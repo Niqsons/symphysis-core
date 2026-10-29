@@ -4,7 +4,7 @@ import sys
 from pathlib import Path
 
 import journal
-from conftest import ROOT, one_record_journal
+from conftest import ROOT, one_record_journal, requires_evidence_roots
 
 
 def test_check_finds_quote_across_linebreak(tmp_path):
@@ -26,6 +26,7 @@ def test_check_missing_file_is_signal_not_error(tmp_path):
     assert r["missing"] and "файла нет" in r["missing"][0]
 
 
+@requires_evidence_roots
 def test_check_plan_journal_all_found():
     j = journal.load_journal(ROOT / "docs/plan-implementation.journal.json")
     r = journal.check_evidence(j, journal.default_roots())

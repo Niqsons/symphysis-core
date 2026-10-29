@@ -516,7 +516,7 @@ def cmd_render_html(args: argparse.Namespace) -> int:
     if journal is None:
         return 1
     # Сверка идёт в памяти: просмотрщик получает вердикты, файл журнала не меняется.
-    result = check_evidence(journal, default_roots())
+    result = check_evidence(journal, default_roots(args.roots))
     try:
         html = render_html(journal, args.template)
     except ValueError as e:
@@ -552,6 +552,7 @@ def build_parser() -> argparse.ArgumentParser:
                                            "негодный журнал — код 1")
     p.add_argument("json", type=Path)
     p.add_argument("--out", type=Path, required=True)
+    p.add_argument("--roots", type=Path, help="файл корней вместо tools/journal-roots.json")
     p.add_argument("--template", type=Path, default=TEMPLATE_PATH,
                    help="по умолчанию tools/playground-template.html")
     p.set_defaults(func=cmd_render_html)

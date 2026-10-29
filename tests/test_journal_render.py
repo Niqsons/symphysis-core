@@ -284,17 +284,42 @@ def test_cli_render_md_writes_crlf_and_roundtrips(tmp_path):
     assert strip_check_fields(journal.import_md_text(text, source=j["source"])) == strip_check_fields(j)
 
 
+def html_fixture(tmp_path, quote):
+    """Журнал с одной уликой и файл корней: всё внутри `tmp_path`, машина не важна."""
+    (tmp_path / "a.md").write_text("раз\nдва\n", encoding="utf-8")
+    roots = tmp_path / "roots.json"
+    roots.write_text(json.dumps({"": str(tmp_path)}), encoding="utf-8")
+    src = tmp_path / "j.json"
+    journal.save_journal(src, one_record_journal("a.md", quote))
+    return src, roots
+
+
 def test_cli_render_html_writes_lf_and_checks_evidence(tmp_path):
+    src, roots = html_fixture(tmp_path, "дв")
+    before = src.read_bytes()
     out = tmp_path / "view.html"
-    run = run_cli("render-html", LIVE_JSON, "--out", out)
+    run = run_cli("render-html", src, "--out", out, "--roots", roots)
     assert run.returncode == 0, run.stderr
-    assert "улик сверено 71 из 71" in run.stdout
+    assert "[ok] улик сверено 1 из 1" in run.stdout and "[!!]" not in run.stdout
     raw = out.read_bytes()
     assert b"\r" not in raw
     data = embedded(raw.decode("utf-8"))
-    assert data["stats"]["evidence_total"] == 71 and data["stats"]["evidence_found"] == 71
-    # журнал-источник сверка не меняет
-    assert "found" not in journal.load_journal(LIVE_JSON)["records"][0]["options"][0]["evidence"][0]
+    assert data["stats"]["evidence_total"] == 1 and data["stats"]["evidence_found"] == 1
+    ev = data["records"][0]["options"][0]["evidence"][0]
+    assert (ev["line"], ev["found"], ev["verdict"]) == (2, True, "сверено")
+    assert src.read_bytes() == before     # сверка в памяти: журнал-источник не меняется
+
+
+def test_cli_render_html_reports_unmatched_evidence_and_still_renders(tmp_path):
+    src, roots = html_fixture(tmp_path, "нет такого")
+    out = tmp_path / "view.html"
+    run = run_cli("render-html", src, "--out", out, "--roots", roots)
+    assert run.returncode == 0, run.stderr
+    assert "[ok] улик сверено 0 из 1" in run.stdout
+    assert "[!!] не сверено — F-01: a.md «нет такого» — цитаты нет дословно" in run.stdout
+    data = embedded(out.read_text(encoding="utf-8"))
+    assert data["stats"]["evidence_found"] == 0
+    assert data["records"][0]["options"][0]["evidence"][0]["found"] is False
 
 
 @pytest.mark.parametrize("command", ["render-md", "render-html"])
