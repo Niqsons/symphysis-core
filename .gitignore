@@ -1,0 +1,7 @@
+upstream/
+node_modules/
+__pycache__/
+.pytest_cache/
+*.pyc
+.superpowers/
+installer/node_modules/

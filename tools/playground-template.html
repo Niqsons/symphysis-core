@@ -1,0 +1,478 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>symphysis — журнал решений</title>
+<style>
+  :root { --bg:#0f1115; --panel:#171a21; --card:#1c2028; --line:#2a303b; --fg:#e6e8ec; --mute:#9aa3b2;
+          --acc:#6ea8fe; --ok:#3fb950; --warn:#d29922; --bad:#f85149; --park:#a371f7; --unlikely:#8b949e; --left:250px; --right:340px; --outh:170px; }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--bg); color:var(--fg); font:14px/1.45 system-ui, -apple-system, "Segoe UI", sans-serif; }
+  code, .mono { font-family: ui-monospace, Consolas, "Cascadia Mono", monospace; font-size:12.5px; }
+  header { display:flex; gap:16px; align-items:center; padding:10px 16px; border-bottom:1px solid var(--line); background:var(--panel); position:sticky; top:0; z-index:5; }
+  header h1 { font-size:15px; margin:0; font-weight:600; }
+  header .stats { display:flex; gap:12px; color:var(--mute); flex-wrap:wrap; }
+  header .stats b { color:var(--fg); }
+  header .spacer { flex:1; }
+  button { background:#232834; color:var(--fg); border:1px solid var(--line); border-radius:6px; padding:5px 10px; cursor:pointer; font:inherit; }
+  button:hover { border-color:var(--acc); }
+  button.primary { background:var(--acc); color:#0b1020; border-color:var(--acc); font-weight:600; }
+  button.small { padding:2px 8px; font-size:12px; }
+  .layout { display:grid; grid-template-columns: var(--left) minmax(0,1fr) var(--right); min-height: calc(100vh - 48px); }
+  aside { background:var(--panel); position:sticky; top:48px; height:calc(100vh - 48px); display:flex; flex-direction:column; min-height:0; }
+  aside.left { border-right:1px solid var(--line); }
+  aside.right { border-left:1px solid var(--line); }
+  aside .head { display:flex; gap:6px; align-items:center; margin-bottom:6px; }
+  aside .head h2 { flex:1; margin:0; }
+  aside h2, main h2 { font-size:12px; text-transform:uppercase; letter-spacing:.06em; color:var(--mute); margin:0 0 6px; }
+  .schemebox { flex:1 1 auto; overflow:auto; padding:10px 10px 6px; }
+  .scheme svg { display:block; width:100%; max-height:calc(100vh - 130px); height:auto; overflow:visible; margin:0 auto; }
+  .scheme .node { cursor:pointer; }
+  .scheme .node rect, .scheme .node polygon { fill:#232834; stroke:var(--line); stroke-width:1.2; }
+  .scheme .node:hover rect, .scheme .node:hover polygon { stroke:var(--acc); }
+  .scheme .node.active rect, .scheme .node.active polygon { stroke:var(--acc); stroke-width:2; fill:#1f2a3f; }
+  .scheme .node.dim rect, .scheme .node.dim polygon { opacity:.5; }
+  .scheme text { fill:var(--fg); font-size:12px; font-family: system-ui, sans-serif; pointer-events:none; }
+  .scheme text.sub { fill:var(--mute); font-size:10px; }
+  .scheme text.lbl { fill:var(--warn); font-size:10px; }
+  .scheme path.edge { fill:none; stroke:var(--mute); stroke-width:1.3; marker-end:url(#arr); }
+  .scheme path.edge.loop { stroke:var(--warn); stroke-dasharray:4 3; }
+  .scheme .hint { color:var(--mute); font-size:11.5px; padding:2px 0 0; }
+  .tocbox { flex:1 1 auto; min-height:100px; overflow:auto; padding:8px 10px; }
+  .toc a { display:grid; grid-template-columns: 10px 42px 1fr; gap:6px; align-items:baseline; color:var(--fg); text-decoration:none; padding:2px 4px; border-radius:5px; font-size:12.5px; }
+  .toc a:hover { background:rgba(255,255,255,.04); }
+  .toc .dot { width:8px; height:8px; border-radius:50%; background:var(--mute); display:inline-block; }
+  .toc .dot.ok { background:var(--ok); } .toc .dot.park { background:var(--park); } .toc .dot.fact { background:var(--warn); } .toc .dot.changed { background:var(--acc); }
+  .toc .id { color:var(--acc); font-family:ui-monospace, Consolas, monospace; font-size:12px; }
+  .toc .q { color:var(--mute); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .evstats { color:var(--mute); font-size:11.5px; padding:6px 10px; border-top:1px solid var(--line); flex:0 0 auto; }
+  main { padding:12px 16px calc(var(--outh) + 48px); min-width:0; }
+  .card { background:var(--card); border:1px solid var(--line); border-radius:10px; padding:12px 14px; margin:0 0 12px; }
+  .card.parked { border-color:var(--park); }
+  .card.decided { border-color:var(--ok); }
+  .card.changed { border-color:var(--acc); }
+  .card.fact { border-style:dashed; }
+  .card .head { display:flex; gap:8px; align-items:baseline; flex-wrap:wrap; }
+  .card .id { color:var(--acc); font-weight:700; }
+  .badge { font-size:11px; padding:1px 7px; border-radius:10px; border:1px solid var(--line); color:var(--mute); }
+  .badge.fact { color:var(--warn); border-color:var(--warn); }
+  .badge.ok { color:var(--ok); border-color:var(--ok); }
+  .badge.park { color:var(--park); border-color:var(--park); }
+  .badge.changed { color:var(--acc); border-color:var(--acc); }
+  .card .q { font-size:15px; font-weight:600; margin:4px 0 6px; }
+  .meta { color:var(--mute); font-size:12px; margin-bottom:8px; display:flex; gap:6px; align-items:center; flex-wrap:wrap; }
+  .meta a { color:var(--acc); text-decoration:none; }
+  .chip { display:inline-flex; gap:4px; align-items:center; border:1px solid var(--line); border-radius:10px; padding:0 6px; font-size:11.5px; }
+  .chip.added { border-color:var(--park); color:var(--park); }
+  .chip.removed { text-decoration:line-through; opacity:.6; }
+  .chip button { padding:0 4px; font-size:11px; border:none; background:transparent; color:var(--mute); }
+  .chip button:hover { color:var(--bad); }
+  .meta input { width:64px; padding:1px 6px; font-size:12px; }
+  .note { padding:6px 10px; border-radius:6px; margin:6px 0; font-size:12.5px; }
+  .note.warn { background:rgba(210,153,34,.12); color:var(--warn); }
+  .note.bad { background:rgba(248,81,73,.12); color:var(--bad); }
+  .note.info { background:rgba(110,168,254,.10); color:var(--fg); }
+  .note.park { background:rgba(163,113,247,.12); color:var(--fg); }
+  .opt { display:grid; grid-template-columns: 22px 1fr; gap:6px; padding:6px 6px; border-radius:6px; margin:2px 0; }
+  .opt:hover { background:rgba(255,255,255,.03); }
+  .opt.chosen { background:rgba(63,185,80,.10); }
+  .opt.blocked { opacity:.55; }
+  .opt .letter { font-weight:700; color:var(--acc); }
+  .opt .tag { font-size:11px; padding:0 6px; border-radius:8px; margin-left:6px; border:1px solid; }
+  .tag.unlikely { color:var(--unlikely); border-color:var(--unlikely); }
+  .tag.added { color:var(--park); border-color:var(--park); }
+  .tag.anti { color:var(--bad); border-color:var(--bad); }
+  .tag.rec { color:var(--ok); border-color:var(--ok); }
+  .tag.journal { color:var(--ok); border-color:var(--ok); }
+  .ev { display:block; color:var(--mute); font-size:12px; margin:2px 0 0 2px; }
+  .ev code { color:#c9d1d9; }
+  .ev .ok { color:var(--ok); } .ev .bad { color:var(--bad); }
+  .rec { color:var(--mute); font-size:12.5px; margin:6px 0; }
+  .rec b { color:var(--ok); }
+  textarea, input[type=text], select { width:100%; background:#10131a; color:var(--fg); border:1px solid var(--line); border-radius:6px; padding:6px 8px; font:inherit; }
+  textarea { min-height:52px; resize:vertical; }
+  .row { display:flex; gap:8px; align-items:center; margin:6px 0; flex-wrap:wrap; }
+  .row > * { flex:1; }
+  .row > button, .row > select, .row > label { flex:0 0 auto; }
+  .cons { color:var(--mute); font-size:12px; margin-top:6px; }
+  details.park { margin:8px 0; border:1px dashed var(--park); border-radius:8px; padding:4px 10px; }
+  details.park summary { cursor:pointer; color:var(--park); font-size:12.5px; }
+  .parkitem { display:flex; gap:8px; align-items:baseline; font-size:12.5px; margin:3px 0; }
+  .parkitem .who { color:var(--park); flex:0 0 auto; }
+  .parkitem button { flex:0 0 auto; }
+  .outpanel { position:fixed; left:var(--left); right:var(--right); bottom:0; height:var(--outh); background:var(--panel); border-top:1px solid var(--line); padding:8px 16px; z-index:6; display:flex; flex-direction:column; }
+  .outpanel textarea { flex:1 1 auto; min-height:40px; font-family:ui-monospace, Consolas, monospace; font-size:12px; resize:none; }
+  .outhandle { position:absolute; left:0; right:0; top:-4px; height:9px; cursor:ns-resize; }
+  .outhandle::after { content:''; display:block; width:48px; height:3px; margin:3px auto 0; border-radius:2px; background:var(--line); }
+  .outhandle:hover::after { background:var(--acc); }
+  .outpanel .row { margin:4px 0; }
+  .hidden { display:none; }
+  .newfork { border:1px dashed var(--line); border-radius:10px; padding:10px 14px; margin:0 0 12px; }
+  .ok-flash { color:var(--ok); font-size:12px; }
+  @media (max-width: 900px) { .layout { grid-template-columns:1fr; } aside { position:static; height:auto; } .outpanel { left:0; right:0; } }
+</style>
+</head>
+<body>
+<header>
+  <h1 id="title">symphysis — журнал решений</h1>
+  <div class="stats" id="stats"></div>
+  <div class="spacer"></div>
+  <button id="btnExport" title="JSON состояния — для переноса в другой браузер">Экспорт JSON</button>
+  <button id="btnImport">Импорт JSON</button>
+  <input type="file" id="fileImport" accept="application/json" class="hidden">
+  <button id="btnReset">Сбросить</button>
+</header>
+<div class="layout">
+  <aside class="left">
+    <div class="tocbox"><div class="head"><h2>Оглавление</h2><button class="small" id="btnAll">все</button><button class="small" id="btnOpen">открытые</button></div><div class="toc" id="toc"></div></div>
+    <div class="evstats mono" id="evstats"></div>
+  </aside>
+  <main>
+    <div class="newfork">
+      <div class="row"><b>Развилка, которой нет в журнале</b><button class="small" id="btnToggleNew">добавить</button></div>
+      <div id="newForkForm" class="hidden">
+        <input type="text" id="nfQuestion" placeholder="вопрос">
+        <textarea id="nfOptions" placeholder="варианты — по одному на строку"></textarea>
+        <textarea id="nfWord" placeholder="слово: почему это развилка и что рекомендуешь"></textarea>
+        <div class="row"><button class="primary small" id="btnAddFork">внести</button></div>
+      </div>
+      <div id="newForks"></div>
+    </div>
+    <div id="cards"></div>
+    <h2>Замечания к схеме и плану</h2>
+    <textarea id="notes" placeholder="что не так в схеме работы, в поставках, в этапах"></textarea>
+  </main>
+  <aside class="right">
+    <div class="schemebox"><h2>Схема работы — клик фильтрует</h2><div class="scheme" id="scheme"></div></div>
+  </aside>
+</div>
+<div class="outpanel">
+  <div class="outhandle" id="outhandle" title="тяни, чтобы изменить высоту панели"></div>
+  <div class="row">
+    <b style="flex:0 0 auto">Возврат решений</b>
+    <span class="ok-flash" id="copied" style="flex:0 0 auto"></span>
+    <span style="flex:1"></span>
+    <button class="primary" id="btnCopy" style="flex:0 0 auto">Скопировать промпт</button>
+  </div>
+  <textarea id="out" readonly></textarea>
+</div>
+
+<script>
+const JOURNAL = __JOURNAL_JSON__;
+const ADDRESSEES = ['материалы','человек','ИБ'];
+const PARK_HINT = 'Парковка — дополнительный вопрос, который нельзя закрыть сейчас: он уходит адресату. «материалы» — ответ ищется в файлах (исследование), «человек» — нужно решение человека, «ИБ» — проверка по чек-листу безопасности. Решение по самой развилке парковка не снимает.';
+/* вертикальная блок-схема под левую панель: спина x=50..250, дуги возвратов по сторонам */
+const SX = 50, SW = 200, SH = 40, STEP = 58;
+const NODES = [
+  {id:'n1',  y:8,   label:'1 Брейншторм',       sub:'decisions.md',                 d:['П1','П2','П3']},
+  {id:'n2',  y:66,  label:'2 Исследование',     sub:'research/*.md · жанры',        d:['П1']},
+  {id:'n3',  y:124, label:'3 Второй круг',      sub:'decisions.md',                 d:['П2','П3']},
+  {id:'q1',  y:182, diamond:true, label:'новое?', sub:'', d:[]},
+  {id:'n4',  y:240, label:'4 Гриль журнала',    sub:'attack.md',                    d:['П3','П5']},
+  {id:'n5',  y:298, label:'5 Просмотрщик',      sub:'HTML → промпт → JSON',         d:['П7']},
+  {id:'n6',  y:356, label:'6 Промпт → OpenSpec', sub:'proposal · specs · design · tasks', d:['П1','П5']},
+  {id:'n7',  y:414, label:'7 Атака артефакта',  sub:'attack.md',                    d:['П3','П5']},
+  {id:'q2',  y:472, diamond:true, label:'вердикт', sub:'', d:[]},
+  {id:'n8',  y:530, label:'готово к apply',     sub:'статус по вердикту',           d:['П4']},
+  {id:'n9',  y:600, x:50,  w:96,  label:'Рамка',       sub:'форк OpenSpec', d:['П4']},
+  {id:'n10', y:600, x:154, w:96,  label:'Инсталлятор', sub:'npx',           d:['П6']},
+  {id:'n11', y:658, label:'Э5 Сухой прогон',    sub:'схема проходит сама себя',     d:['Э5']},
+].map(n => Object.assign({ x:SX, w:SW, h:SH }, n));
+const EDGES = [
+  ['n1','n2'], ['n2','n3'], ['n3','q1'], ['q1','n4','нет'], ['q1','n2','да','right'], ['n4','n5'], ['n5','n6'],
+  ['n6','n7'], ['n7','q2'], ['q2','n8','passed'], ['q2','n1','gaps → журнал','left'], ['n9','n11'], ['n10','n11'],
+];
+const KEY = 'symphysis:' + (JOURNAL.source || 'journal');
+const byId = Object.fromEntries(JOURNAL.records.map(r => [r.id, r]));
+
+const EMPTY = () => ({ decisions:{}, added:{}, newForks:[], disputes:{}, deps:{}, notes:'' });
+let state = EMPTY();
+let filter = { node:null, openOnly:false };
+try { const s = localStorage.getItem(KEY); if (s) state = Object.assign(EMPTY(), JSON.parse(s)); } catch (e) {}
+for (const k in state.decisions) { const d = state.decisions[k]; if (!Array.isArray(d.parked)) d.parked = d.parked ? [{ text:'', addressee:d.addressee || 'человек' }] : []; }
+function save() { try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {} }
+/* то, что уже внесено в журнал, из состояния браузера убирается: слово к решению, парковка, спор, совпадающий выбор */
+(function cleanupIngested() {
+  const norm = s => String(s || '').replace(/\s+/g, ' ').trim();
+  for (const rec of JOURNAL.records) {
+    const d = state.decisions[rec.id]; if (!d) continue;
+    const known = [rec.decision && rec.decision.word, rec.parking && rec.parking.text].filter(Boolean).map(norm);
+    if (d.word && known.includes(norm(d.word))) d.word = '';
+    d.parked = (d.parked || []).filter(p => norm(p.text) && !(rec.parking && norm(p.text) === norm(rec.parking.text)));
+    if (rec.decision && rec.decision.option && d.choice === rec.decision.option) d.choice = null;
+    const sp = norm(state.disputes[rec.id]); if (sp && rec.dispute && norm(rec.dispute).includes(sp)) delete state.disputes[rec.id];
+  }
+  save();
+})();
+/* высота нижней панели — тянется за ручку, запоминается */
+(function outHeight() {
+  const root = document.documentElement, hd = document.getElementById('outhandle');
+  let h = 170; try { h = +localStorage.getItem(KEY + ':outh') || 170; } catch (e) {}
+  root.style.setProperty('--outh', h + 'px');
+  let drag = null;
+  hd.onmousedown = e => { drag = { y:e.clientY, h }; e.preventDefault(); };
+  window.addEventListener('mousemove', e => { if (!drag) return; h = Math.max(70, Math.min(window.innerHeight - 140, drag.h + (drag.y - e.clientY))); root.style.setProperty('--outh', h + 'px'); });
+  window.addEventListener('mouseup', () => { if (!drag) return; drag = null; try { localStorage.setItem(KEY + ':outh', String(h)); } catch (e) {} });
+})();
+
+function dec(id) { return state.decisions[id] || (state.decisions[id] = { choice:null, word:'', parked:[] }); }
+function journalChoice(rec) { return rec.decision && rec.decision.option ? rec.decision.option : null; }
+function chosen(id) { const d = state.decisions[id]; if (d && d.choice) return d.choice; return journalChoice(byId[id] || {}); }
+function effectiveDeps(rec) {
+  const u = state.deps[rec.id] || { add:[], remove:[] };
+  const base = (rec.depends_on || []).map(x => ({ id:x, kind: u.remove.includes(x) ? 'removed' : 'journal' }));
+  return base.concat(u.add.map(x => ({ id:x, kind:'added' })));
+}
+function allOptions(rec) { return rec.options.concat((state.added[rec.id] || []).map(o => Object.assign({ evidence:[], unlikely:null, added:true, local:true }, o))); }
+function antipodesOf(id, letter) {
+  const out = new Set();
+  for (const a of (byId[id].antipodes || [])) if (a.option === letter) out.add(a.other);
+  for (const r of JOURNAL.records) for (const a of (r.antipodes || [])) if (a.other === id + '.' + letter) out.add(r.id + '.' + a.option);
+  return [...out];
+}
+function blockedBy(id, letter) { return antipodesOf(id, letter).filter(k => { const [oid, ol] = k.split('.'); return chosen(oid) === ol; }); }
+function esc(s) { return String(s ?? '').replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+function evHtml(ev) {
+  const loc = ev.line ? ev.path + ':' + ev.line : ev.path;
+  const v = ev.found ? '<b class="ok">сверено</b>' : '<b class="bad">не найдено: ' + esc(ev.verdict || '') + '</b>';
+  return '<span class="ev">улика: <code>' + esc(loc) + '</code> «' + esc(ev.quote) + '» ' + v + '</span>';
+}
+
+/* ---------- схема работы (вертикальная) ---------- */
+function renderScheme() {
+  const N = Object.fromEntries(NODES.map(n => [n.id, n]));
+  const H = 710;
+  let svg = '<svg viewBox="0 0 300 ' + H + '"><defs><marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#9aa3b2"/></marker></defs>';
+  for (const [f, t, label, side] of EDGES) {
+    const a = N[f], b = N[t];
+    const ac = a.x + a.w / 2, bc = b.x + b.w / 2;
+    let d, lx, ly;
+    if (side === 'right') { const p1 = { x:a.x + a.w, y:a.y + a.h / 2 }, p2 = { x:b.x + b.w, y:b.y + b.h / 2 }; const cx = 296;
+      d = 'M' + p1.x + ' ' + p1.y + ' C ' + cx + ' ' + p1.y + ', ' + cx + ' ' + p2.y + ', ' + p2.x + ' ' + p2.y; lx = 282; ly = (p1.y + p2.y) / 2; }
+    else if (side === 'left') { const p1 = { x:a.x, y:a.y + a.h / 2 }, p2 = { x:b.x, y:b.y + b.h / 2 }; const cx = 4;
+      d = 'M' + p1.x + ' ' + p1.y + ' C ' + cx + ' ' + p1.y + ', ' + cx + ' ' + p2.y + ', ' + p2.x + ' ' + p2.y; lx = 18; ly = (p1.y + p2.y) / 2; }
+    else { const p1 = { x:ac, y:a.y + a.h }, p2 = { x:bc, y:b.y }; d = 'M' + p1.x + ' ' + p1.y + ' L ' + p2.x + ' ' + p2.y; lx = ac + 6; ly = (p1.y + p2.y) / 2 + 3; }
+    svg += '<path class="edge' + (side ? ' loop' : '') + '" d="' + d + '"/>';
+    if (label) svg += '<text class="lbl" x="' + lx + '" y="' + ly + '"' + (side === 'right' ? ' text-anchor="middle" transform="rotate(90 ' + lx + ' ' + ly + ')"' : side === 'left' ? ' text-anchor="middle" transform="rotate(-90 ' + lx + ' ' + ly + ')"' : '') + '>' + esc(label) + '</text>';
+  }
+  for (const n of NODES) {
+    const cls = 'node' + (filter.node === n.id ? ' active' : '') + (filter.node && filter.node !== n.id ? ' dim' : '');
+    const cx = n.x + n.w / 2, cy = n.y + n.h / 2;
+    const shape = n.diamond ? '<polygon points="' + cx + ',' + n.y + ' ' + (n.x + n.w - 40) + ',' + cy + ' ' + cx + ',' + (n.y + n.h) + ' ' + (n.x + 40) + ',' + cy + '"/>'
+                            : '<rect x="' + n.x + '" y="' + n.y + '" width="' + n.w + '" height="' + n.h + '" rx="7"/>';
+    const cnt = n.d.length ? JOURNAL.records.filter(r => n.d.includes(r.delivery)).length : 0;
+    svg += '<g class="' + cls + '" data-node="' + n.id + '">' + shape +
+      '<text x="' + cx + '" y="' + (cy - (n.sub ? 2 : -4)) + '" text-anchor="middle">' + esc(n.label) + (cnt ? ' · ' + cnt : '') + '</text>' +
+      (n.sub ? '<text class="sub" x="' + cx + '" y="' + (cy + 11) + '" text-anchor="middle">' + esc(n.sub) + '</text>' : '') + '</g>';
+  }
+  svg += '</svg>';
+  const sch = document.getElementById('scheme');
+  sch.innerHTML = svg + '<div class="hint">' + (filter.node ? 'фильтр: ' + esc(N[filter.node].label) + ' — клик ещё раз снимает' : (filter.openOnly ? 'только открытые' : 'пунктир — возвраты: новое после второго круга, провал вердикта')) + '</div>';
+  sch.querySelectorAll('.node').forEach(g => g.onclick = () => { const n = N[g.dataset.node]; if (!n.d.length) return; filter.node = (filter.node === n.id) ? null : n.id; render(); });
+}
+
+function visible(rec) {
+  if (filter.node) { const n = NODES.find(p => p.id === filter.node); if (!n.d.includes(rec.delivery)) return false; }
+  if (filter.openOnly) { if (rec.kind === 'факт' || chosen(rec.id)) return false; }
+  return true;
+}
+
+/* ---------- карточки ---------- */
+function renderCards() {
+  const el = document.getElementById('cards');
+  el.innerHTML = JOURNAL.records.filter(visible).map(rec => {
+    const d = dec(rec.id);
+    const isFact = rec.kind === 'факт';
+    const jc = journalChoice(rec);
+    const localChoice = d.choice;
+    const changed = !!(localChoice && jc && localChoice !== jc);
+    const parkedAll = (rec.parking ? [{ text:rec.parking.text, addressee:rec.parking.addressee, journal:true }] : []).concat(d.parked || []);
+    const cls = ['card', isFact ? 'fact' : '', changed ? 'changed' : (chosen(rec.id) ? 'decided' : ''), parkedAll.length ? 'parked' : ''].join(' ');
+    let status = isFact ? '<span class="badge fact">факт · закрыт уликами</span>'
+      : changed ? '<span class="badge changed">изменено: ' + esc(jc) + ' → ' + esc(localChoice) + '</span>'
+      : localChoice ? '<span class="badge ok">решено здесь: ' + esc(localChoice) + '</span>'
+      : jc ? '<span class="badge ok">решено в журнале: ' + esc(jc) + '</span>' : '<span class="badge">открыто</span>';
+    if (parkedAll.length) status += '<span class="badge park">парковка: ' + parkedAll.length + '</span>';
+    const deps = effectiveDeps(rec);
+    const waiting = deps.filter(x => x.kind !== 'removed' && !chosen(x.id)).map(x => x.id);
+    let html = '<div class="' + cls + '" id="' + rec.id + '"><div class="head"><span class="id mono">' + rec.id + '</span>' + status +
+      '<span class="badge">' + esc(rec.delivery || '—') + '</span>' + (rec.addressee ? '<span class="badge">адресат: ' + esc(rec.addressee) + '</span>' : '') + '</div>' +
+      '<div class="q">' + esc(rec.question) + '</div>';
+    html += '<div class="meta">зависит от: ' + (deps.length ? deps.map(x => '<span class="chip ' + x.kind + '"><a href="#' + x.id + '">' + x.id + '</a>' +
+      (x.kind === 'removed' ? '<button data-undep="' + rec.id + '|' + x.id + '" title="вернуть">↺</button>' : '<button data-rmdep="' + rec.id + '|' + x.id + '" title="снять зависимость">×</button>') + '</span>').join('') : '—') +
+      '<input type="text" data-deptext="' + rec.id + '" placeholder="F-NN" title="добавить зависимость"><button class="small" data-adddep="' + rec.id + '">+ зависимость</button></div>';
+    if (waiting.length) html += '<div class="note warn">предпосылка не решена: ' + waiting.join(', ') + ' — выбирать можно, но ответ до неё — догадка</div>';
+    if (rec.evidence && rec.evidence.length && !isFact) html += '<div class="note info"><b>улики записи</b>' + rec.evidence.map(evHtml).join('') + '</div>';
+    if (rec.finding) html += '<div class="note info"><b>находка:</b> ' + esc(rec.finding) + '</div>';
+    if (isFact) {
+      html += rec.evidence.map(evHtml).join('');
+      if (rec.dispute) html += '<div class="note park"><b>спор в журнале:</b> ' + esc(rec.dispute) + '</div>';
+      html += '<div class="cons">следствия: ' + esc(rec.consequences || '—') + '</div>';
+      html += '<div class="row"><textarea data-dispute="' + rec.id + '" placeholder="оспорить факт: что не так и чем это подтверждается">' + esc(state.disputes[rec.id] || '') + '</textarea></div>';
+    } else {
+      const cur = chosen(rec.id);
+      for (const o of allOptions(rec)) {
+        const blocked = blockedBy(rec.id, o.letter);
+        const anti = antipodesOf(rec.id, o.letter);
+        const tags = (rec.recommendation && rec.recommendation.option === o.letter ? '<span class="tag rec">рекомендация</span>' : '') +
+          (jc === o.letter ? '<span class="tag journal">в журнале</span>' : '') +
+          (o.unlikely ? '<span class="tag unlikely" title="' + esc(o.unlikely) + '">маловероятно</span>' : '') +
+          (o.added ? '<span class="tag added">добавлен человеком</span>' : '') +
+          (anti.length ? '<span class="tag anti" title="нельзя вместе с: ' + esc(anti.join(', ')) + '">антипод ' + esc(anti.join(', ')) + '</span>' : '');
+        html += '<label class="opt' + (cur === o.letter ? ' chosen' : '') + (blocked.length ? ' blocked' : '') + '">' +
+          '<input type="radio" name="' + rec.id + '" value="' + o.letter + '"' + (cur === o.letter ? ' checked' : '') + '>' +
+          '<div class="t"><span class="letter">' + o.letter + '.</span> ' + esc(o.text) + tags +
+          (o.unlikely ? '<span class="ev">маловероятно: ' + esc(o.unlikely) + '</span>' : '') +
+          (o.evidence || []).map(evHtml).join('') + '</div></label>';
+      }
+      if (rec.recommendation) html += '<div class="rec">рекомендация: <b>' + esc(rec.recommendation.option) + '</b> — ' + esc(rec.recommendation.why) + '</div>';
+      if (rec.decision && rec.decision.word) html += '<div class="note info"><b>слово в журнале (' + esc(rec.decision.date || '') + '):</b> «' + esc(rec.decision.word) + '»</div>';
+      html += '<div class="note bad hidden" data-msg="' + rec.id + '"></div>';
+      html += '<div class="row"><textarea data-word="' + rec.id + '" placeholder="слово человека дословно — почему так (или что изменить в решении из журнала)">' + esc(d.word || '') + '</textarea></div>';
+      html += '<div class="row"><input type="text" data-addtext="' + rec.id + '" placeholder="вариант, которого здесь нет"><button class="small" data-addopt="' + rec.id + '">добавить вариант</button></div>';
+      html += '<details class="park"' + (parkedAll.length ? ' open' : '') + '><summary title="' + esc(PARK_HINT) + '">парковка — дополнительный вопрос с адресатом (' + parkedAll.length + ')</summary>' +
+        '<div class="note park" style="margin:6px 0">' + esc(PARK_HINT) + '</div>' +
+        parkedAll.map((p, i) => '<div class="parkitem"><span class="who">→ ' + esc(p.addressee || '?') + (p.journal ? ' · в журнале' : '') + '</span><span>' + esc(p.text || '(без текста)') + '</span>' +
+          (p.journal ? '' : '<button class="small" data-unpark="' + rec.id + '|' + (i - (rec.parking ? 1 : 0)) + '">снять</button>') + '</div>').join('') +
+        '<div class="row"><input type="text" data-parktext="' + rec.id + '" placeholder="что именно надо узнать или решить отдельно">' +
+        '<select data-addressee="' + rec.id + '" title="' + esc(PARK_HINT) + '">' + ADDRESSEES.map(a => '<option>' + a + '</option>').join('') + '</select>' +
+        '<button class="small" data-park="' + rec.id + '">припарковать</button></div></details>';
+      html += '<div class="cons">следствия: ' + esc(rec.consequences || '—') + '</div>';
+    }
+    return html + '</div>';
+  }).join('');
+
+  el.querySelectorAll('input[type=radio]').forEach(r => r.onchange = () => {
+    const id = r.name, letter = r.value, blocked = blockedBy(id, letter);
+    if (blocked.length) {
+      r.checked = false;
+      const m = el.querySelector('[data-msg="' + id + '"]');
+      m.textContent = 'антипод уже выбран: ' + blocked.join(', ') + ' — сначала измени то решение';
+      m.classList.remove('hidden');
+      return;
+    }
+    const d = dec(id); d.choice = (letter === journalChoice(byId[id])) ? null : letter; save(); render();
+  });
+  el.querySelectorAll('textarea[data-word]').forEach(t => t.oninput = () => { dec(t.dataset.word).word = t.value; save(); updateOut(); });
+  el.querySelectorAll('textarea[data-dispute]').forEach(t => t.oninput = () => { state.disputes[t.dataset.dispute] = t.value; save(); updateOut(); });
+  el.querySelectorAll('button[data-addopt]').forEach(b => b.onclick = () => {
+    const id = b.dataset.addopt, inp = el.querySelector('input[data-addtext="' + id + '"]');
+    const text = (inp.value || '').trim(); if (!text) return;
+    const letters = allOptions(byId[id]).map(o => o.letter);
+    const next = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('').find(l => !letters.includes(l));
+    (state.added[id] = state.added[id] || []).push({ letter: next, text }); save(); render();
+  });
+  el.querySelectorAll('button[data-park]').forEach(b => b.onclick = () => {
+    const id = b.dataset.park, text = (el.querySelector('input[data-parktext="' + id + '"]').value || '').trim();
+    const addressee = el.querySelector('select[data-addressee="' + id + '"]').value;
+    if (!text) { const m = el.querySelector('[data-msg="' + id + '"]'); m.textContent = 'парковка без вопроса — нечего адресовать'; m.classList.remove('hidden'); return; }
+    dec(id).parked.push({ text, addressee }); save(); render();
+  });
+  el.querySelectorAll('button[data-unpark]').forEach(b => b.onclick = () => { const [id, i] = b.dataset.unpark.split('|'); dec(id).parked.splice(+i, 1); save(); render(); });
+  el.querySelectorAll('button[data-adddep]').forEach(b => b.onclick = () => {
+    const id = b.dataset.adddep, inp = el.querySelector('input[data-deptext="' + id + '"]');
+    const dep = (inp.value || '').trim().toUpperCase().replace(/^F(\d)/, 'F-$1');
+    const m = el.querySelector('[data-msg="' + id + '"]');
+    if (!byId[dep]) { m.textContent = 'нет записи ' + dep; m.classList.remove('hidden'); return; }
+    if (dep === id) { m.textContent = 'запись не может зависеть от себя'; m.classList.remove('hidden'); return; }
+    const u = state.deps[id] = state.deps[id] || { add:[], remove:[] };
+    if (byId[id].depends_on.includes(dep)) { u.remove = u.remove.filter(x => x !== dep); }
+    else if (!u.add.includes(dep)) u.add.push(dep);
+    save(); render();
+  });
+  el.querySelectorAll('button[data-rmdep]').forEach(b => b.onclick = () => {
+    const [id, dep] = b.dataset.rmdep.split('|');
+    const u = state.deps[id] = state.deps[id] || { add:[], remove:[] };
+    if (u.add.includes(dep)) u.add = u.add.filter(x => x !== dep); else if (!u.remove.includes(dep)) u.remove.push(dep);
+    save(); render();
+  });
+  el.querySelectorAll('button[data-undep]').forEach(b => b.onclick = () => {
+    const [id, dep] = b.dataset.undep.split('|');
+    const u = state.deps[id]; if (u) u.remove = u.remove.filter(x => x !== dep); save(); render();
+  });
+}
+
+function renderNewForks() {
+  document.getElementById('newForks').innerHTML = state.newForks.map((f, i) =>
+    '<div class="card" style="margin-top:8px"><div class="head"><span class="id mono">' + f.id + '</span><span class="badge added">добавлена человеком</span>' +
+    '<button class="small" data-delfork="' + i + '" style="margin-left:auto">убрать</button></div><div class="q">' + esc(f.question) + '</div>' +
+    '<div class="meta">варианты: ' + esc(f.options.replace(/\n+/g, ' · ')) + '</div><div class="cons">' + esc(f.word) + '</div></div>').join('');
+  document.querySelectorAll('button[data-delfork]').forEach(b => b.onclick = () => { state.newForks.splice(+b.dataset.delfork, 1); save(); render(); });
+}
+
+function renderToc() {
+  document.getElementById('toc').innerHTML = JOURNAL.records.map(rec => {
+    const d = state.decisions[rec.id];
+    const jc = journalChoice(rec);
+    const dot = rec.kind === 'факт' ? 'fact' : (d && d.choice && jc && d.choice !== jc) ? 'changed' : chosen(rec.id) ? 'ok' : ((rec.parking || (d && d.parked && d.parked.length)) ? 'park' : '');
+    return '<a href="#' + rec.id + '"><span class="dot ' + dot + '"></span><span class="id">' + rec.id + '</span><span class="q" title="' + esc(rec.question) + '">' + esc(rec.question) + '</span></a>';
+  }).join('');
+}
+
+function renderStats() {
+  const forks = JOURNAL.records.filter(r => r.kind !== 'факт');
+  const decided = forks.filter(r => chosen(r.id)).length;
+  const changed = forks.filter(r => { const d = state.decisions[r.id]; const jc = journalChoice(r); return d && d.choice && jc && d.choice !== jc; }).length;
+  const parked = forks.filter(r => r.parking || (state.decisions[r.id] && state.decisions[r.id].parked.length)).length;
+  const disputed = Object.values(state.disputes).filter(v => v && v.trim()).length;
+  document.getElementById('stats').innerHTML =
+    'развилок <b>' + forks.length + '</b> · решено <b>' + decided + '</b>' + (changed ? ' · изменено здесь <b>' + changed + '</b>' : '') +
+    ' · открыто <b>' + (forks.length - decided) + '</b> · с парковкой <b>' + parked + '</b> · фактов <b>' + (JOURNAL.records.length - forks.length) + '</b>' +
+    (disputed ? ' · оспорено <b>' + disputed + '</b>' : '') + (state.newForks.length ? ' · добавлено развилок <b>' + state.newForks.length + '</b>' : '');
+  const s = JOURNAL.stats || {};
+  document.getElementById('evstats').textContent = 'улик сверено ' + (s.evidence_found ?? '?') + ' из ' + (s.evidence_total ?? '?') + ' · собрано ' + (JOURNAL.generated || '');
+}
+
+function updateOut() {
+  const lines = ['Решения по журналу ' + (JOURNAL.source || '') + ', ' + new Date().toISOString().slice(0, 10) + ':'];
+  for (const rec of JOURNAL.records) {
+    const d = state.decisions[rec.id];
+    if (rec.kind === 'факт') { const sp = (state.disputes[rec.id] || '').trim(); if (sp) lines.push('- ' + rec.id + ': факт оспорен — «' + sp + '»'); continue; }
+    for (const o of (state.added[rec.id] || [])) lines.push('- ' + rec.id + ': добавлен вариант ' + o.letter + '. ' + o.text);
+    const u = state.deps[rec.id];
+    if (u) { for (const x of u.add) lines.push('- ' + rec.id + ': зависимость добавлена ' + x); for (const x of u.remove) lines.push('- ' + rec.id + ': зависимость снята ' + x); }
+    if (!d) continue;
+    const w = (d.word || '').trim(), jc = journalChoice(rec);
+    for (const p of (d.parked || [])) lines.push('- ' + rec.id + ': припарковано → ' + p.addressee + ' — «' + p.text + '»');
+    if (d.choice && d.choice !== jc) lines.push('- ' + rec.id + ': ' + d.choice + (jc ? ' (было ' + jc + ')' : '') + (w ? ' — «' + w + '»' : ' — (без слова)'));
+    else if (w) lines.push('- ' + rec.id + ': ' + (jc ? 'к решению ' + jc : 'без выбора') + ' — «' + w + '»');
+  }
+  if (state.newForks.length) { lines.push('Новые развилки:'); for (const f of state.newForks) lines.push('- ' + f.id + ': ' + f.question + ' — варианты: ' + f.options.replace(/\n+/g, ' | ') + (f.word ? ' — «' + f.word + '»' : '')); }
+  if ((state.notes || '').trim()) lines.push('Замечания к схеме: ' + state.notes.trim());
+  if (lines.length === 1) lines.push('(нового нет — решения из журнала остаются как есть, молчание по открытой развилке оставляет её открытой)');
+  document.getElementById('out').value = lines.join('\n');
+}
+
+function render() { renderScheme(); renderCards(); renderNewForks(); renderToc(); renderStats(); updateOut(); }
+
+document.getElementById('notes').value = state.notes || '';
+document.getElementById('notes').oninput = e => { state.notes = e.target.value; save(); updateOut(); };
+document.getElementById('btnAll').onclick = () => { filter = { node:null, openOnly:false }; render(); };
+document.getElementById('btnOpen').onclick = () => { filter.openOnly = !filter.openOnly; render(); };
+document.getElementById('btnToggleNew').onclick = () => document.getElementById('newForkForm').classList.toggle('hidden');
+document.getElementById('btnAddFork').onclick = () => {
+  const q = document.getElementById('nfQuestion').value.trim(); if (!q) return;
+  state.newForks.push({ id: 'F-N' + (state.newForks.length + 1), question: q, options: document.getElementById('nfOptions').value.trim(), word: document.getElementById('nfWord').value.trim() });
+  ['nfQuestion','nfOptions','nfWord'].forEach(i => document.getElementById(i).value = ''); save(); render();
+};
+document.getElementById('btnCopy').onclick = async () => {
+  const t = document.getElementById('out'); let ok = false;
+  try { await navigator.clipboard.writeText(t.value); ok = true; } catch (e) { t.select(); ok = document.execCommand('copy'); }
+  const c = document.getElementById('copied'); c.textContent = ok ? 'скопировано' : 'не удалось — выдели и скопируй руками'; setTimeout(() => c.textContent = '', 2000);
+};
+document.getElementById('btnExport').onclick = () => {
+  const blob = new Blob([JSON.stringify(state, null, 1)], { type:'application/json' });
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'symphysis-decisions.json'; a.click();
+};
+document.getElementById('btnImport').onclick = () => document.getElementById('fileImport').click();
+document.getElementById('fileImport').onchange = e => {
+  const f = e.target.files[0]; if (!f) return;
+  f.text().then(txt => { try { state = Object.assign(EMPTY(), JSON.parse(txt)); save(); render(); document.getElementById('notes').value = state.notes || ''; } catch (err) { alert('не JSON состояния'); } });
+};
+document.getElementById('btnReset').onclick = () => { if (confirm('Стереть все решения из браузера? Решения, уже внесённые в журнал, останутся.')) { state = EMPTY(); save(); document.getElementById('notes').value = ''; render(); } };
+document.getElementById('title').textContent = JOURNAL.title || document.title;
+render();
+</script>
+</body>
+</html>
