@@ -6,9 +6,10 @@
 
     py -3.13 tools/journal.py import-md docs/plan-implementation.journal.md \
         --out docs/plan-implementation.journal.json
+    py -3.13 tools/journal.py check docs/plan-implementation.journal.json [--strict] [--write]
 
 Подкоманды добавляются по задачам плана (`docs/plan-implementation.tasks.md`,
-часть A): check, render-md, render-html, apply, apply-md4h.
+часть A): render-md, render-html, apply, apply-md4h.
 """
 from __future__ import annotations
 
@@ -22,6 +23,9 @@ from jsonschema import Draft202012Validator
 
 ROOT = Path(__file__).resolve().parent.parent
 SCHEMA_PATH = ROOT / "docs" / "journal.schema.json"
+ROOTS_PATH = ROOT / "tools" / "journal-roots.json"
+# Префиксы путей улик, которые лежат в самом symphysis (остальные — в journal-roots.json).
+OWN_PREFIXES = ("docs/", "upstream/", "CLAUDE.md")
 
 RE_TITLE = re.compile(r"^# (.*\S)\s*$")
 RE_REC = re.compile(r"^## (F-\d+)\s+(.*\S)\s*$")
@@ -232,7 +236,102 @@ def validate_journal(journal: dict) -> list[str]:
     return errors or _rule_errors(journal)
 
 
+# --- сверка улик -----------------------------------------------------------
+
+def _expand_home(value: str) -> Path:
+    if value.startswith("<home>"):
+        value = str(Path.home()) + value[len("<home>"):]
+    return Path(value).expanduser()
+
+
+def default_roots(roots_file: Path | None = None) -> dict[str, Path]:
+    """Префикс пути улики -> каталог. Свои префиксы symphysis плюс файл корней
+    (`tools/journal-roots.json` или `roots_file`); `~` и `<home>` — домашний каталог."""
+    roots = {prefix: ROOT / prefix for prefix in OWN_PREFIXES}
+    raw = json.loads(Path(roots_file or ROOTS_PATH).read_text(encoding="utf-8"))
+    roots.update({prefix: _expand_home(value) for prefix, value in raw.items()})
+    return roots
+
+
+def _resolve(path: str, roots: dict[str, Path]) -> Path | None:
+    """Файл улики по самому длинному подходящему префиксу; `None` — корня для пути нет."""
+    for prefix in sorted(roots, key=len, reverse=True):
+        if path.startswith(prefix):
+            return roots[prefix] / path[len(prefix):]
+    return None
+
+
+def _map_pos(text: str, flat_pos: int) -> int:
+    """Позиция в `text` для позиции в тексте со схлопнутыми пробелами."""
+    i = j = 0
+    n = len(text)
+    while i < n and j < flat_pos:
+        if text[i].isspace():
+            while i < n and text[i].isspace():
+                i += 1
+        else:
+            i += 1
+        j += 1
+    return i
+
+
+def find_quote(path: str, quote: str, roots: dict[str, Path]) -> tuple[int | None, str]:
+    """(строка, вердикт): построчно, затем со схлопнутыми пробелами — цитата может
+    переходить через перенос строки. Нет строки — вердикт называет причину."""
+    file = _resolve(path, roots)
+    if file is None:
+        return None, "корня для пути нет"
+    if not file.is_file():
+        return None, "файла нет"
+    text = file.read_text(encoding="utf-8", errors="replace")
+    for i, line in enumerate(text.splitlines(), 1):
+        if quote in line:
+            return i, "сверено"
+    flat = re.sub(r"\s+", " ", text)
+    pos = flat.find(re.sub(r"\s+", " ", quote))
+    if pos >= 0:
+        return text[: _map_pos(text, pos)].count("\n") + 1, "сверено через перенос"
+    return None, "цитаты нет дословно"
+
+
+def check_evidence(journal: dict, roots: dict[str, Path]) -> dict:
+    """Сверяет каждую улику грепом по цитате в файле. Пишет в улики `line`, `found`
+    (`False` — сверяли, не нашли) и `verdict`. Несверенная улика — сигнал, не ошибка."""
+    total = found = 0
+    missing: list[str] = []
+    for rec in journal["records"]:
+        evidence = list(rec["evidence"])
+        for opt in rec["options"]:
+            evidence.extend(opt["evidence"])
+        for ev in evidence:
+            total += 1
+            line, verdict = find_quote(ev["path"], ev["quote"], roots)
+            ev["line"], ev["found"], ev["verdict"] = line, line is not None, verdict
+            if line is not None:
+                found += 1
+            else:
+                missing.append(f"{rec['id']}: {ev['path']} «{ev['quote']}» — {verdict}")
+    return {"total": total, "found": found, "missing": missing}
+
+
 # --- командная строка ------------------------------------------------------
+
+def cmd_check(args: argparse.Namespace) -> int:
+    journal = load_journal(args.json)
+    errors = validate_journal(journal)
+    for e in errors:
+        print(f"[!!] {e}", file=sys.stderr)
+    if errors:
+        return 1
+    result = check_evidence(journal, default_roots(args.roots))
+    print(f"[ok] улик сверено {result['found']} из {result['total']}")
+    for m in result["missing"]:
+        print(f"[!!] {m}")
+    if args.write:
+        save_journal(args.json, journal)
+        print(f"[ok] {args.json}")
+    return 2 if args.strict and result["missing"] else 0
+
 
 def cmd_import_md(args: argparse.Namespace) -> int:
     journal = import_md(args.md)
@@ -254,6 +353,12 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("md", type=Path)
     p.add_argument("--out", type=Path, required=True)
     p.set_defaults(func=cmd_import_md)
+    p = sub.add_parser("check", help="сверить улики грепом по цитате (сигнал, не стоп)")
+    p.add_argument("json", type=Path)
+    p.add_argument("--roots", type=Path, help="файл корней вместо tools/journal-roots.json")
+    p.add_argument("--strict", action="store_true", help="код 2, если есть несверенные улики")
+    p.add_argument("--write", action="store_true", help="сохранить line/found/verdict в JSON")
+    p.set_defaults(func=cmd_check)
     return ap
 
 

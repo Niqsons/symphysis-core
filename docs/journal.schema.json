@@ -23,8 +23,9 @@
     "path": {"type": "string", "minLength": 1},
     "quote": {"type": "string", "minLength": 1},
     "line": {"type": ["integer", "null"]},
-    "found": {"type": "boolean"},
-    "verdict": {"type": "string"}
+    "found": {"type": ["boolean", "null"],
+     "description": "null или поля нет — улику не сверяли; false — сверяли, цитаты нет; true — найдена"},
+    "verdict": {"type": ["string", "null"]}
    }
   },
   "option": {
