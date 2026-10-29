@@ -7,13 +7,23 @@
     py -3.13 tools/journal.py import-md docs/plan-implementation.journal.md \
         --out docs/plan-implementation.journal.json
     py -3.13 tools/journal.py check docs/plan-implementation.journal.json [--strict] [--write]
+    py -3.13 tools/journal.py render-md docs/plan-implementation.journal.json \
+        --out docs/plan-implementation.journal.md
+    py -3.13 tools/journal.py render-html docs/plan-implementation.journal.json \
+        --out docs/plan-implementation.html [--template tools/playground-template.html]
+
+Markdown и HTML — производные от JSON: правится JSON, потом рендер. Корни путей
+улик — свои префиксы symphysis плюс `tools/journal-roots.json`. Путь улики, не
+подошедший ни под один префикс, получает вердикт «корня для пути нет»: отката
+на корень symphysis нет.
 
 Подкоманды добавляются по задачам плана (`docs/plan-implementation.tasks.md`,
-часть A): render-md, render-html, apply, apply-md4h.
+часть A): apply, apply-md4h.
 """
 from __future__ import annotations
 
 import argparse
+import datetime as dt
 import json
 import re
 import sys
@@ -24,11 +34,15 @@ from jsonschema import Draft202012Validator
 ROOT = Path(__file__).resolve().parent.parent
 SCHEMA_PATH = ROOT / "docs" / "journal.schema.json"
 ROOTS_PATH = ROOT / "tools" / "journal-roots.json"
+TEMPLATE_PATH = ROOT / "tools" / "playground-template.html"
+PLACEHOLDER = "__JOURNAL_JSON__"
 # Префиксы путей улик, которые лежат в самом symphysis (остальные — в journal-roots.json).
 OWN_PREFIXES = ("docs/", "upstream/", "CLAUDE.md")
 
 RE_TITLE = re.compile(r"^# (.*\S)\s*$")
 RE_REC = re.compile(r"^## (F-\d+)\s+(.*\S)\s*$")
+RE_ANCHOR = re.compile(r"^<!-- journal:F-\d+ -->\s*$")
+RE_GENERATED = re.compile(r"^> Рендер из .+, не править руками\.\s*$")
 RE_FIELD = re.compile(r"^- ([^:]+):\s*(.*)$")
 RE_OPT = re.compile(r"^  - ([A-ZА-Я])\.\s+(.*\S)\s*$")
 RE_EVID = re.compile(r"^\s+- улика:\s*`([^`]+)`\s*«(.+)»\s*$")
@@ -43,8 +57,9 @@ ADDED_MARK = "(добавлен человеком"
 # --- импорт из markdown ----------------------------------------------------
 
 def _unquote(text: str) -> str:
-    """Снимает одну внешнюю пару «» — слово человека хранится без кавычек."""
-    if text.startswith("«") and text.endswith("»") and text.count("«") == 1 and text.count("»") == 1:
+    """Снимает ровно одну внешнюю пару «» — слово человека и вопрос парковки хранятся
+    без кавычек; «» внутри остаются."""
+    if len(text) >= 2 and text.startswith("«") and text.endswith("»"):
         return text[1:-1]
     return text
 
@@ -59,12 +74,14 @@ def _parse_decision(val: str) -> dict | None:
 
 
 def _parse_recommendation(val: str) -> dict | None:
+    """`text` — строка как написана: у составной рекомендации («B для процедур и A для
+    коротких правил; …») `option`/`why` — лишь приближение, источником служит `text`."""
     if val in DASH:
         return None
     m = RE_RECOMMENDATION.match(val)
     if not m:
-        return {"option": None, "why": val}
-    return {"option": m.group(1), "why": m.group(2).strip()}
+        return {"option": None, "why": val, "text": val}
+    return {"option": m.group(1), "why": m.group(2).strip(), "text": val}
 
 
 def _parse_parking(val: str) -> dict | None:
@@ -86,11 +103,14 @@ def _new_record(rid: str, question: str) -> dict:
 def import_md_text(text: str, source: str = "") -> dict:
     """Разбирает markdown-журнал в формате `plan-flexible-pipeline.md` в словарь по схеме."""
     journal = {"title": "", "source": source, "records": []}
+    intro: list[str] = []
     rec: dict | None = None
     opt: dict | None = None
     mode = None
     for raw in text.splitlines():
         line = raw.rstrip("\r")
+        if RE_ANCHOR.match(line):
+            continue
         m = RE_REC.match(line)
         if m:
             rec = _new_record(m.group(1), m.group(2))
@@ -101,6 +121,8 @@ def import_md_text(text: str, source: str = "") -> dict:
             m = RE_TITLE.match(line)
             if m and not journal["title"]:
                 journal["title"] = m.group(1)
+            elif not RE_GENERATED.match(line):
+                intro.append(line)
             continue
         m = RE_EVID.match(line)
         if m:
@@ -161,6 +183,13 @@ def import_md_text(text: str, source: str = "") -> dict:
                 rec["consequences"] = val
             else:
                 print(f"[..] {rec['id']}: поле «{key}» журналу неизвестно", file=sys.stderr)
+    while intro and not intro[0].strip():
+        intro.pop(0)
+    while intro and not intro[-1].strip():
+        intro.pop()
+    if intro:
+        journal["intro"] = "\n".join(intro)
+        journal["records"] = journal.pop("records")  # в файле вводный текст идёт до записей
     return journal
 
 
@@ -294,16 +323,18 @@ def find_quote(path: str, quote: str, roots: dict[str, Path]) -> tuple[int | Non
     return None, "цитаты нет дословно"
 
 
+def _evidence_of(rec: dict) -> list[dict]:
+    """Улики записи: свои и у её вариантов."""
+    return list(rec["evidence"]) + [ev for opt in rec["options"] for ev in opt["evidence"]]
+
+
 def check_evidence(journal: dict, roots: dict[str, Path]) -> dict:
     """Сверяет каждую улику грепом по цитате в файле. Пишет в улики `line`, `found`
     (`False` — сверяли, не нашли) и `verdict`. Несверенная улика — сигнал, не ошибка."""
     total = found = 0
     missing: list[str] = []
     for rec in journal["records"]:
-        evidence = list(rec["evidence"])
-        for opt in rec["options"]:
-            evidence.extend(opt["evidence"])
-        for ev in evidence:
+        for ev in _evidence_of(rec):
             total += 1
             line, verdict = find_quote(ev["path"], ev["quote"], roots)
             ev["line"], ev["found"], ev["verdict"] = line, line is not None, verdict
@@ -314,14 +345,138 @@ def check_evidence(journal: dict, roots: dict[str, Path]) -> dict:
     return {"total": total, "found": found, "missing": missing}
 
 
+# --- рендер ----------------------------------------------------------------
+
+def _evidence_line(ev: dict, indent: str) -> str:
+    return f"{indent}- улика: `{ev['path']}` «{ev['quote']}»"
+
+
+def _render_option(opt: dict) -> list[str]:
+    text = opt["text"]
+    if opt["added"] and ADDED_MARK not in text:
+        text += f" {ADDED_MARK})"
+    lines = [f"  - {opt['letter']}. {text}"]
+    lines += [_evidence_line(ev, "    ") for ev in opt["evidence"]]
+    if opt["unlikely"]:
+        lines.append(f"    - маловероятно: {opt['unlikely']}")
+    return lines
+
+
+def _render_decision(decision: dict) -> str:
+    if decision["option"] is None:  # строка не по форме — слово хранит её целиком
+        return decision["word"]
+    text = decision["option"]
+    if decision["word"]:
+        text += f" — «{decision['word']}»"
+    if decision["date"]:
+        text += f", {decision['date']}"
+    return text
+
+
+def _render_recommendation(rc: dict) -> str:
+    """Сырая строка `text`; нет её (журнал собран не импортом) — `вариант — почему`."""
+    return rc.get("text") or " — ".join(part for part in (rc["option"], rc["why"]) if part)
+
+
+def _render_record(rec: dict) -> list[str]:
+    """Поля в порядке формата; пустые необязательные — без строки. Варианты и антиподы
+    пишутся только у развилки, как в импорте."""
+    lines = [f"## {rec['id']} {rec['question']}", f"<!-- journal:{rec['id']} -->",
+             f"- вид: {rec['kind']}", f"- статус: {rec['status']}"]
+    if rec["addressee"]:
+        lines.append(f"- адресат: {rec['addressee']}")
+    lines.append(f"- зависит от: {', '.join(rec['depends_on']) or '—'}")
+    if rec["delivery"]:
+        lines.append(f"- поставка: {rec['delivery']}")
+    if rec["kind"] == "развилка":
+        lines.append("- варианты:")
+        for opt in rec["options"]:
+            lines += _render_option(opt)
+        lines.append("- антиподы: " + ("; ".join(f"{a['option']} ↔ {a['other']}" for a in rec["antipodes"]) or "—"))
+    if rec["recommendation"]:
+        lines.append(f"- рекомендация: {_render_recommendation(rec['recommendation'])}")
+    for park in rec["parking"]:
+        who = f"{park['addressee']} — " if park["addressee"] else ""
+        lines.append(f"- парковка: {who}«{park['text']}»")
+        if "finding" in park:
+            lines.append(f"- находка: {park['finding']}".rstrip())
+    if rec["evidence"]:
+        lines.append("- улики:")
+        lines += [_evidence_line(ev, "  ") for ev in rec["evidence"]]
+    if rec["dispute"]:
+        lines.append(f"- спор: {rec['dispute']}")
+    if rec["decision"]:
+        lines.append(f"- решение: {_render_decision(rec['decision'])}")
+    if rec["consequences"]:
+        lines.append(f"- следствия: {rec['consequences']}")
+    return lines
+
+
+def render_md(journal: dict, json_name: str = "") -> str:
+    """Журнал -> markdown в формате `plan-flexible-pipeline.md`; после заголовка каждой
+    записи — якорь `<!-- journal:F-NN -->`. `json_name` попадает в шапку: «рендер из …,
+    не править руками». В markdown нет `reversibility`, `outcome`, `comments` и полей сверки
+    улик (`line/found/verdict`) — их источник только JSON."""
+    source = f"`{json_name}`" if json_name else "JSON-журнала"
+    lines = [f"# {journal['title']}", "", f"> Рендер из {source}, не править руками.", ""]
+    if journal.get("intro"):
+        lines += [journal["intro"], ""]
+    for rec in journal["records"]:
+        lines += _render_record(rec) + [""]
+    return "\n".join(lines)
+
+
+def _viewer_record(rec: dict) -> dict:
+    """Запись в форме, которую читает шаблон: одна парковка журнала на запись
+    (`parking` — объект или `null`) и `finding` на самой записи."""
+    first = rec["parking"][0] if rec["parking"] else None
+    view = dict(rec)
+    view["parking"] = {"addressee": first["addressee"], "text": first["text"]} if first else None
+    view["finding"] = first.get("finding", "") if first else ""
+    return view
+
+
+def render_html(journal: dict, template: Path) -> str:
+    """Шаблон просмотрщика с журналом вместо `__JOURNAL_JSON__`. Улики берутся такими,
+    какие в журнале (`check --write` или сверка в памяти); `</` экранируется как `<\\/`,
+    чтобы текст записи не закрыл `<script>`. Шаблон показывает одну парковку на запись:
+    у записи с несколькими — первую."""
+    html = Path(template).read_text(encoding="utf-8")
+    if PLACEHOLDER not in html:
+        raise ValueError(f"в шаблоне нет метки {PLACEHOLDER}")
+    records = journal["records"]
+    forks = [r for r in records if r["kind"] == "развилка"]
+    evidence = [ev for r in records for ev in _evidence_of(r)]
+    payload = {
+        "title": journal["title"],
+        "source": journal["source"],
+        "generated": dt.date.today().isoformat(),
+        "stats": {"records": len(records), "forks": len(forks),
+                  "facts": sum(1 for r in records if r["kind"] == "факт"),
+                  "decided": sum(1 for r in forks if r["decision"]),
+                  "parked": sum(1 for r in forks if r["parking"]),
+                  "evidence_total": len(evidence),
+                  "evidence_found": sum(1 for ev in evidence if ev.get("found"))},
+        "records": [_viewer_record(r) for r in records],
+    }
+    js = json.dumps(payload, ensure_ascii=False, indent=1).replace("</", "<\\/")
+    return html.replace(PLACEHOLDER, js)
+
+
 # --- командная строка ------------------------------------------------------
 
-def cmd_check(args: argparse.Namespace) -> int:
-    journal = load_journal(args.json)
+def _valid_journal(path: Path) -> dict | None:
+    """Журнал из файла; негодный — ошибки в stderr и `None`."""
+    journal = load_journal(path)
     errors = validate_journal(journal)
     for e in errors:
         print(f"[!!] {e}", file=sys.stderr)
-    if errors:
+    return None if errors else journal
+
+
+def cmd_check(args: argparse.Namespace) -> int:
+    journal = _valid_journal(args.json)
+    if journal is None:
         return 1
     result = check_evidence(journal, default_roots(args.roots))
     print(f"[ok] улик сверено {result['found']} из {result['total']}")
@@ -346,6 +501,35 @@ def cmd_import_md(args: argparse.Namespace) -> int:
     return 1 if errors else 0
 
 
+def cmd_render_md(args: argparse.Namespace) -> int:
+    journal = _valid_journal(args.json)
+    if journal is None:
+        return 1
+    Path(args.out).write_text(render_md(journal, json_name=args.json.name), encoding="utf-8", newline="\r\n")
+    print(f"[ok] записей {len(journal['records'])}")
+    print(f"[ok] {args.out}")
+    return 0
+
+
+def cmd_render_html(args: argparse.Namespace) -> int:
+    journal = _valid_journal(args.json)
+    if journal is None:
+        return 1
+    # Сверка идёт в памяти: просмотрщик получает вердикты, файл журнала не меняется.
+    result = check_evidence(journal, default_roots())
+    try:
+        html = render_html(journal, args.template)
+    except ValueError as e:
+        print(f"[!!] {e}", file=sys.stderr)
+        return 1
+    Path(args.out).write_text(html, encoding="utf-8", newline="\n")
+    print(f"[ok] улик сверено {result['found']} из {result['total']}")
+    for m in result["missing"]:
+        print(f"[!!] не сверено — {m}")
+    print(f"[ok] {args.out}")
+    return 0
+
+
 def build_parser() -> argparse.ArgumentParser:
     ap = argparse.ArgumentParser(prog="journal", description=__doc__.splitlines()[0])
     sub = ap.add_subparsers(dest="cmd", required=True)
@@ -353,12 +537,24 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("md", type=Path)
     p.add_argument("--out", type=Path, required=True)
     p.set_defaults(func=cmd_import_md)
-    p = sub.add_parser("check", help="сверить улики грепом по цитате (сигнал, не стоп)")
+    p = sub.add_parser("check", help="сверить улики грепом по цитате (сигнал, не стоп); "
+                                     "негодный по схеме журнал — код 1")
     p.add_argument("json", type=Path)
     p.add_argument("--roots", type=Path, help="файл корней вместо tools/journal-roots.json")
     p.add_argument("--strict", action="store_true", help="код 2, если есть несверенные улики")
     p.add_argument("--write", action="store_true", help="сохранить line/found/verdict в JSON")
     p.set_defaults(func=cmd_check)
+    p = sub.add_parser("render-md", help="JSON -> markdown (производный файл); негодный журнал — код 1")
+    p.add_argument("json", type=Path)
+    p.add_argument("--out", type=Path, required=True)
+    p.set_defaults(func=cmd_render_md)
+    p = sub.add_parser("render-html", help="JSON -> просмотрщик; улики сверяются в памяти; "
+                                           "негодный журнал — код 1")
+    p.add_argument("json", type=Path)
+    p.add_argument("--out", type=Path, required=True)
+    p.add_argument("--template", type=Path, default=TEMPLATE_PATH,
+                   help="по умолчанию tools/playground-template.html")
+    p.set_defaults(func=cmd_render_html)
     return ap
 
 

@@ -22,11 +22,11 @@
   по задачам, у каждой — свой тест.
 - `docs/plan-implementation.md` — план реализации (прикидка): поставки
   П1–П7, этапы Э0–Э5, сводка развилок. Развилки с уликами —
-  `docs/plan-implementation.journal.md`; человек решает их
-  в `docs/plan-implementation.html`, собранном скриптом
-  `tools/journal_render.py` из шаблона `tools/playground-template.html`
-  (спайк: тестов нет). Шаблон просмотрщика описан
-  в `docs/playground-template-llm-pipeline.md`.
+  `docs/plan-implementation.journal.json` (источник; `.journal.md` —
+  его рендер, руками не править); человек решает их
+  в `docs/plan-implementation.html`, собранном командой
+  `tools/journal.py render-html` из шаблона `tools/playground-template.html`.
+  Шаблон просмотрщика описан в `docs/playground-template-llm-pipeline.md`.
 - `docs/analysis/step0-sources.md` — чтение источников шага 0
   с вердиктами: что берём как есть, что дорабатываем, что
   переписываем; при составлении instruction и формата журнала.

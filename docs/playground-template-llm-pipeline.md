@@ -4,7 +4,7 @@
 манере: когда применять, раскладка, элементы управления, состояние,
 промпт на выходе, чем заполнять. Первый инстанс —
 `docs/plan-implementation.html`, собранный из
-`docs/plan-implementation.journal.md` скриптом `tools/journal_render.py`
+`docs/plan-implementation.journal.json` командой `tools/journal.py render-html`
 по шаблону `tools/playground-template.html`. Круг 1 обратной связи
 человека (2026-10-29) внесён; что изменилось — в конце.
 
@@ -157,7 +157,7 @@ const state = {
 ## Чем заполнять
 
 Не сочинять HTML под задачу: шаблон фиксирован, меняются данные.
-`tools/journal_render.py <журнал> --out <html>` читает журнал, сверяет
+`tools/journal.py render-html <журнал.json> --out <html>` читает журнал, сверяет
 улики, встраивает JSON и пишет HTML.
 
 ## Чего шаблон не делает

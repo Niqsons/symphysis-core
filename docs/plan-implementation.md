@@ -80,7 +80,7 @@
 | **П4** | Форк OpenSpec | две правки: статус артефакта по вердикту (`instruction-loader.ts`), workflow-шаблон `continue` с проверкой вердикта; пин версии upstream; порядок разбора выпусков upstream перед втягиванием | F-02.B, F-03.C |
 | **П5** | Служебные скрипты | сверка улик грепом по цитате (сигнал); рендер журнала в просмотрщик; журнал → `design.md` (Decisions / Risks / Open Questions); проверка `attack.md` — вспомогательная, статус считает CLI | F-12.A, F-13.B |
 | **П6** | Инсталлятор | npm-пакет форка: `npx <пакет> install` кладёт схему в `openspec/schemas/symphysis/`, скиллы и скрипты в проект; `check` сверяет версию, схему, конфиг, состав | F-15.C, F-16.B |
-| **П7** | Шаблон просмотрщика → форк плагина playground | `docs/playground-template-llm-pipeline.md`, `tools/playground-template.html`, `tools/journal_render.py`; круг 1 обратной связи внесён; форк плагина с новым шаблоном | F-17.D, F-18.B |
+| **П7** | Шаблон просмотрщика → форк плагина playground | `docs/playground-template-llm-pipeline.md`, `tools/playground-template.html`, `tools/journal.py render-html`; круг 1 обратной связи внесён; форк плагина с новым шаблоном | F-17.D, F-18.B |
 
 ## Этапы — порядок и цена
 
@@ -101,7 +101,7 @@
 Э6 — последним. П7 идёт сбоку.
 
 **Что уже сделано как спайк**: парсер журнала, сверка улик
-и просмотрщик (`tools/journal_render.py`, `tools/playground-template.html`).
+и просмотрщик (`tools/journal.py render-html`, `tools/playground-template.html`).
 Тестов нет. Источник у спайка — markdown, а по F-01.B источником
 станет JSON: в Э1 парсер разворачивается в рендер из JSON, markdown
 и HTML — производные. Оставить спайк — решение Э4.
