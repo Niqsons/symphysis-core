@@ -27,6 +27,10 @@
   в `docs/plan-implementation.html`, собранном командой
   `tools/journal.py render-html` из шаблона `tools/playground-template.html`.
   Шаблон просмотрщика описан в `docs/playground-template-llm-pipeline.md`.
+- `tools/journal*.py` — фасад `journal.py` (CLI, публичные имена) и модули:
+  `journal_model` (схема, проверка, импорт md), `journal_render` (md, html,
+  design.md), `journal_apply` (сверка улик, внесение правок), `journal_cli`;
+  модули импортируют друг друга по имени, не через фасад.
 - `docs/analysis/step0-sources.md` — чтение источников шага 0
   с вердиктами: что берём как есть, что дорабатываем, что
   переписываем; при составлении instruction и формата журнала.
