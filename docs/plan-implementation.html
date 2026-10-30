@@ -161,8 +161,7 @@
 <script>
 const JOURNAL = {
  "title": "Журнал решений: план реализации symphysis",
- "source": "plan-implementation.journal.md",
- "generated": "2026-10-29",
+ "source": "plan-implementation.journal.json",
  "stats": {
   "records": 24,
   "forks": 19,
@@ -248,10 +247,13 @@ const JOURNAL = {
    },
    "reversibility": null,
    "outcome": null,
-   "parking": {
-    "addressee": "материалы",
-    "text": "json разбирать проще, и видно, что это служебный файл. Проблема в том, что изменения в Markdown, который создасться на основе json не запишутся обратно в json. Стоит изучить механику комментариев плагина Markdown Editor for Humans, в нём комментарии записываются как отдельные файлы с якорями. Это позволит отследить изменения в markdown."
-   },
+   "parking": [
+    {
+     "addressee": "материалы",
+     "text": "json разбирать проще, и видно, что это служебный файл. Проблема в том, что изменения в Markdown, который создасться на основе json не запишутся обратно в json. Стоит изучить механику комментариев плагина Markdown Editor for Humans, в нём комментарии записываются как отдельные файлы с якорями. Это позволит отследить изменения в markdown.",
+     "finding": "Markdown Editor for Humans (VS Code, `concretio.markdown-for-humans` 0.4.5) не правит файл за человека, а собирает комментарии к нему: документ на время ревью заперт, связка запечатывается в `.md4h/feedback/<файл>--<раунд>/feedback.md` с SHA-256 источника, номерами строк и хешами блоков на каждый комментарий; человеческая инструкция — только текст в блоке `### Feedback`, остальное агент считает уликой. Для B это значит: правки человека в отрендеренном markdown приходят не правками, а адресованными комментариями, которые агент применяет к JSON; SHA источника гарантирует, что комментарии относятся к той же версии рендера. Прожито в store 28.10: раунд `20261028T201340Z-dfa6`, замечания F1–F6 внесены той же ночью."
+    }
+   ],
    "dispute": "",
    "consequences": "источник журнала — JSON; `decisions.md` и HTML — рендер из него; правки человека в markdown приходят комментариями с якорями и SHA источника по образцу md4h, применяет их агент; спайк на markdown живёт до Э1",
    "evidence": [
@@ -403,7 +405,7 @@ const JOURNAL = {
    },
    "reversibility": null,
    "outcome": null,
-   "parking": null,
+   "parking": [],
    "dispute": "",
    "consequences": "статус считает сам CLI форка по вердикту во frontmatter; `openspec status` показывает «есть файл, нет вердикта» как не готово; П4 становится поставкой с кодом",
    "evidence": [],
@@ -496,7 +498,7 @@ const JOURNAL = {
    },
    "reversibility": null,
    "outcome": null,
-   "parking": null,
+   "parking": [],
    "dispute": "",
    "consequences": "форк меняется в двух местах — статус по вердикту (F-02) и workflow-шаблон continue; каждый выпуск upstream сначала разбирается, потом решается, втягивать ли; пин версии upstream в форке",
    "evidence": [],
@@ -561,7 +563,7 @@ const JOURNAL = {
    },
    "reversibility": null,
    "outcome": null,
-   "parking": null,
+   "parking": [],
    "dispute": "",
    "consequences": "шаблон `decisions.md` и instruction с механиками брейншторма — в П1",
    "evidence": [],
@@ -652,7 +654,7 @@ const JOURNAL = {
    },
    "reversibility": null,
    "outcome": null,
-   "parking": null,
+   "parking": [],
    "dispute": "",
    "consequences": "instruction `research` требует файл на вопрос журнала с адресатом «материалы» и жанром из пяти; в отчёте — пути, цитаты и отрицания по рецепту («не найдено», «искал: шаблоны дословно»)",
    "evidence": [],
@@ -748,7 +750,7 @@ const JOURNAL = {
    },
    "reversibility": null,
    "outcome": null,
-   "parking": null,
+   "parking": [],
    "dispute": "",
    "consequences": "П3 — четыре скилла; instruction артефактов — короткие, зовут скилл по имени",
    "evidence": [],
@@ -829,7 +831,7 @@ const JOURNAL = {
    },
    "reversibility": null,
    "outcome": null,
-   "parking": null,
+   "parking": [],
    "dispute": "",
    "consequences": "новый круг начинается только по слову человека; отказ записывается в журнал строкой «брейншторм закончен по решению человека»; числовой гейт не вводится",
    "evidence": [],
@@ -920,7 +922,7 @@ const JOURNAL = {
    },
    "reversibility": null,
    "outcome": null,
-   "parking": null,
+   "parking": [],
    "dispute": "",
    "consequences": "скилл пробы краёв несёт таблицу восьми категорий дословно, с copyright notice; форма — поле записи, которое человек может переписать",
    "evidence": [],
@@ -996,7 +998,7 @@ const JOURNAL = {
    },
    "reversibility": null,
    "outcome": null,
-   "parking": null,
+   "parking": [],
    "dispute": "",
    "consequences": "формат журнала получает поле `исход` с двумя закрытыми списками",
    "evidence": [],
@@ -1050,7 +1052,7 @@ const JOURNAL = {
    },
    "reversibility": null,
    "outcome": null,
-   "parking": null,
+   "parking": [],
    "dispute": "",
    "consequences": "в `design.md` решения с «в одну сторону» идут первыми; безальтернативные развилки в журнал всё равно пишутся — как решения",
    "evidence": [],
@@ -1126,7 +1128,7 @@ const JOURNAL = {
    },
    "reversibility": null,
    "outcome": null,
-   "parking": null,
+   "parking": [],
    "dispute": "",
    "consequences": "адресат «ИБ» даёт отдельный артефакт или раздел, его состав — в П1; «архитектор» снят и из просмотрщика",
    "evidence": [],
@@ -1202,7 +1204,7 @@ const JOURNAL = {
    },
    "reversibility": null,
    "outcome": null,
-   "parking": null,
+   "parking": [],
    "dispute": "",
    "consequences": "скрипт сверки — первый в П5; несверенная улика — пометка в журнале и в просмотрщике, не стоп",
    "evidence": [],
@@ -1284,7 +1286,7 @@ const JOURNAL = {
    },
    "reversibility": null,
    "outcome": null,
-   "parking": null,
+   "parking": [],
    "dispute": "",
    "consequences": "шаблон `attack.md` с frontmatter: `status`, хеш атакуемого артефакта, список утверждений без опоры; статус по вердикту считает форк (F-02.B)",
    "evidence": [],
@@ -1336,7 +1338,7 @@ const JOURNAL = {
    },
    "reversibility": null,
    "outcome": null,
-   "parking": null,
+   "parking": [],
    "dispute": "",
    "consequences": "у каждого переведённого скилла — список мест, где смысл инструкции изменён против источника, с причиной; человек читает каждый перевод",
    "evidence": [],
@@ -1410,7 +1412,7 @@ const JOURNAL = {
    },
    "reversibility": null,
    "outcome": null,
-   "parking": null,
+   "parking": [],
    "dispute": "",
    "consequences": "форк OpenSpec собирается как npm-пакет; `npx <пакет> install` кладёт схему, скиллы и скрипты в проект; `--check` остаётся глаголом пакета",
    "evidence": [],
@@ -1472,7 +1474,7 @@ const JOURNAL = {
    },
    "reversibility": null,
    "outcome": null,
-   "parking": null,
+   "parking": [],
    "dispute": "",
    "consequences": "схема живёт в репозитории проекта и едет с ним; локальный выбор схемы пользователем — конфиг пользователя поверх",
    "evidence": [],
@@ -1555,7 +1557,7 @@ const JOURNAL = {
    },
    "reversibility": null,
    "outcome": null,
-   "parking": null,
+   "parking": [],
    "dispute": "",
    "consequences": "F-01 решён в B, находка релевантна — два канала возврата в JSON-источник: из HTML промптом, из отрендеренного markdown связкой комментариев с якорями по образцу md4h; оба применяет агент, HTML на диск не пишет",
    "evidence": [],
@@ -1624,7 +1626,7 @@ const JOURNAL = {
    },
    "reversibility": null,
    "outcome": null,
-   "parking": null,
+   "parking": [],
    "dispute": "",
    "consequences": "форк плагина — поставка П7; первый круг обратной связи внесён в шаблон 2026-10-29",
    "evidence": [],
@@ -1685,7 +1687,7 @@ const JOURNAL = {
    },
    "reversibility": null,
    "outcome": null,
-   "parking": null,
+   "parking": [],
    "dispute": "",
    "consequences": "этап Э5 стоит до обкатки",
    "evidence": [],
@@ -1706,7 +1708,7 @@ const JOURNAL = {
    "decision": null,
    "reversibility": null,
    "outcome": null,
-   "parking": null,
+   "parking": [],
    "dispute": "«Ответил в F-02» — факт о ванили стоит; решение F-02.B меняет это в форке",
    "consequences": "F-02, F-13",
    "evidence": [
@@ -1742,7 +1744,7 @@ const JOURNAL = {
    "decision": null,
    "reversibility": null,
    "outcome": null,
-   "parking": null,
+   "parking": [],
    "dispute": "«Но установка производится человеком. При этом поставить symphysis обратно не сложно.» — факт стоит, его цена снята: переустановка symphysis дешёвая, и `update --dry-run` показывает, что перезапишется",
    "consequences": "F-03, F-06",
    "evidence": [
@@ -1778,7 +1780,7 @@ const JOURNAL = {
    "decision": null,
    "reversibility": null,
    "outcome": null,
-   "parking": null,
+   "parking": [],
    "dispute": "«Отвечено в F-08.»",
    "consequences": "F-08",
    "evidence": [
@@ -1807,7 +1809,7 @@ const JOURNAL = {
    "decision": null,
    "reversibility": null,
    "outcome": null,
-   "parking": null,
+   "parking": [],
    "dispute": "«gsd-pi хороший проект, но нам все таки нужен gsd-core, так как он значительно сильнее, но не такой гибкий как openspec.» — факт стоит, направление подтверждено: механики из gsd-core, рамка — OpenSpec",
    "consequences": "готовой связки нет; механики переносятся сами (П3)",
    "evidence": [
@@ -1843,7 +1845,7 @@ const JOURNAL = {
    "decision": null,
    "reversibility": null,
    "outcome": null,
-   "parking": null,
+   "parking": [],
    "dispute": "«этот факт не понял.» — переформулировано: у пробы краёв в GSD есть код-классификатор (его мы не переносим, см. F-22), а у пробы запретов кода нет вовсе — это вопрос модели «чем это может тихо стать» и текстовый отсев; значит, в наш скилл она переезжает целиком, ничего не теряя. Канон (OWASP, GDPR) она не чеканит, а отсылает в чек-лист ИБ — это и есть адресат «ИБ» из F-11",
    "consequences": "скилл пробы запретов — перевод текста; канон — в чек-лист ИБ",
    "evidence": [
@@ -1904,9 +1906,10 @@ function save() { try { localStorage.setItem(KEY, JSON.stringify(state)); } catc
   const norm = s => String(s || '').replace(/\s+/g, ' ').trim();
   for (const rec of JOURNAL.records) {
     const d = state.decisions[rec.id]; if (!d) continue;
-    const known = [rec.decision && rec.decision.word, rec.parking && rec.parking.text].filter(Boolean).map(norm);
+    const jpark = (rec.parking || []).map(p => norm(p.text));
+    const known = [rec.decision && rec.decision.word].filter(Boolean).map(norm).concat(jpark);
     if (d.word && known.includes(norm(d.word))) d.word = '';
-    d.parked = (d.parked || []).filter(p => norm(p.text) && !(rec.parking && norm(p.text) === norm(rec.parking.text)));
+    d.parked = (d.parked || []).filter(p => norm(p.text) && !jpark.includes(norm(p.text)));
     if (rec.decision && rec.decision.option && d.choice === rec.decision.option) d.choice = null;
     const sp = norm(state.disputes[rec.id]); if (sp && rec.dispute && norm(rec.dispute).includes(sp)) delete state.disputes[rec.id];
   }
@@ -1994,7 +1997,8 @@ function renderCards() {
     const jc = journalChoice(rec);
     const localChoice = d.choice;
     const changed = !!(localChoice && jc && localChoice !== jc);
-    const parkedAll = (rec.parking ? [{ text:rec.parking.text, addressee:rec.parking.addressee, journal:true }] : []).concat(d.parked || []);
+    const jpark = (rec.parking || []).map(p => ({ text:p.text, addressee:p.addressee, journal:true }));
+    const parkedAll = jpark.concat(d.parked || []);
     const cls = ['card', isFact ? 'fact' : '', changed ? 'changed' : (chosen(rec.id) ? 'decided' : ''), parkedAll.length ? 'parked' : ''].join(' ');
     let status = isFact ? '<span class="badge fact">факт · закрыт уликами</span>'
       : changed ? '<span class="badge changed">изменено: ' + esc(jc) + ' → ' + esc(localChoice) + '</span>'
@@ -2041,7 +2045,7 @@ function renderCards() {
       html += '<details class="park"' + (parkedAll.length ? ' open' : '') + '><summary title="' + esc(PARK_HINT) + '">парковка — дополнительный вопрос с адресатом (' + parkedAll.length + ')</summary>' +
         '<div class="note park" style="margin:6px 0">' + esc(PARK_HINT) + '</div>' +
         parkedAll.map((p, i) => '<div class="parkitem"><span class="who">→ ' + esc(p.addressee || '?') + (p.journal ? ' · в журнале' : '') + '</span><span>' + esc(p.text || '(без текста)') + '</span>' +
-          (p.journal ? '' : '<button class="small" data-unpark="' + rec.id + '|' + (i - (rec.parking ? 1 : 0)) + '">снять</button>') + '</div>').join('') +
+          (p.journal ? '' : '<button class="small" data-unpark="' + rec.id + '|' + (i - jpark.length) + '">снять</button>') + '</div>').join('') +
         '<div class="row"><input type="text" data-parktext="' + rec.id + '" placeholder="что именно надо узнать или решить отдельно">' +
         '<select data-addressee="' + rec.id + '" title="' + esc(PARK_HINT) + '">' + ADDRESSEES.map(a => '<option>' + a + '</option>').join('') + '</select>' +
         '<button class="small" data-park="' + rec.id + '">припарковать</button></div></details>';
@@ -2112,7 +2116,7 @@ function renderToc() {
   document.getElementById('toc').innerHTML = JOURNAL.records.map(rec => {
     const d = state.decisions[rec.id];
     const jc = journalChoice(rec);
-    const dot = rec.kind === 'факт' ? 'fact' : (d && d.choice && jc && d.choice !== jc) ? 'changed' : chosen(rec.id) ? 'ok' : ((rec.parking || (d && d.parked && d.parked.length)) ? 'park' : '');
+    const dot = rec.kind === 'факт' ? 'fact' : (d && d.choice && jc && d.choice !== jc) ? 'changed' : chosen(rec.id) ? 'ok' : (((rec.parking && rec.parking.length) || (d && d.parked && d.parked.length)) ? 'park' : '');
     return '<a href="#' + rec.id + '"><span class="dot ' + dot + '"></span><span class="id">' + rec.id + '</span><span class="q" title="' + esc(rec.question) + '">' + esc(rec.question) + '</span></a>';
   }).join('');
 }
@@ -2121,7 +2125,7 @@ function renderStats() {
   const forks = JOURNAL.records.filter(r => r.kind !== 'факт');
   const decided = forks.filter(r => chosen(r.id)).length;
   const changed = forks.filter(r => { const d = state.decisions[r.id]; const jc = journalChoice(r); return d && d.choice && jc && d.choice !== jc; }).length;
-  const parked = forks.filter(r => r.parking || (state.decisions[r.id] && state.decisions[r.id].parked.length)).length;
+  const parked = forks.filter(r => (r.parking && r.parking.length) || (state.decisions[r.id] && state.decisions[r.id].parked.length)).length;
   const disputed = Object.values(state.disputes).filter(v => v && v.trim()).length;
   document.getElementById('stats').innerHTML =
     'развилок <b>' + forks.length + '</b> · решено <b>' + decided + '</b>' + (changed ? ' · изменено здесь <b>' + changed + '</b>' : '') +
