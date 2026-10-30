@@ -380,15 +380,52 @@ DECISIONS_RULES = ["у каждого варианта улика — путь �
                    "адресат парковки — материалы, человек, ИБ"]
 
 FORCE_STANCE = "FORCE stance: считай каждое утверждение неподкреплённым, пока улика не доказала обратное"
+# Правило «сначала запись» (D7, F-26): вывод модели — развилка, а не строка поставки; стоит у артефактов,
+# в которые выбор модели попадает, минуя просмотрщик (две утечки 2026-10-30).
+RECORD_FIRST = ("утверждение о механике, цели или ограничении без записи F-NN — предположение: "
+                "сначала запись в журнал (развилка с рекомендацией), потом артефакт")
 
 OTHER_RULES = {
     "specs": ["предположение помечается словом `предположение` и дорогой `проверить|решить`",
               "у каждого требования хотя бы один сценарий GIVEN/WHEN/THEN"],
-    "design": ["решение излагается, не принимается"],
+    "proposal": [RECORD_FIRST],
+    "design": ["решение излагается, не принимается", RECORD_FIRST],
+    "tasks": [RECORD_FIRST],
     "attack-decisions": [FORCE_STANCE],
     "attack-artifacts": [FORCE_STANCE],
     "security": ["канон не чеканится в журнал"],
 }
+
+
+def sample_rules():
+    """Правила образца `config.symphysis.yaml` словарём артефакт -> список строк, без YAML-библиотеки:
+    форма файла — `rules:` → `  <артефакт>:` → `    - "<правило>"`; строка не по форме — AssertionError."""
+    rules, key, inside = {}, None, False
+    for line in CONFIG_SAMPLE.read_text(encoding="utf-8").splitlines():
+        if line.startswith("rules:"):
+            inside = True
+            continue
+        if not inside or not line.strip() or line.lstrip().startswith("#"):
+            continue
+        if not line.startswith(" "):
+            break
+        if (m := re.match(r"^  (\S+):\s*$", line)):
+            key = m.group(1)
+            rules[key] = []
+            continue
+        m = re.match(r'^    - "(.*)"\s*$', line)
+        assert m and key, f"строка правил не по форме: {line!r}"
+        rules[key].append(m.group(1))
+    return rules
+
+
+def test_sample_config_rules_say_record_first():
+    """Без форка: набор правил образца равен константам тестов; «сначала запись» — у proposal, design, tasks."""
+    rules = sample_rules()
+    assert rules == {"decisions": DECISIONS_RULES, **OTHER_RULES}
+    for artifact in ("proposal", "design", "tasks"):
+        assert RECORD_FIRST in rules[artifact], artifact
+    assert rules["design"][0] == "решение излагается, не принимается"
 
 
 def sample_project(tmp_path):
