@@ -24,7 +24,7 @@ description: >-
 не запрещает. Механика — из GSD Core: два такта «широко, затем узко»
 (`upstream/gsd-core/gsd-core/references/prohibition-probe.md:46-48`),
 отсев гигиены (`:60-74`), канон не чеканится (`:76-91`), ярус проверки
-`test | judgment` (`:93-111`; Step 5.6 `workflows/spec-phase.md:384-446`).
+`test | judgment` (`:93-111`; Step 5.6 `workflows/spec-phase.md:384-470`).
 Движка нет и в источнике: «no compiled `prohibition-probe.cjs` engine —
 the recall stage is an LLM prose pass» (`:32-33`; F-24) — переносится
 текст. Оригинал — `references/prohibition-probe.md`; где
@@ -185,13 +185,15 @@ the exact silent failure this probe eliminates»).
 
 - `outcome` ← `{kind: "проба", value: <A и B → Specify, C → Dismiss,
   D → Defer>, reason: <decision.word дословно; у C по «реши сам» — `why`
-  с пометкой>}`. `Backstop` у запретов не бывает, список
+  с пометкой>}`. `Backstop` у запретов не бывает,
   `journal_model.PROBE_OUTCOMES` не расширяется: ярус живёт
   в `consequences`, не в `value`;
-- A и B: в spec.md под той же capability — новое `### Requirement:` с
-  MUST NOT («не должен») и `#### Scenario:` GIVEN/WHEN/THEN; у A THEN
-  проверяет тест, у B THEN называет суждение и судью (ревью, атака
-  `symphysis-attack`). `consequences` ← `проверка: test — <какой тест>`
+- A и B: в spec.md под той же capability, в `## ADDED Requirements`, —
+  новое `### Requirement:` с MUST NOT и `#### Scenario:` GIVEN/WHEN/THEN;
+  меняется существующее — `## MODIFIED Requirements`, требование целиком
+  (`templates/spec.md:6,18`); у A THEN проверяет тест, у B THEN называет
+  суждение и судью (ревью, атака `symphysis-attack`).
+  `consequences` ← `проверка: test — <какой тест>`
   или `проверка: judgment — <кто и как судит>`, затем «в spec.md:
   <имя требования>»; тест пишет `tasks`, здесь только намерение;
 - D: `consequences` ← «запрет не решён — tasks считает его допущением»

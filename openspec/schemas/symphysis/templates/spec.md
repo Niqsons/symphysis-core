@@ -8,7 +8,7 @@
 ### Requirement: <имя требования>
 Система SHALL <наблюдаемое поведение>.
 <!-- проба краёв: форма=<numeric-range | collection | text | stateful | io>, исходы: <по кандидатам: Specify | Dismiss с причиной | Backstop | Defer; записи журнала F-NN> -->
-<!-- проба запретов: исходы: <по кандидатам: Specify | Dismiss с причиной | Backstop | Defer; записи журнала F-NN; канон — в security.md, не здесь> -->
+<!-- проба запретов: исходы: <по кандидатам: Specify/test | Specify/judgment | Dismiss с причиной | Defer; записи журнала F-NN; канон — парковка с адресатом ИБ, не здесь> -->
 
 #### Scenario: <имя сценария>
 - **GIVEN** <исходное состояние — необязательно>
