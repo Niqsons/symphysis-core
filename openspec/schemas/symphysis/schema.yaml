@@ -9,7 +9,7 @@ artifacts:
     instruction: |
       Загрузи скилл `symphysis-brainstorm` и проведи интервью по задаче: развилки и факты записывай в журнал `decisions.json` по шаблону.
       Решает человек, не ты: пока его слова нет, запись остаётся открытой.
-      Улики сверяет `py -3.13 tools/journal.py check` — это сигнал, не стоп.
+      Улики сверяет `py -3.13 .symphysis/tools/journal.py check <каталог изменения>/decisions.json` — это сигнал, не стоп.
     requires: []
 
   - id: research
@@ -18,8 +18,8 @@ artifacts:
     template: research.md
     instruction: |
       На каждую запись журнала с адресатом «материалы» — один файл `research/F-NN.md`.
-      Frontmatter: `genre: устройство|размещение|края|проверка|аналоги` (одно значение) и `question: F-NN`.
-      Отчёт: найденное — с путём, строкой и дословной цитатой; ненайденное — отрицанием по рецепту: «не найдено», «искал: шаблоны дословно».
+      Frontmatter: `genre: устройство|размещение|края|проверка|аналоги` (одно значение), `question: F-NN` и `brief` (текст брифа).
+      Отчёт: найденное — с путём, строкой и дословной цитатой; ненайденное — отрицанием по рецепту: «не найдено» и под ним «искал: <шаблоны дословно>» (сами шаблоны поиска, как они были заданы).
       Цитату бери из прочитанного файла, не по памяти.
     requires:
       - decisions
@@ -27,7 +27,7 @@ artifacts:
   - id: attack-decisions
     generates: attack/decisions.md
     description: Второй круг брейншторма и атака журнала решений с вердиктом
-    template: attack.md
+    template: attack-decisions.md
     verdict:
       frontmatter: status
       value: passed
@@ -71,7 +71,7 @@ artifacts:
     description: Дизайн — как реализовать, решения из журнала
     template: design.md
     instruction: |
-      Получи design.md из журнала: `py -3.13 tools/journal.py render-design <каталог изменения>/decisions.json --out <каталог изменения>/design.md`.
+      Получи design.md из журнала: `py -3.13 .symphysis/tools/journal.py render-design <каталог изменения>/decisions.json --out <каталог изменения>/design.md`.
       Decisions, Risks / Trade-offs и Open Questions приходят из журнала; чтобы их изменить, правь журнал и рендери заново.
       После последнего рендера впиши руками Context (состояние и ограничения; мотивацию — ссылкой на proposal.md) и Goals / Non-Goals (границы дизайна, без повтора proposal).
       Решение излагается, а не принимается: его уже принял человек.
@@ -83,10 +83,10 @@ artifacts:
     description: Чек-лист канона информационной безопасности по спецификациям
     template: security.md
     instruction: |
-      Составь чек-лист канона ИБ по `specs/`. Канон не становится запретом на требование (правило отсылки prohibition probe) — он лежит здесь.
+      Составь чек-лист канона ИБ по `specs/`. Канон (OWASP, инъекции, пути, токены) не записывается в журнал, а отмечается здесь.
       Пункты: инъекции через содержимое файлов, пути с `../`, токены и срок их жизни, права, бинарные файлы.
-      Таблица: пункт · к чему из specs относится · «применимо / неприменимо — причина».
-      Неприменимый пункт остаётся в таблице с причиной; применимый называет требование, которое его закрывает.
+      Таблица: пункт · «применимо / неприменимо — причина» · чем проверено.
+      Неприменимый пункт остаётся в таблице с причиной; применимый называет требование из specs, которое его закрывает.
     requires:
       - specs
 
@@ -107,7 +107,7 @@ artifacts:
   - id: attack-artifacts
     generates: attack/artifacts.md
     description: Атака specs, design, security и tasks с вердиктом
-    template: attack.md
+    template: attack-artifacts.md
     verdict:
       frontmatter: status
       value: passed
@@ -115,7 +115,7 @@ artifacts:
       Загрузи скилл `symphysis-attack` и атакуй `specs/`, `design.md`, `security.md` и `tasks.md`.
       Результат — `attack/artifacts.md` по шаблону.
       Вердикт — во frontmatter: `status: passed | gaps_found`.
-      Дыры закрывай правкой атакуемого артефакта, затем повтори атаку; без `passed` артефакт не готов.
+      Дыры закрывай правкой атакуемого артефакта, затем повтори атаку; форк OpenSpec symphysis считает артефакт готовым только с `status: passed`.
     requires:
       - specs
       - design
