@@ -52,6 +52,15 @@ def _render_recommendation(rc: dict) -> str:
     return rc.get("text") or " — ".join(part for part in (rc["option"], rc["why"]) if part)
 
 
+def _render_outcome(outcome: dict) -> str:
+    """`<вид> — <значение>`, с причиной — `… — <причина>`. Пустая причина хвоста не даёт:
+    у исхода `Dismiss` её требует правило, у остальных она необязательна."""
+    text = f"{outcome['kind']} — {outcome['value']}"
+    if outcome["reason"]:
+        text += f" — {outcome['reason']}"
+    return text
+
+
 def _render_record(rec: dict) -> list[str]:
     """Поля в порядке формата; пустые необязательные — без строки. Варианты и антиподы
     пишутся только у развилки, как в импорте."""
@@ -81,6 +90,8 @@ def _render_record(rec: dict) -> list[str]:
         lines.append(f"- спор: {rec['dispute']}")
     if rec["decision"]:
         lines.append(f"- решение: {_render_decision(rec['decision'])}")
+    if rec["outcome"]:
+        lines.append(f"- исход: {_render_outcome(rec['outcome'])}")
     if rec["consequences"]:
         lines.append(f"- следствия: {rec['consequences']}")
     return lines
@@ -107,8 +118,10 @@ def render_md(journal: dict, json_name: str = "") -> str:
     """Журнал -> markdown в формате `plan-flexible-pipeline.md`; после заголовка каждой
     записи — якорь `<!-- journal:F-NN -->`. `json_name` попадает в шапку: «рендер из …,
     не править руками». `notes` — разделом «Заметки» после последней записи (нет заметок —
-    нет раздела). В markdown нет `reversibility`, `outcome`, `comments`, `generated`
-    и полей сверки улик (`line/found/verdict`) — их источник только JSON."""
+    нет раздела). `outcome` — строкой `- исход: <вид> — <значение> — <причина>` между решением
+    и следствиями (нет исхода — нет строки; пустая причина — без хвоста). В markdown нет
+    `reversibility`, `comments`, `generated` и полей сверки улик (`line/found/verdict`) —
+    их источник только JSON."""
     lines = [f"# {journal['title']}", "", _generated_note(json_name), ""]
     if journal.get("intro"):
         lines += [journal["intro"], ""]

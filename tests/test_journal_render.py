@@ -390,6 +390,57 @@ def test_import_reads_the_notes_section_back_into_notes():
     assert "notes" not in roundtrip(one_record_journal("a.md", "q"))
 
 
+# --- исход: строка «- исход:» между решением и следствиями --------------------
+
+PROBE_OUTCOME = {"kind": "проба", "value": "Dismiss",
+                 "reason": "выход канонически отсортирован — пары равных нет"}
+
+
+def decided_probe(outcome):
+    """Решённый кандидат пробы: решение, исход и следствия — три поля, порядок которых проверяется."""
+    j = one_record_journal("a.md", "q")
+    rec = j["records"][0]
+    rec["status"] = "решён"
+    rec["decision"] = {"option": "A", "word": "слово", "date": "2026-10-30"}
+    rec["outcome"] = outcome
+    rec["consequences"] = "в spec.md: сценарий"
+    return j
+
+
+def test_render_md_writes_outcome_between_decision_and_consequences():
+    lines = journal.render_md(decided_probe(PROBE_OUTCOME)).splitlines()
+    keys = [line[2:].split(":")[0] for line in lines if line.startswith("- ")]
+    assert keys[-3:] == ["решение", "исход", "следствия"]
+    assert "- исход: проба — Dismiss — выход канонически отсортирован — пары равных нет" in lines
+    assert "исход" in journal.render_md.__doc__
+
+
+def test_render_md_omits_the_reason_tail_when_reason_is_empty():
+    md = journal.render_md(decided_probe({"kind": "проба", "value": "Defer", "reason": ""}))
+    assert "- исход: проба — Defer\n" in md
+    assert "- исход:" not in journal.render_md(one_record_journal("a.md", "q"))
+
+
+@pytest.mark.parametrize("outcome", [
+    PROBE_OUTCOME,                                                   # причина сама содержит « — »
+    {"kind": "проба", "value": "Defer", "reason": ""},               # причины нет — хвоста нет
+    {"kind": "вопрос", "value": "не узнать по файлам", "reason": "файлов нет"},
+])
+def test_outcome_survives_the_roundtrip(outcome):
+    j = decided_probe(outcome)
+    back = roundtrip(j)
+    assert back["records"][0]["outcome"] == outcome
+    assert strip_check_fields(back) == strip_check_fields(j)
+
+
+def test_import_skips_an_outcome_line_not_by_form(capsys):
+    head = "# Т\n\n## F-01 В?\n- вид: развилка\n- статус: открыт\n- варианты:\n  - A. а\n"
+    assert journal.import_md_text(head + "- исход: —\n")["records"][0]["outcome"] is None
+    rec = journal.import_md_text(head + "- исход: что-то — Defer\n")["records"][0]
+    assert rec["outcome"] is None
+    assert "F-01: исход не по форме" in capsys.readouterr().err
+
+
 # --- живой журнал ----------------------------------------------------------
 
 def test_live_journal_roundtrips_through_markdown():

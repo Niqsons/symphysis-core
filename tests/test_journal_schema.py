@@ -124,8 +124,39 @@ def test_validate_rejects_antipode_to_missing_letter():
 def test_validate_accepts_reversibility_and_outcome():
     j = plan()
     j["records"][0]["reversibility"] = {"level": "дорого", "why": "формат читают скрипты"}
-    j["records"][0]["outcome"] = {"kind": "проба", "value": "проверить", "reason": "нет данных"}
+    j["records"][0]["outcome"] = {"kind": "проба", "value": "Dismiss", "reason": "нет данных"}
     j["records"][1]["comments"] = [{"round": "20261028T201340Z-dfa6", "lines": [3, 4], "text": "правка"}]
+    assert journal.validate_journal(j) == []
+
+
+# --- исход пробы: четыре слова GSD, Dismiss — только с причиной (F-09.C) ------------
+
+def probe_outcome(value, reason):
+    j = plan()
+    j["records"][0]["outcome"] = {"kind": "проба", "value": value, "reason": reason}
+    return j
+
+
+@pytest.mark.parametrize("value, reason", [
+    ("Specify", ""), ("Dismiss", "вход — ограниченный enum, границы нет"), ("Backstop", ""), ("Defer", ""),
+])
+def test_validate_accepts_the_four_probe_outcomes(value, reason):
+    assert journal.validate_journal(probe_outcome(value, reason)) == []
+
+
+def test_validate_rejects_a_probe_outcome_outside_the_four():
+    errors = journal.validate_journal(probe_outcome("проверить", "нет данных"))
+    assert len(errors) == 1 and errors[0].startswith("F-01") and "проверить" in errors[0]
+    assert all(token in errors[0] for token in ("Specify", "Dismiss", "Backstop", "Defer"))
+
+
+def test_validate_rejects_dismiss_without_a_reason():
+    assert journal.validate_journal(probe_outcome("Dismiss", "  ")) == ["F-01: исход Dismiss без причины"]
+
+
+def test_validate_leaves_the_question_vocabulary_to_its_own_skill():
+    j = plan()
+    j["records"][0]["outcome"] = {"kind": "вопрос", "value": "что угодно", "reason": ""}
     assert journal.validate_journal(j) == []
 
 
