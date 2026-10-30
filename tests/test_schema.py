@@ -202,10 +202,17 @@ def test_research_template_shape():
     genre_line = re.search(r"^genre:.*$", fm, re.M).group(0)
     for genre in ("устройство", "размещение", "края", "проверка", "аналоги"):
         assert genre in genre_line, genre
-    assert re.search(r"^question: F-NN$", fm, re.M) and re.search(r"^brief:", fm, re.M), fm
+    assert re.search(r"^question: <F-NN>$", fm, re.M) and re.search(r"^brief:", fm, re.M), fm
     assert headings(text, 2) == ["Найдено", "Не найдено", "Вопросы, которые открылись"]
     assert "путь:строка" in text and "«цитата»" in text
     assert "не найдено" in text and "искал: " in text and "<шаблон" in text
+
+
+@pytest.mark.parametrize("name", ["research.md", "attack-decisions.md"])
+def test_templates_mark_record_number_as_placeholder(name):
+    """Номер записи в шаблоне — подстановка `<F-NN>`: голый `F-NN` читается как настоящий номер."""
+    text = template_text(name)
+    assert "<F-NN>" in text and re.findall(r"(?<!<)F-NN(?!>)", text) == [], name
 
 
 def test_spec_template_uses_openspec_delta_grammar():
@@ -225,6 +232,8 @@ def test_design_template_marks_generated_sections():
         assert "генерируется `py -3.13 .symphysis/tools/journal.py render-design`" in section(text, title), title
     for title in ("Context", "Goals / Non-Goals"):
         assert "render-design" not in section(text, title), title
+    context = section(text, "Context")
+    assert "рендер ставит сюда факты с уликами" in context.lower() and "после последнего рендера" in context
 
 
 def test_security_template_is_canon_checklist():
@@ -267,6 +276,10 @@ def test_instructions_call_journal_by_installed_path():
     assert ".symphysis/tools/journal.py" in schema_block("design")
     bare = re.findall(r"(?<!\.symphysis/)tools/journal\.py", text)
     assert bare == [], f"путь скрипта без .symphysis/: {bare}"
+
+
+def test_specs_instruction_names_scenario_form_with_given():
+    assert "в виде GIVEN / WHEN / THEN" in schema_block("specs")
 
 
 def test_instruction_wording_from_task7_review():

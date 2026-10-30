@@ -59,7 +59,7 @@ artifacts:
     template: spec.md
     instruction: |
       Напиши спецификации поведения по грамматике OpenSpec: по файлу `specs/<capability>/spec.md` на каждую capability из proposal.
-      Требование — `### Requirement: <имя>` с SHALL или MUST; у каждого есть сценарий `#### Scenario: <имя>` (ровно четыре `#`) в виде WHEN / THEN.
+      Требование — `### Requirement: <имя>` с SHALL или MUST; у каждого есть сценарий `#### Scenario: <имя>` (ровно четыре `#`) в виде GIVEN / WHEN / THEN.
       Дельты — секции `## ADDED|MODIFIED|REMOVED Requirements`; MODIFIED несёт требование целиком.
       Спецификация описывает наблюдаемое поведение, не реализацию.
       После написания на каждое требование позови скиллы `symphysis-edge-probe` и `symphysis-prohibition-probe`.
