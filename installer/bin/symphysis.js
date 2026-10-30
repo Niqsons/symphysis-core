@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 import { parseArgs } from "node:util";
+import { install } from "../lib/install.js";
 
 const USAGE = `symphysis — схема OpenSpec symphysis, скиллы и инструменты журнала в проект
 
@@ -48,7 +49,21 @@ ${USAGE}`);
 
 if (values.help || cmd === "help") {
   process.stdout.write(USAGE);
-} else if (cmd === "install" || cmd === "check") {
+} else if (cmd === "install") {
+  let r;
+  try {
+    r = install(values.project ?? process.cwd(), { skillsDirs: values["skills-dir"] ?? [], force: Boolean(values.force) });
+  } catch (e) {
+    process.stderr.write(`symphysis install: ${e.message}\n`);
+    process.exit(1);
+  }
+  process.stdout.write(`записано ${r.written.length}\n`);
+  for (const m of r.messages) process.stdout.write(`${m}\n`);
+  if (r.skipped.length) {
+    for (const s of r.skipped) process.stderr.write(`${s}\n`);
+    process.stderr.write("перезапись существующих файлов: --force\n");
+  }
+} else if (cmd === "check") {
   process.stderr.write(`symphysis ${cmd}: не реализовано\n`);
   process.exit(2);
 } else {

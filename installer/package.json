@@ -24,5 +24,8 @@
   "symphysis": {
     "openspecPin": "1.15.0-symphysis.1",
     "openspecSource": "<URL репозитория форка — плейсхолдер>"
+  },
+  "dependencies": {
+    "yaml": "^2.9.1"
   }
 }
