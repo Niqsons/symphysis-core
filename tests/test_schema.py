@@ -33,8 +33,8 @@ REQUIRES = {
 }
 
 
-def run_openspec(project, *args):
-    """`openspec <args>` из форка с `cwd=project`. С `--json` — разобранный JSON, иначе — stdout.
+def run_openspec_raw(project, *args):
+    """`openspec <args>` из форка с `cwd=project`: `CompletedProcess` с обоими потоками.
     Ненулевой код — AssertionError с обоими потоками. Конфиг и данные пользователя подменены
     пустыми каталогами рядом с проектом: пользовательская схема не заслонит проектную."""
     env = dict(os.environ,
@@ -47,21 +47,30 @@ def run_openspec(project, *args):
                           stdin=subprocess.DEVNULL, timeout=120)
     assert done.returncode == 0, (f"openspec {' '.join(args)} -> код {done.returncode}\n"
                                   f"stdout:\n{done.stdout}\nstderr:\n{done.stderr}")
+    return done
+
+
+def run_openspec(project, *args):
+    """`openspec <args>` из форка с `cwd=project`. С `--json` — разобранный JSON, иначе — stdout."""
+    done = run_openspec_raw(project, *args)
     if "--json" not in args:
         return done.stdout
     # перед JSON CLI печатает строку-предупреждение («Schema commands are experimental…»)
     return json.JSONDecoder().raw_decode(done.stdout[done.stdout.index("{"):])[0]
 
 
-def make_project(tmp_path, schema="symphysis", change="demo"):
+def make_project(tmp_path, schema="symphysis", change="demo", config=None):
     """Проект OpenSpec с пустым изменением: схема копируется из `openspec/schemas/<schema>`,
-    `config.yaml` и изменение — через `openspec new change` (`openspec init` не нужен)."""
+    изменение создаётся через `openspec new change` (`openspec init` не нужен). `config` — текст
+    `openspec/config.yaml`; без него в конфиге одна строка `schema: <schema>`."""
     src = SCHEMAS / schema
     assert src.is_dir(), f"нет схемы {src.relative_to(ROOT)}"
     proj = tmp_path / "proj"
     (proj / "openspec" / "specs").mkdir(parents=True)
     (proj / "openspec" / "changes").mkdir()
-    (proj / "openspec" / "config.yaml").write_text(f"schema: {schema}\n", encoding="utf-8", newline="\n")
+    if config is None:
+        config = f"schema: {schema}\n"
+    (proj / "openspec" / "config.yaml").write_text(config, encoding="utf-8", newline="\n")
     shutil.copytree(src, proj / "openspec" / "schemas" / schema)
     run_openspec(proj, "new", "change", change, "--schema", schema)
     return proj
@@ -322,3 +331,71 @@ def test_filled_templates_pass_openspec_validate(tmp_path):
         (change / name).write_text(text, encoding="utf-8", newline="\n")
     out = run_openspec(proj, "validate", "demo", "--strict", "--json")
     assert out["summary"]["totals"] == {"items": 1, "passed": 1, "failed": 0}, out
+
+
+# --- config.yaml проекта: rules на артефакт --------------------------------
+
+CONFIG_SAMPLE = ROOT / "openspec" / "config.symphysis.yaml"
+
+DECISIONS_RULES = ["у каждого варианта улика — путь и цитата",
+                   "маловероятный вариант показывается с причиной",
+                   "адресат парковки — материалы, человек, ИБ"]
+
+FORCE_STANCE = "FORCE stance: считай каждое утверждение неподкреплённым, пока улика не доказала обратное"
+
+OTHER_RULES = {
+    "specs": ["предположение помечается словом `предположение` и дорогой `проверить|решить`",
+              "у каждого требования хотя бы один сценарий GIVEN/WHEN/THEN"],
+    "design": ["решение излагается, не принимается"],
+    "attack-decisions": [FORCE_STANCE],
+    "attack-artifacts": [FORCE_STANCE],
+    "security": ["канон не чеканится в журнал"],
+}
+
+
+def sample_project(tmp_path):
+    """Проект, в котором `openspec/config.yaml` — образец `config.symphysis.yaml`."""
+    return make_project(tmp_path, config=CONFIG_SAMPLE.read_text(encoding="utf-8"))
+
+
+@requires_fork
+def test_rules_reach_instructions(tmp_path):
+    proj = sample_project(tmp_path)
+    out = run_openspec(proj, "instructions", "decisions", "--change", "demo", "--json")
+    assert out["rules"] == DECISIONS_RULES
+    assert "decisions.json" in out["context"]
+
+
+@requires_fork
+@pytest.mark.parametrize("artifact_id", sorted(OTHER_RULES))
+def test_sample_rules_reach_their_artifact(tmp_path, artifact_id):
+    proj = sample_project(tmp_path)
+    out = run_openspec(proj, "instructions", artifact_id, "--change", "demo", "--json")
+    assert out["rules"] == OTHER_RULES[artifact_id]
+
+
+@requires_fork
+def test_artifact_without_rules_gets_none(tmp_path):
+    """CLI отдаёт `rules` только непустым: у артефакта без правил ключа нет."""
+    proj = sample_project(tmp_path)
+    out = run_openspec(proj, "instructions", "research", "--change", "demo", "--json")
+    assert "rules" not in out, out.get("rules")
+
+
+@requires_fork
+def test_sample_config_raises_no_warning_about_rules(tmp_path):
+    """Правило с неэкранированным `: ` YAML читает как отображение, и CLI отбрасывает весь список
+    артефакта с предупреждением в stderr; ключ, которого нет в схеме, тоже предупреждает."""
+    proj = sample_project(tmp_path)
+    done = run_openspec_raw(proj, "instructions", "decisions", "--change", "demo", "--json")
+    stderr = done.stderr.lower()
+    assert "rules" not in stderr and "ignoring" not in stderr and "unknown" not in stderr, done.stderr
+
+
+@requires_fork
+def test_sample_config_selects_symphysis_schema(tmp_path):
+    """`schema: symphysis` образца: изменение, созданное без `--schema`, берёт схему из конфига."""
+    proj = sample_project(tmp_path)
+    run_openspec(proj, "new", "change", "by-config")
+    out = run_openspec(proj, "status", "--change", "by-config", "--json")
+    assert out["schemaName"] == "symphysis"
