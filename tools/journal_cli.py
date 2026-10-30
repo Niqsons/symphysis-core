@@ -13,9 +13,9 @@ import sys
 from pathlib import Path
 
 from journal_apply import (REFUSED, apply_answers, apply_md4h, check_evidence, default_roots, parse_answers,
-                           parse_md4h)
+                           parse_md4h, sha256_file)
 from journal_model import import_md, load_journal, save_journal, validate_journal
-from journal_render import TEMPLATE_PATH, render_design, render_html, render_md
+from journal_render import TEMPLATE_PATH, parse_attack_md, render_design, render_html, render_md
 
 __all__ = ["build_parser", "main"]
 
@@ -72,10 +72,25 @@ def cmd_render_html(args: argparse.Namespace) -> int:
     journal = _valid_journal(args.json)
     if journal is None:
         return 1
-    # Сверка идёт в памяти: просмотрщик получает вердикты, файл журнала не меняется.
+    # Атаки разбираются до рендера: битый файл атаки — код 2, HTML не пишется.
+    attacks = []
+    for path in args.attack or []:
+        if not path.is_file():
+            print(f"[!!] {path}: файла нет", file=sys.stderr)
+            return 2
+        try:
+            attacks.append(parse_attack_md(path))
+        except UnicodeDecodeError:  # подкласс ValueError — раньше него
+            print(f"[!!] {path}: не UTF-8 — файл атаки читается как UTF-8", file=sys.stderr)
+            return 2
+        except ValueError as e:
+            print(f"[!!] {e}", file=sys.stderr)
+            return 2
+    # Сверка идёт в памяти: просмотрщик получает вердикты, файл журнала не меняется;
+    # хеш журнала — по байтам файла на диске, как `sha256_file` у связки md4h.
     result = check_evidence(journal, default_roots(args.roots))
     try:
-        html = render_html(journal, args.template)
+        html = render_html(journal, args.template, attacks=attacks, journal_sha256=sha256_file(args.json))
     except ValueError as e:
         print(f"[!!] {e}", file=sys.stderr)
         return 1
@@ -222,12 +237,14 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--out", type=Path, required=True)
     p.set_defaults(func=cmd_render_md)
     p = sub.add_parser("render-html", help="JSON -> просмотрщик; улики сверяются в памяти; "
-                                           "негодный журнал — код 1")
+                                           "негодный журнал — код 1; битый файл атаки — код 2")
     p.add_argument("json", type=Path)
     p.add_argument("--out", type=Path, required=True)
     p.add_argument("--roots", type=Path, help="файл корней вместо tools/journal-roots.json")
     p.add_argument("--template", type=Path, default=TEMPLATE_PATH,
                    help="по умолчанию tools/playground-template.html")
+    p.add_argument("--attack", type=Path, action="append",
+                   help="файл атаки для режима «атака» (attack/decisions.md, attack/artifacts.md); повторяемый")
     p.set_defaults(func=cmd_render_html)
     p = sub.add_parser("render-design", help="JSON -> design.md (Decisions, Risks, Open Questions из журнала); "
                                              "негодный журнал — код 1")

@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 """Рендеры журнала: markdown (`render_md`), HTML-просмотрщик (`render_html`), `design.md`
-(`render_design`) и якоря рендера (`anchor_lines`). Зависит только от journal_model."""
+(`render_design`), якоря рендера (`anchor_lines`) и разбор файла атаки для просмотрщика
+(`parse_attack_md`). Зависит только от journal_model."""
 from __future__ import annotations
 
 import json
@@ -10,13 +11,14 @@ from pathlib import Path
 from journal_model import ADDED_MARK, RE_ANCHOR, ROOT, _evidence_of, _flat
 
 __all__ = [
-    "TEMPLATE_PATH", "PLACEHOLDER",
-    "render_md", "render_html", "render_design", "anchor_lines", "_lines",
+    "TEMPLATE_PATH", "PLACEHOLDER", "PLACEHOLDER_ATTACK",
+    "render_md", "render_html", "render_design", "anchor_lines", "parse_attack_md", "_lines",
 ]
 
 
 TEMPLATE_PATH = ROOT / "tools" / "playground-template.html"
 PLACEHOLDER = "__JOURNAL_JSON__"
+PLACEHOLDER_ATTACK = "__ATTACK_JSON__"
 
 
 # --- рендер ----------------------------------------------------------------
@@ -155,14 +157,28 @@ def _viewer_record(rec: dict) -> dict:
     return view
 
 
-def render_html(journal: dict, template: Path) -> str:
-    """Шаблон просмотрщика с журналом вместо `__JOURNAL_JSON__`. Улики берутся такими,
-    какие в журнале (`check --write` или сверка в памяти); `</` экранируется как `<\\/`,
-    чтобы текст записи не закрыл `<script>`. Дата сборки `generated` — из журнала, если она
-    там есть; своей даты рендер не ставит, и два рендера одного журнала совпадают."""
+def _embed(obj) -> str:
+    """JSON для `<script>` шаблона: `</` экранируется как `<\\/`, чтобы текст не закрыл `<script>`."""
+    return json.dumps(obj, ensure_ascii=False, indent=1).replace("</", "<\\/")
+
+
+def render_html(journal: dict, template: Path, attacks: list[dict] | None = None,
+                journal_sha256: str | None = None) -> str:
+    """Шаблон просмотрщика с журналом вместо `__JOURNAL_JSON__` и списком атак вместо
+    `__ATTACK_JSON__`; обе метки обязательны. Улики берутся такими, какие в журнале
+    (`check --write` или сверка в памяти). Дата сборки `generated` — из журнала, если она
+    там есть; своей даты рендер не ставит, и два рендера одного журнала совпадают.
+
+    `attacks` — результаты `parse_attack_md` как есть (режим «атака» просмотрщика); без них
+    на место метки встаёт `[]`. `journal_sha256` — SHA-256 файла журнала по байтам, его считает
+    CLI: в payload он ключ `sha256`, по нему просмотрщик сверяет хеш цели из frontmatter атаки
+    с журналом; ключа нет, если хеш не подан — рендер из памяти файла не знает. `notes[]`
+    журнала отдаются режиму «проверка»; остальной payload прежний. Метки подставляются за один
+    проход, чтобы текст журнала, похожий на метку, не был подставлен второй раз."""
     html = Path(template).read_text(encoding="utf-8")
-    if PLACEHOLDER not in html:
-        raise ValueError(f"в шаблоне нет метки {PLACEHOLDER}")
+    for mark in (PLACEHOLDER, PLACEHOLDER_ATTACK):
+        if mark not in html:
+            raise ValueError(f"в шаблоне нет метки {mark}")
     records = journal["records"]
     forks = [r for r in records if r["kind"] == "развилка"]
     evidence = [ev for r in records for ev in _evidence_of(r)]
@@ -170,6 +186,7 @@ def render_html(journal: dict, template: Path) -> str:
         "title": journal["title"],
         "source": journal["source"],
         **({"generated": journal["generated"]} if journal.get("generated") else {}),
+        **({"sha256": journal_sha256} if journal_sha256 else {}),
         "stats": {"records": len(records), "forks": len(forks),
                   "facts": sum(1 for r in records if r["kind"] == "факт"),
                   "decided": sum(1 for r in forks if r["decision"]),
@@ -177,9 +194,88 @@ def render_html(journal: dict, template: Path) -> str:
                   "evidence_total": len(evidence),
                   "evidence_found": sum(1 for ev in evidence if ev.get("found"))},
         "records": [_viewer_record(r) for r in records],
+        "notes": list(journal.get("notes") or []),
     }
-    js = json.dumps(payload, ensure_ascii=False, indent=1).replace("</", "<\\/")
-    return html.replace(PLACEHOLDER, js)
+    filled = {PLACEHOLDER: _embed(payload), PLACEHOLDER_ATTACK: _embed(attacks or [])}
+    return "".join(filled.get(part, part) for part in re.split(f"({PLACEHOLDER}|{PLACEHOLDER_ATTACK})", html))
+
+
+# --- файл атаки для просмотрщика --------------------------------------------
+
+ATTACK_ROW_KEYS = ("claim", "section", "lens", "invariant", "severity", "support", "fix")
+ATTACK_FIRST_COLUMN = "Утверждение"
+RE_FRONT_KEY = re.compile(r"^(\w+):\s*(.*?)\s*$")
+RE_TARGET_PATH = re.compile(r"^\s+-\s+path:\s*(.*?)\s*$")
+RE_TARGET_SHA = re.compile(r"^\s+sha256:\s*(.*?)\s*$")
+
+
+def _attack_frontmatter(lines: list[str], name: str) -> tuple[dict, int]:
+    """Frontmatter файла атаки без YAML-библиотеки: форма задана двумя шаблонами схемы
+    (`attack-decisions.md` — `target`/`target_sha256`, `attack-artifacts.md` — `targets[]`
+    с `path` и `sha256`). Наружу всегда `targets[]`: форма журнала приводится к списку из одного
+    элемента. Возвращает словарь и индекс закрывающей строки `---`."""
+    if not lines or lines[0].strip() != "---":
+        raise ValueError(f"{name}: нет frontmatter")
+    end = next((i for i, line in enumerate(lines[1:], 1) if line.strip() == "---"), None)
+    if end is None:
+        raise ValueError(f"{name}: frontmatter не закрыт строкой ---")
+    fields: dict[str, str] = {}
+    targets: list[dict] = []
+    for line in lines[1:end]:
+        if (m := RE_TARGET_PATH.match(line)):
+            targets.append({"path": m.group(1), "sha256": ""})
+        elif (m := RE_TARGET_SHA.match(line)) and targets:
+            targets[-1]["sha256"] = m.group(1)
+        elif (m := RE_FRONT_KEY.match(line)):
+            fields[m.group(1)] = m.group(2)
+    if "target" in fields:
+        targets.insert(0, {"path": fields["target"], "sha256": fields.get("target_sha256", "")})
+    return {"status": fields.get("status", ""), "targets": targets}, end
+
+
+def _cells(line: str) -> list[str]:
+    return [c.strip() for c in line.strip().strip("|").split("|")]
+
+
+def _attack_rows(lines: list[str], name: str, start: int) -> list[dict]:
+    """Строки первой pipe-таблицы после `start`, у которой заголовок из семи колонок и первая —
+    «Утверждение». Разделитель заголовка и строки-подстановки шаблона (первая ячейка `<…>`)
+    пропускаются; `|` внутри ячейки не поддерживается — такая строка даёт лишнюю ячейку
+    и ошибку с номером строки, а не строку с перепутанными колонками."""
+    header = next((i for i in range(start, len(lines)) if lines[i].startswith("|")
+                   and len(_cells(lines[i])) == len(ATTACK_ROW_KEYS)
+                   and _cells(lines[i])[0] == ATTACK_FIRST_COLUMN), None)
+    if header is None:
+        raise ValueError(f"{name}: нет таблицы атаки с заголовком «{ATTACK_FIRST_COLUMN}» из семи колонок")
+    rows: list[dict] = []
+    for n in range(header + 1, len(lines)):
+        line = lines[n]
+        if not line.startswith("|"):
+            break
+        cells = _cells(line)
+        if all(set(c) <= {"-", ":"} for c in cells):
+            continue
+        if len(cells) != len(ATTACK_ROW_KEYS):
+            raise ValueError(f"{name}:{n + 1}: в строке таблицы ячеек {len(cells)}, нужно {len(ATTACK_ROW_KEYS)}"
+                             " (`|` внутри ячейки не поддерживается)")
+        if cells[0].startswith("<") and cells[0].endswith(">"):
+            continue
+        rows.append(dict(zip(ATTACK_ROW_KEYS, cells)))
+    return rows
+
+
+def parse_attack_md(path: Path) -> dict:
+    """Файл атаки (`attack/decisions.md`, `attack/artifacts.md`) -> словарь для режима «атака»
+    просмотрщика: `path` — как подан; `frontmatter` — `status` и `targets[]` (`path`, `sha256`);
+    `rows` — строки первой таблицы с семью колонками после D4b (`claim`, `section`, `lens`,
+    `invariant`, `severity`, `support`, `fix`), ячейки `strip()`. Слуг линзы здесь не проверяется:
+    строка вне закрытого списка — невалидная строка атаки, просмотрщик показывает её группой
+    «вне списка»; падать на ней разбору незачем. Без frontmatter или без таблицы — `ValueError`
+    с именем файла и причиной."""
+    name = str(path)
+    lines = _lines(Path(path).read_text(encoding="utf-8-sig"))
+    frontmatter, end = _attack_frontmatter(lines, name)
+    return {"path": name, "frontmatter": frontmatter, "rows": _attack_rows(lines, name, end + 1)}
 
 
 # --- design.md из журнала --------------------------------------------------

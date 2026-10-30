@@ -361,6 +361,111 @@ def test_cli_render_refuses_an_invalid_journal(tmp_path, command):
     assert not out.exists()
 
 
+# --- атака: parse_attack_md, вторая метка шаблона, --attack ----------------
+
+ATTACK_FIX = FIX / "attack"
+FAKE_SHA = "0123456789abcdef" * 4
+ROW_KEYS = ["claim", "section", "lens", "invariant", "severity", "support", "fix"]
+
+
+def embedded_attack(html):
+    """JSON, который шаблон получил вместо `__ATTACK_JSON__`."""
+    start = html.index("const ATTACK = ") + len("const ATTACK = ")
+    payload, _ = json.JSONDecoder().raw_decode(html[start:].replace("<\\/", "</"))
+    return payload
+
+
+def test_parse_attack_md_decisions_form():
+    att = journal.parse_attack_md(ATTACK_FIX / "decisions.md")
+    assert att["path"] == str(ATTACK_FIX / "decisions.md")
+    assert att["frontmatter"]["status"] == "gaps_found"
+    # форма decisions (`target` / `target_sha256`) наружу отдаётся той же формой `targets[]`
+    assert att["frontmatter"]["targets"] == [{"path": "decisions.json", "sha256": FAKE_SHA}]
+    rows = att["rows"]
+    assert len(rows) == 3 and all(list(r) == ROW_KEYS for r in rows)
+    assert rows[0]["section"] == "F-02, следствия" and rows[0]["support"] == "по спеке не выводится"
+    assert rows[1]["support"] == "нет" and rows[1]["severity"] == "блокер"
+    cover = next(r for r in rows if r["claim"] == "чисто")
+    assert cover["lens"] == "coverage" and cover["invariant"] == "—" and cover["fix"] == "—"
+
+
+def test_parse_attack_md_artifacts_form():
+    att = journal.parse_attack_md(ATTACK_FIX / "artifacts.md")
+    targets = att["frontmatter"]["targets"]
+    assert [t["path"] for t in targets] == ["decisions.json", "specs/demo-cap/spec.md"]   # журнал первым
+    assert targets[0]["sha256"] == FAKE_SHA and targets[1]["sha256"] == "fedcba9876543210" * 4
+    assert att["frontmatter"]["status"] == "gaps_found"
+    assert [r["lens"] for r in att["rows"]] == ["requirement-coverage", "honest-verifier", "coverage"]
+    assert att["rows"][0]["section"] == "specs/demo-cap/spec.md, Requirement: работа по схеме"
+    assert att["rows"][0]["fix"] == "правка артефакта"
+
+
+def test_parse_attack_md_skips_placeholders_and_rejects_missing_table(tmp_path):
+    text = (ATTACK_FIX / "decisions.md").read_text(encoding="utf-8")
+    assert "| <утверждение журнала> |" in text        # строка-подстановка шаблона в фикстуре оставлена
+    rows = journal.parse_attack_md(ATTACK_FIX / "decisions.md")["rows"]
+    assert not any(r["claim"].startswith("<") for r in rows)
+    no_table = tmp_path / "broken.md"
+    no_table.write_text("---\nstatus: gaps_found\ntarget: decisions.json\ntarget_sha256:\n---\n\n# Атака\n\n"
+                        "таблицы нет\n", encoding="utf-8")
+    with pytest.raises(ValueError, match="broken.md"):
+        journal.parse_attack_md(no_table)
+    no_front = tmp_path / "nofront.md"
+    no_front.write_text(text.split("---\n", 2)[2], encoding="utf-8")   # та же таблица, frontmatter снят
+    with pytest.raises(ValueError, match="nofront.md"):
+        journal.parse_attack_md(no_front)
+
+
+def test_render_html_without_attacks_embeds_empty_list():
+    html = journal.render_html(plan(), TEMPLATE)
+    assert "__ATTACK_JSON__" not in html
+    assert embedded_attack(html) == []
+    assert "sha256" not in embedded(html)      # хеш журнала — только когда подан
+
+
+def test_render_html_with_attacks_embeds_rows_and_sha():
+    attacks = [journal.parse_attack_md(ATTACK_FIX / "decisions.md"),
+               journal.parse_attack_md(ATTACK_FIX / "artifacts.md")]
+    html = journal.render_html(plan(), TEMPLATE, attacks=attacks, journal_sha256="ab" * 32)
+    assert embedded_attack(html) == attacks      # результаты parse_attack_md как есть
+    assert embedded(html)["sha256"] == "ab" * 32
+
+
+def test_render_html_requires_both_placeholders(tmp_path):
+    template = tmp_path / "t.html"
+    template.write_text("<html>const JOURNAL = __JOURNAL_JSON__;</html>", encoding="utf-8")
+    with pytest.raises(ValueError, match="__ATTACK_JSON__"):
+        journal.render_html(plan(), template)
+    template.write_text("<html>const ATTACK = __ATTACK_JSON__;</html>", encoding="utf-8")
+    with pytest.raises(ValueError, match="__JOURNAL_JSON__"):
+        journal.render_html(plan(), template)
+
+
+def test_cli_render_html_attack_flag(tmp_path):
+    src, roots = html_fixture(tmp_path, "дв")
+    out = tmp_path / "view.html"
+    run = run_cli("render-html", src, "--out", out, "--roots", roots,
+                  "--attack", ATTACK_FIX / "decisions.md", "--attack", ATTACK_FIX / "artifacts.md")
+    assert run.returncode == 0, run.stderr
+    html = out.read_text(encoding="utf-8")
+    assert '"rows"' in html and '"sha256"' in html
+    attacks = embedded_attack(html)
+    assert [a["path"] for a in attacks] == [str(ATTACK_FIX / "decisions.md"), str(ATTACK_FIX / "artifacts.md")]
+    assert [len(a["rows"]) for a in attacks] == [3, 3]
+    assert embedded(html)["sha256"] == journal.sha256_file(src)   # хеш журнала — по байтам файла
+
+
+def test_cli_render_html_attack_parse_error_exits_2(tmp_path):
+    src, roots = html_fixture(tmp_path, "дв")
+    broken = tmp_path / "attack.md"
+    broken.write_text("# без frontmatter и без таблицы\n", encoding="utf-8")
+    out = tmp_path / "view.html"
+    run = run_cli("render-html", src, "--out", out, "--roots", roots, "--attack", broken)
+    assert run.returncode == 2, run.stdout + run.stderr
+    assert run.stderr.startswith("[!!] ") and "attack.md" in run.stderr
+    assert not out.exists()
+
+
 # --- заметки: раздел «Заметки» в конце markdown ------------------------------
 
 NOTES = [

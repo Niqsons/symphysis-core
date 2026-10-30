@@ -10,7 +10,8 @@
     py -3.13 tools/journal.py render-md docs/plan-implementation.journal.json \
         --out docs/plan-implementation.journal.md
     py -3.13 tools/journal.py render-html docs/plan-implementation.journal.json \
-        --out docs/plan-implementation.html [--template tools/playground-template.html]
+        --out docs/plan-implementation.html [--template tools/playground-template.html] \
+        [--attack <каталог изменения>/attack/decisions.md [--attack <каталог изменения>/attack/artifacts.md]]
     py -3.13 tools/journal.py render-design docs/plan-implementation.journal.json \
         --out design.md
     py -3.13 tools/journal.py apply docs/plan-implementation.journal.json answers.md \
@@ -33,6 +34,11 @@ Markdown, HTML и design.md — производные от JSON: правитс
 `comments[]`. Связка должна быть запечатана и относиться к этому рендеру (SHA-256 файла); запись
 комментария — по ближайшему якорю `<!-- journal:F-NN -->` выше его первой строки. Всё или ничего;
 заново он не рендерит.
+
+`render-html --attack <файл>` (повторяемый) подаёт просмотрщику файлы атаки для режима «атака»:
+`parse_attack_md` читает frontmatter (`status`, цели с хешами) и таблицу строк; хеш файла журнала
+встраивается в страницу, по нему режимы «проверка» и «атака» видят, устарел ли вердикт. Битый файл
+атаки — код 2, HTML не пишется. Строки атаки `apply` не меняет: их закрывает правка цели и повторная атака.
 """
 from __future__ import annotations
 
@@ -43,13 +49,14 @@ from journal_apply import (REFUSED, ROOTS_PATH, apply_answers, apply_md4h, check
 from journal_cli import build_parser, main
 from journal_model import (ROOT, SCHEMA_PATH, _flat, _unquote, import_md, import_md_text, load_journal,
                            save_journal, validate_journal)
-from journal_render import PLACEHOLDER, TEMPLATE_PATH, anchor_lines, render_design, render_html, render_md
+from journal_render import (PLACEHOLDER, PLACEHOLDER_ATTACK, TEMPLATE_PATH, anchor_lines, parse_attack_md,
+                            render_design, render_html, render_md)
 
 __all__ = [
-    "ROOT", "SCHEMA_PATH", "ROOTS_PATH", "TEMPLATE_PATH", "PLACEHOLDER", "REFUSED",
+    "ROOT", "SCHEMA_PATH", "ROOTS_PATH", "TEMPLATE_PATH", "PLACEHOLDER", "PLACEHOLDER_ATTACK", "REFUSED",
     "load_journal", "save_journal", "validate_journal", "import_md", "import_md_text",
     "default_roots", "find_quote", "check_evidence",
-    "render_md", "render_html", "render_design", "anchor_lines",
+    "render_md", "render_html", "render_design", "anchor_lines", "parse_attack_md",
     "parse_answers", "apply_answers", "parse_md4h", "apply_md4h", "sha256_file",
     "build_parser", "main", "_unquote", "_flat",
 ]
