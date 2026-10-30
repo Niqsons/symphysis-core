@@ -22,6 +22,7 @@ upstream: Fission-AI/OpenSpec @ 6d04a1b5 (1.15.0, 2026-10-24)
 | C4 — шаг вердикта в шаблоне `continue` (`continue-change.ts`, пины парити, `skills/openspec-continue-change`) | cb801a59, b982f281 |
 | C5 — сборка, кросс-проверка пинов, docs (`docs/cli.md`, `docs/agent-contract.md`, `docs/customization.md`), тест `status` через `runCLI` | adced9b4, 4b100b6e |
 | C5 — `isGlobPattern` вынесен из `outputs.ts` в `glob-pattern.ts`: проверка verdict в `schema.ts` тянула tinyglobby в чтение схемы (`startup-modules` красный после сборки); `outputs.ts` переэкспортирует имя | d88ca368 |
+| C6 — версия форка 1.15.0-symphysis.1, чтобы гейт инсталлятора отличал форк от ванильного OpenSpec (package.json) | 3a6a8265 |
 
 ## Выпуски upstream
 
