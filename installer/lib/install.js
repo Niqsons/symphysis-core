@@ -48,6 +48,7 @@ export function mergeConfig(existingText, oursText) {
   const doc = parseDocument(existingText);
   const ours = parseDocument(oursText).toJS();
   const previous = doc.get("schema");
+  const warnings = [];
   doc.set("schema", ours.schema);
 
   for (const [key, list] of Object.entries(ours.rules ?? {})) {
@@ -59,12 +60,13 @@ export function mergeConfig(existingText, oursText) {
     const seq = rules.get(key, true);
     if (!isSeq(seq)) {
       if (!rules.has(key)) rules.set(key, doc.createNode(list));
+      else warnings.push(`rules.${key} не список — правила symphysis не добавлены`);
       continue;
     }
     const have = new Set(seq.items.map((i) => (isScalar(i) ? i.value : i)));
     for (const s of list) if (!have.has(s)) seq.add(doc.createNode(s));
   }
-  return { text: doc.toString({ lineWidth: 0 }), previous: previous === undefined || previous === null ? null : String(previous) };
+  return { text: doc.toString({ lineWidth: 0 }), previous: previous === undefined || previous === null ? null : String(previous), warnings };
 }
 
 /**
@@ -97,14 +99,17 @@ export function install(project, { skillsDirs = [], force = false, payloadDir = 
     place(res, root, t.configPath, oursBytes, force);
   } else {
     const before = fs.readFileSync(t.configPath, "utf8");
-    const { text, previous } = mergeConfig(before, oursBytes.toString("utf8"));
+    const { text, previous, warnings } = mergeConfig(before, oursBytes.toString("utf8"));
+    res.messages.push(...warnings);
     if (text !== before) {
       fs.writeFileSync(t.configPath, text);
       res.merged.push(rel(root, t.configPath));
       res.messages.push(
-        previous && previous !== "symphysis"
-          ? `config.yaml уже был: схема переключена с ${previous} на symphysis, rules добавлены`
-          : "config.yaml уже был: схема symphysis, rules добавлены",
+        previous === null
+          ? "config.yaml уже был: схема установлена symphysis, rules добавлены"
+          : previous !== "symphysis"
+            ? `config.yaml уже был: схема переключена с ${previous} на symphysis, rules добавлены`
+            : "config.yaml уже был: схема symphysis, rules добавлены",
       );
     }
   }

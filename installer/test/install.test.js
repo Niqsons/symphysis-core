@@ -77,6 +77,24 @@ test("слияние: схема уже symphysis — иное сообщени�
   assert.deepEqual(r.messages, ["config.yaml уже был: схема symphysis, rules добавлены"]);
 });
 
+test("слияние: rules.<key> скаляр — сообщение, значение не тронуто", () => {
+  const p = tmp();
+  fs.mkdirSync(path.join(p, "openspec"));
+  const cfg = path.join(p, "openspec", "config.yaml");
+  fs.writeFileSync(cfg, "schema: symphysis\nrules:\n  specs: одна строка\n");
+  const r = install(p, { payloadDir });
+  assert.ok(r.messages.includes("rules.specs не список — правила symphysis не добавлены"), JSON.stringify(r.messages));
+  assert.match(fs.readFileSync(cfg, "utf8"), /specs: одна строка/);
+});
+
+test("слияние: в config.yaml нет schema — свой текст сообщения", () => {
+  const p = tmp();
+  fs.mkdirSync(path.join(p, "openspec"));
+  fs.writeFileSync(path.join(p, "openspec", "config.yaml"), "context: x\n");
+  const r = install(p, { payloadDir });
+  assert.deepEqual(r.messages, ["config.yaml уже был: схема установлена symphysis, rules добавлены"]);
+});
+
 test("изменённый файл скилла: skipped, без --force не тронут; с force — перезаписан", () => {
   const p = tmp();
   install(p, { payloadDir });

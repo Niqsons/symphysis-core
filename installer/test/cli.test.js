@@ -25,14 +25,14 @@ test("неизвестная команда — код 2, usage в stderr", () =
   assert.match(r.stderr, /install/);
 });
 
-test("check в E1 — не реализовано, код 2", () => {
-  const r = run("check", "--project", ".");
-  assert.equal(r.status, 2);
-  assert.match(r.stderr, /не реализовано/);
-});
-
 test("лишние позиционные аргументы — usage в stderr, код 2", () => {
   const r = run("install", "extra");
   assert.equal(r.status, 2);
   assert.match(r.stderr, /Использование/);
+});
+
+test("--help перед лишним аргументом — usage в stdout, код 0", () => {
+  const r = run("--help", "foo");
+  assert.equal(r.status, 0);
+  assert.match(r.stdout, /Использование/);
 });

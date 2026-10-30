@@ -40,7 +40,7 @@ try {
 const { values, positionals } = parsed;
 const cmd = positionals[0];
 
-if (positionals.length > 1) {
+if (positionals.length > 1 && !values.help) {
   process.stderr.write(`лишние аргументы: ${positionals.slice(1).join(" ")}
 
 ${USAGE}`);
