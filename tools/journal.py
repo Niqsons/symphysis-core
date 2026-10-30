@@ -494,17 +494,14 @@ RE_PARK = re.compile(r"^припарковано\s*→\s*([^\s—]+)\s*—\s*(.*
 RE_DISPUTE = re.compile(r"^факт оспорен\s*—\s*(.*)$", re.S)
 RE_WORD = re.compile(r"^(?:к решению ([A-ZА-Я])|без выбора)\s*—\s*(.*)$", re.S)
 RE_CHOICE = re.compile(r"^([A-ZА-Я])(?!\w)(?:\s*\(было ([A-ZА-Я])\))?\s*(?:—\s*(.*))?$", re.S)
-RE_NEW_FORK = re.compile(r"^(.*?)\s+—\s+варианты:\s*(.*?)(?:\s+—\s+«(.*)»)?\s*$", re.S)
+RE_NEW_FORK = re.compile(r"^(.*?)\s+—\s+варианты:\s*(.*?)(?:\s+—\s+(«.*»))?\s*$", re.S)
 
 
 def _human_word(rest: str | None) -> str:
-    """Слово человека из `«…»` (снимается одна внешняя пара) или `(без слова)` -> пусто."""
+    """Слово человека из `«…»` или `(без слова)` -> пусто. Кавычки снимает `_unquote` —
+    единственное место, которое знает, какая пара «» внешняя."""
     rest = (rest or "").strip()
-    if rest == "(без слова)":
-        return ""
-    if len(rest) >= 2 and rest.startswith("«") and rest.endswith("»"):
-        return rest[1:-1]
-    return rest
+    return "" if rest == "(без слова)" else _unquote(rest)
 
 
 def _parse_item(rid: str, body: str) -> dict:
@@ -513,7 +510,7 @@ def _parse_item(rid: str, body: str) -> dict:
         if m:
             options = [o.strip() for o in m.group(2).split(" | ") if o.strip()]
             return {"id": rid, "op": "new_fork", "question": m.group(1).strip(),
-                    "options": options, "word": m.group(3) or ""}
+                    "options": options, "word": _human_word(m.group(3))}
     else:
         m = RE_ADD_OPTION.match(body)
         if m:

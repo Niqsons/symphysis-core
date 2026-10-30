@@ -149,6 +149,22 @@ def test_round1_added_options_match_the_live_letters():
      {"id": "F-02", "op": "word", "option": "B", "word": "ещё слово"}),
     ("- F-02: без выбора — «слово»",
      {"id": "F-02", "op": "word", "option": None, "word": "слово"}),
+    # слово, начавшееся с «а», просмотрщик обернул один раз: внешняя пара — крайняя
+    ("- F-02: B — ««а» и «б»»",
+     {"id": "F-02", "op": "decide", "option": "B", "was": None, "word": "«а» и «б»"}),
+    # руками правленный промпт без внешней обёртки: «а» и «б» — два слова, пара не внешняя
+    ("- F-02: B — «а» и «б»",
+     {"id": "F-02", "op": "decide", "option": "B", "was": None, "word": "«а» и «б»"}),
+    ("- F-02: припарковано → человек — «а» и «б»",
+     {"id": "F-02", "op": "park", "addressee": "человек", "text": "«а» и «б»"}),
+    ("- F-20: факт оспорен — «а» и «б»",
+     {"id": "F-20", "op": "dispute", "word": "«а» и «б»"}),
+    ("- F-02: к решению B — «а» и «б»",
+     {"id": "F-02", "op": "word", "option": "B", "word": "«а» и «б»"}),
+    ("- F-N1: вопрос — варианты: x | y — «а» и «б»",
+     {"id": "F-N1", "op": "new_fork", "question": "вопрос", "options": ["x", "y"], "word": "«а» и «б»"}),
+    ("- F-N1: вопрос — варианты: x | y — ««а» и «б»»",
+     {"id": "F-N1", "op": "new_fork", "question": "вопрос", "options": ["x", "y"], "word": "«а» и «б»"}),
 ])
 def test_parse_line_shapes(line, expected):
     assert journal.parse_answers(line) == [expected]
