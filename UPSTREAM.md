@@ -19,6 +19,7 @@ upstream: Fission-AI/OpenSpec @ 6d04a1b5 (1.15.0, 2026-10-24)
 | C1 — verdict в схеме артефакта | 543113cd |
 | C2 — frontmatter и готовность по вердикту (`frontmatter.ts`, `state.ts`) | 3af902cf |
 | C3 — verdict в статусе артефакта и подсказка в `nextSteps` (`instruction-loader.ts`, `change-status-policy.ts`, `status.ts`) | de8c1f10 |
+| C4 — шаг вердикта в шаблоне `continue` (`continue-change.ts`, пины парити, `skills/openspec-continue-change`) | cb801a59 |
 
 ## Выпуски upstream
 
