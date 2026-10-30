@@ -17,6 +17,7 @@ upstream: Fission-AI/OpenSpec @ 6d04a1b5 (1.15.0, 2026-10-24)
 | Правка | Коммит |
 | --- | --- |
 | C1 — verdict в схеме артефакта | 543113cd |
+| C2 — frontmatter и готовность по вердикту (`frontmatter.ts`, `state.ts`) | 3af902cf |
 
 ## Выпуски upstream
 
