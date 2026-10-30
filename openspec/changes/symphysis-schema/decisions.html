@@ -1,0 +1,2785 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>symphysis — журнал решений</title>
+<style>
+  :root { --bg:#0f1115; --panel:#171a21; --card:#1c2028; --line:#2a303b; --fg:#e6e8ec; --mute:#9aa3b2;
+          --acc:#6ea8fe; --ok:#3fb950; --warn:#d29922; --bad:#f85149; --park:#a371f7; --unlikely:#8b949e; --left:250px; --right:340px; --outh:170px; }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--bg); color:var(--fg); font:14px/1.45 system-ui, -apple-system, "Segoe UI", sans-serif; }
+  code, .mono { font-family: ui-monospace, Consolas, "Cascadia Mono", monospace; font-size:12.5px; }
+  header { display:flex; gap:16px; align-items:center; padding:10px 16px; border-bottom:1px solid var(--line); background:var(--panel); position:sticky; top:0; z-index:5; }
+  header h1 { font-size:15px; margin:0; font-weight:600; }
+  header .stats { display:flex; gap:12px; color:var(--mute); flex-wrap:wrap; }
+  header .stats b { color:var(--fg); }
+  header .spacer { flex:1; }
+  button { background:#232834; color:var(--fg); border:1px solid var(--line); border-radius:6px; padding:5px 10px; cursor:pointer; font:inherit; }
+  button:hover { border-color:var(--acc); }
+  button.primary { background:var(--acc); color:#0b1020; border-color:var(--acc); font-weight:600; }
+  button.small { padding:2px 8px; font-size:12px; }
+  .layout { display:grid; grid-template-columns: var(--left) minmax(0,1fr) var(--right); min-height: calc(100vh - 48px); }
+  aside { background:var(--panel); position:sticky; top:48px; height:calc(100vh - 48px); display:flex; flex-direction:column; min-height:0; }
+  aside.left { border-right:1px solid var(--line); }
+  aside.right { border-left:1px solid var(--line); }
+  aside .head { display:flex; gap:6px; align-items:center; margin-bottom:6px; }
+  aside .head h2 { flex:1; margin:0; }
+  aside h2, main h2 { font-size:12px; text-transform:uppercase; letter-spacing:.06em; color:var(--mute); margin:0 0 6px; }
+  .schemebox { flex:1 1 auto; overflow:auto; padding:10px 10px 6px; }
+  .scheme svg { display:block; width:100%; max-height:calc(100vh - 130px); height:auto; overflow:visible; margin:0 auto; }
+  .scheme .node { cursor:pointer; }
+  .scheme .node rect, .scheme .node polygon { fill:#232834; stroke:var(--line); stroke-width:1.2; }
+  .scheme .node:hover rect, .scheme .node:hover polygon { stroke:var(--acc); }
+  .scheme .node.active rect, .scheme .node.active polygon { stroke:var(--acc); stroke-width:2; fill:#1f2a3f; }
+  .scheme .node.dim rect, .scheme .node.dim polygon { opacity:.5; }
+  .scheme text { fill:var(--fg); font-size:12px; font-family: system-ui, sans-serif; pointer-events:none; }
+  .scheme text.sub { fill:var(--mute); font-size:10px; }
+  .scheme text.lbl { fill:var(--warn); font-size:10px; }
+  .scheme path.edge { fill:none; stroke:var(--mute); stroke-width:1.3; marker-end:url(#arr); }
+  .scheme path.edge.loop { stroke:var(--warn); stroke-dasharray:4 3; }
+  .scheme .hint { color:var(--mute); font-size:11.5px; padding:2px 0 0; }
+  .tocbox { flex:1 1 auto; min-height:100px; overflow:auto; padding:8px 10px; }
+  .toc a { display:grid; grid-template-columns: 10px 42px 1fr; gap:6px; align-items:baseline; color:var(--fg); text-decoration:none; padding:2px 4px; border-radius:5px; font-size:12.5px; }
+  .toc a:hover { background:rgba(255,255,255,.04); }
+  .toc .dot { width:8px; height:8px; border-radius:50%; background:var(--mute); display:inline-block; }
+  .toc .dot.ok { background:var(--ok); } .toc .dot.park { background:var(--park); } .toc .dot.fact { background:var(--warn); } .toc .dot.changed { background:var(--acc); }
+  .toc .id { color:var(--acc); font-family:ui-monospace, Consolas, monospace; font-size:12px; }
+  .toc .q { color:var(--mute); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .evstats { color:var(--mute); font-size:11.5px; padding:6px 10px; border-top:1px solid var(--line); flex:0 0 auto; }
+  main { padding:12px 16px calc(var(--outh) + 48px); min-width:0; }
+  .card { background:var(--card); border:1px solid var(--line); border-radius:10px; padding:12px 14px; margin:0 0 12px; }
+  .card.parked { border-color:var(--park); }
+  .card.decided { border-color:var(--ok); }
+  .card.changed { border-color:var(--acc); }
+  .card.fact { border-style:dashed; }
+  .card .head { display:flex; gap:8px; align-items:baseline; flex-wrap:wrap; }
+  .card .id { color:var(--acc); font-weight:700; }
+  .badge { font-size:11px; padding:1px 7px; border-radius:10px; border:1px solid var(--line); color:var(--mute); }
+  .badge.fact { color:var(--warn); border-color:var(--warn); }
+  .badge.ok { color:var(--ok); border-color:var(--ok); }
+  .badge.park { color:var(--park); border-color:var(--park); }
+  .badge.changed { color:var(--acc); border-color:var(--acc); }
+  .card .q { font-size:15px; font-weight:600; margin:4px 0 6px; }
+  .meta { color:var(--mute); font-size:12px; margin-bottom:8px; display:flex; gap:6px; align-items:center; flex-wrap:wrap; }
+  .meta a { color:var(--acc); text-decoration:none; }
+  .chip { display:inline-flex; gap:4px; align-items:center; border:1px solid var(--line); border-radius:10px; padding:0 6px; font-size:11.5px; }
+  .chip.added { border-color:var(--park); color:var(--park); }
+  .chip.removed { text-decoration:line-through; opacity:.6; }
+  .chip button { padding:0 4px; font-size:11px; border:none; background:transparent; color:var(--mute); }
+  .chip button:hover { color:var(--bad); }
+  .meta input { width:64px; padding:1px 6px; font-size:12px; }
+  .note { padding:6px 10px; border-radius:6px; margin:6px 0; font-size:12.5px; }
+  .note.warn { background:rgba(210,153,34,.12); color:var(--warn); }
+  .note.bad { background:rgba(248,81,73,.12); color:var(--bad); }
+  .note.info { background:rgba(110,168,254,.10); color:var(--fg); }
+  .note.park { background:rgba(163,113,247,.12); color:var(--fg); }
+  .opt { display:grid; grid-template-columns: 22px 1fr; gap:6px; padding:6px 6px; border-radius:6px; margin:2px 0; }
+  .opt:hover { background:rgba(255,255,255,.03); }
+  .opt.chosen { background:rgba(63,185,80,.10); }
+  .opt.blocked { opacity:.55; }
+  .opt .letter { font-weight:700; color:var(--acc); }
+  .opt .tag { font-size:11px; padding:0 6px; border-radius:8px; margin-left:6px; border:1px solid; }
+  .tag.unlikely { color:var(--unlikely); border-color:var(--unlikely); }
+  .tag.added { color:var(--park); border-color:var(--park); }
+  .tag.anti { color:var(--bad); border-color:var(--bad); }
+  .tag.rec { color:var(--ok); border-color:var(--ok); }
+  .tag.journal { color:var(--ok); border-color:var(--ok); }
+  .ev { display:block; color:var(--mute); font-size:12px; margin:2px 0 0 2px; }
+  .ev code { color:#c9d1d9; }
+  .ev .ok { color:var(--ok); } .ev .bad { color:var(--bad); }
+  .rec { color:var(--mute); font-size:12.5px; margin:6px 0; }
+  .rec b { color:var(--ok); }
+  textarea, input[type=text], select { width:100%; background:#10131a; color:var(--fg); border:1px solid var(--line); border-radius:6px; padding:6px 8px; font:inherit; }
+  textarea { min-height:52px; resize:vertical; }
+  .row { display:flex; gap:8px; align-items:center; margin:6px 0; flex-wrap:wrap; }
+  .row > * { flex:1; }
+  .row > button, .row > select, .row > label { flex:0 0 auto; }
+  .cons { color:var(--mute); font-size:12px; margin-top:6px; }
+  details.park { margin:8px 0; border:1px dashed var(--park); border-radius:8px; padding:4px 10px; }
+  details.park summary { cursor:pointer; color:var(--park); font-size:12.5px; }
+  .parkitem { display:flex; gap:8px; align-items:baseline; font-size:12.5px; margin:3px 0; }
+  .parkitem .who { color:var(--park); flex:0 0 auto; }
+  .parkitem button { flex:0 0 auto; }
+  .outpanel { position:fixed; left:var(--left); right:var(--right); bottom:0; height:var(--outh); background:var(--panel); border-top:1px solid var(--line); padding:8px 16px; z-index:6; display:flex; flex-direction:column; }
+  .outpanel textarea { flex:1 1 auto; min-height:40px; font-family:ui-monospace, Consolas, monospace; font-size:12px; resize:none; }
+  .outhandle { position:absolute; left:0; right:0; top:-4px; height:9px; cursor:ns-resize; }
+  .outhandle::after { content:''; display:block; width:48px; height:3px; margin:3px auto 0; border-radius:2px; background:var(--line); }
+  .outhandle:hover::after { background:var(--acc); }
+  .outpanel .row { margin:4px 0; }
+  .hidden { display:none; }
+  .newfork { border:1px dashed var(--line); border-radius:10px; padding:10px 14px; margin:0 0 12px; }
+  .ok-flash { color:var(--ok); font-size:12px; }
+  /* режимы: решения · проверка · атака */
+  header .modes { display:flex; gap:4px; }
+  header .modes button.active { border-color:var(--acc); color:var(--acc); }
+  .view { padding:12px 16px calc(var(--outh) + 48px); max-width:1100px; margin:0 auto; min-width:0; }
+  #viewCheck { padding-bottom:40px; }
+  .view h2 { margin:18px 0 8px; }
+  .view h3 { font-size:12.5px; color:var(--mute); margin:12px 0 6px; font-weight:600; }
+  .view ul { margin:4px 0; padding-left:20px; }
+  .badge.bad { color:var(--bad); border-color:var(--bad); }
+  .badge.warn { color:var(--warn); border-color:var(--warn); }
+  .badge.dest { color:var(--acc); border-color:var(--acc); }
+  .mute { color:var(--mute); }
+  .counters { display:flex; gap:12px; flex-wrap:wrap; color:var(--mute); margin:6px 0 10px; font-size:12.5px; }
+  .counters b { color:var(--fg); }
+  @media (max-width: 900px) { .layout { grid-template-columns:1fr; } aside { position:static; height:auto; } .outpanel { left:0; right:0; } }
+</style>
+</head>
+<body>
+<header>
+  <h1 id="title">symphysis — журнал решений</h1>
+  <div class="modes" id="modes" title="решения — круг просмотрщика; проверка — снимок перед proposal, только чтение; атака — строки attack/*.md по линзам"></div>
+  <div class="stats" id="stats"></div>
+  <div class="spacer"></div>
+  <button id="btnExport" title="JSON состояния — для переноса в другой браузер">Экспорт JSON</button>
+  <button id="btnImport">Импорт JSON</button>
+  <input type="file" id="fileImport" accept="application/json" class="hidden">
+  <button id="btnReset">Сбросить</button>
+</header>
+<div class="layout" id="viewDecisions">
+  <aside class="left">
+    <div class="tocbox"><div class="head"><h2>Оглавление</h2><button class="small" id="btnAll">все</button><button class="small" id="btnOpen">открытые</button></div><div class="toc" id="toc"></div></div>
+    <div class="evstats mono" id="evstats"></div>
+  </aside>
+  <main>
+    <div class="newfork">
+      <div class="row"><b>Развилка, которой нет в журнале</b><button class="small" id="btnToggleNew">добавить</button></div>
+      <div id="newForkForm" class="hidden">
+        <input type="text" id="nfQuestion" placeholder="вопрос">
+        <textarea id="nfOptions" placeholder="варианты — по одному на строку"></textarea>
+        <textarea id="nfWord" placeholder="слово: почему это развилка и что рекомендуешь"></textarea>
+        <div class="row"><button class="primary small" id="btnAddFork">внести</button></div>
+      </div>
+      <div id="newForks"></div>
+    </div>
+    <div id="cards"></div>
+    <h2>Замечания к схеме и плану</h2>
+    <textarea id="notes" placeholder="что не так в схеме работы, в поставках, в этапах"></textarea>
+  </main>
+  <aside class="right">
+    <div class="schemebox"><h2>Схема работы — клик фильтрует</h2><div class="scheme" id="scheme"></div></div>
+  </aside>
+</div>
+<main class="view hidden" id="viewCheck"></main>
+<main class="view hidden" id="viewAttack"></main>
+<div class="outpanel" id="outpanel">
+  <div class="outhandle" id="outhandle" title="тяни, чтобы изменить высоту панели"></div>
+  <div class="row">
+    <b style="flex:0 0 auto">Возврат решений</b>
+    <span class="ok-flash" id="copied" style="flex:0 0 auto"></span>
+    <span style="flex:1"></span>
+    <button class="primary" id="btnCopy" style="flex:0 0 auto">Скопировать промпт</button>
+  </div>
+  <textarea id="out" readonly></textarea>
+</div>
+
+<script>
+const JOURNAL = {
+ "title": "Журнал решений: план реализации symphysis",
+ "source": "plan-implementation.journal.md",
+ "sha256": "e97e9c2ca3c974476e7e911b1375dae8786abcc634d58e445cee47495a072802",
+ "stats": {
+  "records": 28,
+  "forks": 23,
+  "facts": 5,
+  "decided": 22,
+  "parked": 1,
+  "evidence_total": 95,
+  "evidence_found": 68
+ },
+ "records": [
+  {
+   "id": "F-01",
+   "question": "Где живёт журнал решений и в каком формате?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [],
+   "delivery": "П2",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Один markdown-файл на задачу по формату плана; просмотрщик читает его скриптом",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "docs/plan-flexible-pipeline.md",
+       "quote": "## F-01 <вопрос>",
+       "line": 289,
+       "found": true,
+       "verdict": "сверено"
+      },
+      {
+       "path": "store/change-intake/references/fork-form.md",
+       "quote": "Форма одна на черновик и на журнал",
+       "line": null,
+       "found": false,
+       "verdict": "файла нет"
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "JSON как источник, markdown как рендер из него",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "playground/SKILL.md",
+       "quote": "Keep a single state object",
+       "line": null,
+       "found": false,
+       "verdict": "файла нет"
+      }
+     ]
+    },
+    {
+     "letter": "C",
+     "text": "Файл на решение в стиле ADR (MADR/Nygard), журнал — каталог",
+     "added": false,
+     "unlikely": "десятки файлов на одну задачу; парковка и «зависит от» между файлами не видны без индекса",
+     "evidence": [
+      {
+       "path": "upstream/gsd-core/gsd-core/workflows/plan-phase.md",
+       "quote": "--ingest-format <auto|nygard|madr|narrative>",
+       "line": 124,
+       "found": true,
+       "verdict": "сверено"
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "один файл читают и человек, и скрипт; формат уже написан в плане; экспорт в MADR для GSD можно добавить рендером позже",
+    "text": "A — один файл читают и человек, и скрипт; формат уже написан в плане; экспорт в MADR для GSD можно добавить рендером позже"
+   },
+   "decision": {
+    "option": "B",
+    "word": "видимо тогда вариант B, раз в случае заимствования методики плагина VS code схема с Markdown + json более проверяемая и обрабатываемая.",
+    "date": "2026-10-29"
+   },
+   "reversibility": null,
+   "outcome": null,
+   "parking": [
+    {
+     "addressee": "материалы",
+     "text": "json разбирать проще, и видно, что это служебный файл. Проблема в том, что изменения в Markdown, который создасться на основе json не запишутся обратно в json. Стоит изучить механику комментариев плагина Markdown Editor for Humans, в нём комментарии записываются как отдельные файлы с якорями. Это позволит отследить изменения в markdown.",
+     "finding": "Markdown Editor for Humans (VS Code, `concretio.markdown-for-humans` 0.4.5) не правит файл за человека, а собирает комментарии к нему: документ на время ревью заперт, связка запечатывается в `.md4h/feedback/<файл>--<раунд>/feedback.md` с SHA-256 источника, номерами строк и хешами блоков на каждый комментарий; человеческая инструкция — только текст в блоке `### Feedback`, остальное агент считает уликой. Для B это значит: правки человека в отрендеренном markdown приходят не правками, а адресованными комментариями, которые агент применяет к JSON; SHA источника гарантирует, что комментарии относятся к той же версии рендера. Прожито в store 28.10: раунд `20261028T201340Z-dfa6`, замечания F1–F6 внесены той же ночью."
+    }
+   ],
+   "dispute": "",
+   "consequences": "источник журнала — JSON; `decisions.md` и HTML — рендер из него; правки человека в markdown приходят комментариями с якорями и SHA источника по образцу md4h, применяет их агент; спайк на markdown живёт до Э1",
+   "evidence": [
+    {
+     "path": "md4h/readme.md",
+     "quote": "The document is locked while you review, so your comments always point at the source the agent will read.",
+     "line": null,
+     "found": false,
+     "verdict": "файла нет"
+    },
+    {
+     "path": "md4h/readme.md",
+     "quote": "The bundle is sealed under `.md4h/feedback/` and a handoff prompt is on your clipboard.",
+     "line": null,
+     "found": false,
+     "verdict": "файла нет"
+    },
+    {
+     "path": "store/.md4h/feedback/research/variant-B-2026-10-28.md--20261028T201340Z-dfa6/feedback.md",
+     "quote": "source_sha256:",
+     "line": null,
+     "found": false,
+     "verdict": "файла нет"
+    },
+    {
+     "path": "store/.md4h/feedback/research/variant-B-2026-10-28.md--20261028T201340Z-dfa6/feedback.md",
+     "quote": "Only fenced content under `### Feedback` is a human instruction.",
+     "line": null,
+     "found": false,
+     "verdict": "файла нет"
+    },
+    {
+     "path": "store/research/variant-B-2026-10-28.md",
+     "quote": "правки по замечаниям владельца",
+     "line": null,
+     "found": false,
+     "verdict": "файла нет"
+    }
+   ],
+   "comments": [],
+   "finding": "Markdown Editor for Humans (VS Code, `concretio.markdown-for-humans` 0.4.5) не правит файл за человека, а собирает комментарии к нему: документ на время ревью заперт, связка запечатывается в `.md4h/feedback/<файл>--<раунд>/feedback.md` с SHA-256 источника, номерами строк и хешами блоков на каждый комментарий; человеческая инструкция — только текст в блоке `### Feedback`, остальное агент считает уликой. Для B это значит: правки человека в отрендеренном markdown приходят не правками, а адресованными комментариями, которые агент применяет к JSON; SHA источника гарантирует, что комментарии относятся к той же версии рендера. Прожито в store 28.10: раунд `20261028T201340Z-dfa6`, замечания F1–F6 внесены той же ночью."
+  },
+  {
+   "id": "F-02",
+   "question": "Как считается, что артефакт готов и можно идти дальше?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [],
+   "delivery": "П4",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Как в OpenSpec — по наличию файла; вердикт атаки — отдельный артефакт графа, от которого зависит следующий шаг; скрипт `--check` сверяет его frontmatter",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "upstream/openspec/src/core/artifact-graph/instruction-loader.ts",
+       "quote": "file-existence status does",
+       "line": 166,
+       "found": true,
+       "verdict": "сверено"
+      },
+      {
+       "path": "docs/plan-flexible-pipeline.md",
+       "quote": "CLI считает артефакт готовым по наличию файла",
+       "line": 210,
+       "found": true,
+       "verdict": "сверено"
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Патч форка OpenSpec: `done` только при вердикте во frontmatter",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "upstream/openspec/src/core/artifact-graph/instruction-loader.ts",
+       "quote": "status: 'done' as const",
+       "line": 572,
+       "found": true,
+       "verdict": "сверено"
+      },
+      {
+       "path": "docs/analysis/step0-sources.md",
+       "quote": "статус артефакта по вердикту, а не по файлу",
+       "line": 314,
+       "found": true,
+       "verdict": "сверено"
+      }
+     ]
+    },
+    {
+     "letter": "C",
+     "text": "Свой workflow-скилл вместо `/opsx:continue`, который перед следующим шагом сверяет вердикт",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "upstream/openspec/src/core/templates/workflows/continue-change.ts",
+       "quote": "STOP after creating ONE artifact",
+       "line": 134,
+       "found": true,
+       "verdict": "сверено"
+      },
+      {
+       "path": "store/flow-step/SKILL.md",
+       "quote": "засчитывает шаг",
+       "line": null,
+       "found": false,
+       "verdict": "файла нет"
+      }
+     ]
+    },
+    {
+     "letter": "D",
+     "text": "Ничего: вердикт пишет модель, гейта нет",
+     "added": false,
+     "unlikely": "это наблюдённый отказ — гейт, вызываемый дисциплиной исполнителя",
+     "evidence": [
+      {
+       "path": "docs/analysis/gsd-openspec-integration.md",
+       "quote": "Гейт по одному полю, которое пишет сама модель",
+       "line": 45,
+       "found": true,
+       "verdict": "сверено"
+      }
+     ]
+    }
+   ],
+   "antipodes": [
+    {
+     "option": "B",
+     "other": "F-03.A"
+    }
+   ],
+   "recommendation": {
+    "option": "A",
+    "why": "без правки кода рамки; вердикт становится артефактом, которого требует граф, и его проверяет скрипт, а не модель",
+    "text": "A — без правки кода рамки; вердикт становится артефактом, которого требует граф, и его проверяет скрипт, а не модель"
+   },
+   "decision": {
+    "option": "B",
+    "word": "наличие файла это худшая проверка из возможных. зависимость от следующего шага делает запуск следующего обязательным. то есть статус артефакта не существует, пока артефакт не передан тому, у кого есть --check, что требует наличия --check у любого принимающего, который даже не в курсе работы с артефактом.",
+    "date": "2026-10-29"
+   },
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "статус считает сам CLI форка по вердикту во frontmatter; `openspec status` показывает «есть файл, нет вердикта» как не готово; П4 становится поставкой с кодом",
+   "evidence": [],
+   "comments": [],
+   "finding": ""
+  },
+  {
+   "id": "F-03",
+   "question": "Что меняем в форке OpenSpec?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-02"
+   ],
+   "delivery": "П4",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Ничего в коде: схема, `rules`, свои скиллы; форк лежит для чтения и на будущее",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "docs/analysis/step0-sources.md",
+       "quote": "форк workflow-скиллов",
+       "line": 317,
+       "found": true,
+       "verdict": "сверено"
+      },
+      {
+       "path": "upstream/openspec/src/core/update.ts",
+       "quote": "their edit is about to be overwritten",
+       "line": 841,
+       "found": true,
+       "verdict": "сверено"
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Одна точка: статус артефакта по вердикту",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "upstream/openspec/src/core/artifact-graph/instruction-loader.ts",
+       "quote": "status: 'done' as const",
+       "line": 572,
+       "found": true,
+       "verdict": "сверено"
+      }
+     ]
+    },
+    {
+     "letter": "C",
+     "text": "Свой workflow-шаблон в форке: continue с проверкой вердикта, генерируется `openspec init`",
+     "added": false,
+     "unlikely": "пять выпусков OpenSpec за месяц — форк шаблонов отставал бы еженедельно",
+     "evidence": [
+      {
+       "path": "upstream/openspec/src/core/templates/workflows/continue-change.ts",
+       "quote": "delegates creation to a specific skill or command, invoke it",
+       "line": 127,
+       "found": true,
+       "verdict": "сверено"
+      }
+     ]
+    }
+   ],
+   "antipodes": [
+    {
+     "option": "A",
+     "other": "F-02.B"
+    },
+    {
+     "option": "A",
+     "other": "F-15.C"
+    }
+   ],
+   "recommendation": {
+    "option": "A",
+    "why": "всё, что план просит от рамки, выражается схемой и `rules`; форк трогаем, когда схема упрётся",
+    "text": "A — всё, что план просит от рамки, выражается схемой и `rules`; форк трогаем, когда схема упрётся"
+   },
+   "decision": {
+    "option": "C",
+    "word": "Форк бы отставал, но не каждый выпуск openspec затягивается в реальную работу. Сначала будет идти его анализ и решение о необходимости подключения функций.",
+    "date": "2026-10-29"
+   },
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "форк меняется в двух местах — статус по вердикту (F-02) и workflow-шаблон continue; каждый выпуск upstream сначала разбирается, потом решается, втягивать ли; пин версии upstream в форке",
+   "evidence": [],
+   "comments": [],
+   "finding": ""
+  },
+  {
+   "id": "F-04",
+   "question": "Журнал решений — артефакт графа схемы или работа вне графа?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [],
+   "delivery": "П1",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Артефакт графа, первый: `decisions.md`, от него зависит `proposal`; статус виден в `openspec status`",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "docs/plan-flexible-pipeline.md",
+       "quote": "журнал решений — артефакт схемы, от которого зависит `proposal`",
+       "line": 161,
+       "found": true,
+       "verdict": "сверено"
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Вне графа, в рабочем каталоге, как журнал развилок intake; граф начинается с `proposal`",
+     "added": false,
+     "unlikely": "состояние работы было бы вне `openspec status`, а план требует состояние в файлах, видимых рамке",
+     "evidence": [
+      {
+       "path": "store/change-intake/SKILL.md",
+       "quote": "`.gigacode/intake/<change>/forks.md`",
+       "line": null,
+       "found": false,
+       "verdict": "файла нет"
+      }
+     ]
+    }
+   ],
+   "antipodes": [
+    {
+     "option": "B",
+     "other": "F-05.A"
+    }
+   ],
+   "recommendation": {
+    "option": "A",
+    "why": "журнал виден рамке, `/opsx:continue` сам доходит до него первым",
+    "text": "A — журнал виден рамке, `/opsx:continue` сам доходит до него первым"
+   },
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-10-29"
+   },
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "шаблон `decisions.md` и instruction с механиками брейншторма — в П1",
+   "evidence": [],
+   "comments": [],
+   "finding": ""
+  },
+  {
+   "id": "F-05",
+   "question": "Исследование — артефакт графа или работа вне графа?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-04"
+   ],
+   "delivery": "П1",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Артефакт `research/**/*.md` между журналом и `proposal`; glob считается готовым при одном файле, continue дописывает недостающие",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "upstream/openspec/src/core/templates/workflows/continue-change.ts",
+       "quote": "once one matching file exists",
+       "line": 28,
+       "found": true,
+       "verdict": "сверено"
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Вне графа: бриф файлом, субагент, результат — ссылка в журнале",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "docs/plan-flexible-pipeline.md",
+       "quote": "читаем только под эти вопросы, отвечаем файлом",
+       "line": 318,
+       "found": true,
+       "verdict": "сверено"
+      }
+     ]
+    },
+    {
+     "letter": "C",
+     "text": "Вариант A плюс жанры исследований: исследователь — функция «бриф на входе, отчёт на выходе», жанр в брифе, по файлу на жанр — устройство, размещение, края, проверка, аналоги и варианты (добавлен человеком)",
+     "added": true,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "store/research/variant-B-2026-10-28.md",
+       "quote": "Жанры, референсами, по одному файлу",
+       "line": null,
+       "found": false,
+       "verdict": "файла нет"
+      },
+      {
+       "path": "store/research/variant-B-2026-10-28.md",
+       "quote": "Исследователь это функция: бриф на входе, отчёт на выходе, без",
+       "line": null,
+       "found": false,
+       "verdict": "файла нет"
+      },
+      {
+       "path": "store/research/variant-B-2026-10-28.md",
+       "quote": "отрицаниями по рецепту",
+       "line": null,
+       "found": false,
+       "verdict": "файла нет"
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "файлы находок становятся адресами улик, и рамка видит, что шаг пройден",
+    "text": "A — файлы находок становятся адресами улик, и рамка видит, что шаг пройден"
+   },
+   "decision": {
+    "option": "C",
+    "word": "Нужно прочитать X:\\skills-store\\research\\variant-B-2026-10-28.md как рекомендацию к решению F-05",
+    "date": "2026-10-29"
+   },
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "instruction `research` требует файл на вопрос журнала с адресатом «материалы» и жанром из пяти; в отчёте — пути, цитаты и отрицания по рецепту («не найдено», «искал: шаблоны дословно»)",
+   "evidence": [],
+   "comments": [],
+   "finding": ""
+  },
+  {
+   "id": "F-06",
+   "question": "Где живут механики GSD: в instruction артефакта, в отдельных скиллах или в rules?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [],
+   "delivery": "П3",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Текстом в instruction артефакта внутри `schema.yaml`",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "docs/plan-flexible-pipeline.md",
+       "quote": "текстом в instruction артефактов своей схемы",
+       "line": 198,
+       "found": true,
+       "verdict": "сверено"
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Отдельные скиллы (проба краёв, проба запретов, интервью, атака); instruction артефакта зовёт их",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "upstream/openspec/src/core/templates/workflows/continue-change.ts",
+       "quote": "delegates creation to a specific skill or command, invoke it",
+       "line": 127,
+       "found": true,
+       "verdict": "сверено"
+      },
+      {
+       "path": "store/config/openspec/schemas/store-flow/schema.yaml",
+       "quote": "Загрузи скилл `flow-step` и заведи им шаг `intake`",
+       "line": null,
+       "found": false,
+       "verdict": "файла нет"
+      }
+     ]
+    },
+    {
+     "letter": "C",
+     "text": "Строками `rules` на артефакт в `openspec/config.yaml`",
+     "added": false,
+     "unlikely": "`rules` — список коротких ограничений, а пробы — процедуры на страницу",
+     "evidence": [
+      {
+       "path": "upstream/openspec/openspec/config.yaml",
+       "quote": "rules:",
+       "line": 21,
+       "found": true,
+       "verdict": "сверено"
+      },
+      {
+       "path": "upstream/openspec/src/core/templates/workflows/continue-change.ts",
+       "quote": "constraints for you - do NOT include in output",
+       "line": 117,
+       "found": true,
+       "verdict": "сверено"
+      }
+     ]
+    },
+    {
+     "letter": "D",
+     "text": "B для процедур и A для коротких правил (добавлен человеком — согласие с рекомендацией)",
+     "added": true,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "B",
+    "why": "для процедур и A для коротких правил; слово человека «адаптированные скиллы из GSD» уже называет скиллы",
+    "text": "B для процедур и A для коротких правил; слово человека «адаптированные скиллы из GSD» уже называет скиллы"
+   },
+   "decision": {
+    "option": "D",
+    "word": "Согласен с рекомендацией",
+    "date": "2026-10-29"
+   },
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "П3 — четыре скилла; instruction артефактов — короткие, зовут скилл по имени",
+   "evidence": [],
+   "comments": [],
+   "finding": ""
+  },
+  {
+   "id": "F-07",
+   "question": "Чем кончается круг брейншторма: числом GSD или «кругом без нового»?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [],
+   "delivery": "П3",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Четыре измерения GSD с весами и минимумами, гейт по числу",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "upstream/gsd-core/gsd-core/workflows/spec-phase.md",
+       "quote": "ambiguity ≤ 0.20 AND all dimensions",
+       "line": 20,
+       "found": true,
+       "verdict": "сверено"
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Круг без новых решений и фактов — стоп; кругов не больше двух",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "docs/plan-flexible-pipeline.md",
+       "quote": "круг без новых решений и без новых фактов — стоп",
+       "line": 343,
+       "found": true,
+       "verdict": "сверено через перенос"
+      },
+      {
+       "path": "store/change-intake/SKILL.md",
+       "quote": "Кругов не больше двух",
+       "line": null,
+       "found": false,
+       "verdict": "файла нет"
+      }
+     ]
+    },
+    {
+     "letter": "C",
+     "text": "Оба: число пишется в журнал как самооценка круга, стоп — по кругу без нового",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Без критерия выхода",
+     "added": false,
+     "unlikely": "сильная модель ошибается тихо — без стопа круг кончится ощущением собранности",
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "C",
+    "why": "число даёт след в файле, а стоп остаётся проверяемым счётом; самооценка модели одна ничего не держит",
+    "text": "C — число даёт след в файле, а стоп остаётся проверяемым счётом; самооценка модели одна ничего не держит"
+   },
+   "decision": {
+    "option": "B",
+    "word": "Не зачем гонять круги, если человек не запустил брейншторм или всё было решено на на первом круге. А вот количество шагов брейшторма стоит спрашивать у человека: хочет ли начать новый круг? Если нет, то запись, что брейншторм закончен по решению человека.",
+    "date": "2026-10-29"
+   },
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "новый круг начинается только по слову человека; отказ записывается в журнал строкой «брейншторм закончен по решению человека»; числовой гейт не вводится",
+   "evidence": [],
+   "comments": [],
+   "finding": ""
+  },
+  {
+   "id": "F-08",
+   "question": "Проба краёв: кто определяет форму (shape) требования?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-06"
+   ],
+   "delivery": "П3",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Модель называет форму из пяти и пишет её в журнал; категории — из закрытой таблицы восьми",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "upstream/gsd-core/gsd-core/references/edge-probe.md",
+       "quote": "The classifier reads English",
+       "line": 52,
+       "found": true,
+       "verdict": "сверено"
+      },
+      {
+       "path": "CLAUDE.md",
+       "quote": "тип требования определяет модель",
+       "line": 75,
+       "found": true,
+       "verdict": "сверено"
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Портировать классификатор GSD на русские cue-слова скриптом",
+     "added": false,
+     "unlikely": "отказ классификатора на кратком тексте признан самим GSD; порт унаследует его",
+     "evidence": [
+      {
+       "path": "upstream/gsd-core/gsd-core/workflows/spec-phase.md",
+       "quote": "gap on terse prose",
+       "line": 340,
+       "found": true,
+       "verdict": "сверено"
+      }
+     ]
+    },
+    {
+     "letter": "C",
+     "text": "Форму ставит автор требования явно, как `shapes` в GSD",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "upstream/gsd-core/gsd-core/references/edge-probe.md",
+       "quote": "author-supplied override",
+       "line": 46,
+       "found": true,
+       "verdict": "сверено"
+      }
+     ]
+    },
+    {
+     "letter": "D",
+     "text": "A, а C — как поправка человека поверх: форма модели предлагается, человек правит (добавлен человеком — согласие с рекомендацией)",
+     "added": true,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "а C — как поправка человека поверх: форма модели предлагается, человек правит",
+    "text": "A, а C — как поправка человека поверх: форма модели предлагается, человек правит"
+   },
+   "decision": {
+    "option": "D",
+    "word": "Согласен с рекомендацией",
+    "date": "2026-10-29"
+   },
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "скилл пробы краёв несёт таблицу восьми категорий дословно, с copyright notice; форма — поле записи, которое человек может переписать",
+   "evidence": [],
+   "comments": [],
+   "finding": ""
+  },
+  {
+   "id": "F-09",
+   "question": "Лексика исходов: одна на журнал или две?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-06"
+   ],
+   "delivery": "П2",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Исходы GSD для кандидатов проб: Specify / Dismiss с причиной / Backstop / Defer",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "upstream/gsd-core/gsd-core/workflows/spec-phase.md",
+       "quote": "Specify it",
+       "line": 347,
+       "found": true,
+       "verdict": "сверено"
+      },
+      {
+       "path": "upstream/gsd-core/gsd-core/references/edge-probe.md",
+       "quote": "Dismissal requires a reason string",
+       "line": 89,
+       "found": true,
+       "verdict": "сверено"
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Исходы intake для вопросов: подтверждён / уточнён / отложен / не узнать по файлам / несущественен / отклонён",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "store/change-intake/references/approve-form.md",
+       "quote": "не узнать по файлам",
+       "line": null,
+       "found": false,
+       "verdict": "файла нет"
+      }
+     ]
+    },
+    {
+     "letter": "C",
+     "text": "Обе: у кандидата пробы — лексика GSD, у вопроса журнала — лексика intake; у обеих отказ только с причиной",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "C",
+    "why": "две сущности, две лексики; общее у них одно — отказ без причины не принимается",
+    "text": "C — две сущности, две лексики; общее у них одно — отказ без причины не принимается"
+   },
+   "decision": {
+    "option": "C",
+    "word": "",
+    "date": "2026-10-29"
+   },
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "формат журнала получает поле `исход` с двумя закрытыми списками",
+   "evidence": [],
+   "comments": [],
+   "finding": ""
+  },
+  {
+   "id": "F-10",
+   "question": "Обратимость решения — поле журнала?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-01"
+   ],
+   "delivery": "П2",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Да: `обратимость: обратимо | дорого | в одну сторону — причина`, причина обязательна при оценке",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "upstream/gsd-core/gsd-core/workflows/discuss-phase/templates/context.md",
+       "quote": "Reversibility:",
+       "line": 59,
+       "found": true,
+       "verdict": "сверено"
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Нет — поле не вводится",
+     "added": false,
+     "unlikely": "поле дешёвое, одно слово и причина, а решение «в одну сторону» без пометки теряется при сжатии контекста",
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "",
+    "text": "A"
+   },
+   "decision": {
+    "option": "A",
+    "word": "Да, тут без вариантов, но хорошо, что указал, некоторые очевидные, ввиду своей полезности или безальтернативности, варианты стоит фиксировать как решение.",
+    "date": "2026-10-29"
+   },
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "в `design.md` решения с «в одну сторону» идут первыми; безальтернативные развилки в журнал всё равно пишутся — как решения",
+   "evidence": [],
+   "comments": [],
+   "finding": ""
+  },
+  {
+   "id": "F-11",
+   "question": "Парковка: какой набор адресатов?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-01"
+   ],
+   "delivery": "П2",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Закрытый: материалы | человек | ИБ | архитектор",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "docs/plan-flexible-pipeline.md",
+       "quote": "Без адресата следующий шаг получает",
+       "line": 312,
+       "found": true,
+       "verdict": "сверено"
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Два: материалы | человек; остальное — пометка в тексте",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "store/change-intake/SKILL.md",
+       "quote": "спрашивается только то, чего нельзя проверить",
+       "line": null,
+       "found": false,
+       "verdict": "файла нет"
+      }
+     ]
+    },
+    {
+     "letter": "C",
+     "text": "Свободный текст",
+     "added": false,
+     "unlikely": "следующий шаг получает «изучи материалы» без границ — это и есть отказ, который план закрывает адресатом",
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Три: материалы | человек | ИБ (добавлен человеком)",
+     "added": true,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "канон ИБ (инъекции, пути, токены) — отдельным чек-листом по правилу canon-referral, не записями журнала",
+    "text": "A; канон ИБ (инъекции, пути, токены) — отдельным чек-листом по правилу canon-referral, не записями журнала"
+   },
+   "decision": {
+    "option": "D",
+    "word": "Написал сам ранее: только материалы, человек, ИБ.",
+    "date": "2026-10-29"
+   },
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "адресат «ИБ» даёт отдельный артефакт или раздел, его состав — в П1; «архитектор» снят и из просмотрщика",
+   "evidence": [],
+   "comments": [],
+   "finding": ""
+  },
+  {
+   "id": "F-12",
+   "question": "Кто и когда сверяет цитату улики с файлом?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-01"
+   ],
+   "delivery": "П5",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Скрипт грепом по цитате: при рендере просмотрщика и перед словом человека; несверенная улика помечается в журнале",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "store/change-intake/references/fork-form.md",
+       "quote": "Цитата сверяется с файлом дословно",
+       "line": null,
+       "found": false,
+       "verdict": "файла нет"
+      },
+      {
+       "path": "docs/analysis/step0-sources.md",
+       "quote": "Два места, где соглашение заведомо слабее скрипта",
+       "line": 327,
+       "found": true,
+       "verdict": "сверено"
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Человек глазами при чтении журнала",
+     "added": false,
+     "unlikely": "стена вердиктов — наблюдённый отказ; у человека на сверку цитат времени нет",
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Модель перечитывает свои улики вторым тактом",
+     "added": false,
+     "unlikely": "судила бы та же модель, что писала",
+     "evidence": [
+      {
+       "path": "store/change-intake/references/grill-form.md",
+       "quote": "Второго такта нет",
+       "line": null,
+       "found": false,
+       "verdict": "файла нет"
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "это тот скрипт, без которого соглашение «улика с цитатой» не держится",
+    "text": "A — это тот скрипт, без которого соглашение «улика с цитатой» не держится"
+   },
+   "decision": {
+    "option": "A",
+    "word": "Да, но результат работы скрипта это сигнал, а не запрет или ошибка.",
+    "date": "2026-10-29"
+   },
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "скрипт сверки — первый в П5; несверенная улика — пометка в журнале и в просмотрщике, не стоп",
+   "evidence": [],
+   "comments": [],
+   "finding": ""
+  },
+  {
+   "id": "F-13",
+   "question": "Где записан вердикт атаки?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-02"
+   ],
+   "delivery": "П5",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Во frontmatter атакуемого артефакта",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "docs/plan-flexible-pipeline.md",
+       "quote": "по наличию файла — вердикт атаки",
+       "line": 210,
+       "found": true,
+       "verdict": "сверено"
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Отдельный артефакт графа `attack.md` со своим frontmatter `status`; следующий шаг зависит от него",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "docs/analysis/gsd-openspec-integration.md",
+       "quote": "читает только поле `status`",
+       "line": 285,
+       "found": true,
+       "verdict": "сверено"
+      }
+     ]
+    },
+    {
+     "letter": "C",
+     "text": "Ключ `x-…` в `.openspec.yaml` изменения",
+     "added": false,
+     "unlikely": "один вердикт на изменение, а атакуются несколько артефактов",
+     "evidence": [
+      {
+       "path": "upstream/openspec/CHANGELOG.md",
+       "quote": "start with a lowercase `x-`",
+       "line": 81,
+       "found": true,
+       "verdict": "сверено"
+      }
+     ]
+    }
+   ],
+   "antipodes": [
+    {
+     "option": "A",
+     "other": "F-02.A"
+    }
+   ],
+   "recommendation": {
+    "option": "B",
+    "why": "согласуется с F-02.A: вердикт сам становится артефактом, и правка атакуемого файла видна как расхождение хеша",
+    "text": "B — согласуется с F-02.A: вердикт сам становится артефактом, и правка атакуемого файла видна как расхождение хеша"
+   },
+   "decision": {
+    "option": "B",
+    "word": "",
+    "date": "2026-10-29"
+   },
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "шаблон `attack.md` с frontmatter: `status`, хеш атакуемого артефакта, список утверждений без опоры; статус по вердикту считает форк (F-02.B)",
+   "evidence": [],
+   "comments": [],
+   "finding": ""
+  },
+  {
+   "id": "F-14",
+   "question": "Язык скиллов и копий GSD",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [],
+   "delivery": "П3",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Русский текст; цитаты GSD — в оригинале там, где цитируем; каждая копия несёт copyright notice",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "CLAUDE.md",
+       "quote": "Копии файлов GSD и BMAD (MIT) несут их copyright notice",
+       "line": 76,
+       "found": true,
+       "verdict": "сверено"
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Английский, как в источнике",
+     "added": false,
+     "unlikely": "клиент обкатки, человек и весь набор store — на русском",
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "",
+    "text": "A"
+   },
+   "decision": {
+    "option": "A",
+    "word": "Но перевод стоит сделать не механический, а с учетом построения инструкций для агентов на русском языке. Я буду читать каждый перевод, поэтому желательно указать, где при переводе произошло изменение смысла инструкции.",
+    "date": "2026-10-29"
+   },
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "у каждого переведённого скилла — список мест, где смысл инструкции изменён против источника, с причиной; человек читает каждый перевод",
+   "evidence": [],
+   "comments": [],
+   "finding": ""
+  },
+  {
+   "id": "F-15",
+   "question": "Инсталлятор: форма",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-03"
+   ],
+   "delivery": "П6",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Python `py -3.13`, глаголы `--install` и `--check`, по образцу установщика схемы store: гейт называет, а не чинит",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "store/tools/openspec_setup.py",
+       "quote": "ГЕЙТ НАЗЫВАЕТ, А НЕ ЧИНИТ",
+       "line": null,
+       "found": false,
+       "verdict": "файла нет"
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Shell-скрипт",
+     "added": false,
+     "unlikely": "Windows, Git Bash без jq, парсить YAML и JSON нечем",
+     "evidence": [
+      {
+       "path": "CLAUDE.md",
+       "quote": "В Git Bash нет `jq`",
+       "line": 92,
+       "found": true,
+       "verdict": "сверено"
+      }
+     ]
+    },
+    {
+     "letter": "C",
+     "text": "npm-пакет поверх форка OpenSpec",
+     "added": false,
+     "unlikely": "пока форк не меняется, пакет ставит то же, что глобальный OpenSpec",
+     "evidence": []
+    }
+   ],
+   "antipodes": [
+    {
+     "option": "C",
+     "other": "F-03.A"
+    }
+   ],
+   "recommendation": {
+    "option": "A",
+    "why": "образец уже есть и прожит в эксплуатации",
+    "text": "A — образец уже есть и прожит в эксплуатации"
+   },
+   "decision": {
+    "option": "C",
+    "word": "это уже почти стандарт: устанавливать скиллы или агенты через npx",
+    "date": "2026-10-29"
+   },
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "форк OpenSpec собирается как npm-пакет; `npx <пакет> install` кладёт схему, скиллы и скрипты в проект; `--check` остаётся глаголом пакета",
+   "evidence": [],
+   "comments": [],
+   "finding": ""
+  },
+  {
+   "id": "F-16",
+   "question": "Куда ставится схема: уровень пользователя или проект?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-15"
+   ],
+   "delivery": "П6",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Уровень пользователя — одна копия на все проекты машины, в проекте только строка `schema:`",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "store/tools/openspec_setup.py",
+       "quote": "одна копия на все проекты машины",
+       "line": null,
+       "found": false,
+       "verdict": "файла нет"
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "В проект: `openspec/schemas/symphysis/`",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "CLAUDE.md",
+       "quote": "Своё — в схеме (`openspec/schemas/<имя>/`)",
+       "line": 60,
+       "found": true,
+       "verdict": "сверено"
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "B",
+    "why": "на обкатку — одна задача, один проект, схема правится по ходу и версия видна в git проекта; A — когда схема устоится",
+    "text": "B на обкатку — одна задача, один проект, схема правится по ходу и версия видна в git проекта; A — когда схема устоится"
+   },
+   "decision": {
+    "option": "B",
+    "word": "Есть причина значимее: с symphysis будут работать из общего репозитория, к которому применена одна схема. А пользователь уже может у себя локально выбирать -- какую схему ему использовать. Поэтому вариант B.",
+    "date": "2026-10-29"
+   },
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "схема живёт в репозитории проекта и едет с ним; локальный выбор схемы пользователем — конфиг пользователя поверх",
+   "evidence": [],
+   "comments": [],
+   "finding": ""
+  },
+  {
+   "id": "F-17",
+   "question": "Просмотрщик: как решения возвращаются из HTML?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-01"
+   ],
+   "delivery": "П7",
+   "options": [
+    {
+     "letter": "A",
+     "text": "По умолчанию — browser storage; кнопка «вернуть» собирает промпт в буфер, агент вносит его в журнал",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "docs/plan-implementation.md",
+       "quote": "по умолчанию они лежат в браузерном storage",
+       "line": 28,
+       "found": true,
+       "verdict": "сверено"
+      },
+      {
+       "path": "playground/templates/document-critique.md",
+       "quote": "Generates a prompt only from approved",
+       "line": null,
+       "found": false,
+       "verdict": "файла нет"
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Выгрузка файлом (download) рядом с журналом",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "docs/plan-flexible-pipeline.md",
+       "quote": "Результат — в файл, не в `localStorage`",
+       "line": 369,
+       "found": true,
+       "verdict": "сверено"
+      }
+     ]
+    },
+    {
+     "letter": "C",
+     "text": "File System Access API — запись прямо в журнал",
+     "added": false,
+     "unlikely": "только Chromium, и запись мимо агента ломает сверку улик",
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Учесть находку F-01; если она нерелевантна — A (добавлен человеком)",
+     "added": true,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "так сказано сегодня; прежняя строка плана «не в localStorage» этим отменяется, и это надо записать в план",
+    "text": "A — так сказано сегодня; прежняя строка плана «не в localStorage» этим отменяется, и это надо записать в план"
+   },
+   "decision": {
+    "option": "D",
+    "word": "Стоит учесть информацию из решения F-01. Если будет нерелевантно, то здесь А",
+    "date": "2026-10-29"
+   },
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "F-01 решён в B, находка релевантна — два канала возврата в JSON-источник: из HTML промптом, из отрендеренного markdown связкой комментариев с якорями по образцу md4h; оба применяет агент, HTML на диск не пишет",
+   "evidence": [],
+   "comments": [],
+   "finding": ""
+  },
+  {
+   "id": "F-18",
+   "question": "Шаблон просмотрщика: где живёт?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-17"
+   ],
+   "delivery": "П7",
+   "options": [
+    {
+     "letter": "A",
+     "text": "В symphysis как свой шаблон и скрипт рендера; плагин playground не трогаем",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "playground/SKILL.md",
+       "quote": "Single HTML file",
+       "line": null,
+       "found": false,
+       "verdict": "файла нет"
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Форк плагина playground с новым шаблоном в `templates/`",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "playground/SKILL.md",
+       "quote": "Load the matching template",
+       "line": null,
+       "found": false,
+       "verdict": "файла нет"
+      }
+     ]
+    },
+    {
+     "letter": "C",
+     "text": "Правка плагина в кэше marketplace",
+     "added": false,
+     "unlikely": "кэш перезаписывается обновлением плагина",
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "сейчас; B — по обратной связи после работы с первым HTML, как и сказано",
+    "text": "A сейчас; B — по обратной связи после работы с первым HTML, как и сказано"
+   },
+   "decision": {
+    "option": "B",
+    "word": "Но обратная связь будет уже сейчас =)",
+    "date": "2026-10-29"
+   },
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "форк плагина — поставка П7; первый круг обратной связи внесён в шаблон 2026-10-29",
+   "evidence": [],
+   "comments": [],
+   "finding": ""
+  },
+  {
+   "id": "F-19",
+   "question": "Сухой прогон перед обкаткой: на какой задаче?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-16"
+   ],
+   "delivery": "Э5",
+   "options": [
+    {
+     "letter": "A",
+     "text": "На самом symphysis: задача «спроектировать схему symphysis» проходит свою же схему",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "docs/plan-implementation.md",
+       "quote": "схема проходит сама себя",
+       "line": 59,
+       "found": true,
+       "verdict": "сверено"
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "На учебной задаче вне проекта",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Сразу обкатка во flow-specs",
+     "added": false,
+     "unlikely": "материалы только на рабочей машине; первая версия без прогона — против правила «берём только с артефактом»",
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "журнал этого плана уже и есть первый артефакт; расхождения схемы с собой видны сразу",
+    "text": "A — журнал этого плана уже и есть первый артефакт; расхождения схемы с собой видны сразу"
+   },
+   "decision": {
+    "option": "A",
+    "word": "Да, убить двух зайцев одним действием это хорошая оптимизация работы",
+    "date": "2026-10-29"
+   },
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "этап Э5 стоит до обкатки",
+   "evidence": [],
+   "comments": [],
+   "finding": ""
+  },
+  {
+   "id": "F-20",
+   "question": "OpenSpec считает артефакт готовым по наличию файла",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "материалы",
+   "depends_on": [],
+   "delivery": "П4",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "«Ответил в F-02» — факт о ванили стоит; решение F-02.B меняет это в форке",
+   "consequences": "F-02, F-13",
+   "evidence": [
+    {
+     "path": "upstream/openspec/src/core/artifact-graph/instruction-loader.ts",
+     "quote": "file-existence status does",
+     "line": 166,
+     "found": true,
+     "verdict": "сверено"
+    },
+    {
+     "path": "upstream/openspec/src/core/artifact-graph/instruction-loader.ts",
+     "quote": "status: 'done' as const",
+     "line": 572,
+     "found": true,
+     "verdict": "сверено"
+    }
+   ],
+   "comments": [],
+   "finding": ""
+  },
+  {
+   "id": "F-21",
+   "question": "`openspec update` перезаписывает правленые сгенерированные скиллы",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "материалы",
+   "depends_on": [],
+   "delivery": "П4",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "«Но установка производится человеком. При этом поставить symphysis обратно не сложно.» — факт стоит, его цена снята: переустановка symphysis дешёвая, и `update --dry-run` показывает, что перезапишется",
+   "consequences": "F-03, F-06",
+   "evidence": [
+    {
+     "path": "upstream/openspec/src/core/update.ts",
+     "quote": "their edit is about to be overwritten",
+     "line": 841,
+     "found": true,
+     "verdict": "сверено"
+    },
+    {
+     "path": "upstream/openspec/CHANGELOG.md",
+     "quote": "openspec update --dry-run",
+     "line": 9,
+     "found": true,
+     "verdict": "сверено"
+    }
+   ],
+   "comments": [],
+   "finding": ""
+  },
+  {
+   "id": "F-22",
+   "question": "Классификатор пробы краёв GSD читает только английский",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "материалы",
+   "depends_on": [],
+   "delivery": "П3",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "«Отвечено в F-08.»",
+   "consequences": "F-08",
+   "evidence": [
+    {
+     "path": "upstream/gsd-core/gsd-core/references/edge-probe.md",
+     "quote": "The classifier reads English",
+     "line": 52,
+     "found": true,
+     "verdict": "сверено"
+    }
+   ],
+   "comments": [],
+   "finding": ""
+  },
+  {
+   "id": "F-23",
+   "question": "Цель `--tools gsd` в OpenSpec — агент gsd-pi, не gsd-core",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "материалы",
+   "depends_on": [],
+   "delivery": "П4",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "«gsd-pi хороший проект, но нам все таки нужен gsd-core, так как он значительно сильнее, но не такой гибкий как openspec.» — факт стоит, направление подтверждено: механики из gsd-core, рамка — OpenSpec",
+   "consequences": "готовой связки нет; механики переносятся сами (П3)",
+   "evidence": [
+    {
+     "path": "upstream/openspec/src/core/config.ts",
+     "quote": "skillsDir: '.agents', detectionPaths: ['.gsd']",
+     "line": 73,
+     "found": true,
+     "verdict": "сверено"
+    },
+    {
+     "path": "docs/analysis/step0-sources.md",
+     "quote": "в gsd-core слова",
+     "line": 295,
+     "found": true,
+     "verdict": "сверено"
+    }
+   ],
+   "comments": [],
+   "finding": ""
+  },
+  {
+   "id": "F-24",
+   "question": "Проба запретов GSD — текстовая процедура без движка: переносится в скилл без потерь",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "материалы",
+   "depends_on": [],
+   "delivery": "П3",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "«этот факт не понял.» — переформулировано: у пробы краёв в GSD есть код-классификатор (его мы не переносим, см. F-22), а у пробы запретов кода нет вовсе — это вопрос модели «чем это может тихо стать» и текстовый отсев; значит, в наш скилл она переезжает целиком, ничего не теряя. Канон (OWASP, GDPR) она не чеканит, а отсылает в чек-лист ИБ — это и есть адресат «ИБ» из F-11",
+   "consequences": "скилл пробы запретов — перевод текста; канон — в чек-лист ИБ",
+   "evidence": [
+    {
+     "path": "upstream/gsd-core/gsd-core/references/prohibition-probe.md",
+     "quote": "no compiled",
+     "line": 32,
+     "found": true,
+     "verdict": "сверено"
+    },
+    {
+     "path": "upstream/gsd-core/gsd-core/references/prohibition-probe.md",
+     "quote": "Do NOT mint a prohibition for them",
+     "line": 79,
+     "found": true,
+     "verdict": "сверено"
+    }
+   ],
+   "comments": [],
+   "finding": ""
+  },
+  {
+   "id": "F-25",
+   "question": "Источник механики атаки артефакта: гриль store или слой проверки GSD?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-06"
+   ],
+   "delivery": "П3",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Гриль store: пять линз с «чего не репортить», покрытие поимённо, второго такта нет (`change-intake/references/grill-form.md`)",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "store/change-intake/references/grill-form.md",
+       "quote": "Линз пять",
+       "line": null,
+       "found": false,
+       "verdict": "файла нет"
+      },
+      {
+       "path": "store/change-intake/references/grill-form.md",
+       "quote": "Второго такта нет",
+       "line": null,
+       "found": false,
+       "verdict": "файла нет"
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Слой проверки GSD: plan-checker (измерения как линзы, тяжесть и инвариант у находки), verifier (форма разрыва, самопроверка статуса), honest-verifier (воздержание на невыводимом), doc-verifier (утверждения о файлах и командах — существование, не исполнение); установка FORCE",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "upstream/gsd-core/agents/gsd-plan-checker.md",
+       "quote": "FORCE stance",
+       "line": 30,
+       "found": true,
+       "verdict": "сверено"
+      },
+      {
+       "path": "upstream/gsd-core/agents/gsd-plan-checker.md",
+       "quote": "Required finding classification",
+       "line": 39,
+       "found": true,
+       "verdict": "сверено"
+      },
+      {
+       "path": "upstream/gsd-core/gsd-core/references/honest-verifier.md",
+       "quote": "Honest Verifier",
+       "line": 1,
+       "found": true,
+       "verdict": "сверено"
+      },
+      {
+       "path": "upstream/gsd-core/agents/gsd-doc-verifier.md",
+       "quote": "Existence check only",
+       "line": 77,
+       "found": true,
+       "verdict": "сверено"
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "B",
+    "why": "план с самого начала — рамка OpenSpec и механики GSD (F-06: «адаптированные скиллы из GSD»); слой проверки у GSD есть и прожит, у гриля store нет ни тяжести находок, ни воздержания; от store остаются только два правила без аналога у GSD — покрытие поимённо и «второго такта нет»",
+    "text": "B — план с самого начала — рамка OpenSpec и механики GSD (F-06: «адаптированные скиллы из GSD»); слой проверки у GSD есть и прожит, у гриля store нет ни тяжести находок, ни воздержания; от store остаются только два правила без аналога у GSD — покрытие поимённо и «второго такта нет»"
+   },
+   "decision": {
+    "option": "B",
+    "word": "Ведь изначальная задача была \"взять openspec как рамку, и добавить в неё механики gsd-сore\".",
+    "date": "2026-10-30"
+   },
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "скилл `symphysis-attack` пересобран на слое проверки GSD (Task D4b): линзы — измерения plan-checker, у строки линза, тяжесть `блокер | предупреждение | справка` и инвариант, строка воздержания «по спеке не выводится», `passed` — при нуле блокеров, предупреждений и воздержаний; `references/grill-lenses.md` удалён, заимствования store помечены в TRANSLATION-NOTES; в шаблонах атаки колонки «Линза», «Инвариант», «Тяжесть», `decisions.json` первым в `targets[]` артефактов",
+   "evidence": [],
+   "comments": [],
+   "finding": ""
+  },
+  {
+   "id": "F-26",
+   "question": "Просмотрщик: форк плагина playground или свой скилл + шаблон?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-18"
+   ],
+   "delivery": "П7",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Форк плагина playground (F-18.B): шаблон журнала в `templates/` плагина, инструкция — его SKILL.md",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "playground/SKILL.md",
+       "quote": "Load the matching template",
+       "line": null,
+       "found": false,
+       "verdict": "файла нет"
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Свой скилл `symphysis-viewer` и свой шаблон `tools/playground-template.html` в symphysis; Playground — образец, не точка расширения",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "playground/SKILL.md",
+       "quote": "Single HTML file",
+       "line": null,
+       "found": false,
+       "verdict": "файла нет"
+      },
+      {
+       "path": "tools/journal_render.py",
+       "quote": "def render_html",
+       "line": 165,
+       "found": true,
+       "verdict": "сверено"
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "B",
+    "why": "шаблон и рендер уже свои (`render-html`, F-17.D), плагин ничего из этого не знает; форк отдал бы инструкции просмотрщика чужому SKILL.md, а важные развилки должны показываться человеку по нашим правилам",
+    "text": "B — шаблон и рендер уже свои (`render-html`, F-17.D), плагин ничего из этого не знает; форк отдал бы инструкции просмотрщика чужому SKILL.md, а важные развилки должны показываться человеку по нашим правилам"
+   },
+   "decision": {
+    "option": "B",
+    "word": "нам стоит сделать свой скилл и шаблон на базе Playground, чтобы инструкции были четкие и мы могли ими управлять, а Playground будет как источник вдохновения, а не точка расширения.",
+    "date": "2026-10-30"
+   },
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "П7 = скилл `symphysis-viewer` + шаблон `tools/playground-template.html` в symphysis, форк плагина снят (F-18.B пересмотрено); у просмотрщика три режима — «решения», «проверка» (снимок решений перед proposal, только чтение) и «атака»; режим «атака» группирует строки `attack/*.md` по линзам — слово владельца 2026-10-30: «раз атакующих перспектив несколько, то можно сгруппировать по ним их \"претензии\" к содержимому»; перспективы интервью и линзы атаки не смешиваются; правило «сначала запись» — в `rules` proposal, design, tasks (Task D7)",
+   "evidence": [],
+   "comments": [],
+   "finding": ""
+  },
+  {
+   "id": "F-27",
+   "question": "Граница между скриптом и моделью: что проверяет код, а что судит модель?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-12"
+   ],
+   "delivery": "П5",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Граница держится: скрипты проверяют только детерминированное (структуру, существование цитаты, хеши, статус во frontmatter); суждение остаётся в скиллах; F1 (сухой прогон) меряет ставку; F2 перечисляет каждое место, где соглашение не удержалось, и каждое такое место — отдельное решение владельца, переносить ли его в код",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "tools/journal_apply.py",
+       "quote": "Несверенная улика — сигнал, не ошибка.",
+       "line": 91,
+       "found": true,
+       "verdict": "сверено"
+      },
+      {
+       "path": "tools/journal_cli.py",
+       "quote": "сверить улики грепом по цитате (сигнал, не стоп)",
+       "line": 204,
+       "found": true,
+       "verdict": "сверено"
+      },
+      {
+       "path": "upstream/openspec/src/core/artifact-graph/instruction-loader.ts",
+       "quote": "const actual = readFrontmatter(outputPath)?.[verdict.frontmatter];",
+       "line": 526,
+       "found": true,
+       "verdict": "сверено"
+      },
+      {
+       "path": "CLAUDE.md",
+       "quote": "сигнал, не стоп (F-12)",
+       "line": 69,
+       "found": true,
+       "verdict": "сверено"
+      },
+      {
+       "path": "docs/plan-implementation.md",
+       "quote": "где не хватило скрипта — кандидаты вернуть проверку в код",
+       "line": 158,
+       "found": true,
+       "verdict": "сверено"
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Убрать скриптов ещё: журнал — простой markdown без `apply`/`check`",
+     "added": false,
+     "unlikely": "дословные слова и улики тогда не сверяет ничто, и утечки снова становятся невидимыми — это и есть два места, где соглашение заведомо слабее скрипта (F-12)",
+     "evidence": [
+      {
+       "path": "CLAUDE.md",
+       "quote": "Решение человека — в план дословно, с датой.",
+       "line": 80,
+       "found": true,
+       "verdict": "сверено"
+      },
+      {
+       "path": "docs/plan-flexible-pipeline.md",
+       "quote": "улика: `путь:строка` «цитата»",
+       "line": 295,
+       "found": true,
+       "verdict": "сверено"
+      }
+     ]
+    },
+    {
+     "letter": "C",
+     "text": "Добавить скриптов до F1: числовые гейты, счёт покрытия линз, формы — подход skills-store",
+     "added": false,
+     "unlikely": "замер владельца — формы под скрипты удвоили время при той же цене; ставка плана — соглашения вместо скриптов, и она ещё не измерена (F1)",
+     "evidence": [
+      {
+       "path": "docs/plan-flexible-pipeline.md",
+       "quote": "можно ли на сильной модели заменить скрипты",
+       "line": 19,
+       "found": true,
+       "verdict": "сверено"
+      },
+      {
+       "path": "docs/plan-flexible-pipeline.md",
+       "quote": "**Оставляем соглашениями** — то, ради чего скрипты существовали:",
+       "line": 33,
+       "found": true,
+       "verdict": "сверено"
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "граница уже держится в коде, и план уже содержит её замер (F1/F2). Повод — тревога владельца 2026-10-30: symphysis может стать вторым skills-store, где логика для недетерминированной информации сведена к скриптам, умеющим только детерминированную; его замер — формы, которые кормят скрипты, удвоили время при той же цене в ванильном OpenSpec. Сверка контролёра по коду: ни один скрипт symphysis не судит смысл — `check` лишь проверяет, что цитата есть по `путь:строка`; `apply` лишь разбирает грамматику промпта возврата целиком-или-никак; форк лишь читает `status` из frontmatter атаки; `render_design` лишь раскладывает структурированные поля. Единственный закрытый словарь, навязанный модели, — четыре исхода пробы, и он GSD-овский",
+    "text": "A — граница уже держится в коде, и план уже содержит её замер (F1/F2). Повод — тревога владельца 2026-10-30: symphysis может стать вторым skills-store, где логика для недетерминированной информации сведена к скриптам, умеющим только детерминированную; его замер — формы, которые кормят скрипты, удвоили время при той же цене в ванильном OpenSpec. Сверка контролёра по коду: ни один скрипт symphysis не судит смысл — `check` лишь проверяет, что цитата есть по `путь:строка`; `apply` лишь разбирает грамматику промпта возврата целиком-или-никак; форк лишь читает `status` из frontmatter атаки; `render_design` лишь раскладывает структурированные поля. Единственный закрытый словарь, навязанный модели, — четыре исхода пробы, и он GSD-овский"
+   },
+   "decision": {
+    "option": "A",
+    "word": "окей, если вариант А у нас сейчас работает, то мы создаем правильный продукт. Если нет, то нужно его менять.",
+    "date": "2026-10-30"
+   },
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "(1) постоянная «строка позиции» в `rules` `openspec/config.symphysis.yaml` не добавляется — слово владельца 2026-10-30: «системный промт хорош только тогда, когда идет работа в стиле вопрос-ответ, и она ограничивается одной сессией. В противном случае системный промпт искажает реализацию всего.»; позицию «реализовать идею, а не решение» несёт механика (перспективы интервью → развилка → дословное слово человека → атака), а не фраза; (2) дневник F1 получает поле «время · ходы» на артефакт, F2 сравнивает с ванильным OpenSpec числом; (3) перечень F2 мест, где соглашение не удержалось, — каждое отдельное решение владельца",
+   "evidence": [],
+   "comments": [],
+   "finding": ""
+  },
+  {
+   "id": "F-28",
+   "question": "Переносить ли инсталлятору корни улик на внешние материалы (store/, playground/, md4h/) при install в целевой проект?",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Переносить корни из tools/journal-roots.json как есть",
+     "added": false,
+     "unlikely": "в корнях машинные пути владельца symphysis (X:\\skills-store, ~/.vscode/extensions/...): в чужом проекте они указывают на материалы, которых там нет",
+     "evidence": [
+      {
+       "path": "tools/journal-roots.json",
+       "quote": "\"store/\": \"X:\\\\skills-store\"",
+       "line": 6,
+       "found": true,
+       "verdict": "сверено"
+      },
+      {
+       "path": "tools/journal-roots.json",
+       "quote": "\"md4h/\": \"<home>/.vscode/extensions/concretio.markdown-for-humans-0.4.5\"",
+       "line": 8,
+       "found": true,
+       "verdict": "сверено"
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Ставить только проектный корень (как сейчас: {\"\": \"<root>/..\"}); сверка на внешние материалы — через --roots при необходимости",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "docs/plan-implementation.tasks.md",
+       "quote": "читаются из `tools/journal-roots.json` с возможностью переопределить `--roots`",
+       "line": 177,
+       "found": true,
+       "verdict": "сверено"
+      },
+      {
+       "path": "installer/lib/install.js",
+       "quote": "const ROOTS_CONTENT = '{\"\": \"<root>/..\"}\\n';",
+       "line": 10,
+       "found": true,
+       "verdict": "сверено"
+      }
+     ]
+    },
+    {
+     "letter": "C",
+     "text": "Переносить корни, переписывая машинные пути в конфигурируемые (переменная окружения/файл проекта)",
+     "added": false,
+     "unlikely": "второй источник конфигурации корней рядом с tools/journal-roots.json: правило «корни задаёт только journal-roots.json» размывается",
+     "evidence": [
+      {
+       "path": "tools/journal.py",
+       "quote": "улик задаёт только `tools/journal-roots.json`",
+       "line": 23,
+       "found": true,
+       "verdict": "сверено"
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "B",
+    "why": "внешние корни — материалы машины владельца symphysis, в чужом проекте они мертвы и несут машинные пути; для случаев вроде прогона схемы на себе есть --roots",
+    "text": ""
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "сверка улик перенесённых журналов в целевом проекте: 27 из 89 улик журнала плана дают «файла нет» установленными корнями, хотя материалы есть на машине — прогон F1, research/F-01.md",
+   "evidence": [
+    {
+     "path": "openspec/changes/symphysis-schema/research/F-01.md",
+     "quote": "установленные корни улик `.symphysis/tools/journal-roots.json` = `{\"\": \"<root>/..\"}` видят только дерево прогона",
+     "line": 35,
+     "found": true,
+     "verdict": "сверено"
+    }
+   ],
+   "comments": [],
+   "finding": ""
+  }
+ ],
+ "notes": []
+};
+const ATTACK = [];
+const ADDRESSEES = ['материалы','человек','ИБ'];
+/* линзы атаки — закрытый список скилла symphysis-attack (таблица «Линза»), порядок таблицы; подписи — чем ищется.
+   Перспектив интервью брейншторма здесь нет: запись журнала и строка атаки — разные сущности (слово владельца 2026-10-30) */
+const LENSES = [
+  {slug:'requirement-coverage',    label:'покрытие требований'},
+  {slug:'task-completeness',       label:'полнота задач'},
+  {slug:'dependency-correctness',  label:'порядок зависимостей'},
+  {slug:'key-links',               label:'связи компонентов'},
+  {slug:'scope-sanity',            label:'объём задач'},
+  {slug:'verification-derivation', label:'проверка по поведению'},
+  {slug:'context-compliance',      label:'соответствие журналу'},
+  {slug:'scope-reduction',         label:'сужение объёма'},
+  {slug:'data-contracts',          label:'контракты данных'},
+  {slug:'research-resolution',     label:'закрытие исследований'},
+  {slug:'claim-authority',         label:'числа и факты'},
+  {slug:'claim-extraction',        label:'существование имён'},
+  {slug:'honest-verifier',         label:'невыводимое'},
+  {slug:'coverage',                label:'покрытие разделов'},
+];
+const SEVERITY = ['блокер','предупреждение','справка'];
+const MODES = ['decisions','check','attack'];
+const MODE_LABELS = { decisions:'решения', check:'проверка', attack:'атака' };
+const ADDED_MARK = '(добавлен человеком';
+const ONE_WAY = 'в одну сторону';
+const ATTACK_HINT = 'Строки атаки apply не меняет — их закрывает правка цели (журнала или артефакта) и повторная атака. Спор по строке (почему опора есть, почему не блокер) уходит в промпт возврата одной строкой «Замечания к схеме:» и ложится в notes[] журнала.';
+const PARK_HINT = 'Парковка — дополнительный вопрос, который нельзя закрыть сейчас: он уходит адресату. «материалы» — ответ ищется в файлах (исследование), «человек» — нужно решение человека, «ИБ» — проверка по чек-листу безопасности. Решение по самой развилке парковка не снимает.';
+/* вертикальная блок-схема под левую панель: спина x=50..250, дуги возвратов по сторонам */
+const SX = 50, SW = 200, SH = 40, STEP = 58;
+const NODES = [
+  {id:'n1',  y:8,   label:'1 Брейншторм',       sub:'decisions.md',                 d:['П1','П2','П3']},
+  {id:'n2',  y:66,  label:'2 Исследование',     sub:'research/*.md · жанры',        d:['П1']},
+  {id:'n3',  y:124, label:'3 Второй круг',      sub:'decisions.md',                 d:['П2','П3']},
+  {id:'q1',  y:182, diamond:true, label:'новое?', sub:'', d:[]},
+  {id:'n4',  y:240, label:'4 Атака журнала',    sub:'attack/decisions.md',          d:['П3','П5']},
+  {id:'n5',  y:298, label:'5 Просмотрщик',      sub:'HTML → промпт → JSON',         d:['П7']},
+  {id:'n6',  y:356, label:'6 Промпт → OpenSpec', sub:'proposal · specs · design · tasks', d:['П1','П5']},
+  {id:'n7',  y:414, label:'7 Атака артефакта',  sub:'attack/artifacts.md',          d:['П3','П5']},
+  {id:'q2',  y:472, diamond:true, label:'вердикт', sub:'', d:[]},
+  {id:'n8',  y:530, label:'готово к apply',     sub:'статус по вердикту',           d:['П4']},
+  {id:'n9',  y:600, x:50,  w:96,  label:'Рамка',       sub:'форк OpenSpec', d:['П4']},
+  {id:'n10', y:600, x:154, w:96,  label:'Инсталлятор', sub:'npx',           d:['П6']},
+  {id:'n11', y:658, label:'Э5 Сухой прогон',    sub:'схема проходит сама себя',     d:['Э5']},
+].map(n => Object.assign({ x:SX, w:SW, h:SH }, n));
+const EDGES = [
+  ['n1','n2'], ['n2','n3'], ['n3','q1'], ['q1','n4','нет'], ['q1','n2','да','right'], ['n4','n5'], ['n5','n6'],
+  ['n6','n7'], ['n7','q2'], ['q2','n8','passed'], ['q2','n1','gaps → журнал','left'], ['n9','n11'], ['n10','n11'],
+];
+const KEY = 'symphysis:' + (JOURNAL.source || 'journal');
+const byId = Object.fromEntries(JOURNAL.records.map(r => [r.id, r]));
+
+const EMPTY = () => ({ decisions:{}, added:{}, newForks:[], disputes:{}, deps:{}, notes:'' });
+let state = EMPTY();
+let filter = { node:null, openOnly:false };
+try { const s = localStorage.getItem(KEY); if (s) state = Object.assign(EMPTY(), JSON.parse(s)); } catch (e) {}
+for (const k in state.decisions) { const d = state.decisions[k]; if (!Array.isArray(d.parked)) d.parked = d.parked ? [{ text:'', addressee:d.addressee || 'человек' }] : []; }
+function save() { try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {} }
+/* режим страницы и споры по строкам атаки — свои ключи browser storage; в состояние режима 1 они не входят */
+let mode = 'decisions';
+try { const m = localStorage.getItem(KEY + ':mode'); if (MODES.includes(m)) mode = m; } catch (e) {}
+let attackState = { disputes:{} };
+try { const s = JSON.parse(localStorage.getItem(KEY + ':attack') || 'null'); if (s && s.disputes && typeof s.disputes === 'object') attackState.disputes = s.disputes; } catch (e) {}
+function saveAttack() { try { localStorage.setItem(KEY + ':attack', JSON.stringify(attackState)); } catch (e) {} }
+function setMode(m) { mode = m; try { localStorage.setItem(KEY + ':mode', m); } catch (e) {} render(); }
+/* ключ спора — файл, раздел и утверждение строки: при повторной атаке спор остаётся у той же строки, не у того же номера */
+function disputeKey(att, row) { return att.path + '|' + row.section + '|' + row.claim; }
+/* то, что уже внесено в журнал, из состояния браузера убирается: слово к решению, парковка, спор, совпадающий выбор */
+(function cleanupIngested() {
+  const norm = s => String(s || '').replace(/\s+/g, ' ').trim();
+  for (const rec of JOURNAL.records) {
+    const d = state.decisions[rec.id]; if (!d) continue;
+    const jpark = (rec.parking || []).map(p => norm(p.text));
+    const known = [rec.decision && rec.decision.word].filter(Boolean).map(norm).concat(jpark);
+    if (d.word && known.includes(norm(d.word))) d.word = '';
+    d.parked = (d.parked || []).filter(p => norm(p.text) && !jpark.includes(norm(p.text)));
+    if (rec.decision && rec.decision.option && d.choice === rec.decision.option) d.choice = null;
+    const sp = norm(state.disputes[rec.id]); if (sp && rec.dispute && norm(rec.dispute).includes(sp)) delete state.disputes[rec.id];
+  }
+  save();
+  /* спор по строке атаки, уже внесённый apply в notes[] журнала, тоже убирается */
+  const noteTexts = (JOURNAL.notes || []).map(n => norm(n.text));
+  let dropped = false;
+  for (const att of ATTACK) for (const r of (att.rows || [])) {
+    const k = disputeKey(att, r), sp = norm(attackState.disputes[k]);
+    if (sp && noteTexts.some(t => t.includes(sp))) { delete attackState.disputes[k]; dropped = true; }
+  }
+  if (dropped) saveAttack();
+})();
+/* высота нижней панели — тянется за ручку, запоминается */
+(function outHeight() {
+  const root = document.documentElement, hd = document.getElementById('outhandle');
+  let h = 170; try { h = +localStorage.getItem(KEY + ':outh') || 170; } catch (e) {}
+  root.style.setProperty('--outh', h + 'px');
+  let drag = null;
+  hd.onmousedown = e => { drag = { y:e.clientY, h }; e.preventDefault(); };
+  window.addEventListener('mousemove', e => { if (!drag) return; h = Math.max(70, Math.min(window.innerHeight - 140, drag.h + (drag.y - e.clientY))); root.style.setProperty('--outh', h + 'px'); });
+  window.addEventListener('mouseup', () => { if (!drag) return; drag = null; try { localStorage.setItem(KEY + ':outh', String(h)); } catch (e) {} });
+})();
+
+function dec(id) { return state.decisions[id] || (state.decisions[id] = { choice:null, word:'', parked:[] }); }
+function journalChoice(rec) { return rec.decision && rec.decision.option ? rec.decision.option : null; }
+function chosen(id) { const d = state.decisions[id]; if (d && d.choice) return d.choice; return journalChoice(byId[id] || {}); }
+function effectiveDeps(rec) {
+  const u = state.deps[rec.id] || { add:[], remove:[] };
+  const base = (rec.depends_on || []).map(x => ({ id:x, kind: u.remove.includes(x) ? 'removed' : 'journal' }));
+  return base.concat(u.add.map(x => ({ id:x, kind:'added' })));
+}
+function allOptions(rec) { return rec.options.concat((state.added[rec.id] || []).map(o => Object.assign({ evidence:[], unlikely:null, added:true, local:true }, o))); }
+function antipodesOf(id, letter) {
+  const out = new Set();
+  for (const a of (byId[id].antipodes || [])) if (a.option === letter) out.add(a.other);
+  for (const r of JOURNAL.records) for (const a of (r.antipodes || [])) if (a.other === id + '.' + letter) out.add(r.id + '.' + a.option);
+  return [...out];
+}
+function blockedBy(id, letter) { return antipodesOf(id, letter).filter(k => { const [oid, ol] = k.split('.'); return chosen(oid) === ol; }); }
+function esc(s) { return String(s ?? '').replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+function evHtml(ev) {
+  const loc = ev.line ? ev.path + ':' + ev.line : ev.path;
+  const v = ev.found ? '<b class="ok">сверено</b>' : '<b class="bad">не найдено: ' + esc(ev.verdict || '') + '</b>';
+  return '<span class="ev">улика: <code>' + esc(loc) + '</code> «' + esc(ev.quote) + '» ' + v + '</span>';
+}
+
+/* ---------- схема работы (вертикальная) ---------- */
+function renderScheme() {
+  const N = Object.fromEntries(NODES.map(n => [n.id, n]));
+  const H = 710;
+  let svg = '<svg viewBox="0 0 300 ' + H + '"><defs><marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#9aa3b2"/></marker></defs>';
+  for (const [f, t, label, side] of EDGES) {
+    const a = N[f], b = N[t];
+    const ac = a.x + a.w / 2, bc = b.x + b.w / 2;
+    let d, lx, ly;
+    if (side === 'right') { const p1 = { x:a.x + a.w, y:a.y + a.h / 2 }, p2 = { x:b.x + b.w, y:b.y + b.h / 2 }; const cx = 296;
+      d = 'M' + p1.x + ' ' + p1.y + ' C ' + cx + ' ' + p1.y + ', ' + cx + ' ' + p2.y + ', ' + p2.x + ' ' + p2.y; lx = 282; ly = (p1.y + p2.y) / 2; }
+    else if (side === 'left') { const p1 = { x:a.x, y:a.y + a.h / 2 }, p2 = { x:b.x, y:b.y + b.h / 2 }; const cx = 4;
+      d = 'M' + p1.x + ' ' + p1.y + ' C ' + cx + ' ' + p1.y + ', ' + cx + ' ' + p2.y + ', ' + p2.x + ' ' + p2.y; lx = 18; ly = (p1.y + p2.y) / 2; }
+    else { const p1 = { x:ac, y:a.y + a.h }, p2 = { x:bc, y:b.y }; d = 'M' + p1.x + ' ' + p1.y + ' L ' + p2.x + ' ' + p2.y; lx = ac + 6; ly = (p1.y + p2.y) / 2 + 3; }
+    svg += '<path class="edge' + (side ? ' loop' : '') + '" d="' + d + '"/>';
+    if (label) svg += '<text class="lbl" x="' + lx + '" y="' + ly + '"' + (side === 'right' ? ' text-anchor="middle" transform="rotate(90 ' + lx + ' ' + ly + ')"' : side === 'left' ? ' text-anchor="middle" transform="rotate(-90 ' + lx + ' ' + ly + ')"' : '') + '>' + esc(label) + '</text>';
+  }
+  for (const n of NODES) {
+    const cls = 'node' + (filter.node === n.id ? ' active' : '') + (filter.node && filter.node !== n.id ? ' dim' : '');
+    const cx = n.x + n.w / 2, cy = n.y + n.h / 2;
+    const shape = n.diamond ? '<polygon points="' + cx + ',' + n.y + ' ' + (n.x + n.w - 40) + ',' + cy + ' ' + cx + ',' + (n.y + n.h) + ' ' + (n.x + 40) + ',' + cy + '"/>'
+                            : '<rect x="' + n.x + '" y="' + n.y + '" width="' + n.w + '" height="' + n.h + '" rx="7"/>';
+    const cnt = n.d.length ? JOURNAL.records.filter(r => n.d.includes(r.delivery)).length : 0;
+    svg += '<g class="' + cls + '" data-node="' + n.id + '">' + shape +
+      '<text x="' + cx + '" y="' + (cy - (n.sub ? 2 : -4)) + '" text-anchor="middle">' + esc(n.label) + (cnt ? ' · ' + cnt : '') + '</text>' +
+      (n.sub ? '<text class="sub" x="' + cx + '" y="' + (cy + 11) + '" text-anchor="middle">' + esc(n.sub) + '</text>' : '') + '</g>';
+  }
+  svg += '</svg>';
+  const sch = document.getElementById('scheme');
+  sch.innerHTML = svg + '<div class="hint">' + (filter.node ? 'фильтр: ' + esc(N[filter.node].label) + ' — клик ещё раз снимает' : (filter.openOnly ? 'только открытые' : 'пунктир — возвраты: новое после второго круга, провал вердикта')) + '</div>';
+  sch.querySelectorAll('.node').forEach(g => g.onclick = () => { const n = N[g.dataset.node]; if (!n.d.length) return; filter.node = (filter.node === n.id) ? null : n.id; render(); });
+}
+
+function visible(rec) {
+  if (filter.node) { const n = NODES.find(p => p.id === filter.node); if (!n.d.includes(rec.delivery)) return false; }
+  if (filter.openOnly) { if (rec.kind === 'факт' || chosen(rec.id)) return false; }
+  return true;
+}
+
+/* ---------- карточки ---------- */
+function renderCards() {
+  const el = document.getElementById('cards');
+  el.innerHTML = JOURNAL.records.filter(visible).map(rec => {
+    const d = dec(rec.id);
+    const isFact = rec.kind === 'факт';
+    const jc = journalChoice(rec);
+    const localChoice = d.choice;
+    const changed = !!(localChoice && jc && localChoice !== jc);
+    const jpark = (rec.parking || []).map(p => ({ text:p.text, addressee:p.addressee, journal:true }));
+    const parkedAll = jpark.concat(d.parked || []);
+    const cls = ['card', isFact ? 'fact' : '', changed ? 'changed' : (chosen(rec.id) ? 'decided' : ''), parkedAll.length ? 'parked' : ''].join(' ');
+    let status = isFact ? '<span class="badge fact">факт · закрыт уликами</span>'
+      : changed ? '<span class="badge changed">изменено: ' + esc(jc) + ' → ' + esc(localChoice) + '</span>'
+      : localChoice ? '<span class="badge ok">решено здесь: ' + esc(localChoice) + '</span>'
+      : jc ? '<span class="badge ok">решено в журнале: ' + esc(jc) + '</span>' : '<span class="badge">открыто</span>';
+    if (parkedAll.length) status += '<span class="badge park">парковка: ' + parkedAll.length + '</span>';
+    const deps = effectiveDeps(rec);
+    const waiting = deps.filter(x => x.kind !== 'removed' && !chosen(x.id)).map(x => x.id);
+    let html = '<div class="' + cls + '" id="' + rec.id + '"><div class="head"><span class="id mono">' + rec.id + '</span>' + status +
+      '<span class="badge">' + esc(rec.delivery || '—') + '</span>' + (rec.addressee ? '<span class="badge">адресат: ' + esc(rec.addressee) + '</span>' : '') + '</div>' +
+      '<div class="q">' + esc(rec.question) + '</div>';
+    html += '<div class="meta">зависит от: ' + (deps.length ? deps.map(x => '<span class="chip ' + x.kind + '"><a href="#' + x.id + '">' + x.id + '</a>' +
+      (x.kind === 'removed' ? '<button data-undep="' + rec.id + '|' + x.id + '" title="вернуть">↺</button>' : '<button data-rmdep="' + rec.id + '|' + x.id + '" title="снять зависимость">×</button>') + '</span>').join('') : '—') +
+      '<input type="text" data-deptext="' + rec.id + '" placeholder="F-NN" title="добавить зависимость"><button class="small" data-adddep="' + rec.id + '">+ зависимость</button></div>';
+    if (waiting.length) html += '<div class="note warn">предпосылка не решена: ' + waiting.join(', ') + ' — выбирать можно, но ответ до неё — догадка</div>';
+    if (rec.evidence && rec.evidence.length && !isFact) html += '<div class="note info"><b>улики записи</b>' + rec.evidence.map(evHtml).join('') + '</div>';
+    if (rec.finding) html += '<div class="note info"><b>находка:</b> ' + esc(rec.finding) + '</div>';
+    if (isFact) {
+      html += rec.evidence.map(evHtml).join('');
+      if (rec.dispute) html += '<div class="note park"><b>спор в журнале:</b> ' + esc(rec.dispute) + '</div>';
+      html += '<div class="cons">следствия: ' + esc(rec.consequences || '—') + '</div>';
+      html += '<div class="row"><textarea data-dispute="' + rec.id + '" placeholder="оспорить факт: что не так и чем это подтверждается">' + esc(state.disputes[rec.id] || '') + '</textarea></div>';
+    } else {
+      const cur = chosen(rec.id);
+      for (const o of allOptions(rec)) {
+        const blocked = blockedBy(rec.id, o.letter);
+        const anti = antipodesOf(rec.id, o.letter);
+        const tags = (rec.recommendation && rec.recommendation.option === o.letter ? '<span class="tag rec">рекомендация</span>' : '') +
+          (jc === o.letter ? '<span class="tag journal">в журнале</span>' : '') +
+          (o.unlikely ? '<span class="tag unlikely" title="' + esc(o.unlikely) + '">маловероятно</span>' : '') +
+          (o.added ? '<span class="tag added">добавлен человеком</span>' : '') +
+          (anti.length ? '<span class="tag anti" title="нельзя вместе с: ' + esc(anti.join(', ')) + '">антипод ' + esc(anti.join(', ')) + '</span>' : '');
+        html += '<label class="opt' + (cur === o.letter ? ' chosen' : '') + (blocked.length ? ' blocked' : '') + '">' +
+          '<input type="radio" name="' + rec.id + '" value="' + o.letter + '"' + (cur === o.letter ? ' checked' : '') + '>' +
+          '<div class="t"><span class="letter">' + o.letter + '.</span> ' + esc(o.text) + tags +
+          (o.unlikely ? '<span class="ev">маловероятно: ' + esc(o.unlikely) + '</span>' : '') +
+          (o.evidence || []).map(evHtml).join('') + '</div></label>';
+      }
+      if (rec.recommendation) html += '<div class="rec">рекомендация: <b>' + esc(rec.recommendation.option) + '</b> — ' + esc(rec.recommendation.why) + '</div>';
+      if (rec.decision && rec.decision.word) html += '<div class="note info"><b>слово в журнале (' + esc(rec.decision.date || '') + '):</b> «' + esc(rec.decision.word) + '»</div>';
+      html += '<div class="note bad hidden" data-msg="' + rec.id + '"></div>';
+      html += '<div class="row"><textarea data-word="' + rec.id + '" placeholder="слово человека дословно — почему так (или что изменить в решении из журнала)">' + esc(d.word || '') + '</textarea></div>';
+      html += '<div class="row"><input type="text" data-addtext="' + rec.id + '" placeholder="вариант, которого здесь нет"><button class="small" data-addopt="' + rec.id + '">добавить вариант</button></div>';
+      html += '<details class="park"' + (parkedAll.length ? ' open' : '') + '><summary title="' + esc(PARK_HINT) + '">парковка — дополнительный вопрос с адресатом (' + parkedAll.length + ')</summary>' +
+        '<div class="note park" style="margin:6px 0">' + esc(PARK_HINT) + '</div>' +
+        parkedAll.map((p, i) => '<div class="parkitem"><span class="who">→ ' + esc(p.addressee || '?') + (p.journal ? ' · в журнале' : '') + '</span><span>' + esc(p.text || '(без текста)') + '</span>' +
+          (p.journal ? '' : '<button class="small" data-unpark="' + rec.id + '|' + (i - jpark.length) + '">снять</button>') + '</div>').join('') +
+        '<div class="row"><input type="text" data-parktext="' + rec.id + '" placeholder="что именно надо узнать или решить отдельно">' +
+        '<select data-addressee="' + rec.id + '" title="' + esc(PARK_HINT) + '">' + ADDRESSEES.map(a => '<option>' + a + '</option>').join('') + '</select>' +
+        '<button class="small" data-park="' + rec.id + '">припарковать</button></div></details>';
+      html += '<div class="cons">следствия: ' + esc(rec.consequences || '—') + '</div>';
+    }
+    return html + '</div>';
+  }).join('');
+
+  el.querySelectorAll('input[type=radio]').forEach(r => r.onchange = () => {
+    const id = r.name, letter = r.value, blocked = blockedBy(id, letter);
+    if (blocked.length) {
+      r.checked = false;
+      const m = el.querySelector('[data-msg="' + id + '"]');
+      m.textContent = 'антипод уже выбран: ' + blocked.join(', ') + ' — сначала измени то решение';
+      m.classList.remove('hidden');
+      return;
+    }
+    const d = dec(id); d.choice = (letter === journalChoice(byId[id])) ? null : letter; save(); render();
+  });
+  el.querySelectorAll('textarea[data-word]').forEach(t => t.oninput = () => { dec(t.dataset.word).word = t.value; save(); updateOut(); });
+  el.querySelectorAll('textarea[data-dispute]').forEach(t => t.oninput = () => { state.disputes[t.dataset.dispute] = t.value; save(); updateOut(); });
+  el.querySelectorAll('button[data-addopt]').forEach(b => b.onclick = () => {
+    const id = b.dataset.addopt, inp = el.querySelector('input[data-addtext="' + id + '"]');
+    const text = (inp.value || '').trim(); if (!text) return;
+    const letters = allOptions(byId[id]).map(o => o.letter);
+    const next = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('').find(l => !letters.includes(l));
+    (state.added[id] = state.added[id] || []).push({ letter: next, text }); save(); render();
+  });
+  el.querySelectorAll('button[data-park]').forEach(b => b.onclick = () => {
+    const id = b.dataset.park, text = (el.querySelector('input[data-parktext="' + id + '"]').value || '').trim();
+    const addressee = el.querySelector('select[data-addressee="' + id + '"]').value;
+    if (!text) { const m = el.querySelector('[data-msg="' + id + '"]'); m.textContent = 'парковка без вопроса — нечего адресовать'; m.classList.remove('hidden'); return; }
+    dec(id).parked.push({ text, addressee }); save(); render();
+  });
+  el.querySelectorAll('button[data-unpark]').forEach(b => b.onclick = () => { const [id, i] = b.dataset.unpark.split('|'); dec(id).parked.splice(+i, 1); save(); render(); });
+  el.querySelectorAll('button[data-adddep]').forEach(b => b.onclick = () => {
+    const id = b.dataset.adddep, inp = el.querySelector('input[data-deptext="' + id + '"]');
+    const dep = (inp.value || '').trim().toUpperCase().replace(/^F(\d)/, 'F-$1');
+    const m = el.querySelector('[data-msg="' + id + '"]');
+    if (!byId[dep]) { m.textContent = 'нет записи ' + dep; m.classList.remove('hidden'); return; }
+    if (dep === id) { m.textContent = 'запись не может зависеть от себя'; m.classList.remove('hidden'); return; }
+    const u = state.deps[id] = state.deps[id] || { add:[], remove:[] };
+    if (byId[id].depends_on.includes(dep)) { u.remove = u.remove.filter(x => x !== dep); }
+    else if (!u.add.includes(dep)) u.add.push(dep);
+    save(); render();
+  });
+  el.querySelectorAll('button[data-rmdep]').forEach(b => b.onclick = () => {
+    const [id, dep] = b.dataset.rmdep.split('|');
+    const u = state.deps[id] = state.deps[id] || { add:[], remove:[] };
+    if (u.add.includes(dep)) u.add = u.add.filter(x => x !== dep); else if (!u.remove.includes(dep)) u.remove.push(dep);
+    save(); render();
+  });
+  el.querySelectorAll('button[data-undep]').forEach(b => b.onclick = () => {
+    const [id, dep] = b.dataset.undep.split('|');
+    const u = state.deps[id]; if (u) u.remove = u.remove.filter(x => x !== dep); save(); render();
+  });
+}
+
+function renderNewForks() {
+  document.getElementById('newForks').innerHTML = state.newForks.map((f, i) =>
+    '<div class="card" style="margin-top:8px"><div class="head"><span class="id mono">' + f.id + '</span><span class="badge added">добавлена человеком</span>' +
+    '<button class="small" data-delfork="' + i + '" style="margin-left:auto">убрать</button></div><div class="q">' + esc(f.question) + '</div>' +
+    '<div class="meta">варианты: ' + esc(f.options.replace(/\n+/g, ' · ')) + '</div><div class="cons">' + esc(f.word) + '</div></div>').join('');
+  document.querySelectorAll('button[data-delfork]').forEach(b => b.onclick = () => { state.newForks.splice(+b.dataset.delfork, 1); save(); render(); });
+}
+
+function renderToc() {
+  document.getElementById('toc').innerHTML = JOURNAL.records.map(rec => {
+    const d = state.decisions[rec.id];
+    const jc = journalChoice(rec);
+    const dot = rec.kind === 'факт' ? 'fact' : (d && d.choice && jc && d.choice !== jc) ? 'changed' : chosen(rec.id) ? 'ok' : (((rec.parking && rec.parking.length) || (d && d.parked && d.parked.length)) ? 'park' : '');
+    return '<a href="#' + rec.id + '"><span class="dot ' + dot + '"></span><span class="id">' + rec.id + '</span><span class="q" title="' + esc(rec.question) + '">' + esc(rec.question) + '</span></a>';
+  }).join('');
+}
+
+function renderStats() {
+  const forks = JOURNAL.records.filter(r => r.kind !== 'факт');
+  const decided = forks.filter(r => chosen(r.id)).length;
+  const changed = forks.filter(r => { const d = state.decisions[r.id]; const jc = journalChoice(r); return d && d.choice && jc && d.choice !== jc; }).length;
+  const parked = forks.filter(r => (r.parking && r.parking.length) || (state.decisions[r.id] && state.decisions[r.id].parked.length)).length;
+  const disputed = Object.values(state.disputes).filter(v => v && v.trim()).length;
+  document.getElementById('stats').innerHTML =
+    'развилок <b>' + forks.length + '</b> · решено <b>' + decided + '</b>' + (changed ? ' · изменено здесь <b>' + changed + '</b>' : '') +
+    ' · открыто <b>' + (forks.length - decided) + '</b> · с парковкой <b>' + parked + '</b> · фактов <b>' + (JOURNAL.records.length - forks.length) + '</b>' +
+    (disputed ? ' · оспорено <b>' + disputed + '</b>' : '') + (state.newForks.length ? ' · добавлено развилок <b>' + state.newForks.length + '</b>' : '');
+  const s = JOURNAL.stats || {};
+  document.getElementById('evstats').textContent = 'улик сверено ' + (s.evidence_found ?? '?') + ' из ' + (s.evidence_total ?? '?') + ' · собрано ' + (JOURNAL.generated || '');
+}
+
+function updateOut() {
+  const lines = ['Решения по журналу ' + (JOURNAL.source || '') + ', ' + new Date().toISOString().slice(0, 10) + ':'];
+  for (const rec of JOURNAL.records) {
+    const d = state.decisions[rec.id];
+    if (rec.kind === 'факт') { const sp = (state.disputes[rec.id] || '').trim(); if (sp) lines.push('- ' + rec.id + ': факт оспорен — «' + sp + '»'); continue; }
+    for (const o of (state.added[rec.id] || [])) lines.push('- ' + rec.id + ': добавлен вариант ' + o.letter + '. ' + o.text);
+    const u = state.deps[rec.id];
+    if (u) { for (const x of u.add) lines.push('- ' + rec.id + ': зависимость добавлена ' + x); for (const x of u.remove) lines.push('- ' + rec.id + ': зависимость снята ' + x); }
+    if (!d) continue;
+    const w = (d.word || '').trim(), jc = journalChoice(rec);
+    for (const p of (d.parked || [])) lines.push('- ' + rec.id + ': припарковано → ' + p.addressee + ' — «' + p.text + '»');
+    if (d.choice && d.choice !== jc) lines.push('- ' + rec.id + ': ' + d.choice + (jc ? ' (было ' + jc + ')' : '') + (w ? ' — «' + w + '»' : ' — (без слова)'));
+    else if (w) lines.push('- ' + rec.id + ': ' + (jc ? 'к решению ' + jc : 'без выбора') + ' — «' + w + '»');
+  }
+  if (state.newForks.length) { lines.push('Новые развилки:'); for (const f of state.newForks) lines.push('- ' + f.id + ': ' + f.question + ' — варианты: ' + f.options.replace(/\n+/g, ' | ') + (f.word ? ' — «' + f.word + '»' : '')); }
+  /* споры по строкам атаки — в тот же блок «Замечания к схеме:», замечания режима 1 первыми; грамматика apply даёт один notes[] на блок,
+     поэтому всё склеивается в одну строку через « · » */
+  const disputes = [];
+  for (const att of ATTACK) for (const r of (att.rows || [])) {
+    const sp = (attackState.disputes[disputeKey(att, r)] || '').replace(/\s+/g, ' ').trim();
+    if (sp) disputes.push('атака ' + att.path + ' · ' + r.lens + ' · «' + short(r.claim, 60) + '» — спор: ' + sp);
+  }
+  const notes = [(state.notes || '').trim()].concat(disputes).filter(Boolean);
+  if (notes.length) lines.push('Замечания к схеме: ' + notes.join(' · '));
+  if (lines.length === 1) lines.push('(нового нет — решения из журнала остаются как есть, молчание по открытой развилке оставляет её открытой)');
+  document.getElementById('out').value = lines.join('\n');
+}
+
+/* ---------- режимы: переключатель в шапке, видимость панелей ---------- */
+function renderModes() {
+  const el = document.getElementById('modes');
+  const rows = ATTACK.reduce((n, a) => n + (a.rows || []).length, 0);
+  el.innerHTML = MODES.map(m => '<button class="small' + (mode === m ? ' active' : '') + '" data-mode="' + m + '">' + MODE_LABELS[m] + (m === 'attack' && rows ? ' · ' + rows : '') + '</button>').join('');
+  el.querySelectorAll('button').forEach(b => b.onclick = () => setMode(b.dataset.mode));
+  document.getElementById('viewDecisions').classList.toggle('hidden', mode !== 'decisions');
+  document.getElementById('viewCheck').classList.toggle('hidden', mode !== 'check');
+  document.getElementById('viewAttack').classList.toggle('hidden', mode !== 'attack');
+  document.getElementById('outpanel').classList.toggle('hidden', mode === 'check');   /* проверка ничего не возвращает */
+}
+
+/* ---------- общее для режимов 2 и 3 ---------- */
+function isProbe(rec) { return !!(rec.outcome && rec.outcome.kind === 'проба'); }
+function isAdded(o) { return !!o.added || String(o.text || '').includes(ADDED_MARK); }
+function isOneWay(rec) { return !!(rec.reversibility && rec.reversibility.level === ONE_WAY); }
+function num(id) { return parseInt(String(id).slice(2), 10) || 0; }
+function allEvidence(rec) { return (rec.evidence || []).concat(...(rec.options || []).map(o => o.evidence || [])); }
+function short(s, n) { s = String(s || ''); return s.length > n ? s.slice(0, n - 1) + '…' : s; }
+function shaChip(sha, missing) { return sha ? '<code title="' + esc(sha) + '">' + esc(sha.slice(0, 12)) + '</code>' : '<span class="mute">' + esc(missing) + '</span>'; }
+function journalTarget(att) { return ((att.frontmatter || {}).targets || []).find(t => t.path === 'decisions.json'); }
+/* сверка хеша цели decisions.json из frontmatter атаки с хешем файла журнала, который встроил render-html (ключ sha256) */
+function verdictNote(att) {
+  const t = journalTarget(att);
+  if (!t || !JOURNAL.sha256) return '';
+  if (!t.sha256) return '<span class="badge warn">хеш журнала в атаке не записан</span>';
+  return t.sha256 === JOURNAL.sha256 ? '<span class="badge ok">хеш журнала совпал</span>' : '<span class="badge bad">вердикт устарел: журнал изменён после атаки</span>';
+}
+
+/* ---------- режим 2 — проверка: снимок решений перед proposal, только чтение ---------- */
+/* проекция «куда уйдёт» — зеркало render_design (tools/journal_render.py): решённая развилка, не проба → Decisions
+   («в одну сторону» — первыми); проба Specify* → spec.md; Backstop → тест-страховка в tasks.md, в design.md её нет;
+   Dismiss → никуда, с причиной; Defer и открытая развилка → Open Questions; факт → Context, спорный — ещё и Open Questions */
+function destination(rec) {
+  if (rec.kind === 'факт') return { label:'design.md › Context', note: (rec.dispute || '').trim() ? 'спор → design.md › Open Questions' : '' };
+  if (isProbe(rec)) {
+    const v = String(rec.outcome.value || ''), reason = (rec.outcome.reason || '').trim();
+    if (v.startsWith('Specify')) return { label:'spec.md', note:'исход ' + v };
+    if (v === 'Backstop') return { label:'tasks.md › тест-страховка', note:'в design.md не попадает' };
+    if (v === 'Dismiss') return { label:'никуда', note: reason ? 'причина: ' + reason : 'причина не записана' };
+    if (v === 'Defer') return { label:'design.md › Open Questions', note:'отложена (Defer)' };
+    return { label:'никуда', note:'исход «' + v + '» вне четырёх' };
+  }
+  if (rec.decision && rec.decision.option) return { label:'design.md › Decisions', note: isOneWay(rec) ? 'в одну сторону — первой' : '' };
+  return { label:'design.md › Open Questions', note:'открыта' };
+}
+/* парковки: render_design кладёт каждую в Open Questions; адресат говорит, где ищется ответ */
+function parkingDestination(addressee) { return 'design.md › Open Questions → ' + ({ 'ИБ':'security.md', 'материалы':'research/', 'человек':'вопрос человеку' }[addressee] || '—'); }
+
+function checkCard(rec) {
+  const d = destination(rec), isFact = rec.kind === 'факт';
+  const picked = rec.decision && rec.decision.option ? (rec.options || []).find(o => o.letter === rec.decision.option) : null;
+  let html = '<div class="card' + (isFact ? ' fact' : picked ? ' decided' : '') + '"><div class="head"><span class="id mono">' + rec.id + '</span>' +
+    '<span class="badge">' + esc(rec.kind) + ' · ' + esc(rec.status) + '</span><span class="badge">' + esc(rec.delivery || '—') + '</span>' +
+    (isOneWay(rec) ? '<span class="badge warn">в одну сторону</span>' : '') +
+    '<span class="badge dest" title="куда уйдёт — по правилам render-design">→ ' + esc(d.label) + (d.note ? ' · ' + esc(d.note) : '') + '</span></div>' +
+    '<div class="q">' + esc(rec.question) + '</div>';
+  if (picked) html += '<div class="opt chosen"><span class="letter">' + picked.letter + '.</span><div>' + esc(picked.text) + (isAdded(picked) ? '<span class="tag added">добавлен человеком</span>' : '') + '</div></div>';
+  if (rec.decision && rec.decision.word) html += '<div class="note info"><b>слово (' + esc(rec.decision.date || 'без даты') + '):</b> «' + esc(rec.decision.word) + '»</div>';
+  if (rec.reversibility) html += '<div class="meta">обратимость: ' + esc(rec.reversibility.level) + (rec.reversibility.why ? ' — ' + esc(rec.reversibility.why) : '') + '</div>';
+  if (rec.outcome) html += '<div class="meta">исход: ' + esc(rec.outcome.kind) + ' — <b>' + esc(rec.outcome.value) + '</b>' + (rec.outcome.reason ? ' — ' + esc(rec.outcome.reason) : '') + '</div>';
+  if (!picked && !isFact) {
+    html += (rec.options || []).map(o => '<div class="opt"><span class="letter">' + o.letter + '.</span><div>' + esc(o.text) +
+      (o.unlikely ? '<span class="tag unlikely">маловероятно: ' + esc(o.unlikely) + '</span>' : '') + (isAdded(o) ? '<span class="tag added">добавлен человеком</span>' : '') + '</div></div>').join('');
+    if (rec.recommendation) html += '<div class="rec">рекомендация: <b>' + esc(rec.recommendation.option || '') + '</b> — ' + esc(rec.recommendation.why || rec.recommendation.text || '') + '</div>';
+  } else if (picked) {
+    const added = (rec.options || []).filter(o => isAdded(o) && o.letter !== picked.letter);
+    if (added.length) html += '<div class="meta">добавлены человеком: ' + esc(added.map(o => o.letter + '. ' + o.text).join('; ')) + '</div>';
+  }
+  if (isFact) {
+    html += (rec.evidence || []).map(evHtml).join('');
+    html += (rec.dispute || '').trim() ? '<div class="note park"><b>спор:</b> ' + esc(rec.dispute) + '</div>' : '<div class="meta">спора нет</div>';
+  }
+  if (rec.consequences) html += '<div class="cons">следствия: ' + esc(rec.consequences) + '</div>';
+  return html + '</div>';
+}
+
+function renderCheck() {
+  const recs = JOURNAL.records, forks = recs.filter(r => r.kind === 'развилка');
+  const decidedAll = forks.filter(r => r.decision && r.decision.option);
+  const decided = decidedAll.filter(r => !isProbe(r)), probes = recs.filter(isProbe);
+  const open = forks.filter(r => !(r.decision && r.decision.option)), facts = recs.filter(r => r.kind === 'факт');
+  const parkings = recs.flatMap(r => (r.parking || []).map(p => Object.assign({ rec:r.id }, p)));
+  const snapshot = ATTACK.find(journalTarget);
+  let html = '<div class="card"><div class="head"><span class="id mono">снимок</span><span class="badge">' + esc(JOURNAL.source || '') + '</span>' +
+    '<span class="badge">sha256 журнала: ' + shaChip(JOURNAL.sha256, 'не подан — рендер не из файла') + '</span>' +
+    (snapshot ? '<span class="badge ' + (snapshot.frontmatter.status === 'passed' ? 'ok' : 'park') + '">атака: ' + esc(snapshot.frontmatter.status || '—') + '</span>' + verdictNote(snapshot)
+              : '<span class="badge">атака не подана</span>') +
+    '</div><div class="q">' + esc(JOURNAL.title || '') + '</div>' +
+    '<div class="meta">только чтение: режим ничего не пишет и вердиктом не считается — снимок решений перед proposal и spec.md; «→» у записи — куда она уйдёт по правилам render-design</div></div>';
+  html += '<div class="counters">решено <b>' + decidedAll.length + '</b> · открыто <b>' + open.length + '</b> · припарковано: ' +
+    ADDRESSEES.map(a => a + ' <b>' + parkings.filter(p => p.addressee === a).length + '</b>').join(' / ') +
+    ' · фактов оспорено <b>' + facts.filter(r => (r.dispute || '').trim()).length + '</b>' +
+    ' · улик не найдено <b>' + recs.flatMap(allEvidence).filter(ev => ev.found === false).length + '</b></div>';
+  const dates = [...new Set(decided.map(r => r.decision.date || ''))].sort((a, b) => a < b ? 1 : a > b ? -1 : 0);
+  html += '<h2>Решено — по дате решения · ' + decided.length + '</h2>' + (dates.length ? '' : '<div class="meta">—</div>');
+  for (const date of dates) {
+    const group = decided.filter(r => (r.decision.date || '') === date).sort((a, b) => (isOneWay(b) - isOneWay(a)) || (num(a.id) - num(b.id)));
+    html += '<h3>' + (date ? esc(date) : 'без даты') + ' · ' + group.length + '</h3>' + group.map(checkCard).join('');
+  }
+  const section = (title, list) => '<h2>' + title + ' · ' + list.length + '</h2>' + (list.length ? list.map(checkCard).join('') : '<div class="meta">—</div>');
+  html += section('Открытые развилки — с рекомендацией', open) + section('Пробы — с исходом', probes) + section('Факты — улики и спор', facts);
+  html += '<h2>Парковки — по адресатам · ' + parkings.length + '</h2>' + (parkings.length ? '' : '<div class="meta">—</div>');
+  for (const a of ADDRESSEES) {
+    const ps = parkings.filter(p => p.addressee === a); if (!ps.length) continue;
+    html += '<h3>→ ' + a + ' · ' + ps.length + ' <span class="badge dest">' + esc(parkingDestination(a)) + '</span></h3>' +
+      ps.map(p => '<div class="parkitem"><span class="who mono">' + p.rec + '</span><span>' + esc(p.text) + (p.finding ? ' — <b>находка:</b> ' + esc(p.finding) : '') + '</span></div>').join('');
+  }
+  const notes = JOURNAL.notes || [];
+  html += '<h2>Заметки · ' + notes.length + '</h2>' + (notes.length ? '<ul>' + notes.map(n => '<li><span class="mono">' + esc(n.date) + '</span> — ' + esc(n.text) + '</li>').join('') + '</ul>' : '<div class="meta">—</div>');
+  document.getElementById('viewCheck').innerHTML = html;
+}
+
+/* ---------- режим 3 — атака: строки attack/*.md, линза → тяжесть → строки ---------- */
+function lensLabel(slug) { const l = LENSES.find(x => x.slug === slug); return l ? l.label : ''; }
+function sevClass(s) { return s === 'блокер' ? 'bad' : s === 'предупреждение' ? 'warn' : s === 'справка' ? '' : 'park'; }
+/* раздел вида `F-NN, поле` с записью в журнале — переход к карточке в режиме 1, не слияние сущностей */
+function sectionHtml(section) {
+  const m = /^(F-\d+)/.exec(String(section || ''));
+  if (m && byId[m[1]]) return '<a href="#' + m[1] + '" data-goto="' + m[1] + '" title="к записи ' + m[1] + ' в режиме «решения»">' + esc(section) + '</a>';
+  return esc(section);
+}
+function attackRow(att, r) {
+  const key = disputeKey(att, r), known = LENSES.some(l => l.slug === r.lens);
+  return '<div class="card"><div class="head"><span class="badge ' + sevClass(r.severity) + '">' + esc(r.severity) + '</span><span class="badge">' + sectionHtml(r.section) + '</span>' +
+    (known ? '' : '<span class="badge bad">линза «' + esc(r.lens) + '» вне списка — строка невалидна</span>') + '</div>' +
+    '<div class="q">' + esc(r.claim) + '</div>' +
+    '<div class="meta">инвариант: ' + esc(r.invariant) + '</div><div class="meta">опора: ' + esc(r.support) + '</div><div class="meta">чем закрыть: ' + esc(r.fix) + '</div>' +
+    '<div class="row"><textarea data-dispute-key="' + esc(key) + '" placeholder="спор: почему опора есть / почему не блокер — уйдёт в промпт возврата">' + esc(attackState.disputes[key] || '') + '</textarea></div></div>';
+}
+function renderAttack() {
+  const el = document.getElementById('viewAttack');
+  if (!ATTACK.length) { el.innerHTML = '<div class="card"><div class="q">атака не подана: <code>render-html --attack &lt;attack/decisions.md&gt; [--attack &lt;attack/artifacts.md&gt;]</code></div></div>'; return; }
+  const slugs = LENSES.map(l => l.slug);
+  let html = '<div class="note info">' + esc(ATTACK_HINT) + '</div>';
+  for (const att of ATTACK) {
+    const fm = att.frontmatter || {}, rows = att.rows || [];
+    const outside = rows.filter(r => !slugs.includes(r.lens));
+    html += '<div class="card"><div class="head"><span class="id mono">' + esc(att.path) + '</span><span class="badge ' + (fm.status === 'passed' ? 'ok' : 'park') + '">status: ' + esc(fm.status || '—') + '</span>' + verdictNote(att) + '</div>' +
+      '<div class="meta">цели: ' + (fm.targets || []).map(t => '<span class="chip">' + esc(t.path) + ' ' + shaChip(t.sha256, 'без хеша') + '</span>').join('') + '</div>' +
+      '<div class="counters">по тяжести: ' + SEVERITY.map(s => s + ' <b>' + rows.filter(r => r.severity === s).length + '</b>').join(' · ') + '</div>' +
+      '<div class="counters">по линзе: ' + slugs.map(s => [s, rows.filter(r => r.lens === s).length]).filter(x => x[1]).map(x => '<code>' + x[0] + '</code> <b>' + x[1] + '</b>').join(' · ') +
+      (outside.length ? ' · вне списка <b>' + outside.length + '</b>' : '') + '</div></div>';
+    const groups = slugs.map(s => [s, rows.filter(r => r.lens === s)]).filter(g => g[1].length);
+    if (outside.length) groups.push([null, outside]);
+    for (const [slug, rs] of groups) {
+      html += '<h2>' + (slug ? '<code>' + slug + '</code> · ' + esc(lensLabel(slug)) : 'вне списка — слуг не из закрытого списка линз') + ' · ' + rs.length + '</h2>';
+      const sevs = SEVERITY.concat([...new Set(rs.map(r => r.severity))].filter(s => !SEVERITY.includes(s)));
+      for (const sev of sevs) { const part = rs.filter(r => r.severity === sev); if (part.length) html += '<h3>' + esc(sev) + ' · ' + part.length + '</h3>' + part.map(r => attackRow(att, r)).join(''); }
+    }
+  }
+  el.innerHTML = html;
+  el.querySelectorAll('textarea[data-dispute-key]').forEach(t => t.oninput = () => { const k = t.dataset.disputeKey; if (t.value.trim()) attackState.disputes[k] = t.value; else delete attackState.disputes[k]; saveAttack(); updateOut(); });
+  el.querySelectorAll('a[data-goto]').forEach(a => a.onclick = e => { e.preventDefault(); setMode('decisions'); const c = document.getElementById(a.dataset.goto); if (c && c.scrollIntoView) c.scrollIntoView(); });
+}
+
+function render() { renderModes(); renderScheme(); renderCards(); renderNewForks(); renderToc(); renderStats(); if (mode === 'check') renderCheck(); if (mode === 'attack') renderAttack(); updateOut(); }
+
+document.getElementById('notes').value = state.notes || '';
+document.getElementById('notes').oninput = e => { state.notes = e.target.value; save(); updateOut(); };
+document.getElementById('btnAll').onclick = () => { filter = { node:null, openOnly:false }; render(); };
+document.getElementById('btnOpen').onclick = () => { filter.openOnly = !filter.openOnly; render(); };
+document.getElementById('btnToggleNew').onclick = () => document.getElementById('newForkForm').classList.toggle('hidden');
+document.getElementById('btnAddFork').onclick = () => {
+  const q = document.getElementById('nfQuestion').value.trim(); if (!q) return;
+  state.newForks.push({ id: 'F-N' + (state.newForks.length + 1), question: q, options: document.getElementById('nfOptions').value.trim(), word: document.getElementById('nfWord').value.trim() });
+  ['nfQuestion','nfOptions','nfWord'].forEach(i => document.getElementById(i).value = ''); save(); render();
+};
+document.getElementById('btnCopy').onclick = async () => {
+  const t = document.getElementById('out'); let ok = false;
+  try { await navigator.clipboard.writeText(t.value); ok = true; } catch (e) { t.select(); ok = document.execCommand('copy'); }
+  const c = document.getElementById('copied'); c.textContent = ok ? 'скопировано' : 'не удалось — выдели и скопируй руками'; setTimeout(() => c.textContent = '', 2000);
+};
+document.getElementById('btnExport').onclick = () => {
+  const blob = new Blob([JSON.stringify(state, null, 1)], { type:'application/json' });
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'symphysis-decisions.json'; a.click();
+};
+document.getElementById('btnImport').onclick = () => document.getElementById('fileImport').click();
+document.getElementById('fileImport').onchange = e => {
+  const f = e.target.files[0]; if (!f) return;
+  f.text().then(txt => { try { state = Object.assign(EMPTY(), JSON.parse(txt)); save(); render(); document.getElementById('notes').value = state.notes || ''; } catch (err) { alert('не JSON состояния'); } });
+};
+document.getElementById('btnReset').onclick = () => { if (confirm('Стереть все решения и споры из браузера? Решения, уже внесённые в журнал, останутся.')) { state = EMPTY(); save(); attackState = { disputes:{} }; saveAttack(); document.getElementById('notes').value = ''; render(); } };
+document.getElementById('title').textContent = JOURNAL.title || document.title;
+render();
+</script>
+</body>
+</html>
