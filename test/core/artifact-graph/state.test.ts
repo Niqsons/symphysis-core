@@ -2,9 +2,9 @@ import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import * as fs from 'node:fs';
 import * as path from 'node:path';
 import * as os from 'node:os';
-import { detectCompleted } from '../../../src/core/artifact-graph/state.js';
+import { detectCompleted, verdictState } from '../../../src/core/artifact-graph/state.js';
 import { ArtifactGraph } from '../../../src/core/artifact-graph/graph.js';
-import type { SchemaYaml } from '../../../src/core/artifact-graph/types.js';
+import type { Artifact, SchemaYaml } from '../../../src/core/artifact-graph/types.js';
 
 describe('artifact-graph/state', () => {
   let tempDir: string;
@@ -226,6 +226,133 @@ describe('artifact-graph/state', () => {
 
       const next = graph.getNextArtifacts(completed);
       expect(next).toEqual(['tasks']);
+    });
+  });
+
+  describe('verdict artifacts', () => {
+    const verdictArtifact = (): Artifact => ({
+      id: 'attack',
+      generates: 'attack.md',
+      description: 'Attack',
+      template: 't.md',
+      requires: [],
+      verdict: { frontmatter: 'status', value: 'passed' },
+    });
+
+    const graphWithVerdict = (): ArtifactGraph =>
+      ArtifactGraph.fromSchema(
+        createSchema([
+          verdictArtifact(),
+          { id: 'next', generates: 'next.md', description: 'Next', template: 't.md', requires: ['attack'] },
+        ])
+      );
+
+    const write = (file: string, content: string): void => {
+      fs.writeFileSync(file, content);
+    };
+
+    it('verdict artifact with file but no frontmatter is not completed', () => {
+      write(path.join(tempDir, 'attack.md'), '# no frontmatter');
+
+      expect(detectCompleted(graphWithVerdict(), tempDir).has('attack')).toBe(false);
+    });
+
+    it('verdict artifact with status passed is completed', () => {
+      write(path.join(tempDir, 'attack.md'), '---\nstatus: passed\n---\n');
+
+      expect(detectCompleted(graphWithVerdict(), tempDir).has('attack')).toBe(true);
+    });
+
+    it('verdict artifact with status passed is completed under CRLF and BOM', () => {
+      write(path.join(tempDir, 'attack.md'), '\uFEFF---\r\nstatus: passed\r\n---\r\n# t\r\n');
+
+      expect(detectCompleted(graphWithVerdict(), tempDir).has('attack')).toBe(true);
+    });
+
+    it('verdict artifact with status gaps_found is not completed', () => {
+      write(path.join(tempDir, 'attack.md'), '---\nstatus: gaps_found\n---\n');
+
+      expect(detectCompleted(graphWithVerdict(), tempDir).has('attack')).toBe(false);
+    });
+
+    it('verdict artifact without a file is not completed', () => {
+      expect(detectCompleted(graphWithVerdict(), tempDir).has('attack')).toBe(false);
+    });
+
+    it('a not-passed verdict artifact keeps its dependents blocked', () => {
+      const graph = graphWithVerdict();
+      write(path.join(tempDir, 'attack.md'), '---\nstatus: gaps_found\n---\n');
+      expect(graph.getNextArtifacts(detectCompleted(graph, tempDir))).toEqual(['attack']);
+
+      write(path.join(tempDir, 'attack.md'), '---\nstatus: passed\n---\n');
+      expect(graph.getNextArtifacts(detectCompleted(graph, tempDir))).toEqual(['next']);
+    });
+
+    it.each([
+      ['no frontmatter', '# plain'],
+      ['gaps_found frontmatter', '---\nstatus: gaps_found\n---\n'],
+      ['passed frontmatter', '---\nstatus: passed\n---\n'],
+      ['invalid yaml frontmatter', '---\nstatus: [oops\n---\n'],
+    ])('artifact without verdict stays completed by file existence (%s)', (_label, content) => {
+      const schema = createSchema([
+        { id: 'plain', generates: 'plain.md', description: 'Plain', template: 't.md', requires: [] },
+      ]);
+      write(path.join(tempDir, 'plain.md'), content);
+
+      expect(detectCompleted(ArtifactGraph.fromSchema(schema), tempDir).has('plain')).toBe(true);
+    });
+  });
+
+  describe('verdictState', () => {
+    const artifact = (verdict?: Artifact['verdict']): Artifact => ({
+      id: 'attack',
+      generates: 'attack.md',
+      description: 'Attack',
+      template: 't.md',
+      requires: [],
+      ...(verdict ? { verdict } : {}),
+    });
+    const verdict = { frontmatter: 'status', value: 'passed' };
+    const file = (): string => path.join(tempDir, 'attack.md');
+
+    it("returns 'n/a' for an artifact without verdict", () => {
+      fs.writeFileSync(file(), '---\nstatus: passed\n---\n');
+
+      expect(verdictState(artifact(), tempDir)).toBe('n/a');
+    });
+
+    it.each([
+      ['file absent', undefined, 'missing'],
+      ['no frontmatter', '# plain', 'missing'],
+      ['unterminated frontmatter', '---\nstatus: passed\n', 'missing'],
+      ['key absent', '---\nround: 1\n---\n', 'missing'],
+      ['value differs', '---\nstatus: gaps_found\n---\n', 'mismatch'],
+      ['key present but empty', '---\nstatus:\n---\n', 'mismatch'],
+      ['value equal', '---\nstatus: passed\n---\n', 'ok'],
+      ['value equal under CRLF and BOM', '\uFEFF---\r\nstatus: passed\r\n---\r\n', 'ok'],
+    ])('returns the right state when %s', (_label, content, expected) => {
+      if (content !== undefined) fs.writeFileSync(file(), content);
+
+      expect(verdictState(artifact(verdict), tempDir)).toBe(expected);
+    });
+
+    it('compares non-string scalars by their string form', () => {
+      fs.writeFileSync(file(), '---\npassed: true\n---\n');
+
+      expect(verdictState(artifact({ frontmatter: 'passed', value: 'true' }), tempDir)).toBe('ok');
+      expect(verdictState(artifact({ frontmatter: 'passed', value: 'false' }), tempDir)).toBe('mismatch');
+    });
+
+    it('does not treat inherited object keys as present', () => {
+      fs.writeFileSync(file(), '---\nstatus: passed\n---\n');
+
+      expect(verdictState(artifact({ frontmatter: 'toString', value: 'passed' }), tempDir)).toBe('missing');
+    });
+
+    it("returns 'missing' when the output path is a directory", () => {
+      fs.mkdirSync(file());
+
+      expect(verdictState(artifact(verdict), tempDir)).toBe('missing');
     });
   });
 });
