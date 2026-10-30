@@ -6,3 +6,5 @@ __pycache__/
 .superpowers/
 installer/node_modules/
 installer/payload/
+.claude/
+.symphysis/
