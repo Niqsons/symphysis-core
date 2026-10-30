@@ -11,10 +11,12 @@
         --out docs/plan-implementation.journal.md
     py -3.13 tools/journal.py render-html docs/plan-implementation.journal.json \
         --out docs/plan-implementation.html [--template tools/playground-template.html]
+    py -3.13 tools/journal.py render-design docs/plan-implementation.journal.json \
+        --out design.md
     py -3.13 tools/journal.py apply docs/plan-implementation.journal.json answers.md \
         [--date YYYY-MM-DD] [--dry-run]
 
-Markdown и HTML — производные от JSON: правится JSON, потом рендер. Корни путей
+Markdown, HTML и design.md — производные от JSON: правится JSON, потом рендер. Корни путей
 улик — свои префиксы symphysis плюс `tools/journal-roots.json`. Путь улики, не
 подошедший ни под один префикс, получает вердикт «корня для пути нет»: отката
 на корень symphysis нет.
@@ -478,6 +480,101 @@ def render_html(journal: dict, template: Path) -> str:
     return html.replace(PLACEHOLDER, js)
 
 
+# --- design.md из журнала --------------------------------------------------
+
+ONE_WAY = "в одну сторону"
+EMPTY_SECTION = "—"
+GOALS_STUB = "Цели и не-цели — из proposal; здесь только решения."
+MIGRATION_STUB = "Не применимо к журналу решений; см. tasks.md."
+
+
+def _ref(ev: dict) -> str:
+    """`путь:строка`; строка известна после сверки (`check --write`), без неё — один путь."""
+    return f"{ev['path']}:{ev['line']}" if ev.get("line") is not None else ev["path"]
+
+
+def _unmatched(ev: dict) -> str:
+    """Улика, которую сверяли и не нашли, несёт вердикт: цитата без пометки читалась бы
+    как проверенная. Несверенная (`found` нет или `null`) пишется как есть."""
+    return f" — {ev.get('verdict') or 'цитаты нет'}" if ev.get("found") is False else ""
+
+
+def _design_context(facts: list[dict]) -> list[str]:
+    lines: list[str] = []
+    for fact in facts:
+        lines.append(f"- {fact['id']} {fact['question']}")
+        lines += [f"  - {_ref(ev)} «{ev['quote']}»{_unmatched(ev)}" for ev in fact["evidence"]]
+    return lines
+
+
+def _design_decision(rec: dict) -> list[str]:
+    decision, chosen = rec["decision"], rec["decision"]["option"]
+    picked = next(o for o in rec["options"] if o["letter"] == chosen)
+    lines = [f"### {rec['id']} {rec['question']}", "", f"- **Выбрано:** {chosen}. {picked['text']}"]
+    if decision["word"]:
+        lines.append(f"- **Слово человека ({decision['date']}):** «{decision['word']}»")
+    if rec["reversibility"]:
+        level, why = rec["reversibility"]["level"], rec["reversibility"]["why"]
+        lines.append(f"- **Обратимость:** {level}" + (f" — {why}" if why else ""))
+    lines += [f"- **Улики выбранного:** {_ref(ev)} «{ev['quote']}»{_unmatched(ev)}" for ev in picked["evidence"]]
+    for opt in rec["options"]:
+        if opt["letter"] != chosen:
+            lines.append(f"- **Отвергнуто:** {opt['letter']}. {opt['text']}"
+                         + (f" — маловероятно: {opt['unlikely']}" if opt["unlikely"] else ""))
+    return lines
+
+
+def _design_risks(rec: dict) -> list[str]:
+    """Улика за отвергнутую опцию — довод против выбранной: в Decisions она читается как
+    обоснование, здесь — как то, чем плох выбранный путь (`fork-form.md`, «Разделы постановки»)."""
+    chosen = rec["decision"]["option"]
+    return [f"- [Risk] {ev['quote']} ({rec['id']}, отвергнут {opt['letter']}: {_ref(ev)}{_unmatched(ev)})"
+            f" → Mitigation: решение {chosen}"
+            for opt in rec["options"] if opt["letter"] != chosen for ev in opt["evidence"]]
+
+
+def _design_open_questions(records: list[dict]) -> list[str]:
+    lines = [f"- {r['id']} {r['question']} — открыта"
+             for r in records if r["kind"] == "развилка" and not r["decision"]]
+    for r in records:
+        for park in r["parking"]:
+            who = f" → {park['addressee']}" if park["addressee"] else ""
+            finding = f" — находка: {park['finding']}" if park.get("finding") else ""
+            lines.append(f"- {r['id']}{who}: «{park['text']}»{finding}")
+    lines += [f"- {r['id']} — спор: {r['dispute']}" for r in records if r["dispute"]]
+    return lines
+
+
+def render_design(journal: dict) -> str:
+    """Журнал -> `design.md` по шаблону spec-driven (Context, Goals / Non-Goals, Decisions,
+    Risks / Trade-offs, Migration Plan, Open Questions). Чистая функция: ничего не читает
+    с диска, журнал не меняет; журнал предполагается годным (`validate_journal`).
+
+    Context — факты с уликами. Decisions — развилки со словом человека: сначала «в одну
+    сторону», затем остальные, внутри групп по номеру. Risks / Trade-offs — улики отвергнутых
+    опций решённых развилок, в порядке Decisions. Open Questions — развилки без решения,
+    парковка с адресатом и спорные факты. Номер строки в уликах и вердикт несверенной улики
+    есть, только если журнал сверен (`check --write`); сама функция улик не сверяет."""
+    records = journal["records"]
+    decided = sorted((r for r in records if r["kind"] == "развилка" and r["decision"]),
+                     key=lambda r: ((r["reversibility"] or {}).get("level") != ONE_WAY, int(r["id"][2:])))
+    decisions: list[str] = []
+    for rec in decided:
+        decisions += ([""] if decisions else []) + _design_decision(rec)
+    sections = [
+        ("Context", _design_context([r for r in records if r["kind"] == "факт"])),
+        ("Goals / Non-Goals", [GOALS_STUB]),
+        ("Decisions", decisions),
+        ("Risks / Trade-offs", [line for rec in decided for line in _design_risks(rec)]),
+        ("Migration Plan", [MIGRATION_STUB]),
+        ("Open Questions", _design_open_questions(records)),
+    ]
+    lines = ["# Design", ""]
+    for title, body in sections:
+        lines += [f"## {title}", "", *(body or [EMPTY_SECTION]), ""]
+    return "\n".join(lines)
+
+
 # --- внесение промпта возврата ---------------------------------------------
 
 PARKING_ADDRESSEES = ("материалы", "человек", "ИБ")
@@ -823,6 +920,15 @@ def cmd_render_html(args: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_render_design(args: argparse.Namespace) -> int:
+    journal = _valid_journal(args.json)
+    if journal is None:
+        return 1
+    Path(args.out).write_text(render_design(journal), encoding="utf-8", newline="\n")
+    print(f"[ok] {args.out}")
+    return 0
+
+
 def _iso_date(value: str) -> str:
     if not re.fullmatch(r"\d{4}-\d{2}-\d{2}", value):
         raise argparse.ArgumentTypeError(f"дата {value!r} не в форме YYYY-MM-DD")
@@ -901,6 +1007,11 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--template", type=Path, default=TEMPLATE_PATH,
                    help="по умолчанию tools/playground-template.html")
     p.set_defaults(func=cmd_render_html)
+    p = sub.add_parser("render-design", help="JSON -> design.md (Decisions, Risks, Open Questions из журнала); "
+                                             "негодный журнал — код 1")
+    p.add_argument("json", type=Path)
+    p.add_argument("--out", type=Path, required=True)
+    p.set_defaults(func=cmd_render_design)
     return ap
 
 
