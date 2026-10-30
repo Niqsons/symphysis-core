@@ -1,7 +1,7 @@
 import * as fs from 'node:fs';
 import { parse as parseYaml } from 'yaml';
 import { SchemaYamlSchema, type SchemaYaml, type Artifact } from './types.js';
-import { isGlobPattern } from './outputs.js';
+import { isGlobPattern } from './glob-pattern.js';
 
 export class SchemaValidationError extends Error {
   constructor(message: string) {

@@ -4,9 +4,12 @@ import { expand } from 'brace-expansion';
 import picomatch from 'picomatch';
 import * as globby from 'tinyglobby';
 import { FileSystemUtils } from '../../utils/file-system.js';
+import { EXTGLOB_RE, isGlobPattern } from './glob-pattern.js';
 
-const EXTGLOB_RE = /[!*+?@]\([^(]*\)/u;
-const BRACE_EXPANSION_SEPARATORS_RE = /,|\.\./u;
+// Fork (symphysis): defined in glob-pattern.ts so schema.ts can use it
+// without loading this module (and with it tinyglobby); re-exported for the barrel.
+export { isGlobPattern };
+
 const DUPLICATE_SLASH_RE = /(?!^)\/{2,}/gu;
 // Deeply nested braces can overflow a recursive expander. Reject nesting no real
 // artifact pattern needs before brace-expansion or tinyglobby see the pattern.
@@ -209,30 +212,6 @@ function listDirectoryMatches(directory: string, segment: string): string[] {
     if (isMatch(entry.name)) names.push(entry.name);
   }
   return names;
-}
-
-function hasBraceExpansion(pattern: string): boolean {
-  const openings: number[] = [];
-  for (let index = 0; index < pattern.length; index += 1) {
-    if (pattern[index] === '{') openings.push(index);
-    if (pattern[index] !== '}') continue;
-    const opening = openings.pop();
-    if (opening !== undefined && BRACE_EXPANSION_SEPARATORS_RE.test(pattern.slice(opening, index))) {
-      return true;
-    }
-  }
-  return false;
-}
-
-/**
- * Recognizes artifact globs while preserving literal output filenames.
- */
-export function isGlobPattern(pattern: string): boolean {
-  // Keep the original wildcard rules and recognize brace expansions and extglobs.
-  // Its full dynamic predicate also reinterprets literal !, parentheses, and backslashes.
-  const normalized = FileSystemUtils.toPosixPath(pattern);
-  return normalized.includes('*') || normalized.includes('?') || normalized.includes('[')
-    || EXTGLOB_RE.test(normalized) || hasBraceExpansion(normalized);
 }
 
 /**
