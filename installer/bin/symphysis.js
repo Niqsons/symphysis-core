@@ -20,6 +20,8 @@ const USAGE = `symphysis — схема OpenSpec symphysis, скиллы и ин
                       от --project; без параметра — один .claude/skills
   --force             перезаписать существующее (install)
   -h, --help          эта справка
+
+Код выхода: 0 | 2 (расхождения или usage) | 1 (внутренняя ошибка)
 `;
 
 let parsed;

@@ -160,6 +160,16 @@ test("журнал: годный даёт note, негодный — finding", (
   assert.ok(r.findings.includes("openspec/changes/two/decisions.json: журнал негоден по схеме"), JSON.stringify(r.findings));
 });
 
+test("журнал не JSON: finding «не отработал», а не «негоден по схеме»", () => {
+  const p = installed();
+  const bad = path.join(p, "openspec", "changes", "broken");
+  fs.mkdirSync(bad, { recursive: true });
+  fs.writeFileSync(path.join(bad, "decisions.json"), "{");
+  const r = runCheck(p);
+  const f = r.findings.find((x) => x.startsWith("openspec/changes/broken/decisions.json:"));
+  assert.ok(f && f.includes("journal.py check не отработал"), JSON.stringify(r.findings));
+});
+
 test("CLI: check ok — код 0, «check: ok»; после правки схемы — код 2 и [!!]", () => {
   const p = installed();
   let r = cli("check", "--project", p);

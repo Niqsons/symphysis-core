@@ -121,10 +121,15 @@ export function check(project, { skillsDirs = [], payloadDir = DEFAULT_PAYLOAD }
       const j = path.join(changes, e.name, "decisions.json");
       if (!e.isDirectory() || !fs.existsSync(j)) continue;
       const r = spawnSync(py.cmd, [...py.args, "-X", "utf8", journalPy, "check", j], { encoding: "utf8" });
-      if (r.error || r.status !== 0) findings.push(`${rel(root, j)}: журнал негоден по схеме`);
-      else {
+      if (r.error || r.status !== 0) {
+        const err = String(r.stderr ?? "");
+        if (r.error || !err.includes("[!!]")) {
+          const first = (r.error ? r.error.message : err.split(/\r?\n/).find((l) => l.trim())) ?? `код ${r.status}`;
+          findings.push(`${rel(root, j)}: journal.py check не отработал (${first.trim()})`);
+        } else findings.push(`${rel(root, j)}: журнал негоден по схеме`);
+      } else {
         const lines = String(r.stdout).trim().split(/\r?\n/).filter(Boolean);
-        const line = lines.find((l) => l.includes("улик сверено")) ?? lines.pop() ?? "";
+        const line = lines.find((l) => l.includes("улик сверено")) ?? "";
         notes.push(`${rel(root, j)}: ${line}`);
       }
     }
