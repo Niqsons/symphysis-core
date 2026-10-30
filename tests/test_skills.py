@@ -88,3 +88,40 @@ def test_brainstorm_skill_shape():
     n = word_count(text)
     print(f"SKILL.md symphysis-brainstorm: {n} слов (ориентир {WORDS_TARGET}, потолок {WORDS_CEILING})")
     assert n <= WORDS_CEILING, f"SKILL.md: {n} слов, потолок {WORDS_CEILING}"
+
+
+EDGE_CATEGORIES = ("boundary", "adjacency", "empty", "encoding", "ordering", "precision",
+                   "idempotency", "concurrency")
+PROBE_OUTCOMES = ("Specify", "Dismiss", "Backstop", "Defer")
+
+
+def test_edge_probe_has_eight_categories():
+    skill = SKILLS / "symphysis-edge-probe"
+    text = read(skill / "SKILL.md")
+
+    fm = frontmatter(text)
+    assert fm.get("name") == "symphysis-edge-probe"
+    assert fm.get("description"), "frontmatter без description"
+    assert "Применяй, когда" in fm["description"], "description без «Применяй, когда …»"
+    assert "Не применяй" in fm["description"], "description без «Не применяй …»"
+
+    for cat in EDGE_CATEGORIES:
+        assert f"| {cat} |" in text, f"в таблице SKILL.md нет категории {cat}"
+    for token in PROBE_OUTCOMES:
+        assert token in text, f"в SKILL.md нет исхода {token}"
+    assert "Dismissal requires a reason string" in text, "нет цитаты edge-probe.md:89 об отказе без причины"
+
+    first = read(skill / "references" / "edge-probe.md").splitlines()[0]
+    assert first.startswith(GSD_HEADER), f"references/edge-probe.md: первая строка не шапка MIT/Open GSD: {first!r}"
+    assert GSD_PIN in first, f"references/edge-probe.md: в шапке нет пина {GSD_PIN}"
+
+    notes = read(skill / "TRANSLATION-NOTES.md")
+    rows = table_rows(notes)
+    assert any(all(word in row.lower() for word in NOTES_HEADER) for row in rows), \
+        "в TRANSLATION-NOTES.md нет заголовка таблицы «место · в источнике · у нас · почему смысл изменён»"
+    assert any("unclassified" in row for row in rows), \
+        "в TRANSLATION-NOTES.md нет строки про снятый кандидат `unclassified` (#1110)"
+
+    n = word_count(text)
+    print(f"SKILL.md symphysis-edge-probe: {n} слов (ориентир {WORDS_TARGET}, потолок {WORDS_CEILING})")
+    assert n <= WORDS_CEILING, f"SKILL.md: {n} слов, потолок {WORDS_CEILING}"
