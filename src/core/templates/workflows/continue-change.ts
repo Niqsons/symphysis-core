@@ -34,6 +34,15 @@ const PARTIAL_ARTIFACT_CHECK = `**Before anything else, finish a partly written 
    - For each such \`done\` artifact, first get its instructions and read any completed dependencies needed to determine the expected files. Then compare those files with \`artifactPaths.<id>.existingOutputPaths\`. For spec-driven's \`specs\`, read the proposal and check for one \`specs/<capability-path>/spec.md\` per capability it lists; resolve each expected path against \`changeRoot\` before comparing path identity, and verify each one remains inside \`changeRoot\` after resolving symlinks, both in its parent directories and in the file itself if it already exists
    - Never write an expected path that fails that check; stop and tell the user. If any are missing, write only the missing files, each at its checked path - when the \`instruction\` field delegates creation to a skill or command, invoke it only if it can write each file to its checked path; otherwise stop and tell the user - and STOP - that counts as this invocation's ONE artifact. If you cannot tell whether a file was left out on purpose, ask the user`;
 
+/**
+ * Fork (symphysis, C4): an artifact whose schema entry declares a verdict reads
+ * `done` only when its frontmatter carries the right value (C2/C3). `status --json`
+ * reports `verdict: "missing"` or `"mismatch"` for an artifact whose file already
+ * exists, so `continue` must produce the verdict rather than rewrite the file or
+ * move on. Used by the skill and the slash command alike, word for word.
+ */
+export const VERDICT_CHECK = `**If the first artifact with \`status: "ready"\` carries \`verdict: "missing"\` or \`verdict: "mismatch"\`**: its file already exists; do NOT rewrite it. Get its instructions (\`openspec instructions <artifact-id> --change "<name>" --json\`) and follow them to produce the verdict — the instruction names the attack skill that writes \`status: passed\` or \`status: gaps_found\` into the file's frontmatter. Then re-run \`openspec status --change "<name>" --json\` and confirm the artifact now shows \`verdict: "ok"\` (and \`status: "done"\`); if it shows \`gaps_found\`, report the gaps to the user and STOP. This counts as this invocation's ONE artifact — STOP after it.`;
+
 export function getContinueChangeSkillTemplate(): SkillTemplate {
   return {
     name: 'openspec-continue-change',
@@ -71,6 +80,7 @@ ${PROJECT_ROOT_GUARD}
    Parse the JSON to understand current state. The response includes:
    - \`schemaName\`: The workflow schema being used (e.g., "spec-driven")
    - \`artifacts\`: Array of artifacts with their status ("done", "skipped", "ready", "blocked")
+   - \`verdict\` on an artifact: present only when its schema entry declares a verdict; \`"ok"\`, \`"missing"\` (file or frontmatter value absent) or \`"mismatch"\` (wrong value)
    - \`isPlanningComplete\`: Boolean indicating if all planning artifacts are complete. Older CLI versions expose the same value as \`isComplete\`.
    - \`planningHome\`, \`changeRoot\`, \`artifactPaths\`, and \`actionContext\`: path and scope context. Use these instead of assuming repo-local paths.
 
@@ -79,6 +89,10 @@ ${PROJECT_ROOT_GUARD}
    ---
 
    ${PARTIAL_ARTIFACT_CHECK}
+
+   ---
+
+   ${VERDICT_CHECK}
 
    ---
 
@@ -91,7 +105,7 @@ ${PROJECT_ROOT_GUARD}
    ---
 
    **If artifacts are ready to create** (status shows artifacts with \`status: "ready"\`):
-   - Pick the FIRST artifact with \`status: "ready"\` from the status output
+   - Pick the FIRST artifact with \`status: "ready"\` from the status output (if it carries a verdict other than "ok", the verdict step above applies instead)
    - Get its instructions:
      \`\`\`bash
      openspec instructions <artifact-id> --change "<name>" --json
@@ -197,6 +211,7 @@ ${PROJECT_ROOT_GUARD}
    Parse the JSON to understand current state. The response includes:
    - \`schemaName\`: The workflow schema being used (e.g., "spec-driven")
    - \`artifacts\`: Array of artifacts with their status ("done", "skipped", "ready", "blocked")
+   - \`verdict\` on an artifact: present only when its schema entry declares a verdict; \`"ok"\`, \`"missing"\` (file or frontmatter value absent) or \`"mismatch"\` (wrong value)
    - \`isPlanningComplete\`: Boolean indicating if all planning artifacts are complete. Older CLI versions expose the same value as \`isComplete\`.
    - \`planningHome\`, \`changeRoot\`, \`artifactPaths\`, and \`actionContext\`: path and scope context. Use these instead of assuming repo-local paths.
 
@@ -205,6 +220,10 @@ ${PROJECT_ROOT_GUARD}
    ---
 
    ${PARTIAL_ARTIFACT_CHECK}
+
+   ---
+
+   ${VERDICT_CHECK}
 
    ---
 
@@ -217,7 +236,7 @@ ${PROJECT_ROOT_GUARD}
    ---
 
    **If artifacts are ready to create** (status shows artifacts with \`status: "ready"\`):
-   - Pick the FIRST artifact with \`status: "ready"\` from the status output
+   - Pick the FIRST artifact with \`status: "ready"\` from the status output (if it carries a verdict other than "ok", the verdict step above applies instead)
    - Get its instructions:
      \`\`\`bash
      openspec instructions <artifact-id> --change "<name>" --json

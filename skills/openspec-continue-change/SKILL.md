@@ -51,6 +51,7 @@ In both branches, never create the root as a side effect: do not run `openspec i
    Parse the JSON to understand current state. The response includes:
    - `schemaName`: The workflow schema being used (e.g., "spec-driven")
    - `artifacts`: Array of artifacts with their status ("done", "skipped", "ready", "blocked")
+   - `verdict` on an artifact: present only when its schema entry declares a verdict; `"ok"`, `"missing"` (file or frontmatter value absent) or `"mismatch"` (wrong value)
    - `isPlanningComplete`: Boolean indicating if all planning artifacts are complete. Older CLI versions expose the same value as `isComplete`.
    - `planningHome`, `changeRoot`, `artifactPaths`, and `actionContext`: path and scope context. Use these instead of assuming repo-local paths.
 
@@ -65,6 +66,10 @@ In both branches, never create the root as a side effect: do not run `openspec i
 
    ---
 
+   **If the first artifact with `status: "ready"` carries `verdict: "missing"` or `verdict: "mismatch"`**: its file already exists; do NOT rewrite it. Get its instructions (`openspec instructions <artifact-id> --change "<name>" --json`) and follow them to produce the verdict — the instruction names the attack skill that writes `status: passed` or `status: gaps_found` into the file's frontmatter. Then re-run `openspec status --change "<name>" --json` and confirm the artifact now shows `verdict: "ok"` (and `status: "done"`); if it shows `gaps_found`, report the gaps to the user and STOP. This counts as this invocation's ONE artifact — STOP after it.
+
+   ---
+
    **If all planning artifacts are complete (`isPlanningComplete: true`, or legacy `isComplete: true`)**:
    - Congratulate the user
    - Show final status including the schema used
@@ -74,7 +79,7 @@ In both branches, never create the root as a side effect: do not run `openspec i
    ---
 
    **If artifacts are ready to create** (status shows artifacts with `status: "ready"`):
-   - Pick the FIRST artifact with `status: "ready"` from the status output
+   - Pick the FIRST artifact with `status: "ready"` from the status output (if it carries a verdict other than "ok", the verdict step above applies instead)
    - Get its instructions:
      ```bash
      openspec instructions <artifact-id> --change "<name>" --json
