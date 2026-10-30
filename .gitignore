@@ -5,3 +5,4 @@ __pycache__/
 *.pyc
 .superpowers/
 installer/node_modules/
+installer/payload/
