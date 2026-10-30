@@ -175,6 +175,36 @@ def test_undecided_fork_lands_only_in_open_questions():
     assert "F-01" not in section(md, "Open Questions")
 
 
+# --- кандидаты проб: `outcome.kind == "проба"` — не проектные решения ---------
+
+PROBE_OPTIONS = [opt("A", "Specify"), opt("B", "Dismiss"), opt("C", "Backstop"), opt("D", "Defer")]
+
+
+def probe(rid, letter, value, question, reason=""):
+    """Решённый кандидат пробы: слово человека внесено `apply`, исход отзеркален скиллом."""
+    rec = decided(rid, letter, PROBE_OPTIONS, outcome={"kind": "проба", "value": value, "reason": reason})
+    rec["question"] = question
+    return rec
+
+
+def test_probe_candidates_stay_out_of_decisions_and_a_deferred_one_is_open():
+    fork = decided("F-01", "A", [opt("A", "раз"), opt("B", "два", [ev("b.md", "довод против")])])
+    specified = probe("F-02", "A", "Specify", "[boundary · numeric-range] порог ровно 100")
+    deferred = probe("F-03", "D", "Defer", "[empty · collection] пустой список")
+    md = design_of(fork, specified, deferred)
+    heads = [line.split()[1] for line in section(md, "Decisions").split("\n") if line.startswith("### ")]
+    assert heads == ["F-01"]                             # кандидаты проб — не решения дизайна
+    assert "F-02" not in md                              # Specify закрыт: в дизайне ему нет места
+    assert "F-03" not in section(md, "Risks / Trade-offs")
+    assert "- F-03 [empty · collection] пустой список — отложена (Defer)" in section(md, "Open Questions")
+    assert "F-02" not in section(md, "Open Questions")
+
+
+def test_deferred_probe_candidate_carries_the_human_word():
+    deferred = probe("F-03", "D", "Defer", "[io · io] обрыв сети", reason="после замера")
+    assert "- F-03 [io · io] обрыв сети — отложена (Defer) — «после замера»" in section(design_of(deferred), "Open Questions")
+
+
 def test_question_level_evidence_is_printed_under_its_own_label():
     rec = decided("F-07", "A", [opt("A", "раз", [ev("a.md", "улика выбранного")]), opt("B", "два")], evidence=[
         ev("docs/q.md", "улика вопроса", line=9, found=True),

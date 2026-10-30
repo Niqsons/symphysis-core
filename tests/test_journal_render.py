@@ -425,11 +425,14 @@ def test_render_md_omits_the_reason_tail_when_reason_is_empty():
     PROBE_OUTCOME,                                                   # причина сама содержит « — »
     {"kind": "проба", "value": "Defer", "reason": ""},               # причины нет — хвоста нет
     {"kind": "вопрос", "value": "не узнать по файлам", "reason": "файлов нет"},
+    {"kind": "проба", "value": "Defer", "reason": "   "},            # причина из пробелов — как пустая
 ])
 def test_outcome_survives_the_roundtrip(outcome):
     j = decided_probe(outcome)
     back = roundtrip(j)
-    assert back["records"][0]["outcome"] == outcome
+    expected = {**outcome, "reason": outcome["reason"].strip()}      # импорт причину обрезает
+    assert back["records"][0]["outcome"] == expected
+    j["records"][0]["outcome"] = expected
     assert strip_check_fields(back) == strip_check_fields(j)
 
 

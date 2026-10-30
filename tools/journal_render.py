@@ -53,10 +53,11 @@ def _render_recommendation(rc: dict) -> str:
 
 
 def _render_outcome(outcome: dict) -> str:
-    """`<вид> — <значение>`, с причиной — `… — <причина>`. Пустая причина хвоста не даёт:
-    у исхода `Dismiss` её требует правило, у остальных она необязательна."""
+    """`<вид> — <значение>`, с причиной — `… — <причина>`. Пустая причина (и причина из одних
+    пробелов) хвоста не даёт: у исхода `Dismiss` её требует правило, у остальных она
+    необязательна; хвост ` — ` без причины импорт прочитал бы как часть значения."""
     text = f"{outcome['kind']} — {outcome['value']}"
-    if outcome["reason"]:
+    if outcome["reason"].strip():
         text += f" — {outcome['reason']}"
     return text
 
@@ -241,9 +242,27 @@ def _design_risks(rec: dict) -> list[str]:
             for opt in rec["options"] if opt["letter"] != chosen for ev in opt["evidence"]]
 
 
+def _is_probe(rec: dict) -> bool:
+    """Кандидат пробы — запись с отзеркаленным исходом `outcome.kind == "проба"` (скиллы проб
+    краёв и запретов); проектным решением он не считается."""
+    return bool(rec["outcome"]) and rec["outcome"]["kind"] == "проба"
+
+
+def _open_fork_line(rec: dict) -> str | None:
+    """Строка Open Questions для развилки: без решения — «открыта»; кандидат пробы с исходом
+    `Defer` — «отложена», со словом человека, если оно есть. Остальные развилки строки не дают."""
+    if rec["kind"] != "развилка":
+        return None
+    if not rec["decision"]:
+        return f"- {rec['id']} {rec['question']} — открыта"
+    if _is_probe(rec) and rec["outcome"]["value"] == "Defer":
+        reason = rec["outcome"]["reason"].strip()
+        return f"- {rec['id']} {rec['question']} — отложена (Defer)" + (f" — «{reason}»" if reason else "")
+    return None
+
+
 def _design_open_questions(records: list[dict]) -> list[str]:
-    lines = [f"- {r['id']} {r['question']} — открыта"
-             for r in records if r["kind"] == "развилка" and not r["decision"]]
+    lines = [line for r in records if (line := _open_fork_line(r))]
     for r in records:
         for park in r["parking"]:
             who = f" → {park['addressee']}" if park["addressee"] else ""
@@ -261,15 +280,17 @@ def render_design(journal: dict, source: str | None = None) -> str:
     Context — факты с уликами. Decisions — развилки со словом человека: сначала «в одну
     сторону», затем остальные, внутри групп по номеру. Risks / Trade-offs — улики отвергнутых
     опций решённых развилок, в порядке Decisions. Open Questions — развилки без решения,
-    парковка с адресатом и спорные факты. Номер строки в уликах и вердикт несверенной улики
-    есть, только если журнал сверен (`check --write`); сама функция улик не сверяет.
+    отложенные кандидаты проб, парковка с адресатом и спорные факты. Кандидаты проб
+    (`outcome.kind == "проба"`) — не проектные решения: в Decisions и Risks их нет, в Open
+    Questions стоит только отложенный (`Defer`). Номер строки в уликах и вердикт несверенной
+    улики есть, только если журнал сверен (`check --write`); сама функция улик не сверяет.
 
     Улики самого вопроса (`evidence` записи) выводятся в Decisions отдельной меткой «Улики
     вопроса» — они общие для вариантов. Цитаты улик сплющиваются в одну строку. `source` — имя
     JSON, из которого сделан рендер: если оно есть, под заголовком встаёт та же шапка «рендер
     из …, не править руками», что у `render_md`; без него шапки нет."""
     records = journal["records"]
-    decided = sorted((r for r in records if r["kind"] == "развилка" and r["decision"]),
+    decided = sorted((r for r in records if r["kind"] == "развилка" and r["decision"] and not _is_probe(r)),
                      key=lambda r: ((r["reversibility"] or {}).get("level") != ONE_WAY, int(r["id"][2:])))
     decisions: list[str] = []
     for rec in decided:
