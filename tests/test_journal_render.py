@@ -1,5 +1,7 @@
 import copy
 import json
+import re
+import shutil
 import subprocess
 import sys
 
@@ -464,6 +466,91 @@ def test_cli_render_html_attack_parse_error_exits_2(tmp_path):
     assert run.returncode == 2, run.stdout + run.stderr
     assert run.stderr.startswith("[!!] ") and "attack.md" in run.stderr
     assert not out.exists()
+
+
+# --- режимы «проверка» и «атака»: прогон скрипта шаблона без браузера ----------
+
+node = shutil.which("node")
+requires_node = pytest.mark.skipif(node is None, reason="нет node: шаблон просмотрщика не прогнать")
+
+
+def smoke(tmp_path, html, state=None):
+    """Итог `viewer-smoke.js`: панели режимов и промпт; `state` — состояние браузера, `__suffixes__` в нём —
+    значения ключей `:mode` и `:attack`."""
+    page = tmp_path / "v.html"
+    page.write_text(html, encoding="utf-8", newline="\n")
+    args = [node, str(FIX / "viewer-smoke.js"), str(page)]
+    if state is not None:
+        (tmp_path / "state.json").write_text(json.dumps(state, ensure_ascii=False), encoding="utf-8")
+        args.append(str(tmp_path / "state.json"))
+    run = subprocess.run(args, capture_output=True, text=True, encoding="utf-8")
+    assert run.returncode == 0, run.stderr
+    return json.loads(run.stdout)
+
+
+def fixture_attacks():
+    return [journal.parse_attack_md(ATTACK_FIX / "decisions.md"), journal.parse_attack_md(ATTACK_FIX / "artifacts.md")]
+
+
+@requires_node
+def test_viewer_check_mode_projects_records_like_render_design(tmp_path):
+    """Режим «проверка»: снимок с хешем, счётчики, группа по дате решения («в одну сторону» первой, как
+    `render_design`), проекция «куда уйдёт»: решение → Decisions, проба Specify → spec.md, Dismiss → никуда
+    с причиной, факт → Context."""
+    j = plan()
+    recs = {r["id"]: r for r in j["records"]}
+    recs["F-02"]["reversibility"] = {"level": "в одну сторону", "why": "контракт"}
+    recs["F-04"]["outcome"] = {"kind": "проба", "value": "Specify", "reason": ""}
+    recs["F-05"]["outcome"] = {"kind": "проба", "value": "Dismiss", "reason": "пары равных нет"}
+    out = smoke(tmp_path, journal.render_html(j, TEMPLATE, journal_sha256=FAKE_SHA), {"__suffixes__": {":mode": "check"}})
+    check = out["check"]
+    assert FAKE_SHA[:12] in check and "атака не подана" in check and "вердиктом не считается" in check
+    assert "решено <b>19</b>" in check and "открыто <b>0</b>" in check and "улик не найдено <b>" in check
+    ids = re.findall(r'class="id mono">(F-\d+)<', check)
+    assert ids[:3] == ["F-02", "F-01", "F-03"]          # F-02 «в одну сторону» — первой в группе 2026-10-29
+    assert "<h3>2026-10-29 · 17</h3>" in check          # 19 решённых минус две пробы
+    assert "→ design.md › Decisions · в одну сторону — первой" in check
+    assert "→ spec.md · исход Specify" in check and "→ никуда · причина: пары равных нет" in check
+    assert "→ design.md › Context" in check and check.count("design.md › Context") == 5
+    assert "design.md › Open Questions → research/" in check     # парковка F-01 «материалы»
+    assert "Researcher" not in check and "Исследователь" not in check
+    assert out["modes"].count("<button") == 3 and 'class="small active" data-mode="check"' in out["modes"]
+
+
+@requires_node
+def test_viewer_attack_mode_groups_by_lens_and_returns_disputes_as_notes(tmp_path):
+    """Режим «атака»: линза → тяжесть → строки в порядке LENSES, линза без строк не показана; раздел `F-NN, поле`
+    — ссылка на карточку; споры из browser storage уходят в одну строку «Замечания к схеме:» после замечаний
+    режима 1, через « · », и `parse_answers` читает её одной заметкой."""
+    attacks = fixture_attacks()
+    row = attacks[0]["rows"][1]                           # F-01, context-compliance, блокер
+    key = f'{attacks[0]["path"]}|{row["section"]}|{row["claim"]}'
+    html = journal.render_html(plan(), TEMPLATE, attacks=attacks, journal_sha256=FAKE_SHA)
+    out = smoke(tmp_path, html, {"notes": "стрелка лишняя", "__suffixes__": {
+        ":mode": "attack", ":attack": {"disputes": {key: "опора есть:\n  улика F-01 сверена"}}}})
+    attack = out["attack"]
+    assert re.findall(r"<h2><code>([a-z-]+)</code>", attack) == [
+        "context-compliance", "claim-authority", "coverage", "requirement-coverage", "honest-verifier", "coverage"]
+    assert "хеш журнала совпал" in attack and "вердикт устарел" not in attack
+    assert 'data-goto="F-01"' in attack and "вне списка" not in attack.split("<h2>")[1]
+    assert "Researcher" not in attack and "Исследователь" not in attack
+    assert "атака · 6" in out["modes"]
+    last = out["out"].splitlines()[-1]
+    assert last == ("Замечания к схеме: стрелка лишняя · атака " + attacks[0]["path"] + " · context-compliance · «"
+                    + row["claim"][:59] + "…» — спор: опора есть: улика F-01 сверена")
+    notes = [op for op in journal.parse_answers(out["out"]) if op["op"] == "note"]
+    assert len(notes) == 1 and notes[0]["text"] == last[len("Замечания к схеме: "):]
+
+
+@requires_node
+def test_viewer_attack_mode_marks_stale_verdict_and_missing_attack(tmp_path):
+    attacks = fixture_attacks()
+    stale = smoke(tmp_path, journal.render_html(plan(), TEMPLATE, attacks=attacks, journal_sha256="ff" * 32),
+                  {"__suffixes__": {":mode": "check"}})
+    assert "атака: gaps_found" in stale["check"] and "вердикт устарел: журнал изменён после атаки" in stale["check"]
+    none = smoke(tmp_path, journal.render_html(plan(), TEMPLATE), {"__suffixes__": {":mode": "attack"}})
+    assert "атака не подана: <code>render-html --attack" in none["attack"]
+    assert "Замечания к схеме" not in none["out"]
 
 
 # --- заметки: раздел «Заметки» в конце markdown ------------------------------

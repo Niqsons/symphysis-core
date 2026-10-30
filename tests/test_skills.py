@@ -197,7 +197,10 @@ ATTACK_SEVERITIES = ("блокер", "предупреждение", "справ
 # Линзы атаки — измерения plan-checker по имени (`gsd-plan-checker.md:126`, `:705`) и слуги колонки
 # «Линза» (закрытый список SKILL.md; просмотрщик группирует строки по слугу — слово владельца 2026-10-30).
 ATTACK_LENSES = ("Requirement Coverage", "Numeric/Factual Claim Authority")
-ATTACK_LENS_SLUGS = ("requirement-coverage", "claim-authority", "honest-verifier", "coverage")
+ATTACK_LENS_SLUGS = ("requirement-coverage", "task-completeness", "dependency-correctness", "key-links",
+                     "scope-sanity", "verification-derivation", "context-compliance", "scope-reduction",
+                     "data-contracts", "research-resolution", "claim-authority", "claim-extraction",
+                     "honest-verifier", "coverage")
 # Воздержание honest-verifier: строка, которая не «есть» и не «нет» (`honest-verifier.md:43`).
 ABSTENTION_ROW = "по спеке не выводится"
 # Одно правило вердикта — то же, что в шаблонах (`tests/test_schema.py::VERDICT_RULE`), дословно в §5 и в приёмке.
@@ -246,3 +249,51 @@ def test_attack_skill_writes_verdict_contract():
     notes = read(skill / "TRANSLATION-NOTES.md")
     assert any("store" in row for row in table_rows(notes)), \
         "в TRANSLATION-NOTES.md нет строки про заимствование из store"
+
+
+# --- просмотрщик: линзы атаки и перспективы интервью не смешиваются (слово владельца 2026-10-30) ---
+
+TEMPLATE = ROOT / "tools" / "playground-template.html"
+# Русские имена перспектив — таблица `symphysis-brainstorm/SKILL.md`, шаг 2 (взяты оттуда, не придуманы).
+PERSPECTIVES_RU = ("Исследователь", "Упрощатель", "Хранитель границ", "Аналитик отказов", "Закрывающий")
+
+
+def skill_lens_slugs():
+    """Слуги таблицы линз SKILL.md атаки в порядке строк: от заголовка `| Линза |` до конца таблицы."""
+    text = read(SKILLS / "symphysis-attack" / "SKILL.md")
+    rows = []
+    for line in text[text.index("| Линза |"):].splitlines()[2:]:
+        if not line.startswith("|"):
+            break
+        rows.append(re.match(r"\| `([^`]+)`", line).group(1))
+    return rows
+
+
+def template_lens_slugs():
+    text = read(TEMPLATE)
+    m = re.search(r"const LENSES = \[(.*?)\];", text, re.S)
+    assert m, "в шаблоне просмотрщика нет константы LENSES"
+    return re.findall(r"slug:\s*'([^']+)'", m.group(1))
+
+
+def test_template_lenses_match_the_closed_list():
+    assert skill_lens_slugs() == list(ATTACK_LENS_SLUGS), "константа теста разошлась с таблицей SKILL.md"
+    slugs = template_lens_slugs()
+    assert slugs == list(ATTACK_LENS_SLUGS), f"LENSES шаблона: {slugs}"   # состав и порядок — как в таблице
+
+
+def test_template_keeps_perspectives_out_of_attack_mode():
+    brainstorm = read(SKILLS / "symphysis-brainstorm" / "SKILL.md")
+    for name in PERSPECTIVES_RU:
+        assert name in brainstorm, f"имя перспективы «{name}» не из таблицы брейншторма"
+    text = read(TEMPLATE)
+    for name in PERSPECTIVES + PERSPECTIVES_RU:
+        assert name not in text, f"перспектива интервью «{name}» в шаблоне — перспективы живут в брейншторме"
+    assert not set(template_lens_slugs()) & set(PERSPECTIVES)
+
+
+def test_template_scheme_names_attack_not_grill():
+    text = read(TEMPLATE)
+    assert "Гриль" not in text and "гриль" not in text, "гриля после D4b нет"
+    assert "4 Атака журнала" in text and "attack/decisions.md" in text and "attack/artifacts.md" in text
+    assert "'attack.md'" not in text, "общего attack.md после D4b нет: два файла атаки"
