@@ -200,6 +200,9 @@ ATTACK_LENSES = ("Requirement Coverage", "Numeric/Factual Claim Authority")
 ATTACK_LENS_SLUGS = ("requirement-coverage", "claim-authority", "honest-verifier", "coverage")
 # Воздержание honest-verifier: строка, которая не «есть» и не «нет» (`honest-verifier.md:43`).
 ABSTENTION_ROW = "по спеке не выводится"
+# Одно правило вердикта — то же, что в шаблонах (`tests/test_schema.py::VERDICT_RULE`), дословно в §5 и в приёмке.
+VERDICT_RULE = ("`status: passed` ставится, только когда в таблице нет ни одной строки с тяжестью "
+                "`блокер` или `предупреждение`; строки `справка` не блокируют")
 # Копии слоя проверки GSD в references/ атаки: файл -> строка источника дословно.
 ATTACK_REFERENCES = {
     "plan-checker-dimensions.md": "Issues without a severity classification are not valid output",
@@ -226,6 +229,9 @@ def test_attack_skill_writes_verdict_contract():
     for slug in ATTACK_LENS_SLUGS:
         assert f"`{slug}`" in text, f"в SKILL.md нет слуга линзы `{slug}`"
     assert ABSTENTION_ROW in text, f"в SKILL.md нет строки воздержания «{ABSTENTION_ROW}»"
+    # правило переносится через строку в §5 — сравнение по схлопнутым пробелам, как `check` сверяет цитаты
+    assert " ".join(text.split()).count(VERDICT_RULE) == 2, "правило вердикта — дословно в §5 и в строке приёмки"
+    assert "инварианта не несут" in text, "в SKILL.md нет исключения для строк покрытия"
     # журнал — опора артефактов: его правка обесценивает и вердикт `attack-artifacts` (ruling Task 19)
     artifacts_row = next(row for row in table_rows(text) if row.startswith("| `attack-artifacts`"))
     assert "decisions.json" in artifacts_row, "в строке `attack-artifacts` таблицы вызовов нет `decisions.json`"

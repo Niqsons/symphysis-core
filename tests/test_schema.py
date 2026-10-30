@@ -196,6 +196,10 @@ def test_templates_exist_and_decisions_template_valid():
 # остальное — форма разрыва verifier (`gsd-verifier.md:616-631`).
 ATTACK_COLUMNS = ["Утверждение", "Раздел", "Линза", "Инвариант", "Тяжесть", "Опора есть / нет", "Чем закрыть"]
 ATTACK_SEVERITIES = ("блокер", "предупреждение", "справка")
+# Одно правило вердикта — дословно в обоих шаблонах и в SKILL.md (тяжесть несут только строки «нет»
+# и «по спеке не выводится», строка «есть» — справка; ревью D4b, fix round 1).
+VERDICT_RULE = ("`status: passed` ставится, только когда в таблице нет ни одной строки с тяжестью "
+                "`блокер` или `предупреждение`; строки `справка` не блокируют")
 
 
 @pytest.mark.parametrize("name", ["attack-decisions.md", "attack-artifacts.md"])
@@ -208,9 +212,11 @@ def test_attack_templates_table_and_verdict_rule(name):
         assert severity in text, f"в шаблоне нет тяжести «{severity}»"
     assert "по спеке не выводится" in text, "в шаблоне нет строки воздержания"
     assert "coverage" in text, "в шаблоне нет линзы `coverage` для строк «чисто» и «не пройдено»"
+    assert "инварианта не несут" in text, "в шаблоне нет исключения для строк покрытия"
+    assert "повторить атаку по разделу" in text, "в закрытом списке закрытий нет «повторить атаку по разделу»"
     closing = last_line(text)
-    assert "passed" in closing and "без опоры" in closing, closing
-    assert "справка" in closing and "по спеке не выводится" in closing, closing
+    assert closing == f"Вердикт: {VERDICT_RULE}.", closing
+    assert "без опоры" not in text, "правило вердикта не считает «опору»: тяжесть несут только строки «нет»"
 
 
 def test_attack_decisions_template_names_single_target():
