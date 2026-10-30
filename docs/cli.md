@@ -865,6 +865,20 @@ something that requires it - and artifacts that become ready at the same time
 schema declares them rather than an alphabetical one. So the first `ready` entry
 is the artifact to write next.
 
+<!-- Fork (symphysis): verdict -->
+**Fork (symphysis): `verdict`.** An artifact whose schema declares a
+[`verdict`](customization.md#schema-structure) carries one more field in
+`artifacts`: `"verdict"` is `"ok"` when the frontmatter of the artifact file holds
+the declared value, `"mismatch"` when the key holds another value, and
+`"missing"` when the file has no frontmatter or no such key (or does not exist).
+Only `"ok"` makes the artifact `done`; any other value leaves it `ready`, and the
+text output appends `(verdict: ...)` to its line. When the file exists, the
+verdict is not `ok` and the artifact is the one to write next, `nextSteps` opens
+with one of two lines: `Artifact "<id>" exists but has no verdict (<key>: <value>)
+— run its instruction to produce one` or `Artifact "<id>" has verdict
+<key>=<found> but <value> is required — run its instruction again`. Artifacts
+without a declared `verdict` carry no such field.
+
 ---
 
 ### `openspec instructions`

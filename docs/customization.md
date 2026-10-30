@@ -265,10 +265,30 @@ apply:
 | `template` | Template file in `templates/` directory |
 | `instruction` | AI instructions for creating this artifact |
 | `requires` | Dependencies - which artifacts must exist first |
+| `verdict` | Fork (symphysis), optional: `{frontmatter, value}` - the artifact counts as done only when its file's frontmatter key `frontmatter` equals `value` |
 
 List artifacts in the order you want them written. `requires` decides what is
 possible; the order of the `artifacts:` list decides what comes first when
 several artifacts are ready at once.
+
+<!-- Fork (symphysis): verdict -->
+**Fork (symphysis): `verdict`.** By default an artifact is done as soon as its file
+exists. With `verdict: {frontmatter, value}` it is done only when the frontmatter
+of that file has the key `frontmatter` set to `value` (compared as a string):
+
+```yaml
+  - id: review
+    generates: review.md
+    verdict:
+      frontmatter: status
+      value: passed
+```
+
+A file without that frontmatter, or with another value, leaves the artifact
+`ready` and everything that requires it `blocked`; `openspec status` shows the
+reason (see [status](cli.md#openspec-status)). `verdict` needs a `generates` that
+is a single file - a schema that declares it on a glob such as `specs/**/*.md`
+fails to load.
 
 ### Templates
 
