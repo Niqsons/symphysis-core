@@ -280,6 +280,11 @@ export function printStatusText(status: ChangeStatus, options: PrintStatusTextOp
       line += color(` (blocked by: ${artifact.missingDeps.join(', ')})`);
     }
 
+    // Fork (symphysis, C3): verdict artifacts show their verdict state.
+    if (artifact.verdict) {
+      line += color(` (verdict: ${artifact.verdict})`);
+    }
+
     console.log(line);
   }
 

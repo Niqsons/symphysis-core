@@ -835,5 +835,189 @@ rules:
       expect(proposalIdx).toBeLessThan(specsIdx);
       expect(specsIdx).toBeLessThan(tasksIdx);
     });
+
+    // Fork (symphysis, C3): verdict state in the artifact status and the
+    // next-step hint for a ready verdict artifact.
+    describe('verdict artifacts', () => {
+      const VERDICT_SCHEMA = [
+        'name: verdict-flow',
+        'version: 1',
+        'description: schema with verdict artifacts',
+        'artifacts:',
+        '  - id: attack',
+        '    generates: attack.md',
+        '    description: Attack review',
+        '    template: attack.md',
+        '    requires: []',
+        '    verdict:',
+        '      frontmatter: status',
+        '      value: passed',
+        '  - id: after',
+        '    generates: after.md',
+        '    description: Work that follows a passed attack review',
+        '    template: after.md',
+        '    requires: [attack]',
+        '  - id: recheck',
+        '    generates: recheck.md',
+        '    description: Second verdict artifact behind a blocked dependency',
+        '    template: recheck.md',
+        '    requires: [after]',
+        '    verdict:',
+        '      frontmatter: result',
+        '      value: clean',
+        '',
+      ].join('\n');
+
+      const ATTACK_STEP =
+        'Run openspec instructions attack --change "my-change" --json before writing that artifact.';
+      const AFTER_STEP =
+        'Run openspec instructions after --change "my-change" --json before writing that artifact.';
+
+      function writeSchema(name: string, yaml: string): void {
+        const schemaDir = path.join(tempDir, 'openspec', 'schemas', name);
+        fs.mkdirSync(schemaDir, { recursive: true });
+        fs.writeFileSync(path.join(schemaDir, 'schema.yaml'), yaml);
+      }
+
+      function writeChangeFile(file: string, content: string): void {
+        const changeDir = path.join(tempDir, 'openspec', 'changes', 'my-change');
+        fs.mkdirSync(changeDir, { recursive: true });
+        fs.writeFileSync(path.join(changeDir, file), content);
+      }
+
+      function statusOf(schemaName = 'verdict-flow') {
+        return formatChangeStatus(loadChangeContext(tempDir, 'my-change', schemaName));
+      }
+
+      function artifactOf(status: ReturnType<typeof statusOf>, id: string) {
+        const found = status.artifacts.find((a) => a.id === id);
+        if (!found) throw new Error(`artifact ${id} missing from status`);
+        return found;
+      }
+
+      beforeEach(() => {
+        writeSchema('verdict-flow', VERDICT_SCHEMA);
+      });
+
+      it('reports a ready verdict artifact without a file as missing, with the generic next step only', () => {
+        const status = statusOf();
+
+        expect(artifactOf(status, 'attack').status).toBe('ready');
+        expect(artifactOf(status, 'attack').verdict).toBe('missing');
+        expect(status.nextSteps).toEqual([ATTACK_STEP]);
+      });
+
+      it('reports a file without frontmatter as missing and leads nextSteps with the hint', () => {
+        writeChangeFile('attack.md', '# Attack\n\nNo frontmatter here.\n');
+
+        const status = statusOf();
+
+        expect(artifactOf(status, 'attack').status).toBe('ready');
+        expect(artifactOf(status, 'attack').verdict).toBe('missing');
+        expect(status.nextSteps[0]).toBe(
+          'Artifact "attack" exists but has no verdict (status: passed) — run its instruction to produce one'
+        );
+        // The generic step stays, after the hint.
+        expect(status.nextSteps).toEqual([status.nextSteps[0], ATTACK_STEP]);
+      });
+
+      it('reports a verdict with the wrong value as mismatch and names the actual value', () => {
+        writeChangeFile('attack.md', '---\nstatus: gaps_found\n---\n# Attack\n');
+
+        const status = statusOf();
+
+        expect(artifactOf(status, 'attack').status).toBe('ready');
+        expect(artifactOf(status, 'attack').verdict).toBe('mismatch');
+        expect(status.nextSteps[0]).toBe(
+          'Artifact "attack" has verdict status=gaps_found but passed is required — run its instruction again'
+        );
+        expect(status.nextSteps).toEqual([status.nextSteps[0], ATTACK_STEP]);
+      });
+
+      it('reports a passed verdict as done/ok and unlocks the dependent artifact', () => {
+        writeChangeFile('attack.md', '---\nstatus: passed\n---\n# Attack\n');
+
+        const status = statusOf();
+
+        expect(artifactOf(status, 'attack').status).toBe('done');
+        expect(artifactOf(status, 'attack').verdict).toBe('ok');
+        expect(artifactOf(status, 'after').status).toBe('ready');
+        expect(status.nextSteps).toEqual([AFTER_STEP]);
+      });
+
+      it('leaves the verdict key off artifacts that declare none', () => {
+        // Blocked: attack has no passing verdict yet.
+        const blocked = statusOf();
+        expect(artifactOf(blocked, 'after').status).toBe('blocked');
+        expect('verdict' in artifactOf(blocked, 'after')).toBe(false);
+
+        // Ready: attack passed.
+        writeChangeFile('attack.md', '---\nstatus: passed\n---\n# Attack\n');
+        const ready = statusOf();
+        expect(artifactOf(ready, 'after').status).toBe('ready');
+        expect('verdict' in artifactOf(ready, 'after')).toBe(false);
+
+        // Done: after.md written.
+        writeChangeFile('after.md', '# After\n');
+        const done = statusOf();
+        expect(artifactOf(done, 'after').status).toBe('done');
+        expect('verdict' in artifactOf(done, 'after')).toBe(false);
+      });
+
+      it('omits the verdict of a blocked verdict artifact', () => {
+        const status = statusOf();
+
+        expect(artifactOf(status, 'recheck').status).toBe('blocked');
+        expect('verdict' in artifactOf(status, 'recheck')).toBe(false);
+      });
+
+      it('serializes the verdict into the status JSON', () => {
+        writeChangeFile('attack.md', '---\nstatus: gaps_found\n---\n# Attack\n');
+
+        const parsed = JSON.parse(JSON.stringify(statusOf()));
+        const byId = (id: string) => parsed.artifacts.find((a: { id: string }) => a.id === id);
+
+        expect(byId('attack').verdict).toBe('mismatch');
+        expect('verdict' in byId('after')).toBe(false);
+      });
+
+      it('adds the hint only when the first ready artifact is the verdict one', () => {
+        writeSchema(
+          'verdict-second',
+          [
+            'name: verdict-second',
+            'version: 1',
+            'description: plain artifact ahead of a verdict artifact',
+            'artifacts:',
+            '  - id: brief',
+            '    generates: brief.md',
+            '    description: Brief',
+            '    template: brief.md',
+            '    requires: []',
+            '  - id: attack',
+            '    generates: attack.md',
+            '    description: Attack review',
+            '    template: attack.md',
+            '    requires: []',
+            '    verdict:',
+            '      frontmatter: status',
+            '      value: passed',
+            '',
+          ].join('\n')
+        );
+        writeChangeFile('attack.md', '---\nstatus: gaps_found\n---\n# Attack\n');
+
+        const status = statusOf('verdict-second');
+
+        expect(status.artifacts.map((a) => [a.id, a.status])).toEqual([
+          ['brief', 'ready'],
+          ['attack', 'ready'],
+        ]);
+        expect(artifactOf(status, 'attack').verdict).toBe('mismatch');
+        expect(status.nextSteps).toEqual([
+          'Run openspec instructions brief --change "my-change" --json before writing that artifact.',
+        ]);
+      });
+    });
   });
 });

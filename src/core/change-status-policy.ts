@@ -28,6 +28,10 @@ export interface ChangeNextStepsInput {
   allArtifactsComplete: boolean;
   /** Selected store id; next-step commands must carry it. */
   storeId?: string;
+  /** Fork (symphysis, C3): per-artifact line (id -> sentence) that leads
+   * `nextSteps` when that artifact is the ready one - why a ready verdict
+   * artifact is not done yet. */
+  verdictHints?: ReadonlyMap<string, string>;
 }
 
 export interface ActionContextInput {
@@ -113,6 +117,9 @@ export interface ChangeNextStep {
   command: string;
   /** Sentence form carried by the JSON `nextSteps` array. */
   sentence: string;
+  /** Fork (symphysis, C3): verdict line that precedes `sentence` in `nextSteps`.
+   * The text surface prints `command` only and ignores it. */
+  hint?: string;
 }
 
 export function resolveNextStep(input: ChangeNextStepsInput): ChangeNextStep | undefined {
@@ -121,7 +128,12 @@ export function resolveNextStep(input: ChangeNextStepsInput): ChangeNextStep | u
 
   if (readyArtifact) {
     const command = `openspec instructions ${readyArtifact.id} --change "${input.changeName}"${storeFlag} --json`;
-    return { command, sentence: `Run ${command} before writing that artifact.` };
+    const hint = input.verdictHints?.get(readyArtifact.id);
+    return {
+      command,
+      sentence: `Run ${command} before writing that artifact.`,
+      ...(hint ? { hint } : {}),
+    };
   }
 
   if (input.allArtifactsComplete) {
@@ -137,5 +149,5 @@ export function resolveNextStep(input: ChangeNextStepsInput): ChangeNextStep | u
 
 export function buildNextSteps(input: ChangeNextStepsInput): string[] {
   const step = resolveNextStep(input);
-  return step ? [step.sentence] : [];
+  return step ? [...(step.hint ? [step.hint] : []), step.sentence] : [];
 }

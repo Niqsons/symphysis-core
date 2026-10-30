@@ -2,7 +2,8 @@ import * as fs from 'node:fs';
 import * as path from 'node:path';
 import { getSchemaDir, resolveSchema, listSchemasWithInfo } from './resolver.js';
 import { ArtifactGraph } from './graph.js';
-import { detectCompleted } from './state.js';
+import { detectCompleted, verdictState } from './state.js';
+import { readFrontmatter } from './frontmatter.js';
 import {
   isSpecsArtifactPath,
   resolveArtifactOutputPath,
@@ -167,6 +168,11 @@ export interface ArtifactStatus {
   requires: string[];
   /** Missing dependencies (only for blocked) */
   missingDeps?: string[];
+  /** Fork (symphysis, C3): verdict state, only for artifacts whose schema entry
+   * declares `verdict` and only while they are `done` (always `ok`) or `ready`
+   * (`missing` = no file or no verdict key in it, `mismatch` = another value).
+   * Omitted for `blocked` and `skipped` artifacts. Never `n/a`. */
+  verdict?: 'missing' | 'mismatch' | 'ok';
 }
 
 /**
@@ -466,6 +472,65 @@ function getUnlockedArtifacts(graph: ArtifactGraph, artifactId: string): string[
 }
 
 /**
+ * Fork (symphysis, C3): the `verdict` field of an artifact status.
+ *
+ * Empty for an artifact that declares no `verdict`. Only `done` and `ready`
+ * artifacts carry it: a `blocked` one cannot be worked on yet and a `skipped`
+ * one is not worked on, so what its file says would not be actionable.
+ * `done` is always `ok` (`detectCompleted` admits a verdict artifact only on
+ * `ok`); for `ready` it is what the file says.
+ */
+function verdictField(
+  artifact: Artifact,
+  status: 'done' | 'ready',
+  changeDir: string
+): Pick<ArtifactStatus, 'verdict'> {
+  if (!artifact.verdict) {
+    return {};
+  }
+  if (status === 'done') {
+    return { verdict: 'ok' };
+  }
+  const state = verdictState(artifact, changeDir);
+  return state === 'n/a' ? {} : { verdict: state };
+}
+
+/**
+ * Fork (symphysis, C3): the next-step line for a ready verdict artifact whose
+ * file is there but does not carry the declared verdict. It tells the agent
+ * why the artifact is still `ready`. Without a file the generic next step
+ * already says what to do, so there is no hint.
+ */
+function verdictHint(
+  artifact: Artifact,
+  state: 'missing' | 'mismatch',
+  changeDir: string
+): string | undefined {
+  const verdict = artifact.verdict;
+  if (!verdict) {
+    return undefined;
+  }
+  const outputPath = resolveArtifactOutputPath(changeDir, artifact.generates);
+  try {
+    if (!fs.statSync(outputPath).isFile()) {
+      return undefined;
+    }
+  } catch {
+    return undefined;
+  }
+
+  if (state === 'missing') {
+    return `Artifact "${artifact.id}" exists but has no verdict (${verdict.frontmatter}: ${verdict.value}) — run its instruction to produce one`;
+  }
+
+  const actual = readFrontmatter(outputPath)?.[verdict.frontmatter];
+  if (actual === undefined) {
+    return undefined;
+  }
+  return `Artifact "${artifact.id}" has verdict ${verdict.frontmatter}=${String(actual)} but ${verdict.value} is required — run its instruction again`;
+}
+
+/**
  * Formats the status of all artifacts in a change.
  *
  * @param context - Change context
@@ -506,6 +571,7 @@ export function formatChangeStatus(
         outputPath: artifact.generates,
         status: 'done' as const,
         requires: artifact.requires,
+        ...verdictField(artifact, 'done', context.changeDir),
       };
     }
 
@@ -515,6 +581,7 @@ export function formatChangeStatus(
         outputPath: artifact.generates,
         status: 'ready' as const,
         requires: artifact.requires,
+        ...verdictField(artifact, 'ready', context.changeDir),
       };
     }
 
@@ -534,6 +601,24 @@ export function formatChangeStatus(
   const isComplete = context.graph.isComplete(context.completed);
   const artifactIds = artifactStatuses.map((artifact) => artifact.id);
 
+  // Fork (symphysis, C3): a hint per ready verdict artifact that has a file
+  // but no passing verdict; the next-step policy leads with the one that
+  // belongs to the artifact it recommends.
+  const verdictHints = new Map<string, string>();
+  for (const artifactStatus of artifactStatuses) {
+    if (
+      artifactStatus.status !== 'ready' ||
+      (artifactStatus.verdict !== 'missing' && artifactStatus.verdict !== 'mismatch')
+    ) {
+      continue;
+    }
+    const artifact = context.graph.getArtifact(artifactStatus.id);
+    const hint = artifact && verdictHint(artifact, artifactStatus.verdict, context.changeDir);
+    if (hint) {
+      verdictHints.set(artifactStatus.id, hint);
+    }
+  }
+
   return {
     changeName: context.changeName,
     schemaName: context.schemaName,
@@ -548,6 +633,7 @@ export function formatChangeStatus(
       artifactStatuses,
       allArtifactsComplete: isComplete,
       ...(options.storeId ? { storeId: options.storeId } : {}),
+      ...(verdictHints.size > 0 ? { verdictHints } : {}),
     }),
     actionContext: buildActionContext({
       projectRoot: context.projectRoot,
