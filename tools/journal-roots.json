@@ -1,5 +1,6 @@
 {
  "docs/": "<root>/docs",
+ "tools/": "<root>/tools",
  "upstream/": "<root>/upstream",
  "CLAUDE.md": "<root>/CLAUDE.md",
  "store/": "X:\\skills-store",

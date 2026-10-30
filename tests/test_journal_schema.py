@@ -211,3 +211,24 @@ def test_live_journal_records_attack_source_fork():
     assert rec["decision"]["option"] == "B" and rec["decision"]["date"] == "2026-10-30"
     assert "gsd-сore" in rec["decision"]["word"], "слово владельца дословно, с его написанием"
     assert rec["reversibility"] == {"level": "обратимо", "why": "текст скилла"}
+
+
+def test_live_journal_records_viewer_as_own_skill():
+    """F-26 (D7): просмотрщик — свой скилл `symphysis-viewer` и свой шаблон, Playground — образец, не точка
+    расширения; пересматривает F-18.B; решено словом владельца 2026-10-30, слово о группировке строк атаки
+    по линзам — в следствиях, не только в TRANSLATION-NOTES."""
+    j = journal.load_journal(ROOT / "docs" / "plan-implementation.journal.json")
+    assert journal.validate_journal(j) == []
+    rec = next(r for r in j["records"] if r["id"] == "F-26")
+    assert (rec["kind"], rec["status"], rec["addressee"], rec["delivery"]) == ("развилка", "решён", "человек", "П7")
+    assert rec["depends_on"] == ["F-18"]
+    assert [o["letter"] for o in rec["options"]] == ["A", "B"]
+    assert all(o["evidence"] for o in rec["options"]), "у каждого варианта улика путь:цитата"
+    assert {ev["path"] for o in rec["options"] for ev in o["evidence"]} == {"playground/SKILL.md", "tools/journal_render.py"}
+    assert rec["recommendation"]["option"] == "B" and rec["recommendation"]["why"]
+    assert rec["decision"]["option"] == "B" and rec["decision"]["date"] == "2026-10-30"
+    assert rec["decision"]["word"].startswith("нам стоит сделать свой скилл и шаблон на базе Playground")
+    assert rec["decision"]["word"].endswith("а не точка расширения.")
+    assert "сгруппировать по ним их \"претензии\" к содержимому" in rec["consequences"]
+    assert "symphysis-viewer" in rec["consequences"] and "форк плагина снят" in rec["consequences"]
+    assert rec["reversibility"]["level"] == "обратимо" and rec["reversibility"]["why"]

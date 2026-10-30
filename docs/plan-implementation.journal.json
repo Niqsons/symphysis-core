@@ -1765,6 +1765,77 @@
    "consequences": "скилл `symphysis-attack` пересобран на слое проверки GSD (Task D4b): линзы — измерения plan-checker, у строки линза, тяжесть `блокер | предупреждение | справка` и инвариант, строка воздержания «по спеке не выводится», `passed` — при нуле блокеров, предупреждений и воздержаний; `references/grill-lenses.md` удалён, заимствования store помечены в TRANSLATION-NOTES; в шаблонах атаки колонки «Линза», «Инвариант», «Тяжесть», `decisions.json` первым в `targets[]` артефактов",
    "evidence": [],
    "comments": []
+  },
+  {
+   "id": "F-26",
+   "question": "Просмотрщик: форк плагина playground или свой скилл + шаблон?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-18"
+   ],
+   "delivery": "П7",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Форк плагина playground (F-18.B): шаблон журнала в `templates/` плагина, инструкция — его SKILL.md",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "playground/SKILL.md",
+       "quote": "Load the matching template",
+       "line": 17,
+       "found": true,
+       "verdict": "сверено"
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Свой скилл `symphysis-viewer` и свой шаблон `tools/playground-template.html` в symphysis; Playground — образец, не точка расширения",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "playground/SKILL.md",
+       "quote": "Single HTML file",
+       "line": 29,
+       "found": true,
+       "verdict": "сверено"
+      },
+      {
+       "path": "tools/journal_render.py",
+       "quote": "def render_html",
+       "line": 165,
+       "found": true,
+       "verdict": "сверено"
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "B",
+    "why": "шаблон и рендер уже свои (`render-html`, F-17.D), плагин ничего из этого не знает; форк отдал бы инструкции просмотрщика чужому SKILL.md, а важные развилки должны показываться человеку по нашим правилам",
+    "text": "B — шаблон и рендер уже свои (`render-html`, F-17.D), плагин ничего из этого не знает; форк отдал бы инструкции просмотрщика чужому SKILL.md, а важные развилки должны показываться человеку по нашим правилам"
+   },
+   "decision": {
+    "option": "B",
+    "word": "нам стоит сделать свой скилл и шаблон на базе Playground, чтобы инструкции были четкие и мы могли ими управлять, а Playground будет как источник вдохновения, а не точка расширения.",
+    "date": "2026-10-30"
+   },
+   "reversibility": {
+    "level": "обратимо",
+    "why": "скилл и шаблон — текст в репозитории; форк плагина не начат, отменять нечего"
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "П7 = скилл `symphysis-viewer` + шаблон `tools/playground-template.html` в symphysis, форк плагина снят (F-18.B пересмотрено); у просмотрщика три режима — «решения», «проверка» (снимок решений перед proposal, только чтение) и «атака»; режим «атака» группирует строки `attack/*.md` по линзам — слово владельца 2026-10-30: «раз атакующих перспектив несколько, то можно сгруппировать по ним их \"претензии\" к содержимому»; перспективы интервью и линзы атаки не смешиваются; правило «сначала запись» — в `rules` proposal, design, tasks (Task D7)",
+   "evidence": [],
+   "comments": []
   }
  ]
 }
