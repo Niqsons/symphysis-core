@@ -175,6 +175,47 @@ def test_undecided_fork_lands_only_in_open_questions():
     assert "F-01" not in section(md, "Open Questions")
 
 
+def test_question_level_evidence_is_printed_under_its_own_label():
+    rec = decided("F-07", "A", [opt("A", "раз", [ev("a.md", "улика выбранного")]), opt("B", "два")], evidence=[
+        ev("docs/q.md", "улика вопроса", line=9, found=True),
+        ev("docs/r.md", "несверенная"),
+        ev("docs/s.md", "потерянная", line=None, found=False, verdict="цитаты нет дословно")])
+    block = section(design_of(rec), "Decisions")
+    assert "- **Улики вопроса:** docs/q.md:9 «улика вопроса»" in block
+    assert "- **Улики вопроса:** docs/r.md «несверенная»" in block
+    assert "- **Улики вопроса:** docs/s.md «потерянная» — цитаты нет дословно" in block
+    assert block.count("- **Улики вопроса:**") == 3
+    assert "- **Улики выбранного:** a.md «улика выбранного»" in block       # метка выбранного та же
+    assert block.index("Улики вопроса") < block.index("Отвергнуто")
+
+
+def test_decision_without_question_level_evidence_has_no_such_line():
+    block = section(design_of(decided("F-01", "A", [opt("A", "раз", [ev("a.md", "улика")])])), "Decisions")
+    assert "Улики вопроса" not in block
+
+
+def test_question_level_evidence_of_an_undecided_fork_stays_out_of_the_document():
+    rec = record("F-02", "открытая?", [opt("A", "раз")], evidence=[ev("docs/q.md", "улика открытой")])
+    assert "улика открытой" not in design_of(rec)
+
+
+def test_multiline_quotes_stay_on_one_line_in_every_section():
+    broken = "первая строка\n- ложный пункт\n## Ложный раздел\n\n  вторая   строка"
+    flat = "первая строка - ложный пункт ## Ложный раздел вторая строка"
+    fact = record("F-20", "факт", kind="факт", evidence=[ev("docs/f.md", broken, line=3, found=True)])
+    options = [opt("A", "выбранный", [ev("docs/a.md", broken)]), opt("B", "отвергнутый", [ev("docs/b.md", broken)])]
+    rec = decided("F-01", "A", options, evidence=[ev("docs/q.md", broken)])
+    md = design_of(fact, rec)
+    assert f"  - docs/f.md:3 «{flat}»" in section(md, "Context")
+    decisions = section(md, "Decisions")
+    assert f"- **Улики выбранного:** docs/a.md «{flat}»" in decisions
+    assert f"- **Улики вопроса:** docs/q.md «{flat}»" in decisions
+    assert f"- [Risk] {flat} (F-01, отвергнут B: docs/b.md) → Mitigation: решение A" in section(md, "Risks / Trade-offs")
+    lines = md.split("\n")
+    assert not [line for line in lines if line.startswith("- ложный") or line.startswith("## Ложный")]
+    assert [line for line in lines if line.startswith("## ")] == SECTIONS[1:]
+
+
 # --- Risks / Trade-offs -----------------------------------------------------
 
 def test_risks_are_rejected_options_evidence_with_the_chosen_letter_as_mitigation():
@@ -257,7 +298,42 @@ def test_cli_render_design_writes_the_file(tmp_path):
     run = run_cli("render-design", src, "--out", out)
     assert run.returncode == 0, run.stderr
     assert f"[ok] {out}" in run.stdout
-    assert out.read_text(encoding="utf-8") == journal.render_design(j)
+    assert out.read_text(encoding="utf-8") == journal.render_design(j, source="j.json")
+
+
+def test_cli_render_design_writes_crlf_like_render_md(tmp_path):
+    src, out = tmp_path / "j.json", tmp_path / "design.md"
+    journal.save_journal(src, journal.load_journal(LIVE_JSON))
+    assert run_cli("render-design", src, "--out", out).returncode == 0
+    data = out.read_bytes()
+    assert b"\r\n" in data and data.count(b"\n") == data.count(b"\r\n")      # ни одного голого \n
+    md_out = tmp_path / "journal.md"
+    assert run_cli("render-md", src, "--out", md_out).returncode == 0
+    md = md_out.read_bytes()
+    assert md.count(b"\n") == md.count(b"\r\n")                              # render-md пишет так же
+
+
+def test_cli_render_design_header_names_the_json(tmp_path):
+    src, out = tmp_path / "plan.journal.json", tmp_path / "design.md"
+    journal.save_journal(src, one_record_journal("a.md", "q"))
+    assert run_cli("render-design", src, "--out", out).returncode == 0
+    head = out.read_text(encoding="utf-8").split("\n")[:4]
+    assert head == ["# Design", "", "> Рендер из `plan.journal.json`, не править руками.", ""]
+
+
+def test_render_design_header_is_only_there_when_the_source_is_named():
+    j = {"title": "т", "source": "s.md", "records": []}
+    assert "Рендер из" not in journal.render_design(j)
+    assert journal.render_design(j).split("\n")[:2] == ["# Design", ""]
+    named = journal.render_design(j, source="j.json").split("\n")
+    assert named[:4] == ["# Design", "", "> Рендер из `j.json`, не править руками.", ""]
+    assert named[4] == "## Context"
+
+
+def test_render_design_header_matches_the_one_of_render_md():
+    j = {"title": "т", "source": "s.md", "records": []}
+    md_header = journal.render_md(j, json_name="j.json").split("\n")[2]
+    assert journal.render_design(j, source="j.json").split("\n")[2] == md_header
 
 
 def test_cli_render_design_refuses_an_invalid_journal(tmp_path):

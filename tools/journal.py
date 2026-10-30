@@ -430,13 +430,18 @@ def _render_record(rec: dict) -> list[str]:
     return lines
 
 
+def _generated_note(json_name: str = "") -> str:
+    """Шапка производного файла: «рендер из …, не править руками» (её пропускает импорт)."""
+    source = f"`{json_name}`" if json_name else "JSON-журнала"
+    return f"> Рендер из {source}, не править руками."
+
+
 def render_md(journal: dict, json_name: str = "") -> str:
     """Журнал -> markdown в формате `plan-flexible-pipeline.md`; после заголовка каждой
     записи — якорь `<!-- journal:F-NN -->`. `json_name` попадает в шапку: «рендер из …,
     не править руками». В markdown нет `reversibility`, `outcome`, `comments`, `notes`,
     `generated` и полей сверки улик (`line/found/verdict`) — их источник только JSON."""
-    source = f"`{json_name}`" if json_name else "JSON-журнала"
-    lines = [f"# {journal['title']}", "", f"> Рендер из {source}, не править руками.", ""]
+    lines = [f"# {journal['title']}", "", _generated_note(json_name), ""]
     if journal.get("intro"):
         lines += [journal["intro"], ""]
     for rec in journal["records"]:
@@ -499,11 +504,17 @@ def _unmatched(ev: dict) -> str:
     return f" — {ev.get('verdict') or 'цитаты нет'}" if ev.get("found") is False else ""
 
 
+def _cite(ev: dict) -> str:
+    """`путь:строка «цитата»` с вердиктом несверенной. Цитата сплющена в одну строку: перенос
+    внутри неё оборвал бы пункт списка, а строка `## …` в ней — раздел."""
+    return f"{_ref(ev)} «{_flat(ev['quote'])}»{_unmatched(ev)}"
+
+
 def _design_context(facts: list[dict]) -> list[str]:
     lines: list[str] = []
     for fact in facts:
         lines.append(f"- {fact['id']} {fact['question']}")
-        lines += [f"  - {_ref(ev)} «{ev['quote']}»{_unmatched(ev)}" for ev in fact["evidence"]]
+        lines += [f"  - {_cite(ev)}" for ev in fact["evidence"]]
     return lines
 
 
@@ -516,7 +527,8 @@ def _design_decision(rec: dict) -> list[str]:
     if rec["reversibility"]:
         level, why = rec["reversibility"]["level"], rec["reversibility"]["why"]
         lines.append(f"- **Обратимость:** {level}" + (f" — {why}" if why else ""))
-    lines += [f"- **Улики выбранного:** {_ref(ev)} «{ev['quote']}»{_unmatched(ev)}" for ev in picked["evidence"]]
+    lines += [f"- **Улики вопроса:** {_cite(ev)}" for ev in rec["evidence"]]
+    lines += [f"- **Улики выбранного:** {_cite(ev)}" for ev in picked["evidence"]]
     for opt in rec["options"]:
         if opt["letter"] != chosen:
             lines.append(f"- **Отвергнуто:** {opt['letter']}. {opt['text']}"
@@ -528,7 +540,7 @@ def _design_risks(rec: dict) -> list[str]:
     """Улика за отвергнутую опцию — довод против выбранной: в Decisions она читается как
     обоснование, здесь — как то, чем плох выбранный путь (`fork-form.md`, «Разделы постановки»)."""
     chosen = rec["decision"]["option"]
-    return [f"- [Risk] {ev['quote']} ({rec['id']}, отвергнут {opt['letter']}: {_ref(ev)}{_unmatched(ev)})"
+    return [f"- [Risk] {_flat(ev['quote'])} ({rec['id']}, отвергнут {opt['letter']}: {_ref(ev)}{_unmatched(ev)})"
             f" → Mitigation: решение {chosen}"
             for opt in rec["options"] if opt["letter"] != chosen for ev in opt["evidence"]]
 
@@ -545,7 +557,7 @@ def _design_open_questions(records: list[dict]) -> list[str]:
     return lines
 
 
-def render_design(journal: dict) -> str:
+def render_design(journal: dict, source: str | None = None) -> str:
     """Журнал -> `design.md` по шаблону spec-driven (Context, Goals / Non-Goals, Decisions,
     Risks / Trade-offs, Migration Plan, Open Questions). Чистая функция: ничего не читает
     с диска, журнал не меняет; журнал предполагается годным (`validate_journal`).
@@ -554,7 +566,12 @@ def render_design(journal: dict) -> str:
     сторону», затем остальные, внутри групп по номеру. Risks / Trade-offs — улики отвергнутых
     опций решённых развилок, в порядке Decisions. Open Questions — развилки без решения,
     парковка с адресатом и спорные факты. Номер строки в уликах и вердикт несверенной улики
-    есть, только если журнал сверен (`check --write`); сама функция улик не сверяет."""
+    есть, только если журнал сверен (`check --write`); сама функция улик не сверяет.
+
+    Улики самого вопроса (`evidence` записи) выводятся в Decisions отдельной меткой «Улики
+    вопроса» — они общие для вариантов. Цитаты улик сплющиваются в одну строку. `source` — имя
+    JSON, из которого сделан рендер: если оно есть, под заголовком встаёт та же шапка «рендер
+    из …, не править руками», что у `render_md`; без него шапки нет."""
     records = journal["records"]
     decided = sorted((r for r in records if r["kind"] == "развилка" and r["decision"]),
                      key=lambda r: ((r["reversibility"] or {}).get("level") != ONE_WAY, int(r["id"][2:])))
@@ -569,7 +586,7 @@ def render_design(journal: dict) -> str:
         ("Migration Plan", [MIGRATION_STUB]),
         ("Open Questions", _design_open_questions(records)),
     ]
-    lines = ["# Design", ""]
+    lines = ["# Design", ""] + ([_generated_note(source), ""] if source else [])
     for title, body in sections:
         lines += [f"## {title}", "", *(body or [EMPTY_SECTION]), ""]
     return "\n".join(lines)
@@ -924,7 +941,7 @@ def cmd_render_design(args: argparse.Namespace) -> int:
     journal = _valid_journal(args.json)
     if journal is None:
         return 1
-    Path(args.out).write_text(render_design(journal), encoding="utf-8", newline="\n")
+    Path(args.out).write_text(render_design(journal, source=args.json.name), encoding="utf-8", newline="\r\n")
     print(f"[ok] {args.out}")
     return 0
 
