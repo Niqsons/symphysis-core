@@ -11,18 +11,24 @@
         --out docs/plan-implementation.journal.md
     py -3.13 tools/journal.py render-html docs/plan-implementation.journal.json \
         --out docs/plan-implementation.html [--template tools/playground-template.html]
+    py -3.13 tools/journal.py apply docs/plan-implementation.journal.json answers.md \
+        [--date YYYY-MM-DD] [--dry-run]
 
 Markdown и HTML — производные от JSON: правится JSON, потом рендер. Корни путей
 улик — свои префиксы symphysis плюс `tools/journal-roots.json`. Путь улики, не
 подошедший ни под один префикс, получает вердикт «корня для пути нет»: отката
 на корень symphysis нет.
 
+`apply` вносит промпт возврата просмотрщика (кнопка «Скопировать промпт») в JSON: всё или
+ничего, отказ называет запись; сам он не рендерит — после него `render-md` и `render-html`.
+
 Подкоманды добавляются по задачам плана (`docs/plan-implementation.tasks.md`,
-часть A): apply, apply-md4h.
+часть A): apply-md4h.
 """
 from __future__ import annotations
 
 import argparse
+import copy
 import datetime as dt
 import json
 import re
@@ -58,10 +64,20 @@ ADDED_MARK = "(добавлен человеком"
 
 def _unquote(text: str) -> str:
     """Снимает ровно одну внешнюю пару «» — слово человека и вопрос парковки хранятся
-    без кавычек; «» внутри остаются."""
-    if len(text) >= 2 and text.startswith("«") and text.endswith("»"):
-        return text[1:-1]
-    return text
+    без кавычек; «» внутри остаются. Пара внешняя, только если первая « закрыта
+    последней »: у `«а» и «б»` глубина вернулась в ноль раньше конца — это два слова
+    в кавычках, и строка остаётся как есть."""
+    if len(text) < 2 or not (text.startswith("«") and text.endswith("»")):
+        return text
+    depth = 0
+    for i, ch in enumerate(text):
+        if ch == "«":
+            depth += 1
+        elif ch == "»":
+            depth -= 1
+            if depth == 0 and i < len(text) - 1:
+                return text
+    return text[1:-1]
 
 
 def _parse_decision(val: str) -> dict | None:
@@ -415,8 +431,8 @@ def _render_record(rec: dict) -> list[str]:
 def render_md(journal: dict, json_name: str = "") -> str:
     """Журнал -> markdown в формате `plan-flexible-pipeline.md`; после заголовка каждой
     записи — якорь `<!-- journal:F-NN -->`. `json_name` попадает в шапку: «рендер из …,
-    не править руками». В markdown нет `reversibility`, `outcome`, `comments` и полей сверки
-    улик (`line/found/verdict`) — их источник только JSON."""
+    не править руками». В markdown нет `reversibility`, `outcome`, `comments`, `notes`,
+    `generated` и полей сверки улик (`line/found/verdict`) — их источник только JSON."""
     source = f"`{json_name}`" if json_name else "JSON-журнала"
     lines = [f"# {journal['title']}", "", f"> Рендер из {source}, не править руками.", ""]
     if journal.get("intro"):
@@ -427,20 +443,19 @@ def render_md(journal: dict, json_name: str = "") -> str:
 
 
 def _viewer_record(rec: dict) -> dict:
-    """Запись в форме, которую читает шаблон: одна парковка журнала на запись
-    (`parking` — объект или `null`) и `finding` на самой записи."""
-    first = rec["parking"][0] if rec["parking"] else None
+    """Запись в форме, которую читает шаблон: `parking` — весь список журнала (пустой,
+    если парковки нет) и `finding` на самой записи — находки парковок через « · »."""
     view = dict(rec)
-    view["parking"] = {"addressee": first["addressee"], "text": first["text"]} if first else None
-    view["finding"] = first.get("finding", "") if first else ""
+    view["parking"] = [dict(p) for p in rec["parking"]]
+    view["finding"] = " · ".join(p["finding"] for p in rec["parking"] if p.get("finding"))
     return view
 
 
 def render_html(journal: dict, template: Path) -> str:
     """Шаблон просмотрщика с журналом вместо `__JOURNAL_JSON__`. Улики берутся такими,
     какие в журнале (`check --write` или сверка в памяти); `</` экранируется как `<\\/`,
-    чтобы текст записи не закрыл `<script>`. Шаблон показывает одну парковку на запись:
-    у записи с несколькими — первую."""
+    чтобы текст записи не закрыл `<script>`. Дата сборки `generated` — из журнала, если она
+    там есть; своей даты рендер не ставит, и два рендера одного журнала совпадают."""
     html = Path(template).read_text(encoding="utf-8")
     if PLACEHOLDER not in html:
         raise ValueError(f"в шаблоне нет метки {PLACEHOLDER}")
@@ -450,7 +465,7 @@ def render_html(journal: dict, template: Path) -> str:
     payload = {
         "title": journal["title"],
         "source": journal["source"],
-        "generated": dt.date.today().isoformat(),
+        **({"generated": journal["generated"]} if journal.get("generated") else {}),
         "stats": {"records": len(records), "forks": len(forks),
                   "facts": sum(1 for r in records if r["kind"] == "факт"),
                   "decided": sum(1 for r in forks if r["decision"]),
@@ -461,6 +476,287 @@ def render_html(journal: dict, template: Path) -> str:
     }
     js = json.dumps(payload, ensure_ascii=False, indent=1).replace("</", "<\\/")
     return html.replace(PLACEHOLDER, js)
+
+
+# --- внесение промпта возврата ---------------------------------------------
+
+PARKING_ADDRESSEES = ("материалы", "человек", "ИБ")
+LETTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+REFUSED = "отказ"
+
+# Строки промпта — те, что пишет `updateOut()` в `tools/playground-template.html`.
+RE_ITEM = re.compile(r"^- (F-N?\d+):[ \t]*(.*)$")
+RE_NEW_FORKS = re.compile(r"^Новые развилки:\s*$")
+RE_NOTES = re.compile(r"^Замечания к схеме:[ \t]*(.*)$")
+RE_ADD_OPTION = re.compile(r"^добавлен вариант ([A-ZА-Я])\.\s*(.*)$", re.S)
+RE_DEP = re.compile(r"^зависимость (добавлена|снята)\s+(F-\d+)$")
+RE_PARK = re.compile(r"^припарковано\s*→\s*([^\s—]+)\s*—\s*(.*)$", re.S)
+RE_DISPUTE = re.compile(r"^факт оспорен\s*—\s*(.*)$", re.S)
+RE_WORD = re.compile(r"^(?:к решению ([A-ZА-Я])|без выбора)\s*—\s*(.*)$", re.S)
+RE_CHOICE = re.compile(r"^([A-ZА-Я])(?!\w)(?:\s*\(было ([A-ZА-Я])\))?\s*(?:—\s*(.*))?$", re.S)
+RE_NEW_FORK = re.compile(r"^(.*?)\s+—\s+варианты:\s*(.*?)(?:\s+—\s+«(.*)»)?\s*$", re.S)
+
+
+def _human_word(rest: str | None) -> str:
+    """Слово человека из `«…»` (снимается одна внешняя пара) или `(без слова)` -> пусто."""
+    rest = (rest or "").strip()
+    if rest == "(без слова)":
+        return ""
+    if len(rest) >= 2 and rest.startswith("«") and rest.endswith("»"):
+        return rest[1:-1]
+    return rest
+
+
+def _parse_item(rid: str, body: str) -> dict:
+    if rid.startswith("F-N"):
+        m = RE_NEW_FORK.match(body)
+        if m:
+            options = [o.strip() for o in m.group(2).split(" | ") if o.strip()]
+            return {"id": rid, "op": "new_fork", "question": m.group(1).strip(),
+                    "options": options, "word": m.group(3) or ""}
+    else:
+        m = RE_ADD_OPTION.match(body)
+        if m:
+            return {"id": rid, "op": "add_option", "letter": m.group(1), "text": m.group(2).strip()}
+        m = RE_DEP.match(body)
+        if m:
+            return {"id": rid, "op": "dep_add" if m.group(1) == "добавлена" else "dep_remove", "dep": m.group(2)}
+        m = RE_PARK.match(body)
+        if m:
+            return {"id": rid, "op": "park", "addressee": m.group(1), "text": _human_word(m.group(2))}
+        m = RE_DISPUTE.match(body)
+        if m:
+            return {"id": rid, "op": "dispute", "word": _human_word(m.group(1))}
+        m = RE_WORD.match(body)
+        if m:
+            return {"id": rid, "op": "word", "option": m.group(1), "word": _human_word(m.group(2))}
+        m = RE_CHOICE.match(body)
+        if m:
+            return {"id": rid, "op": "decide", "option": m.group(1), "was": m.group(2),
+                    "word": _human_word(m.group(3))}
+    return {"id": rid, "op": "unknown", "raw": body}
+
+
+def parse_answers(text: str) -> list[dict]:
+    """Промпт возврата просмотрщика -> список `{"id", "op", ...}` в порядке строк.
+
+    Строка начинается с `- F-NN: ` (новая развилка — `- F-N1: `) и продолжается до следующей
+    такой строки: слово человека бывает многострочным. Всё до первой такой строки (шапка
+    `Решения по журналу …:` в простой и в markdown-ссылочной форме) пропускается;
+    `Замечания к схеме:` идут последними и забирают текст до конца. Строка не по форме
+    даёт `op: unknown` — `apply_answers` откажет по ней поимённо."""
+    items: list[list[str]] = []
+    cur: list[str] | None = None
+    notes: list[str] | None = None
+    for line in re.split(r"\r\n|\r|\n", text.lstrip("﻿")):
+        if notes is not None:
+            notes.append(line)
+            continue
+        m = RE_NOTES.match(line)
+        if m:
+            cur, notes = None, [m.group(1)]
+            continue
+        if RE_NEW_FORKS.match(line):
+            cur = None
+            continue
+        m = RE_ITEM.match(line)
+        if m:
+            cur = [m.group(1), m.group(2)]
+            items.append(cur)
+        elif cur is not None:
+            cur[1] += "\n" + line
+    ops = [_parse_item(rid, body.strip()) for rid, body in items]
+    if notes is not None and "\n".join(notes).strip():
+        ops.append({"id": None, "op": "note", "text": "\n".join(notes).strip()})
+    return ops
+
+
+class _Refusal(Exception):
+    """Строка промпта не вносится; текст — причина, названная по записи."""
+
+
+def _flat(text: str) -> str:
+    """Текст в одну строку: markdown-формат журнала однострочный (так же слово F-07 лежит в журнале)."""
+    return " ".join(text.split())
+
+
+def _merge(old: str, new: str) -> str:
+    """Слово дописывается к прежнему; уже сказанное не повторяется."""
+    if not new or new in old:
+        return old
+    return f"{old} {new}" if old else new
+
+
+def _rec(by_id: dict, a: dict) -> dict:
+    rec = by_id.get(a["id"])
+    if rec is None:
+        raise _Refusal(f"{a['id']}: такой записи нет")
+    return rec
+
+
+def _fork(by_id: dict, a: dict) -> dict:
+    rec = _rec(by_id, a)
+    if rec["kind"] != "развилка":
+        raise _Refusal(f"{rec['id']}: это факт — у него нет вариантов, решения, слова и парковки; "
+                       "факт оспаривается строкой «факт оспорен»")
+    return rec
+
+
+def _do_decide(work: dict, by_id: dict, a: dict, date: str) -> str:
+    rec = _fork(by_id, a)
+    rid, letter, was = rec["id"], a["option"], a["was"]
+    letters = [o["letter"] for o in rec["options"]]
+    if letter not in letters:
+        raise _Refusal(f"{rid}: варианта {letter} нет среди {', '.join(letters) or '—'}")
+    current = (rec["decision"] or {}).get("option")
+    if was is not None and was != current:
+        raise _Refusal(f"{rid}: в журнале решено {current}, а не {was}" if current
+                       else f"{rid}: в журнале решения нет, а промпт ждёт {was}")
+    if was is None and current not in (None, letter):
+        raise _Refusal(f"{rid}: в журнале уже решено {current}; смена решения пишется строкой «{letter} (было {current})»")
+    word = _flat(a["word"])
+    rec["status"] = "решён"
+    if current == letter:
+        rec["decision"]["word"] = _merge(rec["decision"]["word"], word)
+        return f"{rid}: решение {letter} подтверждено"
+    rec["decision"] = {"option": letter, "word": word, "date": date}
+    return f"{rid}: решено {letter}" + (f" (было {current})" if current else "")
+
+
+def _do_word(work: dict, by_id: dict, a: dict, date: str) -> str:
+    rec = _fork(by_id, a)
+    rid, decision = rec["id"], rec["decision"]
+    if decision is None:
+        raise _Refusal(f"{rid}: нет решения, к которому добавить слово")
+    if a["option"] is None:
+        raise _Refusal(f"{rid}: слово дано без выбора, а в журнале решено {decision['option']}")
+    if a["option"] != decision["option"]:
+        raise _Refusal(f"{rid}: в журнале решено {decision['option']}, а не {a['option']}")
+    merged = _merge(decision["word"], _flat(a["word"]))
+    if merged == decision["word"]:
+        return f"{rid}: слово к решению {decision['option']} уже в журнале"
+    decision["word"] = merged
+    return f"{rid}: слово добавлено к решению {decision['option']}"
+
+
+def _do_park(work: dict, by_id: dict, a: dict, date: str) -> str:
+    rec = _fork(by_id, a)
+    rid, addressee, text = rec["id"], a["addressee"], _flat(a["text"])
+    if addressee not in PARKING_ADDRESSEES:
+        raise _Refusal(f"{rid}: адресат «{addressee}» — допустимы {' | '.join(PARKING_ADDRESSEES)}")
+    if not text:
+        raise _Refusal(f"{rid}: парковка без вопроса")
+    if any(p["addressee"] == addressee and p["text"] == text for p in rec["parking"]):
+        return f"{rid}: парковка → {addressee} уже есть"
+    rec["parking"].append({"addressee": addressee, "text": text})
+    if rec["decision"] is None:
+        rec["status"] = "припаркован"
+    return f"{rid}: припарковано → {addressee}"
+
+
+def _do_add_option(work: dict, by_id: dict, a: dict, date: str) -> str:
+    rec = _fork(by_id, a)
+    rid, letter, text = rec["id"], a["letter"], _flat(a["text"])
+    if letter in {o["letter"] for o in rec["options"]}:
+        raise _Refusal(f"{rid}: вариант {letter} уже есть")
+    if not text:
+        raise _Refusal(f"{rid}: вариант {letter} без текста")
+    if ADDED_MARK not in text:
+        text += f" {ADDED_MARK})"
+    rec["options"].append({"letter": letter, "text": text, "added": True, "unlikely": None, "evidence": []})
+    return f"{rid}: добавлен вариант {letter}"
+
+
+def _do_dependency(work: dict, by_id: dict, a: dict, date: str) -> str:
+    rec = _rec(by_id, a)
+    rid, dep = rec["id"], a["dep"]
+    if dep not in by_id:
+        raise _Refusal(f"{rid}: зависимость на {dep}, такой записи нет")
+    if a["op"] == "dep_add":
+        if dep == rid:
+            raise _Refusal(f"{rid}: запись не может зависеть от себя")
+        if dep in rec["depends_on"]:
+            return f"{rid}: зависимость от {dep} уже есть"
+        rec["depends_on"].append(dep)
+        return f"{rid}: зависимость добавлена {dep}"
+    if dep not in rec["depends_on"]:
+        return f"{rid}: зависимости от {dep} нет — снимать нечего"
+    rec["depends_on"].remove(dep)
+    return f"{rid}: зависимость снята {dep}"
+
+
+def _do_dispute(work: dict, by_id: dict, a: dict, date: str) -> str:
+    rec = _rec(by_id, a)
+    rid, word = rec["id"], _flat(a["word"])
+    if rec["kind"] != "факт":
+        raise _Refusal(f"{rid}: это развилка — спорится факт, а решение меняется строкой с вариантом")
+    if not word:
+        raise _Refusal(f"{rid}: оспаривание без слова")
+    quoted = f"«{word}»"
+    if quoted in rec["dispute"]:
+        return f"{rid}: спор уже записан"
+    rec["dispute"] = f"{rec['dispute']} {quoted}" if rec["dispute"] else quoted
+    return f"{rid}: факт оспорен"
+
+
+def _do_new_fork(work: dict, by_id: dict, a: dict, date: str) -> str:
+    question = _flat(a["question"])
+    if not question:
+        raise _Refusal(f"{a['id']}: развилка без вопроса")
+    if len(a["options"]) > len(LETTERS):
+        raise _Refusal(f"{a['id']}: вариантов {len(a['options'])}, букв только {len(LETTERS)}")
+    numbers = [int(m.group(1)) for r in work["records"] if (m := re.fullmatch(r"F-(\d+)", r["id"]))]
+    rid = f"F-{max(numbers, default=0) + 1:02d}"
+    rec = _new_record(rid, question)
+    rec["options"] = [{"letter": LETTERS[i], "text": _flat(text), "added": False, "unlikely": None, "evidence": []}
+                      for i, text in enumerate(a["options"])]
+    if _flat(a["word"]):
+        rec["consequences"] = f"слово человека при внесении: {_flat(a['word'])}"
+    work["records"].append(rec)
+    by_id[rid] = rec
+    return f"{a['id']} -> {rid}: новая развилка, вариантов {len(rec['options'])}"
+
+
+def _do_note(work: dict, by_id: dict, a: dict, date: str) -> str:
+    work.setdefault("notes", []).append({"date": date, "text": a["text"]})
+    return "замечание к схеме внесено"
+
+
+def _do_unknown(work: dict, by_id: dict, a: dict, date: str) -> str:
+    raise _Refusal(f"{a['id']}: строка не по форме просмотрщика — «{_flat(a.get('raw', a['op']))[:80]}»")
+
+
+_APPLY = {"decide": _do_decide, "word": _do_word, "park": _do_park, "add_option": _do_add_option,
+          "dep_add": _do_dependency, "dep_remove": _do_dependency, "dispute": _do_dispute,
+          "new_fork": _do_new_fork, "note": _do_note, "unknown": _do_unknown}
+
+
+def apply_answers(journal: dict, answers: list[dict], date: str) -> list[str]:
+    """Вносит разобранный промпт в журнал на месте; возвращает отчёт строками.
+
+    Всё или ничего: любая строка с отказом (нет записи, буква не из вариантов, адресат не из
+    трёх, зависимость на несуществующую запись, «было X» не сошлось с журналом, строка не по
+    форме) оставляет журнал как был — отчёт тогда состоит из строк `отказ: …` с именем
+    записи, чинится строка и промпт вносится целиком заново. Внесённый результат тоже должен
+    пройти `validate_journal`. Слова человека сворачиваются в одну строку (формат markdown
+    однострочный). `date` попадает в `decision.date` и `notes[].date`. Рендер — отдельный шаг."""
+    work = copy.deepcopy(journal)
+    by_id = {r["id"]: r for r in work["records"]}
+    report: list[str] = []
+    refusals: list[str] = []
+    for answer in answers:
+        handler = _APPLY.get(answer["op"], _do_unknown)
+        try:
+            report.append(handler(work, by_id, answer, date))
+        except _Refusal as e:
+            refusals.append(f"{REFUSED}: {e}")
+    if not refusals:
+        refusals = [f"{REFUSED}: после внесения журнал негоден — {e}" for e in validate_journal(work)]
+    if refusals:
+        return refusals + [f"{REFUSED}: журнал не изменён — отказов {len(refusals)}, строк в промпте {len(answers)}"]
+    journal.clear()
+    journal.update(work)
+    return report
 
 
 # --- командная строка ------------------------------------------------------
@@ -530,6 +826,48 @@ def cmd_render_html(args: argparse.Namespace) -> int:
     return 0
 
 
+def _iso_date(value: str) -> str:
+    if not re.fullmatch(r"\d{4}-\d{2}-\d{2}", value):
+        raise argparse.ArgumentTypeError(f"дата {value!r} не в форме YYYY-MM-DD")
+    try:
+        dt.date.fromisoformat(value)
+    except ValueError:
+        raise argparse.ArgumentTypeError(f"даты {value} не бывает") from None
+    return value
+
+
+def cmd_apply(args: argparse.Namespace) -> int:
+    journal = _valid_journal(args.json)
+    if journal is None:
+        return 1
+    if not args.answers.is_file():
+        print(f"[!!] {args.answers}: файла нет", file=sys.stderr)
+        return 1
+    try:
+        text = args.answers.read_text(encoding="utf-8-sig")
+    except UnicodeDecodeError:
+        print(f"[!!] {args.answers}: не UTF-8 — промпт возврата читается как UTF-8", file=sys.stderr)
+        return 1
+    answers = parse_answers(text)
+    if not answers:
+        print("[ok] в промпте нет строк для внесения — журнал не тронут")
+        return 0
+    report = apply_answers(journal, answers, args.date or dt.date.today().isoformat())
+    if any(line.startswith(REFUSED) for line in report):
+        for line in report:
+            print(f"[!!] {line}", file=sys.stderr)
+        return 1
+    for line in report:
+        print(f"[ok] {line}")
+    if args.dry_run:
+        print(f"[..] --dry-run: {args.json} не записан")
+        return 0
+    save_journal(args.json, journal)
+    print(f"[ok] {args.json}")
+    print("[..] apply не рендерит: дальше render-md и render-html")
+    return 0
+
+
 def build_parser() -> argparse.ArgumentParser:
     ap = argparse.ArgumentParser(prog="journal", description=__doc__.splitlines()[0])
     sub = ap.add_subparsers(dest="cmd", required=True)
@@ -544,6 +882,16 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--strict", action="store_true", help="код 2, если есть несверенные улики")
     p.add_argument("--write", action="store_true", help="сохранить line/found/verdict в JSON")
     p.set_defaults(func=cmd_check)
+    p = sub.add_parser("apply", help="внести промпт возврата просмотрщика в JSON (потом render-md, render-html)",
+                       description="Вносит промпт возврата просмотрщика (кнопка «Скопировать промпт») в JSON "
+                                   "журнала. Всё или ничего: любая строка с отказом называет запись, "
+                                   "код 1, журнал не меняется. apply не рендерит: после него "
+                                   "render-md и render-html. Слова человека сворачиваются в одну строку.")
+    p.add_argument("json", type=Path)
+    p.add_argument("answers", type=Path, help="файл с промптом возврата (UTF-8)")
+    p.add_argument("--date", type=_iso_date, help="YYYY-MM-DD в decision.date и notes[].date; по умолчанию сегодня")
+    p.add_argument("--dry-run", action="store_true", help="показать отчёт, JSON не записывать")
+    p.set_defaults(func=cmd_apply)
     p = sub.add_parser("render-md", help="JSON -> markdown (производный файл); негодный журнал — код 1")
     p.add_argument("json", type=Path)
     p.add_argument("--out", type=Path, required=True)

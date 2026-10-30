@@ -197,9 +197,10 @@ function save() { try { localStorage.setItem(KEY, JSON.stringify(state)); } catc
   const norm = s => String(s || '').replace(/\s+/g, ' ').trim();
   for (const rec of JOURNAL.records) {
     const d = state.decisions[rec.id]; if (!d) continue;
-    const known = [rec.decision && rec.decision.word, rec.parking && rec.parking.text].filter(Boolean).map(norm);
+    const jpark = (rec.parking || []).map(p => norm(p.text));
+    const known = [rec.decision && rec.decision.word].filter(Boolean).map(norm).concat(jpark);
     if (d.word && known.includes(norm(d.word))) d.word = '';
-    d.parked = (d.parked || []).filter(p => norm(p.text) && !(rec.parking && norm(p.text) === norm(rec.parking.text)));
+    d.parked = (d.parked || []).filter(p => norm(p.text) && !jpark.includes(norm(p.text)));
     if (rec.decision && rec.decision.option && d.choice === rec.decision.option) d.choice = null;
     const sp = norm(state.disputes[rec.id]); if (sp && rec.dispute && norm(rec.dispute).includes(sp)) delete state.disputes[rec.id];
   }
@@ -287,7 +288,8 @@ function renderCards() {
     const jc = journalChoice(rec);
     const localChoice = d.choice;
     const changed = !!(localChoice && jc && localChoice !== jc);
-    const parkedAll = (rec.parking ? [{ text:rec.parking.text, addressee:rec.parking.addressee, journal:true }] : []).concat(d.parked || []);
+    const jpark = (rec.parking || []).map(p => ({ text:p.text, addressee:p.addressee, journal:true }));
+    const parkedAll = jpark.concat(d.parked || []);
     const cls = ['card', isFact ? 'fact' : '', changed ? 'changed' : (chosen(rec.id) ? 'decided' : ''), parkedAll.length ? 'parked' : ''].join(' ');
     let status = isFact ? '<span class="badge fact">факт · закрыт уликами</span>'
       : changed ? '<span class="badge changed">изменено: ' + esc(jc) + ' → ' + esc(localChoice) + '</span>'
@@ -334,7 +336,7 @@ function renderCards() {
       html += '<details class="park"' + (parkedAll.length ? ' open' : '') + '><summary title="' + esc(PARK_HINT) + '">парковка — дополнительный вопрос с адресатом (' + parkedAll.length + ')</summary>' +
         '<div class="note park" style="margin:6px 0">' + esc(PARK_HINT) + '</div>' +
         parkedAll.map((p, i) => '<div class="parkitem"><span class="who">→ ' + esc(p.addressee || '?') + (p.journal ? ' · в журнале' : '') + '</span><span>' + esc(p.text || '(без текста)') + '</span>' +
-          (p.journal ? '' : '<button class="small" data-unpark="' + rec.id + '|' + (i - (rec.parking ? 1 : 0)) + '">снять</button>') + '</div>').join('') +
+          (p.journal ? '' : '<button class="small" data-unpark="' + rec.id + '|' + (i - jpark.length) + '">снять</button>') + '</div>').join('') +
         '<div class="row"><input type="text" data-parktext="' + rec.id + '" placeholder="что именно надо узнать или решить отдельно">' +
         '<select data-addressee="' + rec.id + '" title="' + esc(PARK_HINT) + '">' + ADDRESSEES.map(a => '<option>' + a + '</option>').join('') + '</select>' +
         '<button class="small" data-park="' + rec.id + '">припарковать</button></div></details>';
@@ -405,7 +407,7 @@ function renderToc() {
   document.getElementById('toc').innerHTML = JOURNAL.records.map(rec => {
     const d = state.decisions[rec.id];
     const jc = journalChoice(rec);
-    const dot = rec.kind === 'факт' ? 'fact' : (d && d.choice && jc && d.choice !== jc) ? 'changed' : chosen(rec.id) ? 'ok' : ((rec.parking || (d && d.parked && d.parked.length)) ? 'park' : '');
+    const dot = rec.kind === 'факт' ? 'fact' : (d && d.choice && jc && d.choice !== jc) ? 'changed' : chosen(rec.id) ? 'ok' : (((rec.parking && rec.parking.length) || (d && d.parked && d.parked.length)) ? 'park' : '');
     return '<a href="#' + rec.id + '"><span class="dot ' + dot + '"></span><span class="id">' + rec.id + '</span><span class="q" title="' + esc(rec.question) + '">' + esc(rec.question) + '</span></a>';
   }).join('');
 }
@@ -414,7 +416,7 @@ function renderStats() {
   const forks = JOURNAL.records.filter(r => r.kind !== 'факт');
   const decided = forks.filter(r => chosen(r.id)).length;
   const changed = forks.filter(r => { const d = state.decisions[r.id]; const jc = journalChoice(r); return d && d.choice && jc && d.choice !== jc; }).length;
-  const parked = forks.filter(r => r.parking || (state.decisions[r.id] && state.decisions[r.id].parked.length)).length;
+  const parked = forks.filter(r => (r.parking && r.parking.length) || (state.decisions[r.id] && state.decisions[r.id].parked.length)).length;
   const disputed = Object.values(state.disputes).filter(v => v && v.trim()).length;
   document.getElementById('stats').innerHTML =
     'развилок <b>' + forks.length + '</b> · решено <b>' + decided + '</b>' + (changed ? ' · изменено здесь <b>' + changed + '</b>' : '') +

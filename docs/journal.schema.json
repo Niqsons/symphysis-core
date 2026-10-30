@@ -10,6 +10,10 @@
   "source": {"type": "string"},
   "intro": {"type": "string",
    "description": "Вводный текст markdown между заголовком и первой записью (формат, корни путей, ход кругов); рендер пишет его как есть"},
+  "generated": {"$ref": "#/$defs/date",
+   "description": "Дата сборки просмотрщика; рендер берёт её отсюда, а не из часов, чтобы два рендера одного журнала совпадали"},
+  "notes": {"type": "array", "items": {"$ref": "#/$defs/note"},
+   "description": "Замечания человека к схеме работы и плану («Замечания к схеме:» промпта возврата), с датой внесения; в markdown их нет"},
   "records": {"type": "array", "items": {"$ref": "#/$defs/record"}}
  },
  "$defs": {
@@ -99,6 +103,15 @@
     "addressee": {"enum": ["материалы", "человек", "ИБ"]},
     "text": {"type": "string"},
     "finding": {"type": "string"}
+   }
+  },
+  "note": {
+   "type": "object",
+   "required": ["date", "text"],
+   "additionalProperties": false,
+   "properties": {
+    "date": {"$ref": "#/$defs/date"},
+    "text": {"type": "string", "minLength": 1}
    }
   },
   "comment": {

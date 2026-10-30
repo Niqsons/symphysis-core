@@ -177,6 +177,29 @@ def test_unquote_leaves_unquoted_and_half_quoted_values_alone():
     assert rec["parking"][0]["text"] == "«начало» и конец"
 
 
+@pytest.mark.parametrize("text, expected", [
+    ("«а» и «б»", "«а» и «б»"),                # первая « закрыта раньше последней »: пара не внешняя
+    ("«а «б» в»", "а «б» в"),                  # первая « закрыта последней »: пара внешняя
+    ("««а» и «б»»", "«а» и «б»"),              # слово, само начавшееся с «а», обёрнуто один раз
+    ("«просто»", "просто"),
+    ("«»", ""),
+    ("«скобка « без пары»", "скобка « без пары"),   # без баланса — прежнее поведение: снять внешнюю пару
+    ("«начало» и конец", "«начало» и конец"),
+    ("слово", "слово"),
+])
+def test_unquote_strips_the_outer_pair_only_when_the_first_guillemet_closes_at_the_end(text, expected):
+    assert journal._unquote(text) == expected
+
+
+def test_decision_word_of_two_quoted_phrases_survives_the_roundtrip():
+    j = one_record_journal("a.md", "q")
+    rec = j["records"][0]
+    rec["status"] = "решён"
+    rec["decision"] = {"option": "A", "word": "«а» и «б»", "date": "2026-10-29"}
+    assert "- решение: A — ««а» и «б»», 2026-10-29" in journal.render_md(j)
+    assert strip_check_fields(roundtrip(j)) == strip_check_fields(j)
+
+
 def test_render_writes_word_and_parking_back_in_guillemets():
     md = journal.render_md(plan())
     lines = md.splitlines()
@@ -226,14 +249,15 @@ def test_render_html_payload_follows_the_viewer_contract():
     data = embedded(journal.render_html(j, TEMPLATE))
     recs = {r["id"]: r for r in data["records"]}
     park = j["records"][0]["parking"][0]
-    assert recs["F-01"]["parking"] == {"addressee": park["addressee"], "text": park["text"]}
+    assert recs["F-01"]["parking"] == [{"addressee": park["addressee"], "text": park["text"],
+                                        "finding": park["finding"]}]
     assert recs["F-01"]["finding"] == park["finding"]
-    assert recs["F-02"]["parking"] is None and recs["F-02"]["finding"] == ""
+    assert recs["F-02"]["parking"] == [] and recs["F-02"]["finding"] == ""
     forks = [r for r in j["records"] if r["kind"] == "развилка"]
     assert data["source"] == "journal-plan.md" and data["title"] == j["title"]
     assert data["stats"]["records"] == 24 and data["stats"]["forks"] == 19 and data["stats"]["facts"] == 5
     assert data["stats"]["decided"] == sum(1 for r in forks if r["decision"]) and data["stats"]["parked"] == 1
-    assert data["generated"]
+    assert "generated" not in data      # дата сборки — из журнала; своей даты рендер не придумывает
 
 
 def test_render_html_counts_checked_evidence(tmp_path):

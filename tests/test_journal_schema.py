@@ -3,6 +3,8 @@ import json
 import subprocess
 import sys
 
+import pytest
+
 import journal
 from conftest import FIX, ROOT
 
@@ -125,6 +127,25 @@ def test_validate_accepts_reversibility_and_outcome():
     j["records"][0]["outcome"] = {"kind": "проба", "value": "проверить", "reason": "нет данных"}
     j["records"][1]["comments"] = [{"round": "20261028T201340Z-dfa6", "lines": [3, 4], "text": "правка"}]
     assert journal.validate_journal(j) == []
+
+
+def test_validate_accepts_notes_and_generated_at_the_top_level():
+    j = plan()
+    j["notes"] = [{"date": "2026-10-30", "text": "замечание"}]
+    j["generated"] = "2026-10-29"
+    assert journal.validate_journal(j) == []
+
+
+@pytest.mark.parametrize("notes", [
+    [{"date": "30.10.2026", "text": "x"}],        # дата не ISO
+    [{"date": "2026-10-30"}],                      # нет текста
+    [{"date": "2026-10-30", "text": "x", "by": "я"}],
+    "замечание",
+])
+def test_validate_rejects_malformed_notes(notes):
+    j = plan()
+    j["notes"] = notes
+    assert any("notes" in e for e in journal.validate_journal(j))
 
 
 def test_validate_does_not_mutate_input():
