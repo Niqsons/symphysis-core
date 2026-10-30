@@ -92,16 +92,30 @@ def _generated_note(json_name: str = "") -> str:
     return f"> Рендер из {source}, не править руками."
 
 
+def _render_notes(notes: list[dict]) -> list[str]:
+    """Раздел «Заметки» в конце markdown: строка на заметку `- <дата> — <текст>`; перенос
+    строки внутри текста — строка-продолжение с отступом в два пробела (импорт её склеит)."""
+    lines = ["## Заметки"]
+    for note in notes:
+        first, *rest = note["text"].split("\n")
+        lines.append(f"- {note['date']} — {first}")
+        lines += [f"  {line}" for line in rest]
+    return lines
+
+
 def render_md(journal: dict, json_name: str = "") -> str:
     """Журнал -> markdown в формате `plan-flexible-pipeline.md`; после заголовка каждой
     записи — якорь `<!-- journal:F-NN -->`. `json_name` попадает в шапку: «рендер из …,
-    не править руками». В markdown нет `reversibility`, `outcome`, `comments`, `notes`,
-    `generated` и полей сверки улик (`line/found/verdict`) — их источник только JSON."""
+    не править руками». `notes` — разделом «Заметки» после последней записи (нет заметок —
+    нет раздела). В markdown нет `reversibility`, `outcome`, `comments`, `generated`
+    и полей сверки улик (`line/found/verdict`) — их источник только JSON."""
     lines = [f"# {journal['title']}", "", _generated_note(json_name), ""]
     if journal.get("intro"):
         lines += [journal["intro"], ""]
     for rec in journal["records"]:
         lines += _render_record(rec) + [""]
+    if journal.get("notes"):
+        lines += _render_notes(journal["notes"]) + [""]
     return "\n".join(lines)
 
 

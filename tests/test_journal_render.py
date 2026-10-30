@@ -357,6 +357,39 @@ def test_cli_render_refuses_an_invalid_journal(tmp_path, command):
     assert not out.exists()
 
 
+# --- заметки: раздел «Заметки» в конце markdown ------------------------------
+
+NOTES = [
+    {"date": "2026-10-30",
+     "text": "круг 1 закончен: решений 2, фактов 1, открытых развилок 0, парковок материалам 1"},
+    {"date": "2026-10-31", "text": "стрелка F-03 → F-15 лишняя\nи вторая строка"},
+]
+
+
+def test_render_md_writes_notes_as_the_last_section():
+    j = one_record_journal("a.md", "q")
+    assert "## Заметки" not in journal.render_md(j)
+    j["notes"] = copy.deepcopy(NOTES)
+    md = journal.render_md(j)
+    assert md.index("## Заметки") > md.index("## F-01")
+    tail = md.split("\n## Заметки\n")[1]
+    assert tail.splitlines() == [
+        "- 2026-10-30 — круг 1 закончен: решений 2, фактов 1, открытых развилок 0, парковок материалам 1",
+        "- 2026-10-31 — стрелка F-03 → F-15 лишняя",
+        "  и вторая строка",
+    ]
+
+
+def test_import_reads_the_notes_section_back_into_notes():
+    j = one_record_journal("a.md", "q")
+    j["notes"] = copy.deepcopy(NOTES)
+    back = roundtrip(j)
+    assert back["notes"] == NOTES
+    assert journal.validate_journal(back) == []
+    assert list(back).index("notes") < list(back).index("records")
+    assert "notes" not in roundtrip(one_record_journal("a.md", "q"))
+
+
 # --- живой журнал ----------------------------------------------------------
 
 def test_live_journal_roundtrips_through_markdown():

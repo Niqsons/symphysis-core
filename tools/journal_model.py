@@ -31,6 +31,8 @@ RE_UNLIKELY = re.compile(r"^\s+- маловероятно:\s*(.*\S)\s*$")
 RE_ANTIPODE = re.compile(r"^([A-ZА-Я])\s*↔\s*(F-\d+\.[A-ZА-Я])$")
 RE_DECISION = re.compile(r"^([A-ZА-Я])(?!\w)\s*(?:—\s*(.*?))?\s*(?:,\s*(\d{4}-\d{2}-\d{2}))?$")
 RE_RECOMMENDATION = re.compile(r"^([A-ZА-Я])(?!\w)[;,]?\s*(?:—\s*)?(.*)$")
+RE_NOTES_HEAD = re.compile(r"^## Заметки\s*$")
+RE_NOTE = re.compile(r"^- (\d{4}-\d{2}-\d{2}) — (.*)$")
 DASH = {"—", "-", ""}
 ADDED_MARK = "(добавлен человеком"
 
@@ -92,15 +94,30 @@ def _new_record(rid: str, question: str) -> dict:
 
 
 def import_md_text(text: str, source: str = "") -> dict:
-    """Разбирает markdown-журнал в формате `plan-flexible-pipeline.md` в словарь по схеме."""
+    """Разбирает markdown-журнал в формате `plan-flexible-pipeline.md` в словарь по схеме.
+    Раздел `## Заметки` в конце файла — в `notes[]`: строка `- <дата> — <текст>`, строки
+    с отступом в два пробела — продолжение текста заметки."""
     journal = {"title": "", "source": source, "records": []}
     intro: list[str] = []
     rec: dict | None = None
     opt: dict | None = None
     mode = None
+    notes: list[dict] | None = None  # после «## Заметки» записей нет — только заметки
     for raw in text.splitlines():
         line = raw.rstrip("\r")
         if RE_ANCHOR.match(line):
+            continue
+        if RE_NOTES_HEAD.match(line):
+            notes, rec, opt, mode = [], None, None, None
+            continue
+        if notes is not None:
+            m = RE_NOTE.match(line)
+            if m:
+                notes.append({"date": m.group(1), "text": m.group(2).strip()})
+            elif line.startswith("  ") and notes:
+                notes[-1]["text"] += "\n" + line[2:]
+            elif line.strip():
+                print(f"[..] заметки: строка не по форме: {line}", file=sys.stderr)
             continue
         m = RE_REC.match(line)
         if m:
@@ -180,7 +197,10 @@ def import_md_text(text: str, source: str = "") -> dict:
         intro.pop()
     if intro:
         journal["intro"] = "\n".join(intro)
-        journal["records"] = journal.pop("records")  # в файле вводный текст идёт до записей
+    if notes:
+        journal["notes"] = notes
+    if intro or notes:
+        journal["records"] = journal.pop("records")  # порядок ключей как в схеме: записи последними
     return journal
 
 
