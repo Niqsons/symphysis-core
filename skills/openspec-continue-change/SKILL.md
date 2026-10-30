@@ -66,7 +66,7 @@ In both branches, never create the root as a side effect: do not run `openspec i
 
    ---
 
-   **If the first artifact with `status: "ready"` carries `verdict: "missing"` or `verdict: "mismatch"`**: its file already exists; do NOT rewrite it. Get its instructions (`openspec instructions <artifact-id> --change "<name>" --json`) and follow them to produce the verdict — the instruction names the attack skill that writes `status: passed` or `status: gaps_found` into the file's frontmatter. Then re-run `openspec status --change "<name>" --json` and confirm the artifact now shows `verdict: "ok"` (and `status: "done"`); if it shows `gaps_found`, report the gaps to the user and STOP. This counts as this invocation's ONE artifact — STOP after it.
+   **If the first artifact with `status: "ready"` carries `verdict: "mismatch"`, or `verdict: "missing"` while its file already exists (`artifactPaths.<artifact-id>.existingOutputPaths` in the status output is non-empty)**: do NOT rewrite the file. Get its instructions (`openspec instructions <artifact-id> --change "<name>" --json`) and follow them to produce the verdict — the instruction names the attack skill that writes `status: passed` or `status: gaps_found` into the file's frontmatter. Then re-run `openspec status --change "<name>" --json` and confirm the artifact now shows `verdict: "ok"` (and `status: "done"`); if it shows `gaps_found`, report the gaps to the user and STOP. This counts as this invocation's ONE artifact — STOP after it. A verdict artifact with `verdict: "missing"` and no existing file is created like any other ready artifact (its instruction writes the file with its frontmatter) — the ordinary branch below applies.
 
    ---
 
@@ -79,7 +79,7 @@ In both branches, never create the root as a side effect: do not run `openspec i
    ---
 
    **If artifacts are ready to create** (status shows artifacts with `status: "ready"`):
-   - Pick the FIRST artifact with `status: "ready"` from the status output (if it carries a verdict other than "ok", the verdict step above applies instead)
+   - Pick the FIRST artifact with `status: "ready"` from the status output (if it carries `verdict: "mismatch"`, or `verdict: "missing"` with an existing file, the verdict step above applies instead)
    - Get its instructions:
      ```bash
      openspec instructions <artifact-id> --change "<name>" --json

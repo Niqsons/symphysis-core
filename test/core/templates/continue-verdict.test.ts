@@ -1,8 +1,10 @@
 // Fork (symphysis, C4): an artifact whose schema entry declares a verdict reads
 // `done` only once its frontmatter carries the right value (C2/C3). When such an
-// artifact already exists with `verdict: "missing"` or `"mismatch"`, `continue`
-// must produce the verdict - not rewrite the file and not move on to the next
-// artifact. Skill and slash-command variants carry the step word for word.
+// artifact has `verdict: "mismatch"`, or `verdict: "missing"` while its file
+// already exists, `continue` must produce the verdict - not rewrite the file and
+// not move on to the next artifact. `"missing"` also covers a file that does not
+// exist yet; that artifact is created by the ordinary ready branch. Skill and
+// slash-command variants carry the step word for word.
 
 import { describe, expect, it } from 'vitest';
 
@@ -56,8 +58,8 @@ describe('continue template: verdict step', () => {
   );
 
   it.each(VARIANTS)('%s: never rewrites the existing file and stops after the verdict', (_label, text) => {
-    expect(VERDICT_CHECK).toContain('its file already exists; do NOT rewrite it');
-    expect(VERDICT_CHECK).toContain(
+    expect(text).toContain('non-empty)**: do NOT rewrite the file. Get its instructions');
+    expect(text).toContain(
       'the instruction names the attack skill that writes `status: passed` or `status: gaps_found` into the file\'s frontmatter'
     );
     expect(text).toContain('confirm the artifact now shows `verdict: "ok"` (and `status: "done"`)');
@@ -66,6 +68,34 @@ describe('continue template: verdict step', () => {
     );
     expect(text).toContain("This counts as this invocation's ONE artifact \u2014 STOP after it.");
   });
+
+  // `verdict: "missing"` is also what C3 reports for a verdict artifact whose
+  // file does not exist yet. That artifact must still be created by the ordinary
+  // ready branch, so the verdict step keys on an existing output file.
+  it.each(VARIANTS)(
+    '%s: the verdict step applies only to an existing file and leaves a new artifact to the ordinary branch',
+    (_label, text) => {
+      const condition =
+        'carries `verdict: "mismatch"`, or `verdict: "missing"` while its file already exists (`artifactPaths.<artifact-id>.existingOutputPaths` in the status output is non-empty)**';
+      const fallback =
+        'A verdict artifact with `verdict: "missing"` and no existing file is created like any other ready artifact (its instruction writes the file with its frontmatter) \u2014 the ordinary branch below applies.';
+      const blockStart = text.indexOf('**If the first artifact with `status: "ready"`');
+      const blockEnd = text.indexOf('**If all planning artifacts are complete');
+
+      for (const needle of [condition, fallback]) {
+        expect(occurrences(text, needle)).toBe(1);
+        expect(text.indexOf(needle)).toBeGreaterThan(blockStart);
+        expect(text.indexOf(needle)).toBeLessThan(blockEnd);
+      }
+      // The fallback closes the block.
+      expect(text.indexOf(fallback) + fallback.length).toBe(
+        text.indexOf(VERDICT_CHECK) + VERDICT_CHECK.length
+      );
+      // The bare `verdict: "missing"` trigger of the first draft is gone.
+      expect(text).not.toContain('or `verdict: "missing"`**');
+      expect(text).not.toContain('its file already exists; do NOT rewrite it');
+    }
+  );
 
   it.each(VARIANTS)('%s: documents the verdict field of status --json', (_label, text) => {
     const bullet =
@@ -77,8 +107,9 @@ describe('continue template: verdict step', () => {
 
   it.each(VARIANTS)('%s: the ready-artifact step defers to the verdict step', (_label, text) => {
     const deferral =
-      '(if it carries a verdict other than "ok", the verdict step above applies instead)';
+      '(if it carries `verdict: "mismatch"`, or `verdict: "missing"` with an existing file, the verdict step above applies instead)';
     expect(occurrences(text, deferral)).toBe(1);
+    expect(text).not.toContain('a verdict other than "ok"');
     expect(text.indexOf(deferral)).toBeGreaterThan(text.indexOf('**If artifacts are ready to create**'));
   });
 });

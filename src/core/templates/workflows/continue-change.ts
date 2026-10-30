@@ -37,11 +37,14 @@ const PARTIAL_ARTIFACT_CHECK = `**Before anything else, finish a partly written 
 /**
  * Fork (symphysis, C4): an artifact whose schema entry declares a verdict reads
  * `done` only when its frontmatter carries the right value (C2/C3). `status --json`
- * reports `verdict: "missing"` or `"mismatch"` for an artifact whose file already
- * exists, so `continue` must produce the verdict rather than rewrite the file or
- * move on. Used by the skill and the slash command alike, word for word.
+ * reports `verdict: "mismatch"`, or `"missing"` for a file that exists without the
+ * key, so `continue` must produce the verdict rather than rewrite the file or move
+ * on. `"missing"` also covers a file that does not exist yet: that artifact is
+ * created by the ordinary ready branch, so the condition keys on
+ * `existingOutputPaths`. Used by the skill and the slash command alike, word for
+ * word.
  */
-export const VERDICT_CHECK = `**If the first artifact with \`status: "ready"\` carries \`verdict: "missing"\` or \`verdict: "mismatch"\`**: its file already exists; do NOT rewrite it. Get its instructions (\`openspec instructions <artifact-id> --change "<name>" --json\`) and follow them to produce the verdict — the instruction names the attack skill that writes \`status: passed\` or \`status: gaps_found\` into the file's frontmatter. Then re-run \`openspec status --change "<name>" --json\` and confirm the artifact now shows \`verdict: "ok"\` (and \`status: "done"\`); if it shows \`gaps_found\`, report the gaps to the user and STOP. This counts as this invocation's ONE artifact — STOP after it.`;
+export const VERDICT_CHECK = `**If the first artifact with \`status: "ready"\` carries \`verdict: "mismatch"\`, or \`verdict: "missing"\` while its file already exists (\`artifactPaths.<artifact-id>.existingOutputPaths\` in the status output is non-empty)**: do NOT rewrite the file. Get its instructions (\`openspec instructions <artifact-id> --change "<name>" --json\`) and follow them to produce the verdict — the instruction names the attack skill that writes \`status: passed\` or \`status: gaps_found\` into the file's frontmatter. Then re-run \`openspec status --change "<name>" --json\` and confirm the artifact now shows \`verdict: "ok"\` (and \`status: "done"\`); if it shows \`gaps_found\`, report the gaps to the user and STOP. This counts as this invocation's ONE artifact — STOP after it. A verdict artifact with \`verdict: "missing"\` and no existing file is created like any other ready artifact (its instruction writes the file with its frontmatter) — the ordinary branch below applies.`;
 
 export function getContinueChangeSkillTemplate(): SkillTemplate {
   return {
@@ -105,7 +108,7 @@ ${PROJECT_ROOT_GUARD}
    ---
 
    **If artifacts are ready to create** (status shows artifacts with \`status: "ready"\`):
-   - Pick the FIRST artifact with \`status: "ready"\` from the status output (if it carries a verdict other than "ok", the verdict step above applies instead)
+   - Pick the FIRST artifact with \`status: "ready"\` from the status output (if it carries \`verdict: "mismatch"\`, or \`verdict: "missing"\` with an existing file, the verdict step above applies instead)
    - Get its instructions:
      \`\`\`bash
      openspec instructions <artifact-id> --change "<name>" --json
@@ -236,7 +239,7 @@ ${PROJECT_ROOT_GUARD}
    ---
 
    **If artifacts are ready to create** (status shows artifacts with \`status: "ready"\`):
-   - Pick the FIRST artifact with \`status: "ready"\` from the status output (if it carries a verdict other than "ok", the verdict step above applies instead)
+   - Pick the FIRST artifact with \`status: "ready"\` from the status output (if it carries \`verdict: "mismatch"\`, or \`verdict: "missing"\` with an existing file, the verdict step above applies instead)
    - Get its instructions:
      \`\`\`bash
      openspec instructions <artifact-id> --change "<name>" --json
