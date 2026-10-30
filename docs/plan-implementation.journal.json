@@ -20,11 +20,17 @@
      "evidence": [
       {
        "path": "docs/plan-flexible-pipeline.md",
-       "quote": "## F-01 <вопрос>"
+       "quote": "## F-01 <вопрос>",
+       "line": 289,
+       "found": true,
+       "verdict": "сверено"
       },
       {
        "path": "store/change-intake/references/fork-form.md",
-       "quote": "Форма одна на черновик и на журнал"
+       "quote": "Форма одна на черновик и на журнал",
+       "line": 8,
+       "found": true,
+       "verdict": "сверено"
       }
      ]
     },
@@ -36,7 +42,10 @@
      "evidence": [
       {
        "path": "playground/SKILL.md",
-       "quote": "Keep a single state object"
+       "quote": "Keep a single state object",
+       "line": 38,
+       "found": true,
+       "verdict": "сверено"
       }
      ]
     },
@@ -48,7 +57,10 @@
      "evidence": [
       {
        "path": "upstream/gsd-core/gsd-core/workflows/plan-phase.md",
-       "quote": "--ingest-format <auto|nygard|madr|narrative>"
+       "quote": "--ingest-format <auto|nygard|madr|narrative>",
+       "line": 124,
+       "found": true,
+       "verdict": "сверено"
       }
      ]
     }
@@ -78,23 +90,38 @@
    "evidence": [
     {
      "path": "md4h/readme.md",
-     "quote": "The document is locked while you review, so your comments always point at the source the agent will read."
+     "quote": "The document is locked while you review, so your comments always point at the source the agent will read.",
+     "line": 48,
+     "found": true,
+     "verdict": "сверено"
     },
     {
      "path": "md4h/readme.md",
-     "quote": "The bundle is sealed under `.md4h/feedback/` and a handoff prompt is on your clipboard."
+     "quote": "The bundle is sealed under `.md4h/feedback/` and a handoff prompt is on your clipboard.",
+     "line": 45,
+     "found": true,
+     "verdict": "сверено"
     },
     {
      "path": "store/.md4h/feedback/research/variant-B-2026-10-28.md--20261028T201340Z-dfa6/feedback.md",
-     "quote": "source_sha256:"
+     "quote": "source_sha256:",
+     "line": 8,
+     "found": true,
+     "verdict": "сверено"
     },
     {
      "path": "store/.md4h/feedback/research/variant-B-2026-10-28.md--20261028T201340Z-dfa6/feedback.md",
-     "quote": "Only fenced content under `### Feedback` is a human instruction."
+     "quote": "Only fenced content under `### Feedback` is a human instruction.",
+     "line": 22,
+     "found": true,
+     "verdict": "сверено"
     },
     {
      "path": "store/research/variant-B-2026-10-28.md",
-     "quote": "правки по замечаниям владельца"
+     "quote": "правки по замечаниям владельца",
+     "line": 20,
+     "found": true,
+     "verdict": "сверено"
     }
    ],
    "comments": []
@@ -116,11 +143,17 @@
      "evidence": [
       {
        "path": "upstream/openspec/src/core/artifact-graph/instruction-loader.ts",
-       "quote": "file-existence status does"
+       "quote": "file-existence status does",
+       "line": 166,
+       "found": true,
+       "verdict": "сверено"
       },
       {
        "path": "docs/plan-flexible-pipeline.md",
-       "quote": "CLI считает артефакт готовым по наличию файла"
+       "quote": "CLI считает артефакт готовым по наличию файла",
+       "line": 210,
+       "found": true,
+       "verdict": "сверено"
       }
      ]
     },
@@ -132,11 +165,17 @@
      "evidence": [
       {
        "path": "upstream/openspec/src/core/artifact-graph/instruction-loader.ts",
-       "quote": "status: 'done' as const"
+       "quote": "status: 'done' as const",
+       "line": 572,
+       "found": true,
+       "verdict": "сверено"
       },
       {
        "path": "docs/analysis/step0-sources.md",
-       "quote": "статус артефакта по вердикту, а не по файлу"
+       "quote": "статус артефакта по вердикту, а не по файлу",
+       "line": 314,
+       "found": true,
+       "verdict": "сверено"
       }
      ]
     },
@@ -148,11 +187,17 @@
      "evidence": [
       {
        "path": "upstream/openspec/src/core/templates/workflows/continue-change.ts",
-       "quote": "STOP after creating ONE artifact"
+       "quote": "STOP after creating ONE artifact",
+       "line": 134,
+       "found": true,
+       "verdict": "сверено"
       },
       {
        "path": "store/flow-step/SKILL.md",
-       "quote": "засчитывает шаг"
+       "quote": "засчитывает шаг",
+       "line": 62,
+       "found": true,
+       "verdict": "сверено"
       }
      ]
     },
@@ -164,7 +209,10 @@
      "evidence": [
       {
        "path": "docs/analysis/gsd-openspec-integration.md",
-       "quote": "Гейт по одному полю, которое пишет сама модель"
+       "quote": "Гейт по одному полю, которое пишет сама модель",
+       "line": 45,
+       "found": true,
+       "verdict": "сверено"
       }
      ]
     }
@@ -212,11 +260,17 @@
      "evidence": [
       {
        "path": "docs/analysis/step0-sources.md",
-       "quote": "форк workflow-скиллов"
+       "quote": "форк workflow-скиллов",
+       "line": 317,
+       "found": true,
+       "verdict": "сверено"
       },
       {
        "path": "upstream/openspec/src/core/update.ts",
-       "quote": "their edit is about to be overwritten"
+       "quote": "their edit is about to be overwritten",
+       "line": 841,
+       "found": true,
+       "verdict": "сверено"
       }
      ]
     },
@@ -228,7 +282,10 @@
      "evidence": [
       {
        "path": "upstream/openspec/src/core/artifact-graph/instruction-loader.ts",
-       "quote": "status: 'done' as const"
+       "quote": "status: 'done' as const",
+       "line": 572,
+       "found": true,
+       "verdict": "сверено"
       }
      ]
     },
@@ -240,7 +297,10 @@
      "evidence": [
       {
        "path": "upstream/openspec/src/core/templates/workflows/continue-change.ts",
-       "quote": "delegates creation to a specific skill or command, invoke it"
+       "quote": "delegates creation to a specific skill or command, invoke it",
+       "line": 127,
+       "found": true,
+       "verdict": "сверено"
       }
      ]
     }
@@ -290,7 +350,10 @@
      "evidence": [
       {
        "path": "docs/plan-flexible-pipeline.md",
-       "quote": "журнал решений — артефакт схемы, от которого зависит `proposal`"
+       "quote": "журнал решений — артефакт схемы, от которого зависит `proposal`",
+       "line": 161,
+       "found": true,
+       "verdict": "сверено"
       }
      ]
     },
@@ -302,7 +365,10 @@
      "evidence": [
       {
        "path": "store/change-intake/SKILL.md",
-       "quote": "`.gigacode/intake/<change>/forks.md`"
+       "quote": "`.gigacode/intake/<change>/forks.md`",
+       "line": 315,
+       "found": true,
+       "verdict": "сверено"
       }
      ]
     }
@@ -350,7 +416,10 @@
      "evidence": [
       {
        "path": "upstream/openspec/src/core/templates/workflows/continue-change.ts",
-       "quote": "once one matching file exists"
+       "quote": "once one matching file exists",
+       "line": 28,
+       "found": true,
+       "verdict": "сверено"
       }
      ]
     },
@@ -362,7 +431,10 @@
      "evidence": [
       {
        "path": "docs/plan-flexible-pipeline.md",
-       "quote": "читаем только под эти вопросы, отвечаем файлом"
+       "quote": "читаем только под эти вопросы, отвечаем файлом",
+       "line": 318,
+       "found": true,
+       "verdict": "сверено"
       }
      ]
     },
@@ -374,15 +446,24 @@
      "evidence": [
       {
        "path": "store/research/variant-B-2026-10-28.md",
-       "quote": "Жанры, референсами, по одному файлу"
+       "quote": "Жанры, референсами, по одному файлу",
+       "line": 207,
+       "found": true,
+       "verdict": "сверено"
       },
       {
        "path": "store/research/variant-B-2026-10-28.md",
-       "quote": "Исследователь это функция: бриф на входе, отчёт на выходе, без"
+       "quote": "Исследователь это функция: бриф на входе, отчёт на выходе, без",
+       "line": 34,
+       "found": true,
+       "verdict": "сверено"
       },
       {
        "path": "store/research/variant-B-2026-10-28.md",
-       "quote": "отрицаниями по рецепту"
+       "quote": "отрицаниями по рецепту",
+       "line": 90,
+       "found": true,
+       "verdict": "сверено"
       }
      ]
     }
@@ -423,7 +504,10 @@
      "evidence": [
       {
        "path": "docs/plan-flexible-pipeline.md",
-       "quote": "текстом в instruction артефактов своей схемы"
+       "quote": "текстом в instruction артефактов своей схемы",
+       "line": 198,
+       "found": true,
+       "verdict": "сверено"
       }
      ]
     },
@@ -435,11 +519,17 @@
      "evidence": [
       {
        "path": "upstream/openspec/src/core/templates/workflows/continue-change.ts",
-       "quote": "delegates creation to a specific skill or command, invoke it"
+       "quote": "delegates creation to a specific skill or command, invoke it",
+       "line": 127,
+       "found": true,
+       "verdict": "сверено"
       },
       {
        "path": "store/config/openspec/schemas/store-flow/schema.yaml",
-       "quote": "Загрузи скилл `flow-step` и заведи им шаг `intake`"
+       "quote": "Загрузи скилл `flow-step` и заведи им шаг `intake`",
+       "line": 16,
+       "found": true,
+       "verdict": "сверено"
       }
      ]
     },
@@ -451,11 +541,17 @@
      "evidence": [
       {
        "path": "upstream/openspec/openspec/config.yaml",
-       "quote": "rules:"
+       "quote": "rules:",
+       "line": 21,
+       "found": true,
+       "verdict": "сверено"
       },
       {
        "path": "upstream/openspec/src/core/templates/workflows/continue-change.ts",
-       "quote": "constraints for you - do NOT include in output"
+       "quote": "constraints for you - do NOT include in output",
+       "line": 117,
+       "found": true,
+       "verdict": "сверено"
       }
      ]
     },
@@ -503,7 +599,10 @@
      "evidence": [
       {
        "path": "upstream/gsd-core/gsd-core/workflows/spec-phase.md",
-       "quote": "ambiguity ≤ 0.20 AND all dimensions"
+       "quote": "ambiguity ≤ 0.20 AND all dimensions",
+       "line": 20,
+       "found": true,
+       "verdict": "сверено"
       }
      ]
     },
@@ -515,11 +614,17 @@
      "evidence": [
       {
        "path": "docs/plan-flexible-pipeline.md",
-       "quote": "круг без новых решений и без новых фактов — стоп"
+       "quote": "круг без новых решений и без новых фактов — стоп",
+       "line": 343,
+       "found": true,
+       "verdict": "сверено через перенос"
       },
       {
        "path": "store/change-intake/SKILL.md",
-       "quote": "Кругов не больше двух"
+       "quote": "Кругов не больше двух",
+       "line": 187,
+       "found": true,
+       "verdict": "сверено"
       }
      ]
     },
@@ -576,11 +681,17 @@
      "evidence": [
       {
        "path": "upstream/gsd-core/gsd-core/references/edge-probe.md",
-       "quote": "The classifier reads English"
+       "quote": "The classifier reads English",
+       "line": 52,
+       "found": true,
+       "verdict": "сверено"
       },
       {
        "path": "CLAUDE.md",
-       "quote": "тип требования определяет модель"
+       "quote": "тип требования определяет модель",
+       "line": 75,
+       "found": true,
+       "verdict": "сверено"
       }
      ]
     },
@@ -592,7 +703,10 @@
      "evidence": [
       {
        "path": "upstream/gsd-core/gsd-core/workflows/spec-phase.md",
-       "quote": "gap on terse prose"
+       "quote": "gap on terse prose",
+       "line": 340,
+       "found": true,
+       "verdict": "сверено"
       }
      ]
     },
@@ -604,7 +718,10 @@
      "evidence": [
       {
        "path": "upstream/gsd-core/gsd-core/references/edge-probe.md",
-       "quote": "author-supplied override"
+       "quote": "author-supplied override",
+       "line": 46,
+       "found": true,
+       "verdict": "сверено"
       }
      ]
     },
@@ -654,11 +771,17 @@
      "evidence": [
       {
        "path": "upstream/gsd-core/gsd-core/workflows/spec-phase.md",
-       "quote": "Specify it"
+       "quote": "Specify it",
+       "line": 347,
+       "found": true,
+       "verdict": "сверено"
       },
       {
        "path": "upstream/gsd-core/gsd-core/references/edge-probe.md",
-       "quote": "Dismissal requires a reason string"
+       "quote": "Dismissal requires a reason string",
+       "line": 89,
+       "found": true,
+       "verdict": "сверено"
       }
      ]
     },
@@ -670,7 +793,10 @@
      "evidence": [
       {
        "path": "store/change-intake/references/approve-form.md",
-       "quote": "не узнать по файлам"
+       "quote": "не узнать по файлам",
+       "line": 8,
+       "found": true,
+       "verdict": "сверено"
       }
      ]
     },
@@ -720,7 +846,10 @@
      "evidence": [
       {
        "path": "upstream/gsd-core/gsd-core/workflows/discuss-phase/templates/context.md",
-       "quote": "Reversibility:"
+       "quote": "Reversibility:",
+       "line": 59,
+       "found": true,
+       "verdict": "сверено"
       }
      ]
     },
@@ -770,7 +899,10 @@
      "evidence": [
       {
        "path": "docs/plan-flexible-pipeline.md",
-       "quote": "Без адресата следующий шаг получает"
+       "quote": "Без адресата следующий шаг получает",
+       "line": 312,
+       "found": true,
+       "verdict": "сверено"
       }
      ]
     },
@@ -782,7 +914,10 @@
      "evidence": [
       {
        "path": "store/change-intake/SKILL.md",
-       "quote": "спрашивается только то, чего нельзя проверить"
+       "quote": "спрашивается только то, чего нельзя проверить",
+       "line": 19,
+       "found": true,
+       "verdict": "сверено"
       }
      ]
     },
@@ -839,11 +974,17 @@
      "evidence": [
       {
        "path": "store/change-intake/references/fork-form.md",
-       "quote": "Цитата сверяется с файлом дословно"
+       "quote": "Цитата сверяется с файлом дословно",
+       "line": 36,
+       "found": true,
+       "verdict": "сверено"
       },
       {
        "path": "docs/analysis/step0-sources.md",
-       "quote": "Два места, где соглашение заведомо слабее скрипта"
+       "quote": "Два места, где соглашение заведомо слабее скрипта",
+       "line": 327,
+       "found": true,
+       "verdict": "сверено"
       }
      ]
     },
@@ -862,7 +1003,10 @@
      "evidence": [
       {
        "path": "store/change-intake/references/grill-form.md",
-       "quote": "Второго такта нет"
+       "quote": "Второго такта нет",
+       "line": 31,
+       "found": true,
+       "verdict": "сверено"
       }
      ]
     }
@@ -905,7 +1049,10 @@
      "evidence": [
       {
        "path": "docs/plan-flexible-pipeline.md",
-       "quote": "по наличию файла — вердикт атаки"
+       "quote": "по наличию файла — вердикт атаки",
+       "line": 210,
+       "found": true,
+       "verdict": "сверено"
       }
      ]
     },
@@ -917,7 +1064,10 @@
      "evidence": [
       {
        "path": "docs/analysis/gsd-openspec-integration.md",
-       "quote": "читает только поле `status`"
+       "quote": "читает только поле `status`",
+       "line": 285,
+       "found": true,
+       "verdict": "сверено"
       }
      ]
     },
@@ -929,7 +1079,10 @@
      "evidence": [
       {
        "path": "upstream/openspec/CHANGELOG.md",
-       "quote": "start with a lowercase `x-`"
+       "quote": "start with a lowercase `x-`",
+       "line": 81,
+       "found": true,
+       "verdict": "сверено"
       }
      ]
     }
@@ -975,7 +1128,10 @@
      "evidence": [
       {
        "path": "CLAUDE.md",
-       "quote": "Копии файлов GSD и BMAD (MIT) несут их copyright notice"
+       "quote": "Копии файлов GSD и BMAD (MIT) несут их copyright notice",
+       "line": 76,
+       "found": true,
+       "verdict": "сверено"
       }
      ]
     },
@@ -1025,7 +1181,10 @@
      "evidence": [
       {
        "path": "store/tools/openspec_setup.py",
-       "quote": "ГЕЙТ НАЗЫВАЕТ, А НЕ ЧИНИТ"
+       "quote": "ГЕЙТ НАЗЫВАЕТ, А НЕ ЧИНИТ",
+       "line": 13,
+       "found": true,
+       "verdict": "сверено"
       }
      ]
     },
@@ -1037,7 +1196,10 @@
      "evidence": [
       {
        "path": "CLAUDE.md",
-       "quote": "В Git Bash нет `jq`"
+       "quote": "В Git Bash нет `jq`",
+       "line": 92,
+       "found": true,
+       "verdict": "сверено"
       }
      ]
     },
@@ -1092,7 +1254,10 @@
      "evidence": [
       {
        "path": "store/tools/openspec_setup.py",
-       "quote": "одна копия на все проекты машины"
+       "quote": "одна копия на все проекты машины",
+       "line": 7,
+       "found": true,
+       "verdict": "сверено"
       }
      ]
     },
@@ -1104,7 +1269,10 @@
      "evidence": [
       {
        "path": "CLAUDE.md",
-       "quote": "Своё — в схеме (`openspec/schemas/<имя>/`)"
+       "quote": "Своё — в схеме (`openspec/schemas/<имя>/`)",
+       "line": 60,
+       "found": true,
+       "verdict": "сверено"
       }
      ]
     }
@@ -1147,11 +1315,17 @@
      "evidence": [
       {
        "path": "docs/plan-implementation.md",
-       "quote": "по умолчанию они лежат в браузерном storage"
+       "quote": "по умолчанию они лежат в браузерном storage",
+       "line": 28,
+       "found": true,
+       "verdict": "сверено"
       },
       {
        "path": "playground/templates/document-critique.md",
-       "quote": "Generates a prompt only from approved"
+       "quote": "Generates a prompt only from approved",
+       "line": 40,
+       "found": true,
+       "verdict": "сверено"
       }
      ]
     },
@@ -1163,7 +1337,10 @@
      "evidence": [
       {
        "path": "docs/plan-flexible-pipeline.md",
-       "quote": "Результат — в файл, не в `localStorage`"
+       "quote": "Результат — в файл, не в `localStorage`",
+       "line": 369,
+       "found": true,
+       "verdict": "сверено"
       }
      ]
     },
@@ -1220,7 +1397,10 @@
      "evidence": [
       {
        "path": "playground/SKILL.md",
-       "quote": "Single HTML file"
+       "quote": "Single HTML file",
+       "line": 29,
+       "found": true,
+       "verdict": "сверено"
       }
      ]
     },
@@ -1232,7 +1412,10 @@
      "evidence": [
       {
        "path": "playground/SKILL.md",
-       "quote": "Load the matching template"
+       "quote": "Load the matching template",
+       "line": 17,
+       "found": true,
+       "verdict": "сверено"
       }
      ]
     },
@@ -1282,7 +1465,10 @@
      "evidence": [
       {
        "path": "docs/plan-implementation.md",
-       "quote": "схема проходит сама себя"
+       "quote": "схема проходит сама себя",
+       "line": 59,
+       "found": true,
+       "verdict": "сверено"
       }
      ]
     },
@@ -1340,11 +1526,17 @@
    "evidence": [
     {
      "path": "upstream/openspec/src/core/artifact-graph/instruction-loader.ts",
-     "quote": "file-existence status does"
+     "quote": "file-existence status does",
+     "line": 166,
+     "found": true,
+     "verdict": "сверено"
     },
     {
      "path": "upstream/openspec/src/core/artifact-graph/instruction-loader.ts",
-     "quote": "status: 'done' as const"
+     "quote": "status: 'done' as const",
+     "line": 572,
+     "found": true,
+     "verdict": "сверено"
     }
    ],
    "comments": []
@@ -1369,11 +1561,17 @@
    "evidence": [
     {
      "path": "upstream/openspec/src/core/update.ts",
-     "quote": "their edit is about to be overwritten"
+     "quote": "their edit is about to be overwritten",
+     "line": 841,
+     "found": true,
+     "verdict": "сверено"
     },
     {
      "path": "upstream/openspec/CHANGELOG.md",
-     "quote": "openspec update --dry-run"
+     "quote": "openspec update --dry-run",
+     "line": 9,
+     "found": true,
+     "verdict": "сверено"
     }
    ],
    "comments": []
@@ -1398,7 +1596,10 @@
    "evidence": [
     {
      "path": "upstream/gsd-core/gsd-core/references/edge-probe.md",
-     "quote": "The classifier reads English"
+     "quote": "The classifier reads English",
+     "line": 52,
+     "found": true,
+     "verdict": "сверено"
     }
    ],
    "comments": []
@@ -1423,11 +1624,17 @@
    "evidence": [
     {
      "path": "upstream/openspec/src/core/config.ts",
-     "quote": "skillsDir: '.agents', detectionPaths: ['.gsd']"
+     "quote": "skillsDir: '.agents', detectionPaths: ['.gsd']",
+     "line": 73,
+     "found": true,
+     "verdict": "сверено"
     },
     {
      "path": "docs/analysis/step0-sources.md",
-     "quote": "в gsd-core слова"
+     "quote": "в gsd-core слова",
+     "line": 295,
+     "found": true,
+     "verdict": "сверено"
     }
    ],
    "comments": []
@@ -1452,13 +1659,111 @@
    "evidence": [
     {
      "path": "upstream/gsd-core/gsd-core/references/prohibition-probe.md",
-     "quote": "no compiled"
+     "quote": "no compiled",
+     "line": 32,
+     "found": true,
+     "verdict": "сверено"
     },
     {
      "path": "upstream/gsd-core/gsd-core/references/prohibition-probe.md",
-     "quote": "Do NOT mint a prohibition for them"
+     "quote": "Do NOT mint a prohibition for them",
+     "line": 79,
+     "found": true,
+     "verdict": "сверено"
     }
    ],
+   "comments": []
+  },
+  {
+   "id": "F-25",
+   "question": "Источник механики атаки артефакта: гриль store или слой проверки GSD?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-06"
+   ],
+   "delivery": "П3",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Гриль store: пять линз с «чего не репортить», покрытие поимённо, второго такта нет (`change-intake/references/grill-form.md`)",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "store/change-intake/references/grill-form.md",
+       "quote": "Линз пять",
+       "line": 24,
+       "found": true,
+       "verdict": "сверено"
+      },
+      {
+       "path": "store/change-intake/references/grill-form.md",
+       "quote": "Второго такта нет",
+       "line": 31,
+       "found": true,
+       "verdict": "сверено"
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Слой проверки GSD: plan-checker (измерения как линзы, тяжесть и инвариант у находки), verifier (форма разрыва, самопроверка статуса), honest-verifier (воздержание на невыводимом), doc-verifier (утверждения о файлах и командах — существование, не исполнение); установка FORCE",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "upstream/gsd-core/agents/gsd-plan-checker.md",
+       "quote": "FORCE stance",
+       "line": 30,
+       "found": true,
+       "verdict": "сверено"
+      },
+      {
+       "path": "upstream/gsd-core/agents/gsd-plan-checker.md",
+       "quote": "Required finding classification",
+       "line": 39,
+       "found": true,
+       "verdict": "сверено"
+      },
+      {
+       "path": "upstream/gsd-core/gsd-core/references/honest-verifier.md",
+       "quote": "Honest Verifier",
+       "line": 1,
+       "found": true,
+       "verdict": "сверено"
+      },
+      {
+       "path": "upstream/gsd-core/agents/gsd-doc-verifier.md",
+       "quote": "Existence check only",
+       "line": 77,
+       "found": true,
+       "verdict": "сверено"
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "B",
+    "why": "план с самого начала — рамка OpenSpec и механики GSD (F-06: «адаптированные скиллы из GSD»); слой проверки у GSD есть и прожит, у гриля store нет ни тяжести находок, ни воздержания; от store остаются только два правила без аналога у GSD — покрытие поимённо и «второго такта нет»",
+    "text": "B — план с самого начала — рамка OpenSpec и механики GSD (F-06: «адаптированные скиллы из GSD»); слой проверки у GSD есть и прожит, у гриля store нет ни тяжести находок, ни воздержания; от store остаются только два правила без аналога у GSD — покрытие поимённо и «второго такта нет»"
+   },
+   "decision": {
+    "option": "B",
+    "word": "Ведь изначальная задача была \"взять openspec как рамку, и добавить в неё механики gsd-сore\".",
+    "date": "2026-10-30"
+   },
+   "reversibility": {
+    "level": "обратимо",
+    "why": "текст скилла"
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "скилл `symphysis-attack` пересобран на слое проверки GSD (Task D4b): линзы — измерения plan-checker, у строки линза, тяжесть `блокер | предупреждение | справка` и инвариант, строка воздержания «по спеке не выводится», `passed` — при нуле блокеров, предупреждений и воздержаний; `references/grill-lenses.md` удалён, заимствования store помечены в TRANSLATION-NOTES; в шаблонах атаки колонки «Линза», «Инвариант», «Тяжесть», `decisions.json` первым в `targets[]` артефактов",
+   "evidence": [],
    "comments": []
   }
  ]

@@ -30,7 +30,7 @@ def test_check_missing_file_is_signal_not_error(tmp_path):
 def test_check_plan_journal_all_found():
     j = journal.load_journal(ROOT / "docs/plan-implementation.journal.json")
     r = journal.check_evidence(j, journal.default_roots())
-    assert r["found"] == r["total"] == 71
+    assert r["found"] == r["total"] == 77   # 71 улика записей F-01…F-24 + 6 улик F-25 (D4b)
 
 
 # --- что именно записывается в улику ---------------------------------------

@@ -195,3 +195,19 @@ def test_cli_import_md_writes_valid_json(tmp_path):
     assert run.returncode == 0, run.stderr
     j = json.loads(out.read_text(encoding="utf-8"))
     assert len(j["records"]) == 24 and journal.validate_journal(j) == []
+
+
+def test_live_journal_records_attack_source_fork():
+    """F-25 (D4b): источник механики атаки — слой проверки GSD, не гриль store; решено словом
+    владельца 2026-10-30, улики на обе стороны — настоящие строки файлов."""
+    j = journal.load_journal(ROOT / "docs" / "plan-implementation.journal.json")
+    assert journal.validate_journal(j) == []
+    rec = next(r for r in j["records"] if r["id"] == "F-25")
+    assert (rec["kind"], rec["status"], rec["addressee"], rec["delivery"]) == ("развилка", "решён", "человек", "П3")
+    assert rec["depends_on"] == ["F-06"]
+    assert [o["letter"] for o in rec["options"]] == ["A", "B"]
+    assert all(o["evidence"] for o in rec["options"]), "у каждого варианта улика путь:цитата"
+    assert rec["recommendation"]["option"] == "B" and rec["recommendation"]["why"]
+    assert rec["decision"]["option"] == "B" and rec["decision"]["date"] == "2026-10-30"
+    assert "gsd-сore" in rec["decision"]["word"], "слово владельца дословно, с его написанием"
+    assert rec["reversibility"] == {"level": "обратимо", "why": "текст скилла"}

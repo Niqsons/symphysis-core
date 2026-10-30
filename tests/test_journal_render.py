@@ -14,9 +14,13 @@ LIVE_MD = ROOT / "docs" / "plan-implementation.journal.md"
 
 
 def strip_check_fields(j):
-    """Копия журнала без полей сверки: `line/found/verdict` в markdown не живут."""
+    """Копия журнала без полей, которых в markdown нет (см. `render_md`): поля сверки улик
+    `line/found/verdict`, `reversibility` и `comments` записи, `generated` журнала — их источник только JSON."""
     j = copy.deepcopy(j)
+    j.pop("generated", None)
     for rec in j["records"]:
+        rec["reversibility"] = None
+        rec["comments"] = []
         for ev in rec["evidence"] + [e for o in rec["options"] for e in o["evidence"]]:
             for key in ("line", "found", "verdict"):
                 ev.pop(key, None)

@@ -59,7 +59,9 @@ def test_apply_round1_reproduces_current_journal():
     ans = journal.parse_answers((FIX / "answers-round1.md").read_text(encoding="utf-8"))
     journal.apply_answers(j, ans, date="2026-10-29")
     now = journal.load_journal(ROOT / "docs/plan-implementation.journal.json")
-    assert [r["id"] for r in j["records"]] == [r["id"] for r in now["records"]]
+    # записи после круга 1 (с F-25, слово владельца 2026-10-30) дописаны в конец: промпт круга их не знал
+    ids = [r["id"] for r in j["records"]]
+    assert [r["id"] for r in now["records"]][:len(ids)] == ids
     for a, b in zip(j["records"], now["records"]):
         if a["id"] == "F-01":   # в промпте круга 1 F-01 припаркован; решение B дал круг 2, словом в чате
             continue
