@@ -33,6 +33,15 @@ export const ArtifactSchema = z.object({
   template: relativePathSchema('template field'),
   instruction: z.string().optional(),
   requires: z.array(z.string()).default([]),
+  // Fork (symphysis, C1): the artifact counts as done only when its file's
+  // frontmatter field `frontmatter` equals `value`. Single-file artifacts only;
+  // `validateVerdictTargets` rejects it on a glob `generates`.
+  verdict: z
+    .object({
+      frontmatter: z.string().min(1),
+      value: z.string().min(1),
+    })
+    .optional(),
 });
 
 // Apply phase configuration for schema-aware apply instructions

@@ -243,6 +243,73 @@ apply:
     });
   });
 
+  describe('verdict', () => {
+    it('accepts verdict on a single-file artifact', () => {
+      const yaml = `
+name: test
+version: 1
+artifacts:
+  - id: attack
+    generates: attack.md
+    description: Attack review
+    template: templates/attack.md
+    verdict:
+      frontmatter: status
+      value: passed
+`;
+      const schema = parseSchema(yaml);
+      expect(schema.artifacts[0].verdict).toEqual({ frontmatter: 'status', value: 'passed' });
+    });
+
+    it('still parses an artifact without verdict', () => {
+      const yaml = `
+name: test
+version: 1
+artifacts:
+  - id: attack
+    generates: attack.md
+    description: Attack review
+    template: templates/attack.md
+`;
+      const schema = parseSchema(yaml);
+      expect(schema.artifacts[0].verdict).toBeUndefined();
+    });
+
+    it('rejects verdict on a glob artifact by name', () => {
+      const yaml = `
+name: test
+version: 1
+artifacts:
+  - id: specs
+    generates: specs/**/*.md
+    description: Specs
+    template: templates/spec.md
+    verdict:
+      frontmatter: status
+      value: passed
+`;
+      expect(() => parseSchema(yaml)).toThrow(SchemaValidationError);
+      expect(() => parseSchema(yaml)).toThrow(/"specs" declares verdict but generates a glob/);
+    });
+
+    it('rejects verdict with an empty value', () => {
+      const yaml = `
+name: test
+version: 1
+artifacts:
+  - id: attack
+    generates: attack.md
+    description: Attack review
+    template: templates/attack.md
+    verdict:
+      frontmatter: status
+      value: ""
+`;
+      expect(() => parseSchema(yaml)).toThrow(SchemaValidationError);
+      expect(() => parseSchema(yaml)).toThrow(/verdict/);
+    });
+  });
+
   describe('resource bounds', () => {
     it('rejects a schema with more artifacts than the cycle check can walk', () => {
       // A long `requires` chain drove the recursive cycle-detection DFS past the

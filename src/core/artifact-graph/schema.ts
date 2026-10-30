@@ -1,6 +1,7 @@
 import * as fs from 'node:fs';
 import { parse as parseYaml } from 'yaml';
 import { SchemaYamlSchema, type SchemaYaml, type Artifact } from './types.js';
+import { isGlobPattern } from './outputs.js';
 
 export class SchemaValidationError extends Error {
   constructor(message: string) {
@@ -38,6 +39,9 @@ export function parseSchema(yamlContent: string): SchemaYaml {
   // Check that all requires references are valid
   validateRequiresReferences(schema.artifacts);
 
+  // Check that verdict is declared only on single-file artifacts
+  validateVerdictTargets(schema.artifacts);
+
   // Check that the apply phase names artifacts this schema declares
   validateApplyReferences(schema);
 
@@ -73,6 +77,22 @@ function validateRequiresReferences(artifacts: Artifact[]): void {
           `Invalid dependency reference in artifact '${artifact.id}': '${req}' does not exist`
         );
       }
+    }
+  }
+}
+
+/**
+ * Validates that `verdict` is declared only on single-file artifacts.
+ *
+ * The verdict is read from one file's frontmatter, so an artifact whose
+ * `generates` is a glob has no single file to read it from.
+ */
+export function validateVerdictTargets(artifacts: Artifact[]): void {
+  for (const artifact of artifacts) {
+    if (artifact.verdict && isGlobPattern(artifact.generates)) {
+      throw new SchemaValidationError(
+        `Artifact "${artifact.id}" declares verdict but generates a glob pattern`
+      );
     }
   }
 }
