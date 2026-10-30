@@ -1,0 +1,130 @@
+name: symphysis
+version: 1
+description: Проектирование на сильной модели — решения (журнал) → исследование → атака решений → proposal → specs → design → security → tasks → атака артефактов
+artifacts:
+  - id: decisions
+    generates: decisions.json
+    description: Журнал решений — развилки и факты с уликами, решает человек
+    template: decisions.json
+    instruction: |
+      Загрузи скилл `symphysis-brainstorm` и проведи интервью по задаче: развилки и факты записывай в журнал `decisions.json` по шаблону.
+      Решает человек, не ты: пока его слова нет, запись остаётся открытой.
+      Улики сверяет `py -3.13 tools/journal.py check` — это сигнал, не стоп.
+    requires: []
+
+  - id: research
+    generates: "research/**/*.md"
+    description: Исследование по записям журнала с адресатом «материалы»
+    template: research.md
+    instruction: |
+      На каждую запись журнала с адресатом «материалы» — один файл `research/F-NN.md`.
+      Frontmatter: `genre: устройство|размещение|края|проверка|аналоги` (одно значение) и `question: F-NN`.
+      Отчёт: найденное — с путём, строкой и дословной цитатой; ненайденное — отрицанием по рецепту: «не найдено», «искал: шаблоны дословно».
+      Цитату бери из прочитанного файла, не по памяти.
+    requires:
+      - decisions
+
+  - id: attack-decisions
+    generates: attack/decisions.md
+    description: Второй круг брейншторма и атака журнала решений с вердиктом
+    template: attack.md
+    verdict:
+      frontmatter: status
+      value: passed
+    instruction: |
+      Второй круг брейншторма — до атаки.
+      Закрой записи журнала с адресатом «материалы» по файлам `research/`: ответ файла внеси в запись, улики — путём и цитатой.
+      Спроси человека, нужен ли новый круг; новый круг идёт только по его слову (скилл `symphysis-brainstorm`).
+      Отказ запиши в журнал строкой «брейншторм закончен по решению человека».
+      Затем загрузи скилл `symphysis-attack` и атакуй `decisions.json`.
+      Вердикт — во frontmatter `attack/decisions.md`: `status: passed | gaps_found`.
+    requires:
+      - research
+
+  - id: proposal
+    generates: proposal.md
+    description: Зачем нужно изменение и какие capabilities оно затрагивает
+    template: proposal.md
+    instruction: |
+      Напиши proposal.md по шаблону: Why, What Changes, Capabilities, Impact.
+      Основание — решённые записи журнала: ссылайся на них по номеру F-NN, не пересказывай.
+      Capabilities — контракт со specs: каждая новая или изменяемая получит `specs/<capability>/spec.md`; называй её по устойчивому поведению системы, не по работе в этом изменении.
+      Требований, которых нет в решениях, не добавляй.
+    requires:
+      - attack-decisions
+
+  - id: specs
+    generates: "specs/**/*.md"
+    description: Спецификации поведения — что система должна делать
+    template: spec.md
+    instruction: |
+      Напиши спецификации поведения по грамматике OpenSpec: по файлу `specs/<capability>/spec.md` на каждую capability из proposal.
+      Требование — `### Requirement: <имя>` с SHALL или MUST; у каждого есть сценарий `#### Scenario: <имя>` (ровно четыре `#`) в виде WHEN / THEN.
+      Дельты — секции `## ADDED|MODIFIED|REMOVED Requirements`; MODIFIED несёт требование целиком.
+      Спецификация описывает наблюдаемое поведение, не реализацию.
+      После написания на каждое требование позови скиллы `symphysis-edge-probe` и `symphysis-prohibition-probe`.
+    requires:
+      - proposal
+
+  - id: design
+    generates: design.md
+    description: Дизайн — как реализовать, решения из журнала
+    template: design.md
+    instruction: |
+      Получи design.md из журнала: `py -3.13 tools/journal.py render-design <каталог изменения>/decisions.json --out <каталог изменения>/design.md`.
+      Decisions, Risks / Trade-offs и Open Questions приходят из журнала; чтобы их изменить, правь журнал и рендери заново.
+      После последнего рендера впиши руками Context (состояние и ограничения; мотивацию — ссылкой на proposal.md) и Goals / Non-Goals (границы дизайна, без повтора proposal).
+      Решение излагается, а не принимается: его уже принял человек.
+    requires:
+      - proposal
+
+  - id: security
+    generates: security.md
+    description: Чек-лист канона информационной безопасности по спецификациям
+    template: security.md
+    instruction: |
+      Составь чек-лист канона ИБ по `specs/`. Канон не становится запретом на требование (правило отсылки prohibition probe) — он лежит здесь.
+      Пункты: инъекции через содержимое файлов, пути с `../`, токены и срок их жизни, права, бинарные файлы.
+      Таблица: пункт · к чему из specs относится · «применимо / неприменимо — причина».
+      Неприменимый пункт остаётся в таблице с причиной; применимый называет требование, которое его закрывает.
+    requires:
+      - specs
+
+  - id: tasks
+    generates: tasks.md
+    description: Список задач реализации с проверкой каждой
+    template: tasks.md
+    instruction: |
+      Разбей работу по грамматике OpenSpec: группы `## N. Название`, задачи `- [ ] N.M Описание`. Прогресс считается только по чекбоксам.
+      Каждая задача называет проверку своего завершения (тест, команда, наблюдаемый результат, файл) прямо в строке.
+      Тесты и документацию несёт та группа, чью работу они проверяют, а не последняя.
+      Порядок — по зависимости; задача укладывается в один сеанс.
+      Опирайся на specs (что строить) и design (как); открытый вопрос design, меняющий задачи, реши с человеком до списка.
+    requires:
+      - specs
+      - design
+
+  - id: attack-artifacts
+    generates: attack/artifacts.md
+    description: Атака specs, design, security и tasks с вердиктом
+    template: attack.md
+    verdict:
+      frontmatter: status
+      value: passed
+    instruction: |
+      Загрузи скилл `symphysis-attack` и атакуй `specs/`, `design.md`, `security.md` и `tasks.md`.
+      Результат — `attack/artifacts.md` по шаблону.
+      Вердикт — во frontmatter: `status: passed | gaps_found`.
+      Дыры закрывай правкой атакуемого артефакта, затем повтори атаку; без `passed` артефакт не готов.
+    requires:
+      - specs
+      - design
+      - security
+      - tasks
+
+apply:
+  requires: [tasks, attack-artifacts]
+  tracks: tasks.md
+  instruction: |
+    Работай по tasks.md по порядку и отмечай `- [x]` по мере выполнения; закрывай задачу проверкой, которая в ней названа.
+    Остановись, если упёрся в блокер или нужно уточнение.

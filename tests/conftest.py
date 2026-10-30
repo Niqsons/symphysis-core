@@ -1,3 +1,4 @@
+import shutil
 import sys
 from pathlib import Path
 
@@ -21,6 +22,25 @@ def missing_evidence_roots() -> list[str]:
 requires_evidence_roots = pytest.mark.skipif(
     bool(missing_evidence_roots()),
     reason="на этой машине нет корней улик: " + "; ".join(missing_evidence_roots()))
+
+
+FORK_BIN = ROOT / "upstream" / "openspec" / "bin" / "openspec.js"
+FORK_DIST = ROOT / "upstream" / "openspec" / "dist" / "cli" / "index.js"
+
+
+def fork_unavailable() -> str:
+    """Почему CLI форка на этой машине не запустить; пустая строка — можно."""
+    if shutil.which("node") is None:
+        return "нет node в PATH"
+    if not FORK_BIN.exists():
+        return f"нет {FORK_BIN.relative_to(ROOT).as_posix()}: форк не клонирован (upstream/ в .gitignore)"
+    if not FORK_DIST.exists():
+        return f"форк не собран: нет {FORK_DIST.relative_to(ROOT).as_posix()} (pnpm build в upstream/openspec)"
+    return ""
+
+
+# Тест через CLI форка: без node или без собранного форка — пропуск, не красное.
+requires_fork = pytest.mark.skipif(bool(fork_unavailable()), reason=fork_unavailable() or "форк на месте")
 
 
 def one_record_journal(path: str, quote: str) -> dict:
