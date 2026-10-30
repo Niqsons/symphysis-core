@@ -13,6 +13,7 @@ from conftest import FORK_BIN, ROOT, requires_fork
 SCHEMAS = ROOT / "openspec" / "schemas"
 TEMPLATES = SCHEMAS / "symphysis" / "templates"
 SCHEMA_YAML = SCHEMAS / "symphysis" / "schema.yaml"
+CHANGE_DEMO = ROOT / "tests" / "fixtures" / "change-demo"
 
 TEMPLATE_FILES = ["decisions.json", "research.md", "attack-decisions.md", "attack-artifacts.md",
                   "proposal.md", "spec.md", "design.md", "security.md", "tasks.md"]
@@ -33,10 +34,11 @@ REQUIRES = {
 }
 
 
-def run_openspec_raw(project, *args):
+def run_openspec_raw(project, *args, returncode=0):
     """`openspec <args>` из форка с `cwd=project`: `CompletedProcess` с обоими потоками.
-    Ненулевой код — AssertionError с обоими потоками. Конфиг и данные пользователя подменены
-    пустыми каталогами рядом с проектом: пользовательская схема не заслонит проектную."""
+    Код выхода не равен ожидаемому `returncode` (по умолчанию 0) — AssertionError с обоими потоками.
+    Конфиг и данные пользователя подменены пустыми каталогами рядом с проектом: пользовательская
+    схема не заслонит проектную."""
     env = dict(os.environ,
                XDG_CONFIG_HOME=str(project.parent / "xdg-config"),
                XDG_DATA_HOME=str(project.parent / "xdg-data"),
@@ -45,24 +47,27 @@ def run_openspec_raw(project, *args):
     done = subprocess.run(["node", str(FORK_BIN), *args], cwd=project, env=env,
                           capture_output=True, text=True, encoding="utf-8",
                           stdin=subprocess.DEVNULL, timeout=120)
-    assert done.returncode == 0, (f"openspec {' '.join(args)} -> код {done.returncode}\n"
-                                  f"stdout:\n{done.stdout}\nstderr:\n{done.stderr}")
+    assert done.returncode == returncode, (
+        f"openspec {' '.join(args)} -> код {done.returncode}, ждали {returncode}\n"
+        f"stdout:\n{done.stdout}\nstderr:\n{done.stderr}")
     return done
 
 
-def run_openspec(project, *args):
+def run_openspec(project, *args, returncode=0):
     """`openspec <args>` из форка с `cwd=project`. С `--json` — разобранный JSON, иначе — stdout."""
-    done = run_openspec_raw(project, *args)
+    done = run_openspec_raw(project, *args, returncode=returncode)
     if "--json" not in args:
         return done.stdout
     # перед JSON CLI печатает строку-предупреждение («Schema commands are experimental…»)
     return json.JSONDecoder().raw_decode(done.stdout[done.stdout.index("{"):])[0]
 
 
-def make_project(tmp_path, schema="symphysis", change="demo", config=None):
+def make_project(tmp_path, schema="symphysis", change="demo", config=None, change_fixture=None):
     """Проект OpenSpec с пустым изменением: схема копируется из `openspec/schemas/<schema>`,
     изменение создаётся через `openspec new change` (`openspec init` не нужен). `config` — текст
-    `openspec/config.yaml`; без него в конфиге одна строка `schema: <schema>`."""
+    `openspec/config.yaml`; без него в конфиге одна строка `schema: <schema>`. `change_fixture` —
+    каталог с файлами готового изменения: он копируется в `openspec/changes/<change>/` вместо
+    `openspec new change`, так что `.openspec.yaml` берётся из фикстуры."""
     src = SCHEMAS / schema
     assert src.is_dir(), f"нет схемы {src.relative_to(ROOT)}"
     proj = tmp_path / "proj"
@@ -72,7 +77,11 @@ def make_project(tmp_path, schema="symphysis", change="demo", config=None):
         config = f"schema: {schema}\n"
     (proj / "openspec" / "config.yaml").write_text(config, encoding="utf-8", newline="\n")
     shutil.copytree(src, proj / "openspec" / "schemas" / schema)
-    run_openspec(proj, "new", "change", change, "--schema", schema)
+    if change_fixture is None:
+        run_openspec(proj, "new", "change", change, "--schema", schema)
+    else:
+        assert change_fixture.is_dir(), f"нет фикстуры {change_fixture.relative_to(ROOT)}"
+        shutil.copytree(change_fixture, proj / "openspec" / "changes" / change)
     return proj
 
 
@@ -133,9 +142,13 @@ def test_instructions_name_skills_and_stay_short(tmp_path):
 
 # --- шаблоны артефактов ----------------------------------------------------
 
+def lf_text(path):
+    """Текст файла с переводами строк LF: `.md` в рабочей копии CRLF, тест от них не зависит."""
+    return path.read_bytes().decode("utf-8").replace("\r\n", "\n")
+
+
 def template_text(name):
-    """Текст шаблона с переводами строк LF: `.md` в рабочей копии CRLF, тест от них не зависит."""
-    return (TEMPLATES / name).read_bytes().decode("utf-8").replace("\r\n", "\n")
+    return lf_text(TEMPLATES / name)
 
 
 def frontmatter(text):
@@ -301,6 +314,13 @@ def test_instruction_wording_from_task7_review():
     assert "«не найдено»" in research and "«искал: <шаблоны дословно>»" in research
 
 
+def test_research_instruction_marks_record_number_as_placeholder():
+    """Как в шаблоне `research.md`: номер записи — подстановка `<F-NN>`, голый `F-NN` читается как настоящий."""
+    research = schema_block("research")
+    assert "`research/<F-NN>.md`" in research and "`question: <F-NN>`" in research
+    assert re.findall(r"(?<!<)F-NN(?!>)", research) == []
+
+
 @requires_fork
 @pytest.mark.parametrize("artifact_id, name", [("attack-decisions", "attack-decisions.md"),
                                                ("attack-artifacts", "attack-artifacts.md")])
@@ -399,3 +419,52 @@ def test_sample_config_selects_symphysis_schema(tmp_path):
     run_openspec(proj, "new", "change", "by-config")
     out = run_openspec(proj, "status", "--change", "by-config", "--json")
     assert out["schemaName"] == "symphysis"
+
+
+# --- заполненное изменение: фикстура change-demo ----------------------------
+
+def test_change_demo_journal_is_valid():
+    """Журнал фикстуры проходит `validate_journal` без форка; номер исследования указывает на запись,
+    которой адресована парковка «материалы» (иначе фикстура непоследовательна)."""
+    data = journal.load_journal(CHANGE_DEMO / "decisions.json")
+    assert journal.validate_journal(data) == []
+    records = {r["id"]: r for r in data["records"]}
+    assert [(r["kind"], r["status"]) for r in records.values()] == [
+        ("развилка", "решён"), ("развилка", "припаркован"), ("факт", "решён")]
+    assert [p["addressee"] for p in records["F-02"]["parking"]] == ["материалы"]
+    report = lf_text(CHANGE_DEMO / "research" / "F-02.md")
+    assert re.search(r"^question: F-02$", frontmatter(report), re.M)
+    assert re.search(r"^genre: устройство$", frontmatter(report), re.M)
+    assert headings(report, 2) == ["Найдено", "Не найдено", "Вопросы, которые открылись"]
+    assert not (CHANGE_DEMO / "attack").exists() and not (CHANGE_DEMO / "proposal.md").exists()
+
+
+@requires_fork
+def test_status_after_research(tmp_path):
+    """Журнал и исследование на месте, атаки нет: `attack-decisions` готов к работе, `proposal` ждёт его."""
+    proj = make_project(tmp_path, change_fixture=CHANGE_DEMO)
+    out = run_openspec(proj, "status", "--change", "demo", "--json")
+    by_id = {a["id"]: a for a in out["artifacts"]}
+    assert out["schemaName"] == "symphysis"
+    assert by_id["decisions"]["status"] == "done" and by_id["research"]["status"] == "done"
+    assert by_id["attack-decisions"]["status"] == "ready"
+    assert by_id["proposal"]["status"] == "blocked"
+    assert by_id["proposal"]["missingDeps"] == ["attack-decisions"]
+
+
+@requires_fork
+def test_validate_all_rejects_change_without_deltas(tmp_path):
+    """`openspec validate --all` на изменении без specs завершается кодом 1, и причина одна: у изменения
+    нет дельт. Это устройство CLI, а не дефект фикстуры: код 0 изменение получает, когда `specs/`
+    написаны (`test_filled_templates_pass_openspec_validate`) или в `.openspec.yaml` стоит
+    `skip_specs: true`. `validate` разбирает только дельты в `specs/` (`validateChangeDeltaSpecs`):
+    proposal, журнал и исследование он не читает, и изменение без proposal находит по каталогу."""
+    proj = make_project(tmp_path, change_fixture=CHANGE_DEMO)
+    out = run_openspec(proj, "validate", "--all", "--json", returncode=1)
+    assert out["summary"]["totals"] == {"items": 1, "passed": 0, "failed": 1}, out
+    [item] = out["items"]
+    assert (item["id"], item["type"], item["valid"]) == ("demo", "change", False), item
+    [issue] = item["issues"]
+    assert issue["level"] == "ERROR" and issue["path"] == "file", issue
+    assert issue["message"].startswith("Change must have at least one delta. No deltas found."), issue
+    assert '"skip_specs: true"' in issue["message"], issue
