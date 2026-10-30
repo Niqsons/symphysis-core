@@ -21,15 +21,32 @@ def read(path):
     return path.read_text(encoding="utf-8")
 
 
+BLOCK_SCALARS = ("|", "|-", ">", ">-")
+
+
 def frontmatter(text):
-    """Поля frontmatter SKILL.md словарём `ключ -> значение`; нет frontmatter — AssertionError."""
+    """Поля frontmatter SKILL.md словарём `ключ -> значение`. Значение — простой скаляр
+    в той же строке или блочный (`>-`, `>`, `|`, `|-`): строки с отступом ниже, свёрнутые
+    пробелом. Простой скаляр с `: ` внутри строгий YAML не разберёт — AssertionError;
+    нет frontmatter — AssertionError."""
     m = re.match(r"---\n(.*?)\n---\n", text, re.S)
     assert m, "нет frontmatter `---` в начале SKILL.md"
-    fields = {}
+    fields, key = {}, None
     for line in m.group(1).splitlines():
+        if not line.strip():
+            continue
+        if line.startswith((" ", "\t")):
+            assert key is not None, f"строка с отступом без ключа: {line!r}"
+            fields[key] = (fields[key] + " " + line.strip()).strip()
+            continue
         key, sep, value = line.partition(":")
-        if sep:
-            fields[key.strip()] = value.strip()
+        assert sep, f"строка frontmatter без ключа: {line!r}"
+        key, value = key.strip(), value.strip()
+        if value in BLOCK_SCALARS:
+            fields[key] = ""
+        else:
+            assert ": " not in value, f"{key}: простой скаляр с «: » внутри — строгий YAML его не разберёт"
+            fields[key] = value
     return fields
 
 
