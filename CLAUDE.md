@@ -90,8 +90,10 @@
 
 - Python — `py -3.13`: под 3.14 нет пакетов, pip получает 403.
 - В Git Bash нет `jq` — скрипты хуков пишутся без него.
-- Тесты symphysis — `py -3.13 -m pytest` (pytest, jsonschema —
-  `requirements-dev.txt`). Тесты форка — `pnpm --dir upstream/openspec test`,
+- Тесты symphysis — `py -3.13 -X utf8 -m pytest` — **всегда с xdist**:
+  `-n 12` стоит в `pytest.ini` (`addopts`), без него тесты не запускаются
+  (правило владельца, 2026-10-30); пакеты — pytest, pytest-xdist, jsonschema
+  (`requirements-dev.txt`). Тесты форка — `pnpm --dir upstream/openspec test`,
   сборка — `pnpm --dir upstream/openspec build`; CLI форка до сборки
   пакета — `node upstream/openspec/bin/openspec.js`.
 - git: ветка работ `impl/plan-tasks`; `upstream/` в `.gitignore`, форк —
