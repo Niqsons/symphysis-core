@@ -125,3 +125,40 @@ def test_edge_probe_has_eight_categories():
     n = word_count(text)
     print(f"SKILL.md symphysis-edge-probe: {n} слов (ориентир {WORDS_TARGET}, потолок {WORDS_CEILING})")
     assert n <= WORDS_CEILING, f"SKILL.md: {n} слов, потолок {WORDS_CEILING}"
+
+
+# Вопрос пробы запретов — дословно (`prohibition-probe.md:53-54`); варианты кандидата — по ярусам проверки.
+PROHIBITION_QUESTION = ("What could this feature silently become that the author would NOT want, "
+                        "but the spec does not forbid?")
+PROHIBITION_OPTIONS = ("Specify/test", "Specify/judgment", "Dismiss", "Defer")
+
+
+def test_prohibition_probe_question_verbatim():
+    skill = SKILLS / "symphysis-prohibition-probe"
+    text = read(skill / "SKILL.md")
+
+    fm = frontmatter(text)
+    assert fm.get("name") == "symphysis-prohibition-probe"
+    assert fm.get("description"), "frontmatter без description"
+    assert "Применяй, когда" in fm["description"], "description без «Применяй, когда …»"
+    assert "Не применяй" in fm["description"], "description без «Не применяй …»"
+
+    assert PROHIBITION_QUESTION in text, "в SKILL.md нет вопроса GSD дословно (prohibition-probe.md:53-54)"
+    assert "security.md" in text, "в SKILL.md нет отсылки канона к `security.md`"
+    for token in PROHIBITION_OPTIONS:
+        assert token in text, f"в SKILL.md нет варианта {token}"
+
+    first = read(skill / "references" / "prohibition-probe.md").splitlines()[0]
+    assert first.startswith(GSD_HEADER), f"references/prohibition-probe.md: первая строка не шапка MIT/Open GSD: {first!r}"
+    assert GSD_PIN in first, f"references/prohibition-probe.md: в шапке нет пина {GSD_PIN}"
+
+    notes = read(skill / "TRANSLATION-NOTES.md")
+    rows = table_rows(notes)
+    assert any(all(word in row.lower() for word in NOTES_HEADER) for row in rows), \
+        "в TRANSLATION-NOTES.md нет заголовка таблицы «место · в источнике · у нас · почему смысл изменён»"
+    assert any("PROB-06" in row or "гейт" in row.lower() for row in rows), \
+        "в TRANSLATION-NOTES.md нет строки про снятый мягкий гейт PROB-06"
+
+    n = word_count(text)
+    print(f"SKILL.md symphysis-prohibition-probe: {n} слов (ориентир {WORDS_TARGET}, потолок {WORDS_CEILING})")
+    assert n <= WORDS_CEILING, f"SKILL.md: {n} слов, потолок {WORDS_CEILING}"
