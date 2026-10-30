@@ -39,6 +39,13 @@ try {
 const { values, positionals } = parsed;
 const cmd = positionals[0];
 
+if (positionals.length > 1) {
+  process.stderr.write(`лишние аргументы: ${positionals.slice(1).join(" ")}
+
+${USAGE}`);
+  process.exit(2);
+}
+
 if (values.help || cmd === "help") {
   process.stdout.write(USAGE);
 } else if (cmd === "install" || cmd === "check") {

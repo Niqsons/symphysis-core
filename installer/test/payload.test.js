@@ -38,3 +38,11 @@ test("устаревший файл в payload удаляется", () => {
   assert.ok(!fs.existsSync(path.join(dest, "stale.txt")));
   assert.ok(!fs.existsSync(path.join(dest, "tools", "old.py")));
 });
+
+test("корень без skills: понятная ошибка, payload не тронут", () => {
+  const dest = tmp();
+  fs.writeFileSync(path.join(dest, "keep.txt"), "x");
+  const badRoot = tmp();
+  assert.throws(() => syncPayload(dest, badRoot), /skills/);
+  assert.ok(fs.existsSync(path.join(dest, "keep.txt")));
+});

@@ -18,26 +18,31 @@ const FILES = [
   "docs/journal.schema.json",
 ];
 
-function skillDirs() {
+function skillDirs(root) {
   return fs
-    .readdirSync(path.join(ROOT, "skills"), { withFileTypes: true })
+    .readdirSync(path.join(root, "skills"), { withFileTypes: true })
     .filter((e) => e.isDirectory() && e.name.startsWith("symphysis-"))
     .map((e) => `skills/${e.name}`);
 }
 
 /** Стирает и пересоздаёт dest, копируя источники из корня symphysis с теми же относительными путями. */
-export function syncPayload(dest = DEFAULT_DEST) {
+export function syncPayload(dest = DEFAULT_DEST, root = ROOT) {
+  // Корень проверяется до очистки: неудачная синхронизация не оставляет пустой payload.
+  if (!fs.existsSync(path.join(root, "skills"))) {
+    throw new Error(`syncPayload: в корне ${root} нет каталога skills — payload не тронут`);
+  }
+  const skills = skillDirs(root);
   fs.rmSync(dest, { recursive: true, force: true });
   fs.mkdirSync(dest, { recursive: true });
   const copied = [];
-  for (const rel of [...DIRS, ...skillDirs()]) {
-    fs.cpSync(path.join(ROOT, rel), path.join(dest, rel), { recursive: true, filter: (s) => path.basename(s) !== "__pycache__" });
+  for (const rel of [...DIRS, ...skills]) {
+    fs.cpSync(path.join(root, rel), path.join(dest, rel), { recursive: true, filter: (s) => path.basename(s) !== "__pycache__" });
     copied.push(rel);
   }
   for (const rel of FILES) {
     const to = path.join(dest, rel);
     fs.mkdirSync(path.dirname(to), { recursive: true });
-    fs.copyFileSync(path.join(ROOT, rel), to);
+    fs.copyFileSync(path.join(root, rel), to);
     copied.push(rel);
   }
   return copied;

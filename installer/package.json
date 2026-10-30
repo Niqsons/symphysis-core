@@ -10,7 +10,8 @@
   "files": [
     "bin",
     "lib",
-    "payload"
+    "payload",
+    "scripts"
   ],
   "engines": {
     "node": ">=20"
