@@ -1,17 +1,18 @@
 #!/usr/bin/env node
 import { parseArgs } from "node:util";
 import { install } from "../lib/install.js";
+import { check } from "../lib/check.js";
 
 const USAGE = `symphysis — схема OpenSpec symphysis, скиллы и инструменты журнала в проект
 
 Использование:
   symphysis install [--project <dir>] [--skills-dir <dir>]... [--force]
-  symphysis check   [--project <dir>]
+  symphysis check   [--project <dir>] [--skills-dir <dir>]...
   symphysis --help
 
 Команды:
   install   поставить схему, скиллы и инструменты журнала в проект
-  check     сверить установку и версию форка OpenSpec
+  check     назвать расхождения установки и версии форка OpenSpec (не чинит)
 
 Параметры:
   --project <dir>     корень проекта (по умолчанию — текущий каталог)
@@ -64,8 +65,17 @@ if (values.help || cmd === "help") {
     process.stderr.write("перезапись существующих файлов: --force\n");
   }
 } else if (cmd === "check") {
-  process.stderr.write(`symphysis ${cmd}: не реализовано\n`);
-  process.exit(2);
+  let r;
+  try {
+    r = check(values.project ?? process.cwd(), { skillsDirs: values["skills-dir"] ?? [] });
+  } catch (e) {
+    process.stderr.write(`symphysis check: ${e.message}\n`);
+    process.exit(1);
+  }
+  for (const f of r.findings) process.stdout.write(`[!!] ${f}\n`);
+  for (const n of r.notes) process.stdout.write(`[..] ${n}\n`);
+  process.stdout.write(r.ok ? "check: ok\n" : `check: ${r.findings.length} расхождений\n`);
+  process.exit(r.ok ? 0 : 2);
 } else {
   process.stderr.write(`${cmd ? `неизвестная команда: ${cmd}\n\n` : ""}${USAGE}`);
   process.exit(2);
