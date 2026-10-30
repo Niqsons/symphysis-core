@@ -62,8 +62,9 @@ def table_rows(text):
 
 SKILL_DIRS = sorted(p for p in SKILLS.glob("symphysis-*/") if p.is_dir())
 SKILLS_COUNT = 4
-# references/*.md без шапки GSD: своё по grill-form.md store (исключение явное, не по маске).
-OWN_REFERENCES = (("symphysis-attack", "grill-lenses.md"),)
+# references/*.md без шапки GSD: с D4b таких нет — переложение гриля store из атаки убрано,
+# все копии несут шапку MIT/Open GSD (исключение было бы явным, не по маске).
+OWN_REFERENCES = ()
 # Вторая персона: целые слова. Кириллица — \w в Unicode-режиме re, границы слов работают.
 SECOND_PERSON = re.compile(
     r"(?<!\w)(?:ты|тебе|тебя|тобой|твой|твоя|твоё|твои|вы|вас|вам|вами|ваш|ваша|ваше|ваши)(?!\w)"
@@ -186,14 +187,26 @@ def test_prohibition_probe_question_verbatim():
         "в TRANSLATION-NOTES.md нет строки про снятый мягкий гейт PROB-06"
 
 
-# Пять линз гриля — имена дословно (`store/change-intake/references/grill-form.md:24-25`).
-GRILL_LENSES = ("эхо требования", "ветви без сценария", "переход состояния",
-                "термин без определения", "реализация в постановке")
 # Установка проверяющих GSD — начала трёх строк «FORCE stance» дословно
 # (`agents/gsd-plan-checker.md:30`, `gsd-code-reviewer.md:22`, `gsd-doc-verifier.md:29`).
 FORCE_LINES = ("Assume every plan set is flawed until evidence proves otherwise",
                "Assume every submitted implementation contains defects",
                "Assume every factual claim in the doc is wrong until filesystem evidence proves it correct")
+# Тяжесть строки атаки — переложение BLOCKER / WARNING / INFO (`agents/gsd-plan-checker.md:39-42`).
+ATTACK_SEVERITIES = ("блокер", "предупреждение", "справка")
+# Линзы атаки — измерения plan-checker по имени (`gsd-plan-checker.md:126`, `:705`) и слуги колонки
+# «Линза» (закрытый список SKILL.md; просмотрщик группирует строки по слугу — слово владельца 2026-10-30).
+ATTACK_LENSES = ("Requirement Coverage", "Numeric/Factual Claim Authority")
+ATTACK_LENS_SLUGS = ("requirement-coverage", "claim-authority", "honest-verifier", "coverage")
+# Воздержание honest-verifier: строка, которая не «есть» и не «нет» (`honest-verifier.md:43`).
+ABSTENTION_ROW = "по спеке не выводится"
+# Копии слоя проверки GSD в references/ атаки: файл -> строка источника дословно.
+ATTACK_REFERENCES = {
+    "plan-checker-dimensions.md": "Issues without a severity classification are not valid output",
+    "claim-extraction.md": "Do NOT execute any commands. Existence check only.",
+    "honest-verifier.md": "## The problem it solves",
+    "gap-output.md": "confirm that status is not `passed` when human verification items exist",
+}
 
 
 def test_attack_skill_writes_verdict_contract():
@@ -205,13 +218,25 @@ def test_attack_skill_writes_verdict_contract():
     for token in ("targets", "sha256", "gaps_found"):
         assert token in text, f"в SKILL.md нет `{token}` — половина `attack-artifacts`"
     assert "FORCE stance" in text, "в SKILL.md нет установки «FORCE stance»"
-    for lens in GRILL_LENSES:
-        assert lens in text, f"в SKILL.md нет линзы «{lens}»"
+    for severity in ATTACK_SEVERITIES:
+        assert severity in text, f"в SKILL.md нет тяжести «{severity}»"
+    for lens in ATTACK_LENSES:
+        assert lens in text, f"в SKILL.md нет линзы plan-checker «{lens}»"
+    assert "| Линза |" in text, "в SKILL.md нет таблицы закрытого списка линз с колонкой «Линза»"
+    for slug in ATTACK_LENS_SLUGS:
+        assert f"`{slug}`" in text, f"в SKILL.md нет слуга линзы `{slug}`"
+    assert ABSTENTION_ROW in text, f"в SKILL.md нет строки воздержания «{ABSTENTION_ROW}»"
+    # журнал — опора артефактов: его правка обесценивает и вердикт `attack-artifacts` (ruling Task 19)
+    artifacts_row = next(row for row in table_rows(text) if row.startswith("| `attack-artifacts`"))
+    assert "decisions.json" in artifacts_row, "в строке `attack-artifacts` таблицы вызовов нет `decisions.json`"
 
     force = read(skill / "references" / "force-stance.md")
     for line in FORCE_LINES:
         assert line in force, f"в references/force-stance.md нет строки «{line[:40]}…» дословно"
+    for name, quote in ATTACK_REFERENCES.items():
+        assert quote in read(skill / "references" / name), f"в references/{name} нет строки «{quote[:40]}…» дословно"
+    assert not (skill / "references" / "grill-lenses.md").exists(), "гриль store — не источник атаки (D4b)"
 
-    lenses = read(skill / "references" / "grill-lenses.md")
-    for lens in GRILL_LENSES:
-        assert lens in lenses, f"в references/grill-lenses.md нет линзы «{lens}»"
+    notes = read(skill / "TRANSLATION-NOTES.md")
+    assert any("store" in row for row in table_rows(notes)), \
+        "в TRANSLATION-NOTES.md нет строки про заимствование из store"
