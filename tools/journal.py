@@ -15,6 +15,8 @@
         --out design.md
     py -3.13 tools/journal.py apply docs/plan-implementation.journal.json answers.md \
         [--date YYYY-MM-DD] [--dry-run]
+    py -3.13 tools/journal.py apply-md4h docs/plan-implementation.journal.json feedback.md \
+        --render docs/plan-implementation.journal.md
 
 Markdown, HTML и design.md — производные от JSON: правится JSON, потом рендер. Корни путей
 улик — свои префиксы symphysis плюс `tools/journal-roots.json`. Путь улики, не
@@ -24,14 +26,19 @@ Markdown, HTML и design.md — производные от JSON: правитс
 `apply` вносит промпт возврата просмотрщика (кнопка «Скопировать промпт») в JSON: всё или
 ничего, отказ называет запись; сам он не рендерит — после него `render-md` и `render-html`.
 
-Подкоманды добавляются по задачам плана (`docs/plan-implementation.tasks.md`,
-часть A): apply-md4h.
+`apply-md4h` вносит комментарии человека из связки Markdown Editor for Humans (`md4h-feedback/v2`)
+в `comments[]` записей: рендер -> комментарии в md4h -> `apply-md4h` -> агент действует по
+`comments[]`. Связка должна быть запечатана и относиться к этому рендеру (SHA-256 файла); запись
+комментария — по ближайшему якорю `<!-- journal:F-NN -->` выше его первой строки. Всё или ничего;
+заново он не рендерит.
 """
 from __future__ import annotations
 
 import argparse
+import bisect
 import copy
 import datetime as dt
+import hashlib
 import json
 import re
 import sys
@@ -49,7 +56,7 @@ OWN_PREFIXES = ("docs/", "upstream/", "CLAUDE.md")
 
 RE_TITLE = re.compile(r"^# (.*\S)\s*$")
 RE_REC = re.compile(r"^## (F-\d+)\s+(.*\S)\s*$")
-RE_ANCHOR = re.compile(r"^<!-- journal:F-\d+ -->\s*$")
+RE_ANCHOR = re.compile(r"^<!-- journal:(F-\d+) -->\s*$")
 RE_GENERATED = re.compile(r"^> Рендер из .+, не править руками\.\s*$")
 RE_FIELD = re.compile(r"^- ([^:]+):\s*(.*)$")
 RE_OPT = re.compile(r"^  - ([A-ZА-Я])\.\s+(.*\S)\s*$")
@@ -447,6 +454,19 @@ def render_md(journal: dict, json_name: str = "") -> str:
     for rec in journal["records"]:
         lines += _render_record(rec) + [""]
     return "\n".join(lines)
+
+
+def _lines(text: str) -> list[str]:
+    """Строки файла как их считает редактор: по `\\n` и `\\r\\n`; номер строки — индекс + 1."""
+    return re.split(r"\r?\n", text)
+
+
+def anchor_lines(rendered_text: str) -> list[tuple[int, str]]:
+    """Якоря `<!-- journal:F-NN -->` рендера: `(номер строки с единицы, id записи)` в порядке
+    файла. Якорь — вся строка; строки считаются так же при LF и при CRLF, чтобы номера
+    совпали с теми, что связка md4h взяла из файла на диске."""
+    return [(n, m.group(1)) for n, line in enumerate(_lines(rendered_text), 1)
+            if (m := RE_ANCHOR.match(line))]
 
 
 def _viewer_record(rec: dict) -> dict:
@@ -870,6 +890,204 @@ def apply_answers(journal: dict, answers: list[dict], date: str) -> list[str]:
     return report
 
 
+# --- комментарии md4h к рендеру --------------------------------------------
+
+MD4H_SCHEMA = "md4h-feedback/v2"
+MD4H_LINE_NUMBERING = "one-based-inclusive"
+MD4H_REQUIRED = ("schema", "state", "round", "source", "source_sha256")
+MD4H_LINES_LABEL = "**Source lines:**"
+RE_MD4H_ITEM = re.compile(r"^## (F\d+)(?:\s.*)?$")
+RE_MD4H_SPAN = re.compile(r"^\*\*Source lines:\*\*[ \t]*(\d+)(?:[ \t]*-[ \t]*(\d+))?[ \t]*$")
+RE_MD4H_FEEDBACK = re.compile(r"^### Feedback[ \t]*$")
+RE_FENCE_OPEN = re.compile(r"^(`{3,})[^`]*$")
+RE_FENCE_CLOSE = re.compile(r"^(`{3,})[ \t]*$")
+
+
+def _md4h_scalar(value: str) -> str:
+    value = value.strip()
+    if len(value) >= 2 and value[0] == value[-1] and value[0] in "\"'":
+        try:
+            return json.loads(value) if value[0] == '"' else value[1:-1]
+        except ValueError:
+            return value[1:-1]
+    return value
+
+
+def _md4h_frontmatter(lines: list[str]) -> tuple[dict, int]:
+    """Поля `ключ: значение` между первой парой `---`; второй результат — индекс строки после неё."""
+    if not lines or lines[0].strip() != "---":
+        raise ValueError("в связке нет frontmatter: файл должен начинаться со строки ---")
+    meta: dict[str, str] = {}
+    for i in range(1, len(lines)):
+        if lines[i].strip() == "---":
+            return meta, i + 1
+        key, sep, value = lines[i].partition(":")
+        if sep and key.strip() and " " not in key.strip():
+            meta[key.strip()] = _md4h_scalar(value)
+    raise ValueError("frontmatter связки не закрыт второй строкой ---")
+
+
+def _md4h_span(item_id: str, line: str) -> tuple[int, int]:
+    m = RE_MD4H_SPAN.match(line)
+    if not m:
+        raise ValueError(f"{item_id}: строка {line.strip()!r} не разобрана: ждали «{MD4H_LINES_LABEL} 12» или «… 12-15»")
+    first = int(m.group(1))
+    last = int(m.group(2) or first)
+    if first < 1 or last < first:
+        raise ValueError(f"{item_id}: строки {first}-{last} не годятся: счёт с единицы, от меньшей к большей")
+    return first, last
+
+
+def parse_md4h(text: str) -> dict:
+    """Связка md4h (`md4h-feedback/v2`) -> `{schema, state, round, source, source_sha256,
+    items: [{id, lines: (первая, последняя), feedback}]}`, комментарии в порядке файла.
+
+    Инструкция человека — только текст в рамке под `### Feedback` (так сказано и в самой связке);
+    выделенный текст, цели и заголовки — улики, в `feedback` они не попадают. Разбор идёт
+    по рамкам кода: заголовок или рамка внутри чужой рамки (выделенный текст сам может
+    быть markdown) разбор не сбивают; рамка закрывается строкой из стольких же обратных
+    кавычек и больше. `Source lines:` — `a-b` или одно число (`a-a`), счёт с единицы, обе
+    границы включены. Незнакомая схема, пропавшее поле или пустой комментарий —
+    `ValueError` с именем того, чего нет. Концы строк LF и CRLF читаются одинаково."""
+    lines = _lines(text.lstrip("\ufeff"))
+    meta, body_start = _md4h_frontmatter(lines)
+    for field in MD4H_REQUIRED:
+        if not meta.get(field):
+            raise ValueError(f"в frontmatter связки нет поля {field}")
+    if meta["schema"] != MD4H_SCHEMA:
+        raise ValueError(f"схема связки {meta['schema']!r} не поддерживается: разбирается только {MD4H_SCHEMA}")
+    if meta.get("line_numbering", MD4H_LINE_NUMBERING) != MD4H_LINE_NUMBERING:
+        raise ValueError(f"line_numbering: {meta['line_numbering']!r} — номера строк разобраны только "
+                         f"в счёте {MD4H_LINE_NUMBERING}")
+
+    items: list[dict] = []
+    item: dict | None = None
+    fence: tuple[int, bool, list[str]] | None = None   # (длина рамки, это Feedback, строки внутри)
+    after_feedback_heading = False
+    for line in lines[body_start:]:
+        if fence is not None:
+            ticks, is_feedback, inner = fence
+            close = RE_FENCE_CLOSE.match(line)
+            if close and len(close.group(1)) >= ticks:
+                if is_feedback:
+                    item["feedback"] = "\n".join(inner).strip()
+                fence = None
+            else:
+                inner.append(line)
+            continue
+        open_ = RE_FENCE_OPEN.match(line)
+        if open_:
+            is_feedback = after_feedback_heading and item is not None and item["feedback"] is None
+            fence = (len(open_.group(1)), is_feedback, [])
+            after_feedback_heading = False
+        elif line.startswith("#"):
+            head = RE_MD4H_ITEM.match(line)
+            if head:
+                item = {"id": head.group(1), "lines": None, "feedback": None}
+                items.append(item)
+            after_feedback_heading = item is not None and bool(RE_MD4H_FEEDBACK.match(line))
+        elif item is not None and item["lines"] is None and line.startswith(MD4H_LINES_LABEL):
+            item["lines"] = _md4h_span(item["id"], line)
+    if fence is not None and fence[1]:
+        raise ValueError(f"{item['id']}: рамка под ### Feedback не закрыта")
+    for it in items:
+        if it["lines"] is None:
+            raise ValueError(f"{it['id']}: нет строки «{MD4H_LINES_LABEL}»")
+        if it["feedback"] is None:
+            raise ValueError(f"{it['id']}: под ### Feedback нет рамки с текстом комментария")
+        if not it["feedback"]:
+            raise ValueError(f"{it['id']}: рамка под ### Feedback пуста — комментарий без текста")
+    return {**{field: meta[field] for field in MD4H_REQUIRED}, "items": items}
+
+
+def sha256_file(path: Path) -> str:
+    """SHA-256 файла по байтам, как он лежит на диске (шестнадцатеричный, строчными)."""
+    return hashlib.sha256(Path(path).read_bytes()).hexdigest()
+
+
+def _record_starts(text: str) -> list[tuple[int, str]]:
+    """`(первая строка записи, id)` по порядку файла. Запись начинается заголовком `## F-NN …`,
+    который `render_md` ставит строкой над якорем: комментарий к самому заголовку принадлежит
+    этой записи, а не предыдущей. Нет такого заголовка над якорем — запись начинается с якоря."""
+    lines = _lines(text)
+    starts = []
+    for n, rid in anchor_lines(text):
+        head = RE_REC.match(lines[n - 2]) if n >= 2 else None
+        starts.append((n - 1 if head and head.group(1) == rid else n, rid))
+    return starts
+
+
+def _md4h_comments(work: dict, bundle: dict, rendered_text: str) -> tuple[list[str], list[str]]:
+    """Раскладывает комментарии связки по записям `work`; возвращает `(отчёт, отказы)`."""
+    starts = _record_starts(rendered_text)
+    if not starts:
+        return [], [f"{REFUSED}: в рендере нет якорей `<!-- journal:F-NN -->` — это не рендер журнала"]
+    firsts = [n for n, _ in starts]
+    by_id = {r["id"]: r for r in work["records"]}
+    report: list[str] = []
+    refusals: list[str] = []
+    for item in bundle["items"]:
+        first, last = item["lines"]
+        at = bisect.bisect_right(firsts, first) - 1
+        if at < 0:
+            refusals.append(f"{REFUSED}: комментарий {item['id']} выше первой записи "
+                            f"(строка {first}, первая запись с {firsts[0]})")
+            continue
+        rid = starts[at][1]
+        rec = by_id.get(rid)
+        if rec is None:
+            refusals.append(f"{REFUSED}: комментарий {item['id']}: записи {rid} нет в журнале — "
+                            "рендер сделан не из этого журнала")
+            continue
+        comment = {"round": bundle["round"], "lines": [first, last], "text": item["feedback"]}
+        if comment in rec["comments"]:
+            report.append(f"{item['id']} → {rid}: уже внесён (строки {first}-{last})")
+        else:
+            rec["comments"].append(comment)
+            report.append(f"{item['id']} → {rid}: комментарий внесён (строки {first}-{last})")
+    return report, refusals
+
+
+def apply_md4h(journal: dict, bundle: dict, rendered_md: Path) -> list[str]:
+    """Вносит комментарии связки md4h в `comments[]` записей журнала на месте; возвращает
+    отчёт строками.
+
+    Отказ (строки `отказ: …`, журнал не меняется): связка не запечатана (`state` не `sealed`);
+    SHA-256 файла `rendered_md` не равен `source_sha256` связки — комментарии относятся к
+    другой версии рендера и их номера строк указывали бы не туда (после этого записи
+    не сопоставляются); комментарий выше первой записи; в рендере есть запись, которой нет
+    в журнале. Как и `apply_answers`, всё или ничего: любой отказ оставляет журнал как был,
+    внесённый результат ещё и проходит `validate_journal`.
+
+    Запись комментария — та, чей якорь `<!-- journal:F-NN -->` ближайший на строке `a`
+    комментария или выше (запись начинается заголовком над якорем, см. `_record_starts`);
+    строки считаются по файлу на диске. Вносится `{round, lines: [a, b], text}`; такой же
+    комментарий (раунд, строки и текст) в записи уже есть — он пропускается со строкой
+    «уже внесён», поэтому повторное внесение той же связки ничего не меняет. Рендер заново
+    не делается."""
+    refusals: list[str] = []
+    if bundle["state"] != "sealed":
+        refusals.append(f"{REFUSED}: связка не запечатана (state: {bundle['state']}) — "
+                        "комментарии вносятся только из запечатанной")
+    data = Path(rendered_md).read_bytes()
+    actual = hashlib.sha256(data).hexdigest()
+    if actual != str(bundle["source_sha256"]).lower():
+        refusals.append(f"{REFUSED}: sha256 рендера не совпадает: связка к другой версии "
+                        f"(в связке {str(bundle['source_sha256'])[:12]}…, у файла {actual[:12]}…)")
+    work = copy.deepcopy(journal)
+    report: list[str] = []
+    if not refusals:  # номера строк чужой версии рендера указывали бы не туда — не сопоставляем
+        report, refusals = _md4h_comments(work, bundle, data.decode("utf-8"))
+    if not refusals:
+        refusals = [f"{REFUSED}: после внесения журнал негоден — {e}" for e in validate_journal(work)]
+    if refusals:
+        return refusals + [f"{REFUSED}: журнал не изменён — отказов {len(refusals)}, "
+                           f"комментариев в связке {len(bundle['items'])}"]
+    journal.clear()
+    journal.update(work)
+    return report
+
+
 # --- командная строка ------------------------------------------------------
 
 def _valid_journal(path: Path) -> dict | None:
@@ -988,6 +1206,47 @@ def cmd_apply(args: argparse.Namespace) -> int:
     return 0
 
 
+def _comment_count(journal: dict) -> int:
+    return sum(len(r["comments"]) for r in journal["records"])
+
+
+def cmd_apply_md4h(args: argparse.Namespace) -> int:
+    journal = _valid_journal(args.json)
+    if journal is None:
+        return 1
+    for path in (args.feedback, args.render):
+        if not path.is_file():
+            print(f"[!!] {path}: файла нет", file=sys.stderr)
+            return 1
+    try:
+        bundle = parse_md4h(args.feedback.read_text(encoding="utf-8-sig"))
+    except UnicodeDecodeError:  # раньше ValueError: это его подкласс
+        print(f"[!!] {args.feedback}: не UTF-8 — связка md4h читается как UTF-8", file=sys.stderr)
+        return 1
+    except ValueError as e:
+        print(f"[!!] {args.feedback}: {e}", file=sys.stderr)
+        return 1
+    before = _comment_count(journal)
+    try:
+        report = apply_md4h(journal, bundle, args.render)
+    except UnicodeDecodeError:
+        print(f"[!!] {args.render}: не UTF-8 — рендер читается как UTF-8", file=sys.stderr)
+        return 1
+    if any(line.startswith(REFUSED) for line in report):
+        for line in report:
+            print(f"[!!] {line}", file=sys.stderr)
+        return 2
+    for line in report:
+        print(f"[ok] {line}")
+    added = _comment_count(journal) - before
+    print(f"[ok] комментариев внесено {added}")
+    if added:  # ничего нового — файл не переписывается, чтобы повтор не менял его ни байтом
+        save_journal(args.json, journal)
+        print(f"[ok] {args.json}")
+        print("[..] apply-md4h не рендерит: комментарии лежат в comments[] записей, дальше действует агент")
+    return 0
+
+
 def build_parser() -> argparse.ArgumentParser:
     ap = argparse.ArgumentParser(prog="journal", description=__doc__.splitlines()[0])
     sub = ap.add_subparsers(dest="cmd", required=True)
@@ -1012,6 +1271,20 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--date", type=_iso_date, help="YYYY-MM-DD в decision.date и notes[].date; по умолчанию сегодня")
     p.add_argument("--dry-run", action="store_true", help="показать отчёт, JSON не записывать")
     p.set_defaults(func=cmd_apply)
+    p = sub.add_parser("apply-md4h", help="внести комментарии человека из связки md4h к рендеру в comments[] JSON",
+                       description="Порядок: render-md -> человек комментирует рендер в Markdown Editor for "
+                                   "Humans (md4h) -> apply-md4h -> агент действует по comments[] записей. "
+                                   "Комментарий попадает в запись по ближайшему якорю журнала выше его "
+                                   "первой строки. Связка должна быть запечатана (state: sealed), а SHA-256 "
+                                   "рендера (--render) — совпасть с source_sha256 связки; иначе отказ, код 2, "
+                                   "JSON не меняется. Всё или ничего; повтор той же связки ничего не меняет. "
+                                   "Негодный журнал или нечитаемая связка — код 1. "
+                                   "apply-md4h не рендерит: ни markdown, ни HTML.")
+    p.add_argument("json", type=Path)
+    p.add_argument("feedback", type=Path, help="feedback.md связки md4h (md4h-feedback/v2, UTF-8)")
+    p.add_argument("--render", type=Path, required=True,
+                   help="отрендеренный markdown, к которому писались комментарии (сверяется SHA-256)")
+    p.set_defaults(func=cmd_apply_md4h)
     p = sub.add_parser("render-md", help="JSON -> markdown (производный файл); негодный журнал — код 1")
     p.add_argument("json", type=Path)
     p.add_argument("--out", type=Path, required=True)
