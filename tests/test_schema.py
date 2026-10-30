@@ -191,7 +191,11 @@ def test_templates_exist_and_decisions_template_valid():
         assert template_text(name).startswith("---\nstatus:"), name
 
 
-ATTACK_COLUMNS = ["Утверждение", "Раздел", "Опора есть / нет", "Чем закрыть"]
+# Колонки атаки: линза (слуг измерения GSD — просмотрщик группирует строки по нему, слово владельца
+# 2026-10-30), инвариант и тяжесть — из классификации находок plan-checker (`agents/gsd-plan-checker.md:39-46`),
+# остальное — форма разрыва verifier (`gsd-verifier.md:616-631`).
+ATTACK_COLUMNS = ["Утверждение", "Раздел", "Линза", "Инвариант", "Тяжесть", "Опора есть / нет", "Чем закрыть"]
+ATTACK_SEVERITIES = ("блокер", "предупреждение", "справка")
 
 
 @pytest.mark.parametrize("name", ["attack-decisions.md", "attack-artifacts.md"])
@@ -200,8 +204,13 @@ def test_attack_templates_table_and_verdict_rule(name):
     assert frontmatter(text).splitlines()[0] == "status: gaps_found"
     header = [row for row in text.splitlines() if row.startswith("|")][0]
     assert [c.strip() for c in header.strip("|").split("|")] == ATTACK_COLUMNS
+    for severity in ATTACK_SEVERITIES:
+        assert severity in text, f"в шаблоне нет тяжести «{severity}»"
+    assert "по спеке не выводится" in text, "в шаблоне нет строки воздержания"
+    assert "coverage" in text, "в шаблоне нет линзы `coverage` для строк «чисто» и «не пройдено»"
     closing = last_line(text)
     assert "passed" in closing and "без опоры" in closing, closing
+    assert "справка" in closing and "по спеке не выводится" in closing, closing
 
 
 def test_attack_decisions_template_names_single_target():
@@ -215,7 +224,9 @@ def test_attack_artifacts_template_lists_targets():
     assert "targets:" in fm and not any(line.startswith("target") and not line.startswith("targets:")
                                         for line in fm), fm
     paths = [m.group(1) for line in fm if (m := re.match(r"\s+- path: (\S+)", line))]
-    assert paths[0].startswith("specs/") and paths[1:] == ["design.md", "security.md", "tasks.md"], paths
+    # журнал — первым: он опора артефактов, его правка обесценивает и этот вердикт (ruling Task 19)
+    assert paths[0] == "decisions.json" and paths[1].startswith("specs/"), paths
+    assert paths[2:] == ["design.md", "security.md", "tasks.md"], paths
     assert len([line for line in fm if re.match(r"\s+sha256:", line)]) == len(paths)
 
 
