@@ -31,6 +31,8 @@
   `journal_model` (схема, проверка, импорт md), `journal_render` (md, html,
   design.md), `journal_apply` (сверка улик, внесение правок), `journal_cli`;
   модули импортируют друг друга по имени, не через фасад.
+- `installer/` — npm-пакет `@niqsons/symphysis`: `install`/`check`;
+  `payload/` генерируется из корня (`scripts/sync-payload.js`), не правится.
 - `docs/analysis/step0-sources.md` — чтение источников шага 0
   с вердиктами: что берём как есть, что дорабатываем, что
   переписываем; при составлении instruction и формата журнала.
