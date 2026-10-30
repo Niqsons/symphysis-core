@@ -14,6 +14,7 @@ SCHEMAS = ROOT / "openspec" / "schemas"
 TEMPLATES = SCHEMAS / "symphysis" / "templates"
 SCHEMA_YAML = SCHEMAS / "symphysis" / "schema.yaml"
 CHANGE_DEMO = ROOT / "tests" / "fixtures" / "change-demo"
+CHANGE_DEMO_ATTACK = ROOT / "tests" / "fixtures" / "change-demo-attack"
 
 TEMPLATE_FILES = ["decisions.json", "research.md", "attack-decisions.md", "attack-artifacts.md",
                   "proposal.md", "spec.md", "design.md", "security.md", "tasks.md"]
@@ -450,6 +451,76 @@ def test_status_after_research(tmp_path):
     assert by_id["attack-decisions"]["status"] == "ready"
     assert by_id["proposal"]["status"] == "blocked"
     assert by_id["proposal"]["missingDeps"] == ["attack-decisions"]
+
+
+# --- вердикт держит граф: фикстура change-demo-attack ----------------------
+
+def artifacts_by_id(status):
+    return {a["id"]: a for a in status["artifacts"]}
+
+
+def write_attack_decisions(proj, verdict):
+    """`attack/decisions.md` изменения `demo`: шаблон схемы с `status: <verdict>` во frontmatter."""
+    text = template_text("attack-decisions.md")
+    opening = "---\nstatus: gaps_found\n"
+    assert text.startswith(opening), text[:40]
+    path = proj / "openspec" / "changes" / "demo" / "attack" / "decisions.md"
+    path.write_text(f"---\nstatus: {verdict}\n" + text[len(opening):], encoding="utf-8", newline="\n")
+
+
+def test_change_demo_attack_extends_change_demo():
+    """Фикстура с черновиком атаки — копия `change-demo` и один файл `attack/decisions.md` без frontmatter."""
+    def files(root):
+        return sorted(p.relative_to(root).as_posix() for p in root.rglob("*") if p.is_file())
+
+    def table_header(text):
+        return [row for row in text.splitlines() if row.startswith("|")][0]
+
+    base = files(CHANGE_DEMO)
+    assert files(CHANGE_DEMO_ATTACK) == sorted(base + ["attack/decisions.md"])
+    for name in base:
+        assert (CHANGE_DEMO_ATTACK / name).read_bytes() == (CHANGE_DEMO / name).read_bytes(), name
+    draft = lf_text(CHANGE_DEMO_ATTACK / "attack" / "decisions.md")
+    assert not draft.startswith("---") and "status:" not in draft, draft[:60]
+    assert headings(draft, 1) == ["Атака журнала решений"]
+    assert table_header(draft) == table_header(template_text("attack-decisions.md"))
+
+
+@requires_fork
+def test_verdict_blocks_proposal(tmp_path):
+    """Файл `attack/decisions.md` без вердикта артефакт не закрывает, и `proposal` ждёт: `ready` с
+    `verdict: missing` и подсказкой в `nextSteps`. Дописали `status: passed` — `done`, `proposal` `ready`."""
+    proj = make_project(tmp_path, change_fixture=CHANGE_DEMO_ATTACK)
+    out = run_openspec(proj, "status", "--change", "demo", "--json")
+    by_id = artifacts_by_id(out)
+    assert by_id["attack-decisions"]["status"] == "ready"
+    assert by_id["attack-decisions"]["verdict"] == "missing"
+    assert out["nextSteps"][0].startswith('Artifact "attack-decisions" exists but has no verdict'), out["nextSteps"]
+    assert by_id["proposal"]["status"] == "blocked"
+    assert by_id["proposal"]["missingDeps"] == ["attack-decisions"]
+    assert "verdict" not in by_id["proposal"] and "verdict" not in by_id["research"]
+
+    write_attack_decisions(proj, "passed")
+    out = run_openspec(proj, "status", "--change", "demo", "--json")
+    by_id = artifacts_by_id(out)
+    assert by_id["attack-decisions"]["status"] == "done"
+    assert by_id["attack-decisions"]["verdict"] == "ok"
+    assert by_id["proposal"]["status"] == "ready"
+    assert not any(step.startswith('Artifact "attack-decisions"') for step in out["nextSteps"]), out["nextSteps"]
+
+
+@requires_fork
+def test_verdict_gaps_found_keeps_proposal_blocked(tmp_path):
+    """Вердикт `gaps_found` — не тот, что требует схема: артефакт остаётся `ready` с `verdict: mismatch`,
+    `proposal` не открывается, подсказка называет найденное значение."""
+    proj = make_project(tmp_path, change_fixture=CHANGE_DEMO_ATTACK)
+    write_attack_decisions(proj, "gaps_found")
+    out = run_openspec(proj, "status", "--change", "demo", "--json")
+    by_id = artifacts_by_id(out)
+    assert by_id["attack-decisions"]["status"] == "ready"
+    assert by_id["attack-decisions"]["verdict"] == "mismatch"
+    assert out["nextSteps"][0].startswith('Artifact "attack-decisions" has verdict status=gaps_found'), out["nextSteps"]
+    assert by_id["proposal"]["status"] == "blocked"
 
 
 @requires_fork
