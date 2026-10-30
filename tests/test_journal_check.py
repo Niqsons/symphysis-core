@@ -105,6 +105,7 @@ def test_default_roots_cover_symphysis_and_file():
     assert roots["upstream/"] == ROOT / "upstream"
     assert roots["CLAUDE.md"] == ROOT / "CLAUDE.md"
     assert {"store/", "playground/", "md4h/"} <= set(roots)
+    assert "" not in roots
 
 
 def test_roots_file_expands_home_and_overrides(tmp_path):
@@ -113,8 +114,25 @@ def test_roots_file_expands_home_and_overrides(tmp_path):
                  encoding="utf-8")
     roots = journal.default_roots(f)
     assert roots["a/"] == Path.home() / "дом" and roots["b/"] == Path.home() / "тильда"
-    assert roots["c/"] == tmp_path and roots["docs/"] == ROOT / "docs"
-    assert "store/" not in roots
+    assert roots["c/"] == tmp_path
+    assert "docs/" not in roots and "store/" not in roots
+
+
+def test_roots_file_expands_root_placeholder(tmp_path):
+    f = tmp_path / "roots.json"
+    f.write_text(json.dumps({"": "<root>/..", "a/": "<root>/docs"}), encoding="utf-8")
+    roots = journal.default_roots(f)
+    assert roots[""] == ROOT.parent
+    assert roots["a/"] == ROOT / "docs"
+
+
+def test_empty_prefix_is_default_root_only_when_configured(tmp_path):
+    (tmp_path / "src").mkdir()
+    (tmp_path / "src" / "a.md").write_text("строка улики\n", encoding="utf-8")
+    j = one_record_journal(path="src/a.md", quote="строка улики")
+    assert journal.check_evidence(j, {"": tmp_path})["found"] == 1
+    r = journal.check_evidence(j, {"docs/": tmp_path})
+    assert r["found"] == 0 and "корня для пути нет" in r["missing"][0]
 
 
 # --- командная строка ------------------------------------------------------

@@ -23,25 +23,26 @@ __all__ = [
 
 
 ROOTS_PATH = ROOT / "tools" / "journal-roots.json"
-# Префиксы путей улик, которые лежат в самом symphysis (остальные — в journal-roots.json).
-OWN_PREFIXES = ("docs/", "upstream/", "CLAUDE.md")
 
 
 # --- сверка улик -----------------------------------------------------------
 
-def _expand_home(value: str) -> Path:
+def _expand_value(value: str) -> Path:
+    """`<home>` и `~` — домашний каталог; `<root>` — ROOT (каталог над `tools/`), хвост
+    после него разрешается (`<root>/..` — каталог над ROOT)."""
+    if value.startswith("<root>"):
+        return (ROOT / value[len("<root>"):].lstrip("/\\")).resolve()
     if value.startswith("<home>"):
         value = str(Path.home()) + value[len("<home>"):]
     return Path(value).expanduser()
 
 
 def default_roots(roots_file: Path | None = None) -> dict[str, Path]:
-    """Префикс пути улики -> каталог. Свои префиксы symphysis плюс файл корней
-    (`tools/journal-roots.json` или `roots_file`); `~` и `<home>` — домашний каталог."""
-    roots = {prefix: ROOT / prefix for prefix in OWN_PREFIXES}
+    """Префикс пути улики -> каталог — только из файла корней (`tools/journal-roots.json`
+    или `roots_file`); зашитых в код префиксов нет. Значение: `<root>`, `<home>`, `~` или
+    путь; пустой префикс `""` — корень по умолчанию, если файл его называет."""
     raw = json.loads(Path(roots_file or ROOTS_PATH).read_text(encoding="utf-8"))
-    roots.update({prefix: _expand_home(value) for prefix, value in raw.items()})
-    return roots
+    return {prefix: _expand_value(value) for prefix, value in raw.items()}
 
 
 def _resolve(path: str, roots: dict[str, Path]) -> Path | None:

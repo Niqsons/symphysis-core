@@ -13,7 +13,7 @@ import journal  # noqa: E402  (после правки sys.path)
 
 
 def missing_evidence_roots() -> list[str]:
-    """Корни улик из `default_roots()` (свои префиксы и `tools/journal-roots.json`),
+    """Корни улик из `default_roots()` (файл `tools/journal-roots.json`),
     которых на этой машине нет: `префикс -> путь`."""
     return [f"{prefix} -> {path}" for prefix, path in journal.default_roots().items() if not path.exists()]
 
