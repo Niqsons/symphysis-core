@@ -186,6 +186,8 @@ def test_attack_skill_writes_verdict_contract():
 
     assert "status: passed" in text, "в SKILL.md нет вердикта `status: passed`"
     assert "target_sha256" in text, "в SKILL.md нет поля `target_sha256`"
+    for token in ("targets", "sha256", "gaps_found"):
+        assert token in text, f"в SKILL.md нет `{token}` — половина `attack-artifacts`"
     assert "FORCE stance" in text, "в SKILL.md нет установки «FORCE stance»"
     for lens in GRILL_LENSES:
         assert lens in text, f"в SKILL.md нет линзы «{lens}»"
