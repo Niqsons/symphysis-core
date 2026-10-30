@@ -61,10 +61,13 @@ def table_rows(text):
 
 
 SKILL_DIRS = sorted(p for p in SKILLS.glob("symphysis-*/") if p.is_dir())
-SKILLS_COUNT = 4
+SKILLS_COUNT = 5
 # references/*.md без шапки GSD: с D4b таких нет — переложение гриля store из атаки убрано,
 # все копии несут шапку MIT/Open GSD (исключение было бы явным, не по маске).
 OWN_REFERENCES = ()
+# Скиллы без источника GSD (F-26: просмотрщик — свой скилл, Playground — образец): references/ нет
+# или без копий GSD — шапка MIT/Open GSD у них не проверяется, её быть не должно.
+OWN_SKILLS = ("symphysis-viewer",)
 # Вторая персона: целые слова. Кириллица — \w в Unicode-режиме re, границы слов работают.
 SECOND_PERSON = re.compile(
     r"(?<!\w)(?:ты|тебе|тебя|тобой|твой|твоя|твоё|твои|вы|вас|вам|вами|ваш|ваша|ваше|ваши)(?!\w)"
@@ -88,8 +91,12 @@ def test_skill_shape(skill):
     assert "Не применяй" in fm["description"], "description без «Не применяй …»"
 
     refs = sorted((skill / "references").glob("*.md"))
-    assert refs, "нет references/*.md"
-    for ref in refs:
+    if skill.name in OWN_SKILLS:
+        for ref in refs:
+            assert not read(ref).startswith(GSD_HEADER), f"references/{ref.name}: копия GSD в своём скилле"
+    else:
+        assert refs, "нет references/*.md"
+    for ref in refs if skill.name not in OWN_SKILLS else ():
         first = read(ref).splitlines()[0]
         if (skill.name, ref.name) in OWN_REFERENCES:
             assert not first.startswith(GSD_HEADER), \
@@ -297,3 +304,33 @@ def test_template_scheme_names_attack_not_grill():
     assert "Гриль" not in text and "гриль" not in text, "гриля после D4b нет"
     assert "4 Атака журнала" in text and "attack/decisions.md" in text and "attack/artifacts.md" in text
     assert "'attack.md'" not in text, "общего attack.md после D4b нет: два файла атаки"
+
+
+# --- symphysis-viewer: свой скилл, Playground — образец (F-26, слово владельца 2026-10-30) ---
+
+VIEWER_MAIN_RULE = "вывод модели — развилка"
+
+
+def test_viewer_skill_shape():
+    """D7: главное правило «вывод модели — развилка, а не строка поставки», три режима и что человек делает
+    в каждом, порядок команд, правило разделения линз и перспектив одной фразой в «Главном правиле»;
+    references/ нет или без копий GSD; TRANSLATION-NOTES — по `playground/SKILL.md`: что взято как образец
+    и что сделано иначе."""
+    skill = SKILLS / "symphysis-viewer"
+    text = read(skill / "SKILL.md")
+    assert VIEWER_MAIN_RULE in text, f"в SKILL.md нет «{VIEWER_MAIN_RULE}»"
+    for token in ("render-html", "apply", "маловероятно", "--attack", "check", "render-md", "answers/",
+                  "сначала запись", "не считается вердиктом"):
+        assert token in text, f"в SKILL.md нет «{token}»"
+    for mode in ("«решения»", "«проверка»", "«атака»"):
+        assert mode in text, f"в SKILL.md нет режима {mode}"
+    main = text.split("## Главное правило")[1].split("\n## ")[0]
+    assert "линз" in main and "перспектив" in main, "правило разделения линз и перспектив — в «Главном правиле»"
+    assert "Playground" in text, "в SKILL.md не назван образец — Playground"
+    refs = sorted((skill / "references").glob("*.md")) if (skill / "references").is_dir() else []
+    assert not any(read(r).startswith(GSD_HEADER) for r in refs), "своё: копий GSD нет"
+    notes = read(skill / "TRANSLATION-NOTES.md")
+    assert any("playground/SKILL.md" in row for row in table_rows(notes)), \
+        "в TRANSLATION-NOTES.md нет строки по playground/SKILL.md"
+    for token in ("Single HTML file", "presets", "browser storage", "apply"):
+        assert token in notes, f"в TRANSLATION-NOTES.md нет «{token}»"
