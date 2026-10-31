@@ -174,6 +174,10 @@
   {
    "date": "2026-10-31",
    "text": "атака decisions.json (проход 8, с начала — хеш цели разошёлся с проходом 7): строк 159, блокеров 0, предупреждений 0, справок 159, не выводится 0 — passed; 34 записи проб: решение E человека, зеркало исхода по букве рекомендации, след в spec.md сверен грепом; канон F-58…F-60 припаркован ИБ; F-61 A со словом"
+  },
+  {
+   "date": "2026-11-01",
+   "text": "финальное ревью ветки: развилки F-62…F-64 заведены по решениям владельца, принятым вне журнала (форма пометки отступления, ответ к нерешённой записи, окно устаревания вердикта); решения внесены `apply` из answers/2026-11-01.md, дата решения — дата внесения; слова F-62 и F-63 сказаны 2026-10-31, F-64 — 2026-11-01"
   }
  ],
  "records": [
@@ -282,16 +286,16 @@
     {
      "path": "skills/symphysis-attack/SKILL.md",
      "quote": "Список закрыт; просмотрщик группирует строки по слугу.",
-     "line": 127,
+     "line": 170,
      "found": true,
      "verdict": "сверено"
     },
     {
      "path": "skills/symphysis-attack/SKILL.md",
      "quote": "решение design противоречит `decision`, не стоит на записи или принято здесь",
-     "line": 138,
-     "found": true,
-     "verdict": "сверено"
+     "line": null,
+     "found": false,
+     "verdict": "цитаты нет дословно"
     },
     {
      "path": "calibration/c3-p1/project/openspec/changes/camunda-bid/attack/artifacts.md",
@@ -338,7 +342,7 @@
     {
      "path": "openspec/schemas/symphysis/schema.yaml",
      "quote": "Получи design.md из журнала",
-     "line": 74,
+     "line": 87,
      "found": true,
      "verdict": "сверено"
     },
@@ -401,7 +405,7 @@
     {
      "path": "skills/symphysis-attack/SKILL.md",
      "quote": "`decisions.json` (опора, не атакуется), `specs/**/*.md`, `design.md`, `security.md`, `tasks.md`",
-     "line": 77,
+     "line": 92,
      "found": true,
      "verdict": "сверено"
     },
@@ -461,21 +465,21 @@
       {
        "path": "upstream/openspec/src/core/artifact-graph/instruction-loader.ts",
        "quote": "isPlanningComplete: isComplete,",
-       "line": 628,
+       "line": 758,
        "found": true,
        "verdict": "сверено"
       },
       {
        "path": "upstream/openspec/src/core/artifact-graph/instruction-loader.ts",
        "quote": "Fork (symphysis, C3): verdict state, only for artifacts whose schema entry",
-       "line": 171,
-       "found": true,
-       "verdict": "сверено"
+       "line": null,
+       "found": false,
+       "verdict": "цитаты нет дословно"
       },
       {
        "path": "skills/symphysis-attack/SKILL.md",
        "quote": "`status: passed` ставится, только когда в таблице нет ни одной строки",
-       "line": 166,
+       "line": 234,
        "found": true,
        "verdict": "сверено"
       }
@@ -505,7 +509,7 @@
       {
        "path": "openspec/schemas/symphysis/schema.yaml",
        "quote": "id: attack-artifacts",
-       "line": 107,
+       "line": 120,
        "found": true,
        "verdict": "сверено"
       }
@@ -583,7 +587,7 @@
       {
        "path": "skills/symphysis-attack/SKILL.md",
        "quote": "Список закрыт; просмотрщик группирует строки по слугу.",
-       "line": 127,
+       "line": 170,
        "found": true,
        "verdict": "сверено"
       }
@@ -659,7 +663,7 @@
       {
        "path": "openspec/schemas/symphysis/schema.yaml",
        "quote": "Основание — решённые записи журнала: ссылайся на них по номеру F-NN, не пересказывай.",
-       "line": 50,
+       "line": 61,
        "found": true,
        "verdict": "сверено"
       }
@@ -750,16 +754,16 @@
       {
        "path": "openspec/schemas/symphysis/schema.yaml",
        "quote": "Получи design.md из журнала",
-       "line": 74,
+       "line": 87,
        "found": true,
        "verdict": "сверено"
       },
       {
        "path": "skills/symphysis-attack/SKILL.md",
        "quote": "решение design противоречит `decision`, не стоит на записи или принято здесь",
-       "line": 138,
-       "found": true,
-       "verdict": "сверено"
+       "line": null,
+       "found": false,
+       "verdict": "цитаты нет дословно"
       },
       {
        "path": "calibration/c3-p1/project/openspec/changes/camunda-bid/decisions.md",
@@ -779,7 +783,7 @@
       {
        "path": "skills/symphysis-brainstorm/SKILL.md",
        "quote": "`consequences` — какие записи на нём стоят.",
-       "line": 131,
+       "line": 178,
        "found": true,
        "verdict": "сверено"
       },
@@ -801,7 +805,7 @@
       {
        "path": "skills/symphysis-brainstorm/SKILL.md",
        "quote": "`consequences` — что следует из решения.",
-       "line": 124,
+       "line": 157,
        "found": true,
        "verdict": "сверено"
       },
@@ -946,7 +950,7 @@
       {
        "path": "archive/RUN-PREP-symphysis-2026-10-30.md",
        "quote": "по К3 — пригодно; по К7 (C против P)",
-       "line": 191,
+       "line": 208,
        "found": true,
        "verdict": "сверено"
       }
@@ -1010,9 +1014,9 @@
       {
        "path": "skills/symphysis-attack/SKILL.md",
        "quote": "парковка `материалы` без `finding` при `research/<F-NN>.md`; `факт` без улики; `recommendation` с пустым `why`",
-       "line": 141,
-       "found": true,
-       "verdict": "сверено"
+       "line": null,
+       "found": false,
+       "verdict": "цитаты нет дословно"
       },
       {
        "path": "calibration/c3-p1/project/openspec/changes/camunda-bid/decisions.md",
@@ -1024,7 +1028,7 @@
       {
        "path": "tools/journal_model.py",
        "quote": "if r[\"decision\"] and r[\"decision\"][\"option\"] not in own:",
-       "line": 279,
+       "line": 323,
        "found": true,
        "verdict": "сверено"
       }
@@ -1039,7 +1043,7 @@
       {
        "path": "skills/symphysis-attack/SKILL.md",
        "quote": "Атака пишет `attack/<цель>.md` и строку итога в `notes[]` журнала.",
-       "line": 90,
+       "line": 113,
        "found": true,
        "verdict": "сверено"
       }
@@ -1088,7 +1092,7 @@
       {
        "path": "openspec/schemas/symphysis/schema.yaml",
        "quote": "id: decisions",
-       "line": 5,
+       "line": 14,
        "found": true,
        "verdict": "сверено"
       },
@@ -1183,7 +1187,7 @@
     {
      "path": "skills/symphysis-brainstorm/SKILL.md",
      "quote": "новый круг — только по слову",
-     "line": 9,
+     "line": 10,
      "found": true,
      "verdict": "сверено"
     },
@@ -1302,16 +1306,16 @@
       {
        "path": "openspec/schemas/symphysis/schema.yaml",
        "quote": "На каждую парковку с адресатом «материалы» — один файл `research/<F-NN>.md`.",
-       "line": 20,
-       "found": true,
-       "verdict": "сверено"
+       "line": null,
+       "found": false,
+       "verdict": "цитаты нет дословно"
       },
       {
        "path": "openspec/schemas/symphysis/schema.yaml",
        "quote": "ненайденное — отрицанием по рецепту",
-       "line": 22,
-       "found": true,
-       "verdict": "сверено"
+       "line": null,
+       "found": false,
+       "verdict": "цитаты нет дословно"
       },
       {
        "path": "openspec/changes/symphysis-schema/decisions.json",
@@ -1331,23 +1335,23 @@
       {
        "path": "openspec/changes/calibration-fixes/decisions.json",
        "quote": "Признак `optional` у артефакта в форке OpenSpec",
-       "line": 457,
+       "line": 461,
        "found": true,
        "verdict": "сверено"
       },
       {
        "path": "upstream/openspec/src/core/artifact-graph/instruction-loader.ts",
        "quote": "isPlanningComplete: isComplete,",
-       "line": 628,
+       "line": 758,
        "found": true,
        "verdict": "сверено"
       },
       {
        "path": "skills/symphysis-attack/SKILL.md",
        "quote": "парковка `материалы` без `finding` при `research/<F-NN>.md`",
-       "line": 141,
-       "found": true,
-       "verdict": "сверено"
+       "line": null,
+       "found": false,
+       "verdict": "цитаты нет дословно"
       }
      ]
     },
@@ -1360,14 +1364,14 @@
       {
        "path": "upstream/openspec/src/core/artifact-graph/instruction-loader.ts",
        "quote": "if (metadata?.skip_specs) {",
-       "line": 312,
+       "line": 354,
        "found": true,
        "verdict": "сверено"
       },
       {
        "path": "upstream/openspec/src/core/artifact-graph/instruction-loader.ts",
        "quote": "This change declares skip_specs: true in .openspec.yaml (no spec-level behavior changes), so this artifact is skipped.",
-       "line": 135,
+       "line": 154,
        "found": true,
        "verdict": "сверено"
       }
@@ -1461,7 +1465,7 @@
       {
        "path": "openspec/changes/calibration-fixes/decisions.json",
        "quote": "\"addressee\": \"материалы\"",
-       "line": 185,
+       "line": 189,
        "found": true,
        "verdict": "сверено"
       }
@@ -1540,16 +1544,16 @@
       {
        "path": "skills/symphysis-viewer/SKILL.md",
        "quote": "строки сгруппированы линза → тяжесть",
-       "line": 131,
+       "line": 133,
        "found": true,
        "verdict": "сверено"
       },
       {
        "path": "skills/symphysis-viewer/SKILL.md",
        "quote": "то, что `apply` уже внёс, из состояния убирается само",
-       "line": 87,
-       "found": true,
-       "verdict": "сверено через перенос"
+       "line": null,
+       "found": false,
+       "verdict": "цитаты нет дословно"
       }
      ]
     },
@@ -1562,7 +1566,7 @@
       {
        "path": "skills/symphysis-viewer/SKILL.md",
        "quote": "отказ называет запись и причину — исправь строку промпта",
-       "line": 160,
+       "line": 204,
        "found": true,
        "verdict": "сверено"
       }
@@ -1633,14 +1637,14 @@
       {
        "path": "openspec/changes/calibration-fixes/decisions.json",
        "quote": "Признак `optional` у артефакта в форке OpenSpec",
-       "line": 457,
+       "line": 461,
        "found": true,
        "verdict": "сверено"
       },
       {
        "path": "upstream/openspec/src/core/artifact-graph/instruction-loader.ts",
        "quote": "isPlanningComplete: isComplete,",
-       "line": 628,
+       "line": 758,
        "found": true,
        "verdict": "сверено"
       }
@@ -1655,7 +1659,7 @@
       {
        "path": "upstream/openspec/src/core/artifact-graph/instruction-loader.ts",
        "quote": "if (metadata?.skip_specs) {",
-       "line": 312,
+       "line": 354,
        "found": true,
        "verdict": "сверено"
       }
@@ -1824,7 +1828,7 @@
       {
        "path": "openspec/changes/symphysis-schema/decisions.json",
        "quote": "\"id\": \"F-79\"",
-       "line": 5264,
+       "line": 5272,
        "found": true,
        "verdict": "сверено"
       }
@@ -1917,9 +1921,9 @@
       {
        "path": "tools/journal_render.py",
        "quote": "return [c.strip() for c in line.strip().strip(\"|\").split(\"|\")]",
-       "line": 237,
-       "found": true,
-       "verdict": "сверено"
+       "line": null,
+       "found": false,
+       "verdict": "цитаты нет дословно"
       },
       {
        "path": "docs/dry-run-report.md",
@@ -1954,7 +1958,7 @@
       {
        "path": "openspec/changes/calibration-fixes/decisions.json",
        "quote": "экранирование сегодня не спасает",
-       "line": 1881,
+       "line": 1885,
        "found": true,
        "verdict": "сверено"
       }
@@ -2290,7 +2294,7 @@
     {
      "path": "openspec/changes/calibration-fixes/specs/artifact-graph/spec.md",
      "quote": "### Requirement: Исследование — файл на каждую парковку «материалы» с жанром",
-     "line": 50,
+     "line": 55,
      "found": true,
      "verdict": "сверено"
     }
@@ -2368,7 +2372,7 @@
     {
      "path": "openspec/changes/calibration-fixes/specs/artifact-graph/spec.md",
      "quote": "### Requirement: Proposal называет отступления от постановки",
-     "line": 77,
+     "line": 82,
      "found": true,
      "verdict": "сверено"
     }
@@ -2524,7 +2528,7 @@
     {
      "path": "openspec/changes/calibration-fixes/specs/verdict-readiness/spec.md",
      "quote": "### Requirement: `continue` при расхождении вердикта не переписывает файл",
-     "line": 40,
+     "line": 55,
      "found": true,
      "verdict": "сверено"
     }
@@ -2602,7 +2606,7 @@
     {
      "path": "openspec/changes/calibration-fixes/specs/verdict-readiness/spec.md",
      "quote": "### Requirement: `continue` при расхождении вердикта не переписывает файл",
-     "line": 40,
+     "line": 55,
      "found": true,
      "verdict": "сверено"
     }
@@ -4011,7 +4015,7 @@
     {
      "path": "openspec/changes/calibration-fixes/specs/decision-viewer/spec.md",
      "quote": "### Requirement: Текст журнала и атаки экранируется в HTML",
-     "line": 77,
+     "line": 82,
      "found": true,
      "verdict": "сверено"
     }
@@ -4707,7 +4711,7 @@
     {
      "path": "openspec/changes/calibration-fixes/specs/decision-viewer/spec.md",
      "quote": "### Requirement: Текст журнала и атаки экранируется в HTML",
-     "line": 77,
+     "line": 82,
      "found": true,
      "verdict": "сверено"
     }
@@ -4773,7 +4777,7 @@
       {
        "path": "openspec/changes/calibration-fixes/decisions.json",
        "quote": "Specify — уточнить: строка «проходит/не проходит» в критерии приёмки spec.md",
-       "line": 2000,
+       "line": 2004,
        "found": true,
        "verdict": "сверено"
       },
@@ -4837,6 +4841,243 @@
    "outcome": null,
    "parking": [],
    "dispute": "",
+   "comments": []
+  },
+  {
+   "id": "F-62",
+   "question": "Форма пометки «отступление от постановки» (F-08.A, F-28.E): номер факта постановки в поле журнала или префикс в тексте записи?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-08",
+    "F-28"
+   ],
+   "delivery": "specs/decision-journal",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Поле `deviation` с номером факта постановки — у варианта развилки (`options[].deviation: F-NN`; уточнение контроллера по F-28.E: отступление определяется выбранным вариантом).",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "tools/journal_model.py",
+       "quote": "`options[].deviation` — только у варианта развилки и только на существующий факт `addressee: постановка`.",
+       "line": 271,
+       "verdict": "сверено",
+       "found": true
+      },
+      {
+       "path": "openspec/schemas/symphysis/schema.yaml",
+       "quote": "решённые развилки, чей выбранный вариант несёт поле `deviation`",
+       "line": 64,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Префикс `[отступление]` в `question` записи.",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Поле проверяет `check` (номер существующего факта `addressee: постановка`), раздел proposal «Отступления от постановки» выводится из него механически; префикс в тексте не проверить, и он не отличает выбранный вариант от отвергнутого.",
+    "text": "A — поле `deviation` у варианта"
+   },
+   "decision": {
+    "option": "A",
+    "word": "Согласен что используем поле, так консистентно.",
+    "date": "2026-11-01"
+   },
+   "reversibility": {
+    "level": "обратимо",
+    "why": "Поле необязательное в `journal.schema.json`: журналы без него годны; откат — снять поле из схемы, `check`, рендеров, просмотрщика и скиллов."
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "При A — `options[].deviation: F-NN`: схема журнала, `check`, render-md и render-design, бейдж просмотрщика, раздел proposal «Отступления от постановки»; дельта decision-journal называет поле вместо предположения «поле записи или префикс». При B — пометка в тексте, `check` её не видит.",
+   "evidence": [
+    {
+     "path": "docs/journal.schema.json",
+     "quote": "Пометка «отступление от постановки» (F-08.A, F-28.E): у варианта развилки, чьё наблюдаемое поведение противоречит сценарию факта `addressee: постановка`, — номер этого факта",
+     "line": 48,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-63",
+   "question": "Ответ в поле спора строки атаки («вопрос человеку») к записи без решения: в промпте возврата у такой записи нет буквы, а `apply` отвергает слово без выбора — куда уходит ответ?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-47"
+   ],
+   "delivery": "specs/decision-viewer",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Слово без выбора хранится в записи: новое поле схемы журнала и ветка `apply`.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "tools/journal_apply.py",
+       "quote": "нет решения, к которому добавить слово",
+       "line": 284,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Ответ уходит в «Замечания к схеме: F-NN: …», запись остаётся открытой.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "tools/playground-template.html",
+       "quote": "Ответ к записи без решения — замечание `F-NN: ответ`",
+       "line": 512,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "C",
+     "text": "Строка слова с буквой рекомендации.",
+     "added": false,
+     "unlikely": "решает за человека: ответ молча фиксирует рекомендацию как решение",
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "B",
+    "why": "Схема журнала и `apply` не меняются, ответ не теряется (виден в `notes[]`), запись остаётся открытой до выбора человека; A — новое поле ради одного пути, C решает за человека.",
+    "text": "B — ответ уходит в «Замечания к схеме»"
+   },
+   "decision": {
+    "option": "B",
+    "word": "Разобрался, спасибо за объяснение, теперь все стало на свои места. Твоё предложение это не обход механики, а предложение о месте хранения. Тогда вариант \"Вариант 2, ответ уходит в «Замечания к схеме».\" подходит, одобряю.",
+    "date": "2026-11-01"
+   },
+   "reversibility": {
+    "level": "обратимо",
+    "why": "Правило промпта просмотрщика (`buildPrompt`) и строка скилла просмотрщика; журнал и `apply` не меняются, откат — прежняя ветка промпта."
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "При B — промпт пишет ответ к записи без решения в «Замечания к схеме: F-NN: ответ», `apply` вносит его в `notes[]`, `decision` записи остаётся пустым; дельта decision-viewer называет правило. При A — поле схемы и ветка `apply`; при C — рекомендация молча становится решением.",
+   "evidence": [
+    {
+     "path": "skills/symphysis-viewer/SKILL.md",
+     "quote": "У записи без решения слова нет, рекомендация не решение",
+     "line": 160,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-64",
+   "question": "Вердикт `stale` (F-26.E) против целей, которые схема меняет сама: пробы на шаге specs дописывают кандидатов в `decisions.json` после атаки журнала, обе атаки пишут итог в `notes[]` журнала, который обе хешируют, `apply` ставит `- [x]` в `tasks.md` — цель атаки артефактов. Как держать гейт без пинг-понга?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-26",
+    "F-06"
+   ],
+   "delivery": "specs/verdict-readiness; specs/artifact-graph; форк OpenSpec (C11)",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Исключить изменчивое из хеша: журнал без `notes[]` и полей проб, `tasks.md` без отметок.",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "`stale` гейтует до появления следующего шага, дальше — сигнал: у артефакта с зависимыми — пока нет файла зависимого (`attack-decisions` — пока нет proposal), у артефакта без зависимых в `apply.requires` — пока в `apply.tracks` нет отмеченной задачи (`attack-artifacts`).",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "upstream/openspec/docs/agent-contract.md",
+       "quote": "**Fork (symphysis): the stale window.**",
+       "line": 70,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "C",
+     "text": "Принять ритм повторных атак: каждый шаг, меняющий цель, зовёт атаку заново.",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "B",
+    "why": "Дешевле A (нормализация хеша для каждого вида цели), снимает пинг-понг C (две атаки, пишущие `notes[]` в журнал, который обе хешируют, не дают оба `ok` одновременно); устаревший вердикт остаётся видимым сигналом.",
+    "text": "B — `stale` гейтует до следующего шага, дальше сигнал"
+   },
+   "decision": {
+    "option": "B",
+    "word": "Давай попробуем вариант два. Делать вариант один выглядит дорого, мне проще вернуться к этому вопросу после апробирования на реальной задаче в работе.",
+    "date": "2026-11-01"
+   },
+   "reversibility": {
+    "level": "обратимо",
+    "why": "Правка форка C11: окно выводится из графа (`requires`) и `apply.tracks`; откат — прежнее правило C7, `stale` гейтует всегда. Вариант A остаётся открытым к апробации."
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "При B — C11 форка: `attack-decisions` после файла proposal и `attack-artifacts` после первой `- [x]` в `tasks.md` — `done` с `verdict: stale` и строкой-сигналом в `nextSteps`; `mismatch` гейтует всегда; дельты verdict-readiness и artifact-graph называют окно. Вариант A — после апробации на реальной задаче (слово владельца).",
+   "evidence": [
+    {
+     "path": "skills/symphysis-attack/SKILL.md",
+     "quote": "кроме `line/found/verdict` и строки `notes[]`",
+     "line": 279,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "skills/symphysis-attack/SKILL.md",
+     "quote": "`status`, `target: decisions.json`, `target_sha256`",
+     "line": 91,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "openspec/schemas/symphysis/schema.yaml",
+     "quote": "  tracks: tasks.md",
+     "line": 141,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
    "comments": []
   }
  ]

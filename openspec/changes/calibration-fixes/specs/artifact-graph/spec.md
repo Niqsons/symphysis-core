@@ -3,7 +3,7 @@
 ## MODIFIED Requirements
 
 ### Requirement: Граф схемы начинается журналом и кончается атакой артефактов
-Схема `symphysis` SHALL задавать артефакты в порядке зависимостей `intent` → `decisions` → `research` → `attack-decisions` → `proposal` → `specs` и `design` → `security`, `tasks` → `attack-artifacts`. Артефакт `intent` SHALL быть первым: файл `intent.md` в каталоге изменения несёт намерение человека его словами; если файла нет или он пуст, шаг схемы SHALL спросить намерение у человека и сохранить его слова дословно как `intent.md`, содержания модель не пишет; дальше файл не правится; схема SHALL NOT делать для `intent` исключений (F-13.A, F-19.A, F-24.E). Артефакты `attack-decisions` и `attack-artifacts` SHALL нести признак `optional`: пока их файла нет, они SHALL NOT блокировать зависящие артефакты и `isPlanningComplete`; вызванная атака SHALL оставаться гейтом — её файл с вердиктом не `passed` или с чужим хешем целей блокирует зависимые (F-06.A, F-26.E). `apply` SHALL требовать `tasks` и `status: passed` у `attack-artifacts`, если атака вызвана (F-04.A, F-13.B, F-06.A).
+Схема `symphysis` SHALL задавать артефакты в порядке зависимостей `intent` → `decisions` → `research` → `attack-decisions` → `proposal` → `specs` и `design` → `security`, `tasks` → `attack-artifacts`. Артефакт `intent` SHALL быть первым: файл `intent.md` в каталоге изменения несёт намерение человека его словами; если файла нет или он пуст, шаг схемы SHALL спросить намерение у человека и сохранить его слова дословно как `intent.md`, содержания модель не пишет; дальше файл не правится; схема SHALL NOT делать для `intent` исключений (F-13.A, F-19.A, F-24.E). Артефакты `attack-decisions` и `attack-artifacts` SHALL нести признак `optional`: пока их файла нет, они SHALL NOT блокировать зависящие артефакты и `isPlanningComplete`; вызванная атака SHALL оставаться гейтом — её файл с вердиктом не `passed` блокирует зависимые всегда, с чужим хешем целей (`stale`) — пока не начался следующий шаг: у `attack-decisions` — пока нет файла `proposal.md`, у `attack-artifacts` — пока в `tasks.md` нет отмеченной задачи; дальше `stale` — видимый сигнал, не гейт (F-06.A, F-26.E, F-64.B). `apply` SHALL требовать `tasks` и `status: passed` у `attack-artifacts`, если атака вызвана, с тем же окном для `stale` (F-04.A, F-13.B, F-06.A, F-64.B).
 <!-- проба краёв: форма=collection, stateful, исходы: F-24 Specify, F-25 Specify, F-26 Specify -->
 <!-- проба запретов: исходы: F-52 Specify -->
 
@@ -43,9 +43,14 @@
 - **THEN** `check` даёт у этих фактов `[!!] цитаты нет дословно` с кодом 0, `status` не меняется, новые факты постановки по новому тексту заводятся только по слову человека
 
 #### Scenario: Вердикт с чужим хешем
-- **GIVEN** `attack/artifacts.md` со `status: passed`, чьи `targets[].sha256` не равны текущим хешам specs и design
+- **GIVEN** `attack/artifacts.md` со `status: passed`, чьи `targets[].sha256` не равны текущим хешам specs и design, и в `tasks.md` нет отмеченной задачи
 - **WHEN** выполняется `status --json`
 - **THEN** `attack-artifacts` — `verdict: stale`, `apply` заблокирован, `continue` зовёт атаку заново
+
+#### Scenario: Устаревший вердикт после начала работы — сигнал
+- **GIVEN** тот же `attack/artifacts.md`, и в `tasks.md` отмечена первая задача (`- [x]`)
+- **WHEN** выполняются `status --json` и `openspec instructions apply --json`
+- **THEN** `attack-artifacts` — `done` с `verdict: stale` и строкой «verdict is stale (signal, not a gate: tasks.md has a checked task)» в `nextSteps`; `apply` не заблокирован этим вердиктом
 
 ### Requirement: Исследование — файл на каждую парковку «материалы» с жанром
 Артефакт `research` SHALL требовать по файлу `research/<F-NN>.md` на каждую парковку журнала с адресатом «материалы»; файл SHALL нести frontmatter `genre` из `устройство | размещение | края | проверка | аналоги`, `question` и `brief`, находки с `путь:строка «цитата»` из прочитанного файла и отрицания по рецепту «не найдено» + «искал: <шаблоны дословно>» (F-05.C). При нуле парковок «материалы» шаг SHALL писать один файл-отрицание `research/none.md` с тем же frontmatter (`question: none`) и отрицанием по рецепту, и этот файл SHALL считаться законным исходом артефакта; при появлении первой парковки «материалы» `none.md` SHALL удаляться (F-16.A, F-27.E).

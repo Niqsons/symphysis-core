@@ -3,7 +3,7 @@
 ## MODIFIED Requirements
 
 ### Requirement: Вердикт-артефакт готов только со `status: passed`
-Форк OpenSpec SHALL считать артефакт, у которого в схеме объявлен `verdict: {frontmatter: status, value: passed}`, сделанным только когда его файл существует и несёт `status: passed`; `openspec status --json` SHALL показывать у такого артефакта `verdict: ok | missing | mismatch`, и зависящие артефакты SHALL оставаться `blocked`, пока вердикт не `ok` (F-02.B, F-13.B). Артефакт с признаком `optional: true` в схеме SHALL NOT требоваться для `isPlanningComplete` и SHALL NOT блокировать зависящие от него артефакты, пока его файла нет; при существующем файле SHALL действовать правило вердикта без скидок; гейт вызванной атаки держится, пока существует её файл (F-06.A, F-29.E).
+Форк OpenSpec SHALL считать артефакт, у которого в схеме объявлен `verdict: {frontmatter: status, value: passed}`, сделанным только когда его файл существует и несёт `status: passed`; `openspec status --json` SHALL показывать у такого артефакта `verdict: ok | missing | mismatch`, и зависящие артефакты SHALL оставаться `blocked`, пока вердикт не `ok` (F-02.B, F-13.B). Артефакт с признаком `optional: true` в схеме SHALL NOT требоваться для `isPlanningComplete` и SHALL NOT блокировать зависящие от него артефакты, пока его файла нет; при существующем файле SHALL действовать правило вердикта без скидок; гейт вызванной атаки держится, пока существует её файл (F-06.A, F-29.E). Вердикт `passed` с чужим хешем целей SHALL показываться `verdict: stale` и SHALL гейтовать, пока не начался следующий шаг: у артефакта, который прямо требуют другие (`requires`), — пока ни у одного из них нет файла; у артефакта без зависимых из `apply.requires` — пока в файле `apply.tracks` нет отмеченной задачи (`- [x]`); без `apply.tracks` окно не закрывается. После этого устаревший вердикт SHALL считаться удовлетворённым для зависимых, `isPlanningComplete` и `apply`, а `status --json` SHALL показывать артефакт `done` с `verdict: stale` и строкой-сигналом в `nextSteps`; `mismatch` и `missing` при существующем файле SHALL гейтовать всегда (F-26.E, F-64.B).
 <!-- проба краёв: форма=text, io, stateful, исходы: F-29 Specify -->
 <!-- проба запретов: исходы: нет -->
 
@@ -37,8 +37,23 @@
 - **WHEN** выполняется `status --json`
 - **THEN** `attack-decisions` снова `optional` без файла, зависимые не `blocked`: удалённый файл читается как «атака не вызывалась»; если файл был закоммичен, его след остаётся в истории git
 
+#### Scenario: Вердикт с чужим хешем до следующего шага
+- **GIVEN** `attack/decisions.md` со `status: passed` и `target_sha256`, не равным хешу текущего `decisions.json`; файла `proposal.md` нет
+- **WHEN** выполняется `status --json`
+- **THEN** `attack-decisions` — `ready` с `verdict: stale`, `proposal` — `blocked`, `nextSteps` открывается строкой «verdict is stale: decisions.json changed since the verdict»
+
+#### Scenario: Устаревший вердикт после начала работы — сигнал
+- **GIVEN** тот же `attack/decisions.md`, и `proposal.md` уже существует
+- **WHEN** выполняется `status --json`
+- **THEN** `attack-decisions` — `done` с `verdict: stale`, `isPlanningComplete` от него не зависит, `nextSteps` несёт «verdict is stale (signal, not a gate: proposal already exists) — re-run it by name if needed»; `continue` без имени его не выбирает
+
+#### Scenario: Расхождение после начала работы гейтует
+- **GIVEN** `attack/decisions.md` со `status: gaps_found`, и `proposal.md` уже существует
+- **WHEN** выполняется `status --json`
+- **THEN** `attack-decisions` — `ready` с `verdict: mismatch`, `isPlanningComplete: false`: окно касается только `stale`
+
 ### Requirement: `continue` при расхождении вердикта не переписывает файл
-Сгенерированный форком workflow `continue` (скилл и команда) SHALL при первом `ready`-артефакте с `verdict: mismatch` или `missing` при существующем файле не переписывать файл, а получить его instructions и выполнить их для вердикта, после чего перечитать `status`; это SHALL считаться единственным артефактом вызова (F-03.C). Workflow SHALL принимать имя артефакта вторым аргументом (`/opsx:continue <изменение> attack-artifacts`) и SHALL создавать или повторять именно его, если он `optional` и его зависимости выполнены; имя SHALL сравниваться точно с `id` схемы, иное — отказ с перечнем артефактов без записи файлов; без имени необязательные артефакты SHALL пропускаться (F-06.A, F-30.E, F-31.E).
+Сгенерированный форком workflow `continue` (скилл и команда) SHALL при первом `ready`-артефакте с `verdict: mismatch` или `missing` при существующем файле не переписывать файл, а получить его instructions и выполнить их для вердикта, после чего перечитать `status`; это SHALL считаться единственным артефактом вызова (F-03.C). Workflow SHALL принимать имя артефакта вторым аргументом (`/opsx:continue <изменение> attack-artifacts`) и SHALL создавать или повторять именно его, если он `optional` и его зависимости выполнены; имя SHALL сравниваться точно с `id` схемы, иное — отказ с перечнем артефактов без записи файлов; названный артефакт `done` без вердикта или `skipped` — сообщение человеку без записи файла. Без имени workflow SHALL брать тот же следующий артефакт, что называет `nextSteps` CLI: необязательный без файла пропускается, вызванный идёт обычным путём и через шаг вердикта, устаревший вердикт после начала работы (`done` с `verdict: stale`) не выбирается (F-06.A, F-30.E, F-31.E, F-64.B).
 <!-- проба краёв: форма=stateful, text, исходы: F-30 Specify, F-31 Specify -->
 <!-- проба запретов: исходы: нет -->
 
