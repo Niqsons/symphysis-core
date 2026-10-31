@@ -233,33 +233,79 @@ def _attack_frontmatter(lines: list[str], name: str) -> tuple[dict, int]:
     return {"status": fields.get("status", ""), "targets": targets}, end
 
 
+def _split_row(line: str) -> tuple[list[str], int | None]:
+    r"""Строка pipe-таблицы -> (ячейки без `strip()`, индекс ячейки с незакрытым backtick или `None`).
+    Посимвольный автомат, не `split("|")`. `\\` даёт литеральную `\`, `\|` — литеральную `|`
+    (везде, и в коде); иная обратная косая литеральна, следующий символ разбирается как обычно.
+    Backtick переключает «внутри кода»; `|` внутри кода — текст ячейки, вне кода — разделитель.
+    Backticks остаются в тексте ячейки: `<code>` из них делает просмотрщик. Ведущая `|` — начало
+    первой ячейки, замыкающая неэкранированная `|` вне кода — конец последней, пустой ячейки после
+    неё нет."""
+    text = line.strip()
+    cells: list[str] = []
+    cur: list[str] = []
+    in_code, opened_in = False, None
+    ended_on_delim = False
+    i = 1 if text.startswith("|") else 0
+    while i < len(text):
+        ch = text[i]
+        ended_on_delim = False
+        if ch == "\\" and i + 1 < len(text) and text[i + 1] in "\\|":
+            cur.append(text[i + 1])
+            i += 2
+            continue
+        if ch == "`":
+            in_code = not in_code
+            opened_in = len(cells) if in_code else None
+        if ch == "|" and not in_code:
+            cells.append("".join(cur))
+            cur = []
+            ended_on_delim = True
+        else:
+            cur.append(ch)
+        i += 1
+    if not ended_on_delim:
+        cells.append("".join(cur))
+    return cells, (opened_in if in_code else None)
+
+
 def _cells(line: str) -> list[str]:
-    return [c.strip() for c in line.strip().strip("|").split("|")]
+    return [c.strip() for c in _split_row(line)[0]]
 
 
 def _attack_rows(lines: list[str], name: str, start: int) -> list[dict]:
     """Строки первой pipe-таблицы после `start`, у которой заголовок из семи колонок и первая —
-    «Утверждение». Разделитель заголовка и строки-подстановки шаблона (первая ячейка `<…>`)
-    пропускаются; `|` внутри ячейки не поддерживается — такая строка даёт лишнюю ячейку
-    и ошибку с номером строки, а не строку с перепутанными колонками."""
+    «Утверждение». Ячейка разбирается `_split_row`. Разделитель заголовка и строки-подстановки
+    шаблона (первая ячейка `<…>`) пропускаются. Ошибка — `ValueError` с `файл:строка:`: число
+    ячеек не семь, незакрытый backtick (с колонкой, где он открыт), пустая ячейка (с колонкой
+    по заголовку) — все семь ячеек обязательны, у строки покрытия в «Инварианте» стоит «—»."""
     header = next((i for i in range(start, len(lines)) if lines[i].startswith("|")
                    and len(_cells(lines[i])) == len(ATTACK_ROW_KEYS)
                    and _cells(lines[i])[0] == ATTACK_FIRST_COLUMN), None)
     if header is None:
         raise ValueError(f"{name}: нет таблицы атаки с заголовком «{ATTACK_FIRST_COLUMN}» из семи колонок")
+    columns = _cells(lines[header])
     rows: list[dict] = []
     for n in range(header + 1, len(lines)):
         line = lines[n]
         if not line.startswith("|"):
             break
-        cells = _cells(line)
-        if all(set(c) <= {"-", ":"} for c in cells):
+        raw, unclosed = _split_row(line)
+        cells = [c.strip() for c in raw]
+        if all(c and set(c) <= {"-", ":"} for c in cells):
             continue
+        if unclosed is not None:
+            col = columns[unclosed] if unclosed < len(columns) else f"№{unclosed + 1}"
+            raise ValueError(f"{name}:{n + 1}: в столбце «{col}» (ячейка {unclosed + 1}) backtick не закрыт")
         if len(cells) != len(ATTACK_ROW_KEYS):
             raise ValueError(f"{name}:{n + 1}: в строке таблицы ячеек {len(cells)}, нужно {len(ATTACK_ROW_KEYS)}"
-                             " (`|` внутри ячейки не поддерживается)")
+                             " (литеральная `|` вне backticks пишется `\\|`)")
         if cells[0].startswith("<") and cells[0].endswith(">"):
             continue
+        empty = next((i for i, c in enumerate(cells) if not c), None)
+        if empty is not None:
+            raise ValueError(f"{name}:{n + 1}: в столбце «{columns[empty]}» (ячейка {empty + 1}) пусто;"
+                             " все семь ячеек обязательны, нет содержимого — «—»")
         rows.append(dict(zip(ATTACK_ROW_KEYS, cells)))
     return rows
 

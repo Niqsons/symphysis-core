@@ -8,6 +8,7 @@ import sys
 import pytest
 
 import journal
+import journal_render
 from conftest import FIX, ROOT, one_record_journal
 
 TEMPLATE = ROOT / "tools" / "playground-template.html"
@@ -659,3 +660,60 @@ def test_docs_state_unmatched_prefix_and_check_exit_code():
     assert "корня для пути нет" in doc and "отката на корень symphysis нет" in doc
     helptext = " ".join(run_cli("-h").stdout.split())
     assert "негодный по схеме журнал — код 1" in helptext
+
+
+# --- разбор ячейки атаки: экранирование, backticks, пустые ячейки (5.7) ----------
+
+ATTACK_HEAD = ("---\nstatus: gaps_found\ntarget: decisions.json\ntarget_sha256:\n---\n\n"
+               "| Утверждение | Раздел | Линза | Инвариант | Тяжесть | Опора есть / нет | Чем закрыть |\n"
+               "| --- | --- | --- | --- | --- | --- | --- |\n")
+
+
+def attack_file(tmp_path, *rows, name="attack.md"):
+    path = tmp_path / name
+    path.write_text(ATTACK_HEAD + "".join(row + "\n" for row in rows), encoding="utf-8")
+    return path
+
+
+def test_pipe_in_backticks_and_escaped_pipe(tmp_path):
+    row = r"| `grep -c '| справка |'` | F-23 | coverage | а \| б | справка | нет | — |"
+    cells = journal.parse_attack_md(attack_file(tmp_path, row))["rows"][0]
+    assert cells["claim"] == "`grep -c '| справка |'`"      # черта в backticks — текст, backticks сохранены
+    assert cells["invariant"] == "а | б"                    # \| — литеральная черта
+    assert cells["support"] == "нет" and cells["fix"] == "—"
+
+
+def test_escaped_backslash_and_unclosed_backtick(tmp_path):
+    ok = r"| `\\|` | F-34 | coverage | x | справка | нет | — |"
+    cells = journal.parse_attack_md(attack_file(tmp_path, ok))["rows"][0]
+    assert cells["claim"] == r"`\|`"                        # в коде: \\ -> \, голая | — текст
+    # вне кода \\| — литеральная косая и разделитель: ячейка «a\», следом «b»
+    assert journal_render._split_row(r"|a\\|b |") == (["a\\", "b "], None)
+    bad = attack_file(tmp_path, "| `открыт | F-01 | coverage | x | справка | нет | — |", name="bad.md")
+    with pytest.raises(ValueError) as err:
+        journal.parse_attack_md(bad)
+    msg = str(err.value)
+    assert "bad.md:9:" in msg and "«Утверждение»" in msg and "backtick" in msg
+
+
+def test_empty_required_cell_names_the_column(tmp_path):
+    path = attack_file(tmp_path, "| чисто | F-03 | coverage |  | справка | есть | — |", name="empty.md")
+    with pytest.raises(ValueError) as err:
+        journal.parse_attack_md(path)
+    assert "empty.md:9:" in str(err.value) and "«Инвариант»" in str(err.value)
+
+
+def test_wrong_cell_count_reports_the_number(tmp_path):
+    path = attack_file(tmp_path, "| а | б | coverage | x | справка | нет |", name="six.md")
+    with pytest.raises(ValueError, match=r"six.md:9: .*ячеек 6, нужно 7"):
+        journal.parse_attack_md(path)
+
+
+def test_cli_render_html_broken_attack_file_exits_2_with_position(tmp_path):
+    src, roots = html_fixture(tmp_path, "дв")
+    broken = attack_file(tmp_path, "| `открыт | F-01 | coverage | x | справка | нет | — |", name="broken-cell.md")
+    out = tmp_path / "view.html"
+    run = run_cli("render-html", src, "--out", out, "--roots", roots, "--attack", broken)
+    assert run.returncode == 2, run.stdout + run.stderr
+    assert "broken-cell.md:9:" in run.stderr and "Утверждение" in run.stderr
+    assert not out.exists()
