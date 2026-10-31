@@ -282,6 +282,11 @@ def parse_attack_md(path: Path) -> dict:
 
 ONE_WAY = "в одну сторону"
 EMPTY_SECTION = "—"
+NO_DECISIONS = "нет: решённых развилок в журнале нет"
+# Каноническая фраза пометки решения «ничего не менять». Её же велит ставить скилл брейншторма
+# (задача 7.2 сошлётся на эту константу): выбранный вариант с таким началом рендерится с ней.
+UNCHANGED_NOTE = "- **Конструкция не меняется.**"
+UNCHANGED_PREFIXES = ("оставить как есть", "ничего не менять")
 GOALS_STUB = "Цели и не-цели — из proposal; здесь только решения."
 MIGRATION_STUB = "Не применимо к журналу решений; см. tasks.md."
 
@@ -311,10 +316,18 @@ def _design_context(facts: list[dict]) -> list[str]:
     return lines
 
 
+def _is_unchanged(option_text: str) -> bool:
+    """Выбранный вариант — «ничего не менять»: текст после `strip()` начинается с «Оставить как есть»
+    или «Ничего не менять», регистр первой буквы не важен."""
+    return option_text.strip().lower().startswith(UNCHANGED_PREFIXES)
+
+
 def _design_decision(rec: dict) -> list[str]:
     decision, chosen = rec["decision"], rec["decision"]["option"]
     picked = next(o for o in rec["options"] if o["letter"] == chosen)
     lines = [f"### {rec['id']} {rec['question']}", "", f"- **Выбрано:** {chosen}. {picked['text']}"]
+    if _is_unchanged(picked["text"]):
+        lines.append(UNCHANGED_NOTE)
     if decision["word"]:
         lines.append(f"- **Слово человека ({decision['date']}):** «{decision['word']}»")
     if rec["reversibility"]:
@@ -373,7 +386,9 @@ def render_design(journal: dict, source: str | None = None) -> str:
     Risks / Trade-offs, Migration Plan, Open Questions). Чистая функция: ничего не читает
     с диска, журнал не меняет; журнал предполагается годным (`validate_journal`).
 
-    Context — факты с уликами. Decisions — развилки со словом человека: сначала «в одну
+    Context — факты с уликами. Decisions — развилки со словом человека (без решённых — строка
+    «нет: решённых развилок в журнале нет»; у решения «ничего не менять» — пометка «Конструкция
+    не меняется»): сначала «в одну
     сторону», затем остальные, внутри групп по номеру. Risks / Trade-offs — улики отвергнутых
     опций решённых развилок, в порядке Decisions. Open Questions — развилки без решения,
     отложенные кандидаты проб, парковка с адресатом и спорные факты. Кандидаты проб
@@ -394,7 +409,7 @@ def render_design(journal: dict, source: str | None = None) -> str:
     sections = [
         ("Context", _design_context([r for r in records if r["kind"] == "факт"])),
         ("Goals / Non-Goals", [GOALS_STUB]),
-        ("Decisions", decisions),
+        ("Decisions", decisions or [NO_DECISIONS]),
         ("Risks / Trade-offs", [line for rec in decided for line in _design_risks(rec)]),
         ("Migration Plan", [MIGRATION_STUB]),
         ("Open Questions", _design_open_questions(records)),

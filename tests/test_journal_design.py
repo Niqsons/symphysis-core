@@ -82,8 +82,9 @@ def test_sections_follow_the_openspec_template_order():
 
 def test_empty_sections_say_so():
     md = design_of()
-    for name in ("Context", "Decisions", "Risks / Trade-offs", "Open Questions"):
+    for name in ("Context", "Risks / Trade-offs", "Open Questions"):
         assert section(md, name).strip() == "—", name
+    assert section(md, "Decisions").strip() == "нет: решённых развилок в журнале нет"
 
 
 def test_live_journal_renders_every_section_once():
@@ -374,3 +375,32 @@ def test_cli_render_design_refuses_an_invalid_journal(tmp_path):
     run = run_cli("render-design", src, "--out", out)
     assert run.returncode == 1 and "F-01" in run.stderr
     assert not out.exists()
+
+
+# --- сценарии 5.6 -----------------------------------------------------------
+
+def test_decisions_come_only_from_forks_without_outcome():
+    probe = decided("F-02", "A", [opt("A", "край")], outcome={"kind": "проба", "value": "Specify", "reason": ""})
+    fact = record("F-03", "факт?", kind="факт")
+    md = design_of(decided("F-01", "A", [opt("A", "первый")]), probe, fact)
+    heads = [line.split()[1] for line in section(md, "Decisions").split("\n") if line.startswith("### ")]
+    assert heads == ["F-01"]
+
+
+def test_journal_without_decided_forks_says_so():
+    md = design_of(record("F-01", "кто решает?", [opt("A", "раз")]))
+    assert section(md, "Decisions").strip() == "нет: решённых развилок в журнале нет"
+    assert "- F-01 кто решает? — открыта" in section(md, "Open Questions")
+
+
+def test_decision_to_change_nothing_is_marked_under_chosen():
+    for text in ("Оставить как есть: цена выше пользы", "  ничего не менять", "Ничего не менять"):
+        block = section(design_of(decided("F-01", "A", [opt("A", text), opt("B", "переписать")])), "Decisions")
+        lines = block.split("\n")
+        chosen = next(i for i, line in enumerate(lines) if line.startswith("- **Выбрано:**"))
+        assert lines[chosen + 1] == "- **Конструкция не меняется.**", text
+
+
+def test_ordinary_decision_is_not_marked():
+    block = section(design_of(decided("F-01", "A", [opt("A", "Переписать"), opt("B", "Оставить как есть")])), "Decisions")
+    assert "Конструкция не меняется" not in block      # «оставить» — отвергнутый вариант, не выбранный
