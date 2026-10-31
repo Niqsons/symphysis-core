@@ -295,8 +295,11 @@ export function printStatusText(status: ChangeStatus, options: PrintStatusTextOp
     }
 
     // Fork (symphysis, C3): verdict artifacts show their verdict state.
+    // Fork (symphysis, C11): a done artifact with a stale verdict is past its
+    // window - the line says it no longer gates.
     if (artifact.verdict) {
-      line += color(` (verdict: ${artifact.verdict})`);
+      const signal = artifact.status === 'done' && artifact.verdict === 'stale';
+      line += color(` (verdict: ${artifact.verdict}${signal ? ' — signal, not a gate' : ''})`);
     }
 
     console.log(line);

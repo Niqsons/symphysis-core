@@ -1228,6 +1228,58 @@ rules:
         );
       });
 
+      // Fork (symphysis, C11): a stale verdict gates until the next step has
+      // begun; after that it is a signal - satisfied, still reported as stale.
+      it('Окно устаревания: stale до файла зависимого — блокирует, сигнала нет', () => {
+        writeChangeFile(
+          'attack.md',
+          `---\nstatus: passed\ntarget: brief.md\ntarget_sha256: ${sha('# Brief, as attacked\n')}\n---\n`
+        );
+
+        const status = statusOf();
+
+        expect(artifactOf(status, 'attack').status).toBe('ready');
+        expect(artifactOf(status, 'proposal').status).toBe('blocked');
+        expect(status.isPlanningComplete).toBe(false);
+        expect(status.nextSteps.some((line) => line.includes('signal, not a gate'))).toBe(false);
+      });
+
+      it('Устаревший вердикт после начала работы — сигнал: done со stale, планирование не держит', () => {
+        writeChangeFile(
+          'attack.md',
+          `---\nstatus: passed\ntarget: brief.md\ntarget_sha256: ${sha('# Brief, as attacked\n')}\n---\n`
+        );
+        writeChangeFile('proposal.md', '# Proposal\n');
+
+        const status = statusOf();
+        const parsed = JSON.parse(JSON.stringify(status));
+        const attack = parsed.artifacts.find((a: { id: string }) => a.id === 'attack');
+
+        expect(attack.status).toBe('done');
+        expect(attack.verdict).toBe('stale');
+        expect(artifactOf(status, 'proposal').status).toBe('done');
+        expect(artifactOf(status, 'review').status).toBe('ready');
+        expect(status.isPlanningComplete).toBe(true);
+        expect(status.nextSteps).toEqual([
+          APPLY_STEP,
+          'Artifact "attack" verdict is stale (signal, not a gate: proposal already exists) — re-run it by name if needed',
+        ]);
+      });
+
+      it('Окно устаревания: mismatch после файла зависимого — по-прежнему гейт', () => {
+        writeChangeFile('attack.md', '---\nstatus: gaps_found\n---\n# Attack\n');
+        writeChangeFile('proposal.md', '# Proposal\n');
+
+        const status = statusOf();
+
+        expect(artifactOf(status, 'attack').status).toBe('ready');
+        expect(artifactOf(status, 'attack').verdict).toBe('mismatch');
+        expect(status.isPlanningComplete).toBe(false);
+        expect(status.nextSteps[0]).toBe(
+          'Artifact "attack" has verdict status=gaps_found but passed is required — run its instruction again'
+        );
+      });
+
       it('Планирование без вызванных атак: isPlanningComplete с явными optional и fileExists', () => {
         writeChangeFile('proposal.md', '# Proposal\n');
 

@@ -224,5 +224,29 @@ describe('status command with a verdict artifact', () => {
       expect(output).toContain('[ ] attack (verdict: stale)');
       expect(output).toContain('[-] proposal (blocked by: attack)');
     });
+
+    // Fork (symphysis, C11): proposal exists, so the stale verdict is a signal.
+    it('Устаревший вердикт после начала работы — сигнал: текст и --json', async () => {
+      fs.writeFileSync(
+        path.join(changeDir(), 'attack.md'),
+        `---\nstatus: passed\ntarget: brief.md\ntarget_sha256: ${'0'.repeat(64)}\n---\n# Attack\n`
+      );
+      fs.writeFileSync(path.join(changeDir(), 'proposal.md'), '# Proposal\n');
+
+      await statusCommand({ change: 'my-change' });
+      const output = lines.join('\n');
+      expect(output).toContain('[x] attack (verdict: stale — signal, not a gate)');
+      expect(output).toContain('All planning artifacts complete! (optional, not invoked: review)');
+
+      lines.length = 0;
+      await statusCommand({ change: 'my-change', json: true });
+      const status = JSON.parse(lines.join('\n'));
+      const attack = status.artifacts.find((a: { id: string }) => a.id === 'attack');
+      expect(attack).toMatchObject({ status: 'done', verdict: 'stale', optional: true, fileExists: true });
+      expect(status.isPlanningComplete).toBe(true);
+      expect(status.nextSteps).toContain(
+        'Artifact "attack" verdict is stale (signal, not a gate: proposal already exists) — re-run it by name if needed'
+      );
+    });
   });
 });

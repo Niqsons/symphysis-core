@@ -889,7 +889,13 @@ any other artifact. `"verdict": "stale"` means the value passes but a target has
 the file declares (`target_sha256`, `targets[].sha256`) no longer matches: the
 artifact stays `ready`, its dependents and apply stay blocked, and `nextSteps`
 opens with `Artifact "<id>" verdict is stale: <path> changed since the verdict —
-run its instruction again`.
+run its instruction again`. Fork (symphysis, C11): `stale` gates only until the
+next step has begun — a file of an artifact that requires it, or, for an artifact
+nothing requires but `apply.requires` names, a checked task in `apply.tracks`;
+past that the artifact is `done` with `verdict: "stale"` (text: `(verdict: stale —
+signal, not a gate)`) and `nextSteps` ends with `Artifact "<id>" verdict is stale
+(signal, not a gate: ...) — re-run it by name if needed`. `mismatch` and `missing`
+always gate.
 The causes of `stale`: a target file changed, a declared target file is gone, a target path leaves the change directory (absolute, `..`, or a link pointing out; the file is not read), or the target entry is unreadable (no path or no sha256). A required verdict artifact listed in `apply.requires` holds `apply` until its verdict is `ok`; the blocked `instruction` names it as `Artifacts without a passing verdict` and says to run its instruction again, not to recreate the file.
 
 ---

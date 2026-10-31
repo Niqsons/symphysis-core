@@ -2,7 +2,14 @@ import * as fs from 'node:fs';
 import * as path from 'node:path';
 import { getSchemaDir, resolveSchema, listSchemasWithInfo } from './resolver.js';
 import { ArtifactGraph } from './graph.js';
-import { detectAbsentOptional, detectCompleted, staleVerdictTarget, verdictState } from './state.js';
+import {
+  detectAbsentOptional,
+  detectCompleted,
+  detectStaleSignals,
+  staleVerdictTarget,
+  verdictState,
+  type StaleSignal,
+} from './state.js';
 import { readFrontmatter } from './frontmatter.js';
 import {
   isSpecsArtifactPath,
@@ -79,6 +86,12 @@ export interface ChangeContext {
    * left out of planning completeness (see `satisfiedArtifacts`).
    */
   absentOptionalArtifacts?: Set<string>;
+  /**
+   * Fork (symphysis, C11): verdict artifacts whose `stale` verdict is past its
+   * window - the next step has begun - keyed by id with what began. They are
+   * in `completed` (a signal, not a gate) and still report `verdict: "stale"`.
+   */
+  staleSignals?: Map<string, StaleSignal>;
 }
 
 export interface LoadChangeContextOptions {
@@ -187,10 +200,11 @@ export interface ArtifactStatus {
    * alongside `optional`. Without the file the artifact is not invoked: it
    * blocks nothing and carries no `verdict`. */
   fileExists?: boolean;
-  /** Fork (symphysis, C3, C7): verdict state, only for artifacts whose schema entry
-   * declares `verdict` and only while they are `done` (always `ok`) or `ready`
-   * (`missing` = no file or no verdict key in it, `mismatch` = another value,
-   * `stale` = the value passes but a declared target hash no longer matches).
+  /** Fork (symphysis, C3, C7, C11): verdict state, only for artifacts whose schema
+   * entry declares `verdict` and only while they are `done` (`ok`, or `stale`
+   * past its window - a signal, not a gate) or `ready` (`missing` = no file or no
+   * verdict key in it, `mismatch` = another value, `stale` = the value passes but
+   * a declared target hash no longer matches, and the next step has not begun).
    * Omitted for `blocked` and `skipped` artifacts and for an optional artifact
    * without a file. Never `n/a`. */
   verdict?: VerdictStatus;
@@ -325,6 +339,13 @@ export function loadChangeContext(
   const graph = ArtifactGraph.fromSchema(schema);
   const completed = detectCompleted(graph, changeDir);
 
+  // Fork (symphysis, C11): a stale verdict past its window is a signal, not a
+  // gate - the artifact counts as completed and still reports `stale`.
+  const staleSignals = detectStaleSignals(graph, changeDir, schema.apply);
+  for (const id of staleSignals.keys()) {
+    completed.add(id);
+  }
+
   // A change that declares skip_specs has no spec deltas by design, so
   // artifacts generating into specs/ count as complete; otherwise the graph
   // would block their dependents (e.g. tasks) on files that must not exist.
@@ -354,6 +375,7 @@ export function loadChangeContext(
     ...(warnings.length > 0 ? { warnings } : {}),
     ...(skippedArtifacts.size > 0 ? { skippedArtifacts } : {}),
     ...(absentOptionalArtifacts.size > 0 ? { absentOptionalArtifacts } : {}),
+    ...(staleSignals.size > 0 ? { staleSignals } : {}),
   };
 }
 
@@ -524,21 +546,23 @@ function getUnlockedArtifacts(graph: ArtifactGraph, artifactId: string): string[
  * Empty for an artifact that declares no `verdict`. Only `done` and `ready`
  * artifacts carry it: a `blocked` one cannot be worked on yet and a `skipped`
  * one is not worked on, so what its file says would not be actionable.
- * `done` is always `ok` (`detectCompleted` admits a verdict artifact only on
- * `ok`); for `ready` it is what the file says. An optional artifact without a
- * file (C7) has no verdict to report: it was not invoked.
+ * `done` is `ok` (`detectCompleted` admits a verdict artifact only on `ok`),
+ * or `stale` for a stale verdict past its window (C11); for `ready` it is what
+ * the file says. An optional artifact without a file (C7) has no verdict to
+ * report: it was not invoked.
  */
 function verdictField(
   artifact: Artifact,
   status: 'done' | 'ready',
   changeDir: string,
-  absentOptional: boolean
+  absentOptional: boolean,
+  staleSignal: boolean
 ): Pick<ArtifactStatus, 'verdict'> {
   if (!artifact.verdict || absentOptional) {
     return {};
   }
   if (status === 'done') {
-    return { verdict: 'ok' };
+    return { verdict: staleSignal ? 'stale' : 'ok' };
   }
   const state = verdictState(artifact, changeDir);
   return state === 'n/a' ? {} : { verdict: state };
@@ -607,6 +631,18 @@ function verdictHint(
 }
 
 /**
+ * Fork (symphysis, C11): the `nextSteps` line for a stale verdict past its
+ * window - the next step has begun, so the verdict no longer gates.
+ */
+function staleSignalLine(id: string, signal: StaleSignal): string {
+  const begun =
+    'dependent' in signal
+      ? `${signal.dependent} already exists`
+      : `${signal.tracks} has a checked task`;
+  return `Artifact "${id}" verdict is stale (signal, not a gate: ${begun}) — re-run it by name if needed`;
+}
+
+/**
  * Formats the status of all artifacts in a change.
  *
  * @param context - Change context
@@ -653,7 +689,13 @@ export function formatChangeStatus(
         status: 'done' as const,
         requires: artifact.requires,
         ...optionalFields(artifact, absentOptional),
-        ...verdictField(artifact, 'done', context.changeDir, absentOptional),
+        ...verdictField(
+          artifact,
+          'done',
+          context.changeDir,
+          absentOptional,
+          context.staleSignals?.has(artifact.id) ?? false
+        ),
       };
     }
 
@@ -664,7 +706,7 @@ export function formatChangeStatus(
         status: 'ready' as const,
         requires: artifact.requires,
         ...optionalFields(artifact, absentOptional),
-        ...verdictField(artifact, 'ready', context.changeDir, absentOptional),
+        ...verdictField(artifact, 'ready', context.changeDir, absentOptional, false),
       };
     }
 
@@ -722,6 +764,15 @@ export function formatChangeStatus(
       allArtifactsComplete: isComplete,
       ...(options.storeId ? { storeId: options.storeId } : {}),
       ...(verdictHints.size > 0 ? { verdictHints } : {}),
+      // Fork (symphysis, C11): stale verdicts past their window, in build order.
+      ...(context.staleSignals
+        ? {
+            signals: artifactStatuses.flatMap((artifactStatus) => {
+              const signal = context.staleSignals?.get(artifactStatus.id);
+              return signal ? [staleSignalLine(artifactStatus.id, signal)] : [];
+            }),
+          }
+        : {}),
     }),
     actionContext: buildActionContext({
       projectRoot: context.projectRoot,

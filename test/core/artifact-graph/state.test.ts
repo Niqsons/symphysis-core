@@ -6,6 +6,7 @@ import { createHash } from 'node:crypto';
 import {
   detectAbsentOptional,
   detectCompleted,
+  detectStaleSignals,
   staleVerdictTarget,
   verdictState,
 } from '../../../src/core/artifact-graph/state.js';
@@ -641,6 +642,125 @@ describe('artifact-graph/state', () => {
       expect(completed.has('attack')).toBe(false);
       expect(g.getNextArtifacts(completed)).toEqual(['attack']);
       expect(g.getBlocked(completed)).toEqual({ next: ['attack'] });
+    });
+  });
+
+  // Fork (symphysis, C11): a stale verdict gates only until the next step has
+  // begun - a file of an artifact that requires it, or (for an artifact nobody
+  // requires but apply.requires names) a checked task in apply.tracks.
+  describe('stale window', () => {
+    const sha = (content: string): string => createHash('sha256').update(content).digest('hex');
+    const write = (file: string, content: string): void => {
+      fs.mkdirSync(path.dirname(path.join(tempDir, file)), { recursive: true });
+      fs.writeFileSync(path.join(tempDir, file), content);
+    };
+    const verdict = { frontmatter: 'status', value: 'passed' };
+    const graph = (): ArtifactGraph =>
+      ArtifactGraph.fromSchema(
+        createSchema([
+          { id: 'journal', generates: 'journal.md', description: 'Journal', template: 't.md', requires: [] },
+          {
+            id: 'attack',
+            generates: 'attack.md',
+            description: 'Attack on the journal',
+            template: 't.md',
+            requires: ['journal'],
+            optional: true,
+            verdict,
+          },
+          {
+            id: 'proposal',
+            generates: 'proposal.md',
+            description: 'Proposal',
+            template: 't.md',
+            requires: ['journal', 'attack'],
+          },
+          {
+            id: 'notes',
+            generates: 'notes/*.md',
+            description: 'Notes',
+            template: 't.md',
+            requires: ['attack'],
+          },
+          { id: 'tasks', generates: 'tasks.md', description: 'Tasks', template: 't.md', requires: ['proposal'] },
+          {
+            id: 'review',
+            generates: 'review.md',
+            description: 'Review of the tasks',
+            template: 't.md',
+            requires: ['tasks'],
+            optional: true,
+            verdict,
+          },
+        ])
+      );
+    const APPLY = { requires: ['tasks', 'review'], tracks: 'tasks.md' };
+
+    const staleAttack = (): void => {
+      write('journal.md', '# Journal, edited after the attack\n');
+      write('attack.md', `---\nstatus: passed\ntarget: journal.md\ntarget_sha256: ${sha('# Journal\n')}\n---\n`);
+    };
+    const staleReview = (tasks: string): void => {
+      write('tasks.md', tasks);
+      write(
+        'review.md',
+        `---\nstatus: passed\ntargets:\n  - path: tasks.md\n    sha256: ${sha('- [ ] 1.1 Work\n')}\n---\n`
+      );
+    };
+
+    it('Окно устаревания: stale до файла зависимого — не сигнал, гейт', () => {
+      staleAttack();
+
+      expect(verdictState(graph().getArtifact('attack')!, tempDir)).toBe('stale');
+      expect(detectStaleSignals(graph(), tempDir, APPLY).size).toBe(0);
+    });
+
+    it('Окно устаревания: файл зависимого есть — stale становится сигналом с именем зависимого', () => {
+      staleAttack();
+      write('proposal.md', '# Proposal\n');
+
+      expect([...detectStaleSignals(graph(), tempDir, APPLY)]).toEqual([['attack', { dependent: 'proposal' }]]);
+    });
+
+    it('Окно устаревания: файл зависимого по glob тоже закрывает окно', () => {
+      staleAttack();
+      write('notes/one.md', '# Note\n');
+
+      expect([...detectStaleSignals(graph(), tempDir, APPLY)]).toEqual([['attack', { dependent: 'notes' }]]);
+    });
+
+    it('Окно устаревания: mismatch после файла зависимого — не сигнал', () => {
+      write('journal.md', '# Journal\n');
+      write('attack.md', '---\nstatus: gaps_found\n---\n');
+      write('proposal.md', '# Proposal\n');
+
+      expect(detectStaleSignals(graph(), tempDir, APPLY).size).toBe(0);
+    });
+
+    it('Окно устаревания: артефакт без зависимых в apply.requires — гейт, пока нет отмеченной задачи', () => {
+      staleReview('- [ ] 1.1 Work, edited\n- [ ] 1.2 More\n');
+
+      expect(verdictState(graph().getArtifact('review')!, tempDir)).toBe('stale');
+      expect(detectStaleSignals(graph(), tempDir, APPLY).size).toBe(0);
+    });
+
+    it('Окно устаревания: первая отмеченная задача в apply.tracks — сигнал', () => {
+      staleReview('- [x] 1.1 Work\n- [ ] 1.2 More\n');
+
+      expect([...detectStaleSignals(graph(), tempDir, APPLY)]).toEqual([['review', { tracks: 'tasks.md' }]]);
+    });
+
+    it('Окно устаревания: без apply.tracks окно не закрывается', () => {
+      staleReview('- [x] 1.1 Work\n');
+
+      expect(detectStaleSignals(graph(), tempDir, { requires: ['tasks', 'review'] }).size).toBe(0);
+      expect(detectStaleSignals(graph(), tempDir, undefined).size).toBe(0);
+    });
+
+    it('Окно устаревания: артефакт без зависимых вне apply.requires — окно не закрывается', () => {
+      staleReview('- [x] 1.1 Work\n');
+
+      expect(detectStaleSignals(graph(), tempDir, { requires: ['tasks'], tracks: 'tasks.md' }).size).toBe(0);
     });
   });
 });

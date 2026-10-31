@@ -19,8 +19,10 @@ export { ArtifactGraph } from './graph.js';
 export {
   detectAbsentOptional,
   detectCompleted,
+  detectStaleSignals,
   staleVerdictTarget,
   verdictState,
+  type StaleSignal,
   type StaleTarget,
 } from './state.js';
 export {

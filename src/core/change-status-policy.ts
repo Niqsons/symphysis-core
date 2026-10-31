@@ -36,6 +36,9 @@ export interface ChangeNextStepsInput {
    * `nextSteps` when that artifact is the ready one - why a ready verdict
    * artifact is not done yet. */
   verdictHints?: ReadonlyMap<string, string>;
+  /** Fork (symphysis, C11): lines that follow the next step in `nextSteps` -
+   * stale verdicts past their window, a signal rather than a gate. */
+  signals?: readonly string[];
 }
 
 export interface ActionContextInput {
@@ -165,5 +168,8 @@ export function resolveNextStep(input: ChangeNextStepsInput): ChangeNextStep | u
 
 export function buildNextSteps(input: ChangeNextStepsInput): string[] {
   const step = resolveNextStep(input);
-  return step ? [...(step.hint ? [step.hint] : []), step.sentence] : [];
+  return [
+    ...(step ? [...(step.hint ? [step.hint] : []), step.sentence] : []),
+    ...(input.signals ?? []),
+  ];
 }

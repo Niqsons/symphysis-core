@@ -8,6 +8,7 @@ import {
   instructionsCommand,
   printApplyInstructionsText,
 } from '../../src/commands/workflow/instructions.js';
+import { formatChangeStatus, loadChangeContext } from '../../src/core/artifact-graph/index.js';
 
 // Fork (symphysis, C7): commands that take an optional artifact as a
 // dependency. The apply gate takes `apply.requires` the way a `requires` edge
@@ -158,6 +159,51 @@ describe('generateApplyInstructions with an optional verdict artifact', () => {
     expect(output).toContain('Artifacts without a passing verdict: review (verdict: stale)');
     expect(output).not.toContain('Missing artifacts');
     expect(output).not.toContain('Not created yet');
+  });
+
+  // Fork (symphysis, C11): `review` has no dependents and is in apply.requires,
+  // so its stale verdict gates apply until tasks.md has a checked task.
+  it('Окно устаревания: stale без отмеченных задач держит apply', async () => {
+    write('tasks.md', '## 1. Work\n\n- [ ] 1.1 Do the work, edited\n- [ ] 1.2 More\n');
+    write(
+      'review.md',
+      `---\nstatus: passed\ntargets:\n  - path: tasks.md\n    sha256: ${sha(TASKS)}\n---\n# Review\n`
+    );
+
+    const instructions = await generateApplyInstructions(tempDir, 'my-change');
+
+    expect(instructions.state).toBe('blocked');
+    expect(instructions.artifactsWithoutPassingVerdict).toEqual([{ id: 'review', verdict: 'stale' }]);
+  });
+
+  it('Устаревший вердикт после начала работы — сигнал: после первой [x] apply ready, status показывает stale', async () => {
+    write('tasks.md', '## 1. Work\n\n- [x] 1.1 Do the work\n- [ ] 1.2 More\n');
+    write(
+      'review.md',
+      `---\nstatus: passed\ntargets:\n  - path: tasks.md\n    sha256: ${sha(TASKS)}\n---\n# Review\n`
+    );
+
+    const instructions = await generateApplyInstructions(tempDir, 'my-change');
+    const status = formatChangeStatus(loadChangeContext(tempDir, 'my-change'));
+    const review = status.artifacts.find((a) => a.id === 'review');
+
+    expect(instructions.state).toBe('ready');
+    expect(instructions.artifactsWithoutPassingVerdict).toBeUndefined();
+    expect(instructions.missingArtifacts).toBeUndefined();
+    expect(review).toMatchObject({ status: 'done', verdict: 'stale' });
+    expect(status.nextSteps).toContain(
+      'Artifact "review" verdict is stale (signal, not a gate: tasks.md has a checked task) — re-run it by name if needed'
+    );
+  });
+
+  it('Окно устаревания: mismatch после отмеченной задачи по-прежнему держит apply', async () => {
+    write('tasks.md', '## 1. Work\n\n- [x] 1.1 Do the work\n');
+    write('review.md', '---\nstatus: gaps_found\n---\n# Review\n');
+
+    const instructions = await generateApplyInstructions(tempDir, 'my-change');
+
+    expect(instructions.state).toBe('blocked');
+    expect(instructions.artifactsWithoutPassingVerdict).toEqual([{ id: 'review', verdict: 'mismatch' }]);
   });
 
   it('Необязательный артефакт с файлом: недостающий файл и вердикт без ok названы порознь', async () => {

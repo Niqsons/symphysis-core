@@ -1,11 +1,12 @@
 import { createHash } from 'node:crypto';
 import * as fs from 'node:fs';
 import * as path from 'node:path';
-import type { Artifact, CompletedSet, VerdictStatus } from './types.js';
+import type { ApplyPhase, Artifact, CompletedSet, VerdictStatus } from './types.js';
 import type { ArtifactGraph } from './graph.js';
-import { artifactOutputExists, resolveArtifactOutputPath } from './outputs.js';
+import { artifactOutputExists, resolveArtifactOutputPath, resolveArtifactOutputs } from './outputs.js';
 import { readFrontmatter } from './frontmatter.js';
 import { FileSystemUtils } from '../../utils/file-system.js';
+import { parseTaskLines } from '../../utils/task-progress.js';
 
 /**
  * Detects which artifacts are completed by checking file existence in the change directory.
@@ -57,6 +58,85 @@ export function detectAbsentOptional(graph: ArtifactGraph, changeDir: string): S
   }
 
   return absent;
+}
+
+/**
+ * Fork (symphysis, C11): what closed a stale verdict's window - the next step
+ * that has begun since the verdict was written.
+ * - `dependent` an artifact that directly `requires` this one has output (its id)
+ * - `tracks`    nothing requires this one, `apply.requires` names it, and a file
+ *               matched by `apply.tracks` has a checked task (the `tracks` value)
+ */
+export type StaleSignal = { dependent: string } | { tracks: string };
+
+/**
+ * Fork (symphysis, C11): the `stale` verdicts that are a signal, not a gate.
+ *
+ * A stale verdict gates only until the next step has begun. For an artifact
+ * other artifacts `require`, that is when one of them has output; for one that
+ * nothing requires but `apply.requires` names, when `apply.tracks` has a
+ * checked task (`- [x]`). Past that point the verdict counts as satisfied for
+ * dependents, planning completeness and the apply gate, and stays visible as
+ * `stale`. An artifact with neither (or a schema without `apply.tracks`) keeps
+ * gating. Only `stale` has a window: `mismatch` and `missing` always gate.
+ * The window is read from the graph and the apply phase, never from artifact ids.
+ */
+export function detectStaleSignals(
+  graph: ArtifactGraph,
+  changeDir: string,
+  apply: ApplyPhase | undefined
+): Map<string, StaleSignal> {
+  const signals = new Map<string, StaleSignal>();
+  if (!fs.existsSync(changeDir)) {
+    return signals;
+  }
+
+  const artifacts = graph.getAllArtifacts();
+  let tracksChecked: boolean | undefined;
+  for (const artifact of artifacts) {
+    if (!artifact.verdict || verdictState(artifact, changeDir) !== 'stale') {
+      continue;
+    }
+
+    const dependents = artifacts.filter((a) => a.requires.includes(artifact.id));
+    if (dependents.length > 0) {
+      const begun = dependents.find((a) => artifactOutputExists(changeDir, a.generates));
+      if (begun) {
+        signals.set(artifact.id, { dependent: begun.id });
+      }
+      continue;
+    }
+
+    if (apply?.tracks && apply.requires.includes(artifact.id)) {
+      tracksChecked ??= hasCheckedTask(changeDir, apply.tracks);
+      if (tracksChecked) {
+        signals.set(artifact.id, { tracks: apply.tracks });
+      }
+    }
+  }
+
+  return signals;
+}
+
+/**
+ * Fork (symphysis, C11): whether a file matched by `apply.tracks` has a checked
+ * task, read with the parser apply and archive count progress with. A file
+ * that cannot be read counts as none - the window stays open.
+ */
+function hasCheckedTask(changeDir: string, tracks: string): boolean {
+  let files: string[];
+  try {
+    files = resolveArtifactOutputs(changeDir, tracks);
+  } catch {
+    return false;
+  }
+  return files.some((file) => {
+    try {
+      return parseTaskLines(fs.readFileSync(file, 'utf-8')).some((task) => task.done);
+    } catch {
+      return false;
+    }
+  });
 }
 
 /**
