@@ -58,6 +58,9 @@ symphysis install --project . --skills-dir .claude/skills --skills-dir .agents/s
 - Идемпотентна: повторный запуск ничего не меняет.
 - Файл, отличающийся от поставляемого, пропускается и называется
   в stderr с подсказкой `--force`; с `--force` перезаписывается.
+  Каждый пропущенный файл схемы дополнительно называется отдельной строкой
+  stdout: `пропущен: <путь> — отличается, нужен --force`. Так обновление
+  схемы (в payload новый `schema.yaml`, в проекте старый) не проходит молча.
 - `openspec/config.yaml` сливается: `schema` переключается на `symphysis`,
   `rules` объединяются, комментарии и прочие ключи пользователя
   сохраняются. Запись — LF без BOM; длинные скаляры разворачиваются
@@ -65,6 +68,7 @@ symphysis install --project . --skills-dir .claude/skills --skills-dir .agents/s
 - Файл корней `.symphysis/tools/journal-roots.json` создаётся один раз
   (`{"": "<корень>/.."}`) и никогда не перезаписывается, в том числе
   с `--force`.
+- Телеметрия форка выключается, если ключ не задан (см. «Телеметрия форка»).
 
 ### check
 
@@ -72,10 +76,11 @@ symphysis install --project . --skills-dir .claude/skills --skills-dir .agents/s
 symphysis check --project .
 ```
 
-Называет расхождения, не чинит. Проверяет: версию форка, байты схемы,
+Называет расхождения, не чинит. Проверяет: версию форка, байты каждого
+файла схемы (расхождение — `[!!] схема: байты отличаются от payload: <путь>`),
 `config.yaml` (`schema: symphysis`), `SKILL.md` в каждом `--skills-dir`,
-инструменты, доступность Python и каждый `openspec/changes/*/decisions.json`
-через `journal.py check`.
+инструменты, доступность Python, телеметрию форка и каждый
+`openspec/changes/*/decisions.json` через `journal.py check`.
 
 Строки `[!!]` — расхождения, `[..]` — сигналы. Сигнал — результат сверки
 улик журналов (F-12): он сообщает, но не останавливает, на код выхода
@@ -87,6 +92,44 @@ symphysis check --project .
 Если `journal.py check` сам не отработал (не JSON, нет Python-модуля),
 расхождение читается «journal.py check не отработал (…)», а не
 «журнал негоден по схеме».
+
+## Вход изменения
+
+Вход изменения — намерение человека, файл `openspec/changes/<имя>/intent.md`
+(первый артефакт схемы `intent`, шаблон `templates/intent.md`). Каталог
+`.gigacode/` установщик не создаёт и не читает. Инструменты журнала
+лежат в `.symphysis/` (`tools/`, `docs/`).
+
+## Телеметрия форка
+
+Форк наследует от OpenSpec анонимную телеметрию: имя команды и версия,
+без аргументов, путей и содержимого; в CI она отключена автоматически.
+В upstream при незаданном ключе телеметрия включена, поэтому здесь она
+выключена по умолчанию:
+
+- `install` пишет `telemetry.enabled: false` в глобальный конфиг OpenSpec
+  (через `openspec config set`), если ключ `telemetry.enabled` не задан.
+  Значение, которое поставил человек (в том числе `true`), `install`
+  не меняет. Если `openspec` не найден, `install` печатает команду
+  и продолжает установку.
+- `check` показывает состояние: `[..] telemetry: выключена` (код 0);
+  `[..] telemetry: конфиг OpenSpec не найден — появится после первого
+  openspec init` (код 0); `[!!] telemetry: включена — выключить: ...`
+  (код 2). Переменные окружения `OPENSPEC_TELEMETRY`, `DO_NOT_TRACK`,
+  `CI` `check` не учитывает — он читает только конфиг.
+- Выключить вручную: `openspec config set telemetry.enabled false`.
+- `telemetry.anonymousId` в том же конфиге — случайный идентификатор
+  установки (UUID без связи с пользователем); `install` его не создаёт
+  и не меняет.
+- Политика upstream — раздел Telemetry в
+  [README OpenSpec](../upstream/openspec/README.md) (в репозитории
+  [Fission-AI/OpenSpec](https://github.com/Fission-AI/OpenSpec#readme));
+  настройки и переменные окружения — в
+  [docs/cli.md](../upstream/openspec/docs/cli.md) форка.
+
+Глобальный конфиг лежит в `$XDG_CONFIG_HOME/openspec/config.json`,
+иначе `%APPDATA%\openspec\config.json` (Windows) или
+`~/.config/openspec/config.json`.
 
 ## Python
 
@@ -111,3 +154,5 @@ npm pack
   Длительность — от нескольких секунд до полутора-двух минут, зависит
   от скорости реестра; без `npm` в `PATH` файл пропускается.
 - Остальные тесты: `node --test`, около 10 секунд.
+- Тесты, вызывающие `install`/`check`, задают `XDG_CONFIG_HOME` во
+  временный каталог: настоящий глобальный конфиг OpenSpec они не трогают.
