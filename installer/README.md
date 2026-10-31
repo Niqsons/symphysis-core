@@ -19,7 +19,7 @@
 
 ## Требование: форк OpenSpec
 
-`check` ждёт `openspec` версии `1.15.0-symphysis.2` (пин — поле
+`check` ждёт `openspec` версии `1.15.0-symphysis.3` (пин — поле
 `symphysis.openspecPin` в `package.json`). Источник форка —
 `symphysis.openspecSource` там же; сейчас это плейсхолдер.
 
