@@ -1,4 +1,5 @@
 """Схема OpenSpec `symphysis`: граф артефактов, как его разбирает CLI форка."""
+import hashlib
 import json
 import os
 import re
@@ -15,18 +16,20 @@ TEMPLATES = SCHEMAS / "symphysis" / "templates"
 SCHEMA_YAML = SCHEMAS / "symphysis" / "schema.yaml"
 CHANGE_DEMO = ROOT / "tests" / "fixtures" / "change-demo"
 CHANGE_DEMO_ATTACK = ROOT / "tests" / "fixtures" / "change-demo-attack"
+CHANGE_DEMO_NONE = ROOT / "tests" / "fixtures" / "change-demo-none"
 
-TEMPLATE_FILES = ["decisions.json", "research.md", "attack-decisions.md", "attack-artifacts.md",
+TEMPLATE_FILES = ["intent.md", "decisions.json", "research.md", "attack-decisions.md", "attack-artifacts.md",
                   "proposal.md", "spec.md", "design.md", "security.md", "tasks.md"]
 
-ARTIFACT_IDS = ["decisions", "research", "attack-decisions", "proposal", "specs",
+ARTIFACT_IDS = ["intent", "decisions", "research", "attack-decisions", "proposal", "specs",
                 "design", "security", "tasks", "attack-artifacts"]
 
 REQUIRES = {
-    "decisions": [],
+    "intent": [],
+    "decisions": ["intent"],
     "research": ["decisions"],
     "attack-decisions": ["research"],
-    "proposal": ["attack-decisions"],
+    "proposal": ["research", "attack-decisions"],
     "specs": ["proposal"],
     "design": ["proposal"],
     "security": ["specs"],
@@ -93,6 +96,7 @@ def test_schema_parses_in_fork(tmp_path):
     ids = [a["id"] for a in out["artifacts"]]
     assert ids == ARTIFACT_IDS
     assert out["artifacts"][0]["status"] == "ready" and out["artifacts"][1]["status"] == "blocked"
+    assert out["artifacts"][0]["id"] == "intent"
 
 
 @requires_fork
@@ -102,11 +106,51 @@ def test_graph_edges_and_apply_gate(tmp_path):
     assert out["schemaName"] == "symphysis"
     assert {a["id"]: a["requires"] for a in out["artifacts"]} == REQUIRES
     assert {a["id"]: a["outputPath"] for a in out["artifacts"]} == {
-        "decisions": "decisions.json", "research": "research/**/*.md",
+        "intent": "intent.md", "decisions": "decisions.json", "research": "research/**/*.md",
         "attack-decisions": "attack/decisions.md", "proposal": "proposal.md",
         "specs": "specs/**/*.md", "design": "design.md", "security": "security.md",
         "tasks": "tasks.md", "attack-artifacts": "attack/artifacts.md"}
     assert out["applyRequires"] == ["tasks", "attack-artifacts"]
+
+
+@requires_fork
+def test_new_change_intent_first_and_attacks_optional(tmp_path):
+    """Сценарий «Новое изменение»: изменение без файлов — `intent` готов, `decisions` ждёт, обе атаки
+    `optional`, гейт apply называет `tasks` (невызванная атака его не держит, вызванная — держит)."""
+    proj = make_project(tmp_path)
+    out = run_openspec(proj, "status", "--change", "demo", "--json")
+    by_id = artifacts_by_id(out)
+    assert by_id["intent"]["status"] == "ready"
+    assert by_id["decisions"]["status"] == "blocked" and by_id["decisions"]["missingDeps"] == ["intent"]
+    assert by_id["attack-decisions"]["optional"] is True and by_id["attack-artifacts"]["optional"] is True
+    assert not any("optional" in by_id[i] for i in by_id if i not in ("attack-decisions", "attack-artifacts"))
+    assert "tasks" in out["applyRequires"]
+
+
+@requires_fork
+def test_research_none_file_closes_research(tmp_path):
+    """Нуль парковок и `research/none.md` — исход `research` законный: `done`, `attack-decisions`
+    (optional) без файла не держит `proposal`: он `ready`."""
+    proj = make_project(tmp_path, change_fixture=CHANGE_DEMO_NONE)
+    out = run_openspec(proj, "status", "--change", "demo", "--json")
+    by_id = artifacts_by_id(out)
+    assert [by_id[i]["status"] for i in ("intent", "decisions", "research")] == ["done"] * 3
+    assert by_id["attack-decisions"]["optional"] is True and by_id["attack-decisions"]["fileExists"] is False
+    assert by_id["proposal"]["status"] == "ready"
+
+
+@requires_fork
+def test_planning_complete_without_called_attacks(tmp_path):
+    """«Планирование без вызванных атак»: все артефакты, кроме двух атак, — планирование завершено."""
+    proj = make_project(tmp_path, change_fixture=CHANGE_DEMO_NONE)
+    change = proj / "openspec" / "changes" / "demo"
+    for name in ("proposal.md", "specs/demo-cap/spec.md", "design.md", "security.md", "tasks.md"):
+        (change / name).parent.mkdir(parents=True, exist_ok=True)
+        (change / name).write_text("заготовка\n", encoding="utf-8", newline="\n")
+    out = run_openspec(proj, "status", "--change", "demo", "--json")
+    assert out["isPlanningComplete"] is True, out
+    by_id = artifacts_by_id(out)
+    assert by_id["attack-artifacts"]["fileExists"] is False
 
 
 @requires_fork
@@ -122,8 +166,8 @@ def test_schema_validate_accepts_symphysis(tmp_path):
 
 @requires_fork
 def test_instructions_name_skills_and_stay_short(tmp_path):
-    """F-06: instruction короткий и называет скилл по имени; research, design, security, tasks —
-    правила без скилла. F-07: attack-decisions начинается со второго круга."""
+    """F-06: instruction короткий и называет скилл по имени; intent, design, security, tasks —
+    правила без скилла. Второй круг брейншторма стоит в конце research, атака журнала — в attack-decisions."""
     proj = make_project(tmp_path)
     text = {i: run_openspec(proj, "instructions", i, "--change", "demo", "--json")["instruction"]
             for i in ARTIFACT_IDS}
@@ -132,13 +176,21 @@ def test_instructions_name_skills_and_stay_short(tmp_path):
     assert "symphysis-brainstorm" in text["decisions"]
     assert "symphysis-attack" in text["attack-decisions"] and "symphysis-attack" in text["attack-artifacts"]
     assert "symphysis-edge-probe" in text["specs"] and "symphysis-prohibition-probe" in text["specs"]
-    for i in ("research", "design", "security", "tasks"):
+    for i in ("intent", "design", "security", "tasks"):
         assert "symphysis-" not in text[i], f"{i}: правила без скилла"
-    second_round = text["attack-decisions"].lstrip()
-    assert second_round.startswith("Второй круг"), second_round[:60]
-    assert second_round.index("материалы") < second_round.index("research/") < second_round.index("symphysis-attack")
-    assert "брейншторм закончен по решению человека" in second_round
-    assert "status: passed | gaps_found" in text["attack-decisions"]
+    # research: второй круг брейншторма стоит в конце, после правил отчётов и none.md
+    research = text["research"]
+    second = research.index("Второй круг брейншторма")
+    assert research.index("research/<F-NN>.md") < research.index("research/none.md") < second
+    assert second < research.index("материалы", second) < research.index("research/", second) < research.index("symphysis-brainstorm")
+    assert research.rstrip().endswith("«брейншторм закончен по решению человека».")
+    attack = text["attack-decisions"].lstrip()
+    assert attack.startswith("Загрузи скилл `symphysis-attack`"), attack[:60]
+    for gone in ("Второй круг", "брейншторм закончен", "новый круг"):
+        assert gone not in attack, gone
+    assert "status: passed | gaps_found" in attack
+    assert "Начни интервью с `intent.md`" in text["decisions"]
+    assert "дословно" in text["intent"] and "Содержания не пиши" in text["intent"]
 
 
 # --- шаблоны артефактов ----------------------------------------------------
@@ -289,8 +341,10 @@ def test_security_template_is_canon_checklist():
 
 def test_proposal_template_keeps_headings_the_cli_parses():
     text = template_text("proposal.md")
-    assert headings(text, 2) == ["Why", "What Changes", "Capabilities", "Impact"]
+    assert headings(text, 2) == ["Why", "What Changes", "Capabilities", "Impact", "Отступления от постановки"]
     assert headings(text, 3) == ["New Capabilities", "Modified Capabilities"]
+    assert section(text, "Отступления от постановки").strip().splitlines()[-1] == "нет"
+    assert "F-MM против F-NN" in text and "Уточнение без противоречия" in text
 
 
 def test_tasks_template_follows_openspec_checkbox_grammar():
@@ -303,7 +357,7 @@ def test_tasks_template_follows_openspec_checkbox_grammar():
 # --- schema.yaml: шаблоны, пути скриптов, формулировки ---------------------
 
 def test_schema_points_each_artifact_at_its_own_template():
-    for artifact_id, template in {"decisions": "decisions.json", "research": "research.md",
+    for artifact_id, template in {"intent": "intent.md", "decisions": "decisions.json", "research": "research.md",
                                   "attack-decisions": "attack-decisions.md", "proposal": "proposal.md",
                                   "specs": "spec.md", "design": "design.md", "security": "security.md",
                                   "tasks": "tasks.md", "attack-artifacts": "attack-artifacts.md"}.items():
@@ -330,6 +384,29 @@ def test_instruction_wording_from_task7_review():
     assert "prohibition probe" not in security
     research = schema_block("research")
     assert "«не найдено»" in research and "«искал: <шаблоны дословно>»" in research
+
+
+def test_research_instruction_and_template_carry_none_rule():
+    """F-16.A: нуль парковок — `research/none.md` (`question: none`, отрицание по рецепту); первая парковка
+    «материалы» удаляет `none.md`. Оба правила — и в instruction, и в шаблоне."""
+    for text in (schema_block("research"), template_text("research.md")):
+        assert "research/none.md" in text and "question: none" in text
+        assert "не найдено" in text and "искал: <шаблоны дословно>" in text
+        assert "addressee: материалы" in text
+        assert "удали `none.md`" in text
+
+
+def test_intent_template_and_instruction():
+    text = template_text("intent.md")
+    assert headings(text, 1) == ["Намерение: <имя изменения>"] and headings(text, 2) == ["Намерение", "Критерии готовности"]
+    assert "Без критериев готовности" in text and "дословно" in text
+    block = schema_block("intent")
+    assert "generates: intent.md" in block and "template: intent.md" in block and "requires: []" in block
+    assert "спроси намерение у человека" in block and "дословно" in block
+    assert "optional: true" in schema_block("attack-decisions") and "optional: true" in schema_block("attack-artifacts")
+    assert "optional" not in schema_block("proposal")
+    assert re.search(r"requires:\n\s+- intent\n", schema_block("decisions"))
+    assert re.search(r"requires:\n\s+- research\n\s+- attack-decisions\n", schema_block("proposal"))
 
 
 def test_research_instruction_marks_record_number_as_placeholder():
@@ -503,8 +580,7 @@ def test_status_after_research(tmp_path):
     assert out["schemaName"] == "symphysis"
     assert by_id["decisions"]["status"] == "done" and by_id["research"]["status"] == "done"
     assert by_id["attack-decisions"]["status"] == "ready"
-    assert by_id["proposal"]["status"] == "blocked"
-    assert by_id["proposal"]["missingDeps"] == ["attack-decisions"]
+    assert by_id["proposal"]["status"] == "ready"
 
 
 # --- вердикт держит граф: фикстура change-demo-attack ----------------------
@@ -518,8 +594,11 @@ def write_attack_decisions(proj, verdict):
     text = template_text("attack-decisions.md")
     opening = "---\nstatus: gaps_found\n"
     assert text.startswith(opening), text[:40]
-    path = proj / "openspec" / "changes" / "demo" / "attack" / "decisions.md"
-    path.write_text(f"---\nstatus: {verdict}\n" + text[len(opening):], encoding="utf-8", newline="\n")
+    change = proj / "openspec" / "changes" / "demo"
+    # хеш цели — SHA-256 сырых байтов журнала: пустой `target_sha256` форк читает как устаревший вердикт
+    digest = hashlib.sha256((change / "decisions.json").read_bytes()).hexdigest()
+    body = text[len(opening):].replace("target_sha256:\n", f"target_sha256: {digest}\n", 1)
+    (change / "attack" / "decisions.md").write_text(f"---\nstatus: {verdict}\n" + body, encoding="utf-8", newline="\n")
 
 
 def test_change_demo_attack_extends_change_demo():

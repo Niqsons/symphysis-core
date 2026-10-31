@@ -1,0 +1,63 @@
+{
+ "title": "Журнал решений: экспорт журнала в CSV",
+ "source": "decisions.json",
+ "intro": "Учебный журнал без парковок «материалы»: исследовать нечего.",
+ "records": [
+  {
+   "id": "F-01",
+   "question": "В каком виде отдавать экспорт журнала?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "один CSV-файл на весь журнал, вложенные поля склеены в ячейки",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "src/export/writer.py",
+       "quote": "def write_row(out, row):"
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "несколько CSV-файлов: записи, варианты и улики, связанные по номеру записи",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "docs/export-notes.md",
+       "quote": "одна строка — одна сущность"
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "B",
+    "why": "плоские таблицы читаются в любой электронной таблице без разбора ячеек",
+    "text": "B — плоские таблицы читаются в любой электронной таблице без разбора ячеек"
+   },
+   "decision": {
+    "option": "B",
+    "word": "Берём B: три таблицы, связанные по номеру записи.",
+    "date": "2026-10-30"
+   },
+   "reversibility": {
+    "level": "обратимо",
+    "why": "экспорт нигде не хранится, формат можно сменить в следующем выпуске"
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [],
+   "comments": []
+  }
+ ]
+}
