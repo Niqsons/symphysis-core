@@ -15,8 +15,9 @@ GSD_PIN = "@ e2cd587"
 # Заголовок таблицы отличий перевода — «место · в источнике · у нас · почему смысл изменён».
 NOTES_HEADER = ("место", "в источнике", "у нас", "почему смысл изменён")
 PERSPECTIVES = ("Researcher", "Simplifier", "Boundary Keeper", "Failure Analyst", "Seed Closer")
-WORDS_TARGET = 1500   # ориентир владельца
-WORDS_CEILING = 1800  # потолок: больше — красное
+# Ориентир владельца. Порога у скиллов нет (бриф 7.1 calibration-fixes, решение контроллера 12; прежний
+# потолок 1800 снят): число слов печатается, превышение ориентира несётся владельцу, текст ради числа не ужимается.
+WORDS_TARGET = 1500
 
 
 def read(path):
@@ -119,8 +120,7 @@ def test_skill_shape(skill):
     n = word_count(text)
     print(f"SKILL.md {skill.name}: {n} слов")
     if n > WORDS_TARGET:
-        print(f"ориентир {WORDS_TARGET} превышен на {n - WORDS_TARGET}")
-    assert n <= WORDS_CEILING, f"SKILL.md: {n} слов, потолок {WORDS_CEILING}"
+        print(f"ориентир {WORDS_TARGET} превышен на {n - WORDS_TARGET} — к владельцу, не ужимать")
 
 
 def test_brainstorm_skill_shape():
