@@ -435,3 +435,40 @@ def test_multiline_quote_needs_whole_middle_lines(tmp_path):
         j = one_record_journal(path="a.md", quote=quote)
         journal.check_evidence(j, {"": tmp_path})
         assert evidence_of(j)["found"] is found, quote
+
+
+# --- отступление от постановки без замка (7.4: F-55.E, F-08.A) --------------------
+
+DEVIATION_FIX = FIX / "journal-deviation.json"
+INTENT_DEMO = FIX / "intent-demo"
+
+
+def intent_demo_roots(tmp_path) -> Path:
+    """Корень улик fixture: путь `openspec/changes/intent-demo/…` — как в журнале изменения, от корня проекта."""
+    roots = tmp_path / "roots.json"
+    roots.write_text(json.dumps({"openspec/changes/intent-demo/": str(INTENT_DEMO)}), encoding="utf-8")
+    return roots
+
+
+def test_deviation_with_a_human_decision_against_the_setting_passes_check(tmp_path):
+    """Сценарий «Отступление проходит check»: факт постановки, развилка с `deviation` на него и решение человека
+    против факта со словом — `check` код 0 и с `--strict`, ни одной строки `[!!]`: пометка — видимость, не замок."""
+    j = journal.load_journal(DEVIATION_FIX)
+    fork = next(r for r in j["records"] if r.get("deviation"))
+    fact = next(r for r in j["records"] if r["id"] == fork["deviation"])
+    assert (fact["kind"], fact["addressee"]) == ("факт", "постановка")
+    chosen = next(o for o in fork["options"] if o["letter"] == fork["decision"]["option"])
+    assert fork["kind"] == "развилка" and fork["status"] == "решён" and fork["decision"]["word"]
+    assert chosen["text"].startswith("Наследование"), "решение против сценария факта постановки"
+    assert fork["recommendation"]["option"] != chosen["letter"]
+    run = run_check(DEVIATION_FIX, "--roots", intent_demo_roots(tmp_path), "--strict")
+    assert run.returncode == 0, run.stdout + run.stderr
+    assert "[!!]" not in run.stdout + run.stderr and "[ok] улик сверено 3 из 3" in run.stdout
+
+
+def test_deviation_stays_visible_in_the_renders():
+    """Видимость: строка у развилки в markdown и у решения в design."""
+    j = journal.load_journal(DEVIATION_FIX)
+    md = journal.render_md(j).split("\n## F-03")[1]
+    assert "- отступление от постановки: F-01" in md
+    assert "- **Отступление от постановки:** F-01" in journal.render_design(j)

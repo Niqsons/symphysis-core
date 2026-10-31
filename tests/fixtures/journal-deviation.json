@@ -1,0 +1,111 @@
+{
+ "title": "Журнал решений: intent-demo — отступление от постановки",
+ "source": "decisions.json",
+ "intro": "Учебный журнал после круга просмотрщика: развилка F-03 помечена отступлением от факта постановки F-01 и решена человеком против него. Пометка — видимость, не замок (F-55.E): `check` годен. Пути улик — от корня проекта (`openspec/changes/intent-demo/…`).",
+ "records": [
+  {
+   "id": "F-01",
+   "question": "Критерий готовности: `businessId=\"\"` → дочерний экземпляр без бизнес-идентификатора",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "постановка",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "F-03",
+   "evidence": [
+    {
+     "path": "openspec/changes/intent-demo/intent.md",
+     "quote": "`businessId=\"\"` → дочерний экземпляр без бизнес-идентификатора"
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-02",
+   "question": "Критерий готовности: `businessId=\"${orderId}\"` → дочерний экземпляр с бизнес-идентификатором из переменной `orderId`",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "постановка",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/intent-demo/intent.md",
+     "quote": "`businessId=\"${orderId}\"` → дочерний экземпляр с бизнес-идентификатором из переменной `orderId`"
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-03",
+   "question": "Что получает дочерний экземпляр, когда атрибут `businessId` задан пустой строкой?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-01"
+   ],
+   "deviation": "F-01",
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Экземпляр без бизнес-идентификатора — как в критерии F-01",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/changes/intent-demo/intent.md",
+       "quote": "`businessId=\"\"` → дочерний экземпляр без бизнес-идентификатора"
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Наследование бизнес-идентификатора родителя: пустой атрибут читается как незаданный",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "критерий постановки назван дословно; наследование меняет его сценарий",
+    "text": "A — критерий постановки назван дословно; наследование меняет его сценарий"
+   },
+   "decision": {
+    "option": "B",
+    "word": "Берём B: пустой атрибут и незаданный ведут себя одинаково.",
+    "date": "2026-10-31"
+   },
+   "reversibility": {
+    "level": "обратимо",
+    "why": "одна ветка условия в обработчике вызова дочернего процесса"
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "При B — отступление от постановки F-01: proposal назовёт его в разделе «Отступления от постановки».",
+   "evidence": [],
+   "comments": []
+  }
+ ]
+}
