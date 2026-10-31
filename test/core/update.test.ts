@@ -2574,7 +2574,8 @@ Old version content
       );
 
       // Should contain generatedBy field
-      expect(updatedContent).toMatch(/generatedBy:\s*["']\d+\.\d+\.\d+["']/);
+      // Fork (symphysis, C10): the fork version carries a prerelease suffix (-symphysis.N).
+      expect(updatedContent).toMatch(/generatedBy:\s*["']\d+\.\d+\.\d+(-[0-9A-Za-z.-]+)?["']/);
     });
   });
 
