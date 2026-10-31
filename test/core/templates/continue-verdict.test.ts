@@ -12,7 +12,7 @@ import {
   getContinueChangeSkillTemplate,
   getOpsxContinueCommandTemplate,
 } from '../../../src/core/templates/skill-templates.js';
-import { VERDICT_CHECK } from '../../../src/core/templates/workflows/continue-change.js';
+import { NAMED_ARTIFACT, VERDICT_CHECK } from '../../../src/core/templates/workflows/continue-change.js';
 
 const VARIANTS: Array<[label: string, text: string]> = [
   ['continue skill', getContinueChangeSkillTemplate().instructions],
@@ -76,7 +76,7 @@ describe('continue template: verdict step', () => {
     '%s: the verdict step applies only to an existing file and leaves a new artifact to the ordinary branch',
     (_label, text) => {
       const condition =
-        'carries `verdict: "mismatch"`, or `verdict: "missing"` while its file already exists (`artifactPaths.<artifact-id>.existingOutputPaths` in the status output is non-empty)**';
+        'carries `verdict: "mismatch"`, `verdict: "stale"`, or `verdict: "missing"` while its file already exists (`artifactPaths.<artifact-id>.existingOutputPaths` in the status output is non-empty)**';
       const fallback =
         'A verdict artifact with `verdict: "missing"` and no existing file is created like any other ready artifact (its instruction writes the file with its frontmatter) \u2014 the ordinary branch below applies.';
       const blockStart = text.indexOf('**If the first artifact with `status: "ready"`');
@@ -99,7 +99,7 @@ describe('continue template: verdict step', () => {
 
   it.each(VARIANTS)('%s: documents the verdict field of status --json', (_label, text) => {
     const bullet =
-      '- `verdict` on an artifact: present only when its schema entry declares a verdict; `"ok"`, `"missing"` (file or frontmatter value absent) or `"mismatch"` (wrong value)';
+      '- `verdict` on an artifact: present only when its schema entry declares a verdict; `"ok"`, `"missing"` (file or frontmatter value absent), `"mismatch"` (wrong value) or `"stale"` (a target changed since the verdict)';
     expect(occurrences(text, bullet)).toBe(1);
     expect(text.indexOf(bullet)).toBeGreaterThan(text.indexOf('- `artifacts`: Array of artifacts'));
     expect(text.indexOf(bullet)).toBeLessThan(text.indexOf('- `isPlanningComplete`'));
@@ -107,9 +107,61 @@ describe('continue template: verdict step', () => {
 
   it.each(VARIANTS)('%s: the ready-artifact step defers to the verdict step', (_label, text) => {
     const deferral =
-      '(if it carries `verdict: "mismatch"`, or `verdict: "missing"` with an existing file, the verdict step above applies instead)';
+      '(if it carries `verdict: "mismatch"`, `verdict: "stale"`, or `verdict: "missing"` with an existing file, the verdict step above applies instead)';
     expect(occurrences(text, deferral)).toBe(1);
     expect(text).not.toContain('a verdict other than "ok"');
     expect(text.indexOf(deferral)).toBeGreaterThan(text.indexOf('**If artifacts are ready to create**'));
+  });
+
+  it('VERDICT_CHECK treats stale like mismatch: no blind rewrite, instruction run again', () => {
+    expect(VERDICT_CHECK).toContain('`verdict: "stale"`');
+    expect(VERDICT_CHECK).toContain('stale');
+    expect(VERDICT_CHECK).toMatch(/stale[^.]*run the artifact's instruction again/);
+  });
+});
+
+// Fork (symphysis, C8): `/opsx:continue <change> [<artifact-id>]` - four rules.
+describe('continue template: artifact named by the caller', () => {
+  it.each(VARIANTS)('%s: states the NAMED_ARTIFACT block exactly once', (_label, text) => {
+    expect(occurrences(text, NAMED_ARTIFACT)).toBe(1);
+  });
+
+  it.each(VARIANTS)('%s: (a) input takes an optional second argument, the artifact id', (_label, text) => {
+    expect(text).toContain('/opsx:continue <change> [<artifact-id>]');
+    expect(text).toContain('second argument is optional');
+  });
+
+  it.each(VARIANTS)('%s: (b) exact match against ids, refusal lists ids and writes nothing', (_label, text) => {
+    expect(text).toContain('exactly - case and hyphens included');
+    expect(text).toContain('list every artifact `id`, write no file');
+    expect(text).toContain('do NOT pick a similar artifact');
+  });
+
+  it.each(VARIANTS)('%s: (c) blocked, valid verdict, stale/mismatch and ready branches', (_label, text) => {
+    expect(text).toContain('name its `missingDeps` and STOP');
+    expect(text).toContain('the verdict is valid');
+    expect(text).toContain('do NOT rewrite the file');
+    expect(text).toContain('only for the rows not passed');
+    expect(text).toContain('`verdict: "mismatch"`, `"stale"`, or `"missing"` with an existing file');
+    expect(text).toContain('create it from its instructions');
+    expect(text).toContain("the ONLY artifact of this invocation");
+  });
+
+  it.each(VARIANTS)('%s: (d) without a name optional artifacts are skipped', (_label, text) => {
+    expect(text).toContain('Without a name, skip artifacts with `optional: true`');
+    const pick = text.slice(text.indexOf('**If artifacts are ready to create**'));
+    expect(pick).toContain('without `optional: true`');
+  });
+
+  it.each(VARIANTS)('%s: named step comes before the partial-artifact check', (_label, text) => {
+    expect(text.indexOf(NAMED_ARTIFACT)).toBeGreaterThan(text.indexOf('3. **Act based on status**'));
+    expect(text.indexOf(NAMED_ARTIFACT)).toBeLessThan(
+      text.indexOf('**Before anything else, finish a partly written artifact**')
+    );
+  });
+
+  it.each(VARIANTS)('%s: status bullets name optional and fileExists', (_label, text) => {
+    expect(text).toContain('`optional: true`');
+    expect(text).toContain('`fileExists`');
   });
 });

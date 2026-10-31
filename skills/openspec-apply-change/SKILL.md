@@ -46,6 +46,8 @@ In both branches, never create the root as a side effect: do not run `openspec i
    - `planningHome`, `changeRoot`, and `actionContext`: planning scope and edit constraints
    - Which artifact contains the tasks (typically "tasks" for spec-driven, check status for others)
 
+   Optional artifacts never invoked: if any artifact in the status output has `optional: true` and `fileExists: false`, say to the user, before any work, the line `атаки не вызывались: <id, id, ...>` - the artifact ids joined with a comma and a space, in schema order, with this Russian prefix verbatim. This is a signal, not a stop: continue with the steps below.
+
 3. **Get apply instructions**
 
    ```bash
@@ -60,9 +62,11 @@ In both branches, never create the root as a side effect: do not run `openspec i
    - Optional `context`: current required project instruction input from the selected root
    - Optional `operationGuidance`: current advisory guidance for apply
    - `missingArtifacts` (when present): required artifact ids with no output
+   - `artifactsWithoutPassingVerdict` (when present): required artifacts whose file exists but whose verdict is not `ok` (`{id, verdict}`)
 
    **Handle states:**
    - If `state: "blocked"`: show the message and pause implementation.
+     - If `artifactsWithoutPassingVerdict` is non-empty: the block is the verdict, not a missing file - follow the `instruction` field: run `openspec instructions <id> --change "<name>"` again for each listed artifact and execute it; do NOT recreate the file
      - If `missingArtifacts` is non-empty: suggest using `/openspec-continue-change` to create them.
      - Otherwise, follow the CLI instruction to create or repair the schema-configured tracking file from existing planning artifacts. Do not assume another artifact is ready or start implementation while blocked.
    - If `state: "all_done"`: report that all tracked tasks are complete and suggest review or verification as appropriate before archiving

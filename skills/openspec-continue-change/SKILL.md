@@ -24,7 +24,7 @@ Otherwise, with no root, what happens next depends on how this workflow was reac
 
 In both branches, never create the root as a side effect: do not run `openspec init` until the user asks for it, do not hand-create `openspec/` files, and do not let a command create it.
 
-**Input**: Optionally specify a change name. If omitted, check if it can be inferred from conversation context. If vague or ambiguous you MUST prompt for available changes.
+**Input**: `/openspec-continue-change <change> [<artifact-id>]` - optionally specify a change name and, as a second argument, an artifact id. If the name is omitted, check if it can be inferred from conversation context. If vague or ambiguous you MUST prompt for available changes.
 
 **Steps**
 
@@ -51,11 +51,19 @@ In both branches, never create the root as a side effect: do not run `openspec i
    Parse the JSON to understand current state. The response includes:
    - `schemaName`: The workflow schema being used (e.g., "spec-driven")
    - `artifacts`: Array of artifacts with their status ("done", "skipped", "ready", "blocked")
-   - `verdict` on an artifact: present only when its schema entry declares a verdict; `"ok"`, `"missing"` (file or frontmatter value absent) or `"mismatch"` (wrong value)
+   - `verdict` on an artifact: present only when its schema entry declares a verdict; `"ok"`, `"missing"` (file or frontmatter value absent), `"mismatch"` (wrong value) or `"stale"` (a target changed since the verdict)
+   - `optional: true` and `fileExists` on an artifact: present only on optional artifacts; one without a file does not block and is not part of completion
    - `isPlanningComplete`: Boolean indicating if all planning artifacts are complete. Older CLI versions expose the same value as `isComplete`.
    - `planningHome`, `changeRoot`, `artifactPaths`, and `actionContext`: path and scope context. Use these instead of assuming repo-local paths.
 
 3. **Act based on status**:
+
+   **If the invocation names an artifact** (`/openspec-continue-change <change> <artifact-id>`; the second argument is optional): compare the name with the `id` of every artifact in the status output exactly - case and hyphens included. If no `id` matches exactly, refuse: list every artifact `id`, write no file, do NOT pick a similar artifact, and STOP. If one matches, it is the ONLY artifact of this invocation, and these cases replace the checks below:
+   - `status: "blocked"`: name its `missingDeps` and STOP
+   - `verdict: "ok"` and the file exists: the verdict is valid (the target hashes match) - do NOT rewrite the file. Tell the user the verdict is valid, then get its instructions and execute them only for the rows not passed (the attack skill's step-1 rule)
+   - `verdict: "mismatch"`, `"stale"`, or `"missing"` with an existing file: apply the verdict step below to this artifact
+   - otherwise (`ready`, no file): create it from its instructions as in the ordinary branch below
+   Then STOP. Without a name, skip artifacts with `optional: true` when picking the first `ready` artifact - they are created only by name.
 
    ---
 
@@ -66,7 +74,7 @@ In both branches, never create the root as a side effect: do not run `openspec i
 
    ---
 
-   **If the first artifact with `status: "ready"` carries `verdict: "mismatch"`, or `verdict: "missing"` while its file already exists (`artifactPaths.<artifact-id>.existingOutputPaths` in the status output is non-empty)**: do NOT rewrite the file. Get its instructions (`openspec instructions <artifact-id> --change "<name>" --json`) and follow them to produce the verdict — the instruction names the attack skill that writes `status: passed` or `status: gaps_found` into the file's frontmatter. Then re-run `openspec status --change "<name>" --json` and confirm the artifact now shows `verdict: "ok"` (and `status: "done"`); if it shows `gaps_found`, report the gaps to the user and STOP. This counts as this invocation's ONE artifact — STOP after it. A verdict artifact with `verdict: "missing"` and no existing file is created like any other ready artifact (its instruction writes the file with its frontmatter) — the ordinary branch below applies.
+   **If the first artifact with `status: "ready"` carries `verdict: "mismatch"`, `verdict: "stale"`, or `verdict: "missing"` while its file already exists (`artifactPaths.<artifact-id>.existingOutputPaths` in the status output is non-empty)**: do NOT rewrite the file. Get its instructions (`openspec instructions <artifact-id> --change "<name>" --json`) and follow them to produce the verdict — the instruction names the attack skill that writes `status: passed` or `status: gaps_found` into the file's frontmatter. Then re-run `openspec status --change "<name>" --json` and confirm the artifact now shows `verdict: "ok"` (and `status: "done"`); if it shows `gaps_found`, report the gaps to the user and STOP. `verdict: "stale"` means a target the verdict was written against has changed since: treat it like `mismatch` — do not rewrite the file blindly, run the artifact's instruction again in full. This counts as this invocation's ONE artifact — STOP after it. A verdict artifact with `verdict: "missing"` and no existing file is created like any other ready artifact (its instruction writes the file with its frontmatter) — the ordinary branch below applies.
 
    ---
 
@@ -79,7 +87,7 @@ In both branches, never create the root as a side effect: do not run `openspec i
    ---
 
    **If artifacts are ready to create** (status shows artifacts with `status: "ready"`):
-   - Pick the FIRST artifact with `status: "ready"` from the status output (if it carries `verdict: "mismatch"`, or `verdict: "missing"` with an existing file, the verdict step above applies instead)
+   - Pick the FIRST artifact with `status: "ready"` and without `optional: true` from the status output (if it carries `verdict: "mismatch"`, `verdict: "stale"`, or `verdict: "missing"` with an existing file, the verdict step above applies instead)
    - Get its instructions:
      ```bash
      openspec instructions <artifact-id> --change "<name>" --json
