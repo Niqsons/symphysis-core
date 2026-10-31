@@ -132,14 +132,15 @@ def test_dispute_on_ask_the_human_row_becomes_the_word(tmp_path):
     disputes = {key(att, 0): "ответ  по\nF-04", key(att, 1): "новое слово к F-02", key(att, 2): "спор 3", key(att, 3): "спор 4"}
     res = prompt(tmp_path, j, state(), [att], disputes)
     lines = res["text"].splitlines()
-    assert "- F-04: A — «ответ по F-04»" in lines            # открытая запись: буква рекомендации
+    assert not [l for l in lines if l.startswith("- F-04:")]  # открытая запись: слова нет, рекомендация не решение
     assert "- F-02: B — «новое слово к F-02»" in lines      # решённая: буква решения
     assert res["conflictKeys"] == []
     tail = lines[-1]
-    assert tail.startswith("Замечания к схеме: ") and "спор: спор 3" in tail and "спор: спор 4" in tail and "ответ по" not in tail
+    assert tail.startswith("Замечания к схеме: ") and "спор: спор 3" in tail and "спор: спор 4" in tail
+    assert "F-04: ответ по F-04" in tail and res["undecidedKeys"] == [key(att, 0)]
     ops = apply_clean(j, res["text"])
     words = {op["id"]: op for op in ops if op["op"] == "decide"}
-    assert words["F-04"]["option"] == "A" and words["F-04"]["word"] == "ответ по F-04"
+    assert "F-04" not in words
     assert words["F-02"]["option"] == "B" and words["F-02"]["word"] == "новое слово к F-02"
     assert [op["op"] for op in ops].count("note") == 1
 
@@ -152,8 +153,8 @@ def test_two_different_answers_to_one_decision_conflict(tmp_path):
     res = prompt(tmp_path, j, state(), [att], disputes)
     assert "- F-02:" not in res["text"]                      # одной строки слова на запись нет вовсе
     assert sorted(res["conflictKeys"]) == sorted([key(att, 0), key(att, 1)])
-    assert "- F-04: A — «ответ три»" in res["text"].splitlines()
-    assert res["text"].splitlines()[-1] == "Замечания к схеме: конфликт ответов к F-02 — оставьте один"
+    assert not [l for l in res["text"].splitlines() if l.startswith("- F-04:")]
+    assert res["text"].splitlines()[-1] == "Замечания к схеме: F-04: ответ три · конфликт ответов к F-02 — оставьте один"
     apply_clean(j, res["text"])
     same = {key(att, 0): "ответ один", key(att, 1): "ответ  один"}                 # одинаковые ответы — не конфликт
     res = prompt(tmp_path, j, state(), [att], same)
@@ -172,7 +173,7 @@ def test_answer_repeating_the_decision_is_not_added(tmp_path):
 
 def test_answer_with_guillemets_survives_parse_answers(tmp_path):
     j = plan_journal()
-    att = attack_file(("F-04, decision", "утверждение", "вопрос человеку"))
+    att = attack_file(("F-02, decision", "утверждение", "вопрос человеку"))
     res = prompt(tmp_path, j, state(), [att], {key(att, 0): "берём «как есть» и `код`"})
     ops = apply_clean(j, res["text"])
     assert ops[0]["word"] == "берём «как есть» и `код`"
@@ -197,3 +198,30 @@ def test_md_escapes_first_then_turns_backtick_pairs_into_code(tmp_path):
     for src, expected in cases.items():
         assert run_js(tmp_path, "text", "md(input)", src) == expected, src
     assert run_js(tmp_path, "text", "md(input)", None) == ""
+
+
+def test_answer_to_an_undecided_record_goes_to_notes_and_leaves_it_open(tmp_path):
+    """Слово владельца 2026-10-31: запись без решения не получает ни строки слова, ни буквы рекомендации; ответ —
+    замечание `F-NN: ответ` в notes[], после apply `decision` нет."""
+    j = plan_journal()
+    att = attack_file(("F-04, decision", "утверждение", "вопрос человеку"))
+    res = prompt(tmp_path, j, state(), [att], {key(att, 0): "ответ по F-04"})
+    assert not [l for l in res["text"].splitlines() if l.startswith("- F-04:")] and "- F-04: A" not in res["text"]
+    assert res["text"].splitlines()[-1] == "Замечания к схеме: F-04: ответ по F-04"
+    assert res["undecidedKeys"] == [key(att, 0)] and res["conflictKeys"] == []
+    ops = apply_clean(j, res["text"])
+    work = copy.deepcopy(j)
+    journal.apply_answers(work, ops, DATE)
+    assert {r["id"]: r for r in work["records"]}["F-04"]["decision"] is None
+    assert any("F-04: ответ по F-04" in n["text"] for n in work["notes"])
+    decided = prompt(tmp_path, j, state(), [attack_file(("F-02, decision", "у", "вопрос человеку"))],
+                     {key(attack_file(("F-02, decision", "у", "вопрос человеку")), 0): "слово"})
+    assert decided["undecidedKeys"] == [] and "- F-02: B — «слово»" in decided["text"]
+
+
+def test_page_marks_undecided_row_and_skill_states_the_rule():
+    """У строки с ответом к нерешённой записи — пометка до копирования промпта; скилл называет то же правило."""
+    html = TEMPLATE.read_text(encoding="utf-8")
+    assert "запись не решена — ответ уйдёт в замечания; выбери вариант в карточке" in html
+    skill = " ".join((ROOT / "skills" / "symphysis-viewer" / "SKILL.md").read_text(encoding="utf-8").split())
+    assert "У записи без решения слова нет, рекомендация не решение" in skill and "`F-NN: ответ`" in skill

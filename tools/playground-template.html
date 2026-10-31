@@ -507,23 +507,27 @@ function renderStats() {
    Уходит всё, что `apply` уже внёс в журнал: вариант с тем же текстом, слово, равное слову решения, парковка, зависимость, замечание.
    Ответ в поле спора строки атаки (закрытие «вопрос человека», раздел `F-NN, decision`) — слово к решению `- F-NN: <буква> — «…»`, одна строка
    на запись; два разных ответа — конфликт: строки нет, в замечаниях «конфликт ответов к F-NN — оставьте один», `conflictKeys` — ключи спора
-   строк, которые его составили. Возвращает { text, conflictKeys }. */
+   строк, которые его составили. Ответ к записи без решения — замечание `F-NN: ответ`, ключи — `undecidedKeys`. Возвращает { text, conflictKeys, undecidedKeys }. */
 function buildPrompt(J, attacks, st, disputes, date) {
   const MARK = '(добавлен человеком';
   const norm = s => String(s == null ? '' : s).replace(/\s+/g, ' ').trim();
   const shorten = (s, n) => { s = String(s || ''); return s.length > n ? s.slice(0, n - 1) + '…' : s; };
   const byId = Object.fromEntries(J.records.map(r => [r.id, r]));
   const jchoice = rec => (rec.decision && rec.decision.option) || null;
-  const letterOf = (rec, d) => (d && d.choice) || jchoice(rec) || (rec.recommendation && rec.recommendation.option) || null;
+  /* рекомендация не решение: буква — выбор в состоянии или решение журнала, иначе её нет */
+  const letterOf = (rec, d) => (d && d.choice) || jchoice(rec) || null;
   const lines = ['Решения по журналу ' + (J.source || '') + ', ' + date + ':'];
   /* споры по строкам атаки: слово к решению или заметка */
-  const answers = {}, otherDisputes = [];
+  const answers = {}, otherDisputes = [], undecidedKeys = [];
   for (const att of (attacks || [])) for (const r of (att.rows || [])) {
     const key = att.path + '|' + r.section + '|' + r.claim, sp = norm((disputes || {})[key]);
     if (!sp) continue;
     const m = /^(F-\d+),\s*decision\b/.exec(norm(r.section)), rec = m && byId[m[1]];
-    if (rec && rec.kind === 'развилка' && norm(r.fix).toLowerCase() === 'вопрос человеку' && letterOf(rec, st.decisions[rec.id])) {
+    const askHuman = rec && rec.kind === 'развилка' && norm(r.fix).toLowerCase() === 'вопрос человеку';
+    if (askHuman && letterOf(rec, st.decisions[rec.id])) {
       (answers[rec.id] = answers[rec.id] || []).push({ key, text: sp });
+    } else if (askHuman) {   /* запись без решения: слова без выбора нет, ответ — замечание `F-NN: …`, запись остаётся открытой */
+      undecidedKeys.push(key); otherDisputes.push(rec.id + ': ' + sp);
     } else otherDisputes.push('атака ' + att.path + ' · ' + r.lens + ' · «' + shorten(r.claim, 60) + '» — спор: ' + sp);
   }
   const conflicts = [], conflictKeys = [];
@@ -558,7 +562,7 @@ function buildPrompt(J, attacks, st, disputes, date) {
   const notes = [own && !ingested ? own : ''].concat(otherDisputes, conflicts.map(id => 'конфликт ответов к ' + id + ' — оставьте один')).filter(Boolean);
   if (notes.length) lines.push('Замечания к схеме: ' + notes.join(' · '));
   if (lines.length === 1) lines.push('(нового нет — решения из журнала остаются как есть, молчание по открытой развилке оставляет её открытой)');
-  return { text: lines.join('\n'), conflictKeys };
+  return { text: lines.join('\n'), conflictKeys, undecidedKeys };
 }
 /* prompt:end */
 function currentPrompt() { return buildPrompt(JOURNAL, ATTACK, state, attackState.disputes, new Date().toISOString().slice(0, 10)); }
@@ -713,7 +717,7 @@ function recordBlock(section) {
             : '<div class="meta">решения нет — запись открыта</div>') +
     '<div class="meta"><a href="#' + id + '" data-goto="' + id + '">к карточке ' + id + ' в режиме «решения»</a></div></details>';
 }
-function attackRow(att, ai, ri, r, conflict) {
+function attackRow(att, ai, ri, r, conflict, undecided) {
   const key = disputeKey(att, r), known = lensList(att).some(l => l.slug === r.lens);
   return '<div class="card attackrow' + (conflict ? ' conflict' : '') + '" data-card="' + ai + '|' + ri + '"><div class="head"><span class="badge ' + sevClass(r.severity) + '">' + esc(r.severity) + '</span>' + demotionBadge(r) +
     '<span class="badge">' + sectionHtml(r.section) + '</span>' +
@@ -721,25 +725,27 @@ function attackRow(att, ai, ri, r, conflict) {
     '<div class="q">' + md(r.claim) + '</div>' +
     '<div class="meta">инвариант: ' + md(r.invariant) + '</div><div class="meta">опора: ' + md(r.support) + '</div><div class="meta">чем закрыть: ' + md(r.fix) + '</div>' +
     recordBlock(r.section) +
+    '<div class="note warn undecided-note' + (undecided ? '' : ' hidden') + '">запись не решена — ответ уйдёт в замечания; выбери вариант в карточке</div>' +
     '<div class="note bad conflict-note' + (conflict ? '' : ' hidden') + '">конфликт ответов к одному решению — оставь один, иначе слово к решению не уйдёт в промпт</div>' +
     '<div class="row"><textarea data-att="' + ai + '" data-row="' + ri + '" placeholder="спор: почему опора есть / почему не блокер — уйдёт в промпт возврата; при закрытии «вопрос человеку» и разделе F-NN, decision — слово к решению">' + esc(attackState.disputes[key] || '') + '</textarea></div></div>';
 }
-function currentPromptConflicts() { return buildPrompt(JOURNAL, ATTACK, state, attackState.disputes, '').conflictKeys; }
+function currentFlags() { return buildPrompt(JOURNAL, ATTACK, state, attackState.disputes, ''); }
 /* страница подсвечивает конфликт ответов у строк, не пересобирая список: поле спора не теряет фокус */
 function markConflicts() {
   if (mode !== 'attack') return;
-  const bad = new Set(currentPromptConflicts());
+  const flags = currentFlags(), bad = new Set(flags.conflictKeys), und = new Set(flags.undecidedKeys);
   document.querySelectorAll('#viewAttack .attackrow').forEach(c => {
     const [ai, ri] = String(c.dataset.card).split('|').map(Number), att = ATTACK[ai], r = att && att.rows[ri];
     const on = !!r && bad.has(disputeKey(att, r));
     c.classList.toggle('conflict', on);
     const n = c.querySelector('.conflict-note'); if (n) n.classList.toggle('hidden', !on);
+    const u = c.querySelector('.undecided-note'); if (u) u.classList.toggle('hidden', !(r && und.has(disputeKey(att, r))));
   });
 }
 function renderAttack() {
   const el = document.getElementById('viewAttack');
   if (!ATTACK.length) { el.innerHTML = '<div class="card"><div class="q">атака не подана: <code>render-html --attack &lt;attack/decisions.md&gt; [--attack &lt;attack/artifacts.md&gt;]</code></div></div>'; return; }
-  const bad = new Set(currentPromptConflicts());
+  const flags = currentFlags(), bad = new Set(flags.conflictKeys), und = new Set(flags.undecidedKeys);
   /* группы по файлам: линзы списка файла в его порядке, затем «вне списка» */
   const files = ATTACK.map((att, ai) => {
     const rows = att.rows || [], list = lensList(att), slugs = list.map(l => l.slug);
@@ -778,7 +784,7 @@ function renderAttack() {
       const sevs = SEVERITY.concat([...new Set(g.rows.map(x => sevBase(x.r.severity)))].filter(s => !SEVERITY.includes(s)));
       for (const sv of sevs) {
         const part = g.rows.filter(x => sevBase(x.r.severity) === sv);
-        if (part.length) html += '<h3>' + esc(sv) + ' · ' + part.length + '</h3>' + part.map(x => attackRow(att, ai, x.ri, x.r, bad.has(disputeKey(att, x.r)))).join('');
+        if (part.length) html += '<h3>' + esc(sv) + ' · ' + part.length + '</h3>' + part.map(x => attackRow(att, ai, x.ri, x.r, bad.has(disputeKey(att, x.r)), und.has(disputeKey(att, x.r)))).join('');
       }
     }
     html += '</div><!' + '--/attack-rows-->';
