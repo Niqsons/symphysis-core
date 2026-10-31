@@ -951,3 +951,57 @@ def test_viewer_marks_the_deviating_option_escaped(tmp_path):
     j["records"][1]["options"][1]["deviation"] = "<b>F-01</b>"          # в обход схемы: показ всё равно экранирован
     cards = smoke(tmp_path, journal.render_html(j, TEMPLATE))["cards"]
     assert "отступление от &lt;b&gt;F-01&lt;/b&gt;" in cards and "<b>F-01" not in cards
+
+
+@requires_node
+def test_viewer_check_and_attack_modes_tag_the_deviating_option(tmp_path):
+    """Ревью: «Проверка» и блок записи «Атаки» показывают у выбранного варианта тот же тег отступления, что карточка;
+    в «Проверке» у открытой развилки тег стоит у отступающего варианта; значение — через `esc`."""
+    tag = '<span class="tag deviation">отступление от F-01</span>'
+    j = deviation_journal()
+    html = journal.render_html(j, TEMPLATE, attacks=[afile([arow(section="F-02, decision")])], journal_sha256=FAKE_SHA)
+    check = smoke(tmp_path, html, {"__suffixes__": {":mode": "check"}})["check"]
+    assert check.count(tag) == 1 and tag in check.split('<span class="letter">B.</span>')[1]
+    attack = smoke(tmp_path, html, {"__suffixes__": {":mode": "attack"}})["attack"]
+    block = attack.split('<details class="recblock">')[1].split("</details>")[0]
+    assert tag in block
+
+    j["records"][1].update(status="открыт", decision=None)
+    check = smoke(tmp_path, journal.render_html(j, TEMPLATE), {"__suffixes__": {":mode": "check"}})["check"]
+    option_a, option_b = check.split('<span class="letter">A.</span>')[1].split('<span class="letter">B.</span>')
+    assert tag in option_b and "отступление от" not in option_a
+
+    j = deviation_journal()
+    j["records"][1]["options"][1]["deviation"] = "<b>F-01</b>"          # в обход схемы: показ экранирован
+    html = journal.render_html(j, TEMPLATE, attacks=[afile([arow(section="F-02, decision")])], journal_sha256=FAKE_SHA)
+    for mode in ("check", "attack"):
+        shown = smoke(tmp_path, html, {"__suffixes__": {":mode": mode}})[mode]
+        assert "отступление от &lt;b&gt;F-01&lt;/b&gt;" in shown and "<b>F-01" not in shown
+
+
+# 3. хвост отступления в тексте варианта без поля: импорт не превращает его в поле
+
+def test_deviation_tail_in_option_text_does_not_turn_into_the_field(tmp_path):
+    """Ревью: текст варианта без поля, сам оканчивающийся «(отступление от F-NN)», после рендера и импорта получил
+    бы поле и усечённый текст. Такой текст `check` отвергает (код 1), render-md его не пишет; тот же оборот
+    в середине текста и хвост при настоящем поле проходят круг без потерь."""
+    j = deviation_journal()
+    a = j["records"][1]["options"][0]
+    a["text"] = "вариант (отступление от F-01) в середине"
+    back = roundtrip(j)
+    assert back["records"][1]["options"][0]["text"] == a["text"] and "deviation" not in back["records"][1]["options"][0]
+
+    a["text"] = "вариант (отступление от F-01)"
+    assert journal.validate_journal(j) == \
+        ["F-02: вариант A — текст варианта оканчивается пометкой отступления без поля"]
+    path = tmp_path / "j.json"
+    journal.save_journal(path, j)
+    run = run_cli("render-md", path, "--out", tmp_path / "j.md")
+    assert run.returncode == 1 and not (tmp_path / "j.md").exists()
+    assert "[!!] F-02: вариант A — текст варианта оканчивается пометкой отступления без поля" in run.stderr
+
+    a["deviation"] = "F-01"
+    assert journal.validate_journal(j) == []
+    back = roundtrip(j)
+    assert back["records"][1]["options"][0] == {**a, "evidence": back["records"][1]["options"][0]["evidence"]}
+    assert strip_check_fields(back) == strip_check_fields(j)

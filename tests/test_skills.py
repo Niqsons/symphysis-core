@@ -735,3 +735,15 @@ def test_round_one_on_an_intent_starts_with_a_setting_fact(tmp_path):
     marks = {o["letter"]: o.get("deviation") for o in fork["options"]}
     assert marks == {"A": None, "B": first["id"]}, "отступает вариант B, уточняющий A пометки не несёт"
     assert "deviation" not in fork and fork["decision"] is None, "пометка у варианта; решает человек"
+
+
+def test_brainstorm_asks_for_criteria_only_while_there_are_no_setting_facts():
+    """Ревью: `intent.md` не правится, поэтому условие вопроса смотрит и в журнал — критериев ноль в `intent.md`
+    и фактов постановки нет; названные в `answers/<дата>-criteria.md` критерии уже дали факты — во втором круге
+    вопрос не задаётся, второй строки `notes[]` нет."""
+    step = block(brainstorm(), "### 1.", "### 2.")
+    for token in ("в `intent.md` их нет", "и фактов `addressee: постановка` в журнале нет",
+                  "Факты постановки в журнале уже есть", "вопрос не задаётся", "второй строки `notes[]` нет"):
+        assert token in step, f"в шаге 1 нет «{token}»"
+    branch = step.split("Критериев ноль")[1].split("«назови критерии готовности»")[0]
+    assert "фактов `addressee: постановка` в журнале нет" in branch, "условие ветки — и по intent.md, и по журналу"

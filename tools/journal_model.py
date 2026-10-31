@@ -269,11 +269,16 @@ def _schema_errors(journal) -> list[str]:
 
 def _deviation_errors(rec: dict, by_id: dict[str, dict]) -> list[str]:
     """`options[].deviation` — только у варианта развилки и только на существующий факт `addressee: постановка`.
-    Выбор такого варианта ошибкой не считается: пометка — видимость, не замок (F-55.E)."""
+    Выбор такого варианта ошибкой не считается: пометка — видимость, не замок (F-55.E). Текст варианта без поля,
+    сам оканчивающийся хвостом `(отступление от F-NN)`, — ошибка: импорт рендера принял бы хвост за поле
+    и усёк текст."""
     errors = []
     for opt in rec["options"]:
         target = opt.get("deviation")
         if target is None:
+            if RE_DEVIATION_TAIL.match(opt["text"]):
+                errors.append(f"{rec['id']}: вариант {opt['letter']} — текст варианта оканчивается пометкой"
+                              " отступления без поля")
             continue
         where = f"{rec['id']}: вариант {opt['letter']} — {DEVIATION_LABEL}"
         fact = by_id.get(target)

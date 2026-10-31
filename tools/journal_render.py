@@ -31,7 +31,7 @@ def _render_option(opt: dict) -> list[str]:
     text = opt["text"]
     if opt["added"] and ADDED_MARK not in text:
         text += f" {ADDED_MARK})"
-    if opt.get("deviation"):
+    if opt.get("deviation"):   # без поля хвост не пишется; текст, сам им оканчивающийся, отвергает check
         text += " " + DEVIATION_TAIL.format(opt["deviation"])
     lines = [f"  - {opt['letter']}. {text}"]
     lines += [_evidence_line(ev, "    ") for ev in opt["evidence"]]

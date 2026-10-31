@@ -398,7 +398,7 @@ function renderCards() {
           (jc === o.letter ? '<span class="tag journal">в журнале</span>' : '') +
           (o.unlikely ? '<span class="tag unlikely" title="' + esc(o.unlikely) + '">маловероятно</span>' : '') +
           (o.added ? '<span class="tag added">добавлен человеком</span>' : '') +
-          (o.deviation ? '<span class="tag deviation">отступление от ' + esc(o.deviation) + '</span>' : '') +
+          deviationTag(o) +
           (anti.length ? '<span class="tag anti" title="нельзя вместе с: ' + esc(anti.join(', ')) + '">антипод ' + esc(anti.join(', ')) + '</span>' : '');
         html += '<label class="opt' + (cur === o.letter ? ' chosen' : '') + (blocked.length ? ' blocked' : '') + '">' +
           '<input type="radio" name="' + esc(rec.id) + '" value="' + esc(o.letter) + '"' + (cur === o.letter ? ' checked' : '') + '>' +
@@ -585,6 +585,8 @@ function renderModes() {
 /* ---------- общее для режимов 2 и 3 ---------- */
 function isProbe(rec) { return !!(rec.outcome && rec.outcome.kind === 'проба'); }
 function isAdded(o) { return !!o.added || String(o.text || '').includes(ADDED_MARK); }
+/* тег «отступление от F-NN» у варианта с `deviation` — один вид в карточке, «проверке» и блоке записи «атаки» */
+function deviationTag(o) { return o && o.deviation ? '<span class="tag deviation">отступление от ' + esc(o.deviation) + '</span>' : ''; }
 function isOneWay(rec) { return !!(rec.reversibility && rec.reversibility.level === ONE_WAY); }
 function num(id) { return parseInt(String(id).slice(2), 10) || 0; }
 function allEvidence(rec) { return (rec.evidence || []).concat(...(rec.options || []).map(o => o.evidence || [])); }
@@ -626,13 +628,13 @@ function checkCard(rec) {
     (isOneWay(rec) ? '<span class="badge warn">в одну сторону</span>' : '') +
     '<span class="badge dest" title="куда уйдёт — по правилам render-design">→ ' + esc(d.label) + (d.note ? ' · ' + esc(d.note) : '') + '</span></div>' +
     '<div class="q">' + md(rec.question) + '</div>';
-  if (picked) html += '<div class="opt chosen"><span class="letter">' + esc(picked.letter) + '.</span><div>' + md(picked.text) + (isAdded(picked) ? '<span class="tag added">добавлен человеком</span>' : '') + '</div></div>';
+  if (picked) html += '<div class="opt chosen"><span class="letter">' + esc(picked.letter) + '.</span><div>' + md(picked.text) + (isAdded(picked) ? '<span class="tag added">добавлен человеком</span>' : '') + deviationTag(picked) + '</div></div>';
   if (rec.decision && rec.decision.word) html += '<div class="note info"><b>слово (' + esc(rec.decision.date || 'без даты') + '):</b> «' + md(rec.decision.word) + '»</div>';
   if (rec.reversibility) html += '<div class="meta">обратимость: ' + esc(rec.reversibility.level) + (rec.reversibility.why ? ' — ' + md(rec.reversibility.why) : '') + '</div>';
   if (rec.outcome) html += '<div class="meta">исход: ' + esc(rec.outcome.kind) + ' — <b>' + esc(rec.outcome.value) + '</b>' + (rec.outcome.reason ? ' — ' + md(rec.outcome.reason) : '') + '</div>';
   if (!picked && !isFact) {
     html += (rec.options || []).map(o => '<div class="opt"><span class="letter">' + esc(o.letter) + '.</span><div>' + md(o.text) +
-      (o.unlikely ? '<span class="tag unlikely">маловероятно: ' + md(o.unlikely) + '</span>' : '') + (isAdded(o) ? '<span class="tag added">добавлен человеком</span>' : '') + '</div></div>').join('');
+      (o.unlikely ? '<span class="tag unlikely">маловероятно: ' + md(o.unlikely) + '</span>' : '') + (isAdded(o) ? '<span class="tag added">добавлен человеком</span>' : '') + deviationTag(o) + '</div></div>').join('');
     if (rec.recommendation) html += '<div class="rec">рекомендация: <b>' + esc(rec.recommendation.option || '') + '</b> — ' + md(rec.recommendation.why || rec.recommendation.text || '') + '</div>';
   } else if (picked) {
     const added = (rec.options || []).filter(o => isAdded(o) && o.letter !== picked.letter);
@@ -715,7 +717,7 @@ function recordBlock(section) {
   if (!id) return '';
   const rec = byId[id], picked = rec.decision && rec.decision.option ? (rec.options || []).find(o => o.letter === rec.decision.option) : null;
   return '<details class="recblock"><summary>запись ' + id + ' — текст вопроса</summary><div class="q">' + md(rec.question) + '</div>' +
-    (picked ? '<div class="opt chosen"><span class="letter">' + esc(picked.letter) + '.</span><div>' + md(picked.text) + '</div></div>'
+    (picked ? '<div class="opt chosen"><span class="letter">' + esc(picked.letter) + '.</span><div>' + md(picked.text) + deviationTag(picked) + '</div></div>'
             : '<div class="meta">решения нет — запись открыта</div>') +
     '<div class="meta"><a href="#' + id + '" data-goto="' + id + '">к карточке ' + id + ' в режиме «решения»</a></div></details>';
 }
