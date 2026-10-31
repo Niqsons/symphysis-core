@@ -276,17 +276,25 @@ def skill_lens_slugs():
     return rows
 
 
-def template_lens_slugs():
+def template_lens_lists():
+    """Закрытые списки линз шаблона по файлам атаки: `ATTACK_LENSES = { journal: [...], artifacts: [...] }`."""
     text = read(TEMPLATE)
-    m = re.search(r"const LENSES = \[(.*?)\];", text, re.S)
-    assert m, "в шаблоне просмотрщика нет константы LENSES"
-    return re.findall(r"slug:\s*'([^']+)'", m.group(1))
+    m = re.search(r"const ATTACK_LENSES = \{(.*?)\n\};", text, re.S)
+    assert m, "в шаблоне просмотрщика нет константы ATTACK_LENSES"
+    lists = dict(re.findall(r"(journal|artifacts):\s*\[(.*?)\n\s*\],", m.group(1), re.S))
+    return {name: re.findall(r"slug:\s*'([^']+)'", body) for name, body in lists.items()}
+
+
+def template_lens_slugs():
+    return [slug for slugs in template_lens_lists().values() for slug in slugs]
 
 
 def test_template_lenses_match_the_closed_list():
     assert skill_lens_slugs() == list(ATTACK_LENS_SLUGS), "константа теста разошлась с таблицей SKILL.md"
-    slugs = template_lens_slugs()
-    assert slugs == list(ATTACK_LENS_SLUGS), f"LENSES шаблона: {slugs}"   # состав и порядок — как в таблице
+    # F-07.A: журнал и артефакты — свои закрытые списки, порядок — порядок списка
+    assert template_lens_lists() == {
+        "journal": ["context-compliance", "claim-authority", "claim-extraction", "coverage"],
+        "artifacts": ["scenario-run", "claim-extraction"]}, f"ATTACK_LENSES шаблона: {template_lens_lists()}"
 
 
 def test_template_keeps_perspectives_out_of_attack_mode():
@@ -334,3 +342,27 @@ def test_viewer_skill_shape():
         "в TRANSLATION-NOTES.md нет строки по playground/SKILL.md"
     for token in ("Single HTML file", "presets", "browser storage", "apply"):
         assert token in notes, f"в TRANSLATION-NOTES.md нет «{token}»"
+
+
+def test_viewer_skill_describes_the_attack_mode():
+    """6.6: раздел «Атака» несёт фильтр по линзе и счётчики вне фильтра, блок записи, слуги по файлам, понижение,
+    промпт из состояния (внесённое уходит, спор «вопрос человеку» → слово к решению, конфликт, выбор без слова)
+    и правило ячейки таблицы атаки."""
+    text = read(SKILLS / "symphysis-viewer" / "SKILL.md")
+    attack = " ".join(text.split("### «Атака»")[1].split("\n## ")[0].split())   # переносы строк не в счёт
+    points = {
+        "фильтр по линзе": ("Фильтр по линзе", "«все»", "прячет группы строк, но не счётчики"),
+        "счётчики вне фильтра": ("блокеров N · предупреждений N · справок N", "вне фильтра", "по всему файлу"),
+        "блок записи": ("Блок записи", "`<details>`", "текст вопроса записи", "выбранный вариант", "переход к карточке"),
+        "списки линз": ("`context-compliance`, `claim-authority`", "`scenario-run`", "группа «вне списка»", "в счётчике линз её нет"),
+        "понижение": ("понижение без причины", "в скобках", "по спеке не выводится"),
+        "промпт из состояния": ("Промпт пересобирается из состояния", "внесённое уходит", "очистка поля замечаний"),
+        "спор — слово к решению": ("«вопрос человеку»", "`F-NN, decision`", "словом к решению", "`- F-NN: <буква> — «ответ»`"),
+        "конфликт ответов": ("конфликт", "оставьте один", "строки слова на запись"),
+        "выбор без слова": ("слово к выбору необязательно", "(без слова)"),
+        "правило ячейки": ("Правило ячейки", "`\\|`", "`\\\\`", "внутри пары backticks", "`\\\\|`", "код 2"),
+    }
+    for point, tokens in points.items():
+        for token in tokens:
+            assert token in attack, f"в разделе «Атака» ({point}) нет «{token}»"
+    assert "Researcher" not in attack and "Исследователь" not in attack
