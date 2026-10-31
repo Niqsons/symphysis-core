@@ -60,6 +60,13 @@ export interface ApplyInstructions {
    * than `missingArtifacts`, which stops at the first hop apply blocks on.
    */
   missingPrerequisites?: string[];
+  /**
+   * Fork (symphysis, C7): required artifacts whose file exists but whose
+   * verdict is not `ok`. Apply waits for them; the remedy is to run their
+   * instructions again, not to recreate the file. Never in `missingArtifacts`
+   * or `missingPrerequisites`, which name artifacts with no file.
+   */
+  artifactsWithoutPassingVerdict?: Array<{ id: string; verdict: 'missing' | 'mismatch' | 'stale' }>;
   /** Non-blocking problems with the change, reported alongside the instruction. */
   warnings?: string[];
   instruction: string;

@@ -6,6 +6,7 @@ import * as os from 'node:os';
 import {
   generateApplyInstructions,
   instructionsCommand,
+  printApplyInstructionsText,
 } from '../../src/commands/workflow/instructions.js';
 
 // Fork (symphysis, C7): commands that take an optional artifact as a
@@ -90,15 +91,19 @@ describe('generateApplyInstructions with an optional verdict artifact', () => {
     expect(instructions.missingPrerequisites).toEqual(['tasks']);
   });
 
-  it('Необязательный артефакт с файлом: gaps_found блокирует apply', async () => {
+  it('Необязательный артефакт с файлом: gaps_found блокирует apply и называет вердикт, а не недостающий файл', async () => {
     write('tasks.md', TASKS);
     write('review.md', '---\nstatus: gaps_found\n---\n# Review\n');
 
     const instructions = await generateApplyInstructions(tempDir, 'my-change');
 
     expect(instructions.state).toBe('blocked');
-    expect(instructions.missingArtifacts).toEqual(['review']);
-    expect(instructions.instruction).toContain('openspec instructions review --change my-change');
+    expect(instructions.missingArtifacts).toBeUndefined();
+    expect(instructions.artifactsWithoutPassingVerdict).toEqual([{ id: 'review', verdict: 'mismatch' }]);
+    expect(instructions.instruction).toBe(
+      'Cannot apply this change yet. Artifacts without a passing verdict: review (verdict: mismatch)' +
+        ' — run `openspec instructions review --change my-change` again; do not recreate the file.'
+    );
   });
 
   it('Необязательный артефакт с файлом: passed со свежими хешами открывает apply', async () => {
@@ -124,7 +129,53 @@ describe('generateApplyInstructions with an optional verdict artifact', () => {
     const instructions = await generateApplyInstructions(tempDir, 'my-change');
 
     expect(instructions.state).toBe('blocked');
-    expect(instructions.missingArtifacts).toEqual(['review']);
+    expect(instructions.missingArtifacts).toBeUndefined();
+    expect(instructions.artifactsWithoutPassingVerdict).toEqual([{ id: 'review', verdict: 'stale' }]);
+    expect(instructions.instruction).toBe(
+      'Cannot apply this change yet. Artifacts without a passing verdict: review (verdict: stale)' +
+        ' — run `openspec instructions review --change my-change` again; do not recreate the file.'
+    );
+    expect(instructions.instruction).not.toContain('Create it with');
+    expect(instructions.instruction).not.toContain('Not created yet');
+  });
+
+  it('Вердикт с чужим хешем: текст apply называет stale в блоке Blocked', async () => {
+    write('tasks.md', TASKS);
+    write(
+      'review.md',
+      `---\nstatus: passed\ntargets:\n  - path: tasks.md\n    sha256: ${sha('## 1. Before the edit\n')}\n---\n# Review\n`
+    );
+    const lines: string[] = [];
+    vi.spyOn(console, 'log').mockImplementation((...args: unknown[]) => {
+      lines.push(args.join(' '));
+    });
+
+    printApplyInstructionsText(await generateApplyInstructions(tempDir, 'my-change'));
+    vi.restoreAllMocks();
+    const output = lines.join('\n');
+
+    expect(output).toContain('### ⚠️ Blocked');
+    expect(output).toContain('Artifacts without a passing verdict: review (verdict: stale)');
+    expect(output).not.toContain('Missing artifacts');
+    expect(output).not.toContain('Not created yet');
+  });
+
+  it('Необязательный артефакт с файлом: недостающий файл и вердикт без ok названы порознь', async () => {
+    write('review.md', '---\nstatus: gaps_found\n---\n# Review\n');
+
+    const instructions = await generateApplyInstructions(tempDir, 'my-change');
+
+    expect(instructions.state).toBe('blocked');
+    expect(instructions.missingArtifacts).toEqual(['tasks']);
+    // review has a file: it is not "not created yet".
+    expect(instructions.missingPrerequisites).toEqual(['tasks']);
+    expect(instructions.artifactsWithoutPassingVerdict).toEqual([{ id: 'review', verdict: 'mismatch' }]);
+    expect(instructions.instruction).toBe(
+      'Cannot apply this change yet. Missing artifacts: tasks.\n' +
+        'Create it with `openspec instructions tasks --change my-change` (`openspec status --change my-change` shows what is left).\n' +
+        'Artifacts without a passing verdict: review (verdict: mismatch)' +
+        ' — run `openspec instructions review --change my-change` again; do not recreate the file.'
+    );
   });
 
   it('Файл вызванной атаки удалён: apply снова не ждёт optional', async () => {
@@ -145,7 +196,20 @@ describe('generateApplyInstructions with an optional verdict artifact', () => {
     const instructions = await generateApplyInstructions(tempDir, 'my-change');
 
     expect(instructions.state).toBe('blocked');
+    expect(instructions.missingArtifacts).toBeUndefined();
+    expect(instructions.artifactsWithoutPassingVerdict).toEqual([{ id: 'review', verdict: 'mismatch' }]);
+  });
+
+  it('обязательный verdict-артефакт без файла остаётся недостающим', async () => {
+    writeSchema(false);
+    write('tasks.md', TASKS);
+
+    const instructions = await generateApplyInstructions(tempDir, 'my-change');
+
+    expect(instructions.state).toBe('blocked');
     expect(instructions.missingArtifacts).toEqual(['review']);
+    expect(instructions.artifactsWithoutPassingVerdict).toBeUndefined();
+    expect(instructions.instruction).toContain('Create it with `openspec instructions review --change my-change`');
   });
 });
 
