@@ -45,62 +45,99 @@ def default_roots(roots_file: Path | None = None) -> dict[str, Path]:
     return {prefix: _expand_value(value) for prefix, value in raw.items()}
 
 
+OUTSIDE_ROOT = Path("<вне корня>")   # признак `_resolve`: путь выходит за корень, файл не читается
+BINARY_PROBE = 8192                   # байт NUL в первых 8 КиБ — файл бинарный (F-42)
+VERDICT_OUTSIDE = "вне корня"
+VERDICT_BINARY = "не проверить: бинарный файл"
+VERDICT_NOT_UTF8 = "не проверить: не UTF-8"
+NOT_CHECKED = (VERDICT_BINARY, VERDICT_NOT_UTF8)
+
+
 def _resolve(path: str, roots: dict[str, Path]) -> Path | None:
-    """Файл улики по самому длинному подходящему префиксу; `None` — корня для пути нет."""
+    """Файл улики по самому длинному подходящему префиксу: `None` — корня для пути нет,
+    `OUTSIDE_ROOT` — путь выходит за корень. Разделители путей нормализуются (обратная косая -> прямая);
+    хвост с `..`, абсолютный хвост и файл, который после `resolve()` (регистр диска,
+    ссылки и junction разрешены) лежит вне `resolve()`-нутого корня, — «вне корня»."""
+    path = path.replace("\\", "/")
     for prefix in sorted(roots, key=len, reverse=True):
-        if path.startswith(prefix):
-            return roots[prefix] / path[len(prefix):]
+        if not path.startswith(prefix.replace("\\", "/")):
+            continue
+        tail = path[len(prefix):]
+        if ".." in tail.split("/") or Path(tail).is_absolute() or tail.startswith("/"):
+            return OUTSIDE_ROOT
+        root = roots[prefix].resolve()
+        file = (root / tail).resolve()
+        # корень-файл (`CLAUDE.md`): хвост пуст, файл совпадает с корнем
+        return file if file == root or file.is_relative_to(root) else OUTSIDE_ROOT
     return None
 
 
-def _map_pos(text: str, flat_pos: int) -> int:
-    """Позиция в `text` для позиции в тексте со схлопнутыми пробелами."""
-    i = j = 0
-    n = len(text)
-    while i < n and j < flat_pos:
-        if text[i].isspace():
-            while i < n and text[i].isspace():
-                i += 1
-        else:
-            i += 1
-        j += 1
-    return i
+def _read_text(file: Path) -> tuple[str | None, str]:
+    """(текст, вердикт): текст `None` — файл читать как текст нельзя, вердикт называет причину."""
+    data = file.read_bytes()
+    if b"\x00" in data[:BINARY_PROBE]:
+        return None, VERDICT_BINARY
+    try:
+        return data.decode("utf-8-sig"), ""
+    except UnicodeDecodeError:
+        return None, VERDICT_NOT_UTF8
+
+
+def _match_lines(lines: list[str], quote: list[str]) -> int | None:
+    """Номер первой строки совпадения (с 1): однострочная цитата — подстрока строки файла;
+    многострочная — подряд идущие строки: первая цитаты — суффикс строки файла, средние равны,
+    последняя — префикс следующей. Символы сравниваются как есть."""
+    n = len(quote)
+    for i, line in enumerate(lines):
+        if n == 1:
+            if quote[0] in line:
+                return i + 1
+        elif (i + n <= len(lines) and line.endswith(quote[0]) and lines[i + 1:i + n - 1] == quote[1:-1]
+              and lines[i + n - 1].startswith(quote[-1])):
+            return i + 1
+    return None
 
 
 def find_quote(path: str, quote: str, roots: dict[str, Path]) -> tuple[int | None, str]:
-    """(строка, вердикт): построчно, затем со схлопнутыми пробелами — цитата может
-    переходить через перенос строки. Нет строки — вердикт называет причину."""
+    """(строка, вердикт): сверка без нормализации по строкам файла, окончания строк в сравнение
+    не входят. Нет строки — вердикт называет причину; «не проверить: …» — файл не текст."""
     file = _resolve(path, roots)
     if file is None:
         return None, "корня для пути нет"
+    if file is OUTSIDE_ROOT:
+        return None, VERDICT_OUTSIDE
     if not file.is_file():
         return None, "файла нет"
-    text = file.read_text(encoding="utf-8", errors="replace")
-    for i, line in enumerate(text.splitlines(), 1):
-        if quote in line:
-            return i, "сверено"
-    flat = re.sub(r"\s+", " ", text)
-    pos = flat.find(re.sub(r"\s+", " ", quote))
-    if pos >= 0:
-        return text[: _map_pos(text, pos)].count("\n") + 1, "сверено через перенос"
-    return None, "цитаты нет дословно"
+    text, verdict = _read_text(file)
+    if text is None:
+        return None, verdict
+    quote_lines = quote.splitlines()
+    line = _match_lines(text.splitlines(), quote_lines) if quote_lines else None
+    return (line, "сверено") if line is not None else (None, "цитаты нет дословно")
 
 
 def check_evidence(journal: dict, roots: dict[str, Path]) -> dict:
-    """Сверяет каждую улику грепом по цитате в файле. Пишет в улики `line`, `found`
-    (`False` — сверяли, не нашли) и `verdict`. Несверенная улика — сигнал, не ошибка."""
+    """Сверяет каждую улику с файлом. Пишет в улики `line`, `found` (`True` — найдена, `False` —
+    сверяли, не нашли, `None` — не проверить: бинарный файл или не UTF-8) и `verdict`.
+    Несверенная улика — сигнал, не ошибка. «Не проверить» не входит ни в найденные, ни в `missing`."""
     total = found = 0
     missing: list[str] = []
+    unchecked: list[str] = []
     for rec in journal["records"]:
         for ev in _evidence_of(rec):
             total += 1
             line, verdict = find_quote(ev["path"], ev["quote"], roots)
-            ev["line"], ev["found"], ev["verdict"] = line, line is not None, verdict
+            ev["line"], ev["verdict"] = line, verdict
+            if verdict in NOT_CHECKED:
+                ev["found"] = None
+                unchecked.append(f"{rec['id']}: {ev['path']} — {verdict}")
+                continue
+            ev["found"] = line is not None
             if line is not None:
                 found += 1
             else:
                 missing.append(f"{rec['id']}: {ev['path']} «{ev['quote']}» — {verdict}")
-    return {"total": total, "found": found, "missing": missing}
+    return {"total": total, "found": found, "missing": missing, "unchecked": unchecked}
 
 
 # --- внесение промпта возврата ---------------------------------------------

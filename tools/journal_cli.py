@@ -31,18 +31,35 @@ def _valid_journal(path: Path) -> dict | None:
     return None if errors else journal
 
 
+def _parkings_without_finding(journal: dict, base: Path) -> list[str]:
+    """Парковка «материалы» без `finding` при файле `research/<F-NN>.md` рядом с журналом —
+    сигнал: исследование есть, находка в журнал не внесена."""
+    return [f"{rec['id']}: парковка «материалы» без finding при research/{rec['id']}.md"
+            for rec in journal["records"]
+            if (base / "research" / f"{rec['id']}.md").is_file()
+            and any(p["addressee"] == "материалы" and not p.get("finding") for p in rec["parking"])]
+
+
 def cmd_check(args: argparse.Namespace) -> int:
     journal = _valid_journal(args.json)
     if journal is None:
         return 1
     result = check_evidence(journal, default_roots(args.roots))
-    print(f"[ok] улик сверено {result['found']} из {result['total']}")
+    summary = f"[ok] улик сверено {result['found']} из {result['total']}"
+    if result["unchecked"]:
+        summary += f", не проверить {len(result['unchecked'])}"
+    print(summary)
     for m in result["missing"]:
+        print(f"[!!] {m}")
+    for m in result["unchecked"]:
+        print(f"[--] {m}")
+    unfound = _parkings_without_finding(journal, args.json.parent)
+    for m in unfound:
         print(f"[!!] {m}")
     if args.write:
         save_journal(args.json, journal)
         print(f"[ok] {args.json}")
-    return 2 if args.strict and result["missing"] else 0
+    return 2 if args.strict and (result["missing"] or unfound) else 0
 
 
 def cmd_import_md(args: argparse.Namespace) -> int:
