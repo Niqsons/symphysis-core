@@ -184,12 +184,18 @@ def test_instructions_name_skills_and_stay_short(tmp_path):
     assert research.index("research/<F-NN>.md") < research.index("research/none.md") < second
     assert second < research.index("материалы", second) < research.index("research/", second) < research.index("symphysis-brainstorm")
     assert research.rstrip().endswith("«брейншторм закончен по решению человека».")
+    # финальное ревью, minor 11: вопрос о новом круге — только без строки отказа в notes[]
+    assert "Нет в `notes[]` строки «брейншторм закончен по решению человека» — спроси, нужен ли новый круг" in research
+    assert "Записи с парковкой «материалы» без `finding` при файлах `research/` — сначала второй круг" in text["proposal"]
     attack = text["attack-decisions"].lstrip()
     assert attack.startswith("Загрузи скилл `symphysis-attack`"), attack[:60]
     for gone in ("Второй круг", "брейншторм закончен", "новый круг"):
         assert gone not in attack, gone
     assert "status: passed | gaps_found" in attack
     assert "Начни интервью с `intent.md`" in text["decisions"]
+    # F-24.E, финальное ревью П.3: пустой intent.md засчитан форком — decisions спрашивает намерение до круга
+    assert ("`intent.md` пуст (0 байт или одна строка заголовка) — сначала спроси намерение и сохрани ответ "
+            "дословно по шаблону, затем круг.") in text["decisions"]
     assert "дословно" in text["intent"] and "Содержания не пиши" in text["intent"]
 
 

@@ -430,13 +430,20 @@ def test_attack_skill_leaves_journal_hygiene_to_check():
 
 
 def test_attack_skill_context_compliance_sees_the_setting():
-    """F-08.A, F-09.A, F-55.E: решение против факта постановки без пометки — находка; пометка со словом
-    человека — справка; опора решения design на факт или на запись без решения — блокер."""
+    """F-08.A, F-09.A, F-55.E: решение против факта постановки без пометки — находка; выбранный вариант
+    с полем `deviation` — справка без слова человека (видимость без замка); опора решения design на факт
+    или на запись без решения — блокер."""
     row = flat(lens_row(read(ATTACK_SKILL / "SKILL.md"), "journal", "context-compliance"))
     for token in ("`addressee: постановка`", "выбранный вариант", "пометки «отступление от постановки»",
-                  "поле `deviation: F-NN` варианта", "словом человека", "`справка`",
+                  "поле `deviation: F-NN` варианта",
+                  "выбранный вариант с полем `deviation` — `справка`, опора «есть: deviation F-NN у выбранного "
+                  "варианта»; слово человека не требуется (F-55.E)",
                   "опора решения design на факт или на запись без решения", "блокер"):
         assert token in row, f"в строке `context-compliance` нет «{token}»"
+    assert "словом человека" not in row, "справка при отступлении не требует слова человека (F-55.E)"
+    notes = flat(read(ATTACK_SKILL / "TRANSLATION-NOTES.md"))
+    assert "с пометкой и словом человека" not in notes
+    assert "с полем `deviation` у выбранного варианта — `справка`, слово человека не требуется" in notes
 
 
 def test_attack_skill_cell_rule():
@@ -444,7 +451,8 @@ def test_attack_skill_cell_rule():
     rule = block(read(ATTACK_SKILL / "SKILL.md"), "**Правило ячейки.**", "\n\n")
     for token in (r"`\|`", "внутри backticks", "цитата кода — в backticks", r"`\\|`", r"`\\`",
                   "следующая черта — разделитель", "Пустых ячеек нет", "«—»", "код 2",
-                  "файлом, строкой и столбцом"):
+                  "файлом, строкой и столбцом",
+                  r"В цитате кода литеральная обратная косая пишется `\\`", r"`\\` как `\` и внутри backticks"):
         assert token in rule, f"в правиле ячейки нет «{token}»"
 
 
@@ -454,6 +462,8 @@ def test_attack_skill_target_paths_relative_to_change_dir():
     text = read(ATTACK_SKILL / "SKILL.md")
     assert "sha256sum <каталог изменения>/" not in text, "хеш с префиксом каталога: такой путь в `path:` — вечный stale"
     assert "cd <каталог изменения> && sha256sum decisions.json" in text
+    # Git Bash печатает `<хеш> *<путь>`: путь с `*` в `path:` дал бы вечный stale (финальное ревью, minor 8)
+    assert "но без `*`" in text and "`<хеш> *<путь>`" in text
     assert "cd <каталог изменения> && find specs -name '*.md'" in text
     files = block(text, "## Файлы и команды", "\n## Порядок атаки")
     for token in ("относительно каталога изменения", "`specs/<cap>/spec.md`", "`openspec/changes/<имя>/`",
@@ -506,6 +516,13 @@ def test_template_lenses_match_the_closed_list():
     # F-07.A: журнал и артефакты — свои закрытые списки, порядок — порядок списка; скилл и шаблон — буква в букву
     assert skill_lens_lists() == ATTACK_LENS_LISTS, f"таблицы линз SKILL.md: {skill_lens_lists()}"
     assert template_lens_lists() == ATTACK_LENS_LISTS, f"ATTACK_LENSES шаблона: {template_lens_lists()}"
+
+
+def test_template_lenses_equal_the_skill_tables():
+    # финальное ревью, minor 12: шаблон сверяется с таблицами скилла напрямую, а не только через константу теста
+    skill, template = skill_lens_lists(), template_lens_lists()
+    assert set(template) == {"journal", "artifacts"}
+    assert template == skill, f"ATTACK_LENSES шаблона {template} ≠ таблицы SKILL.md {skill}"
 
 
 def test_template_keeps_perspectives_out_of_attack_mode():
@@ -571,7 +588,8 @@ def test_viewer_skill_describes_the_attack_mode():
         "спор — слово к решению": ("«вопрос человеку»", "`F-NN, decision`", "словом к решению", "`- F-NN: <буква> — «ответ»`"),
         "конфликт ответов": ("конфликт", "оставьте один", "строки слова на запись"),
         "выбор без слова": ("слово к выбору необязательно", "(без слова)"),
-        "правило ячейки": ("Правило ячейки", "`\\|`", "`\\\\`", "внутри пары backticks", "`\\\\|`", "код 2"),
+        "правило ячейки": ("Правило ячейки", "`\\|`", "`\\\\`", "внутри пары backticks", "`\\\\|`", "код 2",
+                           "в цитате кода литеральная обратная косая пишется `\\\\`"),
     }
     for point, tokens in points.items():
         for token in tokens:
@@ -600,6 +618,18 @@ def test_brainstorm_reads_intent_first():
         assert token in step, f"в шаге 1 нет «{token}»"
     assert step.index("`intent.md`") < step.index("Затем — запрос"), "материалы читаются после intent.md"
     assert "не правит `intent.md`" in block(brainstorm(), "## Чего скилл не делает", "\n## ")
+
+
+def test_brainstorm_fills_an_empty_intent_first():
+    """F-24.E, финальное ревью П.3: форк засчитывает `intent` по существованию файла, в том числе пустого;
+    пустой `intent.md` (0 байт или одна строка заголовка) — сначала намерение дословно по шаблону, затем круг."""
+    step = " ".join(block(brainstorm(), "### 1.", "### 2.").split())
+    for token in ("**`intent.md` пуст** (0 байт или одна строка заголовка)", "по существованию файла",
+                  "сначала спроси намерение и сохрани ответ дословно по шаблону `intent.md`", "затем круг",
+                  "(F-24.E)"):
+        assert token in step, f"в шаге 1 нет «{token}»"
+    assert step.index("`intent.md` пуст") < step.index("Критериев ноль")
+    assert "пустой файл заполняется ответом человека дословно" in block(brainstorm(), "## Чего скилл не делает", "\n## ")
 
 
 def test_brainstorm_asks_for_criteria_when_there_are_none():
