@@ -85,6 +85,7 @@
   .tag.anti { color:var(--bad); border-color:var(--bad); }
   .tag.rec { color:var(--ok); border-color:var(--ok); }
   .tag.journal { color:var(--ok); border-color:var(--ok); }
+  .tag.deviation { color:var(--warn); border-color:var(--warn); }
   .ev { display:block; color:var(--mute); font-size:12px; margin:2px 0 0 2px; }
   .ev code { color:#c9d1d9; }
   .ev .ok { color:var(--ok); } .ev .bad { color:var(--bad); }
@@ -122,6 +123,11 @@
   .badge.warn { color:var(--warn); border-color:var(--warn); }
   .badge.dest { color:var(--acc); border-color:var(--acc); }
   .mute { color:var(--mute); }
+  .lensfilter button.active { border-color:var(--acc); color:var(--acc); }
+  .card.conflict { border-color:var(--bad); }
+  details.recblock { margin:6px 0; border:1px dashed var(--line); border-radius:8px; padding:4px 10px; }
+  details.recblock summary { cursor:pointer; color:var(--acc); font-size:12.5px; }
+  .attack-rows { margin-top:4px; }
   .counters { display:flex; gap:12px; flex-wrap:wrap; color:var(--mute); margin:6px 0 10px; font-size:12.5px; }
   .counters b { color:var(--fg); }
   @media (max-width: 900px) { .layout { grid-template-columns:1fr; } aside { position:static; height:auto; } .outpanel { left:0; right:0; } }
@@ -187,7 +193,7 @@ const JOURNAL = {
   "decided": 51,
   "parked": 0,
   "evidence_total": 148,
-  "evidence_found": 148
+  "evidence_found": 139
  },
  "records": [
   {
@@ -297,16 +303,16 @@ const JOURNAL = {
     {
      "path": "skills/symphysis-attack/SKILL.md",
      "quote": "Список закрыт; просмотрщик группирует строки по слугу.",
-     "line": 127,
+     "line": 167,
      "found": true,
      "verdict": "сверено"
     },
     {
      "path": "skills/symphysis-attack/SKILL.md",
      "quote": "решение design противоречит `decision`, не стоит на записи или принято здесь",
-     "line": 138,
-     "found": true,
-     "verdict": "сверено"
+     "line": null,
+     "found": false,
+     "verdict": "цитаты нет дословно"
     },
     {
      "path": "calibration/c3-p1/project/openspec/changes/camunda-bid/attack/artifacts.md",
@@ -354,7 +360,7 @@ const JOURNAL = {
     {
      "path": "openspec/schemas/symphysis/schema.yaml",
      "quote": "Получи design.md из журнала",
-     "line": 74,
+     "line": 86,
      "found": true,
      "verdict": "сверено"
     },
@@ -418,7 +424,7 @@ const JOURNAL = {
     {
      "path": "skills/symphysis-attack/SKILL.md",
      "quote": "`decisions.json` (опора, не атакуется), `specs/**/*.md`, `design.md`, `security.md`, `tasks.md`",
-     "line": 77,
+     "line": 92,
      "found": true,
      "verdict": "сверено"
     },
@@ -479,21 +485,21 @@ const JOURNAL = {
       {
        "path": "upstream/openspec/src/core/artifact-graph/instruction-loader.ts",
        "quote": "isPlanningComplete: isComplete,",
-       "line": 628,
+       "line": 716,
        "found": true,
        "verdict": "сверено"
       },
       {
        "path": "upstream/openspec/src/core/artifact-graph/instruction-loader.ts",
        "quote": "Fork (symphysis, C3): verdict state, only for artifacts whose schema entry",
-       "line": 171,
-       "found": true,
-       "verdict": "сверено"
+       "line": null,
+       "found": false,
+       "verdict": "цитаты нет дословно"
       },
       {
        "path": "skills/symphysis-attack/SKILL.md",
        "quote": "`status: passed` ставится, только когда в таблице нет ни одной строки",
-       "line": 166,
+       "line": 231,
        "found": true,
        "verdict": "сверено"
       }
@@ -523,7 +529,7 @@ const JOURNAL = {
       {
        "path": "openspec/schemas/symphysis/schema.yaml",
        "quote": "id: attack-artifacts",
-       "line": 107,
+       "line": 119,
        "found": true,
        "verdict": "сверено"
       }
@@ -602,7 +608,7 @@ const JOURNAL = {
       {
        "path": "skills/symphysis-attack/SKILL.md",
        "quote": "Список закрыт; просмотрщик группирует строки по слугу.",
-       "line": 127,
+       "line": 167,
        "found": true,
        "verdict": "сверено"
       }
@@ -679,7 +685,7 @@ const JOURNAL = {
       {
        "path": "openspec/schemas/symphysis/schema.yaml",
        "quote": "Основание — решённые записи журнала: ссылайся на них по номеру F-NN, не пересказывай.",
-       "line": 50,
+       "line": 60,
        "found": true,
        "verdict": "сверено"
       }
@@ -771,16 +777,16 @@ const JOURNAL = {
       {
        "path": "openspec/schemas/symphysis/schema.yaml",
        "quote": "Получи design.md из журнала",
-       "line": 74,
+       "line": 86,
        "found": true,
        "verdict": "сверено"
       },
       {
        "path": "skills/symphysis-attack/SKILL.md",
        "quote": "решение design противоречит `decision`, не стоит на записи или принято здесь",
-       "line": 138,
-       "found": true,
-       "verdict": "сверено"
+       "line": null,
+       "found": false,
+       "verdict": "цитаты нет дословно"
       },
       {
        "path": "calibration/c3-p1/project/openspec/changes/camunda-bid/decisions.md",
@@ -800,7 +806,7 @@ const JOURNAL = {
       {
        "path": "skills/symphysis-brainstorm/SKILL.md",
        "quote": "`consequences` — какие записи на нём стоят.",
-       "line": 131,
+       "line": 173,
        "found": true,
        "verdict": "сверено"
       },
@@ -822,7 +828,7 @@ const JOURNAL = {
       {
        "path": "skills/symphysis-brainstorm/SKILL.md",
        "quote": "`consequences` — что следует из решения.",
-       "line": 124,
+       "line": 152,
        "found": true,
        "verdict": "сверено"
       },
@@ -1034,9 +1040,9 @@ const JOURNAL = {
       {
        "path": "skills/symphysis-attack/SKILL.md",
        "quote": "парковка `материалы` без `finding` при `research/<F-NN>.md`; `факт` без улики; `recommendation` с пустым `why`",
-       "line": 141,
-       "found": true,
-       "verdict": "сверено"
+       "line": null,
+       "found": false,
+       "verdict": "цитаты нет дословно"
       },
       {
        "path": "calibration/c3-p1/project/openspec/changes/camunda-bid/decisions.md",
@@ -1048,7 +1054,7 @@ const JOURNAL = {
       {
        "path": "tools/journal_model.py",
        "quote": "if r[\"decision\"] and r[\"decision\"][\"option\"] not in own:",
-       "line": 279,
+       "line": 323,
        "found": true,
        "verdict": "сверено"
       }
@@ -1063,7 +1069,7 @@ const JOURNAL = {
       {
        "path": "skills/symphysis-attack/SKILL.md",
        "quote": "Атака пишет `attack/<цель>.md` и строку итога в `notes[]` журнала.",
-       "line": 90,
+       "line": 112,
        "found": true,
        "verdict": "сверено"
       }
@@ -1113,7 +1119,7 @@ const JOURNAL = {
       {
        "path": "openspec/schemas/symphysis/schema.yaml",
        "quote": "id: decisions",
-       "line": 5,
+       "line": 14,
        "found": true,
        "verdict": "сверено"
       },
@@ -1209,7 +1215,7 @@ const JOURNAL = {
     {
      "path": "skills/symphysis-brainstorm/SKILL.md",
      "quote": "новый круг — только по слову",
-     "line": 9,
+     "line": 10,
      "found": true,
      "verdict": "сверено"
     },
@@ -1330,16 +1336,16 @@ const JOURNAL = {
       {
        "path": "openspec/schemas/symphysis/schema.yaml",
        "quote": "На каждую парковку с адресатом «материалы» — один файл `research/<F-NN>.md`.",
-       "line": 20,
-       "found": true,
-       "verdict": "сверено"
+       "line": null,
+       "found": false,
+       "verdict": "цитаты нет дословно"
       },
       {
        "path": "openspec/schemas/symphysis/schema.yaml",
        "quote": "ненайденное — отрицанием по рецепту",
-       "line": 22,
-       "found": true,
-       "verdict": "сверено"
+       "line": null,
+       "found": false,
+       "verdict": "цитаты нет дословно"
       },
       {
        "path": "openspec/changes/symphysis-schema/decisions.json",
@@ -1366,16 +1372,16 @@ const JOURNAL = {
       {
        "path": "upstream/openspec/src/core/artifact-graph/instruction-loader.ts",
        "quote": "isPlanningComplete: isComplete,",
-       "line": 628,
+       "line": 716,
        "found": true,
        "verdict": "сверено"
       },
       {
        "path": "skills/symphysis-attack/SKILL.md",
        "quote": "парковка `материалы` без `finding` при `research/<F-NN>.md`",
-       "line": 141,
-       "found": true,
-       "verdict": "сверено"
+       "line": null,
+       "found": false,
+       "verdict": "цитаты нет дословно"
       }
      ]
     },
@@ -1388,14 +1394,14 @@ const JOURNAL = {
       {
        "path": "upstream/openspec/src/core/artifact-graph/instruction-loader.ts",
        "quote": "if (metadata?.skip_specs) {",
-       "line": 312,
+       "line": 333,
        "found": true,
        "verdict": "сверено"
       },
       {
        "path": "upstream/openspec/src/core/artifact-graph/instruction-loader.ts",
        "quote": "This change declares skip_specs: true in .openspec.yaml (no spec-level behavior changes), so this artifact is skipped.",
-       "line": 135,
+       "line": 141,
        "found": true,
        "verdict": "сверено"
       }
@@ -1570,16 +1576,16 @@ const JOURNAL = {
       {
        "path": "skills/symphysis-viewer/SKILL.md",
        "quote": "строки сгруппированы линза → тяжесть",
-       "line": 131,
+       "line": 133,
        "found": true,
        "verdict": "сверено"
       },
       {
        "path": "skills/symphysis-viewer/SKILL.md",
        "quote": "то, что `apply` уже внёс, из состояния убирается само",
-       "line": 87,
-       "found": true,
-       "verdict": "сверено через перенос"
+       "line": null,
+       "found": false,
+       "verdict": "цитаты нет дословно"
       }
      ]
     },
@@ -1592,7 +1598,7 @@ const JOURNAL = {
       {
        "path": "skills/symphysis-viewer/SKILL.md",
        "quote": "отказ называет запись и причину — исправь строку промпта",
-       "line": 160,
+       "line": 202,
        "found": true,
        "verdict": "сверено"
       }
@@ -1671,7 +1677,7 @@ const JOURNAL = {
       {
        "path": "upstream/openspec/src/core/artifact-graph/instruction-loader.ts",
        "quote": "isPlanningComplete: isComplete,",
-       "line": 628,
+       "line": 716,
        "found": true,
        "verdict": "сверено"
       }
@@ -1686,7 +1692,7 @@ const JOURNAL = {
       {
        "path": "upstream/openspec/src/core/artifact-graph/instruction-loader.ts",
        "quote": "if (metadata?.skip_specs) {",
-       "line": 312,
+       "line": 333,
        "found": true,
        "verdict": "сверено"
       }
@@ -1857,7 +1863,7 @@ const JOURNAL = {
       {
        "path": "openspec/changes/symphysis-schema/decisions.json",
        "quote": "\"id\": \"F-79\"",
-       "line": 5264,
+       "line": 5272,
        "found": true,
        "verdict": "сверено"
       }
@@ -1952,9 +1958,9 @@ const JOURNAL = {
       {
        "path": "tools/journal_render.py",
        "quote": "return [c.strip() for c in line.strip().strip(\"|\").split(\"|\")]",
-       "line": 237,
-       "found": true,
-       "verdict": "сверено"
+       "line": null,
+       "found": false,
+       "verdict": "цитаты нет дословно"
       },
       {
        "path": "docs/dry-run-report.md",
@@ -5091,7 +5097,7 @@ const JOURNAL = {
 };
 const ATTACK = [
  {
-  "path": "openspec\\changes\\calibration-fixes\\attack\\decisions.md",
+  "path": "attack\\decisions.md",
   "frontmatter": {
    "status": "passed",
    "targets": [
@@ -6537,30 +6543,29 @@ const ATTACK = [
  }
 ];
 const ADDRESSEES = ['материалы','человек','ИБ'];
-/* линзы атаки — закрытый список скилла symphysis-attack (таблица «Линза»), порядок таблицы; подписи — чем ищется.
-   Перспектив интервью брейншторма здесь нет: запись журнала и строка атаки — разные сущности (слово владельца 2026-10-30) */
-const LENSES = [
-  {slug:'requirement-coverage',    label:'покрытие требований'},
-  {slug:'task-completeness',       label:'полнота задач'},
-  {slug:'dependency-correctness',  label:'порядок зависимостей'},
-  {slug:'key-links',               label:'связи компонентов'},
-  {slug:'scope-sanity',            label:'объём задач'},
-  {slug:'verification-derivation', label:'проверка по поведению'},
-  {slug:'context-compliance',      label:'соответствие журналу'},
-  {slug:'scope-reduction',         label:'сужение объёма'},
-  {slug:'data-contracts',          label:'контракты данных'},
-  {slug:'research-resolution',     label:'закрытие исследований'},
-  {slug:'claim-authority',         label:'числа и факты'},
-  {slug:'claim-extraction',        label:'существование имён'},
-  {slug:'honest-verifier',         label:'невыводимое'},
-  {slug:'coverage',                label:'покрытие разделов'},
-];
+/* линзы атаки — закрытые списки скилла symphysis-attack, по файлу атаки: журнал (`attack/decisions.md`, цель — один `decisions.json`)
+   и артефакты (`attack/artifacts.md`, всё прочее); порядок — порядок списка, подписи — чем ищется. Слуг не из списка своего файла —
+   группа «вне списка», строка невалидна (F-07.A). Перспектив интервью брейншторма здесь нет: запись журнала и строка атаки — разные
+   сущности (слово владельца 2026-10-30) */
+const ATTACK_LENSES = {
+  journal: [
+    {slug:'context-compliance', label:'соответствие журналу'},
+    {slug:'claim-authority',    label:'числа и факты'},
+    {slug:'claim-extraction',   label:'существование имён'},
+    {slug:'coverage',           label:'покрытие разделов'},
+  ],
+  artifacts: [
+    {slug:'scenario-run',       label:'прогон сценария'},
+    {slug:'claim-extraction',   label:'существование имён'},
+  ],
+};
+const OUTSIDE = '__outside__';   /* значение фильтра для группы «вне списка» */
 const SEVERITY = ['блокер','предупреждение','справка'];
 const MODES = ['decisions','check','attack'];
 const MODE_LABELS = { decisions:'решения', check:'проверка', attack:'атака' };
 const ADDED_MARK = '(добавлен человеком';
 const ONE_WAY = 'в одну сторону';
-const ATTACK_HINT = 'Строки атаки apply не меняет — их закрывает правка цели (журнала или артефакта) и повторная атака. Спор по строке (почему опора есть, почему не блокер) уходит в промпт возврата одной строкой «Замечания к схеме:» и ложится в notes[] журнала.';
+const ATTACK_HINT = 'Строки атаки apply не меняет — их закрывает правка цели (журнала или артефакта) и повторная атака. Спор по строке (почему опора есть, почему не блокер) уходит в промпт возврата одной строкой «Замечания к схеме:» и ложится в notes[] журнала; ответ на строку с закрытием «вопрос человеку» и разделом «F-NN, decision» уходит словом к решению. Фильтр по линзе прячет группы, но не счётчики тяжести в шапке файла.';
 const PARK_HINT = 'Парковка — дополнительный вопрос, который нельзя закрыть сейчас: он уходит адресату. «материалы» — ответ ищется в файлах (исследование), «человек» — нужно решение человека, «ИБ» — проверка по чек-листу безопасности. Решение по самой развилке парковка не снимает.';
 /* вертикальная блок-схема под левую панель: спина x=50..250, дуги возвратов по сторонам */
 const SX = 50, SW = 200, SH = 40, STEP = 58;
@@ -6597,6 +6602,8 @@ let mode = 'decisions';
 try { const m = localStorage.getItem(KEY + ':mode'); if (MODES.includes(m)) mode = m; } catch (e) {}
 let attackState = { disputes:{} };
 try { const s = JSON.parse(localStorage.getItem(KEY + ':attack') || 'null'); if (s && s.disputes && typeof s.disputes === 'object') attackState.disputes = s.disputes; } catch (e) {}
+let attackLens = 'all';
+try { const l = localStorage.getItem(KEY + ':lens'); if (l) attackLens = l; } catch (e) {}
 function saveAttack() { try { localStorage.setItem(KEY + ':attack', JSON.stringify(attackState)); } catch (e) {} }
 function setMode(m) { mode = m; try { localStorage.setItem(KEY + ':mode', m); } catch (e) {} render(); }
 /* ключ спора — файл, раздел и утверждение строки: при повторной атаке спор остаётся у той же строки, не у того же номера */
@@ -6605,6 +6612,8 @@ function disputeKey(att, row) { return att.path + '|' + row.section + '|' + row.
 (function cleanupIngested() {
   const norm = s => String(s || '').replace(/\s+/g, ' ').trim();
   for (const rec of JOURNAL.records) {
+    /* вариант, добавленный человеком и уже внесённый apply (та же буква, тот же текст), из состояния уходит */
+    if (state.added[rec.id]) state.added[rec.id] = state.added[rec.id].filter(o => !(rec.options || []).some(x => x.letter === o.letter && norm(String(x.text).split(ADDED_MARK)[0]) === norm(o.text)));
     const d = state.decisions[rec.id]; if (!d) continue;
     const jpark = (rec.parking || []).map(p => norm(p.text));
     const known = [rec.decision && rec.decision.word].filter(Boolean).map(norm).concat(jpark);
@@ -6613,6 +6622,8 @@ function disputeKey(att, row) { return att.path + '|' + row.section + '|' + row.
     if (rec.decision && rec.decision.option && d.choice === rec.decision.option) d.choice = null;
     const sp = norm(state.disputes[rec.id]); if (sp && rec.dispute && norm(rec.dispute).includes(sp)) delete state.disputes[rec.id];
   }
+  const ownNotes = norm(state.notes);
+  if (ownNotes && (JOURNAL.notes || []).some(n => norm(n.text).includes(ownNotes))) state.notes = '';
   save();
   /* спор по строке атаки, уже внесённый apply в notes[] журнала, тоже убирается */
   const noteTexts = (JOURNAL.notes || []).map(n => norm(n.text));
@@ -6650,10 +6661,17 @@ function antipodesOf(id, letter) {
   return [...out];
 }
 function blockedBy(id, letter) { return antipodesOf(id, letter).filter(k => { const [oid, ol] = k.split('.'); return chosen(oid) === ol; }); }
-function esc(s) { return String(s ?? '').replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+/* text:begin */
+function esc(s) { return String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+/* текст журнала и атаки: единственная разметка данных — пары backticks; сначала экранирование, потом `код` -> <code> */
+function md(s) { return esc(s).replace(/`([^`]+)`/g, '<code>$1</code>'); }
+/* text:end */
 function evHtml(ev) {
   const loc = ev.line ? ev.path + ':' + ev.line : ev.path;
-  const v = ev.found ? '<b class="ok">сверено</b>' : '<b class="bad">не найдено: ' + esc(ev.verdict || '') + '</b>';
+  /* found: null — файл не текст (бинарный, не UTF-8): сверить нельзя, это не пропажа цитаты */
+  const v = ev.found ? '<b class="ok">сверено</b>'
+    : ev.found === null ? '<b class="mute">' + esc(/^не проверить/.test(ev.verdict || '') ? ev.verdict : 'не проверить: ' + (ev.verdict || 'файл не текст')) + '</b>'
+    : '<b class="bad">не найдено: ' + esc(ev.verdict || '') + '</b>';
   return '<span class="ev">улика: <code>' + esc(loc) + '</code> «' + esc(ev.quote) + '» ' + v + '</span>';
 }
 
@@ -6715,20 +6733,20 @@ function renderCards() {
     if (parkedAll.length) status += '<span class="badge park">парковка: ' + parkedAll.length + '</span>';
     const deps = effectiveDeps(rec);
     const waiting = deps.filter(x => x.kind !== 'removed' && !chosen(x.id)).map(x => x.id);
-    let html = '<div class="' + cls + '" id="' + rec.id + '"><div class="head"><span class="id mono">' + rec.id + '</span>' + status +
+    let html = '<div class="' + cls + '" id="' + esc(rec.id) + '"><div class="head"><span class="id mono">' + esc(rec.id) + '</span>' + status +
       '<span class="badge">' + esc(rec.delivery || '—') + '</span>' + (rec.addressee ? '<span class="badge">адресат: ' + esc(rec.addressee) + '</span>' : '') + '</div>' +
-      '<div class="q">' + esc(rec.question) + '</div>';
-    html += '<div class="meta">зависит от: ' + (deps.length ? deps.map(x => '<span class="chip ' + x.kind + '"><a href="#' + x.id + '">' + x.id + '</a>' +
-      (x.kind === 'removed' ? '<button data-undep="' + rec.id + '|' + x.id + '" title="вернуть">↺</button>' : '<button data-rmdep="' + rec.id + '|' + x.id + '" title="снять зависимость">×</button>') + '</span>').join('') : '—') +
-      '<input type="text" data-deptext="' + rec.id + '" placeholder="F-NN" title="добавить зависимость"><button class="small" data-adddep="' + rec.id + '">+ зависимость</button></div>';
-    if (waiting.length) html += '<div class="note warn">предпосылка не решена: ' + waiting.join(', ') + ' — выбирать можно, но ответ до неё — догадка</div>';
+      '<div class="q">' + md(rec.question) + '</div>';
+    html += '<div class="meta">зависит от: ' + (deps.length ? deps.map(x => '<span class="chip ' + x.kind + '"><a href="#' + esc(x.id) + '">' + esc(x.id) + '</a>' +
+      (x.kind === 'removed' ? '<button data-undep="' + esc(rec.id) + '|' + esc(x.id) + '" title="вернуть">↺</button>' : '<button data-rmdep="' + esc(rec.id) + '|' + esc(x.id) + '" title="снять зависимость">×</button>') + '</span>').join('') : '—') +
+      '<input type="text" data-deptext="' + esc(rec.id) + '" placeholder="F-NN" title="добавить зависимость"><button class="small" data-adddep="' + esc(rec.id) + '">+ зависимость</button></div>';
+    if (waiting.length) html += '<div class="note warn">предпосылка не решена: ' + waiting.map(esc).join(', ') + ' — выбирать можно, но ответ до неё — догадка</div>';
     if (rec.evidence && rec.evidence.length && !isFact) html += '<div class="note info"><b>улики записи</b>' + rec.evidence.map(evHtml).join('') + '</div>';
-    if (rec.finding) html += '<div class="note info"><b>находка:</b> ' + esc(rec.finding) + '</div>';
+    if (rec.finding) html += '<div class="note info"><b>находка:</b> ' + md(rec.finding) + '</div>';
     if (isFact) {
       html += rec.evidence.map(evHtml).join('');
-      if (rec.dispute) html += '<div class="note park"><b>спор в журнале:</b> ' + esc(rec.dispute) + '</div>';
-      html += '<div class="cons">следствия: ' + esc(rec.consequences || '—') + '</div>';
-      html += '<div class="row"><textarea data-dispute="' + rec.id + '" placeholder="оспорить факт: что не так и чем это подтверждается">' + esc(state.disputes[rec.id] || '') + '</textarea></div>';
+      if (rec.dispute) html += '<div class="note park"><b>спор в журнале:</b> ' + md(rec.dispute) + '</div>';
+      html += '<div class="cons">следствия: ' + md(rec.consequences || '—') + '</div>';
+      html += '<div class="row"><textarea data-dispute="' + esc(rec.id) + '" placeholder="оспорить факт: что не так и чем это подтверждается">' + esc(state.disputes[rec.id] || '') + '</textarea></div>';
     } else {
       const cur = chosen(rec.id);
       for (const o of allOptions(rec)) {
@@ -6738,26 +6756,27 @@ function renderCards() {
           (jc === o.letter ? '<span class="tag journal">в журнале</span>' : '') +
           (o.unlikely ? '<span class="tag unlikely" title="' + esc(o.unlikely) + '">маловероятно</span>' : '') +
           (o.added ? '<span class="tag added">добавлен человеком</span>' : '') +
+          deviationTag(o) +
           (anti.length ? '<span class="tag anti" title="нельзя вместе с: ' + esc(anti.join(', ')) + '">антипод ' + esc(anti.join(', ')) + '</span>' : '');
         html += '<label class="opt' + (cur === o.letter ? ' chosen' : '') + (blocked.length ? ' blocked' : '') + '">' +
-          '<input type="radio" name="' + rec.id + '" value="' + o.letter + '"' + (cur === o.letter ? ' checked' : '') + '>' +
-          '<div class="t"><span class="letter">' + o.letter + '.</span> ' + esc(o.text) + tags +
-          (o.unlikely ? '<span class="ev">маловероятно: ' + esc(o.unlikely) + '</span>' : '') +
+          '<input type="radio" name="' + esc(rec.id) + '" value="' + esc(o.letter) + '"' + (cur === o.letter ? ' checked' : '') + '>' +
+          '<div class="t"><span class="letter">' + esc(o.letter) + '.</span> ' + md(o.text) + tags +
+          (o.unlikely ? '<span class="ev">маловероятно: ' + md(o.unlikely) + '</span>' : '') +
           (o.evidence || []).map(evHtml).join('') + '</div></label>';
       }
-      if (rec.recommendation) html += '<div class="rec">рекомендация: <b>' + esc(rec.recommendation.option) + '</b> — ' + esc(rec.recommendation.why) + '</div>';
-      if (rec.decision && rec.decision.word) html += '<div class="note info"><b>слово в журнале (' + esc(rec.decision.date || '') + '):</b> «' + esc(rec.decision.word) + '»</div>';
-      html += '<div class="note bad hidden" data-msg="' + rec.id + '"></div>';
-      html += '<div class="row"><textarea data-word="' + rec.id + '" placeholder="слово человека дословно — почему так (или что изменить в решении из журнала)">' + esc(d.word || '') + '</textarea></div>';
-      html += '<div class="row"><input type="text" data-addtext="' + rec.id + '" placeholder="вариант, которого здесь нет"><button class="small" data-addopt="' + rec.id + '">добавить вариант</button></div>';
+      if (rec.recommendation) html += '<div class="rec">рекомендация: <b>' + esc(rec.recommendation.option) + '</b> — ' + md(rec.recommendation.why) + '</div>';
+      if (rec.decision && rec.decision.word) html += '<div class="note info"><b>слово в журнале (' + esc(rec.decision.date || '') + '):</b> «' + md(rec.decision.word) + '»</div>';
+      html += '<div class="note bad hidden" data-msg="' + esc(rec.id) + '"></div>';
+      html += '<div class="row"><textarea data-word="' + esc(rec.id) + '" placeholder="слово человека дословно — почему так (или что изменить в решении из журнала)">' + esc(d.word || '') + '</textarea></div>';
+      html += '<div class="row"><input type="text" data-addtext="' + esc(rec.id) + '" placeholder="вариант, которого здесь нет"><button class="small" data-addopt="' + esc(rec.id) + '">добавить вариант</button></div>';
       html += '<details class="park"' + (parkedAll.length ? ' open' : '') + '><summary title="' + esc(PARK_HINT) + '">парковка — дополнительный вопрос с адресатом (' + parkedAll.length + ')</summary>' +
         '<div class="note park" style="margin:6px 0">' + esc(PARK_HINT) + '</div>' +
-        parkedAll.map((p, i) => '<div class="parkitem"><span class="who">→ ' + esc(p.addressee || '?') + (p.journal ? ' · в журнале' : '') + '</span><span>' + esc(p.text || '(без текста)') + '</span>' +
-          (p.journal ? '' : '<button class="small" data-unpark="' + rec.id + '|' + (i - jpark.length) + '">снять</button>') + '</div>').join('') +
-        '<div class="row"><input type="text" data-parktext="' + rec.id + '" placeholder="что именно надо узнать или решить отдельно">' +
-        '<select data-addressee="' + rec.id + '" title="' + esc(PARK_HINT) + '">' + ADDRESSEES.map(a => '<option>' + a + '</option>').join('') + '</select>' +
-        '<button class="small" data-park="' + rec.id + '">припарковать</button></div></details>';
-      html += '<div class="cons">следствия: ' + esc(rec.consequences || '—') + '</div>';
+        parkedAll.map((p, i) => '<div class="parkitem"><span class="who">→ ' + esc(p.addressee || '?') + (p.journal ? ' · в журнале' : '') + '</span><span>' + md(p.text || '(без текста)') + '</span>' +
+          (p.journal ? '' : '<button class="small" data-unpark="' + esc(rec.id) + '|' + (i - jpark.length) + '">снять</button>') + '</div>').join('') +
+        '<div class="row"><input type="text" data-parktext="' + esc(rec.id) + '" placeholder="что именно надо узнать или решить отдельно">' +
+        '<select data-addressee="' + esc(rec.id) + '" title="' + esc(PARK_HINT) + '">' + ADDRESSEES.map(a => '<option>' + a + '</option>').join('') + '</select>' +
+        '<button class="small" data-park="' + esc(rec.id) + '">припарковать</button></div></details>';
+      html += '<div class="cons">следствия: ' + md(rec.consequences || '—') + '</div>';
     }
     return html + '</div>';
   }).join('');
@@ -6814,9 +6833,9 @@ function renderCards() {
 
 function renderNewForks() {
   document.getElementById('newForks').innerHTML = state.newForks.map((f, i) =>
-    '<div class="card" style="margin-top:8px"><div class="head"><span class="id mono">' + f.id + '</span><span class="badge added">добавлена человеком</span>' +
-    '<button class="small" data-delfork="' + i + '" style="margin-left:auto">убрать</button></div><div class="q">' + esc(f.question) + '</div>' +
-    '<div class="meta">варианты: ' + esc(f.options.replace(/\n+/g, ' · ')) + '</div><div class="cons">' + esc(f.word) + '</div></div>').join('');
+    '<div class="card" style="margin-top:8px"><div class="head"><span class="id mono">' + esc(f.id) + '</span><span class="badge added">добавлена человеком</span>' +
+    '<button class="small" data-delfork="' + i + '" style="margin-left:auto">убрать</button></div><div class="q">' + md(f.question) + '</div>' +
+    '<div class="meta">варианты: ' + md(f.options.replace(/\n+/g, ' · ')) + '</div><div class="cons">' + md(f.word) + '</div></div>').join('');
   document.querySelectorAll('button[data-delfork]').forEach(b => b.onclick = () => { state.newForks.splice(+b.dataset.delfork, 1); save(); render(); });
 }
 
@@ -6825,7 +6844,7 @@ function renderToc() {
     const d = state.decisions[rec.id];
     const jc = journalChoice(rec);
     const dot = rec.kind === 'факт' ? 'fact' : (d && d.choice && jc && d.choice !== jc) ? 'changed' : chosen(rec.id) ? 'ok' : (((rec.parking && rec.parking.length) || (d && d.parked && d.parked.length)) ? 'park' : '');
-    return '<a href="#' + rec.id + '"><span class="dot ' + dot + '"></span><span class="id">' + rec.id + '</span><span class="q" title="' + esc(rec.question) + '">' + esc(rec.question) + '</span></a>';
+    return '<a href="#' + esc(rec.id) + '"><span class="dot ' + dot + '"></span><span class="id">' + esc(rec.id) + '</span><span class="q" title="' + esc(rec.question) + '">' + esc(rec.question) + '</span></a>';
   }).join('');
 }
 
@@ -6843,33 +6862,71 @@ function renderStats() {
   document.getElementById('evstats').textContent = 'улик сверено ' + (s.evidence_found ?? '?') + ' из ' + (s.evidence_total ?? '?') + ' · собрано ' + (JOURNAL.generated || '');
 }
 
-function updateOut() {
-  const lines = ['Решения по журналу ' + (JOURNAL.source || '') + ', ' + new Date().toISOString().slice(0, 10) + ':'];
-  for (const rec of JOURNAL.records) {
-    const d = state.decisions[rec.id];
-    if (rec.kind === 'факт') { const sp = (state.disputes[rec.id] || '').trim(); if (sp) lines.push('- ' + rec.id + ': факт оспорен — «' + sp + '»'); continue; }
-    for (const o of (state.added[rec.id] || [])) lines.push('- ' + rec.id + ': добавлен вариант ' + o.letter + '. ' + o.text);
-    const u = state.deps[rec.id];
-    if (u) { for (const x of u.add) lines.push('- ' + rec.id + ': зависимость добавлена ' + x); for (const x of u.remove) lines.push('- ' + rec.id + ': зависимость снята ' + x); }
-    if (!d) continue;
-    const w = (d.word || '').trim(), jc = journalChoice(rec);
-    for (const p of (d.parked || [])) lines.push('- ' + rec.id + ': припарковано → ' + p.addressee + ' — «' + p.text + '»');
-    if (d.choice && d.choice !== jc) lines.push('- ' + rec.id + ': ' + d.choice + (jc ? ' (было ' + jc + ')' : '') + (w ? ' — «' + w + '»' : ' — (без слова)'));
-    else if (w) lines.push('- ' + rec.id + ': ' + (jc ? 'к решению ' + jc : 'без выбора') + ' — «' + w + '»');
+/* prompt:begin */
+/* Промпт возврата — чистая функция состояния: без DOM, без обращения к страницам. Строки пишутся по грамматике `journal_apply.parse_answers`.
+   Уходит всё, что `apply` уже внёс в журнал: вариант с тем же текстом, слово, равное слову решения, парковка, зависимость, замечание.
+   Ответ в поле спора строки атаки (закрытие «вопрос человека», раздел `F-NN, decision`) — слово к решению `- F-NN: <буква> — «…»`, одна строка
+   на запись; два разных ответа — конфликт: строки нет, в замечаниях «конфликт ответов к F-NN — оставьте один», `conflictKeys` — ключи спора
+   строк, которые его составили. Ответ к записи без решения — замечание `F-NN: ответ`, ключи — `undecidedKeys`. Возвращает { text, conflictKeys, undecidedKeys }. */
+function buildPrompt(J, attacks, st, disputes, date) {
+  const MARK = '(добавлен человеком';
+  const norm = s => String(s == null ? '' : s).replace(/\s+/g, ' ').trim();
+  const shorten = (s, n) => { s = String(s || ''); return s.length > n ? s.slice(0, n - 1) + '…' : s; };
+  const byId = Object.fromEntries(J.records.map(r => [r.id, r]));
+  const jchoice = rec => (rec.decision && rec.decision.option) || null;
+  /* рекомендация не решение: буква — выбор в состоянии или решение журнала, иначе её нет */
+  const letterOf = (rec, d) => (d && d.choice) || jchoice(rec) || null;
+  const lines = ['Решения по журналу ' + (J.source || '') + ', ' + date + ':'];
+  /* споры по строкам атаки: слово к решению или заметка */
+  const answers = {}, otherDisputes = [], undecidedKeys = [];
+  for (const att of (attacks || [])) for (const r of (att.rows || [])) {
+    const key = att.path + '|' + r.section + '|' + r.claim, sp = norm((disputes || {})[key]);
+    if (!sp) continue;
+    const m = /^(F-\d+),\s*decision\b/.exec(norm(r.section)), rec = m && byId[m[1]];
+    const askHuman = rec && rec.kind === 'развилка' && norm(r.fix).toLowerCase() === 'вопрос человеку';
+    if (askHuman && letterOf(rec, st.decisions[rec.id])) {
+      (answers[rec.id] = answers[rec.id] || []).push({ key, text: sp });
+    } else if (askHuman) {   /* запись без решения: слова без выбора нет, ответ — замечание `F-NN: …`, запись остаётся открытой */
+      undecidedKeys.push(key); otherDisputes.push(rec.id + ': ' + sp);
+    } else otherDisputes.push('атака ' + att.path + ' · ' + r.lens + ' · «' + shorten(r.claim, 60) + '» — спор: ' + sp);
   }
-  if (state.newForks.length) { lines.push('Новые развилки:'); for (const f of state.newForks) lines.push('- ' + f.id + ': ' + f.question + ' — варианты: ' + f.options.replace(/\n+/g, ' | ') + (f.word ? ' — «' + f.word + '»' : '')); }
-  /* споры по строкам атаки — в тот же блок «Замечания к схеме:», замечания режима 1 первыми; грамматика apply даёт один notes[] на блок,
-     поэтому всё склеивается в одну строку через « · » */
-  const disputes = [];
-  for (const att of ATTACK) for (const r of (att.rows || [])) {
-    const sp = (attackState.disputes[disputeKey(att, r)] || '').replace(/\s+/g, ' ').trim();
-    if (sp) disputes.push('атака ' + att.path + ' · ' + r.lens + ' · «' + short(r.claim, 60) + '» — спор: ' + sp);
+  const conflicts = [], conflictKeys = [];
+  for (const rec of J.records) {
+    const d = st.decisions[rec.id];
+    if (rec.kind === 'факт') { const sp = norm(st.disputes[rec.id]); if (sp) lines.push('- ' + rec.id + ': факт оспорен — «' + sp + '»'); continue; }
+    const jc = jchoice(rec), jword = rec.decision ? norm(rec.decision.word) : '';
+    for (const o of (st.added[rec.id] || [])) {
+      const known = (rec.options || []).some(x => x.letter === o.letter && norm(String(x.text).split(MARK)[0]) === norm(o.text));
+      if (!known) lines.push('- ' + rec.id + ': добавлен вариант ' + o.letter + '. ' + o.text);
+    }
+    const u = st.deps[rec.id], deps = rec.depends_on || [];
+    if (u) {
+      for (const x of u.add) if (!deps.includes(x)) lines.push('- ' + rec.id + ': зависимость добавлена ' + x);
+      for (const x of u.remove) if (deps.includes(x)) lines.push('- ' + rec.id + ': зависимость снята ' + x);
+    }
+    if (d) {
+      const w = (d.word || '').trim(), jpark = (rec.parking || []).map(p => norm(p.text));
+      for (const p of (d.parked || [])) if (!jpark.includes(norm(p.text))) lines.push('- ' + rec.id + ': припарковано → ' + p.addressee + ' — «' + p.text + '»');
+      if (d.choice && d.choice !== jc) lines.push('- ' + rec.id + ': ' + d.choice + (jc ? ' (было ' + jc + ')' : '') + (w ? ' — «' + w + '»' : ' — (без слова)'));
+      else if (w && norm(w) !== jword) lines.push('- ' + rec.id + ': ' + (jc ? 'к решению ' + jc : 'без выбора') + ' — «' + w + '»');
+    }
+    const letter = letterOf(rec, d);
+    const ans = (answers[rec.id] || []).filter(a => !(jc && letter === jc && a.text === jword));   /* то же слово, что уже в decision, — не добавляется */
+    const distinct = [...new Set(ans.map(a => a.text))];
+    if (distinct.length > 1) { conflicts.push(rec.id); ans.forEach(a => conflictKeys.push(a.key)); }
+    else if (distinct.length === 1) lines.push('- ' + rec.id + ': ' + letter + ' — «' + distinct[0] + '»');
   }
-  const notes = [(state.notes || '').trim()].concat(disputes).filter(Boolean);
+  if (st.newForks.length) { lines.push('Новые развилки:'); for (const f of st.newForks) lines.push('- ' + f.id + ': ' + f.question + ' — варианты: ' + f.options.replace(/\n+/g, ' | ') + (f.word ? ' — «' + f.word + '»' : '')); }
+  /* замечания к схеме одной строкой: замечания режима 1 первыми, споры по атаке, конфликты ответов; уже внесённое в notes[] журнала уходит */
+  const own = (st.notes || '').trim(), ingested = (J.notes || []).some(n => norm(n.text).includes(norm(own)));
+  const notes = [own && !ingested ? own : ''].concat(otherDisputes, conflicts.map(id => 'конфликт ответов к ' + id + ' — оставьте один')).filter(Boolean);
   if (notes.length) lines.push('Замечания к схеме: ' + notes.join(' · '));
   if (lines.length === 1) lines.push('(нового нет — решения из журнала остаются как есть, молчание по открытой развилке оставляет её открытой)');
-  document.getElementById('out').value = lines.join('\n');
+  return { text: lines.join('\n'), conflictKeys, undecidedKeys };
 }
+/* prompt:end */
+function currentPrompt() { return buildPrompt(JOURNAL, ATTACK, state, attackState.disputes, new Date().toISOString().slice(0, 10)); }
+function updateOut() { document.getElementById('out').value = currentPrompt().text; markConflicts(); }
 
 /* ---------- режимы: переключатель в шапке, видимость панелей ---------- */
 function renderModes() {
@@ -6886,10 +6943,11 @@ function renderModes() {
 /* ---------- общее для режимов 2 и 3 ---------- */
 function isProbe(rec) { return !!(rec.outcome && rec.outcome.kind === 'проба'); }
 function isAdded(o) { return !!o.added || String(o.text || '').includes(ADDED_MARK); }
+/* тег «отступление от F-NN» у варианта с `deviation` — один вид в карточке, «проверке» и блоке записи «атаки» */
+function deviationTag(o) { return o && o.deviation ? '<span class="tag deviation">отступление от ' + esc(o.deviation) + '</span>' : ''; }
 function isOneWay(rec) { return !!(rec.reversibility && rec.reversibility.level === ONE_WAY); }
 function num(id) { return parseInt(String(id).slice(2), 10) || 0; }
 function allEvidence(rec) { return (rec.evidence || []).concat(...(rec.options || []).map(o => o.evidence || [])); }
-function short(s, n) { s = String(s || ''); return s.length > n ? s.slice(0, n - 1) + '…' : s; }
 function shaChip(sha, missing) { return sha ? '<code title="' + esc(sha) + '">' + esc(sha.slice(0, 12)) + '</code>' : '<span class="mute">' + esc(missing) + '</span>'; }
 function journalTarget(att) { return ((att.frontmatter || {}).targets || []).find(t => t.path === 'decisions.json'); }
 /* сверка хеша цели decisions.json из frontmatter атаки с хешем файла журнала, который встроил render-html (ключ sha256) */
@@ -6923,28 +6981,28 @@ function parkingDestination(addressee) { return 'design.md › Open Questions �
 function checkCard(rec) {
   const d = destination(rec), isFact = rec.kind === 'факт';
   const picked = rec.decision && rec.decision.option ? (rec.options || []).find(o => o.letter === rec.decision.option) : null;
-  let html = '<div class="card' + (isFact ? ' fact' : picked ? ' decided' : '') + '"><div class="head"><span class="id mono">' + rec.id + '</span>' +
+  let html = '<div class="card' + (isFact ? ' fact' : picked ? ' decided' : '') + '"><div class="head"><span class="id mono">' + esc(rec.id) + '</span>' +
     '<span class="badge">' + esc(rec.kind) + ' · ' + esc(rec.status) + '</span><span class="badge">' + esc(rec.delivery || '—') + '</span>' +
     (isOneWay(rec) ? '<span class="badge warn">в одну сторону</span>' : '') +
     '<span class="badge dest" title="куда уйдёт — по правилам render-design">→ ' + esc(d.label) + (d.note ? ' · ' + esc(d.note) : '') + '</span></div>' +
-    '<div class="q">' + esc(rec.question) + '</div>';
-  if (picked) html += '<div class="opt chosen"><span class="letter">' + picked.letter + '.</span><div>' + esc(picked.text) + (isAdded(picked) ? '<span class="tag added">добавлен человеком</span>' : '') + '</div></div>';
-  if (rec.decision && rec.decision.word) html += '<div class="note info"><b>слово (' + esc(rec.decision.date || 'без даты') + '):</b> «' + esc(rec.decision.word) + '»</div>';
-  if (rec.reversibility) html += '<div class="meta">обратимость: ' + esc(rec.reversibility.level) + (rec.reversibility.why ? ' — ' + esc(rec.reversibility.why) : '') + '</div>';
-  if (rec.outcome) html += '<div class="meta">исход: ' + esc(rec.outcome.kind) + ' — <b>' + esc(rec.outcome.value) + '</b>' + (rec.outcome.reason ? ' — ' + esc(rec.outcome.reason) : '') + '</div>';
+    '<div class="q">' + md(rec.question) + '</div>';
+  if (picked) html += '<div class="opt chosen"><span class="letter">' + esc(picked.letter) + '.</span><div>' + md(picked.text) + (isAdded(picked) ? '<span class="tag added">добавлен человеком</span>' : '') + deviationTag(picked) + '</div></div>';
+  if (rec.decision && rec.decision.word) html += '<div class="note info"><b>слово (' + esc(rec.decision.date || 'без даты') + '):</b> «' + md(rec.decision.word) + '»</div>';
+  if (rec.reversibility) html += '<div class="meta">обратимость: ' + esc(rec.reversibility.level) + (rec.reversibility.why ? ' — ' + md(rec.reversibility.why) : '') + '</div>';
+  if (rec.outcome) html += '<div class="meta">исход: ' + esc(rec.outcome.kind) + ' — <b>' + esc(rec.outcome.value) + '</b>' + (rec.outcome.reason ? ' — ' + md(rec.outcome.reason) : '') + '</div>';
   if (!picked && !isFact) {
-    html += (rec.options || []).map(o => '<div class="opt"><span class="letter">' + o.letter + '.</span><div>' + esc(o.text) +
-      (o.unlikely ? '<span class="tag unlikely">маловероятно: ' + esc(o.unlikely) + '</span>' : '') + (isAdded(o) ? '<span class="tag added">добавлен человеком</span>' : '') + '</div></div>').join('');
-    if (rec.recommendation) html += '<div class="rec">рекомендация: <b>' + esc(rec.recommendation.option || '') + '</b> — ' + esc(rec.recommendation.why || rec.recommendation.text || '') + '</div>';
+    html += (rec.options || []).map(o => '<div class="opt"><span class="letter">' + esc(o.letter) + '.</span><div>' + md(o.text) +
+      (o.unlikely ? '<span class="tag unlikely">маловероятно: ' + md(o.unlikely) + '</span>' : '') + (isAdded(o) ? '<span class="tag added">добавлен человеком</span>' : '') + deviationTag(o) + '</div></div>').join('');
+    if (rec.recommendation) html += '<div class="rec">рекомендация: <b>' + esc(rec.recommendation.option || '') + '</b> — ' + md(rec.recommendation.why || rec.recommendation.text || '') + '</div>';
   } else if (picked) {
     const added = (rec.options || []).filter(o => isAdded(o) && o.letter !== picked.letter);
     if (added.length) html += '<div class="meta">добавлены человеком: ' + esc(added.map(o => o.letter + '. ' + o.text).join('; ')) + '</div>';
   }
   if (isFact) {
     html += (rec.evidence || []).map(evHtml).join('');
-    html += (rec.dispute || '').trim() ? '<div class="note park"><b>спор:</b> ' + esc(rec.dispute) + '</div>' : '<div class="meta">спора нет</div>';
+    html += (rec.dispute || '').trim() ? '<div class="note park"><b>спор:</b> ' + md(rec.dispute) + '</div>' : '<div class="meta">спора нет</div>';
   }
-  if (rec.consequences) html += '<div class="cons">следствия: ' + esc(rec.consequences) + '</div>';
+  if (rec.consequences) html += '<div class="cons">следствия: ' + md(rec.consequences) + '</div>';
   return html + '</div>';
 }
 
@@ -6959,10 +7017,10 @@ function renderCheck() {
     '<span class="badge">sha256 журнала: ' + shaChip(JOURNAL.sha256, 'не подан — рендер не из файла') + '</span>' +
     (snapshot ? '<span class="badge ' + (snapshot.frontmatter.status === 'passed' ? 'ok' : 'park') + '">атака: ' + esc(snapshot.frontmatter.status || '—') + '</span>' + verdictNote(snapshot)
               : '<span class="badge">атака не подана</span>') +
-    '</div><div class="q">' + esc(JOURNAL.title || '') + '</div>' +
+    '</div><div class="q">' + md(JOURNAL.title || '') + '</div>' +
     '<div class="meta">только чтение: режим ничего не пишет и вердиктом не считается — снимок решений перед proposal и spec.md; «→» у записи — куда она уйдёт по правилам render-design</div></div>';
   html += '<div class="counters">решено <b>' + decidedAll.length + '</b> · открыто <b>' + open.length + '</b> · припарковано: ' +
-    ADDRESSEES.map(a => a + ' <b>' + parkings.filter(p => p.addressee === a).length + '</b>').join(' / ') +
+    ADDRESSEES.map(a => esc(a) + ' <b>' + parkings.filter(p => p.addressee === a).length + '</b>').join(' / ') +
     ' · фактов оспорено <b>' + facts.filter(r => (r.dispute || '').trim()).length + '</b>' +
     ' · улик не найдено <b>' + recs.flatMap(allEvidence).filter(ev => ev.found === false).length + '</b></div>';
   const dates = [...new Set(decided.map(r => r.decision.date || ''))].sort((a, b) => a < b ? 1 : a > b ? -1 : 0);
@@ -6976,54 +7034,129 @@ function renderCheck() {
   html += '<h2>Парковки — по адресатам · ' + parkings.length + '</h2>' + (parkings.length ? '' : '<div class="meta">—</div>');
   for (const a of ADDRESSEES) {
     const ps = parkings.filter(p => p.addressee === a); if (!ps.length) continue;
-    html += '<h3>→ ' + a + ' · ' + ps.length + ' <span class="badge dest">' + esc(parkingDestination(a)) + '</span></h3>' +
-      ps.map(p => '<div class="parkitem"><span class="who mono">' + p.rec + '</span><span>' + esc(p.text) + (p.finding ? ' — <b>находка:</b> ' + esc(p.finding) : '') + '</span></div>').join('');
+    html += '<h3>→ ' + esc(a) + ' · ' + ps.length + ' <span class="badge dest">' + esc(parkingDestination(a)) + '</span></h3>' +
+      ps.map(p => '<div class="parkitem"><span class="who mono">' + esc(p.rec) + '</span><span>' + md(p.text) + (p.finding ? ' — <b>находка:</b> ' + md(p.finding) : '') + '</span></div>').join('');
   }
   const notes = JOURNAL.notes || [];
-  html += '<h2>Заметки · ' + notes.length + '</h2>' + (notes.length ? '<ul>' + notes.map(n => '<li><span class="mono">' + esc(n.date) + '</span> — ' + esc(n.text) + '</li>').join('') + '</ul>' : '<div class="meta">—</div>');
+  html += '<h2>Заметки · ' + notes.length + '</h2>' + (notes.length ? '<ul>' + notes.map(n => '<li><span class="mono">' + esc(n.date) + '</span> — ' + md(n.text) + '</li>').join('') + '</ul>' : '<div class="meta">—</div>');
   document.getElementById('viewCheck').innerHTML = html;
 }
 
-/* ---------- режим 3 — атака: строки attack/*.md, линза → тяжесть → строки ---------- */
-function lensLabel(slug) { const l = LENSES.find(x => x.slug === slug); return l ? l.label : ''; }
-function sevClass(s) { return s === 'блокер' ? 'bad' : s === 'предупреждение' ? 'warn' : s === 'справка' ? '' : 'park'; }
-/* раздел вида `F-NN, поле` с записью в журнале — переход к карточке в режиме 1, не слияние сущностей */
+/* ---------- режим 3 — атака: строки attack/*.md, фильтр по линзе, линза → тяжесть → строки ---------- */
+/* какой закрытый список линз у файла: журнал — единственная цель `decisions.json`, иначе артефакты */
+function attackKind(att) { const t = (att.frontmatter || {}).targets || []; return t.length === 1 && t[0].path === 'decisions.json' ? 'journal' : 'artifacts'; }
+function lensList(att) { return ATTACK_LENSES[attackKind(att)]; }
+function lensLabel(att, slug) { const l = lensList(att).find(x => x.slug === slug); return l ? l.label : ''; }
+/* тяжесть — первое слово ячейки; причина понижения — текст в скобках после него */
+function sevBase(s) { const m = /^(блокер|предупреждение|справка)(?![а-яёa-z])/i.exec(String(s || '').trim()); return m ? m[1].toLowerCase() : String(s || '').trim(); }
+function sevReason(s) { const m = /\(([^)]+)\)/.exec(String(s || '')); return m ? m[1].trim() : ''; }
+function sevClass(s) { const b = sevBase(s); return b === 'блокер' ? 'bad' : b === 'предупреждение' ? 'warn' : b === 'справка' ? '' : 'park'; }
+/* при опоре «нет» тяжесть источника — блокер; ниже блокера без причины в скобках — понижение без причины, с причиной — понижение с видимой причиной (F-54.E) */
+function demotion(r) {
+  const noSupport = /^нет(?![а-яёa-z0-9])/i.test(String(r.support || '').trim());
+  if (!noSupport || sevBase(r.severity) === 'блокер') return null;
+  return { reason: sevReason(r.severity) };
+}
+function demotionBadge(r) {
+  const d = demotion(r);
+  if (!d) return '';
+  return d.reason ? '<span class="badge warn">понижено: ' + esc(d.reason) + '</span>' : '<span class="badge bad">понижение без причины</span>';
+}
+/* раздел вида `F-NN, поле` с записью в журнале — переход к карточке в режиме 1, не слияние сущностей; якорь строится только из `F-NN` */
+function recordIdOf(section) { const m = /^(F-\d+)(?!\d)/.exec(String(section || '').trim()); return m && byId[m[1]] ? m[1] : null; }
 function sectionHtml(section) {
-  const m = /^(F-\d+)/.exec(String(section || ''));
-  if (m && byId[m[1]]) return '<a href="#' + m[1] + '" data-goto="' + m[1] + '" title="к записи ' + m[1] + ' в режиме «решения»">' + esc(section) + '</a>';
+  const id = recordIdOf(section);
+  if (id) return '<a href="#' + id + '" data-goto="' + id + '" title="к записи ' + id + ' в режиме «решения»">' + esc(section) + '</a>';
   return esc(section);
 }
-function attackRow(att, r) {
-  const key = disputeKey(att, r), known = LENSES.some(l => l.slug === r.lens);
-  return '<div class="card"><div class="head"><span class="badge ' + sevClass(r.severity) + '">' + esc(r.severity) + '</span><span class="badge">' + sectionHtml(r.section) + '</span>' +
+/* скрываемый блок с текстом записи, на которую ссылается раздел строки: вопрос, выбранный вариант, переход к карточке (F-18.A) */
+function recordBlock(section) {
+  const id = recordIdOf(section);
+  if (!id) return '';
+  const rec = byId[id], picked = rec.decision && rec.decision.option ? (rec.options || []).find(o => o.letter === rec.decision.option) : null;
+  return '<details class="recblock"><summary>запись ' + id + ' — текст вопроса</summary><div class="q">' + md(rec.question) + '</div>' +
+    (picked ? '<div class="opt chosen"><span class="letter">' + esc(picked.letter) + '.</span><div>' + md(picked.text) + deviationTag(picked) + '</div></div>'
+            : '<div class="meta">решения нет — запись открыта</div>') +
+    '<div class="meta"><a href="#' + id + '" data-goto="' + id + '">к карточке ' + id + ' в режиме «решения»</a></div></details>';
+}
+function attackRow(att, ai, ri, r, conflict, undecided) {
+  const key = disputeKey(att, r), known = lensList(att).some(l => l.slug === r.lens);
+  return '<div class="card attackrow' + (conflict ? ' conflict' : '') + '" data-card="' + ai + '|' + ri + '"><div class="head"><span class="badge ' + sevClass(r.severity) + '">' + esc(r.severity) + '</span>' + demotionBadge(r) +
+    '<span class="badge">' + sectionHtml(r.section) + '</span>' +
     (known ? '' : '<span class="badge bad">линза «' + esc(r.lens) + '» вне списка — строка невалидна</span>') + '</div>' +
-    '<div class="q">' + esc(r.claim) + '</div>' +
-    '<div class="meta">инвариант: ' + esc(r.invariant) + '</div><div class="meta">опора: ' + esc(r.support) + '</div><div class="meta">чем закрыть: ' + esc(r.fix) + '</div>' +
-    '<div class="row"><textarea data-dispute-key="' + esc(key) + '" placeholder="спор: почему опора есть / почему не блокер — уйдёт в промпт возврата">' + esc(attackState.disputes[key] || '') + '</textarea></div></div>';
+    '<div class="q">' + md(r.claim) + '</div>' +
+    '<div class="meta">инвариант: ' + md(r.invariant) + '</div><div class="meta">опора: ' + md(r.support) + '</div><div class="meta">чем закрыть: ' + md(r.fix) + '</div>' +
+    recordBlock(r.section) +
+    '<div class="note warn undecided-note' + (undecided ? '' : ' hidden') + '">запись не решена — ответ уйдёт в замечания; выбери вариант в карточке</div>' +
+    '<div class="note bad conflict-note' + (conflict ? '' : ' hidden') + '">конфликт ответов к одному решению — оставь один, иначе слово к решению не уйдёт в промпт</div>' +
+    '<div class="row"><textarea data-att="' + ai + '" data-row="' + ri + '" placeholder="спор: почему опора есть / почему не блокер — уйдёт в промпт возврата; при закрытии «вопрос человеку» и разделе F-NN, decision — слово к решению">' + esc(attackState.disputes[key] || '') + '</textarea></div></div>';
+}
+function currentFlags() { return buildPrompt(JOURNAL, ATTACK, state, attackState.disputes, ''); }
+/* страница подсвечивает конфликт ответов у строк, не пересобирая список: поле спора не теряет фокус */
+function markConflicts() {
+  if (mode !== 'attack') return;
+  const flags = currentFlags(), bad = new Set(flags.conflictKeys), und = new Set(flags.undecidedKeys);
+  document.querySelectorAll('#viewAttack .attackrow').forEach(c => {
+    const [ai, ri] = String(c.dataset.card).split('|').map(Number), att = ATTACK[ai], r = att && att.rows[ri];
+    const on = !!r && bad.has(disputeKey(att, r));
+    c.classList.toggle('conflict', on);
+    const n = c.querySelector('.conflict-note'); if (n) n.classList.toggle('hidden', !on);
+    const u = c.querySelector('.undecided-note'); if (u) u.classList.toggle('hidden', !(r && und.has(disputeKey(att, r))));
+  });
 }
 function renderAttack() {
   const el = document.getElementById('viewAttack');
   if (!ATTACK.length) { el.innerHTML = '<div class="card"><div class="q">атака не подана: <code>render-html --attack &lt;attack/decisions.md&gt; [--attack &lt;attack/artifacts.md&gt;]</code></div></div>'; return; }
-  const slugs = LENSES.map(l => l.slug);
-  let html = '<div class="note info">' + esc(ATTACK_HINT) + '</div>';
-  for (const att of ATTACK) {
-    const fm = att.frontmatter || {}, rows = att.rows || [];
-    const outside = rows.filter(r => !slugs.includes(r.lens));
-    html += '<div class="card"><div class="head"><span class="id mono">' + esc(att.path) + '</span><span class="badge ' + (fm.status === 'passed' ? 'ok' : 'park') + '">status: ' + esc(fm.status || '—') + '</span>' + verdictNote(att) + '</div>' +
+  const flags = currentFlags(), bad = new Set(flags.conflictKeys), und = new Set(flags.undecidedKeys);
+  /* группы по файлам: линзы списка файла в его порядке, затем «вне списка» */
+  const files = ATTACK.map((att, ai) => {
+    const rows = att.rows || [], list = lensList(att), slugs = list.map(l => l.slug);
+    const indexed = rows.map((r, ri) => ({ r, ri }));
+    const groups = list.map(l => ({ slug:l.slug, rows:indexed.filter(x => x.r.lens === l.slug) })).filter(g => g.rows.length);
+    const outside = indexed.filter(x => !slugs.includes(x.r.lens));
+    if (outside.length) groups.push({ slug:OUTSIDE, rows:outside });
+    return { att, ai, rows, groups, outside };
+  });
+  const available = [], count = {};
+  for (const f of files) for (const g of f.groups) { if (!available.includes(g.slug)) available.push(g.slug); count[g.slug] = (count[g.slug] || 0) + g.rows.length; }
+  if (attackLens !== 'all' && !available.includes(attackLens)) attackLens = 'all';
+  const total = files.reduce((n, f) => n + f.rows.length, 0);
+  let html = '<div class="note info">' + esc(ATTACK_HINT) + '</div>' +
+    '<div class="row lensfilter" id="lensFilter"><b style="flex:0 0 auto">линза:</b>' +
+    '<button class="small' + (attackLens === 'all' ? ' active' : '') + '" data-lens="all">все · ' + total + '</button>' +
+    available.map(slug => '<button class="small' + (attackLens === slug ? ' active' : '') + '" data-lens="' + esc(slug) + '">' +
+      (slug === OUTSIDE ? 'вне списка' : esc(slug)) + ' · ' + count[slug] + '</button>').join('') + '</div>';
+  for (const f of files) {
+    const { att, ai, rows, groups, outside } = f, fm = att.frontmatter || {};
+    const sev = SEVERITY.map(s => rows.filter(r => sevBase(r.severity) === s).length);
+    const otherSev = rows.filter(r => !SEVERITY.includes(sevBase(r.severity))).length;
+    /* счётчики тяжести — по всему файлу, в шапке файла, вне контейнера строк: фильтр их не трогает (F-56.E) */
+    html += '<div class="card"><div class="head"><span class="id mono">' + esc(att.path) + '</span><span class="badge ' + (fm.status === 'passed' ? 'ok' : 'park') + '">status: ' + esc(fm.status || '—') + '</span>' + verdictNote(att) +
+      '<span class="badge">' + (attackKind(att) === 'journal' ? 'линзы журнала' : 'линзы артефактов') + '</span></div>' +
       '<div class="meta">цели: ' + (fm.targets || []).map(t => '<span class="chip">' + esc(t.path) + ' ' + shaChip(t.sha256, 'без хеша') + '</span>').join('') + '</div>' +
-      '<div class="counters">по тяжести: ' + SEVERITY.map(s => s + ' <b>' + rows.filter(r => r.severity === s).length + '</b>').join(' · ') + '</div>' +
-      '<div class="counters">по линзе: ' + slugs.map(s => [s, rows.filter(r => r.lens === s).length]).filter(x => x[1]).map(x => '<code>' + x[0] + '</code> <b>' + x[1] + '</b>').join(' · ') +
-      (outside.length ? ' · вне списка <b>' + outside.length + '</b>' : '') + '</div></div>';
-    const groups = slugs.map(s => [s, rows.filter(r => r.lens === s)]).filter(g => g[1].length);
-    if (outside.length) groups.push([null, outside]);
-    for (const [slug, rs] of groups) {
-      html += '<h2>' + (slug ? '<code>' + slug + '</code> · ' + esc(lensLabel(slug)) : 'вне списка — слуг не из закрытого списка линз') + ' · ' + rs.length + '</h2>';
-      const sevs = SEVERITY.concat([...new Set(rs.map(r => r.severity))].filter(s => !SEVERITY.includes(s)));
-      for (const sev of sevs) { const part = rs.filter(r => r.severity === sev); if (part.length) html += '<h3>' + esc(sev) + ' · ' + part.length + '</h3>' + part.map(r => attackRow(att, r)).join(''); }
+      '<div class="counters sevcounters">по тяжести, весь файл: блокеров <b>' + sev[0] + '</b> · предупреждений <b>' + sev[1] + '</b> · справок <b>' + sev[2] + '</b>' +
+      (otherSev ? ' · прочих <b>' + otherSev + '</b>' : '') + '</div>' +
+      '<div class="counters">по линзе: ' + groups.filter(g => g.slug !== OUTSIDE).map(g => '<code>' + esc(g.slug) + '</code> <b>' + g.rows.length + '</b>').join(' · ') +
+      (outside.length ? ' · строк вне списка (невалидны, в счётчике линз их нет): <b>' + outside.length + '</b>' : '') + '</div></div>';
+    html += '<div class="attack-rows">';
+    const shown = groups.filter(g => attackLens === 'all' || g.slug === attackLens);
+    if (!shown.length) html += '<div class="meta">по фильтру в этом файле строк нет</div>';
+    for (const g of shown) {
+      html += '<h2>' + (g.slug === OUTSIDE ? 'вне списка — слуг не из закрытого списка линз файла' : '<code>' + esc(g.slug) + '</code> · ' + esc(lensLabel(att, g.slug))) + ' · ' + g.rows.length + '</h2>';
+      const sevs = SEVERITY.concat([...new Set(g.rows.map(x => sevBase(x.r.severity)))].filter(s => !SEVERITY.includes(s)));
+      for (const sv of sevs) {
+        const part = g.rows.filter(x => sevBase(x.r.severity) === sv);
+        if (part.length) html += '<h3>' + esc(sv) + ' · ' + part.length + '</h3>' + part.map(x => attackRow(att, ai, x.ri, x.r, bad.has(disputeKey(att, x.r)), und.has(disputeKey(att, x.r)))).join('');
+      }
     }
+    html += '</div><!' + '--/attack-rows-->';
   }
   el.innerHTML = html;
-  el.querySelectorAll('textarea[data-dispute-key]').forEach(t => t.oninput = () => { const k = t.dataset.disputeKey; if (t.value.trim()) attackState.disputes[k] = t.value; else delete attackState.disputes[k]; saveAttack(); updateOut(); });
+  el.querySelectorAll('button[data-lens]').forEach(b => b.onclick = () => { attackLens = b.dataset.lens; try { localStorage.setItem(KEY + ':lens', attackLens); } catch (e) {} renderAttack(); });
+  el.querySelectorAll('textarea[data-att]').forEach(t => t.oninput = () => {
+    const att = ATTACK[+t.dataset.att], r = att.rows[+t.dataset.row], k = disputeKey(att, r);
+    if (t.value.trim()) attackState.disputes[k] = t.value; else delete attackState.disputes[k]; saveAttack(); updateOut();
+  });
   el.querySelectorAll('a[data-goto]').forEach(a => a.onclick = e => { e.preventDefault(); setMode('decisions'); const c = document.getElementById(a.dataset.goto); if (c && c.scrollIntoView) c.scrollIntoView(); });
 }
 
