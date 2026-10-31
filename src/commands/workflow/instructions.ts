@@ -13,9 +13,12 @@ import {
   generateInstructions,
   resolveSchema,
   resolveArtifactOutputs,
+  satisfiedArtifacts,
   type ArtifactInstructions,
+  type DependencyInfo,
 } from '../../core/artifact-graph/index.js';
 import { isSpecsArtifactPath } from '../../core/artifact-graph/outputs.js';
+import { isNotInvokedOptional } from '../../core/change-status-policy.js';
 import { findUnreadDeltaFiles } from '../../utils/spec-discovery.js';
 import {
   getChangeDir,
@@ -173,7 +176,7 @@ export async function instructionsCommand(
       projectConfig,
       references,
     });
-    const isBlocked = instructions.dependencies.some((d) => !d.done);
+    const isBlocked = instructions.dependencies.some(isUnmetDependency);
 
     spinner?.stop();
 
@@ -187,6 +190,14 @@ export async function instructionsCommand(
     spinner?.stop();
     throw error;
   }
+}
+
+/**
+ * A dependency the artifact still waits for. Fork (symphysis, C7): an optional
+ * dependency nobody invoked is satisfied without being done.
+ */
+function isUnmetDependency(dependency: DependencyInfo): boolean {
+  return !dependency.done && !isNotInvokedOptional(dependency);
 }
 
 export function printInstructionsText(instructions: ArtifactInstructions, isBlocked: boolean): void {
@@ -238,7 +249,7 @@ export function printInstructionsText(instructions: ArtifactInstructions, isBloc
 
   // Warning for blocked artifacts
   if (isBlocked) {
-    const missing = dependencies.filter((d) => !d.done).map((d) => d.id);
+    const missing = dependencies.filter(isUnmetDependency).map((d) => d.id);
     console.log('<warning>');
     console.log('This artifact has unmet dependencies. Complete them first or proceed with caution.');
     console.log(`Missing: ${missing.join(', ')}`);
@@ -295,6 +306,14 @@ export function printInstructionsText(instructions: ArtifactInstructions, isBloc
       if (dep.skipped) {
         console.log(`<dependency id="${dep.id}" status="skipped">`);
         console.log(`  <description>Skipped: the change declares skip_specs, so this artifact has no files to read.</description>`);
+        console.log('</dependency>');
+        continue;
+      }
+      // Fork (symphysis, C7): an optional dependency nobody invoked has no
+      // file either; it is satisfied, not missing.
+      if (isNotInvokedOptional(dep)) {
+        console.log(`<dependency id="${dep.id}" status="not-invoked">`);
+        console.log(`  <description>Optional and not invoked: this artifact has no file to read.</description>`);
         console.log('</dependency>');
         continue;
       }
@@ -572,13 +591,17 @@ export async function generateApplyInstructions(
   // Check which required artifacts are missing. Artifacts the change skips
   // via skip_specs count as present - their files must not exist, and
   // status already reports them complete, so apply cannot block on them.
+  // Fork (symphysis, C7): a required artifact is present the way a `requires`
+  // edge counts it - completed (a verdict artifact only with a passing, fresh
+  // verdict) or optional without a file - not merely by its file existing.
+  const satisfied = satisfiedArtifacts(context);
   const missingArtifacts: string[] = [];
   for (const artifactId of requiredArtifactIds) {
     if (context.skippedArtifacts?.has(artifactId)) {
       continue;
     }
     const artifact = schema.artifacts.find((a) => a.id === artifactId);
-    if (artifact && resolveArtifactOutputs(changeDir, artifact.generates).length === 0) {
+    if (artifact && !satisfied.has(artifactId)) {
       missingArtifacts.push(artifactId);
     }
   }
@@ -588,7 +611,7 @@ export async function generateApplyInstructions(
     requiredArtifactIds: [...requiredArtifactIds],
     schema,
     buildOrder: context.graph.getBuildOrder(),
-    completed: context.completed,
+    completed: satisfied,
   });
 
   // Build context files from all existing artifacts in schema

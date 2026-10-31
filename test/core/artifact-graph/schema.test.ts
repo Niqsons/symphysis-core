@@ -310,6 +310,78 @@ artifacts:
     });
   });
 
+  // Fork (symphysis, C7): the `optional` artifact flag.
+  describe('optional', () => {
+    it('схема с optional: true валидна', () => {
+      const yaml = `
+name: test
+version: 1
+artifacts:
+  - id: attack
+    generates: attack.md
+    description: Attack review
+    template: templates/attack.md
+    optional: true
+    verdict:
+      frontmatter: status
+      value: passed
+  - id: after
+    generates: after.md
+    description: After
+    template: templates/after.md
+    requires: [attack]
+`;
+      const schema = parseSchema(yaml);
+      expect(schema.artifacts[0].optional).toBe(true);
+      expect(schema.artifacts[0].verdict).toEqual({ frontmatter: 'status', value: 'passed' });
+      expect(schema.artifacts[1].requires).toEqual(['attack']);
+    });
+
+    it('без признака — поведение прежнее', () => {
+      const yaml = `
+name: test
+version: 1
+artifacts:
+  - id: attack
+    generates: attack.md
+    description: Attack review
+    template: templates/attack.md
+`;
+      const schema = parseSchema(yaml);
+      expect(schema.artifacts[0].optional).toBeUndefined();
+      expect(schema.artifacts[0].requires).toEqual([]);
+    });
+
+    it('optional: false валидна', () => {
+      const yaml = `
+name: test
+version: 1
+artifacts:
+  - id: attack
+    generates: attack.md
+    description: Attack review
+    template: templates/attack.md
+    optional: false
+`;
+      expect(parseSchema(yaml).artifacts[0].optional).toBe(false);
+    });
+
+    it('optional не булевым значением отвергается', () => {
+      const yaml = `
+name: test
+version: 1
+artifacts:
+  - id: attack
+    generates: attack.md
+    description: Attack review
+    template: templates/attack.md
+    optional: "yes"
+`;
+      expect(() => parseSchema(yaml)).toThrow(SchemaValidationError);
+      expect(() => parseSchema(yaml)).toThrow(/optional/);
+    });
+  });
+
   describe('resource bounds', () => {
     it('rejects a schema with more artifacts than the cycle check can walk', () => {
       // A long `requires` chain drove the recursive cycle-detection DFS past the

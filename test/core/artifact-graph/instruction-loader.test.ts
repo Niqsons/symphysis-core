@@ -1,4 +1,5 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
+import { createHash } from 'node:crypto';
 import * as fs from 'node:fs';
 import * as path from 'node:path';
 import * as os from 'node:os';
@@ -1017,6 +1018,232 @@ rules:
         expect(status.nextSteps).toEqual([
           'Run openspec instructions brief --change "my-change" --json before writing that artifact.',
         ]);
+      });
+    });
+
+    // Fork (symphysis, C7): optional artifacts and the stale verdict in the
+    // change status.
+    describe('optional artifacts', () => {
+      const OPTIONAL_SCHEMA = [
+        'name: optional-flow',
+        'version: 1',
+        'description: schema with optional verdict artifacts',
+        'artifacts:',
+        '  - id: brief',
+        '    generates: brief.md',
+        '    description: Brief',
+        '    template: brief.md',
+        '    requires: []',
+        '  - id: attack',
+        '    generates: attack.md',
+        '    description: Optional attack on the brief',
+        '    template: attack.md',
+        '    requires: [brief]',
+        '    optional: true',
+        '    verdict:',
+        '      frontmatter: status',
+        '      value: passed',
+        '  - id: proposal',
+        '    generates: proposal.md',
+        '    description: Proposal',
+        '    template: proposal.md',
+        '    requires: [brief, attack]',
+        '  - id: review',
+        '    generates: review.md',
+        '    description: Optional review of the proposal',
+        '    template: review.md',
+        '    requires: [proposal]',
+        '    optional: true',
+        '    verdict:',
+        '      frontmatter: status',
+        '      value: passed',
+        'apply:',
+        '  requires: [proposal, review]',
+        '',
+      ].join('\n');
+
+      const PROPOSAL_STEP =
+        'Run openspec instructions proposal --change "my-change" --json before writing that artifact.';
+      const REVIEW_STEP =
+        'Run openspec instructions review --change "my-change" --json before writing that artifact.';
+      const APPLY_STEP =
+        'All planning artifacts are complete. Run openspec instructions apply --change "my-change" --json to inspect implementation progress.';
+
+      const changeDir = () => path.join(tempDir, 'openspec', 'changes', 'my-change');
+      const sha = (content: string): string => createHash('sha256').update(content).digest('hex');
+
+      function writeChangeFile(file: string, content: string): void {
+        fs.mkdirSync(changeDir(), { recursive: true });
+        fs.writeFileSync(path.join(changeDir(), file), content);
+      }
+
+      function statusOf() {
+        return formatChangeStatus(loadChangeContext(tempDir, 'my-change', 'optional-flow'));
+      }
+
+      function artifactOf(status: ReturnType<typeof statusOf>, id: string) {
+        const found = status.artifacts.find((a) => a.id === id);
+        if (!found) throw new Error(`artifact ${id} missing from status`);
+        return found;
+      }
+
+      beforeEach(() => {
+        const schemaDir = path.join(tempDir, 'openspec', 'schemas', 'optional-flow');
+        fs.mkdirSync(schemaDir, { recursive: true });
+        fs.writeFileSync(path.join(schemaDir, 'schema.yaml'), OPTIONAL_SCHEMA);
+        writeChangeFile('brief.md', '# Brief\n');
+      });
+
+      it('Необязательный артефакт без файла: optional без вердикта, зависимые ready, следующим шагом не предлагается', () => {
+        const status = statusOf();
+        const attack = artifactOf(status, 'attack');
+
+        expect(attack.status).toBe('ready');
+        expect(attack.optional).toBe(true);
+        expect(attack.fileExists).toBe(false);
+        expect('verdict' in attack).toBe(false);
+        expect(artifactOf(status, 'proposal').status).toBe('ready');
+        expect(status.nextSteps).toEqual([PROPOSAL_STEP]);
+        expect(status.isPlanningComplete).toBe(false);
+      });
+
+      it('Необязательный артефакт без файла: у обязательных артефактов полей optional и fileExists нет', () => {
+        const status = statusOf();
+
+        for (const id of ['brief', 'proposal']) {
+          expect('optional' in artifactOf(status, id)).toBe(false);
+          expect('fileExists' in artifactOf(status, id)).toBe(false);
+        }
+      });
+
+      it('Необязательный артефакт с файлом: вердикт не passed блокирует зависимые', () => {
+        writeChangeFile('attack.md', '---\nstatus: gaps_found\n---\n# Attack\n');
+
+        const status = statusOf();
+        const attack = artifactOf(status, 'attack');
+
+        expect(attack.status).toBe('ready');
+        expect(attack.optional).toBe(true);
+        expect(attack.fileExists).toBe(true);
+        expect(attack.verdict).toBe('mismatch');
+        expect(artifactOf(status, 'proposal').status).toBe('blocked');
+        expect(artifactOf(status, 'proposal').missingDeps).toEqual(['attack']);
+        expect(status.nextSteps[0]).toBe(
+          'Artifact "attack" has verdict status=gaps_found but passed is required — run its instruction again'
+        );
+      });
+
+      it('Необязательный артефакт с файлом: вердикт passed — done/ok, зависимые ready', () => {
+        writeChangeFile('attack.md', '---\nstatus: passed\n---\n# Attack\n');
+
+        const status = statusOf();
+
+        expect(artifactOf(status, 'attack').status).toBe('done');
+        expect(artifactOf(status, 'attack').verdict).toBe('ok');
+        expect(artifactOf(status, 'attack').fileExists).toBe(true);
+        expect(artifactOf(status, 'proposal').status).toBe('ready');
+      });
+
+      it('Файл вызванной атаки удалён: снова optional без файла, зависимые не blocked', () => {
+        writeChangeFile('attack.md', '---\nstatus: gaps_found\n---\n# Attack\n');
+        expect(artifactOf(statusOf(), 'proposal').status).toBe('blocked');
+
+        fs.rmSync(path.join(changeDir(), 'attack.md'));
+        const status = statusOf();
+        const attack = artifactOf(status, 'attack');
+
+        expect(attack.optional).toBe(true);
+        expect(attack.fileExists).toBe(false);
+        expect('verdict' in attack).toBe(false);
+        expect(artifactOf(status, 'proposal').status).toBe('ready');
+        expect(status.nextSteps).toEqual([PROPOSAL_STEP]);
+      });
+
+      it('Вердикт с чужим хешем: target_sha256 разошёлся — stale, зависимые blocked, подсказка зовёт заново', () => {
+        writeChangeFile(
+          'attack.md',
+          `---\nstatus: passed\ntarget: brief.md\ntarget_sha256: ${sha('# Brief, as attacked\n')}\n---\n# Attack\n`
+        );
+
+        const status = statusOf();
+
+        expect(artifactOf(status, 'attack').status).toBe('ready');
+        expect(artifactOf(status, 'attack').verdict).toBe('stale');
+        expect(artifactOf(status, 'proposal').status).toBe('blocked');
+        expect(status.nextSteps).toEqual([
+          'Artifact "attack" verdict is stale: brief.md changed since the verdict — run its instruction again',
+          'Run openspec instructions attack --change "my-change" --json before writing that artifact.',
+        ]);
+      });
+
+      it('Вердикт с чужим хешем: targets[].sha256 разошёлся — stale, планирование не завершено', () => {
+        writeChangeFile('proposal.md', '# Proposal, edited after the review\n');
+        writeChangeFile(
+          'review.md',
+          '---\nstatus: passed\ntargets:\n' +
+            `  - path: brief.md\n    sha256: ${sha('# Brief\n')}\n` +
+            `  - path: proposal.md\n    sha256: ${sha('# Proposal\n')}\n` +
+            '---\n# Review\n'
+        );
+
+        const status = statusOf();
+
+        expect(artifactOf(status, 'review').status).toBe('ready');
+        expect(artifactOf(status, 'review').verdict).toBe('stale');
+        expect(status.isPlanningComplete).toBe(false);
+        expect(status.nextSteps).toEqual([
+          'Artifact "review" verdict is stale: proposal.md changed since the verdict — run its instruction again',
+          REVIEW_STEP,
+        ]);
+
+        writeChangeFile('proposal.md', '# Proposal\n');
+        const fresh = statusOf();
+        expect(artifactOf(fresh, 'review').status).toBe('done');
+        expect(artifactOf(fresh, 'review').verdict).toBe('ok');
+        expect(fresh.isPlanningComplete).toBe(true);
+      });
+
+      it('Вердикт с чужим хешем: цель вне каталога изменения — stale с причиной', () => {
+        writeChangeFile(
+          'attack.md',
+          `---\nstatus: passed\ntargets:\n  - path: ../other/brief.md\n    sha256: ${sha('# Brief\n')}\n---\n`
+        );
+
+        const status = statusOf();
+
+        expect(artifactOf(status, 'attack').verdict).toBe('stale');
+        expect(status.nextSteps[0]).toBe(
+          'Artifact "attack" verdict is stale: ../other/brief.md is outside the change directory — run its instruction again'
+        );
+      });
+
+      it('Вердикт с чужим хешем: цель без sha256 — stale с причиной', () => {
+        writeChangeFile('attack.md', '---\nstatus: passed\ntargets:\n  - path: brief.md\n---\n');
+
+        const status = statusOf();
+
+        expect(artifactOf(status, 'attack').verdict).toBe('stale');
+        expect(status.nextSteps[0]).toBe(
+          'Artifact "attack" verdict is stale: targets[0] has no path or sha256 — run its instruction again'
+        );
+      });
+
+      it('Планирование без вызванных атак: isPlanningComplete с явными optional и fileExists', () => {
+        writeChangeFile('proposal.md', '# Proposal\n');
+
+        const status = statusOf();
+        const parsed = JSON.parse(JSON.stringify(status));
+        const byId = (id: string) => parsed.artifacts.find((a: { id: string }) => a.id === id);
+
+        expect(parsed.isPlanningComplete).toBe(true);
+        expect(parsed.isComplete).toBe(true);
+        for (const id of ['attack', 'review']) {
+          expect(byId(id).optional).toBe(true);
+          expect(byId(id).fileExists).toBe(false);
+          expect('verdict' in byId(id)).toBe(false);
+        }
+        expect(parsed.applyRequires).toEqual(['proposal', 'review']);
+        expect(status.nextSteps).toEqual([APPLY_STEP]);
       });
     });
   });

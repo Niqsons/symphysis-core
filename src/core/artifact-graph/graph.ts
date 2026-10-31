@@ -140,8 +140,12 @@ export class ArtifactGraph {
 
   /**
    * Gets artifacts that are ready to be created (all dependencies completed).
+   *
+   * Fork (symphysis, C7): `satisfied` is the set a `requires` edge accepts -
+   * `completed` plus the optional artifacts that have no output. It defaults
+   * to `completed`, which is the upstream behavior.
    */
-  getNextArtifacts(completed: CompletedSet): string[] {
+  getNextArtifacts(completed: CompletedSet, satisfied: CompletedSet = completed): string[] {
     const ready: string[] = [];
 
     for (const artifact of this.artifacts.values()) {
@@ -149,7 +153,7 @@ export class ArtifactGraph {
         continue; // Already completed
       }
 
-      const allDepsCompleted = artifact.requires.every(req => completed.has(req));
+      const allDepsCompleted = artifact.requires.every(req => satisfied.has(req));
       if (allDepsCompleted) {
         ready.push(artifact.id);
       }
@@ -174,8 +178,10 @@ export class ArtifactGraph {
 
   /**
    * Gets blocked artifacts and their unmet dependencies.
+   *
+   * Fork (symphysis, C7): `satisfied` as in `getNextArtifacts`.
    */
-  getBlocked(completed: CompletedSet): BlockedArtifacts {
+  getBlocked(completed: CompletedSet, satisfied: CompletedSet = completed): BlockedArtifacts {
     const blocked: BlockedArtifacts = {};
 
     for (const artifact of this.artifacts.values()) {
@@ -183,7 +189,7 @@ export class ArtifactGraph {
         continue; // Already completed
       }
 
-      const unmetDeps = artifact.requires.filter(req => !completed.has(req));
+      const unmetDeps = artifact.requires.filter(req => !satisfied.has(req));
       if (unmetDeps.length > 0) {
         blocked[artifact.id] = unmetDeps.sort((a, b) => this.compareByDeclarationOrder(a, b));
       }

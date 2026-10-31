@@ -879,6 +879,18 @@ with one of two lines: `Artifact "<id>" exists but has no verdict (<key>: <value
 <key>=<found> but <value> is required — run its instruction again`. Artifacts
 without a declared `verdict` carry no such field.
 
+<!-- Fork (symphysis): optional, stale -->
+**Fork (symphysis): `optional`, `stale`.** An artifact declared `optional: true`
+carries `"optional": true` and `"fileExists"`; without a file it blocks nothing
+(dependents, `isPlanningComplete`, apply), has no `verdict`, is never suggested as
+the next step, and the text output marks it `(optional, not invoked)`, leaves it
+out of `Progress` and names it in the completion line; with a file it gates like
+any other artifact. `"verdict": "stale"` means the value passes but a target hash
+the file declares (`target_sha256`, `targets[].sha256`) no longer matches: the
+artifact stays `ready`, its dependents and apply stay blocked, and `nextSteps`
+opens with `Artifact "<id>" verdict is stale: <path> changed since the verdict —
+run its instruction again`.
+
 ---
 
 ### `openspec instructions`

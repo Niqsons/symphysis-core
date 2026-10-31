@@ -125,4 +125,104 @@ describe('status command with a verdict artifact', () => {
       'Artifact "attack" has verdict status=gaps_found but passed is required — run its instruction again'
     );
   });
+
+  // Fork (symphysis, C7): optional artifacts and the stale verdict in the
+  // status output.
+  describe('optional artifacts', () => {
+    const changeDir = () => path.join(tempDir, 'openspec', 'changes', 'my-change');
+
+    beforeEach(() => {
+      const schemaDir = path.join(tempDir, 'openspec', 'schemas', 'optional-flow');
+      fs.mkdirSync(schemaDir, { recursive: true });
+      fs.writeFileSync(
+        path.join(schemaDir, 'schema.yaml'),
+        [
+          'name: optional-flow',
+          'version: 1',
+          'description: schema with optional verdict artifacts',
+          'artifacts:',
+          '  - id: brief',
+          '    generates: brief.md',
+          '    description: Brief',
+          '    template: brief.md',
+          '    requires: []',
+          '  - id: attack',
+          '    generates: attack.md',
+          '    description: Optional attack on the brief',
+          '    template: attack.md',
+          '    requires: [brief]',
+          '    optional: true',
+          '    verdict:',
+          '      frontmatter: status',
+          '      value: passed',
+          '  - id: proposal',
+          '    generates: proposal.md',
+          '    description: Proposal',
+          '    template: proposal.md',
+          '    requires: [brief, attack]',
+          '  - id: review',
+          '    generates: review.md',
+          '    description: Optional review of the proposal',
+          '    template: review.md',
+          '    requires: [proposal]',
+          '    optional: true',
+          '    verdict:',
+          '      frontmatter: status',
+          '      value: passed',
+          '',
+        ].join('\n')
+      );
+      fs.writeFileSync(path.join(changeDir(), '.openspec.yaml'), 'schema: optional-flow\n');
+      fs.writeFileSync(path.join(changeDir(), 'brief.md'), '# Brief\n');
+    });
+
+    it('Планирование без вызванных атак: --json несёт optional и fileExists, текст называет невызванные', async () => {
+      fs.writeFileSync(path.join(changeDir(), 'proposal.md'), '# Proposal\n');
+
+      await statusCommand({ change: 'my-change', json: true });
+      const status = JSON.parse(lines.join('\n'));
+      const byId = (id: string) => status.artifacts.find((a: { id: string }) => a.id === id);
+      expect(status.isPlanningComplete).toBe(true);
+      for (const id of ['attack', 'review']) {
+        expect(byId(id).optional).toBe(true);
+        expect(byId(id).fileExists).toBe(false);
+        expect('verdict' in byId(id)).toBe(false);
+      }
+
+      lines.length = 0;
+      await statusCommand({ change: 'my-change' });
+      const output = lines.join('\n');
+      expect(output).toContain('[ ] attack (optional, not invoked)');
+      expect(output).toContain('[ ] review (optional, not invoked)');
+      expect(output).toContain('Progress: 2/2 artifacts complete (2 optional, not invoked)');
+      expect(output).toContain(
+        'All planning artifacts complete! (optional, not invoked: attack, review)'
+      );
+      expect(output).toContain('Next: openspec instructions apply --change "my-change" --json');
+    });
+
+    it('Необязательный артефакт с файлом: текст показывает вердикт, а не «not invoked»', async () => {
+      fs.writeFileSync(path.join(changeDir(), 'attack.md'), '---\nstatus: gaps_found\n---\n# Attack\n');
+
+      await statusCommand({ change: 'my-change' });
+      const output = lines.join('\n');
+      expect(output).toContain('[ ] attack (verdict: mismatch)');
+      expect(output).not.toContain('attack (optional, not invoked)');
+      expect(output).toContain('[-] proposal (blocked by: attack)');
+      expect(output).toContain('Progress: 1/3 artifacts complete (1 optional, not invoked)');
+      expect(output).toContain('Next: openspec instructions attack --change "my-change" --json');
+    });
+
+    it('Вердикт с чужим хешем: текст показывает stale', async () => {
+      fs.writeFileSync(
+        path.join(changeDir(), 'attack.md'),
+        `---\nstatus: passed\ntarget: brief.md\ntarget_sha256: ${'0'.repeat(64)}\n---\n# Attack\n`
+      );
+
+      await statusCommand({ change: 'my-change' });
+      const output = lines.join('\n');
+      expect(output).toContain('[ ] attack (verdict: stale)');
+      expect(output).toContain('[-] proposal (blocked by: attack)');
+    });
+  });
 });

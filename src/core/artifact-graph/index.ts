@@ -6,6 +6,7 @@ export {
   type SchemaYaml,
   type CompletedSet,
   type BlockedArtifacts,
+  type VerdictStatus,
 } from './types.js';
 
 // Schema loading and validation
@@ -15,7 +16,13 @@ export { loadSchema, parseSchema, SchemaValidationError } from './schema.js';
 export { ArtifactGraph } from './graph.js';
 
 // State detection
-export { detectCompleted, verdictState } from './state.js';
+export {
+  detectAbsentOptional,
+  detectCompleted,
+  staleVerdictTarget,
+  verdictState,
+  type StaleTarget,
+} from './state.js';
 export {
   artifactOutputExists,
   isGlobPattern,
@@ -41,6 +48,7 @@ export {
   loadChangeContext,
   generateInstructions,
   formatChangeStatus,
+  satisfiedArtifacts,
   TemplateLoadError,
   type ChangeContext,
   type LoadChangeContextOptions,

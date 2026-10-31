@@ -2,7 +2,7 @@ import * as fs from 'node:fs';
 import * as path from 'node:path';
 import { getSchemaDir, resolveSchema, listSchemasWithInfo } from './resolver.js';
 import { ArtifactGraph } from './graph.js';
-import { detectCompleted, verdictState } from './state.js';
+import { detectAbsentOptional, detectCompleted, staleVerdictTarget, verdictState } from './state.js';
 import { readFrontmatter } from './frontmatter.js';
 import {
   isSpecsArtifactPath,
@@ -27,7 +27,7 @@ import { readProjectConfig, validateConfigRules, type ProjectConfig } from '../p
 import type { ReferenceIndexEntry } from '../references.js';
 import type { PlanningHome } from '../planning-home.js';
 import type { ChangeMetadata } from '../change-metadata/index.js';
-import type { Artifact, CompletedSet } from './types.js';
+import type { Artifact, CompletedSet, VerdictStatus } from './types.js';
 
 // Session-level cache for validation warnings (avoid repeating same warnings)
 const shownWarnings = new Set<string>();
@@ -73,6 +73,12 @@ export interface ChangeContext {
    * render them as skipped rather than done.
    */
   skippedArtifacts?: Set<string>;
+  /**
+   * Fork (symphysis, C7): optional artifacts whose output does not exist. They
+   * are not in `completed`, yet satisfy their dependents' `requires` and are
+   * left out of planning completeness (see `satisfiedArtifacts`).
+   */
+  absentOptionalArtifacts?: Set<string>;
 }
 
 export interface LoadChangeContextOptions {
@@ -149,6 +155,12 @@ export interface DependencyInfo {
   description: string;
   /** True when the dependency is satisfied via skip_specs - no files exist to read */
   skipped?: boolean;
+  /** Fork (symphysis, C7): present, and `true`, only when the dependency is an
+   * optional artifact. */
+  optional?: true;
+  /** Fork (symphysis, C7): whether the optional dependency's output exists;
+   * without it the dependency is satisfied and has no files to read. */
+  fileExists?: boolean;
 }
 
 /**
@@ -168,11 +180,20 @@ export interface ArtifactStatus {
   requires: string[];
   /** Missing dependencies (only for blocked) */
   missingDeps?: string[];
-  /** Fork (symphysis, C3): verdict state, only for artifacts whose schema entry
+  /** Fork (symphysis, C7): present, and `true`, only for artifacts whose schema
+   * entry declares `optional: true`. */
+  optional?: true;
+  /** Fork (symphysis, C7): whether the optional artifact's output exists; only
+   * alongside `optional`. Without the file the artifact is not invoked: it
+   * blocks nothing and carries no `verdict`. */
+  fileExists?: boolean;
+  /** Fork (symphysis, C3, C7): verdict state, only for artifacts whose schema entry
    * declares `verdict` and only while they are `done` (always `ok`) or `ready`
-   * (`missing` = no file or no verdict key in it, `mismatch` = another value).
-   * Omitted for `blocked` and `skipped` artifacts. Never `n/a`. */
-  verdict?: 'missing' | 'mismatch' | 'ok';
+   * (`missing` = no file or no verdict key in it, `mismatch` = another value,
+   * `stale` = the value passes but a declared target hash no longer matches).
+   * Omitted for `blocked` and `skipped` artifacts and for an optional artifact
+   * without a file. Never `n/a`. */
+  verdict?: VerdictStatus;
 }
 
 /**
@@ -318,6 +339,9 @@ export function loadChangeContext(
     }
   }
 
+  // Fork (symphysis, C7): optional artifacts nobody has written yet.
+  const absentOptionalArtifacts = detectAbsentOptional(graph, changeDir);
+
   return {
     graph,
     completed,
@@ -329,7 +353,19 @@ export function loadChangeContext(
     ...(metadata ? { metadata } : {}),
     ...(warnings.length > 0 ? { warnings } : {}),
     ...(skippedArtifacts.size > 0 ? { skippedArtifacts } : {}),
+    ...(absentOptionalArtifacts.size > 0 ? { absentOptionalArtifacts } : {}),
   };
+}
+
+/**
+ * Fork (symphysis, C7): the artifacts that satisfy a dependency - the
+ * completed ones (skipped included) and the optional ones without output.
+ * An optional artifact with output satisfies a dependency only once it is
+ * completed, verdict included. The artifact graph, planning completeness and
+ * the apply gate all take dependencies from this one set.
+ */
+export function satisfiedArtifacts(context: ChangeContext): CompletedSet {
+  return new Set([...context.completed, ...(context.absentOptionalArtifacts ?? [])]);
 }
 
 /**
@@ -365,7 +401,13 @@ export function generateInstructions(
   }
 
   const templateContent = loadTemplate(context.schemaName, artifact.template, context.projectRoot);
-  const dependencies = getDependencyInfo(artifact, context.graph, context.completed, context.skippedArtifacts);
+  const dependencies = getDependencyInfo(
+    artifact,
+    context.graph,
+    context.completed,
+    context.skippedArtifacts,
+    context.absentOptionalArtifacts
+  );
   const unlocks = getUnlockedArtifacts(context.graph, artifactId);
 
   // Use projectRoot from context if not explicitly provided
@@ -438,7 +480,8 @@ function getDependencyInfo(
   artifact: Artifact,
   graph: ArtifactGraph,
   completed: CompletedSet,
-  skippedArtifacts?: Set<string>
+  skippedArtifacts?: Set<string>,
+  absentOptionalArtifacts?: Set<string>
 ): DependencyInfo[] {
   return artifact.requires.map(id => {
     const depArtifact = graph.getArtifact(id);
@@ -448,6 +491,10 @@ function getDependencyInfo(
       path: depArtifact?.generates ?? id,
       description: depArtifact?.description ?? '',
       ...(skippedArtifacts?.has(id) ? { skipped: true } : {}),
+      // Fork (symphysis, C7): the same fields an optional artifact carries in status.
+      ...(depArtifact?.optional
+        ? { optional: true as const, fileExists: !absentOptionalArtifacts?.has(id) }
+        : {}),
     };
   });
 }
@@ -478,14 +525,16 @@ function getUnlockedArtifacts(graph: ArtifactGraph, artifactId: string): string[
  * artifacts carry it: a `blocked` one cannot be worked on yet and a `skipped`
  * one is not worked on, so what its file says would not be actionable.
  * `done` is always `ok` (`detectCompleted` admits a verdict artifact only on
- * `ok`); for `ready` it is what the file says.
+ * `ok`); for `ready` it is what the file says. An optional artifact without a
+ * file (C7) has no verdict to report: it was not invoked.
  */
 function verdictField(
   artifact: Artifact,
   status: 'done' | 'ready',
-  changeDir: string
+  changeDir: string,
+  absentOptional: boolean
 ): Pick<ArtifactStatus, 'verdict'> {
-  if (!artifact.verdict) {
+  if (!artifact.verdict || absentOptional) {
     return {};
   }
   if (status === 'done') {
@@ -496,14 +545,33 @@ function verdictField(
 }
 
 /**
- * Fork (symphysis, C3): the next-step line for a ready verdict artifact whose
- * file is there but does not carry the declared verdict. It tells the agent
+ * Fork (symphysis, C7): the `optional` and `fileExists` fields of an artifact
+ * status - only for artifacts whose schema entry declares `optional: true`, so
+ * the status of every other artifact keeps its shape.
+ */
+function optionalFields(
+  artifact: Artifact,
+  absentOptional: boolean
+): Pick<ArtifactStatus, 'optional' | 'fileExists'> {
+  return artifact.optional ? { optional: true, fileExists: !absentOptional } : {};
+}
+
+/** Fork (symphysis, C7): why a stale verdict is stale, as `nextSteps` words it. */
+const STALE_REASONS = {
+  changed: 'changed since the verdict',
+  outside: 'is outside the change directory',
+  malformed: 'has no path or sha256',
+} as const;
+
+/**
+ * Fork (symphysis, C3, C7): the next-step line for a ready verdict artifact
+ * whose file is there but does not carry a passing verdict. It tells the agent
  * why the artifact is still `ready`. Without a file the generic next step
  * already says what to do, so there is no hint.
  */
 function verdictHint(
   artifact: Artifact,
-  state: 'missing' | 'mismatch',
+  state: 'missing' | 'mismatch' | 'stale',
   changeDir: string
 ): string | undefined {
   const verdict = artifact.verdict;
@@ -521,6 +589,14 @@ function verdictHint(
 
   if (state === 'missing') {
     return `Artifact "${artifact.id}" exists but has no verdict (${verdict.frontmatter}: ${verdict.value}) — run its instruction to produce one`;
+  }
+
+  if (state === 'stale') {
+    const target = staleVerdictTarget(artifact, changeDir);
+    if (!target) {
+      return undefined;
+    }
+    return `Artifact "${artifact.id}" verdict is stale: ${target.path} ${STALE_REASONS[target.reason]} — run its instruction again`;
   }
 
   const actual = readFrontmatter(outputPath)?.[verdict.frontmatter];
@@ -545,8 +621,11 @@ export function formatChangeStatus(
   const applyRequires = schema.apply?.requires ?? schema.artifacts.map(a => a.id);
 
   const artifacts = context.graph.getAllArtifacts();
-  const ready = new Set(context.graph.getNextArtifacts(context.completed));
-  const blocked = context.graph.getBlocked(context.completed);
+  // Fork (symphysis, C7): dependencies are met by `satisfied` (completed plus
+  // optional artifacts without output); an artifact is done only when completed.
+  const satisfied = satisfiedArtifacts(context);
+  const ready = new Set(context.graph.getNextArtifacts(context.completed, satisfied));
+  const blocked = context.graph.getBlocked(context.completed, satisfied);
 
   const artifactPaths: Record<string, ArtifactPathSummary> = {};
   const artifactStatuses: ArtifactStatus[] = artifacts.map(artifact => {
@@ -555,6 +634,7 @@ export function formatChangeStatus(
       resolvedOutputPath: resolveArtifactOutputPath(context.changeDir, artifact.generates),
       existingOutputPaths: resolveArtifactOutputs(context.changeDir, artifact.generates),
     };
+    const absentOptional = context.absentOptionalArtifacts?.has(artifact.id) ?? false;
 
     if (context.skippedArtifacts?.has(artifact.id)) {
       return {
@@ -562,6 +642,7 @@ export function formatChangeStatus(
         outputPath: artifact.generates,
         status: 'skipped' as const,
         requires: artifact.requires,
+        ...optionalFields(artifact, absentOptional),
       };
     }
 
@@ -571,7 +652,8 @@ export function formatChangeStatus(
         outputPath: artifact.generates,
         status: 'done' as const,
         requires: artifact.requires,
-        ...verdictField(artifact, 'done', context.changeDir),
+        ...optionalFields(artifact, absentOptional),
+        ...verdictField(artifact, 'done', context.changeDir, absentOptional),
       };
     }
 
@@ -581,7 +663,8 @@ export function formatChangeStatus(
         outputPath: artifact.generates,
         status: 'ready' as const,
         requires: artifact.requires,
-        ...verdictField(artifact, 'ready', context.changeDir),
+        ...optionalFields(artifact, absentOptional),
+        ...verdictField(artifact, 'ready', context.changeDir, absentOptional),
       };
     }
 
@@ -591,6 +674,7 @@ export function formatChangeStatus(
       status: 'blocked' as const,
       requires: artifact.requires,
       missingDeps: blocked[artifact.id] ?? [],
+      ...optionalFields(artifact, absentOptional),
     };
   });
 
@@ -598,17 +682,21 @@ export function formatChangeStatus(
   const buildOrder = context.graph.getBuildOrder();
   const orderMap = new Map(buildOrder.map((id, idx) => [id, idx]));
   artifactStatuses.sort((a, b) => (orderMap.get(a.id) ?? 0) - (orderMap.get(b.id) ?? 0));
-  const isComplete = context.graph.isComplete(context.completed);
+  // Fork (symphysis, C7): every artifact done, except optional ones without
+  // output - those are not part of planning until someone writes them.
+  const isComplete = context.graph.isComplete(satisfied);
   const artifactIds = artifactStatuses.map((artifact) => artifact.id);
 
-  // Fork (symphysis, C3): a hint per ready verdict artifact that has a file
+  // Fork (symphysis, C3, C7): a hint per ready verdict artifact that has a file
   // but no passing verdict; the next-step policy leads with the one that
   // belongs to the artifact it recommends.
   const verdictHints = new Map<string, string>();
   for (const artifactStatus of artifactStatuses) {
     if (
       artifactStatus.status !== 'ready' ||
-      (artifactStatus.verdict !== 'missing' && artifactStatus.verdict !== 'mismatch')
+      (artifactStatus.verdict !== 'missing' &&
+        artifactStatus.verdict !== 'mismatch' &&
+        artifactStatus.verdict !== 'stale')
     ) {
       continue;
     }

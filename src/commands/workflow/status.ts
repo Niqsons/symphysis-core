@@ -20,7 +20,7 @@ import {
   formatChangeStatus,
   type ChangeStatus,
 } from '../../core/artifact-graph/index.js';
-import { resolveNextStep } from '../../core/change-status-policy.js';
+import { isNotInvokedOptional, resolveNextStep } from '../../core/change-status-policy.js';
 import { asStatus } from '../shared-output.js';
 import {
   describeNestedChange,
@@ -251,7 +251,12 @@ export interface PrintStatusTextOptions {
 export function printStatusText(status: ChangeStatus, options: PrintStatusTextOptions = {}): void {
   const doneCount = status.artifacts.filter((a) => a.status === 'done').length;
   const skippedCount = status.artifacts.filter((a) => a.status === 'skipped').length;
-  const total = status.artifacts.length - skippedCount;
+  // Fork (symphysis, C7): optional artifacts without a file are not part of
+  // planning, so they are named, not counted.
+  const notInvoked = status.artifacts
+    .filter((a) => isNotInvokedOptional(a) && a.status !== 'skipped')
+    .map((a) => a.id);
+  const total = status.artifacts.length - skippedCount - notInvoked.length;
 
   console.log(`Change: ${status.changeName}`);
   console.log(`Schema: ${status.schemaName}`);
@@ -263,8 +268,12 @@ export function printStatusText(status: ChangeStatus, options: PrintStatusTextOp
   if (status.changeRoot) {
     console.log(`Change root: ${status.changeRoot}`);
   }
-  const skippedSuffix = skippedCount > 0 ? ` (${skippedCount} skipped)` : '';
-  console.log(`Progress: ${doneCount}/${total} artifacts complete${skippedSuffix}`);
+  const uncounted = [
+    ...(skippedCount > 0 ? [`${skippedCount} skipped`] : []),
+    ...(notInvoked.length > 0 ? [`${notInvoked.length} optional, not invoked`] : []),
+  ];
+  const uncountedSuffix = uncounted.length > 0 ? ` (${uncounted.join('; ')})` : '';
+  console.log(`Progress: ${doneCount}/${total} artifacts complete${uncountedSuffix}`);
   console.log();
 
   for (const artifact of status.artifacts) {
@@ -278,6 +287,11 @@ export function printStatusText(status: ChangeStatus, options: PrintStatusTextOp
 
     if (artifact.status === 'blocked' && artifact.missingDeps && artifact.missingDeps.length > 0) {
       line += color(` (blocked by: ${artifact.missingDeps.join(', ')})`);
+    }
+
+    // Fork (symphysis, C7): an optional artifact nobody has written yet.
+    if (notInvoked.includes(artifact.id)) {
+      line += color(' (optional, not invoked)');
     }
 
     // Fork (symphysis, C3): verdict artifacts show their verdict state.
@@ -304,7 +318,11 @@ export function printStatusText(status: ChangeStatus, options: PrintStatusTextOp
   }
 
   if (status.isPlanningComplete) {
-    console.log(chalk.green('All planning artifacts complete!'));
+    // Fork (symphysis, C7): complete planning names the optional artifacts it
+    // went without, so it does not read as checked by them.
+    const notInvokedSuffix =
+      notInvoked.length > 0 ? ` (optional, not invoked: ${notInvoked.join(', ')})` : '';
+    console.log(chalk.green(`All planning artifacts complete!${notInvokedSuffix}`));
   }
 
   if (nextStep) {

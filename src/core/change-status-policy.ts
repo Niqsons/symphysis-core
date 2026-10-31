@@ -20,6 +20,10 @@ export interface ActionContext {
 export interface ChangeStatusPolicyArtifact {
   id: string;
   status: 'done' | 'skipped' | 'ready' | 'blocked';
+  /** Fork (symphysis, C7): set for artifacts the schema declares optional. */
+  optional?: true;
+  /** Fork (symphysis, C7): whether an optional artifact's output exists. */
+  fileExists?: boolean;
 }
 
 export interface ChangeNextStepsInput {
@@ -122,8 +126,20 @@ export interface ChangeNextStep {
   hint?: string;
 }
 
+/**
+ * Fork (symphysis, C7): an optional artifact without output - not invoked.
+ * It blocks nothing and is invoked by name, so it is never recommended as the
+ * next step; once its file exists it is an ordinary artifact. Takes an
+ * artifact status or a dependency entry, which carry the same two fields.
+ */
+export function isNotInvokedOptional(artifact: { optional?: true; fileExists?: boolean }): boolean {
+  return artifact.optional === true && artifact.fileExists === false;
+}
+
 export function resolveNextStep(input: ChangeNextStepsInput): ChangeNextStep | undefined {
-  const readyArtifact = input.artifactStatuses.find((artifact) => artifact.status === 'ready');
+  const readyArtifact = input.artifactStatuses.find(
+    (artifact) => artifact.status === 'ready' && !isNotInvokedOptional(artifact)
+  );
   const storeFlag = input.storeId ? ` --store ${input.storeId}` : '';
 
   if (readyArtifact) {

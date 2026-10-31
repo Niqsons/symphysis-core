@@ -42,6 +42,11 @@ export const ArtifactSchema = z.object({
       value: z.string().min(1),
     })
     .optional(),
+  // Fork (symphysis, C7): an optional artifact whose output does not exist
+  // satisfies its dependents' `requires` and is left out of planning
+  // completeness; once its output exists it gates like any other artifact.
+  // Absent means `false`.
+  optional: z.boolean().optional(),
 });
 
 // Apply phase configuration for schema-aware apply instructions
@@ -81,6 +86,17 @@ export type SchemaYaml = z.infer<typeof SchemaYamlSchema>;
 
 // Slice 1: Simple completion tracking via filesystem
 export type CompletedSet = Set<string>;
+
+/**
+ * Fork (symphysis, C3, C7): what an artifact's verdict file says.
+ * - `missing`  no output file, or no frontmatter / verdict key in it
+ * - `mismatch` the key holds another value
+ * - `ok`       the key holds the declared value and every declared target hash matches
+ * - `stale`    the key holds the declared value but a declared target hash does not
+ *              match the target file (or the target is gone, outside the change
+ *              directory, or declared without a path or sha256)
+ */
+export type VerdictStatus = 'missing' | 'mismatch' | 'ok' | 'stale';
 
 // Return type for blocked query
 export interface BlockedArtifacts {
