@@ -13,6 +13,8 @@ upstream: Fission-AI/OpenSpec @ 6d04a1b5 (1.15.0, 2026-10-24)
 и свои скиллы в проекте symphysis.
 Решение 2026-10-31 (F-06.A, F-26.E) добавило признак `optional`, вердикт `stale`
 и вызов артефакта по имени (`continue <change> <artifact-id>`).
+Решение 2026-11-01 (F-64.B) добавило окно устаревания: `stale` гейтует, пока
+не начался следующий шаг, дальше — сигнал.
 
 ## Правки форка
 
@@ -29,6 +31,9 @@ upstream: Fission-AI/OpenSpec @ 6d04a1b5 (1.15.0, 2026-10-24)
 | C8 — `continue` по имени артефакта: четыре правила `NAMED_ARTIFACT` и `stale` в `VERDICT_CHECK` (`continue-change.ts`, пины парити, `skills/openspec-continue-change`) | 27048f12 |
 | C9 — `apply` о невызванных атаках (`UNINVOKED_OPTIONAL`) и о блоке только по вердикту (`apply-change.ts`, `skills/openspec-apply-change`) | 27048f12 |
 | C10 — версия форка 1.15.0-symphysis.2; регэксп теста `generatedBy` принимает prerelease-суффикс (package.json, `test/core/update.test.ts`) | 1385c85b |
+| C11 — окно устаревания вердикта (F-64.B): `stale` гейтует, пока у зависимого артефакта нет файла, а у артефакта без зависимых в `apply.requires` — пока в `apply.tracks` нет отмеченной задачи; дальше артефакт `done` с `verdict: "stale"` и строкой-сигналом в `nextSteps`; окно — из графа и `apply.tracks`, без имён схемы (`state.ts` `detectStaleSignals`, `instruction-loader.ts`, `change-status-policy.ts`, `status.ts`; документы `docs/agent-contract.md`, `docs/cli.md`; противоречие §4.4 и §4.6 о `missingArtifacts` снято) | 9b2acf6f |
+| C12 — `continue` выбирает тот же следующий артефакт, что CLI (`NEXT_ARTIFACT`: пропускается только optional без файла), по имени `done` без вердикта или `skipped` — STOP; `apply` называет сигнал stale (`STALE_SIGNAL`) (`continue-change.ts`, `apply-change.ts`, пины парити, два SKILL.md) | e0d02a2b |
+| C13 — версия форка 1.15.0-symphysis.3 (package.json) | этот коммит |
 
 ## Выпуски upstream
 
@@ -43,3 +48,4 @@ upstream: Fission-AI/OpenSpec @ 6d04a1b5 (1.15.0, 2026-10-24)
 | 2026-10-29 | база, без правок (6d04a1b5) | 6560 passed, 154 skipped, **8 failed — все EPERM symlink на Windows без прав разработчика** (`test/core/update.test.ts` ×1, `test/commands/schema.test.ts` ×1, `test/core/artifact-graph/resolver.test.ts` ×6); база: «зелёный» значит без новых красных |
 | 2026-10-30 | C1–C5, после сборки `dist/` (4b100b6e) | 6624 passed, 154 skipped, **8 failed — те же восемь EPERM symlink** (`update.test.ts` ×1, `schema.test.ts` ×1, `resolver.test.ts` ×6); первый прогон на свежем `dist/` (b982f281) дал 6622 passed и 9 failed — девятым был `cli-e2e/startup-modules.test.ts`, исправлен в d88ca368; `pnpm regen:parity-hashes`: «already match the build - nothing to update», `pnpm generate:skills`: `git status` чист |
 | 2026-10-31 | C1–C10, после сборки `dist/` (версия 1.15.0-symphysis.2) | 6698 passed, 154 skipped, **8 failed — те же восемь EPERM symlink** (`update.test.ts` ×1, `schema.test.ts` ×1, `resolver.test.ts` ×6); девятое падение (`update.test.ts` «should embed generatedBy», регэксп не принимал `-symphysis.N` после C6) снято правкой регэкспа в C10; `pnpm regen:parity-hashes` после сборки сдвинул пины `continue`/`apply`, `pnpm generate:skills` обновил два SKILL.md |
+| 2026-11-01 | C1–C13, после сборки `dist/` (версия 1.15.0-symphysis.3) | с `XDG_CONFIG_HOME` во временном каталоге: 6719 passed, 154 skipped, **8 failed — те же восемь EPERM symlink** (`update.test.ts` ×1, `schema.test.ts` ×1, `resolver.test.ts` ×6). Без изоляции ещё 11 красных в `test/core/version-check.test.ts`: глобальный конфиг машины несёт `telemetry.enabled: false`, и проверка обновлений отключена (`isCheckEnabled`) — среда, не правка; в изоляции 67/67. `pnpm regen:parity-hashes` сдвинул пины `continue`/`apply`, `pnpm generate:skills` обновил два SKILL.md |
