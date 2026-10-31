@@ -239,6 +239,19 @@ def test_fact_with_record_evidence_is_fine():
     assert journal.validate_journal(fact_journal(evidence=[{"path": "a.md", "quote": "x"}])) == []
 
 
+def test_empty_why_is_an_error(tmp_path):
+    """Сценарий «Пустое why»: код 1; why из пробелов считается пустым."""
+    for why in ("", "  "):
+        j = one_record_journal(path="a.md", quote="x")
+        j["records"][0]["recommendation"] = {"option": "A", "why": why}
+        path = tmp_path / "j.json"
+        journal.save_journal(path, j)
+        run = run_check(path)
+        assert run.returncode == 1 and "[!!] F-01: рекомендация без why" in run.stderr
+    j["records"][0]["recommendation"]["why"] = "потому что"
+    assert journal.validate_journal(j) == []
+
+
 def parking_fixture(tmp_path, with_research=True, finding=None):
     j = one_record_journal(path="a.md", quote="раз")
     parking = {"addressee": "материалы", "text": "найти"}

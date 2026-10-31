@@ -262,6 +262,8 @@ def _rule_errors(journal: dict) -> list[str]:
             errors.append(f"{rid}: у факта нет вариантов, найдено {len(r['options'])}")
         if r["kind"] == "факт" and not r["evidence"] and not r["parking"] and r["status"] != "припаркован":
             errors.append(f"{rid}: факт без улики")
+        if r["recommendation"] and not r["recommendation"]["why"].strip():
+            errors.append(f"{rid}: рекомендация без why")
         for o in r["options"]:
             if o["unlikely"] is not None and not o["unlikely"].strip():
                 errors.append(f"{rid}: вариант {o['letter']} помечен «маловероятно» без причины")
