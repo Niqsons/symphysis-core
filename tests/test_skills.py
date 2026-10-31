@@ -2,7 +2,10 @@
 
 Чистый Python, без форка и без node. Task 20 сводит сюда проверки всех четырёх скиллов.
 """
+import json
 import re
+import subprocess
+import sys
 
 import pytest
 from conftest import ROOT
@@ -139,7 +142,9 @@ def test_brainstorm_skill_shape():
 
 EDGE_CATEGORIES = ("boundary", "adjacency", "empty", "encoding", "ordering", "precision",
                    "idempotency", "concurrency")
-EDGE_OPTION_LINES = (
+# Заголовки вариантов пробы краёв: «<буква>. <токен> — » и шаблон текста; сам текст конкретен у кандидата (F-61.A).
+EDGE_OPTION_HEADS = ("A. Specify — ", "B. Dismiss — ", "C. Backstop — ", "D. Defer — ")
+EDGE_FIXED_LINES = (  # прежние фиксированные строки: после F-61.A их в скилле нет
     "A. Specify — уточнить: строка «проходит/не проходит» в критерии приёмки spec.md",
     "B. Dismiss — не относится; причина обязательна",
     "C. Backstop — тест-страховка на крае; строки в spec.md нет",
@@ -155,8 +160,8 @@ def test_edge_probe_has_eight_categories():
         assert f"| {cat} |" in text, f"в таблице SKILL.md нет категории {cat}"
     for token in PROBE_OUTCOMES:  # из journal_model: токены модели журнала = токены скилла
         assert token in text, f"в SKILL.md нет исхода {token}"
-    for line in EDGE_OPTION_LINES:
-        assert line in text, f"в SKILL.md нет строки варианта дословно: {line!r}"
+    for head in EDGE_OPTION_HEADS:
+        assert f"`{head}<" in text, f"в SKILL.md нет заголовка варианта с шаблоном текста: {head!r}"
     assert "Dismissal requires a reason string" in text, "нет цитаты edge-probe.md:89 об отказе без причины"
 
     notes = read(skill / "TRANSLATION-NOTES.md")
@@ -169,7 +174,8 @@ def test_edge_probe_has_eight_categories():
 PROHIBITION_QUESTION = ("What could this feature silently become that the author would NOT want, "
                         "but the spec does not forbid?")
 PROHIBITION_OPTIONS = ("Specify/test", "Specify/judgment", "Dismiss", "Defer")
-PROHIBITION_OPTION_LINES = (
+PROHIBITION_OPTION_HEADS = ("A. Specify/test — ", "B. Specify/judgment — ", "C. Dismiss — ", "D. Defer — ")
+PROHIBITION_FIXED_LINES = (  # прежние фиксированные строки: после F-61.A их в скилле нет
     "A. Specify/test — запрет становится требованием spec.md; проверка — тест",
     "B. Specify/judgment — запрет становится требованием spec.md; проверка — суждение, не тест",
     "C. Dismiss — не относится; причина обязательна",
@@ -185,13 +191,71 @@ def test_prohibition_probe_question_verbatim():
     assert "security.md" in text, "в SKILL.md нет отсылки канона к `security.md`"
     for token in PROHIBITION_OPTIONS:
         assert token in text, f"в SKILL.md нет варианта {token}"
-    for line in PROHIBITION_OPTION_LINES:
-        assert line in text, f"в SKILL.md нет строки варианта дословно: {line!r}"
+    for head in PROHIBITION_OPTION_HEADS:
+        assert f"`{head}<" in text, f"в SKILL.md нет заголовка варианта с шаблоном текста: {head!r}"
 
     notes = read(skill / "TRANSLATION-NOTES.md")
     rows = table_rows(notes)
     assert any("PROB-06" in row or "гейт" in row.lower() for row in rows), \
         "в TRANSLATION-NOTES.md нет строки про снятый мягкий гейт PROB-06"
+
+
+# --- конкретные тексты исходов у проб (F-61.A) -------------------------------
+
+PROBE_CASES = (("symphysis-edge-probe", EDGE_OPTION_HEADS, EDGE_FIXED_LINES),
+               ("symphysis-prohibition-probe", PROHIBITION_OPTION_HEADS, PROHIBITION_FIXED_LINES))
+
+
+def example_option_texts(text, heads):
+    """Четыре строки варианта из примера кандидата в SKILL.md: начинаются с заголовка без обратных кавычек."""
+    lines = [line for line in text.splitlines() if line.startswith(tuple(heads))]
+    return lines
+
+
+@pytest.mark.parametrize("name,heads,fixed", PROBE_CASES)
+def test_probe_skill_texts_are_concrete_not_template(name, heads, fixed):
+    text = read(SKILLS / name / "SKILL.md")
+
+    assert "Текст, одинаковый у двух кандидатов" in text, "нет правила о шаблонном тексте варианта (F-61.A)"
+    assert "дефект кандидата" in text
+    for line in fixed:
+        assert line not in text, f"в SKILL.md остался прежний фиксированный текст: {line!r}"
+    example = example_option_texts(text, heads)
+    assert len(example) == 4, f"в SKILL.md нужен один пример кандидата с четырьмя вариантами, найдено {len(example)}"
+    bodies = [line.split(" — ", 1)[1] for line in example]
+    assert len(set(bodies)) == 4, "тексты четырёх вариантов в примере совпадают"
+    assert all(len(body) > 40 for body in bodies), "текст варианта в примере слишком короток для конкретики"
+
+
+PROBE_FIXTURE = ROOT / "tests" / "fixtures" / "probe-candidates"
+
+
+def test_probe_fixture_candidates_carry_distinct_texts(tmp_path):
+    """Кандидаты пробы на fixture: `check` годен, четыре текста каждого попарно различны,
+    каждый начинается своим токеном, тексты двух кандидатов не совпадают."""
+    roots = tmp_path / "roots.json"
+    roots.write_text(json.dumps({"": str(PROBE_FIXTURE)}), encoding="utf-8")
+    run = subprocess.run([sys.executable, str(ROOT / "tools" / "journal.py"), "check",
+                          str(PROBE_FIXTURE / "decisions.json"), "--roots", str(roots)],
+                         capture_output=True, text=True, encoding="utf-8")
+    assert run.returncode == 0, run.stdout + run.stderr
+    assert "[!!]" not in run.stdout
+
+    records = json.loads((PROBE_FIXTURE / "decisions.json").read_text(encoding="utf-8"))["records"]
+    edge, prohibition = records
+    assert edge["question"].startswith("[encoding") and prohibition["question"].startswith("[запрет]")
+    per_candidate = []
+    for record, tokens in ((edge, ("Specify", "Dismiss", "Backstop", "Defer")),
+                           (prohibition, ("Specify/test", "Specify/judgment", "Dismiss", "Defer"))):
+        options = record["options"]
+        assert [o["letter"] for o in options] == ["A", "B", "C", "D"]
+        bodies = []
+        for option, token in zip(options, tokens):
+            assert option["text"].startswith(f"{token} — "), f"{record['id']}: текст не начинается с {token}"
+            bodies.append(option["text"].split(" — ", 1)[1])
+        assert len(set(bodies)) == 4, f"{record['id']}: тексты четырёх вариантов совпадают"
+        per_candidate.append(set(bodies))
+    assert not per_candidate[0] & per_candidate[1], "тексты двух кандидатов совпадают"
 
 
 # Установка проверяющих GSD — начала трёх строк «FORCE stance» дословно
