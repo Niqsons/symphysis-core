@@ -17,7 +17,12 @@ const PIN = "1.15.0-symphysis.2";
 const hasFork = fs.existsSync(FORK);
 let payloadDir;
 const tmp = () => fs.mkdtempSync(path.join(os.tmpdir(), "symphysis-check-"));
-const saved = { openspec: process.env.SYMPHYSIS_OPENSPEC, path: process.env.PATH, Path: process.env.Path };
+const saved = { openspec: process.env.SYMPHYSIS_OPENSPEC, path: process.env.PATH, Path: process.env.Path, xdg: process.env.XDG_CONFIG_HOME };
+const cfgFile = () => path.join(process.env.XDG_CONFIG_HOME, "openspec", "config.json");
+const writeCfg = (obj) => {
+  fs.mkdirSync(path.dirname(cfgFile()), { recursive: true });
+  fs.writeFileSync(cfgFile(), JSON.stringify(obj));
+};
 
 before(() => {
   assert.ok(hasFork, `нет форка для зелёного случая: ${FORK}`);
@@ -26,13 +31,15 @@ before(() => {
 });
 
 afterEach(() => {
-  for (const [k, v] of [["SYMPHYSIS_OPENSPEC", saved.openspec], ["PATH", saved.path], ["Path", saved.Path]]) {
+  for (const [k, v] of [["SYMPHYSIS_OPENSPEC", saved.openspec], ["PATH", saved.path], ["Path", saved.Path], ["XDG_CONFIG_HOME", saved.xdg]]) {
     if (v === undefined) delete process.env[k];
     else process.env[k] = v;
   }
 });
 
+// Глобальный конфиг форка — всегда временный каталог: настоящий конфиг пользователя тесты не трогают.
 function installed() {
+  process.env.XDG_CONFIG_HOME = tmp();
   process.env.SYMPHYSIS_OPENSPEC = FORK;
   const p = tmp();
   install(p, { payloadDir });
@@ -59,7 +66,7 @@ test("после install: ok, findings и notes пусты", () => {
   const r = runCheck(p);
   assert.deepEqual(r.findings, []);
   assert.equal(r.ok, true);
-  assert.deepEqual(r.notes, []);
+  assert.deepEqual(r.notes, ["telemetry: выключена"]);
 });
 
 test("байт схемы подменён: findings[0] называет schema.yaml", () => {
@@ -70,8 +77,7 @@ test("байт схемы подменён: findings[0] называет schema.
   fs.writeFileSync(f, b);
   const r = runCheck(p);
   assert.equal(r.ok, false);
-  assert.match(r.findings[0], /schema\.yaml/);
-  assert.match(r.findings[0], /схема изменена/);
+  assert.equal(r.findings[0], "схема: байты отличаются от payload: openspec/schemas/symphysis/schema.yaml");
   assert.deepEqual(fs.readFileSync(f), b, "гейт не чинит");
 });
 
@@ -104,6 +110,7 @@ test("удалён SKILL.md: finding называет его", () => {
 });
 
 test("скиллы проверяются в каждом skillsDir", () => {
+  process.env.XDG_CONFIG_HOME = tmp();
   process.env.SYMPHYSIS_OPENSPEC = FORK;
   const p = tmp();
   install(p, { payloadDir, skillsDirs: ["a/skills", "b/skills"] });
@@ -149,8 +156,8 @@ test("журнал: годный даёт note, негодный — finding", (
   fs.writeFileSync(path.join(good, "decisions.json"), JSON.stringify(MINIMAL_JOURNAL));
   let r = runCheck(p);
   assert.equal(r.ok, true, JSON.stringify(r.findings));
-  assert.match(r.notes[0], /^openspec\/changes\/one\/decisions\.json: /);
-  assert.match(r.notes[0], /улик сверено/);
+  const note = r.notes.find((n) => n.startsWith("openspec/changes/one/decisions.json: "));
+  assert.match(note, /улик сверено/);
 
   const bad = path.join(p, "openspec", "changes", "two");
   fs.mkdirSync(bad, { recursive: true });
@@ -179,6 +186,52 @@ test("CLI: check ok — код 0, «check: ok»; после правки схе�
   fs.appendFileSync(f, "# x\n");
   r = cli("check", "--project", p);
   assert.equal(r.status, 2);
-  assert.match(r.stdout, /^\[!!\] openspec\/schemas\/symphysis\/schema\.yaml: схема изменена$/m);
+  assert.match(r.stdout, /^\[!!\] схема: байты отличаются от payload: openspec\/schemas\/symphysis\/schema\.yaml$/m);
   assert.match(r.stdout, /^check: 1 расхождений$/m);
+});
+
+test("CLI: расхождение байтов схемы — [!!] с путём файла, код 2", () => {
+  const p = installed();
+  const rel = "openspec/schemas/symphysis/templates/intent.md";
+  fs.appendFileSync(path.join(p, rel), "x");
+  const r = cli("check", "--project", p);
+  assert.equal(r.status, 2);
+  assert.ok(r.stdout.split(/\r?\n/).includes(`[!!] схема: байты отличаются от payload: ${rel}`), r.stdout);
+});
+
+test("telemetry: install выключил — [..] выключена, код 0", () => {
+  const p = installed();
+  assert.equal(JSON.parse(fs.readFileSync(cfgFile(), "utf8")).telemetry.enabled, false);
+  const r = cli("check", "--project", p);
+  assert.equal(r.status, 0, r.stdout);
+  assert.match(r.stdout, /^\[\.\.\] telemetry: выключена$/m);
+});
+
+test("telemetry: конфига OpenSpec нет — сигнал, код 0", () => {
+  const p = installed();
+  fs.rmSync(cfgFile());
+  const r = cli("check", "--project", p);
+  assert.equal(r.status, 0, r.stdout);
+  assert.match(r.stdout, /^\[\.\.\] telemetry: конфиг OpenSpec не найден — появится после первого openspec init$/m);
+});
+
+test("telemetry: включена — [!!] с командой, код 2; ключ не задан — то же", () => {
+  const p = installed();
+  const line = /^\[!!\] telemetry: включена — выключить: openspec config set telemetry\.enabled false$/m;
+  writeCfg({ telemetry: { enabled: true, anonymousId: "00000000-0000-4000-8000-000000000000" } });
+  let r = cli("check", "--project", p);
+  assert.equal(r.status, 2, r.stdout);
+  assert.match(r.stdout, line);
+  writeCfg({ profile: "core" });
+  r = cli("check", "--project", p);
+  assert.equal(r.status, 2);
+  assert.match(r.stdout, line);
+});
+
+test("telemetry: конфиг не JSON — сигнал, код 0", () => {
+  const p = installed();
+  fs.writeFileSync(cfgFile(), "{");
+  const r = cli("check", "--project", p);
+  assert.equal(r.status, 0, r.stdout);
+  assert.match(r.stdout, /^\[\.\.\] telemetry: конфиг OpenSpec не читается/m);
 });

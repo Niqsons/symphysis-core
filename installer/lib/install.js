@@ -3,6 +3,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { parseDocument, isMap, isSeq, isScalar } from "yaml";
 import { targets } from "./paths.js";
+import { disableTelemetryIfUnset } from "./telemetry.js";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 export const DEFAULT_PAYLOAD = path.resolve(here, "..", "payload");
@@ -22,12 +23,13 @@ function walk(dir) {
 }
 
 /** Пишет байты в `to`: те же — ничего; другие — skipped без force, иначе перезапись. */
-function place(res, project, to, bytes, force, { keepExisting = false } = {}) {
+function place(res, project, to, bytes, force, { keepExisting = false, schemaDir = null } = {}) {
   if (fs.existsSync(to)) {
     if (fs.readFileSync(to).equals(bytes)) return;
     if (keepExisting) return;
     if (!force) {
       res.skipped.push(`${rel(project, to)} ${SKIP_SUFFIX}`);
+      if (schemaDir && to.startsWith(schemaDir + path.sep)) res.messages.push(`пропущен: ${rel(project, to)} — отличается, нужен --force`);
       return;
     }
   }
@@ -36,10 +38,10 @@ function place(res, project, to, bytes, force, { keepExisting = false } = {}) {
   res.written.push(rel(project, to));
 }
 
-function copyTree(res, project, srcDir, destDir, force, filter = () => true) {
+function copyTree(res, project, srcDir, destDir, force, filter = () => true, opts = {}) {
   for (const file of walk(srcDir)) {
     if (!filter(file)) continue;
-    place(res, project, path.join(destDir, path.relative(srcDir, file)), fs.readFileSync(file), force);
+    place(res, project, path.join(destDir, path.relative(srcDir, file)), fs.readFileSync(file), force, opts);
   }
 }
 
@@ -81,7 +83,7 @@ export function install(project, { skillsDirs = [], force = false, payloadDir = 
     throw new Error(`payload не найден: ${payloadDir} (выполнить npm run prepare)`);
   }
 
-  copyTree(res, root, path.join(payloadDir, "openspec", "schemas", "symphysis"), t.schemaDir, force);
+  copyTree(res, root, path.join(payloadDir, "openspec", "schemas", "symphysis"), t.schemaDir, force, () => true, { schemaDir: t.schemaDir });
 
   const skillsSrc = path.join(payloadDir, "skills");
   for (const e of fs.readdirSync(skillsSrc, { withFileTypes: true })) {
@@ -113,5 +115,7 @@ export function install(project, { skillsDirs = [], force = false, payloadDir = 
       );
     }
   }
+  const tele = disableTelemetryIfUnset();
+  if (tele) res.messages.push(tele);
   return res;
 }

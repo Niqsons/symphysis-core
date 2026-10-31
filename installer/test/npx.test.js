@@ -22,7 +22,8 @@ let tgz;
 
 /** Копия окружения с заменой PATH (на Windows ключ может быть Path). */
 function envWith(extra, pathValue) {
-  const env = { ...process.env, ...extra };
+  // глобальный конфиг форка — временный: настоящий конфиг пользователя тесты не трогают
+  const env = { ...process.env, XDG_CONFIG_HOME: fs.mkdtempSync(path.join(os.tmpdir(), "symphysis-npx-xdg-")), ...extra };
   if (pathValue !== undefined) {
     for (const k of Object.keys(env)) if (k.toLowerCase() === "path") delete env[k];
     env[win ? "Path" : "PATH"] = pathValue;

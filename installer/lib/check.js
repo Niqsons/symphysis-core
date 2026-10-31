@@ -5,6 +5,8 @@ import { spawnSync } from "node:child_process";
 import { parse } from "yaml";
 import { targets } from "./paths.js";
 import { DEFAULT_PAYLOAD } from "./install.js";
+import { runOpenspec } from "./openspec-bin.js";
+import { telemetryState, TELEMETRY_OFF_COMMAND } from "./telemetry.js";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const win = process.platform === "win32";
@@ -27,20 +29,9 @@ function readPin() {
   return pkg.symphysis;
 }
 
-/** Версия форка: SYMPHYSIS_OPENSPEC (.js или исполняемый) либо `openspec` из PATH; null — не запустился. */
+/** Версия форка; null — не запустился. */
 function openspecVersion() {
-  const env = process.env.SYMPHYSIS_OPENSPEC;
-  let r;
-  if (env) {
-    r = env.endsWith(".js")
-      ? spawnSync(process.execPath, [env, "--version"], { encoding: "utf8" })
-      : win && /\.(cmd|bat)$/i.test(env)
-        ? spawnSync(`"${env}" --version`, { encoding: "utf8", shell: true })
-        : spawnSync(env, ["--version"], { encoding: "utf8" });
-  } else {
-    // на Windows openspec из PATH — это openspec.cmd, его запускает только оболочка
-    r = win ? spawnSync("openspec --version", { encoding: "utf8", shell: true }) : spawnSync("openspec", ["--version"], { encoding: "utf8" });
-  }
+  const r = runOpenspec(["--version"]);
   if (r.error || r.status !== 0) return null;
   return String(r.stdout).trim();
 }
@@ -76,7 +67,7 @@ export function check(project, { skillsDirs = [], payloadDir = DEFAULT_PAYLOAD }
   for (const file of walk(schemaSrc).sort()) {
     const to = path.join(t.schemaDir, path.relative(schemaSrc, file));
     if (!fs.existsSync(to)) findings.push(`${rel(root, to)}: нет файла`);
-    else if (!fs.readFileSync(to).equals(fs.readFileSync(file))) findings.push(`${rel(root, to)}: схема изменена`);
+    else if (!fs.readFileSync(to).equals(fs.readFileSync(file))) findings.push(`схема: байты отличаются от payload: ${rel(root, to)}`);
   }
 
   const cfgRel = rel(root, t.configPath);
@@ -134,6 +125,12 @@ export function check(project, { skillsDirs = [], payloadDir = DEFAULT_PAYLOAD }
       }
     }
   }
+
+  const tele = telemetryState();
+  if (tele === "off") notes.push("telemetry: выключена");
+  else if (tele === "missing") notes.push("telemetry: конфиг OpenSpec не найден — появится после первого openspec init");
+  else if (tele === "unreadable") notes.push("telemetry: конфиг OpenSpec не читается — форк в этом случае телеметрию выключает");
+  else findings.push(`telemetry: включена — выключить: ${TELEMETRY_OFF_COMMAND}`);
 
   return { ok: findings.length === 0, findings, notes };
 }
