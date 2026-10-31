@@ -8,7 +8,7 @@ import json
 import re
 from pathlib import Path
 
-from journal_model import ADDED_MARK, DEVIATION_LABEL, RE_ANCHOR, ROOT, _evidence_of, _flat
+from journal_model import ADDED_MARK, DEVIATION_LABEL, DEVIATION_TAIL, RE_ANCHOR, ROOT, _evidence_of, _flat
 
 __all__ = [
     "TEMPLATE_PATH", "PLACEHOLDER", "PLACEHOLDER_ATTACK",
@@ -31,6 +31,8 @@ def _render_option(opt: dict) -> list[str]:
     text = opt["text"]
     if opt["added"] and ADDED_MARK not in text:
         text += f" {ADDED_MARK})"
+    if opt.get("deviation"):
+        text += " " + DEVIATION_TAIL.format(opt["deviation"])
     lines = [f"  - {opt['letter']}. {text}"]
     lines += [_evidence_line(ev, "    ") for ev in opt["evidence"]]
     if opt["unlikely"]:
@@ -72,8 +74,6 @@ def _render_record(rec: dict) -> list[str]:
     if rec["addressee"]:
         lines.append(f"- адресат: {rec['addressee']}")
     lines.append(f"- зависит от: {', '.join(rec['depends_on']) or '—'}")
-    if rec.get("deviation"):
-        lines.append(f"- {DEVIATION_LABEL}: {rec['deviation']}")
     if rec["delivery"]:
         lines.append(f"- поставка: {rec['delivery']}")
     if rec["kind"] == "развилка":
@@ -124,8 +124,8 @@ def render_md(journal: dict, json_name: str = "") -> str:
     записи — якорь `<!-- journal:F-NN -->`. `json_name` попадает в шапку: «рендер из …,
     не править руками». `notes` — разделом «Заметки» после последней записи (нет заметок —
     нет раздела). `outcome` — строкой `- исход: <вид> — <значение> — <причина>` между решением
-    и следствиями (нет исхода — нет строки; пустая причина — без хвоста). `deviation` — строкой
-    `- отступление от постановки: F-NN` после «зависит от» (нет поля — нет строки). В markdown нет
+    и следствиями (нет исхода — нет строки; пустая причина — без хвоста). `deviation` варианта — хвостом
+    его строки `(отступление от F-NN)` после пометки «добавлен человеком». В markdown нет
     `reversibility`, `comments`, `generated` и полей сверки улик (`line/found/verdict`) —
     их источник только JSON."""
     lines = [f"# {journal['title']}", "", _generated_note(json_name), ""]
@@ -379,8 +379,8 @@ def _design_decision(rec: dict) -> list[str]:
     lines = [f"### {rec['id']} {rec['question']}", "", f"- **Выбрано:** {chosen}. {picked['text']}"]
     if _is_unchanged(picked["text"]):
         lines.append(UNCHANGED_NOTE)
-    if rec.get("deviation"):
-        lines.append(f"- **{DEVIATION_LABEL.capitalize()}:** {rec['deviation']}")
+    if picked.get("deviation"):
+        lines.append(f"- **{DEVIATION_LABEL.capitalize()}:** {picked['deviation']}")
     if decision["word"]:
         lines.append(f"- **Слово человека ({decision['date']}):** «{decision['word']}»")
     if rec["reversibility"]:
@@ -441,7 +441,7 @@ def render_design(journal: dict, source: str | None = None) -> str:
 
     Context — факты с уликами. Decisions — развилки со словом человека (без решённых — строка
     «нет: решённых развилок в журнале нет»; у решения «ничего не менять» — пометка «Конструкция
-    не меняется»; у развилки с `deviation` — строка «Отступление от постановки: F-NN»): сначала «в одну
+    не меняется»; выбранный вариант с `deviation` — строка «Отступление от постановки: F-NN»): сначала «в одну
     сторону», затем остальные, внутри групп по номеру. Risks / Trade-offs — улики отвергнутых
     опций решённых развилок, в порядке Decisions. Open Questions — развилки без решения,
     отложенные кандидаты проб, парковка с адресатом и спорные факты. Кандидаты проб

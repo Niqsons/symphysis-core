@@ -243,7 +243,7 @@ LIVE_JOURNALS = [ROOT / "docs" / "plan-implementation.journal.json",
 
 
 def setting_journal(**fork_changes) -> dict:
-    """Факт постановки F-01 и развилка F-02; `fork_changes` — поля развилки (например, `deviation`)."""
+    """Факт постановки F-01 и развилка F-02 с вариантами A и B; `fork_changes` — поля развилки."""
     fact = {"id": "F-01", "question": "критерий готовности", "kind": "факт", "status": "решён",
             "addressee": "постановка", "depends_on": [], "delivery": "", "options": [], "antipodes": [],
             "recommendation": None, "decision": None, "reversibility": None, "outcome": None,
@@ -283,7 +283,7 @@ def test_setting_is_not_a_parking_addressee():
 
 @pytest.mark.parametrize("path", FIXTURE_JOURNALS + LIVE_JOURNALS, ids=lambda p: p.relative_to(ROOT).as_posix())
 def test_fixture_and_live_journals_stay_valid(path):
-    """Журналы плеч (fixtures) и живые журналы годны: без `постановка` и `deviation` — как прежде
+    """Журналы плеч (fixtures) и живые журналы годны: без `постановка` и `options[].deviation` — как прежде
     (новое значение и поле необязательны), с ними — по новым правилам."""
     assert journal.validate_journal(journal.load_journal(path)) == []
 
@@ -292,36 +292,50 @@ def test_fixture_journals_are_found():
     assert len(FIXTURE_JOURNALS) >= 4, [p.name for p in FIXTURE_JOURNALS]
 
 
-def test_deviation_on_a_fork_pointing_at_a_setting_fact_is_valid():
-    """Пометка «отступление от постановки» — поле `deviation` развилки с номером факта постановки."""
-    assert journal.validate_journal(setting_journal(deviation="F-01")) == []
+def deviating(target="F-01", letter="B", **fork_changes) -> dict:
+    """Журнал `setting_journal`, у варианта `letter` развилки F-02 — `deviation: target`."""
+    j = setting_journal(**fork_changes)
+    next(o for o in j["records"][1]["options"] if o["letter"] == letter)["deviation"] = target
+    return j
+
+
+def test_deviation_on_an_option_pointing_at_a_setting_fact_is_valid():
+    """Пометка «отступление от постановки» — поле `deviation` варианта, чьё поведение противоречит сценарию
+    факта постановки (F-28.E): номер этого факта; у варианта-уточнения поля нет."""
+    assert journal.validate_journal(deviating()) == []
 
 
 def test_deviation_with_a_human_decision_against_the_fact_is_valid():
-    """F-55.E: видимость без замка — решение человека против факта со словом и без слова годно."""
+    """F-55.E: видимость без замка — выбран отступающий вариант, со словом и без слова — журнал годен."""
     for word in ("наследование — сознательно", ""):
-        j = setting_journal(deviation="F-01", status="решён",
-                            decision={"option": "B", "word": word, "date": "2026-10-31"},
-                            reversibility={"level": "обратимо", "why": "одно условие в обработчике"})
+        j = deviating(status="решён", decision={"option": "B", "word": word, "date": "2026-10-31"},
+                      reversibility={"level": "обратимо", "why": "одно условие в обработчике"})
         assert journal.validate_journal(j) == []
+
+
+def test_deviation_is_no_longer_a_record_field():
+    """Ruling: на уровне записи поля нет — запись с `deviation` негодна по схеме."""
+    errors = journal.validate_journal(setting_journal(deviation="F-01"))
+    assert errors and errors[0].startswith("F-02: Additional properties") and "'deviation'" in errors[0], errors
 
 
 @pytest.mark.parametrize("value", ["F01", "f-01", "F-01.A", "", "F-"])
 def test_deviation_is_a_record_id(value):
-    errors = journal.validate_journal(setting_journal(deviation=value))
-    assert errors and errors[0].startswith("F-02: deviation:"), errors
+    errors = journal.validate_journal(deviating(value))
+    assert errors and errors[0].startswith("F-02: options/1/deviation:"), errors
 
 
-def test_deviation_only_on_a_fork():
+def test_deviation_only_on_a_fork_option():
     j = setting_journal()
-    j["records"][0]["deviation"] = "F-01"
-    assert "F-01: отступление от постановки у факта — пометка ставится только у развилки" in \
+    j["records"][0]["options"] = [{"letter": "A", "text": "а", "added": False, "unlikely": None, "evidence": [],
+                                   "deviation": "F-01"}]
+    assert "F-01: вариант A — отступление от постановки у факта — пометка ставится только у варианта развилки" in \
         journal.validate_journal(j)
 
 
 def test_deviation_to_a_missing_record():
-    assert journal.validate_journal(setting_journal(deviation="F-09")) == \
-        ["F-02: отступление от постановки F-09 — такой записи нет"]
+    assert journal.validate_journal(deviating("F-09")) == \
+        ["F-02: вариант B — отступление от постановки F-09 — такой записи нет"]
 
 
 @pytest.mark.parametrize("change, what", [
@@ -330,20 +344,23 @@ def test_deviation_to_a_missing_record():
       "options": [{"letter": "A", "text": "а", "added": False, "unlikely": None, "evidence": []}]}, "развилка"),
 ])
 def test_deviation_must_point_at_a_setting_fact(change, what):
-    j = setting_journal(deviation="F-01")
+    j = deviating()
     j["records"][0].update(change)
     assert journal.validate_journal(j) == \
-        [f"F-02: отступление от постановки F-01 — запись не факт `addressee: постановка`: {what}"]
+        [f"F-02: вариант B — отступление от постановки F-01 — запись не факт `addressee: постановка`: {what}"]
 
 
 def test_old_journal_without_deviation_has_no_such_key_after_import():
-    """Поле необязательно: импорт не добавляет `deviation` записи без строки «отступление от постановки»."""
-    assert all("deviation" not in r for r in plan()["records"])
+    """Поле необязательно: импорт не добавляет `deviation` ни записи, ни варианту без пометки в строке варианта."""
+    records = plan()["records"]
+    assert all("deviation" not in r for r in records)
+    assert all("deviation" not in o for r in records for o in r["options"])
 
 
 def test_cli_check_rejects_a_bad_deviation_with_code_1(tmp_path):
     path = tmp_path / "j.json"
-    journal.save_journal(path, setting_journal(deviation="F-09"))
+    journal.save_journal(path, deviating("F-09"))
     run = subprocess.run([sys.executable, str(ROOT / "tools" / "journal.py"), "check", str(path)],
                          capture_output=True, text=True, encoding="utf-8")
-    assert run.returncode == 1 and "[!!] F-02: отступление от постановки F-09 — такой записи нет" in run.stderr
+    assert run.returncode == 1
+    assert "[!!] F-02: вариант B — отступление от постановки F-09 — такой записи нет" in run.stderr

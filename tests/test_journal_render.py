@@ -890,48 +890,64 @@ def test_render_html_embeds_hostile_text_as_data_only():
     assert embedded_attack(html)[0]["rows"][0]["claim"] == "</script><img src=x onerror=alert(3)>"
 
 
-# --- пометка «отступление от постановки»: поле `deviation` (5.1, решение контроллера 2) -------
+# --- пометка «отступление от постановки»: `options[].deviation` (5.1, ruling: у варианта, F-28.E) ----
 
 def deviation_journal():
-    """Факт постановки F-01 и решённая развилка F-02 с `deviation: F-01`."""
+    """Факт постановки F-01 и решённая развилка F-02: вариант B отступает от F-01, A — нет."""
     j = one_record_journal("intent.md", "критерий")
     fact = j["records"][0]
     fact.update(kind="факт", status="решён", addressee="постановка", options=[],
                 evidence=[{"path": "intent.md", "quote": "критерий"}])
     fork = copy.deepcopy(one_record_journal("a.md", "q")["records"][0])
-    fork.update(id="F-02", status="решён", addressee="человек", depends_on=["F-01"], deviation="F-01",
-                decision={"option": "A", "word": "", "date": "2026-10-31"})
+    fork["options"].append({"letter": "B", "text": "наследование", "added": False, "unlikely": None,
+                            "evidence": [], "deviation": "F-01"})
+    fork.update(id="F-02", status="решён", addressee="человек", depends_on=["F-01"],
+                decision={"option": "B", "word": "", "date": "2026-10-31"})
     j["records"].append(fork)
     assert journal.validate_journal(j) == []
     return j
 
 
-def test_render_md_writes_the_deviation_line_after_dependencies():
+def test_render_md_marks_the_deviating_option_line():
     md = journal.render_md(deviation_journal())
     fork = md.split("\n## F-02")[1].splitlines()
-    keys = [line[2:].split(":")[0] for line in fork if line.startswith("- ")]
-    assert keys[:4] == ["вид", "статус", "адресат", "зависит от"] and keys[4] == "отступление от постановки"
-    assert "- отступление от постановки: F-01" in fork
-    assert "отступление от постановки" not in md.split("\n## F-02")[0]      # у факта строки нет
-    assert "отступление от постановки" in journal.render_md.__doc__
+    assert "  - B. наследование (отступление от F-01)" in fork
+    assert "  - A. вариант" in fork                                         # вариант без пометки — как был
+    assert "отступление от" not in md.split("\n## F-02")[0]                # у факта пометки нет
+    assert not any(line.startswith("- отступление") for line in fork)     # строки записи больше нет
+    assert "отступление от F-NN" in journal.render_md.__doc__
 
 
 def test_deviation_survives_the_roundtrip():
     j = deviation_journal()
     back = roundtrip(j)
-    assert back["records"][1]["deviation"] == "F-01" and "deviation" not in back["records"][0]
+    options = back["records"][1]["options"]
+    assert options[1]["deviation"] == "F-01" and options[1]["text"] == "наследование"
+    assert "deviation" not in options[0] and "deviation" not in back["records"][1]
     assert strip_check_fields(back) == strip_check_fields(j)
     assert journal.render_md(back) == journal.render_md(j)
 
 
+def test_deviation_mark_follows_the_added_mark_and_survives_the_roundtrip():
+    """Вариант, добавленный человеком и отступающий: обе пометки, импорт разбирает обе."""
+    j = deviation_journal()
+    j["records"][1]["options"][1]["added"] = True
+    md = journal.render_md(j)
+    assert "  - B. наследование (добавлен человеком) (отступление от F-01)" in md
+    back = roundtrip(j)["records"][1]["options"][1]
+    assert back["added"] is True and back["deviation"] == "F-01"
+
+
 @requires_node
-def test_viewer_card_shows_the_deviation_badge_escaped(tmp_path):
-    """Карточка развилки с `deviation` — бейдж «отступление от F-NN»; значение идёт через `esc`."""
+def test_viewer_marks_the_deviating_option_escaped(tmp_path):
+    """Бейдж «отступление от F-NN» — у отступающего варианта, при выборе видно, какой вариант отступает;
+    значение идёт через `esc`."""
     j = deviation_journal()
     cards = smoke(tmp_path, journal.render_html(j, TEMPLATE))["cards"]
     fork = cards.split('id="F-02"')[1]
-    assert '<span class="badge warn">отступление от F-01</span>' in fork
-    assert "отступление от" not in cards.split('id="F-02"')[0]
-    j["records"][1]["deviation"] = "<b>F-01</b>"          # в обход схемы: показ всё равно экранирован
+    option_a, option_b = fork.split('value="A"')[1].split('value="B"')
+    assert '<span class="tag deviation">отступление от F-01</span>' in option_b
+    assert "отступление от" not in option_a and "отступление от" not in cards.split('id="F-02"')[0]
+    j["records"][1]["options"][1]["deviation"] = "<b>F-01</b>"          # в обход схемы: показ всё равно экранирован
     cards = smoke(tmp_path, journal.render_html(j, TEMPLATE))["cards"]
     assert "отступление от &lt;b&gt;F-01&lt;/b&gt;" in cards and "<b>F-01" not in cards

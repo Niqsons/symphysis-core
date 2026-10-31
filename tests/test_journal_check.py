@@ -451,24 +451,25 @@ def intent_demo_roots(tmp_path) -> Path:
 
 
 def test_deviation_with_a_human_decision_against_the_setting_passes_check(tmp_path):
-    """Сценарий «Отступление проходит check»: факт постановки, развилка с `deviation` на него и решение человека
-    против факта со словом — `check` код 0 и с `--strict`, ни одной строки `[!!]`: пометка — видимость, не замок."""
+    """Сценарий «Отступление проходит check»: факт постановки, развилка, чей выбранный вариант несёт `deviation`
+    на него, решение человека против факта со словом — `check` код 0 и с `--strict`, ни одной строки `[!!]`:
+    пометка — видимость, не замок."""
     j = journal.load_journal(DEVIATION_FIX)
-    fork = next(r for r in j["records"] if r.get("deviation"))
-    fact = next(r for r in j["records"] if r["id"] == fork["deviation"])
-    assert (fact["kind"], fact["addressee"]) == ("факт", "постановка")
+    fork = next(r for r in j["records"] if any(o.get("deviation") for o in r["options"]))
     chosen = next(o for o in fork["options"] if o["letter"] == fork["decision"]["option"])
+    fact = next(r for r in j["records"] if r["id"] == chosen["deviation"])
+    assert (fact["kind"], fact["addressee"]) == ("факт", "постановка")
     assert fork["kind"] == "развилка" and fork["status"] == "решён" and fork["decision"]["word"]
     assert chosen["text"].startswith("Наследование"), "решение против сценария факта постановки"
-    assert fork["recommendation"]["option"] != chosen["letter"]
+    assert fork["recommendation"]["option"] != chosen["letter"] and "deviation" not in fork
     run = run_check(DEVIATION_FIX, "--roots", intent_demo_roots(tmp_path), "--strict")
     assert run.returncode == 0, run.stdout + run.stderr
     assert "[!!]" not in run.stdout + run.stderr and "[ok] улик сверено 3 из 3" in run.stdout
 
 
 def test_deviation_stays_visible_in_the_renders():
-    """Видимость: строка у развилки в markdown и у решения в design."""
+    """Видимость: пометка у строки выбранного варианта в markdown и строка у решения в design."""
     j = journal.load_journal(DEVIATION_FIX)
     md = journal.render_md(j).split("\n## F-03")[1]
-    assert "- отступление от постановки: F-01" in md
+    assert "(отступление от F-01)" in next(line for line in md.splitlines() if line.startswith("  - B. "))
     assert "- **Отступление от постановки:** F-01" in journal.render_design(j)

@@ -43,7 +43,9 @@
     "text": {"type": "string", "minLength": 1},
     "added": {"type": "boolean"},
     "unlikely": {"type": ["string", "null"]},
-    "evidence": {"type": "array", "items": {"$ref": "#/$defs/evidence"}}
+    "evidence": {"type": "array", "items": {"$ref": "#/$defs/evidence"}},
+    "deviation": {"$ref": "#/$defs/recordId",
+     "description": "Пометка «отступление от постановки» (F-08.A, F-28.E): у варианта развилки, чьё наблюдаемое поведение противоречит сценарию факта `addressee: постановка`, — номер этого факта; уточнение без противоречия поля не несёт. Необязательно: журналы без пометки годны. Только у варианта развилки и только на факт постановки — правило validate_journal. Замка нет: выбор такого варианта годен (F-55.E)"}
    }
   },
   "antipode": {
@@ -138,8 +140,6 @@
     "addressee": {"enum": ["материалы", "человек", "ИБ", "постановка", ""],
      "description": "Адресат записи; «постановка» — факт из intent.md изменения (F-17.A). Значение сравнивается точно: регистр и пробелы не нормализуются (F-36)"},
     "depends_on": {"type": "array", "items": {"$ref": "#/$defs/recordId"}},
-    "deviation": {"$ref": "#/$defs/recordId",
-     "description": "Пометка «отступление от постановки» (F-08.A): у развилки, чей вариант даёт поведение против сценария факта `addressee: постановка`, — номер этого факта. Необязательно: журналы без пометки годны. Только у развилки и только на факт постановки — правило validate_journal. Замка нет: решение человека против факта годно (F-55.E)"},
     "delivery": {"type": "string"},
     "options": {"type": "array", "items": {"$ref": "#/$defs/option"}},
     "antipodes": {"type": "array", "items": {"$ref": "#/$defs/antipode"}},

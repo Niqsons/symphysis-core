@@ -62,7 +62,6 @@
    "depends_on": [
     "F-01"
    ],
-   "deviation": "F-01",
    "delivery": "",
    "options": [
     {
@@ -82,7 +81,8 @@
      "text": "Наследование бизнес-идентификатора родителя: пустой атрибут читается как незаданный",
      "added": false,
      "unlikely": null,
-     "evidence": []
+     "evidence": [],
+     "deviation": "F-01"
     }
    ],
    "antipodes": [],

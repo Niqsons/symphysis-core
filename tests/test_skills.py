@@ -433,8 +433,9 @@ def test_attack_skill_context_compliance_sees_the_setting():
     """F-08.A, F-09.A, F-55.E: решение против факта постановки без пометки — находка; пометка со словом
     человека — справка; опора решения design на факт или на запись без решения — блокер."""
     row = flat(lens_row(read(ATTACK_SKILL / "SKILL.md"), "journal", "context-compliance"))
-    for token in ("`addressee: постановка`", "пометки «отступление от постановки»", "поле `deviation: F-NN`",
-                  "словом человека", "`справка`", "опора решения design на факт или на запись без решения", "блокер"):
+    for token in ("`addressee: постановка`", "выбранный вариант", "пометки «отступление от постановки»",
+                  "поле `deviation: F-NN` варианта", "словом человека", "`справка`",
+                  "опора решения design на факт или на запись без решения", "блокер"):
         assert token in row, f"в строке `context-compliance` нет «{token}»"
 
 
@@ -620,12 +621,12 @@ def test_brainstorm_second_round_does_not_duplicate_setting_facts():
 
 
 def test_brainstorm_marks_a_deviation_from_the_setting():
-    """(г) F-08.A, F-28.E, F-55.E: вариант против сценария факта постановки — поле `deviation: F-NN` у развилки;
-    уточнение без противоречия — без поля; пометка не замок."""
+    """(г) F-08.A, F-28.E, F-55.E: вариант против сценария факта постановки несёт поле `deviation: F-NN` —
+    пометка у варианта, не у записи; уточнение без противоречия — без поля; пометка не замок."""
     rule = block(brainstorm(), "**Отступление от постановки**", "\n\n")
-    for token in ("`deviation: F-NN`", "противоречащее сценарию факта", "`addressee: постановка`",
-                  "Уточнение без противоречия", "без поля", "видимость, не замок", "Решает человек",
-                  "«Отступления от постановки»"):
+    for token in ("`options[].deviation: F-NN`", "противоречит сценарию факта", "`addressee: постановка`",
+                  "у варианта, не у записи", "Уточнение без противоречия", "без поля", "видимость, не замок",
+                  "Решает человек", "выбранный вариант", "«Отступления от постановки»"):
         assert token in rule, f"в правиле отступления нет «{token}»"
 
 
@@ -686,9 +687,9 @@ def test_second_round_lives_at_the_end_of_research():
 
 
 def test_viewer_card_names_the_deviation_badge():
-    """Карточка развилки с `deviation` — бейдж «отступление от F-NN»; слово к выбору и тогда необязательно."""
+    """Вариант с `deviation` — бейдж «отступление от F-NN» у этого варианта; слово к выбору и тогда необязательно."""
     card = block(read(VIEWER / "SKILL.md"), "### «Решения»", "### «Проверка»")
-    for token in ("`deviation`", "бейдж «отступление от F-NN»"):
+    for token in ("`deviation`", "бейдж «отступление от F-NN»", "у варианта", "необязательно"):
         assert token in card, f"в разделе «Решения» нет «{token}»"
 
 
@@ -731,4 +732,6 @@ def test_round_one_on_an_intent_starts_with_a_setting_fact(tmp_path):
     assert sorted(quotes) == sorted(criteria) and len(set(quotes)) == len(quotes), "по одному факту на критерий"
 
     fork = next(r for r in records if r["kind"] == "развилка")
-    assert fork["deviation"] == first["id"] and fork["decision"] is None, "отступление помечено, решает человек"
+    marks = {o["letter"]: o.get("deviation") for o in fork["options"]}
+    assert marks == {"A": None, "B": first["id"]}, "отступает вариант B, уточняющий A пометки не несёт"
+    assert "deviation" not in fork and fork["decision"] is None, "пометка у варианта; решает человек"

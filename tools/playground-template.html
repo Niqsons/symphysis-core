@@ -85,6 +85,7 @@
   .tag.anti { color:var(--bad); border-color:var(--bad); }
   .tag.rec { color:var(--ok); border-color:var(--ok); }
   .tag.journal { color:var(--ok); border-color:var(--ok); }
+  .tag.deviation { color:var(--warn); border-color:var(--warn); }
   .ev { display:block; color:var(--mute); font-size:12px; margin:2px 0 0 2px; }
   .ev code { color:#c9d1d9; }
   .ev .ok { color:var(--ok); } .ev .bad { color:var(--bad); }
@@ -375,8 +376,7 @@ function renderCards() {
     const deps = effectiveDeps(rec);
     const waiting = deps.filter(x => x.kind !== 'removed' && !chosen(x.id)).map(x => x.id);
     let html = '<div class="' + cls + '" id="' + esc(rec.id) + '"><div class="head"><span class="id mono">' + esc(rec.id) + '</span>' + status +
-      '<span class="badge">' + esc(rec.delivery || '—') + '</span>' + (rec.addressee ? '<span class="badge">адресат: ' + esc(rec.addressee) + '</span>' : '') +
-      (rec.deviation ? '<span class="badge warn">отступление от ' + esc(rec.deviation) + '</span>' : '') + '</div>' +
+      '<span class="badge">' + esc(rec.delivery || '—') + '</span>' + (rec.addressee ? '<span class="badge">адресат: ' + esc(rec.addressee) + '</span>' : '') + '</div>' +
       '<div class="q">' + md(rec.question) + '</div>';
     html += '<div class="meta">зависит от: ' + (deps.length ? deps.map(x => '<span class="chip ' + x.kind + '"><a href="#' + esc(x.id) + '">' + esc(x.id) + '</a>' +
       (x.kind === 'removed' ? '<button data-undep="' + esc(rec.id) + '|' + esc(x.id) + '" title="вернуть">↺</button>' : '<button data-rmdep="' + esc(rec.id) + '|' + esc(x.id) + '" title="снять зависимость">×</button>') + '</span>').join('') : '—') +
@@ -398,6 +398,7 @@ function renderCards() {
           (jc === o.letter ? '<span class="tag journal">в журнале</span>' : '') +
           (o.unlikely ? '<span class="tag unlikely" title="' + esc(o.unlikely) + '">маловероятно</span>' : '') +
           (o.added ? '<span class="tag added">добавлен человеком</span>' : '') +
+          (o.deviation ? '<span class="tag deviation">отступление от ' + esc(o.deviation) + '</span>' : '') +
           (anti.length ? '<span class="tag anti" title="нельзя вместе с: ' + esc(anti.join(', ')) + '">антипод ' + esc(anti.join(', ')) + '</span>' : '');
         html += '<label class="opt' + (cur === o.letter ? ' chosen' : '') + (blocked.length ? ' blocked' : '') + '">' +
           '<input type="radio" name="' + esc(rec.id) + '" value="' + esc(o.letter) + '"' + (cur === o.letter ? ' checked' : '') + '>' +

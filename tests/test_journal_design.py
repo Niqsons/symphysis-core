@@ -406,14 +406,23 @@ def test_ordinary_decision_is_not_marked():
     assert "Конструкция не меняется" not in block      # «оставить» — отвергнутый вариант, не выбранный
 
 
-# --- отступление от постановки (5.1, решение контроллера 2) ------------------
+# --- отступление от постановки: только у выбранного отступающего варианта (5.1, ruling) ---------
 
-def test_decision_of_a_deviation_fork_names_the_setting_fact():
-    fork = decided("F-02", "B", [opt("A", "как в постановке"), opt("B", "наследование")], deviation="F-01")
-    block = section(design_of(fork), "Decisions")
-    lines = block.split("\n")
+def deviating_option(letter, text, target="F-01"):
+    return {**opt(letter, text), "deviation": target}
+
+
+def test_decision_on_a_deviating_option_names_the_setting_fact():
+    fork = decided("F-02", "B", [opt("A", "как в постановке"), deviating_option("B", "наследование")])
+    lines = section(design_of(fork), "Decisions").split("\n")
     chosen = next(i for i, line in enumerate(lines) if line.startswith("- **Выбрано:**"))
     assert lines[chosen + 1] == "- **Отступление от постановки:** F-01"
+
+
+def test_decision_on_a_keeping_option_has_no_deviation_line():
+    """Отступающий вариант отвергнут — решение не отступает, строки нет."""
+    fork = decided("F-02", "A", [opt("A", "как в постановке"), deviating_option("B", "наследование")])
+    assert "Отступление от постановки" not in design_of(fork)
 
 
 def test_ordinary_decision_has_no_deviation_line():
