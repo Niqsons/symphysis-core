@@ -232,3 +232,118 @@ def test_live_journal_records_viewer_as_own_skill():
     assert "сгруппировать по ним их \"претензии\" к содержимому" in rec["consequences"]
     assert "symphysis-viewer" in rec["consequences"] and "форк плагина снят" in rec["consequences"]
     assert rec["reversibility"]["level"] == "обратимо" and rec["reversibility"]["why"]
+
+
+# --- факт постановки и пометка отступления (5.1: F-17.A, F-08.A, F-36 Dismiss) ---------------
+
+FIXTURE_JOURNALS = sorted(FIX.glob("*/decisions.json"))
+LIVE_JOURNALS = [ROOT / "docs" / "plan-implementation.journal.json",
+                 ROOT / "openspec" / "changes" / "symphysis-schema" / "decisions.json",
+                 ROOT / "openspec" / "changes" / "calibration-fixes" / "decisions.json"]
+
+
+def setting_journal(**fork_changes) -> dict:
+    """Факт постановки F-01 и развилка F-02; `fork_changes` — поля развилки (например, `deviation`)."""
+    fact = {"id": "F-01", "question": "критерий готовности", "kind": "факт", "status": "решён",
+            "addressee": "постановка", "depends_on": [], "delivery": "", "options": [], "antipodes": [],
+            "recommendation": None, "decision": None, "reversibility": None, "outcome": None,
+            "parking": [], "dispute": "", "consequences": "F-02",
+            "evidence": [{"path": "openspec/changes/x/intent.md", "quote": "критерий"}], "comments": []}
+    fork = {"id": "F-02", "question": "развилка?", "kind": "развилка", "status": "открыт",
+            "addressee": "человек", "depends_on": ["F-01"], "delivery": "",
+            "options": [{"letter": "A", "text": "как в постановке", "added": False, "unlikely": None, "evidence": []},
+                        {"letter": "B", "text": "иначе, чем в постановке", "added": False, "unlikely": None,
+                         "evidence": []}],
+            "antipodes": [], "recommendation": None, "decision": None, "reversibility": None, "outcome": None,
+            "parking": [], "dispute": "", "consequences": "", "evidence": [], "comments": [], **fork_changes}
+    return {"title": "т", "source": "decisions.json", "records": [fact, fork]}
+
+
+def test_setting_fact_is_valid():
+    """Сценарий «Факт постановки»: `kind: факт`, `addressee: постановка` с уликой из intent.md — годен."""
+    assert journal.validate_journal(setting_journal()) == []
+
+
+@pytest.mark.parametrize("value", ["Постановка", "постановка ", " постановка", "ПОСТАНОВКА"])
+def test_setting_addressee_is_not_normalized(value):
+    """F-36 Dismiss: регистр и пробелы не нормализуются — ошибка схемы с именем записи и полем."""
+    j = setting_journal()
+    j["records"][0]["addressee"] = value
+    errors = journal.validate_journal(j)
+    assert errors and all(e.startswith("F-01: addressee:") for e in errors), errors
+    assert repr(value) in errors[0]
+
+
+def test_setting_is_not_a_parking_addressee():
+    """Адресат парковки остаётся из трёх (F-11.D): `постановка` — значение записи, не парковки."""
+    j = setting_journal()
+    j["records"][1]["parking"] = [{"addressee": "постановка", "text": "вопрос"}]
+    assert any(e.startswith("F-02: parking/0/addressee:") for e in journal.validate_journal(j))
+
+
+@pytest.mark.parametrize("path", FIXTURE_JOURNALS + LIVE_JOURNALS, ids=lambda p: p.relative_to(ROOT).as_posix())
+def test_fixture_and_live_journals_stay_valid(path):
+    """Журналы плеч (fixtures) и живые журналы годны: без `постановка` и `deviation` — как прежде
+    (новое значение и поле необязательны), с ними — по новым правилам."""
+    assert journal.validate_journal(journal.load_journal(path)) == []
+
+
+def test_fixture_journals_are_found():
+    assert len(FIXTURE_JOURNALS) >= 4, [p.name for p in FIXTURE_JOURNALS]
+
+
+def test_deviation_on_a_fork_pointing_at_a_setting_fact_is_valid():
+    """Пометка «отступление от постановки» — поле `deviation` развилки с номером факта постановки."""
+    assert journal.validate_journal(setting_journal(deviation="F-01")) == []
+
+
+def test_deviation_with_a_human_decision_against_the_fact_is_valid():
+    """F-55.E: видимость без замка — решение человека против факта со словом и без слова годно."""
+    for word in ("наследование — сознательно", ""):
+        j = setting_journal(deviation="F-01", status="решён",
+                            decision={"option": "B", "word": word, "date": "2026-10-31"},
+                            reversibility={"level": "обратимо", "why": "одно условие в обработчике"})
+        assert journal.validate_journal(j) == []
+
+
+@pytest.mark.parametrize("value", ["F01", "f-01", "F-01.A", "", "F-"])
+def test_deviation_is_a_record_id(value):
+    errors = journal.validate_journal(setting_journal(deviation=value))
+    assert errors and errors[0].startswith("F-02: deviation:"), errors
+
+
+def test_deviation_only_on_a_fork():
+    j = setting_journal()
+    j["records"][0]["deviation"] = "F-01"
+    assert "F-01: отступление от постановки у факта — пометка ставится только у развилки" in \
+        journal.validate_journal(j)
+
+
+def test_deviation_to_a_missing_record():
+    assert journal.validate_journal(setting_journal(deviation="F-09")) == \
+        ["F-02: отступление от постановки F-09 — такой записи нет"]
+
+
+@pytest.mark.parametrize("change, what", [
+    ({"addressee": "материалы"}, "факт с адресатом «материалы»"),
+    ({"kind": "развилка", "status": "открыт", "evidence": [],
+      "options": [{"letter": "A", "text": "а", "added": False, "unlikely": None, "evidence": []}]}, "развилка"),
+])
+def test_deviation_must_point_at_a_setting_fact(change, what):
+    j = setting_journal(deviation="F-01")
+    j["records"][0].update(change)
+    assert journal.validate_journal(j) == \
+        [f"F-02: отступление от постановки F-01 — запись не факт `addressee: постановка`: {what}"]
+
+
+def test_old_journal_without_deviation_has_no_such_key_after_import():
+    """Поле необязательно: импорт не добавляет `deviation` записи без строки «отступление от постановки»."""
+    assert all("deviation" not in r for r in plan()["records"])
+
+
+def test_cli_check_rejects_a_bad_deviation_with_code_1(tmp_path):
+    path = tmp_path / "j.json"
+    journal.save_journal(path, setting_journal(deviation="F-09"))
+    run = subprocess.run([sys.executable, str(ROOT / "tools" / "journal.py"), "check", str(path)],
+                         capture_output=True, text=True, encoding="utf-8")
+    assert run.returncode == 1 and "[!!] F-02: отступление от постановки F-09 — такой записи нет" in run.stderr

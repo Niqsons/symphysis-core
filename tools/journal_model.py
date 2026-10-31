@@ -11,7 +11,7 @@ from pathlib import Path
 from jsonschema import Draft202012Validator
 
 __all__ = [
-    "ROOT", "SCHEMA_PATH", "RE_ANCHOR", "RE_REC", "ADDED_MARK", "PROBE_OUTCOMES",
+    "ROOT", "SCHEMA_PATH", "RE_ANCHOR", "RE_REC", "ADDED_MARK", "PROBE_OUTCOMES", "DEVIATION_LABEL", "SETTING",
     "load_journal", "save_journal", "validate_journal", "import_md", "import_md_text",
     "_unquote", "_flat", "_new_record", "_evidence_of",
 ]
@@ -38,6 +38,10 @@ RE_NOTE = re.compile(r"^- (\d{4}-\d{2}-\d{2}) — (.*)$")
 RE_OUTCOME = re.compile(r"^(проба|вопрос)\s*—\s*(.*?)(?:\s+—\s+(.*))?$")
 DASH = {"—", "-", ""}
 ADDED_MARK = "(добавлен человеком"
+# Пометка «отступление от постановки» (F-08.A): поле `deviation` развилки — номер факта постановки;
+# в markdown — строка `- отступление от постановки: F-NN`, импорт разбирает её обратно в поле.
+DEVIATION_LABEL = "отступление от постановки"
+SETTING = "постановка"   # адресат факта из intent.md (F-17.A)
 # Исходы кандидата пробы — слова GSD (F-09.C): `Dismiss` только с причиной (`edge-probe.md:89`).
 PROBE_OUTCOMES = ("Specify", "Dismiss", "Backstop", "Defer")
 
@@ -101,7 +105,8 @@ def _new_record(rid: str, question: str) -> dict:
 def import_md_text(text: str, source: str = "") -> dict:
     """Разбирает markdown-журнал в формате `plan-flexible-pipeline.md` в словарь по схеме.
     Строка `- исход: <вид> — <значение>[ — <причина>]` — в `outcome` (не по форме — пропуск
-    с пометкой в stderr). Раздел `## Заметки` в конце файла — в `notes[]`: строка
+    с пометкой в stderr). Строка `- отступление от постановки: F-NN` — в `deviation` записи;
+    нет строки — нет поля. Раздел `## Заметки` в конце файла — в `notes[]`: строка
     `- <дата> — <текст>`, строки с отступом в два пробела — продолжение текста заметки."""
     journal = {"title": "", "source": source, "records": []}
     intro: list[str] = []
@@ -171,6 +176,9 @@ def import_md_text(text: str, source: str = "") -> dict:
                 rec["delivery"] = val
             elif key == "зависит от":
                 rec["depends_on"] = [] if val in DASH else [v.strip() for v in val.split(",") if v.strip()]
+            elif key == DEVIATION_LABEL:
+                if val not in DASH:
+                    rec["deviation"] = val
             elif key == "антиподы":
                 for p in ([] if val in DASH else [p.strip() for p in val.split(";") if p.strip()]):
                     mm = RE_ANTIPODE.match(p)
@@ -253,9 +261,27 @@ def _schema_errors(journal) -> list[str]:
     return errors
 
 
+def _deviation_error(rec: dict, by_id: dict[str, dict]) -> str | None:
+    """`deviation` — только у развилки и только на существующий факт `addressee: постановка`.
+    Решение человека против этого факта ошибкой не считается: пометка — видимость, не замок (F-55.E)."""
+    rid, target = rec["id"], rec.get("deviation")
+    if target is None:
+        return None
+    if rec["kind"] != "развилка":
+        return f"{rid}: {DEVIATION_LABEL} у факта — пометка ставится только у развилки"
+    fact = by_id.get(target)
+    if fact is None:
+        return f"{rid}: {DEVIATION_LABEL} {target} — такой записи нет"
+    if fact["kind"] != "факт" or fact["addressee"] != SETTING:
+        what = "развилка" if fact["kind"] == "развилка" else f"факт с адресатом «{fact['addressee']}»"
+        return f"{rid}: {DEVIATION_LABEL} {target} — запись не факт `addressee: {SETTING}`: {what}"
+    return None
+
+
 def _rule_errors(journal: dict) -> list[str]:
     errors = []
     letters = {r["id"]: {o["letter"] for o in r["options"]} for r in journal["records"]}
+    by_id = {r["id"]: r for r in journal["records"]}
     for r in journal["records"]:
         rid, own = r["id"], letters[r["id"]]
         if r["kind"] == "факт" and r["options"]:
@@ -282,6 +308,8 @@ def _rule_errors(journal: dict) -> list[str]:
                 errors.append(f"{rid}: антипод {a['option']} ↔ {a['other']}: у {target} нет варианта {letter}")
         if r["decision"] and r["decision"]["option"] not in own:
             errors.append(f"{rid}: решение {r['decision']['option']} — такого варианта нет среди {sorted(own)}")
+        if (deviation := _deviation_error(r, by_id)):
+            errors.append(deviation)
         outcome = r["outcome"]
         if outcome and outcome["kind"] == "проба":   # лексика «вопрос» — у своего скилла
             if outcome["value"] not in PROBE_OUTCOMES:

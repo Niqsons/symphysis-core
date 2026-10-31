@@ -380,6 +380,15 @@ def test_proposal_template_keeps_headings_the_cli_parses():
     assert "F-MM против F-NN" in text and "Уточнение без противоречия" in text
 
 
+def test_proposal_deviations_come_from_the_deviation_field():
+    """5.1, решение контроллера 3: источник раздела «Отступления от постановки» — развилки с полем `deviation`;
+    в раздел идёт развилка, чей выбранный вариант противоречит сценарию факта."""
+    comment = section(template_text("proposal.md"), "Отступления от постановки")
+    instruction = " ".join(schema_block("proposal").split())
+    for text in (comment, instruction):
+        assert "`deviation`" in text and "`addressee: постановка`" in text and "выбранный вариант" in text
+
+
 def test_tasks_template_follows_openspec_checkbox_grammar():
     text = template_text("tasks.md")
     assert re.findall(r"^## (\d+)\. ", text, re.M) == ["1", "2"]
