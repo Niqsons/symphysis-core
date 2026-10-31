@@ -115,6 +115,17 @@ def test_unmatched_fact_evidence_is_kept_with_the_verdict():
     assert "upstream/x.ts «нет такой» — цитаты нет дословно" in context
 
 
+def test_unverifiable_evidence_carries_its_verdict():
+    """Финальное ревью, minor 7: `found: null` после `check` — «не проверить: …» (бинарный файл, не UTF-8),
+    пометка как у `found: false`; улика, которую не сверяли (нет ни `found`, ни `verdict`), — как есть."""
+    fact = record("F-20", "факт", kind="факт", evidence=[
+        ev("docs/bin.dat", "байты", line=None, found=None, verdict="не проверить: бинарный файл"),
+        ev("docs/new.md", "не сверяли")])
+    context = section(design_of(fact), "Context")
+    assert "docs/bin.dat «байты» — не проверить: бинарный файл" in context
+    assert "  - docs/new.md «не сверяли»" in context.splitlines()
+
+
 # --- Decisions --------------------------------------------------------------
 
 def test_decision_block_carries_choice_word_reversibility_evidence_and_rejected():

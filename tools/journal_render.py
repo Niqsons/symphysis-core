@@ -348,9 +348,14 @@ def _ref(ev: dict) -> str:
 
 
 def _unmatched(ev: dict) -> str:
-    """Улика, которую сверяли и не нашли, несёт вердикт: цитата без пометки читалась бы
-    как проверенная. Несверенная (`found` нет или `null`) пишется как есть."""
-    return f" — {ev.get('verdict') or 'цитаты нет'}" if ev.get("found") is False else ""
+    """Улика, которую сверяли и не нашли (`found: false`) или не смогли проверить (`found: null`
+    с вердиктом «не проверить: …» — бинарный файл, не UTF-8), несёт вердикт: цитата без пометки
+    читалась бы как проверенная. Улика, которую не сверяли (нет ни `found`, ни `verdict`), — как есть."""
+    if ev.get("found") is False:
+        return f" — {ev.get('verdict') or 'цитаты нет'}"
+    if ev.get("found") is None and ev.get("verdict"):
+        return f" — {ev['verdict']}"
+    return ""
 
 
 def _cite(ev: dict) -> str:

@@ -696,6 +696,18 @@ def test_escaped_backslash_and_unclosed_backtick(tmp_path):
     assert "bad.md:9:" in msg and "«Утверждение»" in msg and "backtick" in msg
 
 
+def test_escapes_inside_code_and_lone_backslash(tmp_path):
+    r"""Триаж 5B: внутри backticks `\|` — `|`, `\\` — `\`; обратная косая перед иным символом литеральна;
+    `\\|` вне кода через `parse_attack_md` — литеральная косая и разделитель."""
+    row = r"| `a\|b` и `c:\\d` | F-23 | coverage | x\y и `\n` | справка | нет | — |"
+    cells = journal.parse_attack_md(attack_file(tmp_path, row))["rows"][0]
+    assert cells["claim"] == r"`a|b` и `c:\d`"
+    assert cells["invariant"] == r"x\y и `\n`"
+    outside = attack_file(tmp_path, r"| a\\| F-34 | coverage | x | справка | нет | — |", name="outside.md")
+    cells = journal.parse_attack_md(outside)["rows"][0]
+    assert cells["claim"] == "a\\" and cells["section"] == "F-34" and cells["fix"] == "—"
+
+
 def test_empty_required_cell_names_the_column(tmp_path):
     path = attack_file(tmp_path, "| чисто | F-03 | coverage |  | справка | есть | — |", name="empty.md")
     with pytest.raises(ValueError) as err:
@@ -1000,6 +1012,12 @@ def test_deviation_tail_in_option_text_does_not_turn_into_the_field(tmp_path):
     assert run.returncode == 1 and not (tmp_path / "j.md").exists()
     assert "[!!] F-02: вариант A — текст варианта оканчивается пометкой отступления без поля" in run.stderr
 
+    # триаж финального ревью: хвостовой пробел не прячет пометку от check — импорт её всё равно принял бы
+    a["text"] = "вариант (отступление от F-01) "
+    assert journal.validate_journal(j) == \
+        ["F-02: вариант A — текст варианта оканчивается пометкой отступления без поля"]
+
+    a["text"] = "вариант (отступление от F-01)"
     a["deviation"] = "F-01"
     assert journal.validate_journal(j) == []
     back = roundtrip(j)

@@ -276,7 +276,7 @@ def _deviation_errors(rec: dict, by_id: dict[str, dict]) -> list[str]:
     for opt in rec["options"]:
         target = opt.get("deviation")
         if target is None:
-            if RE_DEVIATION_TAIL.match(opt["text"]):
+            if RE_DEVIATION_TAIL.match(opt["text"].rstrip()):
                 errors.append(f"{rec['id']}: вариант {opt['letter']} — текст варианта оканчивается пометкой"
                               " отступления без поля")
             continue
