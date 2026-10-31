@@ -263,12 +263,45 @@ def test_attack_templates_table_and_verdict_rule(name):
     for severity in ATTACK_SEVERITIES:
         assert severity in text, f"в шаблоне нет тяжести «{severity}»"
     assert "по спеке не выводится" in text, "в шаблоне нет строки воздержания"
-    assert "coverage" in text, "в шаблоне нет линзы `coverage` для строк «чисто» и «не пройдено»"
-    assert "инварианта не несут" in text, "в шаблоне нет исключения для строк покрытия"
     assert "повторить атаку по разделу" in text, "в закрытом списке закрытий нет «повторить атаку по разделу»"
     closing = last_line(text)
     assert closing == f"Вердикт: {VERDICT_RULE}.", closing
     assert "без опоры" not in text, "правило вердикта не считает «опору»: тяжесть несут только строки «нет»"
+
+
+# Закрытые списки линз по файлу атаки — те же, что в SKILL.md `symphysis-attack` и в просмотрщике (F-07.A);
+# линзы присутствия сняты.
+TEMPLATE_LENSES = {"attack-decisions.md": ("context-compliance", "claim-authority", "claim-extraction", "coverage"),
+                   "attack-artifacts.md": ("scenario-run", "claim-extraction")}
+REMOVED_LENS_SLUGS = ("requirement-coverage", "task-completeness", "dependency-correctness", "key-links",
+                      "scope-sanity", "verification-derivation", "scope-reduction", "data-contracts",
+                      "research-resolution", "honest-verifier")
+
+
+@pytest.mark.parametrize("name", TEMPLATE_LENSES)
+def test_attack_templates_name_own_closed_lens_list(name):
+    text = template_text(name)
+    lenses = ", ".join(TEMPLATE_LENSES[name])
+    assert f"закрытого списка скилла symphysis-attack для этого файла: {lenses}." in text, \
+        f"шаблон {name} не называет свой список линз: {lenses}"
+    for slug in REMOVED_LENS_SLUGS:
+        assert slug not in text, f"в шаблоне {name} осталась снятая линза {slug}"
+
+
+def test_attack_decisions_template_keeps_coverage_rows():
+    text = template_text("attack-decisions.md")
+    assert "линза coverage" in text, "в шаблоне журнала нет линзы `coverage` для строк «чисто» и «не пройдено»"
+    assert "инварианта не несут" in text, "в шаблоне нет исключения для строк покрытия"
+
+
+def test_attack_artifacts_template_covers_by_scenarios():
+    """У артефактов строк `coverage` нет: покрытие держит `scenario-run` — каждый сценарий в строке,
+    непройденный — «нет: не пройдено», механизм не назван — «нет: design не называет механизм»."""
+    text = template_text("attack-artifacts.md")
+    assert "coverage" not in text, "у артефактов строк покрытия `coverage` нет (F-07.A)"
+    for token in ("каждый сценарий каждой спеки цели", "нет: не пройдено", "нет: design не называет механизм",
+                  "исход совпал", "THEN"):
+        assert token in text, f"в шаблоне артефактов нет «{token}»"
 
 
 def test_attack_decisions_template_names_single_target():

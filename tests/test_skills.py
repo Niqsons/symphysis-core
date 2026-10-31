@@ -201,13 +201,20 @@ FORCE_LINES = ("Assume every plan set is flawed until evidence proves otherwise"
                "Assume every factual claim in the doc is wrong until filesystem evidence proves it correct")
 # Тяжесть строки атаки — переложение BLOCKER / WARNING / INFO (`agents/gsd-plan-checker.md:39-42`).
 ATTACK_SEVERITIES = ("блокер", "предупреждение", "справка")
-# Линзы атаки — измерения plan-checker по имени (`gsd-plan-checker.md:126`, `:705`) и слуги колонки
-# «Линза» (закрытый список SKILL.md; просмотрщик группирует строки по слугу — слово владельца 2026-10-30).
-ATTACK_LENSES = ("Requirement Coverage", "Numeric/Factual Claim Authority")
-ATTACK_LENS_SLUGS = ("requirement-coverage", "task-completeness", "dependency-correctness", "key-links",
-                     "scope-sanity", "verification-derivation", "context-compliance", "scope-reduction",
-                     "data-contracts", "research-resolution", "claim-authority", "claim-extraction",
-                     "honest-verifier", "coverage")
+# Линзы атаки — измерения plan-checker по имени (`gsd-plan-checker.md:376`, `:705`) и слуги колонки
+# «Линза»: закрытый список на каждый файл атаки (F-07.A), просмотрщик группирует строки по слугу —
+# слово владельца 2026-10-30. Порядок — порядок таблицы SKILL.md и константы ATTACK_LENSES шаблона.
+ATTACK_LENSES = ("Context Compliance", "Numeric/Factual Claim Authority")
+ATTACK_LENS_LISTS = {
+    "journal": ["context-compliance", "claim-authority", "claim-extraction", "coverage"],
+    "artifacts": ["scenario-run", "claim-extraction"],
+}
+# Метки таблиц линз в SKILL.md, шаг 3: таблица файла — первая после метки.
+LENS_TABLES = {"journal": "**Линзы журнала**", "artifacts": "**Линзы артефактов**"}
+# Линзы присутствия, снятые решением F-07.A: детерминируемое — в `journal.py check` и `openspec validate --strict`.
+REMOVED_LENS_SLUGS = ("requirement-coverage", "task-completeness", "dependency-correctness", "key-links",
+                      "scope-sanity", "verification-derivation", "scope-reduction", "data-contracts",
+                      "research-resolution", "honest-verifier")
 # Воздержание honest-verifier: строка, которая не «есть» и не «нет» (`honest-verifier.md:43`).
 ABSTENTION_ROW = "по спеке не выводится"
 # Одно правило вердикта — то же, что в шаблонах (`tests/test_schema.py::VERDICT_RULE`), дословно в §5 и в приёмке.
@@ -236,7 +243,7 @@ def test_attack_skill_writes_verdict_contract():
     for lens in ATTACK_LENSES:
         assert lens in text, f"в SKILL.md нет линзы plan-checker «{lens}»"
     assert "| Линза |" in text, "в SKILL.md нет таблицы закрытого списка линз с колонкой «Линза»"
-    for slug in ATTACK_LENS_SLUGS:
+    for slug in {s for lenses in ATTACK_LENS_LISTS.values() for s in lenses}:
         assert f"`{slug}`" in text, f"в SKILL.md нет слуга линзы `{slug}`"
     assert ABSTENTION_ROW in text, f"в SKILL.md нет строки воздержания «{ABSTENTION_ROW}»"
     # правило переносится через строку в §5 — сравнение по схлопнутым пробелам, как `check` сверяет цитаты
@@ -258,6 +265,150 @@ def test_attack_skill_writes_verdict_contract():
         "в TRANSLATION-NOTES.md нет строки про заимствование из store"
 
 
+# --- атака: линзы следования вместо линз присутствия (7.1: F-07.A, F-12.A, F-08.A, F-09.A, F-23.A,
+# F-32.E, F-33.E, F-34.E, F-53.E, F-54.E) ---
+
+ATTACK_SKILL = SKILLS / "symphysis-attack"
+
+
+def flat(text):
+    """Текст в одну строку: переносы markdown не в счёт, как `check` сверяет цитаты."""
+    return " ".join(text.split())
+
+
+def block(text, start, stop):
+    """Кусок текста от метки `start` до первой метки `stop` после неё (или до конца), в одну строку."""
+    assert start in text, f"в SKILL.md нет «{start}»"
+    tail = text[text.index(start):]
+    end = tail.find(stop, len(start))
+    return flat(tail if end < 0 else tail[:end])
+
+
+def lens_table(text, marker):
+    """Строки данных таблицы линз, первой после метки: от заголовка `| Линза |` до конца таблицы."""
+    assert marker in text, f"в SKILL.md нет метки таблицы «{marker}»"
+    tail = text[text.index(marker):]
+    rows = []
+    for line in tail[tail.index("| Линза |"):].splitlines()[2:]:
+        if not line.startswith("|"):
+            break
+        rows.append(line)
+    return rows
+
+
+def lens_row(text, file, slug):
+    return next(row for row in lens_table(text, LENS_TABLES[file]) if row.startswith(f"| `{slug}`"))
+
+
+def test_attack_skill_drops_presence_lenses():
+    """F-07.A: линзы присутствия сняты целиком — ни строки таблицы, ни слуга; одна фраза-ссылка
+    на `journal.py check` и `openspec validate --strict`."""
+    text = read(ATTACK_SKILL / "SKILL.md")
+    for slug in REMOVED_LENS_SLUGS:
+        assert f"`{slug}`" not in text, f"в SKILL.md остался слуг снятой линзы `{slug}`"
+    step3 = block(text, "### 3. Линзы", "\n### 4.")
+    for token in ("`journal.py check`", "`openspec validate --strict`", "F-07.A"):
+        assert token in step3, f"в шаге 3 нет фразы-ссылки о снятых линзах: «{token}»"
+
+
+def test_attack_skill_scenario_run_row_form():
+    """F-07.A, F-32.E, F-33.E: строка `scenario-run` — сценарий, механизм, код, исход, THEN; строка на пару;
+    механизм не назван — блокер без воздержания; воздержание — только край Defer; покрытие — каждым сценарием."""
+    text = read(ATTACK_SKILL / "SKILL.md")
+    row = flat(lens_row(text, "artifacts", "scenario-run"))
+    assert "SELF" in row and "F-03" in row and "F-07.A" in row, "источник `scenario-run` — SELF: калибровка, F-03, F-07.A"
+    artifacts = block(text, LENS_TABLES["artifacts"], "\n### 4.")
+    for token in ("`<файл>, <требование> / <сценарий>`", "механизм design", "THEN сценария",
+                  "`есть: <путь:строка> «код» → исход совпал`",
+                  "`нет: <путь:строка> «код» → исход <какой>, THEN <какой>`",
+                  "`нет: design не называет механизм`",
+                  "Одна строка на пару «сценарий × механизм»", "инвариант каждой — исход по своему коду",
+                  "воздержания нет: ответ выводится из design", "исходом Defer",
+                  "каждый сценарий каждой спеки цели", "нет: не пройдено", "повторить атаку по разделу",
+                  "чтением кода и рассуждением"):
+        assert token in artifacts, f"в описании строки `scenario-run` нет «{token}»"
+
+
+def test_attack_skill_reads_does_not_execute():
+    """F-53.E: «читает, не исполняет» — отдельный абзац; разрешены чтение и греп; проверка — ревью транскрипта."""
+    text = read(ATTACK_SKILL / "SKILL.md")
+    rule = block(text, "**Читает, не исполняет.**", "\n\n")
+    for token in ("не запускает код образца, тесты, сборку или команды цели", "чтение файлов и греп",
+                  "`claim-extraction`", "`claim-authority`", "`wc`", "`grep -c`", "`sha256sum`",
+                  "ревью транскрипта", "суждение"):
+        assert token in rule, f"в правиле «читает, не исполняет» нет «{token}»"
+
+
+def test_attack_skill_demotion_needs_a_reason():
+    """F-54.E: тяжесть «нет» — тяжесть линзы (у всех — блокер); иная — с причиной в скобках той же ячейки."""
+    text = read(ATTACK_SKILL / "SKILL.md")
+    rule = block(text, "**Понижение тяжести.**", "\n\n")
+    for token in ("тяжесть линзы", "`блокер`", "`предупреждение (<причина>)`", "в той же ячейке",
+                  "нарушение правила", "«понижение без причины»"):
+        assert token in rule, f"в правиле понижения тяжести нет «{token}»"
+    for file, slugs in ATTACK_LENS_LISTS.items():
+        for slug in slugs:
+            assert "блокер" in lens_row(text, file, slug), f"у линзы `{slug}` ({file}) тяжесть «нет» — не блокер"
+
+
+def test_attack_skill_leaves_journal_hygiene_to_check():
+    """F-12.A: гигиену журнала ловит `check` (код 1 / `[!!]`), атака её не репортит."""
+    text = read(ATTACK_SKILL / "SKILL.md")
+    skip = block(text, "Не репортится", "\n\n")
+    for token in ("`факт` без улики", "`recommendation` с пустым `why`", "без `finding`",
+                  "буква решения вне вариантов", "`journal.py check`", "код 1", "`[!!]`"):
+        assert token in skip, f"в «Не репортится» нет гигиены журнала: «{token}»"
+    for file in LENS_TABLES:
+        for row in lens_table(text, LENS_TABLES[file]):
+            assert "без улики" not in row and "`finding`" not in row and "`why`" not in row, \
+                f"гигиена журнала в таблице линз: {row[:60]}"
+
+
+def test_attack_skill_context_compliance_sees_the_setting():
+    """F-08.A, F-09.A, F-55.E: решение против факта постановки без пометки — находка; пометка со словом
+    человека — справка; опора решения design на факт или на запись без решения — блокер."""
+    row = flat(lens_row(read(ATTACK_SKILL / "SKILL.md"), "journal", "context-compliance"))
+    for token in ("`addressee: постановка`", "пометки «отступление от постановки»", "словом человека",
+                  "`справка`", "опора решения design на факт или на запись без решения", "блокер"):
+        assert token in row, f"в строке `context-compliance` нет «{token}»"
+
+
+def test_attack_skill_cell_rule():
+    r"""F-23.A, F-34.E: черта — `\|` или внутри backticks; `\\|` — косая и черта в цитате кода; пустых ячеек нет."""
+    rule = block(read(ATTACK_SKILL / "SKILL.md"), "**Правило ячейки.**", "\n\n")
+    for token in (r"`\|`", "внутри backticks", "цитата кода — в backticks", r"`\\|`", r"`\\`",
+                  "следующая черта — разделитель", "Пустых ячеек нет", "«—»", "код 2",
+                  "файлом, строкой и столбцом"):
+        assert token in rule, f"в правиле ячейки нет «{token}»"
+
+
+def test_attack_skill_target_paths_relative_to_change_dir():
+    """Дополнение контроллера 13: форк считает `path` и `target` от каталога изменения — хеш печатается
+    из каталога изменения, путь с префиксом `openspec/changes/<имя>/` даёт вечный `stale`."""
+    text = read(ATTACK_SKILL / "SKILL.md")
+    assert "sha256sum <каталог изменения>/" not in text, "хеш с префиксом каталога: такой путь в `path:` — вечный stale"
+    assert "cd <каталог изменения> && sha256sum decisions.json" in text
+    assert "cd <каталог изменения> && find specs -name '*.md'" in text
+    files = block(text, "## Файлы и команды", "\n## Порядок атаки")
+    for token in ("относительно каталога изменения", "`specs/<cap>/spec.md`", "`openspec/changes/<имя>/`",
+                  "`stale`"):
+        assert token in files, f"в «Файлы и команды» нет правила пути цели: «{token}»"
+
+
+def test_attack_translation_notes_name_self_and_removed_dimensions():
+    """`scenario-run` — измерение SELF; снятые измерения plan-checker — с причиной (F-07.A); выписки GSD помечены."""
+    notes = table_rows(read(ATTACK_SKILL / "TRANSLATION-NOTES.md"))
+    assert any("`scenario-run`" in row and "SELF" in row and "F-03" in row for row in notes), \
+        "в TRANSLATION-NOTES.md нет строки о `scenario-run` как измерении SELF"
+    removed = [row for row in notes if "F-07.A" in row and all(f"`{s}`" in row for s in REMOVED_LENS_SLUGS)]
+    assert removed, "в TRANSLATION-NOTES.md нет строки о снятых измерениях с причиной F-07.A"
+    assert "`journal.py check`" in removed[0] and "`openspec validate --strict`" in removed[0]
+    for name in ("plan-checker-dimensions.md", "honest-verifier.md"):
+        mark = read(ATTACK_SKILL / "references" / name).splitlines()[1]
+        assert "F-07.A" in mark and "не линз" in mark, f"references/{name}: нет пометки «не линза после F-07.A»"
+    assert "Requirement Coverage" in read(ATTACK_SKILL / "references" / "plan-checker-dimensions.md").splitlines()[1]
+
+
 # --- просмотрщик: линзы атаки и перспективы интервью не смешиваются (слово владельца 2026-10-30) ---
 
 TEMPLATE = ROOT / "tools" / "playground-template.html"
@@ -265,15 +416,11 @@ TEMPLATE = ROOT / "tools" / "playground-template.html"
 PERSPECTIVES_RU = ("Исследователь", "Упрощатель", "Хранитель границ", "Аналитик отказов", "Закрывающий")
 
 
-def skill_lens_slugs():
-    """Слуги таблицы линз SKILL.md атаки в порядке строк: от заголовка `| Линза |` до конца таблицы."""
+def skill_lens_lists():
+    """Закрытые списки линз SKILL.md атаки по файлам: слуги таблицы после метки файла в порядке строк."""
     text = read(SKILLS / "symphysis-attack" / "SKILL.md")
-    rows = []
-    for line in text[text.index("| Линза |"):].splitlines()[2:]:
-        if not line.startswith("|"):
-            break
-        rows.append(re.match(r"\| `([^`]+)`", line).group(1))
-    return rows
+    return {file: [re.match(r"\| `([^`]+)`", row).group(1) for row in lens_table(text, marker)]
+            for file, marker in LENS_TABLES.items()}
 
 
 def template_lens_lists():
@@ -290,11 +437,9 @@ def template_lens_slugs():
 
 
 def test_template_lenses_match_the_closed_list():
-    assert skill_lens_slugs() == list(ATTACK_LENS_SLUGS), "константа теста разошлась с таблицей SKILL.md"
-    # F-07.A: журнал и артефакты — свои закрытые списки, порядок — порядок списка
-    assert template_lens_lists() == {
-        "journal": ["context-compliance", "claim-authority", "claim-extraction", "coverage"],
-        "artifacts": ["scenario-run", "claim-extraction"]}, f"ATTACK_LENSES шаблона: {template_lens_lists()}"
+    # F-07.A: журнал и артефакты — свои закрытые списки, порядок — порядок списка; скилл и шаблон — буква в букву
+    assert skill_lens_lists() == ATTACK_LENS_LISTS, f"таблицы линз SKILL.md: {skill_lens_lists()}"
+    assert template_lens_lists() == ATTACK_LENS_LISTS, f"ATTACK_LENSES шаблона: {template_lens_lists()}"
 
 
 def test_template_keeps_perspectives_out_of_attack_mode():
