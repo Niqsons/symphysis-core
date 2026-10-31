@@ -691,6 +691,14 @@ it('continue skill and command carry the verdict step before artifact creation',
 
 ---
 
+## Правки по калибровке
+
+Правки по итогам сухого прогона ведёт изменение `calibration-fixes`:
+задачи и их порядок — в `openspec/changes/calibration-fixes/tasks.md`
+(здесь не дублируются).
+
+---
+
 ## Самопроверка плана
 
 - **Покрытие спеки:** П1 → B1–B4; П2 → A1, A3; П3 → D1–D5; П4 → C1–C5; П5 → A2, A4–A6; П6 → E1–E4; П7 — вне плана (форк плагина по кругам обратной связи, `docs/plan-implementation.md`, «Чего в плане нет»); Э6 → F1–F2. Решения F-01…F-19 — каждое названо в задаче, где применяется.
