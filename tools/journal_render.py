@@ -158,8 +158,9 @@ def _viewer_record(rec: dict) -> dict:
 
 
 def _embed(obj) -> str:
-    """JSON для `<script>` шаблона: `</` экранируется как `<\\/`, чтобы текст не закрыл `<script>`."""
-    return json.dumps(obj, ensure_ascii=False, indent=1).replace("</", "<\\/")
+    """JSON для `<script>` шаблона: `</` экранируется как `<\\/`, чтобы текст не закрыл `<script>`,
+    `<!--` — как `\\u003c!--`, чтобы текст не открыл в скрипте «экранированное» состояние разбора HTML."""
+    return json.dumps(obj, ensure_ascii=False, indent=1).replace("</", "<\\/").replace("<!--", "\\u003c!--")
 
 
 def render_html(journal: dict, template: Path, attacks: list[dict] | None = None,

@@ -520,7 +520,7 @@ def test_viewer_check_mode_projects_records_like_render_design(tmp_path):
 
 @requires_node
 def test_viewer_attack_mode_groups_by_lens_and_returns_disputes_as_notes(tmp_path):
-    """Режим «атака»: линза → тяжесть → строки в порядке LENSES, линза без строк не показана; раздел `F-NN, поле`
+    """Режим «атака»: линза → тяжесть → строки в порядке списка линз файла, линза без строк не показана; раздел `F-NN, поле`
     — ссылка на карточку; споры из browser storage уходят в одну строку «Замечания к схеме:» после замечаний
     режима 1, через « · », и `parse_answers` читает её одной заметкой."""
     attacks = fixture_attacks()
@@ -530,8 +530,8 @@ def test_viewer_attack_mode_groups_by_lens_and_returns_disputes_as_notes(tmp_pat
     out = smoke(tmp_path, html, {"notes": "стрелка лишняя", "__suffixes__": {
         ":mode": "attack", ":attack": {"disputes": {key: "опора есть:\n  улика F-01 сверена"}}}})
     attack = out["attack"]
-    assert re.findall(r"<h2><code>([a-z-]+)</code>", attack) == [
-        "context-compliance", "claim-authority", "coverage", "requirement-coverage", "honest-verifier", "coverage"]
+    assert re.findall(r"<h2><code>([a-z-]+)</code>", attack) == ["context-compliance", "claim-authority", "coverage"]
+    assert attack.count("<h2>вне списка") == 1             # у артефактов все три линзы фикстуры — не из списка артефактов
     assert "хеш журнала совпал" in attack and "вердикт устарел" not in attack
     assert 'data-goto="F-01"' in attack and "вне списка" not in attack.split("<h2>")[1]
     assert "Researcher" not in attack and "Исследователь" not in attack
@@ -717,3 +717,174 @@ def test_cli_render_html_broken_attack_file_exits_2_with_position(tmp_path):
     assert run.returncode == 2, run.stdout + run.stderr
     assert "broken-cell.md:9:" in run.stderr and "Утверждение" in run.stderr
     assert not out.exists()
+
+
+# --- режим «атака»: фильтр, счётчики, блок записи, слуги, понижение, улики без проверки ---------
+
+JOURNAL_TARGET = [{"path": "decisions.json", "sha256": ""}]
+ARTIFACT_TARGETS = JOURNAL_TARGET + [{"path": "design.md", "sha256": ""}]
+
+
+def arow(section="F-01, decision", lens="context-compliance", severity="блокер", support="нет", claim="утверждение",
+         fix="правка записи", invariant="инвариант"):
+    return {"claim": claim, "section": section, "lens": lens, "invariant": invariant, "severity": severity,
+            "support": support, "fix": fix}
+
+
+def afile(rows, targets=JOURNAL_TARGET, path="attack/decisions.md", status="gaps_found"):
+    return {"path": path, "frontmatter": {"status": status, "targets": targets}, "rows": rows}
+
+
+def attack_view(tmp_path, attacks, suffixes=None, j=None):
+    """Панели страницы в режиме «атака»; `suffixes` — дополнительные ключи browser storage (`:lens`)."""
+    state = {"__suffixes__": dict({":mode": "attack"}, **(suffixes or {}))}
+    return smoke(tmp_path, journal.render_html(j or plan(), TEMPLATE, attacks=attacks, journal_sha256=FAKE_SHA), state)
+
+
+def without_rows(attack_html):
+    """Шапки файлов и фильтр: всё, кроме контейнеров строк (`attack-rows` … маркер конца)."""
+    return re.sub(r'<div class="attack-rows">.*?<!--/attack-rows-->', "", attack_html, flags=re.S)
+
+
+@requires_node
+def test_viewer_attack_has_lens_filter_and_severity_counters_outside_the_rows(tmp_path):
+    """6.1: переключатель линз («все» и слуги файла) и блок счётчиков тяжести по всему файлу стоят вне контейнера строк."""
+    rows = [arow(lens="context-compliance"), arow(lens="context-compliance", claim="второй"),
+            arow(lens="claim-authority", severity="справка", support="есть"),
+            arow(lens="coverage", severity="предупреждение", support="по спеке не выводится")]
+    attack = attack_view(tmp_path, [afile(rows)])["attack"]
+    assert 'id="lensFilter"' in attack and 'data-lens="all"' in attack
+    for slug in ("context-compliance", "claim-authority", "coverage"):
+        assert f'data-lens="{slug}"' in attack
+    assert 'data-lens="scenario-run"' not in attack and 'data-lens="__outside__"' not in attack
+    assert "блокеров <b>2</b> · предупреждений <b>1</b> · справок <b>1</b>" in without_rows(attack)
+    assert "блокеров" not in attack[attack.index('<div class="attack-rows">'):attack.index("<!--/attack-rows-->")]
+
+
+@requires_node
+def test_viewer_attack_filter_hides_groups_but_not_blocker_counters(tmp_path):
+    """Сценарий «Фильтр и счётчик блокеров»: при фильтре «claim-authority» видны строки этой линзы, шапка по-прежнему
+    показывает «блокеров 2» по всему файлу (F-56.E)."""
+    rows = [arow(lens="context-compliance", claim="блокер один"), arow(lens="context-compliance", claim="блокер два"),
+            arow(lens="claim-authority", severity="справка", support="есть", claim="справка про числа")]
+    attack = attack_view(tmp_path, [afile(rows)], {":lens": "claim-authority"})["attack"]
+    assert "справка про числа" in attack and "блокер один" not in attack and "блокер два" not in attack
+    assert re.findall(r"<h2><code>([a-z-]+)</code>", attack) == ["claim-authority"]
+    assert 'class="small active" data-lens="claim-authority"' in attack
+    assert "блокеров <b>2</b>" in without_rows(attack)
+    # линзы, которой в файлах нет, фильтр не держит: страница показывает всё
+    stale = attack_view(tmp_path, [afile(rows)], {":lens": "scenario-run"})["attack"]
+    assert "блокер один" in stale and 'class="small active" data-lens="all"' in stale
+
+
+@requires_node
+def test_viewer_attack_lens_lists_follow_the_target_of_the_file(tmp_path):
+    """Журнал (`decisions.json` — единственная цель): context-compliance, claim-authority, claim-extraction, coverage;
+    артефакты: scenario-run, claim-extraction. Прочие слуги — «вне списка»: в тяжести считаются, в линзе нет."""
+    jr = [arow(lens=s, claim=f"ж-{s}") for s in ("context-compliance", "claim-authority", "claim-extraction", "coverage", "scenario-run", "style")]
+    ar = [arow(section="design.md", lens=s, claim=f"а-{s}") for s in ("scenario-run", "claim-extraction", "coverage", "requirement-coverage")]
+    attack = attack_view(tmp_path, [afile(jr), afile(ar, ARTIFACT_TARGETS, "attack/artifacts.md")])["attack"]
+    groups = re.findall(r"<h2>(?:<code>([a-z-]+)</code>|(вне списка))", attack)
+    assert groups == [("context-compliance", ""), ("claim-authority", ""), ("claim-extraction", ""), ("coverage", ""),
+                      ("", "вне списка"), ("scenario-run", ""), ("claim-extraction", ""), ("", "вне списка")]
+    outside_journal = attack.split("<h2>вне списка")[1]
+    assert "ж-scenario-run" in outside_journal and "ж-style" in outside_journal and "строка невалидна" in outside_journal
+    heads = without_rows(attack)
+    assert heads.count("блокеров <b>6</b>") == 1 and heads.count("блокеров <b>4</b>") == 1      # тяжесть — по всему файлу
+    assert "по линзе: <code>context-compliance</code> <b>1</b> · <code>claim-authority</code> <b>1</b>" in heads
+    assert "строк вне списка (невалидны, в счётчике линз их нет): <b>2</b>" in heads
+    assert 'data-lens="__outside__"' in attack and 'data-lens="requirement-coverage"' not in attack
+
+
+@requires_node
+def test_viewer_attack_row_has_a_record_block(tmp_path):
+    """6.2 и сценарий «Текст записи у строки»: `<details>` с вопросом записи, выбранным вариантом и переходом; без записи блока нет."""
+    j = plan()
+    rec = {r["id"]: r for r in j["records"]}["F-02"]
+    picked = next(o for o in rec["options"] if o["letter"] == rec["decision"]["option"])
+    rows = [arow(section="F-02, decision"), arow(section="F-99, decision", claim="нет такой записи"),
+            arow(section="intro", claim="раздел без записи")]
+    attack = attack_view(tmp_path, [afile(rows)], j=j)["attack"]
+    assert attack.count('<details class="recblock">') == 1
+    block = attack.split('<details class="recblock">')[1].split("</details>")[0]
+    assert rec["question"].split("`")[0] in block and f'<span class="letter">{picked["letter"]}.</span>' in block
+    assert picked["text"].split("`")[0][:20] in block
+    assert 'href="#F-02" data-goto="F-02"' in block
+    assert attack.count('data-goto="F-02"') == 2          # ссылка раздела в шапке строки и переход из блока
+    assert "F-99" in attack and 'href="#F-99"' not in attack
+
+
+@requires_node
+def test_viewer_attack_demotion_without_reason_is_visible(tmp_path):
+    """F-54.E, сценарий «Понижение без причины»: опора «нет» и тяжесть ниже блокера без причины в скобках — пометка;
+    с причиной — видимая причина; опора «есть» и «по спеке не выводится» понижением не считаются."""
+    rows = [arow(severity="предупреждение", support="нет", claim="без причины"),
+            arow(severity="предупреждение (решено человеком в F-11)", support="нет: ничем не подтверждено", claim="с причиной"),
+            arow(severity="блокер", support="нет", claim="блокер"),
+            arow(severity="справка", support="есть: файл:1 «цитата»", claim="есть опора"),
+            arow(severity="предупреждение", support="по спеке не выводится", claim="не выводится")]
+    attack = attack_view(tmp_path, [afile(rows)])["attack"]
+    cards = attack.split('<div class="card attackrow')[1:]
+    by_claim = {re.search(r'<div class="q">([^<]*)</div>', c).group(1): c for c in cards}
+    assert "понижение без причины" in by_claim["без причины"] and "понижено:" not in by_claim["без причины"]
+    assert "понижено: решено человеком в F-11" in by_claim["с причиной"] and "понижение без причины" not in by_claim["с причиной"]
+    for claim in ("блокер", "есть опора", "не выводится"):
+        assert "понижени" not in by_claim[claim], claim
+    assert "блокеров <b>1</b> · предупреждений <b>3</b>" in without_rows(attack)       # скобка тяжесть не меняет
+
+
+@requires_node
+def test_viewer_unchecked_evidence_is_neutral_not_missing(tmp_path):
+    """Улика `found: null` («не проверить: бинарный файл») показана нейтрально, не как «не найдено»."""
+    j = plan()
+    j["records"][0]["evidence"] = [
+        {"path": "a.bin", "quote": "q", "line": None, "found": None, "verdict": "не проверить: бинарный файл"},
+        {"path": "b.md", "quote": "q", "line": None, "found": False, "verdict": "цитаты нет дословно"}]
+    cards = smoke(tmp_path, journal.render_html(j, TEMPLATE))["cards"]
+    assert '<b class="mute">не проверить: бинарный файл</b>' in cards
+    assert "не найдено: не проверить" not in cards and '<b class="bad">не найдено: цитаты нет дословно</b>' in cards
+
+
+# --- экранирование (6.4) ---------------------------------------------------------
+
+XSS_SCRIPT = "<script>alert(1)</script>"
+XSS_IMG = "<img src=x onerror=alert(1)>"
+
+
+def xss_journal():
+    j = plan()
+    rec = j["records"][0]
+    rec["decision"]["word"] = XSS_SCRIPT
+    rec["question"] = "вопрос `код` и <b>жирный</b>"
+    rec["evidence"] = [{"path": "a.md", "quote": XSS_IMG, "line": 1, "found": True, "verdict": "сверено"}]
+    rec["consequences"] = XSS_SCRIPT
+    return j
+
+
+@requires_node
+def test_viewer_escapes_journal_and_attack_text_in_every_mode(tmp_path):
+    """6.4: слово `<script>alert(1)</script>`, цитата с `<img onerror>` и ячейка атаки с тем же показаны текстом
+    во всех режимах; `<b>` — текст, `` `код` `` — `<code>`."""
+    att = afile([arow(claim=XSS_IMG, invariant=XSS_SCRIPT, support=f"есть: `{XSS_IMG}`", fix="<b>x</b>", lens=XSS_IMG)])
+    html = journal.render_html(xss_journal(), TEMPLATE, attacks=[att], journal_sha256=FAKE_SHA)
+    cards = smoke(tmp_path, html)["cards"]
+    check = smoke(tmp_path, html, {"__suffixes__": {":mode": "check"}})["check"]
+    attack = smoke(tmp_path, html, {"__suffixes__": {":mode": "attack"}})["attack"]
+    for shown in (cards, check, attack):
+        assert "<script" not in shown and "<img" not in shown and "<b>жирный" not in shown and "<b>x" not in shown
+    assert "&lt;script&gt;alert(1)&lt;/script&gt;" in cards and "&lt;img src=x onerror=alert(1)&gt;" in cards
+    assert "&lt;script&gt;alert(1)&lt;/script&gt;" in check
+    assert "вопрос <code>код</code> и &lt;b&gt;жирный&lt;/b&gt;" in cards and "вопрос <code>код</code> и &lt;b&gt;жирный&lt;/b&gt;" in check
+    assert "опора: есть: <code>&lt;img src=x onerror=alert(1)&gt;</code>" in attack
+    assert "&lt;b&gt;x&lt;/b&gt;" in attack and "линза «&lt;img" in attack
+
+
+def test_render_html_embeds_hostile_text_as_data_only():
+    """Данные журнала и атаки не закрывают `<script>` страницы и не открывают в нём «экранированное» состояние:
+    `</` и `<!--` в JSON закодированы."""
+    j = xss_journal()
+    j["records"][0]["question"] = "до </script><script>alert(2)</script> и <!--<script> после"
+    html = journal.render_html(j, TEMPLATE, attacks=[afile([arow(claim="</script><img src=x onerror=alert(3)>")])])
+    assert "</script><script>alert(2)" not in html and "<!--<script>" not in html and "</script><img" not in html
+    assert embedded(html)["records"][0]["question"] == "до </script><script>alert(2)</script> и <!--<script> после"
+    assert embedded_attack(html)[0]["rows"][0]["claim"] == "</script><img src=x onerror=alert(3)>"

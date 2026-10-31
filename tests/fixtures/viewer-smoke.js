@@ -4,7 +4,7 @@
 // Использование: node viewer-smoke.js <файл.html> [<состояние.json>]
 // Состояние — то, что просмотрщик хранит в браузере (localStorage) под главным ключом; в итог (`saved`) попадает
 // последнее сохранённое под ним. Необязательный ключ `__suffixes__` состояния задаёт значения ключей с суффиксом:
-// `":mode"` — строка режима, `":attack"` — объект споров по строкам атаки; сохранённое под `:attack` — `savedAttack`.
+// `":mode"` — строка режима, `":attack"` — объект споров по строкам атаки, `":lens"` — выбранная линза фильтра атаки; сохранённое под `:attack` — `savedAttack`.
 const fs = require('fs');
 const vm = require('vm');
 
@@ -14,7 +14,7 @@ const suffixes = (parsed && parsed.__suffixes__) || {};
 if (parsed) delete parsed.__suffixes__;
 const stored = parsed ? JSON.stringify(parsed) : null;
 let saved = null, savedAttack = null;
-const script = html.slice(html.lastIndexOf('<script>') + '<script>'.length, html.lastIndexOf('</script>'));
+const script = html.slice(html.indexOf('<script>') + '<script>'.length, html.lastIndexOf('</script>'));
 
 const suffix = k => k.slice(k.lastIndexOf(':'));
 const nodes = {};
@@ -38,12 +38,12 @@ const context = {
       const s = suffix(k);
       if (s === ':outh') return null;
       if (s in suffixes) return typeof suffixes[s] === 'string' ? suffixes[s] : JSON.stringify(suffixes[s]);
-      return s === ':mode' || s === ':attack' ? null : stored;
+      return s === ':mode' || s === ':attack' || s === ':lens' ? null : stored;
     },
     setItem(k, v) {
       const s = suffix(k);
       if (s === ':attack') savedAttack = v;
-      else if (s !== ':outh' && s !== ':mode') saved = v;
+      else if (s !== ':outh' && s !== ':mode' && s !== ':lens') saved = v;
     },
   },
   navigator: {}, Blob: function () {}, URL: { createObjectURL() { return ''; } },
