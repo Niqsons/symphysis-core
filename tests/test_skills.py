@@ -2,6 +2,7 @@
 
 Чистый Python, без форка и без node. Task 20 сводит сюда проверки всех четырёх скиллов.
 """
+import hashlib
 import json
 import re
 import subprocess
@@ -432,8 +433,8 @@ def test_attack_skill_context_compliance_sees_the_setting():
     """F-08.A, F-09.A, F-55.E: решение против факта постановки без пометки — находка; пометка со словом
     человека — справка; опора решения design на факт или на запись без решения — блокер."""
     row = flat(lens_row(read(ATTACK_SKILL / "SKILL.md"), "journal", "context-compliance"))
-    for token in ("`addressee: постановка`", "пометки «отступление от постановки»", "словом человека",
-                  "`справка`", "опора решения design на факт или на запись без решения", "блокер"):
+    for token in ("`addressee: постановка`", "пометки «отступление от постановки»", "поле `deviation: F-NN`",
+                  "словом человека", "`справка`", "опора решения design на факт или на запись без решения", "блокер"):
         assert token in row, f"в строке `context-compliance` нет «{token}»"
 
 
@@ -575,3 +576,159 @@ def test_viewer_skill_describes_the_attack_mode():
         for token in tokens:
             assert token in attack, f"в разделе «Атака» ({point}) нет «{token}»"
     assert "Researcher" not in attack and "Исследователь" not in attack
+
+
+# --- брейншторм: намерение первым, факты постановки, отступление, предписание (7.2: F-13.A, F-08.A, F-09.A,
+# F-17.A, F-28.E, F-43.E, F-44.E, F-55.E) ---
+
+BRAINSTORM = SKILLS / "symphysis-brainstorm"
+VIEWER = SKILLS / "symphysis-viewer"
+
+
+def brainstorm():
+    return read(BRAINSTORM / "SKILL.md")
+
+
+def test_brainstorm_reads_intent_first():
+    """(а) Круг 1 начинается с `intent.md`: каждый критерий — факт `addressee: постановка` с дословной цитатой
+    и путём от корня проекта; факты постановки — первые записи; `intent.md` не правится."""
+    step = block(brainstorm(), "### 1.", "### 2.")
+    for token in ("Первым — `intent.md`", "Каждый критерий готовности", "`addressee: постановка`",
+                  "дословно", "`openspec/changes/<имя>/intent.md`", "первые записи журнала",
+                  "`intent.md` не правится", "живёт записями журнала"):
+        assert token in step, f"в шаге 1 нет «{token}»"
+    assert step.index("`intent.md`") < step.index("Затем — запрос"), "материалы читаются после intent.md"
+    assert "не правит `intent.md`" in block(brainstorm(), "## Чего скилл не делает", "\n## ")
+
+
+def test_brainstorm_asks_for_criteria_when_there_are_none():
+    """(б) F-43.E: нуль критериев — первый вопрос «назови критерии готовности» и строка `notes[]`; ответ
+    «Без критериев готовности» — факт постановки, критерии заполнены."""
+    step = block(brainstorm(), "### 1.", "### 2.")
+    for token in ("Критериев ноль", "первый вопрос человеку", "«назови критерии готовности»",
+                  "«намерение без критериев»", "`notes[]`", "«Без критериев готовности»",
+                  "критерии заполнены", "`<каталог изменения>/answers/<дата>-criteria.md`"):
+        assert token in step, f"в шаге 1 нет «{token}»"
+
+
+def test_brainstorm_second_round_does_not_duplicate_setting_facts():
+    """(в) F-44.E: факт с той же цитатой второй раз не заводится; изменённый текст — новый факт по слову человека."""
+    step = block(brainstorm(), "### 1.", "### 2.")
+    for token in ("Второй круг", "с той же цитатой второй раз не заводится", "изменился",
+                  "только по слову человека"):
+        assert token in step, f"в шаге 1 нет «{token}»"
+
+
+def test_brainstorm_marks_a_deviation_from_the_setting():
+    """(г) F-08.A, F-28.E, F-55.E: вариант против сценария факта постановки — поле `deviation: F-NN` у развилки;
+    уточнение без противоречия — без поля; пометка не замок."""
+    rule = block(brainstorm(), "**Отступление от постановки**", "\n\n")
+    for token in ("`deviation: F-NN`", "противоречащее сценарию факта", "`addressee: постановка`",
+                  "Уточнение без противоречия", "без поля", "видимость, не замок", "Решает человек",
+                  "«Отступления от постановки»"):
+        assert token in rule, f"в правиле отступления нет «{token}»"
+
+
+def test_brainstorm_turns_a_prescription_into_a_fork():
+    """(д) F-09.A: находка, из которой напрашивается конструкция, — факт-наблюдение и развилка с вариантами
+    и рекомендацией; предписания в `consequences` факта нет."""
+    rule = block(brainstorm(), "**Правило предписания**", "\n\n")
+    for token in ("«по образцу X»", "«требует новой …»", "фактом-наблюдением", "развилкой с вариантами",
+                  "образец X", "иной путь", "маловероятные с причиной", "рекомендацией",
+                  "не предписание в `consequences`"):
+        assert token in rule, f"в правиле предписания нет «{token}»"
+
+
+def test_brainstorm_names_the_keep_as_is_option_by_the_render_prefix():
+    """(е) Вариант «ничего не менять» начинается словами «Оставить как есть» — тем префиксом, по которому
+    `render-design` ставит пометку «конструкция не меняется»."""
+    import journal_render
+    text = flat(brainstorm())
+    for token in ("«Оставить как есть»", "`UNCHANGED_PREFIXES`", "«конструкция не меняется»"):
+        assert token in text, f"в SKILL.md нет «{token}»"
+    assert "оставить как есть" in journal_render.UNCHANGED_PREFIXES
+    assert journal_render._is_unchanged("Оставить как есть: цена выше пользы")
+
+
+def test_brainstorm_word_to_a_choice_is_optional():
+    """(ж) F-55.E: слово к выбору необязательно — строка `- F-NN: X — (без слова)` законна."""
+    step = block(brainstorm(), "### 6.", "### 7.")
+    for token in ("Слово к выбору необязательно", "`- F-NN: X — (без слова)`", "объяснения выбора"):
+        assert token in step, f"в шаге 6 нет «{token}»"
+
+
+def test_second_round_lives_at_the_end_of_research():
+    """(з) Второй круг брейншторма — в конце шага `research`, после отчётов, не в `attack-decisions`
+    (схема: instruction `research`); то же в описании и тексте просмотрщика."""
+    text = brainstorm()
+    description = frontmatter(text)["description"]
+    assert "instruction артефакта `decisions` или `research`" in description
+    assert "`attack-decisions`" not in description
+    body = flat(text)
+    for stale in ("instruction `attack-decisions`", "(спросит `attack-decisions`)", "второго круга перед атакой"):
+        assert stale not in body, f"в SKILL.md брейншторма осталось «{stale}»"
+    assert "в конце шага `research`" in body
+    notes = flat(read(BRAINSTORM / "TRANSLATION-NOTES.md"))
+    for stale in ("второй круг из `attack-decisions`", "instruction артефакта `attack-decisions`",
+                  "второй круг по схеме идёт из `attack-decisions`"):
+        assert stale not in notes, f"в TRANSLATION-NOTES.md брейншторма осталось «{stale}»"
+    assert "в конце шага `research`" in notes
+    schema = read(ROOT / "openspec" / "schemas" / "symphysis" / "schema.yaml")
+    research = schema.split("  - id: research")[1].split("  - id: ")[0]
+    assert "Второй круг брейншторма — после отчётов" in research and "symphysis-brainstorm" in research
+
+    viewer = read(VIEWER / "SKILL.md")
+    for part in (frontmatter(viewer)["description"], flat(viewer)):
+        assert "второй круг перед `attack-decisions`" not in part
+        assert "второго круга перед `attack-decisions`" not in part
+    assert "второй круг в конце `research`" in frontmatter(viewer)["description"]
+    assert "после второго круга в конце шага `research`" in flat(viewer)
+
+
+def test_viewer_card_names_the_deviation_badge():
+    """Карточка развилки с `deviation` — бейдж «отступление от F-NN»; слово к выбору и тогда необязательно."""
+    card = block(read(VIEWER / "SKILL.md"), "### «Решения»", "### «Проверка»")
+    for token in ("`deviation`", "бейдж «отступление от F-NN»"):
+        assert token in card, f"в разделе «Решения» нет «{token}»"
+
+
+# Fixture-изменение после круга 1: `intent.md` с критерием из сценария «Намерение прочитано первым» и журнал,
+# каким его оставляет круг 1 по правилу скилла. Модель в тесте не запускается — проверяется форма результата.
+INTENT_FIXTURE = ROOT / "tests" / "fixtures" / "intent-demo"
+INTENT_PATH = "openspec/changes/intent-demo/intent.md"
+SCENARIO_CRITERION = '`businessId=""` → дочерний экземпляр без бизнес-идентификатора'
+# Эталон `intent.md` fixture — SHA-256 его байтов (`*.md` в рабочей копии — CRLF по `.gitattributes`):
+# круг 1 файл не правит (F-13.A).
+INTENT_SHA256 = "86d4a88c859a64013664a255fa63075d499c7de2ec4860701c23a8097ad44693"
+
+
+def test_round_one_on_an_intent_starts_with_a_setting_fact(tmp_path):
+    """7.2: `check` годен; первая запись — факт `addressee: постановка` с цитатой критерия из сценария спеки,
+    цитата дословно в `intent.md`; каждый критерий — один факт постановки, они идут первыми; `intent.md`
+    побайтно равен эталону; развилка против сценария факта несёт `deviation`."""
+    roots = tmp_path / "roots.json"
+    roots.write_text(json.dumps({"openspec/changes/intent-demo/": str(INTENT_FIXTURE)}), encoding="utf-8")
+    run = subprocess.run([sys.executable, str(ROOT / "tools" / "journal.py"), "check",
+                          str(INTENT_FIXTURE / "decisions.json"), "--roots", str(roots), "--strict"],
+                         capture_output=True, text=True, encoding="utf-8")
+    assert run.returncode == 0, run.stdout + run.stderr
+    assert "[!!]" not in run.stdout + run.stderr
+
+    intent = INTENT_FIXTURE / "intent.md"
+    assert hashlib.sha256(intent.read_bytes()).hexdigest() == INTENT_SHA256, "intent.md изменён"
+    lines = intent.read_text(encoding="utf-8").splitlines()
+    criteria = [line[2:] for line in lines[lines.index("## Критерии готовности"):] if line.startswith("- ")]
+
+    records = json.loads((INTENT_FIXTURE / "decisions.json").read_text(encoding="utf-8"))["records"]
+    first = records[0]
+    assert (first["kind"], first["addressee"], first["status"]) == ("факт", "постановка", "решён")
+    assert first["evidence"] == [{"path": INTENT_PATH, "quote": SCENARIO_CRITERION}]
+    assert any(SCENARIO_CRITERION in line for line in lines), "цитата не дословно из intent.md"
+
+    setting = [r for r in records if r["addressee"] == "постановка"]
+    assert records[:len(setting)] == setting, "факты постановки — первые записи"
+    quotes = [r["evidence"][0]["quote"] for r in setting]
+    assert sorted(quotes) == sorted(criteria) and len(set(quotes)) == len(quotes), "по одному факту на критерий"
+
+    fork = next(r for r in records if r["kind"] == "развилка")
+    assert fork["deviation"] == first["id"] and fork["decision"] is None, "отступление помечено, решает человек"
