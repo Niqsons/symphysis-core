@@ -890,6 +890,7 @@ the file declares (`target_sha256`, `targets[].sha256`) no longer matches: the
 artifact stays `ready`, its dependents and apply stay blocked, and `nextSteps`
 opens with `Artifact "<id>" verdict is stale: <path> changed since the verdict —
 run its instruction again`.
+The causes of `stale`: a target file changed, a declared target file is gone, a target path leaves the change directory (absolute, `..`, or a link pointing out; the file is not read), or the target entry is unreadable (no path or no sha256). A required verdict artifact listed in `apply.requires` holds `apply` until its verdict is `ok`; the blocked `instruction` names it as `Artifacts without a passing verdict` and says to run its instruction again, not to recreate the file.
 
 ---
 

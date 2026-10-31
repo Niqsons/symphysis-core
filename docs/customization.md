@@ -266,6 +266,7 @@ apply:
 | `instruction` | AI instructions for creating this artifact |
 | `requires` | Dependencies - which artifacts must exist first |
 | `verdict` | Fork (symphysis), optional: `{frontmatter, value}` - the artifact counts as done only when its file's frontmatter key `frontmatter` equals `value` |
+| `optional` | Fork (symphysis), optional: `true` - without a file the artifact does not block dependents, apply or `isPlanningComplete`; with a file the `verdict` rule applies; it is invoked by name: `/opsx:continue <change> <artifact-id>` |
 
 List artifacts in the order you want them written. `requires` decides what is
 possible; the order of the `artifacts:` list decides what comes first when
