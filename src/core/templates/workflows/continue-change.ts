@@ -42,9 +42,10 @@ const PARTIAL_ARTIFACT_CHECK = `**Before anything else, finish a partly written 
  * on. `"missing"` also covers a file that does not exist yet: that artifact is
  * created by the ordinary ready branch, so the condition keys on
  * `existingOutputPaths`. Used by the skill and the slash command alike, word for
- * word.
+ * word. Fork (symphysis, C11): it applies to the next artifact as `NEXT_ARTIFACT`
+ * defines it - the one `nextSteps` names.
  */
-export const VERDICT_CHECK = `**If the first artifact with \`status: "ready"\` carries \`verdict: "mismatch"\`, \`verdict: "stale"\`, or \`verdict: "missing"\` while its file already exists (\`artifactPaths.<artifact-id>.existingOutputPaths\` in the status output is non-empty)**: do NOT rewrite the file. Get its instructions (\`openspec instructions <artifact-id> --change "<name>" --json\`) and follow them to produce the verdict — the instruction names the attack skill that writes \`status: passed\` or \`status: gaps_found\` into the file's frontmatter. Then re-run \`openspec status --change "<name>" --json\` and confirm the artifact now shows \`verdict: "ok"\` (and \`status: "done"\`); if it shows \`gaps_found\`, report the gaps to the user and STOP. \`verdict: "stale"\` means a target the verdict was written against has changed since: treat it like \`mismatch\` — do not rewrite the file blindly, run the artifact's instruction again in full. This counts as this invocation's ONE artifact — STOP after it. A verdict artifact with \`verdict: "missing"\` and no existing file is created like any other ready artifact (its instruction writes the file with its frontmatter) — the ordinary branch below applies.`;
+export const VERDICT_CHECK = `**If the next artifact (step 2) carries \`verdict: "mismatch"\`, \`verdict: "stale"\`, or \`verdict: "missing"\` while its file already exists (\`artifactPaths.<artifact-id>.existingOutputPaths\` in the status output is non-empty)**: do NOT rewrite the file. Get its instructions (\`openspec instructions <artifact-id> --change "<name>" --json\`) and follow them to produce the verdict — the instruction names the attack skill that writes \`status: passed\` or \`status: gaps_found\` into the file's frontmatter. Then re-run \`openspec status --change "<name>" --json\` and confirm the artifact now shows \`verdict: "ok"\` (and \`status: "done"\`); if it shows \`gaps_found\`, report the gaps to the user and STOP. \`verdict: "stale"\` means a target the verdict was written against has changed since: treat it like \`mismatch\` — do not rewrite the file blindly, run the artifact's instruction again in full. This counts as this invocation's ONE artifact — STOP after it. A verdict artifact with \`verdict: "missing"\` and no existing file is created like any other ready artifact (its instruction writes the file with its frontmatter) — the ordinary branch below applies.`;
 
 /**
  * Fork (symphysis, C8): `/opsx:continue <change> [<artifact-id>]`. An optional
@@ -56,8 +57,19 @@ export const NAMED_ARTIFACT = `**If the invocation names an artifact** (\`/opsx:
    - \`status: "blocked"\`: name its \`missingDeps\` and STOP
    - \`verdict: "ok"\` and the file exists: the verdict is valid (the target hashes match) - do NOT rewrite the file. Tell the user the verdict is valid, then get its instructions and execute them only for the rows not passed (the attack skill's step-1 rule)
    - \`verdict: "mismatch"\`, \`"stale"\`, or \`"missing"\` with an existing file: apply the verdict step below to this artifact
+   - \`status: "done"\` without a \`verdict\` field, or \`status: "skipped"\`: tell the user the artifact is already done (or skipped by the change) and STOP - write nothing, do NOT rewrite its file
    - otherwise (\`ready\`, no file): create it from its instructions as in the ordinary branch below
-   Then STOP. Without a name, skip artifacts with \`optional: true\` when picking the first \`ready\` artifact - they are created only by name.`;
+   Then STOP. Without a name, work on the next artifact (step 2).`;
+
+/**
+ * Fork (symphysis, C11): the artifact `continue` works on without a name is the
+ * one the CLI picks for `nextSteps` (`resolveNextStep`), stated in status fields
+ * rather than as a copy of the CLI's logic: the first `ready` artifact, minus
+ * optional artifacts without a file. A stale verdict past its window reads
+ * `done`, so it is never picked. Used by the skill and the slash command alike,
+ * word for word.
+ */
+export const NEXT_ARTIFACT = `- **The next artifact** (when the invocation names none): the FIRST artifact with \`status: "ready"\`, skipping any with \`optional: true\` and \`fileExists: false\` (not invoked - created only by name). It is the artifact \`nextSteps\` names. An invoked optional artifact (\`fileExists: true\`) is picked like any other. A \`done\` artifact with \`verdict: "stale"\` is past its window - a signal, not a gate: it is never picked; mention it to the user, and re-run it only when the invocation names it`;
 
 export function getContinueChangeSkillTemplate(): SkillTemplate {
   return {
@@ -98,6 +110,7 @@ ${PROJECT_ROOT_GUARD}
    - \`artifacts\`: Array of artifacts with their status ("done", "skipped", "ready", "blocked")
    - \`verdict\` on an artifact: present only when its schema entry declares a verdict; \`"ok"\`, \`"missing"\` (file or frontmatter value absent), \`"mismatch"\` (wrong value) or \`"stale"\` (a target changed since the verdict)
    - \`optional: true\` and \`fileExists\` on an artifact: present only on optional artifacts; one without a file does not block and is not part of completion
+   ${NEXT_ARTIFACT}
    - \`isPlanningComplete\`: Boolean indicating if all planning artifacts are complete. Older CLI versions expose the same value as \`isComplete\`.
    - \`planningHome\`, \`changeRoot\`, \`artifactPaths\`, and \`actionContext\`: path and scope context. Use these instead of assuming repo-local paths.
 
@@ -124,7 +137,7 @@ ${PROJECT_ROOT_GUARD}
    ---
 
    **If artifacts are ready to create** (status shows artifacts with \`status: "ready"\`):
-   - Pick the FIRST artifact with \`status: "ready"\` and without \`optional: true\` from the status output (if it carries \`verdict: "mismatch"\`, \`verdict: "stale"\`, or \`verdict: "missing"\` with an existing file, the verdict step above applies instead)
+   - Pick the next artifact (step 2) (if it carries \`verdict: "mismatch"\`, \`verdict: "stale"\`, or \`verdict: "missing"\` with an existing file, the verdict step above applies instead)
    - Get its instructions:
      \`\`\`bash
      openspec instructions <artifact-id> --change "<name>" --json
@@ -232,6 +245,7 @@ ${PROJECT_ROOT_GUARD}
    - \`artifacts\`: Array of artifacts with their status ("done", "skipped", "ready", "blocked")
    - \`verdict\` on an artifact: present only when its schema entry declares a verdict; \`"ok"\`, \`"missing"\` (file or frontmatter value absent), \`"mismatch"\` (wrong value) or \`"stale"\` (a target changed since the verdict)
    - \`optional: true\` and \`fileExists\` on an artifact: present only on optional artifacts; one without a file does not block and is not part of completion
+   ${NEXT_ARTIFACT}
    - \`isPlanningComplete\`: Boolean indicating if all planning artifacts are complete. Older CLI versions expose the same value as \`isComplete\`.
    - \`planningHome\`, \`changeRoot\`, \`artifactPaths\`, and \`actionContext\`: path and scope context. Use these instead of assuming repo-local paths.
 
@@ -258,7 +272,7 @@ ${PROJECT_ROOT_GUARD}
    ---
 
    **If artifacts are ready to create** (status shows artifacts with \`status: "ready"\`):
-   - Pick the FIRST artifact with \`status: "ready"\` and without \`optional: true\` from the status output (if it carries \`verdict: "mismatch"\`, \`verdict: "stale"\`, or \`verdict: "missing"\` with an existing file, the verdict step above applies instead)
+   - Pick the next artifact (step 2) (if it carries \`verdict: "mismatch"\`, \`verdict: "stale"\`, or \`verdict: "missing"\` with an existing file, the verdict step above applies instead)
    - Get its instructions:
      \`\`\`bash
      openspec instructions <artifact-id> --change "<name>" --json

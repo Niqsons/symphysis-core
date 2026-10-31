@@ -48,6 +48,8 @@ In both branches, never create the root as a side effect: do not run `openspec i
 
    Optional artifacts never invoked: if any artifact in the status output has `optional: true` and `fileExists: false`, say to the user, before any work, the line `атаки не вызывались: <id, id, ...>` - the artifact ids joined with a comma and a space, in schema order, with this Russian prefix verbatim. This is a signal, not a stop: continue with the steps below.
 
+   Stale verdicts past their window: if any artifact in the status output has `status: "done"` and `verdict: "stale"`, tell the user, before any work, its `nextSteps` line (`Artifact "<id>" verdict is stale (signal, not a gate: ...)`). This is a signal, not a stop: the verdict no longer gates apply; continue with the steps below.
+
 3. **Get apply instructions**
 
    ```bash

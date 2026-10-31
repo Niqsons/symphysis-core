@@ -11,7 +11,7 @@ import {
   getApplyChangeSkillTemplate,
   getOpsxApplyCommandTemplate,
 } from '../../../src/core/templates/skill-templates.js';
-import { UNINVOKED_OPTIONAL } from '../../../src/core/templates/workflows/apply-change.js';
+import { STALE_SIGNAL, UNINVOKED_OPTIONAL } from '../../../src/core/templates/workflows/apply-change.js';
 
 const VARIANTS: Array<[label: string, text: string]> = [
   ['apply skill', getApplyChangeSkillTemplate().instructions],
@@ -42,6 +42,15 @@ describe('apply template: uninvoked optional artifacts', () => {
     );
   });
 
+  // Fork (symphysis, C11): a stale verdict past its window is told, not obeyed.
+  it.each(VARIANTS)('%s: a stale verdict past its window is a signal before work', (_label, text) => {
+    expect(occurrences(text, STALE_SIGNAL)).toBe(1);
+    expect(STALE_SIGNAL).toContain('`status: "done"` and `verdict: "stale"`');
+    expect(STALE_SIGNAL).toContain('This is a signal, not a stop: the verdict no longer gates apply');
+    expect(text.indexOf(STALE_SIGNAL)).toBeGreaterThan(text.indexOf(UNINVOKED_OPTIONAL));
+    expect(text.indexOf(STALE_SIGNAL)).toBeLessThan(text.indexOf('3. **Get apply instructions**'));
+  });
+
   it('generated SKILL.md carries the line', () => {
     const here = path.dirname(fileURLToPath(import.meta.url));
     const skill = readFileSync(
@@ -50,5 +59,6 @@ describe('apply template: uninvoked optional artifacts', () => {
     );
     expect(skill).toContain('атаки не вызывались: <id, id, ...>');
     expect(skill).toContain('`artifactsWithoutPassingVerdict`');
+    expect(skill).toContain('Stale verdicts past their window');
   });
 });

@@ -12,7 +12,11 @@ import {
   getContinueChangeSkillTemplate,
   getOpsxContinueCommandTemplate,
 } from '../../../src/core/templates/skill-templates.js';
-import { NAMED_ARTIFACT, VERDICT_CHECK } from '../../../src/core/templates/workflows/continue-change.js';
+import {
+  NAMED_ARTIFACT,
+  NEXT_ARTIFACT,
+  VERDICT_CHECK,
+} from '../../../src/core/templates/workflows/continue-change.js';
 
 const VARIANTS: Array<[label: string, text: string]> = [
   ['continue skill', getContinueChangeSkillTemplate().instructions],
@@ -79,7 +83,7 @@ describe('continue template: verdict step', () => {
         'carries `verdict: "mismatch"`, `verdict: "stale"`, or `verdict: "missing"` while its file already exists (`artifactPaths.<artifact-id>.existingOutputPaths` in the status output is non-empty)**';
       const fallback =
         'A verdict artifact with `verdict: "missing"` and no existing file is created like any other ready artifact (its instruction writes the file with its frontmatter) \u2014 the ordinary branch below applies.';
-      const blockStart = text.indexOf('**If the first artifact with `status: "ready"`');
+      const blockStart = text.indexOf('**If the next artifact (step 2) carries');
       const blockEnd = text.indexOf('**If all planning artifacts are complete');
 
       for (const needle of [condition, fallback]) {
@@ -115,7 +119,6 @@ describe('continue template: verdict step', () => {
 
   it('VERDICT_CHECK treats stale like mismatch: no blind rewrite, instruction run again', () => {
     expect(VERDICT_CHECK).toContain('`verdict: "stale"`');
-    expect(VERDICT_CHECK).toContain('stale');
     expect(VERDICT_CHECK).toMatch(/stale[^.]*run the artifact's instruction again/);
   });
 });
@@ -147,10 +150,42 @@ describe('continue template: artifact named by the caller', () => {
     expect(text).toContain("the ONLY artifact of this invocation");
   });
 
-  it.each(VARIANTS)('%s: (d) without a name optional artifacts are skipped', (_label, text) => {
-    expect(text).toContain('Without a name, skip artifacts with `optional: true`');
+  // Fork (symphysis, C11): one rule for the CLI and `continue` - only an
+  // optional artifact without a file is skipped; an invoked one is picked and
+  // goes through the verdict step; a stale verdict past its window reads done.
+  it.each(VARIANTS)('%s: (d) without a name the next artifact is the one nextSteps names', (_label, text) => {
+    expect(text).toContain('Then STOP. Without a name, work on the next artifact (step 2).');
+    expect(occurrences(text, NEXT_ARTIFACT)).toBe(1);
+    expect(NEXT_ARTIFACT).toContain(
+      'the FIRST artifact with `status: "ready"`, skipping any with `optional: true` and `fileExists: false` (not invoked - created only by name). It is the artifact `nextSteps` names.'
+    );
+    expect(NEXT_ARTIFACT).toContain('An invoked optional artifact (`fileExists: true`) is picked like any other.');
     const pick = text.slice(text.indexOf('**If artifacts are ready to create**'));
-    expect(pick).toContain('without `optional: true`');
+    expect(pick).toContain('- Pick the next artifact (step 2) (if it carries');
+    // The old rule skipped every optional artifact, invoked or not.
+    expect(text).not.toContain('Without a name, skip artifacts with `optional: true`');
+    expect(text).not.toContain('without `optional: true`');
+  });
+
+  it.each(VARIANTS)('%s: (d) a stale verdict past its window is a signal, never picked', (_label, text) => {
+    expect(text).toContain(
+      'A `done` artifact with `verdict: "stale"` is past its window - a signal, not a gate: it is never picked; mention it to the user, and re-run it only when the invocation names it'
+    );
+    expect(VERDICT_CHECK.startsWith('**If the next artifact (step 2) carries')).toBe(true);
+    // The definition comes before the verdict step that refers to it.
+    expect(text.indexOf(NEXT_ARTIFACT)).toBeLessThan(text.indexOf(VERDICT_CHECK));
+  });
+
+  // Triage 3B: a named artifact that is done without a verdict (e.g. proposal)
+  // or skipped must not be rewritten.
+  it.each(VARIANTS)('%s: (e) named done without a verdict, or skipped: STOP, write nothing', (_label, text) => {
+    const rule =
+      '- `status: "done"` without a `verdict` field, or `status: "skipped"`: tell the user the artifact is already done (or skipped by the change) and STOP - write nothing, do NOT rewrite its file';
+    expect(occurrences(text, rule)).toBe(1);
+    const named = text.slice(text.indexOf(NAMED_ARTIFACT), text.indexOf(NAMED_ARTIFACT) + NAMED_ARTIFACT.length);
+    expect(named).toContain(rule);
+    // Before the catch-all "otherwise" branch.
+    expect(named.indexOf(rule)).toBeLessThan(named.indexOf('- otherwise (`ready`, no file)'));
   });
 
   it.each(VARIANTS)('%s: named step comes before the partial-artifact check', (_label, text) => {

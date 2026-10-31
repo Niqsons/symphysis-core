@@ -35,6 +35,13 @@ const ARCHIVE_HANDOFF = optionalWorkflow(
 export const UNINVOKED_OPTIONAL = `Optional artifacts never invoked: if any artifact in the status output has \`optional: true\` and \`fileExists: false\`, say to the user, before any work, the line \`атаки не вызывались: <id, id, ...>\` - the artifact ids joined with a comma and a space, in schema order, with this Russian prefix verbatim. This is a signal, not a stop: continue with the steps below.`;
 
 /**
+ * Fork (symphysis, C11): a stale verdict past its window (the next step has
+ * begun) no longer holds apply. `status --json` reports it as `done` with
+ * `verdict: "stale"` and a `nextSteps` line; the user hears it before work.
+ */
+export const STALE_SIGNAL = `Stale verdicts past their window: if any artifact in the status output has \`status: "done"\` and \`verdict: "stale"\`, tell the user, before any work, its \`nextSteps\` line (\`Artifact "<id>" verdict is stale (signal, not a gate: ...)\`). This is a signal, not a stop: the verdict no longer gates apply; continue with the steps below.`;
+
+/**
  * The apply workflow instructions, authored once and rendered by both the
  * skill and command surfaces. The surfaces are intentionally distinct, but
  * they differ only in how they are invoked — the generation transformers
@@ -73,6 +80,8 @@ ${PROJECT_ROOT_GUARD}
    - Which artifact contains the tasks (typically "tasks" for spec-driven, check status for others)
 
    ${UNINVOKED_OPTIONAL}
+
+   ${STALE_SIGNAL}
 
 3. **Get apply instructions**
 
