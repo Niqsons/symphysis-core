@@ -171,6 +171,34 @@ def test_answer_repeating_the_decision_is_not_added(tmp_path):
     assert "- F-02: B — «" + word + " и ещё»" in other["text"]
 
 
+def test_ingested_answer_appended_to_the_old_word_leaves_the_prompt(tmp_path):
+    """`apply` дописывает ответ к прежнему слову решения (`_merge`): внесённое — вхождение, не равенство.
+    Ни спор строки атаки, ни слово карточки к тому же решению не возвращаются в промпт."""
+    j = plan_journal()
+    att = attack_file(("F-02, decision", "утверждение", "вопрос человеку"))
+    first = prompt(tmp_path, j, state(), [att], {key(att, 0): "ответ  к\nF-02"})
+    work = copy.deepcopy(j)
+    journal.apply_answers(work, apply_clean(j, first["text"]), DATE)
+    merged = {r["id"]: r for r in work["records"]}["F-02"]["decision"]["word"]
+    assert merged.endswith(" ответ к F-02") and merged != "ответ к F-02"      # прежнее слово + ответ
+    again = prompt(tmp_path, work, state(), [att], {key(att, 0): "ответ  к\nF-02"})
+    assert "- F-02" not in again["text"] and again["conflictKeys"] == []
+    card = prompt(tmp_path, work, state(decisions={"F-02": {"choice": None, "word": "ответ к F-02 ", "parked": []}}))
+    assert "- F-02" not in card["text"]
+    same_letter = prompt(tmp_path, work, state(decisions={"F-02": {"choice": "B", "word": "ответ к F-02", "parked": []}}))
+    assert "- F-02" not in same_letter["text"]
+    new_word = prompt(tmp_path, work, state(decisions={"F-02": {"choice": None, "word": "ещё одно", "parked": []}}))
+    assert "- F-02: к решению B — «ещё одно»" in new_word["text"].splitlines()
+
+
+def test_card_cleanup_uses_the_same_ingested_rule():
+    """`cleanupIngested` чистит слово карточки тем же правилом вхождения, что и промпт."""
+    html = TEMPLATE.read_text(encoding="utf-8")
+    cleanup = html[html.index("(function cleanupIngested()"):html.index("/* prompt:begin */")]
+    assert "wordIngested(rec.decision.word, d.word)" in cleanup
+    assert "function wordIngested(" in block("prompt")
+
+
 def test_answer_with_guillemets_survives_parse_answers(tmp_path):
     j = plan_journal()
     att = attack_file(("F-02, decision", "утверждение", "вопрос человеку"))

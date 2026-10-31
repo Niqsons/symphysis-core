@@ -258,8 +258,8 @@ function disputeKey(att, row) { return att.path + '|' + row.section + '|' + row.
     if (state.added[rec.id]) state.added[rec.id] = state.added[rec.id].filter(o => !(rec.options || []).some(x => x.letter === o.letter && norm(String(x.text).split(ADDED_MARK)[0]) === norm(o.text)));
     const d = state.decisions[rec.id]; if (!d) continue;
     const jpark = (rec.parking || []).map(p => norm(p.text));
-    const known = [rec.decision && rec.decision.word].filter(Boolean).map(norm).concat(jpark);
-    if (d.word && known.includes(norm(d.word))) d.word = '';
+    const sameDecision = rec.decision && (!d.choice || d.choice === rec.decision.option);
+    if (d.word && ((sameDecision && wordIngested(rec.decision.word, d.word)) || jpark.includes(norm(d.word)))) d.word = '';
     d.parked = (d.parked || []).filter(p => norm(p.text) && !jpark.includes(norm(p.text)));
     if (rec.decision && rec.decision.option && d.choice === rec.decision.option) d.choice = null;
     const sp = norm(state.disputes[rec.id]); if (sp && rec.dispute && norm(rec.dispute).includes(sp)) delete state.disputes[rec.id];
@@ -510,6 +510,13 @@ function renderStats() {
    Ответ в поле спора строки атаки (закрытие «вопрос человека», раздел `F-NN, decision`) — слово к решению `- F-NN: <буква> — «…»`, одна строка
    на запись; два разных ответа — конфликт: строки нет, в замечаниях «конфликт ответов к F-NN — оставьте один», `conflictKeys` — ключи спора
    строк, которые его составили. Ответ к записи без решения — замечание `F-NN: ответ`, ключи — `undecidedKeys`. Возвращает { text, conflictKeys, undecidedKeys }. */
+/* слово уже в решении журнала: `apply` дописывает новое слово к прежнему (`journal_apply._merge`, проверка вхождением),
+   поэтому внесённое — вхождение в слово решения, а не равенство; пробелы схлопываются, как в `_flat` */
+function wordIngested(journalWord, word) {
+  const n = s => String(s == null ? '' : s).replace(/\s+/g, ' ').trim();
+  const w = n(word);
+  return w !== '' && n(journalWord).includes(w);
+}
 function buildPrompt(J, attacks, st, disputes, date) {
   const MARK = '(добавлен человеком';
   const norm = s => String(s == null ? '' : s).replace(/\s+/g, ' ').trim();
@@ -550,10 +557,10 @@ function buildPrompt(J, attacks, st, disputes, date) {
       const w = (d.word || '').trim(), jpark = (rec.parking || []).map(p => norm(p.text));
       for (const p of (d.parked || [])) if (!jpark.includes(norm(p.text))) lines.push('- ' + rec.id + ': припарковано → ' + p.addressee + ' — «' + p.text + '»');
       if (d.choice && d.choice !== jc) lines.push('- ' + rec.id + ': ' + d.choice + (jc ? ' (было ' + jc + ')' : '') + (w ? ' — «' + w + '»' : ' — (без слова)'));
-      else if (w && norm(w) !== jword) lines.push('- ' + rec.id + ': ' + (jc ? 'к решению ' + jc : 'без выбора') + ' — «' + w + '»');
+      else if (w && !wordIngested(jword, w)) lines.push('- ' + rec.id + ': ' + (jc ? 'к решению ' + jc : 'без выбора') + ' — «' + w + '»');
     }
     const letter = letterOf(rec, d);
-    const ans = (answers[rec.id] || []).filter(a => !(jc && letter === jc && a.text === jword));   /* то же слово, что уже в decision, — не добавляется */
+    const ans = (answers[rec.id] || []).filter(a => !(jc && letter === jc && wordIngested(jword, a.text)));   /* слово, уже вошедшее в decision, — не добавляется */
     const distinct = [...new Set(ans.map(a => a.text))];
     if (distinct.length > 1) { conflicts.push(rec.id); ans.forEach(a => conflictKeys.push(a.key)); }
     else if (distinct.length === 1) lines.push('- ' + rec.id + ': ' + letter + ' — «' + distinct[0] + '»');
