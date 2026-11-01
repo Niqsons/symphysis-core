@@ -1,0 +1,68 @@
+# Проба парковки F-21, 2026-11-01. Chrome без флагов ослабления, чистый профиль на замер, страница decisions.html из file://, mermaid 12.2.0 и @mermaid-js/tiny 12.2.0.
+# Скрипты пробы вне репозитория: _archive/decision-scheme-probe-f21 на диске владельца. Снимки рядом: shot-fit.png, рисунок вписан в панель; shot-natural.png, натуральный размер без прокрутки.
+# Формат строки: вариант, итог показа, состояние страницы, сетевые запросы, ошибки.
+# --- размеры вариантов страницы, байт
+base-text.html                142693
+broken.html                   141041
+cdn.html                      142890
+csp.html                      142906
+evil-csp.html                 141261
+evil-nocsp.html               141095
+inline.html                  5641843
+sibling-missing.html          142733
+sibling.html                  142740
+tiny.html                     142741
+page 137455 sri sha384-8xUhuLNMjW/cI2Dac
+# --- размеры файла mermaid, байт
+mermaid.min.js 5494801, gzip 1570966
+mermaid.tiny.js 2811424, gzip 746681
+# --- показ
+base-text	{"kind":"text","why":"нет mermaid","ms":106}	{"cards":14,"loaded":106,"pre":1247}	http=[]	err=[]
+base-text	{"kind":"text","why":"нет mermaid","ms":28}	{"cards":14,"loaded":28,"pre":1247}	http=[]	err=[]
+base-text	{"kind":"text","why":"нет mermaid","ms":32}	{"cards":14,"loaded":32,"pre":1247}	http=[]	err=[]
+inline	{"kind":"svg","renderMs":216,"ms":451,"nodes":20,"imgs":0}	{"cards":14,"loaded":426,"pre":0}	http=[]	err=[]
+inline	{"kind":"svg","renderMs":214,"ms":457,"nodes":20,"imgs":0}	{"cards":14,"loaded":433,"pre":0}	http=[]	err=[]
+inline	{"kind":"svg","renderMs":228,"ms":1004,"nodes":20,"imgs":0}	{"cards":14,"loaded":977,"pre":0}	http=[]	err=[]
+sibling	{"kind":"svg","renderMs":219,"ms":384,"nodes":20,"imgs":0}	{"cards":14,"loaded":384,"pre":0}	http=[]	err=[]
+sibling	{"kind":"svg","renderMs":226,"ms":402,"nodes":20,"imgs":0}	{"cards":14,"loaded":402,"pre":0}	http=[]	err=[]
+sibling	{"kind":"svg","renderMs":225,"ms":374,"nodes":20,"imgs":0}	{"cards":14,"loaded":374,"pre":0}	http=[]	err=[]
+sibling-missing	{"kind":"text","why":"нет mermaid","ms":52}	{"cards":14,"loaded":52,"pre":1247}	http=[]	err=["Failed to load resource: net::ERR_FILE_NOT_FOUND"]
+sibling-missing	{"kind":"text","why":"нет mermaid","ms":25}	{"cards":14,"loaded":25,"pre":1247}	http=[]	err=["Failed to load resource: net::ERR_FILE_NOT_FOUND"]
+cdn	{"kind":"svg","renderMs":209,"ms":1114,"nodes":20,"imgs":0}	{"cards":14,"loaded":1114,"pre":0}	http=["<CDN jsdelivr, mermaid 12.2.0>"]	err=[]
+cdn	{"kind":"svg","renderMs":209,"ms":1034,"nodes":20,"imgs":0}	{"cards":14,"loaded":1034,"pre":0}	http=["<CDN jsdelivr, mermaid 12.2.0>"]	err=[]
+cdn	{"kind":"svg","renderMs":228,"ms":1117,"nodes":20,"imgs":0}	{"cards":14,"loaded":1117,"pre":0}	http=["<CDN jsdelivr, mermaid 12.2.0>"]	err=[]
+cdn/offline	{"kind":"text","why":"нет mermaid","ms":24}	{"cards":14,"loaded":24,"pre":1247}	http=["<CDN jsdelivr, mermaid 12.2.0>"]	err=["Failed to load resource: net::ERR_NAME_NOT_RESOLVED"]
+cdn/offline	{"kind":"text","why":"нет mermaid","ms":19}	{"cards":14,"loaded":19,"pre":1247}	http=["<CDN jsdelivr, mermaid 12.2.0>"]	err=["Failed to load resource: net::ERR_NAME_NOT_RESOLVED"]
+csp	{"kind":"svg","renderMs":221,"ms":431,"nodes":20,"imgs":0}	{"cards":14,"loaded":431,"pre":0}	http=[]	err=[]
+csp	{"kind":"svg","renderMs":227,"ms":464,"nodes":20,"imgs":0}	{"cards":14,"loaded":464,"pre":0}	http=[]	err=[]
+broken	{"kind":"text","why":"ошибка: Parse error on line 4:","ms":202}	{"cards":14,"loaded":209,"pre":34}	http=[]	err=[]
+evil-nocsp	{"kind":"svg","renderMs":156,"ms":558,"nodes":2,"imgs":1}	{"cards":14,"loaded":552,"pre":0}	http=["http://127.0.0.1:9/pixel.png","http://127.0.0.1:9/pixel.png"]	err=["Failed to load resource: net::ERR_UNSAFE_PORT","Failed to load resource: net::ERR_UNSAFE_PORT"]
+evil-csp	{"kind":"svg","renderMs":150,"ms":378,"nodes":2,"imgs":1}	{"cards":14,"loaded":371,"pre":0}	http=["http://127.0.0.1:9/pixel.png","http://127.0.0.1:9/pixel.png"]	err=["Loading the image 'http://127.0.0.1:9/pixel.png' violates the following Content Security Policy directive: \"img-src data:\". The action has been blocked.","Loading the image 'http://127.0.0.1:9/pixel.png' violates the following Content Security Policy directive: \"img-src data:\". The action has been blocked."]
+tiny	{"kind":"svg","renderMs":83,"ms":1292,"nodes":20,"imgs":0}	{"cards":14,"loaded":1296,"pre":0}	http=[]	err=[]
+tiny	{"kind":"svg","renderMs":92,"ms":225,"nodes":20,"imgs":0}	{"cards":14,"loaded":229,"pre":0}	http=[]	err=[]
+tiny	{"kind":"svg","renderMs":81,"ms":200,"nodes":20,"imgs":0}	{"cards":14,"loaded":204,"pre":0}	http=[]	err=[]
+natural	{"kind":"svg","renderMs":242,"ms":423,"nodes":20,"imgs":0}	{"cards":14,"loaded":423,"pre":0}	http=[]	err=[]
+# --- номер строки в ошибке mermaid: ожидаемая строка в имени случая, loc.first_line в конце
+стоп на строке 2, последний перевод есть	Parse error on line 2:	loc={"first_line":2,"last_line":2,"first_column":3,"last_column":8}
+стоп на строке 2, перевода нет	Parse error on line 2:	loc={"first_line":2,"last_line":2,"first_column":3,"last_column":8}
+стоп на строке 2, CRLF	Parse error on line 2:	loc={"first_line":2,"last_line":2,"first_column":3,"last_column":8}
+стоп на строке 3, последний перевод есть	Parse error on line 3:	loc={"first_line":3,"last_line":3,"first_column":3,"last_column":8}
+стоп на строке 3, перевода нет	Parse error on line 3:	loc={"first_line":3,"last_line":3,"first_column":3,"last_column":8}
+стоп на строке 3, CRLF	Parse error on line 3:	loc={"first_line":3,"last_line":3,"first_column":3,"last_column":8}
+стоп на строке 5, последний перевод есть	Parse error on line 5:	loc={"first_line":5,"last_line":5,"first_column":3,"last_column":8}
+стоп на строке 5, перевода нет	Parse error on line 5:	loc={"first_line":5,"last_line":5,"first_column":3,"last_column":8}
+стоп на строке 5, CRLF	Parse error on line 5:	loc={"first_line":5,"last_line":5,"first_column":3,"last_column":8}
+незакрытая скобка на строке 2	Parse error on line 4:	loc={"first_line":2,"last_line":4,"first_column":4,"last_column":0}
+незакрытая скобка на строке 2 из 6	Parse error on line 8:	loc={"first_line":2,"last_line":8,"first_column":4,"last_column":0}
+# --- README @mermaid-js/tiny 12.2.0, строки 8, 14-16, 21
+This is not supported in the tiny mermaid library. So it's always recommended to use the full mermaid library unless you have a very specific reason to reduce the bundle size.
+- Mindmap Diagram
+- Architecture Diagram
+- Katex rendering
+This package is not meant to be installed directly from npm. It is designed to be used via CDN.
+# --- страницы журналов в git, ls-files по маске decisions.html
+openspec/changes/calibration-fixes/decisions.html
+openspec/changes/implementation-consequences/decisions.html
+openspec/changes/symphysis-schema/decisions.html
+# --- гейт имён на файле mermaid, сами строки не приводятся
+check_names на mermaid.min.js: код 1, 3,6 с, строк вывода 307
