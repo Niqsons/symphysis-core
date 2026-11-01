@@ -38,7 +38,7 @@
 - **Схема:** `openspec/schemas/symphysis/schema.yaml`, новый шаблон `consequences.md`, instruction `design` и `specs`.
 - **Скиллы:** новый скилл шага последствий, `skills/symphysis-edge-probe` (текст, шаблон, сырой список).
 - **Инструменты:** `tools/journal*.py` — список мест кода и сверка.
-- **Инсталлятор:** `installer/lib/install.js`, `installer/lib/check.js`, скрипт сборки, `vendor/`. Шаг `install` правит глобальный конфиг OpenSpec так же, как уже делает с телеметрией (F-32.A), и `.gitignore` проекта (F-94.E).
+- **Инсталлятор:** `installer/lib/install.js`, `installer/lib/check.js`, скрипт сборки, `vendor/`. Шаг `install` правит глобальный конфиг OpenSpec так же, как уже делает с телеметрией (F-32.A), при `profile: core` переводит профиль в `custom` с шестью workflow и `continue` (F-79.A); кастомный профиль форк сам больше не пополняет, это касается других проектов на машине. Ещё `install` правит `.gitignore` проекта (F-94.E).
 - **Форк OpenSpec:** не меняется (F-13.A, F-32.A).
 - **Документы:** `docs/GUIDE.md`, `installer/README.md`.
 - **Вне репозитория:** `skills-factory`, ветка стенда: водитель, сборка плеч, правила судейства (F-37). Прогоны расходуют Fable на двух копиях и Opus 5.5 на трёх плечах; судейство трёх листов — за владельцем.

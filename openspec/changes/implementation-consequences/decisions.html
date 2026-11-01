@@ -185,15 +185,15 @@
 const JOURNAL = {
  "title": "Журнал решений: implementation-consequences",
  "source": "decisions.json",
- "sha256": "63f27faf80c17ef605a13783573b81cb8f4f1ff622f7f86c0229932d2b2969c7",
+ "sha256": "1a34da30007897c1e24608bbeb197cc12c748137eb1df8bda7b3f2ee7d0e42b7",
  "stats": {
-  "records": 106,
-  "forks": 79,
+  "records": 112,
+  "forks": 85,
   "facts": 27,
   "decided": 79,
   "parked": 0,
-  "evidence_total": 182,
-  "evidence_found": 182
+  "evidence_total": 203,
+  "evidence_found": 203
  },
  "records": [
   {
@@ -7240,6 +7240,466 @@ const JOURNAL = {
    ],
    "comments": [],
    "finding": ""
+  },
+  {
+   "id": "F-107",
+   "question": "Решение F-100.A запрещает `install` менять в глобальном конфиге что-либо, кроме `continue` и смены профиля. Но `install` сам пишет туда `telemetry.enabled: false`, если ключ не задан, и F-32.A называет это образцом. На чистой машине тест «до и после» покраснеет. Что поправить?",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-100",
+    "F-32",
+    "F-79"
+   ],
+   "delivery": "specs/project-installer",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Телеметрия входит в разрешённое: запрет называет три правки — `continue`, названную смену профиля и `telemetry.enabled: false` при незаданном ключе. Заданное человеком значение `install` не трогает, как и сейчас. При выборе: в рабочем контуре телеметрия выключается сама, код не меняется, правятся текст запрета и тест. Цена: в запрете три исключения вместо двух.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "installer/lib/install.js",
+       "quote": "const tele = disableTelemetryIfUnset();",
+       "line": 118,
+       "verdict": "сверено",
+       "found": true
+      },
+      {
+       "path": "installer/lib/telemetry.js",
+       "quote": "Выключает телеметрию, если ключ не задан. Значение, заданное человеком (в том числе true), не меняется.",
+       "line": 39,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Снять выключение телеметрии с `install`: остаётся сигнал в `check` и команда в руководстве. При выборе: буква F-100.A верна, глобальный конфиг меняется меньше. Цена: на чистой установке телеметрия включена, пока человек не выполнит команду; пересматривается решение прежнего изменения.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "installer/README.md",
+       "quote": "`[!!] telemetry: включена — выключить: ...`",
+       "line": 117,
+       "verdict": "сверено",
+       "found": true
+      },
+      {
+       "path": "openspec/changes/implementation-consequences/specs/project-installer/spec.md",
+       "quote": "MUST NOT менять в глобальном конфиге OpenSpec что-либо, кроме добавления `continue` и названной смены профиля",
+       "line": 42,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Вопрос F-100 был о списке workflow и профиле, про телеметрию в нём ничего нет. Слово владельца в этой сессии: «в рабочем контуре уже правильнее убирать телеметрию».",
+    "text": "A — телеметрия в разрешённом"
+   },
+   "decision": null,
+   "reversibility": {
+    "level": "обратимо",
+    "why": "Текст требования и тест; при B ещё строка `install`."
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "Требование «`install` меняет в глобальном конфиге только названное» и его сценарий.",
+   "evidence": [],
+   "comments": [],
+   "finding": ""
+  },
+  {
+   "id": "F-108",
+   "question": "При пустой описи F-48.A требует раздел pre-mortem «с тремя кандидатами», а F-46.A разрешает две причины и строку, почему третьей нет. Модель, честно видящая две причины при пустой описи, нарушит один из двух сценариев. Какое число действует при пустой описи?",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-46",
+    "F-48"
+   ],
+   "delivery": "specs/consequence-inventory",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Число следует F-46.A при любой описи, а F-48.A решает только то, что раздел есть. Сценарий «Пустая опись и pre-mortem» говорит: «раздел pre-mortem по правилу числа причин». При выборе: одно правило на весь шаг. Цена: поправка текста уже выбранного сценария.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/changes/implementation-consequences/specs/consequence-inventory/spec.md",
+       "quote": "**THEN** две причины и строка, почему третьей нет; при пяти — три наиболее вероятные кандидатами, остальные в разделе без записей журнала",
+       "line": 147,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "При пустой описи ровно три, F-46.A действует только при непустой. При выборе: буква обоих сценариев остаётся, их разводит условие. Цена: там, где материала меньше всего, модель обязана добирать причину до трёх.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/changes/implementation-consequences/specs/consequence-inventory/spec.md",
+       "quote": "**THEN** файл несёт причину и раздел pre-mortem с тремя кандидатами",
+       "line": 182,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Рекомендация F-48 называла присутствие раздела, а не число: «pre-mortem идёт и при пустой описи». Довод F-46: принудительная третья причина — наполнитель.",
+    "text": "A — число по правилу F-46.A"
+   },
+   "decision": null,
+   "reversibility": {
+    "level": "обратимо",
+    "why": "Одна строка сценария."
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "Сценарий «Пустая опись и pre-mortem».",
+   "evidence": [],
+   "comments": [],
+   "finding": ""
+  },
+  {
+   "id": "F-109",
+   "question": "`edge_probe:` без значения: F-50.C считает это формой пустоты («включено»), F-51.A даёт `[!!]` с кодом 2 на значение не из `true | false`. Включено в обоих случаях, расходятся только сигнал и код выхода. Есть ли `[!!]` у пустого значения?",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-50",
+    "F-51"
+   ],
+   "delivery": "specs/project-settings",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Пустое значение равно отсутствию ключа: включено, `[!!]` нет; F-51.A действует на непустые значения. При выборе: три формы пустоты читаются одинаково, состав виден строкой `[..]` в `check`. Цена: забытое `false` оставит выбор включённым без сигнала; сторона безопасная.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/changes/implementation-consequences/decisions.json",
+       "quote": "тест подаёт пустой файл, файл из комментариев и `edge_probe:` и утверждает, что состав везде «включено»",
+       "line": 3023,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Пустое значение недопустимо: включено, `[!!] symphysis.yaml: недопустимое значение`, код 2. При выборе: одно правило «только `true` и `false`» без исключений. Цена: `edge_probe:` и пустой файл читаются по-разному, а похожий сигнал в варианте F-50.A человек не выбрал.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/changes/implementation-consequences/specs/project-settings/spec.md",
+       "quote": "**THEN** выбор считается включённым, `check` даёт `[!!] symphysis.yaml: недопустимое значение <значение>`, код 2",
+       "line": 31,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Человек выбрал F-50.C, а не F-50.A с отдельным сигналом на пустое значение; довод выбранного варианта — формы пустоты читаются одинаково.",
+    "text": "A — пустое значение равно отсутствию ключа"
+   },
+   "decision": null,
+   "reversibility": {
+    "level": "обратимо",
+    "why": "Одна ветка разбора и случай в тесте."
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "Тест-страховка F-50 и сценарий «Значение не из true и false».",
+   "evidence": [],
+   "comments": [],
+   "finding": ""
+  },
+  {
+   "id": "F-110",
+   "question": "В какой форме `symphysis.yaml` и чем он читается? `journal.py` пакетов не использует, инсталлятор читает YAML пакетом `yaml`, а слово к F-51 требует одного поведения. В спеках предположение о вложенных ключах, а края F-50 и F-85 написаны плоско: `edge_probe:`.",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-24",
+    "F-51",
+    "F-96"
+   ],
+   "delivery": "specs/project-settings, tools, installer",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Плоский файл: три ключа верхнего уровня `failure_branches`, `assumptions`, `edge_probe`, значения `true | false`, комментарии `#`. Python и JS читают одной грамматикой «строка — ключ: значение», вложенный ключ даёт `[!!]` «неизвестный ключ». Один файл случаев гоняется тестами на обоих языках. Корень проекта `journal.py` берёт из файла корней. При выборе: одно поведение проверяется, а не обещается, пакетов не прибавляется. Цена: файл не полный YAML, а будущие настройки лягут плоско, группы — только префиксом имени.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "installer/README.md",
+       "quote": "Ищется `python`, затем `python3`; версия не закрепляется, пакетов",
+       "line": 136,
+       "verdict": "сверено",
+       "found": true
+      },
+      {
+       "path": "openspec/changes/implementation-consequences/answers/2026-11-01-5.md",
+       "quote": "Делаем консистентно. Опционально это хорошо, но отслеживать варианты флагов это перебор.",
+       "line": 15,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Вложенные ключи, как в предположении спек: `consequences.failure_branches`, `consequences.assumptions`, `edge_probe.enabled`. Разбор отступов в Python, пакет `yaml` в JS. При выборе: будущему общему файлу настроек есть куда расти. Цена: два разборщика разной силы на один файл и расхождения на отступах и табах.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/changes/implementation-consequences/specs/project-settings/spec.md",
+       "quote": "предположение: ключи `consequences.failure_branches`, `consequences.assumptions`, `edge_probe.enabled` со значениями `true | false`",
+       "line": 21,
+       "verdict": "сверено",
+       "found": true
+      },
+      {
+       "path": "openspec/changes/implementation-consequences/answers/2026-11-01.md",
+       "quote": "При развитии symphysis будет также файл конфигурации всех подобных параметров и их умолчания.",
+       "line": 6,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "C",
+     "text": "PyYAML в `journal.py`, полный разбор с обеих сторон. При выборе: своих разборщиков нет. Цена: первый пакет у инструментов журнала, установка перестаёт обходиться голым Python.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "installer/lib/install.js",
+       "quote": "import { parseDocument, isMap, isSeq, isScalar } from \"yaml\";",
+       "line": 4,
+       "verdict": "сверено",
+       "found": true
+      },
+      {
+       "path": "installer/README.md",
+       "quote": "Ищется `python`, затем `python3`; версия не закрепляется, пакетов",
+       "line": 136,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Настроек три, и все логические. Общий файл случаев даёт согласованность, о которой просит слово к F-51, а перейти на вложенные ключи позже можно с появлением первой группы настроек.",
+    "text": "A — плоский файл, одна грамматика, общие случаи тестов"
+   },
+   "decision": null,
+   "reversibility": {
+    "level": "обратимо",
+    "why": "Формат одного файла до первого выпуска; после выпуска смена потребует миграции личных файлов."
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "Снимает предположение о ключах в сценарии «Ключа нет»; определяет чтение в `journal.py`, скиллах и `check`.",
+   "evidence": [],
+   "comments": [],
+   "finding": ""
+  },
+  {
+   "id": "F-111",
+   "question": "Одиннадцать требований родились из решений проб и сами пробами не проходили: у них стоит след «пробами не проходило». Десять — узкие следствия решений. У одного, `install` вносит `symphysis.yaml` в `.gitignore` (F-94.E), есть открытые края: `.gitignore` нет; проект не под git; файл уже отслеживается git, и `.gitignore` его не снимет; правка `.gitignore` сама уходит в git команды. Что делать?",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-94"
+   ],
+   "delivery": "specs/project-installer, specs/project-settings",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Края только у `.gitignore`, четыре сценария сразу: `.gitignore` нет — создаётся; проект не под git — строка вносится, ошибки нет; файл уже отслеживается — `check` даёт `[!!] symphysis.yaml: отслеживается git — выполнить: git rm --cached symphysis.yaml`, код 2; stdout `install` называет правку `.gitignore`. Остальные десять остаются со следом, их читает атака артефактов. При выборе: закрыт край, способный молча отменить F-94.E. Цена: пробы прошли по одному требованию из одиннадцати, и след это называет.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/changes/implementation-consequences/specs/project-installer/spec.md",
+       "quote": "Команда `symphysis install` SHALL добавлять строку `symphysis.yaml` в `.gitignore` проекта, если её там нет",
+       "line": 98,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Полная проба краёв и запретов по всем одиннадцати. При выборе: правило шага выполнено буквально. Цена: ещё один круг просмотрщика, при прежней плотности (64 кандидата на 26 требований) около 25–30 кандидатов.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/schemas/symphysis/schema.yaml",
+       "quote": "После написания на каждое требование позови скиллы `symphysis-edge-probe` и `symphysis-prohibition-probe`.",
+       "line": 78,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "C",
+     "text": "Ничего не добавлять: два сценария F-94.E остаются как есть. При выборе: новой работы нет. Цена: файл, уже попавший в git, продолжит ездить по команде, хотя требование говорит обратное, и сигнала об этом нет.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/changes/implementation-consequences/specs/project-settings/spec.md",
+       "quote": "**THEN** `symphysis.yaml` в коммит не попал, состав во втором клоне прежний",
+       "line": 40,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Десять остальных — прямые следствия уже прожатых решений, а новое поведение появилось только у `.gitignore`. Отслеживаемый файл — единственный случай, где F-94.E не выполнится молча.",
+    "text": "A — четыре сценария у `.gitignore`, остальным след"
+   },
+   "decision": null,
+   "reversibility": {
+    "level": "обратимо",
+    "why": "Сценарии и одна строка `check`."
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "Новые сценарии требования о `.gitignore` и строка `check` об отслеживаемом файле.",
+   "evidence": [],
+   "comments": [],
+   "finding": ""
+  },
+  {
+   "id": "F-112",
+   "question": "След пробы лежит в теле требования, а тело считается в предел 500 символов: у десяти требований этого изменения больше 400, у самого длинного 494, и 150 из них — комментарии. Парсер форка комментарии не отсеивает, а `validate --strict` считает превышение ошибкой. Значит, подробный след проб красит чистую валидацию там, где смысл не нарушен. Где живёт след?",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-13",
+    "F-70"
+   ],
+   "delivery": "schema, skills, specs",
+   "options": [
+    {
+     "letter": "A",
+     "text": "След пробы — в конец блока требования, после сценариев, где уже стоит строка «без кандидата». Меняются шаблон `spec.md` и текст двух скиллов, требования этого изменения правятся одним проходом. При выборе: предел считает только текст требования, форк не меняется. Цена: след дальше от SHALL, переписываются тест шаблона и все следы изменения.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/schemas/symphysis/templates/spec.md",
+       "quote": "\u003c!-- проба краёв: форма=<numeric-range | collection | text | stateful | io>, исходы:",
+       "line": 10,
+       "verdict": "сверено",
+       "found": true
+      },
+      {
+       "path": "upstream/openspec/src/core/parsers/requirement-text.ts",
+       "quote": "if (HEADER_LINE.test(line)) break; // first scenario or stray divider",
+       "line": 78,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Форк не считает комментарии в предел. При выборе: след остаётся под требованием. Цена: новое расхождение с OpenSpec, новая версия пина и пересборка тестов паритета, а F-13.A и F-32.A держат форк неизменным.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "upstream/openspec/src/core/validation/constants.ts",
+       "quote": "export const MAX_REQUIREMENT_TEXT_LENGTH = 500;",
+       "line": 11,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "C",
+     "text": "Оставить как есть, авторы сокращают текст требования. При выборе: ничего не меняется. Цена: предел начинает ограничивать подробность следа и самого требования, а требования этого изменения близки к нему уже сейчас.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "upstream/openspec/src/core/validation/validator.ts",
+       "quote": "// `validate <change> --strict` catches a new overlong requirement",
+       "line": 321,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Разбор останавливается на первом сценарии, поэтому строка после сценариев в предел не идёт: так уже устроена строка «без кандидата». Форк остаётся неизменным, как решено в F-13.A.",
+    "text": "A — след после сценариев"
+   },
+   "decision": null,
+   "reversibility": {
+    "level": "обратимо",
+    "why": "Шаблон и тексты скиллов; след переносится механически."
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "Шаблон `spec.md`, скиллы `symphysis-edge-probe` и `symphysis-prohibition-probe`, тест шаблона, следы в спеках этого изменения.",
+   "evidence": [],
+   "comments": [],
+   "finding": ""
   }
  ],
  "notes": [
@@ -7286,6 +7746,10 @@ const JOURNAL = {
   {
    "date": "2026-11-01",
    "text": "проба запретов: требований 26, оставлено 12, канон → ИБ 5 (парковок 6), Specify 10, Dismiss 2, Defer 0"
+  },
+  {
+   "date": "2026-11-01",
+   "text": "после зеркала: три расхождения решений (F-107, F-108, F-109) и три вопроса дизайна (F-110, F-111, F-112) — нужен человек (просмотрщик decisions.html, режим «решения»)"
   }
  ]
 };
