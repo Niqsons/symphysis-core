@@ -1,0 +1,963 @@
+{
+ "title": "Журнал решений: implementation-consequences",
+ "source": "decisions.json",
+ "intro": "Журнал изменения по разбору `docs/analysis/edge-cases-and-consequences-2026-11-01.md` и записке замера `docs/analysis/calibration-fixes-measure-2026-11-01.md`. Читались схема symphysis, скиллы атаки и пробы, источники GSD в `upstream/gsd-core`, журналы плеч. Номера F-NN чужих журналов названы с именем плеча. Пути улик — от корня проекта `X:\\symphysis`; префикс `calibration/` — `X:\\demo-live\\runs`; корни — в `.symphysis/tools/journal-roots.json`.",
+ "notes": [
+  {
+   "date": "2026-11-01",
+   "text": "намерение без критериев"
+  }
+ ],
+ "records": [
+  {
+   "id": "F-01",
+   "question": "Разведка кода в GSD ищет переиспользуемое, образцы и точки интеграции. Веток отказа в её выводе нет, и вывод не пишется в файл.",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "материалы",
+   "depends_on": [],
+   "delivery": "design: Context",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "Формулировка предложения «Это перенос разведки кода из GSD» верна только для вопроса «где смотреть». Выписывание веток отказа и опись в файле — собственная часть приёма. На этом стоит развилка F-14.",
+   "evidence": [
+    {
+     "path": "upstream/gsd-core/gsd-core/references/scout-codebase.md",
+     "quote": "- **Reusable assets** — components, hooks, utilities usable in this phase",
+     "line": 45,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "upstream/gsd-core/gsd-core/references/scout-codebase.md",
+     "quote": "- **Integration points** — routes, nav, providers where new code connects",
+     "line": 47,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "upstream/gsd-core/gsd-core/references/scout-codebase.md",
+     "quote": "Used in `analyze_phase` and `present_gray_areas`. NOT written to a file —",
+     "line": 50,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-02",
+   "question": "Ближайший к веткам отказа механизм GSD — анализатор допущений: каждое допущение обязано назвать конкретное последствие на случай, если оно неверно.",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "материалы",
+   "depends_on": [],
+   "delivery": "design: Context",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "Второй возможный источник единицы описи, см. F-14. Владелец этот механизм не выбирал.",
+   "evidence": [
+    {
+     "path": "upstream/gsd-core/agents/gsd-assumptions-analyzer.md",
+     "quote": "2. Every assumption MUST state a concrete consequence if wrong",
+     "line": 93,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-03",
+   "question": "Pre-mortem в GSD — проверка плана перед завершением: три вероятные причины провала и шаги или критерии, ловящие каждую рано.",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "материалы",
+   "depends_on": [],
+   "delivery": "design: Context",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "В источнике приём относится к плану, а не к поведению механизма. Место приёма у нас — развилка F-17.",
+   "evidence": [
+    {
+     "path": "upstream/gsd-core/gsd-core/references/thinking-models-planning.md",
+     "quote": "Before finalizing this plan, assume it has already failed. List the 3 most likely reasons for failure -- missing dependency, wrong decomposition, underestimated complexity -- and add mitigation steps or acceptance criteria that would catch each failure early.",
+     "line": 15,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-04",
+   "question": "`design.md` — рендер журнала: на шаге design решение не принимается, а `design` в графе требует только `proposal`.",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "материалы",
+   "depends_on": [],
+   "delivery": "design: Context",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "Найденное должно попасть в журнал до рендера, иначе в `design.md` его не будет. Чтобы шаг видел спеки, в граф придётся добавить зависимость от `specs`. На этом стоят F-13 и F-16.",
+   "evidence": [
+    {
+     "path": "openspec/schemas/symphysis/schema.yaml",
+     "quote": "Decisions, Risks / Trade-offs и Open Questions приходят из журнала; чтобы их изменить, правь журнал и рендери заново.",
+     "line": 88,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "openspec/schemas/symphysis/schema.yaml",
+     "quote": "      Решение излагается, а не принимается: его уже принял человек.\n    requires:\n      - proposal",
+     "line": 90,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-05",
+   "question": "Линза `scenario-run` идёт от сценария к механизму. Ветка механизма, на которую сценария нет, в её строку не попадает. Атаки необязательны, в последнем замере их не вызывали.",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "материалы",
+   "depends_on": [],
+   "delivery": "design: Context",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "Новый шаг идёт в обратную сторону: от механизма к ветке и затем к сценарию. С линзой он не дублируется.",
+   "evidence": [
+    {
+     "path": "skills/symphysis-attack/SKILL.md",
+     "quote": "исход сценария spec по коду механизма design против THEN",
+     "line": 189,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "docs/analysis/edge-cases-and-consequences-2026-11-01.md",
+     "quote": "F-07.A. Атаки после F-06.A необязательные; в замере `c3-p2-cf` их не вызывали.",
+     "line": 73,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-06",
+   "question": "Пункты П7/Т3 и П10/Т1 — поведение существующего кода, а не края требований. У P-шп ветка лежала в вычислителе и прошла незамеченной.",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "материалы",
+   "depends_on": [],
+   "delivery": "design: Context",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "Это цель шага. В последнем замере оба пункта взяты и без него, так что по одному прогону разница не видна.",
+   "evidence": [
+    {
+     "path": "docs/analysis/edge-cases-and-consequences-2026-11-01.md",
+     "quote": "| П7, Т3 | ненайденная переменная — инцидент, текст называет выражение |",
+     "line": 102,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "docs/analysis/edge-cases-and-consequences-2026-11-01.md",
+     "quote": "| П10, Т1 | литерал длиннее лимита — отказ деплоя существующим валидатором |",
+     "line": 103,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "docs/analysis/silent-mechanics-review-2026-10-31.md",
+     "quote": "**Дыра настоящая.** `ExpressionProcessor.java:270–283`",
+     "line": 29,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-07",
+   "question": "Путь «кандидат в журнале — исход — поставка» уже работает: Specify дошли до спек 35 из 35. Backstop упомянуты в `tasks.md` по номеру 10 из 10, счёт скриптом по трём прогонам P, без отдельного правила в instruction `tasks`.",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "материалы",
+   "depends_on": [],
+   "delivery": "design: Context",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "Новое правило для доставки Backstop не нужно. Прежнее опасение из разбора (`instruction tasks журнал не читает`) в данных не подтвердилось.",
+   "evidence": [
+    {
+     "path": "openspec/schemas/symphysis/schema.yaml",
+     "quote": "После написания на каждое требование позови скиллы `symphysis-edge-probe` и `symphysis-prohibition-probe`.",
+     "line": 78,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "docs/analysis/edge-cases-and-consequences-2026-11-01.md",
+     "quote": "- Гипотеза «пробы находят края, но теряют до поставки» не подтвердилась: 35 из 35 исходов",
+     "line": 19,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-08",
+   "question": "Объём и проверка списка задним числом. В уликах выбранных вариантов непробных развилок трёх прогонов 6, 7 и 9 файлов кода. Файл с потерянной веткой был в списке: `ExpressionProcessor.java` у P-шп, `ProcessInstanceCreationHelper.java` у P-чел. Счёт скриптом.",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "материалы",
+   "depends_on": [],
+   "delivery": "design: Context",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "Список из журнала задаёт предсказуемый объём и накрывает оба наблюдённых промаха. Это проверка списка, а не самого шага: нашёл бы шаг ветку, покажет только прогон. На этом стоит F-15.",
+   "evidence": [
+    {
+     "path": "calibration/c3-p1/project/openspec/changes/camunda-bid/decisions.json",
+     "quote": "ExpressionProcessor.java",
+     "line": 320,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "calibration/c3-p2/project/openspec/changes/camunda-bid/decisions.json",
+     "quote": "ProcessInstanceCreationHelper.java",
+     "line": 346,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-09",
+   "question": "Снятие атак прогон не ускорило: остальные шаги выросли с 36 до 61 мин, журнал — с 38 до 63 записей. Реальный расход сессии $34,79.",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "материалы",
+   "depends_on": [],
+   "delivery": "design: Context",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "Новый шаг прибавит время и развилки к уже выросшему журналу. Цена учтена в вариантах F-16 и F-18.",
+   "evidence": [
+    {
+     "path": "docs/analysis/calibration-fixes-measure-2026-11-01.md",
+     "quote": "шаги выросли с 36 до 61 мин, журнал вырос с 38 до 63 записей. Снятие атак не ускорило прогон.",
+     "line": 118,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "docs/analysis/calibration-fixes-measure-2026-11-01.md",
+     "quote": "| расход сессии плеча, реальный | $10,83 | $39,83 | $37,90 | $34,79 |",
+     "line": 29,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-10",
+   "question": "Владелец отказался от 2–3 прогонов на плечо.",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "материалы",
+   "depends_on": [],
+   "delivery": "proposal: Why",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [
+    {
+     "addressee": "человек",
+     "text": "новая возможность: проверка на слабой модели из предложения 3 разбора. Владелец сказал о ней «почти согласен». Решить, нужна ли она отдельным изменением."
+    }
+   ],
+   "dispute": "",
+   "consequences": "Ограничивает проверку шага, см. F-19.",
+   "evidence": [
+    {
+     "path": "docs/analysis/edge-cases-and-consequences-2026-11-01.md",
+     "quote": "- По повторам: «А вот гонять 2-3 прогона на плечо это я разорюсь.",
+     "line": 128,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-11",
+   "question": "Детерминированный пол пробы краёв снят при переносе из GSD, поэтому проба стала выборкой, а сырой список кандидатов не сохраняется.",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "материалы",
+   "depends_on": [],
+   "delivery": "design: Context",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "Предмет развилки F-18: владелец сказал «почти согласен» и просил уточнить при постановке.",
+   "evidence": [
+    {
+     "path": "skills/symphysis-edge-probe/TRANSLATION-NOTES.md",
+     "quote": "the deterministic `items[]` are the FLOOR",
+     "line": 18,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "docs/analysis/edge-cases-and-consequences-2026-11-01.md",
+     "quote": "Снятый пол превратил обязательное покрытие в выборку",
+     "line": 110,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-12",
+   "question": "Новая потеря замера — решение F-23.B журнала `c3-p2-cf`. Факты постановки берутся только из критериев готовности, поэтому пометка отступления сработать на нём не могла.",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "материалы",
+   "depends_on": [],
+   "delivery": "proposal: Why",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [
+    {
+     "addressee": "человек",
+     "text": "новая возможность: заводить факты постановки не только из критериев, но и из прозы намерения. Цена — больше записей журнала. Решить, нужна ли она отдельным изменением."
+    }
+   ],
+   "dispute": "",
+   "consequences": "Этому изменению не мешает, в его объём не входит.",
+   "evidence": [
+    {
+     "path": "docs/analysis/calibration-fixes-measure-2026-11-01.md",
+     "quote": "Пометка отступления на F-23 сработать не могла.",
+     "line": 83,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-13",
+   "question": "Где в схеме живёт шаг последствий?",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [],
+   "delivery": "specs/artifact-graph, design",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Отдельный артефакт `consequences` между `specs` и `design`, файл `consequences.md`. При выборе: шаг виден в `status`, `design` не строится без файла, у описи есть постоянное место. Нет механизмов — файл с причиной, как `research/none.md`. Цена: артефакт, шаблон и тесты схемы, форк не меняется.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/schemas/symphysis/schema.yaml",
+       "quote": "Нуль парковок — один `research/none.md`",
+       "line": 34,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Скилл, который instruction `design` зовёт перед рендером, как `specs` зовёт пробы. При выборе: новых артефактов нет, правка меньше. Но шаг можно пропустить молча: `status` его не видит, а `design.md` собирается и без него. В `design.requires` всё равно добавляется `specs`.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/schemas/symphysis/schema.yaml",
+       "quote": "После написания на каждое требование позови скиллы `symphysis-edge-probe` и `symphysis-prohibition-probe`.",
+       "line": 78,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "C",
+     "text": "Жанр `последствия` в шаге `research` и обязательная парковка на каждый механизм. При выборе: находки успевают до proposal, переделок меньше. Но спек ещё нет: вопрос «есть ли сценарий на эту ветку» задать не к чему.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/schemas/symphysis/templates/research.md",
+       "quote": "genre: <устройство | размещение | края | проверка | аналоги — одно значение>",
+       "line": 2,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "D",
+     "text": "Обязательная `scenario-run` на шаге design вместо описи.",
+     "added": false,
+     "unlikely": "владелец выбрал опись, а линза от сценария не видит ветку без сценария (F-05)",
+     "evidence": [
+      {
+       "path": "skills/symphysis-attack/SKILL.md",
+       "quote": "исход сценария spec по коду механизма design против THEN",
+       "line": 189,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Опись нужен постоянный файл при любом варианте. Статус делает шаг видимым, к этому моменту спеки уже есть, а образец файла с причиной при нуле находок в схеме уже работает.",
+    "text": "A — отдельный артефакт `consequences` между `specs` и `design`"
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "Определяет набор правок: схема, шаблон и скилл при A, instruction и скилл при B, шаг `research` при C.",
+   "evidence": [],
+   "comments": []
+  },
+  {
+   "id": "F-14",
+   "question": "Что считается строкой описи? Выбранная формулировка назвала её переносом из GSD, но веток отказа в разведке GSD нет (F-01).",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [],
+   "delivery": "specs, скилл шага",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Ветка отказа из кода, как выбрал владелец: механизм, `путь:строка` «цитата», что код делает при отказе. При выборе: каждая строка проверяема по коду, это собственная часть приёма, а от GSD берётся только вопрос «где смотреть».",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "upstream/gsd-core/gsd-core/references/scout-codebase.md",
+       "quote": "- **Integration points** — routes, nav, providers where new code connects",
+       "line": 47,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Допущение с последствием, как у анализатора GSD: что конструкция предполагает о механизме и что будет, если это неверно. При выборе: источник готовый и видно рассуждение. Но допущения называет сама модель, это снова выборка, и ветка, о которой она не подумала, в список не войдёт.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "upstream/gsd-core/agents/gsd-assumptions-analyzer.md",
+       "quote": "2. Every assumption MUST state a concrete consequence if wrong",
+       "line": 93,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "C",
+     "text": "Обе колонки: ветка из кода и допущение нашей конструкции о ней. При выборе: видно и то, что код делает, и на что мы рассчитываем. Цена: строка длиннее и чтения больше.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "upstream/gsd-core/agents/gsd-assumptions-analyzer.md",
+       "quote": "2. Every assumption MUST state a concrete consequence if wrong",
+       "line": 93,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Это слово владельца, и только этот вариант не зависит от того, о чём модель подумала. Поправка касается происхождения приёма, а не его выбора.",
+    "text": "A — ветка отказа из кода"
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "Определяет шаблон строки описи и текст скилла.",
+   "evidence": [],
+   "comments": []
+  },
+  {
+   "id": "F-15",
+   "question": "Какие места кода обязаны получить разбор?",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [],
+   "delivery": "specs, tools/journal.py",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Каждый файл кода из улик выбранных вариантов решённых развилок, кроме проб. Список выводит скрипт из журнала, модель дописывает найденное сама, исключить можно строкой с причиной. При выборе: покрытие проверяемо, объём предсказуем — 6–9 файлов в трёх прогонах, и оба наблюдённых промаха в списке (F-08).",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "calibration/c3-p1/project/openspec/changes/camunda-bid/decisions.json",
+       "quote": "ExpressionProcessor.java",
+       "line": 320,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "То, что модель назовёт сама, прочитав журнал и спеки. При выборе: дешевле и без скрипта. Но это снова выборка: так проба краёв дала разных кандидатов в двух прогонах (F-11).",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "docs/analysis/edge-cases-and-consequences-2026-11-01.md",
+       "quote": "Снятый пол превратил обязательное покрытие в выборку",
+       "line": 110,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "C",
+     "text": "Каждая точка, где будущий код обращается к существующему.",
+     "added": false,
+     "unlikely": "кода ещё нет: конвейер кончается на tasks, выводить такой список не из чего",
+     "evidence": [
+      {
+       "path": "openspec/schemas/symphysis/schema.yaml",
+       "quote": "Каждая задача называет проверку своего завершения",
+       "line": 112,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Механизм обязателен к разбору ровно потому, что на него опирается принятое решение. Список механический, поэтому «не разобрали» отличимо от «разобрали, ветки нет».",
+    "text": "A — файлы из улик выбранных вариантов"
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "Скрипт сверки описи со списком становится частью `journal.py`. Сигнал `[!!]` или стоп — решается в design этого изменения.",
+   "evidence": [],
+   "comments": []
+  },
+  {
+   "id": "F-16",
+   "question": "Как найденное доходит до человека и до design?",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-13"
+   ],
+   "delivery": "specs/decision-journal, скилл шага",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Вся опись лежит в файле. В журнал идут только ветки без сценария, кандидатами с исходами проб: Specify, Dismiss, Backstop, Defer. При выборе: человек решает только непокрытое, опись остаётся следом, путь доставки уже работает (F-07).",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "docs/analysis/edge-cases-and-consequences-2026-11-01.md",
+       "quote": "- Гипотеза «пробы находят края, но теряют до поставки» не подтвердилась: 35 из 35 исходов",
+       "line": 19,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Каждая ветка — запись журнала с решением человека. При выборе: ничего не теряется и всё видно в просмотрщике. Но на 6–9 файлов выйдут десятки решений поверх 37 развилок последнего прогона (F-09).",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "docs/analysis/calibration-fixes-measure-2026-11-01.md",
+       "quote": "шаги выросли с 36 до 61 мин, журнал вырос с 38 до 63 записей.",
+       "line": 118,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "C",
+     "text": "Только файл, журнал не трогается. При выборе: нагрузки на человека нет. Но `design.md` — рендер журнала (F-04), найденное в него не попадёт и до tasks дойдёт лишь случайно.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/schemas/symphysis/schema.yaml",
+       "quote": "Decisions, Risks / Trade-offs и Open Questions приходят из журнала; чтобы их изменить, правь журнал и рендери заново.",
+       "line": 88,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Человеку идёт только то, что требует решения, остальное лежит в проверяемом файле. Новых механизмов доставки не нужно.",
+    "text": "A — опись в файле, непокрытые ветки в журнал"
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "Определяет формат кандидата. Число кандидатов на человека покажет проверка F-19.",
+   "evidence": [],
+   "comments": []
+  },
+  {
+   "id": "F-17",
+   "question": "Где и в каком объёме идёт pre-mortem?",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-13"
+   ],
+   "delivery": "скилл шага",
+   "options": [
+    {
+     "letter": "A",
+     "text": "В конце шага последствий: три причины провала всего изменения, каждая — кандидат в журнал с теми же исходами. При выборе: причина, меняющая поведение, ещё успевает в spec. Отличие от GSD: там это проверка плана (F-03).",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "upstream/gsd-core/gsd-core/references/thinking-models-planning.md",
+       "quote": "Before finalizing this plan, assume it has already failed.",
+       "line": 15,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "В instruction `tasks`, как в GSD: перед завершением списка три причины, на каждую задача или критерий. При выборе: видит весь план, журнал не растёт, человека не спрашивает. Но причина, меняющая поведение, уже опоздала к spec.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "upstream/gsd-core/gsd-core/references/thinking-models-planning.md",
+       "quote": "add mitigation steps or acceptance criteria that would catch each failure early.",
+       "line": 15,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "C",
+     "text": "Три причины на каждый механизм.",
+     "added": false,
+     "unlikely": "дублирует опись и даёт 18–27 строк на прогон",
+     "evidence": [
+      {
+       "path": "upstream/gsd-core/gsd-core/references/thinking-models-planning.md",
+       "quote": "List the 3 most likely reasons for failure",
+       "line": 15,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Наблюдённые потери — в поведении, а не в разбиении плана. Значит, причине нужно успеть до spec.",
+    "text": "A — три причины в конце шага последствий"
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "Определяет раздел шаблона и последний шаг скилла.",
+   "evidence": [],
+   "comments": []
+  },
+  {
+   "id": "F-18",
+   "question": "Что делать с пробой краёв? Предложение 1: пол и сырой список, владелец сказал «почти согласен».",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [],
+   "delivery": "skills/symphysis-edge-probe",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Только сырой список: кандидаты пробы сохраняются файлом рядом с журналом, состав проб не меняется. При выборе: различимо «не нашли» и «нашли, но не выбрали», цена почти нулевая. Покрытие остаётся выборкой.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "docs/analysis/edge-cases-and-consequences-2026-11-01.md",
+       "quote": "Снятый пол превратил обязательное покрытие в выборку",
+       "line": 110,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Пол текстом и сырой список: каждое требование получает строку по всем восьми категориям, хотя бы «неприменимо: причина», покрытие проверяет скрипт, человеку идут только кандидаты. При выборе: выборка становится покрытием. Цена: 80–128 строк на прогон при 10–16 требованиях и рост времени.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "skills/symphysis-edge-probe/TRANSLATION-NOTES.md",
+       "quote": "the deterministic `items[]` are the FLOOR",
+       "line": 18,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "C",
+     "text": "Оставить как есть. При выборе: изменение короче. «Не нашли» и «не выбрали» по-прежнему неразличимы, вернуться можно отдельным изменением.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "docs/analysis/edge-cases-and-consequences-2026-11-01.md",
+       "quote": "Снятый пол превратил обязательное покрытие в выборку",
+       "line": 110,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "На сильной модели потери не в краях (F-06), поэтому пол дорог против ожидаемой отдачи. Сырой список стоит почти ничего и нужен для разбора следующих замеров.",
+    "text": "A — только сырой список"
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "При B объём изменения заметно растёт: шаблон пробы, скрипт покрытия, тесты.",
+   "evidence": [],
+   "comments": []
+  },
+  {
+   "id": "F-19",
+   "question": "Как проверить, что шаг работает? Предложение 3 без повторов (F-10).",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-13",
+    "F-16"
+   ],
+   "delivery": "tasks",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Прогон одного шага на замороженных копиях `c3-p1` и `c3-p2` до `design`: первый потерял П7/Т3, второй П10/Т1. Всплыла ли ветка и сколько кандидатов получил человек. При выборе: проверка прицельная и дешёвая, оценка — порядка шага проб, около $8 и 15 мин на копию. Слабость: контроллер знает пункты, случай тот же, полнота не считается.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "calibration/c3-p1/project/openspec/changes/camunda-bid/decisions.json",
+       "quote": "ExpressionProcessor.java",
+       "line": 320,
+       "verdict": "сверено",
+       "found": true
+      },
+      {
+       "path": "calibration/c3-p2/project/openspec/changes/camunda-bid/decisions.json",
+       "quote": "ProcessInstanceCreationHelper.java",
+       "line": 346,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Полный прогон P-чел, как `c3-p2-cf`, и судейство. При выборе: числа сравнимы с прежними. Цена: $35, час и лист на 253 строки; один прогон не отделит шаг от разброса.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "docs/analysis/calibration-fixes-measure-2026-11-01.md",
+       "quote": "| расход сессии плеча, реальный | $10,83 | $39,83 | $37,90 | $34,79 |",
+       "line": 29,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "C",
+     "text": "Без замера: первая настоящая задача в работе. При выборе: затрат сейчас нет, материал живой. Но сравнить не с чем, а ответ придёт поздно.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "docs/analysis/edge-cases-and-consequences-2026-11-01.md",
+       "quote": "- По повторам: «А вот гонять 2-3 прогона на плечо это я разорюсь.",
+       "line": 128,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "D",
+     "text": "2–3 прогона на плечо.",
+     "added": false,
+     "unlikely": "владелец отказал: «это я разорюсь»",
+     "evidence": [
+      {
+       "path": "docs/analysis/edge-cases-and-consequences-2026-11-01.md",
+       "quote": "- По повторам: «А вот гонять 2-3 прогона на плечо это я разорюсь.",
+       "line": 128,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Шаг целится в два известных промаха, поэтому прицельная проверка отвечает на главный вопрос за малые деньги. Полный прогон оправдан только если она покажет пользу.",
+    "text": "A — шаг на замороженных копиях"
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "Становится задачей `tasks.md` с той же оградой: чек-лист закрыт от плеча.",
+   "evidence": [],
+   "comments": []
+  }
+ ]
+}
