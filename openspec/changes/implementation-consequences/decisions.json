@@ -62,6 +62,10 @@
   {
    "date": "2026-11-01",
    "text": "атака артефактов: gaps_found, блокеров 12 (шесть причин), предупреждений 24, справок 133, покрыто 128 сценариев из 128; решений требуют F-114…F-121 — нужен человек (просмотрщик decisions.html, режим «решения»), остальное закрывается правкой артефактов, затем повтор атаки"
+  },
+  {
+   "date": "2026-11-01",
+   "text": "решения F-114…F-121 приняты, F-115.D добавлен человеком; факт F-122 об XDG_CONFIG_HOME; проход по артефактам сделан, атака повторяется"
   }
  ],
  "records": [
@@ -3218,7 +3222,7 @@
     {
      "path": "openspec/changes/implementation-consequences/specs/project-settings/spec.md",
      "quote": "### Requirement: Выключенный состав назван в артефакте шага",
-     "line": 87,
+     "line": 97,
      "verdict": "сверено",
      "found": true
     }
@@ -3518,7 +3522,7 @@
     {
      "path": "openspec/changes/implementation-consequences/specs/onboarding-guide/spec.md",
      "quote": "### Requirement: Учебный проект идёт настоящими командами и выводами",
-     "line": 48,
+     "line": 58,
      "verdict": "сверено",
      "found": true
     }
@@ -3589,7 +3593,7 @@
     {
      "path": "openspec/changes/implementation-consequences/specs/onboarding-guide/spec.md",
      "quote": "### Requirement: Учебный проект идёт настоящими командами и выводами",
-     "line": 48,
+     "line": 58,
      "verdict": "сверено",
      "found": true
     }
@@ -3661,7 +3665,7 @@
     {
      "path": "openspec/changes/implementation-consequences/specs/onboarding-guide/spec.md",
      "quote": "### Requirement: Руководство покрывает все шаги OpenSpec",
-     "line": 78,
+     "line": 88,
      "verdict": "сверено",
      "found": true
     }
@@ -3733,7 +3737,7 @@
     {
      "path": "openspec/changes/implementation-consequences/specs/onboarding-guide/spec.md",
      "quote": "### Requirement: Руководство покрывает все шаги OpenSpec",
-     "line": 78,
+     "line": 88,
      "verdict": "сверено",
      "found": true
     },
@@ -4827,7 +4831,7 @@
     {
      "path": "openspec/changes/implementation-consequences/specs/decision-journal/spec.md",
      "quote": "### Requirement: `check` сигналит расхождение описи со списком мест",
-     "line": 41,
+     "line": 46,
      "verdict": "сверено",
      "found": true
     }
@@ -4899,7 +4903,7 @@
     {
      "path": "openspec/changes/implementation-consequences/specs/decision-journal/spec.md",
      "quote": "### Requirement: `check` сигналит расхождение описи со списком мест",
-     "line": 41,
+     "line": 46,
      "verdict": "сверено",
      "found": true
     }
@@ -4971,7 +4975,7 @@
     {
      "path": "openspec/changes/implementation-consequences/specs/decision-journal/spec.md",
      "quote": "### Requirement: `check` сигналит расхождение описи со списком мест",
-     "line": 41,
+     "line": 46,
      "verdict": "сверено",
      "found": true
     }
@@ -5043,7 +5047,7 @@
     {
      "path": "openspec/changes/implementation-consequences/specs/decision-journal/spec.md",
      "quote": "### Requirement: `check` сигналит неполное покрытие пробы краёв",
-     "line": 77,
+     "line": 82,
      "verdict": "сверено",
      "found": true
     }
@@ -5114,7 +5118,7 @@
     {
      "path": "openspec/changes/implementation-consequences/specs/decision-journal/spec.md",
      "quote": "### Requirement: `check` сигналит неполное покрытие пробы краёв",
-     "line": 77,
+     "line": 82,
      "verdict": "сверено",
      "found": true
     },
@@ -5429,7 +5433,7 @@
     {
      "path": "openspec/changes/implementation-consequences/specs/project-installer/spec.md",
      "quote": "### Requirement: `check` называет отсутствие команды `/opsx:continue`",
-     "line": 50,
+     "line": 60,
      "verdict": "сверено",
      "found": true
     }
@@ -5501,7 +5505,7 @@
     {
      "path": "openspec/changes/implementation-consequences/specs/project-installer/spec.md",
      "quote": "### Requirement: `check` называет отсутствие команды `/opsx:continue`",
-     "line": 50,
+     "line": 60,
      "verdict": "сверено",
      "found": true
     },
@@ -5579,7 +5583,7 @@
     {
      "path": "openspec/changes/implementation-consequences/specs/project-installer/spec.md",
      "quote": "### Requirement: `install` создаёт `symphysis.yaml`, если файла нет, и не перезаписывает его",
-     "line": 76,
+     "line": 86,
      "verdict": "сверено",
      "found": true
     }
@@ -5650,7 +5654,7 @@
     {
      "path": "openspec/changes/implementation-consequences/specs/project-installer/spec.md",
      "quote": "### Requirement: `check` показывает состав из `symphysis.yaml`",
-     "line": 131,
+     "line": 141,
      "verdict": "сверено",
      "found": true
     }
@@ -5722,7 +5726,7 @@
     {
      "path": "openspec/changes/implementation-consequences/specs/project-installer/spec.md",
      "quote": "### Requirement: Скрипт сборки кладёт тарбол форка в `vendor/`",
-     "line": 157,
+     "line": 200,
      "verdict": "сверено",
      "found": true
     }
@@ -5793,7 +5797,7 @@
     {
      "path": "openspec/changes/implementation-consequences/specs/project-installer/spec.md",
      "quote": "### Requirement: Скрипт сборки кладёт тарбол форка в `vendor/`",
-     "line": 157,
+     "line": 200,
      "verdict": "сверено",
      "found": true
     }
@@ -5865,7 +5869,7 @@
     {
      "path": "openspec/changes/implementation-consequences/specs/project-installer/spec.md",
      "quote": "### Requirement: Скрипт сборки кладёт тарбол форка в `vendor/`",
-     "line": 157,
+     "line": 200,
      "verdict": "сверено",
      "found": true
     }
@@ -5937,7 +5941,7 @@
     {
      "path": "openspec/changes/implementation-consequences/specs/project-installer/spec.md",
      "quote": "### Requirement: Скрипт сборки кладёт тарбол форка в `vendor/`",
-     "line": 157,
+     "line": 200,
      "verdict": "сверено",
      "found": true
     },
@@ -6390,7 +6394,7 @@
     {
      "path": "openspec/changes/implementation-consequences/specs/project-settings/spec.md",
      "quote": "### Requirement: Шаг читает выбор в начале и человека не спрашивает",
-     "line": 71,
+     "line": 81,
      "verdict": "сверено",
      "found": true
     }
@@ -6461,7 +6465,7 @@
     {
      "path": "openspec/changes/implementation-consequences/specs/project-settings/spec.md",
      "quote": "### Requirement: Выключенный состав назван в артефакте шага",
-     "line": 87,
+     "line": 97,
      "verdict": "сверено",
      "found": true
     }
@@ -6604,7 +6608,7 @@
     {
      "path": "openspec/changes/implementation-consequences/specs/onboarding-guide/spec.md",
      "quote": "### Requirement: Учебный проект идёт настоящими командами и выводами",
-     "line": 48,
+     "line": 58,
      "verdict": "сверено",
      "found": true
     }
@@ -6818,7 +6822,7 @@
     {
      "path": "openspec/changes/implementation-consequences/specs/project-installer/spec.md",
      "quote": "### Requirement: Скрипт сборки кладёт тарбол форка в `vendor/`",
-     "line": 157,
+     "line": 200,
      "verdict": "сверено",
      "found": true
     }
@@ -6997,7 +7001,7 @@
     {
      "path": "openspec/changes/implementation-consequences/specs/project-installer/spec.md",
      "quote": "### Requirement: Скрипт сборки кладёт тарбол форка в `vendor/`",
-     "line": 157,
+     "line": 200,
      "verdict": "сверено",
      "found": true
     }
@@ -7055,7 +7059,7 @@
       {
        "path": "openspec/changes/implementation-consequences/decisions.json",
        "quote": "в глобальном конфиге меняется что-либо кроме добавления `continue` и названной смены профиля",
-       "line": 6699,
+       "line": 6703,
        "verdict": "сверено",
        "found": true
       }
@@ -7120,7 +7124,7 @@
       {
        "path": "openspec/changes/implementation-consequences/decisions.json",
        "quote": "файл несёт причину и раздел pre-mortem с тремя кандидатами",
-       "line": 2878,
+       "line": 2882,
        "verdict": "сверено",
        "found": true
       }
@@ -7170,7 +7174,7 @@
       {
        "path": "openspec/changes/implementation-consequences/decisions.json",
        "quote": "тест подаёт пустой файл, файл из комментариев и `edge_probe:` и утверждает, что состав везде «включено»",
-       "line": 3035,
+       "line": 3039,
        "verdict": "сверено",
        "found": true
       }
@@ -7183,9 +7187,9 @@
      "unlikely": null,
      "evidence": [
       {
-       "path": "openspec/changes/implementation-consequences/specs/project-settings/spec.md",
-       "quote": "**THEN** выбор считается включённым, `check` даёт `[!!] symphysis.yaml: недопустимое значение <значение>`, код 2",
-       "line": 29,
+       "path": "openspec/changes/implementation-consequences/decisions.json",
+       "quote": "выбор считается включённым, `check` даёт `[!!] symphysis.yaml: недопустимое значение <значение>`, код 2",
+       "line": 3096,
        "verdict": "сверено",
        "found": true
       }
@@ -7329,7 +7333,7 @@
       {
        "path": "openspec/changes/implementation-consequences/specs/project-installer/spec.md",
        "quote": "Команда `symphysis install` SHALL добавлять строку `symphysis.yaml` в `.gitignore` проекта, если её там нет",
-       "line": 98,
+       "line": 108,
        "verdict": "сверено",
        "found": true
       }
@@ -7359,7 +7363,7 @@
       {
        "path": "openspec/changes/implementation-consequences/specs/project-settings/spec.md",
        "quote": "**THEN** `symphysis.yaml` в коммит не попал, состав во втором клоне прежний",
-       "line": 68,
+       "line": 78,
        "verdict": "сверено",
        "found": true
       }
@@ -7531,7 +7535,7 @@
    "id": "F-114",
    "question": "Установка из клона по спеке не работает: `node_modules` и `payload` инсталлятора вне git, поэтому `node installer/bin/symphysis.js install` на чистом клоне падает. После `git pull` хуже: `payload` прежний, `install --force` молча кладёт старую версию, а `check` сверяет с тем же `payload` и отвечает `ok`. Как установка из клона получает инсталлятор и как не застрять на старой версии?",
    "kind": "развилка",
-   "status": "открыт",
+   "status": "решён",
    "addressee": "человек",
    "depends_on": [
     "F-31",
@@ -7584,7 +7588,11 @@
     "why": "Прямо следует из F-36.A «установка из клона», а застревание на старой версии — как раз тихая порча, которую стоит контролировать (слово человека о контроле).",
     "text": "A — `npm --prefix installer ci` и сигнал о старом `payload`"
    },
-   "decision": null,
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-01"
+   },
    "reversibility": {
     "level": "обратимо",
     "why": "Шаги руководства и строка `check`; второй тарбол можно добавить позже."
@@ -7600,7 +7608,7 @@
    "id": "F-115",
    "question": "Спеки просят `check` и `install` называть клиента и отличать «клиент не настроен», но механизма нет: в инсталляторе карты клиентов нет намеренно, форк список настроенных клиентов наружу не отдаёт, а `openspec update` без клиента отвечает кодом 0. Как определять клиента?",
    "kind": "развилка",
-   "status": "открыт",
+   "status": "решён",
    "addressee": "человек",
    "depends_on": [
     "F-32",
@@ -7654,6 +7662,13 @@
        "found": true
       }
      ]
+    },
+    {
+     "letter": "D",
+     "text": "Можно дать подсказку человеку вызвать which или where opencode / claude и выбрать для какого клиента из устанавливать (добавлен человеком)",
+     "added": true,
+     "unlikely": null,
+     "evidence": []
     }
    ],
    "antipodes": [],
@@ -7662,7 +7677,11 @@
     "why": "Форк сам определяет настроенных клиентов по этому же файлу, поэтому признак не придуман, а взят у него.",
     "text": "A — признак по файлам, созданным форком, без карты"
    },
-   "decision": null,
+   "decision": {
+    "option": "D",
+    "word": "",
+    "date": "2026-11-01"
+   },
    "reversibility": {
     "level": "обратимо",
     "why": "Одна функция в `check.js`, на неё опирается `install`."
@@ -7670,7 +7689,7 @@
    "outcome": null,
    "parking": [],
    "dispute": "",
-   "consequences": "Сценарии «Форка нет или клиент не настроен», «Команды нет», «Команда у настроенного клиента», «Клиент не настроен».",
+   "consequences": "Клиента выбирает человек: параметр `--skills-dir` уже есть, умолчание `.claude/skills`, инсталлятор клиентов не ищет. Настроен — в выбранном каталоге есть созданные форком `skills/openspec-*` или `commands/opsx/`. Подсказка называет `where.exe claude`, `where.exe opencode` и `which`: в PowerShell `where` — псевдоним `Where-Object`, он ничего не покажет. Сценарии «Форка нет или клиент не настроен», «Команды нет», «Команда у настроенного клиента», «Клиент не настроен».",
    "evidence": [],
    "comments": []
   },
@@ -7678,7 +7697,7 @@
    "id": "F-116",
    "question": "F-100.A и F-107.A запрещают менять в глобальном конфиге что-либо сверх названного, но форк сам шире: любой `config set` дописывает умолчания `featureFlags`, `profile`, `delivery`, а любой вызов при незаданной телеметрии дописывает `noticeSeen`, `anonymousId` и шлёт событие. Тест «до и после» покраснеет при правильной работе. Что считать различием?",
    "kind": "развилка",
-   "status": "открыт",
+   "status": "решён",
    "addressee": "человек",
    "depends_on": [
     "F-100",
@@ -7730,7 +7749,11 @@
     "why": "Запрет защищает от смены поведения других проектов на машине. Дописанные умолчания поведения не меняют, а чужой формат инсталлятору держать незачем.",
     "text": "A — телеметрия выключена на вызовах, умолчания форка разрешены"
    },
-   "decision": null,
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-01"
+   },
    "reversibility": {
     "level": "обратимо",
     "why": "Текст запрета, окружение вызова и тест."
@@ -7746,7 +7769,7 @@
    "id": "F-117",
    "question": "Руководство зовёт `openspec init` раньше `install`, поэтому на чистой машине телеметрия успевает сработать: при первой команде форк пишет идентификатор и шлёт событие. Выключать ли её до первой команды форка? Слово владельца: «в рабочем контуре уже правильнее убирать телеметрию».",
    "kind": "развилка",
-   "status": "открыт",
+   "status": "решён",
    "addressee": "человек",
    "depends_on": [
     "F-107",
@@ -7791,7 +7814,11 @@
     "why": "Один шаг против данных наружу, и это совпадает со словом владельца о рабочем контуре.",
     "text": "A — выключить до первой команды форка"
    },
-   "decision": null,
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-01"
+   },
    "reversibility": {
     "level": "обратимо",
     "why": "Одна команда в тексте руководства."
@@ -7807,7 +7834,7 @@
    "id": "F-118",
    "question": "Скилл читает `symphysis.yaml` сам, глазами модели: скрипты согласованы, а модель может понять `enabled: no` как «выключено» и пропустить шаг. Вопрос F-51 называл чтение моделью отдельным читателем. Как модель узнаёт состав?",
    "kind": "развилка",
-   "status": "открыт",
+   "status": "решён",
    "addressee": "человек",
    "depends_on": [
     "F-51",
@@ -7825,7 +7852,7 @@
       {
        "path": "openspec/changes/implementation-consequences/decisions.json",
        "quote": "разбор YAML в `check`, чтение моделью и Python без пакетов поймут его по-разному",
-       "line": 3081,
+       "line": 3085,
        "verdict": "сверено",
        "found": true
       }
@@ -7853,7 +7880,11 @@
     "why": "Молчаливое выключение проверки — тот самый случай «самое опасное», а цена контроля здесь одна строка вызова. Заодно это один вход, который потом удобно отдать агенту.",
     "text": "A — подкоманда `journal.py settings`"
    },
-   "decision": null,
+   "decision": {
+    "option": "A",
+    "word": "Или может лучше сделать symphysis config и работать с конфигурацией через свой скрипт, а с журнал останется журналом.",
+    "date": "2026-11-01"
+   },
    "reversibility": {
     "level": "обратимо",
     "why": "Подкоманда и строка в скиллах."
@@ -7861,7 +7892,7 @@
    "outcome": null,
    "parking": [],
    "dispute": "",
-   "consequences": "Новый сценарий в требовании «Все читатели `symphysis.yaml` дают один итог», задачи групп 3 и 5.",
+   "consequences": "Слово человека принято: настройки — свой скрипт, журнал остаётся журналом, подкоманды `journal.py settings` нет. Команды `symphysis` в проекте нет, она живёт в клоне, поэтому модель зовёт `.symphysis/tools/symphysis_config.py`, а человек — `symphysis config`. `journal.py check` берёт чтение из того же модуля. Новые сценарии «Модель узнаёт состав скриптом», «Человек смотрит состав».",
    "evidence": [],
    "comments": []
   },
@@ -7869,7 +7900,7 @@
    "id": "F-119",
    "question": "Опись идёт в git, а `symphysis.yaml` личный (F-94.E). Опись, написанная без веток отказа, в другом клоне даст `[!!]` по каждой строке, а признак `[..] выключено настройкой` исчезнет, как только настройку включат. Что читает сверка: состав, с которым шёл шаг, или текущий личный файл?",
    "kind": "развилка",
-   "status": "открыт",
+   "status": "решён",
    "addressee": "человек",
    "depends_on": [
     "F-94",
@@ -7888,7 +7919,7 @@
       {
        "path": "openspec/changes/implementation-consequences/specs/project-settings/spec.md",
        "quote": "**THEN** `symphysis.yaml` в коммит не попал, состав во втором клоне прежний",
-       "line": 68,
+       "line": 78,
        "verdict": "сверено",
        "found": true
       }
@@ -7903,7 +7934,7 @@
       {
        "path": "openspec/changes/implementation-consequences/decisions.json",
        "quote": "тест утверждает, что `journal.py check` на таком изменении печатает `[..] <часть>: выключено настройкой`",
-       "line": 6413,
+       "line": 6417,
        "verdict": "сверено",
        "found": true
       }
@@ -7916,7 +7947,11 @@
     "why": "Прямое следствие твоего F-94.E: личная настройка не должна менять то, как читается общий артефакт.",
     "text": "A — сверка читает состав из файла описи"
    },
-   "decision": null,
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-01"
+   },
    "reversibility": {
     "level": "обратимо",
     "why": "Источник значения в одной функции `check`."
@@ -7932,7 +7967,7 @@
    "id": "F-120",
    "question": "F-49.A даёт `[!!]` по новым местам после файла с причиной «механизмов нет». Что с другими причинами? При «все колонки выключены» и «шаг появился позже» каждое место из списка тоже дало бы `[!!]`, а у трёх старых изменений таких мест десятки.",
    "kind": "развилка",
-   "status": "открыт",
+   "status": "решён",
    "addressee": "человек",
    "depends_on": [
     "F-49",
@@ -7950,7 +7985,7 @@
       {
        "path": "openspec/changes/implementation-consequences/decisions.json",
        "quote": "GIVEN `consequences.md` с причиной «механизмов нет» и список мест, ставший непустым",
-       "line": 2950,
+       "line": 2954,
        "verdict": "сверено",
        "found": true
       }
@@ -7965,7 +8000,7 @@
       {
        "path": "openspec/changes/implementation-consequences/decisions.json",
        "quote": "до правки схемы у него написан `consequences.md` с причиной «шаг появился позже», `status` не ломается",
-       "line": 3763,
+       "line": 3767,
        "verdict": "сверено",
        "found": true
       }
@@ -7978,7 +8013,11 @@
     "why": "Сигнал ценен, пока он о реальном расхождении, а выключенный состав и старые изменения им не являются.",
     "text": "A — `[!!]` только у «механизмов нет»"
    },
-   "decision": null,
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-01"
+   },
    "reversibility": {
     "level": "обратимо",
     "why": "Одна ветка сверки и строки шаблона."
@@ -7994,7 +8033,7 @@
    "id": "F-121",
    "question": "Без PyYAML `symphysis check` читает файл пакетом `yaml` и показывает `проба краёв выкл`, а `journal.py check` рядом считает всё включённым. Требование обещает один итог на одном файле. Это принятое исключение?",
    "kind": "развилка",
-   "status": "открыт",
+   "status": "решён",
    "addressee": "человек",
    "depends_on": [
     "F-110",
@@ -8009,9 +8048,9 @@
      "unlikely": null,
      "evidence": [
       {
-       "path": "openspec/changes/implementation-consequences/specs/project-installer/spec.md",
-       "quote": "**THEN** состав показан, stdout несёт `[!!] python: нет пакета PyYAML — выполнить: <python> -m pip install pyyaml`, код 2",
-       "line": 152,
+       "path": "openspec/changes/implementation-consequences/decisions.json",
+       "quote": "строка `[!!] python` говорит, что инструменты журнала считают всё включённым",
+       "line": 8043,
        "verdict": "сверено",
        "found": true
       }
@@ -8039,7 +8078,11 @@
     "why": "Сторона безопасная, а строка `[!!]` прямо называет причину. Расхождение живёт только до установки пакета.",
     "text": "A — исключение, названное строкой `[!!]`"
    },
-   "decision": null,
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-01"
+   },
    "reversibility": {
     "level": "обратимо",
     "why": "Текст требования и одной строки `check`."
@@ -8049,6 +8092,52 @@
    "dispute": "",
    "consequences": "Требование «Все читатели `symphysis.yaml` дают один итог», сценарий «У найденного Python нет PyYAML».",
    "evidence": [],
+   "comments": []
+  },
+  {
+   "id": "F-122",
+   "question": "Единственная запись по пути `XDG_CONFIG_HOME` — глобальный конфиг форка `<XDG_CONFIG_HOME>/openspec/config.json`; файлов symphysis там нет, соседние каталоги не трогаются. Без переменной конфиг лежит в `%APPDATA%\\openspec\\config.json`. На домашней машине постоянной переменной нет, её задаёт на сессию `env.ps1` стенда, поэтому конфигов бывает два. `openspec update` убирает скиллы workflow, которых нет в прочитанном конфиге, и `/opsx:continue` пропадает, если `update` идёт из другой оболочки.",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "материалы",
+   "depends_on": [
+    "F-32",
+    "F-79",
+    "F-107"
+   ],
+   "delivery": "design: Context",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "Конфликта файлов нет, настоящий риск — два конфига. `install` и `check` называют путь, `check` называет и второй файл, руководство объясняет переменную. Временная переменная в тестах — только на одну команду.",
+   "evidence": [
+    {
+     "path": "installer/README.md",
+     "quote": "Глобальный конфиг лежит в `$XDG_CONFIG_HOME/openspec/config.json`,",
+     "line": 130,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "upstream/openspec/src/core/update.ts",
+     "quote": "removedDeselectedSkillCount += await this.removeUnselectedSkillDirs(",
+     "line": 448,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "openspec/changes/implementation-consequences/answers/2026-11-01-xdg.md",
+     "quote": "Если у нас тоже что то устанавливается по этому пути, то стоит это указать, чтобы не было конфликтов.",
+     "line": 3,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
    "comments": []
   }
  ]
