@@ -1,0 +1,210 @@
+{
+ "title": "Журнал образца описи",
+ "source": "decisions.json",
+ "records": [
+  {
+   "id": "F-01",
+   "question": "Где живёт повтор запроса?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Берём готовый повтор",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "src/retry.js",
+       "quote": "export function retry(send, limit)"
+      },
+      {
+       "path": "src/plain.js",
+       "quote": "export const limitOf"
+      },
+      {
+       "path": "src/skipped.js",
+       "quote": "export const label"
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Пишем свой",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "docs/plan.md",
+       "quote": "пишем свой повтор запроса"
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-01"
+   },
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [],
+   "comments": []
+  },
+  {
+   "id": "F-02",
+   "question": "`null` от повтора: исчерпание попыток или пустой ответ?",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — сценарий на эту ветку; цена: сценарий, тест и сопровождение",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — причина",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест без сценария",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — потом",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [],
+   "comments": []
+  },
+  {
+   "id": "F-03",
+   "question": "Повтор дублирует запись при неидемпотентном запросе?",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — сценарий на эту ветку; цена: сценарий, тест и сопровождение",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — причина",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест без сценария",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — потом",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [],
+   "comments": []
+  },
+  {
+   "id": "F-04",
+   "question": "Предел попыток читается до загрузки настроек?",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — сценарий на эту ветку; цена: сценарий, тест и сопровождение",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — причина",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест без сценария",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — потом",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [],
+   "comments": []
+  }
+ ]
+}

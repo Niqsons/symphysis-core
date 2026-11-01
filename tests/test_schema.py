@@ -9,7 +9,7 @@ import subprocess
 import pytest
 
 import journal
-from conftest import FORK_BIN, ROOT, requires_fork
+from conftest import FORK_BIN, ROOT, fork_record, journal_of, requires_fork
 
 SCHEMAS = ROOT / "openspec" / "schemas"
 TEMPLATES = SCHEMAS / "symphysis" / "templates"
@@ -17,11 +17,12 @@ SCHEMA_YAML = SCHEMAS / "symphysis" / "schema.yaml"
 CHANGE_DEMO = ROOT / "tests" / "fixtures" / "change-demo"
 CHANGE_DEMO_ATTACK = ROOT / "tests" / "fixtures" / "change-demo-attack"
 CHANGE_DEMO_NONE = ROOT / "tests" / "fixtures" / "change-demo-none"
+CONSEQUENCES_FILLED = ROOT / "tests" / "fixtures" / "consequences-filled"
 
 TEMPLATE_FILES = ["intent.md", "decisions.json", "research.md", "attack-decisions.md", "attack-artifacts.md",
-                  "proposal.md", "spec.md", "design.md", "security.md", "tasks.md"]
+                  "proposal.md", "spec.md", "consequences.md", "design.md", "security.md", "tasks.md"]
 
-ARTIFACT_IDS = ["intent", "decisions", "research", "attack-decisions", "proposal", "specs",
+ARTIFACT_IDS = ["intent", "decisions", "research", "attack-decisions", "proposal", "specs", "consequences",
                 "design", "security", "tasks", "attack-artifacts"]
 
 REQUIRES = {
@@ -31,7 +32,8 @@ REQUIRES = {
     "attack-decisions": ["research"],
     "proposal": ["research", "attack-decisions"],
     "specs": ["proposal"],
-    "design": ["proposal"],
+    "consequences": ["specs"],
+    "design": ["proposal", "consequences"],
     "security": ["specs"],
     "tasks": ["specs", "design"],
     "attack-artifacts": ["specs", "design", "security", "tasks"],
@@ -108,7 +110,7 @@ def test_graph_edges_and_apply_gate(tmp_path):
     assert {a["id"]: a["outputPath"] for a in out["artifacts"]} == {
         "intent": "intent.md", "decisions": "decisions.json", "research": "research/**/*.md",
         "attack-decisions": "attack/decisions.md", "proposal": "proposal.md",
-        "specs": "specs/**/*.md", "design": "design.md", "security": "security.md",
+        "specs": "specs/**/*.md", "consequences": "consequences.md", "design": "design.md", "security": "security.md",
         "tasks": "tasks.md", "attack-artifacts": "attack/artifacts.md"}
     assert out["applyRequires"] == ["tasks", "attack-artifacts"]
 
@@ -144,13 +146,79 @@ def test_planning_complete_without_called_attacks(tmp_path):
     """«Планирование без вызванных атак»: все артефакты, кроме двух атак, — планирование завершено."""
     proj = make_project(tmp_path, change_fixture=CHANGE_DEMO_NONE)
     change = proj / "openspec" / "changes" / "demo"
-    for name in ("proposal.md", "specs/demo-cap/spec.md", "design.md", "security.md", "tasks.md"):
+    for name in ("proposal.md", "specs/demo-cap/spec.md", "consequences.md", "design.md", "security.md", "tasks.md"):
         (change / name).parent.mkdir(parents=True, exist_ok=True)
         (change / name).write_text("заготовка\n", encoding="utf-8", newline="\n")
     out = run_openspec(proj, "status", "--change", "demo", "--json")
     assert out["isPlanningComplete"] is True, out
     by_id = artifacts_by_id(out)
     assert by_id["attack-artifacts"]["fileExists"] is False
+
+
+def change_with_specs(tmp_path):
+    """Изменение с готовыми `specs`, но без описи: файлы артефактов до `specs` включительно — заготовки."""
+    proj = make_project(tmp_path, change_fixture=CHANGE_DEMO_NONE)
+    change = proj / "openspec" / "changes" / "demo"
+    for name in ("proposal.md", "specs/demo-cap/spec.md"):
+        (change / name).parent.mkdir(parents=True, exist_ok=True)
+        (change / name).write_text("заготовка\n", encoding="utf-8", newline="\n")
+    return proj, change
+
+
+@requires_fork
+def test_design_waits_for_the_inventory(tmp_path):
+    """Сценарий «Дизайн ждёт опись»."""
+    proj, _ = change_with_specs(tmp_path)
+    out = run_openspec(proj, "status", "--change", "demo", "--json")
+    by_id = artifacts_by_id(out)
+    assert by_id["consequences"]["status"] == "ready"
+    assert by_id["design"]["status"] == "blocked" and "consequences" in by_id["design"]["missingDeps"]
+    assert out["isPlanningComplete"] is False
+
+
+@requires_fork
+def test_inventory_opens_design(tmp_path):
+    """Сценарий «Опись открывает дизайн»: файл с причиной открывает так же (сценарии «Нуль механизмов»,
+    «Все колонки выключены»)."""
+    proj, change = change_with_specs(tmp_path)
+    for text in ("**Причина:** механизмов нет, искал: `throw`\n", "**Причина:** все колонки выключены настройками\n",
+                 "**Состав:** ветки отказа, допущения\n\n## Опись\n"):
+        (change / "consequences.md").write_text(text, encoding="utf-8", newline="\n")
+        by_id = artifacts_by_id(run_openspec(proj, "status", "--change", "demo", "--json"))
+        assert by_id["consequences"]["status"] == "done" and by_id["design"]["status"] == "ready", text
+
+
+@requires_fork
+def test_inventory_instruction(tmp_path):
+    """Сценарий «Инструкция шага»: вывод несёт шаблон и называет скилл шага."""
+    proj, _ = change_with_specs(tmp_path)
+    out = run_openspec(proj, "instructions", "consequences", "--change", "demo", "--json")
+    assert out["template"].replace("\r\n", "\n") == template_text("consequences.md")
+    assert "symphysis-consequences" in out["instruction"]
+    plain = run_openspec(proj, "instructions", "consequences", "--change", "demo")
+    assert "symphysis-consequences" in plain and "## Опись" in plain
+
+
+@requires_fork
+def test_change_started_before_the_artifact(tmp_path):
+    """Сценарий «Изменение, начатое до артефакта»: файл с причиной написан до правки схемы, `status` не ломается,
+    планирование считается как раньше."""
+    proj, change = change_with_specs(tmp_path)
+    for name in ("design.md", "security.md", "tasks.md"):
+        (change / name).write_text("заготовка\n", encoding="utf-8", newline="\n")
+    (change / "consequences.md").write_text("**Причина:** шаг появился позже\n", encoding="utf-8", newline="\n")
+    out = run_openspec(proj, "status", "--change", "demo", "--json")
+    by_id = artifacts_by_id(out)
+    assert by_id["consequences"]["status"] == "done" and by_id["design"]["status"] == "done"
+    assert out["isPlanningComplete"] is True, out
+
+
+def test_inventory_declared_before_security_and_design():
+    """Backstop F-62: `/opsx:continue` берёт следующий артефакт в порядке объявления, поэтому опись идёт раньше
+    `security`, хотя он её не требует."""
+    text = SCHEMA_YAML.read_bytes().decode("utf-8")
+    order = re.findall(r"^  - id: (\S+)$", text, re.M)
+    assert order.index("specs") < order.index("consequences") < order.index("design") < order.index("security")
 
 
 @requires_fork
@@ -176,6 +244,9 @@ def test_instructions_name_skills_and_stay_short(tmp_path):
     assert "symphysis-brainstorm" in text["decisions"]
     assert "symphysis-attack" in text["attack-decisions"] and "symphysis-attack" in text["attack-artifacts"]
     assert "symphysis-edge-probe" in text["specs"] and "symphysis-prohibition-probe" in text["specs"]
+    assert "symphysis-consequences" in text["consequences"]
+    assert ".symphysis/tools/symphysis_config.py" in text["consequences"]
+    assert ".symphysis/tools/journal.py code-sites" in text["consequences"]
     for i in ("intent", "design", "security", "tasks"):
         assert "symphysis-" not in text[i], f"{i}: правила без скилла"
     # research: второй круг брейншторма стоит в конце, после правил отчётов и none.md
@@ -339,7 +410,7 @@ def test_research_template_shape():
     assert "не найдено" in text and "искал: " in text and "<шаблон" in text
 
 
-@pytest.mark.parametrize("name", ["research.md", "attack-decisions.md"])
+@pytest.mark.parametrize("name", ["research.md", "attack-decisions.md", "consequences.md"])
 def test_templates_mark_record_number_as_placeholder(name):
     """Номер записи в шаблоне — подстановка `<F-NN>`: голый `F-NN` читается как настоящий номер."""
     text = template_text(name)
@@ -355,6 +426,68 @@ def test_spec_template_uses_openspec_delta_grammar():
     assert "<!-- проба краёв: " in text and "<!-- проба запретов: " in text
 
 
+def test_spec_template_puts_the_trail_after_the_scenario():
+    """Сценарий «Шаблон ставит след после сценария»: след в конце блока требования, в предел 500 символов не идёт."""
+    text = template_text("spec.md")
+    scenario = text.index("#### Scenario: ")
+    assert scenario < text.index("<!-- проба краёв: ") and scenario < text.index("<!-- проба запретов: ")
+    assert "проба краёв: выключена настройкой" in text
+
+
+def test_consequences_template_shape():
+    """4.2: `**Состав:**` одной строкой, три раздела, все формы строки описи."""
+    text = template_text("consequences.md")
+    assert headings(text, 2) == ["Опись", "Исключения", "Pre-mortem"]
+    assert len(re.findall(r"^\*\*Состав:\*\* ", text, re.M)) == 1
+    assert "- **<механизм>** — `путь:строка` «цитата»" in text
+    for sub in ("при отказе:", "допущение:", "сценарий:", "кандидат: <F-NN>"):
+        assert sub in section(text, "Опись"), sub
+    assert "- **<механизм>** (`<путь>`) — допущение: " in text
+    assert "- **<механизм>** (`<путь>`): веток отказа не найдено, искал: <шаблоны>" in text
+    assert "выключены настройкой" in text
+
+
+def test_consequences_template_reason_is_a_sample_not_a_line():
+    """`**Причина:**` стоит образцом внутри комментария: шаблон, скопированный как есть, сверку мест не снимает."""
+    text = template_text("consequences.md")
+    assert "**Причина:** механизмов нет" in text and "**Причина:** все колонки выключены настройками" in text
+    assert not re.search(r"^\s*\*\*Причина:\*\*", text, re.M)
+
+
+def test_unfilled_consequences_template_keeps_the_sites_check(tmp_path):
+    """Скрипт читает шаблон как опись без мест: `[!!]` на место, цитат в образцах нет."""
+    file = tmp_path / "consequences.md"
+    file.write_text(template_text("consequences.md"), encoding="utf-8")
+    data = journal_of(fork_record("F-01", "A", A=["src/Foo.java"]))
+    assert journal.check_consequences(data, file, {"": tmp_path}) == {
+        "missing": ["consequences.md: src/Foo.java — нет ни разбора, ни исключения с причиной"], "unchecked": []}
+
+
+def test_filled_consequences_sample_passes_the_checks():
+    """4.2: заполненный образец по шаблону проходит обе проверки: разобранное место, место без веток, исключённое."""
+    data = journal.load_journal(CONSEQUENCES_FILLED / "decisions.json")
+    assert journal.validate_journal(data) == []
+    roots = {"": CONSEQUENCES_FILLED}
+    assert set(journal.code_sites(data, roots)["sites"]) == {"src/retry.js", "src/plain.js", "src/skipped.js"}
+    assert journal.check_consequences(data, CONSEQUENCES_FILLED / "consequences.md", roots) == {
+        "missing": [], "unchecked": []}
+    assert journal.check_evidence(data, roots)["missing"] == []
+    filled = lf_text(CONSEQUENCES_FILLED / "consequences.md")
+    assert headings(filled, 2) == headings(template_text("consequences.md"), 2)
+    assert re.search(r"^\*\*Состав:\*\* ветки отказа, допущения$", filled, re.M)
+
+
+def test_filled_consequences_sample_breaks_on_a_wrong_quote(tmp_path):
+    """Контроль образца: та же опись с испорченной цитатой даёт сигнал, значит прохождение выше не пустое."""
+    filled = lf_text(CONSEQUENCES_FILLED / "consequences.md")
+    good = "«if (attempts > limit || reply == null) return null;»"
+    assert good in filled
+    broken = tmp_path / "consequences.md"
+    broken.write_text(filled.replace(good, "«if (attempts >= limit || reply == null) return null;»"), encoding="utf-8")
+    data = journal.load_journal(CONSEQUENCES_FILLED / "decisions.json")
+    result = journal.check_consequences(data, broken, {"": CONSEQUENCES_FILLED})
+    assert result["missing"] == ["consequences.md: src/retry.js «if (attempts >= limit || reply == null) return null;» "
+                                 "— цитаты нет дословно"]
 def test_design_template_marks_generated_sections():
     text = template_text("design.md")
     assert headings(text, 2) == ["Context", "Goals / Non-Goals", "Decisions", "Risks / Trade-offs",
@@ -409,7 +542,8 @@ def test_tasks_template_follows_openspec_checkbox_grammar():
 def test_schema_points_each_artifact_at_its_own_template():
     for artifact_id, template in {"intent": "intent.md", "decisions": "decisions.json", "research": "research.md",
                                   "attack-decisions": "attack-decisions.md", "proposal": "proposal.md",
-                                  "specs": "spec.md", "design": "design.md", "security": "security.md",
+                                  "specs": "spec.md", "consequences": "consequences.md", "design": "design.md",
+                                  "security": "security.md",
                                   "tasks": "tasks.md", "attack-artifacts": "attack-artifacts.md"}.items():
         assert re.search(rf"^    template: {re.escape(template)}$", schema_block(artifact_id), re.M), artifact_id
 
@@ -478,24 +612,61 @@ def test_instructions_return_attack_template_of_own_artifact(tmp_path, artifact_
 @requires_fork
 def test_filled_templates_pass_openspec_validate(tmp_path):
     """Грамматику proposal, spec и tasks разбирает CLI: заполненные шаблоны проходят `validate --strict`,
-    комментарии с пробами между требованием и сценарием ему не мешают."""
+    комментарии с пробами после сценария ему не мешают."""
     proj = make_project(tmp_path)
+    write_filled_templates(proj, "Система SHALL работать.")
+    out = run_openspec(proj, "validate", "demo", "--strict", "--json")
+    assert out["summary"]["totals"] == {"items": 1, "passed": 1, "failed": 0}, out
+
+
+def write_filled_templates(proj, requirement, edit_spec=lambda text: text):
+    """Заполненные шаблоны proposal, spec и tasks изменения `demo`; `requirement` — текст требования,
+    `edit_spec` правит готовый текст спеки."""
     change = proj / "openspec" / "changes" / "demo"
     fill = lambda text: re.sub(r"<(?!!--)[^<>\n]*>", "заполнено", text)
     why = "Нужно проверить, что шаблоны схемы разбираются CLI так же, как шаблоны spec-driven."
     purpose = "Проверка формы шаблона spec.md на живом разборе CLI форка OpenSpec: грамматика требований."
+    spec = fill(template_text("spec.md")).replace("## Purpose\n", f"## Purpose\n{purpose}\n")
     files = {
         "proposal.md": fill(template_text("proposal.md")).replace("## Why\n", f"## Why\n\n{why}\n")
                                                           .replace("## What Changes\n", "## What Changes\n\n- Новая capability.\n"),
-        "specs/demo-cap/spec.md": fill(template_text("spec.md")).replace("## Purpose\n", f"## Purpose\n{purpose}\n")
-                                                              .replace("Система SHALL заполнено.", "Система SHALL работать."),
+        "specs/demo-cap/spec.md": edit_spec(spec.replace("Система SHALL заполнено.", requirement)),
         "tasks.md": fill(template_text("tasks.md")),
     }
     for name, text in files.items():
         (change / name).parent.mkdir(parents=True, exist_ok=True)
         (change / name).write_text(text, encoding="utf-8", newline="\n")
+
+
+def long_requirement_and_trail():
+    """Текст требования на 400 символов и след проб на 200."""
+    requirement = "Система SHALL работать " + "а" * 377
+    trail = "<!-- проба краёв: " + "б" * 178 + " -->"
+    assert (len(requirement), len(trail)) == (400, 200)
+    return requirement, trail
+
+
+@requires_fork
+def test_long_trail_does_not_colour_validation(tmp_path):
+    """Сценарий «Длинный след не красит валидацию»: след после сценария в предел не идёт."""
+    proj = make_project(tmp_path)
+    requirement, trail = long_requirement_and_trail()
+    write_filled_templates(proj, requirement, edit_spec=lambda text: text.replace(
+        "- **THEN** заполнено\n", f"- **THEN** заполнено\n{trail}\n", 1))
     out = run_openspec(proj, "validate", "demo", "--strict", "--json")
     assert out["summary"]["totals"] == {"items": 1, "passed": 1, "failed": 0}, out
+
+
+@requires_fork
+def test_trail_above_the_scenario_would_colour_validation(tmp_path):
+    """Контроль сценария выше: тот же след над сценарием идёт в предел, и `--strict` отказывает. Без этого
+    теста зелёное выше ничего не доказывает."""
+    proj = make_project(tmp_path)
+    requirement, trail = long_requirement_and_trail()
+    write_filled_templates(proj, requirement, edit_spec=lambda text: text.replace(
+        requirement + "\n", f"{requirement}\n{trail}\n", 1))
+    out = run_openspec(proj, "validate", "demo", "--strict", "--json", returncode=1)
+    assert out["summary"]["totals"]["failed"] == 1, out
 
 
 # --- config.yaml проекта: rules на артефакт --------------------------------
