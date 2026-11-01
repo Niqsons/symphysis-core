@@ -185,15 +185,15 @@
 const JOURNAL = {
  "title": "Журнал решений: implementation-consequences",
  "source": "decisions.json",
- "sha256": "e6350b6e13a73ea3f119e6f1acac74b71b209baca8171cb6eeacbe4b18f57176",
+ "sha256": "f8769c58b61e9112b72a2d6f7f32547ef75439bb7873f7ab1002b1e64dbbdd53",
  "stats": {
-  "records": 26,
-  "forks": 10,
-  "facts": 16,
-  "decided": 4,
+  "records": 34,
+  "forks": 14,
+  "facts": 20,
+  "decided": 10,
   "parked": 0,
-  "evidence_total": 66,
-  "evidence_found": 66
+  "evidence_total": 91,
+  "evidence_found": 91
  },
  "records": [
   {
@@ -213,11 +213,12 @@ const JOURNAL = {
    "parking": [
     {
      "addressee": "материалы",
-     "text": "Что нужно стенду для трёх плеч на Opus 5.5. Выяснить: где закреплена модель (`MODEL` в `p_drive.py`, `arm_c.py`, сборка плеч), что менять в сборке плеч V, C и P, как считаются ходы и расход на этой модели. Читать: `.superpowers/sdd/plan-implementation.tasks/`, `X:/skills-factory-camunda-stand/stands/demo`, `X:/_archive/camunda-bid/RUN-PREP-symphysis-2026-10-30.md`."
+     "text": "Что нужно стенду для трёх плеч на Opus 5.5. Выяснить: где закреплена модель (`MODEL` в `p_drive.py`, `arm_c.py`, сборка плеч), что менять в сборке плеч V, C и P, как считаются ходы и расход на этой модели. Читать: `.superpowers/sdd/plan-implementation.tasks/`, `X:/skills-factory-camunda-stand/stands/demo`, `X:/_archive/camunda-bid/RUN-PREP-symphysis-2026-10-30.md`.",
+     "finding": "Отчёт `research/F-20.md`. Модель — константа на плечо и роль, ключа нет; расход суммируется неверно; сборка P не пишет `arm.ps1`; нужен новый снимок ветки; проба q1–q3 и плечо C на Opus 5.5 обязательны до P. Решения — F-30, F-33."
     }
    ],
    "dispute": "",
-   "consequences": "Определяет итоговую группу задач. Чтение второй фразы владелец подтверждает в чате. Состав прогонов — F-26.",
+   "consequences": "Определяет итоговую группу задач. Смысл второй фразы владелец уточнил — F-27. Состав прогонов — F-26.B.",
    "evidence": [
     {
      "path": "openspec/changes/implementation-consequences/intent.md",
@@ -235,7 +236,7 @@ const JOURNAL = {
     }
    ],
    "comments": [],
-   "finding": ""
+   "finding": "Отчёт `research/F-20.md`. Модель — константа на плечо и роль, ключа нет; расход суммируется неверно; сборка P не пишет `arm.ps1`; нужен новый снимок ветки; проба q1–q3 и плечо C на Opus 5.5 обязательны до P. Решения — F-30, F-33."
   },
   {
    "id": "F-21",
@@ -290,7 +291,8 @@ const JOURNAL = {
    "parking": [
     {
      "addressee": "материалы",
-     "text": "Что нужно для GUIDE. Выяснить: как сегодня собирается форк и пакет инсталлятора с чистой машины, какие шаги не описаны в `installer/README.md`, какой пример сквозного изменения годится для GUIDE. Читать: `installer/README.md`, `installer/package.json`, `docs/dry-run-journal.md`, `openspec/changes/calibration-fixes/`."
+     "text": "Что нужно для GUIDE. Выяснить: как сегодня собирается форк и пакет инсталлятора с чистой машины, какие шаги не описаны в `installer/README.md`, какой пример сквозного изменения годится для GUIDE. Читать: `installer/README.md`, `installer/package.json`, `docs/dry-run-journal.md`, `openspec/changes/calibration-fixes/`.",
+     "finding": "Отчёт `research/F-22.md`. Из двух тарболов на чистом каталоге всё ставится, `check: ok`. Но форка нет ни в одном удалённом репозитории, а `/opsx:continue` на чистой установке отсутствует и `check` этого не видит. Решения — F-28, F-29, F-31, F-32, F-34."
     }
    ],
    "dispute": "",
@@ -300,6 +302,35 @@ const JOURNAL = {
      "path": "openspec/changes/implementation-consequences/intent.md",
      "quote": "3. Symphysis можно собрать и инсталлировать. Написан пошаговый GUIDE с примерами.",
      "line": 27,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "finding": "Отчёт `research/F-22.md`. Из двух тарболов на чистом каталоге всё ставится, `check: ok`. Но форка нет ни в одном удалённом репозитории, а `/opsx:continue` на чистой установке отсутствует и `check` этого не видит. Решения — F-28, F-29, F-31, F-32, F-34."
+  },
+  {
+   "id": "F-27",
+   "question": "Критерий готовности: уточнение критерия F-20. Достаточно провести прогоны и записать результат, каким бы он ни вышел. Ожидание: P-чел на Opus 5.5 не ниже ванили в пределах одного прогона; если ниже, значит правки не помогли, хотя механики добавлены.",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "постановка",
+   "depends_on": [],
+   "delivery": "proposal: Why",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "Прогоны и запись итога закрывают задачу в любом случае. Итог ниже ванили не блокирует изменение, но записывается выводом: правки не помогли.",
+   "evidence": [
+    {
+     "path": "openspec/changes/implementation-consequences/answers/2026-11-01-criteria.md",
+     "quote": "Достаточно. Но критерий готовности текущего изменения, что \" P-чел на Opus 5.5 не ниже ванили в пределах одного прогона\", если это не так, значит правки не помогли, хотя мы добавили новые механики.",
+     "line": 5,
      "verdict": "сверено",
      "found": true
     }
@@ -741,7 +772,7 @@ const JOURNAL = {
    "id": "F-13",
    "question": "Где в схеме живёт шаг последствий?",
    "kind": "развилка",
-   "status": "открыт",
+   "status": "решён",
    "addressee": "человек",
    "depends_on": [],
    "delivery": "specs/artifact-graph, design",
@@ -813,8 +844,15 @@ const JOURNAL = {
     "why": "Опись нужен постоянный файл при любом варианте. Статус делает шаг видимым, к этому моменту спеки уже есть, а образец файла с причиной при нуле находок в схеме уже работает.",
     "text": "A — отдельный артефакт `consequences` между `specs` и `design`"
    },
-   "decision": null,
-   "reversibility": null,
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-01"
+   },
+   "reversibility": {
+    "level": "обратимо",
+    "why": "Меняются `schema.yaml`, шаблон и тесты схемы; форк не трогается, а артефакт снимается правкой графа. Изменения, уже прошедшие шаг, остаются читаемыми."
+   },
    "outcome": null,
    "parking": [],
    "dispute": "",
@@ -990,7 +1028,7 @@ const JOURNAL = {
    "id": "F-16",
    "question": "Как найденное доходит до человека и до design?",
    "kind": "развилка",
-   "status": "открыт",
+   "status": "решён",
    "addressee": "человек",
    "depends_on": [
     "F-13"
@@ -1049,8 +1087,15 @@ const JOURNAL = {
     "why": "Человеку идёт только то, что требует решения, остальное лежит в проверяемом файле. Новых механизмов доставки не нужно.",
     "text": "A — опись в файле, непокрытые ветки в журнал"
    },
-   "decision": null,
-   "reversibility": null,
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-01"
+   },
+   "reversibility": {
+    "level": "обратимо",
+    "why": "Опись — файл изменения, кандидат — обычная запись журнала с исходом пробы; схема журнала не меняется."
+   },
    "outcome": null,
    "parking": [],
    "dispute": "",
@@ -1063,7 +1108,7 @@ const JOURNAL = {
    "id": "F-17",
    "question": "Где и в каком объёме идёт pre-mortem?",
    "kind": "развилка",
-   "status": "открыт",
+   "status": "решён",
    "addressee": "человек",
    "depends_on": [
     "F-13"
@@ -1122,8 +1167,15 @@ const JOURNAL = {
     "why": "Наблюдённые потери — в поведении, а не в разбиении плана. Значит, причине нужно успеть до spec.",
     "text": "A — три причины в конце шага последствий"
    },
-   "decision": null,
-   "reversibility": null,
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-01"
+   },
+   "reversibility": {
+    "level": "обратимо",
+    "why": "Раздел шаблона `consequences` и последний шаг скилла; контракта с другими системами нет."
+   },
    "outcome": null,
    "parking": [],
    "dispute": "",
@@ -1367,7 +1419,7 @@ const JOURNAL = {
    "id": "F-24",
    "question": "Как человек выбирает перед запуском, что выполнять: ветки отказа, допущения, пробу краёв?",
    "kind": "развилка",
-   "status": "открыт",
+   "status": "решён",
    "addressee": "человек",
    "depends_on": [
     "F-14",
@@ -1427,8 +1479,15 @@ const JOURNAL = {
     "why": "Владелец уже назвал файл настроек как направление развития, и умолчание «включено» в нём выражается значением. Выбор до запуска не добавляет остановок, что важно при цели сократить время.",
     "text": "A — файл настроек `symphysis.yaml` с умолчаниями"
    },
-   "decision": null,
-   "reversibility": null,
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-01"
+   },
+   "reversibility": {
+    "level": "обратимо",
+    "why": "Один файл в проекте и чтение его скиллами; без файла действуют умолчания. Правка инсталлятора и строки `check` снимается вместе с ним."
+   },
    "outcome": null,
    "parking": [],
    "dispute": "",
@@ -1441,7 +1500,7 @@ const JOURNAL = {
    "id": "F-25",
    "question": "Что делает проверка, когда опись или покрытие пробы расходятся со списком скрипта?",
    "kind": "развилка",
-   "status": "открыт",
+   "status": "решён",
    "addressee": "человек",
    "depends_on": [
     "F-15",
@@ -1493,8 +1552,15 @@ const JOURNAL = {
     "why": "Это прямое следствие слова владельца к F-15. Записано развилкой, потому что вывод сделан моделью.",
     "text": "A — сигнал, не стоп"
    },
-   "decision": null,
-   "reversibility": null,
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-01"
+   },
+   "reversibility": {
+    "level": "обратимо",
+    "why": "Код возврата подкоманды сверки `journal.py`; на него опираются только тесты и скилл шага."
+   },
    "outcome": null,
    "parking": [],
    "dispute": "",
@@ -1507,7 +1573,7 @@ const JOURNAL = {
    "id": "F-26",
    "question": "Какие прогоны делает это изменение? К F-19 сказано «на полный нет», а критерий F-20 требует новых прогонов на Opus 5.5. Прочитано так: «нет» относится к Fable (F-10).",
    "kind": "развилка",
-   "status": "открыт",
+   "status": "решён",
    "addressee": "человек",
    "depends_on": [
     "F-19",
@@ -1574,12 +1640,473 @@ const JOURNAL = {
     "why": "Слово владельца закрывает Fable, а смешение моделей в прицельной проверке терпимо: вопрос там «всплыла ли ветка», а не сравнение чисел.",
     "text": "A — шаг на копиях и три плеча, всё на Opus 5.5"
    },
+   "decision": {
+    "option": "B",
+    "word": "чтобы не смешивать результаты этот шаг выполним на Fable",
+    "date": "2026-11-01"
+   },
+   "reversibility": {
+    "level": "обратимо",
+    "why": "До запуска отмена ничего не стоит. После запуска расход на Fable не вернуть, это цена одного шага на двух копиях."
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "Определяет итоговую группу задач и работу стенда (парковка F-20). Судейство трёх листов — за владельцем.",
+   "evidence": [],
+   "comments": [],
+   "finding": ""
+  },
+  {
+   "id": "F-28",
+   "question": "Форк и symphysis существуют только на этом диске: у symphysis нет удалённого репозитория, `upstream/` вне git, источник форка в инсталляторе — плейсхолдер. Из двух тарболов всё ставится на чистый каталог (проба 2026-11-01).",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "материалы",
+   "depends_on": [],
+   "delivery": "design: Context",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
    "decision": null,
    "reversibility": null,
    "outcome": null,
    "parking": [],
    "dispute": "",
-   "consequences": "Определяет итоговую группу задач и работу стенда (парковка F-20). Судейство трёх листов — за владельцем.",
+   "consequences": "Критерий F-22 на другой машине сегодня невыполним. Тарболы — проверенный путь. На этом стоит F-31. Единственная копия коммитов на одном диске — отдельный риск, о нём сказано владельцу.",
+   "evidence": [
+    {
+     "path": "installer/README.md",
+     "quote": "`symphysis.openspecSource` там же; сейчас это плейсхолдер.",
+     "line": 24,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": ".gitignore",
+     "quote": "upstream/",
+     "line": 1,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "openspec/changes/implementation-consequences/research/F-22.md",
+     "quote": "не найдено: удалённого репозитория у symphysis",
+     "line": 36,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "openspec/changes/implementation-consequences/research/F-22.md",
+     "quote": "`check: ok`, код 0",
+     "line": 29,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "finding": ""
+  },
+  {
+   "id": "F-29",
+   "question": "На чистой установке команды `/opsx:continue` нет: профиль `core` её не ставит, а `check` отвечает `ok`. Известно с сухого прогона, не исправлено. У прогонов она была благодаря глобальному конфигу владельца.",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "материалы",
+   "depends_on": [],
+   "delivery": "design: Context",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "Без этой команды схема на другой машине дальше первого шага не идёт. На этом стоит F-32.",
+   "evidence": [
+    {
+     "path": "docs/dry-run-journal.md",
+     "quote": "(1) workflow `continue` не входит в профиль `init` по умолчанию",
+     "line": 43,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "docs/dry-run-journal.md",
+     "quote": "`check` не проверяет, что workflow `continue` (или команда `/opsx:continue`) установлен у клиента",
+     "line": 48,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "openspec/changes/implementation-consequences/research/F-22.md",
+     "quote": "Команды `continue` нет, а `check` отвечает `ok`.",
+     "line": 32,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "finding": ""
+  },
+  {
+   "id": "F-30",
+   "question": "Стенд привязан к Fable. Модель — одна константа на плечо и роль, ключа нет. Сборка P не пишет `arm.ps1`, расход суммируется неверно, водитель лежит вне git. Проба q1–q3 и плечо C на Opus 5.5 обязательны до P.",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "материалы",
+   "depends_on": [],
+   "delivery": "tasks",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "Группа задач стенда: ключ модели, верный счёт расхода, `arm.ps1` из сборки, новый снимок ветки, перенос водителя в постоянное место, проба и плечо C.",
+   "evidence": [
+    {
+     "path": ".superpowers/sdd/plan-implementation.tasks/p_drive.py",
+     "quote": "MODEL = \"claude-fable-5-1\"",
+     "line": 35,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": ".superpowers/sdd/plan-implementation.tasks/p_drive.py",
+     "quote": "state[\"cost\"] += float(arm.get(\"total_cost_usd\") or 0)",
+     "line": 346,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "openspec/changes/implementation-consequences/research/F-20.md",
+     "quote": "сборка `build-p-arm-cf.sh` этот файл не пишет",
+     "line": 19,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "archive/RUN-PREP-symphysis-2026-10-30.md",
+     "quote": "- проба q1–q3 — свежий субагент, без файлов и инструментов (счётчик",
+     "line": 96,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "finding": ""
+  },
+  {
+   "id": "F-31",
+   "question": "Как человек получает форк OpenSpec на другой машине?",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-22",
+    "F-28"
+   ],
+   "delivery": "installer, GUIDE",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Два тарбола: скрипт сборки кладёт форк и инсталлятор в каталог выпуска, GUIDE ставит их `npm i -g` и `npx`. При выборе: путь уже проверен на чистом каталоге, удалённый репозиторий не нужен, файлы можно перенести в закрытый контур. Цена: обновление — снова перенос файлов; зависимости тянутся из реестра, нужна сеть или зеркало.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/changes/implementation-consequences/research/F-22.md",
+       "quote": "`check: ok`, код 0",
+       "line": 29,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Отдельный репозиторий форка, установка из git. При выборе: обновлять проще, источник в инсталляторе становится настоящей ссылкой. Цена: репозиторий заводит и пушит владелец; форк собирается на машине при установке.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "installer/README.md",
+       "quote": "`symphysis.openspecSource` там же; сейчас это плейсхолдер.",
+       "line": 24,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "C",
+     "text": "Инсталлятор везёт форк внутри своего пакета и ставит сам. При выборе: один шаг вместо двух. Цена: пакет заметно тяжелее, а установщик начинает менять глобальные программы, чего сегодня не делает.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "installer/README.md",
+       "quote": "Установщик схемы OpenSpec `symphysis`: кладёт в проект схему, четыре скилла",
+       "line": 3,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "D",
+     "text": "Как сейчас: только из клона на этой машине.",
+     "added": false,
+     "unlikely": "на другой машине форка взять неоткуда, критерий F-22 не выполняется",
+     "evidence": [
+      {
+       "path": ".gitignore",
+       "quote": "upstream/",
+       "line": 1,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Это единственный путь, уже проверенный на деле, и он не зависит от решения о публикации. Позже к нему можно добавить B.",
+    "text": "A — два тарбола"
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "Определяет скрипт сборки и первые шаги GUIDE.",
+   "evidence": [],
+   "comments": [],
+   "finding": ""
+  },
+  {
+   "id": "F-32",
+   "question": "Как на чистой установке появляется `/opsx:continue`?",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-22",
+    "F-29"
+   ],
+   "delivery": "installer",
+   "options": [
+    {
+     "letter": "A",
+     "text": "`symphysis install` добавляет `continue` в список workflow через `config set` форка и обновляет проект, как уже выключает телеметрию; `check` даёт `[!!]`, если команды нет. При выборе: установка работает с первого раза, форк не меняется. Цена: установщик правит глобальный конфиг OpenSpec, это добавление, а не замена.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "docs/dry-run-journal.md",
+       "quote": "`check` не проверяет, что workflow `continue` (или команда `/opsx:continue`) установлен у клиента",
+       "line": 48,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "В форке `continue` входит в профиль `core`. При выборе: одна строка, команда есть у всех сразу. Цена: новое расхождение форка с исходным проектом, версия форка и пин меняются, тесты паритета пересобираются.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "docs/dry-run-journal.md",
+       "quote": "(1) workflow `continue` не входит в профиль `init` по умолчанию",
+       "line": 43,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "C",
+     "text": "Шаг руками в GUIDE и `[!!]` в `check`. При выборе: глобальный конфиг без ведома человека не меняется. Цена: лишний шаг, который легко пропустить, хотя `check` его поймает.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "docs/dry-run-journal.md",
+       "quote": "`check` не проверяет, что workflow `continue` (или команда `/opsx:continue`) установлен у клиента",
+       "line": 48,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Схема без этой команды не работает, значит её установка — часть установки схемы. Образец правки глобального конфига у инсталлятора уже есть.",
+    "text": "A — `install` ставит `continue`, `check` проверяет"
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "Новая строка `check` и шаг `install`, тесты с временным конфигом. Настоящий конфиг владельца тесты не трогают.",
+   "evidence": [],
+   "comments": [],
+   "finding": ""
+  },
+  {
+   "id": "F-33",
+   "question": "На какой модели идёт роль человека в плече P-чел? Сегодня у плеча и роли одна константа (F-30).",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-20",
+    "F-30"
+   ],
+   "delivery": "tasks",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Opus 5.5 у плеча и у роли. При выборе: условие одно на весь прогон, Fable не тратится. Числа с прежним P-чел сравниваются только как направление: сменилась и роль.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/changes/implementation-consequences/answers/2026-11-01.md",
+       "quote": "лучше сделать несколько на Opus, чем один на Fable 5.1",
+       "line": 3,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Плечо на Opus 5.5, роль на Sonnet 5.5. При выборе: дешевле. Но слова роли решают развилки, F-23.B прошлого замера стоил 1,5 пункта, и более слабая роль может исказить итог против ванили.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "docs/analysis/calibration-fixes-measure-2026-11-01.md",
+       "quote": "**П2, П8 — новая потеря.**",
+       "line": 78,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "C",
+     "text": "Плечо на Opus 5.5, роль на Fable.",
+     "added": false,
+     "unlikely": "владелец сказал, что на Fable больше не запускает",
+     "evidence": [
+      {
+       "path": "openspec/changes/implementation-consequences/answers/2026-11-01.md",
+       "quote": "На Fable 5.1 больше не смогу",
+       "line": 3,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Критерий называет модель прогона, а смена модели только у роли добавила бы второе различие.",
+    "text": "A — Opus 5.5 у плеча и у роли"
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "Определяет ключи водителя: одна модель или две.",
+   "evidence": [],
+   "comments": [],
+   "finding": ""
+  },
+  {
+   "id": "F-34",
+   "question": "Какой пример ведёт GUIDE?",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-22",
+    "F-31"
+   ],
+   "delivery": "docs/GUIDE.md, tasks",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Маленький учебный проект: GUIDE проходит на нём весь путь от установки до `tasks`, команды и выводы настоящие. При выборе: читатель повторяет всё сам за минуты, и прохождение заодно проверяет GUIDE. Цена: один прогон на Opus 5.5 или Sonnet 5.5 на учебной задаче.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/changes/implementation-consequences/intent.md",
+       "quote": "3. Symphysis можно собрать и инсталлировать. Написан пошаговый GUIDE с примерами.",
+       "line": 27,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Выдержки из `camunda-bid`. При выборе: пример настоящий и уже есть. Цена: без архива его не повторить, журнал на 63 записи пугает с первого шага, в тексте чужой код.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "docs/analysis/calibration-fixes-measure-2026-11-01.md",
+       "quote": "журнал вырос с 38 до 63 записей.",
+       "line": 118,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "C",
+     "text": "Только команды, без сквозного примера.",
+     "added": false,
+     "unlikely": "критерий прямо требует примеров",
+     "evidence": [
+      {
+       "path": "openspec/changes/implementation-consequences/intent.md",
+       "quote": "3. Symphysis можно собрать и инсталлировать. Написан пошаговый GUIDE с примерами.",
+       "line": 27,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Руководство, которое никто не прошёл, обычно ломается на первом расхождении. Сквозной проход и есть его проверка, а тот же дефект с `/opsx:continue` иначе не всплыл бы.",
+    "text": "A — маленький учебный проект"
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "GUIDE лежит в `docs/GUIDE.md`, на русском. Показывает Claude Code и `--skills-dir` для других клиентов; opencode этим проходом не проверяется.",
    "evidence": [],
    "comments": [],
    "finding": ""
@@ -1597,6 +2124,14 @@ const JOURNAL = {
   {
    "date": "2026-11-01",
    "text": "промпт владельца: строки F-13 (вариант D и буква), F-16, F-17 не внесены. Вариант D дословно совпал с F-13 журнала calibration-fixes, а буквы совпали с его решениями: ключ состояния браузера был общим у всех журналов (исправлено, коммит 7f490bc). Открыты до слова владельца. Промпт целиком — answers/2026-11-01.md, внесённое — answers/2026-11-01-applied.md."
+  },
+  {
+   "date": "2026-11-01",
+   "text": "F-13, F-16, F-17 подтверждены вторым промптом владельца со страницы с новым ключом браузера. Первый промпт нёс чужое состояние, второй — собственный выбор владельца."
+  },
+  {
+   "date": "2026-11-01",
+   "text": "круг 1 закончен: решений 10, фактов 17, открытых развилок 0, парковок материалам 2"
   }
  ]
 };
