@@ -54,6 +54,14 @@
   {
    "date": "2026-11-01",
    "text": "согласование после зеркала закончено: F-107…F-112 решены, F-113 — факт о читателях; спеки приведены к решениям, след проб перенесён в конец блока (F-112.A)"
+  },
+  {
+   "date": "2026-11-01",
+   "text": "слово человека о контроле: answers/2026-11-01-control.md — скриптом только самое опасное или с большим импактом, остальное — качеством инструкций; предположения tasks.md оставлены, зависимость PyYAML подтверждена"
+  },
+  {
+   "date": "2026-11-01",
+   "text": "атака артефактов: gaps_found, блокеров 12 (шесть причин), предупреждений 24, справок 133, покрыто 128 сценариев из 128; решений требуют F-114…F-121 — нужен человек (просмотрщик decisions.html, режим «решения»), остальное закрывается правкой артефактов, затем повтор атаки"
   }
  ],
  "records": [
@@ -7047,7 +7055,7 @@
       {
        "path": "openspec/changes/implementation-consequences/decisions.json",
        "quote": "в глобальном конфиге меняется что-либо кроме добавления `continue` и названной смены профиля",
-       "line": 6691,
+       "line": 6699,
        "verdict": "сверено",
        "found": true
       }
@@ -7112,7 +7120,7 @@
       {
        "path": "openspec/changes/implementation-consequences/decisions.json",
        "quote": "файл несёт причину и раздел pre-mortem с тремя кандидатами",
-       "line": 2870,
+       "line": 2878,
        "verdict": "сверено",
        "found": true
       }
@@ -7162,7 +7170,7 @@
       {
        "path": "openspec/changes/implementation-consequences/decisions.json",
        "quote": "тест подаёт пустой файл, файл из комментариев и `edge_probe:` и утверждает, что состав везде «включено»",
-       "line": 3027,
+       "line": 3035,
        "verdict": "сверено",
        "found": true
       }
@@ -7297,7 +7305,7 @@
    "outcome": null,
    "parking": [],
    "dispute": "",
-   "consequences": "Вложенные ключи `consequences.failure_branches`, `consequences.assumptions`, `edge_probe.enabled`. Слово к варианту снимает цену варианта C, поэтому Python читает файл пакетом PyYAML, а не своим разбором отступов: так прочитано слово «добавить его в зависимость», вслух названо человеку. Пакет становится зависимостью инструментов журнала: шаг в руководстве, строка `check`, правка `installer/README.md` (F-113).",
+   "consequences": "Вложенные ключи `consequences.failure_branches`, `consequences.assumptions`, `edge_probe.enabled`. Слово к варианту снимает цену варианта C, поэтому Python читает файл пакетом PyYAML, а не своим разбором отступов: так прочитано слово «добавить его в зависимость», человек подтвердил: «зависимость это ок». Пакет становится зависимостью инструментов журнала: шаг в руководстве, строка `check`, правка `installer/README.md` (F-113).",
    "evidence": [],
    "comments": []
   },
@@ -7469,7 +7477,7 @@
   },
   {
    "id": "F-113",
-   "question": "PyYAML не «почти наверняка есть»: на этой машине он есть у `python` 3.14 и нет у `py -3.13` и `python3`. С настройками по умолчанию два читателя расходятся на значениях края F-51: `enabled: no` в PyYAML молча выключает выбор, а в пакете `yaml` остаётся строкой и даёт сигнал. Одно поведение дают `BaseLoader` и схема `failsafe`: значения приходят текстом и сравниваются с `true` и `false` дословно.",
+   "question": "На домашней машине разработки PyYAML есть только у `python` 3.14, у `py -3.13` и `python3` его нет; слово человека «почти наверняка есть» сказано о рабочей машине, зависимость человек подтвердил. С настройками по умолчанию два читателя расходятся на значениях края F-51: `enabled: no` в PyYAML молча выключает выбор, а в пакете `yaml` остаётся строкой и даёт сигнал. Одно поведение дают `BaseLoader` и схема `failsafe`: значения приходят текстом и сравниваются с `true` и `false` дословно.",
    "kind": "факт",
    "status": "решён",
    "addressee": "материалы",
@@ -7508,8 +7516,539 @@
      "line": 38,
      "verdict": "сверено",
      "found": true
+    },
+    {
+     "path": "openspec/changes/implementation-consequences/answers/2026-11-01-control.md",
+     "quote": "про наличие yaml я говорил про рабочую машину.",
+     "line": 5,
+     "verdict": "сверено",
+     "found": true
     }
    ],
+   "comments": []
+  },
+  {
+   "id": "F-114",
+   "question": "Установка из клона по спеке не работает: `node_modules` и `payload` инсталлятора вне git, поэтому `node installer/bin/symphysis.js install` на чистом клоне падает. После `git pull` хуже: `payload` прежний, `install --force` молча кладёт старую версию, а `check` сверяет с тем же `payload` и отвечает `ok`. Как установка из клона получает инсталлятор и как не застрять на старой версии?",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-31",
+    "F-36",
+    "F-54"
+   ],
+   "delivery": "specs/onboarding-guide, specs/project-installer, installer",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Шаг `npm --prefix installer ci` в установке и в обновлении: скрипт `prepare` пересобирает `payload` сам. `check`, запущенный из клона, сравнивает `payload` с исходниками и даёт `[!!] payload старее исходников — выполнить: npm --prefix installer ci`. При выборе: один лишний шаг, а тихое застревание на старой версии закрыто сигналом. Цена: шагу нужен реестр npm или зеркало, как и тарболу форка.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "installer/package.json",
+       "quote": "\"prepare\": \"node scripts/sync-payload.js\",",
+       "line": 20,
+       "verdict": "сверено",
+       "found": true
+      },
+      {
+       "path": ".gitignore",
+       "quote": "installer/payload/",
+       "line": 8,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Второй тарбол в `vendor/`: инсталлятор собирается как и форк, оба ставятся `npm i -g`, команда становится `symphysis install`. При выборе: `payload` приезжает готовым, сборки у пользователя нет. Цена: каждая правка ядра требует пересборки и коммита бинарного файла, история растёт, нужен тест на расхождение тарбола с исходниками, зависимость `yaml` всё равно берётся из реестра.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/changes/implementation-consequences/research/F-22.md",
+       "quote": "npx --yes ./niqsons-symphysis-0.1.0.tgz install",
+       "line": 28,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Прямо следует из F-36.A «установка из клона», а застревание на старой версии — как раз тихая порча, которую стоит контролировать (слово человека о контроле).",
+    "text": "A — `npm --prefix installer ci` и сигнал о старом `payload`"
+   },
+   "decision": null,
+   "reversibility": {
+    "level": "обратимо",
+    "why": "Шаги руководства и строка `check`; второй тарбол можно добавить позже."
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "Шаг в требовании «Руководство ведёт установку из клона репозитория», сценарий «Обновление до новой версии», новая строка `check`.",
+   "evidence": [],
+   "comments": []
+  },
+  {
+   "id": "F-115",
+   "question": "Спеки просят `check` и `install` называть клиента и отличать «клиент не настроен», но механизма нет: в инсталляторе карты клиентов нет намеренно, форк список настроенных клиентов наружу не отдаёт, а `openspec update` без клиента отвечает кодом 0. Как определять клиента?",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-32",
+    "F-82",
+    "F-83",
+    "F-81"
+   ],
+   "delivery": "specs/project-installer, installer",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Без карты: клиент — каталог проекта, в котором лежит созданное форком `<каталог>/skills/openspec-*/SKILL.md` или `<каталог>/commands/opsx/`. Команда установлена, если там есть скилл `openspec-continue-change` или `commands/opsx/continue.md`; `--skills-dir` учитывается. Имя клиента — имя каталога. Такого каталога нет — клиент не настроен, строка несёт команду с буквальным `<клиент>`. `install` проверяет это до вызова обновления. При выборе: форк и карта не нужны, новые клиенты работают сами. Цена: клиент с иной раскладкой не распознается и получит сигнал.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "upstream/openspec/src/core/shared/tool-detection.ts",
+       "quote": "view.exists(path.join(skillsDir, skillName, 'SKILL.md'))",
+       "line": 123,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Карта клиентов в инсталляторе: имя, каталог команд, каталог скиллов. При выборе: имена и раскладки точные. Цена: карта повторяет форк и устаревает с ним, а инсталлятор сегодня намеренно к клиенту не привязан.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "installer/lib/paths.js",
+       "quote": "Раскладка целей установки в проекте. Карты клиентов нет:",
+       "line": 6,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "C",
+     "text": "Новая команда форка, отдающая настроенных клиентов. При выборе: ответ из первых рук. Цена: новое расхождение с OpenSpec и новый пин, а F-13.A и F-32.A держат форк неизменным.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "upstream/openspec/src/core/update.ts",
+       "quote": "this.log(chalk.yellow('No configured tools found.'));",
+       "line": 313,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Форк сам определяет настроенных клиентов по этому же файлу, поэтому признак не придуман, а взят у него.",
+    "text": "A — признак по файлам, созданным форком, без карты"
+   },
+   "decision": null,
+   "reversibility": {
+    "level": "обратимо",
+    "why": "Одна функция в `check.js`, на неё опирается `install`."
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "Сценарии «Форка нет или клиент не настроен», «Команды нет», «Команда у настроенного клиента», «Клиент не настроен».",
+   "evidence": [],
+   "comments": []
+  },
+  {
+   "id": "F-116",
+   "question": "F-100.A и F-107.A запрещают менять в глобальном конфиге что-либо сверх названного, но форк сам шире: любой `config set` дописывает умолчания `featureFlags`, `profile`, `delivery`, а любой вызов при незаданной телеметрии дописывает `noticeSeen`, `anonymousId` и шлёт событие. Тест «до и после» покраснеет при правильной работе. Что считать различием?",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-100",
+    "F-107"
+   ],
+   "delivery": "specs/project-installer, installer",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Все вызовы форка из `install` идут с `OPENSPEC_TELEMETRY=0`: нет ни уведомления, ни идентификатора, ни события. Умолчания, которые `config set` дописывает сам, разрешены: тест сравнивает конфиг до и после с этими умолчаниями, подставленными с обеих сторон. При выборе: запись по-прежнему через форк, сам инсталлятор ничего наружу не шлёт. Цена: файл меняется шире трёх правок, но значения поведения не меняют, и запрет это называет.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "upstream/openspec/src/core/global-config.ts",
+       "quote": "const merged: GlobalConfig = {",
+       "line": 163,
+       "verdict": "сверено",
+       "found": true
+      },
+      {
+       "path": "upstream/openspec/src/telemetry/index.ts",
+       "quote": "if (isTelemetryOptedOutByEnv()) {",
+       "line": 82,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Инсталлятор пишет JSON конфига сам, без вызова форка. При выборе: файл меняется ровно на три правки, байт в байт. Цена: инсталлятор начинает держать формат чужого файла и молча разойдётся с ним при новой версии форка, а F-32.A называет `config set`.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "installer/lib/telemetry.js",
+       "quote": "пишет через `openspec config set` — форк сам держит формат файла.",
+       "line": 41,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Запрет защищает от смены поведения других проектов на машине. Дописанные умолчания поведения не меняют, а чужой формат инсталлятору держать незачем.",
+    "text": "A — телеметрия выключена на вызовах, умолчания форка разрешены"
+   },
+   "decision": null,
+   "reversibility": {
+    "level": "обратимо",
+    "why": "Текст запрета, окружение вызова и тест."
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "Требование «`install` меняет в глобальном конфиге только названное», строка README про `anonymousId`.",
+   "evidence": [],
+   "comments": []
+  },
+  {
+   "id": "F-117",
+   "question": "Руководство зовёт `openspec init` раньше `install`, поэтому на чистой машине телеметрия успевает сработать: при первой команде форк пишет идентификатор и шлёт событие. Выключать ли её до первой команды форка? Слово владельца: «в рабочем контуре уже правильнее убирать телеметрию».",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-107",
+    "F-34"
+   ],
+   "delivery": "specs/onboarding-guide",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Первый шаг руководства после установки форка: `OPENSPEC_TELEMETRY=0 openspec config set telemetry.enabled false`, отдельно для PowerShell и bash. При выборе: наружу не уходит ни одно событие. Цена: ещё один шаг, который можно пропустить; тогда работает прежнее выключение в `install`.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "upstream/openspec/src/telemetry/index.ts",
+       "quote": "Opt out: OPENSPEC_TELEMETRY=0 or openspec config set telemetry.enabled false",
+       "line": 216,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Шага нет, руководство называет, что до `install` уйдёт одно или два события. При выборе: руководство короче. Цена: первые события уходят наружу, а в контуре без выхода наружу они просто не дойдут.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "upstream/openspec/src/cli/index.ts",
+       "quote": "await trackCommand(commandPath, version);",
+       "line": 223,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Один шаг против данных наружу, и это совпадает со словом владельца о рабочем контуре.",
+    "text": "A — выключить до первой команды форка"
+   },
+   "decision": null,
+   "reversibility": {
+    "level": "обратимо",
+    "why": "Одна команда в тексте руководства."
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "Новый шаг в требовании об установке и строка `security.md`.",
+   "evidence": [],
+   "comments": []
+  },
+  {
+   "id": "F-118",
+   "question": "Скилл читает `symphysis.yaml` сам, глазами модели: скрипты согласованы, а модель может понять `enabled: no` как «выключено» и пропустить шаг. Вопрос F-51 называл чтение моделью отдельным читателем. Как модель узнаёт состав?",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-51",
+    "F-110",
+    "F-24"
+   ],
+   "delivery": "specs/project-settings, tools, skills",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Подкоманда `journal.py settings` печатает состав одной строкой, скиллы зовут её и файл сами не разбирают. При выборе: модель получает то же, что и `check`, включая сторону «включено» при сомнении. Цена: одна маленькая подкоманда и одна строка в трёх скиллах.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/changes/implementation-consequences/decisions.json",
+       "quote": "разбор YAML в `check`, чтение моделью и Python без пакетов поймут его по-разному",
+       "line": 3081,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Только инструкция: скилл велит считать выключенным лишь буквальное `false`, а прочее включённым. При выборе: скриптов не прибавляется. Цена: тихое выключение проверки зависит от внимания модели, и сверка этого не увидит.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/changes/implementation-consequences/answers/2026-11-01-control.md",
+       "quote": "все остальное пытаемся выполнить через более качественные инструкции агента и скиллов",
+       "line": 4,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Молчаливое выключение проверки — тот самый случай «самое опасное», а цена контроля здесь одна строка вызова. Заодно это один вход, который потом удобно отдать агенту.",
+    "text": "A — подкоманда `journal.py settings`"
+   },
+   "decision": null,
+   "reversibility": {
+    "level": "обратимо",
+    "why": "Подкоманда и строка в скиллах."
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "Новый сценарий в требовании «Все читатели `symphysis.yaml` дают один итог», задачи групп 3 и 5.",
+   "evidence": [],
+   "comments": []
+  },
+  {
+   "id": "F-119",
+   "question": "Опись идёт в git, а `symphysis.yaml` личный (F-94.E). Опись, написанная без веток отказа, в другом клоне даст `[!!]` по каждой строке, а признак `[..] выключено настройкой` исчезнет, как только настройку включат. Что читает сверка: состав, с которым шёл шаг, или текущий личный файл?",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-94",
+    "F-96",
+    "F-39",
+    "F-52"
+   ],
+   "delivery": "specs/consequence-inventory, specs/project-settings, specs/decision-journal, tools",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Сверка описи и признак выключенной части читают строку `**Состав:**` из `consequences.md`; `symphysis.yaml` действует только на следующий запуск шага. Сверка покрытия молчит, если проба выключена в `symphysis.yaml` или след в `specs/` называет выключение. При выборе: один файл даёт один сигнал в любом клоне. Цена: `check` разбирает ещё одну строку, сценарий F-96.A переформулируется.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/changes/implementation-consequences/specs/project-settings/spec.md",
+       "quote": "**THEN** `symphysis.yaml` в коммит не попал, состав во втором клоне прежний",
+       "line": 68,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Сверка читает текущий личный файл. При выборе: один источник, разбирать `**Состав:**` не нужно. Цена: сигналы зависят от машины, в другом клоне появляются ложные `[!!]`, а след выключения пропадает при смене настройки.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/changes/implementation-consequences/decisions.json",
+       "quote": "тест утверждает, что `journal.py check` на таком изменении печатает `[..] <часть>: выключено настройкой`",
+       "line": 6413,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Прямое следствие твоего F-94.E: личная настройка не должна менять то, как читается общий артефакт.",
+    "text": "A — сверка читает состав из файла описи"
+   },
+   "decision": null,
+   "reversibility": {
+    "level": "обратимо",
+    "why": "Источник значения в одной функции `check`."
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "Сценарии «Строка без цитаты», «Признак выключенной части», «Проба выключена».",
+   "evidence": [],
+   "comments": []
+  },
+  {
+   "id": "F-120",
+   "question": "F-49.A даёт `[!!]` по новым местам после файла с причиной «механизмов нет». Что с другими причинами? При «все колонки выключены» и «шаг появился позже» каждое место из списка тоже дало бы `[!!]`, а у трёх старых изменений таких мест десятки.",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-49",
+    "F-60",
+    "F-24"
+   ],
+   "delivery": "specs/consequence-inventory, tools",
+   "options": [
+    {
+     "letter": "A",
+     "text": "`[!!]` только у причины «механизмов нет». «Все колонки выключены» и «шаг появился позже» сверку мест не дают: у первой есть строка `[..]`, у второй шага не было. При выборе: сигнал остаётся о настоящем расхождении. Цена: `check` различает причины, поэтому причины становятся тремя постоянными строками шаблона.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/changes/implementation-consequences/decisions.json",
+       "quote": "GIVEN `consequences.md` с причиной «механизмов нет» и список мест, ставший непустым",
+       "line": 2950,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "`[!!]` у всех причин. При выборе: правило без исключений и текст причины не разбирается. Цена: старые изменения и выключенный состав шумят, а настоящий сигнал теряется в шуме.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/changes/implementation-consequences/decisions.json",
+       "quote": "до правки схемы у него написан `consequences.md` с причиной «шаг появился позже», `status` не ломается",
+       "line": 3763,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Сигнал ценен, пока он о реальном расхождении, а выключенный состав и старые изменения им не являются.",
+    "text": "A — `[!!]` только у «механизмов нет»"
+   },
+   "decision": null,
+   "reversibility": {
+    "level": "обратимо",
+    "why": "Одна ветка сверки и строки шаблона."
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "Сценарий «Новое место после файла с причиной», шаблон `consequences.md`.",
+   "evidence": [],
+   "comments": []
+  },
+  {
+   "id": "F-121",
+   "question": "Без PyYAML `symphysis check` читает файл пакетом `yaml` и показывает `проба краёв выкл`, а `journal.py check` рядом считает всё включённым. Требование обещает один итог на одном файле. Это принятое исключение?",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-110",
+    "F-113"
+   ],
+   "delivery": "specs/project-settings, specs/project-installer",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Принять и назвать: требование называет отсутствие пакета исключением, а строка `[!!] python` говорит, что инструменты журнала считают всё включённым. При выборе: `check` показывает то, что в файле, и причину расхождения. Цена: на такой машине два ответа рядом, пока пакет не поставлен.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/changes/implementation-consequences/specs/project-installer/spec.md",
+       "quote": "**THEN** состав показан, stdout несёт `[!!] python: нет пакета PyYAML — выполнить: <python> -m pip install pyyaml`, код 2",
+       "line": 152,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "JS тоже считает всё включённым, если у найденного Python нет пакета. При выборе: один итог буквально. Цена: `symphysis check` показывает не то, что написано в файле, а чтение настроек начинает зависеть от проверки Python.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/changes/implementation-consequences/specs/project-settings/spec.md",
+       "quote": "оба SHALL брать значения текстом, без разбора типов, и на одном файле SHALL давать один состав и один сигнал",
+       "line": 34,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Сторона безопасная, а строка `[!!]` прямо называет причину. Расхождение живёт только до установки пакета.",
+    "text": "A — исключение, названное строкой `[!!]`"
+   },
+   "decision": null,
+   "reversibility": {
+    "level": "обратимо",
+    "why": "Текст требования и одной строки `check`."
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "Требование «Все читатели `symphysis.yaml` дают один итог», сценарий «У найденного Python нет PyYAML».",
+   "evidence": [],
    "comments": []
   }
  ]
