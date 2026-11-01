@@ -1,8 +1,9 @@
 # @niqsons/symphysis
 
-Установщик схемы OpenSpec `symphysis`: кладёт в проект схему, четыре скилла
-и инструменты журнала решений; командой `check` называет расхождения
-установки. Форк OpenSpec не ставит — только проверяет его версию.
+Установщик схемы OpenSpec `symphysis`: кладёт в проект схему, скиллы
+и инструменты журнала решений, создаёт личный `symphysis.yaml`; командой
+`check` называет расхождения установки. Форк OpenSpec не ставит — только
+проверяет его версию и обновляет им проект, если нет `/opsx:continue`.
 
 ## Что и куда ставится
 
@@ -10,21 +11,38 @@
 | --- | --- | --- |
 | схема `symphysis` | `<проект>/openspec/schemas/symphysis/` | в проект, не в глобальный каталог (F-16.B) |
 | `openspec/config.yaml` | `<проект>/openspec/config.yaml` | сливается, см. ниже |
-| четыре скилла `symphysis-*` | `<skills-dir>/<имя>/SKILL.md` | в каждый `--skills-dir`; без параметра — `.claude/skills` |
-| инструменты журнала | `<проект>/.symphysis/` (`tools/`, `docs/`) | `journal.py`, модули, схема JSON, файл корней |
+| скиллы `symphysis-*` | `<skills-dir>/<имя>/SKILL.md` | в каждый `--skills-dir`; без параметра — `.claude/skills` |
+| инструменты журнала и настроек | `<проект>/.symphysis/` (`tools/`, `docs/`) | `journal.py`, модули, `symphysis_config.py`, схема JSON, файл корней |
+| `symphysis.yaml` | `<проект>/symphysis.yaml` | личная настройка, всё включено; не перезаписывается и с `--force` |
+| строка `symphysis.yaml` | `<проект>/.gitignore` | файл создаётся при отсутствии; git не нужен; правка уходит в git вместе с работой |
 
 Клиент не привязан: каталог скиллов задаётся явно через `--skills-dir`,
 единственное умолчание — `.claude/skills`. Относительный путь считается
-от `--project`.
+от `--project`. Клиентов инсталлятор сам не ищет: какой есть на машине,
+покажут `where.exe claude`, `where.exe opencode` в PowerShell и `which`
+в bash (в PowerShell `where` — псевдоним `Where-Object`). Клиент — каталог
+над `--skills-dir`, его имя — имя этого каталога без точки.
 
 ## Требование: форк OpenSpec
 
-`check` ждёт `openspec` версии `1.15.0-symphysis.3` (пин — поле
-`symphysis.openspecPin` в `package.json`). Источник форка —
-`symphysis.openspecSource` там же; сейчас это плейсхолдер.
+`check` ждёт `openspec` версии `1.15.0-symphysis.4` (пин — поле
+`symphysis.openspecPin` в `package.json`). Форк лежит тарболом в `vendor/`
+репозитория, путь — поле `symphysis.openspecSource`:
+
+```
+npm i -g ./vendor/fission-ai-openspec-1.15.0-symphysis.4.tgz
+```
+
+Сборки на машине пользователя нет, исходники форка не нужны; из сети берутся
+только зависимости форка, из реестра или зеркала.
+
+В этом форке `continue` входит в профиль `core`, поэтому `openspec init`
+и `openspec update` ставят `/opsx:continue` сами, а глобальный конфиг
+менять не нужно.
 
 Бинарь берётся из переменной `SYMPHYSIS_OPENSPEC` либо из `PATH`.
 Переменная указывает на `openspec.js`, `.cmd`/`.bat` или `.exe`.
+Отказ форка и «не найден» — разные строки: первая несёт код и текст форка.
 
 ## Установка пакета
 
@@ -34,11 +52,18 @@
 npx --yes ./symphysis-0.1.0.tgz install --project <каталог проекта>
 ```
 
-Из клона репозитория:
+Из клона репозитория: зависимости и `payload`, затем команда `symphysis`
+в `PATH`. Ссылка ведёт в клон, поэтому обновляется вместе с ним, а удаление
+клона её ломает. Откат: `npm rm -g @niqsons/symphysis`.
 
 ```
-node installer/bin/symphysis.js install --project <каталог проекта>
+npm --prefix installer ci
+npm i -g ./installer
+symphysis install --project <каталог проекта>
 ```
+
+После `git pull` снова `npm --prefix installer ci`: скрипт `prepare`
+пересобирает `payload`. Без этого `check` даёт `[!!] payload старее исходников`.
 
 Абсолютный путь Windows (`C:\...`) `npx` принимает за имя команды и молча
 выходит с кодом 0, ничего не поставив. Рабочие формы — `./файл.tgz`
@@ -46,8 +71,8 @@ node installer/bin/symphysis.js install --project <каталог проекта
 
 ## Команды
 
-Параметры обеих: `--project <dir>` (по умолчанию текущий каталог),
-`--skills-dir <dir>` (повторяемый). Только у `install`: `--force`.
+Параметры: `--project <dir>` (по умолчанию текущий каталог) у всех трёх,
+`--skills-dir <dir>` (повторяемый) у `install` и `check`, `--force` у `install`.
 
 ### install
 
@@ -68,7 +93,18 @@ symphysis install --project . --skills-dir .claude/skills --skills-dir .agents/s
 - Файл корней `.symphysis/tools/journal-roots.json` создаётся один раз
   (`{"": "<корень>/.."}`) и никогда не перезаписывается, в том числе
   с `--force`.
+- `symphysis.yaml` создаётся, если файла нет, и не перезаписывается,
+  в том числе с `--force`; строка о нём вносится в `.gitignore` один раз,
+  и stdout называет эту правку.
 - Телеметрия форка выключается, если ключ не задан (см. «Телеметрия форка»).
+- Если `/opsx:continue` в проекте нет, зовётся `openspec update`; профиль
+  и список workflow не меняются. Команда уже есть — форк не зовётся.
+  Форка или клиента нет — установка всё равно заканчивается кодом 0, а stdout
+  называет команду на потом и подсказку о клиенте. Профиль `custom` без
+  `continue` остаётся как есть, stdout называет `openspec config profile`.
+  Если в конфиге не задан профиль, `update` тоже не зовётся: его разовая
+  миграция записала бы туда `custom` со списком того, что уже стоит в проекте.
+- stdout называет путь глобального конфига.
 
 ### check
 
@@ -80,11 +116,23 @@ symphysis check --project .
 файла схемы (расхождение — `[!!] схема: байты отличаются от payload: <путь>`),
 `config.yaml` (`schema: symphysis`), `SKILL.md` в каждом `--skills-dir`,
 инструменты, доступность Python, телеметрию форка и каждый
-`openspec/changes/*/decisions.json` через `journal.py check`.
+`openspec/changes/*/decisions.json` через `journal.py check`. Кроме того:
 
-Строки `[!!]` — расхождения, `[..]` — сигналы. Сигнал — результат сверки
-улик журналов (F-12): он сообщает, но не останавливает, на код выхода
-не влияет.
+| Строка | Когда |
+| --- | --- |
+| `[!!] continue: команда /opsx:continue не установлена у <клиент> — выполнить: symphysis install` | команды и скилла `openspec-continue-change` нет ни в одном выбранном каталоге |
+| `[!!] continue: клиент не настроен — выполнить: openspec init --tools <клиент>` | нет созданных форком `skills/openspec-*` и `commands/opsx/`; следом `[..]` с подсказкой `where.exe` и `which` |
+| `[..] <каталог>: файлов форка нет, туда поставлены только скиллы symphysis` | второй `--skills-dir` без файлов форка |
+| `[..] symphysis.yaml: ветки отказа вкл, допущения вкл, проба краёв вкл` | состав; строки дословно от `symphysis_config.py --strict`, файл `check` сам не разбирает |
+| `[!!] symphysis.yaml: ...` | неизвестный ключ, недопустимое значение, файл не разбирается, не UTF-8, нет PyYAML; выбор считается включённым |
+| `[..] symphysis.yaml: нет файла, действует всё включено; создать: symphysis install` | файла нет |
+| `[!!] symphysis.yaml: отслеживается git — выполнить: git rm --cached symphysis.yaml` | файл уже вошёл в коммит проекта |
+| `[!!] payload старее исходников — выполнить: npm --prefix installer ci` | запуск из клона, `payload` не совпадает с исходниками; у инсталлятора из тарбола этой сверки нет |
+| `[..] openspec: глобальный конфиг <путь>` | путь, действующий в этой оболочке; см. «Глобальный конфиг» |
+| `[..] <журнал>: <сигнал>` | сигнал `journal.py check`: несверенная улика, парковка, место или цитата описи |
+
+Строки `[!!]` — расхождения, `[..]` — сигналы. Сигнал сообщает, но не
+останавливает, на код выхода не влияет.
 
 Коды выхода: `0` — расхождений нет; `2` — расхождения либо ошибка
 в аргументах; `1` — внутренняя ошибка (исключение).
@@ -92,6 +140,29 @@ symphysis check --project .
 Если `journal.py check` сам не отработал (не JSON, нет Python-модуля),
 расхождение читается «journal.py check не отработал (…)», а не
 «журнал негоден по схеме».
+
+### config
+
+```
+symphysis config --project .
+```
+
+Печатает дословно строки `.symphysis/tools/symphysis_config.py`: тот же состав
+и те же сигналы получает скилл в начале шага. Файл инсталлятор сам не разбирает.
+Сигналы код не меняют; нет Python или копии скрипта — `[!!]` с причиной, код 2.
+
+## Настройки: symphysis.yaml
+
+Файл в корне проекта, личный: в git не идёт, каждый решает сам. Отсутствие файла
+или ключа означает «включено». Читает его только `symphysis_config.py`.
+
+```yaml
+consequences:
+  failure_branches: true   # ветки отказа в описи
+  assumptions: true        # допущения в описи
+edge_probe:
+  enabled: true            # проба краёв
+```
 
 ## Вход изменения
 
@@ -119,23 +190,36 @@ symphysis check --project .
   `CI` `check` не учитывает — он читает только конфиг.
 - Выключить вручную: `openspec config set telemetry.enabled false`.
 - `telemetry.anonymousId` в том же конфиге — случайный идентификатор
-  установки (UUID без связи с пользователем); `install` его не создаёт
-  и не меняет.
+  установки (UUID без связи с пользователем). Все вызовы форка из инсталлятора
+  идут с `OPENSPEC_TELEMETRY=0`, поэтому `anonymousId` и `noticeSeen` не появляются,
+  событие не отправляется; записанный раньше идентификатор не меняется.
+- Умолчания `featureFlags`, `profile`, `delivery` дописывает сам `config set`
+  форка, значений они не меняют.
 - Политика upstream — раздел Telemetry в
   [README OpenSpec](../upstream/openspec/README.md) (в репозитории
   [Fission-AI/OpenSpec](https://github.com/Fission-AI/OpenSpec#readme));
   настройки и переменные окружения — в
   [docs/cli.md](../upstream/openspec/docs/cli.md) форка.
 
+## Глобальный конфиг
+
 Глобальный конфиг лежит в `$XDG_CONFIG_HOME/openspec/config.json`,
 иначе `%APPDATA%\openspec\config.json` (Windows) или
-`~/.config/openspec/config.json`.
+`~/.config/openspec/config.json`. Инсталлятор пишет только в подкаталог
+`openspec/`, соседей не трогает.
+
+`XDG_CONFIG_HOME`, заданная не во всех оболочках, даёт два конфига, а
+`openspec update` приводит проект к тому, что прочитал: из другой оболочки
+`/opsx:continue` может пропасть. Поэтому `check` называет оба файла:
+`[..] openspec: глобальный конфиг <путь>; есть ещё <путь>, он действует без XDG_CONFIG_HOME`.
 
 ## Python
 
-Ищется `python`, затем `python3`; версия не закрепляется, пакетов
-инструменты журнала не требуют. Поиск `python3` вне Windows написан,
-но не проверялся.
+Ищется `python`, затем `python3`; версия не закрепляется. Журнал пакетов
+не требует, а `symphysis_config.py` читает `symphysis.yaml` пакетом PyYAML:
+`python -m pip install pyyaml`. Без пакета настройки считаются включёнными,
+и `check` с `symphysis config` дают `[!!]` с этой командой. Поиск `python3`
+вне Windows написан, но не проверялся.
 
 ## Разработка
 
@@ -148,12 +232,23 @@ npm pack
 
 - `payload/` генерируется из корня репозитория скриптом
   `scripts/sync-payload.js` и находится в `.gitignore`; `prepare` и
-  `pretest` пересобирают его.
+  `pretest` пересобирают его. Совпадающий `payload` не переписывается.
+- Форк для тестов и сборки лежит в `upstream/openspec`, вне git ядра, в ветке
+  `openspec-fork`: `git fetch origin openspec-fork && git worktree add
+  upstream/openspec FETCH_HEAD`, затем `pnpm --dir upstream/openspec install`
+  и `pnpm --dir upstream/openspec build`, потому что `bin/openspec.js` ждёт `dist/`.
+  Без него тесты называют эту причину и шаг.
+- Новый тарбол: `node installer/scripts/build-vendor.js` после коммита в форк
+  и правки пина. Грязное дерево форка или версия не равна пину — код 1,
+  тарбол не кладётся. Перед коммитом `vendor/` файлы распакованного тарбола
+  идут через гейт имён.
 - `npm test` включает `test/npx.test.js`: он пакует tarball и ставит его
   через `npx` в пустой каталог. Тесту нужны сеть (зависимость `yaml`
   тянется из реестра) и `upstream/openspec` для зелёного случая `check`.
   Длительность — от нескольких секунд до полутора-двух минут, зависит
   от скорости реестра; без `npm` в `PATH` файл пропускается.
-- Остальные тесты: `node --test`, около 10 секунд.
+  Там же тест тарбола: `npm i -g ./vendor/<тарбол>` с временным префиксом.
+- Остальные тесты: `node --test`, около минуты.
 - Тесты, вызывающие `install`/`check`, задают `XDG_CONFIG_HOME` во
-  временный каталог: настоящий глобальный конфиг OpenSpec они не трогают.
+  временный каталог: настоящий глобальный конфиг OpenSpec они не трогают,
+  и отдельный тест сверяет его байты до и после.

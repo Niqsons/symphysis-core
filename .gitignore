@@ -9,3 +9,4 @@ installer/payload/
 # производные init форка и symphysis install — воспроизведение: docs/dry-run-journal.md, шаг 1
 .claude/
 .symphysis/
+symphysis.yaml

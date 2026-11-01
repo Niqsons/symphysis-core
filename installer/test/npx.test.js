@@ -113,3 +113,25 @@ test("npx check без форка (нет переменной, PATH без open
   assert.match(r.stdout, /не найден/);
 });
 
+// Тарбол форка в клоне без upstream/: установка из vendor/ с временным префиксом, сборки нет.
+test("Тарбол в клоне: npm i -g ./vendor/<тарбол> даёт версию пина, upstream/ не нужен", opts, () => {
+  const pkg = JSON.parse(fs.readFileSync(path.join(installerDir, "package.json"), "utf8"));
+  const vendored = path.resolve(installerDir, "..", pkg.symphysis.openspecSource);
+  assert.ok(fs.existsSync(vendored), `нет ${vendored}: собрать node installer/scripts/build-vendor.js`);
+  const clone = mk("clone");
+  fs.mkdirSync(path.join(clone, "vendor"));
+  fs.copyFileSync(vendored, path.join(clone, "vendor", path.basename(vendored)));
+  const prefix = mk("prefix");
+  const env = envWith({ NPM_CONFIG_CACHE: cache, npm_config_cache: cache, OPENSPEC_TELEMETRY: "0" });
+  const rel = `./vendor/${path.basename(vendored)}`;
+  const installed = win
+    ? spawnSync(`npm i -g "${rel}" --prefix "${prefix}"`, { cwd: clone, encoding: "utf8", shell: true, env, timeout: TIMEOUT })
+    : spawnSync("npm", ["i", "-g", rel, "--prefix", prefix], { cwd: clone, encoding: "utf8", env, timeout: TIMEOUT });
+  assert.equal(installed.status, 0, installed.stdout + installed.stderr);
+  const openspec = win ? path.join(prefix, "openspec.cmd") : path.join(prefix, "bin", "openspec");
+  const v = win
+    ? spawnSync(`"${openspec}" --version`, { cwd: clone, encoding: "utf8", shell: true, env })
+    : spawnSync(openspec, ["--version"], { cwd: clone, encoding: "utf8", env });
+  assert.equal(v.status, 0, v.stdout + v.stderr);
+  assert.equal(v.stdout.trim(), pkg.symphysis.openspecPin);
+});
