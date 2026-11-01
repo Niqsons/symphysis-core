@@ -13,7 +13,7 @@ import { check } from "../lib/check.js";
 const here = path.dirname(fileURLToPath(import.meta.url));
 const bin = path.resolve(here, "..", "bin", "symphysis.js");
 const FORK = path.resolve(here, "..", "..", "upstream", "openspec", "bin", "openspec.js");
-const PIN = "1.15.0-symphysis.3";
+const PIN = "1.15.0-symphysis.4";
 const hasFork = fs.existsSync(FORK);
 let payloadDir;
 const tmp = () => fs.mkdtempSync(path.join(os.tmpdir(), "symphysis-check-"));

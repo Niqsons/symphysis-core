@@ -22,7 +22,7 @@
     "test": "node --test"
   },
   "symphysis": {
-    "openspecPin": "1.15.0-symphysis.3",
+    "openspecPin": "1.15.0-symphysis.4",
     "openspecSource": "<URL репозитория форка — плейсхолдер>"
   },
   "dependencies": {
