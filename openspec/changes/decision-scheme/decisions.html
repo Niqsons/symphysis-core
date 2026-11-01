@@ -185,15 +185,15 @@
 const JOURNAL = {
  "title": "Журнал решений: decision-scheme",
  "source": "decisions.json",
- "sha256": "9cd6eed09e5b5f8a930a2d15fc6daeef9489ff491074c404d1c12b8434beda0f",
+ "sha256": "495d5352ce015aa5ff12780c9fbae88876c78274b90ced1aa2f0d8039d9f9dbd",
  "stats": {
-  "records": 118,
-  "forks": 85,
-  "facts": 33,
-  "decided": 26,
+  "records": 123,
+  "forks": 87,
+  "facts": 36,
+  "decided": 87,
   "parked": 4,
-  "evidence_total": 297,
-  "evidence_found": 297
+  "evidence_total": 316,
+  "evidence_found": 316
  },
  "records": [
   {
@@ -1103,7 +1103,7 @@ const JOURNAL = {
     {
      "addressee": "материалы",
      "text": "А вообще, стоит сделать так, что в скилле symphysis-viewer идет чтение созданной scheme.md, и если человек просит html, то для схемы можно сделать html рендер на основе scheme.md. но тогда нужно изменить шаблон Html, что схема покаывается текстом, или рендером. Это нужно на случай, если человек не хочет пользоваться плагином, но просит Html.",
-     "finding": "Проба на настоящей странице, отчёт `research/F-21.md`: страница рисует `scheme.md` из `file://` при всех трёх способах доставки mermaid; без mermaid и при битом тексте остаётся текст. Соседний файл: 374–402 мс, страница 143 КБ, файл 5,5 МБ в инсталляторе. Внутри страницы: 451–457 мс, страница 5,6 МБ. CDN: 1034–1117 мс и первый сетевой запрос страницы. Страница без CSP ходит по адресу `<img>` из подписи, строгий режим этого не снимает, CSP в `<meta>` блокирует. В колонке страницы рисунок плохо читается и вписанным, и в натуральном размере. Выбор способа не сделан."
+     "finding": "Закрыто решением F-39.A: рисунок, если рядом есть файл mermaid, иначе текст; место и ширину панели решили F-54 и F-122. Замеры — `research/F-21.md`."
     }
    ],
    "dispute": "",
@@ -1132,7 +1132,7 @@ const JOURNAL = {
     }
    ],
    "comments": [],
-   "finding": "Проба на настоящей странице, отчёт `research/F-21.md`: страница рисует `scheme.md` из `file://` при всех трёх способах доставки mermaid; без mermaid и при битом тексте остаётся текст. Соседний файл: 374–402 мс, страница 143 КБ, файл 5,5 МБ в инсталляторе. Внутри страницы: 451–457 мс, страница 5,6 МБ. CDN: 1034–1117 мс и первый сетевой запрос страницы. Страница без CSP ходит по адресу `<img>` из подписи, строгий режим этого не снимает, CSP в `<meta>` блокирует. В колонке страницы рисунок плохо читается и вписанным, и в натуральном размере. Выбор способа не сделан."
+   "finding": "Закрыто решением F-39.A: рисунок, если рядом есть файл mermaid, иначе текст; место и ширину панели решили F-54 и F-122. Замеры — `research/F-21.md`."
   },
   {
    "id": "F-22",
@@ -1494,14 +1494,15 @@ const JOURNAL = {
    "parking": [
     {
      "addressee": "ИБ",
-     "text": "`scheme.md` пишут человек и модель, файл может прийти из чужой ветки: строгий режим mermaid и CSP вкладки с `style-src 'unsafe-inline'` — в чек-лист `security.md`."
+     "text": "`scheme.md` пишут человек и модель, файл может прийти из чужой ветки: строгий режим mermaid и CSP вкладки с `style-src 'unsafe-inline'` — в чек-лист `security.md`.",
+     "finding": "Закрыто чек-листом: `security.md`, строка про подпись на вкладке."
     }
    ],
    "dispute": "",
    "consequences": "Вкладке нужна своя CSP с `style-src 'unsafe-inline'`, у просмотрщика и поиска остаётся строгая. Плашка отсутствия схемы живёт во вкладке.",
    "evidence": [],
    "comments": [],
-   "finding": ""
+   "finding": "Закрыто чек-листом: `security.md`, строка про подпись на вкладке."
   },
   {
    "id": "F-27",
@@ -3865,7 +3866,7 @@ const JOURNAL = {
    "id": "F-56",
    "question": "Какая тяжесть у строки атаки журнала, если выбраны оба антипода?",
    "kind": "развилка",
-   "status": "открыт",
+   "status": "решён",
    "addressee": "человек",
    "depends_on": [
     "F-52"
@@ -3930,8 +3931,15 @@ const JOURNAL = {
     "option": "B",
     "why": "Это твоё «увеличим на одну», если считать от `справки`. Цена: при ложной паре модели шаг стоит, пока запись не поправят; `справка` этого не даёт, но и не остановит."
    },
-   "decision": null,
-   "reversibility": null,
+   "decision": {
+    "option": "B",
+    "word": "",
+    "date": "2026-11-02"
+   },
+   "reversibility": {
+    "level": "обратимо",
+    "why": "Одна строка линзы `context-compliance` в скилле `symphysis-attack`: журналы и контракт с плагином тяжесть не хранят, а файл атаки стареет по хешу и пишется заново."
+   },
    "outcome": null,
    "parking": [],
    "dispute": "",
@@ -3944,7 +3952,7 @@ const JOURNAL = {
    "id": "F-57",
    "question": "[idempotency · stateful] Брейншторм создаёт `scheme.md`: первый круг оборвался сразу после записи файла, и при повторе скилл принимает его за файл человека: ссылки в чат нет, человек о схеме не узнал",
    "kind": "развилка",
-   "status": "открыт",
+   "status": "решён",
    "addressee": "человек",
    "depends_on": [
     "F-22"
@@ -3985,12 +3993,20 @@ const JOURNAL = {
     "option": "A",
     "why": "Цена — одна строка в скилле, а без ссылки человек может не узнать о файле: критерий F-01 требует её дать."
    },
-   "decision": null,
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-02"
+   },
    "reversibility": null,
-   "outcome": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Specify",
+    "reason": ""
+   },
    "parking": [],
    "dispute": "",
-   "consequences": "",
+   "consequences": "в spec.md: Повтор после обрыва",
    "evidence": [
     {
      "path": "openspec/changes/decision-scheme/specs/decision-scheme/spec.md",
@@ -4007,7 +4023,7 @@ const JOURNAL = {
    "id": "F-58",
    "question": "[concurrency · stateful] Брейншторм создаёт `scheme.md`: файла не было при проверке, а пока модель составляла схему, человек сохранил свой: запись модели затрёт его файл",
    "kind": "развилка",
-   "status": "открыт",
+   "status": "решён",
    "addressee": "человек",
    "depends_on": [
     "F-22"
@@ -4048,12 +4064,20 @@ const JOURNAL = {
     "option": "A",
     "why": "Файл принадлежит человеку (F-07), а цена проверки перед записью нулевая."
    },
-   "decision": null,
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-02"
+   },
    "reversibility": null,
-   "outcome": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Specify",
+    "reason": ""
+   },
    "parking": [],
    "dispute": "",
-   "consequences": "",
+   "consequences": "в spec.md: Файл появился перед записью",
    "evidence": [
     {
      "path": "openspec/changes/decision-scheme/specs/decision-scheme/spec.md",
@@ -4070,7 +4094,7 @@ const JOURNAL = {
    "id": "F-59",
    "question": "[adjacency · collection] `scheme.md` — один блок mermaid: человек вставил два блока подряд, например два сценария: какой рисуется и видно ли это",
    "kind": "развилка",
-   "status": "открыт",
+   "status": "решён",
    "addressee": "человек",
    "depends_on": [
     "F-54"
@@ -4111,17 +4135,25 @@ const JOURNAL = {
     "option": "A",
     "why": "Человек уже говорил о нескольких сценариях (F-54), а молчаливый показ первого блока выглядел бы как потерянный рисунок."
    },
-   "decision": null,
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-02"
+   },
    "reversibility": null,
-   "outcome": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Specify",
+    "reason": ""
+   },
    "parking": [],
    "dispute": "",
-   "consequences": "",
+   "consequences": "в spec.md: Два блока в файле",
    "evidence": [
     {
      "path": "openspec/changes/decision-scheme/specs/decision-scheme/spec.md",
      "quote": "### Requirement: `scheme.md` — один блок mermaid, и шаги от него не зависят",
-     "line": 28,
+     "line": 38,
      "verdict": "сверено",
      "found": true
     }
@@ -4133,7 +4165,7 @@ const JOURNAL = {
    "id": "F-60",
    "question": "[empty · text] `scheme.md` — один блок mermaid: файл есть, но пуст, без блока или с пустым блоком: это «схема не создана» или ошибка, и создаст ли его брейншторм заново",
    "kind": "развилка",
-   "status": "открыт",
+   "status": "решён",
    "addressee": "человек",
    "depends_on": [
     "F-28"
@@ -4174,17 +4206,25 @@ const JOURNAL = {
     "option": "A",
     "why": "Человек мог создать файл заранее, а сообщение mermaid о пустом тексте ему ничего не объяснит."
    },
-   "decision": null,
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-02"
+   },
    "reversibility": null,
-   "outcome": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Specify",
+    "reason": ""
+   },
    "parking": [],
    "dispute": "",
-   "consequences": "",
+   "consequences": "в spec.md: Файл без схемы",
    "evidence": [
     {
      "path": "openspec/changes/decision-scheme/specs/decision-scheme/spec.md",
      "quote": "### Requirement: `scheme.md` — один блок mermaid, и шаги от него не зависят",
-     "line": 28,
+     "line": 38,
      "verdict": "сверено",
      "found": true
     }
@@ -4196,7 +4236,7 @@ const JOURNAL = {
    "id": "F-61",
    "question": "[encoding · text] `scheme.md` — один блок mermaid: файл сохранён на Windows с BOM и CRLF: находится ли блок и верен ли номер строки в ошибке",
    "kind": "развилка",
-   "status": "открыт",
+   "status": "решён",
    "addressee": "человек",
    "depends_on": [
     "F-28"
@@ -4237,17 +4277,25 @@ const JOURNAL = {
     "option": "A",
     "why": "Редактор на Windows может сохранить файл по-разному, а проба mermaid проверяла CRLF только в тексте блока, но не поиск самого блока."
    },
-   "decision": null,
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-02"
+   },
    "reversibility": null,
-   "outcome": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Specify",
+    "reason": ""
+   },
    "parking": [],
    "dispute": "",
-   "consequences": "",
+   "consequences": "в spec.md: BOM и CRLF",
    "evidence": [
     {
      "path": "openspec/changes/decision-scheme/specs/decision-scheme/spec.md",
      "quote": "### Requirement: `scheme.md` — один блок mermaid, и шаги от него не зависят",
-     "line": 28,
+     "line": 38,
      "verdict": "сверено",
      "found": true
     }
@@ -4259,7 +4307,7 @@ const JOURNAL = {
    "id": "F-62",
    "question": "[idempotency · stateful] Вкладка схемы открывается кнопкой: человек нажимает «схема» при уже открытой вкладке: вторая вкладка, закрытие или фокус",
    "kind": "развилка",
-   "status": "открыт",
+   "status": "решён",
    "addressee": "человек",
    "depends_on": [
     "F-26"
@@ -4300,12 +4348,20 @@ const JOURNAL = {
     "option": "A",
     "why": "Повтор не должен плодить вкладки, а закрыть можно обычным крестиком."
    },
-   "decision": null,
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-02"
+   },
    "reversibility": null,
-   "outcome": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Specify",
+    "reason": ""
+   },
    "parking": [],
    "dispute": "",
-   "consequences": "",
+   "consequences": "в spec.md: Повторное нажатие",
    "evidence": [
     {
      "path": "openspec/changes/decision-scheme/specs/plugin-scheme-view/spec.md",
@@ -4322,7 +4378,7 @@ const JOURNAL = {
    "id": "F-63",
    "question": "[concurrency · io] Вкладка схемы открывается кнопкой: просмотрщик закрыт, а вкладка схемы осталась: что делает клик по узлу",
    "kind": "развилка",
-   "status": "открыт",
+   "status": "решён",
    "addressee": "человек",
    "depends_on": [
     "F-26",
@@ -4364,12 +4420,20 @@ const JOURNAL = {
     "option": "A",
     "why": "Клик обещает показать карточки узла, а без этого он молча ничего не делает."
    },
-   "decision": null,
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-02"
+   },
    "reversibility": null,
-   "outcome": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Specify",
+    "reason": ""
+   },
    "parking": [],
    "dispute": "",
-   "consequences": "",
+   "consequences": "в spec.md: Клик при закрытом просмотрщике",
    "evidence": [
     {
      "path": "openspec/changes/decision-scheme/specs/plugin-scheme-view/spec.md",
@@ -4386,7 +4450,7 @@ const JOURNAL = {
    "id": "F-64",
    "question": "[concurrency · stateful] Вкладка схемы открывается кнопкой: вкладка показывает изменение А, а в просмотрщике открыли журнал изменения Б: чья схема на экране",
    "kind": "развилка",
-   "status": "открыт",
+   "status": "решён",
    "addressee": "человек",
    "depends_on": [
     "F-26"
@@ -4427,12 +4491,20 @@ const JOURNAL = {
     "option": "A",
     "why": "Клик по узлу фильтрует просмотрщик, поэтому схема и карточки обязаны быть про одно изменение."
    },
-   "decision": null,
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-02"
+   },
    "reversibility": null,
-   "outcome": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Specify",
+    "reason": ""
+   },
    "parking": [],
    "dispute": "",
-   "consequences": "",
+   "consequences": "в spec.md: Журнал сменился при открытой вкладке",
    "evidence": [
     {
      "path": "openspec/changes/decision-scheme/specs/plugin-scheme-view/spec.md",
@@ -4449,7 +4521,7 @@ const JOURNAL = {
    "id": "F-65",
    "question": "[concurrency · io] Вкладка рисует файл сама: автосохранение раз в секунду, а первый рисунок занимает около 350 мс: рисунок старой версии может прийти позже новой",
    "kind": "развилка",
-   "status": "открыт",
+   "status": "решён",
    "addressee": "человек",
    "depends_on": [
     "F-25"
@@ -4490,17 +4562,25 @@ const JOURNAL = {
     "option": "A",
     "why": "Автосохранение в VS Code обычное дело, а устаревший рисунок глазами не отличить от верного."
    },
-   "decision": null,
+   "decision": {
+    "option": "B",
+    "word": "Считать ли текст варианта твоей причиной? Да, про все.",
+    "date": "2026-11-02"
+   },
    "reversibility": null,
-   "outcome": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Dismiss",
+    "reason": "Считать ли текст варианта твоей причиной? Да, про все."
+   },
    "parking": [],
    "dispute": "",
-   "consequences": "",
+   "consequences": "не покрывается: рисунок обновится при следующем сохранении, а ошибка живёт доли секунды",
    "evidence": [
     {
      "path": "openspec/changes/decision-scheme/specs/plugin-scheme-view/spec.md",
      "quote": "### Requirement: Вкладка рисует файл сама и без сети",
-     "line": 28,
+     "line": 38,
      "verdict": "сверено",
      "found": true
     },
@@ -4519,7 +4599,7 @@ const JOURNAL = {
    "id": "F-66",
    "question": "[idempotency · stateful] Вкладка рисует файл сама: файл сохранён и рисунок обновился: сбрасываются ли масштаб и позиция, которые человек только что выставил",
    "kind": "развилка",
-   "status": "открыт",
+   "status": "решён",
    "addressee": "человек",
    "depends_on": [
     "F-25",
@@ -4561,17 +4641,25 @@ const JOURNAL = {
     "option": "A",
     "why": "Человек правит схему и смотрит результат рядом, и сброс при каждом сохранении заставит искать своё место заново."
    },
-   "decision": null,
+   "decision": {
+    "option": "B",
+    "word": "Считать ли текст варианта твоей причиной? Да, про все.",
+    "date": "2026-11-02"
+   },
    "reversibility": null,
-   "outcome": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Dismiss",
+    "reason": "Считать ли текст варианта твоей причиной? Да, про все."
+   },
    "parking": [],
    "dispute": "",
-   "consequences": "",
+   "consequences": "сброс не покрывается: после правки схема другая, а кнопка «вписать» рядом",
    "evidence": [
     {
      "path": "openspec/changes/decision-scheme/specs/plugin-scheme-view/spec.md",
      "quote": "### Requirement: Вкладка рисует файл сама и без сети",
-     "line": 28,
+     "line": 38,
      "verdict": "сверено",
      "found": true
     }
@@ -4583,7 +4671,7 @@ const JOURNAL = {
    "id": "F-67",
    "question": "[boundary · numeric-range] Схему можно масштабировать: что делает «−» на минимальном масштабе и «+» на максимальном и где эти границы",
    "kind": "развилка",
-   "status": "открыт",
+   "status": "решён",
    "addressee": "человек",
    "depends_on": [
     "F-29"
@@ -4624,17 +4712,25 @@ const JOURNAL = {
     "option": "C",
     "why": "Сами числа лучше подобрать на показе, а вот исчезнуть рисунок не должен: это держит тест."
    },
-   "decision": null,
+   "decision": {
+    "option": "C",
+    "word": "",
+    "date": "2026-11-02"
+   },
    "reversibility": null,
-   "outcome": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Backstop",
+    "reason": ""
+   },
    "parking": [],
    "dispute": "",
-   "consequences": "",
+   "consequences": "тест-страховка: тест нажимает «−» двадцать раз и утверждает, что рисунок не исчез и «+» его возвращает",
    "evidence": [
     {
      "path": "openspec/changes/decision-scheme/specs/plugin-scheme-view/spec.md",
      "quote": "### Requirement: Схему можно масштабировать и перетаскивать",
-     "line": 43,
+     "line": 53,
      "verdict": "сверено",
      "found": true
     }
@@ -4646,7 +4742,7 @@ const JOURNAL = {
    "id": "F-68",
    "question": "[boundary · numeric-range] Схему можно перетаскивать: сдвиг мыши на 1–3 пикселя при клике: это клик по узлу или перетаскивание",
    "kind": "развилка",
-   "status": "открыт",
+   "status": "решён",
    "addressee": "человек",
    "depends_on": [
     "F-29"
@@ -4687,17 +4783,25 @@ const JOURNAL = {
     "option": "C",
     "why": "Край известен, но число в требовании лишнее, поведение держит тест."
    },
-   "decision": null,
+   "decision": {
+    "option": "C",
+    "word": "",
+    "date": "2026-11-02"
+   },
    "reversibility": null,
-   "outcome": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Backstop",
+    "reason": ""
+   },
    "parking": [],
    "dispute": "",
-   "consequences": "",
+   "consequences": "тест-страховка: тест подаёт сдвиги на 0, 3 и 4 пикселя и утверждает итог для каждого",
    "evidence": [
     {
      "path": "openspec/changes/decision-scheme/specs/plugin-scheme-view/spec.md",
      "quote": "### Requirement: Схему можно масштабировать и перетаскивать",
-     "line": 43,
+     "line": 53,
      "verdict": "сверено",
      "found": true
     }
@@ -4709,7 +4813,7 @@ const JOURNAL = {
    "id": "F-69",
    "question": "[precision · numeric-range] Схему можно масштабировать: кнопка «вписать» на схеме из одного-двух узлов: растянуть её на всю панель или оставить натуральный размер",
    "kind": "развилка",
-   "status": "открыт",
+   "status": "решён",
    "addressee": "человек",
    "depends_on": [
     "F-29"
@@ -4750,17 +4854,25 @@ const JOURNAL = {
     "option": "A",
     "why": "Огромные блоки на маленькой схеме читаются хуже натурального размера."
    },
-   "decision": null,
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-02"
+   },
    "reversibility": null,
-   "outcome": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Specify",
+    "reason": ""
+   },
    "parking": [],
    "dispute": "",
-   "consequences": "",
+   "consequences": "в spec.md: «Вписать» на маленькой схеме",
    "evidence": [
     {
      "path": "openspec/changes/decision-scheme/specs/plugin-scheme-view/spec.md",
      "quote": "### Requirement: Схему можно масштабировать и перетаскивать",
-     "line": 43,
+     "line": 53,
      "verdict": "сверено",
      "found": true
     }
@@ -4772,7 +4884,7 @@ const JOURNAL = {
    "id": "F-70",
    "question": "[concurrency · io] Отказы видны на вкладке: файл удалён или ушёл со сменой ветки при открытой вкладке: остаётся прежний рисунок или появляется плашка",
    "kind": "развилка",
-   "status": "открыт",
+   "status": "решён",
    "addressee": "человек",
    "depends_on": [
     "F-05",
@@ -4814,17 +4926,25 @@ const JOURNAL = {
     "option": "A",
     "why": "Смена ветки git убирает файл обычным образом, а рисунок несуществующей схемы вводит в заблуждение."
    },
-   "decision": null,
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-02"
+   },
    "reversibility": null,
-   "outcome": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Specify",
+    "reason": ""
+   },
    "parking": [],
    "dispute": "",
-   "consequences": "",
+   "consequences": "в spec.md: Файл удалён при открытой вкладке",
    "evidence": [
     {
      "path": "openspec/changes/decision-scheme/specs/plugin-scheme-view/spec.md",
      "quote": "### Requirement: Отказы видны на вкладке",
-     "line": 63,
+     "line": 78,
      "verdict": "сверено",
      "found": true
     }
@@ -4836,7 +4956,7 @@ const JOURNAL = {
    "id": "F-71",
    "question": "[boundary · numeric-range] Отказы видны на вкладке: схема больше предела mermaid: текст длиннее 50 000 символов или больше 500 связей, и вместо рисунка mermaid даёт свою ошибку",
    "kind": "развилка",
-   "status": "открыт",
+   "status": "решён",
    "addressee": "человек",
    "depends_on": [
     "F-28"
@@ -4877,17 +4997,25 @@ const JOURNAL = {
     "option": "C",
     "why": "Пределы настоящие, но до них далеко: у схемы этого изменения 20 узлов. Достаточно, чтобы вкладка не падала."
    },
-   "decision": null,
+   "decision": {
+    "option": "B",
+    "word": "Считать ли текст варианта твоей причиной? Да, про все.",
+    "date": "2026-11-02"
+   },
    "reversibility": null,
-   "outcome": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Dismiss",
+    "reason": "Считать ли текст варианта твоей причиной? Да, про все."
+   },
    "parking": [],
    "dispute": "",
-   "consequences": "",
+   "consequences": "не покрывается: схема такого размера всё равно нечитаема, а сообщение mermaid о пределе человек поймёт",
    "evidence": [
     {
      "path": "openspec/changes/decision-scheme/specs/plugin-scheme-view/spec.md",
      "quote": "### Requirement: Отказы видны на вкладке",
-     "line": 63,
+     "line": 78,
      "verdict": "сверено",
      "found": true
     },
@@ -4913,7 +5041,7 @@ const JOURNAL = {
    "id": "F-72",
    "question": "[adjacency · collection] Клик по узлу: два узла с одинаковой подписью и разными идентификаторами: фильтр идёт по подписи или по идентификатору",
    "kind": "развилка",
-   "status": "открыт",
+   "status": "решён",
    "addressee": "человек",
    "depends_on": [
     "F-27"
@@ -4954,17 +5082,25 @@ const JOURNAL = {
     "option": "C",
     "why": "Поведение следует из поля `nodes`, сценарий ничего не добавит, а регрессию поймает тест."
    },
-   "decision": null,
+   "decision": {
+    "option": "C",
+    "word": "",
+    "date": "2026-11-02"
+   },
    "reversibility": null,
-   "outcome": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Backstop",
+    "reason": ""
+   },
    "parking": [],
    "dispute": "",
-   "consequences": "",
+   "consequences": "тест-страховка: тест подаёт схему с одинаковыми подписями и утверждает, что фильтр различает узлы",
    "evidence": [
     {
      "path": "openspec/changes/decision-scheme/specs/plugin-scheme-view/spec.md",
      "quote": "### Requirement: Клик по узлу фильтрует карточки по `nodes`",
-     "line": 88,
+     "line": 108,
      "verdict": "сверено",
      "found": true
     }
@@ -4976,7 +5112,7 @@ const JOURNAL = {
    "id": "F-73",
    "question": "[empty · collection] Клик по узлу: журнал вообще без поля `nodes`, как все журналы до этого изменения: клик по любому узлу скрывает все карточки",
    "kind": "развилка",
-   "status": "открыт",
+   "status": "решён",
    "addressee": "человек",
    "depends_on": [
     "F-23",
@@ -5018,17 +5154,25 @@ const JOURNAL = {
     "option": "A",
     "why": "Все журналы ядра сегодня такие, и фильтр, скрывший все карточки, выглядит как поломка."
    },
-   "decision": null,
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-02"
+   },
    "reversibility": null,
-   "outcome": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Specify",
+    "reason": ""
+   },
    "parking": [],
    "dispute": "",
-   "consequences": "",
+   "consequences": "в spec.md: Журнал без `nodes`",
    "evidence": [
     {
      "path": "openspec/changes/decision-scheme/specs/plugin-scheme-view/spec.md",
      "quote": "### Requirement: Клик по узлу фильтрует карточки по `nodes`",
-     "line": 88,
+     "line": 108,
      "verdict": "сверено",
      "found": true
     }
@@ -5040,7 +5184,7 @@ const JOURNAL = {
    "id": "F-74",
    "question": "[idempotency · stateful] Клик по узлу: условие «узел X» выбрано, а человек убрал узел X из `scheme.md`: кликом условие уже не снять",
    "kind": "развилка",
-   "status": "открыт",
+   "status": "решён",
    "addressee": "человек",
    "depends_on": [
     "F-27"
@@ -5081,17 +5225,25 @@ const JOURNAL = {
     "option": "B",
     "why": "У условия есть крестик, он работает независимо от рисунка, а запись с этим узлом остаётся видна с подсказкой."
    },
-   "decision": null,
+   "decision": {
+    "option": "B",
+    "word": "Считать ли текст варианта твоей причиной? Да, про все.",
+    "date": "2026-11-02"
+   },
    "reversibility": null,
-   "outcome": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Dismiss",
+    "reason": "Считать ли текст варианта твоей причиной? Да, про все."
+   },
    "parking": [],
    "dispute": "",
-   "consequences": "",
+   "consequences": "не покрывается: у условия есть крестик, он работает независимо от рисунка, а запись с этим узлом видна с подсказкой",
    "evidence": [
     {
      "path": "openspec/changes/decision-scheme/specs/plugin-scheme-view/spec.md",
      "quote": "### Requirement: Клик по узлу фильтрует карточки по `nodes`",
-     "line": 88,
+     "line": 108,
      "verdict": "сверено",
      "found": true
     }
@@ -5103,7 +5255,7 @@ const JOURNAL = {
    "id": "F-75",
    "question": "[concurrency · stateful] Клик по узлу: поиск или оглавление ведут к записи, скрытой условием «узел X»",
    "kind": "развилка",
-   "status": "открыт",
+   "status": "решён",
    "addressee": "человек",
    "depends_on": [
     "F-27"
@@ -5144,17 +5296,25 @@ const JOURNAL = {
     "option": "A",
     "why": "Плагин уже так ведёт себя с фильтром «показать»: переход не должен молча ни к чему не приводить."
    },
-   "decision": null,
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-02"
+   },
    "reversibility": null,
-   "outcome": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Specify",
+    "reason": ""
+   },
    "parking": [],
    "dispute": "",
-   "consequences": "",
+   "consequences": "в spec.md: Переход к записи, скрытой условием",
    "evidence": [
     {
      "path": "openspec/changes/decision-scheme/specs/plugin-scheme-view/spec.md",
      "quote": "### Requirement: Клик по узлу фильтрует карточки по `nodes`",
-     "line": 88,
+     "line": 108,
      "verdict": "сверено",
      "found": true
     }
@@ -5166,7 +5326,7 @@ const JOURNAL = {
    "id": "F-76",
    "question": "[boundary · numeric-range] Плагин сверяет номер: поле есть, но это не целое число: строка \"1\", 1.5, null или отрицательное",
    "kind": "развилка",
-   "status": "открыт",
+   "status": "решён",
    "addressee": "человек",
    "depends_on": [
     "F-31"
@@ -5207,12 +5367,20 @@ const JOURNAL = {
     "option": "C",
     "why": "Номер пишет только ядро, поэтому сценарий избыточен, но закрытая «Внести» при мусоре на входе должна держаться тестом."
    },
-   "decision": null,
+   "decision": {
+    "option": "C",
+    "word": "",
+    "date": "2026-11-02"
+   },
    "reversibility": null,
-   "outcome": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Backstop",
+    "reason": ""
+   },
    "parking": [],
    "dispute": "",
-   "consequences": "",
+   "consequences": "тест-страховка: тест подаёт четыре негодных значения и утверждает, что «Внести» закрыта",
    "evidence": [
     {
      "path": "openspec/changes/decision-scheme/specs/plugin-core-contract/spec.md",
@@ -5236,7 +5404,7 @@ const JOURNAL = {
    "id": "F-77",
    "question": "[idempotency · stateful] Плагин сверяет номер: инструменты обновили при открытом журнале и черновик человека на месте: открывается ли «Внести» без перезапуска",
    "kind": "развилка",
-   "status": "открыт",
+   "status": "решён",
    "addressee": "человек",
    "depends_on": [
     "F-31"
@@ -5277,12 +5445,20 @@ const JOURNAL = {
     "option": "A",
     "why": "Просьба обновить должна кончаться рабочим журналом, иначе человек решит, что обновление не помогло."
    },
-   "decision": null,
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-02"
+   },
    "reversibility": null,
-   "outcome": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Specify",
+    "reason": ""
+   },
    "parking": [],
    "dispute": "",
-   "consequences": "",
+   "consequences": "в spec.md: Инструменты обновлены при открытом журнале",
    "evidence": [
     {
      "path": "openspec/changes/decision-scheme/specs/plugin-core-contract/spec.md",
@@ -5299,7 +5475,7 @@ const JOURNAL = {
    "id": "F-78",
    "question": "[concurrency · stateful] Плагин сверяет номер: в рабочей области два проекта с разными версиями инструментов: один совпал, другой нет",
    "kind": "развилка",
-   "status": "открыт",
+   "status": "решён",
    "addressee": "человек",
    "depends_on": [
     "F-31"
@@ -5340,12 +5516,20 @@ const JOURNAL = {
     "option": "A",
     "why": "Ядро лежит в `.symphysis/tools/` каждого проекта, поэтому версии расходятся именно по проектам."
    },
-   "decision": null,
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-02"
+   },
    "reversibility": null,
-   "outcome": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Specify",
+    "reason": ""
+   },
    "parking": [],
    "dispute": "",
-   "consequences": "",
+   "consequences": "в spec.md: Два проекта с разными номерами",
    "evidence": [
     {
      "path": "openspec/changes/decision-scheme/specs/plugin-core-contract/spec.md",
@@ -5369,7 +5553,7 @@ const JOURNAL = {
    "id": "F-79",
    "question": "[empty · collection] Плагин сверяет номер: журнал открывается впервые, прежних данных нет: что на экране при несовпадении",
    "kind": "развилка",
-   "status": "открыт",
+   "status": "решён",
    "addressee": "человек",
    "depends_on": [
     "F-31"
@@ -5410,12 +5594,20 @@ const JOURNAL = {
     "option": "A",
     "why": "Это обычный первый запуск после установки нового плагина на старые инструменты."
    },
-   "decision": null,
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-02"
+   },
    "reversibility": null,
-   "outcome": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Specify",
+    "reason": ""
+   },
    "parking": [],
    "dispute": "",
-   "consequences": "",
+   "consequences": "в spec.md: Прежних данных нет",
    "evidence": [
     {
      "path": "openspec/changes/decision-scheme/specs/plugin-core-contract/spec.md",
@@ -5432,7 +5624,7 @@ const JOURNAL = {
    "id": "F-80",
    "question": "[ordering · collection] Один черновик даёт один журнал: человек добавил два варианта к одной записи: страница и плагин назначают буквы в одном порядке",
    "kind": "развилка",
-   "status": "открыт",
+   "status": "решён",
    "addressee": "человек",
    "depends_on": [
     "F-20"
@@ -5473,17 +5665,25 @@ const JOURNAL = {
     "option": "C",
     "why": "Требование и так об этом, нужен только конкретный набор данных в тесте."
    },
-   "decision": null,
+   "decision": {
+    "option": "C",
+    "word": "",
+    "date": "2026-11-02"
+   },
    "reversibility": null,
-   "outcome": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Backstop",
+    "reason": ""
+   },
    "parking": [],
    "dispute": "",
-   "consequences": "",
+   "consequences": "тест-страховка: контрактный тест получает этот черновик отдельным набором и утверждает равенство журналов",
    "evidence": [
     {
      "path": "openspec/changes/decision-scheme/specs/plugin-core-contract/spec.md",
      "quote": "### Requirement: Один черновик даёт один журнал со страницы и из плагина",
-     "line": 48,
+     "line": 58,
      "verdict": "сверено",
      "found": true
     }
@@ -5495,7 +5695,7 @@ const JOURNAL = {
    "id": "F-81",
    "question": "[encoding · text] Один черновик даёт один журнал: слово человека с кавычками «», переводом строки, тире и чертой: одно ли слово окажется в журнале",
    "kind": "развилка",
-   "status": "открыт",
+   "status": "решён",
    "addressee": "человек",
    "depends_on": [
     "F-20"
@@ -5536,17 +5736,25 @@ const JOURNAL = {
     "option": "A",
     "why": "Логика страницы и плагина уже расходится по контракту, а слова человека сюда нельзя терять."
    },
-   "decision": null,
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-02"
+   },
    "reversibility": null,
-   "outcome": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Specify",
+    "reason": ""
+   },
    "parking": [],
    "dispute": "",
-   "consequences": "",
+   "consequences": "в spec.md: Слово со знаками",
    "evidence": [
     {
      "path": "openspec/changes/decision-scheme/specs/plugin-core-contract/spec.md",
      "quote": "### Requirement: Один черновик даёт один журнал со страницы и из плагина",
-     "line": 48,
+     "line": 58,
      "verdict": "сверено",
      "found": true
     },
@@ -5565,7 +5773,7 @@ const JOURNAL = {
    "id": "F-82",
    "question": "[empty · text] Заданный `SYMPHYSIS_ROOT`: переменная задана пустой строкой",
    "kind": "развилка",
-   "status": "открыт",
+   "status": "решён",
    "addressee": "человек",
    "depends_on": [
     "F-20"
@@ -5606,17 +5814,25 @@ const JOURNAL = {
     "option": "A",
     "why": "`??` в `test/unit/fixture-project.ts` пропускает пустую строку как значение, и такой край сам собой не проявится."
    },
-   "decision": null,
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-02"
+   },
    "reversibility": null,
-   "outcome": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Specify",
+    "reason": ""
+   },
    "parking": [],
    "dispute": "",
-   "consequences": "",
+   "consequences": "в spec.md: Пустая переменная",
    "evidence": [
     {
      "path": "openspec/changes/decision-scheme/specs/plugin-core-contract/spec.md",
      "quote": "### Requirement: Заданный `SYMPHYSIS_ROOT` без ядра — падение, а не пропуск",
-     "line": 58,
+     "line": 73,
      "verdict": "сверено",
      "found": true
     },
@@ -5635,7 +5851,7 @@ const JOURNAL = {
    "id": "F-83",
    "question": "[encoding · text] Собранный файл называет версию и коммит: какая запись примется: `0.2.0+abc1234` или `0.2.0-abc1234`, и что покажет окно расширений",
    "kind": "развилка",
-   "status": "открыт",
+   "status": "решён",
    "addressee": "человек",
    "depends_on": [
     "F-30"
@@ -5676,12 +5892,20 @@ const JOURNAL = {
     "option": "C",
     "why": "Форму надо проверить настоящей установкой, и такая проверка нужна при любой записи."
    },
-   "decision": null,
+   "decision": {
+    "option": "C",
+    "word": "",
+    "date": "2026-11-02"
+   },
    "reversibility": null,
-   "outcome": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Backstop",
+    "reason": ""
+   },
    "parking": [],
    "dispute": "",
-   "consequences": "",
+   "consequences": "тест-страховка: `e2e:vsix` читает версию установленного расширения и утверждает, что в ней есть H",
    "evidence": [
     {
      "path": "openspec/changes/decision-scheme/specs/plugin-packaging/spec.md",
@@ -5698,7 +5922,7 @@ const JOURNAL = {
    "id": "F-84",
    "question": "[idempotency · stateful] Собранный файл называет версию и коммит: сборка при незакоммиченных правках: хеш называет коммит, из которого файл на самом деле не собран",
    "kind": "развилка",
-   "status": "открыт",
+   "status": "решён",
    "addressee": "человек",
    "depends_on": [
     "F-30"
@@ -5739,12 +5963,20 @@ const JOURNAL = {
     "option": "A",
     "why": "Хеш нужен, чтобы понять, что собрано, а без пометки он обманывает именно при отладке."
    },
-   "decision": null,
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-02"
+   },
    "reversibility": null,
-   "outcome": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Specify",
+    "reason": ""
+   },
    "parking": [],
    "dispute": "",
-   "consequences": "",
+   "consequences": "в spec.md: Сборка с незакоммиченными правками",
    "evidence": [
     {
      "path": "openspec/changes/decision-scheme/specs/plugin-packaging/spec.md",
@@ -5761,7 +5993,7 @@ const JOURNAL = {
    "id": "F-85",
    "question": "[concurrency · io] Промежуточная сборка: `SYMPHYSIS_ROOT` не задан, и `e2e:vsix` идёт по той ветке, что сейчас стоит в `../symphysis`, то есть по чужой работе",
    "kind": "развилка",
-   "status": "открыт",
+   "status": "решён",
    "addressee": "человек",
    "depends_on": [
     "F-55"
@@ -5802,17 +6034,25 @@ const JOURNAL = {
     "option": "A",
     "why": "Шаги 1 и 2 сняты, и теперь только итог прогона говорит, на каком ядре он шёл."
    },
-   "decision": null,
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-02"
+   },
    "reversibility": null,
-   "outcome": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Specify",
+    "reason": ""
+   },
    "parking": [],
    "dispute": "",
-   "consequences": "",
+   "consequences": "в spec.md: Итог называет ядро",
    "evidence": [
     {
      "path": "openspec/changes/decision-scheme/specs/plugin-packaging/spec.md",
      "quote": "### Requirement: Промежуточная сборка проверяется установкой, без шагов выпуска про `main`",
-     "line": 23,
+     "line": 33,
      "verdict": "сверено",
      "found": true
     },
@@ -5831,7 +6071,7 @@ const JOURNAL = {
    "id": "F-86",
    "question": "[empty · collection] Запись ссылается на узлы: `nodes: []`: это то же, что нет поля",
    "kind": "развилка",
-   "status": "открыт",
+   "status": "решён",
    "addressee": "человек",
    "depends_on": [
     "F-23",
@@ -5873,12 +6113,20 @@ const JOURNAL = {
     "option": "A",
     "why": "Сценарий стоит одной строки, и подсказка «узел не найден» не должна срабатывать на пустом списке."
    },
-   "decision": null,
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-02"
+   },
    "reversibility": null,
-   "outcome": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Specify",
+    "reason": ""
+   },
    "parking": [],
    "dispute": "",
-   "consequences": "",
+   "consequences": "в spec.md: Пустой список",
    "evidence": [
     {
      "path": "openspec/changes/decision-scheme/specs/decision-journal/spec.md",
@@ -5895,7 +6143,7 @@ const JOURNAL = {
    "id": "F-87",
    "question": "[encoding · text] Запись ссылается на узлы: идентификатор с кириллицей и разным регистром: `Узел1` и `узел1` это один узел",
    "kind": "развилка",
-   "status": "открыт",
+   "status": "решён",
    "addressee": "человек",
    "depends_on": [
     "F-23"
@@ -5936,12 +6184,20 @@ const JOURNAL = {
     "option": "A",
     "why": "Человек правит файл сам (F-06), а mermaid различает регистр, поэтому правило должно быть названо."
    },
-   "decision": null,
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-02"
+   },
    "reversibility": null,
-   "outcome": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Specify",
+    "reason": ""
+   },
    "parking": [],
    "dispute": "",
-   "consequences": "",
+   "consequences": "в spec.md: Регистр и кириллица",
    "evidence": [
     {
      "path": "openspec/changes/decision-scheme/specs/decision-journal/spec.md",
@@ -5958,7 +6214,7 @@ const JOURNAL = {
    "id": "F-88",
    "question": "[concurrency · stateful] Панель схемы: `scheme.md` поправили после сборки страницы: панель показывает старую версию, и этого не видно",
    "kind": "развилка",
-   "status": "открыт",
+   "status": "решён",
    "addressee": "человек",
    "depends_on": [
     "F-39",
@@ -6000,12 +6256,20 @@ const JOURNAL = {
     "option": "B",
     "why": "Страница и так снимок журнала с тем же свойством, а скилл просмотрщика пересобирает её перед показом."
    },
-   "decision": null,
+   "decision": {
+    "option": "B",
+    "word": "Считать ли текст варианта твоей причиной? Да, про все.",
+    "date": "2026-11-02"
+   },
    "reversibility": null,
-   "outcome": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Dismiss",
+    "reason": "Считать ли текст варианта твоей причиной? Да, про все."
+   },
    "parking": [],
    "dispute": "",
-   "consequences": "",
+   "consequences": "не покрывается: страница и так снимок журнала, человек пересобирает её",
    "evidence": [
     {
      "path": "openspec/changes/decision-scheme/specs/decision-viewer/spec.md",
@@ -6022,7 +6286,7 @@ const JOURNAL = {
    "id": "F-89",
    "question": "[encoding · text] Панель схемы: текст `scheme.md` содержит `<\/script>` или `\u003c!--`: подстановка в страницу ломает её разбор",
    "kind": "развилка",
-   "status": "открыт",
+   "status": "решён",
    "addressee": "человек",
    "depends_on": [
     "F-39"
@@ -6063,12 +6327,20 @@ const JOURNAL = {
     "option": "C",
     "why": "Файл может прийти из чужой ветки, а механизм экранирования уже есть, нужен только тест."
    },
-   "decision": null,
+   "decision": {
+    "option": "C",
+    "word": "",
+    "date": "2026-11-02"
+   },
    "reversibility": null,
-   "outcome": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Backstop",
+    "reason": ""
+   },
    "parking": [],
    "dispute": "",
-   "consequences": "",
+   "consequences": "тест-страховка: тест рендера подаёт схему с этими строками и утверждает, что страница цела и текст дословен",
    "evidence": [
     {
      "path": "openspec/changes/decision-scheme/specs/decision-viewer/spec.md",
@@ -6092,7 +6364,7 @@ const JOURNAL = {
    "id": "F-90",
    "question": "[empty · text] Панель схемы: изменение без `scheme.md`: есть ли кнопка панели и что она показывает",
    "kind": "развилка",
-   "status": "открыт",
+   "status": "решён",
    "addressee": "человек",
    "depends_on": [
     "F-05",
@@ -6134,12 +6406,20 @@ const JOURNAL = {
     "option": "A",
     "why": "Страница и плагин говорят одно и то же, а человек понимает, что схемы именно нет, а не что панель сломана."
    },
-   "decision": null,
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-02"
+   },
    "reversibility": null,
-   "outcome": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Specify",
+    "reason": ""
+   },
    "parking": [],
    "dispute": "",
-   "consequences": "",
+   "consequences": "в spec.md: Схемы нет",
    "evidence": [
     {
      "path": "openspec/changes/decision-scheme/specs/decision-viewer/spec.md",
@@ -6156,7 +6436,7 @@ const JOURNAL = {
    "id": "F-91",
    "question": "[boundary · numeric-range] Панель схемы: окно уже 900 пикселей, где страница складывается в одну колонку: рядом с карточками панели не поместиться",
    "kind": "развилка",
-   "status": "открыт",
+   "status": "решён",
    "addressee": "человек",
    "depends_on": [
     "F-54"
@@ -6197,12 +6477,20 @@ const JOURNAL = {
     "option": "A",
     "why": "Шаблон уже складывается в одну колонку на этой ширине, панель должна подчиняться тому же правилу."
    },
-   "decision": null,
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-02"
+   },
    "reversibility": null,
-   "outcome": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Specify",
+    "reason": ""
+   },
    "parking": [],
    "dispute": "",
-   "consequences": "",
+   "consequences": "в spec.md: Узкое окно",
    "evidence": [
     {
      "path": "openspec/changes/decision-scheme/specs/decision-viewer/spec.md",
@@ -6226,7 +6514,7 @@ const JOURNAL = {
    "id": "F-92",
    "question": "[concurrency · io] Подписи схемы не ходят в сеть: CSP действует на всю страницу: работают ли под ней экспорт JSON, импорт и копирование промпта",
    "kind": "развилка",
-   "status": "открыт",
+   "status": "решён",
    "addressee": "человек",
    "depends_on": [
     "F-39"
@@ -6267,17 +6555,25 @@ const JOURNAL = {
     "option": "A",
     "why": "Экспорт идёт через `blob:`, а проба проверяла только рисунок и карточки: это как раз непроверенное."
    },
-   "decision": null,
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-02"
+   },
    "reversibility": null,
-   "outcome": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Specify",
+    "reason": ""
+   },
    "parking": [],
    "dispute": "",
-   "consequences": "",
+   "consequences": "в spec.md: Кнопки страницы под CSP",
    "evidence": [
     {
      "path": "openspec/changes/decision-scheme/specs/decision-viewer/spec.md",
      "quote": "### Requirement: Подписи схемы не ходят в сеть",
-     "line": 62,
+     "line": 77,
      "verdict": "сверено",
      "found": true
     },
@@ -6296,7 +6592,7 @@ const JOURNAL = {
    "id": "F-93",
    "question": "[idempotency · stateful] Внесённая новая развилка вычищается: человек поправил текст уже внесённой развилки в черновике: как отличить её от внесённой",
    "kind": "развилка",
-   "status": "открыт",
+   "status": "решён",
    "addressee": "человек",
    "depends_on": [
     "F-20"
@@ -6337,17 +6633,25 @@ const JOURNAL = {
     "option": "A",
     "why": "Иначе правка человека либо пропадёт, либо вернётся дублем."
    },
-   "decision": null,
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-02"
+   },
    "reversibility": null,
-   "outcome": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Specify",
+    "reason": ""
+   },
    "parking": [],
    "dispute": "",
-   "consequences": "",
+   "consequences": "в spec.md: Изменённая развилка в черновике",
    "evidence": [
     {
      "path": "openspec/changes/decision-scheme/specs/decision-viewer/spec.md",
      "quote": "### Requirement: Внесённая новая развилка вычищается из черновика",
-     "line": 82,
+     "line": 102,
      "verdict": "сверено",
      "found": true
     }
@@ -6359,7 +6663,7 @@ const JOURNAL = {
    "id": "F-94",
    "question": "[adjacency · collection] Зависимость от факта: факт оспорен человеком или припаркован: считается ли предпосылка решённой",
    "kind": "развилка",
-   "status": "открыт",
+   "status": "решён",
    "addressee": "человек",
    "depends_on": [
     "F-20"
@@ -6400,17 +6704,25 @@ const JOURNAL = {
     "option": "A",
     "why": "Починка не должна заменить одну ложную пометку другой: припаркованный факт и правда не закрыт."
    },
-   "decision": null,
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-02"
+   },
    "reversibility": null,
-   "outcome": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Specify",
+    "reason": ""
+   },
    "parking": [],
    "dispute": "",
-   "consequences": "",
+   "consequences": "в spec.md: Зависимость от припаркованного факта; Оспоренный факт",
    "evidence": [
     {
      "path": "openspec/changes/decision-scheme/specs/decision-viewer/spec.md",
      "quote": "### Requirement: Зависимость от факта не считается нерешённой предпосылкой",
-     "line": 92,
+     "line": 117,
      "verdict": "сверено",
      "found": true
     }
@@ -6422,7 +6734,7 @@ const JOURNAL = {
    "id": "F-95",
    "question": "[boundary · numeric-range] Круг кончается счётом: K = 0, M = 0, D = 0, но P > 0: брейншторм закончен или ждёт исследования",
    "kind": "развилка",
-   "status": "открыт",
+   "status": "решён",
    "addressee": "человек",
    "depends_on": [
     "F-44"
@@ -6463,12 +6775,20 @@ const JOURNAL = {
     "option": "A",
     "why": "Снятие потолка меняет порядок правил §8, и этот случай лучше назвать сразу."
    },
-   "decision": null,
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-02"
+   },
    "reversibility": null,
-   "outcome": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Specify",
+    "reason": ""
+   },
    "parking": [],
    "dispute": "",
-   "consequences": "",
+   "consequences": "в spec.md: Только парковки",
    "evidence": [
     {
      "path": "openspec/changes/decision-scheme/specs/brainstorm-interview/spec.md",
@@ -6485,7 +6805,7 @@ const JOURNAL = {
    "id": "F-96",
    "question": "[idempotency · stateful] Круг кончается счётом: в `notes[]` уже стоит «брейншторм закончен по решению человека», а человек просит ещё круг",
    "kind": "развилка",
-   "status": "открыт",
+   "status": "решён",
    "addressee": "человек",
    "depends_on": [
     "F-44"
@@ -6526,12 +6846,20 @@ const JOURNAL = {
     "option": "A",
     "why": "Слово человека: после второго круга могут возникнуть вопросы; то же верно и после слова «закончен»."
    },
-   "decision": null,
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-02"
+   },
    "reversibility": null,
-   "outcome": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Specify",
+    "reason": ""
+   },
    "parking": [],
    "dispute": "",
-   "consequences": "",
+   "consequences": "в spec.md: Круг после конца брейншторма",
    "evidence": [
     {
      "path": "openspec/changes/decision-scheme/specs/brainstorm-interview/spec.md",
@@ -6555,7 +6883,7 @@ const JOURNAL = {
    "id": "F-97",
    "question": "[adjacency · collection] Антиподы сверяются: модель написала антипод внутри одной развилки: так ответил glm-5.2 без рассуждений, 18 пар из 19",
    "kind": "развилка",
-   "status": "открыт",
+   "status": "решён",
    "addressee": "человек",
    "depends_on": [
     "F-50"
@@ -6596,17 +6924,25 @@ const JOURNAL = {
     "option": "A",
     "why": "Варианты одной развилки и так исключают друг друга, поэтому такая пара всегда ошибка, а проверка формы бесплатна. Это и есть отсечение ответа без рассуждений из F-50."
    },
-   "decision": null,
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-02"
+   },
    "reversibility": null,
-   "outcome": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Specify",
+    "reason": ""
+   },
    "parking": [],
    "dispute": "",
-   "consequences": "",
+   "consequences": "в spec.md: Антипод внутри развилки",
    "evidence": [
     {
      "path": "openspec/changes/decision-scheme/specs/brainstorm-interview/spec.md",
      "quote": "### Requirement: Антиподы сверяются до показа и после выбора",
-     "line": 32,
+     "line": 42,
      "verdict": "сверено",
      "found": true
     },
@@ -6625,7 +6961,7 @@ const JOURNAL = {
    "id": "F-98",
    "question": "[idempotency · stateful] Антиподы сверяются: сверка после следующего круга снова находит пару, по которой уже заведена развилка",
    "kind": "развилка",
-   "status": "открыт",
+   "status": "решён",
    "addressee": "человек",
    "depends_on": [
     "F-50"
@@ -6666,17 +7002,25 @@ const JOURNAL = {
     "option": "A",
     "why": "Сверка идёт в каждом круге, поэтому повтор будет обычным случаем, а не исключением."
    },
-   "decision": null,
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-02"
+   },
    "reversibility": null,
-   "outcome": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Specify",
+    "reason": ""
+   },
    "parking": [],
    "dispute": "",
-   "consequences": "",
+   "consequences": "в spec.md: Пара уже заведена",
    "evidence": [
     {
      "path": "openspec/changes/decision-scheme/specs/brainstorm-interview/spec.md",
      "quote": "### Requirement: Антиподы сверяются до показа и после выбора",
-     "line": 32,
+     "line": 42,
      "verdict": "сверено",
      "found": true
     }
@@ -6688,7 +7032,7 @@ const JOURNAL = {
    "id": "F-99",
    "question": "[empty · collection] Исследование: раздел «Проба» без следа в каталоге изменения, например всё осталось во временном каталоге",
    "kind": "развилка",
-   "status": "открыт",
+   "status": "решён",
    "addressee": "человек",
    "depends_on": [
     "F-41"
@@ -6729,12 +7073,20 @@ const JOURNAL = {
     "option": "A",
     "why": "Находка без следа — это пересказ, а опора на пересказ как раз то, что атака считает дырой."
    },
-   "decision": null,
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-02"
+   },
    "reversibility": null,
-   "outcome": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Specify",
+    "reason": ""
+   },
    "parking": [],
    "dispute": "",
-   "consequences": "",
+   "consequences": "в spec.md: Проба без следа",
    "evidence": [
     {
      "path": "openspec/changes/decision-scheme/specs/artifact-graph/spec.md",
@@ -6751,7 +7103,7 @@ const JOURNAL = {
    "id": "F-100",
    "question": "[concurrency · io] `install` ставит схему: зависимость mermaid не установлена при сборке поставки: `sync-payload.js` молча соберёт её без файла",
    "kind": "развилка",
-   "status": "открыт",
+   "status": "решён",
    "addressee": "человек",
    "depends_on": [
     "F-53"
@@ -6792,12 +7144,20 @@ const JOURNAL = {
     "option": "A",
     "why": "Запасной текст нужен человеку, а не сборке: поставка без рисунка выглядела бы рабочей и молчала."
    },
-   "decision": null,
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-02"
+   },
    "reversibility": null,
-   "outcome": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Specify",
+    "reason": ""
+   },
    "parking": [],
    "dispute": "",
-   "consequences": "",
+   "consequences": "в spec.md: Файла mermaid нет при сборке поставки",
    "evidence": [
     {
      "path": "openspec/changes/decision-scheme/specs/project-installer/spec.md",
@@ -6814,7 +7174,7 @@ const JOURNAL = {
    "id": "F-101",
    "question": "[empty · collection] `install` ставит схему: файл mermaid пропал из `.symphysis/tools/`: что говорит `symphysis check`",
    "kind": "развилка",
-   "status": "открыт",
+   "status": "решён",
    "addressee": "человек",
    "depends_on": [
     "F-53"
@@ -6855,12 +7215,20 @@ const JOURNAL = {
     "option": "A",
     "why": "Страница без файла работает, поэтому это сигнал, а не `[!!]`, но промолчать значит оставить человека гадать, почему нет рисунка."
    },
-   "decision": null,
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-02"
+   },
    "reversibility": null,
-   "outcome": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Specify",
+    "reason": ""
+   },
    "parking": [],
    "dispute": "",
-   "consequences": "",
+   "consequences": "в spec.md: Файл mermaid пропал из проекта",
    "evidence": [
     {
      "path": "openspec/changes/decision-scheme/specs/project-installer/spec.md",
@@ -6877,7 +7245,7 @@ const JOURNAL = {
    "id": "F-102",
    "question": "[запрет] Брейншторм создаёт `scheme.md`, если файла нет: не должен становиться надзирателем схемы: спрашивать об обновлении на каждом круге или ждать её утверждения",
    "kind": "развилка",
-   "status": "открыт",
+   "status": "решён",
    "addressee": "человек",
    "depends_on": [
     "F-22"
@@ -6918,12 +7286,20 @@ const JOURNAL = {
     "option": "A",
     "why": "Это твоё слово к F-22: при постоянных вопросах человек откажется от функции. Тесты на текст скилла в ядре уже есть."
    },
-   "decision": null,
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-02"
+   },
    "reversibility": null,
-   "outcome": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Specify",
+    "reason": ""
+   },
    "parking": [],
    "dispute": "",
-   "consequences": "",
+   "consequences": "проверка: test — тест на текст скилла ищет шаги с вопросом об обновлении `scheme.md` и ожиданием его утверждения. в spec.md: Брейншторм не надзирает за схемой",
    "evidence": [
     {
      "path": "openspec/changes/decision-scheme/specs/decision-scheme/spec.md",
@@ -6954,7 +7330,7 @@ const JOURNAL = {
    "id": "F-103",
    "question": "[запрет] Вкладка рисует файл сама и без сети: не должна писать в `scheme.md`: файл принадлежит человеку",
    "kind": "развилка",
-   "status": "открыт",
+   "status": "решён",
    "addressee": "человек",
    "depends_on": [
     "F-25"
@@ -6995,17 +7371,25 @@ const JOURNAL = {
     "option": "A",
     "why": "Тест простой, а нарушение незаметно: файл человека изменится без его ведома."
    },
-   "decision": null,
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-02"
+   },
    "reversibility": null,
-   "outcome": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Specify",
+    "reason": ""
+   },
    "parking": [],
    "dispute": "",
-   "consequences": "",
+   "consequences": "проверка: test — сквозной тест сверяет хеш файла до и после клика, масштаба и перетаскивания. в spec.md: Вкладка не пишет в `scheme.md`",
    "evidence": [
     {
      "path": "openspec/changes/decision-scheme/specs/plugin-scheme-view/spec.md",
      "quote": "### Requirement: Вкладка рисует файл сама и без сети",
-     "line": 28,
+     "line": 38,
      "verdict": "сверено",
      "found": true
     },
@@ -7024,7 +7408,7 @@ const JOURNAL = {
    "id": "F-104",
    "question": "[запрет] Клик по узлу фильтрует карточки по `nodes`: не должен прятать открытые развилки: человек нажмёт «Внести», не увидев, что вне узла что-то не решено",
    "kind": "развилка",
-   "status": "открыт",
+   "status": "решён",
    "addressee": "человек",
    "depends_on": [
     "F-27"
@@ -7065,17 +7449,25 @@ const JOURNAL = {
     "option": "A",
     "why": "Счётчик проверяется механически, а ошибка дорогая: решение уйдёт без части развилок."
    },
-   "decision": null,
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-02"
+   },
    "reversibility": null,
-   "outcome": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Specify",
+    "reason": ""
+   },
    "parking": [],
    "dispute": "",
-   "consequences": "",
+   "consequences": "проверка: test — сквозной тест: при условии шапка показывает открытые по всему журналу и сколько из них скрыто. в spec.md: Условие «узел X» не прячет открытые записи",
    "evidence": [
     {
      "path": "openspec/changes/decision-scheme/specs/plugin-scheme-view/spec.md",
      "quote": "### Requirement: Клик по узлу фильтрует карточки по `nodes`",
-     "line": 88,
+     "line": 108,
      "verdict": "сверено",
      "found": true
     }
@@ -7087,7 +7479,7 @@ const JOURNAL = {
    "id": "F-105",
    "question": "[запрет] Плагин сверяет номер и говорит, что обновить: не должен терять черновик человека при несовпадении номера",
    "kind": "развилка",
-   "status": "открыт",
+   "status": "решён",
    "addressee": "человек",
    "depends_on": [
     "F-31"
@@ -7128,12 +7520,20 @@ const JOURNAL = {
     "option": "A",
     "why": "В черновике слова человека, а тест на него простой."
    },
-   "decision": null,
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-02"
+   },
    "reversibility": null,
-   "outcome": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Specify",
+    "reason": ""
+   },
    "parking": [],
    "dispute": "",
-   "consequences": "",
+   "consequences": "проверка: test — тест сверяет файл черновика в `.symphysis/viewer/` до и после. в spec.md: Несовпадение номера не трогает черновик",
    "evidence": [
     {
      "path": "openspec/changes/decision-scheme/specs/plugin-core-contract/spec.md",
@@ -7150,7 +7550,7 @@ const JOURNAL = {
    "id": "F-106",
    "question": "[запрет] Плагин сверяет номер и говорит, что обновить: не должен обновлять инструменты или ставить пакет сам",
    "kind": "развилка",
-   "status": "открыт",
+   "status": "решён",
    "addressee": "человек",
    "depends_on": [
     "F-31"
@@ -7191,12 +7591,20 @@ const JOURNAL = {
     "option": "A",
     "why": "«Удобная кнопка» здесь напрашивается, а инструменты лежат в проекте человека и могут быть с его правками."
    },
-   "decision": null,
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-02"
+   },
    "reversibility": null,
-   "outcome": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Specify",
+    "reason": ""
+   },
    "parking": [],
    "dispute": "",
-   "consequences": "",
+   "consequences": "проверка: test — тест следит за вызовами процессов: допустимо только чтение журнала. в spec.md: Плагин не обновляет инструменты сам",
    "evidence": [
     {
      "path": "openspec/changes/decision-scheme/specs/plugin-core-contract/spec.md",
@@ -7213,7 +7621,7 @@ const JOURNAL = {
    "id": "F-107",
    "question": "[запрет] Промежуточная сборка проверяется установкой, без шагов выпуска про `main`: снятие шагов 1 и 2 не должно распространиться на настоящий выпуск",
    "kind": "развилка",
-   "status": "открыт",
+   "status": "решён",
    "addressee": "человек",
    "depends_on": [
     "F-55"
@@ -7254,17 +7662,25 @@ const JOURNAL = {
     "option": "C",
     "why": "Контракт здесь не правится: шаги 1 и 2 относятся к выпуску, а эта сборка выпуском не считается."
    },
-   "decision": null,
+   "decision": {
+    "option": "C",
+    "word": "Считать ли текст варианта твоей причиной? Да, про все.",
+    "date": "2026-11-02"
+   },
    "reversibility": null,
-   "outcome": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Dismiss",
+    "reason": "Считать ли текст варианта твоей причиной? Да, про все."
+   },
    "parking": [],
    "dispute": "",
-   "consequences": "",
+   "consequences": "запрет не нужен: шаги 1 и 2 в контракте и так про выпуск, а сборка 0.2.0 выпуском не считается",
    "evidence": [
     {
      "path": "openspec/changes/decision-scheme/specs/plugin-packaging/spec.md",
      "quote": "### Requirement: Промежуточная сборка проверяется установкой, без шагов выпуска про `main`",
-     "line": 23,
+     "line": 33,
      "verdict": "сверено",
      "found": true
     },
@@ -7283,7 +7699,7 @@ const JOURNAL = {
    "id": "F-108",
    "question": "[запрет] Панель схемы показывает `scheme.md` рядом с карточками: не должна мешать выбору: вытеснять карточки, кнопки вариантов и промпт возврата",
    "kind": "развилка",
-   "status": "открыт",
+   "status": "решён",
    "addressee": "человек",
    "depends_on": [
     "F-54"
@@ -7324,12 +7740,20 @@ const JOURNAL = {
     "option": "B",
     "why": "Панель нужна, пока человек думает над развилкой (F-54), и удобство рядом с карточками может оценить только он."
    },
-   "decision": null,
+   "decision": {
+    "option": "C",
+    "word": "Считать ли текст варианта твоей причиной? Да, про все.",
+    "date": "2026-11-02"
+   },
    "reversibility": null,
-   "outcome": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Dismiss",
+    "reason": "Считать ли текст варианта твоей причиной? Да, про все."
+   },
    "parking": [],
    "dispute": "",
-   "consequences": "",
+   "consequences": "запрет не нужен: панель выключается, а человек сам выставит то, что ему удобно",
    "evidence": [
     {
      "path": "openspec/changes/decision-scheme/specs/decision-viewer/spec.md",
@@ -7346,7 +7770,7 @@ const JOURNAL = {
    "id": "F-109",
    "question": "[запрет] Подписи схемы не ходят в сеть: страница вообще не должна ходить в сеть, даже за mermaid при отсутствии файла",
    "kind": "развилка",
-   "status": "открыт",
+   "status": "решён",
    "addressee": "человек",
    "depends_on": [
     "F-39"
@@ -7387,17 +7811,25 @@ const JOURNAL = {
     "option": "A",
     "why": "Сейчас страница в сеть не ходит вообще, и это свойство стоит закрепить тестом: проба показала, что нарушить его легко."
    },
-   "decision": null,
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-02"
+   },
    "reversibility": null,
-   "outcome": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Specify",
+    "reason": ""
+   },
    "parking": [],
    "dispute": "",
-   "consequences": "",
+   "consequences": "проверка: test — тест запускает браузер с журналом сети, как проба F-21, и утверждает ноль запросов. в spec.md: Страница не ходит в сеть",
    "evidence": [
     {
      "path": "openspec/changes/decision-scheme/specs/decision-viewer/spec.md",
      "quote": "### Requirement: Подписи схемы не ходят в сеть",
-     "line": 62,
+     "line": 77,
      "verdict": "сверено",
      "found": true
     },
@@ -7416,7 +7848,7 @@ const JOURNAL = {
    "id": "F-110",
    "question": "[запрет] Антиподы сверяются до показа и после выбора: модель не должна решать за человека: убирать вариант, менять рекомендацию молча или отменять решение из-за найденной пары",
    "kind": "развилка",
-   "status": "открыт",
+   "status": "решён",
    "addressee": "человек",
    "depends_on": [
     "F-50"
@@ -7457,17 +7889,25 @@ const JOURNAL = {
     "option": "B",
     "why": "Шаг выполняет модель, скрипта здесь нет, поэтому судить может только чтение журнала. `apply` защищает решение, но не варианты и рекомендацию."
    },
-   "decision": null,
+   "decision": {
+    "option": "B",
+    "word": "",
+    "date": "2026-11-02"
+   },
    "reversibility": null,
-   "outcome": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Specify",
+    "reason": ""
+   },
    "parking": [],
    "dispute": "",
-   "consequences": "",
+   "consequences": "проверка: judgment — судят атака линзой `context-compliance` и человек по журналу: это шаг модели, а не скрипта. в spec.md: Сверка антиподов не решает за человека",
    "evidence": [
     {
      "path": "openspec/changes/decision-scheme/specs/brainstorm-interview/spec.md",
      "quote": "### Requirement: Антиподы сверяются до показа и после выбора",
-     "line": 32,
+     "line": 42,
      "verdict": "сверено",
      "found": true
     }
@@ -7479,7 +7919,7 @@ const JOURNAL = {
    "id": "F-111",
    "question": "[запрет] Круг кончается счётом и словом человека, не числом: снятие потолка не должно превратить брейншторм в бесконечный: модель не должна склонять к новому кругу или заводить записи до ответа",
    "kind": "развилка",
-   "status": "открыт",
+   "status": "решён",
    "addressee": "человек",
    "depends_on": [
     "F-44"
@@ -7520,12 +7960,20 @@ const JOURNAL = {
     "option": "B",
     "why": "Формулировку вопроса тестом не проверить, а склонять к новому кругу для модели естественно."
    },
-   "decision": null,
+   "decision": {
+    "option": "C",
+    "word": "Считать ли текст варианта твоей причиной? Да, про все.",
+    "date": "2026-11-02"
+   },
    "reversibility": null,
-   "outcome": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Dismiss",
+    "reason": "Считать ли текст варианта твоей причиной? Да, про все."
+   },
    "parking": [],
    "dispute": "",
-   "consequences": "",
+   "consequences": "запрет не нужен: новый круг и так только по слову человека",
    "evidence": [
     {
      "path": "openspec/changes/decision-scheme/specs/brainstorm-interview/spec.md",
@@ -7542,7 +7990,7 @@ const JOURNAL = {
    "id": "F-112",
    "question": "[запрет] Исследование — файл на каждую парковку «материалы» с жанром: проба агента не должна оставлять правки в рабочем дереве: код проекта меняется только задачами",
    "kind": "развилка",
-   "status": "открыт",
+   "status": "решён",
    "addressee": "человек",
    "depends_on": [
     "F-41"
@@ -7583,12 +8031,20 @@ const JOURNAL = {
     "option": "B",
     "why": "Шаг исполняет модель, поэтому проверить можно только по следу: что попало в коммит."
    },
-   "decision": null,
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-02"
+   },
    "reversibility": null,
-   "outcome": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Specify",
+    "reason": ""
+   },
    "parking": [],
    "dispute": "",
-   "consequences": "",
+   "consequences": "проверка: test — тест на текст инструкции `research`. в spec.md: Проба агента не правит рабочее дерево",
    "evidence": [
     {
      "path": "openspec/changes/decision-scheme/specs/artifact-graph/spec.md",
@@ -7605,7 +8061,7 @@ const JOURNAL = {
    "id": "F-113",
    "question": "[запрет] `install` ставит схему, скиллы и инструменты в проект и сливает конфиг: установка не должна ходить в сеть за файлом mermaid: он приходит с поставкой",
    "kind": "развилка",
-   "status": "открыт",
+   "status": "решён",
    "addressee": "человек",
    "depends_on": [
     "F-53"
@@ -7646,12 +8102,20 @@ const JOURNAL = {
     "option": "A",
     "why": "Закрытый контур это не прощает, а тест простой."
    },
-   "decision": null,
+   "decision": {
+    "option": "C",
+    "word": "Считать ли текст варианта твоей причиной? Да, про все.",
+    "date": "2026-11-02"
+   },
    "reversibility": null,
-   "outcome": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Dismiss",
+    "reason": "Считать ли текст варианта твоей причиной? Да, про все."
+   },
    "parking": [],
    "dispute": "",
-   "consequences": "",
+   "consequences": "запрет не нужен: F-53 уже отверг скачивание, а кода скачивания нет",
    "evidence": [
     {
      "path": "openspec/changes/decision-scheme/specs/project-installer/spec.md",
@@ -7668,7 +8132,7 @@ const JOURNAL = {
    "id": "F-114",
    "question": "[запрет] Запись ссылается на узлы схемы необязательным полем `nodes`: поле `nodes` не должно становиться обязанностью: запись без него не считается дефектом ни `check`, ни атакой",
    "kind": "развилка",
-   "status": "открыт",
+   "status": "решён",
    "addressee": "человек",
    "depends_on": [
     "F-23"
@@ -7709,12 +8173,20 @@ const JOURNAL = {
     "option": "A",
     "why": "Схема нужна человеку, а не модели (F-07): обязанность ставить узлы быстро превратит помощь в надзор."
    },
-   "decision": null,
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-02"
+   },
    "reversibility": null,
-   "outcome": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Specify",
+    "reason": ""
+   },
    "parking": [],
    "dispute": "",
-   "consequences": "",
+   "consequences": "проверка: test — тест `check` и тест на текст скилла атаки. в spec.md: Запись без `nodes` не считается дефектом",
    "evidence": [
     {
      "path": "openspec/changes/decision-scheme/specs/decision-journal/spec.md",
@@ -7751,7 +8223,8 @@ const JOURNAL = {
    "parking": [
     {
      "addressee": "ИБ",
-     "text": "Инъекция через подпись `scheme.md` из чужой ветки при `style-src 'unsafe-inline'` на вкладке — канон, покрывается чек-листом security.md; запрет не чеканится"
+     "text": "Инъекция через подпись `scheme.md` из чужой ветки при `style-src 'unsafe-inline'` на вкладке — канон, покрывается чек-листом security.md; запрет не чеканится",
+     "finding": "Закрыто чек-листом: `security.md`, строка про подпись на вкладке."
     }
    ],
    "dispute": "",
@@ -7760,13 +8233,13 @@ const JOURNAL = {
     {
      "path": "openspec/changes/decision-scheme/specs/plugin-scheme-view/spec.md",
      "quote": "### Requirement: Вкладка рисует файл сама и без сети",
-     "line": 28,
+     "line": 38,
      "verdict": "сверено",
      "found": true
     }
    ],
    "comments": [],
-   "finding": ""
+   "finding": "Закрыто чек-листом: `security.md`, строка про подпись на вкладке."
   },
   {
    "id": "F-116",
@@ -7785,11 +8258,13 @@ const JOURNAL = {
    "parking": [
     {
      "addressee": "ИБ",
-     "text": "Инъекция через подпись `scheme.md` на странице, открытой из `file://` — канон, покрывается чек-листом security.md; запрет не чеканится"
+     "text": "Инъекция через подпись `scheme.md` на странице, открытой из `file://` — канон, покрывается чек-листом security.md; запрет не чеканится",
+     "finding": "Закрыто чек-листом: `security.md`, строка про подпись на странице."
     },
     {
      "addressee": "ИБ",
-     "text": "CSP страницы и строгий режим mermaid — канон, покрывается чек-листом security.md; запрет не чеканится"
+     "text": "CSP страницы и строгий режим mermaid — канон, покрывается чек-листом security.md; запрет не чеканится",
+     "finding": "Закрыто чек-листом: `security.md`, строка про CSP и строгий режим."
     }
    ],
    "dispute": "",
@@ -7798,13 +8273,13 @@ const JOURNAL = {
     {
      "path": "openspec/changes/decision-scheme/specs/decision-viewer/spec.md",
      "quote": "### Requirement: Подписи схемы не ходят в сеть",
-     "line": 62,
+     "line": 77,
      "verdict": "сверено",
      "found": true
     }
    ],
    "comments": [],
-   "finding": ""
+   "finding": "Закрыто чек-листом: `security.md`, строка про подпись на странице. · Закрыто чек-листом: `security.md`, строка про CSP и строгий режим."
   },
   {
    "id": "F-117",
@@ -7823,7 +8298,8 @@ const JOURNAL = {
    "parking": [
     {
      "addressee": "ИБ",
-     "text": "Файл стороннего пакета в поставке: закрепление версии и целостность зависимости сборки — канон, покрывается чек-листом security.md; запрет не чеканится"
+     "text": "Файл стороннего пакета в поставке: закрепление версии и целостность зависимости сборки — канон, покрывается чек-листом security.md; запрет не чеканится",
+     "finding": "Закрыто чек-листом: `security.md`, строка про файл стороннего пакета."
     }
    ],
    "dispute": "",
@@ -7838,7 +8314,7 @@ const JOURNAL = {
     }
    ],
    "comments": [],
-   "finding": ""
+   "finding": "Закрыто чек-листом: `security.md`, строка про файл стороннего пакета."
   },
   {
    "id": "F-118",
@@ -7857,7 +8333,8 @@ const JOURNAL = {
    "parking": [
     {
      "addressee": "ИБ",
-     "text": "Проба агента: чтение вне корней проекта и отправка материала внешней модели, сторож исходящего — канон, покрывается чек-листом security.md; запрет не чеканится"
+     "text": "Проба агента: чтение вне корней проекта и отправка материала внешней модели, сторож исходящего — канон, покрывается чек-листом security.md; запрет не чеканится",
+     "finding": "Вопрос к ядру, не к этому изменению. Слово человека: «права агента изоляцией считаются. Они же задаются конфигом, а не инструкцией. Но это вопрос к ядру, а не дизайну этого решения.»"
     }
    ],
    "dispute": "",
@@ -7871,6 +8348,332 @@ const JOURNAL = {
      "found": true
     }
    ],
+   "comments": [],
+   "finding": "Вопрос к ядру, не к этому изменению. Слово человека: «права агента изоляцией считаются. Они же задаются конфигом, а не инструкцией. Но это вопрос к ядру, а не дизайну этого решения.»"
+  },
+  {
+   "id": "F-119",
+   "question": "На настоящей странице панель шириной 40 % окна 1400 показывает рисунок читаемо: подписи 16 пикселей, после начальной прокрутки виден верхний узел, карточкам остаётся 575 пикселей. Вписанный в ту же панель рисунок даёт подписи 9,1 пикселя",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "материалы",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "На этом стоит F-122. Снимки: `research/design-probe/shot-natural-1400-w40.png`, `shot-natural-1400-w50.png`, `shot-fit-1400-w40.png`, `shot-natural-800-narrow.png`.",
+   "evidence": [
+    {
+     "path": "openspec/changes/decision-scheme/research/design-probe/probe.log",
+     "quote": "\"labelPx\":16,\"total\":20,\"seen\":7,\"whole\":3,\"topVisible\":true,\"cardsWidth\":575",
+     "line": 1,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "openspec/changes/decision-scheme/research/design-probe/probe.log",
+     "quote": "\"scale\":0.57,\"labelPx\":9.1,\"total\":20,\"seen\":15,\"whole\":12,\"topVisible\":true,\"cardsWidth\":575",
+     "line": 4,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "finding": ""
+  },
+  {
+   "id": "F-120",
+   "question": "Под CSP страницы экспорт, импорт и копирование работают, запросов в сеть ноль; файл mermaid читается относительным путём от `openspec/changes/<имя>/` до `.symphysis/tools/`, без файла виден текст",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "материалы",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "Проверено до кода для F-92 и F-109; тесты этих требований остаются.",
+   "evidence": [
+    {
+     "path": "openspec/changes/decision-scheme/research/design-probe/probe.log",
+     "quote": "import=проба импорта",
+     "line": 7,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "openspec/changes/decision-scheme/research/design-probe/probe.log",
+     "quote": "copy=скопировано",
+     "line": 7,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "openspec/changes/decision-scheme/research/design-probe/probe.log",
+     "quote": "http=[]",
+     "line": 7,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "openspec/changes/decision-scheme/research/design-probe/probe.log",
+     "quote": "kind=text",
+     "line": 8,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "finding": ""
+  },
+  {
+   "id": "F-121",
+   "question": "Запись версии с `-` сравнивается как предварительная: сборка с меньшим по алфавиту хешем не ставится при коде 0, а хеш из цифр с нулём впереди падает при установке. Запись с `+` ставится всегда, `e2e:vsix` на копии плагина с ней прошёл",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "материалы",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "На этом стоит F-123. Окно расширений глазами не смотрелось: `--list-extensions` показывает запись как есть.",
+   "evidence": [
+    {
+     "path": "openspec/changes/decision-scheme/research/design-probe/probe.log",
+     "quote": "A newer version of extension 'symphysis.probe-version' v0.2.0-gbbb2222 is already installed.",
+     "line": 20,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "openspec/changes/decision-scheme/research/design-probe/probe.log",
+     "quote": "upgrade 0.2.0+bbb2222 -> 0.2.0+aaa1111",
+     "line": 18,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "openspec/changes/decision-scheme/research/design-probe/probe.log",
+     "quote": "install=код 1 ScanningExtension",
+     "line": 13,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "openspec/changes/decision-scheme/research/design-probe/probe.log",
+     "quote": "итого 5, упало 0",
+     "line": 26,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "finding": ""
+  },
+  {
+   "id": "F-122",
+   "question": "Какая ширина и начальная позиция у панели схемы на странице?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-54",
+    "F-119"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Ширина 40 % окна, границу можно тянуть мышью, браузер её помнит. Рисунок в натуральном размере, вначале виден верхний узел посередине панели. На окне 1400 подписи 16 пикселей, карточкам 575, целиком видно 3 узла из 20, остальное прокруткой. Удобства контракт оставляет плагину, но такая ручка на странице уже есть у панели возврата.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/changes/decision-scheme/research/design-probe/probe.log",
+       "quote": "\"labelPx\":16,\"total\":20,\"seen\":7,\"whole\":3,\"topVisible\":true,\"cardsWidth\":575",
+       "line": 1,
+       "verdict": "сверено",
+       "found": true
+      },
+      {
+       "path": "tools/playground-template.html",
+       "quote": "тяни, чтобы изменить высоту панели",
+       "line": 174,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "То же, но ширина всегда 40 %, граница не тянется. Кода меньше, но «сам выставит» из отказа F-108 тогда значит только включить или выключить панель либо сменить размер окна.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/changes/decision-scheme/research/design-probe/probe.log",
+       "quote": "\"labelPx\":16,\"total\":20,\"seen\":7,\"whole\":3,\"topVisible\":true,\"cardsWidth\":575",
+       "line": 1,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "C",
+     "text": "Ширина всегда 50 %. Целиком видно 6 узлов из 20, но карточкам остаётся 435 пикселей.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/changes/decision-scheme/research/design-probe/probe.log",
+       "quote": "\"labelPx\":16,\"total\":20,\"seen\":7,\"whole\":6,\"topVisible\":true,\"cardsWidth\":435",
+       "line": 2,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "D",
+     "text": "Ширина 40 %, рисунок вписан в ширину панели: видна вся структура, целиком 12 узлов из 20, но подписи 9 пикселей, а увеличить на странице нечем.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/changes/decision-scheme/research/design-probe/probe.log",
+       "quote": "\"scale\":0.57,\"labelPx\":9.1,\"total\":20,\"seen\":15,\"whole\":12,\"topVisible\":true,\"cardsWidth\":575",
+       "line": 4,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Подписи читаются, а ширину человек подгоняет сам: на этом стоит его причина отказа F-108. Ручка повторяет код панели возврата, это около семи строк."
+   },
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-02"
+   },
+   "reversibility": {
+    "level": "обратимо",
+    "why": "Всё лежит в `tools/playground-template.html` и его `viewer-smoke`: ширина — значение переменной, ручка — семь строк. Журналы и контракт с плагином панели не знают, страницы пересобираются `render-html`."
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "Панель по умолчанию выключена и помнит состояние в browser storage, как режим. Верхний узел посередине нужен и вкладке плагина (F-35). Правятся шаблон страницы и `viewer-smoke`.",
+   "evidence": [],
+   "comments": [],
+   "finding": ""
+  },
+  {
+   "id": "F-123",
+   "question": "Как записывать хеш и пометку незакоммиченных правок в версии `.vsix`?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-30",
+    "F-84",
+    "F-121"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "`0.2.0+abc1234` и `0.2.0+abc1234.dirty`. Новая сборка ставится поверх прежней всегда, при любом хеше; `e2e:vsix` на копии плагина с такой версией прошёл 5 из 5.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/changes/decision-scheme/research/design-probe/probe.log",
+       "quote": "upgrade 0.2.0+bbb2222 -> 0.2.0+aaa1111",
+       "line": 18,
+       "verdict": "сверено",
+       "found": true
+      },
+      {
+       "path": "openspec/changes/decision-scheme/research/design-probe/probe.log",
+       "quote": "итого 5, упало 0",
+       "line": 26,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "`0.2.0-gabc1234` и `0.2.0-gabc1234.dirty`, с буквой `g`, как у `git describe`. Примерно половина новых сборок не поставится: команда установки отвечает кодом 0, а остаётся старая, нужен `--force`.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/changes/decision-scheme/research/design-probe/probe.log",
+       "quote": "A newer version of extension 'symphysis.probe-version' v0.2.0-gbbb2222 is already installed.",
+       "line": 20,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "C",
+     "text": "`0.2.0-abc1234` и `0.2.0-abc1234.dirty`. То же, что B, и ещё хеш из цифр с нулём впереди упаковывается, а при установке падает.",
+     "added": false,
+     "unlikely": "случайный хеш ломает установку",
+     "evidence": [
+      {
+       "path": "openspec/changes/decision-scheme/research/design-probe/probe.log",
+       "quote": "install=код 1 ScanningExtension",
+       "line": 13,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Только эта запись заменяет прежнюю сборку при любом хеше. Для сборок, которые ставятся руками поверх старых, это главное."
+   },
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-02"
+   },
+   "reversibility": {
+    "level": "обратимо",
+    "why": "Версию считает один шаг `npm run package`, проверяет `test/e2e/vsix.mjs`; в `package.json` и журналах хеша нет. Переход на запись с `-` потребует одной установки с `--force`: предварительная версия младше `0.2.0+…`."
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "`npm run package` считает хеш и правки и передаёт версию `vsce package` с `--no-update-package-json`; в `package.json` остаётся 0.2.0. `test/e2e/vsix.mjs:11` берёт имя файла из итога сборки, а не из `pkg.version`.",
+   "evidence": [],
    "comments": [],
    "finding": ""
   }
@@ -7927,6 +8730,34 @@ const JOURNAL = {
   {
    "date": "2026-11-01",
    "text": "Сверка антиподов до показа записей проб, вручную в том же контексте: новые варианты между собой и с выбранными, отвергнутые не смотрелись; антиподов 0."
+  },
+  {
+   "date": "2026-11-02",
+   "text": "Сверка выбранных вариантов после проб, вручную в том же контексте: 59 новых решений между собой и с 26 прежними; антиподов 0. Уточнения, а не пары: F-95 сужает конец брейншторма из F-44, F-94 сужает требование из F-17, F-106 и F-109 не запрещают чтение журнала и соседнего файла по `file:`."
+  },
+  {
+   "date": "2026-11-02",
+   "text": "проба краёв: кандидатов 45, Specify 33, Dismiss 5, Backstop 7, Defer 0"
+  },
+  {
+   "date": "2026-11-02",
+   "text": "проба запретов: требований 25, оставлено 13, канон → ИБ 4, Specify 9, Dismiss 4, Defer 0"
+  },
+  {
+   "date": "2026-11-02",
+   "text": "У девяти отказов причина — текст выбранного варианта, по слову человека: «Да, развилок многовато, мне искренне лень было писать обоснование для каждой, но это ввиду отсутствия времени, а не вообще.» Сырое слово — `answers/2026-11-02-dismiss-chat.md`."
+  },
+  {
+   "date": "2026-11-02",
+   "text": "Сверка антиподов до показа F-122 и F-123, вручную в том же контексте: новые варианты между собой и с выбранными, отвергнутые не смотрелись; антиподов 0."
+  },
+  {
+   "date": "2026-11-02",
+   "text": "Сверка выбранных F-122 и F-123 с прежними решениями, вручную в том же контексте: антиподов 0. F-122.A отходит от строки контракта «Удобства, такие как поиск, фильтры и оглавление атаки, есть только в плагине»: вариант называл это в тексте."
+  },
+  {
+   "date": "2026-11-02",
+   "text": "Парковки закрыты находками по слову человека («давай закроем этот вопрос»): F-21 решением F-39.A, F-26 и F-115…F-117 чек-листом `security.md`, F-118 передан ядру. Рендер `design` показывает и закрытые парковки: в Open Questions они идут с находкой. Сырое слово — `answers/2026-11-02-chat-2.md`."
   }
  ]
 };

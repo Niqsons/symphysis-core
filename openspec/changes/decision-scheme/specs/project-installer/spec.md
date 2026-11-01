@@ -4,8 +4,8 @@
 
 ### Requirement: `install` ставит схему, скиллы и инструменты в проект и сливает конфиг
 Команда `symphysis install --project <dir> [--skills-dir <dir>]…` SHALL положить схему в `openspec/schemas/symphysis/`, скиллы в каждый `--skills-dir` (по умолчанию `.claude/skills`), инструменты в `.symphysis/` и создать или слить `openspec/config.yaml` (`schema` → `symphysis`, `rules` объединяются, прочее сохраняется); повторный запуск SHALL ничего не менять, отличающийся файл SHALL пропускаться с подсказкой `--force`, файл корней SHALL NOT перезаписываться (журнал `symphysis-schema`: F-15.C, F-16.B). Файл mermaid закреплённой версии SHALL ставиться в `.symphysis/tools/` и SHALL NOT лежать в git ядра (F-49, F-53). Каталог `.symphysis/viewer/` с черновиками человека SHALL NOT стираться и при `--force` (`docs/repo-contract.md`, F-20).
-<!-- проба краёв: форма=io, stateful, collection, исходы: F-100 открыт, F-101 открыт; снято: idempotency — сценарий «Повторная установка» и подсказка `--force` -->
-<!-- проба запретов: исходы: F-113 открыт; канон — F-117 → security.md -->
+<!-- проба краёв: форма=io, stateful, collection, исходы: F-100 Specify, F-101 Specify; снято: idempotency — сценарий «Повторная установка» и подсказка `--force` -->
+<!-- проба запретов: исходы: F-113 Dismiss; канон — F-117 → security.md -->
 
 #### Scenario: Проект с конфигом другой схемы
 - **GIVEN** `openspec/config.yaml` со `schema: spec-driven` и комментариями
@@ -36,3 +36,13 @@
 - **GIVEN** `.symphysis/viewer/` с черновиком человека
 - **WHEN** выполняется `install --force`
 - **THEN** черновик байт в байт прежний
+
+#### Scenario: Файла mermaid нет при сборке поставки
+- **GIVEN** файла mermaid нет в зависимостях сборки
+- **WHEN** идёт `sync-payload.js`
+- **THEN** код не ноль и названа причина, поставка не собрана
+
+#### Scenario: Файл mermaid пропал из проекта
+- **GIVEN** проект без файла mermaid
+- **WHEN** выполняется `symphysis check`
+- **THEN** строка-сигнал `[..]`, код прежний: страница работает и с текстом

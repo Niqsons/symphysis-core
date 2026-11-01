@@ -1,0 +1,26 @@
+natural-1400-w40	{"kind":"svg","viewport":1400,"natural":[932,2260],"panel":[560,854],"scale":1,"labelPx":16,"total":20,"seen":7,"whole":3,"topVisible":true,"cardsWidth":575,"viewWidth":null,"viol":[]}	http=0	err=[]
+natural-1400-w50	{"kind":"svg","viewport":1400,"natural":[932,2260],"panel":[700,854],"scale":1,"labelPx":16,"total":20,"seen":7,"whole":6,"topVisible":true,"cardsWidth":435,"viewWidth":null,"viol":[]}	http=0	err=[]
+natural-1920-w40	{"kind":"svg","viewport":1920,"natural":[932,2260],"panel":[768,1034],"scale":1,"labelPx":16,"total":20,"seen":9,"whole":7,"topVisible":true,"cardsWidth":887,"viewWidth":null,"viol":[]}	http=0	err=[]
+fit-1400-w40	{"kind":"svg","viewport":1400,"natural":[932,2260],"panel":[560,854],"scale":0.57,"labelPx":9.1,"total":20,"seen":15,"whole":12,"topVisible":true,"cardsWidth":575,"viewWidth":null,"viol":[]}	http=0	err=[]
+natural-1400-w40-check	{"kind":"svg","viewport":1400,"natural":[932,2260],"panel":[560,854],"scale":1,"labelPx":16,"total":20,"seen":7,"whole":3,"topVisible":true,"cardsWidth":null,"viewWidth":825,"viol":[]}	http=0	err=[]
+natural-800-narrow	{"kind":"svg","viewport":800,"natural":[932,2260],"panel":[785,405],"scale":1,"labelPx":16,"total":20,"seen":4,"whole":4,"topVisible":true,"cardsWidth":785,"viewWidth":null,"viol":[]}	http=0	err=[]
+buttons tree	kind=svg	export=symphysis-decisions.json	import=проба импорта	copy=скопировано	http=[]	file=["openspec/changes/decision-scheme/decisions.html",".symphysis/tools/mermaid.min.js"]	viol=[]	err=[]
+buttons tree-nomermaid	kind=text	export=symphysis-decisions.json	import=проба импорта	copy=скопировано	http=[]	file=["openspec/changes/decision-scheme/decisions.html",".symphysis/tools/mermaid.min.js"]	viol=[]	err=["Failed to load resource: net::ERR_FILE_NOT_FOUND"]
+version 0.2.0+abc1234	package=0	manifest=0.2.0+abc1234	install=код 0	list=symphysis.probe-version@0.2.0+abc1234
+version 0.2.0-abc1234	package=0	manifest=0.2.0-abc1234	install=код 0	list=symphysis.probe-version@0.2.0-abc1234
+version 0.2.0+abc1234.dirty	package=0	manifest=0.2.0+abc1234.dirty	install=код 0	list=symphysis.probe-version@0.2.0+abc1234.dirty
+version 0.2.0-abc1234.dirty	package=0	manifest=0.2.0-abc1234.dirty	install=код 0	list=symphysis.probe-version@0.2.0-abc1234.dirty
+version 0.2.0-0123456	package=0	manifest=0.2.0-0123456	install=код 1 ScanningExtension: Cannot read the extension from <каталог пробы>	list=symphysis.probe-version@0.2.0-0123456
+version 0.2.0+0123456	package=0	manifest=0.2.0+0123456	install=код 0	list=symphysis.probe-version@0.2.0+0123456
+version 0.2.0-g0123456	package=0	manifest=0.2.0-g0123456	install=код 0	list=symphysis.probe-version@0.2.0-g0123456
+version 0.2.0-g0123456.dirty	package=0	manifest=0.2.0-g0123456.dirty	install=код 0	list=symphysis.probe-version@0.2.0-g0123456.dirty
+upgrade 0.2.0+aaa1111 -> 0.2.0+bbb2222	код 0	стоит=0.2.0+bbb2222	(Use `Code --trace-deprecation ...` to show where the warning was created)
+upgrade 0.2.0+bbb2222 -> 0.2.0+aaa1111	код 0	стоит=0.2.0+aaa1111	(Use `Code --trace-deprecation ...` to show where the warning was created)
+upgrade 0.2.0-gaaa1111 -> 0.2.0-gbbb2222	код 0	стоит=0.2.0-gbbb2222	(Use `Code --trace-deprecation ...` to show where the warning was created)
+upgrade 0.2.0-gbbb2222 -> 0.2.0-gaaa1111	код 0	стоит=0.2.0-gbbb2222	A newer version of extension 'symphysis.probe-version' v0.2.0-gbbb2222 is already installed. Use '--force' option to downgrade to 
+upgrade 0.2.0-gaaa1111 -> 0.2.0-gaaa1111.dirty	код 0	стоит=0.2.0-gaaa1111.dirty	(Use `Code --trace-deprecation ...` to show where the warning was created)
+upgrade 0.2.0-gaaa1111.dirty -> 0.2.0-gaaa1111	код 0	стоит=0.2.0-gaaa1111.dirty	A newer version of extension 'symphysis.probe-version' v0.2.0-gaaa1111.dirty is already installed. Use '--force' option to downgra
+upgrade 0.2.0+aaa1111 -> 0.2.0+aaa1111.dirty	код 0	стоит=0.2.0+aaa1111.dirty	(Use `Code --trace-deprecation ...` to show where the warning was created)
+upgrade 0.2.0-gaaa1111 -> 0.3.0-gaaa1111	код 0	стоит=0.3.0-gaaa1111	(Use `Code --trace-deprecation ...` to show where the warning was created)
+upgrade 0.1.0 -> 0.2.0-gaaa1111	код 0	стоит=0.2.0-gaaa1111	(Use `Code --trace-deprecation ...` to show where the warning was created)
+e2e:vsix на копии плагина с версией 0.2.0+abc1234 в package.json, ядро из ветки изменения: итого 5, упало 0, журналов хоста 1, ошибок расширения 0; пакет symphysis-vscode-0.2.0+abc1234.vsix, 175 КБ
