@@ -52,10 +52,10 @@
 - F-23 Настройки проекта есть в двух местах: `rules:` в `openspec/config.yaml` подмешиваются в инструкции артефактов, а `.symphysis/` — производный каталог: `install --force` перезаписывает файлы в нём, и в этом репозитории он вне git.
   - openspec/config.yaml:2 «rules:»
   - upstream/openspec/src/core/project-config.ts:55 «.describe('Per-artifact rules, keyed by artifact ID')»
-  - installer/README.md:60 «с `--force` перезаписывается.»
+  - installer/README.md:85 «с `--force` перезаписывается.»
   - .gitignore:11 «.symphysis/»
 - F-28 Форк и symphysis существуют только на этом диске: у symphysis нет удалённого репозитория, `upstream/` вне git, источник форка в инсталляторе — плейсхолдер. Из двух тарболов всё ставится на чистый каталог (проба 2026-11-01).
-  - installer/README.md:24 «`symphysis.openspecSource` там же; сейчас это плейсхолдер.»
+  - installer/README.md «`symphysis.openspecSource` там же; сейчас это плейсхолдер.» — цитаты нет дословно
   - .gitignore:1 «upstream/»
   - openspec/changes/implementation-consequences/research/F-22.md:38 «не найдено: удалённого репозитория у symphysis»
   - openspec/changes/implementation-consequences/research/F-22.md:29 «`check: ok`, код 0»
@@ -69,7 +69,7 @@
   - openspec/changes/implementation-consequences/research/F-20.md:19 «сборка `build-p-arm-cf.sh` этот файл не пишет»
   - archive/RUN-PREP-symphysis-2026-10-30.md:96 «- проба q1–q3 — свежий субагент, без файлов и инструментов (счётчик»
 - F-35 Удалённый репозиторий есть: `Niqsons/symphysis-core`, приватный и пустой на 2026-11-01. Приватный репозиторий зеркало и люди контура без токена не видят. Пакет инсталлятора лежит в подкаталоге `installer/`, поэтому установка `npm` прямо из git к нему неприменима: только клон.
-  - installer/README.md:40 «node installer/bin/symphysis.js install --project <каталог проекта>»
+  - installer/README.md «node installer/bin/symphysis.js install --project <каталог проекта>» — цитаты нет дословно
   - openspec/changes/implementation-consequences/answers/2026-11-01-3.md:2 «А symphysis будет лежать в корпоративном репозитории, установка будет происходить по обращении к нему.»
 - F-37 Раскладка по слову владельца: сами замеры лежат только на диске; механики прогона, раннеры, скрипты и правила судейства живут в `skills-factory`; доноры из `upstream/` не публикуются; абсолютные пути вида `C:\Work` не вычищаются.
   - openspec/changes/implementation-consequences/answers/2026-11-01-repos.md:8 «механики прогона, раннеры, скрипты, правила судейства, стоит складывать в skills-factory»
@@ -88,10 +88,10 @@
 - F-113 На домашней машине разработки PyYAML есть только у `python` 3.14, у `py -3.13` и `python3` его нет; слово человека «почти наверняка есть» сказано о рабочей машине, зависимость человек подтвердил. С настройками по умолчанию два читателя расходятся на значениях края F-51: `enabled: no` в PyYAML молча выключает выбор, а в пакете `yaml` остаётся строкой и даёт сигнал. Одно поведение дают `BaseLoader` и схема `failsafe`: значения приходят текстом и сравниваются с `true` и `false` дословно.
   - openspec/changes/implementation-consequences/research/F-110.md:18 «| `py -3.13` | нет пакета |»
   - openspec/changes/implementation-consequences/research/F-110.md:29 «| `no` | `false` | `"no"` | `"no"` | `"no"` |»
-  - installer/lib/check.js:38 «Python: `python`, затем `python3`; версия не закрепляется.»
+  - installer/lib/check.js:70 «Python: `python`, затем `python3`; версия не закрепляется.»
   - openspec/changes/implementation-consequences/answers/2026-11-01-control.md:5 «про наличие yaml я говорил про рабочую машину.»
 - F-122 Единственная запись по пути `XDG_CONFIG_HOME` — глобальный конфиг форка `<XDG_CONFIG_HOME>/openspec/config.json`; файлов symphysis там нет, соседние каталоги не трогаются. Без переменной конфиг лежит в `%APPDATA%\openspec\config.json`. На домашней машине постоянной переменной нет, её задаёт на сессию `env.ps1` стенда, поэтому конфигов бывает два. `openspec update` убирает скиллы workflow, которых нет в прочитанном конфиге, и `/opsx:continue` пропадает, если `update` идёт из другой оболочки.
-  - installer/README.md:130 «Глобальный конфиг лежит в `$XDG_CONFIG_HOME/openspec/config.json`,»
+  - installer/README.md:206 «Глобальный конфиг лежит в `$XDG_CONFIG_HOME/openspec/config.json`,»
   - upstream/openspec/src/core/update.ts:448 «removedDeselectedSkillCount += await this.removeUnselectedSkillDirs(»
   - openspec/changes/implementation-consequences/answers/2026-11-01-xdg.md:3 «Если у нас тоже что то устанавливается по этому пути, то стоит это указать, чтобы не было конфликтов.»
 - F-134 Контекст прежних прогонов не был чистым: у всех плеч, и у ванили, глобальный `CLAUDE.md` человека, плагины, стиль Explanatory и MCP, около 30 тысяч лишних токенов в запросе. Чужих скиллов и агентов плечи не вызывали. Чистый контекст при входе по подписке даёт `--setting-sources project --strict-mcp-config`, отключение `CLAUDE.md` и автопамяти и окружение без переменных родительской сессии; `--bare` читает только ключ API.
@@ -273,8 +273,8 @@ Non-Goals — что этот дизайн не делает:
 
 - **Выбрано:** A. Телеметрия входит в разрешённое: запрет называет три правки — `continue`, названную смену профиля и `telemetry.enabled: false` при незаданном ключе. Заданное человеком значение `install` не трогает, как и сейчас. При выборе: в рабочем контуре телеметрия выключается сама, код не меняется, правятся текст запрета и тест. Цена: в запрете три исключения вместо двух.
 - **Обратимость:** обратимо — Текст требования и тест; при B ещё строка `install`.
-- **Улики выбранного:** installer/lib/install.js:118 «const tele = disableTelemetryIfUnset();»
-- **Улики выбранного:** installer/lib/telemetry.js:39 «Выключает телеметрию, если ключ не задан. Значение, заданное человеком (в том числе true), не меняется.»
+- **Улики выбранного:** installer/lib/install.js:135 «const tele = disableTelemetryIfUnset();»
+- **Улики выбранного:** installer/lib/telemetry.js:21 «Выключает телеметрию, если ключ не задан. Значение, заданное человеком (в том числе true), не меняется.»
 - **Отвергнуто:** B. Снять выключение телеметрии с `install`: остаётся сигнал в `check` и команда в руководстве. При выборе: буква F-100.A верна, глобальный конфиг меняется меньше. Цена: на чистой установке телеметрия включена, пока человек не выполнит команду; пересматривается решение прежнего изменения.
 
 ### F-108 При пустой описи F-48.A требует раздел pre-mortem «с тремя кандидатами», а F-46.A разрешает две причины и строку, почему третьей нет. Модель, честно видящая две причины при пустой описи, нарушит один из двух сценариев. Какое число действует при пустой описи?
@@ -390,7 +390,7 @@ Non-Goals — что этот дизайн не делает:
 
 - **Выбрано:** A. `[!!] continue` только если команды нет ни в одном выбранном каталоге; об остальных строка `[..] <каталог>: файлов форка нет, туда поставлены только скиллы symphysis`. При выборе: документированный вызов не даёт ложного кода 2, а `--skills-dir` остаётся тем, что он есть: куда класть наши скиллы. Цена: не настроенный клиент, на которого рассчитывал человек, виден только заметкой.
 - **Обратимость:** обратимо — Одна ветка `check.js`.
-- **Улики выбранного:** installer/README.md:55 «symphysis install --project . --skills-dir .claude/skills --skills-dir .agents/skills»
+- **Улики выбранного:** installer/README.md:80 «symphysis install --project . --skills-dir .claude/skills --skills-dir .agents/skills»
 - **Отвергнуто:** B. `[!!]` на каждый выбранный каталог без команды. При выборе: каждый выбор проверен строго. Цена: вызов из README всегда даёт код 2, потому что `.agents` клиентом не является.
 
 ### F-125 Подсказки `check` и спеки говорят `symphysis install` и `symphysis config`, а при установке из клона команды `symphysis` в PATH нет: есть только `node installer/bin/symphysis.js`. Подсказка ведёт на отсутствующую команду. Как быть?
@@ -471,7 +471,7 @@ Non-Goals — что этот дизайн не делает:
 - **Обратимость:** обратимо — Строки настроек в `check` ещё не написаны (задача 6.5), выпуска нет: меняется код части A и один файл спеки.
 - **Улики вопроса:** openspec/changes/implementation-consequences/research/F-135.md:29 «14 файлов из 3000 дали разный состав»
 - **Улики выбранного:** openspec/changes/implementation-consequences/research/F-135.md:37 «Только ради совпадения двух разборщиков существуют»
-- **Улики выбранного:** installer/lib/check.js:110 «spawnSync(py, ["-X", "utf8", journalPy, "check", j]»
+- **Улики выбранного:** installer/lib/check.js:150 «spawnSync(py, ["-X", "utf8", journalPy, "check", j]»
 - **Отвергнуто:** A. Подогнать и принять остаток. Одиночный CR в классе обоих читателей, `null` у JS как пустое значение, а четыре оставшиеся формы записать исключением требования. При выборе: меньше всего правок, F-121.A в силе. Цена: два разборщика и правила подгонки остаются, каждый новый ключ пишется дважды, а на остатке модель всё ещё может получить `выкл` без сигнала.
 - **Отвергнуто:** C. Один читатель на Node. Модель зовёт `symphysis config`; `symphysis_config.py` и зависимость PyYAML уходят вместе с её шагом в руководстве, строкой `check` и исключением F-121. При выборе: инструменты снова без пакетов. Цена: шаг модели зависит от команды `symphysis` в PATH, а F-118 исходил из того, что в проекте её нет; нет команды — считать всё включённым должна инструкция скилла, скрипт этого не гарантирует.
 
@@ -490,6 +490,14 @@ Non-Goals — что этот дизайн не делает:
 - **Обратимость:** обратимо — Одна фраза в тексте скилла.
 - **Улики выбранного:** skills/symphysis-edge-probe/SKILL.md:208 «Край конкретный, но исход уже определён, и ответ человека ничего не изменит»
 - **Отвергнуто:** B. Край без порчи тоже `не выбран`: кандидат только при тихой порче или необратимости. При выборе: вопросов человеку заметно меньше, журнал легче. Цена: отводит край сама модель, причина лежит только в файле покрытия и в счёте `notes[]`; пересматривает сценарий «Край без порчи» и F-130.A.
+
+### F-138 Живой проход скилла: модель дописала запись с номером, который в журнале уже был. `check` ответил `[ok]`, а `apply` при таком дубле кладёт слово человека в последнюю запись с этим номером, первая остаётся открытой. Держать ли это скриптом?
+
+- **Выбрано:** A. Новая проверка схемы журнала: повторный номер делает журнал негодным, код 1. Две строки в проверщике и тест; это не разбор текста модели, а структура файла. При выборе: слово человека не уходит не в ту запись. Цена: ещё одна проверка; плагин на негодном журнале останавливает пересборку, как и на прочих негодных.
+- **Слово человека (2026-11-02):** «Однозначно A.»
+- **Обратимость:** обратимо — Две строки в проверщике журнала; в четырёх журналах репозитория дублей нет.
+- **Улики выбранного:** tools/journal_apply.py:402 «by_id = {r["id"]: r for r in work["records"]}»
+- **Отвергнуто:** B. Только текст: в скилле правило «наибольший номер плюс один», оно уже внесено. При выборе: скриптов не прибавляется. Цена: нарушение остаётся тихим, а скиллов, пишущих в журнал, четыре.
 
 ## Risks / Trade-offs
 
@@ -516,8 +524,8 @@ Non-Goals — что этот дизайн не делает:
 - [Risk] лучше сделать несколько на Opus, чем один на Fable 5.1 (F-26, отвергнут A: openspec/changes/implementation-consequences/answers/2026-11-01.md:3) → Mitigation: решение B
 - [Risk] 1. Проведены новые прогоны на плечах: ванили, чистый промпт, P-чел на модели Opus 5.5. (F-26, отвергнут A: openspec/changes/implementation-consequences/intent.md:24) → Mitigation: решение B
 - [Risk] 1. Проведены новые прогоны на плечах: ванили, чистый промпт, P-чел на модели Opus 5.5. (F-26, отвергнут C: openspec/changes/implementation-consequences/intent.md:24) → Mitigation: решение B
-- [Risk] `symphysis.openspecSource` там же; сейчас это плейсхолдер. (F-31, отвергнут B: installer/README.md:24) → Mitigation: решение A
-- [Risk] Установщик схемы OpenSpec `symphysis`: кладёт в проект схему, четыре скилла (F-31, отвергнут C: installer/README.md:3) → Mitigation: решение A
+- [Risk] `symphysis.openspecSource` там же; сейчас это плейсхолдер. (F-31, отвергнут B: installer/README.md — цитаты нет дословно) → Mitigation: решение A
+- [Risk] Установщик схемы OpenSpec `symphysis`: кладёт в проект схему, четыре скилла (F-31, отвергнут C: installer/README.md — цитаты нет дословно) → Mitigation: решение A
 - [Risk] upstream/ (F-31, отвергнут D: .gitignore:1) → Mitigation: решение A
 - [Risk] (1) workflow `continue` не входит в профиль `init` по умолчанию (F-32, отвергнут B: docs/dry-run-journal.md:43) → Mitigation: решение A
 - [Risk] `check` не проверяет, что workflow `continue` (или команда `/opsx:continue`) установлен у клиента (F-32, отвергнут C: docs/dry-run-journal.md:48) → Mitigation: решение A
@@ -527,14 +535,14 @@ Non-Goals — что этот дизайн не делает:
 - [Risk] 3. Symphysis можно собрать и инсталлировать. Написан пошаговый GUIDE с примерами. (F-34, отвергнут C: openspec/changes/implementation-consequences/intent.md:27) → Mitigation: решение A
 - [Risk] на данный момент openspec в контуре загружается через через зеркало или напрямую с github. (F-36, отвергнут B: openspec/changes/implementation-consequences/answers/2026-11-01-3.md:2) → Mitigation: решение A
 - [Risk] А symphysis будет лежать в корпоративном репозитории (F-36, отвергнут C: openspec/changes/implementation-consequences/answers/2026-11-01-3.md:2) → Mitigation: решение A
-- [Risk] `[!!] telemetry: включена — выключить: ...` (F-107, отвергнут B: installer/README.md:117) → Mitigation: решение A
+- [Risk] `[!!] telemetry: включена — выключить: ...` (F-107, отвергнут B: installer/README.md:188) → Mitigation: решение A
 - [Risk] в глобальном конфиге меняется что-либо кроме добавления `continue` и названной смены профиля (F-107, отвергнут B: openspec/changes/implementation-consequences/decisions.json:6719) → Mitigation: решение A
 - [Risk] файл несёт причину и раздел pre-mortem с тремя кандидатами (F-108, отвергнут B: openspec/changes/implementation-consequences/decisions.json:2898) → Mitigation: решение A
 - [Risk] выбор считается включённым, `check` даёт `[!!] symphysis.yaml: недопустимое значение <значение>`, код 2 (F-109, отвергнут B: openspec/changes/implementation-consequences/decisions.json:3112) → Mitigation: решение A
-- [Risk] Ищется `python`, затем `python3`; версия не закрепляется, пакетов (F-110, отвергнут A: installer/README.md:136) → Mitigation: решение B
+- [Risk] Ищется `python`, затем `python3`; версия не закрепляется, пакетов (F-110, отвергнут A: installer/README.md — цитаты нет дословно) → Mitigation: решение B
 - [Risk] Делаем консистентно. Опционально это хорошо, но отслеживать варианты флагов это перебор. (F-110, отвергнут A: openspec/changes/implementation-consequences/answers/2026-11-01-5.md:15) → Mitigation: решение B
 - [Risk] import { parseDocument, isMap, isSeq, isScalar } from "yaml"; (F-110, отвергнут C: installer/lib/install.js:4) → Mitigation: решение B
-- [Risk] Ищется `python`, затем `python3`; версия не закрепляется, пакетов (F-110, отвергнут C: installer/README.md:136) → Mitigation: решение B
+- [Risk] Ищется `python`, затем `python3`; версия не закрепляется, пакетов (F-110, отвергнут C: installer/README.md — цитаты нет дословно) → Mitigation: решение B
 - [Risk] После написания на каждое требование позови скиллы `symphysis-edge-probe` и `symphysis-prohibition-probe`. (F-111, отвергнут B: openspec/schemas/symphysis/schema.yaml:78) → Mitigation: решение A
 - [Risk] **THEN** `symphysis.yaml` в коммит не попал, состав во втором клоне прежний (F-111, отвергнут C: openspec/changes/implementation-consequences/specs/project-settings/spec.md:83) → Mitigation: решение A
 - [Risk] export const MAX_REQUIREMENT_TEXT_LENGTH = 500; (F-112, отвергнут B: upstream/openspec/src/core/validation/constants.ts:11) → Mitigation: решение A
@@ -543,7 +551,7 @@ Non-Goals — что этот дизайн не делает:
 - [Risk] view.exists(path.join(skillsDir, skillName, 'SKILL.md')) (F-115, отвергнут A: upstream/openspec/src/core/shared/tool-detection.ts:123) → Mitigation: решение D
 - [Risk] Раскладка целей установки в проекте. Карты клиентов нет: (F-115, отвергнут B: installer/lib/paths.js:6) → Mitigation: решение D
 - [Risk] this.log(chalk.yellow('No configured tools found.')); (F-115, отвергнут C: upstream/openspec/src/core/update.ts:313) → Mitigation: решение D
-- [Risk] пишет через `openspec config set` — форк сам держит формат файла. (F-116, отвергнут B: installer/lib/telemetry.js:41) → Mitigation: решение A
+- [Risk] пишет через `openspec config set` — форк сам держит формат файла. (F-116, отвергнут B: installer/lib/telemetry.js:23) → Mitigation: решение A
 - [Risk] await trackCommand(commandPath, version); (F-117, отвергнут B: upstream/openspec/src/cli/index.ts:223) → Mitigation: решение A
 - [Risk] все остальное пытаемся выполнить через более качественные инструкции агента и скиллов (F-118, отвергнут B: openspec/changes/implementation-consequences/answers/2026-11-01-control.md:4) → Mitigation: решение A
 - [Risk] тест утверждает, что `journal.py check` на таком изменении печатает `[..] <часть>: выключено настройкой` (F-119, отвергнут B: openspec/changes/implementation-consequences/decisions.json:6433) → Mitigation: решение A
@@ -551,7 +559,7 @@ Non-Goals — что этот дизайн не делает:
 - [Risk] требование из F-110, пересмотрено F-135 (F-121, отвергнут B: openspec/changes/implementation-consequences/specs/project-settings/spec.md:75) → Mitigation: решение A
 - [Risk] Требование обещает «не убирая уже заданные» (F-123, отвергнут B: openspec/changes/implementation-consequences/decisions.json:8161) → Mitigation: решение A
 - [Risk] removedDeselectedSkillCount += await this.removeUnselectedSkillDirs( (F-123, отвергнут C: upstream/openspec/src/core/update.ts:448) → Mitigation: решение A
-- [Risk] "skills-dir": { type: "string", multiple: true }, (F-124, отвергнут B: installer/bin/symphysis.js:44) → Mitigation: решение A
+- [Risk] "skills-dir": { type: "string", multiple: true }, (F-124, отвергнут B: installer/bin/symphysis.js:51) → Mitigation: решение A
 - [Risk] | `node installer/bin/symphysis.js --help` после `ci` | справка напечатана | (F-125, отвергнут B: openspec/changes/implementation-consequences/research/F-114.md:18) → Mitigation: решение A
 - [Risk] если мы меняем профиль что создан ранее, то это плохо. (F-126, отвергнут B: openspec/changes/implementation-consequences/answers/2026-11-01-8.md:2) → Mitigation: решение A
 - [Risk] Сигнал: строка `[!!]` в `check`, код 0, с `--strict` код 2. (F-127, отвергнут B: openspec/changes/implementation-consequences/decisions.json:1377) → Mitigation: решение A
@@ -565,6 +573,7 @@ Non-Goals — что этот дизайн не делает:
 - [Risk] "yaml": "^2.9.1" (F-135, отвергнут C: installer/package.json:29) → Mitigation: решение B
 - [Risk] иная — только с причиной в скобках той же ячейки (F-54.E) (F-136, отвергнут A: skills/symphysis-attack/TRANSLATION-NOTES.md:28) → Mitigation: решение B
 - [Risk] #### Scenario: Край без порчи (F-137, отвергнут B: openspec/changes/implementation-consequences/specs/requirement-probes/spec.md:44) → Mitigation: решение A
+- [Risk] Номер записи — наибольший F-NN в журнале плюс один (F-138, отвергнут B: skills/symphysis-consequences/SKILL.md:270) → Mitigation: решение A
 
 ## Migration Plan
 
@@ -585,7 +594,6 @@ Non-Goals — что этот дизайн не делает:
 
 ## Open Questions
 
-- F-138 Живой проход скилла: модель дописала запись с номером, который в журнале уже был. `check` ответил `[ok]`, а `apply` при таком дубле кладёт слово человека в последнюю запись с этим номером, первая остаётся открытой. Держать ли это скриптом? — открыта
 - F-20 → материалы: «Что нужно стенду для трёх плеч на Opus 5.5. Выяснить: где закреплена модель (`MODEL` в `p_drive.py`, `arm_c.py`, сборка плеч), что менять в сборке плеч V, C и P, как считаются ходы и расход на этой модели. Читать: `.superpowers/sdd/plan-implementation.tasks/`, `X:/skills-factory-camunda-stand/stands/demo`, `X:/_archive/camunda-bid/RUN-PREP-symphysis-2026-10-30.md`.» — находка: Отчёт `research/F-20.md`. Модель — константа на плечо и роль, ключа нет; расход суммируется неверно; сборка P не пишет `arm.ps1`; нужен новый снимок ветки; проба q1–q3 и плечо C на Opus 5.5 обязательны до P. Решения — F-30, F-33.
 - F-22 → материалы: «Что нужно для GUIDE. Выяснить: как сегодня собирается форк и пакет инсталлятора с чистой машины, какие шаги не описаны в `installer/README.md`, какой пример сквозного изменения годится для GUIDE. Читать: `installer/README.md`, `installer/package.json`, `docs/dry-run-journal.md`, `openspec/changes/calibration-fixes/`.» — находка: Отчёт `research/F-22.md`. Из двух тарболов на чистом каталоге всё ставится, `check: ok`. Но форка нет ни в одном удалённом репозитории, а `/opsx:continue` на чистой установке отсутствует и `check` этого не видит. Решения — F-28, F-29, F-31, F-32, F-34. На чистом клоне тесты инсталлятора падают без форка в `upstream/openspec`: GUIDE даёт шаг для разработчика, а тесты должны называть причину.
 - F-12 → человек: «новая возможность: заводить факты постановки не только из критериев, но и из прозы намерения. Цена — больше записей журнала. Решить, нужна ли она отдельным изменением.»
