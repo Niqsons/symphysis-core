@@ -36,7 +36,7 @@ function openspecVersion() {
 }
 
 /** Python: `python`, затем `python3`; версия не закрепляется. Возвращает имя команды или null. */
-function findPython() {
+export function findPython() {
   for (const cmd of ["python", "python3"]) {
     const r = spawnSync(cmd, ["--version"], { encoding: "utf8" });
     if (!r.error && r.status === 0) return cmd;

@@ -130,7 +130,7 @@
   "assumptions": true,
   "edge_probe": true,
   "signals": [
-   "symphysis.yaml: недопустимое значение {\"a\":\"1\",\"b\":[\"2\",\"x\"]}"
+   "symphysis.yaml: недопустимое значение составное"
   ]
  },
  {
@@ -150,7 +150,7 @@
   "assumptions": true,
   "edge_probe": true,
   "signals": [
-   "symphysis.yaml: недопустимое значение [\"echo ВЗЛОМ\"]"
+   "symphysis.yaml: недопустимое значение составное"
   ]
  },
  {
@@ -228,16 +228,6 @@
   ]
  },
  {
-  "name": "таб после двоеточия",
-  "bytes_b64": "ZWRnZV9wcm9iZToKICBlbmFibGVkOglmYWxzZQo=",
-  "failure_branches": true,
-  "assumptions": true,
-  "edge_probe": true,
-  "signals": [
-   "symphysis.yaml: не разбирается"
-  ]
- },
- {
   "name": "корень не словарь: список",
   "bytes_b64": "LSBhCg==",
   "failure_branches": true,
@@ -268,38 +258,8 @@
   ]
  },
  {
-  "name": "составной ключ",
-  "bytes_b64": "PyBbYSwgYl0KOiBjCg==",
-  "failure_branches": true,
-  "assumptions": true,
-  "edge_probe": true,
-  "signals": [
-   "symphysis.yaml: не разбирается"
-  ]
- },
- {
-  "name": "ключ из пустоты",
-  "bytes_b64": "OiB4Cg==",
-  "failure_branches": true,
-  "assumptions": true,
-  "edge_probe": true,
-  "signals": [
-   "symphysis.yaml: не разбирается"
-  ]
- },
- {
   "name": "рекурсивный алиас",
   "bytes_b64": "eDogJmEgWyphXQo=",
-  "failure_branches": true,
-  "assumptions": true,
-  "edge_probe": true,
-  "signals": [
-   "symphysis.yaml: не разбирается"
-  ]
- },
- {
-  "name": "управляющий символ",
-  "bytes_b64": "ZWRnZV9wcm9iZToKICBlbmFibGVkOiAHCg==",
   "failure_branches": true,
   "assumptions": true,
   "edge_probe": true,
@@ -345,16 +305,6 @@
   "edge_probe": true,
   "signals": [
    "symphysis.yaml: неизвестный ключ edge_probe.enable"
-  ]
- },
- {
-  "name": "ключ из свойств объекта",
-  "bytes_b64": "Y29uc3RydWN0b3I6IGZhbHNlCg==",
-  "failure_branches": true,
-  "assumptions": true,
-  "edge_probe": true,
-  "signals": [
-   "symphysis.yaml: неизвестный ключ constructor"
   ]
  },
  {

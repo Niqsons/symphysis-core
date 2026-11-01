@@ -3,13 +3,12 @@
 """Настройки symphysis: состав выбора из личного файла `symphysis.yaml` в корне проекта.
 
 Журнал этот модуль не импортирует и настройки не читает (F-128.A). Файл читается пакетом PyYAML,
-значения приходят текстом и сравниваются с `true` и `false` дословно: так читает и инсталлятор
-(`installer/lib/settings.js`), один файл случаев гоняется на обоих языках (F-110.B, F-113).
+значения приходят текстом и сравниваются с `true` и `false` дословно (F-110.B, F-113); это единственный
+читатель файла, `symphysis config` и `symphysis check` зовут этот скрипт (F-135.B).
 Сомнение решается во включённую сторону сигналом, а не остановкой (F-24.A, F-25.A)."""
 from __future__ import annotations
 
 import argparse
-import json
 import re
 import sys
 from dataclasses import dataclass, field
@@ -31,11 +30,6 @@ KEYS = {
     "edge_probe": {"enabled": "edge_probe"},
 }
 
-# Таб и управляющие символы читатели понимают по-разному: `enabled:<таб>false` один разбирает,
-# другой нет. Поэтому такой файл не разбирается ни одним, тот же класс — в `settings.js`.
-NOT_YAML_TEXT = re.compile("[\x00-\x09\x0b\x0c\x0e-\x1f\x7f-\x9f\u2028\u2029\ufeff\ufffe\uffff]")
-
-
 @dataclass
 class Settings:
     failure_branches: bool = True
@@ -45,18 +39,10 @@ class Settings:
 
 
 def _show(value) -> str:
-    """Значение в строке сигнала: текст как есть в одну строку, составное — компактным JSON,
-    как `JSON.stringify` в `settings.js`."""
+    """Значение в строке сигнала: текст как есть в одну строку, составное — словом."""
     if isinstance(value, str):
         return re.sub(r"\s*\n\s*", " ", value).strip(" ")
-    return json.dumps(value, ensure_ascii=False, separators=(",", ":"))
-
-
-def _has_empty_key(node) -> bool:
-    """`: x` один читатель отвергает, другой читает как ключ из пустоты; пустой ключ не разбирается у обоих."""
-    if isinstance(node, dict):
-        return any(key == "" or _has_empty_key(value) for key, value in node.items())
-    return isinstance(node, list) and any(_has_empty_key(value) for value in node)
+    return "составное"
 
 
 def _apply(data, settings: Settings) -> None:
@@ -64,7 +50,7 @@ def _apply(data, settings: Settings) -> None:
     отсутствию ключа (F-50.C, F-109.A)."""
     if data is None or data == "":
         return
-    if not isinstance(data, dict) or _has_empty_key(data):
+    if not isinstance(data, dict):
         settings.signals.append(SIGNAL_UNPARSED)
         return
     for group, inner in data.items():
@@ -105,9 +91,6 @@ def read_settings(project_root: Path | str) -> Settings:
         import yaml
     except ImportError:
         settings.signals.append(SIGNAL_NO_PACKAGE)
-        return settings
-    if NOT_YAML_TEXT.search(text):
-        settings.signals.append(SIGNAL_UNPARSED)
         return settings
     try:
         # BaseLoader не разбирает типы и не исполняет теги: `no` остаётся строкой (research/F-110.md).

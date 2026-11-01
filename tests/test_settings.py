@@ -1,4 +1,4 @@
-"""Настройки `symphysis.yaml`: чтение скриптом, общий с инсталлятором файл случаев, вход для модели."""
+"""Настройки `symphysis.yaml`: чтение скриптом, файл случаев, вход для модели."""
 import ast
 import base64
 import json
@@ -6,6 +6,7 @@ import os
 import shutil
 import subprocess
 import sys
+import time
 
 import pytest
 
@@ -46,7 +47,7 @@ def without_yaml(tmp_path):
 
 @pytest.mark.parametrize("case", CASES, ids=[c["name"] for c in CASES])
 def test_shared_cases(tmp_path, case):
-    """Сценарий «Один файл случаев на обоих языках», сторона Python; Backstop F-50."""
+    """Файл случаев: состав и сигналы; Backstop F-50."""
     write_case(tmp_path, case)
     got = symphysis_config.read_settings(tmp_path)
     assert (got.failure_branches, got.assumptions, got.edge_probe) == (
@@ -70,6 +71,18 @@ def test_lone_surrogate_in_a_value_is_a_signal_not_a_crash(tmp_path):
     assert done.stdout.splitlines()[0].startswith("[..] symphysis.yaml:")
     assert any(line.startswith("[!!] symphysis.yaml:") and "недопустимое значение" in line
                for line in done.stdout.splitlines()), done.stdout
+
+
+def test_alias_chain_prints_fast(tmp_path):
+    """Цепочка алиасов на 12 уровней: значение в сигнале называется словом, а не печатается целиком."""
+    levels = ["a0: &a0 [x, x]"] + [f"a{i}: &a{i} [*a{i - 1}, *a{i - 1}]" for i in range(1, 12)]
+    (tmp_path / "symphysis.yaml").write_text(
+        "\n".join(levels) + "\nedge_probe:\n  enabled: *a11\n", encoding="utf-8")
+    started = time.monotonic()
+    done = run_config("--project", tmp_path)
+    assert time.monotonic() - started < 1
+    assert done.returncode == 0, done.stderr
+    assert "[!!] symphysis.yaml: недопустимое значение составное" in done.stdout.splitlines()
 
 
 def test_strict_gives_code_two_only_with_signals(tmp_path):

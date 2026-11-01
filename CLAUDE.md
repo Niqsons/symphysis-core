@@ -35,10 +35,10 @@
   (места кода из улик, подкоманда `code-sites`), `journal_consequences` (две
   проверки описи `consequences.md` внутри `check`), `journal_cli`; модули
   импортируют друг друга по имени, не через фасад.
-- `tools/symphysis_config.py` — состав выбора из личного `symphysis.yaml`, своя
-  область: журнал этот модуль не импортирует и настройки не читает. Парный
-  читатель — `installer/lib/settings.js` (команда `symphysis config`), общие
-  случаи — `tests/fixtures/settings-cases.json`: итог у двух читателей один.
+- `tools/symphysis_config.py` — состав выбора из личного `symphysis.yaml`, единственный
+  читатель файла: журнал этот модуль не импортирует и настройки не читает, а
+  `symphysis config` и `symphysis check` зовут его. Случаи —
+  `tests/fixtures/settings-cases.json`.
 - `installer/` — npm-пакет `@niqsons/symphysis`: `install`/`check`/`config`;
   `payload/` генерируется из корня (`scripts/sync-payload.js`), не правится.
 - `docs/analysis/step0-sources.md` — чтение источников шага 0

@@ -1,9 +1,11 @@
 #!/usr/bin/env node
 import fs from "node:fs";
+import path from "node:path";
+import { spawnSync } from "node:child_process";
 import { parseArgs } from "node:util";
 import { install } from "../lib/install.js";
-import { check } from "../lib/check.js";
-import { readSettings, compositionLine } from "../lib/settings.js";
+import { check, findPython } from "../lib/check.js";
+import { targets } from "../lib/paths.js";
 
 const USAGE = `symphysis — схема OpenSpec symphysis, скиллы и инструменты журнала в проект
 
@@ -93,9 +95,20 @@ if (values.help || cmd === "help") {
     process.stderr.write(`symphysis config: --project: каталога нет: ${project}\n`);
     process.exit(2);
   }
-  const settings = readSettings(project);
-  process.stdout.write(`[..] ${compositionLine(settings)}\n`);
-  for (const s of settings.signals) process.stdout.write(`[!!] ${s}\n`);
+  const py = findPython();
+  const tool = path.join(targets(path.resolve(project)).toolsDir, "tools", "symphysis_config.py");
+  const fail = (line) => {
+    process.stdout.write(`[!!] ${line}\n`);
+    process.exit(2);
+  };
+  if (!py) fail("python: python или python3 не отвечает");
+  if (!fs.existsSync(tool)) fail("symphysis_config.py: нет файла — выполнить: symphysis install");
+  const r = spawnSync(py, ["-X", "utf8", tool, "--project", project], { encoding: "utf8" });
+  if (r.error || r.status !== 0) {
+    const first = (r.error ? r.error.message : String(r.stderr ?? "").split(/\r?\n/).find((l) => l.trim())) ?? `код ${r.status}`;
+    fail(`symphysis_config.py: не отработал (${first.trim()})`);
+  }
+  process.stdout.write(r.stdout);
 } else {
   process.stderr.write(`${cmd ? `неизвестная команда: ${cmd}\n\n` : ""}${USAGE}`);
   process.exit(2);
