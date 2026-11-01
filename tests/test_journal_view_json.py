@@ -51,6 +51,7 @@ def test_payload_is_what_the_page_gets_plus_additions(tmp_path):
     assert run_cli("render-html", src, "--out", out).returncode == 0
     data = view(src)
     assert data.pop("attacks") == []
+    assert data.pop("contract") == journal_render.CONTRACT
     for rec in data["records"]:
         assert rec.pop("destination")["label"]
         for park in rec["parking"]:
@@ -191,3 +192,29 @@ def test_destination_matches_the_template(tmp_path):
     js = json.loads(run.stdout)
     assert js["records"] == [journal_render.destination(d[0]) for d in DESTINATIONS]
     assert js["parkings"] == [journal_render.parking_destination(p[0]) for p in PARKINGS]
+
+
+# --- номер контракта (F-08, F-16, F-31) ----------------------------------------
+
+def test_output_carries_the_contract_number(tmp_path):
+    src, roots = journal_file(tmp_path)
+    number = view(src, "--roots", roots)["contract"]
+    assert type(number) is int and number == 1
+
+
+def test_a_new_field_does_not_raise_the_number_and_reaches_the_output(tmp_path):
+    src, roots = journal_file(tmp_path)
+    before = view(src, "--roots", roots)["contract"]
+    j = journal.load_journal(src)
+    j["records"][0]["nodes"] = ["X"]
+    journal.save_journal(src, j)
+    data = view(src, "--roots", roots)
+    assert data["contract"] == before
+    assert data["records"][0]["nodes"] == ["X"]
+
+
+def test_the_page_does_not_get_the_contract_number(tmp_path):
+    src, roots = journal_file(tmp_path)
+    out = tmp_path / "page.html"
+    assert run_cli("render-html", src, "--out", out, "--roots", roots).returncode == 0
+    assert "contract" not in page_payload(out.read_text(encoding="utf-8"))

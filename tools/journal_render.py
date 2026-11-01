@@ -11,7 +11,8 @@ from pathlib import Path
 from journal_model import ADDED_MARK, DEVIATION_LABEL, DEVIATION_TAIL, RE_ANCHOR, ROOT, _evidence_of, _flat
 
 __all__ = [
-    "TEMPLATE_PATH", "PLACEHOLDER", "PLACEHOLDER_ATTACK",
+    "TEMPLATE_PATH", "PLACEHOLDER", "PLACEHOLDER_ATTACK", "PLACEHOLDER_SCHEME", "CONTRACT",
+    "parse_scheme", "scheme_payload",
     "render_md", "render_html", "render_design", "view_payload", "destination", "parking_destination",
     "anchor_lines", "parse_attack_md", "_lines",
 ]
@@ -20,6 +21,9 @@ __all__ = [
 TEMPLATE_PATH = ROOT / "tools" / "playground-template.html"
 PLACEHOLDER = "__JOURNAL_JSON__"
 PLACEHOLDER_ATTACK = "__ATTACK_JSON__"
+PLACEHOLDER_SCHEME = "__SCHEME_JSON__"
+# Номер контракта ядра с плагином в выводе `view-json`: растёт при смене контракта, от нового поля не растёт (`docs/repo-contract.md`).
+CONTRACT = 1
 
 
 # --- рендер ----------------------------------------------------------------
@@ -189,10 +193,58 @@ def _viewer_payload(journal: dict, journal_sha256: str | None) -> dict:
     }
 
 
+# --- scheme.md ----------------------------------------------------------------
+
+RE_FENCE = re.compile(r"^ {0,3}(`{3,})[ \t]*([^`]*?)[ \t]*$")
+NO_SCHEME = {"exists": False, "text": None, "blocks": 0, "first_line": None, "mermaid": None}
+
+
+def parse_scheme(text: str) -> dict:
+    """`scheme.md`: текст первого непустого блока mermaid, число непустых блоков и строка файла, с которой
+    блок начинается, для номера строки в ошибке. BOM и CRLF не мешают; блок внутри другой ограды — не блок.
+    Плагин разбирает файл сам, оба разбора сверяются набором `tests/fixtures/scheme/cases.json`."""
+    fence = None
+    blocks = []
+    for number, line in enumerate(text.removeprefix("\ufeff").replace("\r\n", "\n").split("\n"), 1):
+        match = RE_FENCE.match(line)
+        if fence is None:
+            if match:
+                fence = {"length": len(match[1]), "mermaid": match[2] == "mermaid", "first": number + 1, "body": []}
+        elif match and not match[2] and len(match[1]) >= fence["length"]:
+            blocks.append(fence)
+            fence = None
+        else:
+            fence["body"].append(line)
+    if fence:
+        blocks.append(fence)
+    filled = [b for b in blocks if b["mermaid"] and "".join(b["body"]).strip()]
+    if not filled:
+        return {"text": None, "blocks": 0, "first_line": None}
+    return {"text": "\n".join(filled[0]["body"]).rstrip("\n") + "\n", "blocks": len(filled), "first_line": filled[0]["first"]}
+
+
+def _mermaid_src(out: Path) -> str | None:
+    """Путь от страницы до файла mermaid проекта: страница вне проекта его не получает и показывает текст (F-39)."""
+    here = Path(out).resolve().parent
+    for up, base in enumerate([here, *here.parents]):
+        if (base / ".symphysis" / "tools").is_dir():
+            return "../" * up + ".symphysis/tools/mermaid.min.js"
+    return None
+
+
+def scheme_payload(scheme_path: Path, out: Path) -> dict:
+    """Что страница `out` получает о файле `scheme_path`: своя метка шаблона, вне `_viewer_payload`, поэтому
+    в `view-json` текст схемы не уходит (F-25). Не текст файла — файл без блока, а не отказ сборки."""
+    path = Path(scheme_path)
+    if not path.is_file():
+        return {**NO_SCHEME, "mermaid": _mermaid_src(out)}
+    return {"exists": True, **parse_scheme(path.read_text(encoding="utf-8", errors="replace")), "mermaid": _mermaid_src(out)}
+
+
 def render_html(journal: dict, template: Path, attacks: list[dict] | None = None,
-                journal_sha256: str | None = None) -> str:
-    """Шаблон просмотрщика с журналом вместо `__JOURNAL_JSON__` и списком атак вместо
-    `__ATTACK_JSON__`; обе метки обязательны. Улики берутся такими, какие в журнале
+                journal_sha256: str | None = None, scheme: dict | None = None) -> str:
+    """Шаблон просмотрщика с журналом вместо `__JOURNAL_JSON__`, списком атак вместо
+    `__ATTACK_JSON__` и схемой вместо `__SCHEME_JSON__`; все три метки обязательны. Улики берутся такими, какие в журнале
     (`check --write` или сверка в памяти). Дата сборки `generated` — из журнала, если она
     там есть; своей даты рендер не ставит, и два рендера одного журнала совпадают.
 
@@ -203,11 +255,12 @@ def render_html(journal: dict, template: Path, attacks: list[dict] | None = None
     журнала отдаются режиму «проверка»; остальной payload прежний. Метки подставляются за один
     проход, чтобы текст журнала, похожий на метку, не был подставлен второй раз."""
     html = Path(template).read_text(encoding="utf-8")
-    for mark in (PLACEHOLDER, PLACEHOLDER_ATTACK):
+    for mark in (PLACEHOLDER, PLACEHOLDER_ATTACK, PLACEHOLDER_SCHEME):
         if mark not in html:
             raise ValueError(f"в шаблоне нет метки {mark}")
-    filled = {PLACEHOLDER: _embed(_viewer_payload(journal, journal_sha256)), PLACEHOLDER_ATTACK: _embed(attacks or [])}
-    return "".join(filled.get(part, part) for part in re.split(f"({PLACEHOLDER}|{PLACEHOLDER_ATTACK})", html))
+    filled = {PLACEHOLDER: _embed(_viewer_payload(journal, journal_sha256)), PLACEHOLDER_ATTACK: _embed(attacks or []),
+              PLACEHOLDER_SCHEME: _embed(scheme or NO_SCHEME)}
+    return "".join(filled.get(part, part) for part in re.split(f"({PLACEHOLDER}|{PLACEHOLDER_ATTACK}|{PLACEHOLDER_SCHEME})", html))
 
 
 # --- файл атаки для просмотрщика --------------------------------------------
@@ -527,4 +580,5 @@ def view_payload(journal: dict, attacks: list[dict] | None = None, journal_sha25
         for park in rec["parking"]:
             park["destination"] = parking_destination(park["addressee"])
     payload["attacks"] = attacks or []
+    payload["contract"] = CONTRACT
     return payload

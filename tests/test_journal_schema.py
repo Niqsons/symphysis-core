@@ -364,3 +364,34 @@ def test_cli_check_rejects_a_bad_deviation_with_code_1(tmp_path):
                          capture_output=True, text=True, encoding="utf-8")
     assert run.returncode == 1
     assert "[!!] F-02: вариант B — отступление от постановки F-09 — такой записи нет" in run.stderr
+
+
+# --- nodes: необязательная ссылка записи на узлы схемы (F-23, F-24, F-86) ------
+
+def run_check(path):
+    return subprocess.run([sys.executable, "-X", "utf8", str(ROOT / "tools" / "journal.py"), "check", str(path)],
+                          capture_output=True, text=True, encoding="utf-8")
+
+
+def test_old_journal_without_nodes_stays_valid():
+    j = plan()
+    assert not any("nodes" in r for r in j["records"])
+    assert journal.validate_journal(j) == []
+
+
+@pytest.mark.parametrize("nodes", [[], ["A"], ["A", "узел1"]])
+def test_nodes_as_a_list_of_strings_is_valid(nodes):
+    j = plan()
+    j["records"][2]["nodes"] = nodes
+    assert journal.validate_journal(j) == []
+
+
+@pytest.mark.parametrize("nodes", ["A", 1, None, [1], ["A", None]])
+def test_nodes_of_a_wrong_form_names_the_record_and_the_field(nodes, tmp_path):
+    j = plan()
+    j["records"][2]["nodes"] = nodes
+    assert any(e.startswith("F-03") and "nodes" in e for e in journal.validate_journal(j))
+    src = tmp_path / "decisions.json"
+    src.write_text(json.dumps(j, ensure_ascii=False), encoding="utf-8")
+    run = run_check(src)
+    assert run.returncode == 1 and "F-03" in run.stderr + run.stdout and "nodes" in run.stderr + run.stdout

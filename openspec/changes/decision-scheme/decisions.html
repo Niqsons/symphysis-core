@@ -2,43 +2,30 @@
 <html lang="ru">
 <head>
 <meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline' file:; style-src 'unsafe-inline'; img-src data:; font-src data:">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>symphysis — журнал решений</title>
 <style>
   :root { --bg:#0f1115; --panel:#171a21; --card:#1c2028; --line:#2a303b; --fg:#e6e8ec; --mute:#9aa3b2;
-          --acc:#6ea8fe; --ok:#3fb950; --warn:#d29922; --bad:#f85149; --park:#a371f7; --unlikely:#8b949e; --left:250px; --right:340px; --outh:170px; }
+          --acc:#6ea8fe; --ok:#3fb950; --warn:#d29922; --bad:#f85149; --park:#a371f7; --unlikely:#8b949e; --left:250px; --right:0px; --schemew:40vw; --outh:170px; --headh:48px; }
   * { box-sizing:border-box; }
   body { margin:0; background:var(--bg); color:var(--fg); font:14px/1.45 system-ui, -apple-system, "Segoe UI", sans-serif; }
   code, .mono { font-family: ui-monospace, Consolas, "Cascadia Mono", monospace; font-size:12.5px; }
   header { display:flex; gap:16px; align-items:center; padding:10px 16px; border-bottom:1px solid var(--line); background:var(--panel); position:sticky; top:0; z-index:5; }
   header h1 { font-size:15px; margin:0; font-weight:600; }
-  header .stats { display:flex; gap:12px; color:var(--mute); flex-wrap:wrap; }
+  header .stats { color:var(--mute); }
   header .stats b { color:var(--fg); }
   header .spacer { flex:1; }
   button { background:#232834; color:var(--fg); border:1px solid var(--line); border-radius:6px; padding:5px 10px; cursor:pointer; font:inherit; }
   button:hover { border-color:var(--acc); }
   button.primary { background:var(--acc); color:#0b1020; border-color:var(--acc); font-weight:600; }
   button.small { padding:2px 8px; font-size:12px; }
-  .layout { display:grid; grid-template-columns: var(--left) minmax(0,1fr) var(--right); min-height: calc(100vh - 48px); }
-  aside { background:var(--panel); position:sticky; top:48px; height:calc(100vh - 48px); display:flex; flex-direction:column; min-height:0; }
+  .layout { display:grid; grid-template-columns: var(--left) minmax(0,1fr) var(--right); min-height: calc(100vh - var(--headh)); }
+  aside { background:var(--panel); position:sticky; top:var(--headh); height:calc(100vh - var(--headh)); display:flex; flex-direction:column; min-height:0; }
   aside.left { border-right:1px solid var(--line); }
-  aside.right { border-left:1px solid var(--line); }
   aside .head { display:flex; gap:6px; align-items:center; margin-bottom:6px; }
   aside .head h2 { flex:1; margin:0; }
   aside h2, main h2 { font-size:12px; text-transform:uppercase; letter-spacing:.06em; color:var(--mute); margin:0 0 6px; }
-  .schemebox { flex:1 1 auto; overflow:auto; padding:10px 10px 6px; }
-  .scheme svg { display:block; width:100%; max-height:calc(100vh - 130px); height:auto; overflow:visible; margin:0 auto; }
-  .scheme .node { cursor:pointer; }
-  .scheme .node rect, .scheme .node polygon { fill:#232834; stroke:var(--line); stroke-width:1.2; }
-  .scheme .node:hover rect, .scheme .node:hover polygon { stroke:var(--acc); }
-  .scheme .node.active rect, .scheme .node.active polygon { stroke:var(--acc); stroke-width:2; fill:#1f2a3f; }
-  .scheme .node.dim rect, .scheme .node.dim polygon { opacity:.5; }
-  .scheme text { fill:var(--fg); font-size:12px; font-family: system-ui, sans-serif; pointer-events:none; }
-  .scheme text.sub { fill:var(--mute); font-size:10px; }
-  .scheme text.lbl { fill:var(--warn); font-size:10px; }
-  .scheme path.edge { fill:none; stroke:var(--mute); stroke-width:1.3; marker-end:url(#arr); }
-  .scheme path.edge.loop { stroke:var(--warn); stroke-dasharray:4 3; }
-  .scheme .hint { color:var(--mute); font-size:11.5px; padding:2px 0 0; }
   .tocbox { flex:1 1 auto; min-height:100px; overflow:auto; padding:8px 10px; }
   .toc a { display:grid; grid-template-columns: 10px 42px 1fr; gap:6px; align-items:baseline; color:var(--fg); text-decoration:none; padding:2px 4px; border-radius:5px; font-size:12.5px; }
   .toc a:hover { background:rgba(255,255,255,.04); }
@@ -77,7 +64,6 @@
   .opt { display:grid; grid-template-columns: 22px 1fr; gap:6px; padding:6px 6px; border-radius:6px; margin:2px 0; }
   .opt:hover { background:rgba(255,255,255,.03); }
   .opt.chosen { background:rgba(63,185,80,.10); }
-  .opt.blocked { opacity:.55; }
   .opt .letter { font-weight:700; color:var(--acc); }
   .opt .tag { font-size:11px; padding:0 6px; border-radius:8px; margin-left:6px; border:1px solid; }
   .tag.unlikely { color:var(--unlikely); border-color:var(--unlikely); }
@@ -130,13 +116,27 @@
   .attack-rows { margin-top:4px; }
   .counters { display:flex; gap:12px; flex-wrap:wrap; color:var(--mute); margin:6px 0 10px; font-size:12.5px; }
   .counters b { color:var(--fg); }
-  @media (max-width: 900px) { .layout { grid-template-columns:1fr; } aside { position:static; height:auto; } .outpanel { left:0; right:0; } }
+  /* панель схемы: поверх режимов, рядом с карточками; ширину держит --schemew */
+  body.scheme-on { --right:var(--schemew); }
+  body.scheme-on .view { margin:0 var(--right) 0 0; max-width:none; }
+  #schemePanel { position:fixed; top:var(--headh); right:0; bottom:0; width:var(--schemew); background:var(--panel); border-left:1px solid var(--line); z-index:4; display:flex; flex-direction:column; }
+  #schemePanel.hidden { display:none; }
+  .schemehandle { position:absolute; left:-4px; top:0; bottom:0; width:9px; cursor:ew-resize; }
+  .schemehandle:hover { background:rgba(110,168,254,.25); }
+  #schemeBody { flex:1 1 auto; min-height:0; overflow:auto; padding:8px 10px; }
+  #schemeBody svg { display:block; }
+  #schemeBody pre { margin:0; font-family:ui-monospace, Consolas, "Cascadia Mono", monospace; font-size:12.5px; }
+  #schemeBody .note { white-space:pre-wrap; }
+  header #btnScheme.active, aside .head button.active { border-color:var(--acc); color:var(--acc); }
+  @media (max-width: 900px) { .layout { grid-template-columns:1fr; } aside { position:static; height:auto; } .outpanel { left:0; right:0; }
+    body.scheme-on { --right:0px; } #schemePanel { position:static; width:auto; height:45vh; border-left:0; border-bottom:1px solid var(--line); } .schemehandle { display:none; } }
 </style>
 </head>
 <body>
-<header>
+<header id="pageHeader">
   <h1 id="title">symphysis — журнал решений</h1>
   <div class="modes" id="modes" title="решения — круг просмотрщика; проверка — снимок перед proposal, только чтение; атака — строки attack/*.md по линзам"></div>
+  <button id="btnScheme" title="схема решения рядом с карточками: scheme.md этого изменения">схема</button>
   <div class="stats" id="stats"></div>
   <div class="spacer"></div>
   <button id="btnExport" title="JSON состояния — для переноса в другой браузер">Экспорт JSON</button>
@@ -144,6 +144,10 @@
   <input type="file" id="fileImport" accept="application/json" class="hidden">
   <button id="btnReset">Сбросить</button>
 </header>
+<div id="schemePanel" class="hidden">
+  <div class="schemehandle" id="schemehandle" title="тяни, чтобы изменить ширину панели"></div>
+  <div id="schemeBody"></div>
+</div>
 <div class="layout" id="viewDecisions">
   <aside class="left">
     <div class="tocbox"><div class="head"><h2>Оглавление</h2><button class="small" id="btnAll">все</button><button class="small" id="btnOpen">открытые</button></div><div class="toc" id="toc"></div></div>
@@ -164,9 +168,6 @@
     <h2>Замечания к схеме и плану</h2>
     <textarea id="notes" placeholder="что не так в схеме работы, в поставках, в этапах"></textarea>
   </main>
-  <aside class="right">
-    <div class="schemebox"><h2>Схема работы — клик фильтрует</h2><div class="scheme" id="scheme"></div></div>
-  </aside>
 </div>
 <main class="view hidden" id="viewCheck"></main>
 <main class="view hidden" id="viewAttack"></main>
@@ -193,7 +194,7 @@ const JOURNAL = {
   "decided": 87,
   "parked": 4,
   "evidence_total": 316,
-  "evidence_found": 316
+  "evidence_found": 300
  },
  "records": [
   {
@@ -586,7 +587,7 @@ const JOURNAL = {
     {
      "path": "tools/journal_render.py",
      "quote": "view = dict(rec)",
-     "line": 158,
+     "line": 162,
      "verdict": "сверено",
      "found": true
     }
@@ -708,9 +709,9 @@ const JOURNAL = {
     {
      "path": "docs/repo-contract.md",
      "quote": "| номер контракта в выводе `view-json` | ядро |",
-     "line": 112,
-     "verdict": "сверено",
-     "found": true
+     "line": null,
+     "verdict": "цитаты нет дословно",
+     "found": false
     },
     {
      "path": "docs/repo-contract.md",
@@ -729,30 +730,30 @@ const JOURNAL = {
     {
      "path": "docs/repo-contract.md",
      "quote": "| дефект шаблона про новую развилку: на нём контрактный тест, по-видимому, покраснеет | ядро |",
+     "line": null,
+     "verdict": "цитаты нет дословно",
+     "found": false
+    },
+    {
+     "path": "docs/repo-contract.md",
+     "quote": "| заданный `SYMPHYSIS_ROOT` без ядра даёт падение, а не пропуск | плагин |",
      "line": 115,
      "verdict": "сверено",
      "found": true
     },
     {
      "path": "docs/repo-contract.md",
-     "quote": "| заданный `SYMPHYSIS_ROOT` без ядра даёт падение, а не пропуск | плагин |",
+     "quote": "| `npm run e2e:vsix` после коммита упаковки | плагин |",
      "line": 116,
      "verdict": "сверено",
      "found": true
     },
     {
      "path": "docs/repo-contract.md",
-     "quote": "| `npm run e2e:vsix` после коммита упаковки | плагин |",
-     "line": 117,
-     "verdict": "сверено",
-     "found": true
-    },
-    {
-     "path": "docs/repo-contract.md",
      "quote": "| тест: инсталлятор не стирает `.symphysis/viewer/` | ядро |",
-     "line": 118,
-     "verdict": "сверено",
-     "found": true
+     "line": null,
+     "verdict": "цитаты нет дословно",
+     "found": false
     }
    ],
    "comments": [],
@@ -779,9 +780,9 @@ const JOURNAL = {
     {
      "path": "tools/playground-template.html",
      "quote": "const waiting = deps.filter(x => x.kind !== 'removed' && !chosen(x.id)).map(x => x.id);",
-     "line": 378,
-     "verdict": "сверено",
-     "found": true
+     "line": null,
+     "verdict": "цитаты нет дословно",
+     "found": false
     },
     {
      "path": "vscode/docs/design-part1-viewer.md",
@@ -815,16 +816,16 @@ const JOURNAL = {
     {
      "path": "tools/playground-template.html",
      "quote": "<h2>Схема работы — клик фильтрует<\/h2>",
-     "line": 168,
-     "verdict": "сверено",
-     "found": true
+     "line": null,
+     "verdict": "цитаты нет дословно",
+     "found": false
     },
     {
      "path": "tools/playground-template.html",
      "quote": "if (!n.d.includes(rec.delivery)) return false;",
-     "line": 355,
-     "verdict": "сверено",
-     "found": true
+     "line": null,
+     "verdict": "цитаты нет дословно",
+     "found": false
     },
     {
      "path": "vscode/docs/design-part1-viewer.md",
@@ -948,9 +949,9 @@ const JOURNAL = {
       {
        "path": "docs/repo-contract.md",
        "quote": "| тест: инсталлятор не стирает `.symphysis/viewer/` | ядро |",
-       "line": 118,
-       "verdict": "сверено",
-       "found": true
+       "line": null,
+       "verdict": "цитаты нет дословно",
+       "found": false
       }
      ]
     },
@@ -1047,9 +1048,9 @@ const JOURNAL = {
       {
        "path": "tools/playground-template.html",
        "quote": "<h2>Схема работы — клик фильтрует<\/h2>",
-       "line": 168,
-       "verdict": "сверено",
-       "found": true
+       "line": null,
+       "verdict": "цитаты нет дословно",
+       "found": false
       }
      ]
     },
@@ -1252,7 +1253,7 @@ const JOURNAL = {
       {
        "path": "docs/repo-contract.md",
        "quote": "На странице доступны все виды слова.",
-       "line": 71,
+       "line": 72,
        "verdict": "сверено",
        "found": true
       }
@@ -1386,9 +1387,9 @@ const JOURNAL = {
       {
        "path": "docs/repo-contract.md",
        "quote": "- вывод `view-json`;",
-       "line": 48,
-       "verdict": "сверено",
-       "found": true
+       "line": null,
+       "verdict": "цитаты нет дословно",
+       "found": false
       }
      ]
     }
@@ -1524,9 +1525,9 @@ const JOURNAL = {
       {
        "path": "tools/playground-template.html",
        "quote": "filter.node = (filter.node === n.id) ? null : n.id;",
-       "line": 351,
-       "verdict": "сверено",
-       "found": true
+       "line": null,
+       "verdict": "цитаты нет дословно",
+       "found": false
       }
      ]
     },
@@ -1554,7 +1555,7 @@ const JOURNAL = {
       {
        "path": "skills/symphysis-viewer/SKILL.md",
        "quote": "**Запись журнала и строка атаки не смешиваются**",
-       "line": 52,
+       "line": 53,
        "verdict": "сверено",
        "found": true
       }
@@ -1809,7 +1810,7 @@ const JOURNAL = {
       {
        "path": "docs/repo-contract.md",
        "quote": "`SYMPHYSIS_ROOT` на worktree `main` ядра",
-       "line": 80,
+       "line": 81,
        "verdict": "сверено",
        "found": true
       }
@@ -1863,7 +1864,7 @@ const JOURNAL = {
       {
        "path": "docs/repo-contract.md",
        "quote": "| выше ожидаемого | поставить новый `.vsix` |",
-       "line": 63,
+       "line": 64,
        "verdict": "сверено",
        "found": true
       }
@@ -2184,9 +2185,9 @@ const JOURNAL = {
     {
      "path": "tools/playground-template.html",
      "quote": "ответ ищется в файлах (исследование)",
-     "line": 211,
-     "verdict": "сверено",
-     "found": true
+     "line": null,
+     "verdict": "цитаты нет дословно",
+     "found": false
     },
     {
      "path": "docs/journal.schema.json",
@@ -2205,7 +2206,7 @@ const JOURNAL = {
     {
      "path": "tools/playground-template.html",
      "quote": "const ADDRESSEES = ['материалы','человек','ИБ'];",
-     "line": 187,
+     "line": 189,
      "verdict": "сверено",
      "found": true
     },
@@ -2219,7 +2220,7 @@ const JOURNAL = {
     {
      "path": "docs/repo-contract.md",
      "quote": "Удаление, переименование, смена смысла и новое значение существующего поля считаются.",
-     "line": 56,
+     "line": 57,
      "verdict": "сверено",
      "found": true
     }
@@ -2262,16 +2263,16 @@ const JOURNAL = {
     {
      "path": "skills/symphysis-brainstorm/SKILL.md",
      "quote": "N = 2 — брейншторм закончен",
-     "line": 236,
-     "verdict": "сверено",
-     "found": true
+     "line": null,
+     "verdict": "цитаты нет дословно",
+     "found": false
     },
     {
      "path": "skills/symphysis-brainstorm/SKILL.md",
      "quote": "третьего круга нет",
-     "line": 276,
-     "verdict": "сверено",
-     "found": true
+     "line": null,
+     "verdict": "цитаты нет дословно",
+     "found": false
     },
     {
      "path": "openspec/specs/brainstorm-interview/spec.md",
@@ -2565,7 +2566,7 @@ const JOURNAL = {
       {
        "path": "docs/repo-contract.md",
        "quote": "Удаление, переименование, смена смысла и новое значение существующего поля считаются.",
-       "line": 56,
+       "line": 57,
        "verdict": "сверено",
        "found": true
       }
@@ -2602,7 +2603,7 @@ const JOURNAL = {
       {
        "path": "skills/symphysis-brainstorm/SKILL.md",
        "quote": "Объём изменения в записях не растёт",
-       "line": 139,
+       "line": 156,
        "verdict": "сверено",
        "found": true
       }
@@ -2624,7 +2625,7 @@ const JOURNAL = {
       {
        "path": "skills/symphysis-brainstorm/SKILL.md",
        "quote": "«Реши сам» — тоже слово человека",
-       "line": 212,
+       "line": 245,
        "verdict": "сверено",
        "found": true
       }
@@ -2688,7 +2689,7 @@ const JOURNAL = {
       {
        "path": "docs/repo-contract.md",
        "quote": "Своя ветка — свой worktree.",
-       "line": 86,
+       "line": 87,
        "verdict": "сверено",
        "found": true
       },
@@ -2744,7 +2745,7 @@ const JOURNAL = {
       {
        "path": "tools/playground-template.html",
        "quote": "<h2>Замечания к схеме и плану<\/h2>",
-       "line": 164,
+       "line": 168,
        "verdict": "сверено",
        "found": true
       },
@@ -2758,7 +2759,7 @@ const JOURNAL = {
       {
        "path": "tools/playground-template.html",
        "quote": "что не так в схеме работы, в поставках, в этапах",
-       "line": 165,
+       "line": 169,
        "verdict": "сверено",
        "found": true
       }
@@ -2864,7 +2865,7 @@ const JOURNAL = {
       {
        "path": "skills/symphysis-brainstorm/SKILL.md",
        "quote": "иначе спроси человека в чате",
-       "line": 246,
+       "line": 277,
        "verdict": "сверено",
        "found": true
       }
@@ -2879,16 +2880,16 @@ const JOURNAL = {
       {
        "path": "skills/symphysis-brainstorm/SKILL.md",
        "quote": "N = 2 — брейншторм закончен",
-       "line": 236,
-       "verdict": "сверено",
-       "found": true
+       "line": null,
+       "verdict": "цитаты нет дословно",
+       "found": false
       },
       {
        "path": "skills/symphysis-brainstorm/SKILL.md",
        "quote": "третьего круга нет",
-       "line": 276,
-       "verdict": "сверено",
-       "found": true
+       "line": null,
+       "verdict": "цитаты нет дословно",
+       "found": false
       }
      ]
     }
@@ -2993,14 +2994,14 @@ const JOURNAL = {
     {
      "path": "skills/symphysis-brainstorm/SKILL.md",
      "quote": "`antipodes` — варианты других развилок, несовместимые",
-     "line": 156,
+     "line": 173,
      "verdict": "сверено",
      "found": true
     },
     {
      "path": "tools/journal_model.py",
      "quote": "антипод {a['option']} ↔ {a['other']}: записи {target} нет",
-     "line": 404,
+     "line": 406,
      "verdict": "сверено",
      "found": true
     },
@@ -3247,7 +3248,7 @@ const JOURNAL = {
       {
        "path": "skills/symphysis-brainstorm/SKILL.md",
        "quote": "### 7. Обратимость",
-       "line": 217,
+       "line": 250,
        "verdict": "сверено",
        "found": true
       }
@@ -3299,7 +3300,7 @@ const JOURNAL = {
       {
        "path": "docs/repo-contract.md",
        "quote": "Удаление, переименование, смена смысла и новое значение существующего поля считаются.",
-       "line": 56,
+       "line": 57,
        "verdict": "сверено",
        "found": true
       }
@@ -3490,7 +3491,7 @@ const JOURNAL = {
       {
        "path": "skills/symphysis-viewer/SKILL.md",
        "quote": "антипод уже выбранного — блок с подсказкой",
-       "line": 95,
+       "line": 96,
        "verdict": "сверено",
        "found": true
       },
@@ -3664,9 +3665,9 @@ const JOURNAL = {
     {
      "path": "installer/lib/install.js",
      "quote": "/^(journal.*\\.py|playground-template\\.html)$/",
-     "line": 95,
-     "verdict": "сверено",
-     "found": true
+     "line": null,
+     "verdict": "цитаты нет дословно",
+     "found": false
     }
    ],
    "comments": [],
@@ -3692,14 +3693,14 @@ const JOURNAL = {
       {
        "path": "tools/playground-template.html",
        "quote": "const MODES = ['decisions','check','attack'];",
-       "line": 206,
+       "line": 208,
        "verdict": "сверено",
        "found": true
       },
       {
        "path": "tools/playground-template.html",
        "quote": "grid-template-columns: var(--left) minmax(0,1fr) var(--right)",
-       "line": 22,
+       "line": 23,
        "verdict": "сверено",
        "found": true
       }
@@ -3826,14 +3827,14 @@ const JOURNAL = {
       {
        "path": "docs/repo-contract.md",
        "quote": "к первому выпуску версия поднимается до 1.0.0",
-       "line": 75,
+       "line": 76,
        "verdict": "сверено",
        "found": true
       },
       {
        "path": "docs/repo-contract.md",
        "quote": "Хеши из `Needs:` достижимы из `main` ядра",
-       "line": 79,
+       "line": 80,
        "verdict": "сверено",
        "found": true
       }
@@ -3904,7 +3905,7 @@ const JOURNAL = {
       {
        "path": "skills/symphysis-attack/SKILL.md",
        "quote": "`status: passed` ставится, только когда в таблице нет ни одной строки",
-       "line": 234,
+       "line": 235,
        "verdict": "сверено",
        "found": true
       }
@@ -5541,7 +5542,7 @@ const JOURNAL = {
     {
      "path": "docs/repo-contract.md",
      "quote": "Ядро лежит в `.symphysis/tools/` каждого проекта",
-     "line": 58,
+     "line": 59,
      "verdict": "сверено",
      "found": true
     }
@@ -5761,7 +5762,7 @@ const JOURNAL = {
     {
      "path": "docs/repo-contract.md",
      "quote": "Логика страницы и плагина уже расходится, и человек это принял.",
-     "line": 69,
+     "line": 70,
      "verdict": "сверено",
      "found": true
     }
@@ -6059,7 +6060,7 @@ const JOURNAL = {
     {
      "path": "docs/repo-contract.md",
      "quote": "без этой настройки тесты идут по той ветке, что стоит в `../symphysis`",
-     "line": 80,
+     "line": 81,
      "verdict": "сверено",
      "found": true
     }
@@ -6352,7 +6353,7 @@ const JOURNAL = {
     {
      "path": "tools/journal_render.py",
      "quote": "чтобы текст не закрыл `<script>`",
-     "line": 165,
+     "line": 169,
      "verdict": "сверено",
      "found": true
     }
@@ -6502,7 +6503,7 @@ const JOURNAL = {
     {
      "path": "tools/playground-template.html",
      "quote": "@media (max-width: 900px)",
-     "line": 133,
+     "line": 131,
      "verdict": "сверено",
      "found": true
     }
@@ -6580,7 +6581,7 @@ const JOURNAL = {
     {
      "path": "tools/playground-template.html",
      "quote": "URL.createObjectURL(blob)",
-     "line": 832,
+     "line": 852,
      "verdict": "сверено",
      "found": true
     }
@@ -7687,7 +7688,7 @@ const JOURNAL = {
     {
      "path": "docs/repo-contract.md",
      "quote": "Перед выпуском плагина:",
-     "line": 77,
+     "line": 78,
      "verdict": "сверено",
      "found": true
     }
@@ -8515,7 +8516,7 @@ const JOURNAL = {
       {
        "path": "tools/playground-template.html",
        "quote": "тяни, чтобы изменить высоту панели",
-       "line": 174,
+       "line": 175,
        "verdict": "сверено",
        "found": true
       }
@@ -8762,6 +8763,13 @@ const JOURNAL = {
  ]
 };
 const ATTACK = [];
+const SCHEME = {
+ "exists": true,
+ "text": "flowchart TD\n    intent[\"intent.md<br/>слова и критерии человека\"] --> exists{\"есть scheme.md?\"}\n    exists -- \"нет\" --> scenario{\"в intent.md есть сценарий?\"}\n    scenario -- \"да\" --> create[\"модель создаёт scheme.md<br/>и даёт ссылку в чат\"]\n    scenario -- \"нет\" --> ask[\"модель предлагает своё видение<br/>и задаёт вопросы\"]\n    ask --> create\n    exists -- \"да\" --> journal\n    create --> journal[\"записи decisions.json<br/>с полем nodes\"]\n    file[\"scheme.md<br/>файл человека\"] -.-> create\n    human[\"человек правит scheme.md\"] --> file\n    human -. \"говорит агенту сам\" .-> journal\n\n    journal --> viewjson[\"view-json<br/>с номером контракта\"]\n    viewjson --> number{\"номер совпал?\"}\n    number -- \"нет\" --> update[\"плагин говорит, что обновить\"]\n    number -- \"да\" --> cards[\"просмотрщик: карточки\"]\n\n    file --> tab{\"вкладка схемы:<br/>файл есть?\"}\n    tab -- \"нет\" --> plate[\"плашка «Схема не создана»\"]\n    tab -- \"да\" --> picture[\"рисунок: масштаб и перетаскивание\"]\n    picture -- \"клик по узлу\" --> filter[\"фильтр карточек по nodes\"]\n    filter --> cards\n    cards -. \"узла нет в схеме\" .-> hint[\"подсказка «узел не найден»\"]\n\n    package[\"пакет правок\"] --> vsix[\"сборка .vsix с версией\"]\n    vsix --> check[\"npm run e2e:vsix\"]\n",
+ "blocks": 1,
+ "first_line": 6,
+ "mermaid": "../../../.symphysis/tools/mermaid.min.js"
+};
 const ADDRESSEES = ['материалы','человек','ИБ'];
 /* линзы атаки — закрытые списки скилла symphysis-attack, по файлу атаки: журнал (`attack/decisions.md`, цель — один `decisions.json`)
    и артефакты (`attack/artifacts.md`, всё прочее); порядок — порядок списка, подписи — чем ищется. Слуг не из списка своего файла —
@@ -8786,35 +8794,14 @@ const MODE_LABELS = { decisions:'решения', check:'проверка', atta
 const ADDED_MARK = '(добавлен человеком';
 const ONE_WAY = 'в одну сторону';
 const ATTACK_HINT = 'Строки атаки apply не меняет — их закрывает правка цели (журнала или артефакта) и повторная атака. Спор по строке (почему опора есть, почему не блокер) уходит в промпт возврата одной строкой «Замечания к схеме:» и ложится в notes[] журнала; ответ на строку с закрытием «вопрос человеку» и разделом «F-NN, decision» уходит словом к решению. Фильтр по линзе прячет группы, но не счётчики тяжести в шапке файла.';
-const PARK_HINT = 'Парковка — дополнительный вопрос, который нельзя закрыть сейчас: он уходит адресату. «материалы» — ответ ищется в файлах (исследование), «человек» — нужно решение человека, «ИБ» — проверка по чек-листу безопасности. Решение по самой развилке парковка не снимает.';
-/* вертикальная блок-схема под левую панель: спина x=50..250, дуги возвратов по сторонам */
-const SX = 50, SW = 200, SH = 40, STEP = 58;
-const NODES = [
-  {id:'n1',  y:8,   label:'1 Брейншторм',       sub:'decisions.md',                 d:['П1','П2','П3']},
-  {id:'n2',  y:66,  label:'2 Исследование',     sub:'research/*.md · жанры',        d:['П1']},
-  {id:'n3',  y:124, label:'3 Второй круг',      sub:'decisions.md',                 d:['П2','П3']},
-  {id:'q1',  y:182, diamond:true, label:'новое?', sub:'', d:[]},
-  {id:'n4',  y:240, label:'4 Атака журнала',    sub:'attack/decisions.md',          d:['П3','П5']},
-  {id:'n5',  y:298, label:'5 Просмотрщик',      sub:'HTML → промпт → JSON',         d:['П7']},
-  {id:'n6',  y:356, label:'6 Промпт → OpenSpec', sub:'proposal · specs · design · tasks', d:['П1','П5']},
-  {id:'n7',  y:414, label:'7 Атака артефакта',  sub:'attack/artifacts.md',          d:['П3','П5']},
-  {id:'q2',  y:472, diamond:true, label:'вердикт', sub:'', d:[]},
-  {id:'n8',  y:530, label:'готово к apply',     sub:'статус по вердикту',           d:['П4']},
-  {id:'n9',  y:600, x:50,  w:96,  label:'Рамка',       sub:'форк OpenSpec', d:['П4']},
-  {id:'n10', y:600, x:154, w:96,  label:'Инсталлятор', sub:'npx',           d:['П6']},
-  {id:'n11', y:658, label:'Э5 Сухой прогон',    sub:'схема проходит сама себя',     d:['Э5']},
-].map(n => Object.assign({ x:SX, w:SW, h:SH }, n));
-const EDGES = [
-  ['n1','n2'], ['n2','n3'], ['n3','q1'], ['q1','n4','нет'], ['q1','n2','да','right'], ['n4','n5'], ['n5','n6'],
-  ['n6','n7'], ['n7','q2'], ['q2','n8','passed'], ['q2','n1','gaps → журнал','left'], ['n9','n11'], ['n10','n11'],
-];
+const PARK_HINT = 'Парковка — дополнительный вопрос, который нельзя закрыть сейчас: он уходит адресату. «материалы» — ответ ищет агент, в файлах или пробой (исследование), «человек» — нужно решение человека, «ИБ» — проверка по чек-листу безопасности. Решение по самой развилке парковка не снимает.';
 /* ключ — путь страницы: `source` у всех журналов один, и состояние одного журнала приходило бы в другой с теми же номерами F-NN */
 const KEY = 'symphysis:' + ((typeof location !== 'undefined' && location.pathname) || JOURNAL.title || JOURNAL.source || 'journal');
 const byId = Object.fromEntries(JOURNAL.records.map(r => [r.id, r]));
 
 const EMPTY = () => ({ decisions:{}, added:{}, newForks:[], disputes:{}, deps:{}, notes:'' });
 let state = EMPTY();
-let filter = { node:null, openOnly:false };
+let filter = { openOnly:false };
 try { const s = localStorage.getItem(KEY); if (s) state = Object.assign(EMPTY(), JSON.parse(s)); } catch (e) {}
 for (const k in state.decisions) { const d = state.decisions[k]; if (!Array.isArray(d.parked)) d.parked = d.parked ? [{ text:'', addressee:d.addressee || 'человек' }] : []; }
 function save() { try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {} }
@@ -8843,6 +8830,9 @@ function disputeKey(att, row) { return att.path + '|' + row.section + '|' + row.
     if (rec.decision && rec.decision.option && d.choice === rec.decision.option) d.choice = null;
     const sp = norm(state.disputes[rec.id]); if (sp && rec.dispute && norm(rec.dispute).includes(sp)) delete state.disputes[rec.id];
   }
+  /* новая развилка, уже внесённая apply, из состояния уходит; поправленная человеком остаётся: вопрос другой */
+  const questions = new Set(JOURNAL.records.map(r => norm(r.question)));
+  state.newForks = (state.newForks || []).filter(f => !questions.has(norm(f.question)));
   const ownNotes = norm(state.notes);
   if (ownNotes && (JOURNAL.notes || []).some(n => norm(n.text).includes(ownNotes))) state.notes = '';
   save();
@@ -8866,6 +8856,79 @@ function disputeKey(att, row) { return att.path + '|' + row.section + '|' + row.
   window.addEventListener('mouseup', () => { if (!drag) return; drag = null; try { localStorage.setItem(KEY + ':outh', String(h)); } catch (e) {} });
 })();
 
+/* панель схемы: включается поверх режимов, рисунок — файлом mermaid рядом, иначе текст; файл грузится при первом включении (F-39, F-54, F-122) */
+let schemeOn = false, schemeLoaded = false;
+try { schemeOn = localStorage.getItem(KEY + ':scheme') === '1'; } catch (e) {}
+(function schemeWidth() {
+  const root = document.documentElement, hd = document.getElementById('schemehandle');
+  let w = 0; try { w = +localStorage.getItem(KEY + ':schemew') || 0; } catch (e) {}
+  if (w) root.style.setProperty('--schemew', w + 'px');
+  let drag = null;
+  hd.onmousedown = e => { drag = { x:e.clientX, w:document.getElementById('schemePanel').offsetWidth }; e.preventDefault(); };
+  window.addEventListener('mousemove', e => { if (!drag) return; w = Math.max(240, Math.min(window.innerWidth - 480, drag.w + (drag.x - e.clientX))); root.style.setProperty('--schemew', w + 'px'); });
+  window.addEventListener('mouseup', () => { if (!drag) return; drag = null; try { localStorage.setItem(KEY + ':schemew', String(w)); } catch (e) {} });
+})();
+function schemeShow(st, notes, content) {
+  const made = notes.map(([cls, text]) => { const n = document.createElement('div'); n.className = 'note ' + cls; n.textContent = text; return n; });
+  document.getElementById('schemeBody').replaceChildren(...made, ...(content ? [content] : []));
+  document.getElementById('schemePanel').dataset.state = st;
+}
+function schemeBlocksNote() {
+  const n = SCHEME.blocks;
+  return n > 1 ? [['warn', 'в файле ' + n + ' ' + (n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 12 || n % 100 > 14) ? 'блока' : 'блоков') + ', показан первый']] : [];
+}
+function schemeText(notes) {
+  const pre = document.createElement('pre'); pre.textContent = SCHEME.text;
+  schemeShow('text', [...schemeBlocksNote(), ...notes], pre);
+}
+/* сообщение mermaid при незакрытой скобке называет конец текста: верная строка — в hash.loc, от начала блока (F-28, F-61) */
+function schemeError(e) {
+  const loc = e && e.hash && e.hash.loc;
+  const line = loc && Number.isInteger(loc.first_line) ? loc.first_line + SCHEME.first_line - 1 : null;
+  const text = String((e && e.message) || e).replace(/^Parse error on line \d+:?\s*/, '');
+  return 'Ошибка mermaid' + (line ? ', строка ' + line + ' в scheme.md' : '') + ':\n' + text;
+}
+async function schemeDraw() {
+  try {
+    mermaid.initialize({ startOnLoad:false, securityLevel:'strict', theme:'dark', suppressErrorRendering:true });
+    const { svg } = await mermaid.render('schemeDrawing', SCHEME.text);
+    const holder = document.createElement('div'); holder.innerHTML = svg;
+    schemeShow('svg', schemeBlocksNote(), holder);
+    const el = holder.querySelector('svg'), vb = el.viewBox && el.viewBox.baseVal;
+    if (vb && vb.width) { el.style.width = vb.width + 'px'; el.style.height = vb.height + 'px'; el.style.maxWidth = 'none'; }
+    /* натуральный размер шире панели: вначале виден верхний узел посередине, иначе панель пуста, пока не прокрутишь (F-35) */
+    const body = document.getElementById('schemeBody'), box = n => n.getBoundingClientRect();
+    const nodes = [...el.querySelectorAll('g.node')];
+    if (nodes.length) {
+      const top = nodes.reduce((a, b) => box(b).top < box(a).top ? b : a);
+      body.scrollLeft += box(top).left + box(top).width / 2 - box(body).left - body.clientWidth / 2;
+      body.scrollTop = 0;
+    }
+  } catch (e) { schemeText([['bad', schemeError(e)]]); }
+}
+function schemeLoad() {
+  if (schemeLoaded) return;
+  schemeLoaded = true;
+  if (!SCHEME.exists) return schemeShow('missing', [['info', 'Схема не создана']]);
+  if (SCHEME.text === null) return schemeShow('empty', [['info', 'В scheme.md нет схемы']]);
+  const noFile = () => schemeText([['info', 'Файла mermaid рядом нет: показан текст схемы']]);
+  if (!SCHEME.mermaid) return noFile();
+  const s = document.createElement('script');
+  s.src = SCHEME.mermaid; s.onload = schemeDraw; s.onerror = noFile;
+  document.head.appendChild(s);
+}
+function headerHeight() {
+  const h = document.getElementById('pageHeader').offsetHeight;
+  if (h) document.documentElement.style.setProperty('--headh', h + 'px');
+}
+window.addEventListener('resize', headerHeight);
+function renderSchemePanel() {
+  document.getElementById('schemePanel').classList.toggle('hidden', !schemeOn);
+  document.body.classList.toggle('scheme-on', schemeOn);
+  document.getElementById('btnScheme').classList.toggle('active', schemeOn);
+  if (schemeOn) schemeLoad();
+}
+
 function dec(id) { return state.decisions[id] || (state.decisions[id] = { choice:null, word:'', parked:[] }); }
 function journalChoice(rec) { return rec.decision && rec.decision.option ? rec.decision.option : null; }
 function chosen(id) { const d = state.decisions[id]; if (d && d.choice) return d.choice; return journalChoice(byId[id] || {}); }
@@ -8881,7 +8944,7 @@ function antipodesOf(id, letter) {
   for (const r of JOURNAL.records) for (const a of (r.antipodes || [])) if (a.other === id + '.' + letter) out.add(r.id + '.' + a.option);
   return [...out];
 }
-function blockedBy(id, letter) { return antipodesOf(id, letter).filter(k => { const [oid, ol] = k.split('.'); return chosen(oid) === ol; }); }
+function chosenAntipodes(id, letter) { return antipodesOf(id, letter).filter(k => { const [oid, ol] = k.split('.'); return chosen(oid) === ol; }); }
 /* text:begin */
 function esc(s) { return String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
 /* текст журнала и атаки: единственная разметка данных — пары backticks; сначала экранирование, потом `код` -> <code> */
@@ -8896,41 +8959,7 @@ function evHtml(ev) {
   return '<span class="ev">улика: <code>' + esc(loc) + '</code> «' + esc(ev.quote) + '» ' + v + '</span>';
 }
 
-/* ---------- схема работы (вертикальная) ---------- */
-function renderScheme() {
-  const N = Object.fromEntries(NODES.map(n => [n.id, n]));
-  const H = 710;
-  let svg = '<svg viewBox="0 0 300 ' + H + '"><defs><marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#9aa3b2"/></marker></defs>';
-  for (const [f, t, label, side] of EDGES) {
-    const a = N[f], b = N[t];
-    const ac = a.x + a.w / 2, bc = b.x + b.w / 2;
-    let d, lx, ly;
-    if (side === 'right') { const p1 = { x:a.x + a.w, y:a.y + a.h / 2 }, p2 = { x:b.x + b.w, y:b.y + b.h / 2 }; const cx = 296;
-      d = 'M' + p1.x + ' ' + p1.y + ' C ' + cx + ' ' + p1.y + ', ' + cx + ' ' + p2.y + ', ' + p2.x + ' ' + p2.y; lx = 282; ly = (p1.y + p2.y) / 2; }
-    else if (side === 'left') { const p1 = { x:a.x, y:a.y + a.h / 2 }, p2 = { x:b.x, y:b.y + b.h / 2 }; const cx = 4;
-      d = 'M' + p1.x + ' ' + p1.y + ' C ' + cx + ' ' + p1.y + ', ' + cx + ' ' + p2.y + ', ' + p2.x + ' ' + p2.y; lx = 18; ly = (p1.y + p2.y) / 2; }
-    else { const p1 = { x:ac, y:a.y + a.h }, p2 = { x:bc, y:b.y }; d = 'M' + p1.x + ' ' + p1.y + ' L ' + p2.x + ' ' + p2.y; lx = ac + 6; ly = (p1.y + p2.y) / 2 + 3; }
-    svg += '<path class="edge' + (side ? ' loop' : '') + '" d="' + d + '"/>';
-    if (label) svg += '<text class="lbl" x="' + lx + '" y="' + ly + '"' + (side === 'right' ? ' text-anchor="middle" transform="rotate(90 ' + lx + ' ' + ly + ')"' : side === 'left' ? ' text-anchor="middle" transform="rotate(-90 ' + lx + ' ' + ly + ')"' : '') + '>' + esc(label) + '</text>';
-  }
-  for (const n of NODES) {
-    const cls = 'node' + (filter.node === n.id ? ' active' : '') + (filter.node && filter.node !== n.id ? ' dim' : '');
-    const cx = n.x + n.w / 2, cy = n.y + n.h / 2;
-    const shape = n.diamond ? '<polygon points="' + cx + ',' + n.y + ' ' + (n.x + n.w - 40) + ',' + cy + ' ' + cx + ',' + (n.y + n.h) + ' ' + (n.x + 40) + ',' + cy + '"/>'
-                            : '<rect x="' + n.x + '" y="' + n.y + '" width="' + n.w + '" height="' + n.h + '" rx="7"/>';
-    const cnt = n.d.length ? JOURNAL.records.filter(r => n.d.includes(r.delivery)).length : 0;
-    svg += '<g class="' + cls + '" data-node="' + n.id + '">' + shape +
-      '<text x="' + cx + '" y="' + (cy - (n.sub ? 2 : -4)) + '" text-anchor="middle">' + esc(n.label) + (cnt ? ' · ' + cnt : '') + '</text>' +
-      (n.sub ? '<text class="sub" x="' + cx + '" y="' + (cy + 11) + '" text-anchor="middle">' + esc(n.sub) + '</text>' : '') + '</g>';
-  }
-  svg += '</svg>';
-  const sch = document.getElementById('scheme');
-  sch.innerHTML = svg + '<div class="hint">' + (filter.node ? 'фильтр: ' + esc(N[filter.node].label) + ' — клик ещё раз снимает' : (filter.openOnly ? 'только открытые' : 'пунктир — возвраты: новое после второго круга, провал вердикта')) + '</div>';
-  sch.querySelectorAll('.node').forEach(g => g.onclick = () => { const n = N[g.dataset.node]; if (!n.d.length) return; filter.node = (filter.node === n.id) ? null : n.id; render(); });
-}
-
 function visible(rec) {
-  if (filter.node) { const n = NODES.find(p => p.id === filter.node); if (!n.d.includes(rec.delivery)) return false; }
   if (filter.openOnly) { if (rec.kind === 'факт' || chosen(rec.id)) return false; }
   return true;
 }
@@ -8953,7 +8982,9 @@ function renderCards() {
       : jc ? '<span class="badge ok">решено в журнале: ' + esc(jc) + '</span>' : '<span class="badge">открыто</span>';
     if (parkedAll.length) status += '<span class="badge park">парковка: ' + parkedAll.length + '</span>';
     const deps = effectiveDeps(rec);
-    const waiting = deps.filter(x => x.kind !== 'removed' && !chosen(x.id)).map(x => x.id);
+    /* факт решения не требует: предпосылка ждёт только у развилки без выбора и у припаркованного факта */
+    const settled = id => chosen(id) || (byId[id] && byId[id].kind === 'факт' && byId[id].status === 'решён');
+    const waiting = deps.filter(x => x.kind !== 'removed' && !settled(x.id)).map(x => x.id);
     let html = '<div class="' + cls + '" id="' + esc(rec.id) + '"><div class="head"><span class="id mono">' + esc(rec.id) + '</span>' + status +
       '<span class="badge">' + esc(rec.delivery || '—') + '</span>' + (rec.addressee ? '<span class="badge">адресат: ' + esc(rec.addressee) + '</span>' : '') + '</div>' +
       '<div class="q">' + md(rec.question) + '</div>';
@@ -8971,7 +9002,7 @@ function renderCards() {
     } else {
       const cur = chosen(rec.id);
       for (const o of allOptions(rec)) {
-        const blocked = blockedBy(rec.id, o.letter);
+        const paired = chosenAntipodes(rec.id, o.letter);
         const anti = antipodesOf(rec.id, o.letter);
         const tags = (rec.recommendation && rec.recommendation.option === o.letter ? '<span class="tag rec">рекомендация</span>' : '') +
           (jc === o.letter ? '<span class="tag journal">в журнале</span>' : '') +
@@ -8979,10 +9010,11 @@ function renderCards() {
           (o.added ? '<span class="tag added">добавлен человеком</span>' : '') +
           deviationTag(o) +
           (anti.length ? '<span class="tag anti" title="нельзя вместе с: ' + esc(anti.join(', ')) + '">антипод ' + esc(anti.join(', ')) + '</span>' : '');
-        html += '<label class="opt' + (cur === o.letter ? ' chosen' : '') + (blocked.length ? ' blocked' : '') + '">' +
+        html += '<label class="opt' + (cur === o.letter ? ' chosen' : '') + '">' +
           '<input type="radio" name="' + esc(rec.id) + '" value="' + esc(o.letter) + '"' + (cur === o.letter ? ' checked' : '') + '>' +
           '<div class="t"><span class="letter">' + esc(o.letter) + '.</span> ' + md(o.text) + tags +
           (o.unlikely ? '<span class="ev">маловероятно: ' + md(o.unlikely) + '</span>' : '') +
+          (paired.length ? '<span class="note warn" data-antipode-warning="' + esc(rec.id + '.' + o.letter) + '">антипод уже выбран: ' + esc(paired.join(', ')) + '. Выбрать можно, но вместе они станут строкой атаки.</span>' : '') +
           (o.evidence || []).map(evHtml).join('') + '</div></label>';
       }
       if (rec.recommendation) html += '<div class="rec">рекомендация: <b>' + esc(rec.recommendation.option) + '</b> — ' + md(rec.recommendation.why) + '</div>';
@@ -9003,14 +9035,7 @@ function renderCards() {
   }).join('');
 
   el.querySelectorAll('input[type=radio]').forEach(r => r.onchange = () => {
-    const id = r.name, letter = r.value, blocked = blockedBy(id, letter);
-    if (blocked.length) {
-      r.checked = false;
-      const m = el.querySelector('[data-msg="' + id + '"]');
-      m.textContent = 'антипод уже выбран: ' + blocked.join(', ') + ' — сначала измени то решение';
-      m.classList.remove('hidden');
-      return;
-    }
+    const id = r.name, letter = r.value;
     const d = dec(id); d.choice = (letter === journalChoice(byId[id])) ? null : letter; save(); render();
   });
   el.querySelectorAll('textarea[data-word]').forEach(t => t.oninput = () => { dec(t.dataset.word).word = t.value; save(); updateOut(); });
@@ -9388,12 +9413,13 @@ function renderAttack() {
   el.querySelectorAll('a[data-goto]').forEach(a => a.onclick = e => { e.preventDefault(); setMode('decisions'); const c = document.getElementById(a.dataset.goto); if (c && c.scrollIntoView) c.scrollIntoView(); });
 }
 
-function render() { renderModes(); renderScheme(); renderCards(); renderNewForks(); renderToc(); renderStats(); if (mode === 'check') renderCheck(); if (mode === 'attack') renderAttack(); updateOut(); }
+function render() { renderModes(); renderSchemePanel(); document.getElementById('btnOpen').classList.toggle('active', filter.openOnly); renderCards(); renderNewForks(); renderToc(); renderStats(); headerHeight(); if (mode === 'check') renderCheck(); if (mode === 'attack') renderAttack(); updateOut(); }
 
 document.getElementById('notes').value = state.notes || '';
 document.getElementById('notes').oninput = e => { state.notes = e.target.value; save(); updateOut(); };
-document.getElementById('btnAll').onclick = () => { filter = { node:null, openOnly:false }; render(); };
+document.getElementById('btnAll').onclick = () => { filter = { openOnly:false }; render(); };
 document.getElementById('btnOpen').onclick = () => { filter.openOnly = !filter.openOnly; render(); };
+document.getElementById('btnScheme').onclick = () => { schemeOn = !schemeOn; try { localStorage.setItem(KEY + ':scheme', schemeOn ? '1' : '0'); } catch (e) {} renderSchemePanel(); };
 document.getElementById('btnToggleNew').onclick = () => document.getElementById('newForkForm').classList.toggle('hidden');
 document.getElementById('btnAddFork').onclick = () => {
   const q = document.getElementById('nfQuestion').value.trim(); if (!q) return;

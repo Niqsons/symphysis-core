@@ -151,7 +151,9 @@
     "dispute": {"type": "string"},
     "consequences": {"type": "string"},
     "evidence": {"type": "array", "items": {"$ref": "#/$defs/evidence"}},
-    "comments": {"type": "array", "items": {"$ref": "#/$defs/comment"}}
+    "comments": {"type": "array", "items": {"$ref": "#/$defs/comment"}},
+    "nodes": {"type": "array", "items": {"type": "string"},
+     "description": "Узлы схемы scheme.md, необязательно; ставит модель при записи, check проверяет только форму (F-23, F-24)."}
    }
   }
  }

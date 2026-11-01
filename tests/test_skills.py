@@ -535,10 +535,10 @@ def test_template_keeps_perspectives_out_of_attack_mode():
     assert not set(template_lens_slugs()) & set(PERSPECTIVES)
 
 
-def test_template_scheme_names_attack_not_grill():
+def test_template_names_attack_not_grill():
     text = read(TEMPLATE)
     assert "Гриль" not in text and "гриль" not in text, "гриля после D4b нет"
-    assert "4 Атака журнала" in text and "attack/decisions.md" in text and "attack/artifacts.md" in text
+    assert "attack/decisions.md" in text and "attack/artifacts.md" in text
     assert "'attack.md'" not in text, "общего attack.md после D4b нет: два файла атаки"
 
 
@@ -777,3 +777,77 @@ def test_brainstorm_asks_for_criteria_only_while_there_are_no_setting_facts():
         assert token in step, f"в шаге 1 нет «{token}»"
     branch = step.split("Критериев ноль")[1].split("«назови критерии готовности»")[0]
     assert "фактов `addressee: постановка` в журнале нет" in branch, "условие ветки — и по intent.md, и по журналу"
+
+
+# --- decision-scheme: схема, круги без потолка, антиподы (F-22, F-44, F-50, F-56, F-102, F-110, F-114) ---
+
+def test_brainstorm_creates_the_scheme_on_the_first_round():
+    """Сценарии «Сценарий есть», «Сценария нет», «Файл уже есть», «Повтор после обрыва», «Файл появился перед записью»."""
+    step = block(brainstorm(), "### 1.", "### 2.")
+    for token in ("`<каталог изменения>/scheme.md`", "первом круге", "Файла нет, сценарий в `intent.md` есть", "Файла нет и сценария нет",
+                  "предложи своё видение", "Файл есть", "не меняй его и дай на него ссылку", "не различаются",
+                  "Перед записью проверь ещё раз", "не перезаписывай", "покажи свой вариант в чате"):
+        assert token in step, f"в шаге 1 нет «{token}»"
+
+
+def test_brainstorm_changes_the_scheme_only_by_the_word():
+    """Сценарии «Новый круг с новыми решениями» и «Человек попросил правку», F-22."""
+    step = block(brainstorm(), "### 1.", "### 2.")
+    for token in ("только по слову человека", "Просит поправить", "правишь файл и даёшь ссылку"):
+        assert token in step, f"в шаге 1 нет «{token}»"
+    assert "`nodes`" in block(brainstorm(), "### 4.", "### 5."), "модель ставит `nodes` при записи"
+
+
+def test_brainstorm_does_not_supervise_the_scheme():
+    """Запрет F-102: при закрытии круга о схеме не спрашивает и утверждения не ждёт."""
+    closing = block(brainstorm(), "### 8.", "## Чего скилл не делает")
+    assert "scheme.md" not in closing and "схем" not in closing
+    assert "При закрытии круга о схеме не спрашивай и утверждения файла не жди" in block(brainstorm(), "### 1.", "### 2.")
+    assert "не надзирает за схемой" in block(brainstorm(), "## Чего скилл не делает", "## Приёмка")
+
+
+def test_brainstorm_has_no_ceiling_of_rounds():
+    """F-44: потолка нет, конец — отказ человека или круг без нового; при парковках спрашивает `research` (F-95)."""
+    text = brainstorm()
+    assert "два круга" not in text and "N = 2" not in text and "третьего круга нет" not in text
+    closing = block(text, "### 8.", "## Чего скилл не делает")
+    assert "K = 0 и M = 0" in closing and "только если и D = 0" in closing
+    assert closing.index("P > 0") < closing.index("K = 0 и M = 0"), "парковки проверяются раньше конца брейншторма"
+    assert "Начать новый круг?" in closing
+
+
+def test_brainstorm_round_after_the_end_line():
+    """F-96: строка о конце брейншторма новому кругу не мешает."""
+    closing = block(brainstorm(), "### 8.", "## Чего скилл не делает")
+    assert "Строка о конце брейншторма новому кругу не мешает" in closing
+    assert "прежняя строка остаётся" in closing
+
+
+def test_brainstorm_reconciles_antipodes_before_showing_and_after_choice():
+    """Сценарии «Пара до показа», «Вариант отвергнут раньше», «Вариант человека», «Антиподов нет», «Пара уже заведена»; F-50, F-51."""
+    step = block(brainstorm(), "### 6.", "### 7.")
+    for token in ("До показа", "новые варианты между собой и с уже выбранными", "отвергнутые не смотри", "у обоих вариантов",
+                  "После выбора", "выбранные за круг между собой и с прежними решениями", "Находка — новая развилка",
+                  "уже заведена", "новой записи не даёт", "в этом же контексте", "субагента для неё не заводи"):
+        assert token in step, f"в шаге 6 нет «{token}»"
+    closing = block(brainstorm(), "### 8.", "## Чего скилл не делает")
+    assert "антиподов A" in closing and "ноль значит «смотрел, таких нет»" in closing
+
+
+def test_brainstorm_reconciling_does_not_decide_for_the_human():
+    """Запрет F-110: судят атака и человек; в тексте скилла запрет назван."""
+    step = block(brainstorm(), "### 6.", "### 7.")
+    assert "Тексты вариантов, рекомендации и `decision` прежних записей сверка не меняет" in step
+
+
+def test_attack_both_antipodes_is_a_warning_and_missing_nodes_is_not_a_finding():
+    """F-56: оговорка в линзе, как у `deviation`; F-114: отсутствие `nodes` не находка."""
+    text = read(SKILLS / "symphysis-attack" / "SKILL.md")
+    assert "оба антипода решены — `предупреждение (оба антипода выбраны, F-56)`" in text
+    assert "отсутствие поля `nodes` у записи" in block(text, "Не репортится", "### 4.")
+
+
+def test_viewer_skill_names_the_fallback_of_the_scheme_panel():
+    """F-39: страница больше не всегда один файл; без файла mermaid рядом виден текст."""
+    text = read(VIEWER / "SKILL.md")
+    assert "панель `scheme.md`" in text and "иначе текст" in text

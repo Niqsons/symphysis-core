@@ -1,3 +1,4 @@
 # Строки, которые гейт принимает за адреса, а они имена файлов.
 plan-implementation.journal.md  # имя файла журнала
 j.md  # имя файла в тесте
+sha512-NcV1JjO5oDzoK  # хеш целостности @types/d3-ease в installer/package-lock.json: совпадение внутри хеша случайно

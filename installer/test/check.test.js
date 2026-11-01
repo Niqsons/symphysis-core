@@ -258,3 +258,12 @@ test("telemetry: конфиг не JSON — сигнал, код 0", () => {
   assert.equal(r.status, 0, r.stdout);
   assert.match(r.stdout, /^\[\.\.\] telemetry: конфиг OpenSpec не читается/m);
 });
+
+
+test("нет файла mermaid: сигнал [..], находки нет, страница работает и с текстом (F-101)", () => {
+  const p = installed();
+  fs.rmSync(path.join(targets(p).toolsDir, "tools", "mermaid.min.js"));
+  const r = runCheck(p);
+  assert.deepEqual(r.findings, []);
+  assert.ok(r.notes.some((n) => n.startsWith(".symphysis/tools/mermaid.min.js:")), JSON.stringify(r.notes));
+});

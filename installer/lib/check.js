@@ -97,6 +97,9 @@ export function check(project, { skillsDirs = [], payloadDir = DEFAULT_PAYLOAD }
     path.join(toolsDir, "journal-roots.json"),
   ];
   for (const f of toolFiles) if (!fs.existsSync(f)) findings.push(`${rel(root, f)}: нет файла`);
+  // Страница работает и без файла, показывает схему текстом, поэтому это сигнал, а не находка (F-39, F-101).
+  const mermaidFile = path.join(toolsDir, "mermaid.min.js");
+  if (!fs.existsSync(mermaidFile)) notes.push(`${rel(root, mermaidFile)}: нет файла, страница покажет схему текстом; рисунок вернёт symphysis install`);
 
   const py = findPython();
   if (!py) findings.push("python: python или python3 не отвечает");

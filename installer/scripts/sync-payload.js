@@ -18,6 +18,12 @@ const FILES = [
   "docs/journal.schema.json",
 ];
 
+/** Файл mermaid и лицензия: приходят из зависимости сборки, в git ядра не лежат (F-53). */
+const MERMAID_FILES = [
+  ["dist/mermaid.min.js", "tools/mermaid.min.js"],
+  ["LICENSE", "tools/mermaid.LICENSE"],
+];
+
 function skillDirs(root) {
   return fs
     .readdirSync(path.join(root, "skills"), { withFileTypes: true })
@@ -31,6 +37,13 @@ export function syncPayload(dest = DEFAULT_DEST, root = ROOT) {
   if (!fs.existsSync(path.join(root, "skills"))) {
     throw new Error(`syncPayload: в корне ${root} нет каталога skills — payload не тронут`);
   }
+  // Зависимость сборки тоже проверяется до очистки: без файла поставка не собирается (F-100).
+  const mermaid = path.join(root, "installer", "node_modules", "mermaid");
+  for (const [from] of MERMAID_FILES) {
+    if (!fs.existsSync(path.join(mermaid, from))) {
+      throw new Error(`syncPayload: нет ${path.join(mermaid, from)}: поставьте зависимости сборки (npm ci в installer), payload не тронут`);
+    }
+  }
   const skills = skillDirs(root);
   fs.rmSync(dest, { recursive: true, force: true });
   fs.mkdirSync(dest, { recursive: true });
@@ -43,6 +56,12 @@ export function syncPayload(dest = DEFAULT_DEST, root = ROOT) {
     const to = path.join(dest, rel);
     fs.mkdirSync(path.dirname(to), { recursive: true });
     fs.copyFileSync(path.join(root, rel), to);
+    copied.push(rel);
+  }
+  for (const [from, rel] of MERMAID_FILES) {
+    const to = path.join(dest, rel);
+    fs.mkdirSync(path.dirname(to), { recursive: true });
+    fs.copyFileSync(path.join(mermaid, from), to);
     copied.push(rel);
   }
   return copied;
