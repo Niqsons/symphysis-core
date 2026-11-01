@@ -512,3 +512,119 @@ test("Соседи в XDG_CONFIG_HOME не тронуты: запись толь
   assert.deepEqual(fs.readdirSync(path.dirname(neighbour)), ["настройки.json"]);
 });
 
+// --- symphysis.yaml --------------------------------------------------------
+
+const settingsFile = (p) => path.join(p, "symphysis.yaml");
+const gitignore = (p) => path.join(p, ".gitignore");
+const lines = (file) => fs.readFileSync(file, "utf8").split(/\r?\n/);
+
+test("Первая установка: symphysis.yaml создан, всё включено, вложенные ключи", { skip: spawnSync("python", ["-c", "import yaml"]).status === 0 ? false : "у python из PATH нет PyYAML: python -m pip install pyyaml" }, () => {
+  const p = tmp();
+  const r = install(p, { payloadDir });
+  assert.ok(r.written.includes("symphysis.yaml"));
+  const text = fs.readFileSync(settingsFile(p), "utf8");
+  assert.match(text, /^consequences:\n {2}failure_branches: true\n {2}assumptions: true\nedge_probe:\n {2}enabled: true\n$/m);
+  const py = spawnSync("python", ["-X", "utf8", path.join(p, ".symphysis", "tools", "symphysis_config.py"), "--project", p, "--strict"], { encoding: "utf8" });
+  assert.equal(py.status, 0, py.stdout + py.stderr);
+  assert.equal(py.stdout.trim(), "[..] symphysis.yaml: ветки отказа вкл, допущения вкл, проба краёв вкл");
+});
+
+test("Файл с правками человека: --force не меняет байты", () => {
+  const p = tmp();
+  const mine = Buffer.from("# моё\r\nedge_probe:\r\n  enabled: false\r\n");
+  fs.writeFileSync(settingsFile(p), mine);
+  const r = install(p, { payloadDir, force: true });
+  assert.deepEqual(fs.readFileSync(settingsFile(p)), mine);
+  assert.ok(!r.written.includes("symphysis.yaml"));
+});
+
+test("Файл переживает обновление установки: файл тот же, .symphysis/ обновлён", () => {
+  const p = tmp();
+  install(p, { payloadDir });
+  fs.writeFileSync(settingsFile(p), "edge_probe:\n  enabled: false\n");
+  const tool = path.join(p, ".symphysis", "tools", "journal.py");
+  fs.writeFileSync(tool, "старый");
+  install(p, { payloadDir, force: true });
+  assert.equal(fs.readFileSync(settingsFile(p), "utf8"), "edge_probe:\n  enabled: false\n");
+  assert.notEqual(fs.readFileSync(tool, "utf8"), "старый");
+});
+
+// --- .gitignore ------------------------------------------------------------
+
+test("Установка вносит строку: прежние строки на месте", () => {
+  const p = tmp();
+  fs.writeFileSync(gitignore(p), "node_modules/\n*.log\n");
+  install(p, { payloadDir });
+  assert.deepEqual(lines(gitignore(p)), ["node_modules/", "*.log", "symphysis.yaml", ""]);
+});
+
+test("Установка вносит строку: CRLF сохраняется, файл без конца строки не склеивается", () => {
+  const p = tmp();
+  fs.writeFileSync(gitignore(p), "a\r\nb");
+  install(p, { payloadDir });
+  assert.equal(fs.readFileSync(gitignore(p), "utf8"), "a\r\nb\r\nsymphysis.yaml\r\n");
+});
+
+test("Повторный запуск не дублирует строку", () => {
+  const p = tmp();
+  fs.writeFileSync(gitignore(p), "x\n");
+  install(p, { payloadDir });
+  const r = install(p, { payloadDir });
+  assert.equal(lines(gitignore(p)).filter((l) => l === "symphysis.yaml").length, 1);
+  assert.ok(!r.messages.some((m) => m.startsWith(".gitignore")), JSON.stringify(r.messages));
+});
+
+test("Файла .gitignore нет: создан со строкой", () => {
+  const p = tmp();
+  install(p, { payloadDir });
+  assert.equal(fs.readFileSync(gitignore(p), "utf8"), "symphysis.yaml\n");
+});
+
+test("Проект не под git: строка внесена, ошибки нет, код 0", () => {
+  const p = tmp();
+  const r = symphysis(commandEnv(tmp()), "install", "--project", p);
+  assert.equal(r.status, 0, r.stdout + r.stderr);
+  assert.ok(!fs.existsSync(path.join(p, ".git")));
+  assert.ok(lines(gitignore(p)).includes("symphysis.yaml"));
+});
+
+test("Правка .gitignore названа: она уходит в git вместе с работой человека", () => {
+  const p = tmp();
+  const r = symphysis(commandEnv(tmp()), "install", "--project", p);
+  assert.match(r.stdout, /^\.gitignore: добавлена строка symphysis\.yaml — правка уйдёт в git вместе с работой$/m);
+});
+
+const noGitConfig = path.join(tmp(), "gitconfig");
+fs.writeFileSync(noGitConfig, "");
+const gitEnv = { ...process.env, GIT_CONFIG_GLOBAL: noGitConfig, GIT_CONFIG_NOSYSTEM: "1" };
+const git = (cwd, ...args) => {
+  const r = spawnSync("git", ["-c", "user.name=t", "-c", "user.email=t@t", "-c", "init.defaultBranch=main", ...args], { cwd, encoding: "utf8", env: gitEnv });
+  assert.equal(r.status, 0, `git ${args.join(" ")}: ${r.stdout}${r.stderr}`);
+  return r.stdout;
+};
+
+test("git check-ignore называет symphysis.yaml после install", () => {
+  const p = tmp();
+  git(p, "init", "-q");
+  install(p, { payloadDir });
+  assert.equal(git(p, "check-ignore", "symphysis.yaml").trim(), "symphysis.yaml");
+});
+
+test("Выбор одного человека не доходит до другого: два клона", () => {
+  const origin = tmp();
+  git(origin, "init", "-q", "--bare");
+  const first = tmp();
+  git(first, "clone", "-q", origin, ".");
+  install(first, { payloadDir });
+  fs.writeFileSync(settingsFile(first), "edge_probe:\n  enabled: false\n");
+  git(first, "add", "-A");
+  git(first, "commit", "-qm", "работа");
+  git(first, "push", "-q", "origin", "HEAD:main");
+  assert.doesNotMatch(git(first, "ls-files"), /^symphysis\.yaml$/m);
+
+  const second = tmp();
+  git(second, "clone", "-q", "--branch", "main", origin, ".");
+  assert.ok(!fs.existsSync(settingsFile(second)), "файл первого клона приехал");
+  install(second, { payloadDir });
+  assert.match(fs.readFileSync(settingsFile(second), "utf8"), /enabled: true/);
+});

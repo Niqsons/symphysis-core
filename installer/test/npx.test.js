@@ -92,9 +92,13 @@ test("npx install в чистый проект: записано, файлы н�
 test("npx check с форком из SYMPHYSIS_OPENSPEC: код 0, check: ok", opts, () => {
   requireFork(FORK);
   const project = path.join(tmpRoot, "project");
+  // PyYAML у python на машине этому тесту ни к чему: о настройках — check.test.js.
+  fs.rmSync(path.join(project, "symphysis.yaml"));
   const r = npx(["check", "--project", project], envWith({ NPM_CONFIG_CACHE: cache, npm_config_cache: cache, SYMPHYSIS_OPENSPEC: FORK }));
   assert.equal(r.status, 0, r.stdout + r.stderr);
   assert.match(r.stdout, /^check: ok$/m);
+  // Инсталлятор не из клона: исходников рядом нет, сверки payload нет.
+  assert.doesNotMatch(r.stdout, /payload/);
 });
 
 test("npx check без форка (нет переменной, PATH без openspec): код 2, «не найден»", opts, () => {

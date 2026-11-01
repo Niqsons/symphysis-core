@@ -19,6 +19,8 @@ let payloadDir;
 const tmp = () => fs.mkdtempSync(path.join(os.tmpdir(), "symphysis-check-"));
 const saved = { openspec: process.env.SYMPHYSIS_OPENSPEC, path: process.env.PATH, Path: process.env.Path, xdg: process.env.XDG_CONFIG_HOME };
 const cfgFile = () => path.join(process.env.XDG_CONFIG_HOME, "openspec", "config.json");
+// Сценарии о строках скрипта настроек требуют PyYAML у `python` из PATH; остальным файл настроек не нужен.
+const withYaml = { skip: spawnSync("python", ["-c", "import yaml"]).status === 0 ? false : "у python из PATH нет PyYAML: python -m pip install pyyaml" };
 const writeCfg = (obj) => {
   fs.mkdirSync(path.dirname(cfgFile()), { recursive: true });
   fs.writeFileSync(cfgFile(), JSON.stringify(obj));
@@ -38,7 +40,7 @@ afterEach(() => {
 });
 
 // Глобальный конфиг форка — всегда временный каталог: настоящий конфиг пользователя тесты не трогают.
-function installed() {
+function installedWithSettings() {
   process.env.XDG_CONFIG_HOME = tmp();
   process.env.SYMPHYSIS_OPENSPEC = FORK;
   const p = tmp();
@@ -46,6 +48,12 @@ function installed() {
   fs.mkdirSync(path.join(p, ".claude", "commands", "opsx"), { recursive: true });
   fs.writeFileSync(path.join(p, ".claude", "commands", "opsx", "continue.md"), "x");
   install(p, { payloadDir });
+  return p;
+}
+/** Установка без файла настроек: строки скрипта и PyYAML этим тестам ни к чему. */
+function installed() {
+  const p = installedWithSettings();
+  fs.rmSync(path.join(p, "symphysis.yaml"));
   return p;
 }
 const runCheck = (p) => check(p, { payloadDir });
@@ -64,12 +72,14 @@ const MINIMAL_JOURNAL = {
   ],
 };
 
-test("после install: ok, находок нет, заметка о телеметрии", () => {
-  const p = installed();
+test("после install: ok, находок нет, заметки — состав, конфиг и телеметрия", withYaml, () => {
+  const p = installedWithSettings();
   const r = runCheck(p);
   assert.deepEqual(r.findings, []);
   assert.equal(r.ok, true);
-  assert.deepEqual(r.notes, ["telemetry: выключена"]);
+  assert.ok(r.notes.includes("symphysis.yaml: ветки отказа вкл, допущения вкл, проба краёв вкл"), JSON.stringify(r.notes));
+  assert.ok(r.notes.some((n) => n.startsWith(`openspec: глобальный конфиг ${cfgFile()}`)), JSON.stringify(r.notes));
+  assert.ok(r.notes.includes("telemetry: выключена"), JSON.stringify(r.notes));
 });
 
 test("байт схемы подменён: findings[0] называет schema.yaml", () => {
@@ -119,6 +129,7 @@ test("скиллы проверяются в каждом skillsDir", () => {
   fs.mkdirSync(path.join(p, "a", "commands", "opsx"), { recursive: true });
   fs.writeFileSync(path.join(p, "a", "commands", "opsx", "continue.md"), "x");
   install(p, { payloadDir, skillsDirs: ["a/skills", "b/skills"] });
+  fs.rmSync(path.join(p, "symphysis.yaml"));
   fs.rmSync(path.join(p, "b", "skills", "symphysis-brainstorm", "SKILL.md"));
   const r = check(p, { payloadDir, skillsDirs: ["a/skills", "b/skills"] });
   assert.deepEqual(r.findings, ["b/skills/symphysis-brainstorm/SKILL.md: нет файла"]);
@@ -344,6 +355,190 @@ test("Клиент не настроен: своя строка, код 2, по�
   const hint = out.find((l) => l.startsWith("[..] continue: "));
   assert.ok(hint, r.stdout);
   for (const s of ["where.exe claude", "where.exe opencode", "which", "--skills-dir"]) assert.ok(hint.includes(s), `${s}: ${hint}`);
+});
+
+// --- symphysis.yaml ---------------------------------------------------------
+
+const settings = (p) => path.join(p, "symphysis.yaml");
+const ALL_ON = "symphysis.yaml: ветки отказа вкл, допущения вкл, проба краёв вкл";
+
+test("Годный файл: [..] с составом, код 0", withYaml, () => {
+  const p = installed();
+  fs.writeFileSync(settings(p), "consequences:\n  assumptions: false\n");
+  const r = cli("check", "--project", p);
+  assert.equal(r.status, 0, r.stdout);
+  assert.ok(r.stdout.split(/\r?\n/).includes("[..] symphysis.yaml: ветки отказа вкл, допущения выкл, проба краёв вкл"), r.stdout);
+});
+
+test("Опечатка в ключе: [!!] от скрипта, код 2", withYaml, () => {
+  const p = installed();
+  fs.writeFileSync(settings(p), "edge-probe:\n  enabled: false\n");
+  const r = cli("check", "--project", p);
+  assert.equal(r.status, 2, r.stdout);
+  assert.ok(r.stdout.split(/\r?\n/).includes("[!!] symphysis.yaml: неизвестный ключ edge-probe"), r.stdout);
+  assert.ok(r.stdout.split(/\r?\n/).includes(`[..] ${ALL_ON}`), r.stdout);
+});
+
+for (const [name, text, line] of [
+  ["недопустимое значение", "edge_probe:\n  enabled: no\n", "symphysis.yaml: недопустимое значение no"],
+  ["файл не разбирается", "edge_probe:\n\tenabled: false\n", "symphysis.yaml: не разбирается"],
+  ["плоская запись", "edge_probe: false\n", "symphysis.yaml: edge_probe — нужен вложенный ключ"],
+]) {
+  test(`Настройки: ${name} — [!!], код 2, выбор включён`, withYaml, () => {
+    const p = installed();
+    fs.writeFileSync(settings(p), text);
+    const r = runCheck(p);
+    assert.equal(r.ok, false);
+    assert.ok(r.findings.includes(line), JSON.stringify(r.findings));
+    assert.ok(r.notes.includes(ALL_ON), JSON.stringify(r.notes));
+  });
+}
+
+test("Файла настроек нет: заметка из сценария, код не меняется, скрипт не нужен", () => {
+  const p = installed();
+  fs.writeFileSync(path.join(targets(p).toolsDir, "tools", "symphysis_config.py"), 'raise SystemExit("не должен зваться")\n');
+  const r = cli("check", "--project", p);
+  assert.equal(r.status, 0, r.stdout);
+  assert.ok(r.stdout.split(/\r?\n/).includes("[..] symphysis.yaml: нет файла, действует всё включено; создать: symphysis install"), r.stdout);
+});
+
+test("BOM принимается: состав прочитан, код 0", withYaml, () => {
+  const p = installed();
+  fs.writeFileSync(settings(p), Buffer.concat([Buffer.from([0xef, 0xbb, 0xbf]), Buffer.from("edge_probe:\n  enabled: false\n")]));
+  const r = cli("check", "--project", p);
+  assert.equal(r.status, 0, r.stdout);
+  assert.match(r.stdout, /проба краёв выкл/);
+});
+
+test("Не UTF-8: [!!] symphysis.yaml: не UTF-8, код 2", () => {
+  const p = installed();
+  fs.writeFileSync(settings(p), Buffer.concat([Buffer.from("edge_probe:\n  enabled: "), Buffer.from([0xe2, 0xfb, 0xea]), Buffer.from("\n")]));
+  const r = cli("check", "--project", p);
+  assert.equal(r.status, 2, r.stdout);
+  assert.ok(r.stdout.split(/\r?\n/).includes("[!!] symphysis.yaml: не UTF-8"), r.stdout);
+});
+
+test("Скрипт настроек упал: [!!] с причиной, файл инсталлятор сам не разбирает", () => {
+  const p = installedWithSettings();
+  fs.writeFileSync(path.join(targets(p).toolsDir, "tools", "symphysis_config.py"), 'raise SystemExit("сломан")\n');
+  const r = runCheck(p);
+  assert.ok(r.findings.includes("symphysis_config.py: не отработал (сломан)"), JSON.stringify(r.findings));
+  assert.ok(!r.notes.some((n) => n.startsWith("symphysis.yaml:")), JSON.stringify(r.notes));
+});
+
+test("Python нет: прежняя находка, строки состава нет", () => {
+  const p = installedWithSettings();
+  process.env.PATH = tmp();
+  process.env.Path = process.env.PATH;
+  const r = runCheck(p);
+  assert.ok(r.findings.includes("python: python или python3 не отвечает"), JSON.stringify(r.findings));
+  assert.ok(!r.notes.some((n) => n.startsWith("symphysis.yaml:")), JSON.stringify(r.notes));
+});
+
+test("У найденного Python нет PyYAML: состав всё включено и [!!] с командой, код 2", () => {
+  const venv = tmp();
+  const made = spawnSync("python", ["-m", "venv", "--without-pip", venv], { encoding: "utf8" });
+  assert.equal(made.status, 0, made.stdout + made.stderr);
+  const p = installed();
+  fs.writeFileSync(settings(p), "edge_probe:\n  enabled: false\n");
+  const env = { ...process.env, SYMPHYSIS_OPENSPEC: FORK };
+  for (const k of Object.keys(env)) if (k.toLowerCase() === "path") delete env[k];
+  env[process.platform === "win32" ? "Path" : "PATH"] = path.join(venv, process.platform === "win32" ? "Scripts" : "bin");
+  const r = spawnSync(process.execPath, [bin, "check", "--project", p], { encoding: "utf8", env });
+  assert.equal(r.status, 2, r.stdout + r.stderr);
+  const out = r.stdout.split(/\r?\n/);
+  assert.ok(out.includes(`[..] ${ALL_ON}`), r.stdout);
+  assert.ok(out.includes("[!!] symphysis.yaml: нет пакета PyYAML — выполнить: python -m pip install pyyaml"), r.stdout);
+});
+
+test("Файл уже отслеживается git: [!!] с командой, код 2", () => {
+  const p = installedWithSettings();
+  const noConfig = path.join(tmp(), "gitconfig");
+  fs.writeFileSync(noConfig, "");
+  const gitEnv = { ...process.env, GIT_CONFIG_GLOBAL: noConfig, GIT_CONFIG_NOSYSTEM: "1" };
+  const git = (...a) => assert.equal(spawnSync("git", ["-c", "user.name=t", "-c", "user.email=t@t", ...a], { cwd: p, encoding: "utf8", env: gitEnv }).status, 0, a.join(" "));
+  git("init", "-q");
+  git("add", "-f", "symphysis.yaml");
+  git("commit", "-qm", "ошибка");
+  const r = cli("check", "--project", p);
+  assert.equal(r.status, 2, r.stdout);
+  assert.ok(r.stdout.split(/\r?\n/).includes("[!!] symphysis.yaml: отслеживается git — выполнить: git rm --cached symphysis.yaml"), r.stdout);
+  git("rm", "-q", "--cached", "symphysis.yaml");
+  assert.doesNotMatch(cli("check", "--project", p).stdout, /отслеживается git/);
+});
+
+// --- payload и исходники ----------------------------------------------------
+
+const STALE_PAYLOAD = "payload старее исходников — выполнить: npm --prefix installer ci";
+
+test("payload старее исходников: [!!] при запуске из клона", () => {
+  const p = installed();
+  const old = tmp();
+  syncPayload(old);
+  fs.appendFileSync(path.join(old, "tools", "journal.py"), "# прежняя версия\n");
+  const r = check(p, { payloadDir: old });
+  assert.ok(r.findings.includes(STALE_PAYLOAD), JSON.stringify(r.findings));
+});
+
+test("payload старее исходников: лишний файл в payload тоже расхождение", () => {
+  const p = installed();
+  const old = tmp();
+  syncPayload(old);
+  fs.writeFileSync(path.join(old, "tools", "journal_old.py"), "x");
+  assert.ok(check(p, { payloadDir: old }).findings.includes(STALE_PAYLOAD));
+});
+
+test("Инсталлятор не из клона: сверки нет, строки о payload нет", () => {
+  const p = installed();
+  const old = tmp();
+  syncPayload(old);
+  fs.appendFileSync(path.join(old, "tools", "journal.py"), "# прежняя версия\n");
+  const r = check(p, { payloadDir: old, sourceRoot: tmp() });
+  assert.ok(!r.findings.some((f) => f.includes("payload")), JSON.stringify(r.findings));
+});
+
+// --- глобальный конфиг ------------------------------------------------------
+
+/** Окружение одной команды: каталог, где конфиг лежит без XDG_CONFIG_HOME, — тоже временный. */
+function noXdgHome(withConfig) {
+  const home = tmp();
+  const second = process.platform === "win32" ? path.join(home, "openspec", "config.json") : path.join(home, ".config", "openspec", "config.json");
+  if (withConfig) {
+    fs.mkdirSync(path.dirname(second), { recursive: true });
+    fs.writeFileSync(second, "{}\n");
+  }
+  return { second, env: { APPDATA: home, HOME: home, USERPROFILE: home } };
+}
+
+test("Один конфиг: [..] с путём, код не меняется", () => {
+  const p = installed();
+  const { env } = noXdgHome(false);
+  const r = spawnSync(process.execPath, [bin, "check", "--project", p], { encoding: "utf8", env: { ...process.env, ...env } });
+  assert.equal(r.status, 0, r.stdout + r.stderr);
+  assert.ok(r.stdout.split(/\r?\n/).includes(`[..] openspec: глобальный конфиг ${cfgFile()}`), r.stdout);
+});
+
+test("Два конфига: [..] называет оба, код не меняется", () => {
+  const p = installed();
+  const { env, second } = noXdgHome(true);
+  const r = spawnSync(process.execPath, [bin, "check", "--project", p], { encoding: "utf8", env: { ...process.env, ...env } });
+  assert.equal(r.status, 0, r.stdout + r.stderr);
+  assert.ok(r.stdout.split(/\r?\n/).includes(`[..] openspec: глобальный конфиг ${cfgFile()}; есть ещё ${second}, он действует без XDG_CONFIG_HOME`), r.stdout);
+});
+
+// --- сигналы журнала --------------------------------------------------------
+
+test("Сигнал доходит до symphysis check: строка [..] <журнал>: ..., код не меняется", () => {
+  const p = installed();
+  const one = path.join(p, "openspec", "changes", "one");
+  fs.mkdirSync(one, { recursive: true });
+  fs.writeFileSync(path.join(one, "decisions.json"), JSON.stringify(MINIMAL_JOURNAL));
+  const direct = spawnSync("python", ["-X", "utf8", path.join(targets(p).toolsDir, "tools", "journal.py"), "check", path.join(one, "decisions.json")], { encoding: "utf8" });
+  assert.match(direct.stdout, /^\[!!\] F-01: /m, "журнал теста должен давать сигнал сверки");
+  const signal = direct.stdout.split(/\r?\n/).find((l) => l.startsWith("[!!] F-01: ")).slice("[!!] ".length);
+  const r = cli("check", "--project", p);
+  assert.equal(r.status, 0, r.stdout);
+  assert.ok(r.stdout.split(/\r?\n/).includes(`[..] openspec/changes/one/decisions.json: ${signal}`), r.stdout);
 });
 
 test("Форк отказал: своя находка, а не «не найден»", () => {

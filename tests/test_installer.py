@@ -1,6 +1,8 @@
 """Единый гейт: Node-тесты инсталлятора запускаются из pytest."""
+import os
 import shutil
 import subprocess
+import sys
 from pathlib import Path
 
 import pytest
@@ -19,8 +21,12 @@ def test_installer_node_tests_pass():
     assert sync.returncode == 0, sync.stdout + sync.stderr
     # Node >=22 не принимает `node --test test/` (каталог читается как модуль) —
     # автообнаружение без аргумента находит test/**.
+    # `python` у этих тестов — интерпретатор pytest с пакетами requirements-dev: иначе node найдёт
+    # другой, а Python из Microsoft Store передаёт потомкам свой каталог пользовательских пакетов,
+    # и у того, другого, пропадает PyYAML.
+    env = {**os.environ, "PATH": str(Path(sys.executable).parent) + os.pathsep + os.environ.get("PATH", "")}
     r = subprocess.run(
         [node, "--test"], cwd=INSTALLER, capture_output=True, text=True,
-        encoding="utf-8", errors="replace",
+        encoding="utf-8", errors="replace", env=env,
     )
     assert r.returncode == 0, r.stdout + r.stderr

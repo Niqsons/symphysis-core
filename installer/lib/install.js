@@ -3,6 +3,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { parseDocument, isMap, isSeq, isScalar } from "yaml";
 import { ensureContinue } from "./clients.js";
+import { ensureIgnored } from "./gitignore.js";
 import { globalConfigPath } from "./global-config.js";
 import { targets } from "./paths.js";
 import { disableTelemetryIfUnset } from "./telemetry.js";
@@ -11,6 +12,15 @@ const here = path.dirname(fileURLToPath(import.meta.url));
 export const DEFAULT_PAYLOAD = path.resolve(here, "..", "payload");
 const SKIP_SUFFIX = "(есть, отличается — перезапись: --force)";
 const ROOTS_CONTENT = '{"": "<root>/.."}\n';
+const SETTINGS_FILE = "symphysis.yaml";
+const SETTINGS_CONTENT = `# Личная настройка symphysis: в git проекта не идёт. Показать состав: symphysis config
+consequences:
+  failure_branches: true
+  assumptions: true
+edge_probe:
+  enabled: true
+`;
+
 const rel = (project, p) => path.relative(project, p).split(path.sep).join("/");
 
 function walk(dir) {
@@ -73,7 +83,8 @@ export function mergeConfig(existingText, oursText) {
 }
 
 /**
- * Ставит схему, скиллы и инструменты журнала в проект и обновляет его, если в нём нет `/opsx:continue`.
+ * Ставит схему, скиллы и инструменты журнала в проект, создаёт личный `symphysis.yaml`,
+ * вносит его в `.gitignore` и обновляет проект, если в нём нет `/opsx:continue`.
  * Пути в результате — от корня проекта, с «/». `messages` — строки для печати.
  */
 export function install(project, { skillsDirs = [], force = false, payloadDir = DEFAULT_PAYLOAD } = {}) {
@@ -116,6 +127,10 @@ export function install(project, { skillsDirs = [], force = false, payloadDir = 
       );
     }
   }
+  // Файл личный: не перезаписывается и с --force, в git не идёт (F-24.A, F-94.E).
+  place(res, root, path.join(root, SETTINGS_FILE), Buffer.from(SETTINGS_CONTENT), force, { keepExisting: true });
+  if (ensureIgnored(root, SETTINGS_FILE)) res.messages.push(`.gitignore: добавлена строка ${SETTINGS_FILE} — правка уйдёт в git вместе с работой`);
+
   // Телеметрия раньше обновления: `config set` записывает профиль, и разовая миграция форка не срабатывает.
   const tele = disableTelemetryIfUnset();
   if (tele) res.messages.push(tele);
