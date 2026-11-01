@@ -185,15 +185,15 @@
 const JOURNAL = {
  "title": "Журнал решений: implementation-consequences",
  "source": "decisions.json",
- "sha256": "f8769c58b61e9112b72a2d6f7f32547ef75439bb7873f7ab1002b1e64dbbdd53",
+ "sha256": "f903eca7e8d502ecc15ec7b24adb1aa68fff9a8f31509e6a11309c9bcd390c3f",
  "stats": {
-  "records": 34,
-  "forks": 14,
-  "facts": 20,
-  "decided": 10,
+  "records": 36,
+  "forks": 15,
+  "facts": 21,
+  "decided": 14,
   "parked": 0,
-  "evidence_total": 91,
-  "evidence_found": 91
+  "evidence_total": 96,
+  "evidence_found": 96
  },
  "records": [
   {
@@ -1804,7 +1804,7 @@ const JOURNAL = {
    "id": "F-31",
    "question": "Как человек получает форк OpenSpec на другой машине?",
    "kind": "развилка",
-   "status": "открыт",
+   "status": "решён",
    "addressee": "человек",
    "depends_on": [
     "F-22",
@@ -1879,12 +1879,19 @@ const JOURNAL = {
     "why": "Это единственный путь, уже проверенный на деле, и он не зависит от решения о публикации. Позже к нему можно добавить B.",
     "text": "A — два тарбола"
    },
-   "decision": null,
-   "reversibility": null,
+   "decision": {
+    "option": "A",
+    "word": "на данный момент openspec в контуре загружается через через зеркало или напрямую с github. А symphysis будет лежать в корпоративном репозитории, установка будет происходить по обращении к нему. Хотя кажется, это больше похоже на варианта B.",
+    "date": "2026-11-01"
+   },
+   "reversibility": {
+    "level": "обратимо",
+    "why": "Меняются скрипт сборки и первые шаги GUIDE; пин форка в `installer/package.json` от способа доставки не зависит."
+   },
    "outcome": null,
    "parking": [],
    "dispute": "",
-   "consequences": "Определяет скрипт сборки и первые шаги GUIDE.",
+   "consequences": "Слово владельца описывает установку из репозиториев, а буква A — тарболы. Как это совместить — F-36.",
    "evidence": [],
    "comments": [],
    "finding": ""
@@ -1893,7 +1900,7 @@ const JOURNAL = {
    "id": "F-32",
    "question": "Как на чистой установке появляется `/opsx:continue`?",
    "kind": "развилка",
-   "status": "открыт",
+   "status": "решён",
    "addressee": "человек",
    "depends_on": [
     "F-22",
@@ -1953,8 +1960,15 @@ const JOURNAL = {
     "why": "Схема без этой команды не работает, значит её установка — часть установки схемы. Образец правки глобального конфига у инсталлятора уже есть.",
     "text": "A — `install` ставит `continue`, `check` проверяет"
    },
-   "decision": null,
-   "reversibility": null,
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-01"
+   },
+   "reversibility": {
+    "level": "обратимо",
+    "why": "Шаг `install` и строка `check`; добавленный workflow убирается той же командой `config set` форка."
+   },
    "outcome": null,
    "parking": [],
    "dispute": "",
@@ -1967,7 +1981,7 @@ const JOURNAL = {
    "id": "F-33",
    "question": "На какой модели идёт роль человека в плече P-чел? Сегодня у плеча и роли одна константа (F-30).",
    "kind": "развилка",
-   "status": "открыт",
+   "status": "решён",
    "addressee": "человек",
    "depends_on": [
     "F-20",
@@ -2027,8 +2041,15 @@ const JOURNAL = {
     "why": "Критерий называет модель прогона, а смена модели только у роли добавила бы второе различие.",
     "text": "A — Opus 5.5 у плеча и у роли"
    },
-   "decision": null,
-   "reversibility": null,
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-01"
+   },
+   "reversibility": {
+    "level": "обратимо",
+    "why": "Ключ водителя. До запуска прогона отмена бесплатна, после него расход уже сделан."
+   },
    "outcome": null,
    "parking": [],
    "dispute": "",
@@ -2041,7 +2062,7 @@ const JOURNAL = {
    "id": "F-34",
    "question": "Какой пример ведёт GUIDE?",
    "kind": "развилка",
-   "status": "открыт",
+   "status": "решён",
    "addressee": "человек",
    "depends_on": [
     "F-22",
@@ -2101,12 +2122,129 @@ const JOURNAL = {
     "why": "Руководство, которое никто не прошёл, обычно ломается на первом расхождении. Сквозной проход и есть его проверка, а тот же дефект с `/opsx:continue` иначе не всплыл бы.",
     "text": "A — маленький учебный проект"
    },
+   "decision": {
+    "option": "A",
+    "word": "Нам стоит ключить в GUIDE все шаги openspec, то есть и те, что после tasks.md. Во первых, мы расширим symphysis и на них, а во вторых, иначе гайд обрывается, и человеку нужно будет искать другой гайд, как работать с оставшимися шагами. Шаги после tasks.md могут быть описаны более кратко.",
+    "date": "2026-11-01"
+   },
+   "reversibility": {
+    "level": "обратимо",
+    "why": "Текст руководства и учебный проект; контракта с другими системами нет."
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "GUIDE лежит в `docs/GUIDE.md`, на русском, и покрывает все шаги OpenSpec, включая те, что после `tasks.md`: они описаны короче (слово владельца). Показывает Claude Code и `--skills-dir` для других клиентов; opencode этим проходом не проверяется.",
+   "evidence": [],
+   "comments": [],
+   "finding": ""
+  },
+  {
+   "id": "F-35",
+   "question": "Удалённый репозиторий есть: `Niqsons/symphysis-core`, приватный и пустой на 2026-11-01. Приватный репозиторий зеркало и люди контура без токена не видят. Пакет инсталлятора лежит в подкаталоге `installer/`, поэтому установка `npm` прямо из git к нему неприменима: только клон.",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "материалы",
+   "depends_on": [],
+   "delivery": "design: Context",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
    "decision": null,
    "reversibility": null,
    "outcome": null,
    "parking": [],
    "dispute": "",
-   "consequences": "GUIDE лежит в `docs/GUIDE.md`, на русском. Показывает Claude Code и `--skills-dir` для других клиентов; opencode этим проходом не проверяется.",
+   "consequences": "На этом стоит F-36.",
+   "evidence": [
+    {
+     "path": "installer/README.md",
+     "quote": "node installer/bin/symphysis.js install --project <каталог проекта>",
+     "line": 40,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "openspec/changes/implementation-consequences/answers/2026-11-01-3.md",
+     "quote": "А symphysis будет лежать в корпоративном репозитории, установка будет происходить по обращении к нему.",
+     "line": 2,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "finding": ""
+  },
+  {
+   "id": "F-36",
+   "question": "Откуда контур берёт форк и symphysis? К F-31 выбрана буква A (тарболы), а слово описывает установку из репозиториев: «кажется, это больше похоже на варианта B».",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-31",
+    "F-35"
+   ],
+   "delivery": "installer, GUIDE",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Оба из корпоративного репозитория: в нём исходники symphysis и рядом тарбол форка, около 600 КБ. Установка: клон, `npm i -g ./vendor/…tgz`, `node installer/bin/symphysis.js install`. При выборе: один источник, совпадают и буква F-31, и слово к ней; публичный репозиторий не нужен, сборки на машине нет, зеркало нужно только для зависимостей форка. Цена: бинарный файл в репозитории на каждую версию форка.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/changes/implementation-consequences/answers/2026-11-01-3.md",
+       "quote": "А symphysis будет лежать в корпоративном репозитории, установка будет происходить по обращении к нему.",
+       "line": 2,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Форк из отдельного публичного репозитория на GitHub, symphysis из корпоративного. Установка: `npm i -g <URL форка>#symphysis`, затем клон symphysis. При выборе: это ближе к тому, как OpenSpec загружается сегодня, обновлять проще, бинарных файлов нет. Цена: нужно завести публичный репозиторий, форк собирается на машине при установке, и эту установку ещё надо проверить.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/changes/implementation-consequences/answers/2026-11-01-3.md",
+       "quote": "на данный момент openspec в контуре загружается через через зеркало или напрямую с github.",
+       "line": 2,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "C",
+     "text": "Оба из `Niqsons/symphysis-core` с токеном.",
+     "added": false,
+     "unlikely": "личный токен GitHub в контуре, а symphysis по слову владельца будет в корпоративном репозитории",
+     "evidence": [
+      {
+       "path": "openspec/changes/implementation-consequences/answers/2026-11-01-3.md",
+       "quote": "А symphysis будет лежать в корпоративном репозитории",
+       "line": 2,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Это единственный вариант, в котором совпадают буква и слово к F-31, и он уже проверен пробой тарболов. Публичный репозиторий можно добавить позже без переделки.",
+    "text": "A — оба из корпоративного репозитория, тарбол форка рядом"
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "Определяет скрипт сборки, раскладку выпуска и первые шаги GUIDE. Перед корпоративным репозиторием нужна отдельная вычитка абсолютных путей.",
    "evidence": [],
    "comments": [],
    "finding": ""
