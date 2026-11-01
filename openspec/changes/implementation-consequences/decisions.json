@@ -74,6 +74,10 @@
   {
    "date": "2026-11-01",
    "text": "после повтора атаки: блокеров 0, закрыто 12 из 12; решений требуют F-123, F-124, F-125 — нужен человек; остальные восемь предупреждений закрываются правкой артефактов"
+  },
+  {
+   "date": "2026-11-01",
+   "text": "F-123, F-124, F-125 внесены. Слово человека о техдолге: answers/2026-11-01-weight.md. Третья атака и проход отложены, разбор веса: docs/analysis/implementation-consequences-weight-2026-11-01.md, решения пока не меняются"
   }
  ],
  "records": [
@@ -7067,7 +7071,7 @@
       {
        "path": "openspec/changes/implementation-consequences/decisions.json",
        "quote": "в глобальном конфиге меняется что-либо кроме добавления `continue` и названной смены профиля",
-       "line": 6711,
+       "line": 6715,
        "verdict": "сверено",
        "found": true
       }
@@ -7132,7 +7136,7 @@
       {
        "path": "openspec/changes/implementation-consequences/decisions.json",
        "quote": "файл несёт причину и раздел pre-mortem с тремя кандидатами",
-       "line": 2890,
+       "line": 2894,
        "verdict": "сверено",
        "found": true
       }
@@ -7182,7 +7186,7 @@
       {
        "path": "openspec/changes/implementation-consequences/decisions.json",
        "quote": "тест подаёт пустой файл, файл из комментариев и `edge_probe:` и утверждает, что состав везде «включено»",
-       "line": 3047,
+       "line": 3051,
        "verdict": "сверено",
        "found": true
       }
@@ -7197,7 +7201,7 @@
       {
        "path": "openspec/changes/implementation-consequences/decisions.json",
        "quote": "выбор считается включённым, `check` даёт `[!!] symphysis.yaml: недопустимое значение <значение>`, код 2",
-       "line": 3104,
+       "line": 3108,
        "verdict": "сверено",
        "found": true
       }
@@ -7860,7 +7864,7 @@
       {
        "path": "openspec/changes/implementation-consequences/decisions.json",
        "quote": "разбор YAML в `check`, чтение моделью и Python без пакетов поймут его по-разному",
-       "line": 3093,
+       "line": 3097,
        "verdict": "сверено",
        "found": true
       }
@@ -7942,7 +7946,7 @@
       {
        "path": "openspec/changes/implementation-consequences/decisions.json",
        "quote": "тест утверждает, что `journal.py check` на таком изменении печатает `[..] <часть>: выключено настройкой`",
-       "line": 6425,
+       "line": 6429,
        "verdict": "сверено",
        "found": true
       }
@@ -7993,7 +7997,7 @@
       {
        "path": "openspec/changes/implementation-consequences/decisions.json",
        "quote": "GIVEN `consequences.md` с причиной «механизмов нет» и список мест, ставший непустым",
-       "line": 2962,
+       "line": 2966,
        "verdict": "сверено",
        "found": true
       }
@@ -8008,7 +8012,7 @@
       {
        "path": "openspec/changes/implementation-consequences/decisions.json",
        "quote": "до правки схемы у него написан `consequences.md` с причиной «шаг появился позже», `status` не ломается",
-       "line": 3775,
+       "line": 3779,
        "verdict": "сверено",
        "found": true
       }
@@ -8058,7 +8062,7 @@
       {
        "path": "openspec/changes/implementation-consequences/decisions.json",
        "quote": "строка `[!!] python` говорит, что инструменты журнала считают всё включённым",
-       "line": 8054,
+       "line": 8058,
        "verdict": "сверено",
        "found": true
       }
@@ -8152,7 +8156,7 @@
    "id": "F-123",
    "question": "Конфиг с профилем `core` или без ключа `profile`, но со своим списком `workflows`: при `core` форк список игнорирует, он спит. `install` переводит профиль в `custom` (F-79.A). Что станет со спящим списком? Требование обещает «не убирая уже заданные», а сценарий «Список человека сохраняется» профиля не называет.",
    "kind": "развилка",
-   "status": "открыт",
+   "status": "решён",
    "addressee": "человек",
    "depends_on": [
     "F-79",
@@ -8213,7 +8217,11 @@
     "why": "Запрет F-100 защищает поведение других проектов. Список, который форк игнорирует, поведения не определяет, а B и C его меняют.",
     "text": "A — сохраняется действующий набор"
    },
-   "decision": null,
+   "decision": {
+    "option": "A",
+    "word": "смотри, если профиль уже установлен, то при инсталляции мы лишь должны добавить свой профиль custom и выбрать его при инициализации проекта. если мы меняем профиль что создан ранее, то это плохо. если не меняем, то всё ок.",
+    "date": "2026-11-01"
+   },
    "reversibility": {
     "level": "обратимо",
     "why": "Одна ветка `install` и сценарий."
@@ -8221,7 +8229,7 @@
    "outcome": null,
    "parking": [],
    "dispute": "",
-   "consequences": "Сценарий «Список человека сохраняется» и новый сценарий о спящем списке.",
+   "consequences": "Слово человека расходится с текстом варианта A: вариант заменял спящий список, а слово говорит, что менять созданный ранее профиль плохо. До ответа на срез С1 (`docs/analysis/implementation-consequences-weight-2026-11-01.md`) не реализуется. У форка один список `workflows` и два профиля, `init --profile custom` действует на один запуск, а `update` читает глобальный профиль.",
    "evidence": [],
    "comments": []
   },
@@ -8229,7 +8237,7 @@
    "id": "F-124",
    "question": "`--skills-dir` повторяемый, и README показывает вызов с двумя каталогами: `.claude/skills` и `.agents/skills`. F-115.D говорит об одном выбранном клиенте. Если во втором каталоге нет файлов форка, что отвечает `check`?",
    "kind": "развилка",
-   "status": "открыт",
+   "status": "решён",
    "addressee": "человек",
    "depends_on": [
     "F-115",
@@ -8274,7 +8282,11 @@
     "why": "Ложный постоянный код 2 на документированном вызове учит игнорировать `check`, а заметка называет то же самое.",
     "text": "A — `[!!]`, если команды нет ни в одном, об остальных заметка"
    },
-   "decision": null,
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-01"
+   },
    "reversibility": {
     "level": "обратимо",
     "why": "Одна ветка `check.js`."
@@ -8290,7 +8302,7 @@
    "id": "F-125",
    "question": "Подсказки `check` и спеки говорят `symphysis install` и `symphysis config`, а при установке из клона команды `symphysis` в PATH нет: есть только `node installer/bin/symphysis.js`. Подсказка ведёт на отсутствующую команду. Как быть?",
    "kind": "развилка",
-   "status": "открыт",
+   "status": "решён",
    "addressee": "человек",
    "depends_on": [
     "F-114",
@@ -8336,7 +8348,11 @@
     "why": "Форк и PyYAML уже ставятся глобально, а имя `symphysis config` названо человеком. Проба на чистом клоне прошла.",
     "text": "A — `npm i -g ./installer`, ссылка в клон"
    },
-   "decision": null,
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-01"
+   },
    "reversibility": {
     "level": "обратимо",
     "why": "Шаг руководства; откат одной командой."
