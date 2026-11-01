@@ -55,7 +55,7 @@ Commands are always the second case. A project whose `openspec/config.yaml` name
 | [openspec-sync-specs](#openspec-sync-specs) | Merge a change proposal's spec updates into `specs/` | Core |
 | [openspec-archive-change](#openspec-archive-change) | Move a finished change proposal to the archive | Core |
 | [openspec-new-change](#openspec-new-change) | Start a change proposal as an empty scaffold | Optional |
-| [openspec-continue-change](#openspec-continue-change) | Create the next planning artifact, one at a time | Optional |
+| [openspec-continue-change](#openspec-continue-change) | Create the next planning artifact, one at a time | Core |
 | [openspec-ff-change](#openspec-ff-change) | Create a change proposal with every artifact implementation needs, in one pass | Optional |
 | [openspec-verify-change](#openspec-verify-change) | Check the implementation matches the plan | Optional |
 | [openspec-bulk-archive-change](#openspec-bulk-archive-change) | Archive several change proposals at once | Optional |
@@ -91,7 +91,7 @@ Implement a change proposal's tasks, working through the list until done or bloc
 |---|---|
 | **Arguments** | A change proposal name (`add-auth`), optional. If the target is ambiguous it lists the active change proposals and asks you to pick. |
 | **Creates** | Code: the minimal changes each task calls for, in your project files. In the change proposal it checks off each finished task (`- [ ]` to `- [x]`) in the tracked file identified by `sourcePath` and one-based `line`. A schema may track tasks across multiple files. |
-| **Response** | Progress per task, then an overall count (N/M tasks complete). All done: suggests `openspec-archive-change`. Blocked by missing artifacts: points to `openspec-continue-change`, or to `openspec status` and `openspec instructions` when that skill is not installed (the core profile leaves it out). Unclear tasks or errors: pauses and asks. |
+| **Response** | Progress per task, then an overall count (N/M tasks complete). All done: suggests `openspec-archive-change`. Blocked by missing artifacts: points to `openspec-continue-change`, or to `openspec status` and `openspec instructions` when that skill is not installed (a custom profile can leave it out). Unclear tasks or errors: pauses and asks. |
 
 ## openspec-update-change
 
@@ -101,7 +101,7 @@ other.
 | Contract | Description |
 |---|---|
 | **Arguments** | A change proposal name, optional, plus the revision you want. With no revision stated it runs a coherence review: artifacts checked against each other for contradictions, gaps, and duplication. |
-| **Creates** | Edits artifact files that already exist. One exception: for an artifact written as a glob, such as `specs/**/*.md`, that already has at least one file, it can add a missing companion file once you confirm the path. An artifact with no files yet is `openspec-continue-change`'s job. Without that skill (the core profile leaves it out), it points to `openspec status` and `openspec instructions` instead. Never code. |
+| **Creates** | Edits artifact files that already exist. One exception: for an artifact written as a glob, such as `specs/**/*.md`, that already has at least one file, it can add a missing companion file once you confirm the path. An artifact with no files yet is `openspec-continue-change`'s job. Without that skill (a custom profile can leave it out), it points to `openspec status` and `openspec instructions` instead. Never code. |
 | **Response** | Shows each proposed revision and writes it only after you confirm, one artifact at a time. Ends with what was revised and the next step; implementation waits for `openspec-apply-change`. |
 
 ## openspec-sync-specs

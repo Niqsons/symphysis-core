@@ -92,9 +92,9 @@ describe('welcome screen', () => {
     const output = writtenOutput();
 
     expect(output).toContain('/opsx:propose');
+    expect(output).toContain('/opsx:continue');
     expect(output).toContain('/opsx:apply');
     expect(output).not.toContain('/opsx:new');
-    expect(output).not.toContain('/opsx:continue');
   });
 
   it('advertises expanded commands when a custom profile installs them', async () => {

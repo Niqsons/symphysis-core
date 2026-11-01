@@ -15,6 +15,8 @@ upstream: Fission-AI/OpenSpec @ 6d04a1b5 (1.15.0, 2026-10-24)
 и вызов артефакта по имени (`continue <change> <artifact-id>`).
 Решение 2026-11-01 (F-64.B) добавило окно устаревания: `stale` гейтует, пока
 не начался следующий шаг, дальше — сигнал.
+Решение 2026-11-01 (F-126.A): `continue` входит в профиль `core`, `symphysis install`
+только обновляет проект, а глобальный конфиг не трогает.
 
 ## Правки форка
 
@@ -33,7 +35,8 @@ upstream: Fission-AI/OpenSpec @ 6d04a1b5 (1.15.0, 2026-10-24)
 | C10 — версия форка 1.15.0-symphysis.2; регэксп теста `generatedBy` принимает prerelease-суффикс (package.json, `test/core/update.test.ts`) | 1385c85b |
 | C11 — окно устаревания вердикта (F-64.B): `stale` гейтует, пока у зависимого артефакта нет файла, а у артефакта без зависимых в `apply.requires` — пока в `apply.tracks` нет отмеченной задачи; дальше артефакт `done` с `verdict: "stale"` и строкой-сигналом в `nextSteps`; окно — из графа и `apply.tracks`, без имён схемы (`state.ts` `detectStaleSignals`, `instruction-loader.ts`, `change-status-policy.ts`, `status.ts`; документы `docs/agent-contract.md`, `docs/cli.md`; противоречие §4.4 и §4.6 о `missingArtifacts` снято) | 9b2acf6f |
 | C12 — `continue` выбирает тот же следующий артефакт, что CLI (`NEXT_ARTIFACT`: пропускается только optional без файла), по имени `done` без вердикта или `skipped` — STOP; `apply` называет сигнал stale (`STALE_SIGNAL`) (`continue-change.ts`, `apply-change.ts`, пины парити, два SKILL.md) | e0d02a2b |
-| C13 — версия форка 1.15.0-symphysis.3 (package.json) | этот коммит |
+| C13 — версия форка 1.15.0-symphysis.3 (package.json) | 18ae8ba1 |
+| C14 — `continue` в `CORE_WORKFLOWS` (F-126.A, `profiles.ts`): развилки `optionalWorkflow` сами дают `/opsx:continue` на core, запасной путь CLI остаётся для custom без него; тесты паритета под семь workflow. Состав core поправлен в `docs-lab/customize/profiles.md` (его читает тест), `docs-lab/reference/skills.md`, `docs/glossary.md`. В `README.md`, `docs/supported-tools.md`, `faq.md`, `how-commands-work.md`, `opsx.md` прежний состав: в тарбол они не входят, а правка поднимала гейт имён на чужих адресах всего файла. Версия форка 1.15.0-symphysis.4 (package.json) | этот коммит |
 
 ## Выпуски upstream
 
@@ -49,3 +52,4 @@ upstream: Fission-AI/OpenSpec @ 6d04a1b5 (1.15.0, 2026-10-24)
 | 2026-10-30 | C1–C5, после сборки `dist/` (4b100b6e) | 6624 passed, 154 skipped, **8 failed — те же восемь EPERM symlink** (`update.test.ts` ×1, `schema.test.ts` ×1, `resolver.test.ts` ×6); первый прогон на свежем `dist/` (b982f281) дал 6622 passed и 9 failed — девятым был `cli-e2e/startup-modules.test.ts`, исправлен в d88ca368; `pnpm regen:parity-hashes`: «already match the build - nothing to update», `pnpm generate:skills`: `git status` чист |
 | 2026-10-31 | C1–C10, после сборки `dist/` (версия 1.15.0-symphysis.2) | 6698 passed, 154 skipped, **8 failed — те же восемь EPERM symlink** (`update.test.ts` ×1, `schema.test.ts` ×1, `resolver.test.ts` ×6); девятое падение (`update.test.ts` «should embed generatedBy», регэксп не принимал `-symphysis.N` после C6) снято правкой регэкспа в C10; `pnpm regen:parity-hashes` после сборки сдвинул пины `continue`/`apply`, `pnpm generate:skills` обновил два SKILL.md |
 | 2026-11-01 | C1–C13, после сборки `dist/` (версия 1.15.0-symphysis.3) | с `XDG_CONFIG_HOME` во временном каталоге: 6719 passed, 154 skipped, **8 failed — те же восемь EPERM symlink** (`update.test.ts` ×1, `schema.test.ts` ×1, `resolver.test.ts` ×6). Без изоляции ещё 11 красных в `test/core/version-check.test.ts`: глобальный конфиг машины несёт `telemetry.enabled: false`, и проверка обновлений отключена (`isCheckEnabled`) — среда, не правка; в изоляции 67/67. `pnpm regen:parity-hashes` сдвинул пины `continue`/`apply`, `pnpm generate:skills` обновил два SKILL.md |
+| 2026-11-02 | C1–C14, после сборки `dist/` (версия 1.15.0-symphysis.4) | с `XDG_CONFIG_HOME` во временном каталоге: 6719 passed, 154 skipped, **8 failed — те же восемь EPERM symlink** (`update.test.ts` ×1, `schema.test.ts` ×1, `resolver.test.ts` ×6). До правки тестов под новый состав core падало 46, из них 38 — ожидания прежних шести workflow. `pnpm regen:parity-hashes`: «already match the build», `pnpm generate:skills`: `git status` без новых файлов |

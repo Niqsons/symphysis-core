@@ -1,10 +1,11 @@
 /**
  * Optional-Workflow Conditionals
  *
- * Not every workflow is installed. The `core` profile ships six of the twelve
- * (`propose`, `explore`, `apply`, `update`, `sync`, `archive`), and a `custom`
- * profile can ship any subset. A template that names `/opsx:continue` is
- * therefore writing a dead reference for anyone whose profile omits it — the
+ * Not every workflow is installed. The `core` profile ships seven of the twelve
+ * (`propose`, `explore`, `continue`, `apply`, `update`, `sync`, `archive`; `continue`
+ * is the fork's addition), and a `custom` profile can ship any subset. A template
+ * that names `/opsx:continue` is therefore writing a dead reference for anyone
+ * whose profile omits it — the
  * agent is told to hand off to a workflow that was never generated (#1734,
  * umbrella #919).
  *

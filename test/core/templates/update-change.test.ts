@@ -26,6 +26,9 @@ const render = (workflows: readonly string[]): Array<[string, string]> => {
 // set — these are the bodies a profile with every workflow installed receives.
 const bodies = render(ALL_WORKFLOWS);
 const coreBodies = render(CORE_WORKFLOWS);
+// Fork (symphysis): `continue` is in core, so the CLI fallback is what a custom
+// profile without it receives.
+const noContinueBodies = render(CORE_WORKFLOWS.filter((workflow) => workflow !== 'continue'));
 
 // The load-bearing sentence of step 4 and the whole of step 5 are pinned
 // verbatim. #1836 happened because a single verb ("Apply") in step 4 silently
@@ -372,7 +375,7 @@ describe('update-change templates', () => {
   });
 
   it('never names /opsx:continue on a profile that does not install it', () => {
-    for (const [label, body] of coreBodies) {
+    for (const [label, body] of noContinueBodies) {
       expect(body, label).not.toContain('/opsx:continue');
       expect(body, label).toContain('it never creates missing ones');
       expect(body, label).toContain(

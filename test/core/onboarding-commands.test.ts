@@ -10,9 +10,8 @@ describe('getOnboardingCommands', () => {
   it('omits commands the profile does not install', () => {
     const commands = getOnboardingCommands(CORE_WORKFLOWS).map((c) => c.command);
 
-    expect(commands).toEqual(['/opsx:propose', '/opsx:apply']);
+    expect(commands).toEqual(['/opsx:propose', '/opsx:continue', '/opsx:apply']);
     expect(commands).not.toContain('/opsx:new');
-    expect(commands).not.toContain('/opsx:continue');
   });
 
   it('includes expanded commands when a custom profile installs them', () => {
@@ -49,7 +48,7 @@ describe('formatOptionalWorkflowsNote', () => {
 
     expect(note).not.toBeNull();
     expect(note?.[0]).toBe(
-      'Note: 6 more workflows are available (new, continue, ff, bulk-archive, verify, onboard).'
+      'Note: 5 more workflows are available (new, ff, bulk-archive, verify, onboard).'
     );
     expect(note?.[1]).toBe(
       'Add them with `openspec config profile`.'

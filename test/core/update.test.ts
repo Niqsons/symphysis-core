@@ -1122,9 +1122,10 @@ metadata:
 
       await updateCommand.execute(testDir);
 
-      // Verify core profile skill files were created/updated (propose, explore, apply, update, sync, archive)
+      // Verify core profile skill files were created/updated (propose, explore, continue, apply, update, sync, archive)
       const coreSkillNames = [
         'openspec-explore',
+        'openspec-continue-change',
         'openspec-apply-change',
         'openspec-update-change',
         'openspec-sync-specs',
@@ -1146,7 +1147,6 @@ metadata:
       // Verify non-core skills are NOT created
       const nonCoreSkillNames = [
         'openspec-new-change',
-        'openspec-continue-change',
         'openspec-ff-change',
         'openspec-bulk-archive-change',
         'openspec-verify-change',
@@ -1377,8 +1377,8 @@ metadata:
 
       await updateCommand.execute(testDir);
 
-      // Verify core profile commands were created (propose, explore, apply, update, sync, archive)
-      const coreCommandIds = ['explore', 'apply', 'update', 'sync', 'archive', 'propose'];
+      // Verify core profile commands were created (propose, explore, continue, apply, update, sync, archive)
+      const coreCommandIds = ['explore', 'continue', 'apply', 'update', 'sync', 'archive', 'propose'];
       const commandsDir = path.join(testDir, '.claude', 'commands', 'opsx');
       for (const cmdId of coreCommandIds) {
         const cmdFile = path.join(commandsDir, `${cmdId}.md`);
@@ -1387,7 +1387,7 @@ metadata:
       }
 
       // Verify non-core commands are NOT created
-      const nonCoreCommandIds = ['new', 'continue', 'ff', 'bulk-archive', 'verify'];
+      const nonCoreCommandIds = ['new', 'ff', 'bulk-archive', 'verify'];
       for (const cmdId of nonCoreCommandIds) {
         const cmdFile = path.join(commandsDir, `${cmdId}.md`);
         const exists = await FileSystemUtils.fileExists(cmdFile);
@@ -3257,7 +3257,7 @@ More user content after markers.
       );
 
       // Should show getting started message for newly configured tools,
-      // limited to the commands the core profile installs (not new/continue)
+      // limited to the commands the core profile installs (not new)
       expect(consoleSpy).toHaveBeenCalledWith(
         expect.stringContaining('Getting started')
       );
@@ -3268,7 +3268,7 @@ More user content after markers.
         .map((call) => call.map((arg) => String(arg)).join(' '))
         .join('\n');
       expect(gettingStartedCalls).not.toContain('/opsx:new');
-      expect(gettingStartedCalls).not.toContain('/opsx:continue');
+      expect(gettingStartedCalls).toContain('/opsx:continue');
       expect(gettingStartedCalls).not.toContain('Restart your IDE');
 
       // Skills should be created
@@ -3712,7 +3712,7 @@ More user content after markers.
           featureFlags: {},
           profile: 'custom',
           delivery,
-          workflows: ['propose', 'explore', 'apply', 'archive'],
+          workflows: ['propose', 'explore', 'continue', 'apply', 'archive'],
         });
 
         const archiveSkill = path.join(
@@ -3768,7 +3768,7 @@ More user content after markers.
         featureFlags: {},
         profile: 'custom',
         delivery: 'both',
-        workflows: ['propose', 'explore', 'apply', 'sync', 'archive'],
+        workflows: ['propose', 'explore', 'continue', 'apply', 'sync', 'archive'],
       });
 
       const initCommand = new InitCommand({ tools: 'claude', force: true });
@@ -3796,7 +3796,7 @@ More user content after markers.
         featureFlags: {},
         profile: 'custom',
         delivery: 'both',
-        workflows: ['propose', 'explore', 'apply', 'update', 'sync', 'archive', 'verify'],
+        workflows: ['propose', 'explore', 'continue', 'apply', 'update', 'sync', 'archive', 'verify'],
       });
 
       const initCommand = new InitCommand({ tools: 'claude', force: true });
@@ -3833,7 +3833,7 @@ More user content after markers.
       );
       const note = calls.find(call => call.includes('more workflows are available'));
       expect(note).toBeTruthy();
-      for (const workflow of ['new', 'continue', 'ff', 'bulk-archive', 'verify', 'onboard']) {
+      for (const workflow of ['new', 'ff', 'bulk-archive', 'verify', 'onboard']) {
         expect(note).toContain(workflow);
       }
 
@@ -4142,6 +4142,7 @@ More user content after markers.
       expect((await fs.readdir(skillsDir)).sort()).toEqual([
         'openspec-apply-change',
         'openspec-archive-change',
+        'openspec-continue-change',
         'openspec-custom',
         'openspec-explore',
         'openspec-propose',

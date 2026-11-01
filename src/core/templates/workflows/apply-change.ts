@@ -10,8 +10,9 @@ import { STORE_SELECTION_GUIDANCE } from './store-selection.js';
 import { PROJECT_ROOT_GUARD } from './project-root.js';
 
 /**
- * `/opsx:continue` is not in the `core` profile, so the blocked-state handoff
- * is authored with a CLI fallback and resolved at generation time (see
+ * `/opsx:continue` is in the fork's `core` profile but not guaranteed in a
+ * `custom` one, so the blocked-state handoff is authored with a CLI fallback
+ * and resolved at generation time (see
  * optional-workflow.ts).
  */
 const BLOCKED_STATE_HANDOFF = optionalWorkflow(

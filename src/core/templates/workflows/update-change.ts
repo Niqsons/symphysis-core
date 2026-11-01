@@ -10,9 +10,10 @@ import { STORE_SELECTION_GUIDANCE } from './store-selection.js';
 import { PROJECT_ROOT_GUARD } from './project-root.js';
 
 /**
- * Passages that hand off to `/opsx:continue` or `/opsx:new`. Neither workflow
- * is in the `core` profile, so each is authored with a CLI fallback and
- * resolved at generation time (see optional-workflow.ts). Shared by both
+ * Passages that hand off to `/opsx:continue` or `/opsx:new`. `new` is outside
+ * the `core` profile and a `custom` one may leave out either, so each is
+ * authored with a CLI fallback and resolved at generation time (see
+ * optional-workflow.ts). Shared by both
  * surfaces below so the skill and the command cannot drift apart.
  */
 const CONTINUE_SCOPE_NOTE = optionalWorkflow(

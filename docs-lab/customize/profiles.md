@@ -6,12 +6,13 @@ A profile is your preference for which OpenSpec workflows (the [skills and comma
 
 ## The core set
 
-The `core` profile installs six workflows, covering the whole loop from idea to archive:
+The `core` profile installs seven workflows, covering the whole loop from idea to archive:
 
 | Workflow | What it's for |
 |---|---|
 | [`explore`](../reference/skills.md#openspec-explore) | Think through an idea before it becomes a change proposal |
 | [`propose`](../reference/skills.md#openspec-propose) | Create a change proposal and generate all its planning artifacts in one step |
+| [`continue`](../reference/skills.md#openspec-continue-change) | Create the next planning artifact in a change proposal, one at a time |
 | [`apply`](../reference/skills.md#openspec-apply-change) | Implement a change proposal's tasks |
 | [`update`](../reference/skills.md#openspec-update-change) | Revise a change proposal's existing planning artifacts |
 | [`sync`](../reference/skills.md#openspec-sync-specs) | Merge a change proposal's spec updates into `specs/` without archiving it |
@@ -21,12 +22,11 @@ Each links to its full contract: arguments, what it creates, and what it respond
 
 ## Expanding the set: optional workflows
 
-Six more workflows are available beyond the core set. Three of them (`new`, `continue`, `ff`) create a change proposal artifact by artifact, instead of all at once like `propose`.
+Five more workflows are available beyond the core set. Two of them (`new`, `ff`) create a change proposal artifact by artifact, instead of all at once like `propose`.
 
 | Workflow | What it's for |
 |---|---|
 | [`new`](../reference/skills.md#openspec-new-change) | Start a change proposal as an empty scaffold |
-| [`continue`](../reference/skills.md#openspec-continue-change) | Create the next planning artifact in a change proposal, one at a time |
 | [`ff`](../reference/skills.md#openspec-ff-change) | Create a change proposal and every planning artifact implementation needs, in one pass |
 | [`verify`](../reference/skills.md#openspec-verify-change) | Check that the implementation matches the change proposal's artifacts |
 | [`bulk-archive`](../reference/skills.md#openspec-bulk-archive-change) | Archive several change proposals at once |
@@ -38,7 +38,7 @@ To change the set, run the interactive picker:
 openspec config profile
 ```
 
-The picker asks what to configure ([delivery](#delivery-skills-commands-or-both), workflows, or both), then lists all twelve workflows as checkboxes, with the installed ones checked. Any selection that isn't exactly the core six is saved as the `custom` profile, so you can also uncheck core workflows you don't use.
+The picker asks what to configure ([delivery](#delivery-skills-commands-or-both), workflows, or both), then lists all twelve workflows as checkboxes, with the installed ones checked. Any selection that isn't exactly the core seven is saved as the `custom` profile, so you can also uncheck core workflows you don't use.
 
 ## Delivery: skills, commands, or both
 

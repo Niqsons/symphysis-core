@@ -318,10 +318,11 @@ describe('InitCommand', () => {
 
       await initCommand.execute(testDir);
 
-      // Core profile: propose, explore, apply, update, sync, archive
+      // Core profile: propose, explore, continue, apply, update, sync, archive
       const coreSkillNames = [
         'openspec-propose',
         'openspec-explore',
+        'openspec-continue-change',
         'openspec-apply-change',
         'openspec-update-change',
         'openspec-sync-specs',
@@ -341,7 +342,6 @@ describe('InitCommand', () => {
       // Non-core skills should NOT be created
       const nonCoreSkillNames = [
         'openspec-new-change',
-        'openspec-continue-change',
         'openspec-ff-change',
         'openspec-bulk-archive-change',
         'openspec-verify-change',
@@ -386,10 +386,11 @@ describe('InitCommand', () => {
 
       await initCommand.execute(testDir);
 
-      // Core profile: propose, explore, apply, update, sync, archive
+      // Core profile: propose, explore, continue, apply, update, sync, archive
       const coreCommandNames = [
         'opsx/propose.md',
         'opsx/explore.md',
+        'opsx/continue.md',
         'opsx/apply.md',
         'opsx/update.md',
         'opsx/sync.md',
@@ -404,7 +405,6 @@ describe('InitCommand', () => {
       // Non-core commands should NOT be created
       const nonCoreCommandNames = [
         'opsx/new.md',
-        'opsx/continue.md',
         'opsx/ff.md',
         'opsx/bulk-archive.md',
         'opsx/verify.md',
@@ -518,12 +518,13 @@ describe('InitCommand', () => {
         ...[
           'openspec-propose',
           'openspec-explore',
+          'openspec-continue-change',
           'openspec-apply-change',
           'openspec-update-change',
           'openspec-sync-specs',
           'openspec-archive-change',
         ].map((name) => path.join(testDir, '.claude', 'skills', name, 'SKILL.md')),
-        ...['propose', 'explore', 'apply', 'update', 'sync', 'archive'].map((name) =>
+        ...['propose', 'explore', 'continue', 'apply', 'update', 'sync', 'archive'].map((name) =>
           path.join(testDir, '.claude', 'commands', 'opsx', `${name}.md`)
         ),
       ];
@@ -540,10 +541,10 @@ describe('InitCommand', () => {
         );
       }
 
-      // The default profile installs six workflows; `continue` and `new` are
-      // not among them. Nothing it generates may name them (#1734) - it would
-      // send the agent to a skill that was never written. The CLI fallback is
-      // stated outright instead of behind a runtime availability check.
+      // Fork (symphysis): the default profile installs seven workflows, `continue`
+      // among them and `new` not. Nothing it generates may name `new` (#1734) - it
+      // would send the agent to a skill that was never written. The CLI fallback
+      // is stated outright instead of behind a runtime availability check.
       const updateVariants = [
         await fs.readFile(
           path.join(
@@ -562,10 +563,9 @@ describe('InitCommand', () => {
       ];
 
       for (const content of updateVariants) {
-        expect(content).not.toContain('/opsx:continue');
+        expect(content).toContain('/opsx:continue');
         expect(content).not.toContain('/opsx:new');
         expect(content).not.toContain('is an optional workflow and may not be installed');
-        expect(content).toContain('it never creates missing ones');
         expect(content).toContain('openspec status --change "<name>" --json');
         expect(content).toContain(
           'openspec instructions "<artifact-id>" --change "<name>" --json'
@@ -585,15 +585,10 @@ describe('InitCommand', () => {
       ];
 
       for (const content of applyVariants) {
-        // The core profile has no `continue`, so the blocked-state handoff
-        // must be the CLI recovery in full, not a workflow this install lacks.
-        expect(content).not.toContain('/opsx:continue');
-        expect(content).toContain('openspec status --change "<name>" --json');
-        expect(content).toContain('next `ready` artifact (not `skipped` or `blocked`)');
-        expect(content).toContain(
-          'openspec instructions "<artifact-id>" --change "<name>" --json'
-        );
-        expect(content).toContain('Keep the selected `--store <id>` on both commands');
+        // Fork (symphysis): `continue` is in core, so the blocked-state handoff
+        // names it; the CLI recovery is for a custom profile without it.
+        expect(content).toContain('suggest using `/opsx:continue` to create them.');
+        expect(content).not.toContain('next `ready` artifact (not `skipped` or `blocked`)');
       }
 
       const syncFiles = [
@@ -1106,6 +1101,7 @@ describe('InitCommand', () => {
       const skillNames = [
         'openspec-apply-change',
         'openspec-archive-change',
+        'openspec-continue-change',
         'openspec-explore',
         'openspec-propose',
         'openspec-sync-specs',
@@ -1733,7 +1729,7 @@ describe('InitCommand', () => {
         if (delivery !== 'skills') {
           const commandFiles = await fs.readdir(commandsDir);
           expect(commandFiles.sort()).toEqual([
-            'opsx-apply.md', 'opsx-archive.md', 'opsx-explore.md',
+            'opsx-apply.md', 'opsx-archive.md', 'opsx-continue.md', 'opsx-explore.md',
             'opsx-propose.md', 'opsx-sync.md', 'opsx-update.md',
           ]);
           for (const filename of commandFiles) {
@@ -1759,7 +1755,7 @@ describe('InitCommand', () => {
       await initCommand.execute(testDir);
 
       const commandsDir = path.join(testDir, `.${toolId}`, 'commands', 'opsx');
-      const commandIds = ['apply', 'archive', 'explore', 'propose', 'sync', 'update'];
+      const commandIds = ['apply', 'archive', 'continue', 'explore', 'propose', 'sync', 'update'];
       expect((await fs.readdir(commandsDir)).sort()).toEqual(commandIds.map((id) => `${id}.toml`));
       for (const commandId of commandIds) {
         const content = parseToml(await fs.readFile(path.join(commandsDir, `${commandId}.toml`), 'utf-8'));
@@ -2483,7 +2479,7 @@ describe('InitCommand - profile and detection features', () => {
     const logCalls = (console.log as unknown as { mock: { calls: unknown[][] } }).mock.calls.flat().map(String);
     const note = logCalls.find((entry) => entry.includes('more workflows are available'));
     expect(note).toBeTruthy();
-    for (const workflow of ['new', 'continue', 'ff', 'bulk-archive', 'verify', 'onboard']) {
+    for (const workflow of ['new', 'ff', 'bulk-archive', 'verify', 'onboard']) {
       expect(note).toContain(workflow);
     }
     // Workflows that were installed must not be advertised as missing

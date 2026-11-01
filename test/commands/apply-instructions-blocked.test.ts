@@ -84,7 +84,7 @@ describe('generateApplyInstructions blocked prerequisites', () => {
   it('points at a command every profile has, never at a skill it may not', async () => {
     const instructions = await generateApplyInstructions(tempDir, 'my-change');
 
-    // `continue` is not in CORE_WORKFLOWS, so the default install never had the
+    // A custom profile may leave `continue` out, and then the install has no
     // skill the old message named.
     expect(instructions.instruction).not.toContain('openspec-continue-change');
     expect(instructions.instruction).toContain('openspec status --change my-change');
