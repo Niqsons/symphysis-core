@@ -1,7 +1,7 @@
 {
  "title": "Журнал решений: decision-scheme",
  "source": "decisions.json",
- "intro": "Пути улик — от корня проекта; префикс `vscode/` — репозиторий плагина symphysis-vscode. Читались: `intent.md`, `docs/repo-contract.md`, `tools/playground-template.html`, `docs/journal.schema.json`, `tools/journal_render.py`, скиллы брейншторма и просмотрщика, дизайн и результаты пробы плагина, код плагина. Круг 2: `research/F-21.md` и след пробы, `openspec/specs/brainstorm-interview/spec.md`, `docs/plan-implementation.md`. Круг 3: след пробы `research/antipodes-probe/probe.log`, журналы и план `implementation-consequences`, `openspec/changes/calibration-fixes/rulings.md`, `installer/`.",
+ "intro": "Пути улик — от корня проекта; префикс `vscode/` — репозиторий плагина symphysis-vscode. Читались: `intent.md`, `docs/repo-contract.md`, `tools/playground-template.html`, `docs/journal.schema.json`, `tools/journal_render.py`, скиллы брейншторма и просмотрщика, дизайн и результаты пробы плагина, код плагина. Круг 2: `research/F-21.md` и след пробы, `openspec/specs/brainstorm-interview/spec.md`, `docs/plan-implementation.md`. Круг 3: след пробы `research/antipodes-probe/probe.log`, журналы и план `implementation-consequences`, `openspec/changes/calibration-fixes/rulings.md`, `installer/`. Пробы шага `specs`: `specs/*/spec.md`.",
  "records": [
   {
    "id": "F-01",
@@ -23,7 +23,10 @@
    "evidence": [
     {
      "path": "openspec/changes/decision-scheme/intent.md",
-     "quote": "При работе с брейнштомом проверяется наличие scheme.md. Если такого файла нет, то он создается на первом круге исходя из сценария в intent.md. Если сценария нет, то модель предлагает своё виденье сценария, задает вопросы, чтобы его составить. После составления формирует файл и дает ссылку на него человеку в чат."
+     "quote": "При работе с брейнштомом проверяется наличие scheme.md. Если такого файла нет, то он создается на первом круге исходя из сценария в intent.md. Если сценария нет, то модель предлагает своё виденье сценария, задает вопросы, чтобы его составить. После составления формирует файл и дает ссылку на него человеку в чат.",
+     "line": 43,
+     "verdict": "сверено",
+     "found": true
     }
    ],
    "comments": []
@@ -48,7 +51,10 @@
    "evidence": [
     {
      "path": "openspec/changes/decision-scheme/intent.md",
-     "quote": "видна на вкладке плагина"
+     "quote": "видна на вкладке плагина",
+     "line": 46,
+     "verdict": "сверено",
+     "found": true
     }
    ],
    "comments": []
@@ -73,7 +79,10 @@
    "evidence": [
     {
      "path": "openspec/changes/decision-scheme/intent.md",
-     "quote": "клик по узлу схемы фильтрует карточки по nodes"
+     "quote": "клик по узлу схемы фильтрует карточки по nodes",
+     "line": 47,
+     "verdict": "сверено",
+     "found": true
     }
    ],
    "comments": []
@@ -98,7 +107,10 @@
    "evidence": [
     {
      "path": "openspec/changes/decision-scheme/intent.md",
-     "quote": "У панели схемы есть кнопки переключения масштаба и перетаскивания схемы внутри панели."
+     "quote": "У панели схемы есть кнопки переключения масштаба и перетаскивания схемы внутри панели.",
+     "line": 48,
+     "verdict": "сверено",
+     "found": true
     }
    ],
    "comments": []
@@ -123,7 +135,10 @@
    "evidence": [
     {
      "path": "openspec/changes/decision-scheme/intent.md",
-     "quote": "При отсутствии схемы отображается плашка \"Схема не создана\""
+     "quote": "При отсутствии схемы отображается плашка \"Схема не создана\"",
+     "line": 49,
+     "verdict": "сверено",
+     "found": true
     }
    ],
    "comments": []
@@ -148,7 +163,10 @@
    "evidence": [
     {
      "path": "openspec/changes/decision-scheme/intent.md",
-     "quote": "Человек может отредактировать файл scheme.md, отсутствующие в нём nodes не будут фильтровать карточки (будет выводится хинт: узел не найден)"
+     "quote": "Человек может отредактировать файл scheme.md, отсутствующие в нём nodes не будут фильтровать карточки (будет выводится хинт: узел не найден)",
+     "line": 52,
+     "verdict": "сверено",
+     "found": true
     }
    ],
    "comments": []
@@ -173,7 +191,10 @@
    "evidence": [
     {
      "path": "openspec/changes/decision-scheme/intent.md",
-     "quote": "Схема нужна человеку, а не модели, поэтому он ей управляет и наполняет. Модель здесь помощник, а не надзиратель."
+     "quote": "Схема нужна человеку, а не модели, поэтому он ей управляет и наполняет. Модель здесь помощник, а не надзиратель.",
+     "line": 53,
+     "verdict": "сверено",
+     "found": true
     }
    ],
    "comments": []
@@ -198,7 +219,10 @@
    "evidence": [
     {
      "path": "openspec/changes/decision-scheme/intent.md",
-     "quote": "Плагин сверяет номер контракта и при несовпадении говорит, что обновить."
+     "quote": "Плагин сверяет номер контракта и при несовпадении говорит, что обновить.",
+     "line": 57,
+     "verdict": "сверено",
+     "found": true
     }
    ],
    "comments": []
@@ -223,7 +247,10 @@
    "evidence": [
     {
      "path": "openspec/changes/decision-scheme/intent.md",
-     "quote": "Новая сборка .vsix вместе с пакетом правок проходит npm run e2e:vsix."
+     "quote": "Новая сборка .vsix вместе с пакетом правок проходит npm run e2e:vsix.",
+     "line": 58,
+     "verdict": "сверено",
+     "found": true
     }
    ],
    "comments": []
@@ -248,7 +275,10 @@
    "evidence": [
     {
      "path": "openspec/changes/decision-scheme/intent.md",
-     "quote": "В собранном файле .vsix указывается версия проекта, что его собрал."
+     "quote": "В собранном файле .vsix указывается версия проекта, что его собрал.",
+     "line": 59,
+     "verdict": "сверено",
+     "found": true
     }
    ],
    "comments": []
@@ -273,7 +303,10 @@
    "evidence": [
     {
      "path": "openspec/changes/decision-scheme/intent.md",
-     "quote": "Включаем mermaid внутрь расширения. Про установленный плагин я говорил лишь, чтобы ускорить разработку."
+     "quote": "Включаем mermaid внутрь расширения. Про установленный плагин я говорил лишь, чтобы ускорить разработку.",
+     "line": 21,
+     "verdict": "сверено",
+     "found": true
     }
    ],
    "comments": []
@@ -298,15 +331,24 @@
    "evidence": [
     {
      "path": "vscode/docs/design-part1-viewer.md",
-     "quote": "- **Р13** — файл `scheme.md` с одним блоком ` ```mermaid `: его рисуют"
+     "quote": "- **Р13** — файл `scheme.md` с одним блоком ` ```mermaid `: его рисуют",
+     "line": 195,
+     "verdict": "сверено",
+     "found": true
     },
     {
      "path": "vscode/docs/design-part1-viewer.md",
-     "quote": "- **Р14** — схема обязательна инструкцией брейншторма, не артефактом"
+     "quote": "- **Р14** — схема обязательна инструкцией брейншторма, не артефактом",
+     "line": 197,
+     "verdict": "сверено",
+     "found": true
     },
     {
      "path": "vscode/docs/design-part1-viewer.md",
-     "quote": "- **Р15** — брейншторм рисует `flowchart`; клик-фильтр — только по нему;"
+     "quote": "- **Р15** — брейншторм рисует `flowchart`; клик-фильтр — только по нему;",
+     "line": 200,
+     "verdict": "сверено",
+     "found": true
     }
    ],
    "comments": []
@@ -331,11 +373,17 @@
    "evidence": [
     {
      "path": "docs/journal.schema.json",
-     "quote": "\"additionalProperties\": false,"
+     "quote": "\"additionalProperties\": false,",
+     "line": 7,
+     "verdict": "сверено",
+     "found": true
     },
     {
      "path": "tools/journal_render.py",
-     "quote": "view = dict(rec)"
+     "quote": "view = dict(rec)",
+     "line": 158,
+     "verdict": "сверено",
+     "found": true
     }
    ],
    "comments": []
@@ -360,23 +408,38 @@
    "evidence": [
     {
      "path": "vscode/docs/spike-part1-results.md",
-     "quote": "| Идентификаторы узлов с кириллицей | работают (`узел1`) |"
+     "quote": "| Идентификаторы узлов с кириллицей | работают (`узел1`) |",
+     "line": 78,
+     "verdict": "сверено",
+     "found": true
     },
     {
      "path": "vscode/docs/spike-part1-results.md",
-     "quote": "| Клик во вкладке схемы фильтрует карточки в другой вкладке | работает, 2–6 мс |"
+     "quote": "| Клик во вкладке схемы фильтрует карточки в другой вкладке | работает, 2–6 мс |",
+     "line": 80,
+     "verdict": "сверено",
+     "found": true
     },
     {
      "path": "vscode/docs/spike-part1-results.md",
-     "quote": "| Битый текст | ошибка с номером строки: `Parse error on line 4: …` |"
+     "quote": "| Битый текст | ошибка с номером строки: `Parse error on line 4: …` |",
+     "line": 81,
+     "verdict": "сверено",
+     "found": true
     },
     {
      "path": "vscode/docs/spike-part1-results.md",
-     "quote": "| Диаграмма последовательности | рисуется; узлов `g.node` нет, фильтр по ней не работает (как решено в Р15) |"
+     "quote": "| Диаграмма последовательности | рисуется; узлов `g.node` нет, фильтр по ней не работает (как решено в Р15) |",
+     "line": 82,
+     "verdict": "сверено",
+     "found": true
     },
     {
      "path": "vscode/docs/spike-part1-results.md",
-     "quote": "Идентификатор в рисунке — `scheme1-flowchart-n1-0`: узел достаётся регулярным"
+     "quote": "Идентификатор в рисунке — `scheme1-flowchart-n1-0`: узел достаётся регулярным",
+     "line": 86,
+     "verdict": "сверено",
+     "found": true
     }
    ],
    "comments": []
@@ -401,11 +464,17 @@
    "evidence": [
     {
      "path": "vscode/docs/spike-part1-results.md",
-     "quote": "ограды: строгий режим и CSP. Без `style-src 'unsafe-inline'` страница не обходится:"
+     "quote": "ограды: строгий режим и CSP. Без `style-src 'unsafe-inline'` страница не обходится:",
+     "line": 103,
+     "verdict": "сверено",
+     "found": true
     },
     {
      "path": "vscode/src/host/page.ts",
-     "quote": "`style-src ${webview.cspSource}`"
+     "quote": "`style-src ${webview.cspSource}`",
+     "line": 9,
+     "verdict": "сверено",
+     "found": true
     }
    ],
    "comments": []
@@ -430,31 +499,52 @@
    "evidence": [
     {
      "path": "docs/repo-contract.md",
-     "quote": "| номер контракта в выводе `view-json` | ядро |"
+     "quote": "| номер контракта в выводе `view-json` | ядро |",
+     "line": 112,
+     "verdict": "сверено",
+     "found": true
     },
     {
      "path": "docs/repo-contract.md",
-     "quote": "| проверка номера: сегодня `src/host/core.ts:31` принимает JSON без проверки | плагин |"
+     "quote": "| проверка номера: сегодня `src/host/core.ts:31` принимает JSON без проверки | плагин |",
+     "line": 113,
+     "verdict": "сверено",
+     "found": true
     },
     {
      "path": "docs/repo-contract.md",
-     "quote": "| контрактный тест из разовой сверки черновиков | плагин |"
+     "quote": "| контрактный тест из разовой сверки черновиков | плагин |",
+     "line": 114,
+     "verdict": "сверено",
+     "found": true
     },
     {
      "path": "docs/repo-contract.md",
-     "quote": "| дефект шаблона про новую развилку: на нём контрактный тест, по-видимому, покраснеет | ядро |"
+     "quote": "| дефект шаблона про новую развилку: на нём контрактный тест, по-видимому, покраснеет | ядро |",
+     "line": 115,
+     "verdict": "сверено",
+     "found": true
     },
     {
      "path": "docs/repo-contract.md",
-     "quote": "| заданный `SYMPHYSIS_ROOT` без ядра даёт падение, а не пропуск | плагин |"
+     "quote": "| заданный `SYMPHYSIS_ROOT` без ядра даёт падение, а не пропуск | плагин |",
+     "line": 116,
+     "verdict": "сверено",
+     "found": true
     },
     {
      "path": "docs/repo-contract.md",
-     "quote": "| `npm run e2e:vsix` после коммита упаковки | плагин |"
+     "quote": "| `npm run e2e:vsix` после коммита упаковки | плагин |",
+     "line": 117,
+     "verdict": "сверено",
+     "found": true
     },
     {
      "path": "docs/repo-contract.md",
-     "quote": "| тест: инсталлятор не стирает `.symphysis/viewer/` | ядро |"
+     "quote": "| тест: инсталлятор не стирает `.symphysis/viewer/` | ядро |",
+     "line": 118,
+     "verdict": "сверено",
+     "found": true
     }
    ],
    "comments": []
@@ -479,11 +569,17 @@
    "evidence": [
     {
      "path": "tools/playground-template.html",
-     "quote": "const waiting = deps.filter(x => x.kind !== 'removed' && !chosen(x.id)).map(x => x.id);"
+     "quote": "const waiting = deps.filter(x => x.kind !== 'removed' && !chosen(x.id)).map(x => x.id);",
+     "line": 378,
+     "verdict": "сверено",
+     "found": true
     },
     {
      "path": "vscode/docs/design-part1-viewer.md",
-     "quote": "новая развилка не вычищается после `apply` и уходит в промпт повторно; зависимость от факта навсегда даёт «предпосылка не решена»"
+     "quote": "новая развилка не вычищается после `apply` и уходит в промпт повторно; зависимость от факта навсегда даёт «предпосылка не решена»",
+     "line": 430,
+     "verdict": "сверено",
+     "found": true
     }
    ],
    "comments": []
@@ -508,15 +604,24 @@
    "evidence": [
     {
      "path": "tools/playground-template.html",
-     "quote": "<h2>Схема работы — клик фильтрует</h2>"
+     "quote": "<h2>Схема работы — клик фильтрует</h2>",
+     "line": 168,
+     "verdict": "сверено",
+     "found": true
     },
     {
      "path": "tools/playground-template.html",
-     "quote": "if (!n.d.includes(rec.delivery)) return false;"
+     "quote": "if (!n.d.includes(rec.delivery)) return false;",
+     "line": 355,
+     "verdict": "сверено",
+     "found": true
     },
     {
      "path": "vscode/docs/design-part1-viewer.md",
-     "quote": "не ход работы; у журналов изменений они не фильтруют ничего."
+     "quote": "не ход работы; у журналов изменений они не фильтруют ничего.",
+     "line": 115,
+     "verdict": "сверено",
+     "found": true
     }
    ],
    "comments": []
@@ -538,11 +643,17 @@
      "evidence": [
       {
        "path": "openspec/changes/decision-scheme/intent.md",
-       "quote": "видна на вкладке плагина"
+       "quote": "видна на вкладке плагина",
+       "line": 46,
+       "verdict": "сверено",
+       "found": true
       },
       {
        "path": "docs/repo-contract.md",
-       "quote": "Коммит плагина, которому нужен коммит ядра, несёт `Needs: symphysis <хеш>` в том же абзаце."
+       "quote": "Коммит плагина, которому нужен коммит ядра, несёт `Needs: symphysis <хеш>` в том же абзаце.",
+       "line": 42,
+       "verdict": "сверено",
+       "found": true
       }
      ]
     },
@@ -554,7 +665,10 @@
      "evidence": [
       {
        "path": "vscode/docs/design-part1-viewer.md",
-       "quote": "собирает, нового смысла нет); схема, поле `nodes`, тексты скиллов —"
+       "quote": "собирает, нового смысла нет); схема, поле `nodes`, тексты скиллов —",
+       "line": 188,
+       "verdict": "сверено",
+       "found": true
       }
      ]
     },
@@ -566,7 +680,10 @@
      "evidence": [
       {
        "path": "vscode/CLAUDE.md",
-       "quote": "Замысел и решения: `docs/design-part1-viewer.md`."
+       "quote": "Замысел и решения: `docs/design-part1-viewer.md`.",
+       "line": 7,
+       "verdict": "сверено",
+       "found": true
       }
      ]
     }
@@ -611,11 +728,17 @@
      "evidence": [
       {
        "path": "docs/repo-contract.md",
-       "quote": "| контрактный тест из разовой сверки черновиков | плагин |"
+       "quote": "| контрактный тест из разовой сверки черновиков | плагин |",
+       "line": 114,
+       "verdict": "сверено",
+       "found": true
       },
       {
        "path": "docs/repo-contract.md",
-       "quote": "| тест: инсталлятор не стирает `.symphysis/viewer/` | ядро |"
+       "quote": "| тест: инсталлятор не стирает `.symphysis/viewer/` | ядро |",
+       "line": 118,
+       "verdict": "сверено",
+       "found": true
       }
      ]
     },
@@ -627,11 +750,17 @@
      "evidence": [
       {
        "path": "openspec/changes/decision-scheme/intent.md",
-       "quote": "> Починим позже."
+       "quote": "> Починим позже.",
+       "line": 35,
+       "verdict": "сверено",
+       "found": true
       },
       {
        "path": "openspec/changes/decision-scheme/intent.md",
-       "quote": "Новая сборка .vsix вместе с пакетом правок проходит npm run e2e:vsix."
+       "quote": "Новая сборка .vsix вместе с пакетом правок проходит npm run e2e:vsix.",
+       "line": 58,
+       "verdict": "сверено",
+       "found": true
       }
      ]
     },
@@ -643,7 +772,10 @@
      "evidence": [
       {
        "path": "openspec/changes/decision-scheme/intent.md",
-       "quote": "Новая сборка .vsix вместе с пакетом правок проходит npm run e2e:vsix."
+       "quote": "Новая сборка .vsix вместе с пакетом правок проходит npm run e2e:vsix.",
+       "line": 58,
+       "verdict": "сверено",
+       "found": true
       }
      ]
     }
@@ -686,7 +818,10 @@
      "evidence": [
       {
        "path": "vscode/docs/design-part1-viewer.md",
-       "quote": "Страница `decisions.html` схему решения не рисует; `scheme.md` смотрится"
+       "quote": "Страница `decisions.html` схему решения не рисует; `scheme.md` смотрится",
+       "line": 217,
+       "verdict": "сверено",
+       "found": true
       }
      ]
     },
@@ -698,7 +833,10 @@
      "evidence": [
       {
        "path": "tools/playground-template.html",
-       "quote": "<h2>Схема работы — клик фильтрует</h2>"
+       "quote": "<h2>Схема работы — клик фильтрует</h2>",
+       "line": 168,
+       "verdict": "сверено",
+       "found": true
       }
      ]
     },
@@ -710,7 +848,10 @@
      "evidence": [
       {
        "path": "vscode/docs/design-part1-viewer.md",
-       "quote": "GitHub и GitLab, человек правит обычный markdown."
+       "quote": "GitHub и GitLab, человек правит обычный markdown.",
+       "line": 196,
+       "verdict": "сверено",
+       "found": true
       }
      ]
     },
@@ -722,7 +863,10 @@
      "evidence": [
       {
        "path": "vscode/docs/design-part1-viewer.md",
-       "quote": "стоит Markdown Preview Enhanced). Ядро symphysis от mermaid не зависит."
+       "quote": "стоит Markdown Preview Enhanced). Ядро symphysis от mermaid не зависит.",
+       "line": 219,
+       "verdict": "сверено",
+       "found": true
       }
      ]
     }
@@ -750,19 +894,28 @@
     }
    ],
    "dispute": "",
-   "consequences": "Шаблон общий: панель исчезает у всех журналов, страница становится шире. Правятся тесты рендера и `viewer-smoke`. Поле `delivery` остаётся.",
+   "consequences": "Вшитая схема и её фильтр уходят у всех журналов: шаблон общий. Текст `scheme.md` остаётся запасным путём, рисунок и место панели решены в F-39 и F-54. Правятся тесты рендера и `viewer-smoke`. Поле `delivery` остаётся.",
    "evidence": [
     {
      "path": "openspec/changes/decision-scheme/research/F-21-probe/probe.log",
-     "quote": "{\"kind\":\"svg\",\"renderMs\":219,\"ms\":384,\"nodes\":20,\"imgs\":0}"
+     "quote": "{\"kind\":\"svg\",\"renderMs\":219,\"ms\":384,\"nodes\":20,\"imgs\":0}",
+     "line": 26,
+     "verdict": "сверено",
+     "found": true
     },
     {
      "path": "openspec/changes/decision-scheme/research/F-21-probe/probe.log",
-     "quote": "http=[\"http://127.0.0.1:9/pixel.png\""
+     "quote": "http=[\"http://127.0.0.1:9/pixel.png\"",
+     "line": 39,
+     "verdict": "сверено",
+     "found": true
     },
     {
      "path": "openspec/changes/decision-scheme/research/F-21-probe/probe.log",
-     "quote": "The action has been blocked."
+     "quote": "The action has been blocked.",
+     "line": 40,
+     "verdict": "сверено",
+     "found": true
     }
    ],
    "comments": []
@@ -784,7 +937,10 @@
      "evidence": [
       {
        "path": "openspec/changes/decision-scheme/intent.md",
-       "quote": "Схема нужна человеку, а не модели, поэтому он ей управляет и наполняет. Модель здесь помощник, а не надзиратель."
+       "quote": "Схема нужна человеку, а не модели, поэтому он ей управляет и наполняет. Модель здесь помощник, а не надзиратель.",
+       "line": 53,
+       "verdict": "сверено",
+       "found": true
       }
      ]
     },
@@ -796,7 +952,10 @@
      "evidence": [
       {
        "path": "vscode/docs/design-part1-viewer.md",
-       "quote": "не в журнале; правят и человек, и агент."
+       "quote": "не в журнале; правят и человек, и агент.",
+       "line": 168,
+       "verdict": "сверено",
+       "found": true
       }
      ],
      "deviation": "F-07"
@@ -809,7 +968,10 @@
      "evidence": [
       {
        "path": "openspec/changes/decision-scheme/intent.md",
-       "quote": "Поэтому схему не нужно добавлять в журнал, так как он контролируется."
+       "quote": "Поэтому схему не нужно добавлять в журнал, так как он контролируется.",
+       "line": 13,
+       "verdict": "сверено",
+       "found": true
       }
      ]
     }
@@ -852,7 +1014,10 @@
      "evidence": [
       {
        "path": "skills/symphysis-brainstorm/SKILL.md",
-       "quote": "JSON правят только модель (записи, факты, парковки, обратимость, `notes`)"
+       "quote": "JSON правят только модель (записи, факты, парковки, обратимость, `notes`)",
+       "line": 58,
+       "verdict": "сверено",
+       "found": true
       }
      ]
     },
@@ -864,11 +1029,17 @@
      "evidence": [
       {
        "path": "tools/journal_apply.py",
-       "quote": "return f\"{rid}: зависимость добавлена {dep}\""
+       "quote": "return f\"{rid}: зависимость добавлена {dep}\"",
+       "line": 335,
+       "verdict": "сверено",
+       "found": true
       },
       {
        "path": "docs/repo-contract.md",
-       "quote": "На странице доступны все виды слова."
+       "quote": "На странице доступны все виды слова.",
+       "line": 71,
+       "verdict": "сверено",
+       "found": true
       }
      ]
     }
@@ -890,7 +1061,7 @@
    "outcome": null,
    "parking": [],
    "dispute": "",
-   "consequences": "При B растёт грамматика `apply`, это контракт ядра с плагином, и страница получает новый вид слова.",
+   "consequences": "Грамматика `apply` не растёт, страница нового вида слова не получает.",
    "evidence": [],
    "comments": []
   },
@@ -913,11 +1084,17 @@
      "evidence": [
       {
        "path": "openspec/changes/decision-scheme/intent.md",
-       "quote": "Человек может отредактировать файл scheme.md, отсутствующие в нём nodes не будут фильтровать карточки (будет выводится хинт: узел не найден)"
+       "quote": "Человек может отредактировать файл scheme.md, отсутствующие в нём nodes не будут фильтровать карточки (будет выводится хинт: узел не найден)",
+       "line": 52,
+       "verdict": "сверено",
+       "found": true
       },
       {
        "path": "openspec/changes/decision-scheme/intent.md",
-       "quote": "Схема нужна человеку, а не модели, поэтому он ей управляет и наполняет. Модель здесь помощник, а не надзиратель."
+       "quote": "Схема нужна человеку, а не модели, поэтому он ей управляет и наполняет. Модель здесь помощник, а не надзиратель.",
+       "line": 53,
+       "verdict": "сверено",
+       "found": true
       }
      ]
     },
@@ -929,7 +1106,10 @@
      "evidence": [
       {
        "path": "vscode/docs/design-part1-viewer.md",
-       "quote": "`nodes`; запись со ссылкой на несуществующий узел — сигнал."
+       "quote": "`nodes`; запись со ссылкой на несуществующий узел — сигнал.",
+       "line": 376,
+       "verdict": "сверено",
+       "found": true
       }
      ],
      "deviation": "F-07"
@@ -973,7 +1153,10 @@
      "evidence": [
       {
        "path": "vscode/src/extension.ts",
-       "quote": "\"openspec/changes/*/decisions.json\", \"openspec/changes/*/attack/*.md\""
+       "quote": "\"openspec/changes/*/decisions.json\", \"openspec/changes/*/attack/*.md\"",
+       "line": 107,
+       "verdict": "сверено",
+       "found": true
       }
      ]
     },
@@ -985,7 +1168,10 @@
      "evidence": [
       {
        "path": "docs/repo-contract.md",
-       "quote": "- вывод `view-json`;"
+       "quote": "- вывод `view-json`;",
+       "line": 48,
+       "verdict": "сверено",
+       "found": true
       }
      ]
     }
@@ -1034,7 +1220,10 @@
      "evidence": [
       {
        "path": "vscode/docs/design-part1-viewer.md",
-       "quote": "Раскладка владельца: терминал слева, просмотрщик по центру, схема узкой колонкой"
+       "quote": "Раскладка владельца: терминал слева, просмотрщик по центру, схема узкой колонкой",
+       "line": 321,
+       "verdict": "сверено",
+       "found": true
       }
      ]
     },
@@ -1046,7 +1235,10 @@
      "evidence": [
       {
        "path": "vscode/docs/design-part1-viewer.md",
-       "quote": "Раскладка владельца: терминал слева, просмотрщик по центру, схема узкой колонкой"
+       "quote": "Раскладка владельца: терминал слева, просмотрщик по центру, схема узкой колонкой",
+       "line": 321,
+       "verdict": "сверено",
+       "found": true
       }
      ]
     },
@@ -1058,7 +1250,10 @@
      "evidence": [
       {
        "path": "vscode/docs/design-part1-viewer.md",
-       "quote": "около 760 пикселей: интерфейс рассчитывается на неё."
+       "quote": "около 760 пикселей: интерфейс рассчитывается на неё.",
+       "line": 140,
+       "verdict": "сверено",
+       "found": true
       }
      ]
     }
@@ -1108,7 +1303,10 @@
      "evidence": [
       {
        "path": "tools/playground-template.html",
-       "quote": "filter.node = (filter.node === n.id) ? null : n.id;"
+       "quote": "filter.node = (filter.node === n.id) ? null : n.id;",
+       "line": 351,
+       "verdict": "сверено",
+       "found": true
       }
      ]
     },
@@ -1120,7 +1318,10 @@
      "evidence": [
       {
        "path": "openspec/changes/decision-scheme/intent.md",
-       "quote": "клик по узлу схемы фильтрует карточки по nodes"
+       "quote": "клик по узлу схемы фильтрует карточки по nodes",
+       "line": 47,
+       "verdict": "сверено",
+       "found": true
       }
      ]
     },
@@ -1132,7 +1333,10 @@
      "evidence": [
       {
        "path": "skills/symphysis-viewer/SKILL.md",
-       "quote": "**Запись журнала и строка атаки не смешиваются**"
+       "quote": "**Запись журнала и строка атаки не смешиваются**",
+       "line": 52,
+       "verdict": "сверено",
+       "found": true
       }
      ]
     }
@@ -1177,11 +1381,17 @@
      "evidence": [
       {
        "path": "vscode/src/webview/App.tsx",
-       "quote": "Ниже — журнал, каким он был до этого."
+       "quote": "Ниже — журнал, каким он был до этого.",
+       "line": 312,
+       "verdict": "сверено",
+       "found": true
       },
       {
        "path": "vscode/docs/spike-part1-results.md",
-       "quote": "| Битый текст | ошибка с номером строки: `Parse error on line 4: …` |"
+       "quote": "| Битый текст | ошибка с номером строки: `Parse error on line 4: …` |",
+       "line": 81,
+       "verdict": "сверено",
+       "found": true
       }
      ]
     },
@@ -1193,7 +1403,10 @@
      "evidence": [
       {
        "path": "vscode/docs/spike-part1-results.md",
-       "quote": "| Битый текст | ошибка с номером строки: `Parse error on line 4: …` |"
+       "quote": "| Битый текст | ошибка с номером строки: `Parse error on line 4: …` |",
+       "line": 81,
+       "verdict": "сверено",
+       "found": true
       }
      ]
     }
@@ -1236,7 +1449,10 @@
      "evidence": [
       {
        "path": "openspec/changes/decision-scheme/intent.md",
-       "quote": "У панели схемы есть кнопки переключения масштаба и перетаскивания схемы внутри панели."
+       "quote": "У панели схемы есть кнопки переключения масштаба и перетаскивания схемы внутри панели.",
+       "line": 48,
+       "verdict": "сверено",
+       "found": true
       }
      ]
     },
@@ -1248,7 +1464,10 @@
      "evidence": [
       {
        "path": "openspec/changes/decision-scheme/intent.md",
-       "quote": "У панели схемы есть кнопки переключения масштаба и перетаскивания схемы внутри панели."
+       "quote": "У панели схемы есть кнопки переключения масштаба и перетаскивания схемы внутри панели.",
+       "line": 48,
+       "verdict": "сверено",
+       "found": true
       }
      ]
     },
@@ -1260,7 +1479,10 @@
      "evidence": [
       {
        "path": "vscode/package.json",
-       "quote": "\"react\": \"19.3.1\","
+       "quote": "\"react\": \"19.3.1\",",
+       "line": 92,
+       "verdict": "сверено",
+       "found": true
       }
      ]
     },
@@ -1272,7 +1494,10 @@
      "evidence": [
       {
        "path": "vscode/docs/design-part1-viewer.md",
-       "quote": "- Схема: прокрутка и масштаб, «вписать по ширине»; брейншторм рисует сверху вниз (`TD`)."
+       "quote": "- Схема: прокрутка и масштаб, «вписать по ширине»; брейншторм рисует сверху вниз (`TD`).",
+       "line": 379,
+       "verdict": "сверено",
+       "found": true
       }
      ],
      "deviation": "F-04"
@@ -1281,11 +1506,11 @@
    "antipodes": [],
    "recommendation": {
     "option": "A",
-    "why": "Задача на десятки строк без новой зависимости; кликом по узлу перетаскивание не мешает, если считать клик только без сдвига."
+    "why": "Без новой зависимости; кликом по узлу перетаскивание не мешает, если считать клик только без сдвига."
    },
    "decision": {
     "option": "A",
-    "word": "",
+    "word": "Всё правильно.",
     "date": "2026-11-01"
    },
    "reversibility": {
@@ -1295,7 +1520,7 @@
    "outcome": null,
    "parking": [],
    "dispute": "",
-   "consequences": "Начальный размер — натуральный, как в редакторе markdown: владелец посмотрел рисунок этой схемы и оставил такой размер при наличии масштаба (строка `notes[]`). «Вписать» — кнопкой: в узкой колонке вписывание по умолчанию сделало бы подписи нечитаемыми.",
+   "consequences": "Отдельной кнопки перетаскивания нет: критерий F-04 так и понимался, отступления нет. Начальный размер — натуральный, как в редакторе markdown: владелец посмотрел рисунок этой схемы и оставил такой размер при наличии масштаба (строка `notes[]`). «Вписать» — кнопкой: в узкой колонке вписывание по умолчанию сделало бы подписи нечитаемыми.",
    "evidence": [],
    "comments": []
   },
@@ -1316,11 +1541,17 @@
      "evidence": [
       {
        "path": "vscode/test/e2e/vsix.mjs",
-       "quote": "const vsix = path.join(repo, `${pkg.name}-${pkg.version}.vsix`);"
+       "quote": "const vsix = path.join(repo, `${pkg.name}-${pkg.version}.vsix`);",
+       "line": 11,
+       "verdict": "сверено",
+       "found": true
       },
       {
        "path": "vscode/package.json",
-       "quote": "\"version\": \"0.1.0\","
+       "quote": "\"version\": \"0.1.0\",",
+       "line": 6,
+       "verdict": "сверено",
+       "found": true
       }
      ]
     },
@@ -1332,7 +1563,10 @@
      "evidence": [
       {
        "path": "openspec/changes/decision-scheme/intent.md",
-       "quote": "В собранном файле .vsix указывается версия проекта, что его собрал."
+       "quote": "В собранном файле .vsix указывается версия проекта, что его собрал.",
+       "line": 59,
+       "verdict": "сверено",
+       "found": true
       }
      ]
     },
@@ -1344,11 +1578,17 @@
      "evidence": [
       {
        "path": "openspec/changes/decision-scheme/intent.md",
-       "quote": "В собранном файле .vsix указывается версия проекта, что его собрал."
+       "quote": "В собранном файле .vsix указывается версия проекта, что его собрал.",
+       "line": 59,
+       "verdict": "сверено",
+       "found": true
       },
       {
        "path": "docs/repo-contract.md",
-       "quote": "`SYMPHYSIS_ROOT` на worktree `main` ядра"
+       "quote": "`SYMPHYSIS_ROOT` на worktree `main` ядра",
+       "line": 80,
+       "verdict": "сверено",
+       "found": true
       }
      ]
     }
@@ -1391,11 +1631,17 @@
      "evidence": [
       {
        "path": "vscode/src/host/core.ts",
-       "quote": "failure: { kind: \"old-core\", tools: env.tools } };"
+       "quote": "failure: { kind: \"old-core\", tools: env.tools } };",
+       "line": 27,
+       "verdict": "сверено",
+       "found": true
       },
       {
        "path": "docs/repo-contract.md",
-       "quote": "| выше ожидаемого | поставить новый `.vsix` |"
+       "quote": "| выше ожидаемого | поставить новый `.vsix` |",
+       "line": 63,
+       "verdict": "сверено",
+       "found": true
       }
      ]
     },
@@ -1407,7 +1653,10 @@
      "evidence": [
       {
        "path": "vscode/src/host/core.ts",
-       "quote": "const payload = JSON.parse(r.stdout) as ViewPayload;"
+       "quote": "const payload = JSON.parse(r.stdout) as ViewPayload;",
+       "line": 31,
+       "verdict": "сверено",
+       "found": true
       }
      ]
     },
@@ -1419,7 +1668,10 @@
      "evidence": [
       {
        "path": "docs/repo-contract.md",
-       "quote": "- грамматика строк `apply`: плагин сам пишет эти строки, и они попадают в журнал;"
+       "quote": "- грамматика строк `apply`: плагин сам пишет эти строки, и они попадают в журнал;",
+       "line": 46,
+       "verdict": "сверено",
+       "found": true
       }
      ]
     }
@@ -1462,7 +1714,10 @@
      "evidence": [
       {
        "path": "openspec/changes/decision-scheme/intent.md",
-       "quote": "то я могу отредактировать его сам, сообщить об этом агенту."
+       "quote": "то я могу отредактировать его сам, сообщить об этом агенту.",
+       "line": 13,
+       "verdict": "сверено",
+       "found": true
       }
      ]
     },
@@ -1474,7 +1729,10 @@
      "evidence": [
       {
        "path": "vscode/docs/design-part1-viewer.md",
-       "quote": "и печатает «`scheme.md` изменился с прошлого обращения». Первое обращение сессии"
+       "quote": "и печатает «`scheme.md` изменился с прошлого обращения». Первое обращение сессии",
+       "line": 276,
+       "verdict": "сверено",
+       "found": true
       }
      ]
     }
@@ -1520,15 +1778,24 @@
    "evidence": [
     {
      "path": "openspec/changes/decision-scheme/research/F-21-probe/probe.log",
-     "quote": "{\"kind\":\"svg\",\"renderMs\":219,\"ms\":384,\"nodes\":20,\"imgs\":0}"
+     "quote": "{\"kind\":\"svg\",\"renderMs\":219,\"ms\":384,\"nodes\":20,\"imgs\":0}",
+     "line": 26,
+     "verdict": "сверено",
+     "found": true
     },
     {
      "path": "openspec/changes/decision-scheme/research/F-21-probe/probe.log",
-     "quote": "{\"kind\":\"text\",\"why\":\"нет mermaid\",\"ms\":52}"
+     "quote": "{\"kind\":\"text\",\"why\":\"нет mermaid\",\"ms\":52}",
+     "line": 29,
+     "verdict": "сверено",
+     "found": true
     },
     {
      "path": "openspec/changes/decision-scheme/research/F-21-probe/probe.log",
-     "quote": "\"why\":\"ошибка: Parse error on line 4:\""
+     "quote": "\"why\":\"ошибка: Parse error on line 4:\"",
+     "line": 38,
+     "verdict": "сверено",
+     "found": true
     }
    ],
    "comments": []
@@ -1553,15 +1820,24 @@
    "evidence": [
     {
      "path": "openspec/changes/decision-scheme/research/F-21-probe/probe.log",
-     "quote": "http=[\"http://127.0.0.1:9/pixel.png\""
+     "quote": "http=[\"http://127.0.0.1:9/pixel.png\"",
+     "line": 39,
+     "verdict": "сверено",
+     "found": true
     },
     {
      "path": "openspec/changes/decision-scheme/research/F-21-probe/probe.log",
-     "quote": "The action has been blocked."
+     "quote": "The action has been blocked.",
+     "line": 40,
+     "verdict": "сверено",
+     "found": true
     },
     {
      "path": "openspec/changes/decision-scheme/research/F-21-probe/probe.log",
-     "quote": "{\"kind\":\"svg\",\"renderMs\":221,\"ms\":431,\"nodes\":20,\"imgs\":0}"
+     "quote": "{\"kind\":\"svg\",\"renderMs\":221,\"ms\":431,\"nodes\":20,\"imgs\":0}",
+     "line": 36,
+     "verdict": "сверено",
+     "found": true
     }
    ],
    "comments": []
@@ -1586,7 +1862,10 @@
    "evidence": [
     {
      "path": "openspec/changes/decision-scheme/research/F-21.md",
-     "quote": "панель пуста, пока не прокрутишь"
+     "quote": "панель пуста, пока не прокрутишь",
+     "line": 80,
+     "verdict": "сверено",
+     "found": true
     }
    ],
    "comments": []
@@ -1611,23 +1890,38 @@
    "evidence": [
     {
      "path": "openspec/changes/decision-scheme/research/F-21-probe/probe.log",
-     "quote": "mermaid.tiny.js 2811424, gzip 746681"
+     "quote": "mermaid.tiny.js 2811424, gzip 746681",
+     "line": 18,
+     "verdict": "сверено",
+     "found": true
     },
     {
      "path": "openspec/changes/decision-scheme/research/F-21-probe/probe.log",
-     "quote": "mermaid.min.js 5494801, gzip 1570966"
+     "quote": "mermaid.min.js 5494801, gzip 1570966",
+     "line": 17,
+     "verdict": "сверено",
+     "found": true
     },
     {
      "path": "openspec/changes/decision-scheme/research/F-21-probe/probe.log",
-     "quote": "it's always recommended to use the full mermaid library"
+     "quote": "it's always recommended to use the full mermaid library",
+     "line": 58,
+     "verdict": "сверено",
+     "found": true
     },
     {
      "path": "openspec/changes/decision-scheme/research/F-21-probe/probe.log",
-     "quote": "This package is not meant to be installed directly from npm."
+     "quote": "This package is not meant to be installed directly from npm.",
+     "line": 62,
+     "verdict": "сверено",
+     "found": true
     },
     {
      "path": "openspec/changes/decision-scheme/research/F-21-probe/probe.log",
-     "quote": "- Mindmap Diagram"
+     "quote": "- Mindmap Diagram",
+     "line": 59,
+     "verdict": "сверено",
+     "found": true
     }
    ],
    "comments": []
@@ -1652,31 +1946,52 @@
    "evidence": [
     {
      "path": "openspec/schemas/symphysis/schema.yaml",
-     "quote": "Найденное — путь, строка, дословная цитата из прочитанного файла"
+     "quote": "Найденное — путь, строка, дословная цитата из прочитанного файла",
+     "line": 33,
+     "verdict": "сверено",
+     "found": true
     },
     {
      "path": "tools/playground-template.html",
-     "quote": "ответ ищется в файлах (исследование)"
+     "quote": "ответ ищется в файлах (исследование)",
+     "line": 211,
+     "verdict": "сверено",
+     "found": true
     },
     {
      "path": "docs/journal.schema.json",
-     "quote": "\"addressee\": {\"enum\": [\"материалы\", \"человек\", \"ИБ\"]},"
+     "quote": "\"addressee\": {\"enum\": [\"материалы\", \"человек\", \"ИБ\"]},",
+     "line": 105,
+     "verdict": "сверено",
+     "found": true
     },
     {
      "path": "tools/journal_apply.py",
-     "quote": "PARKING_ADDRESSEES = (\"материалы\", \"человек\", \"ИБ\")"
+     "quote": "PARKING_ADDRESSEES = (\"материалы\", \"человек\", \"ИБ\")",
+     "line": 145,
+     "verdict": "сверено",
+     "found": true
     },
     {
      "path": "tools/playground-template.html",
-     "quote": "const ADDRESSEES = ['материалы','человек','ИБ'];"
+     "quote": "const ADDRESSEES = ['материалы','человек','ИБ'];",
+     "line": 187,
+     "verdict": "сверено",
+     "found": true
     },
     {
      "path": "vscode/src/shared/types.ts",
-     "quote": "export const ADDRESSEES = [\"материалы\", \"человек\", \"ИБ\"] as const;"
+     "quote": "export const ADDRESSEES = [\"материалы\", \"человек\", \"ИБ\"] as const;",
+     "line": 85,
+     "verdict": "сверено",
+     "found": true
     },
     {
      "path": "docs/repo-contract.md",
-     "quote": "Удаление, переименование, смена смысла и новое значение существующего поля считаются."
+     "quote": "Удаление, переименование, смена смысла и новое значение существующего поля считаются.",
+     "line": 56,
+     "verdict": "сверено",
+     "found": true
     }
    ],
    "comments": []
@@ -1701,31 +2016,52 @@
    "evidence": [
     {
      "path": "docs/plan-implementation.journal.md",
-     "quote": "А вот количество шагов брейшторма стоит спрашивать у человека: хочет ли начать новый круг?"
+     "quote": "А вот количество шагов брейшторма стоит спрашивать у человека: хочет ли начать новый круг?",
+     "line": 181,
+     "verdict": "сверено",
+     "found": true
     },
     {
      "path": "docs/plan-implementation.md",
-     "quote": "стоп по кругу без нового, не больше двух"
+     "quote": "стоп по кругу без нового, не больше двух",
+     "line": 55,
+     "verdict": "сверено",
+     "found": true
     },
     {
      "path": "skills/symphysis-brainstorm/SKILL.md",
-     "quote": "N = 2 — брейншторм закончен"
+     "quote": "N = 2 — брейншторм закончен",
+     "line": 236,
+     "verdict": "сверено",
+     "found": true
     },
     {
      "path": "skills/symphysis-brainstorm/SKILL.md",
-     "quote": "третьего круга нет"
+     "quote": "третьего круга нет",
+     "line": 276,
+     "verdict": "сверено",
+     "found": true
     },
     {
      "path": "openspec/specs/brainstorm-interview/spec.md",
-     "quote": "кругов SHALL быть не больше двух"
+     "quote": "кругов SHALL быть не больше двух",
+     "line": 24,
+     "verdict": "сверено",
+     "found": true
     },
     {
      "path": "openspec/changes/symphysis-schema/design.md",
-     "quote": "какое первее? — открыта"
+     "quote": "какое первее? — открыта",
+     "line": 354,
+     "verdict": "сверено",
+     "found": true
     },
     {
      "path": "openspec/changes/decision-scheme/answers/2026-11-01-circle2.md",
-     "quote": "после второго могут возникнуть дополнительные вопросы"
+     "quote": "после второго могут возникнуть дополнительные вопросы",
+     "line": 4,
+     "verdict": "сверено",
+     "found": true
     }
    ],
    "comments": []
@@ -1749,15 +2085,24 @@
      "evidence": [
       {
        "path": "openspec/changes/decision-scheme/research/F-21-probe/probe.log",
-       "quote": "{\"kind\":\"svg\",\"renderMs\":219,\"ms\":384,\"nodes\":20,\"imgs\":0}"
+       "quote": "{\"kind\":\"svg\",\"renderMs\":219,\"ms\":384,\"nodes\":20,\"imgs\":0}",
+       "line": 26,
+       "verdict": "сверено",
+       "found": true
       },
       {
        "path": "openspec/changes/decision-scheme/research/F-21-probe/probe.log",
-       "quote": "{\"kind\":\"text\",\"why\":\"нет mermaid\",\"ms\":52}"
+       "quote": "{\"kind\":\"text\",\"why\":\"нет mermaid\",\"ms\":52}",
+       "line": 29,
+       "verdict": "сверено",
+       "found": true
       },
       {
        "path": ".gitignore",
-       "quote": ".symphysis/"
+       "quote": ".symphysis/",
+       "line": 11,
+       "verdict": "сверено",
+       "found": true
       }
      ]
     },
@@ -1769,11 +2114,17 @@
      "evidence": [
       {
        "path": "openspec/changes/decision-scheme/research/F-21-probe/probe.log",
-       "quote": "inline.html                  5641843"
+       "quote": "inline.html                  5641843",
+       "line": 11,
+       "verdict": "сверено",
+       "found": true
       },
       {
        "path": "openspec/changes/decision-scheme/research/F-21-probe/probe.log",
-       "quote": "openspec/changes/symphysis-schema/decisions.html"
+       "quote": "openspec/changes/symphysis-schema/decisions.html",
+       "line": 66,
+       "verdict": "сверено",
+       "found": true
       }
      ]
     },
@@ -1785,11 +2136,17 @@
      "evidence": [
       {
        "path": "openspec/changes/decision-scheme/research/F-21-probe/probe.log",
-       "quote": "{\"kind\":\"svg\",\"renderMs\":209,\"ms\":1114,\"nodes\":20,\"imgs\":0}"
+       "quote": "{\"kind\":\"svg\",\"renderMs\":209,\"ms\":1114,\"nodes\":20,\"imgs\":0}",
+       "line": 31,
+       "verdict": "сверено",
+       "found": true
       },
       {
        "path": "openspec/changes/decision-scheme/research/F-21-probe/probe.log",
-       "quote": "{\"kind\":\"text\",\"why\":\"нет mermaid\",\"ms\":24}"
+       "quote": "{\"kind\":\"text\",\"why\":\"нет mermaid\",\"ms\":24}",
+       "line": 34,
+       "verdict": "сверено",
+       "found": true
       }
      ]
     },
@@ -1801,11 +2158,17 @@
      "evidence": [
       {
        "path": "openspec/changes/decision-scheme/answers/2026-11-01.md",
-       "quote": "Оставим текст, лучше он, чем ничего."
+       "quote": "Оставим текст, лучше он, чем ничего.",
+       "line": 5,
+       "verdict": "сверено",
+       "found": true
       },
       {
        "path": "openspec/changes/decision-scheme/research/F-21-probe/probe.log",
-       "quote": "{\"kind\":\"text\",\"why\":\"нет mermaid\",\"ms\":28}"
+       "quote": "{\"kind\":\"text\",\"why\":\"нет mermaid\",\"ms\":28}",
+       "line": 21,
+       "verdict": "сверено",
+       "found": true
       }
      ]
     },
@@ -1817,7 +2180,10 @@
      "evidence": [
       {
        "path": "openspec/changes/decision-scheme/answers/2026-11-01.md",
-       "quote": "если человек просит html"
+       "quote": "если человек просит html",
+       "line": 4,
+       "verdict": "сверено",
+       "found": true
       }
      ]
     }
@@ -1834,7 +2200,7 @@
    },
    "reversibility": {
     "level": "обратимо",
-    "why": "Инсталлятор перестаёт класть файл, и страница сама показывает текст: проба с отсутствующим файлом это подтвердила. Страницы пересобираются `render-html`. Если файл ляжет в git ядра, его 5,5 МБ останутся в истории: где он живёт, ещё не решено."
+    "why": "Инсталлятор перестаёт класть файл, и страница сама показывает текст: проба с отсутствующим файлом это подтвердила. Страницы пересобираются `render-html`. Файл вне git по F-53, поэтому история от него не растёт."
    },
    "outcome": null,
    "parking": [],
@@ -1860,11 +2226,17 @@
      "evidence": [
       {
        "path": "openspec/changes/decision-scheme/research/F-21-probe/probe.log",
-       "quote": "it's always recommended to use the full mermaid library"
+       "quote": "it's always recommended to use the full mermaid library",
+       "line": 58,
+       "verdict": "сверено",
+       "found": true
       },
       {
        "path": "openspec/changes/decision-scheme/intent.md",
-       "quote": "Mermaid мне нравится тем, что он строит неплохие диаграммы."
+       "quote": "Mermaid мне нравится тем, что он строит неплохие диаграммы.",
+       "line": 13,
+       "verdict": "сверено",
+       "found": true
       }
      ]
     },
@@ -1876,15 +2248,24 @@
      "evidence": [
       {
        "path": "openspec/changes/decision-scheme/research/F-21-probe/probe.log",
-       "quote": "mermaid.tiny.js 2811424, gzip 746681"
+       "quote": "mermaid.tiny.js 2811424, gzip 746681",
+       "line": 18,
+       "verdict": "сверено",
+       "found": true
       },
       {
        "path": "openspec/changes/decision-scheme/research/F-21-probe/probe.log",
-       "quote": "{\"kind\":\"svg\",\"renderMs\":92,\"ms\":225,\"nodes\":20,\"imgs\":0}"
+       "quote": "{\"kind\":\"svg\",\"renderMs\":92,\"ms\":225,\"nodes\":20,\"imgs\":0}",
+       "line": 42,
+       "verdict": "сверено",
+       "found": true
       },
       {
        "path": "openspec/changes/decision-scheme/research/F-21-probe/probe.log",
-       "quote": "- Mindmap Diagram"
+       "quote": "- Mindmap Diagram",
+       "line": 59,
+       "verdict": "сверено",
+       "found": true
       }
      ]
     },
@@ -1896,7 +2277,10 @@
      "evidence": [
       {
        "path": "openspec/changes/decision-scheme/research/F-21-probe/probe.log",
-       "quote": "This package is not meant to be installed directly from npm."
+       "quote": "This package is not meant to be installed directly from npm.",
+       "line": 62,
+       "verdict": "сверено",
+       "found": true
       }
      ]
     }
@@ -1939,11 +2323,17 @@
      "evidence": [
       {
        "path": "openspec/changes/decision-scheme/answers/2026-11-01.md",
-       "quote": "Кажется, что стоит добавить тип парковки \"агент\""
+       "quote": "Кажется, что стоит добавить тип парковки \"агент\"",
+       "line": 17,
+       "verdict": "сверено",
+       "found": true
       },
       {
        "path": "docs/repo-contract.md",
-       "quote": "Удаление, переименование, смена смысла и новое значение существующего поля считаются."
+       "quote": "Удаление, переименование, смена смысла и новое значение существующего поля считаются.",
+       "line": 56,
+       "verdict": "сверено",
+       "found": true
       }
      ]
     },
@@ -1955,11 +2345,17 @@
      "evidence": [
       {
        "path": "openspec/changes/decision-scheme/research/F-21.md",
-       "quote": "итоги пробы пришлось положить отдельным файлом `probe.log`"
+       "quote": "итоги пробы пришлось положить отдельным файлом `probe.log`",
+       "line": 85,
+       "verdict": "сверено",
+       "found": true
       },
       {
        "path": "vscode/src/webview/Card.tsx",
-       "quote": "ответ ищется в файлах (исследование)"
+       "quote": "ответ ищется в файлах (исследование)",
+       "line": 9,
+       "verdict": "сверено",
+       "found": true
       }
      ]
     },
@@ -1971,7 +2367,10 @@
      "evidence": [
       {
        "path": "skills/symphysis-brainstorm/SKILL.md",
-       "quote": "Объём изменения в записях не растёт"
+       "quote": "Объём изменения в записях не растёт",
+       "line": 139,
+       "verdict": "сверено",
+       "found": true
       }
      ]
     },
@@ -1983,11 +2382,17 @@
      "evidence": [
       {
        "path": "skills/symphysis-brainstorm/SKILL.md",
-       "quote": "Решает человек, не модель."
+       "quote": "Решает человек, не модель.",
+       "line": 33,
+       "verdict": "сверено",
+       "found": true
       },
       {
        "path": "skills/symphysis-brainstorm/SKILL.md",
-       "quote": "«Реши сам» — тоже слово человека"
+       "quote": "«Реши сам» — тоже слово человека",
+       "line": 212,
+       "verdict": "сверено",
+       "found": true
       }
      ]
     }
@@ -2032,7 +2437,10 @@
      "evidence": [
       {
        "path": "vscode/src/extension.ts",
-       "quote": "const workspaceDirs = () => (vscode.workspace.workspaceFolders ?? [])"
+       "quote": "const workspaceDirs = () => (vscode.workspace.workspaceFolders ?? [])",
+       "line": 17,
+       "verdict": "сверено",
+       "found": true
       }
      ]
     },
@@ -2044,11 +2452,17 @@
      "evidence": [
       {
        "path": "docs/repo-contract.md",
-       "quote": "Своя ветка — свой worktree."
+       "quote": "Своя ветка — свой worktree.",
+       "line": 86,
+       "verdict": "сверено",
+       "found": true
       },
       {
        "path": ".gitignore",
-       "quote": ".symphysis/"
+       "quote": ".symphysis/",
+       "line": 11,
+       "verdict": "сверено",
+       "found": true
       }
      ]
     }
@@ -2093,15 +2507,24 @@
      "evidence": [
       {
        "path": "tools/playground-template.html",
-       "quote": "<h2>Замечания к схеме и плану</h2>"
+       "quote": "<h2>Замечания к схеме и плану</h2>",
+       "line": 164,
+       "verdict": "сверено",
+       "found": true
       },
       {
        "path": "vscode/src/webview/App.tsx",
-       "quote": "<h2>Замечания к схеме и плану</h2>"
+       "quote": "<h2>Замечания к схеме и плану</h2>",
+       "line": 328,
+       "verdict": "сверено",
+       "found": true
       },
       {
        "path": "tools/playground-template.html",
-       "quote": "что не так в схеме работы, в поставках, в этапах"
+       "quote": "что не так в схеме работы, в поставках, в этапах",
+       "line": 165,
+       "verdict": "сверено",
+       "found": true
       }
      ]
     },
@@ -2113,7 +2536,10 @@
      "evidence": [
       {
        "path": "openspec/changes/decision-scheme/answers/2026-11-01.md",
-       "quote": "Замечания к схеме: Кажется"
+       "quote": "Замечания к схеме: Кажется",
+       "line": 17,
+       "verdict": "сверено",
+       "found": true
       }
      ]
     },
@@ -2125,11 +2551,17 @@
      "evidence": [
       {
        "path": "tools/journal_apply.py",
-       "quote": "RE_NOTES = re.compile(r\"^Замечания к схеме:[ \\t]*(.*)$\")"
+       "quote": "RE_NOTES = re.compile(r\"^Замечания к схеме:[ \\t]*(.*)$\")",
+       "line": 152,
+       "verdict": "сверено",
+       "found": true
       },
       {
        "path": "docs/repo-contract.md",
-       "quote": "грамматика строк `apply`: плагин сам пишет эти строки, и они попадают в журнал;"
+       "quote": "грамматика строк `apply`: плагин сам пишет эти строки, и они попадают в журнал;",
+       "line": 46,
+       "verdict": "сверено",
+       "found": true
       }
      ]
     }
@@ -2151,7 +2583,7 @@
    "outcome": null,
    "parking": [],
    "dispute": "",
-   "consequences": "Правятся тесты плагина и страницы, где проверяется текст заголовка.",
+   "consequences": "Ничего не правится: заголовок и строка промпта остаются как есть.",
    "evidence": [],
    "comments": []
   },
@@ -2172,11 +2604,17 @@
      "evidence": [
       {
        "path": "docs/plan-implementation.journal.md",
-       "quote": "А вот количество шагов брейшторма стоит спрашивать у человека: хочет ли начать новый круг?"
+       "quote": "А вот количество шагов брейшторма стоит спрашивать у человека: хочет ли начать новый круг?",
+       "line": 181,
+       "verdict": "сверено",
+       "found": true
       },
       {
        "path": "openspec/changes/decision-scheme/answers/2026-11-01-circle2.md",
-       "quote": "после второго могут возникнуть дополнительные вопросы"
+       "quote": "после второго могут возникнуть дополнительные вопросы",
+       "line": 4,
+       "verdict": "сверено",
+       "found": true
       }
      ]
     },
@@ -2188,7 +2626,10 @@
      "evidence": [
       {
        "path": "skills/symphysis-brainstorm/SKILL.md",
-       "quote": "иначе спроси человека в чате"
+       "quote": "иначе спроси человека в чате",
+       "line": 246,
+       "verdict": "сверено",
+       "found": true
       }
      ]
     },
@@ -2200,11 +2641,17 @@
      "evidence": [
       {
        "path": "skills/symphysis-brainstorm/SKILL.md",
-       "quote": "N = 2 — брейншторм закончен"
+       "quote": "N = 2 — брейншторм закончен",
+       "line": 236,
+       "verdict": "сверено",
+       "found": true
       },
       {
        "path": "skills/symphysis-brainstorm/SKILL.md",
-       "quote": "третьего круга нет"
+       "quote": "третьего круга нет",
+       "line": 276,
+       "verdict": "сверено",
+       "found": true
       }
      ]
     }
@@ -2212,7 +2659,7 @@
    "antipodes": [],
    "recommendation": {
     "option": "A",
-    "why": "Это и сказано в слове к F-07, и повторено сейчас. Вопрос стоит одну строку, а потолок молча обрывает работу там, где у человека ещё есть вопросы. Стоп по кругу без нового остаётся."
+    "why": "Это и сказано в слове к F-07 журнала `symphysis-schema`, и повторено сейчас. Вопрос стоит одну строку, а потолок молча обрывает работу там, где у человека ещё есть вопросы. Стоп по кругу без нового остаётся."
    },
    "decision": {
     "option": "A",
@@ -2250,23 +2697,38 @@
    "evidence": [
     {
      "path": "openspec/changes/decision-scheme/research/antipodes-probe/probe.log",
-     "quote": "symphysis-schema: развилок 74, вариантов 274, с антиподами 5, антиподов 6, с зависимостями 68; антиподы у F-02, F-03, F-04, F-13, F-15"
+     "quote": "symphysis-schema: развилок 74, вариантов 274, с антиподами 5, антиподов 6, с зависимостями 68; антиподы у F-02, F-03, F-04, F-13, F-15",
+     "line": 3,
+     "verdict": "сверено",
+     "found": true
     },
     {
      "path": "openspec/changes/decision-scheme/research/antipodes-probe/probe.log",
-     "quote": "calibration-fixes: развилок 54, вариантов 228, с антиподами 0, антиподов 0, с зависимостями 48"
+     "quote": "calibration-fixes: развилок 54, вариантов 228, с антиподами 0, антиподов 0, с зависимостями 48",
+     "line": 4,
+     "verdict": "сверено",
+     "found": true
     },
     {
      "path": "openspec/changes/decision-scheme/research/antipodes-probe/probe.log",
-     "quote": "implementation-consequences: развилок 79, вариантов 304, с антиподами 0, антиподов 0, с зависимостями 75"
+     "quote": "implementation-consequences: развилок 79, вариантов 304, с антиподами 0, антиподов 0, с зависимостями 75",
+     "line": 5,
+     "verdict": "сверено",
+     "found": true
     },
     {
      "path": "openspec/changes/decision-scheme/research/antipodes-probe/probe.log",
-     "quote": "decision-scheme: развилок 20, вариантов 59, с антиподами 0, антиподов 0, с зависимостями 7"
+     "quote": "decision-scheme: развилок 20, вариантов 59, с антиподами 0, антиподов 0, с зависимостями 7",
+     "line": 6,
+     "verdict": "сверено",
+     "found": true
     },
     {
      "path": "openspec/changes/decision-scheme/answers/2026-11-01-circle3.md",
-     "quote": "А вот антиподов я не видел за последние несколько кругов"
+     "quote": "А вот антиподов я не видел за последние несколько кругов",
+     "line": 5,
+     "verdict": "сверено",
+     "found": true
     }
    ],
    "comments": []
@@ -2291,15 +2753,24 @@
    "evidence": [
     {
      "path": "skills/symphysis-brainstorm/SKILL.md",
-     "quote": "`antipodes` — варианты других развилок, несовместимые"
+     "quote": "`antipodes` — варианты других развилок, несовместимые",
+     "line": 156,
+     "verdict": "сверено",
+     "found": true
     },
     {
      "path": "tools/journal_model.py",
-     "quote": "антипод {a['option']} ↔ {a['other']}: записи {target} нет"
+     "quote": "антипод {a['option']} ↔ {a['other']}: записи {target} нет",
+     "line": 404,
+     "verdict": "сверено",
+     "found": true
     },
     {
      "path": "skills/symphysis-attack/SKILL.md",
-     "quote": "оба антипода решены"
+     "quote": "оба антипода решены",
+     "line": 180,
+     "verdict": "сверено",
+     "found": true
     }
    ],
    "comments": []
@@ -2324,43 +2795,73 @@
    "evidence": [
     {
      "path": "openspec/changes/decision-scheme/research/antipodes-probe/probe.log",
-     "quote": "sonnet1: 34.3 с, вывод 3843 токена, пар 4, настоящая пара найдена"
+     "quote": "sonnet1: 34.3 с, вывод 3843 токена, пар 4, настоящая пара найдена",
+     "line": 30,
+     "verdict": "сверено",
+     "found": true
     },
     {
      "path": "openspec/changes/decision-scheme/research/antipodes-probe/probe.log",
-     "quote": "sonnet3: 30.6 с, вывод 2761 токен, пар 2, настоящая пара найдена, ложно подана как оба выбраны F-13.D и F-15.B"
+     "quote": "sonnet3: 30.6 с, вывод 2761 токен, пар 2, настоящая пара найдена, ложно подана как оба выбраны F-13.D и F-15.B",
+     "line": 32,
+     "verdict": "сверено",
+     "found": true
     },
     {
      "path": "openspec/changes/decision-scheme/research/antipodes-probe/probe.log",
-     "quote": "glm-5.2 с рассуждениями, прогон 1: 42.1 с, вывод 13169 токенов, пар 3, настоящая пара не найдена"
+     "quote": "glm-5.2 с рассуждениями, прогон 1: 42.1 с, вывод 13169 токенов, пар 3, настоящая пара не найдена",
+     "line": 33,
+     "verdict": "сверено",
+     "found": true
     },
     {
      "path": "openspec/changes/decision-scheme/research/antipodes-probe/probe.log",
-     "quote": "glm-5.2 с рассуждениями, прогон 2: 29.5 с, вывод 7330 токенов, пар 3, настоящая пара найдена"
+     "quote": "glm-5.2 с рассуждениями, прогон 2: 29.5 с, вывод 7330 токенов, пар 3, настоящая пара найдена",
+     "line": 34,
+     "verdict": "сверено",
+     "found": true
     },
     {
      "path": "openspec/changes/decision-scheme/research/antipodes-probe/probe.log",
-     "quote": "glm-5.2 без рассуждений: 4.6 с, вывод 862 токена, пар 19, из них внутри одной развилки 18, настоящая пара не найдена"
+     "quote": "glm-5.2 без рассуждений: 4.6 с, вывод 862 токена, пар 19, из них внутри одной развилки 18, настоящая пара не найдена",
+     "line": 36,
+     "verdict": "сверено",
+     "found": true
     },
     {
      "path": "openspec/changes/decision-scheme/research/antipodes-probe/probe.log",
-     "quote": "все пары, кроме настоящей и пар прогона без рассуждений, содержат вариант, отвергнутый раньше"
+     "quote": "все пары, кроме настоящей и пар прогона без рассуждений, содержат вариант, отвергнутый раньше",
+     "line": 38,
+     "verdict": "сверено",
+     "found": true
     },
     {
      "path": "openspec/changes/decision-scheme/research/antipodes-probe/probe.log",
-     "quote": "токенов 86303, вызовов инструментов 3, время 91 с"
+     "quote": "токенов 86303, вызовов инструментов 3, время 91 с",
+     "line": 12,
+     "verdict": "сверено",
+     "found": true
     },
     {
      "path": "openspec/changes/calibration-fixes/rulings.md",
-     "quote": "F-34.E и F-45.E читают `\\|` по-разному"
+     "quote": "F-34.E и F-45.E читают `\\|` по-разному",
+     "line": 18,
+     "verdict": "сверено",
+     "found": true
     },
     {
      "path": "openspec/changes/decision-scheme/research/antipodes-probe/probe.log",
-     "quote": "субагент, вызов 2: чтение кеша 50214, запись кеша 23755, вывод 11276, 74.6 с, из них рассуждения 72.8 с"
+     "quote": "субагент, вызов 2: чтение кеша 50214, запись кеша 23755, вывод 11276, 74.6 с, из них рассуждения 72.8 с",
+     "line": 43,
+     "verdict": "сверено",
+     "found": true
     },
     {
      "path": "openspec/changes/decision-scheme/research/antipodes-probe/probe.log",
-     "quote": "86303 — размер контекста на последнем вызове, а не расход"
+     "quote": "86303 — размер контекста на последнем вызове, а не расход",
+     "line": 41,
+     "verdict": "сверено",
+     "found": true
     }
    ],
    "comments": []
@@ -2385,19 +2886,31 @@
    "evidence": [
     {
      "path": "openspec/changes/implementation-consequences/proposal.md",
-     "quote": "Файл `symphysis.yaml` в корне проекта с умолчанием «всё включено»"
+     "quote": "Файл `symphysis.yaml` в корне проекта с умолчанием «всё включено»",
+     "line": 15,
+     "verdict": "сверено",
+     "found": true
     },
     {
      "path": "openspec/changes/implementation-consequences/specs/project-settings/spec.md",
-     "quote": "SHALL задавать три выбора: ветки отказа, допущения, проба краёв"
+     "quote": "SHALL задавать три выбора: ветки отказа, допущения, проба краёв",
+     "line": 9,
+     "verdict": "сверено",
+     "found": true
     },
     {
      "path": "openspec/changes/implementation-consequences/decisions.md",
-     "quote": "то, что значительно влияет на время хочется делать выбираемым перед запуском соответствующего шага"
+     "quote": "то, что значительно влияет на время хочется делать выбираемым перед запуском соответствующего шага",
+     "line": 243,
+     "verdict": "сверено",
+     "found": true
     },
     {
      "path": "openspec/changes/decision-scheme/answers/2026-11-01-circle3.md",
-     "quote": "Возможно, это еще один кандидат на конфигурируемый параметр"
+     "quote": "Возможно, это еще один кандидат на конфигурируемый параметр",
+     "line": 6,
+     "verdict": "сверено",
+     "found": true
     }
    ],
    "comments": []
@@ -2422,15 +2935,24 @@
    "evidence": [
     {
      "path": "openspec/changes/decision-scheme/research/F-21-probe/probe.log",
-     "quote": "check_names на mermaid.min.js: код 1, 3,6 с, строк вывода 307"
+     "quote": "check_names на mermaid.min.js: код 1, 3,6 с, строк вывода 307",
+     "line": 68,
+     "verdict": "сверено",
+     "found": true
     },
     {
      "path": "installer/scripts/sync-payload.js",
-     "quote": "\"tools/playground-template.html\","
+     "quote": "\"tools/playground-template.html\",",
+     "line": 17,
+     "verdict": "сверено",
+     "found": true
     },
     {
      "path": ".gitignore",
-     "quote": "installer/payload/"
+     "quote": "installer/payload/",
+     "line": 8,
+     "verdict": "сверено",
+     "found": true
     }
    ],
    "comments": []
@@ -2452,11 +2974,17 @@
      "evidence": [
       {
        "path": "openspec/changes/decision-scheme/answers/2026-11-01-circle3.md",
-       "quote": "взаимоисключающие варианты развилок есть"
+       "quote": "взаимоисключающие варианты развилок есть",
+       "line": 6,
+       "verdict": "сверено",
+       "found": true
       },
       {
        "path": "openspec/changes/decision-scheme/research/antipodes-probe/probe.log",
-       "quote": "итог сверки: настоящая пара среди выбранных 1"
+       "quote": "итог сверки: настоящая пара среди выбранных 1",
+       "line": 27,
+       "verdict": "сверено",
+       "found": true
       }
      ]
     },
@@ -2468,11 +2996,17 @@
      "evidence": [
       {
        "path": "openspec/changes/calibration-fixes/rulings.md",
-       "quote": "F-34.E и F-45.E читают `\\|` по-разному"
+       "quote": "F-34.E и F-45.E читают `\\|` по-разному",
+       "line": 18,
+       "verdict": "сверено",
+       "found": true
       },
       {
        "path": "skills/symphysis-brainstorm/SKILL.md",
-       "quote": "### 7. Обратимость"
+       "quote": "### 7. Обратимость",
+       "line": 217,
+       "verdict": "сверено",
+       "found": true
       }
      ]
     },
@@ -2484,11 +3018,17 @@
      "evidence": [
       {
        "path": "openspec/changes/decision-scheme/answers/2026-11-01-circle3.md",
-       "quote": "я об этом все равно думаю сам"
+       "quote": "я об этом все равно думаю сам",
+       "line": 6,
+       "verdict": "сверено",
+       "found": true
       },
       {
        "path": "openspec/changes/calibration-fixes/rulings.md",
-       "quote": "F-34.E и F-45.E читают `\\|` по-разному"
+       "quote": "F-34.E и F-45.E читают `\\|` по-разному",
+       "line": 18,
+       "verdict": "сверено",
+       "found": true
       }
      ]
     },
@@ -2500,7 +3040,10 @@
      "evidence": [
       {
        "path": "openspec/changes/decision-scheme/research/antipodes-probe/probe.log",
-       "quote": "implementation-consequences: развилок 79, вариантов 304, с антиподами 0"
+       "quote": "implementation-consequences: развилок 79, вариантов 304, с антиподами 0",
+       "line": 5,
+       "verdict": "сверено",
+       "found": true
       }
      ]
     },
@@ -2512,7 +3055,10 @@
      "evidence": [
       {
        "path": "docs/repo-contract.md",
-       "quote": "Удаление, переименование, смена смысла и новое значение существующего поля считаются."
+       "quote": "Удаление, переименование, смена смысла и новое значение существующего поля считаются.",
+       "line": 56,
+       "verdict": "сверено",
+       "found": true
       }
      ]
     }
@@ -2524,7 +3070,7 @@
    },
    "decision": {
     "option": "C",
-    "word": "Отличное дополнение, что человек может внести свой вариант, и окажется, что он на самом деле антипод.",
+    "word": "Отличное дополнение, что человек может внести свой вариант, и окажется, что он на самом деле антипод. Да, ок. Потом будет специализированный субагент, но это уже другая методика.",
     "date": "2026-11-01"
    },
    "reversibility": {
@@ -2557,31 +3103,46 @@
      "evidence": [
       {
        "path": "openspec/changes/decision-scheme/answers/2026-11-01-circle3.md",
-       "quote": "хочу ли я нагружать модель вычислением зависимостей и антиподов"
+       "quote": "хочу ли я нагружать модель вычислением зависимостей и антиподов",
+       "line": 6,
+       "verdict": "сверено",
+       "found": true
       },
       {
        "path": "openspec/changes/implementation-consequences/proposal.md",
-       "quote": "Файл `symphysis.yaml` в корне проекта"
+       "quote": "Файл `symphysis.yaml` в корне проекта",
+       "line": 15,
+       "verdict": "сверено",
+       "found": true
       }
      ]
     },
     {
      "letter": "B",
-     "text": "Нет, сверка идёт всегда: журнал из 54 развилок занимает 30–40 с на Sonnet и на glm-5.2 в одном контексте и 91 с субагентом; под «значительно влияет на время» это не подходит.",
+     "text": "Нет, сверка идёт всегда: журнал из 54 развилок занимает 30–40 с на Sonnet и на glm-5.2 отдельным вызовом без инструментов и 91 с субагентом; под «значительно влияет на время» это не подходит.",
      "added": false,
      "unlikely": null,
      "evidence": [
       {
        "path": "openspec/changes/decision-scheme/research/antipodes-probe/probe.log",
-       "quote": "glm-5.2 с рассуждениями, прогон 2: 29.5 с"
+       "quote": "glm-5.2 с рассуждениями, прогон 2: 29.5 с",
+       "line": 34,
+       "verdict": "сверено",
+       "found": true
       },
       {
        "path": "openspec/changes/decision-scheme/research/antipodes-probe/probe.log",
-       "quote": "sonnet2: 39.0 с"
+       "quote": "sonnet2: 39.0 с",
+       "line": 31,
+       "verdict": "сверено",
+       "found": true
       },
       {
        "path": "openspec/changes/implementation-consequences/decisions.md",
-       "quote": "то, что значительно влияет на время хочется делать выбираемым"
+       "quote": "то, что значительно влияет на время хочется делать выбираемым",
+       "line": 243,
+       "verdict": "сверено",
+       "found": true
       }
      ]
     },
@@ -2593,11 +3154,17 @@
      "evidence": [
       {
        "path": "openspec/changes/implementation-consequences/specs/project-settings/spec.md",
-       "quote": "SHALL задавать три выбора"
+       "quote": "SHALL задавать три выбора",
+       "line": 9,
+       "verdict": "сверено",
+       "found": true
       },
       {
        "path": "openspec/changes/decision-scheme/research/antipodes-probe/probe.log",
-       "quote": "deepseek-v4.1-flash не мерен"
+       "quote": "deepseek-v4.1-flash не мерен",
+       "line": 39,
+       "verdict": "сверено",
+       "found": true
       }
      ]
     },
@@ -2609,11 +3176,17 @@
      "evidence": [
       {
        "path": "openspec/changes/decision-scheme/answers/2026-11-01-circle3.md",
-       "quote": "вычислением зависимостей и антиподов"
+       "quote": "вычислением зависимостей и антиподов",
+       "line": 6,
+       "verdict": "сверено",
+       "found": true
       },
       {
        "path": "openspec/changes/decision-scheme/research/antipodes-probe/probe.log",
-       "quote": "implementation-consequences: развилок 79, вариантов 304, с антиподами 0, антиподов 0, с зависимостями 75"
+       "quote": "implementation-consequences: развилок 79, вариантов 304, с антиподами 0, антиподов 0, с зависимостями 75",
+       "line": 5,
+       "verdict": "сверено",
+       "found": true
       }
      ]
     }
@@ -2634,7 +3207,7 @@
    ],
    "recommendation": {
     "option": "B",
-    "why": "Замер снял довод о нагрузке: на обеих моделях полминуты на весь журнал, а настоящий проход идёт только по новым вариантам и в том же контексте. По критерию из слова к F-14 это не то, что выбирают перед запуском. Настройку можно добавить, если появится число против."
+    "why": "Замер снял довод о нагрузке: на обеих моделях полминуты на весь журнал, а настоящий проход идёт только по новым вариантам и в том же контексте. По критерию из слова к F-14 журнала `implementation-consequences` это не то, что выбирают перед запуском. Настройку можно добавить, если появится число против."
    },
    "decision": {
     "option": "B",
@@ -2648,7 +3221,7 @@
    "outcome": null,
    "parking": [],
    "dispute": "",
-   "consequences": "При A или C строка уходит сессии ядра через человека, план `project-settings` её: это не этот журнал.",
+   "consequences": "Настройки нет, сверка идёт всегда.",
    "evidence": [],
    "comments": []
   },
@@ -2671,11 +3244,17 @@
      "evidence": [
       {
        "path": "skills/symphysis-viewer/SKILL.md",
-       "quote": "антипод уже выбранного — блок с подсказкой"
+       "quote": "антипод уже выбранного — блок с подсказкой",
+       "line": 95,
+       "verdict": "сверено",
+       "found": true
       },
       {
        "path": "vscode/src/webview/Card.tsx",
-       "quote": "антипод уже выбран:"
+       "quote": "антипод уже выбран:",
+       "line": 139,
+       "verdict": "сверено",
+       "found": true
       }
      ]
     },
@@ -2687,15 +3266,24 @@
      "evidence": [
       {
        "path": "openspec/changes/decision-scheme/research/antipodes-probe/probe.log",
-       "quote": "сверка: модель подала как «оба выбраны»; на деле F-13 решён A, вариант D отвергнут"
+       "quote": "сверка: модель подала как «оба выбраны»; на деле F-13 решён A, вариант D отвергнут",
+       "line": 16,
+       "verdict": "сверено",
+       "found": true
       },
       {
        "path": "openspec/changes/calibration-fixes/decisions.md",
-       "quote": "не должен становиться замком на постановке"
+       "quote": "не должен становиться замком на постановке",
+       "line": 1105,
+       "verdict": "сверено",
+       "found": true
       },
       {
        "path": "skills/symphysis-attack/SKILL.md",
-       "quote": "оба антипода решены"
+       "quote": "оба антипода решены",
+       "line": 180,
+       "verdict": "сверено",
+       "found": true
       }
      ]
     }
@@ -2749,15 +3337,24 @@
      "evidence": [
       {
        "path": "openspec/changes/decision-scheme/research/F-21-probe/probe.log",
-       "quote": "check_names на mermaid.min.js: код 1, 3,6 с, строк вывода 307"
+       "quote": "check_names на mermaid.min.js: код 1, 3,6 с, строк вывода 307",
+       "line": 68,
+       "verdict": "сверено",
+       "found": true
       },
       {
        "path": "openspec/changes/decision-scheme/research/F-21-probe/probe.log",
-       "quote": "mermaid.min.js 5494801, gzip 1570966"
+       "quote": "mermaid.min.js 5494801, gzip 1570966",
+       "line": 17,
+       "verdict": "сверено",
+       "found": true
       },
       {
        "path": "installer/scripts/sync-payload.js",
-       "quote": "\"tools/playground-template.html\","
+       "quote": "\"tools/playground-template.html\",",
+       "line": 17,
+       "verdict": "сверено",
+       "found": true
       }
      ]
     },
@@ -2769,11 +3366,17 @@
      "evidence": [
       {
        "path": "installer/package.json",
-       "quote": "\"prepare\": \"node scripts/sync-payload.js\","
+       "quote": "\"prepare\": \"node scripts/sync-payload.js\",",
+       "line": 20,
+       "verdict": "сверено",
+       "found": true
       },
       {
        "path": ".gitignore",
-       "quote": "installer/payload/"
+       "quote": "installer/payload/",
+       "line": 8,
+       "verdict": "сверено",
+       "found": true
       }
      ]
     },
@@ -2785,7 +3388,10 @@
      "evidence": [
       {
        "path": "openspec/changes/decision-scheme/research/F-21-probe/probe.log",
-       "quote": "{\"kind\":\"text\",\"why\":\"нет mermaid\",\"ms\":24}"
+       "quote": "{\"kind\":\"text\",\"why\":\"нет mermaid\",\"ms\":24}",
+       "line": 34,
+       "verdict": "сверено",
+       "found": true
       }
      ]
     }
@@ -2802,13 +3408,18 @@
    },
    "reversibility": {
     "level": "обратимо",
-    "why": "Строка в `installer/package.json` и список `sync-payload.js`. История git не растёт, файл можно перенести в git позже; обратный порядок был бы дорогим."
+    "why": "Точная версия в `installer/package.json`, копирование в `sync-payload.js`, отбор файлов в `installer/lib/install.js`. История git не растёт, файл можно перенести в git позже; обратный порядок был бы дорогим."
    },
    "outcome": null,
    "parking": [],
    "dispute": "",
-   "consequences": "Версия в плагине и инсталляторе закрепляется одним номером, иначе один `scheme.md` может рисоваться по-разному. Лицензия MIT идёт вместе с файлом.",
-   "evidence": [],
+   "consequences": "Инсталлятор сегодня пропускает в `.symphysis/tools/` только `journal*.py` и шаблон, а `sync-payload.js` копирует из корня репозитория по списку: правятся оба места. Версия в плагине и инсталляторе закрепляется одним номером, иначе один `scheme.md` может рисоваться по-разному. Лицензия MIT идёт вместе с файлом.",
+   "evidence": [
+    {
+     "path": "installer/lib/install.js",
+     "quote": "/^(journal.*\\.py|playground-template\\.html)$/"
+    }
+   ],
    "comments": []
   },
   {
@@ -2830,11 +3441,17 @@
      "evidence": [
       {
        "path": "tools/playground-template.html",
-       "quote": "const MODES = ['decisions','check','attack'];"
+       "quote": "const MODES = ['decisions','check','attack'];",
+       "line": 206,
+       "verdict": "сверено",
+       "found": true
       },
       {
        "path": "tools/playground-template.html",
-       "quote": "grid-template-columns: var(--left) minmax(0,1fr) var(--right)"
+       "quote": "grid-template-columns: var(--left) minmax(0,1fr) var(--right)",
+       "line": 22,
+       "verdict": "сверено",
+       "found": true
       }
      ]
     },
@@ -2846,7 +3463,10 @@
      "evidence": [
       {
        "path": "openspec/changes/decision-scheme/intent.md",
-       "quote": "нам придется сделать схему сворачиваемой, или в отдельной вкладке."
+       "quote": "нам придется сделать схему сворачиваемой, или в отдельной вкладке.",
+       "line": 7,
+       "verdict": "сверено",
+       "found": true
       }
      ]
     },
@@ -2858,7 +3478,10 @@
      "evidence": [
       {
        "path": "openspec/changes/decision-scheme/research/F-21.md",
-       "quote": "На `shot-fit.png` подписи мелкие"
+       "quote": "На `shot-fit.png` подписи мелкие",
+       "line": 80,
+       "verdict": "сверено",
+       "found": true
       }
      ]
     },
@@ -2870,7 +3493,10 @@
      "evidence": [
       {
        "path": "openspec/changes/decision-scheme/research/F-21.md",
-       "quote": "панель пуста, пока не прокрутишь"
+       "quote": "панель пуста, пока не прокрутишь",
+       "line": 80,
+       "verdict": "сверено",
+       "found": true
       }
      ]
     },
@@ -2889,7 +3515,7 @@
    },
    "decision": {
     "option": "E",
-    "word": "Зачем нужна схема: чтобы пока человек думает над развилкой он смотреть на сценарий работы. Я уверен, что мы еще внедрим всякие разные сценарии , вроде happy-pass/negative-pass, alt-scenario. Если схему можно посмотреть только отделно -- люди устанут переключать режимы.",
+    "word": "Зачем нужна схема: чтобы пока человек думает над развилкой он смотреть на сценарий работы. Я уверен, что мы еще внедрим всякие разные сценарии , вроде happy-pass/negative-pass, alt-scenario. Если схему можно посмотреть только отделно -- люди устанут переключать режимы. Да, пока не делаем, я лишь сказал, что такое возможно.",
     "date": "2026-11-01"
    },
    "reversibility": {
@@ -2900,7 +3526,8 @@
    "parking": [
     {
      "addressee": "человек",
-     "text": "Новая возможность из слова к F-54: несколько сценариев на схеме, «happy-pass/negative-pass, alt-scenario». В этом изменении не делается. Р13 «один блок mermaid» её не покрывает, а формат `scheme.md` войдёт в контракт, поэтому смена формата потом будет сменой контракта."
+     "text": "Новая возможность из слова к F-54: несколько сценариев на схеме, «happy-pass/negative-pass, alt-scenario». В этом изменении не делается. Р13 «один блок mermaid» её не покрывает, а формат `scheme.md` войдёт в контракт, поэтому смена формата потом будет сменой контракта.",
+     "finding": "Слово человека: «Да, пока не делаем, я лишь сказал, что такое возможно.» Не в этом изменении."
     }
    ],
    "dispute": "",
@@ -2925,11 +3552,17 @@
      "evidence": [
       {
        "path": "vscode/docs/design-part1-viewer.md",
-       "quote": "просмотрщик без схемы, с показом владельцу после каркаса и режима «решения» → хук →"
+       "quote": "просмотрщик без схемы, с показом владельцу после каркаса и режима «решения» → хук →",
+       "line": 22,
+       "verdict": "сверено",
+       "found": true
       },
       {
        "path": "openspec/changes/decision-scheme/intent.md",
-       "quote": "Новая сборка .vsix вместе с пакетом правок проходит npm run e2e:vsix."
+       "quote": "Новая сборка .vsix вместе с пакетом правок проходит npm run e2e:vsix.",
+       "line": 58,
+       "verdict": "сверено",
+       "found": true
       }
      ]
     },
@@ -2941,11 +3574,17 @@
      "evidence": [
       {
        "path": "docs/repo-contract.md",
-       "quote": "к первому выпуску версия поднимается до 1.0.0"
+       "quote": "к первому выпуску версия поднимается до 1.0.0",
+       "line": 75,
+       "verdict": "сверено",
+       "found": true
       },
       {
        "path": "docs/repo-contract.md",
-       "quote": "Хеши из `Needs:` достижимы из `main` ядра"
+       "quote": "Хеши из `Needs:` достижимы из `main` ядра",
+       "line": 79,
+       "verdict": "сверено",
+       "found": true
       }
      ]
     }
@@ -2957,7 +3596,7 @@
    },
    "decision": {
     "option": "A",
-    "word": "",
+    "word": "для промежуточной снимаем. Нам же надо проверять сборку не только при выпуске.",
     "date": "2026-11-01"
    },
    "reversibility": {
@@ -2967,8 +3606,3703 @@
    "outcome": null,
    "parking": [],
    "dispute": "",
-   "consequences": "Определяет версию в `package.json` и имя файла по F-30.B.",
+   "consequences": "Определяет версию в `package.json` и имя файла по F-30.B. Для этой сборки шаги 1 и 2 выпуска из контракта снимаются: ядро в `main` не требуется, тесты плагина идут на ядре из ветки изменения. Остаётся `npm run e2e:vsix`.",
    "evidence": [],
+   "comments": []
+  },
+  {
+   "id": "F-56",
+   "question": "Какая тяжесть у строки атаки журнала, если выбраны оба антипода?",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-52"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Оставить как есть: `блокер`. Шаг стоит, пока запись не поправят.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "skills/symphysis-attack/SKILL.md",
+       "quote": "оба антипода решены"
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "`предупреждение`: на одну выше `справки`. Шаг тоже стоит, гейт считает обе тяжести одинаково, но строка читается как «проверь», а не как «цель не будет достигнута».",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/changes/decision-scheme/answers/2026-11-01-attack-chat.md",
+       "quote": "Увеличим на одну. Какие есть варианты тяжести?"
+      },
+      {
+       "path": "skills/symphysis-attack/SKILL.md",
+       "quote": "`status: passed` ставится, только когда в таблице нет ни одной строки"
+      }
+     ]
+    },
+    {
+     "letter": "C",
+     "text": "`справка`: строка видна, шаг не стоит. Так уже устроено у выбранного варианта с `deviation`: человек видел пару и выбрал.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "skills/symphysis-attack/SKILL.md",
+       "quote": "выбранный вариант с полем `deviation` — `справка`"
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "B",
+    "why": "Это твоё «увеличим на одну», если считать от `справки`. Цена: при ложной паре модели шаг стоит, пока запись не поправят; `справка` этого не даёт, но и не остановит."
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "Правится линза `context-compliance` в скилле `symphysis-attack`. Требование `artifact-attack` антиподов не называет и не меняется.",
+   "evidence": [],
+   "comments": []
+  },
+  {
+   "id": "F-57",
+   "question": "[idempotency · stateful] Брейншторм создаёт `scheme.md`: первый круг оборвался сразу после записи файла, и при повторе скилл принимает его за файл человека: ссылки в чат нет, человек о схеме не узнал",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-22"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN `scheme.md` появился на оборвавшемся первом круге, а ссылки в чате не было WHEN круг запускается снова THEN файл не меняется, а в чат уходит ссылка на него",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — повтор после обрыва не покрывается: файл лежит в каталоге изменения, и вкладка схемы покажет его без всякой ссылки",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест на текст скилла утверждает, что правило «файл есть — не трогать» идёт вместе с выдачей ссылки; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — поведение при обрыве остаётся открытым до первого такого случая; tasks считает, что круг не обрывается",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Цена — одна строка в скилле, а без ссылки человек может не узнать о файле: критерий F-01 требует её дать."
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/decision-scheme/specs/decision-scheme/spec.md",
+     "quote": "### Requirement: Брейншторм создаёт `scheme.md`, если файла нет"
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-58",
+   "question": "[concurrency · stateful] Брейншторм создаёт `scheme.md`: файла не было при проверке, а пока модель составляла схему, человек сохранил свой: запись модели затрёт его файл",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-22"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN при проверке файла не было, а перед записью он появился WHEN модель готова записать схему THEN файл человека не перезаписан, а свой вариант модель показывает в чате",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — гонка не покрывается: модель пишет файл сразу после вопросов, а человек в это время отвечает ей, а не рисует",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест на текст скилла утверждает, что проверка наличия стоит прямо перед записью; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — остаётся открытым, пока схему не начнут править из плагина; tasks считает, что файл пишет один участник",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Файл принадлежит человеку (F-07), а цена проверки перед записью нулевая."
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/decision-scheme/specs/decision-scheme/spec.md",
+     "quote": "### Requirement: Брейншторм создаёт `scheme.md`, если файла нет"
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-59",
+   "question": "[adjacency · collection] `scheme.md` — один блок mermaid: человек вставил два блока подряд, например два сценария: какой рисуется и видно ли это",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-54"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN `scheme.md` с двумя блоками mermaid WHEN вкладка и страница читают файл THEN рисуется первый, а плашка говорит «в файле 2 блока, показан первый»",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — два блока не покрываются: формат предписывает один, файл правит сам человек и сам видит результат",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест плагина подаёт файл с двумя блоками и утверждает, что рисуется ровно один и вкладка не падает; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — остаётся открытым до работы над несколькими сценариями (парковка у F-54); tasks считает, что блок один",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Человек уже говорил о нескольких сценариях (F-54), а молчаливый показ первого блока выглядел бы как потерянный рисунок."
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/decision-scheme/specs/decision-scheme/spec.md",
+     "quote": "### Requirement: `scheme.md` — один блок mermaid, и шаги от него не зависят"
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-60",
+   "question": "[empty · text] `scheme.md` — один блок mermaid: файл есть, но пуст, без блока или с пустым блоком: это «схема не создана» или ошибка, и создаст ли его брейншторм заново",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-28"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN `scheme.md` без непустого блока mermaid WHEN вкладка показывает файл THEN плашка «В scheme.md нет схемы» с кнопкой «Открыть scheme.md», а брейншторм файл не трогает",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — пустой файл отдельно не покрывается: он показывается как обычная ошибка mermaid",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест подаёт файл на 0 байт и файл с пустым блоком и утверждает, что вкладка не падает; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — остаётся открытым до показа вкладки владельцу; tasks считает пустой файл ошибкой разбора",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Человек мог создать файл заранее, а сообщение mermaid о пустом тексте ему ничего не объяснит."
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/decision-scheme/specs/decision-scheme/spec.md",
+     "quote": "### Requirement: `scheme.md` — один блок mermaid, и шаги от него не зависят"
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-61",
+   "question": "[encoding · text] `scheme.md` — один блок mermaid: файл сохранён на Windows с BOM и CRLF: находится ли блок и верен ли номер строки в ошибке",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-28"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN `scheme.md` с BOM и CRLF WHEN файл читают вкладка и `render-html` THEN блок найден, рисунок есть, номер строки в ошибке совпадает со строкой в редакторе",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — BOM не покрывается: файл создаёт модель без BOM, а CRLF внутри текста проба разбора уже прошла",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест разбора подаёт файл с BOM и CRLF и утверждает, что блок найден; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — кодировка не UTF-8 остаётся открытой до первого такого файла человека; tasks считает файл UTF-8",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Редактор на Windows может сохранить файл по-разному, а проба mermaid проверяла CRLF только в тексте блока, но не поиск самого блока."
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/decision-scheme/specs/decision-scheme/spec.md",
+     "quote": "### Requirement: `scheme.md` — один блок mermaid, и шаги от него не зависят"
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-62",
+   "question": "[idempotency · stateful] Вкладка схемы открывается кнопкой: человек нажимает «схема» при уже открытой вкладке: вторая вкладка, закрытие или фокус",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-26"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN вкладка схемы открыта WHEN человек снова нажимает «схема» THEN вторая вкладка не появляется, открытая получает фокус",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — повторное нажатие не покрывается: это мелочь, а закрыть вкладку можно обычным крестиком",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — сквозной тест нажимает кнопку дважды и утверждает, что вкладка схемы одна; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — остаётся открытым до показа владельцу: может оказаться удобнее, чтобы кнопка закрывала вкладку; tasks считает, что кнопка только открывает",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Повтор не должен плодить вкладки, а закрыть можно обычным крестиком."
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/decision-scheme/specs/plugin-scheme-view/spec.md",
+     "quote": "### Requirement: Вкладка схемы открывается кнопкой и командой"
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-63",
+   "question": "[concurrency · io] Вкладка схемы открывается кнопкой: просмотрщик закрыт, а вкладка схемы осталась: что делает клик по узлу",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-26",
+    "F-27"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN вкладка схемы открыта, просмотрщик закрыт WHEN человек кликает по узлу THEN просмотрщик открывается с этим журналом и условием «узел X»",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — не покрывается: закрыв просмотрщик, человек сам откроет его снова, а клик без карточек ничего не значит",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — сквозной тест закрывает просмотрщик, кликает по узлу и утверждает, что ошибки в журнале хоста нет; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — остаётся открытым до работы над связью вкладок; tasks считает, что обе открыты",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Клик обещает показать карточки узла, а без этого он молча ничего не делает."
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/decision-scheme/specs/plugin-scheme-view/spec.md",
+     "quote": "### Requirement: Вкладка схемы открывается кнопкой и командой"
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-64",
+   "question": "[concurrency · stateful] Вкладка схемы открывается кнопкой: вкладка показывает изменение А, а в просмотрщике открыли журнал изменения Б: чья схема на экране",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-26"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN открытая вкладка схемы изменения А WHEN в просмотрщике открыт журнал изменения Б THEN вкладка показывает схему изменения Б",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — смена журнала не покрывается: человек переоткроет вкладку кнопкой",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — сквозной тест переключает журнал и утверждает, что подпись вкладки называет новое изменение; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — остаётся открытым до показа, когда станет видно, как часто журналы меняют; tasks считает, что вкладка следует за журналом",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Клик по узлу фильтрует просмотрщик, поэтому схема и карточки обязаны быть про одно изменение."
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/decision-scheme/specs/plugin-scheme-view/spec.md",
+     "quote": "### Requirement: Вкладка схемы открывается кнопкой и командой"
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-65",
+   "question": "[concurrency · io] Вкладка рисует файл сама: автосохранение раз в секунду, а первый рисунок занимает около 350 мс: рисунок старой версии может прийти позже новой",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-25"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN две сохранённые подряд версии файла WHEN рисунки готовы в обратном порядке THEN показан рисунок последней версии",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — не покрывается: рисунок обновится при следующем сохранении, а ошибка живёт доли секунды",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест плагина подаёт две версии с задержкой у первой и утверждает, что на экране вторая; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — остаётся открытым до замеров на больших схемах; tasks считает, что сохранения редки",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Автосохранение в VS Code обычное дело, а устаревший рисунок глазами не отличить от верного."
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/decision-scheme/specs/plugin-scheme-view/spec.md",
+     "quote": "### Requirement: Вкладка рисует файл сама и без сети"
+    },
+    {
+     "path": "vscode/docs/spike-part1-results.md",
+     "quote": "340–355 / 63–75 мс"
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-66",
+   "question": "[idempotency · stateful] Вкладка рисует файл сама: файл сохранён и рисунок обновился: сбрасываются ли масштаб и позиция, которые человек только что выставил",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-25",
+    "F-29"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN человек выставил масштаб и сдвиг WHEN файл сохранён и рисунок обновился THEN масштаб и сдвиг те же",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — сброс не покрывается: после правки схема другая, а кнопка «вписать» рядом",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — сквозной тест выставляет масштаб, сохраняет файл и утверждает, что масштаб прежний; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — остаётся открытым до показа вкладки; tasks считает, что вид сбрасывается",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Человек правит схему и смотрит результат рядом, и сброс при каждом сохранении заставит искать своё место заново."
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/decision-scheme/specs/plugin-scheme-view/spec.md",
+     "quote": "### Requirement: Вкладка рисует файл сама и без сети"
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-67",
+   "question": "[boundary · numeric-range] Схему можно масштабировать: что делает «−» на минимальном масштабе и «+» на максимальном и где эти границы",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-29"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN масштаб 25 % WHEN человек нажимает «−» THEN масштаб не меняется и кнопка неактивна; то же у «+» на 400 %, шаг 25 %",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — границы не покрываются спекой: это настройка вида, её удобнее подобрать на показе вкладки",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест нажимает «−» двадцать раз и утверждает, что рисунок не исчез и «+» его возвращает; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — числа остаются открытыми до показа вкладки владельцу; tasks берёт 25–400 %",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "C",
+    "why": "Сами числа лучше подобрать на показе, а вот исчезнуть рисунок не должен: это держит тест."
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/decision-scheme/specs/plugin-scheme-view/spec.md",
+     "quote": "### Requirement: Схему можно масштабировать и перетаскивать"
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-68",
+   "question": "[boundary · numeric-range] Схему можно перетаскивать: сдвиг мыши на 1–3 пикселя при клике: это клик по узлу или перетаскивание",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-29"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN нажатие на узел WHEN мышь сдвинулась меньше чем на 4 пикселя и кнопка отпущена THEN это клик по узлу; от 4 пикселей — перетаскивание, фильтр не меняется",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — порог не покрывается спекой: это деталь обработчика, её проверит показ",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест подаёт сдвиги на 0, 3 и 4 пикселя и утверждает итог для каждого; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — порог остаётся открытым до показа; tasks берёт любое разумное значение",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "C",
+    "why": "Край известен, но число в требовании лишнее, поведение держит тест."
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/decision-scheme/specs/plugin-scheme-view/spec.md",
+     "quote": "### Requirement: Схему можно масштабировать и перетаскивать"
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-69",
+   "question": "[precision · numeric-range] Схему можно масштабировать: кнопка «вписать» на схеме из одного-двух узлов: растянуть её на всю панель или оставить натуральный размер",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-29"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN схема меньше панели WHEN человек нажимает «вписать» THEN масштаб 100 %, схема не растягивается",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — не покрывается: растянутая маленькая схема ничему не мешает",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест нажимает «вписать» на схеме из двух узлов и утверждает, что масштаб не выше 100 %; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — остаётся открытым до показа; tasks считает, что вписывание только уменьшает",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Огромные блоки на маленькой схеме читаются хуже натурального размера."
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/decision-scheme/specs/plugin-scheme-view/spec.md",
+     "quote": "### Requirement: Схему можно масштабировать и перетаскивать"
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-70",
+   "question": "[concurrency · io] Отказы видны на вкладке: файл удалён или ушёл со сменой ветки при открытой вкладке: остаётся прежний рисунок или появляется плашка",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-05",
+    "F-28"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN вкладка с рисунком WHEN `scheme.md` удалён THEN рисунок убран, видна плашка «Схема не создана»",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — не покрывается: удаление редкое, а прежний рисунок просто пропадёт при следующем открытии",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — сквозной тест удаляет файл и утверждает, что вкладка не падает; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — остаётся открытым до работы со сменой ветки; tasks считает, что файл не удаляют",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Смена ветки git убирает файл обычным образом, а рисунок несуществующей схемы вводит в заблуждение."
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/decision-scheme/specs/plugin-scheme-view/spec.md",
+     "quote": "### Requirement: Отказы видны на вкладке"
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-71",
+   "question": "[boundary · numeric-range] Отказы видны на вкладке: схема больше предела mermaid: текст длиннее 50 000 символов или больше 500 связей, и вместо рисунка mermaid даёт свою ошибку",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-28"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN `scheme.md` больше пределов mermaid WHEN вкладка рисует файл THEN плашка называет предел, а не общую ошибку разбора",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — не покрывается: схема такого размера всё равно нечитаема, а сообщение mermaid о пределе человек поймёт",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест подаёт схему на 501 связь и утверждает, что вкладка не падает и ошибка видна; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — остаётся открытым до первой такой схемы; tasks считает, что схемы меньше",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "C",
+    "why": "Пределы настоящие, но до них далеко: у схемы этого изменения 20 узлов. Достаточно, чтобы вкладка не падала."
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/decision-scheme/specs/plugin-scheme-view/spec.md",
+     "quote": "### Requirement: Отказы видны на вкладке"
+    },
+    {
+     "path": "vscode/spike/media/mermaid.min.js",
+     "quote": "maxTextSize:5e4"
+    },
+    {
+     "path": "vscode/spike/media/mermaid.min.js",
+     "quote": "maxEdges:500"
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-72",
+   "question": "[adjacency · collection] Клик по узлу: два узла с одинаковой подписью и разными идентификаторами: фильтр идёт по подписи или по идентификатору",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-27"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN два узла с подписью «проверка» и идентификаторами a и b WHEN человек кликает по a THEN показаны записи с `nodes: [a]`, а записи только с b нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — не покрывается: `nodes` и так хранит идентификаторы, других значений у фильтра нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест подаёт схему с одинаковыми подписями и утверждает, что фильтр различает узлы; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — остаётся открытым до первой схемы с повторами; tasks считает подписи уникальными",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "C",
+    "why": "Поведение следует из поля `nodes`, сценарий ничего не добавит, а регрессию поймает тест."
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/decision-scheme/specs/plugin-scheme-view/spec.md",
+     "quote": "### Requirement: Клик по узлу фильтрует карточки по `nodes`"
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-73",
+   "question": "[empty · collection] Клик по узлу: журнал вообще без поля `nodes`, как все журналы до этого изменения: клик по любому узлу скрывает все карточки",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-23",
+    "F-27"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN журнал, где ни у одной записи нет `nodes` WHEN человек кликает по узлу THEN просмотрщик говорит «записи журнала не связаны со схемой», условие не ставится",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — отдельного сообщения не нужно: «записей нет» по сути верно",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест подаёт журнал без `nodes` и утверждает, что клик не скрывает карточки молча; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — остаётся открытым, пока `nodes` не появятся в журналах; tasks считает, что у нового журнала поле есть",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Все журналы ядра сегодня такие, и фильтр, скрывший все карточки, выглядит как поломка."
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/decision-scheme/specs/plugin-scheme-view/spec.md",
+     "quote": "### Requirement: Клик по узлу фильтрует карточки по `nodes`"
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-74",
+   "question": "[idempotency · stateful] Клик по узлу: условие «узел X» выбрано, а человек убрал узел X из `scheme.md`: кликом условие уже не снять",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-27"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN условие «узел X» WHEN узел X исчез из схемы THEN условие снято само, а в шапке сказано почему",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — не покрывается: у условия есть крестик, он работает независимо от рисунка, а запись с этим узлом видна с подсказкой",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — сквозной тест убирает узел из файла и утверждает, что крестик снимает условие; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — остаётся открытым до показа; tasks считает, что условие живёт до снятия",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "B",
+    "why": "У условия есть крестик, он работает независимо от рисунка, а запись с этим узлом остаётся видна с подсказкой."
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/decision-scheme/specs/plugin-scheme-view/spec.md",
+     "quote": "### Requirement: Клик по узлу фильтрует карточки по `nodes`"
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-75",
+   "question": "[concurrency · stateful] Клик по узлу: поиск или оглавление ведут к записи, скрытой условием «узел X»",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-27"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN условие «узел X» и запись без этого узла WHEN человек переходит к ней из поиска THEN условие снято и запись показана, как уже сделано для фильтра «показать»",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — не покрывается: человек сам снимет условие крестиком и повторит переход",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — сквозной тест переходит к скрытой записи и утверждает, что карточка видна; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — остаётся открытым до показа вкладки; tasks считает, что условие и поиск не пересекаются",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Плагин уже так ведёт себя с фильтром «показать»: переход не должен молча ни к чему не приводить."
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/decision-scheme/specs/plugin-scheme-view/spec.md",
+     "quote": "### Requirement: Клик по узлу фильтрует карточки по `nodes`"
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-76",
+   "question": "[boundary · numeric-range] Плагин сверяет номер: поле есть, но это не целое число: строка \"1\", 1.5, null или отрицательное",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-31"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN в `view-json` номер \"1\", 1.5 или null WHEN плагин сверяет THEN это считается как «номера нет»: просьба обновить инструменты",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — не покрывается: номер пишет только ядро, других значений быть не может",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест подаёт четыре негодных значения и утверждает, что «Внести» закрыта; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — остаётся открытым до первой смены формы вывода; tasks считает номер целым",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "C",
+    "why": "Номер пишет только ядро, поэтому сценарий избыточен, но закрытая «Внести» при мусоре на входе должна держаться тестом."
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/decision-scheme/specs/plugin-core-contract/spec.md",
+     "quote": "### Requirement: Плагин сверяет номер и говорит, что обновить"
+    },
+    {
+     "path": "docs/repo-contract.md",
+     "quote": "проверка номера: сегодня `src/host/core.ts:31` принимает JSON без проверки"
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-77",
+   "question": "[idempotency · stateful] Плагин сверяет номер: инструменты обновили при открытом журнале и черновик человека на месте: открывается ли «Внести» без перезапуска",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-31"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN номер не совпал, «Внести» закрыта WHEN инструменты обновлены и плагин читает журнал снова THEN журнал показан, «Внести» открыта, черновик на месте",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — не покрывается: человек перезагрузит окно после обновления инструментов",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — сквозной тест подменяет инструменты на ходу и утверждает, что «Внести» открылась; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — остаётся открытым до первой настоящей смены номера; tasks считает, что нужен перезапуск",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Просьба обновить должна кончаться рабочим журналом, иначе человек решит, что обновление не помогло."
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/decision-scheme/specs/plugin-core-contract/spec.md",
+     "quote": "### Requirement: Плагин сверяет номер и говорит, что обновить"
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-78",
+   "question": "[concurrency · stateful] Плагин сверяет номер: в рабочей области два проекта с разными версиями инструментов: один совпал, другой нет",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-31"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN два проекта с разными номерами WHEN человек открывает журнал каждого THEN сверка идёт по проекту журнала, просьба называет проект, журнал второго работает",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — не покрывается: в окне обычно один проект",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест подаёт два проекта и утверждает, что «Внести» закрыта только у одного; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — остаётся открытым до работы с несколькими проектами в окне; tasks считает проект один",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Ядро лежит в `.symphysis/tools/` каждого проекта, поэтому версии расходятся именно по проектам."
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/decision-scheme/specs/plugin-core-contract/spec.md",
+     "quote": "### Requirement: Плагин сверяет номер и говорит, что обновить"
+    },
+    {
+     "path": "docs/repo-contract.md",
+     "quote": "Ядро лежит в `.symphysis/tools/` каждого проекта"
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-79",
+   "question": "[empty · collection] Плагин сверяет номер: журнал открывается впервые, прежних данных нет: что на экране при несовпадении",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-31"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN журнал открывается впервые, а номер не совпал WHEN плагин получает вывод THEN просмотрщик пуст, говорит, что обновить, и называет команду",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — не покрывается: случай редкий, хватит общего сообщения об ошибке",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — сквозной тест открывает журнал при чужом номере и утверждает, что страница не падает; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — остаётся открытым до первой настоящей смены номера; tasks считает, что данные уже были",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Это обычный первый запуск после установки нового плагина на старые инструменты."
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/decision-scheme/specs/plugin-core-contract/spec.md",
+     "quote": "### Requirement: Плагин сверяет номер и говорит, что обновить"
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-80",
+   "question": "[ordering · collection] Один черновик даёт один журнал: человек добавил два варианта к одной записи: страница и плагин назначают буквы в одном порядке",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-20"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN два добавленных варианта к одной записи WHEN промпт собран страницей и плагином THEN буквы и порядок строк совпадают, а журналы после `apply` равны",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — не покрывается: порядок зависит от порядка добавления, а человек работает в одном месте",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — контрактный тест получает этот черновик отдельным набором и утверждает равенство журналов; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — остаётся открытым до первого расхождения; tasks считает порядок одинаковым",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "C",
+    "why": "Требование и так об этом, нужен только конкретный набор данных в тесте."
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/decision-scheme/specs/plugin-core-contract/spec.md",
+     "quote": "### Requirement: Один черновик даёт один журнал со страницы и из плагина"
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-81",
+   "question": "[encoding · text] Один черновик даёт один журнал: слово человека с кавычками «», переводом строки, тире и чертой: одно ли слово окажется в журнале",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-20"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN слово с «кавычками», переводом строки, тире и чертой WHEN оно внесено со страницы и из плагина THEN в журнале одно и то же слово",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — не покрывается: страница и плагин собирают строку одинаково, а `apply` у них общий",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — контрактный тест получает такое слово в наборе и утверждает равенство журналов; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — остаётся открытым до первого расхождения; tasks считает, что слова простые",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Логика страницы и плагина уже расходится по контракту, а слова человека сюда нельзя терять."
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/decision-scheme/specs/plugin-core-contract/spec.md",
+     "quote": "### Requirement: Один черновик даёт один журнал со страницы и из плагина"
+    },
+    {
+     "path": "docs/repo-contract.md",
+     "quote": "Логика страницы и плагина уже расходится, и человек это принял."
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-82",
+   "question": "[empty · text] Заданный `SYMPHYSIS_ROOT`: переменная задана пустой строкой",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-20"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN `SYMPHYSIS_ROOT` равен пустой строке WHEN выполняется `npm test` THEN это считается как незаданная переменная",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — не покрывается: пустую переменную никто не задаёт специально",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест подаёт пустую строку и утверждает, что прогон не считает ядро найденным в текущем каталоге; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — остаётся открытым до первой путаницы; tasks считает переменную непустой",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "`??` в `test/unit/fixture-project.ts` пропускает пустую строку как значение, и такой край сам собой не проявится."
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/decision-scheme/specs/plugin-core-contract/spec.md",
+     "quote": "### Requirement: Заданный `SYMPHYSIS_ROOT` без ядра — падение, а не пропуск"
+    },
+    {
+     "path": "vscode/test/unit/fixture-project.ts",
+     "quote": "process.env.SYMPHYSIS_ROOT ??"
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-83",
+   "question": "[encoding · text] Собранный файл называет версию и коммит: какая запись примется: `0.2.0+abc1234` или `0.2.0-abc1234`, и что покажет окно расширений",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-30"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN версия `0.2.0+H` WHEN пакет собран и установлен THEN установка проходит, окно расширений показывает `0.2.0+H`",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — форма не покрывается спекой: это деталь упаковки, её выберет `design` пробой",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — `e2e:vsix` читает версию установленного расширения и утверждает, что в ней есть H; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — форма остаётся открытой до пробы установкой в `design`; tasks считает, что подходит любая",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "C",
+    "why": "Форму надо проверить настоящей установкой, и такая проверка нужна при любой записи."
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/decision-scheme/specs/plugin-packaging/spec.md",
+     "quote": "### Requirement: Собранный файл называет версию и коммит"
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-84",
+   "question": "[idempotency · stateful] Собранный файл называет версию и коммит: сборка при незакоммиченных правках: хеш называет коммит, из которого файл на самом деле не собран",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-30"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN незакоммиченные правки WHEN выполняется `npm run package` THEN имя и версия несут пометку `dirty`",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — не покрывается: такая сборка только для себя, а в выпуск идёт сборка из коммита",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест сборки подаёт дерево с правкой и утверждает, что пометка есть; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — остаётся открытым до первой путаницы; tasks считает дерево чистым",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Хеш нужен, чтобы понять, что собрано, а без пометки он обманывает именно при отладке."
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/decision-scheme/specs/plugin-packaging/spec.md",
+     "quote": "### Requirement: Собранный файл называет версию и коммит"
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-85",
+   "question": "[concurrency · io] Промежуточная сборка: `SYMPHYSIS_ROOT` не задан, и `e2e:vsix` идёт по той ветке, что сейчас стоит в `../symphysis`, то есть по чужой работе",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-55"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN `SYMPHYSIS_ROOT` не задан WHEN идёт `npm run e2e:vsix` THEN итог называет ветку и коммит ядра, на которых шёл прогон",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — не покрывается: перед сборкой человек сам выставит переменную",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — `e2e:vsix` падает, если ядро не содержит нового номера контракта; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — остаётся открытым до слияния ядра в `main`; tasks считает переменную заданной",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Шаги 1 и 2 сняты, и теперь только итог прогона говорит, на каком ядре он шёл."
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/decision-scheme/specs/plugin-packaging/spec.md",
+     "quote": "### Requirement: Промежуточная сборка проверяется установкой, без шагов выпуска про `main`"
+    },
+    {
+     "path": "docs/repo-contract.md",
+     "quote": "без этой настройки тесты идут по той ветке, что стоит в `../symphysis`"
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-86",
+   "question": "[empty · collection] Запись ссылается на узлы: `nodes: []`: это то же, что нет поля",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-23",
+    "F-24"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN запись с `nodes: []` WHEN `check` и просмотрщик читают её THEN журнал годен, запись ведёт себя как без поля",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — не покрывается: пустой список модель не пишет, а `check` смотрит только форму",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест `check` подаёт `nodes: []` и утверждает код 0; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — остаётся открытым до первого такого журнала; tasks считает, что пустого списка нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Сценарий стоит одной строки, и подсказка «узел не найден» не должна срабатывать на пустом списке."
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/decision-scheme/specs/decision-journal/spec.md",
+     "quote": "### Requirement: Запись ссылается на узлы схемы необязательным полем `nodes`"
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-87",
+   "question": "[encoding · text] Запись ссылается на узлы: идентификатор с кириллицей и разным регистром: `Узел1` и `узел1` это один узел",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-23"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN `nodes: [Узел1]` и в схеме узел `узел1` WHEN просмотрщик сверяет THEN сравнение дословное, узел не найден",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — не покрывается: идентификаторы ставит модель, копируя из файла",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест подаёт узлы в разном регистре и утверждает подсказку «узел не найден»; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — остаётся открытым до первого расхождения; tasks считает написание одинаковым",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Человек правит файл сам (F-06), а mermaid различает регистр, поэтому правило должно быть названо."
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/decision-scheme/specs/decision-journal/spec.md",
+     "quote": "### Requirement: Запись ссылается на узлы схемы необязательным полем `nodes`"
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-88",
+   "question": "[concurrency · stateful] Панель схемы: `scheme.md` поправили после сборки страницы: панель показывает старую версию, и этого не видно",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-39",
+    "F-54"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN `scheme.md` изменён после `render-html` WHEN человек смотрит панель THEN виден текст на момент сборки, а у панели написано, что это снимок",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — не покрывается: страница и так снимок журнала, человек пересобирает её",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест собирает страницу и утверждает, что текст схемы равен файлу на момент сборки; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — остаётся открытым до показа панели; tasks считает страницу свежей",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "B",
+    "why": "Страница и так снимок журнала с тем же свойством, а скилл просмотрщика пересобирает её перед показом."
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/decision-scheme/specs/decision-viewer/spec.md",
+     "quote": "### Requirement: Панель схемы показывает `scheme.md` рядом с карточками"
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-89",
+   "question": "[encoding · text] Панель схемы: текст `scheme.md` содержит `</script>` или `<!--`: подстановка в страницу ломает её разбор",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-39"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN `scheme.md` с `</script>` и `<!--` WHEN выполняется `render-html` THEN страница работает, а текст схемы показан дословно",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — не покрывается: диаграммы таких строк не содержат",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест рендера подаёт схему с этими строками и утверждает, что страница цела и текст дословен; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — остаётся открытым до показа панели; tasks считает текст безопасным",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "C",
+    "why": "Файл может прийти из чужой ветки, а механизм экранирования уже есть, нужен только тест."
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/decision-scheme/specs/decision-viewer/spec.md",
+     "quote": "### Requirement: Панель схемы показывает `scheme.md` рядом с карточками"
+    },
+    {
+     "path": "tools/journal_render.py",
+     "quote": "чтобы текст не закрыл `<script>`"
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-90",
+   "question": "[empty · text] Панель схемы: изменение без `scheme.md`: есть ли кнопка панели и что она показывает",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-05",
+    "F-54"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN изменение без `scheme.md` WHEN человек включает панель THEN панель говорит «Схема не создана», как вкладка плагина",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — кнопки панели нет, если файла нет: показывать нечего, и вопроса не возникает",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест рендера подаёт изменение без файла и утверждает, что страница годна; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — остаётся открытым до показа панели; tasks считает, что файл есть",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Страница и плагин говорят одно и то же, а человек понимает, что схемы именно нет, а не что панель сломана."
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/decision-scheme/specs/decision-viewer/spec.md",
+     "quote": "### Requirement: Панель схемы показывает `scheme.md` рядом с карточками"
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-91",
+   "question": "[boundary · numeric-range] Панель схемы: окно уже 900 пикселей, где страница складывается в одну колонку: рядом с карточками панели не поместиться",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-54"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN окно уже 900 пикселей WHEN панель включена THEN она стоит над карточками, а не рядом",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — не покрывается: страницу смотрят на широком экране",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — `viewer-smoke` открывает страницу на 800 пикселях и утверждает, что карточки и панель видны; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — остаётся открытым до показа панели; tasks считает окно широким",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Шаблон уже складывается в одну колонку на этой ширине, панель должна подчиняться тому же правилу."
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/decision-scheme/specs/decision-viewer/spec.md",
+     "quote": "### Requirement: Панель схемы показывает `scheme.md` рядом с карточками"
+    },
+    {
+     "path": "tools/playground-template.html",
+     "quote": "@media (max-width: 900px)"
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-92",
+   "question": "[concurrency · io] Подписи схемы не ходят в сеть: CSP действует на всю страницу: работают ли под ней экспорт JSON, импорт и копирование промпта",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-39"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN страница под CSP WHEN человек нажимает «Экспорт JSON», «Импорт JSON» и «Скопировать промпт» THEN все три работают",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — не покрывается: проба под этой CSP показала рисунок и карточки, остальное той же природы",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — `viewer-smoke` нажимает эти три кнопки под CSP и утверждает итог; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — остаётся открытым до реализации панели; tasks считает, что CSP им не мешает",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Экспорт идёт через `blob:`, а проба проверяла только рисунок и карточки: это как раз непроверенное."
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/decision-scheme/specs/decision-viewer/spec.md",
+     "quote": "### Requirement: Подписи схемы не ходят в сеть"
+    },
+    {
+     "path": "tools/playground-template.html",
+     "quote": "URL.createObjectURL(blob)"
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-93",
+   "question": "[idempotency · stateful] Внесённая новая развилка вычищается: человек поправил текст уже внесённой развилки в черновике: как отличить её от внесённой",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-20"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN развилка внесена, а человек изменил её текст в черновике WHEN страница пересобрана THEN изменённая развилка остаётся в черновике, внесённая не дублируется",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — не покрывается: после внесения правят журнал, а не черновик",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест шаблона подаёт такой черновик и утверждает, что вопрос сравнивается дословно; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — остаётся открытым до контрактного теста; tasks считает, что текст не меняют",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Иначе правка человека либо пропадёт, либо вернётся дублем."
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/decision-scheme/specs/decision-viewer/spec.md",
+     "quote": "### Requirement: Внесённая новая развилка вычищается из черновика"
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-94",
+   "question": "[adjacency · collection] Зависимость от факта: факт оспорен человеком или припаркован: считается ли предпосылка решённой",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-20"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN зависимость от факта со статусом `припаркован` WHEN страница показывает карточку THEN пометка «предпосылка не решена» есть; у факта со статусом `решён` её нет, и оспаривание этого не меняет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — не покрывается: зависимость от припаркованного факта редкость",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест шаблона подаёт факты с разными статусами и утверждает пометку; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — остаётся открытым до первого такого журнала; tasks считает все факты решёнными",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Починка не должна заменить одну ложную пометку другой: припаркованный факт и правда не закрыт."
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/decision-scheme/specs/decision-viewer/spec.md",
+     "quote": "### Requirement: Зависимость от факта не считается нерешённой предпосылкой"
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-95",
+   "question": "[boundary · numeric-range] Круг кончается счётом: K = 0, M = 0, D = 0, но P > 0: брейншторм закончен или ждёт исследования",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-44"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN круг с K = M = D = 0 и P = 1 WHEN скилл решает, что дальше THEN брейншторм не закончен: о новом круге спросит `research` после отчёта",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — не покрывается: нельзя припарковать, не написав записи, поэтому такого круга не бывает",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест на текст скилла утверждает, что правило P > 0 идёт раньше правила «круг без нового»; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — остаётся открытым до первого такого круга; tasks считает, что порядок правил прежний",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Снятие потолка меняет порядок правил §8, и этот случай лучше назвать сразу."
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/decision-scheme/specs/brainstorm-interview/spec.md",
+     "quote": "### Requirement: Круг кончается счётом и словом человека, не числом"
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-96",
+   "question": "[idempotency · stateful] Круг кончается счётом: в `notes[]` уже стоит «брейншторм закончен по решению человека», а человек просит ещё круг",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-44"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN строка о конце брейншторма WHEN человек просит новый круг THEN идёт круг N+1, прежняя строка остаётся, в конце новая",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — не покрывается: конец брейншторма окончательный, новое идёт развилкой по ходу шагов",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест на текст скилла утверждает, что конец не запрещает нового круга по слову; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — остаётся открытым до первой такой просьбы; tasks считает конец окончательным",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Слово человека: после второго круга могут возникнуть вопросы; то же верно и после слова «закончен»."
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/decision-scheme/specs/brainstorm-interview/spec.md",
+     "quote": "### Requirement: Круг кончается счётом и словом человека, не числом"
+    },
+    {
+     "path": "openspec/changes/decision-scheme/answers/2026-11-01-circle2.md",
+     "quote": "после второго могут возникнуть дополнительные вопросы"
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-97",
+   "question": "[adjacency · collection] Антиподы сверяются: модель написала антипод внутри одной развилки: так ответил glm-5.2 без рассуждений, 18 пар из 19",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-50"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN антипод, указывающий на вариант той же записи WHEN выполняется `check` THEN код 1 и строка с именем записи",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — не покрывается: сильная модель с рассуждениями так не пишет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест `check` подаёт такую запись и утверждает отказ; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — остаётся открытым до прогона на слабых моделях; tasks считает пары верными",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Варианты одной развилки и так исключают друг друга, поэтому такая пара всегда ошибка, а проверка формы бесплатна. Это и есть отсечение ответа без рассуждений из F-50."
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/decision-scheme/specs/brainstorm-interview/spec.md",
+     "quote": "### Requirement: Антиподы сверяются до показа и после выбора"
+    },
+    {
+     "path": "openspec/changes/decision-scheme/research/antipodes-probe/probe.log",
+     "quote": "пар 19, из них внутри одной развилки 18"
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-98",
+   "question": "[idempotency · stateful] Антиподы сверяются: сверка после следующего круга снова находит пару, по которой уже заведена развилка",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-50"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN пара выбранных вариантов с уже заведённой развилкой WHEN скилл сверяет снова THEN новой записи нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — не покрывается: модель видит журнал и сама не заведёт дубль",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест на текст скилла утверждает, что сверка начинается с чтения уже заведённых пар; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — остаётся открытым до журнала с несколькими кругами; tasks считает, что дублей нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Сверка идёт в каждом круге, поэтому повтор будет обычным случаем, а не исключением."
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/decision-scheme/specs/brainstorm-interview/spec.md",
+     "quote": "### Requirement: Антиподы сверяются до показа и после выбора"
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-99",
+   "question": "[empty · collection] Исследование: раздел «Проба» без следа в каталоге изменения, например всё осталось во временном каталоге",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-41"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN проба, след которой не лежит в каталоге изменения WHEN агент пишет отчёт THEN находка идёт в «Не найдено» с причиной «следа нет», а не в «Найдено»",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — не покрывается: отчёт пишет модель и след кладёт сама",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест на текст шаблона `research` утверждает, что раздел «Проба» требует пути следа; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — остаётся открытым до следующей пробы; tasks считает след на месте",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Находка без следа — это пересказ, а опора на пересказ как раз то, что атака считает дырой."
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/decision-scheme/specs/artifact-graph/spec.md",
+     "quote": "### Requirement: Исследование — файл на каждую парковку «материалы» с жанром"
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-100",
+   "question": "[concurrency · io] `install` ставит схему: зависимость mermaid не установлена при сборке поставки: `sync-payload.js` молча соберёт её без файла",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-53"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN файла mermaid нет в зависимостях сборки WHEN идёт `sync-payload.js` THEN код не ноль и названа причина, поставка не собрана",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — не покрывается: без файла страница работает с текстом, и это законный исход",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест `sync-payload` убирает файл и утверждает отказ; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — остаётся открытым до первой сборки поставки; tasks считает зависимость установленной",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Запасной текст нужен человеку, а не сборке: поставка без рисунка выглядела бы рабочей и молчала."
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/decision-scheme/specs/project-installer/spec.md",
+     "quote": "### Requirement: `install` ставит схему, скиллы и инструменты в проект и сливает конфиг"
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-101",
+   "question": "[empty · collection] `install` ставит схему: файл mermaid пропал из `.symphysis/tools/`: что говорит `symphysis check`",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-53"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN проект без файла mermaid WHEN выполняется `symphysis check` THEN строка-сигнал `[..]`, код прежний: страница работает и с текстом",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — не покрывается: `check` смотрит только инструменты журнала",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест `check` убирает файл и утверждает код 0; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — остаётся открытым до первого такого проекта; tasks считает файл на месте",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Страница без файла работает, поэтому это сигнал, а не `[!!]`, но промолчать значит оставить человека гадать, почему нет рисунка."
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/decision-scheme/specs/project-installer/spec.md",
+     "quote": "### Requirement: `install` ставит схему, скиллы и инструменты в проект и сливает конфиг"
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-102",
+   "question": "[запрет] Брейншторм создаёт `scheme.md`, если файла нет: не должен становиться надзирателем схемы: спрашивать об обновлении на каждом круге или ждать её утверждения",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-22"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify/test — требование MUST NOT: скилл не спрашивает об обновлении `scheme.md` при закрытии круга и не ждёт утверждения файла; тест на текст скилла ищет такие шаги",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Specify/judgment — то же требование; судит человек по ходу брейншторма: ощущение надзора тестом не измерить",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Dismiss — запрет не нужен: F-22 уже запрещает модели менять файл, а вопросов об этом скилл и так не задаёт",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — остаётся открытым до первого брейншторма со схемой; tasks считает, что вопросов нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Это твоё слово к F-22: при постоянных вопросах человек откажется от функции. Тесты на текст скилла в ядре уже есть."
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/decision-scheme/specs/decision-scheme/spec.md",
+     "quote": "### Requirement: Брейншторм создаёт `scheme.md`, если файла нет"
+    },
+    {
+     "path": "openspec/changes/decision-scheme/intent.md",
+     "quote": "Модель здесь помощник, а не надзиратель."
+    },
+    {
+     "path": "openspec/changes/decision-scheme/answers/2026-11-01.md",
+     "quote": "то он откажется от этой функции"
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-103",
+   "question": "[запрет] Вкладка рисует файл сама и без сети: не должна писать в `scheme.md`: файл принадлежит человеку",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-25"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify/test — требование MUST NOT: вкладка не меняет `scheme.md` ни при каких действиях; сквозной тест сверяет хеш файла до и после клика, масштаба и перетаскивания",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Specify/judgment — то же требование; судит ревью кода по вызовам записи файла",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Dismiss — запрет не нужен: у вкладки нет редактора, а «Открыть scheme.md» открывает обычный редактор",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — остаётся открытым до появления правки схемы из плагина; tasks считает вкладку только читающей",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Тест простой, а нарушение незаметно: файл человека изменится без его ведома."
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/decision-scheme/specs/plugin-scheme-view/spec.md",
+     "quote": "### Requirement: Вкладка рисует файл сама и без сети"
+    },
+    {
+     "path": "openspec/changes/decision-scheme/intent.md",
+     "quote": "Схема нужна человеку, а не модели, поэтому он ей управляет и наполняет."
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-104",
+   "question": "[запрет] Клик по узлу фильтрует карточки по `nodes`: не должен прятать открытые развилки: человек нажмёт «Внести», не увидев, что вне узла что-то не решено",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-27"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify/test — требование MUST NOT: условие «узел X» не скрывает счётчик открытых записей журнала; сквозной тест: при условии шапка показывает открытые по всему журналу и сколько из них скрыто",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Specify/judgment — то же требование; судит человек на показе, заметно ли, что вне узла что-то осталось",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Dismiss — запрет не нужен: условие видно в шапке с крестиком, этого достаточно",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — остаётся открытым до показа вкладки; tasks считает условие заметным",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Счётчик проверяется механически, а ошибка дорогая: решение уйдёт без части развилок."
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/decision-scheme/specs/plugin-scheme-view/spec.md",
+     "quote": "### Requirement: Клик по узлу фильтрует карточки по `nodes`"
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-105",
+   "question": "[запрет] Плагин сверяет номер и говорит, что обновить: не должен терять черновик человека при несовпадении номера",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-31"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify/test — требование MUST NOT: несовпадение номера не меняет и не стирает черновик; тест сверяет файл черновика в `.symphysis/viewer/` до и после",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Specify/judgment — то же требование; судит ревью кода сверки",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Dismiss — запрет не нужен: черновик хранится отдельно, сверка его не трогает",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — остаётся открытым до первой настоящей смены номера; tasks считает черновик целым",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "В черновике слова человека, а тест на него простой."
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/decision-scheme/specs/plugin-core-contract/spec.md",
+     "quote": "### Requirement: Плагин сверяет номер и говорит, что обновить"
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-106",
+   "question": "[запрет] Плагин сверяет номер и говорит, что обновить: не должен обновлять инструменты или ставить пакет сам",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-31"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify/test — требование MUST NOT: при несовпадении плагин только называет, что обновить, и ничего не запускает; тест следит за вызовами процессов",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Specify/judgment — то же требование; судит ревью кода",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Dismiss — запрет не нужен: критерий F-08 говорит только «говорит, что обновить», кнопки обновления в плане нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — остаётся открытым до части 3 плагина о настройках; tasks считает, что обновления нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "«Удобная кнопка» здесь напрашивается, а инструменты лежат в проекте человека и могут быть с его правками."
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/decision-scheme/specs/plugin-core-contract/spec.md",
+     "quote": "### Requirement: Плагин сверяет номер и говорит, что обновить"
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-107",
+   "question": "[запрет] Промежуточная сборка проверяется установкой, без шагов выпуска про `main`: снятие шагов 1 и 2 не должно распространиться на настоящий выпуск",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-55"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify/test — требование MUST NOT: раздел «Выпуск» контракта эта работа не меняет; тест сверяет, что шаги 1 и 2 на месте",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Specify/judgment — то же требование; судит человек при слове на выпуск, сверяя шаги контракта",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Dismiss — запрет не нужен: шаги 1 и 2 в контракте и так про выпуск, а сборка 0.2.0 выпуском не считается",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — остаётся открытым до первого выпуска; tasks считает раздел контракта прежним",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "C",
+    "why": "Контракт здесь не правится: шаги 1 и 2 относятся к выпуску, а эта сборка выпуском не считается."
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/decision-scheme/specs/plugin-packaging/spec.md",
+     "quote": "### Requirement: Промежуточная сборка проверяется установкой, без шагов выпуска про `main`"
+    },
+    {
+     "path": "docs/repo-contract.md",
+     "quote": "Перед выпуском плагина:"
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-108",
+   "question": "[запрет] Панель схемы показывает `scheme.md` рядом с карточками: не должна мешать выбору: вытеснять карточки, кнопки вариантов и промпт возврата",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-54"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify/test — требование MUST NOT: при включённой панели кнопки выбора и промпт доступны; `viewer-smoke` выбирает вариант при включённой панели",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Specify/judgment — требование MUST NOT: панель не вытесняет карточки так, что думать над развилкой неудобно; судит владелец на снимке и показе, удобство тестом не измерить",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Dismiss — запрет не нужен: панель выключается, а человек сам выставит то, что ему удобно",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — остаётся открытым до снимка панели в `design`; tasks считает, что места хватает",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "B",
+    "why": "Панель нужна, пока человек думает над развилкой (F-54), и удобство рядом с карточками может оценить только он."
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/decision-scheme/specs/decision-viewer/spec.md",
+     "quote": "### Requirement: Панель схемы показывает `scheme.md` рядом с карточками"
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-109",
+   "question": "[запрет] Подписи схемы не ходят в сеть: страница вообще не должна ходить в сеть, даже за mermaid при отсутствии файла",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-39"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify/test — требование MUST NOT: страница не делает сетевых запросов ни при каких условиях; тест запускает браузер с журналом сети, как проба F-21, и утверждает ноль запросов",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Specify/judgment — то же требование; судит ревью шаблона",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Dismiss — запрет не нужен: CSP уже закрывает это, а адресов в шаблоне нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — остаётся открытым до реализации панели; tasks считает, что адресов нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Сейчас страница в сеть не ходит вообще, и это свойство стоит закрепить тестом: проба показала, что нарушить его легко."
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/decision-scheme/specs/decision-viewer/spec.md",
+     "quote": "### Requirement: Подписи схемы не ходят в сеть"
+    },
+    {
+     "path": "openspec/changes/decision-scheme/research/F-21-probe/probe.log",
+     "quote": "http=[]"
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-110",
+   "question": "[запрет] Антиподы сверяются до показа и после выбора: модель не должна решать за человека: убирать вариант, менять рекомендацию молча или отменять решение из-за найденной пары",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-50"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify/test — требование MUST NOT: сверка не меняет варианты, рекомендации и `decision`; тест на текст скилла называет допустимые действия",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Specify/judgment — то же требование; судит атака линзой `context-compliance` и человек по журналу: это шаг модели, а не скрипта",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Dismiss — запрет не нужен: `decision` и так пишет только `apply`",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — остаётся открытым до первого журнала со сверкой; tasks считает, что записи не меняются",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "B",
+    "why": "Шаг выполняет модель, скрипта здесь нет, поэтому судить может только чтение журнала. `apply` защищает решение, но не варианты и рекомендацию."
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/decision-scheme/specs/brainstorm-interview/spec.md",
+     "quote": "### Requirement: Антиподы сверяются до показа и после выбора"
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-111",
+   "question": "[запрет] Круг кончается счётом и словом человека, не числом: снятие потолка не должно превратить брейншторм в бесконечный: модель не должна склонять к новому кругу или заводить записи до ответа",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-44"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify/test — требование MUST NOT: вопрос о новом круге задаётся один раз на круг, записи нового круга не заводятся до ответа; тест на текст скилла",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Specify/judgment — то же требование; судит человек и атака журнала по строкам `notes[]`: склонение тестом не измерить",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Dismiss — запрет не нужен: новый круг и так только по слову человека",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — остаётся открытым до первых журналов без потолка; tasks считает, что кругов немного",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "B",
+    "why": "Формулировку вопроса тестом не проверить, а склонять к новому кругу для модели естественно."
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/decision-scheme/specs/brainstorm-interview/spec.md",
+     "quote": "### Requirement: Круг кончается счётом и словом человека, не числом"
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-112",
+   "question": "[запрет] Исследование — файл на каждую парковку «материалы» с жанром: проба агента не должна оставлять правки в рабочем дереве: код проекта меняется только задачами",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-41"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify/test — требование MUST NOT: проба не меняет файлы вне `research/` и временного каталога; тест на текст инструкции `research`",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Specify/judgment — то же требование; судит атака и ревью коммита по списку изменённых файлов",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Dismiss — запрет не нужен: проба и так работает на копиях",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — остаётся открытым до следующей пробы; tasks считает, что проба ничего не меняет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "B",
+    "why": "Шаг исполняет модель, поэтому проверить можно только по следу: что попало в коммит."
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/decision-scheme/specs/artifact-graph/spec.md",
+     "quote": "### Requirement: Исследование — файл на каждую парковку «материалы» с жанром"
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-113",
+   "question": "[запрет] `install` ставит схему, скиллы и инструменты в проект и сливает конфиг: установка не должна ходить в сеть за файлом mermaid: он приходит с поставкой",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-53"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify/test — требование MUST NOT: `symphysis install` из собранной поставки не делает сетевых запросов за mermaid; тест подменяет сетевые вызовы и утверждает ноль обращений",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Specify/judgment — то же требование; судит ревью кода инсталлятора",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Dismiss — запрет не нужен: F-53 уже отверг скачивание, а кода скачивания нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — остаётся открытым до первой установки в закрытом контуре; tasks считает, что сеть не нужна",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Закрытый контур это не прощает, а тест простой."
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/decision-scheme/specs/project-installer/spec.md",
+     "quote": "### Requirement: `install` ставит схему, скиллы и инструменты в проект и сливает конфиг"
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-114",
+   "question": "[запрет] Запись ссылается на узлы схемы необязательным полем `nodes`: поле `nodes` не должно становиться обязанностью: запись без него не считается дефектом ни `check`, ни атакой",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-23"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify/test — требование MUST NOT: отсутствие `nodes` не даёт строки у `check` и не становится находкой атаки; тест `check` и тест на текст скилла атаки",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Specify/judgment — то же требование; судит человек по строкам атаки",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Dismiss — запрет не нужен: поле необязательное по схеме",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — остаётся открытым до первых журналов с полем; tasks считает, что атака его не требует",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Схема нужна человеку, а не модели (F-07): обязанность ставить узлы быстро превратит помощь в надзор."
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/decision-scheme/specs/decision-journal/spec.md",
+     "quote": "### Requirement: Запись ссылается на узлы схемы необязательным полем `nodes`"
+    },
+    {
+     "path": "openspec/changes/decision-scheme/intent.md",
+     "quote": "Модель здесь помощник, а не надзиратель."
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-115",
+   "question": "[канон] Вкладка рисует файл сама и без сети: канон ИБ",
+   "kind": "факт",
+   "status": "припаркован",
+   "addressee": "ИБ",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [
+    {
+     "addressee": "ИБ",
+     "text": "Инъекция через подпись `scheme.md` из чужой ветки при `style-src 'unsafe-inline'` на вкладке — канон, покрывается чек-листом security.md; запрет не чеканится"
+    }
+   ],
+   "dispute": "",
+   "consequences": "На этом стоит шаг `security`.",
+   "evidence": [
+    {
+     "path": "openspec/changes/decision-scheme/specs/plugin-scheme-view/spec.md",
+     "quote": "### Requirement: Вкладка рисует файл сама и без сети"
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-116",
+   "question": "[канон] Подписи схемы не ходят в сеть: канон ИБ",
+   "kind": "факт",
+   "status": "припаркован",
+   "addressee": "ИБ",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [
+    {
+     "addressee": "ИБ",
+     "text": "Инъекция через подпись `scheme.md` на странице, открытой из `file://` — канон, покрывается чек-листом security.md; запрет не чеканится"
+    },
+    {
+     "addressee": "ИБ",
+     "text": "CSP страницы и строгий режим mermaid — канон, покрывается чек-листом security.md; запрет не чеканится"
+    }
+   ],
+   "dispute": "",
+   "consequences": "На этом стоит шаг `security`.",
+   "evidence": [
+    {
+     "path": "openspec/changes/decision-scheme/specs/decision-viewer/spec.md",
+     "quote": "### Requirement: Подписи схемы не ходят в сеть"
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-117",
+   "question": "[канон] `install` ставит схему, скиллы и инструменты в проект и сливает конфиг: канон ИБ",
+   "kind": "факт",
+   "status": "припаркован",
+   "addressee": "ИБ",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [
+    {
+     "addressee": "ИБ",
+     "text": "Файл стороннего пакета в поставке: закрепление версии и целостность зависимости сборки — канон, покрывается чек-листом security.md; запрет не чеканится"
+    }
+   ],
+   "dispute": "",
+   "consequences": "На этом стоит шаг `security`.",
+   "evidence": [
+    {
+     "path": "openspec/changes/decision-scheme/specs/project-installer/spec.md",
+     "quote": "### Requirement: `install` ставит схему, скиллы и инструменты в проект и сливает конфиг"
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-118",
+   "question": "[канон] Исследование — файл на каждую парковку «материалы» с жанром: канон ИБ",
+   "kind": "факт",
+   "status": "припаркован",
+   "addressee": "ИБ",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [
+    {
+     "addressee": "ИБ",
+     "text": "Проба агента: чтение вне корней проекта и отправка материала внешней модели, сторож исходящего — канон, покрывается чек-листом security.md; запрет не чеканится"
+    }
+   ],
+   "dispute": "",
+   "consequences": "На этом стоит шаг `security`.",
+   "evidence": [
+    {
+     "path": "openspec/changes/decision-scheme/specs/artifact-graph/spec.md",
+     "quote": "### Requirement: Исследование — файл на каждую парковку «материалы» с жанром"
+    }
+   ],
    "comments": []
   }
  ],
@@ -3008,6 +7342,22 @@
   {
    "date": "2026-11-01",
    "text": "брейншторм закончен по решению человека"
+  },
+  {
+   "date": "2026-11-01",
+   "text": "атака decisions.json: строк 243, блокеров 3, предупреждений 29, справок 211, не выводится 2 — gaps_found"
+  },
+  {
+   "date": "2026-11-01",
+   "text": "То есть вся группа coverage это шум. возможно стоит от неё отказаться."
+  },
+  {
+   "date": "2026-11-01",
+   "text": "Файл атаки перенесён в `research/attack-run-1/decisions.md` по решению человека: закрыты блокеры и ответы человека, остальные предупреждения не закрывались, `passed` не получен. Замечания к механике — `research/attack-run-1/mechanic-notes.md`."
+  },
+  {
+   "date": "2026-11-01",
+   "text": "Сверка антиподов до показа записей проб, вручную в том же контексте: новые варианты между собой и с выбранными, отвергнутые не смотрелись; антиподов 0."
   }
  ]
 }
