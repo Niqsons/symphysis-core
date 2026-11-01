@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import argparse
 import datetime as dt
+import json
 import re
 import sys
 from pathlib import Path
@@ -15,7 +16,7 @@ from pathlib import Path
 from journal_apply import (REFUSED, apply_answers, apply_md4h, check_evidence, default_roots, parse_answers,
                            parse_md4h, sha256_file)
 from journal_model import import_md, load_journal, save_journal, validate_journal
-from journal_render import TEMPLATE_PATH, parse_attack_md, render_design, render_html, render_md
+from journal_render import TEMPLATE_PATH, parse_attack_md, render_design, render_html, render_md, view_payload
 
 __all__ = ["build_parser", "main"]
 
@@ -85,6 +86,18 @@ def cmd_render_md(args: argparse.Namespace) -> int:
     return 0
 
 
+def _read_attack(path: Path) -> tuple[dict | None, str]:
+    """Файл атаки: `(разбор, "")` или `(None, текст отказа)`."""
+    if not path.is_file():
+        return None, f"{path}: файла нет"
+    try:
+        return parse_attack_md(path), ""
+    except UnicodeDecodeError:  # подкласс ValueError — раньше него
+        return None, f"{path}: не UTF-8 — файл атаки читается как UTF-8"
+    except ValueError as e:
+        return None, str(e)
+
+
 def cmd_render_html(args: argparse.Namespace) -> int:
     journal = _valid_journal(args.json)
     if journal is None:
@@ -92,17 +105,11 @@ def cmd_render_html(args: argparse.Namespace) -> int:
     # Атаки разбираются до рендера: битый файл атаки — код 2, HTML не пишется.
     attacks = []
     for path in args.attack or []:
-        if not path.is_file():
-            print(f"[!!] {path}: файла нет", file=sys.stderr)
+        attack, refusal = _read_attack(path)
+        if attack is None:
+            print(f"[!!] {refusal}", file=sys.stderr)
             return 2
-        try:
-            attacks.append(parse_attack_md(path))
-        except UnicodeDecodeError:  # подкласс ValueError — раньше него
-            print(f"[!!] {path}: не UTF-8 — файл атаки читается как UTF-8", file=sys.stderr)
-            return 2
-        except ValueError as e:
-            print(f"[!!] {e}", file=sys.stderr)
-            return 2
+        attacks.append(attack)
     # Сверка идёт в памяти: просмотрщик получает вердикты, файл журнала не меняется;
     # хеш журнала — по байтам файла на диске, как `sha256_file` у связки md4h.
     result = check_evidence(journal, default_roots(args.roots))
@@ -116,6 +123,21 @@ def cmd_render_html(args: argparse.Namespace) -> int:
     for m in result["missing"]:
         print(f"[!!] не сверено — {m}")
     print(f"[ok] {args.out}")
+    return 0
+
+
+def cmd_view_json(args: argparse.Namespace) -> int:
+    journal = _valid_journal(args.json)
+    if journal is None:
+        return 1
+    # Битый файл атаки журнал не прячет: атаку пишет агент, файл бывает недописан. Отказ — у своего файла.
+    attacks = []
+    for path in args.attack or []:
+        attack, refusal = _read_attack(path)
+        attacks.append(attack if attack is not None else {"path": str(path), "error": refusal})
+    # Сверка идёт в памяти, файл журнала не меняется; хеш — по байтам файла, как у `render-html`.
+    check_evidence(journal, default_roots(args.roots))
+    print(json.dumps(view_payload(journal, attacks=attacks, journal_sha256=sha256_file(args.json)), ensure_ascii=False))
     return 0
 
 
@@ -263,6 +285,13 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--attack", type=Path, action="append",
                    help="файл атаки для режима «атака» (attack/decisions.md, attack/artifacts.md); повторяемый")
     p.set_defaults(func=cmd_render_html)
+    p = sub.add_parser("view-json", help="JSON журнала для показа вне страницы — на stdout; улики сверяются в памяти; "
+                                         "негодный журнал — код 1; битый файл атаки — отказ у этого файла, код 0")
+    p.add_argument("json", type=Path)
+    p.add_argument("--roots", type=Path, help="файл корней вместо tools/journal-roots.json")
+    p.add_argument("--attack", type=Path, action="append",
+                   help="файл атаки (attack/decisions.md, attack/artifacts.md); повторяемый")
+    p.set_defaults(func=cmd_view_json)
     p = sub.add_parser("render-design", help="JSON -> design.md (Decisions, Risks, Open Questions из журнала); "
                                              "негодный журнал — код 1")
     p.add_argument("json", type=Path)

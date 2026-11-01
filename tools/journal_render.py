@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """Рендеры журнала: markdown (`render_md`), HTML-просмотрщик (`render_html`), `design.md`
-(`render_design`), якоря рендера (`anchor_lines`) и разбор файла атаки для просмотрщика
-(`parse_attack_md`). Зависит только от journal_model."""
+(`render_design`), данные для показа вне страницы (`view_payload`), якоря рендера (`anchor_lines`)
+и разбор файла атаки для просмотрщика (`parse_attack_md`). Зависит только от journal_model."""
 from __future__ import annotations
 
 import json
@@ -12,7 +12,8 @@ from journal_model import ADDED_MARK, DEVIATION_LABEL, DEVIATION_TAIL, RE_ANCHOR
 
 __all__ = [
     "TEMPLATE_PATH", "PLACEHOLDER", "PLACEHOLDER_ATTACK",
-    "render_md", "render_html", "render_design", "anchor_lines", "parse_attack_md", "_lines",
+    "render_md", "render_html", "render_design", "view_payload", "destination", "parking_destination",
+    "anchor_lines", "parse_attack_md", "_lines",
 ]
 
 
@@ -166,6 +167,28 @@ def _embed(obj) -> str:
     return json.dumps(obj, ensure_ascii=False, indent=1).replace("</", "<\\/").replace("<!--", "\\u003c!--")
 
 
+def _viewer_payload(journal: dict, journal_sha256: str | None) -> dict:
+    """Проекция журнала для просмотра — одна на страницу `render-html` и на `view-json`: заголовок, счётчики,
+    записи в форме просмотрщика, заметки. Улики берутся такими, какие в журнале."""
+    records = journal["records"]
+    forks = [r for r in records if r["kind"] == "развилка"]
+    evidence = [ev for r in records for ev in _evidence_of(r)]
+    return {
+        "title": journal["title"],
+        "source": journal["source"],
+        **({"generated": journal["generated"]} if journal.get("generated") else {}),
+        **({"sha256": journal_sha256} if journal_sha256 else {}),
+        "stats": {"records": len(records), "forks": len(forks),
+                  "facts": sum(1 for r in records if r["kind"] == "факт"),
+                  "decided": sum(1 for r in forks if r["decision"]),
+                  "parked": sum(1 for r in forks if r["parking"]),
+                  "evidence_total": len(evidence),
+                  "evidence_found": sum(1 for ev in evidence if ev.get("found"))},
+        "records": [_viewer_record(r) for r in records],
+        "notes": list(journal.get("notes") or []),
+    }
+
+
 def render_html(journal: dict, template: Path, attacks: list[dict] | None = None,
                 journal_sha256: str | None = None) -> str:
     """Шаблон просмотрщика с журналом вместо `__JOURNAL_JSON__` и списком атак вместо
@@ -183,24 +206,7 @@ def render_html(journal: dict, template: Path, attacks: list[dict] | None = None
     for mark in (PLACEHOLDER, PLACEHOLDER_ATTACK):
         if mark not in html:
             raise ValueError(f"в шаблоне нет метки {mark}")
-    records = journal["records"]
-    forks = [r for r in records if r["kind"] == "развилка"]
-    evidence = [ev for r in records for ev in _evidence_of(r)]
-    payload = {
-        "title": journal["title"],
-        "source": journal["source"],
-        **({"generated": journal["generated"]} if journal.get("generated") else {}),
-        **({"sha256": journal_sha256} if journal_sha256 else {}),
-        "stats": {"records": len(records), "forks": len(forks),
-                  "facts": sum(1 for r in records if r["kind"] == "факт"),
-                  "decided": sum(1 for r in forks if r["decision"]),
-                  "parked": sum(1 for r in forks if r["parking"]),
-                  "evidence_total": len(evidence),
-                  "evidence_found": sum(1 for ev in evidence if ev.get("found"))},
-        "records": [_viewer_record(r) for r in records],
-        "notes": list(journal.get("notes") or []),
-    }
-    filled = {PLACEHOLDER: _embed(payload), PLACEHOLDER_ATTACK: _embed(attacks or [])}
+    filled = {PLACEHOLDER: _embed(_viewer_payload(journal, journal_sha256)), PLACEHOLDER_ATTACK: _embed(attacks or [])}
     return "".join(filled.get(part, part) for part in re.split(f"({PLACEHOLDER}|{PLACEHOLDER_ATTACK})", html))
 
 
@@ -476,3 +482,49 @@ def render_design(journal: dict, source: str | None = None) -> str:
     for title, body in sections:
         lines += [f"## {title}", "", *(body or [EMPTY_SECTION]), ""]
     return "\n".join(lines)
+
+
+# --- данные для просмотра вне страницы (`view-json`) -------------------------
+
+def destination(rec: dict) -> dict:
+    """«Куда уйдёт» запись — проекция правил `render_design` для показа человеку: `{"label", "note"}`. Решённая развилка,
+    не проба → Decisions («в одну сторону» — первыми); проба Specify* → spec.md; Backstop → тест-страховка в tasks.md;
+    Dismiss → никуда; Defer и открытая развилка → Open Questions; факт → Context, спорный — ещё и Open Questions.
+    То же правило есть в шаблоне страницы (`destination`), сверка — `tests/test_journal_view_json.py`."""
+    if rec["kind"] == "факт":
+        return {"label": "design.md › Context", "note": "спор → design.md › Open Questions" if rec["dispute"].strip() else ""}
+    if _is_probe(rec):
+        value, reason = rec["outcome"]["value"], rec["outcome"]["reason"].strip()
+        if value.startswith("Specify"):
+            return {"label": "spec.md", "note": f"исход {value}"}
+        if value == "Backstop":
+            return {"label": "tasks.md › тест-страховка", "note": "в design.md не попадает"}
+        if value == "Dismiss":
+            return {"label": "никуда", "note": f"причина: {reason}" if reason else "причина не записана"}
+        if value == "Defer":
+            return {"label": "design.md › Open Questions", "note": "отложена (Defer)"}
+        return {"label": "никуда", "note": f"исход «{value}» вне четырёх"}
+    if rec["decision"]:
+        one_way = rec["reversibility"] and rec["reversibility"]["level"] == ONE_WAY
+        return {"label": "design.md › Decisions", "note": "в одну сторону — первой" if one_way else ""}
+    return {"label": "design.md › Open Questions", "note": "открыта"}
+
+
+PARKING_ANSWERS = {"ИБ": "security.md", "материалы": "research/", "человек": "вопрос человеку"}
+
+
+def parking_destination(addressee: str) -> str:
+    """Парковка всегда попадает в Open Questions; адресат говорит, где ищется ответ."""
+    return f"design.md › Open Questions → {PARKING_ANSWERS.get(addressee, '—')}"
+
+
+def view_payload(journal: dict, attacks: list[dict] | None = None, journal_sha256: str | None = None) -> dict:
+    """Данные журнала для показа вне страницы: проекция страницы (`_viewer_payload`), у записи и парковки
+    `destination`, в `attacks` — файлы атаки как поданы. Улики берутся такими, какие в журнале."""
+    payload = _viewer_payload(journal, journal_sha256)
+    for rec in payload["records"]:
+        rec["destination"] = destination(rec)
+        for park in rec["parking"]:
+            park["destination"] = parking_destination(park["addressee"])
+    payload["attacks"] = attacks or []
+    return payload

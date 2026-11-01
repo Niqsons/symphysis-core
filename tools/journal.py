@@ -14,6 +14,8 @@
         [--attack <каталог изменения>/attack/decisions.md [--attack <каталог изменения>/attack/artifacts.md]]
     python tools/journal.py render-design docs/plan-implementation.journal.json \
         --out design.md
+    python tools/journal.py view-json docs/plan-implementation.journal.json \
+        [--attack <каталог изменения>/attack/decisions.md]
     python tools/journal.py apply docs/plan-implementation.journal.json answers.md \
         [--date YYYY-MM-DD] [--dry-run]
     python tools/journal.py apply-md4h docs/plan-implementation.journal.json feedback.md \
@@ -39,6 +41,11 @@ Markdown, HTML и design.md — производные от JSON: правитс
 `parse_attack_md` читает frontmatter (`status`, цели с хешами) и таблицу строк; хеш файла журнала
 встраивается в страницу, по нему режимы «проверка» и «атака» видят, устарел ли вердикт. Битый файл
 атаки — код 2, HTML не пишется. Строки атаки `apply` не меняет: их закрывает правка цели и повторная атака.
+
+`view-json` отдаёт на stdout те же данные, что получает страница, для показа вне неё (расширение VS Code):
+улики сверены в памяти, у записи и парковки `destination` — «куда уйдёт», в `attacks` — разобранные файлы
+атаки. Ничего не пишет. Негодный журнал — код 1 и stderr; битый файл атаки — `{"path", "error"}` у этого
+файла, журнал виден, код 0.
 """
 from __future__ import annotations
 
@@ -50,13 +57,13 @@ from journal_cli import build_parser, main
 from journal_model import (ROOT, SCHEMA_PATH, _flat, _unquote, import_md, import_md_text, load_journal,
                            save_journal, validate_journal)
 from journal_render import (PLACEHOLDER, PLACEHOLDER_ATTACK, TEMPLATE_PATH, anchor_lines, parse_attack_md,
-                            render_design, render_html, render_md)
+                            render_design, render_html, render_md, view_payload)
 
 __all__ = [
     "ROOT", "SCHEMA_PATH", "ROOTS_PATH", "TEMPLATE_PATH", "PLACEHOLDER", "PLACEHOLDER_ATTACK", "REFUSED",
     "load_journal", "save_journal", "validate_journal", "import_md", "import_md_text",
     "default_roots", "find_quote", "check_evidence",
-    "render_md", "render_html", "render_design", "anchor_lines", "parse_attack_md",
+    "render_md", "render_html", "render_design", "view_payload", "anchor_lines", "parse_attack_md",
     "parse_answers", "apply_answers", "parse_md4h", "apply_md4h", "sha256_file",
     "build_parser", "main", "_unquote", "_flat",
 ]
