@@ -53,3 +53,20 @@ def one_record_journal(path: str, quote: str) -> dict:
               "outcome": None, "parking": [], "dispute": "", "consequences": "",
               "evidence": [], "comments": []}
     return {"title": "т", "source": "s.md", "records": [record]}
+
+
+def fork_record(record_id: str, chosen: str | None = "A", **options: list[str]) -> dict:
+    """Развилка с вариантами `A=[пути улик]`, …: `chosen` — выбранная буква, `None` — открытая развилка."""
+    opts = [{"letter": letter, "text": "вариант", "added": False, "unlikely": None,
+             "evidence": [{"path": path, "quote": "q"} for path in paths]}
+            for letter, paths in options.items()]
+    decision = None if chosen is None else {"option": chosen, "word": "", "date": "2026-11-01"}
+    return {"id": record_id, "question": "вопрос?", "kind": "развилка",
+            "status": "открыт" if chosen is None else "решён", "addressee": "человек", "depends_on": [],
+            "delivery": "", "options": opts, "antipodes": [], "recommendation": None, "decision": decision,
+            "reversibility": None, "outcome": None, "parking": [], "dispute": "", "consequences": "",
+            "evidence": [], "comments": []}
+
+
+def journal_of(*records: dict) -> dict:
+    return {"title": "т", "source": "s.md", "records": list(records)}

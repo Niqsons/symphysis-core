@@ -15,8 +15,10 @@ from pathlib import Path
 
 from journal_apply import (REFUSED, apply_answers, apply_md4h, check_evidence, default_roots, parse_answers,
                            parse_md4h, sha256_file)
+from journal_consequences import check_consequences
 from journal_model import import_md, load_journal, save_journal, validate_journal
 from journal_render import TEMPLATE_PATH, parse_attack_md, render_design, render_html, render_md, view_payload
+from journal_sites import code_sites
 
 __all__ = ["build_parser", "main"]
 
@@ -45,7 +47,8 @@ def cmd_check(args: argparse.Namespace) -> int:
     journal = _valid_journal(args.json)
     if journal is None:
         return 1
-    result = check_evidence(journal, default_roots(args.roots))
+    roots = default_roots(args.roots)
+    result = check_evidence(journal, roots)
     summary = f"[ok] улик сверено {result['found']} из {result['total']}"
     if result["unchecked"]:
         summary += f", не проверить {len(result['unchecked'])}"
@@ -57,10 +60,28 @@ def cmd_check(args: argparse.Namespace) -> int:
     unfound = _parkings_without_finding(journal, args.json.parent)
     for m in unfound:
         print(f"[!!] {m}")
+    inventory = check_consequences(journal, args.json.parent / "consequences.md", roots)
+    for m in inventory["missing"]:
+        print(f"[!!] {m}")
+    for m in inventory["unchecked"]:
+        print(f"[--] {m}")
     if args.write:
         save_journal(args.json, journal)
         print(f"[ok] {args.json}")
-    return 2 if args.strict and (result["missing"] or unfound) else 0
+    return 2 if args.strict and (result["missing"] or unfound or inventory["missing"]) else 0
+
+
+def cmd_code_sites(args: argparse.Namespace) -> int:
+    journal = _valid_journal(args.json)
+    if journal is None:
+        return 1
+    result = code_sites(journal, default_roots(args.roots))
+    print(f"[ok] мест кода {len(result['sites'])}")
+    for path, ids in result["sites"].items():
+        print(f"  {path} — {', '.join(ids)}")
+    for note in result["notes"]:
+        print(f"[..] {note}")
+    return 0
 
 
 def cmd_import_md(args: argparse.Namespace) -> int:
@@ -233,69 +254,154 @@ def cmd_apply_md4h(args: argparse.Namespace) -> int:
     return 0
 
 
+JOURNAL_HELP = "файл журнала decisions.json"
+ROOTS_HELP = "файл корней вместо tools/journal-roots.json"
+
+MAIN_EPILOG = """\
+Порядок: журнал ведёт шаг decisions; check — после правки журнала или описи; после слова человека
+  apply, затем render-md и render-html; code-sites — в начале шага consequences; render-design — на шаге design.
+Исходы: check и code-sites — сигнал, не стоп; apply и apply-md4h — всё или ничего; рендеры пишут
+  производные файлы, правится JSON. Корни путей улик — только tools/journal-roots.json.
+Коды: 0 — шаг сделан; 1 — негодный журнал, нет или нечитаем вход, отказ apply; 2 — неверный вызов,
+  check --strict при строках [!!], битый файл атаки у render-html, отказ связки у apply-md4h.
+Маркеры: [ok] сделано; [!!] расхождение или отказ; [--] не проверить; [..] сведения, исходом не являются.
+У каждой подкоманды своя справка: journal.py <подкоманда> --help."""
+
+
+def _command(sub, name: str, line: str, subject: str, when: str, codes: str, extra: str = "") -> argparse.ArgumentParser:
+    """Подкоманда по правилу справки: описание — предмет и строка «Звать, когда …», эпилог — исходы и коды.
+    Коды только в эпилоге: написанные при части флагов, они читаются как разница в поведении."""
+    return sub.add_parser(name, help=line, description=f"{subject}\nЗвать, когда {when}",
+                          epilog=f"{extra}\nКоды: {codes}" if extra else f"Коды: {codes}",
+                          formatter_class=argparse.RawDescriptionHelpFormatter)
+
+
 def build_parser() -> argparse.ArgumentParser:
-    ap = argparse.ArgumentParser(prog="journal", description=__doc__.splitlines()[0])
-    sub = ap.add_subparsers(dest="cmd", required=True)
-    p = sub.add_parser("import-md", help="журнал в markdown -> JSON по схеме")
-    p.add_argument("md", type=Path)
-    p.add_argument("--out", type=Path, required=True)
+    ap = argparse.ArgumentParser(prog="journal", formatter_class=argparse.RawDescriptionHelpFormatter,
+                                 description=__doc__.splitlines()[0] + "\nЗвать, когда ведётся журнал решений "
+                                 "изменения: запись, сверка, слово человека, рендер.",
+                                 epilog=MAIN_EPILOG)
+    sub = ap.add_subparsers(dest="cmd", required=True, title="подкоманды")
+
+    p = _command(sub, "import-md", "журнал в markdown -> JSON по схеме",
+                 "Журнал в markdown -> JSON по схеме.",
+                 "журнал есть только в markdown и нужен источник JSON.",
+                 "0 — записан и годен; 1 — записан, но негоден по схеме: ошибки в stderr.")
+    given = p.add_argument_group("вход")
+    given.add_argument("md", type=Path, help="журнал в markdown")
+    written = p.add_argument_group("выход")
+    written.add_argument("--out", type=Path, required=True, help="куда записать JSON")
     p.set_defaults(func=cmd_import_md)
-    p = sub.add_parser("check", help="сверить улики грепом по цитате (сигнал, не стоп); "
-                                     "негодный по схеме журнал — код 1")
-    p.add_argument("json", type=Path)
-    p.add_argument("--roots", type=Path, help="файл корней вместо tools/journal-roots.json")
-    p.add_argument("--strict", action="store_true", help="код 2, если есть несверенные улики")
-    p.add_argument("--write", action="store_true", help="сохранить line/found/verdict в JSON")
+
+    p = _command(sub, "check", "сверить улики грепом по цитате (сигнал, не стоп); при consequences.md — и опись; "
+                               "негодный по схеме журнал — код 1",
+                 "Сверяет улики грепом по цитате. При consequences.md рядом с журналом — ещё две проверки описи:\n"
+                 "место из code-sites названо путём в файле, цитата «путь:строка «цитата»» стоит в коде дословно.\n"
+                 "Файл со строкой **Причина:** сверки мест не даёт, форму файла сверх этого скрипт не разбирает.",
+                 "журнал или опись правились и нужно увидеть, что их опоры стоят дословно.",
+                 "0 — сверка прошла, сигналы код не меняют; 1 — негодный по схеме журнал; 2 — с --strict есть строки [!!].",
+                 extra="Маркеры: [ok] итог сверки; [!!] несверенная улика, парковка без finding, место или цитата описи;\n"
+                       "  [--] не проверить: бинарный файл или не UTF-8.")
+    given = p.add_argument_group("вход")
+    given.add_argument("json", type=Path, help=JOURNAL_HELP)
+    given.add_argument("--roots", type=Path, help=ROOTS_HELP)
+    result = p.add_argument_group("исход")
+    result.add_argument("--strict", action="store_true", help="код 2, если есть строки [!!]")
+    result.add_argument("--write", action="store_true", help="сохранить line/found/verdict в JSON")
     p.set_defaults(func=cmd_check)
-    p = sub.add_parser("apply", help="внести промпт возврата просмотрщика в JSON (потом render-md, render-html)",
-                       description="Вносит промпт возврата просмотрщика (кнопка «Скопировать промпт») в JSON "
-                                   "журнала. Всё или ничего: любая строка с отказом называет запись, "
-                                   "код 1, журнал не меняется. apply не рендерит: после него "
-                                   "render-md и render-html. Слова человека сворачиваются в одну строку.")
-    p.add_argument("json", type=Path)
-    p.add_argument("answers", type=Path, help="файл с промптом возврата (UTF-8)")
-    p.add_argument("--date", type=_iso_date, help="YYYY-MM-DD в decision.date и notes[].date; по умолчанию сегодня")
-    p.add_argument("--dry-run", action="store_true", help="показать отчёт, JSON не записывать")
+
+    p = _command(sub, "code-sites", "места кода из улик выбранных вариантов решённых развилок; журнал не меняется",
+                 "Места кода: файлы из улик выбранных вариантов решённых развилок, кроме проб и фактов, с номерами\n"
+                 "записей. Кодом считается всё, кроме .md и файлов каталогов изменений. Журнал не меняется, файлы\n"
+                 "кода не читаются. Список предлагает, выбирает модель: дополняет его и исключает места с причиной.",
+                 "начинается шаг consequences и нужно знать, что разбирать.",
+                 "0 — список напечатан; 1 — негодный по схеме журнал.",
+                 extra="Маркеры: [ok] число мест, под ним строки «путь — номера записей»;\n"
+                       "  [..] у выбранного варианта нет улик или путь вне корня: такого пути в списке нет.")
+    given = p.add_argument_group("вход")
+    given.add_argument("json", type=Path, help=JOURNAL_HELP)
+    given.add_argument("--roots", type=Path, help=ROOTS_HELP)
+    p.set_defaults(func=cmd_code_sites)
+
+    p = _command(sub, "apply", "внести промпт возврата просмотрщика в JSON (потом render-md, render-html)",
+                 "Вносит промпт возврата просмотрщика (кнопка «Скопировать промпт») в JSON журнала. Всё или ничего:\n"
+                 "любая строка с отказом называет запись, журнал не меняется. apply не рендерит: после него\n"
+                 "render-md и render-html. Слова человека сворачиваются в одну строку.",
+                 "человек вернул промпт из просмотрщика и его слово надо внести в журнал.",
+                 "0 — внесено или вносить нечего; 1 — негодный журнал, нет файла, не UTF-8, отказ по строке.")
+    given = p.add_argument_group("вход")
+    given.add_argument("json", type=Path, help=JOURNAL_HELP)
+    given.add_argument("answers", type=Path, help="файл с промптом возврата (UTF-8)")
+    given.add_argument("--date", type=_iso_date, help="YYYY-MM-DD в decision.date и notes[].date; по умолчанию сегодня")
+    result = p.add_argument_group("исход")
+    result.add_argument("--dry-run", action="store_true", help="показать отчёт, JSON не записывать")
     p.set_defaults(func=cmd_apply)
-    p = sub.add_parser("apply-md4h", help="внести комментарии человека из связки md4h к рендеру в comments[] JSON",
-                       description="Порядок: render-md -> человек комментирует рендер в Markdown Editor for "
-                                   "Humans (md4h) -> apply-md4h -> агент действует по comments[] записей. "
-                                   "Комментарий попадает в запись по ближайшему якорю журнала выше его "
-                                   "первой строки. Связка должна быть запечатана (state: sealed), а SHA-256 "
-                                   "рендера (--render) — совпасть с source_sha256 связки; иначе отказ, код 2, "
-                                   "JSON не меняется. Всё или ничего; повтор той же связки ничего не меняет. "
-                                   "Негодный журнал или нечитаемая связка — код 1. "
-                                   "apply-md4h не рендерит: ни markdown, ни HTML.")
-    p.add_argument("json", type=Path)
-    p.add_argument("feedback", type=Path, help="feedback.md связки md4h (md4h-feedback/v2, UTF-8)")
-    p.add_argument("--render", type=Path, required=True,
-                   help="отрендеренный markdown, к которому писались комментарии (сверяется SHA-256)")
+
+    p = _command(sub, "apply-md4h", "внести комментарии человека из связки md4h к рендеру в comments[] JSON",
+                 "Порядок: render-md -> человек комментирует рендер в Markdown Editor for Humans (md4h) -> apply-md4h ->\n"
+                 "агент действует по comments[] записей. Комментарий попадает в запись по ближайшему якорю журнала\n"
+                 "выше его первой строки. Связка должна быть запечатана (state: sealed), а SHA-256 рендера (--render) —\n"
+                 "совпасть с source_sha256 связки. Всё или ничего; повтор той же связки ничего не меняет.\n"
+                 "apply-md4h не рендерит: ни markdown, ни HTML.",
+                 "человек прокомментировал рендер журнала в md4h и связку надо внести в журнал.",
+                 "0 — внесено; 1 — негодный журнал, нет файла или нечитаемая связка; 2 — связка не запечатана или\n"
+                 "  не к этому рендеру, JSON не меняется.")
+    given = p.add_argument_group("вход")
+    given.add_argument("json", type=Path, help=JOURNAL_HELP)
+    given.add_argument("feedback", type=Path, help="feedback.md связки md4h (md4h-feedback/v2, UTF-8)")
+    given.add_argument("--render", type=Path, required=True,
+                       help="отрендеренный markdown, к которому писались комментарии (сверяется SHA-256)")
     p.set_defaults(func=cmd_apply_md4h)
-    p = sub.add_parser("render-md", help="JSON -> markdown (производный файл); негодный журнал — код 1")
-    p.add_argument("json", type=Path)
-    p.add_argument("--out", type=Path, required=True)
+
+    p = _command(sub, "render-md", "JSON -> markdown (производный файл); негодный журнал — код 1",
+                 "JSON -> markdown: производный файл, руками не правится.",
+                 "журнал изменился и нужен его рендер: после apply или правки записи.",
+                 "0 — записан; 1 — негодный журнал.")
+    given = p.add_argument_group("вход")
+    given.add_argument("json", type=Path, help=JOURNAL_HELP)
+    written = p.add_argument_group("выход")
+    written.add_argument("--out", type=Path, required=True, help="куда записать markdown")
     p.set_defaults(func=cmd_render_md)
-    p = sub.add_parser("render-html", help="JSON -> просмотрщик; улики сверяются в памяти; "
-                                           "негодный журнал — код 1; битый файл атаки — код 2")
-    p.add_argument("json", type=Path)
-    p.add_argument("--out", type=Path, required=True)
-    p.add_argument("--roots", type=Path, help="файл корней вместо tools/journal-roots.json")
-    p.add_argument("--template", type=Path, default=TEMPLATE_PATH,
-                   help="по умолчанию tools/playground-template.html")
-    p.add_argument("--attack", type=Path, action="append",
-                   help="файл атаки для режима «атака» (attack/decisions.md, attack/artifacts.md); повторяемый")
+
+    p = _command(sub, "render-html", "JSON -> просмотрщик; улики сверяются в памяти; "
+                                     "негодный журнал — код 1; битый файл атаки — код 2",
+                 "JSON -> просмотрщик: страница с вариантами и промптом возврата. Улики сверяются в памяти,\n"
+                 "файл журнала не меняется.",
+                 "человек решает развилки или читает атаку в браузере: после круга брейншторма, пробы, атаки.",
+                 "0 — записан, несверенные улики код не меняют; 1 — негодный журнал или шаблон;\n"
+                 "  2 — битый файл атаки, HTML не пишется.")
+    given = p.add_argument_group("вход")
+    given.add_argument("json", type=Path, help=JOURNAL_HELP)
+    given.add_argument("--roots", type=Path, help=ROOTS_HELP)
+    given.add_argument("--template", type=Path, default=TEMPLATE_PATH,
+                       help="по умолчанию tools/playground-template.html")
+    given.add_argument("--attack", type=Path, action="append",
+                       help="файл атаки для режима «атака» (attack/decisions.md, attack/artifacts.md); повторяемый")
+    written = p.add_argument_group("выход")
+    written.add_argument("--out", type=Path, required=True, help="куда записать страницу")
     p.set_defaults(func=cmd_render_html)
-    p = sub.add_parser("view-json", help="JSON журнала для показа вне страницы — на stdout; улики сверяются в памяти; "
-                                         "негодный журнал — код 1; битый файл атаки — отказ у этого файла, код 0")
-    p.add_argument("json", type=Path)
-    p.add_argument("--roots", type=Path, help="файл корней вместо tools/journal-roots.json")
-    p.add_argument("--attack", type=Path, action="append",
-                   help="файл атаки (attack/decisions.md, attack/artifacts.md); повторяемый")
+
+    p = _command(sub, "view-json", "JSON журнала для показа вне страницы — на stdout; улики сверяются в памяти; "
+                                   "негодный журнал — код 1; битый файл атаки — отказ у этого файла, код 0",
+                 "JSON журнала для показа вне страницы — на stdout. Улики сверяются в памяти, файл не меняется.",
+                 "журнал показывает не страница, а другой клиент: расширение VS Code.",
+                 "0 — данные напечатаны, битый файл атаки — отказ у этого файла; 1 — негодный журнал.")
+    given = p.add_argument_group("вход")
+    given.add_argument("json", type=Path, help=JOURNAL_HELP)
+    given.add_argument("--roots", type=Path, help=ROOTS_HELP)
+    given.add_argument("--attack", type=Path, action="append",
+                       help="файл атаки (attack/decisions.md, attack/artifacts.md); повторяемый")
     p.set_defaults(func=cmd_view_json)
-    p = sub.add_parser("render-design", help="JSON -> design.md (Decisions, Risks, Open Questions из журнала); "
-                                             "негодный журнал — код 1")
-    p.add_argument("json", type=Path)
-    p.add_argument("--out", type=Path, required=True)
+
+    p = _command(sub, "render-design", "JSON -> design.md (Decisions, Risks, Open Questions из журнала); "
+                                       "негодный журнал — код 1",
+                 "JSON -> design.md: Decisions, Risks / Trade-offs и Open Questions из журнала.",
+                 "идёт шаг design или журнал изменился после него.",
+                 "0 — записан; 1 — негодный журнал.")
+    given = p.add_argument_group("вход")
+    given.add_argument("json", type=Path, help=JOURNAL_HELP)
+    written = p.add_argument_group("выход")
+    written.add_argument("--out", type=Path, required=True, help="куда записать design.md")
     p.set_defaults(func=cmd_render_design)
     return ap
 

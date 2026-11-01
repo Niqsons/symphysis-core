@@ -9,7 +9,7 @@ import { runOpenspec } from "./openspec-bin.js";
 import { telemetryState, TELEMETRY_OFF_COMMAND } from "./telemetry.js";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
-const TOOL_MODULES = ["journal.py", "journal_apply.py", "journal_cli.py", "journal_model.py", "journal_render.py", "symphysis_config.py"];
+const TOOL_MODULES = ["journal.py", "journal_apply.py", "journal_cli.py", "journal_model.py", "journal_render.py", "journal_sites.py", "journal_consequences.py", "symphysis_config.py"];
 
 const rel = (project, p) => path.relative(project, p).split(path.sep).join("/");
 

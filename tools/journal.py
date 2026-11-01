@@ -20,6 +20,7 @@
         [--date YYYY-MM-DD] [--dry-run]
     python tools/journal.py apply-md4h docs/plan-implementation.journal.json feedback.md \
         --render docs/plan-implementation.journal.md
+    python tools/journal.py code-sites <каталог изменения>/decisions.json
 
 Markdown, HTML и design.md — производные от JSON: правится JSON, потом рендер. Корни путей
 улик задаёт только `tools/journal-roots.json`: префикс -> каталог, в значении `<root>` —
@@ -46,6 +47,12 @@ Markdown, HTML и design.md — производные от JSON: правитс
 улики сверены в памяти, у записи и парковки `destination` — «куда уйдёт», в `attacks` — разобранные файлы
 атаки. Ничего не пишет. Негодный журнал — код 1 и stderr; битый файл атаки — `{"path", "error"}` у этого
 файла, журнал виден, код 0.
+
+`code-sites` печатает файлы кода из улик выбранных вариантов решённых развилок с номерами записей, кроме
+проб и фактов; журнал не меняет, файлов кода не читает (F-15.D). `check` при `consequences.md` рядом с журналом
+сверяет опись с этим списком и цитаты `путь:строка «цитата»` с кодом: сигнал, не стоп; файл со строкой
+`**Причина:**` сверки мест не даёт, форму файла сверх этого скрипт не разбирает (F-128.A). Настройки
+журнал не читает: это `symphysis_config.py`.
 """
 from __future__ import annotations
 
@@ -54,10 +61,12 @@ import sys
 from journal_apply import (REFUSED, ROOTS_PATH, apply_answers, apply_md4h, check_evidence, default_roots,
                            find_quote, parse_answers, parse_md4h, sha256_file)
 from journal_cli import build_parser, main
+from journal_consequences import check_consequences
 from journal_model import (ROOT, SCHEMA_PATH, _flat, _unquote, import_md, import_md_text, load_journal,
                            save_journal, validate_journal)
 from journal_render import (PLACEHOLDER, PLACEHOLDER_ATTACK, TEMPLATE_PATH, anchor_lines, parse_attack_md,
                             render_design, render_html, render_md, view_payload)
+from journal_sites import code_sites, normalize_path
 
 __all__ = [
     "ROOT", "SCHEMA_PATH", "ROOTS_PATH", "TEMPLATE_PATH", "PLACEHOLDER", "PLACEHOLDER_ATTACK", "REFUSED",
@@ -65,6 +74,7 @@ __all__ = [
     "default_roots", "find_quote", "check_evidence",
     "render_md", "render_html", "render_design", "view_payload", "anchor_lines", "parse_attack_md",
     "parse_answers", "apply_answers", "parse_md4h", "apply_md4h", "sha256_file",
+    "code_sites", "normalize_path", "check_consequences",
     "build_parser", "main", "_unquote", "_flat",
 ]
 
