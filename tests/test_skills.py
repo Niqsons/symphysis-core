@@ -66,7 +66,7 @@ def table_rows(text):
 
 
 SKILL_DIRS = sorted(p for p in SKILLS.glob("symphysis-*/") if p.is_dir())
-SKILLS_COUNT = 5
+SKILLS_COUNT = 6
 # references/*.md без шапки GSD: с D4b таких нет — переложение гриля store из атаки убрано,
 # все копии несут шапку MIT/Open GSD (исключение было бы явным, не по маске).
 OWN_REFERENCES = ()
