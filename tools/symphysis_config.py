@@ -150,7 +150,7 @@ def build_parser() -> argparse.ArgumentParser:
                "Маркеры: [..] строка состава, исходом не является; [!!] сигнал.")
     general = ap.add_argument_group("общие")
     general.add_argument("--project", type=Path, metavar="ПУТЬ",
-                         help="корень проекта; без него — пустой префикс файла корней, иначе каталог над tools/")
+                         help="корень проекта; без него — проект над .symphysis/")
     result = ap.add_argument_group("исход")
     result.add_argument("--strict", action="store_true", help="код 2, если есть сигналы")
     return ap
@@ -170,5 +170,5 @@ def main(argv: list[str] | None = None) -> int:
 
 if __name__ == "__main__":
     for stream in (sys.stdout, sys.stderr):
-        stream.reconfigure(encoding="utf-8")
+        stream.reconfigure(encoding="utf-8", errors="backslashreplace")
     sys.exit(main())

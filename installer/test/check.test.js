@@ -131,6 +131,17 @@ test("инструменты: нет journal.py, схемы json, корней",
   }
 });
 
+test("инструменты: каждый модуль из состава проверяется, три новых тоже", () => {
+  const modules = ["journal_apply.py", "journal_cli.py", "journal_model.py", "journal_render.py", "journal_sites.py", "journal_consequences.py", "symphysis_config.py"];
+  const p = installed();
+  const t = targets(p).toolsDir;
+  for (const m of modules) fs.rmSync(path.join(t, "tools", m));
+  const r = runCheck(p);
+  for (const m of modules) {
+    assert.ok(r.findings.includes(`.symphysis/tools/${m}: нет файла`), `${m}: ${JSON.stringify(r.findings)}`);
+  }
+});
+
 test("версия не пин: finding с обеими версиями", () => {
   const p = installed();
   const fake = path.join(tmp(), "fake.js");

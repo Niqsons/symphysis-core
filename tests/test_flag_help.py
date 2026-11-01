@@ -59,3 +59,25 @@ def test_subcommand_help_names_when_and_codes(name):
 def test_subcommands_are_the_expected_ones():
     assert set(SUBCOMMANDS) == {"import-md", "check", "apply", "apply-md4h", "render-md", "render-html", "view-json",
                                 "render-design", "code-sites"}
+
+
+def help_of(*args):
+    return " ".join(run_help(ROOT / "tools" / "journal.py", *args).stdout.split())
+
+
+def test_code_one_names_all_its_causes():
+    """С9: код 1 у `check` и `code-sites` называет и негодную схему, и нет файла, и битый JSON."""
+    for sub in ("check", "code-sites"):
+        assert "1 — нет файла, битый JSON или негодный по схеме журнал" in help_of(sub), sub
+
+
+def test_check_help_names_the_forms_it_recognises():
+    text = help_of("check")
+    assert "**Причина:** считается только в начале строки" in text
+    assert "цитата сверяется только в форме путь:строка «цитата»" in text
+
+
+def test_config_help_says_what_no_project_means():
+    text = " ".join(run_help(ROOT / "tools" / "symphysis_config.py").stdout.split())
+    assert "без него — проект над .symphysis/" in text
+    assert "пустой префикс" not in text

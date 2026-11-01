@@ -102,3 +102,12 @@ test("справка называет команду и строку «Зват�
   assert.match(r.stdout, /symphysis config +\[--project <dir>\]/);
   assert.match(r.stdout, /config .*Звать, когда/s);
 });
+
+test("справка: «Звать, когда» у каждой команды", () => {
+  const r = cli("--help");
+  for (const name of ["install", "check", "config"]) {
+    const entry = new RegExp(`^  ${name} +[^\n]*(?:\n {12}[^\n]*)*`, "m").exec(r.stdout);
+    assert.ok(entry, name);
+    assert.match(entry[0].replace(/\s+/g, " "), /Звать, когда/, name);
+  }
+});

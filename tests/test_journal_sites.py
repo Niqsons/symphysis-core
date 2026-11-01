@@ -111,7 +111,7 @@ def test_path_outside_declared_roots_is_outside(tmp_path):
     """F-105: путь, не подошедший ни под один корень, в список не идёт — как и `..`."""
     data = journal_of(fork_record("F-01", "A", A=["src/Foo.java", "../../secret.txt"]))
     result = journal.code_sites(data, {"docs/": tmp_path})
-    assert result == {"sites": {}, "notes": ["F-01: путь вне корня"]}
+    assert result == {"sites": {}, "notes": ["F-01: путь вне объявленных корней"]}
 
 
 def test_absolute_path_under_named_root_keeps_its_prefix(tmp_path):

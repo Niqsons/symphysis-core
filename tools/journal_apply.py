@@ -50,7 +50,8 @@ BINARY_PROBE = 8192                   # байт NUL в первых 8 КиБ �
 VERDICT_OUTSIDE = "вне корня"
 VERDICT_BINARY = "не проверить: бинарный файл"
 VERDICT_NOT_UTF8 = "не проверить: не UTF-8"
-NOT_CHECKED = (VERDICT_BINARY, VERDICT_NOT_UTF8)
+VERDICT_UNREADABLE = "не проверить: файл не читается"   # права, чужая блокировка: сигнал, не стоп
+NOT_CHECKED = (VERDICT_BINARY, VERDICT_NOT_UTF8, VERDICT_UNREADABLE)
 
 
 def _resolve(path: str, roots: dict[str, Path]) -> Path | None:
@@ -74,7 +75,10 @@ def _resolve(path: str, roots: dict[str, Path]) -> Path | None:
 
 def _read_text(file: Path) -> tuple[str | None, str]:
     """(текст, вердикт): текст `None` — файл читать как текст нельзя, вердикт называет причину."""
-    data = file.read_bytes()
+    try:
+        data = file.read_bytes()
+    except OSError:
+        return None, VERDICT_UNREADABLE
     if b"\x00" in data[:BINARY_PROBE]:
         return None, VERDICT_BINARY
     try:

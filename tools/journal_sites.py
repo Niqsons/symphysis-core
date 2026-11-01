@@ -63,8 +63,9 @@ def code_sites(journal: dict, roots: dict[str, Path]) -> dict:
             path = normalize_path(evidence["path"], roots)
             if not _is_code_file(path):
                 continue
-            if _resolve(path, roots) in (None, OUTSIDE_ROOT):
-                note = f"{rec['id']}: путь вне корня"
+            file = _resolve(path, roots)
+            if file in (None, OUTSIDE_ROOT):
+                note = f"{rec['id']}: " + ("путь вне объявленных корней" if file is None else "путь вне корня")
                 if note not in notes:
                     notes.append(note)
                 continue

@@ -2,6 +2,9 @@
 import json
 import subprocess
 import sys
+from pathlib import Path
+
+import pytest
 
 import journal
 from conftest import ROOT, fork_record, journal_of
@@ -100,21 +103,35 @@ def test_quote_is_not_in_the_file(tmp_path):
     assert inventory_signals(done.stdout) == ["[!!] consequences.md: src/Foo.java «a || c» — цитаты нет дословно"]
 
 
-def test_quote_with_pipes_apostrophe_and_backtick_is_found(tmp_path):
-    """Край F-39: `||`, апостроф, обратный апостроф, неверный номер строки — сигнала нет."""
-    code = {"src/Foo.java": "if (a || b) throw new Error('нет `тут`');\n"}
-    text = "- **Foo** — `src/Foo.java:999` «a || b) throw new Error('нет `тут`')»\n"
-    done = run_check(*project(tmp_path, text, code=code))
+APOSTROPHE_CODE = {"src/Foo.java": "if (a || b) throw new Error('нет `тут`');\n"}
+GUILLEMET_CODE = {"src/Foo.java": "сказал «да» и ушёл\n"}
+NOT_FOUND = "[!!] consequences.md: src/Foo.java «{}» — цитаты нет дословно"
+
+# (код, цитата, форма строки с `{}` на месте цитаты). Пара к каждой строке: та же форма с цитатой, которой нет.
+QUOTE_FORMS = [
+    pytest.param(APOSTROPHE_CODE, "a || b) throw new Error('нет `тут`')", "- **Foo** — `src/Foo.java:999` «{}»\n",
+                 id="pipes-apostrophe-backtick"),
+    pytest.param(GUILLEMET_CODE, "сказал «да» и", "- `src/Foo.java:1` «{}»\n", id="ticked"),
+    pytest.param(GUILLEMET_CODE, "сказал «да» и", "| src/Foo.java:1 «{}» | ветка |\n", id="table-bare"),
+    pytest.param(GUILLEMET_CODE, "сказал «да» и", "src/Foo.java:1 «{}»\n", id="bare"),
+]
+
+
+@pytest.mark.parametrize("code, quote, form", QUOTE_FORMS)
+def test_quote_in_every_form_is_found(tmp_path, code, quote, form):
+    """Край F-39 и предположение б: `||`, апостроф, обратный апостроф, внутренние кавычки, таблица; цитата — до
+    последней `»` строки, номер строки не сверяется."""
+    done = run_check(*project(tmp_path, form.format(quote), code=code))
     assert inventory_signals(done.stdout) == []
 
 
-def test_quote_runs_to_the_last_guillemet_of_the_line(tmp_path):
-    """Предположение б: цитата — до последней `»` в строке; внутренние кавычки и таблица ей не мешают."""
-    code = {"src/Foo.java": "сказал «да» и ушёл\n"}
-    for text in ("- `src/Foo.java:1` «сказал «да» и»\n", "| src/Foo.java:1 «сказал «да» и» | ветка |\n",
-                 "src/Foo.java:1 «сказал «да» и»\n"):
-        done = run_check(*project(tmp_path, text, code=code))
-        assert inventory_signals(done.stdout) == [], text
+@pytest.mark.parametrize("code, quote, form", QUOTE_FORMS)
+def test_missing_quote_in_every_form_is_a_signal(tmp_path, code, quote, form):
+    """Отрицательная пара: разбор строки ничего не нашёл — это не «сверено»; цитата, которой нет, даёт сигнал
+    с полным текстом цитаты (до последней `»`)."""
+    missing = quote + " и НЕТ"
+    done = run_check(*project(tmp_path, form.format(missing), code=code))
+    assert inventory_signals(done.stdout) == [NOT_FOUND.format(missing)]
 
 
 def test_line_without_quote_is_not_parsed(tmp_path):
@@ -153,6 +170,13 @@ def test_started_before_the_artifact(tmp_path):
 def test_reason_inside_a_line_does_not_turn_the_check_off(tmp_path):
     """Шаблон держит `**Причина:**` образцом в комментарии: оставленный комментарий сверку не снимает."""
     text = "<!-- Нечего разбирать: вместо разделов строка «**Причина:** механизмов нет». -->\n\n## Опись\n"
+    done = run_check(*project(tmp_path, text))
+    assert inventory_signals(done.stdout) == [NOT_ANALYSED.format("src/Foo.java")]
+
+
+def test_indented_reason_does_not_turn_the_check_off(tmp_path):
+    """Подпись причины под пунктом исключения с отступом места не снимает: причина только в начале строки."""
+    text = "## Опись\n\n## Исключения\n\n- `src/Other.js`\n  **Причина:** не относится\n"
     done = run_check(*project(tmp_path, text))
     assert inventory_signals(done.stdout) == [NOT_ANALYSED.format("src/Foo.java")]
 
@@ -211,3 +235,34 @@ def test_module_does_not_read_settings():
     """F-128.A: сверка не смотрит на `symphysis.yaml`, строка `**Состав:**` ей не нужна."""
     source = (ROOT / "tools" / "journal_consequences.py").read_text(encoding="utf-8")
     assert "symphysis_config" not in source and "symphysis.yaml" not in source and "**Состав:**" not in source
+
+
+def _unreadable(monkeypatch, name):
+    """Чтение файла с этим именем падает `PermissionError`; права файла не трогаются."""
+    original = Path.read_bytes
+
+    def read_bytes(self):
+        if self.name == name:
+            raise PermissionError(13, "Permission denied", str(self))
+        return original(self)
+
+    monkeypatch.setattr(Path, "read_bytes", read_bytes)
+
+
+def test_unreadable_inventory_is_unchecked_not_a_crash(tmp_path, monkeypatch):
+    """П3: опись, которую не прочитать, — `[--] … не проверить`, а не трассировка с кодом 1."""
+    file, roots = project(tmp_path, "- `src/Foo.java:1` «a || b»\n")
+    _unreadable(monkeypatch, "consequences.md")
+    result = journal.check_consequences(journal.load_journal(file), tmp_path / "consequences.md",
+                                        journal.default_roots(roots))
+    assert result == {"missing": [], "unchecked": ["consequences.md: не проверить: файл не читается"]}
+
+
+def test_unreadable_cited_file_is_unchecked_not_a_crash(tmp_path, monkeypatch):
+    """П3: цитируемый файл не читается — `[--]`, и тот же вердикт у улик журнала (общее чтение)."""
+    file, roots = project(tmp_path, "- `src/Foo.java:1` «a || b»\n")
+    _unreadable(monkeypatch, "Foo.java")
+    result = journal.check_consequences(journal.load_journal(file), tmp_path / "consequences.md",
+                                        journal.default_roots(roots))
+    assert result == {"missing": [], "unchecked": ["consequences.md: src/Foo.java — не проверить: файл не читается"]}
+    assert journal.find_quote("src/Foo.java", "a", journal.default_roots(roots)) == (None, "не проверить: файл не читается")

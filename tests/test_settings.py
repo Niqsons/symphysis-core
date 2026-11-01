@@ -62,6 +62,16 @@ def test_cli_prints_composition_and_signals(tmp_path, case):
     assert done.stdout.splitlines() == [composition_line(case), *(f"[!!] {s}" for s in case["signals"])]
 
 
+def test_lone_surrogate_in_a_value_is_a_signal_not_a_crash(tmp_path):
+    """С4: значение с одиночным суррогатом печатается с экранированием, код 0, сигнал напечатан."""
+    (tmp_path / "symphysis.yaml").write_bytes(b'edge_probe:\n  enabled: "\\uD800"\n')
+    done = run_config("--project", tmp_path)
+    assert done.returncode == 0, done.stderr
+    assert done.stdout.splitlines()[0].startswith("[..] symphysis.yaml:")
+    assert any(line.startswith("[!!] symphysis.yaml:") and "недопустимое значение" in line
+               for line in done.stdout.splitlines()), done.stdout
+
+
 def test_strict_gives_code_two_only_with_signals(tmp_path):
     (tmp_path / "symphysis.yaml").write_text("edge_probe:\n  enabled: false\n", encoding="utf-8")
     assert run_config("--project", tmp_path, "--strict").returncode == 0
