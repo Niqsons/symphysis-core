@@ -185,15 +185,15 @@
 const JOURNAL = {
  "title": "Журнал решений: implementation-consequences",
  "source": "decisions.json",
- "sha256": "fd1bcd36807fba572ab93f79258e0a531f35c7bc961e98497a79689cb7b149ac",
+ "sha256": "b3d12003f4dd4941cffda7a7dcae2e2e1b9b08cc5b22a8744091b3f6d2f813f3",
  "stats": {
   "records": 137,
   "forks": 107,
   "facts": 30,
-  "decided": 106,
+  "decided": 107,
   "parked": 0,
   "evidence_total": 263,
-  "evidence_found": 263
+  "evidence_found": 262
  },
  "records": [
   {
@@ -496,7 +496,7 @@ const JOURNAL = {
     {
      "path": "skills/symphysis-attack/SKILL.md",
      "quote": "исход сценария spec по коду механизма design против THEN",
-     "line": 197,
+     "line": 201,
      "verdict": "сверено",
      "found": true
     },
@@ -831,7 +831,7 @@ const JOURNAL = {
       {
        "path": "skills/symphysis-attack/SKILL.md",
        "quote": "исход сценария spec по коду механизма design против THEN",
-       "line": 197,
+       "line": 201,
        "verdict": "сверено",
        "found": true
       }
@@ -8984,7 +8984,7 @@ const JOURNAL = {
       {
        "path": "skills/symphysis-attack/SKILL.md",
        "quote": "`status: passed` ставится, только когда в таблице нет ни одной строки",
-       "line": 260,
+       "line": 264,
        "verdict": "сверено",
        "found": true
       }
@@ -9297,7 +9297,7 @@ const JOURNAL = {
    "id": "F-136",
    "question": "После F-131.A вердикт держат только блокеры, а атака вправе сама понизить блокер до `предупреждение (<причина>)`. Раньше понижение ничего не снимало: предупреждение держало `apply` так же. Теперь модель с любой причиной получает `passed`. Что делать с понижением?",
    "kind": "развилка",
-   "status": "открыт",
+   "status": "решён",
    "addressee": "человек",
    "depends_on": [
     "F-131"
@@ -9313,9 +9313,9 @@ const JOURNAL = {
       {
        "path": "skills/symphysis-attack/SKILL.md",
        "quote": "Иная — только с причиной в скобках",
-       "line": 155,
-       "verdict": "сверено",
-       "found": true
+       "line": null,
+       "verdict": "цитаты нет дословно",
+       "found": false
       }
      ]
     },
@@ -9341,7 +9341,11 @@ const JOURNAL = {
     "why": "Гейт перед реализацией — то самое опасное место, ради которого контроль и оставлен, а цена защиты — одна фраза текста. Образец такой причины уже есть в скилле просмотрщика.",
     "text": "B — понижать только по слову человека"
    },
-   "decision": null,
+   "decision": {
+    "option": "B",
+    "word": "Фу, F-136-B",
+    "date": "2026-11-02"
+   },
    "reversibility": {
     "level": "обратимо",
     "why": "Одна фраза в тексте скилла."
@@ -9349,7 +9353,7 @@ const JOURNAL = {
    "outcome": null,
    "parking": [],
    "dispute": "",
-   "consequences": "Выбор B: фраза в §«Понижение тяжести» скилла атаки и строка в его `TRANSLATION-NOTES.md`.",
+   "consequences": "Фраза в «Понижение тяжести» скилла атаки, строки `TRANSLATION-NOTES.md`, тест правила понижения. Форк таблицу не читает, правило держится текстом.",
    "evidence": [],
    "comments": [],
    "finding": ""
