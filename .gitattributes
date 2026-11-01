@@ -7,3 +7,4 @@
 *.yaml text eol=lf
 *.txt text eol=lf
 tests/fixtures/evidence-* binary
+vendor/*.tgz binary
