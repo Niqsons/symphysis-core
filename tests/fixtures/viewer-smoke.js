@@ -4,6 +4,7 @@
 // Использование: node viewer-smoke.js <файл.html> [<состояние.json>]
 // Состояние — то, что просмотрщик хранит в браузере (localStorage) под главным ключом; в итог (`saved`) попадает
 // последнее сохранённое под ним. Необязательный ключ `__suffixes__` состояния задаёт значения ключей с суффиксом:
+// `__pathname__` — путь страницы (`location.pathname`), `__key__` — главный ключ, под которым лежит состояние: под другим страница его не видит.
 // `":mode"` — строка режима, `":attack"` — объект споров по строкам атаки, `":lens"` — выбранная линза фильтра атаки; сохранённое под `:attack` — `savedAttack`.
 const fs = require('fs');
 const vm = require('vm');
@@ -11,7 +12,8 @@ const vm = require('vm');
 const html = fs.readFileSync(process.argv[2], 'utf8');
 const parsed = process.argv[3] ? JSON.parse(fs.readFileSync(process.argv[3], 'utf8')) : null;
 const suffixes = (parsed && parsed.__suffixes__) || {};
-if (parsed) delete parsed.__suffixes__;
+const pathname = parsed && parsed.__pathname__, onlyKey = parsed && parsed.__key__;
+if (parsed) { delete parsed.__suffixes__; delete parsed.__pathname__; delete parsed.__key__; }
 const stored = parsed ? JSON.stringify(parsed) : null;
 let saved = null, savedAttack = null;
 const script = html.slice(html.indexOf('<script>') + '<script>'.length, html.lastIndexOf('</script>'));
@@ -38,7 +40,8 @@ const context = {
       const s = suffix(k);
       if (s === ':outh') return null;
       if (s in suffixes) return typeof suffixes[s] === 'string' ? suffixes[s] : JSON.stringify(suffixes[s]);
-      return s === ':mode' || s === ':attack' || s === ':lens' ? null : stored;
+      if (s === ':mode' || s === ':attack' || s === ':lens') return null;
+      return onlyKey && k !== onlyKey ? null : stored;
     },
     setItem(k, v) {
       const s = suffix(k);
@@ -46,6 +49,7 @@ const context = {
       else if (s !== ':outh' && s !== ':mode' && s !== ':lens') saved = v;
     },
   },
+  ...(pathname ? { location: { pathname } } : {}),
   navigator: {}, Blob: function () {}, URL: { createObjectURL() { return ''; } },
   alert() {}, confirm() { return false; }, setTimeout() {},
 };

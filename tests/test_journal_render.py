@@ -494,6 +494,18 @@ def fixture_attacks():
 
 
 @requires_node
+def test_viewer_state_belongs_to_one_page_not_to_every_journal(tmp_path):
+    """Состояние браузера — своё у каждой страницы: у всех журналов `source` один (`decisions.json`), и ключ по нему
+    приносил в промпт нового журнала варианты и буквы из другого журнала с теми же номерами F-NN."""
+    html = journal.render_html(plan(), TEMPLATE, journal_sha256=FAKE_SHA)
+    note = "замечание со страницы другого журнала"
+    own = smoke(tmp_path, html, {"notes": note, "__pathname__": "/a/decisions.html", "__key__": "symphysis:/a/decisions.html"})
+    assert note in own["out"]
+    other = smoke(tmp_path, html, {"notes": note, "__pathname__": "/b/decisions.html", "__key__": "symphysis:/a/decisions.html"})
+    assert note not in other["out"]
+
+
+@requires_node
 def test_viewer_check_mode_projects_records_like_render_design(tmp_path):
     """Режим «проверка»: снимок с хешем, счётчики, группа по дате решения («в одну сторону» первой, как
     `render_design`), проекция «куда уйдёт»: решение → Decisions, проба Specify → spec.md, Dismiss → никуда

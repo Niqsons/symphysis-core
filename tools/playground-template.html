@@ -230,7 +230,8 @@ const EDGES = [
   ['n1','n2'], ['n2','n3'], ['n3','q1'], ['q1','n4','нет'], ['q1','n2','да','right'], ['n4','n5'], ['n5','n6'],
   ['n6','n7'], ['n7','q2'], ['q2','n8','passed'], ['q2','n1','gaps → журнал','left'], ['n9','n11'], ['n10','n11'],
 ];
-const KEY = 'symphysis:' + (JOURNAL.source || 'journal');
+/* ключ — путь страницы: `source` у всех журналов один, и состояние одного журнала приходило бы в другой с теми же номерами F-NN */
+const KEY = 'symphysis:' + ((typeof location !== 'undefined' && location.pathname) || JOURNAL.title || JOURNAL.source || 'journal');
 const byId = Object.fromEntries(JOURNAL.records.map(r => [r.id, r]));
 
 const EMPTY = () => ({ decisions:{}, added:{}, newForks:[], disputes:{}, deps:{}, notes:'' });
