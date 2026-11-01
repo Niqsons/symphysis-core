@@ -311,8 +311,8 @@ REMOVED_LENS_SLUGS = ("requirement-coverage", "task-completeness", "dependency-c
 # Воздержание honest-verifier: строка, которая не «есть» и не «нет» (`honest-verifier.md:43`).
 ABSTENTION_ROW = "по спеке не выводится"
 # Одно правило вердикта — то же, что в шаблонах (`tests/test_schema.py::VERDICT_RULE`), дословно в §5 и в приёмке.
-VERDICT_RULE = ("`status: passed` ставится, только когда в таблице нет ни одной строки с тяжестью "
-                "`блокер` или `предупреждение`; строки `справка` не блокируют")
+VERDICT_RULE = ("`status: passed` ставится, только когда в таблице нет ни одной строки с тяжестью `блокер`; "
+                "строки `предупреждение` идут человеку списком и `apply` не держат, строки `справка` не блокируют")
 # Копии слоя проверки GSD в references/ атаки: файл -> строка источника дословно.
 ATTACK_REFERENCES = {
     "plan-checker-dimensions.md": "Issues without a severity classification are not valid output",

@@ -134,17 +134,17 @@ artifacts:
 
   - id: attack-artifacts
     generates: attack/artifacts.md
-    description: Атака specs, design, security и tasks с вердиктом (вызывается по имени)
+    description: Атака specs, consequences, design, security и tasks с вердиктом (вызывается по имени)
     template: attack-artifacts.md
     optional: true
     verdict:
       frontmatter: status
       value: passed
     instruction: |
-      Загрузи скилл `symphysis-attack` и атакуй `specs/`, `design.md`, `security.md` и `tasks.md`.
+      Загрузи скилл `symphysis-attack` и атакуй `specs/`, `consequences.md`, `design.md`, `security.md` и `tasks.md`.
       Результат — `attack/artifacts.md` по шаблону.
       Вердикт — во frontmatter: `status: passed | gaps_found`.
-      Дыры закрывай правкой атакуемого артефакта, затем повтори атаку; форк OpenSpec symphysis считает артефакт готовым только с `status: passed`.
+      Блокеры закрывай правкой атакуемого артефакта, затем повтори атаку; предупреждения идут человеку списком и повтора не требуют; форк OpenSpec symphysis считает артефакт готовым только с `status: passed`.
     requires:
       - specs
       - design

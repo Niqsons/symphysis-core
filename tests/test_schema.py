@@ -327,8 +327,8 @@ ATTACK_COLUMNS = ["Утверждение", "Раздел", "Линза", "Ин�
 ATTACK_SEVERITIES = ("блокер", "предупреждение", "справка")
 # Одно правило вердикта — дословно в обоих шаблонах и в SKILL.md (тяжесть несут только строки «нет»
 # и «по спеке не выводится», строка «есть» — справка; ревью D4b, fix round 1).
-VERDICT_RULE = ("`status: passed` ставится, только когда в таблице нет ни одной строки с тяжестью "
-                "`блокер` или `предупреждение`; строки `справка` не блокируют")
+VERDICT_RULE = ("`status: passed` ставится, только когда в таблице нет ни одной строки с тяжестью `блокер`; "
+                "строки `предупреждение` идут человеку списком и `apply` не держат, строки `справка` не блокируют")
 
 
 @pytest.mark.parametrize("name", ["attack-decisions.md", "attack-artifacts.md"])
@@ -394,7 +394,7 @@ def test_attack_artifacts_template_lists_targets():
     paths = [m.group(1) for line in fm if (m := re.match(r"\s+- path: (\S+)", line))]
     # журнал — первым: он опора артефактов, его правка обесценивает и этот вердикт (ruling Task 19)
     assert paths[0] == "decisions.json" and paths[1].startswith("specs/"), paths
-    assert paths[2:] == ["design.md", "security.md", "tasks.md"], paths
+    assert paths[2:] == ["consequences.md", "design.md", "security.md", "tasks.md"], paths
     assert len([line for line in fm if re.match(r"\s+sha256:", line)]) == len(paths)
 
 
