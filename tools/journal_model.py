@@ -1,14 +1,13 @@
 # -*- coding: utf-8 -*-
 """Модель журнала: загрузка и сохранение JSON, проверка по схеме и по правилам между
-записями, разбор markdown-журнала в словарь (`import_md`). От соседних модулей не зависит."""
+записями, разбор markdown-журнала в словарь (`import_md`). От соседних модулей не зависит,
+внешних пакетов не требует: `tools/journal*.py` работают на голом Python."""
 from __future__ import annotations
 
 import json
 import re
 import sys
 from pathlib import Path
-
-from jsonschema import Draft202012Validator
 
 __all__ = [
     "ROOT", "SCHEMA_PATH", "RE_ANCHOR", "RE_REC", "ADDED_MARK", "PROBE_OUTCOMES", "DEVIATION_LABEL",
@@ -251,19 +250,104 @@ def save_journal(path: Path, journal: dict) -> None:
 
 # --- проверка --------------------------------------------------------------
 
+# Подмножество JSON Schema 2020-12, которым написан `docs/journal.schema.json`; сообщения — как у `jsonschema`,
+# он остался эталоном сверки в тестах (`tests/test_journal_validator.py`).
+SCHEMA_TYPES = {
+    "object": lambda v: isinstance(v, dict),
+    "array": lambda v: isinstance(v, list),
+    "string": lambda v: isinstance(v, str),
+    "boolean": lambda v: isinstance(v, bool),
+    "null": lambda v: v is None,
+    "integer": lambda v: (isinstance(v, int) and not isinstance(v, bool)) or (isinstance(v, float) and v.is_integer()),
+}
+SCHEMA_KEYWORDS = {"$schema", "$defs", "$ref", "title", "description", "type", "enum", "pattern", "minLength",
+                   "required", "properties", "additionalProperties", "items", "minItems", "maxItems"}
+REF_PREFIX = "#/$defs/"
+
+
+def _refuse_unknown_schema(node: dict, root: dict) -> None:
+    """Вся схема до первой проверки: правило, которого проверщик не знает, — `ValueError`, а не молчаливый пропуск,
+    в том числе там, куда значение не дойдёт."""
+    for keyword, arg in node.items():
+        if keyword not in SCHEMA_KEYWORDS:
+            raise ValueError(f"схема журнала: правила {keyword} проверщик не знает")
+        if keyword in ("properties", "$defs"):
+            for sub in arg.values():
+                _refuse_unknown_schema(sub, root)
+        elif keyword == "items":
+            _refuse_unknown_schema(arg, root)
+        elif keyword == "type":
+            for name in arg if isinstance(arg, list) else [arg]:
+                if name not in SCHEMA_TYPES:
+                    raise ValueError(f"схема журнала: типа {name} проверщик не знает")
+        elif keyword == "additionalProperties" and arg is not False:
+            raise ValueError("схема журнала: additionalProperties проверщик знает только как false")
+        elif keyword == "$ref" and not (arg.startswith(REF_PREFIX) and arg[len(REF_PREFIX):] in root.get("$defs", {})):
+            raise ValueError(f"схема журнала: ссылка {arg} никуда не ведёт")
+
+
+def _walk_schema(node: dict, root: dict, value, path: list, out: list) -> None:
+    for keyword, arg in node.items():
+        if keyword == "$ref":
+            _walk_schema(root["$defs"][arg[len(REF_PREFIX):]], root, value, path, out)
+        elif keyword == "type":
+            names = arg if isinstance(arg, list) else [arg]
+            if not any(SCHEMA_TYPES[name](value) for name in names):
+                out.append((path, keyword, f"{value!r} is not of type {', '.join(map(repr, names))}"))
+        elif keyword == "enum":
+            if value not in arg:
+                out.append((path, keyword, f"{value!r} is not one of {arg!r}"))
+        elif keyword == "pattern":
+            if isinstance(value, str) and not re.search(arg, value):
+                out.append((path, keyword, f"{value!r} does not match {arg!r}"))
+        elif keyword == "minLength":
+            if isinstance(value, str) and len(value) < arg:
+                out.append((path, keyword, f"{value!r} {'should be non-empty' if arg == 1 else 'is too short'}"))
+        elif keyword == "minItems":
+            if isinstance(value, list) and len(value) < arg:
+                out.append((path, keyword, f"{value!r} {'should be non-empty' if arg == 1 else 'is too short'}"))
+        elif keyword == "maxItems":
+            if isinstance(value, list) and len(value) > arg:
+                out.append((path, keyword, f"{value!r} {'is expected to be empty' if arg == 0 else 'is too long'}"))
+        elif keyword == "required":
+            if isinstance(value, dict):
+                out += [(path, keyword, f"{name!r} is a required property") for name in arg if name not in value]
+        elif keyword == "additionalProperties":
+            extras = sorted((k for k in value if k not in node.get("properties", {})), key=str) \
+                if isinstance(value, dict) else []
+            if extras:
+                names, verb = ", ".join(map(repr, extras)), "was" if len(extras) == 1 else "were"
+                out.append((path, keyword, f"Additional properties are not allowed ({names} {verb} unexpected)"))
+        elif keyword == "properties":
+            if isinstance(value, dict):
+                for name, sub in arg.items():
+                    if name in value:
+                        _walk_schema(sub, root, value[name], [*path, name], out)
+        elif keyword == "items":
+            if isinstance(value, list):
+                for i, item in enumerate(value):
+                    _walk_schema(arg, root, item, [*path, i], out)
+
+
+def _schema_violations(schema: dict, value) -> list[tuple[list, str, str]]:
+    """Нарушения схемы: `(путь, ключевое слово, сообщение)`. Схема, в которой есть незнакомое правило, — `ValueError`."""
+    _refuse_unknown_schema(schema, schema)
+    out: list = []
+    _walk_schema(schema, schema, value, [], out)
+    return out
+
+
 def _schema_errors(journal) -> list[str]:
     schema = json.loads(SCHEMA_PATH.read_text(encoding="utf-8"))
     errors = []
-    for err in sorted(Draft202012Validator(schema).iter_errors(journal),
-                      key=lambda e: [str(p) for p in e.absolute_path]):
-        path = list(err.absolute_path)
+    for path, _, message in sorted(_schema_violations(schema, journal), key=lambda v: [str(p) for p in v[0]]):
         if len(path) >= 2 and path[0] == "records" and isinstance(path[1], int):
             rec = journal["records"][path[1]]
             who = rec.get("id") if isinstance(rec, dict) and rec.get("id") else f"records[{path[1]}]"
             where = "/".join(str(p) for p in path[2:])
         else:
             who, where = "журнал", "/".join(str(p) for p in path)
-        errors.append(f"{who}: {where + ': ' if where else ''}{err.message[:300]}")
+        errors.append(f"{who}: {where + ': ' if where else ''}{message[:300]}")
     return errors
 
 
