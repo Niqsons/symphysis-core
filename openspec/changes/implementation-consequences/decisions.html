@@ -185,15 +185,15 @@
 const JOURNAL = {
  "title": "Журнал решений: implementation-consequences",
  "source": "decisions.json",
- "sha256": "0de6443d6e61d9da317735ad2ec932359db067965bb3a1c905bacc8c2ffb4024",
+ "sha256": "24858c4bafdea3e04aa309371f5c10e9cd21993b0dd659ccc63d5afb821c1609",
  "stats": {
-  "records": 122,
-  "forks": 93,
+  "records": 125,
+  "forks": 96,
   "facts": 29,
   "decided": 93,
   "parked": 0,
-  "evidence_total": 228,
-  "evidence_found": 228
+  "evidence_total": 235,
+  "evidence_found": 235
  },
  "records": [
   {
@@ -7292,7 +7292,7 @@ const JOURNAL = {
       {
        "path": "openspec/changes/implementation-consequences/decisions.json",
        "quote": "в глобальном конфиге меняется что-либо кроме добавления `continue` и названной смены профиля",
-       "line": 6707,
+       "line": 6711,
        "verdict": "сверено",
        "found": true
       }
@@ -7358,7 +7358,7 @@ const JOURNAL = {
       {
        "path": "openspec/changes/implementation-consequences/decisions.json",
        "quote": "файл несёт причину и раздел pre-mortem с тремя кандидатами",
-       "line": 2886,
+       "line": 2890,
        "verdict": "сверено",
        "found": true
       }
@@ -7409,7 +7409,7 @@ const JOURNAL = {
       {
        "path": "openspec/changes/implementation-consequences/decisions.json",
        "quote": "тест подаёт пустой файл, файл из комментариев и `edge_probe:` и утверждает, что состав везде «включено»",
-       "line": 3043,
+       "line": 3047,
        "verdict": "сверено",
        "found": true
       }
@@ -7424,7 +7424,7 @@ const JOURNAL = {
       {
        "path": "openspec/changes/implementation-consequences/decisions.json",
        "quote": "выбор считается включённым, `check` даёт `[!!] symphysis.yaml: недопустимое значение <значение>`, код 2",
-       "line": 3100,
+       "line": 3104,
        "verdict": "сверено",
        "found": true
       }
@@ -8096,7 +8096,7 @@ const JOURNAL = {
       {
        "path": "openspec/changes/implementation-consequences/decisions.json",
        "quote": "разбор YAML в `check`, чтение моделью и Python без пакетов поймут его по-разному",
-       "line": 3089,
+       "line": 3093,
        "verdict": "сверено",
        "found": true
       }
@@ -8179,7 +8179,7 @@ const JOURNAL = {
       {
        "path": "openspec/changes/implementation-consequences/decisions.json",
        "quote": "тест утверждает, что `journal.py check` на таком изменении печатает `[..] <часть>: выключено настройкой`",
-       "line": 6421,
+       "line": 6425,
        "verdict": "сверено",
        "found": true
       }
@@ -8231,7 +8231,7 @@ const JOURNAL = {
       {
        "path": "openspec/changes/implementation-consequences/decisions.json",
        "quote": "GIVEN `consequences.md` с причиной «механизмов нет» и список мест, ставший непустым",
-       "line": 2958,
+       "line": 2962,
        "verdict": "сверено",
        "found": true
       }
@@ -8246,7 +8246,7 @@ const JOURNAL = {
       {
        "path": "openspec/changes/implementation-consequences/decisions.json",
        "quote": "до правки схемы у него написан `consequences.md` с причиной «шаг появился позже», `status` не ломается",
-       "line": 3771,
+       "line": 3775,
        "verdict": "сверено",
        "found": true
       }
@@ -8297,7 +8297,7 @@ const JOURNAL = {
       {
        "path": "openspec/changes/implementation-consequences/decisions.json",
        "quote": "строка `[!!] python` говорит, что инструменты журнала считают всё включённым",
-       "line": 8050,
+       "line": 8054,
        "verdict": "сверено",
        "found": true
       }
@@ -8388,6 +8388,209 @@ const JOURNAL = {
    ],
    "comments": [],
    "finding": ""
+  },
+  {
+   "id": "F-123",
+   "question": "Конфиг с профилем `core` или без ключа `profile`, но со своим списком `workflows`: при `core` форк список игнорирует, он спит. `install` переводит профиль в `custom` (F-79.A). Что станет со спящим списком? Требование обещает «не убирая уже заданные», а сценарий «Список человека сохраняется» профиля не называет.",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-79",
+    "F-32",
+    "F-100"
+   ],
+   "delivery": "specs/project-installer, installer",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Сохраняется то, что действует сейчас: шесть `core` и `continue`; спящий список заменяется, stdout называет это и прежнее значение. Сценарий «Список человека сохраняется» получает `profile: custom`. При выборе: набор команд других проектов машины не меняется, кроме `continue`. Цена: спящий список теряется, хотя он назван в stdout и его можно вернуть.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "upstream/openspec/src/core/profiles.ts",
+       "quote": "- 'core' profile always returns CORE_WORKFLOWS",
+       "line": 40,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Объединить: шесть, спящий список и `continue`. При выборе: ничего из записанного человеком не теряется. Цена: спавшие workflow разом просыпаются у всех проектов машины при следующем `update`.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/changes/implementation-consequences/specs/project-installer/spec.md",
+       "quote": "**THEN** в списке те же три и `continue`",
+       "line": 21,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "C",
+     "text": "Спящий список и `continue`, без шести `core`. При выборе: буквально «список человека». Цена: у других проектов при следующем `update` пропадут работающие сейчас команды: `update` убирает невыбранные.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "upstream/openspec/src/core/update.ts",
+       "quote": "removedDeselectedSkillCount += await this.removeUnselectedSkillDirs(",
+       "line": 448,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Запрет F-100 защищает поведение других проектов. Список, который форк игнорирует, поведения не определяет, а B и C его меняют.",
+    "text": "A — сохраняется действующий набор"
+   },
+   "decision": null,
+   "reversibility": {
+    "level": "обратимо",
+    "why": "Одна ветка `install` и сценарий."
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "Сценарий «Список человека сохраняется» и новый сценарий о спящем списке.",
+   "evidence": [],
+   "comments": [],
+   "finding": ""
+  },
+  {
+   "id": "F-124",
+   "question": "`--skills-dir` повторяемый, и README показывает вызов с двумя каталогами: `.claude/skills` и `.agents/skills`. F-115.D говорит об одном выбранном клиенте. Если во втором каталоге нет файлов форка, что отвечает `check`?",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-115",
+    "F-82"
+   ],
+   "delivery": "specs/project-installer, installer",
+   "options": [
+    {
+     "letter": "A",
+     "text": "`[!!] continue` только если команды нет ни в одном выбранном каталоге; об остальных строка `[..] <каталог>: файлов форка нет, туда поставлены только скиллы symphysis`. При выборе: документированный вызов не даёт ложного кода 2, а `--skills-dir` остаётся тем, что он есть: куда класть наши скиллы. Цена: не настроенный клиент, на которого рассчитывал человек, виден только заметкой.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "installer/README.md",
+       "quote": "symphysis install --project . --skills-dir .claude/skills --skills-dir .agents/skills",
+       "line": 55,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "`[!!]` на каждый выбранный каталог без команды. При выборе: каждый выбор проверен строго. Цена: вызов из README всегда даёт код 2, потому что `.agents` клиентом не является.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "installer/bin/symphysis.js",
+       "quote": "\"skills-dir\": { type: \"string\", multiple: true },",
+       "line": 33,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Ложный постоянный код 2 на документированном вызове учит игнорировать `check`, а заметка называет то же самое.",
+    "text": "A — `[!!]`, если команды нет ни в одном, об остальных заметка"
+   },
+   "decision": null,
+   "reversibility": {
+    "level": "обратимо",
+    "why": "Одна ветка `check.js`."
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "Сценарии `check` о команде, задача 6.2.",
+   "evidence": [],
+   "comments": [],
+   "finding": ""
+  },
+  {
+   "id": "F-125",
+   "question": "Подсказки `check` и спеки говорят `symphysis install` и `symphysis config`, а при установке из клона команды `symphysis` в PATH нет: есть только `node installer/bin/symphysis.js`. Подсказка ведёт на отсутствующую команду. Как быть?",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-114",
+    "F-118",
+    "F-36"
+   ],
+   "delivery": "specs/onboarding-guide, specs/project-installer, installer",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Шаг `npm i -g ./installer` после `npm --prefix installer ci`: в PATH появляется `symphysis`, ссылка ведёт в клон, поэтому `git pull` и `ci` обновляют и её. Подсказки и спеки верны как написаны, `symphysis config` работает под названным именем. Откат — `npm rm -g @niqsons/symphysis`. При выборе: одна команда везде. Цена: ещё одна глобальная запись, а удаление клона ломает команду.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/changes/implementation-consequences/research/F-114.md",
+       "quote": "| `npm i -g ./installer --prefix <временный>` | ссылка-junction на `installer/` клона, `symphysis.cmd` отвечает |",
+       "line": 19,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Без глобальной записи: подсказки печатают команду так, как запущен сам инсталлятор: `node <путь>/symphysis.js install`. При выборе: ничего глобального. Цена: `symphysis config` под этим именем не работает, команды длинные, а спеки и руководство различают два написания.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/changes/implementation-consequences/research/F-114.md",
+       "quote": "| `node installer/bin/symphysis.js --help` после `ci` | справка напечатана |",
+       "line": 18,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Форк и PyYAML уже ставятся глобально, а имя `symphysis config` названо человеком. Проба на чистом клоне прошла.",
+    "text": "A — `npm i -g ./installer`, ссылка в клон"
+   },
+   "decision": null,
+   "reversibility": {
+    "level": "обратимо",
+    "why": "Шаг руководства; откат одной командой."
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "Требование об установке, раздел «Обновление», задачи 6.7, 7.2 и проход 7.3.",
+   "evidence": [],
+   "comments": [],
+   "finding": ""
   }
  ],
  "notes": [
@@ -8458,6 +8661,10 @@ const JOURNAL = {
   {
    "date": "2026-11-01",
    "text": "атака артефактов: строк 196, блокеров 0, предупреждений 11, справок 185, не выводится 0 — gaps_found"
+  },
+  {
+   "date": "2026-11-01",
+   "text": "после повтора атаки: блокеров 0, закрыто 12 из 12; решений требуют F-123, F-124, F-125 — нужен человек; остальные восемь предупреждений закрываются правкой артефактов"
   }
  ]
 };
