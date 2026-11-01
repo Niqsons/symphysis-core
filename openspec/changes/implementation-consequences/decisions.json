@@ -66,6 +66,10 @@
   {
    "date": "2026-11-01",
    "text": "решения F-114…F-121 приняты, F-115.D добавлен человеком; факт F-122 об XDG_CONFIG_HOME; проход по артефактам сделан, атака повторяется"
+  },
+  {
+   "date": "2026-11-01",
+   "text": "атака артефактов: строк 196, блокеров 0, предупреждений 11, справок 185, не выводится 0 — gaps_found"
   }
  ],
  "records": [
@@ -7059,7 +7063,7 @@
       {
        "path": "openspec/changes/implementation-consequences/decisions.json",
        "quote": "в глобальном конфиге меняется что-либо кроме добавления `continue` и названной смены профиля",
-       "line": 6703,
+       "line": 6707,
        "verdict": "сверено",
        "found": true
       }
@@ -7124,7 +7128,7 @@
       {
        "path": "openspec/changes/implementation-consequences/decisions.json",
        "quote": "файл несёт причину и раздел pre-mortem с тремя кандидатами",
-       "line": 2882,
+       "line": 2886,
        "verdict": "сверено",
        "found": true
       }
@@ -7174,7 +7178,7 @@
       {
        "path": "openspec/changes/implementation-consequences/decisions.json",
        "quote": "тест подаёт пустой файл, файл из комментариев и `edge_probe:` и утверждает, что состав везде «включено»",
-       "line": 3039,
+       "line": 3043,
        "verdict": "сверено",
        "found": true
       }
@@ -7189,7 +7193,7 @@
       {
        "path": "openspec/changes/implementation-consequences/decisions.json",
        "quote": "выбор считается включённым, `check` даёт `[!!] symphysis.yaml: недопустимое значение <значение>`, код 2",
-       "line": 3096,
+       "line": 3100,
        "verdict": "сверено",
        "found": true
       }
@@ -7852,7 +7856,7 @@
       {
        "path": "openspec/changes/implementation-consequences/decisions.json",
        "quote": "разбор YAML в `check`, чтение моделью и Python без пакетов поймут его по-разному",
-       "line": 3085,
+       "line": 3089,
        "verdict": "сверено",
        "found": true
       }
@@ -7934,7 +7938,7 @@
       {
        "path": "openspec/changes/implementation-consequences/decisions.json",
        "quote": "тест утверждает, что `journal.py check` на таком изменении печатает `[..] <часть>: выключено настройкой`",
-       "line": 6417,
+       "line": 6421,
        "verdict": "сверено",
        "found": true
       }
@@ -7985,7 +7989,7 @@
       {
        "path": "openspec/changes/implementation-consequences/decisions.json",
        "quote": "GIVEN `consequences.md` с причиной «механизмов нет» и список мест, ставший непустым",
-       "line": 2954,
+       "line": 2958,
        "verdict": "сверено",
        "found": true
       }
@@ -8000,7 +8004,7 @@
       {
        "path": "openspec/changes/implementation-consequences/decisions.json",
        "quote": "до правки схемы у него написан `consequences.md` с причиной «шаг появился позже», `status` не ломается",
-       "line": 3767,
+       "line": 3771,
        "verdict": "сверено",
        "found": true
       }
@@ -8050,7 +8054,7 @@
       {
        "path": "openspec/changes/implementation-consequences/decisions.json",
        "quote": "строка `[!!] python` говорит, что инструменты журнала считают всё включённым",
-       "line": 8043,
+       "line": 8050,
        "verdict": "сверено",
        "found": true
       }
