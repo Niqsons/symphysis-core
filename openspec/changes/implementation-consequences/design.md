@@ -26,7 +26,7 @@
   - openspec/schemas/symphysis/schema.yaml:102 «Decisions, Risks / Trade-offs и Open Questions приходят из журнала; чтобы их изменить, правь журнал и рендери заново.»
   - openspec/schemas/symphysis/schema.yaml:104 «Решение излагается, а не принимается: его уже принял человек. requires: - proposal»
 - F-05 Линза `scenario-run` идёт от сценария к механизму. Ветка механизма, на которую сценария нет, в её строку не попадает. Атаки необязательны, в последнем замере их не вызывали.
-  - skills/symphysis-attack/SKILL.md:189 «исход сценария spec по коду механизма design против THEN»
+  - skills/symphysis-attack/SKILL.md:197 «исход сценария spec по коду механизма design против THEN»
   - docs/analysis/edge-cases-and-consequences-2026-11-01.md:73 «F-07.A. Атаки после F-06.A необязательные; в замере `c3-p2-cf` их не вызывали.»
 - F-06 Пункты П7/Т3 и П10/Т1 — поведение существующего кода, а не края требований. У P-шп ветка лежала в вычислителе и прошла незамеченной.
   - docs/analysis/edge-cases-and-consequences-2026-11-01.md:102 «| П7, Т3 | ненайденная переменная — инцидент, текст называет выражение |»
@@ -479,7 +479,7 @@ Non-Goals — что этот дизайн не делает:
 
 - [Risk] После написания на каждое требование позови скиллы `symphysis-edge-probe` и `symphysis-prohibition-probe`. (F-13, отвергнут B: openspec/schemas/symphysis/schema.yaml:78) → Mitigation: решение A
 - [Risk] genre: <устройство | размещение | края | проверка | аналоги — одно значение> (F-13, отвергнут C: openspec/schemas/symphysis/templates/research.md:2) → Mitigation: решение A
-- [Risk] исход сценария spec по коду механизма design против THEN (F-13, отвергнут D: skills/symphysis-attack/SKILL.md:189) → Mitigation: решение A
+- [Risk] исход сценария spec по коду механизма design против THEN (F-13, отвергнут D: skills/symphysis-attack/SKILL.md:197) → Mitigation: решение A
 - [Risk] - **Integration points** — routes, nav, providers where new code connects (F-14, отвергнут A: upstream/gsd-core/gsd-core/references/scout-codebase.md:47) → Mitigation: решение C
 - [Risk] 2. Every assumption MUST state a concrete consequence if wrong (F-14, отвергнут B: upstream/gsd-core/agents/gsd-assumptions-analyzer.md:93) → Mitigation: решение C
 - [Risk] ExpressionProcessor.java (F-15, отвергнут A: calibration/c3-p1/project/openspec/changes/camunda-bid/decisions.json:320) → Mitigation: решение D
@@ -535,14 +535,14 @@ Non-Goals — что этот дизайн не делает:
 - [Risk] требование из F-110, пересмотрено F-135 (F-121, отвергнут B: openspec/changes/implementation-consequences/specs/project-settings/spec.md:75) → Mitigation: решение A
 - [Risk] Требование обещает «не убирая уже заданные» (F-123, отвергнут B: openspec/changes/implementation-consequences/decisions.json:8161) → Mitigation: решение A
 - [Risk] removedDeselectedSkillCount += await this.removeUnselectedSkillDirs( (F-123, отвергнут C: upstream/openspec/src/core/update.ts:448) → Mitigation: решение A
-- [Risk] "skills-dir": { type: "string", multiple: true }, (F-124, отвергнут B: installer/bin/symphysis.js:42) → Mitigation: решение A
+- [Risk] "skills-dir": { type: "string", multiple: true }, (F-124, отвергнут B: installer/bin/symphysis.js:44) → Mitigation: решение A
 - [Risk] | `node installer/bin/symphysis.js --help` после `ci` | справка напечатана | (F-125, отвергнут B: openspec/changes/implementation-consequences/research/F-114.md:18) → Mitigation: решение A
 - [Risk] если мы меняем профиль что создан ранее, то это плохо. (F-126, отвергнут B: openspec/changes/implementation-consequences/answers/2026-11-01-8.md:2) → Mitigation: решение A
 - [Risk] Сигнал: строка `[!!]` в `check`, код 0, с `--strict` код 2. (F-127, отвергнут B: openspec/changes/implementation-consequences/decisions.json:1377) → Mitigation: решение A
 - [Risk] тест утверждает, что `journal.py check` на таком изменении печатает `[..] <часть>: выключено настройкой` (F-128, отвергнут B: openspec/changes/implementation-consequences/decisions.json:6433) → Mitigation: решение A
 - [Risk] Спецификация описывает наблюдаемое поведение, не реализацию. (F-129, отвергнут B: openspec/schemas/symphysis/schema.yaml:77) → Mitigation: решение A
-- [Risk] - A: в spec.md под требованием — новый `#### Scenario:` с GIVEN/WHEN/THEN (F-130, отвергнут B: skills/symphysis-edge-probe/SKILL.md:191) → Mitigation: решение A
-- [Risk] `status: passed` ставится, только когда в таблице нет ни одной строки (F-131, отвергнут B: skills/symphysis-attack/SKILL.md:234) → Mitigation: решение A
+- [Risk] - A: в spec.md под требованием — новый `#### Scenario:` с GIVEN/WHEN/THEN (F-130, отвергнут B: skills/symphysis-edge-probe/SKILL.md:343) → Mitigation: решение A
+- [Risk] `status: passed` ставится, только когда в таблице нет ни одной строки (F-131, отвергнут B: skills/symphysis-attack/SKILL.md:260) → Mitigation: решение A
 - [Risk] Слово человека к нему: «на сильной модели потери не в краях» (F-132, отвергнут B: docs/analysis/implementation-consequences-weight-2026-11-01.md:69) → Mitigation: решение A
 - [Risk] 1. Проведены новые прогоны на плечах: ванили, чистый промпт, P-чел на модели Opus 5.5. (F-133, отвергнут B: openspec/changes/implementation-consequences/intent.md:24) → Mitigation: решение A
 - [Risk] Остаток: четыре формы, разбор которых не догнать без своей грамматики (F-135, отвергнут A: openspec/changes/implementation-consequences/research/F-135.md:31) → Mitigation: решение B
@@ -567,6 +567,8 @@ Non-Goals — что этот дизайн не делает:
 
 ## Open Questions
 
+- F-136 После F-131.A вердикт держат только блокеры, а атака вправе сама понизить блокер до `предупреждение (<причина>)`. Раньше понижение ничего не снимало: предупреждение держало `apply` так же. Теперь модель с любой причиной получает `passed`. Что делать с понижением? — открыта
+- F-137 Проба краёв различает `не выбран` и кандидата, а журнал условия не задаёт. Исполнитель написал: `не выбран` — исход уже определён, ответ человека ничего не изменит; иначе кандидат. От этого признака зависит, сколько вопросов дойдёт до человека. Какой признак верен? — открыта
 - F-20 → материалы: «Что нужно стенду для трёх плеч на Opus 5.5. Выяснить: где закреплена модель (`MODEL` в `p_drive.py`, `arm_c.py`, сборка плеч), что менять в сборке плеч V, C и P, как считаются ходы и расход на этой модели. Читать: `.superpowers/sdd/plan-implementation.tasks/`, `X:/skills-factory-camunda-stand/stands/demo`, `X:/_archive/camunda-bid/RUN-PREP-symphysis-2026-10-30.md`.» — находка: Отчёт `research/F-20.md`. Модель — константа на плечо и роль, ключа нет; расход суммируется неверно; сборка P не пишет `arm.ps1`; нужен новый снимок ветки; проба q1–q3 и плечо C на Opus 5.5 обязательны до P. Решения — F-30, F-33.
 - F-22 → материалы: «Что нужно для GUIDE. Выяснить: как сегодня собирается форк и пакет инсталлятора с чистой машины, какие шаги не описаны в `installer/README.md`, какой пример сквозного изменения годится для GUIDE. Читать: `installer/README.md`, `installer/package.json`, `docs/dry-run-journal.md`, `openspec/changes/calibration-fixes/`.» — находка: Отчёт `research/F-22.md`. Из двух тарболов на чистом каталоге всё ставится, `check: ok`. Но форка нет ни в одном удалённом репозитории, а `/opsx:continue` на чистой установке отсутствует и `check` этого не видит. Решения — F-28, F-29, F-31, F-32, F-34. На чистом клоне тесты инсталлятора падают без форка в `upstream/openspec`: GUIDE даёт шаг для разработчика, а тесты должны называть причину.
 - F-12 → человек: «новая возможность: заводить факты постановки не только из критериев, но и из прозы намерения. Цена — больше записей журнала. Решить, нужна ли она отдельным изменением.»
