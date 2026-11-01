@@ -185,7 +185,7 @@
 const JOURNAL = {
  "title": "Журнал решений: implementation-consequences",
  "source": "decisions.json",
- "sha256": "0f7f93ff38d493407f1631a7b96d0286a404cb1e8f91fb14c6a8d45967c0cf5b",
+ "sha256": "63f27faf80c17ef605a13783573b81cb8f4f1ff622f7f86c0229932d2b2969c7",
  "stats": {
   "records": 106,
   "forks": 79,
@@ -1491,7 +1491,7 @@ const JOURNAL = {
    "outcome": null,
    "parking": [],
    "dispute": "",
-   "consequences": "Определяет, чем `consequences` и проба узнают свой состав. Все колонки выключены — `consequences.md` с этой причиной, как при нуле механизмов.",
+   "consequences": "Определяет, чем `consequences` и проба узнают свой состав. Все колонки выключены — `consequences.md` с этой причиной, как при нуле механизмов. Файл личный и живёт вне git: `install` вносит его в `.gitignore` проекта (F-94.E).",
    "evidence": [],
    "comments": [],
    "finding": ""
@@ -2352,10 +2352,14 @@ const JOURNAL = {
     "date": "2026-11-01"
    },
    "reversibility": null,
-   "outcome": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Specify",
+    "reason": ""
+   },
    "parking": [],
    "dispute": "",
-   "consequences": "",
+   "consequences": "в spec.md: Файл без веток отказа",
    "evidence": [
     {
      "path": "openspec/changes/implementation-consequences/specs/consequence-inventory/spec.md",
@@ -2421,10 +2425,14 @@ const JOURNAL = {
     "date": "2026-11-01"
    },
    "reversibility": null,
-   "outcome": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Specify",
+    "reason": ""
+   },
    "parking": [],
    "dispute": "",
-   "consequences": "",
+   "consequences": "в spec.md: Цитаты нет в файле дословно",
    "evidence": [
     {
      "path": "openspec/changes/implementation-consequences/specs/consequence-inventory/spec.md",
@@ -2490,15 +2498,19 @@ const JOURNAL = {
     "date": "2026-11-01"
    },
    "reversibility": null,
-   "outcome": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Specify",
+    "reason": ""
+   },
    "parking": [],
    "dispute": "",
-   "consequences": "",
+   "consequences": "в spec.md: Повтор шага по новому составу",
    "evidence": [
     {
      "path": "openspec/changes/implementation-consequences/specs/consequence-inventory/spec.md",
      "quote": "### Requirement: Состав строки описи следует настройкам проекта",
-     "line": 23,
+     "line": 42,
      "verdict": "сверено",
      "found": true
     }
@@ -2559,15 +2571,19 @@ const JOURNAL = {
     "date": "2026-11-01"
    },
    "reversibility": null,
-   "outcome": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Dismiss",
+    "reason": "противоречия нет: файл исключён как место, а ветка в нём задета попутно; скрипт это не судит, слово владельца к F-15 оставляет суждение модели"
+   },
    "parking": [],
    "dispute": "",
-   "consequences": "",
+   "consequences": "противоречия нет: файл исключён как место, а ветка в нём задета попутно; скрипт это не судит, слово владельца к F-15 оставляет суждение модели",
    "evidence": [
     {
      "path": "openspec/changes/implementation-consequences/specs/consequence-inventory/spec.md",
      "quote": "### Requirement: Места разбора предлагает скрипт, выбирает модель",
-     "line": 39,
+     "line": 63,
      "verdict": "сверено",
      "found": true
     }
@@ -2628,15 +2644,19 @@ const JOURNAL = {
     "date": "2026-11-01"
    },
    "reversibility": null,
-   "outcome": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Specify",
+    "reason": ""
+   },
    "parking": [],
    "dispute": "",
-   "consequences": "",
+   "consequences": "в spec.md: Сценарий задевает ветку, но не называет её исход",
    "evidence": [
     {
      "path": "openspec/changes/implementation-consequences/specs/consequence-inventory/spec.md",
      "quote": "### Requirement: В журнал идут только ветки без сценария",
-     "line": 55,
+     "line": 88,
      "verdict": "сверено",
      "found": true
     }
@@ -2699,15 +2719,19 @@ const JOURNAL = {
     "date": "2026-11-01"
    },
    "reversibility": null,
-   "outcome": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Specify",
+    "reason": ""
+   },
    "parking": [],
    "dispute": "",
-   "consequences": "",
+   "consequences": "в spec.md: Опись только из допущений",
    "evidence": [
     {
      "path": "openspec/changes/implementation-consequences/specs/consequence-inventory/spec.md",
      "quote": "### Requirement: В журнал идут только ветки без сценария",
-     "line": 55,
+     "line": 88,
      "verdict": "сверено",
      "found": true
     }
@@ -2767,15 +2791,19 @@ const JOURNAL = {
     "date": "2026-11-01"
    },
    "reversibility": null,
-   "outcome": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Specify",
+    "reason": ""
+   },
    "parking": [],
    "dispute": "",
-   "consequences": "",
+   "consequences": "в spec.md: Повтор шага не заводит дублей",
    "evidence": [
     {
      "path": "openspec/changes/implementation-consequences/specs/consequence-inventory/spec.md",
      "quote": "### Requirement: В журнал идут только ветки без сценария",
-     "line": 55,
+     "line": 88,
      "verdict": "сверено",
      "found": true
     }
@@ -2836,15 +2864,19 @@ const JOURNAL = {
     "date": "2026-11-01"
    },
    "reversibility": null,
-   "outcome": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Specify",
+    "reason": ""
+   },
    "parking": [],
    "dispute": "",
-   "consequences": "",
+   "consequences": "в spec.md: Шаг прерван до конца",
    "evidence": [
     {
      "path": "openspec/changes/implementation-consequences/specs/consequence-inventory/spec.md",
      "quote": "### Requirement: В журнал идут только ветки без сценария",
-     "line": 55,
+     "line": 88,
      "verdict": "сверено",
      "found": true
     }
@@ -2905,15 +2937,19 @@ const JOURNAL = {
     "date": "2026-11-01"
    },
    "reversibility": null,
-   "outcome": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Specify",
+    "reason": ""
+   },
    "parking": [],
    "dispute": "",
-   "consequences": "",
+   "consequences": "в spec.md: Причин меньше или больше трёх",
    "evidence": [
     {
      "path": "openspec/changes/implementation-consequences/specs/consequence-inventory/spec.md",
      "quote": "### Requirement: Шаг заканчивается тремя причинами провала изменения",
-     "line": 76,
+     "line": 129,
      "verdict": "сверено",
      "found": true
     },
@@ -2982,15 +3018,19 @@ const JOURNAL = {
     "date": "2026-11-01"
    },
    "reversibility": null,
-   "outcome": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Specify",
+    "reason": ""
+   },
    "parking": [],
    "dispute": "",
-   "consequences": "",
+   "consequences": "в spec.md: Причина совпала с кандидатом описи",
    "evidence": [
     {
      "path": "openspec/changes/implementation-consequences/specs/consequence-inventory/spec.md",
      "quote": "### Requirement: Шаг заканчивается тремя причинами провала изменения",
-     "line": 76,
+     "line": 129,
      "verdict": "сверено",
      "found": true
     }
@@ -3052,15 +3092,19 @@ const JOURNAL = {
     "date": "2026-11-01"
    },
    "reversibility": null,
-   "outcome": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Specify",
+    "reason": ""
+   },
    "parking": [],
    "dispute": "",
-   "consequences": "",
+   "consequences": "в spec.md: Пустая опись и pre-mortem",
    "evidence": [
     {
      "path": "openspec/changes/implementation-consequences/specs/consequence-inventory/spec.md",
      "quote": "### Requirement: Шаг без механизмов или без состава оставляет файл с причиной",
-     "line": 92,
+     "line": 164,
      "verdict": "сверено",
      "found": true
     }
@@ -3121,15 +3165,19 @@ const JOURNAL = {
     "date": "2026-11-01"
    },
    "reversibility": null,
-   "outcome": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Specify",
+    "reason": ""
+   },
    "parking": [],
    "dispute": "",
-   "consequences": "",
+   "consequences": "в spec.md: Новое место после файла с причиной",
    "evidence": [
     {
      "path": "openspec/changes/implementation-consequences/specs/consequence-inventory/spec.md",
      "quote": "### Requirement: Шаг без механизмов или без состава оставляет файл с причиной",
-     "line": 92,
+     "line": 164,
      "verdict": "сверено",
      "found": true
     }
@@ -3189,10 +3237,14 @@ const JOURNAL = {
     "date": "2026-11-01"
    },
    "reversibility": null,
-   "outcome": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Backstop",
+    "reason": ""
+   },
    "parking": [],
    "dispute": "",
-   "consequences": "",
+   "consequences": "тест-страховка: тест подаёт пустой файл, файл из комментариев и `edge_probe:` и утверждает, что состав везде «включено»",
    "evidence": [
     {
      "path": "openspec/changes/implementation-consequences/specs/project-settings/spec.md",
@@ -3257,10 +3309,14 @@ const JOURNAL = {
     "date": "2026-11-01"
    },
    "reversibility": null,
-   "outcome": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Specify",
+    "reason": "Делаем консистентно. Опционально это хорошо, но отслеживать варианты флагов это перебор."
+   },
    "parking": [],
    "dispute": "",
-   "consequences": "",
+   "consequences": "в spec.md: Значение не из true и false",
    "evidence": [
     {
      "path": "openspec/changes/implementation-consequences/specs/project-settings/spec.md",
@@ -3332,15 +3388,19 @@ const JOURNAL = {
     "date": "2026-11-01"
    },
    "reversibility": null,
-   "outcome": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Specify",
+    "reason": ""
+   },
    "parking": [],
    "dispute": "",
-   "consequences": "",
+   "consequences": "в spec.md: Всё включено",
    "evidence": [
     {
      "path": "openspec/changes/implementation-consequences/specs/project-settings/spec.md",
      "quote": "### Requirement: Выключенный состав назван в артефакте шага",
-     "line": 44,
+     "line": 58,
      "verdict": "сверено",
      "found": true
     }
@@ -3401,10 +3461,14 @@ const JOURNAL = {
     "date": "2026-11-01"
    },
    "reversibility": null,
-   "outcome": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Specify",
+    "reason": ""
+   },
    "parking": [],
    "dispute": "",
-   "consequences": "",
+   "consequences": "в spec.md: Реестр npm недоступен",
    "evidence": [
     {
      "path": "openspec/changes/implementation-consequences/specs/onboarding-guide/spec.md",
@@ -3477,10 +3541,14 @@ const JOURNAL = {
     "date": "2026-11-01"
    },
    "reversibility": null,
-   "outcome": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Specify",
+    "reason": ""
+   },
    "parking": [],
    "dispute": "",
-   "consequences": "",
+   "consequences": "в spec.md: Обновление до новой версии",
    "evidence": [
     {
      "path": "openspec/changes/implementation-consequences/specs/onboarding-guide/spec.md",
@@ -3545,10 +3613,14 @@ const JOURNAL = {
     "date": "2026-11-01"
    },
    "reversibility": null,
-   "outcome": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Specify",
+    "reason": ""
+   },
    "parking": [],
    "dispute": "",
-   "consequences": "",
+   "consequences": "в spec.md: Команда установки на Windows",
    "evidence": [
     {
      "path": "openspec/changes/implementation-consequences/specs/onboarding-guide/spec.md",
@@ -3620,15 +3692,19 @@ const JOURNAL = {
     "date": "2026-11-01"
    },
    "reversibility": null,
-   "outcome": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Specify",
+    "reason": ""
+   },
    "parking": [],
    "dispute": "",
-   "consequences": "",
+   "consequences": "в spec.md: Сравнение вывода с руководством",
    "evidence": [
     {
      "path": "openspec/changes/implementation-consequences/specs/onboarding-guide/spec.md",
      "quote": "### Requirement: Учебный проект идёт настоящими командами и выводами",
-     "line": 24,
+     "line": 48,
      "verdict": "сверено",
      "found": true
     }
@@ -3688,15 +3764,19 @@ const JOURNAL = {
     "date": "2026-11-01"
    },
    "reversibility": null,
-   "outcome": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Backstop",
+    "reason": ""
+   },
    "parking": [],
    "dispute": "",
-   "consequences": "",
+   "consequences": "тест-страховка: тест сравнивает версию форка, названную в `docs/GUIDE.md`, с `symphysis.openspecPin` и падает при расхождении",
    "evidence": [
     {
      "path": "openspec/changes/implementation-consequences/specs/onboarding-guide/spec.md",
      "quote": "### Requirement: Учебный проект идёт настоящими командами и выводами",
-     "line": 24,
+     "line": 48,
      "verdict": "сверено",
      "found": true
     }
@@ -3757,15 +3837,19 @@ const JOURNAL = {
     "date": "2026-11-01"
    },
    "reversibility": null,
-   "outcome": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Specify",
+    "reason": "Если мы дадим такой небольшой кусочек кода, то это будет отличной проверкой."
+   },
    "parking": [],
    "dispute": "",
-   "consequences": "",
+   "consequences": "в spec.md: Учебный проект несёт свой код",
    "evidence": [
     {
      "path": "openspec/changes/implementation-consequences/specs/onboarding-guide/spec.md",
      "quote": "### Requirement: Руководство покрывает все шаги OpenSpec",
-     "line": 40,
+     "line": 78,
      "verdict": "сверено",
      "found": true
     }
@@ -3826,15 +3910,19 @@ const JOURNAL = {
     "date": "2026-11-01"
    },
    "reversibility": null,
-   "outcome": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Specify",
+    "reason": ""
+   },
    "parking": [],
    "dispute": "",
-   "consequences": "",
+   "consequences": "в spec.md: Граница всех шагов",
    "evidence": [
     {
      "path": "openspec/changes/implementation-consequences/specs/onboarding-guide/spec.md",
      "quote": "### Requirement: Руководство покрывает все шаги OpenSpec",
-     "line": 40,
+     "line": 78,
      "verdict": "сверено",
      "found": true
     },
@@ -3901,10 +3989,14 @@ const JOURNAL = {
     "date": "2026-11-01"
    },
    "reversibility": null,
-   "outcome": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Specify",
+    "reason": ""
+   },
    "parking": [],
    "dispute": "",
-   "consequences": "",
+   "consequences": "в spec.md: Изменение, начатое до артефакта",
    "evidence": [
     {
      "path": "openspec/changes/implementation-consequences/specs/artifact-graph/spec.md",
@@ -3977,10 +4069,14 @@ const JOURNAL = {
     "date": "2026-11-01"
    },
    "reversibility": null,
-   "outcome": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Specify",
+    "reason": "Да, всё верно. сигнал подается, но на статус не влияет."
+   },
    "parking": [],
    "dispute": "",
-   "consequences": "",
+   "consequences": "в spec.md: Файл без описи и без причины",
    "evidence": [
     {
      "path": "openspec/changes/implementation-consequences/specs/artifact-graph/spec.md",
@@ -4045,10 +4141,14 @@ const JOURNAL = {
     "date": "2026-11-01"
    },
    "reversibility": null,
-   "outcome": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Backstop",
+    "reason": ""
+   },
    "parking": [],
    "dispute": "",
-   "consequences": "",
+   "consequences": "тест-страховка: тест схемы утверждает, что `consequences` объявлен раньше `security` и `design`",
    "evidence": [
     {
      "path": "openspec/changes/implementation-consequences/specs/artifact-graph/spec.md",
@@ -4121,10 +4221,14 @@ const JOURNAL = {
     "date": "2026-11-01"
    },
    "reversibility": null,
-   "outcome": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Dismiss",
+    "reason": "устаревание допустимо: опись — след на момент шага, а правка спек её же кандидатами — штатный ход"
+   },
    "parking": [],
    "dispute": "",
-   "consequences": "",
+   "consequences": "устаревание допустимо: опись — след на момент шага, а правка спек её же кандидатами — штатный ход",
    "evidence": [
     {
      "path": "openspec/changes/implementation-consequences/specs/artifact-graph/spec.md",
@@ -4189,10 +4293,14 @@ const JOURNAL = {
     "date": "2026-11-01"
    },
    "reversibility": null,
-   "outcome": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Specify",
+    "reason": ""
+   },
    "parking": [],
    "dispute": "",
-   "consequences": "",
+   "consequences": "в spec.md: Одно имя требования в двух capabilities",
    "evidence": [
     {
      "path": "openspec/changes/implementation-consequences/specs/requirement-probes/spec.md",
@@ -4257,10 +4365,14 @@ const JOURNAL = {
     "date": "2026-11-01"
    },
    "reversibility": null,
-   "outcome": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Specify",
+    "reason": ""
+   },
    "parking": [],
    "dispute": "",
-   "consequences": "",
+   "consequences": "в spec.md: Снятые и переименованные требования",
    "evidence": [
     {
      "path": "openspec/changes/implementation-consequences/specs/requirement-probes/spec.md",
@@ -4325,10 +4437,14 @@ const JOURNAL = {
     "date": "2026-11-01"
    },
    "reversibility": null,
-   "outcome": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Specify",
+    "reason": ""
+   },
    "parking": [],
    "dispute": "",
-   "consequences": "",
+   "consequences": "в spec.md: Повтор пробы после переименования",
    "evidence": [
     {
      "path": "openspec/changes/implementation-consequences/specs/requirement-probes/spec.md",
@@ -4395,15 +4511,19 @@ const JOURNAL = {
     "date": "2026-11-01"
    },
    "reversibility": null,
-   "outcome": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Specify",
+    "reason": ""
+   },
    "parking": [],
    "dispute": "",
-   "consequences": "",
+   "consequences": "в spec.md: Строка не найдено без содержания",
    "evidence": [
     {
      "path": "openspec/changes/implementation-consequences/specs/requirement-probes/spec.md",
      "quote": "### Requirement: Сырой список различает «не нашли» и «нашли, но не выбрали»",
-     "line": 16,
+     "line": 31,
      "verdict": "сверено",
      "found": true
     }
@@ -4463,15 +4583,19 @@ const JOURNAL = {
     "date": "2026-11-01"
    },
    "reversibility": null,
-   "outcome": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Backstop",
+    "reason": ""
+   },
    "parking": [],
    "dispute": "",
-   "consequences": "",
+   "consequences": "тест-страховка: тест подаёт строку с `;`, `||` и переносом и утверждает, что число строк и значения посчитаны верно",
    "evidence": [
     {
      "path": "openspec/changes/implementation-consequences/specs/requirement-probes/spec.md",
      "quote": "### Requirement: Сырой список различает «не нашли» и «нашли, но не выбрали»",
-     "line": 16,
+     "line": 31,
      "verdict": "сверено",
      "found": true
     }
@@ -4532,15 +4656,19 @@ const JOURNAL = {
     "date": "2026-11-01"
    },
    "reversibility": null,
-   "outcome": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Backstop",
+    "reason": ""
+   },
    "parking": [],
    "dispute": "",
-   "consequences": "",
+   "consequences": "тест-страховка: тест текста утверждает, что в `SKILL.md` названы все четыре значения строки покрытия и у каждого есть пример",
    "evidence": [
     {
      "path": "openspec/changes/implementation-consequences/specs/requirement-probes/spec.md",
      "quote": "### Requirement: Текст пробы объясняет задачу подробнее",
-     "line": 31,
+     "line": 60,
      "verdict": "сверено",
      "found": true
     }
@@ -4601,15 +4729,19 @@ const JOURNAL = {
     "date": "2026-11-01"
    },
    "reversibility": null,
-   "outcome": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Specify",
+    "reason": ""
+   },
    "parking": [],
    "dispute": "",
-   "consequences": "",
+   "consequences": "в spec.md: Проба выключена после первого прохода",
    "evidence": [
     {
      "path": "openspec/changes/implementation-consequences/specs/requirement-probes/spec.md",
      "quote": "### Requirement: Пробу краёв можно выключить, по умолчанию она включена",
-     "line": 42,
+     "line": 71,
      "verdict": "сверено",
      "found": true
     }
@@ -4669,10 +4801,14 @@ const JOURNAL = {
     "date": "2026-11-01"
    },
    "reversibility": null,
-   "outcome": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Specify",
+    "reason": ""
+   },
    "parking": [],
    "dispute": "",
-   "consequences": "",
+   "consequences": "в spec.md: Один файл в разном написании",
    "evidence": [
     {
      "path": "openspec/changes/implementation-consequences/specs/decision-journal/spec.md",
@@ -4737,10 +4873,14 @@ const JOURNAL = {
     "date": "2026-11-01"
    },
    "reversibility": null,
-   "outcome": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Specify",
+    "reason": ""
+   },
    "parking": [],
    "dispute": "",
-   "consequences": "",
+   "consequences": "в spec.md: Выбранный вариант без улик",
    "evidence": [
     {
      "path": "openspec/changes/implementation-consequences/specs/decision-journal/spec.md",
@@ -4806,10 +4946,14 @@ const JOURNAL = {
     "date": "2026-11-01"
    },
    "reversibility": null,
-   "outcome": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Specify",
+    "reason": ""
+   },
    "parking": [],
    "dispute": "",
-   "consequences": "",
+   "consequences": "в spec.md: Что считается файлом кода",
    "evidence": [
     {
      "path": "openspec/changes/implementation-consequences/specs/decision-journal/spec.md",
@@ -4875,15 +5019,19 @@ const JOURNAL = {
     "date": "2026-11-01"
    },
    "reversibility": null,
-   "outcome": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Dismiss",
+    "reason": "сверка только о наличии: глубину судит модель, скрипт над недетерминированным артефактом её не считает (слово владельца к F-15)"
+   },
    "parking": [],
    "dispute": "",
-   "consequences": "",
+   "consequences": "сверка только о наличии: глубину судит модель, скрипт над недетерминированным артефактом её не считает (слово владельца к F-15)",
    "evidence": [
     {
      "path": "openspec/changes/implementation-consequences/specs/decision-journal/spec.md",
      "quote": "### Requirement: `check` сигналит расхождение описи со списком мест",
-     "line": 26,
+     "line": 41,
      "verdict": "сверено",
      "found": true
     }
@@ -4944,15 +5092,19 @@ const JOURNAL = {
     "date": "2026-11-01"
    },
    "reversibility": null,
-   "outcome": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Specify",
+    "reason": ""
+   },
    "parking": [],
    "dispute": "",
-   "consequences": "",
+   "consequences": "в spec.md: Описи ещё нет",
    "evidence": [
     {
      "path": "openspec/changes/implementation-consequences/specs/decision-journal/spec.md",
      "quote": "### Requirement: `check` сигналит расхождение описи со списком мест",
-     "line": 26,
+     "line": 41,
      "verdict": "сверено",
      "found": true
     }
@@ -5013,15 +5165,19 @@ const JOURNAL = {
     "date": "2026-11-01"
    },
    "reversibility": null,
-   "outcome": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Specify",
+    "reason": ""
+   },
    "parking": [],
    "dispute": "",
-   "consequences": "",
+   "consequences": "в spec.md: Другое написание пути",
    "evidence": [
     {
      "path": "openspec/changes/implementation-consequences/specs/decision-journal/spec.md",
      "quote": "### Requirement: `check` сигналит расхождение описи со списком мест",
-     "line": 26,
+     "line": 41,
      "verdict": "сверено",
      "found": true
     }
@@ -5082,15 +5238,19 @@ const JOURNAL = {
     "date": "2026-11-01"
    },
    "reversibility": null,
-   "outcome": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Specify",
+    "reason": ""
+   },
    "parking": [],
    "dispute": "",
-   "consequences": "",
+   "consequences": "в spec.md: Файла покрытия нет",
    "evidence": [
     {
      "path": "openspec/changes/implementation-consequences/specs/decision-journal/spec.md",
      "quote": "### Requirement: `check` сигналит неполное покрытие пробы краёв",
-     "line": 52,
+     "line": 77,
      "verdict": "сверено",
      "found": true
     }
@@ -5150,15 +5310,19 @@ const JOURNAL = {
     "date": "2026-11-01"
    },
    "reversibility": null,
-   "outcome": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Specify",
+    "reason": ""
+   },
    "parking": [],
    "dispute": "",
-   "consequences": "",
+   "consequences": "в spec.md: Сигнал доходит до symphysis check",
    "evidence": [
     {
      "path": "openspec/changes/implementation-consequences/specs/decision-journal/spec.md",
      "quote": "### Requirement: `check` сигналит неполное покрытие пробы краёв",
-     "line": 52,
+     "line": 77,
      "verdict": "сверено",
      "found": true
     },
@@ -5227,10 +5391,14 @@ const JOURNAL = {
     "date": "2026-11-01"
    },
    "reversibility": null,
-   "outcome": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Specify",
+    "reason": ""
+   },
    "parking": [],
    "dispute": "",
-   "consequences": "",
+   "consequences": "в spec.md: Профиль core на чистой установке",
    "evidence": [
     {
      "path": "openspec/changes/implementation-consequences/specs/project-installer/spec.md",
@@ -5309,10 +5477,14 @@ const JOURNAL = {
     "date": "2026-11-01"
    },
    "reversibility": null,
-   "outcome": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Specify",
+    "reason": ""
+   },
    "parking": [],
    "dispute": "",
-   "consequences": "",
+   "consequences": "в spec.md: Workflow уже в списке",
    "evidence": [
     {
      "path": "openspec/changes/implementation-consequences/specs/project-installer/spec.md",
@@ -5377,10 +5549,14 @@ const JOURNAL = {
     "date": "2026-11-01"
    },
    "reversibility": null,
-   "outcome": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Specify",
+    "reason": ""
+   },
    "parking": [],
    "dispute": "",
-   "consequences": "",
+   "consequences": "в spec.md: Форка нет или клиент не настроен",
    "evidence": [
     {
      "path": "openspec/changes/implementation-consequences/specs/project-installer/spec.md",
@@ -5453,15 +5629,19 @@ const JOURNAL = {
     "date": "2026-11-01"
    },
    "reversibility": null,
-   "outcome": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Specify",
+    "reason": ""
+   },
    "parking": [],
    "dispute": "",
-   "consequences": "",
+   "consequences": "в spec.md: Команда у настроенного клиента",
    "evidence": [
     {
      "path": "openspec/changes/implementation-consequences/specs/project-installer/spec.md",
      "quote": "### Requirement: `check` называет отсутствие команды `/opsx:continue`",
-     "line": 26,
+     "line": 50,
      "verdict": "сверено",
      "found": true
     }
@@ -5522,15 +5702,19 @@ const JOURNAL = {
     "date": "2026-11-01"
    },
    "reversibility": null,
-   "outcome": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Specify",
+    "reason": ""
+   },
    "parking": [],
    "dispute": "",
-   "consequences": "",
+   "consequences": "в spec.md: Клиент не настроен",
    "evidence": [
     {
      "path": "openspec/changes/implementation-consequences/specs/project-installer/spec.md",
      "quote": "### Requirement: `check` называет отсутствие команды `/opsx:continue`",
-     "line": 26,
+     "line": 50,
      "verdict": "сверено",
      "found": true
     },
@@ -5597,15 +5781,19 @@ const JOURNAL = {
     "date": "2026-11-01"
    },
    "reversibility": null,
-   "outcome": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Specify",
+    "reason": ""
+   },
    "parking": [],
    "dispute": "",
-   "consequences": "",
+   "consequences": "в spec.md: BOM и не UTF-8",
    "evidence": [
     {
      "path": "openspec/changes/implementation-consequences/specs/project-installer/spec.md",
      "quote": "### Requirement: `install` создаёт `symphysis.yaml`, если файла нет, и не перезаписывает его",
-     "line": 42,
+     "line": 76,
      "verdict": "сверено",
      "found": true
     }
@@ -5665,15 +5853,19 @@ const JOURNAL = {
     "date": "2026-11-01"
    },
    "reversibility": null,
-   "outcome": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Specify",
+    "reason": ""
+   },
    "parking": [],
    "dispute": "",
-   "consequences": "",
+   "consequences": "в spec.md: Файла настроек нет",
    "evidence": [
     {
      "path": "openspec/changes/implementation-consequences/specs/project-installer/spec.md",
      "quote": "### Requirement: `check` показывает состав из `symphysis.yaml`",
-     "line": 58,
+     "line": 111,
      "verdict": "сверено",
      "found": true
     }
@@ -5734,15 +5926,19 @@ const JOURNAL = {
     "date": "2026-11-01"
    },
    "reversibility": null,
-   "outcome": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Specify",
+    "reason": ""
+   },
    "parking": [],
    "dispute": "",
-   "consequences": "",
+   "consequences": "в spec.md: Скрипт на клоне без форка",
    "evidence": [
     {
      "path": "openspec/changes/implementation-consequences/specs/project-installer/spec.md",
      "quote": "### Requirement: Скрипт сборки кладёт тарбол форка в `vendor/`",
-     "line": 74,
+     "line": 132,
      "verdict": "сверено",
      "found": true
     }
@@ -5802,15 +5998,19 @@ const JOURNAL = {
     "date": "2026-11-01"
    },
    "reversibility": null,
-   "outcome": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Specify",
+    "reason": ""
+   },
    "parking": [],
    "dispute": "",
-   "consequences": "",
+   "consequences": "в spec.md: Старый тарбол заменяется",
    "evidence": [
     {
      "path": "openspec/changes/implementation-consequences/specs/project-installer/spec.md",
      "quote": "### Requirement: Скрипт сборки кладёт тарбол форка в `vendor/`",
-     "line": 74,
+     "line": 132,
      "verdict": "сверено",
      "found": true
     }
@@ -5871,15 +6071,19 @@ const JOURNAL = {
     "date": "2026-11-01"
    },
    "reversibility": null,
-   "outcome": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Specify",
+    "reason": ""
+   },
    "parking": [],
    "dispute": "",
-   "consequences": "",
+   "consequences": "в spec.md: Версия форка расходится с пином",
    "evidence": [
     {
      "path": "openspec/changes/implementation-consequences/specs/project-installer/spec.md",
      "quote": "### Requirement: Скрипт сборки кладёт тарбол форка в `vendor/`",
-     "line": 74,
+     "line": 132,
      "verdict": "сверено",
      "found": true
     }
@@ -5940,15 +6144,19 @@ const JOURNAL = {
     "date": "2026-11-01"
    },
    "reversibility": null,
-   "outcome": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Specify",
+    "reason": ""
+   },
    "parking": [],
    "dispute": "",
-   "consequences": "",
+   "consequences": "в spec.md: Строка о форке называет тарбол",
    "evidence": [
     {
      "path": "openspec/changes/implementation-consequences/specs/project-installer/spec.md",
      "quote": "### Requirement: Скрипт сборки кладёт тарбол форка в `vendor/`",
-     "line": 74,
+     "line": 132,
      "verdict": "сверено",
      "found": true
     },
@@ -6015,10 +6223,14 @@ const JOURNAL = {
     "date": "2026-11-01"
    },
    "reversibility": null,
-   "outcome": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Specify",
+    "reason": ""
+   },
    "parking": [],
    "dispute": "",
-   "consequences": "",
+   "consequences": "проверка: test — тест сверки подаёт строку без `путь:строка «цитата»` и утверждает `[!!]`; в spec.md: Строка описи не выдаёт пересказ за ветку отказа",
    "evidence": [
     {
      "path": "openspec/changes/implementation-consequences/specs/consequence-inventory/spec.md",
@@ -6084,15 +6296,19 @@ const JOURNAL = {
     "date": "2026-11-01"
    },
    "reversibility": null,
-   "outcome": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Specify",
+    "reason": ""
+   },
    "parking": [],
    "dispute": "",
-   "consequences": "",
+   "consequences": "проверка: judgment — судит человек, читая раздел исключений, или атака; в spec.md: Исключение места несёт довод о конкретном файле",
    "evidence": [
     {
      "path": "openspec/changes/implementation-consequences/specs/consequence-inventory/spec.md",
      "quote": "### Requirement: Места разбора предлагает скрипт, выбирает модель",
-     "line": 39,
+     "line": 63,
      "verdict": "сверено",
      "found": true
     }
@@ -6154,15 +6370,19 @@ const JOURNAL = {
     "date": "2026-11-01"
    },
    "reversibility": null,
-   "outcome": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Dismiss",
+    "reason": "Запрет не нужен, пользователь может попросить агента \"реши сам такие то пункты\", но помогать или ограничивать его в том ,чтобы не читать развилки мы не будем."
+   },
    "parking": [],
    "dispute": "",
-   "consequences": "",
+   "consequences": "Запрет не нужен, пользователь может попросить агента \"реши сам такие то пункты\", но помогать или ограничивать его в том ,чтобы не читать развилки мы не будем.",
    "evidence": [
     {
      "path": "openspec/changes/implementation-consequences/specs/consequence-inventory/spec.md",
      "quote": "### Requirement: В журнал идут только ветки без сценария",
-     "line": 55,
+     "line": 88,
      "verdict": "сверено",
      "found": true
     }
@@ -6223,15 +6443,19 @@ const JOURNAL = {
     "date": "2026-11-01"
    },
    "reversibility": null,
-   "outcome": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Specify",
+    "reason": ""
+   },
    "parking": [],
    "dispute": "",
-   "consequences": "",
+   "consequences": "проверка: judgment — судит человек в просмотрщике, подставляя в причину другое изменение; в spec.md: Причина провала верна только для этого изменения",
    "evidence": [
     {
      "path": "openspec/changes/implementation-consequences/specs/consequence-inventory/spec.md",
      "quote": "### Requirement: Шаг заканчивается тремя причинами провала изменения",
-     "line": 76,
+     "line": 129,
      "verdict": "сверено",
      "found": true
     },
@@ -6305,10 +6529,14 @@ const JOURNAL = {
     "date": "2026-11-01"
    },
    "reversibility": null,
-   "outcome": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Specify",
+    "reason": ""
+   },
    "parking": [],
    "dispute": "",
-   "consequences": "",
+   "consequences": "проверка: test — тест инсталлятора: после двух запусков `install` строка `symphysis.yaml` в `.gitignore` проекта одна, `git check-ignore` называет файл; ярус поставлен зеркалом, вариант человека его не называет; в spec.md: `symphysis.yaml` — личная настройка и в git не идёт (`project-settings`), `install` вносит `symphysis.yaml` в `.gitignore` проекта (`project-installer`)",
    "evidence": [
     {
      "path": "openspec/changes/implementation-consequences/specs/project-settings/spec.md",
@@ -6375,15 +6603,19 @@ const JOURNAL = {
     "date": "2026-11-01"
    },
    "reversibility": null,
-   "outcome": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Dismiss",
+    "reason": "Тут кажется должн быть антипод с F-94, потому что если файл в gitignore То диффа нет, а значит изменение не увидеть. Но и делать общую конфигурацию на всех нет смысла."
+   },
    "parking": [],
    "dispute": "",
-   "consequences": "",
+   "consequences": "Тут кажется должн быть антипод с F-94, потому что если файл в gitignore То диффа нет, а значит изменение не увидеть. Но и делать общую конфигурацию на всех нет смысла.",
    "evidence": [
     {
      "path": "openspec/changes/implementation-consequences/specs/project-settings/spec.md",
      "quote": "### Requirement: Шаг читает выбор в начале и человека не спрашивает",
-     "line": 28,
+     "line": 42,
      "verdict": "сверено",
      "found": true
     }
@@ -6443,15 +6675,19 @@ const JOURNAL = {
     "date": "2026-11-01"
    },
    "reversibility": null,
-   "outcome": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Specify",
+    "reason": ""
+   },
    "parking": [],
    "dispute": "",
-   "consequences": "",
+   "consequences": "проверка: test — тест утверждает, что `journal.py check` на таком изменении печатает `[..] <часть>: выключено настройкой`; в spec.md: Выключенная часть не читается как пройденная проверка",
    "evidence": [
     {
      "path": "openspec/changes/implementation-consequences/specs/project-settings/spec.md",
      "quote": "### Requirement: Выключенный состав назван в артефакте шага",
-     "line": 44,
+     "line": 58,
      "verdict": "сверено",
      "found": true
     }
@@ -6512,10 +6748,14 @@ const JOURNAL = {
     "date": "2026-11-01"
    },
    "reversibility": null,
-   "outcome": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Specify",
+    "reason": "Так или иначе операции можно откатить, а в руководстве написано что меняется, значит пользователю известно."
+   },
    "parking": [],
    "dispute": "",
-   "consequences": "",
+   "consequences": "проверка: judgment — судит владелец чтением при прохождении; в spec.md: Читатель узнаёт о глобальном эффекте до шага",
    "evidence": [
     {
      "path": "openspec/changes/implementation-consequences/specs/onboarding-guide/spec.md",
@@ -6580,15 +6820,19 @@ const JOURNAL = {
     "date": "2026-11-01"
    },
    "reversibility": null,
-   "outcome": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Specify",
+    "reason": ""
+   },
    "parking": [],
    "dispute": "",
-   "consequences": "",
+   "consequences": "проверка: test — гейт имён по файлу и отсутствие выдержек из замеров; в spec.md: В руководстве нет рабочих имён и материалов замеров",
    "evidence": [
     {
      "path": "openspec/changes/implementation-consequences/specs/onboarding-guide/spec.md",
      "quote": "### Requirement: Учебный проект идёт настоящими командами и выводами",
-     "line": 24,
+     "line": 48,
      "verdict": "сверено",
      "found": true
     }
@@ -6649,15 +6893,19 @@ const JOURNAL = {
     "date": "2026-11-01"
    },
    "reversibility": null,
-   "outcome": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Specify",
+    "reason": ""
+   },
    "parking": [],
    "dispute": "",
-   "consequences": "",
+   "consequences": "проверка: test — тест утверждает строку `notes[]` с числом строк `не выбран` и именами требований; в spec.md: Итог пробы называет число строк `не выбран`",
    "evidence": [
     {
      "path": "openspec/changes/implementation-consequences/specs/requirement-probes/spec.md",
      "quote": "### Requirement: Сырой список различает «не нашли» и «нашли, но не выбрали»",
-     "line": 16,
+     "line": 31,
      "verdict": "сверено",
      "found": true
     }
@@ -6717,10 +6965,14 @@ const JOURNAL = {
     "date": "2026-11-01"
    },
    "reversibility": null,
-   "outcome": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Specify",
+    "reason": ""
+   },
    "parking": [],
    "dispute": "",
-   "consequences": "",
+   "consequences": "проверка: test — тест с временным конфигом сравнивает до и после, stdout называет каждую правку; в spec.md: `install` меняет в глобальном конфиге только названное",
    "evidence": [
     {
      "path": "openspec/changes/implementation-consequences/specs/project-installer/spec.md",
@@ -6785,15 +7037,19 @@ const JOURNAL = {
     "date": "2026-11-01"
    },
    "reversibility": null,
-   "outcome": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Specify",
+    "reason": ""
+   },
    "parking": [],
    "dispute": "",
-   "consequences": "",
+   "consequences": "проверка: test — тест подаёт грязное дерево и утверждает код 1; скрипт печатает хеш коммита форка; в spec.md: Тарбол собирается только из чистого дерева форка",
    "evidence": [
     {
      "path": "openspec/changes/implementation-consequences/specs/project-installer/spec.md",
      "quote": "### Requirement: Скрипт сборки кладёт тарбол форка в `vendor/`",
-     "line": 74,
+     "line": 132,
      "verdict": "сверено",
      "found": true
     }
@@ -6977,7 +7233,7 @@ const JOURNAL = {
     {
      "path": "openspec/changes/implementation-consequences/specs/project-installer/spec.md",
      "quote": "### Requirement: Скрипт сборки кладёт тарбол форка в `vendor/`",
-     "line": 74,
+     "line": 132,
      "verdict": "сверено",
      "found": true
     }
@@ -7022,6 +7278,14 @@ const JOURNAL = {
   {
    "date": "2026-11-01",
    "text": "проба запретов: требований 26, оставлено 12, канон → ИБ 5 (парковок 6), Specify 0, Dismiss 0, Defer 0; без решения все: F-90…F-101 — нужен человек"
+  },
+  {
+   "date": "2026-11-01",
+   "text": "проба краёв: кандидатов 52, Specify 44, Dismiss 3, Backstop 5, Defer 0"
+  },
+  {
+   "date": "2026-11-01",
+   "text": "проба запретов: требований 26, оставлено 12, канон → ИБ 5 (парковок 6), Specify 10, Dismiss 2, Defer 0"
   }
  ]
 };
