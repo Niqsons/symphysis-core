@@ -364,3 +364,51 @@ def test_cli_check_rejects_a_bad_deviation_with_code_1(tmp_path):
                          capture_output=True, text=True, encoding="utf-8")
     assert run.returncode == 1
     assert "[!!] F-02: вариант B — отступление от постановки F-09 — такой записи нет" in run.stderr
+
+
+# --- повторный номер записи (F-138.A) --------------------------------------
+
+def with_repeated_id(tmp_path):
+    """Журнал с двумя записями `F-02`: на диске, для вызова через командную строку."""
+    j = plan()
+    second = copy.deepcopy(next(r for r in j["records"] if r["id"] == "F-02"))
+    j["records"].append(second)
+    path = tmp_path / "decisions.json"
+    path.write_text(json.dumps(j, ensure_ascii=False), encoding="utf-8")
+    return j, path
+
+
+def journal_cli(*args):
+    return subprocess.run([sys.executable, "-X", "utf8", str(ROOT / "tools" / "journal.py"), *args],
+                          capture_output=True, text=True, encoding="utf-8")
+
+
+def test_validate_rejects_a_repeated_record_id(tmp_path):
+    j, _ = with_repeated_id(tmp_path)
+    assert journal.validate_journal(j) == ["F-02: номер записи повторяется"]
+
+
+def test_check_answers_code_1_on_a_repeated_record_id(tmp_path):
+    _, path = with_repeated_id(tmp_path)
+    done = journal_cli("check", str(path))
+    assert done.returncode == 1
+    assert "[!!] F-02: номер записи повторяется" in done.stderr
+
+
+def test_apply_refuses_a_journal_with_a_repeated_record_id(tmp_path):
+    _, path = with_repeated_id(tmp_path)
+    before = path.read_bytes()
+    answers = tmp_path / "answers.md"
+    answers.write_text("F-02: A\n", encoding="utf-8")
+    done = journal_cli("apply", str(path), str(answers))
+    assert done.returncode == 1
+    assert "[!!] F-02: номер записи повторяется" in done.stderr
+    assert path.read_bytes() == before
+
+
+def test_real_journals_have_no_repeated_record_ids():
+    journals = sorted((ROOT / "openspec" / "changes").glob("*/decisions.json"))
+    assert journals
+    for path in journals:
+        loaded = json.loads(path.read_text(encoding="utf-8"))
+        assert not [e for e in journal.validate_journal(loaded) if e.endswith("номер записи повторяется")], path

@@ -7,6 +7,7 @@ from __future__ import annotations
 import json
 import re
 import sys
+from collections import Counter
 from pathlib import Path
 
 __all__ = [
@@ -377,7 +378,10 @@ def _deviation_errors(rec: dict, by_id: dict[str, dict]) -> list[str]:
 
 
 def _rule_errors(journal: dict) -> list[str]:
-    errors = []
+    # Вне схемы: уникальность значения поля в JSON Schema не выражается, а вторую запись с тем же
+    # номером молча съели бы словари ниже (F-138.A).
+    ids = Counter(r["id"] for r in journal["records"])
+    errors = [f"{rid}: номер записи повторяется" for rid, count in ids.items() if count > 1]
     letters = {r["id"]: {o["letter"] for o in r["options"]} for r in journal["records"]}
     by_id = {r["id"]: r for r in journal["records"]}
     for r in journal["records"]:
