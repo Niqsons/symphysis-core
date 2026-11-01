@@ -50,6 +50,10 @@
   {
    "date": "2026-11-01",
    "text": "после зеркала: три расхождения решений (F-107, F-108, F-109) и три вопроса дизайна (F-110, F-111, F-112) — нужен человек (просмотрщик decisions.html, режим «решения»)"
+  },
+  {
+   "date": "2026-11-01",
+   "text": "согласование после зеркала закончено: F-107…F-112 решены, F-113 — факт о читателях; спеки приведены к решениям, след проб перенесён в конец блока (F-112.A)"
   }
  ],
  "records": [
@@ -3206,7 +3210,7 @@
     {
      "path": "openspec/changes/implementation-consequences/specs/project-settings/spec.md",
      "quote": "### Requirement: Выключенный состав назван в артефакте шага",
-     "line": 58,
+     "line": 87,
      "verdict": "сверено",
      "found": true
     }
@@ -4457,7 +4461,7 @@
     {
      "path": "openspec/changes/implementation-consequences/specs/requirement-probes/spec.md",
      "quote": "### Requirement: Текст пробы объясняет задачу подробнее",
-     "line": 60,
+     "line": 74,
      "verdict": "сверено",
      "found": true
     }
@@ -4529,7 +4533,7 @@
     {
      "path": "openspec/changes/implementation-consequences/specs/requirement-probes/spec.md",
      "quote": "### Requirement: Пробу краёв можно выключить, по умолчанию она включена",
-     "line": 71,
+     "line": 85,
      "verdict": "сверено",
      "found": true
     }
@@ -5638,7 +5642,7 @@
     {
      "path": "openspec/changes/implementation-consequences/specs/project-installer/spec.md",
      "quote": "### Requirement: `check` показывает состав из `symphysis.yaml`",
-     "line": 111,
+     "line": 131,
      "verdict": "сверено",
      "found": true
     }
@@ -5710,7 +5714,7 @@
     {
      "path": "openspec/changes/implementation-consequences/specs/project-installer/spec.md",
      "quote": "### Requirement: Скрипт сборки кладёт тарбол форка в `vendor/`",
-     "line": 132,
+     "line": 157,
      "verdict": "сверено",
      "found": true
     }
@@ -5781,7 +5785,7 @@
     {
      "path": "openspec/changes/implementation-consequences/specs/project-installer/spec.md",
      "quote": "### Requirement: Скрипт сборки кладёт тарбол форка в `vendor/`",
-     "line": 132,
+     "line": 157,
      "verdict": "сверено",
      "found": true
     }
@@ -5853,7 +5857,7 @@
     {
      "path": "openspec/changes/implementation-consequences/specs/project-installer/spec.md",
      "quote": "### Requirement: Скрипт сборки кладёт тарбол форка в `vendor/`",
-     "line": 132,
+     "line": 157,
      "verdict": "сверено",
      "found": true
     }
@@ -5925,7 +5929,7 @@
     {
      "path": "openspec/changes/implementation-consequences/specs/project-installer/spec.md",
      "quote": "### Requirement: Скрипт сборки кладёт тарбол форка в `vendor/`",
-     "line": 132,
+     "line": 157,
      "verdict": "сверено",
      "found": true
     },
@@ -6378,7 +6382,7 @@
     {
      "path": "openspec/changes/implementation-consequences/specs/project-settings/spec.md",
      "quote": "### Requirement: Шаг читает выбор в начале и человека не спрашивает",
-     "line": 42,
+     "line": 71,
      "verdict": "сверено",
      "found": true
     }
@@ -6449,7 +6453,7 @@
     {
      "path": "openspec/changes/implementation-consequences/specs/project-settings/spec.md",
      "quote": "### Requirement: Выключенный состав назван в артефакте шага",
-     "line": 58,
+     "line": 87,
      "verdict": "сверено",
      "found": true
     }
@@ -6806,7 +6810,7 @@
     {
      "path": "openspec/changes/implementation-consequences/specs/project-installer/spec.md",
      "quote": "### Requirement: Скрипт сборки кладёт тарбол форка в `vendor/`",
-     "line": 132,
+     "line": 157,
      "verdict": "сверено",
      "found": true
     }
@@ -6985,7 +6989,7 @@
     {
      "path": "openspec/changes/implementation-consequences/specs/project-installer/spec.md",
      "quote": "### Requirement: Скрипт сборки кладёт тарбол форка в `vendor/`",
-     "line": 132,
+     "line": 157,
      "verdict": "сверено",
      "found": true
     }
@@ -6996,7 +7000,7 @@
    "id": "F-107",
    "question": "Решение F-100.A запрещает `install` менять в глобальном конфиге что-либо, кроме `continue` и смены профиля. Но `install` сам пишет туда `telemetry.enabled: false`, если ключ не задан, и F-32.A называет это образцом. На чистой машине тест «до и после» покраснеет. Что поправить?",
    "kind": "развилка",
-   "status": "открыт",
+   "status": "решён",
    "addressee": "человек",
    "depends_on": [
     "F-100",
@@ -7041,9 +7045,9 @@
        "found": true
       },
       {
-       "path": "openspec/changes/implementation-consequences/specs/project-installer/spec.md",
-       "quote": "MUST NOT менять в глобальном конфиге OpenSpec что-либо, кроме добавления `continue` и названной смены профиля",
-       "line": 42,
+       "path": "openspec/changes/implementation-consequences/decisions.json",
+       "quote": "в глобальном конфиге меняется что-либо кроме добавления `continue` и названной смены профиля",
+       "line": 6691,
        "verdict": "сверено",
        "found": true
       }
@@ -7056,7 +7060,11 @@
     "why": "Вопрос F-100 был о списке workflow и профиле, про телеметрию в нём ничего нет. Слово владельца в этой сессии: «в рабочем контуре уже правильнее убирать телеметрию».",
     "text": "A — телеметрия в разрешённом"
    },
-   "decision": null,
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-01"
+   },
    "reversibility": {
     "level": "обратимо",
     "why": "Текст требования и тест; при B ещё строка `install`."
@@ -7072,7 +7080,7 @@
    "id": "F-108",
    "question": "При пустой описи F-48.A требует раздел pre-mortem «с тремя кандидатами», а F-46.A разрешает две причины и строку, почему третьей нет. Модель, честно видящая две причины при пустой описи, нарушит один из двух сценариев. Какое число действует при пустой описи?",
    "kind": "развилка",
-   "status": "открыт",
+   "status": "решён",
    "addressee": "человек",
    "depends_on": [
     "F-46",
@@ -7089,7 +7097,7 @@
       {
        "path": "openspec/changes/implementation-consequences/specs/consequence-inventory/spec.md",
        "quote": "**THEN** две причины и строка, почему третьей нет; при пяти — три наиболее вероятные кандидатами, остальные в разделе без записей журнала",
-       "line": 147,
+       "line": 145,
        "verdict": "сверено",
        "found": true
       }
@@ -7102,9 +7110,9 @@
      "unlikely": null,
      "evidence": [
       {
-       "path": "openspec/changes/implementation-consequences/specs/consequence-inventory/spec.md",
-       "quote": "**THEN** файл несёт причину и раздел pre-mortem с тремя кандидатами",
-       "line": 182,
+       "path": "openspec/changes/implementation-consequences/decisions.json",
+       "quote": "файл несёт причину и раздел pre-mortem с тремя кандидатами",
+       "line": 2870,
        "verdict": "сверено",
        "found": true
       }
@@ -7117,7 +7125,11 @@
     "why": "Рекомендация F-48 называла присутствие раздела, а не число: «pre-mortem идёт и при пустой описи». Довод F-46: принудительная третья причина — наполнитель.",
     "text": "A — число по правилу F-46.A"
    },
-   "decision": null,
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-01"
+   },
    "reversibility": {
     "level": "обратимо",
     "why": "Одна строка сценария."
@@ -7133,7 +7145,7 @@
    "id": "F-109",
    "question": "`edge_probe:` без значения: F-50.C считает это формой пустоты («включено»), F-51.A даёт `[!!]` с кодом 2 на значение не из `true | false`. Включено в обоих случаях, расходятся только сигнал и код выхода. Есть ли `[!!]` у пустого значения?",
    "kind": "развилка",
-   "status": "открыт",
+   "status": "решён",
    "addressee": "человек",
    "depends_on": [
     "F-50",
@@ -7150,7 +7162,7 @@
       {
        "path": "openspec/changes/implementation-consequences/decisions.json",
        "quote": "тест подаёт пустой файл, файл из комментариев и `edge_probe:` и утверждает, что состав везде «включено»",
-       "line": 3023,
+       "line": 3027,
        "verdict": "сверено",
        "found": true
       }
@@ -7165,7 +7177,7 @@
       {
        "path": "openspec/changes/implementation-consequences/specs/project-settings/spec.md",
        "quote": "**THEN** выбор считается включённым, `check` даёт `[!!] symphysis.yaml: недопустимое значение <значение>`, код 2",
-       "line": 31,
+       "line": 29,
        "verdict": "сверено",
        "found": true
       }
@@ -7178,7 +7190,11 @@
     "why": "Человек выбрал F-50.C, а не F-50.A с отдельным сигналом на пустое значение; довод выбранного варианта — формы пустоты читаются одинаково.",
     "text": "A — пустое значение равно отсутствию ключа"
    },
-   "decision": null,
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-01"
+   },
    "reversibility": {
     "level": "обратимо",
     "why": "Одна ветка разбора и случай в тесте."
@@ -7194,7 +7210,7 @@
    "id": "F-110",
    "question": "В какой форме `symphysis.yaml` и чем он читается? `journal.py` пакетов не использует, инсталлятор читает YAML пакетом `yaml`, а слово к F-51 требует одного поведения. В спеках предположение о вложенных ключах, а края F-50 и F-85 написаны плоско: `edge_probe:`.",
    "kind": "развилка",
-   "status": "открыт",
+   "status": "решён",
    "addressee": "человек",
    "depends_on": [
     "F-24",
@@ -7231,13 +7247,6 @@
      "added": false,
      "unlikely": null,
      "evidence": [
-      {
-       "path": "openspec/changes/implementation-consequences/specs/project-settings/spec.md",
-       "quote": "предположение: ключи `consequences.failure_branches`, `consequences.assumptions`, `edge_probe.enabled` со значениями `true | false`",
-       "line": 21,
-       "verdict": "сверено",
-       "found": true
-      },
       {
        "path": "openspec/changes/implementation-consequences/answers/2026-11-01.md",
        "quote": "При развитии symphysis будет также файл конфигурации всех подобных параметров и их умолчания.",
@@ -7276,7 +7285,11 @@
     "why": "Настроек три, и все логические. Общий файл случаев даёт согласованность, о которой просит слово к F-51, а перейти на вложенные ключи позже можно с появлением первой группы настроек.",
     "text": "A — плоский файл, одна грамматика, общие случаи тестов"
    },
-   "decision": null,
+   "decision": {
+    "option": "B",
+    "word": "Расширения будут скоро, поэтому можно закладываться сразу. пакет yaml почти наверняка есть, поэтому добавить его в зависимость это не дополнительная нагрузка.",
+    "date": "2026-11-01"
+   },
    "reversibility": {
     "level": "обратимо",
     "why": "Формат одного файла до первого выпуска; после выпуска смена потребует миграции личных файлов."
@@ -7284,7 +7297,7 @@
    "outcome": null,
    "parking": [],
    "dispute": "",
-   "consequences": "Снимает предположение о ключах в сценарии «Ключа нет»; определяет чтение в `journal.py`, скиллах и `check`.",
+   "consequences": "Вложенные ключи `consequences.failure_branches`, `consequences.assumptions`, `edge_probe.enabled`. Слово к варианту снимает цену варианта C, поэтому Python читает файл пакетом PyYAML, а не своим разбором отступов: так прочитано слово «добавить его в зависимость», вслух названо человеку. Пакет становится зависимостью инструментов журнала: шаг в руководстве, строка `check`, правка `installer/README.md` (F-113).",
    "evidence": [],
    "comments": []
   },
@@ -7292,7 +7305,7 @@
    "id": "F-111",
    "question": "Одиннадцать требований родились из решений проб и сами пробами не проходили: у них стоит след «пробами не проходило». Десять — узкие следствия решений. У одного, `install` вносит `symphysis.yaml` в `.gitignore` (F-94.E), есть открытые края: `.gitignore` нет; проект не под git; файл уже отслеживается git, и `.gitignore` его не снимет; правка `.gitignore` сама уходит в git команды. Что делать?",
    "kind": "развилка",
-   "status": "открыт",
+   "status": "решён",
    "addressee": "человек",
    "depends_on": [
     "F-94"
@@ -7338,7 +7351,7 @@
       {
        "path": "openspec/changes/implementation-consequences/specs/project-settings/spec.md",
        "quote": "**THEN** `symphysis.yaml` в коммит не попал, состав во втором клоне прежний",
-       "line": 40,
+       "line": 68,
        "verdict": "сверено",
        "found": true
       }
@@ -7351,7 +7364,11 @@
     "why": "Десять остальных — прямые следствия уже прожатых решений, а новое поведение появилось только у `.gitignore`. Отслеживаемый файл — единственный случай, где F-94.E не выполнится молча.",
     "text": "A — четыре сценария у `.gitignore`, остальным след"
    },
-   "decision": null,
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-01"
+   },
    "reversibility": {
     "level": "обратимо",
     "why": "Сценарии и одна строка `check`."
@@ -7367,7 +7384,7 @@
    "id": "F-112",
    "question": "След пробы лежит в теле требования, а тело считается в предел 500 символов: у десяти требований этого изменения больше 400, у самого длинного 494, и 150 из них — комментарии. Парсер форка комментарии не отсеивает, а `validate --strict` считает превышение ошибкой. Значит, подробный след проб красит чистую валидацию там, где смысл не нарушен. Где живёт след?",
    "kind": "развилка",
-   "status": "открыт",
+   "status": "решён",
    "addressee": "человек",
    "depends_on": [
     "F-13",
@@ -7434,7 +7451,11 @@
     "why": "Разбор останавливается на первом сценарии, поэтому строка после сценариев в предел не идёт: так уже устроена строка «без кандидата». Форк остаётся неизменным, как решено в F-13.A.",
     "text": "A — след после сценариев"
    },
-   "decision": null,
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-01"
+   },
    "reversibility": {
     "level": "обратимо",
     "why": "Шаблон и тексты скиллов; след переносится механически."
@@ -7444,6 +7465,51 @@
    "dispute": "",
    "consequences": "Шаблон `spec.md`, скиллы `symphysis-edge-probe` и `symphysis-prohibition-probe`, тест шаблона, следы в спеках этого изменения.",
    "evidence": [],
+   "comments": []
+  },
+  {
+   "id": "F-113",
+   "question": "PyYAML не «почти наверняка есть»: на этой машине он есть у `python` 3.14 и нет у `py -3.13` и `python3`. С настройками по умолчанию два читателя расходятся на значениях края F-51: `enabled: no` в PyYAML молча выключает выбор, а в пакете `yaml` остаётся строкой и даёт сигнал. Одно поведение дают `BaseLoader` и схема `failsafe`: значения приходят текстом и сравниваются с `true` и `false` дословно.",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "материалы",
+   "depends_on": [
+    "F-110",
+    "F-51"
+   ],
+   "delivery": "design: Context",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "Чтение текстом и общий файл случаев обязательны, иначе F-51.A не выполняется. Отсутствие пакета — сигнал и «всё включено», импорт только при чтении файла, иначе перестанут работать все команды журнала. `\"false\"` в кавычках читается как `false`.",
+   "evidence": [
+    {
+     "path": "openspec/changes/implementation-consequences/research/F-110.md",
+     "quote": "| `py -3.13` | нет пакета |",
+     "line": 18,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "openspec/changes/implementation-consequences/research/F-110.md",
+     "quote": "| `no` | `false` | `\"no\"` | `\"no\"` | `\"no\"` |",
+     "line": 29,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "installer/lib/check.js",
+     "quote": "Python: `python`, затем `python3`; версия не закрепляется.",
+     "line": 38,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
    "comments": []
   }
  ]

@@ -4,8 +4,6 @@
 
 ### Requirement: Артефакт `consequences` стоит между `specs` и `design`
 Схема `symphysis` SHALL задавать обязательный артефакт `consequences` с файлом `consequences.md`, который требует `specs`, а `design` SHALL требовать `consequences`; требование дополняет «Граф схемы начинается журналом и кончается атакой артефактов»: прочий порядок не меняется, форк OpenSpec SHALL NOT меняться (F-13.A, F-04).
-<!-- проба краёв: форма=collection, stateful, исходы: F-60 Specify, F-61 Specify, F-62 Backstop, F-63 Dismiss -->
-<!-- проба запретов: исходы: нет -->
 
 #### Scenario: Дизайн ждёт опись
 - **GIVEN** изменение с готовыми `specs` и без `consequences.md`
@@ -36,4 +34,6 @@
 - **GIVEN** `consequences.md` без описи и без причины
 - **WHEN** выполняется `journal.py check`
 - **THEN** `[!!] consequences.md: нет ни описи, ни причины`, код 0; `status` не меняется
+<!-- проба краёв: форма=collection, stateful, исходы: F-60 Specify, F-61 Specify, F-62 Backstop, F-63 Dismiss -->
+<!-- проба запретов: исходы: нет -->
 <!-- проба краёв, без кандидата: idempotency — край повторного шага F-44 -->
