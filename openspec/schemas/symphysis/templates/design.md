@@ -10,11 +10,11 @@
 
 ## Decisions
 
-<!-- генерируется `py -3.13 .symphysis/tools/journal.py render-design`: развилки со словом человека. Не править руками — правь журнал и рендери заново. -->
+<!-- генерируется `python .symphysis/tools/journal.py render-design`: развилки со словом человека. Не править руками — правь журнал и рендери заново. -->
 
 ## Risks / Trade-offs
 
-<!-- генерируется `py -3.13 .symphysis/tools/journal.py render-design`: улики за отвергнутые варианты решённых развилок. Не править руками. -->
+<!-- генерируется `python .symphysis/tools/journal.py render-design`: улики за отвергнутые варианты решённых развилок. Не править руками. -->
 
 ## Migration Plan
 
@@ -22,4 +22,4 @@
 
 ## Open Questions
 
-<!-- генерируется `py -3.13 .symphysis/tools/journal.py render-design`: развилки без решения, парковка с адресатом, спорные факты. Не править руками. -->
+<!-- генерируется `python .symphysis/tools/journal.py render-design`: развилки без решения, парковка с адресатом, спорные факты. Не править руками. -->

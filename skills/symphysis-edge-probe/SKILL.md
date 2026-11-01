@@ -53,16 +53,16 @@ no boundary exists" is valid; silence is not» (`edge-probe.md:89-90`);
 `<каталог изменения>/specs/<capability>/spec.md`, журнал —
 `<каталог изменения>/decisions.json` (тот же, что вёл брейншторм;
 кандидаты получают следующие номера F-NN). CLI —
-`py -3.13 .symphysis/tools/journal.py`:
+`python .symphysis/tools/journal.py`:
 
 ```bash
 # после каждой записи: схема и правила (код 1 — журнал негоден, чини), улики (сигнал)
-py -3.13 .symphysis/tools/journal.py check <каталог изменения>/decisions.json
-py -3.13 .symphysis/tools/journal.py render-md <каталог изменения>/decisions.json --out <каталог изменения>/decisions.md
+python .symphysis/tools/journal.py check <каталог изменения>/decisions.json
+python .symphysis/tools/journal.py render-md <каталог изменения>/decisions.json --out <каталог изменения>/decisions.md
 
 # круг просмотрщика: человек решает в HTML, промпт возврата вносит apply
-py -3.13 .symphysis/tools/journal.py render-html <каталог изменения>/decisions.json --out <каталог изменения>/decisions.html
-py -3.13 .symphysis/tools/journal.py apply <каталог изменения>/decisions.json <каталог изменения>/answers/<дата>.md
+python .symphysis/tools/journal.py render-html <каталог изменения>/decisions.json --out <каталог изменения>/decisions.html
+python .symphysis/tools/journal.py apply <каталог изменения>/decisions.json <каталог изменения>/answers/<дата>.md
 ```
 
 JSON правят только модель (кандидаты, `outcome`, `consequences`,

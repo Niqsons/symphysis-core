@@ -360,7 +360,7 @@ def test_design_template_marks_generated_sections():
     assert headings(text, 2) == ["Context", "Goals / Non-Goals", "Decisions", "Risks / Trade-offs",
                                  "Migration Plan", "Open Questions"]
     for title in ("Decisions", "Risks / Trade-offs", "Open Questions"):
-        assert "генерируется `py -3.13 .symphysis/tools/journal.py render-design`" in section(text, title), title
+        assert "генерируется `python .symphysis/tools/journal.py render-design`" in section(text, title), title
     for title in ("Context", "Goals / Non-Goals"):
         assert "render-design" not in section(text, title), title
     context = section(text, "Context")

@@ -149,6 +149,29 @@ test("бинаря нет ни в окружении, ни в PATH: не най�
   assert.ok(r.findings.some((f) => f.startsWith("openspec: не найден (SYMPHYSIS_OPENSPEC или PATH)") && f.includes(PIN)), JSON.stringify(r.findings));
 });
 
+test("python: находится по имени python, версия не закреплена", () => {
+  const found = spawnSync("python", ["-c", "import sys; print(sys.executable)"], { encoding: "utf8" });
+  assert.equal(found.status, 0, "нет python в PATH: тест не прогнать");
+  const p = installed();
+  const one = path.join(p, "openspec", "changes", "one");
+  fs.mkdirSync(one, { recursive: true });
+  fs.writeFileSync(path.join(one, "decisions.json"), JSON.stringify(MINIMAL_JOURNAL));
+  // В PATH только каталог настоящего python: других имён интерпретатора там нет.
+  process.env.PATH = path.dirname(found.stdout.trim());
+  process.env.Path = process.env.PATH;
+  const r = runCheck(p);
+  assert.ok(!r.findings.some((f) => f.startsWith("python:")), JSON.stringify(r.findings));
+  assert.match(r.notes.find((n) => n.startsWith("openspec/changes/one/decisions.json: ")) ?? "", /улик сверено/);
+});
+
+test("python не найден: finding называет имена без версии", () => {
+  const p = installed();
+  process.env.PATH = tmp();
+  process.env.Path = process.env.PATH;
+  const r = runCheck(p);
+  assert.ok(r.findings.includes("python: python или python3 не отвечает"), JSON.stringify(r.findings));
+});
+
 test("журнал: годный даёт note, негодный — finding", () => {
   const p = installed();
   const good = path.join(p, "openspec", "changes", "one");

@@ -20,7 +20,7 @@ artifacts:
       `intent.md` пуст (0 байт или одна строка заголовка) — сначала спроси намерение и сохрани ответ дословно по шаблону, затем круг.
       Загрузи скилл `symphysis-brainstorm` и проведи интервью по задаче: развилки и факты записывай в журнал `decisions.json` по шаблону.
       Решает человек, не ты: пока его слова нет, запись остаётся открытой.
-      Улики сверяет `py -3.13 .symphysis/tools/journal.py check <каталог изменения>/decisions.json` — это сигнал, не стоп.
+      Улики сверяет `python .symphysis/tools/journal.py check <каталог изменения>/decisions.json` — это сигнал, не стоп.
     requires:
       - intent
 
@@ -84,7 +84,7 @@ artifacts:
     description: Дизайн — как реализовать, решения из журнала
     template: design.md
     instruction: |
-      Получи design.md из журнала: `py -3.13 .symphysis/tools/journal.py render-design <каталог изменения>/decisions.json --out <каталог изменения>/design.md`.
+      Получи design.md из журнала: `python .symphysis/tools/journal.py render-design <каталог изменения>/decisions.json --out <каталог изменения>/design.md`.
       Decisions, Risks / Trade-offs и Open Questions приходят из журнала; чтобы их изменить, правь журнал и рендери заново.
       После последнего рендера впиши руками Context (состояние и ограничения; мотивацию — ссылкой на proposal.md) и Goals / Non-Goals (границы дизайна, без повтора proposal).
       Решение излагается, а не принимается: его уже принял человек.

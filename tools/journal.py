@@ -4,19 +4,19 @@
 
 Схема — `docs/journal.schema.json`. Ключи JSON английские, значения русские.
 
-    py -3.13 tools/journal.py import-md docs/plan-implementation.journal.md \
+    python tools/journal.py import-md docs/plan-implementation.journal.md \
         --out docs/plan-implementation.journal.json
-    py -3.13 tools/journal.py check docs/plan-implementation.journal.json [--strict] [--write]
-    py -3.13 tools/journal.py render-md docs/plan-implementation.journal.json \
+    python tools/journal.py check docs/plan-implementation.journal.json [--strict] [--write]
+    python tools/journal.py render-md docs/plan-implementation.journal.json \
         --out docs/plan-implementation.journal.md
-    py -3.13 tools/journal.py render-html docs/plan-implementation.journal.json \
+    python tools/journal.py render-html docs/plan-implementation.journal.json \
         --out docs/plan-implementation.html [--template tools/playground-template.html] \
         [--attack <каталог изменения>/attack/decisions.md [--attack <каталог изменения>/attack/artifacts.md]]
-    py -3.13 tools/journal.py render-design docs/plan-implementation.journal.json \
+    python tools/journal.py render-design docs/plan-implementation.journal.json \
         --out design.md
-    py -3.13 tools/journal.py apply docs/plan-implementation.journal.json answers.md \
+    python tools/journal.py apply docs/plan-implementation.journal.json answers.md \
         [--date YYYY-MM-DD] [--dry-run]
-    py -3.13 tools/journal.py apply-md4h docs/plan-implementation.journal.json feedback.md \
+    python tools/journal.py apply-md4h docs/plan-implementation.journal.json feedback.md \
         --render docs/plan-implementation.journal.md
 
 Markdown, HTML и design.md — производные от JSON: правится JSON, потом рендер. Корни путей

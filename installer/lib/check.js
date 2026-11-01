@@ -9,7 +9,6 @@ import { runOpenspec } from "./openspec-bin.js";
 import { telemetryState, TELEMETRY_OFF_COMMAND } from "./telemetry.js";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
-const win = process.platform === "win32";
 const TOOL_MODULES = ["journal.py", "journal_apply.py", "journal_cli.py", "journal_model.py", "journal_render.py"];
 
 const rel = (project, p) => path.relative(project, p).split(path.sep).join("/");
@@ -36,14 +35,11 @@ function openspecVersion() {
   return String(r.stdout).trim();
 }
 
-/** Python: на Windows `py -3.13`, иначе python3.13, затем python3. Возвращает { cmd, args, label } или null. */
+/** Python: `python`, затем `python3`; версия не закрепляется. Возвращает имя команды или null. */
 function findPython() {
-  const candidates = win
-    ? [{ cmd: "py", args: ["-3.13"], label: "py -3.13" }]
-    : [{ cmd: "python3.13", args: [], label: "python3.13" }, { cmd: "python3", args: [], label: "python3" }];
-  for (const c of candidates) {
-    const r = spawnSync(c.cmd, [...c.args, "--version"], { encoding: "utf8" });
-    if (!r.error && r.status === 0) return c;
+  for (const cmd of ["python", "python3"]) {
+    const r = spawnSync(cmd, ["--version"], { encoding: "utf8" });
+    if (!r.error && r.status === 0) return cmd;
   }
   return null;
 }
@@ -103,7 +99,7 @@ export function check(project, { skillsDirs = [], payloadDir = DEFAULT_PAYLOAD }
   for (const f of toolFiles) if (!fs.existsSync(f)) findings.push(`${rel(root, f)}: нет файла`);
 
   const py = findPython();
-  if (!py) findings.push(`python: ${win ? "py -3.13" : "python3.13 или python3"} не отвечает`);
+  if (!py) findings.push("python: python или python3 не отвечает");
 
   const changes = path.join(root, "openspec", "changes");
   const journalPy = path.join(toolsDir, "journal.py");
@@ -111,7 +107,7 @@ export function check(project, { skillsDirs = [], payloadDir = DEFAULT_PAYLOAD }
     for (const e of fs.readdirSync(changes, { withFileTypes: true }).sort((a, b) => a.name.localeCompare(b.name))) {
       const j = path.join(changes, e.name, "decisions.json");
       if (!e.isDirectory() || !fs.existsSync(j)) continue;
-      const r = spawnSync(py.cmd, [...py.args, "-X", "utf8", journalPy, "check", j], { encoding: "utf8" });
+      const r = spawnSync(py, ["-X", "utf8", journalPy, "check", j], { encoding: "utf8" });
       if (r.error || r.status !== 0) {
         const err = String(r.stderr ?? "");
         if (r.error || !err.includes("[!!]")) {

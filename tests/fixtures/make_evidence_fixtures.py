@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """Порождает бинарные файлы улик для tests/test_journal_check.py (F-42): запуск
-`py -3.13 -X utf8 tests/fixtures/make_evidence_fixtures.py` перезаписывает четыре файла рядом."""
+`python -X utf8 tests/fixtures/make_evidence_fixtures.py` перезаписывает четыре файла рядом."""
 import struct
 import zlib
 from pathlib import Path

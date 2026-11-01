@@ -93,7 +93,7 @@ instruction (`openspec instructions <артефакт> --change <имя> --json`
 
 ```bash
 # журнал (у обоих вызовов): check --write пишет line/found/verdict — хеш после него
-py -3.13 .symphysis/tools/journal.py check --write <каталог изменения>/decisions.json
+python .symphysis/tools/journal.py check --write <каталог изменения>/decisions.json
 # хеши — из каталога изменения; путь для `path:` — как печатает sha256sum, но без `*`
 # перед ним (Git Bash печатает `<хеш> *<путь>` — двоичный режим)
 (cd <каталог изменения> && sha256sum decisions.json)

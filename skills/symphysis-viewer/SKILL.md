@@ -60,17 +60,17 @@ Playground (`playground/SKILL.md`: один HTML-файл, живой перес
 ## Файлы и команды
 
 `<каталог изменения>` — `openspec/changes/<имя>/`. CLI —
-`py -3.13 .symphysis/tools/journal.py`:
+`python .symphysis/tools/journal.py`:
 
 ```bash
 # перед показом: схема и правила (код 1 — журнал негоден, чини), улики (сигнал), markdown
-py -3.13 .symphysis/tools/journal.py check <каталог изменения>/decisions.json
-py -3.13 .symphysis/tools/journal.py render-md <каталог изменения>/decisions.json --out <каталог изменения>/decisions.md
+python .symphysis/tools/journal.py check <каталог изменения>/decisions.json
+python .symphysis/tools/journal.py render-md <каталог изменения>/decisions.json --out <каталог изменения>/decisions.md
 # страница; --attack — файлы атаки для режима «атака», повторяемый; битый файл атаки — код 2
-py -3.13 .symphysis/tools/journal.py render-html <каталог изменения>/decisions.json --out <каталог изменения>/decisions.html \
+python .symphysis/tools/journal.py render-html <каталог изменения>/decisions.json --out <каталог изменения>/decisions.html \
     [--attack <каталог изменения>/attack/decisions.md] [--attack <каталог изменения>/attack/artifacts.md]
 # возврат: промпт из кнопки «Скопировать промпт» сохранён как есть; apply — всё или ничего
-py -3.13 .symphysis/tools/journal.py apply <каталог изменения>/decisions.json <каталог изменения>/answers/<дата>.md
+python .symphysis/tools/journal.py apply <каталог изменения>/decisions.json <каталог изменения>/answers/<дата>.md
 ```
 
 `render-html` сверяет улики в памяти и встраивает хеш файла журнала;
