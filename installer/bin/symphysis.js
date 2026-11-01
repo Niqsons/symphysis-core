@@ -1,18 +1,24 @@
 #!/usr/bin/env node
+import fs from "node:fs";
 import { parseArgs } from "node:util";
 import { install } from "../lib/install.js";
 import { check } from "../lib/check.js";
+import { readSettings, compositionLine } from "../lib/settings.js";
 
 const USAGE = `symphysis — схема OpenSpec symphysis, скиллы и инструменты журнала в проект
 
 Использование:
   symphysis install [--project <dir>] [--skills-dir <dir>]... [--force]
   symphysis check   [--project <dir>] [--skills-dir <dir>]...
+  symphysis config  [--project <dir>]
   symphysis --help
 
 Команды:
   install   поставить схему, скиллы и инструменты журнала в проект
   check     назвать расхождения установки и версии форка OpenSpec (не чинит)
+  config    показать состав из symphysis.yaml: ветки отказа, допущения, проба
+            краёв. Звать, когда человек хочет узнать, с чем пойдёт следующий шаг:
+            тот же состав и те же сигналы получает скилл от symphysis_config.py
 
 Параметры:
   --project <dir>     корень проекта (по умолчанию — текущий каталог)
@@ -21,7 +27,8 @@ const USAGE = `symphysis — схема OpenSpec symphysis, скиллы и ин
   --force             перезаписать существующее (install)
   -h, --help          эта справка
 
-Код выхода: 0 | 2 (расхождения или usage) | 1 (внутренняя ошибка)
+Код выхода: 0 | 2 (расхождения или usage) | 1 (внутренняя ошибка);
+у config сигналы код не меняют: 0, неверный --project — 2
 `;
 
 let parsed;
@@ -78,6 +85,15 @@ if (values.help || cmd === "help") {
   for (const n of r.notes) process.stdout.write(`[..] ${n}\n`);
   process.stdout.write(r.ok ? "check: ok\n" : `check: ${r.findings.length} расхождений\n`);
   process.exit(r.ok ? 0 : 2);
+} else if (cmd === "config") {
+  const project = values.project ?? process.cwd();
+  if (!fs.statSync(project, { throwIfNoEntry: false })?.isDirectory()) {
+    process.stderr.write(`symphysis config: --project: каталога нет: ${project}\n`);
+    process.exit(2);
+  }
+  const settings = readSettings(project);
+  process.stdout.write(`[..] ${compositionLine(settings)}\n`);
+  for (const s of settings.signals) process.stdout.write(`[!!] ${s}\n`);
 } else {
   process.stderr.write(`${cmd ? `неизвестная команда: ${cmd}\n\n` : ""}${USAGE}`);
   process.exit(2);

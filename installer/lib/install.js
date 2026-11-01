@@ -92,7 +92,7 @@ export function install(project, { skillsDirs = [], force = false, payloadDir = 
   }
 
   const toolsDir = path.join(t.toolsDir, "tools");
-  copyTree(res, root, path.join(payloadDir, "tools"), toolsDir, force, (f) => /^(journal.*\.py|playground-template\.html)$/.test(path.basename(f)));
+  copyTree(res, root, path.join(payloadDir, "tools"), toolsDir, force, (f) => /^(journal.*\.py|symphysis_config\.py|playground-template\.html)$/.test(path.basename(f)));
   place(res, root, path.join(t.toolsDir, "docs", "journal.schema.json"), fs.readFileSync(path.join(payloadDir, "docs", "journal.schema.json")), force);
   place(res, root, path.join(toolsDir, "journal-roots.json"), Buffer.from(ROOTS_CONTENT), force, { keepExisting: true });
 

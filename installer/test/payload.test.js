@@ -13,6 +13,7 @@ const FILES = [
   "tools/journal_render.py",
   "tools/journal_apply.py",
   "tools/journal_cli.py",
+  "tools/symphysis_config.py",
   "tools/playground-template.html",
   "docs/journal.schema.json",
 ];
