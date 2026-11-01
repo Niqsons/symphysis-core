@@ -185,15 +185,15 @@
 const JOURNAL = {
  "title": "Журнал решений: implementation-consequences",
  "source": "decisions.json",
- "sha256": "c3d12b72d64cc36880963b189e5b9dbf49d0ace35f6ca207f5d6ff353b02c849",
+ "sha256": "fa06ad57a69e79cd29d8d15f2e344904b624aaab97d0355decfa3a2efcef30b6",
  "stats": {
-  "records": 36,
+  "records": 37,
   "forks": 15,
-  "facts": 21,
-  "decided": 14,
+  "facts": 22,
+  "decided": 15,
   "parked": 0,
-  "evidence_total": 96,
-  "evidence_found": 96
+  "evidence_total": 99,
+  "evidence_found": 99
  },
  "records": [
   {
@@ -1766,7 +1766,7 @@ const JOURNAL = {
    "outcome": null,
    "parking": [],
    "dispute": "",
-   "consequences": "Группа задач стенда: ключ модели, верный счёт расхода, `arm.ps1` из сборки, новый снимок ветки, перенос водителя в постоянное место, проба и плечо C.",
+   "consequences": "Группа задач стенда: ключ модели, верный счёт расхода, `arm.ps1` из сборки, новый снимок ветки, проба и плечо C. Механики замера живут в `skills-factory` (F-37).",
    "evidence": [
     {
      "path": ".superpowers/sdd/plan-implementation.tasks/p_drive.py",
@@ -2179,7 +2179,7 @@ const JOURNAL = {
    "id": "F-36",
    "question": "Откуда контур берёт форк и symphysis? К F-31 выбрана буква A (тарболы), а слово описывает установку из репозиториев: «кажется, это больше похоже на варианта B».",
    "kind": "развилка",
-   "status": "открыт",
+   "status": "решён",
    "addressee": "человек",
    "depends_on": [
     "F-31",
@@ -2239,13 +2239,63 @@ const JOURNAL = {
     "why": "Это единственный вариант, в котором совпадают буква и слово к F-31, и он уже проверен пробой тарболов. Публичный репозиторий можно добавить позже без переделки.",
     "text": "A — оба из корпоративного репозитория, тарбол форка рядом"
    },
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-01"
+   },
+   "reversibility": {
+    "level": "обратимо",
+    "why": "Меняются скрипт сборки, раскладка выпуска и шаги GUIDE; способ доставки можно заменить без правки форка и схемы."
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "Скрипт сборки кладёт тарбол форка в каталог `vendor/` репозитория, GUIDE ведёт установку из клона. Абсолютные пути не вычищаются: слово владельца, F-37.",
+   "evidence": [],
+   "comments": [],
+   "finding": ""
+  },
+  {
+   "id": "F-37",
+   "question": "Раскладка по слову владельца: сами замеры лежат только на диске; механики прогона, раннеры, скрипты и правила судейства живут в `skills-factory`; доноры из `upstream/` не публикуются; абсолютные пути вида `C:\\Work` не вычищаются.",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "материалы",
+   "depends_on": [],
+   "delivery": "tasks",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
    "decision": null,
    "reversibility": null,
    "outcome": null,
    "parking": [],
    "dispute": "",
-   "consequences": "Определяет скрипт сборки, раскладку выпуска и первые шаги GUIDE. Перед корпоративным репозиторием нужна отдельная вычитка абсолютных путей.",
-   "evidence": [],
+   "consequences": "Правки водителя и сборок плеч идут в ветке стенда `skills-factory`, а не в этом репозитории. Контракт связанных репозиториев вне объёма этого изменения.",
+   "evidence": [
+    {
+     "path": "openspec/changes/implementation-consequences/answers/2026-11-01-repos.md",
+     "quote": "механики прогона, раннеры, скрипты, правила судейства, стоит складывать в skills-factory",
+     "line": 8,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "openspec/changes/implementation-consequences/answers/2026-11-01-repos.md",
+     "quote": "upstreams мы конечно не публикуем",
+     "line": 10,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "openspec/changes/implementation-consequences/answers/2026-11-01-repos.md",
+     "quote": "Абсолютные пути вида C:\\Work мы не чистим",
+     "line": 3,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
    "comments": [],
    "finding": ""
   }
@@ -2270,6 +2320,14 @@ const JOURNAL = {
   {
    "date": "2026-11-01",
    "text": "круг 1 закончен: решений 10, фактов 17, открытых развилок 0, парковок материалам 2"
+  },
+  {
+   "date": "2026-11-01",
+   "text": "круг 2 закончен: решений 5, фактов 5, открытых развилок 0, парковок материалам 0"
+  },
+  {
+   "date": "2026-11-01",
+   "text": "два круга пройдены — брейншторм закончен"
   }
  ]
 };
