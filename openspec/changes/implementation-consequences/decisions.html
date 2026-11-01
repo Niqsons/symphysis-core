@@ -185,7 +185,7 @@
 const JOURNAL = {
  "title": "Журнал решений: implementation-consequences",
  "source": "decisions.json",
- "sha256": "f903eca7e8d502ecc15ec7b24adb1aa68fff9a8f31509e6a11309c9bcd390c3f",
+ "sha256": "c3d12b72d64cc36880963b189e5b9dbf49d0ace35f6ca207f5d6ff353b02c849",
  "stats": {
   "records": 36,
   "forks": 15,
@@ -292,7 +292,7 @@ const JOURNAL = {
     {
      "addressee": "материалы",
      "text": "Что нужно для GUIDE. Выяснить: как сегодня собирается форк и пакет инсталлятора с чистой машины, какие шаги не описаны в `installer/README.md`, какой пример сквозного изменения годится для GUIDE. Читать: `installer/README.md`, `installer/package.json`, `docs/dry-run-journal.md`, `openspec/changes/calibration-fixes/`.",
-     "finding": "Отчёт `research/F-22.md`. Из двух тарболов на чистом каталоге всё ставится, `check: ok`. Но форка нет ни в одном удалённом репозитории, а `/opsx:continue` на чистой установке отсутствует и `check` этого не видит. Решения — F-28, F-29, F-31, F-32, F-34."
+     "finding": "Отчёт `research/F-22.md`. Из двух тарболов на чистом каталоге всё ставится, `check: ok`. Но форка нет ни в одном удалённом репозитории, а `/opsx:continue` на чистой установке отсутствует и `check` этого не видит. Решения — F-28, F-29, F-31, F-32, F-34. На чистом клоне тесты инсталлятора падают без форка в `upstream/openspec`: GUIDE даёт шаг для разработчика, а тесты должны называть причину."
     }
    ],
    "dispute": "",
@@ -307,7 +307,7 @@ const JOURNAL = {
     }
    ],
    "comments": [],
-   "finding": "Отчёт `research/F-22.md`. Из двух тарболов на чистом каталоге всё ставится, `check: ok`. Но форка нет ни в одном удалённом репозитории, а `/opsx:continue` на чистой установке отсутствует и `check` этого не видит. Решения — F-28, F-29, F-31, F-32, F-34."
+   "finding": "Отчёт `research/F-22.md`. Из двух тарболов на чистом каталоге всё ставится, `check: ok`. Но форка нет ни в одном удалённом репозитории, а `/opsx:continue` на чистой установке отсутствует и `check` этого не видит. Решения — F-28, F-29, F-31, F-32, F-34. На чистом клоне тесты инсталлятора падают без форка в `upstream/openspec`: GUIDE даёт шаг для разработчика, а тесты должны называть причину."
   },
   {
    "id": "F-27",
@@ -1692,7 +1692,7 @@ const JOURNAL = {
     {
      "path": "openspec/changes/implementation-consequences/research/F-22.md",
      "quote": "не найдено: удалённого репозитория у symphysis",
-     "line": 36,
+     "line": 38,
      "verdict": "сверено",
      "found": true
     },
