@@ -563,7 +563,7 @@ Non-Goals — что этот дизайн не делает:
 - [Risk] 1. Проведены новые прогоны на плечах: ванили, чистый промпт, P-чел на модели Opus 5.5. (F-133, отвергнут B: openspec/changes/implementation-consequences/intent.md:24) → Mitigation: решение A
 - [Risk] Остаток: четыре формы, разбор которых не догнать без своей грамматики (F-135, отвергнут A: openspec/changes/implementation-consequences/research/F-135.md:31) → Mitigation: решение B
 - [Risk] "yaml": "^2.9.1" (F-135, отвергнут C: installer/package.json:29) → Mitigation: решение B
-- [Risk] Иная — только с причиной в скобках (F-136, отвергнут A: skills/symphysis-attack/SKILL.md — цитаты нет дословно) → Mitigation: решение B
+- [Risk] иная — только с причиной в скобках той же ячейки (F-54.E) (F-136, отвергнут A: skills/symphysis-attack/TRANSLATION-NOTES.md:28) → Mitigation: решение B
 - [Risk] #### Scenario: Край без порчи (F-137, отвергнут B: openspec/changes/implementation-consequences/specs/requirement-probes/spec.md:44) → Mitigation: решение A
 
 ## Migration Plan

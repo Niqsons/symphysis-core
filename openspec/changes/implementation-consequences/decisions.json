@@ -9065,11 +9065,11 @@
      "unlikely": null,
      "evidence": [
       {
-       "path": "skills/symphysis-attack/SKILL.md",
-       "quote": "Иная — только с причиной в скобках",
-       "line": null,
-       "verdict": "цитаты нет дословно",
-       "found": false
+       "path": "skills/symphysis-attack/TRANSLATION-NOTES.md",
+       "quote": "иная — только с причиной в скобках той же ячейки (F-54.E)",
+       "line": 28,
+       "verdict": "сверено",
+       "found": true
       }
      ]
     },
