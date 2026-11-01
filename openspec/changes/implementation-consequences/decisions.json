@@ -30,6 +30,14 @@
   {
    "date": "2026-11-01",
    "text": "два круга пройдены — брейншторм закончен"
+  },
+  {
+   "date": "2026-11-01",
+   "text": "проба краёв: кандидатов 52, Specify 0, Dismiss 0, Backstop 0, Defer 0; без решения все: F-38…F-89 — нужен человек (просмотрщик decisions.html, режим «решения»)"
+  },
+  {
+   "date": "2026-11-01",
+   "text": "проба запретов: требований 26, оставлено 12, канон → ИБ 5 (парковок 6), Specify 0, Dismiss 0, Defer 0; без решения все: F-90…F-101 — нужен человек"
   }
  ],
  "records": [
@@ -2093,6 +2101,4359 @@
      "path": "openspec/changes/implementation-consequences/answers/2026-11-01-repos.md",
      "quote": "Абсолютные пути вида C:\\Work мы не чистим",
      "line": 3,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-38",
+   "question": "[empty · text] Опись лежит в файле, строка несёт ветку отказа и допущение о ней: файл из списка мест, в котором модель веток отказа не нашла (геттер, чистая функция): что стоит в описи вместо строки с `путь:строка «цитата»`?",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-14",
+    "F-15"
+   ],
+   "delivery": "specs/consequence-inventory",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN файл из списка мест без веток отказа WHEN модель пишет опись THEN строка «<механизм>: веток отказа не найдено, искал: <шаблоны>» без цитаты, сверка считает место разобранным",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — отдельной формы строки не будет: такой файл модель исключает строкой с причиной «веток отказа нет», исключение уже есть в F-15.D",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест шаблона описи подаёт строку «веток не найдено» без цитаты и утверждает, что сверка не шлёт по этому файлу `[!!]`; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — форма строки «веток нет» открыта до прогона шага на копиях (F-19.A); пока tasks считает, что такой файл исключается с причиной",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "«Не нашёл» и «не относится» — разные исходы: исключение с причиной стирает разницу, а рецепт «не найдено» плюс «искал» уже действует в `research/`.",
+    "text": "A — строка «веток не найдено, искал»"
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/implementation-consequences/specs/consequence-inventory/spec.md",
+     "quote": "### Requirement: Опись лежит в файле, строка несёт ветку отказа и допущение о ней",
+     "line": 8,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-39",
+   "question": "[encoding · text] Опись лежит в файле, строка несёт ветку отказа и допущение о ней: цитата из кода несёт `||` и обратный апостроф, а номер строки уже сместился: чем считается совпадение цитаты описи с файлом и кто его проверяет?",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-14",
+    "F-25"
+   ],
+   "delivery": "specs/consequence-inventory",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN строка описи с цитатой `a || b`, которой в файле нет дословно WHEN выполняется `journal.py check` THEN `[!!] consequences.md: <путь> «a || b» — цитаты нет дословно`, код 0; разбор строки держит `||` и апостроф, номер строки не сверяется",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — цитаты описи скрипт не сверяет: до человека доходят только кандидаты, а их улики `check` уже сверяет дословно; остальная опись — след, отдельной сверки не стоит",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест подаёт опись с цитатой, где `||` и неразрывный пробел, и верную цитату при неверном номере строки и утверждает: первая даёт сигнал, вторая нет; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — сверка цитат описи открыта, пока прогон на копиях (F-19.A) не покажет долю неверных цитат; пока tasks считает, что цитаты не сверяются",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "F-14 обещает строку, проверяемую по коду; сверка цитат уже есть у улик журнала, а номер строки устаревает первым и в сверку не входит.",
+    "text": "A — сигнал `check` по цитате, номер строки не сверяется"
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/implementation-consequences/specs/consequence-inventory/spec.md",
+     "quote": "### Requirement: Опись лежит в файле, строка несёт ветку отказа и допущение о ней",
+     "line": 8,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-40",
+   "question": "[idempotency · stateful] Состав строки описи следует настройкам проекта: опись написана при выключенных ветках отказа, человек включил их и зовёт шаг снова: `status` показывает `consequences` — `done`, и `/opsx:continue` к шагу не вернётся. Как получить опись по новому составу?",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-14",
+    "F-24"
+   ],
+   "delivery": "specs/consequence-inventory",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN `consequences.md`, написанный без колонки ветки, и ветки отказа, включённые после этого WHEN человек просит повторить шаг по имени THEN файл переписан целиком по новому составу; `status` сам шаг не открывает",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — повтора по смене настроек нет: выбор делается один раз до прогона (F-24.A), новый состав действует со следующего изменения",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест сверки подаёт опись старого состава при новых настройках и утверждает `[!!]` о расхождении состава и код 0; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — открыто вместе с краем повторного шага F-44; пока tasks считает, что смена состава действует со следующего изменения",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Выбор обратим только при способе повторить шаг, а повтор по слову человека не требует правки форка.",
+    "text": "A — повтор шага по слову человека, файл переписан целиком"
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/implementation-consequences/specs/consequence-inventory/spec.md",
+     "quote": "### Requirement: Состав строки описи следует настройкам проекта",
+     "line": 23,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-41",
+   "question": "[adjacency · collection] Места разбора предлагает скрипт, выбирает модель: `src/Foo.java` исключён строкой с причиной, а при разборе `src/Bar.java` модель выписала ветку из `src/Foo.java`: путь стоит и в исключениях, и в описи. Что показывает сверка?",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-15",
+    "F-25"
+   ],
+   "delivery": "specs/consequence-inventory",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN путь и в строке исключения, и в строке описи WHEN выполняется `journal.py check` THEN `[!!] consequences.md: src/Foo.java — исключён и разобран одновременно`, код 0",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — противоречия нет: файл исключён как место, а ветка в нём задета попутно; скрипт это не судит, слово владельца к F-15 оставляет суждение модели",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест подаёт такую опись и утверждает, что сверка считает место закрытым и сигнала не даёт; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — открыто до прогона на копиях (F-19.A): случается ли такое на деле; пока tasks считает место закрытым при любой из двух строк",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "B",
+    "why": "Место закрыто в обоих случаях: модель его видела, причина и строка лежат в файле, а лишний сигнал только шумит.",
+    "text": "B — сигнала нет, место закрыто"
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/implementation-consequences/specs/consequence-inventory/spec.md",
+     "quote": "### Requirement: Места разбора предлагает скрипт, выбирает модель",
+     "line": 39,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-42",
+   "question": "[adjacency · collection] В журнал идут только ветки без сценария: сценарий задевает ветку, но не проверяет её: в `specs/` есть инцидент при ненайденной переменной, а ветка кода на другом пути молча отдаёт пустое значение. Ветка покрыта или нет?",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-16",
+    "F-06"
+   ],
+   "delivery": "specs/consequence-inventory",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN сценарий, чей THEN не называет исход этой ветки WHEN шаг сверяет ветку со сценариями THEN ветка считается без сценария и идёт кандидатом, строка описи называет ближайший сценарий",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — покрытие судит модель по смыслу, правила не будет: F-15.D оставляет ей суждение, а спорный случай увидит атака по имени",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — контрольный случай в проверке шага на копиях (F-19.A): ветка потерянного пункта обязана дать кандидата, а не строку «сценарий есть»; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — критерий покрытия открыт до итога шага на копиях; пока tasks считает покрытым то, что модель назвала сценарием",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Цель шага — ветки вроде П7/Т3 и П10/Т1 (F-06): без критерия близкий сценарий засчитается, и ветка до человека не дойдёт. «THEN называет исход» проверяется чтением.",
+    "text": "A — покрыто, только если THEN называет исход ветки"
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/implementation-consequences/specs/consequence-inventory/spec.md",
+     "quote": "### Requirement: В журнал идут только ветки без сценария",
+     "line": 55,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-43",
+   "question": "[empty · collection] В журнал идут только ветки без сценария: ветки отказа выключены, допущения включены: веток нет, кандидатов ноль, и допущения до человека не доходят, хотя `design.md` видит только журнал (F-04). Что идёт в журнал?",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-16",
+    "F-14",
+    "F-24",
+    "F-04"
+   ],
+   "delivery": "specs/consequence-inventory",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN опись только из допущений WHEN шаг сверяет допущения со сценариями THEN допущение без сценария идёт кандидатом журнала с теми же четырьмя исходами",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — кандидатов в этом составе нет: F-16.A говорит о ветках, человек сам выключил их ради времени, а допущения остаются следом в файле",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест подаёт опись только из допущений при нуле кандидатов и утверждает сигнал `[!!]` «описи есть, кандидатов нет»; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — открыто до слова о том, нужен ли такой состав на деле; пока tasks считает, что допущения остаются в файле",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Иначе состав «только допущения» тратит время и ничего не меняет: F-16.C отклонён как раз за то, что найденное не доходит до `design.md`.",
+    "text": "A — допущение без сценария идёт кандидатом"
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/implementation-consequences/specs/consequence-inventory/spec.md",
+     "quote": "### Requirement: В журнал идут только ветки без сценария",
+     "line": 55,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-44",
+   "question": "[idempotency · stateful] В журнал идут только ветки без сценария: шаг повторён после прерывания или по слову человека: те же ветки заведут вторые кандидаты с новыми номерами, а по уже решённым появится дубль",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-16"
+   ],
+   "delivery": "specs/consequence-inventory",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN журнал с кандидатом на `src/Foo.java` и той же цитатой WHEN шаг повторяется THEN новой записи нет, строка описи называет прежний номер, решённая запись не меняется",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — повтор не предусмотрен: `status` показывает `done`, сам шаг не открывается, а дубль модель заметит при записи",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест подаёт журнал с кандидатом и второй кандидат с тем же путём и цитатой и утверждает `[!!]` о дубле, код 0; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — открыто до решения о повторе шага вообще; пока tasks считает, что шаг идёт один раз",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Для проб это уже решено: у края один номер и одно решение, дубль дал бы два решения на одну ветку.",
+    "text": "A — дубля нет, строка называет прежний номер"
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/implementation-consequences/specs/consequence-inventory/spec.md",
+     "quote": "### Requirement: В журнал идут только ветки без сценария",
+     "line": 55,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-45",
+   "question": "[concurrency · stateful] В журнал идут только ветки без сценария: шаг прерван между записью файла и заведением кандидатов: `consequences.md` есть, `status` — `done`, `design` открыт, а половины кандидатов в журнале нет",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-16",
+    "F-13"
+   ],
+   "delivery": "specs/consequence-inventory",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN шаг, прерванный до конца WHEN выполняется `status --json` THEN `consequences` ещё не `done`: кандидаты заводятся первыми, файл пишется последним",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — порядок записи не гарантируется: строка описи называет номер кандидата, пропуск виден при чтении, прерванный шаг человек повторит сам",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест подаёт опись, где ветка без сценария не называет номера записи, и утверждает `[!!]` в `check`, код 0; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — порядок записи открыт до скилла шага; пока tasks считает, что шаг не прерывается",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "`status` считает артефакт готовым по существованию файла, форк не меняется (F-13.A); файл последним закрывает край без новой механики.",
+    "text": "A — кандидаты первыми, файл последним"
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/implementation-consequences/specs/consequence-inventory/spec.md",
+     "quote": "### Requirement: В журнал идут только ветки без сценария",
+     "line": 55,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-46",
+   "question": "[boundary · numeric-range] Шаг заканчивается тремя причинами провала изменения: модель честно видит две причины или пять: «три» — норма, потолок или пол?",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-17",
+    "F-03"
+   ],
+   "delivery": "specs/consequence-inventory",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN модель нашла две причины WHEN пишет раздел THEN две причины и строка, почему третьей нет; при пяти — три наиболее вероятные кандидатами, остальные в разделе без записей журнала",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — ровно три без исключений, как в источнике: нехватка означает, что модель плохо искала",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест подаёт раздел с двумя и с четырьмя причинами и утверждает сигнал `[!!]`, а не отказ, код 0; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — открыто до шага на копиях (F-19.A): сколько причин выходит на деле; пока tasks считает «ровно три»",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Принудительная третья причина — наполнитель, а над недетерминированным артефактом скрипт и число суждение не ограничивают (слово владельца к F-15).",
+    "text": "A — три — норма, меньше с объяснением, больше без записей"
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/implementation-consequences/specs/consequence-inventory/spec.md",
+     "quote": "### Requirement: Шаг заканчивается тремя причинами провала изменения",
+     "line": 76,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "upstream/gsd-core/gsd-core/references/thinking-models-planning.md",
+     "quote": "List the 3 most likely reasons for failure",
+     "line": 15,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-47",
+   "question": "[adjacency · collection] Шаг заканчивается тремя причинами провала изменения: причина провала совпала с веткой, на которую уже заведён кандидат описи: вторая запись про то же самое?",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-17",
+    "F-16",
+    "F-09"
+   ],
+   "delivery": "specs/consequence-inventory",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN причина, совпадающая с кандидатом F-NN описи WHEN шаг пишет раздел pre-mortem THEN новой записи нет, раздел ссылается на F-NN, причин остаётся три",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — дубль допустим: pre-mortem смотрит на изменение целиком, вопрос у записи другой, лишнюю человек отведёт с причиной",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест подаёт раздел, где причина ссылается на существующий номер, и утверждает, что сверка принимает её как кандидата; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — открыто до шага на копиях (F-19.A); пока tasks считает, что у каждой причины своя запись",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Решение одно на край, а журнал и так вырос с 38 до 63 записей (F-09).",
+    "text": "A — ссылка на существующий кандидат"
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/implementation-consequences/specs/consequence-inventory/spec.md",
+     "quote": "### Requirement: Шаг заканчивается тремя причинами провала изменения",
+     "line": 76,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-48",
+   "question": "[empty · collection] Шаг без механизмов или без состава оставляет файл с причиной: опись пуста — нуль механизмов или все колонки выключены: идёт ли pre-mortem? F-24 перечисляет три выбора, pre-mortem среди них нет",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-17",
+    "F-24",
+    "F-13"
+   ],
+   "delivery": "specs/consequence-inventory",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN пустая опись по любой из двух причин WHEN шаг завершается THEN файл несёт причину и раздел pre-mortem с тремя кандидатами",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — pre-mortem не идёт: следствие F-24 называет файл «с этой причиной», а человек выключал колонки ради времени прогона",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест шаблона подаёт файл с причиной без раздела pre-mortem и утверждает, что артефакт годен; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — открыто до слова, нужен ли четвёртый выбор «pre-mortem» в `symphysis.yaml`; пока tasks считает, что при пустой описи его нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "F-17.A ставит причины на всё изменение, а не на механизмы; выключались колонки описи, и чтения кода причины не требуют.",
+    "text": "A — pre-mortem идёт и при пустой описи"
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/implementation-consequences/specs/consequence-inventory/spec.md",
+     "quote": "### Requirement: Шаг без механизмов или без состава оставляет файл с причиной",
+     "line": 92,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-49",
+   "question": "[idempotency · stateful] Шаг без механизмов или без состава оставляет файл с причиной: файл с причиной «механизмов нет» уже лежит, а новая решённая развилка принесла файл кода: `status` по-прежнему `done`",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-13",
+    "F-25"
+   ],
+   "delivery": "specs/consequence-inventory",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN `consequences.md` с причиной «механизмов нет» и список мест, ставший непустым WHEN выполняется `journal.py check` THEN `[!!]` по каждому новому месту, код 0, файл сам не меняется",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — файл остаётся как есть: шаг идёт после спек, новая развилка после него редка, и человек видит её в журнале",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест подаёт такой журнал и файл и утверждает сигнал по новому месту и код 0; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — открыто до шага на копиях; пока tasks считает файл с причиной окончательным",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Сверка и так сигналит место без разбора, отдельной механики не нужно; так же `research/none.md` уступает первой парковке.",
+    "text": "A — сигнал сверки по новому месту"
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/implementation-consequences/specs/consequence-inventory/spec.md",
+     "quote": "### Requirement: Шаг без механизмов или без состава оставляет файл с причиной",
+     "line": 92,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-50",
+   "question": "[empty · text] `symphysis.yaml` в корне проекта задаёт выбор перед запуском шага: файл есть, но пуст, только из комментариев, или ключ без значения (`edge_probe:`): включено, как при отсутствии, или ошибка?",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-24"
+   ],
+   "delivery": "specs/project-settings",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN `symphysis.yaml` с ключом без значения WHEN шаг читает файл THEN выбор включён, а `check` даёт `[!!] symphysis.yaml: ключ без значения`; пустой файл читается как все умолчания, без `[!!]`",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — пустое значение отдельно не разбирается: YAML отдаёт null, скилл читает его как отсутствие ключа, и отдельная строка `check` лишняя",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест подаёт пустой файл, файл из комментариев и `edge_probe:` и утверждает, что состав везде «включено»; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — открыто до появления следующих настроек (слово владельца к F-14); пока tasks считает пустое значение отсутствием ключа",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "C",
+    "why": "Смысл уже задан сценарием «Ключа нет», нужно только, чтобы три формы пустоты читались одинаково.",
+    "text": "C — тест-страховка на три формы пустоты"
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/implementation-consequences/specs/project-settings/spec.md",
+     "quote": "### Requirement: `symphysis.yaml` в корне проекта задаёт выбор перед запуском шага",
+     "line": 8,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-51",
+   "question": "[encoding · text] `symphysis.yaml` в корне проекта задаёт выбор перед запуском шага: значение `no`, `False`, `\"false\"` или `выкл`: разбор YAML в `check`, чтение моделью и Python без пакетов поймут его по-разному",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-24"
+   ],
+   "delivery": "specs/project-settings",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN значение не из `true | false` WHEN `check` и скилл читают файл THEN выбор считается включённым, `check` даёт `[!!] symphysis.yaml: недопустимое значение <значение>`, код 2",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — принимаются все формы, которые понимает разбор YAML: человек пишет как привык, расхождение читателей считается редким",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест подаёт `no`, `False`, `\"false\"`, `выкл` и утверждает, что `symphysis check` и `journal.py check` видят один состав; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — открыто до выбора, чем читает файл `journal.py`: пакетов у инструментов журнала нет; пока tasks считает допустимыми только `true` и `false`",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Сомнение решается во включённую сторону (умолчание F-24.A): опечатка не должна молча выключить пробу.",
+    "text": "A — только `true | false`, остальное включено и `[!!]`"
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/implementation-consequences/specs/project-settings/spec.md",
+     "quote": "### Requirement: `symphysis.yaml` в корне проекта задаёт выбор перед запуском шага",
+     "line": 8,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "installer/README.md",
+     "quote": "Ищется `python`, затем `python3`; версия не закрепляется, пакетов",
+     "line": 136,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-52",
+   "question": "[empty · text] Выключенный состав назван в артефакте шага: всё включено, выключать нечего: артефакт молчит или называет состав? По молчащему файлу не отличить «прочитал — всё включено» от «файл настроек не читал»",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-24"
+   ],
+   "delivery": "specs/project-settings",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN всё включено WHEN шаг пишет `consequences.md` THEN файл называет состав «ветки отказа, допущения» той же строкой, что и при выключенных",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — при полном составе строки нет: умолчание не несёт сигнала, лишняя строка читателю не нужна",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест шаблона утверждает, что строка состава есть в `consequences.md` при любых настройках; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — открыто до разбора шага на копиях; пока tasks считает строку нужной только при выключенном",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "«Не читал» и «прочитал — чисто» — разные исходы, а одна строка дешевле гадания при разборе прогона.",
+    "text": "A — строка состава есть всегда"
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/implementation-consequences/specs/project-settings/spec.md",
+     "quote": "### Requirement: Выключенный состав назван в артефакте шага",
+     "line": 44,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-53",
+   "question": "[concurrency · io] Руководство ведёт установку из клона репозитория: `npm i -g ./vendor/<тарбол>` обрывается: зависимости форка тянутся из реестра (F-31.A), а реестр недоступен или зеркало не настроено. Что читает человек?",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-31",
+    "F-36"
+   ],
+   "delivery": "specs/onboarding-guide",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN реестр npm недоступен WHEN шаг установки форка падает THEN `docs/GUIDE.md` называет эту причину и настройку зеркала, повтор после настройки ставит форк",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — сеть и зеркало руководство не разбирает: `npm` сам печатает ошибку реестра, а настройка зеркала своя в каждом контуре",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест запускает установку тарбола с заведомо неверным реестром и затем с верным и утверждает, что второй запуск ставит форк; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — открыто до первой установки в контуре: настройка зеркала там ещё не известна; пока tasks даёт только общую ссылку на зеркало",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Установка через зеркало — штатный путь контура по слову к F-31; неназванный обрыв на первом шаге читается как поломка.",
+    "text": "A — руководство называет причину и зеркало"
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/implementation-consequences/specs/onboarding-guide/spec.md",
+     "quote": "### Requirement: Руководство ведёт установку из клона репозитория",
+     "line": 8,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "openspec/changes/implementation-consequences/answers/2026-11-01-3.md",
+     "quote": "на данный момент openspec в контуре загружается через через зеркало или напрямую с github.",
+     "line": 2,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-54",
+   "question": "[idempotency · stateful] Руководство ведёт установку из клона репозитория: человек идёт по руководству второй раз при новой версии: новый тарбол, `install` без `--force` пропускает отличающиеся файлы схемы, `check` даёт `[!!]`",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-31",
+    "F-22"
+   ],
+   "delivery": "specs/onboarding-guide",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN установленный проект и клон с новой версией WHEN человек выполняет раздел «Обновление» THEN `git pull`, `npm i -g` нового тарбола, `install --force`, затем `check: ok`; `symphysis.yaml` и файл корней не тронуты",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — раздела обновления нет: цель критерия F-22 — первая установка, а `check` и так называет `--force`",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест инсталлятора ставит старую версию, затем новую с `--force` и утверждает `check: ok` и нетронутый `symphysis.yaml`; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — открыто до первого выпуска с новым форком; пока tasks считает, что руководство описывает только первую установку",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Обновление — названная цена варианта A F-31: «снова перенос файлов»; без шага в руководстве человек упрётся в `[!!]`.",
+    "text": "A — раздел «Обновление»"
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/implementation-consequences/specs/onboarding-guide/spec.md",
+     "quote": "### Requirement: Руководство ведёт установку из клона репозитория",
+     "line": 8,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-55",
+   "question": "[encoding · text] Руководство ведёт установку из клона репозитория: форма пути `--project`: `X:\\symphysis` без кавычек в Git Bash становится `X:symphysis`, инсталлятор молча ставит не туда, а `check` там же отвечает `ok`",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-22"
+   ],
+   "delivery": "specs/onboarding-guide",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN читатель на Windows WHEN копирует команду установки THEN `docs/GUIDE.md` даёт её отдельно для PowerShell и bash, с относительным путём и предупреждением о `\\` в Git Bash",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — примеры идут для одной оболочки: относительный путь одинаков везде, а абсолютные пути с `\\` руководство не показывает",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест запускает `install` в каталог без `openspec/` и утверждает предупреждение в stdout; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — открыто до прохождения на другой машине; пока tasks считает, что примеры идут на PowerShell",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Случай наблюдён на сухом прогоне и молчит: человек увидит `ok` и не узнает, что поставил не туда.",
+    "text": "A — команды для двух оболочек и предупреждение"
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/implementation-consequences/specs/onboarding-guide/spec.md",
+     "quote": "### Requirement: Руководство ведёт установку из клона репозитория",
+     "line": 8,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "docs/dry-run-journal.md",
+     "quote": "`X:\\symphysis` без кавычек в Git Bash превратился в drive-relative `X:symphysis`",
+     "line": 42,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-56",
+   "question": "[encoding · text] Учебный проект идёт настоящими командами и выводами: что считается совпадением вывода при повторе: вывод CLI воспроизводим с точностью до путей, а журнал и спеки пишет модель, и у читателя они будут другими",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-34"
+   ],
+   "delivery": "specs/onboarding-guide",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN блок вывода в руководстве WHEN читатель сравнивает его со своим THEN вывод CLI совпадает с точностью до путей, заменённых на `<каталог>`; артефакты модели помечены «пример, у читателя будет иначе»",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — совпадения не обещается вообще: выводы взяты из одного прохождения, читатель сам понимает, что это пример",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест сравнивает блоки вывода CLI из `docs/GUIDE.md` с выводом текущей версии на учебном проекте, пути нормализуются; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — открыто до самого прохождения; пока tasks считает, что разметки «пример» нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Иначе другой журнал читается как поломка, а отличие в `check` как норма.",
+    "text": "A — CLI дословно, артефакты модели — пример"
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/implementation-consequences/specs/onboarding-guide/spec.md",
+     "quote": "### Requirement: Учебный проект идёт настоящими командами и выводами",
+     "line": 24,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-57",
+   "question": "[idempotency · stateful] Учебный проект идёт настоящими командами и выводами: пин форка вырос или шаги схемы поменялись, а текст не перепроходили: команды и выводы в руководстве перестают быть настоящими",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-34"
+   ],
+   "delivery": "specs/onboarding-guide",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN рост `symphysis.openspecPin` WHEN готовится выпуск THEN прохождение по `docs/GUIDE.md` повторяется, и текст называет версию форка своего прохождения",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — повторного прохождения не требуется: руководство правят по мере замечаний, а выпуск редок",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест сравнивает версию форка, названную в `docs/GUIDE.md`, с `symphysis.openspecPin` и падает при расхождении; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — открыто до первого выпуска с новым форком; пока tasks считает прохождение разовым",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "C",
+    "why": "Падение теста само напомнит перепройти текст; обязывать каждый выпуск прогоном модели (цена F-34.A) дорого.",
+    "text": "C — тест версии в тексте против пина"
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/implementation-consequences/specs/onboarding-guide/spec.md",
+     "quote": "### Requirement: Учебный проект идёт настоящими командами и выводами",
+     "line": 24,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-58",
+   "question": "[empty · collection] Руководство покрывает все шаги OpenSpec: маленький учебный проект без своего кода: список мест пуст, шаг `consequences` покажет только файл «механизмов нет», и главный новый шаг читатель не увидит",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-34",
+    "F-13"
+   ],
+   "delivery": "specs/onboarding-guide",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN учебный проект WHEN читатель доходит до шага `consequences` THEN в проекте есть код, на который опирается решение журнала, и шаг показывает хотя бы одну строку описи и одного кандидата",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — шаг показывается файлом с причиной: учебному проекту важнее быстрый повтор, опись описывается словами",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест прохождения утверждает, что `consequences.md` учебного проекта несёт строку описи, а не только причину; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — открыто до выбора учебной задачи в `tasks.md`; пока tasks считает, что задача выбирается с кодом",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Цель изменения — этот шаг (F-06); руководство без него показывает прежнюю схему.",
+    "text": "A — в учебном проекте есть код и строка описи"
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/implementation-consequences/specs/onboarding-guide/spec.md",
+     "quote": "### Requirement: Руководство покрывает все шаги OpenSpec",
+     "line": 40,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-59",
+   "question": "[adjacency · collection] Руководство покрывает все шаги OpenSpec: «все шаги OpenSpec» и двенадцать workflow форка: `new`, `ff`, `verify`, `bulk-archive`, `onboard` установка не ставит. Где граница «всех»?",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-34",
+    "F-32"
+   ],
+   "delivery": "specs/onboarding-guide",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN `docs/GUIDE.md` WHEN читатель ищет шаг THEN описаны workflow, которые ставит установка: шесть профиля `core` и `continue`; об остальных одна строка: они есть и как их добавить",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — описаны все двенадцать, остальные коротко: слово к F-34 сказано «все шаги», а граница по установке — вывод модели",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест сравнивает список workflow из раздела руководства со списком после установки; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — открыто до расширения symphysis на шаги после tasks (слово владельца к F-34); пока tasks считает шагами только установленные",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Человеку нужно дойти до конца, а не узнать все команды; неустановленная команда в тексте сама ломает повтор.",
+    "text": "A — описаны установленные, об остальных строка"
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/implementation-consequences/specs/onboarding-guide/spec.md",
+     "quote": "### Requirement: Руководство покрывает все шаги OpenSpec",
+     "line": 40,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "upstream/openspec/src/core/profiles.ts",
+     "quote": "export const CORE_WORKFLOWS = ['propose', 'explore', 'apply', 'update', 'sync', 'archive'] as const;",
+     "line": 14,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-60",
+   "question": "[adjacency · collection] Артефакт `consequences` стоит между `specs` и `design`: изменение, начатое до появления артефакта: у `calibration-fixes` `design.md` уже есть, `consequences.md` нет; `consequences` всплывает `ready`, `isPlanningComplete` падает в `false`",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-13"
+   ],
+   "delivery": "specs/artifact-graph",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN изменение с `design.md` без `consequences.md` WHEN схема получает артефакт THEN до правки схемы у него написан `consequences.md` с причиной «шаг появился позже», `status` не ломается",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — ничего не делать: `design` остаётся `done` по файлу, `apply` описи не требует, а `false` у старых изменений допустим",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест подаёт изменение с `design.md` без описи и утверждает, что `apply` не заблокирован, а `consequences` — `ready`; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — открыто до порядка архивации `calibration-fixes`; пока tasks считает, что оно архивируется раньше правки схемы",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Так уже решено для `intent`: файл до правки схемы.",
+    "text": "A — файл с причиной до правки схемы"
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/implementation-consequences/specs/artifact-graph/spec.md",
+     "quote": "### Requirement: Артефакт `consequences` стоит между `specs` и `design`",
+     "line": 5,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "openspec/changes/calibration-fixes/specs/artifact-graph/spec.md",
+     "quote": "#### Scenario: Изменения, начатые до появления intent",
+     "line": 30,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-61",
+   "question": "[empty · collection] Артефакт `consequences` стоит между `specs` и `design`: `consequences.md` в 0 байт или с одним заголовком: `status` считает шаг `done` по существованию файла, `design` открыт, хотя ни описи, ни причины нет",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-13",
+    "F-25"
+   ],
+   "delivery": "specs/artifact-graph",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN `consequences.md` без описи и без причины WHEN выполняется `journal.py check` THEN `[!!] consequences.md: нет ни описи, ни причины`, код 0; `status` не меняется",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — пустой файл не разбирается: его пишет скилл за один проход, руками его не создают",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест подаёт файл в 0 байт и файл с одним заголовком и утверждает сигнал и код 0; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — открыто до шага на копиях; пока tasks считает, что файл всегда непуст",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Форк не меняется (F-13.A), поэтому гейта здесь нет, и сигнал — самое дешёвое место; тот же край был у `intent.md`.",
+    "text": "A — сигнал `check`, `status` не меняется"
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/implementation-consequences/specs/artifact-graph/spec.md",
+     "quote": "### Requirement: Артефакт `consequences` стоит между `specs` и `design`",
+     "line": 5,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-62",
+   "question": "[ordering · collection] Артефакт `consequences` стоит между `specs` и `design`: после `specs` готовы сразу `consequences` и `security`: `security.md`, написанный раньше описи, не увидит сценариев, которые добавит Specify из описи",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-13"
+   ],
+   "delivery": "specs/artifact-graph",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN готовые `specs` WHEN `/opsx:continue` выбирает следующий артефакт THEN идёт `consequences`, потому что схема объявляет его раньше `security`; формально `security` описи не ждёт",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — порядок не важен: чек-лист канона строится по парковкам и требованиям, а новые сценарии из описи канона обычно не добавляют",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест схемы утверждает, что `consequences` объявлен раньше `security` и `design`; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — открыто до решения, должен ли `security` требовать `consequences`; пока tasks оставляет `security` зависимым только от `specs`",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "C",
+    "why": "Порядок выбора уже следует порядку объявления; нужно только, чтобы правка схемы его не сломала, а смена зависимости `security` вышла бы за F-13.A.",
+    "text": "C — тест порядка объявления"
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/implementation-consequences/specs/artifact-graph/spec.md",
+     "quote": "### Requirement: Артефакт `consequences` стоит между `specs` и `design`",
+     "line": 5,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "upstream/openspec/src/core/artifact-graph/graph.ts",
+     "quote": "// Start with roots (in-degree 0), in declaration order for determinism",
+     "line": 112,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-63",
+   "question": "[concurrency · stateful] Артефакт `consequences` стоит между `specs` и `design`: `specs` правятся после `consequences.md`: Specify из описи сам добавляет сценарий, новый круг проб тоже; `status` показывает `done`, хеша целей, как у атак, у описи нет",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-13",
+    "F-16"
+   ],
+   "delivery": "specs/artifact-graph",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN `specs/` новее `consequences.md` WHEN выполняется `journal.py check` THEN `[..] consequences.md старше specs/`, код 0",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — устаревание допустимо: опись — след на момент шага, а правка спек её же кандидатами — штатный ход",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест утверждает, что правка спек после описи не блокирует `design`; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — открыто до решения о хешах целей у описи; пока tasks считает опись следом без сверки свежести",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "B",
+    "why": "Specify из описи правит спеки штатно, сигнал срабатывал бы на каждом прогоне, а сверка по времени файлов ломается на клоне.",
+    "text": "B — устаревание допустимо"
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/implementation-consequences/specs/artifact-graph/spec.md",
+     "quote": "### Requirement: Артефакт `consequences` стоит между `specs` и `design`",
+     "line": 5,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-64",
+   "question": "[adjacency · collection] Проба краёв даёт каждому требованию строку по всем восьми категориям: требования с одним именем в двух capabilities: строки покрытия сольются, а сверка посчитает их одним требованием",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-18"
+   ],
+   "delivery": "specs/requirement-probes",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN `### Requirement: Foo` в двух файлах `specs/` WHEN проба пишет покрытие THEN ключ строки — `<capability>/<имя>`, строк шестнадцать",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — коллизий на деле нет: имена длинные и описательные, `validate` держит уникальность внутри capability, а совпадение между ними редкость",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест подаёт две спеки с одинаковым именем требования и утверждает, что сверка ждёт шестнадцать строк; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — открыто до выбора формата файла покрытия; пока tasks считает ключом имя требования",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Ключ с capability ничего не стоит и нужен сверке в любом случае.",
+    "text": "A — ключ `<capability>/<имя>`"
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/implementation-consequences/specs/requirement-probes/spec.md",
+     "quote": "### Requirement: Проба краёв даёт каждому требованию строку по всем восьми категориям",
+     "line": 5,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-65",
+   "question": "[empty · collection] Проба краёв даёт каждому требованию строку по всем восьми категориям: дельта с `## REMOVED Requirements` или capability только с ними: нужна ли строка покрытия на снятое требование?",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-18"
+   ],
+   "delivery": "specs/requirement-probes",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN дельта с REMOVED и RENAMED WHEN сверка считает пары THEN в счёт идут только требования из ADDED и MODIFIED; нет таких — нет строк и нет сигнала",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — правила не нужно: у снятого требования строка `неприменимо: снято` пишется без труда, сверке особый случай не нужен",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест подаёт дельту только с REMOVED и утверждает отсутствие сигнала о покрытии; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — открыто до первого такого изменения; пока tasks считает, что снятых требований нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Восемь строк «неприменимо» на снятое требование — чистый шум.",
+    "text": "A — только ADDED и MODIFIED"
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/implementation-consequences/specs/requirement-probes/spec.md",
+     "quote": "### Requirement: Проба краёв даёт каждому требованию строку по всем восьми категориям",
+     "line": 5,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-66",
+   "question": "[idempotency · stateful] Проба краёв даёт каждому требованию строку по всем восьми категориям: проба повторена после правки или переименования требования: старые строки остаются сиротами, а у кандидатов уже есть номера и решения",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-18"
+   ],
+   "delivery": "specs/requirement-probes",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN файл покрытия и переименованное требование WHEN проба повторяется THEN файл переписан целиком, номер и решение кандидата сохранены по категории и новому имени, старых строк нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — повторная проба только дописывает: лишние строки сверка не считает, сигнал идёт лишь на нехватку, а история видна в файле",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест подаёт покрытие с лишней строкой про несуществующее требование и утверждает отсутствие сигнала; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — открыто до первого повторного прогона пробы; пока tasks считает, что проба идёт один раз",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Край, решённый в журнале, второй раз не поднимается, и файл покрытия обязан это отражать.",
+    "text": "A — файл переписан, номера сохранены"
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/implementation-consequences/specs/requirement-probes/spec.md",
+     "quote": "### Requirement: Проба краёв даёт каждому требованию строку по всем восьми категориям",
+     "line": 5,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-67",
+   "question": "[empty · text] Сырой список различает «не нашли» и «нашли, но не выбрали»: строка `не найдено:` с пустым хвостом: по ней не отличить поиск от отписки, а сверка требует причину только у `неприменимо` и `не выбран`",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-18",
+    "F-11",
+    "F-25"
+   ],
+   "delivery": "specs/requirement-probes",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN строка `не найдено:` без того, что проверялось WHEN выполняется `journal.py check` THEN `[!!]` с именем требования и категорией, код 0",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — хвоста у `не найдено` не требуется: край не найден, описывать нечего, причину требуют только отказы",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест подаёт такую строку и утверждает сигнал и код 0; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — открыто до прогонов на моделях слабее (F-10): там и будет видно, пишут ли хвост; пока tasks считает его необязательным",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Рецепт «не найдено» плюс «искал» уже действует в `research/`, а цель пола — различить «не нашли» и молчание (F-11).",
+    "text": "A — сигнал на пустой хвост"
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/implementation-consequences/specs/requirement-probes/spec.md",
+     "quote": "### Requirement: Сырой список различает «не нашли» и «нашли, но не выбрали»",
+     "line": 16,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-68",
+   "question": "[encoding · text] Сырой список различает «не нашли» и «нашли, но не выбрали»: край в строке несёт `|`, `;` или перевод строки, потому что в нём цитата кода: таблица рвётся, разбор `<край>; <причина>` режет не там",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-18"
+   ],
+   "delivery": "specs/requirement-probes",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN край с `;` и `||` WHEN сверка разбирает строку THEN значение определяется по первому слову, хвост не режется, `|` экранируется как в рендере журнала",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — разбор края не нужен: сверка смотрит только на первое слово и непустой хвост, порча таблицы ей не мешает",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест подаёт строку с `;`, `||` и переносом и утверждает, что число строк и значения посчитаны верно; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — открыто до выбора формата файла: таблица или список; пока tasks считает файл таблицей",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "C",
+    "why": "Край известен, но зависит от формата файла, который решается при реализации; строка спеки его не прояснит.",
+    "text": "C — тест на `;`, `||` и перенос"
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/implementation-consequences/specs/requirement-probes/spec.md",
+     "quote": "### Requirement: Сырой список различает «не нашли» и «нашли, но не выбрали»",
+     "line": 16,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-69",
+   "question": "[empty · text] Текст пробы объясняет задачу подробнее: «подробнее» без меры: текст можно считать выполненным при одном новом абзаце. Что подтверждает, что объяснения хватает?",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-18",
+    "F-10"
+   ],
+   "delivery": "specs/requirement-probes",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN новый текст скилла WHEN читатель ищет разницу напоминания и края THEN в тексте есть пара «напоминание — край» на данных одного требования",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — мера не нужна: судит владелец чтением, как записано в требовании; проверка механикой подменила бы суждение",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест текста утверждает, что в `SKILL.md` названы все четыре значения строки покрытия и у каждого есть пример; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — мера открыта до прогонов на моделях слабее (F-10), которые уже в планах; пока tasks считает достаточным чтение владельца",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "C",
+    "why": "Наличие определений и примеров проверяется механически, а достаточность остаётся за чтением владельца.",
+    "text": "C — тест наличия четырёх значений и примеров"
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/implementation-consequences/specs/requirement-probes/spec.md",
+     "quote": "### Requirement: Текст пробы объясняет задачу подробнее",
+     "line": 31,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-70",
+   "question": "[idempotency · stateful] Пробу краёв можно выключить, по умолчанию она включена: проба выключена после первого прохода: в журнале уже есть кандидаты и файл покрытия, и шаг `specs` завершается снова",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-18",
+    "F-24"
+   ],
+   "delivery": "specs/requirement-probes",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN журнал с кандидатами пробы, файл покрытия и выключенная проба WHEN шаг `specs` завершается снова THEN записи и файл остаются, новых нет, сверка покрытия молчит, след называет выключение рядом с прежними номерами",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — выключать после начала не предполагается: выбор делается до прогона (F-24.A), смешанное состояние человек устроил сам",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест подаёт такой журнал при выключенной пробе и утверждает: записи на месте, сигнала покрытия нет; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — открыто до первого такого случая; пока tasks считает, что выбор не меняется внутри изменения",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Удаление решённых записей стёрло бы слово человека, а молчание сверки уже записано в требовании.",
+    "text": "A — записи остаются, сверка молчит"
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/implementation-consequences/specs/requirement-probes/spec.md",
+     "quote": "### Requirement: Пробу краёв можно выключить, по умолчанию она включена",
+     "line": 42,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-71",
+   "question": "[adjacency · collection] Подкоманда журнала предлагает места кода: один файл в уликах трёх развилок и в разном написании (`src\\Foo.java`, `src/Foo.java`, регистр диска): сколько мест в списке?",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-15"
+   ],
+   "delivery": "specs/decision-journal",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN такие улики WHEN выполняется `code-sites` THEN одна строка с нормализованным путём и тремя номерами записей",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — нормализации нет: скрипт только предлагает, дубль модель видит сама",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест подаёт три написания одного пути и утверждает одну строку; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — открыто до шага на копиях; пока tasks считает, что пути в уликах пишутся одинаково",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Сверка сравнивает список с описью по пути: без одной формы пути сигналы будут ложными.",
+    "text": "A — одна строка, нормализованный путь"
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/implementation-consequences/specs/decision-journal/spec.md",
+     "quote": "### Requirement: Подкоманда журнала предлагает места кода",
+     "line": 5,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-72",
+   "question": "[empty · collection] Подкоманда журнала предлагает места кода: выбранный вариант без улик: варианты, добавленные человеком (как F-15.D), улик не несут, и развилка не даёт в список ничего, хотя её решение может называть код",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-15"
+   ],
+   "delivery": "specs/decision-journal",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN решённая развилка с выбранным вариантом без улик WHEN выполняется `code-sites` THEN вывод несёт `[..] F-NN: выбранный вариант без улик`, код 0",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — молчать: модель читает журнал и дополнит список сама (F-15.D), строка сигнала повторит очевидное",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест подаёт журнал из одной такой развилки и утверждает пустой список и код 0; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — открыто до шага на копиях: сколько таких вариантов на деле; пока tasks считает, что они в список не входят",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Слово человека — самое сильное решение журнала, и пропуск его файлов в списке должен быть виден.",
+    "text": "A — сигнал о варианте без улик"
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/implementation-consequences/specs/decision-journal/spec.md",
+     "quote": "### Requirement: Подкоманда журнала предлагает места кода",
+     "line": 5,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-73",
+   "question": "[encoding · text] Подкоманда журнала предлагает места кода: что считается файлом кода: в уликах лежат `docs/*.md`, `schema.yaml`, `decisions.json`, `upstream/...`. Где граница?",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-15",
+    "F-08"
+   ],
+   "delivery": "specs/decision-journal",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN улики `src/Foo.java`, `docs/plan.md`, `openspec/schemas/x/schema.yaml`, `openspec/changes/y/decisions.json` WHEN выполняется `code-sites` THEN в списке `src/Foo.java` и `schema.yaml`; `.md` и файлы каталогов изменений не входят",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — в список идут все файлы улик: скрипт только предлагает, лишнее модель исключит строкой",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест подаёт журнал со всеми четырьмя видами файлов и утверждает состав списка; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — граница открыта до шага на копиях, где ожидается 6–9 файлов (F-08); пока tasks считает кодом всё, кроме `.md`",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Со всеми файлами сверка шумит на документах и заставляет исключать их строками, а счёт F-08 шёл только по файлам кода.",
+    "text": "A — всё, кроме `.md` и файлов каталогов изменений"
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/implementation-consequences/specs/decision-journal/spec.md",
+     "quote": "### Requirement: Подкоманда журнала предлагает места кода",
+     "line": 5,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-74",
+   "question": "[boundary · numeric-range] `check` сигналит расхождение описи со списком мест: файл считается разобранным при одной строке описи: модель выписала одну ветку из двенадцати, сигнала нет",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-15",
+    "F-25"
+   ],
+   "delivery": "specs/decision-journal",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN `src/Foo.java` с одной строкой описи WHEN выполняется `journal.py check` THEN сигнала нет, вывод несёт счёт `мест разобрано N из M, строк K` для чтения человеком",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — сверка только о наличии: глубину судит модель, скрипт над недетерминированным артефактом её не считает (слово владельца к F-15)",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест подаёт файл с одной строкой описи и утверждает отсутствие сигнала и код 0; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — открыто до шага на копиях (F-19.A): он покажет, сколько строк на файл выходит; пока tasks считает порог равным одной строке",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "B",
+    "why": "Порог по числу строк над суждением модели прямо против слова к F-15; глубину увидит прогон на копиях.",
+    "text": "B — сверка только о наличии"
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/implementation-consequences/specs/decision-journal/spec.md",
+     "quote": "### Requirement: `check` сигналит расхождение описи со списком мест",
+     "line": 26,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-75",
+   "question": "[empty · collection] `check` сигналит расхождение описи со списком мест: `consequences.md` ещё нет: шаг не пройден или журнал старого изменения. Каждое место сигналит или сверка молчит?",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-25",
+    "F-13"
+   ],
+   "delivery": "specs/decision-journal",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN изменение без `consequences.md` WHEN выполняется `journal.py check` THEN сверки описи нет, строк `[!!]` о ней нет, код 0",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — нет файла — сигнал на все места: шаг пропущен, и это надо видеть",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест подаёт журнал с решёнными развилками без `consequences.md` и утверждает отсутствие строк о сверке; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — открыто до архивации `calibration-fixes`; пока tasks считает, что сверка идёт только при файле",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "`status` и так показывает, что артефакта нет, а `symphysis check` гоняет `journal.py check` по каждому изменению, и старые шумели бы вечно.",
+    "text": "A — нет файла — нет сверки"
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/implementation-consequences/specs/decision-journal/spec.md",
+     "quote": "### Requirement: `check` сигналит расхождение описи со списком мест",
+     "line": 26,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-76",
+   "question": "[adjacency · collection] `check` сигналит расхождение описи со списком мест: строка описи называет `src\\Foo.java:270`, список — `src/Foo.java`: совпадение при номере строки, другом разделителе и префиксе корня вроде `calibration/`",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-25",
+    "F-15"
+   ],
+   "delivery": "specs/decision-journal",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN такие написания WHEN выполняется `journal.py check` THEN сравнение идёт по пути без `:строка`, с прямыми разделителями и тем же префиксом корня, место закрыто",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — сравнение точное: опись пишет путь так, как дала подкоманда, и шаблон строки это требует",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест подаёт все написания одного пути и утверждает отсутствие сигнала; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — открыто до формата строки описи в шаблоне; пока tasks считает пути совпадающими дословно",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Модель пишет пути как придётся, а ложный сигнал быстро приучит его не читать.",
+    "text": "A — сравнение по нормализованному пути"
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/implementation-consequences/specs/decision-journal/spec.md",
+     "quote": "### Requirement: `check` сигналит расхождение описи со списком мест",
+     "line": 26,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-77",
+   "question": "[empty · collection] `check` сигналит неполное покрытие пробы краёв: файла покрытия нет при включённой пробе: журнал старого изменения (у `calibration-fixes` пробы без файла) или шаг `specs` не дошёл до пробы. Сколько строк в выводе?",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-25",
+    "F-18"
+   ],
+   "delivery": "specs/decision-journal",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN нет файла покрытия, проба включена, в `specs/` есть требования WHEN выполняется `journal.py check` THEN одна строка `[!!] edge-probe.md: файла нет`, а не по строке на пару, код 0",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — нет файла — молчать: журналы до появления пола остаются без шума, а пропуск пробы виден по отсутствию кандидатов",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест подаёт журнал старого изменения и утверждает не более одной строки о покрытии; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — открыто до архивации `calibration-fixes`, чей журнал и даёт этот случай; пока tasks считает, что без файла покрытие не сверяется",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Пропуск пробы молчать не должен (F-25.A), а восемь строк на пару утопили бы вывод.",
+    "text": "A — одна строка о файле"
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/implementation-consequences/specs/decision-journal/spec.md",
+     "quote": "### Requirement: `check` сигналит неполное покрытие пробы краёв",
+     "line": 52,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-78",
+   "question": "[adjacency · collection] `check` сигналит неполное покрытие пробы краёв: сигналы сверки и `symphysis check`: инсталлятор берёт из вывода `journal.py check` только строку «улик сверено», строки `[!!]` об описи и покрытии до человека не дойдут",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-25"
+   ],
+   "delivery": "specs/decision-journal",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN журнал с сигналом сверки WHEN выполняется `symphysis check` THEN сигнал показан строкой `[..] <журнал>: ...`, код выхода не меняется",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — инсталлятор не показывает: сигналы видны при прямом `journal.py check`, который скилл зовёт после каждой записи",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест инсталлятора подаёт такой журнал и утверждает, что сигнал есть в выводе и код 0; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — открыто до контрольного теста контракта ядра с плагином; пока tasks считает, что сигнал виден только в `journal.py check`",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "F-25.A обещает, что человек видит расхождение, а `check` инсталлятора — его основная точка входа.",
+    "text": "A — сигнал виден и в `symphysis check`"
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/implementation-consequences/specs/decision-journal/spec.md",
+     "quote": "### Requirement: `check` сигналит неполное покрытие пробы краёв",
+     "line": 52,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "installer/lib/check.js",
+     "quote": "const line = lines.find((l) => l.includes(\"улик сверено\")) ?? \"\";",
+     "line": 119,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-79",
+   "question": "[adjacency · collection] `install` добавляет workflow `continue` и обновляет проект: у профиля `core` форк игнорирует список `workflows`: `config set workflows` при умолчании ничего не даст, нужен ещё `profile: custom`, а кастомный профиль форк сам больше не пополняет",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-32",
+    "F-29"
+   ],
+   "delivery": "specs/project-installer",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN глобальный конфиг с `profile: core` без `workflows` WHEN выполняется `install` THEN `profile: custom`, `workflows` — шесть профиля `core` и `continue`, stdout называет обе правки, `/opsx:continue` есть",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — только `config set workflows`, профиль не трогать: F-32.A говорит о списке; на чистой установке с `core` команда не появится, человек сменит профиль сам",
+     "added": false,
+     "unlikely": null,
+     "evidence": [],
+     "deviation": "F-22"
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест с временным конфигом ставит на чистом `profile: core` и утверждает наличие `.claude/commands/opsx/continue.md` и набор workflow; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — открыто до слова о том, допустима ли смена профиля; пока tasks считает, что при `core` `install` печатает команду смены вместо правки",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Иначе выбранный вариант F-32 на чистой установке не работает: умолчание форка — `core`.",
+    "text": "A — при `core` — `custom` с шестью и `continue`"
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/implementation-consequences/specs/project-installer/spec.md",
+     "quote": "### Requirement: `install` добавляет workflow `continue` и обновляет проект",
+     "line": 5,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "upstream/openspec/src/core/profiles.ts",
+     "quote": "- 'core' profile always returns CORE_WORKFLOWS",
+     "line": 40,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "upstream/openspec/src/core/update.ts",
+     "quote": "do not mutate them.",
+     "line": 942,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-80",
+   "question": "[idempotency · stateful] `install` добавляет workflow `continue` и обновляет проект: `continue` уже в списке: повторный `install` снова пишет конфиг и зовёт обновление проекта, хотя «Повторная установка» обещает пустой список записанных",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-32"
+   ],
+   "delivery": "specs/project-installer",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN `continue` в списке и команда в проекте WHEN `install` выполняется снова THEN глобальный конфиг не изменён байт в байт, обновление проекта не зовётся, строки о workflow в stdout нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — повторная запись безвредна: значение то же, а обновление форка при совпадении ничего не меняет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест выполняет два `install` подряд с временным конфигом и утверждает совпадение SHA-256 конфига; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — открыто до реализации шага; пока tasks считает повторную запись допустимой",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Идемпотентность `install` уже записана в существующем требовании.",
+    "text": "A — конфиг не тронут, обновления нет"
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/implementation-consequences/specs/project-installer/spec.md",
+     "quote": "### Requirement: `install` добавляет workflow `continue` и обновляет проект",
+     "line": 5,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-81",
+   "question": "[concurrency · io] `install` добавляет workflow `continue` и обновляет проект: `openspec` не найден или `openspec init` не делался: `config set` прошёл, а обновление проекта упало. Глобальный конфиг уже изменён, команды в проекте нет",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-32"
+   ],
+   "delivery": "specs/project-installer",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN форка нет в PATH или проект без настроенного клиента WHEN выполняется `install` THEN схема и скиллы поставлены, stdout называет команду для выполнения позже, код 0; `check` даёт `[!!] continue`",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — `install` падает с кодом 2 до первой записи: без форка и `init` ставить нечего",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест запускает `install` без форка и утверждает код 0 и печать команды; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — открыто до порядка шагов в руководстве; пока tasks считает, что `init` и форк всегда есть до `install`",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Так уже устроена телеметрия: `install` печатает команду и продолжает, а `check` всё равно назовёт отсутствие команды.",
+    "text": "A — печать команды и код 0, как у телеметрии"
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/implementation-consequences/specs/project-installer/spec.md",
+     "quote": "### Requirement: `install` добавляет workflow `continue` и обновляет проект",
+     "line": 5,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "installer/README.md",
+     "quote": "и продолжает установку.",
+     "line": 114,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-82",
+   "question": "[encoding · text] `check` называет отсутствие команды `/opsx:continue`: что значит «команда есть» у другого клиента и при `delivery: skills`: `.claude/commands/opsx/continue.md`, скилл `openspec-continue-change` или каталог другого клиента?",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-32",
+    "F-34"
+   ],
+   "delivery": "specs/project-installer",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN проект с настроенным клиентом WHEN выполняется `check` THEN команда считается установленной, если у этого клиента есть файл команды или скилл `openspec-continue-change`; строка называет клиента",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — только путь Claude Code: прохождение и прогоны идут на нём (F-34), другие клиенты не проверяются",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест подаёт проект с `delivery: skills` без файла команды и утверждает отсутствие `[!!] continue`; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — открыто до проверки других клиентов; пока tasks считает признаком файл команды Claude Code",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Инсталлятор не привязан к клиенту (`--skills-dir`), а код 2 у другого клиента ломал бы `check` без причины.",
+    "text": "A — файл команды или скилл у настроенного клиента"
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/implementation-consequences/specs/project-installer/spec.md",
+     "quote": "### Requirement: `check` называет отсутствие команды `/opsx:continue`",
+     "line": 26,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-83",
+   "question": "[empty · text] `check` называет отсутствие команды `/opsx:continue`: клиент не настроен: `openspec init` не делался или каталог вообще не проект, а `check` против неверного каталога уже отвечал `ok`",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-32",
+    "F-29"
+   ],
+   "delivery": "specs/project-installer",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN каталог без настроенного клиента WHEN выполняется `check` THEN `[!!] continue: клиент не настроен — выполнить: openspec init --tools <клиент>`, код 2",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — нет клиента — нет строки: `check` проверяет поставленное symphysis, а `init` не его забота",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест запускает `check` в каталоге без `.claude/` и утверждает строку `[!!]` и код 2; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — открыто до порядка шагов в руководстве; пока tasks считает, что `check` зовут только в настроенном проекте",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Случай наблюдён на сухом прогоне: `ok` в неверном каталоге скрывает ошибку установки.",
+    "text": "A — `[!!]` с командой `init`"
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/implementation-consequences/specs/project-installer/spec.md",
+     "quote": "### Requirement: `check` называет отсутствие команды `/opsx:continue`",
+     "line": 26,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "docs/dry-run-journal.md",
+     "quote": "`check` против неверного каталога (`installer/symphysis/`) дал `check: ok`",
+     "line": 43,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-84",
+   "question": "[encoding · text] `install` создаёт `symphysis.yaml`, если файла нет, и не перезаписывает его: человек правит `symphysis.yaml` редактором, который пишет BOM или CP1251: `check` и чтение файла расходятся или падают",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-24"
+   ],
+   "delivery": "specs/project-installer",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN `symphysis.yaml` с BOM и второй случай в CP1251 WHEN выполняется `check` THEN BOM принимается, не UTF-8 даёт `[!!] symphysis.yaml: не UTF-8`, код 2",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — край не покрывается: файл создаётся в UTF-8 без BOM, чужая кодировка — забота редактора",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест подаёт BOM и CP1251 и утверждает, что `check` отвечает строкой, а не исключением; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — открыто до первой правки файла человеком; пока tasks считает файл UTF-8 без BOM",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "На Windows это обычный случай, а падение `check` назвало бы причину хуже, чем строка.",
+    "text": "A — BOM принят, не UTF-8 — `[!!]`"
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/implementation-consequences/specs/project-installer/spec.md",
+     "quote": "### Requirement: `install` создаёт `symphysis.yaml`, если файла нет, и не перезаписывает его",
+     "line": 42,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-85",
+   "question": "[empty · text] `check` показывает состав из `symphysis.yaml`: проект поставлен раньше, `symphysis.yaml` нет: умолчания действуют законно, а `check` обычно называет отсутствующий файл `[!!]` с кодом 2",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-24"
+   ],
+   "delivery": "specs/project-installer",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN проект без `symphysis.yaml` WHEN выполняется `check` THEN `[..] symphysis.yaml: нет файла, действует всё включено; создать: symphysis install`, код не меняется",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — нет файла — `[!!]` с кодом 2, как у остальных файлов установки: единообразие важнее",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест запускает `check` без файла и утверждает строку `[..]` и код 0; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — открыто до первого обновления старых проектов; пока tasks считает отсутствие файла сигналом",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Отсутствие законно по F-24.A; код 2 ломал бы `check` проектам, которым менять нечего.",
+    "text": "A — сигнал `[..]`, код не меняется"
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/implementation-consequences/specs/project-installer/spec.md",
+     "quote": "### Requirement: `check` показывает состав из `symphysis.yaml`",
+     "line": 58,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-86",
+   "question": "[empty · collection] Скрипт сборки кладёт тарбол форка в `vendor/`: в клоне нет `upstream/openspec`, каталог вне git: скрипт сборки запущен на чистом клоне",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-36",
+    "F-22"
+   ],
+   "delivery": "specs/project-installer",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN клон без `upstream/openspec` WHEN запускается скрипт сборки THEN код 1, stderr называет ветку `openspec-fork` и команду её получения, `vendor/` не меняется",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — скрипт запускает только выпускающий, у него форк есть, а ошибки `npm pack` о нехватке каталога достаточно",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест запускает скрипт с пустым путём форка и утверждает код 1 и неизменный `vendor/`; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — открыто до раздела для разработчика в руководстве; пока tasks считает, что форк у выпускающего есть",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "F-22 уже показал: падение без форка читается как поломка, причину надо называть.",
+    "text": "A — код 1 и ветка `openspec-fork` в stderr"
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/implementation-consequences/specs/project-installer/spec.md",
+     "quote": "### Requirement: Скрипт сборки кладёт тарбол форка в `vendor/`",
+     "line": 74,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-87",
+   "question": "[adjacency · collection] Скрипт сборки кладёт тарбол форка в `vendor/`: в `vendor/` рядом старый тарбол и новый: `npm i -g ./vendor/<тарбол>` двусмысленна, а F-36.A предупреждает о бинарном файле на каждую версию",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-36"
+   ],
+   "delivery": "specs/project-installer",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN `vendor/` с тарболом прежней версии WHEN скрипт кладёт новый THEN прежний удалён, в каталоге один `*.tgz`",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — прежние остаются для отката: имя файла называет версию, выбор человек делает сам",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест репозитория утверждает ровно один `*.tgz` в `vendor/`; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — открыто до первого выпуска с новым форком; пока tasks считает тарбол единственным",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "История git и так хранит прежний файл, а один файл снимает двусмысленность шага установки.",
+    "text": "A — один тарбол в `vendor/`"
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/implementation-consequences/specs/project-installer/spec.md",
+     "quote": "### Requirement: Скрипт сборки кладёт тарбол форка в `vendor/`",
+     "line": 74,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-88",
+   "question": "[concurrency · io] Скрипт сборки кладёт тарбол форка в `vendor/`: порядок эффектов: форк поднят, тарбол собран, а `openspecPin` в `installer/package.json` остался прежним, или наоборот: `check` откажет сразу после установки",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-36",
+    "F-31"
+   ],
+   "delivery": "specs/project-installer",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN версия в `upstream/openspec/package.json` отличается от `symphysis.openspecPin` WHEN запускается скрипт сборки THEN код 1, stderr называет обе версии, тарбол не кладётся",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — сверки в скрипте нет: расхождение поймает `check` у первого, кто поставит, и выпуск перепакуют",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест репозитория сравнивает версию в имени тарбола из `vendor/` с `symphysis.openspecPin`; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — открыто до выбора, поднимает ли пин сам скрипт; пока tasks считает пин ручной правкой",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Ошибка выпуска должна падать у выпускающего, а не на чужой машине.",
+    "text": "A — скрипт сверяет версию с пином"
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/implementation-consequences/specs/project-installer/spec.md",
+     "quote": "### Requirement: Скрипт сборки кладёт тарбол форка в `vendor/`",
+     "line": 74,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-89",
+   "question": "[empty · text] Скрипт сборки кладёт тарбол форка в `vendor/`: `symphysis.openspecSource` остаётся плейсхолдером: без форка `check` печатает `<URL репозитория форка — плейсхолдер>` в строке «нужен форк»",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-36",
+    "F-28"
+   ],
+   "delivery": "specs/project-installer",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN форка нет WHEN выполняется `check` THEN строка называет `vendor/<тарбол>` и команду `npm i -g`; поле `openspecSource` заполнено этим путём",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — поле остаётся: `docs/GUIDE.md` даёт путь, строка `check` вторична",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест утверждает, что вывод `check` без форка не содержит слова «плейсхолдер»; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — открыто до адреса корпоративного репозитория (слово к F-31); пока tasks оставляет плейсхолдер",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Источник форка по F-36.A теперь известен: `vendor/`; строка отказа — первое, что увидит человек без форка.",
+    "text": "A — `check` называет `vendor/<тарбол>`"
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/implementation-consequences/specs/project-installer/spec.md",
+     "quote": "### Requirement: Скрипт сборки кладёт тарбол форка в `vendor/`",
+     "line": 74,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "installer/package.json",
+     "quote": "\"openspecSource\": \"<URL репозитория форка — плейсхолдер>\"",
+     "line": 26,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-90",
+   "question": "[запрет] Опись лежит в файле, строка несёт ветку отказа и допущение о ней: не должен выдавать пересказ кода по памяти за ветку отказа: строка без прочитанного файла выглядит проверенной",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-14"
+   ],
+   "delivery": "specs/consequence-inventory",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify/test — требование MUST NOT: строка описи без `путь:строка «цитата»` при включённых ветках; тест сверки подаёт такую строку и утверждает `[!!]`",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Specify/judgment — требование MUST NOT: ветка записана без чтения файла; судит человек или атака, сверяя две выборочные строки с кодом",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Dismiss — запрет не нужен: цитата уже обязательна в требовании, а чтение файла моделью тестом не измерить",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — открыто до шага на копиях (F-19.A): встречаются ли такие строки; пока tasks считает запрета нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Форма строки проверяется механически, а без цитаты строка не проверяема вовсе (F-14).",
+    "text": "A — тест сверки на строку без цитаты"
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/implementation-consequences/specs/consequence-inventory/spec.md",
+     "quote": "### Requirement: Опись лежит в файле, строка несёт ветку отказа и допущение о ней",
+     "line": 8,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-91",
+   "question": "[запрет] Места разбора предлагает скрипт, выбирает модель: не должен стать способом снять шаг: все места исключены шаблонной причиной, сверка зелёная, описи нет",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-15",
+    "F-25"
+   ],
+   "delivery": "specs/consequence-inventory",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify/test — требование MUST NOT: все места исключены одной и той же причиной; тест сверки подаёт такой файл и утверждает `[!!]`",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Specify/judgment — требование MUST NOT: исключение без довода о конкретном файле; судит человек, читая раздел исключений, или атака",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Dismiss — запрет не нужен: F-15.D отдаёт выбор модели, причина лежит в файле на виду",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — открыто до шага на копиях: сколько мест исключают на деле; пока tasks считает исключение свободным",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "B",
+    "why": "Одинаковую причину поймал бы тест, а отписку разными словами — только чтение; скрипт суждение модели не ограничивает (F-25.A).",
+    "text": "B — судит человек или атака"
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/implementation-consequences/specs/consequence-inventory/spec.md",
+     "quote": "### Requirement: Места разбора предлагает скрипт, выбирает модель",
+     "line": 39,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-92",
+   "question": "[запрет] В журнал идут только ветки без сценария: не должен стать стеной решений: кандидатов столько, что человек перестаёт читать варианты; журнал уже вырос с 38 до 63 записей (F-09)",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-16",
+    "F-19",
+    "F-09"
+   ],
+   "delivery": "specs/consequence-inventory",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify/test — требование MUST NOT: шаг без счёта; тест утверждает строку `notes[]` с числом веток и кандидатов шага",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Specify/judgment — требование MUST NOT: кандидат на ветку, которая не меняет поведения изменения; судит человек в просмотрщике, отводя такие записи Dismiss",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Dismiss — запрет не нужен: F-16.A уже оставил в журнале только непокрытое, а F-19.A считает кандидатов; порог без данных был бы выдумкой",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — порог числа кандидатов открыт до итога шага на копиях (F-19.A); пока tasks считает порога нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "C",
+    "why": "Объём уже ограничен F-16.A и будет сосчитан проверкой F-19.A; порог без данных был бы выдумкой.",
+    "text": "C — объём ограничен F-16.A и считается F-19.A"
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/implementation-consequences/specs/consequence-inventory/spec.md",
+     "quote": "### Requirement: В журнал идут только ветки без сценария",
+     "line": 55,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-93",
+   "question": "[запрет] Шаг заканчивается тремя причинами провала изменения: не должен стать ритуалом: три общие причины из примера источника вместо причин этого изменения",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-17",
+    "F-03"
+   ],
+   "delivery": "specs/consequence-inventory",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify/test — требование MUST NOT: причина без ссылки на артефакт изменения; тест сверки подаёт причину без `F-NN`, пути или имени требования и утверждает `[!!]`",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Specify/judgment — требование MUST NOT: причина, верная для любого изменения; судит человек в просмотрщике, подставляя в неё другое изменение",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Dismiss — запрет не нужен: общую причину человек и так отведёт Dismiss",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — открыто до шага на копиях: какие причины выходят на деле; пока tasks считает запрета нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "B",
+    "why": "Общность причины тестом не измерить, а пример источника прямо подсказывает общие формулировки.",
+    "text": "B — судит человек в просмотрщике"
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/implementation-consequences/specs/consequence-inventory/spec.md",
+     "quote": "### Requirement: Шаг заканчивается тремя причинами провала изменения",
+     "line": 76,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "upstream/gsd-core/gsd-core/references/thinking-models-planning.md",
+     "quote": "missing dependency, wrong decomposition, underestimated complexity",
+     "line": 15,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-94",
+   "question": "[запрет] `symphysis.yaml` в корне проекта задаёт выбор перед запуском шага: не должен из выбора одного человека ради времени стать молчаливым выключением проверок у всей команды через git",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-24"
+   ],
+   "delivery": "specs/project-settings",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify/test — требование MUST NOT: выключенный состав без строки в `symphysis check`; тест запускает `check` на проекте с выключенной пробой и утверждает строку состава",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Specify/judgment — требование MUST NOT: коммит, снижающий состав, без упоминания в сообщении; судит ревьюер изменения",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Dismiss — запрет не нужен: файл — настройка проекта, правка видна в истории git и в строке `check`, команде решать вместе",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — открыто до решения, живёт ли файл в git или остаётся личной настройкой; пока tasks считает его файлом проекта в git",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "C",
+    "why": "Видимость уже есть: требование о строке `check` и след в артефакте шага; отдельного запрета это не требует.",
+    "text": "C — видимость уже есть"
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/implementation-consequences/specs/project-settings/spec.md",
+     "quote": "### Requirement: `symphysis.yaml` в корне проекта задаёт выбор перед запуском шага",
+     "line": 8,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-95",
+   "question": "[запрет] Шаг читает выбор в начале и человека не спрашивает: не должен позволить модели самой поменять `symphysis.yaml`, чтобы успеть или сократить шаг",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-24",
+    "F-14"
+   ],
+   "delivery": "specs/project-settings",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify/test — требование MUST NOT: шаг правит файл настроек; тест проверки шага на копии утверждает неизменный SHA-256 файла",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Specify/judgment — требование MUST NOT: модель меняет выбор или решает за человека ради времени; судит человек по диффу коммита шага или атака",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Dismiss — запрет не нужен: файл только читают, инструкции записи в нём нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — открыто до скилла шага; пока tasks считает, что файл только читается",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "B",
+    "why": "Выбор принадлежит человеку (слово к F-14); на модели тест годен только в прогоне, а дифф виден всегда.",
+    "text": "B — судит человек по диффу или атака"
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/implementation-consequences/specs/project-settings/spec.md",
+     "quote": "### Requirement: Шаг читает выбор в начале и человека не спрашивает",
+     "line": 28,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-96",
+   "question": "[запрет] Выключенный состав назван в артефакте шага: не должен позволять читать выключенную часть как пройденную проверку: `status` — `done`, `check: ok`, а ветки никто не разбирал",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-24"
+   ],
+   "delivery": "specs/project-settings",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify/test — требование MUST NOT: выключенная часть без видимого признака; тест утверждает, что `journal.py check` на таком изменении печатает `[..] <часть>: выключено настройкой`",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Specify/judgment — требование MUST NOT: читатель принимает выключенное за пройденное; судит человек при чтении `design.md` и `status`",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Dismiss — запрет не нужен: артефакт шага уже называет выключенное, других признаков не требуется",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — открыто до шага на копиях; пока tasks считает признаком только строку артефакта",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Тот же разрыв уже закрыт для атак требованием «Невызванная атака видна в status» в `calibration-fixes`.",
+    "text": "A — тест строки `check`"
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/implementation-consequences/specs/project-settings/spec.md",
+     "quote": "### Requirement: Выключенный состав назван в артефакте шага",
+     "line": 44,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-97",
+   "question": "[запрет] Руководство ведёт установку из клона репозитория: не должен умолчать, что шаги меняют глобальное окружение: `npm i -g` и список workflow глобального конфига касаются других проектов читателя",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-32",
+    "F-36"
+   ],
+   "delivery": "specs/onboarding-guide",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify/test — требование MUST NOT: шаг с глобальным эффектом без пометки и отката; тест текста утверждает пометку и команду отката рядом с `npm i -g` и описанием `install`",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Specify/judgment — требование MUST NOT: читатель узнаёт о глобальном эффекте постфактум; судит владелец чтением при прохождении",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Dismiss — запрет не нужен: `install` сам печатает правку конфига, а `npm i -g` общеизвестен",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — открыто до прохождения; пока tasks считает достаточной печать `install`",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "B",
+    "why": "Достаточность предупреждения тестом не измерить; на сухом прогоне этот эффект был отмечен как побочный.",
+    "text": "B — судит владелец при прохождении"
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/implementation-consequences/specs/onboarding-guide/spec.md",
+     "quote": "### Requirement: Руководство ведёт установку из клона репозитория",
+     "line": 8,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-98",
+   "question": "[запрет] Учебный проект идёт настоящими командами и выводами: не должен нести чужой код, рабочие имена и материалы замеров: руководство уйдёт в корпоративный репозиторий и к людям",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-34"
+   ],
+   "delivery": "specs/onboarding-guide",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify/test — требование MUST NOT: в `docs/GUIDE.md` имена и код из рабочих задач; тест — гейт имён по файлу и отсутствие выдержек из замеров",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Specify/judgment — требование MUST NOT: пример опирается на чужой материал; судит владелец чтением перед выпуском",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Dismiss — запрет не нужен: F-34.A уже выбрал учебный проект вместо выдержек",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — открыто до выбора учебной задачи; пока tasks считает, что задача своя",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Гейт имён уже есть и дешёв; выдержки F-34.B были отвергнуты в том числе за чужой код.",
+    "text": "A — гейт имён по файлу"
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/implementation-consequences/specs/onboarding-guide/spec.md",
+     "quote": "### Requirement: Учебный проект идёт настоящими командами и выводами",
+     "line": 24,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-99",
+   "question": "[запрет] Сырой список различает «не нашли» и «нашли, но не выбрали»: не должен превратить `не выбран` в молчаливый Dismiss мимо человека: модель отводит край причиной, которой человек не увидит",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-18",
+    "F-11"
+   ],
+   "delivery": "specs/requirement-probes",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify/test — требование MUST NOT: итог пробы без счёта строк `не выбран`; тест утверждает строку `notes[]` с их числом и именами требований",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Specify/judgment — требование MUST NOT: в `не выбран` уходит край, меняющий поведение требования; судит человек или атака выборкой из файла покрытия",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Dismiss — запрет не нужен: файл покрытия сам и есть след для атаки и разбора, а F-18.B выносит человеку только кандидатов",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — открыто до прогонов на моделях слабее (F-10): как часто модель берёт это значение; пока tasks считает запрета нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Отказ без слова человека — тот самый молчаливый отказ, который закрывает проба; счёт в итоге механичен и делает его видимым.",
+    "text": "A — счёт `не выбран` в итоге пробы"
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/implementation-consequences/specs/requirement-probes/spec.md",
+     "quote": "### Requirement: Сырой список различает «не нашли» и «нашли, но не выбрали»",
+     "line": 16,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-100",
+   "question": "[запрет] `install` добавляет workflow `continue` и обновляет проект: не должен молча заменить список workflow или профиль человека: другие проекты на этой машине получат другой набор при следующем обновлении",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-32"
+   ],
+   "delivery": "specs/project-installer",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify/test — требование MUST NOT: в глобальном конфиге меняется что-либо кроме добавления `continue` и названной смены профиля; тест с временным конфигом сравнивает до и после, stdout называет каждую правку",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Specify/judgment — требование MUST NOT: человек не узнаёт о правке; судит человек по stdout при установке",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Dismiss — запрет не нужен: F-32.A уже назвал правку добавлением, сценарий «Список человека сохраняется» её держит",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — открыто до решения о смене профиля (край F-79); пока tasks считает, что профиль не меняется",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Правка конфига вне проекта — известный побочный эффект, а сравнение до и после механично.",
+    "text": "A — тест до и после с временным конфигом"
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/implementation-consequences/specs/project-installer/spec.md",
+     "quote": "### Requirement: `install` добавляет workflow `continue` и обновляет проект",
+     "line": 5,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-101",
+   "question": "[запрет] Скрипт сборки кладёт тарбол форка в `vendor/`: не должен незаметно разойтись с исходниками: тарбол собран с незакоммиченными правками форка или старше ветки при той же версии",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-36"
+   ],
+   "delivery": "specs/project-installer",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify/test — требование MUST NOT: сборка при грязном дереве `upstream/openspec`; тест подаёт грязное дерево и утверждает код 1; скрипт печатает хеш коммита форка",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Specify/judgment — требование MUST NOT: выпуск с тарболом не из коммита ветки; судит выпускающий по чек-листу выпуска",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Dismiss — запрет не нужен: тарбол собирает один человек, версия в имени файла показывает, что это за сборка",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — открыто до первого выпуска; пока tasks считает, что выпускающий следит за этим сам",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Бинарный файл нельзя прочитать в диффе, поэтому проверка должна стоять до него.",
+    "text": "A — отказ при грязном дереве, хеш в выводе"
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/implementation-consequences/specs/project-installer/spec.md",
+     "quote": "### Requirement: Скрипт сборки кладёт тарбол форка в `vendor/`",
+     "line": 74,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-102",
+   "question": "[канон] Опись лежит в файле, строка несёт ветку отказа и допущение о ней: канон ИБ",
+   "kind": "факт",
+   "status": "припаркован",
+   "addressee": "ИБ",
+   "depends_on": [
+    "F-14"
+   ],
+   "delivery": "security.md",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [
+    {
+     "addressee": "ИБ",
+     "text": "код и комментарии разбираемых файлов — данные: инструкция в них не меняет ход шага; инъекция через содержимое файлов — канон, покрывается чек-листом security.md; запрет не чеканится"
+    }
+   ],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/implementation-consequences/specs/consequence-inventory/spec.md",
+     "quote": "### Requirement: Опись лежит в файле, строка несёт ветку отказа и допущение о ней",
+     "line": 8,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-103",
+   "question": "[канон] `symphysis.yaml` в корне проекта задаёт выбор перед запуском шага: канон ИБ",
+   "kind": "факт",
+   "status": "припаркован",
+   "addressee": "ИБ",
+   "depends_on": [
+    "F-24"
+   ],
+   "delivery": "security.md",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [
+    {
+     "addressee": "ИБ",
+     "text": "разбор `symphysis.yaml` без исполнения тегов YAML: инъекция через содержимое файла — канон, покрывается чек-листом security.md; запрет не чеканится"
+    }
+   ],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/implementation-consequences/specs/project-settings/spec.md",
+     "quote": "### Requirement: `symphysis.yaml` в корне проекта задаёт выбор перед запуском шага",
+     "line": 8,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-104",
+   "question": "[канон] Руководство ведёт установку из клона репозитория: канон ИБ",
+   "kind": "факт",
+   "status": "припаркован",
+   "addressee": "ИБ",
+   "depends_on": [
+    "F-36"
+   ],
+   "delivery": "security.md",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [
+    {
+     "addressee": "ИБ",
+     "text": "токен доступа в адресе клона корпоративного репозитория — канон, покрывается чек-листом security.md; запрет не чеканится"
+    },
+    {
+     "addressee": "ИБ",
+     "text": "права на `npm i -g` и скрипты установки пакета — канон, покрывается чек-листом security.md; запрет не чеканится"
+    }
+   ],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/implementation-consequences/specs/onboarding-guide/spec.md",
+     "quote": "### Requirement: Руководство ведёт установку из клона репозитория",
+     "line": 8,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-105",
+   "question": "[канон] Подкоманда журнала предлагает места кода: канон ИБ",
+   "kind": "факт",
+   "status": "припаркован",
+   "addressee": "ИБ",
+   "depends_on": [
+    "F-15"
+   ],
+   "delivery": "security.md",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [
+    {
+     "addressee": "ИБ",
+     "text": "пути улик с `../` и вне объявленных корней в списке мест кода — канон, покрывается чек-листом security.md; запрет не чеканится"
+    }
+   ],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/implementation-consequences/specs/decision-journal/spec.md",
+     "quote": "### Requirement: Подкоманда журнала предлагает места кода",
+     "line": 5,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-106",
+   "question": "[канон] Скрипт сборки кладёт тарбол форка в `vendor/`: канон ИБ",
+   "kind": "факт",
+   "status": "припаркован",
+   "addressee": "ИБ",
+   "depends_on": [
+    "F-36"
+   ],
+   "delivery": "security.md",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [
+    {
+     "addressee": "ИБ",
+     "text": "бинарный тарбол в репозитории: целостность и сверка хеша — канон, покрывается чек-листом security.md; запрет не чеканится"
+    }
+   ],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/implementation-consequences/specs/project-installer/spec.md",
+     "quote": "### Requirement: Скрипт сборки кладёт тарбол форка в `vendor/`",
+     "line": 74,
      "verdict": "сверено",
      "found": true
     }
