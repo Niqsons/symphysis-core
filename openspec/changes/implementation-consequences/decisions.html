@@ -185,12 +185,12 @@
 const JOURNAL = {
  "title": "Журнал решений: implementation-consequences",
  "source": "decisions.json",
- "sha256": "71225804992d12501ffd3daffc510c64369a1bb80652bb46dd630c76ce22eb6b",
+ "sha256": "5da652f37dfdf2fa7ca066d78a1b88a28a5fd559ddd792ba6501df0dc7d083a7",
  "stats": {
   "records": 135,
   "forks": 105,
   "facts": 30,
-  "decided": 104,
+  "decided": 105,
   "parked": 0,
   "evidence_total": 259,
   "evidence_found": 259
@@ -3400,7 +3400,7 @@ const JOURNAL = {
     {
      "path": "openspec/changes/implementation-consequences/specs/project-settings/spec.md",
      "quote": "### Requirement: Выключенный состав назван в артефакте шага",
-     "line": 92,
+     "line": 97,
      "verdict": "сверено",
      "found": true
     }
@@ -6615,7 +6615,7 @@ const JOURNAL = {
     {
      "path": "openspec/changes/implementation-consequences/specs/project-settings/spec.md",
      "quote": "### Requirement: Шаг читает выбор в начале и человека не спрашивает",
-     "line": 81,
+     "line": 86,
      "verdict": "сверено",
      "found": true
     }
@@ -6687,7 +6687,7 @@ const JOURNAL = {
     {
      "path": "openspec/changes/implementation-consequences/specs/project-settings/spec.md",
      "quote": "### Requirement: Выключенный состав назван в артефакте шага",
-     "line": 92,
+     "line": 97,
      "verdict": "сверено",
      "found": true
     }
@@ -7545,7 +7545,7 @@ const JOURNAL = {
    "outcome": null,
    "parking": [],
    "dispute": "",
-   "consequences": "Вложенные ключи `consequences.failure_branches`, `consequences.assumptions`, `edge_probe.enabled`. Слово к варианту снимает цену варианта C, поэтому Python читает файл пакетом PyYAML, а не своим разбором отступов: так прочитано слово «добавить его в зависимость», человек подтвердил: «зависимость это ок». Пакет становится зависимостью инструментов журнала: шаг в руководстве, строка `check`, правка `installer/README.md` (F-113).",
+   "consequences": "Вложенные ключи `consequences.failure_branches`, `consequences.assumptions`, `edge_probe.enabled`. Слово к варианту снимает цену варианта C, поэтому Python читает файл пакетом PyYAML, а не своим разбором отступов: так прочитано слово «добавить его в зависимость», человек подтвердил: «зависимость это ок». Пакет становится зависимостью инструментов журнала: шаг в руководстве, строка `check`, правка `installer/README.md` (F-113). Инсталлятор файл сам не читает: `symphysis config` и `check` зовут скрипт (F-135.B).",
    "evidence": [],
    "comments": [],
    "finding": ""
@@ -7600,7 +7600,7 @@ const JOURNAL = {
       {
        "path": "openspec/changes/implementation-consequences/specs/project-settings/spec.md",
        "quote": "**THEN** `symphysis.yaml` в коммит не попал, состав во втором клоне прежний",
-       "line": 78,
+       "line": 83,
        "verdict": "сверено",
        "found": true
       }
@@ -7737,7 +7737,7 @@ const JOURNAL = {
    "outcome": null,
    "parking": [],
    "dispute": "",
-   "consequences": "Чтение текстом и общий файл случаев обязательны, иначе F-51.A не выполняется. Отсутствие пакета — сигнал и «всё включено», импорт только при чтении файла, иначе перестанут работать все команды журнала. `\"false\"` в кавычках читается как `false`.",
+   "consequences": "Чтение текстом и общий файл случаев обязательны, иначе F-51.A не выполняется. Отсутствие пакета — сигнал и «всё включено», импорт только при чтении файла, иначе перестанут работать все команды журнала. `\"false\"` в кавычках читается как `false`. Файл случаев остался одному читателю, совпадение двух читателей больше не требуется (F-135.B).",
    "evidence": [
     {
      "path": "openspec/changes/implementation-consequences/research/F-110.md",
@@ -8136,7 +8136,7 @@ const JOURNAL = {
    "outcome": null,
    "parking": [],
    "dispute": "",
-   "consequences": "Слово человека принято: настройки — свой скрипт, журнал остаётся журналом, подкоманды `journal.py settings` нет. Команды `symphysis` в проекте нет, она живёт в клоне, поэтому модель зовёт `.symphysis/tools/symphysis_config.py`, а человек — `symphysis config`. `journal.py check` берёт чтение из того же модуля. Новые сценарии «Модель узнаёт состав скриптом», «Человек смотрит состав».",
+   "consequences": "Слово человека принято: настройки — свой скрипт, журнал остаётся журналом, подкоманды `journal.py settings` нет. Команды `symphysis` в проекте нет, она живёт в клоне, поэтому модель зовёт `.symphysis/tools/symphysis_config.py`, а человек — `symphysis config`. `journal.py check` берёт чтение из того же модуля. Новые сценарии «Модель узнаёт состав скриптом», «Человек смотрит состав». `symphysis config` зовёт этот же скрипт (F-135.B).",
    "evidence": [],
    "comments": [],
    "finding": ""
@@ -8164,7 +8164,7 @@ const JOURNAL = {
       {
        "path": "openspec/changes/implementation-consequences/specs/project-settings/spec.md",
        "quote": "**THEN** `symphysis.yaml` в коммит не попал, состав во втором клоне прежний",
-       "line": 78,
+       "line": 83,
        "verdict": "сверено",
        "found": true
       }
@@ -8311,8 +8311,8 @@ const JOURNAL = {
      "evidence": [
       {
        "path": "openspec/changes/implementation-consequences/specs/project-settings/spec.md",
-       "quote": "оба SHALL брать значения текстом, без разбора типов, и на одном файле SHALL давать один состав и один сигнал",
-       "line": 34,
+       "quote": "требование из F-110, пересмотрено F-135",
+       "line": 75,
        "verdict": "сверено",
        "found": true
       }
@@ -8337,7 +8337,7 @@ const JOURNAL = {
    "outcome": null,
    "parking": [],
    "dispute": "",
-   "consequences": "Требование «Все читатели `symphysis.yaml` дают один итог», сценарий «У найденного Python нет PyYAML».",
+   "consequences": "Требование «Все читатели `symphysis.yaml` дают один итог», сценарий «У найденного Python нет PyYAML». Пересмотрено F-135.B: читатель один, без PyYAML `check` показывает то, что получит модель. Требование теперь «`symphysis.yaml` читает один скрипт».",
    "evidence": [],
    "comments": [],
    "finding": ""
@@ -8507,7 +8507,7 @@ const JOURNAL = {
       {
        "path": "installer/bin/symphysis.js",
        "quote": "\"skills-dir\": { type: \"string\", multiple: true },",
-       "line": 40,
+       "line": 42,
        "verdict": "сверено",
        "found": true
       }
@@ -9199,7 +9199,7 @@ const JOURNAL = {
    "id": "F-135",
    "question": "Ревью части A: читателей `symphysis.yaml` два, и на редких формах файла они дают разный состав. Модель получает `проба выкл` без сигнала, а `symphysis config` пишет `вкл` и `не разбирается`. Требование это запрещает, а подгонка до конца не доходит. Как закрыть?",
    "kind": "развилка",
-   "status": "открыт",
+   "status": "решён",
    "addressee": "человек",
    "depends_on": [
     "F-110",
@@ -9231,9 +9231,9 @@ const JOURNAL = {
      "unlikely": null,
      "evidence": [
       {
-       "path": "tools/symphysis_config.py",
-       "quote": "Таб и управляющие символы читатели понимают по-разному",
-       "line": 34,
+       "path": "openspec/changes/implementation-consequences/research/F-135.md",
+       "quote": "Только ради совпадения двух разборщиков существуют",
+       "line": 37,
        "verdict": "сверено",
        "found": true
       },
@@ -9268,7 +9268,11 @@ const JOURNAL = {
     "why": "Расхождение исчезает по построению, а не подгонкой, и код становится меньше до того, как придут новые ключи. Цена F-121.A здесь мала: показывать в `check` то, что записано в файле, когда модель получит другое, менее честно, чем показать то, что она получит. Вариант C снимает ещё и зависимость, но вносит в основной ход новую опору на PATH.",
     "text": "B — один читатель на Python"
    },
-   "decision": null,
+   "decision": {
+    "option": "B",
+    "word": "выбираю вариант B, согласен с тобой.",
+    "date": "2026-11-02"
+   },
    "reversibility": {
     "level": "обратимо",
     "why": "Строки настроек в `check` ещё не написаны (задача 6.5), выпуска нет: меняется код части A и один файл спеки."
@@ -9276,7 +9280,7 @@ const JOURNAL = {
    "outcome": null,
    "parking": [],
    "dispute": "",
-   "consequences": "A: правки П1 и П2, строка исключения в требовании «Все читатели». B: требование, задачи 2.2, 2.3 и 6.5, удаление `settings.js`. C: требование, задачи 2.2, 2.3, 5.1, 5.2, 6.5, группа 7, снятие PyYAML. Находки ревью С1 и С3 зависят от выбора и ждут его.",
+   "consequences": "Требование «`symphysis.yaml` читает один скрипт» вместо «Все читатели», сценарий «У найденного Python нет PyYAML», задачи 2.3 и 6.5, `security.md`. Находки ревью П1, П2, С1, С3 снимаются вместе с кодом.",
    "evidence": [
     {
      "path": "openspec/changes/implementation-consequences/research/F-135.md",

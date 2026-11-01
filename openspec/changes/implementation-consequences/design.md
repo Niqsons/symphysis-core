@@ -116,7 +116,7 @@ Goals — границы того, что этот дизайн достигае
 - Шаг `consequences` стоит в графе между `specs` и `design`: опись в файле, строка несёт ветку отказа и допущение, скрипт предлагает места, модель выбирает, в журнал идёт только непокрытое, в конце причины провала всего изменения (F-13.A, F-14.C, F-15.D, F-16.A, F-17.A).
 - Скрипт держит над описью две проверки: место названо путём и цитата дословна. Сигнал, не стоп, виден в `symphysis check` (F-25.A, F-75.A, F-78.A, F-128.A).
 - Проба краёв даёт строку на каждую пару требования и категории, сырой список различает «не нашли» и «нашли, но не выбрали», её можно выключить, файл покрытия читает человек, а след не расходует предел длины требования (F-18.B, F-99.A, F-112.A, F-127.A). Рекомендация `Specify` называет цену и даётся только при тихой порче или необратимости (F-130.A).
-- Выбор перед запуском: личный файл `symphysis.yaml` вне git, вложенные ключи, свой скрипт настроек вместо чтения файла моделью, один итог у всех читателей, сомнение решается во включённую сторону (F-24.A, F-94.E, F-110.B, F-51.A, F-109.A, F-113, F-118.A, F-121.A).
+- Выбор перед запуском: личный файл `symphysis.yaml` вне git, вложенные ключи, свой скрипт настроек вместо чтения файла моделью, он же единственный читатель файла, сомнение решается во включённую сторону (F-24.A, F-94.E, F-110.B, F-51.A, F-109.A, F-113, F-118.A, F-135.B).
 - Установка работает с первого раза: из клона после `npm --prefix installer ci` и `npm i -g ./installer`, устаревший `payload` виден в `check`, `/opsx:continue` приходит из профиля `core`, настроенный профиль не меняется, клиента выбирает человек, `.gitignore` и PyYAML закрыты шагом и строкой `check` (F-111.A, F-114.A, F-115.D, F-116.A, F-124.A, F-125.A, F-126.A).
 - Форк доставляется тарболом из клона, собранным только из чистого дерева (F-31.A, F-36.A, F-101.A).
 - `docs/GUIDE.md` ведёт учебный проект со своим кодом через все шаги OpenSpec настоящими командами, телеметрия выключается до других команд форка (F-34.A, F-58.A, F-97.B, F-98.A, F-117.A).
@@ -360,7 +360,7 @@ Non-Goals — что этот дизайн не делает:
 
 - **Выбрано:** A. Сверка описи и признак выключенной части читают строку `**Состав:**` из `consequences.md`; `symphysis.yaml` действует только на следующий запуск шага. Сверка покрытия молчит, если проба выключена в `symphysis.yaml` или след в `specs/` называет выключение. При выборе: один файл даёт один сигнал в любом клоне. Цена: `check` разбирает ещё одну строку, сценарий F-96.A переформулируется.
 - **Обратимость:** обратимо — Источник значения в одной функции `check`.
-- **Улики выбранного:** openspec/changes/implementation-consequences/specs/project-settings/spec.md:78 «**THEN** `symphysis.yaml` в коммит не попал, состав во втором клоне прежний»
+- **Улики выбранного:** openspec/changes/implementation-consequences/specs/project-settings/spec.md:83 «**THEN** `symphysis.yaml` в коммит не попал, состав во втором клоне прежний»
 - **Отвергнуто:** B. Сверка читает текущий личный файл. При выборе: один источник, разбирать `**Состав:**` не нужно. Цена: сигналы зависят от машины, в другом клоне появляются ложные `[!!]`, а след выключения пропадает при смене настройки.
 
 ### F-120 F-49.A даёт `[!!]` по новым местам после файла с причиной «механизмов нет». Что с другими причинами? При «все колонки выключены» и «шаг появился позже» каждое место из списка тоже дало бы `[!!]`, а у трёх старых изменений таких мест десятки.
@@ -464,6 +464,17 @@ Non-Goals — что этот дизайн не делает:
 - **Улики выбранного:** openspec/changes/implementation-consequences/answers/2026-11-01-measure.md:6 «Сделаем дешевый прогон на sonnet 5.5, без судейства на текущем состоянии (change мы ведь еще не реализовали).»
 - **Отвергнуто:** B. Как решено в F-26.B: шаг на копиях на Fable, затем три плеча на Opus 5.5. При выборе: критерий F-20 выполняется. Цена: стенд не готов, решение об откате откладывается.
 
+### F-135 Ревью части A: читателей `symphysis.yaml` два, и на редких формах файла они дают разный состав. Модель получает `проба выкл` без сигнала, а `symphysis config` пишет `вкл` и `не разбирается`. Требование это запрещает, а подгонка до конца не доходит. Как закрыть?
+
+- **Выбрано:** B. Один читатель на Python. `symphysis config` и `symphysis check` зовут `symphysis_config.py` и передают его строки; `installer/lib/settings.js` и правила подгонки уходят. При выборе: один итог по построению, `check` показывает то, что получит модель, новый ключ пишется в одном месте. Цена: пересматривает F-121.A: без Python или PyYAML `check` показывает «всё включено» и сигнал, а не то, что записано в файле; `symphysis config` требует Python.
+- **Слово человека (2026-11-02):** «выбираю вариант B, согласен с тобой.»
+- **Обратимость:** обратимо — Строки настроек в `check` ещё не написаны (задача 6.5), выпуска нет: меняется код части A и один файл спеки.
+- **Улики вопроса:** openspec/changes/implementation-consequences/research/F-135.md:29 «14 файлов из 3000 дали разный состав»
+- **Улики выбранного:** openspec/changes/implementation-consequences/research/F-135.md:37 «Только ради совпадения двух разборщиков существуют»
+- **Улики выбранного:** installer/lib/check.js:110 «spawnSync(py, ["-X", "utf8", journalPy, "check", j]»
+- **Отвергнуто:** A. Подогнать и принять остаток. Одиночный CR в классе обоих читателей, `null` у JS как пустое значение, а четыре оставшиеся формы записать исключением требования. При выборе: меньше всего правок, F-121.A в силе. Цена: два разборщика и правила подгонки остаются, каждый новый ключ пишется дважды, а на остатке модель всё ещё может получить `выкл` без сигнала.
+- **Отвергнуто:** C. Один читатель на Node. Модель зовёт `symphysis config`; `symphysis_config.py` и зависимость PyYAML уходят вместе с её шагом в руководстве, строкой `check` и исключением F-121. При выборе: инструменты снова без пакетов. Цена: шаг модели зависит от команды `symphysis` в PATH, а F-118 исходил из того, что в проекте её нет; нет команды — считать всё включённым должна инструкция скилла, скрипт этого не гарантирует.
+
 ## Risks / Trade-offs
 
 - [Risk] После написания на каждое требование позови скиллы `symphysis-edge-probe` и `symphysis-prohibition-probe`. (F-13, отвергнут B: openspec/schemas/symphysis/schema.yaml:78) → Mitigation: решение A
@@ -509,7 +520,7 @@ Non-Goals — что этот дизайн не делает:
 - [Risk] import { parseDocument, isMap, isSeq, isScalar } from "yaml"; (F-110, отвергнут C: installer/lib/install.js:4) → Mitigation: решение B
 - [Risk] Ищется `python`, затем `python3`; версия не закрепляется, пакетов (F-110, отвергнут C: installer/README.md:136) → Mitigation: решение B
 - [Risk] После написания на каждое требование позови скиллы `symphysis-edge-probe` и `symphysis-prohibition-probe`. (F-111, отвергнут B: openspec/schemas/symphysis/schema.yaml:78) → Mitigation: решение A
-- [Risk] **THEN** `symphysis.yaml` в коммит не попал, состав во втором клоне прежний (F-111, отвергнут C: openspec/changes/implementation-consequences/specs/project-settings/spec.md:78) → Mitigation: решение A
+- [Risk] **THEN** `symphysis.yaml` в коммит не попал, состав во втором клоне прежний (F-111, отвергнут C: openspec/changes/implementation-consequences/specs/project-settings/spec.md:83) → Mitigation: решение A
 - [Risk] export const MAX_REQUIREMENT_TEXT_LENGTH = 500; (F-112, отвергнут B: upstream/openspec/src/core/validation/constants.ts:11) → Mitigation: решение A
 - [Risk] // `validate <change> --strict` catches a new overlong requirement (F-112, отвергнут C: upstream/openspec/src/core/validation/validator.ts:321) → Mitigation: решение A
 - [Risk] npx --yes ./niqsons-symphysis-0.1.0.tgz install (F-114, отвергнут B: openspec/changes/implementation-consequences/research/F-22.md:28) → Mitigation: решение A
@@ -521,10 +532,10 @@ Non-Goals — что этот дизайн не делает:
 - [Risk] все остальное пытаемся выполнить через более качественные инструкции агента и скиллов (F-118, отвергнут B: openspec/changes/implementation-consequences/answers/2026-11-01-control.md:4) → Mitigation: решение A
 - [Risk] тест утверждает, что `journal.py check` на таком изменении печатает `[..] <часть>: выключено настройкой` (F-119, отвергнут B: openspec/changes/implementation-consequences/decisions.json:6433) → Mitigation: решение A
 - [Risk] до правки схемы у него написан `consequences.md` с причиной «шаг появился позже», `status` не ломается (F-120, отвергнут B: openspec/changes/implementation-consequences/decisions.json:3783) → Mitigation: решение A
-- [Risk] оба SHALL брать значения текстом, без разбора типов, и на одном файле SHALL давать один состав и один сигнал (F-121, отвергнут B: openspec/changes/implementation-consequences/specs/project-settings/spec.md:34) → Mitigation: решение A
+- [Risk] требование из F-110, пересмотрено F-135 (F-121, отвергнут B: openspec/changes/implementation-consequences/specs/project-settings/spec.md:75) → Mitigation: решение A
 - [Risk] Требование обещает «не убирая уже заданные» (F-123, отвергнут B: openspec/changes/implementation-consequences/decisions.json:8161) → Mitigation: решение A
 - [Risk] removedDeselectedSkillCount += await this.removeUnselectedSkillDirs( (F-123, отвергнут C: upstream/openspec/src/core/update.ts:448) → Mitigation: решение A
-- [Risk] "skills-dir": { type: "string", multiple: true }, (F-124, отвергнут B: installer/bin/symphysis.js:40) → Mitigation: решение A
+- [Risk] "skills-dir": { type: "string", multiple: true }, (F-124, отвергнут B: installer/bin/symphysis.js:42) → Mitigation: решение A
 - [Risk] | `node installer/bin/symphysis.js --help` после `ci` | справка напечатана | (F-125, отвергнут B: openspec/changes/implementation-consequences/research/F-114.md:18) → Mitigation: решение A
 - [Risk] если мы меняем профиль что создан ранее, то это плохо. (F-126, отвергнут B: openspec/changes/implementation-consequences/answers/2026-11-01-8.md:2) → Mitigation: решение A
 - [Risk] Сигнал: строка `[!!]` в `check`, код 0, с `--strict` код 2. (F-127, отвергнут B: openspec/changes/implementation-consequences/decisions.json:1377) → Mitigation: решение A
@@ -534,6 +545,8 @@ Non-Goals — что этот дизайн не делает:
 - [Risk] `status: passed` ставится, только когда в таблице нет ни одной строки (F-131, отвергнут B: skills/symphysis-attack/SKILL.md:234) → Mitigation: решение A
 - [Risk] Слово человека к нему: «на сильной модели потери не в краях» (F-132, отвергнут B: docs/analysis/implementation-consequences-weight-2026-11-01.md:69) → Mitigation: решение A
 - [Risk] 1. Проведены новые прогоны на плечах: ванили, чистый промпт, P-чел на модели Opus 5.5. (F-133, отвергнут B: openspec/changes/implementation-consequences/intent.md:24) → Mitigation: решение A
+- [Risk] Остаток: четыре формы, разбор которых не догнать без своей грамматики (F-135, отвергнут A: openspec/changes/implementation-consequences/research/F-135.md:31) → Mitigation: решение B
+- [Risk] "yaml": "^2.9.1" (F-135, отвергнут C: installer/package.json:29) → Mitigation: решение B
 
 ## Migration Plan
 
@@ -541,7 +554,7 @@ Non-Goals — что этот дизайн не делает:
 
 1. Базовый замер на текущем состоянии: снимок ядра `9a4327b`, форк `1.15.0-symphysis.3`. Пока он идёт, форк не правится (F-133.A).
 2. До правки схемы — `consequences.md` с причиной «шаг появился позже» у трёх начатых изменений, иначе `status` у них ломается на один ход (F-60.A).
-3. Свой скрипт настроек и чтение на обоих языках с общим файлом случаев (F-110.B, F-113, F-118.A). Тестовому Python нужен PyYAML: `requirements-dev.txt`.
+3. Свой скрипт настроек, единственный читатель файла; `symphysis config` и `check` зовут его (F-110.B, F-113, F-118.A, F-135.B). Тестовому Python нужен PyYAML: `requirements-dev.txt`.
 4. Подкоманда `code-sites` и две проверки описи отдельными модулями, справка `journal.py` по правилу справки (F-15.D, F-128.A).
 5. Схема и шаблоны: артефакт `consequences`, `design` требует его; след проб после сценариев (F-13.A, F-112.A).
 6. Скиллы: новый шаг, правка пробы краёв и пробы запретов, правило рекомендации, вердикт и чтение исключений атакой (F-14.C, F-18.B, F-91.B, F-130.A, F-131.A).
@@ -554,7 +567,6 @@ Non-Goals — что этот дизайн не делает:
 
 ## Open Questions
 
-- F-135 Ревью части A: читателей `symphysis.yaml` два, и на редких формах файла они дают разный состав. Модель получает `проба выкл` без сигнала, а `symphysis config` пишет `вкл` и `не разбирается`. Требование это запрещает, а подгонка до конца не доходит. Как закрыть? — открыта
 - F-20 → материалы: «Что нужно стенду для трёх плеч на Opus 5.5. Выяснить: где закреплена модель (`MODEL` в `p_drive.py`, `arm_c.py`, сборка плеч), что менять в сборке плеч V, C и P, как считаются ходы и расход на этой модели. Читать: `.superpowers/sdd/plan-implementation.tasks/`, `X:/skills-factory-camunda-stand/stands/demo`, `X:/_archive/camunda-bid/RUN-PREP-symphysis-2026-10-30.md`.» — находка: Отчёт `research/F-20.md`. Модель — константа на плечо и роль, ключа нет; расход суммируется неверно; сборка P не пишет `arm.ps1`; нужен новый снимок ветки; проба q1–q3 и плечо C на Opus 5.5 обязательны до P. Решения — F-30, F-33.
 - F-22 → материалы: «Что нужно для GUIDE. Выяснить: как сегодня собирается форк и пакет инсталлятора с чистой машины, какие шаги не описаны в `installer/README.md`, какой пример сквозного изменения годится для GUIDE. Читать: `installer/README.md`, `installer/package.json`, `docs/dry-run-journal.md`, `openspec/changes/calibration-fixes/`.» — находка: Отчёт `research/F-22.md`. Из двух тарболов на чистом каталоге всё ставится, `check: ok`. Но форка нет ни в одном удалённом репозитории, а `/opsx:continue` на чистой установке отсутствует и `check` этого не видит. Решения — F-28, F-29, F-31, F-32, F-34. На чистом клоне тесты инсталлятора падают без форка в `upstream/openspec`: GUIDE даёт шаг для разработчика, а тесты должны называть причину.
 - F-12 → человек: «новая возможность: заводить факты постановки не только из критериев, но и из прозы намерения. Цена — больше записей журнала. Решить, нужна ли она отдельным изменением.»
