@@ -342,14 +342,14 @@
     {
      "path": "openspec/schemas/symphysis/schema.yaml",
      "quote": "Decisions, Risks / Trade-offs и Open Questions приходят из журнала; чтобы их изменить, правь журнал и рендери заново.",
-     "line": 88,
+     "line": 102,
      "verdict": "сверено",
      "found": true
     },
     {
      "path": "openspec/schemas/symphysis/schema.yaml",
      "quote": "      Решение излагается, а не принимается: его уже принял человек.\n    requires:\n      - proposal",
-     "line": 90,
+     "line": 104,
      "verdict": "сверено",
      "found": true
     }
@@ -858,7 +858,7 @@
       {
        "path": "openspec/schemas/symphysis/schema.yaml",
        "quote": "Каждая задача называет проверку своего завершения",
-       "line": 112,
+       "line": 127,
        "verdict": "сверено",
        "found": true
       }
@@ -944,7 +944,7 @@
       {
        "path": "openspec/schemas/symphysis/schema.yaml",
        "quote": "Decisions, Risks / Trade-offs и Open Questions приходят из журнала; чтобы их изменить, правь журнал и рендери заново.",
-       "line": 88,
+       "line": 102,
        "verdict": "сверено",
        "found": true
       }
@@ -7429,7 +7429,7 @@
       {
        "path": "openspec/schemas/symphysis/templates/spec.md",
        "quote": "<!-- проба краёв: форма=<numeric-range | collection | text | stateful | io>, исходы:",
-       "line": 10,
+       "line": 15,
        "verdict": "сверено",
        "found": true
       },
@@ -8066,7 +8066,7 @@
       {
        "path": "openspec/changes/implementation-consequences/decisions.json",
        "quote": "строка `[!!] python` говорит, что инструменты журнала считают всё включённым",
-       "line": 8059,
+       "line": 8062,
        "verdict": "сверено",
        "found": true
       }
@@ -8193,7 +8193,7 @@
       {
        "path": "openspec/changes/implementation-consequences/decisions.json",
        "quote": "Требование обещает «не убирая уже заданные»",
-       "line": 8158,
+       "line": 8161,
        "verdict": "сверено",
        "found": true
       }
@@ -8273,7 +8273,7 @@
       {
        "path": "installer/bin/symphysis.js",
        "quote": "\"skills-dir\": { type: \"string\", multiple: true },",
-       "line": 33,
+       "line": 40,
        "verdict": "сверено",
        "found": true
       }
@@ -8944,6 +8944,99 @@
      "path": "openspec/changes/implementation-consequences/answers/2026-11-01-measure.md",
      "quote": "Но замеры будем делать на чистом контексте, это важно, я не уверен, что раньше контекст был чистый.",
      "line": 9,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-135",
+   "question": "Ревью части A: читателей `symphysis.yaml` два, и на редких формах файла они дают разный состав. Модель получает `проба выкл` без сигнала, а `symphysis config` пишет `вкл` и `не разбирается`. Требование это запрещает, а подгонка до конца не доходит. Как закрыть?",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-110",
+    "F-113",
+    "F-118",
+    "F-121"
+   ],
+   "delivery": "specs, tasks",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Подогнать и принять остаток. Одиночный CR в классе обоих читателей, `null` у JS как пустое значение, а четыре оставшиеся формы записать исключением требования. При выборе: меньше всего правок, F-121.A в силе. Цена: два разборщика и правила подгонки остаются, каждый новый ключ пишется дважды, а на остатке модель всё ещё может получить `выкл` без сигнала.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/changes/implementation-consequences/research/F-135.md",
+       "quote": "Остаток: четыре формы, разбор которых не догнать без своей грамматики",
+       "line": 31,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Один читатель на Python. `symphysis config` и `symphysis check` зовут `symphysis_config.py` и передают его строки; `installer/lib/settings.js` и правила подгонки уходят. При выборе: один итог по построению, `check` показывает то, что получит модель, новый ключ пишется в одном месте. Цена: пересматривает F-121.A: без Python или PyYAML `check` показывает «всё включено» и сигнал, а не то, что записано в файле; `symphysis config` требует Python.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "tools/symphysis_config.py",
+       "quote": "Таб и управляющие символы читатели понимают по-разному",
+       "line": 34,
+       "verdict": "сверено",
+       "found": true
+      },
+      {
+       "path": "installer/lib/check.js",
+       "quote": "spawnSync(py, [\"-X\", \"utf8\", journalPy, \"check\", j]",
+       "line": 110,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "C",
+     "text": "Один читатель на Node. Модель зовёт `symphysis config`; `symphysis_config.py` и зависимость PyYAML уходят вместе с её шагом в руководстве, строкой `check` и исключением F-121. При выборе: инструменты снова без пакетов. Цена: шаг модели зависит от команды `symphysis` в PATH, а F-118 исходил из того, что в проекте её нет; нет команды — считать всё включённым должна инструкция скилла, скрипт этого не гарантирует.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "installer/package.json",
+       "quote": "\"yaml\": \"^2.9.1\"",
+       "line": 29,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "B",
+    "why": "Расхождение исчезает по построению, а не подгонкой, и код становится меньше до того, как придут новые ключи. Цена F-121.A здесь мала: показывать в `check` то, что записано в файле, когда модель получит другое, менее честно, чем показать то, что она получит. Вариант C снимает ещё и зависимость, но вносит в основной ход новую опору на PATH.",
+    "text": "B — один читатель на Python"
+   },
+   "decision": null,
+   "reversibility": {
+    "level": "обратимо",
+    "why": "Строки настроек в `check` ещё не написаны (задача 6.5), выпуска нет: меняется код части A и один файл спеки."
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "A: правки П1 и П2, строка исключения в требовании «Все читатели». B: требование, задачи 2.2, 2.3 и 6.5, удаление `settings.js`. C: требование, задачи 2.2, 2.3, 5.1, 5.2, 6.5, группа 7, снятие PyYAML. Находки ревью С1 и С3 зависят от выбора и ждут его.",
+   "evidence": [
+    {
+     "path": "openspec/changes/implementation-consequences/research/F-135.md",
+     "quote": "14 файлов из 3000 дали разный состав",
+     "line": 29,
      "verdict": "сверено",
      "found": true
     }

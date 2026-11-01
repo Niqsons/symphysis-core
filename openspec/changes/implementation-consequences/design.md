@@ -23,8 +23,8 @@
 - F-03 Pre-mortem в GSD — проверка плана перед завершением: три вероятные причины провала и шаги или критерии, ловящие каждую рано.
   - upstream/gsd-core/gsd-core/references/thinking-models-planning.md:15 «Before finalizing this plan, assume it has already failed. List the 3 most likely reasons for failure -- missing dependency, wrong decomposition, underestimated complexity -- and add mitigation steps or acceptance criteria that would catch each failure early.»
 - F-04 `design.md` — рендер журнала: на шаге design решение не принимается, а `design` в графе требует только `proposal`.
-  - openspec/schemas/symphysis/schema.yaml:88 «Decisions, Risks / Trade-offs и Open Questions приходят из журнала; чтобы их изменить, правь журнал и рендери заново.»
-  - openspec/schemas/symphysis/schema.yaml:90 «Решение излагается, а не принимается: его уже принял человек. requires: - proposal»
+  - openspec/schemas/symphysis/schema.yaml:102 «Decisions, Risks / Trade-offs и Open Questions приходят из журнала; чтобы их изменить, правь журнал и рендери заново.»
+  - openspec/schemas/symphysis/schema.yaml:104 «Решение излагается, а не принимается: его уже принял человек. requires: - proposal»
 - F-05 Линза `scenario-run` идёт от сценария к механизму. Ветка механизма, на которую сценария нет, в её строку не попадает. Атаки необязательны, в последнем замере их не вызывали.
   - skills/symphysis-attack/SKILL.md:189 «исход сценария spec по коду механизма design против THEN»
   - docs/analysis/edge-cases-and-consequences-2026-11-01.md:73 «F-07.A. Атаки после F-06.A необязательные; в замере `c3-p2-cf` их не вызывали.»
@@ -312,7 +312,7 @@ Non-Goals — что этот дизайн не делает:
 
 - **Выбрано:** A. След пробы — в конец блока требования, после сценариев, где уже стоит строка «без кандидата». Меняются шаблон `spec.md` и текст двух скиллов, требования этого изменения правятся одним проходом. При выборе: предел считает только текст требования, форк не меняется. Цена: след дальше от SHALL, переписываются тест шаблона и все следы изменения.
 - **Обратимость:** обратимо — Шаблон и тексты скиллов; след переносится механически.
-- **Улики выбранного:** openspec/schemas/symphysis/templates/spec.md:10 «<!-- проба краёв: форма=<numeric-range | collection | text | stateful | io>, исходы:»
+- **Улики выбранного:** openspec/schemas/symphysis/templates/spec.md:15 «<!-- проба краёв: форма=<numeric-range | collection | text | stateful | io>, исходы:»
 - **Улики выбранного:** upstream/openspec/src/core/parsers/requirement-text.ts:78 «if (HEADER_LINE.test(line)) break; // first scenario or stray divider»
 - **Отвергнуто:** B. Форк не считает комментарии в предел. При выборе: след остаётся под требованием. Цена: новое расхождение с OpenSpec, новая версия пина и пересборка тестов паритета, а F-13.A и F-32.A держат форк неизменным.
 - **Отвергнуто:** C. Оставить как есть, авторы сокращают текст требования. При выборе: ничего не меняется. Цена: предел начинает ограничивать подробность следа и самого требования, а требования этого изменения близки к нему уже сейчас.
@@ -374,7 +374,7 @@ Non-Goals — что этот дизайн не делает:
 
 - **Выбрано:** A. Принять и назвать: требование называет отсутствие пакета исключением, а строка `[!!] python` говорит, что инструменты журнала считают всё включённым. При выборе: `check` показывает то, что в файле, и причину расхождения. Цена: на такой машине два ответа рядом, пока пакет не поставлен.
 - **Обратимость:** обратимо — Текст требования и одной строки `check`.
-- **Улики выбранного:** openspec/changes/implementation-consequences/decisions.json:8059 «строка `[!!] python` говорит, что инструменты журнала считают всё включённым»
+- **Улики выбранного:** openspec/changes/implementation-consequences/decisions.json:8062 «строка `[!!] python` говорит, что инструменты журнала считают всё включённым»
 - **Отвергнуто:** B. JS тоже считает всё включённым, если у найденного Python нет пакета. При выборе: один итог буквально. Цена: `symphysis check` показывает не то, что написано в файле, а чтение настроек начинает зависеть от проверки Python.
 
 ### F-123 Конфиг с профилем `core` или без ключа `profile`, но со своим списком `workflows`: при `core` форк список игнорирует, он спит. `install` переводит профиль в `custom` (F-79.A). Что станет со спящим списком? Требование обещает «не убирая уже заданные», а сценарий «Список человека сохраняется» профиля не называет.
@@ -473,9 +473,9 @@ Non-Goals — что этот дизайн не делает:
 - [Risk] 2. Every assumption MUST state a concrete consequence if wrong (F-14, отвергнут B: upstream/gsd-core/agents/gsd-assumptions-analyzer.md:93) → Mitigation: решение C
 - [Risk] ExpressionProcessor.java (F-15, отвергнут A: calibration/c3-p1/project/openspec/changes/camunda-bid/decisions.json:320) → Mitigation: решение D
 - [Risk] Снятый пол превратил обязательное покрытие в выборку (F-15, отвергнут B: docs/analysis/edge-cases-and-consequences-2026-11-01.md:110) → Mitigation: решение D
-- [Risk] Каждая задача называет проверку своего завершения (F-15, отвергнут C: openspec/schemas/symphysis/schema.yaml:112) → Mitigation: решение D
+- [Risk] Каждая задача называет проверку своего завершения (F-15, отвергнут C: openspec/schemas/symphysis/schema.yaml:127) → Mitigation: решение D
 - [Risk] шаги выросли с 36 до 61 мин, журнал вырос с 38 до 63 записей. (F-16, отвергнут B: docs/analysis/calibration-fixes-measure-2026-11-01.md:118) → Mitigation: решение A
-- [Risk] Decisions, Risks / Trade-offs и Open Questions приходят из журнала; чтобы их изменить, правь журнал и рендери заново. (F-16, отвергнут C: openspec/schemas/symphysis/schema.yaml:88) → Mitigation: решение A
+- [Risk] Decisions, Risks / Trade-offs и Open Questions приходят из журнала; чтобы их изменить, правь журнал и рендери заново. (F-16, отвергнут C: openspec/schemas/symphysis/schema.yaml:102) → Mitigation: решение A
 - [Risk] add mitigation steps or acceptance criteria that would catch each failure early. (F-17, отвергнут B: upstream/gsd-core/gsd-core/references/thinking-models-planning.md:15) → Mitigation: решение A
 - [Risk] List the 3 most likely reasons for failure (F-17, отвергнут C: upstream/gsd-core/gsd-core/references/thinking-models-planning.md:15) → Mitigation: решение A
 - [Risk] Снятый пол превратил обязательное покрытие в выборку (F-18, отвергнут A: docs/analysis/edge-cases-and-consequences-2026-11-01.md:110) → Mitigation: решение B
@@ -522,9 +522,9 @@ Non-Goals — что этот дизайн не делает:
 - [Risk] тест утверждает, что `journal.py check` на таком изменении печатает `[..] <часть>: выключено настройкой` (F-119, отвергнут B: openspec/changes/implementation-consequences/decisions.json:6433) → Mitigation: решение A
 - [Risk] до правки схемы у него написан `consequences.md` с причиной «шаг появился позже», `status` не ломается (F-120, отвергнут B: openspec/changes/implementation-consequences/decisions.json:3783) → Mitigation: решение A
 - [Risk] оба SHALL брать значения текстом, без разбора типов, и на одном файле SHALL давать один состав и один сигнал (F-121, отвергнут B: openspec/changes/implementation-consequences/specs/project-settings/spec.md:34) → Mitigation: решение A
-- [Risk] Требование обещает «не убирая уже заданные» (F-123, отвергнут B: openspec/changes/implementation-consequences/decisions.json:8158) → Mitigation: решение A
+- [Risk] Требование обещает «не убирая уже заданные» (F-123, отвергнут B: openspec/changes/implementation-consequences/decisions.json:8161) → Mitigation: решение A
 - [Risk] removedDeselectedSkillCount += await this.removeUnselectedSkillDirs( (F-123, отвергнут C: upstream/openspec/src/core/update.ts:448) → Mitigation: решение A
-- [Risk] "skills-dir": { type: "string", multiple: true }, (F-124, отвергнут B: installer/bin/symphysis.js:33) → Mitigation: решение A
+- [Risk] "skills-dir": { type: "string", multiple: true }, (F-124, отвергнут B: installer/bin/symphysis.js:40) → Mitigation: решение A
 - [Risk] | `node installer/bin/symphysis.js --help` после `ci` | справка напечатана | (F-125, отвергнут B: openspec/changes/implementation-consequences/research/F-114.md:18) → Mitigation: решение A
 - [Risk] если мы меняем профиль что создан ранее, то это плохо. (F-126, отвергнут B: openspec/changes/implementation-consequences/answers/2026-11-01-8.md:2) → Mitigation: решение A
 - [Risk] Сигнал: строка `[!!]` в `check`, код 0, с `--strict` код 2. (F-127, отвергнут B: openspec/changes/implementation-consequences/decisions.json:1377) → Mitigation: решение A
@@ -554,6 +554,7 @@ Non-Goals — что этот дизайн не делает:
 
 ## Open Questions
 
+- F-135 Ревью части A: читателей `symphysis.yaml` два, и на редких формах файла они дают разный состав. Модель получает `проба выкл` без сигнала, а `symphysis config` пишет `вкл` и `не разбирается`. Требование это запрещает, а подгонка до конца не доходит. Как закрыть? — открыта
 - F-20 → материалы: «Что нужно стенду для трёх плеч на Opus 5.5. Выяснить: где закреплена модель (`MODEL` в `p_drive.py`, `arm_c.py`, сборка плеч), что менять в сборке плеч V, C и P, как считаются ходы и расход на этой модели. Читать: `.superpowers/sdd/plan-implementation.tasks/`, `X:/skills-factory-camunda-stand/stands/demo`, `X:/_archive/camunda-bid/RUN-PREP-symphysis-2026-10-30.md`.» — находка: Отчёт `research/F-20.md`. Модель — константа на плечо и роль, ключа нет; расход суммируется неверно; сборка P не пишет `arm.ps1`; нужен новый снимок ветки; проба q1–q3 и плечо C на Opus 5.5 обязательны до P. Решения — F-30, F-33.
 - F-22 → материалы: «Что нужно для GUIDE. Выяснить: как сегодня собирается форк и пакет инсталлятора с чистой машины, какие шаги не описаны в `installer/README.md`, какой пример сквозного изменения годится для GUIDE. Читать: `installer/README.md`, `installer/package.json`, `docs/dry-run-journal.md`, `openspec/changes/calibration-fixes/`.» — находка: Отчёт `research/F-22.md`. Из двух тарболов на чистом каталоге всё ставится, `check: ok`. Но форка нет ни в одном удалённом репозитории, а `/opsx:continue` на чистой установке отсутствует и `check` этого не видит. Решения — F-28, F-29, F-31, F-32, F-34. На чистом клоне тесты инсталлятора падают без форка в `upstream/openspec`: GUIDE даёт шаг для разработчика, а тесты должны называть причину.
 - F-12 → человек: «новая возможность: заводить факты постановки не только из критериев, но и из прозы намерения. Цена — больше записей журнала. Решить, нужна ли она отдельным изменением.»
