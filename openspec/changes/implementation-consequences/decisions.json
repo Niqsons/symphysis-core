@@ -78,6 +78,10 @@
   {
    "date": "2026-11-01",
    "text": "F-123, F-124, F-125 внесены. Слово человека о техдолге: answers/2026-11-01-weight.md. Третья атака и проход отложены, разбор веса: docs/analysis/implementation-consequences-weight-2026-11-01.md, решения пока не меняются"
+  },
+  {
+   "date": "2026-11-01",
+   "text": "слово человека: срезы С1–С6 приняты (F-126…F-131), F-132 открыт, замеры на Sonnet 5.5 на чистом контексте (F-133, F-134). Проход по артефактам сделан, предупреждения закрыты правкой текста, третьей атаки нет (F-131.A)"
   }
  ],
  "records": [
@@ -1223,7 +1227,7 @@
    "outcome": null,
    "parking": [],
    "dispute": "",
-   "consequences": "Прогон шага на копиях — задача `tasks.md`, ограда та же: чек-лист закрыт от плеча. Модель и связь с полными прогонами критерия F-20 — F-26.",
+   "consequences": "Прогон шага на копиях — задача `tasks.md`, ограда та же: чек-лист закрыт от плеча. Модель и связь с полными прогонами критерия F-20 — F-26. Отложено F-133.A до слова человека.",
    "evidence": [],
    "comments": []
   },
@@ -1424,7 +1428,7 @@
    "outcome": null,
    "parking": [],
    "dispute": "",
-   "consequences": "Определяет подкоманду сверки в `journal.py` и её коды.",
+   "consequences": "Определяет подкоманду сверки в `journal.py` и её коды. Сужено F-127.A и F-128.A: покрытие не сверяется, у описи две проверки.",
    "evidence": [],
    "comments": []
   },
@@ -1511,7 +1515,7 @@
    "outcome": null,
    "parking": [],
    "dispute": "",
-   "consequences": "Определяет итоговую группу задач и работу стенда (парковка F-20). Судейство трёх листов — за владельцем.",
+   "consequences": "Определяет итоговую группу задач и работу стенда (парковка F-20). Судейство трёх листов — за владельцем. Отложено F-133.A до слова человека.",
    "evidence": [],
    "comments": []
   },
@@ -1826,7 +1830,7 @@
    "outcome": null,
    "parking": [],
    "dispute": "",
-   "consequences": "Новая строка `check` и шаг `install`, тесты с временным конфигом. Настоящий конфиг владельца тесты не трогают.",
+   "consequences": "Новая строка `check` и шаг `install`, тесты с временным конфигом. Настоящий конфиг владельца тесты не трогают. Пересмотрено F-126.A: `continue` в профиле `core` форка.",
    "evidence": [],
    "comments": []
   },
@@ -2351,7 +2355,7 @@
    },
    "parking": [],
    "dispute": "",
-   "consequences": "в spec.md: Повтор шага по новому составу",
+   "consequences": "в spec.md: Повтор шага по новому составу По F-129.A — фраза инструкции, сценария нет.",
    "evidence": [
     {
      "path": "openspec/changes/implementation-consequences/specs/consequence-inventory/spec.md",
@@ -2428,7 +2432,7 @@
     {
      "path": "openspec/changes/implementation-consequences/specs/consequence-inventory/spec.md",
      "quote": "### Requirement: Места разбора предлагает скрипт, выбирает модель",
-     "line": 63,
+     "line": 58,
      "verdict": "сверено",
      "found": true
     }
@@ -2500,7 +2504,7 @@
     {
      "path": "openspec/changes/implementation-consequences/specs/consequence-inventory/spec.md",
      "quote": "### Requirement: В журнал идут только ветки без сценария",
-     "line": 88,
+     "line": 83,
      "verdict": "сверено",
      "found": true
     }
@@ -2574,7 +2578,7 @@
     {
      "path": "openspec/changes/implementation-consequences/specs/consequence-inventory/spec.md",
      "quote": "### Requirement: В журнал идут только ветки без сценария",
-     "line": 88,
+     "line": 83,
      "verdict": "сверено",
      "found": true
     }
@@ -2640,12 +2644,12 @@
    },
    "parking": [],
    "dispute": "",
-   "consequences": "в spec.md: Повтор шага не заводит дублей",
+   "consequences": "в spec.md: Повтор шага не заводит дублей По F-129.A — фраза инструкции, сценария нет.",
    "evidence": [
     {
      "path": "openspec/changes/implementation-consequences/specs/consequence-inventory/spec.md",
      "quote": "### Requirement: В журнал идут только ветки без сценария",
-     "line": 88,
+     "line": 83,
      "verdict": "сверено",
      "found": true
     }
@@ -2712,12 +2716,12 @@
    },
    "parking": [],
    "dispute": "",
-   "consequences": "в spec.md: Шаг прерван до конца",
+   "consequences": "в spec.md: Шаг прерван до конца По F-129.A — фраза инструкции, сценария нет.",
    "evidence": [
     {
      "path": "openspec/changes/implementation-consequences/specs/consequence-inventory/spec.md",
      "quote": "### Requirement: В журнал идут только ветки без сценария",
-     "line": 88,
+     "line": 83,
      "verdict": "сверено",
      "found": true
     }
@@ -2784,12 +2788,12 @@
    },
    "parking": [],
    "dispute": "",
-   "consequences": "в spec.md: Причин меньше или больше трёх",
+   "consequences": "в spec.md: Причин меньше или больше трёх По F-129.A — фраза инструкции, правило в тексте требования.",
    "evidence": [
     {
      "path": "openspec/changes/implementation-consequences/specs/consequence-inventory/spec.md",
      "quote": "### Requirement: Шаг заканчивается тремя причинами провала изменения",
-     "line": 129,
+     "line": 115,
      "verdict": "сверено",
      "found": true
     },
@@ -2864,12 +2868,12 @@
    },
    "parking": [],
    "dispute": "",
-   "consequences": "в spec.md: Причина совпала с кандидатом описи",
+   "consequences": "в spec.md: Причина совпала с кандидатом описи По F-129.A — фраза инструкции, правило в тексте требования.",
    "evidence": [
     {
      "path": "openspec/changes/implementation-consequences/specs/consequence-inventory/spec.md",
      "quote": "### Requirement: Шаг заканчивается тремя причинами провала изменения",
-     "line": 129,
+     "line": 115,
      "verdict": "сверено",
      "found": true
     }
@@ -2937,12 +2941,12 @@
    },
    "parking": [],
    "dispute": "",
-   "consequences": "в spec.md: Пустая опись и pre-mortem",
+   "consequences": "в spec.md: Пустая опись и pre-mortem По F-129.A — фраза инструкции, сценария нет.",
    "evidence": [
     {
      "path": "openspec/changes/implementation-consequences/specs/consequence-inventory/spec.md",
      "quote": "### Requirement: Шаг без механизмов или без состава оставляет файл с причиной",
-     "line": 164,
+     "line": 141,
      "verdict": "сверено",
      "found": true
     }
@@ -3009,12 +3013,12 @@
    },
    "parking": [],
    "dispute": "",
-   "consequences": "в spec.md: Новое место после файла с причиной",
+   "consequences": "в spec.md: Новое место после файла с причиной Снято F-128.A: файл с причиной сверки мест не даёт.",
    "evidence": [
     {
      "path": "openspec/changes/implementation-consequences/specs/consequence-inventory/spec.md",
      "quote": "### Requirement: Шаг без механизмов или без состава оставляет файл с причиной",
-     "line": 164,
+     "line": 141,
      "verdict": "сверено",
      "found": true
     }
@@ -3234,7 +3238,7 @@
     {
      "path": "openspec/changes/implementation-consequences/specs/project-settings/spec.md",
      "quote": "### Requirement: Выключенный состав назван в артефакте шага",
-     "line": 97,
+     "line": 92,
      "verdict": "сверено",
      "found": true
     }
@@ -3677,7 +3681,7 @@
     {
      "path": "openspec/changes/implementation-consequences/specs/onboarding-guide/spec.md",
      "quote": "### Requirement: Руководство покрывает все шаги OpenSpec",
-     "line": 88,
+     "line": 93,
      "verdict": "сверено",
      "found": true
     }
@@ -3749,7 +3753,7 @@
     {
      "path": "openspec/changes/implementation-consequences/specs/onboarding-guide/spec.md",
      "quote": "### Requirement: Руководство покрывает все шаги OpenSpec",
-     "line": 88,
+     "line": 93,
      "verdict": "сверено",
      "found": true
     },
@@ -3901,7 +3905,7 @@
    },
    "parking": [],
    "dispute": "",
-   "consequences": "в spec.md: Файл без описи и без причины",
+   "consequences": "в spec.md: Файл без описи и без причины Снято F-128.A: форма файла скриптом не разбирается.",
    "evidence": [
     {
      "path": "openspec/changes/implementation-consequences/specs/artifact-graph/spec.md",
@@ -4122,7 +4126,7 @@
    },
    "parking": [],
    "dispute": "",
-   "consequences": "в spec.md: Одно имя требования в двух capabilities",
+   "consequences": "в spec.md: Одно имя требования в двух capabilities По F-129.A — фраза инструкции, сценария нет.",
    "evidence": [
     {
      "path": "openspec/changes/implementation-consequences/specs/requirement-probes/spec.md",
@@ -4193,7 +4197,7 @@
    },
    "parking": [],
    "dispute": "",
-   "consequences": "в spec.md: Снятые и переименованные требования",
+   "consequences": "в spec.md: Снятые и переименованные требования По F-129.A — фраза инструкции, сценария нет.",
    "evidence": [
     {
      "path": "openspec/changes/implementation-consequences/specs/requirement-probes/spec.md",
@@ -4264,7 +4268,7 @@
    },
    "parking": [],
    "dispute": "",
-   "consequences": "в spec.md: Повтор пробы после переименования",
+   "consequences": "в spec.md: Повтор пробы после переименования По F-129.A — фраза инструкции, сценария нет.",
    "evidence": [
     {
      "path": "openspec/changes/implementation-consequences/specs/requirement-probes/spec.md",
@@ -4337,12 +4341,12 @@
    },
    "parking": [],
    "dispute": "",
-   "consequences": "в spec.md: Строка не найдено без содержания",
+   "consequences": "в spec.md: Строка не найдено без содержания Снято F-127.A.",
    "evidence": [
     {
      "path": "openspec/changes/implementation-consequences/specs/requirement-probes/spec.md",
      "quote": "### Requirement: Сырой список различает «не нашли» и «нашли, но не выбрали»",
-     "line": 31,
+     "line": 16,
      "verdict": "сверено",
      "found": true
     }
@@ -4408,12 +4412,12 @@
    },
    "parking": [],
    "dispute": "",
-   "consequences": "тест-страховка: тест подаёт строку с `;`, `||` и переносом и утверждает, что число строк и значения посчитаны верно",
+   "consequences": "тест-страховка: тест подаёт строку с `;`, `||` и переносом и утверждает, что число строк и значения посчитаны верно Снято F-127.A: тест-страховка не нужна без разбора.",
    "evidence": [
     {
      "path": "openspec/changes/implementation-consequences/specs/requirement-probes/spec.md",
      "quote": "### Requirement: Сырой список различает «не нашли» и «нашли, но не выбрали»",
-     "line": 31,
+     "line": 16,
      "verdict": "сверено",
      "found": true
     }
@@ -4485,7 +4489,7 @@
     {
      "path": "openspec/changes/implementation-consequences/specs/requirement-probes/spec.md",
      "quote": "### Requirement: Текст пробы объясняет задачу подробнее",
-     "line": 74,
+     "line": 64,
      "verdict": "сверено",
      "found": true
     }
@@ -4552,12 +4556,12 @@
    },
    "parking": [],
    "dispute": "",
-   "consequences": "в spec.md: Проба выключена после первого прохода",
+   "consequences": "в spec.md: Проба выключена после первого прохода По F-129.A — фраза инструкции, сценария нет.",
    "evidence": [
     {
      "path": "openspec/changes/implementation-consequences/specs/requirement-probes/spec.md",
      "quote": "### Requirement: Пробу краёв можно выключить, по умолчанию она включена",
-     "line": 85,
+     "line": 75,
      "verdict": "сверено",
      "found": true
     }
@@ -5054,12 +5058,12 @@
    },
    "parking": [],
    "dispute": "",
-   "consequences": "в spec.md: Файла покрытия нет",
+   "consequences": "в spec.md: Файла покрытия нет Снято F-127.A.",
    "evidence": [
     {
-     "path": "openspec/changes/implementation-consequences/specs/decision-journal/spec.md",
-     "quote": "### Requirement: `check` сигналит неполное покрытие пробы краёв",
-     "line": 82,
+     "path": "docs/analysis/implementation-consequences-weight-2026-11-01.md",
+     "quote": "Снимается требование «`check` сигналит неполное покрытие пробы краёв»",
+     "line": 43,
      "verdict": "сверено",
      "found": true
     }
@@ -5128,9 +5132,9 @@
    "consequences": "в spec.md: Сигнал доходит до symphysis check",
    "evidence": [
     {
-     "path": "openspec/changes/implementation-consequences/specs/decision-journal/spec.md",
-     "quote": "### Requirement: `check` сигналит неполное покрытие пробы краёв",
-     "line": 82,
+     "path": "docs/analysis/implementation-consequences-weight-2026-11-01.md",
+     "quote": "Снимается требование «`check` сигналит неполное покрытие пробы краёв»",
+     "line": 43,
      "verdict": "сверено",
      "found": true
     },
@@ -5205,11 +5209,11 @@
    },
    "parking": [],
    "dispute": "",
-   "consequences": "в spec.md: Профиль core на чистой установке",
+   "consequences": "в spec.md: Профиль core на чистой установке Пересмотрено F-126.A: профиль и список не меняются.",
    "evidence": [
     {
      "path": "openspec/changes/implementation-consequences/specs/project-installer/spec.md",
-     "quote": "### Requirement: `install` добавляет workflow `continue` и обновляет проект",
+     "quote": "### Requirement: `install` обновляет проект так, чтобы появилась `/opsx:continue`",
      "line": 5,
      "verdict": "сверено",
      "found": true
@@ -5294,7 +5298,7 @@
    "evidence": [
     {
      "path": "openspec/changes/implementation-consequences/specs/project-installer/spec.md",
-     "quote": "### Requirement: `install` добавляет workflow `continue` и обновляет проект",
+     "quote": "### Requirement: `install` обновляет проект так, чтобы появилась `/opsx:continue`",
      "line": 5,
      "verdict": "сверено",
      "found": true
@@ -5365,7 +5369,7 @@
    "evidence": [
     {
      "path": "openspec/changes/implementation-consequences/specs/project-installer/spec.md",
-     "quote": "### Requirement: `install` добавляет workflow `continue` и обновляет проект",
+     "quote": "### Requirement: `install` обновляет проект так, чтобы появилась `/opsx:continue`",
      "line": 5,
      "verdict": "сверено",
      "found": true
@@ -5445,7 +5449,7 @@
     {
      "path": "openspec/changes/implementation-consequences/specs/project-installer/spec.md",
      "quote": "### Requirement: `check` называет отсутствие команды `/opsx:continue`",
-     "line": 60,
+     "line": 59,
      "verdict": "сверено",
      "found": true
     }
@@ -5517,7 +5521,7 @@
     {
      "path": "openspec/changes/implementation-consequences/specs/project-installer/spec.md",
      "quote": "### Requirement: `check` называет отсутствие команды `/opsx:continue`",
-     "line": 60,
+     "line": 59,
      "verdict": "сверено",
      "found": true
     },
@@ -5595,7 +5599,7 @@
     {
      "path": "openspec/changes/implementation-consequences/specs/project-installer/spec.md",
      "quote": "### Requirement: `install` создаёт `symphysis.yaml`, если файла нет, и не перезаписывает его",
-     "line": 86,
+     "line": 90,
      "verdict": "сверено",
      "found": true
     }
@@ -5666,7 +5670,7 @@
     {
      "path": "openspec/changes/implementation-consequences/specs/project-installer/spec.md",
      "quote": "### Requirement: `check` показывает состав из `symphysis.yaml`",
-     "line": 141,
+     "line": 145,
      "verdict": "сверено",
      "found": true
     }
@@ -5738,7 +5742,7 @@
     {
      "path": "openspec/changes/implementation-consequences/specs/project-installer/spec.md",
      "quote": "### Requirement: Скрипт сборки кладёт тарбол форка в `vendor/`",
-     "line": 200,
+     "line": 204,
      "verdict": "сверено",
      "found": true
     }
@@ -5809,7 +5813,7 @@
     {
      "path": "openspec/changes/implementation-consequences/specs/project-installer/spec.md",
      "quote": "### Requirement: Скрипт сборки кладёт тарбол форка в `vendor/`",
-     "line": 200,
+     "line": 204,
      "verdict": "сверено",
      "found": true
     }
@@ -5881,7 +5885,7 @@
     {
      "path": "openspec/changes/implementation-consequences/specs/project-installer/spec.md",
      "quote": "### Requirement: Скрипт сборки кладёт тарбол форка в `vendor/`",
-     "line": 200,
+     "line": 204,
      "verdict": "сверено",
      "found": true
     }
@@ -5953,7 +5957,7 @@
     {
      "path": "openspec/changes/implementation-consequences/specs/project-installer/spec.md",
      "quote": "### Requirement: Скрипт сборки кладёт тарбол форка в `vendor/`",
-     "line": 200,
+     "line": 204,
      "verdict": "сверено",
      "found": true
     },
@@ -6026,7 +6030,7 @@
    },
    "parking": [],
    "dispute": "",
-   "consequences": "проверка: test — тест сверки подаёт строку без `путь:строка «цитата»` и утверждает `[!!]`; в spec.md: Строка описи не выдаёт пересказ за ветку отказа",
+   "consequences": "проверка: test — тест сверки подаёт строку без `путь:строка «цитата»` и утверждает `[!!]`; в spec.md: Строка описи не выдаёт пересказ за ветку отказа Проверка перешла в чтение по F-128.A.",
    "evidence": [
     {
      "path": "openspec/changes/implementation-consequences/specs/consequence-inventory/spec.md",
@@ -6103,7 +6107,7 @@
     {
      "path": "openspec/changes/implementation-consequences/specs/consequence-inventory/spec.md",
      "quote": "### Requirement: Места разбора предлагает скрипт, выбирает модель",
-     "line": 63,
+     "line": 58,
      "verdict": "сверено",
      "found": true
     }
@@ -6176,7 +6180,7 @@
     {
      "path": "openspec/changes/implementation-consequences/specs/consequence-inventory/spec.md",
      "quote": "### Requirement: В журнал идут только ветки без сценария",
-     "line": 88,
+     "line": 83,
      "verdict": "сверено",
      "found": true
     }
@@ -6248,7 +6252,7 @@
     {
      "path": "openspec/changes/implementation-consequences/specs/consequence-inventory/spec.md",
      "quote": "### Requirement: Шаг заканчивается тремя причинами провала изменения",
-     "line": 129,
+     "line": 115,
      "verdict": "сверено",
      "found": true
     },
@@ -6472,12 +6476,12 @@
    },
    "parking": [],
    "dispute": "",
-   "consequences": "проверка: test — тест утверждает, что `journal.py check` на таком изменении печатает `[..] <часть>: выключено настройкой`; в spec.md: Выключенная часть не читается как пройденная проверка",
+   "consequences": "проверка: test — тест утверждает, что `journal.py check` на таком изменении печатает `[..] <часть>: выключено настройкой`; в spec.md: Выключенная часть не читается как пройденная проверка Снято F-128.A: признак — строка `**Состав:**` в артефакте.",
    "evidence": [
     {
      "path": "openspec/changes/implementation-consequences/specs/project-settings/spec.md",
      "quote": "### Requirement: Выключенный состав назван в артефакте шага",
-     "line": 97,
+     "line": 92,
      "verdict": "сверено",
      "found": true
     }
@@ -6692,7 +6696,7 @@
     {
      "path": "openspec/changes/implementation-consequences/specs/requirement-probes/spec.md",
      "quote": "### Requirement: Сырой список различает «не нашли» и «нашли, но не выбрали»",
-     "line": 31,
+     "line": 16,
      "verdict": "сверено",
      "found": true
     }
@@ -6758,11 +6762,11 @@
    },
    "parking": [],
    "dispute": "",
-   "consequences": "проверка: test — тест с временным конфигом сравнивает до и после, stdout называет каждую правку; в spec.md: `install` меняет в глобальном конфиге только названное",
+   "consequences": "проверка: test — тест с временным конфигом сравнивает до и после, stdout называет каждую правку; в spec.md: `install` меняет в глобальном конфиге только названное Сужено F-126.A: в глобальном конфиге остаётся только выключение телеметрии.",
    "evidence": [
     {
      "path": "openspec/changes/implementation-consequences/specs/project-installer/spec.md",
-     "quote": "### Requirement: `install` добавляет workflow `continue` и обновляет проект",
+     "quote": "### Requirement: `install` обновляет проект так, чтобы появилась `/opsx:continue`",
      "line": 5,
      "verdict": "сверено",
      "found": true
@@ -6834,7 +6838,7 @@
     {
      "path": "openspec/changes/implementation-consequences/specs/project-installer/spec.md",
      "quote": "### Requirement: Скрипт сборки кладёт тарбол форка в `vendor/`",
-     "line": 200,
+     "line": 204,
      "verdict": "сверено",
      "found": true
     }
@@ -7013,7 +7017,7 @@
     {
      "path": "openspec/changes/implementation-consequences/specs/project-installer/spec.md",
      "quote": "### Requirement: Скрипт сборки кладёт тарбол форка в `vendor/`",
-     "line": 200,
+     "line": 204,
      "verdict": "сверено",
      "found": true
     }
@@ -7071,7 +7075,7 @@
       {
        "path": "openspec/changes/implementation-consequences/decisions.json",
        "quote": "в глобальном конфиге меняется что-либо кроме добавления `continue` и названной смены профиля",
-       "line": 6715,
+       "line": 6719,
        "verdict": "сверено",
        "found": true
       }
@@ -7119,9 +7123,9 @@
      "unlikely": null,
      "evidence": [
       {
-       "path": "openspec/changes/implementation-consequences/specs/consequence-inventory/spec.md",
-       "quote": "**THEN** две причины и строка, почему третьей нет; при пяти — три наиболее вероятные кандидатами, остальные в разделе без записей журнала",
-       "line": 145,
+       "path": "openspec/changes/implementation-consequences/decisions.json",
+       "quote": "THEN две причины и строка, почему третьей нет; при пяти — три наиболее вероятные кандидатами, остальные в разделе без записей журнала",
+       "line": 2745,
        "verdict": "сверено",
        "found": true
       }
@@ -7136,7 +7140,7 @@
       {
        "path": "openspec/changes/implementation-consequences/decisions.json",
        "quote": "файл несёт причину и раздел pre-mortem с тремя кандидатами",
-       "line": 2894,
+       "line": 2898,
        "verdict": "сверено",
        "found": true
       }
@@ -7161,7 +7165,7 @@
    "outcome": null,
    "parking": [],
    "dispute": "",
-   "consequences": "Сценарий «Пустая опись и pre-mortem».",
+   "consequences": "Сценарий «Пустая опись и pre-mortem». По F-129.A — фраза инструкции, сценария нет.",
    "evidence": [],
    "comments": []
   },
@@ -7186,7 +7190,7 @@
       {
        "path": "openspec/changes/implementation-consequences/decisions.json",
        "quote": "тест подаёт пустой файл, файл из комментариев и `edge_probe:` и утверждает, что состав везде «включено»",
-       "line": 3051,
+       "line": 3055,
        "verdict": "сверено",
        "found": true
       }
@@ -7201,7 +7205,7 @@
       {
        "path": "openspec/changes/implementation-consequences/decisions.json",
        "quote": "выбор считается включённым, `check` даёт `[!!] symphysis.yaml: недопустимое значение <значение>`, код 2",
-       "line": 3108,
+       "line": 3112,
        "verdict": "сверено",
        "found": true
       }
@@ -7345,7 +7349,7 @@
       {
        "path": "openspec/changes/implementation-consequences/specs/project-installer/spec.md",
        "quote": "Команда `symphysis install` SHALL добавлять строку `symphysis.yaml` в `.gitignore` проекта, если её там нет",
-       "line": 108,
+       "line": 112,
        "verdict": "сверено",
        "found": true
       }
@@ -7773,7 +7777,7 @@
    "outcome": null,
    "parking": [],
    "dispute": "",
-   "consequences": "Требование «`install` меняет в глобальном конфиге только названное», строка README про `anonymousId`.",
+   "consequences": "Требование «`install` меняет в глобальном конфиге только названное», строка README про `anonymousId`. Сужено F-126.A: умолчания форка и `OPENSPEC_TELEMETRY=0` остаются для записи телеметрии.",
    "evidence": [],
    "comments": []
   },
@@ -7864,7 +7868,7 @@
       {
        "path": "openspec/changes/implementation-consequences/decisions.json",
        "quote": "разбор YAML в `check`, чтение моделью и Python без пакетов поймут его по-разному",
-       "line": 3097,
+       "line": 3101,
        "verdict": "сверено",
        "found": true
       }
@@ -7946,7 +7950,7 @@
       {
        "path": "openspec/changes/implementation-consequences/decisions.json",
        "quote": "тест утверждает, что `journal.py check` на таком изменении печатает `[..] <часть>: выключено настройкой`",
-       "line": 6429,
+       "line": 6433,
        "verdict": "сверено",
        "found": true
       }
@@ -7971,7 +7975,7 @@
    "outcome": null,
    "parking": [],
    "dispute": "",
-   "consequences": "Сценарии «Строка без цитаты», «Признак выключенной части», «Проба выключена».",
+   "consequences": "Сценарии «Строка без цитаты», «Признак выключенной части», «Проба выключена». Снято F-128.A: сверка состав не читает.",
    "evidence": [],
    "comments": []
   },
@@ -7997,7 +8001,7 @@
       {
        "path": "openspec/changes/implementation-consequences/decisions.json",
        "quote": "GIVEN `consequences.md` с причиной «механизмов нет» и список мест, ставший непустым",
-       "line": 2966,
+       "line": 2970,
        "verdict": "сверено",
        "found": true
       }
@@ -8012,7 +8016,7 @@
       {
        "path": "openspec/changes/implementation-consequences/decisions.json",
        "quote": "до правки схемы у него написан `consequences.md` с причиной «шаг появился позже», `status` не ломается",
-       "line": 3779,
+       "line": 3783,
        "verdict": "сверено",
        "found": true
       }
@@ -8037,7 +8041,7 @@
    "outcome": null,
    "parking": [],
    "dispute": "",
-   "consequences": "Сценарий «Новое место после файла с причиной», шаблон `consequences.md`.",
+   "consequences": "Сценарий «Новое место после файла с причиной», шаблон `consequences.md`. Заменено F-128.A: любая строка `**Причина:**` сверки мест не даёт.",
    "evidence": [],
    "comments": []
   },
@@ -8062,7 +8066,7 @@
       {
        "path": "openspec/changes/implementation-consequences/decisions.json",
        "quote": "строка `[!!] python` говорит, что инструменты журнала считают всё включённым",
-       "line": 8058,
+       "line": 8059,
        "verdict": "сверено",
        "found": true
       }
@@ -8187,9 +8191,9 @@
      "unlikely": null,
      "evidence": [
       {
-       "path": "openspec/changes/implementation-consequences/specs/project-installer/spec.md",
-       "quote": "**THEN** в списке те же три и `continue`",
-       "line": 21,
+       "path": "openspec/changes/implementation-consequences/decisions.json",
+       "quote": "Требование обещает «не убирая уже заданные»",
+       "line": 8158,
        "verdict": "сверено",
        "found": true
       }
@@ -8229,7 +8233,7 @@
    "outcome": null,
    "parking": [],
    "dispute": "",
-   "consequences": "Слово человека расходится с текстом варианта A: вариант заменял спящий список, а слово говорит, что менять созданный ранее профиль плохо. До ответа на срез С1 (`docs/analysis/implementation-consequences-weight-2026-11-01.md`) не реализуется. У форка один список `workflows` и два профиля, `init --profile custom` действует на один запуск, а `update` читает глобальный профиль.",
+   "consequences": "Слово человека расходится с текстом варианта A: вариант заменял спящий список, а слово говорит, что менять созданный ранее профиль плохо. До ответа на срез С1 (`docs/analysis/implementation-consequences-weight-2026-11-01.md`) не реализуется. У форка один список `workflows` и два профиля, `init --profile custom` действует на один запуск, а `update` читает глобальный профиль. Снято F-126.A: профиль и спящий список не меняются вовсе, как и просило слово человека.",
    "evidence": [],
    "comments": []
   },
@@ -8362,6 +8366,584 @@
    "dispute": "",
    "consequences": "Требование об установке, раздел «Обновление», задачи 6.7, 7.2 и проход 7.3.",
    "evidence": [],
+   "comments": []
+  },
+  {
+   "id": "F-126",
+   "question": "Срез С1. Как появляется `/opsx:continue`, если настроенный человеком профиль менять нельзя (слово к F-123)? F-32.A и F-79.A правят глобальный конфиг, и отсюда выросли F-100, F-116, F-122, F-123.",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-32",
+    "F-79",
+    "F-100",
+    "F-116",
+    "F-123"
+   ],
+   "delivery": "upstream/openspec, specs/project-installer, installer",
+   "options": [
+    {
+     "letter": "A",
+     "text": "`continue` входит в `CORE_WORKFLOWS` форка, как в F-32.B. `install` только обновляет проект, профиль и список не трогает; у кастомного профиля без `continue` форк сам подсказывает, а `check` даёт `[!!]`. При выборе: настроенный профиль не меняется вовсе. Цена: ещё одно отличие форка, версия `1.15.0-symphysis.4`, правка тестов паритета.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "upstream/openspec/src/core/update.ts",
+       "quote": "grow CORE_WORKFLOWS stay discoverable. Keep custom profiles user-owned;",
+       "line": 941,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Оставить F-32.A и F-79.A: `install` правит глобальный конфиг. При выборе: форк не меняется. Цена: запись в чужой конфиг и всё, что вокруг неё выросло.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/changes/implementation-consequences/answers/2026-11-01-8.md",
+       "quote": "если мы меняем профиль что создан ранее, то это плохо.",
+       "line": 2,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Источник сам велит не менять кастомный профиль и предусматривает рост списка `core`.",
+    "text": "A — `continue` в `CORE_WORKFLOWS`"
+   },
+   "decision": {
+    "option": "A",
+    "word": "Так как из семи срезов ты все рекомендуешь брать (ну разве что один вопрос, а не срез) мы реализуем.",
+    "date": "2026-11-01"
+   },
+   "reversibility": {
+    "level": "обратимо",
+    "why": "Одна строка форка и его тесты; снимается новой версией пина."
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "Пересматривает F-32.A, F-79.A, F-123.A; сужает F-100.A, F-107.A, F-116.A, F-122. Форк правится после базового замера: плечо работает на нём.",
+   "evidence": [],
+   "comments": []
+  },
+  {
+   "id": "F-127",
+   "question": "Срез С2. Разбирать ли `edge-probe.md` в `journal.py check`? Файл пишет модель, а разбор требует ключей, значений и отдельной сверки (F-25.A, F-64, F-65, F-67, F-68, F-77).",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-25",
+    "F-67",
+    "F-68",
+    "F-77",
+    "F-18"
+   ],
+   "delivery": "specs/decision-journal, specs/requirement-probes, tools",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Нет: файл покрытия пишет модель по инструкции, читает человек, `check` его не разбирает. При выборе: минус требование и задача 3.3. Цена: пропущенную пару скрипт не назовёт; это видно в файле и порчей не является.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "docs/analysis/implementation-consequences-weight-2026-11-01.md",
+       "quote": "Снимается требование «`check` сигналит неполное покрытие пробы краёв»",
+       "line": 43,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Да, как решено в F-25.A. При выборе: покрытие проверяется скриптом. Цена: разбор файла модели и правила его формы.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/changes/implementation-consequences/decisions.json",
+       "quote": "Сигнал: строка `[!!]` в `check`, код 0, с `--strict` код 2.",
+       "line": 1377,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Потеря тут не тихая порча, а меньше кандидатов, и она видна в файле.",
+    "text": "A — `check` файл покрытия не разбирает"
+   },
+   "decision": {
+    "option": "A",
+    "word": "Так как из семи срезов ты все рекомендуешь брать (ну разве что один вопрос, а не срез) мы реализуем.",
+    "date": "2026-11-01"
+   },
+   "reversibility": {
+    "level": "обратимо",
+    "why": "Удаление требования и задачи."
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "Пересматривает половину F-25.A и F-67.A, F-68.C, F-77.A, ключи F-64.A, F-65.A; сигнал F-78.A остаётся у сверки описи.",
+   "evidence": [],
+   "comments": []
+  },
+  {
+   "id": "F-128",
+   "question": "Срез С3. Сколько формы описи проверять скриптом? Разбор файла модели требует жёсткой формы, форма рождает края, края рождают правила: так появились F-119 и F-120.",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-25",
+    "F-38",
+    "F-49",
+    "F-61",
+    "F-90",
+    "F-96",
+    "F-119",
+    "F-120"
+   ],
+   "delivery": "specs/consequence-inventory, specs/decision-journal, specs/project-settings, tools",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Две проверки: каждое место из списка названо путём в файле, файл с `**Причина:**` сверки не даёт; цитата стоит в коде дословно. `journal.py` настройки не читает вовсе. При выборе: журнал остаётся журналом, форма свободнее. Цена: строку без цитаты и выключенную часть видно только чтением файла.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "docs/analysis/implementation-consequences-weight-2026-11-01.md",
+       "quote": "`check` держит только: каждое место из списка названо путём в файле или исключено; цитата стоит в коде дословно.",
+       "line": 49,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Как решено: `check` разбирает форму, состав и причины. При выборе: больше сигналов. Цена: каждое новое правило формы — новый край.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/changes/implementation-consequences/decisions.json",
+       "quote": "тест утверждает, что `journal.py check` на таком изменении печатает `[..] <часть>: выключено настройкой`",
+       "line": 6433,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Это самый вредный вид веса, а обе оставшиеся проверки ловят именно тихую порчу.",
+    "text": "A — две проверки"
+   },
+   "decision": {
+    "option": "A",
+    "word": "Так как из семи срезов ты все рекомендуешь брать (ну разве что один вопрос, а не срез) мы реализуем.",
+    "date": "2026-11-01"
+   },
+   "reversibility": {
+    "level": "обратимо",
+    "why": "Удаление веток сверки и упрощение шаблона."
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "Пересматривает F-49.A, F-61.A, F-96.A, F-119.A, F-120.A; проверка F-90.A переходит в чтение; упрощает F-38.A, F-75.A, F-76.A.",
+   "evidence": [],
+   "comments": []
+  },
+  {
+   "id": "F-129",
+   "question": "Срез С4. Держать ли в спеках сценарии о поведении модели при повторе и прерывании (F-40, F-44, F-45, F-46, F-47, F-48, F-64, F-65, F-66, F-70, F-108)? Скрипт их не проверяет, а каждый создаёт строку атаки.",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-40",
+    "F-44",
+    "F-45",
+    "F-66",
+    "F-70"
+   ],
+   "delivery": "specs/consequence-inventory, specs/requirement-probes, skills",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Нет: остаются одной фразой инструкции в скилле, сценарии уходят. При выборе: спека короче, атаке нечего сверять. Цена: требование к модели живёт только в тексте скилла.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "docs/analysis/implementation-consequences-weight-2026-11-01.md",
+       "quote": "F-40, F-44, F-45, F-47, F-48, F-66, F-70, F-108 и им подобные остаются одной фразой инструкции, а сценарии уходят.",
+       "line": 55,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Да, как решено. При выборе: всё поведение описано в спеке. Цена: сценарии, которые никто не выполняет.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/schemas/symphysis/schema.yaml",
+       "quote": "Спецификация описывает наблюдаемое поведение, не реализацию.",
+       "line": 77,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Граница контроля человека: поведение модели держат инструкции и живые проходы.",
+    "text": "A — в текст скилла"
+   },
+   "decision": {
+    "option": "A",
+    "word": "Так как из семи срезов ты все рекомендуешь брать (ну разве что один вопрос, а не срез) мы реализуем.",
+    "date": "2026-11-01"
+   },
+   "reversibility": {
+    "level": "обратимо",
+    "why": "Перенос текста."
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "Исходы названных записей теперь доходят до текста скилла, а не до сценария.",
+   "evidence": [],
+   "comments": []
+  },
+  {
+   "id": "F-130",
+   "question": "Срез С5. Что рекомендует проба? В этом изменении рекомендация была `Specify` в 54 случаях из 64, а цена этого варианта в тексте не названа.",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-18",
+    "F-92"
+   ],
+   "delivery": "specs/requirement-probes, skills",
+   "options": [
+    {
+     "letter": "A",
+     "text": "В тексте скиллов проб: `Specify` рекомендуется, только когда край тихо портит результат или необратим, иначе `Dismiss` с причиной; вариант `Specify` называет цену. При выборе: снижается вес всех будущих изменений. Цена: часть краёв уйдёт из спек, решает человек.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "docs/analysis/implementation-consequences-weight-2026-11-01.md",
+       "quote": "`Specify` рекомендуется, только когда край тихо портит результат или необратим, иначе `Dismiss` с причиной.",
+       "line": 59,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Как сейчас: рекомендация по суждению модели без правила. При выборе: текст не меняется. Цена: проба продолжает раздувать спеки.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "skills/symphysis-edge-probe/SKILL.md",
+       "quote": "- A: в spec.md под требованием — новый `#### Scenario:` с GIVEN/WHEN/THEN",
+       "line": 191,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Одна правка текста действует на все будущие изменения и скрипта не требует.",
+    "text": "A — правило рекомендации и цена"
+   },
+   "decision": {
+    "option": "A",
+    "word": "Так как из семи срезов ты все рекомендуешь брать (ну разве что один вопрос, а не срез) мы реализуем.",
+    "date": "2026-11-01"
+   },
+   "reversibility": {
+    "level": "обратимо",
+    "why": "Текст двух скиллов."
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "Новое требование в `requirement-probes`, тексты двух скиллов.",
+   "evidence": [],
+   "comments": []
+  },
+  {
+   "id": "F-131",
+   "question": "Срез С6. Что держит `apply` после атаки? Правило `status: passed` только при нуле предупреждений заставляет повторять круги: атака каждый раз находит новые края рядом с правками.",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-111"
+   ],
+   "delivery": "specs/artifact-attack, skills",
+   "options": [
+    {
+     "letter": "A",
+     "text": "`apply` держат только блокеры, предупреждения идут человеку списком и становятся заметками к задачам. При выборе: круг заканчивается, когда чинить нечего срочно. Цена: отступление от правила GSD, причина записана; форк не меняется.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "docs/analysis/implementation-consequences-weight-2026-11-01.md",
+       "quote": "`apply` держат только блокеры, предупреждения идут человеку списком и становятся заметками к задачам.",
+       "line": 63,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Как сейчас: ноль и блокеров, и предупреждений. При выборе: строже. Цена: новые круги без конца.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "skills/symphysis-attack/SKILL.md",
+       "quote": "`status: passed` ставится, только когда в таблице нет ни одной строки",
+       "line": 234,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Повтор показал: блокеры закрылись за круг, а предупреждения сходятся к всё более узким краям.",
+    "text": "A — держат только блокеры"
+   },
+   "decision": {
+    "option": "A",
+    "word": "Так как из семи срезов ты все рекомендуешь брать (ну разве что один вопрос, а не срез) мы реализуем.",
+    "date": "2026-11-01"
+   },
+   "reversibility": {
+    "level": "обратимо",
+    "why": "Текст скилла и его тест."
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "Третья атака этого изменения не проводится: повтор дал блокеров 0. Оставшиеся предупреждения закрыты правкой текста.",
+   "evidence": [],
+   "comments": []
+  },
+  {
+   "id": "F-132",
+   "question": "Вопрос С7. Пол пробы краёв при 39 требованиях даёт 312 строк, слово к F-18: «на сильной модели потери не в краях». Умолчание человек уже выбрал. Выключать ли пол во втором замере на Sonnet 5.5? Первый замер этого пола ещё не содержит.",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-18",
+    "F-24",
+    "F-133"
+   ],
+   "delivery": "tasks",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Не выключать: замер меряет настройку по умолчанию, время пола видно в строке шага `specs`. При выборе: сравнение честное для того, что получит пользователь. Цена: разница смешает шаг последствий и пол.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "docs/analysis/implementation-consequences-weight-2026-11-01.md",
+       "quote": "F-18.B при 39 требованиях этого изменения даёт 312 строк",
+       "line": 69,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Выключить в `symphysis.yaml` плеча. При выборе: чище видно шаг последствий и нет лишнего времени. Цена: замер меряет не умолчание.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "docs/analysis/implementation-consequences-weight-2026-11-01.md",
+       "quote": "Слово человека к нему: «на сильной модели потери не в краях»",
+       "line": 69,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Человек сравнивает общий вес системы и хочет видеть шаги, а отдельный прогон без пола дешёв, если разница окажется непонятной.",
+    "text": "A — не выключать"
+   },
+   "decision": null,
+   "reversibility": {
+    "level": "обратимо",
+    "why": "Значение одного файла в сборке плеча."
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "Ключ в файле плеча перед вторым замером.",
+   "evidence": [],
+   "comments": []
+  },
+  {
+   "id": "F-133",
+   "question": "Какие прогоны делает это изменение теперь? Прогоны на Opus 5.5 не готовы, а решение об откате нужно раньше. Критерий F-20 называет три плеча на Opus 5.5.",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-20",
+    "F-26",
+    "F-19",
+    "F-33"
+   ],
+   "delivery": "tasks, stand",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Базовый замер P-чел на Sonnet 5.5 на чистом контексте до реализации, второй после неё, без судейства; сверка по шагам и решение об откате. Шаг на копиях на Fable и плечи на Opus 5.5 — по слову человека после этого решения. При выборе: дешёвый ответ на главный вопрос. Цена: полнота не меряется, критерий F-20 откладывается.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/changes/implementation-consequences/answers/2026-11-01-measure.md",
+       "quote": "Сделаем дешевый прогон на sonnet 5.5, без судейства на текущем состоянии (change мы ведь еще не реализовали).",
+       "line": 6,
+       "verdict": "сверено",
+       "found": true
+      }
+     ],
+     "deviation": "F-20"
+    },
+    {
+     "letter": "B",
+     "text": "Как решено в F-26.B: шаг на копиях на Fable, затем три плеча на Opus 5.5. При выборе: критерий F-20 выполняется. Цена: стенд не готов, решение об откате откладывается.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/changes/implementation-consequences/intent.md",
+       "quote": "1. Проведены новые прогоны на плечах: ванили, чистый промпт, P-чел на модели Opus 5.5.",
+       "line": 24,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Слово человека.",
+    "text": "A — два замера на Sonnet 5.5"
+   },
+   "decision": {
+    "option": "A",
+    "word": "Сделаем дешевый прогон на sonnet 5.5, без судейства на текущем состоянии. После реализации сделаем еще один замер на sonnet 5.5. а потом сверим разницу. Но замеры будем делать на чистом контексте. И уже будем решать, откатываться нам или нет.",
+    "date": "2026-11-01"
+   },
+   "reversibility": {
+    "level": "обратимо",
+    "why": "Состав групп 9–11 `tasks.md`."
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "Пересматривает порядок F-19.A и F-26.B: откладывает, а не отменяет. Отступление от F-20 записано в proposal.",
+   "evidence": [],
+   "comments": []
+  },
+  {
+   "id": "F-134",
+   "question": "Контекст прежних прогонов не был чистым: у всех плеч, и у ванили, глобальный `CLAUDE.md` человека, плагины, стиль Explanatory и MCP, около 30 тысяч лишних токенов в запросе. Чужих скиллов и агентов плечи не вызывали. Чистый контекст при входе по подписке даёт `--setting-sources project --strict-mcp-config`, отключение `CLAUDE.md` и автопамяти и окружение без переменных родительской сессии; `--bare` читает только ключ API.",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "материалы",
+   "depends_on": [
+    "F-133"
+   ],
+   "delivery": "design: Context",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "Числа прежней серии с новыми напрямую не сравниваются; сравнение плеч внутри серии остаётся сравнением в одних условиях. Водитель проверяет чистоту на первом ходу.",
+   "evidence": [
+    {
+     "path": "openspec/changes/implementation-consequences/research/F-133.md",
+     "quote": "| глобальный `CLAUDE.md` человека | да |",
+     "line": 17,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "openspec/changes/implementation-consequences/research/F-133.md",
+     "quote": "`--bare` не подходит: он читает только ключ API, вход по подписке не работает.",
+     "line": 38,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "openspec/changes/implementation-consequences/answers/2026-11-01-measure.md",
+     "quote": "Но замеры будем делать на чистом контексте, это важно, я не уверен, что раньше контекст был чистый.",
+     "line": 9,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
    "comments": []
   }
  ]
