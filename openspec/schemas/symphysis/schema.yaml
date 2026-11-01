@@ -1,0 +1,144 @@
+name: symphysis
+version: 1
+description: Проектирование на сильной модели — намерение → решения (журнал) → исследование и второй круг → proposal → specs → design → security → tasks; атаки решений и артефактов вызываются по имени
+artifacts:
+  - id: intent
+    generates: intent.md
+    description: Намерение человека — его слова дословно и критерии готовности
+    template: intent.md
+    instruction: |
+      Если `intent.md` нет или он пуст (0 байт либо одна строка заголовка), спроси намерение у человека и сохрани его ответ дословно по шаблону: слова — в «Намерение», критерии — в «Критерии готовности»; «Без критериев готовности» — законное значение.
+      Содержания не пиши. Принесённый человеком файл принимается как есть; дальше файл не правится.
+    requires: []
+
+  - id: decisions
+    generates: decisions.json
+    description: Журнал решений — развилки и факты с уликами, решает человек
+    template: decisions.json
+    instruction: |
+      Начни интервью с `intent.md`.
+      `intent.md` пуст (0 байт или одна строка заголовка) — сначала спроси намерение и сохрани ответ дословно по шаблону, затем круг.
+      Загрузи скилл `symphysis-brainstorm` и проведи интервью по задаче: развилки и факты записывай в журнал `decisions.json` по шаблону.
+      Решает человек, не ты: пока его слова нет, запись остаётся открытой.
+      Улики сверяет `python .symphysis/tools/journal.py check <каталог изменения>/decisions.json` — это сигнал, не стоп.
+    requires:
+      - intent
+
+  - id: research
+    generates: "research/**/*.md"
+    description: Исследование по записям журнала с адресатом «материалы» и второй круг брейншторма
+    template: research.md
+    instruction: |
+      На каждую парковку с адресатом «материалы» — файл `research/<F-NN>.md`: frontmatter `genre: устройство|размещение|края|проверка|аналоги` (одно значение), `question: <F-NN>`, `brief` (текст брифа).
+      Найденное — путь, строка, дословная цитата из прочитанного файла; ненайденное — «не найдено» и «искал: <шаблоны дословно>».
+      Нуль парковок — один `research/none.md`: `question: none`, то же отрицание, перечень записей с `addressee: материалы` на уровне записи; это законный исход. Первая парковка — пиши `research/<F-NN>.md` и удали `none.md`.
+      Второй круг брейншторма — после отчётов: закрой записи с адресатом «материалы» по файлам `research/`: ответ внеси в запись, улики — путём и цитатой.
+      Нет в `notes[]` строки «брейншторм закончен по решению человека» — спроси, нужен ли новый круг: только по слову человека (скилл `symphysis-brainstorm`); отказ запиши строкой «брейншторм закончен по решению человека».
+    requires:
+      - decisions
+
+  - id: attack-decisions
+    generates: attack/decisions.md
+    description: Атака журнала решений с вердиктом (вызывается по имени)
+    template: attack-decisions.md
+    optional: true
+    verdict:
+      frontmatter: status
+      value: passed
+    instruction: |
+      Загрузи скилл `symphysis-attack` и атакуй `decisions.json`.
+      Вердикт — во frontmatter `attack/decisions.md`: `status: passed | gaps_found`.
+    requires:
+      - research
+
+  - id: proposal
+    generates: proposal.md
+    description: Зачем нужно изменение и какие capabilities оно затрагивает
+    template: proposal.md
+    instruction: |
+      Записи с парковкой «материалы» без `finding` при файлах `research/` — сначала второй круг брейншторма (конец instruction `research`), потом proposal.
+      Напиши proposal.md по шаблону: Why, What Changes, Capabilities, Impact.
+      Основание — решённые записи журнала: ссылайся на них по номеру F-NN, не пересказывай.
+      Capabilities — контракт со specs: каждая новая или изменяемая получит `specs/<capability>/spec.md`; называй её по устойчивому поведению системы, не по работе в этом изменении.
+      Требований, которых нет в решениях, не добавляй.
+      Отступления от постановки — в раздел «Отступления от постановки»: решённые развилки, чей выбранный вариант несёт поле `deviation` (номер факта `addressee: постановка`), — строкой «F-MM против F-NN — <вариант>» на каждую; нет таких — «нет».
+    requires:
+      - research
+      - attack-decisions
+
+  - id: specs
+    generates: "specs/**/*.md"
+    description: Спецификации поведения — что система должна делать
+    template: spec.md
+    instruction: |
+      Напиши спецификации поведения по грамматике OpenSpec: по файлу `specs/<capability>/spec.md` на каждую capability из proposal.
+      Требование — `### Requirement: <имя>` с SHALL или MUST; у каждого есть сценарий `#### Scenario: <имя>` (ровно четыре `#`) в виде GIVEN / WHEN / THEN.
+      Дельты — секции `## ADDED|MODIFIED|REMOVED Requirements`; MODIFIED несёт требование целиком.
+      Спецификация описывает наблюдаемое поведение, не реализацию.
+      После написания на каждое требование позови скиллы `symphysis-edge-probe` и `symphysis-prohibition-probe`.
+    requires:
+      - proposal
+
+  - id: design
+    generates: design.md
+    description: Дизайн — как реализовать, решения из журнала
+    template: design.md
+    instruction: |
+      Получи design.md из журнала: `python .symphysis/tools/journal.py render-design <каталог изменения>/decisions.json --out <каталог изменения>/design.md`.
+      Decisions, Risks / Trade-offs и Open Questions приходят из журнала; чтобы их изменить, правь журнал и рендери заново.
+      После последнего рендера впиши руками Context (состояние и ограничения; мотивацию — ссылкой на proposal.md) и Goals / Non-Goals (границы дизайна, без повтора proposal).
+      Решение излагается, а не принимается: его уже принял человек.
+    requires:
+      - proposal
+
+  - id: security
+    generates: security.md
+    description: Чек-лист канона информационной безопасности по спецификациям
+    template: security.md
+    instruction: |
+      Составь чек-лист канона ИБ по `specs/`. Канон (OWASP, инъекции, пути, токены) не записывается в журнал, а отмечается здесь.
+      Пункты: инъекции через содержимое файлов, пути с `../`, токены и срок их жизни, права, бинарные файлы.
+      Таблица: пункт · «применимо / неприменимо — причина» · чем проверено.
+      Неприменимый пункт остаётся в таблице с причиной; применимый называет требование из specs, которое его закрывает.
+    requires:
+      - specs
+
+  - id: tasks
+    generates: tasks.md
+    description: Список задач реализации с проверкой каждой
+    template: tasks.md
+    instruction: |
+      Разбей работу по грамматике OpenSpec: группы `## N. Название`, задачи `- [ ] N.M Описание`. Прогресс считается только по чекбоксам.
+      Каждая задача называет проверку своего завершения (тест, команда, наблюдаемый результат, файл) прямо в строке.
+      Тесты и документацию несёт та группа, чью работу они проверяют, а не последняя.
+      Порядок — по зависимости; задача укладывается в один сеанс.
+      Опирайся на specs (что строить) и design (как); открытый вопрос design, меняющий задачи, реши с человеком до списка.
+    requires:
+      - specs
+      - design
+
+  - id: attack-artifacts
+    generates: attack/artifacts.md
+    description: Атака specs, design, security и tasks с вердиктом (вызывается по имени)
+    template: attack-artifacts.md
+    optional: true
+    verdict:
+      frontmatter: status
+      value: passed
+    instruction: |
+      Загрузи скилл `symphysis-attack` и атакуй `specs/`, `design.md`, `security.md` и `tasks.md`.
+      Результат — `attack/artifacts.md` по шаблону.
+      Вердикт — во frontmatter: `status: passed | gaps_found`.
+      Дыры закрывай правкой атакуемого артефакта, затем повтори атаку; форк OpenSpec symphysis считает артефакт готовым только с `status: passed`.
+    requires:
+      - specs
+      - design
+      - security
+      - tasks
+
+apply:
+  requires: [tasks, attack-artifacts]
+  tracks: tasks.md
+  instruction: |
+    Работай по tasks.md по порядку и отмечай `- [x]` по мере выполнения; закрывай задачу проверкой, которая в ней названа.
+    Остановись, если упёрся в блокер или нужно уточнение.

@@ -1,0 +1,158 @@
+{
+ "$schema": "https://json-schema.org/draft/2020-12/schema",
+ "title": "Журнал решений symphysis",
+ "description": "Источник журнала решений (F-01.B): ключи английские, значения русские. Правила между записями (антиподы, зависимости, решение среди вариантов, отступление от постановки) проверяет validate_journal в tools/journal.py.",
+ "type": "object",
+ "required": ["title", "source", "records"],
+ "additionalProperties": false,
+ "properties": {
+  "title": {"type": "string"},
+  "source": {"type": "string"},
+  "intro": {"type": "string",
+   "description": "Вводный текст markdown между заголовком и первой записью (формат, корни путей, ход кругов); рендер пишет его как есть"},
+  "generated": {"$ref": "#/$defs/date",
+   "description": "Дата сборки просмотрщика; рендер берёт её отсюда, а не из часов, чтобы два рендера одного журнала совпадали"},
+  "notes": {"type": "array", "items": {"$ref": "#/$defs/note"},
+   "description": "Заметки человека к схеме и плану («Замечания к схеме:» промпта возврата) и служебные строки скиллов (итоги кругов, завершение брейншторма), с датой внесения; рендерятся разделом «Заметки» в конце markdown"},
+  "records": {"type": "array", "items": {"$ref": "#/$defs/record"}}
+ },
+ "$defs": {
+  "recordId": {"type": "string", "pattern": "^F-\\d+$"},
+  "letter": {"type": "string", "pattern": "^[A-ZА-Я]$"},
+  "optionRef": {"type": "string", "pattern": "^F-\\d+\\.[A-ZА-Я]$"},
+  "date": {"type": "string", "pattern": "^\\d{4}-\\d{2}-\\d{2}$"},
+  "evidence": {
+   "type": "object",
+   "required": ["path", "quote"],
+   "additionalProperties": false,
+   "properties": {
+    "path": {"type": "string", "minLength": 1},
+    "quote": {"type": "string", "minLength": 1},
+    "line": {"type": ["integer", "null"]},
+    "found": {"type": ["boolean", "null"],
+     "description": "null или поля нет — улику не сверяли; false — сверяли, цитаты нет; true — найдена"},
+    "verdict": {"type": ["string", "null"]}
+   }
+  },
+  "option": {
+   "type": "object",
+   "required": ["letter", "text", "added", "unlikely", "evidence"],
+   "additionalProperties": false,
+   "properties": {
+    "letter": {"$ref": "#/$defs/letter"},
+    "text": {"type": "string", "minLength": 1},
+    "added": {"type": "boolean"},
+    "unlikely": {"type": ["string", "null"]},
+    "evidence": {"type": "array", "items": {"$ref": "#/$defs/evidence"}},
+    "deviation": {"$ref": "#/$defs/recordId",
+     "description": "Пометка «отступление от постановки» (F-08.A, F-28.E): у варианта развилки, чьё наблюдаемое поведение противоречит сценарию факта `addressee: постановка`, — номер этого факта; уточнение без противоречия поля не несёт. Необязательно: журналы без пометки годны. Только у варианта развилки и только на факт постановки — правило validate_journal. Замка нет: выбор такого варианта годен (F-55.E)"}
+   }
+  },
+  "antipode": {
+   "type": "object",
+   "required": ["option", "other"],
+   "additionalProperties": false,
+   "properties": {
+    "option": {"$ref": "#/$defs/letter"},
+    "other": {"$ref": "#/$defs/optionRef"}
+   }
+  },
+  "recommendation": {
+   "type": ["object", "null"],
+   "required": ["option", "why"],
+   "additionalProperties": false,
+   "properties": {
+    "option": {"$ref": "#/$defs/letter"},
+    "why": {"type": "string"},
+    "text": {"type": "string",
+     "description": "Строка рекомендации как написана; у составной («B для процедур и A для коротких правил; …») option/why — приближение, рендер пишет text"}
+   }
+  },
+  "decision": {
+   "type": ["object", "null"],
+   "required": ["option", "word", "date"],
+   "additionalProperties": false,
+   "properties": {
+    "option": {"$ref": "#/$defs/letter"},
+    "word": {"type": "string"},
+    "date": {"$ref": "#/$defs/date"}
+   }
+  },
+  "reversibility": {
+   "type": ["object", "null"],
+   "required": ["level", "why"],
+   "additionalProperties": false,
+   "properties": {
+    "level": {"enum": ["обратимо", "дорого", "в одну сторону"]},
+    "why": {"type": "string"}
+   }
+  },
+  "outcome": {
+   "type": ["object", "null"],
+   "required": ["kind", "value", "reason"],
+   "additionalProperties": false,
+   "properties": {
+    "kind": {"enum": ["проба", "вопрос"]},
+    "value": {"type": "string"},
+    "reason": {"type": "string"}
+   }
+  },
+  "parking": {
+   "type": "object",
+   "required": ["addressee", "text"],
+   "additionalProperties": false,
+   "properties": {
+    "addressee": {"enum": ["материалы", "человек", "ИБ"]},
+    "text": {"type": "string"},
+    "finding": {"type": "string"}
+   }
+  },
+  "note": {
+   "type": "object",
+   "required": ["date", "text"],
+   "additionalProperties": false,
+   "properties": {
+    "date": {"$ref": "#/$defs/date"},
+    "text": {"type": "string", "minLength": 1}
+   }
+  },
+  "comment": {
+   "type": "object",
+   "required": ["round", "lines", "text"],
+   "additionalProperties": false,
+   "properties": {
+    "round": {"type": "string"},
+    "lines": {"type": "array", "items": {"type": "integer"}, "minItems": 2, "maxItems": 2},
+    "text": {"type": "string"}
+   }
+  },
+  "record": {
+   "type": "object",
+   "required": ["id", "question", "kind", "status", "addressee", "depends_on", "delivery",
+                "options", "antipodes", "recommendation", "decision", "reversibility", "outcome",
+                "parking", "dispute", "consequences", "evidence", "comments"],
+   "additionalProperties": false,
+   "properties": {
+    "id": {"$ref": "#/$defs/recordId"},
+    "question": {"type": "string", "minLength": 1},
+    "kind": {"enum": ["развилка", "факт"]},
+    "status": {"enum": ["открыт", "припаркован", "решён"]},
+    "addressee": {"enum": ["материалы", "человек", "ИБ", "постановка", ""],
+     "description": "Адресат записи; «постановка» — факт из intent.md изменения (F-17.A). Значение сравнивается точно: регистр и пробелы не нормализуются (F-36)"},
+    "depends_on": {"type": "array", "items": {"$ref": "#/$defs/recordId"}},
+    "delivery": {"type": "string"},
+    "options": {"type": "array", "items": {"$ref": "#/$defs/option"}},
+    "antipodes": {"type": "array", "items": {"$ref": "#/$defs/antipode"}},
+    "recommendation": {"$ref": "#/$defs/recommendation"},
+    "decision": {"$ref": "#/$defs/decision"},
+    "reversibility": {"$ref": "#/$defs/reversibility"},
+    "outcome": {"$ref": "#/$defs/outcome"},
+    "parking": {"type": "array", "items": {"$ref": "#/$defs/parking"}},
+    "dispute": {"type": "string"},
+    "consequences": {"type": "string"},
+    "evidence": {"type": "array", "items": {"$ref": "#/$defs/evidence"}},
+    "comments": {"type": "array", "items": {"$ref": "#/$defs/comment"}}
+   }
+  }
+ }
+}

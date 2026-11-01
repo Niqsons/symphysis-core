@@ -14,6 +14,8 @@
 
 Шесть частей, каждая — отдельно исполняемый подплан со своим выходом.
 Порядок — по этапам плана; A, B, C, D после задачи 0 независимы.
+Заголовки задач несут сквозной номер `Task N` (0–26) для скрипта
+брифов; имена частей (A1, C3…) — в скобках и в ссылках по тексту.
 
 | Часть | Этап | Поставка | Выход | Задач |
 | --- | --- | --- | --- | --- |
@@ -61,7 +63,7 @@
 
 ---
 
-## Задача 0: окружение и git
+## Task 0: окружение и git
 
 **Files:**
 - Create: `.gitignore`, `UPSTREAM.md` (в `upstream/openspec`), `requirements-dev.txt`
@@ -105,7 +107,7 @@ git commit -m "chore: git, окружение форка и python"
 
 ## Часть A — формат журнала и скрипты (П2, П5)
 
-### Задача A1: JSON-схема журнала и миграция markdown → JSON
+### Task 1 (A1): JSON-схема журнала и миграция markdown → JSON
 
 **Files:**
 - Create: `docs/journal.schema.json`, `tools/journal.py`, `tests/test_journal_schema.py`, `tests/fixtures/` (копия `docs/plan-implementation.journal.md` как `journal-plan.md`)
@@ -165,7 +167,7 @@ git add docs/journal.schema.json tools/journal.py tests/ docs/plan-implementatio
 git commit -m "feat(journal): JSON-схема журнала и миграция из markdown"
 ```
 
-### Задача A2: сверка улик `check`
+### Task 2 (A2): сверка улик `check`
 
 **Files:**
 - Modify: `tools/journal.py`
@@ -219,7 +221,7 @@ git add tools/journal.py tools/journal-roots.json tests/test_journal_check.py
 git commit -m "feat(journal): сверка улик грепом — сигнал, не стоп"
 ```
 
-### Задача A3: рендер markdown и HTML из JSON
+### Task 3 (A3): рендер markdown и HTML из JSON
 
 **Files:**
 - Modify: `tools/journal.py`; `tools/playground-template.html` (без изменений логики — только метка)
@@ -266,7 +268,7 @@ git add -A tools docs tests
 git commit -m "feat(journal): markdown и HTML — рендер из JSON; markdown производный"
 ```
 
-### Задача A4: `apply` — внесение промпта возврата
+### Task 4 (A4): `apply` — внесение промпта возврата
 
 **Files:**
 - Modify: `tools/journal.py`
@@ -312,7 +314,7 @@ git add tools/journal.py tests/
 git commit -m "feat(journal): apply — промпт возврата вносится в JSON без переписывания"
 ```
 
-### Задача A5: `design.md` из журнала
+### Task 5 (A5): `design.md` из журнала
 
 **Files:**
 - Modify: `tools/journal.py`
@@ -342,7 +344,7 @@ def test_design_rejected_evidence_in_risks():
 
 - [ ] **Step 5: Commit** — `feat(journal): design.md из журнала`.
 
-### Задача A6: `apply-md4h` — комментарии к рендеру
+### Task 6 (A6): `apply-md4h` — комментарии к рендеру
 
 **Files:**
 - Modify: `tools/journal.py`
@@ -379,7 +381,7 @@ def test_md4h_maps_comment_to_record(tmp_path):
 
 ## Часть B — схема `symphysis` (П1)
 
-### Задача B1: граф артефактов
+### Task 7 (B1): граф артефактов
 
 **Files:**
 - Create: `openspec/schemas/symphysis/schema.yaml`
@@ -406,7 +408,7 @@ def test_schema_parses_in_fork(tmp_path):
 
 - [ ] **Step 5: Commit** — `feat(schema): граф symphysis`.
 
-### Задача B2: шаблоны артефактов
+### Task 8 (B2): шаблоны артефактов
 
 **Files:**
 - Create: `openspec/schemas/symphysis/templates/decisions.json`, `research.md`, `attack.md`, `proposal.md`, `spec.md`, `design.md`, `security.md`, `tasks.md`
@@ -423,7 +425,7 @@ def test_schema_parses_in_fork(tmp_path):
 - [ ] **Step 2–4:** падает → написать → проходит.
 - [ ] **Step 5: Commit** — `feat(schema): шаблоны артефактов`.
 
-### Задача B3: `config.yaml` и `rules`
+### Task 9 (B3): `config.yaml` и `rules`
 
 **Files:**
 - Create: `openspec/config.symphysis.yaml` (образец для проекта: `schema: symphysis` + `rules`)
@@ -435,7 +437,7 @@ def test_schema_parses_in_fork(tmp_path):
 - [ ] **Step 1: тест** — `test_rules_reach_instructions`: `openspec instructions decisions --change demo --json` в проекте-фикстуре возвращает `rules` с тремя строками для `decisions`.
 - [ ] **Step 2–4;** **Step 5: Commit** — `feat(schema): config.yaml с rules`.
 
-### Задача B4: валидация `validate` и `status` на заполненном изменении
+### Task 10 (B4): валидация `validate` и `status` на заполненном изменении
 
 **Files:**
 - Create: `tests/fixtures/change-demo/` — изменение с `decisions.json` (три записи), одним `research/*.md`, без `attack/`
@@ -448,7 +450,7 @@ def test_schema_parses_in_fork(tmp_path):
 
 ## Часть C — форк OpenSpec (П4)
 
-### Задача C1: поле `verdict` в схеме артефакта
+### Task 11 (C1): поле `verdict` в схеме артефакта
 
 **Files:**
 - Modify: `upstream/openspec/src/core/artifact-graph/schema.ts:29-36` (`ArtifactSchema`), `parseSchema` (`:23-47`)
@@ -476,7 +478,7 @@ it('rejects verdict on a glob artifact by name', () => {
 - [ ] **Step 4:** PASS; добавить `verdict` в `openspec/schemas/symphysis/schema.yaml` (B1) у обоих `attack-*`.
 - [ ] **Step 5: Commit** (в форке) — `feat(schema): verdict — артефакт готов по значению frontmatter`.
 
-### Задача C2: frontmatter и готовность по вердикту
+### Task 12 (C2): frontmatter и готовность по вердикту
 
 **Files:**
 - Create: `upstream/openspec/src/core/artifact-graph/frontmatter.ts`
@@ -509,7 +511,7 @@ it('verdict artifact with status gaps_found is not completed', () => { /* ана
 - [ ] **Step 2–4:** FAIL → реализовать → PASS.
 - [ ] **Step 5: Commit** — `feat(state): готовность артефакта по вердикту во frontmatter`.
 
-### Задача C3: статус с полем `verdict` и подсказкой
+### Task 13 (C3): статус с полем `verdict` и подсказкой
 
 **Files:**
 - Modify: `upstream/openspec/src/core/artifact-graph/instruction-loader.ts:474-540` (`formatChangeStatus`), `:161-172` (`ArtifactStatus`)
@@ -522,7 +524,7 @@ it('verdict artifact with status gaps_found is not completed', () => { /* ана
 - [ ] **Step 1: тест** — `status --json` на фикстуре с `attack.md` без frontmatter: `artifacts[attack].status === 'ready'`, `.verdict === 'missing'`, `nextSteps` содержит `has no verdict`.
 - [ ] **Step 2–4;** **Step 5: Commit** — `feat(status): verdict в статусе артефакта`.
 
-### Задача C4: шаблон `continue` с проверкой вердикта
+### Task 14 (C4): шаблон `continue` с проверкой вердикта
 
 **Files:**
 - Modify: `upstream/openspec/src/core/templates/workflows/continue-change.ts` (обе функции — skill и command)
@@ -545,7 +547,7 @@ it('continue skill and command carry the verdict step before artifact creation',
 - [ ] **Step 2–4:** FAIL → реализовать → PASS; если парити-тест шаблонов называет устаревший пин, обновить пин инструментом репозитория (`test/core/templates/parity-hash-shared.test.ts` описывает перезапись пинов).
 - [ ] **Step 5: Commit** — `feat(continue): шаг вердикта перед следующим артефактом`.
 
-### Задача C5: сборка форка и дымовой прогон на схеме symphysis
+### Task 15 (C5): сборка форка и дымовой прогон на схеме symphysis
 
 **Files:**
 - Modify: `upstream/openspec/UPSTREAM.md` (строка «правки форка: C1–C4, тесты N passed»)
@@ -561,7 +563,7 @@ it('continue skill and command carry the verdict step before artifact creation',
 
 Общее для D1–D4: каталог `skills/<имя>/`: `SKILL.md` (frontmatter `name`, `description` по-русски с «Применяй, когда…» и «Не применяй…»), `references/<оригинал>.md` — копия файла GSD с шапкой `<!-- MIT License, Copyright (c) 2026 Open GSD; источник: upstream/gsd-core/<путь> @ e2cd587 -->`, `TRANSLATION-NOTES.md` — таблица «место · в источнике · у нас · почему смысл изменён» (F-14). Тест общий — `tests/test_skills.py`.
 
-### Задача D1: `symphysis-brainstorm` — интервью и журнал
+### Task 16 (D1): `symphysis-brainstorm` — интервью и журнал
 
 **Files:**
 - Create: `skills/symphysis-brainstorm/SKILL.md`, `references/spec-phase.md` (копия `gsd-core/workflows/spec-phase.md`, только разделы `<purpose>`, `<interview_perspectives>`, Step 4), `references/discuss-phase-gray-areas.md` (`<philosophy>`, `<gray_area_identification>`, `<scope_guardrail>` из `discuss-phase.md`), `TRANSLATION-NOTES.md`
@@ -573,7 +575,7 @@ it('continue skill and command carry the verdict step before artifact creation',
 - [ ] **Step 1: тест** — `test_brainstorm_skill_shape`: frontmatter есть; в SKILL.md пять перспектив по имени; строка «брейншторм закончен по решению человека»; `references/spec-phase.md` начинается с copyright-шапки; `TRANSLATION-NOTES.md` содержит строку про снятый числовой гейт.
 - [ ] **Step 2–4;** **Step 5: Commit** — `feat(skills): symphysis-brainstorm`.
 
-### Задача D2: `symphysis-edge-probe` — проба краёв
+### Task 17 (D2): `symphysis-edge-probe` — проба краёв
 
 **Files:**
 - Create: `skills/symphysis-edge-probe/SKILL.md`, `references/edge-probe.md` (копия `gsd-core/references/edge-probe.md` целиком), `TRANSLATION-NOTES.md`
@@ -584,7 +586,7 @@ it('continue skill and command carry the verdict step before artifact creation',
 - [ ] **Step 1: тест** — `test_edge_probe_has_eight_categories`: все восемь id (`boundary, adjacency, empty, encoding, ordering, precision, idempotency, concurrency`) в SKILL.md; четыре исхода; copyright-шапка в копии.
 - [ ] **Step 2–4;** **Step 5: Commit** — `feat(skills): symphysis-edge-probe`.
 
-### Задача D3: `symphysis-prohibition-probe` — проба запретов
+### Task 18 (D3): `symphysis-prohibition-probe` — проба запретов
 
 **Files:**
 - Create: `skills/symphysis-prohibition-probe/SKILL.md`, `references/prohibition-probe.md` (копия), `TRANSLATION-NOTES.md`
@@ -595,7 +597,7 @@ it('continue skill and command carry the verdict step before artifact creation',
 - [ ] **Step 1: тест** — `test_prohibition_probe_question_verbatim`: английская фраза есть дословно; слово `security.md` есть; copyright-шапка.
 - [ ] **Step 2–4;** **Step 5: Commit** — `feat(skills): symphysis-prohibition-probe`.
 
-### Задача D4: `symphysis-attack` — атака артефакта
+### Task 19 (D4): `symphysis-attack` — атака артефакта
 
 **Files:**
 - Create: `skills/symphysis-attack/SKILL.md`, `references/force-stance.md` (строки «FORCE stance» из `agents/gsd-plan-checker.md:30`, `gsd-code-reviewer.md:22`, `gsd-doc-verifier.md` — с шапкой), `references/grill-lenses.md` (пять линз с «чего не репортить» по `store/change-intake/references/grill-form.md`, своё), `TRANSLATION-NOTES.md`
@@ -606,7 +608,7 @@ it('continue skill and command carry the verdict step before artifact creation',
 - [ ] **Step 1: тест** — `test_attack_skill_writes_verdict_contract`: в SKILL.md есть `status: passed`, `target_sha256`, «FORCE stance», пять линз.
 - [ ] **Step 2–4;** **Step 5: Commit** — `feat(skills): symphysis-attack`.
 
-### Задача D5: общий тест скиллов и перечень отличий
+### Task 20 (D5): общий тест скиллов и перечень отличий
 
 **Files:**
 - Test: `tests/test_skills.py` (свод)
@@ -618,7 +620,7 @@ it('continue skill and command carry the verdict step before artifact creation',
 
 ## Часть E — инсталлятор (П6)
 
-### Задача E1: каркас пакета
+### Task 21 (E1): каркас пакета
 
 **Files:**
 - Create: `installer/package.json` (`name: "<scope>/symphysis"` — плейсхолдер, `bin: { symphysis: "./bin/symphysis.js" }`, `dependencies: { "@fission-ai/openspec": "file:../upstream/openspec" }`, `files: [bin, lib, payload]`, `scripts.test: "node --test test/"`), `installer/bin/symphysis.js`, `installer/lib/paths.js`, `installer/test/cli.test.js`
@@ -630,7 +632,7 @@ it('continue skill and command carry the verdict step before artifact creation',
 - [ ] **Step 1: тест** — `node --test`: `symphysis --help` печатает обе команды; `targets(p, ['claude','gigacode']).skillsDirs` — два пути.
 - [ ] **Step 2–4;** **Step 5: Commit** — `feat(installer): каркас пакета и раскладка целей`.
 
-### Задача E2: `install`
+### Task 22 (E2): `install`
 
 **Files:**
 - Create: `installer/lib/install.js`
@@ -642,7 +644,7 @@ it('continue skill and command carry the verdict step before artifact creation',
 - [ ] **Step 1: тесты** — `install` в пустой tmp-проект: все пути из `targets` существуют; повторный `install` — `written` пуст; проект с `config.yaml` `schema: spec-driven` и своими `rules.specs` — после установки `schema: symphysis`, `rules.specs` содержит и старые, и новые строки, `merged` содержит `openspec/config.yaml`.
 - [ ] **Step 2–4;** **Step 5: Commit** — `feat(installer): install со слиянием config.yaml`.
 
-### Задача E3: `check`
+### Task 23 (E3): `check`
 
 **Files:**
 - Create: `installer/lib/check.js`
@@ -654,7 +656,7 @@ it('continue skill and command carry the verdict step before artifact creation',
 - [ ] **Step 1: тесты** — после `install` → `ok`; подменить байт в `schema.yaml` → `ok === false`, `findings[0]` содержит `schema.yaml`; убрать `schema:` из config → finding с `config.yaml`.
 - [ ] **Step 2–4;** **Step 5: Commit** — `feat(installer): check — называет расхождения`.
 
-### Задача E4: `npx` из чистого каталога
+### Task 24 (E4): `npx` из чистого каталога
 
 **Files:**
 - Modify: `installer/README.md`, `CLAUDE.md` («Где что»: `installer/`)
@@ -667,7 +669,7 @@ it('continue skill and command carry the verdict step before artifact creation',
 
 ## Часть F — сухой прогон (Э6)
 
-### Задача F1: схема проходит сама себя
+### Task 25 (F1): схема проходит сама себя
 
 **Files:**
 - Create: `openspec/changes/symphysis-schema/` в symphysis (через `openspec new change symphysis-schema` форка после `symphysis install --project X:\symphysis`)
@@ -678,7 +680,7 @@ it('continue skill and command carry the verdict step before artifact creation',
 - [ ] **Step 3:** пройти `/opsx:continue` по графу до `attack-artifacts`; каждый шаг — строка дневника: артефакт, что сделал скилл, что пришлось делать руками, что сломалось.
 - [ ] **Step 4:** вердикты `attack/*.md` ставит скилл `symphysis-attack`; `status` форка держит граф (C5).
 
-### Задача F2: отчёт со счётчиками
+### Task 26 (F2): отчёт со счётчиками
 
 **Files:**
 - Create: `docs/dry-run-report.md`
@@ -686,6 +688,14 @@ it('continue skill and command carry the verdict step before artifact creation',
 - [ ] **Step 1:** таблица из «Как поймём» плана: утверждения без опоры (сколько, на каком шаге пойманы); развилки, оказавшиеся фактами, и наоборот; улики, не сверившиеся грепом; что переделано и почему; где не хватило скрипта. Каждая строка — с указанием на файл прогона.
 - [ ] **Step 2:** вердикт по ставке плана: «соглашения вместо скриптов» — где держалось, где нет; кандидаты вернуть проверку в код.
 - [ ] **Step 3: Commit** — `docs: сухой прогон схемы на себе — отчёт`.
+
+---
+
+## Правки по калибровке
+
+Правки по итогам сухого прогона ведёт изменение `calibration-fixes`:
+задачи и их порядок — в `openspec/changes/calibration-fixes/tasks.md`
+(здесь не дублируются).
 
 ---
 

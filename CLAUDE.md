@@ -1,12 +1,14 @@
 # symphysis
 
-Схема OpenSpec для конвейера проектирования на сильной модели:
-рамка OpenSpec, механики GSD — в instruction артефактов. Обкатка —
-на рабочей задаче в проекте flow-specs (`C:\Work\flow-specs`, ветка
-`feature/<задача>`), материалы задачи лежат там.
+Схема OpenSpec для конвейера проектирования на сильной модели:  
+рамка OpenSpec, механики GSD — в instruction артефактов. Обкатка —  
+на рабочей задаче в проекте flow-specs, материалы задачи лежат там.
 
 ## Где что
 
+- `docs/repo-contract.md` — контракт с плагином `symphysis-vscode`: подпись
+  коммитов, что считается сменой контракта, пуш и пауза; читать перед правкой
+  инструментов журнала и страницы.
 - `docs/plan-flexible-pipeline.md` — план и решения человека; читать
   перед любой работой над схемой. Что берём из OpenSpec и GSD и почему
   пока без BMAD — раздел «Решение по основе».
@@ -22,11 +24,17 @@
   по задачам, у каждой — свой тест.
 - `docs/plan-implementation.md` — план реализации (прикидка): поставки
   П1–П7, этапы Э0–Э5, сводка развилок. Развилки с уликами —
-  `docs/plan-implementation.journal.md`; человек решает их
-  в `docs/plan-implementation.html`, собранном скриптом
-  `tools/journal_render.py` из шаблона `tools/playground-template.html`
-  (спайк: тестов нет). Шаблон просмотрщика описан
-  в `docs/playground-template-llm-pipeline.md`.
+  `docs/plan-implementation.journal.json` (источник; `.journal.md` —
+  его рендер, руками не править); человек решает их
+  в `docs/plan-implementation.html`, собранном командой
+  `tools/journal.py render-html` из шаблона `tools/playground-template.html`.
+  Шаблон просмотрщика описан в `docs/playground-template-llm-pipeline.md`.
+- `tools/journal*.py` — фасад `journal.py` (CLI, публичные имена) и модули:
+  `journal_model` (схема, проверка, импорт md), `journal_render` (md, html,
+  design.md), `journal_apply` (сверка улик, внесение правок), `journal_cli`;
+  модули импортируют друг друга по имени, не через фасад.
+- `installer/` — npm-пакет `@niqsons/symphysis`: `install`/`check`;
+  `payload/` генерируется из корня (`scripts/sync-payload.js`), не правится.
 - `docs/analysis/step0-sources.md` — чтение источников шага 0
   с вердиктами: что берём как есть, что дорабатываем, что
   переписываем; при составлении instruction и формата журнала.
@@ -55,9 +63,19 @@
   сгенерированные workflow-скиллы OpenSpec `openspec update`
   перезаписывает. Правки самого OpenSpec — в форке
   `upstream/openspec`; решением 2026-10-29 (F-02, F-03) форк
-  меняется в двух точках: статус артефакта по вердикту
-  и workflow-шаблон `continue` с проверкой вердикта. Каждый выпуск
-  upstream сначала разбирается, потом решается, втягивать ли.
+  меняется не в двух точках, как решалось сначала, а по перечню правок
+  в `upstream/openspec/UPSTREAM.md` (версия форка `1.15.0-symphysis.2`).
+  Каждый выпуск upstream сначала разбирается, потом решается, втягивать ли.
+- Первый артефакт схемы — `intent` (`intent.md`: намерение словами
+  человека); без него `decisions` заблокирован (F-13.A). Второй круг
+  брейншторма — в конце шага `research`, не в `attack-decisions`.
+- Атаки `attack-decisions` и `attack-artifacts` необязательные (признак
+  `optional` форка): `continue` без имени их пропускает, вызов —
+  `/opsx:continue <изменение> attack-artifacts`. Вызванная атака гейтует
+  зависимые артефакты и apply, пока вердикт не `passed`; вердикт с чужим
+  хешем целей — `stale` (F-06.A, F-26.E).
+- Перед архивом дельты изменения переносятся в `openspec/specs/`
+  операцией агента `/opsx:sync` (F-20.B).
 - Ванильный CLI считает артефакт готовым, когда файл существует;
   форк считает по вердикту во frontmatter `attack.md`. Скрипты
   сверки — сигнал, не стоп (F-12).
@@ -82,5 +100,16 @@
 
 ## Окружение
 
-- Python — `py -3.13`: под 3.14 нет пакетов, pip получает 403.
+- Python — `python`, версия не закрепляется: `tools/journal*.py` работают
+  на голом Python, без пакетов (слово владельца, 2026-11-01).
 - В Git Bash нет `jq` — скрипты хуков пишутся без него.
+- Тесты symphysis — `python -X utf8 -m pytest` — **всегда с xdist**:
+  `-n 12` стоит в `pytest.ini` (`addopts`), без него тесты не запускаются
+  (правило владельца, 2026-10-30); пакеты — pytest, pytest-xdist, jsonschema
+  (`requirements-dev.txt`). `jsonschema` — только эталон сверки проверщика
+  (`tests/test_journal_validator.py`): без него сверка показывается пропуском
+  и пройденной не считается. Тесты форка — `pnpm --dir upstream/openspec test`,
+  сборка — `pnpm --dir upstream/openspec build`; CLI форка до сборки
+  пакета — `node upstream/openspec/bin/openspec.js`.
+- git: ветка работ `impl/plan-tasks`; `upstream/` в `.gitignore`, форк —
+  своя ветка `symphysis` в `upstream/openspec` с пином в `UPSTREAM.md`.

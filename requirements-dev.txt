@@ -1,2 +1,4 @@
 pytest
+pytest-xdist
+# эталон сверки проверщика журнала (tests/test_journal_validator.py); инструментам не нужен
 jsonschema

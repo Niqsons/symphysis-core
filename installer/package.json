@@ -1,0 +1,31 @@
+{
+  "name": "@niqsons/symphysis",
+  "version": "0.1.0",
+  "description": "Схема OpenSpec symphysis, скиллы и инструменты журнала — установка в проект",
+  "type": "module",
+  "license": "MIT",
+  "bin": {
+    "symphysis": "./bin/symphysis.js"
+  },
+  "files": [
+    "bin",
+    "lib",
+    "payload",
+    "scripts"
+  ],
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "prepare": "node scripts/sync-payload.js",
+    "pretest": "node scripts/sync-payload.js",
+    "test": "node --test"
+  },
+  "symphysis": {
+    "openspecPin": "1.15.0-symphysis.3",
+    "openspecSource": "<URL репозитория форка — плейсхолдер>"
+  },
+  "dependencies": {
+    "yaml": "^2.9.1"
+  }
+}
