@@ -185,12 +185,12 @@
 const JOURNAL = {
  "title": "Журнал решений: implementation-consequences",
  "source": "decisions.json",
- "sha256": "93df590cefbdb4d8ee48038e4db7bc2e4a0edc0874f395e573033a9567f91ea7",
+ "sha256": "0f7f93ff38d493407f1631a7b96d0286a404cb1e8f91fb14c6a8d45967c0cf5b",
  "stats": {
   "records": 106,
   "forks": 79,
   "facts": 27,
-  "decided": 15,
+  "decided": 79,
   "parked": 0,
   "evidence_total": 182,
   "evidence_found": 182
@@ -2303,7 +2303,7 @@ const JOURNAL = {
    "id": "F-38",
    "question": "[empty · text] Опись лежит в файле, строка несёт ветку отказа и допущение о ней: файл из списка мест, в котором модель веток отказа не нашла (геттер, чистая функция): что стоит в описи вместо строки с `путь:строка «цитата»`?",
    "kind": "развилка",
-   "status": "открыт",
+   "status": "решён",
    "addressee": "человек",
    "depends_on": [
     "F-14",
@@ -2346,7 +2346,11 @@ const JOURNAL = {
     "why": "«Не нашёл» и «не относится» — разные исходы: исключение с причиной стирает разницу, а рецепт «не найдено» плюс «искал» уже действует в `research/`.",
     "text": "A — строка «веток не найдено, искал»"
    },
-   "decision": null,
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-01"
+   },
    "reversibility": null,
    "outcome": null,
    "parking": [],
@@ -2368,7 +2372,7 @@ const JOURNAL = {
    "id": "F-39",
    "question": "[encoding · text] Опись лежит в файле, строка несёт ветку отказа и допущение о ней: цитата из кода несёт `||` и обратный апостроф, а номер строки уже сместился: чем считается совпадение цитаты описи с файлом и кто его проверяет?",
    "kind": "развилка",
-   "status": "открыт",
+   "status": "решён",
    "addressee": "человек",
    "depends_on": [
     "F-14",
@@ -2411,7 +2415,11 @@ const JOURNAL = {
     "why": "F-14 обещает строку, проверяемую по коду; сверка цитат уже есть у улик журнала, а номер строки устаревает первым и в сверку не входит.",
     "text": "A — сигнал `check` по цитате, номер строки не сверяется"
    },
-   "decision": null,
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-01"
+   },
    "reversibility": null,
    "outcome": null,
    "parking": [],
@@ -2433,7 +2441,7 @@ const JOURNAL = {
    "id": "F-40",
    "question": "[idempotency · stateful] Состав строки описи следует настройкам проекта: опись написана при выключенных ветках отказа, человек включил их и зовёт шаг снова: `status` показывает `consequences` — `done`, и `/opsx:continue` к шагу не вернётся. Как получить опись по новому составу?",
    "kind": "развилка",
-   "status": "открыт",
+   "status": "решён",
    "addressee": "человек",
    "depends_on": [
     "F-14",
@@ -2476,7 +2484,11 @@ const JOURNAL = {
     "why": "Выбор обратим только при способе повторить шаг, а повтор по слову человека не требует правки форка.",
     "text": "A — повтор шага по слову человека, файл переписан целиком"
    },
-   "decision": null,
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-01"
+   },
    "reversibility": null,
    "outcome": null,
    "parking": [],
@@ -2498,7 +2510,7 @@ const JOURNAL = {
    "id": "F-41",
    "question": "[adjacency · collection] Места разбора предлагает скрипт, выбирает модель: `src/Foo.java` исключён строкой с причиной, а при разборе `src/Bar.java` модель выписала ветку из `src/Foo.java`: путь стоит и в исключениях, и в описи. Что показывает сверка?",
    "kind": "развилка",
-   "status": "открыт",
+   "status": "решён",
    "addressee": "человек",
    "depends_on": [
     "F-15",
@@ -2541,7 +2553,11 @@ const JOURNAL = {
     "why": "Место закрыто в обоих случаях: модель его видела, причина и строка лежат в файле, а лишний сигнал только шумит.",
     "text": "B — сигнала нет, место закрыто"
    },
-   "decision": null,
+   "decision": {
+    "option": "B",
+    "word": "",
+    "date": "2026-11-01"
+   },
    "reversibility": null,
    "outcome": null,
    "parking": [],
@@ -2563,7 +2579,7 @@ const JOURNAL = {
    "id": "F-42",
    "question": "[adjacency · collection] В журнал идут только ветки без сценария: сценарий задевает ветку, но не проверяет её: в `specs/` есть инцидент при ненайденной переменной, а ветка кода на другом пути молча отдаёт пустое значение. Ветка покрыта или нет?",
    "kind": "развилка",
-   "status": "открыт",
+   "status": "решён",
    "addressee": "человек",
    "depends_on": [
     "F-16",
@@ -2606,7 +2622,11 @@ const JOURNAL = {
     "why": "Цель шага — ветки вроде П7/Т3 и П10/Т1 (F-06): без критерия близкий сценарий засчитается, и ветка до человека не дойдёт. «THEN называет исход» проверяется чтением.",
     "text": "A — покрыто, только если THEN называет исход ветки"
    },
-   "decision": null,
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-01"
+   },
    "reversibility": null,
    "outcome": null,
    "parking": [],
@@ -2628,7 +2648,7 @@ const JOURNAL = {
    "id": "F-43",
    "question": "[empty · collection] В журнал идут только ветки без сценария: ветки отказа выключены, допущения включены: веток нет, кандидатов ноль, и допущения до человека не доходят, хотя `design.md` видит только журнал (F-04). Что идёт в журнал?",
    "kind": "развилка",
-   "status": "открыт",
+   "status": "решён",
    "addressee": "человек",
    "depends_on": [
     "F-16",
@@ -2673,7 +2693,11 @@ const JOURNAL = {
     "why": "Иначе состав «только допущения» тратит время и ничего не меняет: F-16.C отклонён как раз за то, что найденное не доходит до `design.md`.",
     "text": "A — допущение без сценария идёт кандидатом"
    },
-   "decision": null,
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-01"
+   },
    "reversibility": null,
    "outcome": null,
    "parking": [],
@@ -2695,7 +2719,7 @@ const JOURNAL = {
    "id": "F-44",
    "question": "[idempotency · stateful] В журнал идут только ветки без сценария: шаг повторён после прерывания или по слову человека: те же ветки заведут вторые кандидаты с новыми номерами, а по уже решённым появится дубль",
    "kind": "развилка",
-   "status": "открыт",
+   "status": "решён",
    "addressee": "человек",
    "depends_on": [
     "F-16"
@@ -2737,7 +2761,11 @@ const JOURNAL = {
     "why": "Для проб это уже решено: у края один номер и одно решение, дубль дал бы два решения на одну ветку.",
     "text": "A — дубля нет, строка называет прежний номер"
    },
-   "decision": null,
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-01"
+   },
    "reversibility": null,
    "outcome": null,
    "parking": [],
@@ -2759,7 +2787,7 @@ const JOURNAL = {
    "id": "F-45",
    "question": "[concurrency · stateful] В журнал идут только ветки без сценария: шаг прерван между записью файла и заведением кандидатов: `consequences.md` есть, `status` — `done`, `design` открыт, а половины кандидатов в журнале нет",
    "kind": "развилка",
-   "status": "открыт",
+   "status": "решён",
    "addressee": "человек",
    "depends_on": [
     "F-16",
@@ -2802,7 +2830,11 @@ const JOURNAL = {
     "why": "`status` считает артефакт готовым по существованию файла, форк не меняется (F-13.A); файл последним закрывает край без новой механики.",
     "text": "A — кандидаты первыми, файл последним"
    },
-   "decision": null,
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-01"
+   },
    "reversibility": null,
    "outcome": null,
    "parking": [],
@@ -2824,7 +2856,7 @@ const JOURNAL = {
    "id": "F-46",
    "question": "[boundary · numeric-range] Шаг заканчивается тремя причинами провала изменения: модель честно видит две причины или пять: «три» — норма, потолок или пол?",
    "kind": "развилка",
-   "status": "открыт",
+   "status": "решён",
    "addressee": "человек",
    "depends_on": [
     "F-17",
@@ -2867,7 +2899,11 @@ const JOURNAL = {
     "why": "Принудительная третья причина — наполнитель, а над недетерминированным артефактом скрипт и число суждение не ограничивают (слово владельца к F-15).",
     "text": "A — три — норма, меньше с объяснением, больше без записей"
    },
-   "decision": null,
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-01"
+   },
    "reversibility": null,
    "outcome": null,
    "parking": [],
@@ -2896,7 +2932,7 @@ const JOURNAL = {
    "id": "F-47",
    "question": "[adjacency · collection] Шаг заканчивается тремя причинами провала изменения: причина провала совпала с веткой, на которую уже заведён кандидат описи: вторая запись про то же самое?",
    "kind": "развилка",
-   "status": "открыт",
+   "status": "решён",
    "addressee": "человек",
    "depends_on": [
     "F-17",
@@ -2940,7 +2976,11 @@ const JOURNAL = {
     "why": "Решение одно на край, а журнал и так вырос с 38 до 63 записей (F-09).",
     "text": "A — ссылка на существующий кандидат"
    },
-   "decision": null,
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-01"
+   },
    "reversibility": null,
    "outcome": null,
    "parking": [],
@@ -2962,7 +3002,7 @@ const JOURNAL = {
    "id": "F-48",
    "question": "[empty · collection] Шаг без механизмов или без состава оставляет файл с причиной: опись пуста — нуль механизмов или все колонки выключены: идёт ли pre-mortem? F-24 перечисляет три выбора, pre-mortem среди них нет",
    "kind": "развилка",
-   "status": "открыт",
+   "status": "решён",
    "addressee": "человек",
    "depends_on": [
     "F-17",
@@ -3006,7 +3046,11 @@ const JOURNAL = {
     "why": "F-17.A ставит причины на всё изменение, а не на механизмы; выключались колонки описи, и чтения кода причины не требуют.",
     "text": "A — pre-mortem идёт и при пустой описи"
    },
-   "decision": null,
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-01"
+   },
    "reversibility": null,
    "outcome": null,
    "parking": [],
@@ -3028,7 +3072,7 @@ const JOURNAL = {
    "id": "F-49",
    "question": "[idempotency · stateful] Шаг без механизмов или без состава оставляет файл с причиной: файл с причиной «механизмов нет» уже лежит, а новая решённая развилка принесла файл кода: `status` по-прежнему `done`",
    "kind": "развилка",
-   "status": "открыт",
+   "status": "решён",
    "addressee": "человек",
    "depends_on": [
     "F-13",
@@ -3071,7 +3115,11 @@ const JOURNAL = {
     "why": "Сверка и так сигналит место без разбора, отдельной механики не нужно; так же `research/none.md` уступает первой парковке.",
     "text": "A — сигнал сверки по новому месту"
    },
-   "decision": null,
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-01"
+   },
    "reversibility": null,
    "outcome": null,
    "parking": [],
@@ -3093,7 +3141,7 @@ const JOURNAL = {
    "id": "F-50",
    "question": "[empty · text] `symphysis.yaml` в корне проекта задаёт выбор перед запуском шага: файл есть, но пуст, только из комментариев, или ключ без значения (`edge_probe:`): включено, как при отсутствии, или ошибка?",
    "kind": "развилка",
-   "status": "открыт",
+   "status": "решён",
    "addressee": "человек",
    "depends_on": [
     "F-24"
@@ -3135,7 +3183,11 @@ const JOURNAL = {
     "why": "Смысл уже задан сценарием «Ключа нет», нужно только, чтобы три формы пустоты читались одинаково.",
     "text": "C — тест-страховка на три формы пустоты"
    },
-   "decision": null,
+   "decision": {
+    "option": "C",
+    "word": "",
+    "date": "2026-11-01"
+   },
    "reversibility": null,
    "outcome": null,
    "parking": [],
@@ -3157,7 +3209,7 @@ const JOURNAL = {
    "id": "F-51",
    "question": "[encoding · text] `symphysis.yaml` в корне проекта задаёт выбор перед запуском шага: значение `no`, `False`, `\"false\"` или `выкл`: разбор YAML в `check`, чтение моделью и Python без пакетов поймут его по-разному",
    "kind": "развилка",
-   "status": "открыт",
+   "status": "решён",
    "addressee": "человек",
    "depends_on": [
     "F-24"
@@ -3199,7 +3251,11 @@ const JOURNAL = {
     "why": "Сомнение решается во включённую сторону (умолчание F-24.A): опечатка не должна молча выключить пробу.",
     "text": "A — только `true | false`, остальное включено и `[!!]`"
    },
-   "decision": null,
+   "decision": {
+    "option": "A",
+    "word": "Делаем консистентно. Опционально это хорошо, но отслеживать варианты флагов это перебор.",
+    "date": "2026-11-01"
+   },
    "reversibility": null,
    "outcome": null,
    "parking": [],
@@ -3228,7 +3284,7 @@ const JOURNAL = {
    "id": "F-52",
    "question": "[empty · text] Выключенный состав назван в артефакте шага: всё включено, выключать нечего: артефакт молчит или называет состав? По молчащему файлу не отличить «прочитал — всё включено» от «файл настроек не читал»",
    "kind": "развилка",
-   "status": "открыт",
+   "status": "решён",
    "addressee": "человек",
    "depends_on": [
     "F-24"
@@ -3270,7 +3326,11 @@ const JOURNAL = {
     "why": "«Не читал» и «прочитал — чисто» — разные исходы, а одна строка дешевле гадания при разборе прогона.",
     "text": "A — строка состава есть всегда"
    },
-   "decision": null,
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-01"
+   },
    "reversibility": null,
    "outcome": null,
    "parking": [],
@@ -3292,7 +3352,7 @@ const JOURNAL = {
    "id": "F-53",
    "question": "[concurrency · io] Руководство ведёт установку из клона репозитория: `npm i -g ./vendor/<тарбол>` обрывается: зависимости форка тянутся из реестра (F-31.A), а реестр недоступен или зеркало не настроено. Что читает человек?",
    "kind": "развилка",
-   "status": "открыт",
+   "status": "решён",
    "addressee": "человек",
    "depends_on": [
     "F-31",
@@ -3335,7 +3395,11 @@ const JOURNAL = {
     "why": "Установка через зеркало — штатный путь контура по слову к F-31; неназванный обрыв на первом шаге читается как поломка.",
     "text": "A — руководство называет причину и зеркало"
    },
-   "decision": null,
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-01"
+   },
    "reversibility": null,
    "outcome": null,
    "parking": [],
@@ -3364,7 +3428,7 @@ const JOURNAL = {
    "id": "F-54",
    "question": "[idempotency · stateful] Руководство ведёт установку из клона репозитория: человек идёт по руководству второй раз при новой версии: новый тарбол, `install` без `--force` пропускает отличающиеся файлы схемы, `check` даёт `[!!]`",
    "kind": "развилка",
-   "status": "открыт",
+   "status": "решён",
    "addressee": "человек",
    "depends_on": [
     "F-31",
@@ -3407,7 +3471,11 @@ const JOURNAL = {
     "why": "Обновление — названная цена варианта A F-31: «снова перенос файлов»; без шага в руководстве человек упрётся в `[!!]`.",
     "text": "A — раздел «Обновление»"
    },
-   "decision": null,
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-01"
+   },
    "reversibility": null,
    "outcome": null,
    "parking": [],
@@ -3429,7 +3497,7 @@ const JOURNAL = {
    "id": "F-55",
    "question": "[encoding · text] Руководство ведёт установку из клона репозитория: форма пути `--project`: `X:\\symphysis` без кавычек в Git Bash становится `X:symphysis`, инсталлятор молча ставит не туда, а `check` там же отвечает `ok`",
    "kind": "развилка",
-   "status": "открыт",
+   "status": "решён",
    "addressee": "человек",
    "depends_on": [
     "F-22"
@@ -3471,7 +3539,11 @@ const JOURNAL = {
     "why": "Случай наблюдён на сухом прогоне и молчит: человек увидит `ok` и не узнает, что поставил не туда.",
     "text": "A — команды для двух оболочек и предупреждение"
    },
-   "decision": null,
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-01"
+   },
    "reversibility": null,
    "outcome": null,
    "parking": [],
@@ -3500,7 +3572,7 @@ const JOURNAL = {
    "id": "F-56",
    "question": "[encoding · text] Учебный проект идёт настоящими командами и выводами: что считается совпадением вывода при повторе: вывод CLI воспроизводим с точностью до путей, а журнал и спеки пишет модель, и у читателя они будут другими",
    "kind": "развилка",
-   "status": "открыт",
+   "status": "решён",
    "addressee": "человек",
    "depends_on": [
     "F-34"
@@ -3542,7 +3614,11 @@ const JOURNAL = {
     "why": "Иначе другой журнал читается как поломка, а отличие в `check` как норма.",
     "text": "A — CLI дословно, артефакты модели — пример"
    },
-   "decision": null,
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-01"
+   },
    "reversibility": null,
    "outcome": null,
    "parking": [],
@@ -3564,7 +3640,7 @@ const JOURNAL = {
    "id": "F-57",
    "question": "[idempotency · stateful] Учебный проект идёт настоящими командами и выводами: пин форка вырос или шаги схемы поменялись, а текст не перепроходили: команды и выводы в руководстве перестают быть настоящими",
    "kind": "развилка",
-   "status": "открыт",
+   "status": "решён",
    "addressee": "человек",
    "depends_on": [
     "F-34"
@@ -3606,7 +3682,11 @@ const JOURNAL = {
     "why": "Падение теста само напомнит перепройти текст; обязывать каждый выпуск прогоном модели (цена F-34.A) дорого.",
     "text": "C — тест версии в тексте против пина"
    },
-   "decision": null,
+   "decision": {
+    "option": "C",
+    "word": "",
+    "date": "2026-11-01"
+   },
    "reversibility": null,
    "outcome": null,
    "parking": [],
@@ -3628,7 +3708,7 @@ const JOURNAL = {
    "id": "F-58",
    "question": "[empty · collection] Руководство покрывает все шаги OpenSpec: маленький учебный проект без своего кода: список мест пуст, шаг `consequences` покажет только файл «механизмов нет», и главный новый шаг читатель не увидит",
    "kind": "развилка",
-   "status": "открыт",
+   "status": "решён",
    "addressee": "человек",
    "depends_on": [
     "F-34",
@@ -3671,7 +3751,11 @@ const JOURNAL = {
     "why": "Цель изменения — этот шаг (F-06); руководство без него показывает прежнюю схему.",
     "text": "A — в учебном проекте есть код и строка описи"
    },
-   "decision": null,
+   "decision": {
+    "option": "A",
+    "word": "Если мы дадим такой небольшой кусочек кода, то это будет отличной проверкой.",
+    "date": "2026-11-01"
+   },
    "reversibility": null,
    "outcome": null,
    "parking": [],
@@ -3693,7 +3777,7 @@ const JOURNAL = {
    "id": "F-59",
    "question": "[adjacency · collection] Руководство покрывает все шаги OpenSpec: «все шаги OpenSpec» и двенадцать workflow форка: `new`, `ff`, `verify`, `bulk-archive`, `onboard` установка не ставит. Где граница «всех»?",
    "kind": "развилка",
-   "status": "открыт",
+   "status": "решён",
    "addressee": "человек",
    "depends_on": [
     "F-34",
@@ -3736,7 +3820,11 @@ const JOURNAL = {
     "why": "Человеку нужно дойти до конца, а не узнать все команды; неустановленная команда в тексте сама ломает повтор.",
     "text": "A — описаны установленные, об остальных строка"
    },
-   "decision": null,
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-01"
+   },
    "reversibility": null,
    "outcome": null,
    "parking": [],
@@ -3765,7 +3853,7 @@ const JOURNAL = {
    "id": "F-60",
    "question": "[adjacency · collection] Артефакт `consequences` стоит между `specs` и `design`: изменение, начатое до появления артефакта: у `calibration-fixes` `design.md` уже есть, `consequences.md` нет; `consequences` всплывает `ready`, `isPlanningComplete` падает в `false`",
    "kind": "развилка",
-   "status": "открыт",
+   "status": "решён",
    "addressee": "человек",
    "depends_on": [
     "F-13"
@@ -3807,7 +3895,11 @@ const JOURNAL = {
     "why": "Так уже решено для `intent`: файл до правки схемы.",
     "text": "A — файл с причиной до правки схемы"
    },
-   "decision": null,
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-01"
+   },
    "reversibility": null,
    "outcome": null,
    "parking": [],
@@ -3836,7 +3928,7 @@ const JOURNAL = {
    "id": "F-61",
    "question": "[empty · collection] Артефакт `consequences` стоит между `specs` и `design`: `consequences.md` в 0 байт или с одним заголовком: `status` считает шаг `done` по существованию файла, `design` открыт, хотя ни описи, ни причины нет",
    "kind": "развилка",
-   "status": "открыт",
+   "status": "решён",
    "addressee": "человек",
    "depends_on": [
     "F-13",
@@ -3879,7 +3971,11 @@ const JOURNAL = {
     "why": "Форк не меняется (F-13.A), поэтому гейта здесь нет, и сигнал — самое дешёвое место; тот же край был у `intent.md`.",
     "text": "A — сигнал `check`, `status` не меняется"
    },
-   "decision": null,
+   "decision": {
+    "option": "A",
+    "word": "Да, всё верно. сигнал подается, но на статус не влияет.",
+    "date": "2026-11-01"
+   },
    "reversibility": null,
    "outcome": null,
    "parking": [],
@@ -3901,7 +3997,7 @@ const JOURNAL = {
    "id": "F-62",
    "question": "[ordering · collection] Артефакт `consequences` стоит между `specs` и `design`: после `specs` готовы сразу `consequences` и `security`: `security.md`, написанный раньше описи, не увидит сценариев, которые добавит Specify из описи",
    "kind": "развилка",
-   "status": "открыт",
+   "status": "решён",
    "addressee": "человек",
    "depends_on": [
     "F-13"
@@ -3943,7 +4039,11 @@ const JOURNAL = {
     "why": "Порядок выбора уже следует порядку объявления; нужно только, чтобы правка схемы его не сломала, а смена зависимости `security` вышла бы за F-13.A.",
     "text": "C — тест порядка объявления"
    },
-   "decision": null,
+   "decision": {
+    "option": "C",
+    "word": "",
+    "date": "2026-11-01"
+   },
    "reversibility": null,
    "outcome": null,
    "parking": [],
@@ -3972,7 +4072,7 @@ const JOURNAL = {
    "id": "F-63",
    "question": "[concurrency · stateful] Артефакт `consequences` стоит между `specs` и `design`: `specs` правятся после `consequences.md`: Specify из описи сам добавляет сценарий, новый круг проб тоже; `status` показывает `done`, хеша целей, как у атак, у описи нет",
    "kind": "развилка",
-   "status": "открыт",
+   "status": "решён",
    "addressee": "человек",
    "depends_on": [
     "F-13",
@@ -4015,7 +4115,11 @@ const JOURNAL = {
     "why": "Specify из описи правит спеки штатно, сигнал срабатывал бы на каждом прогоне, а сверка по времени файлов ломается на клоне.",
     "text": "B — устаревание допустимо"
    },
-   "decision": null,
+   "decision": {
+    "option": "B",
+    "word": "",
+    "date": "2026-11-01"
+   },
    "reversibility": null,
    "outcome": null,
    "parking": [],
@@ -4037,7 +4141,7 @@ const JOURNAL = {
    "id": "F-64",
    "question": "[adjacency · collection] Проба краёв даёт каждому требованию строку по всем восьми категориям: требования с одним именем в двух capabilities: строки покрытия сольются, а сверка посчитает их одним требованием",
    "kind": "развилка",
-   "status": "открыт",
+   "status": "решён",
    "addressee": "человек",
    "depends_on": [
     "F-18"
@@ -4079,7 +4183,11 @@ const JOURNAL = {
     "why": "Ключ с capability ничего не стоит и нужен сверке в любом случае.",
     "text": "A — ключ `<capability>/<имя>`"
    },
-   "decision": null,
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-01"
+   },
    "reversibility": null,
    "outcome": null,
    "parking": [],
@@ -4101,7 +4209,7 @@ const JOURNAL = {
    "id": "F-65",
    "question": "[empty · collection] Проба краёв даёт каждому требованию строку по всем восьми категориям: дельта с `## REMOVED Requirements` или capability только с ними: нужна ли строка покрытия на снятое требование?",
    "kind": "развилка",
-   "status": "открыт",
+   "status": "решён",
    "addressee": "человек",
    "depends_on": [
     "F-18"
@@ -4143,7 +4251,11 @@ const JOURNAL = {
     "why": "Восемь строк «неприменимо» на снятое требование — чистый шум.",
     "text": "A — только ADDED и MODIFIED"
    },
-   "decision": null,
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-01"
+   },
    "reversibility": null,
    "outcome": null,
    "parking": [],
@@ -4165,7 +4277,7 @@ const JOURNAL = {
    "id": "F-66",
    "question": "[idempotency · stateful] Проба краёв даёт каждому требованию строку по всем восьми категориям: проба повторена после правки или переименования требования: старые строки остаются сиротами, а у кандидатов уже есть номера и решения",
    "kind": "развилка",
-   "status": "открыт",
+   "status": "решён",
    "addressee": "человек",
    "depends_on": [
     "F-18"
@@ -4207,7 +4319,11 @@ const JOURNAL = {
     "why": "Край, решённый в журнале, второй раз не поднимается, и файл покрытия обязан это отражать.",
     "text": "A — файл переписан, номера сохранены"
    },
-   "decision": null,
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-01"
+   },
    "reversibility": null,
    "outcome": null,
    "parking": [],
@@ -4229,7 +4345,7 @@ const JOURNAL = {
    "id": "F-67",
    "question": "[empty · text] Сырой список различает «не нашли» и «нашли, но не выбрали»: строка `не найдено:` с пустым хвостом: по ней не отличить поиск от отписки, а сверка требует причину только у `неприменимо` и `не выбран`",
    "kind": "развилка",
-   "status": "открыт",
+   "status": "решён",
    "addressee": "человек",
    "depends_on": [
     "F-18",
@@ -4273,7 +4389,11 @@ const JOURNAL = {
     "why": "Рецепт «не найдено» плюс «искал» уже действует в `research/`, а цель пола — различить «не нашли» и молчание (F-11).",
     "text": "A — сигнал на пустой хвост"
    },
-   "decision": null,
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-01"
+   },
    "reversibility": null,
    "outcome": null,
    "parking": [],
@@ -4295,7 +4415,7 @@ const JOURNAL = {
    "id": "F-68",
    "question": "[encoding · text] Сырой список различает «не нашли» и «нашли, но не выбрали»: край в строке несёт `|`, `;` или перевод строки, потому что в нём цитата кода: таблица рвётся, разбор `<край>; <причина>` режет не там",
    "kind": "развилка",
-   "status": "открыт",
+   "status": "решён",
    "addressee": "человек",
    "depends_on": [
     "F-18"
@@ -4337,7 +4457,11 @@ const JOURNAL = {
     "why": "Край известен, но зависит от формата файла, который решается при реализации; строка спеки его не прояснит.",
     "text": "C — тест на `;`, `||` и перенос"
    },
-   "decision": null,
+   "decision": {
+    "option": "C",
+    "word": "",
+    "date": "2026-11-01"
+   },
    "reversibility": null,
    "outcome": null,
    "parking": [],
@@ -4359,7 +4483,7 @@ const JOURNAL = {
    "id": "F-69",
    "question": "[empty · text] Текст пробы объясняет задачу подробнее: «подробнее» без меры: текст можно считать выполненным при одном новом абзаце. Что подтверждает, что объяснения хватает?",
    "kind": "развилка",
-   "status": "открыт",
+   "status": "решён",
    "addressee": "человек",
    "depends_on": [
     "F-18",
@@ -4402,7 +4526,11 @@ const JOURNAL = {
     "why": "Наличие определений и примеров проверяется механически, а достаточность остаётся за чтением владельца.",
     "text": "C — тест наличия четырёх значений и примеров"
    },
-   "decision": null,
+   "decision": {
+    "option": "C",
+    "word": "",
+    "date": "2026-11-01"
+   },
    "reversibility": null,
    "outcome": null,
    "parking": [],
@@ -4424,7 +4552,7 @@ const JOURNAL = {
    "id": "F-70",
    "question": "[idempotency · stateful] Пробу краёв можно выключить, по умолчанию она включена: проба выключена после первого прохода: в журнале уже есть кандидаты и файл покрытия, и шаг `specs` завершается снова",
    "kind": "развилка",
-   "status": "открыт",
+   "status": "решён",
    "addressee": "человек",
    "depends_on": [
     "F-18",
@@ -4467,7 +4595,11 @@ const JOURNAL = {
     "why": "Удаление решённых записей стёрло бы слово человека, а молчание сверки уже записано в требовании.",
     "text": "A — записи остаются, сверка молчит"
    },
-   "decision": null,
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-01"
+   },
    "reversibility": null,
    "outcome": null,
    "parking": [],
@@ -4489,7 +4621,7 @@ const JOURNAL = {
    "id": "F-71",
    "question": "[adjacency · collection] Подкоманда журнала предлагает места кода: один файл в уликах трёх развилок и в разном написании (`src\\Foo.java`, `src/Foo.java`, регистр диска): сколько мест в списке?",
    "kind": "развилка",
-   "status": "открыт",
+   "status": "решён",
    "addressee": "человек",
    "depends_on": [
     "F-15"
@@ -4531,7 +4663,11 @@ const JOURNAL = {
     "why": "Сверка сравнивает список с описью по пути: без одной формы пути сигналы будут ложными.",
     "text": "A — одна строка, нормализованный путь"
    },
-   "decision": null,
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-01"
+   },
    "reversibility": null,
    "outcome": null,
    "parking": [],
@@ -4553,7 +4689,7 @@ const JOURNAL = {
    "id": "F-72",
    "question": "[empty · collection] Подкоманда журнала предлагает места кода: выбранный вариант без улик: варианты, добавленные человеком (как F-15.D), улик не несут, и развилка не даёт в список ничего, хотя её решение может называть код",
    "kind": "развилка",
-   "status": "открыт",
+   "status": "решён",
    "addressee": "человек",
    "depends_on": [
     "F-15"
@@ -4595,7 +4731,11 @@ const JOURNAL = {
     "why": "Слово человека — самое сильное решение журнала, и пропуск его файлов в списке должен быть виден.",
     "text": "A — сигнал о варианте без улик"
    },
-   "decision": null,
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-01"
+   },
    "reversibility": null,
    "outcome": null,
    "parking": [],
@@ -4617,7 +4757,7 @@ const JOURNAL = {
    "id": "F-73",
    "question": "[encoding · text] Подкоманда журнала предлагает места кода: что считается файлом кода: в уликах лежат `docs/*.md`, `schema.yaml`, `decisions.json`, `upstream/...`. Где граница?",
    "kind": "развилка",
-   "status": "открыт",
+   "status": "решён",
    "addressee": "человек",
    "depends_on": [
     "F-15",
@@ -4660,7 +4800,11 @@ const JOURNAL = {
     "why": "Со всеми файлами сверка шумит на документах и заставляет исключать их строками, а счёт F-08 шёл только по файлам кода.",
     "text": "A — всё, кроме `.md` и файлов каталогов изменений"
    },
-   "decision": null,
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-01"
+   },
    "reversibility": null,
    "outcome": null,
    "parking": [],
@@ -4682,7 +4826,7 @@ const JOURNAL = {
    "id": "F-74",
    "question": "[boundary · numeric-range] `check` сигналит расхождение описи со списком мест: файл считается разобранным при одной строке описи: модель выписала одну ветку из двенадцати, сигнала нет",
    "kind": "развилка",
-   "status": "открыт",
+   "status": "решён",
    "addressee": "человек",
    "depends_on": [
     "F-15",
@@ -4725,7 +4869,11 @@ const JOURNAL = {
     "why": "Порог по числу строк над суждением модели прямо против слова к F-15; глубину увидит прогон на копиях.",
     "text": "B — сверка только о наличии"
    },
-   "decision": null,
+   "decision": {
+    "option": "B",
+    "word": "",
+    "date": "2026-11-01"
+   },
    "reversibility": null,
    "outcome": null,
    "parking": [],
@@ -4747,7 +4895,7 @@ const JOURNAL = {
    "id": "F-75",
    "question": "[empty · collection] `check` сигналит расхождение описи со списком мест: `consequences.md` ещё нет: шаг не пройден или журнал старого изменения. Каждое место сигналит или сверка молчит?",
    "kind": "развилка",
-   "status": "открыт",
+   "status": "решён",
    "addressee": "человек",
    "depends_on": [
     "F-25",
@@ -4790,7 +4938,11 @@ const JOURNAL = {
     "why": "`status` и так показывает, что артефакта нет, а `symphysis check` гоняет `journal.py check` по каждому изменению, и старые шумели бы вечно.",
     "text": "A — нет файла — нет сверки"
    },
-   "decision": null,
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-01"
+   },
    "reversibility": null,
    "outcome": null,
    "parking": [],
@@ -4812,7 +4964,7 @@ const JOURNAL = {
    "id": "F-76",
    "question": "[adjacency · collection] `check` сигналит расхождение описи со списком мест: строка описи называет `src\\Foo.java:270`, список — `src/Foo.java`: совпадение при номере строки, другом разделителе и префиксе корня вроде `calibration/`",
    "kind": "развилка",
-   "status": "открыт",
+   "status": "решён",
    "addressee": "человек",
    "depends_on": [
     "F-25",
@@ -4855,7 +5007,11 @@ const JOURNAL = {
     "why": "Модель пишет пути как придётся, а ложный сигнал быстро приучит его не читать.",
     "text": "A — сравнение по нормализованному пути"
    },
-   "decision": null,
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-01"
+   },
    "reversibility": null,
    "outcome": null,
    "parking": [],
@@ -4877,7 +5033,7 @@ const JOURNAL = {
    "id": "F-77",
    "question": "[empty · collection] `check` сигналит неполное покрытие пробы краёв: файла покрытия нет при включённой пробе: журнал старого изменения (у `calibration-fixes` пробы без файла) или шаг `specs` не дошёл до пробы. Сколько строк в выводе?",
    "kind": "развилка",
-   "status": "открыт",
+   "status": "решён",
    "addressee": "человек",
    "depends_on": [
     "F-25",
@@ -4920,7 +5076,11 @@ const JOURNAL = {
     "why": "Пропуск пробы молчать не должен (F-25.A), а восемь строк на пару утопили бы вывод.",
     "text": "A — одна строка о файле"
    },
-   "decision": null,
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-01"
+   },
    "reversibility": null,
    "outcome": null,
    "parking": [],
@@ -4942,7 +5102,7 @@ const JOURNAL = {
    "id": "F-78",
    "question": "[adjacency · collection] `check` сигналит неполное покрытие пробы краёв: сигналы сверки и `symphysis check`: инсталлятор берёт из вывода `journal.py check` только строку «улик сверено», строки `[!!]` об описи и покрытии до человека не дойдут",
    "kind": "развилка",
-   "status": "открыт",
+   "status": "решён",
    "addressee": "человек",
    "depends_on": [
     "F-25"
@@ -4984,7 +5144,11 @@ const JOURNAL = {
     "why": "F-25.A обещает, что человек видит расхождение, а `check` инсталлятора — его основная точка входа.",
     "text": "A — сигнал виден и в `symphysis check`"
    },
-   "decision": null,
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-01"
+   },
    "reversibility": null,
    "outcome": null,
    "parking": [],
@@ -5013,7 +5177,7 @@ const JOURNAL = {
    "id": "F-79",
    "question": "[adjacency · collection] `install` добавляет workflow `continue` и обновляет проект: у профиля `core` форк игнорирует список `workflows`: `config set workflows` при умолчании ничего не даст, нужен ещё `profile: custom`, а кастомный профиль форк сам больше не пополняет",
    "kind": "развилка",
-   "status": "открыт",
+   "status": "решён",
    "addressee": "человек",
    "depends_on": [
     "F-32",
@@ -5057,7 +5221,11 @@ const JOURNAL = {
     "why": "Иначе выбранный вариант F-32 на чистой установке не работает: умолчание форка — `core`.",
     "text": "A — при `core` — `custom` с шестью и `continue`"
    },
-   "decision": null,
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-01"
+   },
    "reversibility": null,
    "outcome": null,
    "parking": [],
@@ -5093,7 +5261,7 @@ const JOURNAL = {
    "id": "F-80",
    "question": "[idempotency · stateful] `install` добавляет workflow `continue` и обновляет проект: `continue` уже в списке: повторный `install` снова пишет конфиг и зовёт обновление проекта, хотя «Повторная установка» обещает пустой список записанных",
    "kind": "развилка",
-   "status": "открыт",
+   "status": "решён",
    "addressee": "человек",
    "depends_on": [
     "F-32"
@@ -5135,7 +5303,11 @@ const JOURNAL = {
     "why": "Идемпотентность `install` уже записана в существующем требовании.",
     "text": "A — конфиг не тронут, обновления нет"
    },
-   "decision": null,
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-01"
+   },
    "reversibility": null,
    "outcome": null,
    "parking": [],
@@ -5157,7 +5329,7 @@ const JOURNAL = {
    "id": "F-81",
    "question": "[concurrency · io] `install` добавляет workflow `continue` и обновляет проект: `openspec` не найден или `openspec init` не делался: `config set` прошёл, а обновление проекта упало. Глобальный конфиг уже изменён, команды в проекте нет",
    "kind": "развилка",
-   "status": "открыт",
+   "status": "решён",
    "addressee": "человек",
    "depends_on": [
     "F-32"
@@ -5199,7 +5371,11 @@ const JOURNAL = {
     "why": "Так уже устроена телеметрия: `install` печатает команду и продолжает, а `check` всё равно назовёт отсутствие команды.",
     "text": "A — печать команды и код 0, как у телеметрии"
    },
-   "decision": null,
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-01"
+   },
    "reversibility": null,
    "outcome": null,
    "parking": [],
@@ -5228,7 +5404,7 @@ const JOURNAL = {
    "id": "F-82",
    "question": "[encoding · text] `check` называет отсутствие команды `/opsx:continue`: что значит «команда есть» у другого клиента и при `delivery: skills`: `.claude/commands/opsx/continue.md`, скилл `openspec-continue-change` или каталог другого клиента?",
    "kind": "развилка",
-   "status": "открыт",
+   "status": "решён",
    "addressee": "человек",
    "depends_on": [
     "F-32",
@@ -5271,7 +5447,11 @@ const JOURNAL = {
     "why": "Инсталлятор не привязан к клиенту (`--skills-dir`), а код 2 у другого клиента ломал бы `check` без причины.",
     "text": "A — файл команды или скилл у настроенного клиента"
    },
-   "decision": null,
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-01"
+   },
    "reversibility": null,
    "outcome": null,
    "parking": [],
@@ -5293,7 +5473,7 @@ const JOURNAL = {
    "id": "F-83",
    "question": "[empty · text] `check` называет отсутствие команды `/opsx:continue`: клиент не настроен: `openspec init` не делался или каталог вообще не проект, а `check` против неверного каталога уже отвечал `ok`",
    "kind": "развилка",
-   "status": "открыт",
+   "status": "решён",
    "addressee": "человек",
    "depends_on": [
     "F-32",
@@ -5336,7 +5516,11 @@ const JOURNAL = {
     "why": "Случай наблюдён на сухом прогоне: `ok` в неверном каталоге скрывает ошибку установки.",
     "text": "A — `[!!]` с командой `init`"
    },
-   "decision": null,
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-01"
+   },
    "reversibility": null,
    "outcome": null,
    "parking": [],
@@ -5365,7 +5549,7 @@ const JOURNAL = {
    "id": "F-84",
    "question": "[encoding · text] `install` создаёт `symphysis.yaml`, если файла нет, и не перезаписывает его: человек правит `symphysis.yaml` редактором, который пишет BOM или CP1251: `check` и чтение файла расходятся или падают",
    "kind": "развилка",
-   "status": "открыт",
+   "status": "решён",
    "addressee": "человек",
    "depends_on": [
     "F-24"
@@ -5407,7 +5591,11 @@ const JOURNAL = {
     "why": "На Windows это обычный случай, а падение `check` назвало бы причину хуже, чем строка.",
     "text": "A — BOM принят, не UTF-8 — `[!!]`"
    },
-   "decision": null,
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-01"
+   },
    "reversibility": null,
    "outcome": null,
    "parking": [],
@@ -5429,7 +5617,7 @@ const JOURNAL = {
    "id": "F-85",
    "question": "[empty · text] `check` показывает состав из `symphysis.yaml`: проект поставлен раньше, `symphysis.yaml` нет: умолчания действуют законно, а `check` обычно называет отсутствующий файл `[!!]` с кодом 2",
    "kind": "развилка",
-   "status": "открыт",
+   "status": "решён",
    "addressee": "человек",
    "depends_on": [
     "F-24"
@@ -5471,7 +5659,11 @@ const JOURNAL = {
     "why": "Отсутствие законно по F-24.A; код 2 ломал бы `check` проектам, которым менять нечего.",
     "text": "A — сигнал `[..]`, код не меняется"
    },
-   "decision": null,
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-01"
+   },
    "reversibility": null,
    "outcome": null,
    "parking": [],
@@ -5493,7 +5685,7 @@ const JOURNAL = {
    "id": "F-86",
    "question": "[empty · collection] Скрипт сборки кладёт тарбол форка в `vendor/`: в клоне нет `upstream/openspec`, каталог вне git: скрипт сборки запущен на чистом клоне",
    "kind": "развилка",
-   "status": "открыт",
+   "status": "решён",
    "addressee": "человек",
    "depends_on": [
     "F-36",
@@ -5536,7 +5728,11 @@ const JOURNAL = {
     "why": "F-22 уже показал: падение без форка читается как поломка, причину надо называть.",
     "text": "A — код 1 и ветка `openspec-fork` в stderr"
    },
-   "decision": null,
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-01"
+   },
    "reversibility": null,
    "outcome": null,
    "parking": [],
@@ -5558,7 +5754,7 @@ const JOURNAL = {
    "id": "F-87",
    "question": "[adjacency · collection] Скрипт сборки кладёт тарбол форка в `vendor/`: в `vendor/` рядом старый тарбол и новый: `npm i -g ./vendor/<тарбол>` двусмысленна, а F-36.A предупреждает о бинарном файле на каждую версию",
    "kind": "развилка",
-   "status": "открыт",
+   "status": "решён",
    "addressee": "человек",
    "depends_on": [
     "F-36"
@@ -5600,7 +5796,11 @@ const JOURNAL = {
     "why": "История git и так хранит прежний файл, а один файл снимает двусмысленность шага установки.",
     "text": "A — один тарбол в `vendor/`"
    },
-   "decision": null,
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-01"
+   },
    "reversibility": null,
    "outcome": null,
    "parking": [],
@@ -5622,7 +5822,7 @@ const JOURNAL = {
    "id": "F-88",
    "question": "[concurrency · io] Скрипт сборки кладёт тарбол форка в `vendor/`: порядок эффектов: форк поднят, тарбол собран, а `openspecPin` в `installer/package.json` остался прежним, или наоборот: `check` откажет сразу после установки",
    "kind": "развилка",
-   "status": "открыт",
+   "status": "решён",
    "addressee": "человек",
    "depends_on": [
     "F-36",
@@ -5665,7 +5865,11 @@ const JOURNAL = {
     "why": "Ошибка выпуска должна падать у выпускающего, а не на чужой машине.",
     "text": "A — скрипт сверяет версию с пином"
    },
-   "decision": null,
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-01"
+   },
    "reversibility": null,
    "outcome": null,
    "parking": [],
@@ -5687,7 +5891,7 @@ const JOURNAL = {
    "id": "F-89",
    "question": "[empty · text] Скрипт сборки кладёт тарбол форка в `vendor/`: `symphysis.openspecSource` остаётся плейсхолдером: без форка `check` печатает `<URL репозитория форка — плейсхолдер>` в строке «нужен форк»",
    "kind": "развилка",
-   "status": "открыт",
+   "status": "решён",
    "addressee": "человек",
    "depends_on": [
     "F-36",
@@ -5730,7 +5934,11 @@ const JOURNAL = {
     "why": "Источник форка по F-36.A теперь известен: `vendor/`; строка отказа — первое, что увидит человек без форка.",
     "text": "A — `check` называет `vendor/<тарбол>`"
    },
-   "decision": null,
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-01"
+   },
    "reversibility": null,
    "outcome": null,
    "parking": [],
@@ -5759,7 +5967,7 @@ const JOURNAL = {
    "id": "F-90",
    "question": "[запрет] Опись лежит в файле, строка несёт ветку отказа и допущение о ней: не должен выдавать пересказ кода по памяти за ветку отказа: строка без прочитанного файла выглядит проверенной",
    "kind": "развилка",
-   "status": "открыт",
+   "status": "решён",
    "addressee": "человек",
    "depends_on": [
     "F-14"
@@ -5801,7 +6009,11 @@ const JOURNAL = {
     "why": "Форма строки проверяется механически, а без цитаты строка не проверяема вовсе (F-14).",
     "text": "A — тест сверки на строку без цитаты"
    },
-   "decision": null,
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-01"
+   },
    "reversibility": null,
    "outcome": null,
    "parking": [],
@@ -5823,7 +6035,7 @@ const JOURNAL = {
    "id": "F-91",
    "question": "[запрет] Места разбора предлагает скрипт, выбирает модель: не должен стать способом снять шаг: все места исключены шаблонной причиной, сверка зелёная, описи нет",
    "kind": "развилка",
-   "status": "открыт",
+   "status": "решён",
    "addressee": "человек",
    "depends_on": [
     "F-15",
@@ -5866,7 +6078,11 @@ const JOURNAL = {
     "why": "Одинаковую причину поймал бы тест, а отписку разными словами — только чтение; скрипт суждение модели не ограничивает (F-25.A).",
     "text": "B — судит человек или атака"
    },
-   "decision": null,
+   "decision": {
+    "option": "B",
+    "word": "",
+    "date": "2026-11-01"
+   },
    "reversibility": null,
    "outcome": null,
    "parking": [],
@@ -5888,7 +6104,7 @@ const JOURNAL = {
    "id": "F-92",
    "question": "[запрет] В журнал идут только ветки без сценария: не должен стать стеной решений: кандидатов столько, что человек перестаёт читать варианты; журнал уже вырос с 38 до 63 записей (F-09)",
    "kind": "развилка",
-   "status": "открыт",
+   "status": "решён",
    "addressee": "человек",
    "depends_on": [
     "F-16",
@@ -5932,7 +6148,11 @@ const JOURNAL = {
     "why": "Объём уже ограничен F-16.A и будет сосчитан проверкой F-19.A; порог без данных был бы выдумкой.",
     "text": "C — объём ограничен F-16.A и считается F-19.A"
    },
-   "decision": null,
+   "decision": {
+    "option": "C",
+    "word": "Запрет не нужен, пользователь может попросить агента \"реши сам такие то пункты\", но помогать или ограничивать его в том ,чтобы не читать развилки мы не будем.",
+    "date": "2026-11-01"
+   },
    "reversibility": null,
    "outcome": null,
    "parking": [],
@@ -5954,7 +6174,7 @@ const JOURNAL = {
    "id": "F-93",
    "question": "[запрет] Шаг заканчивается тремя причинами провала изменения: не должен стать ритуалом: три общие причины из примера источника вместо причин этого изменения",
    "kind": "развилка",
-   "status": "открыт",
+   "status": "решён",
    "addressee": "человек",
    "depends_on": [
     "F-17",
@@ -5997,7 +6217,11 @@ const JOURNAL = {
     "why": "Общность причины тестом не измерить, а пример источника прямо подсказывает общие формулировки.",
     "text": "B — судит человек в просмотрщике"
    },
-   "decision": null,
+   "decision": {
+    "option": "B",
+    "word": "",
+    "date": "2026-11-01"
+   },
    "reversibility": null,
    "outcome": null,
    "parking": [],
@@ -6026,7 +6250,7 @@ const JOURNAL = {
    "id": "F-94",
    "question": "[запрет] `symphysis.yaml` в корне проекта задаёт выбор перед запуском шага: не должен из выбора одного человека ради времени стать молчаливым выключением проверок у всей команды через git",
    "kind": "развилка",
-   "status": "открыт",
+   "status": "решён",
    "addressee": "человек",
    "depends_on": [
     "F-24"
@@ -6060,6 +6284,13 @@ const JOURNAL = {
      "added": false,
      "unlikely": null,
      "evidence": []
+    },
+    {
+     "letter": "E",
+     "text": "файл конфигурации живёт вне гит (то есть добавим в gitignore). Тогда каждый пользователь может сам решать с каким инструментарием работать и как его настраивать. (добавлен человеком)",
+     "added": true,
+     "unlikely": null,
+     "evidence": []
     }
    ],
    "antipodes": [],
@@ -6068,7 +6299,11 @@ const JOURNAL = {
     "why": "Видимость уже есть: требование о строке `check` и след в артефакте шага; отдельного запрета это не требует.",
     "text": "C — видимость уже есть"
    },
-   "decision": null,
+   "decision": {
+    "option": "E",
+    "word": "",
+    "date": "2026-11-01"
+   },
    "reversibility": null,
    "outcome": null,
    "parking": [],
@@ -6090,11 +6325,12 @@ const JOURNAL = {
    "id": "F-95",
    "question": "[запрет] Шаг читает выбор в начале и человека не спрашивает: не должен позволить модели самой поменять `symphysis.yaml`, чтобы успеть или сократить шаг",
    "kind": "развилка",
-   "status": "открыт",
+   "status": "решён",
    "addressee": "человек",
    "depends_on": [
     "F-24",
-    "F-14"
+    "F-14",
+    "F-94"
    ],
    "delivery": "specs/project-settings",
    "options": [
@@ -6133,7 +6369,11 @@ const JOURNAL = {
     "why": "Выбор принадлежит человеку (слово к F-14); на модели тест годен только в прогоне, а дифф виден всегда.",
     "text": "B — судит человек по диффу или атака"
    },
-   "decision": null,
+   "decision": {
+    "option": "C",
+    "word": "Тут кажется должн быть антипод с F-94, потому что если файл в gitignore То диффа нет, а значит изменение не увидеть. Но и делать общую конфигурацию на всех нет смысла.",
+    "date": "2026-11-01"
+   },
    "reversibility": null,
    "outcome": null,
    "parking": [],
@@ -6155,7 +6395,7 @@ const JOURNAL = {
    "id": "F-96",
    "question": "[запрет] Выключенный состав назван в артефакте шага: не должен позволять читать выключенную часть как пройденную проверку: `status` — `done`, `check: ok`, а ветки никто не разбирал",
    "kind": "развилка",
-   "status": "открыт",
+   "status": "решён",
    "addressee": "человек",
    "depends_on": [
     "F-24"
@@ -6197,7 +6437,11 @@ const JOURNAL = {
     "why": "Тот же разрыв уже закрыт для атак требованием «Невызванная атака видна в status» в `calibration-fixes`.",
     "text": "A — тест строки `check`"
    },
-   "decision": null,
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-01"
+   },
    "reversibility": null,
    "outcome": null,
    "parking": [],
@@ -6219,7 +6463,7 @@ const JOURNAL = {
    "id": "F-97",
    "question": "[запрет] Руководство ведёт установку из клона репозитория: не должен умолчать, что шаги меняют глобальное окружение: `npm i -g` и список workflow глобального конфига касаются других проектов читателя",
    "kind": "развилка",
-   "status": "открыт",
+   "status": "решён",
    "addressee": "человек",
    "depends_on": [
     "F-32",
@@ -6262,7 +6506,11 @@ const JOURNAL = {
     "why": "Достаточность предупреждения тестом не измерить; на сухом прогоне этот эффект был отмечен как побочный.",
     "text": "B — судит владелец при прохождении"
    },
-   "decision": null,
+   "decision": {
+    "option": "B",
+    "word": "Так или иначе операции можно откатить, а в руководстве написано что меняется, значит пользователю известно.",
+    "date": "2026-11-01"
+   },
    "reversibility": null,
    "outcome": null,
    "parking": [],
@@ -6284,7 +6532,7 @@ const JOURNAL = {
    "id": "F-98",
    "question": "[запрет] Учебный проект идёт настоящими командами и выводами: не должен нести чужой код, рабочие имена и материалы замеров: руководство уйдёт в корпоративный репозиторий и к людям",
    "kind": "развилка",
-   "status": "открыт",
+   "status": "решён",
    "addressee": "человек",
    "depends_on": [
     "F-34"
@@ -6326,7 +6574,11 @@ const JOURNAL = {
     "why": "Гейт имён уже есть и дешёв; выдержки F-34.B были отвергнуты в том числе за чужой код.",
     "text": "A — гейт имён по файлу"
    },
-   "decision": null,
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-01"
+   },
    "reversibility": null,
    "outcome": null,
    "parking": [],
@@ -6348,7 +6600,7 @@ const JOURNAL = {
    "id": "F-99",
    "question": "[запрет] Сырой список различает «не нашли» и «нашли, но не выбрали»: не должен превратить `не выбран` в молчаливый Dismiss мимо человека: модель отводит край причиной, которой человек не увидит",
    "kind": "развилка",
-   "status": "открыт",
+   "status": "решён",
    "addressee": "человек",
    "depends_on": [
     "F-18",
@@ -6391,7 +6643,11 @@ const JOURNAL = {
     "why": "Отказ без слова человека — тот самый молчаливый отказ, который закрывает проба; счёт в итоге механичен и делает его видимым.",
     "text": "A — счёт `не выбран` в итоге пробы"
    },
-   "decision": null,
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-01"
+   },
    "reversibility": null,
    "outcome": null,
    "parking": [],
@@ -6413,7 +6669,7 @@ const JOURNAL = {
    "id": "F-100",
    "question": "[запрет] `install` добавляет workflow `continue` и обновляет проект: не должен молча заменить список workflow или профиль человека: другие проекты на этой машине получат другой набор при следующем обновлении",
    "kind": "развилка",
-   "status": "открыт",
+   "status": "решён",
    "addressee": "человек",
    "depends_on": [
     "F-32"
@@ -6455,7 +6711,11 @@ const JOURNAL = {
     "why": "Правка конфига вне проекта — известный побочный эффект, а сравнение до и после механично.",
     "text": "A — тест до и после с временным конфигом"
    },
-   "decision": null,
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-01"
+   },
    "reversibility": null,
    "outcome": null,
    "parking": [],
@@ -6477,7 +6737,7 @@ const JOURNAL = {
    "id": "F-101",
    "question": "[запрет] Скрипт сборки кладёт тарбол форка в `vendor/`: не должен незаметно разойтись с исходниками: тарбол собран с незакоммиченными правками форка или старше ветки при той же версии",
    "kind": "развилка",
-   "status": "открыт",
+   "status": "решён",
    "addressee": "человек",
    "depends_on": [
     "F-36"
@@ -6519,7 +6779,11 @@ const JOURNAL = {
     "why": "Бинарный файл нельзя прочитать в диффе, поэтому проверка должна стоять до него.",
     "text": "A — отказ при грязном дереве, хеш в выводе"
    },
-   "decision": null,
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-01"
+   },
    "reversibility": null,
    "outcome": null,
    "parking": [],
