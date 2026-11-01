@@ -1,14 +1,13 @@
 import fs from "node:fs";
 import path from "node:path";
-import { fileURLToPath } from "node:url";
 import { spawnSync } from "node:child_process";
 import { parse } from "yaml";
+import { continueLines, selectedClients } from "./clients.js";
 import { targets } from "./paths.js";
 import { DEFAULT_PAYLOAD } from "./install.js";
-import { runOpenspec } from "./openspec-bin.js";
+import { describeFailure, forkPin, runOpenspec } from "./openspec-bin.js";
 import { telemetryState, TELEMETRY_OFF_COMMAND } from "./telemetry.js";
 
-const here = path.dirname(fileURLToPath(import.meta.url));
 const TOOL_MODULES = ["journal.py", "journal_apply.py", "journal_cli.py", "journal_model.py", "journal_render.py", "journal_sites.py", "journal_consequences.py", "symphysis_config.py"];
 
 const rel = (project, p) => path.relative(project, p).split(path.sep).join("/");
@@ -23,16 +22,15 @@ function walk(dir) {
   return out;
 }
 
-function readPin() {
-  const pkg = JSON.parse(fs.readFileSync(path.join(here, "..", "package.json"), "utf8"));
-  return pkg.symphysis;
-}
-
-/** Версия форка; null — не запустился. */
-function openspecVersion() {
+/** Строка о форке или null: «не найден» и отказ самого форка — разные исходы; обе называют тарбол (F-31.A, F-36.A). */
+function forkFinding() {
+  const { openspecPin, openspecSource } = forkPin();
+  const install = `npm i -g ./${openspecSource}`;
   const r = runOpenspec(["--version"]);
-  if (r.error || r.status !== 0) return null;
-  return String(r.stdout).trim();
+  if (r.notFound) return `openspec: не найден (SYMPHYSIS_OPENSPEC или PATH); нужен форк ${openspecPin}: ${install}`;
+  if (r.error || r.status !== 0) return `openspec: ${describeFailure(r).replace(/^openspec /, "")}; нужен форк ${openspecPin}: ${install}`;
+  const actual = String(r.stdout).trim();
+  return actual === openspecPin ? null : `openspec: версия ${actual}, нужна ${openspecPin} (форк symphysis): ${install}`;
 }
 
 /** Python: `python`, затем `python3`; версия не закрепляется. Возвращает имя команды или null. */
@@ -51,13 +49,11 @@ export function findPython() {
 export function check(project, { skillsDirs = [], payloadDir = DEFAULT_PAYLOAD } = {}) {
   const root = path.resolve(project);
   const t = targets(root, skillsDirs);
-  const { openspecPin, openspecSource } = readPin();
   const findings = [];
   const notes = [];
 
-  const actual = openspecVersion();
-  if (actual === null) findings.push(`openspec: не найден (SYMPHYSIS_OPENSPEC или PATH); нужен форк ${openspecPin}: ${openspecSource}`);
-  else if (actual !== openspecPin) findings.push(`openspec: версия ${actual}, нужна ${openspecPin} (форк symphysis): ${openspecSource}`);
+  const fork = forkFinding();
+  if (fork) findings.push(fork);
 
   const schemaSrc = path.join(payloadDir, "openspec", "schemas", "symphysis");
   for (const file of walk(schemaSrc).sort()) {
@@ -100,6 +96,10 @@ export function check(project, { skillsDirs = [], payloadDir = DEFAULT_PAYLOAD }
 
   const py = findPython();
   if (!py) findings.push("python: python или python3 не отвечает");
+
+  const clientLines = continueLines(selectedClients(root, t.skillsDirs));
+  findings.push(...clientLines.findings);
+  notes.push(...clientLines.notes);
 
   const changes = path.join(root, "openspec", "changes");
   const journalPy = path.join(toolsDir, "journal.py");

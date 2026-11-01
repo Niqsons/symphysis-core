@@ -2,6 +2,8 @@ import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { parseDocument, isMap, isSeq, isScalar } from "yaml";
+import { ensureContinue } from "./clients.js";
+import { globalConfigPath } from "./global-config.js";
 import { targets } from "./paths.js";
 import { disableTelemetryIfUnset } from "./telemetry.js";
 
@@ -9,7 +11,6 @@ const here = path.dirname(fileURLToPath(import.meta.url));
 export const DEFAULT_PAYLOAD = path.resolve(here, "..", "payload");
 const SKIP_SUFFIX = "(есть, отличается — перезапись: --force)";
 const ROOTS_CONTENT = '{"": "<root>/.."}\n';
-
 const rel = (project, p) => path.relative(project, p).split(path.sep).join("/");
 
 function walk(dir) {
@@ -72,7 +73,7 @@ export function mergeConfig(existingText, oursText) {
 }
 
 /**
- * Ставит схему, скиллы и инструменты журнала в проект.
+ * Ставит схему, скиллы и инструменты журнала в проект и обновляет его, если в нём нет `/opsx:continue`.
  * Пути в результате — от корня проекта, с «/». `messages` — строки для печати.
  */
 export function install(project, { skillsDirs = [], force = false, payloadDir = DEFAULT_PAYLOAD } = {}) {
@@ -115,7 +116,10 @@ export function install(project, { skillsDirs = [], force = false, payloadDir = 
       );
     }
   }
+  // Телеметрия раньше обновления: `config set` записывает профиль, и разовая миграция форка не срабатывает.
   const tele = disableTelemetryIfUnset();
   if (tele) res.messages.push(tele);
+  res.messages.push(...ensureContinue(root, t.skillsDirs));
+  res.messages.push(`openspec: глобальный конфиг ${globalConfigPath()}`);
   return res;
 }

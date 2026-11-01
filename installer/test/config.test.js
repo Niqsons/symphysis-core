@@ -8,6 +8,7 @@ import { fileURLToPath } from "node:url";
 import { syncPayload } from "../scripts/sync-payload.js";
 import { targets } from "../lib/paths.js";
 import { install } from "../lib/install.js";
+import { requireFork } from "../scripts/build-vendor.js";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const bin = path.resolve(here, "..", "bin", "symphysis.js");
@@ -16,6 +17,7 @@ const tmp = () => fs.mkdtempSync(path.join(os.tmpdir(), "symphysis-config-"));
 let payloadDir;
 
 before(() => {
+  requireFork(FORK);
   payloadDir = tmp();
   syncPayload(payloadDir);
 });

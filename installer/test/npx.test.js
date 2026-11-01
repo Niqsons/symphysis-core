@@ -6,6 +6,7 @@ import os from "node:os";
 import path from "node:path";
 import { spawnSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
+import { requireFork } from "../scripts/build-vendor.js";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const installerDir = path.resolve(here, "..");
@@ -72,8 +73,12 @@ test("npm pack: tarball с payload и скриптом, без test/ и node_mod
 
 test("npx install в чистый проект: записано, файлы на местах", opts, () => {
   assert.ok(tgz, "нужен tarball из предыдущего теста");
+  requireFork(FORK);
   const project = mk("project");
-  const r = npx(["install", "--project", project], envWith({ NPM_CONFIG_CACHE: cache, npm_config_cache: cache }));
+  // Клиент настроен форком до установки, как в руководстве; конфиг — временный на эту команду.
+  const init = spawnSync(process.execPath, [FORK, "init", "--tools", "claude"], { cwd: project, encoding: "utf8", env: envWith({ OPENSPEC_TELEMETRY: "0" }) });
+  assert.equal(init.status, 0, init.stdout + init.stderr);
+  const r = npx(["install", "--project", project], envWith({ NPM_CONFIG_CACHE: cache, npm_config_cache: cache, SYMPHYSIS_OPENSPEC: FORK }));
   assert.equal(r.status, 0, r.stdout + r.stderr);
   assert.match(r.stdout, /записано/);
   for (const f of [
@@ -85,7 +90,7 @@ test("npx install в чистый проект: записано, файлы н�
 });
 
 test("npx check с форком из SYMPHYSIS_OPENSPEC: код 0, check: ok", opts, () => {
-  assert.ok(fs.existsSync(FORK), `нет форка: ${FORK}`);
+  requireFork(FORK);
   const project = path.join(tmpRoot, "project");
   const r = npx(["check", "--project", project], envWith({ NPM_CONFIG_CACHE: cache, npm_config_cache: cache, SYMPHYSIS_OPENSPEC: FORK }));
   assert.equal(r.status, 0, r.stdout + r.stderr);
@@ -103,3 +108,4 @@ test("npx check без форка (нет переменной, PATH без open
   assert.equal(r.status, 2, r.stdout + r.stderr);
   assert.match(r.stdout, /не найден/);
 });
+

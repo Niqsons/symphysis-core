@@ -9,12 +9,12 @@ import { syncPayload } from "../scripts/sync-payload.js";
 import { targets } from "../lib/paths.js";
 import { install } from "../lib/install.js";
 import { check } from "../lib/check.js";
+import { requireFork } from "../scripts/build-vendor.js";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const bin = path.resolve(here, "..", "bin", "symphysis.js");
 const FORK = path.resolve(here, "..", "..", "upstream", "openspec", "bin", "openspec.js");
 const PIN = "1.15.0-symphysis.4";
-const hasFork = fs.existsSync(FORK);
 let payloadDir;
 const tmp = () => fs.mkdtempSync(path.join(os.tmpdir(), "symphysis-check-"));
 const saved = { openspec: process.env.SYMPHYSIS_OPENSPEC, path: process.env.PATH, Path: process.env.Path, xdg: process.env.XDG_CONFIG_HOME };
@@ -25,7 +25,7 @@ const writeCfg = (obj) => {
 };
 
 before(() => {
-  assert.ok(hasFork, `нет форка для зелёного случая: ${FORK}`);
+  requireFork(FORK);
   payloadDir = tmp();
   syncPayload(payloadDir);
 });
@@ -42,6 +42,9 @@ function installed() {
   process.env.XDG_CONFIG_HOME = tmp();
   process.env.SYMPHYSIS_OPENSPEC = FORK;
   const p = tmp();
+  // Клиент настроен: файл команды форка; сценарии о самой команде живут ниже.
+  fs.mkdirSync(path.join(p, ".claude", "commands", "opsx"), { recursive: true });
+  fs.writeFileSync(path.join(p, ".claude", "commands", "opsx", "continue.md"), "x");
   install(p, { payloadDir });
   return p;
 }
@@ -61,7 +64,7 @@ const MINIMAL_JOURNAL = {
   ],
 };
 
-test("после install: ok, findings и notes пусты", () => {
+test("после install: ok, находок нет, заметка о телеметрии", () => {
   const p = installed();
   const r = runCheck(p);
   assert.deepEqual(r.findings, []);
@@ -113,6 +116,8 @@ test("скиллы проверяются в каждом skillsDir", () => {
   process.env.XDG_CONFIG_HOME = tmp();
   process.env.SYMPHYSIS_OPENSPEC = FORK;
   const p = tmp();
+  fs.mkdirSync(path.join(p, "a", "commands", "opsx"), { recursive: true });
+  fs.writeFileSync(path.join(p, "a", "commands", "opsx", "continue.md"), "x");
   install(p, { payloadDir, skillsDirs: ["a/skills", "b/skills"] });
   fs.rmSync(path.join(p, "b", "skills", "symphysis-brainstorm", "SKILL.md"));
   const r = check(p, { payloadDir, skillsDirs: ["a/skills", "b/skills"] });
@@ -268,4 +273,86 @@ test("telemetry: конфиг не JSON — сигнал, код 0", () => {
   const r = cli("check", "--project", p);
   assert.equal(r.status, 0, r.stdout);
   assert.match(r.stdout, /^\[\.\.\] telemetry: конфиг OpenSpec не читается/m);
+});
+
+// --- /opsx:continue у выбранного клиента ------------------------------------
+
+const CONTINUE_MISSING = "continue: команда /opsx:continue не установлена у claude — выполнить: symphysis install";
+const CLIENT_NOT_SET = "continue: клиент не настроен — выполнить: openspec init --tools claude";
+
+/** Установка без файлов клиента: схема цела, команды нет. */
+function bareInstalled(skillsDirs = []) {
+  process.env.XDG_CONFIG_HOME = tmp();
+  process.env.SYMPHYSIS_OPENSPEC = FORK;
+  const p = tmp();
+  install(p, { payloadDir, skillsDirs });
+  return p;
+}
+
+test("Команды нет: клиент настроен, а команды и скилла нет — [!!] с именем клиента, код 2", () => {
+  const p = bareInstalled();
+  fs.mkdirSync(path.join(p, ".claude", "skills", "openspec-apply-change"));
+  const r = cli("check", "--project", p);
+  assert.equal(r.status, 2, r.stdout);
+  assert.ok(r.stdout.split(/\r?\n/).includes(`[!!] ${CONTINUE_MISSING}`), r.stdout);
+});
+
+test("Команда есть: строки [!!] continue нет", () => {
+  const p = installed();
+  const r = cli("check", "--project", p);
+  assert.equal(r.status, 0, r.stdout);
+  assert.doesNotMatch(r.stdout, /continue:/);
+});
+
+test("Команда у настроенного клиента: скилл считается установкой, клиент — имя каталога без точки", () => {
+  const p = bareInstalled();
+  const skill = path.join(p, ".claude", "skills", "openspec-continue-change");
+  fs.mkdirSync(skill);
+  fs.writeFileSync(path.join(skill, "SKILL.md"), "x");
+  assert.ok(!runCheck(p).findings.some((f) => f.startsWith("continue:")));
+  const other = bareInstalled([".opencode/skills"]);
+  fs.mkdirSync(path.join(other, ".opencode", "commands", "opsx"), { recursive: true });
+  const r = check(other, { payloadDir, skillsDirs: [".opencode/skills"] });
+  assert.ok(r.findings.includes("continue: команда /opsx:continue не установлена у opencode — выполнить: symphysis install"), JSON.stringify(r.findings));
+});
+
+test("Два каталога: команда у .claude, файлов форка у .agents нет — заметка, а не [!!]", () => {
+  const dirs = [".claude/skills", ".agents/skills"];
+  const p = bareInstalled(dirs);
+  fs.mkdirSync(path.join(p, ".claude", "commands", "opsx"), { recursive: true });
+  fs.writeFileSync(path.join(p, ".claude", "commands", "opsx", "continue.md"), "x");
+  const r = check(p, { payloadDir, skillsDirs: dirs });
+  assert.ok(!r.findings.some((f) => f.startsWith("continue:")), JSON.stringify(r.findings));
+  assert.ok(r.notes.includes(".agents: файлов форка нет, туда поставлены только скиллы symphysis"), JSON.stringify(r.notes));
+});
+
+test("Два каталога: команды нет ни в одном — один [!!], клиент без файлов форка заметкой", () => {
+  const dirs = [".claude/skills", ".agents/skills"];
+  const p = bareInstalled(dirs);
+  fs.mkdirSync(path.join(p, ".claude", "commands", "opsx"), { recursive: true });
+  const r = check(p, { payloadDir, skillsDirs: dirs });
+  assert.deepEqual(r.findings.filter((f) => f.startsWith("continue:")), [CONTINUE_MISSING]);
+  assert.ok(r.notes.includes(".agents: файлов форка нет, туда поставлены только скиллы symphysis"), JSON.stringify(r.notes));
+});
+
+test("Клиент не настроен: своя строка, код 2, подсказка where.exe и which; клиентов сам не ищет", () => {
+  const p = bareInstalled();
+  const r = cli("check", "--project", p);
+  assert.equal(r.status, 2, r.stdout);
+  const out = r.stdout.split(/\r?\n/);
+  assert.ok(out.includes(`[!!] ${CLIENT_NOT_SET}`), r.stdout);
+  const hint = out.find((l) => l.startsWith("[..] continue: "));
+  assert.ok(hint, r.stdout);
+  for (const s of ["where.exe claude", "where.exe opencode", "which", "--skills-dir"]) assert.ok(hint.includes(s), `${s}: ${hint}`);
+});
+
+test("Форк отказал: своя находка, а не «не найден»", () => {
+  const p = installed();
+  const fake = path.join(tmp(), "fake.js");
+  fs.writeFileSync(fake, 'console.error("boom"); process.exit(3);\n');
+  process.env.SYMPHYSIS_OPENSPEC = fake;
+  const r = runCheck(p);
+  const line = r.findings.find((f) => f.startsWith("openspec: "));
+  assert.ok(line?.includes("не отработал (код 3: boom)"), JSON.stringify(r.findings));
+  assert.ok(!line.includes("не найден"), line);
 });

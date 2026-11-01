@@ -5,10 +5,13 @@ import os from "node:os";
 import path from "node:path";
 import { spawnSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
+import { check } from "../lib/check.js";
 import { forkMissingMessage, requireFork } from "../scripts/build-vendor.js";
+import { syncPayload } from "../scripts/sync-payload.js";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const script = path.resolve(here, "..", "scripts", "build-vendor.js");
+const pkg = JSON.parse(fs.readFileSync(path.resolve(here, "..", "package.json"), "utf8"));
 const tmp = () => fs.mkdtempSync(path.join(os.tmpdir(), "symphysis-vendor-"));
 const noGitConfig = path.join(tmp(), "gitconfig");
 fs.writeFileSync(noGitConfig, "");
@@ -106,6 +109,26 @@ test("--help: предмет, «Звать, когда», исходы и код
 test("неизвестный флаг: код 2", () => {
   const r = spawnSync(process.execPath, [script, "--нет"], { encoding: "utf8" });
   assert.equal(r.status, 2);
+});
+
+test("Строка о форке называет тарбол: openspecSource — путь в vendor/ версии пина", () => {
+  assert.equal(pkg.symphysis.openspecSource, `vendor/fission-ai-openspec-${pkg.symphysis.openspecPin}.tgz`);
+  const payloadDir = tmp();
+  syncPayload(payloadDir);
+  const saved = { openspec: process.env.SYMPHYSIS_OPENSPEC, xdg: process.env.XDG_CONFIG_HOME };
+  process.env.SYMPHYSIS_OPENSPEC = path.join(tmp(), "нет.js");
+  process.env.XDG_CONFIG_HOME = tmp();
+  try {
+    const { findings } = check(tmp(), { payloadDir });
+    const line = findings.find((f) => f.startsWith("openspec: не найден"));
+    assert.ok(line, JSON.stringify(findings));
+    assert.ok(line.includes(`npm i -g ./${pkg.symphysis.openspecSource}`), line);
+  } finally {
+    for (const [k, v] of [["SYMPHYSIS_OPENSPEC", saved.openspec], ["XDG_CONFIG_HOME", saved.xdg]]) {
+      if (v === undefined) delete process.env[k];
+      else process.env[k] = v;
+    }
+  }
 });
 
 test("Форка нет: тесты называют причину и шаг получения", () => {
