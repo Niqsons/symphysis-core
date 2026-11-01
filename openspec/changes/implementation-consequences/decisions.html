@@ -185,12 +185,12 @@
 const JOURNAL = {
  "title": "Журнал решений: implementation-consequences",
  "source": "decisions.json",
- "sha256": "7b50a6ca7679663e09824b7af02c006d0b6f2b9837b36676059603087f3f3473",
+ "sha256": "5287510559efc8bb1b54f33e1d25fcb71311b5499897b1a9ea277bbe4c1ddd1d",
  "stats": {
   "records": 134,
   "forks": 104,
   "facts": 30,
-  "decided": 103,
+  "decided": 104,
   "parked": 0,
   "evidence_total": 254,
   "evidence_found": 254
@@ -8507,7 +8507,7 @@ const JOURNAL = {
       {
        "path": "installer/bin/symphysis.js",
        "quote": "\"skills-dir\": { type: \"string\", multiple: true },",
-       "line": 33,
+       "line": 40,
        "verdict": "сверено",
        "found": true
       }
@@ -9018,7 +9018,7 @@ const JOURNAL = {
    "id": "F-132",
    "question": "Вопрос С7. Пол пробы краёв при 39 требованиях даёт 312 строк, слово к F-18: «на сильной модели потери не в краях». Умолчание человек уже выбрал. Выключать ли пол во втором замере на Sonnet 5.5? Первый замер этого пола ещё не содержит.",
    "kind": "развилка",
-   "status": "открыт",
+   "status": "решён",
    "addressee": "человек",
    "depends_on": [
     "F-18",
@@ -9064,7 +9064,11 @@ const JOURNAL = {
     "why": "Человек сравнивает общий вес системы и хочет видеть шаги, а отдельный прогон без пола дешёв, если разница окажется непонятной.",
     "text": "A — не выключать"
    },
-   "decision": null,
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-01"
+   },
    "reversibility": {
     "level": "обратимо",
     "why": "Значение одного файла в сборке плеча."
@@ -9072,7 +9076,7 @@ const JOURNAL = {
    "outcome": null,
    "parking": [],
    "dispute": "",
-   "consequences": "Ключ в файле плеча перед вторым замером.",
+   "consequences": "Ключа в файле плеча нет: второй замер идёт на настройке по умолчанию, время пола видно в строке шага `specs`.",
    "evidence": [],
    "comments": [],
    "finding": ""
