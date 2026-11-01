@@ -171,6 +171,34 @@ def test_edge_probe_has_eight_categories():
         "в TRANSLATION-NOTES.md нет строки про снятый кандидат `unclassified` (#1110)"
 
 
+# Значения строки покрытия: как названы в определении и чем начинается хвост строки разобранного примера.
+COVERAGE_VALUES = {"`кандидат F-NN`": r"· кандидат F-\d+$",
+                   "`не выбран: <край>; <причина>`": r"· не выбран: [^;\n]+; .+$",
+                   "`не найдено: <что проверялось>`": r"· не найдено: .+$",
+                   "`неприменимо: <причина>`": r"· неприменимо: .+$"}
+
+
+def test_edge_probe_names_each_coverage_value_with_an_example():
+    """Backstop F-69, сценарий «Чтение текста скилла»: каждое значение названо определением
+    и встречается в файле покрытия примера; все строки примера — об одном требовании, их восемь."""
+    text = read(SKILLS / "symphysis-edge-probe" / "SKILL.md")
+    step = text.split("### 5. ")[1].split("\n### ")[0]
+    sample = text.split("### 7. ")[1].split("```")[1]
+    rows = [line for line in sample.splitlines() if line.startswith("- ")]
+    assert [row.split(" · ")[1] for row in rows] == list(EDGE_CATEGORIES), "восемь строк в порядке таблицы категорий"
+    assert len({row.split(" · ")[0] for row in rows}) == 1, "примеры значений — на данных одного требования"
+    for value, pattern in COVERAGE_VALUES.items():
+        assert f"**{value}**" in step, f"в такте 5 нет определения значения {value}"
+        assert any(re.search(pattern, row) for row in rows), f"в файле покрытия примера нет значения {value}"
+
+
+def test_edge_probe_summary_counts_not_selected_rows():
+    """F-99: итог пробы не идёт без счёта строк `не выбран`: строка `notes[]` несёт их число и имена требований."""
+    summary = flat(read(SKILLS / "symphysis-edge-probe" / "SKILL.md").split("### 10. ")[1].split("\n### ")[0])
+    assert "не выбран k: <ключи требований через запятую>" in summary
+    assert "число строк `не выбран`" in summary
+
+
 # Вопрос пробы запретов — дословно (`prohibition-probe.md:53-54`); варианты кандидата — по ярусам проверки.
 PROHIBITION_QUESTION = ("What could this feature silently become that the author would NOT want, "
                         "but the spec does not forbid?")
