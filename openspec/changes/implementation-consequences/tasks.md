@@ -94,7 +94,7 @@
 
 ## 11. По слову человека после решения (F-19.A, F-20, F-21, F-22, F-26.B, F-27, F-33.A)
 
-- [ ] 11.1 Если изменение остаётся: шаг на копиях `c3-p1`, `c3-p2` на Fable и записка, всплыли ли ветки П7/Т3 и П10/Т1; проба q1–q3, плечи C, V и P-чел на Opus 5.5; `score.py sheets`, судейство за человеком, ограду снимает человек; записка с правилом §4 — проверка: файлы замеров и записка; числа сверены с `score.py`.
+- [ ] 11.1 Если изменение остаётся: шаг на копиях `c3-p1`, `c3-p2` на Fable и записка, всплыли ли ветки П7/Т3 и П10/Т1; проба q1–q3, плечи C, V и P-чел на Opus 5.5; `score.py sheets`, судейство за человеком, ограду снимает человек; записка с правилом §4 — проверка: файлы замеров и записка; числа сверены с `score.py`. **Не делается: слово человека 2026-11-02, `answers/2026-11-02-6.md`.**
 - [ ] 11.2 Сверка F-21: таблица «решение журнала → где реализовано или причина отклонения» по всем развилкам и по `docs/analysis/edge-cases-and-consequences-2026-11-01.md` — проверка: файл `docs/analysis/implementation-consequences-criteria-<дата>.md`, строка на каждую развилку (скрипт сверяет номера с журналом).
 - [ ] 11.3 Общая сверка: `py -3.13 -m pytest`, `npm --prefix installer test`, `openspec validate implementation-consequences --strict`, `journal.py check`, `python X:\architecture-ways\tools\check_names.py --all` — проверка: все зелёные, вывод в строке `notes[]`.
 - [ ] 11.4 Архивировать `symphysis-schema`, затем `calibration-fixes`; в этом изменении заменить дополнения на `MODIFIED`: порядок графа в `artifact-graph`, правило одного края в `requirement-probes`, вердикт в `artifact-attack` — проверка: `openspec validate implementation-consequences --strict` чисто, в `issues` нет INFO «Archive would refuse this delta».
