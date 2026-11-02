@@ -1,0 +1,3227 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline' file:; style-src 'unsafe-inline'; img-src data:; font-src data:">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>symphysis — журнал решений</title>
+<style>
+  :root { --bg:#0f1115; --panel:#171a21; --card:#1c2028; --line:#2a303b; --fg:#e6e8ec; --mute:#9aa3b2;
+          --acc:#6ea8fe; --ok:#3fb950; --warn:#d29922; --bad:#f85149; --park:#a371f7; --unlikely:#8b949e; --left:250px; --right:0px; --schemew:40vw; --outh:170px; --headh:48px; }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--bg); color:var(--fg); font:14px/1.45 system-ui, -apple-system, "Segoe UI", sans-serif; }
+  code, .mono { font-family: ui-monospace, Consolas, "Cascadia Mono", monospace; font-size:12.5px; }
+  header { display:flex; gap:16px; align-items:center; padding:10px 16px; border-bottom:1px solid var(--line); background:var(--panel); position:sticky; top:0; z-index:5; }
+  header h1 { font-size:15px; margin:0; font-weight:600; }
+  header .stats { color:var(--mute); }
+  header .stats b { color:var(--fg); }
+  header .spacer { flex:1; }
+  button { background:#232834; color:var(--fg); border:1px solid var(--line); border-radius:6px; padding:5px 10px; cursor:pointer; font:inherit; }
+  button:hover { border-color:var(--acc); }
+  button.primary { background:var(--acc); color:#0b1020; border-color:var(--acc); font-weight:600; }
+  button.small { padding:2px 8px; font-size:12px; }
+  .layout { display:grid; grid-template-columns: var(--left) minmax(0,1fr) var(--right); min-height: calc(100vh - var(--headh)); }
+  aside { background:var(--panel); position:sticky; top:var(--headh); height:calc(100vh - var(--headh)); display:flex; flex-direction:column; min-height:0; }
+  aside.left { border-right:1px solid var(--line); }
+  aside .head { display:flex; gap:6px; align-items:center; margin-bottom:6px; }
+  aside .head h2 { flex:1; margin:0; }
+  aside h2, main h2 { font-size:12px; text-transform:uppercase; letter-spacing:.06em; color:var(--mute); margin:0 0 6px; }
+  .tocbox { flex:1 1 auto; min-height:100px; overflow:auto; padding:8px 10px; }
+  .toc a { display:grid; grid-template-columns: 10px 42px 1fr; gap:6px; align-items:baseline; color:var(--fg); text-decoration:none; padding:2px 4px; border-radius:5px; font-size:12.5px; }
+  .toc a:hover { background:rgba(255,255,255,.04); }
+  .toc .dot { width:8px; height:8px; border-radius:50%; background:var(--mute); display:inline-block; }
+  .toc .dot.ok { background:var(--ok); } .toc .dot.park { background:var(--park); } .toc .dot.fact { background:var(--warn); } .toc .dot.changed { background:var(--acc); }
+  .toc .id { color:var(--acc); font-family:ui-monospace, Consolas, monospace; font-size:12px; }
+  .toc .q { color:var(--mute); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .evstats { color:var(--mute); font-size:11.5px; padding:6px 10px; border-top:1px solid var(--line); flex:0 0 auto; }
+  main { padding:12px 16px calc(var(--outh) + 48px); min-width:0; }
+  .card { background:var(--card); border:1px solid var(--line); border-radius:10px; padding:12px 14px; margin:0 0 12px; }
+  .card.parked { border-color:var(--park); }
+  .card.decided { border-color:var(--ok); }
+  .card.changed { border-color:var(--acc); }
+  .card.fact { border-style:dashed; }
+  .card .head { display:flex; gap:8px; align-items:baseline; flex-wrap:wrap; }
+  .card .id { color:var(--acc); font-weight:700; }
+  .badge { font-size:11px; padding:1px 7px; border-radius:10px; border:1px solid var(--line); color:var(--mute); }
+  .badge.fact { color:var(--warn); border-color:var(--warn); }
+  .badge.ok { color:var(--ok); border-color:var(--ok); }
+  .badge.park { color:var(--park); border-color:var(--park); }
+  .badge.changed { color:var(--acc); border-color:var(--acc); }
+  .card .q { font-size:15px; font-weight:600; margin:4px 0 6px; }
+  .meta { color:var(--mute); font-size:12px; margin-bottom:8px; display:flex; gap:6px; align-items:center; flex-wrap:wrap; }
+  .meta a { color:var(--acc); text-decoration:none; }
+  .chip { display:inline-flex; gap:4px; align-items:center; border:1px solid var(--line); border-radius:10px; padding:0 6px; font-size:11.5px; }
+  .chip.added { border-color:var(--park); color:var(--park); }
+  .chip.removed { text-decoration:line-through; opacity:.6; }
+  .chip button { padding:0 4px; font-size:11px; border:none; background:transparent; color:var(--mute); }
+  .chip button:hover { color:var(--bad); }
+  .meta input { width:64px; padding:1px 6px; font-size:12px; }
+  .note { padding:6px 10px; border-radius:6px; margin:6px 0; font-size:12.5px; }
+  .note.warn { background:rgba(210,153,34,.12); color:var(--warn); }
+  .note.bad { background:rgba(248,81,73,.12); color:var(--bad); }
+  .note.info { background:rgba(110,168,254,.10); color:var(--fg); }
+  .note.park { background:rgba(163,113,247,.12); color:var(--fg); }
+  .opt { display:grid; grid-template-columns: 22px 1fr; gap:6px; padding:6px 6px; border-radius:6px; margin:2px 0; }
+  .opt:hover { background:rgba(255,255,255,.03); }
+  .opt.chosen { background:rgba(63,185,80,.10); }
+  .opt .letter { font-weight:700; color:var(--acc); }
+  .opt .tag { font-size:11px; padding:0 6px; border-radius:8px; margin-left:6px; border:1px solid; }
+  .tag.unlikely { color:var(--unlikely); border-color:var(--unlikely); }
+  .tag.added { color:var(--park); border-color:var(--park); }
+  .tag.anti { color:var(--bad); border-color:var(--bad); }
+  .tag.rec { color:var(--ok); border-color:var(--ok); }
+  .tag.journal { color:var(--ok); border-color:var(--ok); }
+  .tag.deviation { color:var(--warn); border-color:var(--warn); }
+  .ev { display:block; color:var(--mute); font-size:12px; margin:2px 0 0 2px; }
+  .ev code { color:#c9d1d9; }
+  .ev .ok { color:var(--ok); } .ev .bad { color:var(--bad); }
+  .rec { color:var(--mute); font-size:12.5px; margin:6px 0; }
+  .rec b { color:var(--ok); }
+  textarea, input[type=text], select { width:100%; background:#10131a; color:var(--fg); border:1px solid var(--line); border-radius:6px; padding:6px 8px; font:inherit; }
+  textarea { min-height:52px; resize:vertical; }
+  .row { display:flex; gap:8px; align-items:center; margin:6px 0; flex-wrap:wrap; }
+  .row > * { flex:1; }
+  .row > button, .row > select, .row > label { flex:0 0 auto; }
+  .cons { color:var(--mute); font-size:12px; margin-top:6px; }
+  details.park { margin:8px 0; border:1px dashed var(--park); border-radius:8px; padding:4px 10px; }
+  details.park summary { cursor:pointer; color:var(--park); font-size:12.5px; }
+  .parkitem { display:flex; gap:8px; align-items:baseline; font-size:12.5px; margin:3px 0; }
+  .parkitem .who { color:var(--park); flex:0 0 auto; }
+  .parkitem button { flex:0 0 auto; }
+  .outpanel { position:fixed; left:var(--left); right:var(--right); bottom:0; height:var(--outh); background:var(--panel); border-top:1px solid var(--line); padding:8px 16px; z-index:6; display:flex; flex-direction:column; }
+  .outpanel textarea { flex:1 1 auto; min-height:40px; font-family:ui-monospace, Consolas, monospace; font-size:12px; resize:none; }
+  .outhandle { position:absolute; left:0; right:0; top:-4px; height:9px; cursor:ns-resize; }
+  .outhandle::after { content:''; display:block; width:48px; height:3px; margin:3px auto 0; border-radius:2px; background:var(--line); }
+  .outhandle:hover::after { background:var(--acc); }
+  .outpanel .row { margin:4px 0; }
+  .hidden { display:none; }
+  .newfork { border:1px dashed var(--line); border-radius:10px; padding:10px 14px; margin:0 0 12px; }
+  .ok-flash { color:var(--ok); font-size:12px; }
+  /* режимы: решения · проверка · атака */
+  header .modes { display:flex; gap:4px; }
+  header .modes button.active { border-color:var(--acc); color:var(--acc); }
+  .view { padding:12px 16px calc(var(--outh) + 48px); max-width:1100px; margin:0 auto; min-width:0; }
+  #viewCheck { padding-bottom:40px; }
+  .view h2 { margin:18px 0 8px; }
+  .view h3 { font-size:12.5px; color:var(--mute); margin:12px 0 6px; font-weight:600; }
+  .view ul { margin:4px 0; padding-left:20px; }
+  .badge.bad { color:var(--bad); border-color:var(--bad); }
+  .badge.warn { color:var(--warn); border-color:var(--warn); }
+  .badge.dest { color:var(--acc); border-color:var(--acc); }
+  .mute { color:var(--mute); }
+  .lensfilter button.active { border-color:var(--acc); color:var(--acc); }
+  .card.conflict { border-color:var(--bad); }
+  details.recblock { margin:6px 0; border:1px dashed var(--line); border-radius:8px; padding:4px 10px; }
+  details.recblock summary { cursor:pointer; color:var(--acc); font-size:12.5px; }
+  .attack-rows { margin-top:4px; }
+  .counters { display:flex; gap:12px; flex-wrap:wrap; color:var(--mute); margin:6px 0 10px; font-size:12.5px; }
+  .counters b { color:var(--fg); }
+  /* панель схемы: поверх режимов, рядом с карточками; ширину держит --schemew */
+  body.scheme-on { --right:var(--schemew); }
+  body.scheme-on .view { margin:0 var(--right) 0 0; max-width:none; }
+  #schemePanel { position:fixed; top:var(--headh); right:0; bottom:0; width:var(--schemew); background:var(--panel); border-left:1px solid var(--line); z-index:4; display:flex; flex-direction:column; }
+  #schemePanel.hidden { display:none; }
+  .schemehandle { position:absolute; left:-4px; top:0; bottom:0; width:9px; cursor:ew-resize; }
+  .schemehandle:hover { background:rgba(110,168,254,.25); }
+  #schemeBody { flex:1 1 auto; min-height:0; overflow:auto; padding:8px 10px; }
+  #schemeBody svg { display:block; }
+  #schemeBody pre { margin:0; font-family:ui-monospace, Consolas, "Cascadia Mono", monospace; font-size:12.5px; }
+  #schemeBody .note { white-space:pre-wrap; }
+  header #btnScheme.active, aside .head button.active { border-color:var(--acc); color:var(--acc); }
+  @media (max-width: 900px) { .layout { grid-template-columns:1fr; } aside { position:static; height:auto; } .outpanel { left:0; right:0; }
+    body.scheme-on { --right:0px; } #schemePanel { position:static; width:auto; height:45vh; border-left:0; border-bottom:1px solid var(--line); } .schemehandle { display:none; } }
+</style>
+</head>
+<body>
+<header id="pageHeader">
+  <h1 id="title">symphysis — журнал решений</h1>
+  <div class="modes" id="modes" title="решения — круг просмотрщика; проверка — снимок перед proposal, только чтение; атака — строки attack/*.md по линзам"></div>
+  <button id="btnScheme" title="схема решения рядом с карточками: scheme.md этого изменения">схема</button>
+  <div class="stats" id="stats"></div>
+  <div class="spacer"></div>
+  <button id="btnExport" title="JSON состояния — для переноса в другой браузер">Экспорт JSON</button>
+  <button id="btnImport">Импорт JSON</button>
+  <input type="file" id="fileImport" accept="application/json" class="hidden">
+  <button id="btnReset">Сбросить</button>
+</header>
+<div id="schemePanel" class="hidden">
+  <div class="schemehandle" id="schemehandle" title="тяни, чтобы изменить ширину панели"></div>
+  <div id="schemeBody"></div>
+</div>
+<div class="layout" id="viewDecisions">
+  <aside class="left">
+    <div class="tocbox"><div class="head"><h2>Оглавление</h2><button class="small" id="btnAll">все</button><button class="small" id="btnOpen">открытые</button></div><div class="toc" id="toc"></div></div>
+    <div class="evstats mono" id="evstats"></div>
+  </aside>
+  <main>
+    <div class="newfork">
+      <div class="row"><b>Развилка, которой нет в журнале</b><button class="small" id="btnToggleNew">добавить</button></div>
+      <div id="newForkForm" class="hidden">
+        <input type="text" id="nfQuestion" placeholder="вопрос">
+        <textarea id="nfOptions" placeholder="варианты — по одному на строку"></textarea>
+        <textarea id="nfWord" placeholder="слово: почему это развилка и что рекомендуешь"></textarea>
+        <div class="row"><button class="primary small" id="btnAddFork">внести</button></div>
+      </div>
+      <div id="newForks"></div>
+    </div>
+    <div id="cards"></div>
+    <h2>Замечания к схеме и плану</h2>
+    <textarea id="notes" placeholder="что не так в схеме работы, в поставках, в этапах"></textarea>
+  </main>
+</div>
+<main class="view hidden" id="viewCheck"></main>
+<main class="view hidden" id="viewAttack"></main>
+<div class="outpanel" id="outpanel">
+  <div class="outhandle" id="outhandle" title="тяни, чтобы изменить высоту панели"></div>
+  <div class="row">
+    <b style="flex:0 0 auto">Возврат решений</b>
+    <span class="ok-flash" id="copied" style="flex:0 0 auto"></span>
+    <span style="flex:1"></span>
+    <button class="primary" id="btnCopy" style="flex:0 0 auto">Скопировать промпт</button>
+  </div>
+  <textarea id="out" readonly></textarea>
+</div>
+
+<script>
+const JOURNAL = {
+ "title": "Журнал решений: step-help",
+ "source": "decisions.json",
+ "sha256": "e777a7a83c15f62337245b0c2ff114df874f3d378bb59d326a4daaf19032746c",
+ "stats": {
+  "records": 39,
+  "forks": 17,
+  "facts": 22,
+  "decided": 17,
+  "parked": 0,
+  "evidence_total": 110,
+  "evidence_found": 107
+ },
+ "records": [
+  {
+   "id": "F-01",
+   "question": "Критерий готовности: какой шаг конвейера сейчас выполняется?",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "постановка",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/step-help/intent.md",
+     "quote": "какой шаг конвейера сейчас выполняется?",
+     "line": 8,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "finding": ""
+  },
+  {
+   "id": "F-02",
+   "question": "Критерий готовности: зачем он? какие основные механики?",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "постановка",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/step-help/intent.md",
+     "quote": "зачем он? какие основные механики?",
+     "line": 9,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "finding": ""
+  },
+  {
+   "id": "F-03",
+   "question": "Критерий готовности: что будет, если я не выполню этот шаг?",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "постановка",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/step-help/intent.md",
+     "quote": "что будет, если я не выполню этот шаг?",
+     "line": 10,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "finding": ""
+  },
+  {
+   "id": "F-04",
+   "question": "Критерий готовности: какие файлы и где смотреть, чтобы проверить результаты шага",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "постановка",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/step-help/intent.md",
+     "quote": "какие файлы и где смотреть, чтобы проверить результаты шага",
+     "line": 11,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "finding": ""
+  },
+  {
+   "id": "F-05",
+   "question": "Критерий готовности: справку, которая смотрит на status, и описывает текущий шаг",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "постановка",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/step-help/intent.md",
+     "quote": "справку, которая смотрит на status, и описывает текущий шаг",
+     "line": 13,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "finding": ""
+  },
+  {
+   "id": "F-06",
+   "question": "Критерий готовности: можно посмотреть и другие шаги, с помощью листания справки, или выбора пункта",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "постановка",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/step-help/intent.md",
+     "quote": "можно посмотреть и другие шаги, с помощью листания справки, или выбора пункта",
+     "line": 13,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "finding": ""
+  },
+  {
+   "id": "F-07",
+   "question": "Критерий готовности: базово её выведем в html",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "постановка",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/step-help/intent.md",
+     "quote": "базово её выведем в html",
+     "line": 6,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "finding": ""
+  },
+  {
+   "id": "F-08",
+   "question": "Готовность шага в `status` — наличие его файла: содержание и решения журнала статус не читает. Журнал `{}` без единой записи делает `decisions` готовым, следующим назван `research`",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "материалы",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "На нём стоят F-19 и F-24.",
+   "evidence": [
+    {
+     "path": "upstream/openspec/src/core/artifact-graph/state.ts",
+     "quote": "Detects which artifacts are completed by checking file existence in the change directory.",
+     "line": 12,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "openspec/changes/step-help/probes/status-empty-files.txt",
+     "quote": "=== decisions.json = {}: ни одной записи, ничего не решено",
+     "line": 5,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "openspec/changes/step-help/probes/status-empty-files.txt",
+     "quote": "готовы к работе: research",
+     "line": 7,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "status",
+    "where"
+   ],
+   "finding": ""
+  },
+  {
+   "id": "F-09",
+   "question": "После `specs` к работе готовы сразу три шага, `Next` называет один",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "материалы",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "На нём стоит F-27: один текущий шаг справка выбирает так же, как `/opsx:continue`.",
+   "evidence": [
+    {
+     "path": "openspec/changes/step-help/probes/status-empty-files.txt",
+     "quote": "готовы к работе: attack-decisions consequences security",
+     "line": 11,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "where"
+   ],
+   "finding": ""
+  },
+  {
+   "id": "F-10",
+   "question": "Шаг `security` можно пропустить: `tasks` от него не зависит, а единственный путь к `apply` шёл через необязательную `attack-artifacts`; без `security.md` `instructions apply` отвечает `state=ready`. В спеке и решениях намерения пропускать его нет: решение об `apply.requires` говорит только об атаке",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "материалы",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "На нём стоят F-25 и F-26.",
+   "evidence": [
+    {
+     "path": "openspec/schemas/symphysis/schema.yaml",
+     "quote": "requires: [tasks, attack-artifacts]",
+     "line": null,
+     "verdict": "цитаты нет дословно",
+     "found": false
+    },
+    {
+     "path": "openspec/changes/step-help/probes/status-empty-files.txt",
+     "quote": "state=ready progress={\"total\":1,\"complete\":0,\"remaining\":1}",
+     "line": 18,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "openspec/changes/archive/2026-11-02-calibration-fixes/rulings.md",
+     "quote": "форк считает optional без файла выполненным и в гейте apply",
+     "line": 9,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "finding": ""
+  },
+  {
+   "id": "F-11",
+   "question": "Счётчики журнала уже считаются: развилки всего и решённые, разность даёт открытые",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "материалы",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "tools/journal_render.py",
+     "quote": "\"stats\": {\"records\": len(records), \"forks\": len(forks),",
+     "line": 185,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "tools/journal_render.py",
+     "quote": "\"decided\": sum(1 for r in forks if r[\"decision\"]),",
+     "line": 187,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "journal"
+   ],
+   "finding": ""
+  },
+  {
+   "id": "F-12",
+   "question": "Прогресс задач отдаёт `instructions apply`: всего, закрыто, осталось",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "материалы",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/step-help/probes/status-empty-files.txt",
+     "quote": "state=ready progress={\"total\":1,\"complete\":0,\"remaining\":1}",
+     "line": 18,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "openspec/schemas/symphysis/schema.yaml",
+     "quote": "tracks: tasks.md",
+     "line": 157,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "tasks"
+   ],
+   "finding": ""
+  },
+  {
+   "id": "F-13",
+   "question": "`apply`, `sync` и `archive` не артефакты графа; признака «синхронизация сделана» в файлах нет, спеки сравнивает сама команда архива",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "материалы",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "На нём стоит F-27: после задач справка называет `sync` и `archive` следующими, не утверждая, что `sync` не сделан.",
+   "evidence": [
+    {
+     "path": "openspec/schemas/symphysis/schema.yaml",
+     "quote": "apply:",
+     "line": 155,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "docs/GUIDE.md",
+     "quote": "Синхронизация: дельты из `specs/` изменения переходят в общие спеки `openspec/specs/`.",
+     "line": 504,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "docs/GUIDE.md",
+     "quote": "Спеки уже синхронизированы, поэтому команда спросит: `Archive now`, `Sync anyway` или `Cancel`.",
+     "line": 510,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "after"
+   ],
+   "finding": ""
+  },
+  {
+   "id": "F-14",
+   "question": "`GUIDE` отправляет за текущим шагом к `status`, а ответов на четыре вопроса намерения в нём нет",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "материалы",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "docs/GUIDE.md",
+     "quote": "Какой шаг следующий, показывает `openspec status --change add-overdue`.",
+     "line": 263,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "openspec/changes/step-help/intent.md",
+     "quote": "сейчас в GUIDE.md описан процесс по шагам, и описан хорошо. Но не сказано:",
+     "line": 7,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "finding": ""
+  },
+  {
+   "id": "F-15",
+   "question": "Плагин зовёт ядро только через Python-скрипты из `.symphysis/tools/`, а версия ядра в проекте расходится с версией плагина",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "материалы",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "На нём стоят F-20 и F-23.",
+   "evidence": [
+    {
+     "path": "vscode/src/host/core.ts",
+     "quote": "Граница с ядром: `journal.py view-json`, `apply`, `check`, `render-md`, `render-html`.",
+     "line": 1,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "docs/repo-contract.md",
+     "quote": "Ядро лежит в `.symphysis/tools/` каждого проекта, и его версия расходится с версией плагина.",
+     "line": 59,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "plugin"
+   ],
+   "finding": ""
+  },
+  {
+   "id": "F-16",
+   "question": "Каталог схемы целиком едет в `payload`, а инструменты в `.symphysis/tools/` — только по перечню и фильтру имён",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "материалы",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "На нём стоят F-20, F-23 и F-29: новый скрипт и шаблон требуют правки обоих мест.",
+   "evidence": [
+    {
+     "path": "installer/scripts/sync-payload.js",
+     "quote": "const DIRS = [\"openspec/schemas/symphysis\"];",
+     "line": 9,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "installer/scripts/sync-payload.js",
+     "quote": "\"tools/symphysis_config.py\",",
+     "line": 19,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "installer/lib/install.js",
+     "quote": "(journal.*\\.py|symphysis_config\\.py|playground-template\\.html",
+     "line": 107,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "finding": ""
+  },
+  {
+   "id": "F-17",
+   "question": "В рамке части 2 от 31 октября кроме четырёх вопросов были команды, подсказки, предыдущий и следующий шаг",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "материалы",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "На нём стоит F-28.",
+   "evidence": [
+    {
+     "path": "vscode/docs/design-part1-viewer.md",
+     "quote": "2. **Интерактивная справка о ходе работы** — какой шаг выполняется,",
+     "line": 30,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "vscode/docs/design-part1-viewer.md",
+     "quote": "с какими артефактами и командами, подсказки, предыдущий и следующий",
+     "line": 31,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "finding": ""
+  },
+  {
+   "id": "F-18",
+   "question": "Атаки в это изменение не включаются словом человека: `attack-decisions` и `attack-artifacts` не вызываются",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "материалы",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/step-help/intent.md",
+     "quote": "атаки в него включать не будем",
+     "line": 16,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "finding": ""
+  },
+  {
+   "id": "F-19",
+   "question": "Откуда справка берёт «где мы и чей ход»?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Только `openspec status`",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/changes/step-help/intent.md",
+       "quote": "справку, которая смотрит на status, и описывает текущий шаг",
+       "line": 13,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "`status`, счётчики журнала и прогресс задач; хук можно добавить позже, не меняя формат",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "tools/journal_render.py",
+       "quote": "\"decided\": sum(1 for r in forks if r[\"decision\"]),",
+       "line": 187,
+       "verdict": "сверено",
+       "found": true
+      },
+      {
+       "path": "openspec/changes/step-help/probes/status-empty-files.txt",
+       "quote": "=== decisions.json = {}: ни одной записи, ничего не решено",
+       "line": 5,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "C",
+     "text": "Всё это и хук: видно, что шаг выполняется прямо сейчас",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "vscode/docs/design-part1-viewer.md",
+       "quote": "какой шаг выполняется,",
+       "line": 30,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "B",
+    "why": "Один `status` ведёт дальше как раз тогда, когда ход за человеком (F-08); хук пока не сделан.",
+    "text": "Вопрос «какой шаг выполняется» до хука честно звучит как «какой шаг следующий и чей ход»."
+   },
+   "decision": {
+    "option": "B",
+    "word": "Да, твои рекомендации принимаю",
+    "date": "2026-11-02"
+   },
+   "reversibility": {
+    "level": "обратимо",
+    "why": "вывод справки ещё никем не занят: плагин начнёт читать его отдельным изменением, а хук добавится новым полем без смены контракта"
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "Страница не утверждает, что шаг выполняется сейчас.",
+   "evidence": [],
+   "comments": [],
+   "nodes": [
+    "status",
+    "journal",
+    "tasks",
+    "where"
+   ],
+   "finding": ""
+  },
+  {
+   "id": "F-20",
+   "question": "Где лежат тексты шагов?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Отдельный файл в каталоге схемы; тест требует раздел для каждого артефакта",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "installer/scripts/sync-payload.js",
+       "quote": "const DIRS = [\"openspec/schemas/symphysis\"];",
+       "line": 9,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Поле у артефакта в `schema.yaml`",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/schemas/symphysis/schema.yaml",
+       "quote": "description: Журнал решений — развилки и факты с уликами, решает человек",
+       "line": 16,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "C",
+     "text": "Разбор разделов `docs/GUIDE.md`",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/changes/step-help/intent.md",
+       "quote": "сейчас в GUIDE.md описан процесс по шагам, и описан хорошо. Но не сказано:",
+       "line": 7,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Каталог уже едет в `payload`, текст версионируется вместе со схемой (F-15, F-16); ответов на четыре вопроса в `GUIDE` нет.",
+    "text": "Новый шаг без справки не пройдёт тест."
+   },
+   "decision": {
+    "option": "A",
+    "word": "Да, твои рекомендации принимаю",
+    "date": "2026-11-02"
+   },
+   "reversibility": {
+    "level": "обратимо",
+    "why": "файл текстов читает один скрипт и его тест; перенос меняет только их"
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [],
+   "comments": [],
+   "nodes": [
+    "texts"
+   ],
+   "finding": ""
+  },
+  {
+   "id": "F-21",
+   "question": "Как обновляется HTML, раз файл сам `status` не вызовет?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Снимок одной командой, на странице время снятия",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/changes/step-help/intent.md",
+       "quote": "базово её выведем в html",
+       "line": 6,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Пересборка моделью в конце каждого шага",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/schemas/symphysis/schema.yaml",
+       "quote": "Улики сверяет `python .symphysis/tools/journal.py check <каталог изменения>/decisions.json` — это сигнал, не стоп.",
+       "line": 23,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "C",
+     "text": "Локальный сервер",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/changes/step-help/intent.md",
+       "quote": "базово её выведем в html",
+       "line": 6,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Живое обновление придёт с плагином; модель пересобирала бы страницу за токены и по дисциплине.",
+    "text": "Снимок честно показывает, на какой момент он снят."
+   },
+   "decision": {
+    "option": "A",
+    "word": "Да, твои рекомендации принимаю",
+    "date": "2026-11-02"
+   },
+   "reversibility": {
+    "level": "обратимо",
+    "why": "команда снимка не входит в контракт с плагином: он пойдёт через JSON"
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [],
+   "comments": [],
+   "nodes": [
+    "page"
+   ],
+   "finding": ""
+  },
+  {
+   "id": "F-22",
+   "question": "Входит ли вкладка плагина в это изменение?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Только ядро: скрипт, тексты шагов, JSON и HTML; вкладка — отдельным изменением на этих данных",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/changes/step-help/intent.md",
+       "quote": "базово её выведем в html",
+       "line": 6,
+       "verdict": "сверено",
+       "found": true
+      },
+      {
+       "path": "openspec/changes/step-help/intent.md",
+       "quote": "Теперь стоит заняться тем, что блокирует разработку следующих частей плагина.",
+       "line": 5,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Одно изменение на оба проекта, как у `decision-scheme`, вместе со вкладкой",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/changes/decision-scheme/decisions.json",
+       "quote": "Одно изменение на оба проекта: specs и tasks говорят и о ядре, и о плагине",
+       "line": 640,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "C",
+     "text": "Только тексты шагов, без команды и без расчёта текущего шага",
+     "added": false,
+     "unlikely": "не отвечает на вопрос «какой шаг сейчас»",
+     "evidence": [
+      {
+       "path": "openspec/changes/step-help/intent.md",
+       "quote": "справку, которая смотрит на status, и описывает текущий шаг",
+       "line": 13,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Плагину нужен готовый контракт данных, а проверить справку можно на странице, без вкладки.",
+    "text": "Часть 2 плагина начнётся с уже проверенных данных."
+   },
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-02"
+   },
+   "reversibility": {
+    "level": "обратимо",
+    "why": "вкладка делается отдельным изменением в плагине на тех же данных; объединить работу можно до начала реализации"
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "В `docs/repo-contract.md` появится новый вывод для плагина.",
+   "evidence": [],
+   "comments": [],
+   "nodes": [
+    "plugin"
+   ],
+   "finding": ""
+  },
+  {
+   "id": "F-23",
+   "question": "Где живёт расчёт и сборка страницы?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Новый скрипт `tools/step_help.py` с одной областью и `--help`: едет в `.symphysis/tools/`, зовёт `openspec status --json`",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "tools/symphysis_config.py",
+       "quote": "Журнал этот модуль не импортирует и настройки не читает (F-128.A).",
+       "line": 5,
+       "verdict": "сверено",
+       "found": true
+      },
+      {
+       "path": "vscode/src/host/core.ts",
+       "quote": "Граница с ядром: `journal.py view-json`, `apply`, `check`, `render-md`, `render-html`.",
+       "line": 1,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Подкоманда `symphysis` на Node: поиск форка уже есть, но команда глобальная и идёт из клона, а не с проектом",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "installer/lib/openspec-bin.js",
+       "quote": "Первый `openspec` из PATH по PATHEXT; null — нет.",
+       "line": 20,
+       "verdict": "сверено",
+       "found": true
+      },
+      {
+       "path": "docs/GUIDE.md",
+       "quote": "Ссылка ведёт в клон: `git pull` обновляет и её, а удаление клона ломает команду.",
+       "line": 144,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "C",
+     "text": "Подкоманда `journal.py`: на шаге `intent` журнала ещё нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "tools/journal_cli.py",
+       "quote": "сверить улики грепом по цитате (сигнал, не стоп)",
+       "line": 297,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "D",
+     "text": "Самому читать файлы и схему в Python, без `openspec`",
+     "added": false,
+     "unlikely": "вторая реализация готовности и вердиктов с хешами разойдётся с форком",
+     "evidence": [
+      {
+       "path": "upstream/openspec/src/core/artifact-graph/state.ts",
+       "quote": "Detects which artifacts are completed by checking file existence in the change directory.",
+       "line": 12,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Плагин уже зовёт Python из `.symphysis/tools/`, версия едет с проектом; журнал здесь лишь один из источников (F-15).",
+    "text": "Цена: на Python придётся повторить поиск `.cmd`-шима из `openspec-bin.js`."
+   },
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-02"
+   },
+   "reversibility": {
+    "level": "обратимо",
+    "why": "скрипт новый и пока никем не занят; как только плагин начнёт его звать, перенос станет сменой контракта `docs/repo-contract.md`"
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "Скрипт и шаблон вносятся в перечень `FILES` и фильтр `install.js` (F-16). В `PATH` может стоять не форк, поэтому скрипт чтит `SYMPHYSIS_OPENSPEC`, как инсталлятор.",
+   "evidence": [
+    {
+     "path": "installer/lib/check.js",
+     "quote": "openspec: не найден (SYMPHYSIS_OPENSPEC или PATH)",
+     "line": 33,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "cmd"
+   ],
+   "finding": ""
+  },
+  {
+   "id": "F-24",
+   "question": "Насколько глубоко определять, закончен ли шаг?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Только то, что считается и так: статус, открытые развилки, задачи; страница прямо пишет «файл есть, содержание не проверялось»",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "upstream/openspec/src/core/artifact-graph/state.ts",
+       "quote": "Detects which artifacts are completed by checking file existence in the change directory.",
+       "line": 12,
+       "verdict": "сверено",
+       "found": true
+      },
+      {
+       "path": "upstream/openspec/src/core/templates/workflows/continue-change.ts",
+       "quote": "reads \\`done\\` as soon as one matching file exists",
+       "line": 33,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Плюс признаки незавершённости: строки `notes[]` и файл `edge-probe.md`; формулировки заметок становятся контрактом",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "docs/GUIDE.md",
+       "quote": "по восемь строк на требование, а итог — строкой `notes[]` журнала.",
+       "line": 373,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "C",
+     "text": "Плюс проверка содержания: `journal.py check` и `validate --strict` при каждом снимке",
+     "added": false,
+     "unlikely": "страница покраснеет от сигналов при нормальном ходе, а снимок станет долгим",
+     "evidence": [
+      {
+       "path": "tools/journal_cli.py",
+       "quote": "сверить улики грепом по цитате (сигнал, не стоп)",
+       "line": 297,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Обрыв записи `specs` уже ловит `/opsx:continue`, а главная дыра, открытые развилки, закрыта счётчиком.",
+    "text": "Можно расширить позже, если на деле человек будет путаться."
+   },
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-02"
+   },
+   "reversibility": {
+    "level": "обратимо",
+    "why": "признаки незавершённости добавляются новым полем вывода, контракт с плагином не меняется"
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [],
+   "comments": [],
+   "nodes": [
+    "where"
+   ],
+   "finding": ""
+  },
+  {
+   "id": "F-25",
+   "question": "Как отвечать на вопрос «что будет, если я не выполню этот шаг»?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Механика выводится из графа при показе: что заблокируется, необязателен ли шаг, остановит ли `apply`; что теряется по смыслу — текстом",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/schemas/symphysis/schema.yaml",
+       "quote": "requires: [tasks, attack-artifacts]",
+       "line": null,
+       "verdict": "цитаты нет дословно",
+       "found": false
+      },
+      {
+       "path": "openspec/changes/step-help/probes/status-empty-files.txt",
+       "quote": "state=ready progress={\"total\":1,\"complete\":0,\"remaining\":1}",
+       "line": 18,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Всё текстом, тест сверяет ключевые фразы с графом",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "installer/scripts/sync-payload.js",
+       "quote": "const DIRS = [\"openspec/schemas/symphysis\"];",
+       "line": 9,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "C",
+     "text": "Только граф, без текста о потере",
+     "added": false,
+     "unlikely": "«заблокирует `design`» не объясняет, что будет с результатом",
+     "evidence": [
+      {
+       "path": "openspec/changes/step-help/intent.md",
+       "quote": "что будет, если я не выполню этот шаг?",
+       "line": 10,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Случай `security` (F-10) показывает, что по памяти этот ответ написать легко и неверно; при правке графа справка не устареет.",
+    "text": "Текст отвечает только за смысл."
+   },
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-02"
+   },
+   "reversibility": {
+    "level": "обратимо",
+    "why": "меняются только сборка данных в `step_help.py` и разделы `steps.md`"
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [],
+   "comments": [],
+   "nodes": [
+    "deps"
+   ],
+   "finding": ""
+  },
+  {
+   "id": "F-26",
+   "question": "Что делать с пропуском `security`?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Исправить здесь: `security` становится обязательным для `apply`, требование `artifact-graph` меняется",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/schemas/symphysis/schema.yaml",
+       "quote": "requires: [tasks, attack-artifacts]",
+       "line": null,
+       "verdict": "цитаты нет дословно",
+       "found": false
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Отдельной веткой `fix/` со своим тестом; справка выводит блокировки из графа и сама покажет новое состояние",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/changes/archive/2026-11-02-calibration-fixes/rulings.md",
+       "quote": "форк считает optional без файла выполненным и в гейте apply",
+       "line": 9,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "C",
+     "text": "Оставить как есть: чек-лист `security.md` не гейт реализации, справка так и скажет",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/changes/step-help/probes/status-empty-files.txt",
+       "quote": "state=ready progress={\"total\":1,\"complete\":0,\"remaining\":1}",
+       "line": 18,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "B",
+    "why": "Это дефект графа, а не часть справки: своя ветка не растит объём изменения и быстрее дойдёт до `main`.",
+    "text": "Вариант C законен, если `security.md` задуман как необязательный: в решениях этого нет (F-10)."
+   },
+   "decision": {
+    "option": "B",
+    "word": "",
+    "date": "2026-11-02"
+   },
+   "reversibility": {
+    "level": "обратимо",
+    "why": "одна строка `apply.requires` в `schema.yaml` и её тест; проекты получают её через `install --force`"
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [],
+   "comments": [],
+   "finding": ""
+  },
+  {
+   "id": "F-27",
+   "question": "Какие шаги получают страницу справки?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Артефакты схемы, круг просмотрщика, `apply`, `sync`, `archive`; тест требует раздел для каждого `id` из схемы",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/schemas/symphysis/schema.yaml",
+       "quote": "apply:",
+       "line": 155,
+       "verdict": "сверено",
+       "found": true
+      },
+      {
+       "path": "docs/GUIDE.md",
+       "quote": "Этот круг повторяется на шагах `decisions`, `specs` и `consequences`",
+       "line": 313,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Только артефакты схемы: после `tasks` справка молчит",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/schemas/symphysis/schema.yaml",
+       "quote": "- id: tasks",
+       "line": 122,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "C",
+     "text": "Ещё и установка",
+     "added": false,
+     "unlikely": "до установки в проекте нет ни скрипта, ни схемы; это остаётся в `GUIDE`",
+     "evidence": [
+      {
+       "path": "docs/GUIDE.md",
+       "quote": "## Часть 1. Установка",
+       "line": 27,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Человек застревает и на круге просмотрщика, и после задач, а `status` об этом не скажет (F-09, F-13).",
+    "text": "Текущим шагом страница считает тот же, что назовёт `/opsx:continue`."
+   },
+   "decision": {
+    "option": "A",
+    "word": "За установкой не следим, но показываем версию форка, версию symphysis, и версию плагина. Справочно и малозаметно.",
+    "date": "2026-11-02"
+   },
+   "reversibility": {
+    "level": "обратимо",
+    "why": "состав страниц задан разделами `steps.md` и тестом на них"
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [],
+   "comments": [],
+   "nodes": [
+    "current",
+    "others"
+   ],
+   "finding": ""
+  },
+  {
+   "id": "F-28",
+   "question": "Что показывает страница шага?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Четыре ответа из намерения, команда шага, предыдущий и следующий шаг",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/changes/step-help/intent.md",
+       "quote": "какие файлы и где смотреть, чтобы проверить результаты шага",
+       "line": 11,
+       "verdict": "сверено",
+       "found": true
+      },
+      {
+       "path": "vscode/docs/design-part1-viewer.md",
+       "quote": "с какими артефактами и командами, подсказки, предыдущий и следующий",
+       "line": 31,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Только четыре ответа из намерения",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/changes/step-help/intent.md",
+       "quote": "зачем он? какие основные механики?",
+       "line": 9,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Без команды человек снова пойдёт в `GUIDE`; предыдущий и следующий шаг нужны для листания (F-06).",
+    "text": "Пути файлов берутся из `status`: `existingOutputPaths` даёт настоящие файлы."
+   },
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-02"
+   },
+   "reversibility": {
+    "level": "обратимо",
+    "why": "состав полей показа; новое поле по `docs/repo-contract.md` сменой контракта не считается"
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [],
+   "comments": [],
+   "nodes": [
+    "current"
+   ],
+   "finding": ""
+  },
+  {
+   "id": "F-29",
+   "question": "Страница отдельная или режим просмотрщика?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Отдельная страница со своим шаблоном",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/changes/step-help/intent.md",
+       "quote": "вместо того, чтобы держать под рукой гайд, я предлагаю создать справку",
+       "line": 13,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Четвёртый режим `decisions.html`: на шаге `intent` журнала и страницы ещё нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "tools/playground-template.html",
+       "quote": "решения — круг просмотрщика; проверка — снимок перед proposal",
+       "line": 138,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    }
+   ],
+   "antipodes": [
+    {
+     "option": "B",
+     "other": "F-30.A"
+    },
+    {
+     "option": "B",
+     "other": "F-30.B"
+    }
+   ],
+   "recommendation": {
+    "option": "A",
+    "why": "Справка нужна и до журнала, а просмотрщик отвечает за решения; его шаблон и так 864 строки.",
+    "text": "CSP и оформление берутся с просмотрщика."
+   },
+   "decision": {
+    "option": "B",
+    "word": "Отдельную страницу удобнее разработать и поддерживать. Но пользоваться ей тогда вряд ли будут. Справка будет соперничать со схемой, то есть отображаем или схему или справку, поэтому они занимают одну область. в html на шаге intent страницы еще не будет. но в плагине будет, так как его можно открыть и в пустом проектее.",
+    "date": "2026-11-02"
+   },
+   "reversibility": {
+    "level": "дорого",
+    "why": "панель делят `tools/playground-template.html` и будущая вкладка плагина: вынос на отдельную страницу переделает переключатель в обоих показах"
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [],
+   "comments": [],
+   "nodes": [
+    "page"
+   ],
+   "finding": ""
+  },
+  {
+   "id": "F-30",
+   "question": "Куда пишется снимок?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "`.symphysis/help.html`; `install` вносит эту строку в `.gitignore`, как `symphysis.yaml`",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/specs/project-installer/spec.md",
+       "quote": "Команда `symphysis install` SHALL добавлять строку `symphysis.yaml` в `.gitignore` проекта",
+       "line": 185,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "`<каталог изменения>/help.html`, рядом с `decisions.html`: снимок уйдёт в коммит и там устареет",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "docs/GUIDE.md",
+       "quote": "1. Открой `openspec/changes/add-overdue/decisions.html` в браузере.",
+       "line": 315,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "C",
+     "text": "Только `--out`, пути по умолчанию нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "skills/symphysis-brainstorm/SKILL.md",
+       "quote": "render-html <каталог изменения>/decisions.json --out <каталог изменения>/decisions.html",
+       "line": 54,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    }
+   ],
+   "antipodes": [
+    {
+     "option": "A",
+     "other": "F-29.B"
+    },
+    {
+     "option": "B",
+     "other": "F-29.B"
+    }
+   ],
+   "recommendation": {
+    "option": "A",
+    "why": "Снимок устаревает по природе, в истории ему делать нечего; путь постоянный, поэтому хватает обновить вкладку.",
+    "text": "Цена: правка `install` и его спеки."
+   },
+   "decision": {
+    "option": "C",
+    "word": "видимо, нужно переименовать тогда decisions.html на symphysis.html, раз страница становится мультизадачной.",
+    "date": "2026-11-02"
+   },
+   "reversibility": {
+    "level": "обратимо",
+    "why": "путь задаёт вызывающий через `--out`; значение по умолчанию можно добавить позже без смены контракта"
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [],
+   "comments": [],
+   "nodes": [
+    "page"
+   ],
+   "finding": ""
+  },
+  {
+   "id": "F-31",
+   "question": "В каком формате лежат тексты шагов?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-20"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Один Markdown `openspec/schemas/symphysis/steps.md`, разделы `## <id>`: читается без пакетов и правится руками",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "docs/GUIDE.md",
+       "quote": "Без него настройки считаются включёнными, а `check` даёт `[!!]`.",
+       "line": 126,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "YAML: для чтения нужен необязательный PyYAML",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "tools/symphysis_config.py",
+       "quote": "Журнал этот модуль не импортирует и настройки не читает (F-128.A).",
+       "line": 5,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "C",
+     "text": "По файлу на шаг, `steps/<id>.md`",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "installer/scripts/sync-payload.js",
+       "quote": "const DIRS = [\"openspec/schemas/symphysis\"];",
+       "line": 9,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Справка не должна ломаться без PyYAML, а один файл проще сверить тестом и прочитать целиком.",
+    "text": "Тот же файл читается человеком как оглавление."
+   },
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-02"
+   },
+   "reversibility": {
+    "level": "обратимо",
+    "why": "формат читают один скрипт и один тест; перенос меняет только их"
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [],
+   "comments": [],
+   "nodes": [
+    "texts"
+   ],
+   "finding": ""
+  },
+  {
+   "id": "F-32",
+   "question": "Как понято слово к F-29: справка занимает ту же область, что схема, и показывается либо схема, либо справка; это панель рядом с карточками с переключателем, а не четвёртая кнопка рядом с режимами «решения», «проверка», «атака»",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "материалы",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "На нём стоят требования к панели. Понято неверно — оспорь этот факт.",
+   "evidence": [
+    {
+     "path": "openspec/changes/step-help/answers/2026-11-02-2.md",
+     "quote": "Справка будет соперничать со схемой, то есть отображаем или схему или справку, поэтому они занимают одну область.",
+     "line": 9,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "tools/playground-template.html",
+     "quote": "id=\"btnScheme\" title=\"схема решения рядом с карточками",
+     "line": 139,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "page",
+    "current"
+   ],
+   "finding": ""
+  },
+  {
+   "id": "F-33",
+   "question": "На странице справка появляется вместе с журналом, а в плагине нужна и в пустом проекте: данные справки должны считаться без журнала и без изменения, хотя вкладка и не входит сюда (F-22)",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "материалы",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "На нём стоит F-34.",
+   "evidence": [
+    {
+     "path": "openspec/changes/step-help/answers/2026-11-02-2.md",
+     "quote": "в html на шаге intent страницы еще не будет. но в плагине будет, так как его можно открыть и в пустом проектее.",
+     "line": 9,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "cmd",
+    "plugin"
+   ],
+   "finding": ""
+  },
+  {
+   "id": "F-34",
+   "question": "F-23.A и F-29.B расходятся: по первому страницу собирает новый скрипт, по второму справка живёт на странице просмотрщика. Как данные справки попадают на страницу?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "`render-html` зовёт расчёт из `tools/step_help.py` и встраивает данные. Сбой расчёта (нет `openspec`, не тот форк) страницу не роняет: панель называет причину. Сам `step_help.py` отдаёт только JSON — для плагина и для проекта без журнала. Сборка вырастет с 0,2 с примерно до 0,7 с",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "tools/journal_cli.py",
+       "quote": "def cmd_render_html(args: argparse.Namespace) -> int:",
+       "line": 122,
+       "verdict": "сверено",
+       "found": true
+      },
+      {
+       "path": "openspec/changes/step-help/probes/fork-call-cost.txt",
+       "quote": "status 257 мс, instructions apply 249 мс",
+       "line": 3,
+       "verdict": "сверено",
+       "found": true
+      },
+      {
+       "path": "openspec/changes/step-help/probes/fork-call-cost.txt",
+       "quote": "render-html сейчас 210 мс",
+       "line": 5,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Отдельная команда `step_help.py render-html` собирает ту же страницу со справкой, `journal.py render-html` остаётся без неё: у одной страницы две сборки, а скиллы и плагин надо перевести на новую",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "vscode/src/host/core.ts",
+       "quote": "const html = await step([\"render-html\", journal, \"--out\", rel(env, path.join(ref.dir, \"decisions.html\"))",
+       "line": 66,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "C",
+     "text": "Соседний файл данных, как файл mermaid: скрипт пишет его отдельно, страница подключает тегом и обновляется без пересборки журнала; появляется второй путь, а данные могут разойтись со страницей",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "tools/journal_render.py",
+       "quote": "return \"../\" * up + \".symphysis/tools/mermaid.min.js\"",
+       "line": 231,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Страница одна и собирается одной командой, скиллы и плагин менять не нужно; цена измерена и невелика.",
+    "text": "Плагин получает те же данные из JSON, поэтому `view-json` журнал читать не перестаёт."
+   },
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-02"
+   },
+   "reversibility": {
+    "level": "обратимо",
+    "why": "встраивание живёт в `render-html`, а плагин получает данные отдельно через JSON: перенос меняет только сборку страницы"
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "Без журнала и без изменения работает только JSON (F-33). С версией форка из F-36.A сборка страницы занимает около 1 с: 0,2 с сейчас и три вызова форка по 0,25 с.",
+   "evidence": [],
+   "comments": [],
+   "nodes": [
+    "cmd",
+    "page"
+   ],
+   "finding": ""
+  },
+  {
+   "id": "F-35",
+   "question": "Слово к F-30: «видимо, нужно переименовать» страницу в `symphysis.html`. Что с переименованием?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Переименовать в этом изменении: в ядре 11 файлов (`GUIDE`, две спеки, пять скиллов, заметки перевода, два теста), в плагине строка `core.ts` и его тесты. Записи старых прогонов и архив не трогаем, у `decision-scheme` старый файл удаляется. Путь входит в контракт, поэтому номер растёт и старый плагин попросит обновиться",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/changes/step-help/answers/2026-11-02-2.md",
+       "quote": "видимо, нужно переименовать тогда decisions.html на symphysis.html, раз страница становится мультизадачной.",
+       "line": 10,
+       "verdict": "сверено",
+       "found": true
+      },
+      {
+       "path": "docs/repo-contract.md",
+       "quote": "- пути файлов изменения;",
+       "line": 51,
+       "verdict": "сверено",
+       "found": true
+      },
+      {
+       "path": "vscode/src/host/core.ts",
+       "quote": "const html = await step([\"render-html\", journal, \"--out\", rel(env, path.join(ref.dir, \"decisions.html\"))",
+       "line": 66,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Переименовать, но отдельным изменением после справки: те же файлы плюс то, что добавит справка",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/changes/step-help/answers/2026-11-02-2.md",
+       "quote": "видимо, нужно переименовать тогда decisions.html на symphysis.html, раз страница становится мультизадачной.",
+       "line": 10,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "C",
+     "text": "Оставить как есть: страница по-прежнему строится из журнала и без него не существует, поэтому имя не врёт",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/specs/decision-viewer/spec.md",
+       "quote": "`render-html` SHALL собирать `decisions.html` из `decisions.json`",
+       "line": 9,
+       "verdict": "сверено",
+       "found": true
+      },
+      {
+       "path": "openspec/changes/step-help/answers/2026-11-02-2.md",
+       "quote": "в html на шаге intent страницы еще не будет.",
+       "line": 9,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Страница становится многозадачной именно здесь, и второй проход по тем же файлам дороже одного.",
+    "text": "Правка плагина обязательна в паре: иначе модель пишет новый файл, плагин старый, и один из них устаревает молча. Это не вкладка, поэтому F-22 не нарушается."
+   },
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-02"
+   },
+   "reversibility": {
+    "level": "дорого",
+    "why": "путь входит в контракт `docs/repo-contract.md`: обратное переименование снова проходит по 11 файлам ядра и строке плагина, ещё раз поднимает номер контракта и заставляет обновить `.vsix`"
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [],
+   "comments": [],
+   "nodes": [
+    "page"
+   ],
+   "finding": ""
+  },
+  {
+   "id": "F-36",
+   "question": "Слово к F-27 просит показывать версию symphysis, но в проекте её нет. Откуда её брать?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "`install` записывает рядом с инструментами версию из `installer/package.json` и короткий хеш клона, как у сборки `.vsix`: `0.1.0+aa50e8f`; справка читает этот файл. Без git — только версия",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "installer/package.json",
+       "quote": "\"version\": \"0.1.0\",",
+       "line": 3,
+       "verdict": "сверено",
+       "found": true
+      },
+      {
+       "path": "openspec/changes/decision-scheme/specs/plugin-packaging/spec.md",
+       "quote": "Сборка `.vsix` SHALL нести версию из `package.json` и короткий хеш коммита плагина",
+       "line": 9,
+       "verdict": "сверено",
+       "found": true
+      },
+      {
+       "path": "openspec/changes/step-help/answers/2026-11-02-2.md",
+       "quote": "За установкой не следим, но показываем версию форка, версию symphysis, и версию плагина. Справочно и малозаметно.",
+       "line": 7,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Только версия из `installer/package.json`: сейчас она не растёт и разные сборки не различает",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "installer/package.json",
+       "quote": "\"version\": \"0.1.0\",",
+       "line": 3,
+       "verdict": "сверено",
+       "found": true
+      },
+      {
+       "path": "docs/repo-contract.md",
+       "quote": "Каждый проект ставит тег в свой `main`. У ядра это `v1.x.x` и далее.",
+       "line": 76,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "C",
+     "text": "Показывать номер контракта вместо версии",
+     "added": false,
+     "unlikely": "номер говорит о совместимости с плагином, а не о сборке, и слово к F-27 просит версию",
+     "evidence": [
+      {
+       "path": "tools/journal_render.py",
+       "quote": "CONTRACT = 1",
+       "line": 26,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Хеш отвечает на настоящий вопрос «какая сборка стоит в этом проекте», а номер `0.1.0` на него не ответит.",
+    "text": "Версия форка — из `openspec --version`, ещё примерно 0,25 с. Версию плагина страница не знает: её покажет сам плагин на своей вкладке."
+   },
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-02"
+   },
+   "reversibility": {
+    "level": "обратимо",
+    "why": "файл версии читает один скрипт, `check` за ним не следит; формат меняется без миграции: `install --force` запишет новый"
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "Правка `install.js` и новое требование `project-installer`. `check` за этой версией не следит: «за установкой не следим».",
+   "evidence": [],
+   "comments": [],
+   "nodes": [
+    "page"
+   ],
+   "finding": ""
+  },
+  {
+   "id": "F-37",
+   "question": "`decision-scheme` на `main` активно и пересекается со справкой: панель схемы, на которую опирается F-29, есть только в его дельте, а требование «Просмотрщик», которое меняет F-35, оно само меняет через MODIFIED. Архив на копии проходит с кодом 0",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "материалы",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "На нём стоит F-38.",
+   "evidence": [
+    {
+     "path": "openspec/changes/decision-scheme/specs/decision-viewer/spec.md",
+     "quote": "### Requirement: Панель схемы показывает `scheme.md` рядом с карточками",
+     "line": 45,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "openspec/changes/decision-scheme/specs/decision-viewer/spec.md",
+     "quote": "### Requirement: Просмотрщик — один HTML из своего шаблона",
+     "line": 5,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "openspec/schemas/symphysis/schema.yaml",
+     "quote": "MODIFIED несёт требование целиком.",
+     "line": 77,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "openspec/changes/step-help/probes/archive-decision-scheme.txt",
+     "quote": "Totals: + 31, ~ 4, - 0, → 0",
+     "line": 9,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "openspec/changes/step-help/probes/archive-decision-scheme.txt",
+     "quote": "код архива 0",
+     "line": 12,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "finding": ""
+  },
+  {
+   "id": "F-38",
+   "question": "Как разойтись с активным `decision-scheme` до спек справки?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Сначала архивировать `decision-scheme`, потом писать спеки справки на новой базе. Это работа сессии плагина: по твоему слову сделать здесь или там; дельты влиты, но улики журнала надо перевести на архивный путь, а плагин проверить на архивном журнале",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/changes/step-help/probes/archive-decision-scheme.txt",
+       "quote": "Change 'decision-scheme' archived as '2026-11-02-decision-scheme'.",
+       "line": 11,
+       "verdict": "сверено",
+       "found": true
+      },
+      {
+       "path": "openspec/changes/step-help/probes/archive-decision-scheme.txt",
+       "quote": "код архива 0",
+       "line": 12,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Писать спеки на текущей базе и держать оба изменения активными: второй архив сводить вручную по трём версиям, как при вливании, иначе `MODIFIED` молча откатит текст другого изменения",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/schemas/symphysis/schema.yaml",
+       "quote": "MODIFIED несёт требование целиком.",
+       "line": 77,
+       "verdict": "сверено",
+       "found": true
+      },
+      {
+       "path": "openspec/changes/decision-scheme/specs/decision-viewer/spec.md",
+       "quote": "### Requirement: Просмотрщик — один HTML из своего шаблона",
+       "line": 5,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "C",
+     "text": "Обойтись в спеках справки только `ADDED`, без `MODIFIED`",
+     "added": false,
+     "unlikely": "F-35.A меняет текст существующего требования, поэтому без MODIFIED имя страницы в спеке останется старым",
+     "evidence": [
+      {
+       "path": "openspec/changes/decision-scheme/specs/decision-viewer/spec.md",
+       "quote": "### Requirement: Просмотрщик — один HTML из своего шаблона",
+       "line": 5,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Реализация `decision-scheme` закрыта, а база спек станет одна: не придётся вручную сводить тексты второй раз.",
+    "text": "Шаг затрагивает чужую сессию, поэтому нужно твоё слово."
+   },
+   "decision": {
+    "option": "A",
+    "word": "Тут без вариантов, сначала архив, потом изменение.",
+    "date": "2026-11-02"
+   },
+   "reversibility": {
+    "level": "обратимо",
+    "why": "архив — отдельный коммит: `git revert` вернёт `decision-scheme` в активные, пока на новой базе нет спек справки; позже откат сводится вручную по трём версиям, как в варианте B"
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "От решения зависит только порядок работ: состав `proposal` остаётся тем же.",
+   "evidence": [],
+   "comments": [],
+   "nodes": [
+    "page"
+   ],
+   "finding": ""
+  },
+  {
+   "id": "F-39",
+   "question": "В `docs/GUIDE.md` появляется строка о справке: что она есть, где открывается и какой командой считается. Кроме этой строки в гайде меняется только имя страницы (F-35)",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "материалы",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "На нём стоит задача правки `docs/GUIDE.md`.",
+   "evidence": [
+    {
+     "path": "docs/GUIDE.md",
+     "quote": "Какой шаг следующий, показывает `openspec status --change add-overdue`.",
+     "line": 263,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "openspec/changes/step-help/intent.md",
+     "quote": "сейчас в GUIDE.md описан процесс по шагам, и описан хорошо.",
+     "line": 7,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "finding": ""
+  }
+ ],
+ "notes": [
+  {
+   "date": "2026-11-02",
+   "text": "F-32 подтверждён словом человека в чате: «верно понял»; справка делит со схемой панель рядом с карточками."
+  },
+  {
+   "date": "2026-11-02",
+   "text": "круг 1 закончен: решений 16, фактов 20, открытых развилок 0, парковок материалам 0, антиподов 3"
+  },
+  {
+   "date": "2026-11-02",
+   "text": "брейншторм закончен по решению человека: «Новый круг не нужен.»"
+  },
+  {
+   "date": "2026-11-02",
+   "text": "F-26.B сделан вне этого изменения: коммит `2961908` влит в `main` проматыванием по слову человека, `apply` без `security.md` отвечает `blocked`; факт F-10 описывает состояние до правки."
+  },
+  {
+   "date": "2026-11-02",
+   "text": "сверка после выбора F-38.A: `decision-scheme` уйдёт в архив раньше переименования, поэтому его `decisions.html` уезжает туда со старым именем и подпадает под «архив не трогаем» из F-35.A; оговорка «у `decision-scheme` старый файл удаляется» отпала, слово F-35 не менялось."
+  },
+  {
+   "date": "2026-11-02",
+   "text": "F-39 заведён словом человека в чате: «Давай добавим запись.» — ответ на вопрос, нужна ли в `GUIDE` строка о справке."
+  }
+ ]
+};
+const ATTACK = [];
+const SCHEME = {
+ "exists": true,
+ "text": "flowchart TD\n  person([Человек хочет понять, где он в конвейере]) --> cmd[Команда справки по изменению]\n  cmd --> status[openspec status: какие файлы шагов есть]\n  cmd --> journal[Журнал: сколько развилок открыто]\n  cmd --> tasks[tasks.md: сколько задач закрыто]\n  status --> where{Где мы и чей ход}\n  journal --> where\n  tasks --> where\n  where -->|ход за человеком| human[Круг просмотрщика: решить развилки]\n  where -->|ход за моделью| model[Команда следующего шага]\n  where -->|планирование закончено| after[apply, sync, archive]\n  human --> page\n  model --> page\n  after --> page\n  texts[Тексты шагов в каталоге схемы] --> page[Снимок: страница с временем снятия]\n  deps[Граф schema.yaml: что блокирует пропуск шага] --> page\n  page --> current[Текущий шаг: зачем, механики, что будет без него, какие файлы смотреть]\n  current --> others[Другие шаги: листание и выбор пункта]\n  others --> current\n  page -.->|те же данные JSON, позже| plugin[Вкладка плагина]\n",
+ "blocks": 1,
+ "first_line": 4,
+ "mermaid": "../../../.symphysis/tools/mermaid.min.js"
+};
+const ADDRESSEES = ['материалы','человек','ИБ'];
+/* линзы атаки — закрытые списки скилла symphysis-attack, по файлу атаки: журнал (`attack/decisions.md`, цель — один `decisions.json`)
+   и артефакты (`attack/artifacts.md`, всё прочее); порядок — порядок списка, подписи — чем ищется. Слуг не из списка своего файла —
+   группа «вне списка», строка невалидна (F-07.A). Перспектив интервью брейншторма здесь нет: запись журнала и строка атаки — разные
+   сущности (слово владельца 2026-10-30) */
+const ATTACK_LENSES = {
+  journal: [
+    {slug:'context-compliance', label:'соответствие журналу'},
+    {slug:'claim-authority',    label:'числа и факты'},
+    {slug:'claim-extraction',   label:'существование имён'},
+    {slug:'coverage',           label:'покрытие разделов'},
+  ],
+  artifacts: [
+    {slug:'scenario-run',       label:'прогон сценария'},
+    {slug:'claim-extraction',   label:'существование имён'},
+  ],
+};
+const OUTSIDE = '__outside__';   /* значение фильтра для группы «вне списка» */
+const SEVERITY = ['блокер','предупреждение','справка'];
+const MODES = ['decisions','check','attack'];
+const MODE_LABELS = { decisions:'решения', check:'проверка', attack:'атака' };
+const ADDED_MARK = '(добавлен человеком';
+const ONE_WAY = 'в одну сторону';
+const ATTACK_HINT = 'Строки атаки apply не меняет — их закрывает правка цели (журнала или артефакта) и повторная атака. Спор по строке (почему опора есть, почему не блокер) уходит в промпт возврата одной строкой «Замечания к схеме:» и ложится в notes[] журнала; ответ на строку с закрытием «вопрос человеку» и разделом «F-NN, decision» уходит словом к решению. Фильтр по линзе прячет группы, но не счётчики тяжести в шапке файла.';
+const PARK_HINT = 'Парковка — дополнительный вопрос, который нельзя закрыть сейчас: он уходит адресату. «материалы» — ответ ищет агент, в файлах или пробой (исследование), «человек» — нужно решение человека, «ИБ» — проверка по чек-листу безопасности. Решение по самой развилке парковка не снимает.';
+/* ключ — путь страницы: `source` у всех журналов один, и состояние одного журнала приходило бы в другой с теми же номерами F-NN */
+const KEY = 'symphysis:' + ((typeof location !== 'undefined' && location.pathname) || JOURNAL.title || JOURNAL.source || 'journal');
+const byId = Object.fromEntries(JOURNAL.records.map(r => [r.id, r]));
+
+const EMPTY = () => ({ decisions:{}, added:{}, newForks:[], disputes:{}, deps:{}, notes:'' });
+let state = EMPTY();
+let filter = { openOnly:false };
+try { const s = localStorage.getItem(KEY); if (s) state = Object.assign(EMPTY(), JSON.parse(s)); } catch (e) {}
+for (const k in state.decisions) { const d = state.decisions[k]; if (!Array.isArray(d.parked)) d.parked = d.parked ? [{ text:'', addressee:d.addressee || 'человек' }] : []; }
+function save() { try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {} }
+/* режим страницы и споры по строкам атаки — свои ключи browser storage; в состояние режима 1 они не входят */
+let mode = 'decisions';
+try { const m = localStorage.getItem(KEY + ':mode'); if (MODES.includes(m)) mode = m; } catch (e) {}
+let attackState = { disputes:{} };
+try { const s = JSON.parse(localStorage.getItem(KEY + ':attack') || 'null'); if (s && s.disputes && typeof s.disputes === 'object') attackState.disputes = s.disputes; } catch (e) {}
+let attackLens = 'all';
+try { const l = localStorage.getItem(KEY + ':lens'); if (l) attackLens = l; } catch (e) {}
+function saveAttack() { try { localStorage.setItem(KEY + ':attack', JSON.stringify(attackState)); } catch (e) {} }
+function setMode(m) { mode = m; try { localStorage.setItem(KEY + ':mode', m); } catch (e) {} render(); }
+/* ключ спора — файл, раздел и утверждение строки: при повторной атаке спор остаётся у той же строки, не у того же номера */
+function disputeKey(att, row) { return att.path + '|' + row.section + '|' + row.claim; }
+/* то, что уже внесено в журнал, из состояния браузера убирается: слово к решению, парковка, спор, совпадающий выбор */
+(function cleanupIngested() {
+  const norm = s => String(s || '').replace(/\s+/g, ' ').trim();
+  for (const rec of JOURNAL.records) {
+    /* вариант, добавленный человеком и уже внесённый apply (та же буква, тот же текст), из состояния уходит */
+    if (state.added[rec.id]) state.added[rec.id] = state.added[rec.id].filter(o => !(rec.options || []).some(x => x.letter === o.letter && norm(String(x.text).split(ADDED_MARK)[0]) === norm(o.text)));
+    const d = state.decisions[rec.id]; if (!d) continue;
+    const jpark = (rec.parking || []).map(p => norm(p.text));
+    const sameDecision = rec.decision && (!d.choice || d.choice === rec.decision.option);
+    if (d.word && ((sameDecision && wordIngested(rec.decision.word, d.word)) || jpark.includes(norm(d.word)))) d.word = '';
+    d.parked = (d.parked || []).filter(p => norm(p.text) && !jpark.includes(norm(p.text)));
+    if (rec.decision && rec.decision.option && d.choice === rec.decision.option) d.choice = null;
+    const sp = norm(state.disputes[rec.id]); if (sp && rec.dispute && norm(rec.dispute).includes(sp)) delete state.disputes[rec.id];
+  }
+  /* новая развилка, уже внесённая apply, из состояния уходит; поправленная человеком остаётся: вопрос другой */
+  const questions = new Set(JOURNAL.records.map(r => norm(r.question)));
+  state.newForks = (state.newForks || []).filter(f => !questions.has(norm(f.question)));
+  const ownNotes = norm(state.notes);
+  if (ownNotes && (JOURNAL.notes || []).some(n => norm(n.text).includes(ownNotes))) state.notes = '';
+  save();
+  /* спор по строке атаки, уже внесённый apply в notes[] журнала, тоже убирается */
+  const noteTexts = (JOURNAL.notes || []).map(n => norm(n.text));
+  let dropped = false;
+  for (const att of ATTACK) for (const r of (att.rows || [])) {
+    const k = disputeKey(att, r), sp = norm(attackState.disputes[k]);
+    if (sp && noteTexts.some(t => t.includes(sp))) { delete attackState.disputes[k]; dropped = true; }
+  }
+  if (dropped) saveAttack();
+})();
+/* высота нижней панели — тянется за ручку, запоминается */
+(function outHeight() {
+  const root = document.documentElement, hd = document.getElementById('outhandle');
+  let h = 170; try { h = +localStorage.getItem(KEY + ':outh') || 170; } catch (e) {}
+  root.style.setProperty('--outh', h + 'px');
+  let drag = null;
+  hd.onmousedown = e => { drag = { y:e.clientY, h }; e.preventDefault(); };
+  window.addEventListener('mousemove', e => { if (!drag) return; h = Math.max(70, Math.min(window.innerHeight - 140, drag.h + (drag.y - e.clientY))); root.style.setProperty('--outh', h + 'px'); });
+  window.addEventListener('mouseup', () => { if (!drag) return; drag = null; try { localStorage.setItem(KEY + ':outh', String(h)); } catch (e) {} });
+})();
+
+/* панель схемы: включается поверх режимов, рисунок — файлом mermaid рядом, иначе текст; файл грузится при первом включении (F-39, F-54, F-122) */
+let schemeOn = false, schemeLoaded = false;
+try { schemeOn = localStorage.getItem(KEY + ':scheme') === '1'; } catch (e) {}
+(function schemeWidth() {
+  const root = document.documentElement, hd = document.getElementById('schemehandle');
+  let w = 0; try { w = +localStorage.getItem(KEY + ':schemew') || 0; } catch (e) {}
+  if (w) root.style.setProperty('--schemew', w + 'px');
+  let drag = null;
+  hd.onmousedown = e => { drag = { x:e.clientX, w:document.getElementById('schemePanel').offsetWidth }; e.preventDefault(); };
+  window.addEventListener('mousemove', e => { if (!drag) return; w = Math.max(240, Math.min(window.innerWidth - 480, drag.w + (drag.x - e.clientX))); root.style.setProperty('--schemew', w + 'px'); });
+  window.addEventListener('mouseup', () => { if (!drag) return; drag = null; try { localStorage.setItem(KEY + ':schemew', String(w)); } catch (e) {} });
+})();
+function schemeShow(st, notes, content) {
+  const made = notes.map(([cls, text]) => { const n = document.createElement('div'); n.className = 'note ' + cls; n.textContent = text; return n; });
+  document.getElementById('schemeBody').replaceChildren(...made, ...(content ? [content] : []));
+  document.getElementById('schemePanel').dataset.state = st;
+}
+function schemeBlocksNote() {
+  const n = SCHEME.blocks;
+  return n > 1 ? [['warn', 'в файле ' + n + ' ' + (n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 12 || n % 100 > 14) ? 'блока' : 'блоков') + ', показан первый']] : [];
+}
+function schemeText(notes) {
+  const pre = document.createElement('pre'); pre.textContent = SCHEME.text;
+  schemeShow('text', [...schemeBlocksNote(), ...notes], pre);
+}
+/* сообщение mermaid при незакрытой скобке называет конец текста: верная строка — в hash.loc, от начала блока (F-28, F-61) */
+function schemeError(e) {
+  const loc = e && e.hash && e.hash.loc;
+  const line = loc && Number.isInteger(loc.first_line) ? loc.first_line + SCHEME.first_line - 1 : null;
+  const text = String((e && e.message) || e).replace(/^Parse error on line \d+:?\s*/, '');
+  return 'Ошибка mermaid' + (line ? ', строка ' + line + ' в scheme.md' : '') + ':\n' + text;
+}
+async function schemeDraw() {
+  try {
+    mermaid.initialize({ startOnLoad:false, securityLevel:'strict', theme:'dark', suppressErrorRendering:true });
+    const { svg } = await mermaid.render('schemeDrawing', SCHEME.text);
+    const holder = document.createElement('div'); holder.innerHTML = svg;
+    schemeShow('svg', schemeBlocksNote(), holder);
+    const el = holder.querySelector('svg'), vb = el.viewBox && el.viewBox.baseVal;
+    if (vb && vb.width) { el.style.width = vb.width + 'px'; el.style.height = vb.height + 'px'; el.style.maxWidth = 'none'; }
+    /* натуральный размер шире панели: вначале виден верхний узел посередине, иначе панель пуста, пока не прокрутишь (F-35) */
+    const body = document.getElementById('schemeBody'), box = n => n.getBoundingClientRect();
+    const nodes = [...el.querySelectorAll('g.node')];
+    if (nodes.length) {
+      const top = nodes.reduce((a, b) => box(b).top < box(a).top ? b : a);
+      body.scrollLeft += box(top).left + box(top).width / 2 - box(body).left - body.clientWidth / 2;
+      body.scrollTop = 0;
+    }
+  } catch (e) { schemeText([['bad', schemeError(e)]]); }
+}
+function schemeLoad() {
+  if (schemeLoaded) return;
+  schemeLoaded = true;
+  if (!SCHEME.exists) return schemeShow('missing', [['info', 'Схема не создана']]);
+  if (SCHEME.text === null) return schemeShow('empty', [['info', 'В scheme.md нет схемы']]);
+  const noFile = () => schemeText([['info', 'Файла mermaid рядом нет: показан текст схемы']]);
+  if (!SCHEME.mermaid) return noFile();
+  const s = document.createElement('script');
+  s.src = SCHEME.mermaid; s.onload = schemeDraw; s.onerror = noFile;
+  document.head.appendChild(s);
+}
+function headerHeight() {
+  const h = document.getElementById('pageHeader').offsetHeight;
+  if (h) document.documentElement.style.setProperty('--headh', h + 'px');
+}
+window.addEventListener('resize', headerHeight);
+function renderSchemePanel() {
+  document.getElementById('schemePanel').classList.toggle('hidden', !schemeOn);
+  document.body.classList.toggle('scheme-on', schemeOn);
+  document.getElementById('btnScheme').classList.toggle('active', schemeOn);
+  if (schemeOn) schemeLoad();
+}
+
+function dec(id) { return state.decisions[id] || (state.decisions[id] = { choice:null, word:'', parked:[] }); }
+function journalChoice(rec) { return rec.decision && rec.decision.option ? rec.decision.option : null; }
+function chosen(id) { const d = state.decisions[id]; if (d && d.choice) return d.choice; return journalChoice(byId[id] || {}); }
+function effectiveDeps(rec) {
+  const u = state.deps[rec.id] || { add:[], remove:[] };
+  const base = (rec.depends_on || []).map(x => ({ id:x, kind: u.remove.includes(x) ? 'removed' : 'journal' }));
+  return base.concat(u.add.map(x => ({ id:x, kind:'added' })));
+}
+function allOptions(rec) { return rec.options.concat((state.added[rec.id] || []).map(o => Object.assign({ evidence:[], unlikely:null, added:true, local:true }, o))); }
+function antipodesOf(id, letter) {
+  const out = new Set();
+  for (const a of (byId[id].antipodes || [])) if (a.option === letter) out.add(a.other);
+  for (const r of JOURNAL.records) for (const a of (r.antipodes || [])) if (a.other === id + '.' + letter) out.add(r.id + '.' + a.option);
+  return [...out];
+}
+function chosenAntipodes(id, letter) { return antipodesOf(id, letter).filter(k => { const [oid, ol] = k.split('.'); return chosen(oid) === ol; }); }
+/* text:begin */
+function esc(s) { return String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+/* текст журнала и атаки: единственная разметка данных — пары backticks; сначала экранирование, потом `код` -> <code> */
+function md(s) { return esc(s).replace(/`([^`]+)`/g, '<code>$1</code>'); }
+/* text:end */
+function evHtml(ev) {
+  const loc = ev.line ? ev.path + ':' + ev.line : ev.path;
+  /* found: null — файл не текст (бинарный, не UTF-8): сверить нельзя, это не пропажа цитаты */
+  const v = ev.found ? '<b class="ok">сверено</b>'
+    : ev.found === null ? '<b class="mute">' + esc(/^не проверить/.test(ev.verdict || '') ? ev.verdict : 'не проверить: ' + (ev.verdict || 'файл не текст')) + '</b>'
+    : '<b class="bad">не найдено: ' + esc(ev.verdict || '') + '</b>';
+  return '<span class="ev">улика: <code>' + esc(loc) + '</code> «' + esc(ev.quote) + '» ' + v + '</span>';
+}
+
+function visible(rec) {
+  if (filter.openOnly) { if (rec.kind === 'факт' || chosen(rec.id)) return false; }
+  return true;
+}
+
+/* ---------- карточки ---------- */
+function renderCards() {
+  const el = document.getElementById('cards');
+  el.innerHTML = JOURNAL.records.filter(visible).map(rec => {
+    const d = dec(rec.id);
+    const isFact = rec.kind === 'факт';
+    const jc = journalChoice(rec);
+    const localChoice = d.choice;
+    const changed = !!(localChoice && jc && localChoice !== jc);
+    const jpark = (rec.parking || []).map(p => ({ text:p.text, addressee:p.addressee, journal:true }));
+    const parkedAll = jpark.concat(d.parked || []);
+    const cls = ['card', isFact ? 'fact' : '', changed ? 'changed' : (chosen(rec.id) ? 'decided' : ''), parkedAll.length ? 'parked' : ''].join(' ');
+    let status = isFact ? '<span class="badge fact">факт · закрыт уликами</span>'
+      : changed ? '<span class="badge changed">изменено: ' + esc(jc) + ' → ' + esc(localChoice) + '</span>'
+      : localChoice ? '<span class="badge ok">решено здесь: ' + esc(localChoice) + '</span>'
+      : jc ? '<span class="badge ok">решено в журнале: ' + esc(jc) + '</span>' : '<span class="badge">открыто</span>';
+    if (parkedAll.length) status += '<span class="badge park">парковка: ' + parkedAll.length + '</span>';
+    const deps = effectiveDeps(rec);
+    /* факт решения не требует: предпосылка ждёт только у развилки без выбора и у припаркованного факта */
+    const settled = id => chosen(id) || (byId[id] && byId[id].kind === 'факт' && byId[id].status === 'решён');
+    const waiting = deps.filter(x => x.kind !== 'removed' && !settled(x.id)).map(x => x.id);
+    let html = '<div class="' + cls + '" id="' + esc(rec.id) + '"><div class="head"><span class="id mono">' + esc(rec.id) + '</span>' + status +
+      '<span class="badge">' + esc(rec.delivery || '—') + '</span>' + (rec.addressee ? '<span class="badge">адресат: ' + esc(rec.addressee) + '</span>' : '') + '</div>' +
+      '<div class="q">' + md(rec.question) + '</div>';
+    html += '<div class="meta">зависит от: ' + (deps.length ? deps.map(x => '<span class="chip ' + x.kind + '"><a href="#' + esc(x.id) + '">' + esc(x.id) + '</a>' +
+      (x.kind === 'removed' ? '<button data-undep="' + esc(rec.id) + '|' + esc(x.id) + '" title="вернуть">↺</button>' : '<button data-rmdep="' + esc(rec.id) + '|' + esc(x.id) + '" title="снять зависимость">×</button>') + '</span>').join('') : '—') +
+      '<input type="text" data-deptext="' + esc(rec.id) + '" placeholder="F-NN" title="добавить зависимость"><button class="small" data-adddep="' + esc(rec.id) + '">+ зависимость</button></div>';
+    if (waiting.length) html += '<div class="note warn">предпосылка не решена: ' + waiting.map(esc).join(', ') + ' — выбирать можно, но ответ до неё — догадка</div>';
+    if (rec.evidence && rec.evidence.length && !isFact) html += '<div class="note info"><b>улики записи</b>' + rec.evidence.map(evHtml).join('') + '</div>';
+    if (rec.finding) html += '<div class="note info"><b>находка:</b> ' + md(rec.finding) + '</div>';
+    if (isFact) {
+      html += rec.evidence.map(evHtml).join('');
+      if (rec.dispute) html += '<div class="note park"><b>спор в журнале:</b> ' + md(rec.dispute) + '</div>';
+      html += '<div class="cons">следствия: ' + md(rec.consequences || '—') + '</div>';
+      html += '<div class="row"><textarea data-dispute="' + esc(rec.id) + '" placeholder="оспорить факт: что не так и чем это подтверждается">' + esc(state.disputes[rec.id] || '') + '</textarea></div>';
+    } else {
+      const cur = chosen(rec.id);
+      for (const o of allOptions(rec)) {
+        const paired = chosenAntipodes(rec.id, o.letter);
+        const anti = antipodesOf(rec.id, o.letter);
+        const tags = (rec.recommendation && rec.recommendation.option === o.letter ? '<span class="tag rec">рекомендация</span>' : '') +
+          (jc === o.letter ? '<span class="tag journal">в журнале</span>' : '') +
+          (o.unlikely ? '<span class="tag unlikely" title="' + esc(o.unlikely) + '">маловероятно</span>' : '') +
+          (o.added ? '<span class="tag added">добавлен человеком</span>' : '') +
+          deviationTag(o) +
+          (anti.length ? '<span class="tag anti" title="нельзя вместе с: ' + esc(anti.join(', ')) + '">антипод ' + esc(anti.join(', ')) + '</span>' : '');
+        html += '<label class="opt' + (cur === o.letter ? ' chosen' : '') + '">' +
+          '<input type="radio" name="' + esc(rec.id) + '" value="' + esc(o.letter) + '"' + (cur === o.letter ? ' checked' : '') + '>' +
+          '<div class="t"><span class="letter">' + esc(o.letter) + '.</span> ' + md(o.text) + tags +
+          (o.unlikely ? '<span class="ev">маловероятно: ' + md(o.unlikely) + '</span>' : '') +
+          (paired.length ? '<span class="note warn" data-antipode-warning="' + esc(rec.id + '.' + o.letter) + '">антипод уже выбран: ' + esc(paired.join(', ')) + '. Выбрать можно, но вместе они станут строкой атаки.</span>' : '') +
+          (o.evidence || []).map(evHtml).join('') + '</div></label>';
+      }
+      if (rec.recommendation) html += '<div class="rec">рекомендация: <b>' + esc(rec.recommendation.option) + '</b> — ' + md(rec.recommendation.why) + '</div>';
+      if (rec.decision && rec.decision.word) html += '<div class="note info"><b>слово в журнале (' + esc(rec.decision.date || '') + '):</b> «' + md(rec.decision.word) + '»</div>';
+      html += '<div class="note bad hidden" data-msg="' + esc(rec.id) + '"></div>';
+      html += '<div class="row"><textarea data-word="' + esc(rec.id) + '" placeholder="слово человека дословно — почему так (или что изменить в решении из журнала)">' + esc(d.word || '') + '</textarea></div>';
+      html += '<div class="row"><input type="text" data-addtext="' + esc(rec.id) + '" placeholder="вариант, которого здесь нет"><button class="small" data-addopt="' + esc(rec.id) + '">добавить вариант</button></div>';
+      html += '<details class="park"' + (parkedAll.length ? ' open' : '') + '><summary title="' + esc(PARK_HINT) + '">парковка — дополнительный вопрос с адресатом (' + parkedAll.length + ')</summary>' +
+        '<div class="note park" style="margin:6px 0">' + esc(PARK_HINT) + '</div>' +
+        parkedAll.map((p, i) => '<div class="parkitem"><span class="who">→ ' + esc(p.addressee || '?') + (p.journal ? ' · в журнале' : '') + '</span><span>' + md(p.text || '(без текста)') + '</span>' +
+          (p.journal ? '' : '<button class="small" data-unpark="' + esc(rec.id) + '|' + (i - jpark.length) + '">снять</button>') + '</div>').join('') +
+        '<div class="row"><input type="text" data-parktext="' + esc(rec.id) + '" placeholder="что именно надо узнать или решить отдельно">' +
+        '<select data-addressee="' + esc(rec.id) + '" title="' + esc(PARK_HINT) + '">' + ADDRESSEES.map(a => '<option>' + a + '</option>').join('') + '</select>' +
+        '<button class="small" data-park="' + esc(rec.id) + '">припарковать</button></div></details>';
+      html += '<div class="cons">следствия: ' + md(rec.consequences || '—') + '</div>';
+    }
+    return html + '</div>';
+  }).join('');
+
+  el.querySelectorAll('input[type=radio]').forEach(r => r.onchange = () => {
+    const id = r.name, letter = r.value;
+    const d = dec(id); d.choice = (letter === journalChoice(byId[id])) ? null : letter; save(); render();
+  });
+  el.querySelectorAll('textarea[data-word]').forEach(t => t.oninput = () => { dec(t.dataset.word).word = t.value; save(); updateOut(); });
+  el.querySelectorAll('textarea[data-dispute]').forEach(t => t.oninput = () => { state.disputes[t.dataset.dispute] = t.value; save(); updateOut(); });
+  el.querySelectorAll('button[data-addopt]').forEach(b => b.onclick = () => {
+    const id = b.dataset.addopt, inp = el.querySelector('input[data-addtext="' + id + '"]');
+    const text = (inp.value || '').trim(); if (!text) return;
+    const letters = allOptions(byId[id]).map(o => o.letter);
+    const next = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('').find(l => !letters.includes(l));
+    (state.added[id] = state.added[id] || []).push({ letter: next, text }); save(); render();
+  });
+  el.querySelectorAll('button[data-park]').forEach(b => b.onclick = () => {
+    const id = b.dataset.park, text = (el.querySelector('input[data-parktext="' + id + '"]').value || '').trim();
+    const addressee = el.querySelector('select[data-addressee="' + id + '"]').value;
+    if (!text) { const m = el.querySelector('[data-msg="' + id + '"]'); m.textContent = 'парковка без вопроса — нечего адресовать'; m.classList.remove('hidden'); return; }
+    dec(id).parked.push({ text, addressee }); save(); render();
+  });
+  el.querySelectorAll('button[data-unpark]').forEach(b => b.onclick = () => { const [id, i] = b.dataset.unpark.split('|'); dec(id).parked.splice(+i, 1); save(); render(); });
+  el.querySelectorAll('button[data-adddep]').forEach(b => b.onclick = () => {
+    const id = b.dataset.adddep, inp = el.querySelector('input[data-deptext="' + id + '"]');
+    const dep = (inp.value || '').trim().toUpperCase().replace(/^F(\d)/, 'F-$1');
+    const m = el.querySelector('[data-msg="' + id + '"]');
+    if (!byId[dep]) { m.textContent = 'нет записи ' + dep; m.classList.remove('hidden'); return; }
+    if (dep === id) { m.textContent = 'запись не может зависеть от себя'; m.classList.remove('hidden'); return; }
+    const u = state.deps[id] = state.deps[id] || { add:[], remove:[] };
+    if (byId[id].depends_on.includes(dep)) { u.remove = u.remove.filter(x => x !== dep); }
+    else if (!u.add.includes(dep)) u.add.push(dep);
+    save(); render();
+  });
+  el.querySelectorAll('button[data-rmdep]').forEach(b => b.onclick = () => {
+    const [id, dep] = b.dataset.rmdep.split('|');
+    const u = state.deps[id] = state.deps[id] || { add:[], remove:[] };
+    if (u.add.includes(dep)) u.add = u.add.filter(x => x !== dep); else if (!u.remove.includes(dep)) u.remove.push(dep);
+    save(); render();
+  });
+  el.querySelectorAll('button[data-undep]').forEach(b => b.onclick = () => {
+    const [id, dep] = b.dataset.undep.split('|');
+    const u = state.deps[id]; if (u) u.remove = u.remove.filter(x => x !== dep); save(); render();
+  });
+}
+
+function renderNewForks() {
+  document.getElementById('newForks').innerHTML = state.newForks.map((f, i) =>
+    '<div class="card" style="margin-top:8px"><div class="head"><span class="id mono">' + esc(f.id) + '</span><span class="badge added">добавлена человеком</span>' +
+    '<button class="small" data-delfork="' + i + '" style="margin-left:auto">убрать</button></div><div class="q">' + md(f.question) + '</div>' +
+    '<div class="meta">варианты: ' + md(f.options.replace(/\n+/g, ' · ')) + '</div><div class="cons">' + md(f.word) + '</div></div>').join('');
+  document.querySelectorAll('button[data-delfork]').forEach(b => b.onclick = () => { state.newForks.splice(+b.dataset.delfork, 1); save(); render(); });
+}
+
+function renderToc() {
+  document.getElementById('toc').innerHTML = JOURNAL.records.map(rec => {
+    const d = state.decisions[rec.id];
+    const jc = journalChoice(rec);
+    const dot = rec.kind === 'факт' ? 'fact' : (d && d.choice && jc && d.choice !== jc) ? 'changed' : chosen(rec.id) ? 'ok' : (((rec.parking && rec.parking.length) || (d && d.parked && d.parked.length)) ? 'park' : '');
+    return '<a href="#' + esc(rec.id) + '"><span class="dot ' + dot + '"></span><span class="id">' + esc(rec.id) + '</span><span class="q" title="' + esc(rec.question) + '">' + esc(rec.question) + '</span></a>';
+  }).join('');
+}
+
+function renderStats() {
+  const forks = JOURNAL.records.filter(r => r.kind !== 'факт');
+  const decided = forks.filter(r => chosen(r.id)).length;
+  const changed = forks.filter(r => { const d = state.decisions[r.id]; const jc = journalChoice(r); return d && d.choice && jc && d.choice !== jc; }).length;
+  const parked = forks.filter(r => (r.parking && r.parking.length) || (state.decisions[r.id] && state.decisions[r.id].parked.length)).length;
+  const disputed = Object.values(state.disputes).filter(v => v && v.trim()).length;
+  document.getElementById('stats').innerHTML =
+    'развилок <b>' + forks.length + '</b> · решено <b>' + decided + '</b>' + (changed ? ' · изменено здесь <b>' + changed + '</b>' : '') +
+    ' · открыто <b>' + (forks.length - decided) + '</b> · с парковкой <b>' + parked + '</b> · фактов <b>' + (JOURNAL.records.length - forks.length) + '</b>' +
+    (disputed ? ' · оспорено <b>' + disputed + '</b>' : '') + (state.newForks.length ? ' · добавлено развилок <b>' + state.newForks.length + '</b>' : '');
+  const s = JOURNAL.stats || {};
+  document.getElementById('evstats').textContent = 'улик сверено ' + (s.evidence_found ?? '?') + ' из ' + (s.evidence_total ?? '?') + ' · собрано ' + (JOURNAL.generated || '');
+}
+
+/* prompt:begin */
+/* Промпт возврата — чистая функция состояния: без DOM, без обращения к страницам. Строки пишутся по грамматике `journal_apply.parse_answers`.
+   Уходит всё, что `apply` уже внёс в журнал: вариант с тем же текстом, слово, равное слову решения, парковка, зависимость, замечание.
+   Ответ в поле спора строки атаки (закрытие «вопрос человека», раздел `F-NN, decision`) — слово к решению `- F-NN: <буква> — «…»`, одна строка
+   на запись; два разных ответа — конфликт: строки нет, в замечаниях «конфликт ответов к F-NN — оставьте один», `conflictKeys` — ключи спора
+   строк, которые его составили. Ответ к записи без решения — замечание `F-NN: ответ`, ключи — `undecidedKeys`. Возвращает { text, conflictKeys, undecidedKeys }. */
+/* слово уже в решении журнала: `apply` дописывает новое слово к прежнему (`journal_apply._merge`, проверка вхождением),
+   поэтому внесённое — вхождение в слово решения, а не равенство; пробелы схлопываются, как в `_flat` */
+function wordIngested(journalWord, word) {
+  const n = s => String(s == null ? '' : s).replace(/\s+/g, ' ').trim();
+  const w = n(word);
+  return w !== '' && n(journalWord).includes(w);
+}
+function buildPrompt(J, attacks, st, disputes, date) {
+  const MARK = '(добавлен человеком';
+  const norm = s => String(s == null ? '' : s).replace(/\s+/g, ' ').trim();
+  const shorten = (s, n) => { s = String(s || ''); return s.length > n ? s.slice(0, n - 1) + '…' : s; };
+  const byId = Object.fromEntries(J.records.map(r => [r.id, r]));
+  const jchoice = rec => (rec.decision && rec.decision.option) || null;
+  /* рекомендация не решение: буква — выбор в состоянии или решение журнала, иначе её нет */
+  const letterOf = (rec, d) => (d && d.choice) || jchoice(rec) || null;
+  const lines = ['Решения по журналу ' + (J.source || '') + ', ' + date + ':'];
+  /* споры по строкам атаки: слово к решению или заметка */
+  const answers = {}, otherDisputes = [], undecidedKeys = [];
+  for (const att of (attacks || [])) for (const r of (att.rows || [])) {
+    const key = att.path + '|' + r.section + '|' + r.claim, sp = norm((disputes || {})[key]);
+    if (!sp) continue;
+    const m = /^(F-\d+),\s*decision\b/.exec(norm(r.section)), rec = m && byId[m[1]];
+    const askHuman = rec && rec.kind === 'развилка' && norm(r.fix).toLowerCase() === 'вопрос человеку';
+    if (askHuman && letterOf(rec, st.decisions[rec.id])) {
+      (answers[rec.id] = answers[rec.id] || []).push({ key, text: sp });
+    } else if (askHuman) {   /* запись без решения: слова без выбора нет, ответ — замечание `F-NN: …`, запись остаётся открытой */
+      undecidedKeys.push(key); otherDisputes.push(rec.id + ': ' + sp);
+    } else otherDisputes.push('атака ' + att.path + ' · ' + r.lens + ' · «' + shorten(r.claim, 60) + '» — спор: ' + sp);
+  }
+  const conflicts = [], conflictKeys = [];
+  for (const rec of J.records) {
+    const d = st.decisions[rec.id];
+    if (rec.kind === 'факт') { const sp = norm(st.disputes[rec.id]); if (sp) lines.push('- ' + rec.id + ': факт оспорен — «' + sp + '»'); continue; }
+    const jc = jchoice(rec), jword = rec.decision ? norm(rec.decision.word) : '';
+    for (const o of (st.added[rec.id] || [])) {
+      const known = (rec.options || []).some(x => x.letter === o.letter && norm(String(x.text).split(MARK)[0]) === norm(o.text));
+      if (!known) lines.push('- ' + rec.id + ': добавлен вариант ' + o.letter + '. ' + o.text);
+    }
+    const u = st.deps[rec.id], deps = rec.depends_on || [];
+    if (u) {
+      for (const x of u.add) if (!deps.includes(x)) lines.push('- ' + rec.id + ': зависимость добавлена ' + x);
+      for (const x of u.remove) if (deps.includes(x)) lines.push('- ' + rec.id + ': зависимость снята ' + x);
+    }
+    if (d) {
+      const w = (d.word || '').trim(), jpark = (rec.parking || []).map(p => norm(p.text));
+      for (const p of (d.parked || [])) if (!jpark.includes(norm(p.text))) lines.push('- ' + rec.id + ': припарковано → ' + p.addressee + ' — «' + p.text + '»');
+      if (d.choice && d.choice !== jc) lines.push('- ' + rec.id + ': ' + d.choice + (jc ? ' (было ' + jc + ')' : '') + (w ? ' — «' + w + '»' : ' — (без слова)'));
+      else if (w && !wordIngested(jword, w)) lines.push('- ' + rec.id + ': ' + (jc ? 'к решению ' + jc : 'без выбора') + ' — «' + w + '»');
+    }
+    const letter = letterOf(rec, d);
+    const ans = (answers[rec.id] || []).filter(a => !(jc && letter === jc && wordIngested(jword, a.text)));   /* слово, уже вошедшее в decision, — не добавляется */
+    const distinct = [...new Set(ans.map(a => a.text))];
+    if (distinct.length > 1) { conflicts.push(rec.id); ans.forEach(a => conflictKeys.push(a.key)); }
+    else if (distinct.length === 1) lines.push('- ' + rec.id + ': ' + letter + ' — «' + distinct[0] + '»');
+  }
+  if (st.newForks.length) { lines.push('Новые развилки:'); for (const f of st.newForks) lines.push('- ' + f.id + ': ' + f.question + ' — варианты: ' + f.options.replace(/\n+/g, ' | ') + (f.word ? ' — «' + f.word + '»' : '')); }
+  /* замечания к схеме одной строкой: замечания режима 1 первыми, споры по атаке, конфликты ответов; уже внесённое в notes[] журнала уходит */
+  const own = (st.notes || '').trim(), ingested = (J.notes || []).some(n => norm(n.text).includes(norm(own)));
+  const notes = [own && !ingested ? own : ''].concat(otherDisputes, conflicts.map(id => 'конфликт ответов к ' + id + ' — оставьте один')).filter(Boolean);
+  if (notes.length) lines.push('Замечания к схеме: ' + notes.join(' · '));
+  if (lines.length === 1) lines.push('(нового нет — решения из журнала остаются как есть, молчание по открытой развилке оставляет её открытой)');
+  return { text: lines.join('\n'), conflictKeys, undecidedKeys };
+}
+/* prompt:end */
+function currentPrompt() { return buildPrompt(JOURNAL, ATTACK, state, attackState.disputes, new Date().toISOString().slice(0, 10)); }
+function updateOut() { document.getElementById('out').value = currentPrompt().text; markConflicts(); }
+
+/* ---------- режимы: переключатель в шапке, видимость панелей ---------- */
+function renderModes() {
+  const el = document.getElementById('modes');
+  const rows = ATTACK.reduce((n, a) => n + (a.rows || []).length, 0);
+  el.innerHTML = MODES.map(m => '<button class="small' + (mode === m ? ' active' : '') + '" data-mode="' + m + '">' + MODE_LABELS[m] + (m === 'attack' && rows ? ' · ' + rows : '') + '</button>').join('');
+  el.querySelectorAll('button').forEach(b => b.onclick = () => setMode(b.dataset.mode));
+  document.getElementById('viewDecisions').classList.toggle('hidden', mode !== 'decisions');
+  document.getElementById('viewCheck').classList.toggle('hidden', mode !== 'check');
+  document.getElementById('viewAttack').classList.toggle('hidden', mode !== 'attack');
+  document.getElementById('outpanel').classList.toggle('hidden', mode === 'check');   /* проверка ничего не возвращает */
+}
+
+/* ---------- общее для режимов 2 и 3 ---------- */
+function isProbe(rec) { return !!(rec.outcome && rec.outcome.kind === 'проба'); }
+function isAdded(o) { return !!o.added || String(o.text || '').includes(ADDED_MARK); }
+/* тег «отступление от F-NN» у варианта с `deviation` — один вид в карточке, «проверке» и блоке записи «атаки» */
+function deviationTag(o) { return o && o.deviation ? '<span class="tag deviation">отступление от ' + esc(o.deviation) + '</span>' : ''; }
+function isOneWay(rec) { return !!(rec.reversibility && rec.reversibility.level === ONE_WAY); }
+function num(id) { return parseInt(String(id).slice(2), 10) || 0; }
+function allEvidence(rec) { return (rec.evidence || []).concat(...(rec.options || []).map(o => o.evidence || [])); }
+function shaChip(sha, missing) { return sha ? '<code title="' + esc(sha) + '">' + esc(sha.slice(0, 12)) + '</code>' : '<span class="mute">' + esc(missing) + '</span>'; }
+function journalTarget(att) { return ((att.frontmatter || {}).targets || []).find(t => t.path === 'decisions.json'); }
+/* сверка хеша цели decisions.json из frontmatter атаки с хешем файла журнала, который встроил render-html (ключ sha256) */
+function verdictNote(att) {
+  const t = journalTarget(att);
+  if (!t || !JOURNAL.sha256) return '';
+  if (!t.sha256) return '<span class="badge warn">хеш журнала в атаке не записан</span>';
+  return t.sha256 === JOURNAL.sha256 ? '<span class="badge ok">хеш журнала совпал</span>' : '<span class="badge bad">вердикт устарел: журнал изменён после атаки</span>';
+}
+
+/* ---------- режим 2 — проверка: снимок решений перед proposal, только чтение ---------- */
+/* проекция «куда уйдёт» — зеркало render_design (tools/journal_render.py): решённая развилка, не проба → Decisions
+   («в одну сторону» — первыми); проба Specify* → spec.md; Backstop → тест-страховка в tasks.md, в design.md её нет;
+   Dismiss → никуда, с причиной; Defer и открытая развилка → Open Questions; факт → Context, спорный — ещё и Open Questions */
+function destination(rec) {
+  if (rec.kind === 'факт') return { label:'design.md › Context', note: (rec.dispute || '').trim() ? 'спор → design.md › Open Questions' : '' };
+  if (isProbe(rec)) {
+    const v = String(rec.outcome.value || ''), reason = (rec.outcome.reason || '').trim();
+    if (v.startsWith('Specify')) return { label:'spec.md', note:'исход ' + v };
+    if (v === 'Backstop') return { label:'tasks.md › тест-страховка', note:'в design.md не попадает' };
+    if (v === 'Dismiss') return { label:'никуда', note: reason ? 'причина: ' + reason : 'причина не записана' };
+    if (v === 'Defer') return { label:'design.md › Open Questions', note:'отложена (Defer)' };
+    return { label:'никуда', note:'исход «' + v + '» вне четырёх' };
+  }
+  if (rec.decision && rec.decision.option) return { label:'design.md › Decisions', note: isOneWay(rec) ? 'в одну сторону — первой' : '' };
+  return { label:'design.md › Open Questions', note:'открыта' };
+}
+/* парковки: render_design кладёт каждую в Open Questions; адресат говорит, где ищется ответ */
+function parkingDestination(addressee) { return 'design.md › Open Questions → ' + ({ 'ИБ':'security.md', 'материалы':'research/', 'человек':'вопрос человеку' }[addressee] || '—'); }
+
+function checkCard(rec) {
+  const d = destination(rec), isFact = rec.kind === 'факт';
+  const picked = rec.decision && rec.decision.option ? (rec.options || []).find(o => o.letter === rec.decision.option) : null;
+  let html = '<div class="card' + (isFact ? ' fact' : picked ? ' decided' : '') + '"><div class="head"><span class="id mono">' + esc(rec.id) + '</span>' +
+    '<span class="badge">' + esc(rec.kind) + ' · ' + esc(rec.status) + '</span><span class="badge">' + esc(rec.delivery || '—') + '</span>' +
+    (isOneWay(rec) ? '<span class="badge warn">в одну сторону</span>' : '') +
+    '<span class="badge dest" title="куда уйдёт — по правилам render-design">→ ' + esc(d.label) + (d.note ? ' · ' + esc(d.note) : '') + '</span></div>' +
+    '<div class="q">' + md(rec.question) + '</div>';
+  if (picked) html += '<div class="opt chosen"><span class="letter">' + esc(picked.letter) + '.</span><div>' + md(picked.text) + (isAdded(picked) ? '<span class="tag added">добавлен человеком</span>' : '') + deviationTag(picked) + '</div></div>';
+  if (rec.decision && rec.decision.word) html += '<div class="note info"><b>слово (' + esc(rec.decision.date || 'без даты') + '):</b> «' + md(rec.decision.word) + '»</div>';
+  if (rec.reversibility) html += '<div class="meta">обратимость: ' + esc(rec.reversibility.level) + (rec.reversibility.why ? ' — ' + md(rec.reversibility.why) : '') + '</div>';
+  if (rec.outcome) html += '<div class="meta">исход: ' + esc(rec.outcome.kind) + ' — <b>' + esc(rec.outcome.value) + '</b>' + (rec.outcome.reason ? ' — ' + md(rec.outcome.reason) : '') + '</div>';
+  if (!picked && !isFact) {
+    html += (rec.options || []).map(o => '<div class="opt"><span class="letter">' + esc(o.letter) + '.</span><div>' + md(o.text) +
+      (o.unlikely ? '<span class="tag unlikely">маловероятно: ' + md(o.unlikely) + '</span>' : '') + (isAdded(o) ? '<span class="tag added">добавлен человеком</span>' : '') + deviationTag(o) + '</div></div>').join('');
+    if (rec.recommendation) html += '<div class="rec">рекомендация: <b>' + esc(rec.recommendation.option || '') + '</b> — ' + md(rec.recommendation.why || rec.recommendation.text || '') + '</div>';
+  } else if (picked) {
+    const added = (rec.options || []).filter(o => isAdded(o) && o.letter !== picked.letter);
+    if (added.length) html += '<div class="meta">добавлены человеком: ' + esc(added.map(o => o.letter + '. ' + o.text).join('; ')) + '</div>';
+  }
+  if (isFact) {
+    html += (rec.evidence || []).map(evHtml).join('');
+    html += (rec.dispute || '').trim() ? '<div class="note park"><b>спор:</b> ' + md(rec.dispute) + '</div>' : '<div class="meta">спора нет</div>';
+  }
+  if (rec.consequences) html += '<div class="cons">следствия: ' + md(rec.consequences) + '</div>';
+  return html + '</div>';
+}
+
+function renderCheck() {
+  const recs = JOURNAL.records, forks = recs.filter(r => r.kind === 'развилка');
+  const decidedAll = forks.filter(r => r.decision && r.decision.option);
+  const decided = decidedAll.filter(r => !isProbe(r)), probes = recs.filter(isProbe);
+  const open = forks.filter(r => !(r.decision && r.decision.option)), facts = recs.filter(r => r.kind === 'факт');
+  const parkings = recs.flatMap(r => (r.parking || []).map(p => Object.assign({ rec:r.id }, p)));
+  const snapshot = ATTACK.find(journalTarget);
+  let html = '<div class="card"><div class="head"><span class="id mono">снимок</span><span class="badge">' + esc(JOURNAL.source || '') + '</span>' +
+    '<span class="badge">sha256 журнала: ' + shaChip(JOURNAL.sha256, 'не подан — рендер не из файла') + '</span>' +
+    (snapshot ? '<span class="badge ' + (snapshot.frontmatter.status === 'passed' ? 'ok' : 'park') + '">атака: ' + esc(snapshot.frontmatter.status || '—') + '</span>' + verdictNote(snapshot)
+              : '<span class="badge">атака не подана</span>') +
+    '</div><div class="q">' + md(JOURNAL.title || '') + '</div>' +
+    '<div class="meta">только чтение: режим ничего не пишет и вердиктом не считается — снимок решений перед proposal и spec.md; «→» у записи — куда она уйдёт по правилам render-design</div></div>';
+  html += '<div class="counters">решено <b>' + decidedAll.length + '</b> · открыто <b>' + open.length + '</b> · припарковано: ' +
+    ADDRESSEES.map(a => esc(a) + ' <b>' + parkings.filter(p => p.addressee === a).length + '</b>').join(' / ') +
+    ' · фактов оспорено <b>' + facts.filter(r => (r.dispute || '').trim()).length + '</b>' +
+    ' · улик не найдено <b>' + recs.flatMap(allEvidence).filter(ev => ev.found === false).length + '</b></div>';
+  const dates = [...new Set(decided.map(r => r.decision.date || ''))].sort((a, b) => a < b ? 1 : a > b ? -1 : 0);
+  html += '<h2>Решено — по дате решения · ' + decided.length + '</h2>' + (dates.length ? '' : '<div class="meta">—</div>');
+  for (const date of dates) {
+    const group = decided.filter(r => (r.decision.date || '') === date).sort((a, b) => (isOneWay(b) - isOneWay(a)) || (num(a.id) - num(b.id)));
+    html += '<h3>' + (date ? esc(date) : 'без даты') + ' · ' + group.length + '</h3>' + group.map(checkCard).join('');
+  }
+  const section = (title, list) => '<h2>' + title + ' · ' + list.length + '</h2>' + (list.length ? list.map(checkCard).join('') : '<div class="meta">—</div>');
+  html += section('Открытые развилки — с рекомендацией', open) + section('Пробы — с исходом', probes) + section('Факты — улики и спор', facts);
+  html += '<h2>Парковки — по адресатам · ' + parkings.length + '</h2>' + (parkings.length ? '' : '<div class="meta">—</div>');
+  for (const a of ADDRESSEES) {
+    const ps = parkings.filter(p => p.addressee === a); if (!ps.length) continue;
+    html += '<h3>→ ' + esc(a) + ' · ' + ps.length + ' <span class="badge dest">' + esc(parkingDestination(a)) + '</span></h3>' +
+      ps.map(p => '<div class="parkitem"><span class="who mono">' + esc(p.rec) + '</span><span>' + md(p.text) + (p.finding ? ' — <b>находка:</b> ' + md(p.finding) : '') + '</span></div>').join('');
+  }
+  const notes = JOURNAL.notes || [];
+  html += '<h2>Заметки · ' + notes.length + '</h2>' + (notes.length ? '<ul>' + notes.map(n => '<li><span class="mono">' + esc(n.date) + '</span> — ' + md(n.text) + '</li>').join('') + '</ul>' : '<div class="meta">—</div>');
+  document.getElementById('viewCheck').innerHTML = html;
+}
+
+/* ---------- режим 3 — атака: строки attack/*.md, фильтр по линзе, линза → тяжесть → строки ---------- */
+/* какой закрытый список линз у файла: журнал — единственная цель `decisions.json`, иначе артефакты */
+function attackKind(att) { const t = (att.frontmatter || {}).targets || []; return t.length === 1 && t[0].path === 'decisions.json' ? 'journal' : 'artifacts'; }
+function lensList(att) { return ATTACK_LENSES[attackKind(att)]; }
+function lensLabel(att, slug) { const l = lensList(att).find(x => x.slug === slug); return l ? l.label : ''; }
+/* тяжесть — первое слово ячейки; причина понижения — текст в скобках после него */
+function sevBase(s) { const m = /^(блокер|предупреждение|справка)(?![а-яёa-z])/i.exec(String(s || '').trim()); return m ? m[1].toLowerCase() : String(s || '').trim(); }
+function sevReason(s) { const m = /\(([^)]+)\)/.exec(String(s || '')); return m ? m[1].trim() : ''; }
+function sevClass(s) { const b = sevBase(s); return b === 'блокер' ? 'bad' : b === 'предупреждение' ? 'warn' : b === 'справка' ? '' : 'park'; }
+/* при опоре «нет» тяжесть источника — блокер; ниже блокера без причины в скобках — понижение без причины, с причиной — понижение с видимой причиной (F-54.E) */
+function demotion(r) {
+  const noSupport = /^нет(?![а-яёa-z0-9])/i.test(String(r.support || '').trim());
+  if (!noSupport || sevBase(r.severity) === 'блокер') return null;
+  return { reason: sevReason(r.severity) };
+}
+function demotionBadge(r) {
+  const d = demotion(r);
+  if (!d) return '';
+  return d.reason ? '<span class="badge warn">понижено: ' + esc(d.reason) + '</span>' : '<span class="badge bad">понижение без причины</span>';
+}
+/* раздел вида `F-NN, поле` с записью в журнале — переход к карточке в режиме 1, не слияние сущностей; якорь строится только из `F-NN` */
+function recordIdOf(section) { const m = /^(F-\d+)(?!\d)/.exec(String(section || '').trim()); return m && byId[m[1]] ? m[1] : null; }
+function sectionHtml(section) {
+  const id = recordIdOf(section);
+  if (id) return '<a href="#' + id + '" data-goto="' + id + '" title="к записи ' + id + ' в режиме «решения»">' + esc(section) + '</a>';
+  return esc(section);
+}
+/* скрываемый блок с текстом записи, на которую ссылается раздел строки: вопрос, выбранный вариант, переход к карточке (F-18.A) */
+function recordBlock(section) {
+  const id = recordIdOf(section);
+  if (!id) return '';
+  const rec = byId[id], picked = rec.decision && rec.decision.option ? (rec.options || []).find(o => o.letter === rec.decision.option) : null;
+  return '<details class="recblock"><summary>запись ' + id + ' — текст вопроса</summary><div class="q">' + md(rec.question) + '</div>' +
+    (picked ? '<div class="opt chosen"><span class="letter">' + esc(picked.letter) + '.</span><div>' + md(picked.text) + deviationTag(picked) + '</div></div>'
+            : '<div class="meta">решения нет — запись открыта</div>') +
+    '<div class="meta"><a href="#' + id + '" data-goto="' + id + '">к карточке ' + id + ' в режиме «решения»</a></div></details>';
+}
+function attackRow(att, ai, ri, r, conflict, undecided) {
+  const key = disputeKey(att, r), known = lensList(att).some(l => l.slug === r.lens);
+  return '<div class="card attackrow' + (conflict ? ' conflict' : '') + '" data-card="' + ai + '|' + ri + '"><div class="head"><span class="badge ' + sevClass(r.severity) + '">' + esc(r.severity) + '</span>' + demotionBadge(r) +
+    '<span class="badge">' + sectionHtml(r.section) + '</span>' +
+    (known ? '' : '<span class="badge bad">линза «' + esc(r.lens) + '» вне списка — строка невалидна</span>') + '</div>' +
+    '<div class="q">' + md(r.claim) + '</div>' +
+    '<div class="meta">инвариант: ' + md(r.invariant) + '</div><div class="meta">опора: ' + md(r.support) + '</div><div class="meta">чем закрыть: ' + md(r.fix) + '</div>' +
+    recordBlock(r.section) +
+    '<div class="note warn undecided-note' + (undecided ? '' : ' hidden') + '">запись не решена — ответ уйдёт в замечания; выбери вариант в карточке</div>' +
+    '<div class="note bad conflict-note' + (conflict ? '' : ' hidden') + '">конфликт ответов к одному решению — оставь один, иначе слово к решению не уйдёт в промпт</div>' +
+    '<div class="row"><textarea data-att="' + ai + '" data-row="' + ri + '" placeholder="спор: почему опора есть / почему не блокер — уйдёт в промпт возврата; при закрытии «вопрос человеку» и разделе F-NN, decision — слово к решению">' + esc(attackState.disputes[key] || '') + '</textarea></div></div>';
+}
+function currentFlags() { return buildPrompt(JOURNAL, ATTACK, state, attackState.disputes, ''); }
+/* страница подсвечивает конфликт ответов у строк, не пересобирая список: поле спора не теряет фокус */
+function markConflicts() {
+  if (mode !== 'attack') return;
+  const flags = currentFlags(), bad = new Set(flags.conflictKeys), und = new Set(flags.undecidedKeys);
+  document.querySelectorAll('#viewAttack .attackrow').forEach(c => {
+    const [ai, ri] = String(c.dataset.card).split('|').map(Number), att = ATTACK[ai], r = att && att.rows[ri];
+    const on = !!r && bad.has(disputeKey(att, r));
+    c.classList.toggle('conflict', on);
+    const n = c.querySelector('.conflict-note'); if (n) n.classList.toggle('hidden', !on);
+    const u = c.querySelector('.undecided-note'); if (u) u.classList.toggle('hidden', !(r && und.has(disputeKey(att, r))));
+  });
+}
+function renderAttack() {
+  const el = document.getElementById('viewAttack');
+  if (!ATTACK.length) { el.innerHTML = '<div class="card"><div class="q">атака не подана: <code>render-html --attack &lt;attack/decisions.md&gt; [--attack &lt;attack/artifacts.md&gt;]</code></div></div>'; return; }
+  const flags = currentFlags(), bad = new Set(flags.conflictKeys), und = new Set(flags.undecidedKeys);
+  /* группы по файлам: линзы списка файла в его порядке, затем «вне списка» */
+  const files = ATTACK.map((att, ai) => {
+    const rows = att.rows || [], list = lensList(att), slugs = list.map(l => l.slug);
+    const indexed = rows.map((r, ri) => ({ r, ri }));
+    const groups = list.map(l => ({ slug:l.slug, rows:indexed.filter(x => x.r.lens === l.slug) })).filter(g => g.rows.length);
+    const outside = indexed.filter(x => !slugs.includes(x.r.lens));
+    if (outside.length) groups.push({ slug:OUTSIDE, rows:outside });
+    return { att, ai, rows, groups, outside };
+  });
+  const available = [], count = {};
+  for (const f of files) for (const g of f.groups) { if (!available.includes(g.slug)) available.push(g.slug); count[g.slug] = (count[g.slug] || 0) + g.rows.length; }
+  if (attackLens !== 'all' && !available.includes(attackLens)) attackLens = 'all';
+  const total = files.reduce((n, f) => n + f.rows.length, 0);
+  let html = '<div class="note info">' + esc(ATTACK_HINT) + '</div>' +
+    '<div class="row lensfilter" id="lensFilter"><b style="flex:0 0 auto">линза:</b>' +
+    '<button class="small' + (attackLens === 'all' ? ' active' : '') + '" data-lens="all">все · ' + total + '</button>' +
+    available.map(slug => '<button class="small' + (attackLens === slug ? ' active' : '') + '" data-lens="' + esc(slug) + '">' +
+      (slug === OUTSIDE ? 'вне списка' : esc(slug)) + ' · ' + count[slug] + '</button>').join('') + '</div>';
+  for (const f of files) {
+    const { att, ai, rows, groups, outside } = f, fm = att.frontmatter || {};
+    const sev = SEVERITY.map(s => rows.filter(r => sevBase(r.severity) === s).length);
+    const otherSev = rows.filter(r => !SEVERITY.includes(sevBase(r.severity))).length;
+    /* счётчики тяжести — по всему файлу, в шапке файла, вне контейнера строк: фильтр их не трогает (F-56.E) */
+    html += '<div class="card"><div class="head"><span class="id mono">' + esc(att.path) + '</span><span class="badge ' + (fm.status === 'passed' ? 'ok' : 'park') + '">status: ' + esc(fm.status || '—') + '</span>' + verdictNote(att) +
+      '<span class="badge">' + (attackKind(att) === 'journal' ? 'линзы журнала' : 'линзы артефактов') + '</span></div>' +
+      '<div class="meta">цели: ' + (fm.targets || []).map(t => '<span class="chip">' + esc(t.path) + ' ' + shaChip(t.sha256, 'без хеша') + '</span>').join('') + '</div>' +
+      '<div class="counters sevcounters">по тяжести, весь файл: блокеров <b>' + sev[0] + '</b> · предупреждений <b>' + sev[1] + '</b> · справок <b>' + sev[2] + '</b>' +
+      (otherSev ? ' · прочих <b>' + otherSev + '</b>' : '') + '</div>' +
+      '<div class="counters">по линзе: ' + groups.filter(g => g.slug !== OUTSIDE).map(g => '<code>' + esc(g.slug) + '</code> <b>' + g.rows.length + '</b>').join(' · ') +
+      (outside.length ? ' · строк вне списка (невалидны, в счётчике линз их нет): <b>' + outside.length + '</b>' : '') + '</div></div>';
+    html += '<div class="attack-rows">';
+    const shown = groups.filter(g => attackLens === 'all' || g.slug === attackLens);
+    if (!shown.length) html += '<div class="meta">по фильтру в этом файле строк нет</div>';
+    for (const g of shown) {
+      html += '<h2>' + (g.slug === OUTSIDE ? 'вне списка — слуг не из закрытого списка линз файла' : '<code>' + esc(g.slug) + '</code> · ' + esc(lensLabel(att, g.slug))) + ' · ' + g.rows.length + '</h2>';
+      const sevs = SEVERITY.concat([...new Set(g.rows.map(x => sevBase(x.r.severity)))].filter(s => !SEVERITY.includes(s)));
+      for (const sv of sevs) {
+        const part = g.rows.filter(x => sevBase(x.r.severity) === sv);
+        if (part.length) html += '<h3>' + esc(sv) + ' · ' + part.length + '</h3>' + part.map(x => attackRow(att, ai, x.ri, x.r, bad.has(disputeKey(att, x.r)), und.has(disputeKey(att, x.r)))).join('');
+      }
+    }
+    html += '</div><!' + '--/attack-rows-->';
+  }
+  el.innerHTML = html;
+  el.querySelectorAll('button[data-lens]').forEach(b => b.onclick = () => { attackLens = b.dataset.lens; try { localStorage.setItem(KEY + ':lens', attackLens); } catch (e) {} renderAttack(); });
+  el.querySelectorAll('textarea[data-att]').forEach(t => t.oninput = () => {
+    const att = ATTACK[+t.dataset.att], r = att.rows[+t.dataset.row], k = disputeKey(att, r);
+    if (t.value.trim()) attackState.disputes[k] = t.value; else delete attackState.disputes[k]; saveAttack(); updateOut();
+  });
+  el.querySelectorAll('a[data-goto]').forEach(a => a.onclick = e => { e.preventDefault(); setMode('decisions'); const c = document.getElementById(a.dataset.goto); if (c && c.scrollIntoView) c.scrollIntoView(); });
+}
+
+function render() { renderModes(); renderSchemePanel(); document.getElementById('btnOpen').classList.toggle('active', filter.openOnly); renderCards(); renderNewForks(); renderToc(); renderStats(); headerHeight(); if (mode === 'check') renderCheck(); if (mode === 'attack') renderAttack(); updateOut(); }
+
+document.getElementById('notes').value = state.notes || '';
+document.getElementById('notes').oninput = e => { state.notes = e.target.value; save(); updateOut(); };
+document.getElementById('btnAll').onclick = () => { filter = { openOnly:false }; render(); };
+document.getElementById('btnOpen').onclick = () => { filter.openOnly = !filter.openOnly; render(); };
+document.getElementById('btnScheme').onclick = () => { schemeOn = !schemeOn; try { localStorage.setItem(KEY + ':scheme', schemeOn ? '1' : '0'); } catch (e) {} renderSchemePanel(); };
+document.getElementById('btnToggleNew').onclick = () => document.getElementById('newForkForm').classList.toggle('hidden');
+document.getElementById('btnAddFork').onclick = () => {
+  const q = document.getElementById('nfQuestion').value.trim(); if (!q) return;
+  state.newForks.push({ id: 'F-N' + (state.newForks.length + 1), question: q, options: document.getElementById('nfOptions').value.trim(), word: document.getElementById('nfWord').value.trim() });
+  ['nfQuestion','nfOptions','nfWord'].forEach(i => document.getElementById(i).value = ''); save(); render();
+};
+document.getElementById('btnCopy').onclick = async () => {
+  const t = document.getElementById('out'); let ok = false;
+  try { await navigator.clipboard.writeText(t.value); ok = true; } catch (e) { t.select(); ok = document.execCommand('copy'); }
+  const c = document.getElementById('copied'); c.textContent = ok ? 'скопировано' : 'не удалось — выдели и скопируй руками'; setTimeout(() => c.textContent = '', 2000);
+};
+document.getElementById('btnExport').onclick = () => {
+  const blob = new Blob([JSON.stringify(state, null, 1)], { type:'application/json' });
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'symphysis-decisions.json'; a.click();
+};
+document.getElementById('btnImport').onclick = () => document.getElementById('fileImport').click();
+document.getElementById('fileImport').onchange = e => {
+  const f = e.target.files[0]; if (!f) return;
+  f.text().then(txt => { try { state = Object.assign(EMPTY(), JSON.parse(txt)); save(); render(); document.getElementById('notes').value = state.notes || ''; } catch (err) { alert('не JSON состояния'); } });
+};
+document.getElementById('btnReset').onclick = () => { if (confirm('Стереть все решения и споры из браузера? Решения, уже внесённые в журнал, останутся.')) { state = EMPTY(); save(); attackState = { disputes:{} }; saveAttack(); document.getElementById('notes').value = ''; render(); } };
+document.getElementById('title').textContent = JOURNAL.title || document.title;
+render();
+</script>
+</body>
+</html>

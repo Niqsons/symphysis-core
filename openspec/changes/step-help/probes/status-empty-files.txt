@@ -1,0 +1,18 @@
+=== только intent.md
+готово: intent
+готовы к работе: decisions
+isPlanningComplete=false applyRequires=tasks,attack-artifacts
+=== decisions.json = {}: ни одной записи, ничего не решено
+готово: intent decisions
+готовы к работе: research
+isPlanningComplete=false applyRequires=tasks,attack-artifacts
+=== пустые research/none.md, proposal.md, specs/a/spec.md
+готово: intent decisions research proposal specs
+готовы к работе: attack-decisions consequences security
+isPlanningComplete=false applyRequires=tasks,attack-artifacts
+=== пустые consequences.md, design.md; tasks.md с одной задачей; security.md нет
+готово: intent decisions research proposal specs consequences design tasks
+готовы к работе: attack-decisions security
+isPlanningComplete=false applyRequires=tasks,attack-artifacts
+=== instructions apply без security.md
+state=ready progress={"total":1,"complete":0,"remaining":1}

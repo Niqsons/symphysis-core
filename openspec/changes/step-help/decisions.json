@@ -1,0 +1,2310 @@
+{
+ "title": "Журнал решений: step-help",
+ "source": "decisions.json",
+ "intro": "Пути улик — от корня проекта; префикс `vscode/` — репозиторий плагина symphysis-vscode, `upstream/` — исходники форка; корни — `openspec/changes/step-help/probes/journal-roots.json`. Читались: `intent.md`, `schema.yaml`, `docs/GUIDE.md`, `docs/repo-contract.md`, `state.ts` форка, `tools/journal_render.py`, `tools/symphysis_config.py`, инсталлятор, граница плагина с ядром. Проба с пустыми файлами — `probes/status-empty-files.sh`, её след рядом.",
+ "notes": [
+  {
+   "date": "2026-11-02",
+   "text": "F-32 подтверждён словом человека в чате: «верно понял»; справка делит со схемой панель рядом с карточками."
+  },
+  {
+   "date": "2026-11-02",
+   "text": "круг 1 закончен: решений 16, фактов 20, открытых развилок 0, парковок материалам 0, антиподов 3"
+  },
+  {
+   "date": "2026-11-02",
+   "text": "брейншторм закончен по решению человека: «Новый круг не нужен.»"
+  },
+  {
+   "date": "2026-11-02",
+   "text": "F-26.B сделан вне этого изменения: коммит `2961908` влит в `main` проматыванием по слову человека, `apply` без `security.md` отвечает `blocked`; факт F-10 описывает состояние до правки."
+  },
+  {
+   "date": "2026-11-02",
+   "text": "сверка после выбора F-38.A: `decision-scheme` уйдёт в архив раньше переименования, поэтому его `decisions.html` уезжает туда со старым именем и подпадает под «архив не трогаем» из F-35.A; оговорка «у `decision-scheme` старый файл удаляется» отпала, слово F-35 не менялось."
+  },
+  {
+   "date": "2026-11-02",
+   "text": "F-39 заведён словом человека в чате: «Давай добавим запись.» — ответ на вопрос, нужна ли в `GUIDE` строка о справке."
+  }
+ ],
+ "records": [
+  {
+   "id": "F-01",
+   "question": "Критерий готовности: какой шаг конвейера сейчас выполняется?",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "постановка",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/step-help/intent.md",
+     "quote": "какой шаг конвейера сейчас выполняется?",
+     "line": 8,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-02",
+   "question": "Критерий готовности: зачем он? какие основные механики?",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "постановка",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/step-help/intent.md",
+     "quote": "зачем он? какие основные механики?",
+     "line": 9,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-03",
+   "question": "Критерий готовности: что будет, если я не выполню этот шаг?",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "постановка",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/step-help/intent.md",
+     "quote": "что будет, если я не выполню этот шаг?",
+     "line": 10,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-04",
+   "question": "Критерий готовности: какие файлы и где смотреть, чтобы проверить результаты шага",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "постановка",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/step-help/intent.md",
+     "quote": "какие файлы и где смотреть, чтобы проверить результаты шага",
+     "line": 11,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-05",
+   "question": "Критерий готовности: справку, которая смотрит на status, и описывает текущий шаг",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "постановка",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/step-help/intent.md",
+     "quote": "справку, которая смотрит на status, и описывает текущий шаг",
+     "line": 13,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-06",
+   "question": "Критерий готовности: можно посмотреть и другие шаги, с помощью листания справки, или выбора пункта",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "постановка",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/step-help/intent.md",
+     "quote": "можно посмотреть и другие шаги, с помощью листания справки, или выбора пункта",
+     "line": 13,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-07",
+   "question": "Критерий готовности: базово её выведем в html",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "постановка",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/step-help/intent.md",
+     "quote": "базово её выведем в html",
+     "line": 6,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-08",
+   "question": "Готовность шага в `status` — наличие его файла: содержание и решения журнала статус не читает. Журнал `{}` без единой записи делает `decisions` готовым, следующим назван `research`",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "материалы",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "На нём стоят F-19 и F-24.",
+   "evidence": [
+    {
+     "path": "upstream/openspec/src/core/artifact-graph/state.ts",
+     "quote": "Detects which artifacts are completed by checking file existence in the change directory.",
+     "line": 12,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "openspec/changes/step-help/probes/status-empty-files.txt",
+     "quote": "=== decisions.json = {}: ни одной записи, ничего не решено",
+     "line": 5,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "openspec/changes/step-help/probes/status-empty-files.txt",
+     "quote": "готовы к работе: research",
+     "line": 7,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "status",
+    "where"
+   ]
+  },
+  {
+   "id": "F-09",
+   "question": "После `specs` к работе готовы сразу три шага, `Next` называет один",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "материалы",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "На нём стоит F-27: один текущий шаг справка выбирает так же, как `/opsx:continue`.",
+   "evidence": [
+    {
+     "path": "openspec/changes/step-help/probes/status-empty-files.txt",
+     "quote": "готовы к работе: attack-decisions consequences security",
+     "line": 11,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "where"
+   ]
+  },
+  {
+   "id": "F-10",
+   "question": "Шаг `security` можно пропустить: `tasks` от него не зависит, а единственный путь к `apply` шёл через необязательную `attack-artifacts`; без `security.md` `instructions apply` отвечает `state=ready`. В спеке и решениях намерения пропускать его нет: решение об `apply.requires` говорит только об атаке",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "материалы",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "На нём стоят F-25 и F-26.",
+   "evidence": [
+    {
+     "path": "openspec/schemas/symphysis/schema.yaml",
+     "quote": "requires: [tasks, attack-artifacts]",
+     "line": null,
+     "verdict": "цитаты нет дословно",
+     "found": false
+    },
+    {
+     "path": "openspec/changes/step-help/probes/status-empty-files.txt",
+     "quote": "state=ready progress={\"total\":1,\"complete\":0,\"remaining\":1}",
+     "line": 18,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "openspec/changes/archive/2026-11-02-calibration-fixes/rulings.md",
+     "quote": "форк считает optional без файла выполненным и в гейте apply",
+     "line": 9,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-11",
+   "question": "Счётчики журнала уже считаются: развилки всего и решённые, разность даёт открытые",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "материалы",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "tools/journal_render.py",
+     "quote": "\"stats\": {\"records\": len(records), \"forks\": len(forks),",
+     "line": 185,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "tools/journal_render.py",
+     "quote": "\"decided\": sum(1 for r in forks if r[\"decision\"]),",
+     "line": 187,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "journal"
+   ]
+  },
+  {
+   "id": "F-12",
+   "question": "Прогресс задач отдаёт `instructions apply`: всего, закрыто, осталось",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "материалы",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/step-help/probes/status-empty-files.txt",
+     "quote": "state=ready progress={\"total\":1,\"complete\":0,\"remaining\":1}",
+     "line": 18,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "openspec/schemas/symphysis/schema.yaml",
+     "quote": "tracks: tasks.md",
+     "line": 157,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "tasks"
+   ]
+  },
+  {
+   "id": "F-13",
+   "question": "`apply`, `sync` и `archive` не артефакты графа; признака «синхронизация сделана» в файлах нет, спеки сравнивает сама команда архива",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "материалы",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "На нём стоит F-27: после задач справка называет `sync` и `archive` следующими, не утверждая, что `sync` не сделан.",
+   "evidence": [
+    {
+     "path": "openspec/schemas/symphysis/schema.yaml",
+     "quote": "apply:",
+     "line": 155,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "docs/GUIDE.md",
+     "quote": "Синхронизация: дельты из `specs/` изменения переходят в общие спеки `openspec/specs/`.",
+     "line": 504,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "docs/GUIDE.md",
+     "quote": "Спеки уже синхронизированы, поэтому команда спросит: `Archive now`, `Sync anyway` или `Cancel`.",
+     "line": 510,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "after"
+   ]
+  },
+  {
+   "id": "F-14",
+   "question": "`GUIDE` отправляет за текущим шагом к `status`, а ответов на четыре вопроса намерения в нём нет",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "материалы",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "docs/GUIDE.md",
+     "quote": "Какой шаг следующий, показывает `openspec status --change add-overdue`.",
+     "line": 263,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "openspec/changes/step-help/intent.md",
+     "quote": "сейчас в GUIDE.md описан процесс по шагам, и описан хорошо. Но не сказано:",
+     "line": 7,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-15",
+   "question": "Плагин зовёт ядро только через Python-скрипты из `.symphysis/tools/`, а версия ядра в проекте расходится с версией плагина",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "материалы",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "На нём стоят F-20 и F-23.",
+   "evidence": [
+    {
+     "path": "vscode/src/host/core.ts",
+     "quote": "Граница с ядром: `journal.py view-json`, `apply`, `check`, `render-md`, `render-html`.",
+     "line": 1,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "docs/repo-contract.md",
+     "quote": "Ядро лежит в `.symphysis/tools/` каждого проекта, и его версия расходится с версией плагина.",
+     "line": 59,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "plugin"
+   ]
+  },
+  {
+   "id": "F-16",
+   "question": "Каталог схемы целиком едет в `payload`, а инструменты в `.symphysis/tools/` — только по перечню и фильтру имён",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "материалы",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "На нём стоят F-20, F-23 и F-29: новый скрипт и шаблон требуют правки обоих мест.",
+   "evidence": [
+    {
+     "path": "installer/scripts/sync-payload.js",
+     "quote": "const DIRS = [\"openspec/schemas/symphysis\"];",
+     "line": 9,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "installer/scripts/sync-payload.js",
+     "quote": "\"tools/symphysis_config.py\",",
+     "line": 19,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "installer/lib/install.js",
+     "quote": "(journal.*\\.py|symphysis_config\\.py|playground-template\\.html",
+     "line": 107,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-17",
+   "question": "В рамке части 2 от 31 октября кроме четырёх вопросов были команды, подсказки, предыдущий и следующий шаг",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "материалы",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "На нём стоит F-28.",
+   "evidence": [
+    {
+     "path": "vscode/docs/design-part1-viewer.md",
+     "quote": "2. **Интерактивная справка о ходе работы** — какой шаг выполняется,",
+     "line": 30,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "vscode/docs/design-part1-viewer.md",
+     "quote": "с какими артефактами и командами, подсказки, предыдущий и следующий",
+     "line": 31,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-18",
+   "question": "Атаки в это изменение не включаются словом человека: `attack-decisions` и `attack-artifacts` не вызываются",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "материалы",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/step-help/intent.md",
+     "quote": "атаки в него включать не будем",
+     "line": 16,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-19",
+   "question": "Откуда справка берёт «где мы и чей ход»?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Только `openspec status`",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/changes/step-help/intent.md",
+       "quote": "справку, которая смотрит на status, и описывает текущий шаг",
+       "line": 13,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "`status`, счётчики журнала и прогресс задач; хук можно добавить позже, не меняя формат",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "tools/journal_render.py",
+       "quote": "\"decided\": sum(1 for r in forks if r[\"decision\"]),",
+       "line": 187,
+       "verdict": "сверено",
+       "found": true
+      },
+      {
+       "path": "openspec/changes/step-help/probes/status-empty-files.txt",
+       "quote": "=== decisions.json = {}: ни одной записи, ничего не решено",
+       "line": 5,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "C",
+     "text": "Всё это и хук: видно, что шаг выполняется прямо сейчас",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "vscode/docs/design-part1-viewer.md",
+       "quote": "какой шаг выполняется,",
+       "line": 30,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "B",
+    "why": "Один `status` ведёт дальше как раз тогда, когда ход за человеком (F-08); хук пока не сделан.",
+    "text": "Вопрос «какой шаг выполняется» до хука честно звучит как «какой шаг следующий и чей ход»."
+   },
+   "decision": {
+    "option": "B",
+    "word": "Да, твои рекомендации принимаю",
+    "date": "2026-11-02"
+   },
+   "reversibility": {
+    "level": "обратимо",
+    "why": "вывод справки ещё никем не занят: плагин начнёт читать его отдельным изменением, а хук добавится новым полем без смены контракта"
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "Страница не утверждает, что шаг выполняется сейчас.",
+   "evidence": [],
+   "comments": [],
+   "nodes": [
+    "status",
+    "journal",
+    "tasks",
+    "where"
+   ]
+  },
+  {
+   "id": "F-20",
+   "question": "Где лежат тексты шагов?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Отдельный файл в каталоге схемы; тест требует раздел для каждого артефакта",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "installer/scripts/sync-payload.js",
+       "quote": "const DIRS = [\"openspec/schemas/symphysis\"];",
+       "line": 9,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Поле у артефакта в `schema.yaml`",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/schemas/symphysis/schema.yaml",
+       "quote": "description: Журнал решений — развилки и факты с уликами, решает человек",
+       "line": 16,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "C",
+     "text": "Разбор разделов `docs/GUIDE.md`",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/changes/step-help/intent.md",
+       "quote": "сейчас в GUIDE.md описан процесс по шагам, и описан хорошо. Но не сказано:",
+       "line": 7,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Каталог уже едет в `payload`, текст версионируется вместе со схемой (F-15, F-16); ответов на четыре вопроса в `GUIDE` нет.",
+    "text": "Новый шаг без справки не пройдёт тест."
+   },
+   "decision": {
+    "option": "A",
+    "word": "Да, твои рекомендации принимаю",
+    "date": "2026-11-02"
+   },
+   "reversibility": {
+    "level": "обратимо",
+    "why": "файл текстов читает один скрипт и его тест; перенос меняет только их"
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [],
+   "comments": [],
+   "nodes": [
+    "texts"
+   ]
+  },
+  {
+   "id": "F-21",
+   "question": "Как обновляется HTML, раз файл сам `status` не вызовет?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Снимок одной командой, на странице время снятия",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/changes/step-help/intent.md",
+       "quote": "базово её выведем в html",
+       "line": 6,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Пересборка моделью в конце каждого шага",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/schemas/symphysis/schema.yaml",
+       "quote": "Улики сверяет `python .symphysis/tools/journal.py check <каталог изменения>/decisions.json` — это сигнал, не стоп.",
+       "line": 23,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "C",
+     "text": "Локальный сервер",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/changes/step-help/intent.md",
+       "quote": "базово её выведем в html",
+       "line": 6,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Живое обновление придёт с плагином; модель пересобирала бы страницу за токены и по дисциплине.",
+    "text": "Снимок честно показывает, на какой момент он снят."
+   },
+   "decision": {
+    "option": "A",
+    "word": "Да, твои рекомендации принимаю",
+    "date": "2026-11-02"
+   },
+   "reversibility": {
+    "level": "обратимо",
+    "why": "команда снимка не входит в контракт с плагином: он пойдёт через JSON"
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [],
+   "comments": [],
+   "nodes": [
+    "page"
+   ]
+  },
+  {
+   "id": "F-22",
+   "question": "Входит ли вкладка плагина в это изменение?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Только ядро: скрипт, тексты шагов, JSON и HTML; вкладка — отдельным изменением на этих данных",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/changes/step-help/intent.md",
+       "quote": "базово её выведем в html",
+       "line": 6,
+       "verdict": "сверено",
+       "found": true
+      },
+      {
+       "path": "openspec/changes/step-help/intent.md",
+       "quote": "Теперь стоит заняться тем, что блокирует разработку следующих частей плагина.",
+       "line": 5,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Одно изменение на оба проекта, как у `decision-scheme`, вместе со вкладкой",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/changes/decision-scheme/decisions.json",
+       "quote": "Одно изменение на оба проекта: specs и tasks говорят и о ядре, и о плагине",
+       "line": 640,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "C",
+     "text": "Только тексты шагов, без команды и без расчёта текущего шага",
+     "added": false,
+     "unlikely": "не отвечает на вопрос «какой шаг сейчас»",
+     "evidence": [
+      {
+       "path": "openspec/changes/step-help/intent.md",
+       "quote": "справку, которая смотрит на status, и описывает текущий шаг",
+       "line": 13,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Плагину нужен готовый контракт данных, а проверить справку можно на странице, без вкладки.",
+    "text": "Часть 2 плагина начнётся с уже проверенных данных."
+   },
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-02"
+   },
+   "reversibility": {
+    "level": "обратимо",
+    "why": "вкладка делается отдельным изменением в плагине на тех же данных; объединить работу можно до начала реализации"
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "В `docs/repo-contract.md` появится новый вывод для плагина.",
+   "evidence": [],
+   "comments": [],
+   "nodes": [
+    "plugin"
+   ]
+  },
+  {
+   "id": "F-23",
+   "question": "Где живёт расчёт и сборка страницы?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Новый скрипт `tools/step_help.py` с одной областью и `--help`: едет в `.symphysis/tools/`, зовёт `openspec status --json`",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "tools/symphysis_config.py",
+       "quote": "Журнал этот модуль не импортирует и настройки не читает (F-128.A).",
+       "line": 5,
+       "verdict": "сверено",
+       "found": true
+      },
+      {
+       "path": "vscode/src/host/core.ts",
+       "quote": "Граница с ядром: `journal.py view-json`, `apply`, `check`, `render-md`, `render-html`.",
+       "line": 1,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Подкоманда `symphysis` на Node: поиск форка уже есть, но команда глобальная и идёт из клона, а не с проектом",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "installer/lib/openspec-bin.js",
+       "quote": "Первый `openspec` из PATH по PATHEXT; null — нет.",
+       "line": 20,
+       "verdict": "сверено",
+       "found": true
+      },
+      {
+       "path": "docs/GUIDE.md",
+       "quote": "Ссылка ведёт в клон: `git pull` обновляет и её, а удаление клона ломает команду.",
+       "line": 144,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "C",
+     "text": "Подкоманда `journal.py`: на шаге `intent` журнала ещё нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "tools/journal_cli.py",
+       "quote": "сверить улики грепом по цитате (сигнал, не стоп)",
+       "line": 297,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "D",
+     "text": "Самому читать файлы и схему в Python, без `openspec`",
+     "added": false,
+     "unlikely": "вторая реализация готовности и вердиктов с хешами разойдётся с форком",
+     "evidence": [
+      {
+       "path": "upstream/openspec/src/core/artifact-graph/state.ts",
+       "quote": "Detects which artifacts are completed by checking file existence in the change directory.",
+       "line": 12,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Плагин уже зовёт Python из `.symphysis/tools/`, версия едет с проектом; журнал здесь лишь один из источников (F-15).",
+    "text": "Цена: на Python придётся повторить поиск `.cmd`-шима из `openspec-bin.js`."
+   },
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-02"
+   },
+   "reversibility": {
+    "level": "обратимо",
+    "why": "скрипт новый и пока никем не занят; как только плагин начнёт его звать, перенос станет сменой контракта `docs/repo-contract.md`"
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "Скрипт и шаблон вносятся в перечень `FILES` и фильтр `install.js` (F-16). В `PATH` может стоять не форк, поэтому скрипт чтит `SYMPHYSIS_OPENSPEC`, как инсталлятор.",
+   "evidence": [
+    {
+     "path": "installer/lib/check.js",
+     "quote": "openspec: не найден (SYMPHYSIS_OPENSPEC или PATH)",
+     "line": 33,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "cmd"
+   ]
+  },
+  {
+   "id": "F-24",
+   "question": "Насколько глубоко определять, закончен ли шаг?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Только то, что считается и так: статус, открытые развилки, задачи; страница прямо пишет «файл есть, содержание не проверялось»",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "upstream/openspec/src/core/artifact-graph/state.ts",
+       "quote": "Detects which artifacts are completed by checking file existence in the change directory.",
+       "line": 12,
+       "verdict": "сверено",
+       "found": true
+      },
+      {
+       "path": "upstream/openspec/src/core/templates/workflows/continue-change.ts",
+       "quote": "reads \\`done\\` as soon as one matching file exists",
+       "line": 33,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Плюс признаки незавершённости: строки `notes[]` и файл `edge-probe.md`; формулировки заметок становятся контрактом",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "docs/GUIDE.md",
+       "quote": "по восемь строк на требование, а итог — строкой `notes[]` журнала.",
+       "line": 373,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "C",
+     "text": "Плюс проверка содержания: `journal.py check` и `validate --strict` при каждом снимке",
+     "added": false,
+     "unlikely": "страница покраснеет от сигналов при нормальном ходе, а снимок станет долгим",
+     "evidence": [
+      {
+       "path": "tools/journal_cli.py",
+       "quote": "сверить улики грепом по цитате (сигнал, не стоп)",
+       "line": 297,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Обрыв записи `specs` уже ловит `/opsx:continue`, а главная дыра, открытые развилки, закрыта счётчиком.",
+    "text": "Можно расширить позже, если на деле человек будет путаться."
+   },
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-02"
+   },
+   "reversibility": {
+    "level": "обратимо",
+    "why": "признаки незавершённости добавляются новым полем вывода, контракт с плагином не меняется"
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [],
+   "comments": [],
+   "nodes": [
+    "where"
+   ]
+  },
+  {
+   "id": "F-25",
+   "question": "Как отвечать на вопрос «что будет, если я не выполню этот шаг»?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Механика выводится из графа при показе: что заблокируется, необязателен ли шаг, остановит ли `apply`; что теряется по смыслу — текстом",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/schemas/symphysis/schema.yaml",
+       "quote": "requires: [tasks, attack-artifacts]",
+       "line": null,
+       "verdict": "цитаты нет дословно",
+       "found": false
+      },
+      {
+       "path": "openspec/changes/step-help/probes/status-empty-files.txt",
+       "quote": "state=ready progress={\"total\":1,\"complete\":0,\"remaining\":1}",
+       "line": 18,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Всё текстом, тест сверяет ключевые фразы с графом",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "installer/scripts/sync-payload.js",
+       "quote": "const DIRS = [\"openspec/schemas/symphysis\"];",
+       "line": 9,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "C",
+     "text": "Только граф, без текста о потере",
+     "added": false,
+     "unlikely": "«заблокирует `design`» не объясняет, что будет с результатом",
+     "evidence": [
+      {
+       "path": "openspec/changes/step-help/intent.md",
+       "quote": "что будет, если я не выполню этот шаг?",
+       "line": 10,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Случай `security` (F-10) показывает, что по памяти этот ответ написать легко и неверно; при правке графа справка не устареет.",
+    "text": "Текст отвечает только за смысл."
+   },
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-02"
+   },
+   "reversibility": {
+    "level": "обратимо",
+    "why": "меняются только сборка данных в `step_help.py` и разделы `steps.md`"
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [],
+   "comments": [],
+   "nodes": [
+    "deps"
+   ]
+  },
+  {
+   "id": "F-26",
+   "question": "Что делать с пропуском `security`?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Исправить здесь: `security` становится обязательным для `apply`, требование `artifact-graph` меняется",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/schemas/symphysis/schema.yaml",
+       "quote": "requires: [tasks, attack-artifacts]",
+       "line": null,
+       "verdict": "цитаты нет дословно",
+       "found": false
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Отдельной веткой `fix/` со своим тестом; справка выводит блокировки из графа и сама покажет новое состояние",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/changes/archive/2026-11-02-calibration-fixes/rulings.md",
+       "quote": "форк считает optional без файла выполненным и в гейте apply",
+       "line": 9,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "C",
+     "text": "Оставить как есть: чек-лист `security.md` не гейт реализации, справка так и скажет",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/changes/step-help/probes/status-empty-files.txt",
+       "quote": "state=ready progress={\"total\":1,\"complete\":0,\"remaining\":1}",
+       "line": 18,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "B",
+    "why": "Это дефект графа, а не часть справки: своя ветка не растит объём изменения и быстрее дойдёт до `main`.",
+    "text": "Вариант C законен, если `security.md` задуман как необязательный: в решениях этого нет (F-10)."
+   },
+   "decision": {
+    "option": "B",
+    "word": "",
+    "date": "2026-11-02"
+   },
+   "reversibility": {
+    "level": "обратимо",
+    "why": "одна строка `apply.requires` в `schema.yaml` и её тест; проекты получают её через `install --force`"
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [],
+   "comments": []
+  },
+  {
+   "id": "F-27",
+   "question": "Какие шаги получают страницу справки?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Артефакты схемы, круг просмотрщика, `apply`, `sync`, `archive`; тест требует раздел для каждого `id` из схемы",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/schemas/symphysis/schema.yaml",
+       "quote": "apply:",
+       "line": 155,
+       "verdict": "сверено",
+       "found": true
+      },
+      {
+       "path": "docs/GUIDE.md",
+       "quote": "Этот круг повторяется на шагах `decisions`, `specs` и `consequences`",
+       "line": 313,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Только артефакты схемы: после `tasks` справка молчит",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/schemas/symphysis/schema.yaml",
+       "quote": "- id: tasks",
+       "line": 122,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "C",
+     "text": "Ещё и установка",
+     "added": false,
+     "unlikely": "до установки в проекте нет ни скрипта, ни схемы; это остаётся в `GUIDE`",
+     "evidence": [
+      {
+       "path": "docs/GUIDE.md",
+       "quote": "## Часть 1. Установка",
+       "line": 27,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Человек застревает и на круге просмотрщика, и после задач, а `status` об этом не скажет (F-09, F-13).",
+    "text": "Текущим шагом страница считает тот же, что назовёт `/opsx:continue`."
+   },
+   "decision": {
+    "option": "A",
+    "word": "За установкой не следим, но показываем версию форка, версию symphysis, и версию плагина. Справочно и малозаметно.",
+    "date": "2026-11-02"
+   },
+   "reversibility": {
+    "level": "обратимо",
+    "why": "состав страниц задан разделами `steps.md` и тестом на них"
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [],
+   "comments": [],
+   "nodes": [
+    "current",
+    "others"
+   ]
+  },
+  {
+   "id": "F-28",
+   "question": "Что показывает страница шага?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Четыре ответа из намерения, команда шага, предыдущий и следующий шаг",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/changes/step-help/intent.md",
+       "quote": "какие файлы и где смотреть, чтобы проверить результаты шага",
+       "line": 11,
+       "verdict": "сверено",
+       "found": true
+      },
+      {
+       "path": "vscode/docs/design-part1-viewer.md",
+       "quote": "с какими артефактами и командами, подсказки, предыдущий и следующий",
+       "line": 31,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Только четыре ответа из намерения",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/changes/step-help/intent.md",
+       "quote": "зачем он? какие основные механики?",
+       "line": 9,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Без команды человек снова пойдёт в `GUIDE`; предыдущий и следующий шаг нужны для листания (F-06).",
+    "text": "Пути файлов берутся из `status`: `existingOutputPaths` даёт настоящие файлы."
+   },
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-02"
+   },
+   "reversibility": {
+    "level": "обратимо",
+    "why": "состав полей показа; новое поле по `docs/repo-contract.md` сменой контракта не считается"
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [],
+   "comments": [],
+   "nodes": [
+    "current"
+   ]
+  },
+  {
+   "id": "F-29",
+   "question": "Страница отдельная или режим просмотрщика?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Отдельная страница со своим шаблоном",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/changes/step-help/intent.md",
+       "quote": "вместо того, чтобы держать под рукой гайд, я предлагаю создать справку",
+       "line": 13,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Четвёртый режим `decisions.html`: на шаге `intent` журнала и страницы ещё нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "tools/playground-template.html",
+       "quote": "решения — круг просмотрщика; проверка — снимок перед proposal",
+       "line": 138,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    }
+   ],
+   "antipodes": [
+    {
+     "option": "B",
+     "other": "F-30.A"
+    },
+    {
+     "option": "B",
+     "other": "F-30.B"
+    }
+   ],
+   "recommendation": {
+    "option": "A",
+    "why": "Справка нужна и до журнала, а просмотрщик отвечает за решения; его шаблон и так 864 строки.",
+    "text": "CSP и оформление берутся с просмотрщика."
+   },
+   "decision": {
+    "option": "B",
+    "word": "Отдельную страницу удобнее разработать и поддерживать. Но пользоваться ей тогда вряд ли будут. Справка будет соперничать со схемой, то есть отображаем или схему или справку, поэтому они занимают одну область. в html на шаге intent страницы еще не будет. но в плагине будет, так как его можно открыть и в пустом проектее.",
+    "date": "2026-11-02"
+   },
+   "reversibility": {
+    "level": "дорого",
+    "why": "панель делят `tools/playground-template.html` и будущая вкладка плагина: вынос на отдельную страницу переделает переключатель в обоих показах"
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [],
+   "comments": [],
+   "nodes": [
+    "page"
+   ]
+  },
+  {
+   "id": "F-30",
+   "question": "Куда пишется снимок?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "`.symphysis/help.html`; `install` вносит эту строку в `.gitignore`, как `symphysis.yaml`",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/specs/project-installer/spec.md",
+       "quote": "Команда `symphysis install` SHALL добавлять строку `symphysis.yaml` в `.gitignore` проекта",
+       "line": 185,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "`<каталог изменения>/help.html`, рядом с `decisions.html`: снимок уйдёт в коммит и там устареет",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "docs/GUIDE.md",
+       "quote": "1. Открой `openspec/changes/add-overdue/decisions.html` в браузере.",
+       "line": 315,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "C",
+     "text": "Только `--out`, пути по умолчанию нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "skills/symphysis-brainstorm/SKILL.md",
+       "quote": "render-html <каталог изменения>/decisions.json --out <каталог изменения>/decisions.html",
+       "line": 54,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    }
+   ],
+   "antipodes": [
+    {
+     "option": "A",
+     "other": "F-29.B"
+    },
+    {
+     "option": "B",
+     "other": "F-29.B"
+    }
+   ],
+   "recommendation": {
+    "option": "A",
+    "why": "Снимок устаревает по природе, в истории ему делать нечего; путь постоянный, поэтому хватает обновить вкладку.",
+    "text": "Цена: правка `install` и его спеки."
+   },
+   "decision": {
+    "option": "C",
+    "word": "видимо, нужно переименовать тогда decisions.html на symphysis.html, раз страница становится мультизадачной.",
+    "date": "2026-11-02"
+   },
+   "reversibility": {
+    "level": "обратимо",
+    "why": "путь задаёт вызывающий через `--out`; значение по умолчанию можно добавить позже без смены контракта"
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [],
+   "comments": [],
+   "nodes": [
+    "page"
+   ]
+  },
+  {
+   "id": "F-31",
+   "question": "В каком формате лежат тексты шагов?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-20"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Один Markdown `openspec/schemas/symphysis/steps.md`, разделы `## <id>`: читается без пакетов и правится руками",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "docs/GUIDE.md",
+       "quote": "Без него настройки считаются включёнными, а `check` даёт `[!!]`.",
+       "line": 126,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "YAML: для чтения нужен необязательный PyYAML",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "tools/symphysis_config.py",
+       "quote": "Журнал этот модуль не импортирует и настройки не читает (F-128.A).",
+       "line": 5,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "C",
+     "text": "По файлу на шаг, `steps/<id>.md`",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "installer/scripts/sync-payload.js",
+       "quote": "const DIRS = [\"openspec/schemas/symphysis\"];",
+       "line": 9,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Справка не должна ломаться без PyYAML, а один файл проще сверить тестом и прочитать целиком.",
+    "text": "Тот же файл читается человеком как оглавление."
+   },
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-02"
+   },
+   "reversibility": {
+    "level": "обратимо",
+    "why": "формат читают один скрипт и один тест; перенос меняет только их"
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [],
+   "comments": [],
+   "nodes": [
+    "texts"
+   ]
+  },
+  {
+   "id": "F-32",
+   "question": "Как понято слово к F-29: справка занимает ту же область, что схема, и показывается либо схема, либо справка; это панель рядом с карточками с переключателем, а не четвёртая кнопка рядом с режимами «решения», «проверка», «атака»",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "материалы",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "На нём стоят требования к панели. Понято неверно — оспорь этот факт.",
+   "evidence": [
+    {
+     "path": "openspec/changes/step-help/answers/2026-11-02-2.md",
+     "quote": "Справка будет соперничать со схемой, то есть отображаем или схему или справку, поэтому они занимают одну область.",
+     "line": 9,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "tools/playground-template.html",
+     "quote": "id=\"btnScheme\" title=\"схема решения рядом с карточками",
+     "line": 139,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "page",
+    "current"
+   ]
+  },
+  {
+   "id": "F-33",
+   "question": "На странице справка появляется вместе с журналом, а в плагине нужна и в пустом проекте: данные справки должны считаться без журнала и без изменения, хотя вкладка и не входит сюда (F-22)",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "материалы",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "На нём стоит F-34.",
+   "evidence": [
+    {
+     "path": "openspec/changes/step-help/answers/2026-11-02-2.md",
+     "quote": "в html на шаге intent страницы еще не будет. но в плагине будет, так как его можно открыть и в пустом проектее.",
+     "line": 9,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "cmd",
+    "plugin"
+   ]
+  },
+  {
+   "id": "F-34",
+   "question": "F-23.A и F-29.B расходятся: по первому страницу собирает новый скрипт, по второму справка живёт на странице просмотрщика. Как данные справки попадают на страницу?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "`render-html` зовёт расчёт из `tools/step_help.py` и встраивает данные. Сбой расчёта (нет `openspec`, не тот форк) страницу не роняет: панель называет причину. Сам `step_help.py` отдаёт только JSON — для плагина и для проекта без журнала. Сборка вырастет с 0,2 с примерно до 0,7 с",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "tools/journal_cli.py",
+       "quote": "def cmd_render_html(args: argparse.Namespace) -> int:",
+       "line": 122,
+       "verdict": "сверено",
+       "found": true
+      },
+      {
+       "path": "openspec/changes/step-help/probes/fork-call-cost.txt",
+       "quote": "status 257 мс, instructions apply 249 мс",
+       "line": 3,
+       "verdict": "сверено",
+       "found": true
+      },
+      {
+       "path": "openspec/changes/step-help/probes/fork-call-cost.txt",
+       "quote": "render-html сейчас 210 мс",
+       "line": 5,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Отдельная команда `step_help.py render-html` собирает ту же страницу со справкой, `journal.py render-html` остаётся без неё: у одной страницы две сборки, а скиллы и плагин надо перевести на новую",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "vscode/src/host/core.ts",
+       "quote": "const html = await step([\"render-html\", journal, \"--out\", rel(env, path.join(ref.dir, \"decisions.html\"))",
+       "line": 66,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "C",
+     "text": "Соседний файл данных, как файл mermaid: скрипт пишет его отдельно, страница подключает тегом и обновляется без пересборки журнала; появляется второй путь, а данные могут разойтись со страницей",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "tools/journal_render.py",
+       "quote": "return \"../\" * up + \".symphysis/tools/mermaid.min.js\"",
+       "line": 231,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Страница одна и собирается одной командой, скиллы и плагин менять не нужно; цена измерена и невелика.",
+    "text": "Плагин получает те же данные из JSON, поэтому `view-json` журнал читать не перестаёт."
+   },
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-02"
+   },
+   "reversibility": {
+    "level": "обратимо",
+    "why": "встраивание живёт в `render-html`, а плагин получает данные отдельно через JSON: перенос меняет только сборку страницы"
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "Без журнала и без изменения работает только JSON (F-33). С версией форка из F-36.A сборка страницы занимает около 1 с: 0,2 с сейчас и три вызова форка по 0,25 с.",
+   "evidence": [],
+   "comments": [],
+   "nodes": [
+    "cmd",
+    "page"
+   ]
+  },
+  {
+   "id": "F-35",
+   "question": "Слово к F-30: «видимо, нужно переименовать» страницу в `symphysis.html`. Что с переименованием?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Переименовать в этом изменении: в ядре 11 файлов (`GUIDE`, две спеки, пять скиллов, заметки перевода, два теста), в плагине строка `core.ts` и его тесты. Записи старых прогонов и архив не трогаем, у `decision-scheme` старый файл удаляется. Путь входит в контракт, поэтому номер растёт и старый плагин попросит обновиться",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/changes/step-help/answers/2026-11-02-2.md",
+       "quote": "видимо, нужно переименовать тогда decisions.html на symphysis.html, раз страница становится мультизадачной.",
+       "line": 10,
+       "verdict": "сверено",
+       "found": true
+      },
+      {
+       "path": "docs/repo-contract.md",
+       "quote": "- пути файлов изменения;",
+       "line": 51,
+       "verdict": "сверено",
+       "found": true
+      },
+      {
+       "path": "vscode/src/host/core.ts",
+       "quote": "const html = await step([\"render-html\", journal, \"--out\", rel(env, path.join(ref.dir, \"decisions.html\"))",
+       "line": 66,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Переименовать, но отдельным изменением после справки: те же файлы плюс то, что добавит справка",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/changes/step-help/answers/2026-11-02-2.md",
+       "quote": "видимо, нужно переименовать тогда decisions.html на symphysis.html, раз страница становится мультизадачной.",
+       "line": 10,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "C",
+     "text": "Оставить как есть: страница по-прежнему строится из журнала и без него не существует, поэтому имя не врёт",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/specs/decision-viewer/spec.md",
+       "quote": "`render-html` SHALL собирать `decisions.html` из `decisions.json`",
+       "line": 9,
+       "verdict": "сверено",
+       "found": true
+      },
+      {
+       "path": "openspec/changes/step-help/answers/2026-11-02-2.md",
+       "quote": "в html на шаге intent страницы еще не будет.",
+       "line": 9,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Страница становится многозадачной именно здесь, и второй проход по тем же файлам дороже одного.",
+    "text": "Правка плагина обязательна в паре: иначе модель пишет новый файл, плагин старый, и один из них устаревает молча. Это не вкладка, поэтому F-22 не нарушается."
+   },
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-02"
+   },
+   "reversibility": {
+    "level": "дорого",
+    "why": "путь входит в контракт `docs/repo-contract.md`: обратное переименование снова проходит по 11 файлам ядра и строке плагина, ещё раз поднимает номер контракта и заставляет обновить `.vsix`"
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [],
+   "comments": [],
+   "nodes": [
+    "page"
+   ]
+  },
+  {
+   "id": "F-36",
+   "question": "Слово к F-27 просит показывать версию symphysis, но в проекте её нет. Откуда её брать?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "`install` записывает рядом с инструментами версию из `installer/package.json` и короткий хеш клона, как у сборки `.vsix`: `0.1.0+aa50e8f`; справка читает этот файл. Без git — только версия",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "installer/package.json",
+       "quote": "\"version\": \"0.1.0\",",
+       "line": 3,
+       "verdict": "сверено",
+       "found": true
+      },
+      {
+       "path": "openspec/changes/decision-scheme/specs/plugin-packaging/spec.md",
+       "quote": "Сборка `.vsix` SHALL нести версию из `package.json` и короткий хеш коммита плагина",
+       "line": 9,
+       "verdict": "сверено",
+       "found": true
+      },
+      {
+       "path": "openspec/changes/step-help/answers/2026-11-02-2.md",
+       "quote": "За установкой не следим, но показываем версию форка, версию symphysis, и версию плагина. Справочно и малозаметно.",
+       "line": 7,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Только версия из `installer/package.json`: сейчас она не растёт и разные сборки не различает",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "installer/package.json",
+       "quote": "\"version\": \"0.1.0\",",
+       "line": 3,
+       "verdict": "сверено",
+       "found": true
+      },
+      {
+       "path": "docs/repo-contract.md",
+       "quote": "Каждый проект ставит тег в свой `main`. У ядра это `v1.x.x` и далее.",
+       "line": 76,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "C",
+     "text": "Показывать номер контракта вместо версии",
+     "added": false,
+     "unlikely": "номер говорит о совместимости с плагином, а не о сборке, и слово к F-27 просит версию",
+     "evidence": [
+      {
+       "path": "tools/journal_render.py",
+       "quote": "CONTRACT = 1",
+       "line": 26,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Хеш отвечает на настоящий вопрос «какая сборка стоит в этом проекте», а номер `0.1.0` на него не ответит.",
+    "text": "Версия форка — из `openspec --version`, ещё примерно 0,25 с. Версию плагина страница не знает: её покажет сам плагин на своей вкладке."
+   },
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-02"
+   },
+   "reversibility": {
+    "level": "обратимо",
+    "why": "файл версии читает один скрипт, `check` за ним не следит; формат меняется без миграции: `install --force` запишет новый"
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "Правка `install.js` и новое требование `project-installer`. `check` за этой версией не следит: «за установкой не следим».",
+   "evidence": [],
+   "comments": [],
+   "nodes": [
+    "page"
+   ]
+  },
+  {
+   "id": "F-37",
+   "question": "`decision-scheme` на `main` активно и пересекается со справкой: панель схемы, на которую опирается F-29, есть только в его дельте, а требование «Просмотрщик», которое меняет F-35, оно само меняет через MODIFIED. Архив на копии проходит с кодом 0",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "материалы",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "На нём стоит F-38.",
+   "evidence": [
+    {
+     "path": "openspec/changes/decision-scheme/specs/decision-viewer/spec.md",
+     "quote": "### Requirement: Панель схемы показывает `scheme.md` рядом с карточками",
+     "line": 45,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "openspec/changes/decision-scheme/specs/decision-viewer/spec.md",
+     "quote": "### Requirement: Просмотрщик — один HTML из своего шаблона",
+     "line": 5,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "openspec/schemas/symphysis/schema.yaml",
+     "quote": "MODIFIED несёт требование целиком.",
+     "line": 77,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "openspec/changes/step-help/probes/archive-decision-scheme.txt",
+     "quote": "Totals: + 31, ~ 4, - 0, → 0",
+     "line": 9,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "openspec/changes/step-help/probes/archive-decision-scheme.txt",
+     "quote": "код архива 0",
+     "line": 12,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-38",
+   "question": "Как разойтись с активным `decision-scheme` до спек справки?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Сначала архивировать `decision-scheme`, потом писать спеки справки на новой базе. Это работа сессии плагина: по твоему слову сделать здесь или там; дельты влиты, но улики журнала надо перевести на архивный путь, а плагин проверить на архивном журнале",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/changes/step-help/probes/archive-decision-scheme.txt",
+       "quote": "Change 'decision-scheme' archived as '2026-11-02-decision-scheme'.",
+       "line": 11,
+       "verdict": "сверено",
+       "found": true
+      },
+      {
+       "path": "openspec/changes/step-help/probes/archive-decision-scheme.txt",
+       "quote": "код архива 0",
+       "line": 12,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Писать спеки на текущей базе и держать оба изменения активными: второй архив сводить вручную по трём версиям, как при вливании, иначе `MODIFIED` молча откатит текст другого изменения",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/schemas/symphysis/schema.yaml",
+       "quote": "MODIFIED несёт требование целиком.",
+       "line": 77,
+       "verdict": "сверено",
+       "found": true
+      },
+      {
+       "path": "openspec/changes/decision-scheme/specs/decision-viewer/spec.md",
+       "quote": "### Requirement: Просмотрщик — один HTML из своего шаблона",
+       "line": 5,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "C",
+     "text": "Обойтись в спеках справки только `ADDED`, без `MODIFIED`",
+     "added": false,
+     "unlikely": "F-35.A меняет текст существующего требования, поэтому без MODIFIED имя страницы в спеке останется старым",
+     "evidence": [
+      {
+       "path": "openspec/changes/decision-scheme/specs/decision-viewer/spec.md",
+       "quote": "### Requirement: Просмотрщик — один HTML из своего шаблона",
+       "line": 5,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Реализация `decision-scheme` закрыта, а база спек станет одна: не придётся вручную сводить тексты второй раз.",
+    "text": "Шаг затрагивает чужую сессию, поэтому нужно твоё слово."
+   },
+   "decision": {
+    "option": "A",
+    "word": "Тут без вариантов, сначала архив, потом изменение.",
+    "date": "2026-11-02"
+   },
+   "reversibility": {
+    "level": "обратимо",
+    "why": "архив — отдельный коммит: `git revert` вернёт `decision-scheme` в активные, пока на новой базе нет спек справки; позже откат сводится вручную по трём версиям, как в варианте B"
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "От решения зависит только порядок работ: состав `proposal` остаётся тем же.",
+   "evidence": [],
+   "comments": [],
+   "nodes": [
+    "page"
+   ]
+  },
+  {
+   "id": "F-39",
+   "question": "В `docs/GUIDE.md` появляется строка о справке: что она есть, где открывается и какой командой считается. Кроме этой строки в гайде меняется только имя страницы (F-35)",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "материалы",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "На нём стоит задача правки `docs/GUIDE.md`.",
+   "evidence": [
+    {
+     "path": "docs/GUIDE.md",
+     "quote": "Какой шаг следующий, показывает `openspec status --change add-overdue`.",
+     "line": 263,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "openspec/changes/step-help/intent.md",
+     "quote": "сейчас в GUIDE.md описан процесс по шагам, и описан хорошо.",
+     "line": 7,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": []
+  }
+ ]
+}

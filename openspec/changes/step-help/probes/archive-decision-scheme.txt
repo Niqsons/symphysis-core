@@ -1,0 +1,15 @@
+Проба: openspec archive decision-scheme -y на копии openspec/ ветки feat/step-help, форк 1.15.0-symphysis.4, 2026-11-02.
+  + 6 added
+Applying changes to openspec/specs/plugin-packaging/spec.md:
+  + 2 added
+Applying changes to openspec/specs/plugin-scheme-view/spec.md:
+  + 8 added
+Applying changes to openspec/specs/project-installer/spec.md:
+  ~ 1 modified
+Totals: + 31, ~ 4, - 0, → 0
+Specs updated successfully.
+Change 'decision-scheme' archived as '2026-11-02-decision-scheme'.
+код архива 0
+1
+16
+1

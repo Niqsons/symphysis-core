@@ -1,0 +1,5 @@
+Замер на машине разработки, 2026-11-02, три запуска подряд, журнал step-help, 31 запись:
+status 265 мс, instructions apply 249 мс
+status 257 мс, instructions apply 249 мс
+status 248 мс, instructions apply 246 мс
+render-html сейчас 210 мс
