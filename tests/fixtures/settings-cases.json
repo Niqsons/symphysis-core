@@ -1,0 +1,355 @@
+[
+ {
+  "name": "файла нет",
+  "bytes_b64": null,
+  "failure_branches": true,
+  "assumptions": true,
+  "edge_probe": true,
+  "signals": []
+ },
+ {
+  "name": "пустой файл",
+  "bytes_b64": "",
+  "failure_branches": true,
+  "assumptions": true,
+  "edge_probe": true,
+  "signals": []
+ },
+ {
+  "name": "файл из комментариев",
+  "bytes_b64": "IyDRgtC+0LvRjNC60L4g0LrQvtC80LzQtdC90YLQsNGA0LjQuQojINC4INC10YnRkSDQvtC00LjQvQo=",
+  "failure_branches": true,
+  "assumptions": true,
+  "edge_probe": true,
+  "signals": []
+ },
+ {
+  "name": "edge_probe без значения",
+  "bytes_b64": "ZWRnZV9wcm9iZToK",
+  "failure_branches": true,
+  "assumptions": true,
+  "edge_probe": true,
+  "signals": []
+ },
+ {
+  "name": "enabled без значения",
+  "bytes_b64": "ZWRnZV9wcm9iZToKICBlbmFibGVkOgo=",
+  "failure_branches": true,
+  "assumptions": true,
+  "edge_probe": true,
+  "signals": []
+ },
+ {
+  "name": "consequences без значения",
+  "bytes_b64": "Y29uc2VxdWVuY2VzOgo=",
+  "failure_branches": true,
+  "assumptions": true,
+  "edge_probe": true,
+  "signals": []
+ },
+ {
+  "name": "документ без содержимого",
+  "bytes_b64": "LS0tCg==",
+  "failure_branches": true,
+  "assumptions": true,
+  "edge_probe": true,
+  "signals": []
+ },
+ {
+  "name": "значение в кавычках пустое",
+  "bytes_b64": "ZWRnZV9wcm9iZToKICBlbmFibGVkOiAiIgo=",
+  "failure_branches": true,
+  "assumptions": true,
+  "edge_probe": true,
+  "signals": []
+ },
+ {
+  "name": "значение no",
+  "bytes_b64": "ZWRnZV9wcm9iZToKICBlbmFibGVkOiBubwo=",
+  "failure_branches": true,
+  "assumptions": true,
+  "edge_probe": true,
+  "signals": [
+   "symphysis.yaml: недопустимое значение no"
+  ]
+ },
+ {
+  "name": "значение off",
+  "bytes_b64": "ZWRnZV9wcm9iZToKICBlbmFibGVkOiBvZmYK",
+  "failure_branches": true,
+  "assumptions": true,
+  "edge_probe": true,
+  "signals": [
+   "symphysis.yaml: недопустимое значение off"
+  ]
+ },
+ {
+  "name": "значение False",
+  "bytes_b64": "ZWRnZV9wcm9iZToKICBlbmFibGVkOiBGYWxzZQo=",
+  "failure_branches": true,
+  "assumptions": true,
+  "edge_probe": true,
+  "signals": [
+   "symphysis.yaml: недопустимое значение False"
+  ]
+ },
+ {
+  "name": "значение выкл",
+  "bytes_b64": "ZWRnZV9wcm9iZToKICBlbmFibGVkOiDQstGL0LrQuwo=",
+  "failure_branches": true,
+  "assumptions": true,
+  "edge_probe": true,
+  "signals": [
+   "symphysis.yaml: недопустимое значение выкл"
+  ]
+ },
+ {
+  "name": "значение no у веток отказа",
+  "bytes_b64": "Y29uc2VxdWVuY2VzOgogIGZhaWx1cmVfYnJhbmNoZXM6IG5vCg==",
+  "failure_branches": true,
+  "assumptions": true,
+  "edge_probe": true,
+  "signals": [
+   "symphysis.yaml: недопустимое значение no"
+  ]
+ },
+ {
+  "name": "значение off у допущений",
+  "bytes_b64": "Y29uc2VxdWVuY2VzOgogIGFzc3VtcHRpb25zOiBvZmYK",
+  "failure_branches": true,
+  "assumptions": true,
+  "edge_probe": true,
+  "signals": [
+   "symphysis.yaml: недопустимое значение off"
+  ]
+ },
+ {
+  "name": "значение-словарь",
+  "bytes_b64": "ZWRnZV9wcm9iZToKICBlbmFibGVkOiB7YTogMSwgYjogWzIsIHhdfQo=",
+  "failure_branches": true,
+  "assumptions": true,
+  "edge_probe": true,
+  "signals": [
+   "symphysis.yaml: недопустимое значение составное"
+  ]
+ },
+ {
+  "name": "блочная строка",
+  "bytes_b64": "ZWRnZV9wcm9iZToKICBlbmFibGVkOiB8CiAgICBmYWxzZQo=",
+  "failure_branches": true,
+  "assumptions": true,
+  "edge_probe": true,
+  "signals": [
+   "symphysis.yaml: недопустимое значение false"
+  ]
+ },
+ {
+  "name": "значение с тегом",
+  "bytes_b64": "ZWRnZV9wcm9iZToKICBlbmFibGVkOiAhIXB5dGhvbi9vYmplY3QvYXBwbHk6b3Muc3lzdGVtIFsnZWNobyDQktCX0JvQntCcJ10K",
+  "failure_branches": true,
+  "assumptions": true,
+  "edge_probe": true,
+  "signals": [
+   "symphysis.yaml: недопустимое значение составное"
+  ]
+ },
+ {
+  "name": "значение true",
+  "bytes_b64": "ZWRnZV9wcm9iZToKICBlbmFibGVkOiB0cnVlCg==",
+  "failure_branches": true,
+  "assumptions": true,
+  "edge_probe": true,
+  "signals": []
+ },
+ {
+  "name": "значение false",
+  "bytes_b64": "ZWRnZV9wcm9iZToKICBlbmFibGVkOiBmYWxzZQo=",
+  "failure_branches": true,
+  "assumptions": true,
+  "edge_probe": false,
+  "signals": []
+ },
+ {
+  "name": "значение false в кавычках",
+  "bytes_b64": "ZWRnZV9wcm9iZToKICBlbmFibGVkOiAiZmFsc2UiCg==",
+  "failure_branches": true,
+  "assumptions": true,
+  "edge_probe": false,
+  "signals": []
+ },
+ {
+  "name": "выключены только допущения",
+  "bytes_b64": "Y29uc2VxdWVuY2VzOgogIGFzc3VtcHRpb25zOiBmYWxzZQo=",
+  "failure_branches": true,
+  "assumptions": false,
+  "edge_probe": true,
+  "signals": []
+ },
+ {
+  "name": "выключены только ветки отказа",
+  "bytes_b64": "Y29uc2VxdWVuY2VzOgogIGZhaWx1cmVfYnJhbmNoZXM6IGZhbHNlCg==",
+  "failure_branches": false,
+  "assumptions": true,
+  "edge_probe": true,
+  "signals": []
+ },
+ {
+  "name": "выключено всё",
+  "bytes_b64": "Y29uc2VxdWVuY2VzOgogIGZhaWx1cmVfYnJhbmNoZXM6IGZhbHNlCiAgYXNzdW1wdGlvbnM6IGZhbHNlCmVkZ2VfcHJvYmU6CiAgZW5hYmxlZDogZmFsc2UK",
+  "failure_branches": false,
+  "assumptions": false,
+  "edge_probe": false,
+  "signals": []
+ },
+ {
+  "name": "концы строк CRLF",
+  "bytes_b64": "ZWRnZV9wcm9iZToNCiAgZW5hYmxlZDogZmFsc2UNCg==",
+  "failure_branches": true,
+  "assumptions": true,
+  "edge_probe": false,
+  "signals": []
+ },
+ {
+  "name": "комментарий после значения",
+  "bytes_b64": "ZWRnZV9wcm9iZToKICBlbmFibGVkOiBmYWxzZSAjINC/0L7QutCwINGC0LDQugo=",
+  "failure_branches": true,
+  "assumptions": true,
+  "edge_probe": false,
+  "signals": []
+ },
+ {
+  "name": "таб в отступе",
+  "bytes_b64": "ZWRnZV9wcm9iZToKCWVuYWJsZWQ6IGZhbHNlCg==",
+  "failure_branches": true,
+  "assumptions": true,
+  "edge_probe": true,
+  "signals": [
+   "symphysis.yaml: не разбирается"
+  ]
+ },
+ {
+  "name": "корень не словарь: список",
+  "bytes_b64": "LSBhCg==",
+  "failure_branches": true,
+  "assumptions": true,
+  "edge_probe": true,
+  "signals": [
+   "symphysis.yaml: не разбирается"
+  ]
+ },
+ {
+  "name": "корень не словарь: edge_probe:false",
+  "bytes_b64": "ZWRnZV9wcm9iZTpmYWxzZQo=",
+  "failure_branches": true,
+  "assumptions": true,
+  "edge_probe": true,
+  "signals": [
+   "symphysis.yaml: не разбирается"
+  ]
+ },
+ {
+  "name": "два документа",
+  "bytes_b64": "ZWRnZV9wcm9iZToKICBlbmFibGVkOiBmYWxzZQotLS0KY29uc2VxdWVuY2VzOgogIGFzc3VtcHRpb25zOiBmYWxzZQo=",
+  "failure_branches": true,
+  "assumptions": true,
+  "edge_probe": true,
+  "signals": [
+   "symphysis.yaml: не разбирается"
+  ]
+ },
+ {
+  "name": "рекурсивный алиас",
+  "bytes_b64": "eDogJmEgWyphXQo=",
+  "failure_branches": true,
+  "assumptions": true,
+  "edge_probe": true,
+  "signals": [
+   "symphysis.yaml: не разбирается"
+  ]
+ },
+ {
+  "name": "плоская edge_probe",
+  "bytes_b64": "ZWRnZV9wcm9iZTogZmFsc2UK",
+  "failure_branches": true,
+  "assumptions": true,
+  "edge_probe": true,
+  "signals": [
+   "symphysis.yaml: edge_probe — нужен вложенный ключ"
+  ]
+ },
+ {
+  "name": "плоская consequences",
+  "bytes_b64": "Y29uc2VxdWVuY2VzOiBmYWxzZQo=",
+  "failure_branches": true,
+  "assumptions": true,
+  "edge_probe": true,
+  "signals": [
+   "symphysis.yaml: consequences — нужен вложенный ключ"
+  ]
+ },
+ {
+  "name": "неизвестный ключ edge-probe",
+  "bytes_b64": "ZWRnZS1wcm9iZToKICBlbmFibGVkOiBmYWxzZQo=",
+  "failure_branches": true,
+  "assumptions": true,
+  "edge_probe": true,
+  "signals": [
+   "symphysis.yaml: неизвестный ключ edge-probe"
+  ]
+ },
+ {
+  "name": "неизвестный вложенный ключ",
+  "bytes_b64": "ZWRnZV9wcm9iZToKICBlbmFibGU6IGZhbHNlCg==",
+  "failure_branches": true,
+  "assumptions": true,
+  "edge_probe": true,
+  "signals": [
+   "symphysis.yaml: неизвестный ключ edge_probe.enable"
+  ]
+ },
+ {
+  "name": "повтор вложенного ключа",
+  "bytes_b64": "ZWRnZV9wcm9iZToKICBlbmFibGVkOiB0cnVlCiAgZW5hYmxlZDogZmFsc2UK",
+  "failure_branches": true,
+  "assumptions": true,
+  "edge_probe": false,
+  "signals": []
+ },
+ {
+  "name": "повтор ключа верхнего уровня",
+  "bytes_b64": "ZWRnZV9wcm9iZToKICBlbmFibGVkOiBmYWxzZQplZGdlX3Byb2JlOgogIGVuYWJsZWQ6IHRydWUK",
+  "failure_branches": true,
+  "assumptions": true,
+  "edge_probe": true,
+  "signals": []
+ },
+ {
+  "name": "BOM",
+  "bytes_b64": "77u/ZWRnZV9wcm9iZToKICBlbmFibGVkOiBmYWxzZQo=",
+  "failure_branches": true,
+  "assumptions": true,
+  "edge_probe": false,
+  "signals": []
+ },
+ {
+  "name": "CP1251",
+  "bytes_b64": "ZWRnZV9wcm9iZToKICBlbmFibGVkOiDi++rrCg==",
+  "failure_branches": true,
+  "assumptions": true,
+  "edge_probe": true,
+  "signals": [
+   "symphysis.yaml: не UTF-8"
+  ]
+ },
+ {
+  "name": "два сигнала",
+  "bytes_b64": "ZWRnZV9wcm9iZToKICBlbmFibGVkOiBubwpjb25zZXF1ZW5jZXM6IGZhbHNlCg==",
+  "failure_branches": true,
+  "assumptions": true,
+  "edge_probe": true,
+  "signals": [
+   "symphysis.yaml: недопустимое значение no",
+   "symphysis.yaml: consequences — нужен вложенный ключ"
+  ]
+ }
+]

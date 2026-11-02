@@ -1,6 +1,6 @@
 name: symphysis
 version: 1
-description: Проектирование на сильной модели — намерение → решения (журнал) → исследование и второй круг → proposal → specs → design → security → tasks; атаки решений и артефактов вызываются по имени
+description: Проектирование на сильной модели — намерение → решения (журнал) → исследование и второй круг → proposal → specs → опись последствий → design → security → tasks; атаки решений и артефактов вызываются по имени
 artifacts:
   - id: intent
     generates: intent.md
@@ -79,6 +79,20 @@ artifacts:
     requires:
       - proposal
 
+  - id: consequences
+    generates: consequences.md
+    description: Опись последствий — ветки отказа переиспользуемого кода и допущения о них; в журнал идёт непокрытое
+    template: consequences.md
+    instruction: |
+      Загрузи скилл `symphysis-consequences` и напиши `consequences.md` по шаблону.
+      Состав возьми из `python .symphysis/tools/symphysis_config.py`, человека о нём не спрашивай.
+      Места кода предлагает `python .symphysis/tools/journal.py code-sites <каталог изменения>/decisions.json`, выбираешь ты: разобрать, дополнить или исключить с доводом о конкретном файле.
+      Ветка без сценария в `specs/` — кандидат журнала; решает человек, не ты.
+      Разбирать нечего или все колонки выключены — файл с причиной; это законный исход.
+      Опись сверяет `python .symphysis/tools/journal.py check <каталог изменения>/decisions.json` — это сигнал, не стоп.
+    requires:
+      - specs
+
   - id: design
     generates: design.md
     description: Дизайн — как реализовать, решения из журнала
@@ -90,6 +104,7 @@ artifacts:
       Решение излагается, а не принимается: его уже принял человек.
     requires:
       - proposal
+      - consequences
 
   - id: security
     generates: security.md
@@ -119,17 +134,17 @@ artifacts:
 
   - id: attack-artifacts
     generates: attack/artifacts.md
-    description: Атака specs, design, security и tasks с вердиктом (вызывается по имени)
+    description: Атака specs, consequences, design, security и tasks с вердиктом (вызывается по имени)
     template: attack-artifacts.md
     optional: true
     verdict:
       frontmatter: status
       value: passed
     instruction: |
-      Загрузи скилл `symphysis-attack` и атакуй `specs/`, `design.md`, `security.md` и `tasks.md`.
+      Загрузи скилл `symphysis-attack` и атакуй `specs/`, `consequences.md`, `design.md`, `security.md` и `tasks.md`.
       Результат — `attack/artifacts.md` по шаблону.
       Вердикт — во frontmatter: `status: passed | gaps_found`.
-      Дыры закрывай правкой атакуемого артефакта, затем повтори атаку; форк OpenSpec symphysis считает артефакт готовым только с `status: passed`.
+      Блокеры закрывай правкой атакуемого артефакта, затем повтори атаку; предупреждения идут человеку списком и повтора не требуют; форк OpenSpec symphysis считает артефакт готовым только с `status: passed`.
     requires:
       - specs
       - design
@@ -141,4 +156,5 @@ apply:
   tracks: tasks.md
   instruction: |
     Работай по tasks.md по порядку и отмечай `- [x]` по мере выполнения; закрывай задачу проверкой, которая в ней названа.
+    Строки `предупреждение` в файлах `attack/*.md` — заметки к задачам: прочитай их до начала работы и учти в задачах, которых они касаются.
     Остановись, если упёрся в блокер или нужно уточнение.

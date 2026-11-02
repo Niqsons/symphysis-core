@@ -66,7 +66,7 @@ def table_rows(text):
 
 
 SKILL_DIRS = sorted(p for p in SKILLS.glob("symphysis-*/") if p.is_dir())
-SKILLS_COUNT = 5
+SKILLS_COUNT = 6
 # references/*.md без шапки GSD: с D4b таких нет — переложение гриля store из атаки убрано,
 # все копии несут шапку MIT/Open GSD (исключение было бы явным, не по маске).
 OWN_REFERENCES = ()
@@ -169,6 +169,34 @@ def test_edge_probe_has_eight_categories():
     rows = table_rows(notes)
     assert any("unclassified" in row for row in rows), \
         "в TRANSLATION-NOTES.md нет строки про снятый кандидат `unclassified` (#1110)"
+
+
+# Значения строки покрытия: как названы в определении и чем начинается хвост строки разобранного примера.
+COVERAGE_VALUES = {"`кандидат F-NN`": r"· кандидат F-\d+$",
+                   "`не выбран: <край>; <причина>`": r"· не выбран: [^;\n]+; .+$",
+                   "`не найдено: <что проверялось>`": r"· не найдено: .+$",
+                   "`неприменимо: <причина>`": r"· неприменимо: .+$"}
+
+
+def test_edge_probe_names_each_coverage_value_with_an_example():
+    """Backstop F-69, сценарий «Чтение текста скилла»: каждое значение названо определением
+    и встречается в файле покрытия примера; все строки примера — об одном требовании, их восемь."""
+    text = read(SKILLS / "symphysis-edge-probe" / "SKILL.md")
+    step = text.split("### 5. ")[1].split("\n### ")[0]
+    sample = text.split("### 7. ")[1].split("```")[1]
+    rows = [line for line in sample.splitlines() if line.startswith("- ")]
+    assert [row.split(" · ")[1] for row in rows] == list(EDGE_CATEGORIES), "восемь строк в порядке таблицы категорий"
+    assert len({row.split(" · ")[0] for row in rows}) == 1, "примеры значений — на данных одного требования"
+    for value, pattern in COVERAGE_VALUES.items():
+        assert f"**{value}**" in step, f"в такте 5 нет определения значения {value}"
+        assert any(re.search(pattern, row) for row in rows), f"в файле покрытия примера нет значения {value}"
+
+
+def test_edge_probe_summary_counts_not_selected_rows():
+    """F-99: итог пробы не идёт без счёта строк `не выбран`: строка `notes[]` несёт их число и имена требований."""
+    summary = flat(read(SKILLS / "symphysis-edge-probe" / "SKILL.md").split("### 10. ")[1].split("\n### ")[0])
+    assert "не выбран k: <ключи требований через запятую>" in summary
+    assert "число строк `не выбран`" in summary
 
 
 # Вопрос пробы запретов — дословно (`prohibition-probe.md:53-54`); варианты кандидата — по ярусам проверки.
@@ -283,8 +311,8 @@ REMOVED_LENS_SLUGS = ("requirement-coverage", "task-completeness", "dependency-c
 # Воздержание honest-verifier: строка, которая не «есть» и не «нет» (`honest-verifier.md:43`).
 ABSTENTION_ROW = "по спеке не выводится"
 # Одно правило вердикта — то же, что в шаблонах (`tests/test_schema.py::VERDICT_RULE`), дословно в §5 и в приёмке.
-VERDICT_RULE = ("`status: passed` ставится, только когда в таблице нет ни одной строки с тяжестью "
-                "`блокер` или `предупреждение`; строки `справка` не блокируют")
+VERDICT_RULE = ("`status: passed` ставится, только когда в таблице нет ни одной строки с тяжестью `блокер`; "
+                "строки `предупреждение` идут человеку списком и `apply` не держат, строки `справка` не блокируют")
 # Копии слоя проверки GSD в references/ атаки: файл -> строка источника дословно.
 ATTACK_REFERENCES = {
     "plan-checker-dimensions.md": "Issues without a severity classification are not valid output",
@@ -405,10 +433,10 @@ def test_attack_skill_reads_does_not_execute():
 
 
 def test_attack_skill_demotion_needs_a_reason():
-    """F-54.E: тяжесть «нет» — тяжесть линзы (у всех — блокер); иная — с причиной в скобках той же ячейки."""
+    """F-54.E, F-136.B: тяжесть «нет» — тяжесть линзы (у всех — блокер); иная — только по слову человека, с записью журнала в скобках той же ячейки."""
     text = read(ATTACK_SKILL / "SKILL.md")
     rule = block(text, "**Понижение тяжести.**", "\n\n")
-    for token in ("тяжесть линзы", "`блокер`", "`предупреждение (<причина>)`", "в той же ячейке",
+    for token in ("тяжесть линзы", "`блокер`", "`предупреждение (решено человеком в F-NN)`", "в той же ячейке",
                   "нарушение правила", "«понижение без причины»"):
         assert token in rule, f"в правиле понижения тяжести нет «{token}»"
     for file, slugs in ATTACK_LENS_LISTS.items():

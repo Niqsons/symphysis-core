@@ -1,15 +1,17 @@
 import fs from "node:fs";
 import path from "node:path";
-import { fileURLToPath } from "node:url";
 import { spawnSync } from "node:child_process";
 import { parse } from "yaml";
+import { continueLines, selectedClients } from "./clients.js";
+import { globalConfigPath, otherConfigPath } from "./global-config.js";
 import { targets } from "./paths.js";
 import { DEFAULT_PAYLOAD } from "./install.js";
-import { runOpenspec } from "./openspec-bin.js";
+import { describeFailure, forkPin, runOpenspec } from "./openspec-bin.js";
 import { telemetryState, TELEMETRY_OFF_COMMAND } from "./telemetry.js";
+import { hasSources, payloadMatches, ROOT } from "../scripts/sync-payload.js";
 
-const here = path.dirname(fileURLToPath(import.meta.url));
-const TOOL_MODULES = ["journal.py", "journal_apply.py", "journal_cli.py", "journal_model.py", "journal_render.py"];
+const SETTINGS_FILE = "symphysis.yaml";
+const TOOL_MODULES = ["journal.py", "journal_apply.py", "journal_cli.py", "journal_model.py", "journal_render.py", "journal_sites.py", "journal_consequences.py", "symphysis_config.py"];
 
 const rel = (project, p) => path.relative(project, p).split(path.sep).join("/");
 
@@ -23,20 +25,50 @@ function walk(dir) {
   return out;
 }
 
-function readPin() {
-  const pkg = JSON.parse(fs.readFileSync(path.join(here, "..", "package.json"), "utf8"));
-  return pkg.symphysis;
+/** Строка о форке или null: «не найден» и отказ самого форка — разные исходы; обе называют тарбол (F-31.A, F-36.A). */
+function forkFinding() {
+  const { openspecPin, openspecSource } = forkPin();
+  const install = `npm i -g ./${openspecSource}`;
+  const r = runOpenspec(["--version"]);
+  if (r.notFound) return `openspec: не найден (SYMPHYSIS_OPENSPEC или PATH); нужен форк ${openspecPin}: ${install}`;
+  if (r.error || r.status !== 0) return `openspec: ${describeFailure(r).replace(/^openspec /, "")}; нужен форк ${openspecPin}: ${install}`;
+  const actual = String(r.stdout).trim();
+  return actual === openspecPin ? null : `openspec: версия ${actual}, нужна ${openspecPin} (форк symphysis): ${install}`;
 }
 
-/** Версия форка; null — не запустился. */
-function openspecVersion() {
-  const r = runOpenspec(["--version"]);
-  if (r.error || r.status !== 0) return null;
-  return String(r.stdout).trim();
+/** Строки скрипта настроек: `[..]` — заметка, `[!!]` — находка. Файл инсталлятор сам не разбирает (F-135.B). */
+function settingsLines(root, py, tool, findings, notes) {
+  if (!fs.existsSync(path.join(root, SETTINGS_FILE))) {
+    notes.push(`${SETTINGS_FILE}: нет файла, действует всё включено; создать: symphysis install`);
+    return;
+  }
+  if (!py || !fs.existsSync(tool)) return;
+  const r = spawnSync(py, ["-X", "utf8", tool, "--project", root, "--strict"], { encoding: "utf8" });
+  if (r.error || (r.status !== 0 && r.status !== 2)) {
+    const first = (r.error ? r.error.message : String(r.stderr ?? "").split(/\r?\n/).find((l) => l.trim())) ?? `код ${r.status}`;
+    findings.push(`symphysis_config.py: не отработал (${first.trim()})`);
+    return;
+  }
+  for (const line of String(r.stdout).split(/\r?\n/)) {
+    if (line.startsWith("[!!] ")) findings.push(line.slice(5));
+    else if (line.startsWith("[..] ")) notes.push(line.slice(5));
+  }
+}
+
+/** `symphysis.yaml` в индексе git проекта: `.gitignore` его уже не снимет (F-111.A). Нет git или репозитория — сигнала нет. */
+function settingsTracked(root) {
+  const r = spawnSync("git", ["-C", root, "ls-files", "--error-unmatch", SETTINGS_FILE], { encoding: "utf8" });
+  return !r.error && r.status === 0;
+}
+
+/** Строка о действующем глобальном конфиге: и о втором файле, если он есть (F-122). */
+function configNote() {
+  const other = otherConfigPath();
+  return `openspec: глобальный конфиг ${globalConfigPath()}${other ? `; есть ещё ${other}, он действует без XDG_CONFIG_HOME` : ""}`;
 }
 
 /** Python: `python`, затем `python3`; версия не закрепляется. Возвращает имя команды или null. */
-function findPython() {
+export function findPython() {
   for (const cmd of ["python", "python3"]) {
     const r = spawnSync(cmd, ["--version"], { encoding: "utf8" });
     if (!r.error && r.status === 0) return cmd;
@@ -48,16 +80,17 @@ function findPython() {
  * Сверяет установку symphysis в проекте. Только называет расхождения, ничего не чинит.
  * `findings` — отказы (каждая строка начинается с имени файла или предмета); `notes` — сигналы (журналы).
  */
-export function check(project, { skillsDirs = [], payloadDir = DEFAULT_PAYLOAD } = {}) {
+export function check(project, { skillsDirs = [], payloadDir = DEFAULT_PAYLOAD, sourceRoot = ROOT } = {}) {
   const root = path.resolve(project);
   const t = targets(root, skillsDirs);
-  const { openspecPin, openspecSource } = readPin();
   const findings = [];
   const notes = [];
 
-  const actual = openspecVersion();
-  if (actual === null) findings.push(`openspec: не найден (SYMPHYSIS_OPENSPEC или PATH); нужен форк ${openspecPin}: ${openspecSource}`);
-  else if (actual !== openspecPin) findings.push(`openspec: версия ${actual}, нужна ${openspecPin} (форк symphysis): ${openspecSource}`);
+  const fork = forkFinding();
+  if (fork) findings.push(fork);
+
+  // Запуск из клона: после `git pull` установка молча положила бы прежний payload (F-114.A).
+  if (hasSources(sourceRoot) && !payloadMatches(payloadDir, sourceRoot)) findings.push("payload старее исходников — выполнить: npm --prefix installer ci");
 
   const schemaSrc = path.join(payloadDir, "openspec", "schemas", "symphysis");
   for (const file of walk(schemaSrc).sort()) {
@@ -101,6 +134,13 @@ export function check(project, { skillsDirs = [], payloadDir = DEFAULT_PAYLOAD }
   const py = findPython();
   if (!py) findings.push("python: python или python3 не отвечает");
 
+  const clientLines = continueLines(selectedClients(root, t.skillsDirs));
+  findings.push(...clientLines.findings);
+  notes.push(...clientLines.notes);
+
+  settingsLines(root, py, path.join(toolsDir, "symphysis_config.py"), findings, notes);
+  if (settingsTracked(root)) findings.push(`${SETTINGS_FILE}: отслеживается git — выполнить: git rm --cached ${SETTINGS_FILE}`);
+
   const changes = path.join(root, "openspec", "changes");
   const journalPy = path.join(toolsDir, "journal.py");
   if (py && fs.existsSync(journalPy) && fs.existsSync(changes)) {
@@ -118,9 +158,13 @@ export function check(project, { skillsDirs = [], payloadDir = DEFAULT_PAYLOAD }
         const lines = String(r.stdout).trim().split(/\r?\n/).filter(Boolean);
         const line = lines.find((l) => l.includes("улик сверено")) ?? "";
         notes.push(`${rel(root, j)}: ${line}`);
+        // Сигналы сверки и описи доходят до человека, код не меняют (F-78.A).
+        for (const l of lines) if (l.startsWith("[!!] ")) notes.push(`${rel(root, j)}: ${l.slice(5)}`);
       }
     }
   }
+
+  notes.push(configNote());
 
   const tele = telemetryState();
   if (tele === "off") notes.push("telemetry: выключена");

@@ -22,8 +22,8 @@
     "test": "node --test"
   },
   "symphysis": {
-    "openspecPin": "1.15.0-symphysis.3",
-    "openspecSource": "<URL репозитория форка — плейсхолдер>"
+    "openspecPin": "1.15.0-symphysis.4",
+    "openspecSource": "vendor/fission-ai-openspec-1.15.0-symphysis.4.tgz"
   },
   "dependencies": {
     "yaml": "^2.9.1"

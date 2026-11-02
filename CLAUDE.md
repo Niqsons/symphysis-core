@@ -31,9 +31,15 @@
   Шаблон просмотрщика описан в `docs/playground-template-llm-pipeline.md`.
 - `tools/journal*.py` — фасад `journal.py` (CLI, публичные имена) и модули:
   `journal_model` (схема, проверка, импорт md), `journal_render` (md, html,
-  design.md), `journal_apply` (сверка улик, внесение правок), `journal_cli`;
-  модули импортируют друг друга по имени, не через фасад.
-- `installer/` — npm-пакет `@niqsons/symphysis`: `install`/`check`;
+  design.md), `journal_apply` (сверка улик, внесение правок), `journal_sites`
+  (места кода из улик, подкоманда `code-sites`), `journal_consequences` (две
+  проверки описи `consequences.md` внутри `check`), `journal_cli`; модули
+  импортируют друг друга по имени, не через фасад.
+- `tools/symphysis_config.py` — состав выбора из личного `symphysis.yaml`, единственный
+  читатель файла: журнал этот модуль не импортирует и настройки не читает, а
+  `symphysis config` и `symphysis check` зовут его. Случаи —
+  `tests/fixtures/settings-cases.json`.
+- `installer/` — npm-пакет `@niqsons/symphysis`: `install`/`check`/`config`;
   `payload/` генерируется из корня (`scripts/sync-payload.js`), не правится.
 - `docs/analysis/step0-sources.md` — чтение источников шага 0
   с вердиктами: что берём как есть, что дорабатываем, что
@@ -64,11 +70,14 @@
   перезаписывает. Правки самого OpenSpec — в форке
   `upstream/openspec`; решением 2026-10-29 (F-02, F-03) форк
   меняется не в двух точках, как решалось сначала, а по перечню правок
-  в `upstream/openspec/UPSTREAM.md` (версия форка `1.15.0-symphysis.2`).
+  в `upstream/openspec/UPSTREAM.md` (версия форка `1.15.0-symphysis.4`).
   Каждый выпуск upstream сначала разбирается, потом решается, втягивать ли.
 - Первый артефакт схемы — `intent` (`intent.md`: намерение словами
   человека); без него `decisions` заблокирован (F-13.A). Второй круг
   брейншторма — в конце шага `research`, не в `attack-decisions`.
+- Шаг `consequences` стоит между `specs` и `design`: опись в `consequences.md`, в журнал
+  идут только ветка или допущение без сценария и причины провала. Скрипт сверяет места
+  и цитаты, сигнал, не стоп; настройки читает `symphysis_config.py`.
 - Атаки `attack-decisions` и `attack-artifacts` необязательные (признак
   `optional` форка): `continue` без имени их пропускает, вызов —
   `/opsx:continue <изменение> attack-artifacts`. Вызванная атака гейтует
@@ -101,12 +110,14 @@
 ## Окружение
 
 - Python — `python`, версия не закрепляется: `tools/journal*.py` работают
-  на голом Python, без пакетов (слово владельца, 2026-11-01).
+  на голом Python, без пакетов (слово владельца, 2026-11-01). PyYAML нужен только
+  `tools/symphysis_config.py` (зависимость разрешена словом владельца, 2026-11-01):
+  файл настроек есть, а пакета нет — всё включено и сигнал с командой установки.
 - В Git Bash нет `jq` — скрипты хуков пишутся без него.
 - Тесты symphysis — `python -X utf8 -m pytest` — **всегда с xdist**:
   `-n 12` стоит в `pytest.ini` (`addopts`), без него тесты не запускаются
-  (правило владельца, 2026-10-30); пакеты — pytest, pytest-xdist, jsonschema
-  (`requirements-dev.txt`). `jsonschema` — только эталон сверки проверщика
+  (правило владельца, 2026-10-30); пакеты — pytest, pytest-xdist, jsonschema,
+  pyyaml (`requirements-dev.txt`). `jsonschema` — только эталон сверки проверщика
   (`tests/test_journal_validator.py`): без него сверка показывается пропуском
   и пройденной не считается. Тесты форка — `pnpm --dir upstream/openspec test`,
   сборка — `pnpm --dir upstream/openspec build`; CLI форка до сборки

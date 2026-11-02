@@ -6,6 +6,7 @@ import os from "node:os";
 import path from "node:path";
 import { spawnSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
+import { requireFork } from "../scripts/build-vendor.js";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const installerDir = path.resolve(here, "..");
@@ -72,8 +73,12 @@ test("npm pack: tarball с payload и скриптом, без test/ и node_mod
 
 test("npx install в чистый проект: записано, файлы на местах", opts, () => {
   assert.ok(tgz, "нужен tarball из предыдущего теста");
+  requireFork(FORK);
   const project = mk("project");
-  const r = npx(["install", "--project", project], envWith({ NPM_CONFIG_CACHE: cache, npm_config_cache: cache }));
+  // Клиент настроен форком до установки, как в руководстве; конфиг — временный на эту команду.
+  const init = spawnSync(process.execPath, [FORK, "init", "--tools", "claude"], { cwd: project, encoding: "utf8", env: envWith({ OPENSPEC_TELEMETRY: "0" }) });
+  assert.equal(init.status, 0, init.stdout + init.stderr);
+  const r = npx(["install", "--project", project], envWith({ NPM_CONFIG_CACHE: cache, npm_config_cache: cache, SYMPHYSIS_OPENSPEC: FORK }));
   assert.equal(r.status, 0, r.stdout + r.stderr);
   assert.match(r.stdout, /записано/);
   for (const f of [
@@ -85,11 +90,15 @@ test("npx install в чистый проект: записано, файлы н�
 });
 
 test("npx check с форком из SYMPHYSIS_OPENSPEC: код 0, check: ok", opts, () => {
-  assert.ok(fs.existsSync(FORK), `нет форка: ${FORK}`);
+  requireFork(FORK);
   const project = path.join(tmpRoot, "project");
+  // PyYAML у python на машине этому тесту ни к чему: о настройках — check.test.js.
+  fs.rmSync(path.join(project, "symphysis.yaml"));
   const r = npx(["check", "--project", project], envWith({ NPM_CONFIG_CACHE: cache, npm_config_cache: cache, SYMPHYSIS_OPENSPEC: FORK }));
   assert.equal(r.status, 0, r.stdout + r.stderr);
   assert.match(r.stdout, /^check: ok$/m);
+  // Инсталлятор не из клона: исходников рядом нет, сверки payload нет.
+  assert.doesNotMatch(r.stdout, /payload/);
 });
 
 test("npx check без форка (нет переменной, PATH без openspec): код 2, «не найден»", opts, () => {
@@ -102,4 +111,27 @@ test("npx check без форка (нет переменной, PATH без open
   );
   assert.equal(r.status, 2, r.stdout + r.stderr);
   assert.match(r.stdout, /не найден/);
+});
+
+// Тарбол форка в клоне без upstream/: установка из vendor/ с временным префиксом, сборки нет.
+test("Тарбол в клоне: npm i -g ./vendor/<тарбол> даёт версию пина, upstream/ не нужен", opts, () => {
+  const pkg = JSON.parse(fs.readFileSync(path.join(installerDir, "package.json"), "utf8"));
+  const vendored = path.resolve(installerDir, "..", pkg.symphysis.openspecSource);
+  assert.ok(fs.existsSync(vendored), `нет ${vendored}: собрать node installer/scripts/build-vendor.js`);
+  const clone = mk("clone");
+  fs.mkdirSync(path.join(clone, "vendor"));
+  fs.copyFileSync(vendored, path.join(clone, "vendor", path.basename(vendored)));
+  const prefix = mk("prefix");
+  const env = envWith({ NPM_CONFIG_CACHE: cache, npm_config_cache: cache, OPENSPEC_TELEMETRY: "0" });
+  const rel = `./vendor/${path.basename(vendored)}`;
+  const installed = win
+    ? spawnSync(`npm i -g "${rel}" --prefix "${prefix}"`, { cwd: clone, encoding: "utf8", shell: true, env, timeout: TIMEOUT })
+    : spawnSync("npm", ["i", "-g", rel, "--prefix", prefix], { cwd: clone, encoding: "utf8", env, timeout: TIMEOUT });
+  assert.equal(installed.status, 0, installed.stdout + installed.stderr);
+  const openspec = win ? path.join(prefix, "openspec.cmd") : path.join(prefix, "bin", "openspec");
+  const v = win
+    ? spawnSync(`"${openspec}" --version`, { cwd: clone, encoding: "utf8", shell: true, env })
+    : spawnSync(openspec, ["--version"], { cwd: clone, encoding: "utf8", env });
+  assert.equal(v.status, 0, v.stdout + v.stderr);
+  assert.equal(v.stdout.trim(), pkg.symphysis.openspecPin);
 });
