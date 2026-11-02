@@ -6,7 +6,7 @@
 `references/`. Перевод — не механический, а инструкция агенту на русском
 (F-14.A в журнале `symphysis-schema`). Ниже — каждое место, где изменён смысл,
 а не только язык, и отдельным разделом то, чего в GSD нет. Номера F-NN — записи
-журнала `openspec/changes/implementation-consequences/decisions.json`. Поведение
+журнала `openspec/changes/archive/2026-11-02-implementation-consequences/decisions.json`. Поведение
 при повторе и прерывании живёт только в тексте скилла: сценариев и проверок на него
 нет, держат его живые проходы (F-129.A).
 

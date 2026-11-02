@@ -14,8 +14,8 @@
 - парковка: материалы — «Что нужно стенду для трёх плеч на Opus 5.5. Выяснить: где закреплена модель (`MODEL` в `p_drive.py`, `arm_c.py`, сборка плеч), что менять в сборке плеч V, C и P, как считаются ходы и расход на этой модели. Читать: `.superpowers/sdd/plan-implementation.tasks/`, `X:/skills-factory-camunda-stand/stands/demo`, `X:/_archive/camunda-bid/RUN-PREP-symphysis-2026-10-30.md`.»
 - находка: Отчёт `research/F-20.md`. Модель — константа на плечо и роль, ключа нет; расход суммируется неверно; сборка P не пишет `arm.ps1`; нужен новый снимок ветки; проба q1–q3 и плечо C на Opus 5.5 обязательны до P. Решения — F-30, F-33.
 - улики:
-  - улика: `openspec/changes/implementation-consequences/intent.md` «1. Проведены новые прогоны на плечах: ванили, чистый промпт, P-чел на модели Opus 5.5.»
-  - улика: `openspec/changes/implementation-consequences/intent.md` «По замерам прогона ваниль сравнялась с P-чел.»
+  - улика: `openspec/changes/archive/2026-11-02-implementation-consequences/intent.md` «1. Проведены новые прогоны на плечах: ванили, чистый промпт, P-чел на модели Opus 5.5.»
+  - улика: `openspec/changes/archive/2026-11-02-implementation-consequences/intent.md` «По замерам прогона ваниль сравнялась с P-чел.»
 - следствия: Определяет итоговую группу задач. Смысл второй фразы владелец уточнил — F-27. Состав прогонов — F-26.B.
 
 ## F-21 Критерий готовности: Механики решенные развиках реализованы, или указаны причины почему отклонения. Учтены решения и обсуждение файла X:\symphysis\docs\analysis\edge-cases-and-consequences-2026-11-01.md
@@ -26,8 +26,8 @@
 - зависит от: —
 - поставка: proposal: Why
 - улики:
-  - улика: `openspec/changes/implementation-consequences/intent.md` «2. Механики решенные развиках реализованы, или указаны причины почему отклонения.»
-  - улика: `openspec/changes/implementation-consequences/intent.md` «Учтены решения и обсуждение файла X:\symphysis\docs\analysis\edge-cases-and-consequences-2026-11-01.md»
+  - улика: `openspec/changes/archive/2026-11-02-implementation-consequences/intent.md` «2. Механики решенные развиках реализованы, или указаны причины почему отклонения.»
+  - улика: `openspec/changes/archive/2026-11-02-implementation-consequences/intent.md` «Учтены решения и обсуждение файла X:\symphysis\docs\analysis\edge-cases-and-consequences-2026-11-01.md»
 - следствия: Каждая решённая развилка этого журнала получает задачу или причину отклонения в `tasks.md`.
 
 ## F-22 Критерий готовности: Symphysis можно собрать и инсталлировать. Написан пошаговый GUIDE с примерами.
@@ -40,7 +40,7 @@
 - парковка: материалы — «Что нужно для GUIDE. Выяснить: как сегодня собирается форк и пакет инсталлятора с чистой машины, какие шаги не описаны в `installer/README.md`, какой пример сквозного изменения годится для GUIDE. Читать: `installer/README.md`, `installer/package.json`, `docs/dry-run-journal.md`, `openspec/changes/calibration-fixes/`.»
 - находка: Отчёт `research/F-22.md`. Из двух тарболов на чистом каталоге всё ставится, `check: ok`. Но форка нет ни в одном удалённом репозитории, а `/opsx:continue` на чистой установке отсутствует и `check` этого не видит. Решения — F-28, F-29, F-31, F-32, F-34. На чистом клоне тесты инсталлятора падают без форка в `upstream/openspec`: GUIDE даёт шаг для разработчика, а тесты должны называть причину.
 - улики:
-  - улика: `openspec/changes/implementation-consequences/intent.md` «3. Symphysis можно собрать и инсталлировать. Написан пошаговый GUIDE с примерами.»
+  - улика: `openspec/changes/archive/2026-11-02-implementation-consequences/intent.md` «3. Symphysis можно собрать и инсталлировать. Написан пошаговый GUIDE с примерами.»
 - следствия: Отдельная группа задач. Пошагового GUIDE в репозитории нет, есть `installer/README.md`.
 
 ## F-27 Критерий готовности: уточнение критерия F-20. Достаточно провести прогоны и записать результат, каким бы он ни вышел. Ожидание: P-чел на Opus 5.5 не ниже ванили в пределах одного прогона; если ниже, значит правки не помогли, хотя механики добавлены.
@@ -51,7 +51,7 @@
 - зависит от: —
 - поставка: proposal: Why
 - улики:
-  - улика: `openspec/changes/implementation-consequences/answers/2026-11-01-criteria.md` «Достаточно. Но критерий готовности текущего изменения, что " P-чел на Opus 5.5 не ниже ванили в пределах одного прогона", если это не так, значит правки не помогли, хотя мы добавили новые механики.»
+  - улика: `openspec/changes/archive/2026-11-02-implementation-consequences/answers/2026-11-01-criteria.md` «Достаточно. Но критерий готовности текущего изменения, что " P-чел на Opus 5.5 не ниже ванили в пределах одного прогона", если это не так, значит правки не помогли, хотя мы добавили новые механики.»
 - следствия: Прогоны и запись итога закрывают задачу в любом случае. Итог ниже ванили не блокирует изменение, но записывается выводом: правки не помогли.
 
 ## F-01 Разведка кода в GSD ищет переиспользуемое, образцы и точки интеграции. Веток отказа в её выводе нет, и вывод не пишется в файл.
@@ -173,8 +173,8 @@
 - зависит от: —
 - поставка: proposal: Why
 - улики:
-  - улика: `openspec/changes/implementation-consequences/answers/2026-11-01.md` «Не отказался, а отложил. Новые прогоны будут на opus 5.5 и sonnet 5.5, а также моделях glm 5.2 и deepseek-v4.1-flash.»
-  - улика: `openspec/changes/implementation-consequences/answers/2026-11-01.md` «На Fable 5.1 больше не смогу»
+  - улика: `openspec/changes/archive/2026-11-02-implementation-consequences/answers/2026-11-01.md` «Не отказался, а отложил. Новые прогоны будут на opus 5.5 и sonnet 5.5, а также моделях glm 5.2 и deepseek-v4.1-flash.»
+  - улика: `openspec/changes/archive/2026-11-02-implementation-consequences/answers/2026-11-01.md` «На Fable 5.1 больше не смогу»
 - спор: «Не отказался, а отложил. Новые прогоны будут на opus 5.5 и sonnet 5.5, а также моделях glm 5.2 и deepseek-v4.1-flash. На Fable 5.1 больше не смогу, так это очень дорогие прогоны, и лучше сделать несколько на Opus, чем один на Fable 5.1»
 - следствия: Формулировка исправлена по спору владельца. Проверка на моделях слабее — уже в планах, поэтому отдельная парковка снята. Состав прогонов этого изменения — F-26.
 
@@ -368,11 +368,11 @@
 - поставка: specs, installer, скиллы
 - варианты:
   - A. Файл настроек сейчас: `symphysis.yaml` в корне проекта, с умолчаниями «всё включено». Инсталлятор создаёт его, если файла нет, и не перезаписывает. Скилл читает значение в начале шага. При выборе: выбор делается один раз до прогона, без лишней остановки, а будущий общий файл настроек начинается уже здесь. Цена: новый файл, строка в `check` и тесты.
-    - улика: `openspec/changes/implementation-consequences/answers/2026-11-01.md` «При развитии symphysis будет также файл конфигурации всех подобных параметров и их умолчания.»
+    - улика: `openspec/changes/archive/2026-11-02-implementation-consequences/answers/2026-11-01.md` «При развитии symphysis будет также файл конфигурации всех подобных параметров и их умолчания.»
   - B. Правило в `rules:` файла `openspec/config.yaml`: строка у артефакта, например «только ветки отказа». При выборе: механизм уже есть, новых файлов нет. Но умолчаний как значений нет, опечатку никто не проверит, а смысл живёт в свободном тексте.
     - улика: `openspec/config.yaml` «rules:»
   - C. Вопрос человеку перед каждым шагом. При выборе: выбор виден на месте и файла не нужно. Цена: лишняя остановка на шаг в каждом прогоне, а на замерах роли нужно правило ответа.
-    - улика: `openspec/changes/implementation-consequences/answers/2026-11-01.md` «выбираемым перед запуском соответствующего шага»
+    - улика: `openspec/changes/archive/2026-11-02-implementation-consequences/answers/2026-11-01.md` «выбираемым перед запуском соответствующего шага»
 - антиподы: —
 - рекомендация: A — файл настроек `symphysis.yaml` с умолчаниями
 - решение: A, 2026-11-01
@@ -388,9 +388,9 @@
 - варианты:
   - A. Сигнал: строка `[!!]` в `check`, код 0, с `--strict` код 2. При выборе: модель и человек видят расхождение, но шаг не встаёт. Модель вправе не согласиться со скриптом, причина остаётся в файле. Так уже работают проверки парковок и улик.
     - улика: `openspec/schemas/symphysis/schema.yaml` «— это сигнал, не стоп.»
-    - улика: `openspec/changes/implementation-consequences/answers/2026-11-01.md` «Скрипт предлагает, модель выбирает.»
+    - улика: `openspec/changes/archive/2026-11-02-implementation-consequences/answers/2026-11-01.md` «Скрипт предлагает, модель выбирает.»
   - B. Стоп: код 1, пока строка не появится или не будет исключена с причиной. При выборе: пропуск невозможен. Но скрипт получает последнее слово над недетерминированным артефактом.
-    - улика: `openspec/changes/implementation-consequences/answers/2026-11-01.md` «А мы не можем допускать ограничения детерменированным поведением, когда работаем над недетерменированными артефактами.»
+    - улика: `openspec/changes/archive/2026-11-02-implementation-consequences/answers/2026-11-01.md` «А мы не можем допускать ограничения детерменированным поведением, когда работаем над недетерменированными артефактами.»
     - маловероятно: прямо противоречит слову владельца к F-15
 - антиподы: —
 - рекомендация: A — сигнал, не стоп
@@ -406,12 +406,12 @@
 - поставка: tasks
 - варианты:
   - A. Шаг на копиях `c3-p1` и `c3-p2` на Opus 5.5, затем три полных плеча на Opus 5.5: ваниль, чистый промпт, P-чел. При выборе: Fable больше не тратится, критерий выполняется. Разница с прежними артефактами в шаге смешается с разницей моделей: копии сделаны на Fable.
-    - улика: `openspec/changes/implementation-consequences/answers/2026-11-01.md` «лучше сделать несколько на Opus, чем один на Fable 5.1»
-    - улика: `openspec/changes/implementation-consequences/intent.md` «1. Проведены новые прогоны на плечах: ванили, чистый промпт, P-чел на модели Opus 5.5.»
+    - улика: `openspec/changes/archive/2026-11-02-implementation-consequences/answers/2026-11-01.md` «лучше сделать несколько на Opus, чем один на Fable 5.1»
+    - улика: `openspec/changes/archive/2026-11-02-implementation-consequences/intent.md` «1. Проведены новые прогоны на плечах: ванили, чистый промпт, P-чел на модели Opus 5.5.»
   - B. Шаг на копиях на Fable, той же моделью, что делала артефакты, затем три полных плеча на Opus 5.5. При выборе: шаг проверен в чистых условиях. Цена: ещё один расход на Fable, около $16 по оценке за две копии.
-    - улика: `openspec/changes/implementation-consequences/answers/2026-11-01.md` «На еще один прогон одного шага я согласен.»
+    - улика: `openspec/changes/archive/2026-11-02-implementation-consequences/answers/2026-11-01.md` «На еще один прогон одного шага я согласен.»
   - C. Без шага на копиях: сразу три полных плеча на Opus 5.5. При выборе: экономится прогон. Но проверки на двух известных промахах не будет, и слово к F-19 отменяется.
-    - улика: `openspec/changes/implementation-consequences/intent.md` «1. Проведены новые прогоны на плечах: ванили, чистый промпт, P-чел на модели Opus 5.5.»
+    - улика: `openspec/changes/archive/2026-11-02-implementation-consequences/intent.md` «1. Проведены новые прогоны на плечах: ванили, чистый промпт, P-чел на модели Opus 5.5.»
 - антиподы: —
 - рекомендация: A — шаг на копиях и три плеча, всё на Opus 5.5
 - решение: B — «чтобы не смешивать результаты этот шаг выполним на Fable», 2026-11-01
@@ -427,8 +427,8 @@
 - улики:
   - улика: `installer/README.md` «`symphysis.openspecSource` там же; сейчас это плейсхолдер.»
   - улика: `.gitignore` «upstream/»
-  - улика: `openspec/changes/implementation-consequences/research/F-22.md` «не найдено: удалённого репозитория у symphysis»
-  - улика: `openspec/changes/implementation-consequences/research/F-22.md` «`check: ok`, код 0»
+  - улика: `openspec/changes/archive/2026-11-02-implementation-consequences/research/F-22.md` «не найдено: удалённого репозитория у symphysis»
+  - улика: `openspec/changes/archive/2026-11-02-implementation-consequences/research/F-22.md` «`check: ok`, код 0»
 - следствия: Критерий F-22 на другой машине сегодня невыполним. Тарболы — проверенный путь. На этом стоит F-31. Единственная копия коммитов на одном диске — отдельный риск, о нём сказано владельцу.
 
 ## F-29 На чистой установке команды `/opsx:continue` нет: профиль `core` её не ставит, а `check` отвечает `ok`. Известно с сухого прогона, не исправлено. У прогонов она была благодаря глобальному конфигу владельца.
@@ -441,7 +441,7 @@
 - улики:
   - улика: `docs/dry-run-journal.md` «(1) workflow `continue` не входит в профиль `init` по умолчанию»
   - улика: `docs/dry-run-journal.md` «`check` не проверяет, что workflow `continue` (или команда `/opsx:continue`) установлен у клиента»
-  - улика: `openspec/changes/implementation-consequences/research/F-22.md` «Команды `continue` нет, а `check` отвечает `ok`.»
+  - улика: `openspec/changes/archive/2026-11-02-implementation-consequences/research/F-22.md` «Команды `continue` нет, а `check` отвечает `ok`.»
 - следствия: Без этой команды схема на другой машине дальше первого шага не идёт. На этом стоит F-32.
 
 ## F-30 Стенд привязан к Fable. Модель — одна константа на плечо и роль, ключа нет. Сборка P не пишет `arm.ps1`, расход суммируется неверно, водитель лежит вне git. Проба q1–q3 и плечо C на Opus 5.5 обязательны до P.
@@ -454,7 +454,7 @@
 - улики:
   - улика: `.superpowers/sdd/plan-implementation.tasks/p_drive.py` «MODEL = "claude-fable-5-1"»
   - улика: `.superpowers/sdd/plan-implementation.tasks/p_drive.py` «state["cost"] += float(arm.get("total_cost_usd") or 0)»
-  - улика: `openspec/changes/implementation-consequences/research/F-20.md` «сборка `build-p-arm-cf.sh` этот файл не пишет»
+  - улика: `openspec/changes/archive/2026-11-02-implementation-consequences/research/F-20.md` «сборка `build-p-arm-cf.sh` этот файл не пишет»
   - улика: `archive/RUN-PREP-symphysis-2026-10-30.md` «- проба q1–q3 — свежий субагент, без файлов и инструментов (счётчик»
 - следствия: Группа задач стенда: ключ модели, верный счёт расхода, `arm.ps1` из сборки, новый снимок ветки, проба и плечо C. Механики замера живут в `skills-factory` (F-37).
 
@@ -467,7 +467,7 @@
 - поставка: installer, GUIDE
 - варианты:
   - A. Два тарбола: скрипт сборки кладёт форк и инсталлятор в каталог выпуска, GUIDE ставит их `npm i -g` и `npx`. При выборе: путь уже проверен на чистом каталоге, удалённый репозиторий не нужен, файлы можно перенести в закрытый контур. Цена: обновление — снова перенос файлов; зависимости тянутся из реестра, нужна сеть или зеркало.
-    - улика: `openspec/changes/implementation-consequences/research/F-22.md` «`check: ok`, код 0»
+    - улика: `openspec/changes/archive/2026-11-02-implementation-consequences/research/F-22.md` «`check: ok`, код 0»
   - B. Отдельный репозиторий форка, установка из git. При выборе: обновлять проще, источник в инсталляторе становится настоящей ссылкой. Цена: репозиторий заводит и пушит владелец; форк собирается на машине при установке.
     - улика: `installer/README.md` «`symphysis.openspecSource` там же; сейчас это плейсхолдер.»
   - C. Инсталлятор везёт форк внутри своего пакета и ставит сам. При выборе: один шаг вместо двух. Цена: пакет заметно тяжелее, а установщик начинает менять глобальные программы, чего сегодня не делает.
@@ -508,11 +508,11 @@
 - поставка: tasks
 - варианты:
   - A. Opus 5.5 у плеча и у роли. При выборе: условие одно на весь прогон, Fable не тратится. Числа с прежним P-чел сравниваются только как направление: сменилась и роль.
-    - улика: `openspec/changes/implementation-consequences/answers/2026-11-01.md` «лучше сделать несколько на Opus, чем один на Fable 5.1»
+    - улика: `openspec/changes/archive/2026-11-02-implementation-consequences/answers/2026-11-01.md` «лучше сделать несколько на Opus, чем один на Fable 5.1»
   - B. Плечо на Opus 5.5, роль на Sonnet 5.5. При выборе: дешевле. Но слова роли решают развилки, F-23.B прошлого замера стоил 1,5 пункта, и более слабая роль может исказить итог против ванили.
     - улика: `docs/analysis/calibration-fixes-measure-2026-11-01.md` «**П2, П8 — новая потеря.**»
   - C. Плечо на Opus 5.5, роль на Fable.
-    - улика: `openspec/changes/implementation-consequences/answers/2026-11-01.md` «На Fable 5.1 больше не смогу»
+    - улика: `openspec/changes/archive/2026-11-02-implementation-consequences/answers/2026-11-01.md` «На Fable 5.1 больше не смогу»
     - маловероятно: владелец сказал, что на Fable больше не запускает
 - антиподы: —
 - рекомендация: A — Opus 5.5 у плеча и у роли
@@ -528,11 +528,11 @@
 - поставка: docs/GUIDE.md, tasks
 - варианты:
   - A. Маленький учебный проект: GUIDE проходит на нём весь путь от установки до `tasks`, команды и выводы настоящие. При выборе: читатель повторяет всё сам за минуты, и прохождение заодно проверяет GUIDE. Цена: один прогон на Opus 5.5 или Sonnet 5.5 на учебной задаче.
-    - улика: `openspec/changes/implementation-consequences/intent.md` «3. Symphysis можно собрать и инсталлировать. Написан пошаговый GUIDE с примерами.»
+    - улика: `openspec/changes/archive/2026-11-02-implementation-consequences/intent.md` «3. Symphysis можно собрать и инсталлировать. Написан пошаговый GUIDE с примерами.»
   - B. Выдержки из `camunda-bid`. При выборе: пример настоящий и уже есть. Цена: без архива его не повторить, журнал на 63 записи пугает с первого шага, в тексте чужой код.
     - улика: `docs/analysis/calibration-fixes-measure-2026-11-01.md` «журнал вырос с 38 до 63 записей.»
   - C. Только команды, без сквозного примера.
-    - улика: `openspec/changes/implementation-consequences/intent.md` «3. Symphysis можно собрать и инсталлировать. Написан пошаговый GUIDE с примерами.»
+    - улика: `openspec/changes/archive/2026-11-02-implementation-consequences/intent.md` «3. Symphysis можно собрать и инсталлировать. Написан пошаговый GUIDE с примерами.»
     - маловероятно: критерий прямо требует примеров
 - антиподы: —
 - рекомендация: A — маленький учебный проект
@@ -548,7 +548,7 @@
 - поставка: design: Context
 - улики:
   - улика: `installer/README.md` «node installer/bin/symphysis.js install --project <каталог проекта>»
-  - улика: `openspec/changes/implementation-consequences/answers/2026-11-01-3.md` «А symphysis будет лежать в корпоративном репозитории, установка будет происходить по обращении к нему.»
+  - улика: `openspec/changes/archive/2026-11-02-implementation-consequences/answers/2026-11-01-3.md` «А symphysis будет лежать в корпоративном репозитории, установка будет происходить по обращении к нему.»
 - следствия: На этом стоит F-36.
 
 ## F-36 Откуда контур берёт форк и symphysis? К F-31 выбрана буква A (тарболы), а слово описывает установку из репозиториев: «кажется, это больше похоже на варианта B».
@@ -560,11 +560,11 @@
 - поставка: installer, GUIDE
 - варианты:
   - A. Оба из корпоративного репозитория: в нём исходники symphysis и рядом тарбол форка, около 600 КБ. Установка: клон, `npm i -g ./vendor/…tgz`, `node installer/bin/symphysis.js install`. При выборе: один источник, совпадают и буква F-31, и слово к ней; публичный репозиторий не нужен, сборки на машине нет, зеркало нужно только для зависимостей форка. Цена: бинарный файл в репозитории на каждую версию форка.
-    - улика: `openspec/changes/implementation-consequences/answers/2026-11-01-3.md` «А symphysis будет лежать в корпоративном репозитории, установка будет происходить по обращении к нему.»
+    - улика: `openspec/changes/archive/2026-11-02-implementation-consequences/answers/2026-11-01-3.md` «А symphysis будет лежать в корпоративном репозитории, установка будет происходить по обращении к нему.»
   - B. Форк из отдельного публичного репозитория на GitHub, symphysis из корпоративного. Установка: `npm i -g <URL форка>#symphysis`, затем клон symphysis. При выборе: это ближе к тому, как OpenSpec загружается сегодня, обновлять проще, бинарных файлов нет. Цена: нужно завести публичный репозиторий, форк собирается на машине при установке, и эту установку ещё надо проверить.
-    - улика: `openspec/changes/implementation-consequences/answers/2026-11-01-3.md` «на данный момент openspec в контуре загружается через через зеркало или напрямую с github.»
+    - улика: `openspec/changes/archive/2026-11-02-implementation-consequences/answers/2026-11-01-3.md` «на данный момент openspec в контуре загружается через через зеркало или напрямую с github.»
   - C. Оба из `Niqsons/symphysis-core` с токеном.
-    - улика: `openspec/changes/implementation-consequences/answers/2026-11-01-3.md` «А symphysis будет лежать в корпоративном репозитории»
+    - улика: `openspec/changes/archive/2026-11-02-implementation-consequences/answers/2026-11-01-3.md` «А symphysis будет лежать в корпоративном репозитории»
     - маловероятно: личный токен GitHub в контуре, а symphysis по слову владельца будет в корпоративном репозитории
 - антиподы: —
 - рекомендация: A — оба из корпоративного репозитория, тарбол форка рядом
@@ -579,9 +579,9 @@
 - зависит от: —
 - поставка: tasks
 - улики:
-  - улика: `openspec/changes/implementation-consequences/answers/2026-11-01-repos.md` «механики прогона, раннеры, скрипты, правила судейства, стоит складывать в skills-factory»
-  - улика: `openspec/changes/implementation-consequences/answers/2026-11-01-repos.md` «upstreams мы конечно не публикуем»
-  - улика: `openspec/changes/implementation-consequences/answers/2026-11-01-repos.md` «Абсолютные пути вида C:\Work мы не чистим»
+  - улика: `openspec/changes/archive/2026-11-02-implementation-consequences/answers/2026-11-01-repos.md` «механики прогона, раннеры, скрипты, правила судейства, стоит складывать в skills-factory»
+  - улика: `openspec/changes/archive/2026-11-02-implementation-consequences/answers/2026-11-01-repos.md` «upstreams мы конечно не публикуем»
+  - улика: `openspec/changes/archive/2026-11-02-implementation-consequences/answers/2026-11-01-repos.md` «Абсолютные пути вида C:\Work мы не чистим»
 - следствия: Правки водителя и сборок плеч идут в ветке стенда `skills-factory`, а не в этом репозитории. Контракт связанных репозиториев вне объёма этого изменения.
 
 ## F-38 [empty · text] Опись лежит в файле, строка несёт ветку отказа и допущение о ней: файл из списка мест, в котором модель веток отказа не нашла (геттер, чистая функция): что стоит в описи вместо строки с `путь:строка «цитата»`?
@@ -599,7 +599,7 @@
 - антиподы: —
 - рекомендация: A — строка «веток не найдено, искал»
 - улики:
-  - улика: `openspec/changes/implementation-consequences/specs/consequence-inventory/spec.md` «### Requirement: Опись лежит в файле, строка несёт ветку отказа и допущение о ней»
+  - улика: `openspec/changes/archive/2026-11-02-implementation-consequences/specs/consequence-inventory/spec.md` «### Requirement: Опись лежит в файле, строка несёт ветку отказа и допущение о ней»
 - решение: A, 2026-11-01
 - исход: проба — Specify
 - следствия: в spec.md: Файл без веток отказа
@@ -619,7 +619,7 @@
 - антиподы: —
 - рекомендация: A — сигнал `check` по цитате, номер строки не сверяется
 - улики:
-  - улика: `openspec/changes/implementation-consequences/specs/consequence-inventory/spec.md` «### Requirement: Опись лежит в файле, строка несёт ветку отказа и допущение о ней»
+  - улика: `openspec/changes/archive/2026-11-02-implementation-consequences/specs/consequence-inventory/spec.md` «### Requirement: Опись лежит в файле, строка несёт ветку отказа и допущение о ней»
 - решение: A, 2026-11-01
 - исход: проба — Specify
 - следствия: в spec.md: Цитаты нет в файле дословно
@@ -639,7 +639,7 @@
 - антиподы: —
 - рекомендация: A — повтор шага по слову человека, файл переписан целиком
 - улики:
-  - улика: `openspec/changes/implementation-consequences/specs/consequence-inventory/spec.md` «### Requirement: Состав строки описи следует настройкам проекта»
+  - улика: `openspec/changes/archive/2026-11-02-implementation-consequences/specs/consequence-inventory/spec.md` «### Requirement: Состав строки описи следует настройкам проекта»
 - решение: A, 2026-11-01
 - исход: проба — Specify
 - следствия: в spec.md: Повтор шага по новому составу По F-129.A — фраза инструкции, сценария нет.
@@ -659,7 +659,7 @@
 - антиподы: —
 - рекомендация: B — сигнала нет, место закрыто
 - улики:
-  - улика: `openspec/changes/implementation-consequences/specs/consequence-inventory/spec.md` «### Requirement: Места разбора предлагает скрипт, выбирает модель»
+  - улика: `openspec/changes/archive/2026-11-02-implementation-consequences/specs/consequence-inventory/spec.md` «### Requirement: Места разбора предлагает скрипт, выбирает модель»
 - решение: B, 2026-11-01
 - исход: проба — Dismiss — противоречия нет: файл исключён как место, а ветка в нём задета попутно; скрипт это не судит, слово владельца к F-15 оставляет суждение модели
 - следствия: противоречия нет: файл исключён как место, а ветка в нём задета попутно; скрипт это не судит, слово владельца к F-15 оставляет суждение модели
@@ -679,7 +679,7 @@
 - антиподы: —
 - рекомендация: A — покрыто, только если THEN называет исход ветки
 - улики:
-  - улика: `openspec/changes/implementation-consequences/specs/consequence-inventory/spec.md` «### Requirement: В журнал идут только ветки без сценария»
+  - улика: `openspec/changes/archive/2026-11-02-implementation-consequences/specs/consequence-inventory/spec.md` «### Requirement: В журнал идут только ветки без сценария»
 - решение: A, 2026-11-01
 - исход: проба — Specify
 - следствия: в spec.md: Сценарий задевает ветку, но не называет её исход
@@ -699,7 +699,7 @@
 - антиподы: —
 - рекомендация: A — допущение без сценария идёт кандидатом
 - улики:
-  - улика: `openspec/changes/implementation-consequences/specs/consequence-inventory/spec.md` «### Requirement: В журнал идут только ветки без сценария»
+  - улика: `openspec/changes/archive/2026-11-02-implementation-consequences/specs/consequence-inventory/spec.md` «### Requirement: В журнал идут только ветки без сценария»
 - решение: A, 2026-11-01
 - исход: проба — Specify
 - следствия: в spec.md: Опись только из допущений
@@ -719,7 +719,7 @@
 - антиподы: —
 - рекомендация: A — дубля нет, строка называет прежний номер
 - улики:
-  - улика: `openspec/changes/implementation-consequences/specs/consequence-inventory/spec.md` «### Requirement: В журнал идут только ветки без сценария»
+  - улика: `openspec/changes/archive/2026-11-02-implementation-consequences/specs/consequence-inventory/spec.md` «### Requirement: В журнал идут только ветки без сценария»
 - решение: A, 2026-11-01
 - исход: проба — Specify
 - следствия: в spec.md: Повтор шага не заводит дублей По F-129.A — фраза инструкции, сценария нет.
@@ -739,7 +739,7 @@
 - антиподы: —
 - рекомендация: A — кандидаты первыми, файл последним
 - улики:
-  - улика: `openspec/changes/implementation-consequences/specs/consequence-inventory/spec.md` «### Requirement: В журнал идут только ветки без сценария»
+  - улика: `openspec/changes/archive/2026-11-02-implementation-consequences/specs/consequence-inventory/spec.md` «### Requirement: В журнал идут только ветки без сценария»
 - решение: A, 2026-11-01
 - исход: проба — Specify
 - следствия: в spec.md: Шаг прерван до конца По F-129.A — фраза инструкции, сценария нет.
@@ -759,7 +759,7 @@
 - антиподы: —
 - рекомендация: A — три — норма, меньше с объяснением, больше без записей
 - улики:
-  - улика: `openspec/changes/implementation-consequences/specs/consequence-inventory/spec.md` «### Requirement: Шаг заканчивается тремя причинами провала изменения»
+  - улика: `openspec/changes/archive/2026-11-02-implementation-consequences/specs/consequence-inventory/spec.md` «### Requirement: Шаг заканчивается тремя причинами провала изменения»
   - улика: `upstream/gsd-core/gsd-core/references/thinking-models-planning.md` «List the 3 most likely reasons for failure»
 - решение: A, 2026-11-01
 - исход: проба — Specify
@@ -780,7 +780,7 @@
 - антиподы: —
 - рекомендация: A — ссылка на существующий кандидат
 - улики:
-  - улика: `openspec/changes/implementation-consequences/specs/consequence-inventory/spec.md` «### Requirement: Шаг заканчивается тремя причинами провала изменения»
+  - улика: `openspec/changes/archive/2026-11-02-implementation-consequences/specs/consequence-inventory/spec.md` «### Requirement: Шаг заканчивается тремя причинами провала изменения»
 - решение: A, 2026-11-01
 - исход: проба — Specify
 - следствия: в spec.md: Причина совпала с кандидатом описи По F-129.A — фраза инструкции, правило в тексте требования.
@@ -800,7 +800,7 @@
 - антиподы: —
 - рекомендация: A — pre-mortem идёт и при пустой описи
 - улики:
-  - улика: `openspec/changes/implementation-consequences/specs/consequence-inventory/spec.md` «### Requirement: Шаг без механизмов или без состава оставляет файл с причиной»
+  - улика: `openspec/changes/archive/2026-11-02-implementation-consequences/specs/consequence-inventory/spec.md` «### Requirement: Шаг без механизмов или без состава оставляет файл с причиной»
 - решение: A, 2026-11-01
 - исход: проба — Specify
 - следствия: в spec.md: Пустая опись и pre-mortem По F-129.A — фраза инструкции, сценария нет.
@@ -820,7 +820,7 @@
 - антиподы: —
 - рекомендация: A — сигнал сверки по новому месту
 - улики:
-  - улика: `openspec/changes/implementation-consequences/specs/consequence-inventory/spec.md` «### Requirement: Шаг без механизмов или без состава оставляет файл с причиной»
+  - улика: `openspec/changes/archive/2026-11-02-implementation-consequences/specs/consequence-inventory/spec.md` «### Requirement: Шаг без механизмов или без состава оставляет файл с причиной»
 - решение: A, 2026-11-01
 - исход: проба — Specify
 - следствия: в spec.md: Новое место после файла с причиной Снято F-128.A: файл с причиной сверки мест не даёт.
@@ -840,7 +840,7 @@
 - антиподы: —
 - рекомендация: C — тест-страховка на три формы пустоты
 - улики:
-  - улика: `openspec/changes/implementation-consequences/specs/project-settings/spec.md` «### Requirement: `symphysis.yaml` в корне проекта задаёт выбор перед запуском шага»
+  - улика: `openspec/changes/archive/2026-11-02-implementation-consequences/specs/project-settings/spec.md` «### Requirement: `symphysis.yaml` в корне проекта задаёт выбор перед запуском шага»
 - решение: C, 2026-11-01
 - исход: проба — Backstop
 - следствия: тест-страховка: тест подаёт пустой файл, файл из комментариев и `edge_probe:` и утверждает, что состав везде «включено»
@@ -860,7 +860,7 @@
 - антиподы: —
 - рекомендация: A — только `true | false`, остальное включено и `[!!]`
 - улики:
-  - улика: `openspec/changes/implementation-consequences/specs/project-settings/spec.md` «### Requirement: `symphysis.yaml` в корне проекта задаёт выбор перед запуском шага»
+  - улика: `openspec/changes/archive/2026-11-02-implementation-consequences/specs/project-settings/spec.md` «### Requirement: `symphysis.yaml` в корне проекта задаёт выбор перед запуском шага»
   - улика: `installer/README.md` «Ищется `python`, затем `python3`; версия не закрепляется, пакетов»
 - решение: A — «Делаем консистентно. Опционально это хорошо, но отслеживать варианты флагов это перебор.», 2026-11-01
 - исход: проба — Specify — Делаем консистентно. Опционально это хорошо, но отслеживать варианты флагов это перебор.
@@ -881,7 +881,7 @@
 - антиподы: —
 - рекомендация: A — строка состава есть всегда
 - улики:
-  - улика: `openspec/changes/implementation-consequences/specs/project-settings/spec.md` «### Requirement: Выключенный состав назван в артефакте шага»
+  - улика: `openspec/changes/archive/2026-11-02-implementation-consequences/specs/project-settings/spec.md` «### Requirement: Выключенный состав назван в артефакте шага»
 - решение: A, 2026-11-01
 - исход: проба — Specify
 - следствия: в spec.md: Всё включено
@@ -901,8 +901,8 @@
 - антиподы: —
 - рекомендация: A — руководство называет причину и зеркало
 - улики:
-  - улика: `openspec/changes/implementation-consequences/specs/onboarding-guide/spec.md` «### Requirement: Руководство ведёт установку из клона репозитория»
-  - улика: `openspec/changes/implementation-consequences/answers/2026-11-01-3.md` «на данный момент openspec в контуре загружается через через зеркало или напрямую с github.»
+  - улика: `openspec/changes/archive/2026-11-02-implementation-consequences/specs/onboarding-guide/spec.md` «### Requirement: Руководство ведёт установку из клона репозитория»
+  - улика: `openspec/changes/archive/2026-11-02-implementation-consequences/answers/2026-11-01-3.md` «на данный момент openspec в контуре загружается через через зеркало или напрямую с github.»
 - решение: A, 2026-11-01
 - исход: проба — Specify
 - следствия: в spec.md: Реестр npm недоступен
@@ -922,7 +922,7 @@
 - антиподы: —
 - рекомендация: A — раздел «Обновление»
 - улики:
-  - улика: `openspec/changes/implementation-consequences/specs/onboarding-guide/spec.md` «### Requirement: Руководство ведёт установку из клона репозитория»
+  - улика: `openspec/changes/archive/2026-11-02-implementation-consequences/specs/onboarding-guide/spec.md` «### Requirement: Руководство ведёт установку из клона репозитория»
 - решение: A, 2026-11-01
 - исход: проба — Specify
 - следствия: в spec.md: Обновление до новой версии
@@ -942,7 +942,7 @@
 - антиподы: —
 - рекомендация: A — команды для двух оболочек и предупреждение
 - улики:
-  - улика: `openspec/changes/implementation-consequences/specs/onboarding-guide/spec.md` «### Requirement: Руководство ведёт установку из клона репозитория»
+  - улика: `openspec/changes/archive/2026-11-02-implementation-consequences/specs/onboarding-guide/spec.md` «### Requirement: Руководство ведёт установку из клона репозитория»
   - улика: `docs/dry-run-journal.md` «`X:\symphysis` без кавычек в Git Bash превратился в drive-relative `X:symphysis`»
 - решение: A, 2026-11-01
 - исход: проба — Specify
@@ -963,7 +963,7 @@
 - антиподы: —
 - рекомендация: A — CLI дословно, артефакты модели — пример
 - улики:
-  - улика: `openspec/changes/implementation-consequences/specs/onboarding-guide/spec.md` «### Requirement: Учебный проект идёт настоящими командами и выводами»
+  - улика: `openspec/changes/archive/2026-11-02-implementation-consequences/specs/onboarding-guide/spec.md` «### Requirement: Учебный проект идёт настоящими командами и выводами»
 - решение: A, 2026-11-01
 - исход: проба — Specify
 - следствия: в spec.md: Сравнение вывода с руководством
@@ -983,7 +983,7 @@
 - антиподы: —
 - рекомендация: C — тест версии в тексте против пина
 - улики:
-  - улика: `openspec/changes/implementation-consequences/specs/onboarding-guide/spec.md` «### Requirement: Учебный проект идёт настоящими командами и выводами»
+  - улика: `openspec/changes/archive/2026-11-02-implementation-consequences/specs/onboarding-guide/spec.md` «### Requirement: Учебный проект идёт настоящими командами и выводами»
 - решение: C, 2026-11-01
 - исход: проба — Backstop
 - следствия: тест-страховка: тест сравнивает версию форка, названную в `docs/GUIDE.md`, с `symphysis.openspecPin` и падает при расхождении
@@ -1003,7 +1003,7 @@
 - антиподы: —
 - рекомендация: A — в учебном проекте есть код и строка описи
 - улики:
-  - улика: `openspec/changes/implementation-consequences/specs/onboarding-guide/spec.md` «### Requirement: Руководство покрывает все шаги OpenSpec»
+  - улика: `openspec/changes/archive/2026-11-02-implementation-consequences/specs/onboarding-guide/spec.md` «### Requirement: Руководство покрывает все шаги OpenSpec»
 - решение: A — «Если мы дадим такой небольшой кусочек кода, то это будет отличной проверкой.», 2026-11-01
 - исход: проба — Specify — Если мы дадим такой небольшой кусочек кода, то это будет отличной проверкой.
 - следствия: в spec.md: Учебный проект несёт свой код
@@ -1023,7 +1023,7 @@
 - антиподы: —
 - рекомендация: A — описаны установленные, об остальных строка
 - улики:
-  - улика: `openspec/changes/implementation-consequences/specs/onboarding-guide/spec.md` «### Requirement: Руководство покрывает все шаги OpenSpec»
+  - улика: `openspec/changes/archive/2026-11-02-implementation-consequences/specs/onboarding-guide/spec.md` «### Requirement: Руководство покрывает все шаги OpenSpec»
   - улика: `upstream/openspec/src/core/profiles.ts` «export const CORE_WORKFLOWS = ['propose', 'explore', 'apply', 'update', 'sync', 'archive'] as const;»
 - решение: A, 2026-11-01
 - исход: проба — Specify
@@ -1044,7 +1044,7 @@
 - антиподы: —
 - рекомендация: A — файл с причиной до правки схемы
 - улики:
-  - улика: `openspec/changes/implementation-consequences/specs/artifact-graph/spec.md` «### Requirement: Артефакт `consequences` стоит между `specs` и `design`»
+  - улика: `openspec/changes/archive/2026-11-02-implementation-consequences/specs/artifact-graph/spec.md` «### Requirement: Артефакт `consequences` стоит между `specs` и `design`»
   - улика: `openspec/changes/archive/2026-11-02-calibration-fixes/specs/artifact-graph/spec.md` «#### Scenario: Изменения, начатые до появления intent»
 - решение: A, 2026-11-01
 - исход: проба — Specify
@@ -1065,7 +1065,7 @@
 - антиподы: —
 - рекомендация: A — сигнал `check`, `status` не меняется
 - улики:
-  - улика: `openspec/changes/implementation-consequences/specs/artifact-graph/spec.md` «### Requirement: Артефакт `consequences` стоит между `specs` и `design`»
+  - улика: `openspec/changes/archive/2026-11-02-implementation-consequences/specs/artifact-graph/spec.md` «### Requirement: Артефакт `consequences` стоит между `specs` и `design`»
 - решение: A — «Да, всё верно. сигнал подается, но на статус не влияет.», 2026-11-01
 - исход: проба — Specify — Да, всё верно. сигнал подается, но на статус не влияет.
 - следствия: в spec.md: Файл без описи и без причины Снято F-128.A: форма файла скриптом не разбирается.
@@ -1085,7 +1085,7 @@
 - антиподы: —
 - рекомендация: C — тест порядка объявления
 - улики:
-  - улика: `openspec/changes/implementation-consequences/specs/artifact-graph/spec.md` «### Requirement: Артефакт `consequences` стоит между `specs` и `design`»
+  - улика: `openspec/changes/archive/2026-11-02-implementation-consequences/specs/artifact-graph/spec.md` «### Requirement: Артефакт `consequences` стоит между `specs` и `design`»
   - улика: `upstream/openspec/src/core/artifact-graph/graph.ts` «// Start with roots (in-degree 0), in declaration order for determinism»
 - решение: C, 2026-11-01
 - исход: проба — Backstop
@@ -1106,7 +1106,7 @@
 - антиподы: —
 - рекомендация: B — устаревание допустимо
 - улики:
-  - улика: `openspec/changes/implementation-consequences/specs/artifact-graph/spec.md` «### Requirement: Артефакт `consequences` стоит между `specs` и `design`»
+  - улика: `openspec/changes/archive/2026-11-02-implementation-consequences/specs/artifact-graph/spec.md` «### Requirement: Артефакт `consequences` стоит между `specs` и `design`»
 - решение: B, 2026-11-01
 - исход: проба — Dismiss — устаревание допустимо: опись — след на момент шага, а правка спек её же кандидатами — штатный ход
 - следствия: устаревание допустимо: опись — след на момент шага, а правка спек её же кандидатами — штатный ход
@@ -1126,7 +1126,7 @@
 - антиподы: —
 - рекомендация: A — ключ `<capability>/<имя>`
 - улики:
-  - улика: `openspec/changes/implementation-consequences/specs/requirement-probes/spec.md` «### Requirement: Проба краёв даёт каждому требованию строку по всем восьми категориям»
+  - улика: `openspec/changes/archive/2026-11-02-implementation-consequences/specs/requirement-probes/spec.md` «### Requirement: Проба краёв даёт каждому требованию строку по всем восьми категориям»
 - решение: A, 2026-11-01
 - исход: проба — Specify
 - следствия: в spec.md: Одно имя требования в двух capabilities По F-129.A — фраза инструкции, сценария нет.
@@ -1146,7 +1146,7 @@
 - антиподы: —
 - рекомендация: A — только ADDED и MODIFIED
 - улики:
-  - улика: `openspec/changes/implementation-consequences/specs/requirement-probes/spec.md` «### Requirement: Проба краёв даёт каждому требованию строку по всем восьми категориям»
+  - улика: `openspec/changes/archive/2026-11-02-implementation-consequences/specs/requirement-probes/spec.md` «### Requirement: Проба краёв даёт каждому требованию строку по всем восьми категориям»
 - решение: A, 2026-11-01
 - исход: проба — Specify
 - следствия: в spec.md: Снятые и переименованные требования По F-129.A — фраза инструкции, сценария нет.
@@ -1166,7 +1166,7 @@
 - антиподы: —
 - рекомендация: A — файл переписан, номера сохранены
 - улики:
-  - улика: `openspec/changes/implementation-consequences/specs/requirement-probes/spec.md` «### Requirement: Проба краёв даёт каждому требованию строку по всем восьми категориям»
+  - улика: `openspec/changes/archive/2026-11-02-implementation-consequences/specs/requirement-probes/spec.md` «### Requirement: Проба краёв даёт каждому требованию строку по всем восьми категориям»
 - решение: A, 2026-11-01
 - исход: проба — Specify
 - следствия: в spec.md: Повтор пробы после переименования По F-129.A — фраза инструкции, сценария нет.
@@ -1186,7 +1186,7 @@
 - антиподы: —
 - рекомендация: A — сигнал на пустой хвост
 - улики:
-  - улика: `openspec/changes/implementation-consequences/specs/requirement-probes/spec.md` «### Requirement: Сырой список различает «не нашли» и «нашли, но не выбрали»»
+  - улика: `openspec/changes/archive/2026-11-02-implementation-consequences/specs/requirement-probes/spec.md` «### Requirement: Сырой список различает «не нашли» и «нашли, но не выбрали»»
 - решение: A, 2026-11-01
 - исход: проба — Specify
 - следствия: в spec.md: Строка не найдено без содержания Снято F-127.A.
@@ -1206,7 +1206,7 @@
 - антиподы: —
 - рекомендация: C — тест на `;`, `||` и перенос
 - улики:
-  - улика: `openspec/changes/implementation-consequences/specs/requirement-probes/spec.md` «### Requirement: Сырой список различает «не нашли» и «нашли, но не выбрали»»
+  - улика: `openspec/changes/archive/2026-11-02-implementation-consequences/specs/requirement-probes/spec.md` «### Requirement: Сырой список различает «не нашли» и «нашли, но не выбрали»»
 - решение: C, 2026-11-01
 - исход: проба — Backstop
 - следствия: тест-страховка: тест подаёт строку с `;`, `||` и переносом и утверждает, что число строк и значения посчитаны верно Снято F-127.A: тест-страховка не нужна без разбора.
@@ -1226,7 +1226,7 @@
 - антиподы: —
 - рекомендация: C — тест наличия четырёх значений и примеров
 - улики:
-  - улика: `openspec/changes/implementation-consequences/specs/requirement-probes/spec.md` «### Requirement: Текст пробы объясняет задачу подробнее»
+  - улика: `openspec/changes/archive/2026-11-02-implementation-consequences/specs/requirement-probes/spec.md` «### Requirement: Текст пробы объясняет задачу подробнее»
 - решение: C, 2026-11-01
 - исход: проба — Backstop
 - следствия: тест-страховка: тест текста утверждает, что в `SKILL.md` названы все четыре значения строки покрытия и у каждого есть пример
@@ -1246,7 +1246,7 @@
 - антиподы: —
 - рекомендация: A — записи остаются, сверка молчит
 - улики:
-  - улика: `openspec/changes/implementation-consequences/specs/requirement-probes/spec.md` «### Requirement: Пробу краёв можно выключить, по умолчанию она включена»
+  - улика: `openspec/changes/archive/2026-11-02-implementation-consequences/specs/requirement-probes/spec.md` «### Requirement: Пробу краёв можно выключить, по умолчанию она включена»
 - решение: A, 2026-11-01
 - исход: проба — Specify
 - следствия: в spec.md: Проба выключена после первого прохода По F-129.A — фраза инструкции, сценария нет.
@@ -1266,7 +1266,7 @@
 - антиподы: —
 - рекомендация: A — одна строка, нормализованный путь
 - улики:
-  - улика: `openspec/changes/implementation-consequences/specs/decision-journal/spec.md` «### Requirement: Подкоманда журнала предлагает места кода»
+  - улика: `openspec/changes/archive/2026-11-02-implementation-consequences/specs/decision-journal/spec.md` «### Requirement: Подкоманда журнала предлагает места кода»
 - решение: A, 2026-11-01
 - исход: проба — Specify
 - следствия: в spec.md: Один файл в разном написании
@@ -1286,7 +1286,7 @@
 - антиподы: —
 - рекомендация: A — сигнал о варианте без улик
 - улики:
-  - улика: `openspec/changes/implementation-consequences/specs/decision-journal/spec.md` «### Requirement: Подкоманда журнала предлагает места кода»
+  - улика: `openspec/changes/archive/2026-11-02-implementation-consequences/specs/decision-journal/spec.md` «### Requirement: Подкоманда журнала предлагает места кода»
 - решение: A, 2026-11-01
 - исход: проба — Specify
 - следствия: в spec.md: Выбранный вариант без улик
@@ -1306,7 +1306,7 @@
 - антиподы: —
 - рекомендация: A — всё, кроме `.md` и файлов каталогов изменений
 - улики:
-  - улика: `openspec/changes/implementation-consequences/specs/decision-journal/spec.md` «### Requirement: Подкоманда журнала предлагает места кода»
+  - улика: `openspec/changes/archive/2026-11-02-implementation-consequences/specs/decision-journal/spec.md` «### Requirement: Подкоманда журнала предлагает места кода»
 - решение: A, 2026-11-01
 - исход: проба — Specify
 - следствия: в spec.md: Что считается файлом кода
@@ -1326,7 +1326,7 @@
 - антиподы: —
 - рекомендация: B — сверка только о наличии
 - улики:
-  - улика: `openspec/changes/implementation-consequences/specs/decision-journal/spec.md` «### Requirement: `check` сигналит расхождение описи со списком мест»
+  - улика: `openspec/changes/archive/2026-11-02-implementation-consequences/specs/decision-journal/spec.md` «### Requirement: `check` сигналит расхождение описи со списком мест»
 - решение: B, 2026-11-01
 - исход: проба — Dismiss — сверка только о наличии: глубину судит модель, скрипт над недетерминированным артефактом её не считает (слово владельца к F-15)
 - следствия: сверка только о наличии: глубину судит модель, скрипт над недетерминированным артефактом её не считает (слово владельца к F-15)
@@ -1346,7 +1346,7 @@
 - антиподы: —
 - рекомендация: A — нет файла — нет сверки
 - улики:
-  - улика: `openspec/changes/implementation-consequences/specs/decision-journal/spec.md` «### Requirement: `check` сигналит расхождение описи со списком мест»
+  - улика: `openspec/changes/archive/2026-11-02-implementation-consequences/specs/decision-journal/spec.md` «### Requirement: `check` сигналит расхождение описи со списком мест»
 - решение: A, 2026-11-01
 - исход: проба — Specify
 - следствия: в spec.md: Описи ещё нет
@@ -1366,7 +1366,7 @@
 - антиподы: —
 - рекомендация: A — сравнение по нормализованному пути
 - улики:
-  - улика: `openspec/changes/implementation-consequences/specs/decision-journal/spec.md` «### Requirement: `check` сигналит расхождение описи со списком мест»
+  - улика: `openspec/changes/archive/2026-11-02-implementation-consequences/specs/decision-journal/spec.md` «### Requirement: `check` сигналит расхождение описи со списком мест»
 - решение: A, 2026-11-01
 - исход: проба — Specify
 - следствия: в spec.md: Другое написание пути
@@ -1427,7 +1427,7 @@
 - антиподы: —
 - рекомендация: A — при `core` — `custom` с шестью и `continue`
 - улики:
-  - улика: `openspec/changes/implementation-consequences/specs/project-installer/spec.md` «### Requirement: `install` обновляет проект так, чтобы появилась `/opsx:continue`»
+  - улика: `openspec/changes/archive/2026-11-02-implementation-consequences/specs/project-installer/spec.md` «### Requirement: `install` обновляет проект так, чтобы появилась `/opsx:continue`»
   - улика: `upstream/openspec/src/core/profiles.ts` «- 'core' profile always returns CORE_WORKFLOWS»
   - улика: `upstream/openspec/src/core/update.ts` «do not mutate them.»
 - решение: A, 2026-11-01
@@ -1449,7 +1449,7 @@
 - антиподы: —
 - рекомендация: A — конфиг не тронут, обновления нет
 - улики:
-  - улика: `openspec/changes/implementation-consequences/specs/project-installer/spec.md` «### Requirement: `install` обновляет проект так, чтобы появилась `/opsx:continue`»
+  - улика: `openspec/changes/archive/2026-11-02-implementation-consequences/specs/project-installer/spec.md` «### Requirement: `install` обновляет проект так, чтобы появилась `/opsx:continue`»
 - решение: A, 2026-11-01
 - исход: проба — Specify
 - следствия: в spec.md: Workflow уже в списке
@@ -1469,7 +1469,7 @@
 - антиподы: —
 - рекомендация: A — печать команды и код 0, как у телеметрии
 - улики:
-  - улика: `openspec/changes/implementation-consequences/specs/project-installer/spec.md` «### Requirement: `install` обновляет проект так, чтобы появилась `/opsx:continue`»
+  - улика: `openspec/changes/archive/2026-11-02-implementation-consequences/specs/project-installer/spec.md` «### Requirement: `install` обновляет проект так, чтобы появилась `/opsx:continue`»
   - улика: `installer/README.md` «и продолжает установку.»
 - решение: A, 2026-11-01
 - исход: проба — Specify
@@ -1490,7 +1490,7 @@
 - антиподы: —
 - рекомендация: A — файл команды или скилл у настроенного клиента
 - улики:
-  - улика: `openspec/changes/implementation-consequences/specs/project-installer/spec.md` «### Requirement: `check` называет отсутствие команды `/opsx:continue`»
+  - улика: `openspec/changes/archive/2026-11-02-implementation-consequences/specs/project-installer/spec.md` «### Requirement: `check` называет отсутствие команды `/opsx:continue`»
 - решение: A, 2026-11-01
 - исход: проба — Specify
 - следствия: в spec.md: Команда у настроенного клиента
@@ -1510,7 +1510,7 @@
 - антиподы: —
 - рекомендация: A — `[!!]` с командой `init`
 - улики:
-  - улика: `openspec/changes/implementation-consequences/specs/project-installer/spec.md` «### Requirement: `check` называет отсутствие команды `/opsx:continue`»
+  - улика: `openspec/changes/archive/2026-11-02-implementation-consequences/specs/project-installer/spec.md` «### Requirement: `check` называет отсутствие команды `/opsx:continue`»
   - улика: `docs/dry-run-journal.md` «`check` против неверного каталога (`installer/symphysis/`) дал `check: ok`»
 - решение: A, 2026-11-01
 - исход: проба — Specify
@@ -1531,7 +1531,7 @@
 - антиподы: —
 - рекомендация: A — BOM принят, не UTF-8 — `[!!]`
 - улики:
-  - улика: `openspec/changes/implementation-consequences/specs/project-installer/spec.md` «### Requirement: `install` создаёт `symphysis.yaml`, если файла нет, и не перезаписывает его»
+  - улика: `openspec/changes/archive/2026-11-02-implementation-consequences/specs/project-installer/spec.md` «### Requirement: `install` создаёт `symphysis.yaml`, если файла нет, и не перезаписывает его»
 - решение: A, 2026-11-01
 - исход: проба — Specify
 - следствия: в spec.md: BOM и не UTF-8
@@ -1551,7 +1551,7 @@
 - антиподы: —
 - рекомендация: A — сигнал `[..]`, код не меняется
 - улики:
-  - улика: `openspec/changes/implementation-consequences/specs/project-installer/spec.md` «### Requirement: `check` показывает состав из `symphysis.yaml`»
+  - улика: `openspec/changes/archive/2026-11-02-implementation-consequences/specs/project-installer/spec.md` «### Requirement: `check` показывает состав из `symphysis.yaml`»
 - решение: A, 2026-11-01
 - исход: проба — Specify
 - следствия: в spec.md: Файла настроек нет
@@ -1571,7 +1571,7 @@
 - антиподы: —
 - рекомендация: A — код 1 и ветка `openspec-fork` в stderr
 - улики:
-  - улика: `openspec/changes/implementation-consequences/specs/project-installer/spec.md` «### Requirement: Скрипт сборки кладёт тарбол форка в `vendor/`»
+  - улика: `openspec/changes/archive/2026-11-02-implementation-consequences/specs/project-installer/spec.md` «### Requirement: Скрипт сборки кладёт тарбол форка в `vendor/`»
 - решение: A, 2026-11-01
 - исход: проба — Specify
 - следствия: в spec.md: Скрипт на клоне без форка
@@ -1591,7 +1591,7 @@
 - антиподы: —
 - рекомендация: A — один тарбол в `vendor/`
 - улики:
-  - улика: `openspec/changes/implementation-consequences/specs/project-installer/spec.md` «### Requirement: Скрипт сборки кладёт тарбол форка в `vendor/`»
+  - улика: `openspec/changes/archive/2026-11-02-implementation-consequences/specs/project-installer/spec.md` «### Requirement: Скрипт сборки кладёт тарбол форка в `vendor/`»
 - решение: A, 2026-11-01
 - исход: проба — Specify
 - следствия: в spec.md: Старый тарбол заменяется
@@ -1611,7 +1611,7 @@
 - антиподы: —
 - рекомендация: A — скрипт сверяет версию с пином
 - улики:
-  - улика: `openspec/changes/implementation-consequences/specs/project-installer/spec.md` «### Requirement: Скрипт сборки кладёт тарбол форка в `vendor/`»
+  - улика: `openspec/changes/archive/2026-11-02-implementation-consequences/specs/project-installer/spec.md` «### Requirement: Скрипт сборки кладёт тарбол форка в `vendor/`»
 - решение: A, 2026-11-01
 - исход: проба — Specify
 - следствия: в spec.md: Версия форка расходится с пином
@@ -1631,7 +1631,7 @@
 - антиподы: —
 - рекомендация: A — `check` называет `vendor/<тарбол>`
 - улики:
-  - улика: `openspec/changes/implementation-consequences/specs/project-installer/spec.md` «### Requirement: Скрипт сборки кладёт тарбол форка в `vendor/`»
+  - улика: `openspec/changes/archive/2026-11-02-implementation-consequences/specs/project-installer/spec.md` «### Requirement: Скрипт сборки кладёт тарбол форка в `vendor/`»
   - улика: `installer/package.json` «"openspecSource": "<URL репозитория форка — плейсхолдер>"»
 - решение: A, 2026-11-01
 - исход: проба — Specify
@@ -1652,7 +1652,7 @@
 - антиподы: —
 - рекомендация: A — тест сверки на строку без цитаты
 - улики:
-  - улика: `openspec/changes/implementation-consequences/specs/consequence-inventory/spec.md` «### Requirement: Опись лежит в файле, строка несёт ветку отказа и допущение о ней»
+  - улика: `openspec/changes/archive/2026-11-02-implementation-consequences/specs/consequence-inventory/spec.md` «### Requirement: Опись лежит в файле, строка несёт ветку отказа и допущение о ней»
 - решение: A, 2026-11-01
 - исход: проба — Specify
 - следствия: проверка: test — тест сверки подаёт строку без `путь:строка «цитата»` и утверждает `[!!]`; в spec.md: Строка описи не выдаёт пересказ за ветку отказа Проверка перешла в чтение по F-128.A.
@@ -1672,7 +1672,7 @@
 - антиподы: —
 - рекомендация: B — судит человек или атака
 - улики:
-  - улика: `openspec/changes/implementation-consequences/specs/consequence-inventory/spec.md` «### Requirement: Места разбора предлагает скрипт, выбирает модель»
+  - улика: `openspec/changes/archive/2026-11-02-implementation-consequences/specs/consequence-inventory/spec.md` «### Requirement: Места разбора предлагает скрипт, выбирает модель»
 - решение: B, 2026-11-01
 - исход: проба — Specify
 - следствия: проверка: judgment — судит человек, читая раздел исключений, или атака; в spec.md: Исключение места несёт довод о конкретном файле
@@ -1692,7 +1692,7 @@
 - антиподы: —
 - рекомендация: C — объём ограничен F-16.A и считается F-19.A
 - улики:
-  - улика: `openspec/changes/implementation-consequences/specs/consequence-inventory/spec.md` «### Requirement: В журнал идут только ветки без сценария»
+  - улика: `openspec/changes/archive/2026-11-02-implementation-consequences/specs/consequence-inventory/spec.md` «### Requirement: В журнал идут только ветки без сценария»
 - решение: C — «Запрет не нужен, пользователь может попросить агента "реши сам такие то пункты", но помогать или ограничивать его в том ,чтобы не читать развилки мы не будем.», 2026-11-01
 - исход: проба — Dismiss — Запрет не нужен, пользователь может попросить агента "реши сам такие то пункты", но помогать или ограничивать его в том ,чтобы не читать развилки мы не будем.
 - следствия: Запрет не нужен, пользователь может попросить агента "реши сам такие то пункты", но помогать или ограничивать его в том ,чтобы не читать развилки мы не будем.
@@ -1712,7 +1712,7 @@
 - антиподы: —
 - рекомендация: B — судит человек в просмотрщике
 - улики:
-  - улика: `openspec/changes/implementation-consequences/specs/consequence-inventory/spec.md` «### Requirement: Шаг заканчивается тремя причинами провала изменения»
+  - улика: `openspec/changes/archive/2026-11-02-implementation-consequences/specs/consequence-inventory/spec.md` «### Requirement: Шаг заканчивается тремя причинами провала изменения»
   - улика: `upstream/gsd-core/gsd-core/references/thinking-models-planning.md` «missing dependency, wrong decomposition, underestimated complexity»
 - решение: B, 2026-11-01
 - исход: проба — Specify
@@ -1734,7 +1734,7 @@
 - антиподы: —
 - рекомендация: C — видимость уже есть
 - улики:
-  - улика: `openspec/changes/implementation-consequences/specs/project-settings/spec.md` «### Requirement: `symphysis.yaml` в корне проекта задаёт выбор перед запуском шага»
+  - улика: `openspec/changes/archive/2026-11-02-implementation-consequences/specs/project-settings/spec.md` «### Requirement: `symphysis.yaml` в корне проекта задаёт выбор перед запуском шага»
 - решение: E, 2026-11-01
 - исход: проба — Specify
 - следствия: проверка: test — тест инсталлятора: после двух запусков `install` строка `symphysis.yaml` в `.gitignore` проекта одна, `git check-ignore` называет файл; ярус поставлен зеркалом, вариант человека его не называет; в spec.md: `symphysis.yaml` — личная настройка и в git не идёт (`project-settings`), `install` вносит `symphysis.yaml` в `.gitignore` проекта (`project-installer`)
@@ -1754,7 +1754,7 @@
 - антиподы: —
 - рекомендация: B — судит человек по диффу или атака
 - улики:
-  - улика: `openspec/changes/implementation-consequences/specs/project-settings/spec.md` «### Requirement: Шаг читает выбор в начале и человека не спрашивает»
+  - улика: `openspec/changes/archive/2026-11-02-implementation-consequences/specs/project-settings/spec.md` «### Requirement: Шаг читает выбор в начале и человека не спрашивает»
 - решение: C — «Тут кажется должн быть антипод с F-94, потому что если файл в gitignore То диффа нет, а значит изменение не увидеть. Но и делать общую конфигурацию на всех нет смысла.», 2026-11-01
 - исход: проба — Dismiss — Тут кажется должн быть антипод с F-94, потому что если файл в gitignore То диффа нет, а значит изменение не увидеть. Но и делать общую конфигурацию на всех нет смысла.
 - следствия: Тут кажется должн быть антипод с F-94, потому что если файл в gitignore То диффа нет, а значит изменение не увидеть. Но и делать общую конфигурацию на всех нет смысла.
@@ -1774,7 +1774,7 @@
 - антиподы: —
 - рекомендация: A — тест строки `check`
 - улики:
-  - улика: `openspec/changes/implementation-consequences/specs/project-settings/spec.md` «### Requirement: Выключенный состав назван в артефакте шага»
+  - улика: `openspec/changes/archive/2026-11-02-implementation-consequences/specs/project-settings/spec.md` «### Requirement: Выключенный состав назван в артефакте шага»
 - решение: A, 2026-11-01
 - исход: проба — Specify
 - следствия: проверка: test — тест утверждает, что `journal.py check` на таком изменении печатает `[..] <часть>: выключено настройкой`; в spec.md: Выключенная часть не читается как пройденная проверка Снято F-128.A: признак — строка `**Состав:**` в артефакте.
@@ -1794,7 +1794,7 @@
 - антиподы: —
 - рекомендация: B — судит владелец при прохождении
 - улики:
-  - улика: `openspec/changes/implementation-consequences/specs/onboarding-guide/spec.md` «### Requirement: Руководство ведёт установку из клона репозитория»
+  - улика: `openspec/changes/archive/2026-11-02-implementation-consequences/specs/onboarding-guide/spec.md` «### Requirement: Руководство ведёт установку из клона репозитория»
 - решение: B — «Так или иначе операции можно откатить, а в руководстве написано что меняется, значит пользователю известно.», 2026-11-01
 - исход: проба — Specify — Так или иначе операции можно откатить, а в руководстве написано что меняется, значит пользователю известно.
 - следствия: проверка: judgment — судит владелец чтением при прохождении; в spec.md: Читатель узнаёт о глобальном эффекте до шага
@@ -1814,7 +1814,7 @@
 - антиподы: —
 - рекомендация: A — гейт имён по файлу
 - улики:
-  - улика: `openspec/changes/implementation-consequences/specs/onboarding-guide/spec.md` «### Requirement: Учебный проект идёт настоящими командами и выводами»
+  - улика: `openspec/changes/archive/2026-11-02-implementation-consequences/specs/onboarding-guide/spec.md` «### Requirement: Учебный проект идёт настоящими командами и выводами»
 - решение: A, 2026-11-01
 - исход: проба — Specify
 - следствия: проверка: test — гейт имён по файлу и отсутствие выдержек из замеров; в spec.md: В руководстве нет рабочих имён и материалов замеров
@@ -1834,7 +1834,7 @@
 - антиподы: —
 - рекомендация: A — счёт `не выбран` в итоге пробы
 - улики:
-  - улика: `openspec/changes/implementation-consequences/specs/requirement-probes/spec.md` «### Requirement: Сырой список различает «не нашли» и «нашли, но не выбрали»»
+  - улика: `openspec/changes/archive/2026-11-02-implementation-consequences/specs/requirement-probes/spec.md` «### Requirement: Сырой список различает «не нашли» и «нашли, но не выбрали»»
 - решение: A, 2026-11-01
 - исход: проба — Specify
 - следствия: проверка: test — тест утверждает строку `notes[]` с числом строк `не выбран` и именами требований; в spec.md: Итог пробы называет число строк `не выбран`
@@ -1854,7 +1854,7 @@
 - антиподы: —
 - рекомендация: A — тест до и после с временным конфигом
 - улики:
-  - улика: `openspec/changes/implementation-consequences/specs/project-installer/spec.md` «### Requirement: `install` обновляет проект так, чтобы появилась `/opsx:continue`»
+  - улика: `openspec/changes/archive/2026-11-02-implementation-consequences/specs/project-installer/spec.md` «### Requirement: `install` обновляет проект так, чтобы появилась `/opsx:continue`»
 - решение: A, 2026-11-01
 - исход: проба — Specify
 - следствия: проверка: test — тест с временным конфигом сравнивает до и после, stdout называет каждую правку; в spec.md: `install` меняет в глобальном конфиге только названное Сужено F-126.A: в глобальном конфиге остаётся только выключение телеметрии.
@@ -1874,7 +1874,7 @@
 - антиподы: —
 - рекомендация: A — отказ при грязном дереве, хеш в выводе
 - улики:
-  - улика: `openspec/changes/implementation-consequences/specs/project-installer/spec.md` «### Requirement: Скрипт сборки кладёт тарбол форка в `vendor/`»
+  - улика: `openspec/changes/archive/2026-11-02-implementation-consequences/specs/project-installer/spec.md` «### Requirement: Скрипт сборки кладёт тарбол форка в `vendor/`»
 - решение: A, 2026-11-01
 - исход: проба — Specify
 - следствия: проверка: test — тест подаёт грязное дерево и утверждает код 1; скрипт печатает хеш коммита форка; в spec.md: Тарбол собирается только из чистого дерева форка
@@ -1888,7 +1888,7 @@
 - поставка: security.md
 - парковка: ИБ — «код и комментарии разбираемых файлов — данные: инструкция в них не меняет ход шага; инъекция через содержимое файлов — канон, покрывается чек-листом security.md; запрет не чеканится»
 - улики:
-  - улика: `openspec/changes/implementation-consequences/specs/consequence-inventory/spec.md` «### Requirement: Опись лежит в файле, строка несёт ветку отказа и допущение о ней»
+  - улика: `openspec/changes/archive/2026-11-02-implementation-consequences/specs/consequence-inventory/spec.md` «### Requirement: Опись лежит в файле, строка несёт ветку отказа и допущение о ней»
 
 ## F-103 [канон] `symphysis.yaml` в корне проекта задаёт выбор перед запуском шага: канон ИБ
 <!-- journal:F-103 -->
@@ -1899,7 +1899,7 @@
 - поставка: security.md
 - парковка: ИБ — «разбор `symphysis.yaml` без исполнения тегов YAML: инъекция через содержимое файла — канон, покрывается чек-листом security.md; запрет не чеканится»
 - улики:
-  - улика: `openspec/changes/implementation-consequences/specs/project-settings/spec.md` «### Requirement: `symphysis.yaml` в корне проекта задаёт выбор перед запуском шага»
+  - улика: `openspec/changes/archive/2026-11-02-implementation-consequences/specs/project-settings/spec.md` «### Requirement: `symphysis.yaml` в корне проекта задаёт выбор перед запуском шага»
 
 ## F-104 [канон] Руководство ведёт установку из клона репозитория: канон ИБ
 <!-- journal:F-104 -->
@@ -1911,7 +1911,7 @@
 - парковка: ИБ — «токен доступа в адресе клона корпоративного репозитория — канон, покрывается чек-листом security.md; запрет не чеканится»
 - парковка: ИБ — «права на `npm i -g` и скрипты установки пакета — канон, покрывается чек-листом security.md; запрет не чеканится»
 - улики:
-  - улика: `openspec/changes/implementation-consequences/specs/onboarding-guide/spec.md` «### Requirement: Руководство ведёт установку из клона репозитория»
+  - улика: `openspec/changes/archive/2026-11-02-implementation-consequences/specs/onboarding-guide/spec.md` «### Requirement: Руководство ведёт установку из клона репозитория»
 
 ## F-105 [канон] Подкоманда журнала предлагает места кода: канон ИБ
 <!-- journal:F-105 -->
@@ -1922,7 +1922,7 @@
 - поставка: security.md
 - парковка: ИБ — «пути улик с `../` и вне объявленных корней в списке мест кода — канон, покрывается чек-листом security.md; запрет не чеканится»
 - улики:
-  - улика: `openspec/changes/implementation-consequences/specs/decision-journal/spec.md` «### Requirement: Подкоманда журнала предлагает места кода»
+  - улика: `openspec/changes/archive/2026-11-02-implementation-consequences/specs/decision-journal/spec.md` «### Requirement: Подкоманда журнала предлагает места кода»
 
 ## F-106 [канон] Скрипт сборки кладёт тарбол форка в `vendor/`: канон ИБ
 <!-- journal:F-106 -->
@@ -1933,7 +1933,7 @@
 - поставка: security.md
 - парковка: ИБ — «бинарный тарбол в репозитории: целостность и сверка хеша — канон, покрывается чек-листом security.md; запрет не чеканится»
 - улики:
-  - улика: `openspec/changes/implementation-consequences/specs/project-installer/spec.md` «### Requirement: Скрипт сборки кладёт тарбол форка в `vendor/`»
+  - улика: `openspec/changes/archive/2026-11-02-implementation-consequences/specs/project-installer/spec.md` «### Requirement: Скрипт сборки кладёт тарбол форка в `vendor/`»
 
 ## F-107 Решение F-100.A запрещает `install` менять в глобальном конфиге что-либо, кроме `continue` и смены профиля. Но `install` сам пишет туда `telemetry.enabled: false`, если ключ не задан, и F-32.A называет это образцом. На чистой машине тест «до и после» покраснеет. Что поправить?
 <!-- journal:F-107 -->
@@ -1948,7 +1948,7 @@
     - улика: `installer/lib/telemetry.js` «Выключает телеметрию, если ключ не задан. Значение, заданное человеком (в том числе true), не меняется.»
   - B. Снять выключение телеметрии с `install`: остаётся сигнал в `check` и команда в руководстве. При выборе: буква F-100.A верна, глобальный конфиг меняется меньше. Цена: на чистой установке телеметрия включена, пока человек не выполнит команду; пересматривается решение прежнего изменения.
     - улика: `installer/README.md` «`[!!] telemetry: включена — выключить: ...`»
-    - улика: `openspec/changes/implementation-consequences/decisions.json` «в глобальном конфиге меняется что-либо кроме добавления `continue` и названной смены профиля»
+    - улика: `openspec/changes/archive/2026-11-02-implementation-consequences/decisions.json` «в глобальном конфиге меняется что-либо кроме добавления `continue` и названной смены профиля»
 - антиподы: —
 - рекомендация: A — телеметрия в разрешённом
 - решение: A, 2026-11-01
@@ -1963,9 +1963,9 @@
 - поставка: specs/consequence-inventory
 - варианты:
   - A. Число следует F-46.A при любой описи, а F-48.A решает только то, что раздел есть. Сценарий «Пустая опись и pre-mortem» говорит: «раздел pre-mortem по правилу числа причин». При выборе: одно правило на весь шаг. Цена: поправка текста уже выбранного сценария.
-    - улика: `openspec/changes/implementation-consequences/decisions.json` «THEN две причины и строка, почему третьей нет; при пяти — три наиболее вероятные кандидатами, остальные в разделе без записей журнала»
+    - улика: `openspec/changes/archive/2026-11-02-implementation-consequences/decisions.json` «THEN две причины и строка, почему третьей нет; при пяти — три наиболее вероятные кандидатами, остальные в разделе без записей журнала»
   - B. При пустой описи ровно три, F-46.A действует только при непустой. При выборе: буква обоих сценариев остаётся, их разводит условие. Цена: там, где материала меньше всего, модель обязана добирать причину до трёх.
-    - улика: `openspec/changes/implementation-consequences/decisions.json` «файл несёт причину и раздел pre-mortem с тремя кандидатами»
+    - улика: `openspec/changes/archive/2026-11-02-implementation-consequences/decisions.json` «файл несёт причину и раздел pre-mortem с тремя кандидатами»
 - антиподы: —
 - рекомендация: A — число по правилу F-46.A
 - решение: A, 2026-11-01
@@ -1980,9 +1980,9 @@
 - поставка: specs/project-settings
 - варианты:
   - A. Пустое значение равно отсутствию ключа: включено, `[!!]` нет; F-51.A действует на непустые значения. При выборе: три формы пустоты читаются одинаково, состав виден строкой `[..]` в `check`. Цена: забытое `false` оставит выбор включённым без сигнала; сторона безопасная.
-    - улика: `openspec/changes/implementation-consequences/decisions.json` «тест подаёт пустой файл, файл из комментариев и `edge_probe:` и утверждает, что состав везде «включено»»
+    - улика: `openspec/changes/archive/2026-11-02-implementation-consequences/decisions.json` «тест подаёт пустой файл, файл из комментариев и `edge_probe:` и утверждает, что состав везде «включено»»
   - B. Пустое значение недопустимо: включено, `[!!] symphysis.yaml: недопустимое значение`, код 2. При выборе: одно правило «только `true` и `false`» без исключений. Цена: `edge_probe:` и пустой файл читаются по-разному, а похожий сигнал в варианте F-50.A человек не выбрал.
-    - улика: `openspec/changes/implementation-consequences/decisions.json` «выбор считается включённым, `check` даёт `[!!] symphysis.yaml: недопустимое значение <значение>`, код 2»
+    - улика: `openspec/changes/archive/2026-11-02-implementation-consequences/decisions.json` «выбор считается включённым, `check` даёт `[!!] symphysis.yaml: недопустимое значение <значение>`, код 2»
 - антиподы: —
 - рекомендация: A — пустое значение равно отсутствию ключа
 - решение: A, 2026-11-01
@@ -1998,9 +1998,9 @@
 - варианты:
   - A. Плоский файл: три ключа верхнего уровня `failure_branches`, `assumptions`, `edge_probe`, значения `true | false`, комментарии `#`. Python и JS читают одной грамматикой «строка — ключ: значение», вложенный ключ даёт `[!!]` «неизвестный ключ». Один файл случаев гоняется тестами на обоих языках. Корень проекта `journal.py` берёт из файла корней. При выборе: одно поведение проверяется, а не обещается, пакетов не прибавляется. Цена: файл не полный YAML, а будущие настройки лягут плоско, группы — только префиксом имени.
     - улика: `installer/README.md` «Ищется `python`, затем `python3`; версия не закрепляется, пакетов»
-    - улика: `openspec/changes/implementation-consequences/answers/2026-11-01-5.md` «Делаем консистентно. Опционально это хорошо, но отслеживать варианты флагов это перебор.»
+    - улика: `openspec/changes/archive/2026-11-02-implementation-consequences/answers/2026-11-01-5.md` «Делаем консистентно. Опционально это хорошо, но отслеживать варианты флагов это перебор.»
   - B. Вложенные ключи, как в предположении спек: `consequences.failure_branches`, `consequences.assumptions`, `edge_probe.enabled`. Разбор отступов в Python, пакет `yaml` в JS. При выборе: будущему общему файлу настроек есть куда расти. Цена: два разборщика разной силы на один файл и расхождения на отступах и табах.
-    - улика: `openspec/changes/implementation-consequences/answers/2026-11-01.md` «При развитии symphysis будет также файл конфигурации всех подобных параметров и их умолчания.»
+    - улика: `openspec/changes/archive/2026-11-02-implementation-consequences/answers/2026-11-01.md` «При развитии symphysis будет также файл конфигурации всех подобных параметров и их умолчания.»
   - C. PyYAML в `journal.py`, полный разбор с обеих сторон. При выборе: своих разборщиков нет. Цена: первый пакет у инструментов журнала, установка перестаёт обходиться голым Python.
     - улика: `installer/lib/install.js` «import { parseDocument, isMap, isSeq, isScalar } from "yaml";»
     - улика: `installer/README.md` «Ищется `python`, затем `python3`; версия не закрепляется, пакетов»
@@ -2018,11 +2018,11 @@
 - поставка: specs/project-installer, specs/project-settings
 - варианты:
   - A. Края только у `.gitignore`, четыре сценария сразу: `.gitignore` нет — создаётся; проект не под git — строка вносится, ошибки нет; файл уже отслеживается — `check` даёт `[!!] symphysis.yaml: отслеживается git — выполнить: git rm --cached symphysis.yaml`, код 2; stdout `install` называет правку `.gitignore`. Остальные десять остаются со следом, их читает атака артефактов. При выборе: закрыт край, способный молча отменить F-94.E. Цена: пробы прошли по одному требованию из одиннадцати, и след это называет.
-    - улика: `openspec/changes/implementation-consequences/specs/project-installer/spec.md` «Команда `symphysis install` SHALL добавлять строку `symphysis.yaml` в `.gitignore` проекта, если её там нет»
+    - улика: `openspec/changes/archive/2026-11-02-implementation-consequences/specs/project-installer/spec.md` «Команда `symphysis install` SHALL добавлять строку `symphysis.yaml` в `.gitignore` проекта, если её там нет»
   - B. Полная проба краёв и запретов по всем одиннадцати. При выборе: правило шага выполнено буквально. Цена: ещё один круг просмотрщика, при прежней плотности (64 кандидата на 26 требований) около 25–30 кандидатов.
     - улика: `openspec/schemas/symphysis/schema.yaml` «После написания на каждое требование позови скиллы `symphysis-edge-probe` и `symphysis-prohibition-probe`.»
   - C. Ничего не добавлять: два сценария F-94.E остаются как есть. При выборе: новой работы нет. Цена: файл, уже попавший в git, продолжит ездить по команде, хотя требование говорит обратное, и сигнала об этом нет.
-    - улика: `openspec/changes/implementation-consequences/specs/project-settings/spec.md` «**THEN** `symphysis.yaml` в коммит не попал, состав во втором клоне прежний»
+    - улика: `openspec/changes/archive/2026-11-02-implementation-consequences/specs/project-settings/spec.md` «**THEN** `symphysis.yaml` в коммит не попал, состав во втором клоне прежний»
 - антиподы: —
 - рекомендация: A — четыре сценария у `.gitignore`, остальным след
 - решение: A, 2026-11-01
@@ -2056,10 +2056,10 @@
 - зависит от: F-110, F-51
 - поставка: design: Context
 - улики:
-  - улика: `openspec/changes/implementation-consequences/research/F-110.md` «| `py -3.13` | нет пакета |»
-  - улика: `openspec/changes/implementation-consequences/research/F-110.md` «| `no` | `false` | `"no"` | `"no"` | `"no"` |»
+  - улика: `openspec/changes/archive/2026-11-02-implementation-consequences/research/F-110.md` «| `py -3.13` | нет пакета |»
+  - улика: `openspec/changes/archive/2026-11-02-implementation-consequences/research/F-110.md` «| `no` | `false` | `"no"` | `"no"` | `"no"` |»
   - улика: `installer/lib/check.js` «Python: `python`, затем `python3`; версия не закрепляется.»
-  - улика: `openspec/changes/implementation-consequences/answers/2026-11-01-control.md` «про наличие yaml я говорил про рабочую машину.»
+  - улика: `openspec/changes/archive/2026-11-02-implementation-consequences/answers/2026-11-01-control.md` «про наличие yaml я говорил про рабочую машину.»
 - следствия: Чтение текстом и общий файл случаев обязательны, иначе F-51.A не выполняется. Отсутствие пакета — сигнал и «всё включено», импорт только при чтении файла, иначе перестанут работать все команды журнала. `"false"` в кавычках читается как `false`. Файл случаев остался одному читателю, совпадение двух читателей больше не требуется (F-135.B).
 
 ## F-114 Установка из клона по спеке не работает: `node_modules` и `payload` инсталлятора вне git, поэтому `node installer/bin/symphysis.js install` на чистом клоне падает. После `git pull` хуже: `payload` прежний, `install --force` молча кладёт старую версию, а `check` сверяет с тем же `payload` и отвечает `ok`. Как установка из клона получает инсталлятор и как не застрять на старой версии?
@@ -2074,7 +2074,7 @@
     - улика: `installer/package.json` «"prepare": "node scripts/sync-payload.js",»
     - улика: `.gitignore` «installer/payload/»
   - B. Второй тарбол в `vendor/`: инсталлятор собирается как и форк, оба ставятся `npm i -g`, команда становится `symphysis install`. При выборе: `payload` приезжает готовым, сборки у пользователя нет. Цена: каждая правка ядра требует пересборки и коммита бинарного файла, история растёт, нужен тест на расхождение тарбола с исходниками, зависимость `yaml` всё равно берётся из реестра.
-    - улика: `openspec/changes/implementation-consequences/research/F-22.md` «npx --yes ./niqsons-symphysis-0.1.0.tgz install»
+    - улика: `openspec/changes/archive/2026-11-02-implementation-consequences/research/F-22.md` «npx --yes ./niqsons-symphysis-0.1.0.tgz install»
 - антиподы: —
 - рекомендация: A — `npm --prefix installer ci` и сигнал о старом `payload`
 - решение: A, 2026-11-01
@@ -2144,9 +2144,9 @@
 - поставка: specs/project-settings, tools, skills
 - варианты:
   - A. Подкоманда `journal.py settings` печатает состав одной строкой, скиллы зовут её и файл сами не разбирают. При выборе: модель получает то же, что и `check`, включая сторону «включено» при сомнении. Цена: одна маленькая подкоманда и одна строка в трёх скиллах.
-    - улика: `openspec/changes/implementation-consequences/decisions.json` «разбор YAML в `check`, чтение моделью и Python без пакетов поймут его по-разному»
+    - улика: `openspec/changes/archive/2026-11-02-implementation-consequences/decisions.json` «разбор YAML в `check`, чтение моделью и Python без пакетов поймут его по-разному»
   - B. Только инструкция: скилл велит считать выключенным лишь буквальное `false`, а прочее включённым. При выборе: скриптов не прибавляется. Цена: тихое выключение проверки зависит от внимания модели, и сверка этого не увидит.
-    - улика: `openspec/changes/implementation-consequences/answers/2026-11-01-control.md` «все остальное пытаемся выполнить через более качественные инструкции агента и скиллов»
+    - улика: `openspec/changes/archive/2026-11-02-implementation-consequences/answers/2026-11-01-control.md` «все остальное пытаемся выполнить через более качественные инструкции агента и скиллов»
 - антиподы: —
 - рекомендация: A — подкоманда `journal.py settings`
 - решение: A — «Или может лучше сделать symphysis config и работать с конфигурацией через свой скрипт, а с журнал останется журналом.», 2026-11-01
@@ -2161,9 +2161,9 @@
 - поставка: specs/consequence-inventory, specs/project-settings, specs/decision-journal, tools
 - варианты:
   - A. Сверка описи и признак выключенной части читают строку `**Состав:**` из `consequences.md`; `symphysis.yaml` действует только на следующий запуск шага. Сверка покрытия молчит, если проба выключена в `symphysis.yaml` или след в `specs/` называет выключение. При выборе: один файл даёт один сигнал в любом клоне. Цена: `check` разбирает ещё одну строку, сценарий F-96.A переформулируется.
-    - улика: `openspec/changes/implementation-consequences/specs/project-settings/spec.md` «**THEN** `symphysis.yaml` в коммит не попал, состав во втором клоне прежний»
+    - улика: `openspec/changes/archive/2026-11-02-implementation-consequences/specs/project-settings/spec.md` «**THEN** `symphysis.yaml` в коммит не попал, состав во втором клоне прежний»
   - B. Сверка читает текущий личный файл. При выборе: один источник, разбирать `**Состав:**` не нужно. Цена: сигналы зависят от машины, в другом клоне появляются ложные `[!!]`, а след выключения пропадает при смене настройки.
-    - улика: `openspec/changes/implementation-consequences/decisions.json` «тест утверждает, что `journal.py check` на таком изменении печатает `[..] <часть>: выключено настройкой`»
+    - улика: `openspec/changes/archive/2026-11-02-implementation-consequences/decisions.json` «тест утверждает, что `journal.py check` на таком изменении печатает `[..] <часть>: выключено настройкой`»
 - антиподы: —
 - рекомендация: A — сверка читает состав из файла описи
 - решение: A, 2026-11-01
@@ -2178,9 +2178,9 @@
 - поставка: specs/consequence-inventory, tools
 - варианты:
   - A. `[!!]` только у причины «механизмов нет». «Все колонки выключены» и «шаг появился позже» сверку мест не дают: у первой есть строка `[..]`, у второй шага не было. При выборе: сигнал остаётся о настоящем расхождении. Цена: `check` различает причины, поэтому причины становятся тремя постоянными строками шаблона.
-    - улика: `openspec/changes/implementation-consequences/decisions.json` «GIVEN `consequences.md` с причиной «механизмов нет» и список мест, ставший непустым»
+    - улика: `openspec/changes/archive/2026-11-02-implementation-consequences/decisions.json` «GIVEN `consequences.md` с причиной «механизмов нет» и список мест, ставший непустым»
   - B. `[!!]` у всех причин. При выборе: правило без исключений и текст причины не разбирается. Цена: старые изменения и выключенный состав шумят, а настоящий сигнал теряется в шуме.
-    - улика: `openspec/changes/implementation-consequences/decisions.json` «до правки схемы у него написан `consequences.md` с причиной «шаг появился позже», `status` не ломается»
+    - улика: `openspec/changes/archive/2026-11-02-implementation-consequences/decisions.json` «до правки схемы у него написан `consequences.md` с причиной «шаг появился позже», `status` не ломается»
 - антиподы: —
 - рекомендация: A — `[!!]` только у «механизмов нет»
 - решение: A, 2026-11-01
@@ -2195,9 +2195,9 @@
 - поставка: specs/project-settings, specs/project-installer
 - варианты:
   - A. Принять и назвать: требование называет отсутствие пакета исключением, а строка `[!!] python` говорит, что инструменты журнала считают всё включённым. При выборе: `check` показывает то, что в файле, и причину расхождения. Цена: на такой машине два ответа рядом, пока пакет не поставлен.
-    - улика: `openspec/changes/implementation-consequences/decisions.json` «строка `[!!] python` говорит, что инструменты журнала считают всё включённым»
+    - улика: `openspec/changes/archive/2026-11-02-implementation-consequences/decisions.json` «строка `[!!] python` говорит, что инструменты журнала считают всё включённым»
   - B. JS тоже считает всё включённым, если у найденного Python нет пакета. При выборе: один итог буквально. Цена: `symphysis check` показывает не то, что написано в файле, а чтение настроек начинает зависеть от проверки Python.
-    - улика: `openspec/changes/implementation-consequences/specs/project-settings/spec.md` «требование из F-110, пересмотрено F-135»
+    - улика: `openspec/changes/archive/2026-11-02-implementation-consequences/specs/project-settings/spec.md` «требование из F-110, пересмотрено F-135»
 - антиподы: —
 - рекомендация: A — исключение, названное строкой `[!!]`
 - решение: A, 2026-11-01
@@ -2213,7 +2213,7 @@
 - улики:
   - улика: `installer/README.md` «Глобальный конфиг лежит в `$XDG_CONFIG_HOME/openspec/config.json`,»
   - улика: `upstream/openspec/src/core/update.ts` «removedDeselectedSkillCount += await this.removeUnselectedSkillDirs(»
-  - улика: `openspec/changes/implementation-consequences/answers/2026-11-01-xdg.md` «Если у нас тоже что то устанавливается по этому пути, то стоит это указать, чтобы не было конфликтов.»
+  - улика: `openspec/changes/archive/2026-11-02-implementation-consequences/answers/2026-11-01-xdg.md` «Если у нас тоже что то устанавливается по этому пути, то стоит это указать, чтобы не было конфликтов.»
 - следствия: Конфликта файлов нет, настоящий риск — два конфига. `install` и `check` называют путь, `check` называет и второй файл, руководство объясняет переменную. Временная переменная в тестах — только на одну команду.
 
 ## F-123 Конфиг с профилем `core` или без ключа `profile`, но со своим списком `workflows`: при `core` форк список игнорирует, он спит. `install` переводит профиль в `custom` (F-79.A). Что станет со спящим списком? Требование обещает «не убирая уже заданные», а сценарий «Список человека сохраняется» профиля не называет.
@@ -2227,7 +2227,7 @@
   - A. Сохраняется то, что действует сейчас: шесть `core` и `continue`; спящий список заменяется, stdout называет это и прежнее значение. Сценарий «Список человека сохраняется» получает `profile: custom`. При выборе: набор команд других проектов машины не меняется, кроме `continue`. Цена: спящий список теряется, хотя он назван в stdout и его можно вернуть.
     - улика: `upstream/openspec/src/core/profiles.ts` «- 'core' profile always returns CORE_WORKFLOWS»
   - B. Объединить: шесть, спящий список и `continue`. При выборе: ничего из записанного человеком не теряется. Цена: спавшие workflow разом просыпаются у всех проектов машины при следующем `update`.
-    - улика: `openspec/changes/implementation-consequences/decisions.json` «Требование обещает «не убирая уже заданные»»
+    - улика: `openspec/changes/archive/2026-11-02-implementation-consequences/decisions.json` «Требование обещает «не убирая уже заданные»»
   - C. Спящий список и `continue`, без шести `core`. При выборе: буквально «список человека». Цена: у других проектов при следующем `update` пропадут работающие сейчас команды: `update` убирает невыбранные.
     - улика: `upstream/openspec/src/core/update.ts` «removedDeselectedSkillCount += await this.removeUnselectedSkillDirs(»
 - антиподы: —
@@ -2261,9 +2261,9 @@
 - поставка: specs/onboarding-guide, specs/project-installer, installer
 - варианты:
   - A. Шаг `npm i -g ./installer` после `npm --prefix installer ci`: в PATH появляется `symphysis`, ссылка ведёт в клон, поэтому `git pull` и `ci` обновляют и её. Подсказки и спеки верны как написаны, `symphysis config` работает под названным именем. Откат — `npm rm -g @niqsons/symphysis`. При выборе: одна команда везде. Цена: ещё одна глобальная запись, а удаление клона ломает команду.
-    - улика: `openspec/changes/implementation-consequences/research/F-114.md` «| `npm i -g ./installer --prefix <временный>` | ссылка-junction на `installer/` клона, `symphysis.cmd` отвечает |»
+    - улика: `openspec/changes/archive/2026-11-02-implementation-consequences/research/F-114.md` «| `npm i -g ./installer --prefix <временный>` | ссылка-junction на `installer/` клона, `symphysis.cmd` отвечает |»
   - B. Без глобальной записи: подсказки печатают команду так, как запущен сам инсталлятор: `node <путь>/symphysis.js install`. При выборе: ничего глобального. Цена: `symphysis config` под этим именем не работает, команды длинные, а спеки и руководство различают два написания.
-    - улика: `openspec/changes/implementation-consequences/research/F-114.md` «| `node installer/bin/symphysis.js --help` после `ci` | справка напечатана |»
+    - улика: `openspec/changes/archive/2026-11-02-implementation-consequences/research/F-114.md` «| `node installer/bin/symphysis.js --help` после `ci` | справка напечатана |»
 - антиподы: —
 - рекомендация: A — `npm i -g ./installer`, ссылка в клон
 - решение: A, 2026-11-01
@@ -2280,7 +2280,7 @@
   - A. `continue` входит в `CORE_WORKFLOWS` форка, как в F-32.B. `install` только обновляет проект, профиль и список не трогает; у кастомного профиля без `continue` форк сам подсказывает, а `check` даёт `[!!]`. При выборе: настроенный профиль не меняется вовсе. Цена: ещё одно отличие форка, версия `1.15.0-symphysis.4`, правка тестов паритета.
     - улика: `upstream/openspec/src/core/update.ts` «grow CORE_WORKFLOWS stay discoverable. Keep custom profiles user-owned;»
   - B. Оставить F-32.A и F-79.A: `install` правит глобальный конфиг. При выборе: форк не меняется. Цена: запись в чужой конфиг и всё, что вокруг неё выросло.
-    - улика: `openspec/changes/implementation-consequences/answers/2026-11-01-8.md` «если мы меняем профиль что создан ранее, то это плохо.»
+    - улика: `openspec/changes/archive/2026-11-02-implementation-consequences/answers/2026-11-01-8.md` «если мы меняем профиль что создан ранее, то это плохо.»
 - антиподы: —
 - рекомендация: A — `continue` в `CORE_WORKFLOWS`
 - решение: A — «Так как из семи срезов ты все рекомендуешь брать (ну разве что один вопрос, а не срез) мы реализуем.», 2026-11-01
@@ -2297,7 +2297,7 @@
   - A. Нет: файл покрытия пишет модель по инструкции, читает человек, `check` его не разбирает. При выборе: минус требование и задача 3.3. Цена: пропущенную пару скрипт не назовёт; это видно в файле и порчей не является.
     - улика: `docs/analysis/implementation-consequences-weight-2026-11-01.md` «Снимается требование «`check` сигналит неполное покрытие пробы краёв»»
   - B. Да, как решено в F-25.A. При выборе: покрытие проверяется скриптом. Цена: разбор файла модели и правила его формы.
-    - улика: `openspec/changes/implementation-consequences/decisions.json` «Сигнал: строка `[!!]` в `check`, код 0, с `--strict` код 2.»
+    - улика: `openspec/changes/archive/2026-11-02-implementation-consequences/decisions.json` «Сигнал: строка `[!!]` в `check`, код 0, с `--strict` код 2.»
 - антиподы: —
 - рекомендация: A — `check` файл покрытия не разбирает
 - решение: A — «Так как из семи срезов ты все рекомендуешь брать (ну разве что один вопрос, а не срез) мы реализуем.», 2026-11-01
@@ -2314,7 +2314,7 @@
   - A. Две проверки: каждое место из списка названо путём в файле, файл с `**Причина:**` сверки не даёт; цитата стоит в коде дословно. `journal.py` настройки не читает вовсе. При выборе: журнал остаётся журналом, форма свободнее. Цена: строку без цитаты и выключенную часть видно только чтением файла.
     - улика: `docs/analysis/implementation-consequences-weight-2026-11-01.md` «`check` держит только: каждое место из списка названо путём в файле или исключено; цитата стоит в коде дословно.»
   - B. Как решено: `check` разбирает форму, состав и причины. При выборе: больше сигналов. Цена: каждое новое правило формы — новый край.
-    - улика: `openspec/changes/implementation-consequences/decisions.json` «тест утверждает, что `journal.py check` на таком изменении печатает `[..] <часть>: выключено настройкой`»
+    - улика: `openspec/changes/archive/2026-11-02-implementation-consequences/decisions.json` «тест утверждает, что `journal.py check` на таком изменении печатает `[..] <часть>: выключено настройкой`»
 - антиподы: —
 - рекомендация: A — две проверки
 - решение: A — «Так как из семи срезов ты все рекомендуешь брать (ну разве что один вопрос, а не срез) мы реализуем.», 2026-11-01
@@ -2397,9 +2397,9 @@
 - поставка: tasks, stand
 - варианты:
   - A. Базовый замер P-чел на Sonnet 5.5 на чистом контексте до реализации, второй после неё, без судейства; сверка по шагам и решение об откате. Шаг на копиях на Fable и плечи на Opus 5.5 — по слову человека после этого решения. При выборе: дешёвый ответ на главный вопрос. Цена: полнота не меряется, критерий F-20 откладывается. (отступление от F-20)
-    - улика: `openspec/changes/implementation-consequences/answers/2026-11-01-measure.md` «Сделаем дешевый прогон на sonnet 5.5, без судейства на текущем состоянии (change мы ведь еще не реализовали).»
+    - улика: `openspec/changes/archive/2026-11-02-implementation-consequences/answers/2026-11-01-measure.md` «Сделаем дешевый прогон на sonnet 5.5, без судейства на текущем состоянии (change мы ведь еще не реализовали).»
   - B. Как решено в F-26.B: шаг на копиях на Fable, затем три плеча на Opus 5.5. При выборе: критерий F-20 выполняется. Цена: стенд не готов, решение об откате откладывается.
-    - улика: `openspec/changes/implementation-consequences/intent.md` «1. Проведены новые прогоны на плечах: ванили, чистый промпт, P-чел на модели Opus 5.5.»
+    - улика: `openspec/changes/archive/2026-11-02-implementation-consequences/intent.md` «1. Проведены новые прогоны на плечах: ванили, чистый промпт, P-чел на модели Opus 5.5.»
 - антиподы: —
 - рекомендация: A — два замера на Sonnet 5.5
 - решение: A — «Сделаем дешевый прогон на sonnet 5.5, без судейства на текущем состоянии. После реализации сделаем еще один замер на sonnet 5.5. а потом сверим разницу. Но замеры будем делать на чистом контексте. И уже будем решать, откатываться нам или нет.», 2026-11-01
@@ -2413,9 +2413,9 @@
 - зависит от: F-133
 - поставка: design: Context
 - улики:
-  - улика: `openspec/changes/implementation-consequences/research/F-133.md` «| глобальный `CLAUDE.md` человека | да |»
-  - улика: `openspec/changes/implementation-consequences/research/F-133.md` «`--bare` не подходит: он читает только ключ API, вход по подписке не работает.»
-  - улика: `openspec/changes/implementation-consequences/answers/2026-11-01-measure.md` «Но замеры будем делать на чистом контексте, это важно, я не уверен, что раньше контекст был чистый.»
+  - улика: `openspec/changes/archive/2026-11-02-implementation-consequences/research/F-133.md` «| глобальный `CLAUDE.md` человека | да |»
+  - улика: `openspec/changes/archive/2026-11-02-implementation-consequences/research/F-133.md` «`--bare` не подходит: он читает только ключ API, вход по подписке не работает.»
+  - улика: `openspec/changes/archive/2026-11-02-implementation-consequences/answers/2026-11-01-measure.md` «Но замеры будем делать на чистом контексте, это важно, я не уверен, что раньше контекст был чистый.»
 - следствия: Числа прежней серии с новыми напрямую не сравниваются; сравнение плеч внутри серии остаётся сравнением в одних условиях. Водитель проверяет чистоту на первом ходу.
 
 ## F-135 Ревью части A: читателей `symphysis.yaml` два, и на редких формах файла они дают разный состав. Модель получает `проба выкл` без сигнала, а `symphysis config` пишет `вкл` и `не разбирается`. Требование это запрещает, а подгонка до конца не доходит. Как закрыть?
@@ -2427,16 +2427,16 @@
 - поставка: specs, tasks
 - варианты:
   - A. Подогнать и принять остаток. Одиночный CR в классе обоих читателей, `null` у JS как пустое значение, а четыре оставшиеся формы записать исключением требования. При выборе: меньше всего правок, F-121.A в силе. Цена: два разборщика и правила подгонки остаются, каждый новый ключ пишется дважды, а на остатке модель всё ещё может получить `выкл` без сигнала.
-    - улика: `openspec/changes/implementation-consequences/research/F-135.md` «Остаток: четыре формы, разбор которых не догнать без своей грамматики»
+    - улика: `openspec/changes/archive/2026-11-02-implementation-consequences/research/F-135.md` «Остаток: четыре формы, разбор которых не догнать без своей грамматики»
   - B. Один читатель на Python. `symphysis config` и `symphysis check` зовут `symphysis_config.py` и передают его строки; `installer/lib/settings.js` и правила подгонки уходят. При выборе: один итог по построению, `check` показывает то, что получит модель, новый ключ пишется в одном месте. Цена: пересматривает F-121.A: без Python или PyYAML `check` показывает «всё включено» и сигнал, а не то, что записано в файле; `symphysis config` требует Python.
-    - улика: `openspec/changes/implementation-consequences/research/F-135.md` «Только ради совпадения двух разборщиков существуют»
+    - улика: `openspec/changes/archive/2026-11-02-implementation-consequences/research/F-135.md` «Только ради совпадения двух разборщиков существуют»
     - улика: `installer/lib/check.js` «spawnSync(py, ["-X", "utf8", journalPy, "check", j]»
   - C. Один читатель на Node. Модель зовёт `symphysis config`; `symphysis_config.py` и зависимость PyYAML уходят вместе с её шагом в руководстве, строкой `check` и исключением F-121. При выборе: инструменты снова без пакетов. Цена: шаг модели зависит от команды `symphysis` в PATH, а F-118 исходил из того, что в проекте её нет; нет команды — считать всё включённым должна инструкция скилла, скрипт этого не гарантирует.
     - улика: `installer/package.json` «"yaml": "^2.9.1"»
 - антиподы: —
 - рекомендация: B — один читатель на Python
 - улики:
-  - улика: `openspec/changes/implementation-consequences/research/F-135.md` «14 файлов из 3000 дали разный состав»
+  - улика: `openspec/changes/archive/2026-11-02-implementation-consequences/research/F-135.md` «14 файлов из 3000 дали разный состав»
 - решение: B — «выбираю вариант B, согласен с тобой.», 2026-11-02
 - следствия: Требование «`symphysis.yaml` читает один скрипт» вместо «Все читатели», сценарий «У найденного Python нет PyYAML», задачи 2.3 и 6.5, `security.md`. Находки ревью П1, П2, С1, С3 снимаются вместе с кодом.
 
@@ -2468,7 +2468,7 @@
   - A. Как написано: `не выбран` только там, где исход уже определён; сомнение в сторону кандидата. При выборе: край без порчи всё равно доходит до человека с рекомендацией `Dismiss`, как велит F-130.A; мимо человека ничего не уходит. Цена: при поле пробы вопросов много, каждая неназванная граница становится записью.
     - улика: `skills/symphysis-edge-probe/SKILL.md` «Край конкретный, но исход уже определён, и ответ человека ничего не изменит»
   - B. Край без порчи тоже `не выбран`: кандидат только при тихой порче или необратимости. При выборе: вопросов человеку заметно меньше, журнал легче. Цена: отводит край сама модель, причина лежит только в файле покрытия и в счёте `notes[]`; пересматривает сценарий «Край без порчи» и F-130.A.
-    - улика: `openspec/changes/implementation-consequences/specs/requirement-probes/spec.md` «#### Scenario: Край без порчи»
+    - улика: `openspec/changes/archive/2026-11-02-implementation-consequences/specs/requirement-probes/spec.md` «#### Scenario: Край без порчи»
 - антиподы: —
 - рекомендация: A — как написано, сверить по второму замеру
 - решение: A — «окей давай A.», 2026-11-02
@@ -2502,7 +2502,7 @@
   - A. Оставить как сделано: `install` ничего не пишет, строка называет команду, человек сам ставит профиль; в сценарий добавляется этот случай. При выборе: глобальный конфиг не трогаем, кода нет. Цена: на таком конфиге `/opsx:continue` появляется не с первого раза, а после одной команды.
     - улика: `installer/lib/clients.js` «if (config.profile === undefined) {»
   - B. `install` сам ставит `profile: core`, раз отсутствие профиля и есть умолчание, затем зовёт `update`. При выборе: команда появляется с первого раза. Цена: `install` пишет ключ профиля в глобальный конфиг человека: значение то же, что действует, но запись новая, и это самое чувствительное место (F-123).
-    - улика: `openspec/changes/implementation-consequences/specs/project-installer/spec.md` «глобальный конфиг с профилем `core`, заданным или по умолчанию»
+    - улика: `openspec/changes/archive/2026-11-02-implementation-consequences/specs/project-installer/spec.md` «глобальный конфиг с профилем `core`, заданным или по умолчанию»
 - антиподы: —
 - рекомендация: A — оставить, сценарий назвать
 - решение: A, 2026-11-02
