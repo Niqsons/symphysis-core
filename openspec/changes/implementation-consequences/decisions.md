@@ -1045,7 +1045,7 @@
 - рекомендация: A — файл с причиной до правки схемы
 - улики:
   - улика: `openspec/changes/implementation-consequences/specs/artifact-graph/spec.md` «### Requirement: Артефакт `consequences` стоит между `specs` и `design`»
-  - улика: `openspec/changes/calibration-fixes/specs/artifact-graph/spec.md` «#### Scenario: Изменения, начатые до появления intent»
+  - улика: `openspec/changes/archive/2026-11-02-calibration-fixes/specs/artifact-graph/spec.md` «#### Scenario: Изменения, начатые до появления intent»
 - решение: A, 2026-11-01
 - исход: проба — Specify
 - следствия: в spec.md: Изменение, начатое до артефакта

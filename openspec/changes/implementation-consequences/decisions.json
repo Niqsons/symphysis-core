@@ -3844,7 +3844,7 @@
      "found": true
     },
     {
-     "path": "openspec/changes/calibration-fixes/specs/artifact-graph/spec.md",
+     "path": "openspec/changes/archive/2026-11-02-calibration-fixes/specs/artifact-graph/spec.md",
      "quote": "#### Scenario: Изменения, начатые до появления intent",
      "line": 30,
      "verdict": "сверено",
