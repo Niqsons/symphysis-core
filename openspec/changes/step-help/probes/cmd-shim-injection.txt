@@ -1,0 +1,8 @@
+Проба: аргумент --change через .cmd-шим, subprocess со списком аргументов, без shell=True, Python 3.14.0, Windows, 2026-11-02.
+Маркер: файл, который создаёт команда из аргумента, если cmd.exe её исполнил.
+'demo' -> код 0 | маркер создан: False
+'a&echo.>INJECTED.txt' -> код 0 | маркер создан: True
+'a|echo.>INJECTED.txt' -> код 0 | маркер создан: True
+'a&echo INJECTED>INJECTED.txt' -> код 0 | маркер создан: False
+'a"&echo INJECTED>INJECTED.txt' -> код 0 | маркер создан: True
+'..\\..\\x' -> код 0 | маркер создан: False

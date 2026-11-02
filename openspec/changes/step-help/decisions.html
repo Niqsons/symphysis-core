@@ -186,15 +186,15 @@
 const JOURNAL = {
  "title": "Журнал решений: step-help",
  "source": "decisions.json",
- "sha256": "acfac48cab558752a06216c0c105f2892295b5eaa93ede35880e4b485354c1e5",
+ "sha256": "a5390c43b03f5aceb0a22bd9e110bc060a620a526ce29ac1c283448fb6304963",
  "stats": {
-  "records": 55,
-  "forks": 30,
+  "records": 69,
+  "forks": 44,
   "facts": 25,
-  "decided": 30,
+  "decided": 44,
   "parked": 0,
-  "evidence_total": 140,
-  "evidence_found": 137
+  "evidence_total": 157,
+  "evidence_found": 154
  },
  "records": [
   {
@@ -543,14 +543,14 @@ const JOURNAL = {
     {
      "path": "tools/journal_render.py",
      "quote": "\"stats\": {\"records\": len(records), \"forks\": len(forks),",
-     "line": 185,
+     "line": 184,
      "verdict": "сверено",
      "found": true
     },
     {
      "path": "tools/journal_render.py",
      "quote": "\"decided\": sum(1 for r in forks if r[\"decision\"]),",
-     "line": 187,
+     "line": 186,
      "verdict": "сверено",
      "found": true
     }
@@ -862,7 +862,7 @@ const JOURNAL = {
       {
        "path": "tools/journal_render.py",
        "quote": "\"decided\": sum(1 for r in forks if r[\"decision\"]),",
-       "line": 187,
+       "line": 186,
        "verdict": "сверено",
        "found": true
       },
@@ -1232,7 +1232,7 @@ const JOURNAL = {
       {
        "path": "tools/journal_cli.py",
        "quote": "сверить улики грепом по цитате (сигнал, не стоп)",
-       "line": 297,
+       "line": 300,
        "verdict": "сверено",
        "found": true
       }
@@ -1343,7 +1343,7 @@ const JOURNAL = {
       {
        "path": "tools/journal_cli.py",
        "quote": "сверить улики грепом по цитате (сигнал, не стоп)",
-       "line": 297,
+       "line": 300,
        "verdict": "сверено",
        "found": true
       }
@@ -2043,7 +2043,7 @@ const JOURNAL = {
       {
        "path": "tools/journal_cli.py",
        "quote": "def cmd_render_html(args: argparse.Namespace) -> int:",
-       "line": 122,
+       "line": 125,
        "verdict": "сверено",
        "found": true
       },
@@ -2087,7 +2087,7 @@ const JOURNAL = {
       {
        "path": "tools/journal_render.py",
        "quote": "return \"../\" * up + \".symphysis/tools/mermaid.min.js\"",
-       "line": 231,
+       "line": 230,
        "verdict": "сверено",
        "found": true
       }
@@ -2583,7 +2583,7 @@ const JOURNAL = {
     {
      "path": "tools/journal_render.py",
      "quote": "\"decided\": sum(1 for r in forks if r[\"decision\"]),",
-     "line": 187,
+     "line": 186,
      "verdict": "сверено",
      "found": true
     }
@@ -3669,6 +3669,1056 @@ const JOURNAL = {
     "current"
    ],
    "finding": ""
+  },
+  {
+   "id": "F-56",
+   "question": "[ветка] Запуск `.js`: `SYMPHYSIS_OPENSPEC` указывает на `bin/openspec.js`, как в тестах ядра. Инсталлятор запускает его своим node, а у Python-скрипта своего node нет. Что, если `node` не найден?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN `SYMPHYSIS_OPENSPEC` указывает на `.js`, `node` в `PATH` нет WHEN выполняется `step_help.py` THEN код 1, `error` называет `node`; цена: сценарий, тест с пустым `PATH`, отдельная ветка сообщения",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — отдельного сообщения нет; допустимо: `.js` зовут только разработчики ядра, у них `node` есть, а сбой всё равно виден как «вызов упал»",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест запускает скрипт с `SYMPHYSIS_OPENSPEC` на `.js` и утверждает, что форк вызван; отсутствие `node` не проверяется, строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — сообщение остаётся открытым до первого проекта, где форк ставят без npm; пока tasks считает, что `.js` идёт через `node` из `PATH`",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "B",
+    "why": "Сбой виден сразу и ничего не портит, а сам запуск `.js` проверят тесты ядра: они только так и ходят в форк."
+   },
+   "decision": {
+    "option": "B",
+    "word": "",
+    "date": "2026-11-02"
+   },
+   "reversibility": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Dismiss",
+    "reason": ""
+   },
+   "parking": [],
+   "dispute": "",
+   "consequences": "Сбой виден сразу и ничего не портит, а сам запуск `.js` проверят тесты ядра: они только так и ходят в форк.",
+   "evidence": [
+    {
+     "path": "installer/lib/openspec-bin.js",
+     "quote": "r = chosen.endsWith(\".js\") ? spawnSync(process.execPath, [chosen, ...args], options) : spawnFile(chosen, args, options);",
+     "line": 52,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "cmd"
+   ],
+   "finding": ""
+  },
+  {
+   "id": "F-57",
+   "question": "[ветка] Подавление телеметрии: инсталлятор зовёт форк с `OPENSPEC_TELEMETRY=0`, а `render-html` теперь будет звать его при каждой сборке страницы. Наследовать ли подавление?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN телеметрия форка включена WHEN выполняется `step_help.py` или `render-html` THEN каждый вызов форка идёт с `OPENSPEC_TELEMETRY=0`; цена: сценарий, тест шимом, печатающим окружение, сопровождение при новом вызове",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — переменная не ставится; допустимо, если телеметрия — выбор человека и считать вызовы справки наравне с его командами законно",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест шимом утверждает значение переменной только у `step_help.py`; поведение сборки страницы не закреплено, строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — остаётся открытым до решения о телеметрии в форке; пока tasks считает, что окружение наследуется как есть",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Тихо: сборка страницы шлёт наружу по несколько событий, хотя человек никакой команды не звал. Инсталлятор уже так не делает, и правило «как инсталлятор» из F-23 читается так же."
+   },
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-02"
+   },
+   "reversibility": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Specify",
+    "reason": ""
+   },
+   "parking": [],
+   "dispute": "",
+   "consequences": "в spec.md: Телеметрия форка подавлена",
+   "evidence": [
+    {
+     "path": "installer/lib/openspec-bin.js",
+     "quote": "const options = { encoding: \"utf8\", cwd, env: { ...process.env, OPENSPEC_TELEMETRY: \"0\" } };",
+     "line": 46,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "cmd"
+   ],
+   "finding": ""
+  },
+  {
+   "id": "F-58",
+   "question": "[ветка] Корень проекта: форк берёт ближайший `openspec/` от каталога вызова, а `render-html` можно позвать откуда угодно с путём к журналу. При вложенном проекте или одноимённом изменении справка покажет чужой шаг",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN журнал `A/openspec/changes/demo/decisions.json`, вызов из проекта `B` со своим `demo` WHEN выполняется `render-html` THEN форк зовётся с корнем `A`, справка о шаге из `A`; цена: сценарий, тест на два проекта, расчёт корня из пути журнала",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — корень по каталогу вызова; допустимо, если страницу всегда собирают из корня проекта, как делают скиллы и плагин",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест из другого каталога утверждает только код 0 и рабочую страницу; чей шаг показан, не проверяет, строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — остаётся открытым до первого вызова не из корня; пока tasks считает, что вызов идёт из корня проекта",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Тихо: страница выглядит верной, а шаг чужой. Журнал уже знает, в каком он проекте, поэтому расчёт корня ничего не стоит."
+   },
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-02"
+   },
+   "reversibility": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Specify",
+    "reason": ""
+   },
+   "parking": [],
+   "dispute": "",
+   "consequences": "в spec.md: Журнал из другого проекта",
+   "evidence": [
+    {
+     "path": "upstream/openspec/src/core/root-selection.ts",
+     "quote": "the nearest ancestor containing `openspec/` wins.",
+     "line": 8,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "cmd",
+    "status"
+   ],
+   "finding": ""
+  },
+  {
+   "id": "F-59",
+   "question": "[ветка] `tasks.md` без задач: форк отвечает `state=blocked`, а `missingArtifacts` пуст, причина только в тексте `instruction` по-английски. Что показывать?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN `tasks.md` без единой задачи WHEN выполняется `step_help.py` THEN текущий шаг `apply`, вывод несёт текст причины от форка; цена: сценарий, тест, английский текст форка на русской странице",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — причина не показывается, текущий шаг `apply`; допустимо: состояние редкое, а `/opsx:apply` сам назовёт причину",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест подаёт `tasks.md` без галочек и утверждает, что текущий шаг не `sync`; что сказано человеку, не проверяет, строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — текст остаётся открытым до перевода сообщений форка; пока tasks показывает только список недостающих артефактов",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "B",
+    "why": "Состояние редкое и ничего не портит: следующая же команда назовёт причину."
+   },
+   "decision": {
+    "option": "B",
+    "word": "",
+    "date": "2026-11-02"
+   },
+   "reversibility": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Dismiss",
+    "reason": ""
+   },
+   "parking": [],
+   "dispute": "",
+   "consequences": "Состояние редкое и ничего не портит: следующая же команда назовёт причину.",
+   "evidence": [
+    {
+     "path": "upstream/openspec/src/commands/workflow/instructions.ts",
+     "quote": "file exists but contains no tasks to work on.",
+     "line": 745,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "tasks",
+    "after"
+   ],
+   "finding": ""
+  },
+  {
+   "id": "F-60",
+   "question": "[ветка] Устаревший вердикт: у атаки `done` с `verdict: stale`, команда упоминает это, но шаг не выбирает, а справка по F-24 о вердикте молчит. Показывать?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-24"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN `attack/artifacts.md` с `verdict: stale` WHEN человек открывает страницу шага THEN шаг готов, рядом пометка «вердикт устарел»; цена: поле вывода, сценарий, тест",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — справка молчит; допустимо: атаки зовут по имени, `/opsx:continue` сам о вердикте скажет, а F-24 выбрал минимум",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест подаёт `verdict: stale` и утверждает, что шаг не становится текущим; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — пометка остаётся открытой до первого изменения с атакой под справкой; пока tasks считает такой шаг просто готовым",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "B",
+    "why": "Атаки необязательны и зовутся по имени, а команда об устаревании сама скажет. Лишнее поле ради этого F-24 не просит."
+   },
+   "decision": {
+    "option": "B",
+    "word": "",
+    "date": "2026-11-02"
+   },
+   "reversibility": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Dismiss",
+    "reason": ""
+   },
+   "parking": [],
+   "dispute": "",
+   "consequences": "Атаки необязательны и зовутся по имени, а команда об устаревании сама скажет. Лишнее поле ради этого F-24 не просит.",
+   "evidence": [
+    {
+     "path": "upstream/openspec/src/core/templates/workflows/continue-change.ts",
+     "quote": "is past its window - a signal, not a gate: it is never picked",
+     "line": 72,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "status"
+   ],
+   "finding": ""
+  },
+  {
+   "id": "F-61",
+   "question": "[ветка] Сборка страницы: `cmd_render_html` ловит только `ValueError`. Сбой расчёта другого типа, например вывод форка не JSON или ошибка декодирования, уронит сборку трассировкой, и журнал не показать",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-34"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN форк печатает не JSON WHEN выполняется `render-html` THEN код 0, панель говорит «вывод не разобран»; `step_help.py` даёт код 1 с тем же `error`; цена: сценарий, тест шимом, отдельное сообщение",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — отдельной ветки нет; допустимо, если форк при `--json` всегда печатает JSON и других сбоев не бывает",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест шимом подаёт мусор, пустой вывод и код возврата и утверждает, что `render-html` даёт код 0 и рабочие режимы; строки в spec.md нет: требование о сбое расчёта уже есть",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — остаётся открытым до первого такого сбоя; пока tasks считает, что ловить надо только названные в спеке случаи",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "C",
+    "why": "Падение всплывёт на круге просмотрщика и закроет человеку показ решений. Требование это уже запрещает, не хватает теста, который подаёт форку разный мусор."
+   },
+   "decision": {
+    "option": "C",
+    "word": "",
+    "date": "2026-11-02"
+   },
+   "reversibility": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Backstop",
+    "reason": ""
+   },
+   "parking": [],
+   "dispute": "",
+   "consequences": "тест-страховка: шимом подаёт форку мусор, пустой вывод и код возврата и утверждает, что `render-html` даёт код 0 и рабочие режимы",
+   "evidence": [
+    {
+     "path": "tools/journal_cli.py",
+     "quote": "except ValueError as e:",
+     "line": 121,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "page"
+   ],
+   "finding": ""
+  },
+  {
+   "id": "F-62",
+   "question": "[ветка] Метка шаблона: `render_html` требует каждую метку. Новая метка справки сделает негодным шаблон без неё: код 1, страницы нет",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-34"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN шаблон без метки справки WHEN выполняется `render-html` THEN код 0, страница без панели справки; цена: сценарий, тест, необязательная метка рядом с тремя обязательными",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — старый шаблон даёт «в шаблоне нет метки», код 1; допустимо: шаблон ставится вместе со скриптами, сбой виден сразу, лечится `install --force`",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест утверждает, что отказ называет новую метку по имени; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — остаётся открытым до первого проекта со своим шаблоном; пока tasks считает метку обязательной",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "B",
+    "why": "Сбой виден сразу и чинится одной командой, а шаблон и скрипт и так ходят вместе."
+   },
+   "decision": {
+    "option": "B",
+    "word": "",
+    "date": "2026-11-02"
+   },
+   "reversibility": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Dismiss",
+    "reason": ""
+   },
+   "parking": [],
+   "dispute": "",
+   "consequences": "Сбой виден сразу и чинится одной командой, а шаблон и скрипт и так ходят вместе.",
+   "evidence": [
+    {
+     "path": "tools/journal_render.py",
+     "quote": "raise ValueError(f\"в шаблоне нет метки {mark}\")",
+     "line": 259,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "page"
+   ],
+   "finding": ""
+  },
+  {
+   "id": "F-63",
+   "question": "[ветка] Дорисовка схемы: `schemeDraw` работает асинхронно и пишет в `schemeBody`. Если справка делит этот контейнер, рисунок заменит её, когда человек уже выбрал «справка»",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-29"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN рисунок ещё грузится WHEN человек выбрал «справка» THEN на панели справка, рисунок её не заменяет; цена: сценарий, браузерный тест с медленной схемой, отдельный контейнер",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — порядок не закрепляется; допустимо: видно сразу, лечится повторным выбором, а отдельный контейнер всё равно решится при реализации",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — браузерный тест выбирает «справка» сразу после включения панели и утверждает, что текст справки на месте; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — остаётся открытым до первой жалобы; пока tasks считает, что панель одна на оба содержимых",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "B",
+    "why": "Человек видит это сразу, и ничего не портится; в реализации хватит отдельного контейнера."
+   },
+   "decision": {
+    "option": "B",
+    "word": "",
+    "date": "2026-11-02"
+   },
+   "reversibility": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Dismiss",
+    "reason": ""
+   },
+   "parking": [],
+   "dispute": "",
+   "consequences": "Человек видит это сразу, и ничего не портится; в реализации хватит отдельного контейнера.",
+   "evidence": [
+    {
+     "path": "tools/playground-template.html",
+     "quote": "schemeShow('svg', schemeBlocksNote(), holder);",
+     "line": 312,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "page"
+   ],
+   "finding": ""
+  },
+  {
+   "id": "F-64",
+   "question": "[ветка] Версия при устаревшем payload: `install` кладёт файлы из payload, а хеш берёт из клона. После `git pull` без `npm ci` справка покажет новую версию над старыми инструментами. Такой откат случился на этой работе: `install --force` молча вернул старый `schema.yaml`",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-36"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN payload старее исходников WHEN выполняется `symphysis install` THEN файл версии содержит только `0.1.0`, без хеша; цена: сценарий, тест, вызов `payloadMatches` в установке",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — хеш всегда из клона; допустимо: `check` и так говорит «payload старее исходников», а за установкой справка не следит",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест ставит из устаревшего payload и утверждает только, что файл версии есть и не пуст; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — остаётся открытым до выпуска с тарболом, где клона нет; пока tasks берёт хеш из клона",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Тихо: версию смотрят как раз тогда, когда хотят понять, что стоит, а она покажет чужое. Вызов `payloadMatches` уже есть в `check`."
+   },
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-02"
+   },
+   "reversibility": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Specify",
+    "reason": ""
+   },
+   "parking": [],
+   "dispute": "",
+   "consequences": "в spec.md: Payload старее исходников",
+   "evidence": [
+    {
+     "path": "installer/lib/check.js",
+     "quote": "if (hasSources(sourceRoot) && !payloadMatches(payloadDir, sourceRoot))",
+     "line": 93,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "page"
+   ],
+   "finding": ""
+  },
+  {
+   "id": "F-65",
+   "question": "[ветка] Перечень модулей: `check` сверяет наличие инструментов по списку `TOOL_MODULES`. Без `step_help.py` в этом списке `check` не заметит, что скрипта нет",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN нет `.symphysis/tools/step_help.py` WHEN выполняется `symphysis check` THEN `[!!] … нет файла`, код 2; цена: строка в перечне, сценарий, тест",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — `check` о скрипте молчит; допустимо: скрипт ставится вместе с остальными, а без него панель сама назовёт причину",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест сверяет, что каждый скрипт из payload есть в `TOOL_MODULES`; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — остаётся открытым до следующей правки `check`; пока tasks не трогает перечень",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "B",
+    "why": "Без скрипта панель сама называет причину, так что сбой виден сразу и ничего не портит."
+   },
+   "decision": {
+    "option": "B",
+    "word": "",
+    "date": "2026-11-02"
+   },
+   "reversibility": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Dismiss",
+    "reason": ""
+   },
+   "parking": [],
+   "dispute": "",
+   "consequences": "Без скрипта панель сама называет причину, так что сбой виден сразу и ничего не портит.",
+   "evidence": [
+    {
+     "path": "installer/lib/check.js",
+     "quote": "...TOOL_MODULES.map((m) => path.join(toolsDir, m)),",
+     "line": 128,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "cmd"
+   ],
+   "finding": ""
+  },
+  {
+   "id": "F-66",
+   "question": "[ветка] Запуск через шим: зависший `.cmd` не снимается простым `subprocess.run(timeout=…)`, потому что дочерний node держит канал вывода: при пределе 2 с вызов вернулся через 12 с. Так предел из F-43 на Windows не работает, а плагин ждёт Python только 30 с",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-23"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN Windows, `openspec.cmd`, дочерний node завис WHEN выполняется `step_help.py` THEN возврат за 15 с с запасом, дерево процессов снято, вся сборка укладывается в 30 с плагина; цена: сценарий, тест, снятие дерева отдельной веткой кода",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — снимается только шим; допустимо лишь там, где шима нет, то есть не на Windows",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест подаёт `.cmd` с зависшим node и утверждает возврат раньше 30 с; строки в spec.md нет: предел уже стоит в сценарии «`openspec` завис»",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — остаётся открытым до первого зависания у людей; пока tasks считает, что хватает `subprocess.run`",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "C",
+    "why": "Простая реализация не сработает именно на основной системе: проба дала 12 с вместо 2. Требование о пределе уже есть, не хватает теста на шиме, а не новой строки спеки."
+   },
+   "decision": {
+    "option": "C",
+    "word": "",
+    "date": "2026-11-02"
+   },
+   "reversibility": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Backstop",
+    "reason": ""
+   },
+   "parking": [],
+   "dispute": "",
+   "consequences": "тест-страховка: подаёт `.cmd` с зависшим node и утверждает возврат раньше 30 с",
+   "evidence": [
+    {
+     "path": "installer/lib/openspec-bin.js",
+     "quote": "if (win && /\\.(cmd|bat)$/i.test(file)) {",
+     "line": 33,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "openspec/changes/step-help/probes/timeout-cmd-shim.txt",
+     "quote": "subprocess.run с timeout: TimeoutExpired за 12.0 с",
+     "line": 2,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "openspec/changes/step-help/probes/timeout-cmd-shim.txt",
+     "quote": "Popen, снятие дерева через taskkill: TimeoutExpired, дерево снято taskkill за 2.2 с",
+     "line": 3,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "cmd"
+   ],
+   "finding": ""
+  },
+  {
+   "id": "F-67",
+   "question": "[pre-mortem] Панель почти всегда показывает прошлый шаг: снимок обновляет только `render-html`, а её зовут на круге просмотрщика. На шагах `design`, `security`, `tasks`, `apply` и дальше страницу никто не пересобирает, и «смотрит на status» не выполнено",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-21"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN снимок на странице WHEN человек открывает справку THEN рядом со временем снятия готовая команда пересборки для этого изменения; цена: сценарий, тест, путь журнала в выводе",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — команды на странице нет; допустимо: это базовый показ, время снятия честно, а живую картину даст вкладка плагина (F-22)",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест собирает страницу, меняет файлы, собирает снова и утверждает, что шаг и время обновились; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — остаётся открытым до вкладки плагина; пока tasks считает, что команду пересборки называет `GUIDE`",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Тихо: страница с честным временем всё равно называет старый шаг текущим, а человек не знает, чем её освежить. Строка с командой ничего не стоит."
+   },
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-02"
+   },
+   "reversibility": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Specify",
+    "reason": ""
+   },
+   "parking": [],
+   "dispute": "",
+   "consequences": "в spec.md: Команда пересборки рядом со снимком",
+   "evidence": [
+    {
+     "path": "openspec/changes/step-help/specs/decision-viewer/spec.md",
+     "quote": "Страница SHALL NOT обновлять снимок сама: новый снимок даёт повторная `render-html` (F-21).",
+     "line": 48,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "page"
+   ],
+   "finding": ""
+  },
+  {
+   "id": "F-68",
+   "question": "[pre-mortem] Тексты `steps.md` молча расходятся со схемой: тест проверяет наличие разделов, а не правду, и после правки вроде F-26.B подраздел «Механики» описывает старое поведение. Справка становится вторым `GUIDE`, которому верят больше",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-20",
+    "F-25"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN в `steps.md` назван скилл или файл шага, которых нет WHEN выполняется тест ядра THEN тест красный и называет имя; цена: требование, сценарий, тест разбора backticks, сопровождение при переименованиях",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — сверки нет; допустимо: тексты правит человек при правке схемы, а механическую часть справка всё равно берёт из графа (F-25)",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест ищет в `steps.md` имена в backticks вида `symphysis-*` и файлы шагов и сверяет их со `skills/` и `schema.yaml`; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — остаётся открытым до первого расхождения; пока tasks считает, что хватает проверки разделов",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "C",
+    "why": "Тихо: устаревшая справка выглядит верной. Смысл текста тестом не проверить, зато имена скиллов и файлов проверяются дёшево, и большая часть расхождений как раз в них."
+   },
+   "decision": {
+    "option": "C",
+    "word": "",
+    "date": "2026-11-02"
+   },
+   "reversibility": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Backstop",
+    "reason": ""
+   },
+   "parking": [],
+   "dispute": "",
+   "consequences": "тест-страховка: ищет в `steps.md` имена в backticks вида `symphysis-*` и файлы шагов и сверяет их со `skills/` и `schema.yaml`",
+   "evidence": [
+    {
+     "path": "openspec/changes/step-help/specs/step-help/spec.md",
+     "quote": "Тест ядра SHALL падать на шаге без раздела и на разделе без шага (F-20).",
+     "line": 157,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "texts"
+   ],
+   "finding": ""
+  },
+  {
+   "id": "F-69",
+   "question": "[pre-mortem] Человек не находит справку: панель выключена при первом открытии, показывает схему, кнопка подписана «схема», а переключатель виден только после неё. Он так и держит под рукой гайд, чего боялись в слове к F-29",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-29"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN страница открыта, панель выключена WHEN человек смотрит на шапку THEN кнопка панели подписана «схема · справка»; цена: подпись, сценарий, правка теста кнопки",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — подпись прежняя; допустимо, если о справке говорит строка в `GUIDE` (F-39), а настоящий показ будет на вкладке плагина",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест утверждает только, что переключатель виден сразу после включения панели; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — подпись остаётся открытой до первых людей на странице; пока tasks оставляет кнопку «схема»",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Тихо: никто не заметит, что справкой не пользуются. Подпись на кнопке стоит одну строку, а четвёртой кнопки рядом с режимами при этом не появляется (F-32)."
+   },
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-02"
+   },
+   "reversibility": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Specify",
+    "reason": ""
+   },
+   "parking": [],
+   "dispute": "",
+   "consequences": "в spec.md: Подпись кнопки панели",
+   "evidence": [
+    {
+     "path": "tools/playground-template.html",
+     "quote": "id=\"btnScheme\" title=\"схема решения рядом с карточками",
+     "line": 139,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "openspec/changes/step-help/specs/decision-viewer/spec.md",
+     "quote": "Выбор SHALL помнить браузер; без сохранённого выбора показывается схема.",
+     "line": 79,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "page"
+   ],
+   "finding": ""
   }
  ],
  "notes": [
@@ -3739,6 +4789,10 @@ const JOURNAL = {
   {
    "date": "2026-11-02",
    "text": "Кнопка при сбое расчёта работает, слово человека в чате: «Да, согласен.» Это исключение из F-47.B: остальная справка при сбое показывает только причину."
+  },
+  {
+   "date": "2026-11-02",
+   "text": "шаг consequences: мест из `code-sites` 10, разобрано 8, исключено 2, добавлено файлов 6; кандидатов 14: веток 11, причин провала 3. Предел из F-43 проверен пробой на `.cmd`-шиме: `probes/timeout-cmd-shim.txt`."
   }
  ]
 };
@@ -3924,6 +4978,14 @@ function antipodesOf(id, letter) {
   for (const r of JOURNAL.records) for (const a of (r.antipodes || [])) if (a.other === id + '.' + letter) out.add(r.id + '.' + a.option);
   return [...out];
 }
+/* выбор мимо рекомендации просит слово: без него читатель журнала не поймёт выбор; это сигнал, внести можно и без слова */
+function wordMissing(rec) {
+  const rc = rec.recommendation, cur = chosen(rec.id);
+  if (!rc || !rc.option || !cur || cur === rc.option) return false;
+  if (allOptions(rec).some(o => o.letter === cur && o.added)) return false;
+  const saved = rec.decision && rec.decision.option === cur ? rec.decision.word : '';
+  return !String((state.decisions[rec.id] || {}).word || '').trim() && !String(saved || '').trim();
+}
 function chosenAntipodes(id, letter) { return antipodesOf(id, letter).filter(k => { const [oid, ol] = k.split('.'); return chosen(oid) === ol; }); }
 /* text:begin */
 function esc(s) { return String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
@@ -4000,6 +5062,7 @@ function renderCards() {
       if (rec.recommendation) html += '<div class="rec">рекомендация: <b>' + esc(rec.recommendation.option) + '</b> — ' + md(rec.recommendation.why) + '</div>';
       if (rec.decision && rec.decision.word) html += '<div class="note info"><b>слово в журнале (' + esc(rec.decision.date || '') + '):</b> «' + md(rec.decision.word) + '»</div>';
       html += '<div class="note bad hidden" data-msg="' + esc(rec.id) + '"></div>';
+      html += '<div class="note warn' + (wordMissing(rec) ? '' : ' hidden') + '" data-word-needed="' + esc(rec.id) + '">Выбран не рекомендованный вариант: напиши, почему. Так выбор поймёт читатель журнала; внести можно и без слова.</div>';
       html += '<div class="row"><textarea data-word="' + esc(rec.id) + '" placeholder="слово человека дословно — почему так (или что изменить в решении из журнала)">' + esc(d.word || '') + '</textarea></div>';
       html += '<div class="row"><input type="text" data-addtext="' + esc(rec.id) + '" placeholder="вариант, которого здесь нет"><button class="small" data-addopt="' + esc(rec.id) + '">добавить вариант</button></div>';
       html += '<details class="park"' + (parkedAll.length ? ' open' : '') + '><summary title="' + esc(PARK_HINT) + '">парковка — дополнительный вопрос с адресатом (' + parkedAll.length + ')</summary>' +
@@ -4018,7 +5081,11 @@ function renderCards() {
     const id = r.name, letter = r.value;
     const d = dec(id); d.choice = (letter === journalChoice(byId[id])) ? null : letter; save(); render();
   });
-  el.querySelectorAll('textarea[data-word]').forEach(t => t.oninput = () => { dec(t.dataset.word).word = t.value; save(); updateOut(); });
+  el.querySelectorAll('textarea[data-word]').forEach(t => t.oninput = () => {
+    dec(t.dataset.word).word = t.value; save();
+    el.querySelector('[data-word-needed="' + t.dataset.word + '"]').classList.toggle('hidden', !wordMissing(byId[t.dataset.word]));
+    updateOut();
+  });
   el.querySelectorAll('textarea[data-dispute]').forEach(t => t.oninput = () => { state.disputes[t.dataset.dispute] = t.value; save(); updateOut(); });
   el.querySelectorAll('button[data-addopt]').forEach(b => b.onclick = () => {
     const id = b.dataset.addopt, inp = el.querySelector('input[data-addtext="' + id + '"]');
@@ -4201,7 +5268,10 @@ function destination(rec) {
     const v = String(rec.outcome.value || ''), reason = (rec.outcome.reason || '').trim();
     if (v.startsWith('Specify')) return { label:'spec.md', note:'исход ' + v };
     if (v === 'Backstop') return { label:'tasks.md › тест-страховка', note:'в design.md не попадает' };
-    if (v === 'Dismiss') return { label:'никуда', note: reason ? 'причина: ' + reason : 'причина не записана' };
+    if (v === 'Dismiss') {
+      const rc = rec.recommendation, why = reason || (rc && rec.decision && rec.decision.option === rc.option ? String(rc.why || '').trim() : '');
+      return { label:'никуда', note: why ? 'причина: ' + why : 'причина не записана' };
+    }
     if (v === 'Defer') return { label:'design.md › Open Questions', note:'отложена (Defer)' };
     return { label:'никуда', note:'исход «' + v + '» вне четырёх' };
   }

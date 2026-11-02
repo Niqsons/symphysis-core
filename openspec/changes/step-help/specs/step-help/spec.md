@@ -118,7 +118,7 @@
 <!-- проба запретов: исходы: нет -->
 
 ### Requirement: Скрипт находит форк как инсталлятор и называет сбой
-Скрипт SHALL брать `openspec` из `SYMPHYSIS_OPENSPEC`, затем из `PATH`, и находить `.cmd`-шим на Windows (F-23). Когда форка нет, вызов упал или `openspec --version` не несёт `symphysis`, скрипт SHALL печатать JSON с полем `error`, называющим причину, код 1 (F-34). Вызов форка, не ответивший за 15 с, SHALL сниматься, а `error` SHALL называть команду и предел (F-43).
+Скрипт SHALL брать `openspec` из `SYMPHYSIS_OPENSPEC`, затем из `PATH`, и находить `.cmd`-шим на Windows (F-23). Когда форка нет, вызов упал или `openspec --version` не несёт `symphysis`, скрипт SHALL печатать JSON с полем `error`, называющим причину, код 1 (F-34). Вызов форка, не ответивший за 15 с, SHALL сниматься, а `error` SHALL называть команду и предел (F-43). Каждый вызов форка SHALL идти с `OPENSPEC_TELEMETRY=0` (F-57).
 
 #### Scenario: Форка нет
 - **GIVEN** `SYMPHYSIS_OPENSPEC` не задан, `openspec` в `PATH` нет
@@ -144,6 +144,11 @@
 - **GIVEN** `openspec` не отвечает 15 с
 - **WHEN** выполняется `step_help.py` или `render-html`
 - **THEN** вызов снят; `step_help.py` даёт код 1 и `error` с командой и пределом, `render-html` отдаёт страницу с кодом 0, а панель называет ту же причину
+
+#### Scenario: Телеметрия форка подавлена
+- **GIVEN** телеметрия форка включена
+- **WHEN** выполняется `step_help.py` или `render-html`
+- **THEN** каждый вызов форка идёт с `OPENSPEC_TELEMETRY=0`
 
 <!-- проба краёв: форма=io, text, исходы: F-43 Specify, F-44 Backstop -->
 <!-- проба запретов: исходы: канон — F-52 → security.md -->
