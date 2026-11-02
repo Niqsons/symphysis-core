@@ -11,8 +11,7 @@ symphysis — схема для OpenSpec: задача идёт от намер�
 - Node 20 или новее, Python с `pip`, git, клиент Claude Code.
 - Доступ к репозиторию symphysis и к реестру npm и индексу pip или их зеркалу. Что делать без них — в разделе «Сбои».
 
-Команды даны отдельно для PowerShell и bash. В PowerShell зови именно `where.exe`: `where` там псевдоним `Where-Object` и ничего не покажет. В Git Bash пути пиши прямыми слешами: `..
-eminders` без кавычек станет `..reminders`, установка молча уйдёт не туда, а `check` там же ответит `ok`.
+Команды даны отдельно для PowerShell и bash. В PowerShell зови именно `where.exe`: `where` там псевдоним `Where-Object` и ничего не покажет. В Git Bash пути пиши прямыми слешами: `..\reminders` без кавычек станет `..reminders`, установка молча уйдёт не туда, а `check` там же ответит `ok`.
 
 ## Что изменится на машине
 
@@ -29,7 +28,7 @@ eminders` без кавычек станет `..reminders`, установка �
 
 ### 1. Клон
 
-Адрес без токена: токен в адресе остаётся в `.git/config` и в истории оболочки. Доступ к закрытому репозиторию держит хранилище учётных данных: на Windows это Git Credential Manager, он идёт с Git for Windows и спросит вход при первом клоне; на macOS и Linux — помощник из `git config --global credential.helper`.
+`<адрес репозитория>` — адрес, который дал владелец репозитория. Адрес без токена: токен в адресе остаётся в `.git/config` и в истории оболочки. Доступ к закрытому репозиторию держит хранилище учётных данных: на Windows это Git Credential Manager, он идёт с Git for Windows и спросит вход при первом клоне; на macOS и Linux — помощник из `git config --global credential.helper`.
 
 PowerShell:
 
@@ -45,7 +44,7 @@ git clone <адрес репозитория> symphysis
 cd symphysis
 ```
 
-Шаги 2–6 идут из корня клона.
+Шаги 2–8 начинаются из корня клона, шаг 8 уводит в каталог проекта.
 
 ### 2. Форк OpenSpec
 
@@ -56,12 +55,14 @@ cd symphysis
 PowerShell:
 
 ```powershell
+npm ls -g @fission-ai/openspec
 npm i -g ./vendor/fission-ai-openspec-1.15.0-symphysis.4.tgz
 ```
 
 bash:
 
 ```bash
+npm ls -g @fission-ai/openspec
 npm i -g ./vendor/fission-ai-openspec-1.15.0-symphysis.4.tgz
 ```
 
@@ -106,7 +107,7 @@ Set telemetry.enabled = false
 1.15.0-symphysis.4
 ```
 
-Ключа `anonymousId` в файле нет. Версия другая — раньше в `PATH` стоит другой `openspec`: `where.exe openspec` в PowerShell, `which openspec` в bash.
+Ключа `anonymousId` в файле нет. Если версия другая, раньше в `PATH` стоит другой `openspec`: `where.exe openspec` в PowerShell, `which openspec` в bash.
 
 ### 4. Где лежит глобальный конфиг
 
@@ -168,7 +169,7 @@ symphysis — схема OpenSpec symphysis, скиллы и инструмен�
 
 ### 7. Выбор клиента
 
-Какой клиент есть на машине, покажут эти команды. Инсталлятор сам клиентов не ищет. Клиента нет — команда отвечает кодом 1 и текстом, что не нашла: это не сбой, а ответ.
+Какой клиент есть на машине, покажут эти команды. Инсталлятор сам клиентов не ищет. Клиента нет — команда отвечает кодом 1 и текстом, что не нашла: это не сбой, а ответ. Дальше нужен хотя бы один клиент: без него шаг 8 ещё пройдёт, а Часть 2 вести нечем.
 
 PowerShell:
 
