@@ -7,6 +7,7 @@ import path from "node:path";
 import { spawnSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
 import { requireFork } from "../scripts/build-vendor.js";
+import { tempDir } from "../test-support/temp-dir.js";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const installerDir = path.resolve(here, "..");
@@ -17,14 +18,14 @@ const TIMEOUT = 240_000;
 const probe = spawnSync(win ? "npm --version" : "npm", win ? [] : ["--version"], { encoding: "utf8", shell: win });
 const hasNpm = !probe.error && probe.status === 0;
 
-const tmpRoot = fs.mkdtempSync(path.join(os.tmpdir(), "symphysis-npx-"));
+const tmpRoot = tempDir("symphysis-npx-");
 const mk = (name) => fs.mkdirSync(path.join(tmpRoot, name), { recursive: true }) && path.join(tmpRoot, name);
 let tgz;
 
 /** Копия окружения с заменой PATH (на Windows ключ может быть Path). */
 function envWith(extra, pathValue) {
   // глобальный конфиг форка — временный: настоящий конфиг пользователя тесты не трогают
-  const env = { ...process.env, XDG_CONFIG_HOME: fs.mkdtempSync(path.join(os.tmpdir(), "symphysis-npx-xdg-")), ...extra };
+  const env = { ...process.env, XDG_CONFIG_HOME: tempDir("symphysis-npx-xdg-"), ...extra };
   if (pathValue !== undefined) {
     for (const k of Object.keys(env)) if (k.toLowerCase() === "path") delete env[k];
     env[win ? "Path" : "PATH"] = pathValue;

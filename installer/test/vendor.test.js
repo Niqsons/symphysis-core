@@ -8,11 +8,12 @@ import { fileURLToPath } from "node:url";
 import { check } from "../lib/check.js";
 import { forkMissingMessage, requireFork } from "../scripts/build-vendor.js";
 import { syncPayload } from "../scripts/sync-payload.js";
+import { tempDir } from "../test-support/temp-dir.js";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const script = path.resolve(here, "..", "scripts", "build-vendor.js");
 const pkg = JSON.parse(fs.readFileSync(path.resolve(here, "..", "package.json"), "utf8"));
-const tmp = () => fs.mkdtempSync(path.join(os.tmpdir(), "symphysis-vendor-"));
+const tmp = () => tempDir("symphysis-vendor-");
 const noGitConfig = path.join(tmp(), "gitconfig");
 fs.writeFileSync(noGitConfig, "");
 const gitEnv = { ...process.env, GIT_CONFIG_GLOBAL: noGitConfig, GIT_CONFIG_NOSYSTEM: "1" };
@@ -25,7 +26,7 @@ const VERSION = "9.9.9-symphysis.1";
 
 /** Корень репозитория с поддельным форком: своя версия, свой коммит; `npm pack` на нём сети не требует. */
 function repoWithFork({ version = VERSION, pin = VERSION, prefix = "symphysis-vendor-" } = {}) {
-  const root = fs.mkdtempSync(path.join(os.tmpdir(), prefix));
+  const root = tempDir(prefix);
   fs.mkdirSync(path.join(root, "installer"));
   fs.writeFileSync(path.join(root, "installer", "package.json"), JSON.stringify({ symphysis: { openspecPin: pin } }));
   const fork = path.join(root, "upstream", "openspec");

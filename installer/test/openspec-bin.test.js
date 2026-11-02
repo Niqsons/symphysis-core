@@ -7,6 +7,7 @@ import { spawnSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
 import { describeFailure, runOpenspec } from "../lib/openspec-bin.js";
 import { requireFork } from "../scripts/build-vendor.js";
+import { tempDir } from "../test-support/temp-dir.js";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const bin = path.resolve(here, "..", "bin", "symphysis.js");
@@ -22,7 +23,7 @@ afterEach(() => {
   }
 });
 
-const tmp = (prefix = "symphysis-bin-") => fs.mkdtempSync(path.join(os.tmpdir(), prefix));
+const tmp = (prefix = "symphysis-bin-") => tempDir(prefix);
 
 /** Настоящий `.cmd` той же формы, что шим npm: `%*` разбирается второй раз. */
 function printingCmd(dir) {
@@ -50,7 +51,7 @@ test("Вызов форка через openspec.cmd: аргументы из PAT
 });
 
 test("Вызов форка через openspec.cmd: путь к .cmd с пробелом и скобками в SYMPHYSIS_OPENSPEC", { skip: !win }, () => {
-  const dir = fs.mkdtempSync(path.join(os.tmpdir(), "symphysis bin (тест) "));
+  const dir = tempDir("symphysis bin (тест) ");
   process.env.SYMPHYSIS_OPENSPEC = printingCmd(dir);
   const r = runOpenspec(ARGS);
   assert.equal(r.status, 0, r.stderr);
@@ -99,7 +100,7 @@ test("Вызов форка через openspec.cmd: install обновляет 
   requireFork(FORK);
   const shim = tmp();
   fs.writeFileSync(path.join(shim, "openspec.cmd"), `@echo off\r\n"${process.execPath}" "${FORK}" %*\r\n`);
-  const project = fs.mkdtempSync(path.join(os.tmpdir(), "symphysis проект "));
+  const project = tempDir("symphysis проект ");
   const env = { ...process.env, XDG_CONFIG_HOME: tmp(), OPENSPEC_TELEMETRY: "0" };
   delete env.SYMPHYSIS_OPENSPEC;
   for (const k of Object.keys(env)) if (k.toLowerCase() === "path") delete env[k];

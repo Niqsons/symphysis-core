@@ -5,6 +5,7 @@ import os from "node:os";
 import path from "node:path";
 import { spawnSync } from "node:child_process";
 import { hasSources, payloadMatches, syncPayload, ROOT } from "../scripts/sync-payload.js";
+import { tempDir } from "../test-support/temp-dir.js";
 
 const FILES = [
   "openspec/schemas/symphysis/schema.yaml",
@@ -21,7 +22,7 @@ const FILES = [
   "docs/journal.schema.json",
 ];
 
-const tmp = () => fs.mkdtempSync(path.join(os.tmpdir(), "symphysis-payload-"));
+const tmp = () => tempDir("symphysis-payload-");
 
 test("payload содержит все перечисленные источники", () => {
   const dest = tmp();
@@ -44,7 +45,7 @@ test("устаревший файл в payload удаляется", () => {
 });
 
 test("устаревший файл удаляется и по кириллическому пути", () => {
-  const dest = fs.mkdtempSync(path.join(os.tmpdir(), "symphysis-доставка-"));
+  const dest = tempDir("symphysis-доставка-");
   fs.mkdirSync(path.join(dest, "tools"));
   fs.writeFileSync(path.join(dest, "tools", "old.py"), "x");
   syncPayload(dest);

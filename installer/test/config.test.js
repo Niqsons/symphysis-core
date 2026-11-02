@@ -9,11 +9,12 @@ import { syncPayload } from "../scripts/sync-payload.js";
 import { targets } from "../lib/paths.js";
 import { install } from "../lib/install.js";
 import { requireFork } from "../scripts/build-vendor.js";
+import { tempDir } from "../test-support/temp-dir.js";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const bin = path.resolve(here, "..", "bin", "symphysis.js");
 const FORK = path.resolve(here, "..", "..", "upstream", "openspec", "bin", "openspec.js");
-const tmp = () => fs.mkdtempSync(path.join(os.tmpdir(), "symphysis-config-"));
+const tmp = () => tempDir("symphysis-config-");
 let payloadDir;
 
 before(() => {

@@ -10,11 +10,12 @@ import { syncPayload } from "../scripts/sync-payload.js";
 import { targets } from "../lib/paths.js";
 import { install } from "../lib/install.js";
 import { requireFork } from "../scripts/build-vendor.js";
+import { tempDir } from "../test-support/temp-dir.js";
 
 const bin = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..", "bin", "symphysis.js");
 const SUFFIX = "(есть, отличается — перезапись: --force)";
 let payloadDir;
-const tmp = () => fs.mkdtempSync(path.join(os.tmpdir(), "symphysis-install-"));
+const tmp = () => tempDir("symphysis-install-");
 const run = (...args) => spawnSync(process.execPath, [bin, ...args], { encoding: "utf8" });
 
 const FORK = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..", "..", "upstream", "openspec", "bin", "openspec.js");
