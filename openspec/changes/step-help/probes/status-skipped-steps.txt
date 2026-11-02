@@ -1,0 +1,10 @@
+Проба: openspec status при пропущенных первых шагах, форк 1.15.0-symphysis.4, схема symphysis, 2026-11-02.
+=== A: proposal.md 
+готовы к работе: intent specs
+первый готовый, как у /opsx:continue: intent
+=== B: intent.md proposal.md 
+готовы к работе: decisions specs
+первый готовый, как у /opsx:continue: decisions
+=== C: decisions.json intent.md proposal.md 
+готовы к работе: research specs
+первый готовый, как у /opsx:continue: research

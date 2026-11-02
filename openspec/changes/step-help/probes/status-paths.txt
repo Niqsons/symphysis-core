@@ -1,0 +1,3 @@
+Проба: какие пути отдаёт openspec status --json и отслеживается ли страница журнала, форк 1.15.0-symphysis.4, 2026-11-02.
+resolvedOutputPath: X:\symphysis-step-help\openspec\changes\step-help\intent.md
+git ls-files: openspec/changes/archive/2026-11-02-decision-scheme/decisions.html

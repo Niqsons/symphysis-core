@@ -1,0 +1,146 @@
+# Покрытие пробы краёв: step-help
+
+- step-help/Скрипт считает текущий шаг и чей ход · boundary · неприменимо: формы collection, io; boundary только для numeric-range
+- step-help/Скрипт считает текущий шаг и чей ход · adjacency · кандидат F-40
+- step-help/Скрипт считает текущий шаг и чей ход · empty · кандидат F-41
+- step-help/Скрипт считает текущий шаг и чей ход · encoding · неприменимо: формы collection, io; encoding только для text
+- step-help/Скрипт считает текущий шаг и чей ход · ordering · кандидат F-55
+- step-help/Скрипт считает текущий шаг и чей ход · precision · неприменимо: формы collection, io; precision только для numeric-range
+- step-help/Скрипт считает текущий шаг и чей ход · idempotency · неприменимо: формы collection, io; idempotency только для stateful
+- step-help/Скрипт считает текущий шаг и чей ход · concurrency · не выбран: файл появился между вызовами `status` и `instructions apply`; снимок показывает время снятия (F-21), следующий снимок это исправит, ответ человека исход не изменит
+- step-help/Справка не выдаёт наличие файла за сделанную работу · boundary · неприменимо: формы text; boundary только для numeric-range
+- step-help/Справка не выдаёт наличие файла за сделанную работу · adjacency · неприменимо: формы text; adjacency только для collection
+- step-help/Справка не выдаёт наличие файла за сделанную работу · empty · не найдено: пустой файл шага назван сценарием «Пустой файл шага»
+- step-help/Справка не выдаёт наличие файла за сделанную работу · encoding · не найдено: формулировки пишем сами, слово ищется подстрокой, нормализации нет
+- step-help/Справка не выдаёт наличие файла за сделанную работу · ordering · неприменимо: формы text; ordering только для collection
+- step-help/Справка не выдаёт наличие файла за сделанную работу · precision · неприменимо: формы text; precision только для numeric-range
+- step-help/Справка не выдаёт наличие файла за сделанную работу · idempotency · неприменимо: формы text; idempotency только для stateful
+- step-help/Справка не выдаёт наличие файла за сделанную работу · concurrency · неприменимо: формы text; concurrency только для io, stateful
+- step-help/Скрипт отдаёт JSON и работает без журнала и без изменения · boundary · неприменимо: формы collection, io; boundary только для numeric-range
+- step-help/Скрипт отдаёт JSON и работает без журнала и без изменения · adjacency · кандидат F-42
+- step-help/Скрипт отдаёт JSON и работает без журнала и без изменения · empty · не найдено: ноль изменений и изменение без журнала названы сценариями
+- step-help/Скрипт отдаёт JSON и работает без журнала и без изменения · encoding · неприменимо: формы collection, io; encoding только для text
+- step-help/Скрипт отдаёт JSON и работает без журнала и без изменения · ordering · не найдено: порядок шагов задаёт `steps.md`, порядок изменений не обещан
+- step-help/Скрипт отдаёт JSON и работает без журнала и без изменения · precision · неприменимо: формы collection, io; precision только для numeric-range
+- step-help/Скрипт отдаёт JSON и работает без журнала и без изменения · idempotency · неприменимо: формы collection, io; idempotency только для stateful
+- step-help/Скрипт отдаёт JSON и работает без журнала и без изменения · concurrency · не выбран: изменение архивируется во время вызова; `status` падает, и это путь `error` из сценария «Изменения с таким именем нет», ответ человека исход не изменит
+- step-help/Скрипт находит форк как инсталлятор и называет сбой · boundary · неприменимо: формы io, text; boundary только для numeric-range
+- step-help/Скрипт находит форк как инсталлятор и называет сбой · adjacency · неприменимо: формы io, text; adjacency только для collection
+- step-help/Скрипт находит форк как инсталлятор и называет сбой · empty · не выбран: пустой `SYMPHYSIS_OPENSPEC`; требование говорит «как инсталлятор», там пустое значение считается незаданным, ответ человека исход не изменит
+- step-help/Скрипт находит форк как инсталлятор и называет сбой · encoding · кандидат F-44
+- step-help/Скрипт находит форк как инсталлятор и называет сбой · ordering · неприменимо: формы io, text; ordering только для collection
+- step-help/Скрипт находит форк как инсталлятор и называет сбой · precision · неприменимо: формы io, text; precision только для numeric-range
+- step-help/Скрипт находит форк как инсталлятор и называет сбой · idempotency · неприменимо: формы io, text; idempotency только для stateful
+- step-help/Скрипт находит форк как инсталлятор и называет сбой · concurrency · кандидат F-43
+- step-help/Тексты шагов лежат в `steps.md`, раздел на шаг · boundary · неприменимо: формы collection, text; boundary только для numeric-range
+- step-help/Тексты шагов лежат в `steps.md`, раздел на шаг · adjacency · не выбран: два раздела с одним `id`; тест ядра красный по той же сверке «раздел на шаг», ответ человека исход не изменит
+- step-help/Тексты шагов лежат в `steps.md`, раздел на шаг · empty · не найдено: нет файла и нет раздела — сценарий «Старая схема в проекте»
+- step-help/Тексты шагов лежат в `steps.md`, раздел на шаг · encoding · не найдено: `id` схемы латиницей, сравниваются побайтно
+- step-help/Тексты шагов лежат в `steps.md`, раздел на шаг · ordering · не найдено: порядок показа задан порядком разделов файла
+- step-help/Тексты шагов лежат в `steps.md`, раздел на шаг · precision · неприменимо: формы collection, text; precision только для numeric-range
+- step-help/Тексты шагов лежат в `steps.md`, раздел на шаг · idempotency · неприменимо: формы collection, text; idempotency только для stateful
+- step-help/Тексты шагов лежат в `steps.md`, раздел на шаг · concurrency · неприменимо: формы collection, text; concurrency только для io, stateful
+- step-help/Страница шага отвечает на вопросы намерения · boundary · неприменимо: формы collection; boundary только для numeric-range
+- step-help/Страница шага отвечает на вопросы намерения · adjacency · не найдено: шаг обязателен и без блокируемых (`security`) — назван сценарием «Шаг останавливает реализацию»
+- step-help/Страница шага отвечает на вопросы намерения · empty · не найдено: файла шага нет — сценарий «Файлов шага ещё нет и уже есть»
+- step-help/Страница шага отвечает на вопросы намерения · encoding · неприменимо: формы collection; encoding только для text
+- step-help/Страница шага отвечает на вопросы намерения · ordering · не найдено: порядок файлов приходит из `existingOutputPaths`, равных путей нет
+- step-help/Страница шага отвечает на вопросы намерения · precision · неприменимо: формы collection; precision только для numeric-range
+- step-help/Страница шага отвечает на вопросы намерения · idempotency · неприменимо: формы collection; idempotency только для stateful
+- step-help/Страница шага отвечает на вопросы намерения · concurrency · неприменимо: формы collection; concurrency только для io, stateful
+- step-help/Версии показаны справочно и не проверяются · boundary · неприменимо: формы text, io; boundary только для numeric-range
+- step-help/Версии показаны справочно и не проверяются · adjacency · неприменимо: формы text, io; adjacency только для collection
+- step-help/Версии показаны справочно и не проверяются · empty · не найдено: нет файла версии — сценарий «Файла версии нет»
+- step-help/Версии показаны справочно и не проверяются · encoding · не найдено: версии в ASCII, показываются как есть
+- step-help/Версии показаны справочно и не проверяются · ordering · неприменимо: формы text, io; ordering только для collection
+- step-help/Версии показаны справочно и не проверяются · precision · неприменимо: формы text, io; precision только для numeric-range
+- step-help/Версии показаны справочно и не проверяются · idempotency · неприменимо: формы text, io; idempotency только для stateful
+- step-help/Версии показаны справочно и не проверяются · concurrency · не найдено: только чтение файла и вызов `--version`, записи нет
+- project-installer/`install` ставит скрипт справки и тексты шагов · boundary · неприменимо: формы stateful, io; boundary только для numeric-range
+- project-installer/`install` ставит скрипт справки и тексты шагов · adjacency · неприменимо: формы stateful, io; adjacency только для collection
+- project-installer/`install` ставит скрипт справки и тексты шагов · empty · неприменимо: формы stateful, io; empty только для collection, text
+- project-installer/`install` ставит скрипт справки и тексты шагов · encoding · неприменимо: формы stateful, io; encoding только для text
+- project-installer/`install` ставит скрипт справки и тексты шагов · ordering · неприменимо: формы stateful, io; ordering только для collection
+- project-installer/`install` ставит скрипт справки и тексты шагов · precision · неприменимо: формы stateful, io; precision только для numeric-range
+- project-installer/`install` ставит скрипт справки и тексты шагов · idempotency · не найдено: повторный запуск ничего не меняет по общему требованию «`install` ставит схему, скиллы и инструменты»
+- project-installer/`install` ставит скрипт справки и тексты шагов · concurrency · не выбран: две установки одновременно; поведение общее для инсталлятора, это изменение его не меняет
+- project-installer/`install` записывает версию symphysis · boundary · неприменимо: формы stateful, text; boundary только для numeric-range
+- project-installer/`install` записывает версию symphysis · adjacency · неприменимо: формы stateful, text; adjacency только для collection
+- project-installer/`install` записывает версию symphysis · empty · не найдено: без git — сценарий «Установка без git»
+- project-installer/`install` записывает версию symphysis · encoding · не найдено: версия и хеш в ASCII
+- project-installer/`install` записывает версию symphysis · ordering · неприменимо: формы stateful, text; ordering только для collection
+- project-installer/`install` записывает версию symphysis · precision · неприменимо: формы stateful, text; precision только для numeric-range
+- project-installer/`install` записывает версию symphysis · idempotency · не найдено: повтор и обновление клона — сценарий «Клон обновлён, инструменты нет»
+- project-installer/`install` записывает версию symphysis · concurrency · не выбран: две установки одновременно; поведение общее для инсталлятора, это изменение его не меняет
+- plugin-core-contract/Имя страницы и вывод справки входят в контракт · boundary · не найдено: ниже, выше и равно названы сценариями
+- plugin-core-contract/Имя страницы и вывод справки входят в контракт · adjacency · неприменимо: формы numeric-range, text; adjacency только для collection
+- plugin-core-contract/Имя страницы и вывод справки входят в контракт · empty · не найдено: номера нет — общий сценарий «Ядро без номера»
+- plugin-core-contract/Имя страницы и вывод справки входят в контракт · encoding · не найдено: имя страницы в ASCII
+- plugin-core-contract/Имя страницы и вывод справки входят в контракт · ordering · неприменимо: формы numeric-range, text; ordering только для collection
+- plugin-core-contract/Имя страницы и вывод справки входят в контракт · precision · не найдено: номер целый
+- plugin-core-contract/Имя страницы и вывод справки входят в контракт · idempotency · неприменимо: формы numeric-range, text; idempotency только для stateful
+- plugin-core-contract/Имя страницы и вывод справки входят в контракт · concurrency · неприменимо: формы numeric-range, text; concurrency только для io, stateful
+- decision-viewer/Просмотрщик — один HTML из своего шаблона с тремя режимами · boundary · неприменимо: формы io, stateful, collection; boundary только для numeric-range
+- decision-viewer/Просмотрщик — один HTML из своего шаблона с тремя режимами · adjacency · кандидат F-49
+- decision-viewer/Просмотрщик — один HTML из своего шаблона с тремя режимами · empty · не найдено: имя файла задаёт `--out`, значения по умолчанию нет
+- decision-viewer/Просмотрщик — один HTML из своего шаблона с тремя режимами · encoding · неприменимо: формы io, stateful, collection; encoding только для text
+- decision-viewer/Просмотрщик — один HTML из своего шаблона с тремя режимами · ordering · не найдено: порядка в требовании нет
+- decision-viewer/Просмотрщик — один HTML из своего шаблона с тремя режимами · precision · неприменимо: формы io, stateful, collection; precision только для numeric-range
+- decision-viewer/Просмотрщик — один HTML из своего шаблона с тремя режимами · idempotency · кандидат F-48
+- decision-viewer/Просмотрщик — один HTML из своего шаблона с тремя режимами · concurrency · не выбран: две сборки одновременно; страницу пишет только `render-html`, поведение прежнее
+- decision-viewer/`render-html` встраивает снимок справки, сбой страницу не роняет · boundary · неприменимо: формы stateful, io, collection; boundary только для numeric-range
+- decision-viewer/`render-html` встраивает снимок справки, сбой страницу не роняет · adjacency · кандидат F-45
+- decision-viewer/`render-html` встраивает снимок справки, сбой страницу не роняет · empty · кандидат F-47
+- decision-viewer/`render-html` встраивает снимок справки, сбой страницу не роняет · encoding · неприменимо: формы stateful, io, collection; encoding только для text
+- decision-viewer/`render-html` встраивает снимок справки, сбой страницу не роняет · ordering · не найдено: порядок шагов приходит из вывода скрипта
+- decision-viewer/`render-html` встраивает снимок справки, сбой страницу не роняет · precision · неприменимо: формы stateful, io, collection; precision только для numeric-range
+- decision-viewer/`render-html` встраивает снимок справки, сбой страницу не роняет · idempotency · кандидат F-46
+- decision-viewer/`render-html` встраивает снимок справки, сбой страницу не роняет · concurrency · не выбран: `openspec` завис во время сборки; тот же край, что F-43, ответ там решит и этот случай
+- decision-viewer/Панель показывает либо схему, либо справку · boundary · неприменимо: формы stateful; boundary только для numeric-range
+- decision-viewer/Панель показывает либо схему, либо справку · adjacency · неприменимо: формы stateful; adjacency только для collection
+- decision-viewer/Панель показывает либо схему, либо справку · empty · неприменимо: формы stateful; empty только для collection, text
+- decision-viewer/Панель показывает либо схему, либо справку · encoding · неприменимо: формы stateful; encoding только для text
+- decision-viewer/Панель показывает либо схему, либо справку · ordering · неприменимо: формы stateful; ordering только для collection
+- decision-viewer/Панель показывает либо схему, либо справку · precision · неприменимо: формы stateful; precision только для numeric-range
+- decision-viewer/Панель показывает либо схему, либо справку · idempotency · не найдено: повторный выбор того же пункта ничего не меняет
+- decision-viewer/Панель показывает либо схему, либо справку · concurrency · не найдено: две вкладки пишут выбор в browser storage, как режим страницы, последняя запись выигрывает
+- decision-viewer/Другие шаги открываются листанием и выбором пункта · boundary · неприменимо: формы collection, stateful; boundary только для numeric-range
+- decision-viewer/Другие шаги открываются листанием и выбором пункта · adjacency · не найдено: открытый шаг совпал с текущим — пункт просто отмечен
+- decision-viewer/Другие шаги открываются листанием и выбором пункта · empty · не выбран: шагов нет при сбое расчёта; тот же край, что F-47, ответ там решит и этот случай
+- decision-viewer/Другие шаги открываются листанием и выбором пункта · encoding · неприменимо: формы collection, stateful; encoding только для text
+- decision-viewer/Другие шаги открываются листанием и выбором пункта · ordering · не найдено: порядок пунктов приходит из вывода скрипта
+- decision-viewer/Другие шаги открываются листанием и выбором пункта · precision · неприменимо: формы collection, stateful; precision только для numeric-range
+- decision-viewer/Другие шаги открываются листанием и выбором пункта · idempotency · не найдено: на конце списка кнопка недоступна — сценарий «Листание до конца списка»
+- decision-viewer/Другие шаги открываются листанием и выбором пункта · concurrency · не найдено: снимок на странице неизменен, запись только в browser storage
+- decision-journal/Журнал — JSON-источник, markdown и HTML — рендер из него · boundary · неприменимо: формы stateful, io; boundary только для numeric-range
+- decision-journal/Журнал — JSON-источник, markdown и HTML — рендер из него · adjacency · неприменимо: формы stateful, io; adjacency только для collection
+- decision-journal/Журнал — JSON-источник, markdown и HTML — рендер из него · empty · неприменимо: формы stateful, io; empty только для collection, text
+- decision-journal/Журнал — JSON-источник, markdown и HTML — рендер из него · encoding · неприменимо: формы stateful, io; encoding только для text
+- decision-journal/Журнал — JSON-источник, markdown и HTML — рендер из него · ordering · неприменимо: формы stateful, io; ordering только для collection
+- decision-journal/Журнал — JSON-источник, markdown и HTML — рендер из него · precision · неприменимо: формы stateful, io; precision только для numeric-range
+- decision-journal/Журнал — JSON-источник, markdown и HTML — рендер из него · idempotency · не найдено: правка только имени файла, повтор сборки разобран в F-46
+- decision-journal/Журнал — JSON-источник, markdown и HTML — рендер из него · concurrency · не выбран: две сборки одновременно; поведение прежнее, правка его не меняет
+- step-help/Правила намерения открываются кнопкой и не зависят от шагов · boundary · неприменимо: формы text, stateful; boundary только для numeric-range
+- step-help/Правила намерения открываются кнопкой и не зависят от шагов · adjacency · неприменимо: формы text, stateful; adjacency только для collection
+- step-help/Правила намерения открываются кнопкой и не зависят от шагов · empty · не найдено: раздела нет — сценарий «Раздела нет»
+- step-help/Правила намерения открываются кнопкой и не зависят от шагов · encoding · не найдено: текст показывается как есть, экранирование — канон F-53
+- step-help/Правила намерения открываются кнопкой и не зависят от шагов · ordering · неприменимо: формы text, stateful; ordering только для collection
+- step-help/Правила намерения открываются кнопкой и не зависят от шагов · precision · неприменимо: формы text, stateful; precision только для numeric-range
+- step-help/Правила намерения открываются кнопкой и не зависят от шагов · idempotency · не найдено: повторное нажатие показывает тот же раздел
+- step-help/Правила намерения открываются кнопкой и не зависят от шагов · concurrency · не найдено: показ только читает снимок, записи нет
+- step-help/Справка не становится гейтом и не меняет файлы · boundary · неприменимо: формы io; boundary только для numeric-range
+- step-help/Справка не становится гейтом и не меняет файлы · adjacency · неприменимо: формы io; adjacency только для collection
+- step-help/Справка не становится гейтом и не меняет файлы · empty · неприменимо: формы io; empty только для collection, text
+- step-help/Справка не становится гейтом и не меняет файлы · encoding · неприменимо: формы io; encoding только для text
+- step-help/Справка не становится гейтом и не меняет файлы · ordering · неприменимо: формы io; ordering только для collection
+- step-help/Справка не становится гейтом и не меняет файлы · precision · неприменимо: формы io; precision только для numeric-range
+- step-help/Справка не становится гейтом и не меняет файлы · idempotency · неприменимо: формы io; idempotency только для stateful
+- step-help/Справка не становится гейтом и не меняет файлы · concurrency · не найдено: записи нет, параллельные вызовы только читают
+- decision-viewer/Снимок справки не несёт абсолютных путей · boundary · неприменимо: формы text, io; boundary только для numeric-range
+- decision-viewer/Снимок справки не несёт абсолютных путей · adjacency · неприменимо: формы text, io; adjacency только для collection
+- decision-viewer/Снимок справки не несёт абсолютных путей · empty · не найдено: файл в корне проекта даёт путь без каталога
+- decision-viewer/Снимок справки не несёт абсолютных путей · encoding · не выбран: кириллица и пробел в пути; тот же край, что F-44, ответ там решил и этот случай
+- decision-viewer/Снимок справки не несёт абсолютных путей · ordering · неприменимо: формы text, io; ordering только для collection
+- decision-viewer/Снимок справки не несёт абсолютных путей · precision · неприменимо: формы text, io; precision только для numeric-range
+- decision-viewer/Снимок справки не несёт абсолютных путей · idempotency · неприменимо: формы text, io; idempotency только для stateful
+- decision-viewer/Снимок справки не несёт абсолютных путей · concurrency · не найдено: только чтение при сборке
