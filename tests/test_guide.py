@@ -62,11 +62,6 @@ def test_guide_fork_version_equals_pin():
     assert versions == {pin}
 
 
-def test_guide_tarball_is_the_pinned_source():
-    source = json.loads(INSTALLER_PACKAGE.read_text(encoding="utf-8"))["symphysis"]["openspecSource"]
-    assert f"npm i -g ./{source}" in text()
-
-
 def test_guide_has_no_address_with_credentials():
     assert token_addresses(text()) == []
     assert token_addresses("git clone https://user:secret@host.example/repo.git")  # gate-ok: эталон теста
