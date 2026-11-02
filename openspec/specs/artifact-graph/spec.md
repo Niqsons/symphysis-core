@@ -6,12 +6,17 @@
 ## Requirements
 
 ### Requirement: Граф схемы начинается журналом и кончается атакой артефактов
-Схема `symphysis` SHALL задавать артефакты в порядке зависимостей `intent` → `decisions` → `research` → `attack-decisions` → `proposal` → `specs` → `consequences` → `design` → `security`, `tasks` → `attack-artifacts`. Артефакт `intent` SHALL быть первым: файл `intent.md` в каталоге изменения несёт намерение человека его словами; если файла нет или он пуст, шаг схемы SHALL спросить намерение у человека и сохранить его слова дословно как `intent.md`, содержания модель не пишет; дальше файл не правится; схема SHALL NOT делать для `intent` исключений (F-13.A, F-19.A, F-24.E). Артефакты `attack-decisions` и `attack-artifacts` SHALL нести признак `optional`: пока их файла нет, они SHALL NOT блокировать зависящие артефакты и `isPlanningComplete`; вызванная атака SHALL оставаться гейтом — её файл с вердиктом не `passed` блокирует зависимые всегда, с чужим хешем целей (`stale`) — пока не начался следующий шаг: у `attack-decisions` — пока нет файла `proposal.md`, у `attack-artifacts` — пока в `tasks.md` нет отмеченной задачи; дальше `stale` — видимый сигнал, не гейт (F-06.A, F-26.E, F-64.B). `apply` SHALL требовать `tasks` и `status: passed` у `attack-artifacts`, если атака вызвана, с тем же окном для `stale` (F-04.A, F-13.B, F-06.A, F-64.B).
+Схема `symphysis` SHALL задавать артефакты в порядке зависимостей `intent` → `decisions` → `research` → `attack-decisions` → `proposal` → `specs` → `consequences` → `design` → `security`, `tasks` → `attack-artifacts`. Артефакт `intent` SHALL быть первым: файл `intent.md` в каталоге изменения несёт намерение человека его словами; если файла нет или он пуст, шаг схемы SHALL спросить намерение у человека и сохранить его слова дословно как `intent.md`, содержания модель не пишет; дальше файл не правится; схема SHALL NOT делать для `intent` исключений (F-13.A, F-19.A, F-24.E). Артефакты `attack-decisions` и `attack-artifacts` SHALL нести признак `optional`: пока их файла нет, они SHALL NOT блокировать зависящие артефакты и `isPlanningComplete`; вызванная атака SHALL оставаться гейтом — её файл с вердиктом не `passed` блокирует зависимые всегда, с чужим хешем целей (`stale`) — пока не начался следующий шаг: у `attack-decisions` — пока нет файла `proposal.md`, у `attack-artifacts` — пока в `tasks.md` нет отмеченной задачи; дальше `stale` — видимый сигнал, не гейт (F-06.A, F-26.E, F-64.B). `apply` SHALL требовать `tasks`, `security` и `status: passed` у `attack-artifacts`, если атака вызвана, с тем же окном для `stale` (F-04.A, F-13.B, F-06.A, F-64.B; журнал `step-help`: F-26.B).
 
 #### Scenario: Новое изменение
 - **GIVEN** проект с `schema: symphysis` в `openspec/config.yaml` и изменение, созданное `openspec new change <имя>`
 - **WHEN** выполняется `openspec status --change <имя> --json`
-- **THEN** `intent` — `ready`, `decisions` — `blocked` до появления `intent.md`, `attack-decisions` и `attack-artifacts` помечены `optional`, `applyRequires` содержит `tasks`
+- **THEN** `intent` — `ready`, `decisions` — `blocked` до появления `intent.md`, `attack-decisions` и `attack-artifacts` помечены `optional`, `applyRequires` содержит `tasks` и `security`
+
+#### Scenario: Реализация ждёт чек-лист
+- **GIVEN** изменение со всеми обязательными артефактами, кроме `security.md`, и невызванными атаками
+- **WHEN** выполняется `openspec instructions apply --json`
+- **THEN** `state: blocked`, в `missingArtifacts` назван `security`; появился `security.md` — `state: ready`
 
 #### Scenario: Схема проходит валидацию форка
 - **GIVEN** каталог `openspec/schemas/symphysis/` в проекте

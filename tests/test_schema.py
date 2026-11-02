@@ -112,7 +112,24 @@ def test_graph_edges_and_apply_gate(tmp_path):
         "attack-decisions": "attack/decisions.md", "proposal": "proposal.md",
         "specs": "specs/**/*.md", "consequences": "consequences.md", "design": "design.md", "security": "security.md",
         "tasks": "tasks.md", "attack-artifacts": "attack/artifacts.md"}
-    assert out["applyRequires"] == ["tasks", "attack-artifacts"]
+    assert out["applyRequires"] == ["tasks", "security", "attack-artifacts"]
+
+
+@requires_fork
+def test_apply_waits_for_security_checklist(tmp_path):
+    """Сценарий «Реализация ждёт чек-лист»: `tasks` от `security` не зависит, а путь через `attack-artifacts`
+    необязателен, поэтому без строки в `apply.requires` шаг пропускается молча."""
+    proj = make_project(tmp_path)
+    change = proj / "openspec" / "changes" / "demo"
+    for rel in ("intent.md", "decisions.json", "research/none.md", "proposal.md", "specs/a/spec.md", "consequences.md", "design.md"):
+        (change / rel).parent.mkdir(parents=True, exist_ok=True)
+        (change / rel).write_text("x\n", encoding="utf-8")
+    (change / "tasks.md").write_text("- [ ] 1.1 задача\n", encoding="utf-8")
+    blocked = run_openspec(proj, "instructions", "apply", "--change", "demo", "--json")
+    assert blocked["state"] == "blocked"
+    assert blocked["missingArtifacts"] == ["security"]
+    (change / "security.md").write_text("x\n", encoding="utf-8")
+    assert run_openspec(proj, "instructions", "apply", "--change", "demo", "--json")["state"] == "ready"
 
 
 @requires_fork

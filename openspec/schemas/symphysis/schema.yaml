@@ -153,7 +153,7 @@ artifacts:
       - tasks
 
 apply:
-  requires: [tasks, attack-artifacts]
+  requires: [tasks, security, attack-artifacts]
   tracks: tasks.md
   instruction: |
     Работай по tasks.md по порядку и отмечай `- [x]` по мере выполнения; закрывай задачу проверкой, которая в ней названа.
