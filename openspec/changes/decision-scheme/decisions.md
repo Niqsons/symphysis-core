@@ -538,7 +538,7 @@
   - улика: `skills/symphysis-brainstorm/SKILL.md` «N = 2 — брейншторм закончен»
   - улика: `skills/symphysis-brainstorm/SKILL.md` «третьего круга нет»
   - улика: `openspec/specs/brainstorm-interview/spec.md` «кругов SHALL быть не больше двух»
-  - улика: `openspec/changes/symphysis-schema/design.md` «какое первее? — открыта»
+  - улика: `openspec/changes/archive/2026-11-02-symphysis-schema/design.md` «какое первее? — открыта»
   - улика: `openspec/changes/decision-scheme/answers/2026-11-01-circle2.md` «после второго могут возникнуть дополнительные вопросы»
 - следствия: На этом стоит F-44.
 
@@ -714,7 +714,7 @@
   - улика: `openspec/changes/decision-scheme/research/antipodes-probe/probe.log` «glm-5.2 без рассуждений: 4.6 с, вывод 862 токена, пар 19, из них внутри одной развилки 18, настоящая пара не найдена»
   - улика: `openspec/changes/decision-scheme/research/antipodes-probe/probe.log` «все пары, кроме настоящей и пар прогона без рассуждений, содержат вариант, отвергнутый раньше»
   - улика: `openspec/changes/decision-scheme/research/antipodes-probe/probe.log` «токенов 86303, вызовов инструментов 3, время 91 с»
-  - улика: `openspec/changes/calibration-fixes/rulings.md` «F-34.E и F-45.E читают `\|` по-разному»
+  - улика: `openspec/changes/archive/2026-11-02-calibration-fixes/rulings.md` «F-34.E и F-45.E читают `\|` по-разному»
   - улика: `openspec/changes/decision-scheme/research/antipodes-probe/probe.log` «субагент, вызов 2: чтение кеша 50214, запись кеша 23755, вывод 11276, 74.6 с, из них рассуждения 72.8 с»
   - улика: `openspec/changes/decision-scheme/research/antipodes-probe/probe.log` «86303 — размер контекста на последнем вызове, а не расход»
 - следствия: На этом стоят F-50, F-51 и F-52.
@@ -726,9 +726,9 @@
 - адресат: материалы
 - зависит от: —
 - улики:
-  - улика: `openspec/changes/implementation-consequences/proposal.md` «Файл `symphysis.yaml` в корне проекта с умолчанием «всё включено»»
-  - улика: `openspec/changes/implementation-consequences/specs/project-settings/spec.md` «SHALL задавать три выбора: ветки отказа, допущения, проба краёв»
-  - улика: `openspec/changes/implementation-consequences/decisions.md` «то, что значительно влияет на время хочется делать выбираемым перед запуском соответствующего шага»
+  - улика: `openspec/changes/archive/2026-11-02-implementation-consequences/proposal.md` «Файл `symphysis.yaml` в корне проекта с умолчанием «всё включено»»
+  - улика: `openspec/changes/archive/2026-11-02-implementation-consequences/specs/project-settings/spec.md` «SHALL задавать три выбора: ветки отказа, допущения, проба краёв»
+  - улика: `openspec/changes/archive/2026-11-02-implementation-consequences/decisions.md` «то, что значительно влияет на время хочется делать выбираемым перед запуском соответствующего шага»
   - улика: `openspec/changes/decision-scheme/answers/2026-11-01-circle3.md` «Возможно, это еще один кандидат на конфигурируемый параметр»
 - следствия: На этом стоит F-51.
 
@@ -755,11 +755,11 @@
     - улика: `openspec/changes/decision-scheme/answers/2026-11-01-circle3.md` «взаимоисключающие варианты развилок есть»
     - улика: `openspec/changes/decision-scheme/research/antipodes-probe/probe.log` «итог сверки: настоящая пара среди выбранных 1»
   - B. После выбора: на шаге обратимости модель сверяет выбранные варианты круга между собой и с прежними решениями, находка становится новой развилкой. Ловит и варианты, добавленные человеком, но конфликт виден уже после выбора.
-    - улика: `openspec/changes/calibration-fixes/rulings.md` «F-34.E и F-45.E читают `\|` по-разному»
+    - улика: `openspec/changes/archive/2026-11-02-calibration-fixes/rulings.md` «F-34.E и F-45.E читают `\|` по-разному»
     - улика: `skills/symphysis-brainstorm/SKILL.md` «### 7. Обратимость»
   - C. Оба прохода: до показа и после выбора.
     - улика: `openspec/changes/decision-scheme/answers/2026-11-01-circle3.md` «я об этом все равно думаю сам»
-    - улика: `openspec/changes/calibration-fixes/rulings.md` «F-34.E и F-45.E читают `\|` по-разному»
+    - улика: `openspec/changes/archive/2026-11-02-calibration-fixes/rulings.md` «F-34.E и F-45.E читают `\|` по-разному»
   - D. Оставить как есть: поле необязательное, модель пишет, если заметит, а противоречия человек ищет сам.
     - улика: `openspec/changes/decision-scheme/research/antipodes-probe/probe.log` «implementation-consequences: развилок 79, вариантов 304, с антиподами 0»
   - E. Убрать поле и блокировку из схемы журнала, страницы и плагина.
@@ -779,13 +779,13 @@
 - варианты:
   - A. Сейчас: ключ в `symphysis.yaml`, по умолчанию включено; при выключенном в строке круга «антиподы не считались». Это изменение начинает зависеть от порядка влития `implementation-consequences`.
     - улика: `openspec/changes/decision-scheme/answers/2026-11-01-circle3.md` «хочу ли я нагружать модель вычислением зависимостей и антиподов»
-    - улика: `openspec/changes/implementation-consequences/proposal.md` «Файл `symphysis.yaml` в корне проекта»
+    - улика: `openspec/changes/archive/2026-11-02-implementation-consequences/proposal.md` «Файл `symphysis.yaml` в корне проекта»
   - B. Нет, сверка идёт всегда: журнал из 54 развилок занимает 30–40 с на Sonnet и на glm-5.2 отдельным вызовом без инструментов и 91 с субагентом; под «значительно влияет на время» это не подходит.
     - улика: `openspec/changes/decision-scheme/research/antipodes-probe/probe.log` «glm-5.2 с рассуждениями, прогон 2: 29.5 с»
     - улика: `openspec/changes/decision-scheme/research/antipodes-probe/probe.log` «sonnet2: 39.0 с»
-    - улика: `openspec/changes/implementation-consequences/decisions.md` «то, что значительно влияет на время хочется делать выбираемым»
+    - улика: `openspec/changes/archive/2026-11-02-implementation-consequences/decisions.md` «то, что значительно влияет на время хочется делать выбираемым»
   - C. Позже: сейчас без настройки, а в план `project-settings` записывается кандидат «сверка антиподов» с условием замерить проход на deepseek.
-    - улика: `openspec/changes/implementation-consequences/specs/project-settings/spec.md` «SHALL задавать три выбора»
+    - улика: `openspec/changes/archive/2026-11-02-implementation-consequences/specs/project-settings/spec.md` «SHALL задавать три выбора»
     - улика: `openspec/changes/decision-scheme/research/antipodes-probe/probe.log` «deepseek-v4.1-flash не мерен»
   - D. Один ключ и на антиподы, и на зависимости.
     - улика: `openspec/changes/decision-scheme/answers/2026-11-01-circle3.md` «вычислением зависимостей и антиподов»
@@ -808,7 +808,7 @@
     - улика: `vscode/src/webview/Card.tsx` «антипод уже выбран:»
   - B. Предупреждение: выбор проходит, пара видна у обоих вариантов. Если выбрать оба, это становится строкой атаки.
     - улика: `openspec/changes/decision-scheme/research/antipodes-probe/probe.log` «сверка: модель подала как «оба выбраны»; на деле F-13 решён A, вариант D отвергнут»
-    - улика: `openspec/changes/calibration-fixes/decisions.md` «не должен становиться замком на постановке»
+    - улика: `openspec/changes/archive/2026-11-02-calibration-fixes/decisions.md` «не должен становиться замком на постановке»
     - улика: `skills/symphysis-attack/SKILL.md` «оба антипода решены»
 - антиподы: A ↔ F-50.E; B ↔ F-50.E
 - рекомендация: B — Пару пишет модель, а модель ошибается: Sonnet в 2 прогонах из 4 подал как «оба выбраны» пару, где один вариант отвергнут, а glm-5.2 без рассуждений дал 18 пар внутри одной развилки. Пока поле почти не заполняли, блок никому не мешал, а при регулярной сверке ошибка модели станет замком на слове человека. Это против правила «решает человек».

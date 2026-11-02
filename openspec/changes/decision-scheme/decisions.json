@@ -2051,7 +2051,7 @@
      "found": true
     },
     {
-     "path": "openspec/changes/symphysis-schema/design.md",
+     "path": "openspec/changes/archive/2026-11-02-symphysis-schema/design.md",
      "quote": "какое первее? — открыта",
      "line": 354,
      "verdict": "сверено",
@@ -2844,7 +2844,7 @@
      "found": true
     },
     {
-     "path": "openspec/changes/calibration-fixes/rulings.md",
+     "path": "openspec/changes/archive/2026-11-02-calibration-fixes/rulings.md",
      "quote": "F-34.E и F-45.E читают `\\|` по-разному",
      "line": 18,
      "verdict": "сверено",
@@ -2886,21 +2886,21 @@
    "consequences": "На этом стоит F-51.",
    "evidence": [
     {
-     "path": "openspec/changes/implementation-consequences/proposal.md",
+     "path": "openspec/changes/archive/2026-11-02-implementation-consequences/proposal.md",
      "quote": "Файл `symphysis.yaml` в корне проекта с умолчанием «всё включено»",
      "line": 15,
      "verdict": "сверено",
      "found": true
     },
     {
-     "path": "openspec/changes/implementation-consequences/specs/project-settings/spec.md",
+     "path": "openspec/changes/archive/2026-11-02-implementation-consequences/specs/project-settings/spec.md",
      "quote": "SHALL задавать три выбора: ветки отказа, допущения, проба краёв",
      "line": 9,
      "verdict": "сверено",
      "found": true
     },
     {
-     "path": "openspec/changes/implementation-consequences/decisions.md",
+     "path": "openspec/changes/archive/2026-11-02-implementation-consequences/decisions.md",
      "quote": "то, что значительно влияет на время хочется делать выбираемым перед запуском соответствующего шага",
      "line": 243,
      "verdict": "сверено",
@@ -2996,7 +2996,7 @@
      "unlikely": null,
      "evidence": [
       {
-       "path": "openspec/changes/calibration-fixes/rulings.md",
+       "path": "openspec/changes/archive/2026-11-02-calibration-fixes/rulings.md",
        "quote": "F-34.E и F-45.E читают `\\|` по-разному",
        "line": 18,
        "verdict": "сверено",
@@ -3025,7 +3025,7 @@
        "found": true
       },
       {
-       "path": "openspec/changes/calibration-fixes/rulings.md",
+       "path": "openspec/changes/archive/2026-11-02-calibration-fixes/rulings.md",
        "quote": "F-34.E и F-45.E читают `\\|` по-разному",
        "line": 18,
        "verdict": "сверено",
@@ -3110,7 +3110,7 @@
        "found": true
       },
       {
-       "path": "openspec/changes/implementation-consequences/proposal.md",
+       "path": "openspec/changes/archive/2026-11-02-implementation-consequences/proposal.md",
        "quote": "Файл `symphysis.yaml` в корне проекта",
        "line": 15,
        "verdict": "сверено",
@@ -3139,7 +3139,7 @@
        "found": true
       },
       {
-       "path": "openspec/changes/implementation-consequences/decisions.md",
+       "path": "openspec/changes/archive/2026-11-02-implementation-consequences/decisions.md",
        "quote": "то, что значительно влияет на время хочется делать выбираемым",
        "line": 243,
        "verdict": "сверено",
@@ -3154,7 +3154,7 @@
      "unlikely": null,
      "evidence": [
       {
-       "path": "openspec/changes/implementation-consequences/specs/project-settings/spec.md",
+       "path": "openspec/changes/archive/2026-11-02-implementation-consequences/specs/project-settings/spec.md",
        "quote": "SHALL задавать три выбора",
        "line": 9,
        "verdict": "сверено",
@@ -3273,7 +3273,7 @@
        "found": true
       },
       {
-       "path": "openspec/changes/calibration-fixes/decisions.md",
+       "path": "openspec/changes/archive/2026-11-02-calibration-fixes/decisions.md",
        "quote": "не должен становиться замком на постановке",
        "line": 1105,
        "verdict": "сверено",

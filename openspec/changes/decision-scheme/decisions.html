@@ -186,7 +186,7 @@
 const JOURNAL = {
  "title": "Журнал решений: decision-scheme",
  "source": "decisions.json",
- "sha256": "d91af75cf82fac2e6eacc3afddcd169333dcad8b798af175e4f1dc38517a9d4c",
+ "sha256": "72c6943ccd9c54b21b84467a36954d8f3b7f647b2dbea9a5685eac339d5c0414",
  "stats": {
   "records": 125,
   "forks": 88,
@@ -194,7 +194,7 @@ const JOURNAL = {
   "decided": 88,
   "parked": 4,
   "evidence_total": 329,
-  "evidence_found": 299
+  "evidence_found": 298
  },
  "records": [
   {
@@ -1246,7 +1246,7 @@ const JOURNAL = {
       {
        "path": "tools/journal_apply.py",
        "quote": "return f\"{rid}: зависимость добавлена {dep}\"",
-       "line": 335,
+       "line": 339,
        "verdict": "сверено",
        "found": true
       },
@@ -2199,7 +2199,7 @@ const JOURNAL = {
     {
      "path": "tools/journal_apply.py",
      "quote": "PARKING_ADDRESSEES = (\"материалы\", \"человек\", \"ИБ\")",
-     "line": 145,
+     "line": 149,
      "verdict": "сверено",
      "found": true
     },
@@ -2277,12 +2277,12 @@ const JOURNAL = {
     {
      "path": "openspec/specs/brainstorm-interview/spec.md",
      "quote": "кругов SHALL быть не больше двух",
-     "line": 24,
+     "line": 49,
      "verdict": "сверено",
      "found": true
     },
     {
-     "path": "openspec/changes/symphysis-schema/design.md",
+     "path": "openspec/changes/archive/2026-11-02-symphysis-schema/design.md",
      "quote": "какое первее? — открыта",
      "line": 354,
      "verdict": "сверено",
@@ -2789,7 +2789,7 @@ const JOURNAL = {
       {
        "path": "tools/journal_apply.py",
        "quote": "RE_NOTES = re.compile(r\"^Замечания к схеме:[ \\t]*(.*)$\")",
-       "line": 152,
+       "line": 156,
        "verdict": "сверено",
        "found": true
       },
@@ -3001,14 +3001,14 @@ const JOURNAL = {
     {
      "path": "tools/journal_model.py",
      "quote": "антипод {a['option']} ↔ {a['other']}: записи {target} нет",
-     "line": 406,
+     "line": 410,
      "verdict": "сверено",
      "found": true
     },
     {
      "path": "skills/symphysis-attack/SKILL.md",
      "quote": "оба антипода решены",
-     "line": 180,
+     "line": 194,
      "verdict": "сверено",
      "found": true
     }
@@ -3084,7 +3084,7 @@ const JOURNAL = {
      "found": true
     },
     {
-     "path": "openspec/changes/calibration-fixes/rulings.md",
+     "path": "openspec/changes/archive/2026-11-02-calibration-fixes/rulings.md",
      "quote": "F-34.E и F-45.E читают `\\|` по-разному",
      "line": 18,
      "verdict": "сверено",
@@ -3127,21 +3127,21 @@ const JOURNAL = {
    "consequences": "На этом стоит F-51.",
    "evidence": [
     {
-     "path": "openspec/changes/implementation-consequences/proposal.md",
+     "path": "openspec/changes/archive/2026-11-02-implementation-consequences/proposal.md",
      "quote": "Файл `symphysis.yaml` в корне проекта с умолчанием «всё включено»",
      "line": 15,
      "verdict": "сверено",
      "found": true
     },
     {
-     "path": "openspec/changes/implementation-consequences/specs/project-settings/spec.md",
+     "path": "openspec/changes/archive/2026-11-02-implementation-consequences/specs/project-settings/spec.md",
      "quote": "SHALL задавать три выбора: ветки отказа, допущения, проба краёв",
-     "line": 9,
-     "verdict": "сверено",
-     "found": true
+     "line": null,
+     "verdict": "цитаты нет дословно",
+     "found": false
     },
     {
-     "path": "openspec/changes/implementation-consequences/decisions.md",
+     "path": "openspec/changes/archive/2026-11-02-implementation-consequences/decisions.md",
      "quote": "то, что значительно влияет на время хочется делать выбираемым перед запуском соответствующего шага",
      "line": 243,
      "verdict": "сверено",
@@ -3186,7 +3186,7 @@ const JOURNAL = {
     {
      "path": "installer/scripts/sync-payload.js",
      "quote": "\"tools/playground-template.html\",",
-     "line": 17,
+     "line": 20,
      "verdict": "сверено",
      "found": true
     },
@@ -3239,7 +3239,7 @@ const JOURNAL = {
      "unlikely": null,
      "evidence": [
       {
-       "path": "openspec/changes/calibration-fixes/rulings.md",
+       "path": "openspec/changes/archive/2026-11-02-calibration-fixes/rulings.md",
        "quote": "F-34.E и F-45.E читают `\\|` по-разному",
        "line": 18,
        "verdict": "сверено",
@@ -3268,7 +3268,7 @@ const JOURNAL = {
        "found": true
       },
       {
-       "path": "openspec/changes/calibration-fixes/rulings.md",
+       "path": "openspec/changes/archive/2026-11-02-calibration-fixes/rulings.md",
        "quote": "F-34.E и F-45.E читают `\\|` по-разному",
        "line": 18,
        "verdict": "сверено",
@@ -3354,7 +3354,7 @@ const JOURNAL = {
        "found": true
       },
       {
-       "path": "openspec/changes/implementation-consequences/proposal.md",
+       "path": "openspec/changes/archive/2026-11-02-implementation-consequences/proposal.md",
        "quote": "Файл `symphysis.yaml` в корне проекта",
        "line": 15,
        "verdict": "сверено",
@@ -3383,7 +3383,7 @@ const JOURNAL = {
        "found": true
       },
       {
-       "path": "openspec/changes/implementation-consequences/decisions.md",
+       "path": "openspec/changes/archive/2026-11-02-implementation-consequences/decisions.md",
        "quote": "то, что значительно влияет на время хочется делать выбираемым",
        "line": 243,
        "verdict": "сверено",
@@ -3398,7 +3398,7 @@ const JOURNAL = {
      "unlikely": null,
      "evidence": [
       {
-       "path": "openspec/changes/implementation-consequences/specs/project-settings/spec.md",
+       "path": "openspec/changes/archive/2026-11-02-implementation-consequences/specs/project-settings/spec.md",
        "quote": "SHALL задавать три выбора",
        "line": 9,
        "verdict": "сверено",
@@ -3518,7 +3518,7 @@ const JOURNAL = {
        "found": true
       },
       {
-       "path": "openspec/changes/calibration-fixes/decisions.md",
+       "path": "openspec/changes/archive/2026-11-02-calibration-fixes/decisions.md",
        "quote": "не должен становиться замком на постановке",
        "line": 1105,
        "verdict": "сверено",
@@ -3527,7 +3527,7 @@ const JOURNAL = {
       {
        "path": "skills/symphysis-attack/SKILL.md",
        "quote": "оба антипода решены",
-       "line": 180,
+       "line": 194,
        "verdict": "сверено",
        "found": true
       }
@@ -3599,7 +3599,7 @@ const JOURNAL = {
       {
        "path": "installer/scripts/sync-payload.js",
        "quote": "\"tools/playground-template.html\",",
-       "line": 17,
+       "line": 20,
        "verdict": "сверено",
        "found": true
       }
@@ -3883,7 +3883,7 @@ const JOURNAL = {
       {
        "path": "skills/symphysis-attack/SKILL.md",
        "quote": "оба антипода решены",
-       "line": 180,
+       "line": 194,
        "verdict": "сверено",
        "found": true
       }
@@ -3905,7 +3905,7 @@ const JOURNAL = {
       {
        "path": "skills/symphysis-attack/SKILL.md",
        "quote": "`status: passed` ставится, только когда в таблице нет ни одной строки",
-       "line": 235,
+       "line": 267,
        "verdict": "сверено",
        "found": true
       }
@@ -3920,7 +3920,7 @@ const JOURNAL = {
       {
        "path": "skills/symphysis-attack/SKILL.md",
        "quote": "выбранный вариант с полем `deviation` — `справка`",
-       "line": 180,
+       "line": 194,
        "verdict": "сверено",
        "found": true
       }
@@ -6275,7 +6275,7 @@ const JOURNAL = {
     {
      "path": "openspec/changes/decision-scheme/specs/decision-viewer/spec.md",
      "quote": "### Requirement: Панель схемы показывает `scheme.md` рядом с карточками",
-     "line": 27,
+     "line": 45,
      "verdict": "сверено",
      "found": true
     }
@@ -6346,7 +6346,7 @@ const JOURNAL = {
     {
      "path": "openspec/changes/decision-scheme/specs/decision-viewer/spec.md",
      "quote": "### Requirement: Панель схемы показывает `scheme.md` рядом с карточками",
-     "line": 27,
+     "line": 45,
      "verdict": "сверено",
      "found": true
     },
@@ -6425,7 +6425,7 @@ const JOURNAL = {
     {
      "path": "openspec/changes/decision-scheme/specs/decision-viewer/spec.md",
      "quote": "### Requirement: Панель схемы показывает `scheme.md` рядом с карточками",
-     "line": 27,
+     "line": 45,
      "verdict": "сверено",
      "found": true
     }
@@ -6496,7 +6496,7 @@ const JOURNAL = {
     {
      "path": "openspec/changes/decision-scheme/specs/decision-viewer/spec.md",
      "quote": "### Requirement: Панель схемы показывает `scheme.md` рядом с карточками",
-     "line": 27,
+     "line": 45,
      "verdict": "сверено",
      "found": true
     },
@@ -6574,7 +6574,7 @@ const JOURNAL = {
     {
      "path": "openspec/changes/decision-scheme/specs/decision-viewer/spec.md",
      "quote": "### Requirement: Подписи схемы не ходят в сеть",
-     "line": 77,
+     "line": 95,
      "verdict": "сверено",
      "found": true
     },
@@ -6652,7 +6652,7 @@ const JOURNAL = {
     {
      "path": "openspec/changes/decision-scheme/specs/decision-viewer/spec.md",
      "quote": "### Requirement: Внесённая новая развилка вычищается из черновика",
-     "line": 102,
+     "line": 120,
      "verdict": "сверено",
      "found": true
     }
@@ -6723,7 +6723,7 @@ const JOURNAL = {
     {
      "path": "openspec/changes/decision-scheme/specs/decision-viewer/spec.md",
      "quote": "### Requirement: Зависимость от факта не считается нерешённой предпосылкой",
-     "line": 117,
+     "line": 135,
      "verdict": "сверено",
      "found": true
     }
@@ -7759,7 +7759,7 @@ const JOURNAL = {
     {
      "path": "openspec/changes/decision-scheme/specs/decision-viewer/spec.md",
      "quote": "### Requirement: Панель схемы показывает `scheme.md` рядом с карточками",
-     "line": 27,
+     "line": 45,
      "verdict": "сверено",
      "found": true
     }
@@ -7830,7 +7830,7 @@ const JOURNAL = {
     {
      "path": "openspec/changes/decision-scheme/specs/decision-viewer/spec.md",
      "quote": "### Requirement: Подписи схемы не ходят в сеть",
-     "line": 77,
+     "line": 95,
      "verdict": "сверено",
      "found": true
     },
@@ -8274,7 +8274,7 @@ const JOURNAL = {
     {
      "path": "openspec/changes/decision-scheme/specs/decision-viewer/spec.md",
      "quote": "### Requirement: Подписи схемы не ходят в сеть",
-     "line": 77,
+     "line": 95,
      "verdict": "сверено",
      "found": true
     }
@@ -8956,7 +8956,7 @@ const SCHEME = {
  "text": "flowchart TD\n    intent[\"intent.md<br/>слова и критерии человека\"] --> exists{\"есть scheme.md?\"}\n    exists -- \"нет\" --> scenario{\"в intent.md есть сценарий?\"}\n    scenario -- \"да\" --> create[\"модель создаёт scheme.md<br/>и даёт ссылку в чат\"]\n    scenario -- \"нет\" --> ask[\"модель предлагает своё видение<br/>и задаёт вопросы\"]\n    ask --> create\n    exists -- \"да\" --> journal\n    create --> journal[\"записи decisions.json<br/>с полем nodes\"]\n    file[\"scheme.md<br/>файл человека\"] -.-> create\n    human[\"человек правит scheme.md\"] --> file\n    human -. \"говорит агенту сам\" .-> journal\n\n    journal --> viewjson[\"view-json<br/>с номером контракта\"]\n    viewjson --> number{\"номер совпал?\"}\n    number -- \"нет\" --> update[\"плагин говорит, что обновить\"]\n    number -- \"да\" --> cards[\"просмотрщик: карточки\"]\n\n    file --> tab{\"вкладка схемы:<br/>файл есть?\"}\n    tab -- \"нет\" --> plate[\"плашка «Схема не создана»\"]\n    tab -- \"да\" --> picture[\"рисунок: масштаб и перетаскивание\"]\n    picture -- \"клик по узлу\" --> filter[\"фильтр карточек по nodes\"]\n    filter --> cards\n    cards -. \"узла нет в схеме\" .-> hint[\"подсказка «узел не найден»\"]\n\n    package[\"пакет правок\"] --> vsix[\"сборка .vsix с версией\"]\n    vsix --> check[\"npm run e2e:vsix\"]\n",
  "blocks": 1,
  "first_line": 6,
- "mermaid": "../../../.symphysis/tools/mermaid.min.js"
+ "mermaid": null
 };
 const ADDRESSEES = ['материалы','человек','ИБ'];
 /* линзы атаки — закрытые списки скилла symphysis-attack, по файлу атаки: журнал (`attack/decisions.md`, цель — один `decisions.json`)
