@@ -129,7 +129,7 @@ def test_mutations_match_reference(reference):
     assert checked > 1000
 
 
-REAL = [*sorted(ROOT.glob("openspec/changes/*/decisions.json")), ROOT / "docs" / "plan-implementation.journal.json",
+REAL = [*sorted(ROOT.glob("openspec/changes/**/decisions.json")), ROOT / "docs" / "plan-implementation.journal.json",
         ROOT / "openspec" / "schemas" / "symphysis" / "templates" / "decisions.json", FIX / "journal-deviation.json"]
 
 

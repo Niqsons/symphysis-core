@@ -238,8 +238,7 @@ def test_live_journal_records_viewer_as_own_skill():
 
 FIXTURE_JOURNALS = sorted(FIX.glob("*/decisions.json"))
 LIVE_JOURNALS = [ROOT / "docs" / "plan-implementation.journal.json",
-                 ROOT / "openspec" / "changes" / "symphysis-schema" / "decisions.json",
-                 ROOT / "openspec" / "changes" / "calibration-fixes" / "decisions.json"]
+                 *sorted((ROOT / "openspec" / "changes" / "archive").glob("*/decisions.json"))]
 
 
 def setting_journal(**fork_changes) -> dict:
@@ -407,7 +406,7 @@ def test_apply_refuses_a_journal_with_a_repeated_record_id(tmp_path):
 
 
 def test_real_journals_have_no_repeated_record_ids():
-    journals = sorted((ROOT / "openspec" / "changes").glob("*/decisions.json"))
+    journals = sorted((ROOT / "openspec" / "changes").glob("**/decisions.json"))
     assert journals
     for path in journals:
         loaded = json.loads(path.read_text(encoding="utf-8"))
