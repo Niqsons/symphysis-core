@@ -24,8 +24,8 @@ const git = (cwd, ...args) => {
 const VERSION = "9.9.9-symphysis.1";
 
 /** Корень репозитория с поддельным форком: своя версия, свой коммит; `npm pack` на нём сети не требует. */
-function repoWithFork({ version = VERSION, pin = VERSION } = {}) {
-  const root = tmp();
+function repoWithFork({ version = VERSION, pin = VERSION, prefix = "symphysis-vendor-" } = {}) {
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), prefix));
   fs.mkdirSync(path.join(root, "installer"));
   fs.writeFileSync(path.join(root, "installer", "package.json"), JSON.stringify({ symphysis: { openspecPin: pin } }));
   const fork = path.join(root, "upstream", "openspec");
@@ -53,6 +53,15 @@ test("Скрипт на клоне без форка: код 1, ветка и к
   assert.equal(r.stdout, "");
   assert.deepEqual(vendorFiles(root), ["old.tgz"]);
   assert.equal(fs.readFileSync(path.join(root, "vendor", "old.tgz"), "utf8"), "старый");
+});
+
+test("Старый тарбол заменяется и по пути с кириллицей: fs.rmSync там молча ничего не удаляет", () => {
+  const { root } = repoWithFork({ prefix: "симфизис-вендор-" });
+  fs.mkdirSync(path.join(root, "vendor"));
+  fs.writeFileSync(path.join(root, "vendor", "old.tgz"), "старый");
+  const r = run(root);
+  assert.equal(r.status, 0, r.stdout + r.stderr);
+  assert.deepEqual(vendorFiles(root), [`fake-fork-${VERSION}.tgz`]);
 });
 
 test("Старый тарбол заменяется: в каталоге один *.tgz", () => {

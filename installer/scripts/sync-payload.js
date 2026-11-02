@@ -37,7 +37,7 @@ function walk(dir, prefix = "") {
 }
 
 /** Стирает дерево: `fs.rmSync` в Node 24 на Windows молча не удаляет по кириллическому пути. */
-function removeTree(dir) {
+export function removeTree(dir) {
   for (const e of fs.readdirSync(dir, { withFileTypes: true })) {
     const full = path.join(dir, e.name);
     if (e.isDirectory()) removeTree(full);

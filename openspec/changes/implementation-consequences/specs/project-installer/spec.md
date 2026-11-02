@@ -18,7 +18,7 @@
 #### Scenario: Список человека сохраняется
 - **GIVEN** глобальный конфиг с `profile: custom` и workflow `propose`, `apply`, `verify`
 - **WHEN** выполняется `symphysis install --project <каталог>`
-- **THEN** список не изменён байт в байт, stdout называет, что `continue` в нём нет и как добавить: `openspec config profile`; `check` даёт `[!!] continue`
+- **THEN** `profile` и `workflows` прежние, умолчания, которые дописал `config set`, в счёт не идут (F-116.A); stdout называет, что `continue` в нём нет и как добавить: `openspec config profile`; `check` даёт `[!!] continue`
 
 #### Scenario: Тесты не трогают настоящий конфиг
 - **GIVEN** `XDG_CONFIG_HOME`, указанный во временный каталог

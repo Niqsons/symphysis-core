@@ -9240,6 +9240,68 @@
    "consequences": "Требование «Повторный номер записи делает журнал негодным» в `decision-journal`, правило в `tools/journal_model.py` и тест, задача 3.4.",
    "evidence": [],
    "comments": []
+  },
+  {
+   "id": "F-139",
+   "question": "Ревью части C: конфиг, где задана телеметрия, а `profile` нет. `openspec update` на нём записал бы `profile: custom` со списком без `continue`, поэтому `install` его не зовёт и просит `openspec config profile core`. А сценарий «Чистая установка» обещает команду при профиле «заданном или по умолчанию». Что должно быть при отсутствии профиля?",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-116",
+    "F-123",
+    "F-126"
+   ],
+   "delivery": "specs, tasks",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Оставить как сделано: `install` ничего не пишет, строка называет команду, человек сам ставит профиль; в сценарий добавляется этот случай. При выборе: глобальный конфиг не трогаем, кода нет. Цена: на таком конфиге `/opsx:continue` появляется не с первого раза, а после одной команды.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "installer/lib/clients.js",
+       "quote": "if (config.profile === undefined) {",
+       "line": 57,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "`install` сам ставит `profile: core`, раз отсутствие профиля и есть умолчание, затем зовёт `update`. При выборе: команда появляется с первого раза. Цена: `install` пишет ключ профиля в глобальный конфиг человека: значение то же, что действует, но запись новая, и это самое чувствительное место (F-123).",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/changes/implementation-consequences/specs/project-installer/spec.md",
+       "quote": "глобальный конфиг с профилем `core`, заданным или по умолчанию",
+       "line": 9,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Случай редкий: обычный `config set` дописывает профиль сам, такой конфиг бывает при ручной записи. Ради него не стоит давать `install` право писать профиль.",
+    "text": "A — оставить, сценарий назвать"
+   },
+   "decision": null,
+   "reversibility": {
+    "level": "обратимо",
+    "why": "Одна ветка в `installer/lib/clients.js` и один сценарий."
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "Выбор A: новый сценарий в `project-installer`. Выбор B: правка `clients.js`, тест, тот же сценарий иначе.",
+   "evidence": [],
+   "comments": []
   }
  ]
 }

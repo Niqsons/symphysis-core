@@ -5,6 +5,7 @@ import path from "node:path";
 import { spawnSync } from "node:child_process";
 import { parseArgs } from "node:util";
 import { fileURLToPath, pathToFileURL } from "node:url";
+import { removeTree } from "./sync-payload.js";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(here, "..", "..");
@@ -83,11 +84,11 @@ export function buildVendor(root = ROOT) {
     const name = packInto(fork, staging);
     const vendor = path.join(root, "vendor");
     fs.mkdirSync(vendor, { recursive: true });
-    for (const old of fs.readdirSync(vendor)) if (old.endsWith(".tgz")) fs.rmSync(path.join(vendor, old));
+    for (const old of fs.readdirSync(vendor)) if (old.endsWith(".tgz")) fs.unlinkSync(path.join(vendor, old));
     fs.copyFileSync(path.join(staging, name), path.join(vendor, name));
     return { hash, name, bytes: fs.statSync(path.join(vendor, name)).size };
   } finally {
-    fs.rmSync(staging, { recursive: true, force: true });
+    removeTree(staging);
   }
 }
 
