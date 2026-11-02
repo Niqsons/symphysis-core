@@ -507,3 +507,41 @@ def test_check_says_nothing_about_a_journal_without_nodes(tmp_path):
     code, out = check_output(tmp_path, None, SCHEME_WITHOUT_X)
     assert code == 0, out
     assert "nodes" not in out and "узел" not in out
+
+
+# --- слово у выбора мимо рекомендации ---------------------------------------------
+
+def word_fixture(tmp_path, choice, word="", added=False):
+    j = one_record_journal(path="a.md", quote="раз")
+    record = j["records"][0]
+    other = dict(record["options"][0], letter="B", text="второй", added=added)
+    record["options"].append(other)
+    record["status"] = "решён"
+    record["recommendation"] = {"option": "A", "why": "причина из рекомендации"}
+    record["decision"] = {"option": choice, "word": word, "date": "2026-11-02"}
+    record["reversibility"] = {"level": "обратимо", "why": "одна строка"}
+    (tmp_path / "a.md").write_text("раз\n", encoding="utf-8")
+    roots = tmp_path / "roots.json"
+    roots.write_text(json.dumps({"": str(tmp_path)}), encoding="utf-8")
+    path = tmp_path / "j.json"
+    journal.save_journal(path, j)
+    return path, roots
+
+
+def test_choice_past_the_recommendation_without_a_word_is_a_signal(tmp_path):
+    """Сценарий «Выбор мимо рекомендации без слова»: код 0, с --strict — 2."""
+    path, roots = word_fixture(tmp_path, "B")
+    run = run_check(path, "--roots", roots)
+    assert run.returncode == 0, run.stderr
+    assert "[!!] F-01: выбран не рекомендованный вариант B без слова" in run.stdout
+    assert run_check(path, "--roots", roots, "--strict").returncode == 2
+
+
+@pytest.mark.parametrize("choice, word, added", [("A", "", False), ("B", "потому что", False), ("B", "", True)])
+def test_no_signal_for_recommended_worded_or_own_choice(tmp_path, choice, word, added):
+    """Сценарии «Рекомендованный отказ без слова» и «Вариант, добавленный человеком»."""
+    path, roots = word_fixture(tmp_path, choice, word, added)
+    run = run_check(path, "--roots", roots, "--strict")
+    assert run.returncode == 0, run.stdout + run.stderr
+    assert "не рекомендованный" not in run.stdout
+

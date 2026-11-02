@@ -1,7 +1,7 @@
 // Прогон страницы просмотрщика в настоящем Chrome: чистый профиль, страница из file://, флагов, ослабляющих проверки, нет.
 // Использование: node viewer-browser.mjs <chrome> <страница.html> <ширина> <высота> <действие>...
 // Действия: panel — включить панель и дождаться рисунка или текста; mode:<режим> — кнопка режима; drag:<dx> — тянуть границу панели;
-// reload — открыть страницу снова; choose:<запись>:<буква> — выбрать вариант; buttons — экспорт, импорт, копирование.
+// reload — открыть страницу снова; choose:<запись>:<буква> — выбрать вариант; word:<запись>:<текст> — написать слово; buttons — экспорт, импорт, копирование.
 // Итог на stdout: JSON с замером страницы, запросами наружу (`http`), запросами, которые заблокировала CSP (`blocked`), нарушениями и ошибками.
 import { spawn } from "node:child_process";
 import { existsSync, mkdirSync, mkdtempSync, readdirSync, readFileSync, writeFileSync } from "node:fs";
@@ -47,6 +47,7 @@ const MEASURE = `(() => {
     text: pre ? pre.textContent : null,
     out: document.getElementById('out').value,
     warnings: [...document.querySelectorAll('[data-antipode-warning]')].map((n) => n.dataset.antipodeWarning),
+    wordNeeded: [...document.querySelectorAll('[data-word-needed]:not(.hidden)')].map((n) => n.dataset.wordNeeded),
     chosen: [...document.querySelectorAll('input[type=radio]:checked')].map((r) => r.name + '.' + r.value),
     mode: (document.querySelector('#modes button.active') || {}).textContent || null };
 })()`;
@@ -110,6 +111,10 @@ async function main() {
     if (name === "choose") {
       await evaluate(`document.querySelector('input[name="${args[0]}"][value="${args[1]}"]').scrollIntoView({ block: 'center' })`);
       await click(`input[name="${args[0]}"][value="${args[1]}"]`);
+      await sleep(50);
+    }
+    if (name === "word") {
+      await evaluate(`(() => { const t = document.querySelector('textarea[data-word="${args[0]}"]'); t.value = ${JSON.stringify(args[1])}; t.dispatchEvent(new Event('input', { bubbles: true })); })()`);
       await sleep(50);
     }
     if (name === "drag") {

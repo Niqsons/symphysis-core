@@ -360,6 +360,14 @@ function antipodesOf(id, letter) {
   for (const r of JOURNAL.records) for (const a of (r.antipodes || [])) if (a.other === id + '.' + letter) out.add(r.id + '.' + a.option);
   return [...out];
 }
+/* выбор мимо рекомендации просит слово: без него читатель журнала не поймёт выбор; это сигнал, внести можно и без слова */
+function wordMissing(rec) {
+  const rc = rec.recommendation, cur = chosen(rec.id);
+  if (!rc || !rc.option || !cur || cur === rc.option) return false;
+  if (allOptions(rec).some(o => o.letter === cur && o.added)) return false;
+  const saved = rec.decision && rec.decision.option === cur ? rec.decision.word : '';
+  return !String((state.decisions[rec.id] || {}).word || '').trim() && !String(saved || '').trim();
+}
 function chosenAntipodes(id, letter) { return antipodesOf(id, letter).filter(k => { const [oid, ol] = k.split('.'); return chosen(oid) === ol; }); }
 /* text:begin */
 function esc(s) { return String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
@@ -436,6 +444,7 @@ function renderCards() {
       if (rec.recommendation) html += '<div class="rec">рекомендация: <b>' + esc(rec.recommendation.option) + '</b> — ' + md(rec.recommendation.why) + '</div>';
       if (rec.decision && rec.decision.word) html += '<div class="note info"><b>слово в журнале (' + esc(rec.decision.date || '') + '):</b> «' + md(rec.decision.word) + '»</div>';
       html += '<div class="note bad hidden" data-msg="' + esc(rec.id) + '"></div>';
+      html += '<div class="note warn' + (wordMissing(rec) ? '' : ' hidden') + '" data-word-needed="' + esc(rec.id) + '">Выбран не рекомендованный вариант: напиши, почему. Так выбор поймёт читатель журнала; внести можно и без слова.</div>';
       html += '<div class="row"><textarea data-word="' + esc(rec.id) + '" placeholder="слово человека дословно — почему так (или что изменить в решении из журнала)">' + esc(d.word || '') + '</textarea></div>';
       html += '<div class="row"><input type="text" data-addtext="' + esc(rec.id) + '" placeholder="вариант, которого здесь нет"><button class="small" data-addopt="' + esc(rec.id) + '">добавить вариант</button></div>';
       html += '<details class="park"' + (parkedAll.length ? ' open' : '') + '><summary title="' + esc(PARK_HINT) + '">парковка — дополнительный вопрос с адресатом (' + parkedAll.length + ')</summary>' +
@@ -454,7 +463,11 @@ function renderCards() {
     const id = r.name, letter = r.value;
     const d = dec(id); d.choice = (letter === journalChoice(byId[id])) ? null : letter; save(); render();
   });
-  el.querySelectorAll('textarea[data-word]').forEach(t => t.oninput = () => { dec(t.dataset.word).word = t.value; save(); updateOut(); });
+  el.querySelectorAll('textarea[data-word]').forEach(t => t.oninput = () => {
+    dec(t.dataset.word).word = t.value; save();
+    el.querySelector('[data-word-needed="' + t.dataset.word + '"]').classList.toggle('hidden', !wordMissing(byId[t.dataset.word]));
+    updateOut();
+  });
   el.querySelectorAll('textarea[data-dispute]').forEach(t => t.oninput = () => { state.disputes[t.dataset.dispute] = t.value; save(); updateOut(); });
   el.querySelectorAll('button[data-addopt]').forEach(b => b.onclick = () => {
     const id = b.dataset.addopt, inp = el.querySelector('input[data-addtext="' + id + '"]');
@@ -637,7 +650,10 @@ function destination(rec) {
     const v = String(rec.outcome.value || ''), reason = (rec.outcome.reason || '').trim();
     if (v.startsWith('Specify')) return { label:'spec.md', note:'исход ' + v };
     if (v === 'Backstop') return { label:'tasks.md › тест-страховка', note:'в design.md не попадает' };
-    if (v === 'Dismiss') return { label:'никуда', note: reason ? 'причина: ' + reason : 'причина не записана' };
+    if (v === 'Dismiss') {
+      const rc = rec.recommendation, why = reason || (rc && rec.decision && rec.decision.option === rc.option ? String(rc.why || '').trim() : '');
+      return { label:'никуда', note: why ? 'причина: ' + why : 'причина не записана' };
+    }
     if (v === 'Defer') return { label:'design.md › Open Questions', note:'отложена (Defer)' };
     return { label:'никуда', note:'исход «' + v + '» вне четырёх' };
   }

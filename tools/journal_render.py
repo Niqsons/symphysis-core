@@ -62,9 +62,8 @@ def _render_recommendation(rc: dict) -> str:
 
 
 def _render_outcome(outcome: dict) -> str:
-    """`<вид> — <значение>`, с причиной — `… — <причина>`. Пустая причина (и причина из одних
-    пробелов) хвоста не даёт: у исхода `Dismiss` её требует правило, у остальных она
-    необязательна; хвост ` — ` без причины импорт прочитал бы как часть значения."""
+    """`<вид> — <значение>`, с причиной — `… — <причина>`. Пустая причина хвоста не даёт:
+    хвост ` — ` без причины импорт прочитал бы как часть значения."""
     text = f"{outcome['kind']} — {outcome['value']}"
     if outcome["reason"].strip():
         text += f" — {outcome['reason']}"
@@ -539,6 +538,12 @@ def render_design(journal: dict, source: str | None = None) -> str:
 
 # --- данные для просмотра вне страницы (`view-json`) -------------------------
 
+def _recommended_why(rec: dict) -> str:
+    """Причина рекомендованного выбора: человек выбрал вариант без слова, и причиной остаётся `why`."""
+    rc, decision = rec.get("recommendation"), rec.get("decision")
+    return rc["why"].strip() if rc and decision and decision["option"] == rc["option"] else ""
+
+
 def destination(rec: dict) -> dict:
     """«Куда уйдёт» запись — проекция правил `render_design` для показа человеку: `{"label", "note"}`. Решённая развилка,
     не проба → Decisions («в одну сторону» — первыми); проба Specify* → spec.md; Backstop → тест-страховка в tasks.md;
@@ -553,6 +558,7 @@ def destination(rec: dict) -> dict:
         if value == "Backstop":
             return {"label": "tasks.md › тест-страховка", "note": "в design.md не попадает"}
         if value == "Dismiss":
+            reason = reason or _recommended_why(rec)
             return {"label": "никуда", "note": f"причина: {reason}" if reason else "причина не записана"}
         if value == "Defer":
             return {"label": "design.md › Open Questions", "note": "отложена (Defer)"}

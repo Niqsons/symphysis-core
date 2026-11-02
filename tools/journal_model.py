@@ -46,7 +46,7 @@ DEVIATION_LABEL = "отступление от постановки"
 DEVIATION_TAIL = "(отступление от {})"
 RE_DEVIATION_TAIL = re.compile(r"^(.*\S)\s+\(отступление от (F-\d+)\)$")
 SETTING = "постановка"   # адресат факта из intent.md (F-17.A)
-# Исходы кандидата пробы — слова GSD (F-09.C): `Dismiss` только с причиной (`edge-probe.md:89`).
+# Исходы кандидата пробы — слова GSD (F-09.C). Причины исход не требует: слово нужно у выбора мимо рекомендации.
 PROBE_OUTCOMES = ("Specify", "Dismiss", "Backstop", "Defer")
 
 
@@ -417,9 +417,20 @@ def _rule_errors(journal: dict) -> list[str]:
         if outcome and outcome["kind"] == "проба":   # лексика «вопрос» — у своего скилла
             if outcome["value"] not in PROBE_OUTCOMES:
                 errors.append(f"{rid}: исход пробы «{outcome['value']}» — не из {', '.join(PROBE_OUTCOMES)}")
-            elif outcome["value"] == "Dismiss" and not outcome["reason"].strip():
-                errors.append(f"{rid}: исход Dismiss без причины")
     return errors
+
+
+def unexplained_choices(journal: dict) -> list[str]:
+    """Решения мимо рекомендации без слова: без него читатель журнала не поймёт выбор. Рекомендованному
+    варианту слово не нужно, его причина стоит в `why`; вариант, добавленный человеком, и есть его слова."""
+    signals = []
+    for r in journal["records"]:
+        decision, rec = r["decision"], r["recommendation"]
+        if not (decision and rec and rec["option"]) or decision["option"] == rec["option"] or decision["word"].strip():
+            continue
+        if not any(o["letter"] == decision["option"] and o["added"] for o in r["options"]):
+            signals.append(f"{r['id']}: выбран не рекомендованный вариант {decision['option']} без слова")
+    return signals
 
 
 def validate_journal(journal: dict) -> list[str]:

@@ -16,7 +16,7 @@ from pathlib import Path
 from journal_apply import (REFUSED, apply_answers, apply_md4h, check_evidence, default_roots, parse_answers,
                            parse_md4h, sha256_file)
 from journal_consequences import check_consequences
-from journal_model import import_md, load_journal, save_journal, validate_journal
+from journal_model import import_md, load_journal, save_journal, unexplained_choices, validate_journal
 from journal_render import TEMPLATE_PATH, parse_attack_md, render_design, render_html, render_md, scheme_payload, view_payload
 from journal_sites import code_sites
 
@@ -60,6 +60,9 @@ def cmd_check(args: argparse.Namespace) -> int:
     unfound = _parkings_without_finding(journal, args.json.parent)
     for m in unfound:
         print(f"[!!] {m}")
+    unexplained = unexplained_choices(journal)
+    for m in unexplained:
+        print(f"[!!] {m}")
     inventory = check_consequences(journal, args.json.parent / "consequences.md", roots)
     for m in inventory["missing"]:
         print(f"[!!] {m}")
@@ -68,7 +71,7 @@ def cmd_check(args: argparse.Namespace) -> int:
     if args.write:
         save_journal(args.json, journal)
         print(f"[ok] {args.json}")
-    return 2 if args.strict and (result["missing"] or unfound or inventory["missing"]) else 0
+    return 2 if args.strict and (result["missing"] or unfound or unexplained or inventory["missing"]) else 0
 
 
 def cmd_code_sites(args: argparse.Namespace) -> int:
@@ -303,7 +306,8 @@ def build_parser() -> argparse.ArgumentParser:
                  "журнал или опись правились и нужно увидеть, что их опоры стоят дословно.",
                  "0 — сверка прошла, сигналы код не меняют; 1 — нет файла, битый JSON или негодный по схеме журнал;\n"
                  "  2 — с --strict есть строки [!!].",
-                 extra="Маркеры: [ok] итог сверки; [!!] несверенная улика, парковка без finding, место или цитата описи;\n"
+                 extra="Маркеры: [ok] итог сверки; [!!] несверенная улика, парковка без finding, выбор мимо рекомендации\n"
+                       "  без слова, место или цитата описи;\n"
                        "  [--] не проверить: бинарный файл или не UTF-8.")
     given = p.add_argument_group("вход")
     given.add_argument("json", type=Path, help=JOURNAL_HELP)

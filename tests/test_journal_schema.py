@@ -129,7 +129,7 @@ def test_validate_accepts_reversibility_and_outcome():
     assert journal.validate_journal(j) == []
 
 
-# --- исход пробы: четыре слова GSD, Dismiss — только с причиной (F-09.C) ------------
+# --- исход пробы: четыре слова GSD (F-09.C); причины исход не требует ---------------
 
 def probe_outcome(value, reason):
     j = plan()
@@ -150,8 +150,8 @@ def test_validate_rejects_a_probe_outcome_outside_the_four():
     assert all(token in errors[0] for token in ("Specify", "Dismiss", "Backstop", "Defer"))
 
 
-def test_validate_rejects_dismiss_without_a_reason():
-    assert journal.validate_journal(probe_outcome("Dismiss", "  ")) == ["F-01: исход Dismiss без причины"]
+def test_validate_accepts_dismiss_without_a_reason():
+    assert journal.validate_journal(probe_outcome("Dismiss", "  ")) == []
 
 
 def test_validate_leaves_the_question_vocabulary_to_its_own_skill():

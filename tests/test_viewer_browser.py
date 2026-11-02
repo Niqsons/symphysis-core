@@ -210,3 +210,40 @@ def test_choosing_the_second_antipode_goes_through_with_a_warning(tmp_path):
     assert sorted(r["chosen"]) == ["F-01.A", "F-02.B"]
     assert sorted(r["warnings"]) == ["F-01.A", "F-02.B"]
     assert "- F-01: A" in r["out"] and "- F-02: B" in r["out"]
+
+
+def recommended_journal():
+    j = one_record_journal("a.md", "дв")
+    fork = j["records"][0]
+    fork["options"].append(dict(fork["options"][0], letter="B", text="второй", evidence=[]))
+    fork["recommendation"] = {"option": "A", "why": "причина"}
+    return j
+
+
+def test_choice_past_the_recommendation_asks_for_a_word_and_does_not_block(tmp_path):
+    """Сценарий «Выбор мимо рекомендации»: просьба видна, выбор и промпт идут."""
+    r = browser(page(tmp_path, j=recommended_journal()), "choose:F-01:B")
+    assert r["wordNeeded"] == ["F-01"]
+    assert r["chosen"] == ["F-01.B"] and "- F-01: B" in r["out"]
+
+
+def test_written_word_removes_the_request(tmp_path):
+    """Сценарий «Слово написано»: просьбы нет, слово ушло в промпт."""
+    r = browser(page(tmp_path, j=recommended_journal()), "choose:F-01:B", "word:F-01:потому что")
+    assert r["wordNeeded"] == []
+    assert "- F-01: B — «потому что»" in r["out"]
+
+
+def test_own_variant_asks_for_nothing(tmp_path):
+    """Сценарий «Вариант человека»."""
+    j = recommended_journal()
+    j["records"][0]["options"][1]["added"] = True
+    r = browser(page(tmp_path, j=j), "choose:F-01:B")
+    assert r["wordNeeded"] == [] and r["chosen"] == ["F-01.B"]
+
+
+def test_recommended_choice_asks_for_nothing(tmp_path):
+    """Сценарий «Рекомендованный вариант»."""
+    r = browser(page(tmp_path, j=recommended_journal()), "choose:F-01:A")
+    assert r["wordNeeded"] == [] and r["chosen"] == ["F-01.A"]
+
