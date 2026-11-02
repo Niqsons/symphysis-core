@@ -10,6 +10,11 @@
 - **WHEN** выполняется `symphysis install --project <каталог>`
 - **THEN** появляется `.claude/commands/opsx/continue.md`; профиль и список workflow в конфиге не изменены
 
+#### Scenario: Конфиг с телеметрией без профиля
+- **GIVEN** глобальный конфиг с заданной телеметрией и без ключа `profile`, команды `/opsx:continue` в проекте нет
+- **WHEN** выполняется `symphysis install --project <каталог>`
+- **THEN** `openspec update` не зовётся, конфиг не изменён, строка называет `openspec config profile core` и `openspec update`, код 0 (F-139.A)
+
 #### Scenario: Вызов форка через `openspec.cmd`
 - **GIVEN** Windows, форк из PATH как `openspec.cmd` и путь проекта с пробелом
 - **WHEN** выполняется `install`
