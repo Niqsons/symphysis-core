@@ -236,7 +236,7 @@ Add them with `openspec config profile`.
 Вывод `symphysis install`:
 
 ```text
-записано 47
+записано 49
 config.yaml уже был: схема переключена с spec-driven на symphysis, rules добавлены
 .gitignore: добавлена строка symphysis.yaml — правка уйдёт в git вместе с работой
 openspec: глобальный конфиг <каталог>\openspec\config.json
