@@ -11,7 +11,7 @@
 - адресат: постановка
 - зависит от: —
 - улики:
-  - улика: `openspec/changes/decision-scheme/intent.md` «При работе с брейнштомом проверяется наличие scheme.md. Если такого файла нет, то он создается на первом круге исходя из сценария в intent.md. Если сценария нет, то модель предлагает своё виденье сценария, задает вопросы, чтобы его составить. После составления формирует файл и дает ссылку на него человеку в чат.»
+  - улика: `openspec/changes/archive/2026-11-02-decision-scheme/intent.md` «При работе с брейнштомом проверяется наличие scheme.md. Если такого файла нет, то он создается на первом круге исходя из сценария в intent.md. Если сценария нет, то модель предлагает своё виденье сценария, задает вопросы, чтобы его составить. После составления формирует файл и дает ссылку на него человеку в чат.»
 
 ## F-02 Критерий готовности: видна на вкладке плагина
 <!-- journal:F-02 -->
@@ -20,7 +20,7 @@
 - адресат: постановка
 - зависит от: —
 - улики:
-  - улика: `openspec/changes/decision-scheme/intent.md` «видна на вкладке плагина»
+  - улика: `openspec/changes/archive/2026-11-02-decision-scheme/intent.md` «видна на вкладке плагина»
 
 ## F-03 Критерий готовности: клик по узлу схемы фильтрует карточки по nodes
 <!-- journal:F-03 -->
@@ -29,7 +29,7 @@
 - адресат: постановка
 - зависит от: —
 - улики:
-  - улика: `openspec/changes/decision-scheme/intent.md` «клик по узлу схемы фильтрует карточки по nodes»
+  - улика: `openspec/changes/archive/2026-11-02-decision-scheme/intent.md` «клик по узлу схемы фильтрует карточки по nodes»
 
 ## F-04 Критерий готовности: У панели схемы есть кнопки переключения масштаба и перетаскивания схемы внутри панели.
 <!-- journal:F-04 -->
@@ -38,7 +38,7 @@
 - адресат: постановка
 - зависит от: —
 - улики:
-  - улика: `openspec/changes/decision-scheme/intent.md` «У панели схемы есть кнопки переключения масштаба и перетаскивания схемы внутри панели.»
+  - улика: `openspec/changes/archive/2026-11-02-decision-scheme/intent.md` «У панели схемы есть кнопки переключения масштаба и перетаскивания схемы внутри панели.»
 
 ## F-05 Критерий готовности: При отсутствии схемы отображается плашка "Схема не создана"
 <!-- journal:F-05 -->
@@ -47,7 +47,7 @@
 - адресат: постановка
 - зависит от: —
 - улики:
-  - улика: `openspec/changes/decision-scheme/intent.md` «При отсутствии схемы отображается плашка "Схема не создана"»
+  - улика: `openspec/changes/archive/2026-11-02-decision-scheme/intent.md` «При отсутствии схемы отображается плашка "Схема не создана"»
 
 ## F-06 Критерий готовности: Человек может отредактировать файл scheme.md, отсутствующие в нём nodes не будут фильтровать карточки (будет выводится хинт: узел не найден)
 <!-- journal:F-06 -->
@@ -56,7 +56,7 @@
 - адресат: постановка
 - зависит от: —
 - улики:
-  - улика: `openspec/changes/decision-scheme/intent.md` «Человек может отредактировать файл scheme.md, отсутствующие в нём nodes не будут фильтровать карточки (будет выводится хинт: узел не найден)»
+  - улика: `openspec/changes/archive/2026-11-02-decision-scheme/intent.md` «Человек может отредактировать файл scheme.md, отсутствующие в нём nodes не будут фильтровать карточки (будет выводится хинт: узел не найден)»
 
 ## F-07 Критерий готовности: Схема нужна человеку, а не модели, поэтому он ей управляет и наполняет. Модель здесь помощник, а не надзиратель.
 <!-- journal:F-07 -->
@@ -65,7 +65,7 @@
 - адресат: постановка
 - зависит от: —
 - улики:
-  - улика: `openspec/changes/decision-scheme/intent.md` «Схема нужна человеку, а не модели, поэтому он ей управляет и наполняет. Модель здесь помощник, а не надзиратель.»
+  - улика: `openspec/changes/archive/2026-11-02-decision-scheme/intent.md` «Схема нужна человеку, а не модели, поэтому он ей управляет и наполняет. Модель здесь помощник, а не надзиратель.»
 
 ## F-08 Критерий готовности: Плагин сверяет номер контракта и при несовпадении говорит, что обновить.
 <!-- journal:F-08 -->
@@ -74,7 +74,7 @@
 - адресат: постановка
 - зависит от: —
 - улики:
-  - улика: `openspec/changes/decision-scheme/intent.md` «Плагин сверяет номер контракта и при несовпадении говорит, что обновить.»
+  - улика: `openspec/changes/archive/2026-11-02-decision-scheme/intent.md` «Плагин сверяет номер контракта и при несовпадении говорит, что обновить.»
 
 ## F-09 Критерий готовности: Новая сборка .vsix вместе с пакетом правок проходит npm run e2e:vsix.
 <!-- journal:F-09 -->
@@ -83,7 +83,7 @@
 - адресат: постановка
 - зависит от: —
 - улики:
-  - улика: `openspec/changes/decision-scheme/intent.md` «Новая сборка .vsix вместе с пакетом правок проходит npm run e2e:vsix.»
+  - улика: `openspec/changes/archive/2026-11-02-decision-scheme/intent.md` «Новая сборка .vsix вместе с пакетом правок проходит npm run e2e:vsix.»
 
 ## F-10 Критерий готовности: В собранном файле .vsix указывается версия проекта, что его собрал.
 <!-- journal:F-10 -->
@@ -92,7 +92,7 @@
 - адресат: постановка
 - зависит от: —
 - улики:
-  - улика: `openspec/changes/decision-scheme/intent.md` «В собранном файле .vsix указывается версия проекта, что его собрал.»
+  - улика: `openspec/changes/archive/2026-11-02-decision-scheme/intent.md` «В собранном файле .vsix указывается версия проекта, что его собрал.»
 
 ## F-11 Постановка: Включаем mermaid внутрь расширения. Про установленный плагин я говорил лишь, чтобы ускорить разработку.
 <!-- journal:F-11 -->
@@ -101,7 +101,7 @@
 - адресат: постановка
 - зависит от: —
 - улики:
-  - улика: `openspec/changes/decision-scheme/intent.md` «Включаем mermaid внутрь расширения. Про установленный плагин я говорил лишь, чтобы ускорить разработку.»
+  - улика: `openspec/changes/archive/2026-11-02-decision-scheme/intent.md` «Включаем mermaid внутрь расширения. Про установленный плагин я говорил лишь, чтобы ускорить разработку.»
 
 ## F-12 Раньше уже решено (Р13–Р15): `scheme.md` — один блок mermaid; схема обязательна инструкцией брейншторма, не артефактом `schema.yaml`; брейншторм рисует `flowchart`, клик-фильтр только по нему, другие виды показываются без фильтра
 <!-- journal:F-12 -->
@@ -198,7 +198,7 @@
 - зависит от: —
 - варианты:
   - A. Одно изменение на оба проекта: specs и tasks говорят и о ядре, и о плагине, задача называет проект; коммиты плагина несут `Needs:` на коммит ядра
-    - улика: `openspec/changes/decision-scheme/intent.md` «видна на вкладке плагина»
+    - улика: `openspec/changes/archive/2026-11-02-decision-scheme/intent.md` «видна на вкладке плагина»
     - улика: `docs/repo-contract.md` «Коммит плагина, которому нужен коммит ядра, несёт `Needs: symphysis <хеш>` в том же абзаце.»
   - B. Только ядро, как записано в Р12; вкладка и проверка номера делаются в плагине по его дизайну, вне этих tasks
     - улика: `vscode/docs/design-part1-viewer.md` «собирает, нового смысла нет); схема, поле `nodes`, тексты скиллов —»
@@ -221,10 +221,10 @@
     - улика: `docs/repo-contract.md` «| контрактный тест из разовой сверки черновиков | плагин |»
     - улика: `docs/repo-contract.md` «| тест: инсталлятор не стирает `.symphysis/viewer/` | ядро |»
   - B. Только названное в `intent.md`: оба дефекта шаблона и `e2e:vsix`; остальное отдельной работой
-    - улика: `openspec/changes/decision-scheme/intent.md` «> Починим позже.»
-    - улика: `openspec/changes/decision-scheme/intent.md` «Новая сборка .vsix вместе с пакетом правок проходит npm run e2e:vsix.»
+    - улика: `openspec/changes/archive/2026-11-02-decision-scheme/intent.md` «> Починим позже.»
+    - улика: `openspec/changes/archive/2026-11-02-decision-scheme/intent.md` «Новая сборка .vsix вместе с пакетом правок проходит npm run e2e:vsix.»
   - C. Только `e2e:vsix`, дефекты шаблона ещё позже
-    - улика: `openspec/changes/decision-scheme/intent.md` «Новая сборка .vsix вместе с пакетом правок проходит npm run e2e:vsix.»
+    - улика: `openspec/changes/archive/2026-11-02-decision-scheme/intent.md` «Новая сборка .vsix вместе с пакетом правок проходит npm run e2e:vsix.»
 - антиподы: —
 - рекомендация: A — Каждая работа мала, все закрывают долг контракта, а контрактный тест без починки дефекта шаблона сразу покраснеет.
 - решение: A, 2026-11-01
@@ -251,9 +251,9 @@
 - парковка: материалы — «А вообще, стоит сделать так, что в скилле symphysis-viewer идет чтение созданной scheme.md, и если человек просит html, то для схемы можно сделать html рендер на основе scheme.md. но тогда нужно изменить шаблон Html, что схема покаывается текстом, или рендером. Это нужно на случай, если человек не хочет пользоваться плагином, но просит Html.»
 - находка: Закрыто решением F-39.A: рисунок, если рядом есть файл mermaid, иначе текст; место и ширину панели решили F-54 и F-122. Замеры — `research/F-21.md`.
 - улики:
-  - улика: `openspec/changes/decision-scheme/research/F-21-probe/probe.log` «{"kind":"svg","renderMs":219,"ms":384,"nodes":20,"imgs":0}»
-  - улика: `openspec/changes/decision-scheme/research/F-21-probe/probe.log` «http=["http://127.0.0.1:9/pixel.png"»
-  - улика: `openspec/changes/decision-scheme/research/F-21-probe/probe.log` «The action has been blocked.»
+  - улика: `openspec/changes/archive/2026-11-02-decision-scheme/research/F-21-probe/probe.log` «{"kind":"svg","renderMs":219,"ms":384,"nodes":20,"imgs":0}»
+  - улика: `openspec/changes/archive/2026-11-02-decision-scheme/research/F-21-probe/probe.log` «http=["http://127.0.0.1:9/pixel.png"»
+  - улика: `openspec/changes/archive/2026-11-02-decision-scheme/research/F-21-probe/probe.log` «The action has been blocked.»
 - решение: C — «Оставим текст, лучше он, чем ничего.», 2026-11-01
 - следствия: Вшитая схема и её фильтр уходят у всех журналов: шаблон общий. Текст `scheme.md` остаётся запасным путём, рисунок и место панели решены в F-39 и F-54. Правятся тесты рендера и `viewer-smoke`. Поле `delivery` остаётся.
 
@@ -265,11 +265,11 @@
 - зависит от: —
 - варианты:
   - A. Только по слову человека: созданный файл модель сама не трогает
-    - улика: `openspec/changes/decision-scheme/intent.md` «Схема нужна человеку, а не модели, поэтому он ей управляет и наполняет. Модель здесь помощник, а не надзиратель.»
+    - улика: `openspec/changes/archive/2026-11-02-decision-scheme/intent.md` «Схема нужна человеку, а не модели, поэтому он ей управляет и наполняет. Модель здесь помощник, а не надзиратель.»
   - B. Дополняет сама при новых решениях и сообщает человеку (отступление от F-07)
     - улика: `vscode/docs/design-part1-viewer.md` «не в журнале; правят и человек, и агент.»
   - C. Предлагает правку схемы развилкой журнала
-    - улика: `openspec/changes/decision-scheme/intent.md` «Поэтому схему не нужно добавлять в журнал, так как он контролируется.»
+    - улика: `openspec/changes/archive/2026-11-02-decision-scheme/intent.md` «Поэтому схему не нужно добавлять в журнал, так как он контролируется.»
     - маловероятно: схема намеренно вне журнала по слову владельца, такая развилка вернёт контроль, от которого схему увели
 - антиподы: —
 - рекомендация: A — Схемой управляет человек; вариант B перетирал бы его правки.
@@ -301,8 +301,8 @@
 - зависит от: F-23
 - варианты:
   - A. Нет: `check` проверяет только форму поля; расхождение видно подсказкой на карточке в плагине
-    - улика: `openspec/changes/decision-scheme/intent.md` «Человек может отредактировать файл scheme.md, отсутствующие в нём nodes не будут фильтровать карточки (будет выводится хинт: узел не найден)»
-    - улика: `openspec/changes/decision-scheme/intent.md` «Схема нужна человеку, а не модели, поэтому он ей управляет и наполняет. Модель здесь помощник, а не надзиратель.»
+    - улика: `openspec/changes/archive/2026-11-02-decision-scheme/intent.md` «Человек может отредактировать файл scheme.md, отсутствующие в нём nodes не будут фильтровать карточки (будет выводится хинт: узел не найден)»
+    - улика: `openspec/changes/archive/2026-11-02-decision-scheme/intent.md` «Схема нужна человеку, а не модели, поэтому он ей управляет и наполняет. Модель здесь помощник, а не надзиратель.»
   - B. Да, сигналом, не стопом, как в прежней редакции дизайна (отступление от F-07)
     - улика: `vscode/docs/design-part1-viewer.md` «`nodes`; запись со ссылкой на несуществующий узел — сигнал.»
 - антиподы: —
@@ -359,7 +359,7 @@
   - A. Клик переводит в «решения» и добавляет условие «узел X» к выбранному «показать»; условие видно в шапке с крестиком, повторный клик снимает
     - улика: `tools/playground-template.html` «filter.node = (filter.node === n.id) ? null : n.id;»
   - B. Клик сбрасывает «показать» на «все» и фильтрует только по узлу
-    - улика: `openspec/changes/decision-scheme/intent.md` «клик по узлу схемы фильтрует карточки по nodes»
+    - улика: `openspec/changes/archive/2026-11-02-decision-scheme/intent.md` «клик по узлу схемы фильтрует карточки по nodes»
   - C. Фильтр по узлу работает и в «проверке», и в строках «атаки»
     - улика: `skills/symphysis-viewer/SKILL.md` «**Запись журнала и строка атаки не смешиваются**»
     - маловероятно: у строки атаки нет `nodes`, а ссылка из неё на запись — переход, не слияние
@@ -393,9 +393,9 @@
 - зависит от: —
 - варианты:
   - A. Своими силами: кнопки «−», «+», «вписать», перетаскивание зажатой мышью без переключателя
-    - улика: `openspec/changes/decision-scheme/intent.md` «У панели схемы есть кнопки переключения масштаба и перетаскивания схемы внутри панели.»
+    - улика: `openspec/changes/archive/2026-11-02-decision-scheme/intent.md` «У панели схемы есть кнопки переключения масштаба и перетаскивания схемы внутри панели.»
   - B. Своими силами и кнопка-переключатель: перетаскивание работает только во включённом режиме
-    - улика: `openspec/changes/decision-scheme/intent.md` «У панели схемы есть кнопки переключения масштаба и перетаскивания схемы внутри панели.»
+    - улика: `openspec/changes/archive/2026-11-02-decision-scheme/intent.md` «У панели схемы есть кнопки переключения масштаба и перетаскивания схемы внутри панели.»
   - C. Библиотекой масштабирования SVG, новая зависимость плагина
     - улика: `vscode/package.json` «"react": "19.3.1",»
   - D. Только полосы прокрутки, без кнопок (отступление от F-04)
@@ -417,9 +417,9 @@
     - улика: `vscode/test/e2e/vsix.mjs` «const vsix = path.join(repo, `${pkg.name}-${pkg.version}.vsix`);»
     - улика: `vscode/package.json` «"version": "0.1.0",»
   - B. Версия и короткий хеш коммита плагина в имени файла и манифесте, видно в окне расширений
-    - улика: `openspec/changes/decision-scheme/intent.md` «В собранном файле .vsix указывается версия проекта, что его собрал.»
+    - улика: `openspec/changes/archive/2026-11-02-decision-scheme/intent.md` «В собранном файле .vsix указывается версия проекта, что его собрал.»
   - C. Ещё и номер контракта с хешем ядра, на котором шли тесты
-    - улика: `openspec/changes/decision-scheme/intent.md` «В собранном файле .vsix указывается версия проекта, что его собрал.»
+    - улика: `openspec/changes/archive/2026-11-02-decision-scheme/intent.md` «В собранном файле .vsix указывается версия проекта, что его собрал.»
     - улика: `docs/repo-contract.md` «`SYMPHYSIS_ROOT` на worktree `main` ядра»
 - антиподы: —
 - рекомендация: B — Имя отличает две сборки одной версии, а вариант A не меняет ничего и не закрывает критерий по существу. Если имелось в виду другое — напиши словом.
@@ -454,7 +454,7 @@
 - зависит от: —
 - варианты:
   - A. Нет: хук остаётся отдельным шагом дизайна; о своей правке человек говорит агенту сам
-    - улика: `openspec/changes/decision-scheme/intent.md` «то я могу отредактировать его сам, сообщить об этом агенту.»
+    - улика: `openspec/changes/archive/2026-11-02-decision-scheme/intent.md` «то я могу отредактировать его сам, сообщить об этом агенту.»
   - B. Да: только сверка хеша `scheme.md` при обращении к агенту, без событий о внесении
     - улика: `vscode/docs/design-part1-viewer.md` «и печатает «`scheme.md` изменился с прошлого обращения». Первое обращение сессии»
 - антиподы: —
@@ -469,9 +469,9 @@
 - адресат: материалы
 - зависит от: —
 - улики:
-  - улика: `openspec/changes/decision-scheme/research/F-21-probe/probe.log` «{"kind":"svg","renderMs":219,"ms":384,"nodes":20,"imgs":0}»
-  - улика: `openspec/changes/decision-scheme/research/F-21-probe/probe.log` «{"kind":"text","why":"нет mermaid","ms":52}»
-  - улика: `openspec/changes/decision-scheme/research/F-21-probe/probe.log` «"why":"ошибка: Parse error on line 4:"»
+  - улика: `openspec/changes/archive/2026-11-02-decision-scheme/research/F-21-probe/probe.log` «{"kind":"svg","renderMs":219,"ms":384,"nodes":20,"imgs":0}»
+  - улика: `openspec/changes/archive/2026-11-02-decision-scheme/research/F-21-probe/probe.log` «{"kind":"text","why":"нет mermaid","ms":52}»
+  - улика: `openspec/changes/archive/2026-11-02-decision-scheme/research/F-21-probe/probe.log` «"why":"ошибка: Parse error on line 4:"»
 - следствия: На этом стоит F-39.
 
 ## F-34 Страница без CSP идёт по адресу `<img>` из подписи `scheme.md` и при строгом режиме mermaid; CSP в `<meta>` загрузку блокирует, рисунок и карточки под ней работают
@@ -481,9 +481,9 @@
 - адресат: материалы
 - зависит от: —
 - улики:
-  - улика: `openspec/changes/decision-scheme/research/F-21-probe/probe.log` «http=["http://127.0.0.1:9/pixel.png"»
-  - улика: `openspec/changes/decision-scheme/research/F-21-probe/probe.log` «The action has been blocked.»
-  - улика: `openspec/changes/decision-scheme/research/F-21-probe/probe.log` «{"kind":"svg","renderMs":221,"ms":431,"nodes":20,"imgs":0}»
+  - улика: `openspec/changes/archive/2026-11-02-decision-scheme/research/F-21-probe/probe.log` «http=["http://127.0.0.1:9/pixel.png"»
+  - улика: `openspec/changes/archive/2026-11-02-decision-scheme/research/F-21-probe/probe.log` «The action has been blocked.»
+  - улика: `openspec/changes/archive/2026-11-02-decision-scheme/research/F-21-probe/probe.log` «{"kind":"svg","renderMs":221,"ms":431,"nodes":20,"imgs":0}»
 - следствия: На этом стоит F-39. Дополняет парковку ИБ у F-26: тот же чек-лист `security.md`.
 
 ## F-35 В колонке страницы рисунок плохо читается вписанным, а в натуральном размере панель пуста, пока не прокрутишь
@@ -493,7 +493,7 @@
 - адресат: материалы
 - зависит от: —
 - улики:
-  - улика: `openspec/changes/decision-scheme/research/F-21.md` «панель пуста, пока не прокрутишь»
+  - улика: `openspec/changes/archive/2026-11-02-decision-scheme/research/F-21.md` «панель пуста, пока не прокрутишь»
 - следствия: На этом стоит F-39. То же грозит вкладке плагина при F-29: нужна начальная прокрутка к верхнему узлу, это уходит в дизайн.
 
 ## F-36 Облегчённая сборка mermaid вдвое легче полной и на этой схеме быстрее, но в ней нет mindmap, architecture и KaTeX, а авторы советуют полную
@@ -503,11 +503,11 @@
 - адресат: материалы
 - зависит от: —
 - улики:
-  - улика: `openspec/changes/decision-scheme/research/F-21-probe/probe.log` «mermaid.tiny.js 2811424, gzip 746681»
-  - улика: `openspec/changes/decision-scheme/research/F-21-probe/probe.log` «mermaid.min.js 5494801, gzip 1570966»
-  - улика: `openspec/changes/decision-scheme/research/F-21-probe/probe.log` «it's always recommended to use the full mermaid library»
-  - улика: `openspec/changes/decision-scheme/research/F-21-probe/probe.log` «This package is not meant to be installed directly from npm.»
-  - улика: `openspec/changes/decision-scheme/research/F-21-probe/probe.log` «- Mindmap Diagram»
+  - улика: `openspec/changes/archive/2026-11-02-decision-scheme/research/F-21-probe/probe.log` «mermaid.tiny.js 2811424, gzip 746681»
+  - улика: `openspec/changes/archive/2026-11-02-decision-scheme/research/F-21-probe/probe.log` «mermaid.min.js 5494801, gzip 1570966»
+  - улика: `openspec/changes/archive/2026-11-02-decision-scheme/research/F-21-probe/probe.log` «it's always recommended to use the full mermaid library»
+  - улика: `openspec/changes/archive/2026-11-02-decision-scheme/research/F-21-probe/probe.log` «This package is not meant to be installed directly from npm.»
+  - улика: `openspec/changes/archive/2026-11-02-decision-scheme/research/F-21-probe/probe.log` «- Mindmap Diagram»
 - следствия: На этом стоит F-40.
 
 ## F-37 Парковка «материалы» закрывается файлом `research/<F-NN>.md`, шаблон которого рассчитан на цитаты из файлов; список адресатов стоит в схеме журнала, `apply`, странице и плагине, а новое значение поля считается сменой контракта
@@ -539,7 +539,7 @@
   - улика: `skills/symphysis-brainstorm/SKILL.md` «третьего круга нет»
   - улика: `openspec/specs/brainstorm-interview/spec.md` «кругов SHALL быть не больше двух»
   - улика: `openspec/changes/archive/2026-11-02-symphysis-schema/design.md` «какое первее? — открыта»
-  - улика: `openspec/changes/decision-scheme/answers/2026-11-01-circle2.md` «после второго могут возникнуть дополнительные вопросы»
+  - улика: `openspec/changes/archive/2026-11-02-decision-scheme/answers/2026-11-01-circle2.md` «после второго могут возникнуть дополнительные вопросы»
 - следствия: На этом стоит F-44.
 
 ## F-39 Как страница показывает `scheme.md` тем, кто работает без плагина?
@@ -550,20 +550,20 @@
 - зависит от: F-21
 - варианты:
   - A. Рисунок, если рядом есть файл mermaid, иначе текст. Файл `.symphysis/tools/mermaid.min.js` кладёт инсталлятор (5,5 МБ), страница остаётся 143 КБ, сеть не нужна. Страницу переслали или файла нет — виден текст.
-    - улика: `openspec/changes/decision-scheme/research/F-21-probe/probe.log` «{"kind":"svg","renderMs":219,"ms":384,"nodes":20,"imgs":0}»
-    - улика: `openspec/changes/decision-scheme/research/F-21-probe/probe.log` «{"kind":"text","why":"нет mermaid","ms":52}»
+    - улика: `openspec/changes/archive/2026-11-02-decision-scheme/research/F-21-probe/probe.log` «{"kind":"svg","renderMs":219,"ms":384,"nodes":20,"imgs":0}»
+    - улика: `openspec/changes/archive/2026-11-02-decision-scheme/research/F-21-probe/probe.log` «{"kind":"text","why":"нет mermaid","ms":52}»
     - улика: `.gitignore` «.symphysis/»
   - B. Mermaid внутри страницы: один файл на 5,6 МБ, его можно переслать, и рисунок останется. Страницы журналов идут в git, а журналов становится больше.
-    - улика: `openspec/changes/decision-scheme/research/F-21-probe/probe.log` «inline.html                  5641843»
-    - улика: `openspec/changes/decision-scheme/research/F-21-probe/probe.log` «openspec/changes/symphysis-schema/decisions.html»
+    - улика: `openspec/changes/archive/2026-11-02-decision-scheme/research/F-21-probe/probe.log` «inline.html                  5641843»
+    - улика: `openspec/changes/archive/2026-11-02-decision-scheme/research/F-21-probe/probe.log` «openspec/changes/symphysis-schema/decisions.html»
   - C. Mermaid с CDN с проверкой целостности: в проекте ни байта, но это первый сетевой запрос страницы, а без доступа к CDN виден только текст.
-    - улика: `openspec/changes/decision-scheme/research/F-21-probe/probe.log` «{"kind":"svg","renderMs":209,"ms":1114,"nodes":20,"imgs":0}»
-    - улика: `openspec/changes/decision-scheme/research/F-21-probe/probe.log` «{"kind":"text","why":"нет mermaid","ms":24}»
+    - улика: `openspec/changes/archive/2026-11-02-decision-scheme/research/F-21-probe/probe.log` «{"kind":"svg","renderMs":209,"ms":1114,"nodes":20,"imgs":0}»
+    - улика: `openspec/changes/archive/2026-11-02-decision-scheme/research/F-21-probe/probe.log` «{"kind":"text","why":"нет mermaid","ms":24}»
   - D. Оставить как есть: только текст, как решено в F-21. Рисунок смотрят в плагине или в редакторе markdown с mermaid.
-    - улика: `openspec/changes/decision-scheme/answers/2026-11-01.md` «Оставим текст, лучше он, чем ничего.»
-    - улика: `openspec/changes/decision-scheme/research/F-21-probe/probe.log` «{"kind":"text","why":"нет mermaid","ms":28}»
+    - улика: `openspec/changes/archive/2026-11-02-decision-scheme/answers/2026-11-01.md` «Оставим текст, лучше он, чем ничего.»
+    - улика: `openspec/changes/archive/2026-11-02-decision-scheme/research/F-21-probe/probe.log` «{"kind":"text","why":"нет mermaid","ms":28}»
   - E. Отдельная страница `scheme.html` новой подкомандой, только по просьбе человека; журнал остаётся с текстом.
-    - улика: `openspec/changes/decision-scheme/answers/2026-11-01.md` «если человек просит html»
+    - улика: `openspec/changes/archive/2026-11-02-decision-scheme/answers/2026-11-01.md` «если человек просит html»
     - маловероятно: нужен тот же файл mermaid в инсталляторе, плюс подкоманда и вторая страница; выигрыша против A нет
 - антиподы: —
 - рекомендация: A — Работает без сети и без плагина, страница и git не растут, а при отказе виден текст, как уже решено в F-21. Цена: 5,5 МБ в инсталляторе, CSP на странице и место под рисунок шире колонки.
@@ -578,14 +578,14 @@
 - зависит от: —
 - варианты:
   - A. Полную, 5,5 МБ: все виды диаграмм, как советуют авторы.
-    - улика: `openspec/changes/decision-scheme/research/F-21-probe/probe.log` «it's always recommended to use the full mermaid library»
-    - улика: `openspec/changes/decision-scheme/intent.md` «Mermaid мне нравится тем, что он строит неплохие диаграммы.»
+    - улика: `openspec/changes/archive/2026-11-02-decision-scheme/research/F-21-probe/probe.log` «it's always recommended to use the full mermaid library»
+    - улика: `openspec/changes/archive/2026-11-02-decision-scheme/intent.md` «Mermaid мне нравится тем, что он строит неплохие диаграммы.»
   - B. Облегчённую, 2,8 МБ: на этой схеме 200–225 мс до рисунка против 374–402, но mindmap, architecture и KaTeX в файле человека не нарисуются.
-    - улика: `openspec/changes/decision-scheme/research/F-21-probe/probe.log` «mermaid.tiny.js 2811424, gzip 746681»
-    - улика: `openspec/changes/decision-scheme/research/F-21-probe/probe.log` «{"kind":"svg","renderMs":92,"ms":225,"nodes":20,"imgs":0}»
-    - улика: `openspec/changes/decision-scheme/research/F-21-probe/probe.log` «- Mindmap Diagram»
+    - улика: `openspec/changes/archive/2026-11-02-decision-scheme/research/F-21-probe/probe.log` «mermaid.tiny.js 2811424, gzip 746681»
+    - улика: `openspec/changes/archive/2026-11-02-decision-scheme/research/F-21-probe/probe.log` «{"kind":"svg","renderMs":92,"ms":225,"nodes":20,"imgs":0}»
+    - улика: `openspec/changes/archive/2026-11-02-decision-scheme/research/F-21-probe/probe.log` «- Mindmap Diagram»
   - C. Полную в плагине, облегчённую на странице.
-    - улика: `openspec/changes/decision-scheme/research/F-21-probe/probe.log` «This package is not meant to be installed directly from npm.»
+    - улика: `openspec/changes/archive/2026-11-02-decision-scheme/research/F-21-probe/probe.log` «This package is not meant to be installed directly from npm.»
     - маловероятно: один файл `scheme.md` рисуется в одном месте и падает в другом; две версии вместо одной
 - антиподы: —
 - рекомендация: A — Файл пишет человек и может принести любой вид диаграммы. Разница около 0,8 МБ в сжатом виде и 170 мс при первом открытии не стоит непонятного отказа рисовать.
@@ -600,10 +600,10 @@
 - зависит от: —
 - варианты:
   - A. Новый адресат `агент`: модель проверяет идею руками (проба, замер) и отвечает находкой, при нужде развилкой; закрывается тем же файлом `research/<F-NN>.md`. Правки в схеме журнала, `apply`, странице и плагине. Смена контракта, но номер контракта вводится в этом же изменении.
-    - улика: `openspec/changes/decision-scheme/answers/2026-11-01.md` «Кажется, что стоит добавить тип парковки "агент"»
+    - улика: `openspec/changes/archive/2026-11-02-decision-scheme/answers/2026-11-01.md` «Кажется, что стоит добавить тип парковки "агент"»
     - улика: `docs/repo-contract.md` «Удаление, переименование, смена смысла и новое значение существующего поля считаются.»
   - B. Адресат прежний, «материалы» шире: подсказка и шаблон `research` говорят, что ответ ищет агент, в файлах или пробой, в шаблоне появляется раздел «Проба». Список значений не меняется, плагин меняет только текст подсказки.
-    - улика: `openspec/changes/decision-scheme/research/F-21.md` «итоги пробы пришлось положить отдельным файлом `probe.log`»
+    - улика: `openspec/changes/archive/2026-11-02-decision-scheme/research/F-21.md` «итоги пробы пришлось положить отдельным файлом `probe.log`»
     - улика: `vscode/src/webview/Card.tsx` «ответ ищется в файлах (исследование)»
   - C. Отдельным изменением после этого; заметка остаётся в журнале.
     - улика: `skills/symphysis-brainstorm/SKILL.md` «Объём изменения в записях не растёт»
@@ -645,7 +645,7 @@
     - улика: `vscode/src/webview/App.tsx` «<h2>Замечания к схеме и плану</h2>»
     - улика: `tools/playground-template.html` «что не так в схеме работы, в поставках, в этапах»
   - B. Оставить как есть: поле и так служит для общих заметок и споров по атаке.
-    - улика: `openspec/changes/decision-scheme/answers/2026-11-01.md` «Замечания к схеме: Кажется»
+    - улика: `openspec/changes/archive/2026-11-02-decision-scheme/answers/2026-11-01.md` «Замечания к схеме: Кажется»
   - C. Сменить и строку промпта в `apply`, странице и плагине. Это смена контракта, а старые файлы `answers/` остаются в прежней форме.
     - улика: `tools/journal_apply.py` «RE_NOTES = re.compile(r"^Замечания к схеме:[ \t]*(.*)$")»
     - улика: `docs/repo-contract.md` «грамматика строк `apply`: плагин сам пишет эти строки, и они попадают в журнал;»
@@ -663,7 +663,7 @@
 - варианты:
   - A. Снять потолок: после каждого круга скилл спрашивает «Начать новый круг?». Конец — отказ человека или круг, не давший ни решений, ни фактов, ни открытых развилок.
     - улика: `docs/plan-implementation.journal.md` «А вот количество шагов брейшторма стоит спрашивать у человека: хочет ли начать новый круг?»
-    - улика: `openspec/changes/decision-scheme/answers/2026-11-01-circle2.md` «после второго могут возникнуть дополнительные вопросы»
+    - улика: `openspec/changes/archive/2026-11-02-decision-scheme/answers/2026-11-01-circle2.md` «после второго могут возникнуть дополнительные вопросы»
   - B. Скилл спрашивает только после первого круга; третий и дальше идут, когда человек попросит сам.
     - улика: `skills/symphysis-brainstorm/SKILL.md` «иначе спроси человека в чате»
   - C. Оставить как есть: два круга, открытое уходит в атаку и Open Questions.
@@ -681,11 +681,11 @@
 - адресат: материалы
 - зависит от: —
 - улики:
-  - улика: `openspec/changes/decision-scheme/research/antipodes-probe/probe.log` «symphysis-schema: развилок 74, вариантов 274, с антиподами 5, антиподов 6, с зависимостями 68; антиподы у F-02, F-03, F-04, F-13, F-15»
-  - улика: `openspec/changes/decision-scheme/research/antipodes-probe/probe.log` «calibration-fixes: развилок 54, вариантов 228, с антиподами 0, антиподов 0, с зависимостями 48»
-  - улика: `openspec/changes/decision-scheme/research/antipodes-probe/probe.log` «implementation-consequences: развилок 79, вариантов 304, с антиподами 0, антиподов 0, с зависимостями 75»
-  - улика: `openspec/changes/decision-scheme/research/antipodes-probe/probe.log` «decision-scheme: развилок 20, вариантов 59, с антиподами 0, антиподов 0, с зависимостями 7»
-  - улика: `openspec/changes/decision-scheme/answers/2026-11-01-circle3.md` «А вот антиподов я не видел за последние несколько кругов»
+  - улика: `openspec/changes/archive/2026-11-02-decision-scheme/research/antipodes-probe/probe.log` «symphysis-schema: развилок 74, вариантов 274, с антиподами 5, антиподов 6, с зависимостями 68; антиподы у F-02, F-03, F-04, F-13, F-15»
+  - улика: `openspec/changes/archive/2026-11-02-decision-scheme/research/antipodes-probe/probe.log` «calibration-fixes: развилок 54, вариантов 228, с антиподами 0, антиподов 0, с зависимостями 48»
+  - улика: `openspec/changes/archive/2026-11-02-decision-scheme/research/antipodes-probe/probe.log` «implementation-consequences: развилок 79, вариантов 304, с антиподами 0, антиподов 0, с зависимостями 75»
+  - улика: `openspec/changes/archive/2026-11-02-decision-scheme/research/antipodes-probe/probe.log` «decision-scheme: развилок 20, вариантов 59, с антиподами 0, антиподов 0, с зависимостями 7»
+  - улика: `openspec/changes/archive/2026-11-02-decision-scheme/answers/2026-11-01-circle3.md` «А вот антиподов я не видел за последние несколько кругов»
 - следствия: На этом стоят F-50 и F-51: зависимости заполняются без отдельного прохода, антиподы нет.
 
 ## F-46 В скилле брейншторма антипод — одна строка в описании полей, без шага и без проверки. `check` сверяет только то, что названный вариант существует, атака смотрит только на уже записанные антиподы, а пустой список ничем не отличается от «смотрел, таких нет»
@@ -707,16 +707,16 @@
 - адресат: материалы
 - зависит от: —
 - улики:
-  - улика: `openspec/changes/decision-scheme/research/antipodes-probe/probe.log` «sonnet1: 34.3 с, вывод 3843 токена, пар 4, настоящая пара найдена»
-  - улика: `openspec/changes/decision-scheme/research/antipodes-probe/probe.log` «sonnet3: 30.6 с, вывод 2761 токен, пар 2, настоящая пара найдена, ложно подана как оба выбраны F-13.D и F-15.B»
-  - улика: `openspec/changes/decision-scheme/research/antipodes-probe/probe.log` «glm-5.2 с рассуждениями, прогон 1: 42.1 с, вывод 13169 токенов, пар 3, настоящая пара не найдена»
-  - улика: `openspec/changes/decision-scheme/research/antipodes-probe/probe.log` «glm-5.2 с рассуждениями, прогон 2: 29.5 с, вывод 7330 токенов, пар 3, настоящая пара найдена»
-  - улика: `openspec/changes/decision-scheme/research/antipodes-probe/probe.log` «glm-5.2 без рассуждений: 4.6 с, вывод 862 токена, пар 19, из них внутри одной развилки 18, настоящая пара не найдена»
-  - улика: `openspec/changes/decision-scheme/research/antipodes-probe/probe.log` «все пары, кроме настоящей и пар прогона без рассуждений, содержат вариант, отвергнутый раньше»
-  - улика: `openspec/changes/decision-scheme/research/antipodes-probe/probe.log` «токенов 86303, вызовов инструментов 3, время 91 с»
+  - улика: `openspec/changes/archive/2026-11-02-decision-scheme/research/antipodes-probe/probe.log` «sonnet1: 34.3 с, вывод 3843 токена, пар 4, настоящая пара найдена»
+  - улика: `openspec/changes/archive/2026-11-02-decision-scheme/research/antipodes-probe/probe.log` «sonnet3: 30.6 с, вывод 2761 токен, пар 2, настоящая пара найдена, ложно подана как оба выбраны F-13.D и F-15.B»
+  - улика: `openspec/changes/archive/2026-11-02-decision-scheme/research/antipodes-probe/probe.log` «glm-5.2 с рассуждениями, прогон 1: 42.1 с, вывод 13169 токенов, пар 3, настоящая пара не найдена»
+  - улика: `openspec/changes/archive/2026-11-02-decision-scheme/research/antipodes-probe/probe.log` «glm-5.2 с рассуждениями, прогон 2: 29.5 с, вывод 7330 токенов, пар 3, настоящая пара найдена»
+  - улика: `openspec/changes/archive/2026-11-02-decision-scheme/research/antipodes-probe/probe.log` «glm-5.2 без рассуждений: 4.6 с, вывод 862 токена, пар 19, из них внутри одной развилки 18, настоящая пара не найдена»
+  - улика: `openspec/changes/archive/2026-11-02-decision-scheme/research/antipodes-probe/probe.log` «все пары, кроме настоящей и пар прогона без рассуждений, содержат вариант, отвергнутый раньше»
+  - улика: `openspec/changes/archive/2026-11-02-decision-scheme/research/antipodes-probe/probe.log` «токенов 86303, вызовов инструментов 3, время 91 с»
   - улика: `openspec/changes/archive/2026-11-02-calibration-fixes/rulings.md` «F-34.E и F-45.E читают `\|` по-разному»
-  - улика: `openspec/changes/decision-scheme/research/antipodes-probe/probe.log` «субагент, вызов 2: чтение кеша 50214, запись кеша 23755, вывод 11276, 74.6 с, из них рассуждения 72.8 с»
-  - улика: `openspec/changes/decision-scheme/research/antipodes-probe/probe.log` «86303 — размер контекста на последнем вызове, а не расход»
+  - улика: `openspec/changes/archive/2026-11-02-decision-scheme/research/antipodes-probe/probe.log` «субагент, вызов 2: чтение кеша 50214, запись кеша 23755, вывод 11276, 74.6 с, из них рассуждения 72.8 с»
+  - улика: `openspec/changes/archive/2026-11-02-decision-scheme/research/antipodes-probe/probe.log` «86303 — размер контекста на последнем вызове, а не расход»
 - следствия: На этом стоят F-50, F-51 и F-52.
 
 ## F-48 Файла настроек ещё нет: `symphysis.yaml` запланирован в изменении `implementation-consequences` с тремя выборами и умолчанием «всё включено», оно ещё не реализовано. Основание там — слово человека: выбирать перед запуском то, что значительно влияет на время
@@ -729,7 +729,7 @@
   - улика: `openspec/changes/archive/2026-11-02-implementation-consequences/proposal.md` «Файл `symphysis.yaml` в корне проекта с умолчанием «всё включено»»
   - улика: `openspec/changes/archive/2026-11-02-implementation-consequences/specs/project-settings/spec.md` «SHALL задавать три выбора: ветки отказа, допущения, проба краёв»
   - улика: `openspec/changes/archive/2026-11-02-implementation-consequences/decisions.md` «то, что значительно влияет на время хочется делать выбираемым перед запуском соответствующего шага»
-  - улика: `openspec/changes/decision-scheme/answers/2026-11-01-circle3.md` «Возможно, это еще один кандидат на конфигурируемый параметр»
+  - улика: `openspec/changes/archive/2026-11-02-decision-scheme/answers/2026-11-01-circle3.md` «Возможно, это еще один кандидат на конфигурируемый параметр»
 - следствия: На этом стоит F-51.
 
 ## F-49 Гейт имён отказывает на файле `mermaid.min.js`, а инсталлятор собирает поставку по списку файлов из корня репозитория в каталог `installer/payload/`, который в git не идёт
@@ -739,7 +739,7 @@
 - адресат: материалы
 - зависит от: —
 - улики:
-  - улика: `openspec/changes/decision-scheme/research/F-21-probe/probe.log` «check_names на mermaid.min.js: код 1, 3,6 с, строк вывода 307»
+  - улика: `openspec/changes/archive/2026-11-02-decision-scheme/research/F-21-probe/probe.log` «check_names на mermaid.min.js: код 1, 3,6 с, строк вывода 307»
   - улика: `installer/scripts/sync-payload.js` «"tools/playground-template.html",»
   - улика: `.gitignore` «installer/payload/»
 - следствия: На этом стоит F-53.
@@ -752,16 +752,16 @@
 - зависит от: —
 - варианты:
   - A. До показа: шаг в конце порции. Новые варианты сверяются между собой и с уже выбранными, отвергнутые не смотрятся. В строке круга итог «антиподов N», ноль значит «смотрел, таких нет». Человек видит пары, пока думает над выбором.
-    - улика: `openspec/changes/decision-scheme/answers/2026-11-01-circle3.md` «взаимоисключающие варианты развилок есть»
-    - улика: `openspec/changes/decision-scheme/research/antipodes-probe/probe.log` «итог сверки: настоящая пара среди выбранных 1»
+    - улика: `openspec/changes/archive/2026-11-02-decision-scheme/answers/2026-11-01-circle3.md` «взаимоисключающие варианты развилок есть»
+    - улика: `openspec/changes/archive/2026-11-02-decision-scheme/research/antipodes-probe/probe.log` «итог сверки: настоящая пара среди выбранных 1»
   - B. После выбора: на шаге обратимости модель сверяет выбранные варианты круга между собой и с прежними решениями, находка становится новой развилкой. Ловит и варианты, добавленные человеком, но конфликт виден уже после выбора.
     - улика: `openspec/changes/archive/2026-11-02-calibration-fixes/rulings.md` «F-34.E и F-45.E читают `\|` по-разному»
     - улика: `skills/symphysis-brainstorm/SKILL.md` «### 7. Обратимость»
   - C. Оба прохода: до показа и после выбора.
-    - улика: `openspec/changes/decision-scheme/answers/2026-11-01-circle3.md` «я об этом все равно думаю сам»
+    - улика: `openspec/changes/archive/2026-11-02-decision-scheme/answers/2026-11-01-circle3.md` «я об этом все равно думаю сам»
     - улика: `openspec/changes/archive/2026-11-02-calibration-fixes/rulings.md` «F-34.E и F-45.E читают `\|` по-разному»
   - D. Оставить как есть: поле необязательное, модель пишет, если заметит, а противоречия человек ищет сам.
-    - улика: `openspec/changes/decision-scheme/research/antipodes-probe/probe.log` «implementation-consequences: развилок 79, вариантов 304, с антиподами 0»
+    - улика: `openspec/changes/archive/2026-11-02-decision-scheme/research/antipodes-probe/probe.log` «implementation-consequences: развилок 79, вариантов 304, с антиподами 0»
   - E. Убрать поле и блокировку из схемы журнала, страницы и плагина.
     - улика: `docs/repo-contract.md` «Удаление, переименование, смена смысла и новое значение существующего поля считаются.»
     - маловероятно: удаление поля — смена контракта, у первого журнала 5 записей с антиподами, а экономии нет: поле и так не заполняют
@@ -778,18 +778,18 @@
 - зависит от: F-50
 - варианты:
   - A. Сейчас: ключ в `symphysis.yaml`, по умолчанию включено; при выключенном в строке круга «антиподы не считались». Это изменение начинает зависеть от порядка влития `implementation-consequences`.
-    - улика: `openspec/changes/decision-scheme/answers/2026-11-01-circle3.md` «хочу ли я нагружать модель вычислением зависимостей и антиподов»
+    - улика: `openspec/changes/archive/2026-11-02-decision-scheme/answers/2026-11-01-circle3.md` «хочу ли я нагружать модель вычислением зависимостей и антиподов»
     - улика: `openspec/changes/archive/2026-11-02-implementation-consequences/proposal.md` «Файл `symphysis.yaml` в корне проекта»
   - B. Нет, сверка идёт всегда: журнал из 54 развилок занимает 30–40 с на Sonnet и на glm-5.2 отдельным вызовом без инструментов и 91 с субагентом; под «значительно влияет на время» это не подходит.
-    - улика: `openspec/changes/decision-scheme/research/antipodes-probe/probe.log` «glm-5.2 с рассуждениями, прогон 2: 29.5 с»
-    - улика: `openspec/changes/decision-scheme/research/antipodes-probe/probe.log` «sonnet2: 39.0 с»
+    - улика: `openspec/changes/archive/2026-11-02-decision-scheme/research/antipodes-probe/probe.log` «glm-5.2 с рассуждениями, прогон 2: 29.5 с»
+    - улика: `openspec/changes/archive/2026-11-02-decision-scheme/research/antipodes-probe/probe.log` «sonnet2: 39.0 с»
     - улика: `openspec/changes/archive/2026-11-02-implementation-consequences/decisions.md` «то, что значительно влияет на время хочется делать выбираемым»
   - C. Позже: сейчас без настройки, а в план `project-settings` записывается кандидат «сверка антиподов» с условием замерить проход на deepseek.
     - улика: `openspec/changes/archive/2026-11-02-implementation-consequences/specs/project-settings/spec.md` «SHALL задавать три выбора»
-    - улика: `openspec/changes/decision-scheme/research/antipodes-probe/probe.log` «deepseek-v4.1-flash не мерен»
+    - улика: `openspec/changes/archive/2026-11-02-decision-scheme/research/antipodes-probe/probe.log` «deepseek-v4.1-flash не мерен»
   - D. Один ключ и на антиподы, и на зависимости.
-    - улика: `openspec/changes/decision-scheme/answers/2026-11-01-circle3.md` «вычислением зависимостей и антиподов»
-    - улика: `openspec/changes/decision-scheme/research/antipodes-probe/probe.log` «implementation-consequences: развилок 79, вариантов 304, с антиподами 0, антиподов 0, с зависимостями 75»
+    - улика: `openspec/changes/archive/2026-11-02-decision-scheme/answers/2026-11-01-circle3.md` «вычислением зависимостей и антиподов»
+    - улика: `openspec/changes/archive/2026-11-02-decision-scheme/research/antipodes-probe/probe.log` «implementation-consequences: развилок 79, вариантов 304, с антиподами 0, антиподов 0, с зависимостями 75»
     - маловероятно: зависимости пишутся по ходу записи и отдельного прохода не требуют, выключать нечего; их снятие лишило бы просмотрщик показа предпосылок
 - антиподы: A ↔ F-50.D; A ↔ F-50.E; C ↔ F-50.D
 - рекомендация: B — Замер снял довод о нагрузке: на обеих моделях полминуты на весь журнал, а настоящий проход идёт только по новым вариантам и в том же контексте. По критерию из слова к F-14 журнала `implementation-consequences` это не то, что выбирают перед запуском. Настройку можно добавить, если появится число против.
@@ -807,7 +807,7 @@
     - улика: `skills/symphysis-viewer/SKILL.md` «антипод уже выбранного — блок с подсказкой»
     - улика: `vscode/src/webview/Card.tsx` «антипод уже выбран:»
   - B. Предупреждение: выбор проходит, пара видна у обоих вариантов. Если выбрать оба, это становится строкой атаки.
-    - улика: `openspec/changes/decision-scheme/research/antipodes-probe/probe.log` «сверка: модель подала как «оба выбраны»; на деле F-13 решён A, вариант D отвергнут»
+    - улика: `openspec/changes/archive/2026-11-02-decision-scheme/research/antipodes-probe/probe.log` «сверка: модель подала как «оба выбраны»; на деле F-13 решён A, вариант D отвергнут»
     - улика: `openspec/changes/archive/2026-11-02-calibration-fixes/decisions.md` «не должен становиться замком на постановке»
     - улика: `skills/symphysis-attack/SKILL.md` «оба антипода решены»
 - антиподы: A ↔ F-50.E; B ↔ F-50.E
@@ -823,14 +823,14 @@
 - зависит от: F-39
 - варианты:
   - A. В git ядра, `tools/mermaid.min.js`, одной строкой в списке `sync-payload.js`. Гейт на нём отказывает, нужны исключения, а каждое обновление версии оставляет в истории около 1,6 МБ сжатым.
-    - улика: `openspec/changes/decision-scheme/research/F-21-probe/probe.log` «check_names на mermaid.min.js: код 1, 3,6 с, строк вывода 307»
-    - улика: `openspec/changes/decision-scheme/research/F-21-probe/probe.log` «mermaid.min.js 5494801, gzip 1570966»
+    - улика: `openspec/changes/archive/2026-11-02-decision-scheme/research/F-21-probe/probe.log` «check_names на mermaid.min.js: код 1, 3,6 с, строк вывода 307»
+    - улика: `openspec/changes/archive/2026-11-02-decision-scheme/research/F-21-probe/probe.log` «mermaid.min.js 5494801, gzip 1570966»
     - улика: `installer/scripts/sync-payload.js` «"tools/playground-template.html",»
   - B. Вне git: точная версия закреплена в `installer/package.json` как зависимость сборки, `sync-payload.js` кладёт файл в `payload/`, инсталлятор ставит его в `.symphysis/tools/`. В git и гейт файл не попадает, но установка из исходников тянет всё дерево пакета mermaid.
     - улика: `installer/package.json` «"prepare": "node scripts/sync-payload.js",»
     - улика: `.gitignore` «installer/payload/»
   - C. Инсталлятор скачивает файл с CDN при установке.
-    - улика: `openspec/changes/decision-scheme/research/F-21-probe/probe.log` «{"kind":"text","why":"нет mermaid","ms":24}»
+    - улика: `openspec/changes/archive/2026-11-02-decision-scheme/research/F-21-probe/probe.log` «{"kind":"text","why":"нет mermaid","ms":24}»
     - маловероятно: установка начинает зависеть от сети, а её отказ молча оставляет страницу с текстом
 - антиподы: —
 - рекомендация: B — Файл чужой и минифицированный: читать его в истории незачем, гейт на нём отказывает, а закреплённая версия даёт то же воспроизведение. Лишний вес дерева пакета платит только тот, кто ставит из исходников.
@@ -850,11 +850,11 @@
     - улика: `tools/playground-template.html` «const MODES = ['decisions','check','attack'];»
     - улика: `tools/playground-template.html` «grid-template-columns: var(--left) minmax(0,1fr) var(--right)»
   - B. Сворачиваемый блок над карточками в режиме «решения».
-    - улика: `openspec/changes/decision-scheme/intent.md` «нам придется сделать схему сворачиваемой, или в отдельной вкладке.»
+    - улика: `openspec/changes/archive/2026-11-02-decision-scheme/intent.md` «нам придется сделать схему сворачиваемой, или в отдельной вкладке.»
   - C. Колонка остаётся, рисунок вписан, по клику открывается на весь экран.
-    - улика: `openspec/changes/decision-scheme/research/F-21.md` «На `shot-fit.png` подписи мелкие»
+    - улика: `openspec/changes/archive/2026-11-02-decision-scheme/research/F-21.md` «На `shot-fit.png` подписи мелкие»
   - D. Колонка остаётся, натуральный размер с прокруткой.
-    - улика: `openspec/changes/decision-scheme/research/F-21.md` «панель пуста, пока не прокрутишь»
+    - улика: `openspec/changes/archive/2026-11-02-decision-scheme/research/F-21.md` «панель пуста, пока не прокрутишь»
     - маловероятно: проба показала пустую панель при открытии, а колонка всё равно узка для рисунка
   - E. отображение схемы переключаемо, а не отдельный режим вместо других. (добавлен человеком)
 - антиподы: —
@@ -873,7 +873,7 @@
 - варианты:
   - A. Промежуточной: версия 0.2.0, без тега и без слияния в `main` плагина. Шаги выпуска из контракта проходятся как проверка. Хук из дизайна части 1 ещё не сделан.
     - улика: `vscode/docs/design-part1-viewer.md` «просмотрщик без схемы, с показом владельцу после каркаса и режима «решения» → хук →»
-    - улика: `openspec/changes/decision-scheme/intent.md` «Новая сборка .vsix вместе с пакетом правок проходит npm run e2e:vsix.»
+    - улика: `openspec/changes/archive/2026-11-02-decision-scheme/intent.md` «Новая сборка .vsix вместе с пакетом правок проходит npm run e2e:vsix.»
   - B. Первым выпуском: версия 1.0.0 и тег в `main` плагина, слияния по слову человека, ядро идёт в `main` раньше.
     - улика: `docs/repo-contract.md` «к первому выпуску версия поднимается до 1.0.0»
     - улика: `docs/repo-contract.md` «Хеши из `Needs:` достижимы из `main` ядра»
@@ -892,7 +892,7 @@
   - A. Оставить как есть: `блокер`. Шаг стоит, пока запись не поправят.
     - улика: `skills/symphysis-attack/SKILL.md` «оба антипода решены»
   - B. `предупреждение`: на одну выше `справки`. Шаг тоже стоит, гейт считает обе тяжести одинаково, но строка читается как «проверь», а не как «цель не будет достигнута».
-    - улика: `openspec/changes/decision-scheme/answers/2026-11-01-attack-chat.md` «Увеличим на одну. Какие есть варианты тяжести?»
+    - улика: `openspec/changes/archive/2026-11-02-decision-scheme/answers/2026-11-01-attack-chat.md` «Увеличим на одну. Какие есть варианты тяжести?»
     - улика: `skills/symphysis-attack/SKILL.md` «`status: passed` ставится, только когда в таблице нет ни одной строки»
   - C. `справка`: строка видна, шаг не стоит. Так уже устроено у выбранного варианта с `deviation`: человек видел пару и выбрал.
     - улика: `skills/symphysis-attack/SKILL.md` «выбранный вариант с полем `deviation` — `справка`»
@@ -915,7 +915,7 @@
 - антиподы: —
 - рекомендация: A — Цена — одна строка в скилле, а без ссылки человек может не узнать о файле: критерий F-01 требует её дать.
 - улики:
-  - улика: `openspec/changes/decision-scheme/specs/decision-scheme/spec.md` «### Requirement: Брейншторм создаёт `scheme.md`, если файла нет»
+  - улика: `openspec/changes/archive/2026-11-02-decision-scheme/specs/decision-scheme/spec.md` «### Requirement: Брейншторм создаёт `scheme.md`, если файла нет»
 - решение: A, 2026-11-02
 - исход: проба — Specify
 - следствия: в spec.md: Повтор после обрыва
@@ -934,7 +934,7 @@
 - антиподы: —
 - рекомендация: A — Файл принадлежит человеку (F-07), а цена проверки перед записью нулевая.
 - улики:
-  - улика: `openspec/changes/decision-scheme/specs/decision-scheme/spec.md` «### Requirement: Брейншторм создаёт `scheme.md`, если файла нет»
+  - улика: `openspec/changes/archive/2026-11-02-decision-scheme/specs/decision-scheme/spec.md` «### Requirement: Брейншторм создаёт `scheme.md`, если файла нет»
 - решение: A, 2026-11-02
 - исход: проба — Specify
 - следствия: в spec.md: Файл появился перед записью
@@ -953,7 +953,7 @@
 - антиподы: —
 - рекомендация: A — Человек уже говорил о нескольких сценариях (F-54), а молчаливый показ первого блока выглядел бы как потерянный рисунок.
 - улики:
-  - улика: `openspec/changes/decision-scheme/specs/decision-scheme/spec.md` «### Requirement: `scheme.md` — один блок mermaid, и шаги от него не зависят»
+  - улика: `openspec/changes/archive/2026-11-02-decision-scheme/specs/decision-scheme/spec.md` «### Requirement: `scheme.md` — один блок mermaid, и шаги от него не зависят»
 - решение: A, 2026-11-02
 - исход: проба — Specify
 - следствия: в spec.md: Два блока в файле
@@ -972,7 +972,7 @@
 - антиподы: —
 - рекомендация: A — Человек мог создать файл заранее, а сообщение mermaid о пустом тексте ему ничего не объяснит.
 - улики:
-  - улика: `openspec/changes/decision-scheme/specs/decision-scheme/spec.md` «### Requirement: `scheme.md` — один блок mermaid, и шаги от него не зависят»
+  - улика: `openspec/changes/archive/2026-11-02-decision-scheme/specs/decision-scheme/spec.md` «### Requirement: `scheme.md` — один блок mermaid, и шаги от него не зависят»
 - решение: A, 2026-11-02
 - исход: проба — Specify
 - следствия: в spec.md: Файл без схемы
@@ -991,7 +991,7 @@
 - антиподы: —
 - рекомендация: A — Редактор на Windows может сохранить файл по-разному, а проба mermaid проверяла CRLF только в тексте блока, но не поиск самого блока.
 - улики:
-  - улика: `openspec/changes/decision-scheme/specs/decision-scheme/spec.md` «### Requirement: `scheme.md` — один блок mermaid, и шаги от него не зависят»
+  - улика: `openspec/changes/archive/2026-11-02-decision-scheme/specs/decision-scheme/spec.md` «### Requirement: `scheme.md` — один блок mermaid, и шаги от него не зависят»
 - решение: A, 2026-11-02
 - исход: проба — Specify
 - следствия: в spec.md: BOM и CRLF
@@ -1010,7 +1010,7 @@
 - антиподы: —
 - рекомендация: A — Повтор не должен плодить вкладки, а закрыть можно обычным крестиком.
 - улики:
-  - улика: `openspec/changes/decision-scheme/specs/plugin-scheme-view/spec.md` «### Requirement: Вкладка схемы открывается кнопкой и командой»
+  - улика: `openspec/changes/archive/2026-11-02-decision-scheme/specs/plugin-scheme-view/spec.md` «### Requirement: Вкладка схемы открывается кнопкой и командой»
 - решение: A, 2026-11-02
 - исход: проба — Specify
 - следствия: в spec.md: Повторное нажатие
@@ -1029,7 +1029,7 @@
 - антиподы: —
 - рекомендация: A — Клик обещает показать карточки узла, а без этого он молча ничего не делает.
 - улики:
-  - улика: `openspec/changes/decision-scheme/specs/plugin-scheme-view/spec.md` «### Requirement: Вкладка схемы открывается кнопкой и командой»
+  - улика: `openspec/changes/archive/2026-11-02-decision-scheme/specs/plugin-scheme-view/spec.md` «### Requirement: Вкладка схемы открывается кнопкой и командой»
 - решение: A, 2026-11-02
 - исход: проба — Specify
 - следствия: в spec.md: Клик при закрытом просмотрщике
@@ -1048,7 +1048,7 @@
 - антиподы: —
 - рекомендация: A — Клик по узлу фильтрует просмотрщик, поэтому схема и карточки обязаны быть про одно изменение.
 - улики:
-  - улика: `openspec/changes/decision-scheme/specs/plugin-scheme-view/spec.md` «### Requirement: Вкладка схемы открывается кнопкой и командой»
+  - улика: `openspec/changes/archive/2026-11-02-decision-scheme/specs/plugin-scheme-view/spec.md` «### Requirement: Вкладка схемы открывается кнопкой и командой»
 - решение: A, 2026-11-02
 - исход: проба — Specify
 - следствия: в spec.md: Журнал сменился при открытой вкладке
@@ -1067,7 +1067,7 @@
 - антиподы: —
 - рекомендация: A — Автосохранение в VS Code обычное дело, а устаревший рисунок глазами не отличить от верного.
 - улики:
-  - улика: `openspec/changes/decision-scheme/specs/plugin-scheme-view/spec.md` «### Requirement: Вкладка рисует файл сама и без сети»
+  - улика: `openspec/changes/archive/2026-11-02-decision-scheme/specs/plugin-scheme-view/spec.md` «### Requirement: Вкладка рисует файл сама и без сети»
   - улика: `vscode/docs/spike-part1-results.md` «340–355 / 63–75 мс»
 - решение: B — «Считать ли текст варианта твоей причиной? Да, про все.», 2026-11-02
 - исход: проба — Dismiss — Считать ли текст варианта твоей причиной? Да, про все.
@@ -1087,7 +1087,7 @@
 - антиподы: —
 - рекомендация: A — Человек правит схему и смотрит результат рядом, и сброс при каждом сохранении заставит искать своё место заново.
 - улики:
-  - улика: `openspec/changes/decision-scheme/specs/plugin-scheme-view/spec.md` «### Requirement: Вкладка рисует файл сама и без сети»
+  - улика: `openspec/changes/archive/2026-11-02-decision-scheme/specs/plugin-scheme-view/spec.md` «### Requirement: Вкладка рисует файл сама и без сети»
 - решение: B — «Считать ли текст варианта твоей причиной? Да, про все.», 2026-11-02
 - исход: проба — Dismiss — Считать ли текст варианта твоей причиной? Да, про все.
 - следствия: сброс не покрывается: после правки схема другая, а кнопка «вписать» рядом
@@ -1106,7 +1106,7 @@
 - антиподы: —
 - рекомендация: C — Сами числа лучше подобрать на показе, а вот исчезнуть рисунок не должен: это держит тест.
 - улики:
-  - улика: `openspec/changes/decision-scheme/specs/plugin-scheme-view/spec.md` «### Requirement: Схему можно масштабировать и перетаскивать»
+  - улика: `openspec/changes/archive/2026-11-02-decision-scheme/specs/plugin-scheme-view/spec.md` «### Requirement: Схему можно масштабировать и перетаскивать»
 - решение: C, 2026-11-02
 - исход: проба — Backstop
 - следствия: тест-страховка: тест нажимает «−» двадцать раз и утверждает, что рисунок не исчез и «+» его возвращает
@@ -1125,7 +1125,7 @@
 - антиподы: —
 - рекомендация: C — Край известен, но число в требовании лишнее, поведение держит тест.
 - улики:
-  - улика: `openspec/changes/decision-scheme/specs/plugin-scheme-view/spec.md` «### Requirement: Схему можно масштабировать и перетаскивать»
+  - улика: `openspec/changes/archive/2026-11-02-decision-scheme/specs/plugin-scheme-view/spec.md` «### Requirement: Схему можно масштабировать и перетаскивать»
 - решение: C, 2026-11-02
 - исход: проба — Backstop
 - следствия: тест-страховка: тест подаёт сдвиги на 0, 3 и 4 пикселя и утверждает итог для каждого
@@ -1144,7 +1144,7 @@
 - антиподы: —
 - рекомендация: A — Огромные блоки на маленькой схеме читаются хуже натурального размера.
 - улики:
-  - улика: `openspec/changes/decision-scheme/specs/plugin-scheme-view/spec.md` «### Requirement: Схему можно масштабировать и перетаскивать»
+  - улика: `openspec/changes/archive/2026-11-02-decision-scheme/specs/plugin-scheme-view/spec.md` «### Requirement: Схему можно масштабировать и перетаскивать»
 - решение: A, 2026-11-02
 - исход: проба — Specify
 - следствия: в spec.md: «Вписать» на маленькой схеме
@@ -1163,7 +1163,7 @@
 - антиподы: —
 - рекомендация: A — Смена ветки git убирает файл обычным образом, а рисунок несуществующей схемы вводит в заблуждение.
 - улики:
-  - улика: `openspec/changes/decision-scheme/specs/plugin-scheme-view/spec.md` «### Requirement: Отказы видны на вкладке»
+  - улика: `openspec/changes/archive/2026-11-02-decision-scheme/specs/plugin-scheme-view/spec.md` «### Requirement: Отказы видны на вкладке»
 - решение: A, 2026-11-02
 - исход: проба — Specify
 - следствия: в spec.md: Файл удалён при открытой вкладке
@@ -1182,7 +1182,7 @@
 - антиподы: —
 - рекомендация: C — Пределы настоящие, но до них далеко: у схемы этого изменения 20 узлов. Достаточно, чтобы вкладка не падала.
 - улики:
-  - улика: `openspec/changes/decision-scheme/specs/plugin-scheme-view/spec.md` «### Requirement: Отказы видны на вкладке»
+  - улика: `openspec/changes/archive/2026-11-02-decision-scheme/specs/plugin-scheme-view/spec.md` «### Requirement: Отказы видны на вкладке»
   - улика: `vscode/spike/media/mermaid.min.js` «maxTextSize:5e4»
   - улика: `vscode/spike/media/mermaid.min.js` «maxEdges:500»
 - решение: B — «Считать ли текст варианта твоей причиной? Да, про все.», 2026-11-02
@@ -1203,7 +1203,7 @@
 - антиподы: —
 - рекомендация: C — Поведение следует из поля `nodes`, сценарий ничего не добавит, а регрессию поймает тест.
 - улики:
-  - улика: `openspec/changes/decision-scheme/specs/plugin-scheme-view/spec.md` «### Requirement: Клик по узлу фильтрует карточки по `nodes`»
+  - улика: `openspec/changes/archive/2026-11-02-decision-scheme/specs/plugin-scheme-view/spec.md` «### Requirement: Клик по узлу фильтрует карточки по `nodes`»
 - решение: C, 2026-11-02
 - исход: проба — Backstop
 - следствия: тест-страховка: тест подаёт схему с одинаковыми подписями и утверждает, что фильтр различает узлы
@@ -1222,7 +1222,7 @@
 - антиподы: —
 - рекомендация: A — Все журналы ядра сегодня такие, и фильтр, скрывший все карточки, выглядит как поломка.
 - улики:
-  - улика: `openspec/changes/decision-scheme/specs/plugin-scheme-view/spec.md` «### Requirement: Клик по узлу фильтрует карточки по `nodes`»
+  - улика: `openspec/changes/archive/2026-11-02-decision-scheme/specs/plugin-scheme-view/spec.md` «### Requirement: Клик по узлу фильтрует карточки по `nodes`»
 - решение: A, 2026-11-02
 - исход: проба — Specify
 - следствия: в spec.md: Журнал без `nodes`
@@ -1241,7 +1241,7 @@
 - антиподы: —
 - рекомендация: B — У условия есть крестик, он работает независимо от рисунка, а запись с этим узлом остаётся видна с подсказкой.
 - улики:
-  - улика: `openspec/changes/decision-scheme/specs/plugin-scheme-view/spec.md` «### Requirement: Клик по узлу фильтрует карточки по `nodes`»
+  - улика: `openspec/changes/archive/2026-11-02-decision-scheme/specs/plugin-scheme-view/spec.md` «### Requirement: Клик по узлу фильтрует карточки по `nodes`»
 - решение: B — «Считать ли текст варианта твоей причиной? Да, про все.», 2026-11-02
 - исход: проба — Dismiss — Считать ли текст варианта твоей причиной? Да, про все.
 - следствия: не покрывается: у условия есть крестик, он работает независимо от рисунка, а запись с этим узлом видна с подсказкой
@@ -1260,7 +1260,7 @@
 - антиподы: —
 - рекомендация: A — Плагин уже так ведёт себя с фильтром «показать»: переход не должен молча ни к чему не приводить.
 - улики:
-  - улика: `openspec/changes/decision-scheme/specs/plugin-scheme-view/spec.md` «### Requirement: Клик по узлу фильтрует карточки по `nodes`»
+  - улика: `openspec/changes/archive/2026-11-02-decision-scheme/specs/plugin-scheme-view/spec.md` «### Requirement: Клик по узлу фильтрует карточки по `nodes`»
 - решение: A, 2026-11-02
 - исход: проба — Specify
 - следствия: в spec.md: Переход к записи, скрытой условием
@@ -1279,7 +1279,7 @@
 - антиподы: —
 - рекомендация: C — Номер пишет только ядро, поэтому сценарий избыточен, но закрытая «Внести» при мусоре на входе должна держаться тестом.
 - улики:
-  - улика: `openspec/changes/decision-scheme/specs/plugin-core-contract/spec.md` «### Requirement: Плагин сверяет номер и говорит, что обновить»
+  - улика: `openspec/changes/archive/2026-11-02-decision-scheme/specs/plugin-core-contract/spec.md` «### Requirement: Плагин сверяет номер и говорит, что обновить»
   - улика: `docs/repo-contract.md` «проверка номера: сегодня `src/host/core.ts:31` принимает JSON без проверки»
 - решение: C, 2026-11-02
 - исход: проба — Backstop
@@ -1299,7 +1299,7 @@
 - антиподы: —
 - рекомендация: A — Просьба обновить должна кончаться рабочим журналом, иначе человек решит, что обновление не помогло.
 - улики:
-  - улика: `openspec/changes/decision-scheme/specs/plugin-core-contract/spec.md` «### Requirement: Плагин сверяет номер и говорит, что обновить»
+  - улика: `openspec/changes/archive/2026-11-02-decision-scheme/specs/plugin-core-contract/spec.md` «### Requirement: Плагин сверяет номер и говорит, что обновить»
 - решение: A, 2026-11-02
 - исход: проба — Specify
 - следствия: в spec.md: Инструменты обновлены при открытом журнале
@@ -1318,7 +1318,7 @@
 - антиподы: —
 - рекомендация: A — Ядро лежит в `.symphysis/tools/` каждого проекта, поэтому версии расходятся именно по проектам.
 - улики:
-  - улика: `openspec/changes/decision-scheme/specs/plugin-core-contract/spec.md` «### Requirement: Плагин сверяет номер и говорит, что обновить»
+  - улика: `openspec/changes/archive/2026-11-02-decision-scheme/specs/plugin-core-contract/spec.md` «### Requirement: Плагин сверяет номер и говорит, что обновить»
   - улика: `docs/repo-contract.md` «Ядро лежит в `.symphysis/tools/` каждого проекта»
 - решение: A, 2026-11-02
 - исход: проба — Specify
@@ -1338,7 +1338,7 @@
 - антиподы: —
 - рекомендация: A — Это обычный первый запуск после установки нового плагина на старые инструменты.
 - улики:
-  - улика: `openspec/changes/decision-scheme/specs/plugin-core-contract/spec.md` «### Requirement: Плагин сверяет номер и говорит, что обновить»
+  - улика: `openspec/changes/archive/2026-11-02-decision-scheme/specs/plugin-core-contract/spec.md` «### Requirement: Плагин сверяет номер и говорит, что обновить»
 - решение: A, 2026-11-02
 - исход: проба — Specify
 - следствия: в spec.md: Прежних данных нет
@@ -1357,7 +1357,7 @@
 - антиподы: —
 - рекомендация: C — Требование и так об этом, нужен только конкретный набор данных в тесте.
 - улики:
-  - улика: `openspec/changes/decision-scheme/specs/plugin-core-contract/spec.md` «### Requirement: Один черновик даёт один журнал со страницы и из плагина»
+  - улика: `openspec/changes/archive/2026-11-02-decision-scheme/specs/plugin-core-contract/spec.md` «### Requirement: Один черновик даёт один журнал со страницы и из плагина»
 - решение: C, 2026-11-02
 - исход: проба — Backstop
 - следствия: тест-страховка: контрактный тест получает этот черновик отдельным набором и утверждает равенство журналов
@@ -1376,7 +1376,7 @@
 - антиподы: —
 - рекомендация: A — Логика страницы и плагина уже расходится по контракту, а слова человека сюда нельзя терять.
 - улики:
-  - улика: `openspec/changes/decision-scheme/specs/plugin-core-contract/spec.md` «### Requirement: Один черновик даёт один журнал со страницы и из плагина»
+  - улика: `openspec/changes/archive/2026-11-02-decision-scheme/specs/plugin-core-contract/spec.md` «### Requirement: Один черновик даёт один журнал со страницы и из плагина»
   - улика: `docs/repo-contract.md` «Логика страницы и плагина уже расходится, и человек это принял.»
 - решение: A, 2026-11-02
 - исход: проба — Specify
@@ -1396,7 +1396,7 @@
 - антиподы: —
 - рекомендация: A — `??` в `test/unit/fixture-project.ts` пропускает пустую строку как значение, и такой край сам собой не проявится.
 - улики:
-  - улика: `openspec/changes/decision-scheme/specs/plugin-core-contract/spec.md` «### Requirement: Заданный `SYMPHYSIS_ROOT` без ядра — падение, а не пропуск»
+  - улика: `openspec/changes/archive/2026-11-02-decision-scheme/specs/plugin-core-contract/spec.md` «### Requirement: Заданный `SYMPHYSIS_ROOT` без ядра — падение, а не пропуск»
   - улика: `vscode/test/unit/fixture-project.ts` «process.env.SYMPHYSIS_ROOT ??»
 - решение: A, 2026-11-02
 - исход: проба — Specify
@@ -1416,7 +1416,7 @@
 - антиподы: —
 - рекомендация: C — Форму надо проверить настоящей установкой, и такая проверка нужна при любой записи.
 - улики:
-  - улика: `openspec/changes/decision-scheme/specs/plugin-packaging/spec.md` «### Requirement: Собранный файл называет версию и коммит»
+  - улика: `openspec/changes/archive/2026-11-02-decision-scheme/specs/plugin-packaging/spec.md` «### Requirement: Собранный файл называет версию и коммит»
 - решение: C, 2026-11-02
 - исход: проба — Backstop
 - следствия: тест-страховка: `e2e:vsix` читает версию установленного расширения и утверждает, что в ней есть H
@@ -1435,7 +1435,7 @@
 - антиподы: —
 - рекомендация: A — Хеш нужен, чтобы понять, что собрано, а без пометки он обманывает именно при отладке.
 - улики:
-  - улика: `openspec/changes/decision-scheme/specs/plugin-packaging/spec.md` «### Requirement: Собранный файл называет версию и коммит»
+  - улика: `openspec/changes/archive/2026-11-02-decision-scheme/specs/plugin-packaging/spec.md` «### Requirement: Собранный файл называет версию и коммит»
 - решение: A, 2026-11-02
 - исход: проба — Specify
 - следствия: в spec.md: Сборка с незакоммиченными правками
@@ -1454,7 +1454,7 @@
 - антиподы: —
 - рекомендация: A — Шаги 1 и 2 сняты, и теперь только итог прогона говорит, на каком ядре он шёл.
 - улики:
-  - улика: `openspec/changes/decision-scheme/specs/plugin-packaging/spec.md` «### Requirement: Промежуточная сборка проверяется установкой, без шагов выпуска про `main`»
+  - улика: `openspec/changes/archive/2026-11-02-decision-scheme/specs/plugin-packaging/spec.md` «### Requirement: Промежуточная сборка проверяется установкой, без шагов выпуска про `main`»
   - улика: `docs/repo-contract.md` «без этой настройки тесты идут по той ветке, что стоит в `../symphysis`»
 - решение: A, 2026-11-02
 - исход: проба — Specify
@@ -1474,7 +1474,7 @@
 - антиподы: —
 - рекомендация: A — Сценарий стоит одной строки, и подсказка «узел не найден» не должна срабатывать на пустом списке.
 - улики:
-  - улика: `openspec/changes/decision-scheme/specs/decision-journal/spec.md` «### Requirement: Запись ссылается на узлы схемы необязательным полем `nodes`»
+  - улика: `openspec/changes/archive/2026-11-02-decision-scheme/specs/decision-journal/spec.md` «### Requirement: Запись ссылается на узлы схемы необязательным полем `nodes`»
 - решение: A, 2026-11-02
 - исход: проба — Specify
 - следствия: в spec.md: Пустой список
@@ -1493,7 +1493,7 @@
 - антиподы: —
 - рекомендация: A — Человек правит файл сам (F-06), а mermaid различает регистр, поэтому правило должно быть названо.
 - улики:
-  - улика: `openspec/changes/decision-scheme/specs/decision-journal/spec.md` «### Requirement: Запись ссылается на узлы схемы необязательным полем `nodes`»
+  - улика: `openspec/changes/archive/2026-11-02-decision-scheme/specs/decision-journal/spec.md` «### Requirement: Запись ссылается на узлы схемы необязательным полем `nodes`»
 - решение: A, 2026-11-02
 - исход: проба — Specify
 - следствия: в spec.md: Регистр и кириллица
@@ -1512,7 +1512,7 @@
 - антиподы: —
 - рекомендация: B — Страница и так снимок журнала с тем же свойством, а скилл просмотрщика пересобирает её перед показом.
 - улики:
-  - улика: `openspec/changes/decision-scheme/specs/decision-viewer/spec.md` «### Requirement: Панель схемы показывает `scheme.md` рядом с карточками»
+  - улика: `openspec/changes/archive/2026-11-02-decision-scheme/specs/decision-viewer/spec.md` «### Requirement: Панель схемы показывает `scheme.md` рядом с карточками»
 - решение: B — «Считать ли текст варианта твоей причиной? Да, про все.», 2026-11-02
 - исход: проба — Dismiss — Считать ли текст варианта твоей причиной? Да, про все.
 - следствия: не покрывается: страница и так снимок журнала, человек пересобирает её
@@ -1531,7 +1531,7 @@
 - антиподы: —
 - рекомендация: C — Файл может прийти из чужой ветки, а механизм экранирования уже есть, нужен только тест.
 - улики:
-  - улика: `openspec/changes/decision-scheme/specs/decision-viewer/spec.md` «### Requirement: Панель схемы показывает `scheme.md` рядом с карточками»
+  - улика: `openspec/changes/archive/2026-11-02-decision-scheme/specs/decision-viewer/spec.md` «### Requirement: Панель схемы показывает `scheme.md` рядом с карточками»
   - улика: `tools/journal_render.py` «чтобы текст не закрыл `<script>`»
 - решение: C, 2026-11-02
 - исход: проба — Backstop
@@ -1551,7 +1551,7 @@
 - антиподы: —
 - рекомендация: A — Страница и плагин говорят одно и то же, а человек понимает, что схемы именно нет, а не что панель сломана.
 - улики:
-  - улика: `openspec/changes/decision-scheme/specs/decision-viewer/spec.md` «### Requirement: Панель схемы показывает `scheme.md` рядом с карточками»
+  - улика: `openspec/changes/archive/2026-11-02-decision-scheme/specs/decision-viewer/spec.md` «### Requirement: Панель схемы показывает `scheme.md` рядом с карточками»
 - решение: A, 2026-11-02
 - исход: проба — Specify
 - следствия: в spec.md: Схемы нет
@@ -1570,7 +1570,7 @@
 - антиподы: —
 - рекомендация: A — Шаблон уже складывается в одну колонку на этой ширине, панель должна подчиняться тому же правилу.
 - улики:
-  - улика: `openspec/changes/decision-scheme/specs/decision-viewer/spec.md` «### Requirement: Панель схемы показывает `scheme.md` рядом с карточками»
+  - улика: `openspec/changes/archive/2026-11-02-decision-scheme/specs/decision-viewer/spec.md` «### Requirement: Панель схемы показывает `scheme.md` рядом с карточками»
   - улика: `tools/playground-template.html` «@media (max-width: 900px)»
 - решение: A, 2026-11-02
 - исход: проба — Specify
@@ -1590,7 +1590,7 @@
 - антиподы: —
 - рекомендация: A — Экспорт идёт через `blob:`, а проба проверяла только рисунок и карточки: это как раз непроверенное.
 - улики:
-  - улика: `openspec/changes/decision-scheme/specs/decision-viewer/spec.md` «### Requirement: Подписи схемы не ходят в сеть»
+  - улика: `openspec/changes/archive/2026-11-02-decision-scheme/specs/decision-viewer/spec.md` «### Requirement: Подписи схемы не ходят в сеть»
   - улика: `tools/playground-template.html` «URL.createObjectURL(blob)»
 - решение: A, 2026-11-02
 - исход: проба — Specify
@@ -1610,7 +1610,7 @@
 - антиподы: —
 - рекомендация: A — Иначе правка человека либо пропадёт, либо вернётся дублем.
 - улики:
-  - улика: `openspec/changes/decision-scheme/specs/decision-viewer/spec.md` «### Requirement: Внесённая новая развилка вычищается из черновика»
+  - улика: `openspec/changes/archive/2026-11-02-decision-scheme/specs/decision-viewer/spec.md` «### Requirement: Внесённая новая развилка вычищается из черновика»
 - решение: A, 2026-11-02
 - исход: проба — Specify
 - следствия: в spec.md: Изменённая развилка в черновике
@@ -1629,7 +1629,7 @@
 - антиподы: —
 - рекомендация: A — Починка не должна заменить одну ложную пометку другой: припаркованный факт и правда не закрыт.
 - улики:
-  - улика: `openspec/changes/decision-scheme/specs/decision-viewer/spec.md` «### Requirement: Зависимость от факта не считается нерешённой предпосылкой»
+  - улика: `openspec/changes/archive/2026-11-02-decision-scheme/specs/decision-viewer/spec.md` «### Requirement: Зависимость от факта не считается нерешённой предпосылкой»
 - решение: A, 2026-11-02
 - исход: проба — Specify
 - следствия: в spec.md: Зависимость от припаркованного факта; Оспоренный факт
@@ -1648,7 +1648,7 @@
 - антиподы: —
 - рекомендация: A — Снятие потолка меняет порядок правил §8, и этот случай лучше назвать сразу.
 - улики:
-  - улика: `openspec/changes/decision-scheme/specs/brainstorm-interview/spec.md` «### Requirement: Круг кончается счётом и словом человека, не числом»
+  - улика: `openspec/changes/archive/2026-11-02-decision-scheme/specs/brainstorm-interview/spec.md` «### Requirement: Круг кончается счётом и словом человека, не числом»
 - решение: A, 2026-11-02
 - исход: проба — Specify
 - следствия: в spec.md: Только парковки
@@ -1667,8 +1667,8 @@
 - антиподы: —
 - рекомендация: A — Слово человека: после второго круга могут возникнуть вопросы; то же верно и после слова «закончен».
 - улики:
-  - улика: `openspec/changes/decision-scheme/specs/brainstorm-interview/spec.md` «### Requirement: Круг кончается счётом и словом человека, не числом»
-  - улика: `openspec/changes/decision-scheme/answers/2026-11-01-circle2.md` «после второго могут возникнуть дополнительные вопросы»
+  - улика: `openspec/changes/archive/2026-11-02-decision-scheme/specs/brainstorm-interview/spec.md` «### Requirement: Круг кончается счётом и словом человека, не числом»
+  - улика: `openspec/changes/archive/2026-11-02-decision-scheme/answers/2026-11-01-circle2.md` «после второго могут возникнуть дополнительные вопросы»
 - решение: A, 2026-11-02
 - исход: проба — Specify
 - следствия: в spec.md: Круг после конца брейншторма
@@ -1687,8 +1687,8 @@
 - антиподы: —
 - рекомендация: A — Варианты одной развилки и так исключают друг друга, поэтому такая пара всегда ошибка, а проверка формы бесплатна. Это и есть отсечение ответа без рассуждений из F-50.
 - улики:
-  - улика: `openspec/changes/decision-scheme/specs/brainstorm-interview/spec.md` «### Requirement: Антиподы сверяются до показа и после выбора»
-  - улика: `openspec/changes/decision-scheme/research/antipodes-probe/probe.log` «пар 19, из них внутри одной развилки 18»
+  - улика: `openspec/changes/archive/2026-11-02-decision-scheme/specs/brainstorm-interview/spec.md` «### Requirement: Антиподы сверяются до показа и после выбора»
+  - улика: `openspec/changes/archive/2026-11-02-decision-scheme/research/antipodes-probe/probe.log` «пар 19, из них внутри одной развилки 18»
 - решение: A, 2026-11-02
 - исход: проба — Specify
 - следствия: в spec.md: Антипод внутри развилки
@@ -1707,7 +1707,7 @@
 - антиподы: —
 - рекомендация: A — Сверка идёт в каждом круге, поэтому повтор будет обычным случаем, а не исключением.
 - улики:
-  - улика: `openspec/changes/decision-scheme/specs/brainstorm-interview/spec.md` «### Requirement: Антиподы сверяются до показа и после выбора»
+  - улика: `openspec/changes/archive/2026-11-02-decision-scheme/specs/brainstorm-interview/spec.md` «### Requirement: Антиподы сверяются до показа и после выбора»
 - решение: A, 2026-11-02
 - исход: проба — Specify
 - следствия: в spec.md: Пара уже заведена
@@ -1726,7 +1726,7 @@
 - антиподы: —
 - рекомендация: A — Находка без следа — это пересказ, а опора на пересказ как раз то, что атака считает дырой.
 - улики:
-  - улика: `openspec/changes/decision-scheme/specs/artifact-graph/spec.md` «### Requirement: Исследование — файл на каждую парковку «материалы» с жанром»
+  - улика: `openspec/changes/archive/2026-11-02-decision-scheme/specs/artifact-graph/spec.md` «### Requirement: Исследование — файл на каждую парковку «материалы» с жанром»
 - решение: A, 2026-11-02
 - исход: проба — Specify
 - следствия: в spec.md: Проба без следа
@@ -1745,7 +1745,7 @@
 - антиподы: —
 - рекомендация: A — Запасной текст нужен человеку, а не сборке: поставка без рисунка выглядела бы рабочей и молчала.
 - улики:
-  - улика: `openspec/changes/decision-scheme/specs/project-installer/spec.md` «### Requirement: `install` ставит схему, скиллы и инструменты в проект и сливает конфиг»
+  - улика: `openspec/changes/archive/2026-11-02-decision-scheme/specs/project-installer/spec.md` «### Requirement: `install` ставит схему, скиллы и инструменты в проект и сливает конфиг»
 - решение: A, 2026-11-02
 - исход: проба — Specify
 - следствия: в spec.md: Файла mermaid нет при сборке поставки
@@ -1764,7 +1764,7 @@
 - антиподы: —
 - рекомендация: A — Страница без файла работает, поэтому это сигнал, а не `[!!]`, но промолчать значит оставить человека гадать, почему нет рисунка.
 - улики:
-  - улика: `openspec/changes/decision-scheme/specs/project-installer/spec.md` «### Requirement: `install` ставит схему, скиллы и инструменты в проект и сливает конфиг»
+  - улика: `openspec/changes/archive/2026-11-02-decision-scheme/specs/project-installer/spec.md` «### Requirement: `install` ставит схему, скиллы и инструменты в проект и сливает конфиг»
 - решение: A, 2026-11-02
 - исход: проба — Specify
 - следствия: в spec.md: Файл mermaid пропал из проекта
@@ -1783,9 +1783,9 @@
 - антиподы: —
 - рекомендация: A — Это твоё слово к F-22: при постоянных вопросах человек откажется от функции. Тесты на текст скилла в ядре уже есть.
 - улики:
-  - улика: `openspec/changes/decision-scheme/specs/decision-scheme/spec.md` «### Requirement: Брейншторм создаёт `scheme.md`, если файла нет»
-  - улика: `openspec/changes/decision-scheme/intent.md` «Модель здесь помощник, а не надзиратель.»
-  - улика: `openspec/changes/decision-scheme/answers/2026-11-01.md` «то он откажется от этой функции»
+  - улика: `openspec/changes/archive/2026-11-02-decision-scheme/specs/decision-scheme/spec.md` «### Requirement: Брейншторм создаёт `scheme.md`, если файла нет»
+  - улика: `openspec/changes/archive/2026-11-02-decision-scheme/intent.md` «Модель здесь помощник, а не надзиратель.»
+  - улика: `openspec/changes/archive/2026-11-02-decision-scheme/answers/2026-11-01.md` «то он откажется от этой функции»
 - решение: A, 2026-11-02
 - исход: проба — Specify
 - следствия: проверка: test — тест на текст скилла ищет шаги с вопросом об обновлении `scheme.md` и ожиданием его утверждения. в spec.md: Брейншторм не надзирает за схемой
@@ -1804,8 +1804,8 @@
 - антиподы: —
 - рекомендация: A — Тест простой, а нарушение незаметно: файл человека изменится без его ведома.
 - улики:
-  - улика: `openspec/changes/decision-scheme/specs/plugin-scheme-view/spec.md` «### Requirement: Вкладка рисует файл сама и без сети»
-  - улика: `openspec/changes/decision-scheme/intent.md` «Схема нужна человеку, а не модели, поэтому он ей управляет и наполняет.»
+  - улика: `openspec/changes/archive/2026-11-02-decision-scheme/specs/plugin-scheme-view/spec.md` «### Requirement: Вкладка рисует файл сама и без сети»
+  - улика: `openspec/changes/archive/2026-11-02-decision-scheme/intent.md` «Схема нужна человеку, а не модели, поэтому он ей управляет и наполняет.»
 - решение: A, 2026-11-02
 - исход: проба — Specify
 - следствия: проверка: test — сквозной тест сверяет хеш файла до и после клика, масштаба и перетаскивания. в spec.md: Вкладка не пишет в `scheme.md`
@@ -1824,7 +1824,7 @@
 - антиподы: —
 - рекомендация: A — Счётчик проверяется механически, а ошибка дорогая: решение уйдёт без части развилок.
 - улики:
-  - улика: `openspec/changes/decision-scheme/specs/plugin-scheme-view/spec.md` «### Requirement: Клик по узлу фильтрует карточки по `nodes`»
+  - улика: `openspec/changes/archive/2026-11-02-decision-scheme/specs/plugin-scheme-view/spec.md` «### Requirement: Клик по узлу фильтрует карточки по `nodes`»
 - решение: A, 2026-11-02
 - исход: проба — Specify
 - следствия: проверка: test — сквозной тест: при условии шапка показывает открытые по всему журналу и сколько из них скрыто. в spec.md: Условие «узел X» не прячет открытые записи
@@ -1843,7 +1843,7 @@
 - антиподы: —
 - рекомендация: A — В черновике слова человека, а тест на него простой.
 - улики:
-  - улика: `openspec/changes/decision-scheme/specs/plugin-core-contract/spec.md` «### Requirement: Плагин сверяет номер и говорит, что обновить»
+  - улика: `openspec/changes/archive/2026-11-02-decision-scheme/specs/plugin-core-contract/spec.md` «### Requirement: Плагин сверяет номер и говорит, что обновить»
 - решение: A, 2026-11-02
 - исход: проба — Specify
 - следствия: проверка: test — тест сверяет файл черновика в `.symphysis/viewer/` до и после. в spec.md: Несовпадение номера не трогает черновик
@@ -1862,7 +1862,7 @@
 - антиподы: —
 - рекомендация: A — «Удобная кнопка» здесь напрашивается, а инструменты лежат в проекте человека и могут быть с его правками.
 - улики:
-  - улика: `openspec/changes/decision-scheme/specs/plugin-core-contract/spec.md` «### Requirement: Плагин сверяет номер и говорит, что обновить»
+  - улика: `openspec/changes/archive/2026-11-02-decision-scheme/specs/plugin-core-contract/spec.md` «### Requirement: Плагин сверяет номер и говорит, что обновить»
 - решение: A, 2026-11-02
 - исход: проба — Specify
 - следствия: проверка: test — тест следит за вызовами процессов: допустимо только чтение журнала. в spec.md: Плагин не обновляет инструменты сам
@@ -1881,7 +1881,7 @@
 - антиподы: —
 - рекомендация: C — Контракт здесь не правится: шаги 1 и 2 относятся к выпуску, а эта сборка выпуском не считается.
 - улики:
-  - улика: `openspec/changes/decision-scheme/specs/plugin-packaging/spec.md` «### Requirement: Промежуточная сборка проверяется установкой, без шагов выпуска про `main`»
+  - улика: `openspec/changes/archive/2026-11-02-decision-scheme/specs/plugin-packaging/spec.md` «### Requirement: Промежуточная сборка проверяется установкой, без шагов выпуска про `main`»
   - улика: `docs/repo-contract.md` «Перед выпуском плагина:»
 - решение: C — «Считать ли текст варианта твоей причиной? Да, про все.», 2026-11-02
 - исход: проба — Dismiss — Считать ли текст варианта твоей причиной? Да, про все.
@@ -1901,7 +1901,7 @@
 - антиподы: —
 - рекомендация: B — Панель нужна, пока человек думает над развилкой (F-54), и удобство рядом с карточками может оценить только он.
 - улики:
-  - улика: `openspec/changes/decision-scheme/specs/decision-viewer/spec.md` «### Requirement: Панель схемы показывает `scheme.md` рядом с карточками»
+  - улика: `openspec/changes/archive/2026-11-02-decision-scheme/specs/decision-viewer/spec.md` «### Requirement: Панель схемы показывает `scheme.md` рядом с карточками»
 - решение: C — «Считать ли текст варианта твоей причиной? Да, про все.», 2026-11-02
 - исход: проба — Dismiss — Считать ли текст варианта твоей причиной? Да, про все.
 - следствия: запрет не нужен: панель выключается, а человек сам выставит то, что ему удобно
@@ -1920,8 +1920,8 @@
 - антиподы: —
 - рекомендация: A — Сейчас страница в сеть не ходит вообще, и это свойство стоит закрепить тестом: проба показала, что нарушить его легко.
 - улики:
-  - улика: `openspec/changes/decision-scheme/specs/decision-viewer/spec.md` «### Requirement: Подписи схемы не ходят в сеть»
-  - улика: `openspec/changes/decision-scheme/research/F-21-probe/probe.log` «http=[]»
+  - улика: `openspec/changes/archive/2026-11-02-decision-scheme/specs/decision-viewer/spec.md` «### Requirement: Подписи схемы не ходят в сеть»
+  - улика: `openspec/changes/archive/2026-11-02-decision-scheme/research/F-21-probe/probe.log` «http=[]»
 - решение: A, 2026-11-02
 - исход: проба — Specify
 - следствия: проверка: test — тест запускает браузер с журналом сети, как проба F-21, и утверждает ноль запросов. в spec.md: Страница не ходит в сеть
@@ -1940,7 +1940,7 @@
 - антиподы: —
 - рекомендация: B — Шаг выполняет модель, скрипта здесь нет, поэтому судить может только чтение журнала. `apply` защищает решение, но не варианты и рекомендацию.
 - улики:
-  - улика: `openspec/changes/decision-scheme/specs/brainstorm-interview/spec.md` «### Requirement: Антиподы сверяются до показа и после выбора»
+  - улика: `openspec/changes/archive/2026-11-02-decision-scheme/specs/brainstorm-interview/spec.md` «### Requirement: Антиподы сверяются до показа и после выбора»
 - решение: B, 2026-11-02
 - исход: проба — Specify
 - следствия: проверка: judgment — судят атака линзой `context-compliance` и человек по журналу: это шаг модели, а не скрипта. в spec.md: Сверка антиподов не решает за человека
@@ -1959,7 +1959,7 @@
 - антиподы: —
 - рекомендация: B — Формулировку вопроса тестом не проверить, а склонять к новому кругу для модели естественно.
 - улики:
-  - улика: `openspec/changes/decision-scheme/specs/brainstorm-interview/spec.md` «### Requirement: Круг кончается счётом и словом человека, не числом»
+  - улика: `openspec/changes/archive/2026-11-02-decision-scheme/specs/brainstorm-interview/spec.md` «### Requirement: Круг кончается счётом и словом человека, не числом»
 - решение: C — «Считать ли текст варианта твоей причиной? Да, про все.», 2026-11-02
 - исход: проба — Dismiss — Считать ли текст варианта твоей причиной? Да, про все.
 - следствия: запрет не нужен: новый круг и так только по слову человека
@@ -1978,7 +1978,7 @@
 - антиподы: —
 - рекомендация: B — Шаг исполняет модель, поэтому проверить можно только по следу: что попало в коммит.
 - улики:
-  - улика: `openspec/changes/decision-scheme/specs/artifact-graph/spec.md` «### Requirement: Исследование — файл на каждую парковку «материалы» с жанром»
+  - улика: `openspec/changes/archive/2026-11-02-decision-scheme/specs/artifact-graph/spec.md` «### Requirement: Исследование — файл на каждую парковку «материалы» с жанром»
 - решение: A, 2026-11-02
 - исход: проба — Specify
 - следствия: проверка: test — тест на текст инструкции `research`. в spec.md: Проба агента не правит рабочее дерево
@@ -1997,7 +1997,7 @@
 - антиподы: —
 - рекомендация: A — Закрытый контур это не прощает, а тест простой.
 - улики:
-  - улика: `openspec/changes/decision-scheme/specs/project-installer/spec.md` «### Requirement: `install` ставит схему, скиллы и инструменты в проект и сливает конфиг»
+  - улика: `openspec/changes/archive/2026-11-02-decision-scheme/specs/project-installer/spec.md` «### Requirement: `install` ставит схему, скиллы и инструменты в проект и сливает конфиг»
 - решение: C — «Считать ли текст варианта твоей причиной? Да, про все.», 2026-11-02
 - исход: проба — Dismiss — Считать ли текст варианта твоей причиной? Да, про все.
 - следствия: запрет не нужен: F-53 уже отверг скачивание, а кода скачивания нет
@@ -2016,8 +2016,8 @@
 - антиподы: —
 - рекомендация: A — Схема нужна человеку, а не модели (F-07): обязанность ставить узлы быстро превратит помощь в надзор.
 - улики:
-  - улика: `openspec/changes/decision-scheme/specs/decision-journal/spec.md` «### Requirement: Запись ссылается на узлы схемы необязательным полем `nodes`»
-  - улика: `openspec/changes/decision-scheme/intent.md` «Модель здесь помощник, а не надзиратель.»
+  - улика: `openspec/changes/archive/2026-11-02-decision-scheme/specs/decision-journal/spec.md` «### Requirement: Запись ссылается на узлы схемы необязательным полем `nodes`»
+  - улика: `openspec/changes/archive/2026-11-02-decision-scheme/intent.md` «Модель здесь помощник, а не надзиратель.»
 - решение: A, 2026-11-02
 - исход: проба — Specify
 - следствия: проверка: test — тест `check` и тест на текст скилла атаки. в spec.md: Запись без `nodes` не считается дефектом
@@ -2031,7 +2031,7 @@
 - парковка: ИБ — «Инъекция через подпись `scheme.md` из чужой ветки при `style-src 'unsafe-inline'` на вкладке — канон, покрывается чек-листом security.md; запрет не чеканится»
 - находка: Закрыто чек-листом: `security.md`, строка про подпись на вкладке.
 - улики:
-  - улика: `openspec/changes/decision-scheme/specs/plugin-scheme-view/spec.md` «### Requirement: Вкладка рисует файл сама и без сети»
+  - улика: `openspec/changes/archive/2026-11-02-decision-scheme/specs/plugin-scheme-view/spec.md` «### Requirement: Вкладка рисует файл сама и без сети»
 - следствия: На этом стоит шаг `security`.
 
 ## F-116 [канон] Подписи схемы не ходят в сеть: канон ИБ
@@ -2045,7 +2045,7 @@
 - парковка: ИБ — «CSP страницы и строгий режим mermaid — канон, покрывается чек-листом security.md; запрет не чеканится»
 - находка: Закрыто чек-листом: `security.md`, строка про CSP и строгий режим.
 - улики:
-  - улика: `openspec/changes/decision-scheme/specs/decision-viewer/spec.md` «### Requirement: Подписи схемы не ходят в сеть»
+  - улика: `openspec/changes/archive/2026-11-02-decision-scheme/specs/decision-viewer/spec.md` «### Requirement: Подписи схемы не ходят в сеть»
 - следствия: На этом стоит шаг `security`.
 
 ## F-117 [канон] `install` ставит схему, скиллы и инструменты в проект и сливает конфиг: канон ИБ
@@ -2057,7 +2057,7 @@
 - парковка: ИБ — «Файл стороннего пакета в поставке: закрепление версии и целостность зависимости сборки — канон, покрывается чек-листом security.md; запрет не чеканится»
 - находка: Закрыто чек-листом: `security.md`, строка про файл стороннего пакета.
 - улики:
-  - улика: `openspec/changes/decision-scheme/specs/project-installer/spec.md` «### Requirement: `install` ставит схему, скиллы и инструменты в проект и сливает конфиг»
+  - улика: `openspec/changes/archive/2026-11-02-decision-scheme/specs/project-installer/spec.md` «### Requirement: `install` ставит схему, скиллы и инструменты в проект и сливает конфиг»
 - следствия: На этом стоит шаг `security`.
 
 ## F-118 [канон] Исследование — файл на каждую парковку «материалы» с жанром: канон ИБ
@@ -2069,7 +2069,7 @@
 - парковка: ИБ — «Проба агента: чтение вне корней проекта и отправка материала внешней модели, сторож исходящего — канон, покрывается чек-листом security.md; запрет не чеканится»
 - находка: Вопрос к ядру, не к этому изменению. Слово человека: «права агента изоляцией считаются. Они же задаются конфигом, а не инструкцией. Но это вопрос к ядру, а не дизайну этого решения.»
 - улики:
-  - улика: `openspec/changes/decision-scheme/specs/artifact-graph/spec.md` «### Requirement: Исследование — файл на каждую парковку «материалы» с жанром»
+  - улика: `openspec/changes/archive/2026-11-02-decision-scheme/specs/artifact-graph/spec.md` «### Requirement: Исследование — файл на каждую парковку «материалы» с жанром»
 - следствия: На этом стоит шаг `security`.
 
 ## F-119 На настоящей странице панель шириной 40 % окна 1400 показывает рисунок читаемо: подписи 16 пикселей, после начальной прокрутки виден верхний узел, карточкам остаётся 575 пикселей. Вписанный в ту же панель рисунок даёт подписи 9,1 пикселя
@@ -2079,8 +2079,8 @@
 - адресат: материалы
 - зависит от: —
 - улики:
-  - улика: `openspec/changes/decision-scheme/research/design-probe/probe.log` «"labelPx":16,"total":20,"seen":7,"whole":3,"topVisible":true,"cardsWidth":575»
-  - улика: `openspec/changes/decision-scheme/research/design-probe/probe.log` «"scale":0.57,"labelPx":9.1,"total":20,"seen":15,"whole":12,"topVisible":true,"cardsWidth":575»
+  - улика: `openspec/changes/archive/2026-11-02-decision-scheme/research/design-probe/probe.log` «"labelPx":16,"total":20,"seen":7,"whole":3,"topVisible":true,"cardsWidth":575»
+  - улика: `openspec/changes/archive/2026-11-02-decision-scheme/research/design-probe/probe.log` «"scale":0.57,"labelPx":9.1,"total":20,"seen":15,"whole":12,"topVisible":true,"cardsWidth":575»
 - следствия: На этом стоит F-122. Снимки: `research/design-probe/shot-natural-1400-w40.png`, `shot-natural-1400-w50.png`, `shot-fit-1400-w40.png`, `shot-natural-800-narrow.png`.
 
 ## F-120 Под CSP страницы экспорт, импорт и копирование работают, запросов в сеть ноль; файл mermaid читается относительным путём от `openspec/changes/<имя>/` до `.symphysis/tools/`, без файла виден текст
@@ -2090,10 +2090,10 @@
 - адресат: материалы
 - зависит от: —
 - улики:
-  - улика: `openspec/changes/decision-scheme/research/design-probe/probe.log` «import=проба импорта»
-  - улика: `openspec/changes/decision-scheme/research/design-probe/probe.log` «copy=скопировано»
-  - улика: `openspec/changes/decision-scheme/research/design-probe/probe.log` «http=[]»
-  - улика: `openspec/changes/decision-scheme/research/design-probe/probe.log` «kind=text»
+  - улика: `openspec/changes/archive/2026-11-02-decision-scheme/research/design-probe/probe.log` «import=проба импорта»
+  - улика: `openspec/changes/archive/2026-11-02-decision-scheme/research/design-probe/probe.log` «copy=скопировано»
+  - улика: `openspec/changes/archive/2026-11-02-decision-scheme/research/design-probe/probe.log` «http=[]»
+  - улика: `openspec/changes/archive/2026-11-02-decision-scheme/research/design-probe/probe.log` «kind=text»
 - следствия: Проверено до кода для F-92 и F-109; тесты этих требований остаются.
 
 ## F-121 Запись версии с `-` сравнивается как предварительная: сборка с меньшим по алфавиту хешем не ставится при коде 0, а хеш из цифр с нулём впереди падает при установке. Запись с `+` ставится всегда, `e2e:vsix` на копии плагина с ней прошёл
@@ -2103,10 +2103,10 @@
 - адресат: материалы
 - зависит от: —
 - улики:
-  - улика: `openspec/changes/decision-scheme/research/design-probe/probe.log` «A newer version of extension 'symphysis.probe-version' v0.2.0-gbbb2222 is already installed.»
-  - улика: `openspec/changes/decision-scheme/research/design-probe/probe.log` «upgrade 0.2.0+bbb2222 -> 0.2.0+aaa1111»
-  - улика: `openspec/changes/decision-scheme/research/design-probe/probe.log` «install=код 1 ScanningExtension»
-  - улика: `openspec/changes/decision-scheme/research/design-probe/probe.log` «итого 5, упало 0»
+  - улика: `openspec/changes/archive/2026-11-02-decision-scheme/research/design-probe/probe.log` «A newer version of extension 'symphysis.probe-version' v0.2.0-gbbb2222 is already installed.»
+  - улика: `openspec/changes/archive/2026-11-02-decision-scheme/research/design-probe/probe.log` «upgrade 0.2.0+bbb2222 -> 0.2.0+aaa1111»
+  - улика: `openspec/changes/archive/2026-11-02-decision-scheme/research/design-probe/probe.log` «install=код 1 ScanningExtension»
+  - улика: `openspec/changes/archive/2026-11-02-decision-scheme/research/design-probe/probe.log` «итого 5, упало 0»
 - следствия: На этом стоит F-123. Окно расширений глазами не смотрелось: `--list-extensions` показывает запись как есть.
 
 ## F-122 Какая ширина и начальная позиция у панели схемы на странице?
@@ -2117,14 +2117,14 @@
 - зависит от: F-54, F-119
 - варианты:
   - A. Ширина 40 % окна, границу можно тянуть мышью, браузер её помнит. Рисунок в натуральном размере, вначале виден верхний узел посередине панели. На окне 1400 подписи 16 пикселей, карточкам 575, целиком видно 3 узла из 20, остальное прокруткой. Удобства контракт оставляет плагину, но такая ручка на странице уже есть у панели возврата.
-    - улика: `openspec/changes/decision-scheme/research/design-probe/probe.log` «"labelPx":16,"total":20,"seen":7,"whole":3,"topVisible":true,"cardsWidth":575»
+    - улика: `openspec/changes/archive/2026-11-02-decision-scheme/research/design-probe/probe.log` «"labelPx":16,"total":20,"seen":7,"whole":3,"topVisible":true,"cardsWidth":575»
     - улика: `tools/playground-template.html` «тяни, чтобы изменить высоту панели»
   - B. То же, но ширина всегда 40 %, граница не тянется. Кода меньше, но «сам выставит» из отказа F-108 тогда значит только включить или выключить панель либо сменить размер окна.
-    - улика: `openspec/changes/decision-scheme/research/design-probe/probe.log` «"labelPx":16,"total":20,"seen":7,"whole":3,"topVisible":true,"cardsWidth":575»
+    - улика: `openspec/changes/archive/2026-11-02-decision-scheme/research/design-probe/probe.log` «"labelPx":16,"total":20,"seen":7,"whole":3,"topVisible":true,"cardsWidth":575»
   - C. Ширина всегда 50 %. Целиком видно 6 узлов из 20, но карточкам остаётся 435 пикселей.
-    - улика: `openspec/changes/decision-scheme/research/design-probe/probe.log` «"labelPx":16,"total":20,"seen":7,"whole":6,"topVisible":true,"cardsWidth":435»
+    - улика: `openspec/changes/archive/2026-11-02-decision-scheme/research/design-probe/probe.log` «"labelPx":16,"total":20,"seen":7,"whole":6,"topVisible":true,"cardsWidth":435»
   - D. Ширина 40 %, рисунок вписан в ширину панели: видна вся структура, целиком 12 узлов из 20, но подписи 9 пикселей, а увеличить на странице нечем.
-    - улика: `openspec/changes/decision-scheme/research/design-probe/probe.log` «"scale":0.57,"labelPx":9.1,"total":20,"seen":15,"whole":12,"topVisible":true,"cardsWidth":575»
+    - улика: `openspec/changes/archive/2026-11-02-decision-scheme/research/design-probe/probe.log` «"scale":0.57,"labelPx":9.1,"total":20,"seen":15,"whole":12,"topVisible":true,"cardsWidth":575»
 - антиподы: —
 - рекомендация: A — Подписи читаются, а ширину человек подгоняет сам: на этом стоит его причина отказа F-108. Ручка повторяет код панели возврата, это около семи строк.
 - решение: A, 2026-11-02
@@ -2138,12 +2138,12 @@
 - зависит от: F-30, F-84, F-121
 - варианты:
   - A. `0.2.0+abc1234` и `0.2.0+abc1234.dirty`. Новая сборка ставится поверх прежней всегда, при любом хеше; `e2e:vsix` на копии плагина с такой версией прошёл 5 из 5.
-    - улика: `openspec/changes/decision-scheme/research/design-probe/probe.log` «upgrade 0.2.0+bbb2222 -> 0.2.0+aaa1111»
-    - улика: `openspec/changes/decision-scheme/research/design-probe/probe.log` «итого 5, упало 0»
+    - улика: `openspec/changes/archive/2026-11-02-decision-scheme/research/design-probe/probe.log` «upgrade 0.2.0+bbb2222 -> 0.2.0+aaa1111»
+    - улика: `openspec/changes/archive/2026-11-02-decision-scheme/research/design-probe/probe.log` «итого 5, упало 0»
   - B. `0.2.0-gabc1234` и `0.2.0-gabc1234.dirty`, с буквой `g`, как у `git describe`. Примерно половина новых сборок не поставится: команда установки отвечает кодом 0, а остаётся старая, нужен `--force`.
-    - улика: `openspec/changes/decision-scheme/research/design-probe/probe.log` «A newer version of extension 'symphysis.probe-version' v0.2.0-gbbb2222 is already installed.»
+    - улика: `openspec/changes/archive/2026-11-02-decision-scheme/research/design-probe/probe.log` «A newer version of extension 'symphysis.probe-version' v0.2.0-gbbb2222 is already installed.»
   - C. `0.2.0-abc1234` и `0.2.0-abc1234.dirty`. То же, что B, и ещё хеш из цифр с нулём впереди упаковывается, а при установке падает.
-    - улика: `openspec/changes/decision-scheme/research/design-probe/probe.log` «install=код 1 ScanningExtension»
+    - улика: `openspec/changes/archive/2026-11-02-decision-scheme/research/design-probe/probe.log` «install=код 1 ScanningExtension»
     - маловероятно: случайный хеш ломает установку
 - антиподы: —
 - рекомендация: A — Только эта запись заменяет прежнюю сборку при любом хеше. Для сборок, которые ставятся руками поверх старых, это главное.
@@ -2157,11 +2157,11 @@
 - адресат: материалы
 - зависит от: —
 - улики:
-  - улика: `openspec/changes/decision-scheme/research/reload-probe/layout.log` «цикл 1, сразу после старта: групп 2: [] *[]»
-  - улика: `openspec/changes/decision-scheme/research/reload-probe/layout.log` «цикл 3, нажата «схема»: групп 4: [] [] *[Журнал: со-схемой] [Схема: со-схемой]»
-  - улика: `openspec/changes/decision-scheme/research/reload-probe/layout.log` «цикл 2, нажата «схема»: групп 3: [] [Журнал: со-схемой] *[Схема: со-схемой]»
+  - улика: `openspec/changes/archive/2026-11-02-decision-scheme/research/reload-probe/layout.log` «цикл 1, сразу после старта: групп 2: [] *[]»
+  - улика: `openspec/changes/archive/2026-11-02-decision-scheme/research/reload-probe/layout.log` «цикл 3, нажата «схема»: групп 4: [] [] *[Журнал: со-схемой] [Схема: со-схемой]»
+  - улика: `openspec/changes/archive/2026-11-02-decision-scheme/research/reload-probe/layout.log` «цикл 2, нажата «схема»: групп 3: [] [Журнал: со-схемой] *[Схема: со-схемой]»
   - улика: `vscode/package.json` «"activationEvents": ["workspaceContains:openspec/changes/*/decisions.json"],»
-  - улика: `openspec/changes/decision-scheme/specs/plugin-scheme-view/spec.md` «снято: перезагрузка окна — по F-26 сама не открывается»
+  - улика: `openspec/changes/archive/2026-11-02-decision-scheme/specs/plugin-scheme-view/spec.md` «снято: перезагрузка окна — по F-26 сама не открывается»
 - следствия: На этом стоит F-125. Строку «снято: перезагрузка окна» в `spec.md` модель написала сама: F-26 решал открытие схемы вместе с журналом, о перезагрузке слова человека не было, а у журнала записи о ней нет вовсе. Нашёл человек на показе (задача 8.3).
 
 ## F-125 Что происходит с вкладками журнала и схемы при перезагрузке окна (Ctrl+R) и перезапуске?
@@ -2172,17 +2172,17 @@
 - зависит от: F-26, F-124
 - варианты:
   - A. Обе вкладки возвращаются на свои места: сериализатор у журнала и у схемы. После Ctrl+R и перезапуска они стоят в своих группах с тем же изменением, пустых групп не остаётся (проверено на мини-расширении, в плагине ещё нет). Цена: вкладка под другой вкладкой поднимается только при показе, и пока она спит, выбор изменения обязан найти её, а не открыть вторую; масштаб рисунка возвращается к начальному
-    - улика: `openspec/changes/decision-scheme/research/reload-probe/serial.log` «этап 1, сразу после старта: групп 2: [вебвью:mainThreadWebview-probe.viewer:probe.viewer:журнал] *[вебвью:mainThreadWebview-probe.scheme:probe.scheme:схема]»
-    - улика: `openspec/changes/decision-scheme/research/reload-probe/serial.log` «этап 3, после полного перезапуска окна: *[вебвью:mainThreadWebview-probe.viewer:probe.viewer:журнал, текст:intent.md] [вебвью:mainThreadWebview-probe.scheme:probe.scheme:схема]»
-    - улика: `openspec/changes/decision-scheme/research/reload-probe/serial.log` «этап 2: журнал под файлом — выше видно, позвали ли его восстановление без показа»
+    - улика: `openspec/changes/archive/2026-11-02-decision-scheme/research/reload-probe/serial.log` «этап 1, сразу после старта: групп 2: [вебвью:mainThreadWebview-probe.viewer:probe.viewer:журнал] *[вебвью:mainThreadWebview-probe.scheme:probe.scheme:схема]»
+    - улика: `openspec/changes/archive/2026-11-02-decision-scheme/research/reload-probe/serial.log` «этап 3, после полного перезапуска окна: *[вебвью:mainThreadWebview-probe.viewer:probe.viewer:журнал, текст:intent.md] [вебвью:mainThreadWebview-probe.scheme:probe.scheme:схема]»
+    - улика: `openspec/changes/archive/2026-11-02-decision-scheme/research/reload-probe/serial.log` «этап 2: журнал под файлом — выше видно, позвали ли его восстановление без показа»
   - B. Возвращается только журнал, схема ждёт кнопку: «сама не открывается» из F-26 действует и после перезагрузки. Цена: та же спящая вкладка у журнала, а группа схемы стоит пустой, пока кнопка не нажата
-    - улика: `openspec/changes/decision-scheme/specs/plugin-scheme-view/spec.md` «снято: перезагрузка окна — по F-26 сама не открывается»
-    - улика: `openspec/changes/decision-scheme/research/reload-probe/layout.log` «цикл 2, нажата «схема»: групп 3: [] [Журнал: со-схемой] *[Схема: со-схемой]»
+    - улика: `openspec/changes/archive/2026-11-02-decision-scheme/specs/plugin-scheme-view/spec.md` «снято: перезагрузка окна — по F-26 сама не открывается»
+    - улика: `openspec/changes/archive/2026-11-02-decision-scheme/research/reload-probe/layout.log` «цикл 2, нажата «схема»: групп 3: [] [Журнал: со-схемой] *[Схема: со-схемой]»
   - C. Вкладки не возвращаются, но встают в пустые группы: выбор изменения занимает первую пустую, «схема» следующую, число групп не растёт. После каждой перезагрузки человек открывает обе заново, черновик цел, он в файле. Цена: своя логика выбора группы вместо обычного «рядом»; вариант не пробовался
     - улика: `vscode/src/host/viewerPanel.ts` «open(key: string, column: vscode.ViewColumn = vscode.ViewColumn.Active): void {»
-    - улика: `openspec/changes/decision-scheme/research/reload-probe/layout.log` «цикл 1, сразу после старта: групп 2: [] *[]»
+    - улика: `openspec/changes/archive/2026-11-02-decision-scheme/research/reload-probe/layout.log` «цикл 1, сразу после старта: групп 2: [] *[]»
   - D. Оставить как есть и записать поведение в документы: вкладки пропадают, пустые группы закрывает человек, перезагрузка может добавить ещё одну. Кода нет
-    - улика: `openspec/changes/decision-scheme/research/reload-probe/layout.log` «цикл 3, нажата «схема»: групп 4: [] [] *[Журнал: со-схемой] [Схема: со-схемой]»
+    - улика: `openspec/changes/archive/2026-11-02-decision-scheme/research/reload-probe/layout.log` «цикл 3, нажата «схема»: групп 4: [] [] *[Журнал: со-схемой] [Схема: со-схемой]»
 - антиподы: —
 - рекомендация: A — Ctrl+R и перезапуск после обновления VS Code — обычные действия, и обычная вкладка редактора после них возвращается; проба показала и места, и состояние, и перезапуск. F-26 это не противоречит: он о том, что схема не открывается вместе с журналом, а здесь человек сам оставил её открытой. Рост групп уходит вместе с причиной, и логика C не нужна.
 - решение: A, 2026-11-02
