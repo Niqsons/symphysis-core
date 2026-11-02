@@ -4,10 +4,11 @@
 // reload — открыть страницу снова; choose:<запись>:<буква> — выбрать вариант; buttons — экспорт, импорт, копирование.
 // Итог на stdout: JSON с замером страницы, запросами наружу (`http`), запросами, которые заблокировала CSP (`blocked`), нарушениями и ошибками.
 import { spawn } from "node:child_process";
-import { existsSync, mkdirSync, mkdtempSync, readdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync, mkdtempSync, readdirSync, readFileSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { pathToFileURL } from "node:url";
+import { removeTree } from "../../installer/scripts/sync-payload.js";
 
 const [chrome, page, width, height, ...actions] = process.argv.slice(2);
 const [w, h] = [Number(width), Number(height)];
@@ -50,11 +51,21 @@ const MEASURE = `(() => {
     mode: (document.querySelector('#modes button.active') || {}).textContent || null };
 })()`;
 
+// Chrome создаёт файл порта раньше, чем отпускает его: под нагрузкой чтение падает с EBUSY, поэтому читается, пока порт не прочитается.
+async function devToolsPort() {
+  let failure;
+  for (let i = 0; i < 400; i++) {
+    try {
+      const port = readFileSync(join(profile, "DevToolsActivePort"), "utf8").split("\n")[0].trim();
+      if (port) return port;
+    } catch (e) { failure = e; }
+    await sleep(25);
+  }
+  throw new Error(`Chrome не отдал порт отладки за 10 с: ${failure}`);
+}
+
 async function main() {
-  const portFile = join(profile, "DevToolsActivePort");
-  for (let i = 0; i < 400 && !existsSync(portFile); i++) await sleep(25);
-  await sleep(100);
-  const port = readFileSync(portFile, "utf8").split("\n")[0].trim();
+  const port = await devToolsPort();
   const targets = await (await fetch(`http://127.0.0.1:${port}/json`)).json();
   const ws = new WebSocket(targets.find((t) => t.type === "page").webSocketDebuggerUrl);
   await new Promise((r) => (ws.onopen = r));
@@ -139,6 +150,18 @@ async function main() {
   return { ...measure, http: [...sent.values()], blocked, files, errors, csp, buttons };
 }
 
+// Процессы Chrome переживают kill главного и держат файлы профиля, поэтому снятие повторяется, пока они не выйдут.
+async function removeProfile() {
+  const end = Date.now() + 20000;
+  let failure;
+  while (existsSync(profile) && Date.now() < end) {
+    try { removeTree(profile); } catch (e) { failure = e; await sleep(100); }
+  }
+  if (!existsSync(profile)) return true;
+  process.stderr.write(`профиль не снят за 20 с: ${profile}: ${failure}\n`);
+  return false;
+}
+
 let code = 0;
 try {
   process.stdout.write(JSON.stringify(await main()));
@@ -147,7 +170,6 @@ try {
   code = 1;
 } finally {
   proc.kill();
-  await sleep(150);
-  try { rmSync(profile, { recursive: true, force: true, maxRetries: 5 }); } catch {}
+  if (!(await removeProfile())) code = 1;
 }
 process.exit(code);

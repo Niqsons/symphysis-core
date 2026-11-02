@@ -64,6 +64,19 @@ def browser(html, *actions, size=(1400, 900)):
     return json.loads(run.stdout)
 
 
+def test_driver_removes_its_profile_under_load(tmp_path):
+    """Процессы Chrome переживают kill главного и держат файлы профиля, под `-n 12` дольше: одна попытка снятия оставляла в системном каталоге по 5,5 МБ на запуск."""
+    html = page(tmp_path)
+    temp = tmp_path / "temp"
+    temp.mkdir()
+    env = {**os.environ, "TEMP": str(temp), "TMP": str(temp), "TMPDIR": str(temp)}
+    runs = [subprocess.Popen([node, str(DRIVER), chrome, str(html), "1400", "900"], stdout=subprocess.DEVNULL, stderr=subprocess.PIPE,
+                             text=True, encoding="utf-8", env=env) for _ in range(6)]
+    errors = [run.communicate(timeout=120)[1] for run in runs]
+    assert [run.returncode for run in runs] == [0] * 6, errors
+    assert [p.name for p in temp.glob("symphysis-viewer-*")] == []
+
+
 def test_panel_is_off_on_first_open_and_cards_take_the_width(tmp_path):
     r = browser(page(tmp_path))
     assert r["shown"] is False
