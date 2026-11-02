@@ -186,15 +186,15 @@
 const JOURNAL = {
  "title": "Журнал решений: decision-scheme",
  "source": "decisions.json",
- "sha256": "495d5352ce015aa5ff12780c9fbae88876c78274b90ced1aa2f0d8039d9f9dbd",
+ "sha256": "d91af75cf82fac2e6eacc3afddcd169333dcad8b798af175e4f1dc38517a9d4c",
  "stats": {
-  "records": 123,
-  "forks": 87,
-  "facts": 36,
-  "decided": 87,
+  "records": 125,
+  "forks": 88,
+  "facts": 37,
+  "decided": 88,
   "parked": 4,
-  "evidence_total": 316,
-  "evidence_found": 300
+  "evidence_total": 329,
+  "evidence_found": 299
  },
  "records": [
   {
@@ -537,21 +537,21 @@ const JOURNAL = {
     {
      "path": "vscode/docs/design-part1-viewer.md",
      "quote": "- **Р13** — файл `scheme.md` с одним блоком ` ```mermaid `: его рисуют",
-     "line": 195,
+     "line": 199,
      "verdict": "сверено",
      "found": true
     },
     {
      "path": "vscode/docs/design-part1-viewer.md",
      "quote": "- **Р14** — схема обязательна инструкцией брейншторма, не артефактом",
-     "line": 197,
+     "line": 201,
      "verdict": "сверено",
      "found": true
     },
     {
      "path": "vscode/docs/design-part1-viewer.md",
      "quote": "- **Р15** — брейншторм рисует `flowchart`; клик-фильтр — только по нему;",
-     "line": 200,
+     "line": 204,
      "verdict": "сверено",
      "found": true
     }
@@ -680,9 +680,9 @@ const JOURNAL = {
     {
      "path": "vscode/src/host/page.ts",
      "quote": "`style-src ${webview.cspSource}`",
-     "line": 9,
-     "verdict": "сверено",
-     "found": true
+     "line": null,
+     "verdict": "цитаты нет дословно",
+     "found": false
     }
    ],
    "comments": [],
@@ -716,16 +716,16 @@ const JOURNAL = {
     {
      "path": "docs/repo-contract.md",
      "quote": "| проверка номера: сегодня `src/host/core.ts:31` принимает JSON без проверки | плагин |",
-     "line": 113,
-     "verdict": "сверено",
-     "found": true
+     "line": null,
+     "verdict": "цитаты нет дословно",
+     "found": false
     },
     {
      "path": "docs/repo-contract.md",
      "quote": "| контрактный тест из разовой сверки черновиков | плагин |",
-     "line": 114,
-     "verdict": "сверено",
-     "found": true
+     "line": null,
+     "verdict": "цитаты нет дословно",
+     "found": false
     },
     {
      "path": "docs/repo-contract.md",
@@ -737,16 +737,16 @@ const JOURNAL = {
     {
      "path": "docs/repo-contract.md",
      "quote": "| заданный `SYMPHYSIS_ROOT` без ядра даёт падение, а не пропуск | плагин |",
-     "line": 115,
-     "verdict": "сверено",
-     "found": true
+     "line": null,
+     "verdict": "цитаты нет дословно",
+     "found": false
     },
     {
      "path": "docs/repo-contract.md",
      "quote": "| `npm run e2e:vsix` после коммита упаковки | плагин |",
-     "line": 116,
-     "verdict": "сверено",
-     "found": true
+     "line": null,
+     "verdict": "цитаты нет дословно",
+     "found": false
     },
     {
      "path": "docs/repo-contract.md",
@@ -787,7 +787,7 @@ const JOURNAL = {
     {
      "path": "vscode/docs/design-part1-viewer.md",
      "quote": "новая развилка не вычищается после `apply` и уходит в промпт повторно; зависимость от факта навсегда даёт «предпосылка не решена»",
-     "line": 430,
+     "line": 434,
      "verdict": "сверено",
      "found": true
     }
@@ -878,7 +878,7 @@ const JOURNAL = {
       {
        "path": "vscode/docs/design-part1-viewer.md",
        "quote": "собирает, нового смысла нет); схема, поле `nodes`, тексты скиллов —",
-       "line": 188,
+       "line": 192,
        "verdict": "сверено",
        "found": true
       }
@@ -942,9 +942,9 @@ const JOURNAL = {
       {
        "path": "docs/repo-contract.md",
        "quote": "| контрактный тест из разовой сверки черновиков | плагин |",
-       "line": 114,
-       "verdict": "сверено",
-       "found": true
+       "line": null,
+       "verdict": "цитаты нет дословно",
+       "found": false
       },
       {
        "path": "docs/repo-contract.md",
@@ -1033,7 +1033,7 @@ const JOURNAL = {
       {
        "path": "vscode/docs/design-part1-viewer.md",
        "quote": "Страница `decisions.html` схему решения не рисует; `scheme.md` смотрится",
-       "line": 217,
+       "line": 221,
        "verdict": "сверено",
        "found": true
       }
@@ -1063,7 +1063,7 @@ const JOURNAL = {
       {
        "path": "vscode/docs/design-part1-viewer.md",
        "quote": "GitHub и GitLab, человек правит обычный markdown.",
-       "line": 196,
+       "line": 200,
        "verdict": "сверено",
        "found": true
       }
@@ -1078,7 +1078,7 @@ const JOURNAL = {
       {
        "path": "vscode/docs/design-part1-viewer.md",
        "quote": "стоит Markdown Preview Enhanced). Ядро symphysis от mermaid не зависит.",
-       "line": 219,
+       "line": 223,
        "verdict": "сверено",
        "found": true
       }
@@ -1168,7 +1168,7 @@ const JOURNAL = {
       {
        "path": "vscode/docs/design-part1-viewer.md",
        "quote": "не в журнале; правят и человек, и агент.",
-       "line": 168,
+       "line": 172,
        "verdict": "сверено",
        "found": true
       }
@@ -1324,7 +1324,7 @@ const JOURNAL = {
       {
        "path": "vscode/docs/design-part1-viewer.md",
        "quote": "`nodes`; запись со ссылкой на несуществующий узел — сигнал.",
-       "line": 376,
+       "line": 380,
        "verdict": "сверено",
        "found": true
       }
@@ -1372,7 +1372,7 @@ const JOURNAL = {
       {
        "path": "vscode/src/extension.ts",
        "quote": "\"openspec/changes/*/decisions.json\", \"openspec/changes/*/attack/*.md\"",
-       "line": 107,
+       "line": 111,
        "verdict": "сверено",
        "found": true
       }
@@ -1440,7 +1440,7 @@ const JOURNAL = {
       {
        "path": "vscode/docs/design-part1-viewer.md",
        "quote": "Раскладка владельца: терминал слева, просмотрщик по центру, схема узкой колонкой",
-       "line": 321,
+       "line": 325,
        "verdict": "сверено",
        "found": true
       }
@@ -1455,7 +1455,7 @@ const JOURNAL = {
       {
        "path": "vscode/docs/design-part1-viewer.md",
        "quote": "Раскладка владельца: терминал слева, просмотрщик по центру, схема узкой колонкой",
-       "line": 321,
+       "line": 325,
        "verdict": "сверено",
        "found": true
       }
@@ -1604,7 +1604,7 @@ const JOURNAL = {
       {
        "path": "vscode/src/webview/App.tsx",
        "quote": "Ниже — журнал, каким он был до этого.",
-       "line": 312,
+       "line": 326,
        "verdict": "сверено",
        "found": true
       },
@@ -1703,7 +1703,7 @@ const JOURNAL = {
       {
        "path": "vscode/package.json",
        "quote": "\"react\": \"19.3.1\",",
-       "line": 92,
+       "line": 95,
        "verdict": "сверено",
        "found": true
       }
@@ -1718,7 +1718,7 @@ const JOURNAL = {
       {
        "path": "vscode/docs/design-part1-viewer.md",
        "quote": "- Схема: прокрутка и масштаб, «вписать по ширине»; брейншторм рисует сверху вниз (`TD`).",
-       "line": 379,
+       "line": 383,
        "verdict": "сверено",
        "found": true
       }
@@ -1766,16 +1766,16 @@ const JOURNAL = {
       {
        "path": "vscode/test/e2e/vsix.mjs",
        "quote": "const vsix = path.join(repo, `${pkg.name}-${pkg.version}.vsix`);",
-       "line": 11,
-       "verdict": "сверено",
-       "found": true
+       "line": null,
+       "verdict": "цитаты нет дословно",
+       "found": false
       },
       {
        "path": "vscode/package.json",
        "quote": "\"version\": \"0.1.0\",",
-       "line": 6,
-       "verdict": "сверено",
-       "found": true
+       "line": null,
+       "verdict": "цитаты нет дословно",
+       "found": false
       }
      ]
     },
@@ -1857,7 +1857,7 @@ const JOURNAL = {
       {
        "path": "vscode/src/host/core.ts",
        "quote": "failure: { kind: \"old-core\", tools: env.tools } };",
-       "line": 27,
+       "line": 30,
        "verdict": "сверено",
        "found": true
       },
@@ -1879,7 +1879,7 @@ const JOURNAL = {
       {
        "path": "vscode/src/host/core.ts",
        "quote": "const payload = JSON.parse(r.stdout) as ViewPayload;",
-       "line": 31,
+       "line": 34,
        "verdict": "сверено",
        "found": true
       }
@@ -1956,7 +1956,7 @@ const JOURNAL = {
       {
        "path": "vscode/docs/design-part1-viewer.md",
        "quote": "и печатает «`scheme.md` изменился с прошлого обращения». Первое обращение сессии",
-       "line": 276,
+       "line": 280,
        "verdict": "сверено",
        "found": true
       }
@@ -2213,7 +2213,7 @@ const JOURNAL = {
     {
      "path": "vscode/src/shared/types.ts",
      "quote": "export const ADDRESSEES = [\"материалы\", \"человек\", \"ИБ\"] as const;",
-     "line": 85,
+     "line": 89,
      "verdict": "сверено",
      "found": true
     },
@@ -2588,9 +2588,9 @@ const JOURNAL = {
       {
        "path": "vscode/src/webview/Card.tsx",
        "quote": "ответ ищется в файлах (исследование)",
-       "line": 9,
-       "verdict": "сверено",
-       "found": true
+       "line": null,
+       "verdict": "цитаты нет дословно",
+       "found": false
       }
      ]
     },
@@ -2674,7 +2674,7 @@ const JOURNAL = {
       {
        "path": "vscode/src/extension.ts",
        "quote": "const workspaceDirs = () => (vscode.workspace.workspaceFolders ?? [])",
-       "line": 17,
+       "line": 18,
        "verdict": "сверено",
        "found": true
       }
@@ -2752,7 +2752,7 @@ const JOURNAL = {
       {
        "path": "vscode/src/webview/App.tsx",
        "quote": "<h2>Замечания к схеме и плану<\/h2>",
-       "line": 328,
+       "line": 342,
        "verdict": "сверено",
        "found": true
       },
@@ -3498,7 +3498,7 @@ const JOURNAL = {
       {
        "path": "vscode/src/webview/Card.tsx",
        "quote": "антипод уже выбран:",
-       "line": 139,
+       "line": 168,
        "verdict": "сверено",
        "found": true
       }
@@ -4581,7 +4581,7 @@ const JOURNAL = {
     {
      "path": "openspec/changes/decision-scheme/specs/plugin-scheme-view/spec.md",
      "quote": "### Requirement: Вкладка рисует файл сама и без сети",
-     "line": 38,
+     "line": 63,
      "verdict": "сверено",
      "found": true
     },
@@ -4660,7 +4660,7 @@ const JOURNAL = {
     {
      "path": "openspec/changes/decision-scheme/specs/plugin-scheme-view/spec.md",
      "quote": "### Requirement: Вкладка рисует файл сама и без сети",
-     "line": 38,
+     "line": 63,
      "verdict": "сверено",
      "found": true
     }
@@ -4731,7 +4731,7 @@ const JOURNAL = {
     {
      "path": "openspec/changes/decision-scheme/specs/plugin-scheme-view/spec.md",
      "quote": "### Requirement: Схему можно масштабировать и перетаскивать",
-     "line": 53,
+     "line": 78,
      "verdict": "сверено",
      "found": true
     }
@@ -4802,7 +4802,7 @@ const JOURNAL = {
     {
      "path": "openspec/changes/decision-scheme/specs/plugin-scheme-view/spec.md",
      "quote": "### Requirement: Схему можно масштабировать и перетаскивать",
-     "line": 53,
+     "line": 78,
      "verdict": "сверено",
      "found": true
     }
@@ -4873,7 +4873,7 @@ const JOURNAL = {
     {
      "path": "openspec/changes/decision-scheme/specs/plugin-scheme-view/spec.md",
      "quote": "### Requirement: Схему можно масштабировать и перетаскивать",
-     "line": 53,
+     "line": 78,
      "verdict": "сверено",
      "found": true
     }
@@ -4945,7 +4945,7 @@ const JOURNAL = {
     {
      "path": "openspec/changes/decision-scheme/specs/plugin-scheme-view/spec.md",
      "quote": "### Requirement: Отказы видны на вкладке",
-     "line": 78,
+     "line": 103,
      "verdict": "сверено",
      "found": true
     }
@@ -5016,7 +5016,7 @@ const JOURNAL = {
     {
      "path": "openspec/changes/decision-scheme/specs/plugin-scheme-view/spec.md",
      "quote": "### Requirement: Отказы видны на вкладке",
-     "line": 78,
+     "line": 103,
      "verdict": "сверено",
      "found": true
     },
@@ -5101,7 +5101,7 @@ const JOURNAL = {
     {
      "path": "openspec/changes/decision-scheme/specs/plugin-scheme-view/spec.md",
      "quote": "### Requirement: Клик по узлу фильтрует карточки по `nodes`",
-     "line": 108,
+     "line": 133,
      "verdict": "сверено",
      "found": true
     }
@@ -5173,7 +5173,7 @@ const JOURNAL = {
     {
      "path": "openspec/changes/decision-scheme/specs/plugin-scheme-view/spec.md",
      "quote": "### Requirement: Клик по узлу фильтрует карточки по `nodes`",
-     "line": 108,
+     "line": 133,
      "verdict": "сверено",
      "found": true
     }
@@ -5244,7 +5244,7 @@ const JOURNAL = {
     {
      "path": "openspec/changes/decision-scheme/specs/plugin-scheme-view/spec.md",
      "quote": "### Requirement: Клик по узлу фильтрует карточки по `nodes`",
-     "line": 108,
+     "line": 133,
      "verdict": "сверено",
      "found": true
     }
@@ -5315,7 +5315,7 @@ const JOURNAL = {
     {
      "path": "openspec/changes/decision-scheme/specs/plugin-scheme-view/spec.md",
      "quote": "### Requirement: Клик по узлу фильтрует карточки по `nodes`",
-     "line": 108,
+     "line": 133,
      "verdict": "сверено",
      "found": true
     }
@@ -5393,9 +5393,9 @@ const JOURNAL = {
     {
      "path": "docs/repo-contract.md",
      "quote": "проверка номера: сегодня `src/host/core.ts:31` принимает JSON без проверки",
-     "line": 113,
-     "verdict": "сверено",
-     "found": true
+     "line": null,
+     "verdict": "цитаты нет дословно",
+     "found": false
     }
    ],
    "comments": [],
@@ -5840,9 +5840,9 @@ const JOURNAL = {
     {
      "path": "vscode/test/unit/fixture-project.ts",
      "quote": "process.env.SYMPHYSIS_ROOT ??",
-     "line": 6,
-     "verdict": "сверено",
-     "found": true
+     "line": null,
+     "verdict": "цитаты нет дословно",
+     "found": false
     }
    ],
    "comments": [],
@@ -7390,7 +7390,7 @@ const JOURNAL = {
     {
      "path": "openspec/changes/decision-scheme/specs/plugin-scheme-view/spec.md",
      "quote": "### Requirement: Вкладка рисует файл сама и без сети",
-     "line": 38,
+     "line": 63,
      "verdict": "сверено",
      "found": true
     },
@@ -7468,7 +7468,7 @@ const JOURNAL = {
     {
      "path": "openspec/changes/decision-scheme/specs/plugin-scheme-view/spec.md",
      "quote": "### Requirement: Клик по узлу фильтрует карточки по `nodes`",
-     "line": 108,
+     "line": 133,
      "verdict": "сверено",
      "found": true
     }
@@ -8234,7 +8234,7 @@ const JOURNAL = {
     {
      "path": "openspec/changes/decision-scheme/specs/plugin-scheme-view/spec.md",
      "quote": "### Requirement: Вкладка рисует файл сама и без сети",
-     "line": 38,
+     "line": 63,
      "verdict": "сверено",
      "found": true
     }
@@ -8677,6 +8677,186 @@ const JOURNAL = {
    "evidence": [],
    "comments": [],
    "finding": ""
+  },
+  {
+   "id": "F-124",
+   "question": "Проба перезагрузки окна: плагин не просит VS Code сохранять вкладки, поэтому после Ctrl+R вкладок журнала и схемы нет, а пустые группы остаются. Выбор изменения открывает журнал в активной группе, «схема» встаёт рядом с ней: за три перезагрузки групп стало 4",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "материалы",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "На этом стоит F-125. Строку «снято: перезагрузка окна» в `spec.md` модель написала сама: F-26 решал открытие схемы вместе с журналом, о перезагрузке слова человека не было, а у журнала записи о ней нет вовсе. Нашёл человек на показе (задача 8.3).",
+   "evidence": [
+    {
+     "path": "openspec/changes/decision-scheme/research/reload-probe/layout.log",
+     "quote": "цикл 1, сразу после старта: групп 2: [] *[]",
+     "line": 4,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "openspec/changes/decision-scheme/research/reload-probe/layout.log",
+     "quote": "цикл 3, нажата «схема»: групп 4: [] [] *[Журнал: со-схемой] [Схема: со-схемой]",
+     "line": 12,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "openspec/changes/decision-scheme/research/reload-probe/layout.log",
+     "quote": "цикл 2, нажата «схема»: групп 3: [] [Журнал: со-схемой] *[Схема: со-схемой]",
+     "line": 9,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "vscode/package.json",
+     "quote": "\"activationEvents\": [\"workspaceContains:openspec/changes/*/decisions.json\"],",
+     "line": null,
+     "verdict": "цитаты нет дословно",
+     "found": false
+    },
+    {
+     "path": "openspec/changes/decision-scheme/specs/plugin-scheme-view/spec.md",
+     "quote": "снято: перезагрузка окна — по F-26 сама не открывается",
+     "line": null,
+     "verdict": "цитаты нет дословно",
+     "found": false
+    }
+   ],
+   "comments": [],
+   "finding": ""
+  },
+  {
+   "id": "F-125",
+   "question": "Что происходит с вкладками журнала и схемы при перезагрузке окна (Ctrl+R) и перезапуске?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-26",
+    "F-124"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Обе вкладки возвращаются на свои места: сериализатор у журнала и у схемы. После Ctrl+R и перезапуска они стоят в своих группах с тем же изменением, пустых групп не остаётся (проверено на мини-расширении, в плагине ещё нет). Цена: вкладка под другой вкладкой поднимается только при показе, и пока она спит, выбор изменения обязан найти её, а не открыть вторую; масштаб рисунка возвращается к начальному",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/changes/decision-scheme/research/reload-probe/serial.log",
+       "quote": "этап 1, сразу после старта: групп 2: [вебвью:mainThreadWebview-probe.viewer:probe.viewer:журнал] *[вебвью:mainThreadWebview-probe.scheme:probe.scheme:схема]",
+       "line": 5,
+       "verdict": "сверено",
+       "found": true
+      },
+      {
+       "path": "openspec/changes/decision-scheme/research/reload-probe/serial.log",
+       "quote": "этап 3, после полного перезапуска окна: *[вебвью:mainThreadWebview-probe.viewer:probe.viewer:журнал, текст:intent.md] [вебвью:mainThreadWebview-probe.scheme:probe.scheme:схема]",
+       "line": 15,
+       "verdict": "сверено",
+       "found": true
+      },
+      {
+       "path": "openspec/changes/decision-scheme/research/reload-probe/serial.log",
+       "quote": "этап 2: журнал под файлом — выше видно, позвали ли его восстановление без показа",
+       "line": 9,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Возвращается только журнал, схема ждёт кнопку: «сама не открывается» из F-26 действует и после перезагрузки. Цена: та же спящая вкладка у журнала, а группа схемы стоит пустой, пока кнопка не нажата",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/changes/decision-scheme/specs/plugin-scheme-view/spec.md",
+       "quote": "снято: перезагрузка окна — по F-26 сама не открывается",
+       "line": null,
+       "verdict": "цитаты нет дословно",
+       "found": false
+      },
+      {
+       "path": "openspec/changes/decision-scheme/research/reload-probe/layout.log",
+       "quote": "цикл 2, нажата «схема»: групп 3: [] [Журнал: со-схемой] *[Схема: со-схемой]",
+       "line": 9,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "C",
+     "text": "Вкладки не возвращаются, но встают в пустые группы: выбор изменения занимает первую пустую, «схема» следующую, число групп не растёт. После каждой перезагрузки человек открывает обе заново, черновик цел, он в файле. Цена: своя логика выбора группы вместо обычного «рядом»; вариант не пробовался",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "vscode/src/host/viewerPanel.ts",
+       "quote": "open(key: string, column: vscode.ViewColumn = vscode.ViewColumn.Active): void {",
+       "line": 47,
+       "verdict": "сверено",
+       "found": true
+      },
+      {
+       "path": "openspec/changes/decision-scheme/research/reload-probe/layout.log",
+       "quote": "цикл 1, сразу после старта: групп 2: [] *[]",
+       "line": 4,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "D",
+     "text": "Оставить как есть и записать поведение в документы: вкладки пропадают, пустые группы закрывает человек, перезагрузка может добавить ещё одну. Кода нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/changes/decision-scheme/research/reload-probe/layout.log",
+       "quote": "цикл 3, нажата «схема»: групп 4: [] [] *[Журнал: со-схемой] [Схема: со-схемой]",
+       "line": 12,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Ctrl+R и перезапуск после обновления VS Code — обычные действия, и обычная вкладка редактора после них возвращается; проба показала и места, и состояние, и перезапуск. F-26 это не противоречит: он о том, что схема не открывается вместе с журналом, а здесь человек сам оставил её открытой. Рост групп уходит вместе с причиной, и логика C не нужна."
+   },
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-02"
+   },
+   "reversibility": {
+    "level": "обратимо",
+    "why": "Сериализатор, запись показанного изменения в `workspaceState` и две строки `activationEvents` живут только в плагине: снятие возвращает нынешнее поведение. Журналы, `view-json` и контракт с ядром об этом не знают."
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "Журнал и схема возвращаются в свои группы после Ctrl+R и перезапуска окна, пустых групп не остаётся. Показанное изменение плагин помнит в `workspaceState`. Вкладка под другой вкладкой спит до показа: выбор изменения заменяет её новой в той же группе. Строка «снято: перезагрузка окна» в `specs/plugin-scheme-view/spec.md` заменена сценариями.",
+   "evidence": [],
+   "comments": [],
+   "finding": ""
   }
  ],
  "notes": [
@@ -8759,6 +8939,14 @@ const JOURNAL = {
   {
    "date": "2026-11-02",
    "text": "Парковки закрыты находками по слову человека («давай закроем этот вопрос»): F-21 решением F-39.A, F-26 и F-115…F-117 чек-листом `security.md`, F-118 передан ядру. Рендер `design` показывает и закрытые парковки: в Open Questions они идут с находкой. Сырое слово — `answers/2026-11-02-chat-2.md`."
+  },
+  {
+   "date": "2026-11-02",
+   "text": "Показ 8.3, слово человека о вкладке и предположениях: «Остальное посмотрел -- работает.» О шестом предположении, начальном масштабе вкладки: «это хорошее решение про старт с 100%». Дефект показа — F-124, решение — F-125."
+  },
+  {
+   "date": "2026-11-02",
+   "text": "Показ 8.3 закрыт, слово человека о возврате вкладок: «С последним изменением всё ок.» Коммит плагина `52a59e9` с `Needs: symphysis a385653`, чистая сборка `0.2.0+52a59e9`; все четыре набора тестов зелёные на этом коммите. Раздел «Ещё не сделано» снят с `docs/repo-contract.md`: все его строки выполнены."
   }
  ]
 };
