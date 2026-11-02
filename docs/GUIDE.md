@@ -16,7 +16,7 @@ eminders` без кавычек станет `..reminders`, установка �
 
 ## Что изменится на машине
 
-Глобальных изменений четыре. У каждого шага ниже то же самое написано ещё раз перед командой.
+Обязательных глобальных изменений четыре. У каждого шага ниже то же самое написано ещё раз перед командой.
 
 | Шаг | Что меняется | Откат |
 | --- | --- | --- |
@@ -49,7 +49,7 @@ cd symphysis
 
 ### 2. Форк OpenSpec
 
-**Что меняется.** `npm i -g` ставит пакет `@fission-ai/openspec` в глобальный каталог npm и кладёт команду `openspec` в `PATH`: она действует у всех проектов этого пользователя. Уже стоящий глобально OpenSpec заменяется, поэтому его версию запиши заранее: `openspec --version`. Команда не найдена — OpenSpec не стоял, записывать нечего, это не сбой. Сборки нет, тарбол лежит в `vendor/`; из сети берутся только зависимости форка.
+**Что меняется.** `npm i -g` ставит пакет `@fission-ai/openspec` в глобальный каталог npm и кладёт команду `openspec` в `PATH`: она действует у всех проектов этого пользователя. Уже стоящий глобально OpenSpec заменяется, поэтому его версию запиши заранее: `npm ls -g @fission-ai/openspec`. Ответ `(empty)` и код 1 значат, что OpenSpec не стоял и записывать нечего, это не сбой. Сборки нет, тарбол лежит в `vendor/`; из сети берутся только зависимости форка.
 
 **Откат.** `npm rm -g @fission-ai/openspec`. Прежний OpenSpec вернёт `npm i -g @fission-ai/openspec@<записанная версия>`.
 
@@ -188,7 +188,7 @@ which opencode
 
 ### 8. Проект
 
-Учебный проект лежит в `docs/guide/example/`: файл `reminders.py` с напоминаниями и задача `intent.md`. Он копируется рядом с клоном, глобальных изменений здесь нет. `openspec init` создаёт `.claude/` и `openspec/`, `symphysis install` кладёт в проект схему, скиллы, инструменты журнала и личный `symphysis.yaml`.
+Учебный проект лежит в `docs/guide/example/`: код `reminders.py`, его данные `reminders.json`, `README.md` и задача `intent.md`. Он копируется рядом с клоном, глобальных изменений здесь нет. `openspec init` создаёт `.claude/` и `openspec/`, `symphysis install` кладёт в проект схему, скиллы, инструменты журнала и личный `symphysis.yaml`.
 
 Команды идут из каталога проекта. Параметр `--project` им не нужен; если он понадобится, путь относительный и с прямыми слешами. `git init` нужен, чтобы `symphysis.yaml` было от чего отделять: файл личный и в коммит не идёт.
 
@@ -216,7 +216,7 @@ symphysis check
 echo $?
 ```
 
-Конец вывода `openspec init`. Он называет схему `spec-driven` и советует `/opsx:propose`: схему на `symphysis` переключит следующая команда, а основной путь в этом руководстве — `/opsx:continue`.
+Вывод `openspec init` без строк прогресса и двух ссылок в конце. Он называет схему `spec-driven` и советует `/opsx:propose`: схему на `symphysis` переключит следующая команда, а основной путь в этом руководстве — `/opsx:continue`.
 
 ```text
 OpenSpec Setup Complete
@@ -240,6 +240,8 @@ config.yaml уже был: схема переключена с spec-driven на
 .gitignore: добавлена строка symphysis.yaml — правка уйдёт в git вместе с работой
 openspec: глобальный конфиг <каталог>\openspec\config.json
 ```
+
+Строка о `.gitignore` значит: сам `.gitignore` войдёт в коммит вместе с работой, а `symphysis.yaml` в git не пойдёт.
 
 Вывод `symphysis check` и код:
 
@@ -277,9 +279,12 @@ mv intent.md openspec/changes/add-overdue/intent.md
 openspec status --change add-overdue
 ```
 
-Вывод статуса:
+Вывод `openspec new change` и статуса:
 
 ```text
+Created change 'add-overdue' at openspec\changes\add-overdue/
+Schema: symphysis
+Next: openspec status --change add-overdue
 Change: add-overdue
 Schema: symphysis
 Change root: <каталог>\openspec\changes\add-overdue
@@ -453,7 +458,7 @@ D. Defer — что делать с нечитаемым файлом, оста�
 
 Вызванная атака становится воротами: пока у неё `gaps_found`, `/opsx:apply` не начнётся. Блокер закрывается правкой файла, а если не хватает решения — новой развилкой журнала, её решает человек. Затем та же команда ещё раз. Атаку, которую не вызывали, `/opsx:apply` только называет строкой `атаки не вызывались`.
 
-Статус перед реализацией:
+Ожидай этот круг: на учебном проекте первый вызов дал `gaps_found` с тремя блокерами оба раза, второй — `passed`. Статус, когда атака прошла:
 
 ```text
 Change: add-overdue
