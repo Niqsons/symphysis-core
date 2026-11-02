@@ -185,7 +185,7 @@
 const JOURNAL = {
  "title": "Журнал решений: implementation-consequences",
  "source": "decisions.json",
- "sha256": "a08892dba7161fd546cec5a2511952c96848680884a255471b8a78aa374dadd6",
+ "sha256": "f268cada7608a086d4b7cb5663a7b5977a2e9f5576fe62db61384da2f30755b5",
  "stats": {
   "records": 139,
   "forks": 109,
@@ -7292,7 +7292,7 @@ const JOURNAL = {
       {
        "path": "openspec/changes/implementation-consequences/decisions.json",
        "quote": "в глобальном конфиге меняется что-либо кроме добавления `continue` и названной смены профиля",
-       "line": 6727,
+       "line": 6731,
        "verdict": "сверено",
        "found": true
       }
@@ -7343,7 +7343,7 @@ const JOURNAL = {
       {
        "path": "openspec/changes/implementation-consequences/decisions.json",
        "quote": "THEN две причины и строка, почему третьей нет; при пяти — три наиболее вероятные кандидатами, остальные в разделе без записей журнала",
-       "line": 2753,
+       "line": 2757,
        "verdict": "сверено",
        "found": true
       }
@@ -7358,7 +7358,7 @@ const JOURNAL = {
       {
        "path": "openspec/changes/implementation-consequences/decisions.json",
        "quote": "файл несёт причину и раздел pre-mortem с тремя кандидатами",
-       "line": 2906,
+       "line": 2910,
        "verdict": "сверено",
        "found": true
       }
@@ -7409,7 +7409,7 @@ const JOURNAL = {
       {
        "path": "openspec/changes/implementation-consequences/decisions.json",
        "quote": "тест подаёт пустой файл, файл из комментариев и `edge_probe:` и утверждает, что состав везде «включено»",
-       "line": 3063,
+       "line": 3067,
        "verdict": "сверено",
        "found": true
       }
@@ -7424,7 +7424,7 @@ const JOURNAL = {
       {
        "path": "openspec/changes/implementation-consequences/decisions.json",
        "quote": "выбор считается включённым, `check` даёт `[!!] symphysis.yaml: недопустимое значение <значение>`, код 2",
-       "line": 3120,
+       "line": 3124,
        "verdict": "сверено",
        "found": true
       }
@@ -8096,7 +8096,7 @@ const JOURNAL = {
       {
        "path": "openspec/changes/implementation-consequences/decisions.json",
        "quote": "разбор YAML в `check`, чтение моделью и Python без пакетов поймут его по-разному",
-       "line": 3109,
+       "line": 3113,
        "verdict": "сверено",
        "found": true
       }
@@ -8179,7 +8179,7 @@ const JOURNAL = {
       {
        "path": "openspec/changes/implementation-consequences/decisions.json",
        "quote": "тест утверждает, что `journal.py check` на таком изменении печатает `[..] <часть>: выключено настройкой`",
-       "line": 6441,
+       "line": 6445,
        "verdict": "сверено",
        "found": true
       }
@@ -8231,7 +8231,7 @@ const JOURNAL = {
       {
        "path": "openspec/changes/implementation-consequences/decisions.json",
        "quote": "GIVEN `consequences.md` с причиной «механизмов нет» и список мест, ставший непустым",
-       "line": 2978,
+       "line": 2982,
        "verdict": "сверено",
        "found": true
       }
@@ -8246,7 +8246,7 @@ const JOURNAL = {
       {
        "path": "openspec/changes/implementation-consequences/decisions.json",
        "quote": "до правки схемы у него написан `consequences.md` с причиной «шаг появился позже», `status` не ломается",
-       "line": 3791,
+       "line": 3795,
        "verdict": "сверено",
        "found": true
       }
@@ -8297,7 +8297,7 @@ const JOURNAL = {
       {
        "path": "openspec/changes/implementation-consequences/decisions.json",
        "quote": "строка `[!!] python` говорит, что инструменты журнала считают всё включённым",
-       "line": 8070,
+       "line": 8074,
        "verdict": "сверено",
        "found": true
       }
@@ -8426,7 +8426,7 @@ const JOURNAL = {
       {
        "path": "openspec/changes/implementation-consequences/decisions.json",
        "quote": "Требование обещает «не убирая уже заданные»",
-       "line": 8169,
+       "line": 8173,
        "verdict": "сверено",
        "found": true
       }
@@ -8712,7 +8712,7 @@ const JOURNAL = {
       {
        "path": "openspec/changes/implementation-consequences/decisions.json",
        "quote": "Сигнал: строка `[!!]` в `check`, код 0, с `--strict` код 2.",
-       "line": 1385,
+       "line": 1389,
        "verdict": "сверено",
        "found": true
       }
@@ -8784,7 +8784,7 @@ const JOURNAL = {
       {
        "path": "openspec/changes/implementation-consequences/decisions.json",
        "quote": "тест утверждает, что `journal.py check` на таком изменении печатает `[..] <часть>: выключено настройкой`",
-       "line": 6441,
+       "line": 6445,
        "verdict": "сверено",
        "found": true
       }
@@ -9642,6 +9642,10 @@ const JOURNAL = {
   {
    "date": "2026-11-02",
    "text": "Поправка к предыдущей строке: отложена не вся группа 11, а только замеры, задача 11.1; 11.2–11.4 делаются. Критерий F-20 в этом изменении не выполняется: прогонов на Opus 5.5 не будет. Слово человека: «Следующая задача будет связана с влитием отдельного worktree от сессии плагина. Поэтому \"11.2–11.4 не замеры: сверка F-21, общая сверка и архив. Поэтому изменение остаётся неархивированным, а calibration-fixes и symphysis-schema тоже ждут архива. \" Стоит сделать, я имел ввиду только то, что не надо делать замеры.»"
+  },
+  {
+   "date": "2026-11-02",
+   "text": "Общая сверка, задача 11.3: py -3.13 -m pytest 738 зелёных, инсталлятор 140 из 140, openspec validate --strict чисто, journal.py check код 0 и 9 сигналов об уликах состояния до реализации, гейт имён чисто. Сверка F-21: docs/analysis/implementation-consequences-criteria-2026-11-02.md."
   }
  ]
 };
