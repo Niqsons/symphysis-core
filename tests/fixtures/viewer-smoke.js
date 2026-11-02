@@ -29,7 +29,7 @@ function node(id) {
   });
 }
 const document = {
-  getElementById: node, title: '', documentElement: { style: { setProperty() {} } },
+  getElementById: node, title: '', documentElement: { style: { setProperty() {} } }, body: node('body'), head: node('head'),
   querySelectorAll() { return []; }, createElement() { return node('created'); }, execCommand() { return false; },
 };
 const context = {
@@ -38,7 +38,7 @@ const context = {
   localStorage: {
     getItem(k) {
       const s = suffix(k);
-      if (s === ':outh') return null;
+      if (s === ':outh' || s === ':scheme' || s === ':schemew') return null;
       if (s in suffixes) return typeof suffixes[s] === 'string' ? suffixes[s] : JSON.stringify(suffixes[s]);
       if (s === ':mode' || s === ':attack' || s === ':lens') return null;
       return onlyKey && k !== onlyKey ? null : stored;
@@ -46,7 +46,7 @@ const context = {
     setItem(k, v) {
       const s = suffix(k);
       if (s === ':attack') savedAttack = v;
-      else if (s !== ':outh' && s !== ':mode' && s !== ':lens') saved = v;
+      else if (s !== ':outh' && s !== ':mode' && s !== ':lens' && s !== ':scheme' && s !== ':schemew') saved = v;
     },
   },
   ...(pathname ? { location: { pathname } } : {}),

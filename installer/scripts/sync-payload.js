@@ -21,6 +21,12 @@ const FILES = [
   "docs/journal.schema.json",
 ];
 
+/** Файл mermaid и лицензия: приходят из зависимости сборки, в git ядра не лежат (F-53). */
+const MERMAID_FILES = [
+  ["dist/mermaid.min.js", "tools/mermaid.min.js"],
+  ["LICENSE", "tools/mermaid.LICENSE"],
+];
+
 function skillDirs(root) {
   return fs
     .readdirSync(path.join(root, "skills"), { withFileTypes: true })
@@ -53,11 +59,13 @@ export function hasSources(root = ROOT) {
 
 /** Совпадает ли dest с исходниками побайтно: тот же состав файлов и те же байты. */
 export function payloadMatches(dest = DEFAULT_DEST, root = ROOT) {
-  const expected = [...FILES, ...[...DIRS, ...skillDirs(root)].flatMap((rel) => walk(path.join(root, rel)).map((f) => `${rel}/${f}`))];
+  const fromRoot = [...FILES, ...[...DIRS, ...skillDirs(root)].flatMap((rel) => walk(path.join(root, rel)).map((f) => `${rel}/${f}`))];
+  const mermaid = path.join(root, "installer", "node_modules", "mermaid");
+  const expected = [...fromRoot.map((rel) => [rel, path.join(root, rel)]), ...MERMAID_FILES.map(([from, rel]) => [rel, path.join(mermaid, from)])];
   if (!fs.existsSync(dest) || walk(dest).length !== expected.length) return false;
-  return expected.every((rel) => {
+  return expected.every(([rel, source]) => {
     const copy = path.join(dest, rel);
-    return fs.existsSync(copy) && fs.readFileSync(copy).equals(fs.readFileSync(path.join(root, rel)));
+    return fs.existsSync(copy) && fs.existsSync(source) && fs.readFileSync(copy).equals(fs.readFileSync(source));
   });
 }
 
@@ -67,8 +75,15 @@ export function syncPayload(dest = DEFAULT_DEST, root = ROOT) {
   if (!fs.existsSync(path.join(root, "skills"))) {
     throw new Error(`syncPayload: в корне ${root} нет каталога skills — payload не тронут`);
   }
+  // Зависимость сборки тоже проверяется до очистки: без файла поставка не собирается (F-100).
+  const mermaid = path.join(root, "installer", "node_modules", "mermaid");
+  for (const [from] of MERMAID_FILES) {
+    if (!fs.existsSync(path.join(mermaid, from))) {
+      throw new Error(`syncPayload: нет ${path.join(mermaid, from)}: поставьте зависимости сборки (npm ci в installer), payload не тронут`);
+    }
+  }
   const skills = skillDirs(root);
-  const sources = [...DIRS, ...skills, ...FILES];
+  const sources = [...DIRS, ...skills, ...FILES, ...MERMAID_FILES.map(([, rel]) => rel)];
   // Уже совпадает — не трогать: `npm pack` зовёт `prepare`, пока параллельные тесты читают payload.
   if (payloadMatches(dest, root)) return sources;
   if (fs.existsSync(dest)) removeTree(dest);
@@ -80,6 +95,11 @@ export function syncPayload(dest = DEFAULT_DEST, root = ROOT) {
     const to = path.join(dest, rel);
     fs.mkdirSync(path.dirname(to), { recursive: true });
     fs.copyFileSync(path.join(root, rel), to);
+  }
+  for (const [from, rel] of MERMAID_FILES) {
+    const to = path.join(dest, rel);
+    fs.mkdirSync(path.dirname(to), { recursive: true });
+    fs.copyFileSync(path.join(mermaid, from), to);
   }
   return sources;
 }

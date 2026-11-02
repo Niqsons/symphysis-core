@@ -402,6 +402,8 @@ def _rule_errors(journal: dict) -> list[str]:
                 errors.append(f"{rid}: зависит от {dep}, такой записи нет")
         for a in r["antipodes"]:
             target, _, letter = a["other"].partition(".")
+            if target == rid:
+                errors.append(f"{rid}: антипод {a['option']} ↔ {a['other']}: вариант той же записи, варианты одной развилки и так исключают друг друга")
             if a["option"] not in own:
                 errors.append(f"{rid}: антипод {a['option']} ↔ {a['other']}: у записи нет варианта {a['option']}")
             if target not in letters:

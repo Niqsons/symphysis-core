@@ -551,3 +551,11 @@ test("Форк отказал: своя находка, а не «не найд�
   assert.ok(line?.includes("не отработал (код 3: boom)"), JSON.stringify(r.findings));
   assert.ok(!line.includes("не найден"), line);
 });
+
+test("нет файла mermaid: сигнал [..], находки нет, страница работает и с текстом (F-101)", () => {
+  const p = installed();
+  fs.rmSync(path.join(targets(p).toolsDir, "tools", "mermaid.min.js"));
+  const r = runCheck(p);
+  assert.deepEqual(r.findings, []);
+  assert.ok(r.notes.some((n) => n.startsWith(".symphysis/tools/mermaid.min.js:")), JSON.stringify(r.notes));
+});

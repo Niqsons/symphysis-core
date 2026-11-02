@@ -1,0 +1,15 @@
+этап 0, сразу после старта: групп 1: *[]
+этап 0, открыты обе: [вебвью:mainThreadWebview-probe.viewer:probe.viewer:журнал] *[вебвью:mainThreadWebview-probe.scheme:probe.scheme:схема]
+  восстановление probe.viewer: состояние {"key":"журнал"}, столбец 0, видна true
+  восстановление probe.scheme: состояние {"key":"схема"}, столбец 1, видна true
+этап 1, сразу после старта: групп 2: [вебвью:mainThreadWebview-probe.viewer:probe.viewer:журнал] *[вебвью:mainThreadWebview-probe.scheme:probe.scheme:схема]
+этап 1, журнал закрыт файлом: *[вебвью:mainThreadWebview-probe.viewer:probe.viewer:журнал, текст:intent.md] [вебвью:mainThreadWebview-probe.scheme:probe.scheme:схема]
+  восстановление probe.scheme: состояние {"key":"схема"}, столбец 1, видна true
+этап 2, сразу после старта: групп 2: *[вебвью:mainThreadWebview-probe.viewer:probe.viewer:журнал, текст:intent.md] [вебвью:mainThreadWebview-probe.scheme:probe.scheme:схема]
+этап 2: журнал под файлом — выше видно, позвали ли его восстановление без показа
+  восстановление probe.viewer: состояние {"key":"журнал"}, столбец 0, видна true
+этап 2, вкладка журнала показана человеком: *[вебвью:mainThreadWebview-probe.viewer:probe.viewer:журнал, текст:intent.md] [вебвью:mainThreadWebview-probe.scheme:probe.scheme:схема]
+  восстановление probe.viewer: состояние {"key":"журнал"}, столбец 0, видна true
+  восстановление probe.scheme: состояние {"key":"схема"}, столбец 1, видна true
+этап 3, сразу после старта: групп 2: *[вебвью:mainThreadWebview-probe.viewer:probe.viewer:журнал, текст:intent.md] [вебвью:mainThreadWebview-probe.scheme:probe.scheme:схема]
+этап 3, после полного перезапуска окна: *[вебвью:mainThreadWebview-probe.viewer:probe.viewer:журнал, текст:intent.md] [вебвью:mainThreadWebview-probe.scheme:probe.scheme:схема]

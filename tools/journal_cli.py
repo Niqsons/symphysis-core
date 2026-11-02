@@ -17,7 +17,7 @@ from journal_apply import (REFUSED, apply_answers, apply_md4h, check_evidence, d
                            parse_md4h, sha256_file)
 from journal_consequences import check_consequences
 from journal_model import import_md, load_journal, save_journal, validate_journal
-from journal_render import TEMPLATE_PATH, parse_attack_md, render_design, render_html, render_md, view_payload
+from journal_render import TEMPLATE_PATH, parse_attack_md, render_design, render_html, render_md, scheme_payload, view_payload
 from journal_sites import code_sites
 
 __all__ = ["build_parser", "main"]
@@ -135,7 +135,8 @@ def cmd_render_html(args: argparse.Namespace) -> int:
     # хеш журнала — по байтам файла на диске, как `sha256_file` у связки md4h.
     result = check_evidence(journal, default_roots(args.roots))
     try:
-        html = render_html(journal, args.template, attacks=attacks, journal_sha256=sha256_file(args.json))
+        html = render_html(journal, args.template, attacks=attacks, journal_sha256=sha256_file(args.json),
+                           scheme=scheme_payload(Path(args.json).parent / "scheme.md", args.out))
     except ValueError as e:
         print(f"[!!] {e}", file=sys.stderr)
         return 1

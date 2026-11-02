@@ -198,3 +198,32 @@ def test_unknown_schema_refused(schema):
     """Новое правило в схеме не игнорируется молча, даже там, куда значение не дойдёт."""
     with pytest.raises(ValueError):
         journal_model._schema_violations(schema, "значение")
+
+
+# --- антипод внутри одной записи (F-97) ----------------------------------------
+
+def inner_antipode_journal():
+    j = journal.import_md(FIX / "journal-plan.md")
+    fork = next(r for r in j["records"] if r["kind"] == "развилка" and len(r["options"]) >= 2)
+    fork["antipodes"].append({"option": fork["options"][0]["letter"], "other": f"{fork['id']}.{fork['options'][1]['letter']}"})
+    return j, fork["id"]
+
+
+def test_antipode_to_a_variant_of_the_same_record_is_rejected():
+    j, rid = inner_antipode_journal()
+    errors = journal.validate_journal(j)
+    assert any(e.startswith(rid) and "той же записи" in e for e in errors)
+
+
+def test_antipode_inside_a_record_fails_check_with_the_record_name(tmp_path):
+    j, rid = inner_antipode_journal()
+    src = tmp_path / "decisions.json"
+    src.write_text(json.dumps(j, ensure_ascii=False), encoding="utf-8")
+    run = subprocess.run([sys.executable, "-X", "utf8", str(TOOLS / "journal.py"), "check", str(src)],
+                         capture_output=True, text=True, encoding="utf-8")
+    assert run.returncode == 1 and rid in run.stdout + run.stderr
+
+
+@pytest.mark.parametrize("path", sorted(ROOT.glob("openspec/changes/*/decisions.json")), ids=lambda p: p.parent.name)
+def test_no_journal_of_this_tree_breaks_on_the_new_rule(path):
+    assert journal.validate_journal(journal.load_journal(path)) == []

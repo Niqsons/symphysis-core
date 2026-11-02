@@ -1035,3 +1035,143 @@ def test_deviation_tail_in_option_text_does_not_turn_into_the_field(tmp_path):
     back = roundtrip(j)
     assert back["records"][1]["options"][0] == {**a, "evidence": back["records"][1]["options"][0]["evidence"]}
     assert strip_check_fields(back) == strip_check_fields(j)
+
+
+# --- scheme.md: разбор и встраивание в страницу (F-25, F-39, F-59, F-60, F-61, F-89) ---
+
+SCHEME_CASES = json.loads((FIX / "scheme" / "cases.json").read_text(encoding="utf-8"))
+
+
+@pytest.mark.parametrize("case", SCHEME_CASES, ids=lambda c: c["name"])
+def test_parse_scheme_by_the_shared_cases(case):
+    assert journal_render.parse_scheme(case["text"]) == case["expect"]
+
+
+def scheme_embedded(html):
+    start = html.index("const SCHEME = ") + len("const SCHEME = ")
+    return json.JSONDecoder().raw_decode(html[start:].replace("<\\/", "</"))[0]
+
+
+def render_page(tmp_path, scheme=None, out=None):
+    src = tmp_path / "decisions.json"
+    journal.save_journal(src, plan())
+    if scheme is not None:
+        (tmp_path / "scheme.md").write_text(scheme, encoding="utf-8", newline="")
+    out = out or tmp_path / "page.html"
+    run = run_cli("render-html", src, "--out", out)
+    assert run.returncode == 0, run.stderr
+    return out.read_text(encoding="utf-8"), src
+
+
+def test_template_requires_the_scheme_mark(tmp_path):
+    template = tmp_path / "t.html"
+    template.write_text("<html>const JOURNAL = __JOURNAL_JSON__; const ATTACK = __ATTACK_JSON__;</html>", encoding="utf-8")
+    with pytest.raises(ValueError, match="__SCHEME_JSON__"):
+        journal.render_html(plan(), template)
+
+
+def test_scheme_with_script_end_keeps_the_page_whole_and_the_text_verbatim(tmp_path):
+    text = "```mermaid\nflowchart TD\n  A[\"</script><!-- --> \\u003c\"] --> B\n```\n"
+    html, _ = render_page(tmp_path, text)
+    assert "</script><!--" not in html
+    assert html.count("</script>") == 1
+    assert scheme_embedded(html)["text"] == "flowchart TD\n  A[\"</script><!-- --> \\u003c\"] --> B\n"
+
+
+def test_scheme_text_does_not_reach_view_json(tmp_path):
+    _, src = render_page(tmp_path, "```mermaid\nflowchart TD\n  МЕТКАСХЕМЫ --> B\n```\n")
+    run = run_cli("view-json", src)
+    assert run.returncode == 0, run.stderr
+    assert "МЕТКАСХЕМЫ" not in run.stdout
+
+
+def test_page_without_scheme_md_is_valid(tmp_path):
+    html, _ = render_page(tmp_path)
+    assert scheme_embedded(html) == {"exists": False, "text": None, "blocks": 0, "first_line": None, "mermaid": None}
+
+
+def test_file_without_a_block_is_not_the_missing_file(tmp_path):
+    html, _ = render_page(tmp_path, "только текст\n")
+    assert scheme_embedded(html)["exists"] is True and scheme_embedded(html)["text"] is None
+
+
+def test_binary_scheme_is_a_file_without_a_block(tmp_path):
+    (tmp_path / "scheme.md").write_bytes(bytes(range(256)))
+    html, _ = render_page(tmp_path)
+    assert scheme_embedded(html)["exists"] is True and scheme_embedded(html)["text"] is None
+
+
+def test_two_renders_of_one_journal_and_scheme_match(tmp_path):
+    first, _ = render_page(tmp_path, "```mermaid\nflowchart TD\n```\n")
+    second, _ = render_page(tmp_path, "```mermaid\nflowchart TD\n```\n")
+    assert first == second
+
+
+def test_page_inside_a_project_points_at_the_installed_mermaid(tmp_path):
+    change = tmp_path / "openspec" / "changes" / "x"
+    change.mkdir(parents=True)
+    (tmp_path / ".symphysis" / "tools").mkdir(parents=True)
+    html, _ = render_page(change, "```mermaid\nflowchart TD\n```\n")
+    assert scheme_embedded(html)["mermaid"] == "../../../.symphysis/tools/mermaid.min.js"
+
+
+def test_page_outside_a_project_has_no_mermaid_path(tmp_path):
+    html, _ = render_page(tmp_path, "```mermaid\nflowchart TD\n```\n")
+    assert scheme_embedded(html)["mermaid"] is None
+
+
+def test_page_carries_the_csp_and_no_embedded_plan_scheme():
+    template = TEMPLATE.read_text(encoding="utf-8")
+    assert '<meta http-equiv="Content-Security-Policy" content="default-src \'none\'; script-src \'unsafe-inline\' file:; style-src \'unsafe-inline\'; img-src data:; font-src data:">' in template
+    assert "NODES" not in template and "function renderScheme(" not in template and "filter.node" not in template
+    assert "Схема работы" not in template
+
+
+@requires_node
+def test_page_without_the_embedded_scheme_still_runs_all_modes(tmp_path):
+    html = journal.render_html(plan(), TEMPLATE, attacks=fixture_attacks(), journal_sha256=FAKE_SHA)
+    done = smoke(tmp_path, html)
+    assert "F-19" in done["cards"] and done["out"]
+    for mode in ("check", "attack"):
+        assert smoke(tmp_path, html, {"__suffixes__": {":mode": mode}})["modes"]
+
+
+# --- антипод и дефекты шаблона (F-17, F-41, F-52, F-94) -------------------------
+
+def facts_journal(status="решён", dispute=""):
+    j = one_record_journal("a.md", "дв")
+    fork = j["records"][0]
+    fact = json.loads(json.dumps(fork))
+    fact.update(id="F-02", kind="факт", status=status, addressee="материалы", options=[], dispute=dispute,
+                parking=[{"addressee": "материалы", "text": "вопрос"}] if status == "припаркован" else [])
+    fork["depends_on"] = ["F-02"]
+    j["records"].append(fact)
+    return j
+
+
+@requires_node
+def test_dependency_on_a_settled_fact_is_not_waiting(tmp_path):
+    assert "предпосылка не решена" not in smoke(tmp_path, journal.render_html(facts_journal(), TEMPLATE))["cards"]
+
+
+@requires_node
+def test_dependency_on_a_parked_fact_is_waiting(tmp_path):
+    assert "предпосылка не решена: F-02" in smoke(tmp_path, journal.render_html(facts_journal("припаркован"), TEMPLATE))["cards"]
+
+
+@requires_node
+def test_disputing_a_fact_does_not_make_it_a_waiting_dependency(tmp_path):
+    assert "предпосылка не решена" not in smoke(tmp_path, journal.render_html(facts_journal(dispute="не так"), TEMPLATE))["cards"]
+
+
+@requires_node
+def test_dependency_on_an_undecided_fork_is_still_waiting(tmp_path):
+    j = facts_journal()
+    j["records"][1].update(kind="развилка", status="открыт", addressee="человек", options=j["records"][0]["options"])
+    assert "предпосылка не решена: F-02" in smoke(tmp_path, journal.render_html(j, TEMPLATE))["cards"]
+
+
+def test_park_hint_says_the_agent_looks_in_files_or_by_a_probe():
+    template = TEMPLATE.read_text(encoding="utf-8")
+    assert "«материалы» — ответ ищет агент, в файлах или пробой" in template
+    assert "const ADDRESSEES = ['материалы','человек','ИБ'];" in template

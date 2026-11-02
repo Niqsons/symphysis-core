@@ -240,7 +240,9 @@ def test_instructions_name_skills_and_stay_short(tmp_path):
     text = {i: run_openspec(proj, "instructions", i, "--change", "demo", "--json")["instruction"]
             for i in ARTIFACT_IDS}
     for i, t in text.items():
-        assert len(t.split()) <= 120, f"{i}: {len(t.split())} слов"
+        # research несёт ещё и второй круг и пробу (F-41): ужимать чужие строки ради числа нельзя
+        limit = 150 if i == "research" else 120
+        assert len(t.split()) <= limit, f"{i}: {len(t.split())} слов"
     assert "symphysis-brainstorm" in text["decisions"]
     assert "symphysis-attack" in text["attack-decisions"] and "symphysis-attack" in text["attack-artifacts"]
     assert "symphysis-edge-probe" in text["specs"] and "symphysis-prohibition-probe" in text["specs"]
@@ -405,7 +407,7 @@ def test_research_template_shape():
     for genre in ("устройство", "размещение", "края", "проверка", "аналоги"):
         assert genre in genre_line, genre
     assert re.search(r"^question: <F-NN>$", fm, re.M) and re.search(r"^brief:", fm, re.M), fm
-    assert headings(text, 2) == ["Найдено", "Не найдено", "Вопросы, которые открылись"]
+    assert headings(text, 2) == ["Найдено", "Не найдено", "Проба", "Вопросы, которые открылись"]
     assert "путь:строка" in text and "«цитата»" in text
     assert "не найдено" in text and "искал: " in text and "<шаблон" in text
 
@@ -893,3 +895,24 @@ def test_validate_all_rejects_change_without_deltas(tmp_path):
     assert issue["level"] == "ERROR" and issue["path"] == "file", issue
     assert issue["message"].startswith("Change must have at least one delta. No deltas found."), issue
     assert '"skip_specs: true"' in issue["message"], issue
+
+
+# --- decision-scheme: схема не артефакт, «материалы» добывает агент (F-12, F-41, F-99, F-112) ---
+
+def test_scheme_is_not_an_artifact_and_blocks_nothing(tmp_path):
+    """Сценарий «Схемы нет»: без `scheme.md` ни один шаг не заблокирован из-за него."""
+    proj = make_project(tmp_path)
+    status = run_openspec(proj, "status", "--change", "demo", "--json")
+    assert all("scheme" not in a["id"] for a in status["artifacts"])
+    schema = (ROOT / "openspec" / "schemas" / "symphysis" / "schema.yaml").read_text(encoding="utf-8")
+    assert "scheme.md" not in schema
+
+
+def test_research_answer_may_come_from_a_probe():
+    """Сценарии «Ответ добыт пробой», «Проба без следа», «Инструкция `research`»."""
+    schema = (ROOT / "openspec" / "schemas" / "symphysis" / "schema.yaml").read_text(encoding="utf-8")
+    research = schema[schema.index("- id: research"):schema.index("- id: attack-decisions")]
+    for token in ("пробой", "раздел «Проба»", "«следа нет»", "не пишет вне `research/` и временного каталога"):
+        assert token in research, f"в instruction research нет «{token}»"
+    template = (ROOT / "openspec" / "schemas" / "symphysis" / "templates" / "research.md").read_text(encoding="utf-8")
+    assert "## Проба" in template and "«следа нет»" in template

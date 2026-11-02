@@ -473,3 +473,37 @@ def test_deviation_stays_visible_in_the_renders():
     md = journal.render_md(j).split("\n## F-03")[1]
     assert "(отступление от F-01)" in next(line for line in md.splitlines() if line.startswith("  - B. "))
     assert "- **Отступление от постановки:** F-01" in journal.render_design(j)
+
+
+# --- nodes: check смотрит только форму, со схемой не сверяет (F-24, F-114) -----
+
+def check_output(tmp_path, record_nodes=None, scheme=None):
+    """Вывод `check` журнала рядом со `scheme.md`: код и всё, что напечатано."""
+    (tmp_path / "a.md").write_text("раз\nдва\n", encoding="utf-8")
+    roots = tmp_path / "roots.json"
+    roots.write_text(json.dumps({"": str(tmp_path)}), encoding="utf-8")
+    j = one_record_journal("a.md", "дв")
+    if record_nodes is not None:
+        j["records"][0]["nodes"] = record_nodes
+    src = tmp_path / "decisions.json"
+    journal.save_journal(src, j)
+    if scheme is not None:
+        (tmp_path / "scheme.md").write_text(scheme, encoding="utf-8")
+    run = subprocess.run([sys.executable, "-X", "utf8", str(ROOT / "tools" / "journal.py"), "check", str(src), "--roots", str(roots)],
+                         capture_output=True, text=True, encoding="utf-8")
+    return run.returncode, run.stdout + run.stderr
+
+
+SCHEME_WITHOUT_X = "```mermaid\nflowchart TD\n  A --> B\n```\n"
+
+
+def test_check_does_not_compare_nodes_with_the_scheme(tmp_path):
+    code, out = check_output(tmp_path, ["X"], SCHEME_WITHOUT_X)
+    assert code == 0, out
+    assert "nodes" not in out and "узел" not in out
+
+
+def test_check_says_nothing_about_a_journal_without_nodes(tmp_path):
+    code, out = check_output(tmp_path, None, SCHEME_WITHOUT_X)
+    assert code == 0, out
+    assert "nodes" not in out and "узел" not in out

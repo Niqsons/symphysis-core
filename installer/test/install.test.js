@@ -628,3 +628,23 @@ test("Выбор одного человека не доходит до друг
   install(second, { payloadDir });
   assert.match(fs.readFileSync(settingsFile(second), "utf8"), /enabled: true/);
 });
+
+test("файл mermaid и лицензия в .symphysis/tools (F-53)", () => {
+  const p = tmp();
+  install(p, { payloadDir });
+  const tools = targets(p).toolsDir;
+  assert.ok(fs.readFileSync(path.join(tools, "tools", "mermaid.min.js")).equals(fs.readFileSync(path.join(payloadDir, "tools", "mermaid.min.js"))));
+  assert.ok(fs.existsSync(path.join(tools, "tools", "mermaid.LICENSE")));
+});
+
+test("черновики .symphysis/viewer переживают install --force (F-20)", () => {
+  const p = tmp();
+  install(p, { payloadDir });
+  const viewer = path.join(p, ".symphysis", "viewer");
+  fs.mkdirSync(viewer, { recursive: true });
+  const draft = path.join(viewer, "черновик.json");
+  fs.writeFileSync(draft, '{"слово":"своё"}\n');
+  const before = fs.readFileSync(draft);
+  install(p, { payloadDir, force: true });
+  assert.ok(fs.readFileSync(draft).equals(before));
+});

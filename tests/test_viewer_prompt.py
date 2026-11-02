@@ -253,3 +253,36 @@ def test_page_marks_undecided_row_and_skill_states_the_rule():
     assert "запись не решена — ответ уйдёт в замечания; выбери вариант в карточке" in html
     skill = " ".join((ROOT / "skills" / "symphysis-viewer" / "SKILL.md").read_text(encoding="utf-8").split())
     assert "У записи без решения слова нет, рекомендация не решение" in skill and "`F-NN: ответ`" in skill
+
+
+# --- новая развилка, уже внесённая apply, из черновика уходит (F-17, F-93) ------
+
+def page_prompt(tmp_path, j, st):
+    """Промпт страницы, собранной из журнала, при состоянии браузера `st`: скрипт шаблона целиком, без браузера."""
+    html = tmp_path / "v.html"
+    html.write_text(journal.render_html(j, TEMPLATE), encoding="utf-8", newline="\n")
+    data = tmp_path / "state.json"
+    data.write_text(json.dumps(st, ensure_ascii=False), encoding="utf-8")
+    run = subprocess.run([node, str(FIX / "viewer-smoke.js"), str(html), str(data)], capture_output=True, text=True, encoding="utf-8")
+    assert run.returncode == 0, run.stderr
+    return json.loads(run.stdout)["out"]
+
+
+def ingested_fork_journal():
+    j = plan_journal()
+    j["records"].append({**copy.deepcopy(j["records"][-1]), "id": "F-90", "kind": "развилка", "status": "открыт", "question": "Новая   развилка человека?",
+                         "options": [{"letter": "A", "text": "да", "added": True, "unlikely": None, "evidence": []}], "decision": None, "recommendation": None,
+                         "antipodes": [], "depends_on": [], "evidence": [], "outcome": None, "reversibility": None, "parking": [], "dispute": "", "consequences": "", "comments": [], "addressee": "человек"})
+    return j
+
+
+def test_ingested_new_fork_leaves_the_prompt(tmp_path):
+    fork = {"id": "F-N1", "question": "Новая развилка человека?", "options": "да", "word": ""}
+    out = page_prompt(tmp_path, ingested_fork_journal(), state(newForks=[fork]))
+    assert "Новая развилка человека?" not in out
+
+
+def test_edited_new_fork_stays_in_the_prompt(tmp_path):
+    fork = {"id": "F-N1", "question": "Новая развилка человека, поправленная?", "options": "да", "word": ""}
+    out = page_prompt(tmp_path, ingested_fork_journal(), state(newForks=[fork]))
+    assert out.count("Новая развилка человека, поправленная?") == 1
