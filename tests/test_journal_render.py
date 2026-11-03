@@ -1706,6 +1706,16 @@ def test_render_html_embeds_links_and_needs_their_mark(tmp_path):
         journal.render_html(plan(), template)
 
 
+@requires_node
+def test_viewer_smoke_walks_a_page_with_a_file_link(tmp_path):
+    """Плагин гоняет эту заглушку на журналах с настоящими уликами: страница со ссылкой на файл падала, когда пути страницы
+    не подано и `location` не было. Значка редактора без `file:` нет, ссылка на файл на месте."""
+    html = journal.render_html(one_record_journal("a.md", "раз"), TEMPLATE, links={"root": "../", "files": {"a.md": "../a.md"}})
+    cards = smoke(tmp_path, html)["cards"]
+    assert 'href="../a.md"' in cards
+    assert "filelink editor" not in cards
+
+
 def test_project_href_falls_back_to_the_tools_parent():
     """У ядра в файле корней нет пустого префикса: без этой опоры вариант IDEA / GIGA IDE на его страницах молча терял значок."""
     out = journal.ROOT / "docs" / "x.html"

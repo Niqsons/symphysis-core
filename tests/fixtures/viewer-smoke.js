@@ -49,7 +49,7 @@ const context = {
       else if (s !== ':outh' && s !== ':mode' && s !== ':lens' && s !== ':scheme' && s !== ':schemew' && s !== ':panel') saved = v;
     },
   },
-  ...(pathname ? { location: { pathname } } : {}),
+  location: { pathname: pathname || '' },
   navigator: {}, Blob: function () {}, URL: { createObjectURL() { return ''; } },
   alert() {}, confirm() { return false; }, setTimeout() {},
 };
