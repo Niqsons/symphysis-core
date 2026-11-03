@@ -212,15 +212,15 @@
 const JOURNAL = {
  "title": "Журнал решений: step-help-tab",
  "source": "decisions.json",
- "sha256": "ca4966767d8e10ad681ebfa17c77dd853c7dd0ddba9cd1f5361844f11b6892ea",
+ "sha256": "d4f4cc87f8db056e847e47e3c06e7f74cf63a44d3dec0eb49d0dcbbd349634fd",
  "stats": {
-  "records": 68,
-  "forks": 21,
-  "facts": 47,
+  "records": 88,
+  "forks": 39,
+  "facts": 49,
   "decided": 21,
   "parked": 1,
-  "evidence_total": 167,
-  "evidence_found": 167
+  "evidence_total": 205,
+  "evidence_found": 205
  },
  "records": [
   {
@@ -2450,8 +2450,8 @@ const JOURNAL = {
     "date": "2026-11-04"
    },
    "reversibility": {
-    "level": "дорого",
-    "why": "записи уже лягут в `.claude/settings.local.json` открытых проектов: при отмене их надо снимать отдельным кодом плагина, сами они не исчезнут"
+    "level": "обратимо",
+    "why": "настройка `symphysis.hook.enabled` из F-61 снимает запись плагина в `.claude/settings.local.json` и `.opencode/plugins/`; прежняя оценка «дорого» стояла до этого решения. Удаление самого плагина записи не снимет, это вопрос к шагу `specs`"
    },
    "outcome": null,
    "parking": [],
@@ -3939,6 +3939,1408 @@ const JOURNAL = {
     "hook"
    ],
    "finding": ""
+  },
+  {
+   "id": "F-69",
+   "question": "Что с запросом человека, когда запись хука осталась, а файла скрипта нет: `python` сам выходит с кодом 2, а код 2 блокирует запрос (F-52)",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "материалы",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [
+    {
+     "addressee": "материалы",
+     "text": "`python` без файла скрипта выходит с кодом 2. Что делает настоящий клиент; можно ли записать хук так, чтобы этого не было; что с необработанным сбоем у opencode. Ответ — проба на настоящих клиентах.",
+     "finding": "Блокирует, на каждом запросе. Настоящий Claude Code 2.1.317: запись из F-52 без файла скрипта даёт «UserPromptSubmit operation blocked by hook», то есть после `git clean -fdX` агенту нельзя написать ни слова. Запись с обёрткой через `-I -c` запрос не останавливает ни без файла, ни при коде 2 от скрипта, вход и вывод доходят. opencode: необработанное исключение в хуке `prompt` тоже останавливает запрос, пойманный сбой нет. Заодно: файл настроек с комментарием клиент не читает; из вывода 60 КБ модель видит превью 2 КБ. Отчёт — `research/F-69.md`."
+    }
+   ],
+   "dispute": "",
+   "consequences": "В требовании «Хук не останавливает запрос человека» сценарии «Файла скрипта нет у Claude Code» и «Сбой в оболочке opencode». Запись Claude Code меняется против пробы F-52: выбора нет, требование уже стоит. На этом стоят F-71, F-77, F-82.",
+   "evidence": [
+    {
+     "path": "openspec/changes/step-help-tab/research/F-69-probe/probe.log",
+     "quote": "UserPromptSubmit operation blocked by hook:",
+     "line": 2,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "openspec/changes/step-help-tab/research/F-69-probe/probe.log",
+     "quote": "КАЛИНА-6161, вход True",
+     "line": 4,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "openspec/changes/step-help-tab/research/F-69-probe/probe.log",
+     "quote": "РЯБИНА-7272",
+     "line": 5,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "openspec/changes/step-help-tab/research/F-69-probe/probe.log",
+     "quote": "\"case\": \"необработанное исключение в хуке prompt\", \"code\": 1",
+     "line": 11,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "openspec/changes/step-help-tab/research/F-69-probe/probe.log",
+     "quote": "Это только превью первых 2 КБ.",
+     "line": 8,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "settings",
+    "hook"
+   ],
+   "finding": "Блокирует, на каждом запросе. Настоящий Claude Code 2.1.317: запись из F-52 без файла скрипта даёт «UserPromptSubmit operation blocked by hook», то есть после `git clean -fdX` агенту нельзя написать ни слова. Запись с обёрткой через `-I -c` запрос не останавливает ни без файла, ни при коде 2 от скрипта, вход и вывод доходят. opencode: необработанное исключение в хуке `prompt` тоже останавливает запрос, пойманный сбой нет. Заодно: файл настроек с комментарием клиент не читает; из вывода 60 КБ модель видит превью 2 КБ. Отчёт — `research/F-69.md`."
+  },
+  {
+   "id": "F-70",
+   "question": "[concurrency · io] «Внести» пишет событие: `apply` прошёл и журнал изменён, а строка в `events.jsonl` не записалась: файл занят или нет прав. Агент не узнает о внесённом, и этого никто не увидит",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-33"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN `apply` прошёл, запись в `events.jsonl` упала WHEN человек нажимает «Внести» THEN журнал внесён, к отчёту добавлено предупреждение, что агенту надо сказать самому; цена: сценарий, тест с недоступным файлом, одна строка отчёта",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — сбой записи события не показывается; допустимо, если считать такой отказ диска редким: журнал всё равно на диске, и агент увидит его при следующем чтении",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест подаёт недоступный `events.jsonl` и утверждает, что журнал внесён, а плагин не упал; что видит человек, не проверяет; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — что показать человеку, остаётся открытым до первого такого случая; пока tasks считает, что сбой записи события проходит молча",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Портит тихо: человек считает, что агент узнает, а тот работает по старому журналу. Правка — одна строка отчёта, который и так показывается дословно."
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/step-help-tab/specs/plugin-agent-hook/spec.md",
+     "quote": "### Requirement: «Внести» пишет событие",
+     "line": 8,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "event"
+   ],
+   "finding": ""
+  },
+  {
+   "id": "F-71",
+   "question": "[boundary · numeric-range] Хук печатает непрочитанные события этой сессии: сессия молчала неделю, непрочитанных 40, вывод длиннее 10 000 символов. Проба: из 60 КБ модель видит превью 2 КБ, конец только в файле, если сама его откроет",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-69",
+    "F-50"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN непрочитанных событий на 30 000 символов WHEN сессия обращается THEN вывод не длиннее 9 000 символов: самые новые события целиком и строка «ещё N событий в `.symphysis/viewer/events.jsonl`», курсор в конце; цена: сценарий, тест на длинном файле, число в скрипте",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — своего предела нет; допустимо, если считать, что модель видит превью и путь к файлу и откроет его сама, а длинных хвостов на практике не бывает",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест подаёт 1000 событий и утверждает, что вывод короче 10 000 символов, а код 0; какие именно события вошли, не проверяет; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — предел остаётся открытым до первого длинного вывода на настоящей работе; пока tasks считает, что вывод печатается целиком",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Портит тихо: в превью попадает начало, то есть самые старые события, а новое внесение, ради которого хук и нужен, модель не увидит. Точная граница поведения клиента пробой не подбиралась, поэтому запас до 10 000."
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/step-help-tab/specs/plugin-agent-hook/spec.md",
+     "quote": "### Requirement: Хук печатает непрочитанные события этой сессии",
+     "line": 24,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "openspec/changes/step-help-tab/research/F-69-probe/probe.log",
+     "quote": "Это только превью первых 2 КБ.",
+     "line": 8,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "openspec/changes/step-help-tab/research/F-69-probe/docs-excerpts.txt",
+     "quote": "are capped at 10,000 characters",
+     "line": 8,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "hook",
+    "agent"
+   ],
+   "finding": ""
+  },
+  {
+   "id": "F-72",
+   "question": "[empty · collection] Хук печатает непрочитанные события этой сессии: `events.jsonl` удалён и создан заново, теперь он короче курсора сессии. Новые события лежат до курсора, и сессия их не покажет",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-32"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN курсор сессии дальше конца `events.jsonl` WHEN сессия обращается THEN файл читается с начала, новые события показаны, курсор в конце; цена: сценарий, тест с обрезанным файлом, одна проверка в скрипте",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — такой курсор просто ставится в конец файла; допустимо, если файл никто не чистит, а один раз потерянное внесение агент увидит при чтении журнала",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест обрезает файл и утверждает, что скрипт вышел с кодом 0 и упасть не может; что показано, не проверяет; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — остаётся открытым до решения, чистится ли `events.jsonl` вообще; пока tasks считает, что файл только растёт",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Портит тихо: каталог `.symphysis/viewer/` исключён из git, и `git clean -fdX` снимет файл вместе с курсорами не всегда одновременно. Правка стоит одной проверки."
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/step-help-tab/specs/plugin-agent-hook/spec.md",
+     "quote": "### Requirement: Хук печатает непрочитанные события этой сессии",
+     "line": 24,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "event",
+    "hook"
+   ],
+   "finding": ""
+  },
+  {
+   "id": "F-73",
+   "question": "[concurrency · io] Хук печатает непрочитанные события этой сессии: «Внести» дописывает строку в момент, когда скрипт читает файл: последняя строка неполная. Встанет курсор после неё, и сессия потеряет событие",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-32"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN последняя строка `events.jsonl` без перевода строки WHEN сессия обращается THEN эта строка не показана, курсор перед ней, следующее обращение показывает её целиком; цена: сценарий, тест с обрывом, правило в разборе",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — неполная строка пропускается вместе с курсором; допустимо, если считать, что запись одной строки идёт доли миллисекунды и совпасть с чтением почти не может",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест подаёт файл с обрывом в конце и утверждает только, что скрипт вышел с кодом 0; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — разбор обрыва остаётся открытым до появления настоящего случая; пока tasks считает, что строка всегда записана целиком",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Портит тихо и не лечится повтором: событие пропадает для этой сессии насовсем. Правило простое: читать только до последнего перевода строки."
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/step-help-tab/specs/plugin-agent-hook/spec.md",
+     "quote": "### Requirement: Хук печатает непрочитанные события этой сессии",
+     "line": 24,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "event",
+    "hook"
+   ],
+   "finding": ""
+  },
+  {
+   "id": "F-74",
+   "question": "[empty · collection] Хук сообщает об изменении `scheme.md` по хешу: файла не было при первом обращении сессии, потом он появился. Это первое знакомство, которое только запоминается, или правка, о которой надо сказать",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-32",
+    "F-50"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN на первом обращении `scheme.md` у `demo` не было WHEN файл появился и сессия обращается снова THEN вывод называет `demo`; цена: сценарий, тест, хранение отметки «файла не было» в курсоре",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — появление считается первым знакомством и только запоминается; допустимо, если схему с нуля обычно пишет сам агент и ему незачем об этом напоминать",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест создаёт файл между обращениями и утверждает, что скрипт вышел с кодом 0, а хеш запомнен; вывод не проверяет; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — остаётся открытым до показа хука на настоящей работе; пока tasks считает, что появление только запоминается",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Портит тихо: если схему с нуля написал человек, агент работает мимо неё и об этом не знает. Ложная строка после собственной записи агента уже принята в Р20, новой цены нет."
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/step-help-tab/specs/plugin-agent-hook/spec.md",
+     "quote": "### Requirement: Хук сообщает об изменении `scheme.md` по хешу",
+     "line": 50,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "vscode/docs/design-part1-viewer.md",
+     "quote": "Ложное срабатывание — после собственной записи агента: лишняя строка в контексте",
+     "line": 282,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "schemeHash",
+    "hook"
+   ],
+   "finding": ""
+  },
+  {
+   "id": "F-75",
+   "question": "[adjacency · collection] Плагин ставит хук сам там, где он нужен: задан `symphysis.toolsPath`, а проект на обычном OpenSpec без схемы symphysis, и в нём есть `.claude/`. Условие из F-65 выполняется, и хук появится в чужом проекте",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-60",
+    "F-65"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN `openspec/` без `schema: symphysis` в `openspec/config.yaml`, инструменты только по `symphysis.toolsPath` WHEN плагин активируется THEN плагин ничего не пишет; цена: сценарий, тест, чтение `config.yaml` при активации",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — хук ставится; допустимо, потому что журнала там нет, скрипт молчит, файлы спрятаны от git, и вред ограничен лишней записью в личных настройках",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест активирует плагин в таком проекте и утверждает, что запрос доходит до модели, а `git status` чист; поставлена запись или нет, не проверяет; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — признак проекта на symphysis остаётся открытым до этапа `-g`: настройка сейчас у единиц; пока tasks считает, что признак только `openspec/`",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Выбранный тобой F-60.A обещает, что чужой проект не трогается. Настройка задаётся на всю машину, и при B запись появится во всех проектах на обычном OpenSpec, а узнать об этом неоткуда. Поле `schema` пишется в проект и при `-g`, поэтому признак переживёт тот этап."
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/step-help-tab/specs/plugin-agent-hook/spec.md",
+     "quote": "### Requirement: Плагин ставит хук сам там, где он нужен",
+     "line": 102,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "openspec/config.symphysis.yaml",
+     "quote": "schema: symphysis",
+     "line": 5,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "openspec/changes/step-help-tab/decisions.md",
+     "quote": "Пустой и чужой проект не трогается",
+     "line": 756,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "connect"
+   ],
+   "finding": ""
+  },
+  {
+   "id": "F-76",
+   "question": "[concurrency · io] Плагин ставит хук сам там, где он нужен: окно открыто в пустом проекте, человек ставит инструменты командой с вкладки и работает дальше. Активация уже прошла, хука нет, и «Внести» молчит, пока окно не перезагрузят",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-39",
+    "F-60"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN плагин активирован без инструментов WHEN появились `.symphysis/tools/journal.py` и `openspec/` THEN условие проверяется снова, хук встаёт без перезагрузки окна; цена: сценарий, слежение за двумя путями, сквозной тест",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — хук появляется при следующей активации; допустимо, если считать, что после установки окно всё равно перезагружают, а агент узнает о журнале при чтении",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест ставит инструменты при открытом окне, перезагружает его и утверждает, что запись на месте; без перезагрузки не проверяет; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — момент проверки остаётся открытым до tutorial (F-58), который и так ведёт первый запуск; пока tasks считает, что проверка только при активации",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Портит тихо, и именно на пути, который вкладка сама предлагает по F-39: человек нажимает «Внести», всё выглядит рабочим, а агент не узнаёт. Слежение за файлами в плагине уже есть."
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/step-help-tab/specs/plugin-agent-hook/spec.md",
+     "quote": "### Requirement: Плагин ставит хук сам там, где он нужен",
+     "line": 102,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "connect",
+    "installed"
+   ],
+   "finding": ""
+  },
+  {
+   "id": "F-77",
+   "question": "[empty · collection] Запись Claude Code лежит в `.claude/settings.local.json`: в файле комментарий или ошибка синтаксиса. Проба: такой файл клиент не читает вообще, запрос проходит, хук не срабатывает. Плагину его не разобрать",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-69"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN файл настроек не разбирается как JSON WHEN плагин активируется THEN файл байт в байт прежний, записи нет, человеку один раз названы файл и причина; пустой файл считается пустыми настройками; цена: сценарий, тест, одно сообщение",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — плагин молча пропускает такой файл; допустимо, потому что клиент его и сам не читает, и человек столкнётся с этим на своих разрешениях раньше, чем с хуком",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест подаёт битый файл и утверждает, что он не изменился байт в байт; что видит человек, не проверяет; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — что сказать человеку, остаётся открытым до tutorial (F-58); пока tasks считает, что файл только не трогается",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Затереть нельзя: там могут быть разрешения человека, а файл не в git, и откатить нечем. Молчать тоже плохо: не работают ни хук, ни его настройки, а причины никто не видит."
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/step-help-tab/specs/plugin-agent-hook/spec.md",
+     "quote": "### Requirement: Запись Claude Code лежит в `.claude/settings.local.json`",
+     "line": 164,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "openspec/changes/step-help-tab/research/F-69-probe/probe.log",
+     "quote": "\"case\": \"настройки с комментарием: читает ли их клиент\"",
+     "line": 6,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "settings"
+   ],
+   "finding": ""
+  },
+  {
+   "id": "F-78",
+   "question": "[concurrency · io] Запись Claude Code лежит в `.claude/settings.local.json`: клиент дописывает разрешение в тот же файл в момент, когда плагин его прочёл, но ещё не записал. Разрешение потеряется",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-52"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN файл изменился между чтением и записью плагина WHEN плагин пишет запись THEN он перечитывает файл и повторяет слияние, запись через временный файл; цена: сценарий, сверка перед заменой, тест с подменой файла",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — не покрывается; допустимо, потому что плагин пишет только когда записи нет или Python переехал, окно длится миллисекунды, а потерянное разрешение клиент просто спросит снова",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест меняет файл между чтением и записью и утверждает, что результат остаётся разбираемым JSON; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — остаётся открытым до первой жалобы на пропавшее разрешение; пока tasks считает, что одновременной записи нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "B",
+    "why": "Плагин пишет редко, потеря видна сразу и лечится одним ответом клиенту. Запись через временный файл и так общее правило плагина, сценарий ради этого не нужен."
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/step-help-tab/specs/plugin-agent-hook/spec.md",
+     "quote": "### Requirement: Запись Claude Code лежит в `.claude/settings.local.json`",
+     "line": 164,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "settings"
+   ],
+   "finding": ""
+  },
+  {
+   "id": "F-79",
+   "question": "[idempotency · stateful] Файл opencode лежит в `.opencode/plugins/`: там уже лежит чужой `symphysis-hook.js`: файл человека или будущего плагина opencode. Активация его перепишет",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-49",
+    "F-66"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN `symphysis-hook.js` без метки этого плагина WHEN плагин активируется THEN файл не тронут, запись opencode не ставится, причина названа; цена: сценарий, метка в первой строке файла, тест",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — файл перезаписывается всегда; допустимо, потому что имя с нашим префиксом чужому файлу занимать незачем, а будущий плагин opencode поставится иначе",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест кладёт чужой файл и утверждает, что после активации запрос в opencode доходит до модели; судьбу файла не проверяет; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — остаётся открытым до работы над плагином opencode, который тоже называет ключ `symphysis`; пока tasks считает, что чужого файла не бывает",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Необратимо: файл скрыт от git строкой `exclude`, и переписанное уже не вернуть. Проверка стоит одной строки метки."
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/step-help-tab/specs/plugin-agent-hook/spec.md",
+     "quote": "### Requirement: Файл opencode лежит в `.opencode/plugins/`",
+     "line": 195,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "opencode/PROMPT.md",
+     "quote": "запись `instructions.entry` с ключом `symphysis`",
+     "line": 174,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "connect"
+   ],
+   "finding": ""
+  },
+  {
+   "id": "F-80",
+   "question": "[empty · collection] Файлы хука спрятаны от git: `.claude/settings.local.json` уже отслеживается, кто-то его закоммитил. На такой файл `exclude` не действует, и абсолютный путь к Python окажется в следующем коммите",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-66"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN `.claude/settings.local.json` отслеживается git WHEN плагин активируется THEN файл не тронут, записи Claude Code нет, причина названа; цена: сценарий, один вызов `git ls-files`, тест",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — запись ставится как обычно; допустимо, если считать, что человек увидит правку в `git diff` перед коммитом",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест отслеживает файл, активирует плагин и утверждает, что `git status` чист; это и есть запрет записи, только без сценария в spec.md",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — остаётся открытым до показа плагина другим людям: у одного владельца такой файл вряд ли отслеживается; пока tasks считает, что файл не в git",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Необратимо: путь с именем пользователя уезжает в историю, а агент с `git add -A` не заметит. По F-47 плагин действует без спроса, поэтому проверять должен сам."
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/step-help-tab/specs/plugin-agent-hook/spec.md",
+     "quote": "### Requirement: Файлы хука спрятаны от git",
+     "line": 226,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "settings"
+   ],
+   "finding": ""
+  },
+  {
+   "id": "F-81",
+   "question": "[concurrency · io] Файлы хука спрятаны от git: два рабочих дерева одного репозитория делят один `info/exclude`. Выключатель снимает строки в одном, и файл настроек второго, ещё не открытого, станет виден git с абсолютным путём",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-61",
+    "F-66"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN хук стоит в двух рабочих деревьях `git worktree` WHEN его снимают в одном THEN строки `exclude` остаются, пока файлы хука есть в другом; цена: сценарий, вызов `git worktree list`, тест на двух рабочих деревьях",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — строки снимаются всегда; допустимо, потому что выключатель задан на машину и второе рабочее дерево снимет хук при своём открытии",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест снимает хук в одном дереве и утверждает, что `git status` первого чист; второе не проверяет; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — снятие строк остаётся открытым до показа выключателя в tutorial (F-58); пока tasks считает, что рабочее дерево одно",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Портит тихо и необратимо: ты работаешь в рабочих деревьях, а агент с `git add -A` во втором унесёт в коммит абсолютный путь. `git worktree list` даёт ответ одним вызовом."
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/step-help-tab/specs/plugin-agent-hook/spec.md",
+     "quote": "### Requirement: Файлы хука спрятаны от git",
+     "line": 226,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "openspec/changes/step-help-tab/decisions.md",
+     "quote": "Плагин дописывает их имена в `.git/info/exclude`",
+     "line": 865,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "connect"
+   ],
+   "finding": ""
+  },
+  {
+   "id": "F-82",
+   "question": "[concurrency · io] Выключатель снимает хук: человек удаляет плагин, не выключив настройку. Записи и скрипт остаются в проектах. `vscode:uninstall` — скрипт Node после перезапуска VS Code, а какие проекты трогать, ему неизвестно",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-61",
+    "F-69"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN плагин удалён WHEN VS Code перезапущен THEN скрипт `vscode:uninstall` снимает записи во всех проектах из списка, который плагин ведёт на машине; цена: сценарий, список проектов на машине, скрипт снятия без API VS Code, ручная проверка: пробой это не проверялось",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — записи остаются после удаления; допустимо, потому что запрос они уже не блокируют (F-69), без новых событий скрипт говорит только о правке схемы, а убрать можно настройкой до удаления или руками",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест снимает каталог `.symphysis/viewer/` и плагин и утверждает, что запрос доходит до модели; следов записи не проверяет; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — уборка при удалении остаётся открытой до следующего изменения о конфигурации (F-58); пока tasks считает, что записи остаются",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "B",
+    "why": "Вреда нет: F-69 снимает единственную настоящую опасность, блокировку. Но твоё слово «все действия обратимы» здесь верно не целиком: откат есть до удаления настройкой, а после него только руками. Если хочешь буквально, это A, и его стоимость больше остальной части выключателя."
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/step-help-tab/specs/plugin-agent-hook/spec.md",
+     "quote": "### Requirement: Выключатель снимает хук",
+     "line": 262,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "openspec/changes/step-help-tab/research/F-69-probe/docs-excerpts.txt",
+     "quote": "you can register a node script to the uninstall hook vscode:uninstall",
+     "line": 4,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "openspec/changes/step-help-tab/answers/2026-11-04-6.md",
+     "quote": "все действия обратимы",
+     "line": 2,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "connect"
+   ],
+   "finding": ""
+  },
+  {
+   "id": "F-83",
+   "question": "[adjacency · collection] Изменение для справки выбирается как у схемы: две папки рабочей области, в обеих активные изменения, просмотрщик закрыт, последнего показанного нет. `step_help.py` считает для одного корня",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-41"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN две папки рабочей области с активными изменениями и закрытый просмотрщик WHEN открывается вкладка THEN список изменений обеих папок с именем папки, выбор показывает его; цена: сценарий, два расчёта вместо одного, сквозной тест",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — берётся первая папка с `openspec/`; допустимо, если считать, что рабочие области с двумя проектами symphysis редки, а имя изменения видно в заголовке вкладки",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест открывает вкладку в такой области и утверждает, что показано изменение одной из папок и нет отказа; какой именно, не проверяет; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — остаётся открытым до первой настоящей рабочей области с двумя проектами; пока tasks считает, что папка одна",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Портит тихо: вкладка уверенно показывает шаг другого проекта. Список уже нужен при нескольких изменениях, новой логики почти нет."
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/step-help-tab/specs/plugin-step-help-view/spec.md",
+     "quote": "### Requirement: Изменение для справки выбирается как у схемы",
+     "line": 96,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "tab"
+   ],
+   "finding": ""
+  },
+  {
+   "id": "F-84",
+   "question": "[concurrency · io] Отказы справки видны на вкладке: прежний расчёт прошёл, следующий упал. На вкладке остаётся шаг с прошлого раза с пометкой о сбое или только причина и тексты шагов из вывода",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-53"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN на вкладке шаг `specs`, следующий расчёт дал `error` WHEN вкладка обновляется THEN прежний шаг с временем снятия и причиной сверху; цена: сценарий, хранение прежнего ответа, тест",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — вкладка показывает вывод как есть: причину и тексты шагов, без текущего шага, как панель страницы; допустимо, потому что сбой виден сразу, а устаревший шаг мог бы ввести в заблуждение",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест роняет расчёт после удачного и утверждает, что причина видна и вкладка не пуста; что ещё показано, не проверяет; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — остаётся открытым до показа вкладки владельцу; пока tasks считает, что показан вывод как есть",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "B",
+    "why": "Сбой виден сразу и ничего не портит, а поведение совпадает со страницей. Устаревший шаг рядом с плашкой легко прочесть как текущий."
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/step-help-tab/specs/plugin-step-help-view/spec.md",
+     "quote": "### Requirement: Отказы справки видны на вкладке",
+     "line": 168,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "help"
+   ],
+   "finding": ""
+  },
+  {
+   "id": "F-85",
+   "question": "[concurrency · io] Файл открывается рядом и без перевода фокуса: ссылка нажата на вкладке справки, а она уже в крайней правой колонке. По F-45 рядом появится новая колонка: на твоей раскладке это четвёртая",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-45"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN вкладка справки в крайней правой колонке WHEN человек нажимает ссылку THEN файл открыт в этой же колонке предпросмотром, поверх справки, вернуться можно кликом по вкладке; цена: сценарий, ветка в выборе колонки, сквозной тест",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — как в F-45: новая колонка справа от справки; допустимо, потому что всё остаётся на виду, закрывается одним кликом, а тесно станет сразу и заметно",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест нажимает ссылку со вкладки справки и утверждает, что файл открыт и вкладка справки одна; колонку не проверяет; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — остаётся открытым до показа вкладки владельцу на его раскладке; пока tasks считает, что файл открывается в новой колонке",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "B",
+    "why": "Ничего не портится и видно сразу. Выбор удобнее делать, посмотрев на настоящей раскладке, а не заранее."
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/step-help-tab/specs/plugin-file-links/spec.md",
+     "quote": "### Requirement: Файл открывается рядом и без перевода фокуса",
+     "line": 55,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "links",
+    "openFile"
+   ],
+   "finding": ""
+  },
+  {
+   "id": "F-86",
+   "question": "[empty · collection] У шага есть поле `skills`: поле попадает и в снимок страницы, а панель справки на странице его не показывает. Ссылок на скиллы там нет, хотя критерий F-09 говорит о справке вообще",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-46"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN снимок со `skills`, файл скилла в проекте WHEN человек открывает справку на странице THEN скиллы шага показаны ссылками через общую карту; цена: сценарий, правка шаблона страницы, тест шаблона",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — на странице скилл виден именем в тексте шага; допустимо, потому что это изменение про плагин, а страницу трогает только дата в заголовке",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест собирает страницу со снимком, где есть `skills`, и утверждает, что она не падает; ссылок не проверяет; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — показ на странице остаётся открытым до следующей правки панели справки в ядре; пока tasks считает, что страница поле не показывает",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "B",
+    "why": "Ничего не портит: имя скилла на странице видно. Ссылки там добавит любое следующее изменение панели, поле уже будет."
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/step-help-tab/specs/step-help/spec.md",
+     "quote": "### Requirement: У шага есть поле `skills`",
+     "line": 36,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "openspec/changes/step-help-tab/intent.md",
+     "quote": "в самой справке есть ссылки на файлы скиллов или артефактов, которые можно открыть из справки",
+     "line": 20,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "help"
+   ],
+   "finding": ""
+  },
+  {
+   "id": "F-87",
+   "question": "[запрет] Плагин ставит хук сам там, где он нужен: не должен менять настройки клиента так, что человек об этом не узнает. Твоё слово стоит на «получает инструкции», а `README` у пакета нет и tutorial придёт только следующим изменением",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-47",
+    "F-58"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify/test — требование MUST NOT: пакет не выходит без описания хука; в `.vsix` есть `README.md`, он называет записи плагина, настройку `symphysis.hook.enabled` и как убрать хук руками; тест упаковки ищет эти строки; цена: сценарий, файл, тест, правка при смене файлов хука",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Specify/judgment — требование MUST NOT: человек узнаёт о хуке при первой установке в проекте: одно сообщение называет файлы и настройку; судит владелец, глядя на сообщение: понятность тестом не измерить; цена: сценарий, сообщение, проверка глазами при каждой смене текста",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Dismiss — запрет не нужен: сейчас плагин ставишь только ты и об этом знаешь, а другим его покажет уже tutorial из следующего изменения",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — описание хука остаётся открытым до tutorial (F-58); пока tasks считает, что страница расширения пуста",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Твоё слово «легко и безопасно» опирается на инструкции, а их сейчас нет: страница расширения пустая, и нарушение тихое, потому что запись появляется без вопроса и спрятана от git. `README` к тому же сразу наполняет страницу расширения и останется основой для tutorial."
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/step-help-tab/specs/plugin-agent-hook/spec.md",
+     "quote": "### Requirement: Плагин ставит хук сам там, где он нужен",
+     "line": 102,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "vscode/docs/design-part1-viewer.md",
+     "quote": "`README` у пакета нет",
+     "line": 586,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "openspec/changes/step-help-tab/answers/2026-11-04-6.md",
+     "quote": "получает инструкции как им пользоваться",
+     "line": 2,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "connect"
+   ],
+   "finding": ""
+  },
+  {
+   "id": "F-88",
+   "question": "[канон] Хук печатает непрочитанные события этой сессии и настройка `symphysis.toolsPath`: канон ИБ",
+   "kind": "факт",
+   "status": "припаркован",
+   "addressee": "ИБ",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [
+    {
+     "addressee": "ИБ",
+     "text": "Номер сессии со входа хука становится именем файла курсора: `../` и зарезервированные имена Windows; `symphysis.toolsPath` запускает код из настроенного каталога, поэтому только уровень машины; файл opencode несёт абсолютный путь и исполняется клиентом — канон, покрывается чек-листом security.md; запрет не чеканится"
+    }
+   ],
+   "dispute": "",
+   "consequences": "На этом стоит шаг `security`, вместе с F-54 и F-63.",
+   "evidence": [
+    {
+     "path": "openspec/changes/step-help-tab/specs/plugin-agent-hook/spec.md",
+     "quote": "### Requirement: Хук печатает непрочитанные события этой сессии",
+     "line": 24,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "openspec/changes/step-help-tab/specs/plugin-step-help-view/spec.md",
+     "quote": "### Requirement: Инструменты можно указать настройкой `symphysis.toolsPath`",
+     "line": 199,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [],
+   "finding": ""
   }
  ],
  "notes": [
@@ -3953,6 +5355,18 @@ const JOURNAL = {
   {
    "date": "2026-11-04",
    "text": "брейншторм закончен по решению человека"
+  },
+  {
+   "date": "2026-11-04",
+   "text": "Насчет того, что плагин что то делает без спроса: технически да, но человек устанавливает плагин, получает инструкции как им пользоваться, все действия обратимы. Поэтому на мой взгляд это и легко и безопасно."
+  },
+  {
+   "date": "2026-11-04",
+   "text": "проба краёв: кандидатов 17, Specify 0, Dismiss 0, Backstop 0, Defer 0, открыты: F-70, F-71, F-72, F-73, F-74, F-75, F-76, F-77, F-78, F-79, F-80, F-81, F-82, F-83, F-84, F-85, F-86; не выбран 44: plugin-agent-hook/Выключатель снимает хук, plugin-agent-hook/Запись Claude Code лежит в `.claude/settings.local.json`, plugin-agent-hook/Плагин ставит хук сам там, где он нужен, plugin-agent-hook/Скрипт хука приходит из пакета плагина, plugin-agent-hook/Файл opencode лежит в `.opencode/plugins/`, plugin-agent-hook/Файлы хука спрятаны от git, plugin-agent-hook/Хук не останавливает запрос человека, plugin-agent-hook/Хук печатает непрочитанные события этой сессии, plugin-agent-hook/Хук сообщает об изменении `scheme.md` по хешу, plugin-core-contract/Хук описан в контракте, plugin-decision-view/Выбор мимо рекомендации просит слово и не блокирует, plugin-decision-view/Шапка просмотрщика показывает закрытые задачи, plugin-file-links/Плагин открывает только файл из карты, plugin-file-links/Скиллы шага показаны ссылками, plugin-file-links/Ссылкой становится только путь из карты ядра, plugin-file-links/Файл открывается рядом и без перевода фокуса, plugin-scheme-view/Вкладка схемы открывается кнопкой и командой, plugin-scheme-view/Вкладки журнала и схемы переживают перезагрузку окна, plugin-step-help-view/Вкладка показывает вывод ядра и своих текстов не пишет, plugin-step-help-view/Изменение для справки выбирается как у схемы, plugin-step-help-view/Инструменты можно указать настройкой `symphysis.toolsPath`, plugin-step-help-view/Отказы справки видны на вкладке, plugin-step-help-view/Справка делит вкладку со схемой, plugin-step-help-view/Справка обновляется по событиям, plugin-step-help-view/Справка открывается без журнала, step-help/Вывод несёт карту ссылок, step-help/Каталог установки задаётся необязательным аргументом, step-help/Текст текущего шага не повторяет счётчик задач, step-help/У шага есть поле `skills`"
+  },
+  {
+   "date": "2026-11-04",
+   "text": "проба запретов: требований 33, оставлено 1, канон → ИБ 1, Specify 0, Dismiss 0, Defer 0, открыт: F-87"
   }
  ]
 };
@@ -3966,7 +5380,7 @@ const SCHEME = {
 };
 const HELP = {
  "contract": 2,
- "taken_at": "2026-11-04T01:37:21+03:00",
+ "taken_at": "2026-11-04T02:18:10+03:00",
  "versions": {
   "openspec": "1.15.0-symphysis.4",
   "symphysis": null
@@ -3974,12 +5388,12 @@ const HELP = {
  "change": "step-help-tab",
  "changes": null,
  "error": null,
- "current_step": "specs",
- "current_text": "Следующий шаг по файлам — `specs`, ход модели.",
- "turn": "model",
- "next_by_status": "specs",
+ "current_step": "viewer",
+ "current_text": "Следующий шаг по файлам — `viewer`, ход человека: открытых развилок 18, решаются на странице журнала. После них по файлам идёт `consequences`.",
+ "turn": "human",
+ "next_by_status": "consequences",
  "forks": {
-  "open": 0,
+  "open": 18,
   "parked": 0
  },
  "tasks": {
@@ -4051,7 +5465,7 @@ const HELP = {
   },
   {
    "id": "viewer",
-   "state": "idle",
+   "state": "ready",
    "turn": "human",
    "optional": false,
    "blocks": [],
@@ -4094,6 +5508,10 @@ const HELP = {
     },
     {
      "path": "openspec/changes/step-help-tab/research/F-53.md",
+     "exists": true
+    },
+    {
+     "path": "openspec/changes/step-help-tab/research/F-69.md",
      "exists": true
     }
    ],
@@ -4172,7 +5590,7 @@ const HELP = {
   },
   {
    "id": "specs",
-   "state": "ready",
+   "state": "done",
    "turn": "model",
    "optional": false,
    "blocks": [
@@ -4185,11 +5603,39 @@ const HELP = {
    "waits_for": [],
    "files": [
     {
-     "path": "openspec/changes/step-help-tab/specs/**/*.md",
-     "exists": false
+     "path": "openspec/changes/step-help-tab/specs/decision-viewer/spec.md",
+     "exists": true
+    },
+    {
+     "path": "openspec/changes/step-help-tab/specs/plugin-agent-hook/spec.md",
+     "exists": true
+    },
+    {
+     "path": "openspec/changes/step-help-tab/specs/plugin-core-contract/spec.md",
+     "exists": true
+    },
+    {
+     "path": "openspec/changes/step-help-tab/specs/plugin-decision-view/spec.md",
+     "exists": true
+    },
+    {
+     "path": "openspec/changes/step-help-tab/specs/plugin-file-links/spec.md",
+     "exists": true
+    },
+    {
+     "path": "openspec/changes/step-help-tab/specs/plugin-scheme-view/spec.md",
+     "exists": true
+    },
+    {
+     "path": "openspec/changes/step-help-tab/specs/plugin-step-help-view/spec.md",
+     "exists": true
+    },
+    {
+     "path": "openspec/changes/step-help-tab/specs/step-help/spec.md",
+     "exists": true
     }
    ],
-   "file_note": null,
+   "file_note": "файл есть, содержание не проверялось",
    "texts": {
     "title": "Спецификации поведения",
     "why": "Наблюдаемое поведение, записанное требованиями и сценариями. По нему потом проверяют дизайн и код, поэтому всё, что не названо здесь, проверить будет нечем.",
@@ -4205,16 +5651,14 @@ const HELP = {
   },
   {
    "id": "consequences",
-   "state": "blocked",
+   "state": "ready",
    "turn": "model",
    "optional": false,
    "blocks": [
     "design"
    ],
    "stops_apply": false,
-   "waits_for": [
-    "specs"
-   ],
+   "waits_for": [],
    "files": [
     {
      "path": "openspec/changes/step-help-tab/consequences.md",
@@ -4270,16 +5714,14 @@ const HELP = {
   },
   {
    "id": "security",
-   "state": "blocked",
+   "state": "ready",
    "turn": "model",
    "optional": false,
    "blocks": [
     "attack-artifacts"
    ],
    "stops_apply": true,
-   "waits_for": [
-    "specs"
-   ],
+   "waits_for": [],
    "files": [
     {
      "path": "openspec/changes/step-help-tab/security.md",
@@ -4310,7 +5752,6 @@ const HELP = {
    ],
    "stops_apply": true,
    "waits_for": [
-    "specs",
     "design"
    ],
    "files": [
@@ -4341,7 +5782,6 @@ const HELP = {
    "blocks": [],
    "stops_apply": false,
    "waits_for": [
-    "specs",
     "design",
     "security",
     "tasks"
@@ -4450,12 +5890,14 @@ const LINKS = {
   "docs/analysis/opencode-v2-subagents-2026-11-03.md": "../../../docs/analysis/opencode-v2-subagents-2026-11-03.md",
   "docs/analysis/stores-and-context-pack-2026-11-02.md": "../../../docs/analysis/stores-and-context-pack-2026-11-02.md",
   "docs/repo-contract.md": "../../../docs/repo-contract.md",
+  "edge-probe.md": "edge-probe.md",
   "installer/lib/install.js": "../../../installer/lib/install.js",
   "installer/lib/paths.js": "../../../installer/lib/paths.js",
   "intent.md": "intent.md",
   "opencode/PROMPT.md": "../../../../symphysis-opencode/PROMPT.md",
   "openspec/changes/archive/2026-11-03-step-help/decisions.md": "../archive/2026-11-03-step-help/decisions.md",
   "openspec/changes/archive/2026-11-03-step-help/probes/fork-call-cost.txt": "../archive/2026-11-03-step-help/probes/fork-call-cost.txt",
+  "openspec/changes/step-help-tab/answers/2026-11-04-6.md": "answers/2026-11-04-6.md",
   "openspec/changes/step-help-tab/answers/2026-11-04.md": "answers/2026-11-04.md",
   "openspec/changes/step-help-tab/decisions.json": "decisions.json",
   "openspec/changes/step-help-tab/decisions.md": "decisions.md",
@@ -4470,6 +5912,19 @@ const LINKS = {
   "openspec/changes/step-help-tab/research/F-52.md": "research/F-52.md",
   "openspec/changes/step-help-tab/research/F-53-probe/probe.log": "research/F-53-probe/probe.log",
   "openspec/changes/step-help-tab/research/F-53.md": "research/F-53.md",
+  "openspec/changes/step-help-tab/research/F-69-probe/docs-excerpts.txt": "research/F-69-probe/docs-excerpts.txt",
+  "openspec/changes/step-help-tab/research/F-69-probe/probe.log": "research/F-69-probe/probe.log",
+  "openspec/changes/step-help-tab/research/F-69.md": "research/F-69.md",
+  "openspec/changes/step-help-tab/specs/decision-viewer/spec.md": "specs/decision-viewer/spec.md",
+  "openspec/changes/step-help-tab/specs/plugin-agent-hook/spec.md": "specs/plugin-agent-hook/spec.md",
+  "openspec/changes/step-help-tab/specs/plugin-core-contract/spec.md": "specs/plugin-core-contract/spec.md",
+  "openspec/changes/step-help-tab/specs/plugin-decision-view/spec.md": "specs/plugin-decision-view/spec.md",
+  "openspec/changes/step-help-tab/specs/plugin-file-links/spec.md": "specs/plugin-file-links/spec.md",
+  "openspec/changes/step-help-tab/specs/plugin-scheme-view/spec.md": "specs/plugin-scheme-view/spec.md",
+  "openspec/changes/step-help-tab/specs/plugin-step-help-view/spec.md": "specs/plugin-step-help-view/spec.md",
+  "openspec/changes/step-help-tab/specs/step-help/spec.md": "specs/step-help/spec.md",
+  "openspec/config.symphysis.yaml": "../../config.symphysis.yaml",
+  "openspec/config.yaml": "../../config.yaml",
   "openspec/schemas/symphysis/steps.md": "../../schemas/symphysis/steps.md",
   "openspec/specs/decision-viewer/spec.md": "../../specs/decision-viewer/spec.md",
   "openspec/specs/plugin-core-contract/spec.md": "../../specs/plugin-core-contract/spec.md",
@@ -4478,6 +5933,7 @@ const LINKS = {
   "research/F-49.md": "research/F-49.md",
   "research/F-52.md": "research/F-52.md",
   "research/F-53.md": "research/F-53.md",
+  "research/F-69.md": "research/F-69.md",
   "scheme.md": "scheme.md",
   "skills/symphysis-viewer/SKILL.md": "../../../skills/symphysis-viewer/SKILL.md",
   "symphysis.html": "symphysis.html",
