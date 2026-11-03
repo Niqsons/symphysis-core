@@ -33,7 +33,8 @@
 **Хук**
 
 - «Внести» пишет событие в `.symphysis/viewer/events.jsonl`. При обращении к агенту хук печатает непрочитанные события этой сессии и строку о `scheme.md`, если его хеш изменился (F-15, F-32, F-33). Новая сессия прошлых событий не видит (F-50).
-- Плагин ставит хук сам при активации: только где в корне есть `openspec/`, найдены инструменты и есть след клиента. Выбор клиентов придёт следующим изменением (F-47, F-58, F-60, F-65).
+- Плагин ставит хук сам при активации и при появлении инструментов: только где в корне есть `openspec/`, найдены инструменты и есть след клиента; инструменты только по настройке считаются при `schema: symphysis` в проекте. Выбор клиентов придёт следующим изменением (F-47, F-58, F-60, F-65, F-75, F-76).
+- Пакет не выходит без описания хука: `README.md` называет записи плагина, настройку и как убрать хук руками (F-82, F-87, F-90).
 - Настройка `symphysis.hook.enabled` снимает запись плагина, и плагин больше её не ставит (F-61). Файлы, которые плагин создаёт для хука, он прячет в `.git/info/exclude` (F-66).
 - Claude Code: запись в `.claude/settings.local.json`, запуск без оболочки абсолютным путём к Python, путь сверяется при активации. Скрипт хука не выходит с кодом 2 (F-31, F-48, F-52, F-57).
 - opencode: файл в `.opencode/plugins/`, без правки `opencode.json`. Он оболочка над тем же Python-скриптом и доставляет текст записью `instructions.entry` (F-49, F-67, F-68).
@@ -61,7 +62,7 @@
 
 - Код ядра: `tools/step_help.py`, `tools/journal_cli.py`, `tools/journal_render.py`, `tools/journal_apply.py`, `tools/playground-template.html` и их тесты; среди них `test_output_shape`, он перечисляет поля вывода точно.
 - Тексты ядра: `skills/symphysis-viewer/SKILL.md`, `docs/repo-contract.md`.
-- Код плагина: `src/extension.ts`, `src/host/core.ts`, `src/host/project.ts`, `src/host/schemePanel.ts`, `src/webview/App.tsx`, `src/webview/Card.tsx`, `package.json`, новый скрипт хука и файл для opencode. Коммит плагина несёт `Needs:` на коммит ядра.
+- Код плагина: `src/extension.ts`, `src/host/core.ts`, `src/host/project.ts`, `src/host/schemePanel.ts`, `src/webview/App.tsx`, `src/webview/Card.tsx`, `package.json`, `.vscodeignore`, новые `README.md`, скрипт хука и файл для opencode. Коммит плагина несёт `Needs:` на коммит ядра.
 - Что пишет плагин в проекте сверх прежнего: `.claude/settings.local.json`, `.opencode/plugins/`, `.git/info/exclude`. Прежнее решение «по действию человека» заменено словом к F-47.
 - Настройки сверх `symphysis.python` и цветов: `symphysis.toolsPath`, `symphysis.hook.enabled` (F-61, F-62).
 - Не проверено пробами: opencode Desktop и фоновый сервис, подхват нового файла работающим сервером, запуск VS Code именно из меню «Пуск» (F-49, F-53).

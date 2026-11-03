@@ -39,7 +39,7 @@
 #### Scenario: Скилл в проекте
 - **GIVEN** в тексте шага `` `symphysis-brainstorm` ``, файл `.claude/skills/symphysis-brainstorm/SKILL.md`
 - **WHEN** выполняется `step_help.py --change demo`
-- **THEN** у шага запись с этим именем, путём от корня и `base` `project`
+- **THEN** у шага запись с этим именем, путём от корня и `base` `project`, его путь есть и в `file_links`
 
 #### Scenario: Порядок каталогов
 - **GIVEN** файл скилла есть в `.claude/skills` и в `.opencode/skills`
@@ -61,7 +61,7 @@
 - **WHEN** выполняется `step_help.py`
 - **THEN** код 0, у шагов `skills` пуст
 
-<!-- проба краёв: форма=collection, io, исходы: F-86 открыт -->
+<!-- проба краёв: форма=collection, io, исходы: F-86 Dismiss -->
 <!-- проба запретов: исходы: нет -->
 
 ### Requirement: Каталог установки задаётся необязательным аргументом

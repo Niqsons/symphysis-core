@@ -80,6 +80,14 @@
 - plugin-agent-hook/Выключатель снимает хук · precision · неприменимо: формы stateful, io; precision только для numeric-range
 - plugin-agent-hook/Выключатель снимает хук · idempotency · не выбран: выключить дважды и включить снова; исход назван сценариями «Активация при выключенной настройке» и «Включение снова»
 - plugin-agent-hook/Выключатель снимает хук · concurrency · кандидат F-82
+- plugin-agent-hook/Пакет плагина не выходит без описания хука · boundary · неприменимо: формы text, io; boundary только для numeric-range
+- plugin-agent-hook/Пакет плагина не выходит без описания хука · adjacency · неприменимо: формы text, io; adjacency только для collection
+- plugin-agent-hook/Пакет плагина не выходит без описания хука · empty · не выбран: описания нет; исход назван сценарием «Описания нет»
+- plugin-agent-hook/Пакет плагина не выходит без описания хука · encoding · не найдено: тест ищет строки дословно
+- plugin-agent-hook/Пакет плагина не выходит без описания хука · ordering · неприменимо: формы text, io; ordering только для collection
+- plugin-agent-hook/Пакет плагина не выходит без описания хука · precision · неприменимо: формы text, io; precision только для numeric-range
+- plugin-agent-hook/Пакет плагина не выходит без описания хука · idempotency · неприменимо: формы text, io; idempotency только для stateful
+- plugin-agent-hook/Пакет плагина не выходит без описания хука · concurrency · не найдено: тест идёт на собранном пакете, параллельной записи нет
 - plugin-step-help-view/Справка делит вкладку со схемой · boundary · неприменимо: формы stateful; boundary только для numeric-range
 - plugin-step-help-view/Справка делит вкладку со схемой · adjacency · неприменимо: формы stateful; adjacency только для collection
 - plugin-step-help-view/Справка делит вкладку со схемой · empty · неприменимо: формы stateful; empty только для collection, text
