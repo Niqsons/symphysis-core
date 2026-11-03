@@ -8,6 +8,7 @@ import { spawnSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
 import { requireFork } from "../scripts/build-vendor.js";
 import { tempDir } from "../test-support/temp-dir.js";
+import { runWithLockRetry } from "../test-support/lock-retry.js";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const installerDir = path.resolve(here, "..");
@@ -39,9 +40,10 @@ function npx(args, env) {
   const spec = `file:${tgz.split(path.sep).join("/")}`;
   const q = (s) => `"${s}"`;
   const line = `npx --yes ${q(spec)} ${args.map((a) => (/\s/.test(a) ? q(a) : a)).join(" ")}`;
-  return win
+  // npx сам объявляет блокировку своего кэша нарушенной (ECOMPROMISED) под нагрузкой на машину: один повтор, только на этот код
+  return runWithLockRetry(() => win
     ? spawnSync(line, { encoding: "utf8", shell: true, env, timeout: TIMEOUT })
-    : spawnSync("npx", ["--yes", spec, ...args], { encoding: "utf8", env, timeout: TIMEOUT });
+    : spawnSync("npx", ["--yes", spec, ...args], { encoding: "utf8", env, timeout: TIMEOUT }));
 }
 
 const opts = { skip: hasNpm ? false : "npm нет в PATH" };
