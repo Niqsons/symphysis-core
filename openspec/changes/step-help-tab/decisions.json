@@ -1,0 +1,3670 @@
+{
+ "title": "Журнал решений: step-help-tab",
+ "source": "decisions.json",
+ "intro": "Пути улик — от корня проекта; префикс `vscode/` — репозиторий плагина symphysis-vscode; корни — `openspec/changes/step-help-tab/probes/journal-roots.json`. Читались: `intent.md`, `docs/repo-contract.md`, спеки `step-help`, `decision-viewer`, `plugin-core-contract`, `plugin-scheme-view`, архив `2026-11-03-step-help`, `tools/step_help.py`, `tools/journal_cli.py`, `tools/journal_apply.py`, панель справки в `tools/playground-template.html`; в плагине `docs/design-part1-viewer.md`, `docs/spike-part1-results.md`, `package.json`, `src/extension.ts` и хост. Изменение одно на оба проекта: живёт в ядре, код в основном в плагине. После слова 2026-11-04 читались `docs/analysis/stores-and-context-pack-2026-11-02.md` и предпроектный файл плагина opencode: префикс `opencode/`. Отчёты исследования — `research/F-49.md`, `research/F-52.md`, `research/F-53.md`, следы рядом.",
+ "records": [
+  {
+   "id": "F-01",
+   "question": "Критерий готовности: «какой шаг конвейера сейчас выполняется?»",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "постановка",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/step-help-tab/intent.md",
+     "quote": "«какой шаг конвейера сейчас выполняется?» (слово в чате, 2026-11-02; критерий `step-help`, перенесён по слову «те же»)",
+     "line": 34,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "steps"
+   ]
+  },
+  {
+   "id": "F-02",
+   "question": "Критерий готовности: «зачем он? какие основные механики?»",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "постановка",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/step-help-tab/intent.md",
+     "quote": "«зачем он? какие основные механики?» (слово в чате, 2026-11-02; критерий `step-help`, перенесён по слову «те же»)",
+     "line": 35,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "steps"
+   ]
+  },
+  {
+   "id": "F-03",
+   "question": "Критерий готовности: «что будет, если я не выполню этот шаг?»",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "постановка",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/step-help-tab/intent.md",
+     "quote": "«что будет, если я не выполню этот шаг?» (слово в чате, 2026-11-02; критерий `step-help`, перенесён по слову «те же»)",
+     "line": 36,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "steps"
+   ]
+  },
+  {
+   "id": "F-04",
+   "question": "Критерий готовности: «какие файлы и где смотреть, чтобы проверить результаты шага»",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "постановка",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/step-help-tab/intent.md",
+     "quote": "«какие файлы и где смотреть, чтобы проверить результаты шага» (слово в чате, 2026-11-02; критерий `step-help`, перенесён по слову «те же»)",
+     "line": 37,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "steps",
+    "links"
+   ]
+  },
+  {
+   "id": "F-05",
+   "question": "Критерий готовности: «справку, которая смотрит на status, и описывает текущий шаг»",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "постановка",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/step-help-tab/intent.md",
+     "quote": "«справку, которая смотрит на status, и описывает текущий шаг» (слово в чате, 2026-11-02; критерий `step-help`, перенесён по слову «те же»)",
+     "line": 38,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "help"
+   ]
+  },
+  {
+   "id": "F-06",
+   "question": "Критерий готовности: «можно посмотреть и другие шаги, с помощью листания справки, или выбора пункта»",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "постановка",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/step-help-tab/intent.md",
+     "quote": "«можно посмотреть и другие шаги, с помощью листания справки, или выбора пункта» (слово в чате, 2026-11-02; критерий `step-help`, перенесён по слову «те же»)",
+     "line": 39,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "steps"
+   ]
+  },
+  {
+   "id": "F-07",
+   "question": "Критерий готовности: «базово её выведем в html»",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "постановка",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/step-help-tab/intent.md",
+     "quote": "«базово её выведем в html» (слово в чате, 2026-11-02; критерий `step-help`, перенесён по слову «те же»)",
+     "line": 40,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "help"
+   ]
+  },
+  {
+   "id": "F-08",
+   "question": "Критерий готовности: «есть информация о формировании intent»",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "постановка",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/step-help-tab/intent.md",
+     "quote": "«есть информация о формировании intent» (слово в чате, 2026-11-02)",
+     "line": 41,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "howto"
+   ]
+  },
+  {
+   "id": "F-09",
+   "question": "Критерий готовности: «в самой справке есть ссылки на файлы скиллов или артефактов, которые можно открыть из справки»",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "постановка",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/step-help-tab/intent.md",
+     "quote": "«в самой справке есть ссылки на файлы скиллов или артефактов, которые можно открыть из справки» (слово в чате, 2026-11-02)",
+     "line": 42,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "links",
+    "openFile"
+   ]
+  },
+  {
+   "id": "F-10",
+   "question": "Критерий готовности: «забрать в плагин изменения, что были внесены в просмотрщик»",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "постановка",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/step-help-tab/intent.md",
+     "quote": "«забрать в плагин изменения, что были внесены в просмотрщик» (слово в чате, 2026-11-04)",
+     "line": 43,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "viewer"
+   ]
+  },
+  {
+   "id": "F-11",
+   "question": "Критерий готовности: «ссылки на файлы»",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "постановка",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/step-help-tab/intent.md",
+     "quote": "«ссылки на файлы» (слова модели в вопросе о составе, человек их не оспорил, 2026-11-04)",
+     "line": 44,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "links"
+   ]
+  },
+  {
+   "id": "F-12",
+   "question": "Критерий готовности: «просьбу слова»",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "постановка",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/step-help-tab/intent.md",
+     "quote": "«просьбу слова» (слова модели в вопросе о составе, человек их не оспорил, 2026-11-04)",
+     "line": 45,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "word"
+   ]
+  },
+  {
+   "id": "F-13",
+   "question": "Критерий готовности: «счётчик задач»",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "постановка",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/step-help-tab/intent.md",
+     "quote": "«счётчик задач» (слова модели в вопросе о составе, человек их не оспорил, 2026-11-04)",
+     "line": 46,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "counter"
+   ]
+  },
+  {
+   "id": "F-14",
+   "question": "Критерий готовности: «без выбора редактора»",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "постановка",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/step-help-tab/intent.md",
+     "quote": "«без выбора редактора» (слова модели, человек согласился в чате, 2026-11-04)",
+     "line": 47,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "openFile"
+   ]
+  },
+  {
+   "id": "F-15",
+   "question": "Критерий готовности: «Давай все таки сделаем хук»",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "постановка",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/step-help-tab/intent.md",
+     "quote": "«Давай все таки сделаем хук» (слово в чате, 2026-11-04)",
+     "line": 48,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "hook"
+   ]
+  },
+  {
+   "id": "F-16",
+   "question": "От вкладки человек ждёт текущего состояния конвейера при открытии, без опроса: обновление привязано к событиям",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "постановка",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "На этом стоит F-42.",
+   "evidence": [
+    {
+     "path": "openspec/changes/step-help-tab/intent.md",
+     "quote": "От вкладки жду, что могу открыть её, и в ней отображено текущее состояние прохождения конвейера. Каждую секунду опрашивать состояние не нужно, так как оно не меняется каждую секунду. Вопрос в привязке к событиям.",
+     "line": 11,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "changed",
+    "help"
+   ]
+  },
+  {
+   "id": "F-17",
+   "question": "Справка открывается на той же вкладке, что и схема, вместо схемы",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "постановка",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "Своей вкладки у справки нет: на этом стоят F-40 и F-41.",
+   "evidence": [
+    {
+     "path": "openspec/changes/step-help-tab/intent.md",
+     "quote": "я полагал, что в плагине справка тоже будет открываться вместо схемы, на той же вкладке.",
+     "line": 17,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "tab"
+   ]
+  },
+  {
+   "id": "F-18",
+   "question": "Плагин, в отличие от страницы, показывает справку и на шаге `intent`, потому что его можно открыть в пустом проекте",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "постановка",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "На этом стоит F-39.",
+   "evidence": [
+    {
+     "path": "openspec/changes/step-help-tab/intent.md",
+     "quote": "в html на шаге intent страницы еще не будет. но в плагине будет, так как его можно открыть и в пустом проектее.",
+     "line": 8,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "project",
+    "installed"
+   ]
+  },
+  {
+   "id": "F-19",
+   "question": "В пустом проекте справка рассказывает, как подготовить хороший intent",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "постановка",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "Текст уже есть в `steps.md`, раздел «Как готовить». На этом стоит F-39.",
+   "evidence": [
+    {
+     "path": "openspec/changes/step-help-tab/intent.md",
+     "quote": "Справка должна рассказать как подготовить хороший Intent.",
+     "line": 14,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "howto"
+   ]
+  },
+  {
+   "id": "F-20",
+   "question": "Ядро справки сделано и влито: вывод `step_help.py` входит в контракт и несёт тот же номер, что `view-json`",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "материалы",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "Плагин читает этот вывод, а тексты шагов берёт из него и своих не пишет.",
+   "evidence": [
+    {
+     "path": "docs/repo-contract.md",
+     "quote": "- вывод `step_help.py`: поле `contract` то же самое число; поля — в `tests/test_step_help.py`, `test_output_shape`, исходы и коды — в `step_help.py --help`;",
+     "line": 49,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "help"
+   ]
+  },
+  {
+   "id": "F-21",
+   "question": "`step_help.py` работает и без изменения: изменений нет — текущий шаг `intent`; несколько — шага нет, имена в поле `changes`",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "материалы",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "На этом стоит F-41.",
+   "evidence": [
+    {
+     "path": "tools/step_help.py",
+     "quote": "Активных изменений нет: следующий шаг по файлам — `intent`, ход человека.",
+     "line": 427,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "tools/step_help.py",
+     "quote": "Активных изменений несколько, шаг считается для одного: укажи его в --change.",
+     "line": 428,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "help",
+    "steps"
+   ]
+  },
+  {
+   "id": "F-22",
+   "question": "Без `.symphysis/tools/` скрипта справки в проекте нет: он ставится инсталлятором вместе с журналом, а просмотрщик в таком проекте просит поставить инструменты",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "материалы",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "На этом стоит F-39.",
+   "evidence": [
+    {
+     "path": "vscode/src/webview/FailureText.tsx",
+     "quote": "В проекте нет <code>.symphysis/tools/journal.py</code>. Поставь инструменты:",
+     "line": 11,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "installer/lib/install.js",
+     "quote": "step_help\\.py",
+     "line": 128,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "installed",
+    "noTools"
+   ]
+  },
+  {
+   "id": "F-23",
+   "question": "Плагин сам активируется только в проекте с журналом, а без `openspec/changes` его список говорит одну строку",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "материалы",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "Для пустого проекта это придётся менять: F-39, F-40.",
+   "evidence": [
+    {
+     "path": "vscode/package.json",
+     "quote": "\"activationEvents\": [\"workspaceContains:openspec/changes/*/decisions.json\", \"onWebviewPanel:symphysis.viewer\", \"onWebviewPanel:symphysis.scheme\"],",
+     "line": 15,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "vscode/package.json",
+     "quote": "{ \"view\": \"symphysis.changes\", \"contents\": \"В рабочей области нет каталога openspec/changes.\" }",
+     "line": 36,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "project"
+   ]
+  },
+  {
+   "id": "F-24",
+   "question": "Вкладка схемы сейчас привязана к изменению: открывается только с его ключом, после перезагрузки без ключа закрывается",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "материалы",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "Справка без изменения в это не укладывается: вкладке нужен показ без ключа. На этом стоят F-40, F-41.",
+   "evidence": [
+    {
+     "path": "vscode/src/host/schemePanel.ts",
+     "quote": "open(key: string): void {",
+     "line": 29,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "vscode/src/host/schemePanel.ts",
+     "quote": "if (this.panel || !key || !this.deps.store.get(key)) {",
+     "line": 45,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "tab"
+   ]
+  },
+  {
+   "id": "F-25",
+   "question": "Полный расчёт справки — это запуск Python и три вызова форка (`--version`, `status`, `instructions apply`), порядка четверти секунды на вызов; предел вызова 15 с, плагин ждёт Python 30 с",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "материалы",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "На этом стоят F-42, F-43. Сколько это в процессе расширения, проверит F-53.",
+   "evidence": [
+    {
+     "path": "openspec/changes/archive/2026-11-03-step-help/probes/fork-call-cost.txt",
+     "quote": "status 265 мс, instructions apply 249 мс",
+     "line": 2,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "tools/step_help.py",
+     "quote": "FORK_TIMEOUT = 15  # секунд на вызов форка (F-43); плагин ждёт Python 30 с",
+     "line": 29,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "vscode/src/host/python.ts",
+     "quote": "const DEFAULT_TIMEOUT_MS = 30000;",
+     "line": 18,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "help",
+    "changed"
+   ]
+  },
+  {
+   "id": "F-26",
+   "question": "Слежение плагина видит журнал, атаки и схему, но не `proposal.md`, `design.md`, `tasks.md` и `specs/`: от них зависит текущий шаг",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "материалы",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "На этом стоит F-42.",
+   "evidence": [
+    {
+     "path": "vscode/src/extension.ts",
+     "quote": "const journalWatchers = [\"openspec/changes/*/decisions.json\", \"openspec/changes/*/attack/*.md\", \"openspec/changes/*\"].map((glob) => {",
+     "line": 111,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "changed"
+   ]
+  },
+  {
+   "id": "F-27",
+   "question": "Карту ссылок на файлы собирает только `render-html`, с адресами от страницы; `view-json` её не отдаёт",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "материалы",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "На этом стоит F-44.",
+   "evidence": [
+    {
+     "path": "tools/journal_cli.py",
+     "quote": "links = {\"root\": project_href(roots, args.out), \"files\": file_links(journal, roots, Path(args.json).parent, args.out, attacks, snapshot)}",
+     "line": 221,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "tools/journal_cli.py",
+     "quote": "print(json.dumps(view_payload(journal, attacks=attacks, journal_sha256=sha256_file(args.json)), ensure_ascii=False))",
+     "line": 252,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "tools/journal_apply.py",
+     "quote": "Абсолютных путей в карте нет: страницу можно коммитить; адрес ссылки на странице берётся только отсюда.",
+     "line": 111,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "links"
+   ]
+  },
+  {
+   "id": "F-28",
+   "question": "Плагин показывает пути и улики только текстом `<code>`, ссылок на файлы в карточках нет",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "материалы",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "На этом стоят F-44, F-45.",
+   "evidence": [
+    {
+     "path": "vscode/src/webview/Card.tsx",
+     "quote": "export const Text = ({ s }: { s: string }) => <>{String(s ?? \"\").split(/`([^`]+)`/).map((part, i) => (i % 2 ? <code key={i}>{part}</code> : part))}</>;",
+     "line": 12,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "vscode/src/webview/Card.tsx",
+     "quote": "улика: <code>{ev.line ? `${ev.path}:${ev.line}` : ev.path}</code>",
+     "line": 22,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "viewer",
+    "links"
+   ]
+  },
+  {
+   "id": "F-29",
+   "question": "Просьба слова при выборе мимо рекомендации описана спекой и работает на странице, в плагине её нет: поле слова только с общей подсказкой",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "материалы",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "Выбора здесь нет: плагин повторяет поведение спеки. Заодно ясно, что без просьбы красная строка `check` появится у человека уже после «Внести».",
+   "evidence": [
+    {
+     "path": "openspec/specs/decision-viewer/spec.md",
+     "quote": "### Requirement: Выбор мимо рекомендации просит слово и не блокирует",
+     "line": 275,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "tools/playground-template.html",
+     "quote": "Выбран не рекомендованный вариант: напиши, почему. Так выбор поймёт читатель журнала; внести можно и без слова.",
+     "line": 603,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "vscode/src/webview/Card.tsx",
+     "quote": "слово человека дословно — почему так (или что изменить в решении из журнала)",
+     "line": 184,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "word"
+   ]
+  },
+  {
+   "id": "F-30",
+   "question": "Счётчик задач на странице идёт из снимка справки, а там он берётся из ответа форка `instructions apply`",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "материалы",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "На этом стоит F-43.",
+   "evidence": [
+    {
+     "path": "tools/step_help.py",
+     "quote": "tasks = {\"state\": apply[\"state\"], \"total\": apply[\"progress\"][\"total\"], \"complete\": apply[\"progress\"][\"complete\"],",
+     "line": 413,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "tools/playground-template.html",
+     "quote": "return t && t.total > 0 ? ' · Задач закрыто <b>' + esc(t.complete) + ' из ' + esc(t.total) + '</b>' : '';",
+     "line": 685,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "counter"
+   ]
+  },
+  {
+   "id": "F-31",
+   "question": "Решено раньше: хук ставит расширение, подключение лежит в `.claude/settings.local.json`, скрипт на Python в `.symphysis/viewer/`",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "материалы",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "На этом стоят F-47, F-48.",
+   "evidence": [
+    {
+     "path": "vscode/docs/design-part1-viewer.md",
+     "quote": "Вариант B. Мы оставим пользователям возможность не устанавливать",
+     "line": 181,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "vscode/docs/design-part1-viewer.md",
+     "quote": "| `.claude/settings.local.json` — подключение хука | расширение по действию человека (Р11) |",
+     "line": 356,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "vscode/docs/design-part1-viewer.md",
+     "quote": "только тому, у кого стоит расширение. Скрипт хука — на Python",
+     "line": 454,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "connect",
+    "settings"
+   ]
+  },
+  {
+   "id": "F-32",
+   "question": "Решено раньше: хук при обращении к агенту печатает непрочитанные события сессии и строку о `scheme.md`, если его хеш изменился; курсор свой у каждой сессии",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "материалы",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "На этом стоят F-47, F-50.",
+   "evidence": [
+    {
+     "path": "vscode/docs/design-part1-viewer.md",
+     "quote": "Событие: изменение, файл ответа, хеш журнала до и после, отчёт `apply`.",
+     "line": 409,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "vscode/docs/design-part1-viewer.md",
+     "quote": "Хук Claude Code `UserPromptSubmit` печатает непрочитанные события этой сессии",
+     "line": 410,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "vscode/docs/design-part1-viewer.md",
+     "quote": "Курсор «прочитано» — свой у каждой сессии (номер сессии приходит",
+     "line": 412,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "vscode/docs/design-part1-viewer.md",
+     "quote": "Хорошо, давай попробуем B. Если хук будет мешать кому то, то его легко убрать.",
+     "line": 274,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "hook",
+    "event",
+    "schemeHash"
+   ]
+  },
+  {
+   "id": "F-33",
+   "question": "Хук не сделан: в дизайне это шаг 3, и `events.jsonl` до него не пишется, поэтому о внесённом кнопкой агенту сейчас говорит человек",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "материалы",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "На этом стоит F-51.",
+   "evidence": [
+    {
+     "path": "vscode/docs/design-part1-viewer.md",
+     "quote": "| 3 | Хук: события, курсоры, скрипт, подключение Claude Code | расширение | ~250 | 2 |",
+     "line": 561,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "vscode/docs/design-part1-viewer.md",
+     "quote": "- **`events.jsonl` пишется на шаге хука, не раньше**: до него агент о внесённом не узнаёт.",
+     "line": 486,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "event",
+    "hook"
+   ]
+  },
+  {
+   "id": "F-34",
+   "question": "Строка дизайна о скилле просмотрщика в ядро не внесена: скилл знает только промпт из чата, не внесение кнопкой и не черновики",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "материалы",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "Значит, изменение трогает и ядро: без этой строки агент не поймёт, что значит вывод хука.",
+   "evidence": [
+    {
+     "path": "vscode/docs/design-part1-viewer.md",
+     "quote": "| SKILL просмотрщика: слово приходит промптом в чат или внесено кнопкой (`answers/` и событие хука); `.symphysis/viewer/` — черновики человека, не слово; перед записью журнала — перечитать | изменение OpenSpec |",
+     "line": 432,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "skills/symphysis-viewer/SKILL.md",
+     "quote": "4. Человек возвращает промпт — сохрани как есть",
+     "line": 205,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "agent"
+   ]
+  },
+  {
+   "id": "F-35",
+   "question": "Хук уже записан в контракт как будущая часть, а новое поле вывода номер контракта не поднимает",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "материалы",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "Строку контракта надо заменить описанием хука. Поля из F-44 и F-46 номер не поднимают.",
+   "evidence": [
+    {
+     "path": "docs/repo-contract.md",
+     "quote": "- когда появится: хук.",
+     "line": 56,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "docs/repo-contract.md",
+     "quote": "**Что считается сменой.** Новое поле сменой не считается.",
+     "line": 58,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "hook",
+    "links"
+   ]
+  },
+  {
+   "id": "F-36",
+   "question": "Где лежат скиллы, заранее неизвестно: каталог задаёт вызывающий инсталлятор. Текст шага называет скилл именем, а поле `files` шага несёт только файлы артефакта",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "материалы",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "На этом стоит F-46.",
+   "evidence": [
+    {
+     "path": "installer/lib/paths.js",
+     "quote": "* каталоги скиллов задаёт вызывающий, по умолчанию — один `.claude/skills`.",
+     "line": 7,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "openspec/schemas/symphysis/steps.md",
+     "quote": "- Скилл `symphysis-brainstorm`. Интервью идёт по пяти перспективам: исследователь, упрощатель, хранитель границ, аналитик отказов, закрывающий. Вопросы человеку идут порциями по 2–3.",
+     "line": 55,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "tools/step_help.py",
+     "quote": "Настоящие файлы артефакта, а если их нет — путь, куда он ляжет (F-28).",
+     "line": 336,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "links"
+   ]
+  },
+  {
+   "id": "F-37",
+   "question": "Вкладка показывает три версии малозаметно: версию форка и версию symphysis из вывода, версию плагина сама",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "материалы",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/archive/2026-11-03-step-help/decisions.md",
+     "quote": "За установкой не следим, но показываем версию форка, версию symphysis, и версию плагина. Справочно и малозаметно.",
+     "line": 359,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "openspec/changes/archive/2026-11-03-step-help/decisions.md",
+     "quote": "Версию плагина страница не знает: её покажет сам плагин на своей вкладке.",
+     "line": 505,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "help"
+   ]
+  },
+  {
+   "id": "F-38",
+   "question": "Настройки, часть 3 плагина, сюда не входят, а поведение справки задано спекой ядра: кнопка правил намерения и запрет выдавать наличие файла за сделанную работу действуют и на вкладке",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "материалы",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "Новых настроек плагина в этом изменении нет.",
+   "evidence": [
+    {
+     "path": "vscode/docs/design-part1-viewer.md",
+     "quote": "3. **Настройки symphysis** — все переключатели в расширении.",
+     "line": 33,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "openspec/specs/step-help/spec.md",
+     "quote": "Справка SHALL иметь кнопку «Как готовить intent.md?», показывающую раздел `intent` из `steps.md` при любом текущем шаге, без изменения и при сбое расчёта;",
+     "line": 225,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "openspec/specs/step-help/spec.md",
+     "quote": "### Requirement: Справка не выдаёт наличие файла за сделанную работу",
+     "line": 74,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "howto",
+    "steps"
+   ]
+  },
+  {
+   "id": "F-39",
+   "question": "Что показывает вкладка в проекте, где нет инструментов symphysis: `step_help.py` там запустить нечем",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-46"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Вкладка открывается, говорит, что инструментов нет, и называет команду `symphysis install --project .`, как просмотрщик. В проекте с инструментами и без изменений справка работает полностью и показывает «Как готовить»; без инструментов правил намерения нет, пока их не поставят",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "vscode/src/webview/FailureText.tsx",
+       "quote": "В проекте нет <code>.symphysis/tools/journal.py</code>. Поставь инструменты:",
+       "line": 11,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "То же, и плагин носит в `.vsix` свою копию раздела «Как готовить»: правила видны ещё до установки. Копию сверяет тест плагина с `steps.md` ядра, а в проекте текст может отличаться от копии",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/changes/step-help-tab/intent.md",
+       "quote": "Справка должна рассказать как подготовить хороший Intent.",
+       "line": 14,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "C",
+     "text": "Оставить как есть: плагин активируется только при журнале, в пустом проекте вкладки нет",
+     "added": false,
+     "unlikely": "прямо против слова: «в плагине будет, так как его можно открыть и в пустом проектее»",
+     "evidence": [
+      {
+       "path": "vscode/package.json",
+       "quote": "\"activationEvents\": [\"workspaceContains:openspec/changes/*/decisions.json\", \"onWebviewPanel:symphysis.viewer\", \"onWebviewPanel:symphysis.scheme\"],",
+       "line": 15,
+       "verdict": "сверено",
+       "found": true
+      }
+     ],
+     "deviation": "F-18"
+    },
+    {
+     "letter": "D",
+     "text": "Кнопка на вкладке сама запускает установку symphysis",
+     "added": false,
+     "unlikely": "плагин инструментов сам не ставит: он называет, что сделать",
+     "evidence": [
+      {
+       "path": "openspec/specs/plugin-core-contract/spec.md",
+       "quote": "При несовпадении номера плагин MUST NOT обновлять инструменты symphysis и ставить пакет: он только называет, что обновить (F-106).",
+       "line": 98,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Без инструментов нет ни журнала, ни схемы, и первый шаг всё равно установка одной командой. Копия текста в `.vsix` даёт второй источник, который надо сверять ради минуты до установки. Если под «пустым проектом» ты понимаешь проект совсем без symphysis и хочешь правила уже там, это B."
+   },
+   "decision": {
+    "option": "A",
+    "word": "Вариант А, только стоит учесть, что запланирована -g (global) установка symphysis, поэтому инструментов может не быть в проекте, но они будут подключены к клиенту. Поправка -- учетно в F-46, в случае глобальной установки пользователь указывает путь размещения в конфиге плагина.",
+    "date": "2026-11-04"
+   },
+   "reversibility": {
+    "level": "обратимо",
+    "why": "поведение вкладки и `activationEvents` в `package.json` плагина: копию текста можно добавить позже без правки ядра"
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "При A и B меняются `activationEvents` и строка в боковой панели (F-23).",
+   "evidence": [],
+   "comments": [],
+   "nodes": [
+    "installed",
+    "noTools",
+    "howto"
+   ]
+  },
+  {
+   "id": "F-40",
+   "question": "Как человек открывает вкладку со справкой, если журнала нет и кнопки в просмотрщике не видно",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-39"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Кнопка в заголовке списка «Изменения» и команда палитры работают и без журнала. Кнопка в шапке просмотрщика становится «схема · справка», как на странице, внутри вкладки переключатель, заголовок вкладки называет показанное",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "vscode/package.json",
+       "quote": "\"view/title\": [{ \"command\": \"symphysis.refresh\", \"when\": \"view == symphysis.changes\", \"group\": \"navigation\" }],",
+       "line": 39,
+       "verdict": "сверено",
+       "found": true
+      },
+      {
+       "path": "tools/playground-template.html",
+       "quote": "title=\"рядом с карточками: схема решения из scheme.md или справка о шаге конвейера\">схема · справка</button>",
+       "line": 161,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Без журнала только команда палитры; в шапке просмотрщика как в A. Проще на одну кнопку, но узнать о справке в пустом проекте неоткуда",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "vscode/src/webview/App.tsx",
+       "quote": "title=\"схема решения рядом: scheme.md этого изменения\">схема</button>",
+       "line": 285,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "C",
+     "text": "Справка своим списком шагов в боковой панели, без вкладки",
+     "added": false,
+     "unlikely": "боковая панель и так делит высоту на четыре списка",
+     "evidence": [
+      {
+       "path": "vscode/docs/design-part1-viewer.md",
+       "quote": "- **Оглавление атаки свёрнуто по умолчанию**: четыре открытых списка делят высоту, результатам",
+       "line": 541,
+       "verdict": "сверено",
+       "found": true
+      }
+     ],
+     "deviation": "F-17"
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Единственный вариант, где справку видно в пустом проекте без знания команды. Заодно совпадает с подписью кнопки на странице."
+   },
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-04"
+   },
+   "reversibility": {
+    "level": "обратимо",
+    "why": "кнопка и команда в `package.json` плагина, контракт с ядром не участвует"
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "Вкладке нужен показ без ключа изменения (F-24).",
+   "evidence": [],
+   "comments": [],
+   "nodes": [
+    "tab"
+   ]
+  },
+  {
+   "id": "F-41",
+   "question": "Какое изменение показывает справка, когда просмотрщик закрыт или активных изменений несколько",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Вкладка следует за просмотрщиком, как схема. Просмотрщик закрыт: последнее показанное изменение. Такого нет: вызов без `--change`; одно активное берётся само, при нескольких вкладка показывает список из поля `changes`, и человек выбирает",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "vscode/src/host/schemePanel.ts",
+       "quote": "/** В просмотрщике открыт другой журнал: открытая вкладка показывает его схему, закрытая так и остаётся закрытой. */",
+       "line": 55,
+       "verdict": "сверено",
+       "found": true
+      },
+      {
+       "path": "openspec/changes/archive/2026-11-03-step-help/decisions.md",
+       "quote": "Поле `changes` заодно нужно вкладке плагина: она откроется в проекте и выберет изменение сама.",
+       "line": 607,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "У вкладки всегда свой выбор изменения, независимо от просмотрщика. Схема и справка на одной вкладке могут тогда показывать разные изменения",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "tools/step_help.py",
+       "quote": "Активных изменений несколько, шаг считается для одного: укажи его в --change.",
+       "line": 428,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Одно правило со схемой: на одной вкладке не окажется двух разных изменений, а выбор появляется только там, где без него не обойтись."
+   },
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-04"
+   },
+   "reversibility": {
+    "level": "обратимо",
+    "why": "правило выбора в хосте плагина и запись в `workspaceState`"
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "Выбор хранится в `workspaceState`, как уже хранится показанная схема.",
+   "evidence": [],
+   "comments": [],
+   "nodes": [
+    "tab",
+    "help"
+   ]
+  },
+  {
+   "id": "F-42",
+   "question": "По каким событиям пересчитывается справка",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Следить за всем каталогом изменения, `openspec/changes/*/**`, и считать только пока справка видна или журнал открыт в просмотрщике. Записи склеиваются, как у журнала, расчёт один за раз. Плюс существующая кнопка «Обновить»",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "vscode/src/extension.ts",
+       "quote": "// Сохранения склеиваются: автосохранение пишет каждые несколько секунд, агент — сериями.",
+       "line": 88,
+       "verdict": "сверено",
+       "found": true
+      },
+      {
+       "path": "vscode/src/host/store.ts",
+       "quote": "// Данные журналов проекта. Один запуск Python на изменение; просьбы на его время склеиваются в один следующий;",
+       "line": 1,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Считать только при открытии вкладки и по кнопке «Обновить»: дешевле всего, но открытая вкладка устаревает молча",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/changes/step-help-tab/intent.md",
+       "quote": "От вкладки жду, что могу открыть её, и в ней отображено текущее состояние прохождения конвейера. Каждую секунду опрашивать состояние не нужно, так как оно не меняется каждую секунду. Вопрос в привязке к событиям.",
+       "line": 11,
+       "verdict": "сверено",
+       "found": true
+      }
+     ],
+     "deviation": "F-16"
+    },
+    {
+     "letter": "C",
+     "text": "Следить только за файлами артефактов по списку из схемы: меньше лишних расчётов, но список повторяет `schema.yaml`, и новый артефакт тихо перестанет обновлять справку",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "vscode/src/extension.ts",
+       "quote": "const journalWatchers = [\"openspec/changes/*/decisions.json\", \"openspec/changes/*/attack/*.md\", \"openspec/changes/*\"].map((glob) => {",
+       "line": 111,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "D",
+     "text": "Опрашивать таймером",
+     "added": false,
+     "unlikely": "слово человека: «Каждую секунду опрашивать состояние не нужно»",
+     "evidence": [
+      {
+       "path": "openspec/changes/step-help-tab/intent.md",
+       "quote": "От вкладки жду, что могу открыть её, и в ней отображено текущее состояние прохождения конвейера. Каждую секунду опрашивать состояние не нужно, так как оно не меняется каждую секунду. Вопрос в привязке к событиям.",
+       "line": 11,
+       "verdict": "сверено",
+       "found": true
+      }
+     ],
+     "deviation": "F-16"
+    }
+   ],
+   "antipodes": [
+    {
+     "option": "B",
+     "other": "F-43.A"
+    }
+   ],
+   "recommendation": {
+    "option": "A",
+    "why": "Шаг зависит от любого файла изменения, а лишний расчёт стоит около секунды в фоне и экран не блокирует. Склейка и условие «пока видно» снимают серии записей агента."
+   },
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-04"
+   },
+   "reversibility": {
+    "level": "обратимо",
+    "why": "слежение в `src/extension.ts` плагина: шаблон файлов меняется одной строкой"
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "Слежение становится шире текущего (F-26). Закрытая справка при закрытом журнале ничего не считает.",
+   "evidence": [],
+   "comments": [],
+   "nodes": [
+    "changed",
+    "help"
+   ]
+  },
+  {
+   "id": "F-43",
+   "question": "Откуда плагин берёт «Задач закрыто N из N» для шапки просмотрщика",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-42"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Из того же расчёта `step_help.py`, что и справка: считается для журнала, открытого в просмотрщике, даже при закрытой вкладке. Сбой или нет задач — этой части нет, как на странице",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "tools/step_help.py",
+       "quote": "tasks = {\"state\": apply[\"state\"], \"total\": apply[\"progress\"][\"total\"], \"complete\": apply[\"progress\"][\"complete\"],",
+       "line": 413,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Новое поле `tasks` в `view-json`: ядро само считает `tasks.md` без форка. Быстрее, но рядом окажутся два счётчика одного и того же: форка и этот",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "docs/repo-contract.md",
+       "quote": "**Что считается сменой.** Новое поле сменой не считается.",
+       "line": 58,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "C",
+     "text": "Плагин сам считает чекбоксы в `tasks.md`",
+     "added": false,
+     "unlikely": "второй разборщик рядом с ядром, это отвергнуто в Р7",
+     "evidence": [
+      {
+       "path": "vscode/docs/design-part1-viewer.md",
+       "quote": "Отвергнуто: повтор на TypeScript сверки улик и разбора таблиц атак;",
+       "line": 121,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "D",
+     "text": "Показывать счётчик только на вкладке справки, шапка просмотрщика без него: расчёта при закрытой вкладке нет, но и на странице счётчик стоит в шапке",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "tools/playground-template.html",
+       "quote": "return t && t.total > 0 ? ' · Задач закрыто <b>' + esc(t.complete) + ' из ' + esc(t.total) + '</b>' : '';",
+       "line": 685,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    }
+   ],
+   "antipodes": [
+    {
+     "option": "A",
+     "other": "F-42.B"
+    }
+   ],
+   "recommendation": {
+    "option": "A",
+    "why": "Один источник с `/opsx:apply` и со страницы; расчёт всё равно идёт для открытого журнала, отдельного кода не появляется."
+   },
+   "decision": {
+    "option": "A",
+    "word": "Только надо перенести счетчик задач из справки в шапку, там же где и остальные счетчики. Справка для справки, счетчики для счетчиков. Проблема, что это изменение касается и визуальной части symphysis.html, которая лежит в ядре.",
+    "date": "2026-11-04"
+   },
+   "reversibility": {
+    "level": "обратимо",
+    "why": "плагин читает уже существующее поле `tasks` вывода `step_help.py`; фраза в `current_text` не разбирается плагином"
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [],
+   "comments": [],
+   "nodes": [
+    "counter"
+   ]
+  },
+  {
+   "id": "F-44",
+   "question": "Откуда плагин узнаёт, что путь в тексте журнала или справки — настоящий файл, и как его открыть",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Новое поле в выводах `view-json` и `step_help.py`: карта «путь — файл от корня проекта», её собирает ядро той же `file_links`. Плагин показывает ссылку и открывает файл, только если путь есть в карте. Со старым ядром поля нет, и остаётся `<code>`",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "tools/journal_apply.py",
+       "quote": "def file_links(journal: dict, roots: dict[str, Path], change_dir: Path, out: Path, *others) -> dict[str, str]:",
+       "line": 108,
+       "verdict": "сверено",
+       "found": true
+      },
+      {
+       "path": "vscode/docs/design-part1-viewer.md",
+       "quote": "Однозначно вариант А.",
+       "line": 119,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Плагин решает сам: читает файл корней, проверяет выход за корень и наличие файла на TypeScript. Ядро не меняется, но появляется второй разбор корней",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "vscode/docs/design-part1-viewer.md",
+       "quote": "Отвергнуто: повтор на TypeScript сверки улик и разбора таблиц атак;",
+       "line": 121,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "C",
+     "text": "Отдельная подкоманда `journal.py file-links`, плагин зовёт её рядом с `view-json`: вывод прежний, зато лишний запуск Python на каждое обновление",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "vscode/src/host/store.ts",
+       "quote": "// Данные журналов проекта. Один запуск Python на изменение; просьбы на его время склеиваются в один следующий;",
+       "line": 1,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "То же решение, что в Р7: хрупкий разбор живёт в ядре в одном месте. Новое поле номер контракта не поднимает, а файл, которого нет в карте, плагин не откроет."
+   },
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-04"
+   },
+   "reversibility": {
+    "level": "дорого",
+    "why": "новое поле `view-json` и `step_help.py` входит в контракт `docs/repo-contract.md`: добавить можно без номера, а удаление уже смена контракта и новый `.vsix`"
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "Правка ядра и коммит плагина с `Needs:` на неё.",
+   "evidence": [],
+   "comments": [],
+   "nodes": [
+    "links"
+   ]
+  },
+  {
+   "id": "F-45",
+   "question": "Где открывается файл по ссылке из карточки или справки",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-44"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Рядом с вкладкой, предпросмотром и без перевода фокуса: просмотрщик остаётся на виду, следующий клик заменяет ту же вкладку файла",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "vscode/docs/design-part1-viewer.md",
+       "quote": "Раскладка владельца: терминал слева, просмотрщик по центру, схема узкой колонкой",
+       "line": 325,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "В активной группе, как «Открыть scheme.md»: файл ложится поверх карточек, к ним надо возвращаться",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "vscode/src/host/schemePanel.ts",
+       "quote": "await vscode.window.showTextDocument(vscode.Uri.file(schemeFile(this.key)), { viewColumn: vscode.ViewColumn.Active, preview: false, selection: at ? new vscode.Range(at, at) : undefined });",
+       "line": 128,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "C",
+     "text": "Выбор места настройкой",
+     "added": false,
+     "unlikely": "настройки — часть 3, и выбор редактора ты уже снял",
+     "evidence": [
+      {
+       "path": "vscode/docs/design-part1-viewer.md",
+       "quote": "3. **Настройки symphysis** — все переключатели в расширении.",
+       "line": 33,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Смысл ссылки на улику — сверить её рядом с развилкой, не уходя от карточки. На твоей раскладке файл из просмотрщика ляжет в колонку справа, поверх схемы, а не поверх карточек."
+   },
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-04"
+   },
+   "reversibility": {
+    "level": "обратимо",
+    "why": "один вызов `showTextDocument` в хосте плагина"
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "Кнопка «Открыть scheme.md» остаётся как есть: там человек идёт править файл.",
+   "evidence": [],
+   "comments": [],
+   "nodes": [
+    "openFile"
+   ]
+  },
+  {
+   "id": "F-46",
+   "question": "Как в справке появляются ссылки на файлы скиллов: текст называет скилл именем, а каталог заранее неизвестен",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-44"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Новое поле `skills` у шага в `step_help.py`: имя из текста шага и файл `SKILL.md`, если он нашёлся в известных каталогах скиллов проекта",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "installer/lib/paths.js",
+       "quote": "* каталоги скиллов задаёт вызывающий, по умолчанию — один `.claude/skills`.",
+       "line": 7,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Плагин ищет сам: имя вида `symphysis-*` в тексте шага становится ссылкой, если рядом есть `SKILL.md`. Ядро не меняется, поиск живёт в плагине",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/schemas/symphysis/steps.md",
+       "quote": "- Скилл `symphysis-brainstorm`. Интервью идёт по пяти перспективам: исследователь, упрощатель, хранитель границ, аналитик отказов, закрывающий. Вопросы человеку идут порциями по 2–3.",
+       "line": 55,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "C",
+     "text": "Поправить тексты `steps.md`: скилл назван путём `.claude/skills/<имя>/SKILL.md` в обратных кавычках, ссылку даёт общая карта. Нового кода нет; при другом каталоге скиллов ссылки нет, остаётся текст",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "tools/journal_apply.py",
+       "quote": "def file_links(journal: dict, roots: dict[str, Path], change_dir: Path, out: Path, *others) -> dict[str, str]:",
+       "line": 108,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "D",
+     "text": "Только артефакты: скиллы остаются названы текстом, без ссылок",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "tools/step_help.py",
+       "quote": "Настоящие файлы артефакта, а если их нет — путь, куда он ляжет (F-28).",
+       "line": 336,
+       "verdict": "сверено",
+       "found": true
+      }
+     ],
+     "deviation": "F-09"
+    },
+    {
+     "letter": "E",
+     "text": "При запуске плагина -- плагин проверяет куда установлен symphysis. находит внутри symphysis скиллы, и формирует на них ссылки. В первую очередь проверяется содержимое проекта, если в проекте найдено -- значит формируются относительные ссылки на файлы проекта (это прелагаю выполнять с помощью step_help.py как наиболее близкому скрипту) (добавлен человеком)",
+     "added": true,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "C",
+    "why": "Каталог по умолчанию один, карта из F-44 уже проверяет наличие файла, а на чужом каталоге всё ломается мягко: виден текст вместо ссылки. Заодно ссылка появится и на странице. Если F-44 решится не A, смотреть заново."
+   },
+   "decision": {
+    "option": "A",
+    "word": "Вариант А + если у пользователя инструменты не нашлись в проекте, то можно указать путь установки в параметрах плагина.",
+    "date": "2026-11-04"
+   },
+   "reversibility": {
+    "level": "дорого",
+    "why": "поле `skills` вывода `step_help.py` входит в контракт `docs/repo-contract.md`: его удаление поднимает номер контракта"
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "Правка текста в ядре; тест `steps.md` проверяет разделы, а не слова.",
+   "evidence": [],
+   "comments": [],
+   "nodes": [
+    "links"
+   ]
+  },
+  {
+   "id": "F-47",
+   "question": "Как хук подключается и снимается",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "По действию человека: команды «Подключить хук» и «Отключить хук», а после первого «Внести» в проекте без хука одно предложение подключить. Плагин дописывает `.claude/settings.local.json`, чужие настройки не трогает",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "vscode/docs/design-part1-viewer.md",
+       "quote": "| `.claude/settings.local.json` — подключение хука | расширение по действию человека (Р11) |",
+       "line": 356,
+       "verdict": "сверено",
+       "found": true
+      },
+      {
+       "path": "vscode/docs/design-part1-viewer.md",
+       "quote": "Хорошо, давай попробуем B. Если хук будет мешать кому то, то его легко убрать.",
+       "line": 274,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Только две команды, без предложения: тише, но о хуке можно не узнать, и агент так и останется без событий",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "vscode/docs/design-part1-viewer.md",
+       "quote": "| `.claude/settings.local.json` — подключение хука | расширение по действию человека (Р11) |",
+       "line": 356,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "C",
+     "text": "Плагин подключает хук сам при активации",
+     "added": false,
+     "unlikely": "правит настройки клиента без спроса; в дизайне стоит «по действию человека»",
+     "evidence": [
+      {
+       "path": "vscode/docs/design-part1-viewer.md",
+       "quote": "| `.claude/settings.local.json` — подключение хука | расширение по действию человека (Р11) |",
+       "line": 356,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Предложение появляется ровно тогда, когда хук начинает быть нужен, и один раз. Снять хук так же просто, как поставить, это условие твоего слова в Р20."
+   },
+   "decision": {
+    "option": "C",
+    "word": "Вариант C. Следующий change плагина будет про управление конфигурацией symphysis. Так как клиент будет не один Claude code, а еще opencode, то при старте плагина будет tutorial и внесение основных настроек. Вот там будет указание клиентов для которых установить хук и другие зависимые от клиента параметры.",
+    "date": "2026-11-04"
+   },
+   "reversibility": {
+    "level": "дорого",
+    "why": "записи уже лягут в `.claude/settings.local.json` открытых проектов: при отмене их надо снимать отдельным кодом плагина, сами они не исчезнут"
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "Что именно дописывать и как сливать с чужими хуками, покажет F-52.",
+   "evidence": [],
+   "comments": [],
+   "nodes": [
+    "connect",
+    "settings"
+   ]
+  },
+  {
+   "id": "F-48",
+   "question": "Чем запускается скрипт хука",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-47"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Абсолютным путём к Python, который уже нашёл плагин: `.claude/settings.local.json` личный и живёт на одной машине. Если Python переехал, команда «Подключить хук» перепишет путь",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "vscode/src/host/python.ts",
+       "quote": "// Поиск и запуск Python. В VS Code голое имя запускает `python.exe` из корня проекта (пробный запуск),",
+       "line": 1,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Голым именем `python`",
+     "added": false,
+     "unlikely": "в корне проекта можно подложить `python.exe`: проверено пробным запуском",
+     "evidence": [
+      {
+       "path": "vscode/docs/spike-part1-results.md",
+       "quote": "| В VS Code, обычное окружение, без shell | **подложенный файл** |",
+       "line": 46,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "C",
+     "text": "Скрипт на Node вместо Python",
+     "added": false,
+     "unlikely": "Python ядру нужен и так, а Node стал бы новым требованием к машине",
+     "evidence": [
+      {
+       "path": "vscode/docs/design-part1-viewer.md",
+       "quote": "только тому, у кого стоит расширение. Скрипт хука — на Python",
+       "line": 454,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Та же защита, что у самого плагина, а привязка к машине здесь не мешает: файл и так не едет в git."
+   },
+   "decision": {
+    "option": "A",
+    "word": "Вариант А нужно актуализировать с учетом комментария к F-47",
+    "date": "2026-11-04"
+   },
+   "reversibility": {
+    "level": "обратимо",
+    "why": "путь в `.claude/settings.local.json` плагин переписывает сам при активации"
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [],
+   "comments": [],
+   "nodes": [
+    "settings",
+    "hook"
+   ]
+  },
+  {
+   "id": "F-49",
+   "question": "Для каких клиентов хук делается в этом изменении",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-47"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Claude Code и opencode: твоё слово называет оба, но механизм opencode ещё не проверен, и объём зависит от исследования",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "vscode/docs/design-part1-viewer.md",
+       "quote": "к клиенту. Это claude code или opencode, поэтому создать такой hook",
+       "line": 84,
+       "verdict": "сверено",
+       "found": true
+      },
+      {
+       "path": "vscode/docs/design-part1-viewer.md",
+       "quote": "- Как подключается хук у opencode и есть ли у его инструментов правки",
+       "line": 577,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Сейчас Claude Code, opencode отдельным изменением: скрипт и события общие, разница только в подключении",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "vscode/docs/design-part1-viewer.md",
+       "quote": "Хук Claude Code `UserPromptSubmit` печатает непрочитанные события этой сессии",
+       "line": 410,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "B",
+    "why": "Механизм проверен только в дизайне и только у одного клиента, а цель сейчас — не отложить хук снова. Посмотри ещё раз после `research`: если у opencode подключение окажется таким же простым, разумнее A."
+   },
+   "decision": {
+    "option": "A",
+    "word": "Проверим. Нам нужно только проверить сам хук, а не работу Opencode. клиент у меня установлен, как desktop так и cli, но у Opencode всё завязано на сессии, поэтому думаю обращение будет",
+    "date": "2026-11-04"
+   },
+   "reversibility": {
+    "level": "обратимо",
+    "why": "подключение opencode отдельно от общего скрипта и событий в `.symphysis/viewer/`: его можно снять, не трогая Claude Code"
+   },
+   "outcome": null,
+   "parking": [
+    {
+     "addressee": "материалы",
+     "text": "Как opencode 2.2.5 доставляет текст в контекст агента на каждое сообщение, откуда берётся номер сессии, где прописывается подключение. Где читать: `docs/analysis/opencode-v2-subagents-2026-11-03.md`, `architecture-ways/analysis/multi-repo-project-hooks.md`, документация opencode. Ответ — проба на настоящем opencode без расхода на внешнюю модель, либо «не найдено» с шаблонами поиска.",
+     "finding": "Работает на opencode 2.2.5, CLI со своим сервером, `research/F-49.md`. Файл `.opencode/plugins/symphysis-hook.js` грузится сам, без `opencode.json` и без зависимости `@opencode/plugin`: опасение из F-60 о записи в конфиг, который едет в git, снимается. Рантайм Bun, чтение файлов и запуск Python работают. Хук `prompt` получает `sessionID`, он тот же при продолжении. Текст дошёл до модели и через `context`, и через `instructions.entry`. Desktop и фоновый сервис не проверялись."
+    },
+    {
+     "addressee": "материалы",
+     "text": "Можно еще прочесть предпроектный файл подготовки плагина для opencode desktop - X:\\symphysis-opencode\\PROMPT.md",
+     "finding": "Прочитан: `PROMPT.md` называет те же механики, запись `instructions.entry` или хук `prompt`; проверены обе. `~/.config/opencode` проба не меняла."
+    }
+   ],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [],
+   "comments": [],
+   "nodes": [
+    "hook"
+   ]
+  },
+  {
+   "id": "F-50",
+   "question": "Что хук покажет новой сессии агента о событиях, случившихся до неё",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-47"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Ничего: курсор новой сессии встаёт в конец файла, журнал она и так читает с диска",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "vscode/docs/design-part1-viewer.md",
+       "quote": "Курсор «прочитано» — свой у каждой сессии (номер сессии приходит",
+       "line": 412,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Все события с начала файла: ничего не пропадёт, но в первом обращении сессии может оказаться длинный список старых внесений",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "vscode/docs/design-part1-viewer.md",
+       "quote": "Хук Claude Code `UserPromptSubmit` печатает непрочитанные события этой сессии",
+       "line": 410,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "C",
+     "text": "События за последние сутки: компромисс, который придётся объяснять и настраивать",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "vscode/docs/design-part1-viewer.md",
+       "quote": "Событие: изменение, файл ответа, хеш журнала до и после, отчёт `apply`.",
+       "line": 409,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Хук нужен, чтобы сообщить о том, что изменилось под уже работающей сессией. Новая сессия этой проблемы не имеет, а для `scheme.md` первое обращение уже решено так же: только запомнить хеш."
+   },
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-04"
+   },
+   "reversibility": {
+    "level": "обратимо",
+    "why": "положение курсора в скрипте хука в `.symphysis/viewer/`, файлы событий не меняются"
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [],
+   "comments": [],
+   "nodes": [
+    "hook",
+    "agent"
+   ]
+  },
+  {
+   "id": "F-51",
+   "question": "В каком порядке делать части изменения",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Сначала хук, затем просьба слова, ссылки, вкладка со справкой, счётчик",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/changes/step-help-tab/intent.md",
+       "quote": "Давай все таки сделаем хук. а то снова отложим его. Про \"без выбора редактора\" согласен.",
+       "line": 26,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "По зависимостям и размеру: просьба слова, ссылки, вкладка со справкой, счётчик, хук в конце",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "vscode/docs/design-part1-viewer.md",
+       "quote": "| 3 | Хук: события, курсоры, скрипт, подключение Claude Code | расширение | ~250 | 2 |",
+       "line": 561,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Хук ни от чего в этом изменении не зависит, а в конце списка его легче всего снова отложить: так уже было, когда схема его обогнала."
+   },
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-04"
+   },
+   "reversibility": {
+    "level": "обратимо",
+    "why": "порядок групп в `tasks.md` этого изменения"
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [],
+   "comments": [],
+   "nodes": [
+    "hook"
+   ]
+  },
+  {
+   "id": "F-52",
+   "question": "Как настоящий `UserPromptSubmit` работает на Windows: в пробный запуск он не входил",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "материалы",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [
+    {
+     "addressee": "материалы",
+     "text": "Формат записи в `.claude/settings.local.json` и слияние с чужими хуками; что приходит на вход (номер сессии, каталог); как вывод попадает в контекст; что при коде выхода не 0 и при недоступном Python; оболочка и кавычки в пути с пробелом и кириллицей. Ответ — проба с настоящим Claude Code. Где читать: документация Claude Code, агент `claude-code-guide`.",
+     "finding": "Подтверждено пробой на Claude Code 2.1.317, Windows, `research/F-52.md`. Форма без оболочки работает в пути с пробелом и кириллицей: `command` — абсолютный путь к `python.exe`, в `args` — `${CLAUDE_PROJECT_DIR}/...`. На вход приходят `session_id`, `cwd`, `prompt`; номер сессии сохраняется при продолжении. Вывод при коде 0 виден модели, два обработчика дают оба вывода. Код 1 и ненайденный Python запрос не останавливают. Код 2 блокирует запрос человека: скрипт хука не должен выходить с ним ни при каком сбое."
+    },
+    {
+     "addressee": "материалы",
+     "text": "После F-47.C плагин создаёт `.claude/settings.local.json` сам: попадает ли такой файл под исключение git и не считает ли его Claude Code чужим. Ответ — та же проба.",
+     "finding": "Не попадает: файл, созданный не клиентом, остаётся в `git status` и до запроса, и после. Документация обещает исключение, только когда файл сохраняет сам Claude Code. Выбор — F-66."
+    }
+   ],
+   "dispute": "",
+   "consequences": "На этом стоят F-47, F-48, F-66. Для шага `specs`: скрипт хука не выходит с кодом 2.",
+   "evidence": [
+    {
+     "path": "vscode/docs/spike-part1-results.md",
+     "quote": "- Сам хук `UserPromptSubmit`: в пробный запуск не входил.",
+     "line": 172,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "openspec/changes/step-help-tab/research/F-52-probe/probe.log",
+     "quote": "\"reply\": \"КЛЮКВА-7341\\nБРУСНИКА-2206\"",
+     "line": 3,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "openspec/changes/step-help-tab/research/F-52-probe/probe.log",
+     "quote": "UserPromptSubmit operation blocked by hook:",
+     "line": 7,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "openspec/changes/step-help-tab/research/F-52-probe/probe.log",
+     "quote": "\"git_status\": [\"?? .claude/\", \"?? .symphysis/\"]",
+     "line": 2,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "openspec/changes/step-help-tab/research/F-52-probe/docs-excerpts.txt",
+     "quote": "No, gitignored when Claude Code saves a setting to it",
+     "line": 7,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "hook",
+    "settings"
+   ]
+  },
+  {
+   "id": "F-53",
+   "question": "Находит ли `step_help.py` форк из процесса расширения и сколько длится расчёт там",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "материалы",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [
+    {
+     "addressee": "материалы",
+     "text": "VS Code запущен из меню «Пуск» и из терминала: видит ли процесс расширения `openspec` из глобального npm; что человек видит при поле `error`; сколько длится полный расчёт на настоящем журнале. Ответ — проба на установленном пакете или в сквозном тесте.",
+     "finding": "Находит. Настоящий процесс расширения с PATH из реестра: форк `1.15.0-symphysis.4`, код 0, пять расчётов на этом журнале за 751–1775 мс. Без каталога npm отказ за 85 мс, `error` называет причину и что сделать, тексты шагов в выводе остаются. Запуск именно из меню «Пуск» не воспроизводился: PATH взят из реестра, это допущение. Отчёт — `research/F-53.md`."
+    }
+   ],
+   "dispute": "",
+   "consequences": "На этом стоят F-42, F-43.",
+   "evidence": [
+    {
+     "path": "tools/step_help.py",
+     "quote": "openspec не найден: нет ни в SYMPHYSIS_OPENSPEC, ни в PATH. Поставь форк по docs/GUIDE.md",
+     "line": 101,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "openspec/changes/step-help-tab/research/F-53-probe/probe.log",
+     "quote": "\"openspec\":\"1.15.0-symphysis.4\"",
+     "line": 2,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "openspec/changes/step-help-tab/research/F-53-probe/probe.log",
+     "quote": "\"ms\":1775",
+     "line": 6,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "openspec/changes/step-help-tab/research/F-53-probe/probe.log",
+     "quote": "\"ms\":85,\"code\":1",
+     "line": 7,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "help"
+   ]
+  },
+  {
+   "id": "F-54",
+   "question": "[канон] Хук, ссылки и вывод справки: канон ИБ",
+   "kind": "факт",
+   "status": "припаркован",
+   "addressee": "ИБ",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [
+    {
+     "addressee": "ИБ",
+     "text": "Вывод хука попадает в контекст агента: что из журнала и отчёта `apply` туда можно печатать; запись в `.claude/settings.local.json`; путь из сообщения страницы не открывается, если его нет в карте ядра; текст `step_help.py` на странице только текстом, без HTML — канон, покрывается чек-листом security.md; запрет не чеканится"
+    }
+   ],
+   "dispute": "",
+   "consequences": "На этом стоит шаг `security`.",
+   "evidence": [
+    {
+     "path": "vscode/docs/design-part1-viewer.md",
+     "quote": "- **«Внести» — только кликом в интерфейсе**: ни обработчик `vscode://`,",
+     "line": 456,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "hook",
+    "links"
+   ]
+  },
+  {
+   "id": "F-55",
+   "question": "Как понято слово к F-43: на странице счётчик уже стоит в шапке рядом с остальными, шаблон менять не надо. В справке он остался одной фразой в `current_text` на шаге `apply`: её снимает правка `step_help.py`. В плагине счётчик идёт в строку счётчиков шапки",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "материалы",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "Правка ядра — одна строка; номер контракта не растёт: `current_text` плагин показывает текстом и не разбирает. Понято не так — оспорь этот факт.",
+   "evidence": [
+    {
+     "path": "openspec/changes/step-help-tab/answers/2026-11-04.md",
+     "quote": "Только надо перенести счетчик задач из справки в шапку, там же где и остальные счетчики.",
+     "line": 8,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "tools/playground-template.html",
+     "quote": "/* «Задач закрыто N из N» в шапке: из снимка справки; без снимка, при сбое расчёта и без задач части нет (F-70) */",
+     "line": 682,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "tools/step_help.py",
+     "quote": "text += f\" Задач закрыто {tasks['complete']} из {tasks['total']}.\"",
+     "line": 400,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "vscode/src/webview/App.tsx",
+     "quote": "<div className=\"stats\">",
+     "line": 309,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "counter"
+   ]
+  },
+  {
+   "id": "F-56",
+   "question": "Как понят выбор F-46: выбран A со словом о параметре; из добавленного варианта E взято то, что с A не спорит: сначала ищется проект, ссылки от корня проекта, считает `step_help.py`. Каталоги скиллов в проекте — `.claude/skills`, `.opencode/skills`, `.agents/skills`",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "материалы",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "Файл скилла попадает и в карту ссылок F-44: иначе плагин его не откроет. Понято не так — оспорь этот факт.",
+   "evidence": [
+    {
+     "path": "openspec/changes/step-help-tab/answers/2026-11-04.md",
+     "quote": "В первую очередь проверяется содержимое проекта, если в проекте найдено -- значит формируются относительные ссылки на файлы проекта",
+     "line": 12,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "openspec/changes/step-help-tab/answers/2026-11-04.md",
+     "quote": "Вариант А + если у пользователя инструменты не нашлись в проекте, то можно указать путь установки в параметрах плагина.",
+     "line": 13,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "docs/analysis/stores-and-context-pack-2026-11-02.md",
+     "quote": "| Скиллы opencode | `.opencode/skills/`, `.claude/skills/`, `.agents/skills/` проекта и те же на машине |",
+     "line": 230,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "links"
+   ]
+  },
+  {
+   "id": "F-57",
+   "question": "Как понято слово к F-48: при F-47.C команды «Подключить хук» нет, поэтому абсолютный путь к Python плагин сверяет при каждой активации и переписывает запись сам, если Python переехал. Для opencode форму подключения покажет исследование F-49",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "материалы",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "Текст варианта F-48.A не меняется: это решение человека, поправка живёт здесь. Понято не так — оспорь этот факт.",
+   "evidence": [
+    {
+     "path": "openspec/changes/step-help-tab/answers/2026-11-04.md",
+     "quote": "Вариант А нужно актуализировать с учетом комментария к F-47",
+     "line": 15,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "settings"
+   ]
+  },
+  {
+   "id": "F-58",
+   "question": "Tutorial при старте плагина и выбор клиентов, для которых ставится хук, — следующее изменение плагина, сюда они не входят",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "материалы",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "В этом изменении выбор клиента закрывает F-60.",
+   "evidence": [
+    {
+     "path": "openspec/changes/step-help-tab/answers/2026-11-04.md",
+     "quote": "Следующий change плагина будет про управление конфигурацией symphysis.",
+     "line": 14,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "connect"
+   ]
+  },
+  {
+   "id": "F-59",
+   "question": "Установка `-g` решена, но не сделана: флага нет, плагин её не увидит. При ней корни улик от каталога скрипта укажут не туда, скиллы на машине станут заглушками, а плагин ждёт смена контракта",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "материалы",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "На этом стоит F-62.",
+   "evidence": [
+    {
+     "path": "docs/analysis/stores-and-context-pack-2026-11-02.md",
+     "quote": "3. Глобально на этой машине можно будет только после этапа 4: флага нет, пути инструментов написаны буквально, плагин такую установку не увидит.",
+     "line": 261,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "docs/analysis/stores-and-context-pack-2026-11-02.md",
+     "quote": "| Корни улик | `<root>` от каталога скрипта | при инструментах на машине указывает не туда |",
+     "line": 228,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "docs/analysis/stores-and-context-pack-2026-11-02.md",
+     "quote": "| На машине | всё целиком | схема и инструменты; скиллы — заглушки, берут тело из ближайшей копии |",
+     "line": 244,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "docs/analysis/stores-and-context-pack-2026-11-02.md",
+     "quote": "| Что нужно | перевод путей | команда-посредник `symphysis`, правка 40 вхождений, корни улик от журнала, смена контракта плагина, заглушки |",
+     "line": 249,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "installed",
+    "noTools"
+   ]
+  },
+  {
+   "id": "F-60",
+   "question": "В каких проектах плагин подключает хук сам при активации: после F-39 и F-40 он активируется и в пустых проектах, а выбор клиентов придёт только со следующим изменением",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-47",
+    "F-39"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Только там, где есть инструменты symphysis и след клиента: у Claude Code каталог `.claude/`, у opencode его конфиг в проекте. Пустой и чужой проект не трогается",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/changes/step-help-tab/answers/2026-11-04.md",
+       "quote": "Вот там будет указание клиентов для которых установить хук и другие зависимые от клиента параметры.",
+       "line": 14,
+       "verdict": "сверено",
+       "found": true
+      },
+      {
+       "path": "opencode/PROMPT.md",
+       "quote": "Проектный конфиг может добавить запись плагина со своими `options`",
+       "line": 128,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Там, где есть инструменты symphysis, без проверки следа: `.claude/settings.local.json` появится и у тех, кто работает в другом клиенте",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "vscode/docs/design-part1-viewer.md",
+       "quote": "| `.claude/settings.local.json` — подключение хука | расширение по действию человека (Р11) |",
+       "line": 356,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "C",
+     "text": "Не при активации, а при первом «Внести» в этом проекте: ничего не пишется, пока хук не нужен, но о правке `scheme.md` до первого внесения агент не узнает",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "vscode/docs/design-part1-viewer.md",
+       "quote": "и печатает «`scheme.md` изменился с прошлого обращения». Первое обращение сессии",
+       "line": 280,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "D",
+     "text": "В любом открытом проекте",
+     "added": false,
+     "unlikely": "плагин правил бы настройки клиента в проектах, где symphysis нет",
+     "evidence": [
+      {
+       "path": "vscode/package.json",
+       "quote": "\"activationEvents\": [\"workspaceContains:openspec/changes/*/decisions.json\", \"onWebviewPanel:symphysis.viewer\", \"onWebviewPanel:symphysis.scheme\"],",
+       "line": 15,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    }
+   ],
+   "antipodes": [
+    {
+     "option": "A",
+     "other": "F-65.C"
+    }
+   ],
+   "recommendation": {
+    "option": "A",
+    "why": "Слово F-47 сохраняется: человек ничего не нажимает, а записи появляются только там, где symphysis уже работает. След клиента закрывает промежуток до следующего изменения с выбором клиентов."
+   },
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-04"
+   },
+   "reversibility": {
+    "level": "обратимо",
+    "why": "условие в хосте плагина; уже сделанные записи в `.claude/settings.local.json` снимает настройка из F-61"
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "У opencode запись может оказаться в файле, который едет в git, причём с абсолютным путём: покажет исследование F-49, и тогда к этой записи стоит вернуться.",
+   "evidence": [],
+   "comments": [],
+   "nodes": [
+    "connect",
+    "settings"
+   ]
+  },
+  {
+   "id": "F-61",
+   "question": "Как снять хук, если плагин ставит его сам: при следующей активации он вернёт удалённую запись, а ты говорил, что убрать хук должно быть легко",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-47"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Настройка-выключатель `symphysis.hook.enabled`, по умолчанию включена. Выключил: плагин снимает свою запись и больше её не ставит. Следующее изменение покажет её в tutorial",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "vscode/docs/design-part1-viewer.md",
+       "quote": "Хорошо, давай попробуем B. Если хук будет мешать кому то, то его легко убрать.",
+       "line": 274,
+       "verdict": "сверено",
+       "found": true
+      },
+      {
+       "path": "vscode/package.json",
+       "quote": "\"symphysis.python\": {",
+       "line": 49,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Без настройки: если человек удалил запись руками, плагин запоминает это в `.symphysis/viewer/` и не возвращает её. Тихо, но выключенное состояние нигде не видно",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "vscode/docs/design-part1-viewer.md",
+       "quote": "| `.symphysis/viewer/events.jsonl`, курсоры и хеши сессий, скрипт хука | расширение |",
+       "line": 355,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "C",
+     "text": "Снять можно только удалением плагина",
+     "added": false,
+     "unlikely": "против твоего слова в Р20; запись при этом останется в настройках клиента",
+     "evidence": [
+      {
+       "path": "vscode/docs/design-part1-viewer.md",
+       "quote": "Хорошо, давай попробуем B. Если хук будет мешать кому то, то его легко убрать.",
+       "line": 274,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Состояние видно в обычных настройках, а следующему изменению остаётся показать ту же настройку в tutorial. Вариант B легко принять за поломку: хук пропал, и непонятно почему."
+   },
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-04"
+   },
+   "reversibility": {
+    "level": "обратимо",
+    "why": "настройка в `package.json` плагина, с ядром не связана; её имя прочтёт tutorial следующего изменения, поэтому менять его лучше до него"
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "Настройка сверх `symphysis.python` и цветов. Запись F-38 говорила, что новых настроек нет: твоё слово к F-46 это уже изменило.",
+   "evidence": [],
+   "comments": [],
+   "nodes": [
+    "connect",
+    "settings"
+   ]
+  },
+  {
+   "id": "F-62",
+   "question": "Что значит параметр пути к symphysis в этом изменении: установки `-g` ещё нет, и её раскладка не закреплена",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-46",
+    "F-39"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Настройка `symphysis.toolsPath` сейчас: абсолютный путь, только уровень машины, как `symphysis.python`. Инструменты не нашлись в проекте — плагин берёт их оттуда, `step_help.py` ищет скиллы там же. До этапа `-g` работает с оговорками, и они видны: улики дадут «корня для пути нет», тексты шагов только при схеме в проекте, скилл на машине может оказаться заглушкой",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/changes/step-help-tab/answers/2026-11-04.md",
+       "quote": "в случае глобальной установки пользователь указывает путь размещения в конфиге плагина.",
+       "line": 4,
+       "verdict": "сверено",
+       "found": true
+      },
+      {
+       "path": "vscode/src/host/project.ts",
+       "quote": "for (const dir of [path.join(root, \".symphysis\", \"tools\"), path.join(root, \"tools\")]) {",
+       "line": 24,
+       "verdict": "сверено",
+       "found": true
+      },
+      {
+       "path": "docs/analysis/stores-and-context-pack-2026-11-02.md",
+       "quote": "| Корни улик | `<root>` от каталога скрипта | при инструментах на машине указывает не туда |",
+       "line": 228,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Настройка только для каталога скиллов, `symphysis.skillsPath`: закрывает нестандартный каталог уже сейчас, но без инструментов в проекте толку нет: `step_help.py` запускать неоткуда",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "installer/lib/paths.js",
+       "quote": "* каталоги скиллов задаёт вызывающий, по умолчанию — один `.claude/skills`.",
+       "line": 7,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "C",
+     "text": "Настройка вместе с этапом `-g`: сейчас вкладка без инструментов только называет установку, ссылки на скиллы ищутся в проекте. Ни одной полуработающей ветки, но слово к F-46 выполняется позже",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "docs/analysis/stores-and-context-pack-2026-11-02.md",
+       "quote": "3. Глобально на этой машине можно будет только после этапа 4: флага нет, пути инструментов написаны буквально, плагин такую установку не увидит.",
+       "line": 261,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Ты сказал об этом дважды, а кода немного: одна настройка и одна ветка в `findTools`, ограничения человек увидит сам. Если настройке место в следующем изменении о конфигурации или вместе с `-g`, это C."
+   },
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-04"
+   },
+   "reversibility": {
+    "level": "дорого",
+    "why": "новый аргумент `step_help.py` входит в контракт `docs/repo-contract.md`, а при `-g` раскладка может потребовать его смены вместе с номером контракта"
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "Новый необязательный аргумент `step_help.py` входит в контракт, номер от него не растёт. Плановая смена контракта при `-g` остаётся за тем этапом.",
+   "evidence": [],
+   "comments": [],
+   "nodes": [
+    "installed",
+    "noTools",
+    "links"
+   ]
+  },
+  {
+   "id": "F-63",
+   "question": "[канон] Хук ставится плагином без спроса: канон ИБ",
+   "kind": "факт",
+   "status": "припаркован",
+   "addressee": "ИБ",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [
+    {
+     "addressee": "ИБ",
+     "text": "Плагин сам пишет в настройки клиента и подключает скрипт из каталога проекта: откуда берётся скрипт и перезаписывается ли он плагином, чтобы проект не подложил свой; в недоверенной рабочей области ничего не пишется; абсолютные пути не попадают в файлы, которые едут в git — канон, покрывается чек-листом security.md; запрет не чеканится"
+    }
+   ],
+   "dispute": "",
+   "consequences": "На этом стоит шаг `security`.",
+   "evidence": [
+    {
+     "path": "openspec/changes/step-help-tab/answers/2026-11-04.md",
+     "quote": "- F-47: C — «Вариант C.",
+     "line": 14,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "vscode/package.json",
+     "quote": "\"untrustedWorkspaces\": { \"supported\": false, \"description\": \"Расширение запускает .symphysis/tools/journal.py из проекта.\" },",
+     "line": 12,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "connect",
+    "settings",
+    "hook"
+   ]
+  },
+  {
+   "id": "F-64",
+   "question": "Дата в заголовке промпта на странице идёт по UTC: в первые три часа суток по Москве заголовок называет вчерашний день. Чинить ли в этом изменении",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Поправить в этом изменении: шаблон страницы берёт локальную дату, как плагин. Дата решения в журнале от заголовка не зависит: её ставит `apply`",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "tools/playground-template.html",
+       "quote": "function currentPrompt() { return buildPrompt(JOURNAL, ATTACK, state, attackState.disputes, new Date().toISOString().slice(0, 10)); }",
+       "line": 771,
+       "verdict": "сверено",
+       "found": true
+      },
+      {
+       "path": "vscode/src/webview/App.tsx",
+       "quote": "post({ type: \"apply\", key: keyRef.current, text: prompt.text, shownSha: payload.sha256, date: localDate() });",
+       "line": 251,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Правка в одну строку, а заголовок, называющий вчерашний день, сбивает при чтении `answers/`."
+   },
+   "decision": {
+    "option": "A",
+    "word": "Да, это мелкий фикс, поправим в этом изменении. Паралелльно в ядре работ не ведётся.",
+    "date": "2026-11-04"
+   },
+   "reversibility": {
+    "level": "обратимо",
+    "why": "одна строка в `tools/playground-template.html`, контрактный тест плагина берёт дату из первой строки страницы и от правки не зависит"
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "Правка шаблона ядра, на шаге реализации.",
+   "evidence": [],
+   "comments": []
+  },
+  {
+   "id": "F-65",
+   "question": "Что считать «есть инструменты» для автоподключения хука при настройке `symphysis.toolsPath`: она задана на всю машину, и условие из F-60 выполнилось бы в любом проекте",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-60",
+    "F-62"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Признак проекта: в корне есть `openspec/`, а инструменты могут лежать и по настройке. Проект без `openspec/` не трогается, какой бы `symphysis.toolsPath` ни стоял",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "vscode/src/host/project.ts",
+       "quote": "const CHANGES = path.join(\"openspec\", \"changes\");",
+       "line": 19,
+       "verdict": "сверено",
+       "found": true
+      },
+      {
+       "path": "docs/analysis/stores-and-context-pack-2026-11-02.md",
+       "quote": "Она нужна тем, кто хочет открыть сессию в репозитории кода, не кладя туда файлы; теперь это флаг `-g`, а не умолчание.",
+       "line": 218,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Только инструменты в самом проекте: `.symphysis/tools` или `tools`. При настройке хук сам не ставится: сегодня это ничего не ломает, но с `-g` агент останется без событий, пока не появится выбор клиентов",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "vscode/src/host/project.ts",
+       "quote": "for (const dir of [path.join(root, \".symphysis\", \"tools\"), path.join(root, \"tools\")]) {",
+       "line": 24,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "C",
+     "text": "Настройка считается как инструменты: любой проект со следом клиента",
+     "added": false,
+     "unlikely": "настройка на всю машину: хук появится во всех проектах с `.claude/`, а выбранный F-60.A обещает, что чужой проект не трогается",
+     "evidence": [
+      {
+       "path": "openspec/changes/step-help-tab/decisions.md",
+       "quote": "Только там, где есть инструменты symphysis и след клиента: у Claude Code каталог `.claude/`, у opencode его конфиг в проекте. Пустой и чужой проект не трогается",
+       "line": 756,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    }
+   ],
+   "antipodes": [
+    {
+     "option": "C",
+     "other": "F-60.A"
+    }
+   ],
+   "recommendation": {
+    "option": "A",
+    "why": "«Внести» и журнал возможны только там, где есть `openspec/changes`, значит, хук нужен ровно там. Условие не зависит от того, где лежат инструменты, и переживёт `-g`."
+   },
+   "decision": {
+    "option": "A",
+    "word": "Окей, F-65 выбираю А",
+    "date": "2026-11-04"
+   },
+   "reversibility": {
+    "level": "обратимо",
+    "why": "условие в хосте плагина; уже сделанные записи в `.claude/settings.local.json` снимает настройка из F-61"
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "Сессия в репозитории кода без `openspec/` хука не получит: журнала там нет, сообщать не о чем.",
+   "evidence": [],
+   "comments": [],
+   "nodes": [
+    "connect",
+    "settings"
+   ]
+  },
+  {
+   "id": "F-66",
+   "question": "Как спрятать от git файлы, которые плагин создаёт для хука: `.claude/settings.local.json` с абсолютным путём к Python и файл в `.opencode/plugins/`. Сами они не игнорируются, и агент с `git add -A` их закоммитит",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-47",
+    "F-49"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Плагин дописывает их имена в `.git/info/exclude`: в рабочем дереве нет ни новых файлов, ни правок, чужие настройки git не меняются. Путь к файлу даёт сам git, это работает и в worktree. Проект без git ничего не требует",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/changes/step-help-tab/research/F-52-probe/probe.log",
+       "quote": "\"git_status\": [\"?? .claude/\", \"?? .symphysis/\"]",
+       "line": 2,
+       "verdict": "сверено",
+       "found": true
+      },
+      {
+       "path": "openspec/changes/step-help-tab/research/F-52-probe/docs-excerpts.txt",
+       "quote": "No, gitignored when Claude Code saves a setting to it",
+       "line": 7,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Рядом `.gitignore`, который исключает и себя, как уже сделано в `.symphysis/viewer/`: git звать не надо, но в `.claude/` появляется новый файл рядом с файлами команды, а существующий `.gitignore` пришлось бы дописывать",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "vscode/docs/design-part1-viewer.md",
+       "quote": "- **`.symphysis/viewer/.gitignore` с `*`**: черновики не попадают в `git status`",
+       "line": 481,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "C",
+     "text": "Дописывать `.gitignore` проекта",
+     "added": false,
+     "unlikely": "это правка чужого отслеживаемого файла при простом открытии проекта, дизайн такого избегает",
+     "evidence": [
+      {
+       "path": "vscode/docs/design-part1-viewer.md",
+       "quote": "и в `git add -A` агента, `.gitignore` проекта не тронут.",
+       "line": 482,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "D",
+     "text": "Оставить как есть: следить должен человек",
+     "added": false,
+     "unlikely": "абсолютный путь с именем пользователя уедет в git при первом `git add -A` агента, а хук ставится сам и человек о файле может не знать",
+     "evidence": [
+      {
+       "path": "openspec/changes/step-help-tab/research/F-49-probe/probe.log",
+       "quote": "\"git_status\": [\"?? .opencode/\"]",
+       "line": 3,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Единственный вариант, где плагин не добавляет и не правит ничего в рабочем дереве. Это важно именно потому, что по F-47 он действует без спроса."
+   },
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-04"
+   },
+   "reversibility": {
+    "level": "обратимо",
+    "why": "строки в `.git/info/exclude` локальны и не едут в git; плагин снимает их вместе с записью хука по настройке из F-61"
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "Плагин зовёт git, а имя разрешается как у Python: абсолютный путь по PATH без каталогов рабочей области.",
+   "evidence": [],
+   "comments": [],
+   "nodes": [
+    "settings"
+   ]
+  },
+  {
+   "id": "F-67",
+   "question": "Каким путём хук opencode доставляет текст агенту: проверены оба рабочих",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-49"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Хук `prompt` читает новые события и кладёт их записью `instructions.entry` с ключом `symphysis`; новых нет — запись снимается. Текст живёт весь ход, включая продолжения после инструментов, а слова человека не меняются",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/changes/step-help-tab/research/F-49-probe/probe.log",
+       "quote": "\"at\": \"instructions.entry.put\", \"ok\": true",
+       "line": 2,
+       "verdict": "сверено",
+       "found": true
+      },
+      {
+       "path": "openspec/changes/step-help-tab/research/F-49-probe/docs-excerpts.txt",
+       "quote": "updates or removals are announced at the next step boundary without queuing a message turn.",
+       "line": 10,
+       "verdict": "сверено",
+       "found": true
+      },
+      {
+       "path": "opencode/PROMPT.md",
+       "quote": "запись `instructions.entry` с ключом `symphysis`",
+       "line": 174,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Хук `context` добавляет текст в `system`: ничего не сохраняется, но он срабатывает перед каждым вызовом модели, и если событие показано один раз, после вызова инструмента текста уже нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/changes/step-help-tab/research/F-49-probe/docs-excerpts.txt",
+       "quote": "context runs for the agent loop, including tool-driven continuations.",
+       "line": 9,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "C",
+     "text": "Дописывать текст в сам промпт хуком `prompt`",
+     "added": false,
+     "unlikely": "это меняет слова человека и сохраняется в сессии: журнал решений как раз держится на их дословности",
+     "evidence": [
+      {
+       "path": "openspec/changes/step-help-tab/research/F-49-probe/docs-excerpts.txt",
+       "quote": "The hook runs once during admission, not before every model call.",
+       "line": 8,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Ближе всего к Claude Code: сообщение появляется при обращении и не теряется в середине хода. И это та же механика, что записана в предпроектном файле плагина opencode."
+   },
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-04"
+   },
+   "reversibility": {
+    "level": "обратимо",
+    "why": "ключ `symphysis` в `instructions.entry` живёт в сессии opencode, а код — в одном файле `.opencode/plugins/`, который пишет плагин"
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "Запись снимается при следующем обращении без новых событий: агент не видит старое вечно.",
+   "evidence": [],
+   "comments": [],
+   "nodes": [
+    "hook",
+    "agent"
+   ]
+  },
+  {
+   "id": "F-68",
+   "question": "Где живёт логика хука у opencode: курсоры сессий и сверка хеша `scheme.md` уже решены для Python-скрипта",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-49",
+    "F-48"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Один Python-скрипт на обоих клиентов: файл opencode — тонкая оболочка, зовёт его абсолютным путём к Python и передаёт вывод. Логика в одном месте и проверяется одними тестами",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/changes/step-help-tab/research/F-49-probe/probe.log",
+       "quote": "\"python\": \"Python 3.14.0\"",
+       "line": 2,
+       "verdict": "сверено",
+       "found": true
+      },
+      {
+       "path": "vscode/docs/design-part1-viewer.md",
+       "quote": "только тому, у кого стоит расширение. Скрипт хука — на Python",
+       "line": 454,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Повторить логику на JS в файле opencode: Python для хука там не нужен, но курсоры и хеш живут в двух реализациях и расходятся молча",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/changes/step-help-tab/research/F-49-probe/probe.log",
+       "quote": "\"bun\": true, \"node\": \"26.3.0\"",
+       "line": 2,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Python ядру нужен и так, а двух реализаций одного правила в этом проекте уже старались избегать. Абсолютный путь в файле opencode закрывают F-48 и F-66."
+   },
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-04"
+   },
+   "reversibility": {
+    "level": "обратимо",
+    "why": "файл opencode — оболочка над скриптом из `.symphysis/viewer/`, логику можно перенести в него без правки контракта с ядром"
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [],
+   "comments": [],
+   "nodes": [
+    "hook"
+   ]
+  }
+ ],
+ "notes": [
+  {
+   "date": "2026-11-04",
+   "text": "круг 1 закончен: решений 18, фактов 43, открытых развилок 0, парковок материалам 5, антиподов 2"
+  },
+  {
+   "date": "2026-11-04",
+   "text": "круг 2 закончен: решений 3, фактов 0, открытых развилок 0, парковок материалам 0, антиподов 0"
+  },
+  {
+   "date": "2026-11-04",
+   "text": "брейншторм закончен по решению человека"
+  }
+ ]
+}
