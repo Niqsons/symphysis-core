@@ -10,3 +10,6 @@ installer/payload/
 .claude/
 .symphysis/
 symphysis.yaml
+# каталоги IDE: проект открывается в разных IDE при проверках
+.idea/
+.gigaide/
