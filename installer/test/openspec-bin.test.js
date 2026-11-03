@@ -192,3 +192,12 @@ for (const [name, real] of [["python", /^Python \d/], ["git", /^git version/]]) 
     assert.match(out, real);
   });
 }
+
+test("Каталог вызова: spawnSync в lib/ и bin/ стоит только в spawnTool", () => {
+  const root = path.resolve(here, "..");
+  const found = ["lib", "bin"].flatMap((dir) => fs.readdirSync(path.join(root, dir))
+    .filter((name) => name.endsWith(".js") && name !== "openspec-bin.js")
+    .filter((name) => /\bspawnSync\s*\(/.test(fs.readFileSync(path.join(root, dir, name), "utf8")))
+    .map((name) => `${dir}/${name}`));
+  assert.deepEqual(found, [], "запуск мимо spawnTool исполнит программу из каталога вызова");
+});

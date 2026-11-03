@@ -1,11 +1,11 @@
 import fs from "node:fs";
 import path from "node:path";
-import { spawnSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
 import { parseDocument, isMap, isSeq, isScalar } from "yaml";
 import { ensureContinue } from "./clients.js";
 import { ensureIgnored } from "./gitignore.js";
 import { globalConfigPath } from "./global-config.js";
+import { spawnTool } from "./openspec-bin.js";
 import { targets } from "./paths.js";
 import { disableTelemetryIfUnset } from "./telemetry.js";
 import { hasSources, payloadMatches, ROOT } from "../scripts/sync-payload.js";
@@ -61,7 +61,7 @@ function copyTree(res, project, srcDir, destDir, force, filter = () => true, opt
 
 /** Короткий хеш HEAD клона или null: нет git, нет репозитория или каталог лежит внутри чужого репозитория. */
 function cloneHash(root) {
-  const git = (...args) => spawnSync("git", ["-C", root, ...args], { encoding: "utf8" });
+  const git = (...args) => spawnTool("git", ["-C", root, ...args], { encoding: "utf8" });
   const top = git("rev-parse", "--show-cdup");
   if (top.error || top.status !== 0 || top.stdout.trim() !== "") return null;
   const head = git("rev-parse", "--short", "HEAD");
