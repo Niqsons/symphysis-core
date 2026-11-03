@@ -38,7 +38,7 @@ const context = {
   localStorage: {
     getItem(k) {
       const s = suffix(k);
-      if (s === ':outh' || s === ':scheme' || s === ':schemew') return null;
+      if (s === ':outh' || s === ':scheme' || s === ':schemew' || s === ':panel') return null;
       if (s in suffixes) return typeof suffixes[s] === 'string' ? suffixes[s] : JSON.stringify(suffixes[s]);
       if (s === ':mode' || s === ':attack' || s === ':lens') return null;
       return onlyKey && k !== onlyKey ? null : stored;
@@ -46,7 +46,7 @@ const context = {
     setItem(k, v) {
       const s = suffix(k);
       if (s === ':attack') savedAttack = v;
-      else if (s !== ':outh' && s !== ':mode' && s !== ':lens' && s !== ':scheme' && s !== ':schemew') saved = v;
+      else if (s !== ':outh' && s !== ':mode' && s !== ':lens' && s !== ':scheme' && s !== ':schemew' && s !== ':panel') saved = v;
     },
   },
   ...(pathname ? { location: { pathname } } : {}),
@@ -57,5 +57,5 @@ vm.runInNewContext(script, context);
 process.stdout.write(JSON.stringify({
   cards: nodes.cards.innerHTML, toc: nodes.toc.innerHTML, stats: nodes.stats.innerHTML, saved,
   modes: node('modes').innerHTML, check: node('viewCheck').innerHTML, attack: node('viewAttack').innerHTML,
-  out: node('out').value, savedAttack,
+  help: node('helpBody').innerHTML, out: node('out').value, savedAttack,
 }));

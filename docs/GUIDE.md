@@ -236,7 +236,7 @@ Add them with `openspec config profile`.
 Вывод `symphysis install`:
 
 ```text
-записано 49
+записано 52
 config.yaml уже был: схема переключена с spec-driven на symphysis, rules добавлены
 .gitignore: добавлена строка symphysis.yaml — правка уйдёт в git вместе с работой
 openspec: глобальный конфиг <каталог>\openspec\config.json
@@ -312,12 +312,14 @@ Next: openspec instructions decisions --change "add-overdue" --json
 
 Этот круг повторяется на шагах `decisions`, `specs` и `consequences`: модель записывает в журнал `decisions.json` развилки с вариантами и рекомендацией, решает человек.
 
-1. Открой `openspec/changes/add-overdue/decisions.html` в браузере.
+1. Открой `openspec/changes/add-overdue/symphysis.html` в браузере.
 2. У каждой развилки выбери вариант; слово к выбору необязательно. Спорный вопрос можно припарковать.
 3. Нажми «Скопировать промпт» и вставь его в чат.
 4. Модель сохраняет промпт в `answers/<дата>.md`, каталог создаёт сама, и вносит его командой `python .symphysis/tools/journal.py apply`.
 
 Короткий путь для учебного проекта: написать в чат `реши сам`. Модель внесёт рекомендованные варианты строками `- F-NN: X — «реши сам»`, и в журнале будет видно, что решение отдано модели. Слово действует только на записи, показанные сейчас: на следующем круге его пишут заново.
+
+Справка о шагах есть на странице `symphysis.html`: открывается кнопкой «схема · справка», затем вкладка «справка»; считается командой `python .symphysis/tools/step_help.py`.
 
 ### Шаг `decisions`: журнал решений
 

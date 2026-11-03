@@ -6,12 +6,14 @@ import shutil
 import socket
 import subprocess
 import sys
+import time
 from pathlib import Path
 
 import pytest
 
 import journal
-from conftest import FIX, ROOT, one_record_journal
+from conftest import (ALL_STEPS, FIX, FORK_VERSION, ROOT, fake_apply, fake_status, fork_env, fork_record, fork_reply,
+                      install_fork_shim, journal_of, one_record_journal, steps_text)
 
 MERMAID = ROOT / "installer" / "node_modules" / "mermaid" / "dist" / "mermaid.min.js"
 DRIVER = FIX / "viewer-browser.mjs"
@@ -37,7 +39,7 @@ pytestmark = [pytest.mark.skipif(node is None, reason="нет node: драйве
               pytest.mark.skipif(not MERMAID.is_file(), reason="нет файла mermaid: npm ci в installer")]
 
 
-def page(tmp_path, scheme=SIMPLE, with_mermaid=True, j=None):
+def page(tmp_path, scheme=SIMPLE, with_mermaid=True, j=None, env=None):
     """Страница журнала в установленном проекте: `.symphysis/tools/` на месте, файл mermaid по заказу."""
     change = tmp_path / "проект с пробелами" / "openspec" / "changes" / "изменение"
     change.mkdir(parents=True)
@@ -50,9 +52,9 @@ def page(tmp_path, scheme=SIMPLE, with_mermaid=True, j=None):
     journal.save_journal(src, j or one_record_journal("a.md", "дв"))
     if scheme is not None:
         (change / "scheme.md").write_bytes(scheme.encode("utf-8"))
-    out = change / "decisions.html"
+    out = change / "symphysis.html"
     run = subprocess.run([sys.executable, str(ROOT / "tools" / "journal.py"), "render-html", str(src), "--out", str(out)],
-                         capture_output=True, text=True, encoding="utf-8")
+                         capture_output=True, text=True, encoding="utf-8", env=env)
     assert run.returncode == 0, run.stderr
     return out
 
@@ -246,4 +248,298 @@ def test_recommended_choice_asks_for_nothing(tmp_path):
     """Сценарий «Рекомендованный вариант»."""
     r = browser(page(tmp_path, j=recommended_journal()), "choose:F-01:A")
     assert r["wordNeeded"] == [] and r["chosen"] == ["F-01.A"]
+
+
+# --- панель: схема или справка ------------------------------------------------
+
+BEFORE_SPECS = ("intent", "decisions", "research", "proposal")
+HOSTILE = "</script><img src=x onerror=\"document.title='взлом'\"><svg onload=alert(1)>"
+
+
+def help_page(tmp_path, done=BEFORE_SPECS, ready=("specs",), apply=None, scheme=SIMPLE, steps=None, j=None, version=FORK_VERSION,
+              **replies):
+    """Страница в проекте с `steps.md`, форк подменён шимом с ответами по сценарию; текущий шаг по умолчанию `specs`."""
+    project = tmp_path / "проект с пробелами"
+    schema = project / "openspec" / "schemas" / "symphysis"
+    schema.mkdir(parents=True)
+    (schema / "steps.md").write_text(steps_text() if steps is None else steps, encoding="utf-8")
+    status = fake_status(project, change="изменение", done=done, ready=ready)
+    install_fork_shim(tmp_path / "bin", version=version, **{"status": fork_reply(status), "apply": fork_reply(apply or fake_apply()), **replies})
+    no_open_forks = j or journal_of(fork_record("F-01", "A", A=[]))
+    return page(tmp_path, scheme, j=no_open_forks, env=fork_env(tmp_path / "bin"))
+
+
+def snapshot_of(html) -> dict:
+    text = Path(html).read_text(encoding="utf-8")
+    start = text.index("const HELP = ") + len("const HELP = ")
+    return json.JSONDecoder().raw_decode(text[start:].replace("<\\/", "</"))[0]
+
+
+def with_snapshot(html, **fields):
+    """Та же страница с полями снимка, которых шимом не получить: страницу пересобирает рендер из памяти."""
+    src = Path(html).with_name("decisions.json")
+    snapshot = {**snapshot_of(html), **fields}
+    Path(html).write_text(journal.render_html(journal.load_journal(src), ROOT / "tools" / "playground-template.html",
+                                              help_snapshot=snapshot), encoding="utf-8", newline="\n")
+    return html
+
+
+def test_panel_button_says_both(tmp_path):
+    """Сценарий «Подпись кнопки панели»."""
+    r = browser(page(tmp_path))
+    assert r["shown"] is False and r["panelLabel"] == "схема · справка"
+
+
+def test_first_open_shows_the_scheme(tmp_path):
+    """Сценарий «Первое открытие панели»."""
+    r = browser(help_page(tmp_path), "panel")
+    assert r["tabs"] == ["схема", "справка"] and r["activeTab"] == "схема"
+    assert r["help"]["schemeShown"] is True and r["help"]["shown"] is False
+    assert r["state"] == "svg" and r["hasSvg"]
+
+
+def test_switching_keeps_the_place(tmp_path):
+    """Сценарий «Переключение»: на месте схемы справка, ширина прежняя, карточки рядом."""
+    html = help_page(tmp_path)
+    scheme = browser(html, "panel")
+    r = browser(html, "panel", "tab:help")
+    assert r["help"]["shown"] is True and r["help"]["schemeShown"] is False and r["activeTab"] == "справка"
+    assert r["panel"]["width"] == pytest.approx(scheme["panel"]["width"], abs=1)
+    assert r["panel"]["left"] == pytest.approx(scheme["panel"]["left"], abs=1)
+    assert r["cards"]["right"] <= r["panel"]["left"] + 1
+    assert r["errors"] == [] and r["csp"] == []
+
+
+def test_choice_is_remembered(tmp_path):
+    """Сценарий «Выбор сохранился»: и панель, и справка в ней после нового открытия."""
+    r = browser(help_page(tmp_path), "panel", "tab:help", "reload")
+    assert r["shown"] is True and r["help"]["shown"] is True and r["activeTab"] == "справка"
+
+
+def test_modes_are_not_touched(tmp_path):
+    """Сценарий «Режимы страницы не тронуты»: кнопок режимов три, панель показывает справку в другом режиме."""
+    r = browser(help_page(tmp_path), "panel", "tab:help", "mode:check")
+    assert r["help"]["shown"] is True and r["modeButtons"] == 3
+    assert r["view"] <= 1400 - r["panel"]["width"] + 1
+
+
+def test_no_scheme_says_so_on_its_tab(tmp_path):
+    """Сценарий «Схемы нет»."""
+    html = help_page(tmp_path, scheme=None)
+    r = browser(html, "panel", "tab:help")
+    assert r["help"]["shown"] is True and "why specs" in r["help"]["text"]
+    r = browser(html, "panel", "tab:scheme")
+    assert r["state"] == "missing" and any("Схема не создана" in m for m in r["messages"])
+
+
+def test_drawing_does_not_take_the_help_away(tmp_path):
+    """Предположение «е», F-63: у справки свой контейнер. Рисунок готов раньше выбора справки, и справка цела."""
+    html = help_page(tmp_path, scheme=WIDE)
+    r = browser(html, "panel", "tab:help", "tab:scheme", "tab:help")
+    assert r["help"]["shown"] is True and r["hasSvg"] and "why specs" in r["help"]["text"]
+
+
+def test_scheme_first_shown_after_help_starts_at_the_top_node(tmp_path):
+    """Рисунок считает прокрутку на видимом контейнере: при открытой справке он не рисуется, иначе верхний узел ушёл бы (F-35)."""
+    html = help_page(tmp_path, scheme=WIDE)
+    r = browser(html, "panel", "tab:help", "reload", "tab:scheme")
+    assert r["state"] == "svg" and r["topVisible"] is True
+
+
+def test_narrow_window_keeps_the_help_above_the_cards(tmp_path):
+    r = browser(help_page(tmp_path), "panel", "tab:help", size=(800, 900))
+    assert r["help"]["shown"] is True and r["panel"]["bottom"] <= r["cards"]["top"] + 1
+
+
+def test_opens_on_the_current_step(tmp_path):
+    """Сценарий «Открытие на текущем шаге»."""
+    r = browser(help_page(tmp_path), "panel", "tab:help")["help"]
+    assert r["opened"] == "specs" and r["current"] == ["specs"]
+    assert r["steps"] == ALL_STEPS
+    assert "выполняется" not in r["text"] and "по файлам" in r["text"]
+    assert "модель" in r["text"] and "человек" in r["text"], "у пунктов виден чей ход"
+
+
+def test_choosing_an_item_keeps_the_mark(tmp_path):
+    """Сценарий «Выбор пункта»."""
+    r = browser(help_page(tmp_path), "panel", "tab:help", "step:archive")["help"]
+    assert r["opened"] == "archive" and r["current"] == ["specs"]
+    assert "why archive" in r["text"] and "why specs" not in r["text"]
+
+
+def test_paging_to_the_end_of_the_list(tmp_path):
+    """Сценарий «Листание до конца списка»."""
+    html = help_page(tmp_path)
+    r = browser(html, "panel", "tab:help", "step:archive")["help"]
+    assert r["nextDisabled"] is True and r["prevDisabled"] is False
+    r = browser(html, "panel", "tab:help", "step:archive", "helpprev")["help"]
+    assert r["opened"] == "sync" and r["current"] == ["specs"]
+
+
+def test_paging_from_the_start_of_the_list(tmp_path):
+    html = help_page(tmp_path)
+    r = browser(html, "panel", "tab:help", "step:intent")["help"]
+    assert r["prevDisabled"] is True and r["nextDisabled"] is False
+    assert browser(html, "panel", "tab:help", "step:intent", "helpnext")["help"]["opened"] == "decisions"
+
+
+def test_step_page_answers_the_questions_of_the_intent(tmp_path):
+    """Требование «Страница шага отвечает на вопросы намерения» на показе: тексты, файлы, что держит граф, команда."""
+    r = browser(help_page(tmp_path, done=(*BEFORE_SPECS, "specs"), ready=("consequences", "security")), "panel", "tab:help",
+                "step:security")["help"]
+    for word in ("why security", "mechanics security", "if_skipped security", "what_to_check security", "command security",
+                 "openspec/changes/изменение/security.md", "файла ещё нет", "Без него не начнутся: attack-artifacts",
+                 "Без него не начнётся apply"):
+        assert word in r["text"], word
+
+
+def test_optional_step_is_marked(tmp_path):
+    r = browser(help_page(tmp_path, done=("intent", "decisions", "research"), ready=("attack-decisions", "proposal")), "panel",
+                "tab:help", "step:attack-decisions")["help"]
+    assert "необязательный" in r["text"]
+
+
+def test_empty_file_of_a_step(tmp_path):
+    """Сценарий «Пустой файл шага»: статус считает шаг готовым, показан готовым с пометкой."""
+    r = browser(help_page(tmp_path, done=(*BEFORE_SPECS, "specs", "consequences", "design"), ready=("security",)), "panel",
+                "tab:help", "step:design")["help"]
+    assert "готов" in r["text"] and "файл есть, содержание не проверялось" in r["text"]
+
+
+def test_snapshot_stays_until_the_page_is_rebuilt(tmp_path):
+    """Сценарий «Файлы изменились после снимка»."""
+    html = help_page(tmp_path)
+    first = browser(html, "panel", "tab:help")["help"]
+    assert first["time"] and first["current"] == ["specs"]
+    project = tmp_path / "проект с пробелами"
+    (Path(html).parent / "design.md").write_text("дизайн\n", encoding="utf-8")
+    again = browser(html, "panel", "tab:help")["help"]
+    assert (again["current"], again["time"]) == (first["current"], first["time"])
+    scenario = tmp_path / "bin" / "scenario.json"
+    replies = json.loads(scenario.read_text(encoding="utf-8"))
+    replies["status"] = fork_reply(fake_status(project, change="изменение", done=(*BEFORE_SPECS, "specs", "consequences", "design"),
+                                               ready=("security",)))
+    scenario.write_text(json.dumps(replies, ensure_ascii=False), encoding="utf-8")
+    time.sleep(1.1)
+    run = subprocess.run([sys.executable, str(ROOT / "tools" / "journal.py"), "render-html", str(Path(html).with_name("decisions.json")),
+                          "--out", str(html)], capture_output=True, text=True, encoding="utf-8", env=fork_env(tmp_path / "bin"))
+    assert run.returncode == 0, run.stderr
+    rebuilt = browser(html, "panel", "tab:help")["help"]
+    assert rebuilt["current"] == ["security"] and rebuilt["time"] != first["time"]
+
+
+def test_rebuild_command_stands_by_the_time(tmp_path):
+    """Сценарий «Команда пересборки рядом со снимком», показ."""
+    html = help_page(tmp_path)
+    r = browser(html, "panel", "tab:help")["help"]
+    assert r["rebuild"] == snapshot_of(html)["rebuild"] and "render-html" in r["rebuild"]
+    assert r["time"] == snapshot_of(html)["taken_at"]
+    assert "проект с пробелами" not in r["rebuild"]
+
+
+def test_versions_differ_with_no_warning(tmp_path):
+    """Сценарий «Версии разошлись»: показаны обе, предупреждения нет."""
+    html = with_snapshot(help_page(tmp_path), versions={"openspec": "9.9.9-symphysis.9", "symphysis": "0.1.0+aa50e8f"})
+    r = browser(html, "panel", "tab:help")["help"]
+    assert "9.9.9-symphysis.9" in r["versions"] and "0.1.0+aa50e8f" in r["versions"]
+    assert r["error"] is None
+    for word in ("предупрежд", "расход", "не совпад", "обнови"):
+        assert word not in r["text"].lower(), word
+
+
+def test_unknown_symphysis_version(tmp_path):
+    """Сценарий «Файла версии нет», показ."""
+    r = browser(help_page(tmp_path), "panel", "tab:help")["help"]
+    assert "symphysis неизвестно" in r["versions"] and FORK_VERSION in r["versions"] and r["error"] is None
+
+
+def test_unreadable_journal_is_said_in_words(tmp_path):
+    """Сценарий «Журнал не читается», показ: слова вместо числа. Такой журнал страницу не собирает, поэтому снимок задан."""
+    text = "Следующий шаг по файлам — `research`, ход модели. Открытые развилки не посчитаны: журнал не читается."
+    html = with_snapshot(help_page(tmp_path), current_step="research", current_text=text,
+                         forks={"open": "журнал не читается", "parked": "журнал не читается"})
+    r = browser(html, "panel", "tab:help")["help"]
+    assert r["opened"] == "research" and "журнал не читается" in r["text"]
+
+
+def test_open_forks_and_tasks_are_counted(tmp_path):
+    html = help_page(tmp_path, done=("intent", "decisions", "research", "proposal", "specs", "consequences", "design", "security", "tasks"),
+                     ready=(), apply=fake_apply("ready", total=5, complete=2))
+    result = browser(html, "panel", "tab:help")
+    assert result["help"]["current"] == ["apply"] and "Задач закрыто 2 из 5" in " ".join(result["stats"].split())
+
+
+def test_tasks_in_the_header(tmp_path):
+    """Сценарий «Задачи идут на странице»."""
+    html = with_snapshot(help_page(tmp_path), tasks={"state": "ready", "total": 5, "complete": 2, "remaining": 3})
+    assert "Задач закрыто 2 из 5" in " ".join(browser(html)["stats"].split())
+
+
+@pytest.mark.parametrize("fields", [{"tasks": {"state": "ready", "total": 0, "complete": 0, "remaining": 0}}, {"tasks": None},
+                                    {"error": "сбой расчёта", "tasks": {"state": "ready", "total": 5, "complete": 2, "remaining": 3}}])
+def test_no_tasks_in_the_snapshot(tmp_path, fields):
+    """Сценарий «Задач в снимке нет»: нет задач или сбой расчёта, части в шапке нет."""
+    html = with_snapshot(help_page(tmp_path), **fields)
+    assert "Задач закрыто" not in browser(html)["stats"]
+
+
+def test_panel_has_no_fork_counters(tmp_path):
+    """Сценарий «Чисел развилок на панели нет»: в шапке они прежние."""
+    html = with_snapshot(help_page(tmp_path), forks={"open": 1, "parked": 1})
+    r = browser(html, "panel", "tab:help")
+    for word in ("открытых развилок", "припарковано"):
+        assert word not in r["help"]["text"], word
+    assert "открыто" in r["stats"] and "с парковкой" in r["stats"]
+
+
+def test_hostile_step_text_makes_no_element(tmp_path):
+    """Канон F-53: `<img onerror=…>` в тексте шага элемента не создаёт, скрипт не исполняется, страница цела."""
+    html = help_page(tmp_path, steps=f"## specs\n\n{HOSTILE}\n\n### Зачем\n\n{HOSTILE}\n\n### Механики\n\n- {HOSTILE}\n")
+    r = browser(html, "panel", "tab:help")
+    assert r["help"]["foreign"] == 0 and r["errors"] == []
+    assert "<img src=x" in r["help"]["text"]
+
+
+def test_hostile_failure_reason_makes_no_element(tmp_path):
+    """Канон F-53: то же в причине сбоя."""
+    html = help_page(tmp_path, status=fork_reply(code=1, stderr=HOSTILE + "\n"))
+    r = browser(html, "panel", "tab:help")
+    assert r["help"]["foreign"] == 0 and r["errors"] == []
+    assert "<img src=x" in r["help"]["error"]
+
+
+def test_how_to_prepare_on_any_step(tmp_path):
+    """Сценарий «Кнопка на любом шаге»."""
+    r = browser(help_page(tmp_path), "panel", "tab:help", "howto")["help"]
+    assert r["opened"] == "intent" and r["current"] == ["specs"]
+    assert "Как готовить" in r["text"] and "где искать материалы" in r["text"]
+
+
+def test_how_to_prepare_when_the_calculation_failed(tmp_path):
+    """Сценарий «Кнопка при сбое расчёта»: при сбое панель даёт причину и кнопку, списка нет (F-47)."""
+    project = tmp_path / "проект с пробелами"
+    (project / "openspec" / "schemas" / "symphysis").mkdir(parents=True)
+    (project / "openspec" / "schemas" / "symphysis" / "steps.md").write_text(steps_text(), encoding="utf-8")
+    html = page(tmp_path, env=fork_env())
+    r = browser(html, "panel", "tab:help")["help"]
+    assert "openspec не найден" in r["error"] and r["steps"] == [] and r["opened"] is None
+    r = browser(html, "panel", "tab:help", "howto")["help"]
+    assert r["opened"] == "intent" and "где искать материалы" in r["text"]
+    assert "openspec не найден" in r["error"]
+
+
+def test_how_to_prepare_without_the_section(tmp_path):
+    """Сценарий «Раздела нет»: текста нет, остальное работает."""
+    html = help_page(tmp_path, steps=steps_text([step for step in ALL_STEPS if step != "intent"]))
+    r = browser(html, "panel", "tab:help", "howto")["help"]
+    assert r["opened"] == "intent" and "текста нет" in r["text"].lower() and r["current"] == ["specs"]
+    assert browser(html, "panel", "tab:help", "howto", "step:specs")["help"]["opened"] == "specs"
+
+
+def test_how_to_prepare_when_the_journal_is_outside_changes(tmp_path):
+    """Снимка нет совсем: кнопка всё равно отвечает, что текста нет."""
+    html = with_snapshot(page(tmp_path, env=fork_env()), steps=[], error="Журнал лежит вне openspec/changes/")
+    r = browser(html, "panel", "tab:help", "howto")["help"]
+    assert r["opened"] == "intent" and "текста нет" in r["text"].lower() and "Журнал лежит вне" in r["error"]
+    assert r["versions"] and "неизвестно" in r["versions"]
 

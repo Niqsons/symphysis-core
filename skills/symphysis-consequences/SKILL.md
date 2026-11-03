@@ -71,7 +71,7 @@ python .symphysis/tools/journal.py code-sites <каталог изменения
 python .symphysis/tools/journal.py check <каталог изменения>/decisions.json
 python .symphysis/tools/journal.py render-md <каталог изменения>/decisions.json --out <каталог изменения>/decisions.md
 # круг просмотрщика: человек решает в HTML, промпт возврата вносит apply
-python .symphysis/tools/journal.py render-html <каталог изменения>/decisions.json --out <каталог изменения>/decisions.html
+python .symphysis/tools/journal.py render-html <каталог изменения>/decisions.json --out <каталог изменения>/symphysis.html
 python .symphysis/tools/journal.py apply <каталог изменения>/decisions.json <каталог изменения>/answers/<дата>.md
 ```
 
@@ -82,7 +82,7 @@ python .symphysis/tools/journal.py apply <каталог изменения>/dec
 Журнал правят только модель (новые кандидаты, их `outcome` и `consequences`)
 и `apply` (слово человека); чужие записи и решённые кандидаты модель не меняет.
 `spec.md` правится только по решённому исходу Specify. `decisions.md`
-и `decisions.html` — рендер, в них не пишут.
+и `symphysis.html` — рендер, в них не пишут.
 
 ## Порядок шага
 
@@ -437,7 +437,7 @@ python .symphysis/tools/journal.py apply <каталог изменения>/dec
 
 ### 8. Круг просмотрщика
 
-Кандидатов нет — такта нет. Есть — `render-html` и путь к `decisions.html` человеку. Человек
+Кандидатов нет — такта нет. Есть — `render-html` и путь к `symphysis.html` человеку. Человек
 выбирает исход; слово нужно, когда выбор расходится с рекомендацией; у A слово — строка сценария, если он задаёт
 её сам. Промпт возврата сохрани в `<каталог изменения>/answers/<дата>.md` (дата `YYYY-MM-DD`; файл занят — `YYYY-MM-DD-2.md`, затем `-3`) как есть и внеси
 `apply`; отказ называет запись — исправь строку промпта, не JSON. «Реши сам» — тоже слово
@@ -471,7 +471,7 @@ python .symphysis/tools/journal.py apply <каталог изменения>/dec
 
 Человеку одной порцией: состав, строки `[!!]` скрипта настроек дословно, сколько мест разобрано,
 добавлено и исключено, номера кандидатов, сигналы `check`, если остались, пути к `consequences.md`
-и `decisions.html`.
+и `symphysis.html`.
 
 ## Повтор и прерывание
 

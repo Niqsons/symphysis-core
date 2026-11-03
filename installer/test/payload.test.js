@@ -9,6 +9,7 @@ import { tempDir } from "../test-support/temp-dir.js";
 
 const FILES = [
   "openspec/schemas/symphysis/schema.yaml",
+  "openspec/schemas/symphysis/steps.md",
   "openspec/config.symphysis.yaml",
   "tools/journal.py",
   "tools/journal_model.py",
@@ -18,6 +19,7 @@ const FILES = [
   "tools/journal_sites.py",
   "tools/journal_consequences.py",
   "tools/symphysis_config.py",
+  "tools/step_help.py",
   "tools/playground-template.html",
   "docs/journal.schema.json",
 ];

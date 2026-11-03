@@ -1,15 +1,20 @@
 import copy
 import json
+import os
 import re
+import shlex
 import shutil
 import subprocess
 import sys
+import time
+from pathlib import Path
 
 import pytest
 
 import journal
 import journal_render
-from conftest import FIX, ROOT, one_record_journal
+from conftest import (FIX, ROOT, fake_apply, fake_status, fork_calls, fork_env, fork_record, fork_reply, install_fork_shim,
+                      journal_of, one_record_journal, real_fork, real_project, requires_fork)
 
 TEMPLATE = ROOT / "tools" / "playground-template.html"
 LIVE_JSON = ROOT / "docs" / "plan-implementation.journal.json"
@@ -444,6 +449,13 @@ def test_render_html_requires_both_placeholders(tmp_path):
         journal.render_html(plan(), template)
 
 
+def attack_path_from_cwd(path) -> str:
+    try:
+        return os.path.relpath(path).replace("\\", "/")
+    except ValueError:
+        return Path(path).name
+
+
 def test_cli_render_html_attack_flag(tmp_path):
     src, roots = html_fixture(tmp_path, "дв")
     out = tmp_path / "view.html"
@@ -453,7 +465,8 @@ def test_cli_render_html_attack_flag(tmp_path):
     html = out.read_text(encoding="utf-8")
     assert '"rows"' in html and '"sha256"' in html
     attacks = embedded_attack(html)
-    assert [a["path"] for a in attacks] == [str(ATTACK_FIX / "decisions.md"), str(ATTACK_FIX / "artifacts.md")]
+    # Журнал вне openspec/changes/: корень — каталог вызова; путь от него с «/», на другом диске только имя (F-72).
+    assert [a["path"] for a in attacks] == [attack_path_from_cwd(ATTACK_FIX / "decisions.md"), attack_path_from_cwd(ATTACK_FIX / "artifacts.md")]
     assert [len(a["rows"]) for a in attacks] == [3, 3]
     assert embedded(html)["sha256"] == journal.sha256_file(src)   # хеш журнала — по байтам файла
 
@@ -499,9 +512,9 @@ def test_viewer_state_belongs_to_one_page_not_to_every_journal(tmp_path):
     приносил в промпт нового журнала варианты и буквы из другого журнала с теми же номерами F-NN."""
     html = journal.render_html(plan(), TEMPLATE, journal_sha256=FAKE_SHA)
     note = "замечание со страницы другого журнала"
-    own = smoke(tmp_path, html, {"notes": note, "__pathname__": "/a/decisions.html", "__key__": "symphysis:/a/decisions.html"})
+    own = smoke(tmp_path, html, {"notes": note, "__pathname__": "/a/symphysis.html", "__key__": "symphysis:/a/symphysis.html"})
     assert note in own["out"]
-    other = smoke(tmp_path, html, {"notes": note, "__pathname__": "/b/decisions.html", "__key__": "symphysis:/a/decisions.html"})
+    other = smoke(tmp_path, html, {"notes": note, "__pathname__": "/b/symphysis.html", "__key__": "symphysis:/a/symphysis.html"})
     assert note not in other["out"]
 
 
@@ -1175,3 +1188,467 @@ def test_park_hint_says_the_agent_looks_in_files_or_by_a_probe():
     template = TEMPLATE.read_text(encoding="utf-8")
     assert "«материалы» — ответ ищет агент, в файлах или пробой" in template
     assert "const ADDRESSEES = ['материалы','человек','ИБ'];" in template
+
+
+# --- снимок справки в `render-html`: метка шаблона, корень из пути журнала, сбой страницу не роняет, команда пересборки ---
+
+JOURNAL_PY = ROOT / "tools" / "journal.py"
+
+
+def help_of(html: str) -> dict:
+    start = html.index("const HELP = ") + len("const HELP = ")
+    return json.JSONDecoder().raw_decode(html[start:].replace("<\\/", "</"))[0]
+
+
+def journal_in(project: Path, change="demo", data=None, under="") -> Path:
+    change_dir = project / "openspec" / "changes" / under / change
+    change_dir.mkdir(parents=True)
+    src = change_dir / "decisions.json"
+    journal.save_journal(src, data or journal_of(fork_record("F-01", "A", A=[])))
+    return src
+
+
+def build(src: Path, env: dict, *extra, cwd=None, out=None, script=JOURNAL_PY, timeout=60):
+    """`render-html` в своём процессе; возвращает вызов и путь страницы."""
+    out = out or src.parent / "page.html"
+    run = subprocess.run([sys.executable, str(script), "render-html", str(src), "--out", str(out), *map(str, extra)],
+                         capture_output=True, text=True, encoding="utf-8", env=env, cwd=cwd or src.parent, timeout=timeout)
+    return run, out
+
+
+def built(src: Path, env: dict, *extra, **kwargs) -> tuple[dict, str]:
+    run, out = build(src, env, *extra, **kwargs)
+    assert run.returncode == 0, run.stdout + run.stderr
+    html = out.read_text(encoding="utf-8")
+    return help_of(html), html
+
+
+def shim_project(tmp_path, done=(), ready=("intent",), apply=None, name="proj", **replies):
+    """Проект с журналом и шим форка с ответами по сценарию: возвращает журнал и окружение."""
+    project = tmp_path / name
+    src = journal_in(project)
+    install_fork_shim(tmp_path / "bin", status=fork_reply(fake_status(project, done=done, ready=ready)),
+                      apply=fork_reply(apply or fake_apply()), **replies)
+    return project, src, fork_env(tmp_path / "bin")
+
+
+def all_modes_work(tmp_path: Path, html: str):
+    assert "F-01" in smoke(tmp_path, html)["cards"]
+    for mode in ("check", "attack"):
+        assert smoke(tmp_path, html, {"__suffixes__": {":mode": mode}})["modes"]
+
+
+# --- 3.1 метка шаблона --------------------------------------------------------
+
+def test_template_requires_the_help_mark(tmp_path):
+    template = tmp_path / "t.html"
+    template.write_text("const J = __JOURNAL_JSON__; const A = __ATTACK_JSON__; const S = __SCHEME_JSON__;", encoding="utf-8")
+    with pytest.raises(ValueError, match="__HELP_JSON__"):
+        journal.render_html(journal_of(), template)
+    src = journal_in(tmp_path / "proj")
+    run, out = build(src, fork_env(), "--template", template)
+    assert run.returncode == 1 and "__HELP_JSON__" in run.stderr
+    assert not out.exists()
+
+
+def test_render_from_memory_says_no_calculation_and_stays_deterministic():
+    """Без данных на метку встаёт снимок «расчёта нет», времени в нём нет: два рендера совпадают (F-46)."""
+    first = journal.render_html(journal_of(), TEMPLATE)
+    assert first == journal.render_html(journal_of(), TEMPLATE)
+    snapshot = help_of(first)
+    assert snapshot["error"] and snapshot["taken_at"] is None and snapshot["steps"] == []
+    assert snapshot["current_step"] is None
+
+
+def test_docstring_says_who_adds_the_time():
+    assert "время снятия добавляет CLI" in " ".join(journal.render_html.__doc__.split())
+
+
+def hostile_snapshot() -> dict:
+    text = "</script><img src=x onerror=alert(1)><!-- `<b>код</b>`"
+    page = {"id": "intent", "state": "ready", "turn": "human", "optional": False, "blocks": [], "stops_apply": False,
+            "waits_for": [], "files": [{"path": text, "exists": True}], "file_note": None,
+            "texts": {"title": text, "why": text, "mechanics": "- " + text, "if_skipped": text, "what_to_check": text,
+                      "command": text, "how_to_prepare": text},
+            "text_note": None, "prev": None, "next": None}
+    return {"error": text, "taken_at": text, "versions": {"openspec": text, "symphysis": text}, "rebuild": text,
+            "current_step": "intent", "current_text": text, "turn": "human", "next_by_status": "intent", "change": "demo",
+            "changes": None, "forks": {"open": text, "parked": text}, "tasks": None, "steps": [page]}
+
+
+def test_hostile_text_does_not_close_the_tag():
+    """Канон F-53: `</script>` в тексте шага и в `error` тег не закрывает, текст доезжает как есть."""
+    html = journal.render_html(journal_of(), TEMPLATE, help_snapshot=hostile_snapshot())
+    assert html.count("</script>") == TEMPLATE.read_text(encoding="utf-8").count("</script>")
+    assert "<!-- `<b>" not in html
+    assert help_of(html)["error"] == hostile_snapshot()["error"]
+
+
+@requires_node
+@pytest.mark.parametrize("failed", [True, False], ids=["сбой", "снимок"])
+def test_hostile_text_makes_no_markup(tmp_path, failed):
+    """Канон F-53: на панели текст снимка экранирован, разметки нет; `` `код` `` — единственное, что становится тегом."""
+    snapshot = hostile_snapshot()
+    if not failed:
+        snapshot["error"] = None
+    shown = smoke(tmp_path, journal.render_html(journal_of(), TEMPLATE, help_snapshot=snapshot))["help"]
+    assert shown and "<img" not in shown and "<b>код" not in shown and "</script>" not in shown
+    assert "&lt;img src=x onerror=alert(1)&gt;" in shown
+
+
+# --- 3.2 расчёт из `render-html` ----------------------------------------------
+
+def test_snapshot_on_the_page(tmp_path):
+    """Сценарий «Снимок на странице»."""
+    project, src, env = shim_project(tmp_path, done=("intent", "decisions"), ready=("research",))
+    snapshot, _ = built(src, env)
+    assert snapshot["error"] is None and snapshot["change"] == "demo"
+    assert snapshot["current_step"] == "research" and snapshot["taken_at"]
+    assert [item["id"] for item in snapshot["steps"]][:3] == ["intent", "decisions", "viewer"]
+
+
+def test_no_fork_keeps_the_page(tmp_path):
+    """Сценарий «Форка нет»: код 0, журнал и режимы на месте, панель говорит причину."""
+    src = journal_in(tmp_path / "proj")
+    snapshot, html = built(src, fork_env())
+    assert "openspec не найден" in snapshot["error"] and "SYMPHYSIS_OPENSPEC" in snapshot["error"]
+    assert "F-01" in html
+    if node:
+        all_modes_work(tmp_path, html)
+
+
+def test_journal_of_another_project(tmp_path):
+    """Сценарий «Журнал из другого проекта»: корень из пути журнала, а не каталог вызова."""
+    a = tmp_path / "A"
+    src = journal_in(a, data=journal_of(fork_record("F-01", chosen=None, A=[])))
+    journal_in(tmp_path / "B")
+    install_fork_shim(tmp_path / "bin", status=fork_reply(fake_status(a, ready=("intent",))), apply=fork_reply(fake_apply()))
+    snapshot, _ = built(src, fork_env(tmp_path / "bin"), cwd=tmp_path / "B")
+    assert snapshot["forks"]["open"] == 1 and snapshot["current_step"] == "viewer"
+    assert {Path(call["cwd"]) for call in fork_calls(tmp_path / "bin")} == {a}
+
+
+def test_relative_journal_path_gives_the_same_root(tmp_path):
+    project, src, env = shim_project(tmp_path)
+    run = subprocess.run([sys.executable, str(JOURNAL_PY), "render-html", "openspec/changes/demo/decisions.json", "--out", "p.html"],
+                         capture_output=True, text=True, encoding="utf-8", env=env, cwd=project)
+    assert run.returncode == 0, run.stderr
+    assert {Path(call["cwd"]) for call in fork_calls(tmp_path / "bin")} == {project}
+
+
+def test_project_directory_is_not_on_the_page(tmp_path):
+    """Сценарий «Каталог с заметным именем»."""
+    project = tmp_path / "probe-machine-name"
+    src = journal_in(project)
+    status = fake_status(project, done=("intent",), ready=("decisions",))
+    install_fork_shim(tmp_path / "bin", status=fork_reply(status), apply=fork_reply(fake_apply()))
+    snapshot, html = built(src, fork_env(tmp_path / "bin"))
+    assert "probe-machine-name" not in html
+    intent = next(item for item in snapshot["steps"] if item["id"] == "intent")
+    assert intent["files"] == [{"path": "openspec/changes/demo/intent.md", "exists": True}]
+
+
+def test_failure_reason_has_no_directory(tmp_path):
+    """Сценарий «Причина сбоя без каталога»."""
+    src = journal_in(tmp_path / "proj")
+    env = fork_env(SYMPHYSIS_OPENSPEC=str(tmp_path / "probe-machine-name" / "openspec"))
+    snapshot, html = built(src, env)
+    assert "openspec не найден" in snapshot["error"]
+    assert "probe-machine-name" not in html
+
+
+def test_hung_fork_returns_after_the_first_taken_down_call(tmp_path):
+    """Сценарий «`openspec` завис», половина `render-html`, настоящий предел: зависли бы и `status`, и `instructions apply`,
+    но следующих вызовов нет, и сборка укладывается в 30 с плагина."""
+    _, src, env = shim_project(tmp_path)
+    scenario = tmp_path / "bin" / "scenario.json"
+    replies = json.loads(scenario.read_text(encoding="utf-8"))
+    replies["status"]["hang"] = replies["apply"]["hang"] = 50
+    scenario.write_text(json.dumps(replies, ensure_ascii=False), encoding="utf-8")
+    started = time.monotonic()
+    snapshot, html = built(src, env, timeout=120)
+    assert time.monotonic() - started < 30
+    assert "openspec status" in snapshot["error"] and "15 с" in snapshot["error"]
+    assert "F-01" in html
+    assert [call["argv"][0] for call in fork_calls(tmp_path / "bin")] == ["--version", "status"]
+
+
+def test_telemetry_is_off_in_every_call(tmp_path):
+    """Сценарий «Телеметрия форка подавлена», половина `render-html`."""
+    _, src, env = shim_project(tmp_path)
+    built(src, {**env, "OPENSPEC_TELEMETRY": "1"})
+    calls = fork_calls(tmp_path / "bin")
+    assert len(calls) == 3, "--version, status, instructions apply"
+    assert {call["env"]["OPENSPEC_TELEMETRY"] for call in calls} == {"0"}
+
+
+def test_dangerous_directory_of_the_journal(tmp_path):
+    """Канон: каталог `a&md,marker` в чужом репозитории срабатывал бы при сборке страницы; имя из пути журнала не идёт в шим."""
+    project = tmp_path / "proj"
+    src = journal_in(project, change="a&md,marker")
+    install_fork_shim(tmp_path / "bin", status=fork_reply(fake_status(project)), apply=fork_reply(fake_apply()))
+    snapshot, html = built(src, fork_env(tmp_path / "bin"), cwd=project)
+    assert "не подходит" in snapshot["error"] and "F-01" in html
+    assert not (project / "marker").exists() and not (src.parent / "marker").exists()
+    assert [call["argv"] for call in fork_calls(tmp_path / "bin")] == [["--version"]]
+
+
+def copy_of_tools_without_the_script(home: Path) -> Path:
+    """Инструменты журнала в `home/tools`, схема журнала в `home/docs`, как их ставит инсталлятор: возвращает `journal.py`."""
+    (home / "tools").mkdir(parents=True)
+    (home / "docs").mkdir()
+    for file in (ROOT / "tools").glob("journal*"):
+        shutil.copy(file, home / "tools")
+    shutil.copy(TEMPLATE, home / "tools")
+    shutil.copy(ROOT / "docs" / "journal.schema.json", home / "docs")
+    return home / "tools" / "journal.py"
+
+
+def test_no_script_file_keeps_the_page(tmp_path):
+    """Предположение «б»: инструменты без `step_help.py` страницу собирают, панель называет причину (F-65)."""
+    script = copy_of_tools_without_the_script(tmp_path / "home")
+    src = journal_in(tmp_path / "proj")
+    snapshot, html = built(src, fork_env(), script=script)
+    assert "step_help" in snapshot["error"] and "symphysis install" in snapshot["error"]
+    assert "F-01" in html and snapshot["steps"] == []
+
+
+@requires_node
+@pytest.mark.parametrize("reply", [fork_reply("это не JSON"), fork_reply(""), fork_reply("{обрыв"), fork_reply({"artifacts": 5}),
+                                   fork_reply(code=7, stderr="упал\n")],
+                         ids=["мусор", "пусто", "обрыв", "не та форма", "код возврата"])
+def test_strange_answer_keeps_the_page(tmp_path, reply):
+    """Тест-страховка F-61."""
+    project = tmp_path / "proj"
+    src = journal_in(project)
+    install_fork_shim(tmp_path / "bin", status=reply, apply=fork_reply(fake_apply()))
+    snapshot, html = built(src, fork_env(tmp_path / "bin"))
+    assert snapshot["error"] and snapshot["current_step"] is None
+    all_modes_work(tmp_path, html)
+
+
+def test_unexpected_failure_of_the_calculation_keeps_the_page(tmp_path):
+    """Любой сбой расчёта идёт на панель: `step_help.py` падает своей ошибкой, код 0, каталога в причине нет (F-34)."""
+    script = copy_of_tools_without_the_script(tmp_path / "home")
+    (script.parent / "step_help.py").write_text("def compute(root, change):\n    raise RuntimeError(r'C:\\probe-machine-name\\x')\n",
+                                                encoding="utf-8")
+    src = journal_in(tmp_path / "proj")
+    snapshot, html = built(src, fork_env(), script=script)
+    assert snapshot["error"] and "RuntimeError" in snapshot["error"]
+    assert "probe-machine-name" not in html and "F-01" in html
+
+
+def test_journal_outside_changes_does_not_call_the_fork(tmp_path):
+    """Предположение «в»: журнал вне `openspec/changes/` корня не даёт, форк не зовётся, причина своими словами."""
+    src = tmp_path / "somewhere" / "decisions.json"
+    src.parent.mkdir()
+    journal.save_journal(src, journal_of(fork_record("F-01", "A", A=[])))
+    install_fork_shim(tmp_path / "bin")
+    snapshot, html = built(src, fork_env(tmp_path / "bin"))
+    assert "openspec/changes/" in snapshot["error"]
+    assert snapshot["taken_at"] is None and snapshot["rebuild"] is None
+    assert fork_calls(tmp_path / "bin") == [] and "F-01" in html
+
+
+def test_archived_journal_goes_the_common_way(tmp_path):
+    """Предположение «в», F-45: корень есть, форк зовётся, панель показывает его сообщение."""
+    project = tmp_path / "proj"
+    src = journal_in(project, change="2026-11-02-demo", under="archive")
+    missing = {"status": [{"code": "change_error", "message": "Change '2026-11-02-demo' not found."}]}
+    install_fork_shim(tmp_path / "bin", status=fork_reply(missing, code=1))
+    snapshot, _ = built(src, fork_env(tmp_path / "bin"))
+    assert "2026-11-02-demo" in snapshot["error"] and "not found" in snapshot["error"]
+    assert {Path(call["cwd"]) for call in fork_calls(tmp_path / "bin")} == {project}
+
+
+def test_no_default_out(tmp_path):
+    """F-30: файл задаёт только `--out`."""
+    src = journal_in(tmp_path / "proj")
+    run = subprocess.run([sys.executable, str(JOURNAL_PY), "render-html", str(src)], capture_output=True, text=True,
+                         encoding="utf-8", env=fork_env())
+    assert run.returncode == 2 and "--out" in run.stderr
+    assert sorted(path.name for path in src.parent.iterdir()) == ["decisions.json"]
+
+
+def test_calculation_leaves_the_project_as_it_was(tmp_path):
+    """Сборка пишет только страницу: журнал и файлы шагов те же."""
+    project, src, env = shim_project(tmp_path)
+    before = {path: path.read_bytes() for path in project.rglob("*") if path.is_file()}
+    built(src, env)
+    after = {path: path.read_bytes() for path in project.rglob("*") if path.is_file() and path.name != "page.html"}
+    assert after == before
+
+
+# --- 3.3 команда пересборки ---------------------------------------------------
+
+def test_rebuild_command_on_the_data(tmp_path):
+    """Сценарий «Команда пересборки рядом со снимком»: пути от корня, `--out` этой сборки, абсолютных путей нет."""
+    project = tmp_path / "probe-machine-name"
+    src = journal_in(project)
+    install_fork_shim(tmp_path / "bin", status=fork_reply(fake_status(project, ready=("intent",))), apply=fork_reply(fake_apply()))
+    snapshot, _ = built(src, fork_env(tmp_path / "bin"), out=src.parent / "страница с пробелом.html")
+    argv = shlex.split(snapshot["rebuild"])
+    assert argv[:3] == ["python", ".symphysis/tools/journal.py", "render-html"]
+    assert argv[3] == "openspec/changes/demo/decisions.json"
+    assert argv[4:] == ["--out", "openspec/changes/demo/страница с пробелом.html"]
+    assert "probe-machine-name" not in snapshot["rebuild"]
+
+
+def test_rebuild_command_quotes_with_double_quotes(tmp_path):
+    """Одинарные кавычки не читает `cmd`, двойные читают PowerShell, bash и `cmd`: слово с пробелом или кириллицей
+    в двойных, простое пишется как есть; разбор `shlex` даёт те же слова."""
+    project = tmp_path / "proj"
+    src = journal_in(project)
+    install_fork_shim(tmp_path / "bin", status=fork_reply(fake_status(project, ready=("intent",))), apply=fork_reply(fake_apply()))
+    snapshot, _ = built(src, fork_env(tmp_path / "bin"), out=src.parent / "страница с пробелом.html")
+    assert "'" not in snapshot["rebuild"]
+    assert snapshot["rebuild"].endswith('--out "openspec/changes/demo/страница с пробелом.html"')
+    assert snapshot["rebuild"].startswith("python .symphysis/tools/journal.py render-html openspec/changes/demo/decisions.json ")
+
+
+def test_rebuild_command_keeps_cmd_metacharacters_in_double_quotes(tmp_path):
+    """`&`, `|`, `<`, `>`, `^` внутри двойных кавычек безопасны в PowerShell, bash и `cmd`; одинарные `cmd` не читает,
+    и `&` в них исполнил бы хвост."""
+    project = tmp_path / "proj"
+    src = journal_in(project)
+    install_fork_shim(tmp_path / "bin", status=fork_reply(fake_status(project, ready=("intent",))), apply=fork_reply(fake_apply()))
+    snapshot, _ = built(src, fork_env(tmp_path / "bin"), out=src.parent / "а&б в^г.html")
+    assert "'" not in snapshot["rebuild"]
+    assert snapshot["rebuild"].endswith('--out "openspec/changes/demo/а&б в^г.html"')
+
+
+def test_rebuild_command_repeats_attacks_of_this_build(tmp_path):
+    """Предположение «г»: без `--attack` обновление потеряло бы режим «атака»."""
+    project, src, env = shim_project(tmp_path)
+    (src.parent / "attack").mkdir()
+    attack = src.parent / "attack" / "decisions.md"
+    shutil.copy(ATTACK_FIX / "decisions.md", attack)
+    snapshot, _ = built(src, env, "--attack", attack)
+    argv = shlex.split(snapshot["rebuild"])
+    assert argv[argv.index("--attack") + 1] == "openspec/changes/demo/attack/decisions.md"
+
+
+def test_rebuild_command_names_the_script_it_ran_from(tmp_path):
+    """Сборка инструментами самого проекта: путь скрипта от корня, а не установленный по умолчанию."""
+    project, src, env = shim_project(tmp_path)
+    script = copy_of_tools_without_the_script(project)
+    shutil.copy(ROOT / "tools" / "step_help.py", script.parent)
+    snapshot, _ = built(src, env, script=script)
+    assert shlex.split(snapshot["rebuild"])[1] == "tools/journal.py"
+
+
+def test_rebuild_is_given_for_a_failed_calculation_too(tmp_path):
+    """Причина снята — пересборка та же: команда есть и при сбое, если корень известен."""
+    src = journal_in(tmp_path / "proj")
+    snapshot, _ = built(src, fork_env())
+    assert snapshot["error"] and "render-html" in snapshot["rebuild"]
+
+
+def test_rebuild_command_run_from_the_root_builds_the_same_page(tmp_path):
+    """Команда, выполненная из корня, собирает страницу с тем же составом режимов и тем же файлом."""
+    project, src, env = shim_project(tmp_path)
+    installed = copy_of_tools_without_the_script(project / ".symphysis")
+    shutil.copy(ROOT / "tools" / "step_help.py", installed.parent)
+    (src.parent / "attack").mkdir()
+    attack = src.parent / "attack" / "decisions.md"
+    shutil.copy(ATTACK_FIX / "decisions.md", attack)
+    snapshot, html = built(src, env, "--attack", attack, script=installed)
+    out = src.parent / "page.html"
+    first_rows = [len(item["rows"]) for item in json.JSONDecoder().raw_decode(html[html.index("const ATTACK = ") + 15:])[0]]
+    out.unlink()
+    argv = shlex.split(snapshot["rebuild"])
+    run = subprocess.run([sys.executable, *argv[1:]], cwd=project, env=env, capture_output=True, text=True, encoding="utf-8")
+    assert run.returncode == 0, run.stdout + run.stderr
+    again = out.read_text(encoding="utf-8")
+    assert [len(item["rows"]) for item in json.JSONDecoder().raw_decode(again[again.index("const ATTACK = ") + 15:])[0]] == first_rows
+    assert first_rows and help_of(again)["rebuild"] == snapshot["rebuild"]
+
+
+# --- настоящий форк -----------------------------------------------------------
+
+@requires_fork
+def test_real_fork_snapshot_on_the_page(tmp_path):
+    project, env = real_project(tmp_path, "demo", name="probe-machine-name")
+    (project / "openspec" / "changes" / "demo" / "intent.md").write_text("намерение\n", encoding="utf-8")
+    src = project / "openspec" / "changes" / "demo" / "decisions.json"
+    journal.save_journal(src, one_record_journal("a.md", "дв"))
+    snapshot, html = built(src, env)
+    assert snapshot["error"] is None and snapshot["current_step"] == "viewer" and snapshot["next_by_status"] == "research"
+    assert snapshot["versions"]["openspec"] and "symphysis" in snapshot["versions"]["openspec"]
+    assert next(item for item in snapshot["steps"] if item["id"] == "specs")["texts"]["why"]
+    assert "probe-machine-name" not in html
+
+
+@requires_fork
+def test_real_fork_on_an_archived_journal(tmp_path):
+    """F-45 на настоящем форке: `status` такого имени не знает, панель несёт его сообщение."""
+    project, env = real_project(tmp_path)
+    src = journal_in(project, change="2026-11-02-demo", under="archive")
+    snapshot, html = built(src, env)
+    assert "2026-11-02-demo" in snapshot["error"] and "F-01" in html
+
+
+@requires_fork
+def test_real_fork_after_a_rebuild_shows_the_new_step(tmp_path):
+    """Сценарий «Файлы изменились после снимка» на данных: прежняя страница не меняется, новая сборка — новый шаг и время."""
+    project, env = real_project(tmp_path, "demo")
+    change = project / "openspec" / "changes" / "demo"
+    (change / "intent.md").write_text("намерение\n", encoding="utf-8")
+    src = change / "decisions.json"
+    journal.save_journal(src, journal_of())
+    first, html = built(src, env)
+    assert first["current_step"] == "research"
+    (change / "research").mkdir()
+    (change / "research" / "none.md").write_text("нет\n", encoding="utf-8")
+    assert help_of((change / "page.html").read_text(encoding="utf-8")) == first
+    time.sleep(1.1)
+    second, _ = built(src, env)
+    assert second["current_step"] == "proposal" and second["taken_at"] != first["taken_at"]
+    assert real_fork(project, env, "status", "--change", "demo", "--json")
+
+
+# --- 9.2 сигнал о несформированной справке (F-71) -------------------------------
+
+SIGNAL = "[..] справка не сформирована: "
+
+
+def signal_of(run) -> str:
+    lines = [line for line in run.stdout.splitlines() if line.startswith(SIGNAL)]
+    assert len(lines) == 1, run.stdout
+    return lines[0][len(SIGNAL):]
+
+
+def test_signal_when_the_fork_is_missing(tmp_path):
+    """Сценарий «Справка не сформирована»: код 0, строка `[..]` с причиной, та же причина на панели, `[!!]` нет."""
+    src = journal_in(tmp_path / "proj")
+    run, out = build(src, fork_env())
+    assert run.returncode == 0, run.stderr
+    reason = signal_of(run)
+    assert "openspec не найден" in reason and "[!!]" not in run.stdout
+    error = help_of(out.read_text(encoding="utf-8"))["error"]
+    assert error == "Справка не сформирована: " + reason
+    assert str(tmp_path) not in reason
+
+
+def test_signal_for_a_journal_outside_changes(tmp_path):
+    """Сценарий «Журнал вне изменений»: код 0, тот же сигнал, форк не вызван."""
+    src = tmp_path / "somewhere" / "decisions.json"
+    src.parent.mkdir()
+    journal.save_journal(src, journal_of(fork_record("F-01", "A", A=[])))
+    install_fork_shim(tmp_path / "bin")
+    run, out = build(src, fork_env(tmp_path / "bin"))
+    assert run.returncode == 0 and "openspec/changes/" in signal_of(run) and "[!!]" not in run.stdout
+    assert fork_calls(tmp_path / "bin") == []
+    assert help_of(out.read_text(encoding="utf-8"))["error"].startswith("Справка не сформирована: ")
+
+
+def test_signal_without_the_script_file(tmp_path):
+    script = copy_of_tools_without_the_script(tmp_path / "home")
+    run, _ = build(journal_in(tmp_path / "proj"), fork_env(), script=script)
+    assert run.returncode == 0 and "step_help.py" in signal_of(run) and "[!!]" not in run.stdout
+
+
+def test_no_signal_when_the_help_is_formed(tmp_path):
+    project, src, env = shim_project(tmp_path)
+    run, _ = build(src, env)
+    assert run.returncode == 0 and SIGNAL not in run.stdout

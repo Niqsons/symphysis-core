@@ -51,12 +51,12 @@ python .symphysis/tools/journal.py check <каталог изменения>/dec
 python .symphysis/tools/journal.py render-md <каталог изменения>/decisions.json --out <каталог изменения>/decisions.md
 
 # круг просмотрщика: человек решает в HTML, промпт возврата вносит apply
-python .symphysis/tools/journal.py render-html <каталог изменения>/decisions.json --out <каталог изменения>/decisions.html
+python .symphysis/tools/journal.py render-html <каталог изменения>/decisions.json --out <каталог изменения>/symphysis.html
 python .symphysis/tools/journal.py apply <каталог изменения>/decisions.json <каталог изменения>/answers/<дата>.md
 ```
 
 JSON правят только модель (записи, факты, парковки, обратимость, `notes`)
-и `apply` (слово человека). `decisions.md` и `decisions.html` — рендер,
+и `apply` (слово человека). `decisions.md` и `symphysis.html` — рендер,
 в них не пишут.
 
 ## Порядок круга
@@ -230,7 +230,7 @@ design стоит на решении развилки, опору на факт
 `check` отвергнет кодом 1 (F-97). Сверка идёт всегда и в этом же контексте,
 субагента для неё не заводи (F-51).
 
-Затем `render-html`, назови человеку путь к `decisions.html`. Человек выбирает варианты, пишет слово, добавляет
+Затем `render-html`, назови человеку путь к `symphysis.html`. Человек выбирает варианты, пишет слово, добавляет
 варианты и развилки, паркует, оспаривает факты — и копирует промпт
 возврата. Сохрани промпт в `<каталог изменения>/answers/<дата>.md` (дата `YYYY-MM-DD`; файл занят — `YYYY-MM-DD-2.md`, затем `-3`) как
 есть и внеси `apply`. Всё или ничего: отказ называет запись и причину —

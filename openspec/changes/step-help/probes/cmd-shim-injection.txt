@@ -6,3 +6,5 @@
 'a&echo INJECTED>INJECTED.txt' -> код 0 | маркер создан: False
 'a"&echo INJECTED>INJECTED.txt' -> код 0 | маркер создан: True
 '..\\..\\x' -> код 0 | маркер создан: False
+Дополнение: имя, которое может быть каталогом на Windows (без > | "): каталог создан: True
+'a&md,marker' -> код 0 | каталог-маркер создан: True

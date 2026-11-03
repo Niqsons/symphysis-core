@@ -1,7 +1,8 @@
 // Прогон страницы просмотрщика в настоящем Chrome: чистый профиль, страница из file://, флагов, ослабляющих проверки, нет.
 // Использование: node viewer-browser.mjs <chrome> <страница.html> <ширина> <высота> <действие>...
 // Действия: panel — включить панель и дождаться рисунка или текста; mode:<режим> — кнопка режима; drag:<dx> — тянуть границу панели;
-// reload — открыть страницу снова; choose:<запись>:<буква> — выбрать вариант; word:<запись>:<текст> — написать слово; buttons — экспорт, импорт, копирование.
+// reload — открыть страницу снова; choose:<запись>:<буква> — выбрать вариант; word:<запись>:<текст> — написать слово; buttons — экспорт, импорт, копирование;
+// tab:<scheme|help> — переключатель панели; step:<шаг> — пункт списка справки; helpnext, helpprev — листание; howto — кнопка «Как готовить intent.md?».
 // Итог на stdout: JSON с замером страницы, запросами наружу (`http`), запросами, которые заблокировала CSP (`blocked`), нарушениями и ошибками.
 import { spawn } from "node:child_process";
 import { existsSync, mkdirSync, mkdtempSync, readdirSync, readFileSync, writeFileSync } from "node:fs";
@@ -37,13 +38,24 @@ const MEASURE = `(() => {
     const label = svg.querySelector('.nodeLabel');
     if (label) labelPx = parseFloat(getComputedStyle(label).fontSize) * (svg.getBoundingClientRect().width / svg.viewBox.baseVal.width);
   }
-  const pre = shown ? panel.querySelector('pre') : null;
-  return { viewport: innerWidth, headerBottom: document.querySelector('header').getBoundingClientRect().bottom, shown, state: panel ? panel.dataset.state || null : null,
+  const pre = shown ? scroller.querySelector('pre') : null;
+  const body = document.getElementById('helpBody');
+  const field = (sel, name) => { const n = body && body.querySelector(sel); return n ? n[name] : null; };
+  const help = body && { shown: !!shown && !body.classList.contains('hidden'), schemeShown: !!shown && !scroller.classList.contains('hidden'),
+    opened: field('[data-page]', 'dataset') ? field('[data-page]', 'dataset').page : null,
+    current: [...body.querySelectorAll('.helpstep.current')].map((n) => n.dataset.step),
+    steps: [...body.querySelectorAll('.helpstep')].map((n) => n.dataset.step),
+    prevDisabled: field('#helpPrev', 'disabled'), nextDisabled: field('#helpNext', 'disabled'),
+    time: field('#helpTime', 'textContent'), rebuild: field('#helpRebuild', 'textContent'), versions: field('#helpVersions', 'textContent'),
+    error: field('#helpError', 'textContent'), text: body.textContent, foreign: body.querySelectorAll('img, script, iframe, svg').length };
+  return { help, stats: document.getElementById('stats').textContent, panelLabel: document.getElementById('btnScheme').textContent, modeButtons: document.querySelectorAll('#modes button').length,
+    tabs: [...document.querySelectorAll('#panelTabs button')].map((n) => n.textContent), activeTab: (document.querySelector('#panelTabs button.active') || {}).textContent || null,
+    viewport: innerWidth, headerBottom: document.querySelector('header').getBoundingClientRect().bottom, shown, state: panel ? panel.dataset.state || null : null,
     panel: rect && { left: rect.left, top: rect.top, width: rect.width, height: rect.height, bottom: rect.bottom },
     cards: mainRect && { left: mainRect.left, right: mainRect.right, top: mainRect.top, width: mainRect.width },
     view: view ? view.getBoundingClientRect().width : null,
     hasSvg: !!svg, total, topVisible, labelPx,
-    messages: shown ? [...panel.querySelectorAll('.note')].map((n) => n.textContent) : [],
+    messages: shown ? [...scroller.querySelectorAll('.note')].map((n) => n.textContent) : [],
     text: pre ? pre.textContent : null,
     out: document.getElementById('out').value,
     warnings: [...document.querySelectorAll('[data-antipode-warning]')].map((n) => n.dataset.antipodeWarning),
@@ -94,7 +106,7 @@ async function main() {
   await send("Page.addScriptToEvaluateOnNewDocument", { source: "window.__csp = []; document.addEventListener('securitypolicyviolation', (e) => window.__csp.push(e.violatedDirective + ' ' + e.blockedURI));" });
   const url = pathToFileURL(page).href;
   const loaded = async () => { for (let i = 0; i < 400; i++) { if (await evaluate("document.readyState === 'complete' && !!document.getElementById('out')")) return; await sleep(25); } throw new Error("страница не загрузилась"); };
-  const settled = async () => { for (let i = 0; i < 1200; i++) { if (await evaluate("(() => { const p = document.getElementById('schemePanel'); return !p || p.classList.contains('hidden') || !!p.dataset.state; })()")) return; await sleep(25); } throw new Error("панель не дорисовала"); };
+  const settled = async () => { for (let i = 0; i < 1200; i++) { if (await evaluate("(() => { const p = document.getElementById('schemePanel'); return !p || p.classList.contains('hidden') || !!p.dataset.state || p.dataset.view === 'help'; })()")) return; await sleep(25); } throw new Error("панель не дорисовала"); };
   const mouse = async (type, x, y) => send("Input.dispatchMouseEvent", { type, x, y, button: "left", clickCount: 1 });
   const center = (sel) => evaluate(`(() => { const b = document.querySelector(${JSON.stringify(sel)}).getBoundingClientRect(); return [b.left + b.width / 2, b.top + b.height / 2]; })()`);
   const click = async (sel) => { const [x, y] = await center(sel); await mouse("mousePressed", x, y); await mouse("mouseReleased", x, y); };
@@ -106,6 +118,13 @@ async function main() {
   for (const action of actions) {
     const [name, ...args] = action.split(":");
     if (name === "panel") { await click("#btnScheme"); await settled(); }
+    if (name === "tab") { await click(`#panelTabs button[data-panel="${args[0]}"]`); await settled(); }
+    const inHelp = { helpnext: "#helpNext", helpprev: "#helpPrev", howto: "#helpHowTo", step: `#helpBody .helpstep[data-step="${args[0]}"]` }[name];
+    if (inHelp) {
+      await evaluate(`document.querySelector(${JSON.stringify(inHelp)}).scrollIntoView({ block: 'center' })`);
+      await click(inHelp);
+      await sleep(50);
+    }
     if (name === "mode") { await click(`#modes button[data-mode="${args[0]}"]`); await settled(); }
     if (name === "reload") { await send("Page.navigate", { url }); await loaded(); await settled(); }
     if (name === "choose") {

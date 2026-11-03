@@ -1,5 +1,6 @@
 import fs from "node:fs";
 import path from "node:path";
+import { spawnSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
 import { parseDocument, isMap, isSeq, isScalar } from "yaml";
 import { ensureContinue } from "./clients.js";
@@ -7,9 +8,11 @@ import { ensureIgnored } from "./gitignore.js";
 import { globalConfigPath } from "./global-config.js";
 import { targets } from "./paths.js";
 import { disableTelemetryIfUnset } from "./telemetry.js";
+import { hasSources, payloadMatches, ROOT } from "../scripts/sync-payload.js";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 export const DEFAULT_PAYLOAD = path.resolve(here, "..", "payload");
+const VERSION_FILE = "symphysis-version.txt";
 const SKIP_SUFFIX = "(есть, отличается — перезапись: --force)";
 const ROOTS_CONTENT = '{"": "<root>/.."}\n';
 const SETTINGS_FILE = "symphysis.yaml";
@@ -56,6 +59,23 @@ function copyTree(res, project, srcDir, destDir, force, filter = () => true, opt
   }
 }
 
+/** Короткий хеш HEAD клона или null: нет git, нет репозитория или каталог лежит внутри чужого репозитория. */
+function cloneHash(root) {
+  const git = (...args) => spawnSync("git", ["-C", root, ...args], { encoding: "utf8" });
+  const top = git("rev-parse", "--show-cdup");
+  if (top.error || top.status !== 0 || top.stdout.trim() !== "") return null;
+  const head = git("rev-parse", "--short", "HEAD");
+  return head.error || head.status !== 0 ? null : head.stdout.trim() || null;
+}
+
+/** Текст файла версии: `0.1.0+aa50e8f`; хеш только от клона, с которым payload совпадает (F-36, F-64). */
+function versionText(payloadDir, sourceRoot) {
+  const { version } = JSON.parse(fs.readFileSync(path.resolve(here, "..", "package.json"), "utf8"));
+  const hash = hasSources(sourceRoot) && payloadMatches(payloadDir, sourceRoot) ? cloneHash(sourceRoot) : null;
+  return `${hash ? `${version}+${hash}` : version}
+`;
+}
+
 /** Слияние чужого config.yaml со своим: схема переключается, rules объединяются, остальное не трогается. */
 export function mergeConfig(existingText, oursText) {
   const doc = parseDocument(existingText);
@@ -87,7 +107,7 @@ export function mergeConfig(existingText, oursText) {
  * вносит его в `.gitignore` и обновляет проект, если в нём нет `/opsx:continue`.
  * Пути в результате — от корня проекта, с «/». `messages` — строки для печати.
  */
-export function install(project, { skillsDirs = [], force = false, payloadDir = DEFAULT_PAYLOAD } = {}) {
+export function install(project, { skillsDirs = [], force = false, payloadDir = DEFAULT_PAYLOAD, sourceRoot = ROOT } = {}) {
   const root = path.resolve(project);
   const t = targets(root, skillsDirs);
   const res = { written: [], merged: [], skipped: [], messages: [] };
@@ -104,7 +124,14 @@ export function install(project, { skillsDirs = [], force = false, payloadDir = 
   }
 
   const toolsDir = path.join(t.toolsDir, "tools");
-  copyTree(res, root, path.join(payloadDir, "tools"), toolsDir, force, (f) => /^(journal.*\.py|symphysis_config\.py|playground-template\.html|mermaid\.min\.js|mermaid\.LICENSE)$/.test(path.basename(f)));
+  const skippedBefore = res.skipped.length;
+  copyTree(res, root, path.join(payloadDir, "tools"), toolsDir, force, (f) => /^(journal.*\.py|symphysis_config\.py|step_help\.py|playground-template\.html|mermaid\.min\.js|mermaid\.LICENSE)$/.test(path.basename(f)));
+  // Файл версии описывает поставленные инструменты: если часть пропущена, а файла не было, писать его значило бы
+  // назвать версией то, чего в проекте нет. Панель покажет «неизвестно». Уже лежащий файл идёт по общему правилу.
+  const toolsPrefix = `${rel(root, toolsDir)}/`;
+  const toolsSkipped = res.skipped.slice(skippedBefore).some((line) => line.startsWith(toolsPrefix));
+  const versionFile = path.join(toolsDir, VERSION_FILE);
+  if (!toolsSkipped || fs.existsSync(versionFile)) place(res, root, versionFile, Buffer.from(versionText(payloadDir, sourceRoot)), force);
   place(res, root, path.join(t.toolsDir, "docs", "journal.schema.json"), fs.readFileSync(path.join(payloadDir, "docs", "journal.schema.json")), force);
   place(res, root, path.join(toolsDir, "journal-roots.json"), Buffer.from(ROOTS_CONTENT), force, { keepExisting: true });
 

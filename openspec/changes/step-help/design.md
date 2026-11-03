@@ -29,25 +29,25 @@
   - openspec/changes/step-help/probes/status-empty-files.txt:18 «state=ready progress={"total":1,"complete":0,"remaining":1}»
   - openspec/changes/archive/2026-11-02-calibration-fixes/rulings.md:9 «форк считает optional без файла выполненным и в гейте apply»
 - F-11 Счётчики журнала уже считаются: развилки всего и решённые, разность даёт открытые
-  - tools/journal_render.py:184 «"stats": {"records": len(records), "forks": len(forks),»
-  - tools/journal_render.py:186 «"decided": sum(1 for r in forks if r["decision"]),»
+  - tools/journal_render.py:185 «"stats": {"records": len(records), "forks": len(forks),»
+  - tools/journal_render.py:187 «"decided": sum(1 for r in forks if r["decision"]),»
 - F-12 Прогресс задач отдаёт `instructions apply`: всего, закрыто, осталось
   - openspec/changes/step-help/probes/status-empty-files.txt:18 «state=ready progress={"total":1,"complete":0,"remaining":1}»
   - openspec/schemas/symphysis/schema.yaml:157 «tracks: tasks.md»
 - F-13 `apply`, `sync` и `archive` не артефакты графа; признака «синхронизация сделана» в файлах нет, спеки сравнивает сама команда архива
   - openspec/schemas/symphysis/schema.yaml:155 «apply:»
-  - docs/GUIDE.md:504 «Синхронизация: дельты из `specs/` изменения переходят в общие спеки `openspec/specs/`.»
-  - docs/GUIDE.md:510 «Спеки уже синхронизированы, поэтому команда спросит: `Archive now`, `Sync anyway` или `Cancel`.»
+  - docs/GUIDE.md:506 «Синхронизация: дельты из `specs/` изменения переходят в общие спеки `openspec/specs/`.»
+  - docs/GUIDE.md:512 «Спеки уже синхронизированы, поэтому команда спросит: `Archive now`, `Sync anyway` или `Cancel`.»
 - F-14 `GUIDE` отправляет за текущим шагом к `status`, а ответов на четыре вопроса намерения в нём нет
   - docs/GUIDE.md:263 «Какой шаг следующий, показывает `openspec status --change add-overdue`.»
   - openspec/changes/step-help/intent.md:7 «сейчас в GUIDE.md описан процесс по шагам, и описан хорошо. Но не сказано:»
 - F-15 Плагин зовёт ядро только через Python-скрипты из `.symphysis/tools/`, а версия ядра в проекте расходится с версией плагина
   - vscode/src/host/core.ts:1 «Граница с ядром: `journal.py view-json`, `apply`, `check`, `render-md`, `render-html`.»
-  - docs/repo-contract.md:59 «Ядро лежит в `.symphysis/tools/` каждого проекта, и его версия расходится с версией плагина.»
+  - docs/repo-contract.md:62 «Ядро лежит в `.symphysis/tools/` каждого проекта, и его версия расходится с версией плагина.»
 - F-16 Каталог схемы целиком едет в `payload`, а инструменты в `.symphysis/tools/` — только по перечню и фильтру имён
   - installer/scripts/sync-payload.js:9 «const DIRS = ["openspec/schemas/symphysis"];»
   - installer/scripts/sync-payload.js:19 «"tools/symphysis_config.py",»
-  - installer/lib/install.js:107 «(journal.*\.py|symphysis_config\.py|playground-template\.html»
+  - installer/lib/install.js «(journal.*\.py|symphysis_config\.py|playground-template\.html» — цитаты нет дословно
 - F-17 В рамке части 2 от 31 октября кроме четырёх вопросов были команды, подсказки, предыдущий и следующий шаг
   - vscode/docs/design-part1-viewer.md:30 «2. **Интерактивная справка о ходе работы** — какой шаг выполняется,»
   - vscode/docs/design-part1-viewer.md:31 «с какими артефактами и командами, подсказки, предыдущий и следующий»
@@ -55,7 +55,7 @@
   - openspec/changes/step-help/intent.md:16 «атаки в него включать не будем»
 - F-32 Как понято слово к F-29: справка занимает ту же область, что схема, и показывается либо схема, либо справка; это панель рядом с карточками с переключателем, а не четвёртая кнопка рядом с режимами «решения», «проверка», «атака»
   - openspec/changes/step-help/answers/2026-11-02-2.md:9 «Справка будет соперничать со схемой, то есть отображаем или схему или справку, поэтому они занимают одну область.»
-  - tools/playground-template.html:139 «id="btnScheme" title="схема решения рядом с карточками»
+  - tools/playground-template.html «id="btnScheme" title="схема решения рядом с карточками» — цитаты нет дословно
 - F-33 На странице справка появляется вместе с журналом, а в плагине нужна и в пустом проекте: данные справки должны считаться без журнала и без изменения, хотя вкладка и не входит сюда (F-22)
   - openspec/changes/step-help/answers/2026-11-02-2.md:9 «в html на шаге intent страницы еще не будет. но в плагине будет, так как его можно открыть и в пустом проектее.»
 - F-37 `decision-scheme` на `main` активно и пересекается со справкой: панель схемы, на которую опирается F-29, есть только в его дельте, а требование «Просмотрщик», которое меняет F-35, оно само меняет через MODIFIED. Архив на копии проходит с кодом 0
@@ -75,6 +75,12 @@
   - openspec/changes/step-help/answers/2026-11-02-8.md:2 «и всё, никакой зависимости от шагов.»
   - openspec/changes/step-help/probes/intent-guide-words.txt:3 «с чем работаем, где искать материалы, какие компоненты участвуют, и побольше литералов, чтобы по ним грепать.»
   - openspec/changes/step-help/probes/intent-guide-words.txt:1 «да, берем, мы еще будем модифицировать содержание»
+- F-70 Как понято слово о счётчиках: панель справки чисел развилок не показывает, они есть в шапке страницы; в шапке появляется «Задач закрыто N из N» из снимка справки. Вывод `step_help.py` поля развилок сохраняет: по ним считается шаг, и их читает плагин
+  - openspec/changes/step-help/answers/2026-11-03.md:3 «1. Счетчики можно убрать из вкладки справки, они и есть в шапке страницы.»
+- F-71 Как понято слово о сбое: `render-html` при несформированной справке печатает сигнал `[..] справка не сформирована: <причина>`, код выхода прежний, панель начинает сообщение теми же словами. Маркер `[..]`, потому что сбой справки не отменяет страницу
+  - openspec/changes/step-help/answers/2026-11-03.md:4 «2. Давай добавим, что если сбой, то появляется сообщение, что "справка не сформирована".»
+- F-72 Как понято слово о `--attack`: `render-html` и `view-json` приводят путь файла атаки к пути от корня проекта с разделителем `/` на любой системе, поэтому абсолютный, относительный и с обратными косыми дают одно значение на странице, в ключе спора и в промпте
+  - openspec/changes/step-help/answers/2026-11-03.md:5 «3. Хотелось бы консистентности.»
 
 Состояние и ограничения сверх фактов выше; мотивация — в `proposal.md`.
 
@@ -96,6 +102,7 @@ Goals — границы того, что этот дизайн достигае
 - `render-html` встраивает снимок от корня, взятого из пути журнала, со временем снятия и командой пересборки; сбой расчёта страницу не роняет (F-21, F-34, F-58, F-61, F-67).
 - Каждый вызов форка идёт с `OPENSPEC_TELEMETRY=0` и снимается за 15 с вместе с деревом процессов (F-43, F-57, F-66).
 - Страница называется `symphysis.html`, номер контракта 2; `install` ставит скрипт и тексты и пишет версию symphysis (F-16, F-35, F-36, F-64).
+- Шапка страницы говорит, сколько задач закрыто, панель справки чисел развилок не показывает, сбой справки называется в выводе, путь атаки идёт от корня проекта (F-70, F-71, F-72).
 
 Non-Goals — что этот дизайн не делает:
 
@@ -115,7 +122,7 @@ Non-Goals — что этот дизайн не делает:
 - **Выбрано:** B. `status`, счётчики журнала и прогресс задач; хук можно добавить позже, не меняя формат
 - **Слово человека (2026-11-02):** «Да, твои рекомендации принимаю»
 - **Обратимость:** обратимо — вывод справки ещё никем не занят: плагин начнёт читать его отдельным изменением, а хук добавится новым полем без смены контракта
-- **Улики выбранного:** tools/journal_render.py:186 «"decided": sum(1 for r in forks if r["decision"]),»
+- **Улики выбранного:** tools/journal_render.py:187 «"decided": sum(1 for r in forks if r["decision"]),»
 - **Улики выбранного:** openspec/changes/step-help/probes/status-empty-files.txt:5 «=== decisions.json = {}: ни одной записи, ничего не решено»
 - **Отвергнуто:** A. Только `openspec status`
 - **Отвергнуто:** C. Всё это и хук: видно, что шаг выполняется прямо сейчас
@@ -207,7 +214,7 @@ Non-Goals — что этот дизайн не делает:
 - **Выбрано:** B. Четвёртый режим `decisions.html`: на шаге `intent` журнала и страницы ещё нет
 - **Слово человека (2026-11-02):** «Отдельную страницу удобнее разработать и поддерживать. Но пользоваться ей тогда вряд ли будут. Справка будет соперничать со схемой, то есть отображаем или схему или справку, поэтому они занимают одну область. в html на шаге intent страницы еще не будет. но в плагине будет, так как его можно открыть и в пустом проектее.»
 - **Обратимость:** дорого — панель делят `tools/playground-template.html` и будущая вкладка плагина: вынос на отдельную страницу переделает переключатель в обоих показах
-- **Улики выбранного:** tools/playground-template.html:138 «решения — круг просмотрщика; проверка — снимок перед proposal»
+- **Улики выбранного:** tools/playground-template.html:156 «решения — круг просмотрщика; проверка — снимок перед proposal»
 - **Отвергнуто:** A. Отдельная страница со своим шаблоном
 
 ### F-30 Куда пишется снимок?
@@ -215,7 +222,7 @@ Non-Goals — что этот дизайн не делает:
 - **Выбрано:** C. Только `--out`, пути по умолчанию нет
 - **Слово человека (2026-11-02):** «видимо, нужно переименовать тогда decisions.html на symphysis.html, раз страница становится мультизадачной.»
 - **Обратимость:** обратимо — путь задаёт вызывающий через `--out`; значение по умолчанию можно добавить позже без смены контракта
-- **Улики выбранного:** skills/symphysis-brainstorm/SKILL.md:54 «render-html <каталог изменения>/decisions.json --out <каталог изменения>/decisions.html»
+- **Улики выбранного:** skills/symphysis-brainstorm/SKILL.md «render-html <каталог изменения>/decisions.json --out <каталог изменения>/decisions.html» — цитаты нет дословно
 - **Отвергнуто:** A. `.symphysis/help.html`; `install` вносит эту строку в `.gitignore`, как `symphysis.yaml`
 - **Отвергнуто:** B. `<каталог изменения>/help.html`, рядом с `decisions.html`: снимок уйдёт в коммит и там устареет
 
@@ -231,7 +238,7 @@ Non-Goals — что этот дизайн не делает:
 
 - **Выбрано:** A. `render-html` зовёт расчёт из `tools/step_help.py` и встраивает данные. Сбой расчёта (нет `openspec`, не тот форк) страницу не роняет: панель называет причину. Сам `step_help.py` отдаёт только JSON — для плагина и для проекта без журнала. Сборка вырастет с 0,2 с примерно до 0,7 с
 - **Обратимость:** обратимо — встраивание живёт в `render-html`, а плагин получает данные отдельно через JSON: перенос меняет только сборку страницы
-- **Улики выбранного:** tools/journal_cli.py:125 «def cmd_render_html(args: argparse.Namespace) -> int:»
+- **Улики выбранного:** tools/journal_cli.py:187 «def cmd_render_html(args: argparse.Namespace) -> int:»
 - **Улики выбранного:** openspec/changes/step-help/probes/fork-call-cost.txt:3 «status 257 мс, instructions apply 249 мс»
 - **Улики выбранного:** openspec/changes/step-help/probes/fork-call-cost.txt:5 «render-html сейчас 210 мс»
 - **Отвергнуто:** B. Отдельная команда `step_help.py render-html` собирает ту же страницу со справкой, `journal.py render-html` остаётся без неё: у одной страницы две сборки, а скиллы и плагин надо перевести на новую
@@ -242,7 +249,7 @@ Non-Goals — что этот дизайн не делает:
 - **Выбрано:** A. Переименовать в этом изменении: в ядре 11 файлов (`GUIDE`, две спеки, пять скиллов, заметки перевода, два теста), в плагине строка `core.ts` и его тесты. Записи старых прогонов и архив не трогаем, у `decision-scheme` старый файл удаляется. Путь входит в контракт, поэтому номер растёт и старый плагин попросит обновиться
 - **Обратимость:** дорого — путь входит в контракт `docs/repo-contract.md`: обратное переименование снова проходит по 11 файлам ядра и строке плагина, ещё раз поднимает номер контракта и заставляет обновить `.vsix`
 - **Улики выбранного:** openspec/changes/step-help/answers/2026-11-02-2.md:10 «видимо, нужно переименовать тогда decisions.html на symphysis.html, раз страница становится мультизадачной.»
-- **Улики выбранного:** docs/repo-contract.md:51 «- пути файлов изменения;»
+- **Улики выбранного:** docs/repo-contract.md «- пути файлов изменения;» — цитаты нет дословно
 - **Улики выбранного:** vscode/src/host/core.ts:66 «const html = await step(["render-html", journal, "--out", rel(env, path.join(ref.dir, "decisions.html"))»
 - **Отвергнуто:** B. Переименовать, но отдельным изменением после справки: те же файлы плюс то, что добавит справка
 - **Отвергнуто:** C. Оставить как есть: страница по-прежнему строится из журнала и без него не существует, поэтому имя не врёт
@@ -289,10 +296,10 @@ Non-Goals — что этот дизайн не делает:
 - [Risk] справку, которая смотрит на status, и описывает текущий шаг (F-22, отвергнут C: openspec/changes/step-help/intent.md:13) → Mitigation: решение A
 - [Risk] Первый `openspec` из PATH по PATHEXT; null — нет. (F-23, отвергнут B: installer/lib/openspec-bin.js:20) → Mitigation: решение A
 - [Risk] Ссылка ведёт в клон: `git pull` обновляет и её, а удаление клона ломает команду. (F-23, отвергнут B: docs/GUIDE.md:144) → Mitigation: решение A
-- [Risk] сверить улики грепом по цитате (сигнал, не стоп) (F-23, отвергнут C: tools/journal_cli.py:300) → Mitigation: решение A
+- [Risk] сверить улики грепом по цитате (сигнал, не стоп) (F-23, отвергнут C: tools/journal_cli.py:363) → Mitigation: решение A
 - [Risk] Detects which artifacts are completed by checking file existence in the change directory. (F-23, отвергнут D: upstream/openspec/src/core/artifact-graph/state.ts:12) → Mitigation: решение A
-- [Risk] по восемь строк на требование, а итог — строкой `notes[]` журнала. (F-24, отвергнут B: docs/GUIDE.md:373) → Mitigation: решение A
-- [Risk] сверить улики грепом по цитате (сигнал, не стоп) (F-24, отвергнут C: tools/journal_cli.py:300) → Mitigation: решение A
+- [Risk] по восемь строк на требование, а итог — строкой `notes[]` журнала. (F-24, отвергнут B: docs/GUIDE.md:375) → Mitigation: решение A
+- [Risk] сверить улики грепом по цитате (сигнал, не стоп) (F-24, отвергнут C: tools/journal_cli.py:363) → Mitigation: решение A
 - [Risk] const DIRS = ["openspec/schemas/symphysis"]; (F-25, отвергнут B: installer/scripts/sync-payload.js:9) → Mitigation: решение A
 - [Risk] что будет, если я не выполню этот шаг? (F-25, отвергнут C: openspec/changes/step-help/intent.md:10) → Mitigation: решение A
 - [Risk] requires: [tasks, attack-artifacts] (F-26, отвергнут A: openspec/schemas/symphysis/schema.yaml — цитаты нет дословно) → Mitigation: решение B
@@ -302,17 +309,17 @@ Non-Goals — что этот дизайн не делает:
 - [Risk] зачем он? какие основные механики? (F-28, отвергнут B: openspec/changes/step-help/intent.md:9) → Mitigation: решение A
 - [Risk] вместо того, чтобы держать под рукой гайд, я предлагаю создать справку (F-29, отвергнут A: openspec/changes/step-help/intent.md:13) → Mitigation: решение B
 - [Risk] Команда `symphysis install` SHALL добавлять строку `symphysis.yaml` в `.gitignore` проекта (F-30, отвергнут A: openspec/specs/project-installer/spec.md:213) → Mitigation: решение C
-- [Risk] 1. Открой `openspec/changes/add-overdue/decisions.html` в браузере. (F-30, отвергнут B: docs/GUIDE.md:315) → Mitigation: решение C
+- [Risk] 1. Открой `openspec/changes/add-overdue/decisions.html` в браузере. (F-30, отвергнут B: docs/GUIDE.md — цитаты нет дословно) → Mitigation: решение C
 - [Risk] Журнал этот модуль не импортирует и настройки не читает (F-128.A). (F-31, отвергнут B: tools/symphysis_config.py:5) → Mitigation: решение A
 - [Risk] const DIRS = ["openspec/schemas/symphysis"]; (F-31, отвергнут C: installer/scripts/sync-payload.js:9) → Mitigation: решение A
 - [Risk] const html = await step(["render-html", journal, "--out", rel(env, path.join(ref.dir, "decisions.html")) (F-34, отвергнут B: vscode/src/host/core.ts:66) → Mitigation: решение A
-- [Risk] return "../" * up + ".symphysis/tools/mermaid.min.js" (F-34, отвергнут C: tools/journal_render.py:230) → Mitigation: решение A
+- [Risk] return "../" * up + ".symphysis/tools/mermaid.min.js" (F-34, отвергнут C: tools/journal_render.py:231) → Mitigation: решение A
 - [Risk] видимо, нужно переименовать тогда decisions.html на symphysis.html, раз страница становится мультизадачной. (F-35, отвергнут B: openspec/changes/step-help/answers/2026-11-02-2.md:10) → Mitigation: решение A
 - [Risk] `render-html` SHALL собирать `decisions.html` из `decisions.json` (F-35, отвергнут C: openspec/specs/decision-viewer/spec.md:9) → Mitigation: решение A
 - [Risk] в html на шаге intent страницы еще не будет. (F-35, отвергнут C: openspec/changes/step-help/answers/2026-11-02-2.md:9) → Mitigation: решение A
 - [Risk] "version": "0.1.0", (F-36, отвергнут B: installer/package.json:3) → Mitigation: решение A
-- [Risk] Каждый проект ставит тег в свой `main`. У ядра это `v1.x.x` и далее. (F-36, отвергнут B: docs/repo-contract.md:76) → Mitigation: решение A
-- [Risk] CONTRACT = 1 (F-36, отвергнут C: tools/journal_render.py:26) → Mitigation: решение A
+- [Risk] Каждый проект ставит тег в свой `main`. У ядра это `v1.x.x` и далее. (F-36, отвергнут B: docs/repo-contract.md:79) → Mitigation: решение A
+- [Risk] CONTRACT = 1 (F-36, отвергнут C: tools/journal_render.py — цитаты нет дословно) → Mitigation: решение A
 - [Risk] MODIFIED несёт требование целиком. (F-38, отвергнут B: openspec/schemas/symphysis/schema.yaml:77) → Mitigation: решение A
 - [Risk] ### Requirement: Просмотрщик — один HTML из своего шаблона (F-38, отвергнут B: openspec/changes/archive/2026-11-02-decision-scheme/specs/decision-viewer/spec.md:5) → Mitigation: решение A
 - [Risk] ### Requirement: Просмотрщик — один HTML из своего шаблона (F-38, отвергнут C: openspec/changes/archive/2026-11-02-decision-scheme/specs/decision-viewer/spec.md:5) → Mitigation: решение A

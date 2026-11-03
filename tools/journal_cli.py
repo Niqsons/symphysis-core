@@ -9,7 +9,9 @@ from __future__ import annotations
 import argparse
 import datetime as dt
 import json
+import os
 import re
+import shlex
 import sys
 from pathlib import Path
 
@@ -17,7 +19,8 @@ from journal_apply import (REFUSED, apply_answers, apply_md4h, check_evidence, d
                            parse_md4h, sha256_file)
 from journal_consequences import check_consequences
 from journal_model import import_md, load_journal, save_journal, unexplained_choices, validate_journal
-from journal_render import TEMPLATE_PATH, parse_attack_md, render_design, render_html, render_md, scheme_payload, view_payload
+from journal_render import (TEMPLATE_PATH, no_help_snapshot, parse_attack_md, render_design, render_html, render_md,
+                            scheme_payload, view_payload)
 from journal_sites import code_sites
 
 __all__ = ["build_parser", "main"]
@@ -122,6 +125,82 @@ def _read_attack(path: Path) -> tuple[dict | None, str]:
         return None, str(e)
 
 
+def _change_of(journal_path: Path) -> tuple[Path, str] | None:
+    """Корень проекта и имя изменения из пути журнала: `<корень>/openspec/changes/[archive/]<имя>/<журнал>`. Корень не из
+    каталога вызова: у вызова может быть свой проект с тем же именем (F-58). Журнал в другом месте — `None`."""
+    folder = Path(os.path.abspath(journal_path)).parent
+    changes = folder.parent.parent if folder.parent.name == "archive" else folder.parent
+    if changes.name == "changes" and changes.parent.name == "openspec":
+        return changes.parent.parent, folder.name
+    return None
+
+
+def _from_root(path: Path | str, root: Path) -> str:
+    """Путь для команды, выполняемой из корня: без абсолютного пути, прямыми слешами (F-51). Другой диск — только имя файла."""
+    try:
+        return os.path.relpath(os.path.abspath(path), root).replace("\\", "/")
+    except ValueError:
+        return Path(path).name
+
+
+def _attack_path(path: Path | str, journal_path: Path | str) -> str:
+    """Поле `path` атаки на странице и в `view-json`: от корня проекта, с «/» на любой системе (F-72). Корень — из пути журнала,
+    журнал вне `openspec/changes/` считается от каталога вызова. Сообщения об ошибках чтения называют файл как поданный."""
+    where = _change_of(Path(journal_path))
+    return _from_root(path, where[0] if where else Path.cwd())
+
+
+def _shell_word(word: str) -> str:
+    """Слово команды для вставки в терминал. `shlex.join` ставит одинарные кавычки, `cmd` их не читает; двойные читают
+    PowerShell, bash и `cmd`. Простое слово идёт как есть. Слово с символом, что и в двойных кавычках что-то значит
+    (`$`, обратная кавычка, обратная косая, `!`, `%`; `&`, `|`, `<`, `>`, `^` в двойных безопасны), остаётся за `shlex.quote`: путь с ним редок, а молча неверная команда хуже."""
+    if re.fullmatch(r"[\w./:@+=,-]+", word):
+        return word
+    if re.search(r'[\\"$`!%]', word):
+        return shlex.quote(word)
+    return f'"{word}"'
+
+
+def _rebuild_command(args: argparse.Namespace, root: Path) -> str:
+    """Команда, которая из корня проекта соберёт эту же страницу заново: `--out` и `--attack` этой сборки (F-67)."""
+    script = _from_root(os.path.join(os.path.dirname(os.path.abspath(__file__)), "journal.py"), root)
+    if script.startswith("../") or "/" not in script:
+        script = ".symphysis/tools/journal.py"  # инструменты вне проекта: в проекте они лежат здесь
+    words = ["python", script, "render-html", _from_root(args.json, root), "--out", _from_root(args.out, root)]
+    for path in args.attack or []:
+        words += ["--attack", _from_root(path, root)]
+    return " ".join(_shell_word(word) for word in words)
+
+
+NO_HELP = "Справка не сформирована"
+
+
+def _help_snapshot(args: argparse.Namespace) -> dict:
+    """Снимок справки для страницы. Любой сбой расчёта идёт на панель и не меняет код выхода (F-34, F-61); текста исключения
+    в причине нет: в нём бывает абсолютный путь (F-51). `step_help` импортируется здесь: без файла страница собирается (F-65)."""
+    snapshot = _help_calculation(args)
+    if snapshot["error"]:
+        snapshot["error"] = f"{NO_HELP}: {snapshot['error']}"  # панель и сигнал `render-html` начинают одними словами (F-71)
+    return snapshot
+
+
+def _help_calculation(args: argparse.Namespace) -> dict:
+    where = _change_of(args.json)
+    if where is None:
+        return no_help_snapshot("Журнал лежит вне openspec/changes/: проект и изменение по его пути не определить, "
+                                "справка не считалась. Собери страницу из журнала активного изменения.")
+    root, change = where
+    try:
+        import step_help
+        snapshot = step_help.compute(root, change)
+    except ImportError:
+        snapshot = no_help_snapshot("Скрипта справки step_help.py нет рядом с инструментами или он не загрузился: "
+                                    "обнови их командой symphysis install --force.")
+    except Exception as e:
+        snapshot = no_help_snapshot(f"Расчёт справки упал: {type(e).__name__}. Проверь step_help.py в терминале.")
+    return {**snapshot, "rebuild": _rebuild_command(args, root)}
+
+
 def cmd_render_html(args: argparse.Namespace) -> int:
     journal = _valid_journal(args.json)
     if journal is None:
@@ -133,13 +212,15 @@ def cmd_render_html(args: argparse.Namespace) -> int:
         if attack is None:
             print(f"[!!] {refusal}", file=sys.stderr)
             return 2
-        attacks.append(attack)
+        attacks.append({**attack, "path": _attack_path(path, args.json)})
     # Сверка идёт в памяти: просмотрщик получает вердикты, файл журнала не меняется;
     # хеш журнала — по байтам файла на диске, как `sha256_file` у связки md4h.
     result = check_evidence(journal, default_roots(args.roots))
+    snapshot = _help_snapshot(args)
     try:
         html = render_html(journal, args.template, attacks=attacks, journal_sha256=sha256_file(args.json),
-                           scheme=scheme_payload(Path(args.json).parent / "scheme.md", args.out))
+                           scheme=scheme_payload(Path(args.json).parent / "scheme.md", args.out),
+                           help_snapshot=snapshot)
     except ValueError as e:
         print(f"[!!] {e}", file=sys.stderr)
         return 1
@@ -147,6 +228,9 @@ def cmd_render_html(args: argparse.Namespace) -> int:
     print(f"[ok] улик сверено {result['found']} из {result['total']}")
     for m in result["missing"]:
         print(f"[!!] не сверено — {m}")
+    if snapshot["error"]:  # сигнал, не отказ: код выхода прежний (F-71)
+        reason = " ".join(snapshot["error"][len(NO_HELP) + 2:].split())
+        print(f"[..] {NO_HELP.lower()}: {reason}")
     print(f"[ok] {args.out}")
     return 0
 
@@ -159,7 +243,8 @@ def cmd_view_json(args: argparse.Namespace) -> int:
     attacks = []
     for path in args.attack or []:
         attack, refusal = _read_attack(path)
-        attacks.append(attack if attack is not None else {"path": str(path), "error": refusal})
+        shown = _attack_path(path, args.json)
+        attacks.append({**attack, "path": shown} if attack is not None else {"path": shown, "error": refusal})
     # Сверка идёт в памяти, файл журнала не меняется; хеш — по байтам файла, как у `render-html`.
     check_evidence(journal, default_roots(args.roots))
     print(json.dumps(view_payload(journal, attacks=attacks, journal_sha256=sha256_file(args.json)), ensure_ascii=False))
@@ -373,10 +458,11 @@ def build_parser() -> argparse.ArgumentParser:
     p = _command(sub, "render-html", "JSON -> просмотрщик; улики сверяются в памяти; "
                                      "негодный журнал — код 1; битый файл атаки — код 2",
                  "JSON -> просмотрщик: страница с вариантами и промптом возврата. Улики сверяются в памяти,\n"
-                 "файл журнала не меняется.",
+                 "файл журнала не меняется. Страница несёт снимок справки о шаге от корня из пути журнала: новый снимок\n"
+                 "даёт только новая сборка.",
                  "человек решает развилки или читает атаку в браузере: после круга брейншторма, пробы, атаки.",
-                 "0 — записан, несверенные улики код не меняют; 1 — негодный журнал или шаблон;\n"
-                 "  2 — битый файл атаки, HTML не пишется.")
+                 "0 — записан, несверенные улики и сбой расчёта справки код не меняют, причину сбоя называет панель;\n"
+                 "  1 — негодный журнал или шаблон; 2 — битый файл атаки, HTML не пишется.")
     given = p.add_argument_group("вход")
     given.add_argument("json", type=Path, help=JOURNAL_HELP)
     given.add_argument("--roots", type=Path, help=ROOTS_HELP)

@@ -78,7 +78,7 @@ python .symphysis/tools/journal.py check <каталог изменения>/dec
 python .symphysis/tools/journal.py render-md <каталог изменения>/decisions.json --out <каталог изменения>/decisions.md
 
 # круг просмотрщика: человек решает в HTML, промпт возврата вносит apply
-python .symphysis/tools/journal.py render-html <каталог изменения>/decisions.json --out <каталог изменения>/decisions.html
+python .symphysis/tools/journal.py render-html <каталог изменения>/decisions.json --out <каталог изменения>/symphysis.html
 python .symphysis/tools/journal.py apply <каталог изменения>/decisions.json <каталог изменения>/answers/<дата>.md
 ```
 
@@ -88,7 +88,7 @@ python .symphysis/tools/journal.py apply <каталог изменения>/dec
 
 JSON правят только модель (кандидаты, `outcome`, `consequences`,
 `notes`) и `apply` (слово человека). `spec.md` модель правит только
-по решённому исходу и следом пробы. `decisions.md` и `decisions.html` —
+по решённому исходу и следом пробы. `decisions.md` и `symphysis.html` —
 рендер, в них не пишут.
 
 ## Порядок пробы
@@ -327,7 +327,7 @@ B, причина в `why`; вариант A всё равно есть и на�
 ### 8. Круг просмотрщика
 
 Когда кандидаты по всем требованиям записаны — `render-html`, назови
-человеку путь к `decisions.html`. Человек выбирает исход; слово нужно, когда
+человеку путь к `symphysis.html`. Человек выбирает исход; слово нужно, когда
 выбор расходится с рекомендацией; у A слово — строка критерия, если он задаёт её сам.
 Промпт возврата сохрани в `<каталог изменения>/answers/<дата>.md` (дата `YYYY-MM-DD`; файл занят — `YYYY-MM-DD-2.md`, затем `-3`) как
 есть и внеси `apply`; отказ называет запись — исправь строку промпта,

@@ -128,6 +128,24 @@
   #schemeBody pre { margin:0; font-family:ui-monospace, Consolas, "Cascadia Mono", monospace; font-size:12.5px; }
   #schemeBody .note { white-space:pre-wrap; }
   header #btnScheme.active, aside .head button.active { border-color:var(--acc); color:var(--acc); }
+  /* справка о шаге: та же панель, свой контейнер */
+  .paneltabs { display:flex; gap:4px; padding:6px 10px; border-bottom:1px solid var(--line); flex:0 0 auto; }
+  .paneltabs button.active { border-color:var(--acc); color:var(--acc); }
+  #helpBody { flex:1 1 auto; min-height:0; overflow:auto; padding:8px 10px; }
+  #helpBody h3 { font-size:12.5px; color:var(--mute); margin:12px 0 4px; font-weight:600; }
+  #helpBody p { margin:4px 0; }
+  #helpBody ul { margin:4px 0; padding-left:20px; }
+  .helpsnap { color:var(--mute); font-size:11.5px; margin:6px 0; }
+  .helpsnap code { font-size:11.5px; overflow-wrap:anywhere; }
+  .helpver { color:var(--mute); font-size:11px; opacity:.7; margin-top:14px; }
+  .helpsteps { display:flex; flex-wrap:wrap; gap:4px; margin:8px 0; }
+  .helpstep { padding:2px 7px; font-size:12px; }
+  .helpstep .who { color:var(--mute); font-size:11px; }
+  .helpstep.current { border-color:var(--ok); color:var(--ok); }
+  .helpstep.open { background:rgba(110,168,254,.16); }
+  .helppage { border-top:1px solid var(--line); margin-top:8px; padding-top:8px; }
+  .helptitle { font-size:15px; font-weight:600; margin-bottom:4px; }
+  .helphead { display:flex; gap:6px; align-items:baseline; flex-wrap:wrap; margin-bottom:6px; }
   @media (max-width: 900px) { .layout { grid-template-columns:1fr; } aside { position:static; height:auto; } .outpanel { left:0; right:0; }
     body.scheme-on { --right:0px; } #schemePanel { position:static; width:auto; height:45vh; border-left:0; border-bottom:1px solid var(--line); } .schemehandle { display:none; } }
 </style>
@@ -136,7 +154,7 @@
 <header id="pageHeader">
   <h1 id="title">symphysis — журнал решений</h1>
   <div class="modes" id="modes" title="решения — круг просмотрщика; проверка — снимок перед proposal, только чтение; атака — строки attack/*.md по линзам"></div>
-  <button id="btnScheme" title="схема решения рядом с карточками: scheme.md этого изменения">схема</button>
+  <button id="btnScheme" title="рядом с карточками: схема решения из scheme.md или справка о шаге конвейера">схема · справка</button>
   <div class="stats" id="stats"></div>
   <div class="spacer"></div>
   <button id="btnExport" title="JSON состояния — для переноса в другой браузер">Экспорт JSON</button>
@@ -146,7 +164,9 @@
 </header>
 <div id="schemePanel" class="hidden">
   <div class="schemehandle" id="schemehandle" title="тяни, чтобы изменить ширину панели"></div>
+  <div class="paneltabs" id="panelTabs"><button class="small" data-panel="scheme">схема</button><button class="small" data-panel="help">справка</button></div>
   <div id="schemeBody"></div>
+  <div id="helpBody" class="hidden"></div>
 </div>
 <div class="layout" id="viewDecisions">
   <aside class="left">
@@ -186,6 +206,7 @@
 const JOURNAL = __JOURNAL_JSON__;
 const ATTACK = __ATTACK_JSON__;
 const SCHEME = __SCHEME_JSON__;
+const HELP = __HELP_JSON__;
 const ADDRESSEES = ['материалы','человек','ИБ'];
 /* линзы атаки — закрытые списки скилла symphysis-attack, по файлу атаки: журнал (`attack/decisions.md`, цель — один `decisions.json`)
    и артефакты (`attack/artifacts.md`, всё прочее); порядок — порядок списка, подписи — чем ищется. Слуг не из списка своего файла —
@@ -338,12 +359,99 @@ function headerHeight() {
   if (h) document.documentElement.style.setProperty('--headh', h + 'px');
 }
 window.addEventListener('resize', headerHeight);
+/* панель показывает схему или справку в одной области; выбор помнит браузер, без выбора — схема (F-29, F-32). Схема при открытой
+   справке не рисуется: прокрутка к верхнему узлу считается на видимом контейнере (F-35) */
+let panelView = 'scheme';
+try { if (localStorage.getItem(KEY + ':panel') === 'help') panelView = 'help'; } catch (e) {}
 function renderSchemePanel() {
-  document.getElementById('schemePanel').classList.toggle('hidden', !schemeOn);
+  const panel = document.getElementById('schemePanel'), help = panelView === 'help';
+  panel.classList.toggle('hidden', !schemeOn);
+  panel.dataset.view = panelView;
   document.body.classList.toggle('scheme-on', schemeOn);
   document.getElementById('btnScheme').classList.toggle('active', schemeOn);
-  if (schemeOn) schemeLoad();
+  document.getElementById('schemeBody').classList.toggle('hidden', help);
+  document.getElementById('helpBody').classList.toggle('hidden', !help);
+  document.querySelectorAll('#panelTabs button').forEach(b => b.classList.toggle('active', b.dataset.panel === panelView));
+  if (schemeOn && !help) schemeLoad();
 }
+
+/* ---------- справка о шаге: снимок от render-html, страница его не обновляет (F-21) ---------- */
+/* текст снимка — данные: на страницу только через esc и md, как текст журнала (F-53). Свой контейнер: дорисовка схемы справку не заменит (F-63) */
+const HELP_SECTIONS = [['Как готовить','how_to_prepare'], ['Зачем','why'], ['Механики','mechanics'], ['Если пропустить','if_skipped'], ['Что смотреть','what_to_check'], ['Команда','command']];
+const HELP_STATES = { done:'готов', ready:'готов к работе', blocked:'ждёт других шагов', skipped:'пропущен', waiting:'задачи не закрыты', idle:'открытых развилок нет', unknown:'журнал не читается', all_done:'задачи закрыты' };
+let helpOpen = HELP.current_step;
+function helpFind(id) { return (HELP.steps || []).find(s => s.id === id) || null; }
+function helpState(s) {
+  if (s.id === 'viewer' && s.state === 'ready') return 'есть открытые развилки';
+  if (s.id === 'apply' && s.state === 'ready') return 'задачи не закрыты';
+  if (s.id === 'apply' && s.state === 'blocked') return 'реализация заблокирована';
+  return HELP_STATES[s.state] || String(s.state);
+}
+/* подраздел `steps.md`: абзацы и списки `- `; единственная разметка в строке — backticks, как в журнале */
+function helpMarkup(text) {
+  return String(text || '').split(/\n\s*\n/).map(block => {
+    const lines = block.split('\n');
+    return lines.every(l => l.startsWith('- ')) ? '<ul>' + lines.map(l => '<li>' + md(l.slice(2)) + '</li>').join('') + '</ul>' : '<p>' + md(block) + '</p>';
+  }).join('');
+}
+/* что заблокируется и остановит ли шаг реализацию — из графа; что теряется по смыслу — из текста (F-25) */
+function helpGraphFacts(s) {
+  const facts = [];
+  if (s.optional) facts.push('Шаг необязательный, зовётся только по имени.');
+  if (s.blocks.length) facts.push('Без него не начнутся: ' + s.blocks.join(', ') + '.');
+  if (s.stops_apply) facts.push('Без него не начнётся `apply`.');
+  if (s.waits_for.length) facts.push('Ждёт: ' + s.waits_for.join(', ') + '.');
+  return facts.length ? '<ul>' + facts.map(f => '<li>' + md(f) + '</li>').join('') + '</ul>' : '';
+}
+function helpFiles(s) {
+  return s.files.length ? '<ul>' + s.files.map(f => '<li><code>' + esc(f.path) + '</code>' + (f.exists ? '' : ' — файла ещё нет') + '</li>').join('') + '</ul>' : '';
+}
+function helpPageHtml(id) {
+  const s = helpFind(id), open = '<div class="helppage" data-page="' + esc(id) + '">';
+  if (!s) return open + '<div class="note info">Текста нет</div></div>';
+  let html = open + '<div class="helptitle">' + md(s.texts.title || s.id) + '</div><div class="helphead"><code>' + esc(s.id) + '</code>' +
+    (id === HELP.current_step ? '<span class="badge ok">следующий по файлам</span>' : '') +
+    (s.state ? '<span class="badge">' + esc(helpState(s)) + '</span>' : '') +
+    '<span class="badge">ход ' + (s.turn === 'human' ? 'человека' : 'модели') + '</span>' +
+    (s.optional ? '<span class="badge">необязательный</span>' : '') + '</div>';
+  if (s.file_note) html += '<div class="note warn">' + esc(s.file_note) + '</div>';
+  if (s.text_note) html += '<div class="note info">' + esc(s.text_note) + '</div>';
+  for (const [title, key] of HELP_SECTIONS) {
+    const extra = key === 'if_skipped' ? helpGraphFacts(s) : key === 'what_to_check' ? helpFiles(s) : '';
+    if (s.texts[key] || extra) html += '<h3>' + esc(title) + '</h3>' + extra + helpMarkup(s.texts[key]);
+  }
+  const nav = (el, label, to) => '<button class="small" id="' + el + '"' + (to ? ' data-step="' + esc(to) + '"' : ' disabled') + '>' + label + (to ? ': ' + esc(to) : '') + '</button>';
+  return html + '<div class="row">' + nav('helpPrev', 'предыдущий', s.prev) + nav('helpNext', 'следующий', s.next) + '</div></div>';
+}
+/* при сбое панель даёт только причину и кнопку правил намерения (F-47); кнопка не зависит от расчёта и отметку не двигает (F-54) */
+function renderHelp() {
+  const v = HELP.versions || {}, steps = HELP.error ? [] : (HELP.steps || []);
+  let html = HELP.error ? '<div class="note bad" id="helpError">' + md(HELP.error) + '</div>' : '';
+  if (HELP.current_text) html += '<div class="note info">' + md(HELP.current_text) + '</div>';
+  html += '<div class="helpsnap">снимок: <span id="helpTime">' + esc(HELP.taken_at || 'не снимался') + '</span>, страница его не обновляет' +
+    (HELP.rebuild ? '. Новый снимок, из корня проекта: <code id="helpRebuild">' + esc(HELP.rebuild) + '</code>' : '') + '</div>';
+  html += '<div class="row"><button class="small" id="helpHowTo" style="flex:0 0 auto">Как готовить intent.md?</button></div>';
+  if (steps.length) html += '<div class="helpsteps">' + steps.map(s => '<button class="helpstep' + (s.id === HELP.current_step ? ' current' : '') + (s.id === helpOpen ? ' open' : '') + '" data-step="' + esc(s.id) + '">' +
+    (s.id === HELP.current_step ? '● ' : '') + esc(s.id) + ' <span class="who">' + (s.turn === 'human' ? 'человек' : 'модель') + '</span></button>').join('') + '</div>';
+  if (helpOpen) html += helpPageHtml(helpOpen);
+  html += '<div class="helpver" id="helpVersions">форк ' + esc(v.openspec || 'неизвестно') + ' · symphysis ' + esc(v.symphysis || 'неизвестно') + '</div>';
+  document.getElementById('helpBody').innerHTML = html;
+}
+document.getElementById('helpBody').onclick = e => {
+  const hit = e.target.closest('[data-step], #helpHowTo');
+  if (!hit) return;
+  helpOpen = hit.id === 'helpHowTo' ? 'intent' : hit.dataset.step;
+  renderHelp();
+  const page = document.querySelector('#helpBody .helppage');
+  if (page) page.scrollIntoView({ block:'nearest' });
+};
+document.getElementById('panelTabs').onclick = e => {
+  const hit = e.target.closest('button[data-panel]');
+  if (!hit) return;
+  panelView = hit.dataset.panel;
+  try { localStorage.setItem(KEY + ':panel', panelView); } catch (err) {}
+  renderSchemePanel();
+};
 
 function dec(id) { return state.decisions[id] || (state.decisions[id] = { choice:null, word:'', parked:[] }); }
 function journalChoice(rec) { return rec.decision && rec.decision.option ? rec.decision.option : null; }
@@ -523,6 +631,11 @@ function renderToc() {
   }).join('');
 }
 
+/* «Задач закрыто N из N» в шапке: из снимка справки; без снимка, при сбое расчёта и без задач части нет (F-70) */
+function helpTasksPart() {
+  const t = HELP && !HELP.error && HELP.tasks;
+  return t && t.total > 0 ? ' · Задач закрыто <b>' + esc(t.complete) + ' из ' + esc(t.total) + '</b>' : '';
+}
 function renderStats() {
   const forks = JOURNAL.records.filter(r => r.kind !== 'факт');
   const decided = forks.filter(r => chosen(r.id)).length;
@@ -532,7 +645,7 @@ function renderStats() {
   document.getElementById('stats').innerHTML =
     'развилок <b>' + forks.length + '</b> · решено <b>' + decided + '</b>' + (changed ? ' · изменено здесь <b>' + changed + '</b>' : '') +
     ' · открыто <b>' + (forks.length - decided) + '</b> · с парковкой <b>' + parked + '</b> · фактов <b>' + (JOURNAL.records.length - forks.length) + '</b>' +
-    (disputed ? ' · оспорено <b>' + disputed + '</b>' : '') + (state.newForks.length ? ' · добавлено развилок <b>' + state.newForks.length + '</b>' : '');
+    (disputed ? ' · оспорено <b>' + disputed + '</b>' : '') + (state.newForks.length ? ' · добавлено развилок <b>' + state.newForks.length + '</b>' : '') + helpTasksPart();
   const s = JOURNAL.stats || {};
   document.getElementById('evstats').textContent = 'улик сверено ' + (s.evidence_found ?? '?') + ' из ' + (s.evidence_total ?? '?') + ' · собрано ' + (JOURNAL.generated || '');
 }
@@ -874,6 +987,7 @@ document.getElementById('fileImport').onchange = e => {
 };
 document.getElementById('btnReset').onclick = () => { if (confirm('Стереть все решения и споры из браузера? Решения, уже внесённые в журнал, останутся.')) { state = EMPTY(); save(); attackState = { disputes:{} }; saveAttack(); document.getElementById('notes').value = ''; render(); } };
 document.getElementById('title').textContent = JOURNAL.title || document.title;
+renderHelp();
 render();
 </script>
 </body>

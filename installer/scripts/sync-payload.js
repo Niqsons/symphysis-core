@@ -17,6 +17,7 @@ const FILES = [
   "tools/journal_sites.py",
   "tools/journal_consequences.py",
   "tools/symphysis_config.py",
+  "tools/step_help.py",
   "tools/playground-template.html",
   "docs/journal.schema.json",
 ];

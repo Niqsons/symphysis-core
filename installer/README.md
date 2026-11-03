@@ -12,7 +12,7 @@
 | схема `symphysis` | `<проект>/openspec/schemas/symphysis/` | в проект, не в глобальный каталог (F-16.B) |
 | `openspec/config.yaml` | `<проект>/openspec/config.yaml` | сливается, см. ниже |
 | скиллы `symphysis-*` | `<skills-dir>/<имя>/SKILL.md` | в каждый `--skills-dir`; без параметра — `.claude/skills` |
-| инструменты журнала и настроек | `<проект>/.symphysis/` (`tools/`, `docs/`) | `journal.py`, модули, `symphysis_config.py`, схема JSON, файл корней |
+| инструменты журнала и настроек | `<проект>/.symphysis/` (`tools/`, `docs/`) | `journal.py`, модули, `symphysis_config.py`, `step_help.py` (справка о шаге), `symphysis-version.txt` (версия поставленных инструментов; не пишется, если часть инструментов пропущена), схема JSON, файл корней |
 | `symphysis.yaml` | `<проект>/symphysis.yaml` | личная настройка, всё включено; не перезаписывается и с `--force` |
 | строка `symphysis.yaml` | `<проект>/.gitignore` | файл создаётся при отсутствии; git не нужен; правка уходит в git вместе с работой |
 

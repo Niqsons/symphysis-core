@@ -12,7 +12,7 @@ import pytest
 
 import journal
 import journal_render
-from conftest import FIX, ROOT, one_record_journal
+from conftest import FIX, ROOT, fake_apply, fake_status, fork_env, fork_reply, install_fork_shim, one_record_journal
 
 ATTACK_FIX = FIX / "attack"
 TEMPLATE = ROOT / "tools" / "playground-template.html"
@@ -80,10 +80,70 @@ def test_sha256_is_of_the_file_bytes(tmp_path):
     assert view(src, "--roots", roots)["sha256"] == hashlib.sha256(src.read_bytes()).hexdigest()
 
 
+def from_cwd(path) -> str:
+    """Путь атаки от каталога вызова, где журнал вне `openspec/changes/` (F-72): `/` всюду, другой диск — имя файла."""
+    try:
+        return os.path.relpath(path).replace("\\", "/")
+    except ValueError:
+        return path.name
+
+
+def project_with_attack(tmp_path):
+    project = tmp_path / "proj"
+    change = project / "openspec" / "changes" / "demo"
+    (change / "attack").mkdir(parents=True)
+    src = change / "decisions.json"
+    journal.save_journal(src, one_record_journal("a.md", "дв"))
+    attack = change / "attack" / "decisions.md"
+    shutil.copy(ATTACK_FIX / "decisions.md", attack)
+    return project, src, attack
+
+
+def run_in(project, command, *args):
+    return subprocess.run([sys.executable, str(ROOT / "tools" / "journal.py"), command, *map(str, args)], cwd=project,
+                          capture_output=True, text=True, encoding="utf-8")
+
+
+def test_attack_path_is_the_same_for_absolute_and_relative(tmp_path):
+    """Сценарий «Абсолютный и относительный путь»: оба `render-html`, оба `view-json`."""
+    project, src, attack = project_with_attack(tmp_path)
+    relative = "openspec/changes/demo/attack/decisions.md"
+    for given in (attack, relative):
+        run = run_in(project, "view-json", src, "--attack", given)
+        assert run.returncode == 0, run.stderr
+        assert json.loads(run.stdout)["attacks"][0]["path"] == relative
+        out = project / "page.html"
+        assert run_in(project, "render-html", src, "--out", out, "--attack", given).returncode == 0
+        html = out.read_text(encoding="utf-8")
+        start = html.index("const ATTACK = ") + len("const ATTACK = ")
+        assert json.JSONDecoder().raw_decode(html[start:].replace("<\\/", "</"))[0][0]["path"] == relative
+        assert str(tmp_path) not in html[start:start + 400]
+
+
+@pytest.mark.skipif(os.name != "nt", reason="обратные косые — разделитель только на Windows")
+def test_attack_path_with_backslashes_goes_with_slashes(tmp_path):
+    """Сценарий «Обратные косые»."""
+    project, src, _ = project_with_attack(tmp_path)
+    run = run_in(project, "view-json", src, "--attack", r"openspec\changes\demo\attack\decisions.md")
+    assert run.returncode == 0, run.stderr
+    assert json.loads(run.stdout)["attacks"][0]["path"] == "openspec/changes/demo/attack/decisions.md"
+
+
+def test_attack_file_outside_the_root(tmp_path):
+    """Сценарий «Файл атаки вне корня»: `../…`, каталоги выше корня не названы; на другом диске только имя."""
+    project, src, _ = project_with_attack(tmp_path)
+    neighbour = tmp_path / "рядом"
+    neighbour.mkdir()
+    shutil.copy(ATTACK_FIX / "decisions.md", neighbour / "decisions.md")
+    run = run_in(project, "view-json", src, "--attack", neighbour / "decisions.md")
+    assert run.returncode == 0, run.stderr
+    assert json.loads(run.stdout)["attacks"][0]["path"] == "../рядом/decisions.md"
+
+
 def test_attacks_come_parsed(tmp_path):
     src, roots = journal_file(tmp_path)
     data = view(src, "--roots", roots, "--attack", ATTACK_FIX / "decisions.md", "--attack", ATTACK_FIX / "artifacts.md")
-    assert [a["path"] for a in data["attacks"]] == [str(ATTACK_FIX / "decisions.md"), str(ATTACK_FIX / "artifacts.md")]
+    assert [a["path"] for a in data["attacks"]] == [from_cwd(ATTACK_FIX / "decisions.md"), from_cwd(ATTACK_FIX / "artifacts.md")]
     assert [len(a["rows"]) for a in data["attacks"]] == [3, 3]
     assert data["attacks"][0]["frontmatter"]["status"] == "gaps_found"
 
@@ -97,9 +157,9 @@ def test_broken_attack_file_does_not_hide_the_journal(tmp_path):
     data = view(src, "--roots", roots, "--attack", broken, "--attack", ATTACK_FIX / "decisions.md", "--attack", missing)
     assert len(data["records"]) == 1
     first, good, gone = data["attacks"]
-    assert first == {"path": str(broken), "error": f"{broken}: нет frontmatter"}
+    assert first == {"path": from_cwd(broken), "error": f"{broken}: нет frontmatter"}
     assert len(good["rows"]) == 3
-    assert gone == {"path": str(missing), "error": f"{missing}: файла нет"}
+    assert gone == {"path": from_cwd(missing), "error": f"{missing}: файла нет"}
 
 
 def test_invalid_journal_refused_on_stderr(tmp_path):
@@ -203,7 +263,21 @@ def test_destination_matches_the_template(tmp_path):
 def test_output_carries_the_contract_number(tmp_path):
     src, roots = journal_file(tmp_path)
     number = view(src, "--roots", roots)["contract"]
-    assert type(number) is int and number == 1
+    assert type(number) is int and number == 2
+
+
+def test_one_number_in_both_outputs(tmp_path):
+    """Сценарий «Один номер в двух выводах»: `view-json` и `step_help.py` несут одно и то же целое."""
+    src, roots = journal_file(tmp_path)
+    project = tmp_path / "proj"
+    (project / "openspec" / "changes" / "demo").mkdir(parents=True)
+    install_fork_shim(tmp_path / "bin", status=fork_reply(fake_status(project, ready=("intent",))), apply=fork_reply(fake_apply()))
+    done = subprocess.run([sys.executable, str(ROOT / "tools" / "step_help.py"), "--change", "demo"], cwd=project,
+                          env=fork_env(tmp_path / "bin"), capture_output=True)
+    assert done.returncode == 0, done.stderr
+    from_help = json.loads(done.stdout.decode("utf-8"))["contract"]
+    from_view = view(src, "--roots", roots)["contract"]
+    assert type(from_help) is int and from_help == from_view == journal_render.CONTRACT == 2
 
 
 def test_a_new_field_does_not_raise_the_number_and_reaches_the_output(tmp_path):

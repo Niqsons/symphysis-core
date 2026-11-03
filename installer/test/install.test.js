@@ -649,3 +649,177 @@ test("черновики .symphysis/viewer переживают install --force 
   install(p, { payloadDir, force: true });
   assert.ok(fs.readFileSync(draft).equals(before));
 });
+
+test("Новый проект: step_help.py и steps.md ставятся в проект (F-16, F-20)", () => {
+  const p = tmp();
+  const r = install(p, { payloadDir });
+  const t = targets(p);
+  assert.ok(fs.readFileSync(path.join(t.toolsDir, "tools", "step_help.py")).equals(fs.readFileSync(path.join(payloadDir, "tools", "step_help.py"))));
+  assert.ok(fs.readFileSync(path.join(t.schemaDir, "steps.md")).equals(fs.readFileSync(path.join(payloadDir, "openspec", "schemas", "symphysis", "steps.md"))));
+  assert.ok(r.written.includes(".symphysis/tools/step_help.py"), JSON.stringify(r.written));
+  assert.ok(r.written.includes("openspec/schemas/symphysis/steps.md"));
+});
+
+test("Новый проект: после install скрипт справки печатает JSON, шаг intent, тексты не пусты", { skip: !fs.existsSync(FORK) }, () => {
+  process.env.SYMPHYSIS_OPENSPEC = FORK;
+  const p = tmp();
+  install(p, { payloadDir });
+  const fork = spawnSync(process.execPath, [FORK, "new", "change", "demo"], { cwd: p, encoding: "utf8", env: { ...process.env, OPENSPEC_TELEMETRY: "0" } });
+  assert.equal(fork.status, 0, fork.stdout + fork.stderr);
+  const r = spawnSync("python", ["-X", "utf8", path.join(".symphysis", "tools", "step_help.py")], { cwd: p, encoding: "utf8", env: { ...process.env, SYMPHYSIS_OPENSPEC: FORK } });
+  assert.equal(r.status, 0, r.stdout + r.stderr);
+  const out = JSON.parse(r.stdout);
+  assert.equal(out.error, null);
+  assert.equal(out.current_step, "intent");
+  assert.ok(out.steps.length > 0);
+  for (const step of out.steps) {
+    for (const key of ["title", "why", "mechanics"]) assert.ok(step.texts[key].trim() !== "", `${step.id}: ${key}`);
+  }
+});
+
+test("Обновление без `--force`: новые файлы положены, отличающиеся пропущены", () => {
+  const p = tmp();
+  install(p, { payloadDir });
+  const t = targets(p);
+  fs.rmSync(path.join(t.toolsDir, "tools", "step_help.py"));
+  fs.writeFileSync(path.join(t.schemaDir, "steps.md"), "своё");
+  const r = install(p, { payloadDir });
+  assert.ok(fs.existsSync(path.join(t.toolsDir, "tools", "step_help.py")));
+  assert.ok(r.skipped.includes(`openspec/schemas/symphysis/steps.md ${SUFFIX}`), JSON.stringify(r.skipped));
+  assert.equal(fs.readFileSync(path.join(t.schemaDir, "steps.md"), "utf8"), "своё");
+});
+
+// Клон-образец: исходники и файлы mermaid во временном каталоге, чтобы хеш и свежесть payload задавались тестом.
+const REPO = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..", "..");
+const VERSION = JSON.parse(fs.readFileSync(path.join(REPO, "installer", "package.json"), "utf8")).version;
+const VERSION_REL = ".symphysis/tools/symphysis-version.txt";
+const VERSION_FILE_NAME = "symphysis-version.txt";
+const gitIn = (cwd, ...args) =>
+  spawnSync("git", ["-c", "user.name=t", "-c", "user.email=t@t", "-c", "commit.gpgsign=false", ...args], { cwd, encoding: "utf8" });
+
+function makeClone({ git }) {
+  const dir = tmp();
+  const keep = (s) => path.basename(s) !== "__pycache__";
+  for (const rel of ["skills", "tools", "docs", path.join("openspec", "schemas", "symphysis")]) {
+    fs.cpSync(path.join(REPO, rel), path.join(dir, rel), { recursive: true, filter: keep });
+  }
+  fs.copyFileSync(path.join(REPO, "openspec", "config.symphysis.yaml"), path.join(dir, "openspec", "config.symphysis.yaml"));
+  const mer = path.join(dir, "installer", "node_modules", "mermaid");
+  fs.mkdirSync(path.join(mer, "dist"), { recursive: true });
+  fs.copyFileSync(path.join(REPO, "installer", "node_modules", "mermaid", "dist", "mermaid.min.js"), path.join(mer, "dist", "mermaid.min.js"));
+  fs.copyFileSync(path.join(REPO, "installer", "node_modules", "mermaid", "LICENSE"), path.join(mer, "LICENSE"));
+  if (git) {
+    gitIn(dir, "init", "-q");
+    gitIn(dir, "add", "-A");
+    assert.equal(gitIn(dir, "commit", "-qm", "один").status, 0);
+  }
+  return dir;
+}
+const head = (dir) => gitIn(dir, "rev-parse", "--short", "HEAD").stdout.trim();
+const versionOf = (p) => fs.readFileSync(path.join(p, VERSION_REL), "utf8").trim();
+
+test("версия: установка из клона пишет версию и короткий хеш (F-36)", () => {
+  const clone = makeClone({ git: true });
+  const pd = tmp();
+  syncPayload(pd, clone);
+  const p = tmp();
+  install(p, { payloadDir: pd, sourceRoot: clone });
+  assert.match(head(clone), /^[0-9a-f]{7,}$/);
+  assert.equal(versionOf(p), `${VERSION}+${head(clone)}`);
+});
+
+test("Установка без git: версия: клон вне git — только версия, код 0 (F-36)", () => {
+  const clone = makeClone({ git: false });
+  const pd = tmp();
+  syncPayload(pd, clone);
+  const p = tmp();
+  install(p, { payloadDir: pd, sourceRoot: clone });
+  assert.equal(versionOf(p), VERSION);
+});
+
+test("версия: клон внутри чужого репозитория не отдаёт чужой хеш", () => {
+  const outer = tmp();
+  gitIn(outer, "init", "-q");
+  fs.writeFileSync(path.join(outer, "a.txt"), "x");
+  gitIn(outer, "add", "-A");
+  gitIn(outer, "commit", "-qm", "чужой");
+  const clone = makeClone({ git: false });
+  const inner = path.join(outer, "inner");
+  fs.cpSync(clone, inner, { recursive: true });
+  const pd = tmp();
+  syncPayload(pd, inner);
+  const p = tmp();
+  install(p, { payloadDir: pd, sourceRoot: inner });
+  assert.equal(versionOf(p), VERSION);
+});
+
+test("версия: клон обновлён, инструменты нет — без --force файл не меняется, с --force новый хеш (F-36)", () => {
+  const clone = makeClone({ git: true });
+  const pd = tmp();
+  syncPayload(pd, clone);
+  const p = tmp();
+  install(p, { payloadDir: pd, sourceRoot: clone });
+  const first = versionOf(p);
+  fs.appendFileSync(path.join(clone, "tools", "journal.py"), "\n# правка\n");
+  gitIn(clone, "add", "-A");
+  gitIn(clone, "commit", "-qm", "два");
+  syncPayload(pd, clone);
+  const r = install(p, { payloadDir: pd, sourceRoot: clone });
+  assert.equal(versionOf(p), first);
+  assert.ok(r.skipped.includes(`${VERSION_REL} ${SUFFIX}`), JSON.stringify(r.skipped));
+  install(p, { payloadDir: pd, sourceRoot: clone, force: true });
+  assert.equal(versionOf(p), `${VERSION}+${head(clone)}`);
+  assert.notEqual(versionOf(p), first);
+});
+
+test("версия: payload старее исходников — только версия, без хеша (F-64)", () => {
+  const clone = makeClone({ git: true });
+  const pd = tmp();
+  syncPayload(pd, clone);
+  fs.appendFileSync(path.join(clone, "tools", "journal.py"), "\n# новее payload\n");
+  gitIn(clone, "add", "-A");
+  gitIn(clone, "commit", "-qm", "два");
+  const p = tmp();
+  install(p, { payloadDir: pd, sourceRoot: clone });
+  assert.equal(versionOf(p), VERSION);
+});
+
+test("версия: тарбол без исходников — только версия", () => {
+  const p = tmp();
+  install(p, { payloadDir, sourceRoot: tmp() });
+  assert.equal(versionOf(p), VERSION);
+});
+
+// Файл версии описывает поставленные инструменты (project-installer: «Файл версии»).
+test("обновление без --force: пропущен инструмент, файла версии не было — файл не пишется", () => {
+  const p = tmp();
+  install(p, { payloadDir });
+  const t = targets(p);
+  const tools = path.join(t.toolsDir, "tools");
+  fs.writeFileSync(path.join(tools, "journal_cli.py"), "своё");
+  fs.rmSync(path.join(tools, VERSION_FILE_NAME));
+  const r = install(p, { payloadDir });
+  assert.ok(r.skipped.some((line) => line.startsWith(".symphysis/tools/journal_cli.py")), JSON.stringify(r.skipped));
+  assert.equal(fs.existsSync(path.join(tools, VERSION_FILE_NAME)), false);
+});
+
+test("обновление без --force: пропущен инструмент, файл версии уже есть — остаётся как есть и назван пропущенным", () => {
+  const p = tmp();
+  install(p, { payloadDir });
+  const t = targets(p);
+  const tools = path.join(t.toolsDir, "tools");
+  fs.writeFileSync(path.join(tools, "journal_cli.py"), "своё");
+  fs.writeFileSync(path.join(tools, VERSION_FILE_NAME), "0.0.1\n");
+  const r = install(p, { payloadDir });
+  assert.equal(fs.readFileSync(path.join(tools, VERSION_FILE_NAME), "utf8"), "0.0.1\n");
+  assert.ok(r.skipped.includes(`.symphysis/tools/${VERSION_FILE_NAME} ${SUFFIX}`), JSON.stringify(r.skipped));
+});
+
+test("обновление без --force: ничего не пропущено — файл версии пишется", () => {
+  const p = tmp();
+  install(p, { payloadDir });
+  const tools = path.join(targets(p).toolsDir, "tools");
+  fs.rmSync(path.join(tools, VERSION_FILE_NAME));
+  install(p, { payloadDir });
+  assert.ok(fs.existsSync(path.join(tools, VERSION_FILE_NAME)));
+});

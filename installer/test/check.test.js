@@ -560,3 +560,25 @@ test("нет файла mermaid: сигнал [..], находки нет, ст�
   assert.deepEqual(r.findings, []);
   assert.ok(r.notes.some((n) => n.startsWith(".symphysis/tools/mermaid.min.js:")), JSON.stringify(r.notes));
 });
+
+test("steps.md отличается от payload: сигнал о схеме (F-23)", () => {
+  const p = installed();
+  const f = path.join(targets(p).schemaDir, "steps.md");
+  fs.appendFileSync(f, "\nправка\n");
+  const r = runCheck(p);
+  assert.ok(r.findings.includes("схема: байты отличаются от payload: openspec/schemas/symphysis/steps.md"), JSON.stringify(r.findings));
+});
+
+test("Сигнала `check` нет: файл версии и step_help.py: сигнала нет, как бы они ни лежали (F-36, F-65)", () => {
+  const p = installed();
+  const tools = path.join(targets(p).toolsDir, "tools");
+  const base = runCheck(p).findings;
+  fs.writeFileSync(path.join(tools, "symphysis-version.txt"), "0.0.1+0000000\n");
+  assert.deepEqual(runCheck(p).findings, base);
+  fs.rmSync(path.join(tools, "symphysis-version.txt"));
+  assert.deepEqual(runCheck(p).findings, base);
+  fs.writeFileSync(path.join(tools, "step_help.py"), "# другой\n");
+  assert.deepEqual(runCheck(p).findings, base);
+  fs.rmSync(path.join(tools, "step_help.py"));
+  assert.deepEqual(runCheck(p).findings, base);
+});

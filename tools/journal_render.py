@@ -11,8 +11,8 @@ from pathlib import Path
 from journal_model import ADDED_MARK, DEVIATION_LABEL, DEVIATION_TAIL, RE_ANCHOR, ROOT, _evidence_of, _flat
 
 __all__ = [
-    "TEMPLATE_PATH", "PLACEHOLDER", "PLACEHOLDER_ATTACK", "PLACEHOLDER_SCHEME", "CONTRACT",
-    "parse_scheme", "scheme_payload",
+    "TEMPLATE_PATH", "PLACEHOLDER", "PLACEHOLDER_ATTACK", "PLACEHOLDER_SCHEME", "PLACEHOLDER_HELP", "CONTRACT",
+    "parse_scheme", "scheme_payload", "no_help_snapshot",
     "render_md", "render_html", "render_design", "view_payload", "destination", "parking_destination",
     "anchor_lines", "parse_attack_md", "_lines",
 ]
@@ -22,8 +22,9 @@ TEMPLATE_PATH = ROOT / "tools" / "playground-template.html"
 PLACEHOLDER = "__JOURNAL_JSON__"
 PLACEHOLDER_ATTACK = "__ATTACK_JSON__"
 PLACEHOLDER_SCHEME = "__SCHEME_JSON__"
+PLACEHOLDER_HELP = "__HELP_JSON__"
 # Номер контракта ядра с плагином в выводе `view-json`: растёт при смене контракта, от нового поля не растёт (`docs/repo-contract.md`).
-CONTRACT = 1
+CONTRACT = 2
 
 
 # --- рендер ----------------------------------------------------------------
@@ -240,12 +241,20 @@ def scheme_payload(scheme_path: Path, out: Path) -> dict:
     return {"exists": True, **parse_scheme(path.read_text(encoding="utf-8", errors="replace")), "mermaid": _mermaid_src(out)}
 
 
-def render_html(journal: dict, template: Path, attacks: list[dict] | None = None,
-                journal_sha256: str | None = None, scheme: dict | None = None) -> str:
-    """Шаблон просмотрщика с журналом вместо `__JOURNAL_JSON__`, списком атак вместо
-    `__ATTACK_JSON__` и схемой вместо `__SCHEME_JSON__`; все три метки обязательны. Улики берутся такими, какие в журнале
+def no_help_snapshot(reason: str) -> dict:
+    """Снимок «расчёта нет»: поля те же, что у `step_help.compute`, причина в `error`, времени снятия нет."""
+    return {"contract": CONTRACT, "taken_at": None, "versions": {"openspec": None, "symphysis": None}, "change": None,
+            "changes": None, "error": reason, "current_step": None, "current_text": None, "turn": None,
+            "next_by_status": None, "forks": None, "tasks": None, "steps": [], "rebuild": None}
+
+
+def render_html(journal: dict, template: Path, attacks: list[dict] | None = None, journal_sha256: str | None = None,
+                scheme: dict | None = None, help_snapshot: dict | None = None) -> str:
+    """Шаблон просмотрщика с журналом вместо `__JOURNAL_JSON__`, списком атак вместо `__ATTACK_JSON__`, схемой вместо
+    `__SCHEME_JSON__` и справкой вместо `__HELP_JSON__`; все четыре метки обязательны. Улики берутся такими, какие в журнале
     (`check --write` или сверка в памяти). Дата сборки `generated` — из журнала, если она
-    там есть; своей даты рендер не ставит, и два рендера одного журнала совпадают.
+    там есть; своей даты рендер не ставит, и два рендера одного журнала совпадают: снимок справки и его время снятия
+    добавляет CLI, из памяти на метку встаёт снимок «расчёта нет» (F-46).
 
     `attacks` — результаты `parse_attack_md` как есть (режим «атака» просмотрщика); без них
     на место метки встаёт `[]`. `journal_sha256` — SHA-256 файла журнала по байтам, его считает
@@ -254,12 +263,14 @@ def render_html(journal: dict, template: Path, attacks: list[dict] | None = None
     журнала отдаются режиму «проверка»; остальной payload прежний. Метки подставляются за один
     проход, чтобы текст журнала, похожий на метку, не был подставлен второй раз."""
     html = Path(template).read_text(encoding="utf-8")
-    for mark in (PLACEHOLDER, PLACEHOLDER_ATTACK, PLACEHOLDER_SCHEME):
+    marks = (PLACEHOLDER, PLACEHOLDER_ATTACK, PLACEHOLDER_SCHEME, PLACEHOLDER_HELP)
+    for mark in marks:
         if mark not in html:
             raise ValueError(f"в шаблоне нет метки {mark}")
     filled = {PLACEHOLDER: _embed(_viewer_payload(journal, journal_sha256)), PLACEHOLDER_ATTACK: _embed(attacks or []),
-              PLACEHOLDER_SCHEME: _embed(scheme or NO_SCHEME)}
-    return "".join(filled.get(part, part) for part in re.split(f"({PLACEHOLDER}|{PLACEHOLDER_ATTACK}|{PLACEHOLDER_SCHEME})", html))
+              PLACEHOLDER_SCHEME: _embed(scheme or NO_SCHEME),
+              PLACEHOLDER_HELP: _embed(help_snapshot or no_help_snapshot("Справка на этой странице не считалась."))}
+    return "".join(filled.get(part, part) for part in re.split("(" + "|".join(marks) + ")", html))
 
 
 # --- файл атаки для просмотрщика --------------------------------------------
@@ -374,7 +385,7 @@ def _attack_rows(lines: list[str], name: str, start: int) -> list[dict]:
 
 def parse_attack_md(path: Path) -> dict:
     """Файл атаки (`attack/decisions.md`, `attack/artifacts.md`) -> словарь для режима «атака»
-    просмотрщика: `path` — как подан; `frontmatter` — `status` и `targets[]` (`path`, `sha256`);
+    просмотрщика: `path` — как подан парсеру (CLI приводит его к пути от корня проекта, F-72); `frontmatter` — `status` и `targets[]` (`path`, `sha256`);
     `rows` — строки первой таблицы с семью колонками после D4b (`claim`, `section`, `lens`,
     `invariant`, `severity`, `support`, `fix`), ячейки `strip()`. Слуг линзы здесь не проверяется:
     строка вне закрытого списка — невалидная строка атаки, просмотрщик показывает её группой
@@ -579,7 +590,7 @@ def parking_destination(addressee: str) -> str:
 
 def view_payload(journal: dict, attacks: list[dict] | None = None, journal_sha256: str | None = None) -> dict:
     """Данные журнала для показа вне страницы: проекция страницы (`_viewer_payload`), у записи и парковки
-    `destination`, в `attacks` — файлы атаки как поданы. Улики берутся такими, какие в журнале."""
+    `destination`, в `attacks` — файлы атаки (`path` от корня проекта, F-72). Улики берутся такими, какие в журнале."""
     payload = _viewer_payload(journal, journal_sha256)
     for rec in payload["records"]:
         rec["destination"] = destination(rec)

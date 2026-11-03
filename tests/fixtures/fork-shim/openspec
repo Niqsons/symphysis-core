@@ -1,0 +1,2 @@
+#!/bin/sh
+exec "$FORK_SHIM_PYTHON" -X utf8 "$(dirname "$0")/fork_shim.py" "$@"

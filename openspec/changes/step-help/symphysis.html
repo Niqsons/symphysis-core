@@ -128,6 +128,24 @@
   #schemeBody pre { margin:0; font-family:ui-monospace, Consolas, "Cascadia Mono", monospace; font-size:12.5px; }
   #schemeBody .note { white-space:pre-wrap; }
   header #btnScheme.active, aside .head button.active { border-color:var(--acc); color:var(--acc); }
+  /* справка о шаге: та же панель, свой контейнер */
+  .paneltabs { display:flex; gap:4px; padding:6px 10px; border-bottom:1px solid var(--line); flex:0 0 auto; }
+  .paneltabs button.active { border-color:var(--acc); color:var(--acc); }
+  #helpBody { flex:1 1 auto; min-height:0; overflow:auto; padding:8px 10px; }
+  #helpBody h3 { font-size:12.5px; color:var(--mute); margin:12px 0 4px; font-weight:600; }
+  #helpBody p { margin:4px 0; }
+  #helpBody ul { margin:4px 0; padding-left:20px; }
+  .helpsnap { color:var(--mute); font-size:11.5px; margin:6px 0; }
+  .helpsnap code { font-size:11.5px; overflow-wrap:anywhere; }
+  .helpver { color:var(--mute); font-size:11px; opacity:.7; margin-top:14px; }
+  .helpsteps { display:flex; flex-wrap:wrap; gap:4px; margin:8px 0; }
+  .helpstep { padding:2px 7px; font-size:12px; }
+  .helpstep .who { color:var(--mute); font-size:11px; }
+  .helpstep.current { border-color:var(--ok); color:var(--ok); }
+  .helpstep.open { background:rgba(110,168,254,.16); }
+  .helppage { border-top:1px solid var(--line); margin-top:8px; padding-top:8px; }
+  .helptitle { font-size:15px; font-weight:600; margin-bottom:4px; }
+  .helphead { display:flex; gap:6px; align-items:baseline; flex-wrap:wrap; margin-bottom:6px; }
   @media (max-width: 900px) { .layout { grid-template-columns:1fr; } aside { position:static; height:auto; } .outpanel { left:0; right:0; }
     body.scheme-on { --right:0px; } #schemePanel { position:static; width:auto; height:45vh; border-left:0; border-bottom:1px solid var(--line); } .schemehandle { display:none; } }
 </style>
@@ -136,7 +154,7 @@
 <header id="pageHeader">
   <h1 id="title">symphysis — журнал решений</h1>
   <div class="modes" id="modes" title="решения — круг просмотрщика; проверка — снимок перед proposal, только чтение; атака — строки attack/*.md по линзам"></div>
-  <button id="btnScheme" title="схема решения рядом с карточками: scheme.md этого изменения">схема</button>
+  <button id="btnScheme" title="рядом с карточками: схема решения из scheme.md или справка о шаге конвейера">схема · справка</button>
   <div class="stats" id="stats"></div>
   <div class="spacer"></div>
   <button id="btnExport" title="JSON состояния — для переноса в другой браузер">Экспорт JSON</button>
@@ -146,7 +164,9 @@
 </header>
 <div id="schemePanel" class="hidden">
   <div class="schemehandle" id="schemehandle" title="тяни, чтобы изменить ширину панели"></div>
+  <div class="paneltabs" id="panelTabs"><button class="small" data-panel="scheme">схема</button><button class="small" data-panel="help">справка</button></div>
   <div id="schemeBody"></div>
+  <div id="helpBody" class="hidden"></div>
 </div>
 <div class="layout" id="viewDecisions">
   <aside class="left">
@@ -186,15 +206,15 @@
 const JOURNAL = {
  "title": "Журнал решений: step-help",
  "source": "decisions.json",
- "sha256": "a5390c43b03f5aceb0a22bd9e110bc060a620a526ce29ac1c283448fb6304963",
+ "sha256": "0869374b2ee3e870767b29403a7b7f16fc557a60424acef571e2170692dac84c",
  "stats": {
-  "records": 69,
+  "records": 72,
   "forks": 44,
-  "facts": 25,
+  "facts": 28,
   "decided": 44,
   "parked": 0,
-  "evidence_total": 157,
-  "evidence_found": 154
+  "evidence_total": 160,
+  "evidence_found": 150
  },
  "records": [
   {
@@ -543,14 +563,14 @@ const JOURNAL = {
     {
      "path": "tools/journal_render.py",
      "quote": "\"stats\": {\"records\": len(records), \"forks\": len(forks),",
-     "line": 184,
+     "line": 185,
      "verdict": "сверено",
      "found": true
     },
     {
      "path": "tools/journal_render.py",
      "quote": "\"decided\": sum(1 for r in forks if r[\"decision\"]),",
-     "line": 186,
+     "line": 187,
      "verdict": "сверено",
      "found": true
     }
@@ -628,14 +648,14 @@ const JOURNAL = {
     {
      "path": "docs/GUIDE.md",
      "quote": "Синхронизация: дельты из `specs/` изменения переходят в общие спеки `openspec/specs/`.",
-     "line": 504,
+     "line": 506,
      "verdict": "сверено",
      "found": true
     },
     {
      "path": "docs/GUIDE.md",
      "quote": "Спеки уже синхронизированы, поэтому команда спросит: `Archive now`, `Sync anyway` или `Cancel`.",
-     "line": 510,
+     "line": 512,
      "verdict": "сверено",
      "found": true
     }
@@ -710,7 +730,7 @@ const JOURNAL = {
     {
      "path": "docs/repo-contract.md",
      "quote": "Ядро лежит в `.symphysis/tools/` каждого проекта, и его версия расходится с версией плагина.",
-     "line": 59,
+     "line": 62,
      "verdict": "сверено",
      "found": true
     }
@@ -756,9 +776,9 @@ const JOURNAL = {
     {
      "path": "installer/lib/install.js",
      "quote": "(journal.*\\.py|symphysis_config\\.py|playground-template\\.html",
-     "line": 107,
-     "verdict": "сверено",
-     "found": true
+     "line": null,
+     "verdict": "цитаты нет дословно",
+     "found": false
     }
    ],
    "comments": [],
@@ -862,7 +882,7 @@ const JOURNAL = {
       {
        "path": "tools/journal_render.py",
        "quote": "\"decided\": sum(1 for r in forks if r[\"decision\"]),",
-       "line": 186,
+       "line": 187,
        "verdict": "сверено",
        "found": true
       },
@@ -1232,7 +1252,7 @@ const JOURNAL = {
       {
        "path": "tools/journal_cli.py",
        "quote": "сверить улики грепом по цитате (сигнал, не стоп)",
-       "line": 300,
+       "line": 385,
        "verdict": "сверено",
        "found": true
       }
@@ -1328,7 +1348,7 @@ const JOURNAL = {
       {
        "path": "docs/GUIDE.md",
        "quote": "по восемь строк на требование, а итог — строкой `notes[]` журнала.",
-       "line": 373,
+       "line": 375,
        "verdict": "сверено",
        "found": true
       }
@@ -1343,7 +1363,7 @@ const JOURNAL = {
       {
        "path": "tools/journal_cli.py",
        "quote": "сверить улики грепом по цитате (сигнал, не стоп)",
-       "line": 300,
+       "line": 385,
        "verdict": "сверено",
        "found": true
       }
@@ -1737,7 +1757,7 @@ const JOURNAL = {
       {
        "path": "tools/playground-template.html",
        "quote": "решения — круг просмотрщика; проверка — снимок перед proposal",
-       "line": 138,
+       "line": 156,
        "verdict": "сверено",
        "found": true
       }
@@ -1812,9 +1832,9 @@ const JOURNAL = {
       {
        "path": "docs/GUIDE.md",
        "quote": "1. Открой `openspec/changes/add-overdue/decisions.html` в браузере.",
-       "line": 315,
-       "verdict": "сверено",
-       "found": true
+       "line": null,
+       "verdict": "цитаты нет дословно",
+       "found": false
       }
      ]
     },
@@ -1827,9 +1847,9 @@ const JOURNAL = {
       {
        "path": "skills/symphysis-brainstorm/SKILL.md",
        "quote": "render-html <каталог изменения>/decisions.json --out <каталог изменения>/decisions.html",
-       "line": 54,
-       "verdict": "сверено",
-       "found": true
+       "line": null,
+       "verdict": "цитаты нет дословно",
+       "found": false
       }
      ]
     }
@@ -1980,9 +2000,9 @@ const JOURNAL = {
     {
      "path": "tools/playground-template.html",
      "quote": "id=\"btnScheme\" title=\"схема решения рядом с карточками",
-     "line": 139,
-     "verdict": "сверено",
-     "found": true
+     "line": null,
+     "verdict": "цитаты нет дословно",
+     "found": false
     }
    ],
    "comments": [],
@@ -2043,7 +2063,7 @@ const JOURNAL = {
       {
        "path": "tools/journal_cli.py",
        "quote": "def cmd_render_html(args: argparse.Namespace) -> int:",
-       "line": 125,
+       "line": 204,
        "verdict": "сверено",
        "found": true
       },
@@ -2087,7 +2107,7 @@ const JOURNAL = {
       {
        "path": "tools/journal_render.py",
        "quote": "return \"../\" * up + \".symphysis/tools/mermaid.min.js\"",
-       "line": 230,
+       "line": 231,
        "verdict": "сверено",
        "found": true
       }
@@ -2146,9 +2166,9 @@ const JOURNAL = {
       {
        "path": "docs/repo-contract.md",
        "quote": "- пути файлов изменения;",
-       "line": 51,
-       "verdict": "сверено",
-       "found": true
+       "line": null,
+       "verdict": "цитаты нет дословно",
+       "found": false
       },
       {
        "path": "vscode/src/host/core.ts",
@@ -2277,7 +2297,7 @@ const JOURNAL = {
       {
        "path": "docs/repo-contract.md",
        "quote": "Каждый проект ставит тег в свой `main`. У ядра это `v1.x.x` и далее.",
-       "line": 76,
+       "line": 79,
        "verdict": "сверено",
        "found": true
       }
@@ -2292,9 +2312,9 @@ const JOURNAL = {
       {
        "path": "tools/journal_render.py",
        "quote": "CONTRACT = 1",
-       "line": 26,
-       "verdict": "сверено",
-       "found": true
+       "line": null,
+       "verdict": "цитаты нет дословно",
+       "found": false
       }
      ]
     }
@@ -2583,7 +2603,7 @@ const JOURNAL = {
     {
      "path": "tools/journal_render.py",
      "quote": "\"decided\": sum(1 for r in forks if r[\"decision\"]),",
-     "line": 186,
+     "line": 187,
      "verdict": "сверено",
      "found": true
     }
@@ -3207,7 +3227,7 @@ const JOURNAL = {
     {
      "path": "tools/playground-template.html",
      "quote": "const KEY = 'symphysis:' + ((typeof location !== 'undefined' && location.pathname)",
-     "line": 215,
+     "line": 236,
      "verdict": "сверено",
      "found": true
     }
@@ -4097,7 +4117,7 @@ const JOURNAL = {
     {
      "path": "tools/journal_cli.py",
      "quote": "except ValueError as e:",
-     "line": 121,
+     "line": 124,
      "verdict": "сверено",
      "found": true
     }
@@ -4171,7 +4191,7 @@ const JOURNAL = {
     {
      "path": "tools/journal_render.py",
      "quote": "raise ValueError(f\"в шаблоне нет метки {mark}\")",
-     "line": 259,
+     "line": 269,
      "verdict": "сверено",
      "found": true
     }
@@ -4245,7 +4265,7 @@ const JOURNAL = {
     {
      "path": "tools/playground-template.html",
      "quote": "schemeShow('svg', schemeBlocksNote(), holder);",
-     "line": 312,
+     "line": 333,
      "verdict": "сверено",
      "found": true
     }
@@ -4702,9 +4722,9 @@ const JOURNAL = {
     {
      "path": "tools/playground-template.html",
      "quote": "id=\"btnScheme\" title=\"схема решения рядом с карточками",
-     "line": 139,
-     "verdict": "сверено",
-     "found": true
+     "line": null,
+     "verdict": "цитаты нет дословно",
+     "found": false
     },
     {
      "path": "openspec/changes/step-help/specs/decision-viewer/spec.md",
@@ -4718,6 +4738,93 @@ const JOURNAL = {
    "nodes": [
     "page"
    ],
+   "finding": ""
+  },
+  {
+   "id": "F-70",
+   "question": "Как понято слово о счётчиках: панель справки чисел развилок не показывает, они есть в шапке страницы; в шапке появляется «Задач закрыто N из N» из снимка справки. Вывод `step_help.py` поля развилок сохраняет: по ним считается шаг, и их читает плагин",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "материалы",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "На нём стоит требование «Шапка страницы показывает закрытые задачи». Понято неверно — оспорь этот факт.",
+   "evidence": [
+    {
+     "path": "openspec/changes/step-help/answers/2026-11-03.md",
+     "quote": "1. Счетчики можно убрать из вкладки справки, они и есть в шапке страницы.",
+     "line": 3,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "finding": ""
+  },
+  {
+   "id": "F-71",
+   "question": "Как понято слово о сбое: `render-html` при несформированной справке печатает сигнал `[..] справка не сформирована: <причина>`, код выхода прежний, панель начинает сообщение теми же словами. Маркер `[..]`, потому что сбой справки не отменяет страницу",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "материалы",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "На нём стоит требование «`render-html` называет несформированную справку». Понято неверно — оспорь этот факт.",
+   "evidence": [
+    {
+     "path": "openspec/changes/step-help/answers/2026-11-03.md",
+     "quote": "2. Давай добавим, что если сбой, то появляется сообщение, что \"справка не сформирована\".",
+     "line": 4,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "finding": ""
+  },
+  {
+   "id": "F-72",
+   "question": "Как понято слово о `--attack`: `render-html` и `view-json` приводят путь файла атаки к пути от корня проекта с разделителем `/` на любой системе, поэтому абсолютный, относительный и с обратными косыми дают одно значение на странице, в ключе спора и в промпте",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "материалы",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "На нём стоит требование «Путь атаки идёт от корня проекта». Номер контракта и так растёт до 2 в этом изменении. Понято неверно — оспорь этот факт.",
+   "evidence": [
+    {
+     "path": "openspec/changes/step-help/answers/2026-11-03.md",
+     "quote": "3. Хотелось бы консистентности.",
+     "line": 5,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
    "finding": ""
   }
  ],
@@ -4803,6 +4910,474 @@ const SCHEME = {
  "blocks": 1,
  "first_line": 4,
  "mermaid": "../../../.symphysis/tools/mermaid.min.js"
+};
+const HELP = {
+ "contract": 2,
+ "taken_at": "2026-11-03T06:35:43+03:00",
+ "versions": {
+  "openspec": "1.15.0-symphysis.4",
+  "symphysis": "0.1.0+27e1a61"
+ },
+ "change": "step-help",
+ "changes": null,
+ "error": null,
+ "current_step": "apply",
+ "current_text": "Следующий шаг по файлам — `apply`, ход модели. Задач закрыто 27 из 28.",
+ "turn": "model",
+ "next_by_status": "apply",
+ "forks": {
+  "open": 0,
+  "parked": 0
+ },
+ "tasks": {
+  "state": "ready",
+  "total": 28,
+  "complete": 27,
+  "remaining": 1
+ },
+ "steps": [
+  {
+   "id": "intent",
+   "state": "done",
+   "turn": "human",
+   "optional": false,
+   "blocks": [
+    "decisions"
+   ],
+   "stops_apply": false,
+   "waits_for": [],
+   "files": [
+    {
+     "path": "openspec/changes/step-help/intent.md",
+     "exists": true
+    }
+   ],
+   "file_note": "файл есть, содержание не проверялось",
+   "texts": {
+    "title": "Намерение человека",
+    "why": "Весь конвейер идёт от слов человека: что нужно и по каким признакам работа считается готовой. Критерии из этого файла становятся первыми записями журнала, и с ними потом сверяются решения.",
+    "mechanics": "- Файл пишет человек: приносит готовый или отвечает на вопрос модели. Ответ сохраняется дословно по шаблону: слова в раздел «Намерение», критерии в «Критерии готовности». Модель содержания не добавляет.\n- «Без критериев готовности» — законное значение.\n- Дальше файл не правится: переработанное намерение живёт записями журнала, файл остаётся словами человека на входе.\n- Пустой файл шаг закрывает, потому что готовность считается по наличию файла. Тогда намерение спросит следующий шаг, до первого круга брейншторма.",
+    "if_skipped": "Модель работает от своего пересказа задачи, а сверить его не с чем. Без критериев готовности нельзя будет заметить отступление от постановки: пометка `deviation` у варианта ссылается на факт, взятый из этого файла.",
+    "what_to_check": "`intent.md`: совпадают ли слова с тем, что человек имел в виду, и названы ли критерии готовности.",
+    "command": "`openspec new change step-help` создаёт изменение, файл кладётся в его каталог. Либо `/opsx:continue step-help`: модель спросит намерение и сохранит ответ.",
+    "how_to_prepare": "Модели, которая создаёт программное обеспечение и работает с symphysis, на входе нужно больше ясности:\n\n- с чем работаем;\n- где искать материалы;\n- какие компоненты участвуют;\n- побольше литералов, чтобы по ним грепать.\n\nК этому добавляется наличие контекст-пакетов для репозиториев, с которыми ведётся работа. Например, в intent сказано: «Добавить API метод для бэкенд, а для фронтэнд добавить форму отчёта». Значит, это уже два проекта, контекст-пакет которых надо брать."
+   },
+   "text_note": null,
+   "prev": null,
+   "next": "decisions"
+  },
+  {
+   "id": "decisions",
+   "state": "done",
+   "turn": "model",
+   "optional": false,
+   "blocks": [
+    "research"
+   ],
+   "stops_apply": false,
+   "waits_for": [],
+   "files": [
+    {
+     "path": "openspec/changes/step-help/decisions.json",
+     "exists": true
+    }
+   ],
+   "file_note": "файл есть, содержание не проверялось",
+   "texts": {
+    "title": "Журнал решений",
+    "why": "Все развилки изменения собираются в одном месте с вариантами и уликами, и решает по ним человек. Следующие шаги стоят на решённых записях, а не на догадках модели.",
+    "mechanics": "- Скилл `symphysis-brainstorm`. Интервью идёт по пяти перспективам: исследователь, упрощатель, хранитель границ, аналитик отказов, закрывающий. Вопросы человеку идут порциями по 2–3.\n- Первые записи — факты постановки: по одному на критерий готовности из `intent.md`, с цитатой.\n- У каждого вопроса свой маршрут. Ответ есть в файлах — факт с уликой, человека не спрашивают. Выбор между вариантами — развилка с вариантами, уликами и одной рекомендацией. Знает только человек — вопрос в чат. Канон безопасности — парковка адресату `ИБ`. Не прочитать сейчас — парковка адресату `материалы`, её разберёт исследование.\n- Находка, из которой напрашивается конструкция, пишется двумя записями: факт-наблюдение и развилка.\n- `journal.py check` сверяет улики с файлами дословно: это сигнал, не стоп.\n- Решение появляется только из слова человека: `decision` пишет `journal.py apply`. Числового гейта ясности нет: круг кончается счётом новых решений и фактов, новый круг — по слову человека.",
+    "if_skipped": "Выбор модели уходит в артефакты минуя человека: увидеть его получится уже в коде. Proposal ссылается на решённые записи `F-NN`, а требований сверх решений в нём быть не должно, поэтому без журнала ему не на что опереться. Статус считает шаг готовым по наличию файла, поэтому журнал без единой записи тоже выглядит готовым.",
+    "what_to_check": "`decisions.json` — сам журнал. `decisions.md` — он же для чтения. `scheme.md` — схема решения, шаги от неё не зависят.",
+    "command": "`/opsx:continue step-help`",
+    "how_to_prepare": ""
+   },
+   "text_note": null,
+   "prev": "intent",
+   "next": "viewer"
+  },
+  {
+   "id": "viewer",
+   "state": "idle",
+   "turn": "human",
+   "optional": false,
+   "blocks": [],
+   "stops_apply": false,
+   "waits_for": [],
+   "files": [],
+   "file_note": null,
+   "texts": {
+    "title": "Круг просмотрщика",
+    "why": "Здесь решает человек. Страница — единственное место, где развилки видны целиком: все варианты, включая маловероятные с причиной, рекомендация под списком, антиподы, зависимости, парковки, факты с уликами.",
+    "mechanics": "- Скилл `symphysis-viewer`. Круг идёт после брейншторма и проб на шагах `decisions`, `specs`, `consequences` и всякий раз, когда в журнале появилась новая развилка.\n- Режимы страницы: «решения» — круг просмотрщика; «проверка» — снимок решений перед proposal, только чтение; «атака» — строки файлов атаки по линзам.\n- Человек выбирает вариант, пишет слово, добавляет вариант или развилку, паркует вопрос с адресатом, оспаривает факт и копирует промпт кнопкой. Слово к выбору необязательно; при выборе мимо рекомендации страница его просит, но внести запись это не мешает.\n- Модель сохраняет промпт как есть в `answers/<дата>.md` и вносит его `journal.py apply`: всё или ничего, отказ называет запись и причину. Выбор в чате не предлагается, JSON руками не правится.\n- «Реши сам» — тоже слово человека: вносится рекомендованный вариант, и в журнале видно, что решение отдано модели.",
+    "if_skipped": "Открытая развилка следующие шаги не держит: граф считает только файлы, поэтому модель может идти дальше. Вопрос остаётся без решения человека, его подхватят только атака и Open Questions дизайна, а реализация пойдёт на допущении.",
+    "what_to_check": "`symphysis.html` — страница. `decisions.json` — поле `decision` у решённых записей. `answers/<дата>.md` — промпт возврата как есть.",
+    "command": "`python .symphysis/tools/journal.py render-html openspec/changes/step-help/decisions.json --out openspec/changes/step-help/symphysis.html` собирает страницу; если она собиралась с атакой, полная команда с `--attack` стоит рядом со снимком. Промпт вносит `python .symphysis/tools/journal.py apply openspec/changes/step-help/decisions.json openspec/changes/step-help/answers/<дата>.md`.",
+    "how_to_prepare": ""
+   },
+   "text_note": null,
+   "prev": "decisions",
+   "next": "research"
+  },
+  {
+   "id": "research",
+   "state": "done",
+   "turn": "model",
+   "optional": false,
+   "blocks": [
+    "attack-decisions",
+    "proposal"
+   ],
+   "stops_apply": false,
+   "waits_for": [],
+   "files": [
+    {
+     "path": "openspec/changes/step-help/research/none.md",
+     "exists": true
+    }
+   ],
+   "file_note": "файл есть, содержание не проверялось",
+   "texts": {
+    "title": "Исследование и второй круг",
+    "why": "Вопросы, припаркованные к материалам, получают ответ с цитатами из прочитанных файлов. Второй круг брейншторма закрывает по этим ответам записи журнала.",
+    "mechanics": "- Своего скилла у шага нет, правила стоят в инструкции схемы.\n- На каждую парковку адресату «материалы» — файл `research/<F-NN>.md`, во frontmatter `genre` (устройство, размещение, края, проверка или аналоги), `question` и `brief`.\n- Найденное — путь, строка и дословная цитата. Ненайденное — «не найдено» и «искал:» с шаблонами дословно.\n- Ответ можно добыть пробой: раздел «Проба» с условиями и следом в каталоге изменения. След не сохранён — находка идёт в «Не найдено» с причиной «следа нет».\n- Парковок нет — один файл `research/none.md`: это законный исход.\n- Второй круг идёт скиллом `symphysis-brainstorm` после отчётов: ответ вносится в запись, улики — путём и цитатой. О новом круге модель спрашивает, отказ ложится в журнал строкой «брейншторм закончен по решению человека».",
+    "if_skipped": "Припаркованные вопросы дойдут до proposal без ответа, и решения встанут на том, что никто не проверил. Без второго круга находки останутся в файлах и не попадут в записи журнала, на которые опираются следующие шаги.",
+    "what_to_check": "`research/<F-NN>.md` или `research/none.md`: есть ли цитаты и честно ли названо ненайденное. `decisions.json`: поле `finding` у парковок и строка о конце брейншторма в `notes[]`.",
+    "command": "`/opsx:continue step-help`",
+    "how_to_prepare": ""
+   },
+   "text_note": null,
+   "prev": "viewer",
+   "next": "attack-decisions"
+  },
+  {
+   "id": "attack-decisions",
+   "state": "ready",
+   "turn": "model",
+   "optional": true,
+   "blocks": [],
+   "stops_apply": false,
+   "waits_for": [],
+   "files": [
+    {
+     "path": "openspec/changes/step-help/attack/decisions.md",
+     "exists": false
+    }
+   ],
+   "file_note": null,
+   "texts": {
+    "title": "Атака журнала, по желанию",
+    "why": "Проверка журнала до того, как на нём встанут артефакты: какие записи ничем не подкреплены и что в решениях расходится со словами человека.",
+    "mechanics": "- Скилл `symphysis-attack`. Исходная позиция FORCE stance: запись считается негодной, пока улика не докажет обратное. Атака читает файлы и не исполняет цель.\n- Линзы журнала: `context-compliance`, `claim-authority`, `claim-extraction`, `coverage`.\n- У строки есть линза, инвариант и тяжесть: `блокер`, `предупреждение` или `справка`. Невыводимое из цели получает опору «по спеке не выводится» и идёт человеку вопросом.\n- Вердикт во frontmatter: `status: passed` при нуле блокеров, иначе `gaps_found`. Предупреждения идут человеку списком и ничего не держат.\n- Вердикт привязан к хешу журнала, а следующие шаги журнал дописывают. Позже статус покажет `verdict: stale`: это сигнал, идти дальше можно, свежий вердикт даст повтор атаки.\n- Шаг зовётся только по имени. Вызванная атака становится воротами: пока нет `status: passed`, следующий шаг её ждёт.",
+    "if_skipped": "Неподкреплённая запись или решение против постановки дойдут до proposal и дизайна: там исправлять дороже, потому что на записи уже стоят другие файлы. Найти это сможет разве что атака артефактов.",
+    "what_to_check": "`attack/decisions.md`: `status` во frontmatter и таблица строк. `symphysis.html`, режим «атака»: те же строки по линзам.",
+    "command": "`/opsx:continue step-help attack-decisions`",
+    "how_to_prepare": ""
+   },
+   "text_note": null,
+   "prev": "research",
+   "next": "proposal"
+  },
+  {
+   "id": "proposal",
+   "state": "done",
+   "turn": "model",
+   "optional": false,
+   "blocks": [
+    "specs",
+    "design"
+   ],
+   "stops_apply": false,
+   "waits_for": [],
+   "files": [
+    {
+     "path": "openspec/changes/step-help/proposal.md",
+     "exists": true
+    }
+   ],
+   "file_note": "файл есть, содержание не проверялось",
+   "texts": {
+    "title": "Зачем изменение и что оно задевает",
+    "why": "Договор об объёме: почему изменение нужно и какие capabilities оно затрагивает. По этому списку потом пишутся спецификации.",
+    "mechanics": "- Своего скилла у шага нет, правила стоят в инструкции схемы. Разделы шаблона: Why, What Changes, Capabilities, Impact, «Отступления от постановки».\n- Основание — решённые записи журнала: на них ссылаются номером `F-NN`, не пересказывая. Требований, которых нет в решениях, не добавляют.\n- Capabilities — контракт со спецификациями: каждая получит свой файл. Называют её по устойчивому поведению системы, а не по работе в этом изменении.\n- В «Отступления от постановки» идут решённые развилки, у выбранного варианта которых есть поле `deviation`.\n- Перед шагом удобно открыть режим «проверка» на странице журнала: снимок принятых решений, только чтение.",
+    "if_skipped": "Спецификациям не из чего взять список capabilities, и объём изменения определит сама модель, по ходу письма. Отступления от постановки никто не соберёт в одном месте, и человек не увидит их списком.",
+    "what_to_check": "`proposal.md`: совпадает ли объём с тем, что решал человек, и правда ли нет отступлений, если там написано «нет».",
+    "command": "`/opsx:continue step-help`",
+    "how_to_prepare": ""
+   },
+   "text_note": null,
+   "prev": "attack-decisions",
+   "next": "specs"
+  },
+  {
+   "id": "specs",
+   "state": "done",
+   "turn": "model",
+   "optional": false,
+   "blocks": [
+    "consequences",
+    "security",
+    "tasks",
+    "attack-artifacts"
+   ],
+   "stops_apply": false,
+   "waits_for": [],
+   "files": [
+    {
+     "path": "openspec/changes/step-help/specs/decision-journal/spec.md",
+     "exists": true
+    },
+    {
+     "path": "openspec/changes/step-help/specs/decision-viewer/spec.md",
+     "exists": true
+    },
+    {
+     "path": "openspec/changes/step-help/specs/plugin-core-contract/spec.md",
+     "exists": true
+    },
+    {
+     "path": "openspec/changes/step-help/specs/project-installer/spec.md",
+     "exists": true
+    },
+    {
+     "path": "openspec/changes/step-help/specs/step-help/spec.md",
+     "exists": true
+    }
+   ],
+   "file_note": "файл есть, содержание не проверялось",
+   "texts": {
+    "title": "Спецификации поведения",
+    "why": "Наблюдаемое поведение, записанное требованиями и сценариями. По нему потом проверяют дизайн и код, поэтому всё, что не названо здесь, проверить будет нечем.",
+    "mechanics": "- Грамматика OpenSpec: `### Requirement:` с SHALL или MUST, у каждого сценарий `#### Scenario:` в виде GIVEN / WHEN / THEN, дельты в секциях `ADDED`, `MODIFIED`, `REMOVED`. `MODIFIED` несёт требование целиком.\n- Проба краёв, скилл `symphysis-edge-probe`: каждое требование проходит закрытую таксономию из восьми категорий (boundary, adjacency, empty, encoding, ordering, precision, idempotency, concurrency), на каждую пару требования и категории — строка файла покрытия. Выключается настройкой в `symphysis.yaml`.\n- Проба запретов, скилл `symphysis-prohibition-probe`: каждому требованию задаётся вопрос, чем оно может тихо стать, чего автор не хотел бы, а спека не запрещает. Инженерная гигиена отсеивается, канон безопасности паркуется адресату `ИБ`.\n- Найденное идёт кандидатами в журнал, у каждого конкретный край или запрет и варианты исхода; выбирает человек в круге просмотрщика. Исход Specify становится новым сценарием.",
+    "if_skipped": "Реализации и атаке не с чем сверяться: модель строит по своему прочтению решений. Края и запреты, которых спека не назвала, проверяющий не увидит, а код поведёт себя на них как получится.",
+    "what_to_check": "`specs/<capability>/spec.md`: сценарии и след проб в комментариях. `edge-probe.md`: покрытие по парам. `decisions.json`: кандидаты проб и их исходы.",
+    "command": "`/opsx:continue step-help`",
+    "how_to_prepare": ""
+   },
+   "text_note": null,
+   "prev": "proposal",
+   "next": "consequences"
+  },
+  {
+   "id": "consequences",
+   "state": "done",
+   "turn": "model",
+   "optional": false,
+   "blocks": [
+    "design"
+   ],
+   "stops_apply": false,
+   "waits_for": [],
+   "files": [
+    {
+     "path": "openspec/changes/step-help/consequences.md",
+     "exists": true
+    }
+   ],
+   "file_note": "файл есть, содержание не проверялось",
+   "texts": {
+    "title": "Опись последствий",
+    "why": "Что делает код, на который опирается изменение, когда что-то идёт не так, и есть ли на это сценарий в спецификациях. Здесь ветки отказа и допущения конструкции доходят до человека раньше, чем появится дизайн.",
+    "mechanics": "- Скилл `symphysis-consequences`. Состав шага модель берёт скриптом `symphysis_config.py` и человека о нём не спрашивает; выбор лежит в личном `symphysis.yaml`.\n- Места кода предлагает `journal.py code-sites`, выбирает модель: разобрать, дополнить или исключить с доводом о конкретном файле.\n- Строка описи — одна на ветку отказа: цитата из кода, что код делает при отказе, что конструкция об этом считает, и итог сверки со сценариями.\n- Ветка или допущение без сценария в `specs/` — кандидат журнала с исходами Specify, Dismiss, Backstop, Defer; выбирает человек в круге просмотрщика.\n- Конец шага — pre-mortem: три причины провала всего изменения, тоже кандидатами.\n- Кандидаты пишутся первыми, файл последним: статус считает шаг сделанным по наличию файла. Разбирать нечего или все колонки выключены — файл с причиной, это законный исход.",
+    "if_skipped": "Поведение на сбоях останется тем, что получится в коде: например, битый файл данных прочитается как пустой список, и этого никто не заметит. Допущения конструкции о чужом коде так и останутся непроверенными до первого отказа.",
+    "what_to_check": "`consequences.md`: разделы «Опись», «Исключения», «Pre-mortem» и строка `**Состав:**`. `decisions.json`: кандидаты с префиксами `[ветка]`, `[допущение]`, `[pre-mortem]`.",
+    "command": "`/opsx:continue step-help`",
+    "how_to_prepare": ""
+   },
+   "text_note": null,
+   "prev": "specs",
+   "next": "design"
+  },
+  {
+   "id": "design",
+   "state": "done",
+   "turn": "model",
+   "optional": false,
+   "blocks": [
+    "tasks",
+    "attack-artifacts"
+   ],
+   "stops_apply": false,
+   "waits_for": [],
+   "files": [
+    {
+     "path": "openspec/changes/step-help/design.md",
+     "exists": true
+    }
+   ],
+   "file_note": "файл есть, содержание не проверялось",
+   "texts": {
+    "title": "Дизайн",
+    "why": "Как реализовать: решения журнала, риски и открытые вопросы в одном документе, от которого идут задачи.",
+    "mechanics": "- Своего скилла у шага нет. Файл собирает `journal.py render-design`: Decisions, Risks / Trade-offs и Open Questions приходят из журнала.\n- Context и Goals / Non-Goals модель вписывает руками после последнего рендера. Повторная сборка эти разделы стирает, поэтому после правки журнала их вписывают заново.\n- Решение излагается, а не принимается: его уже принял человек. Чтобы изменить решение, правят журнал и рендерят заново.",
+    "if_skipped": "Задачам не от чего идти: что строить, скажут спецификации, а как и с какими рисками, останется в журнале, который при реализации не читают. Открытые вопросы не окажутся перед глазами до начала работы.",
+    "what_to_check": "`design.md`: Open Questions, не осталось ли там важного без решения, и Context с границами, которые модель написала сама.",
+    "command": "`/opsx:continue step-help`",
+    "how_to_prepare": ""
+   },
+   "text_note": null,
+   "prev": "consequences",
+   "next": "security"
+  },
+  {
+   "id": "security",
+   "state": "done",
+   "turn": "model",
+   "optional": false,
+   "blocks": [
+    "attack-artifacts"
+   ],
+   "stops_apply": true,
+   "waits_for": [],
+   "files": [
+    {
+     "path": "openspec/changes/step-help/security.md",
+     "exists": true
+    }
+   ],
+   "file_note": "файл есть, содержание не проверялось",
+   "texts": {
+    "title": "Чек-лист безопасности",
+    "why": "Канон информационной безопасности отмечается по спецификациям пункт за пунктом: чтобы инъекции, пути и токены не остались вопросом, который никто не задал.",
+    "mechanics": "- Своего скилла у шага нет, правила стоят в инструкции схемы. Канон не записывается в журнал, а отмечается здесь.\n- Пункты: инъекции через содержимое файлов, пути с `../`, токены и срок их жизни, права, бинарные файлы.\n- Таблица: пункт, «применимо / неприменимо — причина», чем проверено. Неприменимый пункт остаётся в таблице с причиной; применимый называет требование из спецификаций, которое его закрывает.\n- Сюда приходят парковки адресату `ИБ` из проб и брейншторма.",
+    "if_skipped": "Канон остаётся непроверенным: уязвимость обнаружится уже в готовом коде, если обнаружится вообще. Парковки адресату `ИБ` останутся без ответа.",
+    "what_to_check": "`security.md`: у каждого применимого пункта названо требование и чем он проверен.",
+    "command": "`/opsx:continue step-help`",
+    "how_to_prepare": ""
+   },
+   "text_note": null,
+   "prev": "design",
+   "next": "tasks"
+  },
+  {
+   "id": "tasks",
+   "state": "done",
+   "turn": "model",
+   "optional": false,
+   "blocks": [
+    "attack-artifacts"
+   ],
+   "stops_apply": true,
+   "waits_for": [],
+   "files": [
+    {
+     "path": "openspec/changes/step-help/tasks.md",
+     "exists": true
+    }
+   ],
+   "file_note": "файл есть, содержание не проверялось",
+   "texts": {
+    "title": "Задачи реализации",
+    "why": "Работа, разбитая на задачи, каждую из которых можно закрыть проверкой. По этому списку идёт реализация и считается прогресс.",
+    "mechanics": "- Своего скилла у шага нет, правила стоят в инструкции схемы. Грамматика OpenSpec: группы `## N. Название`, задачи `- [ ] N.M Описание`; прогресс считается только по чекбоксам.\n- Каждая задача называет проверку своего завершения прямо в строке: тест, команду, наблюдаемый результат или файл.\n- Тесты и документацию несёт та группа, чью работу они проверяют, а не последняя.\n- Порядок — по зависимости, задача укладывается в один сеанс.\n- Открытый вопрос дизайна, меняющий задачи, решается с человеком до списка.",
+    "if_skipped": "Порядок и объём реализации определит модель по ходу работы, а закрывать задачу будет нечем, кроме её собственного слова. Прогресс считать не по чему.",
+    "what_to_check": "`tasks.md`: у каждой задачи есть проверка, порядок идёт по зависимости.",
+    "command": "`/opsx:continue step-help`",
+    "how_to_prepare": ""
+   },
+   "text_note": null,
+   "prev": "security",
+   "next": "attack-artifacts"
+  },
+  {
+   "id": "attack-artifacts",
+   "state": "ready",
+   "turn": "model",
+   "optional": true,
+   "blocks": [],
+   "stops_apply": false,
+   "waits_for": [],
+   "files": [
+    {
+     "path": "openspec/changes/step-help/attack/artifacts.md",
+     "exists": false
+    }
+   ],
+   "file_note": null,
+   "texts": {
+    "title": "Атака артефактов, по желанию",
+    "why": "Проверка спецификаций, описи, дизайна, чек-листа и задач перед реализацией: проходит ли каждый сценарий по коду того механизма, который назвал дизайн, и существует ли то, что названо.",
+    "mechanics": "- Скилл `symphysis-attack`, исходная позиция та же: утверждение считается ложным, пока улика не докажет обратное. Атака читает файлы и грепает, код не запускает.\n- Линзы артефактов: `scenario-run` — сценарий проходится по коду механизма до исхода и сравнивается с THEN; `claim-extraction` — пути, команды, номера `F-NN` и имена модулей проверяются грепом.\n- Вердикт: `status: passed` при нуле блокеров, иначе `gaps_found`. Блокер закрывается правкой файла, а если не хватает решения — новой развилкой журнала; затем атака повторяется. На учебном проекте первый вызов дал `gaps_found`, второй `passed`: такой круг ожидаем.\n- Предупреждения идут человеку списком и при реализации читаются как заметки к задачам.\n- Хеши целей лежат в файле атаки: правка цели обесценивает вердикт.\n- Шаг зовётся только по имени. Вызванная атака становится воротами: пока у неё `gaps_found`, реализация не начнётся. Невызванную реализация только называет.",
+    "if_skipped": "Сценарий, который код по этому дизайну не пройдёт, и несуществующий путь найдутся уже при реализации, когда на них потрачена работа. Проверкой остаётся только чтение артефактов человеком.",
+    "what_to_check": "`attack/artifacts.md`: `status` во frontmatter, блокеры и предупреждения. `symphysis.html`, режим «атака»: те же строки по линзам.",
+    "command": "`/opsx:continue step-help attack-artifacts`",
+    "how_to_prepare": ""
+   },
+   "text_note": null,
+   "prev": "tasks",
+   "next": "apply"
+  },
+  {
+   "id": "apply",
+   "state": "ready",
+   "turn": "model",
+   "optional": false,
+   "blocks": [],
+   "stops_apply": false,
+   "waits_for": [],
+   "files": [],
+   "file_note": null,
+   "texts": {
+    "title": "Реализация",
+    "why": "Код по списку задач: модель идёт по `tasks.md` и закрывает задачи их проверками.",
+    "mechanics": "- Работа идёт по `tasks.md` по порядку, задача отмечается `- [x]`, закрывает её проверка из её строки.\n- Строки `предупреждение` в файлах `attack/*.md` читаются до начала работы как заметки к задачам.\n- Модель останавливается, если упёрлась в блокер или нужно уточнение.",
+    "if_skipped": "Спецификации опишут поведение, которого в коде нет: синхронизация и архив перенесут его в общие спеки как состоявшееся.",
+    "what_to_check": "`tasks.md`: отметки задач. Код и тесты, которые названы в проверках задач.",
+    "command": "`/opsx:apply step-help`",
+    "how_to_prepare": ""
+   },
+   "text_note": null,
+   "prev": "attack-artifacts",
+   "next": "sync"
+  },
+  {
+   "id": "sync",
+   "state": "waiting",
+   "turn": "model",
+   "optional": false,
+   "blocks": [],
+   "stops_apply": false,
+   "waits_for": [],
+   "files": [],
+   "file_note": null,
+   "texts": {
+    "title": "Синхронизация спек",
+    "why": "Дельты из `specs/` изменения переходят в общие спеки `openspec/specs/`: туда, откуда следующее изменение узнает, как система ведёт себя сейчас.",
+    "mechanics": "- Команда сливает дельты изменения с общими спеками; изменение при этом остаётся активным.\n- Следа в файлах изменения синхронизация не оставляет, поэтому сделана ли она, справка не видит. Спеки сравнивает сама команда архива.",
+    "if_skipped": "Общие спеки не узнают о новом поведении, и следующее изменение будет проектироваться от устаревшего описания. Архив заметит расхождение сам и предложит синхронизацию.",
+    "what_to_check": "`openspec/specs/`, от корня проекта: появились ли там требования из `specs/<capability>/spec.md` этого изменения.",
+    "command": "`/opsx:sync step-help`",
+    "how_to_prepare": ""
+   },
+   "text_note": null,
+   "prev": "apply",
+   "next": "archive"
+  },
+  {
+   "id": "archive",
+   "state": "waiting",
+   "turn": "model",
+   "optional": false,
+   "blocks": [],
+   "stops_apply": false,
+   "waits_for": [],
+   "files": [],
+   "file_note": null,
+   "texts": {
+    "title": "Архивация",
+    "why": "Завершённое изменение уходит из активных и остаётся в архиве целиком, со всеми решениями и артефактами.",
+    "mechanics": "- Изменение переезжает в `openspec/changes/archive/<дата>-step-help/`.\n- Команда сама сверяет артефакты и задачи: незавершённое показывает предупреждением и просит подтвердить.\n- Спеки уже синхронизированы — команда спросит `Archive now`, `Sync anyway` или `Cancel`, обычно подходит `Archive now`. Без синхронизации она предложит сделать её сама.",
+    "if_skipped": "Изменение остаётся активным. Когда появится следующее, команды без имени начнут спрашивать, какое брать, а справка без `--change` перестанет называть шаг.",
+    "what_to_check": "`openspec/changes/archive/<дата>-step-help/`, от корня проекта: каталог изменения на новом месте. `openspec/specs/`: итоговые спеки.",
+    "command": "`/opsx:archive step-help`",
+    "how_to_prepare": ""
+   },
+   "text_note": null,
+   "prev": "sync",
+   "next": null
+  }
+ ],
+ "rebuild": "python .symphysis/tools/journal.py render-html openspec/changes/step-help/decisions.json --out openspec/changes/step-help/symphysis.html"
 };
 const ADDRESSEES = ['материалы','человек','ИБ'];
 /* линзы атаки — закрытые списки скилла symphysis-attack, по файлу атаки: журнал (`attack/decisions.md`, цель — один `decisions.json`)
@@ -4956,12 +5531,99 @@ function headerHeight() {
   if (h) document.documentElement.style.setProperty('--headh', h + 'px');
 }
 window.addEventListener('resize', headerHeight);
+/* панель показывает схему или справку в одной области; выбор помнит браузер, без выбора — схема (F-29, F-32). Схема при открытой
+   справке не рисуется: прокрутка к верхнему узлу считается на видимом контейнере (F-35) */
+let panelView = 'scheme';
+try { if (localStorage.getItem(KEY + ':panel') === 'help') panelView = 'help'; } catch (e) {}
 function renderSchemePanel() {
-  document.getElementById('schemePanel').classList.toggle('hidden', !schemeOn);
+  const panel = document.getElementById('schemePanel'), help = panelView === 'help';
+  panel.classList.toggle('hidden', !schemeOn);
+  panel.dataset.view = panelView;
   document.body.classList.toggle('scheme-on', schemeOn);
   document.getElementById('btnScheme').classList.toggle('active', schemeOn);
-  if (schemeOn) schemeLoad();
+  document.getElementById('schemeBody').classList.toggle('hidden', help);
+  document.getElementById('helpBody').classList.toggle('hidden', !help);
+  document.querySelectorAll('#panelTabs button').forEach(b => b.classList.toggle('active', b.dataset.panel === panelView));
+  if (schemeOn && !help) schemeLoad();
 }
+
+/* ---------- справка о шаге: снимок от render-html, страница его не обновляет (F-21) ---------- */
+/* текст снимка — данные: на страницу только через esc и md, как текст журнала (F-53). Свой контейнер: дорисовка схемы справку не заменит (F-63) */
+const HELP_SECTIONS = [['Как готовить','how_to_prepare'], ['Зачем','why'], ['Механики','mechanics'], ['Если пропустить','if_skipped'], ['Что смотреть','what_to_check'], ['Команда','command']];
+const HELP_STATES = { done:'готов', ready:'готов к работе', blocked:'ждёт других шагов', skipped:'пропущен', waiting:'задачи не закрыты', idle:'открытых развилок нет', unknown:'журнал не читается', all_done:'задачи закрыты' };
+let helpOpen = HELP.current_step;
+function helpFind(id) { return (HELP.steps || []).find(s => s.id === id) || null; }
+function helpState(s) {
+  if (s.id === 'viewer' && s.state === 'ready') return 'есть открытые развилки';
+  if (s.id === 'apply' && s.state === 'ready') return 'задачи не закрыты';
+  if (s.id === 'apply' && s.state === 'blocked') return 'реализация заблокирована';
+  return HELP_STATES[s.state] || String(s.state);
+}
+/* подраздел `steps.md`: абзацы и списки `- `; единственная разметка в строке — backticks, как в журнале */
+function helpMarkup(text) {
+  return String(text || '').split(/\n\s*\n/).map(block => {
+    const lines = block.split('\n');
+    return lines.every(l => l.startsWith('- ')) ? '<ul>' + lines.map(l => '<li>' + md(l.slice(2)) + '</li>').join('') + '</ul>' : '<p>' + md(block) + '</p>';
+  }).join('');
+}
+/* что заблокируется и остановит ли шаг реализацию — из графа; что теряется по смыслу — из текста (F-25) */
+function helpGraphFacts(s) {
+  const facts = [];
+  if (s.optional) facts.push('Шаг необязательный, зовётся только по имени.');
+  if (s.blocks.length) facts.push('Без него не начнутся: ' + s.blocks.join(', ') + '.');
+  if (s.stops_apply) facts.push('Без него не начнётся `apply`.');
+  if (s.waits_for.length) facts.push('Ждёт: ' + s.waits_for.join(', ') + '.');
+  return facts.length ? '<ul>' + facts.map(f => '<li>' + md(f) + '</li>').join('') + '</ul>' : '';
+}
+function helpFiles(s) {
+  return s.files.length ? '<ul>' + s.files.map(f => '<li><code>' + esc(f.path) + '</code>' + (f.exists ? '' : ' — файла ещё нет') + '</li>').join('') + '</ul>' : '';
+}
+function helpPageHtml(id) {
+  const s = helpFind(id), open = '<div class="helppage" data-page="' + esc(id) + '">';
+  if (!s) return open + '<div class="note info">Текста нет</div></div>';
+  let html = open + '<div class="helptitle">' + md(s.texts.title || s.id) + '</div><div class="helphead"><code>' + esc(s.id) + '</code>' +
+    (id === HELP.current_step ? '<span class="badge ok">следующий по файлам</span>' : '') +
+    (s.state ? '<span class="badge">' + esc(helpState(s)) + '</span>' : '') +
+    '<span class="badge">ход ' + (s.turn === 'human' ? 'человека' : 'модели') + '</span>' +
+    (s.optional ? '<span class="badge">необязательный</span>' : '') + '</div>';
+  if (s.file_note) html += '<div class="note warn">' + esc(s.file_note) + '</div>';
+  if (s.text_note) html += '<div class="note info">' + esc(s.text_note) + '</div>';
+  for (const [title, key] of HELP_SECTIONS) {
+    const extra = key === 'if_skipped' ? helpGraphFacts(s) : key === 'what_to_check' ? helpFiles(s) : '';
+    if (s.texts[key] || extra) html += '<h3>' + esc(title) + '</h3>' + extra + helpMarkup(s.texts[key]);
+  }
+  const nav = (el, label, to) => '<button class="small" id="' + el + '"' + (to ? ' data-step="' + esc(to) + '"' : ' disabled') + '>' + label + (to ? ': ' + esc(to) : '') + '</button>';
+  return html + '<div class="row">' + nav('helpPrev', 'предыдущий', s.prev) + nav('helpNext', 'следующий', s.next) + '</div></div>';
+}
+/* при сбое панель даёт только причину и кнопку правил намерения (F-47); кнопка не зависит от расчёта и отметку не двигает (F-54) */
+function renderHelp() {
+  const v = HELP.versions || {}, steps = HELP.error ? [] : (HELP.steps || []);
+  let html = HELP.error ? '<div class="note bad" id="helpError">' + md(HELP.error) + '</div>' : '';
+  if (HELP.current_text) html += '<div class="note info">' + md(HELP.current_text) + '</div>';
+  html += '<div class="helpsnap">снимок: <span id="helpTime">' + esc(HELP.taken_at || 'не снимался') + '</span>, страница его не обновляет' +
+    (HELP.rebuild ? '. Новый снимок, из корня проекта: <code id="helpRebuild">' + esc(HELP.rebuild) + '</code>' : '') + '</div>';
+  html += '<div class="row"><button class="small" id="helpHowTo" style="flex:0 0 auto">Как готовить intent.md?</button></div>';
+  if (steps.length) html += '<div class="helpsteps">' + steps.map(s => '<button class="helpstep' + (s.id === HELP.current_step ? ' current' : '') + (s.id === helpOpen ? ' open' : '') + '" data-step="' + esc(s.id) + '">' +
+    (s.id === HELP.current_step ? '● ' : '') + esc(s.id) + ' <span class="who">' + (s.turn === 'human' ? 'человек' : 'модель') + '</span></button>').join('') + '</div>';
+  if (helpOpen) html += helpPageHtml(helpOpen);
+  html += '<div class="helpver" id="helpVersions">форк ' + esc(v.openspec || 'неизвестно') + ' · symphysis ' + esc(v.symphysis || 'неизвестно') + '</div>';
+  document.getElementById('helpBody').innerHTML = html;
+}
+document.getElementById('helpBody').onclick = e => {
+  const hit = e.target.closest('[data-step], #helpHowTo');
+  if (!hit) return;
+  helpOpen = hit.id === 'helpHowTo' ? 'intent' : hit.dataset.step;
+  renderHelp();
+  const page = document.querySelector('#helpBody .helppage');
+  if (page) page.scrollIntoView({ block:'nearest' });
+};
+document.getElementById('panelTabs').onclick = e => {
+  const hit = e.target.closest('button[data-panel]');
+  if (!hit) return;
+  panelView = hit.dataset.panel;
+  try { localStorage.setItem(KEY + ':panel', panelView); } catch (err) {}
+  renderSchemePanel();
+};
 
 function dec(id) { return state.decisions[id] || (state.decisions[id] = { choice:null, word:'', parked:[] }); }
 function journalChoice(rec) { return rec.decision && rec.decision.option ? rec.decision.option : null; }
@@ -5141,6 +5803,11 @@ function renderToc() {
   }).join('');
 }
 
+/* «Задач закрыто N из N» в шапке: из снимка справки; без снимка, при сбое расчёта и без задач части нет (F-70) */
+function helpTasksPart() {
+  const t = HELP && !HELP.error && HELP.tasks;
+  return t && t.total > 0 ? ' · Задач закрыто <b>' + esc(t.complete) + ' из ' + esc(t.total) + '</b>' : '';
+}
 function renderStats() {
   const forks = JOURNAL.records.filter(r => r.kind !== 'факт');
   const decided = forks.filter(r => chosen(r.id)).length;
@@ -5150,7 +5817,7 @@ function renderStats() {
   document.getElementById('stats').innerHTML =
     'развилок <b>' + forks.length + '</b> · решено <b>' + decided + '</b>' + (changed ? ' · изменено здесь <b>' + changed + '</b>' : '') +
     ' · открыто <b>' + (forks.length - decided) + '</b> · с парковкой <b>' + parked + '</b> · фактов <b>' + (JOURNAL.records.length - forks.length) + '</b>' +
-    (disputed ? ' · оспорено <b>' + disputed + '</b>' : '') + (state.newForks.length ? ' · добавлено развилок <b>' + state.newForks.length + '</b>' : '');
+    (disputed ? ' · оспорено <b>' + disputed + '</b>' : '') + (state.newForks.length ? ' · добавлено развилок <b>' + state.newForks.length + '</b>' : '') + helpTasksPart();
   const s = JOURNAL.stats || {};
   document.getElementById('evstats').textContent = 'улик сверено ' + (s.evidence_found ?? '?') + ' из ' + (s.evidence_total ?? '?') + ' · собрано ' + (JOURNAL.generated || '');
 }
@@ -5492,6 +6159,7 @@ document.getElementById('fileImport').onchange = e => {
 };
 document.getElementById('btnReset').onclick = () => { if (confirm('Стереть все решения и споры из браузера? Решения, уже внесённые в журнал, останутся.')) { state = EMPTY(); save(); attackState = { disputes:{} }; saveAttack(); document.getElementById('notes').value = ''; render(); } };
 document.getElementById('title').textContent = JOURNAL.title || document.title;
+renderHelp();
 render();
 </script>
 </body>

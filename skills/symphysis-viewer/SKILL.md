@@ -2,7 +2,7 @@
 name: symphysis-viewer
 description: >-
   Просмотрщик журнала решений `decisions.json` схемы symphysis: сборка
-  `decisions.html` командой `journal.py render-html`, три режима —
+  `symphysis.html` командой `journal.py render-html`, три режима —
   «решения» (круг просмотрщика: варианты, слово, парковка, промпт
   возврата), «проверка» (снимок решений перед proposal, только чтение)
   и «атака» (строки `attack/*.md` по линзам); слово человека возвращается
@@ -68,7 +68,7 @@ Playground (`playground/SKILL.md`: один HTML-файл, живой перес
 python .symphysis/tools/journal.py check <каталог изменения>/decisions.json
 python .symphysis/tools/journal.py render-md <каталог изменения>/decisions.json --out <каталог изменения>/decisions.md
 # страница; --attack — файлы атаки для режима «атака», повторяемый; битый файл атаки — код 2
-python .symphysis/tools/journal.py render-html <каталог изменения>/decisions.json --out <каталог изменения>/decisions.html \
+python .symphysis/tools/journal.py render-html <каталог изменения>/decisions.json --out <каталог изменения>/symphysis.html \
     [--attack <каталог изменения>/attack/decisions.md] [--attack <каталог изменения>/attack/artifacts.md]
 # возврат: промпт из кнопки «Скопировать промпт» сохранён как есть; apply — всё или ничего
 python .symphysis/tools/journal.py apply <каталог изменения>/decisions.json <каталог изменения>/answers/<дата>.md
@@ -187,7 +187,7 @@ backticks — косая и разделитель; в цитате кода л�
 ## Порядок
 
 1. Перед показом: `check` (код 1 — чини журнал, негодный не показывай),
-   `render-md`, `render-html --out <каталог изменения>/decisions.html`
+   `render-md`, `render-html --out <каталог изменения>/symphysis.html`
    с `--attack`, если файлы атаки есть.
 2. Проверь страницу до того, как назвать путь: каждая запись журнала
    на месте; у развилки — все варианты с «маловероятно» и причиной,
@@ -198,7 +198,7 @@ backticks — косая и разделитель; в цитате кода л�
    с прошлого круга» у записи нет: её заменяют группировка по дате
    решения в «проверке» и строка «круг N закончен» в `notes[]`; такое
    поле — предложение человеку, не самодеятельность.
-3. Человеку — путь к `decisions.html` и одна фраза, что нового
+3. Человеку — путь к `symphysis.html` и одна фраза, что нового
    с прошлого показа: сколько записей добавлено, какие открыты, есть ли
    атака. Выбор в чате не предлагай.
 4. Человек возвращает промпт — сохрани как есть
