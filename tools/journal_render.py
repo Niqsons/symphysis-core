@@ -11,7 +11,7 @@ from pathlib import Path
 from journal_model import ADDED_MARK, DEVIATION_LABEL, DEVIATION_TAIL, RE_ANCHOR, ROOT, _evidence_of, _flat
 
 __all__ = [
-    "TEMPLATE_PATH", "PLACEHOLDER", "PLACEHOLDER_ATTACK", "PLACEHOLDER_SCHEME", "PLACEHOLDER_HELP", "CONTRACT",
+    "TEMPLATE_PATH", "PLACEHOLDER", "PLACEHOLDER_ATTACK", "PLACEHOLDER_SCHEME", "PLACEHOLDER_HELP", "PLACEHOLDER_LINKS", "CONTRACT",
     "parse_scheme", "scheme_payload", "no_help_snapshot",
     "render_md", "render_html", "render_design", "view_payload", "destination", "parking_destination",
     "anchor_lines", "parse_attack_md", "_lines",
@@ -23,6 +23,7 @@ PLACEHOLDER = "__JOURNAL_JSON__"
 PLACEHOLDER_ATTACK = "__ATTACK_JSON__"
 PLACEHOLDER_SCHEME = "__SCHEME_JSON__"
 PLACEHOLDER_HELP = "__HELP_JSON__"
+PLACEHOLDER_LINKS = "__LINKS_JSON__"
 # Номер контракта ядра с плагином в выводе `view-json`: растёт при смене контракта, от нового поля не растёт (`docs/repo-contract.md`).
 CONTRACT = 2
 
@@ -249,9 +250,9 @@ def no_help_snapshot(reason: str) -> dict:
 
 
 def render_html(journal: dict, template: Path, attacks: list[dict] | None = None, journal_sha256: str | None = None,
-                scheme: dict | None = None, help_snapshot: dict | None = None) -> str:
+                scheme: dict | None = None, help_snapshot: dict | None = None, links: dict | None = None) -> str:
     """Шаблон просмотрщика с журналом вместо `__JOURNAL_JSON__`, списком атак вместо `__ATTACK_JSON__`, схемой вместо
-    `__SCHEME_JSON__` и справкой вместо `__HELP_JSON__`; все четыре метки обязательны. Улики берутся такими, какие в журнале
+    `__SCHEME_JSON__`, справкой вместо `__HELP_JSON__` и картой ссылок на файлы вместо `__LINKS_JSON__`; все пять меток обязательны. Улики берутся такими, какие в журнале
     (`check --write` или сверка в памяти). Дата сборки `generated` — из журнала, если она
     там есть; своей даты рендер не ставит, и два рендера одного журнала совпадают: снимок справки и его время снятия
     добавляет CLI, из памяти на метку встаёт снимок «расчёта нет» (F-46).
@@ -263,13 +264,14 @@ def render_html(journal: dict, template: Path, attacks: list[dict] | None = None
     журнала отдаются режиму «проверка»; остальной payload прежний. Метки подставляются за один
     проход, чтобы текст журнала, похожий на метку, не был подставлен второй раз."""
     html = Path(template).read_text(encoding="utf-8")
-    marks = (PLACEHOLDER, PLACEHOLDER_ATTACK, PLACEHOLDER_SCHEME, PLACEHOLDER_HELP)
+    marks = (PLACEHOLDER, PLACEHOLDER_ATTACK, PLACEHOLDER_SCHEME, PLACEHOLDER_HELP, PLACEHOLDER_LINKS)
     for mark in marks:
         if mark not in html:
             raise ValueError(f"в шаблоне нет метки {mark}")
     filled = {PLACEHOLDER: _embed(_viewer_payload(journal, journal_sha256)), PLACEHOLDER_ATTACK: _embed(attacks or []),
               PLACEHOLDER_SCHEME: _embed(scheme or NO_SCHEME),
-              PLACEHOLDER_HELP: _embed(help_snapshot or no_help_snapshot("Справка на этой странице не считалась."))}
+              PLACEHOLDER_HELP: _embed(help_snapshot or no_help_snapshot("Справка на этой странице не считалась.")),
+              PLACEHOLDER_LINKS: _embed(links or {"root": None, "files": {}})}
     return "".join(filled.get(part, part) for part in re.split("(" + "|".join(marks) + ")", html))
 
 

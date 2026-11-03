@@ -15,8 +15,8 @@ import shlex
 import sys
 from pathlib import Path
 
-from journal_apply import (REFUSED, apply_answers, apply_md4h, check_evidence, default_roots, parse_answers,
-                           parse_md4h, sha256_file)
+from journal_apply import (REFUSED, apply_answers, apply_md4h, check_evidence, default_roots, file_links, parse_answers,
+                           parse_md4h, project_href, sha256_file)
 from journal_consequences import check_consequences
 from journal_model import import_md, load_journal, save_journal, unexplained_choices, validate_journal
 from journal_render import (TEMPLATE_PATH, no_help_snapshot, parse_attack_md, render_design, render_html, render_md,
@@ -215,12 +215,14 @@ def cmd_render_html(args: argparse.Namespace) -> int:
         attacks.append({**attack, "path": _attack_path(path, args.json)})
     # Сверка идёт в памяти: просмотрщик получает вердикты, файл журнала не меняется;
     # хеш журнала — по байтам файла на диске, как `sha256_file` у связки md4h.
-    result = check_evidence(journal, default_roots(args.roots))
+    roots = default_roots(args.roots)
+    result = check_evidence(journal, roots)
     snapshot = _help_snapshot(args)
+    links = {"root": project_href(roots, args.out), "files": file_links(journal, roots, Path(args.json).parent, args.out, attacks, snapshot)}
     try:
         html = render_html(journal, args.template, attacks=attacks, journal_sha256=sha256_file(args.json),
                            scheme=scheme_payload(Path(args.json).parent / "scheme.md", args.out),
-                           help_snapshot=snapshot)
+                           help_snapshot=snapshot, links=links)
     except ValueError as e:
         print(f"[!!] {e}", file=sys.stderr)
         return 1

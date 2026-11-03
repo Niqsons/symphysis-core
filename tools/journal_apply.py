@@ -8,8 +8,10 @@ import bisect
 import copy
 import hashlib
 import json
+import os
 import re
 from pathlib import Path
+from urllib.parse import quote
 
 from journal_model import (ADDED_MARK, RE_REC, ROOT, _evidence_of, _flat, _new_record, _unquote,
                            validate_journal)
@@ -17,7 +19,7 @@ from journal_render import _lines, anchor_lines
 
 __all__ = [
     "ROOTS_PATH", "REFUSED",
-    "default_roots", "find_quote", "check_evidence",
+    "default_roots", "find_quote", "check_evidence", "file_links", "project_href",
     "parse_answers", "apply_answers", "parse_md4h", "apply_md4h", "sha256_file",
 ]
 
@@ -52,6 +54,8 @@ VERDICT_BINARY = "не проверить: бинарный файл"
 VERDICT_NOT_UTF8 = "не проверить: не UTF-8"
 VERDICT_UNREADABLE = "не проверить: файл не читается"   # права, чужая блокировка: сигнал, не стоп
 NOT_CHECKED = (VERDICT_BINARY, VERDICT_NOT_UTF8, VERDICT_UNREADABLE)
+RE_CODE_SPAN = re.compile(r"`([^`]+)`")   # та же разметка, что у `md()` страницы
+RE_LINE_TAIL = re.compile(r":\d+(?:-\d+)?$")
 
 
 def _resolve(path: str, roots: dict[str, Path]) -> Path | None:
@@ -71,6 +75,56 @@ def _resolve(path: str, roots: dict[str, Path]) -> Path | None:
         # корень-файл (`CLAUDE.md`): хвост пуст, файл совпадает с корнем
         return file if file == root or file.is_relative_to(root) else OUTSIDE_ROOT
     return None
+
+
+def _walk_references(value, paths: set[str]) -> None:
+    """Пути из поля `path` и текст в backticks, без хвоста `:строка`; команда или обычное слово отсеются проверкой файла."""
+    if isinstance(value, dict):
+        for key, item in value.items():
+            if key == "path" and isinstance(item, str):
+                paths.add(item)
+            else:
+                _walk_references(item, paths)
+    elif isinstance(value, list):
+        for item in value:
+            _walk_references(item, paths)
+    elif isinstance(value, str):
+        paths.update(RE_LINE_TAIL.sub("", code) for code in RE_CODE_SPAN.findall(value))
+
+
+def _relative_link(path: str, bases: list[dict[str, Path]], here: Path) -> str | None:
+    """Относительный адрес от каталога страницы: первая база, где это файл внутри корня. Недопустимое имя и другой диск — без ссылки."""
+    for roots in bases:
+        try:
+            file = _resolve(path, roots)
+            if file is None or file == OUTSIDE_ROOT or not file.is_file():
+                continue
+            return quote(os.path.relpath(file, here).replace(os.sep, "/"), safe="/")
+        except (OSError, ValueError):
+            continue
+    return None
+
+
+def file_links(journal: dict, roots: dict[str, Path], change_dir: Path, out: Path, *others) -> dict[str, str]:
+    """Карта «путь из журнала -> адрес от страницы» для страницы `out`: путь улики или файла справки и текст в backticks
+    из журнала и из `others` (атаки, снимок справки), если это существующий файл внутри корней улик или каталога изменения.
+    Абсолютных путей в карте нет: страницу можно коммитить; адрес ссылки на странице берётся только отсюда."""
+    paths: set[str] = set()
+    for value in (journal, *others):
+        _walk_references(value, paths)
+    here, bases = Path(out).resolve().parent, [roots, {"": Path(change_dir).resolve()}]
+    found = {path: _relative_link(path, bases, here) for path in sorted(paths)}
+    return {path: href for path, href in found.items() if href}
+
+
+def project_href(roots: dict[str, Path], out: Path) -> str | None:
+    """Адрес корня проекта от страницы `out`: пустой префикс файла корней, без него каталог над `tools/`.
+    Корень на другом диске — `None`."""
+    root = roots.get("", ROOT)
+    try:
+        return quote(os.path.relpath(Path(root).resolve(), Path(out).resolve().parent).replace(os.sep, "/"), safe="/") + "/"
+    except (OSError, ValueError):
+        return None
 
 
 def _read_text(file: Path) -> tuple[str | None, str]:

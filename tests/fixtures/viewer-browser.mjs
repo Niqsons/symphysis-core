@@ -2,7 +2,8 @@
 // Использование: node viewer-browser.mjs <chrome> <страница.html> <ширина> <высота> <действие>...
 // Действия: panel — включить панель и дождаться рисунка или текста; mode:<режим> — кнопка режима; drag:<dx> — тянуть границу панели;
 // reload — открыть страницу снова; choose:<запись>:<буква> — выбрать вариант; word:<запись>:<текст> — написать слово; buttons — экспорт, импорт, копирование;
-// tab:<scheme|help> — переключатель панели; step:<шаг> — пункт списка справки; helpnext, helpprev — листание; howto — кнопка «Как готовить intent.md?».
+// tab:<scheme|help> — переключатель панели; step:<шаг> — пункт списка справки; helpnext, helpprev — листание; howto — кнопка «Как готовить intent.md?»;
+// clicklink — ссылка на файл внутри варианта; editor:<значение>[:<маска>] — выбор редактора; open:<страница> — другая страница в том же профиле.
 // Итог на stdout: JSON с замером страницы, запросами наружу (`http`), запросами, которые заблокировала CSP (`blocked`), нарушениями и ошибками.
 import { spawn } from "node:child_process";
 import { existsSync, mkdirSync, mkdtempSync, readdirSync, readFileSync, writeFileSync } from "node:fs";
@@ -61,6 +62,9 @@ const MEASURE = `(() => {
     warnings: [...document.querySelectorAll('[data-antipode-warning]')].map((n) => n.dataset.antipodeWarning),
     wordNeeded: [...document.querySelectorAll('[data-word-needed]:not(.hidden)')].map((n) => n.dataset.wordNeeded),
     chosen: [...document.querySelectorAll('input[type=radio]:checked')].map((r) => r.name + '.' + r.value),
+    editor: (document.getElementById('editorPick') || {}).value || null, editorMask: (document.getElementById('editorMask') || {}).value ?? null,
+    links: [...document.querySelectorAll('a.filelink')].map((a) => ({ href: a.href, text: a.textContent })),
+    codes: [...document.querySelectorAll('.card code')].map((c) => c.textContent),
     mode: (document.querySelector('#modes button.active') || {}).textContent || null };
 })()`;
 
@@ -131,6 +135,16 @@ async function main() {
       await evaluate(`document.querySelector('input[name="${args[0]}"][value="${args[1]}"]').scrollIntoView({ block: 'center' })`);
       await click(`input[name="${args[0]}"][value="${args[1]}"]`);
       await sleep(50);
+    }
+    if (name === "open") { await send("Page.navigate", { url: pathToFileURL(args.join(":")).href }); await loaded(); await settled(); }
+    if (name === "editor") {
+      await evaluate(`(() => { const s = document.getElementById('editorPick'); s.value = ${JSON.stringify(args[0])}; s.dispatchEvent(new Event('change', { bubbles: true })); const m = ${JSON.stringify(args.slice(1).join(":"))}; if (m) { const i = document.getElementById('editorMask'); i.value = m; i.dispatchEvent(new Event('change', { bubbles: true })); } })()`);
+      await sleep(50);
+    }
+    if (name === "clicklink") {
+      await evaluate(`document.querySelector('label.opt a.filelink').scrollIntoView({ block: 'center' })`);
+      await click("label.opt a.filelink");
+      await sleep(100);
     }
     if (name === "word") {
       await evaluate(`(() => { const t = document.querySelector('textarea[data-word="${args[0]}"]'); t.value = ${JSON.stringify(args[1])}; t.dispatchEvent(new Event('input', { bubbles: true })); })()`);

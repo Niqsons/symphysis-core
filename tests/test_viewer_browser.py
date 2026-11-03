@@ -8,6 +8,7 @@ import subprocess
 import sys
 import time
 from pathlib import Path
+from urllib.parse import quote
 
 import pytest
 
@@ -543,3 +544,66 @@ def test_how_to_prepare_when_the_journal_is_outside_changes(tmp_path):
     assert r["opened"] == "intent" and "текста нет" in r["text"].lower() and "Журнал лежит вне" in r["error"]
     assert r["versions"] and "неизвестно" in r["versions"]
 
+
+def test_files_are_links(tmp_path):
+    """Сценарии «Файл в теле вопроса» и «Файла нет»: ссылка берётся из карты, клик внутри варианта выбор не меняет."""
+    j = one_record_journal("a.md", "дв")
+    record = j["records"][0]
+    record["question"] = "см. `a.md:2`, `нет-такого.md`, `constructor`, `<img src=x onerror=alert(1)>`"
+    record["options"][0]["text"] = "вариант про `a.md`"
+    html = page(tmp_path, j=j)
+    r = browser(html, "clicklink")
+    target = html.with_name("a.md").as_uri()
+    assert {link["href"] for link in r["links"] if link["text"] != "↗"} == {target}
+    assert "file" + target[len("file:") + 2:] + ":2" in [link["href"][len("vscode://"):] for link in r["links"] if link["text"] == "↗"]
+    assert {"нет-такого.md", "constructor", "<img src=x onerror=alert(1)>"} <= set(r["codes"])
+    assert not any(link["text"] in ("нет-такого.md", "constructor") for link in r["links"])
+    assert r["chosen"] == [] and r["errors"] == [] and r["csp"] == []
+
+
+def editor_arrows(result):
+    return [link["href"] for link in result["links"] if link["text"] == "↗"]
+
+
+def test_editor_choice_lives_in_the_browser(tmp_path):
+    """Сценарий «Выбор редактора»: выбор один на браузер, его видит и другая страница, а в файл страницы он не попадает."""
+    j = one_record_journal("a.md", "дв")
+    html, other = page(tmp_path / "один", j=j), page(tmp_path / "два", j=j)
+    before = html.read_bytes()
+    file_part = html.with_name("a.md").as_uri()[len("file:///"):]
+    other_part = other.with_name("a.md").as_uri()[len("file:///"):]
+
+    assert browser(html)["editor"] == "vscode"
+    r = browser(html, "editor:cursor", "reload")
+    assert r["editor"] == "cursor" and editor_arrows(r) == [f"cursor://file/{file_part}:1"]
+    r = browser(html, "editor:cursor", f"open:{other}")
+    assert r["editor"] == "cursor" and editor_arrows(r) == [f"cursor://file/{other_part}:1"]
+    assert editor_arrows(browser(html, "editor:none")) == []
+    r = browser(html, "editor:custom:idea://open?file={path}&line={line}", "reload")
+    assert editor_arrows(r) == [f"idea://open?file={file_part}&line=1"] and r["editorMask"] == "idea://open?file={path}&line={line}"
+    assert html.read_bytes() == before
+
+
+def test_editor_mask_must_be_usable(tmp_path):
+    """Сценарий «Негодная маска»: значка нет, обычная ссылка на файл на месте, ошибок нет."""
+    html = page(tmp_path, j=one_record_journal("a.md", "дв"))
+    for mask in ("javascript:alert({path})", "data:text/html,{path}", "vscode://file/без-пути"):
+        r = browser(html, "editor:custom:" + mask)
+        assert editor_arrows(r) == [] and r["links"] and r["errors"] == [] and r["csp"] == []
+
+
+def test_jetbrains_preset_needs_the_project_root(tmp_path):
+    """Форма команды проверена на GIGA IDE: проект и путь от корня, строка с нуля. Файл вне корня значка не даёт."""
+    j = one_record_journal("a.md", "дв")
+    j["records"][0]["question"] = "см. `a.md:2`"
+    html = page(tmp_path, j=j)
+    assert editor_arrows(browser(html, "editor:jetbrains")) == []
+    project = html.parent.parent.parent.parent
+    roots = tmp_path / "roots.json"
+    roots.write_text(json.dumps({"": str(project)}), encoding="utf-8")
+    run = subprocess.run([sys.executable, str(ROOT / "tools" / "journal.py"), "render-html", str(html.with_name("decisions.json")), "--out", str(html), "--roots", str(roots)],
+                         capture_output=True, text=True, encoding="utf-8")
+    assert run.returncode == 0, run.stderr
+    r = browser(html, "editor:jetbrains")
+    assert "jetbrains://idea/navigate/reference?project=" + quote(project.name) + "&path=" + quote("openspec/changes/изменение/a.md") + ":1" in editor_arrows(r)
+    assert r["errors"] == []

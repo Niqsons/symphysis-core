@@ -14,6 +14,8 @@
   header { display:flex; gap:16px; align-items:center; padding:10px 16px; border-bottom:1px solid var(--line); background:var(--panel); position:sticky; top:0; z-index:5; }
   header h1 { font-size:15px; margin:0; font-weight:600; }
   header .stats { color:var(--mute); }
+  header .editorpick { color:var(--mute); font-size:12px; white-space:nowrap; }
+  #editorMask { width:260px; }
   header .stats b { color:var(--fg); }
   header .spacer { flex:1; }
   button { background:#232834; color:var(--fg); border:1px solid var(--line); border-radius:6px; padding:5px 10px; cursor:pointer; font:inherit; }
@@ -74,6 +76,8 @@
   .tag.deviation { color:var(--warn); border-color:var(--warn); }
   .ev { display:block; color:var(--mute); font-size:12px; margin:2px 0 0 2px; }
   .ev code { color:#c9d1d9; }
+  a.filelink code { text-decoration:underline; }
+  a.filelink.editor { margin-left:4px; font-size:11px; text-decoration:none; }
   .ev .ok { color:var(--ok); } .ev .bad { color:var(--bad); }
   .rec { color:var(--mute); font-size:12.5px; margin:6px 0; }
   .rec b { color:var(--ok); }
@@ -155,6 +159,8 @@
   <h1 id="title">symphysis — журнал решений</h1>
   <div class="modes" id="modes" title="решения — круг просмотрщика; проверка — снимок перед proposal, только чтение; атака — строки attack/*.md по линзам"></div>
   <button id="btnScheme" title="рядом с карточками: схема решения из scheme.md или справка о шаге конвейера">схема · справка</button>
+  <label class="editorpick" title="куда ведёт значок ↗ у ссылки на файл; выбор хранится в этом браузере">↗ <select id="editorPick"><option value="vscode">VS Code</option><option value="cursor">Cursor</option><option value="jetbrains">IDEA / GIGA IDE</option><option value="custom">своя маска</option><option value="none">не показывать</option></select></label>
+  <input type="text" id="editorMask" class="hidden" placeholder="схема://…{path}…{line}" title="подстановки: {path}, {relpath}, {project}, {line}, {line0}">
   <div class="stats" id="stats"></div>
   <div class="spacer"></div>
   <button id="btnExport" title="JSON состояния — для переноса в другой браузер">Экспорт JSON</button>
@@ -207,6 +213,7 @@ const JOURNAL = __JOURNAL_JSON__;
 const ATTACK = __ATTACK_JSON__;
 const SCHEME = __SCHEME_JSON__;
 const HELP = __HELP_JSON__;
+const LINKS = __LINKS_JSON__;
 const ADDRESSEES = ['материалы','человек','ИБ'];
 /* линзы атаки — закрытые списки скилла symphysis-attack, по файлу атаки: журнал (`attack/decisions.md`, цель — один `decisions.json`)
    и артефакты (`attack/artifacts.md`, всё прочее); порядок — порядок списка, подписи — чем ищется. Слуг не из списка своего файла —
@@ -404,7 +411,7 @@ function helpGraphFacts(s) {
   return facts.length ? '<ul>' + facts.map(f => '<li>' + md(f) + '</li>').join('') + '</ul>' : '';
 }
 function helpFiles(s) {
-  return s.files.length ? '<ul>' + s.files.map(f => '<li><code>' + esc(f.path) + '</code>' + (f.exists ? '' : ' — файла ещё нет') + '</li>').join('') + '</ul>' : '';
+  return s.files.length ? '<ul>' + s.files.map(f => '<li>' + (f.exists ? fileLink(esc(f.path), f.path) : '<code>' + esc(f.path) + '</code> — файла ещё нет') + '</li>').join('') + '</ul>' : '';
 }
 function helpPageHtml(id) {
   const s = helpFind(id), open = '<div class="helppage" data-page="' + esc(id) + '">';
@@ -480,15 +487,56 @@ function chosenAntipodes(id, letter) { return antipodesOf(id, letter).filter(k =
 /* text:begin */
 function esc(s) { return String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
 /* текст журнала и атаки: единственная разметка данных — пары backticks; сначала экранирование, потом `код` -> <code> */
-function md(s) { return esc(s).replace(/`([^`]+)`/g, '<code>$1</code>'); }
+function md(s) { return esc(s).replace(/`([^`]+)`/g, (m, code) => typeof codeHtml === 'function' ? codeHtml(code) : '<code>' + code + '</code>'); }
 /* text:end */
+/* файл из журнала — ссылка: адрес только из карты LINKS, её собирает render-html; label уже экранирован. ↗ — тот же файл в VS Code на нужной строке */
+/* редактор значка ↗ — свойство человека и его машины, поэтому хранится в браузере, а не в файле, который уходит в git */
+const EDITOR_KEY = 'symphysis:editor';
+const EDITOR_MASKS = { vscode: 'vscode://file/{path}:{line}', cursor: 'cursor://file/{path}:{line}',
+  jetbrains: 'jetbrains://idea/navigate/reference?project={project}&path={relpath}:{line0}' };
+function editorChoice() { try { return JSON.parse(localStorage.getItem(EDITOR_KEY)) || {}; } catch (e) { return {}; } }
+function maskIsUsable(mask) { return /^[a-z][a-z0-9+.-]*:/i.test(mask) && !/^(javascript|data|vbscript|file|blob):/i.test(mask) && /\{(path|relpath)\}/.test(mask); }
+function editorMask() {
+  const c = editorChoice();
+  if (c.editor === 'none') return '';
+  if (c.editor === 'custom') return maskIsUsable(c.mask || '') ? c.mask : '';
+  return Object.prototype.hasOwnProperty.call(EDITOR_MASKS, c.editor) ? EDITOR_MASKS[c.editor] : EDITOR_MASKS.vscode;
+}
+/* {path} — абсолютный путь, {relpath} и {project} — от корня проекта, {line} — строка, {line0} — она же со счётом от нуля */
+function editorUrl(mask, href, line) {
+  const abs = new URL(href, location.href).pathname;
+  const root = LINKS.root === null ? null : new URL(LINKS.root, location.href).pathname;
+  const inside = root !== null && abs.startsWith(root);
+  if (!inside && /\{(relpath|project)\}/.test(mask)) return '';
+  const values = { path: abs.replace(/^\//, ''), line: String(line || 1), line0: String(Math.max(Number(line || 1) - 1, 0)),
+    relpath: inside ? abs.slice(root.length) : '', project: inside ? root.replace(/\/$/, '').split('/').pop() : '' };
+  return mask.replace(/\{(path|line0|line|relpath|project)\}/g, (m, key) => values[key]);
+}
+function editorLink(href, line) {
+  const mask = editorMask();
+  if (!mask || location.protocol !== 'file:') return '';
+  const url = editorUrl(mask, href, line);
+  if (!url) return '';
+  return ' <a class="filelink editor" href="' + esc(url) + '"' + (/^https?:/i.test(url) ? ' target="_blank" rel="noopener"' : '') + ' title="открыть в редакторе; из встроенного браузера редактора может не сработать">↗</a>';
+}
+function fileLink(label, path, line) {
+  const code = '<code>' + label + '</code>';
+  if (!Object.prototype.hasOwnProperty.call(LINKS.files, path)) return code;
+  const href = LINKS.files[path];
+  return '<a class="filelink" href="' + esc(href) + '" target="_blank" rel="noopener">' + code + '</a>' + editorLink(href, line);
+}
+function codeHtml(code) {
+  const raw = code.replace(/&(amp|lt|gt|quot|#39);/g, (m, c) => ({ amp:'&', lt:'<', gt:'>', quot:'"', '#39':"'" }[c]));
+  const parts = /^(.+?)(?::(\d+)(?:-\d+)?)?$/.exec(raw);
+  return fileLink(code, parts[1], parts[2]);
+}
 function evHtml(ev) {
   const loc = ev.line ? ev.path + ':' + ev.line : ev.path;
   /* found: null — файл не текст (бинарный, не UTF-8): сверить нельзя, это не пропажа цитаты */
   const v = ev.found ? '<b class="ok">сверено</b>'
     : ev.found === null ? '<b class="mute">' + esc(/^не проверить/.test(ev.verdict || '') ? ev.verdict : 'не проверить: ' + (ev.verdict || 'файл не текст')) + '</b>'
     : '<b class="bad">не найдено: ' + esc(ev.verdict || '') + '</b>';
-  return '<span class="ev">улика: <code>' + esc(loc) + '</code> «' + esc(ev.quote) + '» ' + v + '</span>';
+  return '<span class="ev">улика: ' + fileLink(esc(loc), ev.path, ev.line) + ' «' + esc(ev.quote) + '» ' + v + '</span>';
 }
 
 function visible(rec) {
@@ -964,6 +1012,17 @@ document.getElementById('notes').value = state.notes || '';
 document.getElementById('notes').oninput = e => { state.notes = e.target.value; save(); updateOut(); };
 document.getElementById('btnAll').onclick = () => { filter = { openOnly:false }; render(); };
 document.getElementById('btnOpen').onclick = () => { filter.openOnly = !filter.openOnly; render(); };
+(function () {
+  const pick = document.getElementById('editorPick'), maskInput = document.getElementById('editorMask');
+  const show = () => {
+    const c = editorChoice();
+    pick.value = Object.keys(EDITOR_MASKS).concat('custom', 'none').includes(c.editor) ? c.editor : 'vscode';
+    maskInput.value = c.mask || '';
+    maskInput.classList.toggle('hidden', pick.value !== 'custom');
+  };
+  const save = () => { try { localStorage.setItem(EDITOR_KEY, JSON.stringify({ editor: pick.value, mask: maskInput.value.trim() })); } catch (e) {} show(); render(); };
+  pick.onchange = save; maskInput.onchange = save; show();
+})();
 document.getElementById('btnScheme').onclick = () => { schemeOn = !schemeOn; try { localStorage.setItem(KEY + ':scheme', schemeOn ? '1' : '0'); } catch (e) {} renderSchemePanel(); };
 document.getElementById('btnToggleNew').onclick = () => document.getElementById('newForkForm').classList.toggle('hidden');
 document.getElementById('btnAddFork').onclick = () => {

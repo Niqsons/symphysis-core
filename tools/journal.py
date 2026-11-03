@@ -59,7 +59,7 @@ from __future__ import annotations
 import sys
 
 from journal_apply import (REFUSED, ROOTS_PATH, apply_answers, apply_md4h, check_evidence, default_roots,
-                           find_quote, parse_answers, parse_md4h, sha256_file)
+                           file_links, find_quote, parse_answers, project_href, parse_md4h, sha256_file)
 from journal_cli import build_parser, main
 from journal_consequences import check_consequences
 from journal_model import (ROOT, SCHEMA_PATH, _flat, _unquote, import_md, import_md_text, load_journal,
@@ -71,7 +71,7 @@ from journal_sites import code_sites, normalize_path
 __all__ = [
     "ROOT", "SCHEMA_PATH", "ROOTS_PATH", "TEMPLATE_PATH", "PLACEHOLDER", "PLACEHOLDER_ATTACK", "REFUSED",
     "load_journal", "save_journal", "validate_journal", "import_md", "import_md_text",
-    "default_roots", "find_quote", "check_evidence",
+    "default_roots", "find_quote", "check_evidence", "file_links", "project_href",
     "render_md", "render_html", "render_design", "view_payload", "anchor_lines", "parse_attack_md",
     "parse_answers", "apply_answers", "parse_md4h", "apply_md4h", "sha256_file",
     "code_sites", "normalize_path", "check_consequences",
