@@ -1,10 +1,10 @@
 #!/usr/bin/env node
 import fs from "node:fs";
 import path from "node:path";
-import { spawnSync } from "node:child_process";
 import { parseArgs } from "node:util";
 import { install } from "../lib/install.js";
 import { check, findPython } from "../lib/check.js";
+import { spawnTool } from "../lib/openspec-bin.js";
 import { targets } from "../lib/paths.js";
 
 const USAGE = `symphysis — схема OpenSpec symphysis, скиллы и инструменты журнала в проект
@@ -110,7 +110,7 @@ if (values.help || cmd === "help") {
   };
   if (!py) fail("python: python или python3 не отвечает");
   if (!fs.existsSync(tool)) fail("symphysis_config.py: нет файла — выполнить: symphysis install");
-  const r = spawnSync(py, ["-X", "utf8", tool, "--project", project], { encoding: "utf8" });
+  const r = spawnTool(py, ["-X", "utf8", tool, "--project", project], { encoding: "utf8" });
   if (r.error || r.status !== 0) {
     const first = (r.error ? r.error.message : String(r.stderr ?? "").split(/\r?\n/).find((l) => l.trim())) ?? `код ${r.status}`;
     fail(`symphysis_config.py: не отработал (${first.trim()})`);

@@ -1,12 +1,11 @@
 import fs from "node:fs";
 import path from "node:path";
-import { spawnSync } from "node:child_process";
 import { parse } from "yaml";
 import { continueLines, selectedClients } from "./clients.js";
 import { globalConfigPath, otherConfigPath } from "./global-config.js";
 import { targets } from "./paths.js";
 import { DEFAULT_PAYLOAD } from "./install.js";
-import { describeFailure, forkPin, runOpenspec } from "./openspec-bin.js";
+import { describeFailure, forkPin, runOpenspec, spawnTool } from "./openspec-bin.js";
 import { telemetryState, TELEMETRY_OFF_COMMAND } from "./telemetry.js";
 import { hasSources, payloadMatches, ROOT } from "../scripts/sync-payload.js";
 
@@ -43,7 +42,7 @@ function settingsLines(root, py, tool, findings, notes) {
     return;
   }
   if (!py || !fs.existsSync(tool)) return;
-  const r = spawnSync(py, ["-X", "utf8", tool, "--project", root, "--strict"], { encoding: "utf8" });
+  const r = spawnTool(py, ["-X", "utf8", tool, "--project", root, "--strict"], { encoding: "utf8" });
   if (r.error || (r.status !== 0 && r.status !== 2)) {
     const first = (r.error ? r.error.message : String(r.stderr ?? "").split(/\r?\n/).find((l) => l.trim())) ?? `код ${r.status}`;
     findings.push(`symphysis_config.py: не отработал (${first.trim()})`);
@@ -57,7 +56,7 @@ function settingsLines(root, py, tool, findings, notes) {
 
 /** `symphysis.yaml` в индексе git проекта: `.gitignore` его уже не снимет (F-111.A). Нет git или репозитория — сигнала нет. */
 function settingsTracked(root) {
-  const r = spawnSync("git", ["-C", root, "ls-files", "--error-unmatch", SETTINGS_FILE], { encoding: "utf8" });
+  const r = spawnTool("git", ["-C", root, "ls-files", "--error-unmatch", SETTINGS_FILE], { encoding: "utf8" });
   return !r.error && r.status === 0;
 }
 
@@ -70,7 +69,7 @@ function configNote() {
 /** Python: `python`, затем `python3`; версия не закрепляется. Возвращает имя команды или null. */
 export function findPython() {
   for (const cmd of ["python", "python3"]) {
-    const r = spawnSync(cmd, ["--version"], { encoding: "utf8" });
+    const r = spawnTool(cmd, ["--version"], { encoding: "utf8" });
     if (!r.error && r.status === 0) return cmd;
   }
   return null;
@@ -150,7 +149,7 @@ export function check(project, { skillsDirs = [], payloadDir = DEFAULT_PAYLOAD, 
     for (const e of fs.readdirSync(changes, { withFileTypes: true }).sort((a, b) => a.name.localeCompare(b.name))) {
       const j = path.join(changes, e.name, "decisions.json");
       if (!e.isDirectory() || !fs.existsSync(j)) continue;
-      const r = spawnSync(py, ["-X", "utf8", journalPy, "check", j], { encoding: "utf8" });
+      const r = spawnTool(py, ["-X", "utf8", journalPy, "check", j], { encoding: "utf8" });
       if (r.error || r.status !== 0) {
         const err = String(r.stderr ?? "");
         if (r.error || !err.includes("[!!]")) {

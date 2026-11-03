@@ -29,12 +29,22 @@ function findOnPath(name) {
   return null;
 }
 
+/**
+ * `spawnSync` без поиска программы в каталоге вызова. На Windows голое имя ищется сначала в `cwd`, то есть в корне чужого проекта:
+ * лежащий там `python.exe` или `git.exe` исполнился бы. Поиск отключает `NoDefaultCurrentDirectoryInExePath`; `libuv` читает её
+ * из окружения самого процесса, а не из `options.env`, поэтому она ставится здесь, в `process.env`. Для `cmd.exe` она же идёт в окружении вызова.
+ */
+export function spawnTool(command, args, options = {}) {
+  if (win) process.env.NoDefaultCurrentDirectoryInExePath = "1";
+  return spawnSync(command, args, options);
+}
+
 function spawnFile(file, args, options) {
   if (win && /\.(cmd|bat)$/i.test(file)) {
     const line = [file.replace(CMD_META, "^$1"), ...args.map(cmdArg)].join(" ");
-    return spawnSync(line, { ...options, shell: true });
+    return spawnTool(line, [], { ...options, shell: true });
   }
-  return spawnSync(file, args, options);
+  return spawnTool(file, args, options);
 }
 
 /**
@@ -43,19 +53,21 @@ function spawnFile(file, args, options) {
  * Возвращает результат spawnSync; `notFound: true` — форка нет, ненулевой `status` или `error` — форк есть и отказал.
  */
 export function runOpenspec(args, { cwd } = {}) {
-  const options = { encoding: "utf8", cwd, env: { ...process.env, OPENSPEC_TELEMETRY: "0" } };
+  // Шим npm без `node.exe` рядом зовёт голое `node`, и `cmd.exe` ищет его сначала в `cwd`. Ключ снимается без учёта регистра: дубля в блоке нет.
+  const env = Object.fromEntries(Object.entries(process.env).filter(([key]) => key.toLowerCase() !== "nodefaultcurrentdirectoryinexepath"));
+  const options = { encoding: "utf8", cwd, env: { ...env, OPENSPEC_TELEMETRY: "0", NoDefaultCurrentDirectoryInExePath: "1" } };
   // Абсолютный путь: у вызова может быть свой cwd.
   const chosen = process.env.SYMPHYSIS_OPENSPEC ? path.resolve(process.env.SYMPHYSIS_OPENSPEC) : null;
   let r;
   if (chosen) {
     if (!fs.existsSync(chosen)) return NOT_FOUND;
-    r = chosen.endsWith(".js") ? spawnSync(process.execPath, [chosen, ...args], options) : spawnFile(chosen, args, options);
+    r = chosen.endsWith(".js") ? spawnTool(process.execPath, [chosen, ...args], options) : spawnFile(chosen, args, options);
   } else if (win) {
     const file = findOnPath("openspec");
     if (!file) return NOT_FOUND;
     r = spawnFile(file, args, options);
   } else {
-    r = spawnSync("openspec", args, options);
+    r = spawnTool("openspec", args, options);
     if (r.error?.code === "ENOENT") return NOT_FOUND;
   }
   return { ...r, notFound: false };

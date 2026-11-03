@@ -131,3 +131,64 @@ test("Вызов форка через openspec.cmd: отказ форка в in
   assert.match(r.stdout, /^telemetry: openspec не отработал \(код 3: boom\) — выключить после установки: /m);
   assert.doesNotMatch(r.stdout, /не найден/);
 });
+
+// --- каталог вызова не участвует в поиске программы (только Windows) ---------------------------------------------------
+// Среда агента или человека может сама задавать NoDefaultCurrentDirectoryInExePath: без снятия ключа из окружения (без учёта
+// регистра) тесты ниже зелёны и без правки. Контрольный тест первым подтверждает, что в окружении проверки ключа нет.
+
+const GUARD = "nodefaultcurrentdirectoryinexepath";
+const WIN_ONLY = "поиск программы в каталоге вызова есть только на Windows";
+const openspecBinUrl = new URL("../lib/openspec-bin.js", import.meta.url).href;
+
+function envWithoutGuard() {
+  return Object.fromEntries(Object.entries(process.env).filter(([key]) => key.toLowerCase() !== GUARD));
+}
+
+/** Код `script` исполняется отдельным node с `cwd` проекта и окружением без охранной переменной; печатает JSON. */
+function inProject(project, script, env = envWithoutGuard()) {
+  const r = spawnSync(process.execPath, ["--input-type=module", "-e", `import * as bin from ${JSON.stringify(openspecBinUrl)};\n${script}`], {
+    cwd: project, env, encoding: "utf8",
+  });
+  assert.equal(r.status, 0, r.stderr);
+  return JSON.parse(r.stdout);
+}
+
+/** Проект с `node.cmd`, пишущим маркер, и форк под настоящим `.cmd`-шимом, что зовёт голое `node`, как шим npm без `node.exe` рядом. */
+function hostileNodeProject() {
+  const dir = tmp();
+  const project = path.join(dir, "proj");
+  const bindir = path.join(dir, "bin");
+  fs.mkdirSync(project);
+  fs.mkdirSync(bindir);
+  fs.writeFileSync(path.join(project, "node.cmd"), "@echo hostile> marker.txt\r\n@exit /b 0\r\n");
+  fs.writeFileSync(path.join(bindir, "openspec.cmd"), "@node %*\r\n");
+  return { project, shim: path.join(bindir, "openspec.cmd") };
+}
+
+test("Каталог вызова: в окружении проверки нет охранной переменной, и cmd.exe берёт node.cmd из cwd", { skip: !win && WIN_ONLY }, () => {
+  const { project } = hostileNodeProject();
+  assert.ok(!Object.keys(envWithoutGuard()).some((key) => key.toLowerCase() === GUARD));
+  spawnSync("node", { cwd: project, env: envWithoutGuard(), shell: true });
+  assert.ok(fs.existsSync(path.join(project, "marker.txt")));
+});
+
+test("Каталог вызова: runOpenspec не исполняет node.cmd из корня проекта", { skip: !win && WIN_ONLY }, () => {
+  const { project, shim } = hostileNodeProject();
+  inProject(project, `process.env.SYMPHYSIS_OPENSPEC = ${JSON.stringify(shim)};\nbin.runOpenspec(["--version"], { cwd: process.cwd() });\nconsole.log("{}");`);
+  assert.ok(!fs.existsSync(path.join(project, "marker.txt")));
+});
+
+/** Копия node.exe под чужим именем: печатает версию node, а не версию настоящей программы. */
+function hostileExe(project, name) {
+  fs.copyFileSync(process.execPath, path.join(project, `${name}.exe`));
+}
+
+for (const [name, real] of [["python", /^Python \d/], ["git", /^git version/]]) {
+  test(`Каталог вызова: spawnTool не берёт ${name}.exe из корня проекта`, { skip: !win && WIN_ONLY }, (t) => {
+    if (spawnSync(name, ["--version"], { encoding: "utf8" }).status !== 0) return t.skip(`${name} не отвечает в этой среде`);
+    const { project } = hostileNodeProject();
+    hostileExe(project, name);
+    const [out] = inProject(project, `console.log(JSON.stringify([bin.spawnTool(${JSON.stringify(name)}, ["--version"], { encoding: "utf8" }).stdout]));`);
+    assert.match(out, real);
+  });
+}
