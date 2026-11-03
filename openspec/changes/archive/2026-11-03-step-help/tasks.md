@@ -61,7 +61,7 @@
 ## 7. Плагин: свой коммит (F-22, F-35)
 
 - [x] 7.1 Worktree плагина от `feat/part1-viewer`: `EXPECTED_CONTRACT = 2` и путь `symphysis.html` в `src/host/core.ts`, его тесты `test/unit/core.test.ts`, `apply.test.ts`, `contract.test.ts`, `test/e2e/scenario.ts` — проверка: `npm test` плагина с `SYMPHYSIS_ROOT` на этот worktree ядра зелёный: сценарии «Старый плагин и новое ядро», «Новый плагин и старое ядро», «Номера совпали»
-- [ ] 7.2 Коммит плагина несёт `Needs:` на коммит ядра из 6.1 (F-35) — проверка: `git log -1 --format=%B` показывает строку `Needs:` с настоящим хешем
+- [x] 7.2 Коммит плагина несёт `Needs:` на коммит ядра из 6.1 (F-35) — проверка: `git log -1 --format=%B` показывает строку `Needs:` с настоящим хешем
 
 ## 8. Прогон и показ
 

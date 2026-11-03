@@ -2,7 +2,7 @@
 
 > Рендер из `decisions.json`, не править руками.
 
-Пути улик — от корня проекта; префикс `vscode/` — репозиторий плагина symphysis-vscode, `upstream/` — исходники форка; корни — `openspec/changes/step-help/probes/journal-roots.json`. Читались: `intent.md`, `schema.yaml`, `docs/GUIDE.md`, `docs/repo-contract.md`, `state.ts` форка, `tools/journal_render.py`, `tools/symphysis_config.py`, инсталлятор, граница плагина с ядром. Проба с пустыми файлами — `probes/status-empty-files.sh`, её след рядом.
+Пути улик — от корня проекта; префикс `vscode/` — репозиторий плагина symphysis-vscode, `upstream/` — исходники форка; корни — `openspec/changes/archive/2026-11-03-step-help/probes/journal-roots.json`. Читались: `intent.md`, `schema.yaml`, `docs/GUIDE.md`, `docs/repo-contract.md`, `state.ts` форка, `tools/journal_render.py`, `tools/symphysis_config.py`, инсталлятор, граница плагина с ядром. Проба с пустыми файлами — `probes/status-empty-files.sh`, её след рядом.
 
 ## F-01 Критерий готовности: какой шаг конвейера сейчас выполняется?
 <!-- journal:F-01 -->
@@ -11,7 +11,7 @@
 - адресат: постановка
 - зависит от: —
 - улики:
-  - улика: `openspec/changes/step-help/intent.md` «какой шаг конвейера сейчас выполняется?»
+  - улика: `openspec/changes/archive/2026-11-03-step-help/intent.md` «какой шаг конвейера сейчас выполняется?»
 
 ## F-02 Критерий готовности: зачем он? какие основные механики?
 <!-- journal:F-02 -->
@@ -20,7 +20,7 @@
 - адресат: постановка
 - зависит от: —
 - улики:
-  - улика: `openspec/changes/step-help/intent.md` «зачем он? какие основные механики?»
+  - улика: `openspec/changes/archive/2026-11-03-step-help/intent.md` «зачем он? какие основные механики?»
 
 ## F-03 Критерий готовности: что будет, если я не выполню этот шаг?
 <!-- journal:F-03 -->
@@ -29,7 +29,7 @@
 - адресат: постановка
 - зависит от: —
 - улики:
-  - улика: `openspec/changes/step-help/intent.md` «что будет, если я не выполню этот шаг?»
+  - улика: `openspec/changes/archive/2026-11-03-step-help/intent.md` «что будет, если я не выполню этот шаг?»
 
 ## F-04 Критерий готовности: какие файлы и где смотреть, чтобы проверить результаты шага
 <!-- journal:F-04 -->
@@ -38,7 +38,7 @@
 - адресат: постановка
 - зависит от: —
 - улики:
-  - улика: `openspec/changes/step-help/intent.md` «какие файлы и где смотреть, чтобы проверить результаты шага»
+  - улика: `openspec/changes/archive/2026-11-03-step-help/intent.md` «какие файлы и где смотреть, чтобы проверить результаты шага»
 
 ## F-05 Критерий готовности: справку, которая смотрит на status, и описывает текущий шаг
 <!-- journal:F-05 -->
@@ -47,7 +47,7 @@
 - адресат: постановка
 - зависит от: —
 - улики:
-  - улика: `openspec/changes/step-help/intent.md` «справку, которая смотрит на status, и описывает текущий шаг»
+  - улика: `openspec/changes/archive/2026-11-03-step-help/intent.md` «справку, которая смотрит на status, и описывает текущий шаг»
 
 ## F-06 Критерий готовности: можно посмотреть и другие шаги, с помощью листания справки, или выбора пункта
 <!-- journal:F-06 -->
@@ -56,7 +56,7 @@
 - адресат: постановка
 - зависит от: —
 - улики:
-  - улика: `openspec/changes/step-help/intent.md` «можно посмотреть и другие шаги, с помощью листания справки, или выбора пункта»
+  - улика: `openspec/changes/archive/2026-11-03-step-help/intent.md` «можно посмотреть и другие шаги, с помощью листания справки, или выбора пункта»
 
 ## F-07 Критерий готовности: базово её выведем в html
 <!-- journal:F-07 -->
@@ -65,7 +65,7 @@
 - адресат: постановка
 - зависит от: —
 - улики:
-  - улика: `openspec/changes/step-help/intent.md` «базово её выведем в html»
+  - улика: `openspec/changes/archive/2026-11-03-step-help/intent.md` «базово её выведем в html»
 
 ## F-08 Готовность шага в `status` — наличие его файла: содержание и решения журнала статус не читает. Журнал `{}` без единой записи делает `decisions` готовым, следующим назван `research`
 <!-- journal:F-08 -->
@@ -75,8 +75,8 @@
 - зависит от: —
 - улики:
   - улика: `upstream/openspec/src/core/artifact-graph/state.ts` «Detects which artifacts are completed by checking file existence in the change directory.»
-  - улика: `openspec/changes/step-help/probes/status-empty-files.txt` «=== decisions.json = {}: ни одной записи, ничего не решено»
-  - улика: `openspec/changes/step-help/probes/status-empty-files.txt` «готовы к работе: research»
+  - улика: `openspec/changes/archive/2026-11-03-step-help/probes/status-empty-files.txt` «=== decisions.json = {}: ни одной записи, ничего не решено»
+  - улика: `openspec/changes/archive/2026-11-03-step-help/probes/status-empty-files.txt` «готовы к работе: research»
 - следствия: На нём стоят F-19 и F-24.
 
 ## F-09 После `specs` к работе готовы сразу три шага, `Next` называет один
@@ -86,7 +86,7 @@
 - адресат: материалы
 - зависит от: —
 - улики:
-  - улика: `openspec/changes/step-help/probes/status-empty-files.txt` «готовы к работе: attack-decisions consequences security»
+  - улика: `openspec/changes/archive/2026-11-03-step-help/probes/status-empty-files.txt` «готовы к работе: attack-decisions consequences security»
 - следствия: На нём стоит F-27: один текущий шаг справка выбирает так же, как `/opsx:continue`.
 
 ## F-10 Шаг `security` можно пропустить: `tasks` от него не зависит, а единственный путь к `apply` шёл через необязательную `attack-artifacts`; без `security.md` `instructions apply` отвечает `state=ready`. В спеке и решениях намерения пропускать его нет: решение об `apply.requires` говорит только об атаке
@@ -97,7 +97,7 @@
 - зависит от: —
 - улики:
   - улика: `openspec/schemas/symphysis/schema.yaml` «requires: [tasks, attack-artifacts]»
-  - улика: `openspec/changes/step-help/probes/status-empty-files.txt` «state=ready progress={"total":1,"complete":0,"remaining":1}»
+  - улика: `openspec/changes/archive/2026-11-03-step-help/probes/status-empty-files.txt` «state=ready progress={"total":1,"complete":0,"remaining":1}»
   - улика: `openspec/changes/archive/2026-11-02-calibration-fixes/rulings.md` «форк считает optional без файла выполненным и в гейте apply»
 - следствия: На нём стоят F-25 и F-26.
 
@@ -118,7 +118,7 @@
 - адресат: материалы
 - зависит от: —
 - улики:
-  - улика: `openspec/changes/step-help/probes/status-empty-files.txt` «state=ready progress={"total":1,"complete":0,"remaining":1}»
+  - улика: `openspec/changes/archive/2026-11-03-step-help/probes/status-empty-files.txt` «state=ready progress={"total":1,"complete":0,"remaining":1}»
   - улика: `openspec/schemas/symphysis/schema.yaml` «tracks: tasks.md»
 
 ## F-13 `apply`, `sync` и `archive` не артефакты графа; признака «синхронизация сделана» в файлах нет, спеки сравнивает сама команда архива
@@ -141,7 +141,7 @@
 - зависит от: —
 - улики:
   - улика: `docs/GUIDE.md` «Какой шаг следующий, показывает `openspec status --change add-overdue`.»
-  - улика: `openspec/changes/step-help/intent.md` «сейчас в GUIDE.md описан процесс по шагам, и описан хорошо. Но не сказано:»
+  - улика: `openspec/changes/archive/2026-11-03-step-help/intent.md` «сейчас в GUIDE.md описан процесс по шагам, и описан хорошо. Но не сказано:»
 
 ## F-15 Плагин зовёт ядро только через Python-скрипты из `.symphysis/tools/`, а версия ядра в проекте расходится с версией плагина
 <!-- journal:F-15 -->
@@ -184,7 +184,7 @@
 - адресат: материалы
 - зависит от: —
 - улики:
-  - улика: `openspec/changes/step-help/intent.md` «атаки в него включать не будем»
+  - улика: `openspec/changes/archive/2026-11-03-step-help/intent.md` «атаки в него включать не будем»
 
 ## F-19 Откуда справка берёт «где мы и чей ход»?
 <!-- journal:F-19 -->
@@ -194,10 +194,10 @@
 - зависит от: —
 - варианты:
   - A. Только `openspec status`
-    - улика: `openspec/changes/step-help/intent.md` «справку, которая смотрит на status, и описывает текущий шаг»
+    - улика: `openspec/changes/archive/2026-11-03-step-help/intent.md` «справку, которая смотрит на status, и описывает текущий шаг»
   - B. `status`, счётчики журнала и прогресс задач; хук можно добавить позже, не меняя формат
     - улика: `tools/journal_render.py` «"decided": sum(1 for r in forks if r["decision"]),»
-    - улика: `openspec/changes/step-help/probes/status-empty-files.txt` «=== decisions.json = {}: ни одной записи, ничего не решено»
+    - улика: `openspec/changes/archive/2026-11-03-step-help/probes/status-empty-files.txt` «=== decisions.json = {}: ни одной записи, ничего не решено»
   - C. Всё это и хук: видно, что шаг выполняется прямо сейчас
     - улика: `vscode/docs/design-part1-viewer.md` «какой шаг выполняется,»
 - антиподы: —
@@ -217,7 +217,7 @@
   - B. Поле у артефакта в `schema.yaml`
     - улика: `openspec/schemas/symphysis/schema.yaml` «description: Журнал решений — развилки и факты с уликами, решает человек»
   - C. Разбор разделов `docs/GUIDE.md`
-    - улика: `openspec/changes/step-help/intent.md` «сейчас в GUIDE.md описан процесс по шагам, и описан хорошо. Но не сказано:»
+    - улика: `openspec/changes/archive/2026-11-03-step-help/intent.md` «сейчас в GUIDE.md описан процесс по шагам, и описан хорошо. Но не сказано:»
 - антиподы: —
 - рекомендация: Новый шаг без справки не пройдёт тест.
 - решение: A — «Да, твои рекомендации принимаю», 2026-11-02
@@ -230,11 +230,11 @@
 - зависит от: —
 - варианты:
   - A. Снимок одной командой, на странице время снятия
-    - улика: `openspec/changes/step-help/intent.md` «базово её выведем в html»
+    - улика: `openspec/changes/archive/2026-11-03-step-help/intent.md` «базово её выведем в html»
   - B. Пересборка моделью в конце каждого шага
     - улика: `openspec/schemas/symphysis/schema.yaml` «Улики сверяет `python .symphysis/tools/journal.py check <каталог изменения>/decisions.json` — это сигнал, не стоп.»
   - C. Локальный сервер
-    - улика: `openspec/changes/step-help/intent.md` «базово её выведем в html»
+    - улика: `openspec/changes/archive/2026-11-03-step-help/intent.md` «базово её выведем в html»
 - антиподы: —
 - рекомендация: Снимок честно показывает, на какой момент он снят.
 - решение: A — «Да, твои рекомендации принимаю», 2026-11-02
@@ -247,12 +247,12 @@
 - зависит от: —
 - варианты:
   - A. Только ядро: скрипт, тексты шагов, JSON и HTML; вкладка — отдельным изменением на этих данных
-    - улика: `openspec/changes/step-help/intent.md` «базово её выведем в html»
-    - улика: `openspec/changes/step-help/intent.md` «Теперь стоит заняться тем, что блокирует разработку следующих частей плагина.»
+    - улика: `openspec/changes/archive/2026-11-03-step-help/intent.md` «базово её выведем в html»
+    - улика: `openspec/changes/archive/2026-11-03-step-help/intent.md` «Теперь стоит заняться тем, что блокирует разработку следующих частей плагина.»
   - B. Одно изменение на оба проекта, как у `decision-scheme`, вместе со вкладкой
     - улика: `openspec/changes/archive/2026-11-02-decision-scheme/decisions.json` «Одно изменение на оба проекта: specs и tasks говорят и о ядре, и о плагине»
   - C. Только тексты шагов, без команды и без расчёта текущего шага
-    - улика: `openspec/changes/step-help/intent.md` «справку, которая смотрит на status, и описывает текущий шаг»
+    - улика: `openspec/changes/archive/2026-11-03-step-help/intent.md` «справку, которая смотрит на status, и описывает текущий шаг»
     - маловероятно: не отвечает на вопрос «какой шаг сейчас»
 - антиподы: —
 - рекомендация: Часть 2 плагина начнётся с уже проверенных данных.
@@ -312,11 +312,11 @@
 - варианты:
   - A. Механика выводится из графа при показе: что заблокируется, необязателен ли шаг, остановит ли `apply`; что теряется по смыслу — текстом
     - улика: `openspec/schemas/symphysis/schema.yaml` «requires: [tasks, attack-artifacts]»
-    - улика: `openspec/changes/step-help/probes/status-empty-files.txt` «state=ready progress={"total":1,"complete":0,"remaining":1}»
+    - улика: `openspec/changes/archive/2026-11-03-step-help/probes/status-empty-files.txt` «state=ready progress={"total":1,"complete":0,"remaining":1}»
   - B. Всё текстом, тест сверяет ключевые фразы с графом
     - улика: `installer/scripts/sync-payload.js` «const DIRS = ["openspec/schemas/symphysis"];»
   - C. Только граф, без текста о потере
-    - улика: `openspec/changes/step-help/intent.md` «что будет, если я не выполню этот шаг?»
+    - улика: `openspec/changes/archive/2026-11-03-step-help/intent.md` «что будет, если я не выполню этот шаг?»
     - маловероятно: «заблокирует `design`» не объясняет, что будет с результатом
 - антиподы: —
 - рекомендация: Текст отвечает только за смысл.
@@ -334,7 +334,7 @@
   - B. Отдельной веткой `fix/` со своим тестом; справка выводит блокировки из графа и сама покажет новое состояние
     - улика: `openspec/changes/archive/2026-11-02-calibration-fixes/rulings.md` «форк считает optional без файла выполненным и в гейте apply»
   - C. Оставить как есть: чек-лист `security.md` не гейт реализации, справка так и скажет
-    - улика: `openspec/changes/step-help/probes/status-empty-files.txt` «state=ready progress={"total":1,"complete":0,"remaining":1}»
+    - улика: `openspec/changes/archive/2026-11-03-step-help/probes/status-empty-files.txt` «state=ready progress={"total":1,"complete":0,"remaining":1}»
 - антиподы: —
 - рекомендация: Вариант C законен, если `security.md` задуман как необязательный: в решениях этого нет (F-10).
 - решение: B, 2026-11-02
@@ -366,10 +366,10 @@
 - зависит от: —
 - варианты:
   - A. Четыре ответа из намерения, команда шага, предыдущий и следующий шаг
-    - улика: `openspec/changes/step-help/intent.md` «какие файлы и где смотреть, чтобы проверить результаты шага»
+    - улика: `openspec/changes/archive/2026-11-03-step-help/intent.md` «какие файлы и где смотреть, чтобы проверить результаты шага»
     - улика: `vscode/docs/design-part1-viewer.md` «с какими артефактами и командами, подсказки, предыдущий и следующий»
   - B. Только четыре ответа из намерения
-    - улика: `openspec/changes/step-help/intent.md` «зачем он? какие основные механики?»
+    - улика: `openspec/changes/archive/2026-11-03-step-help/intent.md` «зачем он? какие основные механики?»
 - антиподы: —
 - рекомендация: Пути файлов берутся из `status`: `existingOutputPaths` даёт настоящие файлы.
 - решение: A, 2026-11-02
@@ -382,7 +382,7 @@
 - зависит от: —
 - варианты:
   - A. Отдельная страница со своим шаблоном
-    - улика: `openspec/changes/step-help/intent.md` «вместо того, чтобы держать под рукой гайд, я предлагаю создать справку»
+    - улика: `openspec/changes/archive/2026-11-03-step-help/intent.md` «вместо того, чтобы держать под рукой гайд, я предлагаю создать справку»
   - B. Четвёртый режим `decisions.html`: на шаге `intent` журнала и страницы ещё нет
     - улика: `tools/playground-template.html` «решения — круг просмотрщика; проверка — снимок перед proposal»
 - антиподы: B ↔ F-30.A; B ↔ F-30.B
@@ -430,7 +430,7 @@
 - адресат: материалы
 - зависит от: —
 - улики:
-  - улика: `openspec/changes/step-help/answers/2026-11-02-2.md` «Справка будет соперничать со схемой, то есть отображаем или схему или справку, поэтому они занимают одну область.»
+  - улика: `openspec/changes/archive/2026-11-03-step-help/answers/2026-11-02-2.md` «Справка будет соперничать со схемой, то есть отображаем или схему или справку, поэтому они занимают одну область.»
   - улика: `tools/playground-template.html` «id="btnScheme" title="схема решения рядом с карточками»
 - следствия: На нём стоят требования к панели. Понято неверно — оспорь этот факт.
 
@@ -441,7 +441,7 @@
 - адресат: материалы
 - зависит от: —
 - улики:
-  - улика: `openspec/changes/step-help/answers/2026-11-02-2.md` «в html на шаге intent страницы еще не будет. но в плагине будет, так как его можно открыть и в пустом проектее.»
+  - улика: `openspec/changes/archive/2026-11-03-step-help/answers/2026-11-02-2.md` «в html на шаге intent страницы еще не будет. но в плагине будет, так как его можно открыть и в пустом проектее.»
 - следствия: На нём стоит F-34.
 
 ## F-34 F-23.A и F-29.B расходятся: по первому страницу собирает новый скрипт, по второму справка живёт на странице просмотрщика. Как данные справки попадают на страницу?
@@ -453,8 +453,8 @@
 - варианты:
   - A. `render-html` зовёт расчёт из `tools/step_help.py` и встраивает данные. Сбой расчёта (нет `openspec`, не тот форк) страницу не роняет: панель называет причину. Сам `step_help.py` отдаёт только JSON — для плагина и для проекта без журнала. Сборка вырастет с 0,2 с примерно до 0,7 с
     - улика: `tools/journal_cli.py` «def cmd_render_html(args: argparse.Namespace) -> int:»
-    - улика: `openspec/changes/step-help/probes/fork-call-cost.txt` «status 257 мс, instructions apply 249 мс»
-    - улика: `openspec/changes/step-help/probes/fork-call-cost.txt` «render-html сейчас 210 мс»
+    - улика: `openspec/changes/archive/2026-11-03-step-help/probes/fork-call-cost.txt` «status 257 мс, instructions apply 249 мс»
+    - улика: `openspec/changes/archive/2026-11-03-step-help/probes/fork-call-cost.txt` «render-html сейчас 210 мс»
   - B. Отдельная команда `step_help.py render-html` собирает ту же страницу со справкой, `journal.py render-html` остаётся без неё: у одной страницы две сборки, а скиллы и плагин надо перевести на новую
     - улика: `vscode/src/host/core.ts` «const html = await step(["render-html", journal, "--out", rel(env, path.join(ref.dir, "decisions.html"))»
   - C. Соседний файл данных, как файл mermaid: скрипт пишет его отдельно, страница подключает тегом и обновляется без пересборки журнала; появляется второй путь, а данные могут разойтись со страницей
@@ -472,14 +472,14 @@
 - зависит от: —
 - варианты:
   - A. Переименовать в этом изменении: в ядре 11 файлов (`GUIDE`, две спеки, пять скиллов, заметки перевода, два теста), в плагине строка `core.ts` и его тесты. Записи старых прогонов и архив не трогаем, у `decision-scheme` старый файл удаляется. Путь входит в контракт, поэтому номер растёт и старый плагин попросит обновиться
-    - улика: `openspec/changes/step-help/answers/2026-11-02-2.md` «видимо, нужно переименовать тогда decisions.html на symphysis.html, раз страница становится мультизадачной.»
+    - улика: `openspec/changes/archive/2026-11-03-step-help/answers/2026-11-02-2.md` «видимо, нужно переименовать тогда decisions.html на symphysis.html, раз страница становится мультизадачной.»
     - улика: `docs/repo-contract.md` «- пути файлов изменения;»
     - улика: `vscode/src/host/core.ts` «const html = await step(["render-html", journal, "--out", rel(env, path.join(ref.dir, "decisions.html"))»
   - B. Переименовать, но отдельным изменением после справки: те же файлы плюс то, что добавит справка
-    - улика: `openspec/changes/step-help/answers/2026-11-02-2.md` «видимо, нужно переименовать тогда decisions.html на symphysis.html, раз страница становится мультизадачной.»
+    - улика: `openspec/changes/archive/2026-11-03-step-help/answers/2026-11-02-2.md` «видимо, нужно переименовать тогда decisions.html на symphysis.html, раз страница становится мультизадачной.»
   - C. Оставить как есть: страница по-прежнему строится из журнала и без него не существует, поэтому имя не врёт
     - улика: `openspec/specs/decision-viewer/spec.md` «`render-html` SHALL собирать `decisions.html` из `decisions.json`»
-    - улика: `openspec/changes/step-help/answers/2026-11-02-2.md` «в html на шаге intent страницы еще не будет.»
+    - улика: `openspec/changes/archive/2026-11-03-step-help/answers/2026-11-02-2.md` «в html на шаге intent страницы еще не будет.»
 - антиподы: —
 - рекомендация: Правка плагина обязательна в паре: иначе модель пишет новый файл, плагин старый, и один из них устаревает молча. Это не вкладка, поэтому F-22 не нарушается.
 - решение: A, 2026-11-02
@@ -494,7 +494,7 @@
   - A. `install` записывает рядом с инструментами версию из `installer/package.json` и короткий хеш клона, как у сборки `.vsix`: `0.1.0+aa50e8f`; справка читает этот файл. Без git — только версия
     - улика: `installer/package.json` «"version": "0.1.0",»
     - улика: `openspec/changes/archive/2026-11-02-decision-scheme/specs/plugin-packaging/spec.md` «Сборка `.vsix` SHALL нести версию из `package.json` и короткий хеш коммита плагина»
-    - улика: `openspec/changes/step-help/answers/2026-11-02-2.md` «За установкой не следим, но показываем версию форка, версию symphysis, и версию плагина. Справочно и малозаметно.»
+    - улика: `openspec/changes/archive/2026-11-03-step-help/answers/2026-11-02-2.md` «За установкой не следим, но показываем версию форка, версию symphysis, и версию плагина. Справочно и малозаметно.»
   - B. Только версия из `installer/package.json`: сейчас она не растёт и разные сборки не различает
     - улика: `installer/package.json` «"version": "0.1.0",»
     - улика: `docs/repo-contract.md` «Каждый проект ставит тег в свой `main`. У ядра это `v1.x.x` и далее.»
@@ -516,8 +516,8 @@
   - улика: `openspec/changes/archive/2026-11-02-decision-scheme/specs/decision-viewer/spec.md` «### Requirement: Панель схемы показывает `scheme.md` рядом с карточками»
   - улика: `openspec/changes/archive/2026-11-02-decision-scheme/specs/decision-viewer/spec.md` «### Requirement: Просмотрщик — один HTML из своего шаблона»
   - улика: `openspec/schemas/symphysis/schema.yaml` «MODIFIED несёт требование целиком.»
-  - улика: `openspec/changes/step-help/probes/archive-decision-scheme.txt` «Totals: + 31, ~ 4, - 0, → 0»
-  - улика: `openspec/changes/step-help/probes/archive-decision-scheme.txt` «код архива 0»
+  - улика: `openspec/changes/archive/2026-11-03-step-help/probes/archive-decision-scheme.txt` «Totals: + 31, ~ 4, - 0, → 0»
+  - улика: `openspec/changes/archive/2026-11-03-step-help/probes/archive-decision-scheme.txt` «код архива 0»
 - следствия: На нём стоит F-38.
 
 ## F-38 Как разойтись с активным `decision-scheme` до спек справки?
@@ -528,8 +528,8 @@
 - зависит от: —
 - варианты:
   - A. Сначала архивировать `decision-scheme`, потом писать спеки справки на новой базе. Это работа сессии плагина: по твоему слову сделать здесь или там; дельты влиты, но улики журнала надо перевести на архивный путь, а плагин проверить на архивном журнале
-    - улика: `openspec/changes/step-help/probes/archive-decision-scheme.txt` «Change 'decision-scheme' archived as '2026-11-02-decision-scheme'.»
-    - улика: `openspec/changes/step-help/probes/archive-decision-scheme.txt` «код архива 0»
+    - улика: `openspec/changes/archive/2026-11-03-step-help/probes/archive-decision-scheme.txt` «Change 'decision-scheme' archived as '2026-11-02-decision-scheme'.»
+    - улика: `openspec/changes/archive/2026-11-03-step-help/probes/archive-decision-scheme.txt` «код архива 0»
   - B. Писать спеки на текущей базе и держать оба изменения активными: второй архив сводить вручную по трём версиям, как при вливании, иначе `MODIFIED` молча откатит текст другого изменения
     - улика: `openspec/schemas/symphysis/schema.yaml` «MODIFIED несёт требование целиком.»
     - улика: `openspec/changes/archive/2026-11-02-decision-scheme/specs/decision-viewer/spec.md` «### Requirement: Просмотрщик — один HTML из своего шаблона»
@@ -549,7 +549,7 @@
 - зависит от: —
 - улики:
   - улика: `docs/GUIDE.md` «Какой шаг следующий, показывает `openspec status --change add-overdue`.»
-  - улика: `openspec/changes/step-help/intent.md` «сейчас в GUIDE.md описан процесс по шагам, и описан хорошо.»
+  - улика: `openspec/changes/archive/2026-11-03-step-help/intent.md` «сейчас в GUIDE.md описан процесс по шагам, и описан хорошо.»
 - следствия: На нём стоит задача правки `docs/GUIDE.md`.
 
 ## F-40 [adjacency · collection] Скрипт считает текущий шаг и чей ход: у записи `status: припаркован`, решения нет. Разность счётчиков из F-11 считает её открытой — страница зовёт человека к развилке, где решать нечего
@@ -566,7 +566,7 @@
 - антиподы: —
 - рекомендация: A — Портит тихо: при парковке материалам ход на самом деле за моделью и `research`, а страница называет ход человека, и выглядит это верно. В F-11 разность записана фактом, поэтому правило нужно твоим словом.
 - улики:
-  - улика: `openspec/changes/step-help/specs/step-help/spec.md` «### Requirement: Скрипт считает текущий шаг и чей ход»
+  - улика: `openspec/changes/archive/2026-11-03-step-help/specs/step-help/spec.md` «### Requirement: Скрипт считает текущий шаг и чей ход»
   - улика: `tools/journal_render.py` «"decided": sum(1 for r in forks if r["decision"]),»
 - решение: A, 2026-11-02
 - исход: проба — Specify
@@ -586,8 +586,8 @@
 - антиподы: —
 - рекомендация: A — Портит тихо: «открытых 0» на сломанном журнале ведёт к следующему шагу так же, как `status`, от чего справка и должна беречь (F-08).
 - улики:
-  - улика: `openspec/changes/step-help/specs/step-help/spec.md` «### Requirement: Скрипт считает текущий шаг и чей ход»
-  - улика: `openspec/changes/step-help/probes/status-empty-files.txt` «=== decisions.json = {}: ни одной записи, ничего не решено»
+  - улика: `openspec/changes/archive/2026-11-03-step-help/specs/step-help/spec.md` «### Requirement: Скрипт считает текущий шаг и чей ход»
+  - улика: `openspec/changes/archive/2026-11-03-step-help/probes/status-empty-files.txt` «=== decisions.json = {}: ни одной записи, ничего не решено»
 - решение: A — «А вот насчет F-41 видимо придется передумать. я хотел, чтобы пока конвейер не начат то отображался пункт справки про intent. но если мы и во время ошибок будем показывать или если status уже есть, но нет развилок (например пропустили первые шаги, сразу начали с подготовки proposal), то это будет кривая справка. Видимо твой рекомендованный вариант был лучше.», 2026-11-02
 - исход: проба — Specify — А вот насчет F-41 видимо придется передумать. я хотел, чтобы пока конвейер не начат то отображался пункт справки про intent. но если мы и во время ошибок будем показывать или если status уже есть, но нет развилок (например пропустили первые шаги, сразу начали с подготовки proposal), то это будет кривая справка. Видимо твой рекомендованный вариант был лучше.
 - следствия: в spec.md: Журнал не читается
@@ -606,7 +606,7 @@
 - антиподы: —
 - рекомендация: A — Портит тихо: догадка покажет чужое изменение, и страница будет выглядеть верной. Поле `changes` заодно нужно вкладке плагина: она откроется в проекте и выберет изменение сама.
 - улики:
-  - улика: `openspec/changes/step-help/specs/step-help/spec.md` «### Requirement: Скрипт отдаёт JSON и работает без журнала и без изменения»
+  - улика: `openspec/changes/archive/2026-11-03-step-help/specs/step-help/spec.md` «### Requirement: Скрипт отдаёт JSON и работает без журнала и без изменения»
 - решение: A, 2026-11-02
 - исход: проба — Specify
 - следствия: в spec.md: Два активных изменения
@@ -625,8 +625,8 @@
 - антиподы: —
 - рекомендация: A — Портит тихо: падения нет, сборка просто не кончается, и модель с плагином ждут. Обычный вызов занимает 0,25 с, поэтому 15 с запас, а не риск ложного срабатывания на медленной машине.
 - улики:
-  - улика: `openspec/changes/step-help/specs/step-help/spec.md` «### Requirement: Скрипт находит форк как инсталлятор и называет сбой»
-  - улика: `openspec/changes/step-help/probes/fork-call-cost.txt` «status 257 мс, instructions apply 249 мс»
+  - улика: `openspec/changes/archive/2026-11-03-step-help/specs/step-help/spec.md` «### Requirement: Скрипт находит форк как инсталлятор и называет сбой»
+  - улика: `openspec/changes/archive/2026-11-03-step-help/probes/fork-call-cost.txt` «status 257 мс, instructions apply 249 мс»
 - решение: A, 2026-11-02
 - исход: проба — Specify
 - следствия: в spec.md: `openspec` завис
@@ -645,7 +645,7 @@
 - антиподы: —
 - рекомендация: C — Портит тихо и повторялось три раза в одной работе (кириллица в машинных именах). Поведение тут не выбор, а свойство: тест нужен, отдельный сценарий спеки ничего не добавит.
 - улики:
-  - улика: `openspec/changes/step-help/specs/step-help/spec.md` «### Requirement: Скрипт находит форк как инсталлятор и называет сбой»
+  - улика: `openspec/changes/archive/2026-11-03-step-help/specs/step-help/spec.md` «### Requirement: Скрипт находит форк как инсталлятор и называет сбой»
 - решение: C, 2026-11-02
 - исход: проба — Backstop
 - следствия: тест-страховка: запускает скрипт из каталога с кириллицей и пробелом и сверяет JSON с ожидаемым
@@ -664,7 +664,7 @@
 - антиподы: —
 - рекомендация: B — Человек видит причину сразу, и ничего не портится: журнал на месте, а общий путь уже есть. Лишняя ветка в расчёте ради архивной страницы не окупается.
 - улики:
-  - улика: `openspec/changes/step-help/specs/decision-viewer/spec.md` «### Requirement: `render-html` встраивает снимок справки, сбой страницу не роняет»
+  - улика: `openspec/changes/archive/2026-11-03-step-help/specs/decision-viewer/spec.md` «### Requirement: `render-html` встраивает снимок справки, сбой страницу не роняет»
 - решение: B, 2026-11-02
 - исход: проба — Dismiss — Рекомендованный вариант выбран без слова: по слову человека обоснование нужно у нерекомендованного выбора, а не у отказа. Причина из рекомендации: Человек видит причину сразу, и ничего не портится: журнал на месте, а общий путь уже есть. Лишняя ветка в расчёте ради архивной страницы не окупается.
 - следствия: Человек видит причину сразу, и ничего не портится: журнал на месте, а общий путь уже есть. Лишняя ветка в расчёте ради архивной страницы не окупается.
@@ -683,8 +683,8 @@
 - антиподы: —
 - рекомендация: B — Человек видит это сразу, и ничего не портится: дифф в одну строку у файла-рендера. Прятать настоящее время снятия ради чистого диффа хуже, чем сам дифф.
 - улики:
-  - улика: `openspec/changes/step-help/specs/decision-viewer/spec.md` «### Requirement: `render-html` встраивает снимок справки, сбой страницу не роняет»
-  - улика: `openspec/changes/step-help/probes/status-paths.txt` «git ls-files: openspec/changes/archive/2026-11-02-decision-scheme/decisions.html»
+  - улика: `openspec/changes/archive/2026-11-03-step-help/specs/decision-viewer/spec.md` «### Requirement: `render-html` встраивает снимок справки, сбой страницу не роняет»
+  - улика: `openspec/changes/archive/2026-11-03-step-help/probes/status-paths.txt` «git ls-files: openspec/changes/archive/2026-11-02-decision-scheme/decisions.html»
 - решение: B, 2026-11-02
 - исход: проба — Dismiss — Рекомендованный вариант выбран без слова: по слову человека обоснование нужно у нерекомендованного выбора, а не у отказа. Причина из рекомендации: Человек видит это сразу, и ничего не портится: дифф в одну строку у файла-рендера. Прятать настоящее время снятия ради чистого диффа хуже, чем сам дифф.
 - следствия: Человек видит это сразу, и ничего не портится: дифф в одну строку у файла-рендера. Прятать настоящее время снятия ради чистого диффа хуже, чем сам дифф.
@@ -703,7 +703,7 @@
 - антиподы: —
 - рекомендация: B — Сбой виден сразу и ничего не портит, а вторая форма панели стоит кода и теста. Понадобятся тексты при сбое — добавить можно позже, формат это выдержит.
 - улики:
-  - улика: `openspec/changes/step-help/specs/decision-viewer/spec.md` «### Requirement: `render-html` встраивает снимок справки, сбой страницу не роняет»
+  - улика: `openspec/changes/archive/2026-11-03-step-help/specs/decision-viewer/spec.md` «### Requirement: `render-html` встраивает снимок справки, сбой страницу не роняет»
 - решение: B, 2026-11-02
 - исход: проба — Dismiss — Рекомендованный вариант выбран без слова: по слову человека обоснование нужно у нерекомендованного выбора, а не у отказа. Причина из рекомендации: Сбой виден сразу и ничего не портит, а вторая форма панели стоит кода и теста. Понадобятся тексты при сбое — добавить можно позже, формат это выдержит.
 - следствия: Сбой виден сразу и ничего не портит, а вторая форма панели стоит кода и теста. Понадобятся тексты при сбое — добавить можно позже, формат это выдержит.
@@ -722,7 +722,7 @@
 - антиподы: —
 - рекомендация: B — Видно сразу и не теряется: старая страница и её черновик на месте, никто их не удаляет (см. F-49). Код перехода нужен один раз и останется в шаблоне навсегда. Плагин не затронут: у него черновики в `.symphysis/viewer/`.
 - улики:
-  - улика: `openspec/changes/step-help/specs/decision-viewer/spec.md` «### Requirement: Просмотрщик — один HTML из своего шаблона с тремя режимами»
+  - улика: `openspec/changes/archive/2026-11-03-step-help/specs/decision-viewer/spec.md` «### Requirement: Просмотрщик — один HTML из своего шаблона с тремя режимами»
   - улика: `tools/playground-template.html` «const KEY = 'symphysis:' + ((typeof location !== 'undefined' && location.pathname)»
 - решение: B, 2026-11-02
 - исход: проба — Dismiss — Рекомендованный вариант выбран без слова: по слову человека обоснование нужно у нерекомендованного выбора, а не у отказа. Причина из рекомендации: Видно сразу и не теряется: старая страница и её черновик на месте, никто их не удаляет (см. F-49). Код перехода нужен один раз и останется в шаблоне навсегда. Плагин не затронут: у него черновики в `.symphysis/viewer/`.
@@ -742,7 +742,7 @@
 - антиподы: —
 - рекомендация: A — Портит тихо: ответы на старой странице расходятся с журналом, а хеш в шапке никто не сверяет. Удалять файл нельзя: на нём может быть черновик (F-48), поэтому только сигнал.
 - улики:
-  - улика: `openspec/changes/step-help/specs/decision-viewer/spec.md` «### Requirement: Просмотрщик — один HTML из своего шаблона с тремя режимами»
+  - улика: `openspec/changes/archive/2026-11-03-step-help/specs/decision-viewer/spec.md` «### Requirement: Просмотрщик — один HTML из своего шаблона с тремя режимами»
 - решение: B — «О старой decisions.html молчим, потому что это будет мертвая механика, никто кроме нас ею еще не пользовался, держать её для истории не нужно.», 2026-11-02
 - исход: проба — Dismiss — О старой decisions.html молчим, потому что это будет мертвая механика, никто кроме нас ею еще не пользовался, держать её для истории не нужно.
 - следствия: О старой decisions.html молчим, потому что это будет мертвая механика, никто кроме нас ею еще не пользовался, держать её для истории не нужно.
@@ -761,7 +761,7 @@
 - антиподы: —
 - рекомендация: A — Нарушение тихое: справка знает меньше человека (F-24), а модель поверит ей и не сделает просимый шаг. Запрет проверяется механически, и это твой принцип: скрипт предлагает, а решает модель с человеком.
 - улики:
-  - улика: `openspec/changes/step-help/specs/step-help/spec.md` «### Requirement: Скрипт считает текущий шаг и чей ход»
+  - улика: `openspec/changes/archive/2026-11-03-step-help/specs/step-help/spec.md` «### Requirement: Скрипт считает текущий шаг и чей ход»
 - решение: A, 2026-11-02
 - исход: проба — Specify
 - следствия: проверка: test — дерево проекта до и после вызова байт в байт, поиск имени скрипта в `skills/` и `schema.yaml`. в spec.md: Справка не становится гейтом и не меняет файлы
@@ -780,9 +780,9 @@
 - антиподы: —
 - рекомендация: A — Нарушение тихое и необратимое: путь с именем уезжает в коммит и дальше с ним живёт. Сейчас страница абсолютных путей не несёт, поэтому запрет только сохраняет то, что есть; относительные пути нужны и для чтения.
 - улики:
-  - улика: `openspec/changes/step-help/specs/decision-viewer/spec.md` «### Requirement: `render-html` встраивает снимок справки, сбой страницу не роняет»
-  - улика: `openspec/changes/step-help/probes/status-paths.txt` «resolvedOutputPath: X:\symphysis-step-help\openspec\changes\step-help\intent.md»
-  - улика: `openspec/changes/step-help/probes/status-paths.txt` «git ls-files: openspec/changes/archive/2026-11-02-decision-scheme/decisions.html»
+  - улика: `openspec/changes/archive/2026-11-03-step-help/specs/decision-viewer/spec.md` «### Requirement: `render-html` встраивает снимок справки, сбой страницу не роняет»
+  - улика: `openspec/changes/archive/2026-11-03-step-help/probes/status-paths.txt` «resolvedOutputPath: X:\symphysis-step-help\openspec\changes\step-help\intent.md»
+  - улика: `openspec/changes/archive/2026-11-03-step-help/probes/status-paths.txt` «git ls-files: openspec/changes/archive/2026-11-02-decision-scheme/decisions.html»
 - решение: A, 2026-11-02
 - исход: проба — Specify
 - следствия: проверка: test — страница, собранная в каталоге с заметным именем, этого имени не содержит. в spec.md: Снимок справки не несёт абсолютных путей
@@ -795,7 +795,7 @@
 - зависит от: —
 - парковка: ИБ — «Вызов `openspec` без оболочки: путь из `SYMPHYSIS_OPENSPEC` и имя из `--change` не интерпретируются, в том числе через `.cmd`-шим на Windows — канон, покрывается чек-листом security.md; запрет не чеканится»
 - улики:
-  - улика: `openspec/changes/step-help/specs/step-help/spec.md` «### Requirement: Скрипт находит форк как инсталлятор и называет сбой»
+  - улика: `openspec/changes/archive/2026-11-03-step-help/specs/step-help/spec.md` «### Requirement: Скрипт находит форк как инсталлятор и называет сбой»
 - следствия: На этом стоит шаг `security`.
 
 ## F-53 [канон] `render-html` встраивает снимок справки, сбой страницу не роняет: канон ИБ
@@ -806,7 +806,7 @@
 - зависит от: —
 - парковка: ИБ — «Текст `steps.md`, причина сбоя и данные снимка экранируются на странице и не закрывают тег `<script>` — канон, покрывается чек-листом security.md; запрет не чеканится»
 - улики:
-  - улика: `openspec/changes/step-help/specs/decision-viewer/spec.md` «### Requirement: `render-html` встраивает снимок справки, сбой страницу не роняет»
+  - улика: `openspec/changes/archive/2026-11-03-step-help/specs/decision-viewer/spec.md` «### Requirement: `render-html` встраивает снимок справки, сбой страницу не роняет»
 - следствия: На этом стоит шаг `security`.
 
 ## F-54 Как понято слово к F-55: правила подготовки намерения показываются кнопкой «Как готовить intent.md?», которая не зависит от расчёта шага: работает при любом шаге, без изменения и при сбое расчёта, отметку текущего шага не двигает. Особого правила «пока конвейер не начат» нет. Текст берётся из слов человека о хорошем намерении и ещё будет меняться, поэтому тест требует только наличие подраздела
@@ -816,9 +816,9 @@
 - адресат: материалы
 - зависит от: —
 - улики:
-  - улика: `openspec/changes/step-help/answers/2026-11-02-8.md` «и всё, никакой зависимости от шагов.»
-  - улика: `openspec/changes/step-help/probes/intent-guide-words.txt` «с чем работаем, где искать материалы, какие компоненты участвуют, и побольше литералов, чтобы по ним грепать.»
-  - улика: `openspec/changes/step-help/probes/intent-guide-words.txt` «да, берем, мы еще будем модифицировать содержание»
+  - улика: `openspec/changes/archive/2026-11-03-step-help/answers/2026-11-02-8.md` «и всё, никакой зависимости от шагов.»
+  - улика: `openspec/changes/archive/2026-11-03-step-help/probes/intent-guide-words.txt` «с чем работаем, где искать материалы, какие компоненты участвуют, и побольше литералов, чтобы по ним грепать.»
+  - улика: `openspec/changes/archive/2026-11-03-step-help/probes/intent-guide-words.txt` «да, берем, мы еще будем модифицировать содержание»
 - следствия: На нём стоят требование «Правила намерения открываются кнопкой и не зависят от шагов» и подраздел «Как готовить» раздела `intent` в `steps.md`. Понято неверно — оспорь этот факт.
 
 ## F-55 Слово к F-41 приводит пример: первые шаги пропущены, сразу начат `proposal`. Обычный расчёт и тогда называет `intent` или `decisions`, потому что так поступит `/opsx:continue` без имени, а рядом готов `specs`. Что называть текущим шагом?
@@ -829,18 +829,18 @@
 - зависит от: F-27
 - варианты:
   - A. Как `/opsx:continue`: текущий — первый готовый, здесь `intent`; рядом сказано, что дальше уже есть `proposal.md`, и назван тоже готовый `specs`. Справка и команда не расходятся, но страница открывается на шаге, от которого человек ушёл
-    - улика: `openspec/changes/step-help/probes/status-skipped-steps.txt` «первый готовый, как у /opsx:continue: intent»
+    - улика: `openspec/changes/archive/2026-11-03-step-help/probes/status-skipped-steps.txt` «первый готовый, как у /opsx:continue: intent»
     - улика: `upstream/openspec/src/core/templates/workflows/continue-change.ts` «the FIRST artifact with»
   - B. Первый готовый после самого дальнего готового файла, здесь `specs`; пропущенные шаги названы, и у каждого видно, что теряется. Команда шага — `/opsx:continue specs`, потому что без имени команда начнёт с `intent`, и страница обязана это сказать. Без пропусков ответ тот же, что у `/opsx:continue`
-    - улика: `openspec/changes/step-help/probes/status-skipped-steps.txt` «готовы к работе: intent specs»
+    - улика: `openspec/changes/archive/2026-11-03-step-help/probes/status-skipped-steps.txt` «готовы к работе: intent specs»
     - улика: `upstream/openspec/src/core/templates/workflows/continue-change.ts` «Without a name, work on the next artifact (step 2).»
   - C. Как `/opsx:continue` и без пометок: первый готовый, остальное не показывается. Дешевле всего
-    - улика: `openspec/changes/step-help/answers/2026-11-02-6.md` «то это будет кривая справка.»
+    - улика: `openspec/changes/archive/2026-11-03-step-help/answers/2026-11-02-6.md` «то это будет кривая справка.»
     - маловероятно: слово к F-41 называет именно этот случай кривой справкой
 - антиподы: —
 - рекомендация: B — Справка отвечает, где работа, а пропущенные шаги не теряются: они названы вместе с тем, чем грозит пропуск. Цена — команда с именем шага и строка о расхождении с `/opsx:continue` без имени.
 - улики:
-  - улика: `openspec/changes/step-help/specs/step-help/spec.md` «### Requirement: Скрипт считает текущий шаг и чей ход»
+  - улика: `openspec/changes/archive/2026-11-03-step-help/specs/step-help/spec.md` «### Requirement: Скрипт считает текущий шаг и чей ход»
 - решение: C — «А отображение Intent мы просто выведем в справке кнопкой "Как готовить intent.md?", пользователь нажимает на кнопку, отображается справка об intent. и всё, никакой зависимости от шагов. Первый путь. Справка всё таки о symphysis, а внутри него есть правила.», 2026-11-02
 - следствия: Текущий шаг считается как у `/opsx:continue`; состояния других шагов видны в списке по требованию о странице шага, отдельной пометки нет. Менять саму команду — отдельное изменение форка, тест с `nextSteps` не даст справке разойтись с ней молча.
 
@@ -1049,8 +1049,8 @@
 - рекомендация: C — Простая реализация не сработает именно на основной системе: проба дала 12 с вместо 2. Требование о пределе уже есть, не хватает теста на шиме, а не новой строки спеки.
 - улики:
   - улика: `installer/lib/openspec-bin.js` «if (win && /\.(cmd|bat)$/i.test(file)) {»
-  - улика: `openspec/changes/step-help/probes/timeout-cmd-shim.txt` «subprocess.run с timeout: TimeoutExpired за 12.0 с»
-  - улика: `openspec/changes/step-help/probes/timeout-cmd-shim.txt` «Popen, снятие дерева через taskkill: TimeoutExpired, дерево снято taskkill за 2.2 с»
+  - улика: `openspec/changes/archive/2026-11-03-step-help/probes/timeout-cmd-shim.txt` «subprocess.run с timeout: TimeoutExpired за 12.0 с»
+  - улика: `openspec/changes/archive/2026-11-03-step-help/probes/timeout-cmd-shim.txt` «Popen, снятие дерева через taskkill: TimeoutExpired, дерево снято taskkill за 2.2 с»
 - решение: C, 2026-11-02
 - исход: проба — Backstop
 - следствия: тест-страховка: подаёт `.cmd` с зависшим node и утверждает возврат раньше 30 с
@@ -1069,7 +1069,7 @@
 - антиподы: —
 - рекомендация: A — Тихо: страница с честным временем всё равно называет старый шаг текущим, а человек не знает, чем её освежить. Строка с командой ничего не стоит.
 - улики:
-  - улика: `openspec/changes/step-help/specs/decision-viewer/spec.md` «Страница SHALL NOT обновлять снимок сама: новый снимок даёт повторная `render-html` (F-21).»
+  - улика: `openspec/changes/archive/2026-11-03-step-help/specs/decision-viewer/spec.md` «Страница SHALL NOT обновлять снимок сама: новый снимок даёт повторная `render-html` (F-21).»
 - решение: A, 2026-11-02
 - исход: проба — Specify
 - следствия: в spec.md: Команда пересборки рядом со снимком
@@ -1088,7 +1088,7 @@
 - антиподы: —
 - рекомендация: C — Тихо: устаревшая справка выглядит верной. Смысл текста тестом не проверить, зато имена скиллов и файлов проверяются дёшево, и большая часть расхождений как раз в них.
 - улики:
-  - улика: `openspec/changes/step-help/specs/step-help/spec.md` «Тест ядра SHALL падать на шаге без раздела и на разделе без шага (F-20).»
+  - улика: `openspec/changes/archive/2026-11-03-step-help/specs/step-help/spec.md` «Тест ядра SHALL падать на шаге без раздела и на разделе без шага (F-20).»
 - решение: C, 2026-11-02
 - исход: проба — Backstop
 - следствия: тест-страховка: ищет в `steps.md` имена в backticks вида `symphysis-*` и файлы шагов и сверяет их со `skills/` и `schema.yaml`
@@ -1108,7 +1108,7 @@
 - рекомендация: A — Тихо: никто не заметит, что справкой не пользуются. Подпись на кнопке стоит одну строку, а четвёртой кнопки рядом с режимами при этом не появляется (F-32).
 - улики:
   - улика: `tools/playground-template.html` «id="btnScheme" title="схема решения рядом с карточками»
-  - улика: `openspec/changes/step-help/specs/decision-viewer/spec.md` «Выбор SHALL помнить браузер; без сохранённого выбора показывается схема.»
+  - улика: `openspec/changes/archive/2026-11-03-step-help/specs/decision-viewer/spec.md` «Выбор SHALL помнить браузер; без сохранённого выбора показывается схема.»
 - решение: A, 2026-11-02
 - исход: проба — Specify
 - следствия: в spec.md: Подпись кнопки панели
@@ -1120,7 +1120,7 @@
 - адресат: материалы
 - зависит от: —
 - улики:
-  - улика: `openspec/changes/step-help/answers/2026-11-03.md` «1. Счетчики можно убрать из вкладки справки, они и есть в шапке страницы.»
+  - улика: `openspec/changes/archive/2026-11-03-step-help/answers/2026-11-03.md` «1. Счетчики можно убрать из вкладки справки, они и есть в шапке страницы.»
 - следствия: На нём стоит требование «Шапка страницы показывает закрытые задачи». Понято неверно — оспорь этот факт.
 
 ## F-71 Как понято слово о сбое: `render-html` при несформированной справке печатает сигнал `[..] справка не сформирована: <причина>`, код выхода прежний, панель начинает сообщение теми же словами. Маркер `[..]`, потому что сбой справки не отменяет страницу
@@ -1130,7 +1130,7 @@
 - адресат: материалы
 - зависит от: —
 - улики:
-  - улика: `openspec/changes/step-help/answers/2026-11-03.md` «2. Давай добавим, что если сбой, то появляется сообщение, что "справка не сформирована".»
+  - улика: `openspec/changes/archive/2026-11-03-step-help/answers/2026-11-03.md` «2. Давай добавим, что если сбой, то появляется сообщение, что "справка не сформирована".»
 - следствия: На нём стоит требование «`render-html` называет несформированную справку». Понято неверно — оспорь этот факт.
 
 ## F-72 Как понято слово о `--attack`: `render-html` и `view-json` приводят путь файла атаки к пути от корня проекта с разделителем `/` на любой системе, поэтому абсолютный, относительный и с обратными косыми дают одно значение на странице, в ключе спора и в промпте
@@ -1140,7 +1140,7 @@
 - адресат: материалы
 - зависит от: —
 - улики:
-  - улика: `openspec/changes/step-help/answers/2026-11-03.md` «3. Хотелось бы консистентности.»
+  - улика: `openspec/changes/archive/2026-11-03-step-help/answers/2026-11-03.md` «3. Хотелось бы консистентности.»
 - следствия: На нём стоит требование «Путь атаки идёт от корня проекта». Номер контракта и так растёт до 2 в этом изменении. Понято неверно — оспорь этот факт.
 
 ## Заметки
