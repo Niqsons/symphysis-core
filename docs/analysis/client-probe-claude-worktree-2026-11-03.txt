@@ -1,0 +1,45 @@
+Проба 2026-11-03, 2.1.317 (Claude Code)
+A (main, в удалённом) = 4bbd1b574c; B (feat, текущая, не в удалённом) = 989c33cd53
+В дереве родителя: незакоммиченная правка README.md, untracked.txt, игнорируемый ignored.txt; origin/HEAD = origin/main
+
+--- 1. умолчание: настройки нет, сессия на feat с незакоммиченной правкой
+код 0, 26 с, стоимость 0.0046, отказов прав: 0
+  вызовы Agent: [{'subagent_type': 'probe'}] | статусы: ['async_launched']
+  ключи результата у родителя: ['agentId', 'canContinueAgent', 'canReadOutputFile', 'description', 'isAsync', 'outputFile', 'prompt', 'resolvedModel', 'status']
+  поля про worktree в событиях: []
+  журнал субагента: база A (main, удалённый) | ветка worktree-agent-a0cd1152e100fb2f6 | каталог <T>/work/.claude/worktrees/agent-a0cd1152e100fb2f6 | незакоммиченных 0 | файлы .claude,.git,.gitignore,README.md,
+
+--- 2. worktree.baseRef = head, та же сессия
+код 0, 25 с, стоимость 0.0027, отказов прав: 0
+  вызовы Agent: [{'subagent_type': 'probe', 'run_in_background': False}] | статусы: ['completed']
+  ключи результата у родителя: ['agentId', 'agentType', 'canContinueAgent', 'content', 'harnessNoteCount', 'harnessSectionHash', 'harnessTailCount', 'prompt', 'resolvedModel', 'status', 'toolStats', 'toolsUsed', 'totalDurationMs', 'totalTokens', 'totalToolUseCount', 'usage']
+  поля про worktree в событиях: []
+  журнал субагента: база B (feat, текущая) | ветка worktree-agent-a4a5c6c8a73923e91 | каталог <T>/work/.claude/worktrees/agent-a4a5c6c8a73923e91 | незакоммиченных 0 | файлы .claude/,.git,.gitignore,feature.txt,README.md,
+
+--- 3. baseRef = head: родитель коммитит прямо перед вызовом субагента
+код 0, 26 с, стоимость 0.0039, отказов прав: 0
+  вызовы Agent: [{'subagent_type': 'probe'}] | статусы: ['async_launched']
+  ключи результата у родителя: ['agentId', 'canContinueAgent', 'canReadOutputFile', 'description', 'isAsync', 'outputFile', 'prompt', 'resolvedModel', 'status']
+  поля про worktree в событиях: []
+  журнал субагента: база иной fbfc94418b | ветка worktree-agent-a526ea01dcfba4604 | каталог <T>/work/.claude/worktrees/agent-a526ea01dcfba4604 | незакоммиченных 0 | файлы .claude/,.git,.gitignore,feature.txt,README.md,
+  HEAD родителя после коммита: fbfc94418b | совпал с базой субагента: True
+
+--- 4. claude --agent lead: два writer одним сообщением, baseRef = head
+код 0, 38 с, стоимость 0.0054, отказов прав: 0
+  вызовы Agent: [{'subagent_type': 'writer', 'run_in_background': False}, {'subagent_type': 'writer', 'run_in_background': False}] | статусы: ['completed', 'completed']
+  ключи результата у родителя: ['agentId', 'agentType', 'canContinueAgent', 'content', 'harnessNoteCount', 'harnessSectionHash', 'harnessTailCount', 'prompt', 'resolvedModel', 'status', 'toolStats', 'toolsUsed', 'totalDurationMs', 'totalTokens', 'totalToolUseCount', 'usage', 'worktreeBranch', 'worktreePath']
+  поля про worktree в событиях: [["worktreeBranch", "worktree-agent-a4aaa0a09190c730e"], ["worktreeBranch", "worktree-agent-ae5c4677932cebb27"], ["worktreePath", "<T>\\work\\.claude\\worktrees\\agent-a4aaa0a09190c730e"], ["worktreePath", "<T>\\work\\.claude\\worktrees\\agent-ae5c4677932cebb27"]]
+  начала: [1793706750, 1793706754] концы: [1793706760, 1793706766] | пересекаются: True
+  базы новых коммитов: ['fbfc94418b', 'fbfc94418b'] | HEAD родителя: fbfc94418b
+  worktree после работы:
+    <T>/work                                            fbfc944 [feat]
+    <T>/work/.claude/worktrees/agent-a4aaa0a09190c730e  ccb69b2 [worktree-agent-a4aaa0a09190c730e]
+    <T>/work/.claude/worktrees/agent-ae5c4677932cebb27  9c84613 [worktree-agent-ae5c4677932cebb27]
+
+--- 5. вливание веток git-ом в рабочую ветку feat
+  merge worktree-agent-a4aaa0a09190c730e: ок
+  merge worktree-agent-ae5c4677932cebb27: ок
+  файлы в feat после вливания: .claude .gitignore README.md feature.txt one.txt two.txt
+  незакоммиченная правка родителя цела: True
+
+--- конец

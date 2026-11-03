@@ -1,0 +1,47 @@
+Проба 2026-11-03, Windows. Форк: 1.15.0-symphysis.4
+
+--- 1. хранилище со схемой symphysis, изменение с готовым tasks.md
+  new change: код 0
+
+--- 2. репозиторий кода: указатель store и пакет в openspec/context, своих изменений нет
+  status из репозитория кода: код 0 | корень: {"path": "<T>\\plans", "source": "declared", "store_id": "demo-plans"}
+  предупреждение о ключе x-symphysis-context-pack: False | о каталоге context: False
+
+--- 3. instructions apply из репозитория кода: что получит сессия реализации
+  код 0
+  state: blocked | progress: {"total": 3, "complete": 1, "remaining": 2}
+  tasks: [{"id": "1", "description": "1.1 Первая задача", "done": false, "sourcePath": "<T>\\plans\\openspec\\changes\\add-demo\\tasks.md", "line": 5}, {"id": "2", "description": "1.2 Вторая задача", "done": true, "sourcePath": "<T>\\plans\\openspec\\changes\\add-demo\\tasks.md", "line": 6}, {"id": "3", "description": "2.1 Третья задача", "done": false, "sourcePath":
+  contextFiles: {"tasks": ["<T>\\plans\\openspec\\changes\\add-demo\\tasks.md"]}
+  поля: ['changeDir', 'changeName', 'context', 'contextFiles', 'instruction', 'missingArtifacts', 'missingPrerequisites', 'progress', 'root', 'schemaName', 'state', 'taskTrackingConfigured', 'tasks']
+  missingArtifacts: ['security'] | missingPrerequisites: ['intent', 'decisions', 'research', 'proposal', 'specs', 'consequences', 'design', 'security']
+   не хватает: intent
+   не хватает: decisions
+   не хватает: research
+   не хватает: proposal
+   не хватает: specs
+   не хватает: consequences
+   не хватает: design
+   не хватает: security
+  после заглушек артефактов: {'intent': 'done', 'decisions': 'done', 'research': 'ready', 'attack-decisions': 'blocked', 'proposal': 'done', 'specs': 'done', 'consequences': 'done', 'design': 'done', 'security': 'done', 'tasks': 'done', 'attack-artifacts': 'ready'}
+  apply снова: код 0 | state: ready | progress: {"total": 3, "complete": 1, "remaining": 2} | missing: None ['research']
+  contextFiles, ключи: ['consequences', 'decisions', 'design', 'intent', 'proposal', 'security', 'specs', 'tasks']
+
+--- 4. x- в .openspec.yaml: после команд, validate, архив
+  после status и instructions: True
+  validate: код 1 | упоминание x-: False
+  причины validate: ["No delta sections found. Add headers such as \"## ADDED Requirements\" or move non-delta notes outside specs/.", "Change must have at least one delta. No deltas found. Ensure your change has a specs/ directory with capability folders (e.g
+  archive: код 0 | x- в архиве: True
+
+--- 5. схема только на уровне пользователя, в проекте копии нет
+  new change: код 0 | ['schema:', 'symphysis', 'created:', '2026-11-03']
+  источник схемы: [('symphysis', 'user', None)]
+
+--- 6. копия в проекте против копии пользователя: кто выигрывает
+  источник схемы: [('symphysis', 'project', None)]
+  status: код 0
+
+--- 7. схема на изменение: две версии рядом под разными именами
+  c1: код 0 | схема изменения: symphysis | ['schema:', 'symphysis']
+  c2: код 0 | схема изменения: symphysis-2 | ['schema:', 'symphysis-2']
+
+--- конец
