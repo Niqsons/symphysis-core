@@ -86,7 +86,7 @@ def compute_with_limit(project: Path, env: dict, limit: int, change="demo"):
 
 def process_alive(pid: int) -> bool:
     if os.name == "nt":
-        listed = subprocess.run(["tasklist", "/FI", f"PID eq {pid}", "/NH"], capture_output=True, text=True)
+        listed = subprocess.run(["tasklist", "/FI", f"PID eq {pid}", "/NH"], capture_output=True, text=True, errors="replace")  # вывод в OEM, не UTF-8
         return str(pid) in listed.stdout
     try:
         os.kill(pid, 0)
@@ -796,6 +796,7 @@ def test_compute_takes_root_and_name(tmp_path, monkeypatch):
     install_fork_shim(tmp_path / "bin", status=fork_reply(fake_status(project, ready=("intent",))),
                       apply=fork_reply(fake_apply()))
     monkeypatch.chdir(tmp_path / "B")
+    monkeypatch.delenv("SYMPHYSIS_OPENSPEC", raising=False)  # `fork_env` её убирает только из словаря, а расчёт идёт в этом процессе
     for key, value in fork_env(tmp_path / "bin").items():
         monkeypatch.setenv(key, value)
     data = step_help.compute(project, "demo")
