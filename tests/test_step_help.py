@@ -1276,6 +1276,56 @@ def test_broken_roots_file_of_a_core_clone_does_not_change_the_map(tmp_path):
     assert run_clone_script(tmp_path, tools, project)["file_links"] == {"src/only_project.py": "src/only_project.py"}
 
 
+def clone_layout(tmp_path):
+    """Инструменты в раскладке клона ядра вне проекта: файл корней настоящий, без пустого префикса; `docs/only_clone.md` есть только в клоне."""
+    clone = tmp_path / "клон ядра"
+    tools = clone / "tools"
+    tools.mkdir(parents=True)
+    for file in (ROOT / "tools").glob("*"):
+        if file.is_file() and re.match(r"journal.*\.(py|json)|step_help\.py|symphysis_config\.py", file.name):
+            shutil.copy(file, tools / file.name)
+    (clone / "docs").mkdir()
+    shutil.copy(ROOT / "docs" / "journal.schema.json", clone / "docs" / "journal.schema.json")
+    (clone / "docs" / "only_clone.md").write_text("x\n", encoding="utf-8")
+    project = make_project(tmp_path / "проект")
+    (project / "src").mkdir()
+    (project / "src" / "only_project.py").write_text("x\n", encoding="utf-8")
+    steps_with(project, decisions="Файлы `src/only_project.py` и `docs/only_clone.md`.")
+    return tools, project
+
+
+def run_clone_script(tmp_path, tools, project):
+    status = fake_status(project, done=("intent",), ready=("decisions",))
+    install_fork_shim(tmp_path / "bin", status=fork_reply(status), apply=fork_reply(fake_apply()))
+    done = subprocess.run([sys.executable, str(tools / "step_help.py"), "--change", "demo"], cwd=project, env=fork_env(tmp_path / "bin"),
+                          capture_output=True)
+    assert done.returncode == 0, done.stderr.decode("utf-8", "replace")
+    return json.loads(done.stdout.decode("utf-8"))
+
+
+def test_scenario_root_with_tools_in_a_core_clone_step_help_half(tmp_path):
+    """Сценарий «Корень при инструментах вне проекта», раскладка клона: карта от проекта, файл клона не идёт, как у `view-json`."""
+    tools, project = clone_layout(tmp_path)
+    assert run_clone_script(tmp_path, tools, project)["file_links"] == {"src/only_project.py": "src/only_project.py"}
+
+
+def test_broken_roots_file_of_a_core_clone_does_not_change_the_map(tmp_path):
+    tools, project = clone_layout(tmp_path)
+    (tools / "journal-roots.json").write_text("{не json", encoding="utf-8")
+    assert run_clone_script(tmp_path, tools, project)["file_links"] == {"src/only_project.py": "src/only_project.py"}
+
+
+def test_rejected_change_name_does_not_widen_the_map(tmp_path):
+    """Имя, которое отверг `SAFE_NAME`, каталогом изменения не становится: `--change ../../..` не смотрит файлы над проектом и не даёт значений с `../`."""
+    project = make_project(tmp_path / "проект")
+    (tmp_path / "над_проектом.md").write_text("x\n", encoding="utf-8")
+    (project / "рядом.md").write_text("x\n", encoding="utf-8")
+    steps_with(project, decisions="Файлы `над_проектом.md` и `рядом.md`.")
+    code, data, _ = help_run(tmp_path, project, "--change", "../../..")
+    assert code == 1 and data["error"]
+    assert data["file_links"] == {"рядом.md": "рядом.md"}
+
+
 def test_skill_in_project(tmp_path):
     """Сценарий «Скилл в проекте»: имя, путь от корня, `base` `project`, путь есть и в `file_links`."""
     project = make_project(tmp_path / "proj")

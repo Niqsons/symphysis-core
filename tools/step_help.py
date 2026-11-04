@@ -454,7 +454,7 @@ def _file_links(out: dict, root: Path, change: str | None) -> dict:
     """Карта ссылок общим кодом ядра, корни те же, что у `view-json` (F-44, F-104): файлы шагов, текст шагов в обратных кавычках,
     проектные скиллы. Файл скилла из каталога установки сюда не идёт: плагин открывает его по `skills` (F-91)."""
     from journal_apply import file_links, project_roots
-    change_dir = root / "openspec" / "changes" / change if change else root
+    change_dir = root / "openspec" / "changes" / change if change and SAFE_NAME.fullmatch(change) else root   # отвергнутое имя каталогом не становится
     skills = [{"path": skill["path"]} for page in out["steps"] for skill in page["skills"] if skill["base"] == "project"]
     try:
         return file_links({}, project_roots(root), change_dir, None, [{**page, "skills": []} for page in out["steps"]],
