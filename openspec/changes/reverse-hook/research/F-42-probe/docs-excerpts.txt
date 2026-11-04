@@ -1,0 +1,19 @@
+Выдержки документации Claude Code для F-42, скачано 2026-11-04, клиент 2.1.318. Строки дословно, примеры путей и одна ссылка пропущены, пропуск отмечен [...].
+
+Источник: https://code.claude.com/docs/en/permissions.md
+Read and Edit rules both use [gitignore] [...] pattern syntax with four distinct pattern types:
+| `//path` | Absolute path from filesystem root | [...]
+| `/path` | Path relative to the settings source | `Edit(/src/**/*.ts)` | `<primary working directory>/src/**/*.ts` in project settings |
+| `path` or `./path` | Path relative to current directory | `Read(*.env)` | `<cwd>/*.env` |
+> [...] The single leading slash anchors at the settings source, not the filesystem root. [...]
+On Windows, paths are normalized to POSIX form before matching. [...] so use `//c/**/.env` to match `.env` files anywhere on that drive. To match across all drives, use `//**/.env`.
+
+Источник: https://code.claude.com/docs/en/hooks.md
+For tool events, you can filter more narrowly by setting the [`if` field](#common-fields) on individual hook handlers. `if` uses [permission rule syntax](https://code.claude.com/docs/en/permissions.md) to match against the tool name and arguments together, so `"Bash(git *)"` runs when any subcommand of the Bash input matches `git *` and `"Edit(*.ts)"` runs only for TypeScript files.
+| `if` | no | [Permission rule syntax](https://code.claude.com/docs/en/permissions.md#permission-rule-syntax) to filter when this hook runs, such as `"Bash(git *)"` or `"Edit(*.ts)"`. The hook command only runs if the tool call matches the pattern. See the [Bash matching table](#bash-if-matching) for how Bash patterns evaluate against subcommands, `$()`, and backticks. Only evaluated on tool events: `PreToolUse`, `PostToolUse`, `PostToolUseFailure`, `PermissionRequest`, and `PermissionDenied`. On other events, a hook with `if` set never runs |
+The `if` field holds exactly one permission rule. There is no `&&`, `||`, or list syntax for combining rules; to apply multiple conditions, define a separate hook handler for each.
+In an `if` condition for a file tool, a single-segment directory pattern like `"Edit(src/**)"` matches only the `src` directory in the working directory and the files under it. To match a directory named `src` at any depth, write `"Edit(**/src/**)"`.
+
+Источник: https://code.claude.com/docs/en/permissions.md
+Local settings rules anchor at the session's [primary working directory](#working-directories), not at the repository root where Claude Code [stores the file](#permission-system). In a session started at the repository root, the two directories are the same; in a [worktree](https://code.claude.com/docs/en/worktrees.md) session, a shared rule such as `Edit(/src/**)` matches that worktree's own `src/` directory.
+`.claude/settings.local.json` loads from the git repository root instead, even when you start Claude Code in a subdirectory, except where Claude Code [doesn't use the repository root](https://code.claude.com/docs/en/settings.md#where-claude-code-looks-for-each-file), such as on Windows.

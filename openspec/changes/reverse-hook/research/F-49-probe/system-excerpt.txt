@@ -1,0 +1,16 @@
+Участки системного текста одного запроса основного прохода, сессия из подкаталога a/sub (хук context, сервер с OPENCODE_DISABLE_CLAUDE_CODE=1). Всего символов: 8764. Здесь только навыки и окружение; остальной текст просмотрен, это встроенный текст opencode.
+<available_skills>
+  <skill>
+    <id>opencode</id>
+  </skill>
+  <skill>
+    <id>report</id>
+  </skill>
+</available_skills>
+Today's date: Wed Nov 04 2026
+<env>
+  Working directory: <проект>\a\sub
+  Workspace root folder: <проект>\a
+  Is directory a git repo: yes
+  Platform: win32
+</env>

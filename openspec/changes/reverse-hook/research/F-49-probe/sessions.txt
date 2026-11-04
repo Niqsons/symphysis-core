@@ -1,0 +1,13 @@
+Номера сессий пробы. Все удалены: opencode session delete --standalone <номер>, итог в cleanup.txt.
+ses_e5835c269fferVUD5UvurT30lp
+ses_e58344ee2fferM6ohl4jIEZmVe
+ses_e5832d668ffe2ckL27ss4CPFJN
+ses_e5832aa3ffferQoGMldfWUBTE1
+ses_e58329db1ffeby92KhIU2Kzwcc
+ses_e58328d8fffeAzctSYcxf8eLy6
+ses_e58318eb1ffelv0wj2GBPHRIl2
+ses_e5831397dffeWpjZz7wRIzC22K
+ses_e5830a685ffeMkcbj913P2R55j
+ses_e5830a68cffeXARe9KR2dwkXOj
+ses_e582f3023ffeyLqQfANuR2LYx8
+ses_e582f2fbdffeMP5pQr5fsF2yKG

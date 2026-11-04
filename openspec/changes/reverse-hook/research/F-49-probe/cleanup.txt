@@ -1,0 +1,17 @@
+в учёте пробы: 12; в базе с каталогом пробы: 12; вне учёта: 0
+база до: ids:ses_e5835c269fferVUD5UvurT30lp ses_e58344ee2fferM6ohl4jIEZmVe ses_e5832d668ffe2ckL27ss4CPFJN ses_e5832aa3ffferQoGMldfWUBTE1 ses_e58329db1ffeby92KhIU2Kzwcc ses_e58328d8fffeAzctSYcxf8eLy6 ses_e58318eb1ffelv0wj2GBPHRIl2 ses_e5831397dffeWpjZz7wRIzC22K ses_e5830a685ffeMkcbj913P2R55j ses_e5830a68cffeXARe9KR2dwkXOj ses_e582f3023ffeyLqQfANuR2LYx8 ses_e582f2fbdffeMP5pQr5fsF2yKG; session_v2 16; project 11; project_directory 0; suspended 0; project_mine 1
+ses_e5835c269fferVUD5UvurT30lp код 0 был в базе
+ses_e58344ee2fferM6ohl4jIEZmVe код 0 был в базе
+ses_e5832d668ffe2ckL27ss4CPFJN код 0 был в базе
+ses_e5832aa3ffferQoGMldfWUBTE1 код 0 был в базе
+ses_e58329db1ffeby92KhIU2Kzwcc код 0 был в базе
+ses_e58328d8fffeAzctSYcxf8eLy6 код 0 был в базе
+ses_e58318eb1ffelv0wj2GBPHRIl2 код 0 был в базе
+ses_e5831397dffeWpjZz7wRIzC22K код 0 был в базе
+ses_e5830a685ffeMkcbj913P2R55j код 0 был в базе
+ses_e5830a68cffeXARe9KR2dwkXOj код 0 был в базе
+ses_e582f3023ffeyLqQfANuR2LYx8 код 0 был в базе
+ses_e582f2fbdffeMP5pQr5fsF2yKG код 0 был в базе
+база после: ids:; session_v2 4; project 11; project_directory 0; suspended 0; project_mine 1
+сессий пробы в базе осталось: 0
+opencode session list: код 0; номеров пробы в выводе: 0

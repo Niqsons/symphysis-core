@@ -1,0 +1,14 @@
+Строки журнала opencode serve (--print-logs --log-level info), отобраны по шаблону «location services (booted|evicted)|loading plugin». WARN и ERROR в журналах проб нет (шаблон «level=(WARN|ERROR)»).
+evict-close: timestamp=2026-11-04T18:27:22.483Z level=INFO run=d2002f7b message="location services booted" directory="<проект>\\g" workspaceID=undefined durationMs=46 http.span=46 role=server
+evict-close: timestamp=2026-11-04T18:27:22.485Z level=INFO run=d2002f7b msg="loading plugin" id="<проект>\\g\\.opencode\\plugins\\f49-probe.js"  http.span=48 role=server
+evict-close: timestamp=2026-11-04T18:29:22.188Z level=INFO run=d2002f7b message="location services evicted" directory="<проект>\\g" workspaceID=undefined role=server
+evict-close: timestamp=2026-11-04T18:29:26.867Z level=INFO run=d2002f7b message="location services booted" directory="<проект>\\g" workspaceID=undefined durationMs=41 http.span=42 role=server
+evict-close: timestamp=2026-11-04T18:29:26.869Z level=INFO run=d2002f7b msg="loading plugin" id="<проект>\\g\\.opencode\\plugins\\f49-probe.js"  http.span=44 role=server
+evict-keep: timestamp=2026-11-04T18:27:22.384Z level=INFO run=fbc12370 message="location services booted" directory="<проект>\\f" workspaceID=undefined durationMs=47 http.span=47 role=server
+evict-keep: timestamp=2026-11-04T18:27:22.387Z level=INFO run=fbc12370 msg="loading plugin" id="<проект>\\f\\.opencode\\plugins\\f49-probe.js"  http.span=50 role=server
+evict-keep: timestamp=2026-11-04T18:29:22.168Z level=INFO run=fbc12370 message="location services evicted" directory="<проект>\\f" workspaceID=undefined role=server
+evict-keep: timestamp=2026-11-04T18:29:26.870Z level=INFO run=fbc12370 message="location services booted" directory="<проект>\\f" workspaceID=undefined durationMs=41 role=server
+evict-keep: timestamp=2026-11-04T18:29:26.871Z level=INFO run=fbc12370 msg="loading plugin" id="<проект>\\f\\.opencode\\plugins\\f49-probe.js"  role=server
+boot: timestamp=2026-11-04T18:24:29.511Z level=INFO run=b7b230f0 message="location services booted" directory="<проект>\\c" workspaceID=undefined durationMs=130 http.span=131 role=server
+boot: timestamp=2026-11-04T18:24:29.513Z level=INFO run=b7b230f0 msg="loading plugin" id="<проект>\\c\\.opencode\\plugins\\f49-probe.js"  http.span=133 role=server
+boot: timestamp=2026-11-04T18:24:34.721Z level=INFO run=b7b230f0 msg="loading plugin" id="<проект>\\c\\.opencode\\plugins\\f49-probe.js"  http.span=5341 role=server

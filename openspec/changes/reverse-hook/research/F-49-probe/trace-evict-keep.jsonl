@@ -1,0 +1,36 @@
+{"t_ms":0,"at":"probe","rest_create":{"status":200,"sessionID":"ses_e582f3023ffeyLqQfANuR2LYx8","setups":0}}
+{"t_ms":52,"at":"probe","touch_status":200}
+{"t_ms":482,"pid":15500,"at":"setup","copy":"15500-42816","directory":"<проект>\\f","project":{"id":"global","directory":"<проект>\\f"},"bun":true,"argv":["serve","--hostname","127.0.0.1"],"ctx_keys":["app","location","options","agent","aisdk","command","credential","event","experimental","generate","model","provider","integration","mcp","permission","plugin","reference","rpc","skill","storage","tool","vcs","websearch","worktree","session","shell"]}
+{"t_ms":1569,"pid":15500,"at":"command","copy":"15500-42816","op":"list","tag":"до выгрузки","source":"watch"}
+{"t_ms":1571,"pid":15500,"at":"list","copy":"15500-42816","tag":"до выгрузки","directory":"<проект>\\f","data":[{"id":"ses_e582f3023ffeyLqQfANuR2LYx8","directory":"<проект>\\f","model":{"id":"deepseek-v4.1-flash","providerID":"ollama-cloud","variant":"default"},"time":{"created":1793816842327,"updated":1793816842327}},{"id":"ses_e5830a68cffeXARe9KR2dwkXOj","directory":"<проект>\\f","model":{"id":"deepseek-v4.1-flash","providerID":"ollama-cloud","variant":"default"},"time":{"created":1793816746476,"updated":1793816746476}}],"has_next":true}
+{"t_ms":3574,"at":"probe","mark":"ждём выгрузки места, keep=true"}
+{"t_ms":119853,"pid":15500,"at":"event","copy":"15500-42816","type":"location.shutdown","event_location":"<проект>\\f"}
+{"t_ms":119856,"pid":15500,"at":"cleanup","copy":"15500-42816","directory":"<проект>\\f","keep":true}
+{"t_ms":119862,"pid":15500,"at":"event-stream-end","copy":"15500-42816"}
+{"t_ms":119965,"at":"probe","evicted":true,"after_ms":119374}
+{"t_ms":121471,"at":"probe","mark":"строка в файле после выгрузки"}
+{"t_ms":121477,"pid":15500,"at":"command","copy":"15500-42816","op":"list","tag":"после выгрузки","source":"watch"}
+{"t_ms":121480,"pid":15500,"at":"list","copy":"15500-42816","tag":"после выгрузки","directory":"<проект>\\f","data":[{"id":"ses_e582f3023ffeyLqQfANuR2LYx8","directory":"<проект>\\f","model":{"id":"deepseek-v4.1-flash","providerID":"ollama-cloud","variant":"default"},"time":{"created":1793816842327,"updated":1793816842327}},{"id":"ses_e5830a68cffeXARe9KR2dwkXOj","directory":"<проект>\\f","model":{"id":"deepseek-v4.1-flash","providerID":"ollama-cloud","variant":"default"},"time":{"created":1793816746476,"updated":1793816746476}}],"has_next":true}
+{"t_ms":124486,"at":"probe","after_evict":{"commands":2,"setups":1}}
+{"t_ms":124486,"at":"probe","mark":"session.prompt из наблюдателя, пережившего выгрузку"}
+{"t_ms":124493,"pid":15500,"at":"command","copy":"15500-42816","op":"prompt","tag":"после выгрузки, prompt","source":"watch"}
+{"t_ms":124895,"pid":15500,"at":"setup","copy":"15500-67229","directory":"<проект>\\f","project":{"id":"global","directory":"<проект>\\f"},"bun":true,"argv":["serve","--hostname","127.0.0.1"]}
+{"t_ms":125084,"pid":15500,"at":"hook.prompt","copy":"15500-67229","sessionID":"ses_e582f3023ffeyLqQfANuR2LYx8","messageID":"msg_1a7d2b6ad001i3nLiyIXcbVGfQ","delivery":"steer","text":"Ответь одним словом: БУК"}
+{"t_ms":125087,"pid":15500,"at":"admitted","copy":"15500-42816","tag":"после выгрузки, prompt","op":"prompt","ms":594,"res":{"id":"msg_1a7d2b6ad001i3nLiyIXcbVGfQ","type":"user","delivery":"steer","payload_keys":["text"]}}
+{"t_ms":125087,"pid":15500,"at":"event","copy":"15500-67229","type":"session.inbox.enqueued","sessionID":"ses_e582f3023ffeyLqQfANuR2LYx8","event_location":"<проект>\\f","inboxID":"msg_1a7d2b6ad001i3nLiyIXcbVGfQ","item":"user","delivery":"steer","text":"Ответь одним словом: БУК"}
+{"t_ms":125107,"pid":15500,"at":"event","copy":"15500-67229","type":"session.execution.started","sessionID":"ses_e582f3023ffeyLqQfANuR2LYx8"}
+{"t_ms":125110,"pid":15500,"at":"event","copy":"15500-67229","type":"session.instructions.updated","sessionID":"ses_e582f3023ffeyLqQfANuR2LYx8","event_location":"<проект>\\f"}
+{"t_ms":125110,"pid":15500,"at":"event","copy":"15500-67229","type":"session.inbox.delivered","sessionID":"ses_e582f3023ffeyLqQfANuR2LYx8","event_location":"<проект>\\f","inboxID":"msg_1a7d2b6ad001i3nLiyIXcbVGfQ"}
+{"t_ms":125120,"pid":15500,"at":"hook.context","copy":"15500-67229","n":1,"sessionID":"ses_e582f3023ffeyLqQfANuR2LYx8","agent":"build","model":{"id":"deepseek-v4.1-flash","providerID":"ollama-cloud","variant":"default"},"system_chars":8760,"skills":["opencode","report"],"instructions":[],"messages":[{"role":"user","text":"Ответь одним словом: БУК"}],"count":1}
+{"t_ms":125120,"pid":15500,"at":"hook.model.request","copy":"15500-67229","sessionID":"ses_e582f3023ffeyLqQfANuR2LYx8","kind":"title","model":{"id":"deepseek-v4.1-flash","providerID":"ollama-cloud","variant":"default"}}
+{"t_ms":125121,"pid":15500,"at":"hook.model.request","copy":"15500-67229","sessionID":"ses_e582f3023ffeyLqQfANuR2LYx8","kind":"primary","model":{"id":"deepseek-v4.1-flash","providerID":"ollama-cloud","variant":"default"}}
+{"t_ms":126130,"pid":15500,"at":"event","copy":"15500-67229","type":"session.step.started","sessionID":"ses_e582f3023ffeyLqQfANuR2LYx8","event_location":"<проект>\\f"}
+{"t_ms":126394,"pid":15500,"at":"hook.idle","copy":"15500-67229","sessionID":"ses_e582f3023ffeyLqQfANuR2LYx8","background":0}
+{"t_ms":126396,"pid":15500,"at":"event","copy":"15500-67229","type":"session.step.ended","sessionID":"ses_e582f3023ffeyLqQfANuR2LYx8","event_location":"<проект>\\f"}
+{"t_ms":126396,"pid":15500,"at":"event","copy":"15500-67229","type":"session.execution.succeeded","sessionID":"ses_e582f3023ffeyLqQfANuR2LYx8"}
+{"t_ms":128595,"at":"probe","after_prompt":{"setups":2,"cleanups":1}}
+{"t_ms":128600,"pid":15500,"at":"command","copy":"15500-42816","op":"list","tag":"сколько наблюдателей теперь","source":"watch"}
+{"t_ms":128602,"pid":15500,"at":"list","copy":"15500-42816","tag":"сколько наблюдателей теперь","directory":"<проект>\\f","data":[{"id":"ses_e582f3023ffeyLqQfANuR2LYx8","directory":"<проект>\\f","title":"f49-проба","model":{"id":"deepseek-v4.1-flash","providerID":"ollama-cloud","variant":"default"},"outcome":"succeeded","time":{"created":1793816842327,"updated":1793816968725,"busy":1793816967422,"idle":1793816968729}},{"id":"ses_e5830a68cffeXARe9KR2dwkXOj","directory":"<проект>\\f","model":{"id":"deepseek-v4.1-flash","providerID":"ollama-cloud","variant":"default"},"time":{"created":1793816746476,"updated":1793816746476}}],"has_next":true}
+{"t_ms":128602,"pid":15500,"at":"command","copy":"15500-67229","op":"list","tag":"сколько наблюдателей теперь","source":"watch"}
+{"t_ms":128603,"pid":15500,"at":"list","copy":"15500-67229","tag":"сколько наблюдателей теперь","directory":"<проект>\\f","data":[{"id":"ses_e582f3023ffeyLqQfANuR2LYx8","directory":"<проект>\\f","title":"f49-проба","model":{"id":"deepseek-v4.1-flash","providerID":"ollama-cloud","variant":"default"},"outcome":"succeeded","time":{"created":1793816842327,"updated":1793816968725,"busy":1793816967422,"idle":1793816968729}},{"id":"ses_e5830a68cffeXARe9KR2dwkXOj","directory":"<проект>\\f","model":{"id":"deepseek-v4.1-flash","providerID":"ollama-cloud","variant":"default"},"time":{"created":1793816746476,"updated":1793816746476}}],"has_next":true}
+{"t_ms":131605,"at":"probe","context":[{"type":"user","text":"Ответь одним словом: БУК"},{"type":"assistant","text":"БУК"},{"type":"idle"}]}

@@ -212,15 +212,15 @@
 const JOURNAL = {
  "title": "Журнал решений: reverse-hook",
  "source": "decisions.json",
- "sha256": "d8324d2e54394e125e0448b1d896b4c8578631b9bbf4c20446e05071dfaed3ee",
+ "sha256": "5a0feb2865142079c8070679ab41001f0e6c0f9da679488d691cab64969e2d4e",
  "stats": {
   "records": 60,
   "forks": 23,
   "facts": 37,
   "decided": 23,
   "parked": 5,
-  "evidence_total": 131,
-  "evidence_found": 131
+  "evidence_total": 141,
+  "evidence_found": 136
  },
  "records": [
   {
@@ -1415,12 +1415,35 @@ const JOURNAL = {
    "parking": [
     {
      "addressee": "материалы",
-     "text": "Подхватывает ли идущая сессия Claude Code новые записи хуков в `.claude/settings.local.json`, или они действуют только с новой сессии. Сессия, начатая до установки, останется без пробуждения: проба или документация `hooks.md`."
+     "text": "Подхватывает ли идущая сессия Claude Code новые записи хуков в `.claude/settings.local.json`, или они действуют только с новой сессии. Сессия, начатая до установки, останется без пробуждения: проба или документация `hooks.md`.",
+     "finding": "Подхватывает частично, только `claude -p`, 34 прогона, `research/F-32.md`. Новый `UserPromptSubmit` срабатывает на следующей реплике, 12 из 12. Новый `FileChanged` нет: 0 запусков на 48 записей. Наблюдение запускают только `/compact` и `/clear` через `SessionStart` или `cd` при `CwdChanged` с `watchPaths`; `watchPaths` от `UserPromptSubmit` и `ConfigChange` не работают. Вне вопроса: успешный `cd` модели выключает работающее пробуждение, если нет `CwdChanged` с `watchPaths`, 2 из 2. Само пробуждение запускает `UserPromptSubmit`, в `prompt` идёт `<task-notification>`. Интерактивный клиент не проверен."
     }
    ],
    "dispute": "",
    "consequences": "F-33, F-34, F-36, F-42, F-47, F-48",
-   "evidence": [],
+   "evidence": [
+    {
+     "path": "openspec/changes/reverse-hook/research/F-32-probe/run.txt",
+     "quote": "глубокий 1 [13.7]: запусков 0: []",
+     "line": 203,
+     "found": true,
+     "verdict": "сверено"
+    },
+    {
+     "path": "openspec/changes/reverse-hook/research/F-32-probe/run.txt",
+     "quote": "[41.9] хук: SessionStart:compact код 0",
+     "line": 590,
+     "found": true,
+     "verdict": "сверено"
+    },
+    {
+     "path": "openspec/changes/reverse-hook/research/F-32-probe/run.txt",
+     "quote": "глубокий 2 [50.2]: запусков 0: []",
+     "line": 1127,
+     "found": true,
+     "verdict": "сверено"
+    }
+   ],
    "comments": [],
    "nodes": [
     "event",
@@ -1428,7 +1451,7 @@ const JOURNAL = {
     "turn",
     "copy"
    ],
-   "finding": ""
+   "finding": "Подхватывает частично, только `claude -p`, 34 прогона, `research/F-32.md`. Новый `UserPromptSubmit` срабатывает на следующей реплике, 12 из 12. Новый `FileChanged` нет: 0 запусков на 48 записей. Наблюдение запускают только `/compact` и `/clear` через `SessionStart` или `cd` при `CwdChanged` с `watchPaths`; `watchPaths` от `UserPromptSubmit` и `ConfigChange` не работают. Вне вопроса: успешный `cd` модели выключает работающее пробуждение, если нет `CwdChanged` с `watchPaths`, 2 из 2. Само пробуждение запускает `UserPromptSubmit`, в `prompt` идёт `<task-notification>`. Интерактивный клиент не проверен."
   },
   {
    "id": "F-33",
@@ -2184,12 +2207,28 @@ const JOURNAL = {
    "parking": [
     {
      "addressee": "материалы",
-     "text": "Отсекает ли условие `if` вида `Read(**/answers/**)` запуск обработчика на Windows, где `file_path` приходит с обратными косыми. Без него Python запускается на каждое чтение файла. Проба на Claude Code, `probes/filechanged-rewake/`."
+     "text": "Отсекает ли условие `if` вида `Read(**/answers/**)` запуск обработчика на Windows, где `file_path` приходит с обратными косыми. Без него Python запускается на каждое чтение файла. Проба на Claude Code, `probes/filechanged-rewake/`.",
+     "finding": "Да, отсекает, только `claude -p`, 4 прогона, `research/F-42.md`. `Read(**/answers/**)` вне `answers` обработчик не запускает, внутри запускает при шести написаниях пути; формы с обратными косыми в условии не срабатывают ни разу. Файл вне рабочего каталога форма не видит; его видит `Read(//**/answers/**)`, но она срабатывает и на `answers` других проектов. Сессия из подкаталога репозитория на Windows хуков из `.claude/settings.local.json` корня не получает: 0 запусков даже без `if`."
     }
    ],
    "dispute": "",
    "consequences": "F-43, F-44",
-   "evidence": [],
+   "evidence": [
+    {
+     "path": "openspec/changes/reverse-hook/research/F-42-probe/run.txt",
+     "quote": "форма  2: Read(**/answers/**)",
+     "line": 10,
+     "found": true,
+     "verdict": "сверено"
+    },
+    {
+     "path": "openspec/changes/reverse-hook/research/F-42-probe/run.txt",
+     "quote": "формы 0-15: ++++..++.+++++++  запусков 13",
+     "line": 49,
+     "found": true,
+     "verdict": "сверено"
+    }
+   ],
    "comments": [],
    "nodes": [
     "open",
@@ -2197,7 +2236,7 @@ const JOURNAL = {
     "delivered",
     "unseen"
    ],
-   "finding": ""
+   "finding": "Да, отсекает, только `claude -p`, 4 прогона, `research/F-42.md`. `Read(**/answers/**)` вне `answers` обработчик не запускает, внутри запускает при шести написаниях пути; формы с обратными косыми в условии не срабатывают ни разу. Файл вне рабочего каталога форма не видит; его видит `Read(//**/answers/**)`, но она срабатывает и на `answers` других проектов. Сессия из подкаталога репозитория на Windows хуков из `.claude/settings.local.json` корня не получает: 0 запусков даже без `if`."
   },
   {
    "id": "F-43",
@@ -2691,17 +2730,33 @@ const JOURNAL = {
    "parking": [
     {
      "addressee": "материалы",
-     "text": "Что происходит с сообщением, пока сессия занята, и при двух пробуждениях подряд: не теряется ли текст, сколько ходов начнётся. Проба на Claude Code набором `probes/filechanged-rewake/`, режим `claude -p` с потоковым входом."
+     "text": "Что происходит с сообщением, пока сессия занята, и при двух пробуждениях подряд: не теряется ли текст, сколько ходов начнётся. Проба на Claude Code набором `probes/filechanged-rewake/`, режим `claude -p` с потоковым входом.",
+     "finding": "Клиент текст не теряет, теряет обработчик, читающий только последнюю строку: две записи в пределах 0,3 с дают один запуск `FileChanged`. Чтение от смещения довезло всё, 12 прогонов из 12. Своего хода событие не получает: занятая сессия получает текст вложением в начатый ход, два события в простое дали один ход в 15 прогонах из 16. В занятой сессии модель не открыла файл в 2 прогонах из 8, сказав, что человек такого не просил; в простое отказов нет, 16 из 16. Только `claude -p`, 24 прогона, `research/F-48.md`."
     }
    ],
    "dispute": "",
    "consequences": "",
-   "evidence": [],
+   "evidence": [
+    {
+     "path": "openspec/changes/reverse-hook/research/F-48-probe/run.txt",
+     "quote": "--- итог idle0/cursor/1: FileChanged запусков 1; ходов всего 2; Read: ['2026-11-04.md', '2026-11-04-2.md']",
+     "line": 102,
+     "found": true,
+     "verdict": "сверено"
+    },
+    {
+     "path": "openspec/changes/reverse-hook/research/F-48-probe/run.txt",
+     "quote": "Ты такого не просил, поэтому я файл не открывал.",
+     "line": 53,
+     "found": true,
+     "verdict": "сверено"
+    }
+   ],
    "comments": [],
    "nodes": [
     "fileHook"
    ],
-   "finding": ""
+   "finding": "Клиент текст не теряет, теряет обработчик, читающий только последнюю строку: две записи в пределах 0,3 с дают один запуск `FileChanged`. Чтение от смещения довезло всё, 12 прогонов из 12. Своего хода событие не получает: занятая сессия получает текст вложением в начатый ход, два события в простое дали один ход в 15 прогонах из 16. В занятой сессии модель не открыла файл в 2 прогонах из 8, сказав, что человек такого не просил; в простое отказов нет, 16 из 16. Только `claude -p`, 24 прогона, `research/F-48.md`."
   },
   {
    "id": "F-49",
@@ -2771,22 +2826,46 @@ const JOURNAL = {
    "parking": [
     {
      "addressee": "материалы",
-     "text": "Начинает ли `session.prompt` ход в простаивающей сессии на установленной opencode 2.2.5, как сообщение выглядит для модели (обычная реплика или служебное), `steer` или `queue`, откуда плагин берёт номер последней сессии. Читать `packages/core/src/session/session.ts`; проба удаляет свои сессии из общей базы."
+     "text": "Начинает ли `session.prompt` ход в простаивающей сессии на установленной opencode 2.2.5, как сообщение выглядит для модели (обычная реплика или служебное), `steer` или `queue`, откуда плагин берёт номер последней сессии. Читать `packages/core/src/session/session.ts`; проба удаляет свои сессии из общей базы.",
+     "finding": "Да, начинает: `opencode serve` при нуле клиентов и `run --standalone`, пока процесс жив. Для модели это `role: user`, в записи `type: user`, отличить можно только своим `metadata`. `session.synthetic` тоже начинает ход, в записи `type: synthetic`, хук `prompt` на нём не срабатывает, модель получает тоже `role: user`. В простое `steer` и `queue` равны; при занятой сессии `steer` уходит в ближайший запрос того же хода, `queue` после конца прежнего, ошибки занятости нет. Номер даёт `ctx.session.list({directory, parentID: null, limit: 1, order: \"desc\"})`: самая свежая по `time_updated`, каталог сравнивается точно. Наблюдатель живёт при загруженном месте: без запроса с каталогом его нет, после 60 минут без событий сессий снимается (срок по коду, поведение проверено настройкой на 1 минуту). TUI, Desktop и фоновая служба не проверены, `research/F-49.md`."
     },
     {
      "addressee": "материалы",
-     "text": "Что в opencode считать запуском сессии для F-46.B: `SessionStart` там нет, в списке хуков плагина только `prompt` и другие. Читать `packages/plugin/src/promise/session.ts` и события `event.subscribe`."
+     "text": "Что в opencode считать запуском сессии для F-46.B: `SessionStart` там нет, в списке хуков плагина только `prompt` и другие. Читать `packages/plugin/src/promise/session.ts` и события `event.subscribe`.",
+     "finding": "Отдельного запуска нет. `session.created` приходит только новой сессии, и своя копия плагина его теряет, если именно эта сессия загрузила место. При возобновлении события нет, первый сигнал даёт хук `prompt`. По исходнику TUI создаёт сессию при первой отправке, поэтому запуск там совпадает с первой репликой; глазами не проверено. `research/F-49.md`."
     }
    ],
    "dispute": "",
    "consequences": "",
-   "evidence": [],
+   "evidence": [
+    {
+     "path": "openspec/changes/reverse-hook/research/F-49-probe/trace-main.jsonl",
+     "quote": "\"tool\":\"read\",\"input\":{\"path\":\"openspec/changes/demo/answers/2026-11-04.md\"},\"status\":\"completed\"",
+     "line": 31,
+     "found": true,
+     "verdict": "сверено"
+    },
+    {
+     "path": "openspec/changes/reverse-hook/research/F-49-probe/trace-evict-close.jsonl",
+     "quote": "\"after_evict\":{\"commands\":1,\"setups\":1}",
+     "line": 12,
+     "found": true,
+     "verdict": "сверено"
+    },
+    {
+     "path": "openspec/changes/reverse-hook/research/F-49-probe/src-v2.2.5.txt",
+     "quote": "const timeToLive = Duration.fromInputUnsafe(options.timeToLive ?? \"60 minutes\")",
+     "line": 545,
+     "found": true,
+     "verdict": "сверено"
+    }
+   ],
    "comments": [],
    "nodes": [
     "turn",
     "toolHook"
    ],
-   "finding": ""
+   "finding": "Да, начинает: `opencode serve` при нуле клиентов и `run --standalone`, пока процесс жив. Для модели это `role: user`, в записи `type: user`, отличить можно только своим `metadata`. `session.synthetic` тоже начинает ход, в записи `type: synthetic`, хук `prompt` на нём не срабатывает, модель получает тоже `role: user`. В простое `steer` и `queue` равны; при занятой сессии `steer` уходит в ближайший запрос того же хода, `queue` после конца прежнего, ошибки занятости нет. Номер даёт `ctx.session.list({directory, parentID: null, limit: 1, order: \"desc\"})`: самая свежая по `time_updated`, каталог сравнивается точно. Наблюдатель живёт при загруженном месте: без запроса с каталогом его нет, после 60 минут без событий сессий снимается (срок по коду, поведение проверено настройкой на 1 минуту). TUI, Desktop и фоновая служба не проверены, `research/F-49.md`. · Отдельного запуска нет. `session.created` приходит только новой сессии, и своя копия плагина его теряет, если именно эта сессия загрузила место. При возобновлении события нет, первый сигнал даёт хук `prompt`. По исходнику TUI создаёт сессию при первой отправке, поэтому запуск там совпадает с первой репликой; глазами не проверено. `research/F-49.md`."
   },
   {
    "id": "F-50",
@@ -3224,7 +3303,7 @@ const JOURNAL = {
       {
        "path": "skills/symphysis-brainstorm/SKILL.md",
        "quote": "Сохрани промпт в `<каталог изменения>/answers/<дата>.md` (дата `YYYY-MM-DD`; файл занят — `YYYY-MM-DD-2.md`, затем `-3`) как",
-       "line": 243,
+       "line": 245,
        "verdict": "сверено",
        "found": true
       }
@@ -3326,23 +3405,23 @@ const JOURNAL = {
     {
      "path": "skills/symphysis-brainstorm/SKILL.md",
      "quote": "проекта и дословная строка файла; `recommendation {option, why, text}` —",
-     "line": 178,
-     "verdict": "сверено",
-     "found": true
+     "line": null,
+     "verdict": "цитаты нет дословно",
+     "found": false
     },
     {
      "path": "vscode/src/webview/Card.tsx",
      "quote": "<div className=\"rec\">рекомендация: {rec.recommendation.text",
-     "line": 179,
-     "verdict": "сверено",
-     "found": true
+     "line": null,
+     "verdict": "цитаты нет дословно",
+     "found": false
     },
     {
      "path": "tools/journal_render.py",
      "quote": "return rc.get(\"text\") or \" — \".join(part for part in (rc[\"option\"], rc[\"why\"]) if part)",
-     "line": 63,
-     "verdict": "сверено",
-     "found": true
+     "line": null,
+     "verdict": "цитаты нет дословно",
+     "found": false
     },
     {
      "path": "tools/playground-template.html",
@@ -3354,14 +3433,14 @@ const JOURNAL = {
     {
      "path": "docs/journal.schema.json",
      "quote": "Строка рекомендации как написана; у составной",
-     "line": 68,
-     "verdict": "сверено",
-     "found": true
+     "line": null,
+     "verdict": "цитаты нет дословно",
+     "found": false
     },
     {
      "path": "openspec/changes/reverse-hook/probes/recommendation-text.txt",
      "quote": "итого: 180",
-     "line": 17,
+     "line": 10,
      "verdict": "сверено",
      "found": true
     }
@@ -3412,9 +3491,9 @@ const JOURNAL = {
       {
        "path": "skills/symphysis-brainstorm/SKILL.md",
        "quote": "проекта и дословная строка файла; `recommendation {option, why, text}` —",
-       "line": 178,
-       "verdict": "сверено",
-       "found": true
+       "line": null,
+       "verdict": "цитаты нет дословно",
+       "found": false
       }
      ]
     },
@@ -3427,7 +3506,7 @@ const JOURNAL = {
       {
        "path": "openspec/changes/reverse-hook/probes/recommendation-text.txt",
        "quote": "итого: 180",
-       "line": 17,
+       "line": 10,
        "verdict": "сверено",
        "found": true
       }
@@ -3465,6 +3544,14 @@ const JOURNAL = {
   {
    "date": "2026-11-04",
    "text": "Пауза по F-60.A: сначала отдельное изменение `recommendation-why` об обосновании рекомендации. После его вливания шаг `research` по парковкам F-32, F-42, F-48, F-49."
+  },
+  {
+   "date": "2026-11-04",
+   "text": "брейншторм закончен по решению человека"
+  },
+  {
+   "date": "2026-11-04",
+   "text": "Изменение закрыто без реализации по решению человека. На вопрос о новом круге после отчётов `research`: «Нет, поступим иначе.», «Посмотрим как у orca устроены хуки. если нам подходит их механизм -- берем. если нет, то change архивируем.» Сверка: хуки Orca только сообщают статус от агента к приложению, будит она печатью короткой строки в терминал, который сама запустила; выдержки в `probes/orca-hooks.txt`. Печать в терминал здесь не опробована. Слово человека: «архивируем.» Proposal, спек и задач нет, код ядра и плагина изменением не менялся, решения первого круга не реализованы. Находки `research/` опровергают посылки решений F-33, F-46, F-48, F-49, F-56: при возврате к теме читать их первыми."
   }
  ]
 };
@@ -3478,7 +3565,7 @@ const SCHEME = {
 };
 const HELP = {
  "contract": 2,
- "taken_at": "2026-11-04T19:12:14+03:00",
+ "taken_at": "2026-11-04T22:05:40+03:00",
  "versions": {
   "openspec": "1.15.0-symphysis.4",
   "symphysis": null
@@ -3486,10 +3573,10 @@ const HELP = {
  "change": "reverse-hook",
  "changes": null,
  "error": null,
- "current_step": "research",
- "current_text": "Следующий шаг по файлам — `research`, ход модели.",
+ "current_step": "proposal",
+ "current_text": "Следующий шаг по файлам — `proposal`, ход модели.",
  "turn": "model",
- "next_by_status": "research",
+ "next_by_status": "proposal",
  "forks": {
   "open": 0,
   "parked": 0
@@ -3601,7 +3688,7 @@ const HELP = {
   },
   {
    "id": "research",
-   "state": "ready",
+   "state": "done",
    "turn": "model",
    "optional": false,
    "blocks": [
@@ -3612,11 +3699,23 @@ const HELP = {
    "waits_for": [],
    "files": [
     {
-     "path": "openspec/changes/reverse-hook/research/**/*.md",
-     "exists": false
+     "path": "openspec/changes/reverse-hook/research/F-32.md",
+     "exists": true
+    },
+    {
+     "path": "openspec/changes/reverse-hook/research/F-42.md",
+     "exists": true
+    },
+    {
+     "path": "openspec/changes/reverse-hook/research/F-48.md",
+     "exists": true
+    },
+    {
+     "path": "openspec/changes/reverse-hook/research/F-49.md",
+     "exists": true
     }
    ],
-   "file_note": null,
+   "file_note": "файл есть, содержание не проверялось",
    "texts": {
     "title": "Исследование и второй круг",
     "why": "Вопросы, припаркованные к материалам, получают ответ с цитатами из прочитанных файлов. Второй круг брейншторма закрывает по этим ответам записи журнала.",
@@ -3639,14 +3738,12 @@ const HELP = {
   },
   {
    "id": "attack-decisions",
-   "state": "blocked",
+   "state": "ready",
    "turn": "model",
    "optional": true,
    "blocks": [],
    "stops_apply": false,
-   "waits_for": [
-    "research"
-   ],
+   "waits_for": [],
    "files": [
     {
      "path": "openspec/changes/reverse-hook/attack/decisions.md",
@@ -3676,7 +3773,7 @@ const HELP = {
   },
   {
    "id": "proposal",
-   "state": "blocked",
+   "state": "ready",
    "turn": "model",
    "optional": false,
    "blocks": [
@@ -3684,9 +3781,7 @@ const HELP = {
     "design"
    ],
    "stops_apply": false,
-   "waits_for": [
-    "research"
-   ],
+   "waits_for": [],
    "files": [
     {
      "path": "openspec/changes/reverse-hook/proposal.md",
@@ -4018,6 +4113,10 @@ const HELP = {
   "intent.md": "openspec/changes/reverse-hook/intent.md",
   "openspec/changes/reverse-hook/decisions.json": "openspec/changes/reverse-hook/decisions.json",
   "openspec/changes/reverse-hook/intent.md": "openspec/changes/reverse-hook/intent.md",
+  "openspec/changes/reverse-hook/research/F-32.md": "openspec/changes/reverse-hook/research/F-32.md",
+  "openspec/changes/reverse-hook/research/F-42.md": "openspec/changes/reverse-hook/research/F-42.md",
+  "openspec/changes/reverse-hook/research/F-48.md": "openspec/changes/reverse-hook/research/F-48.md",
+  "openspec/changes/reverse-hook/research/F-49.md": "openspec/changes/reverse-hook/research/F-49.md",
   "scheme.md": "openspec/changes/reverse-hook/scheme.md",
   "symphysis.html": "openspec/changes/reverse-hook/symphysis.html"
  },
@@ -4042,7 +4141,22 @@ const LINKS = {
   "openspec/changes/reverse-hook/probes/journal-roots.json": "probes/journal-roots.json",
   "openspec/changes/reverse-hook/probes/opencode-v2.1.4.txt": "probes/opencode-v2.1.4.txt",
   "openspec/changes/reverse-hook/probes/recommendation-text.txt": "probes/recommendation-text.txt",
+  "openspec/changes/reverse-hook/research/F-32-probe/run.txt": "research/F-32-probe/run.txt",
+  "openspec/changes/reverse-hook/research/F-32.md": "research/F-32.md",
+  "openspec/changes/reverse-hook/research/F-42-probe/run.txt": "research/F-42-probe/run.txt",
+  "openspec/changes/reverse-hook/research/F-42.md": "research/F-42.md",
+  "openspec/changes/reverse-hook/research/F-48-probe/run.txt": "research/F-48-probe/run.txt",
+  "openspec/changes/reverse-hook/research/F-48.md": "research/F-48.md",
+  "openspec/changes/reverse-hook/research/F-49-probe/src-v2.2.5.txt": "research/F-49-probe/src-v2.2.5.txt",
+  "openspec/changes/reverse-hook/research/F-49-probe/trace-evict-close.jsonl": "research/F-49-probe/trace-evict-close.jsonl",
+  "openspec/changes/reverse-hook/research/F-49-probe/trace-main.jsonl": "research/F-49-probe/trace-main.jsonl",
+  "openspec/changes/reverse-hook/research/F-49.md": "research/F-49.md",
   "openspec/specs/decision-viewer/spec.md": "../../specs/decision-viewer/spec.md",
+  "probes/orca-hooks.txt": "probes/orca-hooks.txt",
+  "research/F-32.md": "research/F-32.md",
+  "research/F-42.md": "research/F-42.md",
+  "research/F-48.md": "research/F-48.md",
+  "research/F-49.md": "research/F-49.md",
   "scheme.md": "scheme.md",
   "skills/symphysis-brainstorm/SKILL.md": "../../../skills/symphysis-brainstorm/SKILL.md",
   "skills/symphysis-viewer/SKILL.md": "../../../skills/symphysis-viewer/SKILL.md",
@@ -4689,7 +4803,7 @@ function checkCard(rec) {
   if (!picked && !isFact) {
     html += (rec.options || []).map(o => '<div class="opt"><span class="letter">' + esc(o.letter) + '.</span><div>' + md(o.text) +
       (o.unlikely ? '<span class="tag unlikely">маловероятно: ' + md(o.unlikely) + '</span>' : '') + (isAdded(o) ? '<span class="tag added">добавлен человеком</span>' : '') + deviationTag(o) + '</div></div>').join('');
-    if (rec.recommendation) html += '<div class="rec">рекомендация: <b>' + esc(rec.recommendation.option || '') + '</b> — ' + md(rec.recommendation.why || rec.recommendation.text || '') + '</div>';
+    if (rec.recommendation) html += '<div class="rec">рекомендация: <b>' + esc(rec.recommendation.option || '') + '</b> — ' + md(rec.recommendation.why || '') + '</div>';
   } else if (picked) {
     const added = (rec.options || []).filter(o => isAdded(o) && o.letter !== picked.letter);
     if (added.length) html += '<div class="meta">добавлены человеком: ' + esc(added.map(o => o.letter + '. ' + o.text).join('; ')) + '</div>';

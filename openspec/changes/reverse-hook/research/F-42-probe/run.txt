@@ -1,0 +1,256 @@
+Проба F-42: какие формы условия if у PostToolUse отсекают запуск обработчика на Windows.
+2026-11-04, Claude Code 2.1.318, Windows 11, модель haiku, claude -p --input-format stream-json --setting-sources project,local --allowedTools Read.
+Настройка: .claude/settings.local.json, PostToolUse с matcher Read и по обработчику на форму условия. Каждый запуск обработчика оставляет свой файл с номером формы и полученным file_path, считаются файлы.
+Реплика на случай: вызвать Read ровно с указанной строкой file_path. Каждый случай читает свой файл. Рабочий каталог: <проект>. <вне-каталога>: второй временный каталог рядом с ним.
+Строка «инструмент»: file_path в вызове модели. Строка «в обработчик пришло»: tool_input.file_path на входе обработчика.
+
+--- прогон 1: строка на случай; + форма запустила обработчик, . не запустила
+форма  0: нет-if
+форма  1: Read
+форма  2: Read(**/answers/**)
+форма  3: Read(**/answers/*.md)
+форма  4: Read(**\answers\**)
+форма  5: Read(**\\answers\\**)
+форма  6: Read(./**/answers/**)
+форма  7: Read(/**/answers/**)
+форма  8: Read(answers/**)
+форма  9: Read(//**/answers/**)
+форма 10: Read(//c/**/answers/**)
+форма 11: Read(C:/**/answers/**)
+форма 12: Read(C:\**\answers\**)
+форма 13: Read(//<проект>/openspec/changes/demo/answers/**)
+форма 14: Read(<проект с C:/>/openspec/changes/demo/answers/**)
+форма 15: Read(<проект с C:\>\openspec\changes\demo\answers\**)
+
+случай: вне answers, обратные косые
+  модели сказано: <проект>\notes\out-back.md
+  инструмент: Read: <проект>\notes\out-back.md
+  в обработчик пришло: <проект>\notes\out-back.md
+  формы 0-15: ++..............  запусков 2
+случай: вне answers, прямые косые
+  модели сказано: <проект>/notes/out-fwd.md
+  инструмент: Read: <проект>/notes/out-fwd.md
+  в обработчик пришло: <проект>\notes\out-fwd.md
+  формы 0-15: ++..............  запусков 2
+случай: имя answers.md вне каталога answers, обратные
+  модели сказано: <проект>\docs\answers.md
+  инструмент: Read: <проект>\docs\answers.md
+  в обработчик пришло: <проект>\docs\answers.md
+  формы 0-15: ++..............  запусков 2
+случай: имя answers.md вне каталога answers, прямые
+  модели сказано: <проект>/docs/answers2.md
+  инструмент: Read: <проект>/docs/answers2.md
+  в обработчик пришло: <проект>\docs\answers2.md
+  формы 0-15: ++..............  запусков 2
+случай: в answers, обратные косые
+  модели сказано: <проект>\openspec\changes\demo\answers\in-back.md
+  инструмент: Read: <проект>\openspec\changes\demo\answers\in-back.md
+  в обработчик пришло: <проект>\openspec\changes\demo\answers\in-back.md
+  формы 0-15: ++++..++.+++++++  запусков 13
+случай: в answers, прямые косые
+  модели сказано: <проект>/openspec/changes/demo/answers/in-fwd.md
+  инструмент: Read: <проект>/openspec/changes/demo/answers/in-fwd.md
+  в обработчик пришло: <проект>\openspec\changes\demo\answers\in-fwd.md
+  формы 0-15: ++++..++.+++++++  запусков 13
+случай: в answers, относительный путь с прямыми
+  модели сказано: openspec/changes/demo/answers/in-rel.md
+  инструмент: Read: openspec/changes/demo/answers/in-rel.md
+  в обработчик пришло: <проект>\openspec\changes\demo\answers\in-rel.md
+  формы 0-15: ++++..++.+++++++  запусков 13
+случай: в answers, относительный путь с обратными
+  модели сказано: openspec\changes\demo\answers\in-relb.md
+  инструмент: Read: openspec\changes\demo\answers\in-relb.md
+  в обработчик пришло: <проект>\openspec\changes\demo\answers\in-relb.md
+  формы 0-15: ++++..++.+++++++  запусков 13
+случай: в answers, строчная буква диска
+  модели сказано: <проект со строчной c:>\openspec\changes\demo\answers\in-lower.md
+  инструмент: Read: <проект со строчной c:>\openspec\changes\demo\answers\in-lower.md
+  в обработчик пришло: <проект со строчной c:>\openspec\changes\demo\answers\in-lower.md
+  формы 0-15: ++++..++.+++++++  запусков 13
+случай: в answers, путь вида /c/Users
+  модели сказано: <проект в виде /c/...>/openspec/changes/demo/answers/in-msys.md
+  инструмент: Read: <проект в виде /c/...>/openspec/changes/demo/answers/in-msys.md
+  в обработчик пришло: <проект>\openspec\changes\demo\answers\in-msys.md
+  формы 0-15: ++++..++.+++++++  запусков 13
+случай: в answers в корне проекта, обратные
+  модели сказано: <проект>\answers\top-back.md
+  инструмент: Read: <проект>\answers\top-back.md
+  в обработчик пришло: <проект>\answers\top-back.md
+  формы 0-15: ++++..+++++++...  запусков 11
+случай: в answers вне рабочего каталога, обратные
+  модели сказано: <вне-каталога>\openspec\changes\demo\answers\x-back.md
+  инструмент: Read: <вне-каталога>\openspec\changes\demo\answers\x-back.md
+  в обработчик пришло: <вне-каталога>\openspec\changes\demo\answers\x-back.md
+  формы 0-15: ++.......++++...  запусков 6
+случай: в answers вне рабочего каталога, прямые
+  модели сказано: <вне-каталога>/openspec/changes/demo/answers/x-fwd.md
+  инструмент: Read: <вне-каталога>/openspec/changes/demo/answers/x-fwd.md
+  в обработчик пришло: <вне-каталога>\openspec\changes\demo\answers\x-fwd.md
+  формы 0-15: ++.......++++...  запусков 6
+
+--- прогон 2: строка на случай; + форма запустила обработчик, . не запустила
+форма  0: нет-if
+форма  1: Read
+форма  2: Read(**/answers/**)
+форма  3: Read(**/answers/*.md)
+форма  4: Read(**\answers\**)
+форма  5: Read(**\\answers\\**)
+форма  6: Read(./**/answers/**)
+форма  7: Read(/**/answers/**)
+форма  8: Read(answers/**)
+форма  9: Read(//**/answers/**)
+форма 10: Read(//c/**/answers/**)
+форма 11: Read(C:/**/answers/**)
+форма 12: Read(C:\**\answers\**)
+форма 13: Read(//<проект>/openspec/changes/demo/answers/**)
+форма 14: Read(<проект с C:/>/openspec/changes/demo/answers/**)
+форма 15: Read(<проект с C:\>\openspec\changes\demo\answers\**)
+
+случай: вне answers, обратные косые
+  модели сказано: <проект>\notes\out-back.md
+  инструмент: Read: <проект>\notes\out-back.md
+  в обработчик пришло: <проект>\notes\out-back.md
+  формы 0-15: ++..............  запусков 2
+случай: вне answers, прямые косые
+  модели сказано: <проект>/notes/out-fwd.md
+  инструмент: Read: <проект>/notes/out-fwd.md
+  в обработчик пришло: <проект>\notes\out-fwd.md
+  формы 0-15: ++..............  запусков 2
+случай: имя answers.md вне каталога answers, обратные
+  модели сказано: <проект>\docs\answers.md
+  инструмент: Read: <проект>\docs\answers.md
+  в обработчик пришло: <проект>\docs\answers.md
+  формы 0-15: ++..............  запусков 2
+случай: имя answers.md вне каталога answers, прямые
+  модели сказано: <проект>/docs/answers2.md
+  инструмент: Read: <проект>/docs/answers2.md
+  в обработчик пришло: <проект>\docs\answers2.md
+  формы 0-15: ++..............  запусков 2
+случай: в answers, обратные косые
+  модели сказано: <проект>\openspec\changes\demo\answers\in-back.md
+  инструмент: Read: <проект>\openspec\changes\demo\answers\in-back.md
+  в обработчик пришло: <проект>\openspec\changes\demo\answers\in-back.md
+  формы 0-15: ++++..++.+++++++  запусков 13
+случай: в answers, прямые косые
+  модели сказано: <проект>/openspec/changes/demo/answers/in-fwd.md
+  инструмент: Read: <проект>/openspec/changes/demo/answers/in-fwd.md
+  в обработчик пришло: <проект>\openspec\changes\demo\answers\in-fwd.md
+  формы 0-15: ++++..++.+++++++  запусков 13
+случай: в answers, относительный путь с прямыми
+  модели сказано: openspec/changes/demo/answers/in-rel.md
+  инструмент: Read: openspec/changes/demo/answers/in-rel.md
+  в обработчик пришло: <проект>\openspec\changes\demo\answers\in-rel.md
+  формы 0-15: ++++..++.+++++++  запусков 13
+случай: в answers, относительный путь с обратными
+  модели сказано: openspec\changes\demo\answers\in-relb.md
+  инструмент: Read: openspec\changes\demo\answers\in-relb.md
+  в обработчик пришло: <проект>\openspec\changes\demo\answers\in-relb.md
+  формы 0-15: ++++..++.+++++++  запусков 13
+случай: в answers, строчная буква диска
+  модели сказано: <проект со строчной c:>\openspec\changes\demo\answers\in-lower.md
+  инструмент: Read: <проект со строчной c:>\openspec\changes\demo\answers\in-lower.md
+  в обработчик пришло: <проект со строчной c:>\openspec\changes\demo\answers\in-lower.md
+  формы 0-15: ++++..++.+++++++  запусков 13
+случай: в answers, путь вида /c/Users
+  модели сказано: <проект в виде /c/...>/openspec/changes/demo/answers/in-msys.md
+  инструмент: Read: <проект в виде /c/...>/openspec/changes/demo/answers/in-msys.md
+  в обработчик пришло: <проект>\openspec\changes\demo\answers\in-msys.md
+  формы 0-15: ++++..++.+++++++  запусков 13
+случай: в answers в корне проекта, обратные
+  модели сказано: <проект>\answers\top-back.md
+  инструмент: Read: <проект>\answers\top-back.md
+  в обработчик пришло: <проект>\answers\top-back.md
+  формы 0-15: ++++..+++++++...  запусков 11
+случай: в answers вне рабочего каталога, обратные
+  модели сказано: <вне-каталога>\openspec\changes\demo\answers\x-back.md
+  инструмент: Read: <вне-каталога>\openspec\changes\demo\answers\x-back.md
+  в обработчик пришло: <вне-каталога>\openspec\changes\demo\answers\x-back.md
+  формы 0-15: ++.......++++...  запусков 6
+случай: в answers вне рабочего каталога, прямые
+  модели сказано: <вне-каталога>/openspec/changes/demo/answers/x-fwd.md
+  инструмент: Read: <вне-каталога>/openspec/changes/demo/answers/x-fwd.md
+  в обработчик пришло: <вне-каталога>\openspec\changes\demo\answers\x-fwd.md
+  формы 0-15: ++.......++++...  запусков 6
+
+--- прогон sub1: строка на случай; + форма запустила обработчик, . не запустила
+Рабочий каталог: <проект>\sub, настройки в <проект>\.claude, <проект> git-репозиторий.
+CLAUDE_PROJECT_DIR в обработчике: []
+форма  0: нет-if
+форма  1: Read
+форма  2: Read(**/answers/**)
+форма  3: Read(**/answers/*.md)
+форма  4: Read(**\answers\**)
+форма  5: Read(**\\answers\\**)
+форма  6: Read(./**/answers/**)
+форма  7: Read(/**/answers/**)
+форма  8: Read(answers/**)
+форма  9: Read(//**/answers/**)
+форма 10: Read(//c/**/answers/**)
+форма 11: Read(C:/**/answers/**)
+форма 12: Read(C:\**\answers\**)
+форма 13: Read(//<проект>/openspec/changes/demo/answers/**)
+форма 14: Read(<проект с C:/>/openspec/changes/demo/answers/**)
+форма 15: Read(<проект с C:\>\openspec\changes\demo\answers\**)
+
+случай: в answers в корне репозитория, обратные
+  модели сказано: <проект>\openspec\changes\demo\answers\sub-root-back.md
+  инструмент: Read: <проект>\openspec\changes\demo\answers\sub-root-back.md
+  в обработчик пришло: 
+  формы 0-15: ................  запусков 0
+случай: в answers в корне репозитория, прямые
+  модели сказано: <проект>/openspec/changes/demo/answers/sub-root-fwd.md
+  инструмент: Read: <проект>/openspec/changes/demo/answers/sub-root-fwd.md
+  в обработчик пришло: 
+  формы 0-15: ................  запусков 0
+случай: в answers внутри рабочего подкаталога, обратные
+  модели сказано: <проект>\sub\answers\sub-in.md
+  инструмент: Read: <проект>\sub\answers\sub-in.md
+  в обработчик пришло: 
+  формы 0-15: ................  запусков 0
+случай: вне answers, обратные
+  модели сказано: <проект>\notes\sub-out.md
+  инструмент: Read: <проект>\notes\sub-out.md
+  в обработчик пришло: 
+  формы 0-15: ................  запусков 0
+
+--- прогон sub2: строка на случай; + форма запустила обработчик, . не запустила
+Рабочий каталог: <проект>\sub, настройки в <проект>\.claude, <проект> git-репозиторий.
+CLAUDE_PROJECT_DIR в обработчике: []
+форма  0: нет-if
+форма  1: Read
+форма  2: Read(**/answers/**)
+форма  3: Read(**/answers/*.md)
+форма  4: Read(**\answers\**)
+форма  5: Read(**\\answers\\**)
+форма  6: Read(./**/answers/**)
+форма  7: Read(/**/answers/**)
+форма  8: Read(answers/**)
+форма  9: Read(//**/answers/**)
+форма 10: Read(//c/**/answers/**)
+форма 11: Read(C:/**/answers/**)
+форма 12: Read(C:\**\answers\**)
+форма 13: Read(//<проект>/openspec/changes/demo/answers/**)
+форма 14: Read(<проект с C:/>/openspec/changes/demo/answers/**)
+форма 15: Read(<проект с C:\>\openspec\changes\demo\answers\**)
+
+случай: в answers в корне репозитория, обратные
+  модели сказано: <проект>\openspec\changes\demo\answers\sub-root-back.md
+  инструмент: Read: <проект>\openspec\changes\demo\answers\sub-root-back.md
+  в обработчик пришло: 
+  формы 0-15: ................  запусков 0
+случай: в answers в корне репозитория, прямые
+  модели сказано: <проект>/openspec/changes/demo/answers/sub-root-fwd.md
+  инструмент: Read: <проект>/openspec/changes/demo/answers/sub-root-fwd.md
+  в обработчик пришло: 
+  формы 0-15: ................  запусков 0
+случай: в answers внутри рабочего подкаталога, обратные
+  модели сказано: <проект>\sub\answers\sub-in.md
+  инструмент: Read: <проект>\sub\answers\sub-in.md
+  в обработчик пришло: 
+  формы 0-15: ................  запусков 0
+случай: вне answers, обратные
+  модели сказано: <проект>\notes\sub-out.md
+  инструмент: Read: <проект>\notes\sub-out.md
+  в обработчик пришло: 
+  формы 0-15: ................  запусков 0
+

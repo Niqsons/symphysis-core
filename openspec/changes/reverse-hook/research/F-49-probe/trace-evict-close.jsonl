@@ -1,0 +1,18 @@
+{"t_ms":0,"at":"probe","rest_create":{"status":200,"sessionID":"ses_e582f2fbdffeMP5pQr5fsF2yKG","setups":0}}
+{"t_ms":49,"at":"probe","touch_status":200}
+{"t_ms":458,"pid":32580,"at":"setup","copy":"32580-42893","directory":"<проект>\\g","project":{"id":"global","directory":"<проект>\\g"},"bun":true,"argv":["serve","--hostname","127.0.0.1"],"ctx_keys":["app","location","options","agent","aisdk","command","credential","event","experimental","generate","model","provider","integration","mcp","permission","plugin","reference","rpc","skill","storage","tool","vcs","websearch","worktree","session","shell"]}
+{"t_ms":1572,"pid":32580,"at":"command","copy":"32580-42893","op":"list","tag":"до выгрузки","source":"watch"}
+{"t_ms":1574,"pid":32580,"at":"list","copy":"32580-42893","tag":"до выгрузки","directory":"<проект>\\g","data":[{"id":"ses_e582f2fbdffeMP5pQr5fsF2yKG","directory":"<проект>\\g","model":{"id":"deepseek-v4.1-flash","providerID":"ollama-cloud","variant":"default"},"time":{"created":1793816842430,"updated":1793816842430}},{"id":"ses_e5830a685ffeMkcbj913P2R55j","directory":"<проект>\\g","model":{"id":"deepseek-v4.1-flash","providerID":"ollama-cloud","variant":"default"},"time":{"created":1793816746466,"updated":1793816746466}}],"has_next":true}
+{"t_ms":3581,"at":"probe","mark":"ждём выгрузки места, keep=false"}
+{"t_ms":119773,"pid":32580,"at":"event","copy":"32580-42893","type":"location.shutdown","event_location":"<проект>\\g"}
+{"t_ms":119774,"pid":32580,"at":"cleanup","copy":"32580-42893","directory":"<проект>\\g","keep":false}
+{"t_ms":119780,"pid":32580,"at":"event-stream-end","copy":"32580-42893"}
+{"t_ms":119865,"at":"probe","evicted":true,"after_ms":119316}
+{"t_ms":121371,"at":"probe","mark":"строка в файле после выгрузки"}
+{"t_ms":124387,"at":"probe","after_evict":{"commands":1,"setups":1}}
+{"t_ms":124387,"at":"probe","mark":"любой запрос к месту после выгрузки"}
+{"t_ms":124821,"pid":32580,"at":"setup","copy":"32580-67256","directory":"<проект>\\g","project":{"id":"global","directory":"<проект>\\g"},"bun":true,"argv":["serve","--hostname","127.0.0.1"]}
+{"t_ms":127440,"at":"probe","after_touch":{"setups":2}}
+{"t_ms":127445,"pid":32580,"at":"command","copy":"32580-67256","op":"list","tag":"после нового запроса","source":"watch"}
+{"t_ms":127447,"pid":32580,"at":"list","copy":"32580-67256","tag":"после нового запроса","directory":"<проект>\\g","data":[{"id":"ses_e582f2fbdffeMP5pQr5fsF2yKG","directory":"<проект>\\g","model":{"id":"deepseek-v4.1-flash","providerID":"ollama-cloud","variant":"default"},"time":{"created":1793816842430,"updated":1793816842430}},{"id":"ses_e5830a685ffeMkcbj913P2R55j","directory":"<проект>\\g","model":{"id":"deepseek-v4.1-flash","providerID":"ollama-cloud","variant":"default"},"time":{"created":1793816746466,"updated":1793816746466}}],"has_next":true}
+{"t_ms":130452,"at":"probe","reaction":{"commands":2}}

@@ -1,0 +1,4 @@
+{"t_ms":0,"at":"probe","rest_create":{"status":200,"sessionID":"ses_e58318eb1ffelv0wj2GBPHRIl2","setups":0}}
+{"t_ms":13383,"at":"probe","what_loads_plugin":{"before":0,"list_status":200,"after_list":0,"get_status":200,"after_get":0,"context_status":200,"after_context":0}}
+{"t_ms":13817,"pid":30344,"at":"setup","copy":"30344-854","directory":"<проект>\\d","project":{"id":"global","directory":"<проект>\\d"},"bun":true,"argv":["serve","--hostname","127.0.0.1"],"ctx_keys":["app","location","options","agent","aisdk","command","credential","event","experimental","generate","model","provider","integration","mcp","permission","plugin","reference","rpc","skill","storage","tool","vcs","websearch","worktree","session","shell"]}
+{"t_ms":16516,"at":"probe","after_location_request":{"setups":1}}

@@ -1,0 +1,8 @@
+{"t_ms":0,"pid":19316,"at":"setup","copy":"19316-4777","directory":"<проект>\\e","project":{"id":"global","directory":"<проект>\\e"},"bun":true,"argv":["serve","--hostname","127.0.0.1"],"ctx_keys":["app","location","options","agent","aisdk","command","credential","event","experimental","generate","model","provider","integration","mcp","permission","plugin","reference","rpc","skill","storage","tool","vcs","websearch","worktree","session","shell"]}
+{"t_ms":158,"pid":30240,"at":"setup","copy":"30240-4935","directory":"<проект>\\e","project":{"id":"global","directory":"<проект>\\e"},"bun":true,"argv":["serve","--hostname","127.0.0.1"]}
+{"t_ms":273,"at":"probe","mark":"одна строка, два сервера"}
+{"t_ms":280,"pid":19316,"at":"command","copy":"19316-4777","op":"list","tag":"два сервера","source":"watch"}
+{"t_ms":281,"pid":19316,"at":"list","copy":"19316-4777","tag":"два сервера","directory":"<проект>\\e","data":[],"has_next":false}
+{"t_ms":297,"pid":30240,"at":"command","copy":"30240-4935","op":"list","tag":"два сервера","source":"watch"}
+{"t_ms":298,"pid":30240,"at":"list","copy":"30240-4935","tag":"два сервера","directory":"<проект>\\e","data":[],"has_next":false}
+{"t_ms":3284,"at":"probe","two_servers":{"reacted":2,"pids":2}}

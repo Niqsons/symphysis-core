@@ -1,0 +1,2 @@
+{"t_ms":0,"at":"probe","skills":{"label":"без-флага","status":200,"body_keys":["location","data"],"count":20,"from_home_claude":17,"builtin":["opencode","report"]}}
+{"t_ms":4482,"at":"probe","skills":{"label":"с-флагом","status":200,"body_keys":["location","data"],"count":3,"from_home_claude":0,"builtin":["opencode","report"]}}
