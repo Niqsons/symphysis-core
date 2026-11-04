@@ -62,7 +62,7 @@
 
 - [x] 7.1 `skills/symphysis-viewer/SKILL.md`: слово приходит промптом или внесено кнопкой (файл в `answers/` и событие хука), `.symphysis/viewer/` — черновики, не слово; перед записью перечитать журнал; внесённое кнопкой не вносить второй раз; строка о `scheme.md` только сигнал — проверка: `tests/test_skills.py`: сценарий «Текст скилла»; при показе 16.5 чтением скилла: сценарии «Агент получил событие», «Черновик не слово», «Строка о схеме»
 - [x] 7.2 `docs/repo-contract.md`: вместо строки о будущем хуке: `events.jsonl`, курсоры и скрипт в `.symphysis/viewer/`, вывод хука словами, записи `.claude/settings.local.json`, `.opencode/plugins/`, `.git/info/exclude`; поля `file_links` и `skills` — проверка: новый `tests/test_repo_contract.py`: сценарий «Строки «когда появится» больше нет», все эти имена названы
-- [x] 7.3 Инсталлятор не трогает файлы хука: кода не прибавляется — проверка: `tests/test_installer.py`: сценарий «Инсталлятор оставляет файлы хука», оба файла байт в байт
+- [x] 7.3 Инсталлятор не трогает файлы хука: кода не прибавляется — проверка: `installer/test/install.test.js`: сценарий «Инсталлятор оставляет файлы хука», оба файла байт в байт
 
 ## 8. Просьба слова (F-12, F-29, F-97)
 
@@ -105,17 +105,17 @@
 
 ## 14. Местная дата в заголовке промпта (F-64)
 
-- [ ] 14.1 `tools/playground-template.html`: заголовок берёт местную дату вместо `toISOString` — проверка: `tests/test_viewer_prompt.py` со временем и поясом из теста: сценарии «Первые часы суток», «Дата решения»; `npm test` плагина с `SYMPHYSIS_ROOT`: контрактный тест зелёный
+- [x] 14.1 `tools/playground-template.html`: заголовок берёт местную дату вместо `toISOString` — проверка: `tests/test_viewer_prompt.py` со временем и поясом из теста: сценарии «Первые часы суток», «Дата решения»; `npm test` плагина с `SYMPHYSIS_ROOT`: контрактный тест зелёный
 
 ## 15. Пакет: `README.md` (F-82, F-87, F-90, F-99, F-101, `security.md`)
 
-- [ ] 15.1 `README.md` плагина: что он пишет в проекте (`.claude/settings.local.json`, `.opencode/plugins/`, `.git/info/exclude`, `.symphysis/viewer/`), `symphysis.hook.enabled`, как убрать хук руками, в том числе после удаления плагина; агент в другом каталоге хука не услышит (F-99); как обновить инструменты: `symphysis install --project . --force` (F-101). Строка в `.vscodeignore` и `PACKAGE` — проверка: `python <гейт имён> README.md` с кодом 0; `npm run e2e:vsix` с новым списком
-- [ ] 15.2 Тест упаковки читает пакет: проверка строк вынесена в функцию с перечнем того, чего нет; `untrustedWorkspaces.supported` равно `false` — проверка: `test/e2e/vsix-scenario.ts` на установленном `.vsix`: сценарий «Описание в пакете», поле на месте; `test/unit/package-readme.test.ts`: сценарий «Описания нет»: текст без строк и нет файла дают отказ с названием
+- [x] 15.1 `README.md` плагина: что он пишет в проекте (`.claude/settings.local.json`, `.opencode/plugins/`, `.git/info/exclude`, `.symphysis/viewer/`), `symphysis.hook.enabled`, как убрать хук руками, в том числе после удаления плагина; агент в другом каталоге хука не услышит (F-99); как обновить инструменты: `symphysis install --project . --force` (F-101). Строка в `.vscodeignore` и `PACKAGE` — проверка: `python <гейт имён> README.md` с кодом 0; `npm run e2e:vsix` с новым списком
+- [x] 15.2 Тест упаковки читает пакет: проверка строк вынесена в функцию с перечнем того, чего нет; `untrustedWorkspaces.supported` равно `false` — проверка: `test/e2e/vsix-scenario.ts` на установленном `.vsix`: сценарий «Описание в пакете», поле на месте; `test/unit/package-readme.test.ts`: сценарий «Описания нет»: текст без строк и нет файла дают отказ с названием
 
 ## 16. Прогон, показ, обновление
 
-- [ ] 16.1 Полный прогон ядра — проверка: `pytest` на Python с `jsonschema`, `npm --prefix installer test`, `openspec validate step-help-tab --strict`, `journal.py check`, гейт имён зелёные
-- [ ] 16.2 Полный прогон плагина — проверка: `npm run typecheck`, `npm test` с `SYMPHYSIS_ROOT` без пропусков, `npm run e2e`, `npm run e2e:reload`, `npm run e2e:vsix`, `npm run e2e:activation`, `npm run e2e:hook`, гейт имён зелёные
+- [x] 16.1 Полный прогон ядра — проверка: `pytest` на Python с `jsonschema`, `npm --prefix installer test`, `openspec validate step-help-tab --strict`, `journal.py check`, гейт имён зелёные
+- [x] 16.2 Полный прогон плагина — проверка: `npm run typecheck`, `npm test` с `SYMPHYSIS_ROOT` без пропусков, `npm run e2e`, `npm run e2e:reload`, `npm run e2e:vsix`, `npm run e2e:activation`, `npm run e2e:hook`, гейт имён зелёные
 - [ ] 16.3 Сверка покрытия — проверка: скрипт: каждый сценарий из `specs/` назван здесь и в тесте; каждый «новый тест» и каждая механика из `security.md` есть в тестах или коде; список непокрытых пуст
 - [ ] 16.4 Руками то, что не проверить тестом: новый файл плагина в opencode Desktop и в работающем сервере (F-49), VS Code из меню «Пуск» (F-53) — проверка: результат каждой записан в `research/F-49.md` и `research/F-53.md`; не сработало — новая запись журнала, а не правка молча
 - [ ] 16.5 Показ: настоящий форк, просмотрщик, вкладка, хук в настоящей сессии, скилл просмотрщика — проверка: человек проходит и читает; замечания правятся до коммита этого этапа
