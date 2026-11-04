@@ -597,13 +597,22 @@ def test_jetbrains_preset_needs_the_project_root(tmp_path):
     j = one_record_journal("a.md", "дв")
     j["records"][0]["question"] = "см. `a.md:2`"
     html = page(tmp_path, j=j)
-    assert editor_arrows(browser(html, "editor:jetbrains")) == []
     project = html.parent.parent.parent.parent
-    roots = tmp_path / "roots.json"
-    roots.write_text(json.dumps({"": str(project)}), encoding="utf-8")
-    run = subprocess.run([sys.executable, str(ROOT / "tools" / "journal.py"), "render-html", str(html.with_name("decisions.json")), "--out", str(html), "--roots", str(roots)],
-                         capture_output=True, text=True, encoding="utf-8")
-    assert run.returncode == 0, run.stderr
+    arrow = "jetbrains://idea/navigate/reference?project=" + quote(project.name) + "&path=" + quote("openspec/changes/изменение/a.md") + ":1"
+    assert arrow in editor_arrows(browser(html, "editor:jetbrains")), "инструменты вне проекта: корень это проект из пути журнала"
+
+    def render_with_root(root):
+        roots = tmp_path / "roots.json"
+        roots.write_text(json.dumps({"": str(root)}), encoding="utf-8")
+        run = subprocess.run([sys.executable, str(ROOT / "tools" / "journal.py"), "render-html", str(html.with_name("decisions.json")), "--out", str(html), "--roots", str(roots)],
+                             capture_output=True, text=True, encoding="utf-8")
+        assert run.returncode == 0, run.stderr
+
+    other = tmp_path / "другой проект"
+    other.mkdir()
+    render_with_root(other)
+    assert editor_arrows(browser(html, "editor:jetbrains")) == []
+    render_with_root(project)
     r = browser(html, "editor:jetbrains")
-    assert "jetbrains://idea/navigate/reference?project=" + quote(project.name) + "&path=" + quote("openspec/changes/изменение/a.md") + ":1" in editor_arrows(r)
+    assert arrow in editor_arrows(r)
     assert r["errors"] == []

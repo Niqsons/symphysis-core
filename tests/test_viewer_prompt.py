@@ -286,3 +286,43 @@ def test_edited_new_fork_stays_in_the_prompt(tmp_path):
     fork = {"id": "F-N1", "question": "Новая развилка человека, поправленная?", "options": "да", "word": ""}
     out = page_prompt(tmp_path, ingested_fork_journal(), state(newForks=[fork]))
     assert out.count("Новая развилка человека, поправленная?") == 1
+
+
+# --- дата в заголовке промпта: местная, не UTC (F-64) ---------------------------------
+
+def local_date(tmp_path, tz, iso_moment):
+    """`localDate(момент)` шаблона в процессе node с поясом `tz`: пояс задаёт переменная `TZ`, как её читает node."""
+    script = tmp_path / "local-date.js"
+    script.write_text(block("prompt") + f"\nprocess.stdout.write(localDate(new Date('{iso_moment}')));\n", encoding="utf-8")
+    run = subprocess.run([node, str(script)], capture_output=True, text=True, encoding="utf-8", env={**__import__("os").environ, "TZ": tz})
+    assert run.returncode == 0, run.stderr
+    return run.stdout
+
+
+def test_scenario_first_hours_of_the_day(tmp_path):
+    """Сценарий «Первые часы суток»: 01:30 4 ноября при поясе UTC+3 (это 22:30 3 ноября по UTC) — в заголовке `2026-11-04`."""
+    assert local_date(tmp_path, "Etc/GMT-3", "2026-11-03T22:30:00Z") == "2026-11-04"
+
+
+def test_local_date_is_zero_padded_and_follows_the_zone(tmp_path):
+    assert local_date(tmp_path, "Etc/GMT-3", "2026-01-05T00:10:00+03:00") == "2026-01-05"
+    assert local_date(tmp_path, "Etc/GMT+5", "2026-01-01T02:00:00Z") == "2025-12-31"   # к западу от UTC местная дата раньше
+
+
+def test_the_page_takes_the_date_from_local_date():
+    text = TEMPLATE.read_text(encoding="utf-8")
+    assert "toISOString" not in text and "localDate(new Date())" in text
+
+
+def test_scenario_decision_date_comes_from_apply(tmp_path):
+    """Сценарий «Дата решения»: дата в заголовке промпта не равна дате `apply`, у решения дата из `apply`."""
+    j = plan_journal()
+    rec = {r["id"]: r for r in j["records"]}["F-04"]
+    text = run_js(tmp_path, "prompt", "buildPrompt(input.J, input.attacks, input.st, input.disputes, '2020-01-02')",
+                  {"J": j, "attacks": [], "st": state(decisions={"F-04": {"choice": "A", "word": "", "parked": []}}), "disputes": {}})["text"]
+    assert "2020-01-02" in text.splitlines()[0]
+    applied = copy.deepcopy(j)
+    report = journal.apply_answers(applied, journal.parse_answers(text), DATE)
+    assert not [line for line in report if line.startswith("отказ")], report
+    decided = {r["id"]: r for r in applied["records"]}["F-04"]["decision"]
+    assert decided["date"] == DATE

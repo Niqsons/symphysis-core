@@ -1,0 +1,274 @@
+# Покрытие пробы краёв: step-help-tab
+
+- plugin-agent-hook/«Внести» пишет событие · boundary · неприменимо: формы stateful, io; boundary только для numeric-range
+- plugin-agent-hook/«Внести» пишет событие · adjacency · неприменимо: формы stateful, io; adjacency только для collection
+- plugin-agent-hook/«Внести» пишет событие · empty · неприменимо: формы stateful, io; empty только для collection, text
+- plugin-agent-hook/«Внести» пишет событие · encoding · неприменимо: формы stateful, io; encoding только для text
+- plugin-agent-hook/«Внести» пишет событие · ordering · неприменимо: формы stateful, io; ordering только для collection
+- plugin-agent-hook/«Внести» пишет событие · precision · неприменимо: формы stateful, io; precision только для numeric-range
+- plugin-agent-hook/«Внести» пишет событие · idempotency · не найдено: повторное «Внести» создаёт новый файл `answers/` и новую строку, у них разные хеши, склейки нет
+- plugin-agent-hook/«Внести» пишет событие · concurrency · кандидат F-70
+- plugin-agent-hook/Хук печатает непрочитанные события этой сессии · boundary · кандидат F-71
+- plugin-agent-hook/Хук печатает непрочитанные события этой сессии · adjacency · не найдено: две одинаковые строки события печатаются обе, у них разные хеши журнала, курсор считает строки, а не значения
+- plugin-agent-hook/Хук печатает непрочитанные события этой сессии · empty · кандидат F-72
+- plugin-agent-hook/Хук печатает непрочитанные события этой сессии · encoding · неприменимо: формы numeric-range, collection, stateful, io; encoding только для text
+- plugin-agent-hook/Хук печатает непрочитанные события этой сессии · ordering · не найдено: порядок показа — порядок записи в файл, новый порядок при пределе решит F-71
+- plugin-agent-hook/Хук печатает непрочитанные события этой сессии · precision · не найдено: счёт идёт целыми строками и символами, округления нет
+- plugin-agent-hook/Хук печатает непрочитанные события этой сессии · idempotency · не выбран: повтор обращения без новых событий; исход уже назван сценарием «Продолжение сессии», вывод пуст
+- plugin-agent-hook/Хук печатает непрочитанные события этой сессии · concurrency · кандидат F-73
+- plugin-agent-hook/Хук сообщает об изменении `scheme.md` по хешу · boundary · неприменимо: формы collection, stateful, io; boundary только для numeric-range
+- plugin-agent-hook/Хук сообщает об изменении `scheme.md` по хешу · adjacency · не выбран: два активных изменения с одинаковым файлом; хеш сверяется по имени изменения, исход назван сценарием «Правка между обращениями»
+- plugin-agent-hook/Хук сообщает об изменении `scheme.md` по хешу · empty · кандидат F-74
+- plugin-agent-hook/Хук сообщает об изменении `scheme.md` по хешу · encoding · неприменимо: формы collection, stateful, io; encoding только для text
+- plugin-agent-hook/Хук сообщает об изменении `scheme.md` по хешу · ordering · не найдено: строки идут по именам изменений, порядок ни на что не влияет
+- plugin-agent-hook/Хук сообщает об изменении `scheme.md` по хешу · precision · неприменимо: формы collection, stateful, io; precision только для numeric-range
+- plugin-agent-hook/Хук сообщает об изменении `scheme.md` по хешу · idempotency · не выбран: сохранение тем же содержимым; исход назван сценарием «Сохранение без правки»
+- plugin-agent-hook/Хук сообщает об изменении `scheme.md` по хешу · concurrency · не выбран: файл прочитан во время записи, хеш от половины файла; лишняя строка принята в Р20, следующее обращение покажет новый хеш
+- plugin-agent-hook/Хук не останавливает запрос человека · boundary · неприменимо: формы stateful, io; boundary только для numeric-range
+- plugin-agent-hook/Хук не останавливает запрос человека · adjacency · неприменимо: формы stateful, io; adjacency только для collection
+- plugin-agent-hook/Хук не останавливает запрос человека · empty · неприменимо: формы stateful, io; empty только для collection, text
+- plugin-agent-hook/Хук не останавливает запрос человека · encoding · неприменимо: формы stateful, io; encoding только для text
+- plugin-agent-hook/Хук не останавливает запрос человека · ordering · неприменимо: формы stateful, io; ordering только для collection
+- plugin-agent-hook/Хук не останавливает запрос человека · precision · неприменимо: формы stateful, io; precision только для numeric-range
+- plugin-agent-hook/Хук не останавливает запрос человека · idempotency · не найдено: срабатывание не зависит от прошлых, кроме курсора, а его сбой запроса не останавливает
+- plugin-agent-hook/Хук не останавливает запрос человека · concurrency · не выбран: запись осталась, а файла скрипта нет (`git clean -fdX`); исход назван требованием из F-52 и сценарием «Файла скрипта нет у Claude Code», проба F-69 показала, как это сделать, ответ человека его не изменит
+- plugin-agent-hook/Плагин ставит хук сам там, где он нужен · boundary · неприменимо: формы collection, stateful, io; boundary только для numeric-range
+- plugin-agent-hook/Плагин ставит хук сам там, где он нужен · adjacency · кандидат F-75
+- plugin-agent-hook/Плагин ставит хук сам там, где он нужен · empty · не выбран: `.claude/` есть, но клиентом человек не пользуется; след решён F-60, выбор клиентов придёт с F-58
+- plugin-agent-hook/Плагин ставит хук сам там, где он нужен · encoding · неприменимо: формы collection, stateful, io; encoding только для text
+- plugin-agent-hook/Плагин ставит хук сам там, где он нужен · ordering · не найдено: два клиента ставятся независимо, порядок ни на что не влияет
+- plugin-agent-hook/Плагин ставит хук сам там, где он нужен · precision · неприменимо: формы collection, stateful, io; precision только для numeric-range
+- plugin-agent-hook/Плагин ставит хук сам там, где он нужен · idempotency · не выбран: повторная активация; исход назван сценариями «Повторная активация» двух следующих требований
+- plugin-agent-hook/Плагин ставит хук сам там, где он нужен · concurrency · кандидат F-76
+- plugin-agent-hook/Скрипт хука приходит из пакета плагина · boundary · неприменимо: формы stateful, io; boundary только для numeric-range
+- plugin-agent-hook/Скрипт хука приходит из пакета плагина · adjacency · неприменимо: формы stateful, io; adjacency только для collection
+- plugin-agent-hook/Скрипт хука приходит из пакета плагина · empty · неприменимо: формы stateful, io; empty только для collection, text
+- plugin-agent-hook/Скрипт хука приходит из пакета плагина · encoding · неприменимо: формы stateful, io; encoding только для text
+- plugin-agent-hook/Скрипт хука приходит из пакета плагина · ordering · неприменимо: формы stateful, io; ordering только для collection
+- plugin-agent-hook/Скрипт хука приходит из пакета плагина · precision · неприменимо: формы stateful, io; precision только для numeric-range
+- plugin-agent-hook/Скрипт хука приходит из пакета плагина · idempotency · не выбран: файл уже совпадает; исход назван сценарием «Файл совпадает»
+- plugin-agent-hook/Скрипт хука приходит из пакета плагина · concurrency · не выбран: файл заменён, пока хук его читает; хук увидит старый или новый файл, а сбой чтения запроса не останавливает по требованию «Хук не останавливает запрос человека»
+- plugin-agent-hook/Запись Claude Code лежит в `.claude/settings.local.json` · boundary · неприменимо: формы collection, stateful, io; boundary только для numeric-range
+- plugin-agent-hook/Запись Claude Code лежит в `.claude/settings.local.json` · adjacency · не выбран: чужой хук запускает тот же скрипт; своя запись узнаётся по пути в аргументах, чужая сохраняется по сценарию «Чужие настройки и хуки»
+- plugin-agent-hook/Запись Claude Code лежит в `.claude/settings.local.json` · empty · кандидат F-77
+- plugin-agent-hook/Запись Claude Code лежит в `.claude/settings.local.json` · encoding · неприменимо: формы collection, stateful, io; encoding только для text
+- plugin-agent-hook/Запись Claude Code лежит в `.claude/settings.local.json` · ordering · не найдено: порядок обработчиков ни на что не влияет, проба F-52 показала оба вывода
+- plugin-agent-hook/Запись Claude Code лежит в `.claude/settings.local.json` · precision · неприменимо: формы collection, stateful, io; precision только для numeric-range
+- plugin-agent-hook/Запись Claude Code лежит в `.claude/settings.local.json` · idempotency · не выбран: исход назван сценарием «Повторная активация»
+- plugin-agent-hook/Запись Claude Code лежит в `.claude/settings.local.json` · concurrency · кандидат F-78
+- plugin-agent-hook/Файл opencode лежит в `.opencode/plugins/` · boundary · неприменимо: формы stateful, io; boundary только для numeric-range
+- plugin-agent-hook/Файл opencode лежит в `.opencode/plugins/` · adjacency · неприменимо: формы stateful, io; adjacency только для collection
+- plugin-agent-hook/Файл opencode лежит в `.opencode/plugins/` · empty · неприменимо: формы stateful, io; empty только для collection, text
+- plugin-agent-hook/Файл opencode лежит в `.opencode/plugins/` · encoding · неприменимо: формы stateful, io; encoding только для text
+- plugin-agent-hook/Файл opencode лежит в `.opencode/plugins/` · ordering · неприменимо: формы stateful, io; ordering только для collection
+- plugin-agent-hook/Файл opencode лежит в `.opencode/plugins/` · precision · неприменимо: формы stateful, io; precision только для numeric-range
+- plugin-agent-hook/Файл opencode лежит в `.opencode/plugins/` · idempotency · кандидат F-79
+- plugin-agent-hook/Файл opencode лежит в `.opencode/plugins/` · concurrency · не выбран: работающий сервер не подхватил новый файл; записано предположением в требовании, дорога «проверить при реализации», ответ сейчас ничего не изменит
+- plugin-agent-hook/Файлы хука спрятаны от git · boundary · неприменимо: формы collection, stateful, io; boundary только для numeric-range
+- plugin-agent-hook/Файлы хука спрятаны от git · adjacency · не выбран: такая же строка человека; исход назван сценарием «Такая же строка человека»
+- plugin-agent-hook/Файлы хука спрятаны от git · empty · кандидат F-80
+- plugin-agent-hook/Файлы хука спрятаны от git · encoding · неприменимо: формы collection, stateful, io; encoding только для text
+- plugin-agent-hook/Файлы хука спрятаны от git · ordering · не найдено: порядок строк в `info/exclude` ни на что не влияет
+- plugin-agent-hook/Файлы хука спрятаны от git · precision · неприменимо: формы collection, stateful, io; precision только для numeric-range
+- plugin-agent-hook/Файлы хука спрятаны от git · idempotency · не выбран: исход назван сценарием «Повторная активация»
+- plugin-agent-hook/Файлы хука спрятаны от git · concurrency · кандидат F-81
+- plugin-agent-hook/Выключатель снимает хук · boundary · неприменимо: формы stateful, io; boundary только для numeric-range
+- plugin-agent-hook/Выключатель снимает хук · adjacency · неприменимо: формы stateful, io; adjacency только для collection
+- plugin-agent-hook/Выключатель снимает хук · empty · неприменимо: формы stateful, io; empty только для collection, text
+- plugin-agent-hook/Выключатель снимает хук · encoding · неприменимо: формы stateful, io; encoding только для text
+- plugin-agent-hook/Выключатель снимает хук · ordering · неприменимо: формы stateful, io; ordering только для collection
+- plugin-agent-hook/Выключатель снимает хук · precision · неприменимо: формы stateful, io; precision только для numeric-range
+- plugin-agent-hook/Выключатель снимает хук · idempotency · не выбран: выключить дважды и включить снова; исход назван сценариями «Активация при выключенной настройке» и «Включение снова»
+- plugin-agent-hook/Выключатель снимает хук · concurrency · кандидат F-82
+- plugin-agent-hook/Пакет плагина не выходит без описания хука · boundary · неприменимо: формы text, io; boundary только для numeric-range
+- plugin-agent-hook/Пакет плагина не выходит без описания хука · adjacency · неприменимо: формы text, io; adjacency только для collection
+- plugin-agent-hook/Пакет плагина не выходит без описания хука · empty · не выбран: описания нет; исход назван сценарием «Описания нет»
+- plugin-agent-hook/Пакет плагина не выходит без описания хука · encoding · не найдено: тест ищет строки дословно
+- plugin-agent-hook/Пакет плагина не выходит без описания хука · ordering · неприменимо: формы text, io; ordering только для collection
+- plugin-agent-hook/Пакет плагина не выходит без описания хука · precision · неприменимо: формы text, io; precision только для numeric-range
+- plugin-agent-hook/Пакет плагина не выходит без описания хука · idempotency · неприменимо: формы text, io; idempotency только для stateful
+- plugin-agent-hook/Пакет плагина не выходит без описания хука · concurrency · не найдено: тест идёт на собранном пакете, параллельной записи нет
+- plugin-step-help-view/Справка делит вкладку со схемой · boundary · неприменимо: формы stateful; boundary только для numeric-range
+- plugin-step-help-view/Справка делит вкладку со схемой · adjacency · неприменимо: формы stateful; adjacency только для collection
+- plugin-step-help-view/Справка делит вкладку со схемой · empty · неприменимо: формы stateful; empty только для collection, text
+- plugin-step-help-view/Справка делит вкладку со схемой · encoding · неприменимо: формы stateful; encoding только для text
+- plugin-step-help-view/Справка делит вкладку со схемой · ordering · неприменимо: формы stateful; ordering только для collection
+- plugin-step-help-view/Справка делит вкладку со схемой · precision · неприменимо: формы stateful; precision только для numeric-range
+- plugin-step-help-view/Справка делит вкладку со схемой · idempotency · не выбран: повторное нажатие кнопки; исход назван сценарием «Повторное нажатие» в `plugin-scheme-view`
+- plugin-step-help-view/Справка делит вкладку со схемой · concurrency · не найдено: переключатель живёт в одной вкладке одного окна, параллельного изменения нет, перезагрузка покрыта сценарием
+- plugin-step-help-view/Справка открывается без журнала · boundary · неприменимо: формы stateful, io; boundary только для numeric-range
+- plugin-step-help-view/Справка открывается без журнала · adjacency · неприменимо: формы stateful, io; adjacency только для collection
+- plugin-step-help-view/Справка открывается без журнала · empty · неприменимо: формы stateful, io; empty только для collection, text
+- plugin-step-help-view/Справка открывается без журнала · encoding · неприменимо: формы stateful, io; encoding только для text
+- plugin-step-help-view/Справка открывается без журнала · ordering · неприменимо: формы stateful, io; ordering только для collection
+- plugin-step-help-view/Справка открывается без журнала · precision · неприменимо: формы stateful, io; precision только для numeric-range
+- plugin-step-help-view/Справка открывается без журнала · idempotency · не найдено: команда показывает ту же вкладку, вторая не появляется
+- plugin-step-help-view/Справка открывается без журнала · concurrency · не выбран: журнал появился при открытой вкладке без изменения; вкладка выбирает по правилам F-41, слежение обновит её
+- plugin-step-help-view/Вкладка показывает вывод ядра и своих текстов не пишет · boundary · неприменимо: формы collection, text; boundary только для numeric-range
+- plugin-step-help-view/Вкладка показывает вывод ядра и своих текстов не пишет · adjacency · не найдено: шаги различаются по `id`, равных нет
+- plugin-step-help-view/Вкладка показывает вывод ядра и своих текстов не пишет · empty · не выбран: шаг без текста; исход назван сценарием «Текста шага нет»
+- plugin-step-help-view/Вкладка показывает вывод ядра и своих текстов не пишет · encoding · не найдено: текст приходит в UTF-8 и показан теми же правилами, что на странице, длина и равенство тут не сравниваются
+- plugin-step-help-view/Вкладка показывает вывод ядра и своих текстов не пишет · ordering · не найдено: порядок шагов из вывода, вкладка не сортирует
+- plugin-step-help-view/Вкладка показывает вывод ядра и своих текстов не пишет · precision · неприменимо: формы collection, text; precision только для numeric-range
+- plugin-step-help-view/Вкладка показывает вывод ядра и своих текстов не пишет · idempotency · неприменимо: формы collection, text; idempotency только для stateful
+- plugin-step-help-view/Вкладка показывает вывод ядра и своих текстов не пишет · concurrency · неприменимо: формы collection, text; concurrency только для io, stateful
+- plugin-step-help-view/Изменение для справки выбирается как у схемы · boundary · неприменимо: формы collection, stateful; boundary только для numeric-range
+- plugin-step-help-view/Изменение для справки выбирается как у схемы · adjacency · кандидат F-83
+- plugin-step-help-view/Изменение для справки выбирается как у схемы · empty · не выбран: показанного больше нет и активных нет; исход назван сценарием «Показанного больше нет»
+- plugin-step-help-view/Изменение для справки выбирается как у схемы · encoding · неприменимо: формы collection, stateful; encoding только для text
+- plugin-step-help-view/Изменение для справки выбирается как у схемы · ordering · не найдено: порядок из поля `changes`, вкладка не сортирует
+- plugin-step-help-view/Изменение для справки выбирается как у схемы · precision · неприменимо: формы collection, stateful; precision только для numeric-range
+- plugin-step-help-view/Изменение для справки выбирается как у схемы · idempotency · не найдено: тот же выбор показывает то же изменение
+- plugin-step-help-view/Изменение для справки выбирается как у схемы · concurrency · не выбран: расчёт прежнего закончился позже; исход назван сценарием «Расчёт прежнего закончился позже»
+- plugin-step-help-view/Справка обновляется по событиям · boundary · неприменимо: формы stateful, io; boundary только для numeric-range
+- plugin-step-help-view/Справка обновляется по событиям · adjacency · неприменимо: формы stateful, io; adjacency только для collection
+- plugin-step-help-view/Справка обновляется по событиям · empty · неприменимо: формы stateful, io; empty только для collection, text
+- plugin-step-help-view/Справка обновляется по событиям · encoding · неприменимо: формы stateful, io; encoding только для text
+- plugin-step-help-view/Справка обновляется по событиям · ordering · неприменимо: формы stateful, io; ordering только для collection
+- plugin-step-help-view/Справка обновляется по событиям · precision · неприменимо: формы stateful, io; precision только для numeric-range
+- plugin-step-help-view/Справка обновляется по событиям · idempotency · не выбран: собственная запись плагина (`symphysis.html`) даёт лишний расчёт; расчёт ничего не пишет (F-50 журнала `step-help`), петли нет
+- plugin-step-help-view/Справка обновляется по событиям · concurrency · не выбран: запись во время расчёта; исход назван сценарием «Запись во время расчёта»
+- plugin-step-help-view/Отказы справки видны на вкладке · boundary · неприменимо: формы text, io; boundary только для numeric-range
+- plugin-step-help-view/Отказы справки видны на вкладке · adjacency · неприменимо: формы text, io; adjacency только для collection
+- plugin-step-help-view/Отказы справки видны на вкладке · empty · не выбран: вывод пуст или не JSON; исход назван сценарием «Вывод не JSON»
+- plugin-step-help-view/Отказы справки видны на вкладке · encoding · не найдено: `error` приходит в UTF-8, сообщения `cmd.exe` ядро переводит само
+- plugin-step-help-view/Отказы справки видны на вкладке · ordering · неприменимо: формы text, io; ordering только для collection
+- plugin-step-help-view/Отказы справки видны на вкладке · precision · неприменимо: формы text, io; precision только для numeric-range
+- plugin-step-help-view/Отказы справки видны на вкладке · idempotency · неприменимо: формы text, io; idempotency только для stateful
+- plugin-step-help-view/Отказы справки видны на вкладке · concurrency · кандидат F-84
+- plugin-step-help-view/Инструменты можно указать настройкой `symphysis.toolsPath` · boundary · неприменимо: формы text, io; boundary только для numeric-range
+- plugin-step-help-view/Инструменты можно указать настройкой `symphysis.toolsPath` · adjacency · неприменимо: формы text, io; adjacency только для collection
+- plugin-step-help-view/Инструменты можно указать настройкой `symphysis.toolsPath` · empty · не выбран: каталог без `journal.py`; исход назван сценарием «Путь мимо инструментов»
+- plugin-step-help-view/Инструменты можно указать настройкой `symphysis.toolsPath` · encoding · не найдено: путь сверяется как есть той же проверкой абсолютности, что у `symphysis.python`
+- plugin-step-help-view/Инструменты можно указать настройкой `symphysis.toolsPath` · ordering · неприменимо: формы text, io; ordering только для collection
+- plugin-step-help-view/Инструменты можно указать настройкой `symphysis.toolsPath` · precision · неприменимо: формы text, io; precision только для numeric-range
+- plugin-step-help-view/Инструменты можно указать настройкой `symphysis.toolsPath` · idempotency · неприменимо: формы text, io; idempotency только для stateful
+- plugin-step-help-view/Инструменты можно указать настройкой `symphysis.toolsPath` · concurrency · не выбран: настройка изменена при открытых вкладках; следующий расчёт берёт новое значение, ответ человека это не изменит
+- plugin-file-links/Ссылкой становится только путь из карты ядра · boundary · неприменимо: формы collection, text; boundary только для numeric-range
+- plugin-file-links/Ссылкой становится только путь из карты ядра · adjacency · не найдено: `a.md` и `a.md:2` дают один ключ карты, хвост снимает общий код ядра, номер строки берёт показ
+- plugin-file-links/Ссылкой становится только путь из карты ядра · empty · не выбран: карта пуста или поля нет; исход назван сценарием «Старое ядро»
+- plugin-file-links/Ссылкой становится только путь из карты ядра · encoding · не найдено: ключ сверяется дословно, нормализует путь только ядро
+- plugin-file-links/Ссылкой становится только путь из карты ядра · ordering · не найдено: поиск по ключу, порядка нет
+- plugin-file-links/Ссылкой становится только путь из карты ядра · precision · неприменимо: формы collection, text; precision только для numeric-range
+- plugin-file-links/Ссылкой становится только путь из карты ядра · idempotency · неприменимо: формы collection, text; idempotency только для stateful
+- plugin-file-links/Ссылкой становится только путь из карты ядра · concurrency · неприменимо: формы collection, text; concurrency только для io, stateful
+- plugin-file-links/Плагин открывает только файл из карты · boundary · неприменимо: формы text, io; boundary только для numeric-range
+- plugin-file-links/Плагин открывает только файл из карты · adjacency · неприменимо: формы text, io; adjacency только для collection
+- plugin-file-links/Плагин открывает только файл из карты · empty · не выбран: ключ не из карты; исход назван сценарием «Ключ не из карты»
+- plugin-file-links/Плагин открывает только файл из карты · encoding · не найдено: ключ совпадает дословно, путь с `../` может дать только ядро
+- plugin-file-links/Плагин открывает только файл из карты · ordering · неприменимо: формы text, io; ordering только для collection
+- plugin-file-links/Плагин открывает только файл из карты · precision · неприменимо: формы text, io; precision только для numeric-range
+- plugin-file-links/Плагин открывает только файл из карты · idempotency · неприменимо: формы text, io; idempotency только для stateful
+- plugin-file-links/Плагин открывает только файл из карты · concurrency · не выбран: файл удалён после показа ссылки; VS Code сам говорит, что файла нет, человек видит это сразу
+- plugin-file-links/Файл открывается рядом и без перевода фокуса · boundary · неприменимо: формы stateful, io; boundary только для numeric-range
+- plugin-file-links/Файл открывается рядом и без перевода фокуса · adjacency · неприменимо: формы stateful, io; adjacency только для collection
+- plugin-file-links/Файл открывается рядом и без перевода фокуса · empty · неприменимо: формы stateful, io; empty только для collection, text
+- plugin-file-links/Файл открывается рядом и без перевода фокуса · encoding · неприменимо: формы stateful, io; encoding только для text
+- plugin-file-links/Файл открывается рядом и без перевода фокуса · ordering · неприменимо: формы stateful, io; ordering только для collection
+- plugin-file-links/Файл открывается рядом и без перевода фокуса · precision · неприменимо: формы stateful, io; precision только для numeric-range
+- plugin-file-links/Файл открывается рядом и без перевода фокуса · idempotency · не выбран: повторный клик; исход назван сценарием «Следующий клик»
+- plugin-file-links/Файл открывается рядом и без перевода фокуса · concurrency · кандидат F-85
+- plugin-file-links/Скиллы шага показаны ссылками · boundary · неприменимо: формы collection, io; boundary только для numeric-range
+- plugin-file-links/Скиллы шага показаны ссылками · adjacency · не выбран: скилл в двух каталогах; исход назван сценарием «Порядок каталогов» в `step-help`
+- plugin-file-links/Скиллы шага показаны ссылками · empty · не выбран: поле пусто или его нет; исход назван сценариями «Скилл не найден» и «Старое ядро без поля»
+- plugin-file-links/Скиллы шага показаны ссылками · encoding · неприменимо: формы collection, io; encoding только для text
+- plugin-file-links/Скиллы шага показаны ссылками · ordering · не найдено: порядок из вывода, вкладка не сортирует
+- plugin-file-links/Скиллы шага показаны ссылками · precision · неприменимо: формы collection, io; precision только для numeric-range
+- plugin-file-links/Скиллы шага показаны ссылками · idempotency · неприменимо: формы collection, io; idempotency только для stateful
+- plugin-file-links/Скиллы шага показаны ссылками · concurrency · не найдено: файл читает VS Code при открытии, своего состояния у ссылки нет
+- plugin-decision-view/Выбор мимо рекомендации просит слово и не блокирует · boundary · неприменимо: формы stateful, text; boundary только для numeric-range
+- plugin-decision-view/Выбор мимо рекомендации просит слово и не блокирует · adjacency · неприменимо: формы stateful, text; adjacency только для collection
+- plugin-decision-view/Выбор мимо рекомендации просит слово и не блокирует · empty · не выбран: слово из одних пробелов; исход назван сценарием «Одни пробелы»
+- plugin-decision-view/Выбор мимо рекомендации просит слово и не блокирует · encoding · не найдено: проверка та же, что в шаблоне страницы, длина и равенство тут не сравниваются
+- plugin-decision-view/Выбор мимо рекомендации просит слово и не блокирует · ordering · неприменимо: формы stateful, text; ordering только для collection
+- plugin-decision-view/Выбор мимо рекомендации просит слово и не блокирует · precision · неприменимо: формы stateful, text; precision только для numeric-range
+- plugin-decision-view/Выбор мимо рекомендации просит слово и не блокирует · idempotency · не найдено: повторный выбор того же варианта ничего не меняет
+- plugin-decision-view/Выбор мимо рекомендации просит слово и не блокирует · concurrency · не выбран: слово внесено, пока карточка открыта; при чтении журнала просьба считается заново, исход назван сценарием «Слово уже в журнале»
+- plugin-decision-view/Шапка просмотрщика показывает закрытые задачи · boundary · не выбран: всего 0 и все закрыты; исход назван сценариями «Задач нет» и «Все закрыты»
+- plugin-decision-view/Шапка просмотрщика показывает закрытые задачи · adjacency · неприменимо: формы numeric-range, stateful; adjacency только для collection
+- plugin-decision-view/Шапка просмотрщика показывает закрытые задачи · empty · неприменимо: формы numeric-range, stateful; empty только для collection, text
+- plugin-decision-view/Шапка просмотрщика показывает закрытые задачи · encoding · неприменимо: формы numeric-range, stateful; encoding только для text
+- plugin-decision-view/Шапка просмотрщика показывает закрытые задачи · ordering · неприменимо: формы numeric-range, stateful; ordering только для collection
+- plugin-decision-view/Шапка просмотрщика показывает закрытые задачи · precision · не найдено: целые числа из ответа форка
+- plugin-decision-view/Шапка просмотрщика показывает закрытые задачи · idempotency · не найдено: повторный расчёт даёт те же числа при тех же файлах
+- plugin-decision-view/Шапка просмотрщика показывает закрытые задачи · concurrency · не выбран: журнал сменился во время расчёта; исход назван сценарием «Журнал сменился»
+- step-help/Вывод несёт карту ссылок · boundary · неприменимо: формы collection, text; boundary только для numeric-range
+- step-help/Вывод несёт карту ссылок · adjacency · не найдено: хвост `:строка` снимает общий код ядра, это работает на странице
+- step-help/Вывод несёт карту ссылок · empty · не выбран: сбой расчёта; исход назван сценарием «Сбой расчёта»
+- step-help/Вывод несёт карту ссылок · encoding · не выбран: пробел и кириллица в пути; исход назван сценарием «Путь с пробелом и кириллицей»
+- step-help/Вывод несёт карту ссылок · ordering · не найдено: это карта, порядок ключей ничего не значит
+- step-help/Вывод несёт карту ссылок · precision · неприменимо: формы collection, text; precision только для numeric-range
+- step-help/Вывод несёт карту ссылок · idempotency · неприменимо: формы collection, text; idempotency только для stateful
+- step-help/Вывод несёт карту ссылок · concurrency · неприменимо: формы collection, text; concurrency только для io, stateful
+- step-help/У шага есть поле `skills` · boundary · неприменимо: формы collection, io; boundary только для numeric-range
+- step-help/У шага есть поле `skills` · adjacency · не выбран: скилл в двух каталогах; исход назван сценарием «Порядок каталогов»
+- step-help/У шага есть поле `skills` · empty · кандидат F-86
+- step-help/У шага есть поле `skills` · encoding · неприменимо: формы collection, io; encoding только для text
+- step-help/У шага есть поле `skills` · ordering · не найдено: порядок первого упоминания, показ от него не зависит
+- step-help/У шага есть поле `skills` · precision · неприменимо: формы collection, io; precision только для numeric-range
+- step-help/У шага есть поле `skills` · idempotency · неприменимо: формы collection, io; idempotency только для stateful
+- step-help/У шага есть поле `skills` · concurrency · не найдено: скрипт только читает файлы и не пишет (F-50 журнала `step-help`)
+- step-help/Каталог установки задаётся необязательным аргументом · boundary · неприменимо: формы text, io; boundary только для numeric-range
+- step-help/Каталог установки задаётся необязательным аргументом · adjacency · неприменимо: формы text, io; adjacency только для collection
+- step-help/Каталог установки задаётся необязательным аргументом · empty · не выбран: каталога нет; исход назван сценарием «Каталога нет»
+- step-help/Каталог установки задаётся необязательным аргументом · encoding · не найдено: путь идёт аргументом, без оболочки
+- step-help/Каталог установки задаётся необязательным аргументом · ordering · неприменимо: формы text, io; ordering только для collection
+- step-help/Каталог установки задаётся необязательным аргументом · precision · неприменимо: формы text, io; precision только для numeric-range
+- step-help/Каталог установки задаётся необязательным аргументом · idempotency · неприменимо: формы text, io; idempotency только для stateful
+- step-help/Каталог установки задаётся необязательным аргументом · concurrency · не найдено: скрипт только читает файлы и не пишет
+- step-help/Текст текущего шага не повторяет счётчик задач · boundary · неприменимо: формы text; boundary только для numeric-range
+- step-help/Текст текущего шага не повторяет счётчик задач · adjacency · неприменимо: формы text; adjacency только для collection
+- step-help/Текст текущего шага не повторяет счётчик задач · empty · не выбран: задач ноль; фразы нет при любых числах, исход назван требованием
+- step-help/Текст текущего шага не повторяет счётчик задач · encoding · не найдено: фраза снимается целиком, сравнения строк нет
+- step-help/Текст текущего шага не повторяет счётчик задач · ordering · неприменимо: формы text; ordering только для collection
+- step-help/Текст текущего шага не повторяет счётчик задач · precision · неприменимо: формы text; precision только для numeric-range
+- step-help/Текст текущего шага не повторяет счётчик задач · idempotency · неприменимо: формы text; idempotency только для stateful
+- step-help/Текст текущего шага не повторяет счётчик задач · concurrency · неприменимо: формы text; concurrency только для io, stateful
+- plugin-core-contract/`view-json` несёт карту ссылок · boundary · неприменимо: формы collection, io; boundary только для numeric-range
+- plugin-core-contract/`view-json` несёт карту ссылок · adjacency · не найдено: тот же общий код ядра, что у страницы
+- plugin-core-contract/`view-json` несёт карту ссылок · empty · не найдено: журнал без файлов даёт пустую карту, показ остаётся `<code>`
+- plugin-core-contract/`view-json` несёт карту ссылок · encoding · неприменимо: формы collection, io; encoding только для text
+- plugin-core-contract/`view-json` несёт карту ссылок · ordering · не найдено: это карта
+- plugin-core-contract/`view-json` несёт карту ссылок · precision · неприменимо: формы collection, io; precision только для numeric-range
+- plugin-core-contract/`view-json` несёт карту ссылок · idempotency · неприменимо: формы collection, io; idempotency только для stateful
+- plugin-core-contract/`view-json` несёт карту ссылок · concurrency · не найдено: файл удалён между сборкой и кликом, исход назван в `plugin-file-links`
+- plugin-core-contract/Хук описан в контракте · boundary · неприменимо: формы text, io; boundary только для numeric-range
+- plugin-core-contract/Хук описан в контракте · adjacency · неприменимо: формы text, io; adjacency только для collection
+- plugin-core-contract/Хук описан в контракте · empty · не найдено: текст контракта одного вида, вырожденного случая нет
+- plugin-core-contract/Хук описан в контракте · encoding · не найдено: тест ищет строку дословно
+- plugin-core-contract/Хук описан в контракте · ordering · неприменимо: формы text, io; ordering только для collection
+- plugin-core-contract/Хук описан в контракте · precision · неприменимо: формы text, io; precision только для numeric-range
+- plugin-core-contract/Хук описан в контракте · idempotency · неприменимо: формы text, io; idempotency только для stateful
+- plugin-core-contract/Хук описан в контракте · concurrency · не выбран: инструменты обновляются при работающем хуке; исход назван сценарием «Инсталлятор оставляет файлы хука»
+- plugin-scheme-view/Вкладка схемы открывается кнопкой и командой · boundary · неприменимо: формы stateful, io; boundary только для numeric-range
+- plugin-scheme-view/Вкладка схемы открывается кнопкой и командой · adjacency · неприменимо: формы stateful, io; adjacency только для collection
+- plugin-scheme-view/Вкладка схемы открывается кнопкой и командой · empty · неприменимо: формы stateful, io; empty только для collection, text
+- plugin-scheme-view/Вкладка схемы открывается кнопкой и командой · encoding · неприменимо: формы stateful, io; encoding только для text
+- plugin-scheme-view/Вкладка схемы открывается кнопкой и командой · ordering · неприменимо: формы stateful, io; ordering только для collection
+- plugin-scheme-view/Вкладка схемы открывается кнопкой и командой · precision · неприменимо: формы stateful, io; precision только для numeric-range
+- plugin-scheme-view/Вкладка схемы открывается кнопкой и командой · idempotency · не выбран: исход назван сценарием «Повторное нажатие»
+- plugin-scheme-view/Вкладка схемы открывается кнопкой и командой · concurrency · не найдено: панель одна на окно, кнопка и команда идут в один метод
+- plugin-scheme-view/Вкладки журнала и схемы переживают перезагрузку окна · boundary · неприменимо: формы stateful, io; boundary только для numeric-range
+- plugin-scheme-view/Вкладки журнала и схемы переживают перезагрузку окна · adjacency · неприменимо: формы stateful, io; adjacency только для collection
+- plugin-scheme-view/Вкладки журнала и схемы переживают перезагрузку окна · empty · неприменимо: формы stateful, io; empty только для collection, text
+- plugin-scheme-view/Вкладки журнала и схемы переживают перезагрузку окна · encoding · неприменимо: формы stateful, io; encoding только для text
+- plugin-scheme-view/Вкладки журнала и схемы переживают перезагрузку окна · ordering · неприменимо: формы stateful, io; ordering только для collection
+- plugin-scheme-view/Вкладки журнала и схемы переживают перезагрузку окна · precision · неприменимо: формы stateful, io; precision только для numeric-range
+- plugin-scheme-view/Вкладки журнала и схемы переживают перезагрузку окна · idempotency · не выбран: вторая вкладка не появляется, исход назван в требовании
+- plugin-scheme-view/Вкладки журнала и схемы переживают перезагрузку окна · concurrency · не выбран: изменение заархивировано до перезагрузки; исход назван сценариями «Изменения больше нет» и «Справка, изменения больше нет»
+- decision-viewer/Дата в заголовке промпта локальная · boundary · неприменимо: формы text; boundary только для numeric-range
+- decision-viewer/Дата в заголовке промпта локальная · adjacency · неприменимо: формы text; adjacency только для collection
+- decision-viewer/Дата в заголовке промпта локальная · empty · не найдено: дата есть всегда
+- decision-viewer/Дата в заголовке промпта локальная · encoding · не найдено: формат `ГГГГ-ММ-ДД`, как у плагина, сравнений строк нет
+- decision-viewer/Дата в заголовке промпта локальная · ordering · неприменимо: формы text; ordering только для collection
+- decision-viewer/Дата в заголовке промпта локальная · precision · неприменимо: формы text; precision только для numeric-range
+- decision-viewer/Дата в заголовке промпта локальная · idempotency · неприменимо: формы text; idempotency только для stateful
+- decision-viewer/Дата в заголовке промпта локальная · concurrency · неприменимо: формы text; concurrency только для io, stateful
+- decision-viewer/Скилл просмотрщика знает о внесении кнопкой · boundary · неприменимо: формы text; boundary только для numeric-range
+- decision-viewer/Скилл просмотрщика знает о внесении кнопкой · adjacency · неприменимо: формы text; adjacency только для collection
+- decision-viewer/Скилл просмотрщика знает о внесении кнопкой · empty · не найдено: текст скилла, вырожденного случая нет
+- decision-viewer/Скилл просмотрщика знает о внесении кнопкой · encoding · не найдено: тест ищет строки дословно
+- decision-viewer/Скилл просмотрщика знает о внесении кнопкой · ordering · неприменимо: формы text; ordering только для collection
+- decision-viewer/Скилл просмотрщика знает о внесении кнопкой · precision · неприменимо: формы text; precision только для numeric-range
+- decision-viewer/Скилл просмотрщика знает о внесении кнопкой · idempotency · неприменимо: формы text; idempotency только для stateful
+- decision-viewer/Скилл просмотрщика знает о внесении кнопкой · concurrency · неприменимо: формы text; concurrency только для io, stateful

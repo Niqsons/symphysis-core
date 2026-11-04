@@ -823,3 +823,20 @@ test("обновление без --force: ничего не пропущено 
   install(p, { payloadDir });
   assert.ok(fs.existsSync(path.join(tools, VERSION_FILE_NAME)));
 });
+
+test("Инсталлятор оставляет файлы хука: events.jsonl и скрипт байт в байт (F-35)", () => {
+  const p = tmp();
+  install(p, { payloadDir });
+  const viewer = path.join(p, ".symphysis", "viewer");
+  fs.mkdirSync(path.join(viewer, "sessions"), { recursive: true });
+  const files = {
+    "events.jsonl": Buffer.from('{"change":"демо"}\n{"change":"второе"}\n', "utf8"),
+    "hook.py": Buffer.from("# скрипт хука\nprint('хук')\n", "utf8"),
+  };
+  for (const [name, bytes] of Object.entries(files)) fs.writeFileSync(path.join(viewer, name), bytes);
+  install(p, { payloadDir });
+  install(p, { payloadDir, force: true });
+  for (const [name, bytes] of Object.entries(files)) {
+    assert.ok(fs.readFileSync(path.join(viewer, name)).equals(bytes), `${name} изменён`);
+  }
+});

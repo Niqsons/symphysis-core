@@ -52,6 +52,7 @@ def test_payload_is_what_the_page_gets_plus_additions(tmp_path):
     data = view(src)
     assert data.pop("attacks") == []
     assert data.pop("contract") == journal_render.CONTRACT
+    assert isinstance(data.pop("file_links"), dict)
     for rec in data["records"]:
         assert rec.pop("destination")["label"]
         for park in rec["parking"]:
@@ -296,3 +297,60 @@ def test_the_page_does_not_get_the_contract_number(tmp_path):
     out = tmp_path / "page.html"
     assert run_cli("render-html", src, "--out", out, "--roots", roots).returncode == 0
     assert "contract" not in page_payload(out.read_text(encoding="utf-8"))
+
+
+# --- file_links: карта «путь — файл от корня проекта» (F-44, F-102) ---
+
+def links_project(tmp_path):
+    """Проект с файлом в папке с пробелом и кириллицей, соседний каталог `symphysis-vscode` и файл корней с префиксом `vscode/`."""
+    project = tmp_path / "проект"
+    (project / "док ументы").mkdir(parents=True)
+    (project / "док ументы" / "файл один.md").write_text("раз\nдва\n", encoding="utf-8")
+    side = tmp_path / "symphysis-vscode"
+    (side / "src").mkdir(parents=True)
+    (side / "src" / "a.ts").write_text("export {}\n", encoding="utf-8")
+    roots = tmp_path / "roots.json"
+    roots.write_text(json.dumps({"": str(project), "vscode/": str(side)}), encoding="utf-8")
+    change = project / "openspec" / "changes" / "demo"
+    change.mkdir(parents=True)
+    return project, change, roots
+
+
+def test_scenario_evidence_and_record_text_in_file_links(tmp_path):
+    """«Улика и текст записи»: путь улики и существующий файл из текста записи в карте, `нет.md` нет, абсолютных путей нет, без `%20`."""
+    project, change, roots = links_project(tmp_path)
+    j = one_record_journal("док ументы/файл один.md", "раз")
+    j["records"][0]["question"] = "Смотри `док ументы/файл один.md:2-3` и `нет.md`, а ещё `C:/Windows/win.ini`"
+    journal.save_journal(change / "decisions.json", j)
+    links = view(change / "decisions.json", "--roots", roots)["file_links"]
+    assert links == {"док ументы/файл один.md": "док ументы/файл один.md"}
+    assert not any(os.path.isabs(v) or "%" in v for v in links.values())
+
+
+def test_scenario_attack_file_in_file_links(tmp_path):
+    """«Файл атаки»: настоящий файл из строки атаки (и сам файл атаки) попадает в карту."""
+    project, change, roots = links_project(tmp_path)
+    journal.save_journal(change / "decisions.json", one_record_journal("док ументы/файл один.md", "раз"))
+    (change / "attack").mkdir()
+    shutil.copy(ATTACK_FIX / "decisions.md", change / "attack" / "decisions.md")
+    text = (change / "attack" / "decisions.md").read_text(encoding="utf-8")
+    (change / "attack" / "decisions.md").write_text(text + "\nСмотри `док ументы/файл один.md`.\n", encoding="utf-8")
+    links = view(change / "decisions.json", "--roots", roots, "--attack", change / "attack" / "decisions.md")["file_links"]
+    assert links["док ументы/файл один.md"] == "док ументы/файл один.md"
+    assert links["openspec/changes/demo/attack/decisions.md"] == "openspec/changes/demo/attack/decisions.md"
+
+
+def test_scenario_evidence_root_outside_the_project_in_file_links(tmp_path):
+    """«Корень улик вне проекта»: префикс на соседний каталог даёт `../symphysis-vscode/...`."""
+    project, change, roots = links_project(tmp_path)
+    journal.save_journal(change / "decisions.json", one_record_journal("vscode/src/a.ts", "export"))
+    assert view(change / "decisions.json", "--roots", roots)["file_links"] == {"vscode/src/a.ts": "../symphysis-vscode/src/a.ts"}
+
+
+def test_file_links_do_not_change_the_contract_number_or_the_page_map(tmp_path):
+    project, change, roots = links_project(tmp_path)
+    journal.save_journal(change / "decisions.json", one_record_journal("док ументы/файл один.md", "раз"))
+    assert view(change / "decisions.json", "--roots", roots)["contract"] == journal_render.CONTRACT
+    out = tmp_path / "page.html"
+    assert run_cli("render-html", change / "decisions.json", "--out", out, "--roots", roots).returncode == 0
+    assert "%D0%B4%D0%BE%D0%BA%20" in out.read_text(encoding="utf-8")   # карта страницы кодирует, как прежде

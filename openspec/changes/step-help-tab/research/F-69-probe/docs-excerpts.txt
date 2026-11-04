@@ -1,0 +1,10 @@
+Выдержки сняты 2026-11-04, дословно со страниц; строка несёт начало абзаца с искомым местом.
+
+# страница Extension Manifest документации VS Code, раздел о хуке удаления; адрес назван словами, его нет в tools/allowed-hosts.txt
+If your extension has some clean up to be done when it is uninstalled from VS Code, you can register a node script to the uninstall hook vscode:uninstall under scripts section in extension's package.json. { "scripts": { "vscode:uninstall": "node ./out/src/lifecycle" } } This script gets executed when the exten
+This script gets executed when the extension is completely uninstalled from VS Code which is when VS Code is restarted (shutdown and start) after the extension is uninstalled. Note: Only Node.js scripts are supported. Useful Node modules There are several Node.js modules available on npmjs to help with writing VS Code
+
+# https://code.claude.com/docs/en/hooks.md
+A hook's `additionalContext`, `systemMessage`, and `initialUserMessage` strings, and its plain stdout, are capped at 10,000 characters: * **Scope**: Claude Code measures each string on its own, even when several hooks run for the same event. For JSON output, each field is measured separately; plain stdout is measured
+Exit code 2 behavior per event](#exit-code-2-behavior-per-event). To check which decision fields it honors, see [Decision control](#decision-control). #### Exit code 0 Exit 0 means success, and is the intended exit code when you print JSON for structured control. When your hook exits 0 but prints JSON that can't be p
+не найдено: [^\n]*can't open file[^\n]*

@@ -1,0 +1,9 @@
+{"client": "claude", "case": "скрипт висит 25 с, поле timeout 2", "code": 0, "seconds": 6.6, "is_error": false, "reply": "НЕТ"}
+{"client": "git", "mode": "без защиты", "args": "rev-parse --git-path info/exclude", "code": 0, "marker": false}
+{"client": "git", "mode": "без защиты", "args": "ls-files --error-unmatch a.txt", "code": 0, "marker": true}
+{"client": "git", "mode": "без защиты", "args": "worktree list --porcelain", "code": 0, "marker": false}
+{"client": "git", "mode": "без защиты", "args": "status --porcelain", "code": 0, "marker": true}
+{"client": "git", "mode": "с core.fsmonitor=false", "args": "rev-parse --git-path info/exclude", "code": 0, "marker": false}
+{"client": "git", "mode": "с core.fsmonitor=false", "args": "ls-files --error-unmatch a.txt", "code": 0, "marker": false}
+{"client": "git", "mode": "с core.fsmonitor=false", "args": "worktree list --porcelain", "code": 0, "marker": false}
+{"client": "git", "mode": "с core.fsmonitor=false", "args": "status --porcelain", "code": 0, "marker": false}
