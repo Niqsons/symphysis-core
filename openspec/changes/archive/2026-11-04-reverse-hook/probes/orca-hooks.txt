@@ -1,0 +1,39 @@
+Сверка с хуками Orca перед закрытием изменения, слово человека 2026-11-04.
+Клон github.com/stablyai/orca, коммит 085cc38e7 2026-10-20. Строки дословно, номера по этому коммиту.
+
+src/main/agent-hooks/README.md
+  3: Orca learns what each agent is doing through two channels. Both write into the hook server's
+  8: | **Managed integrations** (this folder)                                                                     | Per-agent hooks, plugins and extensions that POST to the loopback hook server. Installers are listed in `managed-agent-hook-registry.ts`; each agent's code lives in `src/main/<agent>/`. | State, prompt, tool name and input, assistant reply, provider session id (resume and native chat), model, subagents |
+
+src/main/claude/claude-managed-hook-events.ts
+  9: export const CLAUDE_EVENTS = [
+  13: eventName: 'SessionStart',
+  17: eventName: 'UserPromptSubmit',
+  21: eventName: 'Stop',
+
+src/main/agent-hooks/hook-post-command.ts
+  14: `  printf '%s' "$payload" | ${curlCommand} -sS -X POST "http://127.0.0.1:\${ORCA_AGENT_HOOK_PORT}/hook/${source}" \\`,
+
+src/main/opencode/status-plugin-post-source.ts
+  9: '  const paneKey = process.env.ORCA_PANE_KEY;',
+  33: '    const response = await fetch(url, {',
+
+src/main/runtime/orchestration/mailbox-pointer-delivery.ts
+  42: if (leaf.lastAgentStatus !== 'idle' || !leaf.lastAgentStatusObservedLive) {
+  79: if (!this.deps.isAgentSettledForDelivery(leaf)) {
+  155: stageOrchestrationMailboxPointer({
+
+src/main/runtime/orchestration/formatter.ts
+  121: return `\nYou have ${count} orchestration ${noun}. Run \`${cliCommand} orchestration check${runFlag}\`.\n`
+
+@types/vscode 1.100.0, index.d.ts (плагин, engines ^1.100.0)
+  7631: readonly processId: Thenable<number | undefined>;
+  7680: sendText(text: string, shouldExecute?: boolean): void;
+
+Поиск по клону, файлов без тестов:
+  asyncRewake в src: 0
+  session.prompt или promptAsync в src/main/opencode: 0
+  draft, typed, user typing в src/main/runtime/orchestration/mailbox-pointer-*.ts: 0
+
+Итог: хуки Orca идут только от агента к приложению и несут статус. Пробуждает Orca печатью короткой строки в терминал, который сама запустила, когда хук сообщил о простое.
+Печать в терминал здесь не опробована: как найти нужный терминал, что с черновиком человека и что, если агент уже вышел, не проверялось.

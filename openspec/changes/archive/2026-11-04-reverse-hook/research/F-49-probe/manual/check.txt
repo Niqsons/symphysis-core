@@ -1,0 +1,3 @@
+Проверка manual-plugin.js без клиента и модели: opencode serve, GET /api/location с каталогом проекта (код 200), затем строка в events.jsonl. Сессии в проекте нет, поэтому latest пуст и вызова session.prompt нет.
+2026-11-04T18:39:04.706Z {"at":"setup","pid":9180,"directory":"<проект>","argv":["serve","--hostname","127.0.0.1"]}
+2026-11-04T18:39:07.387Z {"at":"latest"}

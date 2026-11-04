@@ -1,0 +1,30 @@
+{"t_ms":0,"at":"probe","mark":"run --standalone: строка в файле, пока процесс жив"}
+{"t_ms":719,"pid":35924,"at":"setup","copy":"35924-9069","directory":"<проект>\\h","project":{"id":"global","directory":"<проект>\\h"},"bun":true,"argv":["serve","--stdio","--port"],"ctx_keys":["app","location","options","agent","aisdk","command","credential","event","experimental","generate","model","provider","integration","mcp","permission","plugin","reference","rpc","skill","storage","tool","vcs","websearch","worktree","session","shell"]}
+{"t_ms":871,"pid":35924,"at":"hook.prompt","copy":"35924-9069","sessionID":"ses_e5831397dffeWpjZz7wRIzC22K","messageID":"msg_1a7cec797001nBpEq0bVu3xfoS","delivery":"steer","text":"\"Ответь одним словом: КЕДР\""}
+{"t_ms":874,"pid":35924,"at":"event","copy":"35924-9069","type":"session.inbox.enqueued","sessionID":"ses_e5831397dffeWpjZz7wRIzC22K","event_location":"<проект>\\h","inboxID":"msg_1a7cec797001nBpEq0bVu3xfoS","item":"user","delivery":"steer","text":"\"Ответь одним словом: КЕДР\""}
+{"t_ms":885,"pid":35924,"at":"event","copy":"35924-9069","type":"session.execution.started","sessionID":"ses_e5831397dffeWpjZz7wRIzC22K"}
+{"t_ms":887,"pid":35924,"at":"event","copy":"35924-9069","type":"session.instructions.updated","sessionID":"ses_e5831397dffeWpjZz7wRIzC22K","event_location":"<проект>\\h"}
+{"t_ms":888,"pid":35924,"at":"event","copy":"35924-9069","type":"session.inbox.delivered","sessionID":"ses_e5831397dffeWpjZz7wRIzC22K","event_location":"<проект>\\h","inboxID":"msg_1a7cec797001nBpEq0bVu3xfoS"}
+{"t_ms":897,"pid":35924,"at":"hook.context","copy":"35924-9069","n":1,"sessionID":"ses_e5831397dffeWpjZz7wRIzC22K","agent":"build","model":{"id":"deepseek-v4.1-flash","providerID":"ollama-cloud","variant":"default"},"system_chars":8760,"skills":["opencode","report"],"instructions":[],"messages":[{"role":"user","text":"\"Ответь одним словом: КЕДР\""}],"count":1}
+{"t_ms":901,"pid":35924,"at":"delay.start","copy":"35924-9069","sessionID":"ses_e5831397dffeWpjZz7wRIzC22K","ms":10000}
+{"t_ms":901,"pid":35924,"at":"hook.model.request","copy":"35924-9069","sessionID":"ses_e5831397dffeWpjZz7wRIzC22K","kind":"title","model":{"id":"deepseek-v4.1-flash","providerID":"ollama-cloud","variant":"default"}}
+{"t_ms":1042,"pid":35924,"at":"command","copy":"35924-9069","op":"prompt","tag":"run --standalone, пока жив","source":"watch"}
+{"t_ms":1044,"pid":35924,"at":"latest","copy":"35924-9069","tag":"run --standalone, пока жив","directory":"<проект>\\h","sessionID":"ses_e5831397dffeWpjZz7wRIzC22K"}
+{"t_ms":1045,"pid":35924,"at":"hook.prompt","copy":"35924-9069","sessionID":"ses_e5831397dffeWpjZz7wRIzC22K","messageID":"msg_1a7cec912001sjO4UjkXwJRyi1","delivery":"steer","text":"Дополнение: в конец ответа добавь слово ПИНИЯ."}
+{"t_ms":1046,"pid":35924,"at":"admitted","copy":"35924-9069","tag":"run --standalone, пока жив","op":"prompt","ms":4,"res":{"id":"msg_1a7cec912001sjO4UjkXwJRyi1","type":"user","delivery":"steer","payload_keys":["text"]}}
+{"t_ms":1046,"pid":35924,"at":"event","copy":"35924-9069","type":"session.inbox.enqueued","sessionID":"ses_e5831397dffeWpjZz7wRIzC22K","event_location":"<проект>\\h","inboxID":"msg_1a7cec912001sjO4UjkXwJRyi1","item":"user","delivery":"steer","text":"Дополнение: в конец ответа добавь слово ПИНИЯ."}
+{"t_ms":10902,"pid":35924,"at":"delay.end","copy":"35924-9069","sessionID":"ses_e5831397dffeWpjZz7wRIzC22K"}
+{"t_ms":10903,"pid":35924,"at":"hook.model.request","copy":"35924-9069","sessionID":"ses_e5831397dffeWpjZz7wRIzC22K","kind":"primary","model":{"id":"deepseek-v4.1-flash","providerID":"ollama-cloud","variant":"default"}}
+{"t_ms":11755,"pid":35924,"at":"event","copy":"35924-9069","type":"session.step.started","sessionID":"ses_e5831397dffeWpjZz7wRIzC22K","event_location":"<проект>\\h"}
+{"t_ms":11837,"pid":35924,"at":"hook.context","copy":"35924-9069","n":2,"sessionID":"ses_e5831397dffeWpjZz7wRIzC22K","agent":"build","model":{"id":"deepseek-v4.1-flash","providerID":"ollama-cloud","variant":"default"},"system_chars":8760,"skills":["opencode","report"],"instructions":[],"messages":[{"role":"user","text":"\"Ответь одним словом: КЕДР\""},{"role":"assistant","text":"КЕДР"},{"role":"user","text":"Дополнение: в конец ответа добавь слово ПИНИЯ."}],"count":3}
+{"t_ms":11838,"pid":35924,"at":"hook.model.request","copy":"35924-9069","sessionID":"ses_e5831397dffeWpjZz7wRIzC22K","kind":"primary","model":{"id":"deepseek-v4.1-flash","providerID":"ollama-cloud","variant":"default"}}
+{"t_ms":11839,"pid":35924,"at":"event","copy":"35924-9069","type":"session.step.ended","sessionID":"ses_e5831397dffeWpjZz7wRIzC22K","event_location":"<проект>\\h"}
+{"t_ms":11839,"pid":35924,"at":"event","copy":"35924-9069","type":"session.inbox.delivered","sessionID":"ses_e5831397dffeWpjZz7wRIzC22K","event_location":"<проект>\\h","inboxID":"msg_1a7cec912001sjO4UjkXwJRyi1"}
+{"t_ms":12486,"pid":35924,"at":"event","copy":"35924-9069","type":"session.step.started","sessionID":"ses_e5831397dffeWpjZz7wRIzC22K","event_location":"<проект>\\h"}
+{"t_ms":12760,"pid":35924,"at":"hook.idle","copy":"35924-9069","sessionID":"ses_e5831397dffeWpjZz7wRIzC22K","background":0}
+{"t_ms":12761,"pid":35924,"at":"event","copy":"35924-9069","type":"session.step.ended","sessionID":"ses_e5831397dffeWpjZz7wRIzC22K","event_location":"<проект>\\h"}
+{"t_ms":12765,"pid":35924,"at":"event","copy":"35924-9069","type":"session.execution.succeeded","sessionID":"ses_e5831397dffeWpjZz7wRIzC22K"}
+{"t_ms":12917,"at":"probe","run":"standalone","code":0,"sessionID":"ses_e5831397dffeWpjZz7wRIzC22K","reply":"КЕДРКЕДР ПИНИЯ","stderr":""}
+{"t_ms":14933,"at":"probe","after_exit":{"setups":1,"cleanups":0,"commands":1}}
+{"t_ms":14933,"at":"probe","mark":"строка в файле после выхода run --standalone"}
+{"t_ms":17945,"at":"probe","reaction_after_exit":{"commands":1}}

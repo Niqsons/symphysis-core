@@ -1,0 +1,13 @@
+{"t_ms":0,"at":"probe","touch_status":200}
+{"t_ms":4004,"at":"probe","before_file":{"setups":0}}
+{"t_ms":4004,"at":"probe","mark":"файл плагина появился при живом сервере"}
+{"t_ms":4219,"pid":36172,"at":"setup","copy":"36172-35844","directory":"<проект>\\i","project":{"id":"global","directory":"<проект>\\i"},"bun":true,"argv":["serve","--hostname","127.0.0.1"],"ctx_keys":["app","location","options","agent","aisdk","command","credential","event","experimental","generate","model","provider","integration","mcp","permission","plugin","reference","rpc","skill","storage","tool","vcs","websearch","worktree","session","shell"]}
+{"t_ms":4267,"at":"probe","after_file":{"setups":1,"picked_up":true}}
+{"t_ms":4272,"pid":36172,"at":"command","copy":"36172-35844","op":"list","tag":"после появления файла","source":"watch"}
+{"t_ms":4274,"pid":36172,"at":"list","copy":"36172-35844","tag":"после появления файла","directory":"<проект>\\i","data":[],"has_next":false}
+{"t_ms":6769,"at":"probe","reaction":{"commands":1}}
+{"t_ms":6769,"at":"probe","mark":"файл плагина снят при живом сервере"}
+{"t_ms":6876,"pid":36172,"at":"cleanup","copy":"36172-35844","directory":"<проект>\\i","keep":false}
+{"t_ms":6876,"pid":36172,"at":"event-stream-end","copy":"36172-35844"}
+{"t_ms":11773,"at":"probe","after_unlink":{"cleanups":1}}
+{"t_ms":14277,"at":"probe","reaction_after_unlink":{"commands":1}}

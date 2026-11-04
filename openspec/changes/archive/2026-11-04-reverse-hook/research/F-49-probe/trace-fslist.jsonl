@@ -1,0 +1,2 @@
+{"t_ms":0,"pid":15324,"at":"setup","copy":"15324-51309","directory":"<проект>\\j","project":{"id":"global","directory":"<проект>\\j"},"bun":true,"argv":["serve","--hostname","127.0.0.1"],"ctx_keys":["app","location","options","agent","aisdk","command","credential","event","experimental","generate","model","provider","integration","mcp","permission","plugin","reference","rpc","skill","storage","tool","vcs","websearch","worktree","session","shell"]}
+{"t_ms":127,"at":"probe","fs_list":{"status":200,"setups":1}}

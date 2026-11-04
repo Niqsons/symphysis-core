@@ -1,0 +1,1186 @@
+Проба F-32: подхватывает ли идущая сессия хуки, появившиеся в .claude/settings.local.json после запуска.
+2026-11-04, Claude Code 2.1.318, Windows 11, модель haiku, только claude -p --input-format stream-json --setting-sources project,local --allowedTools "Bash(cd *)" "Bash(sleep *)". Интерактивный клиент не проверен.
+Сессия без хуков, после первого ответа файл настроек записывается через временный файл и замену, как у плагина. Проверки: запись в .symphysis/viewer/events.jsonl (глубокий) и в events.jsonl в рабочем каталоге (корневой), реплика.
+Случаи:
+control: хуки с начала: SessionStart отдаёт watchPaths, UserPromptSubmit пишет журнал, FileChanged matcher events.jsonl.
+late-nodir: те же хуки, каталога .claude при запуске не было. late-nofile: каталог был, файла нет. late-edit: файл был без хуков.
+ups-hso: поздний UserPromptSubmit отдаёт hookSpecificOutput.watchPaths. ups-top: то же верхним полем watchPaths.
+cwd-control: CwdChanged с watchPaths с начала, реплика просит модель выполнить cd. cwd-late: тот же хук поздний.
+seed-late: поздний FileChanged matcher events.jsonl|seed.txt, на seed.txt отдаёт watchPaths.
+compact-late: поздние хуки как control, реплика /compact. clear-late: то же, реплика /clear. config-late: поздний ConfigChange отдаёт watchPaths, настройки правятся ещё раз.
+wake-busy: хуки с начала, запись во время sleep 12, затем реплика и запись в простое: на чём запускается UserPromptSubmit.
+Случаи с окончанием -nt: проект не в %TEMP%, а в каталоге рядом с ним, потому что внутри %TEMP% cd модели не держался и CwdChanged не срабатывал. control-cd-nt: хуки как control, без CwdChanged, реплика просит выполнить cd.
+«по шагам»: какие обработчики запустились от этого шага до следующего. Время в секундах от запуска процесса. Каталог проекта заменён на <проект>.
+Поле prompt обработчик стал писать не сразу: в случаях late-nodir, late-nofile, late-edit, ups-*, cwd-control, cwd-late, seed-late, compact-late, config-late его в журнале нет, вместо него там лишнее поле cfg. На остальное поведение обработчика это не влияет.
+
+=== случай control, прогон 1
+  [0.0] РЕПЛИКА: Ответь одним словом: готов
+  [0.8] хук: SessionStart:startup код 0
+  [1.0] хук: UserPromptSubmit код 0
+  [2.0] модель: Готов
+  [2.0] result: ход №1 окончен
+  [3.0] ЗАПИСЬ: глубокий 1
+  [3.7] хук: FileChanged код 2
+  [3.9] хук: UserPromptSubmit код 0
+  [5.9] модель: Проснулся.
+  [5.9] result: ход №2 окончен
+  [18.1] ЗАПИСЬ: корневой 1
+  [18.8] хук: FileChanged код 2
+  [18.9] хук: UserPromptSubmit код 0
+  [20.0] модель: Проснулся.
+  [20.0] result: ход №3 окончен
+  [32.1] РЕПЛИКА: Ответь одним словом: ок
+  [32.2] хук: UserPromptSubmit код 0
+  [33.1] модель: ок
+  [33.1] result: ход №4 окончен
+  [37.2] ЗАПИСЬ: глубокий 2
+  [37.9] хук: FileChanged код 2
+  [38.0] хук: UserPromptSubmit код 0
+  [38.9] модель: Проснулся.
+  [38.9] result: ход №5 окончен
+  [51.0] ЗАПИСЬ: корневой 2
+  [51.7] хук: FileChanged код 2
+  [51.8] хук: UserPromptSubmit код 0
+  [53.5] модель: Проснулся.  Хук `FileChanged` срабатывает повторно с одним и тем же текстом. Похоже, он настроен на изменение файла, кот
+  [53.5] result: ход №6 окончен
+--- журнал обработчиков (секунды от старта)
+  {"rel": 0.8, "ev": "SessionStart", "mode": "watch-hso", "source": "startup"}
+  {"rel": 1.0, "ev": "UserPromptSubmit", "mode": "log", "prompt": "Ответь одним словом: готов"}
+  {"rel": 3.7, "ev": "FileChanged", "mode": "wake", "file": ".symphysis/viewer/events.jsonl", "change": "change"}
+  {"rel": 3.9, "ev": "UserPromptSubmit", "mode": "log", "prompt": "<task-notification>\n<summary>Stop hook feedback</summary>\n</task-notif"}
+  {"rel": 18.8, "ev": "FileChanged", "mode": "wake", "file": "events.jsonl", "change": "change"}
+  {"rel": 18.9, "ev": "UserPromptSubmit", "mode": "log", "prompt": "<task-notification>\n<summary>Stop hook feedback</summary>\n</task-notif"}
+  {"rel": 32.2, "ev": "UserPromptSubmit", "mode": "log", "prompt": "Ответь одним словом: ок"}
+  {"rel": 37.9, "ev": "FileChanged", "mode": "wake", "file": ".symphysis/viewer/events.jsonl", "change": "change"}
+  {"rel": 38.0, "ev": "UserPromptSubmit", "mode": "log", "prompt": "<task-notification>\n<summary>Stop hook feedback</summary>\n</task-notif"}
+  {"rel": 51.7, "ev": "FileChanged", "mode": "wake", "file": "events.jsonl", "change": "change"}
+  {"rel": 51.8, "ev": "UserPromptSubmit", "mode": "log", "prompt": "<task-notification>\n<summary>Stop hook feedback</summary>\n</task-notif"}
+--- по шагам
+  глубокий 1 [3.0]: запусков 2: ['FileChanged', 'UserPromptSubmit']
+  корневой 1 [18.1]: запусков 2: ['FileChanged', 'UserPromptSubmit']
+  реплика [32.1]: запусков 1: ['UserPromptSubmit']
+  глубокий 2 [37.2]: запусков 2: ['FileChanged', 'UserPromptSubmit']
+  корневой 2 [51.0]: запусков 2: ['FileChanged', 'UserPromptSubmit']
+--- итог control/1: ходов всего 6
+--- журнал клиента (--debug-file): строки про настройки и наблюдатель, время суток
+  18:29:04.542  [DEBUG] FileChanged: watching 1 paths
+  18:29:04.855  [DEBUG] Hook SessionStart (h.py watch-hso) provided 1 watchPaths
+  18:29:04.856  [DEBUG] FileChanged: watching 2 paths
+  18:29:07.718  [DEBUG] FileChanged: change <проект>\.symphysis\viewer\events.jsonl
+  18:29:22.739  [DEBUG] FileChanged: change <проект>\events.jsonl
+  18:29:41.865  [DEBUG] FileChanged: change <проект>\.symphysis\viewer\events.jsonl
+  18:29:55.685  [DEBUG] FileChanged: change <проект>\events.jsonl
+
+=== случай control, прогон 2
+  [0.0] РЕПЛИКА: Ответь одним словом: готов
+  [0.8] хук: SessionStart:startup код 0
+  [1.0] хук: UserPromptSubmit код 0
+  [3.2] модель: Готов
+  [3.3] result: ход №1 окончен
+  [4.3] ЗАПИСЬ: глубокий 1
+  [5.0] хук: FileChanged код 2
+  [5.2] хук: UserPromptSubmit код 0
+  [7.1] модель: Проснулся.
+  [7.2] result: ход №2 окончен
+  [19.2] ЗАПИСЬ: корневой 1
+  [19.9] хук: FileChanged код 2
+  [20.0] хук: UserPromptSubmit код 0
+  [21.0] модель: Проснулся.
+  [21.0] result: ход №3 окончен
+  [33.2] РЕПЛИКА: Ответь одним словом: ок
+  [33.3] хук: UserPromptSubmit код 0
+  [34.1] модель: Ок
+  [34.2] result: ход №4 окончен
+  [38.2] ЗАПИСЬ: глубокий 2
+  [38.9] хук: FileChanged код 2
+  [39.0] хук: UserPromptSubmit код 0
+  [40.0] модель: Проснулся.
+  [40.0] result: ход №5 окончен
+  [52.2] ЗАПИСЬ: корневой 2
+  [52.9] хук: FileChanged код 2
+  [53.0] хук: UserPromptSubmit код 0
+  [55.0] модель: Проснулся.  Это уже четвёртый раз, когда приходит одно и то же уведомление от хука `FileChanged`. Похоже, хук срабатывае
+  [55.0] result: ход №6 окончен
+--- журнал обработчиков (секунды от старта)
+  {"rel": 0.8, "ev": "SessionStart", "mode": "watch-hso", "source": "startup"}
+  {"rel": 1.0, "ev": "UserPromptSubmit", "mode": "log", "prompt": "Ответь одним словом: готов"}
+  {"rel": 5.0, "ev": "FileChanged", "mode": "wake", "file": ".symphysis/viewer/events.jsonl", "change": "change"}
+  {"rel": 5.2, "ev": "UserPromptSubmit", "mode": "log", "prompt": "<task-notification>\n<summary>Stop hook feedback</summary>\n</task-notif"}
+  {"rel": 19.9, "ev": "FileChanged", "mode": "wake", "file": "events.jsonl", "change": "change"}
+  {"rel": 20.0, "ev": "UserPromptSubmit", "mode": "log", "prompt": "<task-notification>\n<summary>Stop hook feedback</summary>\n</task-notif"}
+  {"rel": 33.3, "ev": "UserPromptSubmit", "mode": "log", "prompt": "Ответь одним словом: ок"}
+  {"rel": 38.9, "ev": "FileChanged", "mode": "wake", "file": ".symphysis/viewer/events.jsonl", "change": "change"}
+  {"rel": 39.0, "ev": "UserPromptSubmit", "mode": "log", "prompt": "<task-notification>\n<summary>Stop hook feedback</summary>\n</task-notif"}
+  {"rel": 52.9, "ev": "FileChanged", "mode": "wake", "file": "events.jsonl", "change": "change"}
+  {"rel": 53.0, "ev": "UserPromptSubmit", "mode": "log", "prompt": "<task-notification>\n<summary>Stop hook feedback</summary>\n</task-notif"}
+--- по шагам
+  глубокий 1 [4.3]: запусков 2: ['FileChanged', 'UserPromptSubmit']
+  корневой 1 [19.2]: запусков 2: ['FileChanged', 'UserPromptSubmit']
+  реплика [33.2]: запусков 1: ['UserPromptSubmit']
+  глубокий 2 [38.2]: запусков 2: ['FileChanged', 'UserPromptSubmit']
+  корневой 2 [52.2]: запусков 2: ['FileChanged', 'UserPromptSubmit']
+--- итог control/2: ходов всего 6
+--- журнал клиента (--debug-file): строки про настройки и наблюдатель, время суток
+  18:29:04.542  [DEBUG] FileChanged: watching 1 paths
+  18:29:04.855  [DEBUG] Hook SessionStart (h.py watch-hso) provided 1 watchPaths
+  18:29:04.857  [DEBUG] FileChanged: watching 2 paths
+  18:29:09.020  [DEBUG] FileChanged: change <проект>\.symphysis\viewer\events.jsonl
+  18:29:23.838  [DEBUG] FileChanged: change <проект>\events.jsonl
+  18:29:42.866  [DEBUG] FileChanged: change <проект>\.symphysis\viewer\events.jsonl
+  18:29:56.882  [DEBUG] FileChanged: change <проект>\events.jsonl
+
+=== случай late-nodir, прогон 1
+  [0.0] РЕПЛИКА: Ответь одним словом: готов
+  [2.8] модель: Готов
+  [2.8] result: ход №1 окончен
+  [3.9] УСТАНОВКА: файл настроек с хуками записан
+  [13.9] ЗАПИСЬ: глубокий 1
+  [25.9] ЗАПИСЬ: корневой 1
+  [38.0] РЕПЛИКА: Ответь одним словом: ок
+  [38.1] хук: UserPromptSubmit код 0
+  [39.1] модель: Ок
+  [39.2] result: ход №2 окончен
+  [43.3] ЗАПИСЬ: глубокий 2
+  [55.3] ЗАПИСЬ: корневой 2
+--- журнал обработчиков (секунды от старта)
+  {"rel": 38.1, "ev": "UserPromptSubmit", "mode": "log"}
+--- по шагам
+  установка [3.9]: запусков 0: []
+  глубокий 1 [13.9]: запусков 0: []
+  корневой 1 [25.9]: запусков 0: []
+  реплика [38.0]: запусков 1: ['UserPromptSubmit']
+  глубокий 2 [43.3]: запусков 0: []
+  корневой 2 [55.3]: запусков 0: []
+--- итог late-nodir/1: ходов всего 2
+--- журнал клиента (--debug-file): строки про настройки и наблюдатель, время суток
+  18:19:28.510  [DEBUG] Detected change to <проект>\.claude\settings.local.json
+  18:19:28.513  [DEBUG] Settings changed from localSettings, updating app state
+
+=== случай late-nodir, прогон 2
+  [0.0] РЕПЛИКА: Ответь одним словом: готов
+  [2.1] модель: Готов
+  [2.1] result: ход №1 окончен
+  [3.2] УСТАНОВКА: файл настроек с хуками записан
+  [13.2] ЗАПИСЬ: глубокий 1
+  [25.2] ЗАПИСЬ: корневой 1
+  [37.3] РЕПЛИКА: Ответь одним словом: ок
+  [37.4] хук: UserPromptSubmit код 0
+  [38.2] модель: ок
+  [38.2] result: ход №2 окончен
+  [42.3] ЗАПИСЬ: глубокий 2
+  [54.3] ЗАПИСЬ: корневой 2
+--- журнал обработчиков (секунды от старта)
+  {"rel": 37.4, "ev": "UserPromptSubmit", "mode": "log"}
+--- по шагам
+  установка [3.2]: запусков 0: []
+  глубокий 1 [13.2]: запусков 0: []
+  корневой 1 [25.2]: запусков 0: []
+  реплика [37.3]: запусков 1: ['UserPromptSubmit']
+  глубокий 2 [42.3]: запусков 0: []
+  корневой 2 [54.3]: запусков 0: []
+--- итог late-nodir/2: ходов всего 2
+--- журнал клиента (--debug-file): строки про настройки и наблюдатель, время суток
+  18:19:27.806  [DEBUG] Detected change to <проект>\.claude\settings.local.json
+  18:19:27.809  [DEBUG] Settings changed from localSettings, updating app state
+
+=== случай late-nofile, прогон 1
+  [0.0] РЕПЛИКА: Ответь одним словом: готов
+  [2.6] модель: Готов
+  [2.7] result: ход №1 окончен
+  [3.7] УСТАНОВКА: файл настроек с хуками записан
+  [13.7] ЗАПИСЬ: глубокий 1
+  [25.7] ЗАПИСЬ: корневой 1
+  [37.8] РЕПЛИКА: Ответь одним словом: ок
+  [37.9] хук: UserPromptSubmit код 0
+  [40.6] модель: Ок
+  [40.7] result: ход №2 окончен
+  [44.8] ЗАПИСЬ: глубокий 2
+  [56.8] ЗАПИСЬ: корневой 2
+--- журнал обработчиков (секунды от старта)
+  {"rel": 37.9, "ev": "UserPromptSubmit", "mode": "log"}
+--- по шагам
+  установка [3.7]: запусков 0: []
+  глубокий 1 [13.7]: запусков 0: []
+  корневой 1 [25.7]: запусков 0: []
+  реплика [37.8]: запусков 1: ['UserPromptSubmit']
+  глубокий 2 [44.8]: запусков 0: []
+  корневой 2 [56.8]: запусков 0: []
+--- итог late-nofile/1: ходов всего 2
+--- журнал клиента (--debug-file): строки про настройки и наблюдатель, время суток
+  18:18:08.715  [DEBUG] Detected change to <проект>\.claude\settings.local.json
+  18:18:08.722  [DEBUG] Settings changed from localSettings, updating app state
+
+=== случай late-nofile, прогон 2
+  [0.0] РЕПЛИКА: Ответь одним словом: готов
+  [13.0] модель: Готов.
+  [13.0] result: ход №1 окончен
+  [14.0] УСТАНОВКА: файл настроек с хуками записан
+  [24.1] ЗАПИСЬ: глубокий 1
+  [36.1] ЗАПИСЬ: корневой 1
+  [48.1] РЕПЛИКА: Ответь одним словом: ок
+  [48.2] хук: UserPromptSubmit код 0
+  [49.5] модель: ок
+  [49.5] result: ход №2 окончен
+  [53.5] ЗАПИСЬ: глубокий 2
+  [65.5] ЗАПИСЬ: корневой 2
+--- журнал обработчиков (секунды от старта)
+  {"rel": 48.2, "ev": "UserPromptSubmit", "mode": "log"}
+--- по шагам
+  установка [14.0]: запусков 0: []
+  глубокий 1 [24.1]: запусков 0: []
+  корневой 1 [36.1]: запусков 0: []
+  реплика [48.1]: запусков 1: ['UserPromptSubmit']
+  глубокий 2 [53.5]: запусков 0: []
+  корневой 2 [65.5]: запусков 0: []
+--- итог late-nofile/2: ходов всего 2
+--- журнал клиента (--debug-file): строки про настройки и наблюдатель, время суток
+  18:20:45.386  [DEBUG] Detected change to <проект>\.claude\settings.local.json
+  18:20:45.390  [DEBUG] Settings changed from localSettings, updating app state
+
+=== случай late-edit, прогон 1
+  [0.0] РЕПЛИКА: Ответь одним словом: готов
+  [2.5] модель: Готов
+  [2.5] result: ход №1 окончен
+  [3.6] УСТАНОВКА: файл настроек с хуками записан
+  [13.6] ЗАПИСЬ: глубокий 1
+  [25.7] ЗАПИСЬ: корневой 1
+  [37.7] РЕПЛИКА: Ответь одним словом: ок
+  [37.8] хук: UserPromptSubmit код 0
+  [38.8] модель: Ок.
+  [38.8] result: ход №2 окончен
+  [42.9] ЗАПИСЬ: глубокий 2
+  [54.9] ЗАПИСЬ: корневой 2
+--- журнал обработчиков (секунды от старта)
+  {"rel": 37.8, "ev": "UserPromptSubmit", "mode": "log"}
+--- по шагам
+  установка [3.6]: запусков 0: []
+  глубокий 1 [13.6]: запусков 0: []
+  корневой 1 [25.7]: запусков 0: []
+  реплика [37.7]: запусков 1: ['UserPromptSubmit']
+  глубокий 2 [42.9]: запусков 0: []
+  корневой 2 [54.9]: запусков 0: []
+--- итог late-edit/1: ходов всего 2
+--- журнал клиента (--debug-file): строки про настройки и наблюдатель, время суток
+  18:20:35.927  [DEBUG] Detected change to <проект>\.claude\settings.local.json
+  18:20:35.935  [DEBUG] Settings changed from localSettings, updating app state
+
+=== случай late-edit, прогон 2
+  [0.0] РЕПЛИКА: Ответь одним словом: готов
+  [3.0] модель: Готов
+  [3.0] result: ход №1 окончен
+  [4.0] УСТАНОВКА: файл настроек с хуками записан
+  [14.0] ЗАПИСЬ: глубокий 1
+  [26.1] ЗАПИСЬ: корневой 1
+  [38.1] РЕПЛИКА: Ответь одним словом: ок
+  [38.2] хук: UserPromptSubmit код 0
+  [39.8] модель: ок
+  [39.8] result: ход №2 окончен
+  [43.9] ЗАПИСЬ: глубокий 2
+  [55.9] ЗАПИСЬ: корневой 2
+--- журнал обработчиков (секунды от старта)
+  {"rel": 38.2, "ev": "UserPromptSubmit", "mode": "log"}
+--- по шагам
+  установка [4.0]: запусков 0: []
+  глубокий 1 [14.0]: запусков 0: []
+  корневой 1 [26.1]: запусков 0: []
+  реплика [38.1]: запусков 1: ['UserPromptSubmit']
+  глубокий 2 [43.9]: запусков 0: []
+  корневой 2 [55.9]: запусков 0: []
+--- итог late-edit/2: ходов всего 2
+--- журнал клиента (--debug-file): строки про настройки и наблюдатель, время суток
+  18:20:37.756  [DEBUG] Detected change to <проект>\.claude\settings.local.json
+  18:20:37.759  [DEBUG] Settings changed from localSettings, updating app state
+
+=== случай ups-hso, прогон 1
+  [0.0] РЕПЛИКА: Ответь одним словом: готов
+  [2.7] модель: готов
+  [2.7] result: ход №1 окончен
+  [3.7] УСТАНОВКА: файл настроек с хуками записан
+  [13.7] ЗАПИСЬ: глубокий 1
+  [25.8] ЗАПИСЬ: корневой 1
+  [37.8] РЕПЛИКА: Ответь одним словом: ок
+  [37.9] хук: UserPromptSubmit код 0
+  [39.4] модель: ок
+  [39.4] result: ход №2 окончен
+  [43.5] ЗАПИСЬ: глубокий 2
+  [55.5] ЗАПИСЬ: корневой 2
+--- журнал обработчиков (секунды от старта)
+  {"rel": 37.9, "ev": "UserPromptSubmit", "mode": "watch-hso"}
+--- по шагам
+  установка [3.7]: запусков 0: []
+  глубокий 1 [13.7]: запусков 0: []
+  корневой 1 [25.8]: запусков 0: []
+  реплика [37.8]: запусков 1: ['UserPromptSubmit']
+  глубокий 2 [43.5]: запусков 0: []
+  корневой 2 [55.5]: запусков 0: []
+--- итог ups-hso/1: ходов всего 2
+--- журнал клиента (--debug-file): строки про настройки и наблюдатель, время суток
+  18:20:38.026  [DEBUG] Detected change to <проект>\.claude\settings.local.json
+  18:20:38.033  [DEBUG] Settings changed from localSettings, updating app state
+
+=== случай ups-hso, прогон 2
+  [0.0] РЕПЛИКА: Ответь одним словом: готов
+  [2.5] модель: готов
+  [2.5] result: ход №1 окончен
+  [3.6] УСТАНОВКА: файл настроек с хуками записан
+  [13.6] ЗАПИСЬ: глубокий 1
+  [25.7] ЗАПИСЬ: корневой 1
+  [37.7] РЕПЛИКА: Ответь одним словом: ок
+  [37.9] хук: UserPromptSubmit код 0
+  [39.6] модель: ок
+  [39.6] result: ход №2 окончен
+  [43.7] ЗАПИСЬ: глубокий 2
+  [55.7] ЗАПИСЬ: корневой 2
+--- журнал обработчиков (секунды от старта)
+  {"rel": 37.9, "ev": "UserPromptSubmit", "mode": "watch-hso"}
+--- по шагам
+  установка [3.6]: запусков 0: []
+  глубокий 1 [13.6]: запусков 0: []
+  корневой 1 [25.7]: запусков 0: []
+  реплика [37.7]: запусков 1: ['UserPromptSubmit']
+  глубокий 2 [43.7]: запусков 0: []
+  корневой 2 [55.7]: запусков 0: []
+--- итог ups-hso/2: ходов всего 2
+--- журнал клиента (--debug-file): строки про настройки и наблюдатель, время суток
+  18:21:43.311  [DEBUG] Detected change to <проект>\.claude\settings.local.json
+  18:21:43.316  [DEBUG] Settings changed from localSettings, updating app state
+
+=== случай ups-top, прогон 1
+  [0.0] РЕПЛИКА: Ответь одним словом: готов
+  [4.3] модель: Готов
+  [4.4] result: ход №1 окончен
+  [5.4] УСТАНОВКА: файл настроек с хуками записан
+  [15.4] ЗАПИСЬ: глубокий 1
+  [27.5] ЗАПИСЬ: корневой 1
+  [39.5] РЕПЛИКА: Ответь одним словом: ок
+  [39.6] хук: UserPromptSubmit код 0
+  [40.8] модель: ок
+  [40.8] result: ход №2 окончен
+  [44.9] ЗАПИСЬ: глубокий 2
+  [56.9] ЗАПИСЬ: корневой 2
+--- журнал обработчиков (секунды от старта)
+  {"rel": 39.6, "ev": "UserPromptSubmit", "mode": "watch-top"}
+--- по шагам
+  установка [5.4]: запусков 0: []
+  глубокий 1 [15.4]: запусков 0: []
+  корневой 1 [27.5]: запусков 0: []
+  реплика [39.5]: запусков 1: ['UserPromptSubmit']
+  глубокий 2 [44.9]: запусков 0: []
+  корневой 2 [56.9]: запусков 0: []
+--- итог ups-top/1: ходов всего 2
+--- журнал клиента (--debug-file): строки про настройки и наблюдатель, время суток
+  18:21:47.556  [DEBUG] Detected change to <проект>\.claude\settings.local.json
+  18:21:47.559  [DEBUG] Settings changed from localSettings, updating app state
+
+=== случай ups-top, прогон 2
+  [0.0] РЕПЛИКА: Ответь одним словом: готов
+  [2.7] модель: Готов
+  [2.7] result: ход №1 окончен
+  [3.8] УСТАНОВКА: файл настроек с хуками записан
+  [13.8] ЗАПИСЬ: глубокий 1
+  [25.9] ЗАПИСЬ: корневой 1
+  [37.9] РЕПЛИКА: Ответь одним словом: ок
+  [38.0] хук: UserPromptSubmit код 0
+  [39.5] модель: ок
+  [39.5] result: ход №2 окончен
+  [43.6] ЗАПИСЬ: глубокий 2
+  [55.6] ЗАПИСЬ: корневой 2
+--- журнал обработчиков (секунды от старта)
+  {"rel": 38.0, "ev": "UserPromptSubmit", "mode": "watch-top"}
+--- по шагам
+  установка [3.8]: запусков 0: []
+  глубокий 1 [13.8]: запусков 0: []
+  корневой 1 [25.9]: запусков 0: []
+  реплика [37.9]: запусков 1: ['UserPromptSubmit']
+  глубокий 2 [43.6]: запусков 0: []
+  корневой 2 [55.6]: запусков 0: []
+--- итог ups-top/2: ходов всего 2
+--- журнал клиента (--debug-file): строки про настройки и наблюдатель, время суток
+  18:21:46.122  [DEBUG] Detected change to <проект>\.claude\settings.local.json
+  18:21:46.133  [DEBUG] Settings changed from localSettings, updating app state
+
+=== случай cwd-control, прогон 1
+  [0.0] РЕПЛИКА: Ответь одним словом: готов
+  [2.9] модель: Готов
+  [2.9] result: ход №1 окончен
+  [3.9] ЗАПИСЬ: глубокий 1
+  [15.9] ЗАПИСЬ: корневой 1
+  [16.7] хук: FileChanged код 2
+  [19.3] модель: проснулся
+  [19.3] result: ход №2 окончен
+  [31.4] РЕПЛИКА: Выполни инструментом Bash команду `cd .symphysis`, затем ответь одним словом: ок
+  [33.1] инструмент: Bash {"command": "cd .symphysis", "description": "Change directory into .symphysis"}
+  [37.5] модель: ок
+  [37.5] result: ход №3 окончен
+  [41.5] ЗАПИСЬ: глубокий 2
+  [53.5] ЗАПИСЬ: корневой 2
+  [54.2] хук: FileChanged код 2
+  [55.9] модель: проснулся
+  [55.9] result: ход №4 окончен
+--- журнал обработчиков (секунды от старта)
+  {"rel": 16.6, "ev": "FileChanged", "mode": "wake", "file": "events.jsonl", "change": "change", "cfg": "events.jsonl"}
+  {"rel": 54.2, "ev": "FileChanged", "mode": "wake", "file": "events.jsonl", "change": "change", "cfg": "events.jsonl"}
+--- по шагам
+  глубокий 1 [3.9]: запусков 0: []
+  корневой 1 [15.9]: запусков 1: ['FileChanged']
+  реплика [31.4]: запусков 0: []
+  глубокий 2 [41.5]: запусков 0: []
+  корневой 2 [53.5]: запусков 1: ['FileChanged']
+--- итог cwd-control/1: ходов всего 4
+--- журнал клиента (--debug-file): строки про настройки и наблюдатель, время суток
+  18:21:48.629  [DEBUG] FileChanged: watching 1 paths
+  18:22:04.900  [DEBUG] FileChanged: change <проект>\events.jsonl
+  18:22:22.713  [WARN] shell cwd read-back is not readable; ignoring
+  18:22:42.466  [DEBUG] FileChanged: change <проект>\events.jsonl
+  результат Bash с cd: Shell cwd was reset to <проект>
+
+=== случай cwd-control, прогон 2
+  [0.0] РЕПЛИКА: Ответь одним словом: готов
+  [4.5] модель: Готов.
+  [4.5] result: ход №1 окончен
+  [5.6] ЗАПИСЬ: глубокий 1
+  [17.7] ЗАПИСЬ: корневой 1
+  [18.4] хук: FileChanged код 2
+  [20.8] модель: Проснулся.
+  [20.8] result: ход №2 окончен
+  [32.9] РЕПЛИКА: Выполни инструментом Bash команду `cd .symphysis`, затем ответь одним словом: ок
+  [34.5] инструмент: Bash {"command": "cd .symphysis", "description": "Change directory into .symphysis"}
+  [38.3] модель: ок
+  [38.3] result: ход №3 окончен
+  [42.3] ЗАПИСЬ: глубокий 2
+  [54.3] ЗАПИСЬ: корневой 2
+  [55.1] хук: FileChanged код 2
+  [57.1] модель: Проснулся.
+  [57.1] result: ход №4 окончен
+--- журнал обработчиков (секунды от старта)
+  {"rel": 18.4, "ev": "FileChanged", "mode": "wake", "file": "events.jsonl", "change": "change", "cfg": "events.jsonl"}
+  {"rel": 55.1, "ev": "FileChanged", "mode": "wake", "file": "events.jsonl", "change": "change", "cfg": "events.jsonl"}
+--- по шагам
+  глубокий 1 [5.6]: запусков 0: []
+  корневой 1 [17.7]: запусков 1: ['FileChanged']
+  реплика [32.9]: запусков 0: []
+  глубокий 2 [42.3]: запусков 0: []
+  корневой 2 [54.3]: запусков 1: ['FileChanged']
+--- итог cwd-control/2: ходов всего 4
+--- журнал клиента (--debug-file): строки про настройки и наблюдатель, время суток
+  18:22:47.292  [DEBUG] FileChanged: watching 1 paths
+  18:23:05.304  [DEBUG] FileChanged: change <проект>\events.jsonl
+  18:23:22.740  [WARN] shell cwd read-back is not readable; ignoring
+  18:23:41.969  [DEBUG] FileChanged: change <проект>\events.jsonl
+  результат Bash с cd: Shell cwd was reset to <проект>
+
+=== случай cwd-late, прогон 1
+  [0.0] РЕПЛИКА: Ответь одним словом: готов
+  [3.9] модель: Готов
+  [4.0] result: ход №1 окончен
+  [5.0] УСТАНОВКА: файл настроек с хуками записан
+  [15.0] ЗАПИСЬ: глубокий 1
+  [27.1] ЗАПИСЬ: корневой 1
+  [39.1] РЕПЛИКА: Выполни инструментом Bash команду `cd .symphysis`, затем ответь одним словом: ок
+  [41.2] инструмент: Bash {"command": "cd .symphysis", "description": "Change directory into .symphysis"}
+  [43.9] модель: ок
+  [43.9] result: ход №2 окончен
+  [48.0] ЗАПИСЬ: глубокий 2
+  [60.0] ЗАПИСЬ: корневой 2
+--- журнал обработчиков (секунды от старта)
+--- по шагам
+  установка [5.0]: запусков 0: []
+  глубокий 1 [15.0]: запусков 0: []
+  корневой 1 [27.1]: запусков 0: []
+  реплика [39.1]: запусков 0: []
+  глубокий 2 [48.0]: запусков 0: []
+  корневой 2 [60.0]: запусков 0: []
+--- итог cwd-late/1: ходов всего 2
+--- журнал клиента (--debug-file): строки про настройки и наблюдатель, время суток
+  18:22:55.379  [DEBUG] Detected change to <проект>\.claude\settings.local.json
+  18:22:55.382  [DEBUG] Settings changed from localSettings, updating app state
+  18:23:31.710  [WARN] shell cwd read-back is not readable; ignoring
+  результат Bash с cd: Shell cwd was reset to <проект>
+
+=== случай cwd-late, прогон 2
+  [0.0] РЕПЛИКА: Ответь одним словом: готов
+  [4.7] модель: Готов
+  [4.8] result: ход №1 окончен
+  [5.8] УСТАНОВКА: файл настроек с хуками записан
+  [15.8] ЗАПИСЬ: глубокий 1
+  [27.9] ЗАПИСЬ: корневой 1
+  [39.9] РЕПЛИКА: Выполни инструментом Bash команду `cd .symphysis`, затем ответь одним словом: ок
+  [41.5] инструмент: Bash {"command": "cd .symphysis", "description": "Change directory into .symphysis"}
+  [45.5] модель: ок
+  [45.5] result: ход №2 окончен
+  [49.5] ЗАПИСЬ: глубокий 2
+  [61.5] ЗАПИСЬ: корневой 2
+--- журнал обработчиков (секунды от старта)
+--- по шагам
+  установка [5.8]: запусков 0: []
+  глубокий 1 [15.8]: запусков 0: []
+  корневой 1 [27.9]: запусков 0: []
+  реплика [39.9]: запусков 0: []
+  глубокий 2 [49.5]: запусков 0: []
+  корневой 2 [61.5]: запусков 0: []
+--- итог cwd-late/2: ходов всего 2
+--- журнал клиента (--debug-file): строки про настройки и наблюдатель, время суток
+  18:22:57.301  [DEBUG] Detected change to <проект>\.claude\settings.local.json
+  18:22:57.304  [DEBUG] Settings changed from localSettings, updating app state
+  18:23:33.415  [WARN] shell cwd read-back is not readable; ignoring
+  результат Bash с cd: Shell cwd was reset to <проект>
+
+=== случай seed-late, прогон 1
+  [0.0] РЕПЛИКА: Ответь одним словом: готов
+  [3.6] модель: Готов
+  [3.6] result: ход №1 окончен
+  [4.6] УСТАНОВКА: файл настроек с хуками записан
+  [14.6] ЗАПИСЬ: корневой seed.txt
+  [26.6] ЗАПИСЬ: глубокий 1
+  [38.7] ЗАПИСЬ: корневой 1
+  [50.7] РЕПЛИКА: Ответь одним словом: ок
+  [51.8] модель: ок
+  [51.8] result: ход №2 окончен
+  [55.8] ЗАПИСЬ: глубокий 2
+  [67.8] ЗАПИСЬ: корневой 2
+--- журнал обработчиков (секунды от старта)
+--- по шагам
+  установка [4.6]: запусков 0: []
+  корневой seed.txt [14.6]: запусков 0: []
+  глубокий 1 [26.6]: запусков 0: []
+  корневой 1 [38.7]: запусков 0: []
+  реплика [50.7]: запусков 0: []
+  глубокий 2 [55.8]: запусков 0: []
+  корневой 2 [67.8]: запусков 0: []
+--- итог seed-late/1: ходов всего 2
+--- журнал клиента (--debug-file): строки про настройки и наблюдатель, время суток
+  18:23:02.403  [DEBUG] Detected change to <проект>\.claude\settings.local.json
+  18:23:02.410  [DEBUG] Settings changed from localSettings, updating app state
+
+=== случай seed-late, прогон 2
+  [0.0] РЕПЛИКА: Ответь одним словом: готов
+  [6.5] модель: готов
+  [6.6] result: ход №1 окончен
+  [7.6] УСТАНОВКА: файл настроек с хуками записан
+  [17.6] ЗАПИСЬ: корневой seed.txt
+  [29.7] ЗАПИСЬ: глубокий 1
+  [41.7] ЗАПИСЬ: корневой 1
+  [53.7] РЕПЛИКА: Ответь одним словом: ок
+  [55.7] модель: ок
+  [55.7] result: ход №2 окончен
+  [59.8] ЗАПИСЬ: глубокий 2
+  [71.8] ЗАПИСЬ: корневой 2
+--- журнал обработчиков (секунды от старта)
+--- по шагам
+  установка [7.6]: запусков 0: []
+  корневой seed.txt [17.6]: запусков 0: []
+  глубокий 1 [29.7]: запусков 0: []
+  корневой 1 [41.7]: запусков 0: []
+  реплика [53.7]: запусков 0: []
+  глубокий 2 [59.8]: запусков 0: []
+  корневой 2 [71.8]: запусков 0: []
+--- итог seed-late/2: ходов всего 2
+--- журнал клиента (--debug-file): строки про настройки и наблюдатель, время суток
+  18:24:05.262  [DEBUG] Detected change to <проект>\.claude\settings.local.json
+  18:24:05.266  [DEBUG] Settings changed from localSettings, updating app state
+
+=== случай compact-late, прогон 1
+  [0.0] РЕПЛИКА: Ответь одним словом: готов
+  [2.4] модель: Готов
+  [2.4] result: ход №1 окончен
+  [3.5] УСТАНОВКА: файл настроек с хуками записан
+  [13.5] ЗАПИСЬ: глубокий 1
+  [25.5] ЗАПИСЬ: корневой 1
+  [37.6] РЕПЛИКА: /compact
+  [41.9] хук: SessionStart:compact код 0
+  [41.9] система: compact_boundary
+  [41.9] result: ход №2 окончен
+  [46.0] ЗАПИСЬ: глубокий 2
+  [46.7] хук: FileChanged код 2
+  [46.8] хук: UserPromptSubmit код 0
+  [48.5] модель: Проснулся.
+  [48.7] result: ход №3 окончен
+  [60.8] ЗАПИСЬ: корневой 2
+  [61.5] хук: FileChanged код 2
+  [61.6] хук: UserPromptSubmit код 0
+  [62.5] модель: Проснулся.
+  [62.5] result: ход №4 окончен
+--- журнал обработчиков (секунды от старта)
+  {"rel": 41.9, "ev": "SessionStart", "mode": "watch-hso", "source": "compact"}
+  {"rel": 46.7, "ev": "FileChanged", "mode": "wake", "file": ".symphysis/viewer/events.jsonl", "change": "change", "cfg": "events.jsonl"}
+  {"rel": 46.8, "ev": "UserPromptSubmit", "mode": "log"}
+  {"rel": 61.5, "ev": "FileChanged", "mode": "wake", "file": "events.jsonl", "change": "change", "cfg": "events.jsonl"}
+  {"rel": 61.6, "ev": "UserPromptSubmit", "mode": "log"}
+--- по шагам
+  установка [3.5]: запусков 0: []
+  глубокий 1 [13.5]: запусков 0: []
+  корневой 1 [25.5]: запусков 0: []
+  реплика [37.6]: запусков 1: ['SessionStart']
+  глубокий 2 [46.0]: запусков 2: ['FileChanged', 'UserPromptSubmit']
+  корневой 2 [60.8]: запусков 2: ['FileChanged', 'UserPromptSubmit']
+--- итог compact-late/1: ходов всего 4
+--- журнал клиента (--debug-file): строки про настройки и наблюдатель, время суток
+  18:24:06.326  [DEBUG] Detected change to <проект>\.claude\settings.local.json
+  18:24:06.329  [DEBUG] Settings changed from localSettings, updating app state
+  18:24:43.701  [DEBUG] Hook SessionStart (h.py watch-hso) provided 1 watchPaths
+  18:24:43.702  [DEBUG] FileChanged: watching 2 paths
+  18:24:48.385  [DEBUG] FileChanged: change <проект>\.symphysis\viewer\events.jsonl
+  18:25:03.202  [DEBUG] FileChanged: change <проект>\events.jsonl
+
+=== случай compact-late, прогон 2
+  [0.0] РЕПЛИКА: Ответь одним словом: готов
+  [1.7] модель: Готов
+  [1.7] result: ход №1 окончен
+  [2.8] УСТАНОВКА: файл настроек с хуками записан
+  [12.8] ЗАПИСЬ: глубокий 1
+  [24.8] ЗАПИСЬ: корневой 1
+  [36.9] РЕПЛИКА: /compact
+  [40.8] хук: SessionStart:compact код 0
+  [40.8] система: compact_boundary
+  [40.8] result: ход №2 окончен
+  [44.9] ЗАПИСЬ: глубокий 2
+  [45.6] хук: FileChanged код 2
+  [45.7] хук: UserPromptSubmit код 0
+  [47.4] модель: Проснулся.
+  [47.5] result: ход №3 окончен
+  [59.5] ЗАПИСЬ: корневой 2
+  [60.3] хук: FileChanged код 2
+  [60.4] хук: UserPromptSubmit код 0
+  [61.4] модель: Проснулся.
+  [61.4] result: ход №4 окончен
+--- журнал обработчиков (секунды от старта)
+  {"rel": 40.8, "ev": "SessionStart", "mode": "watch-hso", "source": "compact"}
+  {"rel": 45.6, "ev": "FileChanged", "mode": "wake", "file": ".symphysis/viewer/events.jsonl", "change": "change", "cfg": "events.jsonl"}
+  {"rel": 45.7, "ev": "UserPromptSubmit", "mode": "log"}
+  {"rel": 60.2, "ev": "FileChanged", "mode": "wake", "file": "events.jsonl", "change": "change", "cfg": "events.jsonl"}
+  {"rel": 60.4, "ev": "UserPromptSubmit", "mode": "log"}
+--- по шагам
+  установка [2.8]: запусков 0: []
+  глубокий 1 [12.8]: запусков 0: []
+  корневой 1 [24.8]: запусков 0: []
+  реплика [36.9]: запусков 1: ['SessionStart']
+  глубокий 2 [44.9]: запусков 2: ['FileChanged', 'UserPromptSubmit']
+  корневой 2 [59.5]: запусков 2: ['FileChanged', 'UserPromptSubmit']
+--- итог compact-late/2: ходов всего 4
+--- журнал клиента (--debug-file): строки про настройки и наблюдатель, время суток
+  18:24:08.303  [DEBUG] Detected change to <проект>\.claude\settings.local.json
+  18:24:08.306  [DEBUG] Settings changed from localSettings, updating app state
+  18:24:45.285  [DEBUG] Hook SessionStart (h.py watch-hso) provided 1 watchPaths
+  18:24:45.286  [DEBUG] FileChanged: watching 2 paths
+  18:24:49.969  [DEBUG] FileChanged: change <проект>\.symphysis\viewer\events.jsonl
+  18:25:04.591  [DEBUG] FileChanged: change <проект>\events.jsonl
+
+=== случай clear-late, прогон 1
+  [0.0] РЕПЛИКА: Ответь одним словом: готов
+  [6.2] модель: Готов
+  [6.3] result: ход №1 окончен
+  [7.3] УСТАНОВКА: файл настроек с хуками записан
+  [17.4] ЗАПИСЬ: глубокий 1
+  [29.4] ЗАПИСЬ: корневой 1
+  [41.4] РЕПЛИКА: /clear
+  [41.5] хук: SessionStart:clear код 0
+  [41.5] result: ход №2 окончен
+  [45.6] ЗАПИСЬ: глубокий 2
+  [46.3] хук: FileChanged код 2
+  [46.4] хук: UserPromptSubmit код 0
+  [50.5] модель: Проснулся.
+  [50.6] result: ход №3 окончен
+  [62.6] ЗАПИСЬ: корневой 2
+  [63.3] хук: FileChanged код 2
+  [63.4] хук: UserPromptSubmit код 0
+  [65.2] модель: Проснулся.
+  [65.2] result: ход №4 окончен
+--- журнал обработчиков (секунды от старта)
+  {"rel": 41.5, "ev": "SessionStart", "mode": "watch-hso", "source": "clear"}
+  {"rel": 46.3, "ev": "FileChanged", "mode": "wake", "file": ".symphysis/viewer/events.jsonl", "change": "change"}
+  {"rel": 46.4, "ev": "UserPromptSubmit", "mode": "log", "prompt": "<task-notification>\n<summary>Stop hook feedback</summary>\n</task-notif"}
+  {"rel": 63.3, "ev": "FileChanged", "mode": "wake", "file": "events.jsonl", "change": "change"}
+  {"rel": 63.4, "ev": "UserPromptSubmit", "mode": "log", "prompt": "<task-notification>\n<summary>Stop hook feedback</summary>\n</task-notif"}
+--- по шагам
+  установка [7.3]: запусков 0: []
+  глубокий 1 [17.4]: запусков 0: []
+  корневой 1 [29.4]: запусков 0: []
+  реплика [41.4]: запусков 1: ['SessionStart']
+  глубокий 2 [45.6]: запусков 2: ['FileChanged', 'UserPromptSubmit']
+  корневой 2 [62.6]: запусков 2: ['FileChanged', 'UserPromptSubmit']
+--- итог clear-late/1: ходов всего 4
+--- журнал клиента (--debug-file): строки про настройки и наблюдатель, время суток
+  18:29:12.429  [DEBUG] Detected change to <проект>\.claude\settings.local.json
+  18:29:12.432  [DEBUG] Settings changed from localSettings, updating app state
+  18:29:45.601  [DEBUG] Hook SessionStart (h.py watch-hso) provided 1 watchPaths
+  18:29:45.602  [DEBUG] FileChanged: watching 2 paths
+  18:29:50.280  [DEBUG] FileChanged: change <проект>\.symphysis\viewer\events.jsonl
+  18:30:07.300  [DEBUG] FileChanged: change <проект>\events.jsonl
+
+=== случай clear-late, прогон 2
+  [0.0] РЕПЛИКА: Ответь одним словом: готов
+  [2.0] модель: Готов
+  [2.0] result: ход №1 окончен
+  [3.1] УСТАНОВКА: файл настроек с хуками записан
+  [13.1] ЗАПИСЬ: глубокий 1
+  [25.2] ЗАПИСЬ: корневой 1
+  [37.2] РЕПЛИКА: /clear
+  [37.3] хук: SessionStart:clear код 0
+  [37.3] result: ход №2 окончен
+  [41.4] ЗАПИСЬ: глубокий 2
+  [42.1] хук: FileChanged код 2
+  [42.2] хук: UserPromptSubmit код 0
+  [45.7] модель: Проснулся.
+  [45.8] result: ход №3 окончен
+  [57.8] ЗАПИСЬ: корневой 2
+  [58.5] хук: FileChanged код 2
+  [58.7] хук: UserPromptSubmit код 0
+  [59.7] модель: Проснулся.
+  [59.7] result: ход №4 окончен
+--- журнал обработчиков (секунды от старта)
+  {"rel": 37.3, "ev": "SessionStart", "mode": "watch-hso", "source": "clear"}
+  {"rel": 42.1, "ev": "FileChanged", "mode": "wake", "file": ".symphysis/viewer/events.jsonl", "change": "change"}
+  {"rel": 42.2, "ev": "UserPromptSubmit", "mode": "log", "prompt": "<task-notification>\n<summary>Stop hook feedback</summary>\n</task-notif"}
+  {"rel": 58.5, "ev": "FileChanged", "mode": "wake", "file": "events.jsonl", "change": "change"}
+  {"rel": 58.6, "ev": "UserPromptSubmit", "mode": "log", "prompt": "<task-notification>\n<summary>Stop hook feedback</summary>\n</task-notif"}
+--- по шагам
+  установка [3.1]: запусков 0: []
+  глубокий 1 [13.1]: запусков 0: []
+  корневой 1 [25.2]: запусков 0: []
+  реплика [37.2]: запусков 1: ['SessionStart']
+  глубокий 2 [41.4]: запусков 2: ['FileChanged', 'UserPromptSubmit']
+  корневой 2 [57.8]: запусков 2: ['FileChanged', 'UserPromptSubmit']
+--- итог clear-late/2: ходов всего 4
+--- журнал клиента (--debug-file): строки про настройки и наблюдатель, время суток
+  18:29:08.218  [DEBUG] Detected change to <проект>\.claude\settings.local.json
+  18:29:08.222  [DEBUG] Settings changed from localSettings, updating app state
+  18:29:41.382  [DEBUG] Hook SessionStart (h.py watch-hso) provided 1 watchPaths
+  18:29:41.382  [DEBUG] FileChanged: watching 2 paths
+  18:29:46.066  [DEBUG] FileChanged: change <проект>\.symphysis\viewer\events.jsonl
+  18:30:02.486  [DEBUG] FileChanged: change <проект>\events.jsonl
+
+=== случай config-late, прогон 1
+  [0.0] РЕПЛИКА: Ответь одним словом: готов
+  [1.5] модель: Готов
+  [1.9] result: ход №1 окончен
+  [2.9] УСТАНОВКА: файл настроек с хуками записан
+  [12.9] ЗАПИСЬ: глубокий 1
+  [24.9] ЗАПИСЬ: корневой 1
+  [37.0] УСТАНОВКА: настройки правлены второй раз
+  [45.0] ЗАПИСЬ: глубокий после второй правки
+  [57.0] РЕПЛИКА: Ответь одним словом: ок
+  [58.1] модель: ок
+  [58.2] result: ход №2 окончен
+  [62.2] ЗАПИСЬ: глубокий 2
+  [74.2] ЗАПИСЬ: корневой 2
+--- журнал обработчиков (секунды от старта)
+  {"rel": 38.0, "ev": "ConfigChange", "mode": "watch-hso", "source": "local_settings", "file": ".claude/settings.local.json", "cfg": "settings.local.json"}
+--- по шагам
+  установка [2.9]: запусков 0: []
+  глубокий 1 [12.9]: запусков 0: []
+  корневой 1 [24.9]: запусков 0: []
+  вторая правка настроек [37.0]: запусков 1: ['ConfigChange']
+  глубокий после второй правки [45.0]: запусков 0: []
+  реплика [57.0]: запусков 0: []
+  глубокий 2 [62.2]: запусков 0: []
+  корневой 2 [74.2]: запусков 0: []
+--- итог config-late/1: ходов всего 2
+--- журнал клиента (--debug-file): строки про настройки и наблюдатель, время суток
+  18:24:20.955  [DEBUG] Detected change to <проект>\.claude\settings.local.json
+  18:24:20.962  [DEBUG] Settings changed from localSettings, updating app state
+  18:24:55.003  [DEBUG] Detected change to <проект>\.claude\settings.local.json
+  18:24:55.116  [DEBUG] Settings changed from localSettings, updating app state
+
+=== случай config-late, прогон 2
+  [0.0] РЕПЛИКА: Ответь одним словом: готов
+  [6.8] модель: готов
+  [6.9] result: ход №1 окончен
+  [7.9] УСТАНОВКА: файл настроек с хуками записан
+  [17.9] ЗАПИСЬ: глубокий 1
+  [29.9] ЗАПИСЬ: корневой 1
+  [42.0] УСТАНОВКА: настройки правлены второй раз
+  [50.0] ЗАПИСЬ: глубокий после второй правки
+  [62.0] РЕПЛИКА: Ответь одним словом: ок
+  [63.7] модель: ок
+  [63.7] result: ход №2 окончен
+  [67.8] ЗАПИСЬ: глубокий 2
+  [79.8] ЗАПИСЬ: корневой 2
+--- журнал обработчиков (секунды от старта)
+  {"rel": 43.1, "ev": "ConfigChange", "mode": "watch-hso", "source": "local_settings", "file": ".claude/settings.local.json", "cfg": "settings.local.json"}
+--- по шагам
+  установка [7.9]: запусков 0: []
+  глубокий 1 [17.9]: запусков 0: []
+  корневой 1 [29.9]: запусков 0: []
+  вторая правка настроек [42.0]: запусков 1: ['ConfigChange']
+  глубокий после второй правки [50.0]: запусков 0: []
+  реплика [62.0]: запусков 0: []
+  глубокий 2 [67.8]: запусков 0: []
+  корневой 2 [79.8]: запусков 0: []
+--- итог config-late/2: ходов всего 2
+--- журнал клиента (--debug-file): строки про настройки и наблюдатель, время суток
+  18:25:25.904  [DEBUG] Detected change to <проект>\.claude\settings.local.json
+  18:25:25.908  [DEBUG] Settings changed from localSettings, updating app state
+  18:25:59.952  [DEBUG] Detected change to <проект>\.claude\settings.local.json
+  18:26:00.073  [DEBUG] Settings changed from localSettings, updating app state
+
+=== случай wake-busy, прогон 1
+  [0.0] РЕПЛИКА: Выполни инструментом Bash команду `sleep 12`, затем ответь одним словом: ок
+  [0.4] хук: SessionStart:startup код 0
+  [0.6] хук: UserPromptSubmit код 0
+  [3.2] инструмент: Bash {"command": "sleep 12", "description": "Sleep for 12 seconds"}
+  [6.2] ЗАПИСЬ: глубокий во время sleep
+  [6.9] хук: FileChanged код 2
+  [16.7] хук: UserPromptSubmit код 0
+  [20.0] модель: ок  Hook-сообщение просило ответить «проснулся», но ты просил «ок», так что ответил как ты просил.
+  [20.1] result: ход №1 окончен
+  [44.3] РЕПЛИКА: Ответь одним словом: ок
+  [44.4] хук: UserPromptSubmit код 0
+  [46.6] модель: ок
+  [46.6] result: ход №2 окончен
+  [58.7] ЗАПИСЬ: глубокий в простое
+  [59.4] хук: FileChanged код 2
+  [59.5] хук: UserPromptSubmit код 0
+  [62.0] модель: ок
+  [62.0] result: ход №3 окончен
+--- журнал обработчиков (секунды от старта)
+  {"rel": 0.4, "ev": "SessionStart", "mode": "watch-hso", "source": "startup"}
+  {"rel": 0.6, "ev": "UserPromptSubmit", "mode": "log", "prompt": "Выполни инструментом Bash команду `sleep 12`, затем ответь одним слово"}
+  {"rel": 6.9, "ev": "FileChanged", "mode": "wake", "file": ".symphysis/viewer/events.jsonl", "change": "change"}
+  {"rel": 16.7, "ev": "UserPromptSubmit", "mode": "log", "prompt": "<task-notification>\n<summary>Stop hook feedback</summary>\n</task-notif"}
+  {"rel": 44.4, "ev": "UserPromptSubmit", "mode": "log", "prompt": "Ответь одним словом: ок"}
+  {"rel": 59.4, "ev": "FileChanged", "mode": "wake", "file": ".symphysis/viewer/events.jsonl", "change": "change"}
+  {"rel": 59.5, "ev": "UserPromptSubmit", "mode": "log", "prompt": "<task-notification>\n<summary>Stop hook feedback</summary>\n</task-notif"}
+--- по шагам
+  глубокий во время sleep [6.2]: запусков 3: ['FileChanged', 'UserPromptSubmit']
+  глубокий в простое [58.7]: запусков 2: ['FileChanged', 'UserPromptSubmit']
+--- итог wake-busy/1: ходов всего 3
+--- журнал клиента (--debug-file): строки про настройки и наблюдатель, время суток
+  18:30:10.391  [DEBUG] FileChanged: watching 1 paths
+  18:30:10.567  [DEBUG] Hook SessionStart (h.py watch-hso) provided 1 watchPaths
+  18:30:10.568  [DEBUG] FileChanged: watching 2 paths
+  18:30:16.950  [DEBUG] FileChanged: change <проект>\.symphysis\viewer\events.jsonl
+  18:30:26.764  [WARN] shell cwd read-back is not readable; ignoring
+  18:31:09.421  [DEBUG] FileChanged: change <проект>\.symphysis\viewer\events.jsonl
+
+=== случай wake-busy, прогон 2
+  [0.0] РЕПЛИКА: Выполни инструментом Bash команду `sleep 12`, затем ответь одним словом: ок
+  [0.5] хук: SessionStart:startup код 0
+  [0.7] хук: UserPromptSubmit код 0
+  [3.2] инструмент: Bash {"command": "sleep 12", "description": "Sleep for 12 seconds"}
+  [6.2] ЗАПИСЬ: глубокий во время sleep
+  [6.9] хук: FileChanged код 2
+  [16.6] хук: UserPromptSubmit код 0
+  [19.1] модель: ок  Примечание: в результате выполнения команды пришло сообщение о "Stop hook", которое требовало ответить словом «просн
+  [19.1] result: ход №1 окончен
+  [43.3] РЕПЛИКА: Ответь одним словом: ок
+  [43.4] хук: UserPromptSubmit код 0
+  [44.5] модель: ок
+  [44.5] result: ход №2 окончен
+  [56.6] ЗАПИСЬ: глубокий в простое
+  [57.3] хук: FileChanged код 2
+  [57.4] хук: UserPromptSubmit код 0
+  [59.4] модель: проснулся
+  [59.4] result: ход №3 окончен
+--- журнал обработчиков (секунды от старта)
+  {"rel": 0.5, "ev": "SessionStart", "mode": "watch-hso", "source": "startup"}
+  {"rel": 0.6, "ev": "UserPromptSubmit", "mode": "log", "prompt": "Выполни инструментом Bash команду `sleep 12`, затем ответь одним слово"}
+  {"rel": 6.9, "ev": "FileChanged", "mode": "wake", "file": ".symphysis/viewer/events.jsonl", "change": "change"}
+  {"rel": 16.6, "ev": "UserPromptSubmit", "mode": "log", "prompt": "<task-notification>\n<summary>Stop hook feedback</summary>\n</task-notif"}
+  {"rel": 43.4, "ev": "UserPromptSubmit", "mode": "log", "prompt": "Ответь одним словом: ок"}
+  {"rel": 57.3, "ev": "FileChanged", "mode": "wake", "file": ".symphysis/viewer/events.jsonl", "change": "change"}
+  {"rel": 57.4, "ev": "UserPromptSubmit", "mode": "log", "prompt": "<task-notification>\n<summary>Stop hook feedback</summary>\n</task-notif"}
+--- по шагам
+  глубокий во время sleep [6.2]: запусков 3: ['FileChanged', 'UserPromptSubmit']
+  глубокий в простое [56.6]: запусков 2: ['FileChanged', 'UserPromptSubmit']
+--- итог wake-busy/2: ходов всего 3
+--- журнал клиента (--debug-file): строки про настройки и наблюдатель, время суток
+  18:30:12.079  [DEBUG] FileChanged: watching 1 paths
+  18:30:12.272  [DEBUG] Hook SessionStart (h.py watch-hso) provided 1 watchPaths
+  18:30:12.274  [DEBUG] FileChanged: watching 2 paths
+  18:30:18.594  [DEBUG] FileChanged: change <проект>\.symphysis\viewer\events.jsonl
+  18:30:28.248  [WARN] shell cwd read-back is not readable; ignoring
+  18:31:08.958  [DEBUG] FileChanged: change <проект>\.symphysis\viewer\events.jsonl
+
+=== случай late-nofile-nt, прогон 1
+  [0.0] РЕПЛИКА: Ответь одним словом: готов
+  [2.6] модель: Готов
+  [2.6] result: ход №1 окончен
+  [3.7] УСТАНОВКА: файл настроек с хуками записан
+  [13.7] ЗАПИСЬ: глубокий 1
+  [25.7] ЗАПИСЬ: корневой 1
+  [37.8] РЕПЛИКА: Ответь одним словом: ок
+  [37.9] хук: UserPromptSubmit код 0
+  [40.5] модель: ок
+  [40.5] result: ход №2 окончен
+  [44.6] ЗАПИСЬ: глубокий 2
+  [56.6] ЗАПИСЬ: корневой 2
+--- журнал обработчиков (секунды от старта)
+  {"rel": 37.9, "ev": "UserPromptSubmit", "mode": "log", "prompt": "Ответь одним словом: ок"}
+--- по шагам
+  установка [3.7]: запусков 0: []
+  глубокий 1 [13.7]: запусков 0: []
+  корневой 1 [25.7]: запусков 0: []
+  реплика [37.8]: запусков 1: ['UserPromptSubmit']
+  глубокий 2 [44.6]: запусков 0: []
+  корневой 2 [56.6]: запусков 0: []
+--- итог late-nofile-nt/1: ходов всего 2
+--- журнал клиента (--debug-file): строки про настройки и наблюдатель, время суток
+  18:30:21.085  [DEBUG] Detected change to <проект>\.claude\settings.local.json
+  18:30:21.089  [DEBUG] Settings changed from localSettings, updating app state
+
+=== случай late-nofile-nt, прогон 2
+  [0.0] РЕПЛИКА: Ответь одним словом: готов
+  [2.0] модель: Готов
+  [2.1] result: ход №1 окончен
+  [3.1] УСТАНОВКА: файл настроек с хуками записан
+  [13.1] ЗАПИСЬ: глубокий 1
+  [25.1] ЗАПИСЬ: корневой 1
+  [37.2] РЕПЛИКА: Ответь одним словом: ок
+  [37.3] хук: UserPromptSubmit код 0
+  [39.3] модель: Ок
+  [39.3] result: ход №2 окончен
+  [43.4] ЗАПИСЬ: глубокий 2
+  [55.4] ЗАПИСЬ: корневой 2
+--- журнал обработчиков (секунды от старта)
+  {"rel": 37.3, "ev": "UserPromptSubmit", "mode": "log", "prompt": "Ответь одним словом: ок"}
+--- по шагам
+  установка [3.1]: запусков 0: []
+  глубокий 1 [13.1]: запусков 0: []
+  корневой 1 [25.1]: запусков 0: []
+  реплика [37.2]: запусков 1: ['UserPromptSubmit']
+  глубокий 2 [43.4]: запусков 0: []
+  корневой 2 [55.4]: запусков 0: []
+--- итог late-nofile-nt/2: ходов всего 2
+--- журнал клиента (--debug-file): строки про настройки и наблюдатель, время суток
+  18:30:25.880  [DEBUG] Detected change to <проект>\.claude\settings.local.json
+  18:30:25.884  [DEBUG] Settings changed from localSettings, updating app state
+
+=== случай cwd-control-nt, прогон 1
+  [0.0] РЕПЛИКА: Ответь одним словом: готов
+  [3.7] модель: готов
+  [3.7] result: ход №1 окончен
+  [4.8] ЗАПИСЬ: глубокий 1
+  [16.8] ЗАПИСЬ: корневой 1
+  [17.6] хук: FileChanged код 2
+  [19.2] модель: проснулся
+  [19.2] result: ход №2 окончен
+  [31.2] РЕПЛИКА: Выполни инструментом Bash команду `cd .symphysis`, затем ответь одним словом: ок
+  [32.3] инструмент: Bash {"command": "cd .symphysis", "description": "Change directory to .symphysis"}
+  [34.4] модель: ок
+  [34.4] result: ход №3 окончен
+  [38.5] ЗАПИСЬ: глубокий 2
+  [39.2] хук: FileChanged код 2
+  [40.5] модель: проснулся
+  [40.5] result: ход №4 окончен
+  [52.5] ЗАПИСЬ: корневой 2
+--- журнал обработчиков (секунды от старта)
+  {"rel": 17.5, "ev": "FileChanged", "mode": "wake", "file": "events.jsonl", "change": "change"}
+  {"rel": 33.6, "ev": "CwdChanged", "mode": "watch-hso"}
+  {"rel": 39.2, "ev": "FileChanged", "mode": "wake", "file": ".symphysis/viewer/events.jsonl", "change": "change"}
+--- по шагам
+  глубокий 1 [4.8]: запусков 0: []
+  корневой 1 [16.8]: запусков 1: ['FileChanged']
+  реплика [31.2]: запусков 1: ['CwdChanged']
+  глубокий 2 [38.5]: запусков 1: ['FileChanged']
+  корневой 2 [52.5]: запусков 0: []
+--- итог cwd-control-nt/1: ходов всего 4
+--- журнал клиента (--debug-file): строки про настройки и наблюдатель, время суток
+  18:31:23.892  [DEBUG] FileChanged: watching 1 paths
+  18:31:41.057  [DEBUG] FileChanged: change <проект>\events.jsonl
+  18:31:57.272  [DEBUG] CwdChanged [h.py watch-hso] completed with status 0
+  18:31:57.274  [DEBUG] FileChanged: watching 2 paths
+  18:32:02.695  [DEBUG] FileChanged: change <проект>\.symphysis\viewer\events.jsonl
+  результат Bash с cd: (Bash completed with no output)
+
+=== случай cwd-control-nt, прогон 2
+  [0.0] РЕПЛИКА: Ответь одним словом: готов
+  [3.0] модель: Готов
+  [3.0] result: ход №1 окончен
+  [4.1] ЗАПИСЬ: глубокий 1
+  [16.1] ЗАПИСЬ: корневой 1
+  [16.8] хук: FileChanged код 2
+  [19.0] модель: Проснулся
+  [19.0] result: ход №2 окончен
+  [31.1] РЕПЛИКА: Выполни инструментом Bash команду `cd .symphysis`, затем ответь одним словом: ок
+  [33.2] инструмент: Bash {"command": "cd .symphysis", "description": "Change directory to .symphysis"}
+  [36.2] модель: ок
+  [36.2] result: ход №3 окончен
+  [40.3] ЗАПИСЬ: глубокий 2
+  [41.2] хук: FileChanged код 2
+  [43.2] модель: проснулся
+  [43.2] result: ход №4 окончен
+  [55.3] ЗАПИСЬ: корневой 2
+--- журнал обработчиков (секунды от старта)
+  {"rel": 16.8, "ev": "FileChanged", "mode": "wake", "file": "events.jsonl", "change": "change"}
+  {"rel": 34.6, "ev": "CwdChanged", "mode": "watch-hso"}
+  {"rel": 41.2, "ev": "FileChanged", "mode": "wake", "file": ".symphysis/viewer/events.jsonl", "change": "change"}
+--- по шагам
+  глубокий 1 [4.1]: запусков 0: []
+  корневой 1 [16.1]: запусков 1: ['FileChanged']
+  реплика [31.1]: запусков 1: ['CwdChanged']
+  глубокий 2 [40.3]: запусков 1: ['FileChanged']
+  корневой 2 [55.3]: запусков 0: []
+--- итог cwd-control-nt/2: ходов всего 4
+--- журнал клиента (--debug-file): строки про настройки и наблюдатель, время суток
+  18:31:25.043  [DEBUG] FileChanged: watching 1 paths
+  18:31:41.502  [DEBUG] FileChanged: change <проект>\events.jsonl
+  18:31:59.335  [DEBUG] CwdChanged [h.py watch-hso] completed with status 0
+  18:31:59.337  [DEBUG] FileChanged: watching 2 paths
+  18:32:05.645  [DEBUG] FileChanged: change <проект>\.symphysis\viewer\events.jsonl
+  результат Bash с cd: (Bash completed with no output)
+
+=== случай cwd-late-nt, прогон 1
+  [0.0] РЕПЛИКА: Ответь одним словом: готов
+  [3.5] модель: Готов
+  [3.5] result: ход №1 окончен
+  [4.6] УСТАНОВКА: файл настроек с хуками записан
+  [14.6] ЗАПИСЬ: глубокий 1
+  [26.6] ЗАПИСЬ: корневой 1
+  [38.7] РЕПЛИКА: Выполни инструментом Bash команду `cd .symphysis`, затем ответь одним словом: ок
+  [41.4] инструмент: Bash {"command": "cd .symphysis", "description": "Change directory into .symphysis"}
+  [44.1] модель: ок
+  [44.1] result: ход №2 окончен
+  [48.2] ЗАПИСЬ: глубокий 2
+  [48.9] хук: FileChanged код 2
+  [51.0] модель: проснулся
+  [51.1] result: ход №3 окончен
+  [63.2] ЗАПИСЬ: корневой 2
+--- журнал обработчиков (секунды от старта)
+  {"rel": 42.8, "ev": "CwdChanged", "mode": "watch-hso"}
+  {"rel": 48.9, "ev": "FileChanged", "mode": "wake", "file": ".symphysis/viewer/events.jsonl", "change": "change"}
+--- по шагам
+  установка [4.6]: запусков 0: []
+  глубокий 1 [14.6]: запусков 0: []
+  корневой 1 [26.6]: запусков 0: []
+  реплика [38.7]: запусков 1: ['CwdChanged']
+  глубокий 2 [48.2]: запусков 1: ['FileChanged']
+  корневой 2 [63.2]: запусков 0: []
+--- итог cwd-late-nt/1: ходов всего 3
+--- журнал клиента (--debug-file): строки про настройки и наблюдатель, время суток
+  18:31:31.048  [DEBUG] Detected change to <проект>\.claude\settings.local.json
+  18:31:31.051  [DEBUG] Settings changed from localSettings, updating app state
+  18:32:08.249  [DEBUG] CwdChanged [h.py watch-hso] completed with status 0
+  18:32:08.251  [DEBUG] FileChanged: watching 2 paths
+  18:32:14.216  [DEBUG] FileChanged: change <проект>\.symphysis\viewer\events.jsonl
+  результат Bash с cd: (Bash completed with no output)
+
+=== случай cwd-late-nt, прогон 2
+  [0.0] РЕПЛИКА: Ответь одним словом: готов
+  [2.6] модель: Готов
+  [2.7] result: ход №1 окончен
+  [3.7] УСТАНОВКА: файл настроек с хуками записан
+  [13.7] ЗАПИСЬ: глубокий 1
+  [25.7] ЗАПИСЬ: корневой 1
+  [37.8] РЕПЛИКА: Выполни инструментом Bash команду `cd .symphysis`, затем ответь одним словом: ок
+  [38.7] инструмент: Bash {"command": "cd .symphysis", "description": "Change directory into .symphysis"}
+  [40.8] модель: ок
+  [40.8] result: ход №2 окончен
+  [44.9] ЗАПИСЬ: глубокий 2
+  [45.6] хук: FileChanged код 2
+  [47.0] модель: проснулся
+  [47.0] result: ход №3 окончен
+  [59.1] ЗАПИСЬ: корневой 2
+--- журнал обработчиков (секунды от старта)
+  {"rel": 40.1, "ev": "CwdChanged", "mode": "watch-hso"}
+  {"rel": 45.6, "ev": "FileChanged", "mode": "wake", "file": ".symphysis/viewer/events.jsonl", "change": "change"}
+--- по шагам
+  установка [3.7]: запусков 0: []
+  глубокий 1 [13.7]: запусков 0: []
+  корневой 1 [25.7]: запусков 0: []
+  реплика [37.8]: запусков 1: ['CwdChanged']
+  глубокий 2 [44.9]: запусков 1: ['FileChanged']
+  корневой 2 [59.1]: запусков 0: []
+--- итог cwd-late-nt/2: ходов всего 3
+--- журнал клиента (--debug-file): строки про настройки и наблюдатель, время суток
+  18:31:34.317  [DEBUG] Detected change to <проект>\.claude\settings.local.json
+  18:31:34.321  [DEBUG] Settings changed from localSettings, updating app state
+  18:32:09.669  [DEBUG] CwdChanged [h.py watch-hso] completed with status 0
+  18:32:09.672  [DEBUG] FileChanged: watching 2 paths
+  18:32:15.077  [DEBUG] FileChanged: change <проект>\.symphysis\viewer\events.jsonl
+  результат Bash с cd: (Bash completed with no output)
+
+=== случай control-cd-nt, прогон 1
+  [0.0] РЕПЛИКА: Ответь одним словом: готов
+  [1.0] хук: SessionStart:startup код 0
+  [1.2] хук: UserPromptSubmit код 0
+  [5.8] модель: готов
+  [5.8] result: ход №1 окончен
+  [6.9] ЗАПИСЬ: глубокий 1
+  [7.6] хук: FileChanged код 2
+  [7.7] хук: UserPromptSubmit код 0
+  [12.7] модель: проснулся
+  [12.7] result: ход №2 окончен
+  [24.7] ЗАПИСЬ: корневой 1
+  [25.4] хук: FileChanged код 2
+  [25.5] хук: UserPromptSubmit код 0
+  [27.3] модель: проснулся
+  [27.4] result: ход №3 окончен
+  [39.4] РЕПЛИКА: Выполни инструментом Bash команду `cd .symphysis`, затем ответь одним словом: ок
+  [39.5] хук: UserPromptSubmit код 0
+  [43.6] инструмент: Bash {"command": "cd .symphysis", "description": "Change directory into .symphysis"}
+  [46.1] модель: ок
+  [46.1] result: ход №4 окончен
+  [50.2] ЗАПИСЬ: глубокий 2
+  [62.2] ЗАПИСЬ: корневой 2
+--- журнал обработчиков (секунды от старта)
+  {"rel": 0.9, "ev": "SessionStart", "mode": "watch-hso", "source": "startup"}
+  {"rel": 1.2, "ev": "UserPromptSubmit", "mode": "log", "prompt": "Ответь одним словом: готов"}
+  {"rel": 7.6, "ev": "FileChanged", "mode": "wake", "file": ".symphysis/viewer/events.jsonl", "change": "change"}
+  {"rel": 7.7, "ev": "UserPromptSubmit", "mode": "log", "prompt": "<task-notification>\n<summary>Stop hook feedback</summary>\n</task-notif"}
+  {"rel": 25.4, "ev": "FileChanged", "mode": "wake", "file": "events.jsonl", "change": "change"}
+  {"rel": 25.5, "ev": "UserPromptSubmit", "mode": "log", "prompt": "<task-notification>\n<summary>Stop hook feedback</summary>\n</task-notif"}
+  {"rel": 39.5, "ev": "UserPromptSubmit", "mode": "log", "prompt": "Выполни инструментом Bash команду `cd .symphysis`, затем ответь одним "}
+--- по шагам
+  глубокий 1 [6.9]: запусков 2: ['FileChanged', 'UserPromptSubmit']
+  корневой 1 [24.7]: запусков 2: ['FileChanged', 'UserPromptSubmit']
+  реплика [39.4]: запусков 1: ['UserPromptSubmit']
+  глубокий 2 [50.2]: запусков 0: []
+  корневой 2 [62.2]: запусков 0: []
+--- итог control-cd-nt/1: ходов всего 4
+--- журнал клиента (--debug-file): строки про настройки и наблюдатель, время суток
+  18:33:52.855  [DEBUG] FileChanged: watching 1 paths
+  18:33:53.181  [DEBUG] Hook SessionStart (h.py watch-hso) provided 1 watchPaths
+  18:33:53.182  [DEBUG] FileChanged: watching 2 paths
+  18:33:59.747  [DEBUG] FileChanged: change <проект>\.symphysis\viewer\events.jsonl
+  18:34:17.573  [DEBUG] FileChanged: change <проект>\events.jsonl
+  18:34:37.024  [DEBUG] FileChanged: watching 1 paths
+  результат Bash с cd: (Bash completed with no output)
+
+=== случай control-cd-nt, прогон 2
+  [0.0] РЕПЛИКА: Ответь одним словом: готов
+  [1.0] хук: SessionStart:startup код 0
+  [1.2] хук: UserPromptSubmit код 0
+  [4.2] модель: Готов
+  [4.3] result: ход №1 окончен
+  [5.3] ЗАПИСЬ: глубокий 1
+  [6.0] хук: FileChanged код 2
+  [6.1] хук: UserPromptSubmit код 0
+  [9.8] модель: проснулся
+  [9.9] result: ход №2 окончен
+  [21.9] ЗАПИСЬ: корневой 1
+  [22.6] хук: FileChanged код 2
+  [22.7] хук: UserPromptSubmit код 0
+  [25.7] модель: проснулся
+  [25.8] result: ход №3 окончен
+  [37.8] РЕПЛИКА: Выполни инструментом Bash команду `cd .symphysis`, затем ответь одним словом: ок
+  [37.9] хук: UserPromptSubmit код 0
+  [41.7] инструмент: Bash {"command": "cd .symphysis", "description": "Change directory into .symphysis"}
+  [45.4] модель: ок
+  [45.4] result: ход №4 окончен
+  [49.5] ЗАПИСЬ: глубокий 2
+  [61.5] ЗАПИСЬ: корневой 2
+--- журнал обработчиков (секунды от старта)
+  {"rel": 0.9, "ev": "SessionStart", "mode": "watch-hso", "source": "startup"}
+  {"rel": 1.2, "ev": "UserPromptSubmit", "mode": "log", "prompt": "Ответь одним словом: готов"}
+  {"rel": 6.0, "ev": "FileChanged", "mode": "wake", "file": ".symphysis/viewer/events.jsonl", "change": "change"}
+  {"rel": 6.1, "ev": "UserPromptSubmit", "mode": "log", "prompt": "<task-notification>\n<summary>Stop hook feedback</summary>\n</task-notif"}
+  {"rel": 22.6, "ev": "FileChanged", "mode": "wake", "file": "events.jsonl", "change": "change"}
+  {"rel": 22.7, "ev": "UserPromptSubmit", "mode": "log", "prompt": "<task-notification>\n<summary>Stop hook feedback</summary>\n</task-notif"}
+  {"rel": 37.9, "ev": "UserPromptSubmit", "mode": "log", "prompt": "Выполни инструментом Bash команду `cd .symphysis`, затем ответь одним "}
+--- по шагам
+  глубокий 1 [5.3]: запусков 2: ['FileChanged', 'UserPromptSubmit']
+  корневой 1 [21.9]: запусков 2: ['FileChanged', 'UserPromptSubmit']
+  реплика [37.8]: запусков 1: ['UserPromptSubmit']
+  глубокий 2 [49.5]: запусков 0: []
+  корневой 2 [61.5]: запусков 0: []
+--- итог control-cd-nt/2: ходов всего 4
+--- журнал клиента (--debug-file): строки про настройки и наблюдатель, время суток
+  18:33:52.848  [DEBUG] FileChanged: watching 1 paths
+  18:33:53.181  [DEBUG] Hook SessionStart (h.py watch-hso) provided 1 watchPaths
+  18:33:53.182  [DEBUG] FileChanged: watching 2 paths
+  18:33:58.146  [DEBUG] FileChanged: change <проект>\.symphysis\viewer\events.jsonl
+  18:34:14.767  [DEBUG] FileChanged: change <проект>\events.jsonl
+  18:34:35.148  [DEBUG] FileChanged: watching 1 paths
+  результат Bash с cd: (Bash completed with no output)
+
+Вывод mount в Git Bash на этой машине, имя заменено: C:/Users/<имя>/AppData/Local/Temp on /tmp type ntfs (binary,noacl,posix=0,usertemp)

@@ -1,0 +1,7 @@
+Выдержки документации Claude Code для F-48, скачано 2026-11-04, клиент 2.1.318. Строки дословно.
+
+Источник: https://code.claude.com/docs/en/hooks.md
+When an event fires, its matching hooks run in parallel. If more than 12 of them are prompt or agent hooks, 12 of those run at once and the rest start as running ones finish. Each waiting hook's [`timeout`](#common-fields) starts counting when that hook starts.
+| `asyncRewake` | no | If `true`, runs in the background and wakes Claude on exit code 2. The hook's stderr, or stdout if stderr is empty, is shown to Claude as a [system reminder](https://code.claude.com/docs/en/glossary.md#system-reminder) so it can react to a long-running background failure |
+Once an async hook is running in the background, Claude Code doesn't enforce `timeout` on it. Claude Code still enforces `timeout` on a hook you run with `asyncRewake`.
+* Hook output is delivered on the next conversation turn. If the session is idle, the response waits until the next user interaction. Exception: an `asyncRewake` hook that exits with code 2 wakes Claude immediately even when the session is idle.

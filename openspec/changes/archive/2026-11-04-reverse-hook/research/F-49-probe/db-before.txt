@@ -1,0 +1,5 @@
+Счёт строк общей базы до пробы, только чтение (sqlite3 mode=ro).
+session_v2 4
+project 10
+project_directory 0
+suspended 0

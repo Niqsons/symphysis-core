@@ -1,0 +1,8 @@
+Выдержки кода opencode по тегу v2.1.4, прочитано через git show, клон не менялся. Установленная версия 2.2.5 этим следом не проверена.
+
+packages/plugin/src/promise/adapter.ts:603 prompt: adaptApiMethod(SessionEndpoints["session.prompt"], host.session.prompt),
+packages/plugin/src/promise/session.ts:19 delivery: SessionInbox.Delivery
+packages/core/src/session/session.ts:184 if (input.resume !== false) yield* execution.wake(sessionID)
+packages/core/src/session/session.ts:165 delivery: input.delivery ?? "steer",
+packages/schema/src/session-inbox.ts:11 export const Delivery = Schema.Literals(["steer", "queue"]).annotate({ identifier: "Session.Inbox.Delivery" })
+packages/schema/src/session.ts:103 directory: AbsolutePath.pipe(Schema.optional),

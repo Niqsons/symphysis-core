@@ -1,0 +1,9 @@
+Поиск строк в установленном opencode.exe (2.2.5), py -3.13 и mmap; файл не запускался для этого. Последняя искомая строка — комментарий исходника, в сборку он не входит.
+'location_idle_timeout': есть
+'60 minutes': есть
+'session.inbox.enqueued': есть
+'OPENCODE_DISABLE_CLAUDE_CODE_SKILLS': есть
+'resume!==!1': есть
+'experimental.idle': есть
+'Keep editor context hidden': нет
+размер, МБ: 259

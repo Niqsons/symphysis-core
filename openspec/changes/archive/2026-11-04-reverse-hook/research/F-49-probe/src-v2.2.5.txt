@@ -1,0 +1,796 @@
+Выдержки исходников opencode, тег v2.2.5, репозиторий anomalyco/opencode (адрес github.com/sst/opencode переводит туда же).
+Основа адреса файла: https://raw.githubusercontent.com/anomalyco/opencode/v2.2.5/<путь>
+Список файлов смотрел через GitHub API (git/trees этого тега, recursive=1).
+Формат: «== путь», затем «<номер строки в исходнике>: <строка>». В цитатах F-49.md номер — строка этого файла. Участки, не весь файл.
+
+== packages/core/src/session/session.ts
+155:   const prompt = Effect.fn("Session.prompt")((sessionID: SessionSchema.ID, input: PromptRequest) =>
+156:     Effect.uninterruptibleMask((restore) =>
+157:       Effect.gen(function* () {
+158:         const session = yield* get(sessionID)
+159:         const messageID = input.id ?? SessionMessage.ID.create()
+160:         const admitted = yield* Effect.gen(function* () {
+161:           const existing = yield* admission.reconcile({
+162:             id: messageID,
+163:             sessionID: session.id,
+164:             type: "user",
+165:             delivery: input.delivery ?? "steer",
+166:           })
+167:           if (existing) return existing
+168:           // Preparation, the staged revert commit and admission share one acquisition of the session's location
+169:           // services, so projections see its config whoever called prompt.
+170:           return yield* Effect.gen(function* () {
+171:             const item = yield* restore(SessionPrompt.prepare({ session, messageID, input }))
+172:             // Commit a staged revert only after preparation succeeds, before admitting new work.
+173:             if (session.revert) yield* SessionRevert.commit(bus, session)
+174:             return yield* admission.admit({
+175:               id: messageID,
+176:               sessionID: session.id,
+177:               item,
+178:             })
+179:           }).pipe(
+180:             instances.provide(session),
+181:             Effect.provideService(Database.Service, database),
+182:             Effect.provideService(FSUtil.Service, fs),
+183:           )
+184:         }).pipe(
+185:           Effect.catchTag("SessionInbox.LifecycleConflict", () => new PromptConflictError({ sessionID, messageID })),
+186:         )
+187:         if (input.resume !== false) yield* execution.wake(sessionID)
+188:         return admitted
+189:       }),
+190:     ),
+191:   )
+...
+286:   const synthetic = Effect.fn("Session.synthetic")(
+287:     (
+288:       sessionID: SessionSchema.ID,
+289:       input: {
+290:         id?: SessionMessage.ID
+291:         text: string
+292:         description?: string
+293:         metadata?: Record<string, unknown>
+294:         delivery?: SessionInbox.Delivery
+295:         resume?: boolean
+296:       },
+297:     ) =>
+298:       Effect.uninterruptible(
+299:         Effect.gen(function* () {
+300:           yield* get(sessionID)
+301:           const inputID = input.id ?? SessionMessage.ID.create()
+302:           const admittedInput = {
+303:             type: "synthetic",
+304:             payload: SessionInbox.SyntheticPayload.make({
+305:               text: input.text,
+306:               description: input.description,
+307:               metadata: input.metadata,
+308:             }),
+309:             delivery: input.delivery ?? "steer",
+310:           } satisfies SessionInbox.Item
+311:           const admitted = yield* admission
+312:             .admit({
+313:               id: inputID,
+314:               sessionID,
+315:               item: admittedInput,
+316:             })
+317:             .pipe(
+318:               Effect.catchTag(
+319:                 "SessionInbox.LifecycleConflict",
+320:                 () => new SyntheticConflictError({ sessionID, inputID }),
+321:               ),
+322:             )
+323:           if (input.resume !== false && !(yield* get(sessionID)).revert) yield* execution.wake(sessionID)
+324:           return admitted
+325:         }),
+326:       ),
+327:   )
+...
+
+== packages/core/src/session/prompt.ts
+40:   yield* Plugin.awaitActivation
+41:   const hooks = yield* PluginHooks.Service
+42:   const event = yield* hooks.trigger("session", "prompt", {
+43:     sessionID: request.session.id,
+44:     messageID: request.messageID,
+45:     prompt: structuredClone({
+46:       text: request.input.text,
+47:       files: request.input.files?.slice(),
+48:       agents: request.input.agents?.slice(),
+49:       skills: request.input.skills?.slice(),
+50:     }),
+51:     metadata: structuredClone(request.input.metadata),
+52:     delivery: request.input.delivery ?? "steer",
+53:   })
+...
+79:   return {
+80:     type: "user",
+81:     payload: SessionInbox.UserPayload.make({
+82:       text: input.text,
+83:       agents: input.agents,
+84:       files,
+85:       skills: selected?.length ? selected : undefined,
+86:       metadata: event.metadata,
+87:     }),
+88:     delivery: event.delivery,
+89:   } satisfies SessionInbox.Item
+90: })
+...
+
+== packages/core/src/session/inbox.ts
+52: /**
+53:  * Which pending input `promote` may consume: "steer" promotes steers only (a step
+54:  * boundary mid-work), while "input" also allows one queued input when no steers are
+55:  * waiting (the idle boundary, where the Session picks up fresh work).
+56:  */
+57: export type Promotable = "input" | "steer"
+...
+
+== packages/core/src/session/run-coordinator.ts
+14:   /** Rings the doorbell: an idle key starts an execution; an active one drains again before settling. */
+15:   readonly wake: (key: Key, scope?: Promotable) => Effect.Effect<void>
+...
+131:     const wake = (key: Key, scope: Promotable = "input") =>
+132:       Effect.sync(() => {
+133:         const execution = executions.get(key)
+134:         if (execution !== undefined) {
+135:           // Coalesced wakes keep the widest scope: "input" subsumes "steer".
+136:           execution.pendingWake = execution.pendingWake === "input" ? "input" : scope
+137:           return
+138:         }
+139:         start(key, false, scope)
+140:       })
+...
+
+== packages/core/src/session/execution.ts
+18:   /** Snapshots active execution owned by this process. */
+19:   readonly active: Effect.Effect<ReadonlySet<SessionSchema.ID>>
+20:   /** Checks process-local ownership, including interruption cleanup and terminal settlement. */
+21:   readonly isActive: (sessionID: SessionSchema.ID) => Effect.Effect<boolean>
+22:   /** Starts execution while idle or joins the active execution. */
+23:   readonly resume: (sessionID: SessionSchema.ID) => Effect.Effect<void, SessionRunner.RunError>
+24:   /** Registers newly recorded work. Repeated wakeups may coalesce. */
+25:   readonly wake: (sessionID: SessionSchema.ID) => Effect.Effect<void>
+...
+53: /** Process-local execution: drains run in this process using the selected instance. */
+...
+73:     // Write-ahead claim: starting records the durable intent that a turn is in flight, in the same
+74:     // transaction as the started event. Terminals release it — except shutdown interruption, which
+75:     // preserves the claim so the next server start resumes the turn. A claim that survives with no
+76:     // terminal is the signature of a process that died without teardown (crash, SIGKILL, eviction);
+77:     // recovery is a property of the database, never of a shutdown hook that may not run.
+78:     const claimOnCommit = (sessionID: SessionSchema.ID) => ({
+79:       commit: () => store.claim(sessionID),
+80:     })
+...
+
+== packages/core/src/session/execution/restart.ts
+56:  * The sweep assumes every orphaned claim's owner is dead. The managed-server
+57:  * protocol guarantees this: a successor is only spawned after the previous
+58:  * process is confirmed dead (client service `kill`/`evict` poll the PID), the
+59:  * registration lock admits one managed server at a time, and unregistered
+60:  * servers sharing the database never sweep. The service is inert until called
+61:  * — the managed server invokes it at boot; embedders may call it from their
+62:  * own start-up.
+...
+
+== packages/core/src/session/runner/to-llm-message.ts
+258:     case "user":
+259:       const content = [
+260:         ...(message.skills ?? []).flatMap((skill) => (skill.text === undefined ? [] : [Message.text(skill.text)])),
+261:         ...(message.text === "" ? [] : [Message.text(message.text)]),
+262:         ...userAttachmentContent(message.files ?? []),
+263:       ]
+264:       if (content.length === 0) return []
+265:       return [
+266:         Message.make({
+267:           id: message.id,
+268:           role: "user",
+269:           content,
+270:           metadata: {
+271:             ...message.metadata,
+272:             ...(message.agents?.length ? { agents: message.agents } : {}),
+273:           },
+274:         }),
+275:       ]
+276:     case "synthetic":
+277:       return [Message.make({ id: message.id, role: "user", content: message.text })]
+278:     case "skill":
+279:       return [Message.make({ id: message.id, role: "user", content: message.text, metadata: message.metadata })]
+280:     case "system":
+281:       return [Message.system(message.text)]
+...
+
+== packages/core/src/session/title.ts
+78:       if (prepared.event.result !== undefined) return prepared.event.result
+...
+
+== packages/schema/src/session-inbox.ts
+11: export const Delivery = Schema.Literals(["steer", "queue"]).annotate({ identifier: "Session.Inbox.Delivery" })
+...
+14: export interface UserPayload extends Schema.Schema.Type<typeof UserPayload> {}
+15: export const UserPayload = Schema.Struct({
+16:   ...Prompt.fields,
+17:   metadata: Schema.Record(Schema.String, Schema.Unknown).pipe(optional),
+18: }).annotate({ identifier: "Session.Inbox.UserPayload" })
+...
+27: export interface SyntheticPayload extends Schema.Schema.Type<typeof SyntheticPayload> {}
+28: export const SyntheticPayload = Schema.Struct({
+29:   text: Schema.String,
+30:   description: Schema.String.pipe(optional),
+31:   metadata: Schema.Record(Schema.String, Schema.Unknown).pipe(optional),
+32: }).annotate({ identifier: "Session.Inbox.SyntheticPayload" })
+...
+
+== packages/schema/src/session-message.ts
+76: export interface User extends Schema.Schema.Type<typeof User> {}
+77: export const User = Schema.Struct({
+78:   ...Base,
+79:   text: Prompt.fields.text,
+80:   files: Prompt.fields.files,
+81:   agents: Prompt.fields.agents,
+82:   skills: Prompt.fields.skills,
+83:   type: Schema.tag("user"),
+84: }).annotate({ identifier: "Session.Message.User" })
+...
+93: export interface Synthetic extends Schema.Schema.Type<typeof Synthetic> {}
+94: export const Synthetic = Schema.Struct({
+95:   ...Base,
+96:   text: Schema.String,
+97:   description: Schema.String.pipe(optional),
+98:   type: Schema.tag("synthetic"),
+99: }).annotate({ identifier: "Session.Message.Synthetic" })
+...
+
+== packages/plugin/src/promise/session.ts
+14: export interface SessionPrompt {
+15:   readonly sessionID: Session.ID
+16:   readonly messageID: SessionMessage.ID
+17:   prompt: Types.DeepMutable<PromptInput.Prompt>
+18:   metadata?: Record<string, unknown>
+19:   delivery: SessionInbox.Delivery
+20: }
+...
+168: /**
+169:  * Runs when a Session finishes model work and has no pending input, just before it goes idle.
+170:  * It does not run after interruption, failure, or control-only work such as a manual compaction.
+171:  * Input admitted by the hook, such as a synthetic message, runs in the same execution instead
+172:  * of the Session going idle.
+173:  *
+174:  * `background` lists work that is still running. When the Session's own shell or subagent finishes,
+175:  * its notice wakes the Session and the hook runs again, so a plugin that waits for that work can
+176:  * simply return. Work a descendant owns, such as a shell a subagent left running, wakes that
+177:  * descendant instead, so it is listed for information only. Notices admitted with `resume: false`,
+178:  * such as those recovered after a restart, wait for the next wake. Experimental.
+179:  */
+180: export interface SessionIdle {
+181:   readonly sessionID: Session.ID
+182:   readonly background: ReadonlyArray<SessionIdleBackground>
+183: }
+...
+185: export interface SessionHooks {
+186:   readonly prompt: SessionPrompt
+187:   readonly context: SessionContext
+188:   readonly compaction: SessionCompaction
+189:   readonly generate: SessionGenerate
+190:   readonly title: SessionTitle
+191:   readonly "model.request": SessionModelRequest
+192:   readonly "http.request": SessionHttpRequest
+193:   readonly "http.response": SessionHttpResponse
+194:   readonly "experimental.ws.handshake": SessionWebSocketHandshake
+195:   readonly "experimental.ws.send": SessionWebSocketSend
+196:   readonly "experimental.ws.receive": SessionWebSocketReceive
+197:   readonly retry: SessionRetry
+198:   readonly "experimental.idle": SessionIdle
+199: }
+...
+201: export type SessionDomain = Pick<
+202:   SessionApi,
+203:   | "list"
+204:   | "create"
+205:   | "get"
+206:   | "remove"
+207:   | "switchAgent"
+208:   | "switchModel"
+209:   | "prompt"
+210:   | "generate"
+211:   | "command"
+212:   | "compact"
+213:   | "synthetic"
+214:   | "interrupt"
+215:   | "update"
+216:   | "move"
+217:   | "context"
+218: > &
+219:   Pick<ExperimentalSessionApi, "wait" | "instructions"> & {
+220:     readonly hook: ModelHooks<SessionHooks>
+221:   }
+...
+
+== packages/plugin/src/promise/event.ts
+1: import type { OpenCodeEvent } from "@opencode/client"
+2: import type { SelectedEvent, SubscribeOptions } from "@opencode/client/promise/api"
+3: 
+4: type EventType = Exclude<OpenCodeEvent["type"], "server.connected">
+5: 
+6: export interface EventDomain {
+7:   readonly subscribe: <Type extends EventType = EventType>(
+8:     options?: SubscribeOptions<Type>,
+9:   ) => AsyncIterable<SelectedEvent<OpenCodeEvent, Type>>
+10: }
+...
+
+== packages/plugin/src/promise/plugin.ts
+27: export interface Context {
+28:   readonly app: App
+29:   readonly location: Location.Info
+30:   readonly options: PluginOptions
+...
+35:   readonly event: EventDomain
+...
+52:   readonly session: SessionDomain
+...
+62: export type Cleanup = () => Promise<void> | void
+63: 
+64: export interface Plugin {
+65:   readonly id: string
+66:   readonly setup: (context: Context) => Promise<Cleanup | void> | Cleanup | void
+67: }
+...
+
+== packages/plugin/src/promise/adapter.ts
+331:           event: {
+332:             subscribe: <Type extends Exclude<OpenCodeEvent["type"], "server.connected">>(
+333:               options?: SubscribeOptions<Type>,
+334:             ) =>
+335:               streams(
+336:                 host.event.subscribe({ types: options?.types }).pipe(
+337:                   Stream.mapEffect((event) => encodeOpenCodeEvent(event)),
+338:                   Stream.map((event) => event as SelectedEvent<OpenCodeEvent, Type>),
+339:                 ),
+340:                 options,
+341:               ),
+342:           },
+...
+627:             list: adaptApiMethod(SessionEndpoints["session.list"], host.session.list),
+...
+633:             prompt: adaptApiMethod(SessionEndpoints["session.prompt"], host.session.prompt),
+...
+637:             synthetic: adaptApiMethod(SessionEndpoints["session.synthetic"], host.session.synthetic),
+...
+
+== packages/plugin/src/README.md
+29: Plugin setup registers hooks imperatively through each domain's `hook` method.
+30: It may return a synchronous or asynchronous cleanup function. OpenCode awaits
+31: the cleanup when the plugin is unloaded or replaced:
+32: 
+33: ```ts
+34: setup: async (ctx) => {
+35:   const timer = setInterval(refresh, 60_000)
+36:   return () => clearInterval(timer)
+37: }
+38: ```
+...
+
+== packages/protocol/src/groups/session.ts
+337:       HttpApiEndpoint.post("session.prompt", "/api/session/:sessionID/prompt", {
+338:         params: { sessionID: Session.ID },
+339:         payload: Schema.Struct({
+340:           id: SessionMessage.ID.pipe(Schema.optional),
+341:           ...PromptInput.Prompt.fields,
+342:           metadata: SessionInbox.UserPayload.fields.metadata,
+343:           delivery: SessionInbox.Delivery.pipe(Schema.optional),
+344:           resume: Schema.Boolean.pipe(Schema.optional),
+345:         }),
+346:         success: Schema.Struct({ data: SessionInbox.User }),
+347:         error: [ConflictError, InvalidRequestError, SessionNotFoundError],
+348:       })
+349:         .middleware(sessionLocationMiddleware)
+350:         .annotateMerge(
+351:           OpenApi.annotations({
+352:             identifier: "session.prompt",
+353:             summary: "Send message",
+354:             description: "Durably admit one session input and schedule agent-loop execution unless resume is false.",
+355:           }),
+356:         ),
+...
+398:       HttpApiEndpoint.post("session.synthetic", "/api/session/:sessionID/synthetic", {
+399:         params: { sessionID: Session.ID },
+400:         payload: Schema.Struct({
+401:           id: SessionMessage.ID.pipe(Schema.optional),
+402:           text: Schema.String,
+403:           description: Schema.String.pipe(Schema.optional),
+404:           metadata: SessionMessage.Synthetic.fields.metadata,
+405:           delivery: SessionInbox.Delivery.pipe(Schema.optional),
+406:           resume: Schema.Boolean.pipe(Schema.optional),
+407:         }),
+408:         success: Schema.Struct({ data: SessionInbox.Synthetic }),
+409:         error: [ConflictError, SessionNotFoundError],
+410:       })
+...
+814:       HttpApiEndpoint.post("session.view", "/api/session/:sessionID/view", {
+815:         params: { sessionID: Session.ID },
+816:         payload: Schema.Struct({ idle: DateTimeUtcFromMillis }),
+817:         success: HttpApiSchema.NoContent,
+818:         error: SessionNotFoundError,
+819:       }).annotateMerge(
+820:         OpenApi.annotations({
+821:           identifier: "session.view",
+822:           summary: "View session",
+823:           description: "Mark the idle transition observed by the viewer as viewed.",
+824:         }),
+825:       ),
+...
+
+== packages/schema/src/session-event.ts
+39: export const Created = Event.durable({
+40:   type: "session.created",
+41:   ...options,
+42:   schema: {
+43:     ...Base,
+44:     projectID: Project.ID,
+45:     location: Location.Ref,
+46:     subpath: RelativePath.pipe(optional),
+47:     parentID: SessionID.pipe(optional),
+48:     slug: Schema.String,
+49:     title: Schema.String.pipe(optional),
+50:     agent: Agent.ID.pipe(optional),
+51:     model: Model.Ref.pipe(optional),
+52:     /** Host-supplied annotations resolved at creation, including any inherited from a parent. */
+53:     metadata: SessionMetadata.pipe(optional),
+54:     permissions: Permission.Ruleset.pipe(optional),
+55:     version: Schema.String,
+56:   },
+57: })
+...
+122: export const Viewed = Event.durable({
+123:   type: "session.viewed",
+124:   ...options,
+125:   schema: {
+126:     ...Base,
+127:     /** Epoch-millisecond idle watermark the viewer observed; projection never marks a newer idle transition viewed. */
+128:     idle: Schema.Finite,
+129:   },
+130: })
+...
+244: export namespace Execution {
+245:   export const Started = Event.durable({ type: "session.execution.started", ...options, schema: Base })
+246:   export type Started = typeof Started.Type
+247: 
+248:   export const Succeeded = Event.durable({ type: "session.execution.succeeded", ...options, schema: Base })
+249:   export type Succeeded = typeof Succeeded.Type
+...
+
+== packages/schema/src/session.ts
+44:   /** Outcome of the last completed execution, recorded at `time.idle`. Absent until a run reaches a terminal transition. */
+45:   outcome: Schema.Literals(["succeeded", "failed", "interrupted"]).pipe(optional),
+46:   time: Schema.Struct({
+47:     created: DateTimeUtcFromMillis,
+48:     updated: DateTimeUtcFromMillis,
+49:     /** Start of the most recent execution. While it runs, `idle` still holds the previous execution's end. Resuming after a restart starts a new execution. */
+50:     busy: DateTimeUtcFromMillis.pipe(optional),
+51:     /** End of the most recent completed execution. */
+52:     idle: DateTimeUtcFromMillis.pipe(optional),
+53:     viewed: DateTimeUtcFromMillis.pipe(optional),
+54:     archived: DateTimeUtcFromMillis.pipe(optional),
+55:   }),
+...
+104: export const ListFilter = Schema.Struct({
+105:   ...ListFilterFields,
+106:   directory: AbsolutePath.pipe(Schema.optional),
+107:   project: Project.ID.pipe(Schema.optional),
+108:   subpath: RelativePath.pipe(Schema.optional),
+109: }).annotate({ identifier: "Session.ListFilter" })
+...
+
+== packages/core/src/session/store.ts
+149:         const sortColumn = SessionTable.time_updated
+150:         const conditions: SQL[] = []
+151:         if ("directory" in input) conditions.push(eq(SessionTable.directory, input.directory))
+...
+156:         if (input.parentID !== undefined)
+157:           conditions.push(
+158:             input.parentID === null ? isNull(SessionTable.parent_id) : eq(SessionTable.parent_id, input.parentID),
+159:           )
+160:         if (input.archived !== undefined)
+161:           conditions.push(input.archived ? isNotNull(SessionTable.time_archived) : isNull(SessionTable.time_archived))
+...
+179:           .orderBy(
+180:             order === "asc" ? asc(sortColumn) : desc(sortColumn),
+181:             order === "asc" ? asc(SessionTable.id) : desc(SessionTable.id),
+182:           )
+...
+221:         // Claim bookkeeping never counts as user activity: time_updated is
+222:         // pinned so session ordering only moves on real changes.
+...
+
+== packages/core/src/bus.ts
+127:   /**
+128:    * Volatile live channel: every event published from now on, nothing before or
+129:    * across a disconnect. Consumers that need reliability combine it with `log`.
+130:    * With an ambient Location, delivery is restricted to that Location and global
+131:    * events. Unlocated Session events use the Session's owner at publication time.
+132:    * Session moves reach both the old and new Location, without changing the event.
+133:    */
+...
+188:   return makeGlobalNode({
+...
+
+== packages/core/src/plugin/host.ts
+266:     event: {
+267:       // The bus only delivers the requested types, which TypeScript cannot follow through the generic signature.
+268:       subscribe: ((input?: { readonly types?: ReadonlyArray<string> }) => {
+269:         if (!input?.types?.length) return bus.subscribe().pipe(Stream.filter(isPublicEvent))
+270:         const unknown = new Array<string>()
+271:         const [first, ...rest] = input.types.flatMap((type) => {
+272:           if (isRpcType(type)) return [Rpc.eventDefinition(type)]
+273:           const definition = EventManifest.Server.get(type)
+274:           if (!definition) unknown.push(type)
+275:           return definition ? [definition] : []
+276:         })
+277:         const events = first ? bus.subscribe([first, ...rest]) : Stream.never
+278:         if (unknown.length === 0) return events
+279:         return Stream.unwrap(
+280:           Effect.logWarning("ignoring unknown event types", { pluginID, types: unknown }).pipe(Effect.as(events)),
+281:         )
+282:       }) as Plugin.Context["event"]["subscribe"],
+...
+594:       list: sessions.list,
+...
+615:       prompt: sessions.prompt,
+...
+628:       synthetic: sessions.synthetic,
+...
+
+== packages/core/src/location-activity.ts
+29:       const timeToLive = Duration.fromInputUnsafe(options.timeToLive ?? "60 minutes")
+...
+38:       const idleTimeout = (ref: Location.Ref) =>
+39:         Effect.gen(function* () {
+40:           const context = yield* locations.contextEffectOption(ref)
+41:           if (Option.isNone(context)) return timeToLive
+42:           const entries = yield* Context.get(context.value, Config.Service).entries()
+43:           const configured = entries.findLast(
+44:             (entry): entry is Document =>
+45:               entry.type === "document" && entry.info.experimental?.location_idle_timeout !== undefined,
+46:           )
+47:           return configured?.info.experimental?.location_idle_timeout ?? timeToLive
+48:         }).pipe(
+49:           Effect.scoped,
+...
+76:         // Waiting on a question, a long tool call, or a background job emits no durable activity.
+...
+88:         yield* Effect.forEach(
+89:           expired,
+90:           (entry) => {
+91:             if (occupied.has(key(entry.ref))) return touch(entry.ref)
+92:             entries.delete(key(entry.ref))
+93:             return Effect.logInfo("location services evicted", {
+94:               directory: entry.ref.directory,
+95:               workspaceID: entry.ref.workspaceID,
+96:             }).pipe(Effect.andThen(locations.invalidate(entry.ref)))
+97:           },
+98:           { discard: true },
+99:         )
+100:       }).pipe(Effect.forever, Effect.forkScoped)
+101: 
+102:       return Service.of({})
+103:     }),
+104:   )
+105: }
+...
+
+== packages/core/src/location-services.ts
+54:         // Retain healthy graphs. Boot failures, not local filesystem probes,
+55:         // decide whether a location (including workspace placement) can retry.
+56:         { idleTimeToLive: Duration.infinity },
+...
+
+== packages/schema/src/config/experimental.ts
+46:   location_idle_timeout: Schema.Union([Schema.DurationFromString, Schema.Literal(false)])
+47:     .pipe(optional)
+48:     .annotate({
+49:       description:
+50:         'How long a location can go without session activity before its services are unloaded. Running sessions and background jobs keep a location loaded. Set to false to never unload (default: "60 minutes")',
+51:     }),
+...
+
+== packages/cli/src/session-target.ts
+141: async function latestSession(
+142:   client: OpenCodeClient,
+143:   location: LocationGetOutput,
+144:   cursor?: string,
+145:   signal?: AbortSignal,
+146: ): Promise<SessionInfo | undefined> {
+147:   const page = await client.session.list(
+148:     {
+149:       directory: location.directory,
+150:       parentID: null,
+151:       limit: SESSION_PAGE_LIMIT,
+152:       order: "desc",
+153:       ...(cursor ? { cursor } : {}),
+154:     },
+155:     ...requestOptions(signal),
+156:   )
+157:   const selected = page.data.find((session) => session.location.directory === location.directory)
+158:   if (selected) return selected
+159:   if (!page.cursor.next || page.data.length === 0) return
+160:   return latestSession(client, location, page.cursor.next, signal)
+161: }
+...
+
+== packages/cli/src/run/run.ts
+74:   const root = options.root ?? process.env.PWD ?? process.cwd()
+75:   const local = localDirectory(root)
+76:   const directory = options.useServerDirectory ? undefined : (options.directory ?? local)
+...
+
+== packages/cli/src/services/server-connection.ts
+47:   if (standalone || (yield* ServiceConfig.read()).disabled === true) {
+48:     return { endpoint: yield* Standalone.start() } satisfies Resolved
+49:   }
+50: 
+51:   const mismatch = args.mismatch ?? "ignore"
+52:   const options = yield* ServiceConfig.options({ checkVersion: mismatch !== "ignore" })
+53:   return {
+54:     endpoint: yield* resolveManaged({ ...options, onStart: args.onStart }, mismatch),
+55:     service: managedService(options),
+56:   } satisfies Resolved
+...
+
+== packages/cli/src/server-process.ts
+63:   if (options.mode === "service")
+64:     yield* Effect.try(() => process.chdir(global.home)).pipe(
+65:       Effect.catch((cause) => Effect.logWarning("failed to change service directory to home", { cause })),
+66:     )
+...
+79:       // Desktop can launch the service directly without injecting its saved environment.
+80:       Object.assign(process.env, ServiceConfig.processEnv(config.env))
+81:       // Keep a package-manager or curl install replaceable while the service runs; Desktop updates its own copy.
+82:       if (options.mode === "service" && process.platform === "win32" && RetainedImage.installed(global.home))
+83:         yield* RetainedImage.retain(global.cache, "service")
+84:       const { start } = yield* Effect.promise(() => import("@opencode/server/process"))
+...
+127:             // .claude is only read for skills, so both flags gate the same roots.
+128:             claude: !(
+129:               truthy(process.env.OPENCODE_DISABLE_CLAUDE_CODE) ||
+130:               truthy(process.env.OPENCODE_DISABLE_CLAUDE_CODE_SKILLS)
+131:             ),
+...
+
+== packages/core/src/config/plugin/instruction.ts
+41:       const globalFile = yield* fs.resolve(join(global.config, "AGENTS.md"))
+...
+51:       const candidates = [
+52:         ...(discovery.global ? [globalFile] : []),
+53:         ...(project
+54:           ? ancestorDirectories(start, stop)
+55:               .map((directory) => join(directory, "AGENTS.md"))
+56:               .filter((file) => discovery.global || file !== globalFile)
+57:           : []),
+58:       ]
+...
+
+== packages/core/src/config/plugin/compatibility.ts
+44:         const roots = yield* compatibility()
+45:         const directories = [...roots.claude, ...roots.agents].map((root) => path.join(root, "skills"))
+...
+
+== packages/core/src/config/discovery.ts
+70:   const globalClaudeDirectory = AbsolutePath.make(path.join(global.home, ".claude"))
+71:   const configDirectories = [...(system ? [system] : []), globalDirectory]
+...
+140:         ...(globalEnabled ? [globalAgentsDirectory] : []),
+141:         ...visible.filter((item) => path.basename(item) === ".agents").toReversed(),
+142:       ]),
+143:     ],
+144:   } satisfies Sources
+145: })
+146: 
+147: undefined
+...
+
+== packages/core/src/skill/instructions.ts
+15: 
+16: const entries = (skills: ReadonlyArray<Summary>) =>
+17:   skills.flatMap((skill) => [
+18:     "  <skill>",
+19:     `    <id>${skill.id}</id>`,
+20:     `    <name>${skill.name}</name>`,
+21:     `    <description>${skill.description}</description>`,
+22:     "  </skill>",
+...
+
+== packages/tui/src/component/prompt/index.tsx
+1234:       // Optimistic create: the data layer mints the ID client-side and admits
+1235:       // a local session record synchronously, so the navigation below happens
+1236:       // immediately — enter feels sent even while the create round-trip is in
+1237:       // flight. Sends against the new session gate on the request.
+1238:       const newSessionID = args.takeNewSessionID()
+1239:       const created = data.session.create({
+1240:         id: newSessionID,
+1241:         location: directory ? { directory } : location,
+1242:         agent: agent.id,
+...
+1350:         // Keep editor context hidden while admitting it before the corresponding user prompt.
+1351:         const send = () =>
+1352:           client.api.session.synthetic({
+1353:             sessionID: target,
+1354:             text: formatEditorContext(pendingEditorSelection),
+1355:             resume: false,
+1356:           })
+...
+1366:       data.session
+1367:         .prompt({
+1368:           sessionID: target,
+1369:           text: inputText,
+1370:           files: promptFilesForServer(entry.files, terminalEnvironment.localServer === true),
+1371:           agents: entry.agents,
+1372:           skills: entry.skills?.length ? entry.skills : undefined,
+1373:           delivery,
+1374:           gate: newSession?.gate,
+...
+1398:       route.navigate({
+1399:         type: "session",
+1400:         sessionID,
+1401:       })
+...
+
+== packages/tui/src/routes/session/index.tsx
+1937:         when={props.message.type === "system" || props.message.type === "synthetic" || props.message.type === "skill"}
+1938:       >
+1939:         <Show when={props.message.type === "skill"} fallback={<SessionNoticeMessageV2 message={props.message} />}>
+1940:           <SessionSkillMessage message={props.message as Extract<SessionMessageInfo, { type: "skill" }>} />
+1941:         </Show>
+...
+2102:   const text = () => {
+2103:     if (props.message.type === "system") return props.message.description ?? "Instructions updated"
+2104:     if (props.message.type === "synthetic") return props.message.description ?? ""
+2105:     return ""
+...
+2121:   return (
+2122:     <Show
+2123:       when={completion()}
+2124:       fallback={
+2125:         <InlineToolRow icon={source() === "goal" ? "◎" : "◈"} color={theme.text.muted} pending="Notice" complete={true}>
+2126:           {text()}
+2127:         </InlineToolRow>
+2128:       }
+...
+
+== packages/tui/src/app.tsx
+227:   const location = yield* Effect.tryPromise(() => api.file.list({ location: { directory: process.cwd() } })).pipe(
+228:     Effect.map((response) => response.location),
+...
+
+== packages/tui/src/context/session-tabs.tsx
+236:     createEffect(() => {
+237:       viewRetry()
+238:       if (focused() !== true) return
+239:       if (route.data.type !== "session" || route.data.sessionID === "dummy") return
+240:       const sessionID = root(route.data.sessionID)
+241:       const idle = data.session.get(sessionID)?.time.idle
+242:       if (idle === undefined || !isUnread(sessionID) || acknowledged.get(sessionID) === idle) return
+243:       // Record before the request so event-driven re-runs don't re-post the same watermark.
+244:       acknowledged.set(sessionID, idle)
+245:       void client.api.session.view({ sessionID, idle }).then(
+...
+
+== packages/app/src/session/timeline/message-timeline.tsx
+214:       if (Predicate.isTagged(row, "Notice")) {
+215:         const message = messageByID().get(row.messageID)
+216: 
+217:         return (
+218:           (message?.type === "system" || message?.type === "synthetic") &&
+219:           (message.description ?? message.text).length <= 1024
+220:         )
+...
+
+== packages/app/src/composer/comment-note.ts
+31: // attachment is skipped rather than discarding the rest.
+32: const decodePromptPresentation = Schema.decodeUnknownOption(
+33:   Schema.Struct({
+34:     displayText: Schema.String,
+35:     comments: Schema.Array(Schema.Unknown),
+36:     attachments: Persistence.array(PromptAttachmentReference),
+37:   }),
+...
