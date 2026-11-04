@@ -58,30 +58,42 @@ def _inside(path: Path, root: Path) -> bool:
     return Path(os.path.abspath(path)).resolve().is_relative_to(root.resolve())
 
 
+UNUSABLE_ROOTS = (OSError, ValueError, AttributeError, RuntimeError)   # файла нет, не JSON, не та форма, `~` без домашнего каталога
+
+
+def _roots_around(path: Path) -> dict[str, Path] | None:
+    """Файл корней лежит вне проекта: его корни, только если он называет `""` и `path` внутри этого корня (F-104). У файла клона ядра
+    `""` нет, поэтому он инструментами вне проекта и считается. Негодный файл здесь не нужен и команду не роняет: `None`."""
+    try:
+        roots = _roots_from_file(None)
+        return roots if "" in roots and _inside(path, roots[""]) else None
+    except UNUSABLE_ROOTS:
+        return None
+
+
 def default_roots(roots_file: Path | None = None, journal_path: Path | None = None) -> dict[str, Path]:
     """Префикс пути улики -> каталог — только из файла корней (`tools/journal-roots.json`
     или `roots_file`); зашитых в код префиксов нет. Значение: `<root>`, `<home>`, `~` или
     путь; пустой префикс `""` — корень по умолчанию, если файл его называет.
-    Файл корней вне проекта из пути журнала — инструменты вне проекта (`symphysis.toolsPath`, F-93, F-104): решает положение
-    инструментов, а не содержимое файла (у клона ядра в нём нет `""`); файл не читается, единственный корень — проект.
-    Явный `roots_file` важнее; путь журнала не из `openspec/changes/` — файл корней."""
+    Порядок: явный `roots_file`; журнал не из `openspec/changes/` или файл корней внутри проекта из пути журнала — файл корней;
+    файл вне проекта — см. `_roots_around`; иначе инструменты вне проекта (`symphysis.toolsPath`, F-93, F-104): единственный корень — проект."""
     where = change_of(journal_path) if journal_path is not None and roots_file is None else None
-    if where is not None and not _inside(ROOTS_PATH, where[0]):
-        return {"": where[0].resolve()}
-    return _roots_from_file(roots_file)
+    if where is None or _inside(ROOTS_PATH, where[0]):
+        return _roots_from_file(roots_file)
+    return _roots_around(journal_path) or {"": where[0].resolve()}
 
 
 def project_roots(project: Path) -> dict[str, Path]:
-    """Те же корни для вызова без журнала (`step_help.py`): корень проекта известен по каталогу вызова. Файл корней вне проекта —
-    инструменты вне проекта (F-93, F-104): единственный корень — проект. Файла корней нет или он негоден — тоже."""
+    """Те же корни для вызова без журнала (`step_help.py`): корень проекта известен по каталогу вызова. Порядок тот же:
+    файл корней внутри проекта — его корни, негодный файл — проект; файл вне проекта — см. `_roots_around`; иначе только проект."""
     project = Path(project)
+    own = {"": project.resolve()}
     if not _inside(ROOTS_PATH, project):
-        return {"": project.resolve()}
+        return _roots_around(project) or own
     try:
-        roots = _roots_from_file(None)
-    except (OSError, ValueError):
-        return {"": project.resolve()}
-    return {"": project.resolve(), **roots}   # файл без `""`: без префикса путь считается от проекта, а не от каталога установки
+        return {**own, **_roots_from_file(None)}   # файл без `""`: без префикса путь считается от проекта, а не от каталога установки
+    except UNUSABLE_ROOTS:
+        return own
 
 
 OUTSIDE_ROOT = Path("<вне корня>")   # признак `_resolve`: путь выходит за корень, файл не читается

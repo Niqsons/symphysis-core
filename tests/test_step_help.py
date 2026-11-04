@@ -1206,8 +1206,9 @@ def test_file_links_survive_a_failed_calculation(tmp_path):
     assert code == 1 and data["error"] and data["file_links"] == {"tools/journal.py": "tools/journal.py"}
 
 
-def install_layout(tmp_path):
-    """Инструменты в раскладке инсталлятора вне проекта и проект; в тексте шага файл проекта и файл только установки."""
+def install_layout(tmp_path, nested=False):
+    """Инструменты в раскладке инсталлятора вне проекта и проект; в тексте шага файл проекта и файл только установки.
+    `nested=True` — проект в подкаталоге установки."""
     install = tmp_path / "установка"
     tools = install / ".symphysis" / "tools"
     tools.mkdir(parents=True)
@@ -1219,11 +1220,19 @@ def install_layout(tmp_path):
     (tools / "journal-roots.json").write_text('{"": "<root>/.."}\n', encoding="utf-8")
     (install / "src").mkdir()
     (install / "src" / "only_install.py").write_text("x\n", encoding="utf-8")
-    project = make_project(tmp_path / "проект")
+    project = make_project(install / "sub" if nested else tmp_path / "проект")
     (project / "src").mkdir()
     (project / "src" / "only_project.py").write_text("x\n", encoding="utf-8")
     steps_with(project, decisions="Файлы `src/only_project.py` и `src/only_install.py`.")
     return tools / "step_help.py", project
+
+
+def test_ordinary_installation_with_the_project_in_a_subfolder_step_help_half(tmp_path):
+    """Половина `step_help.py` сценария «Обычная установка»: проект в подкаталоге установки, внутри корня файла: корни из файла."""
+    script, project = install_layout(tmp_path, nested=True)
+    code, data = run_installed(tmp_path, script, project, "--change", "demo")
+    assert code == 0
+    assert data["file_links"] == {"src/only_install.py": "src/only_install.py"}
 
 
 def test_scenario_root_with_tools_outside_the_project_step_help_half(tmp_path):

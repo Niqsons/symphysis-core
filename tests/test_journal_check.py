@@ -688,9 +688,44 @@ def test_ordinary_clone_keeps_its_roots_file(tmp_path):
     assert _verdicts(view.stdout) == {"docs/a.md": "сверено", "src/both.py": "корня для пути нет"}
 
 
+def test_scenario_ordinary_installation_with_the_journal_in_a_subfolder(tmp_path):
+    """«Обычная установка»: инструменты в `<x>/.symphysis/tools`, журнал в `<x>/sub` внутри корня файла: корни из файла, а не от подкаталога."""
+    x = tmp_path / "установка с пробелом"
+    tools = _copy_tools(x)
+    sub = x / "sub"
+    (x / "src").mkdir()
+    (x / "src" / "only_x.py").write_text("в этом месте\n", encoding="utf-8")
+    (sub / "src").mkdir(parents=True)
+    (sub / "src" / "only_sub.py").write_text("в этом месте\n", encoding="utf-8")
+    journal_file = sub / "openspec" / "changes" / "a" / "decisions.json"
+    journal_file.parent.mkdir(parents=True)
+    j = one_record_journal("src/only_x.py", "в ")
+    j["records"][0]["options"][0]["evidence"] = [{"path": p, "quote": "в "} for p in ("src/only_x.py", "src/only_sub.py")]
+    journal.save_journal(journal_file, j)
+    view = _core(tools, sub, "view-json", "openspec/changes/a/decisions.json")
+    assert view.returncode == 0, view.stderr
+    assert _verdicts(view.stdout) == {"src/only_x.py": "сверено", "src/only_sub.py": "файла нет"}
+    check = _core(tools, sub, "check", "openspec/changes/a/decisions.json")
+    assert "улик сверено 1 из 2" in check.stdout, check.stderr
+
+
+@pytest.mark.parametrize("content", [b"[]", b'{"": 1}', b"\xff\xfe", None], ids=["список", "значение не строка", "не UTF-8", "файла нет"])
+def test_unusable_roots_file_outside_the_project_gives_the_project_root(tmp_path, content):
+    """Файл корней вне проекта негоден в любом виде: единственный корень это проект, команда не падает."""
+    tools, project = _layout(tmp_path, tools_in_project=False)
+    roots = tools / "journal-roots.json"
+    if content is None:
+        roots.unlink()
+    else:
+        roots.write_bytes(content)
+    view = _core(tools, project, "view-json", JOURNAL_REL)
+    assert view.returncode == 0, view.stderr
+    assert _verdicts(view.stdout) == {"src/both.py": "сверено", "src/only_project.py": "сверено", "src/only_install.py": "файла нет"}
+
+
 @pytest.mark.parametrize("clone", [False, True], ids=["установка", "клон"])
 def test_broken_roots_file_does_not_stop_commands_that_do_not_need_it(tmp_path, clone):
-    """Инструменты вне проекта: файл корней не читается, поэтому битый файл команду не роняет."""
+    """Инструменты вне проекта: битый файл корней команду не роняет, единственный корень это проект."""
     tools, project = _layout(tmp_path, tools_in_project=False, clone=clone)
     (tools / "journal-roots.json").write_text("{не json", encoding="utf-8")
     view = _core(tools, project, "view-json", JOURNAL_REL)
