@@ -22,7 +22,7 @@
    "consequences": "F-21",
    "evidence": [
     {
-     "path": "openspec/changes/recommendation-why/intent.md",
+     "path": "openspec/changes/archive/2026-11-04-recommendation-why/intent.md",
      "quote": "«у рекомендации есть обоснование» (слово в чате, 2026-11-04)",
      "line": 18,
      "verdict": "сверено",
@@ -54,7 +54,7 @@
    "consequences": "F-11, F-21",
    "evidence": [
     {
-     "path": "openspec/changes/recommendation-why/intent.md",
+     "path": "openspec/changes/archive/2026-11-04-recommendation-why/intent.md",
      "quote": "«должна быть зафиксирована в ядре, а не исправлена только в рамках этой сессии» (слово в чате, 2026-11-04)",
      "line": 19,
      "verdict": "сверено",
@@ -82,7 +82,7 @@
    "consequences": "F-22",
    "evidence": [
     {
-     "path": "openspec/changes/recommendation-why/intent.md",
+     "path": "openspec/changes/archive/2026-11-04-recommendation-why/intent.md",
      "quote": "«если выбран ответ отличный от рекомендации, то нужно писать своё обоснование» (слово в чате, 2026-11-04)",
      "line": 20,
      "verdict": "сверено",
@@ -114,7 +114,7 @@
    "consequences": "F-19",
    "evidence": [
     {
-     "path": "openspec/changes/recommendation-why/intent.md",
+     "path": "openspec/changes/archive/2026-11-04-recommendation-why/intent.md",
      "quote": "«Показ всегда `вариант — why`, как уже делает страница: в плагине и в `decisions.md`» (слова модели в варианте F-60.A, человек его выбрал, 2026-11-04)",
      "line": 21,
      "verdict": "сверено",
@@ -147,7 +147,7 @@
    "consequences": "F-11, F-21",
    "evidence": [
     {
-     "path": "openspec/changes/recommendation-why/intent.md",
+     "path": "openspec/changes/archive/2026-11-04-recommendation-why/intent.md",
      "quote": "«Скилл перестаёт называть `text`, и `why` описан как причина выбора этого варианта против других» (слова модели в варианте F-60.A, человек его выбрал, 2026-11-04)",
      "line": 22,
      "verdict": "сверено",
@@ -178,7 +178,7 @@
    "consequences": "F-14, F-20",
    "evidence": [
     {
-     "path": "openspec/changes/recommendation-why/intent.md",
+     "path": "openspec/changes/archive/2026-11-04-recommendation-why/intent.md",
      "quote": "«Старые журналы остаются в силе» (слова модели в варианте F-60.A, человек его выбрал, 2026-11-04)",
      "line": 23,
      "verdict": "сверено",
@@ -209,7 +209,7 @@
    "consequences": "",
    "evidence": [
     {
-     "path": "openspec/changes/recommendation-why/intent.md",
+     "path": "openspec/changes/archive/2026-11-04-recommendation-why/intent.md",
      "quote": "«Требование в спеке и тест» (слова модели в варианте F-60.A, человек его выбрал, 2026-11-04)",
      "line": 24,
      "verdict": "сверено",
@@ -448,14 +448,14 @@
    "consequences": "F-20",
    "evidence": [
     {
-     "path": "openspec/changes/recommendation-why/probes/recommendation-text.txt",
+     "path": "openspec/changes/archive/2026-11-04-recommendation-why/probes/recommendation-text.txt",
      "quote": "итого: 180",
      "line": 17,
      "verdict": "сверено",
      "found": true
     },
     {
-     "path": "openspec/changes/recommendation-why/probes/recommendation-text.txt",
+     "path": "openspec/changes/archive/2026-11-04-recommendation-why/probes/recommendation-text.txt",
      "quote": "2026-11-02-implementation-consequences с text: 109 | why не внутри text: 109",
      "line": 7,
      "verdict": "сверено",
@@ -486,7 +486,7 @@
    "consequences": "F-19",
    "evidence": [
     {
-     "path": "openspec/changes/recommendation-why/probes/imported-composite.txt",
+     "path": "openspec/changes/archive/2026-11-04-recommendation-why/probes/imported-composite.txt",
      "quote": "итого: 5",
      "line": 18,
      "verdict": "сверено",
@@ -650,7 +650,7 @@
        "found": true
       },
       {
-       "path": "openspec/changes/recommendation-why/probes/imported-composite.txt",
+       "path": "openspec/changes/archive/2026-11-04-recommendation-why/probes/imported-composite.txt",
        "quote": "итого: 5",
        "line": 18,
        "verdict": "сверено",
@@ -765,7 +765,7 @@
      "unlikely": "переписывает 276 записей архива ради поля, которое уже ни на что не влияет",
      "evidence": [
       {
-       "path": "openspec/changes/recommendation-why/probes/recommendation-text.txt",
+       "path": "openspec/changes/archive/2026-11-04-recommendation-why/probes/recommendation-text.txt",
        "quote": "итого: 180",
        "line": 17,
        "verdict": "сверено",
@@ -939,7 +939,7 @@
      "unlikely": null,
      "evidence": [
       {
-       "path": "openspec/changes/recommendation-why/intent.md",
+       "path": "openspec/changes/archive/2026-11-04-recommendation-why/intent.md",
        "quote": "«если выбран ответ отличный от рекомендации, то нужно писать своё обоснование»",
        "line": 20,
        "verdict": "сверено",
@@ -1044,7 +1044,7 @@
      "unlikely": null,
      "evidence": [
       {
-       "path": "openspec/changes/recommendation-why/specs/artifact-attack/spec.md",
+       "path": "openspec/changes/archive/2026-11-04-recommendation-why/specs/artifact-attack/spec.md",
        "quote": "### Requirement: Атака считает находкой `why`, пересказывающий вариант",
        "line": 5,
        "verdict": "сверено",
@@ -1074,7 +1074,7 @@
      "unlikely": null,
      "evidence": [
       {
-       "path": "openspec/changes/recommendation-why/specs/artifact-attack/spec.md",
+       "path": "openspec/changes/archive/2026-11-04-recommendation-why/specs/artifact-attack/spec.md",
        "quote": "### Requirement: Атака считает находкой `why`, пересказывающий вариант",
        "line": 5,
        "verdict": "сверено",
@@ -1110,7 +1110,7 @@
    "consequences": "Нарушение не тихое: блокер виден сразу, атаку зовёт сам человек, а понизить тяжесть его словом можно уже сейчас. Исключение из общего правила A усложнило бы скилл ради случая, которого ещё не было. B обещает то, что и так сказано в сценарии «`why` называет причину». Что нужно для понижения на деле — F-26.",
    "evidence": [
     {
-     "path": "openspec/changes/recommendation-why/specs/artifact-attack/spec.md",
+     "path": "openspec/changes/archive/2026-11-04-recommendation-why/specs/artifact-attack/spec.md",
      "quote": "### Requirement: Атака считает находкой `why`, пересказывающий вариант",
      "line": 5,
      "verdict": "сверено",
@@ -1141,7 +1141,7 @@
    "consequences": "F-24, F-26",
    "evidence": [
     {
-     "path": "openspec/changes/recommendation-why/research/F-24.md",
+     "path": "openspec/changes/archive/2026-11-04-recommendation-why/research/F-24.md",
      "quote": "Итог: путь понижения есть, но длинный.",
      "line": 38,
      "verdict": "сверено",
@@ -1212,7 +1212,7 @@
      "unlikely": null,
      "evidence": [
       {
-       "path": "openspec/changes/recommendation-why/answers/2026-11-04-2.md",
+       "path": "openspec/changes/archive/2026-11-04-recommendation-why/answers/2026-11-04-2.md",
        "quote": "чтобы правильно реализовать вариант С нужен механизм понижения, то есть у карточки атаки должна быть кнопка понизить или повысить, и поле ввода обоснования.",
        "line": 2,
        "verdict": "сверено",
@@ -1458,7 +1458,7 @@
    "consequences": "аналогично обоснованию F-27 : режим проверки будет depricated, как и поле text. но не в этом изменении.",
    "evidence": [
     {
-     "path": "openspec/changes/recommendation-why/proposal.md",
+     "path": "openspec/changes/archive/2026-11-04-recommendation-why/proposal.md",
      "quote": "Контракт ядра с плагином не меняется, номер остаётся прежним (F-23).",
      "line": 36,
      "verdict": "сверено",
@@ -1556,14 +1556,14 @@
    "consequences": "F-27, F-29, F-30",
    "evidence": [
     {
-     "path": "openspec/changes/recommendation-why/answers/2026-11-04-4.md",
+     "path": "openspec/changes/archive/2026-11-04-recommendation-why/answers/2026-11-04-4.md",
      "quote": "режим проверки я собираюсь позже убрать, поэтому и поддерживать его механизмы нет смысла",
      "line": 2,
      "verdict": "сверено",
      "found": true
     },
     {
-     "path": "openspec/changes/recommendation-why/answers/2026-11-04-4.md",
+     "path": "openspec/changes/archive/2026-11-04-recommendation-why/answers/2026-11-04-4.md",
      "quote": "режим проверки будет depricated, как и поле text. но не в этом изменении.",
      "line": 4,
      "verdict": "сверено",
