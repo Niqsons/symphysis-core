@@ -15,7 +15,7 @@ import shlex
 import sys
 from pathlib import Path
 
-from journal_apply import (REFUSED, apply_answers, apply_md4h, check_evidence, default_roots, file_links, parse_answers,
+from journal_apply import (REFUSED, apply_answers, apply_md4h, change_of as _change_of, check_evidence, default_roots, file_links, parse_answers,
                            parse_md4h, project_href, sha256_file)
 from journal_consequences import check_consequences
 from journal_model import import_md, load_journal, save_journal, unexplained_choices, validate_journal
@@ -50,7 +50,7 @@ def cmd_check(args: argparse.Namespace) -> int:
     journal = _valid_journal(args.json)
     if journal is None:
         return 1
-    roots = default_roots(args.roots)
+    roots = default_roots(args.roots, args.json)
     result = check_evidence(journal, roots)
     summary = f"[ok] улик сверено {result['found']} из {result['total']}"
     if result["unchecked"]:
@@ -81,7 +81,7 @@ def cmd_code_sites(args: argparse.Namespace) -> int:
     journal = _valid_journal(args.json)
     if journal is None:
         return 1
-    result = code_sites(journal, default_roots(args.roots))
+    result = code_sites(journal, default_roots(args.roots, args.json))
     print(f"[ok] мест кода {len(result['sites'])}")
     for path, ids in result["sites"].items():
         print(f"  {path} — {', '.join(ids)}")
@@ -123,16 +123,6 @@ def _read_attack(path: Path) -> tuple[dict | None, str]:
         return None, f"{path}: не UTF-8 — файл атаки читается как UTF-8"
     except ValueError as e:
         return None, str(e)
-
-
-def _change_of(journal_path: Path) -> tuple[Path, str] | None:
-    """Корень проекта и имя изменения из пути журнала: `<корень>/openspec/changes/[archive/]<имя>/<журнал>`. Корень не из
-    каталога вызова: у вызова может быть свой проект с тем же именем (F-58). Журнал в другом месте — `None`."""
-    folder = Path(os.path.abspath(journal_path)).parent
-    changes = folder.parent.parent if folder.parent.name == "archive" else folder.parent
-    if changes.name == "changes" and changes.parent.name == "openspec":
-        return changes.parent.parent, folder.name
-    return None
 
 
 def _from_root(path: Path | str, root: Path) -> str:
@@ -215,7 +205,7 @@ def cmd_render_html(args: argparse.Namespace) -> int:
         attacks.append({**attack, "path": _attack_path(path, args.json)})
     # Сверка идёт в памяти: просмотрщик получает вердикты, файл журнала не меняется;
     # хеш журнала — по байтам файла на диске, как `sha256_file` у связки md4h.
-    roots = default_roots(args.roots)
+    roots = default_roots(args.roots, args.json)
     result = check_evidence(journal, roots)
     snapshot = _help_snapshot(args)
     links = {"root": project_href(roots, args.out), "files": file_links(journal, roots, Path(args.json).parent, args.out, attacks, snapshot)}
@@ -248,8 +238,12 @@ def cmd_view_json(args: argparse.Namespace) -> int:
         shown = _attack_path(path, args.json)
         attacks.append({**attack, "path": shown} if attack is not None else {"path": shown, "error": refusal})
     # Сверка идёт в памяти, файл журнала не меняется; хеш — по байтам файла, как у `render-html`.
-    check_evidence(journal, default_roots(args.roots))
-    print(json.dumps(view_payload(journal, attacks=attacks, journal_sha256=sha256_file(args.json)), ensure_ascii=False))
+    roots = default_roots(args.roots, args.json)
+    check_evidence(journal, roots)
+    payload = view_payload(journal, attacks=attacks, journal_sha256=sha256_file(args.json))
+    # Карта для плагина (F-44): те же корни и тот же код, что у страницы, значение от корня проекта. Номер контракта прежний (F-35).
+    payload["file_links"] = file_links(journal, roots, Path(args.json).parent, None, attacks, from_project=True)
+    print(json.dumps(payload, ensure_ascii=False))
     return 0
 
 

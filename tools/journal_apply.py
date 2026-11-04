@@ -19,7 +19,7 @@ from journal_render import _lines, anchor_lines
 
 __all__ = [
     "ROOTS_PATH", "REFUSED",
-    "default_roots", "find_quote", "check_evidence", "file_links", "project_href",
+    "change_of", "default_roots", "find_quote", "check_evidence", "file_links", "project_href",
     "parse_answers", "apply_answers", "parse_md4h", "apply_md4h", "sha256_file",
 ]
 
@@ -39,12 +39,29 @@ def _expand_value(value: str) -> Path:
     return Path(value).expanduser()
 
 
-def default_roots(roots_file: Path | None = None) -> dict[str, Path]:
+def change_of(journal_path: Path) -> tuple[Path, str] | None:
+    """Корень проекта и имя изменения из пути журнала: `<корень>/openspec/changes/[archive/]<имя>/<журнал>`. Корень не из
+    каталога вызова: у вызова может быть свой проект с тем же именем (F-58). Журнал в другом месте — `None`."""
+    folder = Path(os.path.abspath(journal_path)).parent
+    changes = folder.parent.parent if folder.parent.name == "archive" else folder.parent
+    if changes.name == "changes" and changes.parent.name == "openspec":
+        return changes.parent.parent, folder.name
+    return None
+
+
+def default_roots(roots_file: Path | None = None, journal_path: Path | None = None) -> dict[str, Path]:
     """Префикс пути улики -> каталог — только из файла корней (`tools/journal-roots.json`
     или `roots_file`); зашитых в код префиксов нет. Значение: `<root>`, `<home>`, `~` или
-    путь; пустой префикс `""` — корень по умолчанию, если файл его называет."""
+    путь; пустой префикс `""` — корень по умолчанию, если файл его называет.
+    Журнал вне корня `""` файла корней — инструменты вне проекта (`symphysis.toolsPath`, F-93, F-104): файл корней
+    не годится, единственный корень — проект из пути журнала. Явный `roots_file` важнее; путь журнала не из
+    `openspec/changes/` или файл без `""` — прежнее поведение."""
     raw = json.loads(Path(roots_file or ROOTS_PATH).read_text(encoding="utf-8"))
-    return {prefix: _expand_value(value) for prefix, value in raw.items()}
+    roots = {prefix: _expand_value(value) for prefix, value in raw.items()}
+    where = change_of(journal_path) if journal_path is not None and roots_file is None else None
+    if where is not None and "" in roots and not Path(os.path.abspath(journal_path)).resolve().is_relative_to(roots[""].resolve()):
+        return {"": where[0].resolve()}
+    return roots
 
 
 OUTSIDE_ROOT = Path("<вне корня>")   # признак `_resolve`: путь выходит за корень, файл не читается
@@ -92,28 +109,34 @@ def _walk_references(value, paths: set[str]) -> None:
         paths.update(RE_LINE_TAIL.sub("", code) for code in RE_CODE_SPAN.findall(value))
 
 
-def _relative_link(path: str, bases: list[dict[str, Path]], here: Path) -> str | None:
-    """Относительный адрес от каталога страницы: первая база, где это файл внутри корня. Недопустимое имя и другой диск — без ссылки."""
+def _relative_link(path: str, bases: list[dict[str, Path]], here: Path, encode: bool = True) -> str | None:
+    """Относительный адрес от каталога `here`: первая база, где это файл внутри корня. Недопустимое имя и другой диск — без ссылки.
+    `encode=False` — путь как есть (для плагина), без `quote`."""
     for roots in bases:
         try:
             file = _resolve(path, roots)
             if file is None or file == OUTSIDE_ROOT or not file.is_file():
                 continue
-            return quote(os.path.relpath(file, here).replace(os.sep, "/"), safe="/")
+            href = os.path.relpath(file, here).replace(os.sep, "/")
+            return quote(href, safe="/") if encode else href
         except (OSError, ValueError):
             continue
     return None
 
 
-def file_links(journal: dict, roots: dict[str, Path], change_dir: Path, out: Path, *others) -> dict[str, str]:
+def file_links(journal: dict, roots: dict[str, Path], change_dir: Path, out: Path | None, *others,
+               from_project: bool = False) -> dict[str, str]:
     """Карта «путь из журнала -> адрес от страницы» для страницы `out`: путь улики или файла справки и текст в backticks
     из журнала и из `others` (атаки, снимок справки), если это существующий файл внутри корней улик или каталога изменения.
-    Абсолютных путей в карте нет: страницу можно коммитить; адрес ссылки на странице берётся только отсюда."""
+    Абсолютных путей в карте нет: страницу можно коммитить; адрес ссылки на странице берётся только отсюда.
+    `from_project=True` (F-44): значение от корня `""` (без него — каталог над `tools/`), прямые слеши, без кодирования;
+    `out` не нужен. `../` бывает только у префикса файла корней на соседний каталог."""
     paths: set[str] = set()
     for value in (journal, *others):
         _walk_references(value, paths)
-    here, bases = Path(out).resolve().parent, [roots, {"": Path(change_dir).resolve()}]
-    found = {path: _relative_link(path, bases, here) for path in sorted(paths)}
+    bases = [roots, {"": Path(change_dir).resolve()}]
+    here = Path(roots.get("", ROOT)).resolve() if from_project else Path(out).resolve().parent
+    found = {path: _relative_link(path, bases, here, encode=not from_project) for path in sorted(paths)}
     return {path: href for path, href in found.items() if href}
 
 
