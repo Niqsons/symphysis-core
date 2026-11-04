@@ -1,0 +1,58 @@
+# Покрытие пробы краёв: recommendation-why
+
+- decision-journal/`decisions.md` показывает рекомендацию с причиной · boundary · неприменимо: формы text; boundary только для numeric-range
+- decision-journal/`decisions.md` показывает рекомендацию с причиной · adjacency · неприменимо: формы text; adjacency только для collection
+- decision-journal/`decisions.md` показывает рекомендацию с причиной · empty · не найдено: `why` из одних пробелов — `check` отвергает его кодом 1, до рендера запись не доходит
+- decision-journal/`decisions.md` показывает рекомендацию с причиной · encoding · не найдено: перевод строки внутри `why` рвал бы строку рекомендации — в архиве и живых журналах таких `why` ноль
+- decision-journal/`decisions.md` показывает рекомендацию с причиной · ordering · неприменимо: формы text; ordering только для collection
+- decision-journal/`decisions.md` показывает рекомендацию с причиной · precision · неприменимо: формы text; precision только для numeric-range
+- decision-journal/`decisions.md` показывает рекомендацию с причиной · idempotency · неприменимо: формы text; idempotency только для stateful
+- decision-journal/`decisions.md` показывает рекомендацию с причиной · concurrency · неприменимо: формы text; concurrency только для io, stateful
+- decision-journal/Поле `text` не читается и новыми записями не пишется · boundary · неприменимо: формы text, stateful; boundary только для numeric-range
+- decision-journal/Поле `text` не читается и новыми записями не пишется · adjacency · неприменимо: формы text, stateful; adjacency только для collection
+- decision-journal/Поле `text` не читается и новыми записями не пишется · empty · не найдено: строка рекомендации «—» даёт `null`, поведение прежнее и от поля `text` не зависит
+- decision-journal/Поле `text` не читается и новыми записями не пишется · encoding · не выбран: кириллическая буква в начале, «А также…», читается как вариант «А», и показ станет `А — также…`; импорт идёт только из старого плана, где таких строк нет, новых импортов нет
+- decision-journal/Поле `text` не читается и новыми записями не пишется · ordering · неприменимо: формы text, stateful; ordering только для collection
+- decision-journal/Поле `text` не читается и новыми записями не пишется · precision · неприменимо: формы text, stateful; precision только для numeric-range
+- decision-journal/Поле `text` не читается и новыми записями не пишется · idempotency · не найдено: второй импорт того же файла — результат зависит только от файла, круговой разбор закреплён сценарием
+- decision-journal/Поле `text` не читается и новыми записями не пишется · concurrency · не найдено: импорт один раз читает файл и один раз пишет результат, общего состояния с другими запусками нет
+- decision-viewer/Страница показывает рекомендацию с причиной · boundary · неприменимо: формы text; boundary только для numeric-range
+- decision-viewer/Страница показывает рекомендацию с причиной · adjacency · неприменимо: формы text; adjacency только для collection
+- decision-viewer/Страница показывает рекомендацию с причиной · empty · не найдено: пустой `why` на странице — `check` отвергает такой журнал кодом 1
+- decision-viewer/Страница показывает рекомендацию с причиной · encoding · не найдено: `why` проходит через те же `esc` и `md`, что и прежде, правки показа на странице нет
+- decision-viewer/Страница показывает рекомендацию с причиной · ordering · неприменимо: формы text; ordering только для collection
+- decision-viewer/Страница показывает рекомендацию с причиной · precision · неприменимо: формы text; precision только для numeric-range
+- decision-viewer/Страница показывает рекомендацию с причиной · idempotency · неприменимо: формы text; idempotency только для stateful
+- decision-viewer/Страница показывает рекомендацию с причиной · concurrency · неприменимо: формы text; concurrency только для io, stateful
+- plugin-decision-view/Плагин показывает рекомендацию с причиной · boundary · неприменимо: формы text; boundary только для numeric-range
+- plugin-decision-view/Плагин показывает рекомендацию с причиной · adjacency · неприменимо: формы text; adjacency только для collection
+- plugin-decision-view/Плагин показывает рекомендацию с причиной · empty · не выбран: `why` пуст при наличии `text`, как в тесте поиска; `check` отвергает такой журнал кодом 1, в архиве таких записей ноль, настоящих данных с этим краем нет
+- plugin-decision-view/Плагин показывает рекомендацию с причиной · encoding · не найдено: `why` рисует тот же компонент `Text`, что и вариант, обратные кавычки работают одинаково
+- plugin-decision-view/Плагин показывает рекомендацию с причиной · ordering · неприменимо: формы text; ordering только для collection
+- plugin-decision-view/Плагин показывает рекомендацию с причиной · precision · неприменимо: формы text; precision только для numeric-range
+- plugin-decision-view/Плагин показывает рекомендацию с причиной · idempotency · неприменимо: формы text; idempotency только для stateful
+- plugin-decision-view/Плагин показывает рекомендацию с причиной · concurrency · неприменимо: формы text; concurrency только для io, stateful
+- plugin-decision-view/Поиск плагина не читает поле `text` · boundary · неприменимо: формы text, collection; boundary только для numeric-range
+- plugin-decision-view/Поиск плагина не читает поле `text` · adjacency · не найдено: совпадение в `why` и в `text` одной записи — остаётся одно поле «рекомендация», двойной строки результата нет
+- plugin-decision-view/Поиск плагина не читает поле `text` · empty · не найдено: рекомендации нет — поле поиска пусто, как и прежде
+- plugin-decision-view/Поиск плагина не читает поле `text` · encoding · не найдено: нормализация поиска не меняется, меняется только список полей
+- plugin-decision-view/Поиск плагина не читает поле `text` · ordering · не найдено: порядок полей в результате задан списком, удаление одной строки его не меняет
+- plugin-decision-view/Поиск плагина не читает поле `text` · precision · неприменимо: формы text, collection; precision только для numeric-range
+- plugin-decision-view/Поиск плагина не читает поле `text` · idempotency · неприменимо: формы text, collection; idempotency только для stateful
+- plugin-decision-view/Поиск плагина не читает поле `text` · concurrency · неприменимо: формы text, collection; concurrency только для io, stateful
+- brainstorm-interview/Рекомендация записывается с причиной выбора · boundary · неприменимо: формы text; boundary только для numeric-range
+- brainstorm-interview/Рекомендация записывается с причиной выбора · adjacency · неприменимо: формы text; adjacency только для collection
+- brainstorm-interview/Рекомендация записывается с причиной выбора · empty · не найдено: развилка без рекомендации не меняется, а пустой `why` `check` отвергает
+- brainstorm-interview/Рекомендация записывается с причиной выбора · encoding · не найдено: скилл пишет обычную строку JSON, кодировка задана `save_journal`
+- brainstorm-interview/Рекомендация записывается с причиной выбора · ordering · неприменимо: формы text; ordering только для collection
+- brainstorm-interview/Рекомендация записывается с причиной выбора · precision · неприменимо: формы text; precision только для numeric-range
+- brainstorm-interview/Рекомендация записывается с причиной выбора · idempotency · неприменимо: формы text; idempotency только для stateful
+- brainstorm-interview/Рекомендация записывается с причиной выбора · concurrency · неприменимо: формы text; concurrency только для io, stateful
+- artifact-attack/Атака считает находкой `why`, пересказывающий вариант · boundary · неприменимо: формы text; boundary только для numeric-range
+- artifact-attack/Атака считает находкой `why`, пересказывающий вариант · adjacency · неприменимо: формы text; adjacency только для collection
+- artifact-attack/Атака считает находкой `why`, пересказывающий вариант · empty · не найдено: пустой `why` ловит `check`, строки атаки о нём нет по правилу скилла
+- artifact-attack/Атака считает находкой `why`, пересказывающий вариант · encoding · не найдено: сравнение идёт по смыслу, а не по байтам: судит модель атаки
+- artifact-attack/Атака считает находкой `why`, пересказывающий вариант · ordering · неприменимо: формы text; ordering только для collection
+- artifact-attack/Атака считает находкой `why`, пересказывающий вариант · precision · неприменимо: формы text; precision только для numeric-range
+- artifact-attack/Атака считает находкой `why`, пересказывающий вариант · idempotency · неприменимо: формы text; idempotency только для stateful
+- artifact-attack/Атака считает находкой `why`, пересказывающий вариант · concurrency · неприменимо: формы text; concurrency только для io, stateful

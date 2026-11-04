@@ -1,0 +1,6 @@
+{
+ "": "<root>",
+ "docs/": "<root>/docs",
+ "tools/": "<root>/tools",
+ "vscode/": "<root>/../symphysis-vscode"
+}

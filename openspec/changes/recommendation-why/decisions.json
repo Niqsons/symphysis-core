@@ -1,0 +1,1653 @@
+{
+ "title": "Журнал решений: recommendation-why",
+ "source": "decisions.json",
+ "intro": "Пути улик — от корня проекта; префикс `vscode/` — репозиторий плагина symphysis-vscode; корни — `openspec/changes/recommendation-why/probes/journal-roots.json`. Читались: `intent.md`, `docs/journal.schema.json`, `tools/journal_render.py`, `tools/journal_model.py`, `tools/playground-template.html`, скиллы `symphysis-brainstorm`, `symphysis-edge-probe`, `symphysis-attack`, спеки `decision-viewer`, `decision-journal`, `Card.tsx`, `CheckView.tsx`, `search.ts`, `logic.ts`. Подсчёты — в `probes/`.",
+ "records": [
+  {
+   "id": "F-01",
+   "question": "Критерий готовности: «у рекомендации есть обоснование»",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "постановка",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "F-21",
+   "evidence": [
+    {
+     "path": "openspec/changes/recommendation-why/intent.md",
+     "quote": "«у рекомендации есть обоснование» (слово в чате, 2026-11-04)",
+     "line": 18,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "why",
+    "human"
+   ]
+  },
+  {
+   "id": "F-02",
+   "question": "Критерий готовности: «должна быть зафиксирована в ядре, а не исправлена только в рамках этой сессии»",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "постановка",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "F-11, F-21",
+   "evidence": [
+    {
+     "path": "openspec/changes/recommendation-why/intent.md",
+     "quote": "«должна быть зафиксирована в ядре, а не исправлена только в рамках этой сессии» (слово в чате, 2026-11-04)",
+     "line": 19,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-03",
+   "question": "Критерий готовности: «если выбран ответ отличный от рекомендации, то нужно писать своё обоснование»",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "постановка",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "F-22",
+   "evidence": [
+    {
+     "path": "openspec/changes/recommendation-why/intent.md",
+     "quote": "«если выбран ответ отличный от рекомендации, то нужно писать своё обоснование» (слово в чате, 2026-11-04)",
+     "line": 20,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "pick",
+    "word"
+   ]
+  },
+  {
+   "id": "F-04",
+   "question": "Критерий готовности: «Показ всегда `вариант — why`, как уже делает страница: в плагине и в `decisions.md`»",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "постановка",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "F-19",
+   "evidence": [
+    {
+     "path": "openspec/changes/recommendation-why/intent.md",
+     "quote": "«Показ всегда `вариант — why`, как уже делает страница: в плагине и в `decisions.md`» (слова модели в варианте F-60.A, человек его выбрал, 2026-11-04)",
+     "line": 21,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "page",
+    "plugin",
+    "md"
+   ]
+  },
+  {
+   "id": "F-05",
+   "question": "Критерий готовности: «Скилл перестаёт называть `text`, и `why` описан как причина выбора этого варианта против других»",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "постановка",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "F-11, F-21",
+   "evidence": [
+    {
+     "path": "openspec/changes/recommendation-why/intent.md",
+     "quote": "«Скилл перестаёт называть `text`, и `why` описан как причина выбора этого варианта против других» (слова модели в варианте F-60.A, человек его выбрал, 2026-11-04)",
+     "line": 22,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "why"
+   ]
+  },
+  {
+   "id": "F-06",
+   "question": "Критерий готовности: «Старые журналы остаются в силе»",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "постановка",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "F-14, F-20",
+   "evidence": [
+    {
+     "path": "openspec/changes/recommendation-why/intent.md",
+     "quote": "«Старые журналы остаются в силе» (слова модели в варианте F-60.A, человек его выбрал, 2026-11-04)",
+     "line": 23,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "old"
+   ]
+  },
+  {
+   "id": "F-07",
+   "question": "Критерий готовности: «Требование в спеке и тест»",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "постановка",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/recommendation-why/intent.md",
+     "quote": "«Требование в спеке и тест» (слова модели в варианте F-60.A, человек его выбрал, 2026-11-04)",
+     "line": 24,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-08",
+   "question": "Плагин при наличии `text` показывает его вместо причины, в карточке и в режиме проверки",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "материалы",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "F-19",
+   "evidence": [
+    {
+     "path": "vscode/src/webview/Card.tsx",
+     "quote": "<div className=\"rec\">рекомендация: {rec.recommendation.text",
+     "line": 179,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "vscode/src/webview/CheckView.tsx",
+     "quote": "<div className=\"rec\">рекомендация: {rec.recommendation.text",
+     "line": 40,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "plugin"
+   ]
+  },
+  {
+   "id": "F-09",
+   "question": "`decisions.md` при наличии `text` пишет его вместо причины",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "материалы",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "F-19",
+   "evidence": [
+    {
+     "path": "tools/journal_render.py",
+     "quote": "return rc.get(\"text\") or \" — \".join(part for part in (rc[\"option\"], rc[\"why\"]) if part)",
+     "line": 63,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "md"
+   ]
+  },
+  {
+   "id": "F-10",
+   "question": "Страница всегда показывает вариант и причину, `text` не читает",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "материалы",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "F-19",
+   "evidence": [
+    {
+     "path": "tools/playground-template.html",
+     "quote": "html += '<div class=\"rec\">рекомендация: <b>' + esc(rec.recommendation.option) + '</b> — ' + md(rec.recommendation.why)",
+     "line": 600,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "page"
+   ]
+  },
+  {
+   "id": "F-11",
+   "question": "Два скилла называют `text` рядом с `why` без объяснения, какое поле за что отвечает",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "материалы",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "F-21",
+   "evidence": [
+    {
+     "path": "skills/symphysis-brainstorm/SKILL.md",
+     "quote": "проекта и дословная строка файла; `recommendation {option, why, text}` —",
+     "line": 178,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "skills/symphysis-edge-probe/SKILL.md",
+     "quote": "- `recommendation` — одна, после вариантов, `{option, why, text}`.",
+     "line": 274,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "model"
+   ]
+  },
+  {
+   "id": "F-12",
+   "question": "Поле задумано для импорта: строка как написана, а `option` и `why` у составной рекомендации лишь приближение",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "материалы",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "F-19, F-20",
+   "evidence": [
+    {
+     "path": "docs/journal.schema.json",
+     "quote": "Строка рекомендации как написана; у составной",
+     "line": 68,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "tools/journal_model.py",
+     "quote": "`text` — строка как написана: у составной рекомендации",
+     "line": 83,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-13",
+   "question": "`check` следит только за тем, что `why` не пуст. Виден ли он человеку и что в нём написано, не проверяется",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "материалы",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "F-21",
+   "evidence": [
+    {
+     "path": "tools/journal_model.py",
+     "quote": "errors.append(f\"{rid}: рекомендация без why\")",
+     "line": 394,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "openspec/specs/decision-journal/spec.md",
+     "quote": "- **THEN** строка `[!!] <F-NN>: рекомендация без why`, код 1",
+     "line": 108,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "check"
+   ]
+  },
+  {
+   "id": "F-14",
+   "question": "Короткий `text`, за которым прячется `why`, есть у 180 рекомендаций в трёх архивных журналах, ещё 96 старых записей с `text` содержат `why` внутри",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "материалы",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "F-20",
+   "evidence": [
+    {
+     "path": "openspec/changes/recommendation-why/probes/recommendation-text.txt",
+     "quote": "итого: 180",
+     "line": 17,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "openspec/changes/recommendation-why/probes/recommendation-text.txt",
+     "quote": "2026-11-02-implementation-consequences с text: 109 | why не внутри text: 109",
+     "line": 7,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "old"
+   ]
+  },
+  {
+   "id": "F-15",
+   "question": "У 5 импортированных составных рекомендаций `text` и «вариант — why» расходятся только началом: причина цела, меняется знак после буквы. Тесты сейчас закрепляют показ сырой строки",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "материалы",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "F-19",
+   "evidence": [
+    {
+     "path": "openspec/changes/recommendation-why/probes/imported-composite.txt",
+     "quote": "итого: 5",
+     "line": 18,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "tests/test_journal_render.py",
+     "quote": "def test_render_writes_recommendation_from_raw_text():",
+     "line": 158,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "vscode/test/unit/card.test.tsx",
+     "quote": "test(\"составная рекомендация пишется строкой как написана\", () => {",
+     "line": 43,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "old"
+   ]
+  },
+  {
+   "id": "F-16",
+   "question": "При выборе мимо рекомендации карточка просит написать почему и не блокирует, а `check` сигналит",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "материалы",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "F-22",
+   "evidence": [
+    {
+     "path": "openspec/specs/decision-viewer/spec.md",
+     "quote": "### Requirement: Выбор мимо рекомендации просит слово и не блокирует",
+     "line": 275,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "vscode/src/shared/logic.ts",
+     "quote": "export const WORD_NEEDED_TEXT = \"Выбран не рекомендованный вариант: напиши, почему.",
+     "line": 247,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "openspec/specs/decision-journal/spec.md",
+     "quote": "- **THEN** stdout несёт `[!!] <F-NN>: выбран не рекомендованный вариант B без слова`, код 0, с `--strict` — 2",
+     "line": 78,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "word"
+   ]
+  },
+  {
+   "id": "F-17",
+   "question": "Скилл считает слово к выбору необязательным и запрещает требовать объяснение",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "материалы",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "F-22",
+   "evidence": [
+    {
+     "path": "skills/symphysis-brainstorm/SKILL.md",
+     "quote": "Слово к выбору необязательно: строка `- F-NN: X — (без слова)` законна,",
+     "line": 255,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "skills/symphysis-brainstorm/SKILL.md",
+     "quote": "`apply` её принимает; объяснения выбора у человека не требуй (F-55.E).",
+     "line": 256,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "noword",
+    "word"
+   ]
+  },
+  {
+   "id": "F-18",
+   "question": "Поиск плагина ищет и по `text`: если поле не показывать, найденное совпадение окажется невидимым",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "материалы",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "F-20",
+   "evidence": [
+    {
+     "path": "vscode/src/shared/search.ts",
+     "quote": "{ field: \"рекомендация\", text: rec.recommendation?.text },",
+     "line": 95,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "plugin"
+   ]
+  },
+  {
+   "id": "F-19",
+   "question": "Что показывать, если у рекомендации есть `text`",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Всегда `вариант — why`, одно правило для страницы, плагина и `decisions.md`. Поле `text` никто не читает, и ловушка не вернётся. У 5 старых составных рекомендаций меняется только начало: `B — для процедур…` вместо `B для процедур…`. Импорт перестаёт писать `text`, тесты сырой строки переписываются",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "tools/playground-template.html",
+       "quote": "html += '<div class=\"rec\">рекомендация: <b>' + esc(rec.recommendation.option) + '</b> — ' + md(rec.recommendation.why)",
+       "line": 600,
+       "verdict": "сверено",
+       "found": true
+      },
+      {
+       "path": "openspec/changes/recommendation-why/probes/imported-composite.txt",
+       "quote": "итого: 5",
+       "line": 18,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "`text`, только если `why` целиком входит в него, иначе `вариант — why`. Старые составные и их тесты не меняются, но в плагине и в `decisions.md` появляется условие на двух языках",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "tools/journal_render.py",
+       "quote": "return rc.get(\"text\") or \" — \".join(part for part in (rc[\"option\"], rc[\"why\"]) if part)",
+       "line": 63,
+       "verdict": "сверено",
+       "found": true
+      },
+      {
+       "path": "tests/test_journal_render.py",
+       "quote": "def test_render_writes_recommendation_from_raw_text():",
+       "line": 158,
+       "verdict": "сверено",
+       "found": true
+      }
+     ],
+     "deviation": "F-04"
+    },
+    {
+     "letter": "C",
+     "text": "Оба: сначала `text`, под ним `вариант — why`. У записей с причиной внутри `text` она будет написана дважды",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "vscode/src/webview/Card.tsx",
+       "quote": "<div className=\"rec\">рекомендация: {rec.recommendation.text",
+       "line": 179,
+       "verdict": "сверено",
+       "found": true
+      }
+     ],
+     "deviation": "F-04"
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Одно правило, которое страница уже соблюдает. При A поле никто не читает, поэтому спрятать причину снова нечем; при B этот путь остаётся и держится на условии, которое надо поддерживать в двух языках. Цена A почти нулевая: у 5 старых строк появляется тире, причина цела."
+   },
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-04"
+   },
+   "reversibility": {
+    "level": "обратимо",
+    "why": "меняется показ в `tools/journal_render.py` и в `Card.tsx`, `CheckView.tsx` плагина; данные журналов не трогаются, условие можно вернуть"
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "F-20",
+   "evidence": [],
+   "comments": [],
+   "nodes": [
+    "page",
+    "plugin",
+    "md",
+    "old"
+   ]
+  },
+  {
+   "id": "F-20",
+   "question": "Что дальше с полем `text`",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-19"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Оставить необязательным в схеме, с описанием «только старые журналы, показ и поиск его не читают». Новые записи его не пишут",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "docs/journal.schema.json",
+       "quote": "Строка рекомендации как написана; у составной",
+       "line": 68,
+       "verdict": "сверено",
+       "found": true
+      },
+      {
+       "path": "vscode/src/shared/search.ts",
+       "quote": "{ field: \"рекомендация\", text: rec.recommendation?.text },",
+       "line": 95,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Убрать из схемы и вычистить архив",
+     "added": false,
+     "unlikely": "переписывает 276 записей архива ради поля, которое уже ни на что не влияет",
+     "evidence": [
+      {
+       "path": "openspec/changes/recommendation-why/probes/recommendation-text.txt",
+       "quote": "итого: 180",
+       "line": 17,
+       "verdict": "сверено",
+       "found": true
+      }
+     ],
+     "deviation": "F-06"
+    },
+    {
+     "letter": "C",
+     "text": "Оставить и добавить сигнал `check`, если `text` не содержит `why`",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "tools/journal_model.py",
+       "quote": "errors.append(f\"{rid}: рекомендация без why\")",
+       "line": 394,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Старые журналы остаются законными без правок, а новых записей с `text` не появится, потому что о нём не говорит ни один скилл. Сигнал C дал бы 180 предупреждений на архив и не добавил бы защиты: после F-19.A поле ничего не прячет."
+   },
+   "decision": {
+    "option": "A",
+    "word": "И добавить в backlog удаление поля text, если на момент выпуска в него никто не пишет. Чтобы не держать поле, которое нужно только архивным записям до выпуска.",
+    "date": "2026-11-04"
+   },
+   "reversibility": {
+    "level": "обратимо",
+    "why": "поле остаётся в `docs/journal.schema.json`; удалить его можно позже правкой схемы, как и просит слово человека"
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [],
+   "comments": [],
+   "nodes": [
+    "old"
+   ]
+  },
+  {
+   "id": "F-21",
+   "question": "Чем держать смысл `why`, кроме проверки на пустоту",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Текстом: скиллы описывают `why` как причину выбора этого варианта против других, а атака считает находкой `why`, пересказывающий вариант",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "skills/symphysis-brainstorm/SKILL.md",
+       "quote": "проекта и дословная строка файла; `recommendation {option, why, text}` —",
+       "line": 178,
+       "verdict": "сверено",
+       "found": true
+      },
+      {
+       "path": "skills/symphysis-attack/SKILL.md",
+       "quote": "`research/<F-NN>.md`; `факт` без улики; `recommendation` с пустым `why`;",
+       "line": 246,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "То же и сигнал `check`, если `why` совпадает с текстом варианта",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "tools/journal_model.py",
+       "quote": "errors.append(f\"{rid}: рекомендация без why\")",
+       "line": 394,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "C",
+     "text": "Минимальная длина `why` в `check`",
+     "added": false,
+     "unlikely": "короткая причина бывает верной, а длинная пустой: число качества не меряет",
+     "evidence": [
+      {
+       "path": "tools/journal_model.py",
+       "quote": "errors.append(f\"{rid}: рекомендация без why\")",
+       "line": 394,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Механика ловит только дословную копию, а настоящая беда, «A: каждое свой ход», текстом варианта не была и сигнал B прошла бы. Смысл причины оценивает читатель, поэтому нужны правило для модели и взгляд атаки. Сигнал B можно добавить позже, если копии встретятся на деле."
+   },
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-04"
+   },
+   "reversibility": {
+    "level": "обратимо",
+    "why": "правится текст скиллов; сигнал `check` можно добавить позже, если копии встретятся на деле"
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [],
+   "comments": [],
+   "nodes": [
+    "why",
+    "check"
+   ]
+  },
+  {
+   "id": "F-22",
+   "question": "Как обосновывать выбор мимо рекомендации: просить или требовать",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Оставить как есть: карточка просит, «Внести» работает, `check` сигналит. Смысла это не меняет: просьба становится весомее, потому что причина рекомендации теперь видна",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/specs/decision-viewer/spec.md",
+       "quote": "### Requirement: Выбор мимо рекомендации просит слово и не блокирует",
+       "line": 275,
+       "verdict": "сверено",
+       "found": true
+      },
+      {
+       "path": "skills/symphysis-brainstorm/SKILL.md",
+       "quote": "Слово к выбору необязательно: строка `- F-NN: X — (без слова)` законна,",
+       "line": 255,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Закрывать «Внести», пока нет слова. Твоё «нужно писать» выполняется буквально, но это отменяет решение F-55.E в скилле и прежний сценарий «не блокирует» в спеках страницы и плагина",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/changes/recommendation-why/intent.md",
+       "quote": "«если выбран ответ отличный от рекомендации, то нужно писать своё обоснование»",
+       "line": 20,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Твоё «нужно писать» я понял как описание процесса: он сломался не потому, что просьбу можно пропустить, а потому, что сравнивать было не с чем. Запрет чинил бы другое и добавил бы трение там, где ответ уже ясен. Если ты имел в виду именно обязанность, выбирай B."
+   },
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-04"
+   },
+   "reversibility": {
+    "level": "обратимо",
+    "why": "поведение `wordMissing` плагина и страницы не меняется; запрет можно ввести позже отдельным решением"
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [],
+   "comments": [],
+   "nodes": [
+    "pick",
+    "word"
+   ]
+  },
+  {
+   "id": "F-23",
+   "question": "Контракт ядра с плагином поля рекомендации не называет, а `why` плагин уже получает: показ меняется без смены контракта, и коммиты плагина от ядра не зависят",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "материалы",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "docs/repo-contract.md",
+     "quote": "- значения полей, которые плагин разбирает: тяжесть, вид записи, закрытие «вопрос человеку», метка «(добавлен человеком»;",
+     "line": 51,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "vscode/src/shared/types.ts",
+     "quote": "recommendation: { option: string; why: string; text?: string } | null;",
+     "line": 39,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "plugin"
+   ]
+  },
+  {
+   "id": "F-24",
+   "question": "[запрет] Атака считает находкой `why`, пересказывающий вариант: не должен спор о формулировке причины становиться блокером и останавливать конвейер",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-21"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify/test — требование MUST NOT: строка о пересказе не бывает блокером, её тяжесть `предупреждение`; тест по файлу скилла: линза называет эту находку с тяжестью предупреждения; цена: сценарий, исключение из правила «у всех линз блокер», проверка текста скилла",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "skills/symphysis-attack/SKILL.md",
+       "quote": "у всех линз обоих списков — `блокер`. Иная — только по слову человека:",
+       "line": 157,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Specify/judgment — требование MUST NOT: атака не спорит с причиной, которая есть, даже слабой, а находит только пересказ; судит человек, читая строки атаки; цена: сценарий, чтение строк при каждой атаке журнала",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/changes/recommendation-why/specs/artifact-attack/spec.md",
+       "quote": "### Requirement: Атака считает находкой `why`, пересказывающий вариант",
+       "line": 5,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "C",
+     "text": "Dismiss — запрет не нужен: атака идёт только по слову человека, блокер он видит сразу и понижает своим словом, порчи без его ведома нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "skills/symphysis-attack/SKILL.md",
+       "quote": "у всех линз обоих списков — `блокер`. Иная — только по слову человека:",
+       "line": 157,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "D",
+     "text": "Defer — вопрос о тяжести такой строки остаётся открытым до первой настоящей атаки журнала с такой находкой; пока tasks считает, что действует общее правило тяжести",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/changes/recommendation-why/specs/artifact-attack/spec.md",
+       "quote": "### Requirement: Атака считает находкой `why`, пересказывающий вариант",
+       "line": 5,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "C",
+    "why": "Нарушение не тихое: блокер виден сразу, атаку зовёт сам человек, а понизить тяжесть его словом можно уже сейчас. Исключение из общего правила A усложнило бы скилл ради случая, которого ещё не было. B обещает то, что и так сказано в сценарии «`why` называет причину»."
+   },
+   "decision": {
+    "option": "C",
+    "word": "",
+    "date": "2026-11-04"
+   },
+   "reversibility": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Dismiss",
+    "reason": ""
+   },
+   "parking": [
+    {
+     "addressee": "материалы",
+     "text": "чтобы правильно реализовать вариант С нужен механизм понижения, то есть у карточки атаки должна быть кнопка понизить или повысить, и поле ввода обоснования.",
+     "finding": "Кнопки понижения или повышения нет ни на странице, ни в плагине, понятия повышения нет вовсе. Путь есть, но длинный: поле спора у строки уходит в промпт замечанием, модель заводит запись журнала, человек её решает, следующая атака ставит `предупреждение (решено человеком в F-NN)`. `apply` строки атаки не меняет, а его грамматика входит в контракт. Подробности — `research/F-24.md`."
+    }
+   ],
+   "dispute": "",
+   "consequences": "Нарушение не тихое: блокер виден сразу, атаку зовёт сам человек, а понизить тяжесть его словом можно уже сейчас. Исключение из общего правила A усложнило бы скилл ради случая, которого ещё не было. B обещает то, что и так сказано в сценарии «`why` называет причину». Что нужно для понижения на деле — F-26.",
+   "evidence": [
+    {
+     "path": "openspec/changes/recommendation-why/specs/artifact-attack/spec.md",
+     "quote": "### Requirement: Атака считает находкой `why`, пересказывающий вариант",
+     "line": 5,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "why"
+   ]
+  },
+  {
+   "id": "F-25",
+   "question": "Сейчас понизить тяжесть строки атаки можно только в обход: написать в поле спора, дождаться записи журнала, решить её и повторить атаку. Кнопки нет, повышения нет, `apply` строки не меняет",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "материалы",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "F-24, F-26",
+   "evidence": [
+    {
+     "path": "openspec/changes/recommendation-why/research/F-24.md",
+     "quote": "Итог: путь понижения есть, но длинный.",
+     "line": 38,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "skills/symphysis-attack/SKILL.md",
+     "quote": "причина в скобках в той же ячейке называет решённую запись журнала:",
+     "line": 158,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "vscode/src/webview/AttackView.tsx",
+     "quote": "спор: почему опора есть / почему не блокер — уйдёт в промпт возврата",
+     "line": 82,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "skills/symphysis-viewer/SKILL.md",
+     "quote": "Строки атаки `apply` не меняет: их закрывает правка цели и повторная атака.",
+     "line": 177,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-26",
+   "question": "Где делать механизм понижения и повышения тяжести у карточки атаки: кнопка и поле обоснования",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-24",
+    "F-25"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Отдельным изменением: кнопки и поле обоснования в карточке страницы и плагина, своя строка `apply`, правка скилла атаки, новый номер контракта. В `recommendation-why` не входит, записывается в бэклог. До него работает нынешний путь через поле спора и запись журнала, поэтому находка из F-21 блокером ничего не ломает",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "skills/symphysis-viewer/SKILL.md",
+       "quote": "Строки атаки `apply` не меняет: их закрывает правка цели и повторная атака.",
+       "line": 177,
+       "verdict": "сверено",
+       "found": true
+      },
+      {
+       "path": "docs/repo-contract.md",
+       "quote": "грамматика строк `apply`: плагин сам пишет эти строки, и они попадают в журнал",
+       "line": 46,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Здесь, в `recommendation-why`: те же правки. Вливается одним изменением с показом причины, но оно перестаёт быть небольшим и дольше откладывает хук",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/changes/recommendation-why/answers/2026-11-04-2.md",
+       "quote": "чтобы правильно реализовать вариант С нужен механизм понижения, то есть у карточки атаки должна быть кнопка понизить или повысить, и поле ввода обоснования.",
+       "line": 2,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "C",
+     "text": "Механизм не делать, нынешнего пути достаточно",
+     "added": false,
+     "unlikely": "прямо против слова к F-24: для варианта C нужен механизм понижения, а нынешний путь не даёт ни кнопки, ни обоснования у строки",
+     "evidence": [
+      {
+       "path": "skills/symphysis-attack/SKILL.md",
+       "quote": "причина в скобках в той же ячейке называет решённую запись журнала:",
+       "line": 158,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Механизм нужен, но у него другая причина и другая цена, чем у показа `why`. Новая строка `apply` меняет контракт, а значит, нужна своя проверка страницы и плагина, чтобы и повышение, и понижение писали один журнал. Здесь это задержало бы правку, которая уже закрывает ловушку для всех журналов, и хук следом за ней. Пока механизма нет, блокер не тихий: человек его видит и спорит полем, просто дольше."
+   },
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-04"
+   },
+   "reversibility": {
+    "level": "обратимо",
+    "why": "это порядок работ: отдельное изменение не трогает этот журнал, механизм можно начать в любой момент"
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [],
+   "comments": []
+  },
+  {
+   "id": "F-27",
+   "question": "[ветка] Режим проверки страницы: при пустом `why` показывается `text`. Значит, F-10 неточен: страница читает поле в одном месте. Спека запрещает показывать `text` вместо причины, а эта ветка показывает",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-19"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN рекомендация с пустым `why` и непустым `text` WHEN открыт режим проверки THEN страница не показывает `text`, а журнал до неё не доходит; цена: сценарий, тест шаблона на недостижимый случай, правка при смене проверки журнала",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — отдельного сценария нет: журнал с пустым `why` не рендерится, `check` даёт код 1, ветка недостижима. Запасной путь на `text` всё равно убирается вместе с правкой показа",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест подаёт шаблону рекомендацию с пустым `why` и непустым `text` и утверждает, что `text` в странице нет; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — ветка остаётся до следующей правки режима проверки; пока tasks считает, что страница поле читает только здесь",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "B",
+    "why": "Настоящего отказа нет: `render-html` не пропустит журнал с пустым `why`, поэтому человек эту ветку не увидит. Сценарий и тест на недостижимый случай стоят больше, чем удаление лишнего выражения, которое и так входит в правку."
+   },
+   "decision": {
+    "option": "B",
+    "word": "дополню обоснование варианта B -- режим проверки я собираюсь позже убрать, поэтому и поддерживать его механизмы нет смысла",
+    "date": "2026-11-04"
+   },
+   "reversibility": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Dismiss",
+    "reason": "дополню обоснование варианта B -- режим проверки я собираюсь позже убрать, поэтому и поддерживать его механизмы нет смысла"
+   },
+   "parking": [],
+   "dispute": "",
+   "consequences": "дополню обоснование варианта B -- режим проверки я собираюсь позже убрать, поэтому и поддерживать его механизмы нет смысла",
+   "evidence": [
+    {
+     "path": "tools/playground-template.html",
+     "quote": "md(rec.recommendation.why || rec.recommendation.text || '')",
+     "line": 848,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-28",
+   "question": "[ветка] Импорт из markdown: строка рекомендации не по форме даёт негодную запись, без буквы или без причины. Что видит тот, кто импортирует?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-19"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN строка `- рекомендация: смотри ниже` WHEN выполняется `import-md` и `check` THEN `check` называет запись и даёт код 1; цена: сценарий, тест импорта, сопровождение при смене грамматики строки",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — не покрывается: такой журнал `check` отвергает сразу и с номером записи, порчи нет, а новых импортов не идёт: импортирован только старый план",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест подаёт строку без буквы и утверждает, что импорт не пишет запись с пустой причиной молча; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — поведение остаётся прежним до решения, нужен ли импорт как отдельная команда; пока tasks считает, что импорта новых журналов нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "B",
+    "why": "Отказ виден сразу: `check` называет запись и останавливает рендер, данные не портятся. Импорт здесь нужен только старому плану, и его строки разбираются верно, поэтому сценарий охранял бы путь, которым никто не идёт."
+   },
+   "decision": {
+    "option": "B",
+    "word": "",
+    "date": "2026-11-04"
+   },
+   "reversibility": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Dismiss",
+    "reason": ""
+   },
+   "parking": [],
+   "dispute": "",
+   "consequences": "Отказ виден сразу: `check` называет запись и останавливает рендер, данные не портятся. Импорт здесь нужен только старому плану, и его строки разбираются верно, поэтому сценарий охранял бы путь, которым никто не идёт.",
+   "evidence": [
+    {
+     "path": "tools/journal_model.py",
+     "quote": "return {\"option\": None, \"why\": val, \"text\": val}",
+     "line": 89,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-29",
+   "question": "[pre-mortem] Показ починен, но проект остался на старых инструментах: контракт не растёт (F-23), плагин не просит обновиться, скиллы в `.claude/skills` по-прежнему называют `text`, а `decisions.md` пишет его вместо причины",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-23"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN проект со старыми инструментами и новым плагином WHEN человек открывает просмотрщик THEN плагин просит обновить инструменты; цена: новый номер контракта, сценарий, все проекты получат просьбу ради текста скилла",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — не покрывается: в просмотрщике и на странице причина видна сразу при новом плагине и пересобранной странице, расходится только `decisions.md` до следующей установки",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест установки сверяет, что скилл в новой поставке не называет `text`; поведение проекта на старой установке не проверяет; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — остаётся открытым, нужно ли просить обновиться при правке скиллов, до следующей смены контракта; пока tasks считает, что проекты обновляются своим ходом",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "B",
+    "why": "Цель изменения — причина перед глазами в момент выбора, а там она появится с новым плагином, без обновления проекта. Новый номер контракта заставил бы обновляться все проекты ради текста, который и так придёт при следующей установке."
+   },
+   "decision": {
+    "option": "B",
+    "word": "аналогично обоснованию F-27 : режим проверки будет depricated, как и поле text. но не в этом изменении.",
+    "date": "2026-11-04"
+   },
+   "reversibility": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Dismiss",
+    "reason": "аналогично обоснованию F-27 : режим проверки будет depricated, как и поле text. но не в этом изменении."
+   },
+   "parking": [],
+   "dispute": "",
+   "consequences": "аналогично обоснованию F-27 : режим проверки будет depricated, как и поле text. но не в этом изменении.",
+   "evidence": [
+    {
+     "path": "openspec/changes/recommendation-why/proposal.md",
+     "quote": "Контракт ядра с плагином не меняется, номер остаётся прежним (F-23).",
+     "line": 36,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-30",
+   "question": "[pre-mortem] Ловушка возвращается: поле остаётся в схеме и в типе плагина, и новый показ снова прочитает `text` вместо причины, не нарушив ни одной проверки",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-20"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN код плагина и ядра WHEN появляется чтение `recommendation.text` THEN проверка падает; цена: требование о коде в спеке поведения, сценарий, сопровождение списка мест",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — не покрывается: новые места показа редки, а сценарии «есть поле `text`» проверяют существующие показы",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — поле `text` убирается из типа рекомендации в `src/shared/types.ts`, и `tsc` отвергает новое чтение в плагине; тест ядра ищет чтение `text` рекомендации в `tools/`; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — остаётся открытым до удаления поля из схемы, записанного в бэклог; пока tasks считает, что новых показов не появится",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "C",
+    "why": "Порча тихая: журнал и `check` были бы верны, а человек снова решал бы без причины, как уже случилось. Описать это поведением спеки нельзя, зато страховка почти бесплатна: одна строка типа заставляет компилятор ловить новое чтение, а тест ядра закрывает `tools/` до удаления поля."
+   },
+   "decision": {
+    "option": "C",
+    "word": "и вариант C тоже рассматривает одну из механик, которую нужно будет позже удалить.",
+    "date": "2026-11-04"
+   },
+   "reversibility": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Backstop",
+    "reason": "и вариант C тоже рассматривает одну из механик, которую нужно будет позже удалить."
+   },
+   "parking": [],
+   "dispute": "",
+   "consequences": "тест-страховка: поле `text` убрано из типа рекомендации в `src/shared/types.ts`, и `tsc` отвергает новое чтение в плагине; тест ядра ищет чтение `text` рекомендации в `tools/`. Обе страховки снимаются вместе с полем",
+   "evidence": [
+    {
+     "path": "vscode/src/shared/types.ts",
+     "quote": "recommendation: { option: string; why: string; text?: string } | null;",
+     "line": 39,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-31",
+   "question": "Как понято слово к F-27 и F-29: режим проверки и поле `text` уйдут позже, отдельной работой. Поэтому режиму проверки здесь не добавляем сценариев и тестов. Его показ правится только потому, что иначе не соберётся тип без `text` (F-30.C)",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "материалы",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "F-27, F-29, F-30",
+   "evidence": [
+    {
+     "path": "openspec/changes/recommendation-why/answers/2026-11-04-4.md",
+     "quote": "режим проверки я собираюсь позже убрать, поэтому и поддерживать его механизмы нет смысла",
+     "line": 2,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "openspec/changes/recommendation-why/answers/2026-11-04-4.md",
+     "quote": "режим проверки будет depricated, как и поле text. но не в этом изменении.",
+     "line": 4,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "plugin",
+    "page"
+   ]
+  },
+  {
+   "id": "F-32",
+   "question": "Уточнение F-11: `text` учит писать ещё и образец записи в скилле `symphysis-consequences`, причём с коротким заголовком, а причина лежит отдельно",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "материалы",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "F-21",
+   "evidence": [
+    {
+     "path": "skills/symphysis-consequences/SKILL.md",
+     "quote": "\"text\": \"A — сценарий на пустой ответ\"}",
+     "line": 289,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "model"
+   ]
+  }
+ ],
+ "notes": [
+  {
+   "date": "2026-11-04",
+   "text": "круг 1 закончен: решений 4, фактов 18, открытых развилок 0, парковок материалам 0, антиподов 0"
+  },
+  {
+   "date": "2026-11-04",
+   "text": "Слово к F-20 об удалении поля `text` к выпуску записано в бэклог плагина, `.context/backlog.md`: в этом изменении поле остаётся."
+  },
+  {
+   "date": "2026-11-04",
+   "text": "брейншторм закончен по решению человека"
+  },
+  {
+   "date": "2026-11-04",
+   "text": "проба краёв: кандидатов 0, Specify 0, Dismiss 0, Backstop 0, Defer 0; не выбран 2: decision-journal/Поле `text` не читается и новыми записями не пишется, plugin-decision-view/Плагин показывает рекомендацию с причиной"
+  },
+  {
+   "date": "2026-11-04",
+   "text": "проба запретов: требований 7, оставлено 1, канон → ИБ 0, Specify 0, Dismiss 0, Defer 0; открыт F-24"
+  },
+  {
+   "date": "2026-11-04",
+   "text": "проба запретов закрыта: F-24 Dismiss; кандидатов 1. Слово к F-24 о механизме понижения разобрано в `research/F-24.md`, вопрос — F-26."
+  },
+  {
+   "date": "2026-11-04",
+   "text": "Да, окей сделаем позже, вариант меня устраивает"
+  },
+  {
+   "date": "2026-11-04",
+   "text": "круг 2 закончен: решений 1, фактов 1, открытых развилок 0, парковок материалам 0, антиподов 0"
+  },
+  {
+   "date": "2026-11-04",
+   "text": "Механизм понижения и повышения тяжести у карточки атаки по F-26.A записан в бэклог плагина, `.context/backlog.md`: в этом изменении его нет."
+  },
+  {
+   "date": "2026-11-04",
+   "text": "Слова к F-27, F-29, F-30 о снятии режима проверки и страховок вместе с полем записаны в бэклог плагина, `.context/backlog.md`."
+  }
+ ]
+}
