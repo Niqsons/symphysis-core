@@ -62,25 +62,24 @@ def default_roots(roots_file: Path | None = None, journal_path: Path | None = No
     """Префикс пути улики -> каталог — только из файла корней (`tools/journal-roots.json`
     или `roots_file`); зашитых в код префиксов нет. Значение: `<root>`, `<home>`, `~` или
     путь; пустой префикс `""` — корень по умолчанию, если файл его называет.
-    Журнал вне корня `""` файла корней — инструменты вне проекта (`symphysis.toolsPath`, F-93, F-104): файл корней
-    не годится, единственный корень — проект из пути журнала. Явный `roots_file` важнее; путь журнала не из
-    `openspec/changes/` или файл без `""` — прежнее поведение."""
-    roots = _roots_from_file(roots_file)
+    Файл корней вне проекта из пути журнала — инструменты вне проекта (`symphysis.toolsPath`, F-93, F-104): решает положение
+    инструментов, а не содержимое файла (у клона ядра в нём нет `""`); файл не читается, единственный корень — проект.
+    Явный `roots_file` важнее; путь журнала не из `openspec/changes/` — файл корней."""
     where = change_of(journal_path) if journal_path is not None and roots_file is None else None
-    if where is not None and "" in roots and not _inside(journal_path, roots[""]):
+    if where is not None and not _inside(ROOTS_PATH, where[0]):
         return {"": where[0].resolve()}
-    return roots
+    return _roots_from_file(roots_file)
 
 
 def project_roots(project: Path) -> dict[str, Path]:
-    """Те же корни для вызова без журнала (`step_help.py`): корень проекта известен по каталогу вызова. Проект вне корня `""`
-    файла корней — инструменты вне проекта (F-93, F-104): единственный корень — проект. Файла корней нет или он негоден — тоже."""
+    """Те же корни для вызова без журнала (`step_help.py`): корень проекта известен по каталогу вызова. Файл корней вне проекта —
+    инструменты вне проекта (F-93, F-104): единственный корень — проект. Файла корней нет или он негоден — тоже."""
     project = Path(project)
+    if not _inside(ROOTS_PATH, project):
+        return {"": project.resolve()}
     try:
         roots = _roots_from_file(None)
     except (OSError, ValueError):
-        return {"": project.resolve()}
-    if "" in roots and not _inside(project, roots[""]):
         return {"": project.resolve()}
     return {"": project.resolve(), **roots}   # файл без `""`: без префикса путь считается от проекта, а не от каталога установки
 

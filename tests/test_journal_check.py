@@ -553,24 +553,29 @@ import json
 import re
 
 
-def _copy_tools(into: Path) -> Path:
-    """Инструменты в раскладке инсталлятора: `<into>/.symphysis/tools`, файл корней с `"": "<root>/.."`."""
-    tools = into / ".symphysis" / "tools"
+def _copy_tools(into: Path, clone: bool = False) -> Path:
+    """Инструменты в раскладке инсталлятора: `<into>/.symphysis/tools`, файл корней с `"": "<root>/.."`.
+    `clone=True` — раскладка клона ядра: `<into>/tools`, файл корней настоящий, пустого префикса в нём нет."""
+    base = into if clone else into / ".symphysis"
+    tools = base / "tools"
     tools.mkdir(parents=True)
     for f in (ROOT / "tools").glob("*"):
         if f.is_file() and re.match(r"journal.*\.py|step_help\.py|symphysis_config\.py|playground-template\.html|mermaid\.min\.js", f.name):
             shutil.copy(f, tools / f.name)
-    (into / ".symphysis" / "docs").mkdir()
-    shutil.copy(ROOT / "docs" / "journal.schema.json", into / ".symphysis" / "docs" / "journal.schema.json")
-    (tools / "journal-roots.json").write_text('{"": "<root>/.."}\n', encoding="utf-8")
+    (base / "docs").mkdir()
+    shutil.copy(ROOT / "docs" / "journal.schema.json", base / "docs" / "journal.schema.json")
+    if clone:
+        shutil.copy(ROOT / "tools" / "journal-roots.json", tools / "journal-roots.json")
+    else:
+        (tools / "journal-roots.json").write_text('{"": "<root>/.."}\n', encoding="utf-8")
     return tools
 
 
-def _layout(tmp_path: Path, tools_in_project: bool):
-    """(tools, project): в проекте `only_project.py` и `both.py`, в установке `only_install.py` и `both.py`."""
+def _layout(tmp_path: Path, tools_in_project: bool, clone: bool = False):
+    """(tools, project): в проекте `only_project.py` и `both.py`, в установке `only_install.py` и `both.py`. `clone=True` — установка это клон ядра."""
     install = tmp_path / "установка с пробелом"
     project = install if tools_in_project else tmp_path / "проект"
-    tools = _copy_tools(install)
+    tools = _copy_tools(install, clone)
     for base, names in ((install, ("both.py", "only_install.py")), (project, ("both.py", "only_project.py"))):
         (base / "src").mkdir(exist_ok=True, parents=True)
         for name in names:
@@ -648,3 +653,58 @@ def test_default_roots_for_a_journal_outside_openspec_changes_keeps_the_roots_fi
     roots = tmp_path / "r.json"
     roots.write_text(json.dumps({"": str(tmp_path / "a")}), encoding="utf-8")
     assert journal.default_roots(roots)[""] == tmp_path / "a"
+
+
+def _with_evidence(project: Path, *paths: str) -> None:
+    j = journal.load_journal(project / JOURNAL_REL)
+    j["records"][0]["options"][0]["evidence"] = [{"path": p, "quote": "в "} for p in paths]
+    journal.save_journal(project / JOURNAL_REL, j)
+
+
+def test_scenario_root_with_tools_in_a_core_clone(tmp_path):
+    """«Корень при инструментах вне проекта», раскладка клона: файл корней без `""` не решает, чей это проект.
+    Файл только в клоне — «файла нет», файлы проекта — «сверено», в карте только файлы проекта."""
+    tools, project = _layout(tmp_path, tools_in_project=False, clone=True)
+    (tools.parent / "docs" / "repo-contract.md").write_text("в этом месте\n", encoding="utf-8")
+    (project / "docs").mkdir()
+    (project / "docs" / "design-part1-viewer.md").write_text("в этом месте\n", encoding="utf-8")
+    (project / "src" / "extension.ts").write_text("в этом месте\n", encoding="utf-8")
+    _with_evidence(project, "docs/repo-contract.md", "docs/design-part1-viewer.md", "src/extension.ts")
+    view = _core(tools, project, "view-json", JOURNAL_REL)
+    assert view.returncode == 0, view.stderr
+    assert _verdicts(view.stdout) == {"docs/repo-contract.md": "файла нет", "docs/design-part1-viewer.md": "сверено", "src/extension.ts": "сверено"}
+    assert json.loads(view.stdout)["file_links"] == {"docs/design-part1-viewer.md": "docs/design-part1-viewer.md", "src/extension.ts": "src/extension.ts"}
+    check = _core(tools, project, "check", JOURNAL_REL)
+    assert "улик сверено 2 из 3" in check.stdout and "repo-contract.md" in check.stdout
+
+
+def test_ordinary_clone_keeps_its_roots_file(tmp_path):
+    """Инструменты клона и журнал того же клона: файл корней действует, `docs/` считается от клона, пути без префикса корня не имеют."""
+    tools, project = _layout(tmp_path, tools_in_project=True, clone=True)
+    (project / "docs" / "a.md").write_text("в этом месте\n", encoding="utf-8")
+    _with_evidence(project, "docs/a.md", "src/both.py")
+    view = _core(tools, project, "view-json", JOURNAL_REL)
+    assert view.returncode == 0, view.stderr
+    assert _verdicts(view.stdout) == {"docs/a.md": "сверено", "src/both.py": "корня для пути нет"}
+
+
+@pytest.mark.parametrize("clone", [False, True], ids=["установка", "клон"])
+def test_broken_roots_file_does_not_stop_commands_that_do_not_need_it(tmp_path, clone):
+    """Инструменты вне проекта: файл корней не читается, поэтому битый файл команду не роняет."""
+    tools, project = _layout(tmp_path, tools_in_project=False, clone=clone)
+    (tools / "journal-roots.json").write_text("{не json", encoding="utf-8")
+    view = _core(tools, project, "view-json", JOURNAL_REL)
+    assert view.returncode == 0, view.stderr
+    assert _verdicts(view.stdout) == {"src/both.py": "сверено", "src/only_project.py": "сверено", "src/only_install.py": "файла нет"}
+    check = _core(tools, project, "check", JOURNAL_REL)
+    assert "улик сверено 2 из 3" in check.stdout, check.stderr
+    page = _core(tools, project, "render-html", JOURNAL_REL, "--out", "openspec/changes/demo/symphysis.html")
+    assert page.returncode == 0, page.stderr
+
+
+def test_explicit_roots_beat_the_project_root_with_a_core_clone(tmp_path):
+    tools, project = _layout(tmp_path, tools_in_project=False, clone=True)
+    roots = tmp_path / "roots.json"
+    roots.write_text(json.dumps({"": str(tools.parent)}), encoding="utf-8")
+    view = _core(tools, project, "view-json", JOURNAL_REL, "--roots", roots)
+    assert _verdicts(view.stdout)["src/only_install.py"] == "сверено"
