@@ -879,3 +879,10 @@ def test_viewer_skill_names_the_fallback_of_the_scheme_panel():
     """F-39: страница больше не всегда один файл; без файла mermaid рядом виден текст."""
     text = read(VIEWER / "SKILL.md")
     assert "панель `scheme.md`" in text and "иначе текст" in text
+
+
+def test_viewer_skill_text_names_hook_files():
+    """Сценарий «Текст скилла»: скилл называет `events.jsonl`, `.symphysis/viewer/` и `answers/` (F-34)."""
+    text = read(VIEWER / "SKILL.md")
+    for name in ("events.jsonl", ".symphysis/viewer/", "answers/"):
+        assert name in text, f"в SKILL.md не названо {name}"
