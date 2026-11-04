@@ -11,7 +11,7 @@
 - адресат: постановка
 - зависит от: —
 - улики:
-  - улика: `openspec/changes/reverse-hook/intent.md` ««сделать чтение сообщения фактом» (слово в чате, 2026-11-04)»
+  - улика: `openspec/changes/archive/2026-11-04-reverse-hook/intent.md` ««сделать чтение сообщения фактом» (слово в чате, 2026-11-04)»
 - следствия: F-11, F-42
 
 ## F-02 Критерий готовности: «механизм двунаправленного взаимодейстия между symphysis и клиентом»
@@ -21,7 +21,7 @@
 - адресат: постановка
 - зависит от: —
 - улики:
-  - улика: `openspec/changes/reverse-hook/intent.md` ««механизм двунаправленного взаимодейстия между symphysis и клиентом» (слово в чате, 2026-11-04)»
+  - улика: `openspec/changes/archive/2026-11-04-reverse-hook/intent.md` ««механизм двунаправленного взаимодейстия между symphysis и клиентом» (слово в чате, 2026-11-04)»
 - следствия: F-41
 
 ## F-03 Критерий готовности: «Мы отвечаем за факт создания и передачи сообщения»
@@ -31,7 +31,7 @@
 - адресат: постановка
 - зависит от: —
 - улики:
-  - улика: `openspec/changes/reverse-hook/intent.md` ««Мы отвечаем за факт создания и передачи сообщения» (слово в чате, 2026-11-04)»
+  - улика: `openspec/changes/archive/2026-11-04-reverse-hook/intent.md` ««Мы отвечаем за факт создания и передачи сообщения» (слово в чате, 2026-11-04)»
 - следствия: F-42, F-47
 
 ## F-04 Критерий готовности: «предвосхищать все эти кейсы не нужно»
@@ -41,7 +41,7 @@
 - адресат: постановка
 - зависит от: —
 - улики:
-  - улика: `openspec/changes/reverse-hook/intent.md` ««предвосхищать все эти кейсы не нужно» (слово в чате, 2026-11-04)»
+  - улика: `openspec/changes/archive/2026-11-04-reverse-hook/intent.md` ««предвосхищать все эти кейсы не нужно» (слово в чате, 2026-11-04)»
 - следствия: F-47
 
 ## F-05 Критерий готовности: «протестировать в реальной работе»
@@ -51,7 +51,7 @@
 - адресат: постановка
 - зависит от: —
 - улики:
-  - улика: `openspec/changes/reverse-hook/intent.md` ««протестировать в реальной работе» (слово в чате, 2026-11-04)»
+  - улика: `openspec/changes/archive/2026-11-04-reverse-hook/intent.md` ««протестировать в реальной работе» (слово в чате, 2026-11-04)»
 - следствия: F-26, F-51
 
 ## F-06 Критерий готовности: «в репозитории плагина остается только код, необходимый для работы и сборки плагина»
@@ -61,7 +61,7 @@
 - адресат: постановка
 - зависит от: —
 - улики:
-  - улика: `openspec/changes/reverse-hook/intent.md` ««в репозитории плагина остается только код, необходимый для работы и сборки плагина» (слово в чате, 2026-11-04)»
+  - улика: `openspec/changes/archive/2026-11-04-reverse-hook/intent.md` ««в репозитории плагина остается только код, необходимый для работы и сборки плагина» (слово в чате, 2026-11-04)»
 
 ## F-07 Критерий готовности: «логика работы ядра остается в ядре»
 <!-- journal:F-07 -->
@@ -70,7 +70,7 @@
 - адресат: постановка
 - зависит от: —
 - улики:
-  - улика: `openspec/changes/reverse-hook/intent.md` ««логика работы ядра остается в ядре» (слово в чате, 2026-11-04)»
+  - улика: `openspec/changes/archive/2026-11-04-reverse-hook/intent.md` ««логика работы ядра остается в ядре» (слово в чате, 2026-11-04)»
 - следствия: F-17, F-50
 
 ## F-08 Критерий готовности: «Просмотрщик показывает три состояния: внесено, отправлено, доставлено»
@@ -80,7 +80,7 @@
 - адресат: постановка
 - зависит от: —
 - улики:
-  - улика: `openspec/changes/reverse-hook/intent.md` ««Просмотрщик показывает три состояния: внесено, отправлено, доставлено» (слова модели, человек их не оспорил, 2026-11-04)»
+  - улика: `openspec/changes/archive/2026-11-04-reverse-hook/intent.md` ««Просмотрщик показывает три состояния: внесено, отправлено, доставлено» (слова модели, человек их не оспорил, 2026-11-04)»
 - следствия: F-11, F-44, F-45
 
 ## F-09 Критерий готовности: «во всех случаях чтения просто не видно, причину выяснять не надо»
@@ -90,7 +90,7 @@
 - адресат: постановка
 - зависит от: —
 - улики:
-  - улика: `openspec/changes/reverse-hook/intent.md` ««во всех случаях чтения просто не видно, причину выяснять не надо» (слова модели о находке I5, человек их не оспорил, 2026-11-04)»
+  - улика: `openspec/changes/archive/2026-11-04-reverse-hook/intent.md` ««во всех случаях чтения просто не видно, причину выяснять не надо» (слова модели о находке I5, человек их не оспорил, 2026-11-04)»
 - следствия: F-42
 
 ## F-10 Критерий готовности: «`e2e:hook` перестаёт спрашивать модель о её контексте»
@@ -100,7 +100,7 @@
 - адресат: постановка
 - зависит от: —
 - улики:
-  - улика: `openspec/changes/reverse-hook/intent.md` ««`e2e:hook` перестаёт спрашивать модель о её контексте» (слова модели, человек их не оспорил, 2026-11-04)»
+  - улика: `openspec/changes/archive/2026-11-04-reverse-hook/intent.md` ««`e2e:hook` перестаёт спрашивать модель о её контексте» (слова модели, человек их не оспорил, 2026-11-04)»
 - следствия: F-42
 
 ## F-11 Как понято F-01 и F-08: прочтение подтвердить нельзя. Наблюдаемым становится только то, что отправленное дошло: агент открыл файл, названный в сообщении
@@ -110,7 +110,7 @@
 - адресат: материалы
 - зависит от: —
 - улики:
-  - улика: `openspec/changes/reverse-hook/answers/2026-11-04-chat.md` «Так как факт чтения мы подтвердить не можем, а можем лишь узнать, что отправленное сообщение дошло до клиента.»
+  - улика: `openspec/changes/archive/2026-11-04-reverse-hook/answers/2026-11-04-chat.md` «Так как факт чтения мы подтвердить не можем, а можем лишь узнать, что отправленное сообщение дошло до клиента.»
 - следствия: F-42
 
 ## F-12 Сейчас хук говорит агенту только при запросе человека
@@ -215,8 +215,8 @@
 - адресат: материалы
 - зависит от: —
 - улики:
-  - улика: `openspec/changes/reverse-hook/probes/claude-code-docs.txt` «| `FileChanged` | No | Shows stderr to user only |»
-  - улика: `openspec/changes/reverse-hook/probes/claude-code-docs.txt` «FileChanged hooks have no decision control.»
+  - улика: `openspec/changes/archive/2026-11-04-reverse-hook/probes/claude-code-docs.txt` «| `FileChanged` | No | Shows stderr to user only |»
+  - улика: `openspec/changes/archive/2026-11-04-reverse-hook/probes/claude-code-docs.txt` «FileChanged hooks have no decision control.»
 - следствия: F-32
 
 ## F-22 `asyncRewake` с кодом 2 начинает ход и в простаивающей сессии, текст идёт модели
@@ -226,8 +226,8 @@
 - адресат: материалы
 - зависит от: —
 - улики:
-  - улика: `openspec/changes/reverse-hook/probes/claude-code-docs.txt` «| `asyncRewake` | no | If `true`, runs in the background and wakes Claude on exit code 2.»
-  - улика: `openspec/changes/reverse-hook/probes/claude-code-docs.txt` «Exception: an `asyncRewake` hook that exits with code 2 wakes Claude immediately even when the session is idle.»
+  - улика: `openspec/changes/archive/2026-11-04-reverse-hook/probes/claude-code-docs.txt` «| `asyncRewake` | no | If `true`, runs in the background and wakes Claude on exit code 2.»
+  - улика: `openspec/changes/archive/2026-11-04-reverse-hook/probes/claude-code-docs.txt` «Exception: an `asyncRewake` hook that exits with code 2 wakes Claude immediately even when the session is idle.»
 - следствия: F-32, F-33
 
 ## F-23 `matcher` у `FileChanged` следит только за файлами рабочего каталога. Файл глубже называют через `watchPaths`, например из `SessionStart`
@@ -237,8 +237,8 @@
 - адресат: материалы
 - зависит от: —
 - улики:
-  - улика: `openspec/changes/reverse-hook/probes/claude-code-docs.txt` «each segment is registered as a literal filename in the working directory»
-  - улика: `openspec/changes/reverse-hook/probes/claude-code-docs.txt` «To watch files you can't name up front, return [`watchPaths`](#filechanged-output) from a hook to update the watch list dynamically.»
+  - улика: `openspec/changes/archive/2026-11-04-reverse-hook/probes/claude-code-docs.txt` «each segment is registered as a literal filename in the working directory»
+  - улика: `openspec/changes/archive/2026-11-04-reverse-hook/probes/claude-code-docs.txt` «To watch files you can't name up front, return [`watchPaths`](#filechanged-output) from a hook to update the watch list dynamically.»
 - следствия: F-32, F-46
 
 ## F-24 Хуки Claude Code бывают пяти видов, инструмент модели среди них не вызвать
@@ -248,7 +248,7 @@
 - адресат: материалы
 - зависит от: —
 - улики:
-  - улика: `openspec/changes/reverse-hook/probes/claude-code-docs.txt` «| `type` | yes | `"command"`, `"http"`, `"mcp_tool"`, `"prompt"`, or `"agent"` |»
+  - улика: `openspec/changes/archive/2026-11-04-reverse-hook/probes/claude-code-docs.txt` «| `type` | yes | `"command"`, `"http"`, `"mcp_tool"`, `"prompt"`, or `"agent"` |»
 - следствия: F-32
 
 ## F-25 Проба в `claude -p` с потоковым входом: запись в файл внешним процессом будит сессию, агент открывает файл ответа, `PostToolUse` даёт путь и номер сессии
@@ -258,8 +258,8 @@
 - адресат: материалы
 - зависит от: —
 - улики:
-  - улика: `openspec/changes/reverse-hook/probes/filechanged-rewake/run.txt` «Итог: 3 из 3 с читаемым текстом. Ход начался через 3-4 с после записи, файл ответа открыт, PostToolUse дал session_id и tool_input.file_path.»
-  - улика: `openspec/changes/reverse-hook/probes/filechanged-rewake/run.txt` «PostToolUse tool=Read keys=['file_path'] path=<проект>\openspec\changes\demo\answers\2026-11-04.md session=True»
+  - улика: `openspec/changes/archive/2026-11-04-reverse-hook/probes/filechanged-rewake/run.txt` «Итог: 3 из 3 с читаемым текстом. Ход начался через 3-4 с после записи, файл ответа открыт, PostToolUse дал session_id и tool_input.file_path.»
+  - улика: `openspec/changes/archive/2026-11-04-reverse-hook/probes/filechanged-rewake/run.txt` «PostToolUse tool=Read keys=['file_path'] path=<проект>\openspec\changes\demo\answers\2026-11-04.md session=True»
 - следствия: F-32, F-42
 
 ## F-26 Проба владельца в интерактивном клиенте в терминале дала то же самое, панель VS Code не проверена
@@ -269,7 +269,7 @@
 - адресат: материалы
 - зависит от: —
 - улики:
-  - улика: `openspec/changes/reverse-hook/probes/filechanged-rewake/run.txt` «Итог: в интерактивном клиенте в терминале пробуждение работает. Панель VS Code не проверена.»
+  - улика: `openspec/changes/archive/2026-11-04-reverse-hook/probes/filechanged-rewake/run.txt` «Итог: в интерактивном клиенте в терминале пробуждение работает. Панель VS Code не проверена.»
 - следствия: F-05, F-51
 
 ## F-27 Текст приходит модели с чужой подписью: ошибка stop-хука и пометка, что это не слово человека. Формат не документирован
@@ -279,8 +279,8 @@
 - адресат: материалы
 - зависит от: —
 - улики:
-  - улика: `openspec/changes/reverse-hook/probes/filechanged-rewake/run.txt` «Stop hook blocking error from command "FileChanged": Человек внёс решения кнопкой «Внести» в просмотрщике журнала: изменение demo.»
-  - улика: `openspec/changes/reverse-hook/probes/filechanged-rewake/run.txt` «[SYSTEM NOTIFICATION - NOT USER INPUT]»
+  - улика: `openspec/changes/archive/2026-11-04-reverse-hook/probes/filechanged-rewake/run.txt` «Stop hook blocking error from command "FileChanged": Человек внёс решения кнопкой «Внести» в просмотрщике журнала: изменение demo.»
+  - улика: `openspec/changes/archive/2026-11-04-reverse-hook/probes/filechanged-rewake/run.txt` «[SYSTEM NOTIFICATION - NOT USER INPUT]»
 - следствия: F-32, F-43
 
 ## F-28 Привязку сессии к каталогу прочитать можно: `cwd` в каждом хуке, файл работающей сессии у Claude Code, фильтр `directory` у opencode. Внутри одного каталога она у всех сессий одинакова
@@ -290,9 +290,9 @@
 - адресат: материалы
 - зависит от: —
 - улики:
-  - улика: `openspec/changes/reverse-hook/probes/claude-code-docs.txt` «| `cwd` | Current working directory when the hook is invoked |»
-  - улика: `openspec/changes/reverse-hook/probes/claude-code-docs.txt` «holds one small file per running session, used to detect concurrent sessions and crashes.»
-  - улика: `openspec/changes/reverse-hook/probes/opencode-v2.1.4.txt` «directory: AbsolutePath.pipe(Schema.optional),»
+  - улика: `openspec/changes/archive/2026-11-04-reverse-hook/probes/claude-code-docs.txt` «| `cwd` | Current working directory when the hook is invoked |»
+  - улика: `openspec/changes/archive/2026-11-04-reverse-hook/probes/claude-code-docs.txt` «holds one small file per running session, used to detect concurrent sessions and crashes.»
+  - улика: `openspec/changes/archive/2026-11-04-reverse-hook/probes/opencode-v2.1.4.txt` «directory: AbsolutePath.pipe(Schema.optional),»
 - следствия: F-33, F-46
 
 ## F-29 В opencode плагин может начать ход сам: `session.prompt` есть в его API и будит сессию. По коду тега v2.1.4, пробы нет
@@ -302,9 +302,9 @@
 - адресат: материалы
 - зависит от: —
 - улики:
-  - улика: `openspec/changes/reverse-hook/probes/opencode-v2.1.4.txt` «prompt: adaptApiMethod(SessionEndpoints["session.prompt"], host.session.prompt),»
-  - улика: `openspec/changes/reverse-hook/probes/opencode-v2.1.4.txt` «if (input.resume !== false) yield* execution.wake(sessionID)»
-  - улика: `openspec/changes/reverse-hook/probes/opencode-v2.1.4.txt` «export const Delivery = Schema.Literals(["steer", "queue"])»
+  - улика: `openspec/changes/archive/2026-11-04-reverse-hook/probes/opencode-v2.1.4.txt` «prompt: adaptApiMethod(SessionEndpoints["session.prompt"], host.session.prompt),»
+  - улика: `openspec/changes/archive/2026-11-04-reverse-hook/probes/opencode-v2.1.4.txt` «if (input.resume !== false) yield* execution.wake(sessionID)»
+  - улика: `openspec/changes/archive/2026-11-04-reverse-hook/probes/opencode-v2.1.4.txt` «export const Delivery = Schema.Literals(["steer", "queue"])»
 - следствия: F-49
 
 ## F-30 В opencode 2 хук на инструмент несёт номер сессии
@@ -325,7 +325,7 @@
 - адресат: материалы
 - зависит от: —
 - улики:
-  - улика: `openspec/changes/reverse-hook/probes/claude-code-docs.txt` «The hook command only runs if the tool call matches the pattern.»
+  - улика: `openspec/changes/archive/2026-11-04-reverse-hook/probes/claude-code-docs.txt` «The hook command only runs if the tool call matches the pattern.»
 - следствия: F-42
 
 ## F-32 Как сообщение о «Внести» доходит до агента
@@ -338,24 +338,24 @@
   - A. Оставить как есть: хук говорит при следующей реплике человека
     - улика: `vscode/hook/hook.py` «"""Хук клиента: при каждом запросе человека сообщает агенту о внесённом кнопкой и о правке scheme.md.»
   - B. Хук клиента на файл событий сам начинает ход агента, без реплики человека. Запасной путь, не зависящий от клиента: кнопка копирования в просмотрщике
-    - улика: `openspec/changes/reverse-hook/probes/filechanged-rewake/run.txt` «Итог: 3 из 3 с читаемым текстом. Ход начался через 3-4 с после записи, файл ответа открыт, PostToolUse дал session_id и tool_input.file_path.»
-    - улика: `openspec/changes/reverse-hook/answers/2026-11-04-chat.md` «Поэтому текущий хук мы можем заменить маленькой кнопкой скопировать путь файла с ответами, и это будет неубиваемый запасной вариант, на случай отсутствия хука.»
+    - улика: `openspec/changes/archive/2026-11-04-reverse-hook/probes/filechanged-rewake/run.txt` «Итог: 3 из 3 с читаемым текстом. Ход начался через 3-4 с после записи, файл ответа открыт, PostToolUse дал session_id и tool_input.file_path.»
+    - улика: `openspec/changes/archive/2026-11-04-reverse-hook/answers/2026-11-04-chat.md` «Поэтому текущий хук мы можем заменить маленькой кнопкой скопировать путь файла с ответами, и это будет неубиваемый запасной вариант, на случай отсутствия хука.»
   - C. Только кнопка копирования, хук снять совсем
-    - улика: `openspec/changes/reverse-hook/answers/2026-11-04-chat.md` «Поэтому текущий хук мы можем заменить маленькой кнопкой скопировать путь файла с ответами, и это будет неубиваемый запасной вариант, на случай отсутствия хука.»
+    - улика: `openspec/changes/archive/2026-11-04-reverse-hook/answers/2026-11-04-chat.md` «Поэтому текущий хук мы можем заменить маленькой кнопкой скопировать путь файла с ответами, и это будет неубиваемый запасной вариант, на случай отсутствия хука.»
   - D. Вызывать из хука инструмент `SendMessage`
-    - улика: `openspec/changes/reverse-hook/probes/claude-code-docs.txt` «| `type` | yes | `"command"`, `"http"`, `"mcp_tool"`, `"prompt"`, or `"agent"` |»
+    - улика: `openspec/changes/archive/2026-11-04-reverse-hook/probes/claude-code-docs.txt` «| `type` | yes | `"command"`, `"http"`, `"mcp_tool"`, `"prompt"`, or `"agent"` |»
     - маловероятно: это инструмент самой модели, хук вызвать его не может
   - E. Канал MCP `--channels`, который кладёт сообщения в идущую сессию
-    - улика: `openspec/changes/reverse-hook/probes/claude-code-docs.txt` «Being in `.mcp.json` isn't enough to push messages: a server also has to be named in `--channels`.»
+    - улика: `openspec/changes/archive/2026-11-04-reverse-hook/probes/claude-code-docs.txt` «Being in `.mcp.json` isn't enough to push messages: a server also has to be named in `--channels`.»
     - маловероятно: нужен флаг при каждом запуске клиента и предварительная версия
 - антиподы: —
 - рекомендация: B — Следующая реплика человека после «Внести» и так «я внёс», поэтому A автоматизации не даёт. B даёт её, а хрупкость клиента прикрывает кнопка.
 - парковка: материалы — «Подхватывает ли идущая сессия Claude Code новые записи хуков в `.claude/settings.local.json`, или они действуют только с новой сессии. Сессия, начатая до установки, останется без пробуждения: проба или документация `hooks.md`.»
 - находка: Подхватывает частично, только `claude -p`, 34 прогона, `research/F-32.md`. Новый `UserPromptSubmit` срабатывает на следующей реплике, 12 из 12. Новый `FileChanged` нет: 0 запусков на 48 записей. Наблюдение запускают только `/compact` и `/clear` через `SessionStart` или `cd` при `CwdChanged` с `watchPaths`; `watchPaths` от `UserPromptSubmit` и `ConfigChange` не работают. Вне вопроса: успешный `cd` модели выключает работающее пробуждение, если нет `CwdChanged` с `watchPaths`, 2 из 2. Само пробуждение запускает `UserPromptSubmit`, в `prompt` идёт `<task-notification>`. Интерактивный клиент не проверен.
 - улики:
-  - улика: `openspec/changes/reverse-hook/research/F-32-probe/run.txt` «глубокий 1 [13.7]: запусков 0: []»
-  - улика: `openspec/changes/reverse-hook/research/F-32-probe/run.txt` «[41.9] хук: SessionStart:compact код 0»
-  - улика: `openspec/changes/reverse-hook/research/F-32-probe/run.txt` «глубокий 2 [50.2]: запусков 0: []»
+  - улика: `openspec/changes/archive/2026-11-04-reverse-hook/research/F-32-probe/run.txt` «глубокий 1 [13.7]: запусков 0: []»
+  - улика: `openspec/changes/archive/2026-11-04-reverse-hook/research/F-32-probe/run.txt` «[41.9] хук: SessionStart:compact код 0»
+  - улика: `openspec/changes/archive/2026-11-04-reverse-hook/research/F-32-probe/run.txt` «глубокий 2 [50.2]: запусков 0: []»
 - решение: B — «Проблема в том, что вариант А по сути не нужен. Если считывание результата "Внести" происходит по следующему сообщению от человека, то автоматизации нет, ведь следующее сообщение человека после внесения результатов это "Я внёс". Поэтому текущий хук мы можем заменить маленькой кнопкой скопировать путь файла с ответами, и это будет неубиваемый запасной вариант, на случай отсутствия хука.», 2026-11-04
 - следствия: F-33, F-34, F-36, F-42, F-47, F-48
 
@@ -367,14 +367,14 @@
 - зависит от: F-32
 - варианты:
   - A. Все живые сессии каталога: так работает `FileChanged` без отбора
-    - улика: `openspec/changes/reverse-hook/answers/2026-11-04-chat.md` «наверное идея будить сессии это плохая задумка.»
+    - улика: `openspec/changes/archive/2026-11-04-reverse-hook/answers/2026-11-04-chat.md` «наверное идея будить сессии это плохая задумка.»
   - B. Одну: с самым свежим временем записи курсора. Хук каждой сессии сравнивает сам, договариваться им не нужно. Если эта сессия закрыта, не проснётся никто
     - улика: `vscode/hook/hook.py` «save_cursor(cursor_path, {"offset": new_offset, "schemes": now})»
-    - улика: `openspec/changes/reverse-hook/answers/2026-11-04-chat.md` «А вот если сделать вариант Б + Д это уже похоже на полезную реализацию, которую я смогу потом переиспользовать.»
+    - улика: `openspec/changes/archive/2026-11-04-reverse-hook/answers/2026-11-04-chat.md` «А вот если сделать вариант Б + Д это уже похоже на полезную реализацию, которую я смогу потом переиспользовать.»
   - C. Ту, что работала с этим изменением: хук отмечает в курсоре открытые изменения
-    - улика: `openspec/changes/reverse-hook/probes/filechanged-rewake/run.txt` «PostToolUse tool=Read keys=['file_path'] path=<проект>\openspec\changes\demo\answers\2026-11-04.md session=True»
+    - улика: `openspec/changes/archive/2026-11-04-reverse-hook/probes/filechanged-rewake/run.txt` «PostToolUse tool=Read keys=['file_path'] path=<проект>\openspec\changes\demo\answers\2026-11-04.md session=True»
   - D. Выбирает человек из списка, который плагин читает из файлов сессий клиента
-    - улика: `openspec/changes/reverse-hook/probes/claude-code-docs.txt` «holds one small file per running session, used to detect concurrent sessions and crashes.»
+    - улика: `openspec/changes/archive/2026-11-04-reverse-hook/probes/claude-code-docs.txt` «holds one small file per running session, used to detect concurrent sessions and crashes.»
 - антиподы: —
 - рекомендация: B — Свой сигнал без чтения внутренних файлов клиента, одинаковый для обоих клиентов.
 - решение: B — «А вот если сделать вариант Б + Д это уже похоже на полезную реализацию, которую я смогу потом переиспользовать. То есть смогу создавать разные события, в зависимости от кнопок, пробуждать последнюю активную сессию.», 2026-11-04
@@ -388,9 +388,9 @@
 - зависит от: F-32
 - варианты:
   - A. Будит всегда, пока хук стоит
-    - улика: `openspec/changes/reverse-hook/probes/claude-code-docs.txt` «| `asyncRewake` | no | If `true`, runs in the background and wakes Claude on exit code 2.»
+    - улика: `openspec/changes/archive/2026-11-04-reverse-hook/probes/claude-code-docs.txt` «| `asyncRewake` | no | If `true`, runs in the background and wakes Claude on exit code 2.»
   - B. Настройка пробуждения и прежний выключатель хука. Пробуждение выключено: плагин не пишет событие, хук молчит, кнопка и «доставлено» работают. Хук выключен: остаётся кнопка
-    - улика: `openspec/changes/reverse-hook/answers/2026-11-04-chat.md` «И если пользователю такое не надо, то он отключает настройку пробуждения, или сам хук, и доставляет события руками.»
+    - улика: `openspec/changes/archive/2026-11-04-reverse-hook/answers/2026-11-04-chat.md` «И если пользователю такое не надо, то он отключает настройку пробуждения, или сам хук, и доставляет события руками.»
     - улика: `vscode/package.json` «"symphysis.hook.enabled": {»
 - антиподы: —
 - рекомендация: B — «Внести» перестаёт значить «начинай» только там, где человек этого хочет.
@@ -405,7 +405,7 @@
 - зависит от: F-34
 - варианты:
   - A. Включено: каждый, кто поставил плагин, платит за ход модели на каждое «Внести», пока не отключит
-    - улика: `openspec/changes/reverse-hook/answers/2026-11-04-chat.md` «И если пользователю такое не надо, то он отключает настройку пробуждения, или сам хук, и доставляет события руками.»
+    - улика: `openspec/changes/archive/2026-11-04-reverse-hook/answers/2026-11-04-chat.md` «И если пользователю такое не надо, то он отключает настройку пробуждения, или сам хук, и доставляет события руками.»
   - B. Выключено: пробуждение включают сами, по умолчанию доставка идёт кнопкой
     - улика: `vscode/package.json` «"symphysis.hook.enabled": {»
 - антиподы: —
@@ -420,7 +420,7 @@
 - зависит от: F-32, F-33
 - варианты:
   - A. Снять целиком: доставка уходит на файл
-    - улика: `openspec/changes/reverse-hook/answers/2026-11-04-chat.md` «Поэтому текущий хук мы можем заменить маленькой кнопкой скопировать путь файла с ответами, и это будет неубиваемый запасной вариант, на случай отсутствия хука.»
+    - улика: `openspec/changes/archive/2026-11-04-reverse-hook/answers/2026-11-04-chat.md` «Поэтому текущий хук мы можем заменить маленькой кнопкой скопировать путь файла с ответами, и это будет неубиваемый запасной вариант, на случай отсутствия хука.»
   - B. Оставить без текста о «Внести»: он пишет отметку активности, по которой выбирается сессия, и строку о правке `scheme.md`, для которой следующая реплика и есть новость
     - улика: `vscode/hook/hook.py` «save_cursor(cursor_path, {"offset": new_offset, "schemes": now})»
     - улика: `vscode/hook/hook.py` «f"Файл scheme.md изменения {change} правили с прошлого обращения. Это только сигнал: схема лишь "»
@@ -437,9 +437,9 @@
 - зависит от: F-32
 - варианты:
   - A. Голый путь к файлу ответа
-    - улика: `openspec/changes/reverse-hook/answers/2026-11-04-chat.md` «Поэтому текущий хук мы можем заменить маленькой кнопкой скопировать путь файла с ответами, и это будет неубиваемый запасной вариант, на случай отсутствия хука.»
+    - улика: `openspec/changes/archive/2026-11-04-reverse-hook/answers/2026-11-04-chat.md` «Поэтому текущий хук мы можем заменить маленькой кнопкой скопировать путь файла с ответами, и это будет неубиваемый запасной вариант, на случай отсутствия хука.»
   - B. Фразу с путём. Текст задаётся настройкой с умолчанием, подстановка `{path}`; без неё путь дописывается в конец, пустая строка значит голый путь
-    - улика: `openspec/changes/reverse-hook/answers/2026-11-04-chat.md` «Но фразу тогда тоже нужно конфигурировать.»
+    - улика: `openspec/changes/archive/2026-11-04-reverse-hook/answers/2026-11-04-chat.md` «Но фразу тогда тоже нужно конфигурировать.»
     - улика: `skills/symphysis-viewer/SKILL.md` «3. Не зови `apply` на этот файл: решения уже внесены, второй раз их не вносят.»
 - антиподы: —
 - рекомендация: B — По голому пути агент не узнаёт, что `apply` звать не надо; настройка оставляет человеку свой текст.
@@ -470,7 +470,7 @@
 - варианты:
   - A. В строке `type` и проверенные поля, текст агенту таблицей в `hook.py`. Новая кнопка добавляет строку таблицы
     - улика: `vscode/hook/hook.py` «"""Событие из строки файла или None, если строка не по форме. Годятся только проверенные поля."""»
-    - улика: `openspec/changes/reverse-hook/answers/2026-11-04-chat.md` «То есть смогу создавать разные события, в зависимости от кнопок, пробуждать последнюю активную сессию.»
+    - улика: `openspec/changes/archive/2026-11-04-reverse-hook/answers/2026-11-04-chat.md` «То есть смогу создавать разные события, в зависимости от кнопок, пробуждать последнюю активную сессию.»
   - B. Текст для агента лежит в самой строке события
     - улика: `vscode/hook/hook.py` «EVENTS_REL = ".symphysis/viewer/events.jsonl"»
     - маловероятно: файл может дописать кто угодно в проекте: это прямая инъекция в агента
@@ -490,7 +490,7 @@
   - A. Постоянный, в таблице `hook.py`. Настраивается только фраза кнопки: она проходит через руки человека
     - улика: `vscode/hook/hook.py` «"Перечитай журнал перед записью. Этот промпт вносить не надо: решения уже внесены."»
   - B. Настраивается, как фраза кнопки: плагин кладёт текст в файл проекта
-    - улика: `openspec/changes/reverse-hook/answers/2026-11-04-chat.md` «Но фразу тогда тоже нужно конфигурировать.»
+    - улика: `openspec/changes/archive/2026-11-04-reverse-hook/answers/2026-11-04-chat.md` «Но фразу тогда тоже нужно конфигурировать.»
     - маловероятно: текст для агента снова читался бы из файла
 - антиподы: —
 - рекомендация: A — Постоянная форма остаётся без исключений.
@@ -504,9 +504,9 @@
 - зависит от: —
 - варианты:
   - A. Только факты постоянной формы: файл открыт в такой-то сессии. Общего канала нет
-    - улика: `openspec/changes/reverse-hook/answers/2026-11-04-chat.md` «История про общий канал -- появится позже, исходя из потребности. Пока твой совет уместен и актуален, поэтому будем выполнять по нему.»
+    - улика: `openspec/changes/archive/2026-11-04-reverse-hook/answers/2026-11-04-chat.md` «История про общий канал -- появится позже, исходя из потребности. Пока твой совет уместен и актуален, поэтому будем выполнять по нему.»
   - B. Общий двусторонний канал со свободным текстом агента в просмотрщике
-    - улика: `openspec/changes/reverse-hook/intent.md` ««механизм двунаправленного взаимодейстия между symphysis и клиентом»»
+    - улика: `openspec/changes/archive/2026-11-04-reverse-hook/intent.md` ««механизм двунаправленного взаимодейстия между symphysis и клиентом»»
 - антиподы: —
 - рекомендация: A — Второго применения пока нет, а свободный текст открывает инъекцию в просмотрщик.
 - решение: A — «История про общий канал -- появится позже, исходя из потребности. Пока твой совет уместен и актуален, поэтому будем выполнять по нему.», 2026-11-04
@@ -520,9 +520,9 @@
 - зависит от: F-32
 - варианты:
   - A. Агент открыл файл ответа: хук клиента на чтение. Работает и при ручной передаче. `cat` через Bash такой хук не видит, поэтому при отсутствии сигнала пишем «доставки не видно», а не «не читал»
-    - улика: `openspec/changes/reverse-hook/probes/filechanged-rewake/run.txt` «PostToolUse tool=Read keys=['file_path'] path=<проект>\openspec\changes\demo\answers\2026-11-04.md session=True»
+    - улика: `openspec/changes/archive/2026-11-04-reverse-hook/probes/filechanged-rewake/run.txt` «PostToolUse tool=Read keys=['file_path'] path=<проект>\openspec\changes\demo\answers\2026-11-04.md session=True»
   - B. Любой следующий ход или инструмент сессии после пробуждения: ближе к «дошло до клиента», но при ручной передаче сигнала нет
-    - улика: `openspec/changes/reverse-hook/answers/2026-11-04-chat.md` «Так как факт чтения мы подтвердить не можем, а можем лишь узнать, что отправленное сообщение дошло до клиента.»
+    - улика: `openspec/changes/archive/2026-11-04-reverse-hook/answers/2026-11-04-chat.md` «Так как факт чтения мы подтвердить не можем, а можем лишь узнать, что отправленное сообщение дошло до клиента.»
   - C. Чтение журнала или файла ответа
     - улика: `vscode/hook/hook.py` «"Перечитай журнал перед записью. Этот промпт вносить не надо: решения уже внесены."»
     - маловероятно: журнал агент читает и без сообщения, сигнал ничего не доказывает
@@ -531,8 +531,8 @@
 - парковка: материалы — «Отсекает ли условие `if` вида `Read(**/answers/**)` запуск обработчика на Windows, где `file_path` приходит с обратными косыми. Без него Python запускается на каждое чтение файла. Проба на Claude Code, `probes/filechanged-rewake/`.»
 - находка: Да, отсекает, только `claude -p`, 4 прогона, `research/F-42.md`. `Read(**/answers/**)` вне `answers` обработчик не запускает, внутри запускает при шести написаниях пути; формы с обратными косыми в условии не срабатывают ни разу. Файл вне рабочего каталога форма не видит; его видит `Read(//**/answers/**)`, но она срабатывает и на `answers` других проектов. Сессия из подкаталога репозитория на Windows хуков из `.claude/settings.local.json` корня не получает: 0 запусков даже без `if`.
 - улики:
-  - улика: `openspec/changes/reverse-hook/research/F-42-probe/run.txt` «форма  2: Read(**/answers/**)»
-  - улика: `openspec/changes/reverse-hook/research/F-42-probe/run.txt` «формы 0-15: ++++..++.+++++++  запусков 13»
+  - улика: `openspec/changes/archive/2026-11-04-reverse-hook/research/F-42-probe/run.txt` «форма  2: Read(**/answers/**)»
+  - улика: `openspec/changes/archive/2026-11-04-reverse-hook/research/F-42-probe/run.txt` «формы 0-15: ++++..++.+++++++  запусков 13»
 - решение: A — «С остальным согласен.», 2026-11-04
 - следствия: F-43, F-44
 
@@ -544,7 +544,7 @@
 - зависит от: F-42
 - варианты:
   - A. Да: «Открой этот файл», и что `apply` звать не надо. В пробах открыли все
-    - улика: `openspec/changes/reverse-hook/probes/filechanged-rewake/run.txt` «Итог: 3 из 3 с читаемым текстом. Ход начался через 3-4 с после записи, файл ответа открыт, PostToolUse дал session_id и tool_input.file_path.»
+    - улика: `openspec/changes/archive/2026-11-04-reverse-hook/probes/filechanged-rewake/run.txt` «Итог: 3 из 3 с читаемым текстом. Ход начался через 3-4 с после записи, файл ответа открыт, PostToolUse дал session_id и tool_input.file_path.»
   - B. Нет: прежние слова «Перечитай журнал»
     - улика: `vscode/hook/hook.py` «"Перечитай журнал перед записью. Этот промпт вносить не надо: решения уже внесены."»
 - антиподы: B ↔ F-42.A
@@ -583,7 +583,7 @@
   - B. Там же и строкой о последнем внесении в шапке просмотрщика: видно и после перезагрузки
     - улика: `vscode/src/webview/App.tsx` «<header className="top">»
   - C. Список всех внесений с их состояниями
-    - улика: `openspec/changes/reverse-hook/intent.md` ««Просмотрщик показывает три состояния: внесено, отправлено, доставлено»»
+    - улика: `openspec/changes/archive/2026-11-04-reverse-hook/intent.md` ««Просмотрщик показывает три состояния: внесено, отправлено, доставлено»»
     - маловероятно: истории никто не просил, нужен ответ про последнее
 - антиподы: —
 - рекомендация: B — Вопрос «дошло ли» возникает и позже, когда отчёт уже убран.
@@ -599,9 +599,9 @@
   - A. Только реплика человека: так курсор пишется сейчас. Открытая, но молчащая новая сессия свежей не станет
     - улика: `vscode/hook/hook.py` «save_cursor(cursor_path, {"offset": new_offset, "schemes": now})»
   - B. Реплика и запуск сессии: `SessionStart` всё равно нужен для `watchPaths`. Новая сессия сразу свежая, но открытая просто посмотреть перехватит пробуждение
-    - улика: `openspec/changes/reverse-hook/probes/claude-code-docs.txt` «To watch files you can't name up front, return [`watchPaths`](#filechanged-output) from a hook to update the watch list dynamically.»
+    - улика: `openspec/changes/archive/2026-11-04-reverse-hook/probes/claude-code-docs.txt` «To watch files you can't name up front, return [`watchPaths`](#filechanged-output) from a hook to update the watch list dynamically.»
   - C. Поля `status` и `updatedAt` из файлов сессий клиента
-    - улика: `openspec/changes/reverse-hook/probes/claude-code-docs.txt` «holds one small file per running session, used to detect concurrent sessions and crashes.»
+    - улика: `openspec/changes/archive/2026-11-04-reverse-hook/probes/claude-code-docs.txt` «holds one small file per running session, used to detect concurrent sessions and crashes.»
     - маловероятно: внутренний файл, поля не описаны, у opencode другой путь
 - антиподы: C ↔ F-33.B
 - рекомендация: B — Закрыл старую сессию, открыл новую и нажал «Внести»: это частый путь, и новая сессия здесь нужна.
@@ -615,7 +615,7 @@
 - зависит от: F-32, F-33
 - варианты:
   - A. Ничего автоматически: состояние остаётся «внесено», есть кнопка
-    - улика: `openspec/changes/reverse-hook/answers/2026-11-04-chat.md` «Поэтому текущий хук мы можем заменить маленькой кнопкой скопировать путь файла с ответами, и это будет неубиваемый запасной вариант, на случай отсутствия хука.»
+    - улика: `openspec/changes/archive/2026-11-04-reverse-hook/answers/2026-11-04-chat.md` «Поэтому текущий хук мы можем заменить маленькой кнопкой скопировать путь файла с ответами, и это будет неубиваемый запасной вариант, на случай отсутствия хука.»
   - B. Сказать при следующей реплике в любой сессии, как сейчас
     - улика: `vscode/hook/hook.py` «"""Хук клиента: при каждом запросе человека сообщает агенту о внесённом кнопкой и о правке scheme.md.»
   - C. Добавить к следующему пробуждению
@@ -632,19 +632,19 @@
 - зависит от: F-32
 - варианты:
   - A. Каждое даёт свой ход модели
-    - улика: `openspec/changes/reverse-hook/probes/claude-code-docs.txt` «| `asyncRewake` | no | If `true`, runs in the background and wakes Claude on exit code 2.»
+    - улика: `openspec/changes/archive/2026-11-04-reverse-hook/probes/claude-code-docs.txt` «| `asyncRewake` | no | If `true`, runs in the background and wakes Claude on exit code 2.»
   - B. Склейка: хук ждёт несколько секунд и будит один раз. Предел времени у `asyncRewake` действует
-    - улика: `openspec/changes/reverse-hook/probes/claude-code-docs.txt` «| `asyncRewake` | no | If `true`, runs in the background and wakes Claude on exit code 2.»
+    - улика: `openspec/changes/archive/2026-11-04-reverse-hook/probes/claude-code-docs.txt` «| `asyncRewake` | no | If `true`, runs in the background and wakes Claude on exit code 2.»
   - C. Не будить, пока прошлое не доставлено: второе агент узнает, только перечитав журнал
-    - улика: `openspec/changes/reverse-hook/probes/filechanged-rewake/run.txt` «PostToolUse tool=Read keys=['file_path'] path=<проект>\openspec\changes\demo\answers\2026-11-04.md session=True»
+    - улика: `openspec/changes/archive/2026-11-04-reverse-hook/probes/filechanged-rewake/run.txt` «PostToolUse tool=Read keys=['file_path'] path=<проект>\openspec\changes\demo\answers\2026-11-04.md session=True»
   - D. Несколько подряд не может быть. Если человек нажал кнопку "Внести" то новых решений по развилкам не появилось, значит это одно событие. Если человек изменил решение по развилкам не дождавшись ответа от агента -- значит это новое событие, и агент получит два разных, а модель сообщит о проблемах. (добавлен человеком)
 - антиподы: —
 - рекомендация: A — Проще всего и ничего не теряется. Решать лучше после пробы.
 - парковка: материалы — «Что происходит с сообщением, пока сессия занята, и при двух пробуждениях подряд: не теряется ли текст, сколько ходов начнётся. Проба на Claude Code набором `probes/filechanged-rewake/`, режим `claude -p` с потоковым входом.»
 - находка: Клиент текст не теряет, теряет обработчик, читающий только последнюю строку: две записи в пределах 0,3 с дают один запуск `FileChanged`. Чтение от смещения довезло всё, 12 прогонов из 12. Своего хода событие не получает: занятая сессия получает текст вложением в начатый ход, два события в простое дали один ход в 15 прогонах из 16. В занятой сессии модель не открыла файл в 2 прогонах из 8, сказав, что человек такого не просил; в простое отказов нет, 16 из 16. Только `claude -p`, 24 прогона, `research/F-48.md`.
 - улики:
-  - улика: `openspec/changes/reverse-hook/research/F-48-probe/run.txt` «--- итог idle0/cursor/1: FileChanged запусков 1; ходов всего 2; Read: ['2026-11-04.md', '2026-11-04-2.md']»
-  - улика: `openspec/changes/reverse-hook/research/F-48-probe/run.txt` «Ты такого не просил, поэтому я файл не открывал.»
+  - улика: `openspec/changes/archive/2026-11-04-reverse-hook/research/F-48-probe/run.txt` «--- итог idle0/cursor/1: FileChanged запусков 1; ходов всего 2; Read: ['2026-11-04.md', '2026-11-04-2.md']»
+  - улика: `openspec/changes/archive/2026-11-04-reverse-hook/research/F-48-probe/run.txt` «Ты такого не просил, поэтому я файл не открывал.»
 - решение: D — «Видимо вариант D такой же как вариант A, но у рекомендации нет объяснения.», 2026-11-04
 
 ## F-49 Пробуждение в opencode
@@ -655,10 +655,10 @@
 - зависит от: F-32, F-42
 - варианты:
   - A. Тот же поток: наблюдатель файла в плагине, `session.prompt` начинает ход, `execute.after` даёт «доставлено»
-    - улика: `openspec/changes/reverse-hook/probes/opencode-v2.1.4.txt` «if (input.resume !== false) yield* execution.wake(sessionID)»
+    - улика: `openspec/changes/archive/2026-11-04-reverse-hook/probes/opencode-v2.1.4.txt` «if (input.resume !== false) yield* execution.wake(sessionID)»
     - улика: `openspec/changes/archive/2026-11-04-step-help-tab/research/F-49.md` «`v2.1.4:packages/plugin/src/promise/tool.ts:47` «readonly "execute.after": {»»
   - B. В этом изменении только Claude Code, в opencode остаётся кнопка
-    - улика: `openspec/changes/reverse-hook/probes/filechanged-rewake/run.txt` «Итог: в интерактивном клиенте в терминале пробуждение работает. Панель VS Code не проверена.»
+    - улика: `openspec/changes/archive/2026-11-04-reverse-hook/probes/filechanged-rewake/run.txt` «Итог: в интерактивном клиенте в терминале пробуждение работает. Панель VS Code не проверена.»
 - антиподы: —
 - рекомендация: A — Хук уже стоит в обоих клиентах, разрыв был бы заметен. Но только если проба подтвердит код.
 - парковка: материалы — «Начинает ли `session.prompt` ход в простаивающей сессии на установленной opencode 2.2.5, как сообщение выглядит для модели (обычная реплика или служебное), `steer` или `queue`, откуда плагин берёт номер последней сессии. Читать `packages/core/src/session/session.ts`; проба удаляет свои сессии из общей базы.»
@@ -666,9 +666,9 @@
 - парковка: материалы — «Что в opencode считать запуском сессии для F-46.B: `SessionStart` там нет, в списке хуков плагина только `prompt` и другие. Читать `packages/plugin/src/promise/session.ts` и события `event.subscribe`.»
 - находка: Отдельного запуска нет. `session.created` приходит только новой сессии, и своя копия плагина его теряет, если именно эта сессия загрузила место. При возобновлении события нет, первый сигнал даёт хук `prompt`. По исходнику TUI создаёт сессию при первой отправке, поэтому запуск там совпадает с первой репликой; глазами не проверено. `research/F-49.md`.
 - улики:
-  - улика: `openspec/changes/reverse-hook/research/F-49-probe/trace-main.jsonl` «"tool":"read","input":{"path":"openspec/changes/demo/answers/2026-11-04.md"},"status":"completed"»
-  - улика: `openspec/changes/reverse-hook/research/F-49-probe/trace-evict-close.jsonl` «"after_evict":{"commands":1,"setups":1}»
-  - улика: `openspec/changes/reverse-hook/research/F-49-probe/src-v2.2.5.txt` «const timeToLive = Duration.fromInputUnsafe(options.timeToLive ?? "60 minutes")»
+  - улика: `openspec/changes/archive/2026-11-04-reverse-hook/research/F-49-probe/trace-main.jsonl` «"tool":"read","input":{"path":"openspec/changes/demo/answers/2026-11-04.md"},"status":"completed"»
+  - улика: `openspec/changes/archive/2026-11-04-reverse-hook/research/F-49-probe/trace-evict-close.jsonl` «"after_evict":{"commands":1,"setups":1}»
+  - улика: `openspec/changes/archive/2026-11-04-reverse-hook/research/F-49-probe/src-v2.2.5.txt` «const timeToLive = Duration.fromInputUnsafe(options.timeToLive ?? "60 minutes")»
 - решение: A, 2026-11-04
 
 ## F-50 Растёт ли номер контракта
@@ -695,9 +695,9 @@
 - зависит от: F-32
 - варианты:
   - A. Проверить до реализации: без этого в панели работает только кнопка
-    - улика: `openspec/changes/reverse-hook/probes/filechanged-rewake/run.txt` «Итог: в интерактивном клиенте в терминале пробуждение работает. Панель VS Code не проверена.»
+    - улика: `openspec/changes/archive/2026-11-04-reverse-hook/probes/filechanged-rewake/run.txt` «Итог: в интерактивном клиенте в терминале пробуждение работает. Панель VS Code не проверена.»
   - B. Хватает терминала: панель без обещаний, запасной путь уже есть
-    - улика: `openspec/changes/reverse-hook/answers/2026-11-04-chat.md` «Поэтому текущий хук мы можем заменить маленькой кнопкой скопировать путь файла с ответами, и это будет неубиваемый запасной вариант, на случай отсутствия хука.»
+    - улика: `openspec/changes/archive/2026-11-04-reverse-hook/answers/2026-11-04-chat.md` «Поэтому текущий хук мы можем заменить маленькой кнопкой скопировать путь файла с ответами, и это будет неубиваемый запасной вариант, на случай отсутствия хука.»
   - C. во время теста в интерактивном клиенте я использовал терминал внутри VS Code, и всё сработало. (добавлен человеком)
 - антиподы: —
 - рекомендация: B — Ты прислал проверку из терминала. Если работаешь в панели, выбирай A: проверка занимает минуту.
@@ -710,7 +710,7 @@
 - адресат: материалы
 - зависит от: —
 - улики:
-  - улика: `openspec/changes/reverse-hook/answers/2026-11-04-2.md` «Несколько подряд не может быть. Если человек нажал кнопку "Внести" то новых решений по развилкам не появилось, значит это одно событие.»
+  - улика: `openspec/changes/archive/2026-11-04-reverse-hook/answers/2026-11-04-2.md` «Несколько подряд не может быть. Если человек нажал кнопку "Внести" то новых решений по развилкам не появилось, значит это одно событие.»
   - улика: `vscode/src/webview/ReturnPanel.tsx` «disabled={prompt.empty || applying || !!blockedReason}»
 - следствия: F-48, F-56
 
@@ -721,8 +721,8 @@
 - адресат: материалы
 - зависит от: —
 - улики:
-  - улика: `openspec/changes/reverse-hook/answers/2026-11-04-2.md` «во время теста в интерактивном клиенте я использовал терминал внутри VS Code, и всё сработало.»
-  - улика: `openspec/changes/reverse-hook/answers/2026-11-04-2.md` «поддержка официального расширения VS Code "Claude code for VS Code" или расширений VS Code для opencode -- в этом изменении не рассматривается.»
+  - улика: `openspec/changes/archive/2026-11-04-reverse-hook/answers/2026-11-04-2.md` «во время теста в интерактивном клиенте я использовал терминал внутри VS Code, и всё сработало.»
+  - улика: `openspec/changes/archive/2026-11-04-reverse-hook/answers/2026-11-04-2.md` «поддержка официального расширения VS Code "Claude code for VS Code" или расширений VS Code для opencode -- в этом изменении не рассматривается.»
 - следствия: F-51
 
 ## F-54 Как понято F-43: текст пробуждения просит открыть файл ответа, а перед выпуском 1.0.0 плагина его сверяют с тем, что добавится к тому времени. Это отдельная работа к выпуску, в этом изменении её нет
@@ -732,7 +732,7 @@
 - адресат: материалы
 - зависит от: —
 - улики:
-  - улика: `openspec/changes/reverse-hook/answers/2026-11-04-2.md` «Перед выпуском 1.0.0 нужно будет скорректировать промпт, чтобы он не противоречил добавленной функциональности»
+  - улика: `openspec/changes/archive/2026-11-04-reverse-hook/answers/2026-11-04-2.md` «Перед выпуском 1.0.0 нужно будет скорректировать промпт, чтобы он не противоречил добавленной функциональности»
 - следствия: F-43
 
 ## F-55 Курсор хранит смещение в файле событий и записывается целиком за один проход. Значит, когда хук на файл будет двигать смещение, время записи курсора сменится у всех сессий каталога
@@ -774,7 +774,7 @@
   - A. Плагин сам дописывает строку «внесено» в `receipts.jsonl` при каждом «Внести», настройка на это не влияет. Там же «отправлено» и «доставлено» от хуков, все три состояния в одном файле
     - улика: `vscode/src/host/apply.ts` «const answers = saveAnswers(ref.dir, date, text);»
   - B. Писать событие всегда, а настройка выключает только пробуждение: скрипт читает её из файла при каждом срабатывании
-    - улика: `openspec/changes/reverse-hook/answers/2026-11-04-chat.md` «И если пользователю такое не надо, то он отключает настройку пробуждения, или сам хук, и доставляет события руками.»
+    - улика: `openspec/changes/archive/2026-11-04-reverse-hook/answers/2026-11-04-chat.md` «И если пользователю такое не надо, то он отключает настройку пробуждения, или сам хук, и доставляет события руками.»
   - C. Брать самый новый файл из `answers/`
     - улика: `skills/symphysis-brainstorm/SKILL.md` «Сохрани промпт в `<каталог изменения>/answers/<дата>.md` (дата `YYYY-MM-DD`; файл занят — `YYYY-MM-DD-2.md`, затем `-3`) как»
     - маловероятно: промпт, внесённый вручную со страницы, ложится туда же и неотличим от внесённого кнопкой
@@ -789,8 +789,8 @@
 - адресат: материалы
 - зависит от: —
 - улики:
-  - улика: `openspec/changes/reverse-hook/answers/2026-11-04-chat.md` «Если же у рекомендации нет обоснования -- то её ценность и валидность такая же как у других вариантов развилки, а это ломает процесс работы.»
-  - улика: `openspec/changes/reverse-hook/answers/2026-11-04-chat.md` «это важная механика и должна быть зафиксирована в ядре, а не исправлена только в рамках этой сессии.»
+  - улика: `openspec/changes/archive/2026-11-04-reverse-hook/answers/2026-11-04-chat.md` «Если же у рекомендации нет обоснования -- то её ценность и валидность такая же как у других вариантов развилки, а это ломает процесс работы.»
+  - улика: `openspec/changes/archive/2026-11-04-reverse-hook/answers/2026-11-04-chat.md` «это важная механика и должна быть зафиксирована в ядре, а не исправлена только в рамках этой сессии.»
   - улика: `openspec/specs/decision-viewer/spec.md` «### Requirement: Выбор мимо рекомендации просит слово и не блокирует»
 - следствия: F-60
 
@@ -806,7 +806,7 @@
   - улика: `tools/journal_render.py` «return rc.get("text") or " — ".join(part for part in (rc["option"], rc["why"]) if part)»
   - улика: `tools/playground-template.html` «html += '<div class="rec">рекомендация: <b>' + esc(rec.recommendation.option) + '</b> — ' + md(rec.recommendation.why)»
   - улика: `docs/journal.schema.json` «Строка рекомендации как написана; у составной»
-  - улика: `openspec/changes/reverse-hook/probes/recommendation-text.txt` «итого: 180»
+  - улика: `openspec/changes/archive/2026-11-04-reverse-hook/probes/recommendation-text.txt` «итого: 180»
 - следствия: F-60
 
 ## F-60 Как зафиксировать в ядре обоснование рекомендации
@@ -817,12 +817,12 @@
 - зависит от: F-58, F-59
 - варианты:
   - A. Отдельным небольшим изменением ядра и плагина, до продолжения `reverse-hook`. Показ всегда `вариант — why`, как уже делает страница: в плагине и в `decisions.md`. Скилл перестаёт называть `text`, и `why` описан как причина выбора этого варианта против других. Старые журналы остаются в силе. Требование в спеке и тест. После вливания возвращаемся к `research` хука
-    - улика: `openspec/changes/reverse-hook/answers/2026-11-04-chat.md` «это важная механика и должна быть зафиксирована в ядре, а не исправлена только в рамках этой сессии.»
+    - улика: `openspec/changes/archive/2026-11-04-reverse-hook/answers/2026-11-04-chat.md` «это важная механика и должна быть зафиксирована в ядре, а не исправлена только в рамках этой сессии.»
     - улика: `tools/playground-template.html` «html += '<div class="rec">рекомендация: <b>' + esc(rec.recommendation.option) + '</b> — ' + md(rec.recommendation.why)»
   - B. Те же правки внутри `reverse-hook`: один журнал и одна проверка. Вливается вместе с хуком, и до тех пор ловушка остаётся у всех журналов
     - улика: `skills/symphysis-brainstorm/SKILL.md` «проекта и дословная строка файла; `recommendation {option, why, text}` —»
   - C. Те же правки отдельным изменением, но после `reverse-hook`
-    - улика: `openspec/changes/reverse-hook/probes/recommendation-text.txt` «итого: 180»
+    - улика: `openspec/changes/archive/2026-11-04-reverse-hook/probes/recommendation-text.txt` «итого: 180»
 - антиподы: —
 - рекомендация: A — Механика общая для всех журналов, а хуку ещё предстоят `research`, спеки и реализация на двух клиентах: при B и C ловушка живёт всё это время, и следующий проход развилок снова может идти без причин. От хука правка не зависит и задевает немного файлов, поэтому влить её отдельно проще и безопаснее. Цена A: шаги конвейера ради небольшой правки и пауза в хуке.
 - решение: A, 2026-11-04

@@ -22,7 +22,7 @@
    "consequences": "F-11, F-42",
    "evidence": [
     {
-     "path": "openspec/changes/reverse-hook/intent.md",
+     "path": "openspec/changes/archive/2026-11-04-reverse-hook/intent.md",
      "quote": "«сделать чтение сообщения фактом» (слово в чате, 2026-11-04)",
      "line": 28,
      "verdict": "сверено",
@@ -54,7 +54,7 @@
    "consequences": "F-41",
    "evidence": [
     {
-     "path": "openspec/changes/reverse-hook/intent.md",
+     "path": "openspec/changes/archive/2026-11-04-reverse-hook/intent.md",
      "quote": "«механизм двунаправленного взаимодейстия между symphysis и клиентом» (слово в чате, 2026-11-04)",
      "line": 29,
      "verdict": "сверено",
@@ -86,7 +86,7 @@
    "consequences": "F-42, F-47",
    "evidence": [
     {
-     "path": "openspec/changes/reverse-hook/intent.md",
+     "path": "openspec/changes/archive/2026-11-04-reverse-hook/intent.md",
      "quote": "«Мы отвечаем за факт создания и передачи сообщения» (слово в чате, 2026-11-04)",
      "line": 30,
      "verdict": "сверено",
@@ -117,7 +117,7 @@
    "consequences": "F-47",
    "evidence": [
     {
-     "path": "openspec/changes/reverse-hook/intent.md",
+     "path": "openspec/changes/archive/2026-11-04-reverse-hook/intent.md",
      "quote": "«предвосхищать все эти кейсы не нужно» (слово в чате, 2026-11-04)",
      "line": 31,
      "verdict": "сверено",
@@ -148,7 +148,7 @@
    "consequences": "F-26, F-51",
    "evidence": [
     {
-     "path": "openspec/changes/reverse-hook/intent.md",
+     "path": "openspec/changes/archive/2026-11-04-reverse-hook/intent.md",
      "quote": "«протестировать в реальной работе» (слово в чате, 2026-11-04)",
      "line": 32,
      "verdict": "сверено",
@@ -176,7 +176,7 @@
    "consequences": "",
    "evidence": [
     {
-     "path": "openspec/changes/reverse-hook/intent.md",
+     "path": "openspec/changes/archive/2026-11-04-reverse-hook/intent.md",
      "quote": "«в репозитории плагина остается только код, необходимый для работы и сборки плагина» (слово в чате, 2026-11-04)",
      "line": 33,
      "verdict": "сверено",
@@ -204,7 +204,7 @@
    "consequences": "F-17, F-50",
    "evidence": [
     {
-     "path": "openspec/changes/reverse-hook/intent.md",
+     "path": "openspec/changes/archive/2026-11-04-reverse-hook/intent.md",
      "quote": "«логика работы ядра остается в ядре» (слово в чате, 2026-11-04)",
      "line": 34,
      "verdict": "сверено",
@@ -232,7 +232,7 @@
    "consequences": "F-11, F-44, F-45",
    "evidence": [
     {
-     "path": "openspec/changes/reverse-hook/intent.md",
+     "path": "openspec/changes/archive/2026-11-04-reverse-hook/intent.md",
      "quote": "«Просмотрщик показывает три состояния: внесено, отправлено, доставлено» (слова модели, человек их не оспорил, 2026-11-04)",
      "line": 35,
      "verdict": "сверено",
@@ -266,7 +266,7 @@
    "consequences": "F-42",
    "evidence": [
     {
-     "path": "openspec/changes/reverse-hook/intent.md",
+     "path": "openspec/changes/archive/2026-11-04-reverse-hook/intent.md",
      "quote": "«во всех случаях чтения просто не видно, причину выяснять не надо» (слова модели о находке I5, человек их не оспорил, 2026-11-04)",
      "line": 36,
      "verdict": "сверено",
@@ -297,7 +297,7 @@
    "consequences": "F-42",
    "evidence": [
     {
-     "path": "openspec/changes/reverse-hook/intent.md",
+     "path": "openspec/changes/archive/2026-11-04-reverse-hook/intent.md",
      "quote": "«`e2e:hook` перестаёт спрашивать модель о её контексте» (слова модели, человек их не оспорил, 2026-11-04)",
      "line": 37,
      "verdict": "сверено",
@@ -325,7 +325,7 @@
    "consequences": "F-42",
    "evidence": [
     {
-     "path": "openspec/changes/reverse-hook/answers/2026-11-04-chat.md",
+     "path": "openspec/changes/archive/2026-11-04-reverse-hook/answers/2026-11-04-chat.md",
      "quote": "Так как факт чтения мы подтвердить не можем, а можем лишь узнать, что отправленное сообщение дошло до клиента.",
      "line": 10,
      "verdict": "сверено",
@@ -666,14 +666,14 @@
    "consequences": "F-32",
    "evidence": [
     {
-     "path": "openspec/changes/reverse-hook/probes/claude-code-docs.txt",
+     "path": "openspec/changes/archive/2026-11-04-reverse-hook/probes/claude-code-docs.txt",
      "quote": "| `FileChanged` | No | Shows stderr to user only |",
      "line": 8,
      "verdict": "сверено",
      "found": true
     },
     {
-     "path": "openspec/changes/reverse-hook/probes/claude-code-docs.txt",
+     "path": "openspec/changes/archive/2026-11-04-reverse-hook/probes/claude-code-docs.txt",
      "quote": "FileChanged hooks have no decision control.",
      "line": 12,
      "verdict": "сверено",
@@ -704,14 +704,14 @@
    "consequences": "F-32, F-33",
    "evidence": [
     {
-     "path": "openspec/changes/reverse-hook/probes/claude-code-docs.txt",
+     "path": "openspec/changes/archive/2026-11-04-reverse-hook/probes/claude-code-docs.txt",
      "quote": "| `asyncRewake` | no | If `true`, runs in the background and wakes Claude on exit code 2.",
      "line": 6,
      "verdict": "сверено",
      "found": true
     },
     {
-     "path": "openspec/changes/reverse-hook/probes/claude-code-docs.txt",
+     "path": "openspec/changes/archive/2026-11-04-reverse-hook/probes/claude-code-docs.txt",
      "quote": "Exception: an `asyncRewake` hook that exits with code 2 wakes Claude immediately even when the session is idle.",
      "line": 13,
      "verdict": "сверено",
@@ -742,14 +742,14 @@
    "consequences": "F-32, F-46",
    "evidence": [
     {
-     "path": "openspec/changes/reverse-hook/probes/claude-code-docs.txt",
+     "path": "openspec/changes/archive/2026-11-04-reverse-hook/probes/claude-code-docs.txt",
      "quote": "each segment is registered as a literal filename in the working directory",
      "line": 10,
      "verdict": "сверено",
      "found": true
     },
     {
-     "path": "openspec/changes/reverse-hook/probes/claude-code-docs.txt",
+     "path": "openspec/changes/archive/2026-11-04-reverse-hook/probes/claude-code-docs.txt",
      "quote": "To watch files you can't name up front, return [`watchPaths`](#filechanged-output) from a hook to update the watch list dynamically.",
      "line": 11,
      "verdict": "сверено",
@@ -780,7 +780,7 @@
    "consequences": "F-32",
    "evidence": [
     {
-     "path": "openspec/changes/reverse-hook/probes/claude-code-docs.txt",
+     "path": "openspec/changes/archive/2026-11-04-reverse-hook/probes/claude-code-docs.txt",
      "quote": "| `type` | yes | `\"command\"`, `\"http\"`, `\"mcp_tool\"`, `\"prompt\"`, or `\"agent\"` |",
      "line": 4,
      "verdict": "сверено",
@@ -808,14 +808,14 @@
    "consequences": "F-32, F-42",
    "evidence": [
     {
-     "path": "openspec/changes/reverse-hook/probes/filechanged-rewake/run.txt",
+     "path": "openspec/changes/archive/2026-11-04-reverse-hook/probes/filechanged-rewake/run.txt",
      "quote": "Итог: 3 из 3 с читаемым текстом. Ход начался через 3-4 с после записи, файл ответа открыт, PostToolUse дал session_id и tool_input.file_path.",
      "line": 54,
      "verdict": "сверено",
      "found": true
     },
     {
-     "path": "openspec/changes/reverse-hook/probes/filechanged-rewake/run.txt",
+     "path": "openspec/changes/archive/2026-11-04-reverse-hook/probes/filechanged-rewake/run.txt",
      "quote": "PostToolUse tool=Read keys=['file_path'] path=<проект>\\openspec\\changes\\demo\\answers\\2026-11-04.md session=True",
      "line": 19,
      "verdict": "сверено",
@@ -848,7 +848,7 @@
    "consequences": "F-05, F-51",
    "evidence": [
     {
-     "path": "openspec/changes/reverse-hook/probes/filechanged-rewake/run.txt",
+     "path": "openspec/changes/archive/2026-11-04-reverse-hook/probes/filechanged-rewake/run.txt",
      "quote": "Итог: в интерактивном клиенте в терминале пробуждение работает. Панель VS Code не проверена.",
      "line": 63,
      "verdict": "сверено",
@@ -879,14 +879,14 @@
    "consequences": "F-32, F-43",
    "evidence": [
     {
-     "path": "openspec/changes/reverse-hook/probes/filechanged-rewake/run.txt",
+     "path": "openspec/changes/archive/2026-11-04-reverse-hook/probes/filechanged-rewake/run.txt",
      "quote": "Stop hook blocking error from command \"FileChanged\": Человек внёс решения кнопкой «Внести» в просмотрщике журнала: изменение demo.",
      "line": 45,
      "verdict": "сверено",
      "found": true
     },
     {
-     "path": "openspec/changes/reverse-hook/probes/filechanged-rewake/run.txt",
+     "path": "openspec/changes/archive/2026-11-04-reverse-hook/probes/filechanged-rewake/run.txt",
      "quote": "[SYSTEM NOTIFICATION - NOT USER INPUT]",
      "line": 50,
      "verdict": "сверено",
@@ -917,21 +917,21 @@
    "consequences": "F-33, F-46",
    "evidence": [
     {
-     "path": "openspec/changes/reverse-hook/probes/claude-code-docs.txt",
+     "path": "openspec/changes/archive/2026-11-04-reverse-hook/probes/claude-code-docs.txt",
      "quote": "| `cwd` | Current working directory when the hook is invoked |",
      "line": 7,
      "verdict": "сверено",
      "found": true
     },
     {
-     "path": "openspec/changes/reverse-hook/probes/claude-code-docs.txt",
+     "path": "openspec/changes/archive/2026-11-04-reverse-hook/probes/claude-code-docs.txt",
      "quote": "holds one small file per running session, used to detect concurrent sessions and crashes.",
      "line": 20,
      "verdict": "сверено",
      "found": true
     },
     {
-     "path": "openspec/changes/reverse-hook/probes/opencode-v2.1.4.txt",
+     "path": "openspec/changes/archive/2026-11-04-reverse-hook/probes/opencode-v2.1.4.txt",
      "quote": "directory: AbsolutePath.pipe(Schema.optional),",
      "line": 8,
      "verdict": "сверено",
@@ -959,21 +959,21 @@
    "consequences": "F-49",
    "evidence": [
     {
-     "path": "openspec/changes/reverse-hook/probes/opencode-v2.1.4.txt",
+     "path": "openspec/changes/archive/2026-11-04-reverse-hook/probes/opencode-v2.1.4.txt",
      "quote": "prompt: adaptApiMethod(SessionEndpoints[\"session.prompt\"], host.session.prompt),",
      "line": 3,
      "verdict": "сверено",
      "found": true
     },
     {
-     "path": "openspec/changes/reverse-hook/probes/opencode-v2.1.4.txt",
+     "path": "openspec/changes/archive/2026-11-04-reverse-hook/probes/opencode-v2.1.4.txt",
      "quote": "if (input.resume !== false) yield* execution.wake(sessionID)",
      "line": 5,
      "verdict": "сверено",
      "found": true
     },
     {
-     "path": "openspec/changes/reverse-hook/probes/opencode-v2.1.4.txt",
+     "path": "openspec/changes/archive/2026-11-04-reverse-hook/probes/opencode-v2.1.4.txt",
      "quote": "export const Delivery = Schema.Literals([\"steer\", \"queue\"])",
      "line": 7,
      "verdict": "сверено",
@@ -1042,7 +1042,7 @@
    "consequences": "F-42",
    "evidence": [
     {
-     "path": "openspec/changes/reverse-hook/probes/claude-code-docs.txt",
+     "path": "openspec/changes/archive/2026-11-04-reverse-hook/probes/claude-code-docs.txt",
      "quote": "The hook command only runs if the tool call matches the pattern.",
      "line": 5,
      "verdict": "сверено",
@@ -1085,14 +1085,14 @@
      "unlikely": null,
      "evidence": [
       {
-       "path": "openspec/changes/reverse-hook/probes/filechanged-rewake/run.txt",
+       "path": "openspec/changes/archive/2026-11-04-reverse-hook/probes/filechanged-rewake/run.txt",
        "quote": "Итог: 3 из 3 с читаемым текстом. Ход начался через 3-4 с после записи, файл ответа открыт, PostToolUse дал session_id и tool_input.file_path.",
        "line": 54,
        "verdict": "сверено",
        "found": true
       },
       {
-       "path": "openspec/changes/reverse-hook/answers/2026-11-04-chat.md",
+       "path": "openspec/changes/archive/2026-11-04-reverse-hook/answers/2026-11-04-chat.md",
        "quote": "Поэтому текущий хук мы можем заменить маленькой кнопкой скопировать путь файла с ответами, и это будет неубиваемый запасной вариант, на случай отсутствия хука.",
        "line": 31,
        "verdict": "сверено",
@@ -1107,7 +1107,7 @@
      "unlikely": null,
      "evidence": [
       {
-       "path": "openspec/changes/reverse-hook/answers/2026-11-04-chat.md",
+       "path": "openspec/changes/archive/2026-11-04-reverse-hook/answers/2026-11-04-chat.md",
        "quote": "Поэтому текущий хук мы можем заменить маленькой кнопкой скопировать путь файла с ответами, и это будет неубиваемый запасной вариант, на случай отсутствия хука.",
        "line": 31,
        "verdict": "сверено",
@@ -1122,7 +1122,7 @@
      "unlikely": "это инструмент самой модели, хук вызвать его не может",
      "evidence": [
       {
-       "path": "openspec/changes/reverse-hook/probes/claude-code-docs.txt",
+       "path": "openspec/changes/archive/2026-11-04-reverse-hook/probes/claude-code-docs.txt",
        "quote": "| `type` | yes | `\"command\"`, `\"http\"`, `\"mcp_tool\"`, `\"prompt\"`, or `\"agent\"` |",
        "line": 4,
        "verdict": "сверено",
@@ -1137,7 +1137,7 @@
      "unlikely": "нужен флаг при каждом запуске клиента и предварительная версия",
      "evidence": [
       {
-       "path": "openspec/changes/reverse-hook/probes/claude-code-docs.txt",
+       "path": "openspec/changes/archive/2026-11-04-reverse-hook/probes/claude-code-docs.txt",
        "quote": "Being in `.mcp.json` isn't enough to push messages: a server also has to be named in `--channels`.",
        "line": 17,
        "verdict": "сверено",
@@ -1172,21 +1172,21 @@
    "consequences": "F-33, F-34, F-36, F-42, F-47, F-48",
    "evidence": [
     {
-     "path": "openspec/changes/reverse-hook/research/F-32-probe/run.txt",
+     "path": "openspec/changes/archive/2026-11-04-reverse-hook/research/F-32-probe/run.txt",
      "quote": "глубокий 1 [13.7]: запусков 0: []",
      "line": 203,
      "found": true,
      "verdict": "сверено"
     },
     {
-     "path": "openspec/changes/reverse-hook/research/F-32-probe/run.txt",
+     "path": "openspec/changes/archive/2026-11-04-reverse-hook/research/F-32-probe/run.txt",
      "quote": "[41.9] хук: SessionStart:compact код 0",
      "line": 590,
      "found": true,
      "verdict": "сверено"
     },
     {
-     "path": "openspec/changes/reverse-hook/research/F-32-probe/run.txt",
+     "path": "openspec/changes/archive/2026-11-04-reverse-hook/research/F-32-probe/run.txt",
      "quote": "глубокий 2 [50.2]: запусков 0: []",
      "line": 1127,
      "found": true,
@@ -1219,7 +1219,7 @@
      "unlikely": null,
      "evidence": [
       {
-       "path": "openspec/changes/reverse-hook/answers/2026-11-04-chat.md",
+       "path": "openspec/changes/archive/2026-11-04-reverse-hook/answers/2026-11-04-chat.md",
        "quote": "наверное идея будить сессии это плохая задумка.",
        "line": 25,
        "verdict": "сверено",
@@ -1241,7 +1241,7 @@
        "found": true
       },
       {
-       "path": "openspec/changes/reverse-hook/answers/2026-11-04-chat.md",
+       "path": "openspec/changes/archive/2026-11-04-reverse-hook/answers/2026-11-04-chat.md",
        "quote": "А вот если сделать вариант Б + Д это уже похоже на полезную реализацию, которую я смогу потом переиспользовать.",
        "line": 33,
        "verdict": "сверено",
@@ -1256,7 +1256,7 @@
      "unlikely": null,
      "evidence": [
       {
-       "path": "openspec/changes/reverse-hook/probes/filechanged-rewake/run.txt",
+       "path": "openspec/changes/archive/2026-11-04-reverse-hook/probes/filechanged-rewake/run.txt",
        "quote": "PostToolUse tool=Read keys=['file_path'] path=<проект>\\openspec\\changes\\demo\\answers\\2026-11-04.md session=True",
        "line": 19,
        "verdict": "сверено",
@@ -1271,7 +1271,7 @@
      "unlikely": null,
      "evidence": [
       {
-       "path": "openspec/changes/reverse-hook/probes/claude-code-docs.txt",
+       "path": "openspec/changes/archive/2026-11-04-reverse-hook/probes/claude-code-docs.txt",
        "quote": "holds one small file per running session, used to detect concurrent sessions and crashes.",
        "line": 20,
        "verdict": "сверено",
@@ -1323,7 +1323,7 @@
      "unlikely": null,
      "evidence": [
       {
-       "path": "openspec/changes/reverse-hook/probes/claude-code-docs.txt",
+       "path": "openspec/changes/archive/2026-11-04-reverse-hook/probes/claude-code-docs.txt",
        "quote": "| `asyncRewake` | no | If `true`, runs in the background and wakes Claude on exit code 2.",
        "line": 6,
        "verdict": "сверено",
@@ -1338,7 +1338,7 @@
      "unlikely": null,
      "evidence": [
       {
-       "path": "openspec/changes/reverse-hook/answers/2026-11-04-chat.md",
+       "path": "openspec/changes/archive/2026-11-04-reverse-hook/answers/2026-11-04-chat.md",
        "quote": "И если пользователю такое не надо, то он отключает настройку пробуждения, или сам хук, и доставляет события руками.",
        "line": 33,
        "verdict": "сверено",
@@ -1396,7 +1396,7 @@
      "unlikely": null,
      "evidence": [
       {
-       "path": "openspec/changes/reverse-hook/answers/2026-11-04-chat.md",
+       "path": "openspec/changes/archive/2026-11-04-reverse-hook/answers/2026-11-04-chat.md",
        "quote": "И если пользователю такое не надо, то он отключает настройку пробуждения, или сам хук, и доставляет события руками.",
        "line": 33,
        "verdict": "сверено",
@@ -1463,7 +1463,7 @@
      "unlikely": null,
      "evidence": [
       {
-       "path": "openspec/changes/reverse-hook/answers/2026-11-04-chat.md",
+       "path": "openspec/changes/archive/2026-11-04-reverse-hook/answers/2026-11-04-chat.md",
        "quote": "Поэтому текущий хук мы можем заменить маленькой кнопкой скопировать путь файла с ответами, и это будет неубиваемый запасной вариант, на случай отсутствия хука.",
        "line": 31,
        "verdict": "сверено",
@@ -1538,7 +1538,7 @@
      "unlikely": null,
      "evidence": [
       {
-       "path": "openspec/changes/reverse-hook/answers/2026-11-04-chat.md",
+       "path": "openspec/changes/archive/2026-11-04-reverse-hook/answers/2026-11-04-chat.md",
        "quote": "Поэтому текущий хук мы можем заменить маленькой кнопкой скопировать путь файла с ответами, и это будет неубиваемый запасной вариант, на случай отсутствия хука.",
        "line": 31,
        "verdict": "сверено",
@@ -1553,7 +1553,7 @@
      "unlikely": null,
      "evidence": [
       {
-       "path": "openspec/changes/reverse-hook/answers/2026-11-04-chat.md",
+       "path": "openspec/changes/archive/2026-11-04-reverse-hook/answers/2026-11-04-chat.md",
        "quote": "Но фразу тогда тоже нужно конфигурировать.",
        "line": 37,
        "verdict": "сверено",
@@ -1682,7 +1682,7 @@
        "found": true
       },
       {
-       "path": "openspec/changes/reverse-hook/answers/2026-11-04-chat.md",
+       "path": "openspec/changes/archive/2026-11-04-reverse-hook/answers/2026-11-04-chat.md",
        "quote": "То есть смогу создавать разные события, в зависимости от кнопок, пробуждать последнюю активную сессию.",
        "line": 33,
        "verdict": "сверено",
@@ -1769,7 +1769,7 @@
      "unlikely": "текст для агента снова читался бы из файла",
      "evidence": [
       {
-       "path": "openspec/changes/reverse-hook/answers/2026-11-04-chat.md",
+       "path": "openspec/changes/archive/2026-11-04-reverse-hook/answers/2026-11-04-chat.md",
        "quote": "Но фразу тогда тоже нужно конфигурировать.",
        "line": 37,
        "verdict": "сверено",
@@ -1818,7 +1818,7 @@
      "unlikely": null,
      "evidence": [
       {
-       "path": "openspec/changes/reverse-hook/answers/2026-11-04-chat.md",
+       "path": "openspec/changes/archive/2026-11-04-reverse-hook/answers/2026-11-04-chat.md",
        "quote": "История про общий канал -- появится позже, исходя из потребности. Пока твой совет уместен и актуален, поэтому будем выполнять по нему.",
        "line": 8,
        "verdict": "сверено",
@@ -1833,7 +1833,7 @@
      "unlikely": null,
      "evidence": [
       {
-       "path": "openspec/changes/reverse-hook/intent.md",
+       "path": "openspec/changes/archive/2026-11-04-reverse-hook/intent.md",
        "quote": "«механизм двунаправленного взаимодейстия между symphysis и клиентом»",
        "line": 29,
        "verdict": "сверено",
@@ -1884,7 +1884,7 @@
      "unlikely": null,
      "evidence": [
       {
-       "path": "openspec/changes/reverse-hook/probes/filechanged-rewake/run.txt",
+       "path": "openspec/changes/archive/2026-11-04-reverse-hook/probes/filechanged-rewake/run.txt",
        "quote": "PostToolUse tool=Read keys=['file_path'] path=<проект>\\openspec\\changes\\demo\\answers\\2026-11-04.md session=True",
        "line": 19,
        "verdict": "сверено",
@@ -1899,7 +1899,7 @@
      "unlikely": null,
      "evidence": [
       {
-       "path": "openspec/changes/reverse-hook/answers/2026-11-04-chat.md",
+       "path": "openspec/changes/archive/2026-11-04-reverse-hook/answers/2026-11-04-chat.md",
        "quote": "Так как факт чтения мы подтвердить не можем, а можем лишь узнать, что отправленное сообщение дошло до клиента.",
        "line": 10,
        "verdict": "сверено",
@@ -1954,14 +1954,14 @@
    "consequences": "F-43, F-44",
    "evidence": [
     {
-     "path": "openspec/changes/reverse-hook/research/F-42-probe/run.txt",
+     "path": "openspec/changes/archive/2026-11-04-reverse-hook/research/F-42-probe/run.txt",
      "quote": "форма  2: Read(**/answers/**)",
      "line": 10,
      "found": true,
      "verdict": "сверено"
     },
     {
-     "path": "openspec/changes/reverse-hook/research/F-42-probe/run.txt",
+     "path": "openspec/changes/archive/2026-11-04-reverse-hook/research/F-42-probe/run.txt",
      "quote": "формы 0-15: ++++..++.+++++++  запусков 13",
      "line": 49,
      "found": true,
@@ -1994,7 +1994,7 @@
      "unlikely": null,
      "evidence": [
       {
-       "path": "openspec/changes/reverse-hook/probes/filechanged-rewake/run.txt",
+       "path": "openspec/changes/archive/2026-11-04-reverse-hook/probes/filechanged-rewake/run.txt",
        "quote": "Итог: 3 из 3 с читаемым текстом. Ход начался через 3-4 с после записи, файл ответа открыт, PostToolUse дал session_id и tool_input.file_path.",
        "line": 54,
        "verdict": "сверено",
@@ -2178,7 +2178,7 @@
      "unlikely": "истории никто не просил, нужен ответ про последнее",
      "evidence": [
       {
-       "path": "openspec/changes/reverse-hook/intent.md",
+       "path": "openspec/changes/archive/2026-11-04-reverse-hook/intent.md",
        "quote": "«Просмотрщик показывает три состояния: внесено, отправлено, доставлено»",
        "line": 35,
        "verdict": "сверено",
@@ -2245,7 +2245,7 @@
      "unlikely": null,
      "evidence": [
       {
-       "path": "openspec/changes/reverse-hook/probes/claude-code-docs.txt",
+       "path": "openspec/changes/archive/2026-11-04-reverse-hook/probes/claude-code-docs.txt",
        "quote": "To watch files you can't name up front, return [`watchPaths`](#filechanged-output) from a hook to update the watch list dynamically.",
        "line": 11,
        "verdict": "сверено",
@@ -2260,7 +2260,7 @@
      "unlikely": "внутренний файл, поля не описаны, у opencode другой путь",
      "evidence": [
       {
-       "path": "openspec/changes/reverse-hook/probes/claude-code-docs.txt",
+       "path": "openspec/changes/archive/2026-11-04-reverse-hook/probes/claude-code-docs.txt",
        "quote": "holds one small file per running session, used to detect concurrent sessions and crashes.",
        "line": 20,
        "verdict": "сверено",
@@ -2317,7 +2317,7 @@
      "unlikely": null,
      "evidence": [
       {
-       "path": "openspec/changes/reverse-hook/answers/2026-11-04-chat.md",
+       "path": "openspec/changes/archive/2026-11-04-reverse-hook/answers/2026-11-04-chat.md",
        "quote": "Поэтому текущий хук мы можем заменить маленькой кнопкой скопировать путь файла с ответами, и это будет неубиваемый запасной вариант, на случай отсутствия хука.",
        "line": 31,
        "verdict": "сверено",
@@ -2399,7 +2399,7 @@
      "unlikely": null,
      "evidence": [
       {
-       "path": "openspec/changes/reverse-hook/probes/claude-code-docs.txt",
+       "path": "openspec/changes/archive/2026-11-04-reverse-hook/probes/claude-code-docs.txt",
        "quote": "| `asyncRewake` | no | If `true`, runs in the background and wakes Claude on exit code 2.",
        "line": 6,
        "verdict": "сверено",
@@ -2414,7 +2414,7 @@
      "unlikely": null,
      "evidence": [
       {
-       "path": "openspec/changes/reverse-hook/probes/claude-code-docs.txt",
+       "path": "openspec/changes/archive/2026-11-04-reverse-hook/probes/claude-code-docs.txt",
        "quote": "| `asyncRewake` | no | If `true`, runs in the background and wakes Claude on exit code 2.",
        "line": 6,
        "verdict": "сверено",
@@ -2429,7 +2429,7 @@
      "unlikely": null,
      "evidence": [
       {
-       "path": "openspec/changes/reverse-hook/probes/filechanged-rewake/run.txt",
+       "path": "openspec/changes/archive/2026-11-04-reverse-hook/probes/filechanged-rewake/run.txt",
        "quote": "PostToolUse tool=Read keys=['file_path'] path=<проект>\\openspec\\changes\\demo\\answers\\2026-11-04.md session=True",
        "line": 19,
        "verdict": "сверено",
@@ -2471,14 +2471,14 @@
    "consequences": "",
    "evidence": [
     {
-     "path": "openspec/changes/reverse-hook/research/F-48-probe/run.txt",
+     "path": "openspec/changes/archive/2026-11-04-reverse-hook/research/F-48-probe/run.txt",
      "quote": "--- итог idle0/cursor/1: FileChanged запусков 1; ходов всего 2; Read: ['2026-11-04.md', '2026-11-04-2.md']",
      "line": 102,
      "found": true,
      "verdict": "сверено"
     },
     {
-     "path": "openspec/changes/reverse-hook/research/F-48-probe/run.txt",
+     "path": "openspec/changes/archive/2026-11-04-reverse-hook/research/F-48-probe/run.txt",
      "quote": "Ты такого не просил, поэтому я файл не открывал.",
      "line": 53,
      "found": true,
@@ -2509,7 +2509,7 @@
      "unlikely": null,
      "evidence": [
       {
-       "path": "openspec/changes/reverse-hook/probes/opencode-v2.1.4.txt",
+       "path": "openspec/changes/archive/2026-11-04-reverse-hook/probes/opencode-v2.1.4.txt",
        "quote": "if (input.resume !== false) yield* execution.wake(sessionID)",
        "line": 5,
        "verdict": "сверено",
@@ -2531,7 +2531,7 @@
      "unlikely": null,
      "evidence": [
       {
-       "path": "openspec/changes/reverse-hook/probes/filechanged-rewake/run.txt",
+       "path": "openspec/changes/archive/2026-11-04-reverse-hook/probes/filechanged-rewake/run.txt",
        "quote": "Итог: в интерактивном клиенте в терминале пробуждение работает. Панель VS Code не проверена.",
        "line": 63,
        "verdict": "сверено",
@@ -2571,21 +2571,21 @@
    "consequences": "",
    "evidence": [
     {
-     "path": "openspec/changes/reverse-hook/research/F-49-probe/trace-main.jsonl",
+     "path": "openspec/changes/archive/2026-11-04-reverse-hook/research/F-49-probe/trace-main.jsonl",
      "quote": "\"tool\":\"read\",\"input\":{\"path\":\"openspec/changes/demo/answers/2026-11-04.md\"},\"status\":\"completed\"",
      "line": 31,
      "found": true,
      "verdict": "сверено"
     },
     {
-     "path": "openspec/changes/reverse-hook/research/F-49-probe/trace-evict-close.jsonl",
+     "path": "openspec/changes/archive/2026-11-04-reverse-hook/research/F-49-probe/trace-evict-close.jsonl",
      "quote": "\"after_evict\":{\"commands\":1,\"setups\":1}",
      "line": 12,
      "found": true,
      "verdict": "сверено"
     },
     {
-     "path": "openspec/changes/reverse-hook/research/F-49-probe/src-v2.2.5.txt",
+     "path": "openspec/changes/archive/2026-11-04-reverse-hook/research/F-49-probe/src-v2.2.5.txt",
      "quote": "const timeToLive = Duration.fromInputUnsafe(options.timeToLive ?? \"60 minutes\")",
      "line": 545,
      "found": true,
@@ -2690,7 +2690,7 @@
      "unlikely": null,
      "evidence": [
       {
-       "path": "openspec/changes/reverse-hook/probes/filechanged-rewake/run.txt",
+       "path": "openspec/changes/archive/2026-11-04-reverse-hook/probes/filechanged-rewake/run.txt",
        "quote": "Итог: в интерактивном клиенте в терминале пробуждение работает. Панель VS Code не проверена.",
        "line": 63,
        "verdict": "сверено",
@@ -2705,7 +2705,7 @@
      "unlikely": null,
      "evidence": [
       {
-       "path": "openspec/changes/reverse-hook/answers/2026-11-04-chat.md",
+       "path": "openspec/changes/archive/2026-11-04-reverse-hook/answers/2026-11-04-chat.md",
        "quote": "Поэтому текущий хук мы можем заменить маленькой кнопкой скопировать путь файла с ответами, и это будет неубиваемый запасной вариант, на случай отсутствия хука.",
        "line": 31,
        "verdict": "сверено",
@@ -2764,7 +2764,7 @@
    "consequences": "F-48, F-56",
    "evidence": [
     {
-     "path": "openspec/changes/reverse-hook/answers/2026-11-04-2.md",
+     "path": "openspec/changes/archive/2026-11-04-reverse-hook/answers/2026-11-04-2.md",
      "quote": "Несколько подряд не может быть. Если человек нажал кнопку \"Внести\" то новых решений по развилкам не появилось, значит это одно событие.",
      "line": 10,
      "verdict": "сверено",
@@ -2802,14 +2802,14 @@
    "consequences": "F-51",
    "evidence": [
     {
-     "path": "openspec/changes/reverse-hook/answers/2026-11-04-2.md",
+     "path": "openspec/changes/archive/2026-11-04-reverse-hook/answers/2026-11-04-2.md",
      "quote": "во время теста в интерактивном клиенте я использовал терминал внутри VS Code, и всё сработало.",
      "line": 14,
      "verdict": "сверено",
      "found": true
     },
     {
-     "path": "openspec/changes/reverse-hook/answers/2026-11-04-2.md",
+     "path": "openspec/changes/archive/2026-11-04-reverse-hook/answers/2026-11-04-2.md",
      "quote": "поддержка официального расширения VS Code \"Claude code for VS Code\" или расширений VS Code для opencode -- в этом изменении не рассматривается.",
      "line": 15,
      "verdict": "сверено",
@@ -2840,7 +2840,7 @@
    "consequences": "F-43",
    "evidence": [
     {
-     "path": "openspec/changes/reverse-hook/answers/2026-11-04-2.md",
+     "path": "openspec/changes/archive/2026-11-04-reverse-hook/answers/2026-11-04-2.md",
      "quote": "Перед выпуском 1.0.0 нужно будет скорректировать промпт, чтобы он не противоречил добавленной функциональности",
      "line": 5,
      "verdict": "сверено",
@@ -3010,7 +3010,7 @@
      "unlikely": null,
      "evidence": [
       {
-       "path": "openspec/changes/reverse-hook/answers/2026-11-04-chat.md",
+       "path": "openspec/changes/archive/2026-11-04-reverse-hook/answers/2026-11-04-chat.md",
        "quote": "И если пользователю такое не надо, то он отключает настройку пробуждения, или сам хук, и доставляет события руками.",
        "line": 33,
        "verdict": "сверено",
@@ -3083,14 +3083,14 @@
    "consequences": "F-60",
    "evidence": [
     {
-     "path": "openspec/changes/reverse-hook/answers/2026-11-04-chat.md",
+     "path": "openspec/changes/archive/2026-11-04-reverse-hook/answers/2026-11-04-chat.md",
      "quote": "Если же у рекомендации нет обоснования -- то её ценность и валидность такая же как у других вариантов развилки, а это ломает процесс работы.",
      "line": 45,
      "verdict": "сверено",
      "found": true
     },
     {
-     "path": "openspec/changes/reverse-hook/answers/2026-11-04-chat.md",
+     "path": "openspec/changes/archive/2026-11-04-reverse-hook/answers/2026-11-04-chat.md",
      "quote": "это важная механика и должна быть зафиксирована в ядре, а не исправлена только в рамках этой сессии.",
      "line": 45,
      "verdict": "сверено",
@@ -3160,7 +3160,7 @@
      "found": true
     },
     {
-     "path": "openspec/changes/reverse-hook/probes/recommendation-text.txt",
+     "path": "openspec/changes/archive/2026-11-04-reverse-hook/probes/recommendation-text.txt",
      "quote": "итого: 180",
      "line": 17,
      "verdict": "сверено",
@@ -3188,7 +3188,7 @@
      "unlikely": null,
      "evidence": [
       {
-       "path": "openspec/changes/reverse-hook/answers/2026-11-04-chat.md",
+       "path": "openspec/changes/archive/2026-11-04-reverse-hook/answers/2026-11-04-chat.md",
        "quote": "это важная механика и должна быть зафиксирована в ядре, а не исправлена только в рамках этой сессии.",
        "line": 45,
        "verdict": "сверено",
@@ -3225,7 +3225,7 @@
      "unlikely": null,
      "evidence": [
       {
-       "path": "openspec/changes/reverse-hook/probes/recommendation-text.txt",
+       "path": "openspec/changes/archive/2026-11-04-reverse-hook/probes/recommendation-text.txt",
        "quote": "итого: 180",
        "line": 17,
        "verdict": "сверено",
