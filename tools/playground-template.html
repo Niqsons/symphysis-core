@@ -711,6 +711,12 @@ function wordIngested(journalWord, word) {
   const w = n(word);
   return w !== '' && n(journalWord).includes(w);
 }
+/* Местная дата для заголовка промпта, как у плагина: по UTC в первые часы суток вышла бы вчерашняя (F-64).
+   Дату решения в журнале ставит `apply`, заголовок на неё не влияет. */
+function localDate(d) {
+  const p = n => String(n).padStart(2, '0');
+  return d.getFullYear() + '-' + p(d.getMonth() + 1) + '-' + p(d.getDate());
+}
 function buildPrompt(J, attacks, st, disputes, date) {
   const MARK = '(добавлен человеком';
   const norm = s => String(s == null ? '' : s).replace(/\s+/g, ' ').trim();
@@ -768,7 +774,7 @@ function buildPrompt(J, attacks, st, disputes, date) {
   return { text: lines.join('\n'), conflictKeys, undecidedKeys };
 }
 /* prompt:end */
-function currentPrompt() { return buildPrompt(JOURNAL, ATTACK, state, attackState.disputes, new Date().toISOString().slice(0, 10)); }
+function currentPrompt() { return buildPrompt(JOURNAL, ATTACK, state, attackState.disputes, localDate(new Date())); }
 function updateOut() { document.getElementById('out').value = currentPrompt().text; markConflicts(); }
 
 /* ---------- режимы: переключатель в шапке, видимость панелей ---------- */
