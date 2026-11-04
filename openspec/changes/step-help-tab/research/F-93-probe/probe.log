@@ -1,0 +1,4 @@
+{"case": "render-html, инструменты вне проекта", "code": 0, "output": ["[ok] улик сверено 2 из 3", "[!!] не сверено — F-01: src/only_project.py «в » — файла нет", "[ok] openspec\\changes\\demo\\symphysis.html"]}
+{"case": "карта ссылок на странице", "links": {"both.py": "../../../../install/src/both.py", "only_project.py": null, "only_install.py": "../../../../install/src/only_install.py"}}
+{"case": "вердикты view-json", "verdicts": {"src/both.py": "сверено", "src/only_project.py": "файла нет", "src/only_install.py": "сверено"}}
+{"case": "git в рабочем дереве", "exclude": "<основной клон>/.git/info/exclude"}
