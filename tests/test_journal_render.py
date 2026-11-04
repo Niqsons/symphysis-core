@@ -1308,6 +1308,23 @@ def test_snapshot_on_the_page(tmp_path):
     assert [item["id"] for item in snapshot["steps"]][:3] == ["intent", "decisions", "viewer"]
 
 
+def test_snapshot_skills_and_links_carry_no_project_directory(tmp_path):
+    """F-86: снимок на странице считается без `--install-dir`, новые поля не несут абсолютных путей, страница собирается."""
+    project, src, env = shim_project(tmp_path, done=("intent", "decisions"), ready=("research",))
+    schema = project / "openspec" / "schemas" / "symphysis"
+    schema.mkdir(parents=True)
+    (schema / "steps.md").write_text("## decisions\n\nНазвание\n\n### Зачем\n\nЗови `symphysis-brainstorm`.\n", encoding="utf-8")
+    skill = project / ".claude" / "skills" / "symphysis-brainstorm" / "SKILL.md"
+    skill.parent.mkdir(parents=True)
+    skill.write_text("скилл\n", encoding="utf-8")
+    snapshot, html = built(src, env)
+    decisions = next(item for item in snapshot["steps"] if item["id"] == "decisions")
+    assert decisions["skills"] == [{"name": "symphysis-brainstorm", "path": ".claude/skills/symphysis-brainstorm/SKILL.md", "base": "project"}]
+    assert "file_links" in snapshot
+    for form in (str(project), str(project).replace("\\", "/"), json.dumps(str(project))[1:-1]):
+        assert form not in html
+
+
 def test_no_fork_keeps_the_page(tmp_path):
     """Сценарий «Форка нет»: код 0, журнал и режимы на месте, панель говорит причину."""
     src = journal_in(tmp_path / "proj")

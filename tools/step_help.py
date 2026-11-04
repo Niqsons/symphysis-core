@@ -396,8 +396,7 @@ def _current_text(current: str, by_status: str, forks: dict, tasks: dict, missin
                 f"журнала. После них по файлам идёт `{by_status}`.")
     else:
         text = f"Следующий шаг по файлам — `{current}`, {turn}."
-    if current == "apply":
-        text += f" Задач закрыто {tasks['complete']} из {tasks['total']}."
+    if current == "apply":  # счётчик задач живёт в шапке, в тексте его нет (F-55)
         if missing:
             text += f" Реализацию держит: {', '.join(missing)}."
     if current == "sync":
@@ -428,10 +427,55 @@ def _without_one_change(names: list[str]) -> dict:
     return {"current_text": "Активных изменений несколько, шаг считается для одного: укажи его в --change."}
 
 
-def compute(root: Path | str, change: str | None = None) -> dict:
+SKILL_NAME = re.compile(r"`(symphysis-[\w-]+)`")
+PROJECT_SKILL_DIRS = (".claude/skills", ".opencode/skills", ".agents/skills")
+INSTALL_SKILL_DIRS = (*PROJECT_SKILL_DIRS, "skills")  # R16: в клоне ядра скиллы лежат в `skills/`, в установке — как в проекте
+
+
+def _find_skill(name: str, root: Path, install_dir: Path | None) -> dict:
+    """Файл скилла: сначала проект, затем каталог установки; путь с `/` от того каталога, где найден (F-46, F-56)."""
+    for base, label, dirs in ((root, "project", PROJECT_SKILL_DIRS), (install_dir, "install", INSTALL_SKILL_DIRS)):
+        if base is None:
+            continue
+        for directory in dirs:
+            if (base / directory / name / "SKILL.md").is_file():
+                return {"name": name, "path": f"{directory}/{name}/SKILL.md", "base": label}
+    return {"name": name, "path": None, "base": None}
+
+
+def _add_skills(steps: list[dict], root: Path, install_dir: Path | None) -> None:
+    """Поле `skills` у каждого шага: имена `symphysis-*` в обратных кавычках из его текстов, по одной записи на имя."""
+    for page in steps:
+        names = dict.fromkeys(name for text in page["texts"].values() for name in SKILL_NAME.findall(text))
+        page["skills"] = [_find_skill(name, root, install_dir) for name in names]
+
+
+def _file_links(out: dict, root: Path, change: str | None) -> dict:
+    """Карта ссылок общим кодом ядра, корни те же, что у `view-json` (F-44, F-104): файлы шагов, текст шагов в обратных кавычках,
+    проектные скиллы. Файл скилла из каталога установки сюда не идёт: плагин открывает его по `skills` (F-91)."""
+    from journal_apply import file_links, project_roots
+    change_dir = root / "openspec" / "changes" / change if change else root
+    skills = [{"path": skill["path"]} for page in out["steps"] for skill in page["skills"] if skill["base"] == "project"]
+    try:
+        return file_links({}, project_roots(root), change_dir, None, [{**page, "skills": []} for page in out["steps"]],
+                          out["current_text"], skills, from_project=True)
+    except (OSError, ValueError):  # ссылки справке не нужны для работы: без карты всё остаётся текстом
+        return {}
+
+
+def compute(root: Path | str, change: str | None = None, install_dir: Path | str | None = None) -> dict:
+    """Данные справки: `_compute` плюс поля `skills` у шагов и `file_links`, они считаются и при сбое расчёта.
+    `install_dir` — где после проекта искать скиллы; корень и остальные поля он не меняет, без него ищется только в проекте."""
+    root = Path(root)
+    result = _compute(root, change)
+    _add_skills(result["steps"], root, None if install_dir is None else Path(install_dir))
+    result["file_links"] = _file_links(result, root, result["change"] or change)
+    return result
+
+
+def _compute(root: Path, change: str | None) -> dict:
     """Данные справки для проекта в `root`; корень идёт в форк через `cwd`. Сбой не бросается, а идёт в поле `error`:
     тексты шагов при этом остаются в выводе (F-34, F-54). `changes` считается только без `change`."""
-    root = Path(root)
     out = {"contract": CONTRACT, "taken_at": dt.datetime.now().astimezone().isoformat(timespec="seconds"),
            "versions": {"openspec": None, "symphysis": _symphysis_version()}, "change": None, "changes": None,
            "error": None, "current_step": None, "current_text": None, "turn": None, "next_by_status": None, "forks": None,
@@ -486,12 +530,15 @@ def build_parser() -> argparse.ArgumentParser:
                "  изменения нет; 2 — вызов неверен.\n"
                "Маркеры: их нет, вывод только JSON; сбой — поле error, тексты шагов в выводе остаются.")
     ap.add_argument("--change", metavar="ИМЯ", help="имя изменения; без него — единственное активное")
+    ap.add_argument("--install-dir", metavar="КАТАЛОГ", type=Path,
+                    help="где после проекта искать файлы скиллов шагов (клон ядра или установка); без него — только в проекте; "
+                         "корень проекта и остальной вывод он не меняет")
     return ap
 
 
 def main(argv: list[str] | None = None) -> int:
     args = build_parser().parse_args(argv)
-    result = compute(find_root(Path.cwd()), args.change)
+    result = compute(find_root(Path.cwd()), args.change, args.install_dir)
     print(json.dumps(result, ensure_ascii=False))
     return 1 if result["error"] else 0
 

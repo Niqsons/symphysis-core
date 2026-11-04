@@ -518,7 +518,7 @@ def test_tasks_in_progress(tmp_path):
     assert code == 0
     assert data["current_step"] == "apply" and data["turn"] == "model"
     assert data["tasks"] == {"state": "ready", "total": 5, "complete": 2, "remaining": 3}
-    assert "2 из 5" in data["current_text"]
+    assert "Задач закрыто" not in data["current_text"] and "2 из 5" not in data["current_text"]
     assert page(data, "apply")["state"] == "ready"
     assert page(data, "sync")["state"] == "waiting"
 
@@ -813,10 +813,10 @@ def test_output_shape(tmp_path):
     assert dt.datetime.fromisoformat(data["taken_at"]).tzinfo is not None
     assert data["versions"] == {"openspec": FORK_VERSION, "symphysis": None}
     assert set(data) == {"contract", "taken_at", "versions", "change", "changes", "error", "current_step", "current_text",
-                         "turn", "next_by_status", "forks", "tasks", "steps"}
+                         "turn", "next_by_status", "forks", "tasks", "steps", "file_links"}
     assert data["changes"] is None, "при --change список не считается"
     assert set(page(data, "design")) == {"id", "state", "turn", "optional", "blocks", "stops_apply", "waits_for", "files",
-                                         "file_note", "texts", "text_note", "prev", "next"}
+                                         "file_note", "texts", "text_note", "prev", "next", "skills"}
     assert set(page(data, "design")["texts"]) == {"title", "why", "mechanics", "if_skipped", "what_to_check", "command",
                                                   "how_to_prepare"}
 
@@ -860,7 +860,7 @@ def test_symphysis_version_absent_is_null(tmp_path):
 
 def copy_of_tools(directory: Path) -> Path:
     directory.mkdir()
-    for name in ("step_help.py", "journal_render.py", "journal_model.py"):
+    for name in ("step_help.py", "journal_render.py", "journal_model.py", "journal_apply.py"):
         shutil.copy(ROOT / "tools" / name, directory)
     return directory / "step_help.py"
 
@@ -1131,3 +1131,222 @@ def test_js_route_does_not_find_node_cmd_in_the_working_directory(tmp_path):
     code, data, _ = run_help(project, env=env)
     assert not (project / "marker.txt").exists()
     assert code == 0 and data["versions"]["openspec"] == "1.0.0-symphysis.1"
+
+
+# --- 11.1 file_links, 11.2 skills, 11.3 текст шага `apply` -----------------------
+
+def steps_with(project: Path, **text_by_step):
+    """`steps.md` проекта, где у шага один подраздел «Зачем» с заданным текстом."""
+    body = "# Тексты шагов\n\n" + "".join(f"## {step}\n\nНазвание\n\n### Зачем\n\n{text}\n\n" for step, text in text_by_step.items())
+    (project / "openspec" / "schemas" / "symphysis" / "steps.md").write_text(body, encoding="utf-8")
+
+
+def skill_file(base: Path, directory: str, name: str):
+    file = base / directory / name / "SKILL.md"
+    file.parent.mkdir(parents=True)
+    file.write_text("скилл\n", encoding="utf-8")
+
+
+def help_run(tmp_path, project, *args, done=("intent",), ready=("decisions",), **kw):
+    status = fake_status(project, done=done, ready=ready, **kw)
+    install_fork_shim(tmp_path / "bin", status=fork_reply(status), apply=fork_reply(fake_apply()))
+    return run_help(project, *args, env=fork_env(tmp_path / "bin"))
+
+
+def test_file_links_step_file(tmp_path):
+    """Сценарий «Файл шага»: путь файла шага есть, ещё не созданного `design.md` нет."""
+    project = make_project(tmp_path / "proj")
+    (project / "openspec" / "changes" / "demo" / "specs" / "a").mkdir(parents=True)
+    (project / "openspec" / "changes" / "demo" / "specs" / "a" / "spec.md").write_text("x\n", encoding="utf-8")
+    code, data, _ = help_run(tmp_path, project, "--change", "demo", done=("intent", "specs"), files={"specs": ["specs/a/spec.md"]})
+    assert code == 0
+    assert data["file_links"]["openspec/changes/demo/specs/a/spec.md"] == "openspec/changes/demo/specs/a/spec.md"
+    assert "openspec/changes/demo/design.md" not in data["file_links"]
+
+
+def run_installed(tmp_path, script, project, *args, shim=True):
+    if shim:
+        install_fork_shim(tmp_path / "bin", status=fork_reply(fake_status(project, done=("intent",), ready=("decisions",))),
+                          apply=fork_reply(fake_apply()))
+    done = subprocess.run([sys.executable, str(script), *args], cwd=project, env=fork_env(tmp_path / "bin" if shim else None),
+                          capture_output=True)
+    assert b"Traceback" not in done.stderr, done.stderr.decode("utf-8", "replace")
+    return done.returncode, json.loads(done.stdout.decode("utf-8"))
+
+
+def test_file_links_file_in_step_text(tmp_path):
+    """Сценарий «Файл в тексте шага»: в карте только существующий файл проекта. Инструменты в раскладке установки: файл корней
+    самого ядра называет префикс `tools/`, у проекта он свой."""
+    script, project = install_layout(tmp_path)
+    (project / "tools").mkdir()
+    (project / "tools" / "journal.py").write_text("x\n", encoding="utf-8")
+    steps_with(project, decisions="Смотри `tools/journal.py` и `нет.md`.")
+    code, data = run_installed(tmp_path, script, project, "--change", "demo")
+    assert code == 0 and data["file_links"] == {"tools/journal.py": "tools/journal.py"}
+
+
+def test_file_links_path_with_space_and_cyrillic(tmp_path):
+    """Сценарий «Путь с пробелом и кириллицей»: значение без `%20`."""
+    project = make_project(tmp_path / "proj")
+    (project / "openspec" / "changes" / "demo" / "сп ек").mkdir()
+    (project / "openspec" / "changes" / "demo" / "сп ек" / "a.md").write_text("x\n", encoding="utf-8")
+    code, data, _ = help_run(tmp_path, project, "--change", "demo", done=("intent", "specs"), files={"specs": ["сп ек/a.md"]})
+    assert data["file_links"]["openspec/changes/demo/сп ек/a.md"] == "openspec/changes/demo/сп ек/a.md"
+    assert not any("%" in value for value in data["file_links"].values())
+
+
+def test_file_links_survive_a_failed_calculation(tmp_path):
+    """Сценарий «Сбой расчёта»: форка нет, код 1, поле есть."""
+    script, project = install_layout(tmp_path)
+    (project / "tools").mkdir()
+    (project / "tools" / "journal.py").write_text("x\n", encoding="utf-8")
+    steps_with(project, decisions="Смотри `tools/journal.py`.")
+    code, data = run_installed(tmp_path, script, project, shim=False)
+    assert code == 1 and data["error"] and data["file_links"] == {"tools/journal.py": "tools/journal.py"}
+
+
+def install_layout(tmp_path):
+    """Инструменты в раскладке инсталлятора вне проекта и проект; в тексте шага файл проекта и файл только установки."""
+    install = tmp_path / "установка"
+    tools = install / ".symphysis" / "tools"
+    tools.mkdir(parents=True)
+    for file in (ROOT / "tools").glob("*"):
+        if file.is_file() and re.match(r"journal.*\.py|step_help\.py|symphysis_config\.py", file.name):
+            shutil.copy(file, tools / file.name)
+    (install / ".symphysis" / "docs").mkdir()
+    shutil.copy(ROOT / "docs" / "journal.schema.json", install / ".symphysis" / "docs" / "journal.schema.json")
+    (tools / "journal-roots.json").write_text('{"": "<root>/.."}\n', encoding="utf-8")
+    (install / "src").mkdir()
+    (install / "src" / "only_install.py").write_text("x\n", encoding="utf-8")
+    project = make_project(tmp_path / "проект")
+    (project / "src").mkdir()
+    (project / "src" / "only_project.py").write_text("x\n", encoding="utf-8")
+    steps_with(project, decisions="Файлы `src/only_project.py` и `src/only_install.py`.")
+    return tools / "step_help.py", project
+
+
+def test_scenario_root_with_tools_outside_the_project_step_help_half(tmp_path):
+    """Половина `step_help.py` сценария «Корень при инструментах вне проекта»: карта от проекта, файл установки не идёт."""
+    script, project = install_layout(tmp_path)
+    status = fake_status(project, done=("intent",), ready=("decisions",))
+    install_fork_shim(tmp_path / "bin", status=fork_reply(status), apply=fork_reply(fake_apply()))
+    done = subprocess.run([sys.executable, str(script), "--change", "demo"], cwd=project, env=fork_env(tmp_path / "bin"),
+                          capture_output=True)
+    data = json.loads(done.stdout.decode("utf-8"))
+    assert done.returncode == 0, done.stderr.decode("utf-8", "replace")
+    assert data["file_links"] == {"src/only_project.py": "src/only_project.py"}
+
+
+def test_skill_in_project(tmp_path):
+    """Сценарий «Скилл в проекте»: имя, путь от корня, `base` `project`, путь есть и в `file_links`."""
+    project = make_project(tmp_path / "proj")
+    skill_file(project, ".claude/skills", "symphysis-brainstorm")
+    steps_with(project, decisions="Зови `symphysis-brainstorm`, потом снова `symphysis-brainstorm`.")
+    code, data, _ = help_run(tmp_path, project, "--change", "demo")
+    assert code == 0
+    skills = page(data, "decisions")["skills"]
+    assert skills == [{"name": "symphysis-brainstorm", "path": ".claude/skills/symphysis-brainstorm/SKILL.md", "base": "project"}]
+    assert data["file_links"][skills[0]["path"]] == skills[0]["path"]
+
+
+def test_skill_directories_order(tmp_path):
+    """Сценарий «Порядок каталогов»: `.claude/skills` раньше `.opencode/skills`, запись одна."""
+    project = make_project(tmp_path / "proj")
+    skill_file(project, ".opencode/skills", "symphysis-attack")
+    skill_file(project, ".claude/skills", "symphysis-attack")
+    steps_with(project, decisions="`symphysis-attack`")
+    _, data, _ = help_run(tmp_path, project, "--change", "demo")
+    assert [s["path"] for s in page(data, "decisions")["skills"]] == [".claude/skills/symphysis-attack/SKILL.md"]
+    (project / ".claude" / "skills" / "symphysis-attack" / "SKILL.md").unlink()
+    _, data, _ = help_run(tmp_path, project, "--change", "demo")
+    assert [s["path"] for s in page(data, "decisions")["skills"]] == [".opencode/skills/symphysis-attack/SKILL.md"]
+
+
+def test_skill_not_found_and_steps_without_skills(tmp_path):
+    """Сценарии «Скилла нет» и «Шаг без скиллов»."""
+    project = make_project(tmp_path / "proj")
+    steps_with(project, decisions="Зови `symphysis-none`.", research="Скиллов нет.")
+    code, data, _ = help_run(tmp_path, project, "--change", "demo")
+    assert code == 0
+    assert page(data, "decisions")["skills"] == [{"name": "symphysis-none", "path": None, "base": None}]
+    assert page(data, "research")["skills"] == []
+
+
+def test_skills_without_step_texts(tmp_path):
+    """Сценарий «Схема без текстов»: `steps.md` нет, код 0, `skills` пуст."""
+    project = make_project(tmp_path / "proj", steps=False)
+    code, data, _ = help_run(tmp_path, project, "--change", "demo")
+    assert code == 0 and all(item["skills"] == [] for item in data["steps"])
+
+
+def install_dir_with_skill(tmp_path, directory="skills"):
+    install = tmp_path / "каталог установки"
+    skill_file(install, directory, "symphysis-brainstorm")
+    return install
+
+
+def test_skill_only_in_install_dir(tmp_path):
+    """Сценарий «Скилл только в установке»: путь от каталога установки, `base` `install`, строки каталога в выводе нет."""
+    project = make_project(tmp_path / "proj")
+    steps_with(project, decisions="`symphysis-brainstorm`")
+    install = install_dir_with_skill(tmp_path)
+    code, data, done = help_run(tmp_path, project, "--change", "demo", "--install-dir", str(install))
+    assert code == 0
+    assert page(data, "decisions")["skills"] == [{"name": "symphysis-brainstorm", "path": "skills/symphysis-brainstorm/SKILL.md", "base": "install"}]
+    assert install.name not in done.stdout.decode("utf-8")
+    assert "skills/symphysis-brainstorm/SKILL.md" not in data["file_links"]   # файл установки плагин открывает по `skills` (F-91)
+
+
+def test_skill_in_install_dir_dot_directory(tmp_path):
+    project = make_project(tmp_path / "proj")
+    steps_with(project, decisions="`symphysis-brainstorm`")
+    install = install_dir_with_skill(tmp_path, ".claude/skills")
+    _, data, _ = help_run(tmp_path, project, "--change", "demo", "--install-dir", str(install))
+    assert page(data, "decisions")["skills"][0]["path"] == ".claude/skills/symphysis-brainstorm/SKILL.md"
+
+
+def test_project_skill_beats_install_dir(tmp_path):
+    """Сценарий «Проект важнее»."""
+    project = make_project(tmp_path / "proj")
+    skill_file(project, ".agents/skills", "symphysis-brainstorm")
+    steps_with(project, decisions="`symphysis-brainstorm`")
+    install = install_dir_with_skill(tmp_path)
+    _, data, _ = help_run(tmp_path, project, "--change", "demo", "--install-dir", str(install))
+    assert page(data, "decisions")["skills"][0]["base"] == "project"
+
+
+def test_install_dir_missing_is_not_a_failure(tmp_path):
+    """Сценарий «Каталога нет»."""
+    project = make_project(tmp_path / "proj")
+    steps_with(project, decisions="`symphysis-brainstorm`")
+    code, data, _ = help_run(tmp_path, project, "--change", "demo", "--install-dir", str(tmp_path / "нет такого"))
+    assert code == 0 and data["error"] is None and page(data, "decisions")["skills"][0]["path"] is None
+
+
+def test_without_install_dir_only_the_project_is_searched(tmp_path):
+    """Сценарий «Без аргумента»."""
+    project = make_project(tmp_path / "proj")
+    steps_with(project, decisions="`symphysis-brainstorm`")
+    install_dir_with_skill(tmp_path)
+    _, data, _ = help_run(tmp_path, project, "--change", "demo")
+    assert page(data, "decisions")["skills"][0]["path"] is None
+
+
+def test_install_dir_changes_neither_root_nor_other_fields(tmp_path):
+    project = make_project(tmp_path / "proj")
+    steps_with(project, decisions="`symphysis-brainstorm`")
+    install = install_dir_with_skill(tmp_path)
+    _, plain, _ = help_run(tmp_path, project, "--change", "demo")
+    _, with_dir, _ = help_run(tmp_path, project, "--change", "demo", "--install-dir", str(install))
+    for data in (plain, with_dir):
+        del data["taken_at"], page(data, "decisions")["skills"]
+    assert plain == with_dir
+
+
+def test_apply_text_without_task_counter(tmp_path):
+    """Сценарии «Задачи идут» и «Реализация заблокирована»: счётчика в тексте нет, поле `tasks` и причина блока остались."""
+    _, data = with_shim(tmp_path, done=PLANNED, apply=fake_apply("ready", total=5, complete=2))
+    assert "Задач закрыто" not in data["current_text"] and data["tasks"]["complete"] == 2
+    _, blocked = with_shim(tmp_path / "b", done=(*BEFORE_SPECS, "specs", "consequences", "design", "tasks"),
+                           apply=fake_apply("blocked", missing=["security"]))
+    assert "security" in blocked["current_text"]
