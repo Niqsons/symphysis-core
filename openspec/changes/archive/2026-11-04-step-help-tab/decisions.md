@@ -2,7 +2,7 @@
 
 > Рендер из `decisions.json`, не править руками.
 
-Пути улик — от корня проекта; префикс `vscode/` — репозиторий плагина symphysis-vscode; корни — `openspec/changes/step-help-tab/probes/journal-roots.json`. Читались: `intent.md`, `docs/repo-contract.md`, спеки `step-help`, `decision-viewer`, `plugin-core-contract`, `plugin-scheme-view`, архив `2026-11-03-step-help`, `tools/step_help.py`, `tools/journal_cli.py`, `tools/journal_apply.py`, панель справки в `tools/playground-template.html`; в плагине `docs/design-part1-viewer.md`, `docs/spike-part1-results.md`, `package.json`, `src/extension.ts` и хост. Изменение одно на оба проекта: живёт в ядре, код в основном в плагине. После слова 2026-11-04 читались `docs/analysis/stores-and-context-pack-2026-11-02.md` и предпроектный файл плагина opencode: префикс `opencode/`. Отчёты исследования — `research/F-49.md`, `research/F-52.md`, `research/F-53.md`, `research/F-69.md`, `research/F-93.md`, следы рядом.
+Пути улик — от корня проекта; префикс `vscode/` — репозиторий плагина symphysis-vscode; корни — `openspec/changes/archive/2026-11-04-step-help-tab/probes/journal-roots.json`. Читались: `intent.md`, `docs/repo-contract.md`, спеки `step-help`, `decision-viewer`, `plugin-core-contract`, `plugin-scheme-view`, архив `2026-11-03-step-help`, `tools/step_help.py`, `tools/journal_cli.py`, `tools/journal_apply.py`, панель справки в `tools/playground-template.html`; в плагине `docs/design-part1-viewer.md`, `docs/spike-part1-results.md`, `package.json`, `src/extension.ts` и хост. Изменение одно на оба проекта: живёт в ядре, код в основном в плагине. После слова 2026-11-04 читались `docs/analysis/stores-and-context-pack-2026-11-02.md` и предпроектный файл плагина opencode: префикс `opencode/`. Отчёты исследования — `research/F-49.md`, `research/F-52.md`, `research/F-53.md`, `research/F-69.md`, `research/F-93.md`, следы рядом.
 
 ## F-01 Критерий готовности: «какой шаг конвейера сейчас выполняется?»
 <!-- journal:F-01 -->
@@ -11,7 +11,7 @@
 - адресат: постановка
 - зависит от: —
 - улики:
-  - улика: `openspec/changes/step-help-tab/intent.md` ««какой шаг конвейера сейчас выполняется?» (слово в чате, 2026-11-02; критерий `step-help`, перенесён по слову «те же»)»
+  - улика: `openspec/changes/archive/2026-11-04-step-help-tab/intent.md` ««какой шаг конвейера сейчас выполняется?» (слово в чате, 2026-11-02; критерий `step-help`, перенесён по слову «те же»)»
 
 ## F-02 Критерий готовности: «зачем он? какие основные механики?»
 <!-- journal:F-02 -->
@@ -20,7 +20,7 @@
 - адресат: постановка
 - зависит от: —
 - улики:
-  - улика: `openspec/changes/step-help-tab/intent.md` ««зачем он? какие основные механики?» (слово в чате, 2026-11-02; критерий `step-help`, перенесён по слову «те же»)»
+  - улика: `openspec/changes/archive/2026-11-04-step-help-tab/intent.md` ««зачем он? какие основные механики?» (слово в чате, 2026-11-02; критерий `step-help`, перенесён по слову «те же»)»
 
 ## F-03 Критерий готовности: «что будет, если я не выполню этот шаг?»
 <!-- journal:F-03 -->
@@ -29,7 +29,7 @@
 - адресат: постановка
 - зависит от: —
 - улики:
-  - улика: `openspec/changes/step-help-tab/intent.md` ««что будет, если я не выполню этот шаг?» (слово в чате, 2026-11-02; критерий `step-help`, перенесён по слову «те же»)»
+  - улика: `openspec/changes/archive/2026-11-04-step-help-tab/intent.md` ««что будет, если я не выполню этот шаг?» (слово в чате, 2026-11-02; критерий `step-help`, перенесён по слову «те же»)»
 
 ## F-04 Критерий готовности: «какие файлы и где смотреть, чтобы проверить результаты шага»
 <!-- journal:F-04 -->
@@ -38,7 +38,7 @@
 - адресат: постановка
 - зависит от: —
 - улики:
-  - улика: `openspec/changes/step-help-tab/intent.md` ««какие файлы и где смотреть, чтобы проверить результаты шага» (слово в чате, 2026-11-02; критерий `step-help`, перенесён по слову «те же»)»
+  - улика: `openspec/changes/archive/2026-11-04-step-help-tab/intent.md` ««какие файлы и где смотреть, чтобы проверить результаты шага» (слово в чате, 2026-11-02; критерий `step-help`, перенесён по слову «те же»)»
 
 ## F-05 Критерий готовности: «справку, которая смотрит на status, и описывает текущий шаг»
 <!-- journal:F-05 -->
@@ -47,7 +47,7 @@
 - адресат: постановка
 - зависит от: —
 - улики:
-  - улика: `openspec/changes/step-help-tab/intent.md` ««справку, которая смотрит на status, и описывает текущий шаг» (слово в чате, 2026-11-02; критерий `step-help`, перенесён по слову «те же»)»
+  - улика: `openspec/changes/archive/2026-11-04-step-help-tab/intent.md` ««справку, которая смотрит на status, и описывает текущий шаг» (слово в чате, 2026-11-02; критерий `step-help`, перенесён по слову «те же»)»
 
 ## F-06 Критерий готовности: «можно посмотреть и другие шаги, с помощью листания справки, или выбора пункта»
 <!-- journal:F-06 -->
@@ -56,7 +56,7 @@
 - адресат: постановка
 - зависит от: —
 - улики:
-  - улика: `openspec/changes/step-help-tab/intent.md` ««можно посмотреть и другие шаги, с помощью листания справки, или выбора пункта» (слово в чате, 2026-11-02; критерий `step-help`, перенесён по слову «те же»)»
+  - улика: `openspec/changes/archive/2026-11-04-step-help-tab/intent.md` ««можно посмотреть и другие шаги, с помощью листания справки, или выбора пункта» (слово в чате, 2026-11-02; критерий `step-help`, перенесён по слову «те же»)»
 
 ## F-07 Критерий готовности: «базово её выведем в html»
 <!-- journal:F-07 -->
@@ -65,7 +65,7 @@
 - адресат: постановка
 - зависит от: —
 - улики:
-  - улика: `openspec/changes/step-help-tab/intent.md` ««базово её выведем в html» (слово в чате, 2026-11-02; критерий `step-help`, перенесён по слову «те же»)»
+  - улика: `openspec/changes/archive/2026-11-04-step-help-tab/intent.md` ««базово её выведем в html» (слово в чате, 2026-11-02; критерий `step-help`, перенесён по слову «те же»)»
 
 ## F-08 Критерий готовности: «есть информация о формировании intent»
 <!-- journal:F-08 -->
@@ -74,7 +74,7 @@
 - адресат: постановка
 - зависит от: —
 - улики:
-  - улика: `openspec/changes/step-help-tab/intent.md` ««есть информация о формировании intent» (слово в чате, 2026-11-02)»
+  - улика: `openspec/changes/archive/2026-11-04-step-help-tab/intent.md` ««есть информация о формировании intent» (слово в чате, 2026-11-02)»
 
 ## F-09 Критерий готовности: «в самой справке есть ссылки на файлы скиллов или артефактов, которые можно открыть из справки»
 <!-- journal:F-09 -->
@@ -83,7 +83,7 @@
 - адресат: постановка
 - зависит от: —
 - улики:
-  - улика: `openspec/changes/step-help-tab/intent.md` ««в самой справке есть ссылки на файлы скиллов или артефактов, которые можно открыть из справки» (слово в чате, 2026-11-02)»
+  - улика: `openspec/changes/archive/2026-11-04-step-help-tab/intent.md` ««в самой справке есть ссылки на файлы скиллов или артефактов, которые можно открыть из справки» (слово в чате, 2026-11-02)»
 
 ## F-10 Критерий готовности: «забрать в плагин изменения, что были внесены в просмотрщик»
 <!-- journal:F-10 -->
@@ -92,7 +92,7 @@
 - адресат: постановка
 - зависит от: —
 - улики:
-  - улика: `openspec/changes/step-help-tab/intent.md` ««забрать в плагин изменения, что были внесены в просмотрщик» (слово в чате, 2026-11-04)»
+  - улика: `openspec/changes/archive/2026-11-04-step-help-tab/intent.md` ««забрать в плагин изменения, что были внесены в просмотрщик» (слово в чате, 2026-11-04)»
 
 ## F-11 Критерий готовности: «ссылки на файлы»
 <!-- journal:F-11 -->
@@ -101,7 +101,7 @@
 - адресат: постановка
 - зависит от: —
 - улики:
-  - улика: `openspec/changes/step-help-tab/intent.md` ««ссылки на файлы» (слова модели в вопросе о составе, человек их не оспорил, 2026-11-04)»
+  - улика: `openspec/changes/archive/2026-11-04-step-help-tab/intent.md` ««ссылки на файлы» (слова модели в вопросе о составе, человек их не оспорил, 2026-11-04)»
 
 ## F-12 Критерий готовности: «просьбу слова»
 <!-- journal:F-12 -->
@@ -110,7 +110,7 @@
 - адресат: постановка
 - зависит от: —
 - улики:
-  - улика: `openspec/changes/step-help-tab/intent.md` ««просьбу слова» (слова модели в вопросе о составе, человек их не оспорил, 2026-11-04)»
+  - улика: `openspec/changes/archive/2026-11-04-step-help-tab/intent.md` ««просьбу слова» (слова модели в вопросе о составе, человек их не оспорил, 2026-11-04)»
 
 ## F-13 Критерий готовности: «счётчик задач»
 <!-- journal:F-13 -->
@@ -119,7 +119,7 @@
 - адресат: постановка
 - зависит от: —
 - улики:
-  - улика: `openspec/changes/step-help-tab/intent.md` ««счётчик задач» (слова модели в вопросе о составе, человек их не оспорил, 2026-11-04)»
+  - улика: `openspec/changes/archive/2026-11-04-step-help-tab/intent.md` ««счётчик задач» (слова модели в вопросе о составе, человек их не оспорил, 2026-11-04)»
 
 ## F-14 Критерий готовности: «без выбора редактора»
 <!-- journal:F-14 -->
@@ -128,7 +128,7 @@
 - адресат: постановка
 - зависит от: —
 - улики:
-  - улика: `openspec/changes/step-help-tab/intent.md` ««без выбора редактора» (слова модели, человек согласился в чате, 2026-11-04)»
+  - улика: `openspec/changes/archive/2026-11-04-step-help-tab/intent.md` ««без выбора редактора» (слова модели, человек согласился в чате, 2026-11-04)»
 
 ## F-15 Критерий готовности: «Давай все таки сделаем хук»
 <!-- journal:F-15 -->
@@ -137,7 +137,7 @@
 - адресат: постановка
 - зависит от: —
 - улики:
-  - улика: `openspec/changes/step-help-tab/intent.md` ««Давай все таки сделаем хук» (слово в чате, 2026-11-04)»
+  - улика: `openspec/changes/archive/2026-11-04-step-help-tab/intent.md` ««Давай все таки сделаем хук» (слово в чате, 2026-11-04)»
 
 ## F-16 От вкладки человек ждёт текущего состояния конвейера при открытии, без опроса: обновление привязано к событиям
 <!-- journal:F-16 -->
@@ -146,7 +146,7 @@
 - адресат: постановка
 - зависит от: —
 - улики:
-  - улика: `openspec/changes/step-help-tab/intent.md` «От вкладки жду, что могу открыть её, и в ней отображено текущее состояние прохождения конвейера. Каждую секунду опрашивать состояние не нужно, так как оно не меняется каждую секунду. Вопрос в привязке к событиям.»
+  - улика: `openspec/changes/archive/2026-11-04-step-help-tab/intent.md` «От вкладки жду, что могу открыть её, и в ней отображено текущее состояние прохождения конвейера. Каждую секунду опрашивать состояние не нужно, так как оно не меняется каждую секунду. Вопрос в привязке к событиям.»
 - следствия: На этом стоит F-42.
 
 ## F-17 Справка открывается на той же вкладке, что и схема, вместо схемы
@@ -156,7 +156,7 @@
 - адресат: постановка
 - зависит от: —
 - улики:
-  - улика: `openspec/changes/step-help-tab/intent.md` «я полагал, что в плагине справка тоже будет открываться вместо схемы, на той же вкладке.»
+  - улика: `openspec/changes/archive/2026-11-04-step-help-tab/intent.md` «я полагал, что в плагине справка тоже будет открываться вместо схемы, на той же вкладке.»
 - следствия: Своей вкладки у справки нет: на этом стоят F-40 и F-41.
 
 ## F-18 Плагин, в отличие от страницы, показывает справку и на шаге `intent`, потому что его можно открыть в пустом проекте
@@ -166,7 +166,7 @@
 - адресат: постановка
 - зависит от: —
 - улики:
-  - улика: `openspec/changes/step-help-tab/intent.md` «в html на шаге intent страницы еще не будет. но в плагине будет, так как его можно открыть и в пустом проектее.»
+  - улика: `openspec/changes/archive/2026-11-04-step-help-tab/intent.md` «в html на шаге intent страницы еще не будет. но в плагине будет, так как его можно открыть и в пустом проектее.»
 - следствия: На этом стоит F-39.
 
 ## F-19 В пустом проекте справка рассказывает, как подготовить хороший intent
@@ -176,7 +176,7 @@
 - адресат: постановка
 - зависит от: —
 - улики:
-  - улика: `openspec/changes/step-help-tab/intent.md` «Справка должна рассказать как подготовить хороший Intent.»
+  - улика: `openspec/changes/archive/2026-11-04-step-help-tab/intent.md` «Справка должна рассказать как подготовить хороший Intent.»
 - следствия: Текст уже есть в `steps.md`, раздел «Как готовить». На этом стоит F-39.
 
 ## F-20 Ядро справки сделано и влито: вывод `step_help.py` входит в контракт и несёт тот же номер, что `view-json`
@@ -403,7 +403,7 @@
   - A. Вкладка открывается, говорит, что инструментов нет, и называет команду `symphysis install --project .`, как просмотрщик. В проекте с инструментами и без изменений справка работает полностью и показывает «Как готовить»; без инструментов правил намерения нет, пока их не поставят
     - улика: `vscode/src/webview/FailureText.tsx` «В проекте нет <code>.symphysis/tools/journal.py</code>. Поставь инструменты:»
   - B. То же, и плагин носит в `.vsix` свою копию раздела «Как готовить»: правила видны ещё до установки. Копию сверяет тест плагина с `steps.md` ядра, а в проекте текст может отличаться от копии
-    - улика: `openspec/changes/step-help-tab/intent.md` «Справка должна рассказать как подготовить хороший Intent.»
+    - улика: `openspec/changes/archive/2026-11-04-step-help-tab/intent.md` «Справка должна рассказать как подготовить хороший Intent.»
   - C. Оставить как есть: плагин активируется только при журнале, в пустом проекте вкладки нет (отступление от F-18)
     - улика: `vscode/package.json` «"activationEvents": ["workspaceContains:openspec/changes/*/decisions.json", "onWebviewPanel:symphysis.viewer", "onWebviewPanel:symphysis.scheme"],»
     - маловероятно: прямо против слова: «в плагине будет, так как его можно открыть и в пустом проектее»
@@ -463,11 +463,11 @@
     - улика: `vscode/src/extension.ts` «// Сохранения склеиваются: автосохранение пишет каждые несколько секунд, агент — сериями.»
     - улика: `vscode/src/host/store.ts` «// Данные журналов проекта. Один запуск Python на изменение; просьбы на его время склеиваются в один следующий;»
   - B. Считать только при открытии вкладки и по кнопке «Обновить»: дешевле всего, но открытая вкладка устаревает молча (отступление от F-16)
-    - улика: `openspec/changes/step-help-tab/intent.md` «От вкладки жду, что могу открыть её, и в ней отображено текущее состояние прохождения конвейера. Каждую секунду опрашивать состояние не нужно, так как оно не меняется каждую секунду. Вопрос в привязке к событиям.»
+    - улика: `openspec/changes/archive/2026-11-04-step-help-tab/intent.md` «От вкладки жду, что могу открыть её, и в ней отображено текущее состояние прохождения конвейера. Каждую секунду опрашивать состояние не нужно, так как оно не меняется каждую секунду. Вопрос в привязке к событиям.»
   - C. Следить только за файлами артефактов по списку из схемы: меньше лишних расчётов, но список повторяет `schema.yaml`, и новый артефакт тихо перестанет обновлять справку
     - улика: `vscode/src/extension.ts` «const journalWatchers = ["openspec/changes/*/decisions.json", "openspec/changes/*/attack/*.md", "openspec/changes/*"].map((glob) => {»
   - D. Опрашивать таймером (отступление от F-16)
-    - улика: `openspec/changes/step-help-tab/intent.md` «От вкладки жду, что могу открыть её, и в ней отображено текущее состояние прохождения конвейера. Каждую секунду опрашивать состояние не нужно, так как оно не меняется каждую секунду. Вопрос в привязке к событиям.»
+    - улика: `openspec/changes/archive/2026-11-04-step-help-tab/intent.md` «От вкладки жду, что могу открыть её, и в ней отображено текущее состояние прохождения конвейера. Каждую секунду опрашивать состояние не нужно, так как оно не меняется каждую секунду. Вопрос в привязке к событиям.»
     - маловероятно: слово человека: «Каждую секунду опрашивать состояние не нужно»
 - антиподы: B ↔ F-43.A
 - рекомендация: A — Шаг зависит от любого файла изменения, а лишний расчёт стоит около секунды в фоне и экран не блокирует. Склейка и условие «пока видно» снимают серии записей агента.
@@ -637,7 +637,7 @@
 - зависит от: —
 - варианты:
   - A. Сначала хук, затем просьба слова, ссылки, вкладка со справкой, счётчик
-    - улика: `openspec/changes/step-help-tab/intent.md` «Давай все таки сделаем хук. а то снова отложим его. Про "без выбора редактора" согласен.»
+    - улика: `openspec/changes/archive/2026-11-04-step-help-tab/intent.md` «Давай все таки сделаем хук. а то снова отложим его. Про "без выбора редактора" согласен.»
   - B. По зависимостям и размеру: просьба слова, ссылки, вкладка со справкой, счётчик, хук в конце
     - улика: `vscode/docs/design-part1-viewer.md` «| 3 | Хук: события, курсоры, скрипт, подключение Claude Code | расширение | ~250 | 2 |»
 - антиподы: —
@@ -656,10 +656,10 @@
 - находка: Не попадает: файл, созданный не клиентом, остаётся в `git status` и до запроса, и после. Документация обещает исключение, только когда файл сохраняет сам Claude Code. Выбор — F-66.
 - улики:
   - улика: `vscode/docs/spike-part1-results.md` «- Сам хук `UserPromptSubmit`: в пробный запуск не входил.»
-  - улика: `openspec/changes/step-help-tab/research/F-52-probe/probe.log` «"reply": "КЛЮКВА-7341\nБРУСНИКА-2206"»
-  - улика: `openspec/changes/step-help-tab/research/F-52-probe/probe.log` «UserPromptSubmit operation blocked by hook:»
-  - улика: `openspec/changes/step-help-tab/research/F-52-probe/probe.log` «"git_status": ["?? .claude/", "?? .symphysis/"]»
-  - улика: `openspec/changes/step-help-tab/research/F-52-probe/docs-excerpts.txt` «No, gitignored when Claude Code saves a setting to it»
+  - улика: `openspec/changes/archive/2026-11-04-step-help-tab/research/F-52-probe/probe.log` «"reply": "КЛЮКВА-7341\nБРУСНИКА-2206"»
+  - улика: `openspec/changes/archive/2026-11-04-step-help-tab/research/F-52-probe/probe.log` «UserPromptSubmit operation blocked by hook:»
+  - улика: `openspec/changes/archive/2026-11-04-step-help-tab/research/F-52-probe/probe.log` «"git_status": ["?? .claude/", "?? .symphysis/"]»
+  - улика: `openspec/changes/archive/2026-11-04-step-help-tab/research/F-52-probe/docs-excerpts.txt` «No, gitignored when Claude Code saves a setting to it»
 - следствия: На этом стоят F-47, F-48, F-66. Для шага `specs`: скрипт хука не выходит с кодом 2.
 
 ## F-53 Находит ли `step_help.py` форк из процесса расширения и сколько длится расчёт там
@@ -672,9 +672,9 @@
 - находка: Находит. Настоящий процесс расширения с PATH из реестра: форк `1.15.0-symphysis.4`, код 0, пять расчётов на этом журнале за 751–1775 мс. Без каталога npm отказ за 85 мс, `error` называет причину и что сделать, тексты шагов в выводе остаются. Запуск именно из меню «Пуск» не воспроизводился: PATH взят из реестра, это допущение. Отчёт — `research/F-53.md`.
 - улики:
   - улика: `tools/step_help.py` «openspec не найден: нет ни в SYMPHYSIS_OPENSPEC, ни в PATH. Поставь форк по docs/GUIDE.md»
-  - улика: `openspec/changes/step-help-tab/research/F-53-probe/probe.log` «"openspec":"1.15.0-symphysis.4"»
-  - улика: `openspec/changes/step-help-tab/research/F-53-probe/probe.log` «"ms":1775»
-  - улика: `openspec/changes/step-help-tab/research/F-53-probe/probe.log` «"ms":85,"code":1»
+  - улика: `openspec/changes/archive/2026-11-04-step-help-tab/research/F-53-probe/probe.log` «"openspec":"1.15.0-symphysis.4"»
+  - улика: `openspec/changes/archive/2026-11-04-step-help-tab/research/F-53-probe/probe.log` «"ms":1775»
+  - улика: `openspec/changes/archive/2026-11-04-step-help-tab/research/F-53-probe/probe.log` «"ms":85,"code":1»
 - следствия: На этом стоят F-42, F-43.
 
 ## F-54 [канон] Хук, ссылки и вывод справки: канон ИБ
@@ -695,7 +695,7 @@
 - адресат: материалы
 - зависит от: —
 - улики:
-  - улика: `openspec/changes/step-help-tab/answers/2026-11-04.md` «Только надо перенести счетчик задач из справки в шапку, там же где и остальные счетчики.»
+  - улика: `openspec/changes/archive/2026-11-04-step-help-tab/answers/2026-11-04.md` «Только надо перенести счетчик задач из справки в шапку, там же где и остальные счетчики.»
   - улика: `tools/playground-template.html` «/* «Задач закрыто N из N» в шапке: из снимка справки; без снимка, при сбое расчёта и без задач части нет (F-70) */»
   - улика: `tools/step_help.py` «text += f" Задач закрыто {tasks['complete']} из {tasks['total']}."»
   - улика: `vscode/src/webview/App.tsx` «<div className="stats">»
@@ -708,8 +708,8 @@
 - адресат: материалы
 - зависит от: —
 - улики:
-  - улика: `openspec/changes/step-help-tab/answers/2026-11-04.md` «В первую очередь проверяется содержимое проекта, если в проекте найдено -- значит формируются относительные ссылки на файлы проекта»
-  - улика: `openspec/changes/step-help-tab/answers/2026-11-04.md` «Вариант А + если у пользователя инструменты не нашлись в проекте, то можно указать путь установки в параметрах плагина.»
+  - улика: `openspec/changes/archive/2026-11-04-step-help-tab/answers/2026-11-04.md` «В первую очередь проверяется содержимое проекта, если в проекте найдено -- значит формируются относительные ссылки на файлы проекта»
+  - улика: `openspec/changes/archive/2026-11-04-step-help-tab/answers/2026-11-04.md` «Вариант А + если у пользователя инструменты не нашлись в проекте, то можно указать путь установки в параметрах плагина.»
   - улика: `docs/analysis/stores-and-context-pack-2026-11-02.md` «| Скиллы opencode | `.opencode/skills/`, `.claude/skills/`, `.agents/skills/` проекта и те же на машине |»
 - следствия: Файл скилла попадает и в карту ссылок F-44: иначе плагин его не откроет. Понято не так — оспорь этот факт.
 
@@ -720,7 +720,7 @@
 - адресат: материалы
 - зависит от: —
 - улики:
-  - улика: `openspec/changes/step-help-tab/answers/2026-11-04.md` «Вариант А нужно актуализировать с учетом комментария к F-47»
+  - улика: `openspec/changes/archive/2026-11-04-step-help-tab/answers/2026-11-04.md` «Вариант А нужно актуализировать с учетом комментария к F-47»
 - следствия: Текст варианта F-48.A не меняется: это решение человека, поправка живёт здесь. Понято не так — оспорь этот факт.
 
 ## F-58 Tutorial при старте плагина и выбор клиентов, для которых ставится хук, — следующее изменение плагина, сюда они не входят
@@ -730,7 +730,7 @@
 - адресат: материалы
 - зависит от: —
 - улики:
-  - улика: `openspec/changes/step-help-tab/answers/2026-11-04.md` «Следующий change плагина будет про управление конфигурацией symphysis.»
+  - улика: `openspec/changes/archive/2026-11-04-step-help-tab/answers/2026-11-04.md` «Следующий change плагина будет про управление конфигурацией symphysis.»
 - следствия: В этом изменении выбор клиента закрывает F-60.
 
 ## F-59 Установка `-g` решена, но не сделана: флага нет, плагин её не увидит. При ней корни улик от каталога скрипта укажут не туда, скиллы на машине станут заглушками, а плагин ждёт смена контракта
@@ -754,7 +754,7 @@
 - зависит от: F-47, F-39
 - варианты:
   - A. Только там, где есть инструменты symphysis и след клиента: у Claude Code каталог `.claude/`, у opencode его конфиг в проекте. Пустой и чужой проект не трогается
-    - улика: `openspec/changes/step-help-tab/answers/2026-11-04.md` «Вот там будет указание клиентов для которых установить хук и другие зависимые от клиента параметры.»
+    - улика: `openspec/changes/archive/2026-11-04-step-help-tab/answers/2026-11-04.md` «Вот там будет указание клиентов для которых установить хук и другие зависимые от клиента параметры.»
     - улика: `opencode/PROMPT.md` «Проектный конфиг может добавить запись плагина со своими `options`»
   - B. Там, где есть инструменты symphysis, без проверки следа: `.claude/settings.local.json` появится и у тех, кто работает в другом клиенте
     - улика: `vscode/docs/design-part1-viewer.md` «| `.claude/settings.local.json` — подключение хука | расширение по действию человека (Р11) |»
@@ -796,7 +796,7 @@
 - зависит от: F-46, F-39
 - варианты:
   - A. Настройка `symphysis.toolsPath` сейчас: абсолютный путь, только уровень машины, как `symphysis.python`. Инструменты не нашлись в проекте — плагин берёт их оттуда, `step_help.py` ищет скиллы там же. До этапа `-g` работает с оговорками, и они видны: улики дадут «корня для пути нет», тексты шагов только при схеме в проекте, скилл на машине может оказаться заглушкой
-    - улика: `openspec/changes/step-help-tab/answers/2026-11-04.md` «в случае глобальной установки пользователь указывает путь размещения в конфиге плагина.»
+    - улика: `openspec/changes/archive/2026-11-04-step-help-tab/answers/2026-11-04.md` «в случае глобальной установки пользователь указывает путь размещения в конфиге плагина.»
     - улика: `vscode/src/host/project.ts` «for (const dir of [path.join(root, ".symphysis", "tools"), path.join(root, "tools")]) {»
     - улика: `docs/analysis/stores-and-context-pack-2026-11-02.md` «| Корни улик | `<root>` от каталога скрипта | при инструментах на машине указывает не туда |»
   - B. Настройка только для каталога скиллов, `symphysis.skillsPath`: закрывает нестандартный каталог уже сейчас, но без инструментов в проекте толку нет: `step_help.py` запускать неоткуда
@@ -816,7 +816,7 @@
 - зависит от: —
 - парковка: ИБ — «Плагин сам пишет в настройки клиента и подключает скрипт из каталога проекта: откуда берётся скрипт и перезаписывается ли он плагином, чтобы проект не подложил свой; в недоверенной рабочей области ничего не пишется; абсолютные пути не попадают в файлы, которые едут в git — канон, покрывается чек-листом security.md; запрет не чеканится»
 - улики:
-  - улика: `openspec/changes/step-help-tab/answers/2026-11-04.md` «- F-47: C — «Вариант C.»
+  - улика: `openspec/changes/archive/2026-11-04-step-help-tab/answers/2026-11-04.md` «- F-47: C — «Вариант C.»
   - улика: `vscode/package.json` «"untrustedWorkspaces": { "supported": false, "description": "Расширение запускает .symphysis/tools/journal.py из проекта." },»
 - следствия: На этом стоит шаг `security`.
 
@@ -848,7 +848,7 @@
   - B. Только инструменты в самом проекте: `.symphysis/tools` или `tools`. При настройке хук сам не ставится: сегодня это ничего не ломает, но с `-g` агент останется без событий, пока не появится выбор клиентов
     - улика: `vscode/src/host/project.ts` «for (const dir of [path.join(root, ".symphysis", "tools"), path.join(root, "tools")]) {»
   - C. Настройка считается как инструменты: любой проект со следом клиента
-    - улика: `openspec/changes/step-help-tab/decisions.md` «Только там, где есть инструменты symphysis и след клиента: у Claude Code каталог `.claude/`, у opencode его конфиг в проекте. Пустой и чужой проект не трогается»
+    - улика: `openspec/changes/archive/2026-11-04-step-help-tab/decisions.md` «Только там, где есть инструменты symphysis и след клиента: у Claude Code каталог `.claude/`, у opencode его конфиг в проекте. Пустой и чужой проект не трогается»
     - маловероятно: настройка на всю машину: хук появится во всех проектах с `.claude/`, а выбранный F-60.A обещает, что чужой проект не трогается
 - антиподы: C ↔ F-60.A
 - рекомендация: A — «Внести» и журнал возможны только там, где есть `openspec/changes`, значит, хук нужен ровно там. Условие не зависит от того, где лежат инструменты, и переживёт `-g`.
@@ -863,15 +863,15 @@
 - зависит от: F-47, F-49
 - варианты:
   - A. Плагин дописывает их имена в `.git/info/exclude`: в рабочем дереве нет ни новых файлов, ни правок, чужие настройки git не меняются. Путь к файлу даёт сам git, это работает и в worktree. Проект без git ничего не требует
-    - улика: `openspec/changes/step-help-tab/research/F-52-probe/probe.log` «"git_status": ["?? .claude/", "?? .symphysis/"]»
-    - улика: `openspec/changes/step-help-tab/research/F-52-probe/docs-excerpts.txt` «No, gitignored when Claude Code saves a setting to it»
+    - улика: `openspec/changes/archive/2026-11-04-step-help-tab/research/F-52-probe/probe.log` «"git_status": ["?? .claude/", "?? .symphysis/"]»
+    - улика: `openspec/changes/archive/2026-11-04-step-help-tab/research/F-52-probe/docs-excerpts.txt` «No, gitignored when Claude Code saves a setting to it»
   - B. Рядом `.gitignore`, который исключает и себя, как уже сделано в `.symphysis/viewer/`: git звать не надо, но в `.claude/` появляется новый файл рядом с файлами команды, а существующий `.gitignore` пришлось бы дописывать
     - улика: `vscode/docs/design-part1-viewer.md` «- **`.symphysis/viewer/.gitignore` с `*`**: черновики не попадают в `git status`»
   - C. Дописывать `.gitignore` проекта
     - улика: `vscode/docs/design-part1-viewer.md` «и в `git add -A` агента, `.gitignore` проекта не тронут.»
     - маловероятно: это правка чужого отслеживаемого файла при простом открытии проекта, дизайн такого избегает
   - D. Оставить как есть: следить должен человек
-    - улика: `openspec/changes/step-help-tab/research/F-49-probe/probe.log` «"git_status": ["?? .opencode/"]»
+    - улика: `openspec/changes/archive/2026-11-04-step-help-tab/research/F-49-probe/probe.log` «"git_status": ["?? .opencode/"]»
     - маловероятно: абсолютный путь с именем пользователя уедет в git при первом `git add -A` агента, а хук ставится сам и человек о файле может не знать
 - антиподы: —
 - рекомендация: A — Единственный вариант, где плагин не добавляет и не правит ничего в рабочем дереве. Это важно именно потому, что по F-47 он действует без спроса.
@@ -886,13 +886,13 @@
 - зависит от: F-49
 - варианты:
   - A. Хук `prompt` читает новые события и кладёт их записью `instructions.entry` с ключом `symphysis`; новых нет — запись снимается. Текст живёт весь ход, включая продолжения после инструментов, а слова человека не меняются
-    - улика: `openspec/changes/step-help-tab/research/F-49-probe/probe.log` «"at": "instructions.entry.put", "ok": true»
-    - улика: `openspec/changes/step-help-tab/research/F-49-probe/docs-excerpts.txt` «updates or removals are announced at the next step boundary without queuing a message turn.»
+    - улика: `openspec/changes/archive/2026-11-04-step-help-tab/research/F-49-probe/probe.log` «"at": "instructions.entry.put", "ok": true»
+    - улика: `openspec/changes/archive/2026-11-04-step-help-tab/research/F-49-probe/docs-excerpts.txt` «updates or removals are announced at the next step boundary without queuing a message turn.»
     - улика: `opencode/PROMPT.md` «запись `instructions.entry` с ключом `symphysis`»
   - B. Хук `context` добавляет текст в `system`: ничего не сохраняется, но он срабатывает перед каждым вызовом модели, и если событие показано один раз, после вызова инструмента текста уже нет
-    - улика: `openspec/changes/step-help-tab/research/F-49-probe/docs-excerpts.txt` «context runs for the agent loop, including tool-driven continuations.»
+    - улика: `openspec/changes/archive/2026-11-04-step-help-tab/research/F-49-probe/docs-excerpts.txt` «context runs for the agent loop, including tool-driven continuations.»
   - C. Дописывать текст в сам промпт хуком `prompt`
-    - улика: `openspec/changes/step-help-tab/research/F-49-probe/docs-excerpts.txt` «The hook runs once during admission, not before every model call.»
+    - улика: `openspec/changes/archive/2026-11-04-step-help-tab/research/F-49-probe/docs-excerpts.txt` «The hook runs once during admission, not before every model call.»
     - маловероятно: это меняет слова человека и сохраняется в сессии: журнал решений как раз держится на их дословности
 - антиподы: —
 - рекомендация: A — Ближе всего к Claude Code: сообщение появляется при обращении и не теряется в середине хода. И это та же механика, что записана в предпроектном файле плагина opencode.
@@ -907,10 +907,10 @@
 - зависит от: F-49, F-48
 - варианты:
   - A. Один Python-скрипт на обоих клиентов: файл opencode — тонкая оболочка, зовёт его абсолютным путём к Python и передаёт вывод. Логика в одном месте и проверяется одними тестами
-    - улика: `openspec/changes/step-help-tab/research/F-49-probe/probe.log` «"python": "Python 3.14.0"»
+    - улика: `openspec/changes/archive/2026-11-04-step-help-tab/research/F-49-probe/probe.log` «"python": "Python 3.14.0"»
     - улика: `vscode/docs/design-part1-viewer.md` «только тому, у кого стоит расширение. Скрипт хука — на Python»
   - B. Повторить логику на JS в файле opencode: Python для хука там не нужен, но курсоры и хеш живут в двух реализациях и расходятся молча
-    - улика: `openspec/changes/step-help-tab/research/F-49-probe/probe.log` «"bun": true, "node": "26.3.0"»
+    - улика: `openspec/changes/archive/2026-11-04-step-help-tab/research/F-49-probe/probe.log` «"bun": true, "node": "26.3.0"»
 - антиподы: —
 - рекомендация: A — Python ядру нужен и так, а двух реализаций одного правила в этом проекте уже старались избегать. Абсолютный путь в файле opencode закрывают F-48 и F-66.
 - решение: A, 2026-11-04
@@ -924,11 +924,11 @@
 - парковка: материалы — «`python` без файла скрипта выходит с кодом 2. Что делает настоящий клиент; можно ли записать хук так, чтобы этого не было; что с необработанным сбоем у opencode. Ответ — проба на настоящих клиентах.»
 - находка: Блокирует, на каждом запросе. Настоящий Claude Code 2.1.317: запись из F-52 без файла скрипта даёт «UserPromptSubmit operation blocked by hook», то есть после `git clean -fdX` агенту нельзя написать ни слова. Запись с обёрткой через `-I -c` запрос не останавливает ни без файла, ни при коде 2 от скрипта, вход и вывод доходят. opencode: необработанное исключение в хуке `prompt` тоже останавливает запрос, пойманный сбой нет. Заодно: файл настроек с комментарием клиент не читает; из вывода 60 КБ модель видит превью 2 КБ. Отчёт — `research/F-69.md`.
 - улики:
-  - улика: `openspec/changes/step-help-tab/research/F-69-probe/probe.log` «UserPromptSubmit operation blocked by hook:»
-  - улика: `openspec/changes/step-help-tab/research/F-69-probe/probe.log` «КАЛИНА-6161, вход True»
-  - улика: `openspec/changes/step-help-tab/research/F-69-probe/probe.log` «РЯБИНА-7272»
-  - улика: `openspec/changes/step-help-tab/research/F-69-probe/probe.log` «"case": "необработанное исключение в хуке prompt", "code": 1»
-  - улика: `openspec/changes/step-help-tab/research/F-69-probe/probe.log` «Это только превью первых 2 КБ.»
+  - улика: `openspec/changes/archive/2026-11-04-step-help-tab/research/F-69-probe/probe.log` «UserPromptSubmit operation blocked by hook:»
+  - улика: `openspec/changes/archive/2026-11-04-step-help-tab/research/F-69-probe/probe.log` «КАЛИНА-6161, вход True»
+  - улика: `openspec/changes/archive/2026-11-04-step-help-tab/research/F-69-probe/probe.log` «РЯБИНА-7272»
+  - улика: `openspec/changes/archive/2026-11-04-step-help-tab/research/F-69-probe/probe.log` «"case": "необработанное исключение в хуке prompt", "code": 1»
+  - улика: `openspec/changes/archive/2026-11-04-step-help-tab/research/F-69-probe/probe.log` «Это только превью первых 2 КБ.»
 - следствия: В требовании «Хук не останавливает запрос человека» сценарии «Файла скрипта нет у Claude Code» и «Сбой в оболочке opencode». Запись Claude Code меняется против пробы F-52: выбора нет, требование уже стоит. На этом стоят F-71, F-77, F-82.
 
 ## F-70 [concurrency · io] «Внести» пишет событие: `apply` прошёл и журнал изменён, а строка в `events.jsonl` не записалась: файл занят или нет прав. Агент не узнает о внесённом, и этого никто не увидит
@@ -945,7 +945,7 @@
 - антиподы: —
 - рекомендация: A — Портит тихо: человек считает, что агент узнает, а тот работает по старому журналу. Правка — одна строка отчёта, который и так показывается дословно.
 - улики:
-  - улика: `openspec/changes/step-help-tab/specs/plugin-agent-hook/spec.md` «### Requirement: «Внести» пишет событие»
+  - улика: `openspec/changes/archive/2026-11-04-step-help-tab/specs/plugin-agent-hook/spec.md` «### Requirement: «Внести» пишет событие»
 - решение: A, 2026-11-04
 - исход: проба — Specify
 - следствия: в spec.md: Событие не записалось
@@ -964,9 +964,9 @@
 - антиподы: —
 - рекомендация: A — Портит тихо: в превью попадает начало, то есть самые старые события, а новое внесение, ради которого хук и нужен, модель не увидит. Точная граница поведения клиента пробой не подбиралась, поэтому запас до 10 000.
 - улики:
-  - улика: `openspec/changes/step-help-tab/specs/plugin-agent-hook/spec.md` «### Requirement: Хук печатает непрочитанные события этой сессии»
-  - улика: `openspec/changes/step-help-tab/research/F-69-probe/probe.log` «Это только превью первых 2 КБ.»
-  - улика: `openspec/changes/step-help-tab/research/F-69-probe/docs-excerpts.txt` «are capped at 10,000 characters»
+  - улика: `openspec/changes/archive/2026-11-04-step-help-tab/specs/plugin-agent-hook/spec.md` «### Requirement: Хук печатает непрочитанные события этой сессии»
+  - улика: `openspec/changes/archive/2026-11-04-step-help-tab/research/F-69-probe/probe.log` «Это только превью первых 2 КБ.»
+  - улика: `openspec/changes/archive/2026-11-04-step-help-tab/research/F-69-probe/docs-excerpts.txt` «are capped at 10,000 characters»
 - решение: A, 2026-11-04
 - исход: проба — Specify
 - следствия: в spec.md: Длинный вывод
@@ -985,7 +985,7 @@
 - антиподы: —
 - рекомендация: A — Портит тихо: каталог `.symphysis/viewer/` исключён из git, и `git clean -fdX` снимет файл вместе с курсорами не всегда одновременно. Правка стоит одной проверки.
 - улики:
-  - улика: `openspec/changes/step-help-tab/specs/plugin-agent-hook/spec.md` «### Requirement: Хук печатает непрочитанные события этой сессии»
+  - улика: `openspec/changes/archive/2026-11-04-step-help-tab/specs/plugin-agent-hook/spec.md` «### Requirement: Хук печатает непрочитанные события этой сессии»
 - решение: A, 2026-11-04
 - исход: проба — Specify
 - следствия: в spec.md: Курсор дальше конца файла
@@ -1004,7 +1004,7 @@
 - антиподы: —
 - рекомендация: A — Портит тихо и не лечится повтором: событие пропадает для этой сессии насовсем. Правило простое: читать только до последнего перевода строки.
 - улики:
-  - улика: `openspec/changes/step-help-tab/specs/plugin-agent-hook/spec.md` «### Requirement: Хук печатает непрочитанные события этой сессии»
+  - улика: `openspec/changes/archive/2026-11-04-step-help-tab/specs/plugin-agent-hook/spec.md` «### Requirement: Хук печатает непрочитанные события этой сессии»
 - решение: A, 2026-11-04
 - исход: проба — Specify
 - следствия: в spec.md: Неполная последняя строка
@@ -1023,7 +1023,7 @@
 - антиподы: —
 - рекомендация: A — Портит тихо: если схему с нуля написал человек, агент работает мимо неё и об этом не знает. Ложная строка после собственной записи агента уже принята в Р20, новой цены нет.
 - улики:
-  - улика: `openspec/changes/step-help-tab/specs/plugin-agent-hook/spec.md` «### Requirement: Хук сообщает об изменении `scheme.md` по хешу»
+  - улика: `openspec/changes/archive/2026-11-04-step-help-tab/specs/plugin-agent-hook/spec.md` «### Requirement: Хук сообщает об изменении `scheme.md` по хешу»
   - улика: `vscode/docs/design-part1-viewer.md` «Ложное срабатывание — после собственной записи агента: лишняя строка в контексте»
 - решение: A — «Да, вариант А ок, но нужно помнить, что схема это не источник истины, а лишь удобное визуальное представление для человека, поэтому никаких прерываний не происходит -- только сигналы.», 2026-11-04
 - исход: проба — Specify — Да, вариант А ок, но нужно помнить, что схема это не источник истины, а лишь удобное визуальное представление для человека, поэтому никаких прерываний не происходит -- только сигналы.
@@ -1043,9 +1043,9 @@
 - антиподы: —
 - рекомендация: A — Выбранный тобой F-60.A обещает, что чужой проект не трогается. Настройка задаётся на всю машину, и при B запись появится во всех проектах на обычном OpenSpec, а узнать об этом неоткуда. Поле `schema` пишется в проект и при `-g`, поэтому признак переживёт тот этап.
 - улики:
-  - улика: `openspec/changes/step-help-tab/specs/plugin-agent-hook/spec.md` «### Requirement: Плагин ставит хук сам там, где он нужен»
+  - улика: `openspec/changes/archive/2026-11-04-step-help-tab/specs/plugin-agent-hook/spec.md` «### Requirement: Плагин ставит хук сам там, где он нужен»
   - улика: `openspec/config.symphysis.yaml` «schema: symphysis»
-  - улика: `openspec/changes/step-help-tab/decisions.md` «Пустой и чужой проект не трогается»
+  - улика: `openspec/changes/archive/2026-11-04-step-help-tab/decisions.md` «Пустой и чужой проект не трогается»
 - решение: A, 2026-11-04
 - исход: проба — Specify
 - следствия: в spec.md: Проект на обычном OpenSpec; сценарий «Инструменты по настройке» уточнён
@@ -1064,7 +1064,7 @@
 - антиподы: —
 - рекомендация: A — Портит тихо, и именно на пути, который вкладка сама предлагает по F-39: человек нажимает «Внести», всё выглядит рабочим, а агент не узнаёт. Слежение за файлами в плагине уже есть.
 - улики:
-  - улика: `openspec/changes/step-help-tab/specs/plugin-agent-hook/spec.md` «### Requirement: Плагин ставит хук сам там, где он нужен»
+  - улика: `openspec/changes/archive/2026-11-04-step-help-tab/specs/plugin-agent-hook/spec.md` «### Requirement: Плагин ставит хук сам там, где он нужен»
 - решение: A, 2026-11-04
 - исход: проба — Specify
 - следствия: в spec.md: Инструменты поставлены при открытом окне; в тексте требования «при появлении инструментов». Установщик пишет `.symphysis/tools/` после `.claude/skills`, поэтому след клиента к этому моменту есть
@@ -1083,8 +1083,8 @@
 - антиподы: —
 - рекомендация: A — Затереть нельзя: там могут быть разрешения человека, а файл не в git, и откатить нечем. Молчать тоже плохо: не работают ни хук, ни его настройки, а причины никто не видит.
 - улики:
-  - улика: `openspec/changes/step-help-tab/specs/plugin-agent-hook/spec.md` «### Requirement: Запись Claude Code лежит в `.claude/settings.local.json`»
-  - улика: `openspec/changes/step-help-tab/research/F-69-probe/probe.log` «"case": "настройки с комментарием: читает ли их клиент"»
+  - улика: `openspec/changes/archive/2026-11-04-step-help-tab/specs/plugin-agent-hook/spec.md` «### Requirement: Запись Claude Code лежит в `.claude/settings.local.json`»
+  - улика: `openspec/changes/archive/2026-11-04-step-help-tab/research/F-69-probe/probe.log` «"case": "настройки с комментарием: читает ли их клиент"»
 - решение: A, 2026-11-04
 - исход: проба — Specify
 - следствия: в spec.md: Файл настроек не разбирается, Пустой файл настроек. Где названа причина, у всех отказов хука одно место: решит `design`
@@ -1103,7 +1103,7 @@
 - антиподы: —
 - рекомендация: B — Плагин пишет редко, потеря видна сразу и лечится одним ответом клиенту. Запись через временный файл и так общее правило плагина, сценарий ради этого не нужен.
 - улики:
-  - улика: `openspec/changes/step-help-tab/specs/plugin-agent-hook/spec.md` «### Requirement: Запись Claude Code лежит в `.claude/settings.local.json`»
+  - улика: `openspec/changes/archive/2026-11-04-step-help-tab/specs/plugin-agent-hook/spec.md` «### Requirement: Запись Claude Code лежит в `.claude/settings.local.json`»
 - решение: B, 2026-11-04
 - исход: проба — Dismiss
 - следствия: Плагин пишет редко, потеря видна сразу и лечится одним ответом клиенту. Запись через временный файл и так общее правило плагина, сценарий ради этого не нужен.
@@ -1122,7 +1122,7 @@
 - антиподы: —
 - рекомендация: A — Необратимо: файл скрыт от git строкой `exclude`, и переписанное уже не вернуть. Проверка стоит одной строки метки.
 - улики:
-  - улика: `openspec/changes/step-help-tab/specs/plugin-agent-hook/spec.md` «### Requirement: Файл opencode лежит в `.opencode/plugins/`»
+  - улика: `openspec/changes/archive/2026-11-04-step-help-tab/specs/plugin-agent-hook/spec.md` «### Requirement: Файл opencode лежит в `.opencode/plugins/`»
   - улика: `opencode/PROMPT.md` «запись `instructions.entry` с ключом `symphysis`»
 - решение: A, 2026-11-04
 - исход: проба — Specify
@@ -1142,7 +1142,7 @@
 - антиподы: —
 - рекомендация: A — Необратимо: путь с именем пользователя уезжает в историю, а агент с `git add -A` не заметит. По F-47 плагин действует без спроса, поэтому проверять должен сам.
 - улики:
-  - улика: `openspec/changes/step-help-tab/specs/plugin-agent-hook/spec.md` «### Requirement: Файлы хука спрятаны от git»
+  - улика: `openspec/changes/archive/2026-11-04-step-help-tab/specs/plugin-agent-hook/spec.md` «### Requirement: Файлы хука спрятаны от git»
 - решение: A, 2026-11-04
 - исход: проба — Specify
 - следствия: в spec.md: Файл настроек отслеживается git
@@ -1161,8 +1161,8 @@
 - антиподы: —
 - рекомендация: A — Портит тихо и необратимо: ты работаешь в рабочих деревьях, а агент с `git add -A` во втором унесёт в коммит абсолютный путь. `git worktree list` даёт ответ одним вызовом.
 - улики:
-  - улика: `openspec/changes/step-help-tab/specs/plugin-agent-hook/spec.md` «### Requirement: Файлы хука спрятаны от git»
-  - улика: `openspec/changes/step-help-tab/decisions.md` «Плагин дописывает их имена в `.git/info/exclude`»
+  - улика: `openspec/changes/archive/2026-11-04-step-help-tab/specs/plugin-agent-hook/spec.md` «### Requirement: Файлы хука спрятаны от git»
+  - улика: `openspec/changes/archive/2026-11-04-step-help-tab/decisions.md` «Плагин дописывает их имена в `.git/info/exclude`»
 - решение: A, 2026-11-04
 - исход: проба — Specify
 - следствия: в spec.md: Два рабочих дерева
@@ -1181,9 +1181,9 @@
 - антиподы: —
 - рекомендация: B — Вреда нет: F-69 снимает единственную настоящую опасность, блокировку. Но твоё слово «все действия обратимы» здесь верно не целиком: откат есть до удаления настройкой, а после него только руками. Если хочешь буквально, это A, и его стоимость больше остальной части выключателя.
 - улики:
-  - улика: `openspec/changes/step-help-tab/specs/plugin-agent-hook/spec.md` «### Requirement: Выключатель снимает хук»
-  - улика: `openspec/changes/step-help-tab/research/F-69-probe/docs-excerpts.txt` «you can register a node script to the uninstall hook vscode:uninstall»
-  - улика: `openspec/changes/step-help-tab/answers/2026-11-04-6.md` «все действия обратимы»
+  - улика: `openspec/changes/archive/2026-11-04-step-help-tab/specs/plugin-agent-hook/spec.md` «### Requirement: Выключатель снимает хук»
+  - улика: `openspec/changes/archive/2026-11-04-step-help-tab/research/F-69-probe/docs-excerpts.txt` «you can register a node script to the uninstall hook vscode:uninstall»
+  - улика: `openspec/changes/archive/2026-11-04-step-help-tab/answers/2026-11-04-6.md` «все действия обратимы»
 - решение: B, 2026-11-04
 - исход: проба — Dismiss
 - следствия: Вреда нет: F-69 снимает единственную настоящую опасность, блокировку. Но твоё слово «все действия обратимы» здесь верно не целиком: откат есть до удаления настройкой, а после него только руками. Если хочешь буквально, это A, и его стоимость больше остальной части выключателя.
@@ -1202,7 +1202,7 @@
 - антиподы: —
 - рекомендация: A — Портит тихо: вкладка уверенно показывает шаг другого проекта. Список уже нужен при нескольких изменениях, новой логики почти нет.
 - улики:
-  - улика: `openspec/changes/step-help-tab/specs/plugin-step-help-view/spec.md` «### Requirement: Изменение для справки выбирается как у схемы»
+  - улика: `openspec/changes/archive/2026-11-04-step-help-tab/specs/plugin-step-help-view/spec.md` «### Requirement: Изменение для справки выбирается как у схемы»
 - решение: A, 2026-11-04
 - исход: проба — Specify
 - следствия: в spec.md: Две папки рабочей области
@@ -1221,7 +1221,7 @@
 - антиподы: —
 - рекомендация: B — Сбой виден сразу и ничего не портит, а поведение совпадает со страницей. Устаревший шаг рядом с плашкой легко прочесть как текущий.
 - улики:
-  - улика: `openspec/changes/step-help-tab/specs/plugin-step-help-view/spec.md` «### Requirement: Отказы справки видны на вкладке»
+  - улика: `openspec/changes/archive/2026-11-04-step-help-tab/specs/plugin-step-help-view/spec.md` «### Requirement: Отказы справки видны на вкладке»
 - решение: B, 2026-11-04
 - исход: проба — Dismiss
 - следствия: Сбой виден сразу и ничего не портит, а поведение совпадает со страницей. Устаревший шаг рядом с плашкой легко прочесть как текущий.
@@ -1240,7 +1240,7 @@
 - антиподы: —
 - рекомендация: B — Ничего не портится и видно сразу. Выбор удобнее делать, посмотрев на настоящей раскладке, а не заранее.
 - улики:
-  - улика: `openspec/changes/step-help-tab/specs/plugin-file-links/spec.md` «### Requirement: Файл открывается рядом и без перевода фокуса»
+  - улика: `openspec/changes/archive/2026-11-04-step-help-tab/specs/plugin-file-links/spec.md` «### Requirement: Файл открывается рядом и без перевода фокуса»
 - решение: B, 2026-11-04
 - исход: проба — Dismiss
 - следствия: Ничего не портится и видно сразу. Выбор удобнее делать, посмотрев на настоящей раскладке, а не заранее.
@@ -1259,8 +1259,8 @@
 - антиподы: —
 - рекомендация: B — Ничего не портит: имя скилла на странице видно. Ссылки там добавит любое следующее изменение панели, поле уже будет.
 - улики:
-  - улика: `openspec/changes/step-help-tab/specs/step-help/spec.md` «### Requirement: У шага есть поле `skills`»
-  - улика: `openspec/changes/step-help-tab/intent.md` «в самой справке есть ссылки на файлы скиллов или артефактов, которые можно открыть из справки»
+  - улика: `openspec/changes/archive/2026-11-04-step-help-tab/specs/step-help/spec.md` «### Requirement: У шага есть поле `skills`»
+  - улика: `openspec/changes/archive/2026-11-04-step-help-tab/intent.md` «в самой справке есть ссылки на файлы скиллов или артефактов, которые можно открыть из справки»
 - решение: B, 2026-11-04
 - исход: проба — Dismiss
 - следствия: Ничего не портит: имя скилла на странице видно. Ссылки там добавит любое следующее изменение панели, поле уже будет.
@@ -1279,9 +1279,9 @@
 - антиподы: —
 - рекомендация: A — Твоё слово «легко и безопасно» опирается на инструкции, а их сейчас нет: страница расширения пустая, и нарушение тихое, потому что запись появляется без вопроса и спрятана от git. `README` к тому же сразу наполняет страницу расширения и останется основой для tutorial.
 - улики:
-  - улика: `openspec/changes/step-help-tab/specs/plugin-agent-hook/spec.md` «### Requirement: Плагин ставит хук сам там, где он нужен»
+  - улика: `openspec/changes/archive/2026-11-04-step-help-tab/specs/plugin-agent-hook/spec.md` «### Requirement: Плагин ставит хук сам там, где он нужен»
   - улика: `vscode/docs/design-part1-viewer.md` «`README` у пакета нет»
-  - улика: `openspec/changes/step-help-tab/answers/2026-11-04-6.md` «получает инструкции как им пользоваться»
+  - улика: `openspec/changes/archive/2026-11-04-step-help-tab/answers/2026-11-04-6.md` «получает инструкции как им пользоваться»
 - решение: A — «да, мы до сих пор не выпустили тег 1.0.0, поэтому изменение с описанием плагина раньше выпуска не появится.», 2026-11-04
 - исход: проба — Specify — да, мы до сих пор не выпустили тег 1.0.0, поэтому изменение с описанием плагина раньше выпуска не появится.
 - следствия: проверка: test — тест упаковки читает `README.md` собранного `.vsix` и ищет записи плагина, `symphysis.hook.enabled` и как убрать хук; в spec.md: Пакет плагина не выходит без описания хука. Как понято слово, F-90.
@@ -1294,8 +1294,8 @@
 - зависит от: —
 - парковка: ИБ — «Номер сессии со входа хука становится именем файла курсора: `../` и зарезервированные имена Windows; `symphysis.toolsPath` запускает код из настроенного каталога, поэтому только уровень машины; файл opencode несёт абсолютный путь и исполняется клиентом — канон, покрывается чек-листом security.md; запрет не чеканится»
 - улики:
-  - улика: `openspec/changes/step-help-tab/specs/plugin-agent-hook/spec.md` «### Requirement: Хук печатает непрочитанные события этой сессии»
-  - улика: `openspec/changes/step-help-tab/specs/plugin-step-help-view/spec.md` «### Requirement: Инструменты можно указать настройкой `symphysis.toolsPath`»
+  - улика: `openspec/changes/archive/2026-11-04-step-help-tab/specs/plugin-agent-hook/spec.md` «### Requirement: Хук печатает непрочитанные события этой сессии»
+  - улика: `openspec/changes/archive/2026-11-04-step-help-tab/specs/plugin-step-help-view/spec.md` «### Requirement: Инструменты можно указать настройкой `symphysis.toolsPath`»
 - следствия: На этом стоит шаг `security`, вместе с F-54 и F-63.
 
 ## F-89 Как понято слово к F-74: строка о `scheme.md` только сигнал. Схема не источник истины, поэтому хук работу агента не прерывает, а требует этого и от скилла просмотрщика; решения остаются в журнале
@@ -1305,8 +1305,8 @@
 - адресат: материалы
 - зависит от: —
 - улики:
-  - улика: `openspec/changes/step-help-tab/answers/2026-11-04-7.md` «схема это не источник истины»
-  - улика: `openspec/changes/step-help-tab/answers/2026-11-04-7.md` «никаких прерываний не происходит -- только сигналы»
+  - улика: `openspec/changes/archive/2026-11-04-step-help-tab/answers/2026-11-04-7.md` «схема это не источник истины»
+  - улика: `openspec/changes/archive/2026-11-04-step-help-tab/answers/2026-11-04-7.md` «никаких прерываний не происходит -- только сигналы»
 - следствия: В требовании о хеше и в скилле просмотрщика, сценарии «Только сигнал» и «Строка о схеме». Понято не так — оспорь этот факт.
 
 ## F-90 Как понято слово к F-87: выбран A, `README.md` и тест упаковки идут в этом изменении. Тег 1.0.0 не выпущен, поэтому пакет без описания до людей не дойдёт, а сам выпуск сюда не входит
@@ -1316,7 +1316,7 @@
 - адресат: материалы
 - зависит от: —
 - улики:
-  - улика: `openspec/changes/step-help-tab/answers/2026-11-04-7.md` «мы до сих пор не выпустили тег 1.0.0»
+  - улика: `openspec/changes/archive/2026-11-04-step-help-tab/answers/2026-11-04-7.md` «мы до сих пор не выпустили тег 1.0.0»
   - улика: `vscode/.vscodeignore` «!package.json»
   - улика: `vscode/package.json` «"version": "0.2.0"»
 - следствия: Другое возможное чтение: описание придёт отдельным изменением к выпуску; тогда требование здесь не выполнится, и надо вернуться к варианту D. `.vscodeignore` работает белым списком, поэтому `README.md` надо вписать туда: иначе в пакете его не будет, и это ловит тест на собранном `.vsix`. Человек подтвердил это понимание 2026-11-04: второе чтение снято.
@@ -1328,10 +1328,10 @@
 - адресат: материалы
 - зависит от: —
 - улики:
-  - улика: `openspec/changes/step-help-tab/specs/plugin-agent-hook/spec.md` «#### Scenario: Файл opencode отслеживается git»
-  - улика: `openspec/changes/step-help-tab/specs/plugin-agent-hook/spec.md` «#### Scenario: Чужой файл opencode»
-  - улика: `openspec/changes/step-help-tab/specs/plugin-agent-hook/spec.md` «#### Scenario: Файл настроек не разбирается при снятии»
-  - улика: `openspec/changes/step-help-tab/specs/plugin-file-links/spec.md` «поля `skills` последнего показанного вывода»
+  - улика: `openspec/changes/archive/2026-11-04-step-help-tab/specs/plugin-agent-hook/spec.md` «#### Scenario: Файл opencode отслеживается git»
+  - улика: `openspec/changes/archive/2026-11-04-step-help-tab/specs/plugin-agent-hook/spec.md` «#### Scenario: Чужой файл opencode»
+  - улика: `openspec/changes/archive/2026-11-04-step-help-tab/specs/plugin-agent-hook/spec.md` «#### Scenario: Файл настроек не разбирается при снятии»
+  - улика: `openspec/changes/archive/2026-11-04-step-help-tab/specs/plugin-file-links/spec.md` «поля `skills` последнего показанного вывода»
 - следствия: Других столкновений нет: F-71, F-72, F-73 согласны, курсор всегда после последней целой строки; F-84 совпадает с поведением страницы; F-83 расширяет F-41 только на две папки. Понято не так — оспорь этот факт.
 
 ## F-92 Поправка к доводу в рекомендации F-75: фраза «Поле `schema` пишется в проект и при `-g`» была моей догадкой, не проверенной находкой. Раскладка `-g` не закреплена, анализ этого не обещает. На сегодня ничего не меняется: `-g` нет, основной довод из F-60 в силе, но при `-g` признак придётся смотреть заново
@@ -1342,7 +1342,7 @@
 - зависит от: —
 - улики:
   - улика: `docs/analysis/stores-and-context-pack-2026-11-02.md` «| Проект без копии | текущая версия машины | текущая версия машины | номер из `config.yaml` |»
-  - улика: `openspec/changes/step-help-tab/decisions.md` «Поле `schema` пишется в проект и при `-g`, поэтому признак переживёт тот этап.»
+  - улика: `openspec/changes/archive/2026-11-04-step-help-tab/decisions.md` «Поле `schema` пишется в проект и при `-g`, поэтому признак переживёт тот этап.»
 - следствия: Текст рекомендации не меняется: на нём стоит твой выбор. В требовании пометка «предположение», дорога «решить на этапе `-g`». Если этот довод был для тебя главным, оспорь этот факт.
 
 ## F-93 [ветка] Корень улик и карты ссылок: при инструментах по `symphysis.toolsPath` `<root>` считается от каталога установки. Проба: ссылка ведёт на одноимённый файл установки, файл только в установке получает «сверено», настоящий файл проекта «файла нет». В тексте F-62 я обещал вердикт «корня для пути нет»: это было неверно
@@ -1360,8 +1360,8 @@
 - рекомендация: A — Портит тихо: зелёный вердикт по файлу, которого в проекте нет, и ссылка, открывающая чужой файл с тем же именем. Оговорку в F-62 я описал неверно, а выбор сделан по ней: там она выглядела видимой, на деле не видна.
 - улики:
   - улика: `tools/journal_apply.py` «return (ROOT / value[len("<root>"):].lstrip("/\\")).resolve()»
-  - улика: `openspec/changes/step-help-tab/research/F-93-probe/probe.log` «"both.py": "../../../../install/src/both.py"»
-  - улика: `openspec/changes/step-help-tab/research/F-93-probe/probe.log` «"src/only_install.py": "сверено"»
+  - улика: `openspec/changes/archive/2026-11-04-step-help-tab/research/F-93-probe/probe.log` «"both.py": "../../../../install/src/both.py"»
+  - улика: `openspec/changes/archive/2026-11-04-step-help-tab/research/F-93-probe/probe.log` «"src/only_install.py": "сверено"»
 - решение: A, 2026-11-04
 - исход: проба — Specify
 - следствия: в spec.md: Корень при инструментах вне проекта; `check` и `render-html` зовут те же корни: где править, решит `design`
@@ -1477,8 +1477,8 @@
 - антиподы: —
 - рекомендация: A — Портит тихо: человек считает, что агент узнает, и именно так работаешь ты. Снять само ограничение дорого, но назвать его можно одной проверкой: курсор появляется при первом срабатывании хука.
 - улики:
-  - улика: `openspec/changes/step-help-tab/decisions.md` «Сессия в репозитории кода без `openspec/` хука не получит: журнала там нет, сообщать не о чем.»
-  - улика: `openspec/changes/step-help-tab/proposal.md` «Изменение одно на оба проекта»
+  - улика: `openspec/changes/archive/2026-11-04-step-help-tab/decisions.md` «Сессия в репозитории кода без `openspec/` хука не получит: журнала там нет, сообщать не о чем.»
+  - улика: `openspec/changes/archive/2026-11-04-step-help-tab/proposal.md` «Изменение одно на оба проекта»
 - решение: A, 2026-11-04
 - исход: проба — Specify
 - следствия: в spec.md: Ни одна сессия не обращалась; `README` называет это же ограничение
@@ -1497,8 +1497,8 @@
 - антиподы: —
 - рекомендация: A — Портит тихо: задача хука в том, чтобы агент перестал работать по старому журналу, а без пояснения он этого не поймёт. Это про внесённое, а не про схему: там по твоему слову только сигнал.
 - улики:
-  - улика: `openspec/changes/step-help-tab/specs/plugin-agent-hook/spec.md` «### Requirement: Хук печатает непрочитанные события этой сессии»
-  - улика: `openspec/changes/step-help-tab/decisions.md` «Значит, изменение трогает и ядро: без этой строки агент не поймёт, что значит вывод хука.»
+  - улика: `openspec/changes/archive/2026-11-04-step-help-tab/specs/plugin-agent-hook/spec.md` «### Requirement: Хук печатает непрочитанные события этой сессии»
+  - улика: `openspec/changes/archive/2026-11-04-step-help-tab/decisions.md` «Значит, изменение трогает и ядро: без этой строки агент не поймёт, что значит вывод хука.»
 - решение: A, 2026-11-04
 - исход: проба — Specify
 - следствия: в spec.md: Сессия без скилла
@@ -1517,7 +1517,7 @@
 - антиподы: —
 - рекомендация: B — Ты уже решал это про версии: показываем, но не следим. Причина провала здесь не в коде, а в ожидании, поэтому хватает шага в `tasks` и строки в `README`.
 - улики:
-  - улика: `openspec/changes/step-help-tab/specs/plugin-file-links/spec.md` «#### Scenario: Старое ядро»
+  - улика: `openspec/changes/archive/2026-11-04-step-help-tab/specs/plugin-file-links/spec.md` «#### Scenario: Старое ядро»
   - улика: `openspec/specs/step-help/spec.md` «Справка SHALL NOT сравнивать версии и предупреждать о несовпадении: за установкой она не следит (F-27).»
 - решение: B, 2026-11-04
 - исход: проба — Dismiss
@@ -1531,7 +1531,7 @@
 - зависит от: —
 - улики:
   - улика: `tools/journal_apply.py` «paths.update(RE_LINE_TAIL.sub("", code) for code in RE_CODE_SPAN.findall(value))»
-  - улика: `openspec/changes/step-help-tab/specs/step-help/spec.md` «ключ — путь или текст из вывода без хвоста `:строка`»
+  - улика: `openspec/changes/archive/2026-11-04-step-help-tab/specs/step-help/spec.md` «ключ — путь или текст из вывода без хвоста `:строка`»
 - следствия: Это описание существующего кода, а не решение: выбора здесь нет.
 
 ## F-103 Где человек узнаёт, почему хук не поставлен: файл настроек не разбирается, чужой файл opencode, файл отслеживается git, `git` не найден. Спеки говорят «причина названа», но не говорят где
@@ -1543,9 +1543,9 @@
 - варианты:
   - A. Предупреждение VS Code: один раз на проект и причину, с файлом и тем, что сделать. Повторяется только при новой причине, помнит `workspaceState`
     - улика: `vscode/src/host/viewerPanel.ts` «vscode.window.showWarningMessage»
-    - улика: `openspec/changes/step-help-tab/specs/plugin-agent-hook/spec.md` «человеку один раз названы файл и причина»
+    - улика: `openspec/changes/archive/2026-11-04-step-help-tab/specs/plugin-agent-hook/spec.md` «человеку один раз названы файл и причина»
   - B. Строка на вкладке справки рядом с версиями: ничего не всплывает, но при закрытой вкладке причину никто не увидит, а хук именно в этом случае и молчит
-    - улика: `openspec/changes/step-help-tab/specs/plugin-step-help-view/spec.md` «Малозаметно SHALL быть показаны версии форка, symphysis и плагина (F-37).»
+    - улика: `openspec/changes/archive/2026-11-04-step-help-tab/specs/plugin-step-help-view/spec.md` «Малозаметно SHALL быть показаны версии форка, symphysis и плагина (F-37).»
   - C. Канал вывода VS Code: записано всё и всегда, но панель вывода сама не открывается, и без неё это та же тишина
     - улика: `vscode/docs/design-part1-viewer.md` «- **`events.jsonl` пишется на шаге хука, не раньше**: до него агент о внесённом не узнаёт.»
 - антиподы: —
@@ -1566,7 +1566,7 @@
   - B. Только `view-json` и `step_help.py`, как назван сценарий: правка меньше, но при инструментах вне проекта отчёт «Внести» и страница продолжают давать ложный вердикт
     - улика: `tools/journal_cli.py` «check_evidence(journal, default_roots(args.roots))»
   - C. Плагин пишет временный файл корней и подаёт `--roots`: ядро не меняется, но появляется второй разбор корней, а команда из терминала считает иначе, чем кнопка
-    - улика: `openspec/changes/step-help-tab/decisions.md` «B. Плагин решает сам: читает файл корней, проверяет выход за корень и наличие файла на TypeScript. Ядро не меняется, но появляется второй разбор корней»
+    - улика: `openspec/changes/archive/2026-11-04-step-help-tab/decisions.md` «B. Плагин решает сам: читает файл корней, проверяет выход за корень и наличие файла на TypeScript. Ядро не меняется, но появляется второй разбор корней»
     - маловероятно: это уже отвергнуто в F-44
 - антиподы: —
 - рекомендация: A — Ложный вердикт одинаково плох в кнопке и в странице, а правка в одном месте закрывает все команды. Обычная установка проверяется существующими тестами ядра: у неё журнал лежит внутри корня `""`.
@@ -1582,11 +1582,11 @@
 - варианты:
   - A. Файл на сессию: `.symphysis/viewer/sessions/<sha256 номера>.json`, в нём смещение и хеши схем. Сессии не мешают друг другу, номер не становится именем файла. Файлы копятся по одному на сессию, по сотне байт, и не чистятся
     - улика: `vscode/docs/design-part1-viewer.md` «Курсор «прочитано» — свой у каждой сессии (номер сессии приходит»
-    - улика: `openspec/changes/step-help-tab/decisions.md` «Номер сессии со входа хука становится именем файла курсора»
+    - улика: `openspec/changes/archive/2026-11-04-step-help-tab/decisions.md` «Номер сессии со входа хука становится именем файла курсора»
   - B. Один файл `cursors.json` со словарём сессий: файл один, но две сессии, пишущие разом, затрут курсор друг друга, и событие покажется дважды или пропадёт
     - улика: `vscode/docs/design-part1-viewer.md` «хуку на вход): с общим курсором первая сессия «съела» бы событие у второй.»
   - C. Как A, и курсоры старше 30 дней удаляются: каталог не растёт, но сессия, продолженная через месяц, будет сочтена новой и прошлых событий не покажет
-    - улика: `openspec/changes/step-help-tab/decisions.md` «Ничего: курсор новой сессии встаёт в конец файла, журнал она и так читает с диска»
+    - улика: `openspec/changes/archive/2026-11-04-step-help-tab/decisions.md` «Ничего: курсор новой сессии встаёт в конец файла, журнал она и так читает с диска»
 - антиподы: —
 - рекомендация: A — Запись атомарна на уровне файла и не требует блокировок. Сотня байт на сессию не стоит кода чистки; `git clean -fdX` и так снимет каталог, а F-72 и новая сессия это переживают.
 - решение: A, 2026-11-04
@@ -1600,7 +1600,7 @@
 - зависит от: F-61
 - варианты:
   - A. Обычный уровень: пользователь или рабочая область. Хук можно выключить в одном проекте. `.vscode/settings.json` репозитория может и включить его при твоём выключенном, но только в доверенной рабочей области и при тех же условиях установки
-    - улика: `openspec/changes/step-help-tab/decisions.md` «Настройка-выключатель `symphysis.hook.enabled`, по умолчанию включена.»
+    - улика: `openspec/changes/archive/2026-11-04-step-help-tab/decisions.md` «Настройка-выключатель `symphysis.hook.enabled`, по умолчанию включена.»
   - B. Только машина, как `symphysis.python`: один переключатель на всё, проект его не подменит, зато выключить только в одном проекте нельзя
     - улика: `vscode/package.json` «"scope": "machine",»
 - антиподы: —
