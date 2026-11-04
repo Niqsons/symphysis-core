@@ -1,13 +1,38 @@
 {"case":"версии","claude":"2.1.318 (Claude Code)","opencode":"opencode v2.2.5","python":"Python 3.14.0","claude_model":"haiku","opencode_model":"ollama-cloud/deepseek-v4.1-flash"}
-{"client":"claude","case":"путь с пробелом и кириллицей, чужой хук, правка схемы","code":0,"is_error":false,"reply":"- Служебная метка: ЧУЖОЙ-5151\n- Изменение с решениями: КАЛИНА-6161\n- Правка scheme.md: РЯБИНА-7272","stderr":"","retried":false}
-{"client":"claude","case":"Файла скрипта нет у Claude Code","code":0,"is_error":false,"reply":"НЕТ","stderr":"","retried":false}
-{"client":"claude","case":"Скрипт вышел с кодом 2","code":0,"is_error":false,"reply":"Служебная метка: ЧУЖОЙ-5151\n\nИзменений о решениях или о правке scheme.md в контексте нет.","stderr":"","retried":false}
-{"client":"claude","case":"Скрипт упал","code":0,"is_error":false,"reply":"НЕТ","stderr":"","retried":false}
-{"client":"claude","case":"Python переехал","code":0,"is_error":false,"reply":"НЕТ","stderr":"","retried":false}
-{"client":"opencode","case":"первое обращение, событий нет","code":0,"session_known":true,"reply":"НЕТ","log_lines":["timestamp=2026-11-04T03:08:05.104Z level=INFO run=4c0ce016 msg=\"loading plugin\" id=\"<проект>\\\\проекты с пробелом\\\\opencode\\\\.opencode\\\\plugins\\\\symphysis-hook.j"],"retried":false}
-{"client":"opencode","case":"Новые события","code":0,"session_known":true,"reply":"КАЛИНА-6161","log_lines":["timestamp=2026-11-04T03:08:23.666Z level=INFO run=e221ac96 msg=\"loading plugin\" id=\"<проект>\\\\проекты с пробелом\\\\opencode\\\\.opencode\\\\plugins\\\\symphysis-hook.j"],"retried":false}
-{"client":"opencode","case":"контроль: запись не снимается, событий нет","code":0,"session_known":true,"reply":"КАЛИНА-6161","log_lines":["timestamp=2026-11-04T03:08:25.871Z level=INFO run=03d1ec2e msg=\"loading plugin\" id=\"<проект>\\\\проекты с пробелом\\\\opencode\\\\.opencode\\\\plugins\\\\symphysis-hook.j"],"retried":false}
-{"client":"opencode","case":"Новых событий нет и Та же сессия","code":0,"session_known":true,"reply":"НЕТ","log_lines":["timestamp=2026-11-04T03:08:30.756Z level=INFO run=58fcd422 msg=\"loading plugin\" id=\"<проект>\\\\проекты с пробелом\\\\opencode\\\\.opencode\\\\plugins\\\\symphysis-hook.j"],"retried":false}
-{"client":"opencode","case":"замер вызова скрипта","runs":11,"median_ms":47,"max_ms":56}
-{"client":"opencode","case":"Сбой в оболочке opencode: мёртвый путь к Python","code":0,"session_known":true,"reply":"НЕТ","log_lines":["timestamp=2026-11-04T03:08:34.718Z level=INFO run=468483c7 msg=\"loading plugin\" id=\"<проект>\\\\проекты с пробелом\\\\opencode\\\\.opencode\\\\plugins\\\\symphysis-hook.j"],"retried":false}
-{"client":"opencode","case":"Сбой в оболочке opencode: файла скрипта нет","code":0,"session_known":true,"reply":"НЕТ","log_lines":["timestamp=2026-11-04T03:08:37.384Z level=INFO run=b2e013cb msg=\"loading plugin\" id=\"<проект>\\\\проекты с пробелом\\\\opencode\\\\.opencode\\\\plugins\\\\symphysis-hook.j"],"retried":false}
+{"check":"Claude Code: чужие настройки и хуки на месте рядом с записью плагина","ok":true}
+{"check":"«Только сигнал»: строка о схеме называет изменение и не просит остановиться","ok":true,"direct_code":0,"scheme_line":"Файл scheme.md изменения РЯБИНА-7272 правили с прошлого обращения. Это только сигнал: схема лишь представление журнала для человека, а не источник истины."}
+{"client":"claude","case":"путь с пробелом и кириллицей, чужой хук, правка схемы","code":0,"is_error":false,"reply":"- **Изменения:** КАЛИНА-6161 (решения внесены кнопкой «Внести»), РЯБИНА-7272 (правка scheme.md)\n- **Служебная метка:** ЧУЖОЙ-5151","stderr":"","retried":false}
+{"check":"«Путь с пробелом и кириллицей»: хук сработал, вывод виден модели","ok":true}
+{"check":"«Чужие настройки и хуки»: при запросе срабатывают оба","ok":true}
+{"check":"«Только сигнал»: код 0, запрос дошёл до модели, изменение схемы названо","ok":true}
+{"check":"Claude Code: курсор сессии продвинут хуком клиента","ok":true}
+{"client":"claude","case":"Файла скрипта нет у Claude Code","code":0,"is_error":false,"reply":"Изменения: НЕТ\n\nСлужебная метка: Служебная метка: ЧУЖОЙ-5151","stderr":"","retried":false}
+{"check":"«Файла скрипта нет у Claude Code»: запрос доходит до модели, файл настроек прочитан","ok":true}
+{"client":"claude","case":"контроль: файла скрипта нет, запись без обёртки","code":0,"is_error":false,"reply":"UserPromptSubmit operation blocked by hook:\n[<python>\\python.exe -I -X utf8 ${CLAUDE_PROJECT_DIR}/.symphysis/viewer/hook.py]: <python>\\python.exe: can't open file '<проект>\\\\проекты с пробелом\\\\claude/.symphysis/viewer/hook.py': [Er","stderr":"","retried":false}
+{"check":"контроль: без обёртки Python выходит с кодом 2, и клиент блокирует запрос","ok":true,"blocked":true,"code":0,"is_error":false,"reply":"UserPromptSubmit operation blocked by hook:\n[<python>\\python.exe -I -X utf8 ${CLAUDE_PROJECT_DIR}/.symphysis/viewer/hook.py]: <python>\\python.exe: can't open file '<home>\\\\AppData\\\\Lo"}
+{"client":"claude","case":"Скрипт вышел с кодом 2","code":0,"is_error":false,"reply":"Изменения: НЕТ\n\nСлужебные метки:\nЧУЖОЙ-5151\nБУЗИНА-8383","stderr":"","retried":false}
+{"check":"«Скрипт вышел с кодом 2»: запрос доходит до модели, скрипт отработал (его метка у модели)","ok":true}
+{"check":"«Скрипт упал»: код 0, причина в stderr настоящего скрипта","ok":true,"direct_code":0,"stderr_first_line":"symphysis hook: FileExistsError: [WinError 183] Невозможно создать файл, так как он уже существует: '<tmp>\\\\symphysis hook клиен"}
+{"client":"claude","case":"Скрипт упал","code":0,"is_error":false,"reply":"Служебные метки:\n- ЧУЖОЙ-5151\n- ЛИПА-9494\n\nИмён изменений о решениях или о правке scheme.md в контексте нет.","stderr":"","retried":false}
+{"check":"«Скрипт упал»: запрос доходит до модели, метка скрипта до падения у модели","ok":true}
+{"check":"«Скрипт упал»: причина из stderr скрипта в ответе модели, выводе и stderr клиента не видна","ok":true,"leaked":false}
+{"client":"claude","case":"Python переехал","code":0,"is_error":false,"reply":"Служебная метка: ЧУЖОЙ-5151","stderr":"","retried":false}
+{"check":"«Python переехал»: запрос доходит до модели, чужой хук рядом сработал","ok":true}
+{"client":"opencode","case":"первое обращение, событий нет","code":0,"session_known":true,"plugin_loaded":true,"reply":"НЕТ","log_lines":["timestamp=2026-11-04T03:18:51.309Z level=INFO run=2715c9cf msg=\"loading plugin\" id=\"<проект>\\\\проекты с пробелом\\\\opencode\\\\.opencode\\\\plugins\\\\symphysis-hook.j"],"retried":false}
+{"check":"opencode: первое обращение дошло, сессия известна, хук создал её курсор","ok":true}
+{"client":"opencode","case":"Новые события","code":0,"session_known":true,"plugin_loaded":true,"reply":"КАЛИНА-6161","log_lines":["timestamp=2026-11-04T03:18:53.671Z level=INFO run=a9e8851f msg=\"loading plugin\" id=\"<проект>\\\\проекты с пробелом\\\\opencode\\\\.opencode\\\\plugins\\\\symphysis-hook.j"],"retried":false}
+{"check":"«Новые события»: модель видит событие","ok":true}
+{"check":"контроль: заглушка без remove отличается от файла плагина","ok":true}
+{"client":"opencode","case":"контроль: запись не снимается, событий нет","code":0,"session_known":true,"plugin_loaded":true,"reply":"КАЛИНА-6161","log_lines":["timestamp=2026-11-04T03:18:58.996Z level=INFO run=ae40dd9d msg=\"loading plugin\" id=\"<проект>\\\\проекты с пробелом\\\\opencode\\\\.opencode\\\\plugins\\\\symphysis-hook.j"],"retried":false}
+{"check":"контроль: запись symphysis переживает процесс opencode","ok":true}
+{"check":"контроль: настоящий файл плагина возвращён","ok":true}
+{"client":"opencode","case":"Новых событий нет и Та же сессия","code":0,"session_known":true,"plugin_loaded":true,"reply":"НЕТ","log_lines":["timestamp=2026-11-04T03:19:01.449Z level=INFO run=e01a0847 msg=\"loading plugin\" id=\"<проект>\\\\проекты с пробелом\\\\opencode\\\\.opencode\\\\plugins\\\\symphysis-hook.j"],"retried":false}
+{"check":"«Новых событий нет»: плагин загружен, запись снята, модель события не видит","ok":true}
+{"check":"«Новых событий нет»: в журнале клиента нет ошибки remove","ok":true}
+{"check":"«Та же сессия»: события в инструкциях нет","ok":true}
+{"client":"opencode","case":"замер вызова скрипта","runs":11,"median_ms":48,"max_ms":1066}
+{"client":"opencode","case":"Сбой в оболочке opencode: мёртвый путь к Python","code":0,"session_known":true,"plugin_loaded":true,"reply":"НЕТ","log_lines":["timestamp=2026-11-04T03:19:08.281Z level=INFO run=9dcd3344 msg=\"loading plugin\" id=\"<проект>\\\\проекты с пробелом\\\\opencode\\\\.opencode\\\\plugins\\\\symphysis-hook.j"],"retried":false}
+{"check":"«Сбой в оболочке opencode»: мёртвый путь к Python, плагин загружен, запрос доходит до модели","ok":true}
+{"client":"opencode","case":"Сбой в оболочке opencode: файла скрипта нет","code":0,"session_known":true,"plugin_loaded":true,"reply":"НЕТ","log_lines":["timestamp=2026-11-04T03:19:10.427Z level=INFO run=cbaa76bd msg=\"loading plugin\" id=\"<проект>\\\\проекты с пробелом\\\\opencode\\\\.opencode\\\\plugins\\\\symphysis-hook.j"],"retried":false}
+{"check":"«Сбой в оболочке opencode»: файла скрипта нет, плагин загружен, запрос доходит до модели","ok":true}
+{"итог":{"проверок":23,"упало":0}}
