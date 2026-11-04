@@ -1,0 +1,3190 @@
+{
+ "title": "Журнал решений: reverse-hook",
+ "source": "decisions.json",
+ "intro": "Пути улик — от корня проекта; префикс `vscode/` — репозиторий плагина symphysis-vscode; корни — `openspec/changes/reverse-hook/probes/journal-roots.json`. Читались: `intent.md`, `hook/hook.py`, `src/host/hook.ts`, `src/host/apply.ts`, `src/webview/ReturnPanel.tsx`, `package.json` плагина, `skills/symphysis-viewer/SKILL.md`, `docs/repo-contract.md`, спека `plugin-agent-hook`, архив `2026-11-04-step-help-tab`. Документация Claude Code и код opencode — выдержками в `probes/`. Пробы — `probes/filechanged-rewake/`, слова в чате — `answers/2026-11-04-chat.md`.",
+ "records": [
+  {
+   "id": "F-01",
+   "question": "Критерий готовности: «сделать чтение сообщения фактом»",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "постановка",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "F-11, F-42",
+   "evidence": [
+    {
+     "path": "openspec/changes/reverse-hook/intent.md",
+     "quote": "«сделать чтение сообщения фактом» (слово в чате, 2026-11-04)",
+     "line": 28,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "open",
+    "delivered"
+   ]
+  },
+  {
+   "id": "F-02",
+   "question": "Критерий готовности: «механизм двунаправленного взаимодейстия между symphysis и клиентом»",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "постановка",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "F-41",
+   "evidence": [
+    {
+     "path": "openspec/changes/reverse-hook/intent.md",
+     "quote": "«механизм двунаправленного взаимодейстия между symphysis и клиентом» (слово в чате, 2026-11-04)",
+     "line": 29,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "table",
+    "toolHook"
+   ]
+  },
+  {
+   "id": "F-03",
+   "question": "Критерий готовности: «Мы отвечаем за факт создания и передачи сообщения»",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "постановка",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "F-42, F-47",
+   "evidence": [
+    {
+     "path": "openspec/changes/reverse-hook/intent.md",
+     "quote": "«Мы отвечаем за факт создания и передачи сообщения» (слово в чате, 2026-11-04)",
+     "line": 30,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "sent"
+   ]
+  },
+  {
+   "id": "F-04",
+   "question": "Критерий готовности: «предвосхищать все эти кейсы не нужно»",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "постановка",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "F-47",
+   "evidence": [
+    {
+     "path": "openspec/changes/reverse-hook/intent.md",
+     "quote": "«предвосхищать все эти кейсы не нужно» (слово в чате, 2026-11-04)",
+     "line": 31,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "unseen"
+   ]
+  },
+  {
+   "id": "F-05",
+   "question": "Критерий готовности: «протестировать в реальной работе»",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "постановка",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "F-26, F-51",
+   "evidence": [
+    {
+     "path": "openspec/changes/reverse-hook/intent.md",
+     "quote": "«протестировать в реальной работе» (слово в чате, 2026-11-04)",
+     "line": 32,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-06",
+   "question": "Критерий готовности: «в репозитории плагина остается только код, необходимый для работы и сборки плагина»",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "постановка",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/reverse-hook/intent.md",
+     "quote": "«в репозитории плагина остается только код, необходимый для работы и сборки плагина» (слово в чате, 2026-11-04)",
+     "line": 33,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-07",
+   "question": "Критерий готовности: «логика работы ядра остается в ядре»",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "постановка",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "F-17, F-50",
+   "evidence": [
+    {
+     "path": "openspec/changes/reverse-hook/intent.md",
+     "quote": "«логика работы ядра остается в ядре» (слово в чате, 2026-11-04)",
+     "line": 34,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-08",
+   "question": "Критерий готовности: «Просмотрщик показывает три состояния: внесено, отправлено, доставлено»",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "постановка",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "F-11, F-44, F-45",
+   "evidence": [
+    {
+     "path": "openspec/changes/reverse-hook/intent.md",
+     "quote": "«Просмотрщик показывает три состояния: внесено, отправлено, доставлено» (слова модели, человек их не оспорил, 2026-11-04)",
+     "line": 35,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "entered",
+    "sent",
+    "delivered",
+    "viewer"
+   ]
+  },
+  {
+   "id": "F-09",
+   "question": "Критерий готовности: «во всех случаях чтения просто не видно, причину выяснять не надо»",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "постановка",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "F-42",
+   "evidence": [
+    {
+     "path": "openspec/changes/reverse-hook/intent.md",
+     "quote": "«во всех случаях чтения просто не видно, причину выяснять не надо» (слова модели о находке I5, человек их не оспорил, 2026-11-04)",
+     "line": 36,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "unseen"
+   ]
+  },
+  {
+   "id": "F-10",
+   "question": "Критерий готовности: «`e2e:hook` перестаёт спрашивать модель о её контексте»",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "постановка",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "F-42",
+   "evidence": [
+    {
+     "path": "openspec/changes/reverse-hook/intent.md",
+     "quote": "«`e2e:hook` перестаёт спрашивать модель о её контексте» (слова модели, человек их не оспорил, 2026-11-04)",
+     "line": 37,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-11",
+   "question": "Как понято F-01 и F-08: прочтение подтвердить нельзя. Наблюдаемым становится только то, что отправленное дошло: агент открыл файл, названный в сообщении",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "материалы",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "F-42",
+   "evidence": [
+    {
+     "path": "openspec/changes/reverse-hook/answers/2026-11-04-chat.md",
+     "quote": "Так как факт чтения мы подтвердить не можем, а можем лишь узнать, что отправленное сообщение дошло до клиента.",
+     "line": 10,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "open",
+    "delivered"
+   ]
+  },
+  {
+   "id": "F-12",
+   "question": "Сейчас хук говорит агенту только при запросе человека",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "материалы",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "F-32, F-36",
+   "evidence": [
+    {
+     "path": "vscode/hook/hook.py",
+     "quote": "\"\"\"Хук клиента: при каждом запросе человека сообщает агенту о внесённом кнопкой и о правке scheme.md.",
+     "line": 1,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "prompt"
+   ]
+  },
+  {
+   "id": "F-13",
+   "question": "Первая реплика новой сессии ставит курсор в конец `events.jsonl`, хотя сообщения не было",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "материалы",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "F-44",
+   "evidence": [
+    {
+     "path": "vscode/hook/hook.py",
+     "quote": "# Новая сессия: прошлого не видит (F-50), схемы только запоминает (F-74).",
+     "line": 183,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "vscode/hook/hook.py",
+     "quote": "save_cursor(cursor_path, {\"offset\": size, \"schemes\": now})",
+     "line": 184,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "mark"
+   ]
+  },
+  {
+   "id": "F-14",
+   "question": "События сверх лимита курсор проходит, а показывает их одна строка-отсылка",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "материалы",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "F-44",
+   "evidence": [
+    {
+     "path": "vscode/hook/hook.py",
+     "quote": "out.append(f\"Показаны не все: ещё {lower}{more} {plural_events(more)} в `{EVENTS_REL}`.\")",
+     "line": 213,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "table"
+   ]
+  },
+  {
+   "id": "F-15",
+   "question": "Текст хука называет файл ответа, но просит только перечитать журнал",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "материалы",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "F-43",
+   "evidence": [
+    {
+     "path": "vscode/hook/hook.py",
+     "quote": "f\"Журнал изменён (хеш был {before}, стал {after}). Ответ человека лежит в файле {answers}. \"",
+     "line": 57,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "vscode/hook/hook.py",
+     "quote": "\"Перечитай журнал перед записью. Этот промпт вносить не надо: решения уже внесены.\"",
+     "line": 58,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "table"
+   ]
+  },
+  {
+   "id": "F-16",
+   "question": "Скилл просмотрщика описывает строку хука при запросе и запрещает `apply` на файл ответа",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "материалы",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "F-37, F-43, F-50",
+   "evidence": [
+    {
+     "path": "skills/symphysis-viewer/SKILL.md",
+     "quote": "`<каталог изменения>/answers/`, а хук клиента добавляет в запрос строку:",
+     "line": 225,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "skills/symphysis-viewer/SKILL.md",
+     "quote": "3. Не зови `apply` на этот файл: решения уже внесены, второй раз их не вносят.",
+     "line": 238,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "table"
+   ]
+  },
+  {
+   "id": "F-17",
+   "question": "Смысл текста хука входит в контракт ядра с плагином",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "материалы",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "F-50",
+   "evidence": [
+    {
+     "path": "docs/repo-contract.md",
+     "quote": "От этих слов зависит агент, поэтому их смысл меняется как контракт",
+     "line": 55,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-18",
+   "question": "Настройки плагина уже бывают двух уровней: интерпретатор только на машине, выключатель хука на проект",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "материалы",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "F-34, F-38",
+   "evidence": [
+    {
+     "path": "vscode/package.json",
+     "quote": "файл настроек проекта не может подменить интерпретатор",
+     "line": 57,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "vscode/package.json",
+     "quote": "\"symphysis.hook.enabled\": {",
+     "line": 65,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-19",
+   "question": "После «Внести» плагин показывает отчёт с путём файла ответа, отчёт убирается крестиком",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "материалы",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "F-37, F-45",
+   "evidence": [
+    {
+     "path": "vscode/src/webview/ReturnPanel.tsx",
+     "quote": "<div>Внесено, ответ сохранён: <code>{result.answers}</code></div>",
+     "line": 39,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "vscode/src/webview/ReturnPanel.tsx",
+     "quote": "title=\"убрать отчёт\"",
+     "line": 51,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "entered",
+    "copy"
+   ]
+  },
+  {
+   "id": "F-20",
+   "question": "Обёртка обработчика Claude Code приводит любой код выхода скрипта к 0: на `UserPromptSubmit` код 2 останавливает запрос",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "материалы",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "F-32",
+   "evidence": [
+    {
+     "path": "vscode/src/host/hook.ts",
+     "quote": "/** Файла нет или скрипт вышел с любым кодом — код процесса 0. Без обёртки Python сам выходит с кодом 2, а он блокирует запрос (F-69). Текст из пробы F-69. */",
+     "line": 113,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "fileHook"
+   ]
+  },
+  {
+   "id": "F-21",
+   "question": "`FileChanged` сам по себе до модели не доходит: его вывод видит только человек",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "материалы",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "F-32",
+   "evidence": [
+    {
+     "path": "openspec/changes/reverse-hook/probes/claude-code-docs.txt",
+     "quote": "| `FileChanged` | No | Shows stderr to user only |",
+     "line": 8,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "openspec/changes/reverse-hook/probes/claude-code-docs.txt",
+     "quote": "FileChanged hooks have no decision control.",
+     "line": 12,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "fileHook"
+   ]
+  },
+  {
+   "id": "F-22",
+   "question": "`asyncRewake` с кодом 2 начинает ход и в простаивающей сессии, текст идёт модели",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "материалы",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "F-32, F-33",
+   "evidence": [
+    {
+     "path": "openspec/changes/reverse-hook/probes/claude-code-docs.txt",
+     "quote": "| `asyncRewake` | no | If `true`, runs in the background and wakes Claude on exit code 2.",
+     "line": 6,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "openspec/changes/reverse-hook/probes/claude-code-docs.txt",
+     "quote": "Exception: an `asyncRewake` hook that exits with code 2 wakes Claude immediately even when the session is idle.",
+     "line": 13,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "turn"
+   ]
+  },
+  {
+   "id": "F-23",
+   "question": "`matcher` у `FileChanged` следит только за файлами рабочего каталога. Файл глубже называют через `watchPaths`, например из `SessionStart`",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "материалы",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "F-32, F-46",
+   "evidence": [
+    {
+     "path": "openspec/changes/reverse-hook/probes/claude-code-docs.txt",
+     "quote": "each segment is registered as a literal filename in the working directory",
+     "line": 10,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "openspec/changes/reverse-hook/probes/claude-code-docs.txt",
+     "quote": "To watch files you can't name up front, return [`watchPaths`](#filechanged-output) from a hook to update the watch list dynamically.",
+     "line": 11,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "fileHook"
+   ]
+  },
+  {
+   "id": "F-24",
+   "question": "Хуки Claude Code бывают пяти видов, инструмент модели среди них не вызвать",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "материалы",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "F-32",
+   "evidence": [
+    {
+     "path": "openspec/changes/reverse-hook/probes/claude-code-docs.txt",
+     "quote": "| `type` | yes | `\"command\"`, `\"http\"`, `\"mcp_tool\"`, `\"prompt\"`, or `\"agent\"` |",
+     "line": 4,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-25",
+   "question": "Проба в `claude -p` с потоковым входом: запись в файл внешним процессом будит сессию, агент открывает файл ответа, `PostToolUse` даёт путь и номер сессии",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "материалы",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "F-32, F-42",
+   "evidence": [
+    {
+     "path": "openspec/changes/reverse-hook/probes/filechanged-rewake/run.txt",
+     "quote": "Итог: 3 из 3 с читаемым текстом. Ход начался через 3-4 с после записи, файл ответа открыт, PostToolUse дал session_id и tool_input.file_path.",
+     "line": 54,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "openspec/changes/reverse-hook/probes/filechanged-rewake/run.txt",
+     "quote": "PostToolUse tool=Read keys=['file_path'] path=<проект>\\openspec\\changes\\demo\\answers\\2026-11-04.md session=True",
+     "line": 19,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "fileHook",
+    "turn",
+    "toolHook"
+   ]
+  },
+  {
+   "id": "F-26",
+   "question": "Проба владельца в интерактивном клиенте в терминале дала то же самое, панель VS Code не проверена",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "материалы",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "F-05, F-51",
+   "evidence": [
+    {
+     "path": "openspec/changes/reverse-hook/probes/filechanged-rewake/run.txt",
+     "quote": "Итог: в интерактивном клиенте в терминале пробуждение работает. Панель VS Code не проверена.",
+     "line": 63,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "turn"
+   ]
+  },
+  {
+   "id": "F-27",
+   "question": "Текст приходит модели с чужой подписью: ошибка stop-хука и пометка, что это не слово человека. Формат не документирован",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "материалы",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "F-32, F-43",
+   "evidence": [
+    {
+     "path": "openspec/changes/reverse-hook/probes/filechanged-rewake/run.txt",
+     "quote": "Stop hook blocking error from command \"FileChanged\": Человек внёс решения кнопкой «Внести» в просмотрщике журнала: изменение demo.",
+     "line": 45,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "openspec/changes/reverse-hook/probes/filechanged-rewake/run.txt",
+     "quote": "[SYSTEM NOTIFICATION - NOT USER INPUT]",
+     "line": 50,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "turn"
+   ]
+  },
+  {
+   "id": "F-28",
+   "question": "Привязку сессии к каталогу прочитать можно: `cwd` в каждом хуке, файл работающей сессии у Claude Code, фильтр `directory` у opencode. Внутри одного каталога она у всех сессий одинакова",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "материалы",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "F-33, F-46",
+   "evidence": [
+    {
+     "path": "openspec/changes/reverse-hook/probes/claude-code-docs.txt",
+     "quote": "| `cwd` | Current working directory when the hook is invoked |",
+     "line": 7,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "openspec/changes/reverse-hook/probes/claude-code-docs.txt",
+     "quote": "holds one small file per running session, used to detect concurrent sessions and crashes.",
+     "line": 20,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "openspec/changes/reverse-hook/probes/opencode-v2.1.4.txt",
+     "quote": "directory: AbsolutePath.pipe(Schema.optional),",
+     "line": 8,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-29",
+   "question": "В opencode плагин может начать ход сам: `session.prompt` есть в его API и будит сессию. По коду тега v2.1.4, пробы нет",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "материалы",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "F-49",
+   "evidence": [
+    {
+     "path": "openspec/changes/reverse-hook/probes/opencode-v2.1.4.txt",
+     "quote": "prompt: adaptApiMethod(SessionEndpoints[\"session.prompt\"], host.session.prompt),",
+     "line": 3,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "openspec/changes/reverse-hook/probes/opencode-v2.1.4.txt",
+     "quote": "if (input.resume !== false) yield* execution.wake(sessionID)",
+     "line": 5,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "openspec/changes/reverse-hook/probes/opencode-v2.1.4.txt",
+     "quote": "export const Delivery = Schema.Literals([\"steer\", \"queue\"])",
+     "line": 7,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "turn"
+   ]
+  },
+  {
+   "id": "F-30",
+   "question": "В opencode 2 хук на инструмент несёт номер сессии",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "материалы",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "F-42, F-49",
+   "evidence": [
+    {
+     "path": "openspec/changes/archive/2026-11-04-step-help-tab/research/F-49.md",
+     "quote": "`v2.1.4:packages/plugin/src/promise/tool.ts:47` «readonly \"execute.after\": {»",
+     "line": 38,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "openspec/changes/archive/2026-11-04-step-help-tab/research/F-49.md",
+     "quote": "`v2.1.4:packages/plugin/src/promise/tool.ts:49` «readonly sessionID: Session.ID» — номер сессии есть.",
+     "line": 39,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "toolHook"
+   ]
+  },
+  {
+   "id": "F-31",
+   "question": "Условие `if` отсекает лишний запуск обработчика на инструменте. На нашем шаблоне пути не проверено",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "материалы",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "F-42",
+   "evidence": [
+    {
+     "path": "openspec/changes/reverse-hook/probes/claude-code-docs.txt",
+     "quote": "The hook command only runs if the tool call matches the pattern.",
+     "line": 5,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "toolHook"
+   ]
+  },
+  {
+   "id": "F-32",
+   "question": "Как сообщение о «Внести» доходит до агента",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Оставить как есть: хук говорит при следующей реплике человека",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "vscode/hook/hook.py",
+       "quote": "\"\"\"Хук клиента: при каждом запросе человека сообщает агенту о внесённом кнопкой и о правке scheme.md.",
+       "line": 1,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Хук клиента на файл событий сам начинает ход агента, без реплики человека. Запасной путь, не зависящий от клиента: кнопка копирования в просмотрщике",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/changes/reverse-hook/probes/filechanged-rewake/run.txt",
+       "quote": "Итог: 3 из 3 с читаемым текстом. Ход начался через 3-4 с после записи, файл ответа открыт, PostToolUse дал session_id и tool_input.file_path.",
+       "line": 54,
+       "verdict": "сверено",
+       "found": true
+      },
+      {
+       "path": "openspec/changes/reverse-hook/answers/2026-11-04-chat.md",
+       "quote": "Поэтому текущий хук мы можем заменить маленькой кнопкой скопировать путь файла с ответами, и это будет неубиваемый запасной вариант, на случай отсутствия хука.",
+       "line": 31,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "C",
+     "text": "Только кнопка копирования, хук снять совсем",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/changes/reverse-hook/answers/2026-11-04-chat.md",
+       "quote": "Поэтому текущий хук мы можем заменить маленькой кнопкой скопировать путь файла с ответами, и это будет неубиваемый запасной вариант, на случай отсутствия хука.",
+       "line": 31,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "D",
+     "text": "Вызывать из хука инструмент `SendMessage`",
+     "added": false,
+     "unlikely": "это инструмент самой модели, хук вызвать его не может",
+     "evidence": [
+      {
+       "path": "openspec/changes/reverse-hook/probes/claude-code-docs.txt",
+       "quote": "| `type` | yes | `\"command\"`, `\"http\"`, `\"mcp_tool\"`, `\"prompt\"`, or `\"agent\"` |",
+       "line": 4,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "E",
+     "text": "Канал MCP `--channels`, который кладёт сообщения в идущую сессию",
+     "added": false,
+     "unlikely": "нужен флаг при каждом запуске клиента и предварительная версия",
+     "evidence": [
+      {
+       "path": "openspec/changes/reverse-hook/probes/claude-code-docs.txt",
+       "quote": "Being in `.mcp.json` isn't enough to push messages: a server also has to be named in `--channels`.",
+       "line": 17,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "B",
+    "why": "Следующая реплика человека после «Внести» и так «я внёс», поэтому A автоматизации не даёт. B даёт её, а хрупкость клиента прикрывает кнопка."
+   },
+   "decision": {
+    "option": "B",
+    "word": "Проблема в том, что вариант А по сути не нужен. Если считывание результата \"Внести\" происходит по следующему сообщению от человека, то автоматизации нет, ведь следующее сообщение человека после внесения результатов это \"Я внёс\". Поэтому текущий хук мы можем заменить маленькой кнопкой скопировать путь файла с ответами, и это будет неубиваемый запасной вариант, на случай отсутствия хука.",
+    "date": "2026-11-04"
+   },
+   "reversibility": {
+    "level": "обратимо",
+    "why": "записи в `.claude/settings.local.json` и файл `.opencode/plugins/` ставит и снимает плагин при активации; доставку при реплике можно вернуть новой версией `hook.py`"
+   },
+   "outcome": null,
+   "parking": [
+    {
+     "addressee": "материалы",
+     "text": "Подхватывает ли идущая сессия Claude Code новые записи хуков в `.claude/settings.local.json`, или они действуют только с новой сессии. Сессия, начатая до установки, останется без пробуждения: проба или документация `hooks.md`."
+    }
+   ],
+   "dispute": "",
+   "consequences": "F-33, F-34, F-36, F-42, F-47, F-48",
+   "evidence": [],
+   "comments": [],
+   "nodes": [
+    "event",
+    "fileHook",
+    "turn",
+    "copy"
+   ]
+  },
+  {
+   "id": "F-33",
+   "question": "Какую сессию каталога будить, если их несколько",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-32"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Все живые сессии каталога: так работает `FileChanged` без отбора",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/changes/reverse-hook/answers/2026-11-04-chat.md",
+       "quote": "наверное идея будить сессии это плохая задумка.",
+       "line": 25,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Одну: с самым свежим временем записи курсора. Хук каждой сессии сравнивает сам, договариваться им не нужно. Если эта сессия закрыта, не проснётся никто",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "vscode/hook/hook.py",
+       "quote": "save_cursor(cursor_path, {\"offset\": new_offset, \"schemes\": now})",
+       "line": 219,
+       "verdict": "сверено",
+       "found": true
+      },
+      {
+       "path": "openspec/changes/reverse-hook/answers/2026-11-04-chat.md",
+       "quote": "А вот если сделать вариант Б + Д это уже похоже на полезную реализацию, которую я смогу потом переиспользовать.",
+       "line": 33,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "C",
+     "text": "Ту, что работала с этим изменением: хук отмечает в курсоре открытые изменения",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/changes/reverse-hook/probes/filechanged-rewake/run.txt",
+       "quote": "PostToolUse tool=Read keys=['file_path'] path=<проект>\\openspec\\changes\\demo\\answers\\2026-11-04.md session=True",
+       "line": 19,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "D",
+     "text": "Выбирает человек из списка, который плагин читает из файлов сессий клиента",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/changes/reverse-hook/probes/claude-code-docs.txt",
+       "quote": "holds one small file per running session, used to detect concurrent sessions and crashes.",
+       "line": 20,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "B",
+    "why": "Свой сигнал без чтения внутренних файлов клиента, одинаковый для обоих клиентов."
+   },
+   "decision": {
+    "option": "B",
+    "word": "А вот если сделать вариант Б + Д это уже похоже на полезную реализацию, которую я смогу потом переиспользовать. То есть смогу создавать разные события, в зависимости от кнопок, пробуждать последнюю активную сессию.",
+    "date": "2026-11-04"
+   },
+   "reversibility": {
+    "level": "обратимо",
+    "why": "выбор сессии живёт в `hook.py` из пакета плагина, скрипт сверяется и заменяется при активации"
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "F-46, F-47",
+   "evidence": [],
+   "comments": [],
+   "nodes": [
+    "newest",
+    "silent"
+   ]
+  },
+  {
+   "id": "F-34",
+   "question": "Кто решает, будить ли агента",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-32"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Будит всегда, пока хук стоит",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/changes/reverse-hook/probes/claude-code-docs.txt",
+       "quote": "| `asyncRewake` | no | If `true`, runs in the background and wakes Claude on exit code 2.",
+       "line": 6,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Настройка пробуждения и прежний выключатель хука. Пробуждение выключено: плагин не пишет событие, хук молчит, кнопка и «доставлено» работают. Хук выключен: остаётся кнопка",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/changes/reverse-hook/answers/2026-11-04-chat.md",
+       "quote": "И если пользователю такое не надо, то он отключает настройку пробуждения, или сам хук, и доставляет события руками.",
+       "line": 33,
+       "verdict": "сверено",
+       "found": true
+      },
+      {
+       "path": "vscode/package.json",
+       "quote": "\"symphysis.hook.enabled\": {",
+       "line": 65,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "B",
+    "why": "«Внести» перестаёт значить «начинай» только там, где человек этого хочет."
+   },
+   "decision": {
+    "option": "B",
+    "word": "И если пользователю такое не надо, то он отключает настройку пробуждения, или сам хук, и доставляет события руками.",
+    "date": "2026-11-04"
+   },
+   "reversibility": {
+    "level": "обратимо",
+    "why": "настройка в `package.json` плагина; снять её значит поправить плагин, ядро не меняется"
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "F-35",
+   "evidence": [],
+   "comments": [],
+   "nodes": [
+    "wakeOn"
+   ]
+  },
+  {
+   "id": "F-35",
+   "question": "Значение настройки пробуждения по умолчанию",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-34"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Включено: каждый, кто поставил плагин, платит за ход модели на каждое «Внести», пока не отключит",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/changes/reverse-hook/answers/2026-11-04-chat.md",
+       "quote": "И если пользователю такое не надо, то он отключает настройку пробуждения, или сам хук, и доставляет события руками.",
+       "line": 33,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Выключено: пробуждение включают сами, по умолчанию доставка идёт кнопкой",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "vscode/package.json",
+       "quote": "\"symphysis.hook.enabled\": {",
+       "line": 65,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Так понято твоё «отключает»: без включения механизм никто не увидит, а отключить можно одной галочкой."
+   },
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-04"
+   },
+   "reversibility": {
+    "level": "обратимо",
+    "why": "значение по умолчанию в `package.json` плагина; у кого настройка уже задана, у того она останется"
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [],
+   "comments": [],
+   "nodes": [
+    "wakeOn"
+   ]
+  },
+  {
+   "id": "F-36",
+   "question": "Что с обработчиком на реплику человека",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-32",
+    "F-33"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Снять целиком: доставка уходит на файл",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/changes/reverse-hook/answers/2026-11-04-chat.md",
+       "quote": "Поэтому текущий хук мы можем заменить маленькой кнопкой скопировать путь файла с ответами, и это будет неубиваемый запасной вариант, на случай отсутствия хука.",
+       "line": 31,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Оставить без текста о «Внести»: он пишет отметку активности, по которой выбирается сессия, и строку о правке `scheme.md`, для которой следующая реплика и есть новость",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "vscode/hook/hook.py",
+       "quote": "save_cursor(cursor_path, {\"offset\": new_offset, \"schemes\": now})",
+       "line": 219,
+       "verdict": "сверено",
+       "found": true
+      },
+      {
+       "path": "vscode/hook/hook.py",
+       "quote": "f\"Файл scheme.md изменения {change} правили с прошлого обращения. Это только сигнал: схема лишь \"",
+       "line": 64,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "B",
+    "why": "Без отметки «последней активной» не будет, а о правке схемы человек сам не пишет."
+   },
+   "decision": {
+    "option": "B",
+    "word": "С остальным согласен.",
+    "date": "2026-11-04"
+   },
+   "reversibility": {
+    "level": "обратимо",
+    "why": "запись `UserPromptSubmit` и `hook.py` плагин заменяет сам при активации"
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "F-46",
+   "evidence": [],
+   "comments": [],
+   "nodes": [
+    "prompt",
+    "mark",
+    "schemeLine"
+   ]
+  },
+  {
+   "id": "F-37",
+   "question": "Что копирует кнопка",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-32"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Голый путь к файлу ответа",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/changes/reverse-hook/answers/2026-11-04-chat.md",
+       "quote": "Поэтому текущий хук мы можем заменить маленькой кнопкой скопировать путь файла с ответами, и это будет неубиваемый запасной вариант, на случай отсутствия хука.",
+       "line": 31,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Фразу с путём. Текст задаётся настройкой с умолчанием, подстановка `{path}`; без неё путь дописывается в конец, пустая строка значит голый путь",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/changes/reverse-hook/answers/2026-11-04-chat.md",
+       "quote": "Но фразу тогда тоже нужно конфигурировать.",
+       "line": 37,
+       "verdict": "сверено",
+       "found": true
+      },
+      {
+       "path": "skills/symphysis-viewer/SKILL.md",
+       "quote": "3. Не зови `apply` на этот файл: решения уже внесены, второй раз их не вносят.",
+       "line": 238,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "B",
+    "why": "По голому пути агент не узнаёт, что `apply` звать не надо; настройка оставляет человеку свой текст."
+   },
+   "decision": {
+    "option": "B",
+    "word": "Но фразу тогда тоже нужно конфигурировать. Я такое делал для плагина md4h, у него есть встроенный промпт при копировании ссылки на файл с ответами. но меня промпт не устраивал, поэтому изменил, через настройки плагина md4h",
+    "date": "2026-11-04"
+   },
+   "reversibility": {
+    "level": "обратимо",
+    "why": "кнопка и настройка живут только в плагине; у пользователей останется их текст в настройках без действия"
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "F-38",
+   "evidence": [],
+   "comments": [],
+   "nodes": [
+    "copy"
+   ]
+  },
+  {
+   "id": "F-38",
+   "question": "На каком уровне настраивается фраза кнопки",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-37"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Только на машине, как `symphysis.python`: файл настроек проекта её не подменит",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "vscode/package.json",
+       "quote": "файл настроек проекта не может подменить интерпретатор",
+       "line": 57,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "На проект, как `symphysis.hook.enabled`: у каждого проекта своя",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "vscode/package.json",
+       "quote": "\"symphysis.hook.enabled\": {",
+       "line": 65,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Буфер вставляется вслепую: чужой `.vscode/settings.json` не должен менять текст, который уйдёт агенту."
+   },
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-04"
+   },
+   "reversibility": {
+    "level": "обратимо",
+    "why": "уровень настройки в `package.json` плагина, ослабить его можно новой версией"
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [],
+   "comments": [],
+   "nodes": [
+    "copy"
+   ]
+  },
+  {
+   "id": "F-39",
+   "question": "Форма событий, чтобы новые кнопки могли добавлять свои",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "В строке `type` и проверенные поля, текст агенту таблицей в `hook.py`. Новая кнопка добавляет строку таблицы",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "vscode/hook/hook.py",
+       "quote": "\"\"\"Событие из строки файла или None, если строка не по форме. Годятся только проверенные поля.\"\"\"",
+       "line": 36,
+       "verdict": "сверено",
+       "found": true
+      },
+      {
+       "path": "openspec/changes/reverse-hook/answers/2026-11-04-chat.md",
+       "quote": "То есть смогу создавать разные события, в зависимости от кнопок, пробуждать последнюю активную сессию.",
+       "line": 33,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Текст для агента лежит в самой строке события",
+     "added": false,
+     "unlikely": "файл может дописать кто угодно в проекте: это прямая инъекция в агента",
+     "evidence": [
+      {
+       "path": "vscode/hook/hook.py",
+       "quote": "EVENTS_REL = \".symphysis/viewer/events.jsonl\"",
+       "line": 20,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Расширяется таблица, а не поверхность атаки. Сейчас нужен один тип."
+   },
+   "decision": {
+    "option": "A",
+    "word": "С остальным согласен.",
+    "date": "2026-11-04"
+   },
+   "reversibility": {
+    "level": "дорого",
+    "why": "форма строк `events.jsonl` и смысл текста хука входят в контракт ядра с плагином: смена требует нового номера контракта и правки скилла просмотрщика"
+   },
+   "outcome": null,
+   "parking": [
+    {
+     "addressee": "ИБ",
+     "text": "Что может подложить запись в `events.jsonl` и подмена настройки фразы: проверить в `security.md`, что текст агенту не берётся из файла, а поля проверены до показа."
+    }
+   ],
+   "dispute": "",
+   "consequences": "F-40, F-50",
+   "evidence": [],
+   "comments": [],
+   "nodes": [
+    "event",
+    "table"
+   ]
+  },
+  {
+   "id": "F-40",
+   "question": "Настраивается ли текст пробуждения",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-39"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Постоянный, в таблице `hook.py`. Настраивается только фраза кнопки: она проходит через руки человека",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "vscode/hook/hook.py",
+       "quote": "\"Перечитай журнал перед записью. Этот промпт вносить не надо: решения уже внесены.\"",
+       "line": 58,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Настраивается, как фраза кнопки: плагин кладёт текст в файл проекта",
+     "added": false,
+     "unlikely": "текст для агента снова читался бы из файла",
+     "evidence": [
+      {
+       "path": "openspec/changes/reverse-hook/answers/2026-11-04-chat.md",
+       "quote": "Но фразу тогда тоже нужно конфигурировать.",
+       "line": 37,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Постоянная форма остаётся без исключений."
+   },
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-04"
+   },
+   "reversibility": {
+    "level": "обратимо",
+    "why": "текст живёт в `hook.py` из пакета плагина, настройку можно добавить позже"
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [],
+   "comments": [],
+   "nodes": [
+    "table"
+   ]
+  },
+  {
+   "id": "F-41",
+   "question": "Что идёт от агента обратно",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Только факты постоянной формы: файл открыт в такой-то сессии. Общего канала нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/changes/reverse-hook/answers/2026-11-04-chat.md",
+       "quote": "История про общий канал -- появится позже, исходя из потребности. Пока твой совет уместен и актуален, поэтому будем выполнять по нему.",
+       "line": 8,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Общий двусторонний канал со свободным текстом агента в просмотрщике",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/changes/reverse-hook/intent.md",
+       "quote": "«механизм двунаправленного взаимодейстия между symphysis и клиентом»",
+       "line": 29,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Второго применения пока нет, а свободный текст открывает инъекцию в просмотрщик."
+   },
+   "decision": {
+    "option": "A",
+    "word": "История про общий канал -- появится позже, исходя из потребности. Пока твой совет уместен и актуален, поэтому будем выполнять по нему.",
+    "date": "2026-11-04"
+   },
+   "reversibility": {
+    "level": "обратимо",
+    "why": "канал не заводится, файл с фактами постоянной формы не мешает добавить его позже отдельным изменением"
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "F-44",
+   "evidence": [],
+   "comments": [],
+   "nodes": [
+    "toolHook"
+   ]
+  },
+  {
+   "id": "F-42",
+   "question": "Что считать сигналом «доставлено»",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-32"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Агент открыл файл ответа: хук клиента на чтение. Работает и при ручной передаче. `cat` через Bash такой хук не видит, поэтому при отсутствии сигнала пишем «доставки не видно», а не «не читал»",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/changes/reverse-hook/probes/filechanged-rewake/run.txt",
+       "quote": "PostToolUse tool=Read keys=['file_path'] path=<проект>\\openspec\\changes\\demo\\answers\\2026-11-04.md session=True",
+       "line": 19,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Любой следующий ход или инструмент сессии после пробуждения: ближе к «дошло до клиента», но при ручной передаче сигнала нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/changes/reverse-hook/answers/2026-11-04-chat.md",
+       "quote": "Так как факт чтения мы подтвердить не можем, а можем лишь узнать, что отправленное сообщение дошло до клиента.",
+       "line": 10,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "C",
+     "text": "Чтение журнала или файла ответа",
+     "added": false,
+     "unlikely": "журнал агент читает и без сообщения, сигнал ничего не доказывает",
+     "evidence": [
+      {
+       "path": "vscode/hook/hook.py",
+       "quote": "\"Перечитай журнал перед записью. Этот промпт вносить не надо: решения уже внесены.\"",
+       "line": 58,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    }
+   ],
+   "antipodes": [
+    {
+     "option": "A",
+     "other": "F-43.B"
+    }
+   ],
+   "recommendation": {
+    "option": "A",
+    "why": "Имя файла ответа своё у каждого «Внести», и сигнал один на оба пути доставки."
+   },
+   "decision": {
+    "option": "A",
+    "word": "С остальным согласен.",
+    "date": "2026-11-04"
+   },
+   "reversibility": {
+    "level": "обратимо",
+    "why": "сигнал считает `hook.py` и файл opencode из плагина; записи старого вида плагин может не показывать"
+   },
+   "outcome": null,
+   "parking": [
+    {
+     "addressee": "материалы",
+     "text": "Отсекает ли условие `if` вида `Read(**/answers/**)` запуск обработчика на Windows, где `file_path` приходит с обратными косыми. Без него Python запускается на каждое чтение файла. Проба на Claude Code, `probes/filechanged-rewake/`."
+    }
+   ],
+   "dispute": "",
+   "consequences": "F-43, F-44",
+   "evidence": [],
+   "comments": [],
+   "nodes": [
+    "open",
+    "toolHook",
+    "delivered",
+    "unseen"
+   ]
+  },
+  {
+   "id": "F-43",
+   "question": "Просит ли текст пробуждения открыть файл ответа",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-42"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Да: «Открой этот файл», и что `apply` звать не надо. В пробах открыли все",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/changes/reverse-hook/probes/filechanged-rewake/run.txt",
+       "quote": "Итог: 3 из 3 с читаемым текстом. Ход начался через 3-4 с после записи, файл ответа открыт, PostToolUse дал session_id и tool_input.file_path.",
+       "line": 54,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Нет: прежние слова «Перечитай журнал»",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "vscode/hook/hook.py",
+       "quote": "\"Перечитай журнал перед записью. Этот промпт вносить не надо: решения уже внесены.\"",
+       "line": 58,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    }
+   ],
+   "antipodes": [
+    {
+     "option": "B",
+     "other": "F-42.A"
+    }
+   ],
+   "recommendation": {
+    "option": "A",
+    "why": "Без просьбы агент может всё сделать верно, а «доставлено» не появится."
+   },
+   "decision": {
+    "option": "A",
+    "word": "Перед выпуском 1.0.0 нужно будет скорректировать промпт, чтобы он не противоречил добавленной функциональности",
+    "date": "2026-11-04"
+   },
+   "reversibility": {
+    "level": "дорого",
+    "why": "смысл текста хука входит в контракт ядра с плагином и повторяется в `skills/symphysis-viewer/SKILL.md`: правка идёт с новым номером контракта"
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "F-50",
+   "evidence": [],
+   "comments": [],
+   "nodes": [
+    "table"
+   ]
+  },
+  {
+   "id": "F-44",
+   "question": "Где лежат записи «отправлено» и «доставлено»",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-41",
+    "F-42"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Отдельный файл `.symphysis/viewer/receipts.jsonl`: дописывают хуки, форма постоянная, плагин читает и следит",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "docs/repo-contract.md",
+       "quote": "каталог `.symphysis/viewer/`: там черновики человека, а также `events.jsonl`, курсоры сессий и скрипт хука; инсталлятор обязан их не стирать;",
+       "line": 54,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Поля в курсоре сессии: плагин перебирает файлы `sessions/`",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "vscode/hook/hook.py",
+       "quote": "save_cursor(cursor_path, {\"offset\": new_offset, \"schemes\": now})",
+       "line": 219,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "C",
+     "text": "Считать «отправлено» по положению курсора, без записи",
+     "added": false,
+     "unlikely": "новая сессия ставит курсор в конец без сообщения, а события сверх лимита показаны одной строкой",
+     "evidence": [
+      {
+       "path": "vscode/hook/hook.py",
+       "quote": "# Новая сессия: прошлого не видит (F-50), схемы только запоминает (F-74).",
+       "line": 183,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Один файл на все сессии проще читать и следить, а курсоры остаются про своё."
+   },
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-04"
+   },
+   "reversibility": {
+    "level": "обратимо",
+    "why": "`receipts.jsonl` пишет и читает только код плагина, форму можно сменить его новой версией"
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "F-45",
+   "evidence": [],
+   "comments": [],
+   "nodes": [
+    "sent",
+    "delivered"
+   ]
+  },
+  {
+   "id": "F-45",
+   "question": "Где просмотрщик показывает состояние",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-44"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "В отчёте после «Внести», рядом с кнопкой копирования. Отчёт убрали крестиком или закрыли страницу, и состояния не видно",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "vscode/src/webview/ReturnPanel.tsx",
+       "quote": "<div>Внесено, ответ сохранён: <code>{result.answers}</code></div>",
+       "line": 39,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Там же и строкой о последнем внесении в шапке просмотрщика: видно и после перезагрузки",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "vscode/src/webview/App.tsx",
+       "quote": "<header className=\"top\">",
+       "line": 283,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "C",
+     "text": "Список всех внесений с их состояниями",
+     "added": false,
+     "unlikely": "истории никто не просил, нужен ответ про последнее",
+     "evidence": [
+      {
+       "path": "openspec/changes/reverse-hook/intent.md",
+       "quote": "«Просмотрщик показывает три состояния: внесено, отправлено, доставлено»",
+       "line": 35,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "B",
+    "why": "Вопрос «дошло ли» возникает и позже, когда отчёт уже убран."
+   },
+   "decision": {
+    "option": "B",
+    "word": "",
+    "date": "2026-11-04"
+   },
+   "reversibility": {
+    "level": "обратимо",
+    "why": "только показ в просмотрщике плагина, данные не меняются"
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [],
+   "comments": [],
+   "nodes": [
+    "viewer"
+   ]
+  },
+  {
+   "id": "F-46",
+   "question": "Что считается активностью сессии",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-33",
+    "F-36"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Только реплика человека: так курсор пишется сейчас. Открытая, но молчащая новая сессия свежей не станет",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "vscode/hook/hook.py",
+       "quote": "save_cursor(cursor_path, {\"offset\": new_offset, \"schemes\": now})",
+       "line": 219,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Реплика и запуск сессии: `SessionStart` всё равно нужен для `watchPaths`. Новая сессия сразу свежая, но открытая просто посмотреть перехватит пробуждение",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/changes/reverse-hook/probes/claude-code-docs.txt",
+       "quote": "To watch files you can't name up front, return [`watchPaths`](#filechanged-output) from a hook to update the watch list dynamically.",
+       "line": 11,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "C",
+     "text": "Поля `status` и `updatedAt` из файлов сессий клиента",
+     "added": false,
+     "unlikely": "внутренний файл, поля не описаны, у opencode другой путь",
+     "evidence": [
+      {
+       "path": "openspec/changes/reverse-hook/probes/claude-code-docs.txt",
+       "quote": "holds one small file per running session, used to detect concurrent sessions and crashes.",
+       "line": 20,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    }
+   ],
+   "antipodes": [
+    {
+     "option": "C",
+     "other": "F-33.B"
+    }
+   ],
+   "recommendation": {
+    "option": "B",
+    "why": "Закрыл старую сессию, открыл новую и нажал «Внести»: это частый путь, и новая сессия здесь нужна."
+   },
+   "decision": {
+    "option": "B",
+    "word": "",
+    "date": "2026-11-04"
+   },
+   "reversibility": {
+    "level": "обратимо",
+    "why": "считают `hook.py` и запись `SessionStart`, обе плагин заменяет сам при активации"
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [],
+   "comments": [],
+   "nodes": [
+    "mark"
+   ]
+  },
+  {
+   "id": "F-47",
+   "question": "Что с событием, которое некому забрать: самая свежая сессия закрыта",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-32",
+    "F-33"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Ничего автоматически: состояние остаётся «внесено», есть кнопка",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/changes/reverse-hook/answers/2026-11-04-chat.md",
+       "quote": "Поэтому текущий хук мы можем заменить маленькой кнопкой скопировать путь файла с ответами, и это будет неубиваемый запасной вариант, на случай отсутствия хука.",
+       "line": 31,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Сказать при следующей реплике в любой сессии, как сейчас",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "vscode/hook/hook.py",
+       "quote": "\"\"\"Хук клиента: при каждом запросе человека сообщает агенту о внесённом кнопкой и о правке scheme.md.",
+       "line": 1,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "C",
+     "text": "Добавить к следующему пробуждению",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "vscode/hook/hook.py",
+       "quote": "out.append(f\"Показаны не все: ещё {lower}{more} {plural_events(more)} в `{EVENTS_REL}`.\")",
+       "line": 213,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Твоё слово: запасной путь один. Лишний механизм ради закрытой сессии не нужен, и предвосхищать это не просили."
+   },
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-04"
+   },
+   "reversibility": {
+    "level": "обратимо",
+    "why": "автоматической доставки нет, добавить её можно новой версией `hook.py`"
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [],
+   "comments": [],
+   "nodes": [
+    "unseen",
+    "copy"
+   ]
+  },
+  {
+   "id": "F-48",
+   "question": "Что при нескольких «Внести» подряд",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-32"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Каждое даёт свой ход модели",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/changes/reverse-hook/probes/claude-code-docs.txt",
+       "quote": "| `asyncRewake` | no | If `true`, runs in the background and wakes Claude on exit code 2.",
+       "line": 6,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Склейка: хук ждёт несколько секунд и будит один раз. Предел времени у `asyncRewake` действует",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/changes/reverse-hook/probes/claude-code-docs.txt",
+       "quote": "| `asyncRewake` | no | If `true`, runs in the background and wakes Claude on exit code 2.",
+       "line": 6,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "C",
+     "text": "Не будить, пока прошлое не доставлено: второе агент узнает, только перечитав журнал",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/changes/reverse-hook/probes/filechanged-rewake/run.txt",
+       "quote": "PostToolUse tool=Read keys=['file_path'] path=<проект>\\openspec\\changes\\demo\\answers\\2026-11-04.md session=True",
+       "line": 19,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "D",
+     "text": "Несколько подряд не может быть. Если человек нажал кнопку \"Внести\" то новых решений по развилкам не появилось, значит это одно событие. Если человек изменил решение по развилкам не дождавшись ответа от агента -- значит это новое событие, и агент получит два разных, а модель сообщит о проблемах. (добавлен человеком)",
+     "added": true,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Проще всего и ничего не теряется. Решать лучше после пробы."
+   },
+   "decision": {
+    "option": "D",
+    "word": "Видимо вариант D такой же как вариант A, но у рекомендации нет объяснения.",
+    "date": "2026-11-04"
+   },
+   "reversibility": {
+    "level": "обратимо",
+    "why": "склейку можно добавить в `hook.py`, форма событий при этом не меняется"
+   },
+   "outcome": null,
+   "parking": [
+    {
+     "addressee": "материалы",
+     "text": "Что происходит с сообщением, пока сессия занята, и при двух пробуждениях подряд: не теряется ли текст, сколько ходов начнётся. Проба на Claude Code набором `probes/filechanged-rewake/`, режим `claude -p` с потоковым входом."
+    }
+   ],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [],
+   "comments": [],
+   "nodes": [
+    "fileHook"
+   ]
+  },
+  {
+   "id": "F-49",
+   "question": "Пробуждение в opencode",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-32",
+    "F-42"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Тот же поток: наблюдатель файла в плагине, `session.prompt` начинает ход, `execute.after` даёт «доставлено»",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/changes/reverse-hook/probes/opencode-v2.1.4.txt",
+       "quote": "if (input.resume !== false) yield* execution.wake(sessionID)",
+       "line": 5,
+       "verdict": "сверено",
+       "found": true
+      },
+      {
+       "path": "openspec/changes/archive/2026-11-04-step-help-tab/research/F-49.md",
+       "quote": "`v2.1.4:packages/plugin/src/promise/tool.ts:47` «readonly \"execute.after\": {»",
+       "line": 38,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "В этом изменении только Claude Code, в opencode остаётся кнопка",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/changes/reverse-hook/probes/filechanged-rewake/run.txt",
+       "quote": "Итог: в интерактивном клиенте в терминале пробуждение работает. Панель VS Code не проверена.",
+       "line": 63,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Хук уже стоит в обоих клиентах, разрыв был бы заметен. Но только если проба подтвердит код."
+   },
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-04"
+   },
+   "reversibility": {
+    "level": "обратимо",
+    "why": "файл `.opencode/plugins/symphysis-hook.js` плагин заменяет сам при активации"
+   },
+   "outcome": null,
+   "parking": [
+    {
+     "addressee": "материалы",
+     "text": "Начинает ли `session.prompt` ход в простаивающей сессии на установленной opencode 2.2.5, как сообщение выглядит для модели (обычная реплика или служебное), `steer` или `queue`, откуда плагин берёт номер последней сессии. Читать `packages/core/src/session/session.ts`; проба удаляет свои сессии из общей базы."
+    },
+    {
+     "addressee": "материалы",
+     "text": "Что в opencode считать запуском сессии для F-46.B: `SessionStart` там нет, в списке хуков плагина только `prompt` и другие. Читать `packages/plugin/src/promise/session.ts` и события `event.subscribe`."
+    }
+   ],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [],
+   "comments": [],
+   "nodes": [
+    "turn",
+    "toolHook"
+   ]
+  },
+  {
+   "id": "F-50",
+   "question": "Растёт ли номер контракта",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-39",
+    "F-43"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Растёт до 3: смысл текста хука меняется, вместе правятся скилл просмотрщика и `docs/repo-contract.md`",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "docs/repo-contract.md",
+       "quote": "Удаление, переименование, смена смысла и новое значение существующего поля считаются.",
+       "line": 60,
+       "verdict": "сверено",
+       "found": true
+      },
+      {
+       "path": "docs/repo-contract.md",
+       "quote": "От этих слов зависит агент, поэтому их смысл меняется как контракт",
+       "line": 55,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Не растёт: `hook.py` приходит с плагином, а новое поле `type` сменой не считается",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "docs/repo-contract.md",
+       "quote": "Новое поле сменой не считается.",
+       "line": 60,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Старый скилл с новым хуком учит агента по строке, которой больше нет."
+   },
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-04"
+   },
+   "reversibility": {
+    "level": "в одну сторону",
+    "why": "номер контракта только растёт: плагин с номером 3 просит обновить инструменты во всех проектах, вернуть прежний номер нельзя"
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [],
+   "comments": [],
+   "nodes": [
+    "table"
+   ]
+  },
+  {
+   "id": "F-51",
+   "question": "Нужна ли проверка пробуждения в панели VS Code",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-32"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Проверить до реализации: без этого в панели работает только кнопка",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/changes/reverse-hook/probes/filechanged-rewake/run.txt",
+       "quote": "Итог: в интерактивном клиенте в терминале пробуждение работает. Панель VS Code не проверена.",
+       "line": 63,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Хватает терминала: панель без обещаний, запасной путь уже есть",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/changes/reverse-hook/answers/2026-11-04-chat.md",
+       "quote": "Поэтому текущий хук мы можем заменить маленькой кнопкой скопировать путь файла с ответами, и это будет неубиваемый запасной вариант, на случай отсутствия хука.",
+       "line": 31,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "C",
+     "text": "во время теста в интерактивном клиенте я использовал терминал внутри VS Code, и всё сработало. (добавлен человеком)",
+     "added": true,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "B",
+    "why": "Ты прислал проверку из терминала. Если работаешь в панели, выбирай A: проверка занимает минуту."
+   },
+   "decision": {
+    "option": "C",
+    "word": "поддержка официального расширения VS Code \"Claude code for VS Code\" или расширений VS Code для opencode -- в этом изменении не рассматривается.",
+    "date": "2026-11-04"
+   },
+   "reversibility": {
+    "level": "обратимо",
+    "why": "панель можно поддержать отдельным изменением, файл событий и хук при этом не меняются"
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [],
+   "comments": [],
+   "nodes": [
+    "turn"
+   ]
+  },
+  {
+   "id": "F-52",
+   "question": "Как понято F-48: повторно нажать «Внести» без новых решений нельзя, кнопка закрыта при пустом промпте. Каждое новое решение — свой файл ответа, своё событие и свой ход; склейки нет, противоречие между ними называет модель",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "материалы",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "F-48, F-56",
+   "evidence": [
+    {
+     "path": "openspec/changes/reverse-hook/answers/2026-11-04-2.md",
+     "quote": "Несколько подряд не может быть. Если человек нажал кнопку \"Внести\" то новых решений по развилкам не появилось, значит это одно событие.",
+     "line": 10,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "vscode/src/webview/ReturnPanel.tsx",
+     "quote": "disabled={prompt.empty || applying || !!blockedReason}",
+     "line": 100,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "fileHook"
+   ]
+  },
+  {
+   "id": "F-53",
+   "question": "Как понято F-51: проверенная поверхность — интерактивный клиент в терминале, в том числе во встроенном терминале VS Code. Панель расширения Claude Code и расширения VS Code для opencode вне этого изменения",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "материалы",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "F-51",
+   "evidence": [
+    {
+     "path": "openspec/changes/reverse-hook/answers/2026-11-04-2.md",
+     "quote": "во время теста в интерактивном клиенте я использовал терминал внутри VS Code, и всё сработало.",
+     "line": 14,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "openspec/changes/reverse-hook/answers/2026-11-04-2.md",
+     "quote": "поддержка официального расширения VS Code \"Claude code for VS Code\" или расширений VS Code для opencode -- в этом изменении не рассматривается.",
+     "line": 15,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "turn"
+   ]
+  },
+  {
+   "id": "F-54",
+   "question": "Как понято F-43: текст пробуждения просит открыть файл ответа, а перед выпуском 1.0.0 плагина его сверяют с тем, что добавится к тому времени. Это отдельная работа к выпуску, в этом изменении её нет",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "материалы",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "F-43",
+   "evidence": [
+    {
+     "path": "openspec/changes/reverse-hook/answers/2026-11-04-2.md",
+     "quote": "Перед выпуском 1.0.0 нужно будет скорректировать промпт, чтобы он не противоречил добавленной функциональности",
+     "line": 5,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "table"
+   ]
+  },
+  {
+   "id": "F-55",
+   "question": "Курсор хранит смещение в файле событий и записывается целиком за один проход. Значит, когда хук на файл будет двигать смещение, время записи курсора сменится у всех сессий каталога",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "материалы",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "F-33, F-56",
+   "evidence": [
+    {
+     "path": "vscode/hook/hook.py",
+     "quote": "save_cursor(cursor_path, {\"offset\": new_offset, \"schemes\": now})",
+     "line": 219,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "vscode/hook/hook.py",
+     "quote": "offset = cursor[\"offset\"] if cursor[\"offset\"] <= size else 0  # курсор дальше конца: файл урезали (F-72)",
+     "line": 187,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "mark",
+    "newest"
+   ]
+  },
+  {
+   "id": "F-56",
+   "question": "Как хранить отметку активности: сверка нашла, что выбранное в F-33 «время записи курсора» ломается от движения смещения (F-55)",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-33",
+    "F-46",
+    "F-48"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Поле `active` со временем внутри курсора. Его пишут только реплика и запуск сессии, хук на файл двигает `offset` и поля не трогает. Сравнивается поле, а не время файла",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "vscode/hook/hook.py",
+       "quote": "save_cursor(cursor_path, {\"offset\": new_offset, \"schemes\": now})",
+       "line": 219,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Оставить время записи файла курсора, а смещение вынести в отдельный файл: у каждой сессии два файла",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "vscode/hook/hook.py",
+       "quote": "cursor_path = viewer / \"sessions\" / (hashlib.sha256(session.encode(\"utf-8\")).hexdigest() + \".json\")",
+       "line": 172,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "C",
+     "text": "Хук на файл курсор не двигает и читает только последнюю строку `events.jsonl`",
+     "added": false,
+     "unlikely": "F-48.D обещает агенту оба события, а наблюдатель может склеить два срабатывания, и первое потеряется",
+     "evidence": [
+      {
+       "path": "vscode/hook/hook.py",
+       "quote": "def read_unread(path, offset, size):",
+       "line": 77,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Значение явно хранит то, что мы имеем в виду, и не зависит от того, кто и зачем записал файл. Один файл на сессию остаётся, старые курсоры без поля просто считаются неактивными. B работает, но файлов становится вдвое больше ради той же информации."
+   },
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-04"
+   },
+   "reversibility": {
+    "level": "обратимо",
+    "why": "поле живёт в файлах курсоров, которые пишет `hook.py` из пакета плагина; старые курсоры без поля считаются неактивными"
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [],
+   "comments": [],
+   "nodes": [
+    "mark",
+    "newest"
+   ]
+  },
+  {
+   "id": "F-57",
+   "question": "Откуда шапка берёт последнее внесение, если событие не писалось: сверка нашла, что F-34.B (пробуждение выключено, события нет) и F-45.B (шапка видна после перезагрузки) вместе не дают источника",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-34",
+    "F-44",
+    "F-45"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Плагин сам дописывает строку «внесено» в `receipts.jsonl` при каждом «Внести», настройка на это не влияет. Там же «отправлено» и «доставлено» от хуков, все три состояния в одном файле",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "vscode/src/host/apply.ts",
+       "quote": "const answers = saveAnswers(ref.dir, date, text);",
+       "line": 56,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Писать событие всегда, а настройка выключает только пробуждение: скрипт читает её из файла при каждом срабатывании",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/changes/reverse-hook/answers/2026-11-04-chat.md",
+       "quote": "И если пользователю такое не надо, то он отключает настройку пробуждения, или сам хук, и доставляет события руками.",
+       "line": 33,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "C",
+     "text": "Брать самый новый файл из `answers/`",
+     "added": false,
+     "unlikely": "промпт, внесённый вручную со страницы, ложится туда же и неотличим от внесённого кнопкой",
+     "evidence": [
+      {
+       "path": "skills/symphysis-brainstorm/SKILL.md",
+       "quote": "Сохрани промпт в `<каталог изменения>/answers/<дата>.md` (дата `YYYY-MM-DD`; файл занят — `YYYY-MM-DD-2.md`, затем `-3`) как",
+       "line": 243,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    }
+   ],
+   "antipodes": [
+    {
+     "option": "B",
+     "other": "F-34.B"
+    }
+   ],
+   "recommendation": {
+    "option": "A",
+    "why": "Источник один и не зависит от настройки. При выключенном пробуждении хук не запускается на файл, как и решено в F-34. B заставит запускать Python на каждое «Внести» и держать настройку в файле, чтобы её читал скрипт."
+   },
+   "decision": {
+    "option": "A",
+    "word": "Вариант А обязателен архитектурно. В противном случае пришлось бы делать дополнительные проверки и операции без видимой на них причины.",
+    "date": "2026-11-04"
+   },
+   "reversibility": {
+    "level": "обратимо",
+    "why": "строку «внесено» пишет код плагина, `receipts.jsonl` не входит в разбор ядра"
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [],
+   "comments": [],
+   "nodes": [
+    "entered",
+    "viewer"
+   ]
+  },
+  {
+   "id": "F-58",
+   "question": "Обоснование рекомендации — несущая механика работы с развилками: на нём держится просьба слова при выборе мимо рекомендации. Без него рекомендация ничем не лучше других вариантов. Зафиксировать это надо в ядре",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "материалы",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "F-60",
+   "evidence": [
+    {
+     "path": "openspec/changes/reverse-hook/answers/2026-11-04-chat.md",
+     "quote": "Если же у рекомендации нет обоснования -- то её ценность и валидность такая же как у других вариантов развилки, а это ломает процесс работы.",
+     "line": 45,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "openspec/changes/reverse-hook/answers/2026-11-04-chat.md",
+     "quote": "это важная механика и должна быть зафиксирована в ядре, а не исправлена только в рамках этой сессии.",
+     "line": 45,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "openspec/specs/decision-viewer/spec.md",
+     "quote": "### Requirement: Выбор мимо рекомендации просит слово и не блокирует",
+     "line": 275,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-59",
+   "question": "Почему причина рекомендации пропала. Скилл называет поле `text` без объяснения. Плагин и `decisions.md` при наличии `text` показывают его вместо `why`, а страница показывает `why` всегда. Короткий `text` уже есть у 180 рекомендаций в трёх архивных журналах",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "материалы",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "F-60",
+   "evidence": [
+    {
+     "path": "skills/symphysis-brainstorm/SKILL.md",
+     "quote": "проекта и дословная строка файла; `recommendation {option, why, text}` —",
+     "line": 178,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "vscode/src/webview/Card.tsx",
+     "quote": "<div className=\"rec\">рекомендация: {rec.recommendation.text",
+     "line": 179,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "tools/journal_render.py",
+     "quote": "return rc.get(\"text\") or \" — \".join(part for part in (rc[\"option\"], rc[\"why\"]) if part)",
+     "line": 63,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "tools/playground-template.html",
+     "quote": "html += '<div class=\"rec\">рекомендация: <b>' + esc(rec.recommendation.option) + '</b> — ' + md(rec.recommendation.why)",
+     "line": 600,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "docs/journal.schema.json",
+     "quote": "Строка рекомендации как написана; у составной",
+     "line": 68,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "openspec/changes/reverse-hook/probes/recommendation-text.txt",
+     "quote": "итого: 180",
+     "line": 17,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-60",
+   "question": "Как зафиксировать в ядре обоснование рекомендации",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-58",
+    "F-59"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Отдельным небольшим изменением ядра и плагина, до продолжения `reverse-hook`. Показ всегда `вариант — why`, как уже делает страница: в плагине и в `decisions.md`. Скилл перестаёт называть `text`, и `why` описан как причина выбора этого варианта против других. Старые журналы остаются в силе. Требование в спеке и тест. После вливания возвращаемся к `research` хука",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/changes/reverse-hook/answers/2026-11-04-chat.md",
+       "quote": "это важная механика и должна быть зафиксирована в ядре, а не исправлена только в рамках этой сессии.",
+       "line": 45,
+       "verdict": "сверено",
+       "found": true
+      },
+      {
+       "path": "tools/playground-template.html",
+       "quote": "html += '<div class=\"rec\">рекомендация: <b>' + esc(rec.recommendation.option) + '</b> — ' + md(rec.recommendation.why)",
+       "line": 600,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Те же правки внутри `reverse-hook`: один журнал и одна проверка. Вливается вместе с хуком, и до тех пор ловушка остаётся у всех журналов",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "skills/symphysis-brainstorm/SKILL.md",
+       "quote": "проекта и дословная строка файла; `recommendation {option, why, text}` —",
+       "line": 178,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "C",
+     "text": "Те же правки отдельным изменением, но после `reverse-hook`",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/changes/reverse-hook/probes/recommendation-text.txt",
+       "quote": "итого: 180",
+       "line": 17,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Механика общая для всех журналов, а хуку ещё предстоят `research`, спеки и реализация на двух клиентах: при B и C ловушка живёт всё это время, и следующий проход развилок снова может идти без причин. От хука правка не зависит и задевает немного файлов, поэтому влить её отдельно проще и безопаснее. Цена A: шаги конвейера ради небольшой правки и пауза в хуке."
+   },
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-04"
+   },
+   "reversibility": {
+    "level": "обратимо",
+    "why": "это порядок работ: отдельное изменение не трогает файлы `reverse-hook`, а если правка окажется больше, её можно влить вместе с хуком"
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "Круг 1 журнала закрывается после этого решения.",
+   "evidence": [],
+   "comments": []
+  }
+ ],
+ "notes": [
+  {
+   "date": "2026-11-04",
+   "text": "круг 1 закончен: решений 23, фактов 37, открытых развилок 0, парковок материалам 5, антиподов 3"
+  },
+  {
+   "date": "2026-11-04",
+   "text": "Пауза по F-60.A: сначала отдельное изменение `recommendation-why` об обосновании рекомендации. После его вливания шаг `research` по парковкам F-32, F-42, F-48, F-49."
+  }
+ ]
+}
