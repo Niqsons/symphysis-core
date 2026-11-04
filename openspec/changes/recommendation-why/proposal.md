@@ -11,7 +11,7 @@
 - `decisions.md`, карточка и режим проверки плагина всегда показывают `вариант — why`, как уже делает страница (F-04, F-19).
 - Импорт из markdown перестаёт писать `text`. У 5 старых составных рекомендаций меняется только начало строки: `B — для процедур…` вместо `B для процедур…`, причина цела (F-15, F-19).
 - Поле `text` остаётся необязательным в схеме, с описанием «только старые журналы, показ и поиск его не читают». Новые записи его не пишут, поиск плагина перестаёт его читать (F-18, F-20).
-- Скиллы `symphysis-brainstorm` и `symphysis-edge-probe` перестают называть `text`; `why` описан как причина выбора этого варианта против других (F-05, F-21).
+- Скиллы `symphysis-brainstorm`, `symphysis-edge-probe` и `symphysis-consequences` перестают называть `text`; `why` описан как причина выбора этого варианта против других, так же и в `symphysis-prohibition-probe`, который поля не называл (F-05, F-21, F-32).
 - Атака считает находкой `why`, который пересказывает вариант (F-21).
 - Просьба слова при выборе мимо рекомендации не меняется: карточка просит, «Внести» работает, `check` сигналит (F-22).
 - Старые журналы остаются законными, архив не пересобирается (F-06, F-20).
@@ -33,7 +33,7 @@
 
 ## Impact
 
-- Ядро: `tools/journal_render.py`, `tools/journal_model.py`, `docs/journal.schema.json`, `skills/symphysis-brainstorm/SKILL.md`, `skills/symphysis-edge-probe/SKILL.md`, `skills/symphysis-consequences/SKILL.md`, `skills/symphysis-attack/SKILL.md`, `tools/playground-template.html`, `tests/test_journal_render.py`, `tests/test_skills.py`.
+- Ядро: `tools/journal_render.py`, `tools/journal_model.py`, `docs/journal.schema.json`, `skills/symphysis-brainstorm/SKILL.md`, `skills/symphysis-edge-probe/SKILL.md`, `skills/symphysis-consequences/SKILL.md`, `skills/symphysis-prohibition-probe/SKILL.md`, `skills/symphysis-attack/SKILL.md`, `tools/playground-template.html`, `docs/plan-implementation.journal.md` (рендер из неизменённого JSON), `tests/test_journal_render.py`, `tests/test_journal_check.py`, `tests/test_viewer_browser.py`, `tests/test_skills.py`.
 - Плагин: `src/webview/Card.tsx`, `src/webview/CheckView.tsx`, `src/shared/search.ts`, `src/shared/types.ts`, `test/unit/card.test.tsx`, `test/unit/search.test.ts`. Отдельным рабочим деревом, коммиты плагина от ядра не зависят.
 - Контракт ядра с плагином не меняется, номер остаётся прежним (F-23).
 - Бэклог: удаление поля `text` к выпуску, слово человека к F-20, записано вне этого изменения.

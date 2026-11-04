@@ -251,6 +251,13 @@ def test_recommended_choice_asks_for_nothing(tmp_path):
     assert r["wordNeeded"] == [] and r["chosen"] == ["F-01.A"]
 
 
+def test_card_shows_the_reason_when_text_is_present(tmp_path):
+    """Сценарий «Есть поле `text`»: под вариантами причина, строки `text` нет."""
+    j = recommended_journal()
+    j["records"][0]["recommendation"] = {"option": "A", "why": "дешевле откатить", "text": "A — кратко"}
+    assert browser(page(tmp_path, j=j))["recommendations"] == ["рекомендация: A — дешевле откатить"]
+
+
 # --- панель: схема или справка ------------------------------------------------
 
 BEFORE_SPECS = ("intent", "decisions", "research", "proposal")

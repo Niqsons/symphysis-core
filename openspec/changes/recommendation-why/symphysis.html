@@ -212,7 +212,7 @@
 const JOURNAL = {
  "title": "Журнал решений: recommendation-why",
  "source": "decisions.json",
- "sha256": "9b0f9c942306e6b84451b48b26e66110f27a22bed5672d296b6fb8d299c51894",
+ "sha256": "547dcd28d2299971f878f22b7ea038de3cc850cca134e089b7c90541666ec4b4",
  "stats": {
   "records": 32,
   "forks": 10,
@@ -220,7 +220,7 @@ const JOURNAL = {
   "decided": 10,
   "parked": 1,
   "evidence_total": 66,
-  "evidence_found": 66
+  "evidence_found": 53
  },
  "records": [
   {
@@ -505,9 +505,9 @@ const JOURNAL = {
     {
      "path": "tools/journal_render.py",
      "quote": "return rc.get(\"text\") or \" — \".join(part for part in (rc[\"option\"], rc[\"why\"]) if part)",
-     "line": 63,
-     "verdict": "сверено",
-     "found": true
+     "line": null,
+     "verdict": "цитаты нет дословно",
+     "found": false
     }
    ],
    "comments": [],
@@ -569,16 +569,16 @@ const JOURNAL = {
     {
      "path": "skills/symphysis-brainstorm/SKILL.md",
      "quote": "проекта и дословная строка файла; `recommendation {option, why, text}` —",
-     "line": 178,
-     "verdict": "сверено",
-     "found": true
+     "line": null,
+     "verdict": "цитаты нет дословно",
+     "found": false
     },
     {
      "path": "skills/symphysis-edge-probe/SKILL.md",
      "quote": "- `recommendation` — одна, после вариантов, `{option, why, text}`.",
-     "line": 274,
-     "verdict": "сверено",
-     "found": true
+     "line": null,
+     "verdict": "цитаты нет дословно",
+     "found": false
     }
    ],
    "comments": [],
@@ -608,16 +608,16 @@ const JOURNAL = {
     {
      "path": "docs/journal.schema.json",
      "quote": "Строка рекомендации как написана; у составной",
-     "line": 68,
-     "verdict": "сверено",
-     "found": true
+     "line": null,
+     "verdict": "цитаты нет дословно",
+     "found": false
     },
     {
      "path": "tools/journal_model.py",
      "quote": "`text` — строка как написана: у составной рекомендации",
-     "line": 83,
-     "verdict": "сверено",
-     "found": true
+     "line": null,
+     "verdict": "цитаты нет дословно",
+     "found": false
     }
    ],
    "comments": [],
@@ -644,7 +644,7 @@ const JOURNAL = {
     {
      "path": "tools/journal_model.py",
      "quote": "errors.append(f\"{rid}: рекомендация без why\")",
-     "line": 394,
+     "line": 393,
      "verdict": "сверено",
      "found": true
     },
@@ -729,9 +729,9 @@ const JOURNAL = {
     {
      "path": "tests/test_journal_render.py",
      "quote": "def test_render_writes_recommendation_from_raw_text():",
-     "line": 158,
-     "verdict": "сверено",
-     "found": true
+     "line": null,
+     "verdict": "цитаты нет дословно",
+     "found": false
     },
     {
      "path": "vscode/test/unit/card.test.tsx",
@@ -814,14 +814,14 @@ const JOURNAL = {
     {
      "path": "skills/symphysis-brainstorm/SKILL.md",
      "quote": "Слово к выбору необязательно: строка `- F-NN: X — (без слова)` законна,",
-     "line": 255,
+     "line": 257,
      "verdict": "сверено",
      "found": true
     },
     {
      "path": "skills/symphysis-brainstorm/SKILL.md",
      "quote": "`apply` её принимает; объяснения выбора у человека не требуй (F-55.E).",
-     "line": 256,
+     "line": 258,
      "verdict": "сверено",
      "found": true
     }
@@ -905,16 +905,16 @@ const JOURNAL = {
       {
        "path": "tools/journal_render.py",
        "quote": "return rc.get(\"text\") or \" — \".join(part for part in (rc[\"option\"], rc[\"why\"]) if part)",
-       "line": 63,
-       "verdict": "сверено",
-       "found": true
+       "line": null,
+       "verdict": "цитаты нет дословно",
+       "found": false
       },
       {
        "path": "tests/test_journal_render.py",
        "quote": "def test_render_writes_recommendation_from_raw_text():",
-       "line": 158,
-       "verdict": "сверено",
-       "found": true
+       "line": null,
+       "verdict": "цитаты нет дословно",
+       "found": false
       }
      ],
      "deviation": "F-04"
@@ -984,9 +984,9 @@ const JOURNAL = {
       {
        "path": "docs/journal.schema.json",
        "quote": "Строка рекомендации как написана; у составной",
-       "line": 68,
-       "verdict": "сверено",
-       "found": true
+       "line": null,
+       "verdict": "цитаты нет дословно",
+       "found": false
       },
       {
        "path": "vscode/src/shared/search.ts",
@@ -1022,7 +1022,7 @@ const JOURNAL = {
       {
        "path": "tools/journal_model.py",
        "quote": "errors.append(f\"{rid}: рекомендация без why\")",
-       "line": 394,
+       "line": 393,
        "verdict": "сверено",
        "found": true
       }
@@ -1072,9 +1072,9 @@ const JOURNAL = {
       {
        "path": "skills/symphysis-brainstorm/SKILL.md",
        "quote": "проекта и дословная строка файла; `recommendation {option, why, text}` —",
-       "line": 178,
-       "verdict": "сверено",
-       "found": true
+       "line": null,
+       "verdict": "цитаты нет дословно",
+       "found": false
       },
       {
        "path": "skills/symphysis-attack/SKILL.md",
@@ -1094,7 +1094,7 @@ const JOURNAL = {
       {
        "path": "tools/journal_model.py",
        "quote": "errors.append(f\"{rid}: рекомендация без why\")",
-       "line": 394,
+       "line": 393,
        "verdict": "сверено",
        "found": true
       }
@@ -1109,7 +1109,7 @@ const JOURNAL = {
       {
        "path": "tools/journal_model.py",
        "quote": "errors.append(f\"{rid}: рекомендация без why\")",
-       "line": 394,
+       "line": 393,
        "verdict": "сверено",
        "found": true
       }
@@ -1167,7 +1167,7 @@ const JOURNAL = {
       {
        "path": "skills/symphysis-brainstorm/SKILL.md",
        "quote": "Слово к выбору необязательно: строка `- F-NN: X — (без слова)` законна,",
-       "line": 255,
+       "line": 257,
        "verdict": "сверено",
        "found": true
       }
@@ -1566,9 +1566,9 @@ const JOURNAL = {
     {
      "path": "tools/playground-template.html",
      "quote": "md(rec.recommendation.why || rec.recommendation.text || '')",
-     "line": 848,
-     "verdict": "сверено",
-     "found": true
+     "line": null,
+     "verdict": "цитаты нет дословно",
+     "found": false
     }
    ],
    "comments": [],
@@ -1637,9 +1637,9 @@ const JOURNAL = {
     {
      "path": "tools/journal_model.py",
      "quote": "return {\"option\": None, \"why\": val, \"text\": val}",
-     "line": 89,
-     "verdict": "сверено",
-     "found": true
+     "line": null,
+     "verdict": "цитаты нет дословно",
+     "found": false
     }
    ],
    "comments": [],
@@ -1848,9 +1848,9 @@ const JOURNAL = {
     {
      "path": "skills/symphysis-consequences/SKILL.md",
      "quote": "\"text\": \"A — сценарий на пустой ответ\"}",
-     "line": 289,
-     "verdict": "сверено",
-     "found": true
+     "line": null,
+     "verdict": "цитаты нет дословно",
+     "found": false
     }
    ],
    "comments": [],
@@ -1900,6 +1900,10 @@ const JOURNAL = {
   {
    "date": "2026-11-04",
    "text": "Слова к F-27, F-29, F-30 о снятии режима проверки и страховок вместе с полем записаны в бэклог плагина, `.context/backlog.md`."
+  },
+  {
+   "date": "2026-11-04",
+   "text": "Итог ревью, уточнение F-14: `text` не всегда короткая подпись. В архиве его строки нет дословно больше нигде у 121 записей из 254, 19 из них длиннее 60 знаков, у 17 записей `2026-11-03-step-help` это отдельная мысль. После F-19.A показ и поиск их не видят, в JSON и собранных `decisions.md` они остаются. Учесть перед удалением поля (F-20). Проба: `probes/old-text-thoughts.txt`."
   }
  ]
 };
@@ -1913,7 +1917,7 @@ const SCHEME = {
 };
 const HELP = {
  "contract": 2,
- "taken_at": "2026-11-04T19:51:23+03:00",
+ "taken_at": "2026-11-04T20:46:20+03:00",
  "versions": {
   "openspec": "1.15.0-symphysis.4",
   "symphysis": null
@@ -1921,19 +1925,19 @@ const HELP = {
  "change": "recommendation-why",
  "changes": null,
  "error": null,
- "current_step": "apply",
- "current_text": "Следующий шаг по файлам — `apply`, ход модели.",
+ "current_step": "sync",
+ "current_text": "Следующий шаг по файлам — `sync`, ход модели. Задачи закрыты. Сделана ли синхронизация, скрипт не видит: признака в файлах нет.",
  "turn": "model",
- "next_by_status": "apply",
+ "next_by_status": "sync",
  "forks": {
   "open": 0,
   "parked": 0
  },
  "tasks": {
-  "state": "ready",
-  "total": 19,
-  "complete": 0,
-  "remaining": 19
+  "state": "all_done",
+  "total": 20,
+  "complete": 20,
+  "remaining": 0
  },
  "steps": [
   {
@@ -2368,7 +2372,7 @@ const HELP = {
   },
   {
    "id": "apply",
-   "state": "ready",
+   "state": "all_done",
    "turn": "model",
    "optional": false,
    "blocks": [],
@@ -2392,7 +2396,7 @@ const HELP = {
   },
   {
    "id": "sync",
-   "state": "waiting",
+   "state": "ready",
    "turn": "model",
    "optional": false,
    "blocks": [],
@@ -2416,7 +2420,7 @@ const HELP = {
   },
   {
    "id": "archive",
-   "state": "waiting",
+   "state": "ready",
    "turn": "model",
    "optional": false,
    "blocks": [],
@@ -2498,6 +2502,7 @@ const LINKS = {
   "openspec/changes/recommendation-why/tasks.md": "tasks.md",
   "openspec/specs/decision-journal/spec.md": "../../specs/decision-journal/spec.md",
   "openspec/specs/decision-viewer/spec.md": "../../specs/decision-viewer/spec.md",
+  "probes/old-text-thoughts.txt": "probes/old-text-thoughts.txt",
   "proposal.md": "proposal.md",
   "research/F-24.md": "research/F-24.md",
   "scheme.md": "scheme.md",
@@ -3153,7 +3158,7 @@ function checkCard(rec) {
   if (!picked && !isFact) {
     html += (rec.options || []).map(o => '<div class="opt"><span class="letter">' + esc(o.letter) + '.</span><div>' + md(o.text) +
       (o.unlikely ? '<span class="tag unlikely">маловероятно: ' + md(o.unlikely) + '</span>' : '') + (isAdded(o) ? '<span class="tag added">добавлен человеком</span>' : '') + deviationTag(o) + '</div></div>').join('');
-    if (rec.recommendation) html += '<div class="rec">рекомендация: <b>' + esc(rec.recommendation.option || '') + '</b> — ' + md(rec.recommendation.why || rec.recommendation.text || '') + '</div>';
+    if (rec.recommendation) html += '<div class="rec">рекомендация: <b>' + esc(rec.recommendation.option || '') + '</b> — ' + md(rec.recommendation.why || '') + '</div>';
   } else if (picked) {
     const added = (rec.options || []).filter(o => isAdded(o) && o.letter !== picked.letter);
     if (added.length) html += '<div class="meta">добавлены человеком: ' + esc(added.map(o => o.letter + '. ' + o.text).join('; ')) + '</div>';
