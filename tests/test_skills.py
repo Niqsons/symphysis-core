@@ -457,6 +457,33 @@ def test_attack_skill_leaves_journal_hygiene_to_check():
                 f"гигиена журнала в таблице линз: {row[:60]}"
 
 
+RECOMMENDATION_WITH_TEXT = re.compile(r"recommendation[^{}\n]*\{[^}\n]*\btext\b")
+
+
+def test_no_skill_teaches_the_text_of_a_recommendation():
+    """F-05, F-11, F-32: у рекомендации только `option` и `why`, образцы не учат писать `text`."""
+    found = [f"{path.relative_to(ROOT)}:{number}"
+             for path in sorted(SKILLS.rglob("*.md"))
+             for number, line in enumerate(read(path).splitlines(), 1)
+             if RECOMMENDATION_WITH_TEXT.search(line)]
+    assert found == []
+
+
+@pytest.mark.parametrize("skill", ["symphysis-brainstorm", "symphysis-edge-probe", "symphysis-prohibition-probe",
+                                   "symphysis-consequences"])
+def test_skill_describes_why_as_the_reason_against_other_options(skill):
+    """F-05, F-21: `why` — причина выбора этого варианта против других, а не пересказ варианта."""
+    text = flat(read(SKILLS / skill / "SKILL.md"))
+    assert "{option, why}`" in text
+    assert "`why` — причина выбора этого варианта против других, а не пересказ варианта" in text
+
+
+def test_attack_skill_finds_a_why_that_retells_the_option():
+    """F-21: находка под линзой `context-compliance`, закрытый список линз не растёт."""
+    row = flat(lens_row(read(ATTACK_SKILL / "SKILL.md"), "journal", "context-compliance"))
+    assert "`recommendation.why` пересказывает вариант и не называет причины выбора против других" in row
+
+
 def test_attack_skill_context_compliance_sees_the_setting():
     """F-08.A, F-09.A, F-55.E: решение против факта постановки без пометки — находка; выбранный вариант
     с полем `deviation` — справка без слова человека (видимость без замка); опора решения design на факт

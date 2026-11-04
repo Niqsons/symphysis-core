@@ -61,6 +61,7 @@ const MEASURE = `(() => {
     out: document.getElementById('out').value,
     warnings: [...document.querySelectorAll('[data-antipode-warning]')].map((n) => n.dataset.antipodeWarning),
     wordNeeded: [...document.querySelectorAll('[data-word-needed]:not(.hidden)')].map((n) => n.dataset.wordNeeded),
+    recommendations: [...document.querySelectorAll('div.rec')].map((n) => n.textContent),
     chosen: [...document.querySelectorAll('input[type=radio]:checked')].map((r) => r.name + '.' + r.value),
     editor: (document.getElementById('editorPick') || {}).value || null, editorMask: (document.getElementById('editorMask') || {}).value ?? null,
     links: [...document.querySelectorAll('a.filelink')].map((a) => ({ href: a.href, text: a.textContent })),

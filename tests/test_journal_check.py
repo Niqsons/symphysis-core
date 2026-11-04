@@ -252,6 +252,18 @@ def test_empty_why_is_an_error(tmp_path):
     assert journal.validate_journal(j) == []
 
 
+def test_old_journal_with_text_stays_valid(tmp_path):
+    """Сценарий «Старый журнал с полем `text`»: `why` нет внутри `text`, строки о поле нет, код 0."""
+    (tmp_path / "a.md").write_text("раз\n", encoding="utf-8")
+    j = one_record_journal(path="a.md", quote="раз")
+    j["records"][0]["recommendation"] = {"option": "A", "why": "дешевле откатить", "text": "A — кратко"}
+    path = tmp_path / "j.json"
+    journal.save_journal(path, j)
+    run = run_check(path)
+    assert run.returncode == 0, run.stderr
+    assert "text" not in run.stdout + run.stderr
+
+
 def parking_fixture(tmp_path, with_research=True, finding=None):
     j = one_record_journal(path="a.md", quote="раз")
     parking = {"addressee": "материалы", "text": "найти"}

@@ -80,14 +80,13 @@ def _parse_decision(val: str) -> dict | None:
 
 
 def _parse_recommendation(val: str) -> dict | None:
-    """`text` — строка как написана: у составной рекомендации («B для процедур и A для
-    коротких правил; …») `option`/`why` — лишь приближение, источником служит `text`."""
+    """Только вариант и причина: «B для процедур и A для коротких правил» даёт `B` и остаток строки."""
     if val in DASH:
         return None
     m = RE_RECOMMENDATION.match(val)
     if not m:
-        return {"option": None, "why": val, "text": val}
-    return {"option": m.group(1), "why": m.group(2).strip(), "text": val}
+        return {"option": None, "why": val}
+    return {"option": m.group(1), "why": m.group(2).strip()}
 
 
 def _parse_parking(val: str) -> dict | None:
