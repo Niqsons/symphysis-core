@@ -845,7 +845,7 @@ function checkCard(rec) {
   if (!picked && !isFact) {
     html += (rec.options || []).map(o => '<div class="opt"><span class="letter">' + esc(o.letter) + '.</span><div>' + md(o.text) +
       (o.unlikely ? '<span class="tag unlikely">маловероятно: ' + md(o.unlikely) + '</span>' : '') + (isAdded(o) ? '<span class="tag added">добавлен человеком</span>' : '') + deviationTag(o) + '</div></div>').join('');
-    if (rec.recommendation) html += '<div class="rec">рекомендация: <b>' + esc(rec.recommendation.option || '') + '</b> — ' + md(rec.recommendation.why || rec.recommendation.text || '') + '</div>';
+    if (rec.recommendation) html += '<div class="rec">рекомендация: <b>' + esc(rec.recommendation.option || '') + '</b> — ' + md(rec.recommendation.why || '') + '</div>';
   } else if (picked) {
     const added = (rec.options || []).filter(o => isAdded(o) && o.letter !== picked.letter);
     if (added.length) html += '<div class="meta">добавлены человеком: ' + esc(added.map(o => o.letter + '. ' + o.text).join('; ')) + '</div>';

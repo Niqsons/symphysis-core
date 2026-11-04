@@ -59,8 +59,8 @@ def _render_decision(decision: dict) -> str:
 
 
 def _render_recommendation(rc: dict) -> str:
-    """Сырая строка `text`; нет её (журнал собран не импортом) — `вариант — почему`."""
-    return rc.get("text") or " — ".join(part for part in (rc["option"], rc["why"]) if part)
+    """Всегда `вариант — почему`: причиной держится просьба слова при выборе мимо рекомендации."""
+    return " — ".join(part for part in (rc["option"], rc["why"]) if part)
 
 
 def _render_outcome(outcome: dict) -> str:
@@ -132,7 +132,7 @@ def render_md(journal: dict, json_name: str = "") -> str:
     нет раздела). `outcome` — строкой `- исход: <вид> — <значение> — <причина>` между решением
     и следствиями (нет исхода — нет строки; пустая причина — без хвоста). `deviation` варианта — хвостом
     его строки `(отступление от F-NN)` после пометки «добавлен человеком». В markdown нет
-    `reversibility`, `comments`, `generated` и полей сверки улик (`line/found/verdict`) —
+    `reversibility`, `comments`, `generated`, `text` рекомендации и полей сверки улик (`line/found/verdict`) —
     их источник только JSON."""
     lines = [f"# {journal['title']}", "", _generated_note(json_name), ""]
     if journal.get("intro"):

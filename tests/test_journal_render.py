@@ -24,12 +24,15 @@ LIVE_MD = ROOT / "docs" / "plan-implementation.journal.md"
 
 def strip_check_fields(j):
     """Копия журнала без полей, которых в markdown нет (см. `render_md`): поля сверки улик
-    `line/found/verdict`, `reversibility` и `comments` записи, `generated` журнала — их источник только JSON."""
+    `line/found/verdict`, `reversibility` и `comments` записи, `text` рекомендации, `generated` журнала —
+    их источник только JSON."""
     j = copy.deepcopy(j)
     j.pop("generated", None)
     for rec in j["records"]:
         rec["reversibility"] = None
         rec["comments"] = []
+        if rec["recommendation"]:
+            rec["recommendation"].pop("text", None)
         for ev in rec["evidence"] + [e for o in rec["options"] for e in o["evidence"]]:
             for key in ("line", "found", "verdict"):
                 ev.pop(key, None)
@@ -143,31 +146,71 @@ def test_option_lines_carry_evidence_then_unlikely():
     assert f01[i + 2].startswith("    - маловероятно: десятки файлов")
 
 
-# --- рекомендация: сырая строка --------------------------------------------
+# --- рекомендация: вариант и причина ----------------------------------------
 
-def test_recommendation_keeps_the_raw_line_as_text():
+def test_import_splits_the_line_into_option_and_reason():
     recs = {r["id"]: r for r in plan()["records"]}
     for rid in ("F-06", "F-08", "F-11", "F-18"):
-        text = recs[rid]["recommendation"]["text"]
-        assert text and text.startswith(recs[rid]["recommendation"]["option"])
-    assert recs["F-06"]["recommendation"]["text"].startswith(
-        "B для процедур и A для коротких правил; слово")
+        assert set(recs[rid]["recommendation"]) == {"option", "why"} and recs[rid]["recommendation"]["why"]
     assert recs["F-06"]["recommendation"]["option"] == "B"
+    assert recs["F-06"]["recommendation"]["why"].startswith("для процедур и A для коротких правил; слово")
 
 
-def test_render_writes_recommendation_from_raw_text():
+def test_render_writes_the_option_and_the_reason_of_each_recommendation():
     j = plan()
     lines = journal.render_md(j).splitlines()
     forks = [r for r in j["records"] if r["recommendation"]]
     assert len(forks) == 19
     for r in forks:
-        assert f"- рекомендация: {r['recommendation']['text']}" in lines
+        assert f"- рекомендация: {r['recommendation']['option']} — {r['recommendation']['why']}" in lines
 
 
-def test_recommendation_without_text_falls_back_to_option_and_why():
+def test_render_shows_the_reason_without_text():
+    """Сценарий «Поля `text` нет»."""
     j = one_record_journal("a.md", "q")
     j["records"][0]["recommendation"] = {"option": "A", "why": "потому что"}
     assert "- рекомендация: A — потому что" in journal.render_md(j).splitlines()
+
+
+def test_render_shows_the_reason_when_text_is_present():
+    """Сценарий «Есть поле `text`»: причина видна, а строка `text` в файл не попадает."""
+    j = one_record_journal("a.md", "q")
+    j["records"][0]["recommendation"] = {"option": "A", "why": "дешевле откатить", "text": "A — кратко"}
+    md = journal.render_md(j)
+    assert "- рекомендация: A — дешевле откатить" in md.splitlines()
+    assert "A — кратко" not in md
+
+
+def test_import_of_a_composite_recommendation_writes_no_text():
+    """Сценарий «Импорт составной рекомендации»."""
+    md = "# Т\n\n## F-01 В?\n- вид: развилка\n- рекомендация: B для процедур и A для коротких правил\n"
+    assert journal.import_md_text(md)["records"][0]["recommendation"] == {
+        "option": "B", "why": "для процедур и A для коротких правил"}
+
+
+def test_roundtrip_keeps_the_option_and_the_reason():
+    """Сценарий «Круговой разбор»: запись совпадает после вывода и нового импорта, поля `text` не появляется."""
+    once = plan()
+    again = roundtrip(once)
+    assert [r["recommendation"] for r in again["records"]] == [r["recommendation"] for r in once["records"]]
+    composite = next(r for r in again["records"] if r["id"] == "F-06")["recommendation"]
+    assert composite == {"option": "B", "why": composite["why"]}
+    assert composite["why"].startswith("для процедур и A для коротких правил; слово")
+
+
+TEXT_OF_RECOMMENDATION = re.compile(
+    r"""\b(?:recommendation|rc|rec)\b['"\]]*\s*(?:\?\.|\.|\[)\s*(?:get\(\s*)?['"]?text\b""")
+
+
+def test_tools_do_not_read_the_text_of_a_recommendation():
+    """Страховка F-30: поле осталось только старым журналам, новое чтение вернуло бы ловушку F-08, F-09.
+    Снимается вместе с полем."""
+    files = [*(ROOT / "tools").rglob("*.py"), TEMPLATE]
+    reads = [f"{path.relative_to(ROOT)}:{number}"
+             for path in files
+             for number, line in enumerate(path.read_text(encoding="utf-8").splitlines(), 1)
+             if TEXT_OF_RECOMMENDATION.search(line)]
+    assert reads == []
 
 
 # --- «» вокруг слова человека и вопроса парковки ----------------------------
