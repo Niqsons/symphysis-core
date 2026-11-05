@@ -212,15 +212,15 @@
 const JOURNAL = {
  "title": "Журнал решений: trace-graph",
  "source": "decisions.json",
- "sha256": "b85c1d5492fa214a6474f98e1edf34f09b040fc60539f32667013226eb81a414",
+ "sha256": "7fb4849971637b8034b3703e3b97ec8f6a64249aecf362c9a98487ee757d3e0f",
  "stats": {
-  "records": 78,
-  "forks": 58,
+  "records": 79,
+  "forks": 59,
   "facts": 20,
-  "decided": 58,
+  "decided": 59,
   "parked": 1,
-  "evidence_total": 204,
-  "evidence_found": 204
+  "evidence_total": 209,
+  "evidence_found": 209
  },
  "records": [
   {
@@ -3177,7 +3177,7 @@ const JOURNAL = {
    "outcome": null,
    "parking": [],
    "dispute": "",
-   "consequences": "",
+   "consequences": "Коммиты заморозки проставляет `/opsx:archive`: F-79.",
    "evidence": [],
    "comments": [],
    "nodes": [
@@ -4215,7 +4215,7 @@ const JOURNAL = {
    "outcome": null,
    "parking": [],
    "dispute": "",
-   "consequences": "",
+   "consequences": "Слово владельца к предупреждению атаки о числах 23, 10 и 12: «Про предупреждение сказать мне нечего, оно как бы есть, пока не попробуем не узнаем.»",
    "evidence": [],
    "comments": [],
    "nodes": [
@@ -5455,13 +5455,119 @@ const JOURNAL = {
    "outcome": null,
    "parking": [],
    "dispute": "",
-   "consequences": "Цена, не названная при выборе: в конце реализации код часто ещё не закоммичен, поэтому снимок назовёт коммит без него, а `/opsx:archive` сочтёт такой снимок свежим, потому что хеши файлов изменения те же. Что снимок должен называть в этом случае, журнал не решает. Если снимок всё же собран в `/opsx:archive` после синхронизации, сигнал о новых сценариях в MODIFIED молчит.",
+   "consequences": "Цена, не названная при выборе: в конце реализации код часто ещё не закоммичен, поэтому снимок назовёт коммит без него, а `/opsx:archive` сочтёт такой снимок свежим, потому что хеши файлов изменения те же. Что снимок должен называть в этом случае, журнал не решает. Если снимок всё же собран в `/opsx:archive` после синхронизации, сигнал о новых сценариях в MODIFIED молчит. Что снимок называет в этом случае, решено в F-79.",
    "evidence": [],
    "comments": [],
    "nodes": [
     "apply",
     "freeze",
     "sync",
+    "archive"
+   ],
+   "finding": ""
+  },
+  {
+   "id": "F-79",
+   "question": "Что называет снимок, если в конце `/opsx:apply` код ещё не закоммичен? F-78.A ставит заморозку раньше коммита реализации, а `/opsx:archive` сочтёт такой снимок свежим.",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-51",
+    "F-78"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "`/opsx:archive` обновляет в снимке только коммиты корней, граф и отчёт не трогает. Снимок называет верный коммит, а сигнал про MODIFIED из отчёта не теряется. Цена: снимок правится после сборки, и этому нужно отдельное правило",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "context/04-workflow.md",
+       "quote": "Перед реализацией — показ: код не коммитится до показа, пока человек не сказал иначе.",
+       "line": 17,
+       "verdict": "сверено",
+       "found": true
+      },
+      {
+       "path": "docs/analysis/requirements-traceability-graph-of-symphysis.md",
+       "quote": "поэтому снимок называет коммит каждого корня",
+       "line": 360,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Снимок помечает, что дерево было не закоммичено. Честно и просто, но коммит остаётся без реализации, и искать её придётся по истории",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "docs/analysis/requirements-traceability-graph-of-symphysis.md",
+       "quote": "Читатель с доступом откроет файл на этом коммите",
+       "line": 360,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "C",
+     "text": "`/opsx:archive` пересобирает снимок, если коммит сменился. Правило простое, но пересборка станет обычным случаем и пойдёт уже после синхронизации: сигнал про MODIFIED снова замолчит",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "docs/GUIDE.md",
+       "quote": "/opsx:sync add-overdue",
+       "line": 507,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "D",
+     "text": "Заморозка только после коммита реализации",
+     "added": false,
+     "unlikely": "коммит идёт по слову человека, и шаг начнёт зависеть от него",
+     "evidence": [
+      {
+       "path": "context/04-workflow.md",
+       "quote": "Коммит только по слову, пуш — отдельное слово.",
+       "line": 23,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Только он даёт верный коммит и не теряет отчёт. B оставляет коммит без реализации, а C возвращает проблему, ради которой принят F-78."
+   },
+   "decision": {
+    "option": "A",
+    "word": "Вариант А -- ок. Имплементация задач не порождает новых артефактов. Можно конечно что то сделать вне процесса, но от этого никак не защититься. ну и к тому же, это будет еще одним доводом за методику с хранителями,чтобы перепроверять.",
+    "date": "2026-11-05"
+   },
+   "reversibility": {
+    "level": "обратимо",
+    "why": "правило в `tools/trace_graph.py` и текст `operations.archive.guidance`: формат снимка от него не меняется"
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "Подсказка архивации различает три случая: `graph/` нет или он устарел, значит собрать; он свежий, значит обновить коммиты корней. Коммиты не входят в хеши исходников и берутся не из файлов изменения, а запись делает скрипт, поэтому F-30.A это не задевает. Работу вне процесса снимок не защитит, и это не закрывается: слово владельца называет это доводом за хранителей (F-21).",
+   "evidence": [],
+   "comments": [],
+   "nodes": [
+    "freeze",
     "archive"
    ],
    "finding": ""
@@ -5511,6 +5617,14 @@ const JOURNAL = {
   {
    "date": "2026-11-05",
    "text": "атака decisions.json: строк 123, блокеров 0, предупреждений 2, справок 121, не выводится 2 — passed"
+  },
+  {
+   "date": "2026-11-05",
+   "text": "развилка из четвёртого прохода атаки закрыта: решений 1, фактов 0, открытых развилок 0, парковок материалам 0, антиподов 0"
+  },
+  {
+   "date": "2026-11-05",
+   "text": "атака decisions.json: строк 127, блокеров 0, предупреждений 1, справок 126, не выводится 1 — passed"
   }
  ]
 };
@@ -5522,7 +5636,7 @@ const ATTACK = [
    "targets": [
     {
      "path": "decisions.json",
-     "sha256": "b85c1d5492fa214a6474f98e1edf34f09b040fc60539f32667013226eb81a414"
+     "sha256": "7fb4849971637b8034b3703e3b97ec8f6a64249aecf362c9a98487ee757d3e0f"
     }
    ]
   },
@@ -5560,7 +5674,7 @@ const ATTACK = [
     "lens": "claim-authority",
     "invariant": "число описывает отчёт по выбранным правилам",
     "severity": "предупреждение",
-    "support": "по спеке не выводится: расхождение: цель 23, 10, 12; улика: `openspec/changes/trace-graph/research/F-57-probe/prototype.py:204` считает Specify по совпадению слов (F-45.B, не выбран), а на эталонах исходов Specify 0, 11, 42 и комментария F-45.A нет (F-69: «сигнал сработал бы на каждом Specify»); пометки `служебная` там тоже нет. Измерить можно только готовым скриптом",
+    "support": "по спеке не выводится: расхождение: цель 23, 10, 12; улика: `openspec/changes/trace-graph/research/F-57-probe/prototype.py:204` считает Specify по совпадению слов (F-45.B, не выбран), а на эталонах исходов Specify 0, 11, 42 и комментария F-45.A нет (F-69: «сигнал сработал бы на каждом Specify»); пометки `служебная` там тоже нет. Измерить можно только готовым скриптом. Слово владельца в следствиях F-64: «оно как бы есть, пока не попробуем не узнаем»",
     "fix": "вопрос человеку"
    },
    {
@@ -5875,7 +5989,7 @@ const ATTACK = [
     "lens": "context-compliance",
     "invariant": "статус и обратимость соответствуют решению",
     "severity": "справка",
-    "support": "есть: разовый счёт: 58 развилок `решён`, открытых 0, обратимость у 58 из 58",
+    "support": "есть: разовый счёт: 59 развилок `решён`, открытых 0, обратимость у 59 из 59",
     "fix": "—"
    },
    {
@@ -5893,17 +6007,17 @@ const ATTACK = [
     "lens": "claim-authority",
     "invariant": "число сходится с замером",
     "severity": "справка",
-    "support": "есть: круг 1 и круг 2 как в первом проходе; F-74–F-77 дают 4 решения и антипод F-75.B; F-78 даёт 1 решение и антипод F-78.D",
+    "support": "есть: круг 1 и круг 2 как в первом проходе; F-74–F-77 дают 4 решения и антипод F-75.B; F-78 даёт 1 решение и антипод F-78.D; F-79 даёт 1 решение без антипода",
     "fix": "—"
    },
    {
     "claim": "Заморозка в конце `/opsx:apply` (F-78.A) и «Снимок называет только коммиты заморозки» (F-51.A)",
-    "section": "F-78, options.A · F-51, options.A",
+    "section": "F-78, consequences · F-51, consequences · F-79, decision",
     "lens": "context-compliance",
     "invariant": "коммит в снимке содержит то, что снято",
-    "severity": "предупреждение",
-    "support": "по спеке не выводится: `context/04-workflow.md:17` «Перед реализацией — показ: код не коммитится до показа, пока человек не сказал иначе.», поэтому в конце реализации код часто ещё не закоммичен и снимок назовёт коммит без него. `/opsx:archive` такой снимок считает свежим: хеши файлов изменения те же. Что снимок должен называть в этом случае, журнал не решает, следствие F-78 это называет",
-    "fix": "вопрос человеку"
+    "severity": "справка",
+    "support": "есть: F-79.A: `/opsx:archive` обновляет в снимке только коммиты корней. Обе записи ссылаются на это решение",
+    "fix": "—"
    },
    {
     "claim": "Подсказка принимается только у `apply` и `archive`, синхронизация файлов изменения не трогает",
@@ -5921,6 +6035,33 @@ const ATTACK = [
     "invariant": "`decision.word` не расходится с вариантом",
     "severity": "справка",
     "support": "есть: `openspec/changes/trace-graph/answers/2026-11-05-8.md`",
+    "fix": "—"
+   },
+   {
+    "claim": "«снимок правится после сборки» при «Нет: только через файлы изменения, файл графа производный»",
+    "section": "F-79, options.A · F-30, options.A",
+    "lens": "context-compliance",
+    "invariant": "решение не расходится со словом человека",
+    "severity": "справка",
+    "support": "есть: следствие F-79: коммиты не входят в хеши исходников и берутся не из файлов изменения, запись делает скрипт. Правит не рука, а слово Т14 говорит о правке мимо файлов изменения",
+    "fix": "—"
+   },
+   {
+    "claim": "«Имплементация задач не порождает новых артефактов»",
+    "section": "F-79, decision",
+    "lens": "claim-extraction",
+    "invariant": "названное подтверждается схемой",
+    "severity": "справка",
+    "support": "есть: `openspec/schemas/symphysis/schema.yaml:155` шаг `apply` ничего не объявляет в `generates`. Файл `rulings.md` у `step-help` создан рукой вне схемы и графом не читается",
+    "fix": "—"
+   },
+   {
+    "claim": "Слово F-79 внесено дословно",
+    "section": "F-79, decision",
+    "lens": "context-compliance",
+    "invariant": "`decision.word` не расходится с вариантом",
+    "severity": "справка",
+    "support": "есть: `openspec/changes/trace-graph/answers/2026-11-05-9.md`",
     "fix": "—"
    },
    {
@@ -6186,7 +6327,7 @@ const ATTACK = [
    },
    {
     "claim": "чисто",
-    "section": "F-30, все поля",
+    "section": "F-30, остальные поля",
     "lens": "coverage",
     "invariant": "—",
     "severity": "справка",
@@ -6627,6 +6768,15 @@ const ATTACK = [
    },
    {
     "claim": "чисто",
+    "section": "F-79, остальные поля",
+    "lens": "coverage",
+    "invariant": "—",
+    "severity": "справка",
+    "support": "есть",
+    "fix": "—"
+   },
+   {
+    "claim": "чисто",
     "section": "title · source · intro",
     "lens": "coverage",
     "invariant": "—",
@@ -6646,7 +6796,7 @@ const SCHEME = {
 };
 const HELP = {
  "contract": 2,
- "taken_at": "2026-11-05T17:08:28+03:00",
+ "taken_at": "2026-11-05T17:16:04+03:00",
  "versions": {
   "openspec": "1.15.0-symphysis.4",
   "symphysis": null
@@ -7209,6 +7359,7 @@ const LINKS = {
   "CLAUDE.md": "../../../CLAUDE.md",
   "answers/2026-11-05-5.md": "answers/2026-11-05-5.md",
   "answers/2026-11-05-8.md": "answers/2026-11-05-8.md",
+  "answers/2026-11-05-9.md": "answers/2026-11-05-9.md",
   "answers/2026-11-05.md": "answers/2026-11-05.md",
   "attack/decisions.md": "attack/decisions.md",
   "context/04-workflow.md": "../../../../symphysis/.context/04-workflow.md",
@@ -7232,6 +7383,7 @@ const LINKS = {
   "openspec/changes/trace-graph/answers/2026-11-05-5.md": "answers/2026-11-05-5.md",
   "openspec/changes/trace-graph/answers/2026-11-05-6.md": "answers/2026-11-05-6.md",
   "openspec/changes/trace-graph/answers/2026-11-05-8.md": "answers/2026-11-05-8.md",
+  "openspec/changes/trace-graph/answers/2026-11-05-9.md": "answers/2026-11-05-9.md",
   "openspec/changes/trace-graph/attack/decisions.md": "attack/decisions.md",
   "openspec/changes/trace-graph/decisions.json": "decisions.json",
   "openspec/changes/trace-graph/intent.md": "intent.md",
