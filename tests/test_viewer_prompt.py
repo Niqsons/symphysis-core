@@ -5,6 +5,7 @@ import copy
 import json
 import shutil
 import subprocess
+import sys
 
 import pytest
 
@@ -253,7 +254,17 @@ def test_other_dispute_goes_to_notes_and_leaves_the_attack_file_alone(tmp_path):
     j = plan_journal()
     att = attack_file(("F-02, decision", "утверждение", "правка записи"))
     attack_md = tmp_path / "decisions.md"
-    attack_md.write_text("---\nstatus: gaps_found\n---\n| строка |\n", encoding="utf-8")
+    attack_md.write_text(
+        "---\n"
+        "status: gaps_found\n"
+        "targets:\n"
+        "  - path: decisions.json\n"
+        "    sha256: ''\n"
+        "---\n"
+        "| Утверждение | Раздел | Линза | Инвариант | Тяжесть | Опора есть / нет | Чем закрыть |\n"
+        "| --- | --- | --- | --- | --- | --- | --- |\n"
+        "| утверждение | F-02, decision | context-compliance | и | блокер | нет | правка записи |\n"
+        , encoding="utf-8")
     before = attack_md.read_bytes()
     res = prompt(tmp_path, j, state(), [att], {key(att, 0): "мой ответ на строку"})
     lines = res["text"].splitlines()
@@ -264,6 +275,12 @@ def test_other_dispute_goes_to_notes_and_leaves_the_attack_file_alone(tmp_path):
     work = copy.deepcopy(j)
     journal.apply_answers(work, ops, DATE)
     assert any("мой ответ на строку" in n["text"] for n in work["notes"])
+    # файл атаки проходит через путь, который мог бы его изменить: сборка страницы с `--attack`
+    src = tmp_path / "decisions.json"
+    journal.save_journal(src, work)
+    run = subprocess.run([sys.executable, str(ROOT / "tools" / "journal.py"), "render-html", str(src), "--out", str(tmp_path / "v.html"),
+                          "--attack", str(attack_md)], capture_output=True, text=True, encoding="utf-8")
+    assert run.returncode == 0, run.stderr
     assert attack_md.read_bytes() == before
 
 

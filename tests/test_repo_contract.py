@@ -1,4 +1,5 @@
 """Контракт с плагином: раздел о хуке описан, строки «когда появится» нет (F-35)."""
+import journal_render
 from conftest import ROOT
 
 CONTRACT = ROOT / "docs" / "repo-contract.md"
@@ -28,8 +29,7 @@ def test_contract_names_hook_records_and_new_fields():
 def test_contract_three_is_named_and_matches_the_code():
     """F-55: линза `trace-link` — новое значение списка линз, смена контракта: номер 3 назван в
     `docs/repo-contract.md` с тем, что изменилось, и равен `CONTRACT` в `journal_render.py`."""
-    code = (ROOT / "tools" / "journal_render.py").read_text(encoding="utf-8")
-    assert "CONTRACT = 3" in code
+    assert journal_render.CONTRACT == 3
     body = text()
     line = next((l for l in body.splitlines() if l.startswith("С номера 3")), None)
     assert line is not None, "в контракте нет строки «С номера 3»"

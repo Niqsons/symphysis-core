@@ -812,20 +812,31 @@ def test_wrong_cell_count_reports_the_number(tmp_path):
         journal.parse_attack_md(path)
 
 
-def test_bare_pipe_outside_backticks_names_file_line_and_column(tmp_path):
-    """`artifact-attack`: «Черта вне backticks» — отказ называет файл, строку и столбец, код 2: столбец — номер
-    знака в строке (с единицы) первой лишней черты («в столбце N»), той, что делает седьмую ячейку восьмой."""
-    line = "| а | б | scenario-run | в | блокер | нет | чинить a|b |"
+@pytest.mark.parametrize("line, stray", [
+    ("| а | б | scenario-run | в | блокер | нет | чинить a|b |", "a|b"),
+    ("| а | б a|b | scenario-run | в | блокер | нет | чинить |", "a|b"),
+], ids=["в последней ячейке", "во второй ячейке"])
+def test_bare_pipe_outside_backticks_names_file_line_and_columns(tmp_path, line, stray):
+    """`artifact-attack`: «Черта вне backticks» — отказ называет файл, строку и столбцы, код 2. Какая черта лишняя,
+    по тексту не узнать: названы столбцы всех черт вне backticks (без граничных), лишняя — одна из них; каждое
+    названное число указывает на знак `|`."""
     path = attack_file(tmp_path, line, name="bare-pipe.md")
-    column = line.index("|", line.index("чинить")) + 1
+    stray_column = line.index(stray) + 2          # номер знака `|` внутри «a|b», с единицы
+    def named(message):
+        assert "bare-pipe.md:9:" in message and "ячеек 8" in message and "лишняя — одна из них" in message
+        found = re.search(r"в столбцах ([\d, ]+);", message)
+        assert found, message
+        return [int(n) for n in found.group(1).split(",")]
     with pytest.raises(ValueError) as err:
         journal.parse_attack_md(path)
-    assert f"bare-pipe.md:9:" in str(err.value) and f"в столбце {column}" in str(err.value) and "ячеек 8" in str(err.value)
+    columns = named(str(err.value))
+    assert stray_column in columns and all(line[c - 1] == "|" for c in columns)
+    assert len(columns) == 8 - 1                 # восемь ячеек — семь внутренних черт
     src, roots = html_fixture(tmp_path, "дв")
     out = tmp_path / "view.html"
     run = run_cli("render-html", src, "--out", out, "--roots", roots, "--attack", path)
     assert run.returncode == 2, run.stdout + run.stderr
-    assert "bare-pipe.md:9:" in run.stderr and f"в столбце {column}" in run.stderr
+    assert named(run.stderr) == columns
     assert not out.exists()
 
 

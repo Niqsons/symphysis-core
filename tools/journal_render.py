@@ -384,7 +384,9 @@ def _attack_rows(lines: list[str], name: str, start: int) -> list[dict]:
             col = columns[unclosed] if unclosed < len(columns) else f"№{unclosed + 1}"
             raise ValueError(f"{name}:{n + 1}: в столбце «{col}» (ячейка {unclosed + 1}) backtick не закрыт")
         if len(cells) != len(ATTACK_ROW_KEYS):
-            where = (f"; первая лишняя черта вне backticks — в столбце {cuts[len(ATTACK_ROW_KEYS) - 1]}"
+            # какая черта лишняя, по тексту не узнать: называем все черты вне backticks, кроме замыкающей
+            inner = [c for c in cuts if c != len(line.rstrip())]
+            where = (f"; черты вне backticks в столбцах {', '.join(map(str, inner))}; лишняя — одна из них"
                      if len(cells) > len(ATTACK_ROW_KEYS) else "")
             raise ValueError(f"{name}:{n + 1}: в строке таблицы ячеек {len(cells)}, нужно {len(ATTACK_ROW_KEYS)}{where}"
                              " (литеральная `|` вне backticks пишется `\\|`)")
