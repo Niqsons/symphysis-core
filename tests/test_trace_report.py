@@ -115,6 +115,22 @@ def test_unknown_item_without_items_is_not_started_not_clean(tmp_path):
     assert "Сигналов нет." not in done.stdout
 
 
+@pytest.mark.parametrize("item", [
+    {"id": CHANGE, "valid": False, "issues": []},
+    {"id": CHANGE, "issues": []},
+    {"id": CHANGE, "valid": False, "issues": None},
+    {"id": CHANGE, "valid": False, "issues": "строка"},
+], ids=["invalid-no-issues", "no-valid-field", "issues-null", "issues-string"])
+def test_code_one_without_finding_lines_is_a_finding_not_clean(tmp_path, item):
+    """`trace-signals`: «Находка validate в отчёте» — код 1 без строк находок не выглядит чистым отчётом."""
+    root, _ = make_change(tmp_path, specs={"demo": ONE_REQ}, tasks=DONE)
+    _, env = with_shim(tmp_path, fork_reply({"items": [item]}, code=1))
+    done = report(root, env=env)
+    assert done.returncode == 0 and "Traceback" not in done.stderr, done.stderr
+    assert "[!!] openspec validate: изменение невалидно, а находок в ответе нет" in done.stdout, done.stdout
+    assert "Сигналов нет." not in done.stdout
+
+
 def test_hung_fork_gives_not_started_line(tmp_path, monkeypatch):
     """`trace-signals`: «`openspec` не запустился» — форк не ответил за предел: строка с причиной, без трассировки."""
     root, _ = make_change(tmp_path, specs={"demo": ONE_REQ})

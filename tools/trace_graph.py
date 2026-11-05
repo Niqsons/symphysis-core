@@ -860,7 +860,6 @@ def cmd_build(args: argparse.Namespace, root: Path) -> int:
 
 VALIDATE_ARGS = ("--type", "change", "--json", "--strict", "--no-interactive")
 NO_SIGNALS = "Сигналов нет."
-NL = chr(10)
 
 
 def _not_started(reason: str, root: Path) -> list[str]:
@@ -885,11 +884,16 @@ def validate_findings(root: Path, change: str) -> list[str]:
     if not isinstance(items, list) or not items or reply.code not in (0, 1):
         return _not_started(f"ответ без находок `items`, код {reply.code}", root)
     lines = []
+    invalid = reply.code == 1
     for item in items:
-        for issue in item.get("issues", []) if isinstance(item, dict) else []:
+        issues = item.get("issues") if isinstance(item, dict) else None
+        invalid = invalid or not isinstance(item, dict) or item.get("valid") is False
+        for issue in issues if isinstance(issues, list) else []:
             if isinstance(issue, dict):
                 lines.append(no_paths(f"[!!] openspec validate: {issue.get('level', '?')} {issue.get('path', '')}: "
                                       f"{' '.join(str(issue.get('message', '')).split())}", root))
+    if invalid and not lines:  # невалидно, а строк нет: чистым отчёт выглядеть не должен (F-93)
+        lines.append("[!!] openspec validate: изменение невалидно, а находок в ответе нет")
     return lines
 
 
@@ -925,11 +929,11 @@ def build_report(root: Path, change: str) -> str:
     signals = graph_signals(graph, duplicates, unresolved)
     parts = [f"# Отчёт по изменению {change}", ""]
     if not findings and not signals:
-        return NL.join([*parts, NO_SIGNALS, ""])
+        return "\n".join([*parts, NO_SIGNALS, ""])
     for title, lines, none in (("Находки openspec validate", findings, "Находок нет."),
                                ("Сигналы графа", signals, "Сигналов графа нет.")):
         parts += [f"## {title}", "", *(lines or [none]), ""]
-    return NL.join(parts)
+    return "\n".join(parts)
 
 
 def cmd_report(args: argparse.Namespace, root: Path) -> int:
