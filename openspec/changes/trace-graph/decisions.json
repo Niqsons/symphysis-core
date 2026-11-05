@@ -8539,6 +8539,362 @@
     "sync",
     "archive"
    ]
+  },
+  {
+   "id": "F-124",
+   "question": "[ветка] Слияние подсказок: в проекте `operations.archive.guidance` не список. По образцу `rules` `mergeConfig` подсказку не добавит, а форк такую запись отбросит. Что видит человек?",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-49"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN `operations.archive.guidance` не список WHEN выполняется `symphysis install` THEN запись человека цела, предупреждение называет ключ, подсказка заморозки не добавлена; цена: сценарий, тест на `mergeConfig`, правка при смене формы ключа",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — не покрывается: форк такую запись и так отбрасывает с предупреждением, `install` скажет о ней строкой, как у `rules`, а снимок всё равно соберётся в конце `/opsx:apply`",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест подаёт `mergeConfig` конфиг со строкой в `guidance` и утверждает, что строка цела, а `warnings` называет ключ; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — поведение на чужой форме ключа остаётся открытым до текста слияния в design; пока tasks считает, что `guidance` всегда список",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "B",
+    "why": "Это видно сразу: и `install`, и форк говорят об этом словами, а порчи нет, потому что заморозка идёт и без подсказки. Сценарий закрепил бы то, что и так следует из образца `rules`."
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "installer/lib/install.js",
+     "quote": "else warnings.push(`rules.${key} не список — правила symphysis не добавлены`);"
+    },
+    {
+     "path": "upstream/openspec/src/core/project-config.ts",
+     "quote": "`Guidance for operation '${operationId}' must be an array of strings, ignoring this operation's guidance`"
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-125",
+   "question": "[ветка] Чтение журнала: файл разбирается как JSON, но негоден по схеме, например у записи нет `depends_on`. F-80 решил только синтаксическую ошибку: отказать здесь или собрать, что получится?",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN `decisions.json` разбирается, но негоден по схеме WHEN скрипт собирает граф THEN графа нет, код ненулевой, строки называют записи, как у `check`; цена: сценарий, тест, сборка зависит от `validate_journal`",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — не покрывается: негодный журнал и так даёт код 1 у `check` на каждом шаге, поэтому до заморозки он почти не доживает",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест подаёт журнал без поля `depends_on` и утверждает, что скрипт не печатает граф с кодом 0; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — чтение журнала остаётся открытым до design; пока tasks считает, что скрипт зовёт `validate_journal`",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Терпимое чтение выдаст граф без части связей с кодом 0, и выглядеть он будет верным, а снимок после архивации не пересобрать. `check` этого не спасает: между ним и сборкой журнал правят `apply` и модель. Это тот же край, что F-80, только мимо синтаксиса."
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "tools/journal_cli.py",
+     "quote": "return None if errors else journal"
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-126",
+   "question": "[ветка] Проверка установки: `symphysis check` ищет только файлы из `TOOL_MODULES`, а скрипта графа в этом списке нет. Проект без скрипта получит зелёный ответ: называть ли пропажу?",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN проект без скрипта графа WHEN выполняется `symphysis check` THEN находка называет файл скрипта и «нет файла», код 2; цена: строка в `TOOL_MODULES`, сценарий, тест",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — не покрывается: пропажу покажет первый же запуск скрипта в `/opsx:apply`, и модель назовёт ошибку",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест сверяет инструменты в `FILES` у `sync-payload.js` с `TOOL_MODULES` и падает на файле, который есть только в одном списке; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — остаётся открытым до первого выпуска инсталлятора с этим скриптом; пока tasks считает, что скрипт ставится вместе с остальными",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "`symphysis check` затем и нужен, чтобы сказать, что установка неполна. Зелёный ответ при пропавшем скрипте никто не заметит до `/opsx:archive`, а снимок после архивации уже не собрать. Цена одна строка в списке."
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "installer/lib/check.js",
+     "quote": "for (const f of toolFiles) if (!fs.existsSync(f)) findings.push(`${rel(root, f)}: нет файла`);"
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-127",
+   "question": "[ветка] Конец реализации: когда все задачи отмечены, форк отдаёт вместо `apply.instruction` свою строку. Новая сессия `/opsx:apply` заморозку не запустит, и отчёт конца реализации до человека не дойдёт. Получает ли он ссылку, когда `graph/` собирает `/opsx:archive`?",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN все задачи отмечены, `graph/` нет WHEN `/opsx:archive` собирает его THEN человек получает ссылку на файл отчёта до переноса каталога; цена: фраза в подсказке, сценарий, проверка только чтением транскрипта",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — не покрывается: ссылку даёт только `/opsx:apply`, а на этом пути `graph/` всё равно соберётся, и отчёт можно открыть в архиве",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест читает `operations.archive.guidance` и утверждает, что подсказка велит отдать ссылку на отчёт; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — остаётся открытым до первого изменения, прошедшего этот путь; пока tasks считает, что показ идёт только в `/opsx:apply`",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Отчёт в конце реализации нужен затем, чтобы человек увидел зазор, пока его дешёво закрыть (F-31, F-48). На этом пути он зазора не увидит вовсе, и никто об этом не скажет, а после архивации уже поздно."
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "upstream/openspec/src/commands/workflow/instructions.ts",
+     "quote": "instruction = 'All tracked tasks are complete.\\nReview or verify the change as appropriate before archiving.';"
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-128",
+   "question": "[ветка] Синхронизация внутри архивации: `/opsx:archive` сам предлагает синхронизацию раньше `mv`, а требование велит проверить `graph/` перед переносом. Снимка нет, человек выбрал «Sync now»: собирать `graph/` до синхронизации или после?",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-48",
+    "F-49",
+    "F-75"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN изменение без `graph/` и с несинхронизированной дельтой WHEN `/opsx:archive` доходит до выбора синхронизации THEN `graph/` уже собран, база мастер-спеки в нём есть; цена: подсказка говорит «до синхронизации», сценарий, проверка только чтением транскрипта",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — не покрывается: снимок, собранный после синхронизации, идёт запасным путём F-123.A, и отчёт называет такие требования",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест подаёт изменение без `graph/`, где текст MODIFIED уже совпал с мастером, и утверждает строку отчёта о таких требованиях; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — порядок остаётся открытым до текста подсказки в design; пока tasks считает, что проверка идёт прямо перед `mv`",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "После синхронизации база мастера уже потеряна: номера не отсекаются, в снимок попадают чужие связи, а сигнал о новых сценариях молчит. После архивации снимок не пересобрать, а цена только в двух словах подсказки."
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "upstream/openspec/src/core/templates/workflows/archive-change.ts",
+     "quote": "- \"Sync now\" or \"Sync anyway\" — sync, then verify (below)."
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-129",
+   "question": "[pre-mortem] Линза `trace-link` проходит формально: у этого изменения 160 связей требования с записью и 152 сценария, то есть сотни строк на атаку, и строка «есть» пишется, не читая задачу. `passed` выглядит проверкой связей, а проверки не было. Что держит строку «есть»?",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-55",
+    "F-72",
+    "F-105"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN связь задачи со сценарием WHEN линза `trace-link` пишет строку с опорой «есть» THEN опора цитирует обе стороны связи: проверку задачи и THEN сценария; цена: сценарий, длинные строки и время на каждую связь, сверка цитат только чтением",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — не покрывается: атака необязательна, выбор между быстрым и качественным результатом уже отдан человеку (F-19), а правило «опора не пересказ» и так действует",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест разбора: строка `trace-link` с опорой «есть» без цитаты получает пометку на странице; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — остаётся открытым до первой атаки артефактов с этой линзой; пока tasks считает, что общего правила об опоре достаточно",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "`passed` открывает `apply`, а пачка одинаковых строк «есть» неотличима от проверки. Общее правило допускает опору номером решённой записи, а для связи с записью этот номер и есть проверяемое, поэтому здесь оно ничего не держит."
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/trace-graph/specs/artifact-attack/spec.md",
+     "quote": "### Requirement: Линза связей проверяет смысл названных связей"
+    }
+   ],
+   "comments": []
   }
  ],
  "notes": [
