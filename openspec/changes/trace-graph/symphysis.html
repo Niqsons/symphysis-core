@@ -212,12 +212,12 @@
 const JOURNAL = {
  "title": "Журнал решений: trace-graph",
  "source": "decisions.json",
- "sha256": "15da20b92dfc3e5fe6bc643a4300990ce265df7b5c727029919e6c19c766527e",
+ "sha256": "bf412582a078914cc80b5be9ef5a9c5d68bafd2f1616b170ae5f4cd091a431df",
  "stats": {
   "records": 123,
   "forks": 103,
   "facts": 20,
-  "decided": 101,
+  "decided": 103,
   "parked": 1,
   "evidence_total": 265,
   "evidence_found": 265
@@ -528,7 +528,7 @@ const JOURNAL = {
    "outcome": null,
    "parking": [],
    "dispute": "",
-   "consequences": "На этом стоит F-50.",
+   "consequences": "На этом стоит F-50, а затем F-122.",
    "evidence": [
     {
      "path": "context/06-related-changes.md",
@@ -3077,6 +3077,13 @@ const JOURNAL = {
        "found": true
       }
      ]
+    },
+    {
+     "letter": "E",
+     "text": "Перевыбрано в пользу F-122.A (добавлен человеком)",
+     "added": true,
+     "unlikely": null,
+     "evidence": []
     }
    ],
    "antipodes": [
@@ -3090,8 +3097,8 @@ const JOURNAL = {
     "why": "Убирает ручной шаг, которого нет ни в схеме, ни в руководстве: в чужом проекте пути сейчас просто перестают находиться. B лечит только хеш, а улики в архиве остаются битыми, если их забыли перевести."
    },
    "decision": {
-    "option": "A",
-    "word": "",
+    "option": "E",
+    "word": "так как F-50.A решает редкую и мало полезную проблему.",
     "date": "2026-11-05"
    },
    "reversibility": {
@@ -3101,7 +3108,7 @@ const JOURNAL = {
    "outcome": null,
    "parking": [],
    "dispute": "",
-   "consequences": "",
+   "consequences": "Вариант A снят словом владельца: `check` не правится, снято требование `decision-journal`, решение стоит в F-122.A.",
    "evidence": [],
    "comments": [],
    "nodes": [
@@ -3775,10 +3782,6 @@ const JOURNAL = {
     {
      "addressee": "ИБ",
      "text": "Заморозка запускает `git` в каталогах из файла корней, путь приходит из этого файла. Канон, покрывается чек-листом `security.md`, запрет не чеканится."
-    },
-    {
-     "addressee": "ИБ",
-     "text": "Поиск улики в архивном каталоге остаётся внутри объявленного корня и не идёт по `..`. Канон, покрывается чек-листом `security.md`, запрет не чеканится."
     }
    ],
    "dispute": "",
@@ -5468,7 +5471,7 @@ const JOURNAL = {
    "outcome": null,
    "parking": [],
    "dispute": "",
-   "consequences": "Цена, не названная при выборе: в конце реализации код часто ещё не закоммичен, поэтому снимок назовёт коммит без него, а `/opsx:archive` сочтёт такой снимок свежим, потому что хеши файлов изменения те же. Что снимок должен называть в этом случае, журнал не решает. Если снимок всё же собран в `/opsx:archive` после синхронизации, сигнал о новых сценариях в MODIFIED молчит. Что снимок называет в этом случае, решено в F-79.",
+   "consequences": "Цена, не названная при выборе: в конце реализации код часто ещё не закоммичен, поэтому снимок назовёт коммит без него, а `/opsx:archive` сочтёт такой снимок свежим, потому что хеши файлов изменения те же. Что снимок должен называть в этом случае, журнал не решает. Если снимок всё же собран в `/opsx:archive` после синхронизации, сигнал о новых сценариях в MODIFIED молчит. Что снимок называет в этом случае, решено в F-79. С базой снимка (F-123.A) сигнал молчит только у требования, на которое базы нет.",
    "evidence": [],
    "comments": [],
    "nodes": [
@@ -7172,7 +7175,7 @@ const JOURNAL = {
     {
      "path": "openspec/changes/trace-graph/specs/trace-snapshot/spec.md",
      "quote": "### Requirement: Снимок называет только коммиты заморозки",
-     "line": 69,
+     "line": 88,
      "verdict": "сверено",
      "found": true
     }
@@ -7244,7 +7247,7 @@ const JOURNAL = {
     {
      "path": "openspec/changes/trace-graph/specs/trace-snapshot/spec.md",
      "quote": "### Requirement: После архивации снимок не собирается",
-     "line": 85,
+     "line": 104,
      "verdict": "сверено",
      "found": true
     }
@@ -7892,12 +7895,12 @@ const JOURNAL = {
    },
    "parking": [],
    "dispute": "",
-   "consequences": "редкий кейс про обработку улик из архива. и зачем вообще сверять улики из архива? улики должны быть собраны относительно того состояние на котором создается change. Вопрос из этого слова вынесен развилкой F-122.",
+   "consequences": "редкий кейс про обработку улик из архива. и зачем вообще сверять улики из архива? улики должны быть собраны относительно того состояние на котором создается change. Вопрос из этого слова вынесен развилкой F-122. Требование снято с дельты решением F-122.A.",
    "evidence": [
     {
-     "path": "openspec/changes/trace-graph/specs/decision-journal/spec.md",
-     "quote": "### Requirement: Улика активного изменения находится и в архиве",
-     "line": 5,
+     "path": "openspec/changes/trace-graph/answers/2026-11-05-10.md",
+     "quote": "редкий кейс про обработку улик из архива.",
+     "line": 33,
      "verdict": "сверено",
      "found": true
     }
@@ -8636,13 +8639,13 @@ const JOURNAL = {
    "id": "F-122",
    "question": "Нужно ли `check` вообще находить улики архивного журнала? Слово к F-111 спрашивает, зачем их сверять: улика собрана на том состоянии, на котором создано изменение. F-50.A ради этого правит разрешение путей в `check`, а сверять такие журналы сейчас некому.",
    "kind": "развилка",
-   "status": "открыт",
+   "status": "решён",
    "addressee": "человек",
    "depends_on": [
     "F-09",
-    "F-50",
     "F-51",
-    "F-111"
+    "F-111",
+    "F-50"
    ],
    "delivery": "",
    "options": [
@@ -8689,9 +8692,9 @@ const JOURNAL = {
      "unlikely": null,
      "evidence": [
       {
-       "path": "openspec/changes/trace-graph/specs/decision-journal/spec.md",
-       "quote": "### Requirement: Улика активного изменения находится и в архиве",
-       "line": 5,
+       "path": "tools/journal_apply.py",
+       "quote": "def find_quote(path: str, quote: str, roots: dict[str, Path]) -> tuple[int | None, str]:",
+       "line": 214,
        "verdict": "сверено",
        "found": true
       }
@@ -8723,12 +8726,19 @@ const JOURNAL = {
     "option": "A",
     "why": "Сверять некому: `/opsx:archive` `check` не зовёт, панель плагина каталог `archive` пропускает, тесты читают архивы только ради схемы журнала, а в двух старых архивах улики с путём активного изменения лежат до сих пор, 47 и 56 строк. Цитата уже стоит в журнале дословно (F-51). B чинит то, что почти никому не мешает. C честнее на единственном пути, где это видно, в ручной пересборке страницы по архиву, но добавляет ради него код."
    },
-   "decision": null,
-   "reversibility": null,
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-05"
+   },
+   "reversibility": {
+    "level": "обратимо",
+    "why": "кода нет, журналы архива не меняются: научить `journal_apply.py` искать улики в архивном каталоге можно и позже"
+   },
    "outcome": null,
    "parking": [],
    "dispute": "",
-   "consequences": "",
+   "consequences": "Требование и capability `decision-journal` сняты с дельты, `journal_apply.py` не правится. В `trace-snapshot` требование «После архивации снимок не собирается» запрещает менять журнал после архива, сценарии: Журнал уезжает в архив без правок; Ручная проверка архивного журнала. Строку `context/06-related-changes.md` о переводе путей снимает задача в `tasks.md`: на неё опираются улики F-09 и этой записи.",
    "evidence": [
     {
      "path": "openspec/changes/trace-graph/answers/2026-11-05-10.md",
@@ -8749,7 +8759,7 @@ const JOURNAL = {
    "id": "F-123",
    "question": "Что делают сборка и проверка после `/opsx:sync`? Мастер тогда уже несёт номера и сценарии MODIFIED этого изменения. F-84.A отсечёт все эти номера: пересборка потеряет связи, а каждое такое требование получит сигнал F-83. F-118.A сравнит снимок со свежей сборкой и примет разницу за правку руками, и так при каждой обычной архивации с MODIFIED.",
    "kind": "развилка",
-   "status": "открыт",
+   "status": "решён",
    "addressee": "человек",
    "depends_on": [
     "F-74",
@@ -8808,7 +8818,7 @@ const JOURNAL = {
       {
        "path": "openspec/changes/trace-graph/specs/trace-snapshot/spec.md",
        "quote": "После архивации снимок SHALL NOT собираться.",
-       "line": 86,
+       "line": 105,
        "verdict": "сверено",
        "found": true
       }
@@ -8842,17 +8852,24 @@ const JOURNAL = {
     "option": "A",
     "why": "Скрипт и так читает мастер ради F-84 и F-95, поэтому записать прочитанное в снимок почти ничего не стоит, и запись `[сигнал]`, добавленная после синхронизации, снимок не испортит. Такая запись вероятна: человек отвечает на отчёт конца реализации. B и C дешевле на одно поле, но B возвращает ложные связи, а C теряет настоящие, и после архивации это уже не исправить."
    },
-   "decision": null,
-   "reversibility": null,
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-05"
+   },
+   "reversibility": {
+    "level": "дорого",
+    "why": "поле в формате снимка `tools/trace_graph.py`: архивные снимки не пересобираются, поэтому отказ от него оставит два вида снимков"
+   },
    "outcome": null,
    "parking": [],
    "dispute": "",
-   "consequences": "",
+   "consequences": "В `trace-snapshot` новое требование: Снимок несёт базу мастер-спеки. Имя поля в формате снимка решает `design`.",
    "evidence": [
     {
      "path": "openspec/changes/trace-graph/specs/trace-snapshot/spec.md",
      "quote": "- **GIVEN** `graph/`, а затем в журнал добавлена запись `[сигнал]`",
-     "line": 53,
+     "line": 72,
      "verdict": "сверено",
      "found": true
     }
@@ -8922,11 +8939,15 @@ const JOURNAL = {
   },
   {
    "date": "2026-11-05",
-   "text": "проба краёв: кандидатов 32, Specify 23, Dismiss 8, Backstop 1, Defer 0; не выбран 43: artifact-attack/Линзы атаки артефактов, artifact-attack/Состав линз настраивается, artifact-attack/Строка атаки валидна только с линзой, тяжестью, инвариантом и опорой, artifact-attack/Черта в ячейке атаки экранируется, consequence-inventory/Сценарий по ветке описи несёт номер записи, decision-journal/Улика активного изменения находится и в архиве, decision-viewer/Промпт режима «атака» пересобирается из состояния, decision-viewer/Режим «атака» группирует строки по линзам и держит слуг вне списка отдельно, project-installer/`install` переносит подсказки операций, project-installer/`install` ставит скрипт графа, requirement-probes/Сценарий по исходу Specify несёт номер записи, trace-conventions/Длинное требование делится на дочернее, trace-conventions/Задача называет сценарий вместе с capability, trace-diagram/Без выбора действует предел текста, trace-diagram/Конфиг задаёт виды сущностей, trace-diagram/Номер несёт вид и не упирается в гейт, trace-diagram/Скрипт выдаёт текст диаграммы по выбору, trace-diagram/Текст диаграммы разбирается на настоящих именах, trace-graph/Id читаемы, файл несёт версию формата, trace-graph/Граф собирается из файлов изменения, trace-graph/Живой граф не лежит на диске, trace-graph/Новый артефакт схемы проверяется на вход в граф, trace-graph/Связи между требованиями вычисляются как кандидаты, trace-graph/Сохранённый граф проверяется скриптом, trace-signals/Ответ на сигнал записывается в журнал, trace-signals/Отчёт называет закрытый состав сигналов, trace-signals/Отчёт показывается перед реализацией и в её конце, trace-signals/Сигнал называет запись, снявшую исход, trace-signals/Сигнал о решении следует его исходу, trace-snapshot/Архивация проверяет каталог graph, trace-snapshot/Первая заморозка идёт в конце реализации"
+   "text": "проба краёв: кандидатов 32, Specify 23, Dismiss 8, Backstop 1, Defer 0; не выбран 42: artifact-attack/Линзы атаки артефактов, artifact-attack/Состав линз настраивается, artifact-attack/Строка атаки валидна только с линзой, тяжестью, инвариантом и опорой, artifact-attack/Черта в ячейке атаки экранируется, consequence-inventory/Сценарий по ветке описи несёт номер записи, decision-viewer/Промпт режима «атака» пересобирается из состояния, decision-viewer/Режим «атака» группирует строки по линзам и держит слуг вне списка отдельно, project-installer/`install` переносит подсказки операций, project-installer/`install` ставит скрипт графа, requirement-probes/Сценарий по исходу Specify несёт номер записи, trace-conventions/Длинное требование делится на дочернее, trace-conventions/Задача называет сценарий вместе с capability, trace-diagram/Без выбора действует предел текста, trace-diagram/Конфиг задаёт виды сущностей, trace-diagram/Номер несёт вид и не упирается в гейт, trace-diagram/Скрипт выдаёт текст диаграммы по выбору, trace-diagram/Текст диаграммы разбирается на настоящих именах, trace-graph/Id читаемы, файл несёт версию формата, trace-graph/Граф собирается из файлов изменения, trace-graph/Живой граф не лежит на диске, trace-graph/Новый артефакт схемы проверяется на вход в граф, trace-graph/Связи между требованиями вычисляются как кандидаты, trace-graph/Сохранённый граф проверяется скриптом, trace-signals/Ответ на сигнал записывается в журнал, trace-signals/Отчёт называет закрытый состав сигналов, trace-signals/Отчёт показывается перед реализацией и в её конце, trace-signals/Сигнал называет запись, снявшую исход, trace-signals/Сигнал о решении следует его исходу, trace-snapshot/Архивация проверяет каталог graph, trace-snapshot/Первая заморозка идёт в конце реализации"
   },
   {
    "date": "2026-11-05",
-   "text": "проба запретов: требований 49, оставлено 10, канон → ИБ 6, Specify 10, Dismiss 0, Defer 0"
+   "text": "проба запретов: требований 48, оставлено 10, канон → ИБ 5, Specify 10, Dismiss 0, Defer 0"
+  },
+  {
+   "date": "2026-11-05",
+   "text": "развилки из ответов к пробам закрыты: решений 2 (F-122, F-123), перевыбрано 1 (F-50), фактов 0, открытых развилок 0, парковок материалам 0, антиподов 1"
   }
  ]
 };
@@ -10098,7 +10119,7 @@ const SCHEME = {
 };
 const HELP = {
  "contract": 2,
- "taken_at": "2026-11-05T19:57:54+03:00",
+ "taken_at": "2026-11-05T20:29:33+03:00",
  "versions": {
   "openspec": "1.15.0-symphysis.4",
   "symphysis": null
@@ -10106,12 +10127,12 @@ const HELP = {
  "change": "trace-graph",
  "changes": null,
  "error": null,
- "current_step": "viewer",
- "current_text": "Следующий шаг по файлам — `viewer`, ход человека: открытых развилок 2, решаются на странице журнала. После них по файлам идёт `consequences`.",
- "turn": "human",
+ "current_step": "consequences",
+ "current_text": "Следующий шаг по файлам — `consequences`, ход модели.",
+ "turn": "model",
  "next_by_status": "consequences",
  "forks": {
-  "open": 2,
+  "open": 0,
   "parked": 0
  },
  "tasks": {
@@ -10191,7 +10212,7 @@ const HELP = {
   },
   {
    "id": "viewer",
-   "state": "ready",
+   "state": "idle",
    "turn": "human",
    "optional": false,
    "blocks": [],
@@ -10358,10 +10379,6 @@ const HELP = {
     },
     {
      "path": "openspec/changes/trace-graph/specs/consequence-inventory/spec.md",
-     "exists": true
-    },
-    {
-     "path": "openspec/changes/trace-graph/specs/decision-journal/spec.md",
      "exists": true
     },
     {
@@ -10697,7 +10714,6 @@ const HELP = {
   "openspec/changes/trace-graph/specs/artifact-attack/spec.md": "openspec/changes/trace-graph/specs/artifact-attack/spec.md",
   "openspec/changes/trace-graph/specs/brainstorm-interview/spec.md": "openspec/changes/trace-graph/specs/brainstorm-interview/spec.md",
   "openspec/changes/trace-graph/specs/consequence-inventory/spec.md": "openspec/changes/trace-graph/specs/consequence-inventory/spec.md",
-  "openspec/changes/trace-graph/specs/decision-journal/spec.md": "openspec/changes/trace-graph/specs/decision-journal/spec.md",
   "openspec/changes/trace-graph/specs/decision-viewer/spec.md": "openspec/changes/trace-graph/specs/decision-viewer/spec.md",
   "openspec/changes/trace-graph/specs/onboarding-guide/spec.md": "openspec/changes/trace-graph/specs/onboarding-guide/spec.md",
   "openspec/changes/trace-graph/specs/project-installer/spec.md": "openspec/changes/trace-graph/specs/project-installer/spec.md",
@@ -10766,7 +10782,6 @@ const LINKS = {
   "openspec/changes/trace-graph/specs/artifact-attack/spec.md": "specs/artifact-attack/spec.md",
   "openspec/changes/trace-graph/specs/brainstorm-interview/spec.md": "specs/brainstorm-interview/spec.md",
   "openspec/changes/trace-graph/specs/consequence-inventory/spec.md": "specs/consequence-inventory/spec.md",
-  "openspec/changes/trace-graph/specs/decision-journal/spec.md": "specs/decision-journal/spec.md",
   "openspec/changes/trace-graph/specs/decision-viewer/spec.md": "specs/decision-viewer/spec.md",
   "openspec/changes/trace-graph/specs/onboarding-guide/spec.md": "specs/onboarding-guide/spec.md",
   "openspec/changes/trace-graph/specs/project-installer/spec.md": "specs/project-installer/spec.md",
