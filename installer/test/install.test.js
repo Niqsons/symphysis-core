@@ -11,6 +11,7 @@ import { targets } from "../lib/paths.js";
 import { install } from "../lib/install.js";
 import { requireFork } from "../scripts/build-vendor.js";
 import { tempDir } from "../test-support/temp-dir.js";
+import { parse } from "yaml";
 
 const bin = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..", "bin", "symphysis.js");
 const SUFFIX = "(есть, отличается — перезапись: --force)";
@@ -106,6 +107,98 @@ test("слияние: rules.<key> скаляр — сообщение, знач�
   const r = install(p, { payloadDir });
   assert.ok(r.messages.includes("rules.specs не список — правила symphysis не добавлены"), JSON.stringify(r.messages));
   assert.match(fs.readFileSync(cfg, "utf8"), /specs: одна строка/);
+});
+
+const GUIDANCE_MARK = "trace_graph.py freeze";
+const archiveGuidance = (text) => parse(text)?.operations?.archive?.guidance;
+
+test("`project-installer`: «Новый проект»: скрипт графа и openspec_run.py ставятся, --help даёт код 0 (F-39, F-138)", () => {
+  const p = tmp();
+  const r = install(p, { payloadDir });
+  for (const f of ["trace_graph.py", "openspec_run.py"]) assert.ok(r.written.includes(`.symphysis/tools/${f}`), `${f}: ${JSON.stringify(r.written)}`);
+  const h = spawnSync("python", ["-X", "utf8", path.join(".symphysis", "tools", "trace_graph.py"), "--help"], { cwd: p, encoding: "utf8" });
+  assert.equal(h.status, 0, h.stdout + h.stderr);
+  assert.ok(h.stdout.trim() !== "");
+});
+
+test("`project-installer`: «Обновление без `--force`»: скрипт графа положен, отличающийся назван пропущенным", () => {
+  const p = tmp();
+  install(p, { payloadDir });
+  const tools = path.join(targets(p).toolsDir, "tools");
+  fs.rmSync(path.join(tools, "trace_graph.py"));
+  fs.writeFileSync(path.join(tools, "openspec_run.py"), "# своё\n");
+  const r = install(p, { payloadDir });
+  assert.ok(fs.existsSync(path.join(tools, "trace_graph.py")));
+  assert.ok(r.written.includes(".symphysis/tools/trace_graph.py"), JSON.stringify(r.written));
+  assert.ok(r.skipped.includes(`.symphysis/tools/openspec_run.py ${SUFFIX}`), JSON.stringify(r.skipped));
+});
+
+test("`project-installer`: «Конфиг без подсказок»: слияние добавляет operations.archive.guidance", () => {
+  const p = tmp();
+  fs.mkdirSync(path.join(p, "openspec"));
+  const cfg = path.join(p, "openspec", "config.yaml");
+  fs.writeFileSync(cfg, "# мой\nschema: spec-driven\n");
+  install(p, { payloadDir });
+  const g = archiveGuidance(fs.readFileSync(cfg, "utf8"));
+  assert.equal(g.length, 2, JSON.stringify(g));
+  assert.ok(g[0].includes(GUIDANCE_MARK), g[0]);
+});
+
+test("`project-installer`: «Конфиг без подсказок»: форк отдаёт подсказку полем operationGuidance", { skip: !fs.existsSync(FORK) }, () => {
+  process.env.SYMPHYSIS_OPENSPEC = FORK;
+  const p = tmp();
+  fs.mkdirSync(path.join(p, "openspec"));
+  fs.writeFileSync(path.join(p, "openspec", "config.yaml"), "schema: spec-driven\n");
+  install(p, { payloadDir });
+  const fork = (...a) => spawnSync(process.execPath, [FORK, ...a], { cwd: p, encoding: "utf8", env: { ...process.env, OPENSPEC_TELEMETRY: "0" } });
+  let r = fork("new", "change", "demo");
+  assert.equal(r.status, 0, r.stdout + r.stderr);
+  r = fork("instructions", "archive", "--change", "demo", "--json");
+  assert.equal(r.status, 0, r.stdout + r.stderr);
+  const out = JSON.parse(r.stdout);
+  assert.ok(Array.isArray(out.operationGuidance) && out.operationGuidance.some((l) => l.includes(GUIDANCE_MARK)), r.stdout);
+});
+
+test("`project-installer`: «У проекта своя подсказка»: своя строка на месте, подсказка symphysis добавлена", () => {
+  const p = tmp();
+  fs.mkdirSync(path.join(p, "openspec"));
+  const cfg = path.join(p, "openspec", "config.yaml");
+  fs.writeFileSync(cfg, "schema: symphysis\noperations:\n  archive:\n    guidance:\n      - своя строка\n  apply:\n    guidance:\n      - чужая операция\n");
+  install(p, { payloadDir });
+  const parsed = parse(fs.readFileSync(cfg, "utf8"));
+  const g = parsed.operations.archive.guidance;
+  assert.equal(g[0], "своя строка");
+  assert.equal(g.length, 3, JSON.stringify(g));
+  assert.ok(g[1].includes(GUIDANCE_MARK));
+  assert.deepEqual(parsed.operations.apply.guidance, ["чужая операция"]);
+});
+
+test("`project-installer`: «Повторная установка не дублирует»: подсказка заморозки одна", () => {
+  const p = tmp();
+  install(p, { payloadDir });
+  const cfg = path.join(p, "openspec", "config.yaml");
+  const once = fs.readFileSync(cfg, "utf8");
+  install(p, { payloadDir });
+  const again = fs.readFileSync(cfg, "utf8");
+  assert.equal(again, once);
+  assert.equal(archiveGuidance(again).filter((l) => l.includes(GUIDANCE_MARK)).length, 1);
+  // и после слияния в существующий конфиг
+  const q = tmp();
+  fs.mkdirSync(path.join(q, "openspec"));
+  fs.writeFileSync(path.join(q, "openspec", "config.yaml"), "schema: spec-driven\n");
+  install(q, { payloadDir });
+  install(q, { payloadDir });
+  assert.equal(archiveGuidance(fs.readFileSync(path.join(q, "openspec", "config.yaml"), "utf8")).filter((l) => l.includes(GUIDANCE_MARK)).length, 1);
+});
+
+test("слияние: operations.archive.guidance не список — сообщение, значение не тронуто (F-124)", () => {
+  const p = tmp();
+  fs.mkdirSync(path.join(p, "openspec"));
+  const cfg = path.join(p, "openspec", "config.yaml");
+  fs.writeFileSync(cfg, "schema: symphysis\noperations:\n  archive:\n    guidance: одна строка\n");
+  const r = install(p, { payloadDir });
+  assert.ok(r.messages.includes("operations.archive.guidance не список — подсказка symphysis не добавлена"), JSON.stringify(r.messages));
+  assert.match(fs.readFileSync(cfg, "utf8"), /guidance: одна строка/);
 });
 
 test("слияние: в config.yaml нет schema — свой текст сообщения", () => {

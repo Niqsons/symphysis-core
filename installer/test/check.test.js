@@ -159,6 +159,34 @@ test("инструменты: каждый модуль из состава пр
   }
 });
 
+test("`project-installer`: «Скрипта нет при проверке установки»: находка называет файл и «нет файла» (F-126)", () => {
+  const p = installed();
+  const t = targets(p).toolsDir;
+  for (const m of ["trace_graph.py", "openspec_run.py"]) fs.rmSync(path.join(t, "tools", m));
+  const r = runCheck(p);
+  for (const m of ["trace_graph.py", "openspec_run.py"]) assert.ok(r.findings.includes(`.symphysis/tools/${m}: нет файла`), `${m}: ${JSON.stringify(r.findings)}`);
+  assert.equal(r.ok, false);
+});
+
+test("`project-installer`: «Скрипта нет при проверке установки»: CLI check даёт код 2", () => {
+  const p = installed();
+  fs.rmSync(path.join(targets(p).toolsDir, "tools", "trace_graph.py"));
+  const r = spawnSync(process.execPath, [bin, "check", "--project", p], { encoding: "utf8", env: { ...process.env, SYMPHYSIS_OPENSPEC: FORK } });
+  assert.equal(r.status, 2, r.stdout + r.stderr);
+  assert.ok(r.stdout.includes(".symphysis/tools/trace_graph.py: нет файла"), r.stdout);
+});
+
+test("`trace-snapshot`: «Проверка установки»: архив с изменением без graph/ строки не даёт (F-62)", () => {
+  const p = installed();
+  const dir = path.join(p, "openspec", "changes", "archive", "2026-11-01-old-change");
+  fs.mkdirSync(dir, { recursive: true });
+  fs.writeFileSync(path.join(dir, "proposal.md"), "# old\n");
+  const before = runCheck(p);
+  const all = [...before.findings, ...before.notes].join("\n");
+  assert.ok(!/old-change|archive|graph|снимк/i.test(all), all);
+  assert.ok(!fs.existsSync(path.join(dir, "graph")));
+});
+
 test("версия не пин: finding с обеими версиями", () => {
   const p = installed();
   const fake = path.join(tmp(), "fake.js");
