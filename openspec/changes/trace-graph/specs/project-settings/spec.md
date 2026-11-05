@@ -3,7 +3,7 @@
 ## MODIFIED Requirements
 
 ### Requirement: `symphysis.yaml` в корне проекта задаёт выбор перед запуском шага
-Файл `symphysis.yaml` в корне проекта, вне `.symphysis/`, SHALL задавать выборы вложенными ключами: `consequences.failure_branches`, `consequences.assumptions`, `edge_probe.enabled` и ключ на каждую линзу атаки; отсутствие файла или ключа SHALL означать «включено» (F-24.A, F-110.B, F-61, F-63, слова владельца к F-14 и F-18, F-23). предположение: имена ключей линз; решить в design.
+Файл `symphysis.yaml` в корне проекта, вне `.symphysis/`, SHALL задавать выборы вложенными ключами: `consequences.failure_branches`, `consequences.assumptions`, `edge_probe.enabled` и `attack.<слуг линзы>` на каждую линзу атаки; отсутствие файла или ключа SHALL означать «включено» (F-24.A, F-110.B, F-61, F-63, F-132, слова владельца к F-14 и F-18, F-23).
 
 #### Scenario: Файла нет
 - **GIVEN** проект без `symphysis.yaml`

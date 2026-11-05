@@ -3,7 +3,7 @@
 ## ADDED Requirements
 
 ### Requirement: `install` ставит скрипт графа
-Команда `symphysis install` SHALL класть скрипт графа в `.symphysis/tools/`: файл SHALL входить в payload и его перечень (F-39). `symphysis check` SHALL называть его пропажу (F-126).
+Команда `symphysis install` SHALL класть скрипт графа и общий модуль запуска форка в `.symphysis/tools/`: файлы SHALL входить в payload и его перечень (F-39, F-138). `symphysis check` SHALL называть их пропажу (F-126).
 
 #### Scenario: Новый проект
 - **GIVEN** проект без инструментов symphysis

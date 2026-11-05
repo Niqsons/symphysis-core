@@ -352,14 +352,14 @@
 - trace-snapshot/Снимок и отчёт лежат в каталоге graph · precision · неприменимо: формы stateful, io; precision только для numeric-range
 - trace-snapshot/Снимок и отчёт лежат в каталоге graph · idempotency · не найдено: повторная заморозка перезаписывает оба файла, история лежит в git
 - trace-snapshot/Снимок и отчёт лежат в каталоге graph · concurrency · кандидат F-100
-- trace-snapshot/Первая заморозка идёт в конце реализации · boundary · неприменимо: формы stateful; boundary только для numeric-range
-- trace-snapshot/Первая заморозка идёт в конце реализации · adjacency · неприменимо: формы stateful; adjacency только для collection
-- trace-snapshot/Первая заморозка идёт в конце реализации · empty · неприменимо: формы stateful; empty только для collection, text
-- trace-snapshot/Первая заморозка идёт в конце реализации · encoding · неприменимо: формы stateful; encoding только для text
-- trace-snapshot/Первая заморозка идёт в конце реализации · ordering · неприменимо: формы stateful; ordering только для collection
-- trace-snapshot/Первая заморозка идёт в конце реализации · precision · неприменимо: формы stateful; precision только для numeric-range
-- trace-snapshot/Первая заморозка идёт в конце реализации · idempotency · не выбран: новая задача после заморозки; снимок устарел по хешу `tasks.md`, соберёт `/opsx:archive`, сценарий «Снимок устарел»
-- trace-snapshot/Первая заморозка идёт в конце реализации · concurrency · не выбран: последняя задача оставлена неотмеченной; первая заморозка не идёт, соберёт `/opsx:archive`, сценарий «Снимка нет»
+- trace-snapshot/Заморозка идёт перед первой задачей и в конце реализации · boundary · неприменимо: формы stateful; boundary только для numeric-range
+- trace-snapshot/Заморозка идёт перед первой задачей и в конце реализации · adjacency · неприменимо: формы stateful; adjacency только для collection
+- trace-snapshot/Заморозка идёт перед первой задачей и в конце реализации · empty · неприменимо: формы stateful; empty только для collection, text
+- trace-snapshot/Заморозка идёт перед первой задачей и в конце реализации · encoding · неприменимо: формы stateful; encoding только для text
+- trace-snapshot/Заморозка идёт перед первой задачей и в конце реализации · ordering · неприменимо: формы stateful; ordering только для collection
+- trace-snapshot/Заморозка идёт перед первой задачей и в конце реализации · precision · неприменимо: формы stateful; precision только для numeric-range
+- trace-snapshot/Заморозка идёт перед первой задачей и в конце реализации · idempotency · не выбран: новая задача после заморозки; снимок устарел по хешу `tasks.md`, соберёт `/opsx:archive`, сценарий «Снимок устарел»
+- trace-snapshot/Заморозка идёт перед первой задачей и в конце реализации · concurrency · не выбран: последняя задача оставлена неотмеченной; первая заморозка не идёт, соберёт `/opsx:archive`, сценарий «Снимка нет»
 - trace-snapshot/Архивация проверяет каталог graph · boundary · неприменимо: формы stateful, io; boundary только для numeric-range
 - trace-snapshot/Архивация проверяет каталог graph · adjacency · неприменимо: формы stateful, io; adjacency только для collection
 - trace-snapshot/Архивация проверяет каталог graph · empty · неприменимо: формы stateful, io; empty только для collection, text
