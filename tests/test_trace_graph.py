@@ -521,3 +521,83 @@ def test_build_on_this_very_change_gives_nodes_of_every_kind():
     graph = json.loads(run("build", "trace-graph", cwd=ROOT).stdout)
     assert {n["kind"] for n in graph["nodes"]} == {"cap", "req", "scn", "rec", "task", "sec", "branch"}
     assert len(set(ids(graph))) == len(graph["nodes"])
+
+
+# --- дубли id: узел один, сигнал с обоими местами, код 0 (F-31, раунд 1) --------
+
+DUP_REQ = """## ADDED Requirements
+
+### Requirement: Один
+Текст SHALL.
+
+#### Scenario: Первый
+- **WHEN** a
+- **THEN** b
+
+## REMOVED Requirements
+
+### Requirement: Один
+Причина.
+"""
+
+DUP_SCN = """## ADDED Requirements
+
+### Requirement: Один
+Текст SHALL.
+
+#### Scenario: Первый
+- **WHEN** a
+- **THEN** b
+
+#### Scenario: Первый
+- **WHEN** c
+- **THEN** d
+"""
+
+
+def assert_duplicate_signal(done, node_id, places):
+    assert done.returncode == 0, done.stderr
+    assert "Traceback" not in done.stderr
+    line = next((row for row in done.stderr.splitlines() if node_id in row), None)
+    assert line is not None, done.stderr
+    assert all(place in line for place in places), line
+    assert [n["id"] for n in json.loads(done.stdout)["nodes"]].count(node_id) == 1
+
+
+def test_duplicate_requirement_in_one_capability_is_signalled_with_both_places(tmp_path):
+    root, _ = make_change(tmp_path, specs={"cap-a": DUP_REQ})
+    assert_duplicate_signal(build(root), "req:cap-a/Один", ["specs/cap-a/spec.md:3", "specs/cap-a/spec.md:12"])
+
+
+def test_duplicate_scenario_in_one_requirement_is_signalled_with_both_places(tmp_path):
+    root, _ = make_change(tmp_path, specs={"cap-a": DUP_SCN})
+    assert_duplicate_signal(build(root), "scn:cap-a/Один/Первый", ["specs/cap-a/spec.md:6", "specs/cap-a/spec.md:10"])
+
+
+def test_duplicate_security_item_is_signalled_with_both_places(tmp_path):
+    root, _ = make_change(tmp_path, security=SECURITY + "| Права | применимо | ещё раз |\n")
+    assert_duplicate_signal(build(root), "sec:Права", ["security.md:6", "security.md:7"])
+
+
+def test_duplicates_are_returned_to_caller_and_not_put_into_graph_json(tmp_path):
+    root, _ = make_change(tmp_path, specs={"cap-a": DUP_REQ})
+    graph, dups = trace_graph.build_graph_with_duplicates(root, CHANGE)
+    assert dups == [{"id": "req:cap-a/Один", "at": ["specs/cap-a/spec.md:3", "specs/cap-a/spec.md:12"]}]
+    assert set(graph) == {"format", "nodes", "edges", "candidates"}
+    assert [n for n in graph["nodes"] if n["id"] == "req:cap-a/Один"][0]["section"] == "ADDED"  # первый по файлу
+
+
+def test_graph_without_duplicates_has_no_signal(tmp_path):
+    root, _ = make_change(tmp_path, specs={"cap-a": SPEC}, security=SECURITY)
+    assert build(root).stderr == ""
+
+
+def test_schema_refusal_carries_error_lines_and_library_stays_quiet(tmp_path, capsys):
+    root, base = make_change(tmp_path, journal=["F-01"])
+    data = json.loads((base / "decisions.json").read_text(encoding="utf-8"))
+    del data["records"][0]["depends_on"]
+    (base / "decisions.json").write_text(json.dumps(data, ensure_ascii=False), encoding="utf-8")
+    with pytest.raises(trace_graph.Refusal) as caught:
+        trace_graph.build_graph(root, CHANGE)
+    assert capsys.readouterr().err == ""
+    assert any("depends_on" in row for row in caught.value.lines)

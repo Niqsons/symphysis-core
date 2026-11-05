@@ -274,7 +274,12 @@ def find_root(start: Path) -> Path:
 
 
 class Refusal(Exception):
-    """Отказ подкоманды: текст идёт в stderr, код выхода 1, без трассировки."""
+    """Отказ подкоманды: текст идёт в stderr, код выхода 1, без трассировки. `lines` — подробности (например, ошибки схемы),
+    их печатает `main` перед текстом: библиотечные функции в stderr не пишут."""
+
+    def __init__(self, message: str, lines: list[str] | None = None):
+        super().__init__(message)
+        self.lines = list(lines or [])
 
 
 def _not_implemented(name: str) -> Refusal:
@@ -287,7 +292,8 @@ def _not_implemented(name: str) -> Refusal:
 #   rec: `record_kind` (вид записи журнала), `number` (число из `F-NN`); task: `done`; sec, branch: —.
 # `at` — `путь:строка` от каталога изменения, путь с `/`, строки с 1. Файл графа: `format: 1`, `nodes`, `edges`, `candidates`.
 # Узлы идут по `(путь из at, строка, id)`: порядок от файловой системы и от порядка чтения не зависит, две сборки одинаковы
-# байт в байт (F-81). Узел с уже виденным id отбрасывается: id — ключ графа, первый по порядку чтения остаётся.
+# байт в байт (F-81). Узел с уже виденным id в граф не входит: id — ключ графа, остаётся первый по порядку чтения, а дубль
+# уходит в список `build_graph_with_duplicates` и сигналом в stderr у `build`.
 
 GRAPH_FORMAT = 1
 _TASK_LINE = re.compile(r"^- \[[ xX]\] (\d+(?:\.\d+)+)\s+(.*?)\s*$")
@@ -327,9 +333,8 @@ def _read_records(base: Path) -> list[dict]:
         raise Refusal(f"decisions.json: журнал не разбирается ({e}): граф не собран") from None
     errors = validate_journal(journal)
     if errors:
-        for e in errors:
-            print(f"[!!] {e}", file=sys.stderr)
-        raise Refusal(f"decisions.json: журнал негоден по схеме, ошибок {len(errors)}: граф не собран")
+        raise Refusal(f"decisions.json: журнал негоден по схеме, ошибок {len(errors)}: граф не собран",
+                      [f"[!!] {e}" for e in errors])
     lines = text.split("\n")
     nodes = []
     for rec in journal["records"]:
@@ -409,12 +414,20 @@ READERS = {"decisions": _read_records, "specs": _read_specs, "consequences": _re
 
 
 def build_graph(root: Path, change: str) -> dict:
-    """Граф изменения `change` проекта `root`: `format`, `nodes`, `edges`, `candidates`. Читает только артефакты, из которых
-    `REGISTRY` что-то берёт (F-53). Связи добавят следующие порции: `edges` и `candidates` пока пусты."""
+    """Граф изменения без списка дублей id; см. `build_graph_with_duplicates`."""
+    return build_graph_with_duplicates(root, change)[0]
+
+
+def build_graph_with_duplicates(root: Path, change: str) -> tuple[dict, list[dict]]:
+    """Граф изменения `change` проекта `root` и список дублей id. Граф: `format`, `nodes`, `edges`, `candidates`; читает только
+    артефакты, из которых `REGISTRY` что-то берёт (F-53). Связи добавят следующие порции: `edges` и `candidates` пока пусты.
+    Дубль — повторный id (два требования с одним именем в capability, два сценария, два пункта security): в графе остаётся
+    первый по порядку чтения, id уникальны, а дубль не теряется молча, а идёт вторым значением: `[{"id": …, "at": [место
+    первого, место повторного, …]}]` в порядке появления. В JSON графа список не входит (формат не меняется)."""
     base = root / "openspec" / "changes" / change
     if not base.is_dir():
         raise Refusal(f"изменения «{change}» нет: нет каталога openspec/changes/{change}")
-    nodes, seen = [], set()
+    nodes, places = [], {}
     for artifact, row in REGISTRY.items():
         if row.get("берёт") == NOTHING:
             continue
@@ -422,15 +435,21 @@ def build_graph(root: Path, change: str) -> dict:
             raise Refusal(f"в реестре у артефакта «{artifact}» значение «берёт», а читателя нет: добавить читателя "
                           f"или записать `{NOTHING}` с доводом")
         for node in READERS[artifact](base):
-            if node["id"] not in seen:
-                seen.add(node["id"])
+            if node["id"] in places:
+                places[node["id"]].append(node["at"])
+            else:
+                places[node["id"]] = [node["at"]]
                 nodes.append(node)
     nodes.sort(key=lambda n: (n["at"].rsplit(":", 1)[0], int(n["at"].rsplit(":", 1)[1]), n["id"]))
-    return {"format": GRAPH_FORMAT, "nodes": nodes, "edges": [], "candidates": []}
+    duplicates = [{"id": node_id, "at": at} for node_id, at in places.items() if len(at) > 1]
+    return {"format": GRAPH_FORMAT, "nodes": nodes, "edges": [], "candidates": []}, duplicates
 
 
 def cmd_build(args: argparse.Namespace, root: Path) -> int:
-    print(json.dumps(build_graph(root, args.change), ensure_ascii=False, indent=1))
+    graph, duplicates = build_graph_with_duplicates(root, args.change)
+    for dup in duplicates:  # сигнал, не стоп (F-31): граф печатается, код 0
+        print(f"[!!] дубль id {dup['id']}: места {', '.join(dup['at'])}; в графе остался первый", file=sys.stderr)
+    print(json.dumps(graph, ensure_ascii=False, indent=1))
     return 0
 
 
@@ -514,6 +533,8 @@ def main(argv: list[str] | None = None) -> int:
             check_change_name(args.change)  # до любого пути и вызова (F-59)
         return HANDLERS[args.command](args, find_root(Path.cwd()))
     except (ForkError, Refusal) as e:
+        for line in getattr(e, "lines", []):
+            print(line, file=sys.stderr)
         print(str(e), file=sys.stderr)
         return 1
 
