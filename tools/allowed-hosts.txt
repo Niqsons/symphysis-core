@@ -5,3 +5,4 @@ opencode.ai  # документация opencode, ссылки в docs/analysis
 code.claude.com  # документация Claude Code, ссылки в docs/analysis
 json.schemastore.org  # публичные схемы конфигов, ссылка в docs/analysis
 claude.ai  # ссылка на сессию в подписи коммитов; pre-push проверяет и сообщения
+mermaid.js.org  # документация mermaid, ссылка в docs/analysis
