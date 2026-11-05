@@ -212,12 +212,12 @@
 const JOURNAL = {
  "title": "Журнал решений: trace-graph",
  "source": "decisions.json",
- "sha256": "4aadb599034e7c898cc87cceef6212ebf184dffacdaddb3f16a4dfa0f8fd8818",
+ "sha256": "b695e6a4635dce4c5aee5b3a2620e3bc5b7804218093c6e92839905ef059aab9",
  "stats": {
   "records": 150,
   "forks": 129,
   "facts": 21,
-  "decided": 118,
+  "decided": 129,
   "parked": 4,
   "evidence_total": 307,
   "evidence_found": 306
@@ -10033,7 +10033,7 @@ const JOURNAL = {
    "id": "F-140",
    "question": "[связи] Как скрипт графа находит номер записи `F-NN` в тексте требования и задачи? Решено контроллером при реализации, нужно слово владельца.",
    "kind": "развилка",
-   "status": "открыт",
+   "status": "решён",
    "addressee": "человек",
    "depends_on": [
     "F-44"
@@ -10075,7 +10075,11 @@ const JOURNAL = {
     "option": "A",
     "why": "Граница слова отсекает ложный `F-8` из `UTF-8`, а номера вне скобок в задачах остаются связями, которых B лишил бы задачи."
    },
-   "decision": null,
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-06"
+   },
    "reversibility": {
     "level": "обратимо",
     "why": "одна регулярка в `tools/trace_graph.py`, формат графа от неё не зависит"
@@ -10083,7 +10087,7 @@ const JOURNAL = {
    "outcome": null,
    "parking": [],
    "dispute": "",
-   "consequences": "",
+   "consequences": "Так сделано в `tools/trace_graph.py` при реализации; правило войдёт в раздел `docs/GUIDE.md` о графе (задача 11.1).",
    "evidence": [],
    "comments": [],
    "finding": ""
@@ -10092,7 +10096,7 @@ const JOURNAL = {
    "id": "F-141",
    "question": "[связи] Какое имя берётся, когда после «ёлочки» подходят несколько известных имён сценария или требования? F-92 велит сверять с известными именами, а не до первой `»`; выбор между ними решён контроллером.",
    "kind": "развилка",
-   "status": "открыт",
+   "status": "решён",
    "addressee": "человек",
    "depends_on": [
     "F-92"
@@ -10134,7 +10138,11 @@ const JOURNAL = {
     "option": "A",
     "why": "Длинное имя, совпавшее целиком с закрывающей `»`, однозначно; B подменяет связь короче, C шумит на каждом имени-префиксе."
    },
-   "decision": null,
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-06"
+   },
    "reversibility": {
     "level": "обратимо",
     "why": "функция `_take_name` в `tools/trace_graph.py`"
@@ -10142,7 +10150,7 @@ const JOURNAL = {
    "outcome": null,
    "parking": [],
    "dispute": "",
-   "consequences": "",
+   "consequences": "Так сделано в `tools/trace_graph.py` при реализации; правило войдёт в раздел `docs/GUIDE.md` о графе (задача 11.1).",
    "evidence": [],
    "comments": [],
    "finding": ""
@@ -10151,7 +10159,7 @@ const JOURNAL = {
    "id": "F-142",
    "question": "[связи] Какие виды и направления у связей ветки описи со сценарием и пункта security с требованием? Таблица разбора задаёт вид ветки, но не направление, и не задаёт вид у security. Решено контроллером.",
    "kind": "развилка",
-   "status": "открыт",
+   "status": "решён",
    "addressee": "человек",
    "depends_on": [
     "F-56",
@@ -10194,7 +10202,11 @@ const JOURNAL = {
     "option": "A",
     "why": "Направление от называющего одно для всех связей из строк артефактов, а вид у security совпадает с диаграммой F-135; B и C вводят по исключению."
    },
-   "decision": null,
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-06"
+   },
    "reversibility": {
     "level": "обратимо",
     "why": "строки `put_edge` в `tools/trace_graph.py`, архивных снимков ещё нет"
@@ -10202,7 +10214,7 @@ const JOURNAL = {
    "outcome": null,
    "parking": [],
    "dispute": "",
-   "consequences": "",
+   "consequences": "Так сделано в `tools/trace_graph.py` при реализации; правило войдёт в раздел `docs/GUIDE.md` о графе (задача 11.1).",
    "evidence": [],
    "comments": [],
    "finding": ""
@@ -10211,7 +10223,7 @@ const JOURNAL = {
    "id": "F-143",
    "question": "[связи] Что делать с именем, которое нашлось только в мастер-спеке: родитель `derives`, сценарий ветки описи, требование в пункте security? Решено контроллером.",
    "kind": "развилка",
-   "status": "открыт",
+   "status": "решён",
    "addressee": "человек",
    "depends_on": [
     "F-77",
@@ -10254,7 +10266,11 @@ const JOURNAL = {
     "option": "A",
     "why": "Ссылка в мастер законна (опись `consequences.md` ссылается на сценарий мастер-спеки `project-settings`), сигнал о ней был бы шумом, а C выходит за уровень изменения (F-38)."
    },
-   "decision": null,
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-06"
+   },
    "reversibility": {
     "level": "обратимо",
     "why": "одно правило в разрешении связей `tools/trace_graph.py`"
@@ -10262,7 +10278,7 @@ const JOURNAL = {
    "outcome": null,
    "parking": [],
    "dispute": "",
-   "consequences": "",
+   "consequences": "Так сделано в `tools/trace_graph.py` при реализации; правило войдёт в раздел `docs/GUIDE.md` о графе (задача 11.1).",
    "evidence": [],
    "comments": [],
    "finding": ""
@@ -10271,7 +10287,7 @@ const JOURNAL = {
    "id": "F-144",
    "question": "[связи] Даёт ли «ближайший сценарий» в строке описи связь ветки со сценарием? Решено контроллером.",
    "kind": "развилка",
-   "status": "открыт",
+   "status": "решён",
    "addressee": "человек",
    "depends_on": [
     "F-56"
@@ -10313,7 +10329,11 @@ const JOURNAL = {
     "option": "A",
     "why": "По скиллу `symphysis-consequences` ближайший сценарий ветку не покрывает; связь `verifies` выдала бы непокрытую ветку за покрытую."
    },
-   "decision": null,
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-06"
+   },
    "reversibility": {
     "level": "обратимо",
     "why": "регулярка `_BRANCH_SCENARIO` в `tools/trace_graph.py`"
@@ -10321,7 +10341,7 @@ const JOURNAL = {
    "outcome": null,
    "parking": [],
    "dispute": "",
-   "consequences": "",
+   "consequences": "Так сделано в `tools/trace_graph.py` при реализации; правило войдёт в раздел `docs/GUIDE.md` о графе (задача 11.1).",
    "evidence": [
     {
      "path": "skills/symphysis-consequences/SKILL.md",
@@ -10338,7 +10358,7 @@ const JOURNAL = {
    "id": "F-145",
    "question": "[связи] В какой форме пункт `security.md` называет требование? Задачи пишут `` `capability`: «имя» `` (F-42), а `security.md` этого изменения пишет без двоеточия. Решено контроллером.",
    "kind": "развилка",
-   "status": "открыт",
+   "status": "решён",
    "addressee": "человек",
    "depends_on": [
     "F-42",
@@ -10381,7 +10401,11 @@ const JOURNAL = {
     "option": "A",
     "why": "Обе формы однозначны, а принять обе дешевле, чем править шаблон и пункты; B стоит отдельной строки в инструкции шага `security`."
    },
-   "decision": null,
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-06"
+   },
    "reversibility": {
     "level": "обратимо",
     "why": "регулярка `_SEC_REQ` в `tools/trace_graph.py`"
@@ -10389,7 +10413,7 @@ const JOURNAL = {
    "outcome": null,
    "parking": [],
    "dispute": "",
-   "consequences": "",
+   "consequences": "Так сделано в `tools/trace_graph.py` при реализации; правило войдёт в раздел `docs/GUIDE.md` о графе (задача 11.1).",
    "evidence": [],
    "comments": [],
    "finding": ""
@@ -10398,7 +10422,7 @@ const JOURNAL = {
    "id": "F-146",
    "question": "[связи] Считать ли ссылкой форму `` `capability`: «имя» ``, стоящую внутри двойных обратных кавычек? Так `tasks.md` описывает саму форму (задачи 2.4 и 6.2). Решено контроллером.",
    "kind": "развилка",
-   "status": "открыт",
+   "status": "решён",
    "addressee": "человек",
    "depends_on": [
     "F-42",
@@ -10441,7 +10465,11 @@ const JOURNAL = {
     "option": "A",
     "why": "Настоящая ссылка в двойных обратных кавычках не пишется, поэтому правило не теряет связей, а B и C платят шумом или памятью модели."
    },
-   "decision": null,
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-06"
+   },
    "reversibility": {
     "level": "обратимо",
     "why": "регулярка `_SAMPLE_FORM` в `tools/trace_graph.py`"
@@ -10449,7 +10477,7 @@ const JOURNAL = {
    "outcome": null,
    "parking": [],
    "dispute": "",
-   "consequences": "",
+   "consequences": "Так сделано в `tools/trace_graph.py` при реализации; правило войдёт в раздел `docs/GUIDE.md` о графе (задача 11.1).",
    "evidence": [],
    "comments": [],
    "finding": ""
@@ -10458,7 +10486,7 @@ const JOURNAL = {
    "id": "F-147",
    "question": "[связи] Распространяется ли F-84 на комментарии следа проб и `\u003c!-- F-NN -->` под сценарием, перенесённые из мастера в MODIFIED? Без этого след из чужого журнала давал ложный «след отстал»: на этом изменении F-33, на эталоне `step-help` четыре строки. Решено контроллером.",
    "kind": "развилка",
-   "status": "открыт",
+   "status": "решён",
    "addressee": "человек",
    "depends_on": [
     "F-84",
@@ -10501,7 +10529,11 @@ const JOURNAL = {
     "option": "A",
     "why": "Номер из мастера принадлежит журналу другого изменения, как у F-84; A отсекает только его, а C терял бы и свои следы."
    },
-   "decision": null,
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-06"
+   },
    "reversibility": {
     "level": "обратимо",
     "why": "сверка следов в `signal_context`, `tools/trace_graph.py`"
@@ -10509,7 +10541,7 @@ const JOURNAL = {
    "outcome": null,
    "parking": [],
    "dispute": "",
-   "consequences": "",
+   "consequences": "Так сделано в `tools/trace_graph.py` при реализации; правило войдёт в раздел `docs/GUIDE.md` о графе (задача 11.1).",
    "evidence": [
     {
      "path": "openspec/changes/trace-graph/specs/artifact-attack/spec.md",
@@ -10526,7 +10558,7 @@ const JOURNAL = {
    "id": "F-148",
    "question": "[связи] Что делает сборка с повторным id узла и со ссылкой, которая не разрешилась? Решено контроллером после ревью: молча отбрасывать нельзя.",
    "kind": "развилка",
-   "status": "открыт",
+   "status": "решён",
    "addressee": "человек",
    "depends_on": [
     "F-64",
@@ -10569,7 +10601,11 @@ const JOURNAL = {
     "option": "A",
     "why": "Граф остаётся годным, а расхождение видно в отчёте; C роняет отчёт, B ломает читаемые id."
    },
-   "decision": null,
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-06"
+   },
    "reversibility": {
     "level": "обратимо",
     "why": "разрешение связей и `graph_signals` в `tools/trace_graph.py`"
@@ -10577,7 +10613,7 @@ const JOURNAL = {
    "outcome": null,
    "parking": [],
    "dispute": "",
-   "consequences": "",
+   "consequences": "Так сделано в `tools/trace_graph.py` при реализации; правило войдёт в раздел `docs/GUIDE.md` о графе (задача 11.1).",
    "evidence": [],
    "comments": [],
    "finding": ""
@@ -10586,7 +10622,7 @@ const JOURNAL = {
    "id": "F-149",
    "question": "[связи] Даёт ли узел строка описи `consequences.md` без формы `путь:строка` «цитата» (состав «только допущения»)? Id ветки по F-131 — `branch:<путь>:<строка>`. Решено контроллером.",
    "kind": "развилка",
-   "status": "открыт",
+   "status": "решён",
    "addressee": "человек",
    "depends_on": [
     "F-131"
@@ -10628,7 +10664,11 @@ const JOURNAL = {
     "option": "A",
     "why": "Форма F-131 требует строку кода, а B склеивает разные допущения; состав «только допущения» редкий, и его можно добавить позже."
    },
-   "decision": null,
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-06"
+   },
    "reversibility": {
     "level": "обратимо",
     "why": "регулярка `_BRANCH_LINE` в `tools/trace_graph.py`"
@@ -10636,7 +10676,7 @@ const JOURNAL = {
    "outcome": null,
    "parking": [],
    "dispute": "",
-   "consequences": "",
+   "consequences": "Так сделано в `tools/trace_graph.py` при реализации; правило войдёт в раздел `docs/GUIDE.md` о графе (задача 11.1).",
    "evidence": [],
    "comments": [],
    "finding": ""
@@ -10645,7 +10685,7 @@ const JOURNAL = {
    "id": "F-150",
    "question": "[связи] Дочерние требования ADDED, вынесенные из длинного родителя, унесли номера журналов других изменений: `artifact-attack` (F-07.A, F-32.E, F-33.E, F-12.A, F-09.A, F-08.A, F-23.A, F-34.E) и `decision-viewer` (F-18.A, F-47.E, F-48.E, F-63.B). F-84 отсекает чужие номера только у MODIFIED, поэтому граф даёт ложные связи `traces` к одноимённым записям этого журнала. Найдено атакой артефактов.",
    "kind": "развилка",
-   "status": "открыт",
+   "status": "решён",
    "addressee": "человек",
    "depends_on": [
     "F-84",
@@ -10681,7 +10721,11 @@ const JOURNAL = {
     "option": "A",
     "why": "F-91 велит делить старые длинные требования, и каждое деление унесёт номера мастера; правило ловит их без памяти модели, а сигнал «требование без записи» ведёт к верной правке."
    },
-   "decision": null,
+   "decision": {
+    "option": "A",
+    "word": "Да, связи не дает, иначе это избыточная абстракция",
+    "date": "2026-11-06"
+   },
    "reversibility": {
     "level": "обратимо",
     "why": "правило в разрешении связей `tools/trace_graph.py`, архивных снимков ещё нет"
@@ -10689,7 +10733,7 @@ const JOURNAL = {
    "outcome": null,
    "parking": [],
    "dispute": "",
-   "consequences": "",
+   "consequences": "Новая задача 2.9: номер в тексте дочернего требования ADDED, который стоит в мастер-тексте его родителя, связи не даёт, с тестом. Дочерние требования без своих номеров получат сигнал «требование без записи»: на этом изменении четыре, `artifact-attack` «Линзы атаки журнала», «Черта в ячейке атаки экранируется» и `decision-viewer` «Шапка режима «атака» фильтрует по линзе и показывает запись», «Промпт режима «атака» пересобирается из состояния».",
    "evidence": [
     {
      "path": "openspec/changes/trace-graph/specs/artifact-attack/spec.md",
@@ -11949,7 +11993,7 @@ const SCHEME = {
 };
 const HELP = {
  "contract": 2,
- "taken_at": "2026-11-06T00:50:36+03:00",
+ "taken_at": "2026-11-06T00:58:08+03:00",
  "versions": {
   "openspec": "1.15.0-symphysis.4",
   "symphysis": null
@@ -11957,19 +12001,19 @@ const HELP = {
  "change": "trace-graph",
  "changes": null,
  "error": null,
- "current_step": "viewer",
- "current_text": "Следующий шаг по файлам — `viewer`, ход человека: открытых развилок 11, решаются на странице журнала. После них по файлам идёт `apply`.",
- "turn": "human",
+ "current_step": "apply",
+ "current_text": "Следующий шаг по файлам — `apply`, ход модели.",
+ "turn": "model",
  "next_by_status": "apply",
  "forks": {
-  "open": 11,
+  "open": 0,
   "parked": 0
  },
  "tasks": {
   "state": "ready",
   "total": 47,
-  "complete": 17,
-  "remaining": 30
+  "complete": 18,
+  "remaining": 29
  },
  "steps": [
   {
@@ -12042,7 +12086,7 @@ const HELP = {
   },
   {
    "id": "viewer",
-   "state": "ready",
+   "state": "idle",
    "turn": "human",
    "optional": false,
    "blocks": [],
