@@ -176,3 +176,4 @@ def test_apply_and_archive_sections_name_the_freeze():
         mechanics = sections[step]["mechanics"]
         assert "заморозк" in mechanics.lower() and "`graph/report.md`" in mechanics, step
         assert "trace_graph.py freeze" in mechanics, step
+    assert "когда отмечена последняя задача, модель зовёт" in sections["apply"]["mechanics"]

@@ -872,7 +872,7 @@ def test_archive_guidance_reaches_instructions(tmp_path, config_path):
     guidance = operation_guidance(proj)
     assert isinstance(guidance, list) and guidance and all(isinstance(g, str) for g in guidance)
     text = " ".join(guidance)
-    for token in (FREEZE_COMMAND + " <имя>", "до выбора синхронизации", "новой сборке", "`graph/report.md`",
+    for token in (FREEZE_COMMAND + " <имя>", "до выбора синхронизации", "Граф собран заново", "Снимок свежий", "`graph/report.md`",
                   "ошибку", "назови человеку", "архивацию не останавливай"):
         assert token in text, token
 
