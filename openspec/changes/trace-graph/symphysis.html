@@ -212,15 +212,15 @@
 const JOURNAL = {
  "title": "Журнал решений: trace-graph",
  "source": "decisions.json",
- "sha256": "c82f92701112a2af8cfd2855bc2f3971a0fb19840452604b3c2aba1ebe27153c",
+ "sha256": "b85c1d5492fa214a6474f98e1edf34f09b040fc60539f32667013226eb81a414",
  "stats": {
-  "records": 73,
-  "forks": 53,
+  "records": 78,
+  "forks": 58,
   "facts": 20,
-  "decided": 53,
+  "decided": 58,
   "parked": 1,
-  "evidence_total": 185,
-  "evidence_found": 185
+  "evidence_total": 204,
+  "evidence_found": 204
  },
  "records": [
   {
@@ -436,7 +436,7 @@ const JOURNAL = {
    "outcome": null,
    "parking": [],
    "dispute": "",
-   "consequences": "На этом стоит F-32.",
+   "consequences": "На этом стоит F-32. Поправка при атаке: проверщик зовёт только команда `openspec archive`. Скилл `/opsx:archive`, обычный путь архивации, его не зовёт и переносит каталог сам через `mv`.",
    "evidence": [
     {
      "path": "docs/analysis/requirements-traceability-graph-of-symphysis.md",
@@ -1630,6 +1630,14 @@ const JOURNAL = {
     {
      "option": "D",
      "other": "F-49.C"
+    },
+    {
+     "option": "D",
+     "other": "F-75.B"
+    },
+    {
+     "option": "D",
+     "other": "F-78.D"
     }
    ],
    "recommendation": {
@@ -1648,7 +1656,7 @@ const JOURNAL = {
    "outcome": null,
    "parking": [],
    "dispute": "",
-   "consequences": "Закрывает критерий F-05.",
+   "consequences": "Закрывает критерий F-05. Поправка при атаке: «архив сохраняет свой стоп» верно только для ручного `openspec archive`. На обычном пути `/opsx:archive` проверки дельт нет, поэтому наша команда там единственная, кто зовёт `openspec validate`.",
    "evidence": [],
    "comments": [],
    "nodes": [
@@ -1975,7 +1983,7 @@ const JOURNAL = {
    "outcome": null,
    "parking": [],
    "dispute": "",
-   "consequences": "Расхождение с разбором по критерию F-01 фиксируется этим решением. Следующие записи проектируют только уровень изменения.",
+   "consequences": "Расхождение с разбором по критерию F-01 фиксируется этим решением. Следующие записи проектируют только уровень изменения. Строка таблицы разбора «`view-json` — новое поле с графом» в эту поставку не входит. Слово владельца, 2026-11-05: «А вообще, view-json был приведен как пример общего файла, для объяснения модульности». Читателя у такого поля до вида в плагине нет, а новое поле сменой контракта не считается, поэтому его можно добавить вместе с видом.",
    "evidence": [],
    "comments": [],
    "nodes": [
@@ -2499,7 +2507,7 @@ const JOURNAL = {
    "outcome": null,
    "parking": [],
    "dispute": "",
-   "consequences": "",
+   "consequences": "Замер при атаке: 540 номеров на 188 требований, медиана 2, максимум 10, и 20 требований уже длиннее 500 знаков. Довод «семь знаков» относится к одному номеру. Что делать с длинным требованием, решает F-76.",
    "evidence": [],
    "comments": [],
    "nodes": [
@@ -2581,7 +2589,7 @@ const JOURNAL = {
    "outcome": null,
    "parking": [],
    "dispute": "",
-   "consequences": "",
+   "consequences": "В варианте названы два скилла, а сценарий по исходу Specify пишут три: `symphysis-edge-probe`, `symphysis-prohibition-probe` и `symphysis-consequences`. Комментарий ставят все три, иначе сигнал «Specify без сценария» из F-64.A сработает на каждом исходе описи.",
    "evidence": [],
    "comments": [],
    "nodes": [
@@ -2679,7 +2687,7 @@ const JOURNAL = {
    "outcome": null,
    "parking": [],
    "dispute": "",
-   "consequences": "",
+   "consequences": "F-65 и F-129 в тексте варианта это номера журнала `implementation-consequences`, а не этого журнала.",
    "evidence": [],
    "comments": [],
    "nodes": [
@@ -2777,7 +2785,7 @@ const JOURNAL = {
    "outcome": null,
    "parking": [],
    "dispute": "",
-   "consequences": "",
+   "consequences": "Строка атаки снята словом владельца, 2026-11-05: «Стопом остается атака, а не сами по себе сигналы. Во первых, атаки отключаемы. Во вторых, сами по себе сигналы графа ничего не блокируют, а лишь являются контекстом для атаки.» Устаревший вердикт держит `apply` при любой правке журнала, это свойство атаки, а не ответа на сигнал.",
    "evidence": [],
    "comments": [],
    "nodes": [
@@ -2881,7 +2889,7 @@ const JOURNAL = {
    "outcome": null,
    "parking": [],
    "dispute": "",
-   "consequences": "",
+   "consequences": "Вторую точку F-78 переносит с архивации на конец `/opsx:apply`: отчёт показывается там, а `/opsx:archive` только проверяет `graph/`.",
    "evidence": [],
    "comments": [],
    "nodes": [
@@ -2991,7 +2999,7 @@ const JOURNAL = {
    "outcome": null,
    "parking": [],
    "dispute": "",
-   "consequences": "",
+   "consequences": "Довод «снимок можно собрать позже из архивного каталога» больше не опора: сборка и заморозка идут перед архивацией (F-74). Чем это держится, решает F-75. Запуск уточняет F-78: первый запуск идёт в конце `/opsx:apply`, а подсказка архивации проверяет `graph/` и собирает его при пропуске.",
    "evidence": [],
    "comments": [],
    "nodes": [
@@ -3631,7 +3639,7 @@ const JOURNAL = {
    "outcome": null,
    "parking": [],
    "dispute": "",
-   "consequences": "",
+   "consequences": "Уточнено словом владельца к атаке, 2026-11-05: «расхождения с разбором и фиксируются в развилках или фактах, то есть в журнале. Сама по себе запись F-38 и есть фиксация.» Отдельно называть раздел или номер Т в записи не нужно. Соответствие по разделам показывает задача-сверка в `tasks.md`.",
    "evidence": [],
    "comments": [],
    "finding": ""
@@ -3658,7 +3666,7 @@ const JOURNAL = {
     }
    ],
    "dispute": "",
-   "consequences": "",
+   "consequences": "Вид «улика разошлась» считан по строкам `check` со словами «цитаты нет»: в него вошли 6 и 4 строки сверки описи, поэтому 27 и 18 больше 21 и 14 несошедшихся улик. На 23, 10 и 12 это не влияет, вид снят.",
    "evidence": [
     {
      "path": "reference/README.md",
@@ -4379,7 +4387,7 @@ const JOURNAL = {
    "outcome": null,
    "parking": [],
    "dispute": "",
-   "consequences": "Длина имени у записи журнала решается в design: длинные имена дают основной вес текста и приближают предел.",
+   "consequences": "Длина имени у записи журнала решается в design: длинные имена дают основной вес текста и приближают предел. Строка атаки снята словом владельца, 2026-11-05: «Ограничение указано для пропуска имплементации проблем с очень большими схемами и изменениями, и если человека не устраивает размер схемы, то он выбирает к показу более узкую часть изменения. Итого: рисуем, если текст не больше 50 000 знаков.»",
    "evidence": [],
    "comments": [],
    "nodes": [
@@ -4883,7 +4891,7 @@ const JOURNAL = {
    "outcome": null,
    "parking": [],
    "dispute": "",
-   "consequences": "",
+   "consequences": "Строка атаки о пункте 6 намерения снята тем же словом, что у F-47: стоп держит вызванная атака, а не сигнал.",
    "evidence": [],
    "comments": [],
    "nodes": [
@@ -4994,6 +5002,469 @@ const JOURNAL = {
     "why": "Подчёркивание не требует никаких правил и не упирается ни в один гейт, а читается почти так же. B держится на памяти и ломается на первой большой фикстуре, C теряет смысл префикса, а D ослабляет защиту ради формы записи."
    },
    "finding": ""
+  },
+  {
+   "id": "F-74",
+   "question": "Что происходит со сборкой и заморозкой перед архивацией и куда кладётся результат?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-41",
+    "F-49",
+    "F-52"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Сборка и заморозка идут автоматически перед архивацией. К результатам сборки и проверки сохраняется отчёт. Снимок и отчёт лежат в `openspec/changes/<change>/graph`",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/changes/trace-graph/answers/2026-11-05-5.md",
+       "quote": "сборка и заморозка графа перед архивацией происходят автоматически",
+       "line": 2,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Слово владельца, других вариантов он не называл."
+   },
+   "decision": {
+    "option": "A",
+    "word": "ОКей. сборка и заморозка графа перед архивацией происходят автоматически, к результатам сборки и проверки графа сохраняется отчет, и сохраняется в директорию openspec/changes/<change>/graph.",
+    "date": "2026-11-05"
+   },
+   "reversibility": {
+    "level": "дорого",
+    "why": "снимки и отчёты копятся в `archive/` по пути `graph/`, а будущая сверка снимков станет искать их там: смена пути потребует понимать оба"
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "Уточняет F-41.A: в каталоге изменения остаётся не только снимок, но и отчёт, оба в `graph/`. Снимает довод F-49 о позднем сборе: он был бы вычислением после границы F-25. Чем держится «автоматически», решает F-75.",
+   "evidence": [],
+   "comments": [],
+   "nodes": [
+    "freeze",
+    "report"
+   ],
+   "finding": ""
+  },
+  {
+   "id": "F-75",
+   "question": "Чем держится «автоматически» из F-74? F-49.A запускает заморозку подсказкой, которую модель может пропустить, а ручной `openspec archive` её не читает.",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-32",
+    "F-49",
+    "F-62",
+    "F-74"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Подсказка из F-49.A: `/opsx:archive` проводит модель, сборка, отчёт и снимок идут без просьбы человека. Форк цел. Цена: это автоматика для человека, а не гарантия. Модель может пропустить шаг, ручной `openspec archive` снимка не даст, пропуск назовёт скрипт из F-62.A, а позже снимок не собирается",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "upstream/openspec/src/core/templates/workflows/archive-change.ts",
+       "quote": "additive advice: read and consider every entry, and follow entries that are",
+       "line": 74,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Правка форка: `openspec archive` перед переносом каталога зовёт команду из схемы, а её отказ даёт предупреждение и архив не останавливает. Снимок есть при любом запуске. Цена: новая правка форка, новый пин и тарбол в `vendor/`, форк запускает внешнюю команду, что идёт к ИБ, без Python снимка нет, и расходится с «форк цел» из F-32.D",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "installer/README.md",
+       "quote": "`check` ждёт `openspec` версии `1.15.0-symphysis.4` (пин — поле",
+       "line": 28,
+       "verdict": "сверено",
+       "found": true
+      },
+      {
+       "path": "docs/analysis/requirements-traceability-graph-of-symphysis.md",
+       "quote": "форк запускает внешнюю команду, это вопрос к ИБ",
+       "line": 422,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "C",
+     "text": "Своя команда собирает снимок и отчёт и сама зовёт `openspec archive`, а подсказка просит идти через неё",
+     "added": false,
+     "unlikely": "модель всё равно должна послушать подсказку, поэтому надёжности над A это не прибавляет",
+     "evidence": [
+      {
+       "path": "docs/analysis/requirements-traceability-graph-of-symphysis.md",
+       "quote": "добавив по необходимости свои процедуры и проверки",
+       "line": 51,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "D",
+     "text": "Хук клиента на команду `openspec archive`",
+     "added": false,
+     "unlikely": "хуки ставит плагин и у каждого клиента они свои, а ядро работает и без плагина",
+     "evidence": [
+      {
+       "path": "docs/repo-contract.md",
+       "quote": "- записи плагина в проекте: `.claude/settings.local.json`, `.opencode/plugins/`, `.git/info/exclude`;",
+       "line": 56,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    }
+   ],
+   "antipodes": [
+    {
+     "option": "B",
+     "other": "F-32.D"
+    }
+   ],
+   "recommendation": {
+    "option": "A",
+    "why": "Первой поставке снимки нужны только про запас: сверять их начнёт следующий этап, а `/opsx:archive` и есть обычный путь архивации. B даёт настоящую гарантию, но требует правки форка, нового тарбола и решения ИБ, а добавить её можно позже без миграции. Если «автоматически» значит снимок при любом запуске, это B: A такого не обещает."
+   },
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-05"
+   },
+   "reversibility": {
+    "level": "обратимо",
+    "why": "ключ `operations.archive.guidance` в `openspec/config.yaml` и его слияние в `installer/lib/install.js`: что-то другое можно поставить позже, накопленные снимки это не задевает"
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "Поправка к варианту B и к причине: `/opsx:archive` не зовёт `openspec archive`, а переносит каталог сам, поэтому правка команды на обычном пути снимка не даёт. Полной гарантии нет ни у одного варианта: на этом пути шаг выполняет модель. На выбор A это не влияет. Точку запуска уточняет F-78, шаг при этом всё так же выполняет модель.",
+   "evidence": [],
+   "comments": [],
+   "nodes": [
+    "freeze",
+    "archive"
+   ],
+   "finding": ""
+  },
+  {
+   "id": "F-76",
+   "question": "Что делать с требованием, которое не влезает в 500 знаков? Номера записей считаются в этот предел (F-44.A), а 20 требований из 188 его уже превышают.",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-44"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Менять инструкцию составления требований: часть требования выносится в связанное дочернее требование, предел остаётся",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/schemas/symphysis/schema.yaml",
+       "quote": "Требование — `### Requirement: <имя>` с SHALL или MUST",
+       "line": 76,
+       "verdict": "сверено",
+       "found": true
+      },
+      {
+       "path": "docs/analysis/requirements-traceability-graph-of-symphysis.md",
+       "quote": "| Требование связано с требованием | derives, traces |",
+       "line": 137,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Поднять предел в форке",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "upstream/openspec/src/core/validation/constants.ts",
+       "quote": "export const MAX_REQUIREMENT_TEXT_LENGTH = 500;",
+       "line": 11,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Слово владельца: предел в форке он отверг, потому что 500 это выверенная опытом рамка."
+   },
+   "decision": {
+    "option": "A",
+    "word": "Надо менять скилл составления требований. Раз у нас появляется механизм связей, то можно делать связанное дочернее требование, в которое выносить часть требования. Другой вариант модификации форка с изменением лимита мне не нравится, потому что 500 это выверенная опытом рамка хорошего числа символов на требование.",
+    "date": "2026-11-05"
+   },
+   "reversibility": {
+    "level": "обратимо",
+    "why": "строка в инструкции шага `specs` в `openspec/schemas/symphysis/schema.yaml`: уже разделённые требования остаются годными и без неё"
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "Отдельного скилла составления требований нет: это инструкция шага `specs` в `openspec/schemas/symphysis/schema.yaml`, туда и идёт правило. Как записывается связь, решает F-77. Край на шаг `specs`: длинное старое требование попадает в MODIFIED, потому что MODIFIED несёт его целиком.",
+   "evidence": [],
+   "comments": [],
+   "nodes": [
+    "conv"
+   ],
+   "finding": ""
+  },
+  {
+   "id": "F-77",
+   "question": "Как дочернее требование из F-76 называет родителя?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-42",
+    "F-76"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "В тексте дочернего, короткой фразой: `Часть требования «имя».`, а при другой capability в форме F-42.A. Имя сверяется точным совпадением, человек видит связь при чтении. Цена: фраза считается в предел 500 знаков",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/changes/archive/2026-11-04-recommendation-why/tasks.md",
+       "quote": "Написать тесты по сценариям `decision-journal`: «Есть поле `text`»",
+       "line": 5,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Комментарий в конце блока дочернего, как след пробы: в предел не считается. Цена: связи нет в тексте, который читает человек, это та же цена, что у отвергнутого F-44.B",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "skills/symphysis-edge-probe/SKILL.md",
+       "quote": "След стоит в конце блока каждого требования, после всех его сценариев",
+       "line": 363,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "C",
+     "text": "Родитель перечисляет свои части. Цена: каждая новая часть это MODIFIED родителя целиком, а он и так упёрся в предел",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/schemas/symphysis/schema.yaml",
+       "quote": "Дельты — секции `## ADDED|MODIFIED|REMOVED Requirements`; MODIFIED несёт требование целиком.",
+       "line": 77,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "D",
+     "text": "Отдельной записи нет: связь вычисляется по общим записям журнала, как кандидат из F-71",
+     "added": false,
+     "unlikely": "кандидат не отличает дочернее требование от соседа, а слово просит связанное",
+     "evidence": [
+      {
+       "path": "docs/analysis/requirements-traceability-graph-of-symphysis.md",
+       "quote": "Их вычисляет скрипт по общим записям журнала.",
+       "line": 147,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Точное совпадение имени проверяется так же, как остальные связи, и связь видна человеку. Дочернее требование короткое, поэтому предел ему не мешает, а B прячет связь и повторяет цену F-44.B. C заставляет править родителя при каждой новой части."
+   },
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-05"
+   },
+   "reversibility": {
+    "level": "дорого",
+    "why": "фраза уходит в мастер-спеки при архивации: смена формы заставит `trace_graph.py` читать обе"
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "Граф получает связь `derives` между требованиями: mermaid 12.2.0 её знает, на 11.17.2 проба не запускалась. Неверное имя родителя ловит сигнал «Неизвестное имя» из F-64.A. Входит ли эта связь в линзу `trace-link` из F-72.A, решается на шаге `specs`.",
+   "evidence": [],
+   "comments": [],
+   "nodes": [
+    "conv"
+   ],
+   "finding": ""
+  },
+  {
+   "id": "F-78",
+   "question": "Где идёт заморозка, чтобы быть раньше `/opsx:sync`? `docs/GUIDE.md` ставит синхронизацию перед `/opsx:archive`, где заморозку запускает F-75.A, а после синхронизации новый сценарий в MODIFIED уже лежит в мастере.",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-48",
+    "F-49",
+    "F-64",
+    "F-74",
+    "F-75"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Заморозка в конце `/opsx:apply`, строкой в `apply.instruction`: сборка, отчёт и снимок в `graph/`, человек видит отчёт. `/opsx:archive` подсказкой проверяет: если `graph/` нет или он устарел по хешам, собирает. Синхронизация файлов изменения не трогает, поэтому снимок не устаревает. Цена: второй отчёт из F-48.A переезжает с архивации на конец реализации, а ручной `openspec archive` не проверяется",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "upstream/openspec/src/core/project-config.ts",
+       "quote": "export const OPERATION_IDS = ['apply', 'archive'] as const;",
+       "line": 8,
+       "verdict": "сверено",
+       "found": true
+      },
+      {
+       "path": "openspec/schemas/symphysis/schema.yaml",
+       "quote": "Работай по tasks.md по порядку и отмечай `- [x]` по мере выполнения",
+       "line": 159,
+       "verdict": "сверено",
+       "found": true
+      },
+      {
+       "path": "openspec/schemas/symphysis/steps.md",
+       "quote": "Следа в файлах изменения синхронизация не оставляет",
+       "line": 392,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Оставить как есть: заморозка только в `/opsx:archive`. Цена: после синхронизации сигнал о новых сценариях в MODIFIED молчит, и второго шанса поймать пропуск нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "docs/GUIDE.md",
+       "quote": "/opsx:sync add-overdue",
+       "line": 507,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "C",
+     "text": "Поменять порядок в `docs/GUIDE.md` и `steps.md`: синхронизация только внутри `/opsx:archive`, после заморозки. Цена: держится на памяти, команда `/opsx:sync` никуда не делась",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/schemas/symphysis/steps.md",
+       "quote": "`/opsx:sync <имя>`",
+       "line": 404,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "D",
+     "text": "Правка форка: добавить `sync` в список операций и научить скилл синхронизации читать подсказку",
+     "added": false,
+     "unlikely": "новый тарбол ради одного сигнала, и форк перестаёт быть целым (F-32.D)",
+     "evidence": [
+      {
+       "path": "upstream/openspec/src/core/project-config.ts",
+       "quote": "Unknown operation ID",
+       "line": 138,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    }
+   ],
+   "antipodes": [
+    {
+     "option": "D",
+     "other": "F-32.D"
+    }
+   ],
+   "recommendation": {
+    "option": "A",
+    "why": "Заморозка оказывается до синхронизации без правки форка, а пропуск ловится до `mv`, пока его можно исправить. B дешевле, но оставляет обе дыры, C держится на памяти, а D ломает «форк цел» ради одного сигнала."
+   },
+   "decision": {
+    "option": "A",
+    "word": "Может тогда заморока будет перед /opsx:sync, а если далее вызван openspec archive, то проверять есть ли уже созданный отчет по сборке графа? Да, согласен с вариантом А.",
+    "date": "2026-11-05"
+   },
+   "reversibility": {
+    "level": "обратимо",
+    "why": "строка в `apply.instruction` в `openspec/schemas/symphysis/schema.yaml` и текст `operations.archive.guidance`: снимки лежат в том же `graph/`, откуда бы их ни собрали"
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "Цена, не названная при выборе: в конце реализации код часто ещё не закоммичен, поэтому снимок назовёт коммит без него, а `/opsx:archive` сочтёт такой снимок свежим, потому что хеши файлов изменения те же. Что снимок должен называть в этом случае, журнал не решает. Если снимок всё же собран в `/opsx:archive` после синхронизации, сигнал о новых сценариях в MODIFIED молчит.",
+   "evidence": [],
+   "comments": [],
+   "nodes": [
+    "apply",
+    "freeze",
+    "sync",
+    "archive"
+   ],
+   "finding": ""
   }
  ],
  "notes": [
@@ -5012,10 +5483,1160 @@ const JOURNAL = {
   {
    "date": "2026-11-05",
    "text": "брейншторм закончен по решению человека"
+  },
+  {
+   "date": "2026-11-05",
+   "text": "атака decisions.json: строк 117, блокеров 14, предупреждений 2, справок 101, не выводится 2 — gaps_found"
+  },
+  {
+   "date": "2026-11-05",
+   "text": "атака openspec/changes/trace-graph/attack/decisions.md · context-compliance · ««Без выбора рисует всё, если текст не больше 50 000 знаков»…» — спор: Ограничение про \"весь граф в одной картинке \" и \"В функциональность symphysis это не входит\" указано на уровне анализа, а не имплементации. Разрешение блокера: без выбора рисует всё, если текст не больше 50 000 знаков -- валидно, так как задача декомпозиции к человеку. Ограничение указано для пропуска имплементации проблем с очень большими схемами и изменениями, и если человека не устраивает размер схемы, то он выбирает к показу более узкую часть изменения. Итого: рисуем, если текст не больше 50 000 знаков. · атака openspec/changes/trace-graph/attack/decisions.md · context-compliance · «Ответ на сигнал это «Запись журнала с префиксом `[сигнал]`»…» — спор: Тут склеены понятия. Стопом остается атака, а не сами по себе сигналы. Во первых, атаки отключаемы. Во вторых, сами по себе сигналы графа ничего не блокируют, а лишь являются контекстом для атаки. В противном случае мы бы считали стопом любое содержание журнала, а это не так. · атака openspec/changes/trace-graph/attack/decisions.md · context-compliance · ««Цена пропуска невысока: снимок можно собрать позже из архи…» — спор: ОКей. сборка и заморозка графа перед архивацией происходят автоматически, к результатам сборки и проверки графа сохраняется отчет, и сохраняется в директорию openspec/changes/<change>/graph. · атака openspec/changes/trace-graph/attack/decisions.md · context-compliance · «`view-json`: «новое поле с графом»» — спор: Предлагаю почитать repo-contract.md или например X:\\symphysis-trace-graph\\openspec\\changes\\archive\\2026-11-02-decision-scheme\\decisions.html (как пример того, что упоминание есть) А вообще, view-json был приведен как пример общего файла, для объяснения модульности · атака openspec/changes/trace-graph/attack/decisions.md · context-compliance · ««Расхождение с разбором по критерию F-01 фиксируется этим р…» — спор: Проблема в букве? расхождения с разбором и фиксируются в развилках или фактах, то есть в журнале. Сама по себе запись F-38 и есть фиксация. · атака openspec/changes/trace-graph/attack/decisions.md · context-compliance · «Команда отдельным скриптом, в разборе «`tools/`, рабочее им…» — спор: Аналогично -- фиксация F-39 и есть соответствие требованию, что что-либо решено вне разбора · атака openspec/changes/trace-graph/attack/decisions.md · context-compliance · ««Всегда capability и имя»» — спор: Аналогично -- фиксация F-42 и есть соответствие требованию, что что-либо решено вне разбора · атака openspec/changes/trace-graph/attack/decisions.md · context-compliance · «Новая линза без условия» — спор: Аналогично -- фиксация F-55 и есть соответствие требованию, что что-либо решено вне разбора · атака openspec/changes/trace-graph/attack/decisions.md · context-compliance · ««Улики остаются у `check`»» — спор: Аналогично -- фиксация F-64 и есть соответствие требованию, что что-либо решено вне разбора · атака openspec/changes/trace-graph/attack/decisions.md · claim-authority · ««Цена мала: номер занимает семь знаков из 500.»» — спор: Надо менять скилл составления требований. Раз у нас появляется механизм связей, то можно делать связанное дочернее требование, в которое выносить часть требования. Другой вариант модификации форка с изменением лимита мне не нравится, потому что 500 это выверенная опытом рамка хорошего числа символов на требование. · атака openspec/changes/trace-graph/attack/decisions.md · claim-authority · «`decision.date` 2026-11-05 у решений Т9–Т12» — спор: Дата в документе для личного пользования и требованием не является. · атака openspec/changes/trace-graph/attack/decisions.md · context-compliance · ««Находка `блокер`, как у остальных линз» у линзы связей» — спор: Ответил к аналогичному блокеру F-47, options.A · F-48, options.A."
+  },
+  {
+   "date": "2026-11-05",
+   "text": "развилки из первой атаки закрыты: решений 4, фактов 0, открытых развилок 0, парковок материалам 0, антиподов 1"
+  },
+  {
+   "date": "2026-11-05",
+   "text": "атака decisions.json: строк 119, блокеров 2, предупреждений 2, справок 115, не выводится 2 — gaps_found"
+  },
+  {
+   "date": "2026-11-05",
+   "text": "атака decisions.json: строк 119, блокеров 0, предупреждений 2, справок 117, не выводится 2 — passed"
+  },
+  {
+   "date": "2026-11-05",
+   "text": "развилка из второго прохода атаки закрыта: решений 1, фактов 0, открытых развилок 0, парковок материалам 0, антиподов 1"
+  },
+  {
+   "date": "2026-11-05",
+   "text": "атака decisions.json: строк 123, блокеров 0, предупреждений 2, справок 121, не выводится 2 — passed"
   }
  ]
 };
-const ATTACK = [];
+const ATTACK = [
+ {
+  "path": "openspec/changes/trace-graph/attack/decisions.md",
+  "frontmatter": {
+   "status": "passed",
+   "targets": [
+    {
+     "path": "decisions.json",
+     "sha256": "b85c1d5492fa214a6474f98e1edf34f09b040fc60539f32667013226eb81a414"
+    }
+   ]
+  },
+  "rows": [
+   {
+    "claim": "«Архив зовёт тот же проверщик сам», причина F-32: «архив сохраняет свой стоп»",
+    "section": "F-07, consequences · F-32, consequences",
+    "lens": "claim-authority",
+    "invariant": "«уже есть» сходится с замером на обычном пути архивации",
+    "severity": "справка",
+    "support": "есть: следствия обеих записей теперь говорят, что проверщик зовёт только `openspec archive`, а `/opsx:archive` переносит каталог сам: `.claude/skills/openspec-archive-change/SKILL.md:183` основного клона `mv \"<changeRoot>\" \"<planningHome.changesDir>/archive/<target-name>\"`",
+    "fix": "—"
+   },
+   {
+    "claim": "«Снимок есть при любом запуске», причина: «B даёт настоящую гарантию»",
+    "section": "F-75, consequences",
+    "lens": "claim-authority",
+    "invariant": "польза варианта сходится с кодом",
+    "severity": "справка",
+    "support": "есть: поправка в следствиях F-75: правка `openspec archive` на `/opsx:archive` не действует, полной гарантии нет ни у одного варианта (`.claude/skills/openspec-archive-change/SKILL.md:183` основного клона)",
+    "fix": "—"
+   },
+   {
+    "claim": "«в MODIFIED только новые сценарии» и второй отчёт «перед архивацией»",
+    "section": "F-64, options.A · F-48, consequences · F-78, decision",
+    "lens": "context-compliance",
+    "invariant": "сигнал отвечает одинаково до и после `/opsx:sync`",
+    "severity": "справка",
+    "support": "есть: F-78.A ставит заморозку в конец `/opsx:apply`, до синхронизации; пересборка в `/opsx:archive` бывает редко, и следствие F-78 говорит, что сигнал тогда молчит",
+    "fix": "—"
+   },
+   {
+    "claim": "«На эталонах это 23, 10 и 12 строк»",
+    "section": "F-64, options.A",
+    "lens": "claim-authority",
+    "invariant": "число описывает отчёт по выбранным правилам",
+    "severity": "предупреждение",
+    "support": "по спеке не выводится: расхождение: цель 23, 10, 12; улика: `openspec/changes/trace-graph/research/F-57-probe/prototype.py:204` считает Specify по совпадению слов (F-45.B, не выбран), а на эталонах исходов Specify 0, 11, 42 и комментария F-45.A нет (F-69: «сигнал сработал бы на каждом Specify»); пометки `служебная` там тоже нет. Измерить можно только готовым скриптом",
+    "fix": "вопрос человеку"
+   },
+   {
+    "claim": "Строки первого прохода, снятые словом человека",
+    "section": "F-25 · F-26 · F-27 · F-28 · F-38 · F-39 · F-42 · F-47 · F-55 · F-56 · F-64 · F-66 · F-72",
+    "lens": "context-compliance",
+    "invariant": "решённое человеком с причиной не считается находкой",
+    "severity": "справка",
+    "support": "есть: `openspec/changes/trace-graph/answers/2026-11-05-5.md`, заметка `notes[]` с этими словами и следствия F-38, F-47, F-56, F-66, F-72",
+    "fix": "—"
+   },
+   {
+    "claim": "«Цена пропуска невысока: снимок можно собрать позже из архивного каталога.»",
+    "section": "F-49, consequences · F-74, decision",
+    "lens": "context-compliance",
+    "invariant": "вычисление после архивации входит в названные исключения",
+    "severity": "справка",
+    "support": "есть: следствие F-49 снимает этот довод, слово F-74 «сборка и заморозка графа перед архивацией происходят автоматически»",
+    "fix": "—"
+   },
+   {
+    "claim": "`/opsx:archive` и есть обычный путь архивации",
+    "section": "F-75, recommendation",
+    "lens": "claim-authority",
+    "invariant": "«уже есть» сходится с замером",
+    "severity": "справка",
+    "support": "есть: `openspec/schemas/symphysis/steps.md:430`, `docs/GUIDE.md:513`",
+    "fix": "—"
+   },
+   {
+    "claim": "Слова F-74 и F-76 внесены дословно",
+    "section": "F-74 · F-76, decision",
+    "lens": "context-compliance",
+    "invariant": "`decision.word` не расходится с вариантом",
+    "severity": "справка",
+    "support": "есть: `openspec/changes/trace-graph/answers/2026-11-05-6.md`, перенос из `answers/2026-11-05-5.md`",
+    "fix": "—"
+   },
+   {
+    "claim": "«Отдельного скилла составления требований нет: это инструкция шага `specs`»",
+    "section": "F-76, consequences",
+    "lens": "claim-extraction",
+    "invariant": "названное существует",
+    "severity": "справка",
+    "support": "есть: `openspec/schemas/symphysis/schema.yaml:74`; в `skills/` такого скилла нет",
+    "fix": "—"
+   },
+   {
+    "claim": "«mermaid 12.2.0 её знает, на 11.17.2 проба не запускалась»",
+    "section": "F-77, consequences",
+    "lens": "claim-authority",
+    "invariant": "«уже есть» сходится с замером",
+    "severity": "справка",
+    "support": "есть: поиск `derives` в `vscode/node_modules/mermaid/dist/chunks/mermaid.core/requirementDiagram-EQYSW5RA.mjs` даёт 2 совпадения, версия 12.2.0. Про 11.17.2 запись говорит честно",
+    "fix": "—"
+   },
+   {
+    "claim": "188 требований из 188 с номером; задач 251, сценарий у 131, запись у 118, требование у 3, ни с чем 75",
+    "section": "F-06 · F-42 · F-43 · F-44, evidence",
+    "lens": "claim-authority",
+    "invariant": "число сходится с замером",
+    "severity": "справка",
+    "support": "есть: разовый счёт по `openspec/changes/archive/*/`: 188 и 188; 251, 131, 118, 3, 75",
+    "fix": "—"
+   },
+   {
+    "claim": "Замер при атаке: 540 номеров на 188 требований, медиана 2, максимум 10, 20 длиннее 500",
+    "section": "F-44, consequences · F-76, question",
+    "lens": "claim-authority",
+    "invariant": "число сходится с замером",
+    "severity": "справка",
+    "support": "есть: разовый счёт по `openspec/changes/archive/*/specs/`; предел `upstream/openspec/src/core/validation/constants.ts:11`",
+    "fix": "—"
+   },
+   {
+    "claim": "«27 из 590 в мастер-спеках»",
+    "section": "F-42, options.B",
+    "lens": "claim-authority",
+    "invariant": "число сходится с замером",
+    "severity": "справка",
+    "support": "есть: разовый счёт по `openspec/specs/*/spec.md`: 623 сценария, 590 разных имён, 27 повторяются",
+    "fix": "—"
+   },
+   {
+    "claim": "Исходов Specify 159, у 72 связь только в комментарии, у 10 из 77 сценария нет",
+    "section": "F-45, options.B · options.C",
+    "lens": "claim-authority",
+    "invariant": "число сходится с замером",
+    "severity": "справка",
+    "support": "есть: разовый счёт по журналам архива: 159, в тексте 82, только в комментарии 72, нигде 5, то есть 77. Число 10 не перемерено, опора `docs/analysis/requirements-traceability-graph-of-symphysis.md:250`",
+    "fix": "—"
+   },
+   {
+    "claim": "Сценарий по исходу Specify пишут три скилла",
+    "section": "F-45, consequences",
+    "lens": "claim-authority",
+    "invariant": "число сходится с замером",
+    "severity": "справка",
+    "support": "есть: `skills/symphysis-edge-probe/SKILL.md:347`, `skills/symphysis-prohibition-probe/SKILL.md:227`, `skills/symphysis-consequences/SKILL.md:454`",
+    "fix": "—"
+   },
+   {
+    "claim": "«Проверено запуском: `validate --strict` проходит, при архивации комментарий доходит до мастер-спеки.»",
+    "section": "F-45, options.A",
+    "lens": "claim-authority",
+    "invariant": "заявленный запуск подтверждается",
+    "severity": "справка",
+    "support": "есть чтением: `upstream/openspec/src/core/parsers/requirement-blocks.ts:6` «raw: string; // full block including headerLine and following content». Следа запуска в каталоге изменения нет, повтор не запускался",
+    "fix": "—"
+   },
+   {
+    "claim": "F-65 и F-129 это номера журнала `implementation-consequences`",
+    "section": "F-46, consequences",
+    "lens": "claim-extraction",
+    "invariant": "номер в тексте называет чужой журнал",
+    "severity": "справка",
+    "support": "есть: следствие записи; `docs/analysis/requirements-traceability-graph-of-symphysis.md:251`",
+    "fix": "—"
+   },
+   {
+    "claim": "«а в схеме symphysis этой команды нет»",
+    "section": "F-07, question",
+    "lens": "claim-authority",
+    "invariant": "число сходится с замером",
+    "severity": "справка",
+    "support": "есть: поиск `validate` по `openspec/schemas/symphysis/schema.yaml` даёт 0",
+    "fix": "—"
+   },
+   {
+    "claim": "«проверено запуском на копии»: подсказка доходит полем `operationGuidance`",
+    "section": "F-08, question",
+    "lens": "claim-authority",
+    "invariant": "заявленный запуск подтверждается",
+    "severity": "справка",
+    "support": "есть чтением: `upstream/openspec/src/commands/workflow/instructions.ts:1008` «if (inputs.operationGuidance && inputs.operationGuidance.length > 0) {», скилл читает её: `.claude/skills/openspec-archive-change/SKILL.md:50` основного клона",
+    "fix": "—"
+   },
+   {
+    "claim": "Правило перевода путей есть только в пакете контекста",
+    "section": "F-09, question",
+    "lens": "claim-authority",
+    "invariant": "«уже есть» сходится с замером",
+    "severity": "справка",
+    "support": "есть: поиск «переводят», «переводится», «переводить» по `docs/GUIDE.md` и `openspec/schemas/symphysis/steps.md` дал 0",
+    "fix": "—"
+   },
+   {
+    "claim": "«до реализации совпадают 66 улик из 66, перед архивацией 45»",
+    "section": "F-10, question · F-51, recommendation",
+    "lens": "claim-authority",
+    "invariant": "число сходится с замером",
+    "severity": "справка",
+    "support": "есть: `openspec/changes/trace-graph/research/F-57-probe/summary.txt:3` «[ok] улик сверено 45 из 66»; коммит `940caf7` в клоне есть, `git cat-file -t` даёт commit. 66 из 66 на этом коммите не перемерено, опора `docs/analysis/requirements-traceability-graph-of-symphysis.md:361`",
+    "fix": "—"
+   },
+   {
+    "claim": "«у узлов устойчивые id»",
+    "section": "F-15, question",
+    "lens": "claim-extraction",
+    "invariant": "у утверждения факта есть опора",
+    "severity": "справка",
+    "support": "есть: `docs/analysis/requirements-traceability-graph-of-symphysis.md:622` «да: группа в SVG называется», среди улик записи этой строки нет",
+    "fix": "—"
+   },
+   {
+    "claim": "Размеры эталонов",
+    "section": "F-16, evidence",
+    "lens": "claim-authority",
+    "invariant": "число сходится с замером",
+    "severity": "справка",
+    "support": "есть: `openspec/changes/trace-graph/research/F-57-probe/summary.txt:3`, `:4`, `:5`; улик 66, 160, 329 посчитаны по журналам клонов",
+    "fix": "—"
+   },
+   {
+    "claim": "«строка в `FILES` у `sync-payload.js` и в фильтре имён инсталлятора»",
+    "section": "F-39, options.A",
+    "lens": "claim-extraction",
+    "invariant": "названное существует",
+    "severity": "справка",
+    "support": "есть: `installer/scripts/sync-payload.js:10` «const FILES = [», `installer/lib/install.js:128` фильтр с именем `step_help`",
+    "fix": "—"
+   },
+   {
+    "claim": "Живой граф не лежит на диске при слове «надо создавать его граф и постепенно наполнять»",
+    "section": "F-41, options.A · F-18, decision",
+    "lens": "context-compliance",
+    "invariant": "решение не расходится со словом человека",
+    "severity": "справка",
+    "support": "есть: `docs/analysis/requirements-traceability-graph-of-symphysis.md:42` «Форму уточняет Т9: создавать файл не нужно, граф вычисляется.»; `graph/` уточняет F-74",
+    "fix": "—"
+   },
+   {
+    "claim": "«Механизм уже есть: те же четыре исхода, просмотрщик и `apply`»",
+    "section": "F-47, recommendation",
+    "lens": "claim-authority",
+    "invariant": "«уже есть» сходится с замером",
+    "severity": "справка",
+    "support": "есть: `tools/journal_model.py:416`, `tools/journal_render.py:486`, `vscode/src/shared/check.ts:8` читают `outcome.kind` без префикса вопроса",
+    "fix": "—"
+   },
+   {
+    "claim": "«Заморозка не гейт, как и просит Т3»",
+    "section": "F-49, recommendation",
+    "lens": "context-compliance",
+    "invariant": "ссылка на решение подтверждается",
+    "severity": "справка",
+    "support": "есть: `docs/analysis/requirements-traceability-graph-of-symphysis.md:366` «Это совпадает с Т3 и не требует правки форка.» Сам Т3 говорит о проверке связей; что совет можно пропустить, названо в F-49.A и принято в F-62 и F-75",
+    "fix": "—"
+   },
+   {
+    "claim": "«правка разрешения путей в `journal_apply.py`»",
+    "section": "F-50, options.A",
+    "lens": "claim-authority",
+    "invariant": "место правки одно, как сказано",
+    "severity": "справка",
+    "support": "есть: `_resolve` определена в `tools/journal_apply.py:110`, `tools/journal_sites.py:10` её импортирует, ссылки плагина идут через `file_links` там же",
+    "fix": "—"
+   },
+   {
+    "claim": "Слово «вид пишется в id (SEC-3)» и выбранная форма",
+    "section": "F-54, decision · F-67, options.B · F-73, options.A",
+    "lens": "context-compliance",
+    "invariant": "`decision.word` не расходится с вариантом или отступление названо",
+    "severity": "справка",
+    "support": "есть: F-67.B «у `element` признак вида лежит не в поле, а в имени»; F-73.A «небольшое отступление от формы `SEC-3` из слова к F-54»",
+    "fix": "—"
+   },
+   {
+    "claim": "Места правки: `src/shared/attack.ts`, `EXPECTED_CONTRACT`, `test/e2e/scenario.ts`, `tools/playground-template.html`, `CONTRACT`",
+    "section": "F-55, consequences",
+    "lens": "claim-extraction",
+    "invariant": "названное существует",
+    "severity": "справка",
+    "support": "есть: все названы верно, `vscode/src/host/core.ts:9`, `vscode/test/e2e/scenario.ts:300`, `tools/journal_render.py:28`. Список не полон, на шаг `tasks`: линзы называют ещё `openspec/schemas/symphysis/templates/attack-artifacts.md:21`, `openspec/schemas/symphysis/steps.md:337`, `skills/symphysis-viewer/SKILL.md:138`, спека `decision-viewer`, `tests/test_schema.py:371`, `tests/test_skills.py:303`, а номер контракта `vscode/test/unit/core.test.ts:155`",
+    "fix": "—"
+   },
+   {
+    "claim": "Вид «улика разошлась» включает строки сверки описи",
+    "section": "F-57, consequences",
+    "lens": "claim-authority",
+    "invariant": "число сходится с замером",
+    "severity": "справка",
+    "support": "есть: следствие записи; `openspec/changes/trace-graph/research/F-57-probe/signals-recommendation-why.txt` несёт 6 таких строк, `openspec/changes/trace-graph/research/F-57-probe/signals-step-help.txt` 4",
+    "fix": "—"
+   },
+   {
+    "claim": "`docs/repo-contract.md:3` действует для двух проектов; бэклог вне git",
+    "section": "F-60, parking",
+    "lens": "claim-extraction",
+    "invariant": "названное существует",
+    "severity": "справка",
+    "support": "есть: `docs/repo-contract.md:3` «Действует для двух проектов»; `git check-ignore .context/backlog.md` в плагине подтверждает",
+    "fix": "—"
+   },
+   {
+    "claim": "Сценарий «Цели нет» пишет `coverage` для артефактов; шаблон настроек в инсталляторе",
+    "section": "F-61, consequences · options.D",
+    "lens": "claim-extraction",
+    "invariant": "названное существует",
+    "severity": "справка",
+    "support": "есть: `openspec/specs/artifact-attack/spec.md:76`, `installer/lib/install.js:23`",
+    "fix": "—"
+   },
+   {
+    "claim": "«F-119 изменения `implementation-consequences`»",
+    "section": "F-63, recommendation",
+    "lens": "claim-extraction",
+    "invariant": "`F-NN` существует",
+    "severity": "справка",
+    "support": "есть: запись F-119 в журнале этого архива, решение A",
+    "fix": "—"
+   },
+   {
+    "claim": "«На эталонах их 4 на три изменения»",
+    "section": "F-65, options.A",
+    "lens": "claim-authority",
+    "invariant": "число сходится с замером",
+    "severity": "справка",
+    "support": "есть: `openspec/changes/trace-graph/research/F-57-probe/summary.txt:15`: 1+1+2",
+    "fix": "—"
+   },
+   {
+    "claim": "«Хук стоит только в репозитории symphysis»",
+    "section": "F-73, consequences",
+    "lens": "claim-authority",
+    "invariant": "«уже есть» сходится с замером",
+    "severity": "справка",
+    "support": "есть: `gate_hook` не найден в `installer/lib`, `installer/scripts`, `installer/package.json`",
+    "fix": "—"
+   },
+   {
+    "claim": "Антиподов 5 пар, выбранных пар нет",
+    "section": "F-31 · F-32 · F-39 · F-49 · F-64 · F-75 · F-78, antipodes",
+    "lens": "context-compliance",
+    "invariant": "оба антипода не выбраны вместе",
+    "severity": "справка",
+    "support": "есть: выбраны F-31.A, F-32.D, F-39.A, F-49.A, F-64.A, F-75.A, F-78.A; антиподы F-64.B, F-39.C, F-49.C, F-75.B, F-78.D не выбраны",
+    "fix": "—"
+   },
+   {
+    "claim": "Отступления от постановки: выбранных нет",
+    "section": "все записи, options.deviation",
+    "lens": "context-compliance",
+    "invariant": "выбранный вариант, противоречащий факту `постановка`, несёт `deviation`",
+    "severity": "справка",
+    "support": "есть: поле стоит только у F-56.C, он не выбран; выбранные варианты F-01–F-05 не противоречат",
+    "fix": "—"
+   },
+   {
+    "claim": "Решённые записи не на `открыт`, обратимость у всех решений",
+    "section": "все записи, status · reversibility",
+    "lens": "context-compliance",
+    "invariant": "статус и обратимость соответствуют решению",
+    "severity": "справка",
+    "support": "есть: разовый счёт: 58 развилок `решён`, открытых 0, обратимость у 58 из 58",
+    "fix": "—"
+   },
+   {
+    "claim": "Пути и номера в текстах записей",
+    "section": "все записи, тексты",
+    "lens": "claim-extraction",
+    "invariant": "названное существует",
+    "severity": "справка",
+    "support": "есть: не найденные пути это будущие файлы или обороты: `trace_graph.py`, `security.md`, `tasks.md`, `consequences.md`, `symphysis.yaml`, `schema.yaml`, `репозиторий/модуль`, `tools/journal`, `openspec/changes/<имя>/…`, `openspec/changes/<change>/graph`, `req:capability/имя`, `scn:capability/требование/имя`, `graph/`",
+    "fix": "—"
+   },
+   {
+    "claim": "Строки кругов и строки о развилках из атаки",
+    "section": "notes",
+    "lens": "claim-authority",
+    "invariant": "число сходится с замером",
+    "severity": "справка",
+    "support": "есть: круг 1 и круг 2 как в первом проходе; F-74–F-77 дают 4 решения и антипод F-75.B; F-78 даёт 1 решение и антипод F-78.D",
+    "fix": "—"
+   },
+   {
+    "claim": "Заморозка в конце `/opsx:apply` (F-78.A) и «Снимок называет только коммиты заморозки» (F-51.A)",
+    "section": "F-78, options.A · F-51, options.A",
+    "lens": "context-compliance",
+    "invariant": "коммит в снимке содержит то, что снято",
+    "severity": "предупреждение",
+    "support": "по спеке не выводится: `context/04-workflow.md:17` «Перед реализацией — показ: код не коммитится до показа, пока человек не сказал иначе.», поэтому в конце реализации код часто ещё не закоммичен и снимок назовёт коммит без него. `/opsx:archive` такой снимок считает свежим: хеши файлов изменения те же. Что снимок должен называть в этом случае, журнал не решает, следствие F-78 это называет",
+    "fix": "вопрос человеку"
+   },
+   {
+    "claim": "Подсказка принимается только у `apply` и `archive`, синхронизация файлов изменения не трогает",
+    "section": "F-78, options.A",
+    "lens": "claim-authority",
+    "invariant": "«уже есть» сходится с замером",
+    "severity": "справка",
+    "support": "есть: `upstream/openspec/src/core/project-config.ts:8`, `openspec/schemas/symphysis/schema.yaml:158`, `openspec/schemas/symphysis/steps.md:392`; поиск `operationGuidance` в `upstream/openspec/src/core/templates/workflows/sync-specs.ts` даёт 0",
+    "fix": "—"
+   },
+   {
+    "claim": "Слово F-78 внесено дословно",
+    "section": "F-78, decision",
+    "lens": "context-compliance",
+    "invariant": "`decision.word` не расходится с вариантом",
+    "severity": "справка",
+    "support": "есть: `openspec/changes/trace-graph/answers/2026-11-05-8.md`",
+    "fix": "—"
+   },
+   {
+    "claim": "чисто",
+    "section": "F-01, все поля",
+    "lens": "coverage",
+    "invariant": "—",
+    "severity": "справка",
+    "support": "есть",
+    "fix": "—"
+   },
+   {
+    "claim": "чисто",
+    "section": "F-02, все поля",
+    "lens": "coverage",
+    "invariant": "—",
+    "severity": "справка",
+    "support": "есть",
+    "fix": "—"
+   },
+   {
+    "claim": "чисто",
+    "section": "F-03, все поля",
+    "lens": "coverage",
+    "invariant": "—",
+    "severity": "справка",
+    "support": "есть",
+    "fix": "—"
+   },
+   {
+    "claim": "чисто",
+    "section": "F-04, все поля",
+    "lens": "coverage",
+    "invariant": "—",
+    "severity": "справка",
+    "support": "есть",
+    "fix": "—"
+   },
+   {
+    "claim": "чисто",
+    "section": "F-05, все поля",
+    "lens": "coverage",
+    "invariant": "—",
+    "severity": "справка",
+    "support": "есть",
+    "fix": "—"
+   },
+   {
+    "claim": "чисто",
+    "section": "F-06, остальные поля",
+    "lens": "coverage",
+    "invariant": "—",
+    "severity": "справка",
+    "support": "есть",
+    "fix": "—"
+   },
+   {
+    "claim": "чисто",
+    "section": "F-07, остальные поля",
+    "lens": "coverage",
+    "invariant": "—",
+    "severity": "справка",
+    "support": "есть",
+    "fix": "—"
+   },
+   {
+    "claim": "чисто",
+    "section": "F-08, остальные поля",
+    "lens": "coverage",
+    "invariant": "—",
+    "severity": "справка",
+    "support": "есть",
+    "fix": "—"
+   },
+   {
+    "claim": "чисто",
+    "section": "F-09, остальные поля",
+    "lens": "coverage",
+    "invariant": "—",
+    "severity": "справка",
+    "support": "есть",
+    "fix": "—"
+   },
+   {
+    "claim": "чисто",
+    "section": "F-10, остальные поля",
+    "lens": "coverage",
+    "invariant": "—",
+    "severity": "справка",
+    "support": "есть",
+    "fix": "—"
+   },
+   {
+    "claim": "чисто",
+    "section": "F-11, все поля",
+    "lens": "coverage",
+    "invariant": "—",
+    "severity": "справка",
+    "support": "есть",
+    "fix": "—"
+   },
+   {
+    "claim": "чисто",
+    "section": "F-12, все поля",
+    "lens": "coverage",
+    "invariant": "—",
+    "severity": "справка",
+    "support": "есть",
+    "fix": "—"
+   },
+   {
+    "claim": "чисто",
+    "section": "F-13, все поля",
+    "lens": "coverage",
+    "invariant": "—",
+    "severity": "справка",
+    "support": "есть",
+    "fix": "—"
+   },
+   {
+    "claim": "чисто",
+    "section": "F-14, все поля",
+    "lens": "coverage",
+    "invariant": "—",
+    "severity": "справка",
+    "support": "есть",
+    "fix": "—"
+   },
+   {
+    "claim": "чисто",
+    "section": "F-15, остальные поля",
+    "lens": "coverage",
+    "invariant": "—",
+    "severity": "справка",
+    "support": "есть",
+    "fix": "—"
+   },
+   {
+    "claim": "чисто",
+    "section": "F-16, остальные поля",
+    "lens": "coverage",
+    "invariant": "—",
+    "severity": "справка",
+    "support": "есть",
+    "fix": "—"
+   },
+   {
+    "claim": "чисто",
+    "section": "F-17, все поля",
+    "lens": "coverage",
+    "invariant": "—",
+    "severity": "справка",
+    "support": "есть",
+    "fix": "—"
+   },
+   {
+    "claim": "чисто",
+    "section": "F-18, остальные поля",
+    "lens": "coverage",
+    "invariant": "—",
+    "severity": "справка",
+    "support": "есть",
+    "fix": "—"
+   },
+   {
+    "claim": "чисто",
+    "section": "F-19, все поля",
+    "lens": "coverage",
+    "invariant": "—",
+    "severity": "справка",
+    "support": "есть",
+    "fix": "—"
+   },
+   {
+    "claim": "чисто",
+    "section": "F-20, все поля",
+    "lens": "coverage",
+    "invariant": "—",
+    "severity": "справка",
+    "support": "есть",
+    "fix": "—"
+   },
+   {
+    "claim": "чисто",
+    "section": "F-21, все поля",
+    "lens": "coverage",
+    "invariant": "—",
+    "severity": "справка",
+    "support": "есть",
+    "fix": "—"
+   },
+   {
+    "claim": "чисто",
+    "section": "F-22, все поля",
+    "lens": "coverage",
+    "invariant": "—",
+    "severity": "справка",
+    "support": "есть",
+    "fix": "—"
+   },
+   {
+    "claim": "чисто",
+    "section": "F-23, все поля",
+    "lens": "coverage",
+    "invariant": "—",
+    "severity": "справка",
+    "support": "есть",
+    "fix": "—"
+   },
+   {
+    "claim": "чисто",
+    "section": "F-24, все поля",
+    "lens": "coverage",
+    "invariant": "—",
+    "severity": "справка",
+    "support": "есть",
+    "fix": "—"
+   },
+   {
+    "claim": "чисто",
+    "section": "F-25, остальные поля",
+    "lens": "coverage",
+    "invariant": "—",
+    "severity": "справка",
+    "support": "есть",
+    "fix": "—"
+   },
+   {
+    "claim": "чисто",
+    "section": "F-26, остальные поля",
+    "lens": "coverage",
+    "invariant": "—",
+    "severity": "справка",
+    "support": "есть",
+    "fix": "—"
+   },
+   {
+    "claim": "чисто",
+    "section": "F-27, остальные поля",
+    "lens": "coverage",
+    "invariant": "—",
+    "severity": "справка",
+    "support": "есть",
+    "fix": "—"
+   },
+   {
+    "claim": "чисто",
+    "section": "F-28, остальные поля",
+    "lens": "coverage",
+    "invariant": "—",
+    "severity": "справка",
+    "support": "есть",
+    "fix": "—"
+   },
+   {
+    "claim": "чисто",
+    "section": "F-29, все поля",
+    "lens": "coverage",
+    "invariant": "—",
+    "severity": "справка",
+    "support": "есть",
+    "fix": "—"
+   },
+   {
+    "claim": "чисто",
+    "section": "F-30, все поля",
+    "lens": "coverage",
+    "invariant": "—",
+    "severity": "справка",
+    "support": "есть",
+    "fix": "—"
+   },
+   {
+    "claim": "чисто",
+    "section": "F-31, остальные поля",
+    "lens": "coverage",
+    "invariant": "—",
+    "severity": "справка",
+    "support": "есть",
+    "fix": "—"
+   },
+   {
+    "claim": "чисто",
+    "section": "F-32, остальные поля",
+    "lens": "coverage",
+    "invariant": "—",
+    "severity": "справка",
+    "support": "есть",
+    "fix": "—"
+   },
+   {
+    "claim": "чисто",
+    "section": "F-33, все поля",
+    "lens": "coverage",
+    "invariant": "—",
+    "severity": "справка",
+    "support": "есть",
+    "fix": "—"
+   },
+   {
+    "claim": "чисто",
+    "section": "F-34, все поля",
+    "lens": "coverage",
+    "invariant": "—",
+    "severity": "справка",
+    "support": "есть",
+    "fix": "—"
+   },
+   {
+    "claim": "чисто",
+    "section": "F-35, все поля",
+    "lens": "coverage",
+    "invariant": "—",
+    "severity": "справка",
+    "support": "есть",
+    "fix": "—"
+   },
+   {
+    "claim": "чисто",
+    "section": "F-36, все поля",
+    "lens": "coverage",
+    "invariant": "—",
+    "severity": "справка",
+    "support": "есть",
+    "fix": "—"
+   },
+   {
+    "claim": "чисто",
+    "section": "F-37, все поля",
+    "lens": "coverage",
+    "invariant": "—",
+    "severity": "справка",
+    "support": "есть",
+    "fix": "—"
+   },
+   {
+    "claim": "чисто",
+    "section": "F-38, остальные поля",
+    "lens": "coverage",
+    "invariant": "—",
+    "severity": "справка",
+    "support": "есть",
+    "fix": "—"
+   },
+   {
+    "claim": "чисто",
+    "section": "F-39, остальные поля",
+    "lens": "coverage",
+    "invariant": "—",
+    "severity": "справка",
+    "support": "есть",
+    "fix": "—"
+   },
+   {
+    "claim": "чисто",
+    "section": "F-40, все поля",
+    "lens": "coverage",
+    "invariant": "—",
+    "severity": "справка",
+    "support": "есть",
+    "fix": "—"
+   },
+   {
+    "claim": "чисто",
+    "section": "F-41, остальные поля",
+    "lens": "coverage",
+    "invariant": "—",
+    "severity": "справка",
+    "support": "есть",
+    "fix": "—"
+   },
+   {
+    "claim": "чисто",
+    "section": "F-42, остальные поля",
+    "lens": "coverage",
+    "invariant": "—",
+    "severity": "справка",
+    "support": "есть",
+    "fix": "—"
+   },
+   {
+    "claim": "чисто",
+    "section": "F-43, остальные поля",
+    "lens": "coverage",
+    "invariant": "—",
+    "severity": "справка",
+    "support": "есть",
+    "fix": "—"
+   },
+   {
+    "claim": "чисто",
+    "section": "F-44, остальные поля",
+    "lens": "coverage",
+    "invariant": "—",
+    "severity": "справка",
+    "support": "есть",
+    "fix": "—"
+   },
+   {
+    "claim": "чисто",
+    "section": "F-45, остальные поля",
+    "lens": "coverage",
+    "invariant": "—",
+    "severity": "справка",
+    "support": "есть",
+    "fix": "—"
+   },
+   {
+    "claim": "чисто",
+    "section": "F-46, остальные поля",
+    "lens": "coverage",
+    "invariant": "—",
+    "severity": "справка",
+    "support": "есть",
+    "fix": "—"
+   },
+   {
+    "claim": "чисто",
+    "section": "F-47, остальные поля",
+    "lens": "coverage",
+    "invariant": "—",
+    "severity": "справка",
+    "support": "есть",
+    "fix": "—"
+   },
+   {
+    "claim": "чисто",
+    "section": "F-48, остальные поля",
+    "lens": "coverage",
+    "invariant": "—",
+    "severity": "справка",
+    "support": "есть",
+    "fix": "—"
+   },
+   {
+    "claim": "чисто",
+    "section": "F-49, остальные поля",
+    "lens": "coverage",
+    "invariant": "—",
+    "severity": "справка",
+    "support": "есть",
+    "fix": "—"
+   },
+   {
+    "claim": "чисто",
+    "section": "F-50, остальные поля",
+    "lens": "coverage",
+    "invariant": "—",
+    "severity": "справка",
+    "support": "есть",
+    "fix": "—"
+   },
+   {
+    "claim": "чисто",
+    "section": "F-51, остальные поля",
+    "lens": "coverage",
+    "invariant": "—",
+    "severity": "справка",
+    "support": "есть",
+    "fix": "—"
+   },
+   {
+    "claim": "чисто",
+    "section": "F-52, все поля",
+    "lens": "coverage",
+    "invariant": "—",
+    "severity": "справка",
+    "support": "есть",
+    "fix": "—"
+   },
+   {
+    "claim": "чисто",
+    "section": "F-53, все поля",
+    "lens": "coverage",
+    "invariant": "—",
+    "severity": "справка",
+    "support": "есть",
+    "fix": "—"
+   },
+   {
+    "claim": "чисто",
+    "section": "F-54, остальные поля",
+    "lens": "coverage",
+    "invariant": "—",
+    "severity": "справка",
+    "support": "есть",
+    "fix": "—"
+   },
+   {
+    "claim": "чисто",
+    "section": "F-55, остальные поля",
+    "lens": "coverage",
+    "invariant": "—",
+    "severity": "справка",
+    "support": "есть",
+    "fix": "—"
+   },
+   {
+    "claim": "чисто",
+    "section": "F-56, остальные поля",
+    "lens": "coverage",
+    "invariant": "—",
+    "severity": "справка",
+    "support": "есть",
+    "fix": "—"
+   },
+   {
+    "claim": "чисто",
+    "section": "F-57, остальные поля",
+    "lens": "coverage",
+    "invariant": "—",
+    "severity": "справка",
+    "support": "есть",
+    "fix": "—"
+   },
+   {
+    "claim": "чисто",
+    "section": "F-58, все поля",
+    "lens": "coverage",
+    "invariant": "—",
+    "severity": "справка",
+    "support": "есть",
+    "fix": "—"
+   },
+   {
+    "claim": "чисто",
+    "section": "F-59, все поля",
+    "lens": "coverage",
+    "invariant": "—",
+    "severity": "справка",
+    "support": "есть",
+    "fix": "—"
+   },
+   {
+    "claim": "чисто",
+    "section": "F-60, остальные поля",
+    "lens": "coverage",
+    "invariant": "—",
+    "severity": "справка",
+    "support": "есть",
+    "fix": "—"
+   },
+   {
+    "claim": "чисто",
+    "section": "F-61, остальные поля",
+    "lens": "coverage",
+    "invariant": "—",
+    "severity": "справка",
+    "support": "есть",
+    "fix": "—"
+   },
+   {
+    "claim": "чисто",
+    "section": "F-62, остальные поля",
+    "lens": "coverage",
+    "invariant": "—",
+    "severity": "справка",
+    "support": "есть",
+    "fix": "—"
+   },
+   {
+    "claim": "чисто",
+    "section": "F-63, остальные поля",
+    "lens": "coverage",
+    "invariant": "—",
+    "severity": "справка",
+    "support": "есть",
+    "fix": "—"
+   },
+   {
+    "claim": "чисто",
+    "section": "F-64, остальные поля",
+    "lens": "coverage",
+    "invariant": "—",
+    "severity": "справка",
+    "support": "есть",
+    "fix": "—"
+   },
+   {
+    "claim": "чисто",
+    "section": "F-65, остальные поля",
+    "lens": "coverage",
+    "invariant": "—",
+    "severity": "справка",
+    "support": "есть",
+    "fix": "—"
+   },
+   {
+    "claim": "чисто",
+    "section": "F-66, остальные поля",
+    "lens": "coverage",
+    "invariant": "—",
+    "severity": "справка",
+    "support": "есть",
+    "fix": "—"
+   },
+   {
+    "claim": "чисто",
+    "section": "F-67, остальные поля",
+    "lens": "coverage",
+    "invariant": "—",
+    "severity": "справка",
+    "support": "есть",
+    "fix": "—"
+   },
+   {
+    "claim": "чисто",
+    "section": "F-68, все поля",
+    "lens": "coverage",
+    "invariant": "—",
+    "severity": "справка",
+    "support": "есть",
+    "fix": "—"
+   },
+   {
+    "claim": "чисто",
+    "section": "F-69, все поля",
+    "lens": "coverage",
+    "invariant": "—",
+    "severity": "справка",
+    "support": "есть",
+    "fix": "—"
+   },
+   {
+    "claim": "чисто",
+    "section": "F-70, все поля",
+    "lens": "coverage",
+    "invariant": "—",
+    "severity": "справка",
+    "support": "есть",
+    "fix": "—"
+   },
+   {
+    "claim": "чисто",
+    "section": "F-71, все поля",
+    "lens": "coverage",
+    "invariant": "—",
+    "severity": "справка",
+    "support": "есть",
+    "fix": "—"
+   },
+   {
+    "claim": "чисто",
+    "section": "F-72, остальные поля",
+    "lens": "coverage",
+    "invariant": "—",
+    "severity": "справка",
+    "support": "есть",
+    "fix": "—"
+   },
+   {
+    "claim": "чисто",
+    "section": "F-73, остальные поля",
+    "lens": "coverage",
+    "invariant": "—",
+    "severity": "справка",
+    "support": "есть",
+    "fix": "—"
+   },
+   {
+    "claim": "чисто",
+    "section": "F-74, остальные поля",
+    "lens": "coverage",
+    "invariant": "—",
+    "severity": "справка",
+    "support": "есть",
+    "fix": "—"
+   },
+   {
+    "claim": "чисто",
+    "section": "F-75, остальные поля",
+    "lens": "coverage",
+    "invariant": "—",
+    "severity": "справка",
+    "support": "есть",
+    "fix": "—"
+   },
+   {
+    "claim": "чисто",
+    "section": "F-76, остальные поля",
+    "lens": "coverage",
+    "invariant": "—",
+    "severity": "справка",
+    "support": "есть",
+    "fix": "—"
+   },
+   {
+    "claim": "чисто",
+    "section": "F-77, остальные поля",
+    "lens": "coverage",
+    "invariant": "—",
+    "severity": "справка",
+    "support": "есть",
+    "fix": "—"
+   },
+   {
+    "claim": "чисто",
+    "section": "F-78, остальные поля",
+    "lens": "coverage",
+    "invariant": "—",
+    "severity": "справка",
+    "support": "есть",
+    "fix": "—"
+   },
+   {
+    "claim": "чисто",
+    "section": "title · source · intro",
+    "lens": "coverage",
+    "invariant": "—",
+    "severity": "справка",
+    "support": "есть",
+    "fix": "—"
+   }
+  ]
+ }
+];
 const SCHEME = {
  "exists": true,
  "text": "flowchart TD\n    conv[\"Соглашения: требование называет запись,<br/>задача называет сценарий\"] --> files[\"Файлы изменения<br/>единственный источник истины\"]\n    files --> collect[\"Скрипт собирает граф\"]\n    rule[\"Правило разработки: новый артефакт<br/>проверяется на вход в граф\"] -.-> collect\n    collect --> validate[\"openspec validate --json<br/>внутри той же команды\"]\n    collect --> save[\"Файл графа<br/>сохранить и проверить\"]\n    collect --> diagram[\"Текст requirementDiagram<br/>возможность, а не показ\"]\n    collect --> report[\"Отчёт сигналов\"]\n    validate --> report\n    attack[\"Атака на связи, по слову\"] -.-> report\n    report --> human{\"Человек: реализовать<br/>или принять?\"}\n    human -- реализовать --> tasks[\"Новая задача или правка артефакта\"]\n    human -- принять --> outcome[\"Исход в журнал через apply\"]\n    tasks --> files\n    outcome --> files\n    files --> apply[\"/opsx:apply\"]\n    apply --> freeze[\"Заморозка: снимок изменения\"]\n    freeze --> sync[\"/opsx:sync\"]\n    sync --> archive[\"openspec archive\"]\n    archive -.-> later[\"Следующие изменения: снимок корня,<br/>сверка снимков, хранители, модули\"]\n    collect -.-> guide[\"GUIDE.md: граф и его влияние на шаги\"]\n",
@@ -5025,7 +6646,7 @@ const SCHEME = {
 };
 const HELP = {
  "contract": 2,
- "taken_at": "2026-11-05T15:34:33+03:00",
+ "taken_at": "2026-11-05T17:08:28+03:00",
  "versions": {
   "openspec": "1.15.0-symphysis.4",
   "symphysis": null
@@ -5194,19 +6815,21 @@ const HELP = {
   },
   {
    "id": "attack-decisions",
-   "state": "ready",
+   "state": "done",
    "turn": "model",
    "optional": true,
-   "blocks": [],
+   "blocks": [
+    "proposal"
+   ],
    "stops_apply": false,
    "waits_for": [],
    "files": [
     {
      "path": "openspec/changes/trace-graph/attack/decisions.md",
-     "exists": false
+     "exists": true
     }
    ],
-   "file_note": null,
+   "file_note": "файл есть, содержание не проверялось",
    "texts": {
     "title": "Атака журнала, по желанию",
     "why": "Проверка журнала до того, как на нём встанут артефакты: какие записи ничем не подкреплены и что в решениях расходится со словами человека.",
@@ -5564,9 +7187,11 @@ const HELP = {
   }
  ],
  "file_links": {
+  "attack/decisions.md": "openspec/changes/trace-graph/attack/decisions.md",
   "decisions.json": "openspec/changes/trace-graph/decisions.json",
   "decisions.md": "openspec/changes/trace-graph/decisions.md",
   "intent.md": "openspec/changes/trace-graph/intent.md",
+  "openspec/changes/trace-graph/attack/decisions.md": "openspec/changes/trace-graph/attack/decisions.md",
   "openspec/changes/trace-graph/decisions.json": "openspec/changes/trace-graph/decisions.json",
   "openspec/changes/trace-graph/intent.md": "openspec/changes/trace-graph/intent.md",
   "openspec/changes/trace-graph/research/F-54.md": "openspec/changes/trace-graph/research/F-54.md",
@@ -5575,14 +7200,17 @@ const HELP = {
   "scheme.md": "openspec/changes/trace-graph/scheme.md",
   "symphysis.html": "openspec/changes/trace-graph/symphysis.html"
  },
- "rebuild": "python tools/journal.py render-html openspec/changes/trace-graph/decisions.json --out openspec/changes/trace-graph/symphysis.html"
+ "rebuild": "python tools/journal.py render-html openspec/changes/trace-graph/decisions.json --out openspec/changes/trace-graph/symphysis.html --attack openspec/changes/trace-graph/attack/decisions.md"
 };
 const LINKS = {
  "root": "../../../",
  "files": {
   ".gitignore": "../../../.gitignore",
   "CLAUDE.md": "../../../CLAUDE.md",
+  "answers/2026-11-05-5.md": "answers/2026-11-05-5.md",
+  "answers/2026-11-05-8.md": "answers/2026-11-05-8.md",
   "answers/2026-11-05.md": "answers/2026-11-05.md",
+  "attack/decisions.md": "attack/decisions.md",
   "context/04-workflow.md": "../../../../symphysis/.context/04-workflow.md",
   "context/06-related-changes.md": "../../../../symphysis/.context/06-related-changes.md",
   "decisions.json": "decisions.json",
@@ -5592,6 +7220,7 @@ const LINKS = {
   "docs/analysis/stores-and-context-pack-2026-11-02.md": "../../../docs/analysis/stores-and-context-pack-2026-11-02.md",
   "docs/journal.schema.json": "../../../docs/journal.schema.json",
   "docs/repo-contract.md": "../../../docs/repo-contract.md",
+  "installer/README.md": "../../../installer/README.md",
   "installer/lib/check.js": "../../../installer/lib/check.js",
   "installer/lib/install.js": "../../../installer/lib/install.js",
   "installer/package.json": "../../../installer/package.json",
@@ -5600,10 +7229,17 @@ const LINKS = {
   "openspec/changes/archive/2026-11-02-implementation-consequences/design.md": "../archive/2026-11-02-implementation-consequences/design.md",
   "openspec/changes/archive/2026-11-02-implementation-consequences/specs/requirement-probes/spec.md": "../archive/2026-11-02-implementation-consequences/specs/requirement-probes/spec.md",
   "openspec/changes/archive/2026-11-04-recommendation-why/tasks.md": "../archive/2026-11-04-recommendation-why/tasks.md",
+  "openspec/changes/trace-graph/answers/2026-11-05-5.md": "answers/2026-11-05-5.md",
+  "openspec/changes/trace-graph/answers/2026-11-05-6.md": "answers/2026-11-05-6.md",
+  "openspec/changes/trace-graph/answers/2026-11-05-8.md": "answers/2026-11-05-8.md",
+  "openspec/changes/trace-graph/attack/decisions.md": "attack/decisions.md",
   "openspec/changes/trace-graph/decisions.json": "decisions.json",
   "openspec/changes/trace-graph/intent.md": "intent.md",
   "openspec/changes/trace-graph/research/F-54-probe/results.txt": "research/F-54-probe/results.txt",
   "openspec/changes/trace-graph/research/F-54.md": "research/F-54.md",
+  "openspec/changes/trace-graph/research/F-57-probe/prototype.py": "research/F-57-probe/prototype.py",
+  "openspec/changes/trace-graph/research/F-57-probe/signals-recommendation-why.txt": "research/F-57-probe/signals-recommendation-why.txt",
+  "openspec/changes/trace-graph/research/F-57-probe/signals-step-help.txt": "research/F-57-probe/signals-step-help.txt",
   "openspec/changes/trace-graph/research/F-57-probe/summary.txt": "research/F-57-probe/summary.txt",
   "openspec/changes/trace-graph/research/F-57.md": "research/F-57.md",
   "openspec/changes/trace-graph/research/F-58-probe/results.txt": "research/F-58-probe/results.txt",
@@ -5611,6 +7247,8 @@ const LINKS = {
   "openspec/changes/trace-graph/research/F-58.md": "research/F-58.md",
   "openspec/config.yaml": "../../config.yaml",
   "openspec/schemas/symphysis/schema.yaml": "../../schemas/symphysis/schema.yaml",
+  "openspec/schemas/symphysis/steps.md": "../../schemas/symphysis/steps.md",
+  "openspec/schemas/symphysis/templates/attack-artifacts.md": "../../schemas/symphysis/templates/attack-artifacts.md",
   "openspec/schemas/symphysis/templates/tasks.md": "../../schemas/symphysis/templates/tasks.md",
   "openspec/specs/artifact-attack/spec.md": "../../specs/artifact-attack/spec.md",
   "openspec/specs/project-installer/spec.md": "../../specs/project-installer/spec.md",
@@ -5623,24 +7261,37 @@ const LINKS = {
   "research/F-58.md": "research/F-58.md",
   "scheme.md": "scheme.md",
   "skills/symphysis-attack/SKILL.md": "../../../skills/symphysis-attack/SKILL.md",
+  "skills/symphysis-consequences/SKILL.md": "../../../skills/symphysis-consequences/SKILL.md",
   "skills/symphysis-edge-probe/SKILL.md": "../../../skills/symphysis-edge-probe/SKILL.md",
+  "skills/symphysis-prohibition-probe/SKILL.md": "../../../skills/symphysis-prohibition-probe/SKILL.md",
+  "skills/symphysis-viewer/SKILL.md": "../../../skills/symphysis-viewer/SKILL.md",
   "symphysis.html": "symphysis.html",
   "tests/fixtures/settings-cases.json": "../../../tests/fixtures/settings-cases.json",
   "tests/test_schema.py": "../../../tests/test_schema.py",
+  "tests/test_skills.py": "../../../tests/test_skills.py",
   "tools/hooks/gate_hook.py": "../../../tools/hooks/gate_hook.py",
   "tools/journal_apply.py": "../../../tools/journal_apply.py",
   "tools/journal_model.py": "../../../tools/journal_model.py",
   "tools/journal_render.py": "../../../tools/journal_render.py",
+  "tools/journal_sites.py": "../../../tools/journal_sites.py",
   "tools/playground-template.html": "../../../tools/playground-template.html",
   "tools/step_help.py": "../../../tools/step_help.py",
   "tools/symphysis_config.py": "../../../tools/symphysis_config.py",
   "upstream/openspec/UPSTREAM.md": "../../../../symphysis/upstream/openspec/UPSTREAM.md",
+  "upstream/openspec/src/commands/workflow/instructions.ts": "../../../../symphysis/upstream/openspec/src/commands/workflow/instructions.ts",
   "upstream/openspec/src/core/archive.ts": "../../../../symphysis/upstream/openspec/src/core/archive.ts",
+  "upstream/openspec/src/core/parsers/requirement-blocks.ts": "../../../../symphysis/upstream/openspec/src/core/parsers/requirement-blocks.ts",
   "upstream/openspec/src/core/project-config.ts": "../../../../symphysis/upstream/openspec/src/core/project-config.ts",
   "upstream/openspec/src/core/templates/workflows/archive-change.ts": "../../../../symphysis/upstream/openspec/src/core/templates/workflows/archive-change.ts",
   "upstream/openspec/src/core/templates/workflows/sync-specs.ts": "../../../../symphysis/upstream/openspec/src/core/templates/workflows/sync-specs.ts",
+  "upstream/openspec/src/core/validation/constants.ts": "../../../../symphysis/upstream/openspec/src/core/validation/constants.ts",
+  "vscode/node_modules/mermaid/dist/chunks/mermaid.core/requirementDiagram-EQYSW5RA.mjs": "../../../../symphysis-vscode/node_modules/mermaid/dist/chunks/mermaid.core/requirementDiagram-EQYSW5RA.mjs",
+  "vscode/src/host/core.ts": "../../../../symphysis-vscode/src/host/core.ts",
   "vscode/src/shared/attack.ts": "../../../../symphysis-vscode/src/shared/attack.ts",
-  "vscode/src/webview/Card.tsx": "../../../../symphysis-vscode/src/webview/Card.tsx"
+  "vscode/src/shared/check.ts": "../../../../symphysis-vscode/src/shared/check.ts",
+  "vscode/src/webview/Card.tsx": "../../../../symphysis-vscode/src/webview/Card.tsx",
+  "vscode/test/e2e/scenario.ts": "../../../../symphysis-vscode/test/e2e/scenario.ts",
+  "vscode/test/unit/core.test.ts": "../../../../symphysis-vscode/test/unit/core.test.ts"
  }
 };
 const ADDRESSEES = ['материалы','человек','ИБ'];
