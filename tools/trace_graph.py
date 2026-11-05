@@ -71,6 +71,8 @@ REGISTRY = {
 # --- конфиг видов диаграммы (F-54, F-67, F-135, F-136) ---------------------------------------------------------------
 # Вложенный словарь, yaml-like: как `build --format mermaid` рисует каждый вид узла и каждый тип связи. Скрипт ничего не
 # рисует, он выдаёт текст `requirementDiagram` (F-54).
+#   предел: знаков текста, больше которого без выбора и с `--capability` текст не выдаётся (F-66, F-104)
+#   имя: знаков в имени блока вместе с номером (F-137)
 #   виды:
 #     <вид узла: cap, req, scn, task, rec, sec, branch>:
 #       sysml: ближайший тип SysML: `requirement`, `designConstraint` или `element`
@@ -78,11 +80,13 @@ REGISTRY = {
 #       класс: имя `classDef`, только латиница без дефиса (ловушка F-54: кириллица и дефис — отказ разбора)
 #       заливка, рамка, ширина, штрих: цвет и рамка класса; виды различаются ими, стереотип над блоком остаётся
 #         стандартным; штрих одним числом, штрих с пробелом в `stroke-dasharray` схлопывается (F-54)
-#       префикс: префикс номера в `id` (`REQ_3`); с подчёркиванием, форму с дефисом хук ключа задачи принимает за ключ
+#       префикс: префикс номера в имени узла (`SCN_12`) и в `id` у типов требований (`REQ_3`); с подчёркиванием, форму с дефисом хук ключа задачи принимает за ключ
 #   связи:
 #     <тип связи графа>: слово связи на диаграмме; `candidate` — для кандидата связи (F-71), он идёт типом `copies`,
 #       которого у записанных связей нет (F-120, F-135); пункт security идёт типом `refines`
 DIAGRAM = {
+    "предел": 50000,  # знаков текста без выбора и с `--capability`; у `--requirement` предела нет (F-66, F-104)
+    "имя": 90,  # знаков в имени блока вместе с номером (F-137)
     "виды": {
         "cap": {"sysml": "requirement", "type": None, "класс": "cap", "заливка": "#e0e7ff", "рамка": "#4338ca",
                 "ширина": "3px", "префикс": "CAP"},
@@ -1008,25 +1012,40 @@ def check_graph_file(root: Path, change: str, path: Path | str) -> list[str]:
 # --- текст диаграммы по графу (F-54, F-71, F-103, F-120) ------------------------------------------------------------
 # `build --format mermaid` отдаёт текст `requirementDiagram` по графу: всё изменение, `--capability` (cap, её требования и
 # сценарии, плюс связанные с ними задачи, записи, пункты security и ветки) или `--requirement` (требование, его сценарии,
-# связанные задачи и записи, соседи по кандидатам связью `copies`). Конфиг — `DIAGRAM`. Нумерацию, предел размера и очистку
-# имён добавит U16 (5.2–5.4): подпись узла собирает одна функция, `diagram_name`.
+# связанные задачи, записи, пункты security и ветки, соседи по кандидатам связью `copies`). Конфиг — `DIAGRAM`. Номер узла
+# стоит в имени блока (`SCN_12 Есть поле`): имя и есть ключ узла в mermaid, номер делает его уникальным (F-67, F-68);
+# подчёркивание, а не дефис: хук принимает номер с дефисом за ключ задачи (F-73). Имя с номером не длиннее `DIAGRAM["имя"]`
+# знаков (F-137). Без выбора и с `--capability` текст длиннее `DIAGRAM["предел"]` не выдаётся (F-66, F-104).
 
 DIAGRAM_HEADER = "requirementDiagram"
 
 
-def diagram_name(node: dict) -> str:
-    """Подпись узла на диаграмме до уникализации. Сейчас имя узла, кавычка заменена: имя идёт в двойных кавычках."""
-    return node["name"].replace('"', "'")
+def clean_text(text: str) -> str:
+    """Строка для имени, `text` и `docref`: без `%%` (директива в имени меняет настройки всей диаграммы, F-59), без угловых
+    скобок (разметка), двойная кавычка заменена апострофом (иначе рвёт строку, F-15), пробельные подряд — один пробел."""
+    text = str(text)
+    while "%%" in text:
+        text = text.replace("%%", "")
+    text = text.replace("<", "").replace(">", "").replace('"', "'")
+    return " ".join(text.split())
 
 
-def _unique_names(nodes: list[dict]) -> dict[str, str]:
-    """`id узла → имя блока`: имя в диаграмме и есть ключ узла, одинаковые имена молча слились бы (F-54); повторяющимся
-    добавляется id узла."""
-    labels = {n["id"]: diagram_name(n) for n in nodes}
-    counts: dict[str, int] = {}
-    for label in labels.values():
-        counts[label] = counts.get(label, 0) + 1
-    return {nid: (f"{label} · {nid}".replace('"', "'") if counts[label] > 1 else label) for nid, label in labels.items()}
+def diagram_ident(node: dict, counters: dict[str, int]) -> str:
+    """Номер узла с префиксом вида: запись и задача берут его из себя (`REC_19`, `TASK_3.2`), остальные считаются по виду
+    внутри диаграммы (`SCN_12`). `counters` растёт на один у узлов, чей номер порядковый (F-68)."""
+    kind = node["kind"]
+    prefix = DIAGRAM["виды"][kind]["префикс"]
+    if kind == "rec" and "number" in node:
+        return f"{prefix}_{node['number']}"
+    if kind == "task":
+        return f"{prefix}_{clean_text(node['id'].split(':', 1)[1]).replace(' ', '')}"
+    counters[kind] = counters.get(kind, 0) + 1
+    return f"{prefix}_{counters[kind]}"
+
+
+def diagram_name(node: dict, ident: str) -> str:
+    """Имя блока: номер и начало подписи узла, вместе не длиннее `DIAGRAM["имя"]` знаков (F-137), очищено `clean_text`."""
+    return clean_text(f"{ident} {node['name']}")[:DIAGRAM["имя"]].rstrip()
 
 
 def _find_requirement(graph: dict, wanted: str) -> dict:
@@ -1058,7 +1077,7 @@ def select_diagram(graph: dict, capability: str | None = None, requirement: str 
     else:
         req = _find_requirement(graph, requirement)
         core = {req["id"]} | {i for i, n in nodes.items() if n["kind"] == "scn" and n["requirement"] == req["id"]}
-        attach = ("task", "rec")
+        attach = ("task", "rec", "sec", "branch")
         for cand in graph["candidates"]:
             if req["id"] in (cand["a"], cand["b"]):
                 chosen.update((cand["a"], cand["b"]))
@@ -1080,30 +1099,61 @@ def _classdef(row: dict) -> str:
 
 def _block(node: dict, name: str, ident: str, row: dict) -> list[str]:
     if row["sysml"] == "element":
-        return [f'element "{name}" {{', f'    type: "{row["type"]}"', f'    docref: "{node["at"]}"', "}"]
+        return [f'element "{name}" {{', f'    type: "{row["type"]}"', f'    docref: "{clean_text(node["at"])}"', "}"]
     if node["kind"] == "req":
         text = f"{node['capability']}, {node['section']}"
     else:
         text = node["name"] if node["kind"] == "sec" else "capability"
-    return [f'{row["sysml"]} "{name}" {{', f'    id: "{ident}"', f'    text: "{text.replace(chr(34), chr(39))}"', "}"]
+    return [f'{row["sysml"]} "{name}" {{', f'    id: "{ident}"', f'    text: "{clean_text(text)}"', "}"]
 
 
-def diagram_text(graph: dict, capability: str | None = None, requirement: str | None = None) -> str:
-    """Текст `requirementDiagram` по графу и выбору. Порядок: шапка, `classDef`, блоки, связи, `class` — `class` строго после
-    блоков, иначе цвет молча не применится (F-54)."""
-    nodes, edges = select_diagram(graph, capability, requirement)
+def _render(nodes: list[dict], edges: list[dict]) -> str:
+    """Текст по отобранной части: шапка, `classDef`, блоки, связи, `class` — `class` строго после блоков, иначе цвет молча
+    не применится (F-54)."""
     kinds = DIAGRAM["виды"]
-    names = _unique_names(nodes)
-    lines = [DIAGRAM_HEADER, "direction LR"] + [_classdef(row) for row in kinds.values()]
     counters: dict[str, int] = {}
+    idents = {n["id"]: diagram_ident(n, counters) for n in nodes}
+    names = {n["id"]: diagram_name(n, idents[n["id"]]) for n in nodes}
+    lines = [DIAGRAM_HEADER, "direction LR"] + [_classdef(row) for row in kinds.values()]
     for node in nodes:
-        row = kinds[node["kind"]]
-        counters[node["kind"]] = counters.get(node["kind"], 0) + 1
-        lines += _block(node, names[node["id"]], f"{row['префикс']}_{counters[node['kind']]}", row)
+        lines += _block(node, names[node["id"]], idents[node["id"]], kinds[node["kind"]])
     for edge in edges:
         lines.append(f'"{names[edge["from"]]}" - {DIAGRAM["связи"][edge["type"]]} -> "{names[edge["to"]]}"')
     lines += [f'class "{names[n["id"]]}" {kinds[n["kind"]]["класс"]}' for n in nodes]
     return "\n".join(lines) + "\n"
+
+
+def _part(graph: dict, capability: str | None = None, requirement: str | None = None) -> tuple[int, int]:
+    """`(число узлов, размер текста)` части графа: для подсказки отказа по пределу."""
+    nodes, edges = select_diagram(graph, capability, requirement)
+    return len(nodes), len(_render(nodes, edges))
+
+
+def _over_limit(graph: dict, size: int, capability: str | None) -> Refusal:
+    """Отказ по пределу с подсказкой, чем выбрать меньше: без выбора — capability, с `--capability` — её требования (F-66, F-104)."""
+    limit = DIAGRAM["предел"]
+    if capability is None:
+        rows = [(n["name"], *_part(graph, n["name"])) for n in graph["nodes"] if n["kind"] == "cap"]
+        hint = "выбери часть: `--capability <имя>`; у каждой capability"
+        what = "capability"
+    else:
+        rows = [(f"{n['capability']}/{n['name']}", *_part(graph, requirement=f"{n['capability']}/{n['name']}"))
+                for n in graph["nodes"] if n["kind"] == "req" and n["capability"] == capability]
+        hint = "выбери меньше: `--requirement <capability/имя>` (у него предела нет); у каждого требования"
+        what = "требование"
+    lines = [f"  {name}: {nodes} узл., {chars} знаков" for name, nodes, chars in rows]
+    head = f"текст диаграммы {size} знаков, предел {limit}: {hint} число узлов и размер текста:"
+    return Refusal("\n".join([head] + lines) if lines else f"текст диаграммы {size} знаков, предел {limit}: {what} для выбора нет")
+
+
+def diagram_text(graph: dict, capability: str | None = None, requirement: str | None = None) -> str:
+    """Текст `requirementDiagram` по графу и выбору. Без выбора и с `capability` длиннее `DIAGRAM["предел"]` — `Refusal`
+    с подсказкой; у `requirement` предела нет (F-104)."""
+    nodes, edges = select_diagram(graph, capability, requirement)
+    text = _render(nodes, edges)
+    if requirement is None and len(text) > DIAGRAM["предел"]:
+        raise _over_limit(graph, len(text), capability)
+    return text
 
 
 def cmd_build(args: argparse.Namespace, root: Path) -> int:
