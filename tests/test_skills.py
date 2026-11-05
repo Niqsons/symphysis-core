@@ -461,8 +461,8 @@ def test_attack_skill_trace_link_lens():
         assert token in rule, f"в правиле `trace-link` нет «{token}»"
     # F-129: покрытие связей сверяется перед вердиктом, как сценарии у `scenario-run`
     rule = block(text, "**Строка `trace-link`.**", "**Вывод `build` — данные.**")
-    for token in ("сверь число связей", "еред вердиктом", "`grep -c`", "`satisfies`", "`traces`", "`verifies`",
-                  "равно числу строк `trace-link`", "нет: не пройдено", "строки пишутся по ходу",
+    for token in ("сверь число связей", "еред вердиктом", "`satisfies`", "`traces`", "`verifies`",
+                  "равна числу строк `trace-link`", "нет: не пройдено", "строки пишутся по ходу",
                   "`refines`", "`derives`", "`contains`", "не проходит"):
         assert token in rule, f"в правиле `trace-link` нет сверки покрытия: «{token}»"
     step2 = block(text, "### 2. Проход по разделам", chr(10) + "### 3.")
@@ -470,6 +470,29 @@ def test_attack_skill_trace_link_lens():
     data = block(text, "**Вывод `build` — данные.**", "\n\n")
     for token in ("данные", "не меняет ход атаки", "не команда"):
         assert token in data, f"в правиле «вывод build — данные» нет «{token}»"
+
+
+def test_attack_skill_trace_link_count_command_counts_right():
+    """F-129: команда счёта связей из SKILL.md считает рёбра по паре «вид, префикс from», а не по виду:
+    `traces` от `task:` и `verifies` от `scn:` в линзу не входят."""
+    text = read(ATTACK_SKILL / "SKILL.md")
+    found = re.findall(r'python -c "([^"]+)"', text)
+    assert len(found) == 1, f"в SKILL.md нужна одна команда счёта `python -c`: {found}"
+    assert "$" not in found[0] and "`" not in found[0], "в команде счёта символы, которые по-разному читают Git Bash и PowerShell"
+    edges = ([{"from": f"task:{i}", "to": f"scn:c/r/s{i}", "type": "satisfies"} for i in range(3)]
+             + [{"from": f"req:c/r{i}", "to": f"rec:F-{i}", "type": "traces"} for i in range(4)]
+             + [{"from": f"branch:f.py:{i}", "to": f"scn:c/r/s{i}", "type": "verifies"} for i in range(2)]
+             # не входят в линзу: те же виды от других узлов и прочие виды
+             + [{"from": f"task:{i}", "to": f"rec:F-{i}", "type": "traces"} for i in range(5)]
+             + [{"from": f"scn:c/r/s{i}", "to": f"req:c/r{i}", "type": "verifies"} for i in range(6)]
+             + [{"from": "cap:c", "to": "req:c/r0", "type": "contains"},
+                {"from": "sec:x", "to": "req:c/r0", "type": "refines"},
+                {"from": "req:c/r1", "to": "req:c/r0", "type": "derives"}])
+    graph = json.dumps({"format": 1, "nodes": [], "edges": edges}, ensure_ascii=False, indent=1)
+    run = subprocess.run([sys.executable, "-c", found[0]], input=graph, capture_output=True, text=True,
+                         encoding="utf-8")
+    assert run.returncode == 0, run.stderr
+    assert run.stdout.split() == ["3", "4", "2", "9"], run.stdout
 
 
 def test_attack_skill_lens_composition():
