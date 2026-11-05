@@ -16,7 +16,7 @@ from pathlib import Path
 
 sys.dont_write_bytecode = True  # как у соседних скриптов: `__pycache__` в проекте от инструментов не появляется (F-50)
 from journal_model import validate_journal  # noqa: E402
-from openspec_run import ForkError, check_change_name  # noqa: E402
+from openspec_run import ForkError, check_change_name, no_paths, run_fork  # noqa: E402
 
 # --- реестр артефактов (F-53, F-119, F-136) -----------------------------------
 # Вложенный словарь, yaml-like: на каждый артефакт `openspec/schemas/symphysis/schema.yaml` строка, что граф из него берёт.
@@ -854,8 +854,87 @@ def cmd_build(args: argparse.Namespace, root: Path) -> int:
     return 0
 
 
+# --- отчёт: находки validate и сигналы графа (F-31, F-32, F-93, F-138) ----------------------------------------------
+# Отчёт — Markdown. Сигнал — строка `[!!] <вид>: <ключ> — <место>`: ключ — id узла без префикса вида, место — `путь:строка`
+# от каталога изменения. Виды добавляют в `graph_signals` по одному (U10, U11); сигнал кода выхода не меняет.
+
+VALIDATE_ARGS = ("--type", "change", "--json", "--strict", "--no-interactive")
+NO_SIGNALS = "Сигналов нет."
+NL = chr(10)
+
+
+def _not_started(reason: str, root: Path) -> list[str]:
+    return [f"[!!] validate не запустился: {no_paths(' '.join(reason.split()), root)}"]
+
+
+def validate_findings(root: Path, change: str) -> list[str]:
+    """Строки раздела «Находки openspec validate»: `openspec validate <имя> --json` через общий `run_fork`. Код 1 с JSON, где
+    есть `items`, — находки, а не сбой (`validate.ts`: `exitCode = valid ? 0 : 1`). Ответ без `items` (`unknown_item`), не
+    JSON, код не из 0 и 1, форк не найден или не ответил за предел — одна строка «validate не запустился» с причиной без
+    абсолютных путей (F-93). Не печатает; имя изменения проверяет `run_fork`."""
+    try:
+        reply = run_fork(root, "validate", change, *VALIDATE_ARGS)
+    except ForkError as e:
+        return _not_started(str(e), root)
+    try:
+        data = json.loads(reply.out)
+    except ValueError:
+        tail = (reply.err or reply.out).strip().splitlines()
+        return _not_started(f"ответ не JSON, код {reply.code}" + (f": {tail[0][:200]}" if tail else ""), root)
+    items = data.get("items") if isinstance(data, dict) else None
+    if not isinstance(items, list) or not items or reply.code not in (0, 1):
+        return _not_started(f"ответ без находок `items`, код {reply.code}", root)
+    lines = []
+    for item in items:
+        for issue in item.get("issues", []) if isinstance(item, dict) else []:
+            if isinstance(issue, dict):
+                lines.append(no_paths(f"[!!] openspec validate: {issue.get('level', '?')} {issue.get('path', '')}: "
+                                      f"{' '.join(str(issue.get('message', '')).split())}", root))
+    return lines
+
+
+def graph_signals(graph: dict, duplicates: list[dict] | None = None, unresolved: list[dict] | None = None) -> list[str]:
+    """Сигналы графа строками `[!!] вид: ключ — место`, порядок по месту в файле. Служебные списки (`duplicates`,
+    `unresolved` от `build_graph_with_signals`) пока не читаются: их вид и форму решает U10. Сейчас один вид, только для
+    требований ADDED: «сценарий без задачи» — на сценарий нет входящей связи `satisfies`; «требование без задачи» — ни один
+    его сценарий не закрыт задачей (MODIFIED из мастера и остальные виды — U10). Не печатает."""
+    closed = {e["to"] for e in graph["edges"] if e["type"] == "satisfies"}
+    by_req: dict[str, list[dict]] = {}
+    for n in graph["nodes"]:
+        if n["kind"] == "scn":
+            by_req.setdefault(n["requirement"], []).append(n)
+    found = []
+    for req in graph["nodes"]:
+        if req["kind"] != "req" or req.get("section") != "ADDED":
+            continue
+        scenarios = by_req.get(req["id"], [])
+        if not any(s["id"] in closed for s in scenarios):
+            found.append((req["at"], f"[!!] требование без задачи: {req['id'][4:]} — {req['at']}"))
+        found += [(s["at"], f"[!!] сценарий без задачи: {s['id'][4:]} — {s['at']}") for s in scenarios if s["id"] not in closed]
+    found.sort(key=lambda f: (f[0].rsplit(":", 1)[0], int(f[0].rsplit(":", 1)[1])))
+    return [line for _, line in found]
+
+
+def build_report(root: Path, change: str) -> str:
+    """Текст отчёта изменения `change`: находки `openspec validate`, затем сигналы графа; без тех и других — фраза, что
+    сигналов нет. Ничего не печатает и не пишет (её зовёт `freeze` для `graph/report.md`); абсолютных путей в тексте нет (F-59).
+    Имя проверяется до любого пути и вызова форка; нет изменения или негоден журнал — `Refusal`, форк тогда не вызван."""
+    check_change_name(change)
+    graph, duplicates, unresolved = build_graph_with_signals(root, change)
+    findings = validate_findings(root, change)
+    signals = graph_signals(graph, duplicates, unresolved)
+    parts = [f"# Отчёт по изменению {change}", ""]
+    if not findings and not signals:
+        return NL.join([*parts, NO_SIGNALS, ""])
+    for title, lines, none in (("Находки openspec validate", findings, "Находок нет."),
+                               ("Сигналы графа", signals, "Сигналов графа нет.")):
+        parts += [f"## {title}", "", *(lines or [none]), ""]
+    return NL.join(parts)
+
+
 def cmd_report(args: argparse.Namespace, root: Path) -> int:
-    raise _not_implemented("report")
+    print(build_report(root, args.change), end="")  # сигналы и находки кода не меняют (F-31)
+    return 0
 
 
 def cmd_check(args: argparse.Namespace, root: Path) -> int:
@@ -885,10 +964,14 @@ SUBCOMMAND_HELP = {
               "нет: имя изменения не подходит, изменения нет, `decisions.json` не разбирается или негоден по схеме, файл "
               "не в UTF-8, путь `--out` не записать; "
               "2 — вызов неверен."),
-    "report": ("Печатает отчёт по графу изменения: сигналы о разрывах связей.",
-               "Звать, когда нужен список разрывов человеку; отчёт отдаётся ссылкой, модель его не читает.",
-               "Коды: 0 — отчёт напечатан, сигналы кода не меняют (F-31); 1 — отказ: имя изменения не подходит "
-               "или подкоманда ещё не реализована; 2 — вызов неверен."),
+    "report": ("Печатает отчёт Markdown по изменению: находки `openspec validate --json` (форк запускается сам) и сигналы "
+               "графа: у требования ADDED нет задачи, у сценария нет задачи. Без находок и сигналов — «Сигналов нет.»; "
+               "если validate не запустился, в отчёте строка «validate не запустился» с причиной.",
+               "Звать, когда нужен список разрывов человеку; отчёт отдаётся ссылкой, модель его не читает. Форк берётся "
+               "из `SYMPHYSIS_OPENSPEC`, затем из PATH; файлов изменения команда не пишет.",
+               "Коды: 0 — отчёт напечатан, сигналы, находки и незапуск validate кода не меняют (F-31); 1 — отказ: имя "
+               "изменения не подходит, изменения нет, сборка графа не удалась (журнал негоден, файл не в UTF-8); "
+               "2 — вызов неверен."),
     "check": ("Проверяет сохранённый файл графа ФАЙЛ против изменения: форму, состав исходников и их хеши (после "
               "приведения концов строк к LF), а у свежего по хешам файла — узлы и связи против свежей сборки. Сигналы — "
               "строки `[!!]` с именем файла; без них одна строка «сигналов нет».",

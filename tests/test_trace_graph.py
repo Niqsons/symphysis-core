@@ -16,7 +16,7 @@ from test_schema import make_project, run_openspec
 SCHEMA = ROOT / "openspec" / "schemas" / "symphysis" / "schema.yaml"
 SCRIPT = ROOT / "tools" / "trace_graph.py"
 CHANGE_COMMANDS = ["build", "report", "check", "freeze"]
-STUB_COMMANDS = ["report", "freeze"]
+STUB_COMMANDS = ["freeze"]
 
 
 def run(*args, cwd=None):
