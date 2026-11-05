@@ -1164,7 +1164,7 @@ def build_report(root: Path, change: str) -> str:
     негоден журнал — `Refusal`, форк тогда не вызван."""
     check_change_name(change)
     graph, duplicates, unresolved = build_graph_with_signals(root, change)
-    findings = validate_findings(root, change)
+    findings = [_md(line) for line in validate_findings(root, change)]  # и находки: `<путь>` от `no_paths` голой скобкой не остаётся
     every = [_md(no_paths(line, root)) for line in graph_signals(graph, duplicates, unresolved, signal_context(root, change))]
     signals = [line for line in every if not line.startswith(f"[!!] {DIVERGED}:")]
     diverged = [line for line in every if line.startswith(f"[!!] {DIVERGED}:")]
@@ -1243,10 +1243,14 @@ def _roots_note(roots: list[dict]) -> list[str]:
 
 
 def _write(path: Path, text: str) -> None:
+    """Запись через временный файл рядом и `os.replace`: обрыв не оставляет обрезанного файла под настоящим именем."""
+    temp = path.with_name(path.name + ".tmp")
     try:
         path.parent.mkdir(parents=True, exist_ok=True)
-        path.write_text(text, encoding="utf-8", newline="\n")
+        temp.write_text(text, encoding="utf-8", newline="\n")
+        os.replace(temp, path)
     except OSError as e:
+        temp.unlink(missing_ok=True)
         raise Refusal(f"{path.name} не записан в graph: {e.strerror or e}") from e
 
 

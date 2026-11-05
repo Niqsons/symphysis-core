@@ -256,3 +256,52 @@ def test_roots_without_option_are_the_journal_default_roots(tmp_path, fork):
     freeze(root)
     expected = trace_graph.default_roots(None, base / "decisions.json")
     assert [item["prefix"] for item in snapshot(base)["roots"]] == list(expected)
+
+
+def bare_brackets(text):
+    """Угловые скобки вне обратных кавычек (плагин md4h закрывает по ним комментирование файла)."""
+    import re
+    return [ch for ch in re.sub(r"`[^`\n]*`", "", text) if ch in "<>"]
+
+
+def test_report_has_no_bare_angle_brackets_when_fork_fails_with_a_path(tmp_path, monkeypatch):
+    """`trace-snapshot`: «Абсолютных путей нет» — замена пути на `<путь>` не оставляет голых скобок в report.md."""
+    root, base, roots, _ = frozen_project(tmp_path)
+    env = shim_env(tmp_path, fork_reply("", code=2, stderr=f"ENOENT {tmp_path.as_posix()}/proj/x and {tmp_path.as_posix()}/proj/y"))
+    for key, value in env.items():
+        monkeypatch.setenv(key, value)
+    freeze(root, roots)
+    text = (base / "graph" / "report.md").read_text(encoding="utf-8")
+    assert "validate не запустился" in text and "&lt;" in text
+    assert bare_brackets(text) == [], text
+
+
+def test_report_has_no_bare_angle_brackets_in_any_section(tmp_path, fork):
+    """`trace-snapshot`: «Абсолютных путей нет» — скобка в имени узла не даёт голой скобки ни в одном разделе отчёта."""
+    root, base, roots, _ = frozen_project(tmp_path, security="| Пункт | Статус |\n| --- | --- |\n| Ввод <b> и >x | применимо |\n")
+    freeze(root, roots)
+    text = (base / "graph" / "report.md").read_text(encoding="utf-8")
+    assert bare_brackets(text) == [], text
+
+
+def test_findings_of_validate_are_escaped_too(tmp_path, monkeypatch):
+    """`trace-snapshot`: «Абсолютных путей нет» — находка validate с угловой скобкой в сообщении идёт без голых скобок."""
+    found = {"items": [{"id": CHANGE, "type": "change", "valid": False, "durationMs": 1,
+                        "issues": [{"level": "ERROR", "path": "specs/demo/spec.md", "message": "тип <T> не тот"}]}]}
+    root, base, roots, _ = frozen_project(tmp_path)
+    for key, value in shim_env(tmp_path, fork_reply(found, code=1)).items():
+        monkeypatch.setenv(key, value)
+    freeze(root, roots)
+    text = (base / "graph" / "report.md").read_text(encoding="utf-8")
+    assert "тип &lt;T&gt; не тот" in text and bare_brackets(text) == []
+
+
+def test_write_leaves_no_temporary_file_and_replaces_atomically(tmp_path, fork, monkeypatch):
+    """`trace-snapshot`: «Снимок без отчёта» — файлы пишутся через временный и `os.replace`; после записи временных нет."""
+    root, base, roots, _ = frozen_project(tmp_path)
+    replaced = []
+    real = os.replace
+    monkeypatch.setattr(trace_graph.os, "replace", lambda a, b: (replaced.append((os.path.basename(a), os.path.basename(b))), real(a, b))[1])
+    freeze(root, roots)
+    assert sorted(p.name for p in (base / "graph").iterdir()) == ["report.md", "req-graph.json"]
+    assert [dst for _, dst in replaced] == ["req-graph.json", "report.md"] and all(src != dst for src, dst in replaced)
