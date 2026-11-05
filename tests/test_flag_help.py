@@ -7,6 +7,7 @@ import sys
 import pytest
 
 import journal
+import trace_graph
 from conftest import ROOT
 
 TOOLS = sorted((ROOT / "tools").glob("*.py"))
@@ -38,7 +39,8 @@ def test_every_argument_has_help(path):
 
 
 def test_entries_exist():
-    assert {p.name for p in TOOLS if is_entry(p)} == {"journal.py", "symphysis_config.py", "step_help.py"}
+    assert {p.name for p in TOOLS if is_entry(p)} == {"journal.py", "symphysis_config.py", "step_help.py",
+                                                      "trace_graph.py"}
 
 
 @pytest.mark.parametrize("path", [p for p in TOOLS if is_entry(p)], ids=[p.name for p in TOOLS if is_entry(p)])
@@ -54,6 +56,20 @@ def test_subcommand_help_names_when_and_codes(name):
     done = run_help(ROOT / "tools" / "journal.py", name)
     assert done.returncode == 0, done.stderr
     assert WHEN in done.stdout and CODES in done.stdout, done.stdout
+
+
+TRACE_SUBCOMMANDS = trace_graph.build_parser()._subparsers._group_actions[0].choices
+
+
+@pytest.mark.parametrize("name", sorted(TRACE_SUBCOMMANDS))
+def test_trace_graph_subcommand_help_names_when_and_codes(name):
+    done = run_help(ROOT / "tools" / "trace_graph.py", name)
+    assert done.returncode == 0, done.stderr
+    assert WHEN in done.stdout and CODES in done.stdout, done.stdout
+
+
+def test_trace_graph_subcommands_are_the_expected_ones():
+    assert set(TRACE_SUBCOMMANDS) == {"build", "report", "check", "freeze", "archive-gaps"}
 
 
 def test_subcommands_are_the_expected_ones():
