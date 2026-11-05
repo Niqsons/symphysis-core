@@ -166,3 +166,13 @@ def test_parser_reads_crlf_and_skips_fenced_headings():
     text = ("# Шапка\r\n\r\n## a\r\n\r\nНазвание\r\n\r\n### Команда\r\n\r\n```\r\n## не раздел\r\n```\r\n\r\n"
             "### Чужой\r\n\r\nмимо\r\n")
     assert step_help.parse_steps(text) == {"a": {"title": "Название", "command": "```\n## не раздел\n```"}}
+
+
+def test_apply_and_archive_sections_name_the_freeze():
+    """`trace-snapshot`: «Перед первой задачей», «Снимка нет» (F-134, F-139): механика заморозки и ссылка на отчёт
+    названы в разделах `apply` и `archive` — их текст отдаёт справка шага."""
+    sections = step_help.parse_steps(steps_text())
+    for step in ("apply", "archive"):
+        mechanics = sections[step]["mechanics"]
+        assert "заморозк" in mechanics.lower() and "`graph/report.md`" in mechanics, step
+        assert "trace_graph.py freeze" in mechanics, step

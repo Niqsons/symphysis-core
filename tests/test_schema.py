@@ -567,16 +567,50 @@ def test_specs_instruction_names_record_numbers_and_splitting(tmp_path):
     text = instruction_text(tmp_path, "specs")
     for token in ("`(F-NN)`", "500 знаков", "дочернее", "Часть требования «имя».",
                   "``Часть требования `capability`: «имя».``", "MODIFIED", "сценарии родителя остаются при нём",
-                  "условия не теряются", "свой номер"):
+                  "условия не теряются", "свой номер", "номер берётся из журнала",
+                  "записи нет — заведи кандидата", "номер без записи не ставь"):
         assert token in text, token
+    assert len(text.split()) <= 150, len(text.split())
 
 
 def test_tasks_instruction_names_scenario_form_and_service_mark(tmp_path):
     """`trace-conventions`: «Имя вписано ради отчёта» (F-42, F-43, F-89, F-90, F-115)."""
     text = instruction_text(tmp_path, "tasks")
     for token in ("`` `capability`: «сценарий» ``", "у каждого имени", "`` `служебная` ``", "в конце строки",
-                  "потому что задача закрывает сценарий"):
+                  "потому что задача закрывает сценарий", "`` `a`: «А», `a`: «Б» ``"):
         assert token in text, token
+    assert len(text.split()) <= 150, len(text.split())
+
+
+FREEZE_COMMAND = "python .symphysis/tools/trace_graph.py freeze"
+
+
+def ready_apply_project(tmp_path):
+    """Проект с изменением, у которого есть всё для `apply` и одна неотмеченная задача: состояние `ready`."""
+    proj = make_project(tmp_path)
+    change = proj / "openspec" / "changes" / "demo"
+    for rel in ("intent.md", "decisions.json", "research/none.md", "proposal.md", "specs/a/spec.md",
+                "consequences.md", "design.md", "security.md"):
+        (change / rel).parent.mkdir(parents=True, exist_ok=True)
+        (change / rel).write_text("x\n", encoding="utf-8")
+    (change / "tasks.md").write_text("- [ ] 1.1 задача\n", encoding="utf-8")
+    return proj
+
+
+@requires_fork
+def test_apply_instruction_calls_freeze_and_hands_link(tmp_path):
+    """`trace-signals`: «Перед первой задачей», «После последней задачи», «Модель отдаёт отчёт», «Модель видит зазор»,
+    «Решение Specify у записи `[сигнал]`»; `trace-snapshot`: «Перед первой задачей», «Последняя задача отмечена»
+    (F-48, F-78, F-99, F-112, F-113, F-134). Прежние строки инструкции на месте, предел слов тот же."""
+    out = run_openspec(ready_apply_project(tmp_path), "instructions", "apply", "--change", "demo", "--json")
+    assert out["state"] == "ready"
+    text = " ".join(out["instruction"].split())
+    for token in (FREEZE_COMMAND + " <имя>", "Перед первой задачей", "последняя", "`graph/report.md`",
+                  "без пересказа и без отбора строк", "не повод править спеки и задачи без слова человека",
+                  "`[сигнал]`", "Specify", "`outcome`", "`<!-- F-NN -->`",
+                  "Строки `предупреждение` в файлах `attack/*.md`", "Остановись, если упёрся в блокер"):
+        assert token in text, token
+    assert len(text.split()) <= 150, len(text.split())
 
 
 def test_tasks_template_shows_scenario_form_and_service_mark():
@@ -822,6 +856,34 @@ def test_sample_config_selects_symphysis_schema(tmp_path):
     run_openspec(proj, "new", "change", "by-config")
     out = run_openspec(proj, "status", "--change", "by-config", "--json")
     assert out["schemaName"] == "symphysis"
+
+
+def operation_guidance(project):
+    return run_openspec(project, "instructions", "archive", "--change", "demo", "--json").get("operationGuidance")
+
+
+@requires_fork
+@pytest.mark.parametrize("config_path", [CONFIG_SAMPLE, ROOT / "openspec" / "config.yaml"], ids=["sample", "core"])
+def test_archive_guidance_reaches_instructions(tmp_path, config_path):
+    """`trace-snapshot`: «Снимка нет», «Снимок устарел», «Сборка не удалась», «Сборка при всех отмеченных задачах»,
+    «Синхронизация внутри архивации» (F-49, F-75, F-127, F-128, F-139): подсказка операции — список строк ключа
+    `operations.archive.guidance`, CLI отдаёт его полем `operationGuidance`."""
+    proj = make_project(tmp_path, config=config_path.read_text(encoding="utf-8"))
+    guidance = operation_guidance(proj)
+    assert isinstance(guidance, list) and guidance and all(isinstance(g, str) for g in guidance)
+    text = " ".join(guidance)
+    for token in (FREEZE_COMMAND + " <имя>", "до выбора синхронизации", "новой сборке", "`graph/report.md`",
+                  "ошибку", "назови человеку", "архивацию не останавливай"):
+        assert token in text, token
+
+
+@requires_fork
+def test_sample_config_with_operations_raises_no_warning(tmp_path):
+    """Форма ключа `operations` верна: форк не предупреждает ни об ключе, ни о подсказке."""
+    proj = sample_project(tmp_path)
+    done = run_openspec_raw(proj, "instructions", "archive", "--change", "demo", "--json")
+    stderr = done.stderr.lower()
+    assert "guidance" not in stderr and "operation" not in stderr and "ignoring" not in stderr, done.stderr
 
 
 # --- заполненное изменение: фикстура change-demo ----------------------------
