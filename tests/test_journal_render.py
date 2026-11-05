@@ -515,6 +515,28 @@ def test_cli_render_html_attack_flag(tmp_path):
     assert embedded(html)["sha256"] == journal.sha256_file(src)   # хеш журнала — по байтам файла
 
 
+@pytest.mark.parametrize("name", ["attack-decisions.md", "attack-artifacts.md"])
+def test_cli_render_html_attack_template_with_composition_and_empty_table(tmp_path, name):
+    """`artifact-attack`: «Выключены все линзы» — файл со строкой `**Состав:**` и таблицей без строк
+    (заголовок остаётся) собирается страницей, код 0, строк нет (F-106)."""
+    template = (Path(__file__).resolve().parent.parent / "openspec" / "schemas" / "symphysis" / "templates"
+                / name).read_text(encoding="utf-8")
+    head, tail = template.split("| Утверждение |", 1)
+    header = "| Утверждение |" + tail.splitlines()[0] + "\n| --- | --- | --- | --- | --- | --- | --- |\n"
+    placeholder = "**Состав:** включены <слуги>; выключены <слуги или —>"
+    assert placeholder in head
+    body = (head.replace(placeholder, "**Состав:** включены —; выключены все линзы файла")
+            .replace("status: gaps_found", "status: passed", 1)) + header
+    att = tmp_path / "attack.md"
+    att.write_text(body, encoding="utf-8", newline="\n")
+    src, roots = html_fixture(tmp_path, "дв")
+    out = tmp_path / "view.html"
+    run = run_cli("render-html", src, "--out", out, "--roots", roots, "--attack", att)
+    assert run.returncode == 0, run.stderr
+    attacks = embedded_attack(out.read_text(encoding="utf-8"))
+    assert [a["rows"] for a in attacks] == [[]] and attacks[0]["frontmatter"]["status"] == "passed"
+
+
 def test_cli_render_html_attack_parse_error_exits_2(tmp_path):
     src, roots = html_fixture(tmp_path, "дв")
     broken = tmp_path / "attack.md"

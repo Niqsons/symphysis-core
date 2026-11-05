@@ -367,7 +367,7 @@ def test_attack_templates_table_and_verdict_rule(name):
 # Закрытые списки линз по файлу атаки — те же, что в SKILL.md `symphysis-attack` и в просмотрщике (F-07.A);
 # линзы присутствия сняты.
 TEMPLATE_LENSES = {"attack-decisions.md": ("context-compliance", "claim-authority", "claim-extraction", "coverage"),
-                   "attack-artifacts.md": ("scenario-run", "claim-extraction")}
+                   "attack-artifacts.md": ("scenario-run", "claim-extraction", "trace-link")}
 REMOVED_LENS_SLUGS = ("requirement-coverage", "task-completeness", "dependency-correctness", "key-links",
                       "scope-sanity", "verification-derivation", "scope-reduction", "data-contracts",
                       "research-resolution", "honest-verifier")
@@ -381,6 +381,33 @@ def test_attack_templates_name_own_closed_lens_list(name):
         f"шаблон {name} не называет свой список линз: {lenses}"
     for slug in REMOVED_LENS_SLUGS:
         assert slug not in text, f"в шаблоне {name} осталась снятая линза {slug}"
+
+
+@pytest.mark.parametrize("name", TEMPLATE_LENSES)
+def test_attack_templates_name_lens_composition(name):
+    """`artifact-attack`: «Всё включено», «Выключена линза», «Выключены все линзы» (F-61, F-63, F-106):
+    строка `**Состав:**` стоит в файле при любом составе, в ней только линзы этого файла."""
+    text = template_text(name)
+    lines = [line for line in text.splitlines() if line.startswith("**Состав:**")]
+    assert len(lines) == 1, f"в шаблоне {name} нужна одна строка `**Состав:**`"
+    assert lines[0] == "**Состав:** включены <слуги>; выключены <слуги или —>", lines[0]
+    comment = next(line for line in text.splitlines() if line.startswith("<!-- Состав"))
+    for token in ("python .symphysis/tools/symphysis_config.py", "при любом составе", "и при всех включённых",
+                  "выключенная линза строк не даёт", "таблица пуста", "заголовок остаётся", "status: passed",
+                  "модель состав не меняет"):
+        assert token in comment, f"в комментарии о составе шаблона {name} нет «{token}»"
+    for slug in TEMPLATE_LENSES[name]:
+        assert slug in comment, f"в комментарии о составе шаблона {name} нет линзы {slug}"
+    other = next(n for n in TEMPLATE_LENSES if n != name)
+    for slug in set(TEMPLATE_LENSES[other]) - set(TEMPLATE_LENSES[name]):
+        assert slug not in comment, f"в шаблоне {name} линза чужого файла {slug}"
+
+
+def test_attack_artifacts_template_goal_missing_is_claim_extraction():
+    """`artifact-attack`: «Цели нет» — строка `claim-extraction`, не `coverage`."""
+    text = template_text("attack-artifacts.md")
+    assert "Цели нет — строка claim-extraction с именем файла, опора «нет: файла нет», тяжесть блокер" in text
+    assert "trace-link" in text.split("| Утверждение |")[0], "комментарии шаблона не называют строку `trace-link`"
 
 
 def test_attack_decisions_template_keeps_coverage_rows():

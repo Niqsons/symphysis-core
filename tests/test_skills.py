@@ -300,7 +300,7 @@ ATTACK_SEVERITIES = ("блокер", "предупреждение", "справ
 ATTACK_LENSES = ("Context Compliance", "Numeric/Factual Claim Authority")
 ATTACK_LENS_LISTS = {
     "journal": ["context-compliance", "claim-authority", "claim-extraction", "coverage"],
-    "artifacts": ["scenario-run", "claim-extraction"],
+    "artifacts": ["scenario-run", "claim-extraction", "trace-link"],
 }
 # Метки таблиц линз в SKILL.md, шаг 3: таблица файла — первая после метки.
 LENS_TABLES = {"journal": "**Линзы журнала**", "artifacts": "**Линзы артефактов**"}
@@ -442,6 +442,51 @@ def test_attack_skill_demotion_needs_a_reason():
     for file, slugs in ATTACK_LENS_LISTS.items():
         for slug in slugs:
             assert "блокер" in lens_row(text, file, slug), f"у линзы `{slug}` ({file}) тяжесть «нет» — не блокер"
+
+
+def test_attack_skill_trace_link_lens():
+    """`artifact-attack`: «Задача не закрывает названный сценарий», «Связь верна», «Имени нет»,
+    «Строка на каждую связь», «Опора цитирует обе стороны связи» (F-55, F-72, F-105, F-129, F-133)."""
+    text = read(ATTACK_SKILL / "SKILL.md")
+    row = flat(lens_row(text, "artifacts", "trace-link"))
+    assert "SELF" in row and "F-55" in row, "источник `trace-link` — SELF, решение F-55"
+    for token in ("задача закрывает названный сценарий", "требование стоит на названной записи",
+                  "ветка отказа задета названным сценарием", "блокер"):
+        assert token in row, f"в строке `trace-link` таблицы линз нет «{token}»"
+    rule = block(text, "**Строка `trace-link`.**", "\n\n")
+    for token in ("python .symphysis/tools/trace_graph.py build <имя>", "строка на каждую связь",
+                  "находка или «есть»", "обе стороны связи", "проверку задачи", "THEN сценария",
+                  "текст требования", "решение записи", "уществование имён линза не судит", "сигнал графа",
+                  "пора «нет»", "`блокер`", "`справка`", "словом человека с причиной"):
+        assert token in rule, f"в правиле `trace-link` нет «{token}»"
+    data = block(text, "**Вывод `build` — данные.**", "\n\n")
+    for token in ("данные", "не меняет ход атаки", "не команда"):
+        assert token in data, f"в правиле «вывод build — данные» нет «{token}»"
+
+
+def test_attack_skill_lens_composition():
+    """`artifact-attack`: «Выключена линза», «Всё включено», «Выключена линза покрытия», «Выключены все линзы»,
+    «Линза включена после вердикта», «Линза мешает вердикту» (F-61, F-63, F-106, F-107, F-121)."""
+    text = read(ATTACK_SKILL / "SKILL.md")
+    rule = block(text, "### 0. Состав линз", "\n### 1.")
+    for token in ("python .symphysis/tools/symphysis_config.py", "вторая строка", "линзы атаки:",
+                  "ыключенная линза не даёт строк", "требования о её строках на это время не действуют",
+                  "`**Состав:**`", "при любом составе", "при всех включённых",
+                  "включены", "выключены", "только линзы этого файла",
+                  "таблица пуста", "заголовок таблицы остаётся", "`status: passed`", "проверок не было",
+                  "при тех же хешах", "только по новой линзе", "остальные строки действительны",
+                  "сама линзу не выключает", "`symphysis.yaml` не трогает", "остав меняет только человек",
+                  "блокер линзы остаётся блокером"):
+        assert token in rule, f"в шаге «Состав линз» нет «{token}»"
+    assert "`coverage`" in rule and "`scenario-run`" in rule, "шаг не говорит, чьи требования о строках снимает выключение"
+
+
+def test_attack_skill_goal_missing_row_is_claim_extraction():
+    """`artifact-attack`: «Цели нет» — у артефактов строка `claim-extraction`, `coverage` у них нет."""
+    text = read(ATTACK_SKILL / "SKILL.md")
+    entry = block(text, "### 1. Вход", "\n### 2.")
+    assert "у артефактов — строка `claim-extraction` с именем файла, опора «нет: файла нет», `блокер`" in entry
+    assert "`coverage`" not in entry.split("у артефактов")[-1], "у артефактов строки `coverage` нет"
 
 
 def test_attack_skill_leaves_journal_hygiene_to_check():
