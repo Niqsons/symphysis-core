@@ -1,5 +1,6 @@
 """Скрипт графа трассируемости `tools/trace_graph.py`: каркас подкоманд, проверка имени, реестр артефактов."""
 import copy
+import hashlib
 import json
 import shutil
 import subprocess
@@ -896,3 +897,101 @@ def test_master_spec_with_crlf_is_read_like_lf(tmp_path):
                              "#### Scenario: Только в мастере\n- **WHEN** a\n".replace("\n", "\r\n"))
     names = [u["ref"] for u in unresolved_of(root)]
     assert "сценарий: Только в мастере, мастер-спека `old`" not in names and "сценарий: Только в мастере" not in names
+
+
+# --- build: кандидаты связей и --out (U07, F-23, F-41, F-71) ---------------------------------------
+
+def two_reqs_on(*numbers):
+    """Два требования на одни и те же записи."""
+    tail = " ".join(f"(F-{n})" for n in numbers)
+    return ("## ADDED Requirements\n\n"
+            f"### Requirement: Первое\nТекст {tail} SHALL.\n\n### Requirement: Второе\nТекст {tail} SHALL.\n\n"
+            "### Requirement: Чужое\nТекст (F-99) SHALL.\n\n#### Scenario: Сцена\n- **WHEN** a\n")
+
+
+def test_requirements_with_shared_record_are_candidates_not_edges(tmp_path):
+    """`trace-graph`: «Вывод без файла» — граф несёт `candidates`; пара с общей записью (F-19) там есть, в `edges` её нет (F-23, F-71)."""
+    root, _ = make_change(tmp_path, journal=["F-19", "F-99"], specs={"demo": two_reqs_on(19)})
+    graph = graph_of(root)
+    assert graph["candidates"] == [{"a": "req:demo/Второе", "b": "req:demo/Первое",
+                                    "source": "общие записи журнала", "shared": ["rec:F-19"]}]
+    pair = {"req:demo/Первое", "req:demo/Второе"}
+    assert not [e for e in graph["edges"] if {e["from"], e["to"]} == pair]
+
+
+def test_candidate_pair_is_unordered_once_with_all_shared_records_and_stable(tmp_path):
+    root, _ = make_change(tmp_path, journal=["F-19", "F-20", "F-99"], specs={"demo": two_reqs_on(20, 19)})
+    first = build(root).stdout
+    got = json.loads(first)["candidates"]
+    assert len(got) == 1 and got[0]["shared"] == ["rec:F-19", "rec:F-20"] and got[0]["a"] < got[0]["b"]
+    assert build(root).stdout == first
+
+
+def test_no_shared_record_gives_no_candidates_and_task_does_not_make_one(tmp_path):
+    spec = ("## ADDED Requirements\n\n### Requirement: Один\nТекст (F-19).\n\n### Requirement: Два\nТекст (F-20).\n\n"
+            "#### Scenario: Сцена\n- **WHEN** a\n")
+    root, _ = make_change(tmp_path, journal=["F-19", "F-20"], specs={"demo": spec}, tasks="- [ ] 1.1 a (F-19)\n")
+    assert graph_of(root)["candidates"] == []
+
+
+def files_state(base):
+    return {str(p.relative_to(base)): hashlib.sha256(p.read_bytes()).hexdigest() for p in sorted(base.rglob("*")) if p.is_file()}
+
+
+def test_build_without_out_writes_no_file_in_change_dir(tmp_path):
+    """`trace-graph`: «Вывод без файла» — список и хеши файлов каталога изменения те же, граф в stdout."""
+    root, base = make_change(tmp_path, journal=["F-19"], specs={"demo": two_reqs_on(19)}, tasks="- [ ] 1.1 a\n")
+    before = files_state(base)
+    done = build(root)
+    assert done.returncode == 0 and json.loads(done.stdout)["nodes"] and files_state(base) == before
+
+
+def test_build_with_out_writes_graph_there_and_leaves_change_files(tmp_path):
+    """`trace-graph`: «Запись в указанный файл» — по пути лежит граф, файлы изменения не изменены; путь от текущего каталога."""
+    root, base = make_change(tmp_path, journal=["F-19"], specs={"demo": two_reqs_on(19)})
+    before = files_state(base)
+    done = run("build", CHANGE, "--out", "out/g.json", cwd=root)
+    assert done.returncode == 0 and done.stdout == ""
+    written = json.loads((root / "out" / "g.json").read_text(encoding="utf-8"))
+    assert written == graph_of(root) and files_state(base) == before
+    absolute = tmp_path / "abs.json"
+    assert run("build", CHANGE, "--out", str(absolute), cwd=root).returncode == 0
+    assert json.loads(absolute.read_text(encoding="utf-8")) == written
+
+
+def test_duplicate_signal_goes_to_stderr_with_and_without_out(tmp_path):
+    spec = DUP_REQ
+    root, _ = make_change(tmp_path, specs={"cap-a": spec})
+    assert "дубль id" in build(root).stderr
+    done = run("build", CHANGE, "--out", "g.json", cwd=root)
+    assert "дубль id" in done.stderr and done.stdout == ""
+
+
+def test_out_that_cannot_be_written_is_a_refusal(tmp_path):
+    root, _ = make_change(tmp_path)
+    (root / "занято").write_text("x", encoding="utf-8")
+    done = run("build", CHANGE, "--out", "занято/g.json", cwd=root)
+    assert done.returncode == 1 and "Traceback" not in done.stderr and "занято" in done.stderr
+
+
+def test_build_help_names_out():
+    assert "--out" in run("build", "--help").stdout
+
+
+def test_security_requirement_only_in_master_gives_no_link_and_no_record(tmp_path):
+    """Требование, которое есть только в мастер-спеке, пункт security не связывает и неразрешённым не делает (как derives)."""
+    security = SEC_HEAD + ("| Е | применимо — требование `old` «Старое» | тест |\n"
+                           "| Ж | применимо — требование `old` «Нигде» | тест |\n")
+    root, base = make_change(tmp_path, specs=two_cap_specs(), security=security)
+    master_spec(base, "old", "## Requirements\n\n### Requirement: Старое\nТекст SHALL.\n\n#### Scenario: С\n- **WHEN** a\n")
+    assert edges_of(graph_of(root), "refines") == []
+    assert [(u["ref"], u["from"]) for u in unresolved_of(root)] == [("`old`: «Нигде»", "sec:Ж")]
+
+
+def test_capitalized_nearest_scenario_gives_no_branch_link(tmp_path):
+    """«Ближайший сценарий:» в начале строки связи не даёт, как и строчный."""
+    conseq = ("## Опись\n\n- **Ветка** — `a/b.py:3` «код»\n  - при отказе: x\n"
+              "  - Ближайший сценарий: Нигде нет\n  - ближайший сценарий: Нигде нет\n")
+    root, _ = make_change(tmp_path, specs=two_cap_specs(), consequences=conseq)
+    assert [e for e in edges_of(graph_of(root), "verifies") if e[0].startswith("branch:")] == []
+    assert unresolved_of(root) == []

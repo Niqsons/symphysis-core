@@ -304,7 +304,7 @@ _CAP_NAME = re.compile(r"`([^`]+)`:\s*«")  # `capability`: «имя…
 _NEXT_NAME = re.compile(r"\s*,\s*«")  # следующее имя той же строки: своей capability у него нет (F-89)
 _SEC_REQ = re.compile(r"`([^`]+)`:?\s*«")  # `capability` «имя» или `capability`: «имя» в любой колонке строки security (F-131)
 _PARENT = re.compile(r"^\s*Часть требования\s+(?:`([^`]+)`:\s*)?«")  # фраза дочернего: в начале строки, не в кавычках (F-77)
-_BRANCH_SCENARIO = re.compile(r"(?<!ближайший )сценарий:\s*")  # «ближайший сценарий» ветку не покрывает
+_BRANCH_SCENARIO = re.compile(r"(?i:(?<!ближайший ))сценарий:\s*")  # «ближайший сценарий» (и «Ближайший») ветку не покрывает
 _BRANCH_LINE = re.compile(r"^- \*\*(.+?)\*\*\s*—\s*`([^`\s]+:\d+)`\s*«")
 
 
@@ -628,10 +628,10 @@ def _resolve_claims(root: Path, nodes: list[dict], places: dict, claims: list[di
         while (m := _SEC_REQ.search(text, pos)):
             cap = m.group(1)
             in_change = requirements.get(cap, {})
-            name, pos, _ = _take_name(text, m.end(), set(in_change))
+            name, pos, known = _take_name(text, m.end(), set(in_change) | master().get(cap, {}).get("req", set()))
             if name in in_change:
                 put_edge(claim["from"], in_change[name], "refines", claim["at"])
-            else:
+            elif not known:  # только в мастер-спеке: ни связи, ни записи, как у derives
                 put_unresolved(claim, f"`{cap}`: «{name}»", f"в capability `{cap}` нет требования с именем «{name}»")
 
     def resolve_branch(claim: dict) -> None:
@@ -671,12 +671,33 @@ def _resolve_claims(root: Path, nodes: list[dict], places: dict, claims: list[di
     return ordered, list(unresolved.values())
 
 
+CANDIDATE_SOURCE_RECORDS = "общие записи журнала"
+
+
+def record_candidates(edges: list[dict]) -> list[dict]:
+    """Кандидаты связей между требованиями (F-23, F-71): два требования с `traces` к одной записи журнала. Кандидат —
+    `{"a", "b", "source", "shared"}`: пара неупорядоченная (`a` < `b`), встречает один раз, `shared` — общие записи по порядку,
+    `source` называет способ вычисления; новый источник добавляет свои кандидаты с другим `source`, записанных связей не трогая.
+    Порядок — по `(a, b)`."""
+    by_record: dict[str, set[str]] = {}
+    for e in edges:
+        if e["type"] == "traces" and e["from"].startswith("req:"):
+            by_record.setdefault(e["to"], set()).add(e["from"])
+    pairs: dict[tuple[str, str], list[str]] = {}
+    for rec in sorted(by_record):
+        owners = sorted(by_record[rec])
+        for i, a in enumerate(owners):
+            for b in owners[i + 1:]:
+                pairs.setdefault((a, b), []).append(rec)
+    return [{"a": a, "b": b, "source": CANDIDATE_SOURCE_RECORDS, "shared": shared} for (a, b), shared in sorted(pairs.items())]
+
+
 def build_graph_with_signals(root: Path, change: str) -> tuple[dict, list[dict], list[dict]]:
     """Граф изменения `change` проекта `root`, список дублей id и список неразрешённых ссылок. Граф: `format`, `nodes`, `edges`,
     `candidates`; читает только артефакты, из которых `REGISTRY` что-то берёт (F-53). Читатель отдаёт узлы и заявки на связи за
     один проход по файлу; связи разрешаются, когда собраны узлы всех артефактов (`_resolve_claims`). Пункт security —
-    `refines` к требованию, ветка описи — `verifies` к сценарию, дочернее требование — `derives` к родителю (U06); `candidates`
-    пока пуст.
+    `refines` к требованию, ветка описи — `verifies` к сценарию, дочернее требование — `derives` к родителю (U06); `candidates` —
+    пары требований с общими записями журнала (`record_candidates`), отдельно от `edges`.
     Дубль — повторный id (два требования с одним именем в capability, два сценария, два пункта security): в графе остаётся
     первый по порядку чтения, id уникальны, а дубль не теряется молча, а идёт вторым значением: `[{"id": …, "at": [место
     первого, место повторного, …]}]` в порядке появления. Неразрешённые ссылки — третье значение: `[{"ref", "from", "at",
@@ -700,14 +721,23 @@ def build_graph_with_signals(root: Path, change: str) -> tuple[dict, list[dict],
     nodes.sort(key=lambda n: (n["at"].rsplit(":", 1)[0], int(n["at"].rsplit(":", 1)[1]), n["id"]))
     duplicates = [{"id": node_id, "at": at} for node_id, at in places.items() if len(at) > 1]
     edges, unresolved = _resolve_claims(root, nodes, places, claims)
-    return {"format": GRAPH_FORMAT, "nodes": nodes, "edges": edges, "candidates": []}, duplicates, unresolved
+    return {"format": GRAPH_FORMAT, "nodes": nodes, "edges": edges,
+            "candidates": record_candidates(edges)}, duplicates, unresolved
 
 
 def cmd_build(args: argparse.Namespace, root: Path) -> int:
     graph, duplicates = build_graph_with_duplicates(root, args.change)
     for dup in duplicates:  # сигнал, не стоп (F-31): граф печатается, код 0
         print(f"[!!] дубль id {dup['id']}: места {', '.join(dup['at'])}; в графе остался первый", file=sys.stderr)
-    print(json.dumps(graph, ensure_ascii=False, indent=1))
+    text = json.dumps(graph, ensure_ascii=False, indent=1)
+    if args.out is None:
+        print(text)
+        return 0
+    try:  # путь задаёт вызывающий: от текущего каталога или абсолютный, границы прав тут нет (F-41)
+        args.out.parent.mkdir(parents=True, exist_ok=True)
+        args.out.write_text(text + "\n", encoding="utf-8", newline="\n")
+    except OSError as e:
+        raise Refusal(f"граф не записан в {args.out}: {e.strerror or e}") from e
     return 0
 
 
@@ -732,10 +762,13 @@ HANDLERS = {"build": cmd_build, "report": cmd_report, "check": cmd_check, "freez
 
 # Подкоманда: (что делает, когда звать, коды). Правило `tests/test_flag_help.py`: «Звать, когда» и «Коды:».
 SUBCOMMAND_HELP = {
-    "build": ("Собирает граф трассируемости изменения из его артефактов и печатает его JSON в stdout, файлов не пишет.",
-              "Звать, когда нужен живой граф: перед отчётом, при разборе связей, в атаке артефактов.",
-              "Коды: 0 — граф собран (у только что созданного изменения он пуст); 1 — отказ, графа нет: имя изменения "
-              "не подходит, изменения нет, `decisions.json` не разбирается или негоден по схеме, файл не в UTF-8; "
+    "build": ("Собирает граф трассируемости изменения из его артефактов и печатает его JSON в stdout; с `--out` пишет в указанный "
+              "файл. Файлов изменения не пишет.",
+              "Звать, когда нужен живой граф: перед отчётом, при разборе связей, в атаке артефактов. `--out ПУТЬ` — путь от "
+              "текущего каталога или абсолютный, каталоги создаются; сигналы о дублях идут в stderr и с `--out`, и без.",
+              "Коды: 0 — граф собран (у только что созданного изменения он пуст) и выведен или записан; 1 — отказ, графа "
+              "нет: имя изменения не подходит, изменения нет, `decisions.json` не разбирается или негоден по схеме, файл "
+              "не в UTF-8, путь `--out` не записать; "
               "2 — вызов неверен."),
     "report": ("Печатает отчёт по графу изменения: сигналы о разрывах связей.",
                "Звать, когда нужен список разрывов человеку; отчёт отдаётся ссылкой, модель его не читает.",
@@ -781,6 +814,9 @@ def build_parser() -> argparse.ArgumentParser:
             sp.add_argument("archive", metavar="КАТАЛОГ", type=Path, help="каталог архива изменений")
         else:
             sp.add_argument("change", metavar="ИЗМЕНЕНИЕ", help="имя изменения, как у `openspec validate <имя>`")
+        if name == "build":
+            sp.add_argument("--out", metavar="ПУТЬ", type=Path, default=None,
+                            help="записать граф в этот файл вместо stdout; файлы изменения не меняются")
     return ap
 
 
