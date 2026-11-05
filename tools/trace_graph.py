@@ -904,6 +904,10 @@ DIVERGED_TITLE = "Расхождения сценариев MODIFIED"
 _TRACE_COMMENT = re.compile(r"<!--(.*?)-->")
 _TRACE_PAIR = re.compile(r"(?<![\w-])F-(\d+)\s+(открыт|" + "|".join(PROBE_OUTCOMES) + r")(?!\w)")
 _QUOTE_LIMIT = 110
+_SERVICE_MARK = re.compile(r"(?<!`)`служебная`$")  # пометка служебной задачи: только в backticks и только в конце строки (F-43, F-90)
+_SCENARIO_MARK = re.compile(r"^\s*<!--\s*(.*?)\s*-->\s*$")  # комментарий на всю строку; сам номер — по `_REC_REF`
+_MARK_BODY = re.compile(r"F-\d+(?:\s*,\s*F-\d+)*")
+_SIGNAL_QUESTION = re.compile(r"^\[сигнал\]\s+(.+?)\s+·\s+(.+)$")  # `[сигнал] <вид> · <ключ>` (F-47, F-98)
 
 
 def _squash(text: str) -> str:
@@ -933,12 +937,32 @@ def _trace_comments(lines: list[str]) -> list[tuple[int, str, list[tuple[int, st
     return found
 
 
+def _scenario_marks(lines: list[str], mask: list[bool], heading: int) -> set[int]:
+    """Номера записей из комментариев `<!-- F-NN -->` сразу под заголовком сценария (строка `heading`, с 1; F-45): подряд идущие
+    строки-комментарии, пустые строки между ними не мешают, первая другая строка или блок кода обрывает. Комментарий не из
+    номеров (`<!-- требование из F-116 -->`) пропускается и не обрывает."""
+    found = set()
+    for i in range(heading, len(lines)):
+        if mask[i]:
+            break
+        if not lines[i].strip():
+            continue
+        comment = _SCENARIO_MARK.match(lines[i])
+        if not comment:
+            break
+        if _MARK_BODY.fullmatch(comment.group(1)):
+            found.update(_record_numbers(comment.group(1)))
+    return found
+
+
 def signal_context(root: Path, change: str) -> dict:
     """Данные для сигналов, которых нет в графе (U10): `records` — записи журнала (адресат, решение, исход; снимок графа
     ими не раздувается), `modified` — по требованию MODIFIED: `carried` (текст требования как в мастер-спеке; о сценариях говорит `scenarios`) и
     `scenarios` {id сценария: `same`, `new` или `changed`} по имени и тексту с приведением пробелов и концов строк (F-95),
     `traces` — следы проб `<!-- проба …, исходы: F-NN Исход -->` как `(место, номер, слово)`; след в требовании MODIFIED,
-    дословно стоящий в том же требовании мастер-спеки, не входит: его номера из журнала другого изменения. Только читает."""
+    дословно стоящий в том же требовании мастер-спеки, не входит: его номера из журнала другого изменения. `marks` — номера
+    записей из комментариев `<!-- F-NN -->` под заголовками сценариев (F-45); сценарий MODIFIED, перенесённый из мастера без
+    изменения, своих номеров не даёт: они из журнала другого изменения. Только читает."""
     base = root / "openspec" / "changes" / change
     if not base.is_dir():
         raise Refusal(f"изменения «{change}» нет: нет каталога openspec/changes/{change}")
@@ -946,7 +970,7 @@ def signal_context(root: Path, change: str) -> dict:
         records = json.loads(_read_text(base, "decisions.json"))["records"] if (base / "decisions.json").is_file() else []
     except (ValueError, KeyError, TypeError):
         records = []  # негодный журнал сборка графа уже назвала отказом
-    modified, traces = {}, []
+    modified, traces, marks = {}, [], set()
     folders = sorted(p for p in (base / "specs").iterdir() if p.is_dir()) if (base / "specs").is_dir() else []
     for folder in folders:
         rel = f"specs/{folder.name}/spec.md"
@@ -982,7 +1006,13 @@ def signal_context(root: Path, change: str) -> dict:
                                                               "same" if old_text[scn.name] == _squash(scn.text) else "changed")
             carried = old is not None and _squash(old.text) == _squash(item.text)
             modified.setdefault(f"req:{cap}/{item.name}", {"carried": carried, "scenarios": state})
-    return {"records": records, "modified": modified, "traces": traces}
+        mask = _fence_mask(lines)
+        for item in parsed.requirements:
+            state = modified.get(f"req:{cap}/{item.name}", {}).get("scenarios", {}) if item.section == "MODIFIED" else {}
+            for scn in item.scenarios:
+                if state.get(f"scn:{cap}/{item.name}/{scn.name}") != "same":
+                    marks |= _scenario_marks(lines, mask, scn.line)
+    return {"records": records, "modified": modified, "traces": traces, "marks": marks}
 
 
 def _stale_trace(rec: dict, word: str) -> str | None:
@@ -1001,11 +1031,13 @@ def graph_signals(graph: dict, duplicates: list[dict] | None = None, unresolved:
     """Сигналы графа строками `[!!] вид: ключ — место`, порядок по месту в файле (F-57, F-64, F-65, F-83, F-94, F-95). Ключ — id
     без префикса вида. Из графа и списков сборки: «требование без задачи» и «сценарий без задачи» (ADDED), «требование без
     записи», «неоднозначное имя» (дубль id из `duplicates`; одно имя сценария у двух требований capability при задаче с этим
-    именем), «неизвестное имя или номер» (`unresolved`), «задача ни к чему». Из `context` (`signal_context`): «критерий без
-    требования», «решение без требования и задачи», «след отстал от журнала», в MODIFIED новые сценарии («сценарий без
+    именем), «неизвестное имя или номер» (`unresolved`), «задача ни к чему» (кроме служебной: `служебная` в конце строки). Из `context` (`signal_context`): «критерий без
+    требования», «решение без требования и задачи», «след отстал от журнала», «Specify без сценария» (рядом «снято F-NN?» от решённой записи
+    с этой в `depends_on`) и «Backstop без задачи» по исходу пробы, в MODIFIED новые сценарии («сценарий без
     задачи») и сценарии с прежним именем и другим текстом (`DIVERGED`); без `context` MODIFIED и записи журнала не читаются.
-    Молчат: улика, разошедшаяся с файлом (её называет `check`), перенесённое из мастера без изменения текста, решение
-    «Оставить как есть», решение с исходом пробы и кандидаты связей между требованиями (F-71). Не печатает."""
+    Сигнал, на который есть запись `[сигнал] <вид> · <ключ>` с решением, молчит (вид и ключ как в строке, пробелы приведены; F-47,
+    F-98); запись без решения не снимает ничего (F-114). Молчат: улика, разошедшаяся с файлом (её называет `check`), перенесённое из мастера без изменения текста, решение
+    «Оставить как есть», исходы Dismiss и Defer и кандидаты связей между требованиями (F-71). Не печатает."""
     context = context or {}
     edges = graph["edges"]
     closed = {e["to"] for e in edges if e["type"] == "satisfies"}
@@ -1018,8 +1050,15 @@ def graph_signals(graph: dict, duplicates: list[dict] | None = None, unresolved:
             by_name.setdefault((n["capability"], n["name"]), []).append(n)
     found = []
 
+    answered = set()  # (вид, ключ) сигналов, на которые человек ответил записью `[сигнал]` с решением (F-47, F-98, F-114)
+    for rec in context.get("records", []):
+        asked = _SIGNAL_QUESTION.match(_squash(rec.get("question", "")))
+        if asked and rec.get("decision"):
+            answered.add((asked.group(1), asked.group(2)))
+
     def add(at: str, kind: str, key: str, places: str | None = None) -> None:
-        found.append((at, _md(f"[!!] {kind}: {key} — {places or at}")))
+        if (_squash(kind), _squash(key)) not in answered:
+            found.append((at, _md(f"[!!] {kind}: {key} — {places or at}")))
 
     named_traces = {e["from"] for e in edges if e["type"] == "traces"}
     bad_number = {u["from"] for u in unresolved if u["ref"].startswith("F-")}
@@ -1055,7 +1094,8 @@ def graph_signals(graph: dict, duplicates: list[dict] | None = None, unresolved:
     for task in (n for n in graph["nodes"] if n["kind"] == "task"):
         if task["id"] not in unresolved_from and not any(e["from"] == task["id"] and e["type"] in ("satisfies", "traces")
                                                          for e in edges):
-            add(task["at"], "задача ни к чему", task["id"][5:])
+            if not _SERVICE_MARK.search(task["name"]):  # служебная задача висящей не считается (F-43)
+                add(task["at"], "задача ни к чему", task["id"][5:])
     if context:
         reached = {"req": {e["to"] for e in edges if e["type"] == "traces" and e["from"].startswith("req:")},
                    "task": {e["to"] for e in edges if e["type"] == "traces" and e["from"].startswith("task:")}}
@@ -1066,7 +1106,15 @@ def graph_signals(graph: dict, duplicates: list[dict] | None = None, unresolved:
             if rec["kind"] == "факт" and rec.get("addressee") == "постановка" and "rec:" + rec["id"] not in reached["req"]:
                 quote = next((e["quote"] for e in rec.get("evidence", []) if e.get("quote")), rec["question"])
                 add(at, "критерий без требования", f"{rec['id']} «{_short(quote)}»")
-            elif rec["kind"] == "развилка" and decision and (rec.get("outcome") or {}).get("kind") != "проба":
+            elif rec["kind"] == "развилка" and (rec.get("outcome") or {}).get("kind") == "проба":
+                word, number = rec["outcome"]["value"], re.search(r"\d+", rec["id"])
+                if word == "Specify" and number and int(number.group()) not in context.get("marks", ()):
+                    lifting = [r["id"] for r in context["records"] if (r.get("decision") or r.get("status") == "решён")
+                               and rec["id"] in [d.split(".")[0] for d in r.get("depends_on", [])]]  # F-46: `F-12.A` называет F-12
+                    add(at, "Specify без сценария", rec["id"], ", ".join([at, *(f"снято {i}?" for i in lifting)]))
+                elif word == "Backstop" and "rec:" + rec["id"] not in reached["task"]:
+                    add(at, "Backstop без задачи", rec["id"])
+            elif rec["kind"] == "развилка" and decision:
                 text = next((o["text"] for o in rec["options"] if o["letter"] == decision["option"]), "")
                 if text.strip().lower().startswith("оставить как есть"):
                     continue
@@ -1082,6 +1130,17 @@ def graph_signals(graph: dict, duplicates: list[dict] | None = None, unresolved:
     return [line for _, line in found]
 
 
+def service_tasks(graph: dict) -> list[str]:
+    """Номера задач с пометкой `служебная` в конце строки, по порядку в `tasks.md` (F-43, F-90)."""
+    return [n["id"][5:] for n in graph["nodes"] if n["kind"] == "task" and _SERVICE_MARK.search(n["name"])]
+
+
+def service_line(graph: dict) -> str:
+    """Строка отчёта «Служебных задач: N (номера).» или пустая, если таких задач нет; это сведение, а не сигнал (F-116)."""
+    numbers = service_tasks(graph)
+    return f"Служебных задач: {len(numbers)} ({', '.join(numbers)})." if numbers else ""
+
+
 def build_report(root: Path, change: str) -> str:
     """Текст отчёта изменения `change`: находки `openspec validate`, сигналы графа и отдельным разделом расхождения сценариев
     MODIFIED (F-95); без всех трёх — фраза, что сигналов нет. Ничего не печатает и не пишет (её зовёт `freeze` для
@@ -1094,14 +1153,15 @@ def build_report(root: Path, change: str) -> str:
     signals = [line for line in every if not line.startswith(f"[!!] {DIVERGED}:")]
     diverged = [line for line in every if line.startswith(f"[!!] {DIVERGED}:")]
     parts = [f"# Отчёт по изменению {change}", ""]
+    service = service_line(graph)  # сведение отдельной строкой, «Сигналов нет.» не отменяет (F-116)
     if not findings and not every:
-        return "\n".join([*parts, NO_SIGNALS, ""])
+        return "\n".join([*parts, NO_SIGNALS, "", *([service, ""] if service else [])])
     sections = [("Находки openspec validate", findings, "Находок нет."), ("Сигналы графа", signals, "Сигналов графа нет.")]
     if diverged:
         sections.append((DIVERGED_TITLE, diverged, ""))
     for title, lines, none in sections:
         parts += [f"## {title}", "", *(lines or [none]), ""]
-    return "\n".join(parts)
+    return "\n".join([*parts, *([service, ""] if service else [])])
 
 
 def cmd_report(args: argparse.Namespace, root: Path) -> int:

@@ -544,3 +544,184 @@ def test_modified_requirement_with_same_text_and_new_scenario_is_not_without_rec
     signals = lines_of(root)
     assert of_kind(signals, "требование без записи") == []
     assert len(of_kind(signals, "сценарий без задачи")) == 1 and "Новый" in of_kind(signals, "сценарий без задачи")[0]
+
+
+# --- служебные задачи, исходы проб, записи [сигнал] (U11, F-43..F-47, F-64, F-69, F-90, F-98, F-114, F-116) ----------
+
+SERVICE = "`служебная`"
+
+
+def scn_spec(*scenarios, number=1):
+    """Одно требование `Один` с записью `number` и сценариями `(имя, строки после заголовка)`."""
+    body = "".join(f"#### Scenario: {name}\n{under}- **WHEN** a\n- **THEN** b\n\n" for name, under in scenarios)
+    return spec(f"### Requirement: Один\nТекст SHALL (F-{number:02d}).\n\n{body}")
+
+
+def test_service_task_with_mark_has_no_dangling_signal(tmp_path):
+    """`trace-conventions`: «Прогон с пометкой», «Такая же задача без пометки» — пометка снимает сигнал «задача ни к чему»,
+    та же задача без неё его получает."""
+    tasks = DONE_SC + f"- [ ] 1.2 Полный прогон ядра {SERVICE}\n- [ ] 1.3 Полный прогон ядра\n"
+    root, _ = make_change(tmp_path, specs={"demo": spec(req("Один", 1))}, tasks=tasks)
+    found = of_kind(lines_of(root), "задача ни к чему")
+    assert len(found) == 1 and "1.3" in found[0], found
+
+
+def test_service_word_in_text_or_not_at_the_end_is_not_a_mark(tmp_path):
+    """`trace-conventions`: «Слово в тексте задачи» — слово «служебная» в тексте, без backticks, не в конце строки или в
+    образце формы в двойных backticks пометкой не считается."""
+    tasks = (DONE_SC + "- [ ] 1.2 Поправить служебная колонка\n" + f"- [ ] 1.3 {SERVICE} и ещё слова\n"
+             + "- [ ] 1.4 образец `` `служебная` ``\n" + "- [ ] 1.5 слово служебная\n")
+    root, _ = make_change(tmp_path, specs={"demo": spec(req("Один", 1))}, tasks=tasks)
+    found = of_kind(lines_of(root), "задача ни к чему")
+    assert [k for s in found for k in ("1.2", "1.3", "1.4", "1.5") if k in s] == ["1.2", "1.3", "1.4", "1.5"], found
+
+
+def test_service_tasks_line_names_count_and_numbers(tmp_path):
+    """`trace-conventions`: «Отчёт называет служебные задачи» — отдельная строка с числом и номерами; это не сигнал `[!!]`
+    и фразу «Сигналов нет.» она не отменяет."""
+    tasks = DONE_SC + f"- [ ] 1.2 Настройка дерева {SERVICE}\n- [x] 10.1 Полный прогон {SERVICE}\n"
+    root, _ = make_change(tmp_path, specs={"demo": spec(req("Один", 1))}, tasks=tasks)
+    _, env = with_shim(tmp_path, fork_reply(CLEAN))
+    done = report(root, env=env)
+    assert done.returncode == 0, done.stderr
+    line = [row for row in done.stdout.splitlines() if "лужебн" in row]
+    assert line == ["Служебных задач: 2 (1.2, 10.1)."], done.stdout
+    assert "Сигналов нет." in done.stdout and "[!!]" not in done.stdout
+
+
+def test_service_line_stands_next_to_signals_and_is_absent_without_marks(tmp_path):
+    """`trace-conventions`: «Отчёт называет служебные задачи» — при сигналах строка тоже есть, без служебных задач её нет."""
+    root, _ = make_change(tmp_path, specs={"demo": spec(req("Один", 1))}, tasks=DONE_SC + "- [ ] 1.2 ничего\n")
+    _, env = with_shim(tmp_path, fork_reply(CLEAN))
+    assert "Служебных" not in report(root, env=env).stdout
+    (root / "openspec" / "changes" / CHANGE / "tasks.md").write_text(DONE_SC + f"- [ ] 1.2 прогон {SERVICE}\n"
+                                                                     "- [ ] 1.3 ничего\n", encoding="utf-8")
+    out = report(root, env=env).stdout
+    assert "[!!] задача ни к чему: 1.3" in out and "Служебных задач: 1 (1.2)." in out and "1.2 —" not in out
+
+
+def specify_change(tmp_path, under, *, number=12, outcome="Specify", extra=()):
+    """Изменение с записью F-12 и исходом `outcome`; сценарий `Сц` несёт `under` под заголовком."""
+    root, base = make_change(tmp_path, specs={"demo": scn_spec(("Сц", under))}, tasks=DONE_SC)
+    journal(base, {"id": "F-01"}, decided(f"F-{number:02d}", outcome=probe(outcome)), *extra)
+    return root, base
+
+
+def test_outcome_specify_with_comment_is_silent(tmp_path):
+    """`trace-signals`: «Specify с комментарием» — комментарий с номером записи сразу под заголовком сценария: сигнала нет."""
+    root, _ = specify_change(tmp_path, "<!-- F-12 -->\n")
+    assert of_kind(lines_of(root), "Specify без сценария") == []
+
+
+def test_outcome_specify_without_comment_is_named(tmp_path):
+    """`trace-signals`: «Specify без комментария» — сценария с номером нет: сигнал называет F-12 и место записи."""
+    root, _ = specify_change(tmp_path, "")
+    found = of_kind(lines_of(root), "Specify без сценария")
+    assert len(found) == 1 and "F-12" in found[0] and re.search(r"— decisions\.json:\d+$", found[0]), found
+
+
+@pytest.mark.parametrize("under", ["<!-- F-123 -->\n", "<!-- F-1 -->\n", "<!-- F-13 -->\n", "- **WHEN** a\n<!-- F-12 -->\n"],
+                         ids=["longer-number", "shorter-number", "other", "not-under-heading"])
+def test_outcome_specify_comment_must_match_exactly_under_the_heading(tmp_path, under):
+    """`trace-signals`: «Specify без комментария» — совпадение номера точное, а комментарий стоит сразу под заголовком."""
+    root, _ = specify_change(tmp_path, under)
+    assert len(of_kind(lines_of(root), "Specify без сценария")) == 1
+
+
+def test_outcome_specify_comment_with_blank_line_or_in_code_block(tmp_path):
+    """`trace-signals`: «Specify с комментарием» — пустая строка между заголовком и комментарием допустима; комментарий в блоке
+    кода комментарием сценария не считается."""
+    root, _ = specify_change(tmp_path, "\n<!-- F-12 -->\n")
+    assert of_kind(lines_of(root), "Specify без сценария") == []
+    root2, _ = specify_change(tmp_path / "b", "```\n<!-- F-12 -->\n```\n")
+    assert len(of_kind(lines_of(root2), "Specify без сценария")) == 1
+
+
+def test_outcome_dismiss_and_defer_are_silent(tmp_path):
+    """`trace-signals`: «Dismiss» — запись с исходом Dismiss или Defer без требования и задачи: строки о ней нет."""
+    for word in ("Dismiss", "Defer"):
+        root, _ = specify_change(tmp_path / word, "", outcome=word)
+        assert lines_of(root) == [], word
+
+
+def test_outcome_backstop_without_task_is_named_and_with_task_is_not(tmp_path):
+    """`trace-signals`: «Сигнал о решении следует его исходу» — Backstop без задачи назван, со ссылкой задачи на запись нет."""
+    root, base = specify_change(tmp_path, "", outcome="Backstop")
+    found = of_kind(lines_of(root), "Backstop без задачи")
+    assert len(found) == 1 and "F-12" in found[0], found
+    (base / "tasks.md").write_text(DONE_SC + "- [ ] 1.2 защита (F-12)\n", encoding="utf-8")
+    assert of_kind(lines_of(root), "Backstop без задачи") == []
+
+
+def test_outcome_specify_lifted_later_names_the_lifting_record(tmp_path):
+    """`trace-signals`: «Исход снят позже» — решённая F-30 с `depends_on: [F-12]`: строка о F-12 несёт «снято F-30?»; фикстура
+    снятого Specify (F-69). Несколько записей называются все, неснявшие и нерешённые не называются."""
+    lifting = [decided("F-30", depends_on=["F-12"]), decided("F-31", depends_on=["F-12", "F-01"]),
+               {"id": "F-32", "depends_on": ["F-12"]}, decided("F-33", depends_on=["F-01"])]
+    root, _ = specify_change(tmp_path, "", extra=lifting)
+    found = of_kind(lines_of(root), "Specify без сценария")
+    assert len(found) == 1 and "снято F-30?" in found[0] and "снято F-31?" in found[0], found
+    assert "F-32" not in found[0] and "F-33" not in found[0]
+    assert found[0].startswith("[!!] Specify без сценария: F-12 — ")
+
+
+def test_outcome_record_forgot_to_name_the_lifted_one_gets_no_hint(tmp_path):
+    """`brainstorm-interview`: «Запись забыла назвать снятое» — F-30 снимает F-12, но `depends_on` пуст: сигнал о F-12 есть без
+    «снято», запись отчёт не отвергает."""
+    root, _ = specify_change(tmp_path, "", extra=[decided("F-30")])
+    found = of_kind(lines_of(root), "Specify без сценария")
+    assert len(found) == 1 and "снято" not in found[0], found
+
+
+def signal_record(rid, question, decision=True, **extra):
+    """Запись `[сигнал]` с исходом пробы Dismiss; `decision=False` — без решения человека."""
+    rec = decided(rid, outcome=probe("Dismiss"), question=question, **extra)
+    if not decision:
+        rec.update({"decision": None, "status": "открыт"})
+    return rec
+
+
+def test_signal_record_with_decision_removes_exactly_its_signal(tmp_path):
+    """`trace-signals`: «Человек принял зазор», «Запись отвечает на один сигнал» — запись с решением снимает сигнал своего вида
+    и ключа, соседний сигнал того же вида остаётся."""
+    root, base = make_change(tmp_path, specs={"demo": spec(req("Один", 1), req("Два", 1))}, tasks="- [ ] 1.1 (F-01)\n")
+    journal(base, {"id": "F-01"})
+    assert len(of_kind(lines_of(root), "требование без задачи")) == 2
+    journal(base, {"id": "F-01"}, signal_record("F-02", "[сигнал] требование без задачи · demo/Один"))
+    found = of_kind(lines_of(root), "требование без задачи")
+    assert len(found) == 1 and "demo/Два" in found[0], found
+
+
+def test_signal_record_other_kind_same_key_stays(tmp_path):
+    """`trace-signals`: «Запись отвечает на один сигнал» — тот же ключ другого вида не молчит."""
+    root, base = make_change(tmp_path, specs={"demo": spec(req("Один"))}, tasks="- [ ] 1.1 (F-01)\n")
+    journal(base, {"id": "F-01"}, signal_record("F-02", "[сигнал] требование без задачи · demo/Один"))
+    signals = lines_of(root)
+    assert of_kind(signals, "требование без задачи") == [] and len(of_kind(signals, "требование без записи")) == 1, signals
+
+
+def test_signal_record_without_decision_removes_nothing(tmp_path):
+    """`trace-signals`: «Запись без решения», «Человек ничего не записал» — запись `[сигнал]` без `decision` сигнал не снимает,
+    без записи сигнал назван."""
+    root, base = make_change(tmp_path, specs={"demo": spec(req("Один", 1))}, tasks="- [ ] 1.1 (F-01)\n")
+    journal(base, {"id": "F-01"})
+    assert len(of_kind(lines_of(root), "требование без задачи")) == 1
+    journal(base, {"id": "F-01"}, signal_record("F-02", "[сигнал] требование без задачи · demo/Один", decision=False))
+    assert len(of_kind(lines_of(root), "требование без задачи")) == 1
+
+
+def test_signal_record_matches_after_whitespace_squash(tmp_path):
+    """`trace-signals`: «Запись отвечает на один сигнал» — сравнение после приведения пробелов; ключ с угловой скобкой в
+    записи сравнивается как написан, не как в экранированной строке отчёта."""
+    root, base = make_change(tmp_path, specs={"demo": spec(req("Один  два", 1), req("Т<N>", 1))}, tasks="- [ ] 1.1 (F-01)\n")
+    journal(base, {"id": "F-01"}, signal_record("F-02", "[сигнал]   требование без задачи  ·  demo/Один   два"),
+            signal_record("F-03", "[сигнал] требование без задачи · demo/Т<N>"))
+    assert of_kind(lines_of(root), "требование без задачи") == []
+
+
+def test_signal_record_for_specify_signal_silences_only_that_record(tmp_path):
+    """`trace-signals`: «Запись отвечает на один сигнал» — ключ сигнала «Specify без сценария» — номер записи."""
+    root, base = specify_change(tmp_path, "", extra=[decided("F-13", outcome=probe("Specify")),
+                                                     signal_record("F-40", "[сигнал] Specify без сценария · F-12")])
+    found = of_kind(lines_of(root), "Specify без сценария")
+    assert len(found) == 1 and "F-13" in found[0], found
