@@ -881,6 +881,77 @@ def test_derives_phrase_inside_code_or_scenario_is_not_a_link(tmp_path):
     assert edges_of(graph_of(root), "derives") == [] and unresolved_of(root) == []
 
 
+# --- derives: номера мастер-текста родителя у дочернего ADDED связи не дают (U14b, F-150, F-84) -----------------------
+
+PARENT_MASTER = ("## Requirements\n\n### Requirement: Родитель\nДлинный текст SHALL (F-07.A) и (F-18.A).\n\n"
+                 "#### Scenario: Сц\n- **WHEN** a\n- **THEN** b\n")
+PARENT_MODIFIED = ("## MODIFIED Requirements\n\n### Requirement: Родитель\nДлинный текст SHALL (F-07.A) и (F-18.A) и (F-19.A).\n\n"
+                   "#### Scenario: Сц\n- **WHEN** a\n- **THEN** b\n")
+KIDS = ("\n## ADDED Requirements\n\n### Requirement: Со своим\nЧасть требования «Родитель». Номера (F-07.A), (F-18.A), (F-55.B).\n\n"
+        "#### Scenario: Сц1\n- **WHEN** a\n- **THEN** b\n\n"
+        "### Requirement: Без своего\nЧасть требования «Родитель». Номера (F-07.A) и (F-18.A).\n\n"
+        "#### Scenario: Сц2\n- **WHEN** a\n- **THEN** b\n")
+
+
+def parent_project(tmp_path, spec, journal=("F-07", "F-18", "F-19", "F-55")):
+    root, base = make_change(tmp_path, journal=list(journal), specs={"demo": spec})
+    master_spec(base, "demo", PARENT_MASTER)
+    return root, base
+
+
+def traced(root, req_name):
+    return sorted(e["to"] for e in trace_graph.build_graph(root, CHANGE)["edges"]
+                  if e["from"] == f"req:demo/{req_name}" and e["type"] == "traces")
+
+
+def test_child_added_numbers_of_modified_parent_master_text_give_no_link(tmp_path):
+    """`trace-conventions`: «Часть требования» (F-150) — номер, стоящий в мастер-тексте родителя, у дочернего ADDED связи не даёт."""
+    root, _ = parent_project(tmp_path, PARENT_MODIFIED + KIDS)
+    assert "rec:F-07" not in traced(root, "Со своим") and "rec:F-18" not in traced(root, "Со своим")
+    assert [e[:3] for e in edges_of(graph_of(root), "derives")] == [("req:demo/Со своим", "req:demo/Родитель", "derives"),
+                                                                    ("req:demo/Без своего", "req:demo/Родитель", "derives")]
+
+
+def test_child_added_own_number_gives_link(tmp_path):
+    """`trace-conventions`: «Часть требования» (F-150) — своего номера у родителя в мастере нет: связь есть."""
+    root, _ = parent_project(tmp_path, PARENT_MODIFIED + KIDS)
+    assert traced(root, "Со своим") == ["rec:F-55"]
+
+
+def test_child_added_number_new_in_parent_modified_text_still_gives_link(tmp_path):
+    """Отсекается мастер-текст родителя, а не текст его MODIFIED: F-19 стоит только в изменённом тексте — связь есть."""
+    kid = KIDS.replace("(F-55.B)", "(F-19.A)")
+    root, _ = parent_project(tmp_path, PARENT_MODIFIED + kid)
+    assert traced(root, "Со своим") == ["rec:F-19"]
+
+
+def test_child_without_own_number_gets_requirement_without_record(tmp_path):
+    """`trace-conventions`: «Требование без номера» (F-150) — у дочернего без своих номеров нет связей, сигнал обычный."""
+    root, _ = parent_project(tmp_path, PARENT_MODIFIED + KIDS)
+    assert traced(root, "Без своего") == []
+    graph, duplicates, unresolved = trace_graph.build_graph_with_signals(root, CHANGE)
+    signals = trace_graph.graph_signals(graph, duplicates, unresolved, trace_graph.signal_context(root, CHANGE))
+    found = [s for s in signals if s.startswith("[!!] требование без записи:")]
+    assert len(found) == 1 and "demo/Без своего" in found[0], found
+
+
+def test_child_added_master_only_parent_cuts_its_numbers(tmp_path):
+    """Родитель только в мастере другой capability (в изменении его нет): номера его мастер-текста тоже отсекаются."""
+    kids = KIDS.replace("«Родитель»", "`old`: «Родитель»")
+    root, base = parent_project(tmp_path, kids.lstrip("\n"))
+    master_spec(base, "old", PARENT_MASTER)
+    assert traced(root, "Со своим") == ["rec:F-55"] and traced(root, "Без своего") == []
+
+
+def test_child_added_parent_added_in_change_cuts_nothing(tmp_path):
+    """Родитель — тоже ADDED этого изменения: мастер-текста у него нет, отсекать нечего."""
+    spec = ("## ADDED Requirements\n\n### Requirement: Родитель\nТекст SHALL (F-07.A).\n\n#### Scenario: Сц\n- **WHEN** a\n"
+            "- **THEN** b\n\n### Requirement: Дитя\nЧасть требования «Родитель». Номер (F-07.A).\n\n"
+            "#### Scenario: Сц1\n- **WHEN** a\n- **THEN** b\n")
+    root, base = make_change(tmp_path, journal=["F-07"], specs={"demo": spec})
+    assert traced(root, "Дитя") == ["rec:F-07"]
+
+
 def test_master_spec_with_crlf_is_read_like_lf(tmp_path):
     """Мастер-спека с CRLF (так лежит `openspec/specs/project-settings`) читается как с LF: сценарий из неё не неразрешённый."""
     spec = "## ADDED Requirements\n\n### Requirement: Одно\nТекст SHALL.\n\n#### Scenario: Сцена\n- **WHEN** a\n"

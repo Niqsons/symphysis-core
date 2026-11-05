@@ -386,6 +386,24 @@ def test_base_without_a_snapshot_after_sync_would_differ(tmp_path, fork):
     assert view(root) != before
 
 
+CHILD = ("\n## ADDED Requirements\n\n### Requirement: Дитя\nЧасть требования «Один». Номера (F-07.A) и (F-19.A).\n\n"
+         "#### Scenario: Сц\n- **WHEN** a\n- **THEN** b\n")
+
+
+def test_base_child_of_modified_parent_same_answer_after_sync(tmp_path, fork):
+    """`trace-snapshot`: «Пересборка после синхронизации» (F-150) — номера мастер-текста родителя дочернего берутся из базы
+    снимка: после `/opsx:sync` родитель несёт F-19, а связь дочернего к F-19 остаётся, F-07 по-прежнему не даёт связи."""
+    root, base = modified_project(tmp_path, MODIFIED + CHILD)
+    freeze(root)
+    child = "req:demo/Дитя"
+    before = view(root)
+    assert (child, "rec:F-19", "traces") in before[0] and (child, "rec:F-07", "traces") not in before[0]
+    sync(root, MODIFIED + CHILD)
+    (base / "tasks.md").write_text("- [x] 1.1 сделать\n", encoding="utf-8", newline="\n")
+    assert freeze(root).action == "build"
+    assert view(root) == before
+
+
 def test_base_check_after_sync_gives_no_signals(tmp_path, fork):
     """`trace-snapshot`: «Проверка после синхронизации» — свежий снимок с базой, мастер переписан как при `/opsx:sync`:
     проверка файла графа сигналов не даёт."""

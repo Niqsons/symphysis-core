@@ -506,13 +506,15 @@ def _read_specs(base: Path, claims: list[dict], master: "_Master | None" = None)
                 entry, from_base = master.entry(cap, req.name)
                 if entry and not _carried_without_base(entry, from_base, req):
                     known = set(entry["numbers"])
+                elif entry:  # блок уже в мастере без базы: родитель с таким текстом номера дочернего не отсекает (F-150)
+                    claims.append({"kind": "carried", "from": req_id, "src": req_node["at"], "at": req_node["at"]})
             if _REQ_HEADER.match(lines[req.line - 1]):  # у записи REMOVED строкой-маркером тела нет
                 for number, line in _requirement_body(lines, mask, req.line):
                     claims.append({"kind": "rec", "from": req_id, "src": req_node["at"], "at": f"{rel}:{number}",
                                    "text": line, "skip": known})
                     if _PARENT.match(line):
                         claims.append({"kind": "parent", "from": req_id, "src": req_node["at"], "at": f"{rel}:{number}",
-                                       "text": line, "cap": cap})
+                                       "text": line, "cap": cap, "section": req.section})
             for scn in req.scenarios:
                 scn_node = _node(f"scn:{cap}/{req.name}/{scn.name}", "scn", scn.name, rel, scn.line,
                                  capability=cap, requirement=req_id)
@@ -649,15 +651,22 @@ def _resolve_task_line(claim: dict, scenarios: dict, put_edge, put_unresolved) -
         pos = end
 
 
-def _resolve_claims(root: Path, nodes: list[dict], places: dict, claims: list[dict]) -> tuple[list[dict], list[dict]]:
+def _resolve_claims(root: Path, nodes: list[dict], places: dict, claims: list[dict],
+                    base_master: "_Master | None" = None) -> tuple[list[dict], list[dict]]:
     """Связи и неразрешённые ссылки из заявок читателей. Заявка узла, который в граф не вошёл как дубль id, отбрасывается.
     Связь — `from`, `to`, `type`, `at` (место записи от каталога изменения); повтор `(from, to, type)` остаётся первым.
     Ссылка, которая не разрешилась (нет записи с таким номером, нет сценария с таким именем), связи не даёт и идёт в
-    список `[{"ref", "from", "at", "why"}]`: что названо, чьё это, где и почему не связалось."""
+    список `[{"ref", "from", "at", "why"}]`: что названо, чьё это, где и почему не связалось. Номер в тексте дочернего требования
+    ADDED, который стоит в мастер-тексте его родителя (запись базы, а без неё живой мастер, `base_master`), связи не даёт
+    (F-150, F-84 через `derives`); свой номер дочернего даёт. Родителя в мастере нет или он ADDED этого изменения — отсекать
+    нечего: после `/opsx:sync` мастер-текст ADDED-родителя был бы новым и ответ поменялся бы."""
     records = {n["number"]: n["id"] for n in reversed(nodes) if n["kind"] == "rec" and n["number"] is not None}
     scenarios: dict[str, dict[str, list[str]]] = {}
     requirements: dict[str, dict[str, str]] = {}
+    sections: dict[str, str] = {}
     for n in nodes:
+        if n["kind"] == "req":
+            sections.setdefault(n["id"], n["section"])
         if n["kind"] == "scn":
             scenarios.setdefault(n["capability"], {}).setdefault(n["name"], []).append(n["id"])
         elif n["kind"] == "req":
@@ -686,13 +695,18 @@ def _resolve_claims(root: Path, nodes: list[dict], places: dict, claims: list[di
             masters.append(_master_names(root))
         return masters[0]
 
-    def resolve_parent(claim: dict) -> None:
-        """`Часть требования [`cap`: ]«имя».` (F-77, F-92): родитель в изменении — `derives`; только в мастере — ничего."""
+    def parent_of(claim: dict) -> tuple[re.Match, str, str, bool]:
+        """Родитель из фразы дочернего: `(совпадение фразы, capability, имя, известно ли имя)`; известны имена изменения и мастера."""
         text = claim["text"]
         m = _PARENT.match(text)
         cap = m.group(1) or claim["cap"]
+        name, _, known = _take_name(text, m.end(), set(requirements.get(cap, {})) | master().get(cap, {}).get("req", set()))
+        return m, cap, name, known
+
+    def resolve_parent(claim: dict) -> None:
+        """`Часть требования [`cap`: ]«имя».` (F-77, F-92): родитель в изменении — `derives`; только в мастере — ничего."""
+        m, cap, name, known = parent_of(claim)
         in_change = requirements.get(cap, {})
-        name, _, known = _take_name(text, m.end(), set(in_change) | master().get(cap, {}).get("req", set()))
         if name in in_change:
             put_edge(claim["from"], in_change[name], "derives", claim["at"])
         elif not known:
@@ -727,8 +741,27 @@ def _resolve_claims(root: Path, nodes: list[dict], places: dict, claims: list[di
             elif name not in in_master:
                 put_unresolved(claim, f"сценарий: {name}", f"сценария «{name}» нет ни в изменении, ни в мастер-спеках")
 
+    def live(claim: dict) -> bool:
+        return places[claim["from"]][0] == claim["src"]
+
+    carried = {c["from"] for c in claims if c["kind"] == "carried" and live(c)}
+    cut: dict[str, set[int]] = {}  # номера мастер-текста родителя по id дочернего требования ADDED (F-150)
     for claim in claims:
-        if places[claim["from"]][0] != claim["src"]:
+        if claim["kind"] != "parent" or claim["section"] != "ADDED" or not live(claim) or base_master is None:
+            continue
+        _, cap, name, known = parent_of(claim)
+        parent = requirements.get(cap, {}).get(name)
+        if parent is None and not known:
+            continue
+        if parent is not None and (sections[parent] != "MODIFIED" or parent in carried):
+            continue
+        entry = base_master.entry(cap, name)[0]
+        if entry:
+            cut.setdefault(claim["from"], set()).update(entry["numbers"])
+    for claim in claims:
+        if not live(claim):
+            continue
+        if claim["kind"] == "carried":
             continue
         if claim["kind"] == "parent":
             resolve_parent(claim)
@@ -739,7 +772,7 @@ def _resolve_claims(root: Path, nodes: list[dict], places: dict, claims: list[di
         elif claim["kind"] == "edge":
             put_edge(claim["from"], claim["to"], claim["type"], claim["at"])
         elif claim["kind"] == "rec":
-            put_records(claim, claim["text"], claim["skip"])
+            put_records(claim, claim["text"], claim["skip"] | cut.get(claim["from"], set()))
         else:
             _resolve_task_line(claim, scenarios, put_edge, put_unresolved)
             put_records(claim, claim["text"], set())
@@ -799,7 +832,7 @@ def build_graph_with_signals(root: Path, change: str, saved: dict | None = None)
                 nodes.append(node)
     nodes.sort(key=lambda n: (n["at"].rsplit(":", 1)[0], int(n["at"].rsplit(":", 1)[1]), n["id"]))
     duplicates = [{"id": node_id, "at": at} for node_id, at in places.items() if len(at) > 1]
-    edges, unresolved = _resolve_claims(root, nodes, places, claims)
+    edges, unresolved = _resolve_claims(root, nodes, places, claims, master)
     return {"format": GRAPH_FORMAT, "sources": source_hashes(base), "nodes": nodes, "edges": edges,
             "candidates": record_candidates(edges)}, duplicates, unresolved
 
