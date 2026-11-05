@@ -264,9 +264,9 @@ def test_old_journal_with_text_stays_valid(tmp_path):
     assert "text" not in run.stdout + run.stderr
 
 
-def parking_fixture(tmp_path, with_research=True, finding=None):
+def parking_fixture(tmp_path, with_research=True, finding=None, addressee="материалы"):
     j = one_record_journal(path="a.md", quote="раз")
-    parking = {"addressee": "материалы", "text": "найти"}
+    parking = {"addressee": addressee, "text": "найти"}
     if finding is not None:
         parking["finding"] = finding
     j["records"][0]["parking"] = [parking]
@@ -296,6 +296,42 @@ def test_parking_signal_needs_the_research_file_and_no_finding(tmp_path):
         path, roots = parking_fixture(tmp_path / sub, **kw)
         run = run_check(path, "--roots", roots, "--strict")
         assert run.returncode == 0 and "без finding" not in run.stdout
+
+
+def test_human_parking_without_finding_is_a_signal(tmp_path):
+    """Сценарий «Парковка человеку без ответа»: у этого адресата нет своего шага, поэтому напоминает только `check`.
+    Файла `research/` ей не нужно. Код 0, с --strict — 2."""
+    path, roots = parking_fixture(tmp_path, with_research=False, addressee="человек")
+    run = run_check(path, "--roots", roots)
+    assert run.returncode == 0, run.stdout + run.stderr
+    assert "[!!] F-01: парковка «человек» без finding: найти" in run.stdout
+    assert run_check(path, "--roots", roots, "--strict").returncode == 2
+
+
+def test_human_parking_with_finding_is_silent(tmp_path):
+    """Сценарий «Парковка человеку с ответом»."""
+    path, roots = parking_fixture(tmp_path, with_research=False, addressee="человек", finding="записано в бэклог")
+    run = run_check(path, "--roots", roots, "--strict")
+    assert run.returncode == 0, run.stdout + run.stderr
+    assert "без finding" not in run.stdout
+
+
+def test_security_parking_does_not_wait_for_the_human(tmp_path):
+    """Парковку `ИБ` закрывает шаг `security`, поэтому сигнала о ней нет."""
+    path, roots = parking_fixture(tmp_path, with_research=False, addressee="ИБ")
+    run = run_check(path, "--roots", roots, "--strict")
+    assert run.returncode == 0, run.stdout + run.stderr
+    assert "без finding" not in run.stdout
+
+
+def test_each_human_parking_is_counted_on_its_own(tmp_path):
+    """Две парковки у одной записи: сигнал только о той, что без ответа."""
+    path, roots = parking_fixture(tmp_path, with_research=False, addressee="человек", finding="ответ есть")
+    j = journal.load_journal(path)
+    j["records"][0]["parking"].append({"addressee": "человек", "text": "вторая"})
+    journal.save_journal(path, j)
+    lines = [line for line in run_check(path, "--roots", roots).stdout.splitlines() if "без finding" in line]
+    assert lines == ["[!!] F-01: парковка «человек» без finding: вторая"]
 
 
 # --- корень улики (5.3) ------------------------------------------------------
