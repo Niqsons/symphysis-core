@@ -18,7 +18,7 @@ from pathlib import Path
 from journal_apply import (REFUSED, apply_answers, apply_md4h, change_of as _change_of, check_evidence, default_roots, file_links, parse_answers,
                            parse_md4h, project_href, sha256_file)
 from journal_consequences import check_consequences
-from journal_model import import_md, load_journal, save_journal, unexplained_choices, validate_journal
+from journal_model import dependency_cycles, import_md, load_journal, save_journal, unexplained_choices, validate_journal
 from journal_render import (TEMPLATE_PATH, no_help_snapshot, parse_attack_md, render_design, render_html, render_md,
                             scheme_payload, view_payload)
 from journal_sites import code_sites
@@ -66,6 +66,9 @@ def cmd_check(args: argparse.Namespace) -> int:
     unexplained = unexplained_choices(journal)
     for m in unexplained:
         print(f"[!!] {m}")
+    cycles = dependency_cycles(journal)
+    for m in cycles:
+        print(f"[!!] {m}")
     inventory = check_consequences(journal, args.json.parent / "consequences.md", roots)
     for m in inventory["missing"]:
         print(f"[!!] {m}")
@@ -74,7 +77,7 @@ def cmd_check(args: argparse.Namespace) -> int:
     if args.write:
         save_journal(args.json, journal)
         print(f"[ok] {args.json}")
-    return 2 if args.strict and (result["missing"] or unfound or unexplained or inventory["missing"]) else 0
+    return 2 if args.strict and (result["missing"] or unfound or unexplained or cycles or inventory["missing"]) else 0
 
 
 def cmd_code_sites(args: argparse.Namespace) -> int:
@@ -380,7 +383,7 @@ def build_parser() -> argparse.ArgumentParser:
 
     p = _command(sub, "check", "сверить улики грепом по цитате (сигнал, не стоп); при consequences.md — и опись; "
                                "негодный по схеме журнал — код 1",
-                 "Сверяет улики грепом по цитате. При consequences.md рядом с журналом — ещё две проверки описи:\n"
+                 "Сверяет улики грепом по цитате и называет циклы в depends_on. При consequences.md рядом с журналом — ещё две проверки описи:\n"
                  "место из code-sites названо путём в файле, цитата «путь:строка «цитата»» стоит в коде дословно.\n"
                  "Файл со строкой **Причина:** сверки мест не даёт; **Причина:** считается только в начале строки,\n"
                  "цитата сверяется только в форме путь:строка «цитата», форму файла сверх этого скрипт не разбирает.",

@@ -558,6 +558,49 @@ def test_no_signal_for_recommended_worded_or_own_choice(tmp_path, choice, word, 
     assert "не рекомендованный" not in run.stdout
 
 
+# --- цикл зависимостей --------------------------------------------------------------
+
+def deps_fixture(tmp_path, deps):
+    """Журнал из записей с заданными `depends_on`; в остальном записи годны и сигналов не дают."""
+    j = one_record_journal(path="a.md", quote="раз")
+    j["records"] = [dict(j["records"][0], id=rid, depends_on=on) for rid, on in deps.items()]
+    (tmp_path / "a.md").write_text("раз\n", encoding="utf-8")
+    roots = tmp_path / "roots.json"
+    roots.write_text(json.dumps({"": str(tmp_path)}), encoding="utf-8")
+    path = tmp_path / "j.json"
+    journal.save_journal(path, j)
+    return path, roots
+
+
+def test_cycle_through_a_third_record_is_a_signal(tmp_path):
+    """Сценарий «Цикл зависимостей». Форма из журнала `trace-graph`: стрелка замыкается через третью запись,
+    поэтому взаимных пар недостаточно. Код 0, с --strict — 2."""
+    path, roots = deps_fixture(tmp_path, {"F-01": ["F-02"], "F-02": ["F-03"], "F-03": ["F-01"]})
+    run = run_check(path, "--roots", roots)
+    assert run.returncode == 0, run.stdout + run.stderr
+    assert "[!!] F-01: цикл зависимостей F-01 → F-02 → F-03 → F-01" in run.stdout
+    assert run_check(path, "--roots", roots, "--strict").returncode == 2
+
+
+def test_each_cycle_is_named_once(tmp_path):
+    """Две пары: по строке на пару, вход во вторую из её же записи строки не дублирует."""
+    path, roots = deps_fixture(tmp_path, {"F-01": ["F-02"], "F-02": ["F-01"], "F-03": ["F-04"], "F-04": ["F-03"]})
+    lines = [line for line in run_check(path, "--roots", roots).stdout.splitlines() if "цикл зависимостей" in line]
+    assert lines == ["[!!] F-01: цикл зависимостей F-01 → F-02 → F-01", "[!!] F-03: цикл зависимостей F-03 → F-04 → F-03"]
+
+
+@pytest.mark.parametrize("deps", [
+    {"F-01": [], "F-02": ["F-01"], "F-03": ["F-02"]},                       # цепочка
+    {"F-01": [], "F-02": ["F-01"], "F-03": ["F-01"], "F-04": ["F-02", "F-03"]},   # ромб: F-01 достижима двумя путями
+    {"F-01": ["F-02"], "F-02": []},                                         # стрелка на запись с большим номером
+], ids=["цепочка", "ромб", "вперёд"])
+def test_no_cycle_signal_without_a_cycle(tmp_path, deps):
+    path, roots = deps_fixture(tmp_path, deps)
+    run = run_check(path, "--roots", roots, "--strict")
+    assert run.returncode == 0, run.stdout + run.stderr
+    assert "цикл" not in run.stdout
+
+
 
 # --- корни при инструментах вне проекта (F-93, F-104): раскладка по образцу research/F-93-probe/probe.py ---
 
