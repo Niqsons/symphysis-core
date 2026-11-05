@@ -921,11 +921,24 @@ def _short(text: str) -> str:
     return text if len(text) <= _QUOTE_LIMIT else text[:_QUOTE_LIMIT - 1] + "…"
 
 
+def _trace_comments(lines: list[str]) -> list[tuple[int, str, list[tuple[int, str]]]]:
+    """Следы проб вне блоков кода: `(номер строки, комментарий без лишних пробелов, [(номер записи, слово)])`."""
+    mask = _fence_mask(lines)
+    found = []
+    for number, line in enumerate(lines, 1):
+        comment = _TRACE_COMMENT.search(line)
+        if not mask[number - 1] and comment and "проба" in comment.group(1) and "исходы:" in comment.group(1):
+            tail = comment.group(1).split("исходы:", 1)[1]
+            found.append((number, _squash(comment.group(1)), [(int(m.group(1)), m.group(2)) for m in _TRACE_PAIR.finditer(tail)]))
+    return found
+
+
 def signal_context(root: Path, change: str) -> dict:
     """Данные для сигналов, которых нет в графе (U10): `records` — записи журнала (адресат, решение, исход; снимок графа
-    ими не раздувается), `modified` — по требованию MODIFIED: `carried` (текст и все сценарии как в мастер-спеке) и
+    ими не раздувается), `modified` — по требованию MODIFIED: `carried` (текст требования как в мастер-спеке; о сценариях говорит `scenarios`) и
     `scenarios` {id сценария: `same`, `new` или `changed`} по имени и тексту с приведением пробелов и концов строк (F-95),
-    `traces` — следы проб `<!-- проба …, исходы: F-NN Исход -->` как `(место, номер, слово)`. Только читает."""
+    `traces` — следы проб `<!-- проба …, исходы: F-NN Исход -->` как `(место, номер, слово)`; след в требовании MODIFIED,
+    дословно стоящий в том же требовании мастер-спеки, не входит: его номера из журнала другого изменения. Только читает."""
     base = root / "openspec" / "changes" / change
     if not base.is_dir():
         raise Refusal(f"изменения «{change}» нет: нет каталога openspec/changes/{change}")
@@ -941,18 +954,23 @@ def signal_context(root: Path, change: str) -> dict:
             continue
         text = _read_text(base, rel)
         parsed, cap = parse_spec(text), folder.name
-        lines = _spec_lines(text)
-        mask = _fence_mask(lines)
-        for number, line in enumerate(lines, 1):
-            comment = _TRACE_COMMENT.search(line)
-            if not mask[number - 1] and comment and "проба" in comment.group(1) and "исходы:" in comment.group(1):
-                tail = comment.group(1).split("исходы:", 1)[1]
-                traces += [(f"{rel}:{number}", int(m.group(1)), m.group(2)) for m in _TRACE_PAIR.finditer(tail)]
         master_rel = f"openspec/specs/{cap}/spec.md"
-        master = {}
+        master, master_traces = {}, {}  # требования мастера по имени и их следы (F-84: номера в них из другого журнала)
         if any(r.section == "MODIFIED" for r in parsed.requirements) and (root / master_rel).is_file():
-            for old in parse_spec("\n".join(_master_lines(root, master_rel))).requirements:
+            master_lines = _master_lines(root, master_rel)
+            master_reqs = parse_spec("\n".join(master_lines)).requirements
+            for old in master_reqs:
                 master.setdefault(old.name, old)
+            for number, comment, _ in _trace_comments(master_lines):
+                owner = max((r for r in master_reqs if r.line <= number), key=lambda r: r.line, default=None)
+                if owner:
+                    master_traces.setdefault(owner.name, set()).add(comment)
+        lines = _spec_lines(text)
+        for number, comment, pairs in _trace_comments(lines):
+            owner = max((r for r in parsed.requirements if r.line <= number), key=lambda r: r.line, default=None)
+            if owner and owner.section == "MODIFIED" and comment in master_traces.get(owner.name, ()):
+                continue  # дословно стоит в том же требовании мастера: след прежнего изменения
+            traces += [(f"{rel}:{number}", num, word) for num, word in pairs]
         for item in parsed.requirements:
             if item.section != "MODIFIED":
                 continue
@@ -962,7 +980,7 @@ def signal_context(root: Path, change: str) -> dict:
             for scn in item.scenarios:
                 state[f"scn:{cap}/{item.name}/{scn.name}"] = ("new" if scn.name not in old_text else
                                                               "same" if old_text[scn.name] == _squash(scn.text) else "changed")
-            carried = old is not None and _squash(old.text) == _squash(item.text) and set(state.values()) <= {"same"}
+            carried = old is not None and _squash(old.text) == _squash(item.text)
             modified.setdefault(f"req:{cap}/{item.name}", {"carried": carried, "scenarios": state})
     return {"records": records, "modified": modified, "traces": traces}
 

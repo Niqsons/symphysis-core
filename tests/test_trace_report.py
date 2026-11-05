@@ -515,8 +515,32 @@ def test_quote_with_angle_brackets_is_not_left_bare(tmp_path):
 
 
 def test_signals_come_in_order_of_place(tmp_path):
-    """`trace-signals`: «Отчёт называет закрытый состав сигналов» — строки идут по месту: сначала tasks.md выше specs не лезет."""
+    """`trace-signals`: «Отчёт называет закрытый состав сигналов» — строки сигналов идут по месту: путь файла и строка по
+    возрастанию, у строки с несколькими местами сортирует первое."""
     root, _ = make_change(tmp_path, specs={"demo": spec(req("А"), req("Б"))}, tasks="- [ ] 1.1 `demo`: «Сц»\n- [ ] 1.2 ничего\n")
     places = [s.rsplit(" — ", 1)[1].split(", ")[0] for s in lines_of(root)]
     keys = [(p.rsplit(":", 1)[0], int(p.rsplit(":", 1)[1])) for p in places]
     assert keys == sorted(keys) and len(keys) >= 3
+
+
+def test_trace_carried_from_master_is_silent_new_trace_is_checked(tmp_path):
+    """`trace-signals`: «MODIFIED несёт прежний сценарий» — след пробы, дословно стоящий в том же требовании мастер-спеки,
+    номера из журнала другого изменения: сигнала нет; новый след в том же требовании сверяется."""
+    old = "<!-- проба краёв: форма=io, исходы: F-02 открыт -->\n"
+    new = "<!-- проба краёв: форма=io, исходы: F-03 Specify -->\n"
+    root, base = make_change(tmp_path, specs={"demo": spec(req("Один", 1) + old + new, section="MODIFIED")})
+    put_master(root, spec(req("Один", 1) + old.replace("  ", " ")))
+    journal(base, {"id": "F-01"}, decided("F-02", outcome=probe("Specify")), decided("F-03", outcome=probe("Dismiss")))
+    found = of_kind(lines_of(root), "след отстал от журнала")
+    assert len(found) == 1 and "F-03" in found[0], found
+
+
+def test_modified_requirement_with_same_text_and_new_scenario_is_not_without_record(tmp_path):
+    """`trace-signals`: «Новый сценарий в MODIFIED» — требование с неизменным текстом и новым сценарием «без записи» не
+    получает, о сценарии говорит «сценарий без задачи»."""
+    blocks = req("Один", None, ("Старый", "Новый"))
+    root, _ = make_change(tmp_path, specs={"demo": spec(blocks, section="MODIFIED")})
+    put_master(root, spec(req("Один", None, ("Старый",))))
+    signals = lines_of(root)
+    assert of_kind(signals, "требование без записи") == []
+    assert len(of_kind(signals, "сценарий без задачи")) == 1 and "Новый" in of_kind(signals, "сценарий без задачи")[0]
