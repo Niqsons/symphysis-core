@@ -464,3 +464,41 @@ def test_text_keyword_in_text_and_names_keeps_one_block():
 def test_text_whitespace_and_newlines_in_names_are_collapsed():
     text = trace_graph.diagram_text(graph_of([node("sec", "Первая\nвторая\t строка")]))
     assert names(text) == ["SEC_1 Первая вторая строка"]
+
+
+# --- обход очистки и уникальность имён (раунд 1 ревью U16) ---------------------------------
+
+BYPASS = ["%<%{init: {'theme':'forest'}}%>%", "%>%{init: {}}%<%", "#37;#37;{init: {'theme':'forest'}}#37;#37;",
+          "#lt;b#gt; #60;i#62; #x25;#x25;{init}", "%#37;%{init}%#37;%", "#percnt;#percnt;{init}"]
+
+
+def _no_bad(text):
+    assert "%%" not in text and not re.search(r"[<>]", text) and not re.search(r"#\w+;", text), text
+
+
+@pytest.mark.parametrize("raw", BYPASS)
+def test_text_bypass_forms_do_not_survive_clean_text(raw):
+    """`trace-diagram`: «Директива и разметка в имени» — обходные формы директивы и разметки очищаются до неподвижной точки."""
+    out = trace_graph.clean_text("a " + raw + " b")
+    _no_bad(out)
+    assert trace_graph.clean_text(out) == out
+
+
+@pytest.mark.parametrize("raw", BYPASS)
+def test_text_bypass_forms_are_gone_from_name_text_and_docref(raw):
+    nodes = [node("req", raw, "req:c/R", capability=raw, section=raw, at=raw),
+             node("scn", raw, "scn:c/R/s", capability="c", requirement="req:c/R", at=raw),
+             node("sec", raw, "sec:p", at=raw)]
+    text = trace_graph.diagram_text(graph_of(nodes))
+    for _, name, body in blocks(text):
+        _no_bad(name + body)
+    assert "%%" not in text
+
+
+def test_number_all_block_names_are_pairwise_different_with_common_long_start():
+    common = "Очень длинное общее начало имени, которое занимает почти всю отведённую длину подписи узла "
+    nodes = [node("scn", common + str(i), f"scn:c/R/{i}", capability="c", requirement="req:c/R") for i in range(5)]
+    nodes += [node("rec", common + str(i), f"rec:F-{i}", number=i) for i in range(3)]
+    nodes += [node("rec", "без числа", "rec:F-x", number=0), node("rec", "без числа", "rec:F-y")]
+    got = names(trace_graph.diagram_text(graph_of(nodes)))
+    assert len(got) == len(nodes) == len(set(got)) and all(len(n) <= 90 for n in got)

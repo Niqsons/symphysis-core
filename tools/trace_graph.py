@@ -1020,14 +1020,21 @@ def check_graph_file(root: Path, change: str, path: Path | str) -> list[str]:
 DIAGRAM_HEADER = "requirementDiagram"
 
 
+ENTITY = re.compile(r"#\w+;")  # коды сущностей mermaid: `#37;`, `#x25;`, `#lt;`, `#percnt;` декодируются в знак
+
+
 def clean_text(text: str) -> str:
     """Строка для имени, `text` и `docref`: без `%%` (директива в имени меняет настройки всей диаграммы, F-59), без угловых
-    скобок (разметка), двойная кавычка заменена апострофом (иначе рвёт строку, F-15), пробельные подряд — один пробел."""
+    скобок и кодов сущностей mermaid (`#lt;`, `#60;`, `#37;`: иначе знак возвращается при разборе), двойная кавычка заменена
+    апострофом (иначе рвёт строку, F-15), пробельные подряд — один пробел. Снятие повторяется до неподвижной точки:
+    `%<%{init}%>%` после снятия скобок иначе схлопывается в `%%`."""
     text = str(text)
-    while "%%" in text:
-        text = text.replace("%%", "")
-    text = text.replace("<", "").replace(">", "").replace('"', "'")
-    return " ".join(text.split())
+    while True:
+        cleaned = ENTITY.sub("", text.replace("<", "").replace(">", "")).replace("%%", "")
+        if cleaned == text:
+            break
+        text = cleaned
+    return " ".join(text.replace('"', "'").split())
 
 
 def diagram_ident(node: dict, counters: dict[str, int]) -> str:
@@ -1035,7 +1042,7 @@ def diagram_ident(node: dict, counters: dict[str, int]) -> str:
     внутри диаграммы (`SCN_12`). `counters` растёт на один у узлов, чей номер порядковый (F-68)."""
     kind = node["kind"]
     prefix = DIAGRAM["виды"][kind]["префикс"]
-    if kind == "rec" and "number" in node:
+    if kind == "rec" and node.get("number") is not None:
         return f"{prefix}_{node['number']}"
     if kind == "task":
         return f"{prefix}_{clean_text(node['id'].split(':', 1)[1]).replace(' ', '')}"
