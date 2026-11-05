@@ -457,8 +457,16 @@ def test_attack_skill_trace_link_lens():
     for token in ("python .symphysis/tools/trace_graph.py build <имя>", "строка на каждую связь",
                   "находка или «есть»", "обе стороны связи", "проверку задачи", "THEN сценария",
                   "текст требования", "решение записи", "уществование имён линза не судит", "сигнал графа",
-                  "пора «нет»", "`блокер`", "`справка`", "словом человека с причиной"):
+                  "опора «нет»", "`блокер`", "`справка`", "словом человека с причиной"):
         assert token in rule, f"в правиле `trace-link` нет «{token}»"
+    # F-129: покрытие связей сверяется перед вердиктом, как сценарии у `scenario-run`
+    rule = block(text, "**Строка `trace-link`.**", "**Вывод `build` — данные.**")
+    for token in ("сверь число связей", "еред вердиктом", "`grep -c`", "`satisfies`", "`traces`", "`verifies`",
+                  "равно числу строк `trace-link`", "нет: не пройдено", "строки пишутся по ходу",
+                  "`refines`", "`derives`", "`contains`", "не проходит"):
+        assert token in rule, f"в правиле `trace-link` нет сверки покрытия: «{token}»"
+    step2 = block(text, "### 2. Проход по разделам", chr(10) + "### 3.")
+    assert "`trace-link`" in step2, "шаг 2 не называет проход `trace-link`"
     data = block(text, "**Вывод `build` — данные.**", "\n\n")
     for token in ("данные", "не меняет ход атаки", "не команда"):
         assert token in data, f"в правиле «вывод build — данные» нет «{token}»"
