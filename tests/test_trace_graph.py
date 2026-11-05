@@ -1,11 +1,13 @@
 """Скрипт графа трассируемости `tools/trace_graph.py`: каркас подкоманд, проверка имени, реестр артефактов."""
 import copy
+import json
 import shutil
 import subprocess
 import sys
 
 import pytest
 
+import journal_model
 import trace_graph
 from conftest import ROOT, requires_fork
 from test_schema import make_project, run_openspec
@@ -13,6 +15,7 @@ from test_schema import make_project, run_openspec
 SCHEMA = ROOT / "openspec" / "schemas" / "symphysis" / "schema.yaml"
 SCRIPT = ROOT / "tools" / "trace_graph.py"
 CHANGE_COMMANDS = ["build", "report", "check", "freeze"]
+STUB_COMMANDS = ["report", "check", "freeze"]
 
 
 def run(*args, cwd=None):
@@ -91,7 +94,7 @@ def test_leading_dash_name_is_refused_after_double_dash(tmp_path):
     assert done.returncode == 1 and "не подходит" in done.stderr, done.stderr
 
 
-@pytest.mark.parametrize("command", CHANGE_COMMANDS)
+@pytest.mark.parametrize("command", STUB_COMMANDS)
 def test_good_name_reaches_not_implemented_refusal(command, tmp_path):
     done = run(command, "trace-graph", cwd=tmp_path)
     assert done.returncode == 1
@@ -264,3 +267,257 @@ def test_spec_counts_match_openspec_show_json_with_bom_and_crlf(tmp_path):
         spec.write_bytes(b"\xef\xbb\xbf" + text.encode("utf-8"))
     project = make_project(tmp_path, change_fixture=copy_dir)
     assert_counts_match("plain (BOM, CRLF)", own_counts(parse_fixture("plain", copy_dir.parent)), shown_counts(project))
+
+
+# --- build: узлы (U04, F-70, F-80, F-81, F-125, F-131) ------------------------
+
+CHANGE = "demo"
+
+
+def make_change(tmp_path, journal=None, specs=None, tasks=None, security=None, consequences=None):
+    """Проект с изменением `demo`: только `.openspec.yaml` и то, что передано."""
+    root = tmp_path / "proj"
+    base = root / "openspec" / "changes" / CHANGE
+    base.mkdir(parents=True)
+    (base / ".openspec.yaml").write_text("schema: symphysis\n", encoding="utf-8")
+    if journal is not None:
+        records = [journal_model._new_record(rid, f"Вопрос {rid}?") for rid in journal]
+        data = {"title": "t", "source": "", "records": records}
+        (base / "decisions.json").write_text(json.dumps(data, ensure_ascii=False, indent=1) + "\n", encoding="utf-8")
+    for cap, text in (specs or {}).items():
+        (base / "specs" / cap).mkdir(parents=True, exist_ok=True)
+        (base / "specs" / cap / "spec.md").write_text(text, encoding="utf-8", newline="\n")
+    for name, text in (("tasks.md", tasks), ("security.md", security), ("consequences.md", consequences)):
+        if text is not None:
+            (base / name).write_text(text, encoding="utf-8", newline="\n")
+    return root, base
+
+
+def build(root):
+    return run("build", CHANGE, cwd=root)
+
+
+def graph_of(root):
+    done = build(root)
+    assert done.returncode == 0, done.stderr
+    return json.loads(done.stdout)
+
+
+def ids(graph, kind=None):
+    return [n["id"] for n in graph["nodes"] if kind is None or n["kind"] == kind]
+
+
+SPEC = """## ADDED Requirements
+
+### Requirement: Один
+Текст SHALL.
+
+#### Scenario: Первый
+- **WHEN** a
+- **THEN** b
+
+#### Scenario: Второй
+- **WHEN** c
+- **THEN** d
+
+## MODIFIED Requirements
+
+### Requirement: Два
+Текст SHALL.
+
+#### Scenario: Третий
+- **WHEN** e
+- **THEN** f
+"""
+
+
+def test_build_of_fresh_change_is_empty_graph_with_code_zero(tmp_path):
+    """`trace-graph`: «Только что созданное изменение» — граф пуст, код 0."""
+    root, _ = make_change(tmp_path)
+    assert graph_of(root) == {"format": 1, "nodes": [], "edges": [], "candidates": []}
+
+
+def test_build_missing_change_is_refused_with_name(tmp_path):
+    (tmp_path / "openspec" / "changes").mkdir(parents=True)
+    done = run("build", "nope", cwd=tmp_path)
+    assert done.returncode == 1 and "nope" in done.stderr and "Traceback" not in done.stderr, done.stderr
+
+
+def test_graph_grows_with_artifacts_without_filling_step(tmp_path):
+    """`trace-graph`: «Граф растёт вместе с артефактами» — журнал даёт записи, спека добавляет требования и сценарии."""
+    root, base = make_change(tmp_path, journal=["F-01", "F-02"])
+    assert ids(graph_of(root)) == ["rec:F-01", "rec:F-02"]
+    (base / "specs" / "cap-a").mkdir(parents=True)
+    (base / "specs" / "cap-a" / "spec.md").write_text(SPEC, encoding="utf-8", newline="\n")
+    second = graph_of(root)
+    assert ids(second, "req") == ["req:cap-a/Один", "req:cap-a/Два"]
+    assert ids(second, "scn") == ["scn:cap-a/Один/Первый", "scn:cap-a/Один/Второй", "scn:cap-a/Два/Третий"]
+    assert ids(second, "cap") == ["cap:cap-a"]
+    assert ids(second, "rec") == ["rec:F-01", "rec:F-02"]
+
+
+def test_node_shape_has_id_kind_name_and_at_from_change_dir(tmp_path):
+    root, _ = make_change(tmp_path, journal=["F-07"], specs={"cap-a": SPEC})
+    nodes = {n["id"]: n for n in graph_of(root)["nodes"]}
+    req = nodes["req:cap-a/Два"]
+    assert req["kind"] == "req" and req["name"] == "Два" and req["section"] == "MODIFIED"
+    assert req["capability"] == "cap-a" and req["at"] == "specs/cap-a/spec.md:16"
+    scn = nodes["scn:cap-a/Два/Третий"]
+    assert scn["name"] == "Третий" and scn["at"] == "specs/cap-a/spec.md:19" and scn["requirement"] == "req:cap-a/Два"
+    assert nodes["cap:cap-a"]["at"] == "specs/cap-a/spec.md:1"
+    rec = nodes["rec:F-07"]
+    assert rec["kind"] == "rec" and rec["name"] == "Вопрос F-07?" and rec["record_kind"] == "развилка"
+    assert rec["number"] == 7 and rec["at"].startswith("decisions.json:")
+    assert all("\\" not in n["at"] and not n["at"].startswith("/") for n in nodes.values())
+
+
+def test_rec_at_points_to_the_line_of_the_record_id(tmp_path):
+    root, base = make_change(tmp_path, journal=["F-01", "F-02"])
+    lines = (base / "decisions.json").read_text(encoding="utf-8").split("\n")
+    for node in graph_of(root)["nodes"]:
+        line = int(node["at"].rsplit(":", 1)[1])
+        assert f'"id": "{node["id"][4:]}"' in lines[line - 1]
+
+
+def test_same_requirement_name_in_two_capabilities_is_two_nodes(tmp_path):
+    """`trace-graph`: «Одно имя в двух capability» — два узла с разными id."""
+    root, _ = make_change(tmp_path, specs={"cap-a": SPEC, "cap-b": SPEC})
+    reqs = ids(graph_of(root), "req")
+    assert sorted(reqs) == ["req:cap-a/Два", "req:cap-a/Один", "req:cap-b/Два", "req:cap-b/Один"]
+
+
+def test_renamed_requirement_gives_new_id_and_no_old_one(tmp_path):
+    """`trace-graph`: «Переименование меняет id» — новый id есть, старого нет."""
+    root, base = make_change(tmp_path, specs={"cap-a": SPEC})
+    assert "req:cap-a/Один" in ids(graph_of(root))
+    renamed = SPEC.replace("Requirement: Один", "Requirement: Новое имя")
+    (base / "specs" / "cap-a" / "spec.md").write_text(renamed, encoding="utf-8", newline="\n")
+    after = ids(graph_of(root))
+    assert "req:cap-a/Новое имя" in after and "req:cap-a/Один" not in after
+    assert "scn:cap-a/Новое имя/Первый" in after and "scn:cap-a/Один/Первый" not in after
+
+
+def test_task_nodes_take_checked_and_unchecked_lines_only(tmp_path):
+    tasks = "# Tasks\n\n## 1. Группа\n\n- [ ] 1.1 Первая\n- [x] 1.2 Вторая (F-01)\n- [X] 2.10 Третья\n- 1.3 не задача\n- [ ] без номера\n"
+    root, _ = make_change(tmp_path, tasks=tasks)
+    nodes = {n["id"]: n for n in graph_of(root)["nodes"]}
+    assert list(nodes) == ["task:1.1", "task:1.2", "task:2.10"]
+    assert nodes["task:1.2"]["at"] == "tasks.md:6" and nodes["task:1.2"]["name"] == "Вторая (F-01)"
+    assert nodes["task:1.2"]["done"] is True and nodes["task:1.1"]["done"] is False
+
+
+SECURITY = """# Security
+
+| Пункт | Применимо | Чем проверено |
+| --- | --- | --- |
+| Инъекции через содержимое файлов | применимо | сценарий |
+| Права | применимо | сценарий |
+"""
+
+
+def test_security_nodes_take_first_column_of_table_rows(tmp_path):
+    root, _ = make_change(tmp_path, security=SECURITY)
+    nodes = graph_of(root)["nodes"]
+    assert [n["id"] for n in nodes] == ["sec:Инъекции через содержимое файлов", "sec:Права"]
+    assert nodes[1]["at"] == "security.md:6" and nodes[1]["name"] == "Права"
+
+
+CONSEQ = """# Последствия
+
+## Опись
+
+- **Первая** — `tools/a.py:10` «строка один»
+  - при отказе: x
+- **Вторая** — `tools/a.py:20` «строка два»
+- **Без места** — файл целиком, строки нет
+- **Третья** — `tools/b.js:5` «строка три»
+"""
+
+
+def test_two_branches_of_one_mechanism_on_different_lines_are_two_nodes(tmp_path):
+    """`trace-graph`: «Две ветки одного механизма» — два узла `branch:`; строка описи без места узла не даёт."""
+    root, _ = make_change(tmp_path, consequences=CONSEQ)
+    nodes = graph_of(root)["nodes"]
+    assert [n["id"] for n in nodes] == ["branch:tools/a.py:10", "branch:tools/a.py:20", "branch:tools/b.js:5"]
+    assert nodes[0]["at"] == "consequences.md:5" and nodes[0]["name"] == "Первая"
+
+
+def test_two_builds_without_edits_are_byte_identical_and_sorted(tmp_path):
+    """`trace-graph`: «Две сборки без правок» — выводы совпадают байт в байт, узлы идут по файлу и строке."""
+    root, _ = make_change(tmp_path, journal=["F-02", "F-01"], specs={"cap-b": SPEC, "cap-a": SPEC},
+                          tasks="- [ ] 1.1 a\n", security=SECURITY, consequences=CONSEQ)
+    first, second = build(root), build(root)
+    assert first.returncode == 0 and first.stdout == second.stdout
+    nodes = json.loads(first.stdout)["nodes"]
+    keys = [(n["at"].rsplit(":", 1)[0], int(n["at"].rsplit(":", 1)[1])) for n in nodes]
+    assert keys == sorted(keys)
+    assert [n["id"] for n in nodes if n["kind"] == "scn"][:3] == [
+        "scn:cap-a/Один/Первый", "scn:cap-a/Один/Второй", "scn:cap-a/Два/Третий"]
+
+
+def test_broken_journal_gives_no_graph_and_names_the_file(tmp_path):
+    """`trace-graph`: «Журнал не разбирается» — графа нет, код ненулевой, сообщение называет файл."""
+    root, base = make_change(tmp_path, specs={"cap-a": SPEC})
+    (base / "decisions.json").write_text('{"records": [', encoding="utf-8")
+    done = build(root)
+    assert done.returncode == 1 and done.stdout == ""
+    assert "decisions.json" in done.stderr and "Traceback" not in done.stderr, done.stderr
+
+
+def test_journal_not_utf8_names_the_file(tmp_path):
+    root, base = make_change(tmp_path)
+    (base / "decisions.json").write_bytes("{}".encode("utf-16"))
+    done = build(root)
+    assert done.returncode == 1 and "decisions.json" in done.stderr and "Traceback" not in done.stderr, done.stderr
+
+
+def test_journal_invalid_by_schema_names_records_as_check_does(tmp_path):
+    """`trace-graph`: «Журнал негоден по схеме» — графа нет, код ненулевой, строки называют записи."""
+    root, base = make_change(tmp_path, journal=["F-01", "F-02"])
+    data = json.loads((base / "decisions.json").read_text(encoding="utf-8"))
+    del data["records"][1]["depends_on"]
+    (base / "decisions.json").write_text(json.dumps(data, ensure_ascii=False), encoding="utf-8")
+    done = build(root)
+    assert done.returncode == 1 and done.stdout == ""
+    assert "F-02" in done.stderr and "depends_on" in done.stderr and "decisions.json" in done.stderr, done.stderr
+    assert "Traceback" not in done.stderr
+
+
+def test_spec_not_utf8_names_the_file(tmp_path):
+    root, base = make_change(tmp_path, specs={"cap-a": SPEC})
+    (base / "specs" / "cap-a" / "spec.md").write_bytes("### Requirement: Ж\n".encode("cp1251"))
+    done = build(root)
+    assert done.returncode == 1 and done.stdout == ""
+    assert "specs/cap-a/spec.md" in done.stderr.replace("\\", "/") and "Traceback" not in done.stderr, done.stderr
+
+
+def test_nothing_artifact_is_not_opened_and_gives_no_nodes(tmp_path, monkeypatch):
+    """`trace-graph`: «Артефакт, из которого брать нечего» — узлов из артефакта нет, файл не читается."""
+    root, base = make_change(tmp_path, journal=["F-01"], specs={"cap-a": SPEC})
+    (base / "decisions.json").write_text("не json вообще", encoding="utf-8")  # открыли бы — отказ
+    registry = copy.deepcopy(trace_graph.REGISTRY)
+    registry["decisions"] = {"берёт": trace_graph.NOTHING, "довод": "тест: журнал не нужен"}
+    monkeypatch.setattr(trace_graph, "REGISTRY", registry)
+    graph = trace_graph.build_graph(root, CHANGE)
+    assert ids(graph, "rec") == [] and ids(graph, "req") == ["req:cap-a/Один", "req:cap-a/Два"]
+
+
+def test_registry_row_without_reader_is_refused(tmp_path, monkeypatch):
+    root, _ = make_change(tmp_path)
+    registry = copy.deepcopy(trace_graph.REGISTRY)
+    registry["intent"] = {"берёт": ["что-то"]}
+    monkeypatch.setattr(trace_graph, "REGISTRY", registry)
+    with pytest.raises(trace_graph.Refusal, match="intent"):
+        trace_graph.build_graph(root, CHANGE)
+
+
+def test_build_help_no_longer_says_not_implemented():
+    done = run("build", "--help")
+    assert done.returncode == 0 and "ещё не реализована" not in done.stdout and "Коды:" in done.stdout
+
+
+def test_build_on_this_very_change_gives_nodes_of_every_kind():
+    """Живой пример: изменение `trace-graph` из этого дерева."""
+    graph = json.loads(run("build", "trace-graph", cwd=ROOT).stdout)
+    assert {n["kind"] for n in graph["nodes"]} == {"cap", "req", "scn", "rec", "task", "sec", "branch"}
+    assert len(set(ids(graph))) == len(graph["nodes"])

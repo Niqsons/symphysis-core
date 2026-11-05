@@ -1,18 +1,20 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """Граф трассируемости изменения OpenSpec (изменение `trace-graph`, F-39): требования, сценарии, решения журнала, задачи,
-пункты security и ветки описи, связанные ссылками. Здесь пока каркас: пять подкоманд с `--help`, реестр артефактов схемы
-и свой разбор спек (`parse_spec`, F-40); сборку, отчёт, проверку и заморозку добавят следующие порции.
+пункты security и ветки описи, связанные ссылками. Здесь: пять подкоманд с `--help`, реестр артефактов схемы, свой разбор
+спек (`parse_spec`, F-40) и `build` с узлами (`build_graph`); связи, отчёт, проверку и заморозку добавят следующие порции.
 Только стандартная библиотека."""
 from __future__ import annotations
 
 import argparse
+import json
 import re
 import sys
 from dataclasses import dataclass, field
 from pathlib import Path
 
 sys.dont_write_bytecode = True  # как у соседних скриптов: `__pycache__` в проекте от инструментов не появляется (F-50)
+from journal_model import validate_journal  # noqa: E402
 from openspec_run import ForkError, check_change_name  # noqa: E402
 
 # --- реестр артефактов (F-53, F-119, F-136) -----------------------------------
@@ -279,8 +281,157 @@ def _not_implemented(name: str) -> Refusal:
     return Refusal(f"подкоманда `{name}` ещё не реализована: это каркас, обработчик добавит следующая порция")
 
 
+# --- сборка графа: узлы (F-70, F-80, F-81, F-125, F-131) ------------------------
+# Узел — словарь: `id`, `kind` (`cap`, `req`, `scn`, `rec`, `task`, `sec`, `branch`), `name`, `at`; остальное по виду:
+#   cap: —; req: `section` (ADDED, MODIFIED, REMOVED), `capability`; scn: `capability`, `requirement` (id требования);
+#   rec: `record_kind` (вид записи журнала), `number` (число из `F-NN`); task: `done`; sec, branch: —.
+# `at` — `путь:строка` от каталога изменения, путь с `/`, строки с 1. Файл графа: `format: 1`, `nodes`, `edges`, `candidates`.
+# Узлы идут по `(путь из at, строка, id)`: порядок от файловой системы и от порядка чтения не зависит, две сборки одинаковы
+# байт в байт (F-81). Узел с уже виденным id отбрасывается: id — ключ графа, первый по порядку чтения остаётся.
+
+GRAPH_FORMAT = 1
+_TASK_LINE = re.compile(r"^- \[[ xX]\] (\d+(?:\.\d+)+)\s+(.*?)\s*$")
+_TABLE_ROW = re.compile(r"^\|(.*)$")
+_TABLE_RULE = re.compile(r"^\|[\s:|-]+\|?\s*$")
+_BRANCH_LINE = re.compile(r"^- \*\*(.+?)\*\*\s*—\s*`([^`\s]+:\d+)`\s*«")
+
+
+def _node(node_id: str, kind: str, name: str, file: str, line: int, **extra) -> dict:
+    return {"id": node_id, "kind": kind, "name": name, "at": f"{file}:{line}", **extra}
+
+
+def _read_text(base: Path, rel: str) -> str:
+    """Текст файла изменения в UTF-8; иначе отказ с именем файла."""
+    try:
+        return (base / rel).read_bytes().decode("utf-8")
+    except UnicodeDecodeError as e:
+        raise Refusal(f"{rel}: файл не в UTF-8 ({e.reason}, байт {e.start}): граф не собран") from None
+
+
+def _plain_lines(text: str) -> list[tuple[int, str]]:
+    """Строки файла вне блоков кода как `(номер с 1, текст)`; BOM и CRLF не мешают счёту."""
+    lines = re.sub(r"\r\n?", "\n", text.removeprefix("﻿")).split("\n")
+    mask = _fence_mask(lines)
+    return [(i + 1, line) for i, line in enumerate(lines) if not mask[i]]
+
+
+def _read_records(base: Path) -> list[dict]:
+    """Записи журнала `decisions.json` (F-80, F-125): проверка схемы тем же `validate_journal`, что у `journal.py check`;
+    разбор здесь свой, потому что `load_journal` бросает без имени файла. Нет файла — нет узлов."""
+    if not (base / "decisions.json").is_file():
+        return []
+    text = _read_text(base, "decisions.json")
+    try:
+        journal = json.loads(text)
+    except ValueError as e:
+        raise Refusal(f"decisions.json: журнал не разбирается ({e}): граф не собран") from None
+    errors = validate_journal(journal)
+    if errors:
+        for e in errors:
+            print(f"[!!] {e}", file=sys.stderr)
+        raise Refusal(f"decisions.json: журнал негоден по схеме, ошибок {len(errors)}: граф не собран")
+    lines = text.split("\n")
+    nodes = []
+    for rec in journal["records"]:
+        rid = rec["id"]
+        own = re.compile(r'^\s*"id":\s*"' + re.escape(rid) + r'"\s*,?\s*$')
+        line = next((i + 1 for i, row in enumerate(lines) if own.match(row)), 1)  # журнал в одну строку: строка 1
+        number = re.search(r"\d+", rid)
+        nodes.append(_node(f"rec:{rid}", "rec", rec["question"], "decisions.json", line,
+                           record_kind=rec["kind"], number=int(number.group()) if number else None))
+    return nodes
+
+
+def _read_specs(base: Path) -> list[dict]:
+    """Capability, требования и сценарии `specs/<capability>/spec.md`; capability — имя каталога (F-131)."""
+    nodes = []
+    folders = sorted(p for p in (base / "specs").iterdir() if p.is_dir()) if (base / "specs").is_dir() else []
+    for folder in folders:
+        rel = f"specs/{folder.name}/spec.md"
+        if not (base / rel).is_file():
+            continue
+        parsed = parse_spec(_read_text(base, rel))
+        cap = folder.name
+        nodes.append(_node(f"cap:{cap}", "cap", cap, rel, 1))
+        for req in parsed.requirements:
+            req_id = f"req:{cap}/{req.name}"
+            nodes.append(_node(req_id, "req", req.name, rel, req.line, section=req.section, capability=cap))
+            nodes += [_node(f"scn:{cap}/{req.name}/{scn.name}", "scn", scn.name, rel, scn.line,
+                            capability=cap, requirement=req_id) for scn in req.scenarios]
+    return nodes
+
+
+def _read_tasks(base: Path) -> list[dict]:
+    """Задачи `- [ ] N.M …` и `- [x] N.M …` из `tasks.md`; остальные пункты и строки в блоках кода не задачи."""
+    if not (base / "tasks.md").is_file():
+        return []
+    found = []
+    for number, line in _plain_lines(_read_text(base, "tasks.md")):
+        m = _TASK_LINE.match(line)
+        if m:
+            found.append(_node(f"task:{m.group(1)}", "task", m.group(2), "tasks.md", number, done=line[3] in "xX"))
+    return found
+
+
+def _read_security(base: Path) -> list[dict]:
+    """Пункты чек-листа `security.md`: первая колонка строк таблицы, без шапки и разделителя."""
+    if not (base / "security.md").is_file():
+        return []
+    rows = _plain_lines(_read_text(base, "security.md"))
+    found = []
+    for pos, (number, line) in enumerate(rows):
+        if not _TABLE_ROW.match(line) or _TABLE_RULE.match(line):
+            continue
+        following = rows[pos + 1][1] if pos + 1 < len(rows) else ""
+        if _TABLE_RULE.match(following):  # строка над разделителем — шапка
+            continue
+        first = line[1:].split("|", 1)[0].strip()
+        if first:
+            found.append(_node(f"sec:{first}", "sec", first, "security.md", number))
+    return found
+
+
+def _read_branches(base: Path) -> list[dict]:
+    """Ветки описи `consequences.md`: строки `- **Имя** — `путь:строка` «цитата»`. Строка без `путь:строка` узла не даёт."""
+    if not (base / "consequences.md").is_file():
+        return []
+    found = []
+    for number, line in _plain_lines(_read_text(base, "consequences.md")):
+        m = _BRANCH_LINE.match(line)
+        if m:
+            found.append(_node(f"branch:{m.group(2)}", "branch", m.group(1), "consequences.md", number))
+    return found
+
+
+# Читатель на каждый артефакт реестра, из которого граф что-то берёт. Артефакт со значением `ничего` не читается вовсе.
+READERS = {"decisions": _read_records, "specs": _read_specs, "consequences": _read_branches, "security": _read_security,
+           "tasks": _read_tasks}
+
+
+def build_graph(root: Path, change: str) -> dict:
+    """Граф изменения `change` проекта `root`: `format`, `nodes`, `edges`, `candidates`. Читает только артефакты, из которых
+    `REGISTRY` что-то берёт (F-53). Связи добавят следующие порции: `edges` и `candidates` пока пусты."""
+    base = root / "openspec" / "changes" / change
+    if not base.is_dir():
+        raise Refusal(f"изменения «{change}» нет: нет каталога openspec/changes/{change}")
+    nodes, seen = [], set()
+    for artifact, row in REGISTRY.items():
+        if row.get("берёт") == NOTHING:
+            continue
+        if artifact not in READERS:
+            raise Refusal(f"в реестре у артефакта «{artifact}» значение «берёт», а читателя нет: добавить читателя "
+                          f"или записать `{NOTHING}` с доводом")
+        for node in READERS[artifact](base):
+            if node["id"] not in seen:
+                seen.add(node["id"])
+                nodes.append(node)
+    nodes.sort(key=lambda n: (n["at"].rsplit(":", 1)[0], int(n["at"].rsplit(":", 1)[1]), n["id"]))
+    return {"format": GRAPH_FORMAT, "nodes": nodes, "edges": [], "candidates": []}
+
+
 def cmd_build(args: argparse.Namespace, root: Path) -> int:
-    raise _not_implemented("build")
+    print(json.dumps(build_graph(root, args.change), ensure_ascii=False, indent=1))
+    return 0
 
 
 def cmd_report(args: argparse.Namespace, root: Path) -> int:
@@ -304,9 +455,10 @@ HANDLERS = {"build": cmd_build, "report": cmd_report, "check": cmd_check, "freez
 
 # Подкоманда: (что делает, когда звать, коды). Правило `tests/test_flag_help.py`: «Звать, когда» и «Коды:».
 SUBCOMMAND_HELP = {
-    "build": ("Собирает граф трассируемости изменения из его артефактов и печатает его, файлов не пишет.",
+    "build": ("Собирает граф трассируемости изменения из его артефактов и печатает его JSON в stdout, файлов не пишет.",
               "Звать, когда нужен живой граф: перед отчётом, при разборе связей, в атаке артефактов.",
-              "Коды: 0 — граф собран; 1 — отказ: имя изменения не подходит или подкоманда ещё не реализована; "
+              "Коды: 0 — граф собран (у только что созданного изменения он пуст); 1 — отказ, графа нет: имя изменения "
+              "не подходит, изменения нет, `decisions.json` не разбирается или негоден по схеме, файл не в UTF-8; "
               "2 — вызов неверен."),
     "report": ("Печатает отчёт по графу изменения: сигналы о разрывах связей.",
                "Звать, когда нужен список разрывов человеку; отчёт отдаётся ссылкой, модель его не читает.",
