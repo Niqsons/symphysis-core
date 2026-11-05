@@ -68,6 +68,49 @@ REGISTRY = {
     },
 }
 
+# --- конфиг видов диаграммы (F-54, F-67, F-135, F-136) ---------------------------------------------------------------
+# Вложенный словарь, yaml-like: как `build --format mermaid` рисует каждый вид узла и каждый тип связи. Скрипт ничего не
+# рисует, он выдаёт текст `requirementDiagram` (F-54).
+#   виды:
+#     <вид узла: cap, req, scn, task, rec, sec, branch>:
+#       sysml: ближайший тип SysML: `requirement`, `designConstraint` или `element`
+#       type: у `element` слово вида в поле `type` (у `element` поля `id` нет, F-67); у остальных None
+#       класс: имя `classDef`, только латиница без дефиса (ловушка F-54: кириллица и дефис — отказ разбора)
+#       заливка, рамка, ширина, штрих: цвет и рамка класса; виды различаются ими, стереотип над блоком остаётся
+#         стандартным; штрих одним числом, штрих с пробелом в `stroke-dasharray` схлопывается (F-54)
+#       префикс: префикс номера в `id` (`REQ_3`); с подчёркиванием, форму с дефисом хук ключа задачи принимает за ключ
+#   связи:
+#     <тип связи графа>: слово связи на диаграмме; `candidate` — для кандидата связи (F-71), он идёт типом `copies`,
+#       которого у записанных связей нет (F-120, F-135); пункт security идёт типом `refines`
+DIAGRAM = {
+    "виды": {
+        "cap": {"sysml": "requirement", "type": None, "класс": "cap", "заливка": "#e0e7ff", "рамка": "#4338ca",
+                "ширина": "3px", "префикс": "CAP"},
+        "req": {"sysml": "requirement", "type": None, "класс": "req", "заливка": "#dbeafe", "рамка": "#1d4ed8",
+                "ширина": "2px", "префикс": "REQ"},
+        "scn": {"sysml": "element", "type": "сценарий", "класс": "scn", "заливка": "#dcfce7", "рамка": "#15803d",
+                "ширина": "1px", "префикс": "SCN"},
+        "task": {"sysml": "element", "type": "задача", "класс": "task", "заливка": "#fef9c3", "рамка": "#a16207",
+                 "ширина": "1px", "префикс": "TASK"},
+        "rec": {"sysml": "element", "type": "запись", "класс": "rec", "заливка": "#f3e8ff", "рамка": "#7e22ce",
+                "ширина": "1px", "штрих": "6", "префикс": "REC"},
+        "sec": {"sysml": "designConstraint", "type": None, "класс": "sec", "заливка": "#fee2e2", "рамка": "#b91c1c",
+                "ширина": "3px", "префикс": "SEC"},
+        "branch": {"sysml": "element", "type": "ветка", "класс": "branch", "заливка": "#ffedd5", "рамка": "#c2410c",
+                   "ширина": "2px", "штрих": "6", "префикс": "BR"},
+    },
+    "связи": {
+        "contains": "contains",
+        "verifies": "verifies",
+        "traces": "traces",
+        "satisfies": "satisfies",
+        "derives": "derives",
+        "refines": "refines",
+        "candidate": "copies",
+    },
+}
+
+
 ARTIFACT_ID = re.compile(r"^  - id:\s*(\S+)\s*$", re.MULTILINE)
 
 
@@ -962,17 +1005,123 @@ def check_graph_file(root: Path, change: str, path: Path | str) -> list[str]:
     return signals("узел поправлен", _diff_problems(data, build_graph(root, change), root))
 
 
+# --- текст диаграммы по графу (F-54, F-71, F-103, F-120) ------------------------------------------------------------
+# `build --format mermaid` отдаёт текст `requirementDiagram` по графу: всё изменение, `--capability` (cap, её требования и
+# сценарии, плюс связанные с ними задачи, записи, пункты security и ветки) или `--requirement` (требование, его сценарии,
+# связанные задачи и записи, соседи по кандидатам связью `copies`). Конфиг — `DIAGRAM`. Нумерацию, предел размера и очистку
+# имён добавит U16 (5.2–5.4): подпись узла собирает одна функция, `diagram_name`.
+
+DIAGRAM_HEADER = "requirementDiagram"
+
+
+def diagram_name(node: dict) -> str:
+    """Подпись узла на диаграмме до уникализации. Сейчас имя узла, кавычка заменена: имя идёт в двойных кавычках."""
+    return node["name"].replace('"', "'")
+
+
+def _unique_names(nodes: list[dict]) -> dict[str, str]:
+    """`id узла → имя блока`: имя в диаграмме и есть ключ узла, одинаковые имена молча слились бы (F-54); повторяющимся
+    добавляется id узла."""
+    labels = {n["id"]: diagram_name(n) for n in nodes}
+    counts: dict[str, int] = {}
+    for label in labels.values():
+        counts[label] = counts.get(label, 0) + 1
+    return {nid: (f"{label} · {nid}".replace('"', "'") if counts[label] > 1 else label) for nid, label in labels.items()}
+
+
+def _find_requirement(graph: dict, wanted: str) -> dict:
+    reqs = [n for n in graph["nodes"] if n["kind"] == "req"]
+    found = [n for n in reqs if n["id"] == f"req:{wanted}"] or [n for n in reqs if n["name"] == wanted]  # `capability/имя` (F-103)
+    if len(found) == 1:
+        return found[0]
+    if found:
+        forms = ", ".join(f"`{n['capability']}/{n['name']}`" for n in found)
+        raise Refusal(f"требование «{wanted}» есть в нескольких capability: укажи {forms}")
+    known = ", ".join(sorted(f"{n['capability']}/{n['name']}" for n in reqs)) or "требований нет"
+    raise Refusal(f"требования «{wanted}» в изменении нет; известные: {known}")
+
+
+def select_diagram(graph: dict, capability: str | None = None, requirement: str | None = None) -> tuple[list[dict], list[dict]]:
+    """Часть графа для диаграммы: `(узлы в порядке графа, связи from/to/type)`. Связь входит, если выбраны оба конца.
+    Кандидаты идут связью `candidate` только при выборе требования, соседями (F-71); без выбора — всё изменение."""
+    if capability is None and requirement is None:
+        return graph["nodes"], [{"from": e["from"], "to": e["to"], "type": e["type"]} for e in graph["edges"]]
+    nodes = {n["id"]: n for n in graph["nodes"]}
+    chosen: set[str] = set()
+    extra: list[dict] = []
+    if capability is not None:
+        if f"cap:{capability}" not in nodes:
+            known = ", ".join(sorted(n["name"] for n in nodes.values() if n["kind"] == "cap")) or "capability нет"
+            raise Refusal(f"capability «{capability}» в изменении нет; известные: {known}")
+        core = {i for i, n in nodes.items() if i == f"cap:{capability}" or n.get("capability") == capability}
+        attach = ("task", "rec", "sec", "branch")
+    else:
+        req = _find_requirement(graph, requirement)
+        core = {req["id"]} | {i for i, n in nodes.items() if n["kind"] == "scn" and n["requirement"] == req["id"]}
+        attach = ("task", "rec")
+        for cand in graph["candidates"]:
+            if req["id"] in (cand["a"], cand["b"]):
+                chosen.update((cand["a"], cand["b"]))
+                extra.append({"from": cand["a"], "to": cand["b"], "type": "candidate"})
+    chosen |= core
+    for edge in graph["edges"]:
+        for near, far in ((edge["from"], edge["to"]), (edge["to"], edge["from"])):
+            if near in core and nodes[far]["kind"] in attach:
+                chosen.add(far)
+    edges = [{"from": e["from"], "to": e["to"], "type": e["type"]} for e in graph["edges"]
+             if e["from"] in chosen and e["to"] in chosen] + extra
+    return [n for n in graph["nodes"] if n["id"] in chosen], edges
+
+
+def _classdef(row: dict) -> str:
+    dash = f",stroke-dasharray:{row['штрих']}" if row.get("штрих") else ""
+    return f"classDef {row['класс']} fill:{row['заливка']},stroke:{row['рамка']},stroke-width:{row['ширина']}{dash}"
+
+
+def _block(node: dict, name: str, ident: str, row: dict) -> list[str]:
+    if row["sysml"] == "element":
+        return [f'element "{name}" {{', f'    type: "{row["type"]}"', f'    docref: "{node["at"]}"', "}"]
+    if node["kind"] == "req":
+        text = f"{node['capability']}, {node['section']}"
+    else:
+        text = node["name"] if node["kind"] == "sec" else "capability"
+    return [f'{row["sysml"]} "{name}" {{', f'    id: "{ident}"', f'    text: "{text.replace(chr(34), chr(39))}"', "}"]
+
+
+def diagram_text(graph: dict, capability: str | None = None, requirement: str | None = None) -> str:
+    """Текст `requirementDiagram` по графу и выбору. Порядок: шапка, `classDef`, блоки, связи, `class` — `class` строго после
+    блоков, иначе цвет молча не применится (F-54)."""
+    nodes, edges = select_diagram(graph, capability, requirement)
+    kinds = DIAGRAM["виды"]
+    names = _unique_names(nodes)
+    lines = [DIAGRAM_HEADER, "direction LR"] + [_classdef(row) for row in kinds.values()]
+    counters: dict[str, int] = {}
+    for node in nodes:
+        row = kinds[node["kind"]]
+        counters[node["kind"]] = counters.get(node["kind"], 0) + 1
+        lines += _block(node, names[node["id"]], f"{row['префикс']}_{counters[node['kind']]}", row)
+    for edge in edges:
+        lines.append(f'"{names[edge["from"]]}" - {DIAGRAM["связи"][edge["type"]]} -> "{names[edge["to"]]}"')
+    lines += [f'class "{names[n["id"]]}" {kinds[n["kind"]]["класс"]}' for n in nodes]
+    return "\n".join(lines) + "\n"
+
+
 def cmd_build(args: argparse.Namespace, root: Path) -> int:
+    if args.format != "mermaid" and (args.capability or args.requirement):
+        raise Refusal("--capability и --requirement выбирают часть диаграммы: нужен `--format mermaid`")
     graph, duplicates = build_graph_with_duplicates(root, args.change)
     for dup in duplicates:  # сигнал, не стоп (F-31): граф печатается, код 0
         print(f"[!!] дубль id {dup['id']}: места {', '.join(dup['at'])}; в графе остался первый", file=sys.stderr)
-    text = json.dumps(graph, ensure_ascii=False, indent=1)
+    if args.format == "mermaid":
+        text = diagram_text(graph, args.capability, args.requirement)
+    else:
+        text = json.dumps(graph, ensure_ascii=False, indent=1) + "\n"
     if args.out is None:
-        print(text)
+        sys.stdout.write(text)
         return 0
     try:  # путь задаёт вызывающий: от текущего каталога или абсолютный, границы прав тут нет (F-41)
         args.out.parent.mkdir(parents=True, exist_ok=True)
-        args.out.write_text(text + "\n", encoding="utf-8", newline="\n")
+        args.out.write_text(text, encoding="utf-8", newline="\n")
     except OSError as e:
         raise Refusal(f"граф не записан в {args.out}: {e.strerror or e}") from e
     return 0
@@ -1506,13 +1655,16 @@ HANDLERS = {"build": cmd_build, "report": cmd_report, "check": cmd_check, "freez
 # Подкоманда: (что делает, когда звать, коды). Правило `tests/test_flag_help.py`: «Звать, когда» и «Коды:».
 SUBCOMMAND_HELP = {
     "build": ("Собирает граф трассируемости изменения из его артефактов и печатает его JSON в stdout; с `--out` пишет в указанный "
-              "файл. Файлов изменения не пишет.",
+              "файл. С `--format mermaid` печатает текст `requirementDiagram` (всё изменение, `--capability ИМЯ` или "
+              "`--requirement ИМЯ`); рисунка скрипт не делает и файла с ним не создаёт. Файлов изменения не пишет.",
               "Звать, когда нужен живой граф: перед отчётом, при разборе связей, в атаке артефактов. `--out ПУТЬ` — путь от "
-              "текущего каталога или абсолютный, каталоги создаются; сигналы о дублях идут в stderr и с `--out`, и без.",
+              "текущего каталога или абсолютный, каталоги создаются; сигналы о дублях идут в stderr и с `--out`, и без. Диаграмма: "
+              "`--format mermaid`; `--requirement` принимает имя и форму `capability/имя`, а имя в двух capability отказывает и "
+              "называет обе формы.",
               "Коды: 0 — граф собран (у только что созданного изменения он пуст) и выведен или записан; 1 — отказ, графа "
               "нет: имя изменения не подходит, изменения нет, `decisions.json` не разбирается или негоден по схеме, файл "
-              "не в UTF-8, путь `--out` не записать; "
-              "2 — вызов неверен."),
+              "не в UTF-8, путь `--out` не записать, выбор диаграммы не найден или неоднозначен, выбор без "
+              "`--format mermaid`; 2 — вызов неверен (в том числе оба выбора сразу)."),
     "report": ("Печатает отчёт Markdown по изменению: находки `openspec validate --json` (форк запускается сам) и сигналы "
                "графа закрытого состава (F-64): критерий без требования, требование и сценарий без задачи (в MODIFIED только новые "
                "сценарии), требование без записи, решение без требования и задачи, неоднозначное имя, неизвестное имя или "
@@ -1587,6 +1739,15 @@ def build_parser() -> argparse.ArgumentParser:
         if name == "build":
             sp.add_argument("--out", metavar="ПУТЬ", type=Path, default=None,
                             help="записать граф в этот файл вместо stdout; файлы изменения не меняются")
+            sp.add_argument("--format", choices=("json", "mermaid"), default="json",
+                            help="json (по умолчанию) — граф; mermaid — текст `requirementDiagram`, рисунка скрипт не делает")
+            pick = sp.add_mutually_exclusive_group()
+            pick.add_argument("--capability", metavar="ИМЯ", default=None,
+                              help="с `--format mermaid`: только эта capability, её требования и сценарии, связанные задачи, "
+                                   "записи, пункты security и ветки")
+            pick.add_argument("--requirement", metavar="ИМЯ", default=None,
+                              help="с `--format mermaid`: только это требование, его сценарии, связанные задачи и записи, "
+                                   "соседи по кандидатам; имя в двух capability — форма `capability/имя`")
     return ap
 
 
