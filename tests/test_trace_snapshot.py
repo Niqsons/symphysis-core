@@ -305,3 +305,184 @@ def test_write_leaves_no_temporary_file_and_replaces_atomically(tmp_path, fork, 
     freeze(root, roots)
     assert sorted(p.name for p in (base / "graph").iterdir()) == ["report.md", "req-graph.json"]
     assert [dst for _, dst in replaced] == ["req-graph.json", "report.md"] and all(src != dst for src, dst in replaced)
+
+
+# --- база мастер-спеки в снимке (U13, задача 4.3, F-84, F-95, F-118, F-123) --------------------------------------------
+
+from test_trace_report import decided, journal, probe  # noqa: E402
+
+TRACE = "<!-- проба краёв: форма=io, исходы: F-07 открыт -->\n"
+SCN = "#### Scenario: {}\n{}- **WHEN** a\n- **THEN** {}\n\n"
+MASTER_BEFORE = ("## Requirements\n\n### Requirement: Один\nТекст SHALL (F-07.A).\n" + TRACE + "\n"
+                 + SCN.format("Старый", "<!-- F-07 -->\n", "b") + SCN.format("Меняется", "", "b"))
+MODIFIED = ("## MODIFIED Requirements\n\n### Requirement: Один\nТекст SHALL (F-07.A) и новый (F-19).\n" + TRACE + "\n"
+            + SCN.format("Старый", "<!-- F-07 -->\n", "b") + SCN.format("Меняется", "", "другое") + SCN.format("Новый", "", "b"))
+CARRIED = ("## MODIFIED Requirements\n\n### Requirement: Один\nТекст SHALL (F-07.A).\n" + TRACE + "\n"
+           + SCN.format("Старый", "<!-- F-07 -->\n", "b") + SCN.format("Меняется", "", "b"))
+ONE = "req:demo/Один"
+
+
+def master_path(root):
+    return root / "openspec" / "specs" / "demo" / "spec.md"
+
+
+def modified_project(tmp_path, spec_text=MODIFIED, tasks="- [ ] 1.1 сделать\n"):
+    """Изменение с одним требованием MODIFIED и мастер-спекой до `/opsx:sync`; журнал: F-07 (проба Specify), F-19."""
+    root, base = make_change(tmp_path, specs={"demo": spec_text}, tasks=tasks, journal=["F-07", "F-19"])
+    journal(base, decided("F-07", outcome=probe("Specify")), {"id": "F-19"})
+    master_path(root).parent.mkdir(parents=True)
+    master_path(root).write_text(MASTER_BEFORE, encoding="utf-8", newline="\n")
+    return root, base
+
+
+def sync(root, spec_text=MODIFIED):
+    """`/opsx:sync` для одного требования: в мастере то, что несёт MODIFIED, под заголовком `## Requirements`."""
+    master_path(root).write_text(spec_text.replace("## MODIFIED Requirements", "## Requirements"), encoding="utf-8", newline="\n")
+
+
+def view(root):
+    """Связи, сигналы, состояния сценариев MODIFIED и `marks`, как их видит сборка."""
+    graph, duplicates, unresolved = trace_graph.build_graph_with_signals(root, CHANGE)
+    context = trace_graph.signal_context(root, CHANGE)
+    edges = [(e["from"], e["to"], e["type"]) for e in graph["edges"]]
+    return edges, trace_graph.graph_signals(graph, duplicates, unresolved, context), context["modified"], context["marks"]
+
+
+def test_base_freeze_writes_numbers_scenarios_text_traces(tmp_path, fork):
+    """`trace-snapshot`: «Пересборка после синхронизации» — заморозка кладёт в `base` по требованию MODIFIED номера, сценарии
+    с хешами текста, хеш текста требования и хеши следов; текста мастера там нет."""
+    root, base = modified_project(tmp_path)
+    freeze(root)
+    entry = snapshot(base)["base"]["demo"]["Один"]
+    assert set(entry) == {"numbers", "scenarios", "text", "traces"}
+    assert entry["numbers"] == [7] and sorted(entry["scenarios"]) == ["Меняется", "Старый"]
+    assert all(len(h) == 64 for h in [entry["text"], *entry["scenarios"].values(), *entry["traces"]]) and len(entry["traces"]) == 1
+    assert "SHALL" not in json.dumps(snapshot(base)["base"], ensure_ascii=False)
+
+
+def test_base_rebuild_after_sync_keeps_links_and_signals(tmp_path, fork):
+    """`trace-snapshot`: «Пересборка после синхронизации» — снимок с базой, затем `/opsx:sync`: после пересборки связи MODIFIED,
+    сигналы о сценариях, состояния same/changed/new и `marks` те же, что до синхронизации."""
+    root, base = modified_project(tmp_path)
+    freeze(root)
+    before = view(root)
+    assert (ONE, "rec:F-19", "traces") in before[0] and (ONE, "rec:F-07", "traces") not in before[0]
+    assert before[2][ONE]["scenarios"] == {"scn:demo/Один/Старый": "same", "scn:demo/Один/Меняется": "changed",
+                                           "scn:demo/Один/Новый": "new"}
+    assert before[3] == set() and any("Specify без сценария" in s for s in before[1])
+    sync(root)
+    (base / "tasks.md").write_text("- [x] 1.1 сделать\n", encoding="utf-8", newline="\n")  # заморозку конца пропустили
+    assert freeze(root).action == "build"
+    assert view(root) == before
+    assert snapshot(base)["base"]["demo"]["Один"]["numbers"] == [7]  # база прежняя, мастер уже новый
+
+
+def test_base_without_a_snapshot_after_sync_would_differ(tmp_path, fork):
+    """`trace-snapshot`: «Пересборка после синхронизации» — контроль теста: без снимка та же правка мастера меняет ответ."""
+    root, base = modified_project(tmp_path)
+    before = view(root)
+    sync(root)
+    assert view(root) != before
+
+
+def test_base_check_after_sync_gives_no_signals(tmp_path, fork):
+    """`trace-snapshot`: «Проверка после синхронизации» — свежий снимок с базой, мастер переписан как при `/opsx:sync`:
+    проверка файла графа сигналов не даёт."""
+    root, base = modified_project(tmp_path)
+    freeze(root)
+    snap = base / "graph" / "req-graph.json"
+    assert trace_graph.check_graph_file(root, CHANGE, snap) == []
+    sync(root)
+    assert trace_graph.check_graph_file(root, CHANGE, snap) == []
+    done = subprocess.run([sys.executable, "-X", "utf8", str(SCRIPT), "check", CHANGE, str(snap)], capture_output=True,
+                          text=True, encoding="utf-8", cwd=root)
+    assert done.returncode == 0 and done.stdout.strip() == "сигналов нет", done.stdout
+
+
+def test_base_sync_does_not_touch_snapshot(tmp_path, fork):
+    """`trace-snapshot`: «Синхронизация не трогает снимок» — после правки мастера, как при `/opsx:sync`, заморозка видит снимок
+    свежим: обновляет коммиты корней, граф и отчёт прежние."""
+    root, base = modified_project(tmp_path)
+    freeze(root)
+    before = snapshot(base)
+    report = (base / "graph" / "report.md").read_bytes()
+    sync(root)
+    assert freeze(root).action == "commits"
+    assert {k: v for k, v in snapshot(base).items() if k != "roots"} == {k: v for k, v in before.items() if k != "roots"}
+    assert (base / "graph" / "report.md").read_bytes() == report
+
+
+def test_base_missed_end_freeze_keeps_the_old_base(tmp_path, fork):
+    """`trace-snapshot`: «Заморозку конца реализации пропустили» — снимок устарел по `tasks.md` после `/opsx:sync`, собран заново,
+    база в нём прежняя; живой мастер читается только для требования, которого в прежней базе нет."""
+    root, base = modified_project(tmp_path)
+    freeze(root)
+    old = snapshot(base)["base"]
+    sync(root)
+    (base / "tasks.md").write_text("- [x] 1.1 сделать\n- [x] 1.2 ещё\n", encoding="utf-8", newline="\n")
+    result = freeze(root)
+    assert result.action == "build" and "устарел" in result.reason
+    assert snapshot(base)["base"] == old
+    extra = MODIFIED + "### Requirement: Второе\nТекст SHALL.\n\n" + SCN.format("Сц", "", "b")
+    (base / "specs" / "demo" / "spec.md").write_text(extra, encoding="utf-8", newline="\n")
+    master_path(root).write_text(master_path(root).read_text(encoding="utf-8") + "### Requirement: Второе\nМастер SHALL (F-19).\n",
+                                 encoding="utf-8", newline="\n")
+    freeze(root)
+    again = snapshot(base)["base"]["demo"]
+    assert again["Один"] == old["demo"]["Один"] and set(again) == {"Один", "Второе"} and again["Второе"]["numbers"] == [19]
+
+
+def test_base_dropped_when_requirement_is_no_longer_modified(tmp_path, fork):
+    """`trace-snapshot`: «Пересборка после синхронизации» — требование, которое перестало быть MODIFIED, из базы уходит."""
+    root, base = modified_project(tmp_path)
+    freeze(root)
+    (base / "specs" / "demo" / "spec.md").write_text(MODIFIED.replace("MODIFIED", "ADDED"), encoding="utf-8", newline="\n")
+    freeze(root)
+    assert snapshot(base)["base"] == {}
+
+
+def test_base_missing_numbers_stay_when_text_equals_master_and_report_names_it(tmp_path, fork):
+    """`trace-snapshot`: «Базы на требование нет» — `graph/` нет, текст MODIFIED совпал с мастером: номера дают связи, отчёт
+    называет требование отдельным разделом."""
+    root, base = modified_project(tmp_path, spec_text=CARRIED)
+    sync(root, CARRIED)
+    assert (ONE, "rec:F-07", "traces") in view(root)[0]
+    text = trace_graph.build_report(root, CHANGE)
+    head, _, tail = text.partition("## Требования MODIFIED без базы мастер-спеки")
+    assert tail and "demo/Один" in tail and "specs/demo/spec.md:" in tail and "Сигналов нет." not in text
+    assert "без базы" not in head and bare_brackets(text) == []
+
+
+def test_base_missing_but_text_differs_still_cuts_master_numbers(tmp_path, fork):
+    """`trace-snapshot`: «Базы на требование нет» — текст MODIFIED не совпал с мастером: F-84 действует, раздела в отчёте нет."""
+    root, base = modified_project(tmp_path)
+    edges = view(root)[0]
+    assert (ONE, "rec:F-07", "traces") not in edges and (ONE, "rec:F-19", "traces") in edges
+    assert "без базы" not in trace_graph.build_report(root, CHANGE)
+
+
+def test_base_present_after_freeze_so_report_does_not_name_requirement(tmp_path, fork):
+    """`trace-snapshot`: «Базы на требование нет» — после заморозки база есть, отчёт требование не называет, F-84 действует
+    и до, и после синхронизации."""
+    root, base = modified_project(tmp_path, spec_text=CARRIED)
+    freeze(root)
+    assert "без базы" not in (base / "graph" / "report.md").read_text(encoding="utf-8")
+    assert (ONE, "rec:F-07", "traces") not in view(root)[0]
+    sync(root, CARRIED)
+    assert (ONE, "rec:F-07", "traces") not in view(root)[0]
+
+
+@pytest.mark.parametrize("broken", [{"numbers": [7]}, {"numbers": ["7"], "scenarios": {}, "text": "x", "traces": []}, "строка", None])
+def test_base_with_bad_shape_is_not_used(broken, tmp_path, fork):
+    """`trace-snapshot`: «Базы на требование нет» — запись базы негодной формы не служит, читается живой мастер."""
+    root, base = modified_project(tmp_path)
+    freeze(root)
+    good = view(root)
+    snap = snapshot(base)
+    snap["base"] = {"demo": {"Один": broken}}
+    (base / "graph" / "req-graph.json").write_text(json.dumps(snap, ensure_ascii=False), encoding="utf-8")
+    assert view(root) == good  # до синхронизации живой мастер даёт то же
+    sync(root)
+    assert view(root) != good
+    (base / "graph" / "req-graph.json").write_text("не json", encoding="utf-8")
+    assert view(root) != good

@@ -397,23 +397,89 @@ def _master_lines(root: Path, rel: str) -> list[str]:
     return [re.sub(r"^## Requirements[ \t]*$", "## ADDED Requirements", row) for row in _spec_lines(_read_text(root, rel))]
 
 
-def _master_numbers(root: Path, cap: str) -> dict[str, set[int]]:
-    """Номера записей в тексте каждого требования мастер-спеки `openspec/specs/<cap>/spec.md` по имени требования (F-84).
-    Мастер-спека пишет `## Requirements`, а `parse_spec` читает секции дельты: заголовок читается как `ADDED`."""
+def _hash(text: str) -> str:
+    """sha256 текста с приведением пробелов и концов строк (как сверка в `_squash`): в базу идут хеши, а не текст мастер-спеки."""
+    return hashlib.sha256(_squash(text).encode("utf-8")).hexdigest()
+
+
+def master_base(root: Path, cap: str) -> dict[str, dict]:
+    """Что нужно знать о каждом требовании живой мастер-спеки `openspec/specs/<cap>/spec.md` (F-84, F-95, F-123): запись базы
+    `{"numbers": [F-NN, ...], "scenarios": {имя сценария: хеш текста}, "text": хеш текста требования, "traces": [хеши следов
+    проб]}` по имени требования; при повторе имени остаётся первое. Мастер-спека пишет `## Requirements`, а `parse_spec` читает
+    секции дельты: заголовок читается как `ADDED`. Хеш — `_hash`; следы — комментарии `<!-- проба …, исходы: … -->` внутри
+    требования."""
     rel = f"openspec/specs/{cap}/spec.md"
     if not (root / rel).is_file():
         return {}
     lines = _master_lines(root, rel)
     mask = _fence_mask(lines)
-    return {req.name: {n for _, line in _requirement_body(lines, mask, req.line) for n in _record_numbers(line)}
-            for req in parse_spec("\n".join(lines)).requirements}
+    reqs = parse_spec("\n".join(lines)).requirements
+    traces: dict[str, set[str]] = {}
+    for number, comment, _ in _trace_comments(lines):
+        owner = max((r for r in reqs if r.line <= number), key=lambda r: r.line, default=None)
+        if owner:
+            traces.setdefault(owner.name, set()).add(_hash(comment))
+    found: dict[str, dict] = {}
+    for req in reqs:
+        if req.name not in found:
+            found[req.name] = {
+                "numbers": sorted({n for _, line in _requirement_body(lines, mask, req.line) for n in _record_numbers(line)}),
+                "scenarios": {s.name: _hash(s.text) for s in req.scenarios}, "text": _hash(req.text),
+                "traces": sorted(traces.get(req.name, ()))}
+    return found
 
 
-def _read_specs(base: Path, claims: list[dict]) -> list[dict]:
+def _entry_fits(entry) -> bool:
+    """Запись базы годна, если все четыре поля на месте и нужного вида; иной записью база не служит."""
+    return (isinstance(entry, dict) and set(entry) == {"numbers", "scenarios", "text", "traces"}
+            and isinstance(entry["numbers"], list) and all(type(n) is int for n in entry["numbers"])
+            and isinstance(entry["scenarios"], dict) and all(isinstance(k, str) and isinstance(v, str) for k, v in entry["scenarios"].items())
+            and isinstance(entry["text"], str) and isinstance(entry["traces"], list) and all(isinstance(t, str) for t in entry["traces"]))
+
+
+def saved_base(base: Path) -> dict[str, dict[str, dict]]:
+    """База из снимка `graph/req-graph.json` изменения `base`: `{capability: {имя требования: запись}}` только из годных записей.
+    Нет снимка, он не JSON или у него нет поля `base` — база пуста, и сборка читает живой мастер (F-123)."""
+    try:
+        data = json.loads((base / "graph" / "req-graph.json").read_bytes().decode("utf-8-sig"))
+    except (OSError, ValueError):
+        return {}
+    raw = data.get("base") if isinstance(data, dict) else None
+    if not isinstance(raw, dict):
+        return {}
+    return {cap: {name: entry for name, entry in reqs.items() if isinstance(name, str) and _entry_fits(entry)}
+            for cap, reqs in raw.items() if isinstance(cap, str) and isinstance(reqs, dict)}
+
+
+class _Master:
+    """Мастер-спека для сборки (F-123): запись базы по `(capability, имя требования)` берётся из `saved` — базы снимка; нет записи —
+    из живого мастера (`master_base`, один раз на capability). `entry` отдаёт `(запись или None, взята ли из базы)`."""
+
+    def __init__(self, root: Path, saved: dict):
+        self.root, self.saved, self.live = root, saved, {}
+
+    def entry(self, cap: str, name: str) -> tuple[dict | None, bool]:
+        if name in self.saved.get(cap, {}):
+            return self.saved[cap][name], True
+        if cap not in self.live:
+            self.live[cap] = master_base(self.root, cap)
+        return self.live[cap].get(name), False
+
+
+def _carried_without_base(entry: dict | None, from_base: bool, text: str) -> bool:
+    """Базы на требование нет, а текст MODIFIED уже совпал с мастером (F-123): после `/opsx:sync` это то же самое, что до него,
+    различить нельзя; номера не отсекаются, отчёт называет требование."""
+    return entry is not None and not from_base and entry["text"] == _hash(text)
+
+
+def _read_specs(base: Path, claims: list[dict], master: "_Master | None" = None) -> list[dict]:
     """Capability, требования и сценарии `specs/<capability>/spec.md`; capability — имя каталога (F-131). Связи — в `claims`:
-    capability — требование (`contains`), сценарий — требование (`verifies`), требование — запись по `(F-NN)` в тексте."""
+    capability — требование (`contains`), сценарий — требование (`verifies`), требование — запись по `(F-NN)` в тексте. Номера,
+    которые уже стоят в тексте требования MODIFIED у мастера, связи не дают (F-84): мастер — запись базы снимка, а без неё живой
+    (`_Master`, F-123)."""
     nodes = []
     root = base.parents[2]
+    master = master or _Master(root, saved_base(base))
     folders = sorted(p for p in (base / "specs").iterdir() if p.is_dir()) if (base / "specs").is_dir() else []
     for folder in folders:
         rel = f"specs/{folder.name}/spec.md"
@@ -424,7 +490,6 @@ def _read_specs(base: Path, claims: list[dict]) -> list[dict]:
         lines = _spec_lines(text)
         mask = _fence_mask(lines)
         cap = folder.name
-        master = None  # мастер-спеку читаем, только если в изменении есть MODIFIED
         cap_node = _node(f"cap:{cap}", "cap", cap, rel, 1)
         nodes.append(cap_node)
         for req in parsed.requirements:
@@ -433,9 +498,11 @@ def _read_specs(base: Path, claims: list[dict]) -> list[dict]:
             nodes.append(req_node)
             claims.append({"kind": "edge", "from": cap_node["id"], "src": cap_node["at"], "to": req_id,
                            "type": "contains", "at": req_node["at"]})
-            if req.section == "MODIFIED" and master is None:
-                master = _master_numbers(root, cap)
-            known = master.get(req.name, set()) if req.section == "MODIFIED" else set()
+            known = set()
+            if req.section == "MODIFIED":
+                entry, from_base = master.entry(cap, req.name)
+                if entry and not _carried_without_base(entry, from_base, req.text):
+                    known = set(entry["numbers"])
             if _REQ_HEADER.match(lines[req.line - 1]):  # у записи REMOVED строкой-маркером тела нет
                 for number, line in _requirement_body(lines, mask, req.line):
                     claims.append({"kind": "rec", "from": req_id, "src": req_node["at"], "at": f"{rel}:{number}",
@@ -511,9 +578,9 @@ READERS = {"decisions": _read_records, "specs": _read_specs, "consequences": _re
            "tasks": _read_tasks}
 
 
-def build_graph(root: Path, change: str) -> dict:
+def build_graph(root: Path, change: str, saved: dict | None = None) -> dict:
     """Граф изменения без списков дублей и неразрешённых ссылок; см. `build_graph_with_signals`."""
-    return build_graph_with_signals(root, change)[0]
+    return build_graph_with_signals(root, change, saved)[0]
 
 
 def build_graph_with_duplicates(root: Path, change: str) -> tuple[dict, list[dict]]:
@@ -699,7 +766,7 @@ def record_candidates(edges: list[dict]) -> list[dict]:
     return [{"a": a, "b": b, "source": CANDIDATE_SOURCE_RECORDS, "shared": shared} for (a, b), shared in sorted(pairs.items())]
 
 
-def build_graph_with_signals(root: Path, change: str) -> tuple[dict, list[dict], list[dict]]:
+def build_graph_with_signals(root: Path, change: str, saved: dict | None = None) -> tuple[dict, list[dict], list[dict]]:
     """Граф изменения `change` проекта `root`, список дублей id и список неразрешённых ссылок. Граф: `format`, `nodes`, `edges`,
     `sources` (исходники сборки с хешами, `source_hashes`), `candidates`; читает только артефакты, из которых `REGISTRY` что-то берёт (F-53). Читатель отдаёт узлы и заявки на связи за
     один проход по файлу; связи разрешаются, когда собраны узлы всех артефактов (`_resolve_claims`). Пункт security —
@@ -708,10 +775,12 @@ def build_graph_with_signals(root: Path, change: str) -> tuple[dict, list[dict],
     Дубль — повторный id (два требования с одним именем в capability, два сценария, два пункта security): в графе остаётся
     первый по порядку чтения, id уникальны, а дубль не теряется молча, а идёт вторым значением: `[{"id": …, "at": [место
     первого, место повторного, …]}]` в порядке появления. Неразрешённые ссылки — третье значение: `[{"ref", "from", "at",
-    "why"}]`. В JSON графа оба списка не входят (формат не меняется)."""
+    "why"}]`. В JSON графа оба списка не входят (формат не меняется). Мастер-спеку сборка берёт из базы снимка `graph/req-graph.json`
+    (`saved_base`), а для требования без записи в ней — живую; `saved` — готовая база вместо снимка (её передаёт заморозка, F-123)."""
     base = root / "openspec" / "changes" / change
     if not base.is_dir():
         raise Refusal(f"изменения «{change}» нет: нет каталога openspec/changes/{change}")
+    master = _Master(root, saved_base(base) if saved is None else saved)
     nodes, places, claims = [], {}, []
     for artifact, row in REGISTRY.items():
         if row.get("берёт") == NOTHING:
@@ -719,7 +788,7 @@ def build_graph_with_signals(root: Path, change: str) -> tuple[dict, list[dict],
         if artifact not in READERS:
             raise Refusal(f"в реестре у артефакта «{artifact}» значение «берёт», а читателя нет: добавить читателя "
                           f"или записать `{NOTHING}` с доводом")
-        for node in READERS[artifact](base, claims):
+        for node in (READERS[artifact](base, claims, master) if artifact == "specs" else READERS[artifact](base, claims)):
             if node["id"] in places:
                 places[node["id"]].append(node["at"])
             else:
@@ -832,7 +901,8 @@ def check_graph_file(root: Path, change: str, path: Path | str) -> list[str]:
     Ничего не печатает и код выхода не трогает (F-31); её зовёт `cmd_check` и зовёт заморозка на `graph/req-graph.json`.
     Нет изменения — `Refusal`. Порядок: форма; затем состав и хеши исходников (хеш после приведения к LF, F-87); только у
     файла, свежего по хешам, узлы и связи сверяются со свежей сборкой (F-118): у устаревшего расхождение — следствие, а не
-    правка. База мастера для сравнения после `/opsx:sync` — отдельная порция (F-123)."""
+    правка. Свежая сборка берёт мастер-спеку из базы снимка `graph/req-graph.json`, поэтому после `/opsx:sync` она совпадает с
+    файлом (F-123)."""
     base = root / "openspec" / "changes" / change
     if not base.is_dir():
         raise Refusal(f"изменения «{change}» нет: нет каталога openspec/changes/{change}")
@@ -917,6 +987,8 @@ def validate_findings(root: Path, change: str) -> list[str]:
 
 DIVERGED = "сценарий MODIFIED с прежним именем и другим текстом"  # вид F-95: в отчёте идёт отдельным разделом
 DIVERGED_TITLE = "Расхождения сценариев MODIFIED"
+UNBASED = "у требования MODIFIED нет базы мастер-спеки, текст совпал с мастером, номера в нём не отсечены"  # F-123
+UNBASED_TITLE = "Требования MODIFIED без базы мастер-спеки"
 _TRACE_COMMENT = re.compile(r"<!--(.*?)-->")
 _TRACE_PAIR = re.compile(r"(?<![\w-])F-(\d+)\s+(открыт|" + "|".join(PROBE_OUTCOMES) + r")(?!\w)")
 _QUOTE_LIMIT = 110
@@ -971,22 +1043,25 @@ def _scenario_marks(lines: list[str], mask: list[bool], heading: int) -> set[int
     return found
 
 
-def signal_context(root: Path, change: str) -> dict:
+def signal_context(root: Path, change: str, saved: dict | None = None) -> dict:
     """Данные для сигналов, которых нет в графе (U10): `records` — записи журнала (адресат, решение, исход; снимок графа
     ими не раздувается), `modified` — по требованию MODIFIED: `carried` (текст требования как в мастер-спеке; о сценариях говорит `scenarios`) и
     `scenarios` {id сценария: `same`, `new` или `changed`} по имени и тексту с приведением пробелов и концов строк (F-95),
     `traces` — следы проб `<!-- проба …, исходы: F-NN Исход -->` как `(место, номер, слово)`; след в требовании MODIFIED,
     дословно стоящий в том же требовании мастер-спеки, не входит: его номера из журнала другого изменения. `marks` — номера
     записей из комментариев `<!-- F-NN -->` под заголовками сценариев (F-45); сценарий MODIFIED, перенесённый из мастера без
-    изменения, своих номеров не даёт: они из журнала другого изменения. Только читает."""
+    изменения, своих номеров не даёт: они из журнала другого изменения. `unbased` — `[(id требования, место)]` MODIFIED, у которых
+    базы нет, а текст совпал с мастером (F-123). Мастер-спеку берёт из базы снимка, для требования без записи в ней — живую
+    (`_Master`); `saved` — готовая база вместо снимка. Только читает."""
     base = root / "openspec" / "changes" / change
     if not base.is_dir():
         raise Refusal(f"изменения «{change}» нет: нет каталога openspec/changes/{change}")
+    master = _Master(root, saved_base(base) if saved is None else saved)
     try:
         records = json.loads(_read_text(base, "decisions.json"))["records"] if (base / "decisions.json").is_file() else []
     except (ValueError, KeyError, TypeError):
         records = []  # негодный журнал сборка графа уже назвала отказом
-    modified, traces, marks = {}, [], set()
+    modified, traces, marks, unbased = {}, [], set(), []
     folders = sorted(p for p in (base / "specs").iterdir() if p.is_dir()) if (base / "specs").is_dir() else []
     for folder in folders:
         rel = f"specs/{folder.name}/spec.md"
@@ -994,41 +1069,38 @@ def signal_context(root: Path, change: str) -> dict:
             continue
         text = _read_text(base, rel)
         parsed, cap = parse_spec(text), folder.name
-        master_rel = f"openspec/specs/{cap}/spec.md"
-        master, master_traces = {}, {}  # требования мастера по имени и их следы (F-84: номера в них из другого журнала)
-        if any(r.section == "MODIFIED" for r in parsed.requirements) and (root / master_rel).is_file():
-            master_lines = _master_lines(root, master_rel)
-            master_reqs = parse_spec("\n".join(master_lines)).requirements
-            for old in master_reqs:
-                master.setdefault(old.name, old)
-            for number, comment, _ in _trace_comments(master_lines):
-                owner = max((r for r in master_reqs if r.line <= number), key=lambda r: r.line, default=None)
-                if owner:
-                    master_traces.setdefault(owner.name, set()).add(comment)
+        entries = {}  # запись мастера по имени требования MODIFIED: (запись или None, из базы ли); номера в ней из другого журнала (F-84)
+        for item in parsed.requirements:
+            if item.section == "MODIFIED" and item.name not in entries:
+                entries[item.name] = master.entry(cap, item.name)
         lines = _spec_lines(text)
         for number, comment, pairs in _trace_comments(lines):
             owner = max((r for r in parsed.requirements if r.line <= number), key=lambda r: r.line, default=None)
-            if owner and owner.section == "MODIFIED" and comment in master_traces.get(owner.name, ()):
+            entry = entries[owner.name][0] if owner and owner.section == "MODIFIED" else None
+            if entry and _hash(comment) in entry["traces"]:
                 continue  # дословно стоит в том же требовании мастера: след прежнего изменения
             traces += [(f"{rel}:{number}", num, word) for num, word in pairs]
         for item in parsed.requirements:
             if item.section != "MODIFIED":
                 continue
-            old = master.get(item.name)
-            old_text = {s.name: _squash(s.text) for s in old.scenarios} if old else {}
+            entry, from_base = entries[item.name]
+            old_text = entry["scenarios"] if entry else {}
             state = {}
             for scn in item.scenarios:
                 state[f"scn:{cap}/{item.name}/{scn.name}"] = ("new" if scn.name not in old_text else
-                                                              "same" if old_text[scn.name] == _squash(scn.text) else "changed")
-            carried = old is not None and _squash(old.text) == _squash(item.text)
-            modified.setdefault(f"req:{cap}/{item.name}", {"carried": carried, "scenarios": state})
+                                                              "same" if old_text[scn.name] == _hash(scn.text) else "changed")
+            carried = entry is not None and entry["text"] == _hash(item.text)
+            if f"req:{cap}/{item.name}" not in modified:
+                modified[f"req:{cap}/{item.name}"] = {"carried": carried, "scenarios": state}
+                if _carried_without_base(entry, from_base, item.text):
+                    unbased.append((f"req:{cap}/{item.name}", f"{rel}:{item.line}"))
         mask = _fence_mask(lines)
         for item in parsed.requirements:
             state = modified.get(f"req:{cap}/{item.name}", {}).get("scenarios", {}) if item.section == "MODIFIED" else {}
             for scn in item.scenarios:
                 if state.get(f"scn:{cap}/{item.name}/{scn.name}") != "same":
                     marks |= _scenario_marks(lines, mask, scn.line)
-    return {"records": records, "modified": modified, "traces": traces, "marks": marks}
+    return {"records": records, "modified": modified, "traces": traces, "marks": marks, "unbased": unbased}
 
 
 def _stale_trace(rec: dict, word: str) -> str | None:
@@ -1157,24 +1229,30 @@ def service_line(graph: dict) -> str:
     return f"Служебных задач: {len(numbers)} ({', '.join(numbers)})." if numbers else ""
 
 
-def build_report(root: Path, change: str) -> str:
+def build_report(root: Path, change: str, saved: dict | None = None) -> str:
     """Текст отчёта изменения `change`: находки `openspec validate`, сигналы графа и отдельным разделом расхождения сценариев
     MODIFIED (F-95); без всех трёх — фраза, что сигналов нет. Ничего не печатает и не пишет (её зовёт `freeze` для
     `graph/report.md`); абсолютных путей в тексте нет (F-59). Имя проверяется до любого пути и вызова форка; нет изменения или
-    негоден журнал — `Refusal`, форк тогда не вызван."""
+    негоден журнал — `Refusal`, форк тогда не вызван. Мастер-спека — из базы снимка, для требования без записи в ней живая; MODIFIED
+    без базы, чей текст уже совпал с мастером, называется отдельным разделом (`UNBASED_TITLE`, F-123). `saved` — готовая база
+    вместо снимка (её передаёт заморозка)."""
     check_change_name(change)
-    graph, duplicates, unresolved = build_graph_with_signals(root, change)
+    graph, duplicates, unresolved = build_graph_with_signals(root, change, saved)
+    context = signal_context(root, change, saved)
     findings = [_md(line) for line in validate_findings(root, change)]  # и находки: `<путь>` от `no_paths` голой скобкой не остаётся
-    every = [_md(no_paths(line, root)) for line in graph_signals(graph, duplicates, unresolved, signal_context(root, change))]
+    every = [_md(no_paths(line, root)) for line in graph_signals(graph, duplicates, unresolved, context)]
+    unbased = [_md(no_paths(f"[!!] {UNBASED}: {rid[4:]} — {place}", root)) for rid, place in context["unbased"]]
     signals = [line for line in every if not line.startswith(f"[!!] {DIVERGED}:")]
     diverged = [line for line in every if line.startswith(f"[!!] {DIVERGED}:")]
     parts = [f"# Отчёт по изменению {change}", ""]
     service = service_line(graph)  # сведение отдельной строкой, «Сигналов нет.» не отменяет (F-116)
-    if not findings and not every:
+    if not findings and not every and not unbased:
         return "\n".join([*parts, NO_SIGNALS, "", *([service, ""] if service else [])])
     sections = [("Находки openspec validate", findings, "Находок нет."), ("Сигналы графа", signals, "Сигналов графа нет.")]
     if diverged:
         sections.append((DIVERGED_TITLE, diverged, ""))
+    if unbased:
+        sections.append((UNBASED_TITLE, unbased, ""))
     for title, lines, none in sections:
         parts += [f"## {title}", "", *(lines or [none]), ""]
     return "\n".join([*parts, *([service, ""] if service else [])])
@@ -1194,8 +1272,14 @@ def cmd_check(args: argparse.Namespace, root: Path) -> int:
 # --- заморозка: снимок и отчёт в graph/ (F-51, F-52, F-59, F-74, F-79, F-100, F-101, F-139) -----------------------------
 # Снимок `graph/req-graph.json`: поля графа и `roots`, `base`. `roots` — `[{"prefix", "commit"}]` по файлу корней, в его порядке;
 # префикс как в файле, пути корня в снимке нет; `commit` — HEAD корня или пустая строка (корень вне git, без каталога, `git` не
-# ответил). `base` — `{}` до порции U13; U13 кладёт туда мастер-спеку по требованиям MODIFIED:
-# `{capability: {имя требования: {"numbers": [F-NN, ...], "scenarios": [имя сценария, ...]}}}`.
+# ответил). `base` (F-123) — то, что сборка и проверка берут из снимка вместо живой мастер-спеки, которую `/opsx:sync` уже
+# переписал; по требованиям MODIFIED, чьё имя есть в мастере: `{capability: {имя требования: запись}}`, запись —
+# `{"numbers": [F-NN, ...], "scenarios": {имя сценария: хеш текста}, "text": хеш текста требования, "traces": [хеши следов проб]}`.
+# Номера — для отсечения F-84; сценарии — состояние `same`/`new`/`changed` (F-95) и `marks`; текст — признак «перенесено»; следы —
+# след, дословно стоящий в мастере (Ruling U10). Хеши, не тексты: снимок не копирует мастер-спеку. База снимается первой заморозкой
+# из живого мастера и при пересборке берётся из прежнего снимка (F-134): живой читается только для требования без записи.
+# Имён мастера для `derives`, веток и security (`_master_names`) в базе нет: они нужны, чтобы не принять за опечатку имя, живущее
+# только в мастере, а `/opsx:sync` добавляет в мастер лишь то, что уже есть узлом в самом изменении, и узел побеждает имя мастера.
 
 GIT_TIMEOUT = 20
 _COMMIT = re.compile(r"^[0-9a-f]{40,64}$")
@@ -1254,6 +1338,25 @@ def _write(path: Path, text: str) -> None:
         raise Refusal(f"{path.name} не записан в graph: {e.strerror or e}") from e
 
 
+def _freeze_base(root: Path, change: str, prior: dict) -> dict[str, dict[str, dict]]:
+    """База снимка: запись по каждому требованию MODIFIED изменения, у которого есть запись в `prior` (прежняя база) или требование
+    в живой мастер-спеке (F-123, F-134). Прежняя запись не обновляется: после `/opsx:sync` мастер уже несёт номера и сценарии
+    этого изменения. Требование, которое перестало быть MODIFIED, в базу не входит."""
+    base = root / "openspec" / "changes" / change
+    master = _Master(root, prior)
+    found: dict[str, dict[str, dict]] = {}
+    folders = sorted(p for p in (base / "specs").iterdir() if p.is_dir()) if (base / "specs").is_dir() else []
+    for folder in folders:
+        rel = f"specs/{folder.name}/spec.md"
+        if not (base / rel).is_file():
+            continue
+        for req in parse_spec(_read_text(base, rel)).requirements:
+            entry = master.entry(folder.name, req.name)[0] if req.section == "MODIFIED" else None
+            if entry:
+                found.setdefault(folder.name, {}).setdefault(req.name, entry)
+    return found
+
+
 def _freeze_reason(root: Path, change: str, folder: Path) -> str:
     """Почему `graph/` надо собрать заново; пусто — снимок свежий и отчёт на месте (F-100, F-139)."""
     snap, report = folder / "req-graph.json", folder / "report.md"
@@ -1289,9 +1392,10 @@ def freeze_change(root: Path, change: str, roots_file: Path | None = None) -> Fr
         snap["roots"] = roots
         _write(folder / "req-graph.json", json.dumps(snap, ensure_ascii=False, indent=1) + "\n")
         return FreezeResult("commits", unnamed=unnamed)
-    graph = _pathless({**build_graph(root, change), "roots": roots, "base": {}}, root)
+    frozen = _freeze_base(root, change, saved_base(base))  # до записи: прежняя база берётся из ещё не замененного снимка
+    graph = _pathless({**build_graph(root, change, frozen), "roots": roots, "base": frozen}, root)
     note = _roots_note(roots)
-    text = build_report(root, change).rstrip("\n") + "\n"
+    text = build_report(root, change, frozen).rstrip("\n") + "\n"
     if note:
         text += "\n## Корни без коммита\n\n" + "\n".join(_md(no_paths(line, root)) for line in note) + "\n"
     (folder / "report.md").unlink(missing_ok=True)
@@ -1332,7 +1436,7 @@ SUBCOMMAND_HELP = {
                "графа закрытого состава (F-64): критерий без требования, требование и сценарий без задачи (в MODIFIED только новые "
                "сценарии), требование без записи, решение без требования и задачи, неоднозначное имя, неизвестное имя или "
                "номер, задача ни к чему, след пробы, отставший от журнала; расхождения сценариев MODIFIED с мастером идут "
-               "отдельным разделом. Без находок и сигналов — «Сигналов нет.»; если validate не запустился, в отчёте строка "
+               "отдельным разделом, как и требования MODIFIED без базы мастер-спеки, чей текст совпал с мастером (F-123). Без находок и сигналов — «Сигналов нет.»; если validate не запустился, в отчёте строка "
                "«validate не запустился» с причиной.",
                "Звать, когда нужен список разрывов человеку; отчёт отдаётся ссылкой, модель его не читает. Форк берётся "
                "из `SYMPHYSIS_OPENSPEC`, затем из PATH; файлов изменения команда не пишет.",
