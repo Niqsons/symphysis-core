@@ -601,3 +601,182 @@ def test_schema_refusal_carries_error_lines_and_library_stays_quiet(tmp_path, ca
         trace_graph.build_graph(root, CHANGE)
     assert capsys.readouterr().err == ""
     assert any("depends_on" in row for row in caught.value.lines)
+
+
+# --- build: связи с местом at (U05, F-06, F-42, F-44, F-70, F-84, F-89, F-92) -----
+
+def edges_of(graph, type_=None):
+    return [(e["from"], e["to"], e["type"], e["at"]) for e in graph["edges"] if type_ is None or e["type"] == type_]
+
+
+def spec_with(*body_lines, scenario="Первый"):
+    """Спека с одним требованием `Один` в ADDED: строки тела идут с 4-й; сценарий после них."""
+    return ("## ADDED Requirements\n\n### Requirement: Один\n" + "\n".join(body_lines) +
+            f"\n\n#### Scenario: {scenario}\n- **WHEN** a\n- **THEN** b\n")
+
+
+def test_link_names_its_place(tmp_path):
+    """`trace-graph`: «Связь называет место» — `traces` к `rec:F-19` несёт `at` со строкой, где номер записан."""
+    spec = ("## ADDED Requirements\n\n### Requirement: Один\nТекст SHALL.\n\nИз решения (F-19).\n\n"
+            "#### Scenario: Первый\n- **WHEN** a\n")
+    root, _ = make_change(tmp_path, journal=["F-19"], specs={"demo": spec})
+    assert ("req:demo/Один", "rec:F-19", "traces", "specs/demo/spec.md:6") in edges_of(graph_of(root))
+
+
+def test_link_is_fixed_by_editing_the_file(tmp_path):
+    """`trace-graph`: «Связь правится через файл» — номер заменён в тексте, граф собран снова."""
+    root, base = make_change(tmp_path, journal=["F-19", "F-20"], specs={"demo": spec_with("Из решения (F-19).")})
+    assert ("req:demo/Один", "rec:F-19", "traces", "specs/demo/spec.md:4") in edges_of(graph_of(root), "traces")
+    path = base / "specs" / "demo" / "spec.md"
+    path.write_text(path.read_text(encoding="utf-8").replace("(F-19)", "(F-20)"), encoding="utf-8", newline="\n")
+    assert [e[1] for e in edges_of(graph_of(root), "traces")] == ["rec:F-20"]
+
+
+def test_capability_contains_requirement_and_scenario_verifies_it(tmp_path):
+    root, _ = make_change(tmp_path, specs={"demo": SPEC})
+    graph = graph_of(root)
+    assert edges_of(graph, "contains") == [("cap:demo", "req:demo/Один", "contains", "specs/demo/spec.md:3"),
+                                           ("cap:demo", "req:demo/Два", "contains", "specs/demo/spec.md:16")]
+    assert ("scn:demo/Один/Второй", "req:demo/Один", "verifies", "specs/demo/spec.md:10") in edges_of(graph, "verifies")
+    assert len(edges_of(graph, "verifies")) == 3
+    assert all(set(e) == {"from", "to", "type", "at"} for e in graph["edges"])
+
+
+def test_requirement_from_decision_takes_marker_at_word_boundary(tmp_path):
+    """`trace-conventions`: «Требование из решения» — `(F-19)` даёт `traces`; `UTF-8` не даёт `F-8`, `F-07.A` идёт к `F-07`."""
+    root, _ = make_change(tmp_path, journal=["F-07", "F-08", "F-19"],
+                          specs={"demo": spec_with("Кодировка UTF-8 SHALL (F-07.A), (F-19, F-44).")})
+    assert [e[1] for e in edges_of(graph_of(root), "traces")] == ["rec:F-07", "rec:F-19"]
+
+
+def test_requirement_takes_numbers_from_its_text_only(tmp_path):
+    """Номер из сценария и из комментария следа связи не даёт."""
+    spec = ("## ADDED Requirements\n\n### Requirement: Один\nТекст (F-01) SHALL.\n<!-- проба краёв: F-02 -->\n"
+            "<!--\nF-03\n-->\nХвост F-05.\n\n#### Scenario: Первый\n- **WHEN** F-04\n- **THEN** b\n")
+    root, _ = make_change(tmp_path, journal=["F-01", "F-02", "F-03", "F-04", "F-05"], specs={"demo": spec})
+    assert [e[1] for e in edges_of(graph_of(root), "traces")] == ["rec:F-01", "rec:F-05"]
+
+
+def test_number_from_master_spec_gives_no_link(tmp_path):
+    """`trace-conventions`: «Номер пришёл из мастер-спеки» — `(F-07.A)` уже в мастер-спеке, связи нет; новый номер связь даёт."""
+    modified = ("## MODIFIED Requirements\n\n### Requirement: Один\nТекст (F-07.A) и новый (F-19).\n\n"
+                "#### Scenario: Первый\n- **WHEN** a\n- **THEN** b\n")
+    root, _ = make_change(tmp_path, journal=["F-07", "F-19"], specs={"demo": modified})
+    master = root / "openspec" / "specs" / "demo"
+    master.mkdir(parents=True)
+    (master / "spec.md").write_text("# demo\n\n## Requirements\n\n### Requirement: Один\nТекст (F-07.A).\n\n"
+                                    "#### Scenario: Первый\n- **WHEN** a\n- **THEN** b\n", encoding="utf-8", newline="\n")
+    assert [e[1] for e in edges_of(graph_of(root), "traces")] == ["rec:F-19"]
+
+
+def test_master_spec_filters_only_same_named_modified_requirement(tmp_path):
+    added = spec_with("Текст (F-07).")  # ADDED с тем же именем: мастер-спека не мешает
+    root, _ = make_change(tmp_path, journal=["F-07"], specs={"demo": added})
+    master = root / "openspec" / "specs" / "demo"
+    master.mkdir(parents=True)
+    (master / "spec.md").write_text("## Requirements\n\n### Requirement: Один\nТекст (F-07).\n", encoding="utf-8")
+    assert [e[1] for e in edges_of(graph_of(root), "traces")] == ["rec:F-07"]
+    modified = added.replace("ADDED", "MODIFIED").replace("Один", "Другой")  # в мастер-спеке такого требования нет
+    (root / "openspec" / "changes" / CHANGE / "specs" / "demo" / "spec.md").write_text(modified, encoding="utf-8")
+    assert [e[1] for e in edges_of(graph_of(root), "traces")] == ["rec:F-07"]
+
+
+TASKS = """## 1. Часть
+
+- [ ] 1.1 Закрыть `demo`: «Первый» и (F-19)
+- [ ] 1.2 Два имени: `demo`: «Первый», `demo`: «Второй» (F-06, F-99)
+- [ ] 1.3 Вложенное: `demo`: «Фильтр «все»»
+- [ ] 1.4 Неизвестное: `demo`: «Нет такого», `other`: «Первый»
+- [ ] 1.5 Кодировка UTF-8 без номера
+"""
+TWO_SCN = """## ADDED Requirements
+
+### Requirement: Один
+Текст SHALL.
+
+#### Scenario: Первый
+- **WHEN** a
+
+#### Scenario: Второй
+- **WHEN** a
+
+#### Scenario: Фильтр «все»
+- **WHEN** a
+
+#### Scenario: Фильтр
+- **WHEN** a
+"""
+
+
+def test_task_names_scenario_with_own_capability_for_each_name(tmp_path):
+    """`trace-conventions`: «Одно имя сценария в двух capability» — связь только с названной capability; без наследования."""
+    other = TWO_SCN.replace("Один", "Иной")
+    root, _ = make_change(tmp_path, journal=["F-19", "F-06"], specs={"demo": TWO_SCN, "z": other}, tasks=TASKS)
+    graph = graph_of(root)
+    sat = edges_of(graph, "satisfies")
+    assert [(e[0], e[1]) for e in sat] == [
+        ("task:1.1", "scn:demo/Один/Первый"), ("task:1.2", "scn:demo/Один/Второй"),
+        ("task:1.2", "scn:demo/Один/Первый"), ("task:1.3", "scn:demo/Один/Фильтр «все»")]
+    assert [e[3] for e in sat] == ["tasks.md:3", "tasks.md:4", "tasks.md:4", "tasks.md:5"]
+    assert [(e[0], e[1]) for e in edges_of(graph, "traces") if e[0].startswith("task")] == [
+        ("task:1.1", "rec:F-19"), ("task:1.2", "rec:F-06")]
+
+
+def test_task_scenario_name_in_two_requirements_links_to_both(tmp_path):
+    two_reqs = TWO_SCN + "\n### Requirement: Два\nТекст SHALL.\n\n#### Scenario: Первый\n- **WHEN** a\n"
+    root, _ = make_change(tmp_path, specs={"demo": two_reqs}, tasks="- [ ] 1.1 `demo`: «Первый»\n")
+    assert sorted(e[1] for e in edges_of(graph_of(root), "satisfies")) == ["scn:demo/Два/Первый", "scn:demo/Один/Первый"]
+
+
+def test_unresolved_references_are_returned_with_what_where_why(tmp_path):
+    root, _ = make_change(tmp_path, journal=["F-19", "F-06"], specs={"demo": TWO_SCN}, tasks=TASKS)
+    graph, dups, unresolved = trace_graph.build_graph_with_signals(root, CHANGE)
+    assert dups == [] and set(graph) == {"format", "nodes", "edges", "candidates"}
+    assert {(u["from"], u["ref"], u["at"]) for u in unresolved} == {
+        ("task:1.2", "F-99", "tasks.md:4"),
+        ("task:1.4", "`demo`: «Нет такого»", "tasks.md:6"),
+        ("task:1.4", "`other`: «Первый»", "tasks.md:6")}
+    assert all(u["why"] for u in unresolved)
+    assert trace_graph.build_graph_with_duplicates(root, CHANGE)[1] == []
+    assert build(root).stderr == ""  # сигнал даст U10, не build
+
+
+def test_name_without_own_capability_is_not_linked(tmp_path):
+    """Имя «Б» в `` `demo`: «А», «Б» `` capability не наследует: связи нет, ссылка не разрешилась (F-89)."""
+    root, _ = make_change(tmp_path, specs={"demo": TWO_SCN}, tasks="- [ ] 1.1 `demo`: «Первый», «Второй»\n")
+    graph, _, unresolved = trace_graph.build_graph_with_signals(root, CHANGE)
+    assert [e[1] for e in edges_of(graph, "satisfies")] == ["scn:demo/Один/Первый"]
+    assert [(u["from"], u["ref"]) for u in unresolved] == [("task:1.1", "«Второй»")]
+
+
+def test_longest_known_name_wins(tmp_path):
+    root, _ = make_change(tmp_path, specs={"demo": TWO_SCN}, tasks="- [ ] 1.1 `demo`: «Фильтр «все»» и ещё\n")
+    assert [e[1] for e in edges_of(graph_of(root), "satisfies")] == ["scn:demo/Один/Фильтр «все»"]
+
+
+def test_satisfies_of_wrong_meaning_gives_no_signal(tmp_path):
+    """`trace-graph`: «Настоящее имя, неверный смысл» — связь `satisfies` есть, сигнала о ней нет."""
+    root, _ = make_change(tmp_path, specs={"demo": TWO_SCN}, tasks="- [ ] 1.1 Совсем другое `demo`: «Второй»\n")
+    done = build(root)
+    assert done.stderr == ""
+    assert edges_of(json.loads(done.stdout), "satisfies")[0][:3] == ("task:1.1", "scn:demo/Один/Второй", "satisfies")
+
+
+def test_edges_are_sorted_by_file_and_line_and_stable(tmp_path):
+    root, _ = make_change(tmp_path, journal=["F-19", "F-06"], specs={"demo": TWO_SCN, "a": SPEC}, tasks=TASKS)
+    first = build(root).stdout
+    edges = json.loads(first)["edges"]
+    keys = [(e["at"].rsplit(":", 1)[0], int(e["at"].rsplit(":", 1)[1])) for e in edges]
+    assert keys == sorted(keys) and build(root).stdout == first
+
+
+def test_duplicate_requirement_gives_links_of_first_only(tmp_path):
+    spec = DUP_REQ.replace("Текст SHALL.", "Текст (F-01).").replace("Причина.", "Причина (F-02).")
+    root, _ = make_change(tmp_path, journal=["F-01", "F-02"], specs={"cap-a": spec})
+    assert [e[1] for e in edges_of(graph_of(root), "traces")] == ["rec:F-01"]
+
+
+def test_this_very_change_has_links_of_every_kind_of_this_portion():
+    """Живой пример: у изменения `trace-graph` есть связи четырёх видов этой порции."""
+    graph, _, unresolved = trace_graph.build_graph_with_signals(ROOT, "trace-graph")
+    assert {e["type"] for e in graph["edges"]} == {"contains", "verifies", "traces", "satisfies"}

@@ -299,6 +299,9 @@ GRAPH_FORMAT = 1
 _TASK_LINE = re.compile(r"^- \[[ xX]\] (\d+(?:\.\d+)+)\s+(.*?)\s*$")
 _TABLE_ROW = re.compile(r"^\|(.*)$")
 _TABLE_RULE = re.compile(r"^\|[\s:|-]+\|?\s*$")
+_REC_REF = re.compile(r"(?<![\w-])F-(\d+)(?!\d)")  # граница слова слева: `UTF-8` не даёт `F-8`; `.A` у `F-07.A` остаётся за числом
+_CAP_NAME = re.compile(r"`([^`]+)`:\s*«")  # `capability`: «имя…
+_NEXT_NAME = re.compile(r"\s*,\s*«")  # следующее имя той же строки: своей capability у него нет (F-89)
 _BRANCH_LINE = re.compile(r"^- \*\*(.+?)\*\*\s*—\s*`([^`\s]+:\d+)`\s*«")
 
 
@@ -321,7 +324,7 @@ def _plain_lines(text: str) -> list[tuple[int, str]]:
     return [(i + 1, line) for i, line in enumerate(lines) if not mask[i]]
 
 
-def _read_records(base: Path) -> list[dict]:
+def _read_records(base: Path, claims: list[dict]) -> list[dict]:
     """Записи журнала `decisions.json` (F-80, F-125): проверка схемы тем же `validate_journal`, что у `journal.py check`;
     разбор здесь свой, потому что `load_journal` бросает без имени файла. Нет файла — нет узлов."""
     if not (base / "decisions.json").is_file():
@@ -347,38 +350,105 @@ def _read_records(base: Path) -> list[dict]:
     return nodes
 
 
-def _read_specs(base: Path) -> list[dict]:
-    """Capability, требования и сценарии `specs/<capability>/spec.md`; capability — имя каталога (F-131)."""
+def _spec_lines(text: str) -> list[str]:
+    return re.sub(r"\r\n?", "\n", text.removeprefix("﻿")).split("\n")
+
+
+def _requirement_body(lines: list[str], mask: list[bool], heading: int) -> list[tuple[int, str]]:
+    """Тело требования с заголовком в строке `heading` (с 1) как `(номер строки, текст)`: до первого заголовка вне блока кода,
+    без строк в блоках кода и без HTML-комментариев (след пробы `<!-- проба краёв … -->` не текст требования, F-44)."""
+    body, in_comment = [], False
+    for i in range(heading, len(lines)):
+        if mask[i]:
+            continue
+        if re.match(r"^#{1,6}\s", lines[i]):
+            break
+        rest, kept = lines[i], ""
+        while rest:
+            if in_comment:
+                end = rest.find("-->")
+                in_comment, rest = (False, rest[end + 3:]) if end >= 0 else (True, "")
+            else:
+                start = rest.find("<!--")
+                kept, rest, in_comment = (kept + rest, "", False) if start < 0 else (kept + rest[:start], rest[start + 4:], True)
+        if kept.strip():
+            body.append((i + 1, kept))
+    return body
+
+
+def _record_numbers(text: str) -> list[int]:
+    """Номера записей `F-NN` по границе слова: `UTF-8` не даёт `F-8`; суффикс варианта (`F-07.A`) отбрасывается."""
+    return [int(m.group(1)) for m in _REC_REF.finditer(text)]
+
+
+def _master_numbers(root: Path, cap: str) -> dict[str, set[int]]:
+    """Номера записей в тексте каждого требования мастер-спеки `openspec/specs/<cap>/spec.md` по имени требования (F-84).
+    Мастер-спека пишет `## Requirements`, а `parse_spec` читает секции дельты: заголовок читается как `ADDED`."""
+    rel = f"openspec/specs/{cap}/spec.md"
+    if not (root / rel).is_file():
+        return {}
+    lines = _spec_lines(re.sub(r"(?m)^## Requirements[ \t]*$", "## ADDED Requirements", _read_text(root, rel)))
+    mask = _fence_mask(lines)
+    return {req.name: {n for _, line in _requirement_body(lines, mask, req.line) for n in _record_numbers(line)}
+            for req in parse_spec("\n".join(lines)).requirements}
+
+
+def _read_specs(base: Path, claims: list[dict]) -> list[dict]:
+    """Capability, требования и сценарии `specs/<capability>/spec.md`; capability — имя каталога (F-131). Связи — в `claims`:
+    capability — требование (`contains`), сценарий — требование (`verifies`), требование — запись по `(F-NN)` в тексте."""
     nodes = []
+    root = base.parents[2]
     folders = sorted(p for p in (base / "specs").iterdir() if p.is_dir()) if (base / "specs").is_dir() else []
     for folder in folders:
         rel = f"specs/{folder.name}/spec.md"
         if not (base / rel).is_file():
             continue
-        parsed = parse_spec(_read_text(base, rel))
+        text = _read_text(base, rel)
+        parsed = parse_spec(text)
+        lines = _spec_lines(text)
+        mask = _fence_mask(lines)
         cap = folder.name
-        nodes.append(_node(f"cap:{cap}", "cap", cap, rel, 1))
+        master = None  # мастер-спеку читаем, только если в изменении есть MODIFIED
+        cap_node = _node(f"cap:{cap}", "cap", cap, rel, 1)
+        nodes.append(cap_node)
         for req in parsed.requirements:
             req_id = f"req:{cap}/{req.name}"
-            nodes.append(_node(req_id, "req", req.name, rel, req.line, section=req.section, capability=cap))
-            nodes += [_node(f"scn:{cap}/{req.name}/{scn.name}", "scn", scn.name, rel, scn.line,
-                            capability=cap, requirement=req_id) for scn in req.scenarios]
+            req_node = _node(req_id, "req", req.name, rel, req.line, section=req.section, capability=cap)
+            nodes.append(req_node)
+            claims.append({"kind": "edge", "from": cap_node["id"], "src": cap_node["at"], "to": req_id,
+                           "type": "contains", "at": req_node["at"]})
+            if req.section == "MODIFIED" and master is None:
+                master = _master_numbers(root, cap)
+            known = master.get(req.name, set()) if req.section == "MODIFIED" else set()
+            if _REQ_HEADER.match(lines[req.line - 1]):  # у записи REMOVED строкой-маркером тела нет
+                for number, line in _requirement_body(lines, mask, req.line):
+                    claims.append({"kind": "rec", "from": req_id, "src": req_node["at"], "at": f"{rel}:{number}",
+                                   "text": line, "skip": known})
+            for scn in req.scenarios:
+                scn_node = _node(f"scn:{cap}/{req.name}/{scn.name}", "scn", scn.name, rel, scn.line,
+                                 capability=cap, requirement=req_id)
+                nodes.append(scn_node)
+                claims.append({"kind": "edge", "from": scn_node["id"], "src": scn_node["at"], "to": req_id,
+                               "type": "verifies", "at": scn_node["at"]})
     return nodes
 
 
-def _read_tasks(base: Path) -> list[dict]:
-    """Задачи `- [ ] N.M …` и `- [x] N.M …` из `tasks.md`; остальные пункты и строки в блоках кода не задачи."""
+def _read_tasks(base: Path, claims: list[dict]) -> list[dict]:
+    """Задачи `- [ ] N.M …` и `- [x] N.M …` из `tasks.md`; остальные пункты и строки в блоках кода не задачи. Строка задачи
+    уходит в `claims` целиком: имена сценариев сверяются с известными, когда узлы всех артефактов собраны."""
     if not (base / "tasks.md").is_file():
         return []
     found = []
     for number, line in _plain_lines(_read_text(base, "tasks.md")):
         m = _TASK_LINE.match(line)
         if m:
-            found.append(_node(f"task:{m.group(1)}", "task", m.group(2), "tasks.md", number, done=line[3] in "xX"))
+            node = _node(f"task:{m.group(1)}", "task", m.group(2), "tasks.md", number, done=line[3] in "xX")
+            found.append(node)
+            claims.append({"kind": "task", "from": node["id"], "src": node["at"], "at": node["at"], "text": m.group(2)})
     return found
 
 
-def _read_security(base: Path) -> list[dict]:
+def _read_security(base: Path, claims: list[dict]) -> list[dict]:
     """Пункты чек-листа `security.md`: первая колонка строк таблицы, без шапки и разделителя."""
     if not (base / "security.md").is_file():
         return []
@@ -396,7 +466,7 @@ def _read_security(base: Path) -> list[dict]:
     return found
 
 
-def _read_branches(base: Path) -> list[dict]:
+def _read_branches(base: Path, claims: list[dict]) -> list[dict]:
     """Ветки описи `consequences.md`: строки `- **Имя** — `путь:строка` «цитата»`. Строка без `путь:строка` узла не даёт."""
     if not (base / "consequences.md").is_file():
         return []
@@ -414,27 +484,119 @@ READERS = {"decisions": _read_records, "specs": _read_specs, "consequences": _re
 
 
 def build_graph(root: Path, change: str) -> dict:
-    """Граф изменения без списка дублей id; см. `build_graph_with_duplicates`."""
-    return build_graph_with_duplicates(root, change)[0]
+    """Граф изменения без списков дублей и неразрешённых ссылок; см. `build_graph_with_signals`."""
+    return build_graph_with_signals(root, change)[0]
 
 
 def build_graph_with_duplicates(root: Path, change: str) -> tuple[dict, list[dict]]:
-    """Граф изменения `change` проекта `root` и список дублей id. Граф: `format`, `nodes`, `edges`, `candidates`; читает только
-    артефакты, из которых `REGISTRY` что-то берёт (F-53). Связи добавят следующие порции: `edges` и `candidates` пока пусты.
+    """Граф изменения и список дублей id; см. `build_graph_with_signals`."""
+    graph, duplicates, _ = build_graph_with_signals(root, change)
+    return graph, duplicates
+
+
+def _take_name(text: str, start: int, known: set[str]) -> tuple[str, int, bool]:
+    """Имя сценария после `«` (позиция `start`): `(имя, позиция после закрывающей », известно ли)`. Из известных имён
+    берётся самое длинное, которое стоит в строке целиком вместе с закрывающей `»` (F-92: имена бывают с вложенными
+    «ёлочками»); неизвестное имя читается до парной `»`, непарное — до конца строки."""
+    fits = [name for name in known if text.startswith(name + "»", start)]
+    if fits:
+        name = max(fits, key=len)
+        return name, start + len(name) + 1, True
+    depth = 1
+    for i in range(start, len(text)):
+        depth += (text[i] == "«") - (text[i] == "»")
+        if depth == 0:
+            return text[start:i], i + 1, False
+    return text[start:].strip(), len(text), False
+
+
+def _resolve_task_line(claim: dict, scenarios: dict, put_edge, put_unresolved) -> None:
+    """Сценарии, названные строкой задачи (F-42, F-89): у каждого имени своя capability, без наследования; имя, стоящее
+    после запятой без своей capability, не связывается и уходит в неразрешённые."""
+    text, at, task = claim["text"], claim["at"], claim["from"]
+    pos = 0
+    while (m := _CAP_NAME.search(text, pos)):
+        cap, start, first = m.group(1), m.end(), True
+        while True:
+            name, end, known = _take_name(text, start, set(scenarios.get(cap, {})) if first else set())
+            if first and known:
+                for scn_id in scenarios[cap][name]:
+                    put_edge(task, scn_id, "satisfies", at)
+            elif first:
+                put_unresolved(claim, f"`{cap}`: «{name}»", f"в capability `{cap}` нет сценария с именем «{name}»")
+            else:
+                put_unresolved(claim, f"«{name}»", f"у имени «{name}» нет своей capability: после запятой она не "
+                               "наследуется, нужна форма `capability`: «имя» у каждого имени")
+            tail = _NEXT_NAME.match(text, end)
+            if not tail:
+                break
+            start, first = tail.end(), False
+        pos = end
+
+
+def _resolve_claims(nodes: list[dict], places: dict, claims: list[dict]) -> tuple[list[dict], list[dict]]:
+    """Связи и неразрешённые ссылки из заявок читателей. Заявка узла, который в граф не вошёл как дубль id, отбрасывается.
+    Связь — `from`, `to`, `type`, `at` (место записи от каталога изменения); повтор `(from, to, type)` остаётся первым.
+    Ссылка, которая не разрешилась (нет записи с таким номером, нет сценария с таким именем), связи не даёт и идёт в
+    список `[{"ref", "from", "at", "why"}]`: что названо, чьё это, где и почему не связалось."""
+    records = {n["number"]: n["id"] for n in reversed(nodes) if n["kind"] == "rec" and n["number"] is not None}
+    scenarios: dict[str, dict[str, list[str]]] = {}
+    for n in nodes:
+        if n["kind"] == "scn":
+            scenarios.setdefault(n["capability"], {}).setdefault(n["name"], []).append(n["id"])
+    edges: dict[tuple, dict] = {}
+    unresolved: dict[tuple, dict] = {}
+
+    def put_edge(src: str, dst: str, kind: str, at: str) -> None:
+        edges.setdefault((src, dst, kind), {"from": src, "to": dst, "type": kind, "at": at})
+
+    def put_unresolved(claim: dict, ref: str, why: str) -> None:
+        unresolved.setdefault((claim["from"], ref), {"ref": ref, "from": claim["from"], "at": claim["at"], "why": why})
+
+    def put_records(claim: dict, text: str, skip: set) -> None:
+        for number in _record_numbers(text):
+            if number in skip:
+                continue
+            if number in records:
+                put_edge(claim["from"], records[number], "traces", claim["at"])
+            else:
+                put_unresolved(claim, f"F-{number:02d}", f"в журнале изменения нет записи F-{number:02d}")
+
+    for claim in claims:
+        if places[claim["from"]][0] != claim["src"]:
+            continue
+        if claim["kind"] == "edge":
+            put_edge(claim["from"], claim["to"], claim["type"], claim["at"])
+        elif claim["kind"] == "rec":
+            put_records(claim, claim["text"], claim["skip"])
+        else:
+            _resolve_task_line(claim, scenarios, put_edge, put_unresolved)
+            put_records(claim, claim["text"], set())
+    ordered = sorted(edges.values(), key=lambda e: (e["at"].rsplit(":", 1)[0], int(e["at"].rsplit(":", 1)[1]),
+                                                    e["from"], e["to"], e["type"]))
+    return ordered, list(unresolved.values())
+
+
+def build_graph_with_signals(root: Path, change: str) -> tuple[dict, list[dict], list[dict]]:
+    """Граф изменения `change` проекта `root`, список дублей id и список неразрешённых ссылок. Граф: `format`, `nodes`, `edges`,
+    `candidates`; читает только артефакты, из которых `REGISTRY` что-то берёт (F-53). Читатель отдаёт узлы и заявки на связи за
+    один проход по файлу; связи разрешаются, когда собраны узлы всех артефактов (`_resolve_claims`). Связи пункта security,
+    ветки описи и дочернего требования добавит следующая порция: `candidates` пока пуст.
     Дубль — повторный id (два требования с одним именем в capability, два сценария, два пункта security): в графе остаётся
     первый по порядку чтения, id уникальны, а дубль не теряется молча, а идёт вторым значением: `[{"id": …, "at": [место
-    первого, место повторного, …]}]` в порядке появления. В JSON графа список не входит (формат не меняется)."""
+    первого, место повторного, …]}]` в порядке появления. Неразрешённые ссылки — третье значение: `[{"ref", "from", "at",
+    "why"}]`. В JSON графа оба списка не входят (формат не меняется)."""
     base = root / "openspec" / "changes" / change
     if not base.is_dir():
         raise Refusal(f"изменения «{change}» нет: нет каталога openspec/changes/{change}")
-    nodes, places = [], {}
+    nodes, places, claims = [], {}, []
     for artifact, row in REGISTRY.items():
         if row.get("берёт") == NOTHING:
             continue
         if artifact not in READERS:
             raise Refusal(f"в реестре у артефакта «{artifact}» значение «берёт», а читателя нет: добавить читателя "
                           f"или записать `{NOTHING}` с доводом")
-        for node in READERS[artifact](base):
+        for node in READERS[artifact](base, claims):
             if node["id"] in places:
                 places[node["id"]].append(node["at"])
             else:
@@ -442,7 +604,8 @@ def build_graph_with_duplicates(root: Path, change: str) -> tuple[dict, list[dic
                 nodes.append(node)
     nodes.sort(key=lambda n: (n["at"].rsplit(":", 1)[0], int(n["at"].rsplit(":", 1)[1]), n["id"]))
     duplicates = [{"id": node_id, "at": at} for node_id, at in places.items() if len(at) > 1]
-    return {"format": GRAPH_FORMAT, "nodes": nodes, "edges": [], "candidates": []}, duplicates
+    edges, unresolved = _resolve_claims(nodes, places, claims)
+    return {"format": GRAPH_FORMAT, "nodes": nodes, "edges": edges, "candidates": []}, duplicates, unresolved
 
 
 def cmd_build(args: argparse.Namespace, root: Path) -> int:
