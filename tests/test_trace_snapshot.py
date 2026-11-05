@@ -1,7 +1,9 @@
 """Команда `freeze` скрипта графа `tools/trace_graph.py`: снимок и отчёт в `graph/`, выбор «собрать или обновить коммиты»,
 коммиты корней (U12, задачи 4.1 и 4.2)."""
+import hashlib
 import json
 import os
+import re
 import subprocess
 import sys
 
@@ -10,7 +12,7 @@ import pytest
 import trace_graph
 from conftest import ROOT, fork_reply
 from test_trace_graph import CHANGE, make_change
-from test_trace_report import CLEAN, DONE, ONE_REQ, with_shim
+from test_trace_report import CLEAN, DONE, ONE_REQ, journal, with_shim
 
 SCRIPT = ROOT / "tools" / "trace_graph.py"
 GIT = ["git", "-c", "user.name=t", "-c", "user.email=t@t", "-c", "commit.gpgsign=false"]
@@ -464,12 +466,12 @@ def test_base_missing_but_text_differs_still_cuts_master_numbers(tmp_path, fork)
 def test_base_present_after_freeze_so_report_does_not_name_requirement(tmp_path, fork):
     """`trace-snapshot`: «Базы на требование нет» — после заморозки база есть, отчёт требование не называет, F-84 действует
     и до, и после синхронизации."""
-    root, base = modified_project(tmp_path, spec_text=CARRIED)
+    root, base = modified_project(tmp_path)  # текст MODIFIED отличается от мастера: заморозка до синхронизации снимает базу
     freeze(root)
     assert "без базы" not in (base / "graph" / "report.md").read_text(encoding="utf-8")
-    assert (ONE, "rec:F-07", "traces") not in view(root)[0]
-    sync(root, CARRIED)
-    assert (ONE, "rec:F-07", "traces") not in view(root)[0]
+    assert (ONE, "rec:F-07", "traces") not in view(root)[0] and (ONE, "rec:F-19", "traces") in view(root)[0]
+    sync(root)
+    assert (ONE, "rec:F-07", "traces") not in view(root)[0] and (ONE, "rec:F-19", "traces") in view(root)[0]
 
 
 @pytest.mark.parametrize("broken", [{"numbers": [7]}, {"numbers": ["7"], "scenarios": {}, "text": "x", "traces": []}, "строка", None])
@@ -486,3 +488,203 @@ def test_base_with_bad_shape_is_not_used(broken, tmp_path, fork):
     assert view(root) != good
     (base / "graph" / "req-graph.json").write_text("не json", encoding="utf-8")
     assert view(root) != good
+
+
+def test_base_first_freeze_after_sync_does_not_take_a_base_from_the_synced_master(tmp_path, fork):
+    """`trace-snapshot`: «Базы на требование нет» — первая заморозка без `graph/` после `/opsx:sync`: текст MODIFIED совпал с
+    мастером, записи базы нет, номера в связях остались, отчёт называет требование разделом."""
+    root, base = modified_project(tmp_path, spec_text=CARRIED)
+    sync(root, CARRIED)
+    freeze(root)
+    assert "Один" not in snapshot(base)["base"].get("demo", {})
+    assert (ONE, "rec:F-07", "traces") in view(root)[0]
+    report_text = (base / "graph" / "report.md").read_text(encoding="utf-8")
+    assert "## Требования MODIFIED без базы мастер-спеки" in report_text and "demo/Один" in report_text
+
+
+# --- архив: подкоманда archive-gaps (U14, задача 4.4, F-62, F-102) -----------------------------------------------------
+
+def archive_dir(tmp_path, snapshots=(), bare=()):
+    """Каталог архива: `snapshots` — имена изменений с `graph/req-graph.json`, `bare` — без него."""
+    archive = tmp_path / "proj" / "openspec" / "changes" / "archive"
+    archive.mkdir(parents=True, exist_ok=True)
+    for name in snapshots:
+        (archive / name / "graph").mkdir(parents=True)
+        (archive / name / "graph" / "req-graph.json").write_text("{}", encoding="utf-8")
+    for name in bare:
+        (archive / name).mkdir(parents=True)
+        (archive / name / "proposal.md").write_text("x\n", encoding="utf-8")
+    return archive
+
+
+def gaps_cli(*args, cwd):
+    return subprocess.run([sys.executable, "-X", "utf8", str(SCRIPT), "archive-gaps", *map(str, args)], capture_output=True,
+                          text=True, encoding="utf-8", cwd=cwd)
+
+
+def tree(folder):
+    return sorted(p.relative_to(folder).as_posix() for p in folder.rglob("*"))
+
+
+def test_gaps_names_change_without_snapshot_and_adds_no_files(tmp_path):
+    """`trace-snapshot`: «Архив без снимка» — изменение без `graph/` названо, снимок у него не появился."""
+    archive = archive_dir(tmp_path, snapshots=["2026-11-01-a"], bare=["2026-11-02-b"])
+    before = tree(archive)
+    done = gaps_cli(archive, cwd=tmp_path)
+    assert done.returncode == 0, done.stderr
+    assert "2026-11-02-b" in done.stdout and "2026-11-01-a" not in done.stdout
+    assert tree(archive) == before and not (archive / "2026-11-02-b" / "graph").exists()
+
+
+def test_gaps_manual_archive_without_graph_is_named(tmp_path):
+    """`trace-snapshot`: «Ручной перенос мимо скилла» — заархивировано ручным `openspec archive`, `graph/` нет: названо."""
+    archive = archive_dir(tmp_path, snapshots=["2026-11-01-a"], bare=["2026-11-03-demo"])
+    result = trace_graph.archive_gaps(archive)
+    assert result.named == ["2026-11-03-demo"] and result.older == []
+
+
+def test_gaps_older_than_first_snapshot_are_one_line_with_count(tmp_path):
+    """`trace-snapshot`: «Архивы старше первого снимка» — старые без снимка одной строкой со счётом, поимённо только новые."""
+    archive = archive_dir(tmp_path, snapshots=["2026-11-01-first", "2026-11-05-x"],
+                          bare=["2026-10-01-old1", "2026-10-02-old2", "2026-10-31-old3", "2026-11-04-new"])
+    done = gaps_cli(archive, cwd=tmp_path)
+    assert done.returncode == 0, done.stderr
+    assert "2026-11-04-new" in done.stdout
+    assert not any(name in done.stdout for name in ("old1", "old2", "old3"))
+    counted = [line for line in done.stdout.splitlines() if "старше первого снимка" in line.lower()]
+    assert len(counted) == 1 and "3" in counted[0] and "2026-11-01-first" in counted[0]
+
+
+def test_gaps_same_date_as_first_snapshot_is_not_older(tmp_path):
+    """`trace-snapshot`: «Архивы старше первого снимка» — «раньше» строгое: тот же день, что у первого снимка, назван поимённо."""
+    archive = archive_dir(tmp_path, snapshots=["2026-11-01-a"], bare=["2026-11-01-b"])
+    result = trace_graph.archive_gaps(archive)
+    assert result.named == ["2026-11-01-b"] and result.older == []
+
+
+def test_gaps_no_snapshot_anywhere_counts_all_as_older(tmp_path):
+    """`trace-snapshot`: «Архивы старше первого снимка» — снимка нет ни у одного: старше первого считаются все, имён нет."""
+    archive = archive_dir(tmp_path, bare=["2026-10-01-a", "2026-10-02-b"])
+    result = trace_graph.archive_gaps(archive)
+    assert result.named == [] and len(result.older) == 2 and result.first is None
+    done = gaps_cli(archive, cwd=tmp_path)
+    assert done.returncode == 0 and "2026-10-01-a" not in done.stdout and "2" in done.stdout
+
+
+def test_gaps_all_with_snapshot_and_empty_archive_exit_zero(tmp_path):
+    """`trace-snapshot`: «Архив без снимка» — находок нет: код 0 и одна строка, не пусто."""
+    archive = archive_dir(tmp_path, snapshots=["2026-11-01-a"])
+    done = gaps_cli(archive, cwd=tmp_path)
+    assert done.returncode == 0 and done.stdout.strip() and "2026-11-01-a" not in done.stdout
+    (tmp_path / "empty").mkdir()
+    done = gaps_cli(tmp_path / "empty", cwd=tmp_path)
+    assert done.returncode == 0 and done.stdout.strip()
+
+
+def test_gaps_default_directory_is_openspec_changes_archive(tmp_path):
+    """`trace-snapshot`: «Архив без снимка» — без аргумента берётся `openspec/changes/archive` от корня проекта."""
+    archive = archive_dir(tmp_path, snapshots=["2026-11-01-a"], bare=["2026-11-02-b"])
+    done = gaps_cli(cwd=archive.parents[2])
+    assert done.returncode == 0, done.stderr
+    assert "2026-11-02-b" in done.stdout
+
+
+def test_gaps_name_without_date_is_named_never_counted_older(tmp_path):
+    """`trace-snapshot`: «Архив без снимка» — каталог без даты в имени отнести к старым нельзя: он назван поимённо."""
+    archive = archive_dir(tmp_path, snapshots=["2026-11-01-a"], bare=["manual-copy"])
+    assert trace_graph.archive_gaps(archive).named == ["manual-copy"]
+
+
+def test_gaps_refuses_missing_directory_and_file(tmp_path):
+    """`trace-snapshot`: «Архив без снимка» — каталога нет или это не каталог: код 1, строка в stderr, без трассировки."""
+    (tmp_path / "file").write_text("x", encoding="utf-8")
+    for target in (tmp_path / "нет", tmp_path / "file"):
+        done = gaps_cli(target, cwd=tmp_path)
+        assert done.returncode == 1 and done.stderr.strip() and "Traceback" not in done.stderr and not done.stdout
+
+
+def test_no_subcommand_help_claims_it_is_not_implemented():
+    """Справка ни одной подкоманды не называет её нереализованной; у каждой есть «Звать, когда» и «Коды:»."""
+    for name in trace_graph.SUBCOMMAND_HELP:
+        done = subprocess.run([sys.executable, "-X", "utf8", str(SCRIPT), name, "--help"], capture_output=True, text=True,
+                              encoding="utf-8")
+        assert done.returncode == 0 and "ещё не реализована" not in done.stdout, name
+        assert "Звать, когда" in done.stdout and "Коды:" in done.stdout, name
+
+
+# --- перенос в архив настоящим форком (U14, задача 4.5, F-122) --------------------------------------------------------
+
+from conftest import FORK_BIN, requires_fork  # noqa: E402
+from test_schema import make_project, run_openspec  # noqa: E402
+
+EVIDENCE = "openspec/changes/demo/research/F-01.md"
+
+
+def archived_project(tmp_path, monkeypatch):
+    """Проект с изменением `demo` под настоящим форком: журнал с уликой на `research/F-01.md`, спека, задача, `graph/` после
+    `freeze`; изменение перенесено `openspec archive demo --yes`. Возвращает `(проект, каталог в архиве, журнал до архива)`."""
+    monkeypatch.setenv("SYMPHYSIS_OPENSPEC", str(FORK_BIN))
+    proj = make_project(tmp_path)
+    base = proj / "openspec" / "changes" / CHANGE
+    (base / "research").mkdir()
+    (base / "research" / "F-01.md").write_text("находка про мир\n", encoding="utf-8", newline="\n")
+    (base / "specs" / "demo").mkdir(parents=True)
+    (base / "specs" / "demo" / "spec.md").write_text(ONE_REQ, encoding="utf-8", newline="\n")
+    (base / "tasks.md").write_text("- [x] 1.1 сделать `demo`: «Первый»\n", encoding="utf-8", newline="\n")
+    rec = {"id": "F-01", "question": "Вопрос?", "options": [{"letter": "A", "text": "вариант", "added": False, "unlikely": None,
+           "evidence": [{"path": EVIDENCE, "quote": "находка про мир"}]}]}
+    journal(base, rec)
+    data = (base / "decisions.json").read_bytes()
+    (base / "decisions.json").write_bytes(data.replace(b"\n", b"\r\n"))  # CRLF: хеш в снимке считается по LF
+    before = (base / "decisions.json").read_bytes()
+    freeze(proj, roots_file(tmp_path))
+    run_openspec(proj, "archive", CHANGE, "--yes")
+    archive = proj / "openspec" / "changes" / "archive"
+    (found,) = archive.iterdir()
+    assert found.name.endswith("-" + CHANGE)
+    return proj, found, before
+
+
+@requires_fork
+def test_archive_carries_graph_directory(tmp_path, monkeypatch):
+    """`trace-snapshot`: «Каталог уезжает в архив» — снимок и отчёт лежат в `archive/<дата>-<имя>/graph/`."""
+    proj, found, _ = archived_project(tmp_path, monkeypatch)
+    assert sorted(p.name for p in (found / "graph").iterdir()) == ["report.md", "req-graph.json"]
+    assert not (proj / "openspec" / "changes" / CHANGE).exists()
+
+
+@requires_fork
+def test_archive_leaves_journal_byte_for_byte_and_snapshot_hash_holds(tmp_path, monkeypatch):
+    """`trace-snapshot`: «Журнал уезжает в архив без правок» — путь улики тот же, `decisions.json` совпадает побайтно, хеш в
+    `sources` снимка равен хешу архивного файла, приведённого к LF."""
+    proj, found, before = archived_project(tmp_path, monkeypatch)
+    after = (found / "decisions.json").read_bytes()
+    assert after == before and EVIDENCE.encode() in after
+    snap = json.loads((found / "graph" / "req-graph.json").read_text(encoding="utf-8"))
+    (item,) = [s for s in snap["sources"] if s["path"] == "decisions.json"]
+    assert item["sha256"] == hashlib.sha256(re.sub(rb"\r\n?", b"\n", after)).hexdigest()
+
+
+@requires_fork
+def test_archive_gaps_does_not_name_archived_change_with_graph(tmp_path, monkeypatch):
+    """`trace-snapshot`: «Каталог уезжает в архив» — `archive-gaps` на настоящем архиве не называет изменение со `graph/`
+    и ничего не прибавляет."""
+    proj, found, _ = archived_project(tmp_path, monkeypatch)
+    before = tree(found.parent)
+    done = gaps_cli(cwd=proj)
+    assert done.returncode == 0, done.stderr
+    assert found.name not in done.stdout and tree(found.parent) == before
+
+
+@requires_fork
+def test_manual_check_of_archived_journal_names_evidence_missing_and_keeps_bytes(tmp_path, monkeypatch):
+    """`trace-snapshot`: «Ручная проверка архивного журнала» — `journal.py check` без `--write`: улика «файла нет»,
+    `decisions.json` не изменён байт в байт."""
+    proj, found, before = archived_project(tmp_path, monkeypatch)
+    roots = tmp_path / "roots-proj.json"
+    roots.write_text(json.dumps({"": str(proj)}), encoding="utf-8")
+    done = subprocess.run([sys.executable, "-X", "utf8", str(ROOT / "tools" / "journal.py"), "check", str(found / "decisions.json"),
+                           "--roots", str(roots)], capture_output=True, text=True, encoding="utf-8")
+    assert done.returncode == 0, done.stderr
+    assert "файла нет" in done.stdout and EVIDENCE in done.stdout
+    assert (found / "decisions.json").read_bytes() == before

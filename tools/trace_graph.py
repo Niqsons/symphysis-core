@@ -286,10 +286,6 @@ class Refusal(Exception):
         self.lines = list(lines or [])
 
 
-def _not_implemented(name: str) -> Refusal:
-    return Refusal(f"подкоманда `{name}` ещё не реализована: это каркас, обработчик добавит следующая порция")
-
-
 # --- сборка графа: узлы (F-70, F-80, F-81, F-125, F-131) ------------------------
 # Узел — словарь: `id`, `kind` (`cap`, `req`, `scn`, `rec`, `task`, `sec`, `branch`), `name`, `at`; остальное по виду:
 #   cap: —; req: `section` (ADDED, MODIFIED, REMOVED), `capability`; scn: `capability`, `requirement` (id требования);
@@ -1341,7 +1337,9 @@ def _write(path: Path, text: str) -> None:
 def _freeze_base(root: Path, change: str, prior: dict) -> dict[str, dict[str, dict]]:
     """База снимка: запись по каждому требованию MODIFIED изменения, у которого есть запись в `prior` (прежняя база) или требование
     в живой мастер-спеке (F-123, F-134). Прежняя запись не обновляется: после `/opsx:sync` мастер уже несёт номера и сценарии
-    этого изменения. Требование, которое перестало быть MODIFIED, в базу не входит."""
+    этого изменения. Требование, которое перестало быть MODIFIED, в базу не входит. Прежней записи нет, а хеш текста MODIFIED равен
+    хешу текста в живом мастере — синхронизация уже прошла: запись не снимается, сборка видит требование без базы и называет
+    его в отчёте (F-123)."""
     base = root / "openspec" / "changes" / change
     master = _Master(root, prior)
     found: dict[str, dict[str, dict]] = {}
@@ -1351,7 +1349,9 @@ def _freeze_base(root: Path, change: str, prior: dict) -> dict[str, dict[str, di
         if not (base / rel).is_file():
             continue
         for req in parse_spec(_read_text(base, rel)).requirements:
-            entry = master.entry(folder.name, req.name)[0] if req.section == "MODIFIED" else None
+            entry, from_base = master.entry(folder.name, req.name) if req.section == "MODIFIED" else (None, False)
+            if entry and not from_base and entry["text"] == _hash(req.text):
+                continue  # F-123: мастер уже несёт текст изменения (`/opsx:sync` прошёл) — это не база, номера не отсекаются
             if entry:
                 found.setdefault(folder.name, {}).setdefault(req.name, entry)
     return found
@@ -1415,8 +1415,49 @@ def cmd_freeze(args: argparse.Namespace, root: Path) -> int:
     return 0
 
 
+# --- архив: изменения без снимка (F-62, F-102) ---------------------------------------------------------------------------
+
+_ARCHIVE_DATE = re.compile(r"^(\d{4}-\d{2}-\d{2})-")
+
+
+@dataclass
+class ArchiveGaps:
+    """Итог `archive_gaps`: `named` — изменения без снимка поимённо (новее первого снимка или без даты в имени), `older` — без
+    снимка и раньше первого, `first` — имя архива с самым ранним снимком или `None`, если снимка нет ни у одного."""
+    named: list[str] = field(default_factory=list)
+    older: list[str] = field(default_factory=list)
+    first: str | None = None
+
+
+def archive_gaps(archive: Path) -> ArchiveGaps:
+    """Читает каталог архива `archive` и ничего в нём не пишет. Снимок у изменения есть, если лежит `graph/req-graph.json`. Дата —
+    начало имени `ГГГГ-ММ-ДД-имя`; без снимка «старше первого» — дата строго раньше даты самого раннего архива со снимком (F-102);
+    снимка нет ни у одного — старше первого все с датой. Каталог без даты в имени к старым не относится: назван поимённо."""
+    if not archive.is_dir():
+        raise Refusal("каталога архива нет" if not archive.exists() else "архив не каталог: нужен каталог архива изменений")
+    folders = sorted(p for p in archive.iterdir() if p.is_dir())
+    dated = lambda folder: (_ARCHIVE_DATE.match(folder.name) or [None, None])[1]  # noqa: E731
+    has = {p.name: (p / "graph" / "req-graph.json").is_file() for p in folders}
+    firsts = sorted((dated(p), p.name) for p in folders if has[p.name] and dated(p))
+    result = ArchiveGaps(first=firsts[0][1] if firsts else None)
+    for folder in folders:
+        if has[folder.name]:
+            continue
+        date = dated(folder)
+        (result.older if date and (not firsts or date < firsts[0][0]) else result.named).append(folder.name)
+    return result
+
+
 def cmd_archive_gaps(args: argparse.Namespace, root: Path) -> int:
-    raise _not_implemented("archive-gaps")
+    result = archive_gaps(args.archive or root / "openspec" / "changes" / "archive")
+    for name in result.named:
+        print(f"Без снимка: {name}")
+    if result.older:
+        since = f"старше первого снимка ({result.first})" if result.first else "снимка нет ни у одного изменения, все старше первого"
+        print(f"Без снимка, {since}: {len(result.older)}.")
+    if not result.named and not result.older:
+        print("Все изменения архива со снимком.")
+    return 0
 
 
 HANDLERS = {"build": cmd_build, "report": cmd_report, "check": cmd_check, "freeze": cmd_freeze,
@@ -1461,10 +1502,16 @@ SUBCOMMAND_HELP = {
                "Коды: 0 — выполнено, сборка заново и обновление коммитов обе дают 0, сигналы кода не меняют (F-31); 1 — отказ: "
                "имя изменения не подходит, изменения нет, файл корней не прочитан, сборка не удалась (журнал негоден, файл "
                "не в UTF-8), запись не удалась, причина в stderr; 2 — вызов неверен."),
-    "archive-gaps": ("Ищет в каталоге архива изменения без снимка графа.",
-                     "Звать, когда нужно понять, какие архивные изменения заморожены без графа.",
-                     "Коды: 0 — перечень напечатан; 1 — отказ: каталога нет или подкоманда ещё не реализована; "
-                     "2 — вызов неверен."),
+    "archive-gaps": ("Читает каталог архива изменений и называет изменения без снимка `graph/req-graph.json`: поимённо строками "
+                     "«Без снимка: ИМЯ». Изменения старше первого снимка (раньше самого раннего архива со снимком; снимка нет "
+                     "ни у одного — все) идут одной строкой со счётом, поимённо только более новые (F-102). Каталоги архива "
+                     "названы `ГГГГ-ММ-ДД-имя`; без даты в имени каталог назван поимённо. Только читает: файлов в архиве не "
+                     "прибавляет, снимок не собирает, `symphysis check` её не зовёт (F-62).",
+                     "Звать, когда надо узнать, какие архивные изменения не заморожены с графом: например, после "
+                     "ручного `openspec archive` мимо скилла. КАТАЛОГ — путь от текущего каталога или абсолютный; по умолчанию "
+                     "`openspec/changes/archive` от корня проекта.",
+                     "Коды: 0 — перечень напечатан, любая находка кода не меняет (F-31); 1 — отказ: каталога нет или это не "
+                     "каталог; 2 — вызов неверен."),
 }
 
 
@@ -1489,7 +1536,8 @@ def build_parser() -> argparse.ArgumentParser:
         sp = sub.add_parser(name, formatter_class=argparse.RawDescriptionHelpFormatter, help=what,
                             description=f"{what}\n{when}\n{codes}")
         if name == "archive-gaps":
-            sp.add_argument("archive", metavar="КАТАЛОГ", type=Path, help="каталог архива изменений")
+            sp.add_argument("archive", metavar="КАТАЛОГ", type=Path, nargs="?", default=None,
+                           help="каталог архива изменений; по умолчанию openspec/changes/archive от корня проекта")
         else:
             sp.add_argument("change", metavar="ИЗМЕНЕНИЕ", help="имя изменения, как у `openspec validate <имя>`")
         if name == "freeze":

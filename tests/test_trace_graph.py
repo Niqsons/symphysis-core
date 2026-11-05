@@ -94,9 +94,9 @@ def test_leading_dash_name_is_refused_after_double_dash(tmp_path):
     assert done.returncode == 1 and "не подходит" in done.stderr, done.stderr
 
 
-def test_archive_gaps_takes_a_directory_and_refuses_for_now(tmp_path):
+def test_archive_gaps_takes_a_directory_and_exits_zero(tmp_path):
     done = run("archive-gaps", str(tmp_path))
-    assert done.returncode == 1 and "ещё не реализована" in done.stderr, done.stderr
+    assert done.returncode == 0 and "ещё не реализована" not in done.stderr, done.stderr
 
 
 def test_missing_arguments_is_a_usage_error():
