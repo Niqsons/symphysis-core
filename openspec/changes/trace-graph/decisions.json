@@ -1759,7 +1759,7 @@
       {
        "path": "tools/step_help.py",
        "quote": "from journal_render import CONTRACT",
-       "line": 25,
+       "line": 20,
        "verdict": "сверено",
        "found": true
       }
@@ -1850,7 +1850,7 @@
       {
        "path": "openspec/schemas/symphysis/schema.yaml",
        "quote": "у каждого есть сценарий `#### Scenario: <имя>` (ровно четыре `#`)",
-       "line": 76,
+       "line": 77,
        "verdict": "сверено",
        "found": true
       }
@@ -2183,7 +2183,7 @@
       {
        "path": "openspec/schemas/symphysis/schema.yaml",
        "quote": "Требование — `### Requirement: <имя>` с SHALL или MUST",
-       "line": 76,
+       "line": 77,
        "verdict": "сверено",
        "found": true
       },
@@ -2546,7 +2546,7 @@
       {
        "path": "openspec/schemas/symphysis/schema.yaml",
        "quote": "Работай по tasks.md по порядку и отмечай `- [x]` по мере выполнения",
-       "line": 159,
+       "line": 160,
        "verdict": "сверено",
        "found": true
       },
@@ -2702,7 +2702,7 @@
       {
        "path": "openspec/schemas/symphysis/schema.yaml",
        "quote": "requires: [tasks, security, attack-artifacts]",
-       "line": 156,
+       "line": 157,
        "verdict": "сверено",
        "found": true
       }
@@ -2880,7 +2880,7 @@
       {
        "path": "openspec/schemas/symphysis/schema.yaml",
        "quote": "Работай по tasks.md по порядку и отмечай `- [x]` по мере выполнения",
-       "line": 159,
+       "line": 160,
        "verdict": "сверено",
        "found": true
       }
@@ -3499,11 +3499,13 @@
    "parking": [
     {
      "addressee": "ИБ",
-     "text": "Скрипт запускает `openspec` из PATH; путь `--out` приходит снаружи; текст из файлов изменения попадает в текст mermaid и в отчёт, который читает модель. Канон, покрывается чек-листом `security.md`, запрет не чеканится."
+     "text": "Скрипт запускает `openspec` из PATH; путь `--out` приходит снаружи; текст из файлов изменения попадает в текст mermaid и в отчёт, который читает модель. Канон, покрывается чек-листом `security.md`, запрет не чеканится.",
+     "finding": "Разобрано в `security.md`: пункты «Инъекции через содержимое файлов: текст в диаграмме», «Инъекции через содержимое файлов: текст, который читает модель», «Инъекции в вызов форка через имя изменения», «`openspec` из `PATH`», «Пути с `../`». Номер F-59 из текстов трёх требований снят по слову владельца 2026-11-06: опора этих фраз — пункты `security.md`, а они сами называют требования."
     },
     {
      "addressee": "ИБ",
-     "text": "Заморозка запускает `git` в каталогах из файла корней, путь приходит из этого файла. Канон, покрывается чек-листом `security.md`, запрет не чеканится."
+     "text": "Заморозка запускает `git` в каталогах из файла корней, путь приходит из этого файла. Канон, покрывается чек-листом `security.md`, запрет не чеканится.",
+     "finding": "Разобрано в `security.md`: пункт «`git` в каталогах из файла корней»."
     }
    ],
    "dispute": "",
@@ -4914,7 +4916,7 @@
       {
        "path": "openspec/schemas/symphysis/schema.yaml",
        "quote": "Требование — `### Requirement: <имя>` с SHALL или MUST",
-       "line": 76,
+       "line": 77,
        "verdict": "сверено",
        "found": true
       },
@@ -5018,7 +5020,7 @@
       {
        "path": "openspec/schemas/symphysis/schema.yaml",
        "quote": "Дельты — секции `## ADDED|MODIFIED|REMOVED Requirements`; MODIFIED несёт требование целиком.",
-       "line": 77,
+       "line": 78,
        "verdict": "сверено",
        "found": true
       }
@@ -5095,14 +5097,14 @@
       {
        "path": "openspec/schemas/symphysis/schema.yaml",
        "quote": "Работай по tasks.md по порядку и отмечай `- [x]` по мере выполнения",
-       "line": 159,
+       "line": 160,
        "verdict": "сверено",
        "found": true
       },
       {
        "path": "openspec/schemas/symphysis/steps.md",
        "quote": "Следа в файлах изменения синхронизация не оставляет",
-       "line": 392,
+       "line": 395,
        "verdict": "сверено",
        "found": true
       }
@@ -5132,7 +5134,7 @@
       {
        "path": "openspec/schemas/symphysis/steps.md",
        "quote": "`/opsx:sync <имя>`",
-       "line": 404,
+       "line": 407,
        "verdict": "сверено",
        "found": true
       }
@@ -6355,7 +6357,7 @@
     {
      "path": "openspec/changes/trace-graph/specs/trace-signals/spec.md",
      "quote": "### Requirement: Отчёт называет закрытый состав сигналов",
-     "line": 54,
+     "line": 59,
      "verdict": "сверено",
      "found": true
     }
@@ -6427,7 +6429,7 @@
     {
      "path": "openspec/changes/trace-graph/specs/trace-signals/spec.md",
      "quote": "### Requirement: Шумные виды в отчёт не идут",
-     "line": 75,
+     "line": 80,
      "verdict": "сверено",
      "found": true
     }
@@ -6498,7 +6500,7 @@
     {
      "path": "openspec/changes/trace-graph/specs/trace-signals/spec.md",
      "quote": "### Requirement: Сигнал о решении следует его исходу",
-     "line": 106,
+     "line": 111,
      "verdict": "сверено",
      "found": true
     }
@@ -6571,7 +6573,7 @@
     {
      "path": "openspec/changes/trace-graph/specs/trace-signals/spec.md",
      "quote": "### Requirement: Сигнал о решении следует его исходу",
-     "line": 106,
+     "line": 111,
      "verdict": "сверено",
      "found": true
     }
@@ -6642,7 +6644,7 @@
     {
      "path": "openspec/changes/trace-graph/specs/trace-signals/spec.md",
      "quote": "### Requirement: Ответ на сигнал записывается в журнал",
-     "line": 161,
+     "line": 166,
      "verdict": "сверено",
      "found": true
     }
@@ -6714,7 +6716,7 @@
     {
      "path": "openspec/changes/trace-graph/specs/trace-signals/spec.md",
      "quote": "### Requirement: Ответ на сигнал записывается в журнал",
-     "line": 161,
+     "line": 166,
      "verdict": "сверено",
      "found": true
     }
@@ -6857,7 +6859,7 @@
     {
      "path": "openspec/changes/trace-graph/specs/trace-snapshot/spec.md",
      "quote": "### Requirement: Снимок называет только коммиты заморозки",
-     "line": 110,
+     "line": 115,
      "verdict": "сверено",
      "found": true
     }
@@ -6928,7 +6930,7 @@
     {
      "path": "openspec/changes/trace-graph/specs/trace-snapshot/spec.md",
      "quote": "### Requirement: После архивации снимок не собирается",
-     "line": 126,
+     "line": 131,
      "verdict": "сверено",
      "found": true
     }
@@ -7643,7 +7645,7 @@
     {
      "path": "openspec/changes/trace-graph/specs/trace-signals/spec.md",
      "quote": "### Requirement: Сигналы не останавливают работу",
-     "line": 34,
+     "line": 39,
      "verdict": "сверено",
      "found": true
     }
@@ -7715,7 +7717,7 @@
     {
      "path": "openspec/changes/trace-graph/specs/trace-signals/spec.md",
      "quote": "### Requirement: Отчёт показывается перед реализацией и в её конце",
-     "line": 136,
+     "line": 141,
      "verdict": "сверено",
      "found": true
     }
@@ -7786,7 +7788,7 @@
     {
      "path": "openspec/changes/trace-graph/specs/trace-signals/spec.md",
      "quote": "### Requirement: Ответ на сигнал записывается в журнал",
-     "line": 161,
+     "line": 166,
      "verdict": "сверено",
      "found": true
     }
@@ -8441,7 +8443,7 @@
       {
        "path": "openspec/changes/trace-graph/specs/trace-snapshot/spec.md",
        "quote": "поэтому отчёт сверяет MODIFIED с ещё не изменённой мастер-спекой",
-       "line": 30,
+       "line": 35,
        "verdict": "сверено",
        "found": true
       },
@@ -8463,7 +8465,7 @@
       {
        "path": "openspec/changes/trace-graph/specs/trace-signals/spec.md",
        "quote": "сценарий MODIFIED с прежним именем и другим текстом (F-95)",
-       "line": 55,
+       "line": 60,
        "verdict": "сверено",
        "found": true
       }
@@ -8478,7 +8480,7 @@
       {
        "path": "openspec/changes/trace-graph/specs/trace-snapshot/spec.md",
        "quote": "После архивации снимок SHALL NOT собираться.",
-       "line": 127,
+       "line": 132,
        "verdict": "сверено",
        "found": true
       }
@@ -8529,7 +8531,7 @@
     {
      "path": "openspec/changes/trace-graph/specs/trace-snapshot/spec.md",
      "quote": "- **GIVEN** `graph/`, а затем в журнал добавлена запись `[сигнал]`",
-     "line": 82,
+     "line": 87,
      "verdict": "сверено",
      "found": true
     }
@@ -9262,7 +9264,7 @@
       {
        "path": "openspec/changes/trace-graph/specs/trace-signals/spec.md",
        "quote": "### Requirement: Отчёт показывается перед реализацией и в её конце",
-       "line": 136,
+       "line": 141,
        "verdict": "сверено",
        "found": true
       }
@@ -9284,7 +9286,7 @@
       {
        "path": "openspec/changes/trace-graph/specs/trace-snapshot/spec.md",
        "quote": "### Requirement: Заморозка идёт перед первой задачей и в конце реализации",
-       "line": 29,
+       "line": 34,
        "verdict": "сверено",
        "found": true
       }
@@ -9553,9 +9555,9 @@
       {
        "path": "tools/step_help.py",
        "quote": "def run_fork(root: Path | str, *args: str, change: str | None = None) -> ForkReply:",
-       "line": 143,
-       "verdict": "сверено",
-       "found": true
+       "line": null,
+       "verdict": "цитаты нет дословно",
+       "found": false
       }
      ]
     },
@@ -9625,7 +9627,7 @@
       {
        "path": "tools/journal_cli.py",
        "quote": "p = _command(sub, \"check\", \"сверить улики грепом по цитате (сигнал, не стоп); при consequences.md — и опись; \"",
-       "line": 381,
+       "line": 395,
        "verdict": "сверено",
        "found": true
       }
@@ -9666,6 +9668,675 @@
    "dispute": "",
    "consequences": "Имя снимка по слову владельца `req-graph.json`, в тексте варианта A оно старое. Подкоманда `freeze` одна на три случая, поэтому подсказка и инструкция называют только её.",
    "evidence": [],
+   "comments": []
+  },
+  {
+   "id": "F-140",
+   "question": "[связи] Как скрипт графа находит номер записи `F-NN` в тексте требования и задачи? Решено контроллером при реализации, нужно слово владельца.",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-44"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "По границе слова слева: `F-NN` после буквы, цифры или дефиса номером не считается, суффикс варианта отбрасывается, `F-07.A` ведёт к `rec:F-07`. Так сделано",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "tools/trace_graph.py",
+       "quote": "_REC_REF = re.compile(r\"(?<![\\w-])F-(\\d+)(?!\\d)\")",
+       "line": 307,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Только номер в круглых скобках `(F-NN)`, как велит F-44 для требования. Цена: номер в задаче вне скобок связи не даёт",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Любое вхождение `F-\\d+`. Цена: `UTF-8` даёт номер `F-8`, а `tasks.md` этого изменения такую строку несёт",
+     "added": false,
+     "unlikely": "ложные номера на обычных словах",
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Граница слова отсекает ложный `F-8` из `UTF-8`, а номера вне скобок в задачах остаются связями, которых B лишил бы задачи."
+   },
+   "decision": null,
+   "reversibility": {
+    "level": "обратимо",
+    "why": "одна регулярка в `tools/trace_graph.py`, формат графа от неё не зависит"
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [],
+   "comments": []
+  },
+  {
+   "id": "F-141",
+   "question": "[связи] Какое имя берётся, когда после «ёлочки» подходят несколько известных имён сценария или требования? F-92 велит сверять с известными именами, а не до первой `»`; выбор между ними решён контроллером.",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-92"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Самое длинное известное имя, которое стоит в строке целиком вместе с закрывающей `»`. Так сделано",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "tools/trace_graph.py",
+       "quote": "берётся самое длинное, которое стоит в строке целиком вместе с закрывающей `»`",
+       "line": 594,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Первое по порядку известное имя. Цена: «Режим «атака»» перехватит ссылку на «Режим «атака» группирует строки»",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Несколько подходящих имён — сигнал «неоднозначное имя», связи нет. Цена: имя-префикс другого имени всегда даёт сигнал",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Длинное имя, совпавшее целиком с закрывающей `»`, однозначно; B подменяет связь короче, C шумит на каждом имени-префиксе."
+   },
+   "decision": null,
+   "reversibility": {
+    "level": "обратимо",
+    "why": "функция `_take_name` в `tools/trace_graph.py`"
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [],
+   "comments": []
+  },
+  {
+   "id": "F-142",
+   "question": "[связи] Какие виды и направления у связей ветки описи со сценарием и пункта security с требованием? Таблица разбора задаёт вид ветки, но не направление, и не задаёт вид у security. Решено контроллером.",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-56",
+    "F-135"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Ветка → сценарий `verifies`, от того, кто называет, как задача → сценарий `satisfies`; пункт security → требование `refines`, как на диаграмме (F-135). Так сделано",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "docs/analysis/requirements-traceability-graph-of-symphysis.md",
+       "quote": "| Ветка отказа называет сценарий | verifies |",
+       "line": 132,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Сценарий → ветка `verifies`: сценарий проверяет исход ветки, как сценарий проверяет требование. Цена: направление расходится с местом `at`, которое стоит в `consequences.md`",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Требование → пункт security `satisfies`: требование закрывает пункт. Цена: на диаграмме связь идёт `refines` (F-135), граф и рисунок расходятся",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Направление от называющего одно для всех связей из строк артефактов, а вид у security совпадает с диаграммой F-135; B и C вводят по исключению."
+   },
+   "decision": null,
+   "reversibility": {
+    "level": "обратимо",
+    "why": "строки `put_edge` в `tools/trace_graph.py`, архивных снимков ещё нет"
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [],
+   "comments": []
+  },
+  {
+   "id": "F-143",
+   "question": "[связи] Что делать с именем, которое нашлось только в мастер-спеке: родитель `derives`, сценарий ветки описи, требование в пункте security? Решено контроллером.",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-77",
+    "F-64"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Ни связи, ни сигнала: узла в графе изменения нет, а ссылка законна. Нигде не найденное имя даёт «неизвестное имя». Так сделано",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "tools/trace_graph.py",
+       "quote": "elif name not in in_master:",
+       "line": 724,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Сигнал отдельного вида «имя только в мастер-спеке». Цена: новый вид сверх состава F-64, на ссылках в мастер всегда шум",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Узел мастер-требования или мастер-сценария в граф изменения и связь к нему. Цена: граф перестаёт быть графом изменения, это уровень корня (F-38)",
+     "added": false,
+     "unlikely": "уровень корня вне первой поставки",
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Ссылка в мастер законна (опись `consequences.md` ссылается на сценарий мастер-спеки `project-settings`), сигнал о ней был бы шумом, а C выходит за уровень изменения (F-38)."
+   },
+   "decision": null,
+   "reversibility": {
+    "level": "обратимо",
+    "why": "одно правило в разрешении связей `tools/trace_graph.py`"
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [],
+   "comments": []
+  },
+  {
+   "id": "F-144",
+   "question": "[связи] Даёт ли «ближайший сценарий» в строке описи связь ветки со сценарием? Решено контроллером.",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-56"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Нет: связь даёт только подстрока `сценарий: <имя>`, «ближайший сценарий» в любом регистре связи не даёт. Так сделано",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "tools/trace_graph.py",
+       "quote": "_BRANCH_SCENARIO = re.compile(r\"(?i:(?<!ближайший ))сценарий:\\s*\")",
+       "line": 312,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Да, тем же видом `verifies`. Цена: ветка, которую сценарий не покрывает, выглядит покрытой",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Да, но другим видом, `traces`, отдельно от покрытия. Цена: новый вид связи и ветвление в отчёте ради подсказки",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "По скиллу `symphysis-consequences` ближайший сценарий ветку не покрывает; связь `verifies` выдала бы непокрытую ветку за покрытую."
+   },
+   "decision": null,
+   "reversibility": {
+    "level": "обратимо",
+    "why": "регулярка `_BRANCH_SCENARIO` в `tools/trace_graph.py`"
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "skills/symphysis-consequences/SKILL.md",
+     "quote": "Близкий сценарий, засчитанный за покрытие, закрывает ветку молча",
+     "line": 250,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-145",
+   "question": "[связи] В какой форме пункт `security.md` называет требование? Задачи пишут `` `capability`: «имя» `` (F-42), а `security.md` этого изменения пишет без двоеточия. Решено контроллером.",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-42",
+    "F-131"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Обе формы, `` `capability` «имя» `` и `` `capability`: «имя» ``, в любой колонке строки, несколько в строке. Так сделано",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "tools/trace_graph.py",
+       "quote": "_SEC_REQ = re.compile(r\"`([^`]+)`:?\\s*«\")",
+       "line": 310,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Только с двоеточием, как у задач; `security.md` изменения и шаблон правятся. Цена: правка шаблона `security.md` и пунктов этого изменения",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Только без двоеточия. Цена: две формы ссылки в артефактах, у задач одна, у security другая",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Обе формы однозначны, а принять обе дешевле, чем править шаблон и пункты; B стоит отдельной строки в инструкции шага `security`."
+   },
+   "decision": null,
+   "reversibility": {
+    "level": "обратимо",
+    "why": "регулярка `_SEC_REQ` в `tools/trace_graph.py`"
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [],
+   "comments": []
+  },
+  {
+   "id": "F-146",
+   "question": "[связи] Считать ли ссылкой форму `` `capability`: «имя» ``, стоящую внутри двойных обратных кавычек? Так `tasks.md` описывает саму форму (задачи 2.4 и 6.2). Решено контроллером.",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-42",
+    "F-64"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Нет: текст в двойных обратных кавычках — образец формы, он не даёт ни связи, ни неразрешённой ссылки. Так сделано",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "tools/trace_graph.py",
+       "quote": "_SAMPLE_FORM = re.compile(r\"``.+?``\")",
+       "line": 314,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Да: неразрешённый образец даёт сигнал «неизвестное имя», человек снимает его записью `[сигнал]`. Цена: сигнал на каждом описании формы",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Образец пишется без обратных кавычек у capability, правило в инструкции `tasks`. Цена: правило держится на памяти модели",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Настоящая ссылка в двойных обратных кавычках не пишется, поэтому правило не теряет связей, а B и C платят шумом или памятью модели."
+   },
+   "decision": null,
+   "reversibility": {
+    "level": "обратимо",
+    "why": "регулярка `_SAMPLE_FORM` в `tools/trace_graph.py`"
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [],
+   "comments": []
+  },
+  {
+   "id": "F-147",
+   "question": "[связи] Распространяется ли F-84 на комментарии следа проб и `<!-- F-NN -->` под сценарием, перенесённые из мастера в MODIFIED? Без этого след из чужого журнала давал ложный «след отстал»: на этом изменении F-33, на эталоне `step-help` четыре строки. Решено контроллером.",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-84",
+    "F-45"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Да: комментарий, стоящий дословно в том же требовании мастера, и номера сценария, перенесённого без изменения, не сверяются. Так сделано",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "tools/trace_graph.py",
+       "quote": "def _trace_comments(lines: list[str]) -> list[tuple[int, str, list[tuple[int, str]]]]:",
+       "line": 1016,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Нет: все следы сверяются с журналом изменения. Цена: ложный «след отстал» на каждом MODIFIED со следом из мастера",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Следы и номера в MODIFIED не сверяются вовсе. Цена: новый след, поставленный пробой этого изменения в MODIFIED, тоже молчит",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Номер из мастера принадлежит журналу другого изменения, как у F-84; A отсекает только его, а C терял бы и свои следы."
+   },
+   "decision": null,
+   "reversibility": {
+    "level": "обратимо",
+    "why": "сверка следов в `signal_context`, `tools/trace_graph.py`"
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/trace-graph/specs/artifact-attack/spec.md",
+     "quote": "<!-- проба краёв: форма=collection, исходы: F-33 открыт -->",
+     "line": 64,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-148",
+   "question": "[связи] Что делает сборка с повторным id узла и со ссылкой, которая не разрешилась? Решено контроллером после ревью: молча отбрасывать нельзя.",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-64",
+    "F-70"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "В графе остаётся первый узел, дубль идёт сигналом «неоднозначное имя» с обоими местами; неразрешённая ссылка связи не даёт и идёт сигналом «неизвестное имя или номер». Так сделано",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "tools/trace_graph.py",
+       "quote": "в графе остался первый",
+       "line": 932,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Оба узла в графе, id второго с суффиксом. Цена: id перестаёт быть читаемым ключом (F-70), а связи к нему неоднозначны",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Сборка отказывает на дубле. Цена: одна опечатка в спеке оставляет без графа и отчёта",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Граф остаётся годным, а расхождение видно в отчёте; C роняет отчёт, B ломает читаемые id."
+   },
+   "decision": null,
+   "reversibility": {
+    "level": "обратимо",
+    "why": "разрешение связей и `graph_signals` в `tools/trace_graph.py`"
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [],
+   "comments": []
+  },
+  {
+   "id": "F-149",
+   "question": "[связи] Даёт ли узел строка описи `consequences.md` без формы `путь:строка` «цитата» (состав «только допущения»)? Id ветки по F-131 — `branch:<путь>:<строка>`. Решено контроллером.",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-131"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Нет: узел `branch:` даёт только строка с `путь:строка`. Цена: допущения без цитаты в граф не попадают. Так сделано",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "tools/trace_graph.py",
+       "quote": "_BRANCH_LINE = re.compile(",
+       "line": 313,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Узел `branch:<путь>`. Цена: два допущения одного файла склеиваются в один узел",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Узел `branch:<путь>:<номер строки описи>`. Цена: id зависит от места в описи, а не в коде, и меняется при вставке строки",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Форма F-131 требует строку кода, а B склеивает разные допущения; состав «только допущения» редкий, и его можно добавить позже."
+   },
+   "decision": null,
+   "reversibility": {
+    "level": "обратимо",
+    "why": "регулярка `_BRANCH_LINE` в `tools/trace_graph.py`"
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [],
+   "comments": []
+  },
+  {
+   "id": "F-150",
+   "question": "[связи] Дочерние требования ADDED, вынесенные из длинного родителя, унесли номера журналов других изменений: `artifact-attack` (F-07.A, F-32.E, F-33.E, F-12.A, F-09.A, F-08.A, F-23.A, F-34.E) и `decision-viewer` (F-18.A, F-47.E, F-48.E, F-63.B). F-84 отсекает чужие номера только у MODIFIED, поэтому граф даёт ложные связи `traces` к одноимённым записям этого журнала. Найдено атакой артефактов.",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-84",
+    "F-77",
+    "F-91"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Правило графа: номер в тексте дочернего требования, который стоит в мастер-тексте его родителя (родитель назван фразой `Часть требования «…»`), связи не даёт — F-84 через `derives`. Дочернее без своих номеров получит «требование без записи», и ему нужен номер решения о делении; на этом изменении это 4 требования. Цена: правило и тест в `tools/trace_graph.py`",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Правка текстов: из дочерних требований убрать номера чужих журналов и поставить номера этого журнала (F-76, F-91). Цена: правка пяти требований сейчас, а каждое следующее деление (F-91) повторит ошибку, если не помнить",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Оставить: ложные связи видны только на диаграмме и линзе `trace-link`. Цена: граф и снимок несут связи, которых нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "F-91 велит делить старые длинные требования, и каждое деление унесёт номера мастера; правило ловит их без памяти модели, а сигнал «требование без записи» ведёт к верной правке."
+   },
+   "decision": null,
+   "reversibility": {
+    "level": "обратимо",
+    "why": "правило в разрешении связей `tools/trace_graph.py`, архивных снимков ещё нет"
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/trace-graph/specs/artifact-attack/spec.md",
+     "quote": "(F-07.A, F-32.E, F-33.E, F-55)",
+     "line": 72,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "openspec/changes/trace-graph/specs/decision-viewer/spec.md",
+     "quote": "не в файл атаки (F-63.B)",
+     "line": 65,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
    "comments": []
   }
  ],
