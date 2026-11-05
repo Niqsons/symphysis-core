@@ -16,7 +16,7 @@ from test_schema import make_project, run_openspec
 SCHEMA = ROOT / "openspec" / "schemas" / "symphysis" / "schema.yaml"
 SCRIPT = ROOT / "tools" / "trace_graph.py"
 CHANGE_COMMANDS = ["build", "report", "check", "freeze"]
-STUB_COMMANDS = ["report", "check", "freeze"]
+STUB_COMMANDS = ["report", "freeze"]
 
 
 def run(*args, cwd=None):
@@ -84,7 +84,7 @@ def test_empty_takes_list_is_named():
 def test_bad_change_name_is_refused_before_any_path(command, name, tmp_path):
     """`trace-graph`: «Имя изменения с символами оболочки» — отказ в stderr, код 1, без трассировки и без файлов."""
     (tmp_path / "openspec").mkdir()
-    done = run(command, name, cwd=tmp_path)
+    done = run(command, name, *(["g.json"] if command == "check" else []), cwd=tmp_path)
     assert done.returncode == 1, done.stdout
     assert "не подходит" in done.stderr and "Traceback" not in done.stderr, done.stderr
     assert sorted(p.name for p in tmp_path.iterdir()) == ["openspec"]
@@ -335,7 +335,7 @@ SPEC = """## ADDED Requirements
 def test_build_of_fresh_change_is_empty_graph_with_code_zero(tmp_path):
     """`trace-graph`: «Только что созданное изменение» — граф пуст, код 0."""
     root, _ = make_change(tmp_path)
-    assert graph_of(root) == {"format": 1, "nodes": [], "edges": [], "candidates": []}
+    assert graph_of(root) == {"format": 1, "sources": [], "nodes": [], "edges": [], "candidates": []}
 
 
 def test_build_missing_change_is_refused_with_name(tmp_path):
@@ -586,7 +586,7 @@ def test_duplicates_are_returned_to_caller_and_not_put_into_graph_json(tmp_path)
     root, _ = make_change(tmp_path, specs={"cap-a": DUP_REQ})
     graph, dups = trace_graph.build_graph_with_duplicates(root, CHANGE)
     assert dups == [{"id": "req:cap-a/Один", "at": ["specs/cap-a/spec.md:3", "specs/cap-a/spec.md:12"]}]
-    assert set(graph) == {"format", "nodes", "edges", "candidates"}
+    assert set(graph) == {"format", "sources", "nodes", "edges", "candidates"}
     assert [n for n in graph["nodes"] if n["id"] == "req:cap-a/Один"][0]["section"] == "ADDED"  # первый по файлу
 
 
@@ -734,7 +734,7 @@ def test_task_scenario_name_in_two_requirements_links_to_both(tmp_path):
 def test_unresolved_references_are_returned_with_what_where_why(tmp_path):
     root, _ = make_change(tmp_path, journal=["F-19", "F-06"], specs={"demo": TWO_SCN}, tasks=TASKS)
     graph, dups, unresolved = trace_graph.build_graph_with_signals(root, CHANGE)
-    assert dups == [] and set(graph) == {"format", "nodes", "edges", "candidates"}
+    assert dups == [] and set(graph) == {"format", "sources", "nodes", "edges", "candidates"}
     assert {(u["from"], u["ref"], u["at"]) for u in unresolved} == {
         ("task:1.2", "F-99", "tasks.md:4"),
         ("task:1.4", "`demo`: «Нет такого»", "tasks.md:6"),
@@ -995,3 +995,147 @@ def test_capitalized_nearest_scenario_gives_no_branch_link(tmp_path):
     root, _ = make_change(tmp_path, specs=two_cap_specs(), consequences=conseq)
     assert [e for e in edges_of(graph_of(root), "verifies") if e[0].startswith("branch:")] == []
     assert unresolved_of(root) == []
+
+
+# --- check: сохранённый файл графа (U08, F-41, F-86, F-87, F-118) ---------------
+
+def saved(root, name="g.json"):
+    """Граф `demo`, записанный `build --out` в `name` от корня проекта."""
+    assert run("build", CHANGE, "--out", name, cwd=root).returncode == 0
+    return root / name
+
+
+def check(root, name="g.json"):
+    return run("check", CHANGE, name, cwd=root)
+
+
+def checked_change(tmp_path):
+    root, base = make_change(tmp_path, journal=["F-19"], specs={"demo": two_reqs_on(19)}, tasks="- [ ] 1.1 a (F-19)\n",
+                             security=SEC_HEAD + "| Е | применимо | тест |\n")
+    return root, base, saved(root)
+
+
+def test_graph_sources_list_files_read_with_lf_hash_in_stable_order(tmp_path):
+    """`trace-graph`: «Файл свежий» — `sources`: путь от каталога изменения и sha256 после приведения концов строк к LF (F-87)."""
+    root, base, path = checked_change(tmp_path)
+    got = json.loads(path.read_text(encoding="utf-8"))["sources"]
+    assert [s["path"] for s in got] == ["decisions.json", "security.md", "specs/demo/spec.md", "tasks.md"]
+    for s in got:
+        text = (base / s["path"]).read_bytes().replace(b"\r\n", b"\n")
+        assert s["sha256"] == hashlib.sha256(text).hexdigest()
+    assert set(got[0]) == {"path", "sha256"}
+
+
+def test_check_fresh_file_gives_no_signals_and_code_zero(tmp_path):
+    """`trace-graph`: «Файл свежий» — сигналов нет, код 0."""
+    root, _, _ = checked_change(tmp_path)
+    done = check(root)
+    assert done.returncode == 0 and "[!!]" not in done.stdout and "сигналов нет" in done.stdout, done.stdout
+
+
+def test_check_changed_source_names_the_file_with_code_zero(tmp_path):
+    """`trace-graph`: «Исходник изменён» — сигнал «устарел» называет `tasks.md`, код 0."""
+    root, base, _ = checked_change(tmp_path)
+    (base / "tasks.md").write_text("- [ ] 1.1 b (F-19)\n", encoding="utf-8", newline="\n")
+    done = check(root)
+    lines = [l for l in done.stdout.splitlines() if l.startswith("[!!]")]
+    assert done.returncode == 0 and len(lines) == 1 and "устарел" in lines[0] and "tasks.md" in lines[0], done.stdout
+
+
+@pytest.mark.parametrize("mutate, expect", [
+    (lambda d: d.pop("format"), "format"),
+    (lambda d: d.pop("edges"), "edges"),
+    (lambda d: d.pop("sources"), "sources"),
+    (lambda d: d.update(nodes={}), "nodes"),
+])
+def test_check_wrong_shape_names_file_and_what_is_missing(tmp_path, mutate, expect):
+    """`trace-graph`: «Форма не та» — сигнал называет файл и что в нём не так, код 0."""
+    root, _, path = checked_change(tmp_path)
+    data = json.loads(path.read_text(encoding="utf-8"))
+    mutate(data)
+    path.write_text(json.dumps(data), encoding="utf-8")
+    done = check(root)
+    lines = [l for l in done.stdout.splitlines() if l.startswith("[!!]")]
+    assert done.returncode == 0 and len(lines) >= 1 and all("g.json" in l for l in lines), done.stdout
+    assert expect in done.stdout and "устарел" not in done.stdout
+
+
+def test_check_file_that_is_not_json_or_missing_is_a_shape_signal(tmp_path):
+    """`trace-graph`: «Форма не та» — не JSON и нет файла: сигнал с именем файла, код 0."""
+    root, _, path = checked_change(tmp_path)
+    path.write_text("{не json", encoding="utf-8")
+    done = check(root)
+    assert done.returncode == 0 and "[!!]" in done.stdout and "g.json" in done.stdout and "Traceback" not in done.stderr
+    done = check(root, "нет.json")
+    assert done.returncode == 0 and "[!!]" in done.stdout and "нет.json" in done.stdout
+
+
+def test_check_new_and_removed_source_are_named(tmp_path):
+    """`trace-graph`: «Появился новый исходник» — «устарел» называет новый файл; удалённый исходник называется так же (F-86)."""
+    root, base, _ = checked_change(tmp_path)
+    (base / "specs" / "new").mkdir()
+    (base / "specs" / "new" / "spec.md").write_text(two_reqs_on(19), encoding="utf-8", newline="\n")
+    (base / "security.md").unlink()
+    done = check(root)
+    lines = [l for l in done.stdout.splitlines() if l.startswith("[!!]")]
+    assert done.returncode == 0 and all("устарел" in l for l in lines), done.stdout
+    assert any("specs/new/spec.md" in l for l in lines) and any("security.md" in l for l in lines)
+
+
+def test_check_only_line_endings_changed_gives_no_signal(tmp_path):
+    """`trace-graph`: «Изменились только концы строк» — сигнала «устарел» нет (F-87)."""
+    root, base, _ = checked_change(tmp_path)
+    for rel in ("tasks.md", "specs/demo/spec.md"):
+        raw = (base / rel).read_bytes()
+        (base / rel).write_bytes(raw.replace(b"\n", b"\r\n"))
+    done = check(root)
+    assert done.returncode == 0 and "[!!]" not in done.stdout and "сигналов нет" in done.stdout, done.stdout
+
+
+def test_check_edited_node_in_fresh_file_names_file_and_difference(tmp_path):
+    """`trace-graph`: «Узел поправлен в файле» — файл свежий по хешам, узел поправлен: сигнал называет файл и расхождение (F-118)."""
+    root, _, path = checked_change(tmp_path)
+    data = json.loads(path.read_text(encoding="utf-8"))
+    victim = data["nodes"][0]["id"]
+    data["nodes"][0]["name"] = "Подделка"
+    extra = {"id": "req:demo/Лишнее", "kind": "req", "name": "Лишнее", "at": "specs/demo/spec.md:1"}
+    data["nodes"].append(extra)
+    gone = data["edges"].pop()
+    path.write_text(json.dumps(data, ensure_ascii=False, indent=1) + "\n", encoding="utf-8")
+    done = check(root)
+    lines = [l for l in done.stdout.splitlines() if l.startswith("[!!]")]
+    assert done.returncode == 0 and lines and all("g.json" in l for l in lines), done.stdout
+    assert "устарел" not in done.stdout
+    assert victim in done.stdout and "req:demo/Лишнее" in done.stdout and gone["from"] in done.stdout
+
+
+def test_check_edited_candidates_are_a_signal(tmp_path):
+    """`trace-graph`: «Узел поправлен в файле» — расхождение в `candidates` тоже замечено."""
+    root, _, path = checked_change(tmp_path)
+    data = json.loads(path.read_text(encoding="utf-8"))
+    data["candidates"] = []
+    path.write_text(json.dumps(data), encoding="utf-8")
+    assert "candidates" in check(root).stdout
+
+
+def test_check_graph_signals_function_returns_list_and_prints_nothing(tmp_path, capsys):
+    """Функция для заморозки: сигналы списком, ничего не печатает."""
+    root, base, path = checked_change(tmp_path)
+    assert trace_graph.check_graph_file(root, CHANGE, path) == []
+    (base / "tasks.md").write_text("- [ ] 9.9 z\n", encoding="utf-8", newline="\n")
+    signals = trace_graph.check_graph_file(root, CHANGE, path)
+    assert len(signals) == 1 and "tasks.md" in signals[0] and capsys.readouterr().out == ""
+
+
+def test_check_missing_change_and_bad_name_are_refusals(tmp_path):
+    """`trace-graph`: «Имя изменения с символами оболочки» и нет изменения — код 1, без трассировки."""
+    (tmp_path / "openspec").mkdir()
+    done = run("check", CHANGE, "g.json", cwd=tmp_path)
+    assert done.returncode == 1 and "Traceback" not in done.stderr and CHANGE in done.stderr
+    done = run("check", "a/b", "g.json", cwd=tmp_path)
+    assert done.returncode == 1 and "не подходит" in done.stderr
+
+
+def test_check_help_names_arguments_and_codes():
+    text = run("check", "--help").stdout
+    assert "ФАЙЛ" in text and "ещё не реализована" not in text and "Коды:" in text

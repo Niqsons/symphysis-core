@@ -7,6 +7,7 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import re
 import sys
@@ -290,7 +291,8 @@ def _not_implemented(name: str) -> Refusal:
 # Узел — словарь: `id`, `kind` (`cap`, `req`, `scn`, `rec`, `task`, `sec`, `branch`), `name`, `at`; остальное по виду:
 #   cap: —; req: `section` (ADDED, MODIFIED, REMOVED), `capability`; scn: `capability`, `requirement` (id требования);
 #   rec: `record_kind` (вид записи журнала), `number` (число из `F-NN`); task: `done`; sec, branch: —.
-# `at` — `путь:строка` от каталога изменения, путь с `/`, строки с 1. Файл графа: `format: 1`, `nodes`, `edges`, `candidates`.
+# `at` — `путь:строка` от каталога изменения, путь с `/`, строки с 1. Файл графа: `format: 1`, `sources`, `nodes`, `edges`,
+# `candidates`; `sources` — `[{"path", "sha256"}]`, хеш после приведения концов строк к LF (F-87, F-139).
 # Узлы идут по `(путь из at, строка, id)`: порядок от файловой системы и от порядка чтения не зависит, две сборки одинаковы
 # байт в байт (F-81). Узел с уже виденным id в граф не входит: id — ключ графа, остаётся первый по порядку чтения, а дубль
 # уходит в список `build_graph_with_duplicates` и сигналом в stderr у `build`.
@@ -694,7 +696,7 @@ def record_candidates(edges: list[dict]) -> list[dict]:
 
 def build_graph_with_signals(root: Path, change: str) -> tuple[dict, list[dict], list[dict]]:
     """Граф изменения `change` проекта `root`, список дублей id и список неразрешённых ссылок. Граф: `format`, `nodes`, `edges`,
-    `candidates`; читает только артефакты, из которых `REGISTRY` что-то берёт (F-53). Читатель отдаёт узлы и заявки на связи за
+    `sources` (исходники сборки с хешами, `source_hashes`), `candidates`; читает только артефакты, из которых `REGISTRY` что-то берёт (F-53). Читатель отдаёт узлы и заявки на связи за
     один проход по файлу; связи разрешаются, когда собраны узлы всех артефактов (`_resolve_claims`). Пункт security —
     `refines` к требованию, ветка описи — `verifies` к сценарию, дочернее требование — `derives` к родителю (U06); `candidates` —
     пары требований с общими записями журнала (`record_candidates`), отдельно от `edges`.
@@ -721,8 +723,119 @@ def build_graph_with_signals(root: Path, change: str) -> tuple[dict, list[dict],
     nodes.sort(key=lambda n: (n["at"].rsplit(":", 1)[0], int(n["at"].rsplit(":", 1)[1]), n["id"]))
     duplicates = [{"id": node_id, "at": at} for node_id, at in places.items() if len(at) > 1]
     edges, unresolved = _resolve_claims(root, nodes, places, claims)
-    return {"format": GRAPH_FORMAT, "nodes": nodes, "edges": edges,
+    return {"format": GRAPH_FORMAT, "sources": source_hashes(base), "nodes": nodes, "edges": edges,
             "candidates": record_candidates(edges)}, duplicates, unresolved
+
+
+# --- состав исходников и проверка сохранённого файла (F-41, F-86, F-87, F-118) ---------------------------------------
+# Исходник — файл изменения, который читает сборка: у артефакта реестра со значением «берёт» не `ничего` (`specs/*/spec.md`
+# у `specs`, один файл у остальных). Мастер-спеки в `sources` не входят: их смену учитывает база мастера (F-123).
+
+SOURCE_FILES = {"decisions": "decisions.json", "consequences": "consequences.md", "security": "security.md",
+                "tasks": "tasks.md"}
+GRAPH_FIELDS = {"format": int, "sources": list, "nodes": list, "edges": list, "candidates": list}
+
+
+def _lf_hash(path: Path) -> str:
+    """sha256 содержимого после приведения CRLF и одиночного CR к LF: `.gitattributes` держит `*.md` с `eol=crlf`, и
+    байтовый хеш расходился бы при том же содержимом (F-87)."""
+    return hashlib.sha256(re.sub(rb"\r\n?", b"\n", path.read_bytes())).hexdigest()
+
+
+def source_hashes(base: Path) -> list[dict]:
+    """Исходники сборки изменения `base`: `[{"path", "sha256"}]` по пути от каталога изменения, с `/`, в порядке пути."""
+    rels = []
+    for artifact, row in REGISTRY.items():
+        if row.get("берёт") == NOTHING:
+            continue
+        if artifact == "specs":
+            folders = [p for p in (base / "specs").iterdir() if p.is_dir()] if (base / "specs").is_dir() else []
+            rels += [f"specs/{p.name}/spec.md" for p in folders]
+        elif artifact in SOURCE_FILES:
+            rels.append(SOURCE_FILES[artifact])
+    return [{"path": rel, "sha256": _lf_hash(base / rel)} for rel in sorted(set(rels)) if (base / rel).is_file()]
+
+
+def _shape_problems(data) -> list[str]:
+    if not isinstance(data, dict):
+        return ["верхний уровень не объект JSON"]
+    problems = [f"нет поля `{name}`" for name in GRAPH_FIELDS if name not in data]
+    problems += [f"поле `{name}` не того вида (ждали {kind.__name__})" for name, kind in GRAPH_FIELDS.items()
+                 if name in data and not isinstance(data[name], kind)]
+    if not problems and data["format"] != GRAPH_FORMAT:
+        problems.append(f"формат {data['format']}, а скрипт читает {GRAPH_FORMAT}")
+    if isinstance(data.get("sources"), list):
+        for item in data["sources"]:
+            if not (isinstance(item, dict) and isinstance(item.get("path"), str) and isinstance(item.get("sha256"), str)):
+                problems.append("в `sources` есть элемент без `path` и `sha256`")
+                break
+    return problems
+
+
+def _stale_problems(base: Path, saved: list[dict]) -> list[str]:
+    old = {item["path"]: item["sha256"] for item in saved}
+    now = {item["path"]: item["sha256"] for item in source_hashes(base)}
+    return ([f"{rel}: исходник изменён после сборки" for rel in sorted(old.keys() & now.keys()) if old[rel] != now[rel]]
+            + [f"{rel}: новый исходник, в графе его нет" for rel in sorted(now.keys() - old.keys())]
+            + [f"{rel}: исходник удалён" for rel in sorted(old.keys() - now.keys())])
+
+
+def _item_key(item) -> str:
+    return json.dumps(item, ensure_ascii=False, sort_keys=True)
+
+
+def _item_label(name: str, item) -> str:
+    if not isinstance(item, dict):
+        return _item_key(item)
+    return f"{item.get('from')} -{item.get('type')}-> {item.get('to')}" if name == "edges" else f"{item.get('a')} / {item.get('b')}"
+
+
+def _diff_problems(saved: dict, fresh: dict) -> list[str]:
+    """Расхождение узлов, связей и кандидатов файла со свежей сборкой (F-118): что лишнее, чего нет, что поправлено."""
+    problems = []
+    got = {n.get("id"): n for n in saved["nodes"] if isinstance(n, dict)}
+    want = {n["id"]: n for n in fresh["nodes"]}
+    problems += [f"в файле лишний узел {node_id}" for node_id in sorted(map(str, got.keys() - want.keys()))]
+    problems += [f"в файле нет узла {node_id}" for node_id in sorted(want.keys() - got.keys())]
+    problems += [f"узел {node_id} в файле поправлен" for node_id in sorted(got.keys() & want.keys())
+                 if got[node_id] != want[node_id]]
+    for name in ("edges", "candidates"):
+        have = {_item_key(e): e for e in saved[name]}
+        need = {_item_key(e): e for e in fresh[name]}
+        problems += [f"в `{name}` файла лишнее или поправленное: {_item_label(name, have[key])}"
+                     for key in sorted(have.keys() - need.keys())]
+        problems += [f"в `{name}` файла нет или не такое, как в сборке: {_item_label(name, need[key])}"
+                     for key in sorted(need.keys() - have.keys())]
+    return problems
+
+
+def check_graph_file(root: Path, change: str, path: Path | str) -> list[str]:
+    """Сигналы проверки сохранённого файла графа `path` изменения `change`: список строк `[!!] …`, пустой — сигналов нет.
+    Ничего не печатает и код выхода не трогает (F-31); её зовёт `cmd_check` и зовёт заморозка на `graph/req-graph.json`.
+    Нет изменения — `Refusal`. Порядок: форма; затем состав и хеши исходников (хеш после приведения к LF, F-87); только у
+    файла, свежего по хешам, узлы и связи сверяются со свежей сборкой (F-118): у устаревшего расхождение — следствие, а не
+    правка. База мастера для сравнения после `/opsx:sync` — отдельная порция (F-123)."""
+    base = root / "openspec" / "changes" / change
+    if not base.is_dir():
+        raise Refusal(f"изменения «{change}» нет: нет каталога openspec/changes/{change}")
+    path = Path(path)
+
+    def signals(kind: str, texts: list[str]) -> list[str]:
+        return [f"[!!] {path}: {kind}: {text}" for text in texts]
+
+    try:
+        data = json.loads(path.read_bytes().decode("utf-8-sig"))
+    except OSError as e:
+        return signals("форма не та", [f"файл не прочитан ({e.strerror or e})"])
+    except (UnicodeDecodeError, json.JSONDecodeError) as e:
+        return signals("форма не та", [f"файл не разбирается как JSON ({e})"])
+    problems = _shape_problems(data)
+    if problems:
+        return signals("форма не та", problems)
+    stale = _stale_problems(base, data["sources"])
+    if stale:
+        return signals("устарел", stale)
+    return signals("узел поправлен", _diff_problems(data, build_graph(root, change)))
 
 
 def cmd_build(args: argparse.Namespace, root: Path) -> int:
@@ -746,7 +859,9 @@ def cmd_report(args: argparse.Namespace, root: Path) -> int:
 
 
 def cmd_check(args: argparse.Namespace, root: Path) -> int:
-    raise _not_implemented("check")
+    signals = check_graph_file(root, args.change, args.file)
+    print("\n".join(signals) if signals else "сигналов нет")  # сигнал кода не меняет (F-31)
+    return 0
 
 
 def cmd_freeze(args: argparse.Namespace, root: Path) -> int:
@@ -774,10 +889,13 @@ SUBCOMMAND_HELP = {
                "Звать, когда нужен список разрывов человеку; отчёт отдаётся ссылкой, модель его не читает.",
                "Коды: 0 — отчёт напечатан, сигналы кода не меняют (F-31); 1 — отказ: имя изменения не подходит "
                "или подкоманда ещё не реализована; 2 — вызов неверен."),
-    "check": ("Проверяет граф изменения: собирается ли он и сходятся ли связи, и сообщает сигналами.",
-              "Звать, когда нужна проверка перед архивом или после правки артефактов.",
-              "Коды: 0 — проверка прошла, сигнал кода не меняет (F-31); 1 — отказ: имя изменения не подходит "
-              "или подкоманда ещё не реализована; 2 — вызов неверен."),
+    "check": ("Проверяет сохранённый файл графа ФАЙЛ против изменения: форму, состав исходников и их хеши (после "
+              "приведения концов строк к LF), а у свежего по хешам файла — узлы и связи против свежей сборки. Сигналы — "
+              "строки `[!!]` с именем файла; без них одна строка «сигналов нет».",
+              "Звать, когда граф записан в файл (`build --out`) и нужно знать, не устарел ли он и не правили ли его руками: "
+              "перед архивом, после правки артефактов. ФАЙЛ — путь от текущего каталога или абсолютный.",
+              "Коды: 0 — проверка прошла, сигналы кода не меняют (F-31), файл не той формы или отсутствующий — тоже сигнал; "
+              "1 — отказ: имя изменения не подходит или изменения нет; 2 — вызов неверен."),
     "freeze": ("Замораживает снимок графа в каталоге graph изменения: собирает, если снимка нет, он неполон или устарел, "
                "иначе обновляет коммиты (F-139).",
                "Звать, когда изменение готово к архиву; одну команду, без выбора между сборкой и обновлением.",
@@ -814,6 +932,8 @@ def build_parser() -> argparse.ArgumentParser:
             sp.add_argument("archive", metavar="КАТАЛОГ", type=Path, help="каталог архива изменений")
         else:
             sp.add_argument("change", metavar="ИЗМЕНЕНИЕ", help="имя изменения, как у `openspec validate <имя>`")
+        if name == "check":
+            sp.add_argument("file", metavar="ФАЙЛ", type=Path, help="сохранённый граф изменения (JSON от `build --out`)")
         if name == "build":
             sp.add_argument("--out", metavar="ПУТЬ", type=Path, default=None,
                             help="записать граф в этот файл вместо stdout; файлы изменения не меняются")
