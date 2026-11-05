@@ -518,6 +518,8 @@ def test_build_help_no_longer_says_not_implemented():
 
 def test_build_on_this_very_change_gives_nodes_of_every_kind():
     """Живой пример: изменение `trace-graph` из этого дерева."""
+    if not (ROOT / "openspec" / "changes" / "trace-graph").is_dir():
+        pytest.skip("изменение trace-graph заархивировано: каталога openspec/changes/trace-graph нет")
     graph = json.loads(run("build", "trace-graph", cwd=ROOT).stdout)
     assert {n["kind"] for n in graph["nodes"]} == {"cap", "req", "scn", "rec", "task", "sec", "branch"}
     assert len(set(ids(graph))) == len(graph["nodes"])
@@ -777,6 +779,120 @@ def test_duplicate_requirement_gives_links_of_first_only(tmp_path):
 
 
 def test_this_very_change_has_links_of_every_kind_of_this_portion():
-    """Живой пример: у изменения `trace-graph` есть связи четырёх видов этой порции."""
+    """Живой пример: у изменения `trace-graph` есть связи всех видов этой порции."""
+    if not (ROOT / "openspec" / "changes" / "trace-graph").is_dir():
+        pytest.skip("изменение trace-graph заархивировано: каталога openspec/changes/trace-graph нет")
     graph, _, unresolved = trace_graph.build_graph_with_signals(ROOT, "trace-graph")
-    assert {e["type"] for e in graph["edges"]} == {"contains", "verifies", "traces", "satisfies"}
+    assert {"contains", "verifies", "traces", "satisfies", "refines", "derives"} <= {e["type"] for e in graph["edges"]}
+
+
+# --- build: связи пункта security, ветки описи и derives (U06, F-56, F-77, F-92, F-131, F-135) -------
+
+def two_cap_specs():
+    one = ("## ADDED Requirements\n\n### Requirement: Одно\nТекст SHALL.\n\n#### Scenario: Сцена\n- **WHEN** a\n"
+           "\n### Requirement: Режим «атака» группирует строки\nТекст SHALL.\n\n#### Scenario: Сцена два\n- **WHEN** a\n")
+    return {"demo": one}
+
+
+SEC_HEAD = "| Пункт | Применимо | Чем проверено |\n| --- | --- | --- |\n"
+
+
+def unresolved_of(root):
+    return trace_graph.build_graph_with_signals(root, CHANGE)[2]
+
+
+def master_spec(base, cap, text):
+    folder = base.parents[1] / "specs" / cap
+    folder.mkdir(parents=True)
+    (folder / "spec.md").write_text(text, encoding="utf-8", newline="\n")
+
+
+def test_security_row_links_to_named_requirement(tmp_path):
+    """`trace-graph`: пункт security и требование — связь `refines` от пункта, место — строка таблицы (F-135)."""
+    security = SEC_HEAD + "| Пункт А | применимо — закрывает требование `demo` «Одно», сценарий «Сцена» | тест |\n"
+    root, _ = make_change(tmp_path, specs=two_cap_specs(), security=security)
+    assert edges_of(graph_of(root), "refines") == [("sec:Пункт А", "req:demo/Одно", "refines", "security.md:3")]
+    assert unresolved_of(root) == []
+
+
+def test_security_form_with_colon_other_column_and_quoted_name(tmp_path):
+    """Форма с двоеточием, имя в любой колонке, имя с кавычками целиком, два требования в строке."""
+    security = SEC_HEAD + ("| Б | `demo`: «Режим «атака» группирует строки» | `demo` «Одно» и `demo`: «Одно» |\n"
+                           "| В | сценарий «Сцена» без capability | нет |\n")
+    root, _ = make_change(tmp_path, specs=two_cap_specs(), security=security)
+    assert edges_of(graph_of(root), "refines") == [
+        ("sec:Б", "req:demo/Одно", "refines", "security.md:3"),
+        ("sec:Б", "req:demo/Режим «атака» группирует строки", "refines", "security.md:3")]
+    assert unresolved_of(root) == []
+
+
+def test_security_unknown_requirement_is_unresolved(tmp_path):
+    """`trace-signals`: «Пункт security закрыт доводом» — неизвестное имя требования идёт в неразрешённые."""
+    security = SEC_HEAD + "| Г | применимо — требование `demo` «Нет такого» | тест |\n| Д | без имени | нет |\n"
+    root, _ = make_change(tmp_path, specs=two_cap_specs(), security=security)
+    assert edges_of(graph_of(root), "refines") == []
+    assert [(u["ref"], u["from"], u["at"]) for u in unresolved_of(root)] == [
+        ("`demo`: «Нет такого»", "sec:Г", "security.md:3")]
+
+
+CONSEQ_LINKS = ("## Опись\n\n- **Ветка** — `a/b.py:3` «код»\n  - при отказе: x\n  - сценарий: Сцена\n"
+          "  - кандидат: F-1; ближайший сценарий: Одно\n"
+          "- **Другая** — `a/b.py:9` «код»\n  - сценарий: Только в мастере\n"
+          "- **Третья** — `a/b.py:12` «код»\n  - сценарий: Нигде нет\n")
+
+
+def test_branch_links_to_scenario_by_name_in_all_capabilities(tmp_path):
+    """Связь ветки со сценарием даёт только `сценарий: имя`; имя в двух capability — связи к обоим; мастер — без связи
+    и без записи; «ближайший сценарий» связи не даёт."""
+    other = "## ADDED Requirements\n\n### Requirement: Иное\nТекст SHALL.\n\n#### Scenario: Сцена\n- **WHEN** a\n"
+    root, base = make_change(tmp_path, specs={**two_cap_specs(), "other": other}, consequences=CONSEQ_LINKS)
+    master_spec(base, "old", "## Requirements\n\n### Requirement: Старое\nТекст SHALL.\n\n"
+                             "#### Scenario: Только в мастере\n- **WHEN** a\n")
+    branch = [e for e in edges_of(graph_of(root), "verifies") if e[0].startswith("branch:")]
+    assert branch == [("branch:a/b.py:3", "scn:demo/Одно/Сцена", "verifies", "consequences.md:5"),
+                      ("branch:a/b.py:3", "scn:other/Иное/Сцена", "verifies", "consequences.md:5")]
+    assert [(u["ref"], u["from"], u["at"]) for u in unresolved_of(root)] == [
+        ("сценарий: Нигде нет", "branch:a/b.py:12", "consequences.md:10")]
+
+
+def test_derives_same_capability_other_capability_and_quoted_name(tmp_path):
+    """`trace-conventions`: «Родитель в той же capability», «Родитель в другой capability», «Имя родителя с кавычками»."""
+    child = ("## ADDED Requirements\n\n### Requirement: Дитя\nЧасть требования «Одно». Текст SHALL.\n\n"
+             "### Requirement: Второе\nЧасть требования `demo`: «Одно».\n\n"
+             "### Requirement: Третье\nЧасть требования `demo`: «Режим «атака» группирует строки». Текст SHALL.\n\n"
+             "#### Scenario: Сцена\n- **WHEN** a\n")
+    root, _ = make_change(tmp_path, specs={"demo": two_cap_specs()["demo"], "kid": child})
+    got = edges_of(graph_of(root), "derives")
+    assert ("req:kid/Второе", "req:demo/Одно", "derives", "specs/kid/spec.md:7") in got
+    assert ("req:kid/Третье", "req:demo/Режим «атака» группирует строки", "derives", "specs/kid/spec.md:10") in got
+    assert len(got) == 2  # «Одно» без capability ищется в `kid`, где такого нет
+    assert [(u["ref"], u["from"]) for u in unresolved_of(root)] == [("«Одно»", "req:kid/Дитя")]
+
+
+def test_derives_parent_in_same_spec_master_only_and_missing(tmp_path):
+    """Родитель в той же спеке — связь; только в мастере — ни связи, ни сигнала; нигде — неразрешённая."""
+    spec = ("## ADDED Requirements\n\n### Requirement: Одно\nТекст SHALL.\n\n### Requirement: Дитя\nЧасть требования «Одно».\n\n"
+            "### Requirement: Сын мастера\nЧасть требования `old`: «Старое».\n\n"
+            "### Requirement: Сирота\nЧасть требования «Такого родителя нет».\n\n#### Scenario: Сцена\n- **WHEN** a\n")
+    root, base = make_change(tmp_path, specs={"demo": spec})
+    master_spec(base, "old", "## Requirements\n\n### Requirement: Старое\nТекст SHALL.\n\n#### Scenario: С\n- **WHEN** a\n")
+    assert edges_of(graph_of(root), "derives") == [("req:demo/Дитя", "req:demo/Одно", "derives", "specs/demo/spec.md:7")]
+    assert [(u["ref"], u["from"]) for u in unresolved_of(root)] == [("«Такого родителя нет»", "req:demo/Сирота")]
+
+
+def test_derives_phrase_inside_code_or_scenario_is_not_a_link(tmp_path):
+    """Фраза в обратных кавычках и в сценарии связи не даёт."""
+    spec = ("## ADDED Requirements\n\n### Requirement: Одно\nТекст SHALL.\n\n### Requirement: Два\n"
+            "Фраза `Часть требования «Одно».` в кавычках.\n\n#### Scenario: Сцена\n- **GIVEN** Часть требования «Одно».\n")
+    root, _ = make_change(tmp_path, specs={"demo": spec})
+    assert edges_of(graph_of(root), "derives") == [] and unresolved_of(root) == []
+
+
+def test_master_spec_with_crlf_is_read_like_lf(tmp_path):
+    """Мастер-спека с CRLF (так лежит `openspec/specs/project-settings`) читается как с LF: сценарий из неё не неразрешённый."""
+    spec = "## ADDED Requirements\n\n### Requirement: Одно\nТекст SHALL.\n\n#### Scenario: Сцена\n- **WHEN** a\n"
+    root, base = make_change(tmp_path, specs={"demo": spec}, consequences=CONSEQ_LINKS)
+    master_spec(base, "old", "## Requirements\n\n### Requirement: Старое\nТекст SHALL.\n\n"
+                             "#### Scenario: Только в мастере\n- **WHEN** a\n".replace("\n", "\r\n"))
+    names = [u["ref"] for u in unresolved_of(root)]
+    assert "сценарий: Только в мастере, мастер-спека `old`" not in names and "сценарий: Только в мастере" not in names

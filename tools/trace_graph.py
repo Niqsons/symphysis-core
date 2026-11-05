@@ -302,6 +302,9 @@ _TABLE_RULE = re.compile(r"^\|[\s:|-]+\|?\s*$")
 _REC_REF = re.compile(r"(?<![\w-])F-(\d+)(?!\d)")  # граница слова слева: `UTF-8` не даёт `F-8`; `.A` у `F-07.A` остаётся за числом
 _CAP_NAME = re.compile(r"`([^`]+)`:\s*«")  # `capability`: «имя…
 _NEXT_NAME = re.compile(r"\s*,\s*«")  # следующее имя той же строки: своей capability у него нет (F-89)
+_SEC_REQ = re.compile(r"`([^`]+)`:?\s*«")  # `capability` «имя» или `capability`: «имя» в любой колонке строки security (F-131)
+_PARENT = re.compile(r"^\s*Часть требования\s+(?:`([^`]+)`:\s*)?«")  # фраза дочернего: в начале строки, не в кавычках (F-77)
+_BRANCH_SCENARIO = re.compile(r"(?<!ближайший )сценарий:\s*")  # «ближайший сценарий» ветку не покрывает
 _BRANCH_LINE = re.compile(r"^- \*\*(.+?)\*\*\s*—\s*`([^`\s]+:\d+)`\s*«")
 
 
@@ -381,13 +384,20 @@ def _record_numbers(text: str) -> list[int]:
     return [int(m.group(1)) for m in _REC_REF.finditer(text)]
 
 
+def _master_lines(root: Path, rel: str) -> list[str]:
+    """Строки мастер-спеки без CRLF и BOM; она пишет `## Requirements`, а `parse_spec` читает секции дельты: заголовок читается
+    как `ADDED`. Перевод строк нормализуется раньше подмены: `$` не стоит перед возвратом каретки, и спека с CRLF осталась бы
+    без требований."""
+    return [re.sub(r"^## Requirements[ \t]*$", "## ADDED Requirements", row) for row in _spec_lines(_read_text(root, rel))]
+
+
 def _master_numbers(root: Path, cap: str) -> dict[str, set[int]]:
     """Номера записей в тексте каждого требования мастер-спеки `openspec/specs/<cap>/spec.md` по имени требования (F-84).
     Мастер-спека пишет `## Requirements`, а `parse_spec` читает секции дельты: заголовок читается как `ADDED`."""
     rel = f"openspec/specs/{cap}/spec.md"
     if not (root / rel).is_file():
         return {}
-    lines = _spec_lines(re.sub(r"(?m)^## Requirements[ \t]*$", "## ADDED Requirements", _read_text(root, rel)))
+    lines = _master_lines(root, rel)
     mask = _fence_mask(lines)
     return {req.name: {n for _, line in _requirement_body(lines, mask, req.line) for n in _record_numbers(line)}
             for req in parse_spec("\n".join(lines)).requirements}
@@ -424,6 +434,9 @@ def _read_specs(base: Path, claims: list[dict]) -> list[dict]:
                 for number, line in _requirement_body(lines, mask, req.line):
                     claims.append({"kind": "rec", "from": req_id, "src": req_node["at"], "at": f"{rel}:{number}",
                                    "text": line, "skip": known})
+                    if _PARENT.match(line):
+                        claims.append({"kind": "parent", "from": req_id, "src": req_node["at"], "at": f"{rel}:{number}",
+                                       "text": line, "cap": cap})
             for scn in req.scenarios:
                 scn_node = _node(f"scn:{cap}/{req.name}/{scn.name}", "scn", scn.name, rel, scn.line,
                                  capability=cap, requirement=req_id)
@@ -462,7 +475,9 @@ def _read_security(base: Path, claims: list[dict]) -> list[dict]:
             continue
         first = line[1:].split("|", 1)[0].strip()
         if first:
-            found.append(_node(f"sec:{first}", "sec", first, "security.md", number))
+            node = _node(f"sec:{first}", "sec", first, "security.md", number)
+            found.append(node)
+            claims.append({"kind": "sec", "from": node["id"], "src": node["at"], "at": node["at"], "text": line})
     return found
 
 
@@ -470,11 +485,17 @@ def _read_branches(base: Path, claims: list[dict]) -> list[dict]:
     """Ветки описи `consequences.md`: строки `- **Имя** — `путь:строка` «цитата»`. Строка без `путь:строка` узла не даёт."""
     if not (base / "consequences.md").is_file():
         return []
-    found = []
+    found, current = [], None
     for number, line in _plain_lines(_read_text(base, "consequences.md")):
         m = _BRANCH_LINE.match(line)
         if m:
-            found.append(_node(f"branch:{m.group(2)}", "branch", m.group(1), "consequences.md", number))
+            current = _node(f"branch:{m.group(2)}", "branch", m.group(1), "consequences.md", number)
+            found.append(current)
+        elif line[:1].strip():  # строка с нулевым отступом, не ветка, заканчивает опись ветки
+            current = None
+        elif current and _BRANCH_SCENARIO.search(line):
+            claims.append({"kind": "branch", "from": current["id"], "src": current["at"],
+                           "at": f"consequences.md:{number}", "text": line})
     return found
 
 
@@ -510,6 +531,23 @@ def _take_name(text: str, start: int, known: set[str]) -> tuple[str, int, bool]:
     return text[start:].strip(), len(text), False
 
 
+def _master_names(root: Path) -> dict[str, dict[str, set[str]]]:
+    """Имена требований и сценариев мастер-спек `openspec/specs/*/spec.md`: `{capability: {"req": …, "scn": …}}`. Нужны,
+    чтобы родитель или сценарий, который живёт только в мастере, не считался опечаткой: узла в графе изменения у него нет."""
+    found: dict[str, dict[str, set[str]]] = {}
+    for path in sorted((root / "openspec" / "specs").glob("*/spec.md")):
+        rel = path.relative_to(root).as_posix()
+        reqs = parse_spec("\n".join(_master_lines(root, rel))).requirements
+        found[path.parent.name] = {"req": {r.name for r in reqs}, "scn": {s.name for r in reqs for s in r.scenarios}}
+    return found
+
+
+def _take_scenario(text: str, start: int, known: set[str]) -> str:
+    """Имя после `сценарий:`: самое длинное известное, за которым конец строки или знак препинания; иначе до `;`."""
+    fits = [n for n in known if text.startswith(n, start) and (start + len(n) == len(text) or text[start + len(n)] in ";,. ")]
+    return max(fits, key=len) if fits else text[start:].split(";", 1)[0].strip()
+
+
 def _resolve_task_line(claim: dict, scenarios: dict, put_edge, put_unresolved) -> None:
     """Сценарии, названные строкой задачи (F-42, F-89): у каждого имени своя capability, без наследования; имя, стоящее
     после запятой без своей capability, не связывается и уходит в неразрешённые."""
@@ -534,16 +572,20 @@ def _resolve_task_line(claim: dict, scenarios: dict, put_edge, put_unresolved) -
         pos = end
 
 
-def _resolve_claims(nodes: list[dict], places: dict, claims: list[dict]) -> tuple[list[dict], list[dict]]:
+def _resolve_claims(root: Path, nodes: list[dict], places: dict, claims: list[dict]) -> tuple[list[dict], list[dict]]:
     """Связи и неразрешённые ссылки из заявок читателей. Заявка узла, который в граф не вошёл как дубль id, отбрасывается.
     Связь — `from`, `to`, `type`, `at` (место записи от каталога изменения); повтор `(from, to, type)` остаётся первым.
     Ссылка, которая не разрешилась (нет записи с таким номером, нет сценария с таким именем), связи не даёт и идёт в
     список `[{"ref", "from", "at", "why"}]`: что названо, чьё это, где и почему не связалось."""
     records = {n["number"]: n["id"] for n in reversed(nodes) if n["kind"] == "rec" and n["number"] is not None}
     scenarios: dict[str, dict[str, list[str]]] = {}
+    requirements: dict[str, dict[str, str]] = {}
     for n in nodes:
         if n["kind"] == "scn":
             scenarios.setdefault(n["capability"], {}).setdefault(n["name"], []).append(n["id"])
+        elif n["kind"] == "req":
+            requirements.setdefault(n["capability"], {})[n["name"]] = n["id"]
+    masters: list = []  # мастер-спеки читаются один раз и только если нужны (F-84)
     edges: dict[tuple, dict] = {}
     unresolved: dict[tuple, dict] = {}
 
@@ -562,10 +604,62 @@ def _resolve_claims(nodes: list[dict], places: dict, claims: list[dict]) -> tupl
             else:
                 put_unresolved(claim, f"F-{number:02d}", f"в журнале изменения нет записи F-{number:02d}")
 
+    def master() -> dict:
+        if not masters:
+            masters.append(_master_names(root))
+        return masters[0]
+
+    def resolve_parent(claim: dict) -> None:
+        """`Часть требования [`cap`: ]«имя».` (F-77, F-92): родитель в изменении — `derives`; только в мастере — ничего."""
+        text = claim["text"]
+        m = _PARENT.match(text)
+        cap = m.group(1) or claim["cap"]
+        in_change = requirements.get(cap, {})
+        name, _, known = _take_name(text, m.end(), set(in_change) | master().get(cap, {}).get("req", set()))
+        if name in in_change:
+            put_edge(claim["from"], in_change[name], "derives", claim["at"])
+        elif not known:
+            put_unresolved(claim, f"`{cap}`: «{name}»" if m.group(1) else f"«{name}»",
+                           f"в capability `{cap}` нет требования с именем «{name}»: ни в изменении, ни в мастер-спеке")
+
+    def resolve_security(claim: dict) -> None:
+        """Требование в строке пункта: `cap` «имя» или `cap`: «имя»; пункт — `refines` к требованию (F-135)."""
+        text, pos = claim["text"], 0
+        while (m := _SEC_REQ.search(text, pos)):
+            cap = m.group(1)
+            in_change = requirements.get(cap, {})
+            name, pos, _ = _take_name(text, m.end(), set(in_change))
+            if name in in_change:
+                put_edge(claim["from"], in_change[name], "refines", claim["at"])
+            else:
+                put_unresolved(claim, f"`{cap}`: «{name}»", f"в capability `{cap}` нет требования с именем «{name}»")
+
+    def resolve_branch(claim: dict) -> None:
+        """`сценарий: имя` в описи ветки: сценарии изменения во всех capability; только в мастере — ничего (узла нет)."""
+        text = claim["text"]
+        by_name: dict[str, list[str]] = {}
+        for names in scenarios.values():
+            for scn, ids_ in names.items():
+                by_name.setdefault(scn, []).extend(ids_)
+        for m in _BRANCH_SCENARIO.finditer(text):
+            in_master = {n for caps in master().values() for n in caps["scn"]}
+            name = _take_scenario(text, m.end(), set(by_name) | in_master)
+            if name in by_name:
+                for scn_id in by_name[name]:
+                    put_edge(claim["from"], scn_id, "verifies", claim["at"])
+            elif name not in in_master:
+                put_unresolved(claim, f"сценарий: {name}", f"сценария «{name}» нет ни в изменении, ни в мастер-спеках")
+
     for claim in claims:
         if places[claim["from"]][0] != claim["src"]:
             continue
-        if claim["kind"] == "edge":
+        if claim["kind"] == "parent":
+            resolve_parent(claim)
+        elif claim["kind"] == "sec":
+            resolve_security(claim)
+        elif claim["kind"] == "branch":
+            resolve_branch(claim)
+        elif claim["kind"] == "edge":
             put_edge(claim["from"], claim["to"], claim["type"], claim["at"])
         elif claim["kind"] == "rec":
             put_records(claim, claim["text"], claim["skip"])
@@ -580,8 +674,9 @@ def _resolve_claims(nodes: list[dict], places: dict, claims: list[dict]) -> tupl
 def build_graph_with_signals(root: Path, change: str) -> tuple[dict, list[dict], list[dict]]:
     """Граф изменения `change` проекта `root`, список дублей id и список неразрешённых ссылок. Граф: `format`, `nodes`, `edges`,
     `candidates`; читает только артефакты, из которых `REGISTRY` что-то берёт (F-53). Читатель отдаёт узлы и заявки на связи за
-    один проход по файлу; связи разрешаются, когда собраны узлы всех артефактов (`_resolve_claims`). Связи пункта security,
-    ветки описи и дочернего требования добавит следующая порция: `candidates` пока пуст.
+    один проход по файлу; связи разрешаются, когда собраны узлы всех артефактов (`_resolve_claims`). Пункт security —
+    `refines` к требованию, ветка описи — `verifies` к сценарию, дочернее требование — `derives` к родителю (U06); `candidates`
+    пока пуст.
     Дубль — повторный id (два требования с одним именем в capability, два сценария, два пункта security): в графе остаётся
     первый по порядку чтения, id уникальны, а дубль не теряется молча, а идёт вторым значением: `[{"id": …, "at": [место
     первого, место повторного, …]}]` в порядке появления. Неразрешённые ссылки — третье значение: `[{"ref", "from", "at",
@@ -604,7 +699,7 @@ def build_graph_with_signals(root: Path, change: str) -> tuple[dict, list[dict],
                 nodes.append(node)
     nodes.sort(key=lambda n: (n["at"].rsplit(":", 1)[0], int(n["at"].rsplit(":", 1)[1]), n["id"]))
     duplicates = [{"id": node_id, "at": at} for node_id, at in places.items() if len(at) > 1]
-    edges, unresolved = _resolve_claims(nodes, places, claims)
+    edges, unresolved = _resolve_claims(root, nodes, places, claims)
     return {"format": GRAPH_FORMAT, "nodes": nodes, "edges": edges, "candidates": []}, duplicates, unresolved
 
 
