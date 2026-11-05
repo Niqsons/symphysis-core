@@ -3,7 +3,7 @@
 ## ADDED Requirements
 
 ### Requirement: `install` ставит скрипт графа
-Команда `symphysis install` SHALL класть скрипт графа в `.symphysis/tools/`: файл SHALL входить в payload и его перечень (F-39).
+Команда `symphysis install` SHALL класть скрипт графа в `.symphysis/tools/`: файл SHALL входить в payload и его перечень (F-39). `symphysis check` SHALL называть его пропажу (F-126).
 
 #### Scenario: Новый проект
 - **GIVEN** проект без инструментов symphysis
@@ -14,11 +14,17 @@
 - **GIVEN** проект с инструментами до этого изменения
 - **WHEN** выполняется `symphysis install` без `--force`
 - **THEN** скрипт положен, отличающиеся файлы названы пропущенными с подсказкой `--force`
+
+#### Scenario: Скрипта нет при проверке установки
+<!-- F-126 -->
+- **GIVEN** проект без скрипта графа
+- **WHEN** выполняется `symphysis check`
+- **THEN** находка называет файл скрипта и «нет файла», код 2
 <!-- проба краёв: форма=stateful, io, исходы: нет -->
 <!-- проба запретов: исходы: нет -->
 
 ### Requirement: `install` переносит подсказки операций
-Кроме `schema` и `rules` слияние `openspec/config.yaml` SHALL переносить ключ `operations` из конфига symphysis, чтобы подсказка заморозки дошла до проекта (F-08, F-49). предположение: списки подсказок объединяются, как `rules`, а чужие подсказки остаются; решить в design.
+Кроме `schema` и `rules` слияние `openspec/config.yaml` SHALL переносить ключ `operations` из конфига symphysis, чтобы подсказка заморозки дошла до проекта (F-08, F-49). Списки подсказок SHALL объединяться, как `rules`: чужие подсказки остаются, старые человек удаляет руками (F-110, F-124).
 
 #### Scenario: Конфиг без подсказок
 - **GIVEN** `openspec/config.yaml` без ключа `operations`
