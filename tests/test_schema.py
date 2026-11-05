@@ -555,6 +555,38 @@ def test_tasks_template_follows_openspec_checkbox_grammar():
     assert "проверка:" in text
 
 
+def instruction_text(tmp_path, artifact_id):
+    """Инструкция артефакта из `openspec instructions`, пробелы и переводы строк сжаты."""
+    out = run_openspec(make_project(tmp_path), "instructions", artifact_id, "--change", "demo", "--json")
+    return " ".join(out["instruction"].split())
+
+
+def test_specs_instruction_names_record_numbers_and_splitting(tmp_path):
+    """`trace-conventions`: «Требование из решения», «Требование не влезает в предел»,
+    «Старое длинное требование в MODIFIED», «Условие пропало при делении» (F-44, F-76, F-77, F-91, F-117, F-150)."""
+    text = instruction_text(tmp_path, "specs")
+    for token in ("`(F-NN)`", "500 знаков", "дочернее", "Часть требования «имя».",
+                  "``Часть требования `capability`: «имя».``", "MODIFIED", "сценарии родителя остаются при нём",
+                  "условия не теряются", "свой номер"):
+        assert token in text, token
+
+
+def test_tasks_instruction_names_scenario_form_and_service_mark(tmp_path):
+    """`trace-conventions`: «Имя вписано ради отчёта» (F-42, F-43, F-89, F-90, F-115)."""
+    text = instruction_text(tmp_path, "tasks")
+    for token in ("`` `capability`: «сценарий» ``", "у каждого имени", "`` `служебная` ``", "в конце строки",
+                  "потому что задача закрывает сценарий"):
+        assert token in text, token
+
+
+def test_tasks_template_shows_scenario_form_and_service_mark():
+    """`trace-conventions`: «Имя вписано ради отчёта» (F-42, F-43, F-90): образцы формы в двойных обратных кавычках."""
+    text = template_text("tasks.md")
+    assert "`` `capability`: «сценарий» ``" in text
+    assert "`` `служебная` ``" in text
+    assert not re.search(r"(?<!`)`служебная`$", text, re.M), "пометка в шаблоне не должна быть живой"
+
+
 # --- schema.yaml: шаблоны, пути скриптов, формулировки ---------------------
 
 def test_schema_points_each_artifact_at_its_own_template():
