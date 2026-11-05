@@ -9,12 +9,15 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import os
 import re
+import subprocess
 import sys
 from dataclasses import dataclass, field
 from pathlib import Path
 
 sys.dont_write_bytecode = True  # как у соседних скриптов: `__pycache__` в проекте от инструментов не появляется (F-50)
+from journal_apply import UNUSABLE_ROOTS, default_roots  # noqa: E402
 from journal_model import PROBE_OUTCOMES, validate_journal  # noqa: E402
 from openspec_run import ForkError, check_change_name, no_paths, run_fork  # noqa: E402
 
@@ -792,8 +795,21 @@ def _item_label(name: str, item) -> str:
     return f"{item.get('from')} -{item.get('type')}-> {item.get('to')}" if name == "edges" else f"{item.get('a')} / {item.get('b')}"
 
 
-def _diff_problems(saved: dict, fresh: dict) -> list[str]:
-    """Расхождение узлов, связей и кандидатов файла со свежей сборкой (F-118): что лишнее, чего нет, что поправлено."""
+def _pathless(value, root: Path):
+    """Копия значения JSON, где во всех строках сняты абсолютные пути (F-59): так снимок хранится и так он сверяется."""
+    if isinstance(value, str):
+        return no_paths(value, root)
+    if isinstance(value, list):
+        return [_pathless(item, root) for item in value]
+    if isinstance(value, dict):
+        return {_pathless(key, root): _pathless(item, root) for key, item in value.items()}
+    return value
+
+
+def _diff_problems(saved: dict, fresh: dict, root: Path) -> list[str]:
+    """Расхождение узлов, связей и кандидатов файла со свежей сборкой (F-118): что лишнее, чего нет, что поправлено.
+    Обе стороны идут без абсолютных путей: снимок их не хранит (F-59), и имя узла с путём не должно делать его «поправленным»."""
+    saved, fresh = _pathless(saved, root), _pathless(fresh, root)
     problems = []
     got = {n.get("id"): n for n in saved["nodes"] if isinstance(n, dict)}
     want = {n["id"]: n for n in fresh["nodes"]}
@@ -837,7 +853,7 @@ def check_graph_file(root: Path, change: str, path: Path | str) -> list[str]:
     stale = _stale_problems(base, data["sources"])
     if stale:
         return signals("устарел", stale)
-    return signals("узел поправлен", _diff_problems(data, build_graph(root, change)))
+    return signals("узел поправлен", _diff_problems(data, build_graph(root, change), root))
 
 
 def cmd_build(args: argparse.Namespace, root: Path) -> int:
@@ -1175,8 +1191,120 @@ def cmd_check(args: argparse.Namespace, root: Path) -> int:
     return 0
 
 
+# --- заморозка: снимок и отчёт в graph/ (F-51, F-52, F-59, F-74, F-79, F-100, F-101, F-139) -----------------------------
+# Снимок `graph/req-graph.json`: поля графа и `roots`, `base`. `roots` — `[{"prefix", "commit"}]` по файлу корней, в его порядке;
+# префикс как в файле, пути корня в снимке нет; `commit` — HEAD корня или пустая строка (корень вне git, без каталога, `git` не
+# ответил). `base` — `{}` до порции U13; U13 кладёт туда мастер-спеку по требованиям MODIFIED:
+# `{capability: {имя требования: {"numbers": [F-NN, ...], "scenarios": [имя сценария, ...]}}}`.
+
+GIT_TIMEOUT = 20
+_COMMIT = re.compile(r"^[0-9a-f]{40,64}$")
+
+
+@dataclass
+class FreezeResult:
+    """Итог `freeze_change`: `action` — `build` (граф и отчёт собраны заново) или `commits` (обновлены только коммиты корней);
+    `reason` — почему собрано заново (пусто при `commits`); `report` — путь к отчёту от корня проекта с `/` при `build`, иначе `None`;
+    `unnamed` — префиксы корней без коммита."""
+    action: str
+    reason: str = ""
+    report: str | None = None
+    unnamed: list[str] = field(default_factory=list)
+
+
+def root_commit(folder: Path) -> str:
+    """Коммит HEAD каталога `folder` или `""`: каталога нет, он не корень git-дерева (лежит внутри чужого клона, F-101), коммитов нет,
+    `git` не найден или не ответил. `git` зовётся списком аргументов, без оболочки (F-59); читает только HEAD."""
+    if not folder.is_dir():
+        return ""
+    try:
+        done = subprocess.run(["git", "-C", str(folder), "rev-parse", "--show-toplevel", "HEAD"], capture_output=True,
+                              text=True, encoding="utf-8", stdin=subprocess.DEVNULL, timeout=GIT_TIMEOUT)
+        lines = done.stdout.splitlines()
+        if done.returncode != 0 or len(lines) != 2 or not os.path.samefile(lines[0], folder):
+            return ""
+    except (OSError, subprocess.SubprocessError, ValueError):
+        return ""
+    return lines[1].strip() if _COMMIT.match(lines[1].strip()) else ""
+
+
+def _freeze_roots(root: Path, change: str, roots_file: Path | None) -> list[dict]:
+    try:
+        folders = default_roots(roots_file, root / "openspec" / "changes" / change / "decisions.json")
+    except UNUSABLE_ROOTS as e:
+        raise Refusal(f"файл корней не прочитан: {no_paths(str(e), root)}") from e
+    return [{"prefix": no_paths(prefix, root), "commit": root_commit(folder)} for prefix, folder in folders.items()]
+
+
+def _roots_note(roots: list[dict]) -> list[str]:
+    """Строки отчёта про корни без коммита: корень называется префиксом (F-101); пусто, если коммиты есть у всех."""
+    return [f"Корень {'`' + item['prefix'] + '`' if item['prefix'] else 'проекта'} вне git или без каталога: коммит не записан."
+            for item in roots if not item["commit"]]
+
+
+def _write(path: Path, text: str) -> None:
+    try:
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text(text, encoding="utf-8", newline="\n")
+    except OSError as e:
+        raise Refusal(f"{path.name} не записан в graph: {e.strerror or e}") from e
+
+
+def _freeze_reason(root: Path, change: str, folder: Path) -> str:
+    """Почему `graph/` надо собрать заново; пусто — снимок свежий и отчёт на месте (F-100, F-139)."""
+    snap, report = folder / "req-graph.json", folder / "report.md"
+    if not folder.is_dir():
+        return "каталога graph нет"
+    if not snap.is_file():
+        return "снимка нет"
+    if not report.is_file():
+        return "отчёта нет, graph неполон"
+    signals = check_graph_file(root, change, snap)
+    if signals:
+        return f"снимок устарел или негоден: {no_paths(signals[0].split(': ', 1)[-1], root)}" + (
+            f" (и ещё сигналов: {len(signals) - 1})" if len(signals) > 1 else "")
+    return ""
+
+
+def freeze_change(root: Path, change: str, roots_file: Path | None = None) -> FreezeResult:
+    """Заморозка изменения `change`: сама выбирает (F-79, F-139). Нет `graph/`, снимка или отчёта либо проверка снимка дала сигнал —
+    граф и отчёт собираются заново и пишутся (прежний отчёт снимается до записи снимка, чтобы прерванная запись не выглядела
+    свежей, F-100). Иначе пересчитываются только `roots` снимка, граф и отчёт не трогаются. Снимок и отчёт идут без
+    абсолютных путей (F-59). Имя проверяется до любого пути; нет изменения, негоден файл корней, сборка не удалась — `Refusal`
+    или `ForkError`, и тогда ничего не записано."""
+    check_change_name(change)
+    base = root / "openspec" / "changes" / change
+    if not base.is_dir():
+        raise Refusal(f"изменения «{change}» нет: нет каталога openspec/changes/{change}")
+    folder = base / "graph"
+    roots = _freeze_roots(root, change, roots_file)
+    unnamed = [item["prefix"] for item in roots if not item["commit"]]
+    reason = _freeze_reason(root, change, folder)
+    if not reason:
+        snap = json.loads((folder / "req-graph.json").read_bytes().decode("utf-8-sig"))
+        snap["roots"] = roots
+        _write(folder / "req-graph.json", json.dumps(snap, ensure_ascii=False, indent=1) + "\n")
+        return FreezeResult("commits", unnamed=unnamed)
+    graph = _pathless({**build_graph(root, change), "roots": roots, "base": {}}, root)
+    note = _roots_note(roots)
+    text = build_report(root, change).rstrip("\n") + "\n"
+    if note:
+        text += "\n## Корни без коммита\n\n" + "\n".join(_md(no_paths(line, root)) for line in note) + "\n"
+    (folder / "report.md").unlink(missing_ok=True)
+    _write(folder / "req-graph.json", json.dumps(graph, ensure_ascii=False, indent=1) + "\n")
+    _write(folder / "report.md", text)
+    return FreezeResult("build", reason, (folder / "report.md").relative_to(root).as_posix(), unnamed)
+
+
 def cmd_freeze(args: argparse.Namespace, root: Path) -> int:
-    raise _not_implemented("freeze")
+    result = freeze_change(root, args.change, args.roots)
+    if result.action == "commits":
+        print("Снимок свежий: обновлены только коммиты корней, граф и отчёт прежние.")
+    else:
+        print(f"Граф собран заново: {result.reason}. Отчёт: {result.report}")
+    if result.unnamed:
+        print(f"Корни без коммита: {', '.join(name or '(корень проекта)' for name in result.unnamed)}.")
+    return 0
 
 
 def cmd_archive_gaps(args: argparse.Namespace, root: Path) -> int:
@@ -1214,11 +1342,17 @@ SUBCOMMAND_HELP = {
               "перед архивом, после правки артефактов. ФАЙЛ — путь от текущего каталога или абсолютный.",
               "Коды: 0 — проверка прошла, сигналы кода не меняют (F-31), файл не той формы или отсутствующий — тоже сигнал; "
               "1 — отказ: имя изменения не подходит или изменения нет; 2 — вызов неверен."),
-    "freeze": ("Замораживает снимок графа в каталоге graph изменения: собирает, если снимка нет, он неполон или устарел, "
-               "иначе обновляет коммиты (F-139).",
-               "Звать, когда изменение готово к архиву; одну команду, без выбора между сборкой и обновлением.",
-               "Коды: 0 — снимок лежит в graph; 1 — отказ: имя изменения не подходит, сборка не удалась "
-               "или подкоманда ещё не реализована; 2 — вызов неверен."),
+    "freeze": ("Замораживает граф изменения в `graph/` каталога изменения: снимок `req-graph.json` (узлы, связи, хеши исходников, "
+               "коммиты корней, база мастер-спеки) и отчёт `report.md`. Сама выбирает (F-139): каталога, снимка или отчёта нет "
+               "либо проверка снимка дала сигнал — собирает заново; снимок свежий — обновляет только коммиты корней, граф и "
+               "отчёт прежние. Корни — из файла корней, как у `journal.py check --roots`; в снимке и отчёте они названы "
+               "префиксами, абсолютных путей нет. Корень вне git или без каталога остаётся без коммита и назван в отчёте.",
+               "Звать, когда изменение готово к архиву, одной командой, без выбора между сборкой и обновлением. При новой сборке "
+               "вывод называет путь к отчёту от корня проекта: отдай его человеку ссылкой, сам отчёт не читай. "
+               "`--roots ПУТЬ` — файл корней вместо `tools/journal-roots.json`.",
+               "Коды: 0 — выполнено, сборка заново и обновление коммитов обе дают 0, сигналы кода не меняют (F-31); 1 — отказ: "
+               "имя изменения не подходит, изменения нет, файл корней не прочитан, сборка не удалась (журнал негоден, файл "
+               "не в UTF-8), запись не удалась, причина в stderr; 2 — вызов неверен."),
     "archive-gaps": ("Ищет в каталоге архива изменения без снимка графа.",
                      "Звать, когда нужно понять, какие архивные изменения заморожены без графа.",
                      "Коды: 0 — перечень напечатан; 1 — отказ: каталога нет или подкоманда ещё не реализована; "
@@ -1250,6 +1384,8 @@ def build_parser() -> argparse.ArgumentParser:
             sp.add_argument("archive", metavar="КАТАЛОГ", type=Path, help="каталог архива изменений")
         else:
             sp.add_argument("change", metavar="ИЗМЕНЕНИЕ", help="имя изменения, как у `openspec validate <имя>`")
+        if name == "freeze":
+            sp.add_argument("--roots", metavar="ПУТЬ", type=Path, default=None, help="файл корней вместо tools/journal-roots.json")
         if name == "check":
             sp.add_argument("file", metavar="ФАЙЛ", type=Path, help="сохранённый граф изменения (JSON от `build --out`)")
         if name == "build":

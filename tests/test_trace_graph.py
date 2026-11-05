@@ -16,7 +16,6 @@ from test_schema import make_project, run_openspec
 SCHEMA = ROOT / "openspec" / "schemas" / "symphysis" / "schema.yaml"
 SCRIPT = ROOT / "tools" / "trace_graph.py"
 CHANGE_COMMANDS = ["build", "report", "check", "freeze"]
-STUB_COMMANDS = ["freeze"]
 
 
 def run(*args, cwd=None):
@@ -93,13 +92,6 @@ def test_bad_change_name_is_refused_before_any_path(command, name, tmp_path):
 def test_leading_dash_name_is_refused_after_double_dash(tmp_path):
     done = run("build", "--", "-x", cwd=tmp_path)
     assert done.returncode == 1 and "не подходит" in done.stderr, done.stderr
-
-
-@pytest.mark.parametrize("command", STUB_COMMANDS)
-def test_good_name_reaches_not_implemented_refusal(command, tmp_path):
-    done = run(command, "trace-graph", cwd=tmp_path)
-    assert done.returncode == 1
-    assert "ещё не реализована" in done.stderr and "Traceback" not in done.stderr, done.stderr
 
 
 def test_archive_gaps_takes_a_directory_and_refuses_for_now(tmp_path):
