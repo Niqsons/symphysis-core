@@ -1,0 +1,3638 @@
+{
+ "title": "Журнал решений: trace-graph",
+ "source": "decisions.json",
+ "intro": "Пути улик — от корня проекта, корни названы в `probes/journal-roots.json`: `upstream/` и `context/` ведут в основной клон, `vscode/` в плагин, `reference/` в эталонные клоны. Материалы: `intent.md`, `docs/analysis/requirements-traceability-graph-of-symphysis.md`, схема symphysis, форк OpenSpec, инсталлятор.\n\nПервые записи — факты постановки, за ними факты о текущем состоянии. Записи F-17–F-37 это решения Т1–Т21 из разбора: они уже даны и перенесены с дословным словом файлом `answers/2026-11-05.md`. Развилки первого круга начинаются с F-38, парковки — с F-57. F-61 и F-62 появились при сверке выбранного.",
+ "records": [
+  {
+   "id": "F-01",
+   "question": "Критерий готовности: Проектирование функциональности выполнено в виде отдельного артефакта анализа, а реализованная функциональность соответствует описанным в нём механикам, решениям и определениям, или имеет зафиксированное решение о расхождении.",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "постановка",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "F-38, F-56",
+   "evidence": [
+    {
+     "path": "openspec/changes/trace-graph/intent.md",
+     "quote": "Проектирование функциональности выполнено в виде отдельного артефакта анализа, а реализованная функциональность соответствует описанным в нём механикам, решениям и определениям, или имеет зафиксированное решение о расхождении.",
+     "line": 15,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-02",
+   "question": "Критерий готовности: На основе графа возможно создать диаграмму стека mermaid requirementDiagram. В symphysis ядре обеспечивается сама возможность, а не отображение.",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "постановка",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "F-54, F-58",
+   "evidence": [
+    {
+     "path": "openspec/changes/trace-graph/intent.md",
+     "quote": "На основе графа возможно создать диаграмму стека mermaid requirementDiagram. В symphysis ядре обеспечивается сама возможность, а не отображение.",
+     "line": 16,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "diagram"
+   ]
+  },
+  {
+   "id": "F-03",
+   "question": "Критерий готовности: Граф можно сохранить и проверить скриптом.",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "постановка",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "F-41",
+   "evidence": [
+    {
+     "path": "openspec/changes/trace-graph/intent.md",
+     "quote": "Граф можно сохранить и проверить скриптом.",
+     "line": 17,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "save"
+   ]
+  },
+  {
+   "id": "F-04",
+   "question": "Критерий готовности: Описание работы графа, механик, которые он дает, и как влияет на последовательную схему работы symphysis учтено в GUIDE.md.",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "постановка",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/trace-graph/intent.md",
+     "quote": "Описание работы графа, механик, которые он дает, и как влияет на последовательную схему работы symphysis учтено в GUIDE.md.",
+     "line": 18,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "guide"
+   ]
+  },
+  {
+   "id": "F-05",
+   "question": "Критерий готовности: openspec validate учтен в схеме работы с графом.",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "постановка",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "F-32",
+   "evidence": [
+    {
+     "path": "openspec/changes/trace-graph/intent.md",
+     "quote": "openspec validate учтен в схеме работы с графом.",
+     "line": 19,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "validate"
+   ]
+  },
+  {
+   "id": "F-06",
+   "question": "Почти все связи уже записаны в артефактах, но два главных соглашения держатся без правила: требование называет запись журнала, задача называет сценарий.",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "материалы",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "На этом стоят F-42 и F-44.",
+   "evidence": [
+    {
+     "path": "docs/analysis/requirements-traceability-graph-of-symphysis.md",
+     "quote": "| Требование стоит на записи журнала | traces | `(F-NN)` в тексте требования | 188 из 188, правила нет |",
+     "line": 127,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "docs/analysis/requirements-traceability-graph-of-symphysis.md",
+     "quote": "| Задача называет сценарий | satisfies | строка задачи | 131 из 251, правила нет |",
+     "line": 134,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "conv",
+    "files"
+   ]
+  },
+  {
+   "id": "F-07",
+   "question": "`openspec validate` проверяет форму дельт и слияние, а порванные связи пропускает. Архив зовёт тот же проверщик сам, скилл `/opsx:sync` тоже, а в схеме symphysis этой команды нет.",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "материалы",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "На этом стоит F-32.",
+   "evidence": [
+    {
+     "path": "docs/analysis/requirements-traceability-graph-of-symphysis.md",
+     "quote": "| `F-NN` в требованиях заменены несуществующими, имена в задачах и в security подменены, удалены `decisions.json`, `intent.md`, `consequences.md` | годен, 0 замечаний |",
+     "line": 404,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "upstream/openspec/src/core/archive.ts",
+     "quote": "const deltaReport = await validator.validateChangeDeltaSpecs(changeDir);",
+     "line": 1549,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "upstream/openspec/src/core/templates/workflows/sync-specs.ts",
+     "quote": "openspec validate --specs",
+     "line": 173,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "validate"
+   ]
+  },
+  {
+   "id": "F-08",
+   "question": "Подсказка к архивации задаётся ключом `operations.archive.guidance` в `openspec/config.yaml` и доходит до `openspec instructions archive` полем `operationGuidance`: проверено запуском на копии. Это только совет. Инсталлятор переносит из своего конфига только схему и `rules`.",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "материалы",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "На этом стоят F-48 и F-49.",
+   "evidence": [
+    {
+     "path": "upstream/openspec/src/core/project-config.ts",
+     "quote": "export const OPERATION_IDS = ['apply', 'archive'] as const;",
+     "line": 8,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "upstream/openspec/src/core/templates/workflows/archive-change.ts",
+     "quote": "optional: it only supplies extra prompt inputs, so it must never block archiving.",
+     "line": 66,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "installer/lib/install.js",
+     "quote": "схема переключается, rules объединяются, остальное не трогает",
+     "line": 79,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "freeze"
+   ]
+  },
+  {
+   "id": "F-09",
+   "question": "После архива улики журнала с путём активного изменения перестают находиться. Их переводят на архивный путь руками: правило есть только в пакете контекста, в шагах схемы и в `docs/GUIDE.md` его нет.",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "материалы",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "На этом стоит F-50.",
+   "evidence": [
+    {
+     "path": "context/06-related-changes.md",
+     "quote": "После архива улики журнала с путём активного изменения переводятся на архивный.",
+     "line": 45,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "archive"
+   ]
+  },
+  {
+   "id": "F-10",
+   "question": "Реализация сама разводит улики с кодом: на эталоне `recommendation-why` до реализации совпадают 66 улик из 66, перед архивацией 45.",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "материалы",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "На этом стоит F-51.",
+   "evidence": [
+    {
+     "path": "docs/analysis/requirements-traceability-graph-of-symphysis.md",
+     "quote": "совпадают 66 улик из 66, на последнем коммите перед архивацией 45 из 66",
+     "line": 361,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "freeze"
+   ]
+  },
+  {
+   "id": "F-11",
+   "question": "Позднее решение может снять исход Specify, а след в спеке и `outcome` в журнале останутся прежними.",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "материалы",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "На этом стоит F-46.",
+   "evidence": [
+    {
+     "path": "docs/analysis/requirements-traceability-graph-of-symphysis.md",
+     "quote": "У F-66 в журнале и в комментарии спеки по-прежнему Specify, а сценария нет.",
+     "line": 252,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "openspec/specs/requirement-probes/spec.md",
+     "quote": "исходы: F-64 Specify, F-65 Specify, F-66 Specify",
+     "line": 46,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "openspec/changes/archive/2026-11-02-implementation-consequences/design.md",
+     "quote": "### F-129 Срез С4. Держать ли в спеках сценарии о поведении модели при повторе и прерывании",
+     "line": 427,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "report"
+   ]
+  },
+  {
+   "id": "F-12",
+   "question": "`outcome.kind` закрыт двумя значениями, и новое значение это смена контракта с плагином. Новое поле сменой не считается.",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "материалы",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "На этом стоят F-46 и F-47.",
+   "evidence": [
+    {
+     "path": "docs/journal.schema.json",
+     "quote": "\"kind\": {\"enum\": [\"проба\", \"вопрос\"]},",
+     "line": 95,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "docs/repo-contract.md",
+     "quote": "Новое поле сменой не считается. Удаление, переименование, смена смысла и новое значение существующего поля считаются.",
+     "line": 60,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "outcome"
+   ]
+  },
+  {
+   "id": "F-13",
+   "question": "Список артефактов схемы уже сверяется тестом, а правка артефакта тянет за собой известный список мест.",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "материалы",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "На этом стоит F-53.",
+   "evidence": [
+    {
+     "path": "tests/test_schema.py",
+     "quote": "ARTIFACT_IDS = [\"intent\", \"decisions\", \"research\", \"attack-decisions\", \"proposal\", \"specs\", \"consequences\",",
+     "line": 25,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "context/06-related-changes.md",
+     "quote": "| `schema.yaml`: артефакт, порядок | `templates/`; `openspec/specs/artifact-graph`; `docs/GUIDE.md`;",
+     "line": 27,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "rule"
+   ]
+  },
+  {
+   "id": "F-14",
+   "question": "`openspec show --json` даёт имена требований и сценарии с текстом, но без номеров строк: проверено запуском на эталоне.",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "материалы",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "На этом стоит F-40.",
+   "evidence": [
+    {
+     "path": "docs/analysis/requirements-traceability-graph-of-symphysis.md",
+     "quote": "`show --json` даёт имена и сценарии, но без номеров строк",
+     "line": 441,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "collect"
+   ]
+  },
+  {
+   "id": "F-15",
+   "question": "Пробы `requirementDiagram` на mermaid 12.2.0: `risk` и `verifymethod` необязательны, текст надо брать в кавычки, у узлов устойчивые id.",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "материалы",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "На этом стоят F-54 и F-58.",
+   "evidence": [
+    {
+     "path": "docs/analysis/requirements-traceability-graph-of-symphysis.md",
+     "quote": "| Обязательны ли `risk` и `verifymethod` в `requirementDiagram` | нет |",
+     "line": 620,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "docs/analysis/requirements-traceability-graph-of-symphysis.md",
+     "quote": "| Ломает ли разбор ключевое слово в тексте без кавычек | да, генератор всегда берёт текст в кавычки |",
+     "line": 621,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "diagram"
+   ]
+  },
+  {
+   "id": "F-16",
+   "question": "Для замеров есть три эталонных клона на последнем коммите перед архивацией.",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "материалы",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "На этом стоят F-57 и F-58.",
+   "evidence": [
+    {
+     "path": "reference/README.md",
+     "quote": "Клоны трёх изменений на последнем коммите перед архивацией.",
+     "line": 3,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "docs/analysis/requirements-traceability-graph-of-symphysis.md",
+     "quote": "| `step-help`, средний | 5 capability, 21 требование, 86 сценариев, 28 задач, 72 записи, 160 улик |",
+     "line": 655,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-17",
+   "question": "Т1. Чем граф трассируемости отличается от схемы решения?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Граф это снимок спроектированной системы, схема только удобная картинка",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "docs/analysis/requirements-traceability-graph-of-symphysis.md",
+       "quote": "requirement diagram это snapshot текущего состояния, а scheme лишь удобная картинка",
+       "line": 41,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Слово владельца, других вариантов он не называл."
+   },
+   "decision": {
+    "option": "A",
+    "word": "requirement diagram это snapshot текущего состояния, а scheme лишь удобная картинка",
+    "date": "2026-11-05"
+   },
+   "reversibility": {
+    "level": "обратимо",
+    "why": "формулировка назначения, меняется текстом разбора и `docs/GUIDE.md`"
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [],
+   "comments": []
+  },
+  {
+   "id": "F-18",
+   "question": "Т2. Когда граф появляется и как наполняется?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "С первого шага изменения, обновляется на каждом шаге, валидируется перед архивацией",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "docs/analysis/requirements-traceability-graph-of-symphysis.md",
+       "quote": "при создании change надо создавать его граф и постепенно наполнять",
+       "line": 42,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Слово владельца, других вариантов он не называл."
+   },
+   "decision": {
+    "option": "A",
+    "word": "при создании change надо создавать его граф и постепенно наполнять",
+    "date": "2026-11-05"
+   },
+   "reversibility": {
+    "level": "обратимо",
+    "why": "описание шага, меняется в схеме и руководстве"
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [],
+   "comments": [],
+   "nodes": [
+    "files",
+    "collect"
+   ]
+  },
+  {
+   "id": "F-19",
+   "question": "Т3. Кто решает, проверять ли связи по смыслу?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Проверка не жёсткая: необязательная атака, выбор между быстрым и качественным результатом делает человек",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "docs/analysis/requirements-traceability-graph-of-symphysis.md",
+       "quote": "его должна делать не система, а человек",
+       "line": 43,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Слово владельца, других вариантов он не называл."
+   },
+   "decision": {
+    "option": "A",
+    "word": "его должна делать не система, а человек",
+    "date": "2026-11-05"
+   },
+   "reversibility": {
+    "level": "обратимо",
+    "why": "признак `optional` у `attack-artifacts` в `schema.yaml`"
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [],
+   "comments": [],
+   "nodes": [
+    "attack"
+   ]
+  },
+  {
+   "id": "F-20",
+   "question": "Т4. Что скрипты дают слабой модели?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Уменьшают число операций, но не заменяют силу модели",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "docs/analysis/requirements-traceability-graph-of-symphysis.md",
+       "quote": "скрипты не могут компенсировать разницы, но могут уменьшить количество операций",
+       "line": 44,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Слово владельца, других вариантов он не называл."
+   },
+   "decision": {
+    "option": "A",
+    "word": "скрипты не могут компенсировать разницы, но могут уменьшить количество операций",
+    "date": "2026-11-05"
+   },
+   "reversibility": {
+    "level": "обратимо",
+    "why": "граница проверок описана в разборе, скрипт её не закрепляет"
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [],
+   "comments": []
+  },
+  {
+   "id": "F-21",
+   "question": "Т5. Кто отвечает за мастер-спеки и корректность связей в них?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Хранители знаний, люди, асинхронно. Методологическая часть процесса, объявлена ради общей картины",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "docs/analysis/requirements-traceability-graph-of-symphysis.md",
+       "quote": "Хранители знаний это люди, которые отвечают за мастер-спецификации и корректность связей в них",
+       "line": 45,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Слово владельца, других вариантов он не называл."
+   },
+   "decision": {
+    "option": "A",
+    "word": "Хранители это методологическая часть процесса и объявлена здесь ради понимания общей картины. Зачем нужны хранители и кто это? Хранители знаний это люди, которые отвечают за мастер-спецификации и корректность связей в них",
+    "date": "2026-11-05"
+   },
+   "reversibility": {
+    "level": "обратимо",
+    "why": "роль вне кода, в этом изменении не реализуется, запись лежит в бэклоге"
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [],
+   "comments": [],
+   "nodes": [
+    "later"
+   ]
+  },
+  {
+   "id": "F-22",
+   "question": "Т6. Какая модель нужна хранителю?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Сильная: проверка на межрепозиторном уровне ответственна и тяжела. deepseek-v4-pro достаточно, если нет последнего Opus",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "docs/analysis/requirements-traceability-graph-of-symphysis.md",
+       "quote": "поручать её слабой модели нельзя, поэтому и указано, что у хранителя должен быть доступ к хорошим моделям",
+       "line": 46,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Слово владельца, других вариантов он не называл."
+   },
+   "decision": {
+    "option": "A",
+    "word": "Так как выполнение проверки мастер-спецификаций на межрепозиторном уровне при наличии множества changes это ответственная и тяжелая задача то поручать её слабой модели нельзя, поэтому и указано, что у хранителя должен быть доступ к хорошим моделям",
+    "date": "2026-11-05"
+   },
+   "reversibility": {
+    "level": "обратимо",
+    "why": "настройка модели у роли, кода не требует"
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [],
+   "comments": [],
+   "nodes": [
+    "later"
+   ]
+  },
+  {
+   "id": "F-23",
+   "question": "Т7. Нужна ли векторизация для поиска связей?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Не сейчас. Подключается по необходимости, если конструкция графа и объявление связей расширяемы",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "docs/analysis/requirements-traceability-graph-of-symphysis.md",
+       "quote": "то мы сможем подключить векторизацию по необходимости",
+       "line": 47,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Слово владельца, других вариантов он не называл."
+   },
+   "decision": {
+    "option": "A",
+    "word": "Векторизация потребует отдельного хранилища и процесса и если конструкция графа, ровно как и объявление связей в артефактах, будут построены качественно, с возможностью расширения, то мы сможем подключить векторизацию по необходимости",
+    "date": "2026-11-05"
+   },
+   "reversibility": {
+    "level": "обратимо",
+    "why": "новый источник кандидатов связей добавляется, не трогая записанные связи"
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [],
+   "comments": []
+  },
+  {
+   "id": "F-24",
+   "question": "Т8. Как соотносятся структура и поведение?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Две оси, связанные «многие ко многим»: capability не обязана лежать внутри одного модуля. Доводы приведены в разборе дословно и обсуждаемы",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "docs/analysis/requirements-traceability-graph-of-symphysis.md",
+       "quote": "Доводы обсуждаемы, так как их составление вырвано из контекста и может отличаться от конструкции symphysis",
+       "line": 48,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Слово владельца, других вариантов он не называл."
+   },
+   "decision": {
+    "option": "A",
+    "word": "Решения владельца без контекста и \"полностью согласен\" вводят в заблуждение. Доводы обсуждаемы, так как их составление вырвано из контекста и может отличаться от конструкции symphysis",
+    "date": "2026-11-05"
+   },
+   "reversibility": {
+    "level": "обратимо",
+    "why": "связь модуля с требованием появится на этапе модулей, id требования модуль не содержит"
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [],
+   "comments": [],
+   "nodes": [
+    "later"
+   ]
+  },
+  {
+   "id": "F-25",
+   "question": "Т9. Где проходит граница между вычислением графа и снимками?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "По архивации. До неё граф вычисляется в рамках одного изменения, его можно собрать в файл, проверить и атаковать. После неё только сверка снимков",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "docs/analysis/requirements-traceability-graph-of-symphysis.md",
+       "quote": "вычислении графа до момента архивации в рамках одного change -- то я согласен, он вычисляется",
+       "line": 49,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Слово владельца, других вариантов он не называл."
+   },
+   "decision": {
+    "option": "A",
+    "word": "Да, граница архивация",
+    "date": "2026-11-05"
+   },
+   "reversibility": {
+    "level": "дорого",
+    "why": "снимки копятся в архиве, и смена границы потребует пересборки архивных снимков"
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [],
+   "comments": [],
+   "nodes": [
+    "freeze",
+    "later"
+   ]
+  },
+  {
+   "id": "F-26",
+   "question": "Т10. Есть ли исключения из «только сверка»?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Первичный сбор по мастер-спекам. Другие исключения возможны",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "docs/analysis/requirements-traceability-graph-of-symphysis.md",
+       "quote": "Но на текущий момент -- сверка + сбор по мастер-спекам",
+       "line": 50,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Слово владельца, других вариантов он не называл."
+   },
+   "decision": {
+    "option": "A",
+    "word": "Да, допускаю. Также допускаю, что могут быть и другие ограничения или требуемые исключения, которые на данном ходу мы еще не выявили. Но на текущий момент -- сверка + сбор по мастер-спекам",
+    "date": "2026-11-05"
+   },
+   "reversibility": {
+    "level": "обратимо",
+    "why": "этап следующих изменений, кода ещё нет"
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [],
+   "comments": [],
+   "nodes": [
+    "later"
+   ]
+  },
+  {
+   "id": "F-27",
+   "question": "Т11. Доступны ли пользователю чужие репозитории и что для нас архивация?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Доступ к репозиториям, клонам и веткам есть. Архивация OpenSpec это механизм, который мы переиспользуем и дополняем своими процедурами",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "docs/analysis/requirements-traceability-graph-of-symphysis.md",
+       "quote": "Но архивация change артефактов это удобный механизм, который мы переиспользуем у openspec, добавив по необходимости свои процедуры и проверки",
+       "line": 51,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Слово владельца, других вариантов он не называл."
+   },
+   "decision": {
+    "option": "A",
+    "word": "на практике же у пользователя symphysis есть доступ к репозиториям кодовой базы, других команд, клонам, разным веткам -- так как это необходимо для сбора информации, иначе откуда её брать? Но архивация change артефактов это удобный механизм, который мы переиспользуем у openspec, добавив по необходимости свои процедуры и проверки",
+    "date": "2026-11-05"
+   },
+   "reversibility": {
+    "level": "обратимо",
+    "why": "описание условий работы, своих процедур пока нет"
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [],
+   "comments": [],
+   "nodes": [
+    "archive"
+   ]
+  },
+  {
+   "id": "F-28",
+   "question": "Т12. Какие цифры считать опорой?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Только изменения внутри symphysis, прежние замеры качества не опора",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "docs/analysis/requirements-traceability-graph-of-symphysis.md",
+       "quote": "ближе к реальности те, что уже созданы внутри symphysis/",
+       "line": 52,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Слово владельца, других вариантов он не называл."
+   },
+   "decision": {
+    "option": "A",
+    "word": "разборы прошлых замеров, которые выполнялись для проверки качества составления, а не связности документов -- нам дадут плохие цифры. ближе к реальности те, что уже созданы внутри symphysis/",
+    "date": "2026-11-05"
+   },
+   "reversibility": {
+    "level": "обратимо",
+    "why": "правило выбора данных, кода нет"
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [],
+   "comments": []
+  },
+  {
+   "id": "F-29",
+   "question": "Т13. На чём мерить?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "На эталонных клонах: `recommendation-why`, `step-help`, `decision-scheme`, каждый на последнем коммите перед архивацией",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "docs/analysis/requirements-traceability-graph-of-symphysis.md",
+       "quote": "сохраним их клоны в момент последнего коммита перед архивацией",
+       "line": 53,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Слово владельца, других вариантов он не называл."
+   },
+   "decision": {
+    "option": "A",
+    "word": "А вот разборы мы можем себе обеспечить. Возьмем два change: recommendation-why как небольшой и decision-scheme, как средний размер change, сохраним их клоны в момент последнего коммита перед архивацией, и будем ориентироватья на них, в случае необходимости получения замеров. Давай добавим клон step-help, это хороший выбор",
+    "date": "2026-11-05"
+   },
+   "reversibility": {
+    "level": "обратимо",
+    "why": "клоны лежат вне git в `X:\\symphysis-reference` и пересоздаются по коммитам"
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [],
+   "comments": []
+  },
+  {
+   "id": "F-30",
+   "question": "Т14. Можно ли править граф напрямую?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Нет: только через файлы изменения, файл графа производный",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "docs/analysis/requirements-traceability-graph-of-symphysis.md",
+       "quote": "если граф можно модифицировать и дополнять напрямую, а не через файлы изменения -- получится расхождение в логике сбора, конфликты, чего нужно избегать",
+       "line": 54,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Слово владельца, других вариантов он не называл."
+   },
+   "decision": {
+    "option": "A",
+    "word": "И это верный подход. В противном случае, если граф можно модифицировать и дополнять напрямую, а не через файлы изменения -- получится расхождение в логике сбора, конфликты, чего нужно избегать",
+    "date": "2026-11-05"
+   },
+   "reversibility": {
+    "level": "дорого",
+    "why": "на этом стоит всё, что читает граф: прямая правка потребует слияния и разрешения конфликтов в формате снимка"
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [],
+   "comments": [],
+   "nodes": [
+    "files",
+    "collect",
+    "save"
+   ]
+  },
+  {
+   "id": "F-31",
+   "question": "Т15. Что делать с сигналами графа?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Выводить отчётом: человек видит зазор между прочитанным и сделанным и решает, реализовать требование или принять дыру",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "docs/analysis/requirements-traceability-graph-of-symphysis.md",
+       "quote": "то можно увидеть такие сигналы и решить нужно ли реализовывать требования, или дыра приемлема",
+       "line": 55,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Слово владельца, других вариантов он не называл."
+   },
+   "decision": {
+    "option": "A",
+    "word": "Да, дырой в работе не оказался, задача реализована. Но некоторые нюансы тихо упущены, хотя человек их прочел и думал, что они будут учтены в реализации. Но так как сигналы удобно выводить отчетом, то можно увидеть такие сигналы и решить нужно ли реализовывать требования, или дыра приемлема",
+    "date": "2026-11-05"
+   },
+   "reversibility": {
+    "level": "обратимо",
+    "why": "форма вывода скрипта, контракт с плагином её не содержит"
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [],
+   "comments": [],
+   "nodes": [
+    "report",
+    "human"
+   ]
+  },
+  {
+   "id": "F-32",
+   "question": "Т16. Как свести `openspec validate` и нашу проверку в одну операцию?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Наша проверка замещает `validate`: архив и `/opsx:sync` зовут нашу. Цена: правка форка, разбор дельт и пробное слияние повторяются на Python, сверка при каждом выпуске upstream",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "docs/analysis/requirements-traceability-graph-of-symphysis.md",
+       "quote": "| A. Наша проверка замещает `validate` | архив и `/opsx:sync` зовут нашу |",
+       "line": 420,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Две команды рядом: `validate` как есть, наша отдельно. Форк цел, но вторую запускать не будут",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "docs/analysis/requirements-traceability-graph-of-symphysis.md",
+       "quote": "| B. Две команды рядом | `validate` как есть, наша отдельно |",
+       "line": 421,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "C",
+     "text": "`validate` зовёт проверку схемы: форк читает из схемы команду и кладёт её находки уровнем INFO в свой отчёт. Цена: новая правка форка и новый ключ схемы, форк запускает внешнюю команду, без Python эта часть пропадает",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "docs/analysis/requirements-traceability-graph-of-symphysis.md",
+       "quote": "| C. `validate` зовёт проверку схемы |",
+       "line": 422,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "D",
+     "text": "Наша команда сама запускает `openspec validate --json` и выводит всё одним отчётом. Форк цел; голый `validate` по привычке графа не покажет",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "docs/analysis/requirements-traceability-graph-of-symphysis.md",
+       "quote": "| D. Наша команда зовёт `validate` |",
+       "line": 423,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    }
+   ],
+   "antipodes": [
+    {
+     "option": "D",
+     "other": "F-39.C"
+    },
+    {
+     "option": "D",
+     "other": "F-49.C"
+    }
+   ],
+   "recommendation": {
+    "option": "D",
+    "why": "Человек и шаги схемы знают одну команду, архив сохраняет свой стоп, форк не меняется."
+   },
+   "decision": {
+    "option": "D",
+    "word": "Да, вариант D хороший, я с ним согласен",
+    "date": "2026-11-05"
+   },
+   "reversibility": {
+    "level": "обратимо",
+    "why": "переход на вариант C остаётся открытым: наша команда перестанет звать `validate`, когда её начнёт звать форк"
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "Закрывает критерий F-05.",
+   "evidence": [],
+   "comments": [],
+   "nodes": [
+    "validate"
+   ]
+  },
+  {
+   "id": "F-33",
+   "question": "Т17. Мастер-спека менялась мимо изменения: это норма?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Исключение из-за догфудинга symphysis. Сигнал остаётся страховкой",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "docs/analysis/requirements-traceability-graph-of-symphysis.md",
+       "quote": "это правда. но является исключением ввиду догфудинга symphysis",
+       "line": 57,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Слово владельца, других вариантов он не называл."
+   },
+   "decision": {
+    "option": "A",
+    "word": "это правда. но является исключением ввиду догфудинга symphysis",
+    "date": "2026-11-05"
+   },
+   "reversibility": {
+    "level": "обратимо",
+    "why": "формулировка сигнала сверки, этап следующих изменений"
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [],
+   "comments": [],
+   "nodes": [
+    "later"
+   ]
+  },
+  {
+   "id": "F-34",
+   "question": "Т18. Входит ли весь граф одной картинкой в symphysis?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Нет: человек отдельно просит агента выгрузить файл и построить по нему",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "docs/analysis/requirements-traceability-graph-of-symphysis.md",
+       "quote": "он сможет в отдельном порядке попросить агента выгрузить файл и сформировать по нему весь граф",
+       "line": 58,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Слово владельца, других вариантов он не называл."
+   },
+   "decision": {
+    "option": "A",
+    "word": "Если человеку требуется весь граф в одной картинке, то он сможет в отдельном порядке попросить агента выгрузить файл и сформировать по нему весь граф. В функциональность symphysis это не входит",
+    "date": "2026-11-05"
+   },
+   "reversibility": {
+    "level": "обратимо",
+    "why": "функции нет, позже добавляется отдельным видом"
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [],
+   "comments": [],
+   "nodes": [
+    "diagram"
+   ]
+  },
+  {
+   "id": "F-35",
+   "question": "Т19. Можно ли ядру внешние пакеты?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Запрет Р19 снят: можно любой пакет из корпоративного хранилища или собранный самим, лишние нежелательны",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "docs/analysis/requirements-traceability-graph-of-symphysis.md",
+       "quote": "можно добавлять любой пакет, если его можно получить в корпоративном хранилище или собрать самим",
+       "line": 59,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Слово владельца, других вариантов он не называл."
+   },
+   "decision": {
+    "option": "A",
+    "word": "Надо убирать Р19 про требование \"ядро без внеших пакетов\". Во первых, это уже не правда, во вторых, можно добавлять любой пакет, если его можно получить в корпоративном хранилище или собрать самим. Но лишние зависимости нежелательны",
+    "date": "2026-11-05"
+   },
+   "reversibility": {
+    "level": "обратимо",
+    "why": "правило в `CLAUDE.md` обоих репозиториев; дорого станет только после появления самой зависимости"
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [],
+   "comments": []
+  },
+  {
+   "id": "F-36",
+   "question": "Т20. Что такое компонент и модуль?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Компонент выпускается целиком и связан с другими только контрактом: «Ядро + плагин», а репозиториев у части бывает несколько из-за сборки или деплоя. Модуль это часть компонента с одной ответственностью, именем и границей, из файлов любого рода, отдельно не выпускается",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "docs/analysis/requirements-traceability-graph-of-symphysis.md",
+       "quote": "это часть компонента с одной ответственностью, у которой есть имя и граница",
+       "line": 482,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Слово владельца, других вариантов он не называл."
+   },
+   "decision": {
+    "option": "A",
+    "word": "Да, определение модуля верное, этого и будем придерживаться. Насчет компонента твоё определение тоже верное. Моя фраза про \"у компонента бывает несколько репозиториев\" скорее о семантической декомпозии. Например, есть ядро symphysis и плагин vscode. Но я также создам / создал несколько репозиториев для имплементации плагинов под разные платформы, например opencode. Когда я думаю о компонентах то представляю как \"Ядро + плагин\", хотя часть про плагин представляет из себя разные репозитории, и такое разделение связано с особенностями сборки или деплоя",
+    "date": "2026-11-05"
+   },
+   "reversibility": {
+    "level": "дорого",
+    "why": "id модуля `репозиторий/модуль` войдёт в снимки и в README всех модулей"
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [],
+   "comments": [],
+   "nodes": [
+    "later"
+   ]
+  },
+  {
+   "id": "F-37",
+   "question": "Т21. Как модуль описан в репозитории и когда приводить к этому symphysis?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Модуль это каталог с README: описание, ссылки и описание вложенных каталогов первого уровня. Приведение репозитория symphysis к определению позже, отдельным изменением",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "docs/analysis/requirements-traceability-graph-of-symphysis.md",
+       "quote": "хорошо описанный модуль в репозитории должен включать README с описанием этого модуля",
+       "line": 61,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Слово владельца, других вариантов он не называл."
+   },
+   "decision": {
+    "option": "A",
+    "word": "На уровне практики хорошо описанный модуль в репозитории должен включать README с описанием этого модуля, а также ссылок и описание вложенных каталогов первого уровня этого модуля. Думаю, нам стоит самим организовать структуру репозитория symphysis таким образом, чтобы соответствовать своему же определению. Приведение репозитория к определению позже",
+    "date": "2026-11-05"
+   },
+   "reversibility": {
+    "level": "дорого",
+    "why": "перенос затронет 37 файлов с путём `tools/journal`, импорты `tools/` и `installer/scripts/sync-payload.js`"
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [],
+   "comments": [],
+   "nodes": [
+    "later"
+   ]
+  },
+  {
+   "id": "F-38",
+   "question": "Что входит в первую поставку: только уровень изменения или и уровень корня?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Только уровень изменения: граф, отчёт сигналов, файл и его проверка, снимок при архивации, текст `requirementDiagram`, руководство. Снимок корня, сверка снимков, первичный сбор, связи между корнями, хранители, модули и вид в плагине идут следующими изменениями. Снимки начинают копиться уже сейчас",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/changes/trace-graph/intent.md",
+       "quote": "Архивация изменения должна замораживать граф изменения его снимком.",
+       "line": 7,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "То же плюс сверка снимка изменения с мастер-спекой при `/opsx:sync`: повисшие связи и дельта, без снимка корня. Цена: разбор мастер-спек и правила сверки, а разбирать очередь пока некому",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "docs/analysis/requirements-traceability-graph-of-symphysis.md",
+       "quote": "дельта в мастер-спеках; сверка снимка со снимком корня",
+       "line": 281,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "C",
+     "text": "Вся вертикаль из разбора: снимок корня, первичный сбор, сверка, связи между корнями",
+     "added": false,
+     "unlikely": "хранителей в первой поставке нет (Т5), а сверять не с чем, пока снимки не накопятся",
+     "evidence": [
+      {
+       "path": "docs/analysis/requirements-traceability-graph-of-symphysis.md",
+       "quote": "Первый снимок существующего корня не с чем сверять",
+       "line": 377,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Намерение и критерии называют только уровень изменения. Сверку не на чем проверить, пока снимков нет, а копиться они начнут уже с этой поставки. B добавляет разбор мастер-спек ради сигнала, который пока некому разбирать."
+   },
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-05"
+   },
+   "reversibility": {
+    "level": "обратимо",
+    "why": "следующие изменения добавляют уровень корня, снимки этой поставки им не мешают"
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "Расхождение с разбором по критерию F-01 фиксируется этим решением. Следующие записи проектируют только уровень изменения.",
+   "evidence": [],
+   "comments": [],
+   "nodes": [
+    "later",
+    "freeze"
+   ]
+  },
+  {
+   "id": "F-39",
+   "question": "Где живёт сборка графа?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Отдельный скрипт в `tools/`, рабочее имя `trace_graph.py`, со своим `--help`; журнал читает через `journal_model`. Цена: строка в `FILES` у `sync-payload.js` и в фильтре имён инсталлятора",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "context/04-workflow.md",
+       "quote": "У скрипта одна область и `--help`",
+       "line": 32,
+       "verdict": "сверено",
+       "found": true
+      },
+      {
+       "path": "tools/step_help.py",
+       "quote": "from journal_render import CONTRACT",
+       "line": 25,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Подкоманда `journal.py trace`, как в разборе. Цена: `journal.py` начинает читать specs и tasks, а подкоманда, которую позовёт плагин, входит в контракт",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "docs/analysis/requirements-traceability-graph-of-symphysis.md",
+       "quote": "| `tools/`, рабочее имя `journal.py trace` |",
+       "line": 433,
+       "verdict": "сверено",
+       "found": true
+      },
+      {
+       "path": "docs/repo-contract.md",
+       "quote": "- подкоманды и аргументы `journal.py`, которые вызывает плагин",
+       "line": 47,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "C",
+     "text": "Команда в форке: `openspec trace`",
+     "added": false,
+     "unlikely": "графу форк не нужен (F-32), а правка форка сверяется при каждом выпуске upstream",
+     "evidence": [
+      {
+       "path": "CLAUDE.md",
+       "quote": "Своё — в схеме (`openspec/schemas/<имя>/`) и своих скиллах:",
+       "line": 71,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    }
+   ],
+   "antipodes": [
+    {
+     "option": "C",
+     "other": "F-32.D"
+    }
+   ],
+   "recommendation": {
+    "option": "A",
+    "why": "Граф читает всё изменение, а не только журнал: это другая область, как у `step_help.py`. Подкоманда дешевле на один шаг поставки, но растягивает `journal.py` и при вызове из плагина попадает в контракт."
+   },
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-05"
+   },
+   "reversibility": {
+    "level": "обратимо",
+    "why": "скрипт не входит в контракт с плагином, пока плагин его не зовёт; перенос это строка в `FILES` у `sync-payload.js`"
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "В F-32.D и в разборе команда названа рабочим именем `journal.py trace`: это имя решается здесь.",
+   "evidence": [],
+   "comments": [],
+   "nodes": [
+    "collect"
+   ]
+  },
+  {
+   "id": "F-40",
+   "question": "Как разбирать спеки?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Свой разбор заголовков `### Requirement:`, `#### Scenario:` и секций дельты, с номерами строк. Цена: правила разбора повторяются на Python; расхождение с OpenSpec ловит тест, сверяющий счётчики на фикстурах с `openspec show --json`",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/schemas/symphysis/schema.yaml",
+       "quote": "у каждого есть сценарий `#### Scenario: <имя>` (ровно четыре `#`)",
+       "line": 76,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "`openspec show --json`: разбор у самого OpenSpec. Цена: нет номеров строк, связь нельзя открыть на месте; каждый запуск зовёт CLI",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "docs/analysis/requirements-traceability-graph-of-symphysis.md",
+       "quote": "`show --json` даёт имена и сценарии, но без номеров строк",
+       "line": 441,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "C",
+     "text": "Пакет разбора markdown: теперь законно (Т19)",
+     "added": false,
+     "unlikely": "заголовки это отдельные строки, дерево документа не нужно, а лишние зависимости нежелательны",
+     "evidence": [
+      {
+       "path": "docs/analysis/requirements-traceability-graph-of-symphysis.md",
+       "quote": "Но лишние зависимости нежелательны",
+       "line": 59,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Месту связи нужен номер строки: иначе граф называет файл, а не место, и модель снова ищет. Заголовки разбираются коротко, а расхождение с OpenSpec ловит тест."
+   },
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-05"
+   },
+   "reversibility": {
+    "level": "обратимо",
+    "why": "разбор закрыт внутри скрипта, формат графа от него не зависит"
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [],
+   "comments": [],
+   "nodes": [
+    "collect"
+   ]
+  },
+  {
+   "id": "F-41",
+   "question": "Где лежит файл графа и что значит «проверить его скриптом»?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-30"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Живой граф на диске не лежит: скрипт выводит его или пишет в путь из `--out`. В каталоге изменения остаётся только снимок заморозки. Проверка читает файл, сверяет форму и хеши исходников с текущими файлами и даёт сигнал «устарел»",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "docs/analysis/requirements-traceability-graph-of-symphysis.md",
+       "quote": "если нужно его можно собрать в файл, провалидировать, провести атаку на связи",
+       "line": 49,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Живой файл всегда лежит в каталоге изменения и пересобирается на каждом шаге, как `decisions.md`. Цена: шум в diff на каждом шаге и конфликты при параллельной работе",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "docs/analysis/requirements-traceability-graph-of-symphysis.md",
+       "quote": "производный артефакт с проверкой, как `decisions.md`",
+       "line": 32,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "C",
+     "text": "Живой файл в каталоге изменения, но вне git. Цена: ещё одна строка в `.gitignore` проекта от инсталлятора, а в архиве его нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/specs/project-installer/spec.md",
+       "quote": "SHALL добавлять строку `symphysis.yaml` в `.gitignore` проекта",
+       "line": 213,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Истина лежит в файлах изменения (Т14), поэтому постоянный живой файл ничего не добавляет, а шум в каждом шаге дорог. Хеши дают то, что просит критерий: сохранённое можно проверить позже и увидеть, что оно устарело."
+   },
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-05"
+   },
+   "reversibility": {
+    "level": "дорого",
+    "why": "снимки лежат в архиве: смена их места или формата потребует пересборки архива"
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [],
+   "comments": [],
+   "nodes": [
+    "save"
+   ]
+  },
+  {
+   "id": "F-42",
+   "question": "В какой форме задача называет сценарий?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Всегда capability и имя: `decision-journal`: «Есть поле `text`». Такая форма уже встречается. Цена: строка длиннее",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/changes/archive/2026-11-04-recommendation-why/tasks.md",
+       "quote": "Написать тесты по сценариям `decision-journal`: «Есть поле `text`»",
+       "line": 5,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Capability только при совпадении имён. Короче, но модель должна проверять совпадения, а новый дубль делает старую ссылку неоднозначной",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "docs/analysis/requirements-traceability-graph-of-symphysis.md",
+       "quote": "Имена сценариев совпадают чаще: 27 из 590 в мастер-спеках.",
+       "line": 148,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "C",
+     "text": "Отдельный хвост строки рядом с проверкой: `— сценарий: capability / имя`. Разбор точнее, цена: вторая служебная часть строки",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/schemas/symphysis/templates/tasks.md",
+       "quote": "- [ ] 1.1 <Задача> — проверка: <тест, команда, наблюдаемый результат, файл>",
+       "line": 9,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "D",
+     "text": "Задача называет требование, а не сценарий",
+     "added": false,
+     "unlikely": "так пишут 3 задачи из 251, и требование крупнее задачи: одна задача закрывает часть его сценариев",
+     "evidence": [
+      {
+       "path": "docs/analysis/requirements-traceability-graph-of-symphysis.md",
+       "quote": "| Задача называет требование | satisfies | строка задачи | 3 из 251 |",
+       "line": 136,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Закрепляет уже существующую форму, как и просит намерение, и работает без условий: модели не надо проверять совпадения имён, как в B. Без capability совпадение имён даёт ложное покрытие: «Поля `text` нет» у плагина формально закрыт задачей ядра. C точнее в разборе, но вводит вторую служебную часть строки."
+   },
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-05"
+   },
+   "reversibility": {
+    "level": "обратимо",
+    "why": "строка в инструкции `tasks` и в шаблоне, старые задачи не переписываются"
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [],
+   "comments": [],
+   "nodes": [
+    "conv"
+   ]
+  },
+  {
+   "id": "F-43",
+   "question": "Как быть с задачей, которой нечего называть: настройка дерева, полный прогон?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Пометка `служебная` в строке: скрипт не считает такую задачу висящей",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/changes/archive/2026-11-04-recommendation-why/tasks.md",
+       "quote": "Полный прогон ядра",
+       "line": 18,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Пометки нет: сигнал «задача ни к чему» показывается всегда, человек принимает его каждый раз",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "docs/analysis/requirements-traceability-graph-of-symphysis.md",
+       "quote": "75 задач из 251 не называют ни сценария, ни требования, ни записи.",
+       "line": 701,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "C",
+     "text": "Задача обязана назвать сценарий или запись журнала. Цена: связь придётся придумывать там, где её нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "docs/analysis/requirements-traceability-graph-of-symphysis.md",
+       "quote": "| Задача называет запись журнала | traces | строка задачи | 118 из 251 |",
+       "line": 135,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Настройка дерева и прогон честно ни к чему не относятся. Без пометки 75 задач из 251 дадут сигнал, который все научатся не читать, а обязанность из C заставит придумывать связи, и граф начнёт врать."
+   },
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-05"
+   },
+   "reversibility": {
+    "level": "обратимо",
+    "why": "строка в инструкции `tasks` и правило скрипта"
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [],
+   "comments": [],
+   "nodes": [
+    "conv"
+   ]
+  },
+  {
+   "id": "F-44",
+   "question": "Закреплять ли `(F-NN)` в тексте требования?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Да: одна строка в инструкции шага `specs`. Цена: номера считаются в предел 500 символов текста требования",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/schemas/symphysis/schema.yaml",
+       "quote": "Требование — `### Requirement: <имя>` с SHALL или MUST",
+       "line": 76,
+       "verdict": "сверено",
+       "found": true
+      },
+      {
+       "path": "skills/symphysis-edge-probe/SKILL.md",
+       "quote": "он считается в предел 500 символов текста требования",
+       "line": 364,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Перенести номера в конец блока, в комментарий, как след пробы: символы освобождаются. Цена: связь уходит из текста, который читает человек, и ломается то, что уже работает",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "skills/symphysis-edge-probe/SKILL.md",
+       "quote": "След стоит в конце блока каждого требования, после всех его сценариев",
+       "line": 363,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "C",
+     "text": "Оставить как есть: правила нет, отсутствие номера даёт сигнал",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "docs/analysis/requirements-traceability-graph-of-symphysis.md",
+       "quote": "| Требование стоит на записи журнала | traces | `(F-NN)` в тексте требования | 188 из 188, правила нет |",
+       "line": 127,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "В 188 требованиях из 188 номер уже стоит, поэтому закрепление только защищает от модели, которая об этом не знает. Цена мала: номер занимает семь знаков из 500."
+   },
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-05"
+   },
+   "reversibility": {
+    "level": "обратимо",
+    "why": "строка в инструкции шага `specs`"
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [],
+   "comments": [],
+   "nodes": [
+    "conv"
+   ]
+  },
+  {
+   "id": "F-45",
+   "question": "Как связать исход Specify с его сценарием?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-31"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Комментарий `<!-- F-NN -->` под заголовком сценария, его ставит скилл пробы. Проверено запуском: `validate --strict` проходит, при архивации комментарий доходит до мастер-спеки. Цена: строка на сценарий и правка двух скиллов",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/specs/requirement-probes/spec.md",
+       "quote": "под требованием в spec.md появляется новый `#### Scenario:` на этот край",
+       "line": 19,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "След как есть, а сигнал сравнивает слова варианта и сценария по порогу. Цена: неточно, у 10 из 77 сценарий не находится, хотя часть из них снята осознанно",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "docs/analysis/requirements-traceability-graph-of-symphysis.md",
+       "quote": "Из этих 77 сценарий находится по совпадению слов у 67 (порог 0,5), у 10 нет.",
+       "line": 250,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "C",
+     "text": "Оставить как есть: исход Specify не проверяется, сверяет только человек",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "docs/analysis/requirements-traceability-graph-of-symphysis.md",
+       "quote": "у 72 исходов Specify из 159 связь есть только здесь",
+       "line": 128,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Это тот самый зазор из Т15: человек выбрал край и считает его учтённым. Комментарий даёт точное совпадение вместо порога по словам, а точные проверки и должны идти без суждения модели."
+   },
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-05"
+   },
+   "reversibility": {
+    "level": "обратимо",
+    "why": "текст двух скиллов проб; комментарии, уже попавшие в спеки, ничему не мешают"
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [],
+   "comments": [],
+   "nodes": [
+    "conv",
+    "report"
+   ]
+  },
+  {
+   "id": "F-46",
+   "question": "Как сигнал узнаёт, что исход Specify снят позже?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-45"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Соглашение: запись, снимающая решение, называет его в `depends_on`. Сигнал показывает рядом «снято F-129?». Формат журнала не меняется. Цена: если срез забудет, сигнал останется ложным, как у F-65",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "docs/analysis/requirements-traceability-graph-of-symphysis.md",
+       "quote": "это написано только в тексте вопроса и отчасти в `depends_on`",
+       "line": 252,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Новое необязательное поле записи `superseded_by`. Сменой контракта не считается. Цена: схема журнала, рендер и страница ради редкого случая",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "docs/repo-contract.md",
+       "quote": "Новое поле сменой не считается.",
+       "line": 60,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "C",
+     "text": "Менять `outcome` снятой записи на Dismiss",
+     "added": false,
+     "unlikely": "`outcome` зеркалит только `decision`: так записано в спеке, и прошлое решение человека переписывалось бы",
+     "evidence": [
+      {
+       "path": "openspec/changes/archive/2026-11-02-implementation-consequences/specs/requirement-probes/spec.md",
+       "quote": "`outcome` SHALL зеркалить только `decision`",
+       "line": 6,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "D",
+     "text": "Оставить как есть: сигнал ложный, человек один раз отвечает «снято»",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "docs/analysis/requirements-traceability-graph-of-symphysis.md",
+       "quote": "У F-66 в журнале и в комментарии спеки по-прежнему Specify, а сценария нет.",
+       "line": 252,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Формат не меняется, а человек сразу видит вероятную причину. Поле точнее, но меняет журнал, страницу и плагин ради редкого случая."
+   },
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-05"
+   },
+   "reversibility": {
+    "level": "обратимо",
+    "why": "соглашение в тексте скилла, формат журнала не меняется"
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [],
+   "comments": [],
+   "nodes": [
+    "report"
+   ]
+  },
+  {
+   "id": "F-47",
+   "question": "Где записывается ответ человека на сигнал?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-30",
+    "F-31"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Запись журнала с префиксом `[сигнал]` и исходами Specify, Dismiss, Backstop, Defer, `outcome.kind: проба`. Заводится только на сигнал, о котором человек решил что-то записать; скрипт находит такую запись и сигнал больше не поднимает",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "tools/journal_model.py",
+       "quote": "PROBE_OUTCOMES = (\"Specify\", \"Dismiss\", \"Backstop\", \"Defer\")",
+       "line": 50,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Новое значение `outcome.kind: сигнал`. Цена: смена контракта с плагином, новый номер",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "docs/repo-contract.md",
+       "quote": "Новое значение опасно само по себе: плагин считает развилкой всё, что не факт.",
+       "line": 60,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "C",
+     "text": "Отдельный файл ответов в каталоге изменения со своей грамматикой. Контракт цел, но появляется второй журнал",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "docs/analysis/requirements-traceability-graph-of-symphysis.md",
+       "quote": "Как записывается исход сигнала",
+       "line": 702,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "D",
+     "text": "Не записывать: ответ остаётся в чате",
+     "added": false,
+     "unlikely": "через неделю никто не вспомнит, что дыра принята, и сигнал будет подниматься снова",
+     "evidence": [
+      {
+       "path": "docs/analysis/requirements-traceability-graph-of-symphysis.md",
+       "quote": "можно увидеть такие сигналы и решить нужно ли реализовывать требования, или дыра приемлема",
+       "line": 55,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Механизм уже есть: те же четыре исхода, просмотрщик и `apply`, контракт не меняется. Отдельный файл дал бы второй источник решений, а Т14 просит один."
+   },
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-05"
+   },
+   "reversibility": {
+    "level": "обратимо",
+    "why": "формат журнала и контракт с плагином не меняются"
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [],
+   "comments": [],
+   "nodes": [
+    "outcome"
+   ]
+  },
+  {
+   "id": "F-48",
+   "question": "Когда модель показывает отчёт сигналов?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-31"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "В двух точках: перед реализацией, строкой в `apply.instruction` схемы, и перед архивацией, подсказкой `operations.archive.guidance`",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/schemas/symphysis/schema.yaml",
+       "quote": "Работай по tasks.md по порядку и отмечай `- [x]` по мере выполнения",
+       "line": 159,
+       "verdict": "сверено",
+       "found": true
+      },
+      {
+       "path": "upstream/openspec/src/core/templates/workflows/archive-change.ts",
+       "quote": "openspec instructions archive --change",
+       "line": 63,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Только перед архивацией. Цена: реализация уже закончена, и «реализовать» означает снова открыть работу",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "docs/analysis/requirements-traceability-graph-of-symphysis.md",
+       "quote": "На архивации реализация уже закончена, и «реализовать» означает снова открыть работу.",
+       "line": 246,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "C",
+     "text": "После каждого шага, через `/opsx:continue`. Цена: на ранних шагах сигналы ещё ничего не значат: до `tasks` любое требование выглядит без задачи",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "docs/analysis/requirements-traceability-graph-of-symphysis.md",
+       "quote": "| `tasks` | задачи; задача к сценарию, к записи |",
+       "line": 276,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "D",
+     "text": "Только по запросу человека. Цена: о зазоре он узнает, только если спросит",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/changes/trace-graph/intent.md",
+       "quote": "Граф можно сохранить и проверить скриптом.",
+       "line": 17,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Перед реализацией ответ «реализовать» стоит дешевле всего, а перед архивацией видно, что сделано на самом деле. На каждом шаге отчёт только шумел бы."
+   },
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-05"
+   },
+   "reversibility": {
+    "level": "обратимо",
+    "why": "строка в `apply.instruction` файла `schema.yaml` и ключ в `openspec/config.yaml`"
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [],
+   "comments": [],
+   "nodes": [
+    "report",
+    "apply"
+   ]
+  },
+  {
+   "id": "F-49",
+   "question": "Чем запускается заморозка?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-19"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Подсказка `operations.archive.guidance`: модель собирает снимок в привычном `/opsx:archive`. Не блокирует. Цена: модель может пропустить, а инсталлятор пока не переносит ключ `operations`, его придётся научить",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "upstream/openspec/src/core/templates/workflows/archive-change.ts",
+       "quote": "optional: it only supplies extra prompt inputs, so it must never block archiving.",
+       "line": 66,
+       "verdict": "сверено",
+       "found": true
+      },
+      {
+       "path": "installer/lib/install.js",
+       "quote": "схема переключается, rules объединяются, остальное не трогает",
+       "line": 79,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Своя команда-обёртка: снимок, затем `openspec archive`. Надёжнее, но привычный `/opsx:archive` снимка не даст",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "docs/analysis/requirements-traceability-graph-of-symphysis.md",
+       "quote": "добавив по необходимости свои процедуры и проверки",
+       "line": 51,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "C",
+     "text": "Правка форка: `openspec archive` зовёт команду из схемы",
+     "added": false,
+     "unlikely": "графу форк не нужен (F-32), а правка форка сверяется при каждом выпуске upstream",
+     "evidence": [
+      {
+       "path": "upstream/openspec/UPSTREAM.md",
+       "quote": "## Правки форка",
+       "line": 21,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "D",
+     "text": "Артефакт схемы",
+     "added": false,
+     "unlikely": "артефакты идут до реализации: `apply` требует их готовыми, а снимок нужен после неё",
+     "evidence": [
+      {
+       "path": "openspec/schemas/symphysis/schema.yaml",
+       "quote": "requires: [tasks, security, attack-artifacts]",
+       "line": 156,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    }
+   ],
+   "antipodes": [
+    {
+     "option": "C",
+     "other": "F-32.D"
+    }
+   ],
+   "recommendation": {
+    "option": "A",
+    "why": "Заморозка не гейт, как и просит Т3, и работает в том шаге, который человек и так запускает. Цена пропуска невысока: снимок можно собрать позже из архивного каталога."
+   },
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-05"
+   },
+   "reversibility": {
+    "level": "обратимо",
+    "why": "ключ в `openspec/config.yaml` и слияние в `installer/lib/install.js`"
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [],
+   "comments": [],
+   "nodes": [
+    "freeze"
+   ]
+  },
+  {
+   "id": "F-50",
+   "question": "Как снимок переживает перевод путей в журнале после архива? Сейчас перевод меняет журнал, и его хеш в снимке сразу устаревает.",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-49"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "`check` сам находит улику `openspec/changes/<имя>/…` в архивном каталоге, и руками пути больше не переводятся. Журнал после архива не меняется, хеш снимка верен. Цена: правка разрешения путей в `journal_apply.py`; старые архивы с переведёнными путями остаются годными",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "tools/journal_apply.py",
+       "quote": "def _resolve(path: str, roots: dict[str, Path]) -> Path | None:",
+       "line": 110,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Считать хеш журнала без поля `path` у улик. Пути по-прежнему переводятся руками",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "context/06-related-changes.md",
+       "quote": "После архива улики журнала с путём активного изменения переводятся на архивный.",
+       "line": 45,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "C",
+     "text": "Снимать снимок самым последним шагом, уже после архива и перевода путей. Цена: подсказка архивации читается до архива, и снимок легко забыть",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "docs/analysis/requirements-traceability-graph-of-symphysis.md",
+       "quote": "Тогда снимок можно собрать из архивного каталога",
+       "line": 366,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "D",
+     "text": "Оставить как есть: хеш журнала устаревает сразу после архива",
+     "added": false,
+     "unlikely": "снимок выглядел бы устаревшим с первого дня",
+     "evidence": [
+      {
+       "path": "context/06-related-changes.md",
+       "quote": "После архива улики журнала с путём активного изменения переводятся на архивный.",
+       "line": 45,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Убирает ручной шаг, которого нет ни в схеме, ни в руководстве: в чужом проекте пути сейчас просто перестают находиться. B лечит только хеш, а улики в архиве остаются битыми, если их забыли перевести."
+   },
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-05"
+   },
+   "reversibility": {
+    "level": "дорого",
+    "why": "журналы архива перестанут переводиться на архивный путь: откат потребует перевести накопившиеся"
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [],
+   "comments": [],
+   "nodes": [
+    "freeze",
+    "archive"
+   ]
+  },
+  {
+   "id": "F-51",
+   "question": "На каком коммите читать улику из снимка?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Снимок называет только коммиты заморозки. Цитата лежит в журнале дословно, а коммит снятия находится через историю журнала",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "docs/analysis/requirements-traceability-graph-of-symphysis.md",
+       "quote": "их надо читать на коммите снятия",
+       "line": 361,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Снимок называет ещё коммиты корней на момент начала реализации. Цена: отдельный шаг и место, где их запомнить",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/schemas/symphysis/schema.yaml",
+       "quote": "Работай по tasks.md по порядку и отмечай `- [x]` по мере выполнения",
+       "line": 159,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "C",
+     "text": "У каждой улики поле с коммитом, его пишет `check --write`. Точно, но добавляет журналу шум и формат",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "docs/journal.schema.json",
+       "quote": "\"found\": {\"type\": [\"boolean\", \"null\"],",
+       "line": 32,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Цитата уже лежит в журнале дословно, поэтому исходный файл нужен редко. На эталоне так и вышло: коммит журнала `940caf7` даёт 66 совпадений из 66 без всяких новых полей."
+   },
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-05"
+   },
+   "reversibility": {
+    "level": "обратимо",
+    "why": "поле можно добавить позже: новое поле сменой контракта не считается"
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [],
+   "comments": [],
+   "nodes": [
+    "freeze"
+   ]
+  },
+  {
+   "id": "F-52",
+   "question": "Снимок при архивации всегда или по настройке?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Всегда: сбор ничего не задерживает, а без снимка следующему этапу нечего сверять",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "docs/analysis/requirements-traceability-graph-of-symphysis.md",
+       "quote": "Сбор ничего не задерживает, а без снимка верхнему уровню нечего сверять и в споре не на что сослаться.",
+       "line": 686,
+       "verdict": "сверено",
+       "found": true
+      },
+      {
+       "path": "openspec/changes/trace-graph/intent.md",
+       "quote": "Архивация изменения должна замораживать граф изменения его снимком.",
+       "line": 7,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Настройка в `symphysis.yaml`, как у проб. Цена: снимки появляются не у всех изменений, и сверка должна это учитывать",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "tools/symphysis_config.py",
+       "quote": "\"edge_probe\": {\"enabled\": \"edge_probe\"},",
+       "line": 30,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Настройка нужна тому, что стоит времени, как проба. Снимок это один запуск скрипта, а пропуск только создаёт дыры для следующего этапа."
+   },
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-05"
+   },
+   "reversibility": {
+    "level": "обратимо",
+    "why": "настройка добавляется в `symphysis_config.py` позже"
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [],
+   "comments": [],
+   "nodes": [
+    "freeze"
+   ]
+  },
+  {
+   "id": "F-53",
+   "question": "Чем держится правило «новый артефакт проверяется на вход в граф»?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Реестр в скрипте: на каждый артефакт схемы строка, что граф из него берёт, `ничего` законно. Тест сверяет реестр с `schema.yaml`: новый артефакт без строки даёт красный. Правило описано абзацем в `CLAUDE.md`",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "tests/test_schema.py",
+       "quote": "ARTIFACT_IDS = [\"intent\", \"decisions\", \"research\", \"attack-decisions\", \"proposal\", \"specs\", \"consequences\",",
+       "line": 25,
+       "verdict": "сверено",
+       "found": true
+      },
+      {
+       "path": "openspec/changes/trace-graph/intent.md",
+       "quote": "Ввод новых артефактов в состав change -- должен проверяться на внедрение в граф, не нарушая структуру и правила формирования графа.",
+       "line": 9,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Только правило: абзац в `CLAUDE.md` и строка в пакете «меняешь X, меняй Y». Дешевле, но держится на памяти",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "CLAUDE.md",
+       "quote": "## Ограничения схемы",
+       "line": 69,
+       "verdict": "сверено",
+       "found": true
+      },
+      {
+       "path": "context/06-related-changes.md",
+       "quote": "| `schema.yaml`: артефакт, порядок |",
+       "line": 27,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "C",
+     "text": "Сигнал скрипта: файл изменения, незнакомый реестру. Ловит и файлы вне схемы, но только у того, кто запустил скрипт на таком изменении",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/changes/trace-graph/intent.md",
+       "quote": "Ввод новых артефактов в состав change",
+       "line": 9,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "D",
+     "text": "Линза атаки",
+     "added": false,
+     "unlikely": "атака необязательна и идёт по слову, а список линз входит в контракт",
+     "evidence": [
+      {
+       "path": "docs/repo-contract.md",
+       "quote": "- списки линз;",
+       "line": 57,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Намерение говорит «должен проверяться», а точная проверка не требует суждения. Образец уже есть: `ARTIFACT_IDS` в тестах схемы. Правило без теста забудут при первом же новом артефакте."
+   },
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-05"
+   },
+   "reversibility": {
+    "level": "обратимо",
+    "why": "реестр в скрипте и тест, снимаются вместе"
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [],
+   "comments": [],
+   "nodes": [
+    "rule"
+   ]
+  },
+  {
+   "id": "F-54",
+   "question": "Что именно ядро даёт для `requirementDiagram`?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-34"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Генератор текста в том же скрипте: `--format mermaid` с выбором `--capability` или `--requirement`. Ничего не рисует. Требование идёт как `requirement`, сценарий, задача и запись как `element`, связи как verifies, satisfies, traces",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "docs/analysis/requirements-traceability-graph-of-symphysis.md",
+       "quote": "| Ломает ли разбор ключевое слово в тексте без кавычек | да, генератор всегда берёт текст в кавычки |",
+       "line": 621,
+       "verdict": "сверено",
+       "found": true
+      },
+      {
+       "path": "openspec/changes/trace-graph/intent.md",
+       "quote": "В symphysis ядре обеспечивается сама возможность, а не отображение.",
+       "line": 16,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Генератор всего графа без выбора. Проще, но целое изменение на картинке не читается",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "docs/analysis/requirements-traceability-graph-of-symphysis.md",
+       "quote": "Весь граф одной картинкой в функциональность symphysis не входит.",
+       "line": 590,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "C",
+     "text": "Только JSON и таблица соответствий в `docs/GUIDE.md`: диаграмму строит агент",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "docs/analysis/requirements-traceability-graph-of-symphysis.md",
+       "quote": "Тот же граф в JSON отвечает модели точно",
+       "line": 630,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Кавычки, ключевые слова и апострофы это ловушки, о которые каждый агент споткнётся заново: пробы это показали. Генератор короткий и ничего не рисует, поэтому это возможность из критерия, а не показ. Выбор части графа держит Т18."
+   },
+   "decision": {
+    "option": "A",
+    "word": "С дополнением: у генератора есть также описанный конфиг, где указан как работать с различными сущностями. Берётся ближайший тип SysML, на каждый вид сущности вешается classDef, вид пишется в id (SEC-3). Виды различаются цветом и рамкой, но подпись-стереотип над блоком остаётся стандартной.",
+    "date": "2026-11-05"
+   },
+   "reversibility": {
+    "level": "обратимо",
+    "why": "текст генератора и его конфиг, формат графа от них не зависит"
+   },
+   "outcome": null,
+   "parking": [
+    {
+     "addressee": "материалы",
+     "text": "работа с classDef в mermaid"
+    }
+   ],
+   "dispute": "",
+   "consequences": "Реестр из F-53 и конфиг генератора могут оказаться одним файлом: решается в design. Как `classDef` работает в `requirementDiagram`, выясняет парковка этой записи.",
+   "evidence": [],
+   "comments": [],
+   "nodes": [
+    "diagram"
+   ]
+  },
+  {
+   "id": "F-55",
+   "question": "Как атака работает со связями?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-19",
+    "F-25"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Линза `scenario-run` получает файл графа на вход и проверяет смысл связей, не тратя время на существование имён. Список линз не меняется",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "skills/symphysis-attack/SKILL.md",
+       "quote": "следование сценария spec по коду образца, `scenario-run`",
+       "line": 10,
+       "verdict": "сверено",
+       "found": true
+      },
+      {
+       "path": "docs/analysis/requirements-traceability-graph-of-symphysis.md",
+       "quote": "Перед ней скрипт снимает с модели проверки существования, поэтому атаке остаётся смысл.",
+       "line": 393,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Новая линза связей. Цена: смена контракта, новый номер и правка плагина",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "docs/repo-contract.md",
+       "quote": "- списки линз;",
+       "line": 57,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "C",
+     "text": "Оставить как есть: в первой поставке атака графа не знает",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "docs/analysis/requirements-traceability-graph-of-symphysis.md",
+       "quote": "необязательная атака по слову человека (Т3)",
+       "line": 387,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Т9 прямо называет атаку на связи, а менять список линз дорого: это смена контракта. Файл графа на входе не меняет ни формат строк, ни вердикт."
+   },
+   "decision": {
+    "option": "B",
+    "word": "Относительно рекомендации: если я захочу такую линзу связей отключить, то она будет завязана на линзу scenario-run. Поэтому вариант B, а не A",
+    "date": "2026-11-05"
+   },
+   "reversibility": {
+    "level": "дорого",
+    "why": "номер контракта растёт (`docs/repo-contract.md`), плагин поднимает `EXPECTED_CONTRACT`; снять линзу значит новая смена контракта"
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "Отказ от варианта C держит линзу в первой поставке. Поэтому плагин получает в этом изменении малую правку: список линз в `src/shared/attack.ts`, `EXPECTED_CONTRACT`, подстановку в `test/e2e/scenario.ts` и коммит с `Needs:`. Ядро: скилл атаки, список в `tools/playground-template.html`, `CONTRACT` в `tools/journal_render.py`, тесты списков. Вид графа в плагине остаётся следующим изменением (F-38.A).",
+   "evidence": [],
+   "comments": [],
+   "nodes": [
+    "attack"
+   ]
+  },
+  {
+   "id": "F-56",
+   "question": "Как держать соответствие реализации разбору?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Разбор остаётся опорой как есть. Каждое отступление это запись журнала с номером решения Т или разделом разбора. В `tasks.md` отдельная задача: пройти разделы разбора и назвать, что реализовано и что отступило",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/changes/trace-graph/intent.md",
+       "quote": "реализованная функциональность соответствует описанным в нём механикам, решениям и определениям, или имеет зафиксированное решение о расхождении",
+       "line": 15,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Разбор правится по мере решений, чтобы всегда совпадать с реализацией. Цена: два живых источника одних решений и риск потерять исходное",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "CLAUDE.md",
+       "quote": "План и разборы правятся здесь; копии во flow-specs заморожены.",
+       "line": 113,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "C",
+     "text": "После `proposal` разбор больше не опора: его заменяют `proposal` и `design`. Цена: критерий о соответствии разбору не выполнится",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "docs/analysis/requirements-traceability-graph-of-symphysis.md",
+       "quote": "Это ещё не изменение OpenSpec.",
+       "line": 9,
+       "verdict": "сверено",
+       "found": true
+      }
+     ],
+     "deviation": "F-01"
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Критерий требует соответствия или зафиксированного решения о расхождении, и журнал уже умеет это хранить. Задача-сверка делает его проверяемым, а B смешал бы исходный замысел с итогом."
+   },
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-05"
+   },
+   "reversibility": {
+    "level": "обратимо",
+    "why": "порядок работы, кода нет"
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [],
+   "comments": []
+  },
+  {
+   "id": "F-57",
+   "question": "Сколько сигналов каждого вида даёт граф на эталонах и какие из них шумят?",
+   "kind": "факт",
+   "status": "припаркован",
+   "addressee": "материалы",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [
+    {
+     "addressee": "материалы",
+     "text": "Прототип разбора на трёх клонах `X:\\symphysis-reference`: по каждому виду сигнала из разбора число на изменение и выборочное чтение, какие настоящие, а какие шум. Итог: состав сигналов первой поставки, это развилка второго круга. Проба: разовый скрипт и вывод в `probes/` изменения."
+    }
+   ],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "reference/README.md",
+     "quote": "Клоны трёх изменений на последнем коммите перед архивацией.",
+     "line": 3,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "report"
+   ]
+  },
+  {
+   "id": "F-58",
+   "question": "Выдерживает ли `requirementDiagram` целое изменение?",
+   "kind": "факт",
+   "status": "припаркован",
+   "addressee": "материалы",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [
+    {
+     "addressee": "материалы",
+     "text": "Собрать текст диаграммы на клонах `step-help` и `decision-scheme`, нарисовать на mermaid 12.2.0 из плагина и на версии из md4h (`^11.17.2`). Что выяснить: пределы `maxTextSize` и числа связей, падает ли разбор на настоящих именах, какой размер ещё читается. Итог: выбор по умолчанию и нужен ли предел."
+    }
+   ],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "installer/package.json",
+     "quote": "\"mermaid\": \"12.2.0\"",
+     "line": 32,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "diagram"
+   ]
+  },
+  {
+   "id": "F-59",
+   "question": "Канон ИБ графа",
+   "kind": "факт",
+   "status": "припаркован",
+   "addressee": "ИБ",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [
+    {
+     "addressee": "ИБ",
+     "text": "Скрипт запускает `openspec` из PATH; путь `--out` приходит снаружи; текст из файлов изменения попадает в текст mermaid и в отчёт, который читает модель. Канон, покрывается чек-листом `security.md`, запрет не чеканится."
+    }
+   ],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [],
+   "comments": []
+  },
+  {
+   "id": "F-60",
+   "question": "Новые возможности вне этого изменения",
+   "kind": "факт",
+   "status": "припаркован",
+   "addressee": "человек",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [
+    {
+     "addressee": "человек",
+     "text": "новая возможность: контракт для плагина под другую платформу. `docs/repo-contract.md:3` действует для двух проектов, ядра и `symphysis-vscode`."
+    },
+    {
+     "addressee": "человек",
+     "text": "новая возможность: проверяемая цель у обещания «записано в бэклог». Бэклог сейчас лежит локально в другом репозитории, вне git."
+    }
+   ],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [],
+   "comments": [],
+   "nodes": [
+    "later"
+   ]
+  },
+  {
+   "id": "F-61",
+   "question": "Чем отключается линза связей, если её нужно снять? Причина выбора F-55.B в том, что линзу можно отключить отдельно, а механизма отключения линз сейчас нет.",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-55"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Ключ в `symphysis.yaml`, как у проб: модель узнаёт состав скриптом, а артефакт атаки называет выключенную линзу. Список линз не меняется, контракт не трогается. Цена: ключ, сигнал и случай в `tests/fixtures/settings-cases.json`",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "tools/symphysis_config.py",
+       "quote": "\"edge_probe\": {\"enabled\": \"edge_probe\"},",
+       "line": 30,
+       "verdict": "сверено",
+       "found": true
+      },
+      {
+       "path": "openspec/specs/project-settings/spec.md",
+       "quote": "Шаг, часть которого выключена настройкой, SHALL называть это в своём артефакте",
+       "line": 98,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Слово при вызове атаки: «без линзы связей». Настройки нет, но решение не запоминается и при новой атаке теряется",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "CLAUDE.md",
+       "quote": "/opsx:continue <изменение> attack-artifacts",
+       "line": 86,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "C",
+     "text": "Настройки нет: линзу снимают из закрытого списка, когда понадобится. Цена: это новая смена контракта, и до неё линзу не отключить",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "skills/symphysis-attack/SKILL.md",
+       "quote": "Список закрыт; просмотрщик группирует строки по слугу.",
+       "line": 184,
+       "verdict": "сверено",
+       "found": true
+      },
+      {
+       "path": "docs/repo-contract.md",
+       "quote": "- списки линз;",
+       "line": 57,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Причина F-55.B в том, что линзу можно отключить отдельно. Настройка делает это без смены контракта, а механизм уже есть: так выключается проба краёв. Слово при вызове теряется от атаки к атаке, а снятие из списка каждый раз стоит нового номера контракта."
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [],
+   "comments": [],
+   "nodes": [
+    "attack"
+   ]
+  },
+  {
+   "id": "F-62",
+   "question": "F-52.A обещает снимок всегда, а F-49.A запускает его только советом, который модель может пропустить. Кто замечает изменение в архиве без снимка, пока сверки снимков нет (F-38.A)?",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-38",
+    "F-49",
+    "F-52"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Скрипт графа на каталоге архива называет изменения без снимка. Зовут его по необходимости, поэтому шума нет. Цена: заметит только тот, кто запустил",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "docs/analysis/requirements-traceability-graph-of-symphysis.md",
+       "quote": "Тогда снимок можно собрать из архивного каталога, а сверка покажет «изменение без снимка».",
+       "line": 366,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Строка `symphysis check`: проход по архиву при каждой проверке. Заметят все, но все прежние архивы без снимка дают постоянный сигнал, пока их не соберут",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "installer/lib/check.js",
+       "quote": "Сигналы сверки и описи доходят до человека, код не меняют",
+       "line": 163,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "C",
+     "text": "Оставить как есть: до следующего этапа никто не заметит, а снимок потом собирается из архивного каталога. Цена: «всегда» держится только на совете",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "docs/analysis/requirements-traceability-graph-of-symphysis.md",
+       "quote": "изменение в архиве без снимка;",
+       "line": 374,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Без проверки обещание «всегда» остаётся словом, а скрипту это стоит немного и он не шумит. `symphysis check` поднимал бы сигнал на каждом старом архиве, а C оставляет пропуск незамеченным до следующего этапа."
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [],
+   "comments": [],
+   "nodes": [
+    "freeze",
+    "archive"
+   ]
+  }
+ ],
+ "notes": []
+}
