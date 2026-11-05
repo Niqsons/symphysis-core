@@ -247,6 +247,26 @@ def test_answer_to_an_undecided_record_goes_to_notes_and_leaves_it_open(tmp_path
     assert decided["undecidedKeys"] == [] and "- F-02: B — «слово»" in decided["text"]
 
 
+def test_other_dispute_goes_to_notes_and_leaves_the_attack_file_alone(tmp_path):
+    """`decision-viewer`: «Прочий спор идёт в замечания» — строка с закрытием «правка записи» и ответом в поле спора:
+    ответ в «Замечания к схеме:», после `apply` он в `notes[]`, решения нет, файл атаки не изменён."""
+    j = plan_journal()
+    att = attack_file(("F-02, decision", "утверждение", "правка записи"))
+    attack_md = tmp_path / "decisions.md"
+    attack_md.write_text("---\nstatus: gaps_found\n---\n| строка |\n", encoding="utf-8")
+    before = attack_md.read_bytes()
+    res = prompt(tmp_path, j, state(), [att], {key(att, 0): "мой ответ на строку"})
+    lines = res["text"].splitlines()
+    assert lines[-1].startswith("Замечания к схеме: ") and lines[-1].endswith("спор: мой ответ на строку")
+    assert not [l for l in lines if l.startswith("- F-02:")] and res["conflictKeys"] == [] and res["undecidedKeys"] == []
+    ops = apply_clean(j, res["text"])
+    assert [op["op"] for op in ops].count("note") == 1 and not [op for op in ops if op["op"] == "decide"]
+    work = copy.deepcopy(j)
+    journal.apply_answers(work, ops, DATE)
+    assert any("мой ответ на строку" in n["text"] for n in work["notes"])
+    assert attack_md.read_bytes() == before
+
+
 def test_page_marks_undecided_row_and_skill_states_the_rule():
     """У строки с ответом к нерешённой записи — пометка до копирования промпта; скилл называет то же правило."""
     html = TEMPLATE.read_text(encoding="utf-8")

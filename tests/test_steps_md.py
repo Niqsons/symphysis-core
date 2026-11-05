@@ -177,3 +177,12 @@ def test_apply_and_archive_sections_name_the_freeze():
         assert "заморозк" in mechanics.lower() and "`graph/report.md`" in mechanics, step
         assert "trace_graph.py freeze" in mechanics, step
     assert "когда отмечена последняя задача, модель зовёт" in sections["apply"]["mechanics"]
+
+
+def test_attack_artifacts_section_names_the_three_lenses():
+    """F-55: раздел `attack-artifacts` называет все три линзы артефактов, `trace-link` — третьей."""
+    section = step_help.parse_steps(steps_text())["attack-artifacts"]
+    text = section if isinstance(section, str) else repr(section)
+    line = next(l for l in text.splitlines() if l.startswith("- Линзы артефактов:") or "Линзы артефактов:" in l)
+    positions = [line.index(f"`{lens}`") for lens in ("scenario-run", "claim-extraction", "trace-link")]
+    assert positions == sorted(positions)

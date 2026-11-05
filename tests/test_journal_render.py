@@ -812,6 +812,23 @@ def test_wrong_cell_count_reports_the_number(tmp_path):
         journal.parse_attack_md(path)
 
 
+def test_bare_pipe_outside_backticks_names_file_line_and_column(tmp_path):
+    """`artifact-attack`: «Черта вне backticks» — отказ называет файл, строку и столбец, код 2: столбец — номер
+    знака в строке (с единицы) первой лишней черты («в столбце N»), той, что делает седьмую ячейку восьмой."""
+    line = "| а | б | scenario-run | в | блокер | нет | чинить a|b |"
+    path = attack_file(tmp_path, line, name="bare-pipe.md")
+    column = line.index("|", line.index("чинить")) + 1
+    with pytest.raises(ValueError) as err:
+        journal.parse_attack_md(path)
+    assert f"bare-pipe.md:9:" in str(err.value) and f"в столбце {column}" in str(err.value) and "ячеек 8" in str(err.value)
+    src, roots = html_fixture(tmp_path, "дв")
+    out = tmp_path / "view.html"
+    run = run_cli("render-html", src, "--out", out, "--roots", roots, "--attack", path)
+    assert run.returncode == 2, run.stdout + run.stderr
+    assert "bare-pipe.md:9:" in run.stderr and f"в столбце {column}" in run.stderr
+    assert not out.exists()
+
+
 def test_cli_render_html_broken_attack_file_exits_2_with_position(tmp_path):
     src, roots = html_fixture(tmp_path, "дв")
     broken = attack_file(tmp_path, "| `открыт | F-01 | coverage | x | справка | нет | — |", name="broken-cell.md")
@@ -883,17 +900,17 @@ def test_viewer_attack_filter_hides_groups_but_not_blocker_counters(tmp_path):
 @requires_node
 def test_viewer_attack_lens_lists_follow_the_target_of_the_file(tmp_path):
     """Журнал (`decisions.json` — единственная цель): context-compliance, claim-authority, claim-extraction, coverage;
-    артефакты: scenario-run, claim-extraction. Прочие слуги — «вне списка»: в тяжести считаются, в линзе нет."""
+    артефакты: scenario-run, claim-extraction, trace-link (F-55). Прочие слуги — «вне списка»: в тяжести считаются, в линзе нет."""
     jr = [arow(lens=s, claim=f"ж-{s}") for s in ("context-compliance", "claim-authority", "claim-extraction", "coverage", "scenario-run", "style")]
-    ar = [arow(section="design.md", lens=s, claim=f"а-{s}") for s in ("scenario-run", "claim-extraction", "coverage", "requirement-coverage")]
+    ar = [arow(section="design.md", lens=s, claim=f"а-{s}") for s in ("scenario-run", "claim-extraction", "trace-link", "coverage", "requirement-coverage")]
     attack = attack_view(tmp_path, [afile(jr), afile(ar, ARTIFACT_TARGETS, "attack/artifacts.md")])["attack"]
     groups = re.findall(r"<h2>(?:<code>([a-z-]+)</code>|(вне списка))", attack)
     assert groups == [("context-compliance", ""), ("claim-authority", ""), ("claim-extraction", ""), ("coverage", ""),
-                      ("", "вне списка"), ("scenario-run", ""), ("claim-extraction", ""), ("", "вне списка")]
+                      ("", "вне списка"), ("scenario-run", ""), ("claim-extraction", ""), ("trace-link", ""), ("", "вне списка")]
     outside_journal = attack.split("<h2>вне списка")[1]
     assert "ж-scenario-run" in outside_journal and "ж-style" in outside_journal and "строка невалидна" in outside_journal
     heads = without_rows(attack)
-    assert heads.count("блокеров <b>6</b>") == 1 and heads.count("блокеров <b>4</b>") == 1      # тяжесть — по всему файлу
+    assert heads.count("блокеров <b>6</b>") == 1 and heads.count("блокеров <b>5</b>") == 1      # тяжесть — по всему файлу
     assert "по линзе: <code>context-compliance</code> <b>1</b> · <code>claim-authority</code> <b>1</b>" in heads
     assert "строк вне списка (невалидны, в счётчике линз их нет): <b>2</b>" in heads
     assert 'data-lens="__outside__"' in attack and 'data-lens="requirement-coverage"' not in attack

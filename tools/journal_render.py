@@ -25,7 +25,7 @@ PLACEHOLDER_SCHEME = "__SCHEME_JSON__"
 PLACEHOLDER_HELP = "__HELP_JSON__"
 PLACEHOLDER_LINKS = "__LINKS_JSON__"
 # Номер контракта ядра с плагином в выводе `view-json`: растёт при смене контракта, от нового поля не растёт (`docs/repo-contract.md`).
-CONTRACT = 2
+CONTRACT = 3
 
 
 # --- рендер ----------------------------------------------------------------
@@ -310,6 +310,15 @@ def _attack_frontmatter(lines: list[str], name: str) -> tuple[dict, int]:
 
 def _split_row(line: str) -> tuple[list[str], int | None]:
     r"""Строка pipe-таблицы -> (ячейки без `strip()`, индекс ячейки с незакрытым backtick или `None`).
+    Разбор — `_scan_row`, она же отдаёт места разделителей.
+    """
+    cells, unclosed, _ = _scan_row(line)
+    return cells, unclosed
+
+
+def _scan_row(line: str) -> tuple[list[str], int | None, list[int]]:
+    r"""Строка pipe-таблицы -> (ячейки, индекс ячейки с незакрытым backtick или `None`, столбцы разделителей:
+    номера знаков `|` строки, считая с единицы, по одному на каждый разделитель вне кода).
     Посимвольный автомат, не `split("|")`. `\\` даёт литеральную `\`, `\|` — литеральную `|`
     (везде, и в коде); иная обратная косая литеральна, следующий символ разбирается как обычно.
     Backtick переключает «внутри кода»; `|` внутри кода — текст ячейки, вне кода — разделитель.
@@ -321,6 +330,7 @@ def _split_row(line: str) -> tuple[list[str], int | None]:
     cur: list[str] = []
     in_code, opened_in = False, None
     ended_on_delim = False
+    cuts: list[int] = []
     i = 1 if text.startswith("|") else 0
     while i < len(text):
         ch = text[i]
@@ -334,6 +344,7 @@ def _split_row(line: str) -> tuple[list[str], int | None]:
             opened_in = len(cells) if in_code else None
         if ch == "|" and not in_code:
             cells.append("".join(cur))
+            cuts.append(i + 1)
             cur = []
             ended_on_delim = True
         else:
@@ -341,7 +352,7 @@ def _split_row(line: str) -> tuple[list[str], int | None]:
         i += 1
     if not ended_on_delim:
         cells.append("".join(cur))
-    return cells, (opened_in if in_code else None)
+    return cells, (opened_in if in_code else None), cuts
 
 
 def _cells(line: str) -> list[str]:
@@ -365,7 +376,7 @@ def _attack_rows(lines: list[str], name: str, start: int) -> list[dict]:
         line = lines[n]
         if not line.startswith("|"):
             break
-        raw, unclosed = _split_row(line)
+        raw, unclosed, cuts = _scan_row(line)
         cells = [c.strip() for c in raw]
         if all(c and set(c) <= {"-", ":"} for c in cells):
             continue
@@ -373,7 +384,9 @@ def _attack_rows(lines: list[str], name: str, start: int) -> list[dict]:
             col = columns[unclosed] if unclosed < len(columns) else f"№{unclosed + 1}"
             raise ValueError(f"{name}:{n + 1}: в столбце «{col}» (ячейка {unclosed + 1}) backtick не закрыт")
         if len(cells) != len(ATTACK_ROW_KEYS):
-            raise ValueError(f"{name}:{n + 1}: в строке таблицы ячеек {len(cells)}, нужно {len(ATTACK_ROW_KEYS)}"
+            where = (f"; первая лишняя черта вне backticks — в столбце {cuts[len(ATTACK_ROW_KEYS) - 1]}"
+                     if len(cells) > len(ATTACK_ROW_KEYS) else "")
+            raise ValueError(f"{name}:{n + 1}: в строке таблицы ячеек {len(cells)}, нужно {len(ATTACK_ROW_KEYS)}{where}"
                              " (литеральная `|` вне backticks пишется `\\|`)")
         if cells[0].startswith("<") and cells[0].endswith(">"):
             continue

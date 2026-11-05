@@ -520,6 +520,28 @@ def test_attack_skill_goal_missing_row_is_claim_extraction():
     assert "`coverage`" not in entry.split("у артефактов")[-1], "у артефактов строки `coverage` нет"
 
 
+def test_attack_skill_missing_journal_is_an_unvisited_coverage_row():
+    """`artifact-attack`: «Журнала нет» — `decisions.json` не написан: у журнала строка «не пройдено» линзы `coverage`
+    с именем файла в разделе, `блокер`, опора «нет», закрытие «повторить атаку по разделу»; блокер даёт `gaps_found`."""
+    text = read(ATTACK_SKILL / "SKILL.md")
+    entry = block(text, "### 1. Вход", "\n### 2.")
+    assert "у журнала — строка «не пройдено» в разделе с именем файла" in entry
+    coverage = block(text, "**Покрытие у журнала — поимённо.**", "\n\n")
+    assert "`| не пройдено | <раздел> | coverage | — | блокер | нет | повторить атаку по разделу |`" in coverage
+    assert "status: gaps_found" in read(ROOT / "openspec" / "schemas" / "symphysis" / "templates" / "attack-decisions.md").split("---")[1]
+    assert "только когда в таблице нет ни одной строки с тяжестью `блокер`" in flat(text)
+
+
+def test_attack_skill_decision_against_the_setting_without_mark_is_a_blocker():
+    """`artifact-attack`: «Решение против постановки без пометки» — строка `context-compliance`, опора «нет», `блокер`:
+    тяжесть строки `context-compliance` по умолчанию «блокер», пометка `deviation` её снимает до справки."""
+    text = read(ATTACK_SKILL / "SKILL.md")
+    row = flat(lens_row(text, "journal", "context-compliance"))
+    assert "без пометки «отступление от постановки» — поле `deviation: F-NN` варианта" in row
+    assert row.endswith("· блокер |"), "тяжесть «нет» у `context-compliance` — блокер"
+    assert "тяжесть «нет»" in flat(text.split("**Линзы журнала**")[1].split("\n\n")[1])
+
+
 def test_attack_skill_leaves_journal_hygiene_to_check():
     """F-12.A: гигиену журнала ловит `check` (код 1 / `[!!]`), атака её не репортит."""
     text = read(ATTACK_SKILL / "SKILL.md")
@@ -713,7 +735,7 @@ def test_viewer_skill_describes_the_attack_mode():
         "фильтр по линзе": ("Фильтр по линзе", "«все»", "прячет группы строк, но не счётчики"),
         "счётчики вне фильтра": ("блокеров N · предупреждений N · справок N", "вне фильтра", "по всему файлу"),
         "блок записи": ("Блок записи", "`<details>`", "текст вопроса записи", "выбранный вариант", "переход к карточке"),
-        "списки линз": ("`context-compliance`, `claim-authority`", "`scenario-run`", "группа «вне списка»", "в счётчике линз её нет"),
+        "списки линз": ("`context-compliance`, `claim-authority`", "`scenario-run`, `claim-extraction`, `trace-link`", "группа «вне списка»", "в счётчике линз её нет"),
         "понижение": ("понижение без причины", "в скобках", "по спеке не выводится"),
         "промпт из состояния": ("Промпт пересобирается из состояния", "внесённое уходит", "очистка поля замечаний"),
         "спор — слово к решению": ("«вопрос человеку»", "`F-NN, decision`", "словом к решению", "`- F-NN: <буква> — «ответ»`"),
