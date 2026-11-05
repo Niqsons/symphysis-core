@@ -1,18 +1,19 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """Граф трассируемости изменения OpenSpec (изменение `trace-graph`, F-39): требования, сценарии, решения журнала, задачи,
-пункты security и ветки описи, связанные ссылками. Здесь пока каркас: пять подкоманд с `--help` и реестр артефактов схемы;
-сборку, отчёт, проверку и заморозку добавят следующие порции. Только стандартная библиотека."""
+пункты security и ветки описи, связанные ссылками. Здесь пока каркас: пять подкоманд с `--help`, реестр артефактов схемы
+и свой разбор спек (`parse_spec`, F-40); сборку, отчёт, проверку и заморозку добавят следующие порции.
+Только стандартная библиотека."""
 from __future__ import annotations
 
 import argparse
 import re
 import sys
+from dataclasses import dataclass, field
 from pathlib import Path
 
-from openspec_run import ForkError, check_change_name
-
 sys.dont_write_bytecode = True  # как у соседних скриптов: `__pycache__` в проекте от инструментов не появляется (F-50)
+from openspec_run import ForkError, check_change_name  # noqa: E402
 
 # --- реестр артефактов (F-53, F-119, F-136) -----------------------------------
 # Вложенный словарь, yaml-like: на каждый артефакт `openspec/schemas/symphysis/schema.yaml` строка, что граф из него берёт.
@@ -88,6 +89,179 @@ def check_registry(schema_path: Path | str, registry: dict | None = None) -> lis
         elif not takes or isinstance(takes, str):
             problems.append(f"у артефакта «{name}» «берёт» не список и не `{NOTHING}`: назвать, что граф берёт")
     return problems
+
+
+# --- разбор спек (F-40, F-85) -------------------------------------------------
+# Правила повторяют разбор OpenSpec 1.15.0 (`src/core/parsers/`: `code-fence.ts`, `requirement-blocks.ts`,
+# `requirement-text.ts`, `change-parser.ts`), чтобы счётчики совпадали, а не замысел. Расхождение ловит тест сверки с
+# `openspec show --json` на фикстурах `tests/fixtures/trace/` (F-14, F-40). Что взято у OpenSpec:
+#   - строки внутри блока кода (``` или ~~~, закрывает такой же маркер не короче открывающего) заголовками не считаются:
+#     `### Requirement: x` в блоке кода не требование (F-85);
+#   - дельта живёт только в секциях `## ADDED|MODIFIED|REMOVED|RENAMED Requirements`, регистр названия любой,
+#     повторная секция читается так же, требование вне этих секций не считается;
+#   - требование — `###Requirement: имя`, пробел после решёток необязателен, закрывающие решётки в имени отрезаются;
+#   - сценарий — любой заголовок четвёртого уровня под требованием, а не только `#### Scenario:`; без тела
+#     (ни строки до следующего заголовка) он не сценарий; посторонний заголовок третьего уровня внутри требования
+#     обрывает его сценарии;
+#   - REMOVED читается и заголовком `### Requirement:`, и строкой-маркером с таким заголовком (`-`, `*` или `+`).
+# Номера строк с 1, как в редакторе; BOM и CRLF OpenSpec снимает до счёта, и разбор тоже.
+
+@dataclass
+class SpecScenario:
+    name: str  # имя без `Scenario:` и закрывающих решёток
+    line: int  # номер строки заголовка, с 1
+    text: str  # тело сценария до следующего заголовка того же или высшего уровня, без краевых пробелов
+
+
+@dataclass
+class SpecRequirement:
+    section: str  # секция дельты: `ADDED`, `MODIFIED` или `REMOVED`
+    name: str  # имя без `Requirement:` и закрывающих решёток
+    line: int  # номер строки заголовка, с 1
+    text: str  # текст требования до первого заголовка; у записи REMOVED строкой-маркером пуст
+    scenarios: list[SpecScenario] = field(default_factory=list)
+
+
+@dataclass
+class SpecRename:
+    from_name: str  # старое имя из `FROM:`
+    to_name: str  # новое имя из `TO:`
+    line: int  # номер строки `FROM:`, с 1
+
+
+@dataclass
+class SpecParse:
+    requirements: list[SpecRequirement] = field(default_factory=list)  # по порядку в файле
+    renames: list[SpecRename] = field(default_factory=list)  # секция `RENAMED Requirements`: у переименования тела нет
+
+
+DELTA_SECTIONS = {f"{op.lower()} requirements": op for op in ("ADDED", "MODIFIED", "REMOVED", "RENAMED")}
+_FENCE_OPEN = re.compile(r"^\s*(`{3,}|~{3,})")
+_FENCE_CLOSE = re.compile(r"^\s*(`{3,}|~{3,})\s*$")
+_REQ_HEADER = re.compile(r"^###\s*Requirement:\s*(.+)\s*$", re.IGNORECASE)
+_REMOVED_BULLET = re.compile(r"^\s*[-*+]\s*`?###\s*Requirement:\s*(.+?)`?\s*$")
+_RENAME_FROM = re.compile(r"^\s*[-*+]?\s*FROM:\s*`?###\s*Requirement:\s*(.+?)`?\s*$")
+_RENAME_TO = re.compile(r"^\s*[-*+]?\s*TO:\s*`?###\s*Requirement:\s*(.+?)`?\s*$")
+_SECTION_HEADER = re.compile(r"^##\s+(.+)$")
+_ANY_HEADER = re.compile(r"^(#{1,6})\s+(.+)$")
+_META_LINE = re.compile(r"^\*\*[^*]+\*\*:")
+
+
+def _fence_mask(lines: list[str]) -> list[bool]:
+    """Строки внутри блока кода, вместе с открывающей и закрывающей, как `buildCodeFenceMask` у OpenSpec."""
+    mask, active = [False] * len(lines), None
+    for i, line in enumerate(lines):
+        if active is None:
+            opened = _FENCE_OPEN.match(line)
+            if opened:
+                active, mask[i] = opened.group(1), True
+            continue
+        mask[i] = True
+        closed = _FENCE_CLOSE.match(line)
+        if closed and closed.group(1)[0] == active[0] and len(closed.group(1)) >= len(active):
+            active = None
+    return mask
+
+
+def _unclose(name: str) -> str:
+    """Имя без закрывающих решёток заголовка: их отрезают только после пробела или табуляции (`C#` остаётся)."""
+    return re.sub(r"[ \t]+#+[ \t]*$", "", name).strip()
+
+
+def _scenarios(lines: list[str], mask: list[bool], first: int, last: int) -> list[SpecScenario]:
+    """Сценарии требования с заголовком в строке `first` и телом до `last` (не включая): дети его заголовка в дереве
+    заголовков, как у `parseSectionsFromContent` OpenSpec; заголовок без тела не сценарий."""
+    heads = [(i, len(m.group(1))) for i in range(first + 1, last)
+             if not mask[i] and (m := _ANY_HEADER.match(lines[i]))]
+    stack, kids = [3], []  # заголовок требования — третьего уровня, и для `###Requirement:` тоже
+    for pos, (i, level) in enumerate(heads):
+        while stack and stack[-1] >= level:
+            stack.pop()
+        if not stack:  # заголовок не ниже требования: оно закончилось, дальше чужие заголовки
+            break
+        if len(stack) == 1:  # родитель — само требование
+            kids.append((i, next((j for j, lv in heads[pos + 1:] if lv <= level), last)))
+        stack.append(level)
+    result = []
+    for i, end in kids:
+        text = "\n".join(lines[i + 1:end]).strip()
+        if text:
+            title = _ANY_HEADER.match(lines[i]).group(2).strip()
+            name = re.sub(r"^Scenario:\s*", "", re.sub(r"[ \t]+#+[ \t]*$", "", title), flags=re.IGNORECASE).strip()
+            result.append(SpecScenario(name, i + 1, text))
+    return result
+
+
+def _requirement_text(lines: list[str], mask: list[bool], first: int, last: int, title: str) -> str:
+    """Текст требования как `extractRequirementText`: строки до первого заголовка вне блока кода, без пустых; строки
+    вида `**ID**: …` берутся, только если другого текста нет; пусто — заголовок целиком."""
+    captured, meta = [], []
+    for i in range(first + 1, last):
+        if mask[i]:
+            continue
+        if re.match(r"^#{1,6}\s", lines[i]):
+            break
+        line = lines[i].strip()
+        if line:
+            (meta if _META_LINE.match(line) else captured).append(line)
+    return "\n".join(captured or meta) or title.strip()
+
+
+def _requirement(op: str, lines: list[str], mask: list[bool], first: int, last: int) -> SpecRequirement:
+    """Требование из блока: заголовок в строке `first`, тело до строки `last` (не включая)."""
+    title = re.sub(r"^###\s*", "", lines[first]).strip()  # `Requirement: имя`; так OpenSpec читает и `###Requirement:`
+    name = _unclose(re.sub(r"^Requirement:\s*", "", title, flags=re.IGNORECASE))
+    return SpecRequirement(op, name, first + 1, _requirement_text(lines, mask, first, last, title),
+                           _scenarios(lines, mask, first, last))
+
+
+def _section_requirements(op: str, lines: list[str], mask: list[bool], start: int, end: int) -> list[SpecRequirement]:
+    """Требования одной секции: блок от заголовка до следующего заголовка требования; в REMOVED ещё строки-маркеры."""
+    heads = [i for i in range(start, end) if not mask[i] and _REQ_HEADER.match(lines[i])]
+    block_end = {head: (heads[k + 1] if k + 1 < len(heads) else end) for k, head in enumerate(heads)}
+    found = []
+    for i in range(start, end):
+        if mask[i]:
+            continue
+        if i in block_end:
+            found.append(_requirement(op, lines, mask, i, block_end[i]))
+        elif op == "REMOVED" and (bullet := _REMOVED_BULLET.match(lines[i])):
+            found.append(SpecRequirement(op, _unclose(bullet.group(1)), i + 1, ""))
+    return found
+
+
+def _renames(lines: list[str], mask: list[bool], start: int, end: int) -> list[SpecRename]:
+    """Пары `FROM:` и `TO:` одной секции; непарные строки OpenSpec называет в `validate`, здесь они пропускаются."""
+    pairs, pending = [], None
+    for i in range(start, end):
+        if mask[i]:
+            continue
+        if m := _RENAME_FROM.match(lines[i]):
+            pending = (_unclose(m.group(1)), i + 1)
+        elif (m := _RENAME_TO.match(lines[i])) and pending:
+            pairs.append(SpecRename(pending[0], _unclose(m.group(1)), pending[1]))
+            pending = None
+    return pairs
+
+
+def parse_spec(source: str | Path) -> SpecParse:
+    """Разбор одной спеки (F-40): `Path` — файл `spec.md`, `str` — его текст. Даёт требования секций `ADDED`, `MODIFIED`,
+    `REMOVED` в порядке файла (имя, номер строки заголовка, текст, сценарии с именем, строкой и текстом) и пары
+    переименований секции `RENAMED`. Текст без секций дельты даёт пустой разбор. Правила — как у OpenSpec (см. выше)."""
+    text = Path(source).read_bytes().decode("utf-8") if isinstance(source, Path) else source
+    lines = re.sub(r"\r\n?", "\n", text.removeprefix("﻿")).split("\n")
+    mask = _fence_mask(lines)
+    heads = [(i, m.group(1).strip()) for i, line in enumerate(lines)
+             if not mask[i] and (m := _SECTION_HEADER.match(line))]
+    parsed = SpecParse()
+    for pos, (start, title) in enumerate(heads):
+        op = DELTA_SECTIONS.get(title.lower())
+        end = heads[pos + 1][0] if pos + 1 < len(heads) else len(lines)
+        if op == "RENAMED":
+            parsed.renames += _renames(lines, mask, start + 1, end)
+        elif op:
+            parsed.requirements += _section_requirements(op, lines, mask, start + 1, end)
+    return parsed
 
 
 # --- командная строка ---------------------------------------------------------
