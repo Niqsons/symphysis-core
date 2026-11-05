@@ -9,7 +9,7 @@ import subprocess
 import sys
 
 import pytest
-from conftest import ROOT
+from conftest import ROOT, requires_fork
 from journal_model import PROBE_OUTCOMES
 
 SKILLS = ROOT / "skills"
@@ -913,3 +913,58 @@ def test_viewer_skill_text_names_hook_files():
     text = read(VIEWER / "SKILL.md")
     for name in ("events.jsonl", ".symphysis/viewer/", "answers/"):
         assert name in text, f"в SKILL.md не названо {name}"
+
+
+# --- U18: комментарий `<!-- F-NN -->` под заголовком сценария и снятое в depends_on (6.3, 6.4: F-45, F-46) ---
+
+SCENARIO_COMMENT = "<!-- F-NN -->"
+
+
+@pytest.mark.parametrize("name, scenario", [
+    ("symphysis-edge-probe", "Край с исходом Specify"),
+    ("symphysis-prohibition-probe", "Запрет с исходом Specify"),
+    ("symphysis-consequences", "Ветка с исходом Specify"),
+])
+def test_probe_skills_put_the_record_number_under_the_scenario_heading(name, scenario):
+    """`requirement-probes`: «Край с исходом Specify», «Запрет с исходом Specify»;
+    `consequence-inventory`: «Ветка с исходом Specify», «Причина провала с исходом Specify» (F-45):
+    сценарий по исходу Specify несёт `<!-- F-NN -->` строкой под заголовком, и она вне предела 500 знаков."""
+    text = flat(read(SKILLS / name / "SKILL.md"))
+    for token in (SCENARIO_COMMENT, "сразу под заголовком сценария", "предел 500", "(F-45)"):
+        assert token in text, f"{name}: нет «{token}»"
+
+
+def test_consequences_skill_marks_the_pre_mortem_scenario_too():
+    """`consequence-inventory`: «Причина провала с исходом Specify» (F-45)."""
+    step = block(read(SKILLS / "symphysis-consequences" / "SKILL.md"), "### 9.", "\n### ")
+    assert SCENARIO_COMMENT in step and "`[pre-mortem]`" in step and "ветк" in step
+    assert step.index(SCENARIO_COMMENT) < step.index("`consequences` ← «в spec.md")
+
+
+def test_brainstorm_skill_names_the_lifted_decision_in_depends_on():
+    """`brainstorm-interview`: «Срез снимает исход Specify» (F-46): запись, снимающая прежнее решение,
+    называет снятую запись в `depends_on`; `outcome` снятой записи не переписывается."""
+    step = block(brainstorm(), "### 4.", "\n### ")
+    for token in ("снимает прежнее решение", "называет снятую запись в `depends_on`",
+                  "`outcome` снятой записи не переписывается", "зеркалит слово человека", "(F-46)"):
+        assert token in step, f"в шаге 4 нет «{token}»"
+
+
+@requires_fork
+def test_scenario_comment_reaches_the_master_spec(tmp_path):
+    """`requirement-probes`: «Комментарий доходит до мастер-спеки» (F-45): дельта с `<!-- F-12 -->`
+    под заголовком сценария проходит `validate --strict`, после `archive` комментарий стоит под тем же заголовком."""
+    from test_schema import make_project, run_openspec_raw
+    proj = make_project(tmp_path)
+    delta = proj / "openspec" / "changes" / "demo" / "specs" / "cap" / "spec.md"
+    delta.parent.mkdir(parents=True)
+    delta.write_text(
+        "## ADDED Requirements\n\n### Requirement: Слияние интервалов\n"
+        "Система SHALL склеивать касающиеся интервалы.\n\n"
+        "#### Scenario: Интервалы касаются\n<!-- F-12 -->\n"
+        "- **GIVEN** интервалы 1-2 и 2-3\n- **WHEN** собирается отчёт\n- **THEN** в файле один интервал 1-3\n",
+        encoding="utf-8", newline="\n")
+    run_openspec_raw(proj, "validate", "demo", "--strict")
+    run_openspec_raw(proj, "archive", "demo", "--yes")
+    master = (proj / "openspec" / "specs" / "cap" / "spec.md").read_text(encoding="utf-8")
+    assert "#### Scenario: Интервалы касаются\n<!-- F-12 -->\n" in master.replace("\r\n", "\n")
