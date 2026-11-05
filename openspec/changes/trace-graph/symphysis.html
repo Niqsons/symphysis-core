@@ -212,15 +212,15 @@
 const JOURNAL = {
  "title": "Журнал решений: trace-graph",
  "source": "decisions.json",
- "sha256": "3f99eb2797a442575f81003559a1df40247f22660d540312d509b01c835a21ca",
+ "sha256": "15da20b92dfc3e5fe6bc643a4300990ce265df7b5c727029919e6c19c766527e",
  "stats": {
-  "records": 121,
-  "forks": 101,
+  "records": 123,
+  "forks": 103,
   "facts": 20,
-  "decided": 59,
+  "decided": 101,
   "parked": 1,
-  "evidence_total": 251,
-  "evidence_found": 251
+  "evidence_total": 265,
+  "evidence_found": 265
  },
  "records": [
   {
@@ -3079,7 +3079,12 @@ const JOURNAL = {
      ]
     }
    ],
-   "antipodes": [],
+   "antipodes": [
+    {
+     "option": "A",
+     "other": "F-122.A"
+    }
+   ],
    "recommendation": {
     "option": "A",
     "why": "Убирает ручной шаг, которого нет ни в схеме, ни в руководстве: в чужом проекте пути сейчас просто перестают находиться. B лечит только хеш, а улики в архиве остаются битыми, если их забыли перевести."
@@ -5584,7 +5589,7 @@ const JOURNAL = {
    "id": "F-80",
    "question": "[empty · collection] Граф собирается из файлов изменения: `decisions.json` с синтаксической ошибкой: выдать граф без записей или отказаться?",
    "kind": "развилка",
-   "status": "открыт",
+   "status": "решён",
    "addressee": "человек",
    "depends_on": [
     "F-39"
@@ -5625,12 +5630,20 @@ const JOURNAL = {
     "option": "A",
     "why": "Граф без записей и с кодом 0 выглядит верным, а связи `traces` в нём просто пропали. Снимок с такой порчей после архивации уже не пересобрать."
    },
-   "decision": null,
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-05"
+   },
    "reversibility": null,
-   "outcome": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Specify",
+    "reason": ""
+   },
    "parking": [],
    "dispute": "",
-   "consequences": "",
+   "consequences": "в spec.md: Журнал не разбирается.",
    "evidence": [
     {
      "path": "openspec/changes/trace-graph/specs/trace-graph/spec.md",
@@ -5648,7 +5661,7 @@ const JOURNAL = {
    "id": "F-81",
    "question": "[ordering · collection] Граф несёт связи артефактов с местом в файле: две сборки без единой правки: совпадают ли выводы байт в байт, если порядок узлов и связей не задан?",
    "kind": "развилка",
-   "status": "открыт",
+   "status": "решён",
    "addressee": "человек",
    "depends_on": [
     "F-41",
@@ -5690,17 +5703,25 @@ const JOURNAL = {
     "option": "A",
     "why": "Снимки копятся в архиве и не пересобираются. Сверка следующего этапа примет перестановку за изменение, а исправить уже снятое будет нельзя."
    },
-   "decision": null,
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-05"
+   },
    "reversibility": null,
-   "outcome": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Specify",
+    "reason": ""
+   },
    "parking": [],
    "dispute": "",
-   "consequences": "",
+   "consequences": "в spec.md: Две сборки без правок.",
    "evidence": [
     {
      "path": "openspec/changes/trace-graph/specs/trace-graph/spec.md",
      "quote": "### Requirement: Граф несёт связи артефактов с местом в файле",
-     "line": 28,
+     "line": 34,
      "verdict": "сверено",
      "found": true
     }
@@ -5713,7 +5734,7 @@ const JOURNAL = {
    "id": "F-82",
    "question": "[adjacency · collection] Граф несёт связи артефактов с местом в файле: номер стоит и в тексте требования `(F-19)`, и в следе пробы `F-19 Specify`: одна связь `traces` или две?",
    "kind": "развилка",
-   "status": "открыт",
+   "status": "решён",
    "addressee": "человек",
    "depends_on": [
     "F-70"
@@ -5754,17 +5775,25 @@ const JOURNAL = {
     "option": "B",
     "why": "Две стрелки видны сразу и ничего не искажают: обе связи настоящие и называют своё место. Правило слияния только усложнит разбор."
    },
-   "decision": null,
+   "decision": {
+    "option": "B",
+    "word": "",
+    "date": "2026-11-05"
+   },
    "reversibility": null,
-   "outcome": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Dismiss",
+    "reason": ""
+   },
    "parking": [],
    "dispute": "",
-   "consequences": "",
+   "consequences": "Две стрелки видны сразу и ничего не искажают: обе связи настоящие и называют своё место. Правило слияния только усложнит разбор.",
    "evidence": [
     {
      "path": "openspec/changes/trace-graph/specs/trace-graph/spec.md",
      "quote": "### Requirement: Граф несёт связи артефактов с местом в файле",
-     "line": 28,
+     "line": 34,
      "verdict": "сверено",
      "found": true
     }
@@ -5777,7 +5806,7 @@ const JOURNAL = {
    "id": "F-83",
    "question": "[empty · text] Требование называет свои записи журнала: требование без единого `(F-NN)`: в закрытом составе F-64 такого сигнала нет, поэтому отчёт промолчит",
    "kind": "развилка",
-   "status": "открыт",
+   "status": "решён",
    "addressee": "человек",
    "depends_on": [
     "F-44",
@@ -5819,12 +5848,20 @@ const JOURNAL = {
     "option": "A",
     "why": "Без сигнала пропуск не заметит никто: в графе у требования просто нет связи, а отчёт молчит. Это единственное из соглашений, которое никто не проверяет."
    },
-   "decision": null,
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-05"
+   },
    "reversibility": null,
-   "outcome": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Specify",
+    "reason": ""
+   },
    "parking": [],
    "dispute": "",
-   "consequences": "",
+   "consequences": "в spec.md: Требование без номера. Вид «требование без записи» добавлен в закрытый состав отчёта.",
    "evidence": [
     {
      "path": "openspec/changes/trace-graph/specs/trace-conventions/spec.md",
@@ -5842,7 +5879,7 @@ const JOURNAL = {
    "id": "F-84",
    "question": "[encoding · text] Требование называет свои записи журнала: MODIFIED несёт текст мастер-спеки с `(F-07.A)` из журнала другого изменения, а F-07 этого журнала о другом: считать это связью?",
    "kind": "развилка",
-   "status": "открыт",
+   "status": "решён",
    "addressee": "человек",
    "depends_on": [
     "F-44",
@@ -5884,12 +5921,20 @@ const JOURNAL = {
     "option": "A",
     "why": "На эталонах из мастера перенесены 9 номеров из 10 у `step-help` и 13 из 24 у `decision-scheme`. Граф молча свяжет требование с чужой записью того же номера, и выглядеть это будет верно: в наших дельтах у `artifact-attack` таких совпадений 12."
    },
-   "decision": null,
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-05"
+   },
    "reversibility": null,
-   "outcome": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Specify",
+    "reason": ""
+   },
    "parking": [],
    "dispute": "",
-   "consequences": "",
+   "consequences": "в spec.md: Номер пришёл из мастер-спеки. Что будет с этим правилом после `/opsx:sync`, решает F-123.",
    "evidence": [
     {
      "path": "openspec/changes/trace-graph/specs/trace-conventions/spec.md",
@@ -5907,7 +5952,7 @@ const JOURNAL = {
    "id": "F-85",
    "question": "[encoding · text] Скрипт сам разбирает спеки с номерами строк: строка `### Requirement: x` внутри блока кода: OpenSpec такой блок пропускает, а свой разбор может принять за требование",
    "kind": "развилка",
-   "status": "открыт",
+   "status": "решён",
    "addressee": "человек",
    "depends_on": [
     "F-40"
@@ -5948,17 +5993,25 @@ const JOURNAL = {
     "option": "C",
     "why": "Ложный узел выглядит как настоящее требование, а сверка ловит расхождение только на тех фикстурах, что в ней есть. Сценарий тут лишний: правило одно, совпадать с OpenSpec."
    },
-   "decision": null,
+   "decision": {
+    "option": "C",
+    "word": "",
+    "date": "2026-11-05"
+   },
    "reversibility": null,
-   "outcome": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Backstop",
+    "reason": ""
+   },
    "parking": [],
    "dispute": "",
-   "consequences": "",
+   "consequences": "тест-страховка: фикстура со строкой `### Requirement: x` внутри блока кода входит в тест сверки с `openspec show --json`.",
    "evidence": [
     {
      "path": "openspec/changes/trace-graph/specs/trace-graph/spec.md",
      "quote": "### Requirement: Скрипт сам разбирает спеки с номерами строк",
-     "line": 43,
+     "line": 55,
      "verdict": "сверено",
      "found": true
     }
@@ -5971,7 +6024,7 @@ const JOURNAL = {
    "id": "F-86",
    "question": "[adjacency · collection] Сохранённый граф проверяется скриптом: после сборки появился новый `specs/new/spec.md`: его нет в хешах исходников, а все перечисленные файлы сходятся",
    "kind": "развилка",
-   "status": "открыт",
+   "status": "решён",
    "addressee": "человек",
    "depends_on": [
     "F-41",
@@ -6013,17 +6066,25 @@ const JOURNAL = {
     "option": "A",
     "why": "`/opsx:archive` решает по этой проверке: свежий снимок не пересобирается (F-79). Новая спека не попала бы в снимок, а он выглядел бы верным, и после архивации это уже не исправить."
    },
-   "decision": null,
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-05"
+   },
    "reversibility": null,
-   "outcome": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Specify",
+    "reason": ""
+   },
    "parking": [],
    "dispute": "",
-   "consequences": "",
+   "consequences": "в spec.md: Появился новый исходник.",
    "evidence": [
     {
      "path": "openspec/changes/trace-graph/specs/trace-graph/spec.md",
      "quote": "### Requirement: Сохранённый граф проверяется скриптом",
-     "line": 73,
+     "line": 85,
      "verdict": "сверено",
      "found": true
     }
@@ -6036,7 +6097,7 @@ const JOURNAL = {
    "id": "F-87",
    "question": "[encoding · text] Сохранённый граф проверяется скриптом: `.gitattributes` держит `*.md` с `eol=crlf`: файл, записанный с LF, после `git checkout` получает CRLF при том же содержимом, и байтовый хеш расходится",
    "kind": "развилка",
-   "status": "открыт",
+   "status": "решён",
    "addressee": "человек",
    "depends_on": [
     "F-41",
@@ -6078,17 +6139,25 @@ const JOURNAL = {
     "option": "A",
     "why": "После архивации снимок не пересобирается (F-74), поэтому на новом клоне все `.md` навсегда покажут «устарел», и настоящий сигнал станет неотличим. Это не теория: `proposal.md` сейчас записан с LF при атрибуте `eol=crlf`."
    },
-   "decision": null,
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-05"
+   },
    "reversibility": null,
-   "outcome": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Specify",
+    "reason": ""
+   },
    "parking": [],
    "dispute": "",
-   "consequences": "",
+   "consequences": "в spec.md: Изменились только концы строк.",
    "evidence": [
     {
      "path": "openspec/changes/trace-graph/specs/trace-graph/spec.md",
      "quote": "### Requirement: Сохранённый граф проверяется скриптом",
-     "line": 73,
+     "line": 85,
      "verdict": "сверено",
      "found": true
     }
@@ -6101,7 +6170,7 @@ const JOURNAL = {
    "id": "F-88",
    "question": "[adjacency · collection] Связи между требованиями вычисляются как кандидаты: запись вроде F-38 стоит в двадцати требованиях: это 190 пар кандидатов, и `--requirement` покажет всех как соседей",
    "kind": "развилка",
-   "status": "открыт",
+   "status": "решён",
    "addressee": "человек",
    "depends_on": [
     "F-71"
@@ -6142,17 +6211,25 @@ const JOURNAL = {
     "option": "B",
     "why": "Замер разбора даёт от 5 до 22 % пар, граф не сплошной, а порог без данных пришлось бы выдумывать. Лишний сосед виден сразу и ничего не портит."
    },
-   "decision": null,
+   "decision": {
+    "option": "B",
+    "word": "",
+    "date": "2026-11-05"
+   },
    "reversibility": null,
-   "outcome": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Dismiss",
+    "reason": ""
+   },
    "parking": [],
    "dispute": "",
-   "consequences": "",
+   "consequences": "Замер разбора даёт от 5 до 22 % пар, граф не сплошной, а порог без данных пришлось бы выдумывать. Лишний сосед виден сразу и ничего не портит.",
    "evidence": [
     {
      "path": "openspec/changes/trace-graph/specs/trace-graph/spec.md",
      "quote": "### Requirement: Связи между требованиями вычисляются как кандидаты",
-     "line": 108,
+     "line": 142,
      "verdict": "сверено",
      "found": true
     }
@@ -6165,7 +6242,7 @@ const JOURNAL = {
    "id": "F-89",
    "question": "[adjacency · collection] Задача называет сценарий вместе с capability: задача закрывает два сценария одной capability: `` `demo`: «А», «Б» `` — наследует ли «Б» capability?",
    "kind": "развилка",
-   "status": "открыт",
+   "status": "решён",
    "addressee": "человек",
    "depends_on": [
     "F-42"
@@ -6206,17 +6283,25 @@ const JOURNAL = {
     "option": "B",
     "why": "Не разобранное имя сразу даёт сигнал, порчи нет. Правило «у каждого имени своя capability» проще наследования и не ломается при перестановке."
    },
-   "decision": null,
+   "decision": {
+    "option": "B",
+    "word": "",
+    "date": "2026-11-05"
+   },
    "reversibility": null,
-   "outcome": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Dismiss",
+    "reason": ""
+   },
    "parking": [],
    "dispute": "",
-   "consequences": "",
+   "consequences": "Не разобранное имя сразу даёт сигнал, порчи нет. Правило «у каждого имени своя capability» проще наследования и не ломается при перестановке.",
    "evidence": [
     {
      "path": "openspec/changes/trace-graph/specs/trace-conventions/spec.md",
      "quote": "### Requirement: Задача называет сценарий вместе с capability",
-     "line": 18,
+     "line": 30,
      "verdict": "сверено",
      "found": true
     }
@@ -6229,7 +6314,7 @@ const JOURNAL = {
    "id": "F-90",
    "question": "[encoding · text] Служебная задача несёт пометку: задача «Поправить служебная колонка» содержит это слово в тексте, но служебной не является",
    "kind": "развилка",
-   "status": "открыт",
+   "status": "решён",
    "addressee": "человек",
    "depends_on": [
     "F-43"
@@ -6270,17 +6355,25 @@ const JOURNAL = {
     "option": "A",
     "why": "Скрытый сигнал никто не увидит: задача с этим словом молча выпадет из отчёта. А форма в backticks ничего не стоит."
    },
-   "decision": null,
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-05"
+   },
    "reversibility": null,
-   "outcome": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Specify",
+    "reason": ""
+   },
    "parking": [],
    "dispute": "",
-   "consequences": "",
+   "consequences": "в spec.md: Слово в тексте задачи.",
    "evidence": [
     {
      "path": "openspec/changes/trace-graph/specs/trace-conventions/spec.md",
      "quote": "### Requirement: Служебная задача несёт пометку",
-     "line": 28,
+     "line": 50,
      "verdict": "сверено",
      "found": true
     }
@@ -6293,7 +6386,7 @@ const JOURNAL = {
    "id": "F-91",
    "question": "[boundary · numeric-range] Длинное требование делится на дочернее: старое требование мастер-спеки длиной 1500 знаков попадает в MODIFIED ради одной правки: делить его или оставить длинным?",
    "kind": "развилка",
-   "status": "открыт",
+   "status": "решён",
    "addressee": "человек",
    "depends_on": [
     "F-76"
@@ -6334,17 +6427,25 @@ const JOURNAL = {
     "option": "A",
     "why": "Край не тихий, но неизбежный: 20 требований из 188 длиннее предела, и `--strict` остановит шаг на первой их правке. Слово F-76 исключения для старых текстов не делает, и дельты этого изменения уже так написаны."
    },
-   "decision": null,
+   "decision": {
+    "option": "A",
+    "word": "20 требований из 188 говорят о том, что правило обходили, вместо того, чтобы лечить проблему. Ввод нового правила про дочерние требования решает проблему, и новые требования не вырастают больше 500 знаков, а разбор проблем мастер спецификации это отдельная задача. То есть риск роста спек учтен.",
+    "date": "2026-11-05"
+   },
    "reversibility": null,
-   "outcome": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Specify",
+    "reason": "20 требований из 188 говорят о том, что правило обходили, вместо того, чтобы лечить проблему. Ввод нового правила про дочерние требования решает проблему, и новые требования не вырастают больше 500 знаков, а разбор проблем мастер спецификации это отдельная задача. То есть риск роста спек учтен."
+   },
    "parking": [],
    "dispute": "",
-   "consequences": "",
+   "consequences": "в spec.md: Старое длинное требование в MODIFIED. Разбор длинных требований мастер-спеки записан в бэклог ядра как отдельная задача.",
    "evidence": [
     {
      "path": "openspec/changes/trace-graph/specs/trace-conventions/spec.md",
      "quote": "### Requirement: Длинное требование делится на дочернее",
-     "line": 43,
+     "line": 81,
      "verdict": "сверено",
      "found": true
     }
@@ -6357,7 +6458,7 @@ const JOURNAL = {
    "id": "F-92",
    "question": "[encoding · text] Дочернее требование называет родителя: имя родителя само несёт кавычки: `Часть требования «Режим «атака» группирует строки».` — разбор до первой `»` оборвёт имя",
    "kind": "развилка",
-   "status": "открыт",
+   "status": "решён",
    "addressee": "человек",
    "depends_on": [
     "F-77"
@@ -6398,17 +6499,25 @@ const JOURNAL = {
     "option": "A",
     "why": "Такие имена несут 6 требований и 5 сценариев мастер-спек, а также два дочерних этого изменения. Ложный сигнал на каждом приучит не читать настоящий."
    },
-   "decision": null,
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-05"
+   },
    "reversibility": null,
-   "outcome": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Specify",
+    "reason": ""
+   },
    "parking": [],
    "dispute": "",
-   "consequences": "",
+   "consequences": "в spec.md: Имя родителя с кавычками.",
    "evidence": [
     {
      "path": "openspec/changes/trace-graph/specs/trace-conventions/spec.md",
      "quote": "### Requirement: Дочернее требование называет родителя",
-     "line": 53,
+     "line": 107,
      "verdict": "сверено",
      "found": true
     }
@@ -6421,7 +6530,7 @@ const JOURNAL = {
    "id": "F-93",
    "question": "[concurrency · io] Одна команда отчитывается и за граф, и за validate: `openspec` нет в PATH или он упал: отчёт с одними сигналами графа выглядит так, будто `validate` ничего не нашёл",
    "kind": "развилка",
-   "status": "открыт",
+   "status": "решён",
    "addressee": "человек",
    "depends_on": [
     "F-07",
@@ -6463,12 +6572,20 @@ const JOURNAL = {
     "option": "A",
     "why": "Чистый отчёт при незапущенном `validate` читается как «всё проверено», а на обычном пути архивации других проверок дельт нет (F-07)."
    },
-   "decision": null,
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-05"
+   },
    "reversibility": null,
-   "outcome": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Specify",
+    "reason": ""
+   },
    "parking": [],
    "dispute": "",
-   "consequences": "",
+   "consequences": "в spec.md: `openspec` не запустился.",
    "evidence": [
     {
      "path": "openspec/changes/trace-graph/specs/trace-signals/spec.md",
@@ -6486,7 +6603,7 @@ const JOURNAL = {
    "id": "F-94",
    "question": "[adjacency · collection] Отчёт называет закрытый состав сигналов: `` `demo`: «Пустой ввод» ``, а сценарий с таким именем есть у двух требований одной capability: какое из них закрыто?",
    "kind": "развилка",
-   "status": "открыт",
+   "status": "решён",
    "addressee": "человек",
    "depends_on": [
     "F-42",
@@ -6528,17 +6645,25 @@ const JOURNAL = {
     "option": "A",
     "why": "В мастер-спеках таких имён 8. Тихий выбор первого даёт ложное покрытие или ложную дыру, а F-42 принят как раз против этого."
    },
-   "decision": null,
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-05"
+   },
    "reversibility": null,
-   "outcome": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Specify",
+    "reason": ""
+   },
    "parking": [],
    "dispute": "",
-   "consequences": "",
+   "consequences": "в spec.md: Одно имя у двух требований capability.",
    "evidence": [
     {
      "path": "openspec/changes/trace-graph/specs/trace-signals/spec.md",
      "quote": "### Requirement: Отчёт называет закрытый состав сигналов",
-     "line": 33,
+     "line": 49,
      "verdict": "сверено",
      "found": true
     }
@@ -6551,7 +6676,7 @@ const JOURNAL = {
    "id": "F-95",
    "question": "[adjacency · collection] Шумные виды в отчёт не идут: MODIFIED несёт сценарий с прежним именем, но другим THEN: по имени он «перенесён», хотя поведение изменилось",
    "kind": "развилка",
-   "status": "открыт",
+   "status": "решён",
    "addressee": "человек",
    "depends_on": [
     "F-31",
@@ -6593,17 +6718,25 @@ const JOURNAL = {
     "option": "A",
     "why": "На эталоне `step-help` так 3 сценария из 9: поведение поменялось, задачи нет, а отчёт молчит. Это и есть зазор между прочитанным и сделанным из F-31."
    },
-   "decision": null,
+   "decision": {
+    "option": "A",
+    "word": "в сохраняемом отчете расхождения в сценариях надо показывать отдельно",
+    "date": "2026-11-05"
+   },
    "reversibility": null,
-   "outcome": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Specify",
+    "reason": "в сохраняемом отчете расхождения в сценариях надо показывать отдельно"
+   },
    "parking": [],
    "dispute": "",
-   "consequences": "",
+   "consequences": "в spec.md: Прежнее имя, другой текст. Вид «сценарий MODIFIED с прежним именем и другим текстом» добавлен в закрытый состав, в сохранённом отчёте такие расхождения идут отдельным разделом. Что будет с этим сигналом после `/opsx:sync`, решает F-123.",
    "evidence": [
     {
      "path": "openspec/changes/trace-graph/specs/trace-signals/spec.md",
      "quote": "### Requirement: Шумные виды в отчёт не идут",
-     "line": 48,
+     "line": 70,
      "verdict": "сверено",
      "found": true
     }
@@ -6616,7 +6749,7 @@ const JOURNAL = {
    "id": "F-96",
    "question": "[adjacency · collection] Сигнал о решении следует его исходу: один сценарий закрывает исходы Specify двух записей, F-12 и F-13: как он называет обе?",
    "kind": "развилка",
-   "status": "открыт",
+   "status": "решён",
    "addressee": "человек",
    "depends_on": [
     "F-45"
@@ -6657,17 +6790,25 @@ const JOURNAL = {
     "option": "B",
     "why": "Случай редкий: Specify называет один конкретный край, и упущенное сразу покажет сигнал. Порчи нет, а форма со списком легла бы на три скилла."
    },
-   "decision": null,
+   "decision": {
+    "option": "B",
+    "word": "",
+    "date": "2026-11-05"
+   },
    "reversibility": null,
-   "outcome": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Dismiss",
+    "reason": ""
+   },
    "parking": [],
    "dispute": "",
-   "consequences": "",
+   "consequences": "Случай редкий: Specify называет один конкретный край, и упущенное сразу покажет сигнал. Порчи нет, а форма со списком легла бы на три скилла.",
    "evidence": [
     {
      "path": "openspec/changes/trace-graph/specs/trace-signals/spec.md",
      "quote": "### Requirement: Сигнал о решении следует его исходу",
-     "line": 73,
+     "line": 101,
      "verdict": "сверено",
      "found": true
     }
@@ -6680,7 +6821,7 @@ const JOURNAL = {
    "id": "F-97",
    "question": "[empty · text] Сигнал о решении следует его исходу: изменение из архива без единого комментария `\u003c!-- F-NN -->`: на `decision-scheme` это 42 строки сигнала",
    "kind": "развилка",
-   "status": "открыт",
+   "status": "решён",
    "addressee": "человек",
    "depends_on": [
     "F-45",
@@ -6723,17 +6864,25 @@ const JOURNAL = {
     "option": "B",
     "why": "Отчёт нужен активным изменениям, а у них комментарий есть с первого дня. Шум на старых виден сразу и ничего не портит."
    },
-   "decision": null,
+   "decision": {
+    "option": "B",
+    "word": "",
+    "date": "2026-11-05"
+   },
    "reversibility": null,
-   "outcome": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Dismiss",
+    "reason": ""
+   },
    "parking": [],
    "dispute": "",
-   "consequences": "",
+   "consequences": "Отчёт нужен активным изменениям, а у них комментарий есть с первого дня. Шум на старых виден сразу и ничего не портит.",
    "evidence": [
     {
      "path": "openspec/changes/trace-graph/specs/trace-signals/spec.md",
      "quote": "### Requirement: Сигнал о решении следует его исходу",
-     "line": 73,
+     "line": 101,
      "verdict": "сверено",
      "found": true
     }
@@ -6746,7 +6895,7 @@ const JOURNAL = {
    "id": "F-98",
    "question": "[encoding · text] Ответ на сигнал записывается в журнал: по чему скрипт узнаёт, что запись `[сигнал]` отвечает именно на этот сигнал, а не на соседний?",
    "kind": "развилка",
-   "status": "открыт",
+   "status": "решён",
    "addressee": "человек",
    "depends_on": [
     "F-47"
@@ -6787,17 +6936,25 @@ const JOURNAL = {
     "option": "A",
     "why": "Нестрогое совпадение тихо спрячет чужой сигнал, а человек будет считать, что ответил только на один."
    },
-   "decision": null,
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-05"
+   },
    "reversibility": null,
-   "outcome": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Specify",
+    "reason": ""
+   },
    "parking": [],
    "dispute": "",
-   "consequences": "",
+   "consequences": "в spec.md: Запись отвечает на один сигнал.",
    "evidence": [
     {
      "path": "openspec/changes/trace-graph/specs/trace-signals/spec.md",
      "quote": "### Requirement: Ответ на сигнал записывается в журнал",
-     "line": 118,
+     "line": 156,
      "verdict": "сверено",
      "found": true
     }
@@ -6810,7 +6967,7 @@ const JOURNAL = {
    "id": "F-99",
    "question": "[empty · text] Ответ на сигнал записывается в журнал: `apply` внёс решение в запись `[сигнал]`, а `outcome` пуст: скилла для таких записей нет, и сценарий с комментарием при Specify ставить некому",
    "kind": "развилка",
-   "status": "открыт",
+   "status": "решён",
    "addressee": "человек",
    "depends_on": [
     "F-45",
@@ -6852,17 +7009,25 @@ const JOURNAL = {
     "option": "A",
     "why": "Без этой строки Specify останется обещанием: сигнал замолчал, сценария нет, и никто этого не увидит."
    },
-   "decision": null,
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-05"
+   },
    "reversibility": null,
-   "outcome": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Specify",
+    "reason": ""
+   },
    "parking": [],
    "dispute": "",
-   "consequences": "",
+   "consequences": "в spec.md: Решение Specify у записи `[сигнал]`.",
    "evidence": [
     {
      "path": "openspec/changes/trace-graph/specs/trace-signals/spec.md",
      "quote": "### Requirement: Ответ на сигнал записывается в журнал",
-     "line": 118,
+     "line": 156,
      "verdict": "сверено",
      "found": true
     }
@@ -6875,7 +7040,7 @@ const JOURNAL = {
    "id": "F-100",
    "question": "[concurrency · io] Снимок и отчёт лежат в каталоге graph: сборку прервали между файлами: в `graph/` есть снимок, отчёта нет, а снимок по хешам свежий",
    "kind": "развилка",
-   "status": "открыт",
+   "status": "решён",
    "addressee": "человек",
    "depends_on": [
     "F-74",
@@ -6917,12 +7082,20 @@ const JOURNAL = {
     "option": "A",
     "why": "Снимок свежий, поэтому архивация обновит коммиты и пойдёт дальше, а отчёт потеряется навсегда: после архивации ничего не собирается (F-74)."
    },
-   "decision": null,
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-05"
+   },
    "reversibility": null,
-   "outcome": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Specify",
+    "reason": ""
+   },
    "parking": [],
    "dispute": "",
-   "consequences": "",
+   "consequences": "в spec.md: Снимок без отчёта.",
    "evidence": [
     {
      "path": "openspec/changes/trace-graph/specs/trace-snapshot/spec.md",
@@ -6940,7 +7113,7 @@ const JOURNAL = {
    "id": "F-101",
    "question": "[empty · collection] Снимок называет только коммиты заморозки: корень `context/` лежит вне git внутри клона ядра: `git rev-parse` там вернёт чужой коммит, а корня может не быть вовсе",
    "kind": "развилка",
-   "status": "открыт",
+   "status": "решён",
    "addressee": "человек",
    "depends_on": [
     "F-51"
@@ -6981,17 +7154,25 @@ const JOURNAL = {
     "option": "A",
     "why": "Снимок молча назовёт неверную ревизию, и выглядеть это будет верно: у этого изменения такой корень есть (`context/`)."
    },
-   "decision": null,
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-05"
+   },
    "reversibility": null,
-   "outcome": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Specify",
+    "reason": ""
+   },
    "parking": [],
    "dispute": "",
-   "consequences": "",
+   "consequences": "в spec.md: Корень вне git или без каталога.",
    "evidence": [
     {
      "path": "openspec/changes/trace-graph/specs/trace-snapshot/spec.md",
      "quote": "### Requirement: Снимок называет только коммиты заморозки",
-     "line": 63,
+     "line": 69,
      "verdict": "сверено",
      "found": true
     }
@@ -7004,7 +7185,7 @@ const JOURNAL = {
    "id": "F-102",
    "question": "[empty · collection] После архивации снимок не собирается: архивы, снятые до этой поставки, снимка не имеют и не получат: скрипт будет называть их при каждом запуске",
    "kind": "развилка",
-   "status": "открыт",
+   "status": "решён",
    "addressee": "человек",
    "depends_on": [
     "F-62"
@@ -7045,17 +7226,25 @@ const JOURNAL = {
     "option": "A",
     "why": "Новый пропуск утонет в списке старых архивов, и скрипт из F-62 перестанет что-либо значить."
    },
-   "decision": null,
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-05"
+   },
    "reversibility": null,
-   "outcome": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Specify",
+    "reason": ""
+   },
    "parking": [],
    "dispute": "",
-   "consequences": "",
+   "consequences": "в spec.md: Архивы старше первого снимка.",
    "evidence": [
     {
      "path": "openspec/changes/trace-graph/specs/trace-snapshot/spec.md",
      "quote": "### Requirement: После архивации снимок не собирается",
-     "line": 73,
+     "line": 85,
      "verdict": "сверено",
      "found": true
     }
@@ -7068,7 +7257,7 @@ const JOURNAL = {
    "id": "F-103",
    "question": "[adjacency · collection] Скрипт выдаёт текст диаграммы по выбору: `--requirement <имя>`, а требование с этим именем есть в двух capability: какое показать?",
    "kind": "развилка",
-   "status": "открыт",
+   "status": "решён",
    "addressee": "человек",
    "depends_on": [
     "F-54",
@@ -7110,12 +7299,20 @@ const JOURNAL = {
     "option": "A",
     "why": "Молча взятая первая даст диаграмму не того требования, и она будет выглядеть верной. Такие имена в мастер-спеках есть: одно имя стоит и в `decision-viewer`, и в `plugin-decision-view`."
    },
-   "decision": null,
+   "decision": {
+    "option": "A",
+    "word": "А вот с дублированием имён это реальная проблема, решение которой придется отправить в бэклог. Раз у нас нет uuid, чтобы обеспечить уникальность идентификаторов, то придется разрешать возможные конфликты переименованием требований, и это должно происходить при слиянии графов разных change, чтобы в графе были только уникальные имена.",
+    "date": "2026-11-05"
+   },
    "reversibility": null,
-   "outcome": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Specify",
+    "reason": "А вот с дублированием имён это реальная проблема, решение которой придется отправить в бэклог. Раз у нас нет uuid, чтобы обеспечить уникальность идентификаторов, то придется разрешать возможные конфликты переименованием требований, и это должно происходить при слиянии графов разных change, чтобы в графе были только уникальные имена."
+   },
    "parking": [],
    "dispute": "",
-   "consequences": "",
+   "consequences": "в spec.md: Одно имя в двух capability. Уникальность имён при слиянии графов разных изменений записана в бэклог ядра по слову владельца.",
    "evidence": [
     {
      "path": "openspec/changes/trace-graph/specs/trace-diagram/spec.md",
@@ -7133,7 +7330,7 @@ const JOURNAL = {
    "id": "F-104",
    "question": "[boundary · numeric-range] Без выбора действует предел текста: `--capability` выбирает часть, чей текст всё равно больше 50 000 знаков: F-66 решил только случай без выбора",
    "kind": "развилка",
-   "status": "открыт",
+   "status": "решён",
    "addressee": "человек",
    "depends_on": [
     "F-58",
@@ -7175,17 +7372,25 @@ const JOURNAL = {
     "option": "A",
     "why": "Mermaid на таком тексте молча рисует заглушку (F-58): без отказа человек увидит пустую картинку и не поймёт почему."
    },
-   "decision": null,
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-05"
+   },
    "reversibility": null,
-   "outcome": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Specify",
+    "reason": ""
+   },
    "parking": [],
    "dispute": "",
-   "consequences": "",
+   "consequences": "в spec.md: Выбранная capability больше предела.",
    "evidence": [
     {
      "path": "openspec/changes/trace-graph/specs/trace-diagram/spec.md",
      "quote": "### Requirement: Без выбора действует предел текста",
-     "line": 23,
+     "line": 39,
      "verdict": "сверено",
      "found": true
     }
@@ -7198,7 +7403,7 @@ const JOURNAL = {
    "id": "F-105",
    "question": "[adjacency · collection] Линза связей проверяет смысл названных связей: у изменения 20 задач и 40 связей `traces`: линза пишет строку на каждую связь или только на находки?",
    "kind": "развилка",
-   "status": "открыт",
+   "status": "решён",
    "addressee": "человек",
    "depends_on": [
     "F-55",
@@ -7240,12 +7445,20 @@ const JOURNAL = {
     "option": "A",
     "why": "Без строки на связь «проверил, всё верно» и «не смотрел» неотличимы, а `passed` открывает `apply`. То же правило уже действует у `scenario-run`."
    },
-   "decision": null,
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-05"
+   },
    "reversibility": null,
-   "outcome": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Specify",
+    "reason": ""
+   },
    "parking": [],
    "dispute": "",
-   "consequences": "",
+   "consequences": "в spec.md: Строка на каждую связь.",
    "evidence": [
     {
      "path": "openspec/changes/trace-graph/specs/artifact-attack/spec.md",
@@ -7263,7 +7476,7 @@ const JOURNAL = {
    "id": "F-106",
    "question": "[empty · collection] Состав линз настраивается: в `symphysis.yaml` выключены все линзы, а атаку всё же вызвали: что с вердиктом?",
    "kind": "развилка",
-   "status": "открыт",
+   "status": "решён",
    "addressee": "человек",
    "depends_on": [
     "F-61",
@@ -7305,17 +7518,25 @@ const JOURNAL = {
     "option": "A",
     "why": "`passed` без единой проверки открывает `apply`, и без явной строки его не отличить от чистой атаки. F-61 сам назвал этот край на шаг `specs`."
    },
-   "decision": null,
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-05"
+   },
    "reversibility": null,
-   "outcome": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Specify",
+    "reason": ""
+   },
    "parking": [],
    "dispute": "",
-   "consequences": "",
+   "consequences": "в spec.md: Выключены все линзы.",
    "evidence": [
     {
      "path": "openspec/changes/trace-graph/specs/artifact-attack/spec.md",
      "quote": "### Requirement: Состав линз настраивается",
-     "line": 121,
+     "line": 127,
      "verdict": "сверено",
      "found": true
     }
@@ -7328,7 +7549,7 @@ const JOURNAL = {
    "id": "F-107",
    "question": "[idempotency · stateful] Состав линз настраивается: файл атаки `passed`, затем выключенную линзу включили, а цель та же: по правилу хешей прежние строки действительны",
    "kind": "развилка",
-   "status": "открыт",
+   "status": "решён",
    "addressee": "человек",
    "depends_on": [
     "F-61"
@@ -7369,17 +7590,25 @@ const JOURNAL = {
     "option": "A",
     "why": "Человек включил линзу, проверки не случилось, и ничто об этом не говорит: файл по-прежнему `passed`."
    },
-   "decision": null,
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-05"
+   },
    "reversibility": null,
-   "outcome": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Specify",
+    "reason": ""
+   },
    "parking": [],
    "dispute": "",
-   "consequences": "",
+   "consequences": "в spec.md: Линза включена после вердикта.",
    "evidence": [
     {
      "path": "openspec/changes/trace-graph/specs/artifact-attack/spec.md",
      "quote": "### Requirement: Состав линз настраивается",
-     "line": 121,
+     "line": 127,
      "verdict": "сверено",
      "found": true
     }
@@ -7392,7 +7621,7 @@ const JOURNAL = {
    "id": "F-108",
    "question": "[encoding · text] `symphysis.yaml` в корне проекта задаёт выбор перед запуском шага: в ключе линзы опечатка, `trace-lnik: false`: линза работает, а человек считает её выключенной",
    "kind": "развилка",
-   "status": "открыт",
+   "status": "решён",
    "addressee": "человек",
    "depends_on": [
     "F-61",
@@ -7434,12 +7663,20 @@ const JOURNAL = {
     "option": "A",
     "why": "Ошибка в безопасную сторону, но человек не узнает, почему линза не выключилась, а файл личный, и подсказать некому."
    },
-   "decision": null,
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-05"
+   },
    "reversibility": null,
-   "outcome": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Specify",
+    "reason": ""
+   },
    "parking": [],
    "dispute": "",
-   "consequences": "",
+   "consequences": "в spec.md: Неизвестная линза.",
    "evidence": [
     {
      "path": "openspec/changes/trace-graph/specs/project-settings/spec.md",
@@ -7457,7 +7694,7 @@ const JOURNAL = {
    "id": "F-109",
    "question": "[adjacency · collection] `symphysis.yaml` в корне проекта задаёт выбор перед запуском шага: `claim-extraction` стоит в обоих файлах атаки: выключить её только у журнала нельзя при одном ключе на слуг",
    "kind": "развилка",
-   "status": "открыт",
+   "status": "решён",
    "addressee": "человек",
    "depends_on": [
     "F-61"
@@ -7498,12 +7735,20 @@ const JOURNAL = {
     "option": "B",
     "why": "Это видно сразу в строке `**Состав:**` и ничего не портит. Настройка по файлам удвоила бы ключи ради случая, которого никто не просил."
    },
-   "decision": null,
+   "decision": {
+    "option": "B",
+    "word": "",
+    "date": "2026-11-05"
+   },
    "reversibility": null,
-   "outcome": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Dismiss",
+    "reason": ""
+   },
    "parking": [],
    "dispute": "",
-   "consequences": "",
+   "consequences": "Это видно сразу в строке `**Состав:**` и ничего не портит. Настройка по файлам удвоила бы ключи ради случая, которого никто не просил.",
    "evidence": [
     {
      "path": "openspec/changes/trace-graph/specs/project-settings/spec.md",
@@ -7521,7 +7766,7 @@ const JOURNAL = {
    "id": "F-110",
    "question": "[adjacency · collection] `install` переносит подсказки операций: новая версия меняет текст подсказки заморозки: в проекте остаётся старая строка, а рядом появляется новая",
    "kind": "развилка",
-   "status": "открыт",
+   "status": "решён",
    "addressee": "человек",
    "depends_on": [
     "F-49"
@@ -7562,12 +7807,20 @@ const JOURNAL = {
     "option": "B",
     "why": "`rules` уже так живут, и никто на это не жаловался. Метка усложнит слияние ради редкой правки текста."
    },
-   "decision": null,
+   "decision": {
+    "option": "B",
+    "word": "Старые можно удалить руками. Если делать проверки на наличие старых подсказок и правила замены -- это усложняет установщик ради редких кейсов.",
+    "date": "2026-11-05"
+   },
    "reversibility": null,
-   "outcome": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Dismiss",
+    "reason": "Старые можно удалить руками. Если делать проверки на наличие старых подсказок и правила замены -- это усложняет установщик ради редких кейсов."
+   },
    "parking": [],
    "dispute": "",
-   "consequences": "",
+   "consequences": "Старые можно удалить руками. Если делать проверки на наличие старых подсказок и правила замены -- это усложняет установщик ради редких кейсов.",
    "evidence": [
     {
      "path": "openspec/changes/trace-graph/specs/project-installer/spec.md",
@@ -7585,7 +7838,7 @@ const JOURNAL = {
    "id": "F-111",
    "question": "[encoding · text] Улика активного изменения находится и в архиве: улика на `openspec/changes/old/x.md`, а в архиве два каталога: `2026-10-01-old` и `2026-11-05-old`",
    "kind": "развилка",
-   "status": "открыт",
+   "status": "решён",
    "addressee": "человек",
    "depends_on": [
     "F-50"
@@ -7626,12 +7879,20 @@ const JOURNAL = {
     "option": "B",
     "why": "Повторов имён в архиве нет, а журнал обычно цитирует сам себя. Правило выбора пока ни от чего не защищает."
    },
-   "decision": null,
+   "decision": {
+    "option": "B",
+    "word": "редкий кейс про обработку улик из архива. и зачем вообще сверять улики из архива? улики должны быть собраны относительно того состояние на котором создается change.",
+    "date": "2026-11-05"
+   },
    "reversibility": null,
-   "outcome": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Dismiss",
+    "reason": "редкий кейс про обработку улик из архива. и зачем вообще сверять улики из архива? улики должны быть собраны относительно того состояние на котором создается change."
+   },
    "parking": [],
    "dispute": "",
-   "consequences": "",
+   "consequences": "редкий кейс про обработку улик из архива. и зачем вообще сверять улики из архива? улики должны быть собраны относительно того состояние на котором создается change. Вопрос из этого слова вынесен развилкой F-122.",
    "evidence": [
     {
      "path": "openspec/changes/trace-graph/specs/decision-journal/spec.md",
@@ -7649,7 +7910,7 @@ const JOURNAL = {
    "id": "F-112",
    "question": "[запрет] Сигналы не останавливают работу: сигнал не должен становиться основанием для правки спек и задач без слова человека",
    "kind": "развилка",
-   "status": "открыт",
+   "status": "решён",
    "addressee": "человек",
    "depends_on": [
     "F-31"
@@ -7690,17 +7951,25 @@ const JOURNAL = {
     "option": "B",
     "why": "Модель, увидев зазор, начнёт его закрывать: объём растёт тихо, а выглядит как старание. Разбор и F-31 оставляют выбор человеку, а тестом это не поймать, поэтому судья человек."
    },
-   "decision": null,
+   "decision": {
+    "option": "B",
+    "word": "",
+    "date": "2026-11-05"
+   },
    "reversibility": null,
-   "outcome": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Specify",
+    "reason": ""
+   },
    "parking": [],
    "dispute": "",
-   "consequences": "",
+   "consequences": "проверка: judgment — человек сверяет diff реализации с отчётом и своими ответами. в spec.md: Сигнал не повод расширять работу.",
    "evidence": [
     {
      "path": "openspec/changes/trace-graph/specs/trace-signals/spec.md",
      "quote": "### Requirement: Сигналы не останавливают работу",
-     "line": 23,
+     "line": 29,
      "verdict": "сверено",
      "found": true
     }
@@ -7713,7 +7982,7 @@ const JOURNAL = {
    "id": "F-113",
    "question": "[запрет] Отчёт показывается перед реализацией и в её конце: модель не должна пересказывать отчёт или отбирать из него строки, которые сочла шумом",
    "kind": "развилка",
-   "status": "открыт",
+   "status": "решён",
    "addressee": "человек",
    "depends_on": [
     "F-31",
@@ -7755,17 +8024,25 @@ const JOURNAL = {
     "option": "B",
     "why": "Весь смысл отчёта в том, что человек видит зазор сам (F-31). Отбор модели выглядит как забота, а зазор тихо пропадает. Текст инструкции этого не гарантирует, судить может только человек."
    },
-   "decision": null,
+   "decision": {
+    "option": "B",
+    "word": "Отчет отдается человеку как ссылка, и всё. Потому что отчет может быть большим и не влезет в ограничение модели с небольшим Output.",
+    "date": "2026-11-05"
+   },
    "reversibility": null,
-   "outcome": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Specify",
+    "reason": "Отчет отдается человеку как ссылка, и всё. Потому что отчет может быть большим и не влезет в ограничение модели с небольшим Output."
+   },
    "parking": [],
    "dispute": "",
-   "consequences": "",
+   "consequences": "проверка: judgment — человек сверяет чат с файлом: в чате ссылка, пересказа и отбора строк нет. в spec.md: Отчёт отдаётся ссылкой. Требование «Отчёт показывается перед реализацией и в её конце» по этому слову говорит о ссылке, а не о показе.",
    "evidence": [
     {
      "path": "openspec/changes/trace-graph/specs/trace-signals/spec.md",
      "quote": "### Requirement: Отчёт показывается перед реализацией и в её конце",
-     "line": 103,
+     "line": 131,
      "verdict": "сверено",
      "found": true
     }
@@ -7778,7 +8055,7 @@ const JOURNAL = {
    "id": "F-114",
    "question": "[запрет] Ответ на сигнал записывается в журнал: запись `[сигнал]` не должна снимать сигнал без решения человека: модель очистила бы отчёт сама",
    "kind": "развилка",
-   "status": "открыт",
+   "status": "решён",
    "addressee": "человек",
    "depends_on": [
     "F-47"
@@ -7819,17 +8096,25 @@ const JOURNAL = {
     "option": "A",
     "why": "Иначе отчёт можно очистить одной записью без человека, и выглядеть это будет как отвеченный сигнал. Проверяется механически, поэтому судья не нужен."
    },
-   "decision": null,
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-05"
+   },
    "reversibility": null,
-   "outcome": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Specify",
+    "reason": ""
+   },
    "parking": [],
    "dispute": "",
-   "consequences": "",
+   "consequences": "проверка: test — запись `[сигнал]` без `decision` есть, сигнал в отчёте назван. в spec.md: Запись `[сигнал]` без решения не снимает сигнал.",
    "evidence": [
     {
      "path": "openspec/changes/trace-graph/specs/trace-signals/spec.md",
      "quote": "### Requirement: Ответ на сигнал записывается в журнал",
-     "line": 118,
+     "line": 156,
      "verdict": "сверено",
      "found": true
     }
@@ -7842,7 +8127,7 @@ const JOURNAL = {
    "id": "F-115",
    "question": "[запрет] Задача называет сценарий вместе с capability: имя сценария не должно вписываться в задачу только ради того, чтобы исчез сигнал",
    "kind": "развилка",
-   "status": "открыт",
+   "status": "решён",
    "addressee": "человек",
    "depends_on": [
     "F-42",
@@ -7884,17 +8169,25 @@ const JOURNAL = {
     "option": "B",
     "why": "Как только сигнал виден, его легче снять именем, чем работой, и граф начнёт врать (довод F-43). Настоящее имя проходит любую проверку существования, поэтому судят смысл линза и человек."
    },
-   "decision": null,
+   "decision": {
+    "option": "B",
+    "word": "",
+    "date": "2026-11-05"
+   },
    "reversibility": null,
-   "outcome": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Specify",
+    "reason": ""
+   },
    "parking": [],
    "dispute": "",
-   "consequences": "",
+   "consequences": "проверка: judgment — линза `trace-link` при вызванной атаке и человек при чтении `tasks.md`. в spec.md: Связь задачи со сценарием записана по существу.",
    "evidence": [
     {
      "path": "openspec/changes/trace-graph/specs/trace-conventions/spec.md",
      "quote": "### Requirement: Задача называет сценарий вместе с capability",
-     "line": 18,
+     "line": 30,
      "verdict": "сверено",
      "found": true
     }
@@ -7907,7 +8200,7 @@ const JOURNAL = {
    "id": "F-116",
    "question": "[запрет] Служебная задача несёт пометку: пометка `служебная` не должна стать способом убрать сигнал с настоящей работы",
    "kind": "развилка",
-   "status": "открыт",
+   "status": "решён",
    "addressee": "человек",
    "depends_on": [
     "F-43",
@@ -7949,17 +8242,25 @@ const JOURNAL = {
     "option": "A",
     "why": "На эталоне `step-help` задача 1.3 вводит поведение без требования (F-57): с пометкой она молча выпала бы из отчёта. Строка со счётом ничего не запрещает, но делает это видимым."
    },
-   "decision": null,
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-05"
+   },
    "reversibility": null,
-   "outcome": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Specify",
+    "reason": ""
+   },
    "parking": [],
    "dispute": "",
-   "consequences": "",
+   "consequences": "проверка: test — отчёт с двумя служебными задачами несёт строку с их числом и номерами. в spec.md: Служебная задача не вводит поведение.",
    "evidence": [
     {
      "path": "openspec/changes/trace-graph/specs/trace-conventions/spec.md",
      "quote": "### Requirement: Служебная задача несёт пометку",
-     "line": 28,
+     "line": 50,
      "verdict": "сверено",
      "found": true
     }
@@ -7972,7 +8273,7 @@ const JOURNAL = {
    "id": "F-117",
    "question": "[запрет] Длинное требование делится на дочернее: требование не должно терять условия, когда его сокращают ради предела в 500 знаков",
    "kind": "развилка",
-   "status": "открыт",
+   "status": "решён",
    "addressee": "человек",
    "depends_on": [
     "F-76"
@@ -8013,17 +8314,25 @@ const JOURNAL = {
     "option": "B",
     "why": "Предел подталкивает ужать текст, а не разделить его: пропавшее условие никто не заметит, требование выглядит опрятным. По смыслу это могут судить только ревью и атака."
    },
-   "decision": null,
+   "decision": {
+    "option": "B",
+    "word": "",
+    "date": "2026-11-05"
+   },
    "reversibility": null,
-   "outcome": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Specify",
+    "reason": ""
+   },
    "parking": [],
    "dispute": "",
-   "consequences": "",
+   "consequences": "проверка: judgment — ревью и атака артефактов сверяют родителя и дочерних с мастер-спекой. в spec.md: Деление не теряет условий.",
    "evidence": [
     {
      "path": "openspec/changes/trace-graph/specs/trace-conventions/spec.md",
      "quote": "### Requirement: Длинное требование делится на дочернее",
-     "line": 43,
+     "line": 81,
      "verdict": "сверено",
      "found": true
     }
@@ -8036,7 +8345,7 @@ const JOURNAL = {
    "id": "F-118",
    "question": "[запрет] Сохранённый граф проверяется скриптом: файл графа, поправленный руками, не должен выглядеть верным: хеши исходников это не ловят",
    "kind": "развилка",
-   "status": "открыт",
+   "status": "решён",
    "addressee": "человек",
    "depends_on": [
     "F-30",
@@ -8078,17 +8387,25 @@ const JOURNAL = {
     "option": "A",
     "why": "Намерение прямо говорит, что напрямую граф не модифицируется (F-30), а по хешам исходников такая правка не видна: снимок останется «свежим» и неверным. Сравнение со сборкой проверяется тестом."
    },
-   "decision": null,
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-05"
+   },
    "reversibility": null,
-   "outcome": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Specify",
+    "reason": ""
+   },
    "parking": [],
    "dispute": "",
-   "consequences": "",
+   "consequences": "проверка: test — в файле графа правится узел, проверка до архивации даёт сигнал. в spec.md: Правка файла графа не остаётся незамеченной. Сравнение после `/opsx:sync` решает F-123.",
    "evidence": [
     {
      "path": "openspec/changes/trace-graph/specs/trace-graph/spec.md",
      "quote": "### Requirement: Сохранённый граф проверяется скриптом",
-     "line": 73,
+     "line": 85,
      "verdict": "сверено",
      "found": true
     }
@@ -8101,7 +8418,7 @@ const JOURNAL = {
    "id": "F-119",
    "question": "[запрет] Новый артефакт схемы проверяется на вход в граф: значение `ничего` не должно стать способом сделать тест зелёным, не думая о графе",
    "kind": "развилка",
-   "status": "открыт",
+   "status": "решён",
    "addressee": "человек",
    "depends_on": [
     "F-53"
@@ -8142,17 +8459,25 @@ const JOURNAL = {
     "option": "A",
     "why": "Иначе правило из намерения сводится к одному слову в таблице. Довод рядом с `ничего` проверяется механически и заставляет ответить на вопрос, ради которого правило введено."
    },
-   "decision": null,
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-05"
+   },
    "reversibility": null,
-   "outcome": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Specify",
+    "reason": ""
+   },
    "parking": [],
    "dispute": "",
-   "consequences": "",
+   "consequences": "проверка: test — тест реестра падает на значении `ничего` с пустой причиной. в spec.md: Значение `ничего` несёт довод.",
    "evidence": [
     {
      "path": "openspec/changes/trace-graph/specs/trace-graph/spec.md",
      "quote": "### Requirement: Новый артефакт схемы проверяется на вход в граф",
-     "line": 118,
+     "line": 152,
      "verdict": "сверено",
      "found": true
     }
@@ -8165,7 +8490,7 @@ const JOURNAL = {
    "id": "F-120",
    "question": "[запрет] Скрипт выдаёт текст диаграммы по выбору: кандидат связи на диаграмме не должен выглядеть как записанная связь",
    "kind": "развилка",
-   "status": "открыт",
+   "status": "решён",
    "addressee": "человек",
    "depends_on": [
     "F-54",
@@ -8207,12 +8532,20 @@ const JOURNAL = {
     "option": "A",
     "why": "Вычисленная связь на картинке читается как решённая: кто-то сочтёт её истиной и ошибётся молча, а разбор предупреждает, что находка номера верность не доказывает. Тип связи проверяется тестом."
    },
-   "decision": null,
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-05"
+   },
    "reversibility": null,
-   "outcome": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Specify",
+    "reason": ""
+   },
    "parking": [],
    "dispute": "",
-   "consequences": "",
+   "consequences": "проверка: test — текст диаграммы с соседом-кандидатом не несёт для него типов записанных связей. в spec.md: Кандидат не выглядит записанной связью.",
    "evidence": [
     {
      "path": "openspec/changes/trace-graph/specs/trace-diagram/spec.md",
@@ -8230,7 +8563,7 @@ const JOURNAL = {
    "id": "F-121",
    "question": "[запрет] Состав линз настраивается: модель не должна сама выключать линзу, чтобы получить `passed`",
    "kind": "развилка",
-   "status": "открыт",
+   "status": "решён",
    "addressee": "человек",
    "depends_on": [
     "F-61",
@@ -8272,6 +8605,124 @@ const JOURNAL = {
     "option": "B",
     "why": "Вердикт `passed` открывает `apply`, а файл настроек лежит рядом: выключить неудобную линзу проще, чем закрыть блокер, и выглядит это законно. Тестом намерение не поймать, судит человек."
    },
+   "decision": {
+    "option": "B",
+    "word": "",
+    "date": "2026-11-05"
+   },
+   "reversibility": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Specify",
+    "reason": ""
+   },
+   "parking": [],
+   "dispute": "",
+   "consequences": "проверка: judgment — человек по строке `**Состав:**` и ревью транскрипта атаки. в spec.md: Состав линз меняет только человек.",
+   "evidence": [
+    {
+     "path": "openspec/changes/trace-graph/specs/artifact-attack/spec.md",
+     "quote": "### Requirement: Состав линз настраивается",
+     "line": 127,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [],
+   "finding": ""
+  },
+  {
+   "id": "F-122",
+   "question": "Нужно ли `check` вообще находить улики архивного журнала? Слово к F-111 спрашивает, зачем их сверять: улика собрана на том состоянии, на котором создано изменение. F-50.A ради этого правит разрешение путей в `check`, а сверять такие журналы сейчас некому.",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-09",
+    "F-50",
+    "F-51",
+    "F-111"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Архивный журнал не сверяется. Пути не переводятся, `check` не правится, журнал после архива не меняется, и хеш снимка верен. Правило о переводе снимается из пакета контекста, требование и capability `decision-journal` уходят из дельты, а запрет менять журнал после архива переходит в `trace-snapshot`. Цена: ручной `check` и пересборка страницы по архивному журналу, путь законный и под тестом, назовут такие улики «файла нет»",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "context/06-related-changes.md",
+       "quote": "После архива улики журнала с путём активного изменения переводятся на архивный.",
+       "line": 45,
+       "verdict": "сверено",
+       "found": true
+      },
+      {
+       "path": "vscode/src/host/project.ts",
+       "quote": "return entries.filter((e) => e.isDirectory() && e.name !== \"archive\")",
+       "line": 73,
+       "verdict": "сверено",
+       "found": true
+      },
+      {
+       "path": "tests/test_journal_render.py",
+       "quote": "def test_archived_journal_goes_the_common_way(tmp_path):",
+       "line": 1514,
+       "verdict": "сверено",
+       "found": true
+      },
+      {
+       "path": "tests/test_journal_schema.py",
+       "quote": "*sorted((ROOT / \"openspec\" / \"changes\" / \"archive\").glob(\"*/decisions.json\"))]",
+       "line": 241,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Как решено в F-50.A: `check` находит улику в архивном каталоге, требование `decision-journal` остаётся. Цена: правка разрешения путей в `journal_apply.py` и три сценария ради ручного запуска на архиве",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/changes/trace-graph/specs/decision-journal/spec.md",
+       "quote": "### Requirement: Улика активного изменения находится и в архиве",
+       "line": 5,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "C",
+     "text": "`check` и страница узнают журнал из `archive/` и не сверяют его улики: строка «архив: улики собраны на момент изменения», код 0, поля `found` не пишутся. Цена: ветка в `check` и `view-json`, сценарий и тест. Зато ручной запуск не покажет ложного «файла нет»",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "tools/journal_apply.py",
+       "quote": "changes = folder.parent.parent if folder.parent.name == \"archive\" else folder.parent",
+       "line": 46,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    }
+   ],
+   "antipodes": [
+    {
+     "option": "A",
+     "other": "F-50.A"
+    }
+   ],
+   "recommendation": {
+    "option": "A",
+    "why": "Сверять некому: `/opsx:archive` `check` не зовёт, панель плагина каталог `archive` пропускает, тесты читают архивы только ради схемы журнала, а в двух старых архивах улики с путём активного изменения лежат до сих пор, 47 и 56 строк. Цитата уже стоит в журнале дословно (F-51). B чинит то, что почти никому не мешает. C честнее на единственном пути, где это видно, в ручной пересборке страницы по архиву, но добавляет ради него код."
+   },
    "decision": null,
    "reversibility": null,
    "outcome": null,
@@ -8280,15 +8731,139 @@ const JOURNAL = {
    "consequences": "",
    "evidence": [
     {
-     "path": "openspec/changes/trace-graph/specs/artifact-attack/spec.md",
-     "quote": "### Requirement: Состав линз настраивается",
-     "line": 121,
+     "path": "openspec/changes/trace-graph/answers/2026-11-05-10.md",
+     "quote": "и зачем вообще сверять улики из архива?",
+     "line": 33,
      "verdict": "сверено",
      "found": true
     }
    ],
    "comments": [],
-   "nodes": [],
+   "nodes": [
+    "freeze",
+    "archive"
+   ],
+   "finding": ""
+  },
+  {
+   "id": "F-123",
+   "question": "Что делают сборка и проверка после `/opsx:sync`? Мастер тогда уже несёт номера и сценарии MODIFIED этого изменения. F-84.A отсечёт все эти номера: пересборка потеряет связи, а каждое такое требование получит сигнал F-83. F-118.A сравнит снимок со свежей сборкой и примет разницу за правку руками, и так при каждой обычной архивации с MODIFIED.",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-74",
+    "F-78",
+    "F-79",
+    "F-83",
+    "F-84",
+    "F-95",
+    "F-118"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Снимок несёт базу: при заморозке в него пишутся номера и сценарии мастер-спеки по каждому требованию MODIFIED. Сборка и сравнение после синхронизации берут их из `graph/`, и результат тот же, что до неё. `graph/` нет, а текст уже совпал с мастером: номера не отсекаются, отчёт называет такие требования. Цена: поле в формате снимка, ветка в сборке, два сценария и тест",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/changes/trace-graph/specs/trace-snapshot/spec.md",
+       "quote": "поэтому отчёт сверяет MODIFIED с ещё не изменённой мастер-спекой",
+       "line": 30,
+       "verdict": "сверено",
+       "found": true
+      },
+      {
+       "path": "openspec/changes/trace-graph/specs/trace-conventions/spec.md",
+       "quote": "Номер, который уже стоит в тексте этого требования в мастер-спеке, SHALL NOT давать связь",
+       "line": 9,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Базы нет. Скрипт узнаёт синхронизированное требование по совпавшему с мастером тексту: номера не отсекает, сценарии не сверяет, в сравнении F-118 эти связи не участвуют, а отчёт называет такие требования. Цена: на этом пути возвращаются чужие связи, которые убрал F-84, и молчит сигнал F-95",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/changes/trace-graph/specs/trace-signals/spec.md",
+       "quote": "сценарий MODIFIED с прежним именем и другим текстом (F-95)",
+       "line": 50,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "C",
+     "text": "Сравнение F-118 идёт, только пока текст MODIFIED не совпал с мастером, а пересборка после синхронизации теряет связи этих требований и говорит об этом строкой отчёта. Цена: снимок остаётся без этих связей навсегда, потому что после архивации он не собирается (F-74), а F-83 шумит на таких требованиях",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/changes/trace-graph/specs/trace-snapshot/spec.md",
+       "quote": "После архивации снимок SHALL NOT собираться.",
+       "line": 86,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "D",
+     "text": "Оставить как есть. Цена: ложный сигнал на каждой архивации с MODIFIED и потеря связей при пересборке",
+     "added": false,
+     "unlikely": "Сигнал, который срабатывает при каждой обычной архивации, перестают читать, а F-74 не даёт исправить снимок потом",
+     "evidence": [
+      {
+       "path": "docs/GUIDE.md",
+       "quote": "/opsx:sync add-overdue",
+       "line": 507,
+       "verdict": "сверено",
+       "found": true
+      },
+      {
+       "path": "openspec/changes/trace-graph/specs/trace-graph/spec.md",
+       "quote": "до архивации проверка SHALL сравнивать узлы и связи файла со свежей сборкой",
+       "line": 118,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Скрипт и так читает мастер ради F-84 и F-95, поэтому записать прочитанное в снимок почти ничего не стоит, и запись `[сигнал]`, добавленная после синхронизации, снимок не испортит. Такая запись вероятна: человек отвечает на отчёт конца реализации. B и C дешевле на одно поле, но B возвращает ложные связи, а C теряет настоящие, и после архивации это уже не исправить."
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/trace-graph/specs/trace-snapshot/spec.md",
+     "quote": "- **GIVEN** `graph/`, а затем в журнал добавлена запись `[сигнал]`",
+     "line": 53,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "apply",
+    "freeze",
+    "sync",
+    "archive"
+   ],
    "finding": ""
   }
  ],
@@ -8347,11 +8922,11 @@ const JOURNAL = {
   },
   {
    "date": "2026-11-05",
-   "text": "проба краёв: кандидатов 32 (открыты F-80–F-111), Specify 0, Dismiss 0, Backstop 0, Defer 0; не выбран 43: artifact-attack/Линзы атаки артефактов, artifact-attack/Состав линз настраивается, artifact-attack/Строка атаки валидна только с линзой, тяжестью, инвариантом и опорой, artifact-attack/Черта в ячейке атаки экранируется, consequence-inventory/Сценарий по ветке описи несёт номер записи, decision-journal/Улика активного изменения находится и в архиве, decision-viewer/Промпт режима «атака» пересобирается из состояния, decision-viewer/Режим «атака» группирует строки по линзам и держит слуг вне списка отдельно, project-installer/`install` переносит подсказки операций, project-installer/`install` ставит скрипт графа, requirement-probes/Сценарий по исходу Specify несёт номер записи, trace-conventions/Длинное требование делится на дочернее, trace-conventions/Задача называет сценарий вместе с capability, trace-diagram/Без выбора действует предел текста, trace-diagram/Конфиг задаёт виды сущностей, trace-diagram/Номер несёт вид и не упирается в гейт, trace-diagram/Скрипт выдаёт текст диаграммы по выбору, trace-diagram/Текст диаграммы разбирается на настоящих именах, trace-graph/Id читаемы, файл несёт версию формата, trace-graph/Граф собирается из файлов изменения, trace-graph/Живой граф не лежит на диске, trace-graph/Новый артефакт схемы проверяется на вход в граф, trace-graph/Связи между требованиями вычисляются как кандидаты, trace-graph/Сохранённый граф проверяется скриптом, trace-signals/Ответ на сигнал записывается в журнал, trace-signals/Отчёт называет закрытый состав сигналов, trace-signals/Отчёт показывается перед реализацией и в её конце, trace-signals/Сигнал называет запись, снявшую исход, trace-signals/Сигнал о решении следует его исходу, trace-snapshot/Архивация проверяет каталог graph, trace-snapshot/Первая заморозка идёт в конце реализации"
+   "text": "проба краёв: кандидатов 32, Specify 23, Dismiss 8, Backstop 1, Defer 0; не выбран 43: artifact-attack/Линзы атаки артефактов, artifact-attack/Состав линз настраивается, artifact-attack/Строка атаки валидна только с линзой, тяжестью, инвариантом и опорой, artifact-attack/Черта в ячейке атаки экранируется, consequence-inventory/Сценарий по ветке описи несёт номер записи, decision-journal/Улика активного изменения находится и в архиве, decision-viewer/Промпт режима «атака» пересобирается из состояния, decision-viewer/Режим «атака» группирует строки по линзам и держит слуг вне списка отдельно, project-installer/`install` переносит подсказки операций, project-installer/`install` ставит скрипт графа, requirement-probes/Сценарий по исходу Specify несёт номер записи, trace-conventions/Длинное требование делится на дочернее, trace-conventions/Задача называет сценарий вместе с capability, trace-diagram/Без выбора действует предел текста, trace-diagram/Конфиг задаёт виды сущностей, trace-diagram/Номер несёт вид и не упирается в гейт, trace-diagram/Скрипт выдаёт текст диаграммы по выбору, trace-diagram/Текст диаграммы разбирается на настоящих именах, trace-graph/Id читаемы, файл несёт версию формата, trace-graph/Граф собирается из файлов изменения, trace-graph/Живой граф не лежит на диске, trace-graph/Новый артефакт схемы проверяется на вход в граф, trace-graph/Связи между требованиями вычисляются как кандидаты, trace-graph/Сохранённый граф проверяется скриптом, trace-signals/Ответ на сигнал записывается в журнал, trace-signals/Отчёт называет закрытый состав сигналов, trace-signals/Отчёт показывается перед реализацией и в её конце, trace-signals/Сигнал называет запись, снявшую исход, trace-signals/Сигнал о решении следует его исходу, trace-snapshot/Архивация проверяет каталог graph, trace-snapshot/Первая заморозка идёт в конце реализации"
   },
   {
    "date": "2026-11-05",
-   "text": "проба запретов: требований 49, оставлено 10 (открыты F-112–F-121), канон → ИБ 6, Specify 0, Dismiss 0, Defer 0"
+   "text": "проба запретов: требований 49, оставлено 10, канон → ИБ 6, Specify 10, Dismiss 0, Defer 0"
   }
  ]
 };
@@ -9523,7 +10098,7 @@ const SCHEME = {
 };
 const HELP = {
  "contract": 2,
- "taken_at": "2026-11-05T18:10:27+03:00",
+ "taken_at": "2026-11-05T19:57:54+03:00",
  "versions": {
   "openspec": "1.15.0-symphysis.4",
   "symphysis": null
@@ -9532,11 +10107,11 @@ const HELP = {
  "changes": null,
  "error": null,
  "current_step": "viewer",
- "current_text": "Следующий шаг по файлам — `viewer`, ход человека: открытых развилок 42, решаются на странице журнала. После них по файлам идёт `consequences`.",
+ "current_text": "Следующий шаг по файлам — `viewer`, ход человека: открытых развилок 2, решаются на странице журнала. После них по файлам идёт `consequences`.",
  "turn": "human",
  "next_by_status": "consequences",
  "forks": {
-  "open": 42,
+  "open": 2,
   "parked": 0
  },
  "tasks": {
@@ -10169,6 +10744,7 @@ const LINKS = {
   "openspec/changes/archive/2026-11-02-implementation-consequences/design.md": "../archive/2026-11-02-implementation-consequences/design.md",
   "openspec/changes/archive/2026-11-02-implementation-consequences/specs/requirement-probes/spec.md": "../archive/2026-11-02-implementation-consequences/specs/requirement-probes/spec.md",
   "openspec/changes/archive/2026-11-04-recommendation-why/tasks.md": "../archive/2026-11-04-recommendation-why/tasks.md",
+  "openspec/changes/trace-graph/answers/2026-11-05-10.md": "answers/2026-11-05-10.md",
   "openspec/changes/trace-graph/answers/2026-11-05-5.md": "answers/2026-11-05-5.md",
   "openspec/changes/trace-graph/answers/2026-11-05-6.md": "answers/2026-11-05-6.md",
   "openspec/changes/trace-graph/answers/2026-11-05-8.md": "answers/2026-11-05-8.md",
@@ -10224,6 +10800,8 @@ const LINKS = {
   "skills/symphysis-viewer/SKILL.md": "../../../skills/symphysis-viewer/SKILL.md",
   "symphysis.html": "symphysis.html",
   "tests/fixtures/settings-cases.json": "../../../tests/fixtures/settings-cases.json",
+  "tests/test_journal_render.py": "../../../tests/test_journal_render.py",
+  "tests/test_journal_schema.py": "../../../tests/test_journal_schema.py",
   "tests/test_schema.py": "../../../tests/test_schema.py",
   "tests/test_skills.py": "../../../tests/test_skills.py",
   "tools/hooks/gate_hook.py": "../../../tools/hooks/gate_hook.py",
@@ -10244,6 +10822,7 @@ const LINKS = {
   "upstream/openspec/src/core/validation/constants.ts": "../../../../symphysis/upstream/openspec/src/core/validation/constants.ts",
   "vscode/node_modules/mermaid/dist/chunks/mermaid.core/requirementDiagram-EQYSW5RA.mjs": "../../../../symphysis-vscode/node_modules/mermaid/dist/chunks/mermaid.core/requirementDiagram-EQYSW5RA.mjs",
   "vscode/src/host/core.ts": "../../../../symphysis-vscode/src/host/core.ts",
+  "vscode/src/host/project.ts": "../../../../symphysis-vscode/src/host/project.ts",
   "vscode/src/shared/attack.ts": "../../../../symphysis-vscode/src/shared/attack.ts",
   "vscode/src/shared/check.ts": "../../../../symphysis-vscode/src/shared/check.ts",
   "vscode/src/webview/Card.tsx": "../../../../symphysis-vscode/src/webview/Card.tsx",
