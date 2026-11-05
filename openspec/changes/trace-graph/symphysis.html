@@ -212,15 +212,15 @@
 const JOURNAL = {
  "title": "Журнал решений: trace-graph",
  "source": "decisions.json",
- "sha256": "7fb4849971637b8034b3703e3b97ec8f6a64249aecf362c9a98487ee757d3e0f",
+ "sha256": "3f99eb2797a442575f81003559a1df40247f22660d540312d509b01c835a21ca",
  "stats": {
-  "records": 79,
-  "forks": 59,
+  "records": 121,
+  "forks": 101,
   "facts": 20,
   "decided": 59,
   "parked": 1,
-  "evidence_total": 209,
-  "evidence_found": 209
+  "evidence_total": 251,
+  "evidence_found": 251
  },
  "records": [
   {
@@ -3766,6 +3766,14 @@ const JOURNAL = {
     {
      "addressee": "ИБ",
      "text": "Скрипт запускает `openspec` из PATH; путь `--out` приходит снаружи; текст из файлов изменения попадает в текст mermaid и в отчёт, который читает модель. Канон, покрывается чек-листом `security.md`, запрет не чеканится."
+    },
+    {
+     "addressee": "ИБ",
+     "text": "Заморозка запускает `git` в каталогах из файла корней, путь приходит из этого файла. Канон, покрывается чек-листом `security.md`, запрет не чеканится."
+    },
+    {
+     "addressee": "ИБ",
+     "text": "Поиск улики в архивном каталоге остаётся внутри объявленного корня и не идёт по `..`. Канон, покрывается чек-листом `security.md`, запрет не чеканится."
     }
    ],
    "dispute": "",
@@ -5571,6 +5579,2717 @@ const JOURNAL = {
     "archive"
    ],
    "finding": ""
+  },
+  {
+   "id": "F-80",
+   "question": "[empty · collection] Граф собирается из файлов изменения: `decisions.json` с синтаксической ошибкой: выдать граф без записей или отказаться?",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-39"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN `decisions.json` с синтаксической ошибкой WHEN скрипт собирает граф THEN графа нет, код ненулевой, сообщение называет файл; цена: сценарий и тест на битом журнале",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — битый журнал не оговаривается: `journal.py check` на нём уже даёт код 1, и модель увидит это раньше",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест подаёт битый журнал и утверждает, что скрипт не вышел с кодом 0 и графом без записей; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — поведение на битом журнале остаётся открытым до `design`, где решается разбор всех артефактов",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Граф без записей и с кодом 0 выглядит верным, а связи `traces` в нём просто пропали. Снимок с такой порчей после архивации уже не пересобрать."
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/trace-graph/specs/trace-graph/spec.md",
+     "quote": "### Requirement: Граф собирается из файлов изменения",
+     "line": 8,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [],
+   "finding": ""
+  },
+  {
+   "id": "F-81",
+   "question": "[ordering · collection] Граф несёт связи артефактов с местом в файле: две сборки без единой правки: совпадают ли выводы байт в байт, если порядок узлов и связей не задан?",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-41",
+    "F-70"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN изменение без правок WHEN скрипт собирает граф дважды THEN выводы совпадают байт в байт, узлы и связи идут по файлу и строке; цена: сценарий, тест, сортировка в формате снимка",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — порядок не задаётся: граф читают модель и скрипт, а diff снимков пока никому не нужен",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест собирает граф дважды подряд и сравнивает байты; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — порядок остаётся открытым до сверки снимков следующего этапа, которой он и нужен",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Снимки копятся в архиве и не пересобираются. Сверка следующего этапа примет перестановку за изменение, а исправить уже снятое будет нельзя."
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/trace-graph/specs/trace-graph/spec.md",
+     "quote": "### Requirement: Граф несёт связи артефактов с местом в файле",
+     "line": 28,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [],
+   "finding": ""
+  },
+  {
+   "id": "F-82",
+   "question": "[adjacency · collection] Граф несёт связи артефактов с местом в файле: номер стоит и в тексте требования `(F-19)`, и в следе пробы `F-19 Specify`: одна связь `traces` или две?",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-70"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN требование с `(F-19)` в тексте и `F-19 Specify` в следе WHEN скрипт собирает граф THEN одна связь `traces` с местом в тексте; цена: правило слияния в разборе и тест",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — две связи с разными `at` допустимы: обе настоящие, на диаграмме это две стрелки, и человек видит их сразу",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест считает связи такого требования и утверждает, что каждая несёт своё место; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — число связей остаётся открытым до вида графа в плагине, которому оно и важно",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "B",
+    "why": "Две стрелки видны сразу и ничего не искажают: обе связи настоящие и называют своё место. Правило слияния только усложнит разбор."
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/trace-graph/specs/trace-graph/spec.md",
+     "quote": "### Requirement: Граф несёт связи артефактов с местом в файле",
+     "line": 28,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [],
+   "finding": ""
+  },
+  {
+   "id": "F-83",
+   "question": "[empty · text] Требование называет свои записи журнала: требование без единого `(F-NN)`: в закрытом составе F-64 такого сигнала нет, поэтому отчёт промолчит",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-44",
+    "F-64"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN требование без `(F-NN)` WHEN скрипт собирает отчёт THEN сигнал «требование без записи» называет его; цена: новый вид в закрытом составе F-64, сценарий и тест",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — сигнала нет: в 188 требованиях из 188 номер уже стоит, а инструкция шага его закрепляет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест на фикстуре утверждает, что такое требование не роняет сборку и не даёт связей `traces`; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — вопрос остаётся открытым до первых изменений с графом: станет ясно, нарушается ли соглашение вообще",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Без сигнала пропуск не заметит никто: в графе у требования просто нет связи, а отчёт молчит. Это единственное из соглашений, которое никто не проверяет."
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/trace-graph/specs/trace-conventions/spec.md",
+     "quote": "### Requirement: Требование называет свои записи журнала",
+     "line": 8,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [],
+   "finding": ""
+  },
+  {
+   "id": "F-84",
+   "question": "[encoding · text] Требование называет свои записи журнала: MODIFIED несёт текст мастер-спеки с `(F-07.A)` из журнала другого изменения, а F-07 этого журнала о другом: считать это связью?",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-44",
+    "F-70"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN требование в MODIFIED, чей текст в мастер-спеке уже несёт `(F-07.A)` WHEN скрипт собирает граф до `/opsx:sync` THEN связи с `rec:F-07` нет, а новый в тексте номер связь даёт; цена: разбор MODIFIED читает мастер-спеку, сценарий и тест",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — каждый номер считается связью этого журнала: ложные связи с записями того же номера принимаются",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест на эталоне `step-help` утверждает, что из 10 номеров MODIFIED связью стал один новый; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — вопрос остаётся открытым до первичного сбора, где номер получает форму `изменение/F-NN`",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "На эталонах из мастера перенесены 9 номеров из 10 у `step-help` и 13 из 24 у `decision-scheme`. Граф молча свяжет требование с чужой записью того же номера, и выглядеть это будет верно: в наших дельтах у `artifact-attack` таких совпадений 12."
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/trace-graph/specs/trace-conventions/spec.md",
+     "quote": "### Requirement: Требование называет свои записи журнала",
+     "line": 8,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [],
+   "finding": ""
+  },
+  {
+   "id": "F-85",
+   "question": "[encoding · text] Скрипт сам разбирает спеки с номерами строк: строка `### Requirement: x` внутри блока кода: OpenSpec такой блок пропускает, а свой разбор может принять за требование",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-40"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN спека со строкой `### Requirement: x` внутри блока кода WHEN скрипт собирает граф THEN узла нет; цена: сценарий, тест и учёт блоков кода в разборе",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — заголовков внутри блоков кода в спеках нет, а расхождение с OpenSpec поймает тест сверки",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — фикстура с таким блоком входит в тест сверки с `openspec show --json`; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — случай остаётся открытым до первой спеки с таким блоком",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "C",
+    "why": "Ложный узел выглядит как настоящее требование, а сверка ловит расхождение только на тех фикстурах, что в ней есть. Сценарий тут лишний: правило одно, совпадать с OpenSpec."
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/trace-graph/specs/trace-graph/spec.md",
+     "quote": "### Requirement: Скрипт сам разбирает спеки с номерами строк",
+     "line": 43,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [],
+   "finding": ""
+  },
+  {
+   "id": "F-86",
+   "question": "[adjacency · collection] Сохранённый граф проверяется скриптом: после сборки появился новый `specs/new/spec.md`: его нет в хешах исходников, а все перечисленные файлы сходятся",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-41",
+    "F-79"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN файл графа, а затем новый `specs/new/spec.md` WHEN идёт проверка THEN сигнал «устарел» называет новый файл, удалённый исходник тоже; цена: проверка сверяет ещё и состав файлов, сценарий и тест",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — проверка сверяет только перечисленные файлы, новую спеку покажет следующая сборка",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест добавляет файл спеки после сборки и утверждает, что проверка это заметила; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — случай остаётся открытым до `design`, где решается, как проверка узнаёт состав файлов",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "`/opsx:archive` решает по этой проверке: свежий снимок не пересобирается (F-79). Новая спека не попала бы в снимок, а он выглядел бы верным, и после архивации это уже не исправить."
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/trace-graph/specs/trace-graph/spec.md",
+     "quote": "### Requirement: Сохранённый граф проверяется скриптом",
+     "line": 73,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [],
+   "finding": ""
+  },
+  {
+   "id": "F-87",
+   "question": "[encoding · text] Сохранённый граф проверяется скриптом: `.gitattributes` держит `*.md` с `eol=crlf`: файл, записанный с LF, после `git checkout` получает CRLF при том же содержимом, и байтовый хеш расходится",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-41",
+    "F-74"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN файл графа и `tasks.md`, у которого изменились только концы строк WHEN идёт проверка THEN сигнала «устарел» нет: хеш считается после приведения концов строк к LF; цена: сценарий, тест, правило в формате снимка",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — хеш считается по байтам: ложный «устарел» виден сразу, а снимок можно собрать заново",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест пересохраняет файл с CRLF и утверждает, что проверка молчит; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — вопрос остаётся открытым до появления сверки снимков на другой машине",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "После архивации снимок не пересобирается (F-74), поэтому на новом клоне все `.md` навсегда покажут «устарел», и настоящий сигнал станет неотличим. Это не теория: `proposal.md` сейчас записан с LF при атрибуте `eol=crlf`."
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/trace-graph/specs/trace-graph/spec.md",
+     "quote": "### Requirement: Сохранённый граф проверяется скриптом",
+     "line": 73,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [],
+   "finding": ""
+  },
+  {
+   "id": "F-88",
+   "question": "[adjacency · collection] Связи между требованиями вычисляются как кандидаты: запись вроде F-38 стоит в двадцати требованиях: это 190 пар кандидатов, и `--requirement` покажет всех как соседей",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-71"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN запись, на которой стоит больше заданного числа требований WHEN скрипт вычисляет кандидатов THEN такая запись пар не даёт; цена: порог, сценарий и тест",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — кандидатом идёт каждая пара: это подсказка, а не связь, и лишний сосед на диаграмме виден сразу",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест на эталоне утверждает, что доля пар остаётся в пределах замера разбора; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — порог остаётся открытым до первого изменения, где соседей станет слишком много",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "B",
+    "why": "Замер разбора даёт от 5 до 22 % пар, граф не сплошной, а порог без данных пришлось бы выдумывать. Лишний сосед виден сразу и ничего не портит."
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/trace-graph/specs/trace-graph/spec.md",
+     "quote": "### Requirement: Связи между требованиями вычисляются как кандидаты",
+     "line": 108,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [],
+   "finding": ""
+  },
+  {
+   "id": "F-89",
+   "question": "[adjacency · collection] Задача называет сценарий вместе с capability: задача закрывает два сценария одной capability: `` `demo`: «А», «Б» `` — наследует ли «Б» capability?",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-42"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN задача `` `demo`: «А», «Б» `` WHEN скрипт собирает граф THEN оба сценария capability `demo` считаются названными; цена: правило наследования в разборе, сценарий и тест",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — наследования нет: модель повторяет capability у каждого имени, а не разобранное имя сразу даёт сигнал «неизвестное имя»",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест на фикстуре утверждает, что такая строка не закрывает чужой сценарий с именем «Б»; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — форма остаётся открытой до первых задач, написанных по новому шаблону",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "B",
+    "why": "Не разобранное имя сразу даёт сигнал, порчи нет. Правило «у каждого имени своя capability» проще наследования и не ломается при перестановке."
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/trace-graph/specs/trace-conventions/spec.md",
+     "quote": "### Requirement: Задача называет сценарий вместе с capability",
+     "line": 18,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [],
+   "finding": ""
+  },
+  {
+   "id": "F-90",
+   "question": "[encoding · text] Служебная задача несёт пометку: задача «Поправить служебная колонка» содержит это слово в тексте, но служебной не является",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-43"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN задача без связей со словом «служебная» в тексте WHEN скрипт собирает отчёт THEN сигнал о ней есть: пометкой считается только `` `служебная` `` в backticks в конце строки; цена: форма в шаблоне `tasks`, сценарий и тест",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — пометкой считается любое вхождение слова: такое совпадение редко",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест подаёт такую задачу и утверждает, что сигнал её называет; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — форма пометки остаётся открытой до шаблона `tasks`",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Скрытый сигнал никто не увидит: задача с этим словом молча выпадет из отчёта. А форма в backticks ничего не стоит."
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/trace-graph/specs/trace-conventions/spec.md",
+     "quote": "### Requirement: Служебная задача несёт пометку",
+     "line": 28,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [],
+   "finding": ""
+  },
+  {
+   "id": "F-91",
+   "question": "[boundary · numeric-range] Длинное требование делится на дочернее: старое требование мастер-спеки длиной 1500 знаков попадает в MODIFIED ради одной правки: делить его или оставить длинным?",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-76"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN требование длиннее 500 знаков в MODIFIED WHEN модель его правит THEN текст родителя укладывается в предел, вынесенное стоит в дочерних, сценарии родителя остаются при нём; цена: архив не принимает MODIFIED без прежнего сценария, поэтому дочерним нужны новые, и спека растёт",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — старое требование остаётся длинным, а WARNING при `--strict` принимается: так уже было у `decision-scheme`",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест утверждает, что `openspec validate --strict` не называет длинными требования из дельт схемы; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — вопрос остаётся открытым до первой правки длинного требования вне этого изменения",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Край не тихий, но неизбежный: 20 требований из 188 длиннее предела, и `--strict` остановит шаг на первой их правке. Слово F-76 исключения для старых текстов не делает, и дельты этого изменения уже так написаны."
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/trace-graph/specs/trace-conventions/spec.md",
+     "quote": "### Requirement: Длинное требование делится на дочернее",
+     "line": 43,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [],
+   "finding": ""
+  },
+  {
+   "id": "F-92",
+   "question": "[encoding · text] Дочернее требование называет родителя: имя родителя само несёт кавычки: `Часть требования «Режим «атака» группирует строки».` — разбор до первой `»` оборвёт имя",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-77"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN дочернее с фразой `Часть требования «Режим «атака» группирует строки».` WHEN скрипт собирает граф THEN `derives` ведёт к требованию с полным именем: имя сверяется с известными именами, а не ищется до первой `»`; цена: сценарий, тест, такой разбор задач тоже",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — имена с вложенными кавычками дают сигнал «неизвестное имя», человек поправит форму",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест на дельтах `decision-viewer` утверждает, что оба дочерних нашли родителя; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — разбор остаётся открытым до `design`",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Такие имена несут 6 требований и 5 сценариев мастер-спек, а также два дочерних этого изменения. Ложный сигнал на каждом приучит не читать настоящий."
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/trace-graph/specs/trace-conventions/spec.md",
+     "quote": "### Requirement: Дочернее требование называет родителя",
+     "line": 53,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [],
+   "finding": ""
+  },
+  {
+   "id": "F-93",
+   "question": "[concurrency · io] Одна команда отчитывается и за граф, и за validate: `openspec` нет в PATH или он упал: отчёт с одними сигналами графа выглядит так, будто `validate` ничего не нашёл",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-07",
+    "F-32"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN `openspec` нет или он завершился ошибкой WHEN скрипт собирает отчёт THEN отчёт несёт сигналы графа и строку «validate не запустился» с причиной, код 0; цена: сценарий и тест с подменённым бинарём",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — сбой `openspec` не оговаривается: без него не работает вся схема, и человек заметит это раньше",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест запускает скрипт без `openspec` и утверждает, что отчёт об этом говорит; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — поведение остаётся открытым до чек-листа `security.md`, где разбирается запуск из PATH",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Чистый отчёт при незапущенном `validate` читается как «всё проверено», а на обычном пути архивации других проверок дельт нет (F-07)."
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/trace-graph/specs/trace-signals/spec.md",
+     "quote": "### Requirement: Одна команда отчитывается и за граф, и за validate",
+     "line": 8,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [],
+   "finding": ""
+  },
+  {
+   "id": "F-94",
+   "question": "[adjacency · collection] Отчёт называет закрытый состав сигналов: `` `demo`: «Пустой ввод» ``, а сценарий с таким именем есть у двух требований одной capability: какое из них закрыто?",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-42",
+    "F-64"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN одно имя сценария у двух требований capability `demo` и задача с этим именем WHEN скрипт собирает отчёт THEN оба считаются закрытыми, сигнал «неоднозначное имя» называет оба требования; цена: сценарий и тест",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — закрытым считается первый по файлу, второй покажет сигнал «сценарий без задачи»",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест подаёт такую пару и утверждает, что отчёт называет обе; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — случай остаётся открытым до формы, где задача называет ещё и требование",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "В мастер-спеках таких имён 8. Тихий выбор первого даёт ложное покрытие или ложную дыру, а F-42 принят как раз против этого."
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/trace-graph/specs/trace-signals/spec.md",
+     "quote": "### Requirement: Отчёт называет закрытый состав сигналов",
+     "line": 33,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [],
+   "finding": ""
+  },
+  {
+   "id": "F-95",
+   "question": "[adjacency · collection] Шумные виды в отчёт не идут: MODIFIED несёт сценарий с прежним именем, но другим THEN: по имени он «перенесён», хотя поведение изменилось",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-31",
+    "F-64"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN MODIFIED со сценарием, имя которого есть в мастере, а текст другой, и без задачи на него WHEN скрипт собирает отчёт до `/opsx:sync` THEN сигнал называет сценарий; цена: сравнение текста сценария с мастером, сценарий и тест",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — сравнение идёт только по имени: изменённый текст новым не считается",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест на эталоне `step-help` утверждает, что три таких сценария названы; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — сравнение остаётся открытым до пробы настоящего скрипта на эталонах",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "На эталоне `step-help` так 3 сценария из 9: поведение поменялось, задачи нет, а отчёт молчит. Это и есть зазор между прочитанным и сделанным из F-31."
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/trace-graph/specs/trace-signals/spec.md",
+     "quote": "### Requirement: Шумные виды в отчёт не идут",
+     "line": 48,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [],
+   "finding": ""
+  },
+  {
+   "id": "F-96",
+   "question": "[adjacency · collection] Сигнал о решении следует его исходу: один сценарий закрывает исходы Specify двух записей, F-12 и F-13: как он называет обе?",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-45"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN сценарий на исходы F-12 и F-13 WHEN модель ставит след THEN под заголовком `\u003c!-- F-12, F-13 -->`, сигналов о них нет; цена: форма со списком в трёх скиллах, сценарий и тест",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — у каждого исхода свой сценарий: исходы называют разные края, а пропуск сразу покажет сигнал",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест на фикстуре утверждает, что список номеров разбирается; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — форма остаётся открытой до первого такого случая",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "B",
+    "why": "Случай редкий: Specify называет один конкретный край, и упущенное сразу покажет сигнал. Порчи нет, а форма со списком легла бы на три скилла."
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/trace-graph/specs/trace-signals/spec.md",
+     "quote": "### Requirement: Сигнал о решении следует его исходу",
+     "line": 73,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [],
+   "finding": ""
+  },
+  {
+   "id": "F-97",
+   "question": "[empty · text] Сигнал о решении следует его исходу: изменение из архива без единого комментария `\u003c!-- F-NN -->`: на `decision-scheme` это 42 строки сигнала",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-45",
+    "F-64",
+    "F-69"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN изменение с исходами Specify и без комментариев WHEN скрипт собирает отчёт THEN одна строка сводки «связь Specify не проверена» вместо строки на исход; цена: особый случай в отчёте, сценарий и тест",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — строка на каждый исход: отчёт строят по активным изменениям, у новых комментарий есть, а старые прогонять незачем",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест на эталонах утверждает, что сборка на старых изменениях не падает; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — вопрос остаётся открытым до настоящего скрипта; так же решено о числах F-64: «пока не попробуем не узнаем»",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "B",
+    "why": "Отчёт нужен активным изменениям, а у них комментарий есть с первого дня. Шум на старых виден сразу и ничего не портит."
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/trace-graph/specs/trace-signals/spec.md",
+     "quote": "### Requirement: Сигнал о решении следует его исходу",
+     "line": 73,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [],
+   "finding": ""
+  },
+  {
+   "id": "F-98",
+   "question": "[encoding · text] Ответ на сигнал записывается в журнал: по чему скрипт узнаёт, что запись `[сигнал]` отвечает именно на этот сигнал, а не на соседний?",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-47"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN запись с вопросом `[сигнал] требование без задачи · demo/Имя` WHEN скрипт собирает отчёт THEN молчит только сигнал этого вида и этого ключа; цена: форма вопроса в инструкции, разбор, сценарий и тест",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — форма не задаётся: модель пишет вопрос свободно, а скрипт ищет в нём ключ требования",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест подаёт две записи на соседние требования и утверждает, что молчат только их сигналы; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — форма остаётся открытой до `design`",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Нестрогое совпадение тихо спрячет чужой сигнал, а человек будет считать, что ответил только на один."
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/trace-graph/specs/trace-signals/spec.md",
+     "quote": "### Requirement: Ответ на сигнал записывается в журнал",
+     "line": 118,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [],
+   "finding": ""
+  },
+  {
+   "id": "F-99",
+   "question": "[empty · text] Ответ на сигнал записывается в журнал: `apply` внёс решение в запись `[сигнал]`, а `outcome` пуст: скилла для таких записей нет, и сценарий с комментарием при Specify ставить некому",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-45",
+    "F-47"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN запись `[сигнал]` с решением Specify WHEN идёт `/opsx:apply` THEN по строке `apply.instruction` модель пишет `outcome` и сценарий с `\u003c!-- F-NN -->`; цена: строка в инструкции, сценарий, проверка только чтением журнала",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — решения достаточно: скрипт смотрит на `decision`, а сценарий модель поставит и без напоминания",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест подаёт запись с решением и пустым `outcome` и утверждает, что сигнал молчит; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — кто зеркалит исход, остаётся открытым до шага `tasks`",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Без этой строки Specify останется обещанием: сигнал замолчал, сценария нет, и никто этого не увидит."
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/trace-graph/specs/trace-signals/spec.md",
+     "quote": "### Requirement: Ответ на сигнал записывается в журнал",
+     "line": 118,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [],
+   "finding": ""
+  },
+  {
+   "id": "F-100",
+   "question": "[concurrency · io] Снимок и отчёт лежат в каталоге graph: сборку прервали между файлами: в `graph/` есть снимок, отчёта нет, а снимок по хешам свежий",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-74",
+    "F-79"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN в `graph/` есть снимок, отчёта нет WHEN выполняется `/opsx:archive` THEN `graph/` считается неполным и собирается заново; цена: подсказка и проверка знают состав каталога, сценарий и тест",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — неполный каталог не оговаривается: отчёт это только удобство, снимок на месте",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест удаляет отчёт и утверждает, что проверка называет каталог неполным; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — случай остаётся открытым до выбора имён файлов в `design`",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Снимок свежий, поэтому архивация обновит коммиты и пойдёт дальше, а отчёт потеряется навсегда: после архивации ничего не собирается (F-74)."
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/trace-graph/specs/trace-snapshot/spec.md",
+     "quote": "### Requirement: Снимок и отчёт лежат в каталоге graph",
+     "line": 8,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [],
+   "finding": ""
+  },
+  {
+   "id": "F-101",
+   "question": "[empty · collection] Снимок называет только коммиты заморозки: корень `context/` лежит вне git внутри клона ядра: `git rev-parse` там вернёт чужой коммит, а корня может не быть вовсе",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-51"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN корень вне git или каталога нет WHEN идёт заморозка THEN у этого корня пусто, отчёт его называет, заморозка идёт дальше; цена: скрипт отличает файл под git от просто лежащего в дереве, сценарий и тест",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — скрипт берёт `git rev-parse` как есть: такие корни редки и у обычного проекта их нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест подаёт корень вне git и утверждает, что снимок не несёт чужого коммита; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — вопрос остаётся открытым до сверки снимков, которой нужны коммиты",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Снимок молча назовёт неверную ревизию, и выглядеть это будет верно: у этого изменения такой корень есть (`context/`)."
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/trace-graph/specs/trace-snapshot/spec.md",
+     "quote": "### Requirement: Снимок называет только коммиты заморозки",
+     "line": 63,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [],
+   "finding": ""
+  },
+  {
+   "id": "F-102",
+   "question": "[empty · collection] После архивации снимок не собирается: архивы, снятые до этой поставки, снимка не имеют и не получат: скрипт будет называть их при каждом запуске",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-62"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN в архиве изменения старше первого снимка WHEN скрипт запущен на каталоге архива THEN они идут одной строкой со счётом, поимённо только более новые; цена: правило отсечения, сценарий и тест",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — называются все: скрипт зовут по необходимости, и человек сам отличит старые",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест на архиве со смешанными каталогами утверждает, что новый пропуск заметен; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — отсечение остаётся открытым до первого настоящего запуска",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Новый пропуск утонет в списке старых архивов, и скрипт из F-62 перестанет что-либо значить."
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/trace-graph/specs/trace-snapshot/spec.md",
+     "quote": "### Requirement: После архивации снимок не собирается",
+     "line": 73,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [],
+   "finding": ""
+  },
+  {
+   "id": "F-103",
+   "question": "[adjacency · collection] Скрипт выдаёт текст диаграммы по выбору: `--requirement <имя>`, а требование с этим именем есть в двух capability: какое показать?",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-54",
+    "F-70"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN требование с одним именем в двух capability WHEN скрипт запущен с `--requirement <имя>` THEN отказ с кодом, подсказка называет обе формы `capability/имя`, и такая форма работает; цена: сценарий и тест",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — берётся первая по порядку, остальное покажет `--capability`",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест подаёт такую пару и утверждает, что скрипт не выдал молча одну из них; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — форма выбора остаётся открытой до вида графа в плагине",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Молча взятая первая даст диаграмму не того требования, и она будет выглядеть верной. Такие имена в мастер-спеках есть: одно имя стоит и в `decision-viewer`, и в `plugin-decision-view`."
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/trace-graph/specs/trace-diagram/spec.md",
+     "quote": "### Requirement: Скрипт выдаёт текст диаграммы по выбору",
+     "line": 8,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [],
+   "finding": ""
+  },
+  {
+   "id": "F-104",
+   "question": "[boundary · numeric-range] Без выбора действует предел текста: `--capability` выбирает часть, чей текст всё равно больше 50 000 знаков: F-66 решил только случай без выбора",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-58",
+    "F-66"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN capability с текстом диаграммы больше 50 000 знаков WHEN скрипт запущен с `--capability` THEN отказ с кодом, подсказка называет её требования с числом узлов и размером; цена: сценарий и тест",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — выбор выдаётся всегда: человек сам его просил и может поднять `maxTextSize`",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест подаёт большую capability и утверждает, что текста сверх предела скрипт не выдал; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — случай остаётся открытым до первой настолько большой capability",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Mermaid на таком тексте молча рисует заглушку (F-58): без отказа человек увидит пустую картинку и не поймёт почему."
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/trace-graph/specs/trace-diagram/spec.md",
+     "quote": "### Requirement: Без выбора действует предел текста",
+     "line": 23,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [],
+   "finding": ""
+  },
+  {
+   "id": "F-105",
+   "question": "[adjacency · collection] Линза связей проверяет смысл названных связей: у изменения 20 задач и 40 связей `traces`: линза пишет строку на каждую связь или только на находки?",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-55",
+    "F-72"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN 20 задач и 40 связей `traces` WHEN скилл проходит линзой `trace-link` THEN по строке на каждую связь: находка или «есть»; цена: длинная таблица и время чтения на каждую атаку",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — строки только на находки: линза дорогая, а атаку и так вызывают по слову",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест скилла утверждает, что в файле атаки есть хотя бы одна строка линзы на каждый вид связи; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — объём остаётся открытым до первой настоящей атаки с этой линзой",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Без строки на связь «проверил, всё верно» и «не смотрел» неотличимы, а `passed` открывает `apply`. То же правило уже действует у `scenario-run`."
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/trace-graph/specs/artifact-attack/spec.md",
+     "quote": "### Requirement: Линза связей проверяет смысл названных связей",
+     "line": 101,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [],
+   "finding": ""
+  },
+  {
+   "id": "F-106",
+   "question": "[empty · collection] Состав линз настраивается: в `symphysis.yaml` выключены все линзы, а атаку всё же вызвали: что с вердиктом?",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-61",
+    "F-63"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN выключены все линзы и атака вызвана WHEN скилл пишет файл THEN таблица пуста, `**Состав:**` называет всё выключенным, `status: passed`, итог человеку говорит, что проверок не было; цена: сценарий и правка скилла",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — случай не оговаривается: кто выключил всё, атаку не зовёт",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест на пустой таблице утверждает, что файл разбирается страницей; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — вердикт остаётся открытым до первого такого случая",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "`passed` без единой проверки открывает `apply`, и без явной строки его не отличить от чистой атаки. F-61 сам назвал этот край на шаг `specs`."
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/trace-graph/specs/artifact-attack/spec.md",
+     "quote": "### Requirement: Состав линз настраивается",
+     "line": 121,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [],
+   "finding": ""
+  },
+  {
+   "id": "F-107",
+   "question": "[idempotency · stateful] Состав линз настраивается: файл атаки `passed`, затем выключенную линзу включили, а цель та же: по правилу хешей прежние строки действительны",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-61"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN файл атаки `passed` и линза, включённая после него, при тех же хешах WHEN атаку вызывают снова THEN проход идёт по новой линзе, остальные строки действительны; цена: скилл сверяет строку `**Состав:**`, сценарий и правка скилла",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — хеши решают всё: сменивший состав сам знает, что надо пройти заново",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест скилла утверждает, что строка `**Состав:**` сравнивается с текущим составом; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — правило остаётся открытым до первой смены состава на настоящем изменении",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Человек включил линзу, проверки не случилось, и ничто об этом не говорит: файл по-прежнему `passed`."
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/trace-graph/specs/artifact-attack/spec.md",
+     "quote": "### Requirement: Состав линз настраивается",
+     "line": 121,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [],
+   "finding": ""
+  },
+  {
+   "id": "F-108",
+   "question": "[encoding · text] `symphysis.yaml` в корне проекта задаёт выбор перед запуском шага: в ключе линзы опечатка, `trace-lnik: false`: линза работает, а человек считает её выключенной",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-61",
+    "F-63"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN ключ линзы с неизвестным слугом WHEN выполняются `symphysis check` и скрипт настроек THEN `[!!] symphysis.yaml: неизвестная линза <имя>`, все линзы включены; цена: список слугов в скрипте настроек, случай в `settings-cases.json`",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — неизвестный ключ молча игнорируется: сомнение и так решается во включённую сторону",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — случай в `settings-cases.json` закрепляет, что опечатка не выключает линзу; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — проверка имён остаётся открытой до следующей правки настроек",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Ошибка в безопасную сторону, но человек не узнает, почему линза не выключилась, а файл личный, и подсказать некому."
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/trace-graph/specs/project-settings/spec.md",
+     "quote": "### Requirement: `symphysis.yaml` в корне проекта задаёт выбор перед запуском шага",
+     "line": 5,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [],
+   "finding": ""
+  },
+  {
+   "id": "F-109",
+   "question": "[adjacency · collection] `symphysis.yaml` в корне проекта задаёт выбор перед запуском шага: `claim-extraction` стоит в обоих файлах атаки: выключить её только у журнала нельзя при одном ключе на слуг",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-61"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN выключена `claim-extraction` WHEN идёт атака журнала и атака артефактов THEN линза выключена в обеих; цена: сценарий, случай в `settings-cases.json`",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — случай не оговаривается: линза одна, как и её слуг, настройки по файлам нет, а строка `**Состав:**` показывает, что выключено",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — случай в `settings-cases.json` закрепляет чтение ключа; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — вопрос остаётся открытым, пока никто не попросит выключить её только у одного файла",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "B",
+    "why": "Это видно сразу в строке `**Состав:**` и ничего не портит. Настройка по файлам удвоила бы ключи ради случая, которого никто не просил."
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/trace-graph/specs/project-settings/spec.md",
+     "quote": "### Requirement: `symphysis.yaml` в корне проекта задаёт выбор перед запуском шага",
+     "line": 5,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [],
+   "finding": ""
+  },
+  {
+   "id": "F-110",
+   "question": "[adjacency · collection] `install` переносит подсказки операций: новая версия меняет текст подсказки заморозки: в проекте остаётся старая строка, а рядом появляется новая",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-49"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN проект со старым текстом подсказки WHEN выполняется `install` новой версии THEN старая строка заменена; цена: метка у подсказки symphysis, правило замены, сценарий и тест",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — старая и новая стоят рядом, как уже бывает у `rules`, и `install` называет добавленное",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест на двух версиях конфига утверждает, что своя строка проекта не потеряна; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — замена остаётся открытой до первой правки текста подсказки",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "B",
+    "why": "`rules` уже так живут, и никто на это не жаловался. Метка усложнит слияние ради редкой правки текста."
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/trace-graph/specs/project-installer/spec.md",
+     "quote": "### Requirement: `install` переносит подсказки операций",
+     "line": 20,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [],
+   "finding": ""
+  },
+  {
+   "id": "F-111",
+   "question": "[encoding · text] Улика активного изменения находится и в архиве: улика на `openspec/changes/old/x.md`, а в архиве два каталога: `2026-10-01-old` и `2026-11-05-old`",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-50"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN два архивных каталога одного имени WHEN выполняется `check` THEN у журнала в архиве первым идёт его каталог, иначе самый новый; цена: правило выбора в `_resolve`, сценарий и тест",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — случай не оговаривается: повторов имён в архиве сейчас нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест подаёт два таких каталога и утверждает, что вердикт не падает; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — правило остаётся открытым до первого повтора имени",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "B",
+    "why": "Повторов имён в архиве нет, а журнал обычно цитирует сам себя. Правило выбора пока ни от чего не защищает."
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/trace-graph/specs/decision-journal/spec.md",
+     "quote": "### Requirement: Улика активного изменения находится и в архиве",
+     "line": 5,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [],
+   "finding": ""
+  },
+  {
+   "id": "F-112",
+   "question": "[запрет] Сигналы не останавливают работу: сигнал не должен становиться основанием для правки спек и задач без слова человека",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-31"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify/test — требование MUST NOT: модель не меняет `specs/` и `tasks.md` из-за сигнала, пока человек не ответил; проверяет тест скилла по тексту инструкции `apply`, что там нет просьбы чинить; цена: сценарий, тест текста инструкции, правка теста при смене инструкции",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Specify/judgment — требование MUST NOT: сигнал не повод расширять работу без слова; судит человек, сверяя diff реализации с отчётом и своими ответами, тестом это не измерить; цена: сценарий, сверка при каждой реализации, сопровождение формулировки",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Dismiss — запрет не нужен: слово человека и так нужно на любую правку спек, а отчёт сам ничего не меняет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — остаётся открытым, как модель поступает с сигналом, до первой реализации с отчётом; пока tasks считает, что она спрашивает",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "B",
+    "why": "Модель, увидев зазор, начнёт его закрывать: объём растёт тихо, а выглядит как старание. Разбор и F-31 оставляют выбор человеку, а тестом это не поймать, поэтому судья человек."
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/trace-graph/specs/trace-signals/spec.md",
+     "quote": "### Requirement: Сигналы не останавливают работу",
+     "line": 23,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [],
+   "finding": ""
+  },
+  {
+   "id": "F-113",
+   "question": "[запрет] Отчёт показывается перед реализацией и в её конце: модель не должна пересказывать отчёт или отбирать из него строки, которые сочла шумом",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-31",
+    "F-48"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify/test — требование MUST NOT: инструкция велит показывать вывод скрипта целиком и дословно; проверяет тест текста инструкции `apply`; цена: сценарий, тест текста, правка при смене инструкции",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Specify/judgment — требование MUST NOT: человек видит все строки отчёта, а не отбор модели; судит человек, сверяя показанное с файлом в `graph/`; цена: сценарий, сверка при каждом показе, сопровождение формулировки",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Dismiss — запрет не нужен: отчёт лежит в `graph/`, и человек может открыть его сам",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — остаётся открытым, в каком виде показывать длинный отчёт, до первой реализации с настоящими числами",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "B",
+    "why": "Весь смысл отчёта в том, что человек видит зазор сам (F-31). Отбор модели выглядит как забота, а зазор тихо пропадает. Текст инструкции этого не гарантирует, судить может только человек."
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/trace-graph/specs/trace-signals/spec.md",
+     "quote": "### Requirement: Отчёт показывается перед реализацией и в её конце",
+     "line": 103,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [],
+   "finding": ""
+  },
+  {
+   "id": "F-114",
+   "question": "[запрет] Ответ на сигнал записывается в журнал: запись `[сигнал]` не должна снимать сигнал без решения человека: модель очистила бы отчёт сама",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-47"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify/test — требование MUST NOT: запись `[сигнал]` без `decision` сигнала не снимает; проверяет тест: такая запись есть, сигнал в отчёте назван; цена: сценарий и тест",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Specify/judgment — требование MUST NOT: модель сама не заводит ответов на сигнал; судит человек по журналу, сверяя записи `[сигнал]` со своими словами; цена: сценарий, чтение журнала при каждой атаке, сопровождение формулировки",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Dismiss — запрет не нужен: `decision` появляется только из `apply`, а запись без него и так видна открытой на странице",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — остаётся открытым, снимает ли сигнал открытая запись, до `design` разбора записей `[сигнал]`",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Иначе отчёт можно очистить одной записью без человека, и выглядеть это будет как отвеченный сигнал. Проверяется механически, поэтому судья не нужен."
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/trace-graph/specs/trace-signals/spec.md",
+     "quote": "### Requirement: Ответ на сигнал записывается в журнал",
+     "line": 118,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [],
+   "finding": ""
+  },
+  {
+   "id": "F-115",
+   "question": "[запрет] Задача называет сценарий вместе с capability: имя сценария не должно вписываться в задачу только ради того, чтобы исчез сигнал",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-42",
+    "F-43"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify/test — требование MUST NOT: задача не называет сценарий, которого её проверка не касается; проверяет тест на фикстуре, что имя сверено только по существованию, поэтому механически это не поймать; цена: сценарий и тест, который ловит лишь грубые случаи",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Specify/judgment — требование MUST NOT: связь задачи со сценарием записана потому, что задача его закрывает, а не ради отчёта; судит линза `trace-link` при вызванной атаке и человек при чтении `tasks.md`; цена: сценарий, чтение при каждой атаке, сопровождение формулировки",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Dismiss — запрет не нужен: линза `trace-link` и так проверяет этот смысл, а другой строки в спеке он не добавит",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — остаётся открытым до первой атаки с линзой: будет видно, подгоняются ли связи на деле",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "B",
+    "why": "Как только сигнал виден, его легче снять именем, чем работой, и граф начнёт врать (довод F-43). Настоящее имя проходит любую проверку существования, поэтому судят смысл линза и человек."
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/trace-graph/specs/trace-conventions/spec.md",
+     "quote": "### Requirement: Задача называет сценарий вместе с capability",
+     "line": 18,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [],
+   "finding": ""
+  },
+  {
+   "id": "F-116",
+   "question": "[запрет] Служебная задача несёт пометку: пометка `служебная` не должна стать способом убрать сигнал с настоящей работы",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-43",
+    "F-57"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify/test — требование MUST NOT: служебная задача не вводит поведение; отчёт называет счёт и номера таких задач отдельной строкой, а тест утверждает, что они там есть; цена: сценарий, строка в отчёте, тест",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Specify/judgment — требование MUST NOT: пометка стоит только у настройки дерева, прогона и показа; судит человек при чтении `tasks.md` и линза `trace-link`; цена: сценарий, чтение при каждом показе, сопровождение списка примеров",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Dismiss — запрет не нужен: пометка видна в `tasks.md`, и человек читает его перед реализацией",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — остаётся открытым до первых изменений с пометкой: будет видно, сколько таких задач бывает",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "На эталоне `step-help` задача 1.3 вводит поведение без требования (F-57): с пометкой она молча выпала бы из отчёта. Строка со счётом ничего не запрещает, но делает это видимым."
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/trace-graph/specs/trace-conventions/spec.md",
+     "quote": "### Requirement: Служебная задача несёт пометку",
+     "line": 28,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [],
+   "finding": ""
+  },
+  {
+   "id": "F-117",
+   "question": "[запрет] Длинное требование делится на дочернее: требование не должно терять условия, когда его сокращают ради предела в 500 знаков",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-76"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify/test — требование MUST NOT: при делении исчезает условие; тест считает, что все номера `F-NN` прежнего текста стоят в родителе или дочерних; цена: сценарий, тест на сравнение номеров, ловит только потерю номера",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Specify/judgment — требование MUST NOT: родитель и дочерние вместе несут всё, что нёс прежний текст; судят ревью и атака артефактов, сверяя с мастер-спекой; цена: сценарий, сверка текста при каждом делении, сопровождение формулировки",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Dismiss — запрет не нужен: MODIFIED виден в diff, а новые сценарии покажут, что осталось",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — остаётся открытым до первых длинных требований, разделённых вне этого изменения",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "B",
+    "why": "Предел подталкивает ужать текст, а не разделить его: пропавшее условие никто не заметит, требование выглядит опрятным. По смыслу это могут судить только ревью и атака."
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/trace-graph/specs/trace-conventions/spec.md",
+     "quote": "### Requirement: Длинное требование делится на дочернее",
+     "line": 43,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [],
+   "finding": ""
+  },
+  {
+   "id": "F-118",
+   "question": "[запрет] Сохранённый граф проверяется скриптом: файл графа, поправленный руками, не должен выглядеть верным: хеши исходников это не ловят",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-30",
+    "F-41"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify/test — требование MUST NOT: правка файла графа мимо файлов изменения остаётся незамеченной; до архивации проверка сравнивает его содержимое со свежей сборкой и даёт сигнал, тест правит узел в файле; цена: сценарий, сравнение в проверке, тест",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Specify/judgment — требование MUST NOT: граф правится напрямую; судит человек по истории git каталога `graph/`; цена: сценарий, чтение истории при споре, сопровождение формулировки",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Dismiss — запрет не нужен: файл производный, никому незачем его править, и Т14 уже это говорит",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — остаётся открытым до сверки снимков следующего этапа, где правка снимка важнее всего",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Намерение прямо говорит, что напрямую граф не модифицируется (F-30), а по хешам исходников такая правка не видна: снимок останется «свежим» и неверным. Сравнение со сборкой проверяется тестом."
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/trace-graph/specs/trace-graph/spec.md",
+     "quote": "### Requirement: Сохранённый граф проверяется скриптом",
+     "line": 73,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [],
+   "finding": ""
+  },
+  {
+   "id": "F-119",
+   "question": "[запрет] Новый артефакт схемы проверяется на вход в граф: значение `ничего` не должно стать способом сделать тест зелёным, не думая о графе",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-53"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify/test — требование MUST NOT: строка реестра со значением `ничего` остаётся без довода; тест реестра требует непустую причину рядом со значением; цена: сценарий, поле причины в реестре, тест",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Specify/judgment — требование MUST NOT: новый артефакт отмечается `ничего`, если из него следуют связи; судит ревью правки схемы; цена: сценарий, суждение при каждом новом артефакте, сопровождение формулировки",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Dismiss — запрет не нужен: артефакты добавляются редко, и правка схемы и так читается человеком",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — остаётся открытым до следующего нового артефакта схемы",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Иначе правило из намерения сводится к одному слову в таблице. Довод рядом с `ничего` проверяется механически и заставляет ответить на вопрос, ради которого правило введено."
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/trace-graph/specs/trace-graph/spec.md",
+     "quote": "### Requirement: Новый артефакт схемы проверяется на вход в граф",
+     "line": 118,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [],
+   "finding": ""
+  },
+  {
+   "id": "F-120",
+   "question": "[запрет] Скрипт выдаёт текст диаграммы по выбору: кандидат связи на диаграмме не должен выглядеть как записанная связь",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-54",
+    "F-71"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify/test — требование MUST NOT: кандидат идёт типом связи `verifies`, `satisfies`, `traces` или `derives`; тест проверяет текст диаграммы с соседом, цена: сценарий, тест, выбор типа для кандидата в конфиге",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Specify/judgment — требование MUST NOT: читатель принимает соседа за связь; судит человек, глядя на диаграмму; цена: сценарий, просмотр при каждой правке конфига, сопровождение формулировки",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Dismiss — запрет не нужен: сосед показан только при `--requirement`, и тот, кто просил, знает, что это подсказка",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — остаётся открытым до вида графа в плагине, где подсказка получит свой облик",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Вычисленная связь на картинке читается как решённая: кто-то сочтёт её истиной и ошибётся молча, а разбор предупреждает, что находка номера верность не доказывает. Тип связи проверяется тестом."
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/trace-graph/specs/trace-diagram/spec.md",
+     "quote": "### Requirement: Скрипт выдаёт текст диаграммы по выбору",
+     "line": 8,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [],
+   "finding": ""
+  },
+  {
+   "id": "F-121",
+   "question": "[запрет] Состав линз настраивается: модель не должна сама выключать линзу, чтобы получить `passed`",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-61",
+    "F-63"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify/test — требование MUST NOT: скилл атаки правит `symphysis.yaml`; тест текста скилла утверждает, что запрещающая строка на месте; цена: сценарий, тест текста, ловит только пропажу строки",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Specify/judgment — требование MUST NOT: состав меняет кто-либо, кроме человека; судит человек по строке `**Состав:**` и ревью транскрипта атаки; цена: сценарий, сверка при каждой атаке, сопровождение формулировки",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Dismiss — запрет не нужен: файл личный, вне git, и строка `**Состав:**` показывает любое выключение",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — остаётся открытым до первого проекта, где линзы и правда выключают",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "B",
+    "why": "Вердикт `passed` открывает `apply`, а файл настроек лежит рядом: выключить неудобную линзу проще, чем закрыть блокер, и выглядит это законно. Тестом намерение не поймать, судит человек."
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/trace-graph/specs/artifact-attack/spec.md",
+     "quote": "### Requirement: Состав линз настраивается",
+     "line": 121,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [],
+   "finding": ""
   }
  ],
  "notes": [
@@ -5625,6 +8344,14 @@ const JOURNAL = {
   {
    "date": "2026-11-05",
    "text": "атака decisions.json: строк 127, блокеров 0, предупреждений 1, справок 126, не выводится 1 — passed"
+  },
+  {
+   "date": "2026-11-05",
+   "text": "проба краёв: кандидатов 32 (открыты F-80–F-111), Specify 0, Dismiss 0, Backstop 0, Defer 0; не выбран 43: artifact-attack/Линзы атаки артефактов, artifact-attack/Состав линз настраивается, artifact-attack/Строка атаки валидна только с линзой, тяжестью, инвариантом и опорой, artifact-attack/Черта в ячейке атаки экранируется, consequence-inventory/Сценарий по ветке описи несёт номер записи, decision-journal/Улика активного изменения находится и в архиве, decision-viewer/Промпт режима «атака» пересобирается из состояния, decision-viewer/Режим «атака» группирует строки по линзам и держит слуг вне списка отдельно, project-installer/`install` переносит подсказки операций, project-installer/`install` ставит скрипт графа, requirement-probes/Сценарий по исходу Specify несёт номер записи, trace-conventions/Длинное требование делится на дочернее, trace-conventions/Задача называет сценарий вместе с capability, trace-diagram/Без выбора действует предел текста, trace-diagram/Конфиг задаёт виды сущностей, trace-diagram/Номер несёт вид и не упирается в гейт, trace-diagram/Скрипт выдаёт текст диаграммы по выбору, trace-diagram/Текст диаграммы разбирается на настоящих именах, trace-graph/Id читаемы, файл несёт версию формата, trace-graph/Граф собирается из файлов изменения, trace-graph/Живой граф не лежит на диске, trace-graph/Новый артефакт схемы проверяется на вход в граф, trace-graph/Связи между требованиями вычисляются как кандидаты, trace-graph/Сохранённый граф проверяется скриптом, trace-signals/Ответ на сигнал записывается в журнал, trace-signals/Отчёт называет закрытый состав сигналов, trace-signals/Отчёт показывается перед реализацией и в её конце, trace-signals/Сигнал называет запись, снявшую исход, trace-signals/Сигнал о решении следует его исходу, trace-snapshot/Архивация проверяет каталог graph, trace-snapshot/Первая заморозка идёт в конце реализации"
+  },
+  {
+   "date": "2026-11-05",
+   "text": "проба запретов: требований 49, оставлено 10 (открыты F-112–F-121), канон → ИБ 6, Specify 0, Dismiss 0, Defer 0"
   }
  ]
 };
@@ -6796,7 +9523,7 @@ const SCHEME = {
 };
 const HELP = {
  "contract": 2,
- "taken_at": "2026-11-05T17:16:04+03:00",
+ "taken_at": "2026-11-05T18:10:27+03:00",
  "versions": {
   "openspec": "1.15.0-symphysis.4",
   "symphysis": null
@@ -6804,12 +9531,12 @@ const HELP = {
  "change": "trace-graph",
  "changes": null,
  "error": null,
- "current_step": "proposal",
- "current_text": "Следующий шаг по файлам — `proposal`, ход модели.",
- "turn": "model",
- "next_by_status": "proposal",
+ "current_step": "viewer",
+ "current_text": "Следующий шаг по файлам — `viewer`, ход человека: открытых развилок 42, решаются на странице журнала. После них по файлам идёт `consequences`.",
+ "turn": "human",
+ "next_by_status": "consequences",
  "forks": {
-  "open": 0,
+  "open": 42,
   "parked": 0
  },
  "tasks": {
@@ -6889,7 +9616,7 @@ const HELP = {
   },
   {
    "id": "viewer",
-   "state": "idle",
+   "state": "ready",
    "turn": "human",
    "optional": false,
    "blocks": [],
@@ -7002,7 +9729,7 @@ const HELP = {
   },
   {
    "id": "proposal",
-   "state": "ready",
+   "state": "done",
    "turn": "model",
    "optional": false,
    "blocks": [
@@ -7014,10 +9741,10 @@ const HELP = {
    "files": [
     {
      "path": "openspec/changes/trace-graph/proposal.md",
-     "exists": false
+     "exists": true
     }
    ],
-   "file_note": null,
+   "file_note": "файл есть, содержание не проверялось",
    "texts": {
     "title": "Зачем изменение и что оно задевает",
     "why": "Договор об объёме: почему изменение нужно и какие capabilities оно затрагивает. По этому списку потом пишутся спецификации.",
@@ -7034,7 +9761,7 @@ const HELP = {
   },
   {
    "id": "specs",
-   "state": "blocked",
+   "state": "done",
    "turn": "model",
    "optional": false,
    "blocks": [
@@ -7044,16 +9771,66 @@ const HELP = {
     "attack-artifacts"
    ],
    "stops_apply": false,
-   "waits_for": [
-    "proposal"
-   ],
+   "waits_for": [],
    "files": [
     {
-     "path": "openspec/changes/trace-graph/specs/**/*.md",
-     "exists": false
+     "path": "openspec/changes/trace-graph/specs/artifact-attack/spec.md",
+     "exists": true
+    },
+    {
+     "path": "openspec/changes/trace-graph/specs/brainstorm-interview/spec.md",
+     "exists": true
+    },
+    {
+     "path": "openspec/changes/trace-graph/specs/consequence-inventory/spec.md",
+     "exists": true
+    },
+    {
+     "path": "openspec/changes/trace-graph/specs/decision-journal/spec.md",
+     "exists": true
+    },
+    {
+     "path": "openspec/changes/trace-graph/specs/decision-viewer/spec.md",
+     "exists": true
+    },
+    {
+     "path": "openspec/changes/trace-graph/specs/onboarding-guide/spec.md",
+     "exists": true
+    },
+    {
+     "path": "openspec/changes/trace-graph/specs/project-installer/spec.md",
+     "exists": true
+    },
+    {
+     "path": "openspec/changes/trace-graph/specs/project-settings/spec.md",
+     "exists": true
+    },
+    {
+     "path": "openspec/changes/trace-graph/specs/requirement-probes/spec.md",
+     "exists": true
+    },
+    {
+     "path": "openspec/changes/trace-graph/specs/trace-conventions/spec.md",
+     "exists": true
+    },
+    {
+     "path": "openspec/changes/trace-graph/specs/trace-diagram/spec.md",
+     "exists": true
+    },
+    {
+     "path": "openspec/changes/trace-graph/specs/trace-graph/spec.md",
+     "exists": true
+    },
+    {
+     "path": "openspec/changes/trace-graph/specs/trace-signals/spec.md",
+     "exists": true
+    },
+    {
+     "path": "openspec/changes/trace-graph/specs/trace-snapshot/spec.md",
+     "exists": true
     }
    ],
-   "file_note": null,
+   "file_note": "файл есть, содержание не проверялось",
    "texts": {
     "title": "Спецификации поведения",
     "why": "Наблюдаемое поведение, записанное требованиями и сценариями. По нему потом проверяют дизайн и код, поэтому всё, что не названо здесь, проверить будет нечем.",
@@ -7081,16 +9858,14 @@ const HELP = {
   },
   {
    "id": "consequences",
-   "state": "blocked",
+   "state": "ready",
    "turn": "model",
    "optional": false,
    "blocks": [
     "design"
    ],
    "stops_apply": false,
-   "waits_for": [
-    "specs"
-   ],
+   "waits_for": [],
    "files": [
     {
      "path": "openspec/changes/trace-graph/consequences.md",
@@ -7129,7 +9904,6 @@ const HELP = {
    ],
    "stops_apply": false,
    "waits_for": [
-    "proposal",
     "consequences"
    ],
    "files": [
@@ -7155,16 +9929,14 @@ const HELP = {
   },
   {
    "id": "security",
-   "state": "blocked",
+   "state": "ready",
    "turn": "model",
    "optional": false,
    "blocks": [
     "attack-artifacts"
    ],
    "stops_apply": true,
-   "waits_for": [
-    "specs"
-   ],
+   "waits_for": [],
    "files": [
     {
      "path": "openspec/changes/trace-graph/security.md",
@@ -7196,7 +9968,6 @@ const HELP = {
    ],
    "stops_apply": true,
    "waits_for": [
-    "specs",
     "design"
    ],
    "files": [
@@ -7228,7 +9999,6 @@ const HELP = {
    "blocks": [],
    "stops_apply": false,
    "waits_for": [
-    "specs",
     "design",
     "security",
     "tasks"
@@ -7340,13 +10110,30 @@ const HELP = {
   "attack/decisions.md": "openspec/changes/trace-graph/attack/decisions.md",
   "decisions.json": "openspec/changes/trace-graph/decisions.json",
   "decisions.md": "openspec/changes/trace-graph/decisions.md",
+  "edge-probe.md": "openspec/changes/trace-graph/edge-probe.md",
   "intent.md": "openspec/changes/trace-graph/intent.md",
   "openspec/changes/trace-graph/attack/decisions.md": "openspec/changes/trace-graph/attack/decisions.md",
   "openspec/changes/trace-graph/decisions.json": "openspec/changes/trace-graph/decisions.json",
   "openspec/changes/trace-graph/intent.md": "openspec/changes/trace-graph/intent.md",
+  "openspec/changes/trace-graph/proposal.md": "openspec/changes/trace-graph/proposal.md",
   "openspec/changes/trace-graph/research/F-54.md": "openspec/changes/trace-graph/research/F-54.md",
   "openspec/changes/trace-graph/research/F-57.md": "openspec/changes/trace-graph/research/F-57.md",
   "openspec/changes/trace-graph/research/F-58.md": "openspec/changes/trace-graph/research/F-58.md",
+  "openspec/changes/trace-graph/specs/artifact-attack/spec.md": "openspec/changes/trace-graph/specs/artifact-attack/spec.md",
+  "openspec/changes/trace-graph/specs/brainstorm-interview/spec.md": "openspec/changes/trace-graph/specs/brainstorm-interview/spec.md",
+  "openspec/changes/trace-graph/specs/consequence-inventory/spec.md": "openspec/changes/trace-graph/specs/consequence-inventory/spec.md",
+  "openspec/changes/trace-graph/specs/decision-journal/spec.md": "openspec/changes/trace-graph/specs/decision-journal/spec.md",
+  "openspec/changes/trace-graph/specs/decision-viewer/spec.md": "openspec/changes/trace-graph/specs/decision-viewer/spec.md",
+  "openspec/changes/trace-graph/specs/onboarding-guide/spec.md": "openspec/changes/trace-graph/specs/onboarding-guide/spec.md",
+  "openspec/changes/trace-graph/specs/project-installer/spec.md": "openspec/changes/trace-graph/specs/project-installer/spec.md",
+  "openspec/changes/trace-graph/specs/project-settings/spec.md": "openspec/changes/trace-graph/specs/project-settings/spec.md",
+  "openspec/changes/trace-graph/specs/requirement-probes/spec.md": "openspec/changes/trace-graph/specs/requirement-probes/spec.md",
+  "openspec/changes/trace-graph/specs/trace-conventions/spec.md": "openspec/changes/trace-graph/specs/trace-conventions/spec.md",
+  "openspec/changes/trace-graph/specs/trace-diagram/spec.md": "openspec/changes/trace-graph/specs/trace-diagram/spec.md",
+  "openspec/changes/trace-graph/specs/trace-graph/spec.md": "openspec/changes/trace-graph/specs/trace-graph/spec.md",
+  "openspec/changes/trace-graph/specs/trace-signals/spec.md": "openspec/changes/trace-graph/specs/trace-signals/spec.md",
+  "openspec/changes/trace-graph/specs/trace-snapshot/spec.md": "openspec/changes/trace-graph/specs/trace-snapshot/spec.md",
+  "proposal.md": "openspec/changes/trace-graph/proposal.md",
   "scheme.md": "openspec/changes/trace-graph/scheme.md",
   "symphysis.html": "openspec/changes/trace-graph/symphysis.html"
  },
@@ -7355,6 +10142,7 @@ const HELP = {
 const LINKS = {
  "root": "../../../",
  "files": {
+  ".gitattributes": "../../../.gitattributes",
   ".gitignore": "../../../.gitignore",
   "CLAUDE.md": "../../../CLAUDE.md",
   "answers/2026-11-05-5.md": "answers/2026-11-05-5.md",
@@ -7371,6 +10159,7 @@ const LINKS = {
   "docs/analysis/stores-and-context-pack-2026-11-02.md": "../../../docs/analysis/stores-and-context-pack-2026-11-02.md",
   "docs/journal.schema.json": "../../../docs/journal.schema.json",
   "docs/repo-contract.md": "../../../docs/repo-contract.md",
+  "edge-probe.md": "edge-probe.md",
   "installer/README.md": "../../../installer/README.md",
   "installer/lib/check.js": "../../../installer/lib/check.js",
   "installer/lib/install.js": "../../../installer/lib/install.js",
@@ -7387,6 +10176,7 @@ const LINKS = {
   "openspec/changes/trace-graph/attack/decisions.md": "attack/decisions.md",
   "openspec/changes/trace-graph/decisions.json": "decisions.json",
   "openspec/changes/trace-graph/intent.md": "intent.md",
+  "openspec/changes/trace-graph/proposal.md": "proposal.md",
   "openspec/changes/trace-graph/research/F-54-probe/results.txt": "research/F-54-probe/results.txt",
   "openspec/changes/trace-graph/research/F-54.md": "research/F-54.md",
   "openspec/changes/trace-graph/research/F-57-probe/prototype.py": "research/F-57-probe/prototype.py",
@@ -7397,6 +10187,20 @@ const LINKS = {
   "openspec/changes/trace-graph/research/F-58-probe/results.txt": "research/F-58-probe/results.txt",
   "openspec/changes/trace-graph/research/F-58-probe/underscore-results.txt": "research/F-58-probe/underscore-results.txt",
   "openspec/changes/trace-graph/research/F-58.md": "research/F-58.md",
+  "openspec/changes/trace-graph/specs/artifact-attack/spec.md": "specs/artifact-attack/spec.md",
+  "openspec/changes/trace-graph/specs/brainstorm-interview/spec.md": "specs/brainstorm-interview/spec.md",
+  "openspec/changes/trace-graph/specs/consequence-inventory/spec.md": "specs/consequence-inventory/spec.md",
+  "openspec/changes/trace-graph/specs/decision-journal/spec.md": "specs/decision-journal/spec.md",
+  "openspec/changes/trace-graph/specs/decision-viewer/spec.md": "specs/decision-viewer/spec.md",
+  "openspec/changes/trace-graph/specs/onboarding-guide/spec.md": "specs/onboarding-guide/spec.md",
+  "openspec/changes/trace-graph/specs/project-installer/spec.md": "specs/project-installer/spec.md",
+  "openspec/changes/trace-graph/specs/project-settings/spec.md": "specs/project-settings/spec.md",
+  "openspec/changes/trace-graph/specs/requirement-probes/spec.md": "specs/requirement-probes/spec.md",
+  "openspec/changes/trace-graph/specs/trace-conventions/spec.md": "specs/trace-conventions/spec.md",
+  "openspec/changes/trace-graph/specs/trace-diagram/spec.md": "specs/trace-diagram/spec.md",
+  "openspec/changes/trace-graph/specs/trace-graph/spec.md": "specs/trace-graph/spec.md",
+  "openspec/changes/trace-graph/specs/trace-signals/spec.md": "specs/trace-signals/spec.md",
+  "openspec/changes/trace-graph/specs/trace-snapshot/spec.md": "specs/trace-snapshot/spec.md",
   "openspec/config.yaml": "../../config.yaml",
   "openspec/schemas/symphysis/schema.yaml": "../../schemas/symphysis/schema.yaml",
   "openspec/schemas/symphysis/steps.md": "../../schemas/symphysis/steps.md",
@@ -7407,6 +10211,7 @@ const LINKS = {
   "openspec/specs/project-settings/spec.md": "../../specs/project-settings/spec.md",
   "openspec/specs/requirement-probes/spec.md": "../../specs/requirement-probes/spec.md",
   "probes/journal-roots.json": "probes/journal-roots.json",
+  "proposal.md": "proposal.md",
   "reference/README.md": "../../../../symphysis-reference/README.md",
   "research/F-54.md": "research/F-54.md",
   "research/F-57.md": "research/F-57.md",
