@@ -257,9 +257,8 @@ def test_instructions_name_skills_and_stay_short(tmp_path):
     text = {i: run_openspec(proj, "instructions", i, "--change", "demo", "--json")["instruction"]
             for i in ARTIFACT_IDS}
     for i, t in text.items():
-        # research несёт ещё и второй круг и пробу (F-41): ужимать чужие строки ради числа нельзя
-        limit = 150 if i == "research" else 120
-        assert len(t.split()) <= limit, f"{i}: {len(t.split())} слов"
+        # Предел один на все шаги, слово владельца, 2026-11-05: «в 120 слов мало какая инструкция вмещается»
+        assert len(t.split()) <= 150, f"{i}: {len(t.split())} слов"
     assert "symphysis-brainstorm" in text["decisions"]
     assert "symphysis-attack" in text["attack-decisions"] and "symphysis-attack" in text["attack-artifacts"]
     assert "symphysis-edge-probe" in text["specs"] and "symphysis-prohibition-probe" in text["specs"]

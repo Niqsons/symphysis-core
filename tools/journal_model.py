@@ -432,6 +432,26 @@ def unexplained_choices(journal: dict) -> list[str]:
     return signals
 
 
+def dependency_cycles(journal: dict) -> list[str]:
+    """Циклы в `depends_on`: зависимости идут в одну сторону, а цикл говорит, что каждая запись ждёт другую. Сигнал, а не
+    ошибка: журнал с циклом читается и рендерится. Зависимости уже проверены `validate_journal`: ссылки ведут на записи."""
+    graph = {r["id"]: r["depends_on"] for r in journal["records"]}
+    done, signals = set(), []
+
+    def walk(rid: str, path: list[str]) -> None:
+        if rid in path:
+            cycle = [*path[path.index(rid):], rid]
+            signals.append(f"{rid}: цикл зависимостей {' → '.join(cycle)}")
+        elif rid not in done:
+            for dep in graph[rid]:
+                walk(dep, [*path, rid])
+            done.add(rid)
+
+    for rid in graph:
+        walk(rid, [])
+    return signals
+
+
 def validate_journal(journal: dict) -> list[str]:
     """Ошибки по схеме и правилам между записями; пустой список — журнал годен.
 

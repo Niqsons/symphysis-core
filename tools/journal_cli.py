@@ -18,7 +18,7 @@ from pathlib import Path
 from journal_apply import (REFUSED, apply_answers, apply_md4h, change_of as _change_of, check_evidence, default_roots, file_links, parse_answers,
                            parse_md4h, project_href, sha256_file)
 from journal_consequences import check_consequences
-from journal_model import import_md, load_journal, save_journal, unexplained_choices, validate_journal
+from journal_model import dependency_cycles, import_md, load_journal, save_journal, unexplained_choices, validate_journal
 from journal_render import (TEMPLATE_PATH, no_help_snapshot, parse_attack_md, render_design, render_html, render_md,
                             scheme_payload, view_payload)
 from journal_sites import code_sites
@@ -46,6 +46,14 @@ def _parkings_without_finding(journal: dict, base: Path) -> list[str]:
             and any(p["addressee"] == "материалы" and not p.get("finding") for p in rec["parking"])]
 
 
+def _human_parkings_without_finding(journal: dict) -> list[str]:
+    """Парковка «человек» без `finding` — сигнал: у «материалов» и «ИБ» есть свои шаги, а у этого адресата нет,
+    и без сигнала вопрос так и остался бы строкой в Open Questions."""
+    return [f"{rec['id']}: парковка «человек» без finding: {p['text']}"
+            for rec in journal["records"] for p in rec["parking"]
+            if p["addressee"] == "человек" and not p.get("finding")]
+
+
 def cmd_check(args: argparse.Namespace) -> int:
     journal = _valid_journal(args.json)
     if journal is None:
@@ -63,8 +71,14 @@ def cmd_check(args: argparse.Namespace) -> int:
     unfound = _parkings_without_finding(journal, args.json.parent)
     for m in unfound:
         print(f"[!!] {m}")
+    unasked = _human_parkings_without_finding(journal)
+    for m in unasked:
+        print(f"[!!] {m}")
     unexplained = unexplained_choices(journal)
     for m in unexplained:
+        print(f"[!!] {m}")
+    cycles = dependency_cycles(journal)
+    for m in cycles:
         print(f"[!!] {m}")
     inventory = check_consequences(journal, args.json.parent / "consequences.md", roots)
     for m in inventory["missing"]:
@@ -74,7 +88,7 @@ def cmd_check(args: argparse.Namespace) -> int:
     if args.write:
         save_journal(args.json, journal)
         print(f"[ok] {args.json}")
-    return 2 if args.strict and (result["missing"] or unfound or unexplained or inventory["missing"]) else 0
+    return 2 if args.strict and (result["missing"] or unfound or unasked or unexplained or cycles or inventory["missing"]) else 0
 
 
 def cmd_code_sites(args: argparse.Namespace) -> int:
@@ -380,7 +394,7 @@ def build_parser() -> argparse.ArgumentParser:
 
     p = _command(sub, "check", "сверить улики грепом по цитате (сигнал, не стоп); при consequences.md — и опись; "
                                "негодный по схеме журнал — код 1",
-                 "Сверяет улики грепом по цитате. При consequences.md рядом с журналом — ещё две проверки описи:\n"
+                 "Сверяет улики грепом по цитате, называет циклы в depends_on и парковки человеку без finding. При consequences.md рядом с журналом — ещё две проверки описи:\n"
                  "место из code-sites названо путём в файле, цитата «путь:строка «цитата»» стоит в коде дословно.\n"
                  "Файл со строкой **Причина:** сверки мест не даёт; **Причина:** считается только в начале строки,\n"
                  "цитата сверяется только в форме путь:строка «цитата», форму файла сверх этого скрипт не разбирает.",
