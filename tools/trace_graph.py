@@ -15,7 +15,7 @@ from dataclasses import dataclass, field
 from pathlib import Path
 
 sys.dont_write_bytecode = True  # как у соседних скриптов: `__pycache__` в проекте от инструментов не появляется (F-50)
-from journal_model import validate_journal  # noqa: E402
+from journal_model import PROBE_OUTCOMES, validate_journal  # noqa: E402
 from openspec_run import ForkError, check_change_name, no_paths, run_fork  # noqa: E402
 
 # --- реестр артефактов (F-53, F-119, F-136) -----------------------------------
@@ -308,6 +308,7 @@ _SEC_REQ = re.compile(r"`([^`]+)`:?\s*«")  # `capability` «имя» или `ca
 _PARENT = re.compile(r"^\s*Часть требования\s+(?:`([^`]+)`:\s*)?«")  # фраза дочернего: в начале строки, не в кавычках (F-77)
 _BRANCH_SCENARIO = re.compile(r"(?i:(?<!ближайший ))сценарий:\s*")  # «ближайший сценарий» (и «Ближайший») ветку не покрывает
 _BRANCH_LINE = re.compile(r"^- \*\*(.+?)\*\*\s*—\s*`([^`\s]+:\d+)`\s*«")
+_SAMPLE_FORM = re.compile(r"``.+?``")  # образец формы в двойных обратных кавычках: ссылкой не считается
 
 
 def _node(node_id: str, kind: str, name: str, file: str, line: int, **extra) -> dict:
@@ -459,7 +460,8 @@ def _read_tasks(base: Path, claims: list[dict]) -> list[dict]:
         if m:
             node = _node(f"task:{m.group(1)}", "task", m.group(2), "tasks.md", number, done=line[3] in "xX")
             found.append(node)
-            claims.append({"kind": "task", "from": node["id"], "src": node["at"], "at": node["at"], "text": m.group(2)})
+            claims.append({"kind": "task", "from": node["id"], "src": node["at"], "at": node["at"],
+                           "text": _SAMPLE_FORM.sub(" ", m.group(2))})
     return found
 
 
@@ -897,41 +899,189 @@ def validate_findings(root: Path, change: str) -> list[str]:
     return lines
 
 
-def graph_signals(graph: dict, duplicates: list[dict] | None = None, unresolved: list[dict] | None = None) -> list[str]:
-    """Сигналы графа строками `[!!] вид: ключ — место`, порядок по месту в файле. Служебные списки (`duplicates`,
-    `unresolved` от `build_graph_with_signals`) пока не читаются: их вид и форму решает U10. Сейчас один вид, только для
-    требований ADDED: «сценарий без задачи» — на сценарий нет входящей связи `satisfies`; «требование без задачи» — ни один
-    его сценарий не закрыт задачей (MODIFIED из мастера и остальные виды — U10). Не печатает."""
-    closed = {e["to"] for e in graph["edges"] if e["type"] == "satisfies"}
+DIVERGED = "сценарий MODIFIED с прежним именем и другим текстом"  # вид F-95: в отчёте идёт отдельным разделом
+DIVERGED_TITLE = "Расхождения сценариев MODIFIED"
+_TRACE_COMMENT = re.compile(r"<!--(.*?)-->")
+_TRACE_PAIR = re.compile(r"(?<![\w-])F-(\d+)\s+(открыт|" + "|".join(PROBE_OUTCOMES) + r")(?!\w)")
+_QUOTE_LIMIT = 110
+
+
+def _squash(text: str) -> str:
+    """Текст без различий в пробелах и концах строк: так сверяются сценарии и требования с мастер-спекой (F-95)."""
+    return " ".join(text.split())
+
+
+def _md(text: str) -> str:
+    """Угловые скобки без кода ломают плагин md4h: голые заменяются сущностями."""
+    return text.replace("<", "&lt;").replace(">", "&gt;")
+
+
+def _short(text: str) -> str:
+    text = _squash(text)
+    return text if len(text) <= _QUOTE_LIMIT else text[:_QUOTE_LIMIT - 1] + "…"
+
+
+def signal_context(root: Path, change: str) -> dict:
+    """Данные для сигналов, которых нет в графе (U10): `records` — записи журнала (адресат, решение, исход; снимок графа
+    ими не раздувается), `modified` — по требованию MODIFIED: `carried` (текст и все сценарии как в мастер-спеке) и
+    `scenarios` {id сценария: `same`, `new` или `changed`} по имени и тексту с приведением пробелов и концов строк (F-95),
+    `traces` — следы проб `<!-- проба …, исходы: F-NN Исход -->` как `(место, номер, слово)`. Только читает."""
+    base = root / "openspec" / "changes" / change
+    if not base.is_dir():
+        raise Refusal(f"изменения «{change}» нет: нет каталога openspec/changes/{change}")
+    try:
+        records = json.loads(_read_text(base, "decisions.json"))["records"] if (base / "decisions.json").is_file() else []
+    except (ValueError, KeyError, TypeError):
+        records = []  # негодный журнал сборка графа уже назвала отказом
+    modified, traces = {}, []
+    folders = sorted(p for p in (base / "specs").iterdir() if p.is_dir()) if (base / "specs").is_dir() else []
+    for folder in folders:
+        rel = f"specs/{folder.name}/spec.md"
+        if not (base / rel).is_file():
+            continue
+        text = _read_text(base, rel)
+        parsed, cap = parse_spec(text), folder.name
+        lines = _spec_lines(text)
+        mask = _fence_mask(lines)
+        for number, line in enumerate(lines, 1):
+            comment = _TRACE_COMMENT.search(line)
+            if not mask[number - 1] and comment and "проба" in comment.group(1) and "исходы:" in comment.group(1):
+                tail = comment.group(1).split("исходы:", 1)[1]
+                traces += [(f"{rel}:{number}", int(m.group(1)), m.group(2)) for m in _TRACE_PAIR.finditer(tail)]
+        master_rel = f"openspec/specs/{cap}/spec.md"
+        master = {}
+        if any(r.section == "MODIFIED" for r in parsed.requirements) and (root / master_rel).is_file():
+            for old in parse_spec("\n".join(_master_lines(root, master_rel))).requirements:
+                master.setdefault(old.name, old)
+        for item in parsed.requirements:
+            if item.section != "MODIFIED":
+                continue
+            old = master.get(item.name)
+            old_text = {s.name: _squash(s.text) for s in old.scenarios} if old else {}
+            state = {}
+            for scn in item.scenarios:
+                state[f"scn:{cap}/{item.name}/{scn.name}"] = ("new" if scn.name not in old_text else
+                                                              "same" if old_text[scn.name] == _squash(scn.text) else "changed")
+            carried = old is not None and _squash(old.text) == _squash(item.text) and set(state.values()) <= {"same"}
+            modified.setdefault(f"req:{cap}/{item.name}", {"carried": carried, "scenarios": state})
+    return {"records": records, "modified": modified, "traces": traces}
+
+
+def _stale_trace(rec: dict, word: str) -> str | None:
+    """Чем журнал расходится со словом следа (`открыт` или исход пробы), или `None`, если сходится (F-64)."""
+    outcome = rec.get("outcome") or {}
+    actual = outcome.get("value") if outcome.get("kind") == "проба" else None
+    decision = rec.get("decision")
+    if word == "открыт":
+        return (f"в журнале исход «{actual}»" if actual else f"в журнале выбран вариант {decision['option']}") \
+            if (actual or decision) else None
+    return f"в журнале исход «{actual}»" if actual and actual != word else None
+
+
+def graph_signals(graph: dict, duplicates: list[dict] | None = None, unresolved: list[dict] | None = None,
+                  context: dict | None = None) -> list[str]:
+    """Сигналы графа строками `[!!] вид: ключ — место`, порядок по месту в файле (F-57, F-64, F-65, F-83, F-94, F-95). Ключ — id
+    без префикса вида. Из графа и списков сборки: «требование без задачи» и «сценарий без задачи» (ADDED), «требование без
+    записи», «неоднозначное имя» (дубль id из `duplicates`; одно имя сценария у двух требований capability при задаче с этим
+    именем), «неизвестное имя или номер» (`unresolved`), «задача ни к чему». Из `context` (`signal_context`): «критерий без
+    требования», «решение без требования и задачи», «след отстал от журнала», в MODIFIED новые сценарии («сценарий без
+    задачи») и сценарии с прежним именем и другим текстом (`DIVERGED`); без `context` MODIFIED и записи журнала не читаются.
+    Молчат: улика, разошедшаяся с файлом (её называет `check`), перенесённое из мастера без изменения текста, решение
+    «Оставить как есть», решение с исходом пробы и кандидаты связей между требованиями (F-71). Не печатает."""
+    context = context or {}
+    edges = graph["edges"]
+    closed = {e["to"] for e in edges if e["type"] == "satisfies"}
+    unresolved = unresolved or []
     by_req: dict[str, list[dict]] = {}
+    by_name: dict[tuple, list[dict]] = {}
     for n in graph["nodes"]:
         if n["kind"] == "scn":
             by_req.setdefault(n["requirement"], []).append(n)
+            by_name.setdefault((n["capability"], n["name"]), []).append(n)
     found = []
-    for req in graph["nodes"]:
-        if req["kind"] != "req" or req.get("section") != "ADDED":
-            continue
-        scenarios = by_req.get(req["id"], [])
-        if not any(s["id"] in closed for s in scenarios):
-            found.append((req["at"], f"[!!] требование без задачи: {req['id'][4:]} — {req['at']}"))
-        found += [(s["at"], f"[!!] сценарий без задачи: {s['id'][4:]} — {s['at']}") for s in scenarios if s["id"] not in closed]
+
+    def add(at: str, kind: str, key: str, places: str | None = None) -> None:
+        found.append((at, _md(f"[!!] {kind}: {key} — {places or at}")))
+
+    named_traces = {e["from"] for e in edges if e["type"] == "traces"}
+    bad_number = {u["from"] for u in unresolved if u["ref"].startswith("F-")}
+    modified = context.get("modified", {})
+    for req in (n for n in graph["nodes"] if n["kind"] == "req"):
+        scenarios, key = by_req.get(req["id"], []), req["id"][4:]
+        section = req.get("section")
+        if section == "ADDED":
+            if not any(s["id"] in closed for s in scenarios):
+                add(req["at"], "требование без задачи", key)
+            for s in scenarios:
+                if s["id"] not in closed:
+                    add(s["at"], "сценарий без задачи", s["id"][4:])
+        elif section == "MODIFIED" and req["id"] in modified:
+            state = modified[req["id"]]["scenarios"]
+            for s in scenarios:
+                if s["id"] not in closed and state.get(s["id"]) in ("new", "changed"):
+                    add(s["at"], "сценарий без задачи" if state[s["id"]] == "new" else DIVERGED, s["id"][4:])
+        counted = section == "ADDED" or (section == "MODIFIED" and req["id"] in modified and not modified[req["id"]]["carried"])
+        if counted and req["id"] not in named_traces and req["id"] not in bad_number:
+            add(req["at"], "требование без записи", key)
+    for dup in duplicates or []:
+        add(dup["at"][0], "неоднозначное имя", dup["id"].split(":", 1)[1] + " (повторный id)", ", ".join(dup["at"]))
+    for (cap, name), same in by_name.items():
+        owners = sorted({s["requirement"] for s in same})
+        if len(owners) > 1 and any(s["id"] in closed for s in same):
+            names = ", ".join("«" + o.split("/", 1)[1] + "»" for o in owners)
+            add(same[0]["at"], "неоднозначное имя", f"{cap}/{name} (у требований {names}; задача закрыла все)",
+                ", ".join(s["at"] for s in same))
+    for u in unresolved:
+        add(u["at"], "неизвестное имя или номер", f"{u['ref']} (у {u['from'].split(':', 1)[1]}): {u['why']}")
+    unresolved_from = {u["from"] for u in unresolved}
+    for task in (n for n in graph["nodes"] if n["kind"] == "task"):
+        if task["id"] not in unresolved_from and not any(e["from"] == task["id"] and e["type"] in ("satisfies", "traces")
+                                                         for e in edges):
+            add(task["at"], "задача ни к чему", task["id"][5:])
+    if context:
+        reached = {"req": {e["to"] for e in edges if e["type"] == "traces" and e["from"].startswith("req:")},
+                   "task": {e["to"] for e in edges if e["type"] == "traces" and e["from"].startswith("task:")}}
+        for rec in context["records"]:
+            node = next((n for n in graph["nodes"] if n["id"] == "rec:" + rec["id"]), None)
+            at = node["at"] if node else "decisions.json:1"
+            decision = rec.get("decision")
+            if rec["kind"] == "факт" and rec.get("addressee") == "постановка" and "rec:" + rec["id"] not in reached["req"]:
+                quote = next((e["quote"] for e in rec.get("evidence", []) if e.get("quote")), rec["question"])
+                add(at, "критерий без требования", f"{rec['id']} «{_short(quote)}»")
+            elif rec["kind"] == "развилка" and decision and (rec.get("outcome") or {}).get("kind") != "проба":
+                text = next((o["text"] for o in rec["options"] if o["letter"] == decision["option"]), "")
+                if text.strip().lower().startswith("оставить как есть"):
+                    continue
+                if "rec:" + rec["id"] not in reached["req"] | reached["task"]:
+                    add(at, "решение без требования и задачи", f"{rec['id']}.{decision['option']} {_short(rec['question'])}")
+        records = {int(re.search(r"\d+", r["id"]).group()): r for r in reversed(context["records"]) if re.search(r"\d+", r["id"])}
+        for at, number, word in context["traces"]:
+            rec = records.get(number)
+            why = _stale_trace(rec, word) if rec else None
+            if why:
+                add(at, "след отстал от журнала", f"F-{number:02d}: в следе «{word}», {why}")
     found.sort(key=lambda f: (f[0].rsplit(":", 1)[0], int(f[0].rsplit(":", 1)[1])))
     return [line for _, line in found]
 
 
 def build_report(root: Path, change: str) -> str:
-    """Текст отчёта изменения `change`: находки `openspec validate`, затем сигналы графа; без тех и других — фраза, что
-    сигналов нет. Ничего не печатает и не пишет (её зовёт `freeze` для `graph/report.md`); абсолютных путей в тексте нет (F-59).
-    Имя проверяется до любого пути и вызова форка; нет изменения или негоден журнал — `Refusal`, форк тогда не вызван."""
+    """Текст отчёта изменения `change`: находки `openspec validate`, сигналы графа и отдельным разделом расхождения сценариев
+    MODIFIED (F-95); без всех трёх — фраза, что сигналов нет. Ничего не печатает и не пишет (её зовёт `freeze` для
+    `graph/report.md`); абсолютных путей в тексте нет (F-59). Имя проверяется до любого пути и вызова форка; нет изменения или
+    негоден журнал — `Refusal`, форк тогда не вызван."""
     check_change_name(change)
     graph, duplicates, unresolved = build_graph_with_signals(root, change)
     findings = validate_findings(root, change)
-    signals = graph_signals(graph, duplicates, unresolved)
+    every = [_md(no_paths(line, root)) for line in graph_signals(graph, duplicates, unresolved, signal_context(root, change))]
+    signals = [line for line in every if not line.startswith(f"[!!] {DIVERGED}:")]
+    diverged = [line for line in every if line.startswith(f"[!!] {DIVERGED}:")]
     parts = [f"# Отчёт по изменению {change}", ""]
-    if not findings and not signals:
+    if not findings and not every:
         return "\n".join([*parts, NO_SIGNALS, ""])
-    for title, lines, none in (("Находки openspec validate", findings, "Находок нет."),
-                               ("Сигналы графа", signals, "Сигналов графа нет.")):
+    sections = [("Находки openspec validate", findings, "Находок нет."), ("Сигналы графа", signals, "Сигналов графа нет.")]
+    if diverged:
+        sections.append((DIVERGED_TITLE, diverged, ""))
+    for title, lines, none in sections:
         parts += [f"## {title}", "", *(lines or [none]), ""]
     return "\n".join(parts)
 
@@ -969,8 +1119,11 @@ SUBCOMMAND_HELP = {
               "не в UTF-8, путь `--out` не записать; "
               "2 — вызов неверен."),
     "report": ("Печатает отчёт Markdown по изменению: находки `openspec validate --json` (форк запускается сам) и сигналы "
-               "графа: у требования ADDED нет задачи, у сценария нет задачи. Без находок и сигналов — «Сигналов нет.»; "
-               "если validate не запустился, в отчёте строка «validate не запустился» с причиной.",
+               "графа закрытого состава (F-64): критерий без требования, требование и сценарий без задачи (в MODIFIED только новые "
+               "сценарии), требование без записи, решение без требования и задачи, неоднозначное имя, неизвестное имя или "
+               "номер, задача ни к чему, след пробы, отставший от журнала; расхождения сценариев MODIFIED с мастером идут "
+               "отдельным разделом. Без находок и сигналов — «Сигналов нет.»; если validate не запустился, в отчёте строка "
+               "«validate не запустился» с причиной.",
                "Звать, когда нужен список разрывов человеку; отчёт отдаётся ссылкой, модель его не читает. Форк берётся "
                "из `SYMPHYSIS_OPENSPEC`, затем из PATH; файлов изменения команда не пишет.",
                "Коды: 0 — отчёт напечатан, сигналы, находки и незапуск validate кода не меняют (F-31); 1 — отказ: имя "

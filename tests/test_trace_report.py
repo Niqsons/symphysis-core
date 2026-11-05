@@ -1,6 +1,7 @@
 """Команда `report` скрипта графа `tools/trace_graph.py`: находки `openspec validate` и сигналы графа одним отчётом (U09)."""
 import ast
 import os
+import re
 import subprocess
 import sys
 
@@ -10,15 +11,24 @@ import openspec_run
 import trace_graph
 from conftest import ROOT, fork_calls, fork_env, fork_reply, install_fork_shim, requires_fork
 from test_schema import make_project
-from test_trace_graph import CHANGE, SPEC, make_change
+import journal_model
+import json
+from test_trace_graph import CHANGE, make_change as _make_change
 
 SCRIPT = ROOT / "tools" / "trace_graph.py"
 CLEAN = {"items": [{"id": CHANGE, "type": "change", "valid": True, "issues": [], "durationMs": 1}]}
 FOUND = {"items": [{"id": CHANGE, "type": "change", "valid": False, "durationMs": 1, "issues": [
     {"level": "ERROR", "path": "specs/demo/spec.md", "message": "Requirement «Один» must have at least one scenario"}]}]}
-ONE_REQ = "## ADDED Requirements\n\n### Requirement: Один\nТекст SHALL.\n\n#### Scenario: Первый\n- **WHEN** a\n- **THEN** b\n"
+ONE_REQ = "## ADDED Requirements\n\n### Requirement: Один\nТекст SHALL (F-01).\n\n#### Scenario: Первый\n- **WHEN** a\n- **THEN** b\n"
 DONE = "- [ ] 1.1 сделать `demo`: «Первый»\n"
+DONE_SC = "- [ ] 1.1 `demo`: «Сц»\n"
 NO_TASK = "- [ ] 1.1 ничего\n"
+
+
+def make_change(tmp_path, **kw):
+    """Изменение `demo` с записью F-01 в журнале: требования отчётов этого файла называют её, сигнал «без записи» не мешает."""
+    kw.setdefault("journal", ["F-01"])
+    return _make_change(tmp_path, **kw)
 
 
 def report(root, *args, env=None, change=CHANGE):
@@ -188,8 +198,12 @@ def test_broken_journal_is_refusal(tmp_path):
     assert fork_calls(shim_dir) == []
 
 
+SPEC = ("## ADDED Requirements\n\n### Requirement: Один\nТекст SHALL (F-01).\n\n#### Scenario: Первый\n- **WHEN** a\n- **THEN** b\n\n"
+        "#### Scenario: Второй\n- **WHEN** c\n- **THEN** d\n")
+
+
 def test_requirement_and_scenario_without_task_are_signals_with_code_zero(tmp_path):
-    """`trace-signals`: «Отчёт с сигналами» — сценарий без задачи назван с местом, код 0; закрытое и MODIFIED не названы."""
+    """`trace-signals`: «Отчёт с сигналами» — сценарий без задачи назван с местом, код 0; закрытое не названо."""
     root, _ = make_change(tmp_path, specs={"demo": SPEC}, tasks="- [ ] 1.1 `demo`: «Первый»\n")
     _, env = with_shim(tmp_path, fork_reply(CLEAN))
     done = report(root, env=env)
@@ -197,13 +211,12 @@ def test_requirement_and_scenario_without_task_are_signals_with_code_zero(tmp_pa
     lines = [line for line in done.stdout.splitlines() if line.startswith("[!!]")]
     assert any("сценарий без задачи" in line and "Второй" in line and "specs/demo/spec.md:" in line for line in lines)
     assert not any("требование без задачи" in line for line in lines)  # Первый закрыт: требование держится
-    assert not any("Третий" in line or "Два" in line for line in lines)  # MODIFIED — вид U10
     assert not any("Первый" in line for line in lines)
 
 
 def test_requirement_with_no_closed_scenario_is_named(tmp_path):
     """`trace-signals`: «Отчёт с сигналами» — требование без задачи названо вместе с его сценарием."""
-    root, _ = make_change(tmp_path, specs={"demo": ONE_REQ}, tasks=NO_TASK)
+    root, _ = make_change(tmp_path, specs={"demo": ONE_REQ})
     signals = trace_graph.graph_signals(trace_graph.build_graph(root, CHANGE))
     assert {s.split(":", 1)[0] for s in signals} == {"[!!] требование без задачи", "[!!] сценарий без задачи"}, signals
     assert all("demo/Один" in s and "specs/demo/spec.md:" in s for s in signals)
@@ -241,3 +254,269 @@ def test_report_help_is_no_longer_a_stub():
                           encoding="utf-8")
     assert done.returncode == 0 and "ещё не реализована" not in done.stdout
     assert "validate" in done.stdout and "Звать, когда" in done.stdout and "Коды:" in done.stdout
+
+
+# --- состав сигналов (U10, F-57, F-64) ----------------------------------------------------------------------------
+
+def journal(base, *records):
+    """Журнал изменения из словарей-поправок к пустой записи: `id`, `question` и любые поля записи."""
+    full = []
+    for part in records:
+        rec = journal_model._new_record(part["id"], part.get("question", f"Вопрос {part['id']}?"))
+        rec.update({k: v for k, v in part.items() if k not in ("id", "question")})
+        full.append(rec)
+    (base / "decisions.json").write_text(json.dumps({"title": "t", "source": "", "records": full}, ensure_ascii=False,
+                                                    indent=1) + "\n", encoding="utf-8")
+
+
+def decided(rid, text="Взять часть", outcome=None, letter="A", **extra):
+    return {"id": rid, "status": "решён", "options": [{"letter": letter, "text": text, "added": False, "unlikely": None,
+            "evidence": []}], "recommendation": {"option": letter, "why": "потому"},
+            "decision": {"option": letter, "word": "да", "date": "2026-11-05"}, "outcome": outcome, **extra}
+
+
+def probe(value):
+    return {"kind": "проба", "value": value, "reason": ""}
+
+
+def criterion(rid, quote="цитата критерия готовности"):
+    return {"id": rid, "kind": "факт", "status": "решён", "addressee": "постановка", "evidence": [
+        {"path": "intent.md", "quote": quote, "line": 1, "verdict": "сошлась", "found": True}]}
+
+
+def lines_of(root):
+    """Сигналы графа с контекстом журнала и спек, как их собирает отчёт."""
+    graph, duplicates, unresolved = trace_graph.build_graph_with_signals(root, CHANGE)
+    context = trace_graph.signal_context(root, CHANGE)
+    return trace_graph.graph_signals(graph, duplicates, unresolved, context)
+
+
+def of_kind(signals, kind):
+    return [s for s in signals if s.startswith(f"[!!] {kind}:")]
+
+
+def req(name, number=None, scenarios=("Сц",)):
+    text = f"### Requirement: {name}\nТекст SHALL" + (f" (F-{number:02d})" if number else "") + ".\n\n"
+    return text + "".join(f"#### Scenario: {s}\n- **WHEN** a\n- **THEN** b\n\n" for s in scenarios)
+
+
+def spec(*blocks, section="ADDED"):
+    return f"## {section} Requirements\n\n" + "".join(blocks)
+
+
+def put_master(root, text, crlf=False):
+    """Мастер-спека `demo`: заголовок секции у неё `## Requirements`."""
+    path = root / "openspec" / "specs" / "demo" / "spec.md"
+    path.parent.mkdir(parents=True)
+    body = text.replace("## ADDED Requirements", "## Requirements")
+    path.write_bytes((body.replace("\n", "\r\n") if crlf else body).encode("utf-8"))
+
+
+def test_criterion_without_requirement_names_record_and_quote(tmp_path):
+    """`trace-signals`: «Критерий без требования» — сигнал называет запись и цитату критерия."""
+    root, base = make_change(tmp_path, specs={"demo": spec(req("Один", 2))}, tasks=DONE_SC)
+    journal(base, criterion("F-01"), decided("F-02"))
+    found = of_kind(lines_of(root), "критерий без требования")
+    assert len(found) == 1 and "F-01" in found[0] and "цитата критерия готовности" in found[0], found
+    (base / "specs" / "demo" / "spec.md").write_text(spec(req("Один", 1)), encoding="utf-8")
+    assert of_kind(lines_of(root), "критерий без требования") == []
+
+
+def test_scope_decision_is_a_plain_line_without_mark(tmp_path):
+    """`trace-signals`: «Решение об объёме» — строка «решение без требования и задачи», отдельной пометки нет."""
+    root, base = make_change(tmp_path, specs={"demo": spec(req("Один", 1))}, tasks=DONE_SC)
+    journal(base, {"id": "F-01"}, decided("F-02", "Объём: только половина"))
+    found = of_kind(lines_of(root), "решение без требования и задачи")
+    assert len(found) == 1 and re.fullmatch(r"\[!!\] решение без требования и задачи: F-02\.A [^—]+ — decisions\.json:\d+", found[0]), found
+
+
+def test_decision_reached_or_asis_or_probe_is_silent(tmp_path):
+    """`trace-signals`: «Решение об объёме» и «Шумные виды в отчёт не идут» — «Оставить как есть», исход пробы,
+    решение, до которого дошли требование или задача, строки не дают."""
+    root, base = make_change(tmp_path, specs={"demo": spec(req("Один", 1))}, tasks="- [ ] 1.1 `demo`: «Сц» (F-04)\n")
+    journal(base, {"id": "F-01"}, decided("F-02", "Оставить как есть: строка в отчёте"), decided("F-03", outcome=probe("Specify")),
+            decided("F-04"), decided("F-05"))
+    only = of_kind(lines_of(root), "решение без требования и задачи")
+    assert [s.split()[6] for s in only] == ["F-05.A"], only  # F-04 держит задача, F-02 «как есть», F-03 проба
+    (base / "specs" / "demo" / "spec.md").write_text(spec(req("Один", 5)), encoding="utf-8")
+    assert of_kind(lines_of(root), "решение без требования и задачи") == []
+
+
+def test_same_scenario_name_in_two_requirements_is_closed_and_ambiguous(tmp_path):
+    """`trace-signals`: «Одно имя у двух требований capability» — оба сценария закрыты, сигнал называет оба требования."""
+    root, _ = make_change(tmp_path, specs={"demo": spec(req("Первое", 1, ("Пустой ввод",)), req("Второе", 1, ("Пустой ввод",)))},
+                          tasks="- [ ] 1.1 `demo`: «Пустой ввод»\n")
+    signals = lines_of(root)
+    assert of_kind(signals, "сценарий без задачи") == [] and of_kind(signals, "требование без задачи") == [], signals
+    found = of_kind(signals, "неоднозначное имя")
+    assert len(found) == 1 and "Пустой ввод" in found[0] and "«Первое»" in found[0] and "«Второе»" in found[0], found
+
+
+def test_same_name_without_task_is_not_ambiguous_only_unclosed(tmp_path):
+    """`trace-signals`: «Одно имя у двух требований capability» — без задачи с этим именем неоднозначности нет."""
+    root, _ = make_change(tmp_path, specs={"demo": spec(req("Первое", 1, ("Общий",)), req("Второе", 1, ("Общий",)))}, tasks=NO_TASK)
+    signals = lines_of(root)
+    assert of_kind(signals, "неоднозначное имя") == [] and len(of_kind(signals, "сценарий без задачи")) == 2
+
+
+def test_duplicate_id_is_an_ambiguous_name_with_all_places(tmp_path):
+    """`trace-signals`: «Отчёт называет закрытый состав сигналов» — два требования с одним именем: неоднозначное имя с обоими местами."""
+    root, _ = make_change(tmp_path, specs={"demo": spec(req("Один", 1), req("Один", 1))}, tasks=DONE_SC)
+    found = [s for s in of_kind(lines_of(root), "неоднозначное имя") if "demo/Один (" in s]
+    assert len(found) == 1 and found[0].count("specs/demo/spec.md:") == 2, found
+
+
+def test_evidence_that_diverged_is_not_in_the_report(tmp_path):
+    """`trace-signals`: «Улика разошлась» — цитаты нет в файле, строки об улике в отчёте нет."""
+    root, base = make_change(tmp_path, specs={"demo": spec(req("Один", 1))}, tasks=DONE_SC)
+    rec = decided("F-01")
+    rec["options"][0]["evidence"] = [{"path": "intent.md", "quote": "такой цитаты в файле нет", "line": 1,
+                                      "verdict": "цитаты нет", "found": False}]
+    journal(base, rec)
+    assert lines_of(root) == []
+
+
+def test_modified_scenario_carried_from_master_is_silent(tmp_path):
+    """`trace-signals`: «MODIFIED несёт прежний сценарий» — тот же текст в мастере и в MODIFIED, строки о нём нет."""
+    root, _ = make_change(tmp_path, specs={"demo": spec(req("Один", 1, ("Старый",)), section="MODIFIED")})
+    put_master(root, spec(req("Один", 1, ("Старый",))), crlf=True)
+    assert lines_of(root) == []
+
+
+def test_modified_scenario_new_in_master_is_named(tmp_path):
+    """`trace-signals`: «Новый сценарий в MODIFIED» — до `/opsx:sync` сигнал называет сценарий, которого в мастере нет."""
+    root, _ = make_change(tmp_path, specs={"demo": spec(req("Один", 1, ("Старый", "Новый")), section="MODIFIED")})
+    put_master(root, spec(req("Один", 1, ("Старый",))))
+    signals = lines_of(root)
+    found = of_kind(signals, "сценарий без задачи")
+    assert len(found) == 1 and "Новый" in found[0] and "Старый" not in found[0], signals
+
+
+def test_modified_same_name_other_text_is_its_own_kind(tmp_path):
+    """`trace-signals`: «Прежнее имя, другой текст» — сигнал своего вида называет сценарий; вида «без задачи» у него нет."""
+    changed = spec(req("Один", 1, ("Старый",)).replace("**THEN** b", "**THEN** другое"), section="MODIFIED")
+    root, _ = make_change(tmp_path, specs={"demo": changed})
+    put_master(root, spec(req("Один", 1, ("Старый",))))
+    signals = lines_of(root)
+    found = of_kind(signals, "сценарий MODIFIED с прежним именем и другим текстом")
+    assert len(found) == 1 and "Старый" in found[0] and "specs/demo/spec.md:" in found[0], found
+    assert of_kind(signals, "сценарий без задачи") == []
+
+
+def test_modified_text_differing_in_spaces_and_line_ends_is_carried(tmp_path):
+    """`trace-signals`: «MODIFIED несёт прежний сценарий» — различие только в пробелах и концах строк сценарий не меняет."""
+    wrapped = spec(req("Один", 1, ("Старый",)).replace("- **WHEN** a", "-  **WHEN**   a  "), section="MODIFIED")
+    root, _ = make_change(tmp_path, specs={"demo": wrapped})
+    put_master(root, spec(req("Один", 1, ("Старый",))), crlf=True)
+    assert lines_of(root) == []
+
+
+def test_diverged_scenarios_go_to_their_own_report_section(tmp_path, monkeypatch):
+    """`trace-signals`: «Прежнее имя, другой текст» — в сохранённом отчёте расхождение в отдельном разделе, не в «Сигналах графа»."""
+    changed = spec(req("Один", 1, ("Старый",)).replace("**THEN** b", "**THEN** другое"), section="MODIFIED")
+    root, _ = make_change(tmp_path, specs={"demo": changed})
+    put_master(root, spec(req("Один", 1, ("Старый",))))
+    use_shim(tmp_path, monkeypatch, fork_reply(CLEAN))
+    text = trace_graph.build_report(root, CHANGE)
+    head, _, tail = text.partition("## Расхождения сценариев MODIFIED")
+    assert tail and "прежним именем" in tail and "Старый" in tail
+    assert "прежним именем" not in head and "Сигналов нет." not in text
+
+
+def test_security_item_without_name_or_with_known_name_is_silent_unknown_is_named(tmp_path):
+    """`trace-signals`: «Пункт security закрыт доводом» — пункт без имени и с известным именем молчит, неизвестное имя названо."""
+    table = ("| Пункт | Закрыт |\n| --- | --- |\n| Альфа | довод |\n| Бета | `demo` «Один» |\n"
+             "| Гамма | `demo` «Нет такого» |\n")
+    root, _ = make_change(tmp_path, specs={"demo": spec(req("Один", 1))}, tasks=DONE_SC, security=table)
+    found = of_kind(lines_of(root), "неизвестное имя или номер")
+    assert len(found) == 1 and "Нет такого" in found[0] and "security.md:5" in found[0], found
+    assert not any("Альфа" in s or "Бета" in s for s in lines_of(root))
+
+
+def test_requirement_without_number_is_named_and_with_number_is_not(tmp_path):
+    """`trace-conventions`: «Требование без номера» — сигнал «требование без записи» называет его."""
+    root, _ = make_change(tmp_path, specs={"demo": spec(req("Без номера"), req("С номером", 1))}, tasks="- [ ] 1.1 `demo`: «Сц»\n")
+    found = of_kind(lines_of(root), "требование без записи")
+    assert len(found) == 1 and "demo/Без номера" in found[0] and "specs/demo/spec.md:" in found[0], found
+
+
+def test_requirement_with_unknown_number_is_unknown_not_without_record(tmp_path):
+    """`trace-conventions`: «Требование без номера» — номер есть, записи нет: «неизвестное имя или номер», а не «без записи»."""
+    root, _ = make_change(tmp_path, specs={"demo": spec(req("Один", 99))}, tasks=DONE_SC)
+    signals = lines_of(root)
+    assert of_kind(signals, "требование без записи") == []
+    unknown = of_kind(signals, "неизвестное имя или номер")
+    assert len(unknown) == 1 and "F-99" in unknown[0]
+
+
+def test_unknown_parent_is_named_with_place(tmp_path):
+    """`trace-conventions`: «Такого родителя нет» — сигнал «неизвестное имя» называет это место."""
+    child = ("### Requirement: Дочернее\nЧасть требования «Нет такого». Текст SHALL (F-01).\n\n#### Scenario: Сц\n"
+             "- **WHEN** a\n- **THEN** b\n")
+    root, _ = make_change(tmp_path, specs={"demo": spec(child)}, tasks=DONE_SC)
+    found = of_kind(lines_of(root), "неизвестное имя или номер")
+    assert len(found) == 1 and "Нет такого" in found[0] and "specs/demo/spec.md:4" in found[0], found
+
+
+def test_task_names_unknown_scenario_and_unknown_record(tmp_path):
+    """`trace-signals`: «Отчёт называет закрытый состав сигналов» — неизвестное имя сценария и номер записи в задаче названы."""
+    root, _ = make_change(tmp_path, specs={"demo": spec(req("Один", 1))},
+                          tasks="- [ ] 1.1 `demo`: «Сц»\n- [ ] 1.2 `demo`: «Нет сценария» (F-77)\n")
+    found = of_kind(lines_of(root), "неизвестное имя или номер")
+    assert len(found) == 2 and all("tasks.md:2" in s for s in found), found
+    assert any("Нет сценария" in s for s in found) and any("F-77" in s for s in found)
+
+
+def test_task_to_nothing_is_named_and_attached_task_is_not(tmp_path):
+    """`trace-signals`: «Отчёт называет закрытый состав сигналов» — задача без сценария и записи названа, с ними — нет."""
+    root, _ = make_change(tmp_path, specs={"demo": spec(req("Один", 1))},
+                          tasks="- [ ] 1.1 `demo`: «Сц»\n- [ ] 1.2 ничего не называет\n- [ ] 1.3 про (F-01)\n")
+    found = of_kind(lines_of(root), "задача ни к чему")
+    assert len(found) == 1 and "1.2" in found[0] and "tasks.md:2" in found[0], found
+
+
+def test_stale_trace_names_record_with_other_outcome(tmp_path):
+    """`trace-signals`: «Отчёт называет закрытый состав сигналов» — след пробы называет исход, а в журнале исход другой."""
+    block = req("Один", 1) + "<!-- проба краёв: форма=io, исходы: F-02 Specify, F-03 Dismiss, F-04 открыт, F-05 Defer -->\n"
+    root, base = make_change(tmp_path, specs={"demo": spec(block)}, tasks=DONE_SC)
+    journal(base, {"id": "F-01"}, decided("F-02", outcome=probe("Dismiss")), decided("F-03", outcome=probe("Dismiss")),
+            decided("F-04", outcome=probe("Specify")), decided("F-05", outcome=probe("Defer")))
+    found = of_kind(lines_of(root), "след отстал от журнала")
+    assert len(found) == 2, found
+    assert "F-02" in found[0] and "Specify" in found[0] and "Dismiss" in found[0] and "specs/demo/spec.md:" in found[0]
+    assert "F-04" in found[1] and "открыт" in found[1]  # F-03 и F-05 сошлись со следом
+
+
+def test_common_record_gives_candidate_in_graph_not_in_report(tmp_path):
+    """`trace-graph`: «Общая запись» — в графе кандидат с `source`, в отчёте сигналов строки о паре нет."""
+    root, _ = make_change(tmp_path, specs={"demo": spec(req("А", 1, ("Первый",)), req("Б", 1, ("Второй",)))},
+                          tasks="- [ ] 1.1 `demo`: «Первый»\n- [ ] 1.2 `demo`: «Второй»\n")
+    graph = trace_graph.build_graph(root, CHANGE)
+    assert len(graph["candidates"]) == 1 and graph["candidates"][0]["source"]
+    assert lines_of(root) == []
+
+
+def test_sample_form_in_double_backticks_is_not_a_reference(tmp_path):
+    """`trace-signals`: «Отчёт называет закрытый состав сигналов» — образец формы в двойных обратных кавычках не ссылка:
+    ни связи, ни неразрешённой записи; настоящая ссылка в той же строке работает."""
+    tasks = "- [ ] 1.1 форма `` `capability`: «сценарий» `` и настоящая `demo`: «Сц»\n"
+    root, _ = make_change(tmp_path, specs={"demo": spec(req("Один", 1))}, tasks=tasks)
+    graph, _, unresolved = trace_graph.build_graph_with_signals(root, CHANGE)
+    assert unresolved == [] and [e["to"] for e in graph["edges"] if e["type"] == "satisfies"] == ["scn:demo/Один/Сц"]
+    assert lines_of(root) == []
+
+
+def test_quote_with_angle_brackets_is_not_left_bare(tmp_path):
+    """`trace-signals`: «Критерий без требования» — цитата с угловыми скобками в отчёте не остаётся голой (плагин md4h)."""
+    root, base = make_change(tmp_path, specs={"demo": spec(req("Один", 2))}, tasks=DONE_SC)
+    journal(base, criterion("F-01", "список T<N> и <b>"), decided("F-02"))
+    found = of_kind(lines_of(root), "критерий без требования")
+    assert len(found) == 1 and "<" not in found[0] and ">" not in found[0], found
+
+
+def test_signals_come_in_order_of_place(tmp_path):
+    """`trace-signals`: «Отчёт называет закрытый состав сигналов» — строки идут по месту: сначала tasks.md выше specs не лезет."""
+    root, _ = make_change(tmp_path, specs={"demo": spec(req("А"), req("Б"))}, tasks="- [ ] 1.1 `demo`: «Сц»\n- [ ] 1.2 ничего\n")
+    places = [s.rsplit(" — ", 1)[1].split(", ")[0] for s in lines_of(root)]
+    keys = [(p.rsplit(":", 1)[0], int(p.rsplit(":", 1)[1])) for p in places]
+    assert keys == sorted(keys) and len(keys) >= 3
