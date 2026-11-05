@@ -10,9 +10,10 @@ import sys
 import pytest
 
 import trace_graph
-from conftest import ROOT, fork_reply
+from conftest import FORK_BIN, ROOT, fork_reply, requires_fork
+from test_schema import make_project, run_openspec
 from test_trace_graph import CHANGE, make_change
-from test_trace_report import CLEAN, DONE, ONE_REQ, journal, with_shim
+from test_trace_report import CLEAN, DONE, ONE_REQ, decided, journal, probe, with_shim
 
 SCRIPT = ROOT / "tools" / "trace_graph.py"
 GIT = ["git", "-c", "user.name=t", "-c", "user.email=t@t", "-c", "commit.gpgsign=false"]
@@ -262,7 +263,6 @@ def test_roots_without_option_are_the_journal_default_roots(tmp_path, fork):
 
 def bare_brackets(text):
     """Угловые скобки вне обратных кавычек (плагин md4h закрывает по ним комментирование файла)."""
-    import re
     return [ch for ch in re.sub(r"`[^`\n]*`", "", text) if ch in "<>"]
 
 
@@ -311,8 +311,6 @@ def test_write_leaves_no_temporary_file_and_replaces_atomically(tmp_path, fork, 
 
 # --- база мастер-спеки в снимке (U13, задача 4.3, F-84, F-95, F-118, F-123) --------------------------------------------
 
-from test_trace_report import decided, journal, probe  # noqa: E402
-
 TRACE = "<!-- проба краёв: форма=io, исходы: F-07 открыт -->\n"
 SCN = "#### Scenario: {}\n{}- **WHEN** a\n- **THEN** {}\n\n"
 MASTER_BEFORE = ("## Requirements\n\n### Requirement: Один\nТекст SHALL (F-07.A).\n" + TRACE + "\n"
@@ -321,6 +319,7 @@ MODIFIED = ("## MODIFIED Requirements\n\n### Requirement: Один\nТекст S
             + SCN.format("Старый", "<!-- F-07 -->\n", "b") + SCN.format("Меняется", "", "другое") + SCN.format("Новый", "", "b"))
 CARRIED = ("## MODIFIED Requirements\n\n### Requirement: Один\nТекст SHALL (F-07.A).\n" + TRACE + "\n"
            + SCN.format("Старый", "<!-- F-07 -->\n", "b") + SCN.format("Меняется", "", "b"))
+TEXT_EQUAL_NEW_SCENARIO = CARRIED + SCN.format("Новый", "", "b")  # текст равен мастеру, набор сценариев шире
 ONE = "req:demo/Один"
 
 
@@ -614,9 +613,6 @@ def test_no_subcommand_help_claims_it_is_not_implemented():
 
 # --- перенос в архив настоящим форком (U14, задача 4.5, F-122) --------------------------------------------------------
 
-from conftest import FORK_BIN, requires_fork  # noqa: E402
-from test_schema import make_project, run_openspec  # noqa: E402
-
 EVIDENCE = "openspec/changes/demo/research/F-01.md"
 
 
@@ -688,3 +684,37 @@ def test_manual_check_of_archived_journal_names_evidence_missing_and_keeps_bytes
     assert done.returncode == 0, done.stderr
     assert "файла нет" in done.stdout and EVIDENCE in done.stdout
     assert (found / "decisions.json").read_bytes() == before
+
+
+def test_base_text_equal_but_scenario_new_freezes_base_before_sync(tmp_path, fork):
+    """`trace-snapshot`: «Базы на требование нет» — текст равен мастеру, сценарий новый: до `/opsx:sync` заморозка снимает базу,
+    раздела «без базы» нет, номера мастера отсечены; после синхронизации и пересборки «new» и сигнал на месте."""
+    root, base = modified_project(tmp_path, spec_text=TEXT_EQUAL_NEW_SCENARIO)
+    freeze(root)
+    assert "Один" in snapshot(base)["base"]["demo"]
+    assert "без базы" not in (base / "graph" / "report.md").read_text(encoding="utf-8")
+    before = view(root)
+    assert (ONE, "rec:F-07", "traces") not in before[0]
+    assert before[2][ONE]["scenarios"]["scn:demo/Один/Новый"] == "new"
+    sync(root, TEXT_EQUAL_NEW_SCENARIO)
+    (base / "tasks.md").write_text("- [x] 1.1 сделать\n", encoding="utf-8", newline="\n")
+    assert freeze(root).action == "build"
+    assert view(root) == before
+
+
+@pytest.mark.parametrize("spec", [CARRIED.replace(SCN.format("Меняется", "", "b"), SCN.format("Меняется", "", "иначе")),
+                                  CARRIED.replace(SCN.format("Меняется", "", "b"), "")], ids=["изменён", "убран"])
+def test_base_text_equal_but_scenario_changed_or_removed_is_not_carried(spec, tmp_path, fork):
+    """`trace-snapshot`: «Базы на требование нет» — текст равен мастеру, сценарий изменён или убран: это не «синхронизация
+    прошла», номера мастера отсечены, раздела нет."""
+    assert spec != CARRIED
+    root, base = modified_project(tmp_path, spec_text=spec)
+    assert (ONE, "rec:F-07", "traces") not in view(root)[0]
+    assert "без базы" not in trace_graph.build_report(root, CHANGE)
+
+
+def test_base_text_equal_but_scenario_new_report_without_snapshot(tmp_path, fork):
+    """`trace-snapshot`: «Базы на требование нет» — тот же проект без снимка, `report` до синхронизации: раздела нет."""
+    root, base = modified_project(tmp_path, spec_text=TEXT_EQUAL_NEW_SCENARIO)
+    assert (ONE, "rec:F-07", "traces") not in view(root)[0]
+    assert "без базы" not in trace_graph.build_report(root, CHANGE)

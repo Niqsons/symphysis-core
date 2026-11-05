@@ -462,10 +462,17 @@ class _Master:
         return self.live[cap].get(name), False
 
 
-def _carried_without_base(entry: dict | None, from_base: bool, text: str) -> bool:
-    """Базы на требование нет, а текст MODIFIED уже совпал с мастером (F-123): после `/opsx:sync` это то же самое, что до него,
-    различить нельзя; номера не отсекаются, отчёт называет требование."""
-    return entry is not None and not from_base and entry["text"] == _hash(text)
+def _block_equals(entry: dict | None, req) -> bool:
+    """Весь блок требования MODIFIED совпал с записью мастера: хеш текста и набор сценариев (имя и хеш текста). Текст требования
+    сценариев не несёт, поэтому одного хеша текста мало: правка только сценариев оставляет его прежним (F-123)."""
+    return (entry is not None and entry["text"] == _hash(req.text)
+            and entry["scenarios"] == {s.name: _hash(s.text) for s in req.scenarios})
+
+
+def _carried_without_base(entry: dict | None, from_base: bool, req) -> bool:
+    """Базы на требование нет, а весь блок MODIFIED уже совпал с мастером (F-123): после `/opsx:sync` это то же самое, что до
+    него, различить нельзя; номера не отсекаются, отчёт называет требование. Одна проверка для сборки, отчёта и заморозки."""
+    return not from_base and _block_equals(entry, req)
 
 
 def _read_specs(base: Path, claims: list[dict], master: "_Master | None" = None) -> list[dict]:
@@ -497,7 +504,7 @@ def _read_specs(base: Path, claims: list[dict], master: "_Master | None" = None)
             known = set()
             if req.section == "MODIFIED":
                 entry, from_base = master.entry(cap, req.name)
-                if entry and not _carried_without_base(entry, from_base, req.text):
+                if entry and not _carried_without_base(entry, from_base, req):
                     known = set(entry["numbers"])
             if _REQ_HEADER.match(lines[req.line - 1]):  # у записи REMOVED строкой-маркером тела нет
                 for number, line in _requirement_body(lines, mask, req.line):
@@ -1088,7 +1095,7 @@ def signal_context(root: Path, change: str, saved: dict | None = None) -> dict:
             carried = entry is not None and entry["text"] == _hash(item.text)
             if f"req:{cap}/{item.name}" not in modified:
                 modified[f"req:{cap}/{item.name}"] = {"carried": carried, "scenarios": state}
-                if _carried_without_base(entry, from_base, item.text):
+                if _carried_without_base(entry, from_base, item):
                     unbased.append((f"req:{cap}/{item.name}", f"{rel}:{item.line}"))
         mask = _fence_mask(lines)
         for item in parsed.requirements:
@@ -1337,8 +1344,8 @@ def _write(path: Path, text: str) -> None:
 def _freeze_base(root: Path, change: str, prior: dict) -> dict[str, dict[str, dict]]:
     """База снимка: запись по каждому требованию MODIFIED изменения, у которого есть запись в `prior` (прежняя база) или требование
     в живой мастер-спеке (F-123, F-134). Прежняя запись не обновляется: после `/opsx:sync` мастер уже несёт номера и сценарии
-    этого изменения. Требование, которое перестало быть MODIFIED, в базу не входит. Прежней записи нет, а хеш текста MODIFIED равен
-    хешу текста в живом мастере — синхронизация уже прошла: запись не снимается, сборка видит требование без базы и называет
+    этого изменения. Требование, которое перестало быть MODIFIED, в базу не входит. Прежней записи нет, а весь блок MODIFIED (текст и набор
+    сценариев) равен живому мастеру — синхронизация уже прошла: запись не снимается, сборка видит требование без базы и называет
     его в отчёте (F-123)."""
     base = root / "openspec" / "changes" / change
     master = _Master(root, prior)
@@ -1350,8 +1357,8 @@ def _freeze_base(root: Path, change: str, prior: dict) -> dict[str, dict[str, di
             continue
         for req in parse_spec(_read_text(base, rel)).requirements:
             entry, from_base = master.entry(folder.name, req.name) if req.section == "MODIFIED" else (None, False)
-            if entry and not from_base and entry["text"] == _hash(req.text):
-                continue  # F-123: мастер уже несёт текст изменения (`/opsx:sync` прошёл) — это не база, номера не отсекаются
+            if _carried_without_base(entry, from_base, req):
+                continue  # F-123: мастер уже несёт весь блок изменения (`/opsx:sync` прошёл) — это не база, номера не отсекаются
             if entry:
                 found.setdefault(folder.name, {}).setdefault(req.name, entry)
     return found
