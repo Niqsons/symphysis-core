@@ -22,6 +22,13 @@ consequences:
   assumptions: true
 edge_probe:
   enabled: true
+attack:
+  context-compliance: true
+  claim-authority: true
+  claim-extraction: true
+  coverage: true
+  scenario-run: true
+  trace-link: true
 `;
 
 const rel = (project, p) => path.relative(project, p).split(path.sep).join("/");

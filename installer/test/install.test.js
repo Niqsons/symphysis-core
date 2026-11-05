@@ -524,10 +524,16 @@ test("Первая установка: symphysis.yaml создан, всё вк�
   const r = install(p, { payloadDir });
   assert.ok(r.written.includes("symphysis.yaml"));
   const text = fs.readFileSync(settingsFile(p), "utf8");
-  assert.match(text, /^consequences:\n {2}failure_branches: true\n {2}assumptions: true\nedge_probe:\n {2}enabled: true\n$/m);
+  assert.match(text, /^consequences:\n {2}failure_branches: true\n {2}assumptions: true\nedge_probe:\n {2}enabled: true\n/m);
+  // Каждая линза атаки обоих файлов названа своим слугом и включена; claim-extraction одна (F-61, F-132).
+  const lenses = ["context-compliance", "claim-authority", "claim-extraction", "coverage", "scenario-run", "trace-link"];
+  assert.match(text, new RegExp(`\nattack:\n${lenses.map((s) => ` {2}${s}: true\n`).join("")}$`));
   const py = spawnSync("python", ["-X", "utf8", path.join(p, ".symphysis", "tools", "symphysis_config.py"), "--project", p, "--strict"], { encoding: "utf8" });
   assert.equal(py.status, 0, py.stdout + py.stderr);
-  assert.equal(py.stdout.trim(), "[..] symphysis.yaml: ветки отказа вкл, допущения вкл, проба краёв вкл");
+  assert.deepEqual(py.stdout.trim().split(/\r?\n/), [
+    "[..] symphysis.yaml: ветки отказа вкл, допущения вкл, проба краёв вкл",
+    `[..] symphysis.yaml: линзы атаки: ${lenses.map((s) => `${s} вкл`).join(", ")}`,
+  ]);
 });
 
 test("Файл с правками человека: --force не меняет байты", () => {

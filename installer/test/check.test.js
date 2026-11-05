@@ -371,6 +371,17 @@ test("Годный файл: [..] с составом, код 0", withYaml, () =
   assert.ok(r.stdout.split(/\r?\n/).includes("[..] symphysis.yaml: ветки отказа вкл, допущения выкл, проба краёв вкл"), r.stdout);
 });
 
+test("Неизвестная линза: [!!] от скрипта, код 2, линзы не выключены", withYaml, () => {
+  // `project-settings`: «Неизвестная линза» (F-108)
+  const p = installed();
+  fs.writeFileSync(settings(p), "attack:\n  trace-lnik: false\n");
+  const r = cli("check", "--project", p);
+  assert.equal(r.status, 2, r.stdout);
+  const out = r.stdout.split(/\r?\n/);
+  assert.ok(out.includes("[!!] symphysis.yaml: неизвестная линза trace-lnik"), r.stdout);
+  assert.ok(out.some((l) => l.startsWith("[..] symphysis.yaml: линзы атаки: ") && !l.includes("выкл")), r.stdout);
+});
+
 test("Опечатка в ключе: [!!] от скрипта, код 2", withYaml, () => {
   const p = installed();
   fs.writeFileSync(settings(p), "edge-probe:\n  enabled: false\n");
