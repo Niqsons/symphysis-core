@@ -212,15 +212,15 @@
 const JOURNAL = {
  "title": "Журнал решений: trace-graph",
  "source": "decisions.json",
- "sha256": "9c1b6444def2574da6c42a527b34ce73b1841015ba2c2af33ae69e4e22d6856f",
+ "sha256": "1c1352af910abc438d6f64dbe8222245b06440d8b3520899417a9afded2132a6",
  "stats": {
-  "records": 62,
-  "forks": 42,
+  "records": 73,
+  "forks": 53,
   "facts": 20,
-  "decided": 40,
+  "decided": 43,
   "parked": 1,
-  "evidence_total": 134,
-  "evidence_found": 134
+  "evidence_total": 185,
+  "evidence_found": 185
  },
  "records": [
   {
@@ -332,7 +332,7 @@ const JOURNAL = {
    "outcome": null,
    "parking": [],
    "dispute": "",
-   "consequences": "",
+   "consequences": "F-62: скрипт, называющий архив без снимка, описывается в `docs/GUIDE.md` по слову владельца.",
    "evidence": [
     {
      "path": "openspec/changes/trace-graph/intent.md",
@@ -1521,7 +1521,12 @@ const JOURNAL = {
      ]
     }
    ],
-   "antipodes": [],
+   "antipodes": [
+    {
+     "option": "A",
+     "other": "F-64.B"
+    }
+   ],
    "recommendation": {
     "option": "A",
     "why": "Слово владельца, других вариантов он не называл."
@@ -3435,17 +3440,33 @@ const JOURNAL = {
    "parking": [
     {
      "addressee": "материалы",
-     "text": "работа с classDef в mermaid"
+     "text": "работа с classDef в mermaid",
+     "finding": "`research/F-54.md`: `classDef`, `class`, `:::` и `style` работают на 12.2.0 и 11.17.2, стереотип остаётся стандартным. У `element` нет поля `id`, признак вида идёт в `type`. Ловушки: `id` только в кавычках, имя класса только латиницей без дефиса, `class` до объявления молча не действует, штрих с пробелом схлопывается, одинаковые имена сливаются."
     }
    ],
    "dispute": "",
    "consequences": "Реестр из F-53 и конфиг генератора могут оказаться одним файлом: решается в design. Как `classDef` работает в `requirementDiagram`, выясняет парковка этой записи.",
-   "evidence": [],
+   "evidence": [
+    {
+     "path": "openspec/changes/trace-graph/research/F-54-probe/results.txt",
+     "quote": "11.17.2 | classDef и class по имени в кавычках | годен",
+     "line": 6,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "openspec/changes/trace-graph/research/F-54-probe/results.txt",
+     "quote": "Expecting 'NEWLINE', 'STRUCT_STOP', 'TYPE', 'DOCREF', got 'ID'",
+     "line": 13,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
    "comments": [],
    "nodes": [
     "diagram"
    ],
-   "finding": ""
+   "finding": "`research/F-54.md`: `classDef`, `class`, `:::` и `style` работают на 12.2.0 и 11.17.2, стереотип остаётся стандартным. У `element` нет поля `id`, признак вида идёт в `type`. Ловушки: `id` только в кавычках, имя класса только латиницей без дефиса, `class` до объявления молча не действует, штрих с пробелом схлопывается, одинаковые имена сливаются."
   },
   {
    "id": "F-55",
@@ -3619,7 +3640,7 @@ const JOURNAL = {
    "id": "F-57",
    "question": "Сколько сигналов каждого вида даёт граф на эталонах и какие из них шумят?",
    "kind": "факт",
-   "status": "припаркован",
+   "status": "решён",
    "addressee": "материалы",
    "depends_on": [],
    "delivery": "",
@@ -3632,7 +3653,8 @@ const JOURNAL = {
    "parking": [
     {
      "addressee": "материалы",
-     "text": "Прототип разбора на трёх клонах `X:\\symphysis-reference`: по каждому виду сигнала из разбора число на изменение и выборочное чтение, какие настоящие, а какие шум. Итог: состав сигналов первой поставки, это развилка второго круга. Проба: разовый скрипт и вывод в `probes/` изменения."
+     "text": "Прототип разбора на трёх клонах `X:\\symphysis-reference`: по каждому виду сигнала из разбора число на изменение и выборочное чтение, какие настоящие, а какие шум. Итог: состав сигналов первой поставки, это развилка второго круга. Проба: разовый скрипт и вывод в `probes/` изменения.",
+     "finding": "`research/F-57.md`: сырой поток 50, 38 и 60 строк, без шести шумных видов 23, 10 и 12. Прочитаны все 45, брака в работе нет, настоящих нюансов два: буква F-03 в `recommendation-why` и задача 1.3 в `step-help`, вводящая поведение без требования. Состав сигналов это развилка следующего круга."
     }
    ],
    "dispute": "",
@@ -3644,19 +3666,33 @@ const JOURNAL = {
      "line": 3,
      "verdict": "сверено",
      "found": true
+    },
+    {
+     "path": "openspec/changes/trace-graph/research/F-57-probe/summary.txt",
+     "quote": "улика разошлась, файл назван в задачах | 26 | 13 | 27",
+     "line": 22,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "openspec/changes/trace-graph/research/F-57-probe/summary.txt",
+     "quote": "сценарий без задачи, MODIFIED, перенесён из мастера | 0 | 8 | 15",
+     "line": 18,
+     "verdict": "сверено",
+     "found": true
     }
    ],
    "comments": [],
    "nodes": [
     "report"
    ],
-   "finding": ""
+   "finding": "`research/F-57.md`: сырой поток 50, 38 и 60 строк, без шести шумных видов 23, 10 и 12. Прочитаны все 45, брака в работе нет, настоящих нюансов два: буква F-03 в `recommendation-why` и задача 1.3 в `step-help`, вводящая поведение без требования. Состав сигналов это развилка следующего круга."
   },
   {
    "id": "F-58",
    "question": "Выдерживает ли `requirementDiagram` целое изменение?",
    "kind": "факт",
-   "status": "припаркован",
+   "status": "решён",
    "addressee": "материалы",
    "depends_on": [],
    "delivery": "",
@@ -3669,7 +3705,8 @@ const JOURNAL = {
    "parking": [
     {
      "addressee": "материалы",
-     "text": "Собрать текст диаграммы на клонах `step-help` и `decision-scheme`, нарисовать на mermaid 12.2.0 из плагина и на версии из md4h (`^11.17.2`). Что выяснить: пределы `maxTextSize` и числа связей, падает ли разбор на настоящих именах, какой размер ещё читается. Итог: выбор по умолчанию и нужен ли предел."
+     "text": "Собрать текст диаграммы на клонах `step-help` и `decision-scheme`, нарисовать на mermaid 12.2.0 из плагина и на версии из md4h (`^11.17.2`). Что выяснить: пределы `maxTextSize` и числа связей, падает ли разбор на настоящих именах, какой размер ещё читается. Итог: выбор по умолчанию и нужен ли предел.",
+     "finding": "`research/F-58.md`: целиком проходит только небольшое изменение. У `step-help` и `decision-scheme` текст больше предела 50 000 знаков, mermaid молча рисует заглушку, директива в тексте не помогает. С поднятым пределом диаграмма не читается: 5647x18453 px. Читается окрестность одного требования. Выбор по умолчанию это развилка следующего круга."
     }
    ],
    "dispute": "",
@@ -3681,13 +3718,27 @@ const JOURNAL = {
      "line": 32,
      "verdict": "сверено",
      "found": true
+    },
+    {
+     "path": "openspec/changes/trace-graph/research/F-58-probe/results.txt",
+     "quote": "step-help: всё изменение, 63372 зн., настройки по умолчанию | узлов нарисовано 1 из 180",
+     "line": 31,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "openspec/changes/trace-graph/research/F-58-probe/results.txt",
+     "quote": "step-help: то же, директива init в самом тексте | узлов нарисовано 1",
+     "line": 33,
+     "verdict": "сверено",
+     "found": true
     }
    ],
    "comments": [],
    "nodes": [
     "diagram"
    ],
-   "finding": ""
+   "finding": "`research/F-58.md`: целиком проходит только небольшое изменение. У `step-help` и `decision-scheme` текст больше предела 50 000 знаков, mermaid молча рисует заглушку, директива в тексте не помогает. С поднятым пределом диаграмма не читается: 5647x18453 px. Читается окрестность одного требования. Выбор по умолчанию это развилка следующего круга."
   },
   {
    "id": "F-59",
@@ -3750,9 +3801,9 @@ const JOURNAL = {
   },
   {
    "id": "F-61",
-   "question": "Чем отключается линза связей, если её нужно снять? Причина выбора F-55.B в том, что линзу можно отключить отдельно, а механизма отключения линз сейчас нет.",
+   "question": "Чем отключается линза связей и настраивается ли так весь состав линз? Причина выбора F-55.B в том, что линзу можно отключить отдельно, а механизма отключения линз сейчас нет.",
    "kind": "развилка",
-   "status": "открыт",
+   "status": "решён",
    "addressee": "человек",
    "depends_on": [
     "F-55"
@@ -3817,19 +3868,62 @@ const JOURNAL = {
        "found": true
       }
      ]
+    },
+    {
+     "letter": "D",
+     "text": "Весь состав настраивается: отдельный ключ на каждую линзу обоих файлов атаки, по умолчанию всё включено. Закрытый список не меняется: выключенная линза просто не даёт строк, а страница и плагин скрывают линзы без строк. Цена: выключение снимает проверки, которые держит только эта линза, поэтому спека `artifact-attack` уточняется словами «если линза включена», а файл атаки называет выключенное; ключи и случаи в `tests/fixtures/settings-cases.json`, строка состава в `symphysis_config.py`, шаблон файла в инсталляторе",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "tools/playground-template.html",
+       "quote": ".filter(g => g.rows.length)",
+       "line": 967,
+       "verdict": "сверено",
+       "found": true
+      },
+      {
+       "path": "vscode/src/shared/attack.ts",
+       "quote": ".filter((g) => g.rows.length)",
+       "line": 92,
+       "verdict": "сверено",
+       "found": true
+      },
+      {
+       "path": "skills/symphysis-attack/SKILL.md",
+       "quote": "Сверка `check` считает такое место закрытым и молчит, поэтому держит его только атака;",
+       "line": 213,
+       "verdict": "сверено",
+       "found": true
+      },
+      {
+       "path": "openspec/specs/project-settings/spec.md",
+       "quote": "Шаг, часть которого выключена настройкой, SHALL называть это в своём артефакте",
+       "line": 98,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
     }
    ],
    "antipodes": [],
    "recommendation": {
-    "option": "A",
-    "why": "Причина F-55.B в том, что линзу можно отключить отдельно. Настройка делает это без смены контракта, а механизм уже есть: так выключается проба краёв. Слово при вызове теряется от атаки к атаке, а снятие из списка каждый раз стоит нового номера контракта."
+    "option": "D",
+    "why": "Это почти не дороже одного ключа из A, а довод из F-55 закрывает сразу для всех линз. Показ и контракт это не трогает, потому что список не меняется. B теряет решение от атаки к атаке, а C каждый раз стоит нового номера контракта."
    },
-   "decision": null,
-   "reversibility": null,
+   "decision": {
+    "option": "D",
+    "word": "",
+    "date": "2026-11-05"
+   },
+   "reversibility": {
+    "level": "обратимо",
+    "why": "ключи читает только `symphysis_config.py`, закрытый список линз и контракт с плагином не меняются"
+   },
    "outcome": null,
    "parking": [],
    "dispute": "",
-   "consequences": "",
+   "consequences": "Что теряется при выключении: `scenario-run` держит покрытие артефактов, `claim-extraction` держит находки в `consequences.md`, `coverage` держит построчное покрытие журнала, `context-compliance` держит требование о `why`. Зависимостей у `claim-authority` не найдено. Заодно чинится расхождение: сценарий «Цели нет» в спеке `artifact-attack` пишет строку `coverage` для атаки артефактов, а у артефактов такой линзы нет. Край для пробы на шаге `specs`: выключены все линзы, а атаку всё же вызвали.",
    "evidence": [],
    "comments": [],
    "nodes": [
@@ -3841,7 +3935,7 @@ const JOURNAL = {
    "id": "F-62",
    "question": "F-52.A обещает снимок всегда, а F-49.A запускает его только советом, который модель может пропустить. Кто замечает изменение в архиве без снимка, пока сверки снимков нет (F-38.A)?",
    "kind": "развилка",
-   "status": "открыт",
+   "status": "решён",
    "addressee": "человек",
    "depends_on": [
     "F-38",
@@ -3901,8 +3995,15 @@ const JOURNAL = {
     "option": "A",
     "why": "Без проверки обещание «всегда» остаётся словом, а скрипту это стоит немного и он не шумит. `symphysis check` поднимал бы сигнал на каждом старом архиве, а C оставляет пропуск незамеченным до следующего этапа."
    },
-   "decision": null,
-   "reversibility": null,
+   "decision": {
+    "option": "A",
+    "word": "Но о том, что такой скрипт существует нужно сказать в GUIDE.md",
+    "date": "2026-11-05"
+   },
+   "reversibility": {
+    "level": "обратимо",
+    "why": "режим скрипта и абзац в `docs/GUIDE.md`"
+   },
    "outcome": null,
    "parking": [],
    "dispute": "",
@@ -3914,9 +4015,927 @@ const JOURNAL = {
     "archive"
    ],
    "finding": ""
+  },
+  {
+   "id": "F-63",
+   "question": "Где лежит настройка состава линз: личная она или общая? Состав влияет на вердикт, который лежит в git и открывает `apply`, а `symphysis.yaml` вне git.",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-61"
+   ],
+   "delivery": "",
+   "antipodes": [],
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-05"
+   },
+   "reversibility": {
+    "level": "обратимо",
+    "why": "источник значения в `symphysis_config.py`; после выпуска перенос потребует миграции личных файлов"
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "evidence": [],
+   "comments": [],
+   "nodes": [
+    "attack"
+   ],
+   "consequences": "Строка `**Состав:**` в файле атаки нужна при любом варианте. Причина владельца стоит в заметках журнала от 2026-11-05: линзы нужны не всем, при слабых моделях они могут вредить, поэтому общая настройка здесь антипаттерн.",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Личная: ключи в `symphysis.yaml`, как остальные выборы. Файл атаки называет выключенные линзы строкой `**Состав:**`, как уже делает опись. Цена: у двух людей может быть разный состав, а общий вердикт в git; кто что выключил, видно только из файла атаки",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/specs/project-settings/spec.md",
+       "quote": "Личный файл настроек `symphysis.yaml` в корне проекта, вне git",
+       "line": 4,
+       "verdict": "сверено",
+       "found": true
+      },
+      {
+       "path": "openspec/changes/archive/2026-11-02-implementation-consequences/design.md",
+       "quote": "Сверка описи и признак выключенной части читают строку `**Состав:**` из `consequences.md`",
+       "line": 361,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Общая: ключ `x-symphysis-attack` в `openspec/config.yaml`, в git. Один состав на всех, правка видна в истории. Проверено запуском: `validate --strict` и `instructions` такой ключ принимают, инсталлятор его не трогает. Цена: `symphysis_config.py` становится читателем второго файла, а выключить линзу только для себя нельзя",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "docs/analysis/stores-and-context-pack-2026-11-02.md",
+       "quote": "Ключ `x-symphysis-context-pack` в `openspec/config.yaml` репозитория",
+       "line": 172,
+       "verdict": "сверено",
+       "found": true
+      },
+      {
+       "path": "installer/lib/install.js",
+       "quote": "схема переключается, rules объединяются, остальное не трогает",
+       "line": 79,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "C",
+     "text": "Два уровня: общий ключ задаёт состав, а личный файл может только включить выключенное",
+     "added": false,
+     "unlikely": "нужды в личной добавке пока нет, а правило слияния придётся описывать и проверять",
+     "evidence": [
+      {
+       "path": "tools/symphysis_config.py",
+       "quote": "Сомнение решается во включённую сторону",
+       "line": 8,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "D",
+     "text": "В самой схеме symphysis",
+     "added": false,
+     "unlikely": "`symphysis check` сверяет байты схемы с поставкой, и правка состава давала бы отказ",
+     "evidence": [
+      {
+       "path": "openspec/specs/project-installer/spec.md",
+       "quote": "байты схемы",
+       "line": 67,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    }
+   ],
+   "recommendation": {
+    "option": "A",
+    "why": "Атаку и так вызывает один человек по слову и может не вызвать вовсе, поэтому общий файл не защищает вердикт сильнее, чем строка состава, которую видят все. Этот приём уже работает у описи (F-119 изменения `implementation-consequences`). B понадобится, когда команда договорится о составе как о правиле: ключ добавляется позже без миграции."
+   },
+   "finding": ""
+  },
+  {
+   "id": "F-64",
+   "question": "Какие сигналы входят в первую поставку?",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-31",
+    "F-57"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Набор из отчёта F-57. Критерий без требования. Требование и сценарий без задачи, в MODIFIED только новые сценарии. Решение без требования и задачи по исходам: Specify без сценария, Backstop без задачи, Dismiss и Defer молчат. Неоднозначное имя. Неизвестное имя или номер. Задача ни к чему, кроме служебной. След отстал от журнала. Улики остаются у `check`, пункт security сигналит только при неизвестном имени, решение «Оставить как есть» молчит. На эталонах это 23, 10 и 12 строк",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/changes/trace-graph/research/F-57.md",
+       "quote": "Без шести шумных видов остаётся 23, 10 и 12 строк.",
+       "line": 45,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Только точные сверки: неизвестное имя или номер, неоднозначное имя, след отстал. На эталонах единицы строк, но зазор между прочитанным и сделанным отчёт больше не показывает",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/changes/trace-graph/research/F-57-probe/summary.txt",
+       "quote": "след отстал от журнала | 0 | 2 | 0",
+       "line": 16,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "C",
+     "text": "Все виды как есть: 50, 38 и 60 строк. Ничего не теряется, кроме внимания читателя",
+     "added": false,
+     "unlikely": "больше половины потока оказалось шумом, и такой отчёт перестанут читать",
+     "evidence": [
+      {
+       "path": "openspec/changes/trace-graph/research/F-57-probe/summary.txt",
+       "quote": "улика разошлась, файл назван в задачах | 26 | 13 | 27",
+       "line": 22,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    }
+   ],
+   "antipodes": [
+    {
+     "option": "B",
+     "other": "F-31.A"
+    }
+   ],
+   "recommendation": {
+    "option": "A",
+    "why": "Т15 просит видеть зазор, поэтому B слишком мал, а в C шум занимает больше половины. A снимает только то, что при чтении оказалось шумом на всех трёх эталонах."
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [],
+   "comments": [],
+   "nodes": [
+    "report"
+   ],
+   "finding": ""
+  },
+  {
+   "id": "F-65",
+   "question": "Что делать с решениями об объёме и порядке работ? Они законно не доходят до требований и задач, а сигнал «решение без требования и задачи» на них срабатывает.",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-64"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Оставить как есть: строка в отчёте. На эталонах их 4 на три изменения, и понять их можно за секунды",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/changes/trace-graph/research/F-57-probe/summary.txt",
+       "quote": "решение без требования и задачи | 1 | 1 | 2",
+       "line": 15,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Пометка в вопросе записи, `[объём]`, как `[запрет]` и `[ветка]`: у такой записи сигнала нет. Цена: строка в скилле брейншторма, а модель может пометить и решение о поведении, и сигнал тихо пропадёт",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/specs/requirement-probes/spec.md",
+       "quote": "в префиксе `question` кандидата `[<категория> · <форма>]`",
+       "line": 9,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "C",
+     "text": "Поле `delivery` записи со значением `объём`: страница и плагин покажут значок. Цена: у поля сейчас другой смысл, и риск тот же, что в B",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "vscode/src/webview/Card.tsx",
+       "quote": "{rec.delivery && <span className=\"badge muted\">{rec.delivery}<\/span",
+       "line": 222,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Четыре строки на три изменения не стоят нового механизма. Пометка покупает тишину ценой риска: модель спрячет настоящее решение, и человек этого не увидит."
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [],
+   "comments": [],
+   "nodes": [
+    "report"
+   ],
+   "finding": ""
+  },
+  {
+   "id": "F-66",
+   "question": "Что делает генератор диаграммы без выбора части графа и при превышении предела?",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-34",
+    "F-54"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Без выбора рисует всё, если текст не больше 50 000 знаков. Иначе отказ с кодом и подсказкой: capability с числом узлов и размером текста. Небольшое изменение получается одной командой",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/changes/trace-graph/research/F-58-probe/results.txt",
+       "quote": "recommendation-why: всё изменение | узлов 42 | связей 54 | текст 13324 зн.",
+       "line": 3,
+       "verdict": "сверено",
+       "found": true
+      },
+      {
+       "path": "openspec/changes/trace-graph/research/F-58-probe/results.txt",
+       "quote": "step-help: всё изменение, 63372 зн., настройки по умолчанию | узлов нарисовано 1 из 180",
+       "line": 31,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Выбор обязателен всегда: без `--capability` или `--requirement` отказ. Правило проще, но и небольшое изменение просит выбор",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "docs/analysis/requirements-traceability-graph-of-symphysis.md",
+       "quote": "Весь граф одной картинкой в функциональность symphysis не входит.",
+       "line": 590,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "C",
+     "text": "Текст отдаётся всегда, а при превышении сигнал. С поднятым пределом его можно нарисовать. Цена: кто не прочёл сигнал, увидит заглушку",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/changes/trace-graph/research/F-58-probe/results.txt",
+       "quote": "step-help: то же, maxTextSize 500000 | узлов нарисовано 180, 1918 мс, 5647x18453 px",
+       "line": 32,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Заглушка молчит, поэтому предел должен считать сам генератор. Небольшое изменение целиком полезно и влезает, так что обязательный выбор в B мешает зря. Весь граф сверх предела остаётся за JSON (Т18)."
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [],
+   "comments": [],
+   "nodes": [
+    "diagram"
+   ],
+   "finding": ""
+  },
+  {
+   "id": "F-67",
+   "question": "Как у каждого вида записать тип SysML и признак вида?",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-54"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Как в пробе: требование и capability это `requirement`, пункт security `designConstraint`, остальное `element`. Признак вида у требований в `id`, у `element` в `type`: `Type: SCN-3`. Ближе всего к слову F-54. Цена: номер стоит в блоке дважды, потому что и имя несёт номер",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/changes/trace-graph/research/F-54-probe/results.txt",
+       "quote": "<<Element>>Сценарий успехаType: SCN-3",
+       "line": 15,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Типы те же, но `type` у `element` называет вид словом: `Type: сценарий`, а номер стоит в имени: `SCN-3 Есть поле`. Повтора нет, и читается лучше. Цена: у `element` признак вида лежит не в поле, а в имени",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/changes/trace-graph/research/F-54-probe/results.txt",
+       "quote": "Expecting 'NEWLINE', 'STRUCT_STOP', 'TYPE', 'DOCREF', got 'ID'",
+       "line": 13,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "C",
+     "text": "Всем видам типы требований, чтобы у всех было поле `id`: сценарий `functionalRequirement` и так далее",
+     "added": false,
+     "unlikely": "стереотип станет неверным: задача и запись журнала не требования, а `verifies` в SysML идёт от проверки",
+     "evidence": [
+      {
+       "path": "openspec/changes/trace-graph/research/F-54-probe/results.txt",
+       "quote": "шесть типов требований | годен | узлов 6",
+       "line": 21,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "B",
+    "why": "Имя и так несёт номер: без него одинаковые имена сливаются. Тогда `type` свободен и может сказать то, чего не говорит стандартный стереотип `Element`. Цвет и рамка дают то же различие глазами, а подпись даёт его и в тексте."
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "Примеры здесь записаны с дефисом и одной цифрой, форму номера решает F-73.",
+   "evidence": [],
+   "comments": [],
+   "nodes": [
+    "diagram"
+   ],
+   "finding": ""
+  },
+  {
+   "id": "F-68",
+   "question": "Откуда берётся номер в диаграмме?",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-67"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Запись и задача берут номер из себя: 19 и 3.2. Требование, сценарий и пункт security нумеруются по порядку внутри диаграммы. Номер может поменяться при правке, а устойчивые ключи лежат в графе",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "docs/analysis/requirements-traceability-graph-of-symphysis.md",
+       "quote": "Поэтому id требования это `capability/имя`.",
+       "line": 148,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Короткий хеш от capability и имени: `REQ-a3f2`. Не плывёт при добавлении соседей, но не читается и меняется при переименовании",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "docs/analysis/requirements-traceability-graph-of-symphysis.md",
+       "quote": "Имя требования служит ключом слияния OpenSpec",
+       "line": 148,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "C",
+     "text": "Без номера: capability в имени, `decision-journal / Есть поле`. Устойчиво и понятно, но длинные имена и так дают основной вес текста и приближают предел",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/changes/trace-graph/research/F-58.md",
+       "quote": "Уменьшать ли текст: у записи журнала в имени вопрос целиком, а длинные имена и дают основной вес.",
+       "line": 48,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Диаграмма производная и живёт один показ, а на место ведёт `docref`. Хеш ничего не говорит читателю, а C съедает предел, который и так узкое место."
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "Форму номера решает F-73.",
+   "evidence": [],
+   "comments": [],
+   "nodes": [
+    "diagram"
+   ],
+   "finding": ""
+  },
+  {
+   "id": "F-69",
+   "question": "Нужен ли четвёртый эталон для снятых Specify?",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-45",
+    "F-46"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Нет: точная связь F-45.A появится только в новых изменениях, в старых журналах её нет, поэтому клон её не проверит. Сигнал F-46.A проверяется фикстурой в тестах",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/changes/trace-graph/research/F-57.md",
+       "quote": "Эталоны не содержат снятых Specify, поэтому сигнал о них на этих данных не проверен.",
+       "line": 67,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Да: клон `implementation-consequences`, около 20 МБ. Единственное изменение, где срезы снимали Specify",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/changes/archive/2026-11-02-implementation-consequences/design.md",
+       "quote": "### F-129 Срез С4. Держать ли в спеках сценарии о поведении модели при повторе и прерывании",
+       "line": 427,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Клон стоит недорого, но проверять на нём нечего: старые журналы не несут комментария из F-45.A, и сигнал сработал бы на каждом Specify. Фикстура проверит оба случая точнее."
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [],
+   "comments": [],
+   "nodes": [
+    "report"
+   ],
+   "finding": ""
+  },
+  {
+   "id": "F-70",
+   "question": "Какие id и какая версия у файла графа?",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-23",
+    "F-41"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Читаемые id: `req:capability/имя`, `scn:capability/требование/имя`, `rec:F-NN`, `task:N.M`. В файле поле `format: 1`, у кандидата связи поле `source`, у связи место `at` от каталога изменения. При переименовании id меняется, это покажет дельта",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "docs/analysis/requirements-traceability-graph-of-symphysis.md",
+       "quote": "{\"id\": \"rec:F-19\", \"kind\": \"fork\", \"decision\": \"A\"},",
+       "line": 312,
+       "verdict": "сверено",
+       "found": true
+      },
+      {
+       "path": "docs/analysis/requirements-traceability-graph-of-symphysis.md",
+       "quote": "Форма условная, детали идут в брейншторм:",
+       "line": 299,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Хеш-id: устойчивы к переименованию, но в файле ничего не прочитать, и модель не сверит связь глазами",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "docs/analysis/requirements-traceability-graph-of-symphysis.md",
+       "quote": "Имя требования или сценария само служит проверяемой строкой",
+       "line": 449,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "C",
+     "text": "Читаемые id без версии и без `source`: файл проще",
+     "added": false,
+     "unlikely": "Т7 просит возможность расширения, а снимки лежат в архиве и сами не пересоберутся",
+     "evidence": [
+      {
+       "path": "docs/analysis/requirements-traceability-graph-of-symphysis.md",
+       "quote": "то мы сможем подключить векторизацию по необходимости",
+       "line": 47,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Имя само служит проверкой: выдуманную связь ловит точное совпадение, а хеш этого не даёт. Версия и `source` почти ничего не стоят сейчас и дают расширение из Т7 без пересборки архива."
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [],
+   "comments": [],
+   "nodes": [
+    "save",
+    "freeze"
+   ],
+   "finding": ""
+  },
+  {
+   "id": "F-71",
+   "question": "Куда идут вычисленные связи между требованиями?",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-54",
+    "F-64"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "В JSON как кандидаты с `source` и в выбор `--requirement` как соседи. В отчёт сигналов не идут: это подсказка, а не вопрос",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "docs/analysis/requirements-traceability-graph-of-symphysis.md",
+       "quote": "Их вычисляет скрипт по общим записям журнала.",
+       "line": 147,
+       "verdict": "сверено",
+       "found": true
+      },
+      {
+       "path": "docs/analysis/requirements-traceability-graph-of-symphysis.md",
+       "quote": "и есть ли связь между требованиями",
+       "line": 24,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Только в JSON: диаграмма показывает лишь записанные связи",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "docs/analysis/requirements-traceability-graph-of-symphysis.md",
+       "quote": "Такие пары составляют от 5 до 22 % всех пар",
+       "line": 147,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "C",
+     "text": "Ещё и строка в отчёте на каждую пару",
+     "added": false,
+     "unlikely": "таких пар до 43 % всех, и вопроса перед человеком они не ставят",
+     "evidence": [
+      {
+       "path": "docs/analysis/requirements-traceability-graph-of-symphysis.md",
+       "quote": "а в изменении на 7 требований 43 %",
+       "line": 147,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Вопрос «есть ли связь между требованиями» стоял в исходной проблеме, и без показа кандидаты останутся только для скрипта. В отчёте им делать нечего."
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [],
+   "comments": [],
+   "nodes": [
+    "collect",
+    "diagram"
+   ],
+   "finding": ""
+  },
+  {
+   "id": "F-72",
+   "question": "Что проверяет линза связей и какая у неё тяжесть?",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-55",
+    "F-61"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Слуг `trace-link`, три вида связей по смыслу: задача закрывает названный сценарий, требование стоит на названной записи, ветка отказа задета названным сценарием. Находка `блокер`, как у остальных линз: понизить можно словом с причиной",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "skills/symphysis-attack/SKILL.md",
+       "quote": "исход сценария spec по коду механизма design против THEN; расхождение или механизм не назван · блокер",
+       "line": 203,
+       "verdict": "сверено",
+       "found": true
+      },
+      {
+       "path": "openspec/specs/artifact-attack/spec.md",
+       "quote": "MUST NOT ставить строке тяжесть ниже тяжести её линзы без причины",
+       "line": 89,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Те же связи, находка `предупреждение`: вердикт `passed` линза не держит. Цена: исключение из правила, и ложная связь не останавливает `apply`",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "docs/analysis/requirements-traceability-graph-of-symphysis.md",
+       "quote": "его должна делать не система, а человек",
+       "line": 43,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "C",
+     "text": "Только задача и сценарий: на этой связи держится покрытие. Дешевле на чтение, но требования и записи журнала остаются без проверки",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "docs/analysis/requirements-traceability-graph-of-symphysis.md",
+       "quote": "Задача и требование связаны через сценарий.",
+       "line": 146,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Атаку вызывают по слову, то есть человек уже выбрал качество, а не скорость, и ложная связь значит, что граф врёт. Исключение из правила о тяжести пришлось бы объяснять, а понижение уже есть."
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [],
+   "comments": [],
+   "nodes": [
+    "attack"
+   ],
+   "finding": ""
+  },
+  {
+   "id": "F-73",
+   "question": "Как писать номер в диаграмме? Хук считает ключом задачи заглавные буквы, дефис и минимум две цифры, поэтому форма из слова к F-54 проходит только до девятого номера: `SEC-3` да, а двузначный уже нет.",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-54"
+   ],
+   "delivery": "",
+   "antipodes": [],
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "evidence": [],
+   "comments": [],
+   "nodes": [
+    "diagram"
+   ],
+   "consequences": "Хук стоит только в репозитории symphysis, но похожие проверки бывают и в других. Снимок графа это не задевает: в нём id вида `rec:F-NN`.",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Подчёркивание: `SEC_12`, `SCN_12`, `TASK_3.2`. Хук молчит при любом номере, на обеих версиях mermaid проверено запуском. Цена: небольшое отступление от формы `SEC-3` из слова к F-54",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/changes/trace-graph/research/F-58-probe/underscore-results.txt",
+       "quote": "ключей задач 0 | годен",
+       "line": 3,
+       "verdict": "сверено",
+       "found": true
+      },
+      {
+       "path": "tools/hooks/gate_hook.py",
+       "quote": "KEY = re.compile(r\"\\b([A-Z]{2,10})-\\d{2,6}\\b\")",
+       "line": 24,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Дефис как в слове к F-54, а текст диаграммы не коммитить: он производный и в снимок не входит. Цена: правило надо помнить, а фикстура генератора на десять узлов в тестах хук не пройдёт",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "docs/repo-contract.md",
+       "quote": "Проверяют гейт имён и шаблон ключей задач.",
+       "line": 98,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "C",
+     "text": "Однобуквенный префикс с дефисом: хук молчит, дефис остаётся, как у `F-NN`. Цена: одна буква мало говорит о виде",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "docs/journal.schema.json",
+       "quote": "\"recordId\": {\"type\": \"string\", \"pattern\": \"^F-\\\\d+$\"},",
+       "line": 20,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "D",
+     "text": "Дефис и префиксы в списке исключений хука",
+     "added": false,
+     "unlikely": "`SEC`, `REQ` и `TASK` это обычные имена проектов в трекерах, а хук и нужен, чтобы такие ключи не уходили наружу",
+     "evidence": [
+      {
+       "path": "tools/hooks/gate_hook.py",
+       "quote": "KEY_ALLOW = {\"SHA\", \"UTF\", \"ISO\", \"RFC\", \"CVE\", \"CWE\", \"PEP\", \"ADR\", \"PROB\", \"FF\", \"GPT\", \"HTTP\", \"TLS\"}",
+       "line": 26,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    }
+   ],
+   "recommendation": {
+    "option": "A",
+    "why": "Подчёркивание не требует никаких правил и не упирается ни в один гейт, а читается почти так же. B держится на памяти и ломается на первой большой фикстуре, C теряет смысл префикса, а D ослабляет защиту ради формы записи."
+   },
+   "finding": ""
   }
  ],
- "notes": []
+ "notes": [
+  {
+   "date": "2026-11-05",
+   "text": "личная имено из необходимости настройки. то есть у кого то может быть так построена работа над спецификациями и требованиями, что линзы не нужны. или например, у человека есть доступ только к слабым моделям, и линзы дают больше вреда, чем пользы. Общая настройка в этом случае это антипаттерн, так как заранее неизвестно кому какие линзы нужны."
+  },
+  {
+   "date": "2026-11-05",
+   "text": "круг 1 закончен: решений 43, фактов 16, открытых развилок 0, парковок материалам 3, антиподов 2"
+  }
+ ]
 };
 const ATTACK = [];
 const SCHEME = {
@@ -3928,7 +4947,7 @@ const SCHEME = {
 };
 const HELP = {
  "contract": 2,
- "taken_at": "2026-11-05T14:38:14+03:00",
+ "taken_at": "2026-11-05T15:17:36+03:00",
  "versions": {
   "openspec": "1.15.0-symphysis.4",
   "symphysis": null
@@ -3937,11 +4956,11 @@ const HELP = {
  "changes": null,
  "error": null,
  "current_step": "viewer",
- "current_text": "Следующий шаг по файлам — `viewer`, ход человека: открытых развилок 2, решаются на странице журнала. После них по файлам идёт `research`.",
+ "current_text": "Следующий шаг по файлам — `viewer`, ход человека: открытых развилок 10, решаются на странице журнала. После них по файлам идёт `proposal`.",
  "turn": "human",
- "next_by_status": "research",
+ "next_by_status": "proposal",
  "forks": {
-  "open": 2,
+  "open": 10,
   "parked": 0
  },
  "tasks": {
@@ -4051,7 +5070,7 @@ const HELP = {
   },
   {
    "id": "research",
-   "state": "ready",
+   "state": "done",
    "turn": "model",
    "optional": false,
    "blocks": [
@@ -4062,11 +5081,19 @@ const HELP = {
    "waits_for": [],
    "files": [
     {
-     "path": "openspec/changes/trace-graph/research/**/*.md",
-     "exists": false
+     "path": "openspec/changes/trace-graph/research/F-54.md",
+     "exists": true
+    },
+    {
+     "path": "openspec/changes/trace-graph/research/F-57.md",
+     "exists": true
+    },
+    {
+     "path": "openspec/changes/trace-graph/research/F-58.md",
+     "exists": true
     }
    ],
-   "file_note": null,
+   "file_note": "файл есть, содержание не проверялось",
    "texts": {
     "title": "Исследование и второй круг",
     "why": "Вопросы, припаркованные к материалам, получают ответ с цитатами из прочитанных файлов. Второй круг брейншторма закрывает по этим ответам записи журнала.",
@@ -4089,14 +5116,12 @@ const HELP = {
   },
   {
    "id": "attack-decisions",
-   "state": "blocked",
+   "state": "ready",
    "turn": "model",
    "optional": true,
    "blocks": [],
    "stops_apply": false,
-   "waits_for": [
-    "research"
-   ],
+   "waits_for": [],
    "files": [
     {
      "path": "openspec/changes/trace-graph/attack/decisions.md",
@@ -4126,7 +5151,7 @@ const HELP = {
   },
   {
    "id": "proposal",
-   "state": "blocked",
+   "state": "ready",
    "turn": "model",
    "optional": false,
    "blocks": [
@@ -4134,9 +5159,7 @@ const HELP = {
     "design"
    ],
    "stops_apply": false,
-   "waits_for": [
-    "research"
-   ],
+   "waits_for": [],
    "files": [
     {
      "path": "openspec/changes/trace-graph/proposal.md",
@@ -4468,6 +5491,9 @@ const HELP = {
   "intent.md": "openspec/changes/trace-graph/intent.md",
   "openspec/changes/trace-graph/decisions.json": "openspec/changes/trace-graph/decisions.json",
   "openspec/changes/trace-graph/intent.md": "openspec/changes/trace-graph/intent.md",
+  "openspec/changes/trace-graph/research/F-54.md": "openspec/changes/trace-graph/research/F-54.md",
+  "openspec/changes/trace-graph/research/F-57.md": "openspec/changes/trace-graph/research/F-57.md",
+  "openspec/changes/trace-graph/research/F-58.md": "openspec/changes/trace-graph/research/F-58.md",
   "scheme.md": "openspec/changes/trace-graph/scheme.md",
   "symphysis.html": "openspec/changes/trace-graph/symphysis.html"
  },
@@ -4485,6 +5511,7 @@ const LINKS = {
   "decisions.md": "decisions.md",
   "docs/GUIDE.md": "../../../docs/GUIDE.md",
   "docs/analysis/requirements-traceability-graph-of-symphysis.md": "../../../docs/analysis/requirements-traceability-graph-of-symphysis.md",
+  "docs/analysis/stores-and-context-pack-2026-11-02.md": "../../../docs/analysis/stores-and-context-pack-2026-11-02.md",
   "docs/journal.schema.json": "../../../docs/journal.schema.json",
   "docs/repo-contract.md": "../../../docs/repo-contract.md",
   "installer/lib/check.js": "../../../installer/lib/check.js",
@@ -4497,20 +5524,32 @@ const LINKS = {
   "openspec/changes/archive/2026-11-04-recommendation-why/tasks.md": "../archive/2026-11-04-recommendation-why/tasks.md",
   "openspec/changes/trace-graph/decisions.json": "decisions.json",
   "openspec/changes/trace-graph/intent.md": "intent.md",
+  "openspec/changes/trace-graph/research/F-54-probe/results.txt": "research/F-54-probe/results.txt",
+  "openspec/changes/trace-graph/research/F-54.md": "research/F-54.md",
+  "openspec/changes/trace-graph/research/F-57-probe/summary.txt": "research/F-57-probe/summary.txt",
+  "openspec/changes/trace-graph/research/F-57.md": "research/F-57.md",
+  "openspec/changes/trace-graph/research/F-58-probe/results.txt": "research/F-58-probe/results.txt",
+  "openspec/changes/trace-graph/research/F-58-probe/underscore-results.txt": "research/F-58-probe/underscore-results.txt",
+  "openspec/changes/trace-graph/research/F-58.md": "research/F-58.md",
   "openspec/config.yaml": "../../config.yaml",
   "openspec/schemas/symphysis/schema.yaml": "../../schemas/symphysis/schema.yaml",
   "openspec/schemas/symphysis/templates/tasks.md": "../../schemas/symphysis/templates/tasks.md",
+  "openspec/specs/artifact-attack/spec.md": "../../specs/artifact-attack/spec.md",
   "openspec/specs/project-installer/spec.md": "../../specs/project-installer/spec.md",
   "openspec/specs/project-settings/spec.md": "../../specs/project-settings/spec.md",
   "openspec/specs/requirement-probes/spec.md": "../../specs/requirement-probes/spec.md",
   "probes/journal-roots.json": "probes/journal-roots.json",
   "reference/README.md": "../../../../symphysis-reference/README.md",
+  "research/F-54.md": "research/F-54.md",
+  "research/F-57.md": "research/F-57.md",
+  "research/F-58.md": "research/F-58.md",
   "scheme.md": "scheme.md",
   "skills/symphysis-attack/SKILL.md": "../../../skills/symphysis-attack/SKILL.md",
   "skills/symphysis-edge-probe/SKILL.md": "../../../skills/symphysis-edge-probe/SKILL.md",
   "symphysis.html": "symphysis.html",
   "tests/fixtures/settings-cases.json": "../../../tests/fixtures/settings-cases.json",
   "tests/test_schema.py": "../../../tests/test_schema.py",
+  "tools/hooks/gate_hook.py": "../../../tools/hooks/gate_hook.py",
   "tools/journal_apply.py": "../../../tools/journal_apply.py",
   "tools/journal_model.py": "../../../tools/journal_model.py",
   "tools/journal_render.py": "../../../tools/journal_render.py",
@@ -4521,7 +5560,9 @@ const LINKS = {
   "upstream/openspec/src/core/archive.ts": "../../../../symphysis/upstream/openspec/src/core/archive.ts",
   "upstream/openspec/src/core/project-config.ts": "../../../../symphysis/upstream/openspec/src/core/project-config.ts",
   "upstream/openspec/src/core/templates/workflows/archive-change.ts": "../../../../symphysis/upstream/openspec/src/core/templates/workflows/archive-change.ts",
-  "upstream/openspec/src/core/templates/workflows/sync-specs.ts": "../../../../symphysis/upstream/openspec/src/core/templates/workflows/sync-specs.ts"
+  "upstream/openspec/src/core/templates/workflows/sync-specs.ts": "../../../../symphysis/upstream/openspec/src/core/templates/workflows/sync-specs.ts",
+  "vscode/src/shared/attack.ts": "../../../../symphysis-vscode/src/shared/attack.ts",
+  "vscode/src/webview/Card.tsx": "../../../../symphysis-vscode/src/webview/Card.tsx"
  }
 };
 const ADDRESSEES = ['материалы','человек','ИБ'];

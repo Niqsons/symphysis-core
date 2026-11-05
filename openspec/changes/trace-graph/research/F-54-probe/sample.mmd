@@ -1,0 +1,36 @@
+requirementDiagram
+direction LR
+classDef req fill:#dbeafe,stroke:#1d4ed8,stroke-width:2px
+classDef scn fill:#dcfce7,stroke:#15803d
+classDef task fill:#fef9c3,stroke:#a16207
+classDef rec fill:#f3e8ff,stroke:#7e22ce,stroke-dasharray:6 3
+classDef sec fill:#fee2e2,stroke:#b91c1c,stroke-width:3px
+requirement "Плагин показывает рекомендацию с причиной" {
+    id: "REQ-1"
+    text: "Карточка показывает вариант и why"
+}
+element "Карточка при поле text" {
+    type: "SCN-1"
+    docref: "specs/plugin-decision-view/spec.md:8"
+}
+element "Задача 3.2" {
+    type: "TASK-3.2"
+    docref: "tasks.md:24"
+}
+element "F-19 всегда вариант и why" {
+    type: "REC_19"
+    docref: "decisions.json"
+}
+designConstraint "Инъекции через содержимое файлов" {
+    id: "SEC-1"
+    text: "Закрывают требования плагина и страницы"
+}
+"Карточка при поле text" - verifies -> "Плагин показывает рекомендацию с причиной"
+"Задача 3.2" - satisfies -> "Карточка при поле text"
+"Плагин показывает рекомендацию с причиной" - traces -> "F-19 всегда вариант и why"
+"Инъекции через содержимое файлов" - refines -> "Плагин показывает рекомендацию с причиной"
+class "Плагин показывает рекомендацию с причиной" req
+class "Карточка при поле text" scn
+class "Задача 3.2" task
+class "F-19 всегда вариант и why" rec
+class "Инъекции через содержимое файлов" sec
