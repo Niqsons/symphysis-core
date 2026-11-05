@@ -1594,6 +1594,7 @@ def test_rebuild_command_names_the_script_it_ran_from(tmp_path):
     project, src, env = shim_project(tmp_path)
     script = copy_of_tools_without_the_script(project)
     shutil.copy(ROOT / "tools" / "step_help.py", script.parent)
+    shutil.copy(ROOT / "tools" / "openspec_run.py", script.parent)
     snapshot, _ = built(src, env, script=script)
     assert shlex.split(snapshot["rebuild"])[1] == "tools/journal.py"
 
@@ -1610,6 +1611,7 @@ def test_rebuild_command_run_from_the_root_builds_the_same_page(tmp_path):
     project, src, env = shim_project(tmp_path)
     installed = copy_of_tools_without_the_script(project / ".symphysis")
     shutil.copy(ROOT / "tools" / "step_help.py", installed.parent)
+    shutil.copy(ROOT / "tools" / "openspec_run.py", installed.parent)
     (src.parent / "attack").mkdir()
     attack = src.parent / "attack" / "decisions.md"
     shutil.copy(ATTACK_FIX / "decisions.md", attack)

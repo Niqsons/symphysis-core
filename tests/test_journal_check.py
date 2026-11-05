@@ -651,7 +651,7 @@ def _copy_tools(into: Path, clone: bool = False) -> Path:
     tools = base / "tools"
     tools.mkdir(parents=True)
     for f in (ROOT / "tools").glob("*"):
-        if f.is_file() and re.match(r"journal.*\.py|step_help\.py|symphysis_config\.py|playground-template\.html|mermaid\.min\.js", f.name):
+        if f.is_file() and re.match(r"journal.*\.py|step_help\.py|openspec_run\.py|symphysis_config\.py|playground-template\.html|mermaid\.min\.js", f.name):
             shutil.copy(f, tools / f.name)
     (base / "docs").mkdir()
     shutil.copy(ROOT / "docs" / "journal.schema.json", base / "docs" / "journal.schema.json")

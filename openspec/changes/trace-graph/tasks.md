@@ -2,8 +2,8 @@
 
 ## 1. Общий модуль запуска форка
 
-- [ ] 1.1 Перенести тесты запуска форка из `tests/test_step_help.py` в `tests/test_openspec_run.py` под импорт из `openspec_run`, добавить тест: у форка переменная `OPENSPEC_TELEMETRY` равна 0 (F-138, security.md) — проверка: `python -X utf8 -m pytest tests/test_openspec_run.py` красный только потому, что модуля нет
-- [ ] 1.2 Вынести из `tools/step_help.py` в `tools/openspec_run.py` всё, что перечислено в `research/F-138.md`, вместе с `ABSOLUTE_PATH` и `_no_paths`; правило имени изменения стоит отдельной функцией, её зовёт и `run_fork`; `step_help.py` импортирует модуль по имени (F-138, F-59) — `trace-signals`: «Запуск форка общий» — проверка: `python -X utf8 -m pytest tests/test_openspec_run.py tests/test_step_help.py` зелёный, вывод `python tools/step_help.py --change trace-graph` до и после выноса совпадает байт в байт
+- [x] 1.1 Перенести тесты запуска форка из `tests/test_step_help.py` в `tests/test_openspec_run.py` под импорт из `openspec_run`, добавить тест: у форка переменная `OPENSPEC_TELEMETRY` равна 0 (F-138, security.md) — проверка: `python -X utf8 -m pytest tests/test_openspec_run.py` красный только потому, что модуля нет
+- [x] 1.2 Вынести из `tools/step_help.py` в `tools/openspec_run.py` всё, что перечислено в `research/F-138.md`, вместе с `ABSOLUTE_PATH` и `_no_paths`; правило имени изменения стоит отдельной функцией, её зовёт и `run_fork`; `step_help.py` импортирует модуль по имени (F-138, F-59) — `trace-signals`: «Запуск форка общий» — проверка: `python -X utf8 -m pytest tests/test_openspec_run.py tests/test_step_help.py` зелёный, вывод `python tools/step_help.py --change trace-graph` до и после выноса совпадает байт в байт
 
 ## 2. Сборка графа
 

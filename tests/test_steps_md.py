@@ -3,6 +3,7 @@
 import fnmatch
 import re
 
+import openspec_run
 import step_help
 from conftest import ROOT
 
@@ -158,7 +159,7 @@ def test_text_does_not_say_the_step_is_running():
 
 def test_text_has_no_absolute_paths():
     """Текст шага попадает в снимок на странице, а она отслеживается git (F-51)."""
-    assert step_help.ABSOLUTE_PATH.search(steps_text()) is None
+    assert openspec_run.ABSOLUTE_PATH.search(steps_text()) is None
 
 
 def test_parser_reads_crlf_and_skips_fenced_headings():
