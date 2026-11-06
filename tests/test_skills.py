@@ -61,6 +61,14 @@ def word_count(text):
     return len(text.split())
 
 
+PROVENANCE = re.compile(r"^[ \t]*<!--[ \t]*(?:src|dev)\b.*?-->[ \t]*\r?\n?", re.M | re.S)
+
+
+def stripped(text):
+    """Тело без комментариев провенанса `<!-- src: -->` и `<!-- dev: -->` — то, что уходит в payload."""
+    return PROVENANCE.sub("", text)
+
+
 def table_rows(text):
     return [line for line in text.splitlines() if line.startswith("|")]
 
@@ -602,22 +610,33 @@ def test_template_names_attack_not_grill():
 VIEWER_MAIN_RULE = "вывод модели — развилка"
 
 
+CANON_SECTIONS = ("## Вход", "## Выход", "## Инварианты", "## Порядок", "## Коды и сигналы", "## Границы", "## Приёмка")
+
+
+def canon_sections(text):
+    """Разделы `##` тела в порядке появления — скелет канона (docs/skills-canon.md, раздел 2)."""
+    return [line for line in text.splitlines() if line.startswith("## ")]
+
+
 def test_viewer_skill_shape():
-    """D7: главное правило «вывод модели — развилка, а не строка поставки», три режима и что человек делает
-    в каждом, порядок команд, правило разделения линз и перспектив одной фразой в «Главном правиле»;
-    sources/ нет или без копий GSD; TRANSLATION-NOTES — по `playground/SKILL.md`: что взято как образец
-    и что сделано иначе."""
+    """Канон: тело по скелету — инварианты (решает человек, всё показано, рендер не правится, запись и строка
+    атаки не смешиваются), три режима в шаге 1, команды в шаге 2, правило развилки — в «Границах» с хозяином;
+    sources/ без копий GSD; TRANSLATION-NOTES — по `playground/SKILL.md`: что взято как образец и что сделано
+    иначе; Playground в теле продукта не назван — провенанс."""
     skill = SKILLS / "symphysis-viewer"
     text = read(skill / "SKILL.md")
-    assert VIEWER_MAIN_RULE in text, f"в SKILL.md нет «{VIEWER_MAIN_RULE}»"
+    assert canon_sections(text) == list(CANON_SECTIONS), canon_sections(text)
     for token in ("render-html", "apply", "маловероятно", "--attack", "check", "render-md", "answers/",
-                  "сначала запись", "не считается вердиктом"):
+                  "вердиктом не считается", "`.symphysis/docs/terms.md`", "`.symphysis/docs/journal-cli.md`",
+                  "`.symphysis/docs/attack-table.md`"):
         assert token in text, f"в SKILL.md нет «{token}»"
     for mode in ("«решения»", "«проверка»", "«атака»"):
-        assert mode in text, f"в SKILL.md нет режима {mode}"
-    main = text.split("## Главное правило")[1].split("\n## ")[0]
-    assert "линз" in main and "перспектив" in main, "правило разделения линз и перспектив — в «Главном правиле»"
-    assert "Playground" in text, "в SKILL.md не назван образец — Playground"
+        assert mode in block(text, "### 1.", "### 2."), f"в шаге 1 нет режима {mode}"
+    invariants = block(text, "## Инварианты", "\n## ")
+    assert "линз" in invariants and "строка атаки" in invariants, "разделение записи и строки атаки — инвариант"
+    assert "MUST" in invariants, "инварианты без уровня RFC 2119"
+    assert VIEWER_MAIN_RULE in block(text, "## Границы", "\n## "), "правило развилки — в «Границах», хозяин — rules конфигурации"
+    assert "Playground" not in stripped(text), "образец Playground — провенанс, в теле продукта его нет"
     refs = sorted(r for r in (skill / "sources").glob("*.md") if r.name != "TRANSLATION-NOTES.md") if (skill / "sources").is_dir() else []
     assert not any(read(r).startswith(GSD_HEADER) for r in refs), "своё: копий GSD нет"
     notes = read(skill / "sources" / "TRANSLATION-NOTES.md")
@@ -627,29 +646,31 @@ def test_viewer_skill_shape():
         assert token in notes, f"в TRANSLATION-NOTES.md нет «{token}»"
 
 
+SHARED = ROOT / "skills" / "shared"
+
+
 def test_viewer_skill_describes_the_attack_mode():
-    """6.6: раздел «Атака» несёт фильтр по линзе и счётчики вне фильтра, блок записи, слуги по файлам, понижение,
-    промпт из состояния (внесённое уходит, спор «вопрос человеку» → слово к решению, конфликт, выбор без слова)
-    и правило ячейки таблицы атаки."""
+    """Р9-A: в теле — когда режим «атака» и куда уходит спор; поведение страницы и правило ячейки — общий
+    файл `attack-table.md` (хозяин нормы — атака, страница только показывает)."""
     text = read(SKILLS / "symphysis-viewer" / "SKILL.md")
-    attack = " ".join(text.split("### «Атака»")[1].split("\n## ")[0].split())   # переносы строк не в счёт
+    mode = block(text, "режим «атака»", "\n- ")
+    for token in ("`attack/decisions.md`", "`attack/artifacts.md`", "по линзам и тяжести", "`notes[]`",
+                  "`.symphysis/docs/attack-table.md`"):
+        assert token in flat(text), f"в теле нет «{token}»"
+    assert "Researcher" not in text and "Исследователь" not in text
+    table = " ".join(read(SHARED / "attack-table.md").split())
     points = {
-        "фильтр по линзе": ("Фильтр по линзе", "«все»", "прячет группы строк, но не счётчики"),
         "счётчики вне фильтра": ("блокеров N · предупреждений N · справок N", "вне фильтра", "по всему файлу"),
-        "блок записи": ("Блок записи", "`<details>`", "текст вопроса записи", "выбранный вариант", "переход к карточке"),
-        "списки линз": ("`context-compliance`, `claim-authority`", "`scenario-run`", "группа «вне списка»", "в счётчике линз её нет"),
+        "фильтр по линзе": ("прячет группы, но не счётчики",),
+        "блок записи": ("`F-NN, поле`", "переход, не слияние"),
+        "списки линз": ("`context-compliance`", "`claim-authority`", "`scenario-run`", "группа «вне списка»", "в счётчике линз её нет"),
         "понижение": ("понижение без причины", "в скобках", "по спеке не выводится"),
-        "промпт из состояния": ("Промпт пересобирается из состояния", "внесённое уходит", "очистка поля замечаний"),
-        "спор — слово к решению": ("«вопрос человеку»", "`F-NN, decision`", "словом к решению", "`- F-NN: <буква> — «ответ»`"),
-        "конфликт ответов": ("конфликт", "оставьте один", "строки слова на запись"),
-        "выбор без слова": ("слово к выбору необязательно", "(без слова)"),
-        "правило ячейки": ("Правило ячейки", "`\\|`", "`\\\\`", "внутри пары backticks", "`\\\\|`", "код 2",
-                           "в цитате кода литеральная обратная косая пишется `\\\\`"),
+        "правило ячейки": ("`\\|`", "внутри backticks", "`\\\\|`", "Пустых ячеек нет", "код 2", "файлом, строкой и столбцом"),
+        "строки атаки и apply": ("Строки атаки `apply` не меняет",),
     }
     for point, tokens in points.items():
         for token in tokens:
-            assert token in attack, f"в разделе «Атака» ({point}) нет «{token}»"
-    assert "Researcher" not in attack and "Исследователь" not in attack
+            assert token in table, f"в attack-table.md ({point}) нет «{token}»"
 
 
 # --- брейншторм: намерение первым, факты постановки, отступление, предписание (7.2: F-13.A, F-08.A, F-09.A,
@@ -768,13 +789,13 @@ def test_second_round_lives_at_the_end_of_research():
         assert "второй круг перед `attack-decisions`" not in part
         assert "второго круга перед `attack-decisions`" not in part
     assert "второй круг в конце `research`" in frontmatter(viewer)["description"]
-    assert "после второго круга в конце шага `research`" in flat(viewer)
+    assert "второй круг в конце шага `research`" in flat(viewer)
 
 
 def test_viewer_card_names_the_deviation_badge():
     """Вариант с `deviation` — бейдж «отступление от F-NN» у этого варианта; слово к выбору и тогда необязательно."""
-    card = block(read(VIEWER / "SKILL.md"), "### «Решения»", "### «Проверка»")
-    for token in ("`deviation`", "бейдж «отступление от F-NN»", "у варианта", "необязательно"):
+    card = block(read(VIEWER / "SKILL.md"), "режим «решения»", "режим «проверка»")
+    for token in ("`deviation`", "бейдж «отступление от F-NN»", "У варианта", "необязательно"):
         assert token in card, f"в разделе «Решения» нет «{token}»"
 
 
@@ -905,7 +926,7 @@ def test_attack_both_antipodes_is_a_warning_and_missing_nodes_is_not_a_finding()
 def test_viewer_skill_names_the_fallback_of_the_scheme_panel():
     """F-39: страница больше не всегда один файл; без файла mermaid рядом виден текст."""
     text = read(VIEWER / "SKILL.md")
-    assert "панель `scheme.md`" in text and "иначе текст" in text
+    assert "`scheme.md` рисунком" in text and "текст вместо рисунка — не ошибка" in text
 
 
 def test_viewer_skill_text_names_hook_files():
