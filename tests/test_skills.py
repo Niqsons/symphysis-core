@@ -171,7 +171,7 @@ def test_edge_probe_has_eight_categories():
         assert token in text, f"в SKILL.md нет исхода {token}"
     for head in EDGE_OPTION_HEADS:
         assert f"`{head}<" in text, f"в SKILL.md нет заголовка варианта с шаблоном текста: {head!r}"
-    assert "Dismissal requires a reason string" in text, "нет цитаты edge-probe.md:89 об отказе без причины"
+    assert "Слово нужно у выбора мимо рекомендации, не у отказа" in text, "нет инварианта о слове мимо рекомендации"
 
     notes = read(skill / "sources" / "TRANSLATION-NOTES.md")
     rows = table_rows(notes)
@@ -210,6 +210,7 @@ def test_edge_probe_summary_counts_not_selected_rows():
 # Вопрос пробы запретов — дословно (`prohibition-probe.md:53-54`); варианты кандидата — по ярусам проверки.
 PROHIBITION_QUESTION = ("What could this feature silently become that the author would NOT want, "
                         "but the spec does not forbid?")
+PROHIBITION_QUESTION_RU = "Чем эта возможность может тихо стать"
 PROHIBITION_OPTIONS = ("Specify/test", "Specify/judgment", "Dismiss", "Defer")
 PROHIBITION_OPTION_HEADS = ("A. Specify/test — ", "B. Specify/judgment — ", "C. Dismiss — ", "D. Defer — ")
 PROHIBITION_FIXED_LINES = (  # прежние фиксированные строки: после F-61.A их в скилле нет
@@ -224,7 +225,9 @@ def test_prohibition_probe_question_verbatim():
     skill = SKILLS / "symphysis-prohibition-probe"
     text = read(skill / "SKILL.md")
 
-    assert PROHIBITION_QUESTION in text, "в SKILL.md нет вопроса GSD дословно (prohibition-probe.md:53-54)"
+    assert PROHIBITION_QUESTION_RU in text, "в SKILL.md нет вопроса пробы по-русски"
+    source = flat(read(skill / "sources" / "prohibition-probe.md").replace("\n> ", "\n"))  # цитата `>` переносится
+    assert PROHIBITION_QUESTION in source, "в sources/ нет вопроса GSD дословно"
     assert "security.md" in text, "в SKILL.md нет отсылки канона к `security.md`"
     for token in PROHIBITION_OPTIONS:
         assert token in text, f"в SKILL.md нет варианта {token}"
@@ -252,9 +255,11 @@ def example_option_texts(text, heads):
 @pytest.mark.parametrize("name,heads,fixed", PROBE_CASES)
 def test_probe_skill_texts_are_concrete_not_template(name, heads, fixed):
     text = read(SKILLS / name / "SKILL.md")
+    shared = read(SHARED / "candidate.md")
 
-    assert "Текст, одинаковый у двух кандидатов" in text, "нет правила о шаблонном тексте варианта (F-61.A)"
-    assert "дефект кандидата" in text
+    assert "Текст, одинаковый у двух кандидатов" in shared, "нет правила о шаблонном тексте варианта (F-61.A) в candidate.md"
+    assert "дефект кандидата" in shared
+    assert "`.symphysis/docs/candidate.md`" in text, "тело не называет общий файл candidate.md"
     for line in fixed:
         assert line not in text, f"в SKILL.md остался прежний фиксированный текст: {line!r}"
     example = example_option_texts(text, heads)
@@ -341,8 +346,6 @@ def test_attack_skill_writes_verdict_contract():
     assert "FORCE stance" in text, "в SKILL.md нет установки «FORCE stance»"
     for severity in ATTACK_SEVERITIES:
         assert severity in text, f"в SKILL.md нет тяжести «{severity}»"
-    for lens in ATTACK_LENSES:
-        assert lens in text, f"в SKILL.md нет линзы plan-checker «{lens}»"
     assert "| Линза |" in text, "в SKILL.md нет таблицы закрытого списка линз с колонкой «Линза»"
     for slug in {s for lenses in ATTACK_LENS_LISTS.values() for s in lenses}:
         assert f"`{slug}`" in text, f"в SKILL.md нет слуга линзы `{slug}`"
@@ -351,8 +354,8 @@ def test_attack_skill_writes_verdict_contract():
     assert " ".join(text.split()).count(VERDICT_RULE) == 2, "правило вердикта — дословно в §5 и в строке приёмки"
     assert "инварианта не несут" in text, "в SKILL.md нет исключения для строк покрытия"
     # журнал — опора артефактов: его правка обесценивает и вердикт `attack-artifacts` (ruling Task 19)
-    artifacts_row = next(row for row in table_rows(text) if row.startswith("| `attack-artifacts`"))
-    assert "decisions.json" in artifacts_row, "в строке `attack-artifacts` таблицы вызовов нет `decisions.json`"
+    artifacts_call = block(text, "- Вызов `attack-artifacts`:", "\n- ")
+    assert "decisions.json" in artifacts_call, "во «Входе» у вызова `attack-artifacts` нет `decisions.json`"
 
     force = read(skill / "sources" / "force-stance.md")
     for line in FORCE_LINES:
@@ -407,24 +410,24 @@ def test_attack_skill_drops_presence_lenses():
     text = read(ATTACK_SKILL / "SKILL.md")
     for slug in REMOVED_LENS_SLUGS:
         assert f"`{slug}`" not in text, f"в SKILL.md остался слуг снятой линзы `{slug}`"
-    step3 = block(text, "### 3. Линзы", "\n### 4.")
-    for token in ("`journal.py check`", "`openspec validate --strict`", "F-07.A"):
-        assert token in step3, f"в шаге 3 нет фразы-ссылки о снятых линзах: «{token}»"
+    step4 = block(text, "### 4. Назови линзу", "\n### 5.")
+    for token in ("`journal.py check`", "`openspec validate --strict`"):
+        assert token in step4, f"в шаге 4 нет фразы-ссылки о снятых линзах: «{token}»"
 
 
 def test_attack_skill_scenario_run_row_form():
     """F-07.A, F-32.E, F-33.E: строка `scenario-run` — сценарий, механизм, код, исход, THEN; строка на пару;
     механизм не назван — блокер без воздержания; воздержание — только край Defer; покрытие — каждым сценарием."""
     text = read(ATTACK_SKILL / "SKILL.md")
-    row = flat(lens_row(text, "artifacts", "scenario-run"))
-    assert "SELF" in row and "F-03" in row and "F-07.A" in row, "источник `scenario-run` — SELF: калибровка, F-03, F-07.A"
-    artifacts = block(text, LENS_TABLES["artifacts"], "\n### 4.")
+    notes = flat(read(ATTACK_SKILL / "sources" / "TRANSLATION-NOTES.md"))
+    assert "`scenario-run`" in notes and "SELF" in notes, "источник `scenario-run` — SELF, в заметках перевода"
+    artifacts = block(text, "#### scenario-run", "\n#### claim-extraction")
     for token in ("`<файл>, <требование> / <сценарий>`", "механизм design", "THEN сценария",
                   "`есть: <путь:строка> «код» → исход совпал`",
                   "`нет: <путь:строка> «код» → исход <какой>, THEN <какой>`",
                   "`нет: design не называет механизм`",
                   "Одна строка на пару «сценарий × механизм»", "инвариант каждой — исход по своему коду",
-                  "воздержания нет: ответ выводится из design", "исходом Defer",
+                  "воздержания нет: ответ выводится из design", "исходом `Defer`",
                   "каждый сценарий каждой спеки цели", "нет: не пройдено", "повторить атаку по разделу",
                   "чтением кода и рассуждением"):
         assert token in artifacts, f"в описании строки `scenario-run` нет «{token}»"
@@ -434,7 +437,7 @@ def test_attack_skill_reads_does_not_execute():
     """F-53.E: «читает, не исполняет» — отдельный абзац; разрешены чтение и греп; проверка — ревью транскрипта."""
     text = read(ATTACK_SKILL / "SKILL.md")
     rule = block(text, "**Читает, не исполняет.**", "\n\n")
-    for token in ("не запускает код образца, тесты, сборку или команды цели", "чтение файлов и греп",
+    for token in ("запускать код образца, тесты, сборку или команды цели", "чтение файлов и греп",
                   "`claim-extraction`", "`claim-authority`", "`wc`", "`grep -c`", "`sha256sum`",
                   "ревью транскрипта", "суждение"):
         assert token in rule, f"в правиле «читает, не исполняет» нет «{token}»"
@@ -480,15 +483,18 @@ def test_no_skill_teaches_the_text_of_a_recommendation():
 @pytest.mark.parametrize("skill", ["symphysis-brainstorm", "symphysis-edge-probe", "symphysis-prohibition-probe",
                                    "symphysis-consequences"])
 def test_skill_describes_why_as_the_reason_against_other_options(skill):
-    """F-05, F-21: `why` — причина выбора этого варианта против других, а не пересказ варианта."""
+    """F-05, F-21: `why` — причина выбора этого варианта против других, а не пересказ варианта.
+    У тел, вынесших форму кандидата в общий файл `candidate.md`, норма стоит там (канон, раздел 8)."""
     text = flat(read(SKILLS / skill / "SKILL.md"))
+    if "`.symphysis/docs/candidate.md`" in text:
+        text = flat(read(SHARED / "candidate.md"))
     assert "{option, why}`" in text
     assert "`why` — причина выбора этого варианта против других, а не пересказ варианта" in text
 
 
 def test_attack_skill_finds_a_why_that_retells_the_option():
     """F-21: находка под линзой `context-compliance`, закрытый список линз не растёт."""
-    row = flat(lens_row(read(ATTACK_SKILL / "SKILL.md"), "journal", "context-compliance"))
+    row = block(read(ATTACK_SKILL / "SKILL.md"), "#### context-compliance", "\n#### claim-authority")
     assert "`recommendation.why` пересказывает вариант и не называет причины выбора против других" in row
 
 
@@ -496,11 +502,11 @@ def test_attack_skill_context_compliance_sees_the_setting():
     """F-08.A, F-09.A, F-55.E: решение против факта постановки без пометки — находка; выбранный вариант
     с полем `deviation` — справка без слова человека (видимость без замка); опора решения design на факт
     или на запись без решения — блокер."""
-    row = flat(lens_row(read(ATTACK_SKILL / "SKILL.md"), "journal", "context-compliance"))
+    row = block(read(ATTACK_SKILL / "SKILL.md"), "#### context-compliance", "\n#### claim-authority")
     for token in ("`addressee: постановка`", "выбранный вариант", "пометки «отступление от постановки»",
                   "поле `deviation: F-NN` варианта",
                   "выбранный вариант с полем `deviation` — `справка`, опора «есть: deviation F-NN у выбранного "
-                  "варианта»; слово человека не требуется (F-55.E)",
+                  "варианта»; слово человека не требуется",
                   "опора решения design на факт или на запись без решения", "блокер"):
         assert token in row, f"в строке `context-compliance` нет «{token}»"
     assert "словом человека" not in row, "справка при отступлении не требует слова человека (F-55.E)"
@@ -510,12 +516,13 @@ def test_attack_skill_context_compliance_sees_the_setting():
 
 
 def test_attack_skill_cell_rule():
-    r"""F-23.A, F-34.E: черта — `\|` или внутри backticks; `\\|` — косая и черта в цитате кода; пустых ячеек нет."""
-    rule = block(read(ATTACK_SKILL / "SKILL.md"), "**Правило ячейки.**", "\n\n")
-    for token in (r"`\|`", "внутри backticks", "цитата кода — в backticks", r"`\\|`", r"`\\`",
-                  "следующая черта — разделитель", "Пустых ячеек нет", "«—»", "код 2",
+    r"""F-23.A, F-34.E: черта — `\|` или внутри backticks; `\\|` — косая и черта в цитате кода; пустых ячеек нет.
+    Хозяин нормы — общий файл `attack-table.md` (Р9-A, канон раздел 8): пишет атака, читает просмотрщик."""
+    rule = block(read(SHARED / "attack-table.md"), "## Правило ячейки", "\n## ")
+    for token in (r"`\|`", "внутри backticks", "Цитата кода — в backticks", r"`\\|`", r"`\\`",
+                  "следующая черта — разделитель", "Пустых ячеек нет", "`—`", "код 2",
                   "файлом, строкой и столбцом",
-                  r"В цитате кода литеральная обратная косая пишется `\\`", r"`\\` как `\` и внутри backticks"):
+                  r"Литеральная обратная косая в цитате кода пишется `\\`", r"внутри backticks `\\|` читается как `\|`"):
         assert token in rule, f"в правиле ячейки нет «{token}»"
 
 
@@ -528,7 +535,7 @@ def test_attack_skill_target_paths_relative_to_change_dir():
     # Git Bash печатает `<хеш> *<путь>`: путь с `*` в `path:` дал бы вечный stale (финальное ревью, minor 8)
     assert "но без `*`" in text and "`<хеш> *<путь>`" in text
     assert "cd <каталог изменения> && find specs -name '*.md'" in text
-    files = block(text, "## Файлы и команды", "\n## Порядок атаки")
+    files = block(text, "### 1. Войди", "\n### 2.")
     for token in ("относительно каталога изменения", "`specs/<cap>/spec.md`", "`openspec/changes/<имя>/`",
                   "`stale`"):
         assert token in files, f"в «Файлы и команды» нет правила пути цели: «{token}»"
@@ -687,13 +694,15 @@ def brainstorm():
 def test_brainstorm_reads_intent_first():
     """(а) Круг 1 начинается с `intent.md`: каждый критерий — факт `addressee: постановка` с дословной цитатой
     и путём от корня проекта; факты постановки — первые записи; `intent.md` не правится."""
-    step = block(brainstorm(), "### 1.", "### 2.")
-    for token in ("Первым — `intent.md`", "Каждый критерий готовности", "`addressee: постановка`",
+    text = brainstorm()
+    step = block(text, "### 1.", "### 2.")
+    for token in ("Первым — `<каталог изменения>/intent.md`", "Каждый критерий готовности", "`addressee: постановка`",
                   "дословно", "`openspec/changes/<имя>/intent.md`", "первые записи журнала",
-                  "`intent.md` не правится", "живёт записями журнала"):
+                  "`intent.md` не правится"):
         assert token in step, f"в шаге 1 нет «{token}»"
-    assert step.index("`intent.md`") < step.index("Затем — запрос"), "материалы читаются после intent.md"
-    assert "не правит `intent.md`" in block(brainstorm(), "## Чего скилл не делает", "\n## ")
+    assert "живёт записями журнала" in block(text, "## Инварианты", "\n## ")
+    assert text.index("### 1. Прочитай намерение") < text.index("### 3. Прочитай материалы"), "материалы читаются после intent.md"
+    assert "дальше файл не правится" in block(text, "## Границы", "\n## ")
 
 
 def test_brainstorm_fills_an_empty_intent_first():
@@ -701,11 +710,10 @@ def test_brainstorm_fills_an_empty_intent_first():
     пустой `intent.md` (0 байт или одна строка заголовка) — сначала намерение дословно по шаблону, затем круг."""
     step = " ".join(block(brainstorm(), "### 1.", "### 2.").split())
     for token in ("**`intent.md` пуст** (0 байт или одна строка заголовка)", "по существованию файла",
-                  "сначала спроси намерение и сохрани ответ дословно по шаблону `intent.md`", "затем круг",
-                  "(F-24.E)"):
+                  "сначала спроси намерение и сохрани ответ дословно по шаблону `intent.md`", "затем круг"):
         assert token in step, f"в шаге 1 нет «{token}»"
     assert step.index("`intent.md` пуст") < step.index("Критериев ноль")
-    assert "пустой файл заполняется ответом человека дословно" in block(brainstorm(), "## Чего скилл не делает", "\n## ")
+    assert "пустой файл заполняется его ответом дословно" in block(brainstorm(), "## Границы", "\n## ")
 
 
 def test_brainstorm_asks_for_criteria_when_there_are_none():
@@ -729,7 +737,7 @@ def test_brainstorm_second_round_does_not_duplicate_setting_facts():
 def test_brainstorm_marks_a_deviation_from_the_setting():
     """(г) F-08.A, F-28.E, F-55.E: вариант против сценария факта постановки несёт поле `deviation: F-NN` —
     пометка у варианта, не у записи; уточнение без противоречия — без поля; пометка не замок."""
-    rule = block(brainstorm(), "**Отступление от постановки**", "\n\n")
+    rule = block(brainstorm(), "#### Отступление от постановки", "\n#### ")
     for token in ("`options[].deviation: F-NN`", "противоречит сценарию факта", "`addressee: постановка`",
                   "у варианта, не у записи", "Уточнение без противоречия", "без поля", "видимость, не замок",
                   "Решает человек", "выбранный вариант", "«Отступления от постановки»"):
@@ -739,8 +747,8 @@ def test_brainstorm_marks_a_deviation_from_the_setting():
 def test_brainstorm_turns_a_prescription_into_a_fork():
     """(д) F-09.A: находка, из которой напрашивается конструкция, — факт-наблюдение и развилка с вариантами
     и рекомендацией; предписания в `consequences` факта нет."""
-    rule = block(brainstorm(), "**Правило предписания**", "\n\n")
-    for token in ("«по образцу X»", "«требует новой …»", "фактом-наблюдением", "развилкой с вариантами",
+    rule = block(brainstorm(), "**Находка с конструкцией — развилка, не предписание.**", "\n<!--")
+    for token in ("«по образцу X»", "«требует новой …»", "факт-наблюдение", "развилку с вариантами",
                   "образец X", "иной путь", "маловероятные с причиной", "рекомендацией",
                   "не предписание в `consequences`"):
         assert token in rule, f"в правиле предписания нет «{token}»"
@@ -751,7 +759,7 @@ def test_brainstorm_names_the_keep_as_is_option_by_the_render_prefix():
     `render-design` ставит пометку «конструкция не меняется»."""
     import journal_render
     text = flat(brainstorm())
-    for token in ("«Оставить как есть»", "`UNCHANGED_PREFIXES`", "«конструкция не меняется»"):
+    for token in ("«Оставить как есть»", "«конструкция не меняется»"):
         assert token in text, f"в SKILL.md нет «{token}»"
     assert "оставить как есть" in journal_render.UNCHANGED_PREFIXES
     assert journal_render._is_unchanged("Оставить как есть: цена выше пользы")
@@ -759,9 +767,10 @@ def test_brainstorm_names_the_keep_as_is_option_by_the_render_prefix():
 
 def test_brainstorm_word_to_a_choice_is_optional():
     """(ж) F-55.E: слово к выбору необязательно — строка `- F-NN: X — (без слова)` законна."""
-    step = block(brainstorm(), "### 6.", "### 7.")
-    for token in ("Слово к выбору необязательно", "`- F-NN: X — (без слова)`", "объяснения выбора"):
-        assert token in step, f"в шаге 6 нет «{token}»"
+    viewer = block(read(VIEWER / "SKILL.md"), "### 5.", "### 6.")
+    for token in ("`- F-NN: X — (без слова)` законна", "просит слово"):
+        assert token in viewer, f"в шаге 5 просмотрщика нет «{token}»"
+    assert "скилл `symphysis-viewer`" in block(brainstorm(), "### 8.", "### 9."), "брейншторм называет хозяина круга"
 
 
 def test_second_round_lives_at_the_end_of_research():
@@ -859,7 +868,7 @@ def test_brainstorm_asks_for_criteria_only_while_there_are_no_setting_facts():
 
 def test_brainstorm_creates_the_scheme_on_the_first_round():
     """Сценарии «Сценарий есть», «Сценария нет», «Файл уже есть», «Повтор после обрыва», «Файл появился перед записью»."""
-    step = block(brainstorm(), "### 1.", "### 2.")
+    step = block(brainstorm(), "### 2.", "### 3.")
     for token in ("`<каталог изменения>/scheme.md`", "первом круге", "Файла нет, сценарий в `intent.md` есть", "Файла нет и сценария нет",
                   "предложи своё видение", "Файл есть", "не меняй его и дай на него ссылку", "не различаются",
                   "Перед записью проверь ещё раз", "не перезаписывай", "покажи свой вариант в чате"):
@@ -868,25 +877,25 @@ def test_brainstorm_creates_the_scheme_on_the_first_round():
 
 def test_brainstorm_changes_the_scheme_only_by_the_word():
     """Сценарии «Новый круг с новыми решениями» и «Человек попросил правку», F-22."""
-    step = block(brainstorm(), "### 1.", "### 2.")
+    step = block(brainstorm(), "### 2.", "### 3.")
     for token in ("только по слову человека", "Просит поправить", "правишь файл и даёшь ссылку"):
-        assert token in step, f"в шаге 1 нет «{token}»"
-    assert "`nodes`" in block(brainstorm(), "### 4.", "### 5."), "модель ставит `nodes` при записи"
+        assert token in step, f"в шаге 2 нет «{token}»"
+    assert "`nodes`" in block(brainstorm(), "### 6.", "### 7."), "модель ставит `nodes` при записи"
 
 
 def test_brainstorm_does_not_supervise_the_scheme():
     """Запрет F-102: при закрытии круга о схеме не спрашивает и утверждения не ждёт."""
-    closing = block(brainstorm(), "### 8.", "## Чего скилл не делает")
+    closing = block(brainstorm(), "### 10.", "## Коды и сигналы")
     assert "scheme.md" not in closing and "схем" not in closing
-    assert "При закрытии круга о схеме не спрашивай и утверждения файла не жди" in block(brainstorm(), "### 1.", "### 2.")
-    assert "не надзирает за схемой" in block(brainstorm(), "## Чего скилл не делает", "## Приёмка")
+    assert "При закрытии круга о схеме не спрашивай и утверждения файла не жди" in block(brainstorm(), "### 2.", "### 3.")
+    assert "не надзирает за схемой" in block(brainstorm(), "## Границы", "## Приёмка")
 
 
 def test_brainstorm_has_no_ceiling_of_rounds():
     """F-44: потолка нет, конец — отказ человека или круг без нового; при парковках спрашивает `research` (F-95)."""
     text = brainstorm()
     assert "два круга" not in text and "N = 2" not in text and "третьего круга нет" not in text
-    closing = block(text, "### 8.", "## Чего скилл не делает")
+    closing = block(text, "### 10.", "## Коды и сигналы")
     assert "K = 0 и M = 0" in closing and "только если и D = 0" in closing
     assert closing.index("P > 0") < closing.index("K = 0 и M = 0"), "парковки проверяются раньше конца брейншторма"
     assert "Начать новый круг?" in closing
@@ -894,33 +903,33 @@ def test_brainstorm_has_no_ceiling_of_rounds():
 
 def test_brainstorm_round_after_the_end_line():
     """F-96: строка о конце брейншторма новому кругу не мешает."""
-    closing = block(brainstorm(), "### 8.", "## Чего скилл не делает")
+    closing = block(brainstorm(), "### 10.", "## Коды и сигналы")
     assert "Строка о конце брейншторма новому кругу не мешает" in closing
     assert "прежняя строка остаётся" in closing
 
 
 def test_brainstorm_reconciles_antipodes_before_showing_and_after_choice():
     """Сценарии «Пара до показа», «Вариант отвергнут раньше», «Вариант человека», «Антиподов нет», «Пара уже заведена»; F-50, F-51."""
-    step = block(brainstorm(), "### 6.", "### 7.")
+    step = block(brainstorm(), "### 8.", "### 9.")
     for token in ("До показа", "новые варианты между собой и с уже выбранными", "отвергнутые не смотри", "у обоих вариантов",
-                  "После выбора", "выбранные за круг между собой и с прежними решениями", "Находка — новая развилка",
+                  "После выбора", "выбранные за круг решения между собой и с прежними решениями", "Находка — новая развилка",
                   "уже заведена", "новой записи не даёт", "в этом же контексте", "субагента для неё не заводи"):
-        assert token in step, f"в шаге 6 нет «{token}»"
-    closing = block(brainstorm(), "### 8.", "## Чего скилл не делает")
+        assert token in step, f"в шаге 8 нет «{token}»"
+    closing = block(brainstorm(), "### 10.", "## Коды и сигналы")
     assert "антиподов A" in closing and "ноль значит «смотрел, таких нет»" in closing
 
 
 def test_brainstorm_reconciling_does_not_decide_for_the_human():
     """Запрет F-110: судят атака и человек; в тексте скилла запрет назван."""
-    step = block(brainstorm(), "### 6.", "### 7.")
+    step = block(brainstorm(), "### 8.", "### 9.")
     assert "Тексты вариантов, рекомендации и `decision` прежних записей сверка не меняет" in step
 
 
 def test_attack_both_antipodes_is_a_warning_and_missing_nodes_is_not_a_finding():
     """F-56: оговорка в линзе, как у `deviation`; F-114: отсутствие `nodes` не находка."""
     text = read(SKILLS / "symphysis-attack" / "SKILL.md")
-    assert "оба антипода решены — `предупреждение (оба антипода выбраны, F-56)`" in text
-    assert "отсутствие поля `nodes` у записи" in block(text, "Не репортится", "### 4.")
+    assert "оба антипода выбраны — `предупреждение (оба антипода выбраны)`" in text
+    assert "отсутствие поля `nodes` у записи" in block(text, "Не репортится", "### 5.")
 
 
 def test_viewer_skill_names_the_fallback_of_the_scheme_panel():
