@@ -19,7 +19,7 @@ from pathlib import Path
 sys.dont_write_bytecode = True  # как у соседних скриптов: `__pycache__` в проекте от инструментов не появляется (F-50)
 from journal_apply import UNUSABLE_ROOTS, default_roots  # noqa: E402
 from journal_model import PROBE_OUTCOMES, validate_journal  # noqa: E402
-from openspec_run import ForkError, check_change_name, no_paths, run_fork  # noqa: E402
+from openspec_run import ForkError, check_change_name, find_on_path, no_paths, run_fork  # noqa: E402
 
 # --- реестр артефактов (F-53, F-119, F-136) -----------------------------------
 # Вложенный словарь, yaml-like: на каждый артефакт `openspec/schemas/symphysis/schema.yaml` строка, что граф из него берёт.
@@ -302,7 +302,7 @@ def parse_spec(source: str | Path) -> SpecParse:
     `REMOVED` в порядке файла (имя, номер строки заголовка, текст, сценарии с именем, строкой и текстом) и пары
     переименований секции `RENAMED`. Текст без секций дельты даёт пустой разбор. Правила — как у OpenSpec (см. выше)."""
     text = Path(source).read_bytes().decode("utf-8") if isinstance(source, Path) else source
-    lines = re.sub(r"\r\n?", "\n", text.removeprefix("﻿")).split("\n")
+    lines = re.sub(r"\r\n?", "\n", text.removeprefix("\ufeff")).split("\n")
     mask = _fence_mask(lines)
     heads = [(i, m.group(1).strip()) for i, line in enumerate(lines)
              if not mask[i] and (m := _SECTION_HEADER.match(line))]
@@ -371,7 +371,7 @@ def _read_text(base: Path, rel: str) -> str:
 
 def _plain_lines(text: str) -> list[tuple[int, str]]:
     """Строки файла вне блоков кода как `(номер с 1, текст)`; BOM и CRLF не мешают счёту."""
-    lines = re.sub(r"\r\n?", "\n", text.removeprefix("﻿")).split("\n")
+    lines = re.sub(r"\r\n?", "\n", text.removeprefix("\ufeff")).split("\n")
     mask = _fence_mask(lines)
     return [(i + 1, line) for i, line in enumerate(lines) if not mask[i]]
 
@@ -403,7 +403,7 @@ def _read_records(base: Path, claims: list[dict]) -> list[dict]:
 
 
 def _spec_lines(text: str) -> list[str]:
-    return re.sub(r"\r\n?", "\n", text.removeprefix("﻿")).split("\n")
+    return re.sub(r"\r\n?", "\n", text.removeprefix("\ufeff")).split("\n")
 
 
 def _requirement_body(lines: list[str], mask: list[bool], heading: int) -> list[tuple[int, str]]:
@@ -862,7 +862,7 @@ def parked_records(base: Path) -> set[str]:
 def record_candidates(edges: list[dict], parked: set[str] = frozenset()) -> list[dict]:
     """Кандидаты связей между требованиями (F-23, F-71): два требования с `traces` к одной записи журнала. Запись из `parked`
     (статус `припаркован`) кандидатов не даёт, её связь `traces` остаётся (F-157): парковка — другой механизм. Кандидат —
-    `{"a", "b", "source", "shared"}`: пара неупорядоченная (`a` < `b`), встречает один раз, `shared` — общие записи по порядку,
+    `{"a", "b", "source", "shared"}`: пара неупорядоченная (`a` < `b`), встречается один раз, `shared` — общие записи по порядку,
     `source` называет способ вычисления; новый источник добавляет свои кандидаты с другим `source`, записанных связей не трогая.
     Порядок — по `(a, b)`."""
     by_record: dict[str, set[str]] = {}
@@ -1229,7 +1229,9 @@ def validate_findings(root: Path, change: str) -> list[str]:
     """Строки раздела «Находки openspec validate»: `openspec validate <имя> --json` через общий `run_fork`. Код 1 с JSON, где
     есть `items`, — находки, а не сбой (`validate.ts`: `exitCode = valid ? 0 : 1`). Ответ без `items` (`unknown_item`), не
     JSON, код не из 0 и 1, форк не найден или не ответил за предел — одна строка «validate не запустился» с причиной без
-    абсолютных путей (F-93). Не печатает; имя изменения проверяет `run_fork`."""
+    абсолютных путей (F-93). Не печатает; имя проверяет `check_change_name` первой строкой (`run_fork` проверяет только
+    `change=`, а здесь имя идёт позиционным аргументом): негодное — `ForkError`, форк не вызван."""
+    check_change_name(change)
     try:
         reply = run_fork(root, "validate", change, *VALIDATE_ARGS)
     except ForkError as e:
@@ -1569,11 +1571,14 @@ class FreezeResult:
 
 def root_commit(folder: Path) -> str:
     """Коммит HEAD каталога `folder` или `""`: каталога нет, он не корень git-дерева (лежит внутри чужого клона, F-101), коммитов нет,
-    `git` не найден или не ответил. `git` зовётся списком аргументов, без оболочки (F-59); читает только HEAD."""
+    `git` не найден или не ответил. `git` зовётся списком аргументов, без оболочки, по абсолютному пути из `PATH` (F-59); читает только HEAD."""
     if not folder.is_dir():
         return ""
+    git = find_on_path("git")  # абсолютный путь: голое имя Windows ищет в текущем каталоге раньше `PATH`
+    if not git:
+        return ""
     try:
-        done = subprocess.run(["git", "-C", str(folder), "rev-parse", "--show-toplevel", "HEAD"], capture_output=True,
+        done = subprocess.run([git, "-C", str(folder), "rev-parse", "--show-toplevel", "HEAD"], capture_output=True,
                               text=True, encoding="utf-8", stdin=subprocess.DEVNULL, timeout=GIT_TIMEOUT)
         lines = done.stdout.splitlines()
         if done.returncode != 0 or len(lines) != 2 or not os.path.samefile(lines[0], folder):

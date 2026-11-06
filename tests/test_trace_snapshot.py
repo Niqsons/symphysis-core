@@ -204,7 +204,7 @@ def test_roots_git_is_called_with_an_argument_list_and_no_shell(tmp_path, fork, 
 
     monkeypatch.setattr(trace_graph.subprocess, "run", spy)
     freeze(root, roots)
-    git_calls = [c for c in calls if isinstance(c[0][0], list) and c[0][0][0] == "git"]
+    git_calls = [c for c in calls if isinstance(c[0][0], list) and "rev-parse" in c[0][0]]
     assert len(git_calls) == 2
     assert all("shell" not in kwargs for _, kwargs in calls)
     assert all(isinstance(args[0], list) for args, _ in calls)
@@ -736,3 +736,35 @@ def test_base_text_equal_but_scenario_new_report_without_snapshot(tmp_path, fork
     root, base = modified_project(tmp_path, spec_text=TEXT_EQUAL_NEW_SCENARIO)
     assert (ONE, "rec:F-07", "traces") not in view(root)[0]
     assert "без базы" not in trace_graph.build_report(root, CHANGE)
+
+
+def test_roots_git_is_called_by_absolute_path(tmp_path, fork, monkeypatch):
+    """`trace-snapshot`: «Два корня» — `git` берётся из `PATH` абсолютным путём, а не из каталога процесса (Windows ищет голое имя там раньше `PATH`)."""
+    root, base, roots, _ = frozen_project(tmp_path)
+    calls = []
+    real = subprocess.run
+
+    def spy(*args, **kwargs):
+        calls.append(args[0])
+        return real(*args, **kwargs)
+
+    monkeypatch.setattr(trace_graph.subprocess, "run", spy)
+    freeze(root, roots)
+    git_calls = [argv for argv in calls if "rev-parse" in argv]
+    assert len(git_calls) == 2 and all(os.path.isabs(argv[0]) for argv in git_calls)
+
+
+def test_root_commit_without_git_on_path_is_empty(tmp_path, monkeypatch):
+    """`trace-snapshot`: «Корень вне git или без каталога» — `git` на `PATH` не найден: коммит пуст, процесс не запускается."""
+    monkeypatch.setattr(trace_graph, "find_on_path", lambda name: None)
+    assert trace_graph.root_commit(tmp_path) == ""
+
+
+def test_validate_findings_refuses_bad_name_before_fork(tmp_path, monkeypatch):
+    """`trace-signals`: «Имя изменения с символами оболочки» — недопустимое имя в `validate_findings` получает отказ, форк не зовётся."""
+    called = []
+    monkeypatch.setattr(trace_graph, "run_fork", lambda *a, **k: called.append(a))
+    with pytest.raises(trace_graph.ForkError):
+        trace_graph.validate_findings(tmp_path, "a&echo.>file")
+    assert called == []
+

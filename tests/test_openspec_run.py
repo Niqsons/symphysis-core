@@ -134,3 +134,9 @@ def test_hung_fork_is_taken_down_with_its_tree(tmp_path, monkeypatch):
     assert time.monotonic() - started < 20
     hung = [call for call in fork_calls(tmp_path / "bin") if call["argv"][0] == "status"]
     assert len(hung) == 1 and not process_alive(hung[0]["pid"])
+
+
+def test_no_paths_keeps_the_closing_backtick(tmp_path):
+    """Сценарий «Абсолютные пути в выводе форка»: путь в обратных апострофах снимается, закрывающий апостроф остаётся."""
+    got = openspec_run.no_paths(r"Рабочее дерево `X:\a`, ветка и `/srv/x/y` тут", tmp_path)
+    assert got == "Рабочее дерево `<путь>`, ветка и `<путь>` тут"

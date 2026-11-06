@@ -19,7 +19,7 @@ from typing import NamedTuple
 
 sys.dont_write_bytecode = True  # как у скриптов, что его зовут: `__pycache__` в проекте от инструментов не появляется (F-50)
 
-__all__ = ["ForkError", "ForkReply", "FORK_TIMEOUT", "SAFE_NAME", "ABSOLUTE_PATH", "check_change_name", "run_fork", "no_paths"]
+__all__ = ["ForkError", "ForkReply", "FORK_TIMEOUT", "SAFE_NAME", "ABSOLUTE_PATH", "check_change_name", "run_fork", "no_paths", "find_on_path"]
 
 FORK_TIMEOUT = 15  # секунд на вызов форка (F-43); плагин ждёт Python 30 с
 KILL_TIMEOUT = 5   # секунд на `taskkill`
@@ -35,7 +35,7 @@ SHIM_UNSAFE = re.compile(r'[&|<>^%"]')
 
 # Абсолютный путь в тексте форка: диск, UNC или корень POSIX. Пробелы тут не ловятся, поэтому известные каталоги
 # снимаются раньше, по значению (`no_paths`).
-ABSOLUTE_PATH = re.compile(r"""[A-Za-z]:[\\/][^\s"'«»,;]*|\\\\[^\s"'«»,;]+|(?<![\w.~:/>-])/[^\s"'«»,;:/]+/[^\s"'«»,;:]*""")
+ABSOLUTE_PATH = re.compile(r"""[A-Za-z]:[\\/][^\s"'`«»,;]*|\\\\[^\s"'`«»,;]+|(?<![\w.~:/>-])/[^\s"'`«»,;:/]+/[^\s"'`«»,;:]*""")
 
 
 class ForkError(Exception):
@@ -51,8 +51,8 @@ class ForkReply(NamedTuple):
 
 # --- вызов форка -------------------------------------------------------------
 
-def _find_on_path(name: str) -> str | None:
-    """Первый `openspec` из PATH: на Windows по PATHEXT, как `findOnPath` инсталлятора, чтобы найти `.cmd`-шим."""
+def find_on_path(name: str) -> str | None:
+    """Первый `name` из PATH: на Windows по PATHEXT, как `findOnPath` инсталлятора, чтобы найти `.cmd`-шим."""
     if os.name != "nt":
         return shutil.which(name)
     exts = [ext for ext in os.environ.get("PATHEXT", ".COM;.EXE;.BAT;.CMD").split(";") if ext]
@@ -74,7 +74,7 @@ def _fork_command() -> list[str]:
             raise ForkError("openspec не найден: файла из SYMPHYSIS_OPENSPEC нет. Поправь переменную или убери её, "
                             "тогда форк возьмётся из PATH.")
     else:
-        file = _find_on_path("openspec")
+        file = find_on_path("openspec")
         if not file:
             raise ForkError("openspec не найден: нет ни в SYMPHYSIS_OPENSPEC, ни в PATH. Поставь форк по docs/GUIDE.md "
                             "или задай SYMPHYSIS_OPENSPEC.")
@@ -85,7 +85,7 @@ def _fork_command() -> list[str]:
     if file.lower().endswith(".js"):
         # `node` берётся из PATH без каталога вызова: `shutil.which` и голое имя в `CreateProcess` смотрят в `cwd`, то есть
         # в корень чужого проекта. Нет node: обычный сбой запуска (F-56).
-        node = _find_on_path("node")
+        node = find_on_path("node")
         if not node:
             raise FileNotFoundError(errno.ENOENT, "node не найден в PATH")  # `run_fork` назовёт это как любой незапуск
         return [node, file]
