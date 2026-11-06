@@ -168,3 +168,11 @@
 - trace-graph/Граф собирается из файлов изменения · precision · неприменимо: формы io, collection; precision только для numeric-range
 - trace-graph/Граф собирается из файлов изменения · idempotency · неприменимо: формы io, collection; idempotency только для stateful
 - trace-graph/Граф собирается из файлов изменения · concurrency · не найдено: граф строится из файлов на чтение, напрямую его не правит никто; правка этого изменения — только имя пути (F-26)
+- project-installer/`check`, запущенный из клона, сигналит устаревший `payload` · boundary · неприменимо: формы io, collection; boundary только для numeric-range
+- project-installer/`check`, запущенный из клона, сигналит устаревший `payload` · adjacency · не найдено: payload и исходники, отличные только концами строк, — payload собирается из того же рабочего дерева, байты совпадают
+- project-installer/`check`, запущенный из клона, сигналит устаревший `payload` · empty · не выбран: клон без каталога `skills/` в модульной раскладке; край решён записью описи F-60 (Specify), ответ человека уже дан
+- project-installer/`check`, запущенный из клона, сигналит устаревший `payload` · encoding · неприменимо: формы io, collection; encoding только для text
+- project-installer/`check`, запущенный из клона, сигналит устаревший `payload` · ordering · не найдено: порядок файлов на сверку payload с исходниками не влияет
+- project-installer/`check`, запущенный из клона, сигналит устаревший `payload` · precision · неприменимо: формы io, collection; precision только для numeric-range
+- project-installer/`check`, запущенный из клона, сигналит устаревший `payload` · idempotency · неприменимо: формы io, collection; idempotency только для stateful
+- project-installer/`check`, запущенный из клона, сигналит устаревший `payload` · concurrency · не найдено: `check` только читает payload и исходники

@@ -3400,6 +3400,413 @@
     }
    ],
    "comments": []
+  },
+  {
+   "id": "F-60",
+   "question": "[ветка] Признак клона в инсталляторе: `hasSources` ищет каталог `skills/`, которого после переноса скиллов в модули (F-18) не будет, — `check` и `install` считают клон тарболом, и сигнал «payload старее исходников» пропадает молча?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-18",
+    "F-36"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN клон в модульной раскладке без каталога `skills/` и прежний `installer/payload` WHEN из клона выполняется `symphysis check` THEN stdout несёт `[!!] payload старее исходников`, код 2; цена: сценарий под требованием «`check`, запущенный из клона, сигналит устаревший `payload`», тест на клоне новой раскладки, правка признака клона при каждой перестройке",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — признак клона не покрывается; допустимо, если перестройка правит `hasSources` вместе с переносом скиллов, а тесты инсталлятора на клоне это ловят",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест собирает дерево клона в модульной раскладке и утверждает, что `hasSources` возвращает истину; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — признак клона остаётся открытым до задачи перестройки инсталлятора; пока tasks считает, что он правится вместе с переносом скиллов",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Без признака клона клон выглядит тарболом, сценарий «Инсталлятор не из клона» делает молчание законным, и предупреждение о старом payload пропадает незаметно; против C — исход наблюдаем командой `check`, сценарий короче теста без строки; цена — сценарий и тест."
+   },
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-06"
+   },
+   "reversibility": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Specify",
+    "reason": ""
+   },
+   "parking": [],
+   "dispute": "",
+   "consequences": "в spec.md: Клон в модульной раскладке",
+   "evidence": [
+    {
+     "path": "installer/scripts/sync-payload.js",
+     "quote": "return fs.existsSync(path.join(root, \"skills\")) && FILES.every((rel) => fs.existsSync(path.join(root, rel)));"
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-61",
+   "question": "[ветка] Признак ядра в тестах плагина: `hasCore` ищет `tools/journal.py` соседнего клона — после перестройки без `SYMPHYSIS_ROOT` тесты на настоящем ядре пропускаются, а прогон зелёный?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-26",
+    "F-29"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN `SYMPHYSIS_ROOT` не задан, соседний клон ядра в модульной раскладке WHEN в плагине выполняется `npm test` THEN тесты на настоящем ядре запускаются, а не пропускаются; цена: сценарий под требованием `plugin-core-contract`, тест, правка признака ядра при перестройке ядра",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — пропуск не покрывается; допустимо, если `npm test` плагина всегда запускают с заданным `SYMPHYSIS_ROOT`",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест утверждает, что при соседнем клоне ядра новой раскладки `hasCore` истинен; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — признак ядра остаётся открытым до задачи правки тестов плагина, копирующих ядро (F-09)",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Пропуск без переменной выглядит как «ядра нет на этой машине»: прогон зелёный, а плагин не проверен на ядре — тихая порча; цена — сценарий и тест."
+   },
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-06"
+   },
+   "reversibility": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Specify",
+    "reason": ""
+   },
+   "parking": [],
+   "dispute": "",
+   "consequences": "в spec.md: Соседний клон в модульной раскладке",
+   "evidence": [
+    {
+     "path": "vscode/test/unit/fixture-project.ts",
+     "quote": "export const hasCore = fs.existsSync(path.join(SYMPHYSIS, \"tools\", \"journal.py\"));"
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-62",
+   "question": "[ветка] Сборка юнит-тестов плагина: `build.mjs` берёт тесты только из `test/unit/` — юнит-тесты, перенесённые в каталоги модулей по F-23, не собираются и не запускаются, а `npm test` зелёный?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-23",
+    "F-31"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN юнит-тест модуля плагина лежит в каталоге модуля в `src/` WHEN выполняется `npm test` THEN тест собран и запущен; цена: сценарий под требованием «Тесты модуля лежат в его каталоге», правка `buildUnits`, тест",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — сбор тестов не покрывается; допустимо, если после переноса число тестов прогона сверяют глазами",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест утверждает, что число собранных файлов тестов равно числу файлов `*.test.ts` в `src/` и `test/unit/`; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — сбор тестов остаётся открытым до задачи переноса тестов плагина в модули",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Тесты, которые не собраны, не падают: прогон зелёный на меньшем числе тестов, и этого никто не видит — тихая порча; цена — сценарий и правка сборки."
+   },
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-06"
+   },
+   "reversibility": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Specify",
+    "reason": ""
+   },
+   "parking": [],
+   "dispute": "",
+   "consequences": "в spec.md: Юнит-тест модуля плагина собирается",
+   "evidence": [
+    {
+     "path": "vscode/build.mjs",
+     "quote": "const units = fs.readdirSync(\"test/unit\").filter((f) => /\\.test\\.tsx?$/.test(f)).map((f) => path.join(\"test/unit\", f));"
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-63",
+   "question": "[ветка] Поиск скилла справкой: скилл не найден ни в проекте, ни в каталоге установки — `path: null`; при настройке плагина на клон ядра скиллы в каталогах модулей (F-42) не находятся, и ссылка на скилл пропадает?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-42"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN `--install-dir` указывает на клон ядра, скилл лежит в каталоге своего модуля WHEN выполняется `step_help.py` THEN у скилла `path` от клона и `base: install`; цена: сценарий под требованием «У шага есть поле `skills`» (MODIFIED), тест",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — ненайденный скилл не покрывается: плагин и так показывает его имя текстом, порчи нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест подаёт клон с `SKILL.md` в каталоге модуля и утверждает, что `path` найден; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — поиск скиллов клона остаётся открытым до задачи переноса скиллов в модули",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "C",
+    "why": "Поведение уже решено F-42 A, а требование «У шага есть поле `skills`» о клоне не говорит; тест держит решение без правки требования, а потерю ссылки человек видит сразу — текст вместо ссылки."
+   },
+   "decision": {
+    "option": "C",
+    "word": "",
+    "date": "2026-11-06"
+   },
+   "reversibility": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Backstop",
+    "reason": ""
+   },
+   "parking": [],
+   "dispute": "",
+   "consequences": "тест-страховка: подаёт клон ядра с `SKILL.md` в каталоге модуля как `--install-dir` и утверждает, что у скилла `path` найден, `base: install`",
+   "evidence": [
+    {
+     "path": "tools/step_help.py",
+     "quote": "return {\"name\": name, \"path\": None, \"base\": None}"
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-64",
+   "question": "[ветка] Проверка payload в `install`: отказ «payload не найден» срабатывает только без каталога `skills` — payload без `openspec/config.symphysis.yaml` после переноса файла в каталог схемы (F-37) падает на чтении, когда схема уже скопирована в проект?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-37"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN payload без `openspec/config.symphysis.yaml` WHEN выполняется `symphysis install` THEN отказ с именем файла до первой записи в проект; цена: сценарий, проверка состава payload до копирования, тест",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — неполный payload не покрывается: тест состава payload называет файл, и сборка без него красная до выпуска, пользователь такой payload не получит",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест ставит проект из payload без файла и утверждает, что проект не тронут; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — проверка состава payload остаётся открытой до задачи переноса `config.symphysis.yaml`",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "B",
+    "why": "Неполный payload ловит тест его состава (`installer/test/payload.test.js` называет файл) до выпуска; ошибка чтения при установке громкая, а не тихая."
+   },
+   "decision": {
+    "option": "B",
+    "word": "",
+    "date": "2026-11-06"
+   },
+   "reversibility": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Dismiss",
+    "reason": ""
+   },
+   "parking": [],
+   "dispute": "",
+   "consequences": "Неполный payload ловит тест его состава (`installer/test/payload.test.js` называет файл) до выпуска; ошибка чтения при установке громкая, а не тихая.",
+   "evidence": [
+    {
+     "path": "installer/lib/install.js",
+     "quote": "if (!fs.existsSync(path.join(payloadDir, \"skills\"))) {"
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-65",
+   "question": "[pre-mortem] Установка без файла, рождённого разрезом: payload собирается списком `FILES`, а исходник ядра запускается с каталогами модулей в `sys.path` (F-20) — новый файл модуля, не вписанный в список, проходит тесты ядра и падает на импорте только в `.symphysis/tools/` проекта пользователя?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-19",
+    "F-20",
+    "F-27"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN модуль ядра с новым файлом кода, который импортирует точка входа, WHEN выполняется `symphysis install` и вызов этой точки входа из `.symphysis/tools/` THEN код 0; цена: сценарий под требованием «`install` ставит схему, скиллы и инструменты в проект и сливает конфиг» (MODIFIED длинного требования), тест на установленной копии",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — разрез не покрывается; допустимо, если каждый новый файл кода вписывают в `FILES` руками и ревью это видит",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест ставит ядро во временный проект и зовёт `--help` каждой точки входа из `.symphysis/tools/`; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — страховка остаётся открытой до задачи разрезки `journal_render.py` и `journal_apply.py`",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "C",
+    "why": "Порча тихая: тесты ядра идут из исходника и зелёные, а падает установленная копия у пользователя. Против A — поведение установки уже сказано требованием, а его MODIFIED тянет деление длинного текста; не хватает страховки на разрез, и тест на установленной копии ловит её без правки требования."
+   },
+   "decision": {
+    "option": "C",
+    "word": "",
+    "date": "2026-11-06"
+   },
+   "reversibility": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Backstop",
+    "reason": ""
+   },
+   "parking": [],
+   "dispute": "",
+   "consequences": "тест-страховка: ставит ядро во временный проект и зовёт `--help` каждой точки входа из `.symphysis/tools/`, утверждая код 0",
+   "evidence": [
+    {
+     "path": "installer/scripts/sync-payload.js",
+     "quote": "\"tools/journal_render.py\","
+    }
+   ],
+   "comments": []
   }
  ],
  "notes": [
@@ -3422,6 +3829,14 @@
   {
    "date": "2026-11-06",
    "text": "проба запретов: требований 21, оставлено 4, канон → ИБ 1, Specify 4, Dismiss 0, Defer 0"
+  },
+  {
+   "date": "2026-11-06",
+   "text": "проба краёв дополнена: требование `project-installer` «`check`, запущенный из клона, сигналит устаревший `payload`» вошло в счёт как MODIFIED по F-60; кандидатов 0, не выбран 1: project-installer/`check`, запущенный из клона, сигналит устаревший `payload`"
+  },
+  {
+   "date": "2026-11-06",
+   "text": "проба запретов дополнена: требование `project-installer` «`check`, запущенный из клона, сигналит устаревший `payload`»; оставлено 0, канон → ИБ 0"
   }
  ]
 }

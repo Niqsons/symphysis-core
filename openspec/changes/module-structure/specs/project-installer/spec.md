@@ -1,5 +1,28 @@
 # Spec Delta
 
+## MODIFIED Requirements
+
+### Requirement: `check`, запущенный из клона, сигналит устаревший `payload`
+Команда `symphysis check`, запущенная из клона репозитория, SHALL сравнивать `payload` инсталлятора с исходниками и при расхождении SHALL давать `[!!]` и код 2: иначе после `git pull` установка молча кладёт старую версию (F-114.A).
+
+#### Scenario: `payload` старее исходников
+- **GIVEN** клон после `git pull` с новыми исходниками и прежний `installer/payload`
+- **WHEN** выполняется `node installer/bin/symphysis.js check --project <каталог>`
+- **THEN** stdout несёт `[!!] payload старее исходников — выполнить: npm --prefix installer ci`, код 2
+
+#### Scenario: Инсталлятор не из клона
+- **GIVEN** инсталлятор из тарбола, исходников рядом с ним нет
+- **WHEN** выполняется `symphysis check --project <каталог>`
+- **THEN** этой сверки нет, строки о `payload` нет
+
+#### Scenario: Клон в модульной раскладке
+<!-- F-60 -->
+- **GIVEN** клон в модульной раскладке без каталога `skills/` и прежний `installer/payload`
+- **WHEN** из клона выполняется `symphysis check --project <каталог>`
+- **THEN** stdout несёт `[!!] payload старее исходников — выполнить: npm --prefix installer ci`, код 2
+<!-- проба краёв: форма=io, collection, исходы: F-60 Specify -->
+<!-- проба запретов: исходы: нет -->
+
 ## ADDED Requirements
 
 ### Requirement: README модуля схемы в проект не ставится
