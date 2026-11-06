@@ -529,7 +529,7 @@ python reminders.py overdue
 | --- | --- |
 | `python .symphysis/tools/trace_graph.py build add-overdue` | граф в JSON в stdout: узлы, связи, кандидаты связей между требованиями (запись со статусом `припаркован` кандидатов не даёт, связь `traces` к ней остаётся) |
 | `python .symphysis/tools/trace_graph.py build add-overdue --out graph.json` | тот же граф в файле; каталоги пути создаются, файлы изменения не меняются |
-| `python .symphysis/tools/trace_graph.py build add-overdue --format mermaid` | текст `requirementDiagram` для Mermaid, предел 50 000 знаков |
+| `python .symphysis/tools/trace_graph.py build add-overdue --format mermaid` | текст `requirementDiagram` для Mermaid, предел 50 000 знаков без выбора и с `--capability`; у `--requirement` предела нет, а превышение даёт отказ с кодом 1 и подсказкой, чем выбрать меньше |
 | `python .symphysis/tools/trace_graph.py report add-overdue` | отчёт Markdown: находки `openspec validate` и сигналы графа одним списком |
 | `python .symphysis/tools/trace_graph.py check add-overdue graph.json` | сверка сохранённого файла графа с изменением: не устарел ли и не правили ли его руками |
 | `python .symphysis/tools/trace_graph.py freeze add-overdue` | заморозка: снимок `req-graph.json` и отчёт `report.md` в `graph/` изменения |
@@ -549,7 +549,7 @@ python reminders.py overdue
 2. Когда отмечена последняя задача `/opsx:apply`: `freeze` повторяется. Это раньше `/opsx:sync`: после синхронизации новый сценарий MODIFIED уже лежит в мастере, и сигнал о нём замолчал бы.
 3. В `/opsx:archive` до вопроса о синхронизации: `freeze` собирает граф заново, если каталога, снимка или отчёта нет либо файлы изменения разошлись со снимком; свежий снимок только обновляет коммиты корней, граф и отчёт остаются прежними.
 
-Вывод `freeze` называет путь к `graph/report.md`. Модель отдаёт тебе ссылку на него без пересказа и без отбора строк: читай отчёт сам. Сигнал отчёта не повод править спеки и задачи без твоего слова. Ручной `openspec archive` мимо скилла заморозку не вызывает: для этого есть `archive-gaps`.
+Когда граф собран заново, вывод `freeze` называет путь к `graph/report.md`; на ветке «Снимок свежий: обновлены только коммиты корней, граф и отчёт прежние.» ссылки в выводе нет, отчёт лежит там же. Модель отдаёт тебе ссылку на него без пересказа и без отбора строк: читай отчёт сам. Сигнал отчёта не повод править спеки и задачи без твоего слова. Дочернее требование, вынесенное из длинного родителя, без своего номера записи получает сигнал «требование без записи»: ему нужен номер решения о делении (F-150). Ручной `openspec archive` мимо скилла заморозку не вызывает: для этого есть `archive-gaps`.
 
 ### Соглашения в артефактах
 

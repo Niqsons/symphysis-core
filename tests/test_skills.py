@@ -1018,12 +1018,8 @@ def test_viewer_skill_text_names_hook_files():
 SCENARIO_COMMENT = "<!-- F-NN -->"
 
 
-@pytest.mark.parametrize("name, scenario", [
-    ("symphysis-edge-probe", "Край с исходом Specify"),
-    ("symphysis-prohibition-probe", "Запрет с исходом Specify"),
-    ("symphysis-consequences", "Ветка с исходом Specify"),
-])
-def test_probe_skills_put_the_record_number_under_the_scenario_heading(name, scenario):
+@pytest.mark.parametrize("name", ["symphysis-edge-probe", "symphysis-prohibition-probe", "symphysis-consequences"])
+def test_probe_skills_put_the_record_number_under_the_scenario_heading(name):
     """`requirement-probes`: «Край с исходом Specify», «Запрет с исходом Specify»;
     `consequence-inventory`: «Ветка с исходом Specify», «Причина провала с исходом Specify» (F-45):
     сценарий по исходу Specify несёт `<!-- F-NN -->` строкой под заголовком, и она вне предела 500 знаков."""
