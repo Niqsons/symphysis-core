@@ -29,7 +29,7 @@
 #### Scenario: Конфиг без подсказок
 - **GIVEN** `openspec/config.yaml` без ключа `operations`
 - **WHEN** выполняется `symphysis install`
-- **THEN** `openspec instructions archive --json` отдаёт подсказку заморозки полем `operationGuidance`
+- **THEN** для изменения проекта `openspec instructions archive --change <имя> --json` отдаёт подсказку заморозки полем `operationGuidance`
 
 #### Scenario: У проекта своя подсказка
 - **GIVEN** `openspec/config.yaml` со своей строкой в `operations.archive.guidance`

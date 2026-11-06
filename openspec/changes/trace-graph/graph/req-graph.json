@@ -15,7 +15,7 @@
   },
   {
    "path": "specs/artifact-attack/spec.md",
-   "sha256": "2a8cd3fb14dcd17577b5472e2f6b412e7462428072db9a54917e02365b156c71"
+   "sha256": "f7b956c03e9a5f7952692fccc3f9a2b02793f9e16630b0c03026caf955ded656"
   },
   {
    "path": "specs/brainstorm-interview/spec.md",
@@ -35,7 +35,7 @@
   },
   {
    "path": "specs/project-installer/spec.md",
-   "sha256": "cad211635816c744878299c53c60275d88ec1b8283388e87f3569d47814bd987"
+   "sha256": "7a124a0a544fc5d2ccd8081313a2b2eb1a15a8848867d77b08b4f7548dd30e9e"
   },
   {
    "path": "specs/project-settings/spec.md",
@@ -67,7 +67,7 @@
   },
   {
    "path": "tasks.md",
-   "sha256": "2ccab25eb367be39ddcdb0ea7bbebe8569fd0b23adff862b49de92d1a9f3b970"
+   "sha256": "327f238c823d248fd72c9eb854b583194b0271fbef84884eb669275d6b48ce1e"
   }
  ],
  "nodes": [
@@ -3797,7 +3797,7 @@
   {
    "id": "task:9.2",
    "kind": "task",
-   "name": "`mergeConfig` переносит `operations` из `config.symphysis.yaml`: списки подсказок объединяются, как `rules`, без повторов, ключ не списком даёт предупреждение (F-49, F-110, F-124) — `project-installer`: «Конфиг без подсказок», `project-installer`: «У проекта своя подсказка», `project-installer`: «Повторная установка не дублирует» — проверка: `npm test` в `installer/` зелёный; после `install` в пустой проект `openspec instructions archive --json` отдаёт подсказку полем `operationGuidance`",
+   "name": "`mergeConfig` переносит `operations` из `config.symphysis.yaml`: списки подсказок объединяются, как `rules`, без повторов, ключ не списком даёт предупреждение (F-49, F-110, F-124) — `project-installer`: «Конфиг без подсказок», `project-installer`: «У проекта своя подсказка», `project-installer`: «Повторная установка не дублирует» — проверка: `npm test` в `installer/` зелёный; после `install` в пустой проект и `openspec new change demo` команда `openspec instructions archive --change demo --json` отдаёт подсказку полем `operationGuidance`",
    "at": "tasks.md:70",
    "done": true
   },
@@ -3811,14 +3811,14 @@
   {
    "id": "task:10.1",
    "kind": "task",
-   "name": "Рабочее дерево `<путь>`, ветка `feat/trace-graph` от `main` плагина, зависимости через `npm ci` — проверка: `npm run typecheck` зелёный до правок `служебная`",
+   "name": "Рабочее дерево `<каталог>-vscode-trace-graph`, ветка `feat/trace-graph` от `main` плагина, зависимости через `npm ci` — проверка: `npm run typecheck` зелёный до правок `служебная`",
    "at": "tasks.md:75",
    "done": true
   },
   {
    "id": "task:10.2",
    "kind": "task",
-   "name": "`trace-link` в списке линз `src/shared/attack.ts`, `EXPECTED_CONTRACT = 3` в `src/host/core.ts`, подстановка в `test/e2e/scenario.ts`, номер в `test/unit/core.test.ts`; коммит по слову владельца несёт `Needs: symphysis <хеш>` на коммит ядра с номером 3 (F-55) — `artifact-attack`: «Выключена линза» — проверка: с `SYMPHYSIS_ROOT=<каталог>` зелёные `npm run typecheck`, `npm test`, `npm run e2e`; группа линзы без строк не показана",
+   "name": "`trace-link` в списке линз `src/shared/attack.ts`, `EXPECTED_CONTRACT = 3` в `src/host/core.ts`, подстановка в `test/e2e/scenario.ts`, номер в `test/unit/core.test.ts`; коммит по слову владельца несёт `Needs: symphysis <хеш>` на коммит ядра с номером 3 (F-55) — `artifact-attack`: «Выключена линза» — проверка: с `SYMPHYSIS_ROOT=<каталог>-trace-graph` зелёные `npm run typecheck`, `npm test`, `npm run e2e`; группа линзы без строк не показана",
    "at": "tasks.md:76",
    "done": true
   },
@@ -3860,7 +3860,7 @@
   {
    "id": "task:12.4",
    "kind": "task",
-   "name": "Снять строку о переводе улик на архивный путь из `<путь>`; задача последняя, потому что на эту строку опираются улики F-09 и F-122 (F-122) — `trace-snapshot`: «Журнал уезжает в архив без правок» — проверка: поиск «переводятся на архивный» по `<путь>` пуст",
+   "name": "Снять строку о переводе улик на архивный путь из `<каталог>\\.context\\06-related-changes.md:45`; задача последняя, потому что на эту строку опираются улики F-09 и F-122 (F-122) — `trace-snapshot`: «Журнал уезжает в архив без правок» — проверка: поиск «переводятся на архивный» по `<каталог>\\.context\\` пуст",
    "at": "tasks.md:88",
    "done": true
   }
@@ -9482,7 +9482,7 @@
  "roots": [
   {
    "prefix": "",
-   "commit": "f25524cc4146d30876f070c9a8e03ba7799a344d"
+   "commit": "a3a2c0c5f97737639f1adfdc1ac2041f902bc235"
   },
   {
    "prefix": "docs/",
@@ -9506,7 +9506,7 @@
   },
   {
    "prefix": "vscode/",
-   "commit": "e339b167a95d151c6f862106777c35655b7df5f2"
+   "commit": "38ff5bde48b89d55e843148073caf435a33b0752"
   }
  ],
  "base": {
