@@ -1,54 +1,19 @@
 import copy
 import hashlib
-import itertools
-import json
 import re
-import subprocess
-import sys
-from pathlib import Path
 
 import pytest
 
 # conftest — первым: он ставит каталоги модулей в sys.path и при запуске одного файла (pytest.ini, pythonpath)
-from conftest import FIX, ROOT, one_record_journal
+from conftest import comments_of, FIX, FIXTURE, fixture_text, line_of, one_record_journal, plan, rendered
 import journal
 
-FIXTURE = FIX / "md4h-feedback.md"
+
 FEEDBACK_TEXT = {  # то, что лежит в фикстуре под `### Feedback`
     "F1": "Пример текста первого комментария.",
     "F2": "Пример текста второго комментария.",
     "F6": "Пример многострочного комментария:\nпервая строка-заглушка\n\nвторая строка после пустой.",
 }
-
-
-def run_cli(*args):
-    return subprocess.run(
-        [sys.executable, str(ROOT / "cli" / "journal.py"), *map(str, args)],
-        capture_output=True, text=True, encoding="utf-8")
-
-
-def line_of(path, needle):
-    """Номер (с единицы) первой строки файла, где есть needle; файл читается как лежит на диске."""
-    for n, line in enumerate(Path(path).read_bytes().decode("utf-8").split("\n"), 1):
-        if needle in line:
-            return n
-    raise AssertionError(f"{needle!r} в {path} не найдено")
-
-
-def plan():
-    return journal.import_md(FIX / "journal-plan.md")
-
-
-def rendered(tmp_path, j, name="d.md"):
-    """Рендер журнала на диске, как его пишет `render-md`: CRLF."""
-    md = tmp_path / name
-    md.write_text(journal.render_md(j), encoding="utf-8", newline="\r\n")
-    return md
-
-
-def fixture_text():
-    """Фикстура как лежит на диске — с CRLF."""
-    return FIXTURE.read_bytes().decode("utf-8")
 
 
 def bundle_at(md, *spans):
@@ -59,23 +24,6 @@ def bundle_at(md, *spans):
     for item, span in zip(b["items"], spans):
         item["lines"] = span
     return b
-
-
-def write_feedback(tmp_path, md, *spans, state="sealed", name="feedback.md"):
-    """Файл связки на диске: фикстура с SHA рендера `md` и строками `spans` у первых комментариев."""
-    text = fixture_text().replace("\r\n", "\n")
-    text = re.sub(r"(?m)^source_sha256: .*$", f"source_sha256: {journal.sha256_file(md)}", text)
-    text = re.sub(r"(?m)^state: .*$", f"state: {state}", text)
-    count = itertools.count()      # комментариев больше, чем spans, — берётся последний span
-    text = re.sub(r"(?m)^\*\*Source lines:\*\* .*$",
-                  lambda m: "**Source lines:** %d-%d" % spans[min(next(count), len(spans) - 1)], text)
-    out = tmp_path / name
-    out.write_text(text, encoding="utf-8", newline="\r\n")
-    return out
-
-
-def comments_of(j, rid):
-    return next(r for r in j["records"] if r["id"] == rid)["comments"]
 
 
 def all_comments(j):
@@ -424,120 +372,3 @@ def test_invalid_result_is_refused(tmp_path):
     report = journal.apply_md4h(j, b, md)
     assert "журнал негоден" in report[0] and "F-01" in report[0]
     assert j == before
-
-
-# --- командная строка -------------------------------------------------------
-
-def cli_setup(tmp_path):
-    """Журнал на диске, его рендер и строка первой записи F-03 в рендере."""
-    j = plan()
-    src = tmp_path / "j.json"
-    journal.save_journal(src, j)
-    md = rendered(tmp_path, j)
-    return j, src, md, line_of(md, "<!-- journal:F-03 -->")
-
-
-def test_cli_apply_md4h_writes_comments_and_reports(tmp_path):
-    j, src, md, f3 = cli_setup(tmp_path)
-    fb = write_feedback(tmp_path, md, (f3 + 1, f3 + 2), (f3 + 3, f3 + 3), (f3 + 4, f3 + 5))
-    run = run_cli("apply-md4h", src, fb, "--render", md)
-    assert run.returncode == 0, run.stderr
-    assert "[ok] комментариев внесено 3" in run.stdout and "F-03" in run.stdout
-    saved = journal.load_journal(src)
-    assert [c["lines"] for c in comments_of(saved, "F-03")] == [[f3 + 1, f3 + 2], [f3 + 3, f3 + 3], [f3 + 4, f3 + 5]]
-    assert journal.validate_journal(saved) == []
-    assert "не рендерит" in run.stdout
-
-
-def test_cli_apply_md4h_twice_leaves_the_file_as_it_was(tmp_path):
-    j, src, md, f3 = cli_setup(tmp_path)
-    fb = write_feedback(tmp_path, md, (f3 + 1, f3 + 2), (f3 + 3, f3 + 3), (f3 + 4, f3 + 5))
-    assert run_cli("apply-md4h", src, fb, "--render", md).returncode == 0
-    src.write_text(json.dumps(journal.load_journal(src), ensure_ascii=False, indent=4), encoding="utf-8")
-    after_first = src.read_bytes()      # другая вёрстка: переписанный файл отличался бы от этого
-    run = run_cli("apply-md4h", src, fb, "--render", md)
-    assert run.returncode == 0, run.stderr
-    assert "[ok] комментариев внесено 0" in run.stdout and "уже внесён" in run.stdout
-    assert src.read_bytes() == after_first
-
-
-def test_cli_apply_md4h_refuses_a_foreign_sha_with_code_2(tmp_path):
-    j, src, md, f3 = cli_setup(tmp_path)
-    fb = write_feedback(tmp_path, md, (f3 + 1, f3 + 1))
-    md.write_text(journal.render_md(j) + "\nправка\n", encoding="utf-8", newline="\r\n")
-    before = src.read_bytes()
-    run = run_cli("apply-md4h", src, fb, "--render", md)
-    assert run.returncode == 2
-    assert "[!!]" in run.stderr and "sha256" in run.stderr
-    assert "комментариев внесено" not in run.stdout
-    assert src.read_bytes() == before
-
-
-def test_cli_apply_md4h_refuses_an_unsealed_bundle_with_code_2(tmp_path):
-    j, src, md, f3 = cli_setup(tmp_path)
-    fb = write_feedback(tmp_path, md, (f3 + 1, f3 + 1), state="draft")
-    before = src.read_bytes()
-    run = run_cli("apply-md4h", src, fb, "--render", md)
-    assert run.returncode == 2 and "связка не запечатана" in run.stderr
-    assert src.read_bytes() == before
-
-
-def test_cli_apply_md4h_refuses_a_comment_above_the_first_record_with_code_2(tmp_path):
-    j, src, md, f3 = cli_setup(tmp_path)
-    fb = write_feedback(tmp_path, md, (1, 1))
-    before = src.read_bytes()
-    run = run_cli("apply-md4h", src, fb, "--render", md)
-    assert run.returncode == 2 and "комментарий F1 выше первой записи" in run.stderr
-    assert src.read_bytes() == before
-
-
-def test_cli_apply_md4h_refuses_an_invalid_journal_with_code_1(tmp_path):
-    j, src, md, f3 = cli_setup(tmp_path)
-    fb = write_feedback(tmp_path, md, (f3 + 1, f3 + 1))
-    j["records"][0]["status"] = "готов"
-    journal.save_journal(src, j)
-    before = src.read_bytes()
-    run = run_cli("apply-md4h", src, fb, "--render", md)
-    assert run.returncode == 1 and "F-01" in run.stderr
-    assert src.read_bytes() == before
-
-
-def test_cli_apply_md4h_reports_a_broken_bundle_with_code_1(tmp_path):
-    j, src, md, f3 = cli_setup(tmp_path)
-    fb = write_feedback(tmp_path, md, (f3 + 1, f3 + 1))
-    fb.write_text(fb.read_text(encoding="utf-8").replace("md4h-feedback/v2", "md4h-feedback/v9"),
-                  encoding="utf-8", newline="\r\n")
-    before = src.read_bytes()
-    run = run_cli("apply-md4h", src, fb, "--render", md)
-    assert run.returncode == 1 and "md4h-feedback/v9" in run.stderr
-    assert src.read_bytes() == before
-
-
-def test_cli_apply_md4h_reports_missing_files_with_code_1(tmp_path):
-    j, src, md, f3 = cli_setup(tmp_path)
-    fb = write_feedback(tmp_path, md, (f3 + 1, f3 + 1))
-    run = run_cli("apply-md4h", src, tmp_path / "нет.md", "--render", md)
-    assert run.returncode == 1 and "нет.md" in run.stderr and "файла нет" in run.stderr
-    run = run_cli("apply-md4h", src, fb, "--render", tmp_path / "нет-рендера.md")
-    assert run.returncode == 1 and "нет-рендера.md" in run.stderr and "файла нет" in run.stderr
-
-
-def test_cli_apply_md4h_requires_the_render_argument(tmp_path):
-    j, src, md, f3 = cli_setup(tmp_path)
-    fb = write_feedback(tmp_path, md, (f3 + 1, f3 + 1))
-    run = run_cli("apply-md4h", src, fb)
-    assert run.returncode == 2 and "--render" in run.stderr
-
-
-def test_cli_apply_md4h_help_tells_the_flow():
-    run = run_cli("apply-md4h", "--help")
-    assert run.returncode == 0
-    text = " ".join(run.stdout.split())
-    assert "render-md" in text and "md4h" in text and "comments[]" in text
-    assert "не рендерит" in text
-    assert "--render" in text
-
-
-def test_cli_lists_apply_md4h_among_the_commands():
-    run = run_cli("--help")
-    assert run.returncode == 0 and "apply-md4h" in run.stdout

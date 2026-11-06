@@ -1,35 +1,22 @@
 import copy
 import json
-import shutil
-import subprocess
-import sys
 
 import pytest
 
 # conftest — первым: он ставит каталоги модулей в sys.path и при запуске одного файла (pytest.ini, pythonpath)
-from conftest import FIX, ROOT
+from conftest import FIX, HEADER_LINK, plan, rec_of, ROOT
 import journal
 
+
 LIVE_JSON = ROOT / "docs" / "plan-implementation.journal.json"
-TEMPLATE = ROOT / "viewer" / "playground-template.html"
 DATE = "2026-10-30"
 
-HEADER_LINK = "### Решения по журналу [j.md](http://j.md), 2026-10-29:\n\n"
 HEADER_PLAIN = "Решения по журналу j.md, 2026-10-29:\n"
-
-
-def plan():
-    """Журнал в состоянии после круга 1 (решения, парковка F-01, споры по фактам)."""
-    return journal.import_md(FIX / "journal-plan.md")
 
 
 def before():
     """Журнал до круга 1: решений, парковки, споров и добавленных вариантов нет."""
     return journal.import_md(FIX / "journal-plan-before-round1.md")
-
-
-def rec_of(j, rid):
-    return next(r for r in j["records"] if r["id"] == rid)
 
 
 def apply(j, text, date=DATE):
@@ -38,19 +25,6 @@ def apply(j, text, date=DATE):
 
 def snapshot(j):
     return json.dumps(j, ensure_ascii=False, sort_keys=True)
-
-
-def embedded(html):
-    """JSON, который шаблон получил вместо `__JOURNAL_JSON__`."""
-    start = html.index("const JOURNAL = ") + len("const JOURNAL = ")
-    payload, _ = json.JSONDecoder().raw_decode(html[start:].replace("<\\/", "</"))
-    return payload
-
-
-def run_cli(*args):
-    return subprocess.run(
-        [sys.executable, str(ROOT / "cli" / "journal.py"), *map(str, args)],
-        capture_output=True, text=True, encoding="utf-8")
 
 
 # --- тесты из брифа ---------------------------------------------------------
@@ -512,168 +486,3 @@ def test_apply_does_not_touch_the_arguments_it_was_given():
     answers_before = copy.deepcopy(answers)
     journal.apply_answers(j, answers, date=DATE)
     assert answers == answers_before
-
-
-# --- командная строка -------------------------------------------------------
-
-@pytest.fixture
-def workdir(tmp_path):
-    path = tmp_path / "j.json"
-    journal.save_journal(path, plan())
-    return tmp_path, path
-
-
-def test_cli_apply_writes_the_journal_in_place_with_the_given_date(workdir):
-    tmp, path = workdir
-    answers = tmp / "a.md"
-    answers.write_text(HEADER_LINK + "- F-06: A (было D) — «передумал»\n", encoding="utf-8")
-    run = run_cli("apply", path, answers, "--date", "2026-11-01")
-    assert run.returncode == 0, run.stderr + run.stdout
-    raw = path.read_bytes()
-    assert b"\r" not in raw
-    dec = rec_of(journal.load_journal(path), "F-06")["decision"]
-    assert dec == {"option": "A", "word": "передумал", "date": "2026-11-01"}
-    assert "render-md" in run.stdout and "render-html" in run.stdout
-
-
-def test_cli_apply_dry_run_reports_and_does_not_write(workdir):
-    tmp, path = workdir
-    before_bytes = path.read_bytes()
-    answers = tmp / "a.md"
-    answers.write_text("- F-06: A (было D) — «передумал»\n", encoding="utf-8")
-    run = run_cli("apply", path, answers, "--dry-run")
-    assert run.returncode == 0 and "F-06" in run.stdout
-    assert path.read_bytes() == before_bytes
-
-
-def test_cli_apply_refusal_exits_1_names_the_record_and_does_not_write(workdir):
-    tmp, path = workdir
-    before_bytes = path.read_bytes()
-    answers = tmp / "a.md"
-    answers.write_text("- F-06: A (было D) — «передумал»\n- F-05: Q — «x»\n", encoding="utf-8")
-    run = run_cli("apply", path, answers)
-    assert run.returncode == 1 and "F-05" in run.stdout + run.stderr
-    assert path.read_bytes() == before_bytes
-
-
-def test_cli_apply_default_date_is_today(workdir):
-    import datetime
-    tmp, path = workdir
-    answers = tmp / "a.md"
-    answers.write_text("- F-06: A (было D) — «x»\n", encoding="utf-8")
-    assert run_cli("apply", path, answers).returncode == 0
-    assert rec_of(journal.load_journal(path), "F-06")["decision"]["date"] == datetime.date.today().isoformat()
-
-
-def test_cli_apply_rejects_a_malformed_date(workdir):
-    tmp, path = workdir
-    answers = tmp / "a.md"
-    answers.write_text("- F-06: A (было D) — «x»\n", encoding="utf-8")
-    run = run_cli("apply", path, answers, "--date", "30.10.2026")
-    assert run.returncode == 2 and "YYYY-MM-DD" in run.stderr
-
-
-def test_cli_apply_reads_a_bom_prefixed_prompt(workdir):
-    tmp, path = workdir
-    answers = tmp / "a.md"
-    answers.write_bytes(b"\xef\xbb\xbf" + "- F-06: A (было D) — «x»\r\n".encode("utf-8"))
-    assert run_cli("apply", path, answers).returncode == 0
-
-
-def test_cli_apply_says_so_when_the_prompt_is_not_utf8(workdir):
-    tmp, path = workdir
-    before_bytes = path.read_bytes()
-    answers = tmp / "a.md"
-    answers.write_bytes("- F-06: A (было D) — «x»\n".encode("utf-16"))
-    run = run_cli("apply", path, answers)
-    assert run.returncode == 1 and "UTF-8" in run.stdout + run.stderr
-    assert path.read_bytes() == before_bytes
-
-
-def test_cli_apply_refuses_an_invalid_journal(tmp_path):
-    bad = tmp_path / "bad.json"
-    bad.write_text('{"title": "т"}', encoding="utf-8")
-    answers = tmp_path / "a.md"
-    answers.write_text("- F-06: A — «x»\n", encoding="utf-8")
-    assert run_cli("apply", bad, answers).returncode == 1
-
-
-def test_apply_help_says_render_is_a_separate_step():
-    text = " ".join(run_cli("apply", "-h").stdout.split())
-    assert "render-md" in text and "render-html" in text and "не рендерит" in text
-    assert "apply" in " ".join(journal.__doc__.split())
-
-
-# --- просмотрщик: парковка списком, дата сборки -----------------------------
-
-def test_render_html_passes_every_parking_element_to_the_viewer():
-    j = plan()
-    rec_of(j, "F-01")["parking"].append({"addressee": "человек", "text": "второй вопрос"})
-    data = embedded(journal.render_html(j, TEMPLATE))
-    recs = {r["id"]: r for r in data["records"]}
-    assert [p["text"] for p in recs["F-01"]["parking"]] == [p["text"] for p in rec_of(j, "F-01")["parking"]]
-    assert recs["F-01"]["parking"][0]["finding"] == rec_of(j, "F-01")["parking"][0]["finding"]
-    assert recs["F-02"]["parking"] == []
-
-
-def test_render_html_generated_comes_from_the_journal_or_is_absent():
-    j = plan()
-    assert "generated" not in embedded(journal.render_html(j, TEMPLATE))
-    j["generated"] = "2026-10-29"
-    assert embedded(journal.render_html(j, TEMPLATE))["generated"] == "2026-10-29"
-    assert journal.validate_journal(j) == []
-
-
-def test_render_html_is_reproducible():
-    j = plan()
-    assert journal.render_html(j, TEMPLATE) == journal.render_html(copy.deepcopy(j), TEMPLATE)
-
-
-node = shutil.which("node")
-requires_node = pytest.mark.skipif(node is None, reason="нет node: шаблон просмотрщика не прогнать")
-
-
-@requires_node
-def test_viewer_script_is_valid_javascript(tmp_path):
-    html = journal.render_html(plan(), TEMPLATE)
-    script = html[html.rindex("<script>") + len("<script>"):html.rindex("</script>")]
-    js = tmp_path / "viewer.js"
-    js.write_text(script, encoding="utf-8")
-    run = subprocess.run([node, "--check", str(js)], capture_output=True, text=True, encoding="utf-8")
-    assert run.returncode == 0, run.stderr
-
-
-@requires_node
-def test_viewer_renders_every_parking_element(tmp_path):
-    j = plan()
-    rec_of(j, "F-01")["parking"].append({"addressee": "ИБ", "text": "второй вопрос парковки"})
-    html = tmp_path / "v.html"
-    html.write_text(journal.render_html(j, TEMPLATE), encoding="utf-8", newline="\n")
-    run = subprocess.run([node, str(FIX / "viewer-smoke.js"), str(html)],
-                         capture_output=True, text=True, encoding="utf-8")
-    assert run.returncode == 0, run.stderr
-    out = json.loads(run.stdout)
-    assert "парковка: 2" in out["cards"]
-    assert "json разбирать проще" in out["cards"] and "второй вопрос парковки" in out["cards"]
-    assert "в журнале" in out["cards"] and "→ ИБ" in out["cards"]
-    assert "с парковкой <b>1</b>" in out["stats"]
-
-
-@requires_node
-def test_viewer_drops_ingested_parking_from_the_browser_state(tmp_path):
-    # браузер помнит парковку, которую apply уже внёс в журнал: она не должна показываться дважды
-    j = plan()
-    rec_of(j, "F-01")["parking"].append({"addressee": "ИБ", "text": "второй вопрос парковки"})
-    html, state = tmp_path / "v.html", tmp_path / "state.json"
-    html.write_text(journal.render_html(j, TEMPLATE), encoding="utf-8", newline="\n")
-    first, second = [p["text"] for p in rec_of(j, "F-01")["parking"]]
-    state.write_text(json.dumps({"decisions": {"F-01": {"choice": None, "word": "", "parked": [
-        {"text": first, "addressee": "материалы"}, {"text": second, "addressee": "ИБ"},
-        {"text": "ещё не внесённый вопрос", "addressee": "человек"}]}}}, ensure_ascii=False), encoding="utf-8")
-    run = subprocess.run([node, str(FIX / "viewer-smoke.js"), str(html), str(state)],
-                         capture_output=True, text=True, encoding="utf-8")
-    assert run.returncode == 0, run.stderr
-    out = json.loads(run.stdout)
-    assert "парковка: 3" in out["cards"]       # два из журнала и один свой
-    kept = json.loads(out["saved"])["decisions"]["F-01"]["parked"]
-    assert [p["text"] for p in kept] == ["ещё не внесённый вопрос"]

@@ -1,3 +1,4 @@
+import copy
 import json
 import os
 import shutil
@@ -339,3 +340,188 @@ def fork_record(record_id: str, chosen: str | None = "A", **options: list[str]) 
 
 def journal_of(*records: dict) -> dict:
     return {"title": "т", "source": "s.md", "records": list(records)}
+
+
+# --- общее для тестов `decisions` и тестов, вынесенных в каталоги модулей (M1) ----------------
+
+def evidence_of(j):
+    return j["records"][0]["options"][0]["evidence"][0]
+
+
+def run_check(*args):
+    return subprocess.run(
+        [sys.executable, str(ROOT / "cli" / "journal.py"), "check", *map(str, args)],
+        capture_output=True, text=True, encoding="utf-8")
+
+
+def setting_journal(**fork_changes) -> dict:
+    """Факт постановки F-01 и развилка F-02 с вариантами A и B; `fork_changes` — поля развилки."""
+    fact = {"id": "F-01", "question": "критерий готовности", "kind": "факт", "status": "решён",
+            "addressee": "постановка", "depends_on": [], "delivery": "", "options": [], "antipodes": [],
+            "recommendation": None, "decision": None, "reversibility": None, "outcome": None,
+            "parking": [], "dispute": "", "consequences": "F-02",
+            "evidence": [{"path": "openspec/changes/x/intent.md", "quote": "критерий"}], "comments": []}
+    fork = {"id": "F-02", "question": "развилка?", "kind": "развилка", "status": "открыт",
+            "addressee": "человек", "depends_on": ["F-01"], "delivery": "",
+            "options": [{"letter": "A", "text": "как в постановке", "added": False, "unlikely": None, "evidence": []},
+                        {"letter": "B", "text": "иначе, чем в постановке", "added": False, "unlikely": None,
+                         "evidence": []}],
+            "antipodes": [], "recommendation": None, "decision": None, "reversibility": None, "outcome": None,
+            "parking": [], "dispute": "", "consequences": "", "evidence": [], "comments": [], **fork_changes}
+    return {"title": "т", "source": "decisions.json", "records": [fact, fork]}
+
+
+def deviating(target="F-01", letter="B", **fork_changes) -> dict:
+    """Журнал `setting_journal`, у варианта `letter` развилки F-02 — `deviation: target`."""
+    j = setting_journal(**fork_changes)
+    next(o for o in j["records"][1]["options"] if o["letter"] == letter)["deviation"] = target
+    return j
+
+
+HEADER_LINK = "### Решения по журналу [j.md](http://j.md), 2026-10-29:\n\n"
+
+
+def plan():
+    """Журнал в состоянии после круга 1 (решения, парковка F-01, споры по фактам)."""
+    return journal.import_md(FIX / "journal-plan.md")
+
+
+def rec_of(j, rid):
+    return next(r for r in j["records"] if r["id"] == rid)
+
+
+def run_cli(*args):
+    return subprocess.run(
+        [sys.executable, str(ROOT / "cli" / "journal.py"), *map(str, args)],
+        capture_output=True, text=True, encoding="utf-8")
+
+
+FIXTURE = FIX / "md4h-feedback.md"
+
+
+def line_of(path, needle):
+    """Номер (с единицы) первой строки файла, где есть needle; файл читается как лежит на диске."""
+    for n, line in enumerate(Path(path).read_bytes().decode("utf-8").split("\n"), 1):
+        if needle in line:
+            return n
+    raise AssertionError(f"{needle!r} в {path} не найдено")
+
+
+def rendered(tmp_path, j, name="d.md"):
+    """Рендер журнала на диске, как его пишет `render-md`: CRLF."""
+    md = tmp_path / name
+    md.write_text(journal.render_md(j), encoding="utf-8", newline="\r\n")
+    return md
+
+
+def fixture_text():
+    """Фикстура как лежит на диске — с CRLF."""
+    return FIXTURE.read_bytes().decode("utf-8")
+
+
+def comments_of(j, rid):
+    return next(r for r in j["records"] if r["id"] == rid)["comments"]
+
+
+LIVE_JSON = ROOT / "docs" / "plan-implementation.journal.json"
+
+
+TEMPLATE = ROOT / "viewer" / "playground-template.html"
+
+
+def strip_check_fields(j):
+    """Копия журнала без полей, которых в markdown нет (см. `render_md`): поля сверки улик
+    `line/found/verdict`, `reversibility` и `comments` записи, `text` рекомендации, `generated` журнала —
+    их источник только JSON."""
+    j = copy.deepcopy(j)
+    j.pop("generated", None)
+    for rec in j["records"]:
+        rec["reversibility"] = None
+        rec["comments"] = []
+        if rec["recommendation"]:
+            rec["recommendation"].pop("text", None)
+        for ev in rec["evidence"] + [e for o in rec["options"] for e in o["evidence"]]:
+            for key in ("line", "found", "verdict"):
+                ev.pop(key, None)
+    return j
+
+
+def html_fixture(tmp_path, quote):
+    """Журнал с одной уликой и файл корней: всё внутри `tmp_path`, машина не важна."""
+    (tmp_path / "a.md").write_text("раз\nдва\n", encoding="utf-8")
+    roots = tmp_path / "roots.json"
+    roots.write_text(json.dumps({"": str(tmp_path)}), encoding="utf-8")
+    src = tmp_path / "j.json"
+    journal.save_journal(src, one_record_journal("a.md", quote))
+    return src, roots
+
+
+ATTACK_FIX = FIX / "attack"
+
+
+FAKE_SHA = "0123456789abcdef" * 4
+
+
+def embedded_attack(html):
+    """JSON, который шаблон получил вместо `__ATTACK_JSON__`."""
+    start = html.index("const ATTACK = ") + len("const ATTACK = ")
+    payload, _ = json.JSONDecoder().raw_decode(html[start:].replace("<\\/", "</"))
+    return payload
+
+
+node = shutil.which("node")
+
+
+requires_node = pytest.mark.skipif(node is None, reason="нет node: шаблон просмотрщика не прогнать")
+
+
+def smoke(tmp_path, html, state=None):
+    """Итог `viewer-smoke.js`: панели режимов и промпт; `state` — состояние браузера, `__suffixes__` в нём —
+    значения ключей `:mode` и `:attack`."""
+    page = tmp_path / "v.html"
+    page.write_text(html, encoding="utf-8", newline="\n")
+    args = [node, str(FIX / "viewer-smoke.js"), str(page)]
+    if state is not None:
+        (tmp_path / "state.json").write_text(json.dumps(state, ensure_ascii=False), encoding="utf-8")
+        args.append(str(tmp_path / "state.json"))
+    run = subprocess.run(args, capture_output=True, text=True, encoding="utf-8")
+    assert run.returncode == 0, run.stderr
+    return json.loads(run.stdout)
+
+
+def deviation_journal():
+    """Факт постановки F-01 и решённая развилка F-02: вариант B отступает от F-01, A — нет."""
+    j = one_record_journal("intent.md", "критерий")
+    fact = j["records"][0]
+    fact.update(kind="факт", status="решён", addressee="постановка", options=[],
+                evidence=[{"path": "intent.md", "quote": "критерий"}])
+    fork = copy.deepcopy(one_record_journal("a.md", "q")["records"][0])
+    fork["options"].append({"letter": "B", "text": "наследование", "added": False, "unlikely": None,
+                            "evidence": [], "deviation": "F-01"})
+    fork.update(id="F-02", status="решён", addressee="человек", depends_on=["F-01"],
+                decision={"option": "B", "word": "", "date": "2026-10-31"})
+    j["records"].append(fork)
+    assert journal.validate_journal(j) == []
+    return j
+
+
+def scheme_embedded(html):
+    start = html.index("const SCHEME = ") + len("const SCHEME = ")
+    return json.JSONDecoder().raw_decode(html[start:].replace("<\\/", "</"))[0]
+
+
+def render_page(tmp_path, scheme=None, out=None):
+    src = tmp_path / "decisions.json"
+    journal.save_journal(src, plan())
+    if scheme is not None:
+        (tmp_path / "scheme.md").write_text(scheme, encoding="utf-8", newline="")
+    out = out or tmp_path / "page.html"
+    run = run_cli("render-html", src, "--out", out)
+    assert run.returncode == 0, run.stderr
+    return out.read_text(encoding="utf-8"), src
+
+
+def embedded_attack(html):
+    """Список атак, встроенный в страницу на место метки `__ATTACK_JSON__`."""
+    start = html.index("const ATTACK = ") + len("const ATTACK = ")
+    return json.JSONDecoder().raw_decode(html[start:].replace("<\\/", "</"))[0]

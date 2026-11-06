@@ -6,7 +6,7 @@ import sys
 import pytest
 
 # conftest — первым: он ставит каталоги модулей в sys.path и при запуске одного файла (pytest.ini, pythonpath)
-from conftest import FIX, ROOT
+from conftest import deviating, FIX, ROOT, setting_journal
 import journal
 
 
@@ -187,17 +187,6 @@ def test_validate_does_not_mutate_input():
     assert j == before
 
 
-def test_cli_import_md_writes_valid_json(tmp_path):
-    out = tmp_path / "plan.json"
-    run = subprocess.run(
-        [sys.executable, str(ROOT / "cli" / "journal.py"), "import-md",
-         str(FIX / "journal-plan.md"), "--out", str(out)],
-        capture_output=True, text=True, encoding="utf-8")
-    assert run.returncode == 0, run.stderr
-    j = json.loads(out.read_text(encoding="utf-8"))
-    assert len(j["records"]) == 24 and journal.validate_journal(j) == []
-
-
 def test_live_journal_records_attack_source_fork():
     """F-25 (D4b): источник механики атаки — слой проверки GSD, не гриль store; решено словом
     владельца 2026-10-30, улики на обе стороны — настоящие строки файлов."""
@@ -242,23 +231,6 @@ LIVE_JOURNALS = [ROOT / "docs" / "plan-implementation.journal.json",
                  *sorted((ROOT / "openspec" / "changes" / "archive").glob("*/decisions.json"))]
 
 
-def setting_journal(**fork_changes) -> dict:
-    """Факт постановки F-01 и развилка F-02 с вариантами A и B; `fork_changes` — поля развилки."""
-    fact = {"id": "F-01", "question": "критерий готовности", "kind": "факт", "status": "решён",
-            "addressee": "постановка", "depends_on": [], "delivery": "", "options": [], "antipodes": [],
-            "recommendation": None, "decision": None, "reversibility": None, "outcome": None,
-            "parking": [], "dispute": "", "consequences": "F-02",
-            "evidence": [{"path": "openspec/changes/x/intent.md", "quote": "критерий"}], "comments": []}
-    fork = {"id": "F-02", "question": "развилка?", "kind": "развилка", "status": "открыт",
-            "addressee": "человек", "depends_on": ["F-01"], "delivery": "",
-            "options": [{"letter": "A", "text": "как в постановке", "added": False, "unlikely": None, "evidence": []},
-                        {"letter": "B", "text": "иначе, чем в постановке", "added": False, "unlikely": None,
-                         "evidence": []}],
-            "antipodes": [], "recommendation": None, "decision": None, "reversibility": None, "outcome": None,
-            "parking": [], "dispute": "", "consequences": "", "evidence": [], "comments": [], **fork_changes}
-    return {"title": "т", "source": "decisions.json", "records": [fact, fork]}
-
-
 def test_setting_fact_is_valid():
     """Сценарий «Факт постановки»: `kind: факт`, `addressee: постановка` с уликой из intent.md — годен."""
     assert journal.validate_journal(setting_journal()) == []
@@ -290,13 +262,6 @@ def test_fixture_and_live_journals_stay_valid(path):
 
 def test_fixture_journals_are_found():
     assert len(FIXTURE_JOURNALS) >= 4, [p.name for p in FIXTURE_JOURNALS]
-
-
-def deviating(target="F-01", letter="B", **fork_changes) -> dict:
-    """Журнал `setting_journal`, у варианта `letter` развилки F-02 — `deviation: target`."""
-    j = setting_journal(**fork_changes)
-    next(o for o in j["records"][1]["options"] if o["letter"] == letter)["deviation"] = target
-    return j
 
 
 def test_deviation_on_an_option_pointing_at_a_setting_fact_is_valid():
@@ -355,15 +320,6 @@ def test_old_journal_without_deviation_has_no_such_key_after_import():
     records = plan()["records"]
     assert all("deviation" not in r for r in records)
     assert all("deviation" not in o for r in records for o in r["options"])
-
-
-def test_cli_check_rejects_a_bad_deviation_with_code_1(tmp_path):
-    path = tmp_path / "j.json"
-    journal.save_journal(path, deviating("F-09"))
-    run = subprocess.run([sys.executable, str(ROOT / "cli" / "journal.py"), "check", str(path)],
-                         capture_output=True, text=True, encoding="utf-8")
-    assert run.returncode == 1
-    assert "[!!] F-02: вариант B — отступление от постановки F-09 — такой записи нет" in run.stderr
 
 
 # --- повторный номер записи (F-138.A) --------------------------------------

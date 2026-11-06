@@ -1,20 +1,12 @@
 import copy
-import subprocess
-import sys
 
 # conftest — первым: он ставит каталоги модулей в sys.path и при запуске одного файла (pytest.ini, pythonpath)
-from conftest import ROOT, one_record_journal
+from conftest import LIVE_JSON, one_record_journal, ROOT
 import journal
 
-LIVE_JSON = ROOT / "docs" / "plan-implementation.journal.json"
+
 SECTIONS = ["# Design", "## Context", "## Goals / Non-Goals", "## Decisions", "## Risks / Trade-offs",
             "## Migration Plan", "## Open Questions"]
-
-
-def run_cli(*args):
-    return subprocess.run(
-        [sys.executable, str(ROOT / "cli" / "journal.py"), *map(str, args)],
-        capture_output=True, text=True, encoding="utf-8")
 
 
 def ev(path, quote, **extra):
@@ -334,35 +326,6 @@ def test_render_design_is_deterministic():
 
 # --- командная строка -------------------------------------------------------
 
-def test_cli_render_design_writes_the_file(tmp_path):
-    src, out = tmp_path / "j.json", tmp_path / "design.md"
-    j = journal.load_journal(LIVE_JSON)
-    journal.save_journal(src, j)
-    run = run_cli("render-design", src, "--out", out)
-    assert run.returncode == 0, run.stderr
-    assert f"[ok] {out}" in run.stdout
-    assert out.read_text(encoding="utf-8") == journal.render_design(j, source="j.json")
-
-
-def test_cli_render_design_writes_crlf_like_render_md(tmp_path):
-    src, out = tmp_path / "j.json", tmp_path / "design.md"
-    journal.save_journal(src, journal.load_journal(LIVE_JSON))
-    assert run_cli("render-design", src, "--out", out).returncode == 0
-    data = out.read_bytes()
-    assert b"\r\n" in data and data.count(b"\n") == data.count(b"\r\n")      # ни одного голого \n
-    md_out = tmp_path / "journal.md"
-    assert run_cli("render-md", src, "--out", md_out).returncode == 0
-    md = md_out.read_bytes()
-    assert md.count(b"\n") == md.count(b"\r\n")                              # render-md пишет так же
-
-
-def test_cli_render_design_header_names_the_json(tmp_path):
-    src, out = tmp_path / "plan.journal.json", tmp_path / "design.md"
-    journal.save_journal(src, one_record_journal("a.md", "q"))
-    assert run_cli("render-design", src, "--out", out).returncode == 0
-    head = out.read_text(encoding="utf-8").split("\n")[:4]
-    assert head == ["# Design", "", "> Рендер из `plan.journal.json`, не править руками.", ""]
-
 
 def test_render_design_header_is_only_there_when_the_source_is_named():
     j = {"title": "т", "source": "s.md", "records": []}
@@ -377,16 +340,6 @@ def test_render_design_header_matches_the_one_of_render_md():
     j = {"title": "т", "source": "s.md", "records": []}
     md_header = journal.render_md(j, json_name="j.json").split("\n")[2]
     assert journal.render_design(j, source="j.json").split("\n")[2] == md_header
-
-
-def test_cli_render_design_refuses_an_invalid_journal(tmp_path):
-    j = one_record_journal("a.md", "q")
-    j["records"][0]["status"] = "готов"
-    src, out = tmp_path / "j.json", tmp_path / "design.md"
-    journal.save_journal(src, j)
-    run = run_cli("render-design", src, "--out", out)
-    assert run.returncode == 1 and "F-01" in run.stderr
-    assert not out.exists()
 
 
 # --- сценарии 5.6 -----------------------------------------------------------
