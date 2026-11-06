@@ -212,15 +212,15 @@
 const JOURNAL = {
  "title": "Журнал решений: trace-graph",
  "source": "decisions.json",
- "sha256": "83980aad56850e752c22c2164844a622b09641985fe41c0bfcc3777007bf218b",
+ "sha256": "acb4137b42144679c6706277d389d33de5ce40e2215467e8ad20737226d3139b",
  "stats": {
-  "records": 157,
-  "forks": 136,
+  "records": 159,
+  "forks": 138,
   "facts": 21,
   "decided": 136,
   "parked": 4,
-  "evidence_total": 319,
-  "evidence_found": 153
+  "evidence_total": 323,
+  "evidence_found": 154
  },
  "records": [
   {
@@ -10503,7 +10503,7 @@ const JOURNAL = {
       {
        "path": "tools/trace_graph.py",
        "quote": "def _trace_comments(lines: list[str]) -> list[tuple[int, str, list[tuple[int, str]]]]:",
-       "line": 1276,
+       "line": 1287,
        "verdict": "сверено",
        "found": true
       }
@@ -10575,7 +10575,7 @@ const JOURNAL = {
       {
        "path": "tools/trace_graph.py",
        "quote": "в графе остался первый",
-       "line": 1189,
+       "line": 1200,
        "verdict": "сверено",
        "found": true
       }
@@ -11272,6 +11272,151 @@ const JOURNAL = {
    ],
    "comments": [],
    "finding": ""
+  },
+  {
+   "id": "F-158",
+   "question": "[связи] После F-156 сигнал «требование без записи» гасит любая связь `traces`, в том числе из следа пробы (`исходы: F-85 Backstop`) и к парковке (`канон — F-59`). Сценарий F-83.A говорит о требовании без `(F-NN)` в тексте. Требование без единого номера в тексте, но со следом пробы, сигнала не получит. На этом изменении таких требований ноль. Найдено финальным ревью ветки. Что гасит сигнал?",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-83",
+    "F-156",
+    "F-157",
+    "F-44"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Только номер в тексте требования: след пробы и парковка сигнал не гасят. Цена: правило в `graph_signals` (опора — номера тела, а не все связи `traces`), тест «след есть, номера в тексте нет — сигнал»",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Номер в тексте или в следе пробы, но не парковка: проба — запись о требовании, а парковка — другой механизм (F-157). Цена: правило по статусу записи, тест, уточнение сценария «Требование без номера»",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Любая связь `traces`, как сейчас; сценарий «Требование без номера» уточнить словами «ни в тексте, ни в следе». Цена: правка спеки, требование, у которого опора только в следе пробы, сигнала не получит",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Номер в тексте называет решение, из которого требование выросло (F-44); запись пробы называет край, найденный над уже написанным требованием, а не его происхождение. B и C оставят требование без истоков молча, если на нём сработала проба."
+   },
+   "decision": null,
+   "reversibility": {
+    "level": "обратимо",
+    "why": "правило сигнала в одном месте, архивных снимков ещё нет"
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/trace-graph/specs/trace-conventions/spec.md",
+     "quote": "- **GIVEN** требование без `(F-NN)`",
+     "line": null,
+     "verdict": "корня для пути нет",
+     "found": false
+    },
+    {
+     "path": "tools/trace_graph.py",
+     "quote": "named_traces = {e[\"from\"] for e in edges if e[\"type\"] == \"traces\"}",
+     "line": 1422,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "finding": ""
+  },
+  {
+   "id": "F-159",
+   "question": "[связи] Отчёт `trace-graph` называет четыре дочерних требования без записи: `artifact-attack` «Линзы атаки журнала», «Черта в ячейке атаки экранируется», `decision-viewer` «Шапка режима «атака» фильтрует по линзе и показывает запись», «Промпт режима «атака» пересобирается из состояния». По F-150.A им нужен номер решения о делении; номер мастера родителя связи не даёт. Чем закрыть до архива?",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-150",
+    "F-76",
+    "F-91",
+    "F-83"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Вписать `(F-76)` в текст четырёх дочерних: F-76.A — решение делить требование длиннее 500 знаков на дочерние. Цена: правка четырёх требований, сверка предела 500 знаков и `validate --strict`, вердикт атаки артефактов уже `stale`",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Завести на каждое деление запись-факт («требование X разделено на Y и Z») и вписать её номер. Цена: две новые записи (родителей два), правка четырёх требований",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Принять сигнал: четыре записи `[сигнал] требование без записи · …` с Dismiss. Цена: требования остаются без истока, сигнал снят словом",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Оставить сигнал открытым до архива: отчёт уедет в `graph/report.md` с четырьмя строками",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Деление сделано по решению F-76.A, и это решение уже в журнале; B завела бы записи, повторяющие F-76, а C и D оставили бы требования без истока, которое известно."
+   },
+   "decision": null,
+   "reversibility": {
+    "level": "обратимо",
+    "why": "правка текста четырёх требований"
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/trace-graph/specs/artifact-attack/spec.md",
+     "quote": "### Requirement: Линзы атаки журнала",
+     "line": null,
+     "verdict": "корня для пути нет",
+     "found": false
+    },
+    {
+     "path": "openspec/changes/trace-graph/specs/decision-viewer/spec.md",
+     "quote": "### Requirement: Промпт режима «атака» пересобирается из состояния",
+     "line": null,
+     "verdict": "корня для пути нет",
+     "found": false
+    }
+   ],
+   "comments": [],
+   "finding": ""
   }
  ],
  "notes": [
@@ -11355,7 +11500,7 @@ const SCHEME = {
 };
 const HELP = {
  "contract": 3,
- "taken_at": "2026-11-06T11:17:47+03:00",
+ "taken_at": "2026-11-06T11:40:20+03:00",
  "versions": {
   "openspec": "1.15.0-symphysis.4",
   "symphysis": null
@@ -11363,19 +11508,19 @@ const HELP = {
  "change": "trace-graph",
  "changes": null,
  "error": null,
- "current_step": "apply",
- "current_text": "Следующий шаг по файлам — `apply`, ход модели.",
- "turn": "model",
+ "current_step": "viewer",
+ "current_text": "Следующий шаг по файлам — `viewer`, ход человека: открытых развилок 2, решаются на странице журнала. После них по файлам идёт `apply`.",
+ "turn": "human",
  "next_by_status": "apply",
  "forks": {
-  "open": 0,
+  "open": 2,
   "parked": 0
  },
  "tasks": {
   "state": "ready",
   "total": 50,
-  "complete": 45,
-  "remaining": 5
+  "complete": 46,
+  "remaining": 4
  },
  "steps": [
   {
@@ -11448,7 +11593,7 @@ const HELP = {
   },
   {
    "id": "viewer",
-   "state": "idle",
+   "state": "ready",
    "turn": "human",
    "optional": false,
    "blocks": [],
