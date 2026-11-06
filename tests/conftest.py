@@ -462,13 +462,6 @@ ATTACK_FIX = FIX / "attack"
 FAKE_SHA = "0123456789abcdef" * 4
 
 
-def embedded_attack(html):
-    """JSON, который шаблон получил вместо `__ATTACK_JSON__`."""
-    start = html.index("const ATTACK = ") + len("const ATTACK = ")
-    payload, _ = json.JSONDecoder().raw_decode(html[start:].replace("<\\/", "</"))
-    return payload
-
-
 node = shutil.which("node")
 
 
