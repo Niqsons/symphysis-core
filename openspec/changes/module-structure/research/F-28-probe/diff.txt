@@ -1,0 +1,1 @@
+diff without-readme.txt with-readme.txt: 0 строк

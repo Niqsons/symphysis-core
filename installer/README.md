@@ -1,3 +1,8 @@
+---
+name: installer
+kind: технический
+---
+
 # @niqsons/symphysis
 
 Установщик схемы OpenSpec `symphysis`: кладёт в проект схему, скиллы
@@ -13,7 +18,7 @@
 | `openspec/config.yaml` | `<проект>/openspec/config.yaml` | сливается, см. ниже |
 | скиллы `symphysis-*` | `<skills-dir>/<имя>/SKILL.md` | в каждый `--skills-dir`; без параметра — `.claude/skills` |
 | тела агентов-водителей | `<agents-dir>/symphysis-<скилл>-driver.md` | в каждый `--agents-dir`; без параметра — `agents` рядом с каждым `--skills-dir` (`.claude/agents`); формат Claude Code, поле `skills:` грузит тело скилла |
-| инструменты журнала и настроек | `<проект>/.symphysis/` (`tools/`, `docs/`) | `journal.py`, модули, `symphysis_config.py`, `step_help.py` (справка о шаге), `trace_graph.py` (граф трассируемости), `openspec_run.py` (общий запуск форка), `symphysis-version.txt` (версия поставленных инструментов; не пишется, если часть инструментов пропущена), схема JSON, файл корней |
+| инструменты журнала и настроек | `<проект>/.symphysis/` (`tools/`, `docs/`) | `journal.py`, модули, `symphysis_config.py`, `step_help.py` (справка о шаге), `trace_graph.py` (граф трассируемости), `openspec_run.py` (общий запуск форка), `symphysis-version.txt` (версия поставленных инструментов; не пишется, если часть инструментов пропущена), схема `journal.schema.json` (в `tools/` рядом с кодом, F-41), файл корней |
 | `symphysis.yaml` | `<проект>/symphysis.yaml` | личная настройка, всё включено; не перезаписывается и с `--force` |
 | строка `symphysis.yaml` | `<проект>/.gitignore` | файл создаётся при отсутствии; git не нужен; правка уходит в git вместе с работой |
 
@@ -260,3 +265,11 @@ npm pack
 - Тесты, вызывающие `install`/`check`, задают `XDG_CONFIG_HOME` во
   временный каталог: настоящий глобальный конфиг OpenSpec они не трогают,
   и отдельный тест сверяет его байты до и после.
+
+## Каталоги пакета
+
+- [bin/](bin/) — точка входа команды `symphysis`
+- [lib/](lib/) — код команд `install`, `check`, `config`
+- [scripts/](scripts/) — сборка `payload/` из корня репозитория
+- [test/](test/) — тесты пакета; в поставку не идут
+- [test-support/](test-support/) — вспомогательные файлы тестов

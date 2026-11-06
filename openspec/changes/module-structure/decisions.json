@@ -1,0 +1,3966 @@
+{
+ "title": "Журнал решений: module-structure",
+ "source": "decisions.json",
+ "intro": "Пути улик — от корня проекта, корни названы в `probes/journal-roots.json`: `upstream/` и `context/` ведут в основной клон, `vscode/` — в плагин. Материалы: `intent.md`, раздел «Компоненты и модули» разбора `docs/analysis/requirements-traceability-graph-of-symphysis.md` (определения Т20, README модуля Т21, разведка путей и импортов), `tools/`, `installer/scripts/sync-payload.js`, `installer/README.md`, `docs/repo-contract.md`, тесты ядра и плагина, мастер-спеки, `src/`, `build.mjs` и упаковка плагина.\n\nF-01 — критерий из `intent.md`, F-02–F-13 — факты о текущем состоянии ядра. F-14–F-16 — ответы владельца в чате 2026-11-06 на вопросы о критериях, до журнала; перенесены дословно файлом `answers/2026-11-06.md`. Развилки первого круга — F-17–F-26. F-29 — ответ владельца о плагине в объёме изменения (`answers/2026-11-06-2.md`), за ним F-30–F-32 о плагине. Парковки исследованию — F-20, F-27, F-28, F-32.\n\nВторой круг начинается с F-33: развилки подняты отчётами `research/F-20.md`, `research/F-27.md`, `research/F-28.md`, `research/F-32.md`; находки внесены в парковки F-20, F-27, F-28, F-32. Раскладка 3 графа модулей (`research/F-27-probe/module-graph.txt`) досчитана во втором круге. F-39 C снимает решение F-21 A.\n\nF-45 заведена на шаге proposal по находке модели и решена в чате: `answers/2026-11-06-5.md`. F-46 — факт шага specs: деление длинного требования при MODIFIED. F-66 и F-67 — развилки шага tasks: без них задачи переноса не конкретны.",
+ "records": [
+  {
+   "id": "F-01",
+   "question": "Критерий готовности: структура symphysis теперь соответствует определениям",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "постановка",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "F-17, F-18, F-22, F-25",
+   "evidence": [
+    {
+     "path": "openspec/changes/module-structure/intent.md",
+     "quote": "структура symphysis теперь соответствует определениям"
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-02",
+   "question": "Определения приняты владельцем 2026-11-05 (Т20): компонент выпускается целиком; модуль — часть компонента с одной ответственностью, именем и границей, отдельно не выпускается; модули двух родов — доменный и технический.",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "материалы",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "F-17, F-18, F-21, F-22",
+   "evidence": [
+    {
+     "path": "docs/analysis/requirements-traceability-graph-of-symphysis.md",
+     "quote": "это то, что выпускается целиком: своя версия, свой способ поставки, связь с другими компонентами только через объявленный контракт"
+    },
+    {
+     "path": "docs/analysis/requirements-traceability-graph-of-symphysis.md",
+     "quote": "это часть компонента с одной ответственностью, у которой есть имя и граница: остальные части обращаются к нему через эту границу."
+    },
+    {
+     "path": "docs/analysis/requirements-traceability-graph-of-symphysis.md",
+     "quote": "Доменный отвечает за область, технический ни за какую, и переиспользуемое живёт в таких."
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-03",
+   "question": "Модуль в репозитории — каталог с README: описание модуля, ссылки и описание вложенных каталогов первого уровня (Т21). Файл принадлежит одному модулю. Id модуля — `репозиторий/модуль`; репозиторий ядра в таблице разбора — `symphysis-core`.",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "материалы",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "F-17, F-21, F-25, F-27",
+   "evidence": [
+    {
+     "path": "docs/analysis/requirements-traceability-graph-of-symphysis.md",
+     "quote": "Хорошо описанный модуль это каталог с README: описание модуля, а также ссылки и описание вложенных каталогов первого уровня (Т21)."
+    },
+    {
+     "path": "docs/analysis/requirements-traceability-graph-of-symphysis.md",
+     "quote": "Файл принадлежит одному модулю."
+    },
+    {
+     "path": "docs/analysis/requirements-traceability-graph-of-symphysis.md",
+     "quote": "Поэтому id модуля это `репозиторий/модуль`."
+    },
+    {
+     "path": "openspec/changes/module-structure/intent.md",
+     "quote": "хорошо описанный модуль в репозитории должен включать README с описанием этого модуля"
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-04",
+   "question": "Сейчас репозиторий определениям не соответствует: README есть только у `installer/`, модули ядра лежат вперемешку в `tools/` и `skills/`, а `tools/journal_render.py` стоит сразу в двух модулях.",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "материалы",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "F-17, F-18, F-27",
+   "evidence": [
+    {
+     "path": "docs/analysis/requirements-traceability-graph-of-symphysis.md",
+     "quote": "README есть только у `installer/`, модули ядра лежат вперемешку в `tools/` и `skills/`."
+    },
+    {
+     "path": "docs/analysis/requirements-traceability-graph-of-symphysis.md",
+     "quote": "Сейчас файл стоит сразу в двух модулях."
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-05",
+   "question": "Скрипты `tools/` импортируют друг друга по имени из одного каталога; тесты кладут `tools/` в `sys.path`. Разнести их по каталогам модулей — не просто перенос файлов.",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "материалы",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "F-20, F-27",
+   "evidence": [
+    {
+     "path": "docs/analysis/requirements-traceability-graph-of-symphysis.md",
+     "quote": "Модули `tools/` импортируют друг друга по имени из одного каталога, поэтому разнести их это не просто перенос файлов."
+    },
+    {
+     "path": "tests/conftest.py",
+     "quote": "sys.path.insert(0, str(ROOT / \"tools\"))"
+    },
+    {
+     "path": "tools/trace_graph.py",
+     "quote": "from journal_apply import UNUSABLE_ROOTS, default_roots  # noqa: E402"
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-06",
+   "question": "Свои файлы скрипты находят от каталога над `tools/`: схему журнала в `docs/`, шаблон страницы и файл корней в `tools/`. В исходнике этот каталог — корень репозитория, в установке — `.symphysis`; раскладка исходника `tools/` + `docs/journal.schema.json` повторяет раскладку установки.",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "материалы",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "F-19, F-20",
+   "evidence": [
+    {
+     "path": "tools/journal_model.py",
+     "quote": "ROOT = Path(__file__).resolve().parent.parent"
+    },
+    {
+     "path": "tools/journal_model.py",
+     "quote": "SCHEMA_PATH = ROOT / \"docs\" / \"journal.schema.json\""
+    },
+    {
+     "path": "tools/journal_render.py",
+     "quote": "TEMPLATE_PATH = ROOT / \"tools\" / \"playground-template.html\""
+    },
+    {
+     "path": "tools/journal_apply.py",
+     "quote": "ROOTS_PATH = ROOT / \"tools\" / \"journal-roots.json\""
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-07",
+   "question": "Установка собирается списком: payload берёт файлы `tools/` и `docs/journal.schema.json` по именам, скиллы — из каталогов `skills/symphysis-*`, общие файлы — из `skills/shared`, схему — каталогом; в проекте всё ложится в `.symphysis/tools/` и `.symphysis/docs/`. Схема и скиллы зовут `.symphysis/tools/…`.",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "материалы",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "F-18, F-19",
+   "evidence": [
+    {
+     "path": "installer/scripts/sync-payload.js",
+     "quote": "\"tools/journal.py\","
+    },
+    {
+     "path": "installer/scripts/sync-payload.js",
+     "quote": "const SHARED_DIR = \"skills/shared\";"
+    },
+    {
+     "path": "installer/scripts/sync-payload.js",
+     "quote": ".filter((e) => e.isDirectory() && e.name.startsWith(\"symphysis-\"))"
+    },
+    {
+     "path": "installer/README.md",
+     "quote": "инструменты журнала и настроек | `<проект>/.symphysis/` (`tools/`, `docs/`)"
+    },
+    {
+     "path": "openspec/schemas/symphysis/schema.yaml",
+     "quote": "Улики сверяет `python .symphysis/tools/journal.py check <каталог изменения>/decisions.json`"
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-08",
+   "question": "Плагин ищет ядро в `.symphysis/tools/journal.py`, затем в `tools/journal.py` папки; контракт называет `.symphysis/tools/` местом ядра в каждом проекте, а подкоманды `journal.py` — частью контракта.",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "материалы",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "F-19, F-20",
+   "evidence": [
+    {
+     "path": "vscode/src/host/project.ts",
+     "quote": "const toolsDirs = (root: string) => [path.join(root, \".symphysis\", \"tools\"), path.join(root, \"tools\")];"
+    },
+    {
+     "path": "docs/repo-contract.md",
+     "quote": "Ядро лежит в `.symphysis/tools/` каждого проекта, и его версия расходится с версией плагина."
+    },
+    {
+     "path": "docs/repo-contract.md",
+     "quote": "подкоманды и аргументы `journal.py`, которые вызывает плагин, в том числе `--out`, `--attack`, `--dry-run`;"
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "contract"
+   ]
+  },
+  {
+   "id": "F-09",
+   "question": "Юнит-тесты плагина берут ядро из `tools/` клона symphysis: проверяют `tools/journal.py` и копируют файлы регуляркой по именам; таких мест четыре (`test/unit/fixture-project.ts`, `test/unit/step-help.test.ts`, `test/e2e/harness.mjs`, `test/e2e/demo.mjs`). Перенос `tools/` их ломает, коммиту плагина нужен `Needs:`.",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "материалы",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "F-19",
+   "evidence": [
+    {
+     "path": "vscode/test/unit/fixture-project.ts",
+     "quote": "export const hasCore = fs.existsSync(path.join(SYMPHYSIS, \"tools\", \"journal.py\"));"
+    },
+    {
+     "path": "vscode/test/unit/fixture-project.ts",
+     "quote": "if (/^(journal.*\\.(py|json)|step_help\\.py|openspec_run\\.py|playground-template\\.html)$/.test(f))"
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "contract"
+   ]
+  },
+  {
+   "id": "F-10",
+   "question": "Мастер-спеки называют исходные пути в телах требований: `tools/trace_graph.py`, `tools/step_help.py`, `tools/playground-template.html` и другие.",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "материалы",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "F-26",
+   "evidence": [
+    {
+     "path": "openspec/specs/trace-graph/spec.md",
+     "quote": "Скрипт графа, рабочее имя `tools/trace_graph.py`, SHALL собирать граф изменения"
+    },
+    {
+     "path": "openspec/specs/step-help/spec.md",
+     "quote": "`tools/step_help.py` SHALL называть один текущий шаг"
+    },
+    {
+     "path": "openspec/specs/decision-viewer/spec.md",
+     "quote": "по шаблону `tools/playground-template.html`"
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-11",
+   "question": "Улики прежних журналов называют пути `tools/…` (около 120 в девяти архивных журналах и в журнале плана) и `vscode/src/…` (около 60). Файлы корней сопоставляют префиксу один каталог.",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "материалы",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "F-24",
+   "evidence": [
+    {
+     "path": "openspec/changes/archive/2026-11-06-trace-graph/decisions.json",
+     "quote": "\"path\": \"tools/step_help.py\","
+    },
+    {
+     "path": "tools/journal-roots.json",
+     "quote": "\"tools/\": \"<root>/tools\","
+    },
+    {
+     "path": "openspec/changes/archive/2026-11-06-trace-graph/decisions.json",
+     "quote": "\"path\": \"vscode/src/shared/attack.ts\","
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-12",
+   "question": "Схема уже каталог `openspec/schemas/symphysis/`, её место задаёт OpenSpec; payload копирует этот каталог целиком.",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "материалы",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "F-28",
+   "evidence": [
+    {
+     "path": "docs/analysis/requirements-traceability-graph-of-symphysis.md",
+     "quote": "`openspec/schemas/symphysis/` уже каталог, и там её ищет OpenSpec. Это будет модуль, чьё место задано извне."
+    },
+    {
+     "path": "installer/scripts/sync-payload.js",
+     "quote": "const DIRS = [\"openspec/schemas/symphysis\"];"
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "coreMods"
+   ]
+  },
+  {
+   "id": "F-13",
+   "question": "В корне рядом с продуктом лежит контур разработки: установка в самого себя (`.symphysis/`, `.claude/`) производна и в git не лежит; хуки гейта имён и списки разрешённого — в `tools/`; тесты — в `tests/`.",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "материалы",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "F-22, F-23",
+   "evidence": [
+    {
+     "path": ".gitignore",
+     "quote": "# производные init форка и symphysis install"
+    },
+    {
+     "path": "docs/repo-contract.md",
+     "quote": "Разрешённые адреса и строки каждый проект держит в своих `tools/allowed-hosts.txt` и `tools/allowed-lines.txt`."
+    },
+    {
+     "path": "pytest.ini",
+     "quote": "testpaths = tests"
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "coreDev"
+   ]
+  },
+  {
+   "id": "F-14",
+   "question": "Нужна ли миграция установленных копий, если раскладка `.symphysis/` изменится?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Миграции нет: установка в другие проекты не переносится, демонстрационные и тестовые копии переустанавливаются или удаляются. Единственная живая установка — сам symphysis, она производна и переустанавливается `symphysis install --force`",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": ".gitignore",
+       "quote": "# производные init форка и symphysis install"
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Слово владельца, других вариантов он не называл."
+   },
+   "decision": {
+    "option": "A",
+    "word": "Про раскладку установки: symphysis еще нигде не установлен, кроме самого symphysis, если где то и остались копии, то это демонстрационные и тестовые, их не жалко.",
+    "date": "2026-11-06"
+   },
+   "reversibility": {
+    "level": "обратимо",
+    "why": "живую установку переустанавливает `symphysis install --force`; миграцию можно написать позже, если такая найдётся"
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "F-19: цена варианта B — только смена контракта с плагином, без миграции",
+   "evidence": [],
+   "comments": []
+  },
+  {
+   "id": "F-15",
+   "question": "Должны ли импорты прежней раскладки работать в установленных проектах без переустановки?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Нет: совместимость со старыми установками не держится, единственная активная установка — в этом проекте, она переустанавливается",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "docs/analysis/requirements-traceability-graph-of-symphysis.md",
+       "quote": "Модули `tools/` импортируют друг друга по имени из одного каталога, поэтому разнести их это не просто перенос файлов."
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Слово владельца, других вариантов он не называл."
+   },
+   "decision": {
+    "option": "A",
+    "word": "про импорты уже сказал, что единственная активная установка -- в этом проекте.",
+    "date": "2026-11-06"
+   },
+   "reversibility": {
+    "level": "обратимо",
+    "why": "обёртки старых имён в `.symphysis/tools/` можно добавить позже без смены контракта с плагином"
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "F-20: варианты не обязаны оставлять старые пути рабочими",
+   "evidence": [],
+   "comments": []
+  },
+  {
+   "id": "F-16",
+   "question": "Когда README модуля несёт имя и род в разборчивом для скрипта виде: в этом изменении или на этапе графа?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "В этом изменении; форма — F-21",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "docs/analysis/requirements-traceability-graph-of-symphysis.md",
+       "quote": "Если README несёт имя и род в разборчивом для скрипта виде, граф возьмёт их оттуда."
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Слово владельца, других вариантов он не называл."
+   },
+   "decision": {
+    "option": "A",
+    "word": "про имя и род модуля -- сделать лучше сейчас.",
+    "date": "2026-11-06"
+   },
+   "reversibility": {
+    "level": "обратимо",
+    "why": "пока скрипт графа README не читает, форма имени и рода меняется правкой README без миграции"
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "F-21",
+   "evidence": [],
+   "comments": []
+  },
+  {
+   "id": "F-17",
+   "question": "Где в репозитории лежат каталоги модулей?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-02",
+    "F-03"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Каждый модуль — каталог первого уровня рядом с `installer/`: `decisions/`, `viewer/` и так далее. `installer/` уже так устроен и не переезжает. В корне соседствуют модули и контур разработки (`docs/`, `openspec/`, `tests/`), различает их README корня (F-22). Обратимо: перенос каталогов",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "docs/analysis/requirements-traceability-graph-of-symphysis.md",
+       "quote": "README есть только у `installer/`, модули ядра лежат вперемешку в `tools/` и `skills/`."
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Модули в одном каталоге-контейнере (`modules/<имя>/`), контур разработки — в корне: граница продукта и разработки видна по пути. Цена: ступень в каждом пути; `installer/` переезжает или остаётся исключением, а схема всё равно остаётся в `openspec/schemas/symphysis/` — контейнер не соберёт все модули",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "docs/analysis/requirements-traceability-graph-of-symphysis.md",
+       "quote": "`openspec/schemas/symphysis/` уже каталог, и там её ищет OpenSpec. Это будет модуль, чьё место задано извне."
+      }
+     ]
+    },
+    {
+     "letter": "C",
+     "text": "Оставить как есть: каталоги по роду файлов (`tools/`, `skills/`, `agents/`), у каждого README",
+     "added": false,
+     "unlikely": "в `tools/` лежат журнал, граф, справка о шаге и настройки — несколько ответственностей в одном каталоге, критерий F-01 не выполнен",
+     "evidence": [
+      {
+       "path": "docs/analysis/requirements-traceability-graph-of-symphysis.md",
+       "quote": "Файл принадлежит одному модулю."
+      }
+     ]
+    }
+   ],
+   "antipodes": [
+    {
+     "option": "C",
+     "other": "F-18.A"
+    },
+    {
+     "option": "C",
+     "other": "F-18.B"
+    }
+   ],
+   "recommendation": {
+    "option": "A",
+    "why": "`installer/` уже модуль первого уровня с README — образец есть, и он не переезжает. B всё равно не соберёт схему, чьё место задаёт OpenSpec, а лишняя ступень ляжет на все ссылки; C оставляет каталог с несколькими ответственностями."
+   },
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-06"
+   },
+   "reversibility": {
+    "level": "обратимо",
+    "why": "раскладка исходника не входит ни в контракт с плагином, ни в установку (F-19 A): откат — обратный перенос и правка путей внутри репозитория"
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "F-22, F-23",
+   "evidence": [],
+   "comments": [],
+   "nodes": [
+    "coreMods"
+   ]
+  },
+  {
+   "id": "F-18",
+   "question": "Насколько мелко резать ядро на модули и где живут скиллы и водители?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-02",
+    "F-04"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Модуль на механику конвейера, скилл и водитель — в модуле своей механики. Доменные: `decisions` (журнал, проверка, `apply`, скилл брейншторма), `viewer` (страница, скилл просмотрщика), `consequences` (места кода, опись, скилл, водитель), `attack` (скилл, таблица линз, водитель), `probes` (две пробы, водители), `research` (скилл, водитель), `trace` (граф), `step-help` (справка о шаге). Технические: `openspec-run` (запуск форка), `settings` (`symphysis.yaml`), `installer`. Схема — модуль с местом от OpenSpec. Как в таблице разбора. Цена: инсталлятор собирает скиллы и водителей из модулей, а не из `skills/` и `agents/`; меняются пути в `docs/skills-canon.md`",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "docs/analysis/requirements-traceability-graph-of-symphysis.md",
+       "quote": "`skills/symphysis-brainstorm/` | доменный |"
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Код по механикам, как в A, а скиллы, водители и их общие файлы — один модуль `skills/` (водители внутри). Инсталлятор и канон тел скиллов почти не меняются. Цена: модуль `skills` отвечает за все шаги сразу, скилл отделён от кода своей механики",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "installer/scripts/sync-payload.js",
+       "quote": "const SHARED_DIR = \"skills/shared\";"
+      }
+     ]
+    },
+    {
+     "letter": "C",
+     "text": "Крупно: `journal` (журнал, страница, опись), `trace`, `step-help`, `skills`, `installer`, схема. Меньше переносов, `tools/journal_render.py` резать не надо",
+     "added": false,
+     "unlikely": "владелец называл `decisions` и `viewer` отдельными модулями (Т20), C сливает их обратно",
+     "evidence": [
+      {
+       "path": "docs/analysis/requirements-traceability-graph-of-symphysis.md",
+       "quote": "это, например, модуль decisions, или модуль viewer"
+      }
+     ]
+    }
+   ],
+   "antipodes": [
+    {
+     "option": "A",
+     "other": "F-17.C"
+    },
+    {
+     "option": "B",
+     "other": "F-17.C"
+    }
+   ],
+   "recommendation": {
+    "option": "A",
+    "why": "Владелец назвал модулями `decisions` и `viewer` — это механики, а не роды файлов. В A скилл лежит рядом с кодом своей механики, и правка механики не ходит по двум каталогам; B оставляет модуль `skills` с ответственностью за все шаги, C сливает разделённое владельцем."
+   },
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-06"
+   },
+   "reversibility": {
+    "level": "обратимо",
+    "why": "границы модулей живут внутри репозитория, установка плоская (F-19 A): перекроить модули — перенос файлов и правка `sync-payload.js`"
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "F-27 раскладывает файлы по выбранному варианту, F-23",
+   "evidence": [],
+   "comments": [],
+   "nodes": [
+    "coreMods"
+   ]
+  },
+  {
+   "id": "F-19",
+   "question": "Как раскладывается установка `.symphysis/` после перестройки исходника?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-14"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Плоская, как сейчас: `.symphysis/tools/` и `.symphysis/docs/`, payload сводит файлы модулей в эти два каталога. Пути в схеме, скиллах, контракте с плагином не меняются, номер контракта прежний. Цена: раскладки исходника и установки разные — код ищет свои файлы в обеих (F-20)",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "docs/analysis/requirements-traceability-graph-of-symphysis.md",
+       "quote": "Если в `.symphysis/tools/` раскладка не изменится, контракт с плагином перенос не затронет."
+      },
+      {
+       "path": "installer/README.md",
+       "quote": "инструменты журнала и настроек | `<проект>/.symphysis/` (`tools/`, `docs/`)"
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Установка повторяет модули: `.symphysis/<модуль>/`, раскладка одна в исходнике и в установке. Цена: смена контракта (номер 4) — плагин ищет `.symphysis/tools/journal.py`; правятся все вызовы `.symphysis/tools/…` в схеме и скиллах; выпуск плагина с `Needs:`. Миграции не нужно (F-14)",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "vscode/src/host/project.ts",
+       "quote": "const toolsDirs = (root: string) => [path.join(root, \".symphysis\", \"tools\"), path.join(root, \"tools\")];"
+      },
+      {
+       "path": "docs/repo-contract.md",
+       "quote": "Ядро лежит в `.symphysis/tools/` каждого проекта, и его версия расходится с версией плагина."
+      }
+     ]
+    }
+   ],
+   "antipodes": [
+    {
+     "option": "B",
+     "other": "F-20.A"
+    },
+    {
+     "option": "B",
+     "other": "F-20.B"
+    }
+   ],
+   "recommendation": {
+    "option": "A",
+    "why": "Определения говорят о структуре репозитория, а установка — формат поставки компонента. A не трогает контракт с плагином и пути в продукте; B делает раскладку одной, но платит сменой контракта и выпуском плагина ради того, чего критерий F-01 не требует."
+   },
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-06"
+   },
+   "reversibility": {
+    "level": "обратимо",
+    "why": "контракт с плагином не меняется; перейти к зеркальной раскладке позже стоит столько же, сколько сейчас: номер контракта 4 и выпуск плагина"
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "F-20",
+   "evidence": [],
+   "comments": [],
+   "nodes": [
+    "payload",
+    "install"
+   ]
+  },
+  {
+   "id": "F-20",
+   "question": "Как код модулей находит друг друга и свои файлы в исходнике?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-15",
+    "F-19"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Точки входа (`journal.py`, `trace_graph.py`, `step_help.py`, `symphysis_config.py`) в исходнике добавляют каталоги модулей в `sys.path`, тесты — через `conftest.py`; свои файлы модуль ищет рядом с кодом, а в установке — по плоской раскладке. Исходник запускается на месте, как сейчас. Цена: код знает две раскладки",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "tests/conftest.py",
+       "quote": "sys.path.insert(0, str(ROOT / \"tools\"))"
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Исходник на месте не запускается: всё идёт через установку — `.symphysis/tools/` самого репозитория, в тестах — собранный payload. Код знает одну, плоскую раскладку. Цена: перед запуском из исходника — сборка и установка, тестам нужен node; правило архивации и команды `CLAUDE.md` переходят на установленную копию, а у неё `<root>` файла корней — `.symphysis`",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "tools/journal_model.py",
+       "quote": "ROOT = Path(__file__).resolve().parent.parent"
+      }
+     ]
+    },
+    {
+     "letter": "C",
+     "text": "Пакет Python: подпакеты модулей и относительные импорты",
+     "added": false,
+     "unlikely": "плоская установка и вызов `python .symphysis/tools/journal.py` из контракта с плагином без обёрток перестают работать",
+     "evidence": [
+      {
+       "path": "docs/analysis/requirements-traceability-graph-of-symphysis.md",
+       "quote": "Модули `tools/` импортируют друг друга по имени из одного каталога, поэтому разнести их это не просто перенос файлов."
+      }
+     ]
+    }
+   ],
+   "antipodes": [
+    {
+     "option": "A",
+     "other": "F-19.B"
+    },
+    {
+     "option": "B",
+     "other": "F-19.B"
+    }
+   ],
+   "recommendation": {
+    "option": "A",
+    "why": "Запуск из исходника нужен разработке сегодня: команды `CLAUDE.md`, заморозка графа исходным `tools/trace_graph.py` из-за `<root>` файлов корней. B переводит каждый запуск на установку и меняет `<root>`; C ломает плоскую установку. Окончательно — после карты из парковки."
+   },
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-06"
+   },
+   "reversibility": {
+    "level": "обратимо",
+    "why": "две раскладки знают только точки входа и `conftest.py`; переход к запуску через установку — снять обёртки и переписать команды `CLAUDE.md` и правило архивации"
+   },
+   "outcome": null,
+   "parking": [
+    {
+     "addressee": "материалы",
+     "text": "Перечислить в `tools/*.py` все места, где код находит файлы от `ROOT` или `__file__` (схема JSON, шаблон страницы, файл корней, файл версии, путь `journal.py` для подсказок), и все точки запуска из исходника (`CLAUDE.md`, `docs/repo-contract.md`, правила архивации в `openspec/config.yaml`, хуки `tools/hooks/`, тесты ядра и плагина). Для вариантов A и B — что меняется в каждом месте и как `<root>` файла корней ведёт себя в исходнике и в установке.",
+     "finding": "`research/F-20.md`: `ROOT` — каталог над кодом; при модулях первого уровня он и из каталога модуля — корень репозитория, `<root>` исходника прежний. «Рядом с кодом» совпадает в обеих раскладках для файлов, которые установка кладёт в `.symphysis/tools/` (шаблон, файл версии, `journal.py`); исключения — схема журнала (в установке `.symphysis/docs/`), исходный файл корней `tools/journal-roots.json` и скиллы клона в `skills/`. Исходник запускают `CLAUDE.md`, 23 файла тестов ядра и четыре места тестов плагина; хуки остаются в `tools/hooks/`; правило архивации зовёт установку. Развилки — F-40, F-41, F-42."
+    }
+   ],
+   "dispute": "",
+   "consequences": "При F-19.B развилка теряет смысл: раскладка одна, в исходнике и в установке",
+   "evidence": [
+    {
+     "path": "tools/step_help.py",
+     "quote": "INSTALL_SKILL_DIRS = (*PROJECT_SKILL_DIRS, \"skills\")"
+    },
+    {
+     "path": "CLAUDE.md",
+     "quote": "`tools/journal.py render-html` из шаблона `tools/playground-template.html`."
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "payload"
+   ]
+  },
+  {
+   "id": "F-21",
+   "question": "В каком виде README модуля несёт имя и род?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-16",
+    "F-32"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Frontmatter YAML в начале README: `name: decisions`, `kind: доменный`; ниже — описание и вложенные каталоги ссылками. Скрипт читает первые строки без разбора markdown, GitHub показывает frontmatter таблицей. Имя может отличаться от имени каталога (схема лежит в `symphysis/`). Цена: README инсталлятора и корневой README плагина — README пакетов, frontmatter попадёт на их страницы (F-32)",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "docs/analysis/requirements-traceability-graph-of-symphysis.md",
+       "quote": "Если README несёт имя и род в разборчивом для скрипта виде, граф возьмёт их оттуда."
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Без frontmatter: заголовок `# Модуль decisions` и строка `Род: доменный`, скрипт берёт их регуляркой. Читается как обычный текст. Цена: форма строки держится договорённостью, правка текста её ломает",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/changes/module-structure/intent.md",
+       "quote": "хорошо описанный модуль в репозитории должен включать README с описанием этого модуля"
+      }
+     ]
+    },
+    {
+     "letter": "C",
+     "text": "Отдельный `module.yaml` рядом с README",
+     "added": false,
+     "unlikely": "владелец описал модуль README (Т21), второй файл объявления на каждый модуль определение не просит",
+     "evidence": [
+      {
+       "path": "docs/analysis/requirements-traceability-graph-of-symphysis.md",
+       "quote": "Хорошо описанный модуль это каталог с README: описание модуля, а также ссылки и описание вложенных каталогов первого уровня (Т21)."
+      }
+     ]
+    }
+   ],
+   "antipodes": [
+    {
+     "option": "A",
+     "other": "F-39.C"
+    }
+   ],
+   "recommendation": {
+    "option": "A",
+    "why": "Frontmatter отделяет данные для скрипта от текста для человека: правка описания не ломает разбор. У B форма строки держится только договорённостью, C добавляет второй файл на модуль, хотя модуль описан README."
+   },
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-06"
+   },
+   "reversibility": {
+    "level": "дорого",
+    "why": "frontmatter станет входом теста структуры (F-25), а на этапе графа — скрипта графа; смена формы — правка README всех модулей обоих репозиториев и разборщиков"
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "F-25",
+   "evidence": [],
+   "comments": [],
+   "nodes": [
+    "coreMods",
+    "plugMods"
+   ]
+  },
+  {
+   "id": "F-22",
+   "question": "Что в корне каждого репозитория описывает его самого и каталоги, которые не модули?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-17",
+    "F-29",
+    "F-32"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "README корня: компонент (ядро), репозиторий `symphysis-core`, как выпускается и где контракт с плагином; затем каждый каталог первого уровня с пометкой — модуль или контур разработки (`docs/`, `openspec/`, `tests/`, `tools/` с хуками гейта имён, `vendor/`, `.bugs/`). README модуля — только у модулей: контур разработки не выпускается и частью компонента не является. `tools/` остаётся каталогом инструментов разработки, его пути в `docs/repo-contract.md` не меняются. В плагине корневой README — README пакета `.vsix`; где там живёт описание репозитория — после F-32",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "docs/repo-contract.md",
+       "quote": "Разрешённые адреса и строки каждый проект держит в своих `tools/allowed-hosts.txt` и `tools/allowed-lines.txt`."
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "README модуля у каждого каталога первого уровня, включая `docs/`, `tests/`, `openspec/`: единообразно. Цена: каталоги разработки получают имя и род модуля, хотя частью выпускаемого компонента не являются, — граф примет их за модули",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/changes/module-structure/intent.md",
+       "quote": "хорошо описанный модуль в репозитории должен включать README с описанием этого модуля"
+      }
+     ]
+    },
+    {
+     "letter": "C",
+     "text": "Собрать контур разработки под один каталог `dev/`",
+     "added": false,
+     "unlikely": "корень проекта находится по каталогу `openspec/`, а пути `docs/…` называют `CLAUDE.md`, разборы и архивные журналы",
+     "evidence": [
+      {
+       "path": "tools/step_help.py",
+       "quote": "if (folder / \"openspec\").is_dir()), start)"
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Компонент — то, что выпускается, а `docs/` и `tests/` не выпускаются; A описывает их, не называя модулями. B выдаёт контур разработки за модули и запутает граф, C ломает поиск корня и сотни ссылок."
+   },
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-06"
+   },
+   "reversibility": {
+    "level": "обратимо",
+    "why": "README корня — текст; на нём стоит только тест структуры (F-25)"
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "F-25",
+   "evidence": [],
+   "comments": [],
+   "nodes": [
+    "coreReadme",
+    "coreDev",
+    "plugReadme",
+    "plugDev"
+   ]
+  },
+  {
+   "id": "F-23",
+   "question": "Где лежат тесты модуля?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-17",
+    "F-18",
+    "F-31"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "В каталоге модуля (`decisions/tests/`), как у `installer/test/`; в плагине — юнит-тесты модуля в его каталоге, сквозные e2e остаются в `test/e2e/`; общие фикстуры и шим форка — в общем месте для тестов, `pytest.ini` перечисляет каталоги. Перенос модуля несёт его тесты. Цена: общий `conftest.py` и фикстуры делятся между модулями",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "docs/plan-implementation.tasks.md",
+       "quote": "- Test: `installer/test/install.test.js`"
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Оставить как есть: общий `tests/` в контуре разработки, README модуля называет свои тестовые файлы. Ни один тест не переезжает. Цена: 28 файлов разных модулей в одном каталоге, связь теста с модулем держит только README",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "pytest.ini",
+       "quote": "testpaths = tests"
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Тест проверяет одну ответственность, его место — в её модуле; `installer/` так уже устроен. B оставляет общий каталог вперемешку — то, что изменение убирает в `tools/`."
+   },
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-06"
+   },
+   "reversibility": {
+    "level": "обратимо",
+    "why": "перенос тестов внутри репозитория: меняются `pytest.ini`, общий `conftest.py` и точки сборки тестов в `build.mjs` плагина"
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [],
+   "comments": [],
+   "nodes": [
+    "coreDev",
+    "plugDev"
+   ]
+  },
+  {
+   "id": "F-24",
+   "question": "Что делать с уликами прежних журналов, которые называют старые пути `tools/…`?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Оставить как есть: улики прежних журналов (`tools/…` и `vscode/src/…`) — история на своём коммите; `check` по архивному журналу даст «файла нет» — сигнал, не стоп",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/changes/archive/2026-11-06-trace-graph/decisions.json",
+       "quote": "\"path\": \"tools/step_help.py\","
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Переписать пути улик в архивных журналах и журнале плана",
+     "added": false,
+     "unlikely": "архив — след решений на своём коммите, правка путей меняет журнал задним числом",
+     "evidence": [
+      {
+       "path": "openspec/changes/archive/2026-11-06-trace-graph/decisions.json",
+       "quote": "\"path\": \"tools/step_help.py\","
+      }
+     ]
+    },
+    {
+     "letter": "C",
+     "text": "Переадресация префикса `tools/` в файле корней",
+     "added": false,
+     "unlikely": "файлы `tools/` расходятся по разным модулям, а корень сопоставляет префиксу один каталог",
+     "evidence": [
+      {
+       "path": "tools/journal-roots.json",
+       "quote": "\"tools/\": \"<root>/tools\","
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Улика читается на коммите своего журнала; B переписывает историю, C не работает, потому что префикс ведёт в один каталог."
+   },
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-06"
+   },
+   "reversibility": {
+    "level": "обратимо",
+    "why": "старые журналы не меняются; переписать их улики можно и позже, отдельным решением"
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [],
+   "comments": []
+  },
+  {
+   "id": "F-25",
+   "question": "Чем проверяется критерий «структура соответствует определениям»?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-21",
+    "F-22"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Новая capability о структуре репозитория (README модуля с именем и родом, ссылки на вложенные каталоги первого уровня, файл в одном модуле, README корня называет каждый каталог) и тест в каждом репозитории (pytest в ядре, node в плагине), который сверяет это по файлам: следующий каталог без README даёт красный",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "CLAUDE.md",
+       "quote": "Тест `tests/test_trace_graph.py` сверяет реестр со `schema.yaml`: артефакт без"
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Только тест, без capability: устройство репозитория продукт не видит, установка собирается списком",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "docs/analysis/requirements-traceability-graph-of-symphysis.md",
+       "quote": "`installer/scripts/sync-payload.js:10` копирует инструменты списком."
+      }
+     ]
+    },
+    {
+     "letter": "C",
+     "text": "Проверка только чтением на атаке артефактов",
+     "added": false,
+     "unlikely": "без автоматической проверки критерий распадётся при первом новом каталоге без README",
+     "evidence": [
+      {
+       "path": "openspec/changes/module-structure/intent.md",
+       "quote": "структура symphysis теперь соответствует определениям"
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Критерий владельца — утверждение о репозитории: требование делает его частью мастер-спеки, а тест держит его после этого изменения. B держит то же тестом, но правила не видно в спеках, по которым работает конвейер; C проверит один раз."
+   },
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-06"
+   },
+   "reversibility": {
+    "level": "дорого",
+    "why": "требования уходят в мастер-спеки при архиве: снять их — отдельное изменение с REMOVED; тест держит правило в обоих репозиториях"
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [],
+   "comments": [],
+   "nodes": [
+    "check"
+   ]
+  },
+  {
+   "id": "F-26",
+   "question": "Как быть с исходными путями в требованиях мастер-спек?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-17",
+    "F-19"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "MODIFIED требований, где назван исходный путь: требование называет новый путь в модуле",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/specs/trace-graph/spec.md",
+       "quote": "Скрипт графа, рабочее имя `tools/trace_graph.py`, SHALL собирать граф изменения"
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "MODIFIED тех же требований, но они называют установленный путь (`.symphysis/tools/…`) или имя скрипта без каталога исходника: путь в требовании больше не зависит от раскладки исходника",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/specs/step-help/spec.md",
+       "quote": "`tools/step_help.py` SHALL называть один текущий шаг"
+      }
+     ]
+    },
+    {
+     "letter": "C",
+     "text": "Оставить как есть: путь в требовании — рабочее имя, правится при следующей правке требования. Цена: мастер-спека называет файлы, которых нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/specs/trace-graph/spec.md",
+       "quote": "Скрипт графа, рабочее имя `tools/trace_graph.py`, SHALL собирать граф изменения"
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "B",
+    "why": "Имя скрипта без каталога исходника переживёт и эту, и следующую перестройку; A чинит пути до следующего переноса, C оставляет мастер-спеку называть файлы, которых нет."
+   },
+   "decision": {
+    "option": "B",
+    "word": "",
+    "date": "2026-11-06"
+   },
+   "reversibility": {
+    "level": "обратимо",
+    "why": "правка текста требований; вернуть исходные пути — MODIFIED в следующем изменении"
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [],
+   "comments": []
+  },
+  {
+   "id": "F-27",
+   "question": "Как файлы и функции ядра и плагина раскладываются по модулям выбранных в F-18 и F-31 вариантов и какие зависимости между модулями появятся?",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "материалы",
+   "depends_on": [
+    "F-18",
+    "F-31"
+   ],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [
+    {
+     "addressee": "материалы",
+     "text": "Разложить по модулям каждый файл `tools/`, `skills/`, `skills/shared/`, `agents/`, а также `docs/journal.schema.json` и `openspec/config.symphysis.yaml` — каждый к одному модулю. Для `tools/journal_render.py`, `tools/journal_cli.py` и `tools/journal_apply.py` — по функциям: какие уходят в другой модуль, какие импорты между будущими модулями появятся, нет ли циклов (например, `decisions` и `viewer` через `render-html`), куда идут `view-json` и номер контракта. Итог: таблица файлов и граф зависимостей модулей; развилки резки — во втором круге. В плагине — каждый файл `src/`, `hook/`, `media/icon.svg`, `build.mjs`, `package.mjs` к модулю F-31: импорты между модулями, общее для стороны VS Code и страниц, путь `hook/hook.py`, который читает код.",
+     "finding": "`research/F-27.md`, таблицы `research/F-27-probe/core-map.txt` и `plugin-map.txt`: ядро — 25 из 33 файлов к одному модулю, два делятся по функциям (`journal_apply.py`: корни улик и поиск цитат против `apply`; `journal_render.py`: md, design, `view-json` и `CONTRACT` — decisions, страница — viewer, разбор атаки — attack); не ложатся одному фасад CLI и `driver.md`, `terms.md`, `candidate.md`. Граф: CLI в `decisions` — цикл attack, consequences, decisions, step-help, viewer; CLI отдельным модулем — циклов нет и с корнями в `decisions` (раскладка 3, досчитана во втором круге), и с отдельным модулем корней (тогда `ROOT` идёт в него). Плагин — 32 из 51 файла к одному модулю F-31 A; без модуля активация, дерево изменений, хранилище, логика журнала, общие части страниц; циклы типов `protocol` ↔ `search` и `protocol` ↔ `scheme`. Развилки — F-33, F-34, F-35, F-43, F-44."
+    }
+   ],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "docs/analysis/requirements-traceability-graph-of-symphysis.md",
+     "quote": "Сейчас файл стоит сразу в двух модулях."
+    },
+    {
+     "path": "openspec/changes/module-structure/research/F-27-probe/module-graph.txt",
+     "quote": "цикл: attack <-> consequences <-> decisions <-> step-help <-> viewer"
+    },
+    {
+     "path": "openspec/changes/module-structure/research/F-27-probe/module-graph.txt",
+     "quote": "### Раскладка 3: CLI — модуль cli, корни улик и поиск цитат остаются в decisions — по ссылкам функций"
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "coreMods",
+    "plugMods"
+   ]
+  },
+  {
+   "id": "F-28",
+   "question": "Как схема становится модулем, если её каталог задаёт OpenSpec?",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "материалы",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [
+    {
+     "addressee": "материалы",
+     "text": "Читает ли форк лишние файлы в `openspec/schemas/symphysis/` (README.md рядом со `schema.yaml`) и не ломает ли это `openspec schemas`, `status`, `instructions`; уходит ли README в payload по `DIRS` и в проекты пользователей; можно ли перенести `openspec/config.symphysis.yaml` внутрь каталога схемы и где его читает инсталлятор. Где читать: `upstream/openspec/src/core/artifact-graph/`, `installer/scripts/sync-payload.js`, `installer/lib/`.",
+     "finding": "`research/F-28.md`: форк читает из каталога схемы только `schema.yaml` и `templates/`; проба с `README.md` в каталоге схемы дала тот же вывод `schemas`, `status`, `instructions`. Инсталлятор копирует каталог схемы целиком, `check` сверяет каждый его файл — README модуля уедет к пользователю. `config.symphysis.yaml` читают по прежнему пути инсталлятор и два теста; форк его не читает. Развилки — F-36, F-37."
+    }
+   ],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "docs/analysis/requirements-traceability-graph-of-symphysis.md",
+     "quote": "`openspec/schemas/symphysis/` уже каталог, и там её ищет OpenSpec. Это будет модуль, чьё место задано извне."
+    },
+    {
+     "path": "installer/scripts/sync-payload.js",
+     "quote": "const DIRS = [\"openspec/schemas/symphysis\"];"
+    },
+    {
+     "path": "upstream/openspec/src/core/artifact-graph/resolver.ts",
+     "quote": "const schemaPath = path.join(schemaDir, 'schema.yaml');"
+    },
+    {
+     "path": "installer/lib/install.js",
+     "quote": "copyTree(res, root, path.join(payloadDir, \"openspec\", \"schemas\", \"symphysis\"), t.schemaDir, force, () => true, { schemaDir: t.schemaDir });"
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "coreMods"
+   ]
+  },
+  {
+   "id": "F-29",
+   "question": "Что входит в готовый результат: только репозиторий ядра или и плагин?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Ядро `symphysis-core` и плагин `symphysis-vscode`: структура обоих репозиториев приводится к определениям. Коммиты плагина несут `Needs:` на коммиты ядра",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "docs/analysis/requirements-traceability-graph-of-symphysis.md",
+       "quote": "Система symphysis это «Ядро + плагин»."
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Слово владельца, других вариантов он не называл."
+   },
+   "decision": {
+    "option": "A",
+    "word": "Да, приведём к определениям и структуру плагина.",
+    "date": "2026-11-06"
+   },
+   "reversibility": {
+    "level": "обратимо",
+    "why": "до шага tasks плагин выделяется в отдельное изменение без потерь; после — откат коммитов плагина, несущих Needs: на ядро"
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "F-30, F-31, F-32; F-22, F-23, F-25 и F-27 распространены на плагин",
+   "evidence": [],
+   "comments": [],
+   "nodes": [
+    "plug",
+    "plugMods"
+   ]
+  },
+  {
+   "id": "F-30",
+   "question": "Плагин разложен по слоям: `src/host` — сторона VS Code, `src/webview` — четыре страницы со своими точками сборки (решения, поиск, схема, справка), `src/shared` — общее. `hook/hook.py` лежит в пакете по пути, который читает код. README в репозитории один, корневой; это README пакета `.vsix`, его содержание проверяет тест.",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "материалы",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "F-31, F-32",
+   "evidence": [
+    {
+     "path": "vscode/build.mjs",
+     "quote": "await build({ ...web, minify: true, entryPoints: [\"src/webview/main.tsx\"], outfile: \"media/viewer.js\" });"
+    },
+    {
+     "path": "vscode/build.mjs",
+     "quote": "await build({ ...web, minify: true, entryPoints: [\"src/webview/scheme.ts\"], outfile: \"media/scheme.js\" });"
+    },
+    {
+     "path": "vscode/src/host/hook.ts",
+     "quote": "const packaged = fs.readFileSync(path.join(extensionPath, \"hook\", SCRIPT));"
+    },
+    {
+     "path": "vscode/.vscodeignore",
+     "quote": "!README.md"
+    },
+    {
+     "path": "vscode/test/package-readme.ts",
+     "quote": "// Что должно быть в README.md пакета (F-82, F-87)."
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "plugMods",
+    "plugReadme"
+   ]
+  },
+  {
+   "id": "F-31",
+   "question": "Как резать плагин на модули?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-29",
+    "F-30"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "По механике, как в ядре (F-18 A): `viewer` (карточки решений и внесение), `search`, `scheme`, `step-help`, `hook` (хук агента и `hook/hook.py`), `core` (поиск ядра и Python, вызов `journal.py`, номер контракта); у модуля в одном каталоге `src/<модуль>/` части стороны VS Code и страницы; общее для них — технический модуль `protocol`. `build.mjs` берёт точки входа из модулей. Цена: в одном каталоге код двух сред, Node и страницы, — сборка и `tsconfig` различают их по файлу",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "vscode/build.mjs",
+       "quote": "await build({ ...web, minify: true, entryPoints: [\"src/webview/scheme.ts\"], outfile: \"media/scheme.js\" });"
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "По слоям, как в таблице разбора: `host` (технический, `src/host/`), `viewer` (доменный, `src/webview/`), `shared` (технический); README у каждого, файлы не переезжают. Цена: `src/webview` держит четыре страницы, а `src/host` — хук, панели, хранилище и связь с ядром: одной ответственности на каталог нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "docs/analysis/requirements-traceability-graph-of-symphysis.md",
+       "quote": "| плагин | `symphysis-vscode` | `viewer` | `src/webview/` | доменный |"
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Та же нарезка, что в ядре, и одна ответственность на каталог; одноимённые модули ядра и плагина различает id `репозиторий/модуль`. B сохраняет слои среды исполнения — технический признак, а не область, — и в одном каталоге остаются четыре страницы."
+   },
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-06"
+   },
+   "reversibility": {
+    "level": "обратимо",
+    "why": "раскладка `src/` плагина в пакет не попадает: esbuild собирает тот же `.vsix`; откат — обратный перенос и пути в `build.mjs`"
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "F-27 раскладывает файлы плагина по выбранному варианту, F-23",
+   "evidence": [],
+   "comments": [],
+   "nodes": [
+    "plugMods"
+   ]
+  },
+  {
+   "id": "F-32",
+   "question": "Как README модуля уживается с README пакета: `installer/README.md` — README пакета npm, корневой README плагина — README `.vsix`?",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "материалы",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [
+    {
+     "addressee": "материалы",
+     "text": "Как страница пакета npm и вкладка расширения VS Code показывают YAML frontmatter в README — проверить сборкой пакета (`npm pack`, `vsce package`) и кодом показа, не по памяти. Умеет ли `vsce package` брать README не из корня (`--readme-path`) и что тогда читает `test/package-readme.ts`. Где в обоих случаях может жить описание модуля или репозитория, не попадая на страницу пакета. Где читать: `vscode/package.mjs`, `vscode/test/package-readme.ts`, `installer/package.json`.",
+     "finding": "`research/F-32.md`: `vsce` 4.0.0 кладёт README в пакет как есть, frontmatter не трогает; `--readme-path` работает, только когда корневой `README.md` исключён из пакета (`.vscodeignore` без `!README.md`; юнит-тест этого не пускает). npm кладёт README из корня пакета всегда, другого файла не выбрать. Как страницы npm и VS Code показывают frontmatter — не проверено. Развилки — F-38, F-39."
+    }
+   ],
+   "dispute": "",
+   "consequences": "F-21, F-22",
+   "evidence": [
+    {
+     "path": "installer/README.md",
+     "quote": "# @niqsons/symphysis"
+    },
+    {
+     "path": "vscode/.vscodeignore",
+     "quote": "!README.md"
+    },
+    {
+     "path": "vscode/test/package-readme.ts",
+     "quote": "// Что должно быть в README.md пакета (F-82, F-87)."
+    },
+    {
+     "path": "openspec/changes/module-structure/research/F-32-probe/vsce-3.txt",
+     "quote": "файлы readme в пакете: ['extension/readme.md']"
+    },
+    {
+     "path": "openspec/changes/module-structure/research/F-32-probe/npm-pack.txt",
+     "quote": "README в пакете: ['README.md']"
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "plugReadme"
+   ]
+  },
+  {
+   "id": "F-33",
+   "question": "Где живёт фасад CLI ядра — `journal.py` и `journal_cli.py`?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-18",
+    "F-27"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Отдельный технический модуль (рабочее имя `cli`): точка входа `journal.py` из контракта с плагином остаётся одним файлом и в установке лежит, как сейчас, в `.symphysis/tools/`. Модуль зависит от доменных, они от него — нет: цикла нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/changes/module-structure/research/F-27-probe/module-graph.txt",
+       "quote": "### Раскладка 3: CLI — модуль cli, корни улик и поиск цитат остаются в decisions — по ссылкам функций"
+      },
+      {
+       "path": "docs/repo-contract.md",
+       "quote": "подкоманды и аргументы `journal.py`, которые вызывает плагин, в том числе `--out`, `--attack`, `--dry-run`;"
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "В `decisions`: на модуль меньше. Цена: `decisions` зовёт подкоманды страницы, описи, атаки и справки, а они зовут `decisions` — все доменные модули журнала в одном цикле, граница `decisions` не держится",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/changes/module-structure/research/F-27-probe/module-graph.txt",
+       "quote": "цикл: attack <-> consequences <-> decisions <-> step-help <-> viewer"
+      }
+     ]
+    },
+    {
+     "letter": "C",
+     "text": "У каждого модуля своя точка входа (`viewer.py render-html`, `consequences.py code-sites` и так далее)",
+     "added": false,
+     "unlikely": "подкоманды `journal.py` — часть контракта с плагином, а `.symphysis/tools/journal.py` зовут схема и скиллы: смена контракта и всех вызовов",
+     "evidence": [
+      {
+       "path": "docs/repo-contract.md",
+       "quote": "подкоманды и аргументы `journal.py`, которые вызывает плагин, в том числе `--out`, `--attack`, `--dry-run`;"
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "A снимает цикл и оставляет контракт `journal.py` как есть; B держит цикл всех доменных модулей журнала, C меняет контракт с плагином."
+   },
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-06"
+   },
+   "reversibility": {
+    "level": "обратимо",
+    "why": "точка входа `journal.py` из контракта с плагином остаётся одним файлом в `.symphysis/tools/`; граница модуля — внутри репозитория"
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "F-34",
+   "evidence": [],
+   "comments": [],
+   "nodes": [
+    "coreMods"
+   ]
+  },
+  {
+   "id": "F-34",
+   "question": "Где живут корни улик и поиск цитат — 26 имён `journal_apply.py`?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-27",
+    "F-33"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Технический модуль (рабочее имя `roots`) вместе с константой `ROOT`: разбор файла корней, `_resolve`, `file_links`, `find_quote`. Им пользуются `decisions`, `consequences`, `trace`, `step-help`, `settings` — переиспользуемое живёт в техническом модуле. `<root>` файла корней раскрывается от `ROOT`, поэтому константа идёт сюда же; цикла нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/changes/module-structure/research/F-27-probe/defs.txt",
+       "quote": "default_roots:74 — journal:61, journal_cli:18, symphysis_config:19, trace_graph:20"
+      },
+      {
+       "path": "docs/analysis/requirements-traceability-graph-of-symphysis.md",
+       "quote": "Доменный отвечает за область, технический ни за какую, и переиспользуемое живёт в таких."
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Оставить в `decisions`: `trace`, `settings`, `step-help`, `consequences` зависят от доменного модуля журнала ради технической функции. Цикла и так нет, если CLI отдельно (F-33 A)",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/changes/module-structure/research/F-27-probe/module-graph.txt",
+       "quote": "settings -> decisions: 2 ссылок, например tools/symphysis_config.py:147 _default_project -> journal_model.ROOT"
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Цикла нет в обоих вариантах, выбор — по определению: переиспользуемое живёт в техническом модуле. В B четыре модуля зависят от журнала только ради корней, и граница `decisions` шире его ответственности."
+   },
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-06"
+   },
+   "reversibility": {
+    "level": "обратимо",
+    "why": "граница внутри репозитория, установка плоская (F-19 A): вернуть корни в `decisions` — перенос имён и `ROOT`"
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "F-40",
+   "evidence": [],
+   "comments": [],
+   "nodes": [
+    "coreMods"
+   ]
+  },
+  {
+   "id": "F-35",
+   "question": "Куда идут общие файлы скиллов `terms.md`, `driver.md`, `candidate.md`?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-18",
+    "F-27"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "`terms.md` и `driver.md` — технический модуль общих файлов скиллов (рабочее имя `skill-shared`); `candidate.md` — в `decisions`: это формат записи журнала, который пишут пробы и опись. Установка по-прежнему кладёт все три в `.symphysis/docs/`",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/changes/module-structure/research/F-27-probe/core-map.txt",
+       "quote": "skills/shared/candidate.md — не ложится одному: probes и consequences пишут запись-кандидат журнала (decisions)"
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Все три — в технический модуль общих файлов скиллов, включая `candidate.md`",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/changes/module-structure/research/F-27-probe/core-map.txt",
+       "quote": "skills/shared/terms.md — не ложится одному"
+      }
+     ]
+    },
+    {
+     "letter": "C",
+     "text": "Каждый — своему хозяину: `candidate.md` — `decisions`, `driver.md` — технический модуль водителей, `terms.md` — технический модуль терминов. Цена: два модуля из одного файла",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "skills/shared/driver.md",
+       "quote": "# Водитель: brief и отчёт"
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "`candidate.md` описывает запись журнала — это область `decisions`; `terms.md` и `driver.md` ни к одной области не относятся и читаются всеми — ровно технический модуль. B кладёт доменный формат в технический модуль, C плодит модули из одного файла."
+   },
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-06"
+   },
+   "reversibility": {
+    "level": "обратимо",
+    "why": "установка кладёт все три файла в `.symphysis/docs/`, как раньше; перекладка — внутри репозитория"
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [],
+   "comments": [],
+   "nodes": [
+    "coreMods"
+   ]
+  },
+  {
+   "id": "F-36",
+   "question": "Уходит ли README модуля схемы к пользователю вместе со схемой?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-28"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Нет: payload пропускает README каталога схемы (фильтр в `installer/scripts/sync-payload.js`). README описывает модуль репозитория; в проект уходят `schema.yaml`, `templates/`, `steps.md`",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "installer/scripts/sync-payload.js",
+       "quote": "const DIRS = [\"openspec/schemas/symphysis\"];"
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Да: в каждом проекте `openspec/schemas/symphysis/README.md`, его сверяет `check`. Цена: в проекте пользователя — описание модуля репозитория со ссылками на каталоги, которых там нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "installer/lib/install.js",
+       "quote": "copyTree(res, root, path.join(payloadDir, \"openspec\", \"schemas\", \"symphysis\"), t.schemaDir, force, () => true, { schemaDir: t.schemaDir });"
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "README модуля говорит об устройстве репозитория, пользователю схемы он не нужен; B кладёт его в каждый проект и в сверку `check`."
+   },
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-06"
+   },
+   "reversibility": {
+    "level": "обратимо",
+    "why": "фильтр в `sync-payload.js`: отдать README пользователю — снять фильтр"
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "F-37",
+   "evidence": [],
+   "comments": [],
+   "nodes": [
+    "coreMods",
+    "install"
+   ]
+  },
+  {
+   "id": "F-37",
+   "question": "Где лежит `openspec/config.symphysis.yaml` — файл модуля схемы вне её каталога?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-28",
+    "F-36"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "В каталоге схемы `openspec/schemas/symphysis/`: файл внутри модуля. Payload берёт его оттуда и кладёт по прежнему пути payload `openspec/config.symphysis.yaml`, в каталог схемы проекта он не идёт — тот же фильтр, что у README (F-36). Правка `sync-payload.js` и тестов `installer/test/payload.test.js`, `installer/test/install.test.js`, `tests/test_schema.py`",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "installer/lib/install.js",
+       "quote": "const oursBytes = fs.readFileSync(path.join(payloadDir, \"openspec\", \"config.symphysis.yaml\"));"
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Оставить как есть: файл модуля схемы лежит вне его каталога, README модуля его называет. Цена: тест структуры помнит исключение «файл модуля вне каталога»",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "installer/scripts/sync-payload.js",
+       "quote": "\"openspec/config.symphysis.yaml\","
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Модуль — каталог, файл принадлежит одному модулю (F-03): A держит правило без исключений, путь в payload и чтение инсталлятора прежние. B оставляет исключение, которое тест структуры будет помнить."
+   },
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-06"
+   },
+   "reversibility": {
+    "level": "обратимо",
+    "why": "путь в payload и чтение инсталлятора прежние; вернуть файл — перенос и правка `sync-payload.js` и тестов"
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [],
+   "comments": [],
+   "nodes": [
+    "coreMods"
+   ]
+  },
+  {
+   "id": "F-38",
+   "question": "Где README пакета плагина, если корень описывает репозиторий?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-22",
+    "F-32"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Корень плагина — под README репозитория (как в ядре, F-22 A); README пакета — отдельный файл: `package.mjs` передаёт его `--readme-path`, `.vscodeignore` перестаёт пропускать корневой `README.md`, юнит-тест `package-readme.test.ts` читает новый путь. Проба: пакет собирается, в нём один `readme.md` — README пакета",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/changes/module-structure/research/F-32-probe/vsce-3.txt",
+       "quote": "файлы readme в пакете: ['extension/readme.md']"
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Корневой README остаётся README пакета; описание репозитория — другим файлом в корне. Упаковка и тесты не меняются. Цена: корень плагина описан не README, в отличие от ядра",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "vscode/.vscodeignore",
+       "quote": "!README.md"
+      }
+     ]
+    },
+    {
+     "letter": "C",
+     "text": "Один корневой README: текст пакета и раздел о репозитории вместе",
+     "added": false,
+     "unlikely": "пользователи расширения увидят на странице пакета устройство репозитория, а имя и род модуля лягут в пакет как есть",
+     "evidence": [
+      {
+       "path": "openspec/changes/module-structure/research/F-32-probe/vsce.txt",
+       "quote": "name: symphysis-vscode"
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Одно правило для обоих репозиториев — корень описан README; проба показала, что упаковка с отдельным README пакета работает. B оставляет плагину исключение, C выносит устройство репозитория на страницу пакета."
+   },
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-06"
+   },
+   "reversibility": {
+    "level": "обратимо",
+    "why": "в `.vsix` README пакета лежит тем же `extension/readme.md`; вернуть — `.vscodeignore`, флаг `--readme-path` в `package.mjs` и юнит-тест"
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [],
+   "comments": [],
+   "nodes": [
+    "plugReadme"
+   ]
+  },
+  {
+   "id": "F-39",
+   "question": "README модуля `installer` — это страница пакета npm: в каком виде он несёт имя и род?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-21",
+    "F-32",
+    "F-38"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Оставить как есть: frontmatter, как у всех модулей (F-21 A). Как страница npm его покажет — не проверено; npm берёт README из корня пакета как есть",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/changes/module-structure/research/F-32-probe/npm-pack.txt",
+       "quote": "README в пакете: ['README.md']"
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Исключение для `installer`: имя и род — строкой-комментарием HTML (`<!-- module: installer; kind: технический -->`), её не показывает ни один рендер; тест структуры и граф знают обе формы",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "installer/README.md",
+       "quote": "# @niqsons/symphysis"
+      }
+     ]
+    },
+    {
+     "letter": "C",
+     "text": "Одна форма для всех модулей — строка-комментарий HTML вместо frontmatter: не видна на GitHub, на странице npm и во вкладке VS Code, тест и граф знают одну форму. Снимает F-21 A; на нём ещё ничего не построено",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "docs/analysis/requirements-traceability-graph-of-symphysis.md",
+       "quote": "Если README несёт имя и род в разборчивом для скрипта виде, граф возьмёт их оттуда."
+      }
+     ]
+    }
+   ],
+   "antipodes": [
+    {
+     "option": "C",
+     "other": "F-21.A"
+    }
+   ],
+   "recommendation": {
+    "option": "C",
+    "why": "Показ frontmatter на странице npm не проверен, а C снимает вопрос для всех рендеров одной формой, пока на F-21 A ничего не построено. A оставляет риск на странице пакета, B вводит две формы, которые тест и граф должны знать."
+   },
+   "decision": {
+    "option": "A",
+    "word": "Да нормально всё будет с отображением на github, он поддерживает frontmatter в yaml",
+    "date": "2026-11-06"
+   },
+   "reversibility": {
+    "level": "дорого",
+    "why": "frontmatter станет входом теста структуры (F-25), а на этапе графа — скрипта графа; смена формы — правка README всех модулей обоих репозиториев и разборщиков; показ на странице npm не проверен"
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [],
+   "comments": [],
+   "nodes": [
+    "coreMods",
+    "check"
+   ]
+  },
+  {
+   "id": "F-40",
+   "question": "Где живёт исходный файл корней `tools/journal-roots.json`?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-20",
+    "F-34"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Оставить как есть: в `tools/` контура разработки. Формула `ROOT / \"tools\" / \"journal-roots.json\"` верна в обеих раскладках: в исходнике `ROOT` — корень репозитория, в установке — `.symphysis`",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "tools/journal_apply.py",
+       "quote": "ROOTS_PATH = ROOT / \"tools\" / \"journal-roots.json\""
+      },
+      {
+       "path": "tools/journal-roots.json",
+       "quote": "\"docs/\": \"<root>/docs\","
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Файл корней ищется рядом с кодом модуля корней, исходный файл переезжает в его каталог. Цена: файл разработки этого репозитория — в каталоге модуля продукта",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "tools/journal_apply.py",
+       "quote": "ROOTS_PATH = ROOT / \"tools\" / \"journal-roots.json\""
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Исходный файл корней служит журналам самого репозитория, а формула пути и так верна в обеих раскладках; B кладёт файл разработки в модуль продукта."
+   },
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-06"
+   },
+   "reversibility": {
+    "level": "обратимо",
+    "why": "формула пути не меняется; перенос файла корней — правка `ROOTS_PATH`"
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [],
+   "comments": [],
+   "nodes": [
+    "coreDev"
+   ]
+  },
+  {
+   "id": "F-41",
+   "question": "Где схема журнала `journal.schema.json` в исходнике и в установке?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-20",
+    "F-19"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "В каталоге модуля `decisions`; установка кладёт её в `.symphysis/tools/` рядом с кодом — одно правило «рядом с кодом» в обеих раскладках. Цена: путь в установке меняется (`.symphysis/docs/` → `.symphysis/tools/`), правка `sync-payload.js`, README и тестов инсталлятора; путь схемы в контракт с плагином не входит",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "tools/journal_model.py",
+       "quote": "SCHEMA_PATH = ROOT / \"docs\" / \"journal.schema.json\""
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "В каталоге модуля `decisions`; в установке остаётся в `.symphysis/docs/`, код ищет её в двух местах: рядом с кодом в исходнике, `ROOT / \"docs\"` в установке",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "installer/README.md",
+       "quote": "инструменты журнала и настроек | `<проект>/.symphysis/` (`tools/`, `docs/`)"
+      }
+     ]
+    },
+    {
+     "letter": "C",
+     "text": "В исходнике остаётся в `docs/journal.schema.json`",
+     "added": false,
+     "unlikely": "`docs/` — контур разработки (F-22 A), файл модуля `decisions` лежал бы вне его каталога",
+     "evidence": [
+      {
+       "path": "docs/analysis/requirements-traceability-graph-of-symphysis.md",
+       "quote": "`skills/symphysis-brainstorm/` | доменный |"
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Одно правило поиска без ветвления по раскладке, а путь схемы в установке никто снаружи не читает. B держит две ветки поиска ради прежнего пути, C оставляет файл модуля в контуре разработки."
+   },
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-06"
+   },
+   "reversibility": {
+    "level": "обратимо",
+    "why": "путь схемы в установке никто снаружи не читает: вернуть `.symphysis/docs/` — путь в `sync-payload.js` и `SCHEMA_PATH`, переустановка"
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [],
+   "comments": [],
+   "nodes": [
+    "coreMods",
+    "install"
+   ]
+  },
+  {
+   "id": "F-42",
+   "question": "Как справка о шаге находит скиллы в клоне ядра, если каталога `skills/` не будет?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-18",
+    "F-20"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Ищет `SKILL.md` скилла в каталогах модулей клона вместо `skills/<имя>/SKILL.md`: плагин с настройкой на клон находит скиллы, как раньше",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "tools/step_help.py",
+       "quote": "INSTALL_SKILL_DIRS = (*PROJECT_SKILL_DIRS, \"skills\")"
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Клон без установки в себя не поддерживается: справка ищет скиллы клона, как в проекте (`.claude/skills` и другие); `skills` из поиска уходит. Цена: снимается прежнее решение R16 о клоне ядра",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "tools/step_help.py",
+       "quote": "PROJECT_SKILL_DIRS = (\".claude/skills\", \".opencode/skills\", \".agents/skills\")"
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "A сохраняет решённое раньше R16: плагин с настройкой на клон находит скиллы. B снимает его ради более простого поиска, хотя прежнее поведение стоит дёшево."
+   },
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-06"
+   },
+   "reversibility": {
+    "level": "обратимо",
+    "why": "поиск скиллов клона — внутри `step_help.py`; снять его позже — правка одного списка каталогов"
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [],
+   "comments": [],
+   "nodes": [
+    "coreMods"
+   ]
+  },
+  {
+   "id": "F-43",
+   "question": "Куда идут файлы плагина, которые не легли в модули F-31 A?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-27",
+    "F-31"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Ещё пять модулей: доменные `changes` (дерево изменений и хранилище журналов: `host/sidebar.ts`, `host/store.ts`), `journal` (логика журнала на стороне плагина: `shared/logic.ts`, `shared/ops.ts`, `shared/attack.ts`), `file-links` (ссылки на файлы: `host/links.ts`, `host/openFile.ts`, `shared/links.ts` — как capability `plugin-file-links`); технические `ui` (общие части страниц и панелей: `Text.tsx`, `Segmented.tsx`, `colors.ts`, `FailureText.tsx`, `style.css`, `host/page.ts`, `host/tabs.ts`) и `activation` (`extension.ts`). Сборка и упаковка (`build.mjs`, `package.mjs`, `media/icon.svg`) — контур сборки в корне, не модуль",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/changes/module-structure/research/F-27-probe/plugin-map.txt",
+       "quote": "src/host/sidebar.ts — не ложится одному: дерево изменений в боковой панели, в F-31 A модуля для него нет"
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Один технический модуль `common` для всего общего (логика, ссылки, части страниц, хранилище), дерево изменений — доменный `changes`, активация — в `core`. Цена: `common` отвечает за несколько областей; `core` с активацией импортирует все модули, а `viewer` и `step-help` зовут `core` — цикл",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/changes/module-structure/research/F-27-probe/plugin-map.txt",
+       "quote": "src/extension.ts — не ложится одному: активация импортирует модули всех механик"
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Одна ответственность на модуль, как требует определение, и `file-links` уже есть capability. B собирает разное в `common` и даёт цикл через активацию в `core`."
+   },
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-06"
+   },
+   "reversibility": {
+    "level": "обратимо",
+    "why": "раскладка `src/` плагина в пакет не попадает: esbuild собирает тот же `.vsix`"
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "F-44",
+   "evidence": [],
+   "comments": [],
+   "nodes": [
+    "plugMods"
+   ]
+  },
+  {
+   "id": "F-44",
+   "question": "Как снять циклы типов `protocol` ↔ `search` и `protocol` ↔ `scheme` в плагине?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-31",
+    "F-43"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Типы сообщений `SearchOutcome` и `ParsedScheme` переезжают в `protocol`: `protocol` перестаёт зависеть от `search` и `scheme`",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "vscode/src/shared/protocol.ts",
+       "quote": "import type { SearchOutcome } from \"./search\";"
+      },
+      {
+       "path": "vscode/src/shared/protocol.ts",
+       "quote": "import type { ParsedScheme } from \"./scheme\";"
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Оставить как есть: циклы только по типам и в собранный код не попадают. Цена: граф модулей плагина с циклами, тест структуры или граф должны их терпеть",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "vscode/src/shared/search.ts",
+       "quote": "import type { RevealTarget } from \"./protocol\";"
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "`protocol` — технический модуль, на котором стоят все страницы; в A он не зависит от доменных, и граф модулей без циклов. B оставляет исключение, которое должен помнить каждый читатель графа."
+   },
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-06"
+   },
+   "reversibility": {
+    "level": "обратимо",
+    "why": "перенос двух типов между файлами `src/shared/`; в собранный код типы не попадают"
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [],
+   "comments": [],
+   "nodes": [
+    "plugMods"
+   ]
+  },
+  {
+   "id": "F-45",
+   "question": "Что с настройкой плагина `symphysis.toolsPath`, указывающей на `<клон>/tools`, если в `tools/` клона ядра не будет `journal.py`?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-17",
+    "F-22",
+    "F-29"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Принять как часть BREAKING контура разработки: настройка на `<клон>/tools` перестаёт находить ядро, настройка на `<клон>` находит его через `.symphysis/tools/` установки клона в себя. Плагин не меняется",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "vscode/src/host/project.ts",
+       "quote": "const dir = withJournal([...toolsDirs(toolsPath), toolsPath]);"
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Научить `findTools` плагина искать ядро в каталогах модулей клона: настройка на `<клон>/tools` и на `<клон>` без установки в себя продолжают работать. Цена: плагин знает раскладку исходников ядра",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "vscode/src/host/project.ts",
+       "quote": "if (path.basename(dir) !== \"tools\" || withJournal(toolsDirs(dir))) return dir;"
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Единственная установка — сам symphysis (F-14), а настройка плагина и так находит ядро клона через его установку; B учит плагин раскладке исходников ядра ради случая, которого нет."
+   },
+   "decision": {
+    "option": "A",
+    "word": "У меня нигде не настроено, symphysis установлен только здесь. Строку можно вернуть, риска нет.",
+    "date": "2026-11-06"
+   },
+   "reversibility": {
+    "level": "обратимо",
+    "why": "поиск ядра в модулях клона можно добавить в `findTools` плагина позже, без смены контракта"
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "Строка BREAKING в `proposal.md`, раздел What Changes",
+   "evidence": [
+    {
+     "path": "vscode/src/host/project.ts",
+     "quote": "const dir = withJournal([...toolsDirs(toolsPath), toolsPath]);"
+    },
+    {
+     "path": "vscode/src/host/project.ts",
+     "quote": "if (path.basename(dir) !== \"tools\" || withJournal(toolsDirs(dir))) return dir;"
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "contract"
+   ]
+  },
+  {
+   "id": "F-46",
+   "question": "Правка пути по F-26 даёт MODIFIED требования `decision-viewer` «Просмотрщик — один HTML из своего шаблона с тремя режимами» длиной 1077 знаков; по правилу схемы длинное требование в MODIFIED делится на дочернее, сценарии родителя остаются при нём (решения F-76 A и F-91 A журнала `trace-graph`).",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "материалы",
+   "depends_on": [
+    "F-26"
+   ],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "Дочернее требование `decision-viewer` о разборе строки таблицы атаки несёт `(F-46)`",
+   "evidence": [
+    {
+     "path": "openspec/schemas/symphysis/schema.yaml",
+     "quote": "Длинное в MODIFIED дели так же: сценарии родителя остаются при нём, условия не теряются"
+    },
+    {
+     "path": "openspec/changes/archive/2026-11-06-trace-graph/decisions.json",
+     "quote": "Надо менять скилл составления требований. Раз у нас появляется механизм связей, то можно делать связанное дочернее требование"
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-47",
+   "question": "[empty · text] README модуля несёт имя и род во frontmatter: `name:` с пустым значением или из одних пробелов — тест структуры красный или модуль принят без имени?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-03",
+    "F-21",
+    "F-39"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN README модуля с `name: \"\"` WHEN выполняется тест структуры THEN тест красный и называет каталог; цена: сценарий, проверка непустого `name` в тесте структуры",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — пустое имя не покрывается; допустимо, пока имя модуля, кроме теста структуры, никто не читает",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест подаёт README с `name:` из пробелов и утверждает, что тест структуры красный; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — пустое имя остаётся открытым до этапа графа, где имя станет частью id `репозиторий/модуль`",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Модуль без имени проходит тест молча, а на этапе графа его id станет `репозиторий/` — порча, которую сразу никто не увидит; цена — сценарий и одна проверка в тесте."
+   },
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-06"
+   },
+   "reversibility": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Specify",
+    "reason": ""
+   },
+   "parking": [],
+   "dispute": "",
+   "consequences": "в spec.md: Пустое имя модуля",
+   "evidence": [
+    {
+     "path": "openspec/changes/module-structure/specs/module-declaration/spec.md",
+     "quote": "### Requirement: README модуля несёт имя и род во frontmatter"
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-48",
+   "question": "[adjacency · collection] README модуля несёт имя и род во frontmatter: два модуля одного репозитория с одинаковым `name` (имя может отличаться от каталога, F-21) — тест красный или оба приняты?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-03",
+    "F-21"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN два каталога модулей ядра с `name: decisions` WHEN выполняется тест структуры THEN тест красный и называет оба каталога; цена: сценарий, проверка повторов имён в тесте",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — повтор имён не покрывается; допустимо, пока имя каждого модуля совпадает с его каталогом, а каталоги одного уровня различны",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест собирает имена всех README модулей репозитория и утверждает, что повторов нет; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — повтор имён остаётся открытым до этапа графа, где id `репозиторий/модуль` впервые станет ключом",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Имя может отличаться от каталога, и два модуля с одним именем дадут один id `репозиторий/модуль` — граф молча сольёт их; цена — сценарий и проверка повторов."
+   },
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-06"
+   },
+   "reversibility": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Specify",
+    "reason": ""
+   },
+   "parking": [],
+   "dispute": "",
+   "consequences": "в spec.md: Два модуля с одним именем",
+   "evidence": [
+    {
+     "path": "openspec/changes/module-structure/specs/module-declaration/spec.md",
+     "quote": "### Requirement: README модуля несёт имя и род во frontmatter"
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-49",
+   "question": "[empty · collection] README модуля описывает вложенные каталоги первого уровня: каталог есть на диске, но не в git (`__pycache__/`, `.pytest_cache/` после прогона тестов) — README модуля обязан его описать?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-03",
+    "F-25"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN в модуле есть `__pycache__/`, которого нет в git WHEN выполняется тест структуры THEN тест его не требует: в счёт идут каталоги, которые знает git; цена: сценарий, список каталогов из git в тесте",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — служебные каталоги не покрываются; допустимо, если тест структуры гоняют только на чистом клоне",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест создаёт `__pycache__/` в модуле и утверждает, что тест структуры зелёный; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — служебные каталоги остаются открытыми до первой реализации теста структуры",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Без правила требование само велит описывать `__pycache__/`: тест структуры краснеет после любого прогона тестов, его начинают обходить, и критерий F-01 перестаёт держаться незаметно; цена — сценарий и список каталогов из git."
+   },
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-06"
+   },
+   "reversibility": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Specify",
+    "reason": ""
+   },
+   "parking": [],
+   "dispute": "",
+   "consequences": "в spec.md: Вложенный каталог вне git",
+   "evidence": [
+    {
+     "path": "openspec/changes/module-structure/specs/module-declaration/spec.md",
+     "quote": "### Requirement: README модуля описывает вложенные каталоги первого уровня"
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-50",
+   "question": "[encoding · text] README модуля описывает вложенные каталоги первого уровня: ссылка на вложенный каталог в форме `./tests`, `tests` без косой или `tests/` — какие формы тест считает ссылкой на каталог?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-03"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN README модуля со ссылкой `[тесты](./tests)` WHEN выполняется тест структуры THEN каталог `tests/` считается описанным; цена: сценарий, нормализация пути ссылки в тесте",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — форма ссылки не покрывается: тест принимает одну форму `[имя/](имя/)`, другая даёт красный тест сразу, и автор README правит ссылку",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест подаёт три формы ссылки и утверждает, какие из них приняты; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — форма ссылки остаётся открытой до первого README, написанного не по образцу",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "B",
+    "why": "Неверная форма видна сразу красным тестом и ничего не портит, а одна форма проще для README двух репозиториев, чем нормализация."
+   },
+   "decision": {
+    "option": "B",
+    "word": "",
+    "date": "2026-11-06"
+   },
+   "reversibility": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Dismiss",
+    "reason": ""
+   },
+   "parking": [],
+   "dispute": "",
+   "consequences": "Неверная форма видна сразу красным тестом и ничего не портит, а одна форма проще для README двух репозиториев, чем нормализация.",
+   "evidence": [
+    {
+     "path": "openspec/changes/module-structure/specs/module-declaration/spec.md",
+     "quote": "### Requirement: README модуля описывает вложенные каталоги первого уровня"
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-51",
+   "question": "[empty · collection] README корня называет каждый каталог первого уровня: каталоги корня, которых нет в git (`upstream/`, `.symphysis/`, `.claude/`, `node_modules/`, `out/` плагина), — README корня обязан их называть?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-22",
+    "F-25"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN в корне ядра есть `.symphysis/` и `upstream/`, которых нет в git WHEN выполняется тест структуры THEN тест их не требует: в счёт идут каталоги, которые знает git; цена: сценарий, список каталогов из git в тесте",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — каталоги вне git не покрываются; допустимо, если тест структуры гоняют только на чистом клоне без установки",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест создаёт `node_modules/` в корне и утверждает, что тест структуры зелёный; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — каталоги вне git остаются открытыми до первой реализации теста структуры",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "На любой рабочей машине в корне есть `.symphysis/`, `node_modules/` или `upstream/`: без правила тест структуры красный всегда, его обходят, и критерий F-01 перестаёт держаться незаметно; цена — сценарий и список каталогов из git."
+   },
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-06"
+   },
+   "reversibility": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Specify",
+    "reason": ""
+   },
+   "parking": [],
+   "dispute": "",
+   "consequences": "в spec.md: Каталоги корня вне git",
+   "evidence": [
+    {
+     "path": "openspec/changes/module-structure/specs/repository-layout/spec.md",
+     "quote": "### Requirement: README корня называет каждый каталог первого уровня"
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-52",
+   "question": "[adjacency · collection] Файл принадлежит одному модулю: `hook/hook.py` плагина — файл модуля `hook` (F-31, F-43), а лежит в корне: пакет кладёт его в `hook/`, и код читает этот путь — переносить в каталог модуля или оставить исключением?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-03",
+    "F-31",
+    "F-43"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN `hook.py` в каталоге модуля `hook` WHEN собирается `.vsix` THEN в пакете он лежит по пути `hook/hook.py`, который читает код; цена: сценарий, копирование файла при сборке, проверка в тесте упаковки",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — исключение: `hook/hook.py` остаётся в корне, а README корня называет `hook/` частью модуля `hook`; допустимо, пока такой файл один",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест упаковки утверждает, что в `.vsix` есть `hook/hook.py`, где бы файл ни лежал в репозитории; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — место `hook.py` остаётся открытым до следующего изменения плагина, которое тронет хук",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Иначе тест структуры либо краснеет на `hook/`, либо держит молчаливое исключение для одного файла, и правило «файл в одном модуле» перестаёт проверяться; цена — копирование при сборке и проверка в тесте упаковки."
+   },
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-06"
+   },
+   "reversibility": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Specify",
+    "reason": ""
+   },
+   "parking": [],
+   "dispute": "",
+   "consequences": "в spec.md: Файл хука в каталоге своего модуля",
+   "evidence": [
+    {
+     "path": "openspec/changes/module-structure/specs/repository-layout/spec.md",
+     "quote": "### Requirement: Файл принадлежит одному модулю"
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-53",
+   "question": "[adjacency · collection] Тесты модуля лежат в его каталоге: два модуля ядра с одноимёнными файлами тестов (`decisions/tests/test_cli.py` и `viewer/tests/test_cli.py`) — по памяти модели, pytest без пакетов тестов называет конфликт имён при сборе (запуском не проверено): разрешать одноимённые или нет?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-23"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN два модуля с `tests/test_cli.py` WHEN выполняется `python -X utf8 -m pytest` THEN оба теста найдены и запущены; цена: сценарий, режим импорта pytest или пакеты тестов, сопровождение `pytest.ini`",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — одноимённые тесты не покрываются: конфликт виден при сборе сразу, файл переименовывается, порчи нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест структуры утверждает, что имена файлов тестов ядра не повторяются; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — одноимённые тесты остаются открытыми до первой такой пары",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "B",
+    "why": "Конфликт виден сразу при сборе тестов, исправление — переименование файла; правило о режиме импорта ради будущей пары тестов стоит дороже, чем переименование."
+   },
+   "decision": {
+    "option": "B",
+    "word": "",
+    "date": "2026-11-06"
+   },
+   "reversibility": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Dismiss",
+    "reason": ""
+   },
+   "parking": [],
+   "dispute": "",
+   "consequences": "Конфликт виден сразу при сборе тестов, исправление — переименование файла; правило о режиме импорта ради будущей пары тестов стоит дороже, чем переименование.",
+   "evidence": [
+    {
+     "path": "openspec/changes/module-structure/specs/repository-layout/spec.md",
+     "quote": "### Requirement: Тесты модуля лежат в его каталоге"
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-54",
+   "question": "[empty · collection] Справка не становится гейтом и не меняет файлы: тест «Скиллы о скрипте не знают» не нашёл ни одного текста скилла (скиллы переехали в модули, а поиск смотрит старое место) — тест зелёный пусто или красный?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-18",
+    "F-26"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN раскладка, где поиск не нашёл ни одного `SKILL.md` WHEN тест ищет имя `step_help` THEN тест красный: скиллов ноль; цена: сценарий, проверка числа найденных скиллов",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — пустой поиск не покрывается; допустимо, если перенос скиллов сопровождает ручная проверка теста",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест утверждает, что найдено столько скиллов, сколько их ставит инсталлятор; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — пустой поиск остаётся открытым до задачи переноса скиллов в модули",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "После переноса скиллов в модули пустой поиск даёт зелёный тест, который ничего не проверяет, — тихая порча; цена — сценарий и счёт найденных скиллов."
+   },
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-06"
+   },
+   "reversibility": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Specify",
+    "reason": ""
+   },
+   "parking": [],
+   "dispute": "",
+   "consequences": "в spec.md: Поиск не нашёл скиллов",
+   "evidence": [
+    {
+     "path": "openspec/changes/module-structure/specs/step-help/spec.md",
+     "quote": "### Requirement: Справка не становится гейтом и не меняет файлы"
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-55",
+   "question": "[запрет] README модуля описывает вложенные каталоги первого уровня: не должен называть вложенный каталог, которого в модуле уже нет",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-03",
+    "F-25"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify/test — требование MUST NOT: README модуля называет только существующие вложенные каталоги; тест структуры сверяет ссылки README с каталогами модуля в обе стороны; цена: сценарий, проверка ссылок в тесте структуры",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Specify/judgment — требование MUST NOT: строка о каталоге в README модуля не расходится с тем, что в каталоге лежит; судят ревью изменения и атака артефактов чтением README; цена: сценарий, чтение README при каждой правке модуля",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Dismiss — запрет не нужен: ссылка на удалённый каталог видна читателю сразу, когда он по ней не находит каталога",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — остаётся открытым до этапа графа, который начнёт читать README модулей",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "README, называющий удалённый каталог, вводит в заблуждение читателя и будущий граф, а тест в одну сторону этого не видит — тихая порча; против B — существование каталога проверяется механически; цена — сценарий и проверка ссылок."
+   },
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-06"
+   },
+   "reversibility": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Specify",
+    "reason": ""
+   },
+   "parking": [],
+   "dispute": "",
+   "consequences": "проверка: test — тест структуры сверяет ссылки README модуля с его каталогами в обе стороны; в spec.md: README модуля не называет каталог, которого нет",
+   "evidence": [
+    {
+     "path": "openspec/changes/module-structure/specs/module-declaration/spec.md",
+     "quote": "### Requirement: README модуля описывает вложенные каталоги первого уровня"
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-56",
+   "question": "[запрет] README корня называет каждый каталог первого уровня: не должен называть каталог первого уровня, которого в корне уже нет",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-22",
+    "F-25"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify/test — требование MUST NOT: README корня называет только существующие каталоги первого уровня; тест структуры сверяет строки README корня с каталогами корня в обе стороны; цена: сценарий, вторая сторона сверки в тесте структуры",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Specify/judgment — требование MUST NOT: описание каталога в README корня (модуль или контур разработки, назначение) не расходится с тем, чем каталог стал; судит ревью изменения, которое переносит или удаляет каталог; цена: сценарий, чтение README корня при каждом переносе",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Dismiss — запрет не нужен: README корня правят вместе с переносом каталога, а лишняя строка ничего не ломает",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — остаётся открытым до первого удаления каталога первого уровня после перестройки",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Строка о каталоге, которого нет, тихо врёт о составе компонента новому читателю и графу; против B — существование каталога проверяется тем же тестом структуры механически; цена — сценарий и вторая сторона сверки."
+   },
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-06"
+   },
+   "reversibility": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Specify",
+    "reason": ""
+   },
+   "parking": [],
+   "dispute": "",
+   "consequences": "проверка: test — тест структуры сверяет строки README корня с каталогами корня в обе стороны; в spec.md: README корня не называет каталог, которого нет",
+   "evidence": [
+    {
+     "path": "openspec/changes/module-structure/specs/repository-layout/spec.md",
+     "quote": "### Requirement: README корня называет каждый каталог первого уровня"
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-57",
+   "question": "[запрет] Файл принадлежит одному модулю: не должен соблюдаться копией общего файла в каждый модуль, которому он нужен",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-03",
+    "F-33",
+    "F-34",
+    "F-35",
+    "F-43"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify/test — требование MUST NOT: непустой файл с одинаковым содержимым в двух модулях; тест структуры сравнивает хеши файлов модулей; цена: сценарий, сравнение хешей в тесте, список законных совпадений",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Specify/judgment — требование MUST NOT: общее для модулей живёт в техническом модуле, а не в копиях; судят ревью изменения и атака артефактов; цена: сценарий, суждение при каждом новом общем файле",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Dismiss — запрет не нужен: общее уже вынесено в технические модули решениями F-33, F-34, F-35 и F-43",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — остаётся открытым до первой копии общего файла после перестройки",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Копия формально соблюдает «файл в одном модуле», а потом копии расходятся молча — так уже разошлись тексты одного требования у страницы и плагина; против B — одинаковое содержимое ловится хешем механически; цена — сценарий и сравнение хешей."
+   },
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-06"
+   },
+   "reversibility": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Specify",
+    "reason": ""
+   },
+   "parking": [],
+   "dispute": "",
+   "consequences": "проверка: test — тест структуры сравнивает хеши непустых файлов модулей; в spec.md: Общий файл не копируется в модули",
+   "evidence": [
+    {
+     "path": "openspec/changes/module-structure/specs/repository-layout/spec.md",
+     "quote": "### Requirement: Файл принадлежит одному модулю"
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-58",
+   "question": "[запрет] Тесты модуля лежат в его каталоге: тесты и фикстуры модуля не должны попадать в payload и в пакеты пользователя",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-23",
+    "F-36"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify/test — требование MUST NOT: в payload, пакете npm `@niqsons/symphysis` и `.vsix` нет файлов каталогов тестов модулей; тест состава payload и тест упаковки проверяют список файлов; цена: сценарий, проверка списка в двух тестах",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Specify/judgment — требование MUST NOT: тесты и фикстуры модулей не уходят пользователю; судит ревью выпуска по `npm pack --dry-run` и списку файлов `.vsix`; цена: сценарий, чтение списков при каждом выпуске",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Dismiss — запрет не нужен: payload собирается списком файлов, а `.vsix` пропускает только перечисленное в `.vscodeignore`",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — остаётся открытым до первого выпуска пакетов после перестройки",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Каталог схемы payload берёт целиком (`DIRS` в `sync-payload.js`), и тесты модуля схемы, положенные в его каталог по F-23, уехали бы в каждый проект и в сверку `check` — этого никто не видит; против B — список файлов проверяется механически; цена — сценарий и проверка в двух тестах."
+   },
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-06"
+   },
+   "reversibility": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Specify",
+    "reason": ""
+   },
+   "parking": [],
+   "dispute": "",
+   "consequences": "проверка: test — тест состава payload и тест упаковки проверяют, что файлов каталогов тестов модулей в списке нет; в spec.md: Тесты модулей не уходят пользователю",
+   "evidence": [
+    {
+     "path": "openspec/changes/module-structure/specs/repository-layout/spec.md",
+     "quote": "### Requirement: Тесты модуля лежат в его каталоге"
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-59",
+   "question": "[канон] README корня называет каждый каталог первого уровня: канон ИБ",
+   "kind": "факт",
+   "status": "припаркован",
+   "addressee": "ИБ",
+   "depends_on": [
+    "F-22"
+   ],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [
+    {
+     "addressee": "ИБ",
+     "text": "абсолютные пути машины разработчика и имена из рабочих задач в README корня и README модулей — канон чувствительных данных в публикуемых файлах, покрывается чек-листом security.md и гейтом имён; запрет не чеканится"
+    }
+   ],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/module-structure/specs/repository-layout/spec.md",
+     "quote": "### Requirement: README корня называет каждый каталог первого уровня"
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-60",
+   "question": "[ветка] Признак клона в инсталляторе: `hasSources` ищет каталог `skills/`, которого после переноса скиллов в модули (F-18) не будет, — `check` и `install` считают клон тарболом, и сигнал «payload старее исходников» пропадает молча?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-18",
+    "F-36"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN клон в модульной раскладке без каталога `skills/` и прежний `installer/payload` WHEN из клона выполняется `symphysis check` THEN stdout несёт `[!!] payload старее исходников`, код 2; цена: сценарий под требованием «`check`, запущенный из клона, сигналит устаревший `payload`», тест на клоне новой раскладки, правка признака клона при каждой перестройке",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — признак клона не покрывается; допустимо, если перестройка правит `hasSources` вместе с переносом скиллов, а тесты инсталлятора на клоне это ловят",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест собирает дерево клона в модульной раскладке и утверждает, что `hasSources` возвращает истину; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — признак клона остаётся открытым до задачи перестройки инсталлятора; пока tasks считает, что он правится вместе с переносом скиллов",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Без признака клона клон выглядит тарболом, сценарий «Инсталлятор не из клона» делает молчание законным, и предупреждение о старом payload пропадает незаметно; против C — исход наблюдаем командой `check`, сценарий короче теста без строки; цена — сценарий и тест."
+   },
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-06"
+   },
+   "reversibility": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Specify",
+    "reason": ""
+   },
+   "parking": [],
+   "dispute": "",
+   "consequences": "в spec.md: Клон в модульной раскладке",
+   "evidence": [
+    {
+     "path": "installer/scripts/sync-payload.js",
+     "quote": "return fs.existsSync(path.join(root, \"skills\")) && FILES.every((rel) => fs.existsSync(path.join(root, rel)));"
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-61",
+   "question": "[ветка] Признак ядра в тестах плагина: `hasCore` ищет `tools/journal.py` соседнего клона — после перестройки без `SYMPHYSIS_ROOT` тесты на настоящем ядре пропускаются, а прогон зелёный?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-26",
+    "F-29"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN `SYMPHYSIS_ROOT` не задан, соседний клон ядра в модульной раскладке WHEN в плагине выполняется `npm test` THEN тесты на настоящем ядре запускаются, а не пропускаются; цена: сценарий под требованием `plugin-core-contract`, тест, правка признака ядра при перестройке ядра",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — пропуск не покрывается; допустимо, если `npm test` плагина всегда запускают с заданным `SYMPHYSIS_ROOT`",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест утверждает, что при соседнем клоне ядра новой раскладки `hasCore` истинен; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — признак ядра остаётся открытым до задачи правки тестов плагина, копирующих ядро (F-09)",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Пропуск без переменной выглядит как «ядра нет на этой машине»: прогон зелёный, а плагин не проверен на ядре — тихая порча; цена — сценарий и тест."
+   },
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-06"
+   },
+   "reversibility": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Specify",
+    "reason": ""
+   },
+   "parking": [],
+   "dispute": "",
+   "consequences": "в spec.md: Соседний клон в модульной раскладке",
+   "evidence": [
+    {
+     "path": "vscode/test/unit/fixture-project.ts",
+     "quote": "export const hasCore = fs.existsSync(path.join(SYMPHYSIS, \"tools\", \"journal.py\"));"
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-62",
+   "question": "[ветка] Сборка юнит-тестов плагина: `build.mjs` берёт тесты только из `test/unit/` — юнит-тесты, перенесённые в каталоги модулей по F-23, не собираются и не запускаются, а `npm test` зелёный?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-23",
+    "F-31"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN юнит-тест модуля плагина лежит в каталоге модуля в `src/` WHEN выполняется `npm test` THEN тест собран и запущен; цена: сценарий под требованием «Тесты модуля лежат в его каталоге», правка `buildUnits`, тест",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — сбор тестов не покрывается; допустимо, если после переноса число тестов прогона сверяют глазами",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест утверждает, что число собранных файлов тестов равно числу файлов `*.test.ts` в `src/` и `test/unit/`; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — сбор тестов остаётся открытым до задачи переноса тестов плагина в модули",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Тесты, которые не собраны, не падают: прогон зелёный на меньшем числе тестов, и этого никто не видит — тихая порча; цена — сценарий и правка сборки."
+   },
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-06"
+   },
+   "reversibility": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Specify",
+    "reason": ""
+   },
+   "parking": [],
+   "dispute": "",
+   "consequences": "в spec.md: Юнит-тест модуля плагина собирается",
+   "evidence": [
+    {
+     "path": "vscode/build.mjs",
+     "quote": "const units = fs.readdirSync(\"test/unit\").filter((f) => /\\.test\\.tsx?$/.test(f)).map((f) => path.join(\"test/unit\", f));"
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-63",
+   "question": "[ветка] Поиск скилла справкой: скилл не найден ни в проекте, ни в каталоге установки — `path: null`; при настройке плагина на клон ядра скиллы в каталогах модулей (F-42) не находятся, и ссылка на скилл пропадает?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-42"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN `--install-dir` указывает на клон ядра, скилл лежит в каталоге своего модуля WHEN выполняется `step_help.py` THEN у скилла `path` от клона и `base: install`; цена: сценарий под требованием «У шага есть поле `skills`» (MODIFIED), тест",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — ненайденный скилл не покрывается: плагин и так показывает его имя текстом, порчи нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест подаёт клон с `SKILL.md` в каталоге модуля и утверждает, что `path` найден; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — поиск скиллов клона остаётся открытым до задачи переноса скиллов в модули",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "C",
+    "why": "Поведение уже решено F-42 A, а требование «У шага есть поле `skills`» о клоне не говорит; тест держит решение без правки требования, а потерю ссылки человек видит сразу — текст вместо ссылки."
+   },
+   "decision": {
+    "option": "C",
+    "word": "",
+    "date": "2026-11-06"
+   },
+   "reversibility": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Backstop",
+    "reason": ""
+   },
+   "parking": [],
+   "dispute": "",
+   "consequences": "тест-страховка: подаёт клон ядра с `SKILL.md` в каталоге модуля как `--install-dir` и утверждает, что у скилла `path` найден, `base: install`",
+   "evidence": [
+    {
+     "path": "tools/step_help.py",
+     "quote": "return {\"name\": name, \"path\": None, \"base\": None}"
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-64",
+   "question": "[ветка] Проверка payload в `install`: отказ «payload не найден» срабатывает только без каталога `skills` — payload без `openspec/config.symphysis.yaml` после переноса файла в каталог схемы (F-37) падает на чтении, когда схема уже скопирована в проект?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-37"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN payload без `openspec/config.symphysis.yaml` WHEN выполняется `symphysis install` THEN отказ с именем файла до первой записи в проект; цена: сценарий, проверка состава payload до копирования, тест",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — неполный payload не покрывается: тест состава payload называет файл, и сборка без него красная до выпуска, пользователь такой payload не получит",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест ставит проект из payload без файла и утверждает, что проект не тронут; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — проверка состава payload остаётся открытой до задачи переноса `config.symphysis.yaml`",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "B",
+    "why": "Неполный payload ловит тест его состава (`installer/test/payload.test.js` называет файл) до выпуска; ошибка чтения при установке громкая, а не тихая."
+   },
+   "decision": {
+    "option": "B",
+    "word": "",
+    "date": "2026-11-06"
+   },
+   "reversibility": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Dismiss",
+    "reason": ""
+   },
+   "parking": [],
+   "dispute": "",
+   "consequences": "Неполный payload ловит тест его состава (`installer/test/payload.test.js` называет файл) до выпуска; ошибка чтения при установке громкая, а не тихая.",
+   "evidence": [
+    {
+     "path": "installer/lib/install.js",
+     "quote": "if (!fs.existsSync(path.join(payloadDir, \"skills\"))) {"
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-65",
+   "question": "[pre-mortem] Установка без файла, рождённого разрезом: payload собирается списком `FILES`, а исходник ядра запускается с каталогами модулей в `sys.path` (F-20) — новый файл модуля, не вписанный в список, проходит тесты ядра и падает на импорте только в `.symphysis/tools/` проекта пользователя?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-19",
+    "F-20",
+    "F-27"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN модуль ядра с новым файлом кода, который импортирует точка входа, WHEN выполняется `symphysis install` и вызов этой точки входа из `.symphysis/tools/` THEN код 0; цена: сценарий под требованием «`install` ставит схему, скиллы и инструменты в проект и сливает конфиг» (MODIFIED длинного требования), тест на установленной копии",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — разрез не покрывается; допустимо, если каждый новый файл кода вписывают в `FILES` руками и ревью это видит",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест ставит ядро во временный проект и зовёт `--help` каждой точки входа из `.symphysis/tools/`; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — страховка остаётся открытой до задачи разрезки `journal_render.py` и `journal_apply.py`",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "C",
+    "why": "Порча тихая: тесты ядра идут из исходника и зелёные, а падает установленная копия у пользователя. Против A — поведение установки уже сказано требованием, а его MODIFIED тянет деление длинного текста; не хватает страховки на разрез, и тест на установленной копии ловит её без правки требования."
+   },
+   "decision": {
+    "option": "C",
+    "word": "",
+    "date": "2026-11-06"
+   },
+   "reversibility": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Backstop",
+    "reason": ""
+   },
+   "parking": [],
+   "dispute": "",
+   "consequences": "тест-страховка: ставит ядро во временный проект и зовёт `--help` каждой точки входа из `.symphysis/tools/`, утверждая код 0",
+   "evidence": [
+    {
+     "path": "installer/scripts/sync-payload.js",
+     "quote": "\"tools/journal_render.py\","
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-66",
+   "question": "В каком модуле лежит `journal-cli.md` — справка скиллам о командах и кодах `journal.py`?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-27",
+    "F-33",
+    "F-35"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "В модуле `cli` вместе с `journal.py`: справка о командах и кодах выхода лежит рядом с точкой входа, которую описывает (F-33); установка по-прежнему кладёт её в `.symphysis/docs/`",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "skills/shared/journal-cli.md",
+       "quote": "# Команды журнала решений"
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "В модуле `decisions`, как в карте F-27: коды и маркеры говорят о журнале. Цена: справка о CLI отделена от CLI, а карта составлена до решения F-33 о модуле `cli`",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/changes/module-structure/research/F-27-probe/core-map.txt",
+       "quote": "skills/shared/journal-cli.md — decisions"
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Файл описывает вызовы `journal.py`, коды выхода и маркеры — границу модуля `cli`; карта F-27 отнесла его к `decisions` до того, как F-33 вынес CLI в свой модуль."
+   },
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-06"
+   },
+   "reversibility": {
+    "level": "обратимо",
+    "why": "перенос одного файла внутри репозитория; установка кладёт его в `.symphysis/docs/` при любом решении"
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "Задача переноса общих файлов скиллов в `tasks.md`",
+   "evidence": [],
+   "comments": [],
+   "nodes": [
+    "coreMods"
+   ]
+  },
+  {
+   "id": "F-67",
+   "question": "Как устроен каталог модуля ядра внутри: где код, каталоги скиллов, водители и тесты?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-18",
+    "F-23",
+    "F-42"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Подкаталоги по роду файлов внутри модуля с прежними именами: код и данные — в корне каталога модуля, скиллы — `skills/<имя>/`, водители — `agents/`, тесты — `tests/`. Инсталлятор собирает скиллы по маске `<модуль>/skills/symphysis-*`, водителей — `<модуль>/agents/*.md`; канон тел скиллов меняет только префикс пути",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "installer/scripts/sync-payload.js",
+       "quote": "const AGENTS_DIR = \"agents\";"
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Всё в корне каталога модуля: каталог скилла `symphysis-<имя>/` и тело водителя лежат рядом с кодом, тесты — `tests/`. На ступень короче пути. Цена: в корне модуля смешаны код, каталоги скиллов и тела агентов, инсталлятор различает их по префиксу и суффиксу имени",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "installer/scripts/sync-payload.js",
+       "quote": ".filter((e) => e.isDirectory() && e.name.startsWith(\"symphysis-\"))"
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Прежние имена `skills/`, `agents/`, `tests/` внутри модуля делают перенос механическим: инсталлятор, канон тел скиллов и поиск скиллов клона (F-42) меняют только префикс; B смешивает в корне модуля три рода файлов и заставляет различать их по имени."
+   },
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-06"
+   },
+   "reversibility": {
+    "level": "обратимо",
+    "why": "раскладка внутри модуля — только исходники: меняются маска сбора в `sync-payload.js` и поиск скиллов клона в `step_help.py`"
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "Маска сбора скиллов и водителей в `sync-payload.js`, поиск скиллов клона в `step_help.py`",
+   "evidence": [],
+   "comments": [],
+   "nodes": [
+    "coreMods"
+   ]
+  }
+ ],
+ "notes": [
+  {
+   "date": "2026-11-06",
+   "text": "круг 1 закончен: решений 15, фактов 14, открытых развилок 0, парковок материалам 4, антиподов 4"
+  },
+  {
+   "date": "2026-11-06",
+   "text": "круг 2 закончен: решений 12, фактов 0, открытых развилок 0, парковок материалам 0, антиподов 1"
+  },
+  {
+   "date": "2026-11-06",
+   "text": "брейншторм закончен по решению человека"
+  },
+  {
+   "date": "2026-11-06",
+   "text": "проба краёв: кандидатов 8, Specify 6, Dismiss 2, Backstop 0, Defer 0; не выбран 10: module-declaration/README модуля несёт имя и род во frontmatter, plugin-core-contract/Заданный `SYMPHYSIS_ROOT` без ядра — падение, а не пропуск, project-installer/README модуля схемы в проект не ставится, repository-layout/README корня называет каждый каталог первого уровня, repository-layout/Корень плагина описывает репозиторий, README пакета — отдельный файл, repository-layout/Файл принадлежит одному модулю, repository-layout/Тесты модуля лежат в его каталоге"
+  },
+  {
+   "date": "2026-11-06",
+   "text": "проба запретов: требований 21, оставлено 4, канон → ИБ 1, Specify 4, Dismiss 0, Defer 0"
+  },
+  {
+   "date": "2026-11-06",
+   "text": "проба краёв дополнена: требование `project-installer` «`check`, запущенный из клона, сигналит устаревший `payload`» вошло в счёт как MODIFIED по F-60; кандидатов 0, не выбран 1: project-installer/`check`, запущенный из клона, сигналит устаревший `payload`"
+  },
+  {
+   "date": "2026-11-06",
+   "text": "проба запретов дополнена: требование `project-installer` «`check`, запущенный из клона, сигналит устаревший `payload`»; оставлено 0, канон → ИБ 0"
+  }
+ ]
+}

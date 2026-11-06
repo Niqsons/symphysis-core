@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
-"""Порождает бинарные файлы улик для tests/test_journal_check.py (F-42): запуск
+"""Порождает бинарные файлы улик для decisions/tests/test_journal_check.py (F-42): запуск
 `python -X utf8 tests/fixtures/make_evidence_fixtures.py` перезаписывает четыре файла рядом."""
 import struct
 import zlib
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
-PROBE = 8192   # порог journal_apply.BINARY_PROBE
+PROBE = 8192   # порог roots.BINARY_PROBE
 
 
 def png() -> bytes:

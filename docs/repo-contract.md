@@ -46,7 +46,7 @@ git log --grep='^Origin: ' --format='%h %s | %(trailers:key=Origin,valueonly,sep
 - грамматика строк `apply`: плагин сам пишет эти строки, и они попадают в журнал;
 - подкоманды и аргументы `journal.py`, которые вызывает плагин, в том числе `--out`, `--attack`, `--dry-run`;
 - вывод `view-json`, в нём поле `contract` с номером контракта;
-- вывод `step_help.py`: поле `contract` то же самое число; поля — в `tests/test_step_help.py`, `test_output_shape`, исходы и коды — в `step_help.py --help`;
+- вывод `step_help.py`: поле `contract` то же самое число; поля — в `step-help/tests/test_step_help.py`, `test_output_shape`, исходы и коды — в `step_help.py --help`;
 - коды выхода `journal.py`;
 - значения полей, которые плагин разбирает: тяжесть, вид записи, закрытие «вопрос человеку», метка «(добавлен человеком»;
 - пути файлов изменения, в том числе страница `symphysis.html`;

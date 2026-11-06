@@ -701,7 +701,7 @@ symphysis check --skills-dir .opencode/skills
 
 Форк лежит вне git ядра, в ветке `openspec-fork`, а `bin/openspec.js` ждёт собранный `dist/`. Нужен `pnpm`: `npm i -g pnpm`, откат `npm rm -g pnpm`.
 
-Тела скиллов и агентов пишутся по канону `docs/skills-canon.md`: общие файлы — `skills/shared/` (в проект они ложатся в `.symphysis/docs/`), выписки доноров и заметки перевода — `skills/<имя>/sources/` (в продукт не идут), тела водителей — `agents/`. Форму проверяют `tests/test_skills.py` и `tests/test_agents.py`; переписанное тело проверяется двумя прогонами субагентом с одним brief, не чтением.
+Тела скиллов и агентов пишутся по канону `docs/skills-canon.md`: общие файлы — у модулей (`skill-shared/`, `cli/`, `settings/`, `decisions/`, `attack/`; в проект они ложатся в `.symphysis/docs/`), выписки доноров и заметки перевода — `<модуль>/skills/<имя>/sources/` (в продукт не идут), тела водителей — `<модуль>/agents/`. Форму проверяют `tests/test_skills.py` и `tests/test_agents.py`; переписанное тело проверяется двумя прогонами субагентом с одним brief, не чтением.
 
 PowerShell, из корня клона:
 

@@ -10,7 +10,7 @@ import { telemetryState, TELEMETRY_OFF_COMMAND } from "./telemetry.js";
 import { hasSources, payloadMatches, ROOT } from "../scripts/sync-payload.js";
 
 const SETTINGS_FILE = "symphysis.yaml";
-const TOOL_MODULES = ["journal.py", "journal_apply.py", "journal_cli.py", "journal_model.py", "journal_render.py", "journal_sites.py", "journal_consequences.py", "symphysis_config.py", "openspec_run.py", "trace_graph.py"];
+const TOOL_MODULES = ["journal.py", "journal_apply.py", "journal_cli.py", "journal_model.py", "journal_render.py", "journal.schema.json", "roots.py", "viewer_render.py", "attack_table.py", "journal_sites.py", "journal_consequences.py", "symphysis_config.py", "openspec_run.py", "trace_graph.py"];
 
 const rel = (project, p) => path.relative(project, p).split(path.sep).join("/");
 
@@ -134,7 +134,7 @@ export function check(project, { skillsDirs = [], agentsDirs = [], payloadDir = 
   const payloadDocs = path.join(payloadDir, "docs");
   const toolFiles = [
     ...TOOL_MODULES.map((m) => path.join(toolsDir, m)),
-    // `docs/` payload целиком: схема журнала, общие файлы скиллов, уведомления MIT.
+    // `docs/` payload целиком: общие файлы скиллов, уведомления MIT; схема журнала — в `tools/` (F-41 A).
     ...walk(payloadDocs).map((f) => path.join(t.toolsDir, "docs", path.relative(payloadDocs, f))),
     path.join(toolsDir, "journal-roots.json"),
   ];

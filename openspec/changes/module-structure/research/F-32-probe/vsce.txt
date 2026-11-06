@@ -1,0 +1,19 @@
+### Случай 1: frontmatter в корневом README, vsce package без --readme-path
+      └─ extension.js [108.29 KB]
+The file extension/media/mermaid.min.js is large (5.24 MB)
+ DONE  Packaged: <временный каталог>/one.vsix (14 files, 1.78 MB)
+код vsce: 0
+первые строки extension/readme.md в пакете:
+---
+name: symphysis-vscode
+kind: проба
+---
+
+# Symphysis
+
+### Случай 2: README пакета в docs/package-readme.md, корневой README — описание репозитория, --readme-path docs/package-readme.md
+ ERROR  The following files have the same case insensitive path, which isn't supported by the VSIX format:
+  - extension/README.md
+  - extension/readme.md
+код vsce: 1
+пакета нет

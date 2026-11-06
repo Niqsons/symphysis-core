@@ -175,14 +175,15 @@ export function install(project, { skillsDirs = [], agentsDirs = [], force = fal
 
   const toolsDir = path.join(t.toolsDir, "tools");
   const skippedBefore = res.skipped.length;
-  copyTree(res, root, path.join(payloadDir, "tools"), toolsDir, force, (f) => /^(journal.*\.py|symphysis_config\.py|step_help\.py|trace_graph\.py|openspec_run\.py|playground-template\.html|mermaid\.min\.js|mermaid\.LICENSE)$/.test(path.basename(f)));
+  copyTree(res, root, path.join(payloadDir, "tools"), toolsDir, force, (f) => /^(journal.*\.py|journal\.schema\.json|roots\.py|viewer_render\.py|attack_table\.py|symphysis_config\.py|step_help\.py|trace_graph\.py|openspec_run\.py|playground-template\.html|mermaid\.min\.js|mermaid\.LICENSE)$/.test(path.basename(f)));
   // Файл версии описывает поставленные инструменты: если часть пропущена, а файла не было, писать его значило бы
   // назвать версией то, чего в проекте нет. Панель покажет «неизвестно». Уже лежащий файл идёт по общему правилу.
   const toolsPrefix = `${rel(root, toolsDir)}/`;
   const toolsSkipped = res.skipped.slice(skippedBefore).some((line) => line.startsWith(toolsPrefix));
   const versionFile = path.join(toolsDir, VERSION_FILE);
   if (!toolsSkipped || fs.existsSync(versionFile)) place(res, root, versionFile, Buffer.from(versionText(payloadDir, sourceRoot)), force);
-  // `docs/` payload целиком: схема журнала, общие файлы скиллов (`terms.md`, `journal-cli.md`, …), уведомления MIT.
+  // `docs/` payload целиком: общие файлы скиллов (`terms.md`, `journal-cli.md`, …), уведомления MIT. Схема журнала —
+  // в `tools/` рядом с кодом (F-41 A).
   copyTree(res, root, path.join(payloadDir, "docs"), path.join(t.toolsDir, "docs"), force);
   place(res, root, path.join(toolsDir, "journal-roots.json"), Buffer.from(ROOTS_CONTENT), force, { keepExisting: true });
 

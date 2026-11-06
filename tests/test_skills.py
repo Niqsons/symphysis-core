@@ -9,10 +9,9 @@ import subprocess
 import sys
 
 import pytest
-from conftest import ROOT, requires_fork
+from conftest import ROOT, SHARED_SKILL_FILES, requires_fork, skill_dir, skill_dirs
 from journal_model import PROBE_OUTCOMES
 
-SKILLS = ROOT / "skills"
 # Шапка копии файла GSD: первая строка файла, с пином коммита источника.
 GSD_HEADER = "<!-- MIT License, Copyright (c) 2026 Open GSD; источник: upstream/gsd-core/"
 GSD_PIN = "@ e2cd587"
@@ -73,7 +72,7 @@ def table_rows(text):
     return [line for line in text.splitlines() if line.startswith("|")]
 
 
-SKILL_DIRS = sorted(p for p in SKILLS.glob("symphysis-*/") if p.is_dir())
+SKILL_DIRS = skill_dirs()   # скиллы всех модулей: `<модуль>/skills/<имя>/` (F-67 A)
 SKILLS_COUNT = 7
 # sources/*.md без шапки GSD: с D4b таких нет — переложение гриля store из атаки убрано,
 # все копии несут шапку MIT/Open GSD (исключение было бы явным, не по маске).
@@ -137,7 +136,7 @@ def test_skill_shape(skill):
 
 
 def test_brainstorm_skill_shape():
-    skill = SKILLS / "symphysis-brainstorm"
+    skill = skill_dir("symphysis-brainstorm")
     text = read(skill / "SKILL.md")
 
     for name in PERSPECTIVES:
@@ -163,7 +162,7 @@ EDGE_FIXED_LINES = (  # прежние фиксированные строки: 
 
 
 def test_edge_probe_has_eight_categories():
-    skill = SKILLS / "symphysis-edge-probe"
+    skill = skill_dir("symphysis-edge-probe")
     text = read(skill / "SKILL.md")
 
     for cat in EDGE_CATEGORIES:
@@ -190,7 +189,7 @@ COVERAGE_VALUES = {"`кандидат F-NN`": r"· кандидат F-\d+$",
 def test_edge_probe_names_each_coverage_value_with_an_example():
     """Backstop F-69, сценарий «Чтение текста скилла»: каждое значение названо определением
     и встречается в файле покрытия примера; все строки примера — об одном требовании, их восемь."""
-    text = read(SKILLS / "symphysis-edge-probe" / "SKILL.md")
+    text = read(skill_dir("symphysis-edge-probe") / "SKILL.md")
     step = text.split("### 5. ")[1].split("\n### ")[0]
     sample = text.split("### 7. ")[1].split("```")[1]
     rows = [line for line in sample.splitlines() if line.startswith("- ")]
@@ -203,7 +202,7 @@ def test_edge_probe_names_each_coverage_value_with_an_example():
 
 def test_edge_probe_summary_counts_not_selected_rows():
     """F-99: итог пробы не идёт без счёта строк `не выбран`: строка `notes[]` несёт их число и имена требований."""
-    summary = flat(read(SKILLS / "symphysis-edge-probe" / "SKILL.md").split("### 10. ")[1].split("\n### ")[0])
+    summary = flat(read(skill_dir("symphysis-edge-probe") / "SKILL.md").split("### 10. ")[1].split("\n### ")[0])
     assert "не выбран k: <ключи требований через запятую>" in summary
     assert "число строк `не выбран`" in summary
 
@@ -223,7 +222,7 @@ PROHIBITION_FIXED_LINES = (  # прежние фиксированные стр�
 
 
 def test_prohibition_probe_question_verbatim():
-    skill = SKILLS / "symphysis-prohibition-probe"
+    skill = skill_dir("symphysis-prohibition-probe")
     text = read(skill / "SKILL.md")
 
     assert PROHIBITION_QUESTION_RU in text, "в SKILL.md нет вопроса пробы по-русски"
@@ -255,8 +254,8 @@ def example_option_texts(text, heads):
 
 @pytest.mark.parametrize("name,heads,fixed", PROBE_CASES)
 def test_probe_skill_texts_are_concrete_not_template(name, heads, fixed):
-    text = read(SKILLS / name / "SKILL.md")
-    shared = read(SHARED / "candidate.md")
+    text = read(skill_dir(name) / "SKILL.md")
+    shared = read(SHARED["candidate.md"])
 
     assert "Текст, одинаковый у двух кандидатов" in shared, "нет правила о шаблонном тексте варианта (F-61.A) в candidate.md"
     assert "дефект кандидата" in shared
@@ -278,7 +277,7 @@ def test_probe_fixture_candidates_carry_distinct_texts(tmp_path):
     каждый начинается своим токеном, тексты двух кандидатов не совпадают."""
     roots = tmp_path / "roots.json"
     roots.write_text(json.dumps({"": str(PROBE_FIXTURE)}), encoding="utf-8")
-    run = subprocess.run([sys.executable, str(ROOT / "tools" / "journal.py"), "check",
+    run = subprocess.run([sys.executable, str(ROOT / "cli" / "journal.py"), "check",
                           str(PROBE_FIXTURE / "decisions.json"), "--roots", str(roots)],
                          capture_output=True, text=True, encoding="utf-8")
     assert run.returncode == 0, run.stdout + run.stderr
@@ -324,7 +323,7 @@ REMOVED_LENS_SLUGS = ("requirement-coverage", "task-completeness", "dependency-c
                       "research-resolution", "honest-verifier")
 # Воздержание honest-verifier: строка, которая не «есть» и не «нет» (`honest-verifier.md:43`).
 ABSTENTION_ROW = "по спеке не выводится"
-# Одно правило вердикта — то же, что в шаблонах (`tests/test_schema.py::VERDICT_RULE`), дословно в §5 и в приёмке.
+# Одно правило вердикта — то же, что в шаблонах (`openspec/schemas/symphysis/tests/test_schema.py::VERDICT_RULE`), дословно в §5 и в приёмке.
 VERDICT_RULE = ("`status: passed` ставится, только когда в таблице нет ни одной строки с тяжестью `блокер`; "
                 "строки `предупреждение` идут человеку списком и `apply` не держат, строки `справка` не блокируют")
 # Копии слоя проверки GSD в sources/ атаки: файл -> строка источника дословно.
@@ -337,7 +336,7 @@ ATTACK_REFERENCES = {
 
 
 def test_attack_skill_writes_verdict_contract():
-    skill = SKILLS / "symphysis-attack"
+    skill = skill_dir("symphysis-attack")
     text = read(skill / "SKILL.md")
 
     assert "status: passed" in text, "в SKILL.md нет вердикта `status: passed`"
@@ -373,7 +372,7 @@ def test_attack_skill_writes_verdict_contract():
 # --- атака: линзы следования вместо линз присутствия (7.1: F-07.A, F-12.A, F-08.A, F-09.A, F-23.A,
 # F-32.E, F-33.E, F-34.E, F-53.E, F-54.E) ---
 
-ATTACK_SKILL = SKILLS / "symphysis-attack"
+ATTACK_SKILL = skill_dir("symphysis-attack")
 
 
 def flat(text):
@@ -539,7 +538,7 @@ def test_attack_skill_missing_journal_is_an_unvisited_coverage_row():
     text = read(ATTACK_SKILL / "SKILL.md")
     entry = block(text, "### 1. Войди", "\n### 2.")
     assert "у журнала — строка «не пройдено» в разделе с именем файла" in entry
-    coverage = flat(read(SHARED / "attack-table.md"))
+    coverage = flat(read(SHARED["attack-table.md"]))
     assert "`| не пройдено | <раздел> | coverage | — | блокер | нет | повторить атаку по разделу |`" in coverage
     assert "status: gaps_found" in read(ROOT / "openspec" / "schemas" / "symphysis" / "templates" / "attack-decisions.md").split("---")[1]
     assert "только когда в таблице нет ни одной строки с тяжестью `блокер`" in flat(text)
@@ -575,7 +574,7 @@ RECOMMENDATION_WITH_TEXT = re.compile(r"recommendation[^{}\n]*\{[^}\n]*\btext\b"
 def test_no_skill_teaches_the_text_of_a_recommendation():
     """F-05, F-11, F-32: у рекомендации только `option` и `why`, образцы не учат писать `text`."""
     found = [f"{path.relative_to(ROOT)}:{number}"
-             for path in sorted(SKILLS.rglob("*.md"))
+             for path in sorted([*(file for skill in SKILL_DIRS for file in skill.rglob("*.md")), *SHARED.values()])
              for number, line in enumerate(read(path).splitlines(), 1)
              if RECOMMENDATION_WITH_TEXT.search(line)]
     assert found == []
@@ -586,9 +585,9 @@ def test_no_skill_teaches_the_text_of_a_recommendation():
 def test_skill_describes_why_as_the_reason_against_other_options(skill):
     """F-05, F-21: `why` — причина выбора этого варианта против других, а не пересказ варианта.
     У тел, вынесших форму кандидата в общий файл `candidate.md`, норма стоит там (канон, раздел 8)."""
-    text = flat(read(SKILLS / skill / "SKILL.md"))
+    text = flat(read(skill_dir(skill) / "SKILL.md"))
     if "`.symphysis/docs/candidate.md`" in text:
-        text = flat(read(SHARED / "candidate.md"))
+        text = flat(read(SHARED["candidate.md"]))
     assert "{option, why}`" in text
     assert "`why` — причина выбора этого варианта против других, а не пересказ варианта" in text
 
@@ -619,7 +618,7 @@ def test_attack_skill_context_compliance_sees_the_setting():
 def test_attack_skill_cell_rule():
     r"""F-23.A, F-34.E: черта — `\|` или внутри backticks; `\\|` — косая и черта в цитате кода; пустых ячеек нет.
     Хозяин нормы — общий файл `attack-table.md` (Р9-A, канон раздел 8): пишет атака, читает просмотрщик."""
-    rule = block(read(SHARED / "attack-table.md"), "## Правило ячейки", "\n## ")
+    rule = block(read(SHARED["attack-table.md"]), "## Правило ячейки", "\n## ")
     for token in (r"`\|`", "внутри backticks", "Цитата кода — в backticks", r"`\\|`", r"`\\`",
                   "следующая черта — разделитель", "Пустых ячеек нет", "`—`", "код 2",
                   "файлом, строкой и столбцом",
@@ -658,14 +657,14 @@ def test_attack_translation_notes_name_self_and_removed_dimensions():
 
 # --- просмотрщик: линзы атаки и перспективы интервью не смешиваются (слово владельца 2026-10-30) ---
 
-TEMPLATE = ROOT / "tools" / "playground-template.html"
+TEMPLATE = ROOT / "viewer" / "playground-template.html"
 # Русские имена перспектив — таблица `symphysis-brainstorm/SKILL.md`, шаг 2 (взяты оттуда, не придуманы).
 PERSPECTIVES_RU = ("Исследователь", "Упрощатель", "Хранитель границ", "Аналитик отказов", "Закрывающий")
 
 
 def skill_lens_lists():
     """Закрытые списки линз SKILL.md атаки по файлам: слуги таблицы после метки файла в порядке строк."""
-    text = read(SKILLS / "symphysis-attack" / "SKILL.md")
+    text = read(skill_dir("symphysis-attack") / "SKILL.md")
     return {file: [re.match(r"\| `([^`]+)`", row).group(1) for row in lens_table(text, marker)]
             for file, marker in LENS_TABLES.items()}
 
@@ -697,7 +696,7 @@ def test_template_lenses_equal_the_skill_tables():
 
 
 def test_template_keeps_perspectives_out_of_attack_mode():
-    brainstorm = read(SKILLS / "symphysis-brainstorm" / "SKILL.md")
+    brainstorm = read(skill_dir("symphysis-brainstorm") / "SKILL.md")
     for name in PERSPECTIVES_RU:
         assert name in brainstorm, f"имя перспективы «{name}» не из таблицы брейншторма"
     text = read(TEMPLATE)
@@ -731,7 +730,7 @@ def test_viewer_skill_shape():
     атаки не смешиваются), три режима в шаге 1, команды в шаге 2, правило развилки — в «Границах» с хозяином;
     sources/ без копий GSD; TRANSLATION-NOTES — по `playground/SKILL.md`: что взято как образец и что сделано
     иначе; Playground в теле продукта не назван — провенанс."""
-    skill = SKILLS / "symphysis-viewer"
+    skill = skill_dir("symphysis-viewer")
     text = read(skill / "SKILL.md")
     assert canon_sections(text) == list(CANON_SECTIONS), canon_sections(text)
     for token in ("render-html", "apply", "маловероятно", "--attack", "check", "render-md", "answers/",
@@ -754,14 +753,14 @@ def test_viewer_skill_shape():
         assert token in notes, f"в TRANSLATION-NOTES.md нет «{token}»"
 
 
-SHARED = ROOT / "skills" / "shared"
+SHARED = SHARED_SKILL_FILES   # общие файлы скиллов по имени: каждый в своём модуле (F-35 A, F-66 A)
 
 
 def test_research_skill_shape():
     """Р8-A: тело по скелету с разделом «Водитель»; инварианты — цитата из прочитанного файла и «искал:»
     (instruction research дословно); шаги 1–3 и 9 — главная нить, 4–8 — водитель по brief с `question: F-NN`;
     хозяева второго круга, парковок `человек` и `ИБ`, слова — названы в «Границах»."""
-    skill = SKILLS / "symphysis-research"
+    skill = skill_dir("symphysis-research")
     text = read(skill / "SKILL.md")
     assert canon_sections(text) == [*CANON_SECTIONS, "## Водитель"], canon_sections(text)
     for token in ("research/<F-NN>.md", "research/none.md", "искал:", "не найдено", "question: none",
@@ -787,7 +786,7 @@ def test_research_skill_shape():
 def test_shared_driver_file_holds_brief_and_report_form():
     """Канон, раздел 10: каталог запуска, поля brief, форма отчёта и права водителя — один общий файл,
     тела агентов и разделы «Водитель» держат строку нормы и путь."""
-    text = read(SHARED / "driver.md")
+    text = read(SHARED["driver.md"])
     for head in ("## Каталог запуска", "## Brief", "## Отчёт", "## Права водителя", "## Главная нить после отчёта"):
         assert head in text, head
     for token in ("briefs/<скилл>-<YYYY-MM-DD>/", "`skill`", "`targets`", "`config`", "`inputs`", "`question`",
@@ -796,20 +795,20 @@ def test_shared_driver_file_holds_brief_and_report_form():
         assert token in text, f"в driver.md нет «{token}»"
     for skill in ("symphysis-attack", "symphysis-edge-probe", "symphysis-prohibition-probe",
                   "symphysis-consequences", "symphysis-research"):
-        body = read(SKILLS / skill / "SKILL.md")
+        body = read(skill_dir(skill) / "SKILL.md")
         assert "## Водитель" in body, f"{skill}: нет раздела «Водитель»"
 
 
 def test_viewer_skill_describes_the_attack_mode():
     """Р9-A: в теле — когда режим «атака» и куда уходит спор; поведение страницы и правило ячейки — общий
     файл `attack-table.md` (хозяин нормы — атака, страница только показывает)."""
-    text = read(SKILLS / "symphysis-viewer" / "SKILL.md")
+    text = read(skill_dir("symphysis-viewer") / "SKILL.md")
     mode = block(text, "режим «атака»", "\n- ")
     for token in ("`attack/decisions.md`", "`attack/artifacts.md`", "по линзам и тяжести", "`notes[]`",
                   "`.symphysis/docs/attack-table.md`"):
         assert token in flat(text), f"в теле нет «{token}»"
     assert "Researcher" not in text and "Исследователь" not in text
-    table = " ".join(read(SHARED / "attack-table.md").split())
+    table = " ".join(read(SHARED["attack-table.md"]).split())
     points = {
         "счётчики вне фильтра": ("блокеров N · предупреждений N · справок N", "вне фильтра", "по всему файлу"),
         "фильтр по линзе": ("прячет группы, но не счётчики",),
@@ -828,8 +827,8 @@ def test_viewer_skill_describes_the_attack_mode():
 # --- брейншторм: намерение первым, факты постановки, отступление, предписание (7.2: F-13.A, F-08.A, F-09.A,
 # F-17.A, F-28.E, F-43.E, F-44.E, F-55.E) ---
 
-BRAINSTORM = SKILLS / "symphysis-brainstorm"
-VIEWER = SKILLS / "symphysis-viewer"
+BRAINSTORM = skill_dir("symphysis-brainstorm")
+VIEWER = skill_dir("symphysis-viewer")
 
 
 def brainstorm():
@@ -969,7 +968,7 @@ def test_round_one_on_an_intent_starts_with_a_setting_fact(tmp_path):
     побайтно равен эталону; развилка против сценария факта несёт `deviation`."""
     roots = tmp_path / "roots.json"
     roots.write_text(json.dumps({"openspec/changes/intent-demo/": str(INTENT_FIXTURE)}), encoding="utf-8")
-    run = subprocess.run([sys.executable, str(ROOT / "tools" / "journal.py"), "check",
+    run = subprocess.run([sys.executable, str(ROOT / "cli" / "journal.py"), "check",
                           str(INTENT_FIXTURE / "decisions.json"), "--roots", str(roots), "--strict"],
                          capture_output=True, text=True, encoding="utf-8")
     assert run.returncode == 0, run.stdout + run.stderr
@@ -1072,14 +1071,14 @@ def test_brainstorm_reconciling_does_not_decide_for_the_human():
 
 def test_attack_both_antipodes_is_a_warning_and_missing_nodes_is_not_a_finding():
     """F-56: оговорка в линзе, как у `deviation`; F-114: отсутствие `nodes` не находка."""
-    text = read(SKILLS / "symphysis-attack" / "SKILL.md")
+    text = read(skill_dir("symphysis-attack") / "SKILL.md")
     assert "оба антипода выбраны — `предупреждение (оба антипода выбраны)`" in text
     assert "отсутствие поля `nodes` у записи" in block(text, "Не репортится", "### 5.")
 
 
 def test_attack_claim_extraction_accepts_parked_security_canon():
     """Слово владельца 2026-11-06 «Исключение в скилле»: номер парковки ИБ — отсылка к канону, не опора на решение."""
-    lens = block(read(SKILLS / "symphysis-attack" / "SKILL.md"), "#### claim-extraction\n\nSpecs", "\n#### consequences.md")
+    lens = block(read(skill_dir("symphysis-attack") / "SKILL.md"), "#### claim-extraction\n\nSpecs", "\n#### consequences.md")
     assert "`status: припаркован` и `addressee: ИБ`" in lens and "в любой цели" in lens
 
 
@@ -1107,19 +1106,19 @@ def test_probe_skills_put_the_record_number_under_the_scenario_heading(name):
     `consequence-inventory`: «Ветка с исходом Specify», «Причина провала с исходом Specify» (F-45):
     сценарий по исходу Specify несёт `<!-- F-NN -->` строкой под заголовком, и она вне предела 500 знаков.
     Правило — в общем `candidate.md` (зеркало исхода), тело скилла называет строку в своём зеркале."""
-    rule = block(read(SHARED / "candidate.md"), "- `Specify` —", "\n- `Backstop`")
+    rule = block(read(SHARED["candidate.md"]), "- `Specify` —", "\n- `Backstop`")
     for token in (SCENARIO_COMMENT, "под заголовком сценария", "предел 500", "F-45"):
         assert token in rule, f"candidate.md: нет «{token}»"
-    text = flat(read(SKILLS / name / "SKILL.md"))
+    text = flat(read(skill_dir(name) / "SKILL.md"))
     for token in (SCENARIO_COMMENT, "сразу под заголовком", "candidate.md"):
         assert token in text, f"{name}: нет «{token}»"
 
 
 def test_consequences_skill_marks_the_pre_mortem_scenario_too():
     """`consequence-inventory`: «Причина провала с исходом Specify» (F-45)."""
-    step = block(read(SKILLS / "symphysis-consequences" / "SKILL.md"), "### 9.", "\n### ")
+    step = block(read(skill_dir("symphysis-consequences") / "SKILL.md"), "### 9.", "\n### ")
     assert SCENARIO_COMMENT in step and "`[pre-mortem]`" in step and "ветк" in step
-    rule = block(read(SHARED / "candidate.md"), "- `Specify` —", "\n- `Backstop`")
+    rule = block(read(SHARED["candidate.md"]), "- `Specify` —", "\n- `Backstop`")
     assert rule.index(SCENARIO_COMMENT) < rule.index("`consequences` ← «в spec.md")
 
 
@@ -1136,7 +1135,7 @@ def test_brainstorm_skill_names_the_lifted_decision_in_depends_on():
 def test_scenario_comment_reaches_the_master_spec(tmp_path):
     """`requirement-probes`: «Комментарий доходит до мастер-спеки» (F-45): дельта с `<!-- F-12 -->`
     под заголовком сценария проходит `validate --strict`, после `archive` комментарий стоит под тем же заголовком."""
-    from test_schema import make_project, run_openspec_raw
+    from conftest import make_project, run_openspec_raw
     proj = make_project(tmp_path)
     delta = proj / "openspec" / "changes" / "demo" / "specs" / "cap" / "spec.md"
     delta.parent.mkdir(parents=True)

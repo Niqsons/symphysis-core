@@ -1,0 +1,93 @@
+### Раскладка 1: CLI и корни улик в decisions
+consequences -> decisions: 5 имён, например tools/journal_consequences.py:11 journal_apply.NOT_CHECKED
+decisions -> attack: 2 имён, например tools/journal.py:67 journal_render.parse_attack_md
+decisions -> consequences: 5 имён, например tools/journal.py:64 journal_consequences.check_consequences
+decisions -> step-help: 1 имён, например tools/journal_cli.py:198 step_help.*
+decisions -> viewer: 7 имён, например tools/journal.py:67 journal_render.PLACEHOLDER
+settings -> decisions: 2 имён, например tools/symphysis_config.py:19 journal_apply.default_roots
+step-help -> decisions: 3 имён, например tools/step_help.py:20 journal_render.CONTRACT
+step-help -> openspec-run: 6 имён, например tools/step_help.py:21 openspec_run.FORK_TIMEOUT
+trace -> decisions: 4 имён, например tools/trace_graph.py:20 journal_apply.UNUSABLE_ROOTS
+trace -> openspec-run: 5 имён, например tools/trace_graph.py:22 openspec_run.ForkError
+циклов: 1
+  цикл: consequences <-> decisions <-> step-help
+
+### Раскладка 2: CLI — модуль cli, корни улик и поиск цитат — модуль roots
+cli -> attack: 2 имён, например tools/journal.py:67 journal_render.parse_attack_md
+cli -> consequences: 5 имён, например tools/journal.py:64 journal_consequences.check_consequences
+cli -> decisions: 37 имён, например tools/journal.py:61 journal_apply.REFUSED
+cli -> roots: 9 имён, например tools/journal.py:61 journal_apply.ROOTS_PATH
+cli -> step-help: 1 имён, например tools/journal_cli.py:198 step_help.*
+cli -> viewer: 7 имён, например tools/journal.py:67 journal_render.PLACEHOLDER
+consequences -> roots: 5 имён, например tools/journal_consequences.py:11 journal_apply.NOT_CHECKED
+settings -> decisions: 1 имён, например tools/symphysis_config.py:20 journal_model.ROOT
+settings -> roots: 1 имён, например tools/symphysis_config.py:19 journal_apply.default_roots
+step-help -> decisions: 1 имён, например tools/step_help.py:20 journal_render.CONTRACT
+step-help -> openspec-run: 6 имён, например tools/step_help.py:21 openspec_run.FORK_TIMEOUT
+step-help -> roots: 2 имён, например tools/step_help.py:303 journal_apply.file_links
+trace -> decisions: 2 имён, например tools/trace_graph.py:21 journal_model.PROBE_OUTCOMES
+trace -> openspec-run: 5 имён, например tools/trace_graph.py:22 openspec_run.ForkError
+trace -> roots: 2 имён, например tools/trace_graph.py:20 journal_apply.UNUSABLE_ROOTS
+циклов: 0
+
+### Раскладка 1: CLI и корни улик в decisions — по ссылкам функций (имена своего файла и импортированные)
+attack -> decisions: 1 ссылок, например tools/journal_render.py:403 parse_attack_md -> _lines
+consequences -> decisions: 5 ссылок, например tools/journal_consequences.py:46 check_consequences -> journal_apply.find_quote
+decisions -> attack: 1 ссылок, например tools/journal_cli.py:130 _read_attack -> journal_render.parse_attack_md
+decisions -> consequences: 2 ссылок, например tools/journal_cli.py:57 cmd_check -> journal_consequences.check_consequences
+decisions -> step-help: 1 ссылок, например tools/journal_cli.py:191 _help_calculation -> step_help.*
+decisions -> viewer: 3 ссылок, например tools/journal_cli.py:208 cmd_render_html -> journal_render.scheme_payload
+settings -> decisions: 2 ссылок, например tools/symphysis_config.py:147 _default_project -> journal_apply.default_roots
+step-help -> decisions: 3 ссылок, например tools/step_help.py:300 _file_links -> journal_apply.file_links
+step-help -> openspec-run: 9 ссылок, например tools/step_help.py:58 _reason -> openspec_run.ForkReply
+trace -> decisions: 4 ссылок, например tools/trace_graph.py:379 _read_records -> journal_model.validate_journal
+trace -> openspec-run: 15 ссылок, например tools/trace_graph.py:994 _pathless -> openspec_run.no_paths
+viewer -> decisions: 3 ссылок, например tools/journal_render.py:21 TEMPLATE_PATH -> journal_model.ROOT
+циклов: 1
+  цикл: attack <-> consequences <-> decisions <-> step-help <-> viewer
+
+### Раскладка 2: CLI — модуль cli, корни улик и поиск цитат — модуль roots — по ссылкам функций (имена своего файла и импортированные)
+attack -> decisions: 1 ссылок, например tools/journal_render.py:403 parse_attack_md -> _lines
+cli -> attack: 1 ссылок, например tools/journal_cli.py:130 _read_attack -> journal_render.parse_attack_md
+cli -> consequences: 2 ссылок, например tools/journal_cli.py:57 cmd_check -> journal_consequences.check_consequences
+cli -> decisions: 25 ссылок, например tools/journal_cli.py:31 _valid_journal -> journal_model.load_journal
+cli -> roots: 9 ссылок, например tools/journal_cli.py:57 cmd_check -> journal_apply.default_roots
+cli -> step-help: 1 ссылок, например tools/journal_cli.py:191 _help_calculation -> step_help.*
+cli -> viewer: 3 ссылок, например tools/journal_cli.py:208 cmd_render_html -> journal_render.scheme_payload
+consequences -> roots: 5 ссылок, например tools/journal_consequences.py:46 check_consequences -> journal_apply.find_quote
+decisions -> roots: 2 ссылок, например tools/journal_apply.py:232 check_evidence -> find_quote
+roots -> decisions: 4 ссылок, например tools/journal_apply.py:27 ROOTS_PATH -> journal_model.ROOT
+settings -> decisions: 1 ссылок, например tools/symphysis_config.py:147 _default_project -> journal_model.ROOT
+settings -> roots: 1 ссылок, например tools/symphysis_config.py:147 _default_project -> journal_apply.default_roots
+step-help -> decisions: 1 ссылок, например tools/step_help.py:323 _compute -> journal_render.CONTRACT
+step-help -> openspec-run: 9 ссылок, например tools/step_help.py:58 _reason -> openspec_run.ForkReply
+step-help -> roots: 2 ссылок, например tools/step_help.py:300 _file_links -> journal_apply.file_links
+trace -> decisions: 2 ссылок, например tools/trace_graph.py:379 _read_records -> journal_model.validate_journal
+trace -> openspec-run: 15 ссылок, например tools/trace_graph.py:994 _pathless -> openspec_run.no_paths
+trace -> roots: 2 ссылок, например tools/trace_graph.py:1613 _freeze_roots -> journal_apply.UNUSABLE_ROOTS
+viewer -> decisions: 3 ссылок, например tools/journal_render.py:21 TEMPLATE_PATH -> journal_model.ROOT
+циклов: 1
+  цикл: decisions <-> roots
+
+### Раскладка 2: ссылки группы корней (journal_apply.py) на decisions — все на ROOT
+ROOTS_PATH:27 -> ['ROOT']
+_expand_value:32 -> ['ROOT']
+file_links:159 -> ['ROOT']
+project_href:175 -> ['ROOT']
+ROOT определён в tools/journal_model.py:21; без этих ссылок ребро roots -> decisions пропадает, и цикл decisions <-> roots тоже
+
+### Раскладка 3: CLI — модуль cli, корни улик и поиск цитат остаются в decisions — по ссылкам функций
+attack -> decisions: 1 ссылок, например tools/journal_render.py:403 parse_attack_md -> _lines
+cli -> attack: 1 ссылок, например tools/journal_cli.py:130 _read_attack -> journal_render.parse_attack_md
+cli -> consequences: 2 ссылок, например tools/journal_cli.py:57 cmd_check -> journal_consequences.check_consequences
+cli -> decisions: 34 ссылок, например tools/journal_cli.py:31 _valid_journal -> journal_model.load_journal
+cli -> step-help: 1 ссылок, например tools/journal_cli.py:191 _help_calculation -> step_help.*
+cli -> viewer: 3 ссылок, например tools/journal_cli.py:208 cmd_render_html -> journal_render.scheme_payload
+consequences -> decisions: 5 ссылок, например tools/journal_consequences.py:46 check_consequences -> journal_apply.NOT_CHECKED
+settings -> decisions: 2 ссылок, например tools/symphysis_config.py:147 _default_project -> journal_model.ROOT
+step-help -> decisions: 3 ссылок, например tools/step_help.py:300 _file_links -> journal_apply.project_roots
+step-help -> openspec-run: 9 ссылок, например tools/step_help.py:58 _reason -> openspec_run.ForkReply
+trace -> decisions: 4 ссылок, например tools/trace_graph.py:379 _read_records -> journal_model.validate_journal
+trace -> openspec-run: 15 ссылок, например tools/trace_graph.py:994 _pathless -> openspec_run.no_paths
+viewer -> decisions: 3 ссылок, например tools/journal_render.py:21 TEMPLATE_PATH -> journal_model.ROOT
+циклов: 0

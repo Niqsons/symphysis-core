@@ -11,6 +11,7 @@ import { targets } from "../lib/paths.js";
 import { install } from "../lib/install.js";
 import { requireFork } from "../scripts/build-vendor.js";
 import { tempDir } from "../test-support/temp-dir.js";
+import { REPO, gitIn, makeClone as makeCloneIn } from "../test-support/clone.js";
 import { parse } from "yaml";
 
 const bin = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..", "bin", "symphysis.js");
@@ -47,13 +48,16 @@ test("install в пустой проект: все цели существуют
   const r = install(p, { payloadDir });
   const t = targets(p);
   assert.ok(fs.existsSync(path.join(t.schemaDir, "schema.yaml")));
+  assert.ok(!fs.existsSync(path.join(t.schemaDir, "config.symphysis.yaml")), "образец конфига — не файл схемы проекта (F-37)");
+  assert.ok(!fs.existsSync(path.join(t.schemaDir, "tests")), "тесты модуля схемы в проект не идут");
   assert.ok(fs.existsSync(t.configPath));
   for (const d of t.skillsDirs) assert.ok(fs.existsSync(path.join(d, "symphysis-brainstorm", "SKILL.md")));
   for (const d of t.agentsDirs) assert.ok(fs.existsSync(path.join(d, "symphysis-attack-driver.md")));
   assert.ok(fs.existsSync(path.join(p, ".claude", "agents", "symphysis-research-driver.md")));
   assert.ok(fs.existsSync(path.join(t.toolsDir, "tools", "journal.py")));
   assert.ok(fs.existsSync(path.join(t.toolsDir, "tools", "playground-template.html")));
-  assert.ok(fs.existsSync(path.join(t.toolsDir, "docs", "journal.schema.json")));
+  assert.ok(fs.existsSync(path.join(t.toolsDir, "tools", "journal.schema.json")));   // схема журнала — рядом с кодом (F-41)
+  assert.ok(!fs.existsSync(path.join(t.toolsDir, "docs", "journal.schema.json")));
   for (const d of ["terms.md", "journal-cli.md", "config.md", "candidate.md", "attack-table.md", "THIRD-PARTY-NOTICES.md"]) {
     assert.ok(fs.existsSync(path.join(t.toolsDir, "docs", d)), d);
   }
@@ -804,32 +808,11 @@ test("Обновление без `--force`: новые файлы положе�
   assert.equal(fs.readFileSync(path.join(t.schemaDir, "steps.md"), "utf8"), "своё");
 });
 
-// Клон-образец: исходники и файлы mermaid во временном каталоге, чтобы хеш и свежесть payload задавались тестом.
-const REPO = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..", "..");
+// Клон-образец в модульной раскладке: `test-support/clone.js`.
 const VERSION = JSON.parse(fs.readFileSync(path.join(REPO, "installer", "package.json"), "utf8")).version;
 const VERSION_REL = ".symphysis/tools/symphysis-version.txt";
 const VERSION_FILE_NAME = "symphysis-version.txt";
-const gitIn = (cwd, ...args) =>
-  spawnSync("git", ["-c", "user.name=t", "-c", "user.email=t@t", "-c", "commit.gpgsign=false", ...args], { cwd, encoding: "utf8" });
-
-function makeClone({ git }) {
-  const dir = tmp();
-  const keep = (s) => path.basename(s) !== "__pycache__";
-  for (const rel of ["skills", "tools", "docs", path.join("openspec", "schemas", "symphysis")]) {
-    fs.cpSync(path.join(REPO, rel), path.join(dir, rel), { recursive: true, filter: keep });
-  }
-  fs.copyFileSync(path.join(REPO, "openspec", "config.symphysis.yaml"), path.join(dir, "openspec", "config.symphysis.yaml"));
-  const mer = path.join(dir, "installer", "node_modules", "mermaid");
-  fs.mkdirSync(path.join(mer, "dist"), { recursive: true });
-  fs.copyFileSync(path.join(REPO, "installer", "node_modules", "mermaid", "dist", "mermaid.min.js"), path.join(mer, "dist", "mermaid.min.js"));
-  fs.copyFileSync(path.join(REPO, "installer", "node_modules", "mermaid", "LICENSE"), path.join(mer, "LICENSE"));
-  if (git) {
-    gitIn(dir, "init", "-q");
-    gitIn(dir, "add", "-A");
-    assert.equal(gitIn(dir, "commit", "-qm", "один").status, 0);
-  }
-  return dir;
-}
+const makeClone = ({ git }) => makeCloneIn(tmp(), { git });
 const head = (dir) => gitIn(dir, "rev-parse", "--short", "HEAD").stdout.trim();
 const versionOf = (p) => fs.readFileSync(path.join(p, VERSION_REL), "utf8").trim();
 
@@ -875,7 +858,7 @@ test("версия: клон обновлён, инструменты нет —
   const p = tmp();
   install(p, { payloadDir: pd, sourceRoot: clone });
   const first = versionOf(p);
-  fs.appendFileSync(path.join(clone, "tools", "journal.py"), "\n# правка\n");
+  fs.appendFileSync(path.join(clone, "cli", "journal.py"), "\n# правка\n");
   gitIn(clone, "add", "-A");
   gitIn(clone, "commit", "-qm", "два");
   syncPayload(pd, clone);
@@ -891,7 +874,7 @@ test("версия: payload старее исходников — только �
   const clone = makeClone({ git: true });
   const pd = tmp();
   syncPayload(pd, clone);
-  fs.appendFileSync(path.join(clone, "tools", "journal.py"), "\n# новее payload\n");
+  fs.appendFileSync(path.join(clone, "cli", "journal.py"), "\n# новее payload\n");
   gitIn(clone, "add", "-A");
   gitIn(clone, "commit", "-qm", "два");
   const p = tmp();

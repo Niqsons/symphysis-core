@@ -1,0 +1,224 @@
+# верхнеуровневые имена делимых файлов: имя:строка — кто импортирует (файл:строка)
+
+## tools/journal_model.py
+__all__:13 — -
+ROOT:21 — journal:65, journal_apply:16, journal_render:11, symphysis_config:20
+SCHEMA_PATH:22 — journal:65
+RE_TITLE:24 — -
+RE_REC:25 — journal_apply:16
+RE_ANCHOR:26 — journal_render:11
+RE_GENERATED:27 — -
+RE_FIELD:28 — -
+RE_OPT:29 — -
+RE_EVID:30 — -
+RE_UNLIKELY:31 — -
+RE_ANTIPODE:32 — -
+RE_DECISION:33 — -
+RE_RECOMMENDATION:34 — -
+RE_NOTES_HEAD:35 — -
+RE_NOTE:36 — -
+RE_OUTCOME:39 — -
+DASH:40 — -
+ADDED_MARK:41 — journal_apply:16, journal_render:11
+DEVIATION_LABEL:45 — journal_render:11
+DEVIATION_TAIL:46 — journal_render:11
+RE_DEVIATION_TAIL:47 — -
+SETTING:48 — -
+PROBE_OUTCOMES:50 — trace_graph:21
+_unquote:55 — journal:65, journal_apply:16
+_parse_decision:73 — -
+_parse_recommendation:82 — -
+_parse_parking:92 — -
+_new_record:101 — journal_apply:16
+import_md_text:108 — journal:65
+import_md:235 — journal:65, journal_cli:21
+load_journal:242 — journal:65, journal_cli:21
+save_journal:246 — journal:65, journal_cli:21
+SCHEMA_TYPES:255 — -
+SCHEMA_KEYWORDS:263 — -
+REF_PREFIX:265 — -
+_refuse_unknown_schema:268 — -
+_walk_schema:289 — -
+_schema_violations:332 — -
+_schema_errors:340 — -
+_deviation_errors:354 — -
+_rule_errors:379 — -
+unexplained_choices:422 — journal_cli:21
+dependency_cycles:435 — journal_cli:21
+validate_journal:455 — journal:65, journal_apply:16, journal_cli:21, trace_graph:21
+_flat:467 — journal:65, journal_apply:16, journal_render:11
+_evidence_of:472 — journal_apply:16, journal_render:11
+
+## tools/journal_apply.py
+__all__:20 — -
+ROOTS_PATH:27 — journal:61
+_expand_value:32 — -
+change_of:42 — journal_cli:18
+_roots_from_file:52 — -
+_inside:57 — -
+UNUSABLE_ROOTS:61 — trace_graph:20
+_roots_around:64 — -
+default_roots:74 — journal:61, journal_cli:18, symphysis_config:19, trace_graph:20
+project_roots:86 — step_help:303
+OUTSIDE_ROOT:99 — journal_sites:10
+BINARY_PROBE:100 — -
+VERDICT_OUTSIDE:101 — -
+VERDICT_BINARY:102 — -
+VERDICT_NOT_UTF8:103 — -
+VERDICT_UNREADABLE:104 — -
+NOT_CHECKED:105 — journal_consequences:11
+RE_CODE_SPAN:106 — -
+RE_LINE_TAIL:107 — -
+_resolve:110 — journal_sites:10
+_walk_references:129 — -
+_relative_link:144 — -
+file_links:159 — journal:61, journal_cli:18, step_help:303
+project_href:175 — journal:61, journal_cli:18
+_read_text:185 — journal_consequences:11
+_match_lines:199 — -
+find_quote:214 — journal:61, journal_consequences:11
+check_evidence:232 — journal:61, journal_cli:18
+PARKING_ADDRESSEES:258 — -
+LETTERS:259 — -
+REFUSED:260 — journal:61, journal_cli:18
+RE_ITEM:263 — -
+RE_NEW_FORKS:264 — -
+RE_NOTES:265 — -
+RE_ADD_OPTION:266 — -
+RE_DEP:267 — -
+RE_PARK:268 — -
+RE_DISPUTE:269 — -
+RE_WORD:270 — -
+RE_CHOICE:271 — -
+RE_NEW_FORK:272 — -
+_human_word:275 — -
+_parse_item:282 — -
+parse_answers:312 — journal:61, journal_cli:18
+_Refusal:346 — -
+_merge:350 — -
+_rec:357 — -
+_fork:364 — -
+_do_decide:372 — -
+_do_word:393 — -
+_do_park:409 — -
+_do_add_option:424 — -
+_do_dependency:437 — -
+_do_dispute:455 — -
+_do_new_fork:469 — -
+_do_note:487 — -
+_do_unknown:492 — -
+_APPLY:496 — -
+apply_answers:501 — journal:61, journal_cli:18
+MD4H_SCHEMA:531 — -
+MD4H_LINE_NUMBERING:532 — -
+MD4H_REQUIRED:533 — -
+MD4H_LINES_LABEL:534 — -
+RE_MD4H_ITEM:535 — -
+RE_MD4H_SPAN:536 — -
+RE_MD4H_FEEDBACK:537 — -
+RE_FENCE_OPEN:538 — -
+RE_FENCE_CLOSE:539 — -
+_md4h_scalar:542 — -
+_md4h_frontmatter:552 — -
+_md4h_span:566 — -
+parse_md4h:577 — journal:61, journal_cli:18
+sha256_file:639 — journal:61, journal_cli:18
+_record_starts:644 — -
+_md4h_comments:656 — -
+apply_md4h:687 — journal:61, journal_cli:18
+
+## tools/journal_render.py
+__all__:13 — -
+TEMPLATE_PATH:21 — journal:67, journal_cli:22
+PLACEHOLDER:22 — journal:67
+PLACEHOLDER_ATTACK:23 — journal:67
+PLACEHOLDER_SCHEME:24 — -
+PLACEHOLDER_HELP:25 — -
+PLACEHOLDER_LINKS:26 — -
+CONTRACT:28 — step_help:20
+_evidence_line:33 — -
+_render_option:37 — -
+_render_decision:50 — -
+_render_recommendation:61 — -
+_render_outcome:66 — -
+_render_record:75 — -
+_generated_note:111 — -
+_render_notes:117 — -
+render_md:128 — journal:67, journal_cli:22
+_lines:147 — journal_apply:18
+anchor_lines:152 — journal:67, journal_apply:18
+_viewer_record:160 — -
+_embed:169 — -
+_viewer_payload:175 — -
+RE_FENCE:199 — -
+NO_SCHEME:200 — -
+parse_scheme:203 — -
+_mermaid_src:227 — -
+scheme_payload:236 — journal_cli:22
+no_help_snapshot:245 — journal_cli:22
+render_html:252 — journal:67, journal_cli:22
+ATTACK_ROW_KEYS:280 — -
+ATTACK_FIRST_COLUMN:281 — -
+RE_FRONT_KEY:282 — -
+RE_TARGET_PATH:283 — -
+RE_TARGET_SHA:284 — -
+_attack_frontmatter:287 — -
+_split_row:311 — -
+_scan_row:319 — -
+_cells:358 — -
+_attack_rows:362 — -
+parse_attack_md:403 — journal:67, journal_cli:22
+ONE_WAY:419 — -
+EMPTY_SECTION:420 — -
+NO_DECISIONS:421 — -
+UNCHANGED_NOTE:425 — -
+UNCHANGED_PREFIXES:426 — -
+GOALS_STUB:427 — -
+MIGRATION_STUB:428 — -
+_ref:431 — -
+_unmatched:436 — -
+_cite:447 — -
+_design_context:453 — -
+_is_unchanged:461 — -
+_design_decision:467 — -
+_design_risks:489 — -
+_is_probe:498 — -
+_open_fork_line:504 — -
+_design_open_questions:517 — -
+render_design:528 — journal:67, journal_cli:22
+_recommended_why:569 — -
+destination:575 — -
+PARKING_ANSWERS:600 — -
+parking_destination:603 — -
+view_payload:608 — journal:67, journal_cli:22
+
+## tools/journal_cli.py
+__all__:26 — -
+_valid_journal:31 — -
+_parkings_without_finding:40 — -
+_human_parkings_without_finding:49 — -
+cmd_check:57 — -
+cmd_code_sites:94 — -
+cmd_import_md:107 — -
+cmd_render_md:120 — -
+_read_attack:130 — -
+_from_root:142 — -
+_attack_path:150 — -
+_shell_word:157 — -
+_rebuild_command:168 — -
+NO_HELP:179 — -
+_help_snapshot:182 — -
+_help_calculation:191 — -
+cmd_render_html:208 — -
+cmd_view_json:244 — -
+cmd_render_design:264 — -
+_iso_date:273 — -
+cmd_apply:283 — -
+_comment_count:315 — -
+cmd_apply_md4h:319 — -
+JOURNAL_HELP:356 — -
+ROOTS_HELP:357 — -
+MAIN_EPILOG:359 — -
+_command:370 — -
+build_parser:378 — journal:63
+main:512 — journal:63

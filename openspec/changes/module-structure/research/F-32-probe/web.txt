@@ -1,0 +1,14 @@
+Документация по адресам brief, 2026-11-06. Страницы прочитал агент чтения страниц (web-fetch); цитаты ниже — дословно из его отчёта.
+Страницы прочитаны не целиком: npm — 39932 из 56163 символов дословно, VS Code — 39913 из 52039; хвосты агент передал пересказом, пересказ помечен.
+
+### https://docs.npmjs.com/cli/v10/configuring-npm/package-json — раздел "files"
+"Certain files are always included, regardless of settings:"
+элемент списка: "`README`"
+"`README` & `LICENSE` can have any case and extension."
+отсутствие (агент): в дословной части нет поля "readme" и способа выбрать другой README; пересказ хвоста: "The page also does not mention any package.json field (such as "readme") or option for choosing a different README file."
+
+### https://code.visualstudio.com/api/working-with-extensions/publishing-extension — раздел "Advanced usage" > "Marketplace integration"
+"Add a `README.md` file to the root of your extension with the content you want to show on the extension's Marketplace page."
+"You can also set base URLs for links and images with the `--baseContentUrl` and `--baseImagesUrl` flags."
+отсутствие (агент): `--readme-path` и другой путь README в дословной части не названы; пересказ хвоста: "Alternative README locations: Not mentioned."
+отсутствие (агент): YAML frontmatter в README не упомянут ни в дословной части, ни в пересказе хвоста.
