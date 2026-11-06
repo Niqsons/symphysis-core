@@ -224,7 +224,7 @@ def test_live_journal_records_viewer_as_own_skill():
     assert rec["depends_on"] == ["F-18"]
     assert [o["letter"] for o in rec["options"]] == ["A", "B"]
     assert all(o["evidence"] for o in rec["options"]), "у каждого варианта улика путь:цитата"
-    assert {ev["path"] for o in rec["options"] for ev in o["evidence"]} == {"playground/SKILL.md", "tools/viewer_render.py"}
+    assert {ev["path"] for o in rec["options"] for ev in o["evidence"]} == {"playground/SKILL.md", "tools/journal_render.py"}
     assert rec["recommendation"]["option"] == "B" and rec["recommendation"]["why"]
     assert rec["decision"]["option"] == "B" and rec["decision"]["date"] == "2026-10-30"
     assert rec["decision"]["word"].startswith("нам стоит сделать свой скилл и шаблон на базе Playground")

@@ -1806,7 +1806,7 @@
        "verdict": "сверено"
       },
       {
-       "path": "tools/viewer_render.py",
+       "path": "tools/journal_render.py",
        "quote": "def render_html",
        "line": 165,
        "found": true,

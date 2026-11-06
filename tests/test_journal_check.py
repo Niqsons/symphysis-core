@@ -34,10 +34,18 @@ def test_check_missing_file_is_signal_not_error(tmp_path):
 def test_check_plan_journal_all_found():
     j = journal.load_journal(ROOT / "docs/plan-implementation.journal.json")
     r = journal.check_evidence(j, journal.default_roots())
-    # 71 улика F-01…F-24 + 6 улик F-25 (D4b) + 3 улики F-26 (D7) + 9 улик F-27; без нормализации (F-36)
-    # не находится одна — цитата F-07 из docs/plan-flexible-pipeline.md переходит через перенос строки
-    assert r["total"] == 89 and r["found"] == 88
-    assert len(r["missing"]) == 1 and r["missing"][0].startswith("F-07: docs/plan-flexible-pipeline.md")
+    # 89 улик: F-01…F-24, F-25 (D4b), F-26 (D7), F-27; без нормализации (F-36). Улики прежних журналов — история
+    # (F-24 A, ruling R9): путь, перенесённый изменением `module-structure`, остаётся в журнале и даёт «файла нет».
+    assert r["total"] == 89
+    wrapped = "F-07: docs/plan-flexible-pipeline.md"             # цитата переходит через перенос строки
+    moved = "F-26: tools/journal_render.py «def render_html»"      # `render_html` ушёл в viewer_render.py, файл потом переедет
+    absent = [m for m in r["missing"] if "файла нет" in m]
+    for item in r["missing"]:
+        assert item.startswith((wrapped, moved)) or item in absent, item
+    for item in absent:                                          # «файла нет» называет только путь, которого в дереве нет
+        path = item.split(": ", 1)[1].split(" «", 1)[0]
+        assert not (ROOT / path).exists(), item
+    assert r["found"] + len(r["missing"]) == 89 and any(m.startswith(wrapped) for m in r["missing"])
 
 
 # --- что именно записывается в улику ---------------------------------------
