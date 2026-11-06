@@ -1,0 +1,170 @@
+# Покрытие пробы краёв: module-structure
+
+- decision-viewer/Просмотрщик — один HTML из своего шаблона с тремя режимами · boundary · неприменимо: формы io; boundary только для numeric-range
+- decision-viewer/Просмотрщик — один HTML из своего шаблона с тремя режимами · adjacency · неприменимо: формы io; adjacency только для collection
+- decision-viewer/Просмотрщик — один HTML из своего шаблона с тремя режимами · empty · неприменимо: формы io; empty только для collection, text
+- decision-viewer/Просмотрщик — один HTML из своего шаблона с тремя режимами · encoding · неприменимо: формы io; encoding только для text
+- decision-viewer/Просмотрщик — один HTML из своего шаблона с тремя режимами · ordering · неприменимо: формы io; ordering только для collection
+- decision-viewer/Просмотрщик — один HTML из своего шаблона с тремя режимами · precision · неприменимо: формы io; precision только для numeric-range
+- decision-viewer/Просмотрщик — один HTML из своего шаблона с тремя режимами · idempotency · неприменимо: формы io; idempotency только для stateful
+- decision-viewer/Просмотрщик — один HTML из своего шаблона с тремя режимами · concurrency · не найдено: два `render-html` в один файл — страницу пишет только `render-html`, прежняя проба сняла этот край; правка этого изменения — только имя пути (F-26)
+- decision-viewer/`render-html` встраивает снимок справки, сбой страницу не роняет · boundary · неприменимо: формы stateful, io, collection; boundary только для numeric-range
+- decision-viewer/`render-html` встраивает снимок справки, сбой страницу не роняет · adjacency · не найдено: снимок одного изменения в журнале другого проекта — сценарий «Журнал из другого проекта»; правка этого изменения — только имя пути (F-26)
+- decision-viewer/`render-html` встраивает снимок справки, сбой страницу не роняет · empty · не найдено: справка без форка — сценарий «Форка нет»; правка этого изменения — только имя пути (F-26)
+- decision-viewer/`render-html` встраивает снимок справки, сбой страницу не роняет · encoding · неприменимо: формы stateful, io, collection; encoding только для text
+- decision-viewer/`render-html` встраивает снимок справки, сбой страницу не роняет · ordering · не найдено: порядок шагов в снимке задаёт `openspec status`, не страница; правка этого изменения — только имя пути (F-26)
+- decision-viewer/`render-html` встраивает снимок справки, сбой страницу не роняет · precision · неприменимо: формы stateful, io, collection; precision только для numeric-range
+- decision-viewer/`render-html` встраивает снимок справки, сбой страницу не роняет · idempotency · не найдено: повторная `render-html` даёт новый снимок — сценарий «Файлы изменились после снимка»; правка этого изменения — только имя пути (F-26)
+- decision-viewer/`render-html` встраивает снимок справки, сбой страницу не роняет · concurrency · не найдено: сбой расчёта во время сборки — требование: код выхода прежний, панель называет причину; правка этого изменения — только имя пути (F-26)
+- decision-viewer/Скилл просмотрщика знает о внесении кнопкой · boundary · неприменимо: формы text; boundary только для numeric-range
+- decision-viewer/Скилл просмотрщика знает о внесении кнопкой · adjacency · неприменимо: формы text; adjacency только для collection
+- decision-viewer/Скилл просмотрщика знает о внесении кнопкой · empty · не найдено: пустой файл скилла — сценарий «Текст скилла» требует три имени; правка этого изменения — только имя пути (F-26)
+- decision-viewer/Скилл просмотрщика знает о внесении кнопкой · encoding · не найдено: имена `events.jsonl`, `.symphysis/viewer/`, `answers/` ищутся как есть; правка этого изменения — только имя пути (F-26)
+- decision-viewer/Скилл просмотрщика знает о внесении кнопкой · ordering · неприменимо: формы text; ordering только для collection
+- decision-viewer/Скилл просмотрщика знает о внесении кнопкой · precision · неприменимо: формы text; precision только для numeric-range
+- decision-viewer/Скилл просмотрщика знает о внесении кнопкой · idempotency · неприменимо: формы text; idempotency только для stateful
+- decision-viewer/Скилл просмотрщика знает о внесении кнопкой · concurrency · неприменимо: формы text; concurrency только для io, stateful
+- decision-viewer/Строка таблицы атаки разбирается по соглашению markdown · boundary · неприменимо: формы text; boundary только для numeric-range
+- decision-viewer/Строка таблицы атаки разбирается по соглашению markdown · adjacency · неприменимо: формы text; adjacency только для collection
+- decision-viewer/Строка таблицы атаки разбирается по соглашению markdown · empty · не найдено: пустая ячейка — у требования «Негодная строка таблицы атаки — ошибка с местом»; текст перенесён без смысловой правки (F-46)
+- decision-viewer/Строка таблицы атаки разбирается по соглашению markdown · encoding · не найдено: черта, косая и backtick разобраны прежней пробой (журнал `calibration-fixes`: F-45.E, F-46.E), текст перенесён без смысловой правки (F-46)
+- decision-viewer/Строка таблицы атаки разбирается по соглашению markdown · ordering · неприменимо: формы text; ordering только для collection
+- decision-viewer/Строка таблицы атаки разбирается по соглашению markdown · precision · неприменимо: формы text; precision только для numeric-range
+- decision-viewer/Строка таблицы атаки разбирается по соглашению markdown · idempotency · неприменимо: формы text; idempotency только для stateful
+- decision-viewer/Строка таблицы атаки разбирается по соглашению markdown · concurrency · неприменимо: формы text; concurrency только для io, stateful
+- decision-viewer/Негодная строка таблицы атаки — ошибка с местом · boundary · неприменимо: формы text, io; boundary только для numeric-range
+- decision-viewer/Негодная строка таблицы атаки — ошибка с местом · adjacency · неприменимо: формы text, io; adjacency только для collection
+- decision-viewer/Негодная строка таблицы атаки — ошибка с местом · empty · не найдено: пустая ячейка там, где правило требует значение, названа в тексте; прежняя проба (журнал `calibration-fixes`: F-46.E)
+- decision-viewer/Негодная строка таблицы атаки — ошибка с местом · encoding · не найдено: незакрытый backtick назван в тексте; прежняя проба (журнал `calibration-fixes`: F-45.E)
+- decision-viewer/Негодная строка таблицы атаки — ошибка с местом · ordering · неприменимо: формы text, io; ordering только для collection
+- decision-viewer/Негодная строка таблицы атаки — ошибка с местом · precision · неприменимо: формы text, io; precision только для numeric-range
+- decision-viewer/Негодная строка таблицы атаки — ошибка с местом · idempotency · неприменимо: формы text, io; idempotency только для stateful
+- decision-viewer/Негодная строка таблицы атаки — ошибка с местом · concurrency · не найдено: ошибка разбора — HTML не пишется, прерывать нечего
+- decision-viewer/Страница `symphysis.html` работает без соседних файлов · boundary · неприменимо: формы io; boundary только для numeric-range
+- decision-viewer/Страница `symphysis.html` работает без соседних файлов · adjacency · неприменимо: формы io; adjacency только для collection
+- decision-viewer/Страница `symphysis.html` работает без соседних файлов · empty · неприменимо: формы io; empty только для collection, text
+- decision-viewer/Страница `symphysis.html` работает без соседних файлов · encoding · неприменимо: формы io; encoding только для text
+- decision-viewer/Страница `symphysis.html` работает без соседних файлов · ordering · неприменимо: формы io; ordering только для collection
+- decision-viewer/Страница `symphysis.html` работает без соседних файлов · precision · неприменимо: формы io; precision только для numeric-range
+- decision-viewer/Страница `symphysis.html` работает без соседних файлов · idempotency · неприменимо: формы io; idempotency только для stateful
+- decision-viewer/Страница `symphysis.html` работает без соседних файлов · concurrency · не найдено: страница только читается браузером, файлы рядом не пишет
+- module-declaration/README модуля несёт имя и род во frontmatter · boundary · неприменимо: формы text, collection, io; boundary только для numeric-range
+- module-declaration/README модуля несёт имя и род во frontmatter · adjacency · кандидат F-48
+- module-declaration/README модуля несёт имя и род во frontmatter · empty · кандидат F-47
+- module-declaration/README модуля несёт имя и род во frontmatter · encoding · не выбран: `kind: Доменный` с заглавной; исход назван сценарием «Род вне двух значений» — значение не из двух, тест красный
+- module-declaration/README модуля несёт имя и род во frontmatter · ordering · не найдено: порядок полей frontmatter на разбор не влияет
+- module-declaration/README модуля несёт имя и род во frontmatter · precision · неприменимо: формы text, collection, io; precision только для numeric-range
+- module-declaration/README модуля несёт имя и род во frontmatter · idempotency · неприменимо: формы text, collection, io; idempotency только для stateful
+- module-declaration/README модуля несёт имя и род во frontmatter · concurrency · не найдено: тест структуры только читает README
+- module-declaration/README модуля описывает вложенные каталоги первого уровня · boundary · неприменимо: формы collection, text; boundary только для numeric-range
+- module-declaration/README модуля описывает вложенные каталоги первого уровня · adjacency · не найдено: два вложенных каталога с одним именем в одном модуле файловая система не допускает
+- module-declaration/README модуля описывает вложенные каталоги первого уровня · empty · кандидат F-49
+- module-declaration/README модуля описывает вложенные каталоги первого уровня · encoding · кандидат F-50
+- module-declaration/README модуля описывает вложенные каталоги первого уровня · ordering · не найдено: порядок строк о каталогах ни на что не влияет — тест сверяет множество
+- module-declaration/README модуля описывает вложенные каталоги первого уровня · precision · неприменимо: формы collection, text; precision только для numeric-range
+- module-declaration/README модуля описывает вложенные каталоги первого уровня · idempotency · неприменимо: формы collection, text; idempotency только для stateful
+- module-declaration/README модуля описывает вложенные каталоги первого уровня · concurrency · неприменимо: формы collection, text; concurrency только для io, stateful
+- plugin-core-contract/Заданный `SYMPHYSIS_ROOT` без ядра — падение, а не пропуск · boundary · неприменимо: формы text, io; boundary только для numeric-range
+- plugin-core-contract/Заданный `SYMPHYSIS_ROOT` без ядра — падение, а не пропуск · adjacency · неприменимо: формы text, io; adjacency только для collection
+- plugin-core-contract/Заданный `SYMPHYSIS_ROOT` без ядра — падение, а не пропуск · empty · не выбран: `SYMPHYSIS_ROOT` равен пустой строке; исход назван сценарием «Пустая переменная», ответ человека его не изменит
+- plugin-core-contract/Заданный `SYMPHYSIS_ROOT` без ядра — падение, а не пропуск · encoding · не выбран: `SYMPHYSIS_ROOT` на клоне ядра в прежней раскладке с `tools/journal.py`; совместимость с прежней раскладкой не держится (F-15), ответ человека её не вернёт
+- plugin-core-contract/Заданный `SYMPHYSIS_ROOT` без ядра — падение, а не пропуск · ordering · неприменимо: формы text, io; ordering только для collection
+- plugin-core-contract/Заданный `SYMPHYSIS_ROOT` без ядра — падение, а не пропуск · precision · неприменимо: формы text, io; precision только для numeric-range
+- plugin-core-contract/Заданный `SYMPHYSIS_ROOT` без ядра — падение, а не пропуск · idempotency · неприменимо: формы text, io; idempotency только для stateful
+- plugin-core-contract/Заданный `SYMPHYSIS_ROOT` без ядра — падение, а не пропуск · concurrency · не найдено: переменная читается один раз при запуске тестов
+- project-installer/README модуля схемы в проект не ставится · boundary · неприменимо: формы io, collection, stateful; boundary только для numeric-range
+- project-installer/README модуля схемы в проект не ставится · adjacency · не выбран: `readme.md` другого регистра в каталоге схемы; README модуля — `README.md` по требованию `module-declaration`, другой файл модулем не объявлен
+- project-installer/README модуля схемы в проект не ставится · empty · не найдено: каталог схемы без README — фильтру нечего пропускать, установка прежняя
+- project-installer/README модуля схемы в проект не ставится · encoding · неприменимо: формы io, collection, stateful; encoding только для text
+- project-installer/README модуля схемы в проект не ставится · ordering · не найдено: порядок файлов каталога схемы на фильтр не влияет
+- project-installer/README модуля схемы в проект не ставится · precision · неприменимо: формы io, collection, stateful; precision только для numeric-range
+- project-installer/README модуля схемы в проект не ставится · idempotency · не найдено: повторная установка — README нет и после неё, фильтр тот же
+- project-installer/README модуля схемы в проект не ставится · concurrency · не найдено: фильтр payload работает при сборке payload, не при установке
+- repository-layout/README корня называет каждый каталог первого уровня · boundary · неприменимо: формы collection, text, io; boundary только для numeric-range
+- repository-layout/README корня называет каждый каталог первого уровня · adjacency · не выбран: каталог помечен контуром разработки, а несёт README модуля; исход назван сценарием «Контур разработки с README модуля»
+- repository-layout/README корня называет каждый каталог первого уровня · empty · кандидат F-51
+- repository-layout/README корня называет каждый каталог первого уровня · encoding · не выбран: форма ссылки на каталог в README корня; та же, что у README модуля, решается кандидатом F-50
+- repository-layout/README корня называет каждый каталог первого уровня · ordering · не найдено: порядок каталогов в README корня тест не сверяет
+- repository-layout/README корня называет каждый каталог первого уровня · precision · неприменимо: формы collection, text, io; precision только для numeric-range
+- repository-layout/README корня называет каждый каталог первого уровня · idempotency · неприменимо: формы collection, text, io; idempotency только для stateful
+- repository-layout/README корня называет каждый каталог первого уровня · concurrency · не найдено: тест структуры только читает README
+- repository-layout/Корень плагина описывает репозиторий, README пакета — отдельный файл · boundary · неприменимо: формы io, text; boundary только для numeric-range
+- repository-layout/Корень плагина описывает репозиторий, README пакета — отдельный файл · adjacency · неприменимо: формы io, text; adjacency только для collection
+- repository-layout/Корень плагина описывает репозиторий, README пакета — отдельный файл · empty · не выбран: README пакета нет на месте; `vsce` с `--readme-path` без файла отказывает кодом 1 (`vscode/node_modules/@vscode/vsce/out/package.js:750`), пакет не собирается
+- repository-layout/Корень плагина описывает репозиторий, README пакета — отдельный файл · encoding · не выбран: корневой `README.md` попал в пакет рядом с README пакета; `vsce` отказывает на двух путях, равных без учёта регистра (`research/F-32-probe/vsce.txt:15`)
+- repository-layout/Корень плагина описывает репозиторий, README пакета — отдельный файл · ordering · неприменимо: формы io, text; ordering только для collection
+- repository-layout/Корень плагина описывает репозиторий, README пакета — отдельный файл · precision · неприменимо: формы io, text; precision только для numeric-range
+- repository-layout/Корень плагина описывает репозиторий, README пакета — отдельный файл · idempotency · неприменимо: формы io, text; idempotency только для stateful
+- repository-layout/Корень плагина описывает репозиторий, README пакета — отдельный файл · concurrency · не найдено: упаковка идёт одним вызовом `vsce`
+- repository-layout/Модуль — каталог на своём месте · boundary · неприменимо: формы collection, io; boundary только для numeric-range
+- repository-layout/Модуль — каталог на своём месте · adjacency · не найдено: два каталога модулей с одним именем на одном уровне файловая система не допускает
+- repository-layout/Модуль — каталог на своём месте · empty · не найдено: репозиторий без модулей — у ядра и плагина модули есть по F-18 и F-31
+- repository-layout/Модуль — каталог на своём месте · encoding · неприменимо: формы collection, io; encoding только для text
+- repository-layout/Модуль — каталог на своём месте · ordering · не найдено: порядок каталогов на место модуля не влияет
+- repository-layout/Модуль — каталог на своём месте · precision · неприменимо: формы collection, io; precision только для numeric-range
+- repository-layout/Модуль — каталог на своём месте · idempotency · неприменимо: формы collection, io; idempotency только для stateful
+- repository-layout/Модуль — каталог на своём месте · concurrency · не найдено: тест структуры только читает дерево
+- repository-layout/Файл принадлежит одному модулю · boundary · неприменимо: формы collection; boundary только для numeric-range
+- repository-layout/Файл принадлежит одному модулю · adjacency · кандидат F-52
+- repository-layout/Файл принадлежит одному модулю · empty · не выбран: файлы в корне репозитория (`pytest.ini`, `build.mjs`, `package.json`) — не файлы модуля: корень — уровень репозитория (F-22, F-43)
+- repository-layout/Файл принадлежит одному модулю · encoding · неприменимо: формы collection; encoding только для text
+- repository-layout/Файл принадлежит одному модулю · ordering · не найдено: порядок файлов на принадлежность модулю не влияет
+- repository-layout/Файл принадлежит одному модулю · precision · неприменимо: формы collection; precision только для numeric-range
+- repository-layout/Файл принадлежит одному модулю · idempotency · неприменимо: формы collection; idempotency только для stateful
+- repository-layout/Файл принадлежит одному модулю · concurrency · неприменимо: формы collection; concurrency только для io, stateful
+- repository-layout/Тесты модуля лежат в его каталоге · boundary · неприменимо: формы collection, io; boundary только для numeric-range
+- repository-layout/Тесты модуля лежат в его каталоге · adjacency · кандидат F-53
+- repository-layout/Тесты модуля лежат в его каталоге · empty · не выбран: модуль без тестов; требование о месте тестов, а не об их наличии (F-23)
+- repository-layout/Тесты модуля лежат в его каталоге · encoding · неприменимо: формы collection, io; encoding только для text
+- repository-layout/Тесты модуля лежат в его каталоге · ordering · не найдено: порядок сбора тестов pytest на их место не влияет
+- repository-layout/Тесты модуля лежат в его каталоге · precision · неприменимо: формы collection, io; precision только для numeric-range
+- repository-layout/Тесты модуля лежат в его каталоге · idempotency · неприменимо: формы collection, io; idempotency только для stateful
+- repository-layout/Тесты модуля лежат в его каталоге · concurrency · не найдено: тесты разных модулей идут параллельно под `-n 12` и раньше, шим форка общий
+- repository-layout/Тест структуры в каждом репозитории · boundary · неприменимо: формы io, collection; boundary только для numeric-range
+- repository-layout/Тест структуры в каждом репозитории · adjacency · не найдено: тест структуры один на репозиторий, совпадать не с чем
+- repository-layout/Тест структуры в каждом репозитории · empty · не найдено: репозиторий без модулей — у ядра и плагина модули есть по F-18 и F-31
+- repository-layout/Тест структуры в каждом репозитории · encoding · неприменимо: формы io, collection; encoding только для text
+- repository-layout/Тест структуры в каждом репозитории · ordering · не найдено: порядок проверок теста на итог не влияет
+- repository-layout/Тест структуры в каждом репозитории · precision · неприменимо: формы io, collection; precision только для numeric-range
+- repository-layout/Тест структуры в каждом репозитории · idempotency · неприменимо: формы io, collection; idempotency только для stateful
+- repository-layout/Тест структуры в каждом репозитории · concurrency · не найдено: тест структуры только читает дерево и идёт в общем прогоне
+- requirement-probes/Текст пробы объясняет задачу подробнее · boundary · неприменимо: формы text; boundary только для numeric-range
+- requirement-probes/Текст пробы объясняет задачу подробнее · adjacency · неприменимо: формы text; adjacency только для collection
+- requirement-probes/Текст пробы объясняет задачу подробнее · empty · не найдено: пустой текст скилла — сценарий требует определения каждого значения строки покрытия; правка этого изменения — только имя пути (F-26)
+- requirement-probes/Текст пробы объясняет задачу подробнее · encoding · не найдено: текст читается человеком и моделью, сравнения строк нет; правка этого изменения — только имя пути (F-26)
+- requirement-probes/Текст пробы объясняет задачу подробнее · ordering · неприменимо: формы text; ordering только для collection
+- requirement-probes/Текст пробы объясняет задачу подробнее · precision · неприменимо: формы text; precision только для numeric-range
+- requirement-probes/Текст пробы объясняет задачу подробнее · idempotency · неприменимо: формы text; idempotency только для stateful
+- requirement-probes/Текст пробы объясняет задачу подробнее · concurrency · неприменимо: формы text; concurrency только для io, stateful
+- skill-transfer/Скилл несёт копию источника с copyright notice и перечень смысловых отличий · boundary · неприменимо: формы collection; boundary только для numeric-range
+- skill-transfer/Скилл несёт копию источника с copyright notice и перечень смысловых отличий · adjacency · не найдено: два каталога одного скилла — имя скилла единственно; правка этого изменения — только имя пути (F-26)
+- skill-transfer/Скилл несёт копию источника с copyright notice и перечень смысловых отличий · empty · не найдено: скилл без источника GSD — сценарий «Скилл без источника GSD»; правка этого изменения — только имя пути (F-26)
+- skill-transfer/Скилл несёт копию источника с copyright notice и перечень смысловых отличий · encoding · неприменимо: формы collection; encoding только для text
+- skill-transfer/Скилл несёт копию источника с copyright notice и перечень смысловых отличий · ordering · не найдено: порядок файлов каталога скилла на состав не влияет; правка этого изменения — только имя пути (F-26)
+- skill-transfer/Скилл несёт копию источника с copyright notice и перечень смысловых отличий · precision · неприменимо: формы collection; precision только для numeric-range
+- skill-transfer/Скилл несёт копию источника с copyright notice и перечень смысловых отличий · idempotency · неприменимо: формы collection; idempotency только для stateful
+- skill-transfer/Скилл несёт копию источника с copyright notice и перечень смысловых отличий · concurrency · неприменимо: формы collection; concurrency только для io, stateful
+- step-help/Скрипт считает текущий шаг и чей ход · boundary · неприменимо: формы collection, io; boundary только для numeric-range
+- step-help/Скрипт считает текущий шаг и чей ход · adjacency · не найдено: открытая и припаркованная развилки — сценарий «Припаркованная развилка»; правка этого изменения — только имя пути (F-26)
+- step-help/Скрипт считает текущий шаг и чей ход · empty · не найдено: нет активных изменений — сценарий «Активных изменений нет»; правка этого изменения — только имя пути (F-26)
+- step-help/Скрипт считает текущий шаг и чей ход · encoding · неприменимо: формы collection, io; encoding только для text
+- step-help/Скрипт считает текущий шаг и чей ход · ordering · не найдено: несколько готовых шагов — сценарий «Несколько готовых шагов после `specs`»; правка этого изменения — только имя пути (F-26)
+- step-help/Скрипт считает текущий шаг и чей ход · precision · неприменимо: формы collection, io; precision только для numeric-range
+- step-help/Скрипт считает текущий шаг и чей ход · idempotency · неприменимо: формы collection, io; idempotency только для stateful
+- step-help/Скрипт считает текущий шаг и чей ход · concurrency · не найдено: скрипт только читает и пишет в stdout; правка этого изменения — только имя пути (F-26)
+- step-help/Справка не становится гейтом и не меняет файлы · boundary · неприменимо: формы io, collection; boundary только для numeric-range
+- step-help/Справка не становится гейтом и не меняет файлы · adjacency · не найдено: два скилла с одним именем в разных модулях невозможны — имя скилла `symphysis-*` единственно
+- step-help/Справка не становится гейтом и не меняет файлы · empty · кандидат F-54
+- step-help/Справка не становится гейтом и не меняет файлы · encoding · неприменимо: формы io, collection; encoding только для text
+- step-help/Справка не становится гейтом и не меняет файлы · ordering · не найдено: порядок обхода скиллов на итог поиска имени не влияет
+- step-help/Справка не становится гейтом и не меняет файлы · precision · неприменимо: формы io, collection; precision только для numeric-range
+- step-help/Справка не становится гейтом и не меняет файлы · idempotency · неприменимо: формы io, collection; idempotency только для stateful
+- step-help/Справка не становится гейтом и не меняет файлы · concurrency · не найдено: тест только читает тексты скиллов
+- trace-graph/Граф собирается из файлов изменения · boundary · неприменимо: формы io, collection; boundary только для numeric-range
+- trace-graph/Граф собирается из файлов изменения · adjacency · не найдено: связи двух записей с одним требованием — граф из файлов изменения; правка этого изменения — только имя пути (F-26)
+- trace-graph/Граф собирается из файлов изменения · empty · не найдено: изменение без файлов шага — сценарий «Только что созданное изменение»; правка этого изменения — только имя пути (F-26)
+- trace-graph/Граф собирается из файлов изменения · encoding · неприменимо: формы io, collection; encoding только для text
+- trace-graph/Граф собирается из файлов изменения · ordering · не найдено: порядок узлов графа задаёт файл изменения; правка этого изменения — только имя пути (F-26)
+- trace-graph/Граф собирается из файлов изменения · precision · неприменимо: формы io, collection; precision только для numeric-range
+- trace-graph/Граф собирается из файлов изменения · idempotency · неприменимо: формы io, collection; idempotency только для stateful
+- trace-graph/Граф собирается из файлов изменения · concurrency · не найдено: граф строится из файлов на чтение, напрямую его не правит никто; правка этого изменения — только имя пути (F-26)

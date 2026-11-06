@@ -212,15 +212,15 @@
 const JOURNAL = {
  "title": "Журнал решений: module-structure",
  "source": "decisions.json",
- "sha256": "b915654316fe544810d0fe8c94974117b8018db6140f41bbfc99a22bf5381885",
+ "sha256": "e6f9004a25c562b0e79ae1c5fa78090f18b2f026f920048914f051967af3d50b",
  "stats": {
-  "records": 45,
-  "forks": 28,
-  "facts": 17,
-  "decided": 28,
+  "records": 59,
+  "forks": 40,
+  "facts": 19,
+  "decided": 40,
   "parked": 1,
-  "evidence_total": 130,
-  "evidence_found": 130
+  "evidence_total": 145,
+  "evidence_found": 145
  },
  "records": [
   {
@@ -3173,6 +3173,947 @@ const JOURNAL = {
     "contract"
    ],
    "finding": ""
+  },
+  {
+   "id": "F-46",
+   "question": "Правка пути по F-26 даёт MODIFIED требования `decision-viewer` «Просмотрщик — один HTML из своего шаблона с тремя режимами» длиной 1077 знаков; по правилу схемы длинное требование в MODIFIED делится на дочернее, сценарии родителя остаются при нём (решения F-76 A и F-91 A журнала `trace-graph`).",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "материалы",
+   "depends_on": [
+    "F-26"
+   ],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "Дочернее требование `decision-viewer` о разборе строки таблицы атаки несёт `(F-46)`",
+   "evidence": [
+    {
+     "path": "openspec/schemas/symphysis/schema.yaml",
+     "quote": "Длинное в MODIFIED дели так же: сценарии родителя остаются при нём, условия не теряются",
+     "line": 82,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "openspec/changes/archive/2026-11-06-trace-graph/decisions.json",
+     "quote": "Надо менять скилл составления требований. Раз у нас появляется механизм связей, то можно делать связанное дочернее требование",
+     "line": 4955,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "finding": ""
+  },
+  {
+   "id": "F-47",
+   "question": "[empty · text] README модуля несёт имя и род во frontmatter: `name:` с пустым значением или из одних пробелов — тест структуры красный или модуль принят без имени?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-03",
+    "F-21",
+    "F-39"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN README модуля с `name: \"\"` WHEN выполняется тест структуры THEN тест красный и называет каталог; цена: сценарий, проверка непустого `name` в тесте структуры",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — пустое имя не покрывается; допустимо, пока имя модуля, кроме теста структуры, никто не читает",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест подаёт README с `name:` из пробелов и утверждает, что тест структуры красный; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — пустое имя остаётся открытым до этапа графа, где имя станет частью id `репозиторий/модуль`",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Модуль без имени проходит тест молча, а на этапе графа его id станет `репозиторий/` — порча, которую сразу никто не увидит; цена — сценарий и одна проверка в тесте."
+   },
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-06"
+   },
+   "reversibility": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Specify",
+    "reason": ""
+   },
+   "parking": [],
+   "dispute": "",
+   "consequences": "в spec.md: Пустое имя модуля",
+   "evidence": [
+    {
+     "path": "openspec/changes/module-structure/specs/module-declaration/spec.md",
+     "quote": "### Requirement: README модуля несёт имя и род во frontmatter",
+     "line": 9,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "finding": ""
+  },
+  {
+   "id": "F-48",
+   "question": "[adjacency · collection] README модуля несёт имя и род во frontmatter: два модуля одного репозитория с одинаковым `name` (имя может отличаться от каталога, F-21) — тест красный или оба приняты?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-03",
+    "F-21"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN два каталога модулей ядра с `name: decisions` WHEN выполняется тест структуры THEN тест красный и называет оба каталога; цена: сценарий, проверка повторов имён в тесте",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — повтор имён не покрывается; допустимо, пока имя каждого модуля совпадает с его каталогом, а каталоги одного уровня различны",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест собирает имена всех README модулей репозитория и утверждает, что повторов нет; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — повтор имён остаётся открытым до этапа графа, где id `репозиторий/модуль` впервые станет ключом",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Имя может отличаться от каталога, и два модуля с одним именем дадут один id `репозиторий/модуль` — граф молча сольёт их; цена — сценарий и проверка повторов."
+   },
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-06"
+   },
+   "reversibility": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Specify",
+    "reason": ""
+   },
+   "parking": [],
+   "dispute": "",
+   "consequences": "в spec.md: Два модуля с одним именем",
+   "evidence": [
+    {
+     "path": "openspec/changes/module-structure/specs/module-declaration/spec.md",
+     "quote": "### Requirement: README модуля несёт имя и род во frontmatter",
+     "line": 9,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "finding": ""
+  },
+  {
+   "id": "F-49",
+   "question": "[empty · collection] README модуля описывает вложенные каталоги первого уровня: каталог есть на диске, но не в git (`__pycache__/`, `.pytest_cache/` после прогона тестов) — README модуля обязан его описать?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-03",
+    "F-25"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN в модуле есть `__pycache__/`, которого нет в git WHEN выполняется тест структуры THEN тест его не требует: в счёт идут каталоги, которые знает git; цена: сценарий, список каталогов из git в тесте",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — служебные каталоги не покрываются; допустимо, если тест структуры гоняют только на чистом клоне",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест создаёт `__pycache__/` в модуле и утверждает, что тест структуры зелёный; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — служебные каталоги остаются открытыми до первой реализации теста структуры",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Без правила требование само велит описывать `__pycache__/`: тест структуры краснеет после любого прогона тестов, его начинают обходить, и критерий F-01 перестаёт держаться незаметно; цена — сценарий и список каталогов из git."
+   },
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-06"
+   },
+   "reversibility": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Specify",
+    "reason": ""
+   },
+   "parking": [],
+   "dispute": "",
+   "consequences": "в spec.md: Вложенный каталог вне git",
+   "evidence": [
+    {
+     "path": "openspec/changes/module-structure/specs/module-declaration/spec.md",
+     "quote": "### Requirement: README модуля описывает вложенные каталоги первого уровня",
+     "line": 41,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "finding": ""
+  },
+  {
+   "id": "F-50",
+   "question": "[encoding · text] README модуля описывает вложенные каталоги первого уровня: ссылка на вложенный каталог в форме `./tests`, `tests` без косой или `tests/` — какие формы тест считает ссылкой на каталог?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-03"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN README модуля со ссылкой `[тесты](./tests)` WHEN выполняется тест структуры THEN каталог `tests/` считается описанным; цена: сценарий, нормализация пути ссылки в тесте",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — форма ссылки не покрывается: тест принимает одну форму `[имя/](имя/)`, другая даёт красный тест сразу, и автор README правит ссылку",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест подаёт три формы ссылки и утверждает, какие из них приняты; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — форма ссылки остаётся открытой до первого README, написанного не по образцу",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "B",
+    "why": "Неверная форма видна сразу красным тестом и ничего не портит, а одна форма проще для README двух репозиториев, чем нормализация."
+   },
+   "decision": {
+    "option": "B",
+    "word": "",
+    "date": "2026-11-06"
+   },
+   "reversibility": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Dismiss",
+    "reason": ""
+   },
+   "parking": [],
+   "dispute": "",
+   "consequences": "Неверная форма видна сразу красным тестом и ничего не портит, а одна форма проще для README двух репозиториев, чем нормализация.",
+   "evidence": [
+    {
+     "path": "openspec/changes/module-structure/specs/module-declaration/spec.md",
+     "quote": "### Requirement: README модуля описывает вложенные каталоги первого уровня",
+     "line": 41,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "finding": ""
+  },
+  {
+   "id": "F-51",
+   "question": "[empty · collection] README корня называет каждый каталог первого уровня: каталоги корня, которых нет в git (`upstream/`, `.symphysis/`, `.claude/`, `node_modules/`, `out/` плагина), — README корня обязан их называть?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-22",
+    "F-25"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN в корне ядра есть `.symphysis/` и `upstream/`, которых нет в git WHEN выполняется тест структуры THEN тест их не требует: в счёт идут каталоги, которые знает git; цена: сценарий, список каталогов из git в тесте",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — каталоги вне git не покрываются; допустимо, если тест структуры гоняют только на чистом клоне без установки",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест создаёт `node_modules/` в корне и утверждает, что тест структуры зелёный; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — каталоги вне git остаются открытыми до первой реализации теста структуры",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "На любой рабочей машине в корне есть `.symphysis/`, `node_modules/` или `upstream/`: без правила тест структуры красный всегда, его обходят, и критерий F-01 перестаёт держаться незаметно; цена — сценарий и список каталогов из git."
+   },
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-06"
+   },
+   "reversibility": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Specify",
+    "reason": ""
+   },
+   "parking": [],
+   "dispute": "",
+   "consequences": "в spec.md: Каталоги корня вне git",
+   "evidence": [
+    {
+     "path": "openspec/changes/module-structure/specs/repository-layout/spec.md",
+     "quote": "### Requirement: README корня называет каждый каталог первого уровня",
+     "line": 9,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "finding": ""
+  },
+  {
+   "id": "F-52",
+   "question": "[adjacency · collection] Файл принадлежит одному модулю: `hook/hook.py` плагина — файл модуля `hook` (F-31, F-43), а лежит в корне: пакет кладёт его в `hook/`, и код читает этот путь — переносить в каталог модуля или оставить исключением?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-03",
+    "F-31",
+    "F-43"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN `hook.py` в каталоге модуля `hook` WHEN собирается `.vsix` THEN в пакете он лежит по пути `hook/hook.py`, который читает код; цена: сценарий, копирование файла при сборке, проверка в тесте упаковки",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — исключение: `hook/hook.py` остаётся в корне, а README корня называет `hook/` частью модуля `hook`; допустимо, пока такой файл один",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест упаковки утверждает, что в `.vsix` есть `hook/hook.py`, где бы файл ни лежал в репозитории; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — место `hook.py` остаётся открытым до следующего изменения плагина, которое тронет хук",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Иначе тест структуры либо краснеет на `hook/`, либо держит молчаливое исключение для одного файла, и правило «файл в одном модуле» перестаёт проверяться; цена — копирование при сборке и проверка в тесте упаковки."
+   },
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-06"
+   },
+   "reversibility": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Specify",
+    "reason": ""
+   },
+   "parking": [],
+   "dispute": "",
+   "consequences": "в spec.md: Файл хука в каталоге своего модуля",
+   "evidence": [
+    {
+     "path": "openspec/changes/module-structure/specs/repository-layout/spec.md",
+     "quote": "### Requirement: Файл принадлежит одному модулю",
+     "line": 50,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "finding": ""
+  },
+  {
+   "id": "F-53",
+   "question": "[adjacency · collection] Тесты модуля лежат в его каталоге: два модуля ядра с одноимёнными файлами тестов (`decisions/tests/test_cli.py` и `viewer/tests/test_cli.py`) — по памяти модели, pytest без пакетов тестов называет конфликт имён при сборе (запуском не проверено): разрешать одноимённые или нет?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-23"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN два модуля с `tests/test_cli.py` WHEN выполняется `python -X utf8 -m pytest` THEN оба теста найдены и запущены; цена: сценарий, режим импорта pytest или пакеты тестов, сопровождение `pytest.ini`",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — одноимённые тесты не покрываются: конфликт виден при сборе сразу, файл переименовывается, порчи нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест структуры утверждает, что имена файлов тестов ядра не повторяются; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — одноимённые тесты остаются открытыми до первой такой пары",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "B",
+    "why": "Конфликт виден сразу при сборе тестов, исправление — переименование файла; правило о режиме импорта ради будущей пары тестов стоит дороже, чем переименование."
+   },
+   "decision": {
+    "option": "B",
+    "word": "",
+    "date": "2026-11-06"
+   },
+   "reversibility": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Dismiss",
+    "reason": ""
+   },
+   "parking": [],
+   "dispute": "",
+   "consequences": "Конфликт виден сразу при сборе тестов, исправление — переименование файла; правило о режиме импорта ради будущей пары тестов стоит дороже, чем переименование.",
+   "evidence": [
+    {
+     "path": "openspec/changes/module-structure/specs/repository-layout/spec.md",
+     "quote": "### Requirement: Тесты модуля лежат в его каталоге",
+     "line": 66,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "finding": ""
+  },
+  {
+   "id": "F-54",
+   "question": "[empty · collection] Справка не становится гейтом и не меняет файлы: тест «Скиллы о скрипте не знают» не нашёл ни одного текста скилла (скиллы переехали в модули, а поиск смотрит старое место) — тест зелёный пусто или красный?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-18",
+    "F-26"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN раскладка, где поиск не нашёл ни одного `SKILL.md` WHEN тест ищет имя `step_help` THEN тест красный: скиллов ноль; цена: сценарий, проверка числа найденных скиллов",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — пустой поиск не покрывается; допустимо, если перенос скиллов сопровождает ручная проверка теста",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест утверждает, что найдено столько скиллов, сколько их ставит инсталлятор; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — пустой поиск остаётся открытым до задачи переноса скиллов в модули",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "После переноса скиллов в модули пустой поиск даёт зелёный тест, который ничего не проверяет, — тихая порча; цена — сценарий и счёт найденных скиллов."
+   },
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-06"
+   },
+   "reversibility": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Specify",
+    "reason": ""
+   },
+   "parking": [],
+   "dispute": "",
+   "consequences": "в spec.md: Поиск не нашёл скиллов",
+   "evidence": [
+    {
+     "path": "openspec/changes/module-structure/specs/step-help/spec.md",
+     "quote": "### Requirement: Справка не становится гейтом и не меняет файлы",
+     "line": 70,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "finding": ""
+  },
+  {
+   "id": "F-55",
+   "question": "[запрет] README модуля описывает вложенные каталоги первого уровня: не должен называть вложенный каталог, которого в модуле уже нет",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-03",
+    "F-25"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify/test — требование MUST NOT: README модуля называет только существующие вложенные каталоги; тест структуры сверяет ссылки README с каталогами модуля в обе стороны; цена: сценарий, проверка ссылок в тесте структуры",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Specify/judgment — требование MUST NOT: строка о каталоге в README модуля не расходится с тем, что в каталоге лежит; судят ревью изменения и атака артефактов чтением README; цена: сценарий, чтение README при каждой правке модуля",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Dismiss — запрет не нужен: ссылка на удалённый каталог видна читателю сразу, когда он по ней не находит каталога",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — остаётся открытым до этапа графа, который начнёт читать README модулей",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "README, называющий удалённый каталог, вводит в заблуждение читателя и будущий граф, а тест в одну сторону этого не видит — тихая порча; против B — существование каталога проверяется механически; цена — сценарий и проверка ссылок."
+   },
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-06"
+   },
+   "reversibility": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Specify",
+    "reason": ""
+   },
+   "parking": [],
+   "dispute": "",
+   "consequences": "проверка: test — тест структуры сверяет ссылки README модуля с его каталогами в обе стороны; в spec.md: README модуля не называет каталог, которого нет",
+   "evidence": [
+    {
+     "path": "openspec/changes/module-structure/specs/module-declaration/spec.md",
+     "quote": "### Requirement: README модуля описывает вложенные каталоги первого уровня",
+     "line": 41,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "finding": ""
+  },
+  {
+   "id": "F-56",
+   "question": "[запрет] README корня называет каждый каталог первого уровня: не должен называть каталог первого уровня, которого в корне уже нет",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-22",
+    "F-25"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify/test — требование MUST NOT: README корня называет только существующие каталоги первого уровня; тест структуры сверяет строки README корня с каталогами корня в обе стороны; цена: сценарий, вторая сторона сверки в тесте структуры",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Specify/judgment — требование MUST NOT: описание каталога в README корня (модуль или контур разработки, назначение) не расходится с тем, чем каталог стал; судит ревью изменения, которое переносит или удаляет каталог; цена: сценарий, чтение README корня при каждом переносе",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Dismiss — запрет не нужен: README корня правят вместе с переносом каталога, а лишняя строка ничего не ломает",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — остаётся открытым до первого удаления каталога первого уровня после перестройки",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Строка о каталоге, которого нет, тихо врёт о составе компонента новому читателю и графу; против B — существование каталога проверяется тем же тестом структуры механически; цена — сценарий и вторая сторона сверки."
+   },
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-06"
+   },
+   "reversibility": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Specify",
+    "reason": ""
+   },
+   "parking": [],
+   "dispute": "",
+   "consequences": "проверка: test — тест структуры сверяет строки README корня с каталогами корня в обе стороны; в spec.md: README корня не называет каталог, которого нет",
+   "evidence": [
+    {
+     "path": "openspec/changes/module-structure/specs/repository-layout/spec.md",
+     "quote": "### Requirement: README корня называет каждый каталог первого уровня",
+     "line": 9,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "finding": ""
+  },
+  {
+   "id": "F-57",
+   "question": "[запрет] Файл принадлежит одному модулю: не должен соблюдаться копией общего файла в каждый модуль, которому он нужен",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-03",
+    "F-33",
+    "F-34",
+    "F-35",
+    "F-43"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify/test — требование MUST NOT: непустой файл с одинаковым содержимым в двух модулях; тест структуры сравнивает хеши файлов модулей; цена: сценарий, сравнение хешей в тесте, список законных совпадений",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Specify/judgment — требование MUST NOT: общее для модулей живёт в техническом модуле, а не в копиях; судят ревью изменения и атака артефактов; цена: сценарий, суждение при каждом новом общем файле",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Dismiss — запрет не нужен: общее уже вынесено в технические модули решениями F-33, F-34, F-35 и F-43",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — остаётся открытым до первой копии общего файла после перестройки",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Копия формально соблюдает «файл в одном модуле», а потом копии расходятся молча — так уже разошлись тексты одного требования у страницы и плагина; против B — одинаковое содержимое ловится хешем механически; цена — сценарий и сравнение хешей."
+   },
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-06"
+   },
+   "reversibility": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Specify",
+    "reason": ""
+   },
+   "parking": [],
+   "dispute": "",
+   "consequences": "проверка: test — тест структуры сравнивает хеши непустых файлов модулей; в spec.md: Общий файл не копируется в модули",
+   "evidence": [
+    {
+     "path": "openspec/changes/module-structure/specs/repository-layout/spec.md",
+     "quote": "### Requirement: Файл принадлежит одному модулю",
+     "line": 50,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "finding": ""
+  },
+  {
+   "id": "F-58",
+   "question": "[запрет] Тесты модуля лежат в его каталоге: тесты и фикстуры модуля не должны попадать в payload и в пакеты пользователя",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-23",
+    "F-36"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify/test — требование MUST NOT: в payload, пакете npm `@niqsons/symphysis` и `.vsix` нет файлов каталогов тестов модулей; тест состава payload и тест упаковки проверяют список файлов; цена: сценарий, проверка списка в двух тестах",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Specify/judgment — требование MUST NOT: тесты и фикстуры модулей не уходят пользователю; судит ревью выпуска по `npm pack --dry-run` и списку файлов `.vsix`; цена: сценарий, чтение списков при каждом выпуске",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Dismiss — запрет не нужен: payload собирается списком файлов, а `.vsix` пропускает только перечисленное в `.vscodeignore`",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — остаётся открытым до первого выпуска пакетов после перестройки",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Каталог схемы payload берёт целиком (`DIRS` в `sync-payload.js`), и тесты модуля схемы, положенные в его каталог по F-23, уехали бы в каждый проект и в сверку `check` — этого никто не видит; против B — список файлов проверяется механически; цена — сценарий и проверка в двух тестах."
+   },
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-06"
+   },
+   "reversibility": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Specify",
+    "reason": ""
+   },
+   "parking": [],
+   "dispute": "",
+   "consequences": "проверка: test — тест состава payload и тест упаковки проверяют, что файлов каталогов тестов модулей в списке нет; в spec.md: Тесты модулей не уходят пользователю",
+   "evidence": [
+    {
+     "path": "openspec/changes/module-structure/specs/repository-layout/spec.md",
+     "quote": "### Requirement: Тесты модуля лежат в его каталоге",
+     "line": 66,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "finding": ""
+  },
+  {
+   "id": "F-59",
+   "question": "[канон] README корня называет каждый каталог первого уровня: канон ИБ",
+   "kind": "факт",
+   "status": "припаркован",
+   "addressee": "ИБ",
+   "depends_on": [
+    "F-22"
+   ],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [
+    {
+     "addressee": "ИБ",
+     "text": "абсолютные пути машины разработчика и имена из рабочих задач в README корня и README модулей — канон чувствительных данных в публикуемых файлах, покрывается чек-листом security.md и гейтом имён; запрет не чеканится"
+    }
+   ],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/module-structure/specs/repository-layout/spec.md",
+     "quote": "### Requirement: README корня называет каждый каталог первого уровня",
+     "line": 9,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "finding": ""
   }
  ],
  "notes": [
@@ -3187,6 +4128,14 @@ const JOURNAL = {
   {
    "date": "2026-11-06",
    "text": "брейншторм закончен по решению человека"
+  },
+  {
+   "date": "2026-11-06",
+   "text": "проба краёв: кандидатов 8, Specify 6, Dismiss 2, Backstop 0, Defer 0; не выбран 10: module-declaration/README модуля несёт имя и род во frontmatter, plugin-core-contract/Заданный `SYMPHYSIS_ROOT` без ядра — падение, а не пропуск, project-installer/README модуля схемы в проект не ставится, repository-layout/README корня называет каждый каталог первого уровня, repository-layout/Корень плагина описывает репозиторий, README пакета — отдельный файл, repository-layout/Файл принадлежит одному модулю, repository-layout/Тесты модуля лежат в его каталоге"
+  },
+  {
+   "date": "2026-11-06",
+   "text": "проба запретов: требований 21, оставлено 4, канон → ИБ 1, Specify 4, Dismiss 0, Defer 0"
   }
  ]
 };
@@ -3200,7 +4149,7 @@ const SCHEME = {
 };
 const HELP = {
  "contract": 3,
- "taken_at": "2026-11-06T19:58:25+03:00",
+ "taken_at": "2026-11-06T20:21:50+03:00",
  "versions": {
   "openspec": "1.15.0-symphysis.4",
   "symphysis": null
@@ -3208,10 +4157,10 @@ const HELP = {
  "change": "module-structure",
  "changes": null,
  "error": null,
- "current_step": "specs",
- "current_text": "Следующий шаг по файлам — `specs`, ход модели.",
+ "current_step": "consequences",
+ "current_text": "Следующий шаг по файлам — `consequences`, ход модели.",
  "turn": "model",
- "next_by_status": "specs",
+ "next_by_status": "consequences",
  "forks": {
   "open": 0,
   "parked": 0
@@ -3445,7 +4394,7 @@ const HELP = {
   },
   {
    "id": "specs",
-   "state": "ready",
+   "state": "done",
    "turn": "model",
    "optional": false,
    "blocks": [
@@ -3458,11 +4407,43 @@ const HELP = {
    "waits_for": [],
    "files": [
     {
-     "path": "openspec/changes/module-structure/specs/**/*.md",
-     "exists": false
+     "path": "openspec/changes/module-structure/specs/decision-viewer/spec.md",
+     "exists": true
+    },
+    {
+     "path": "openspec/changes/module-structure/specs/module-declaration/spec.md",
+     "exists": true
+    },
+    {
+     "path": "openspec/changes/module-structure/specs/plugin-core-contract/spec.md",
+     "exists": true
+    },
+    {
+     "path": "openspec/changes/module-structure/specs/project-installer/spec.md",
+     "exists": true
+    },
+    {
+     "path": "openspec/changes/module-structure/specs/repository-layout/spec.md",
+     "exists": true
+    },
+    {
+     "path": "openspec/changes/module-structure/specs/requirement-probes/spec.md",
+     "exists": true
+    },
+    {
+     "path": "openspec/changes/module-structure/specs/skill-transfer/spec.md",
+     "exists": true
+    },
+    {
+     "path": "openspec/changes/module-structure/specs/step-help/spec.md",
+     "exists": true
+    },
+    {
+     "path": "openspec/changes/module-structure/specs/trace-graph/spec.md",
+     "exists": true
     }
    ],
-   "file_note": null,
+   "file_note": "файл есть, содержание не проверялось",
    "texts": {
     "title": "Спецификации поведения",
     "why": "Наблюдаемое поведение, записанное требованиями и сценариями. По нему потом проверяют дизайн и код, поэтому всё, что не названо здесь, проверить будет нечем.",
@@ -3490,16 +4471,14 @@ const HELP = {
   },
   {
    "id": "consequences",
-   "state": "blocked",
+   "state": "ready",
    "turn": "model",
    "optional": false,
    "blocks": [
     "design"
    ],
    "stops_apply": false,
-   "waits_for": [
-    "specs"
-   ],
+   "waits_for": [],
    "files": [
     {
      "path": "openspec/changes/module-structure/consequences.md",
@@ -3563,16 +4542,14 @@ const HELP = {
   },
   {
    "id": "security",
-   "state": "blocked",
+   "state": "ready",
    "turn": "model",
    "optional": false,
    "blocks": [
     "attack-artifacts"
    ],
    "stops_apply": true,
-   "waits_for": [
-    "specs"
-   ],
+   "waits_for": [],
    "files": [
     {
      "path": "openspec/changes/module-structure/security.md",
@@ -3604,7 +4581,6 @@ const HELP = {
    ],
    "stops_apply": true,
    "waits_for": [
-    "specs",
     "design"
    ],
    "files": [
@@ -3636,7 +4612,6 @@ const HELP = {
    "blocks": [],
    "stops_apply": false,
    "waits_for": [
-    "specs",
     "design",
     "security",
     "tasks"
@@ -3747,6 +4722,7 @@ const HELP = {
  "file_links": {
   "decisions.json": "openspec/changes/module-structure/decisions.json",
   "decisions.md": "openspec/changes/module-structure/decisions.md",
+  "edge-probe.md": "openspec/changes/module-structure/edge-probe.md",
   "intent.md": "openspec/changes/module-structure/intent.md",
   "openspec/changes/module-structure/decisions.json": "openspec/changes/module-structure/decisions.json",
   "openspec/changes/module-structure/intent.md": "openspec/changes/module-structure/intent.md",
@@ -3755,6 +4731,15 @@ const HELP = {
   "openspec/changes/module-structure/research/F-27.md": "openspec/changes/module-structure/research/F-27.md",
   "openspec/changes/module-structure/research/F-28.md": "openspec/changes/module-structure/research/F-28.md",
   "openspec/changes/module-structure/research/F-32.md": "openspec/changes/module-structure/research/F-32.md",
+  "openspec/changes/module-structure/specs/decision-viewer/spec.md": "openspec/changes/module-structure/specs/decision-viewer/spec.md",
+  "openspec/changes/module-structure/specs/module-declaration/spec.md": "openspec/changes/module-structure/specs/module-declaration/spec.md",
+  "openspec/changes/module-structure/specs/plugin-core-contract/spec.md": "openspec/changes/module-structure/specs/plugin-core-contract/spec.md",
+  "openspec/changes/module-structure/specs/project-installer/spec.md": "openspec/changes/module-structure/specs/project-installer/spec.md",
+  "openspec/changes/module-structure/specs/repository-layout/spec.md": "openspec/changes/module-structure/specs/repository-layout/spec.md",
+  "openspec/changes/module-structure/specs/requirement-probes/spec.md": "openspec/changes/module-structure/specs/requirement-probes/spec.md",
+  "openspec/changes/module-structure/specs/skill-transfer/spec.md": "openspec/changes/module-structure/specs/skill-transfer/spec.md",
+  "openspec/changes/module-structure/specs/step-help/spec.md": "openspec/changes/module-structure/specs/step-help/spec.md",
+  "openspec/changes/module-structure/specs/trace-graph/spec.md": "openspec/changes/module-structure/specs/trace-graph/spec.md",
   "proposal.md": "openspec/changes/module-structure/proposal.md",
   "scheme.md": "openspec/changes/module-structure/scheme.md",
   "symphysis.html": "openspec/changes/module-structure/symphysis.html"
@@ -3776,6 +4761,7 @@ const LINKS = {
   "docs/plan-implementation.tasks.md": "../../../docs/plan-implementation.tasks.md",
   "docs/repo-contract.md": "../../../docs/repo-contract.md",
   "docs/skills-canon.md": "../../../docs/skills-canon.md",
+  "edge-probe.md": "edge-probe.md",
   "installer/README.md": "../../../installer/README.md",
   "installer/lib/install.js": "../../../installer/lib/install.js",
   "installer/package.json": "../../../installer/package.json",
@@ -3798,6 +4784,15 @@ const LINKS = {
   "openspec/changes/module-structure/research/F-32-probe/vsce-3.txt": "research/F-32-probe/vsce-3.txt",
   "openspec/changes/module-structure/research/F-32-probe/vsce.txt": "research/F-32-probe/vsce.txt",
   "openspec/changes/module-structure/research/F-32.md": "research/F-32.md",
+  "openspec/changes/module-structure/specs/decision-viewer/spec.md": "specs/decision-viewer/spec.md",
+  "openspec/changes/module-structure/specs/module-declaration/spec.md": "specs/module-declaration/spec.md",
+  "openspec/changes/module-structure/specs/plugin-core-contract/spec.md": "specs/plugin-core-contract/spec.md",
+  "openspec/changes/module-structure/specs/project-installer/spec.md": "specs/project-installer/spec.md",
+  "openspec/changes/module-structure/specs/repository-layout/spec.md": "specs/repository-layout/spec.md",
+  "openspec/changes/module-structure/specs/requirement-probes/spec.md": "specs/requirement-probes/spec.md",
+  "openspec/changes/module-structure/specs/skill-transfer/spec.md": "specs/skill-transfer/spec.md",
+  "openspec/changes/module-structure/specs/step-help/spec.md": "specs/step-help/spec.md",
+  "openspec/changes/module-structure/specs/trace-graph/spec.md": "specs/trace-graph/spec.md",
   "openspec/config.symphysis.yaml": "../../config.symphysis.yaml",
   "openspec/config.yaml": "../../config.yaml",
   "openspec/schemas/symphysis/schema.yaml": "../../schemas/symphysis/schema.yaml",
