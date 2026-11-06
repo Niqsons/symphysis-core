@@ -1,0 +1,52 @@
+# Плагин: файл — модуль F-31 A — опора (кто импортирует, plugin-imports.txt). «не ложится одному» — кандидаты названы, выбора нет.
+src/extension.ts — не ложится одному: активация импортирует модули всех механик — `core` или отдельный технический модуль, как фасад CLI ядра
+src/host/apply.ts — viewer — <- host/viewerPanel.ts
+src/host/core.ts — core — <- extension, apply, stepHelp, store, viewerPanel
+src/host/helpTasks.ts — step-help — <- extension, viewerPanel
+src/host/hook.ts — hook
+src/host/hookGit.ts — hook
+src/host/hookRunner.ts — hook
+src/host/links.ts — не ложится одному: scheme и viewer — <- schemePanel, viewerPanel
+src/host/openFile.ts — не ложится одному: scheme и viewer — <- schemePanel, viewerPanel
+src/host/page.ts — не ложится одному: scheme, search, viewer — <- schemePanel, searchView, viewerPanel
+src/host/project.ts — core — <- 10 файлов; сам импортирует shared/scheme.ts и shared/logic.ts
+src/host/python.ts — core
+src/host/schemePanel.ts — scheme
+src/host/searchView.ts — search
+src/host/sidebar.ts — не ложится одному: дерево изменений в боковой панели, в F-31 A модуля для него нет — <- extension
+src/host/stepHelp.ts — step-help — <- extension, helpTasks, schemePanel
+src/host/store.ts — не ложится одному: viewer, search и дерево изменений — <- extension, searchView, sidebar, viewerPanel
+src/host/tabs.ts — не ложится одному: scheme и viewer — <- schemePanel, viewerPanel
+src/host/viewerPanel.ts — viewer
+src/shared/attack.ts — не ложится одному: режим атаки viewer, search и дерево изменений — <- sidebar, shared/search, App, AttackView, CheckView
+src/shared/check.ts — viewer — <- CheckView
+src/shared/links.ts — не ложится одному: host/links, Card, HelpBody, Text — viewer, scheme, step-help
+src/shared/logic.ts — не ложится одному: core (project.ts), search, дерево изменений, viewer
+src/shared/ops.ts — не ложится одному: viewer, search, дерево изменений
+src/shared/protocol.ts — protocol — импортирует типы shared/scheme.ts и shared/search.ts
+src/shared/scheme.ts — scheme — <- project.ts, protocol, App, webview/scheme
+src/shared/search.ts — search — импортирует тип из shared/protocol.ts: цикл типов protocol <-> search
+src/shared/types.ts — protocol — <- 19 файлов
+src/webview/main.tsx — viewer — точка сборки media/viewer.js
+src/webview/App.tsx — viewer
+src/webview/AttackView.tsx — viewer
+src/webview/Card.tsx — viewer
+src/webview/CheckView.tsx — viewer
+src/webview/ReturnPanel.tsx — viewer
+src/webview/Tasks.tsx — step-help по смыслу, зовёт его viewer (App.tsx)
+src/webview/help.tsx — step-help — точка сборки media/help.js
+src/webview/HelpBody.tsx — step-help
+src/webview/helpShown.ts — step-help
+src/webview/scheme.ts — scheme — точка сборки media/scheme.js
+src/webview/search.tsx — search — точка сборки media/search.js
+src/webview/SearchApp.tsx — search
+src/webview/SearchResults.tsx — search
+src/webview/colors.ts — не ложится одному: viewer и search — <- App, SearchApp
+src/webview/FailureText.tsx — не ложится одному: viewer и step-help — <- App, HelpBody
+src/webview/Segmented.tsx — не ложится одному: viewer и step-help — <- App, AttackView, help
+src/webview/Text.tsx — не ложится одному: viewer и step-help — <- App, AttackView, Card, CheckView, HelpBody
+src/webview/style.css — не ложится одному: стиль страниц
+hook/hook.py — hook — пакет кладёт его в `hook/`, код читает `path.join(extensionPath, "hook", SCRIPT)`
+media/icon.svg — не механика: значок пакета
+build.mjs — не механика: сборка точек входа всех страниц
+package.mjs — не механика: упаковка `.vsix`

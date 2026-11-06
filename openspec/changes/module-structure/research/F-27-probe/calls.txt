@@ -1,0 +1,111 @@
+# вызовы внутри файла: функция:строка -> имена верхнего уровня того же файла
+
+## tools/journal_render.py
+_evidence_line:33 -> -
+_render_option:37 -> _evidence_line
+_render_decision:50 -> -
+_render_recommendation:61 -> -
+_render_outcome:66 -> -
+_render_record:75 -> _evidence_line, _render_decision, _render_option, _render_outcome, _render_recommendation
+_generated_note:111 -> -
+_render_notes:117 -> -
+render_md:128 -> _generated_note, _render_notes, _render_record
+_lines:147 -> -
+anchor_lines:152 -> _lines
+_viewer_record:160 -> -
+_embed:169 -> -
+_viewer_payload:175 -> _viewer_record
+parse_scheme:203 -> RE_FENCE
+_mermaid_src:227 -> -
+scheme_payload:236 -> NO_SCHEME, _mermaid_src, parse_scheme
+no_help_snapshot:245 -> CONTRACT
+render_html:252 -> NO_SCHEME, PLACEHOLDER, PLACEHOLDER_ATTACK, PLACEHOLDER_HELP, PLACEHOLDER_LINKS, PLACEHOLDER_SCHEME, _embed, _viewer_payload, no_help_snapshot
+_attack_frontmatter:287 -> RE_FRONT_KEY, RE_TARGET_PATH, RE_TARGET_SHA
+_split_row:311 -> _scan_row
+_scan_row:319 -> -
+_cells:358 -> _split_row
+_attack_rows:362 -> ATTACK_FIRST_COLUMN, ATTACK_ROW_KEYS, _cells, _scan_row
+parse_attack_md:403 -> _attack_frontmatter, _attack_rows, _lines
+_ref:431 -> -
+_unmatched:436 -> -
+_cite:447 -> _ref, _unmatched
+_design_context:453 -> _cite
+_is_unchanged:461 -> UNCHANGED_PREFIXES
+_design_decision:467 -> UNCHANGED_NOTE, _cite, _is_unchanged
+_design_risks:489 -> _ref, _unmatched
+_is_probe:498 -> -
+_open_fork_line:504 -> _is_probe
+_design_open_questions:517 -> _open_fork_line
+render_design:528 -> EMPTY_SECTION, GOALS_STUB, MIGRATION_STUB, NO_DECISIONS, ONE_WAY, _design_context, _design_decision, _design_open_questions, _design_risks, _generated_note, _is_probe
+_recommended_why:569 -> -
+destination:575 -> ONE_WAY, _is_probe, _recommended_why
+parking_destination:603 -> PARKING_ANSWERS
+view_payload:608 -> CONTRACT, _viewer_payload, destination, parking_destination
+
+## tools/journal_cli.py
+_valid_journal:31 -> -
+_parkings_without_finding:40 -> -
+_human_parkings_without_finding:49 -> -
+cmd_check:57 -> _human_parkings_without_finding, _parkings_without_finding, _valid_journal
+cmd_code_sites:94 -> _valid_journal
+cmd_import_md:107 -> -
+cmd_render_md:120 -> _valid_journal
+_read_attack:130 -> -
+_from_root:142 -> -
+_attack_path:150 -> _from_root
+_shell_word:157 -> -
+_rebuild_command:168 -> _from_root, _shell_word
+_help_snapshot:182 -> NO_HELP, _help_calculation
+_help_calculation:191 -> _rebuild_command
+cmd_render_html:208 -> NO_HELP, _attack_path, _help_snapshot, _read_attack, _valid_journal
+cmd_view_json:244 -> _attack_path, _read_attack, _valid_journal
+cmd_render_design:264 -> _valid_journal
+_iso_date:273 -> -
+cmd_apply:283 -> _valid_journal
+_comment_count:315 -> -
+cmd_apply_md4h:319 -> _comment_count, _valid_journal
+_command:370 -> -
+build_parser:378 -> JOURNAL_HELP, MAIN_EPILOG, ROOTS_HELP, _command, _iso_date, cmd_apply, cmd_apply_md4h, cmd_check, cmd_code_sites, cmd_import_md, cmd_render_design, cmd_render_html, cmd_render_md, cmd_view_json
+main:512 -> build_parser
+
+## tools/journal_apply.py
+_expand_value:32 -> -
+change_of:42 -> -
+_roots_from_file:52 -> ROOTS_PATH, _expand_value
+_inside:57 -> -
+_roots_around:64 -> UNUSABLE_ROOTS, _inside, _roots_from_file
+default_roots:74 -> ROOTS_PATH, _inside, _roots_around, _roots_from_file, change_of
+project_roots:86 -> ROOTS_PATH, UNUSABLE_ROOTS, _inside, _roots_around, _roots_from_file
+_resolve:110 -> OUTSIDE_ROOT
+_walk_references:129 -> RE_CODE_SPAN, RE_LINE_TAIL
+_relative_link:144 -> OUTSIDE_ROOT, _resolve
+file_links:159 -> _relative_link, _walk_references
+project_href:175 -> -
+_read_text:185 -> BINARY_PROBE, VERDICT_BINARY, VERDICT_NOT_UTF8, VERDICT_UNREADABLE
+_match_lines:199 -> -
+find_quote:214 -> OUTSIDE_ROOT, VERDICT_OUTSIDE, _match_lines, _read_text, _resolve
+check_evidence:232 -> NOT_CHECKED, find_quote
+_human_word:275 -> -
+_parse_item:282 -> RE_ADD_OPTION, RE_CHOICE, RE_DEP, RE_DISPUTE, RE_NEW_FORK, RE_PARK, RE_WORD, _human_word
+parse_answers:312 -> RE_ITEM, RE_NEW_FORKS, RE_NOTES, _parse_item
+_merge:350 -> -
+_rec:357 -> _Refusal
+_fork:364 -> _Refusal, _rec
+_do_decide:372 -> _Refusal, _fork, _merge
+_do_word:393 -> _Refusal, _fork, _merge
+_do_park:409 -> PARKING_ADDRESSEES, _Refusal, _fork
+_do_add_option:424 -> _Refusal, _fork
+_do_dependency:437 -> _Refusal, _rec
+_do_dispute:455 -> _Refusal, _rec
+_do_new_fork:469 -> LETTERS, _Refusal
+_do_note:487 -> -
+_do_unknown:492 -> _Refusal
+apply_answers:501 -> REFUSED, _APPLY, _Refusal, _do_unknown
+_md4h_scalar:542 -> -
+_md4h_frontmatter:552 -> _md4h_scalar
+_md4h_span:566 -> MD4H_LINES_LABEL, RE_MD4H_SPAN
+parse_md4h:577 -> MD4H_LINES_LABEL, MD4H_LINE_NUMBERING, MD4H_REQUIRED, MD4H_SCHEMA, RE_FENCE_CLOSE, RE_FENCE_OPEN, RE_MD4H_FEEDBACK, RE_MD4H_ITEM, _md4h_frontmatter, _md4h_span
+sha256_file:639 -> -
+_record_starts:644 -> -
+_md4h_comments:656 -> REFUSED, _record_starts
+apply_md4h:687 -> REFUSED, _md4h_comments

@@ -1,0 +1,4 @@
+### npm pack --dry-run в installer/ (список файлов пакета)
+name: @niqsons/symphysis
+README в пакете: ['README.md']
+файлов: 62

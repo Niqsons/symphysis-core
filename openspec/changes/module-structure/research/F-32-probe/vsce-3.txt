@@ -1,0 +1,9 @@
+### Случай 3: как случай 2, но .vscodeignore без строки !README.md
+The file extension/media/mermaid.min.js is large (5.24 MB)
+ DONE  Packaged: <временный каталог>/three.vsix (14 files, 1.78 MB)
+код vsce: 0
+файлы readme в пакете: ['extension/readme.md']
+первые строки extension/readme.md:
+# Symphysis
+
+Расширение VS Code для журнала решений symphysis: развилки, слово человека, внесение в журнал, схема решения и справка о шаге конвейера.

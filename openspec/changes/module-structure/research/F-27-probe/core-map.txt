@@ -1,0 +1,34 @@
+# Ядро: файл — модуль F-18 A — опора. «не ложится одному» — кандидаты названы, выбора нет.
+tools/journal.py — не ложится одному: decisions или технический `cli` — фасад импортирует подкоманды decisions, viewer, consequences, attack (imports.txt, module-graph.txt)
+tools/journal_cli.py — не ложится одному: decisions или технический `cli` — `cmd_render_html`, `cmd_code_sites`, `cmd_check`, `_help_calculation` зовут viewer, consequences, step-help (calls.txt)
+tools/journal_model.py — decisions — схема и правила журнала; `ROOT:21` нужен и группе корней (module-graph.txt, раскладка 2)
+tools/journal_apply.py — делится: 26 имён корней улик и поиска цитат — decisions или технический `roots`; `apply_answers`, `parse_answers`, `check_evidence`, `apply_md4h` — decisions (defs.txt)
+tools/journal_render.py — делится: md, `render_design`, `view_payload`, `CONTRACT`, `anchor_lines` — decisions; `render_html`, `scheme_payload`, `TEMPLATE_PATH` — viewer; `parse_attack_md` и разбор строк — attack (calls.txt)
+tools/journal_sites.py — consequences — места кода из улик (`code-sites`)
+tools/journal_consequences.py — consequences — проверки описи `consequences.md`
+tools/step_help.py — step-help
+tools/openspec_run.py — openspec-run
+tools/symphysis_config.py — settings
+tools/trace_graph.py — trace
+tools/playground-template.html — viewer — читает только `render_html` (`TEMPLATE_PATH`)
+tools/journal-roots.json — контур разработки: файл корней журналов самого репозитория, установка пишет свой
+docs/journal.schema.json — decisions — `SCHEMA_PATH` в `journal_model.py`
+openspec/config.symphysis.yaml — схема: правила артефактов; читает инсталлятор (research/F-28.md)
+skills/symphysis-brainstorm/ — decisions
+skills/symphysis-viewer/ — viewer
+skills/symphysis-consequences/ — consequences
+skills/symphysis-attack/ — attack
+skills/symphysis-edge-probe/ — probes
+skills/symphysis-prohibition-probe/ — probes
+skills/symphysis-research/ — research
+skills/shared/journal-cli.md — decisions — команды `journal.py`; читают все семь скиллов и пять водителей
+skills/shared/config.md — settings — состав шага из `symphysis.yaml`
+skills/shared/attack-table.md — attack — форма строки атаки; читают attack и viewer
+skills/shared/candidate.md — не ложится одному: probes и consequences пишут запись-кандидат журнала (decisions) — читают consequences, edge-probe, prohibition-probe и их водители
+skills/shared/driver.md — не ложится одному: механика водителя, её читают все пять водителей; в F-18 A модуля для неё нет
+skills/shared/terms.md — не ложится одному: термины, их читают все семь скиллов и пять водителей; в F-18 A модуля для них нет
+agents/symphysis-attack-driver.md — attack
+agents/symphysis-consequences-driver.md — consequences
+agents/symphysis-edge-probe-driver.md — probes
+agents/symphysis-prohibition-probe-driver.md — probes
+agents/symphysis-research-driver.md — research
