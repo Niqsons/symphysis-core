@@ -1,3 +1,8 @@
+---
+name: installer
+kind: технический
+---
+
 # @niqsons/symphysis
 
 Установщик схемы OpenSpec `symphysis`: кладёт в проект схему, скиллы
@@ -260,3 +265,11 @@ npm pack
 - Тесты, вызывающие `install`/`check`, задают `XDG_CONFIG_HOME` во
   временный каталог: настоящий глобальный конфиг OpenSpec они не трогают,
   и отдельный тест сверяет его байты до и после.
+
+## Каталоги пакета
+
+- [bin/](bin/) — точка входа команды `symphysis`
+- [lib/](lib/) — код команд `install`, `check`, `config`
+- [scripts/](scripts/) — сборка `payload/` из корня репозитория
+- [test/](test/) — тесты пакета; в поставку не идут
+- [test-support/](test-support/) — вспомогательные файлы тестов
