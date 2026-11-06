@@ -329,3 +329,30 @@ def test_чужой_frontmatter_глубже_первого_уровня_не_к
     tree["docs/sub/x.md"] = "x\n"
     build(tmp_path, tree)
     assert rs.check_repository(tmp_path) == []
+
+
+# --- лишний ключ рядом с name и kind не отменяет README модуля
+
+EXTRA = "---\nname: viewer\nkind: KIND\ndescription: что-то\n---\n"
+
+
+def test_лишний_ключ_модуль_узнан_и_проверки_идут(tmp_path):
+    tree = base_tree()
+    tree["viewer/README.md"] = EXTRA.replace("KIND", "служебный")
+    build(tmp_path, tree)
+    assert "служебный" in joined(rs.check_module_frontmatter(rs.Repo(tmp_path)))
+
+
+def test_лишний_ключ_в_контуре_красный(tmp_path):
+    tree = base_tree()
+    tree["docs/README.md"] = EXTRA.replace("KIND", "доменный")
+    build(tmp_path, tree)
+    assert "docs/" in joined(rs.check_root_readme(rs.Repo(tmp_path)))
+
+
+def test_лишний_ключ_глубже_первого_уровня_красный(tmp_path):
+    tree = base_tree()
+    tree["decisions/inner/README.md"] = EXTRA.replace("KIND", "доменный")
+    tree["decisions/inner/i.py"] = "i\n"
+    build(tmp_path, tree)
+    assert "decisions/inner/" in joined(rs.check_module_places(rs.Repo(tmp_path)))

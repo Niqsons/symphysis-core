@@ -93,7 +93,7 @@ def _has_frontmatter(repo, rel_readme):
     if fm is None:
         return False
     keys = {m.group(1) for m in (re.match(r"^(name|kind)\s*:", line) for line in fm) if m}
-    return keys == {"name", "kind"}
+    return {"name", "kind"} <= keys
 
 
 def root_marks(repo):
