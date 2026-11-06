@@ -1,7 +1,7 @@
 {
  "title": "Журнал решений: module-structure",
  "source": "decisions.json",
- "intro": "Пути улик — от корня проекта, корни названы в `probes/journal-roots.json`: `upstream/` и `context/` ведут в основной клон, `vscode/` — в плагин. Материалы: `intent.md`, раздел «Компоненты и модули» разбора `docs/analysis/requirements-traceability-graph-of-symphysis.md` (определения Т20, README модуля Т21, разведка путей и импортов), `tools/`, `installer/scripts/sync-payload.js`, `installer/README.md`, `docs/repo-contract.md`, тесты ядра и плагина, мастер-спеки, `src/`, `build.mjs` и упаковка плагина.\n\nF-01 — критерий из `intent.md`, F-02–F-13 — факты о текущем состоянии ядра. F-14–F-16 — ответы владельца в чате 2026-11-06 на вопросы о критериях, до журнала; перенесены дословно файлом `answers/2026-11-06.md`. Развилки первого круга — F-17–F-26. F-29 — ответ владельца о плагине в объёме изменения (`answers/2026-11-06-2.md`), за ним F-30–F-32 о плагине. Парковки исследованию — F-20, F-27, F-28, F-32.\n\nВторой круг начинается с F-33: развилки подняты отчётами `research/F-20.md`, `research/F-27.md`, `research/F-28.md`, `research/F-32.md`; находки внесены в парковки F-20, F-27, F-28, F-32. Раскладка 3 графа модулей (`research/F-27-probe/module-graph.txt`) досчитана во втором круге. F-39 C снимает решение F-21 A.\n\nF-45 заведена на шаге proposal по находке модели и решена в чате: `answers/2026-11-06-5.md`. F-46 — факт шага specs: деление длинного требования при MODIFIED.",
+ "intro": "Пути улик — от корня проекта, корни названы в `probes/journal-roots.json`: `upstream/` и `context/` ведут в основной клон, `vscode/` — в плагин. Материалы: `intent.md`, раздел «Компоненты и модули» разбора `docs/analysis/requirements-traceability-graph-of-symphysis.md` (определения Т20, README модуля Т21, разведка путей и импортов), `tools/`, `installer/scripts/sync-payload.js`, `installer/README.md`, `docs/repo-contract.md`, тесты ядра и плагина, мастер-спеки, `src/`, `build.mjs` и упаковка плагина.\n\nF-01 — критерий из `intent.md`, F-02–F-13 — факты о текущем состоянии ядра. F-14–F-16 — ответы владельца в чате 2026-11-06 на вопросы о критериях, до журнала; перенесены дословно файлом `answers/2026-11-06.md`. Развилки первого круга — F-17–F-26. F-29 — ответ владельца о плагине в объёме изменения (`answers/2026-11-06-2.md`), за ним F-30–F-32 о плагине. Парковки исследованию — F-20, F-27, F-28, F-32.\n\nВторой круг начинается с F-33: развилки подняты отчётами `research/F-20.md`, `research/F-27.md`, `research/F-28.md`, `research/F-32.md`; находки внесены в парковки F-20, F-27, F-28, F-32. Раскладка 3 графа модулей (`research/F-27-probe/module-graph.txt`) досчитана во втором круге. F-39 C снимает решение F-21 A.\n\nF-45 заведена на шаге proposal по находке модели и решена в чате: `answers/2026-11-06-5.md`. F-46 — факт шага specs: деление длинного требования при MODIFIED. F-66 и F-67 — развилки шага tasks: без них задачи переноса не конкретны.",
  "records": [
   {
    "id": "F-01",
@@ -3807,6 +3807,130 @@
     }
    ],
    "comments": []
+  },
+  {
+   "id": "F-66",
+   "question": "В каком модуле лежит `journal-cli.md` — справка скиллам о командах и кодах `journal.py`?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-27",
+    "F-33",
+    "F-35"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "В модуле `cli` вместе с `journal.py`: справка о командах и кодах выхода лежит рядом с точкой входа, которую описывает (F-33); установка по-прежнему кладёт её в `.symphysis/docs/`",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "skills/shared/journal-cli.md",
+       "quote": "# Команды журнала решений"
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "В модуле `decisions`, как в карте F-27: коды и маркеры говорят о журнале. Цена: справка о CLI отделена от CLI, а карта составлена до решения F-33 о модуле `cli`",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/changes/module-structure/research/F-27-probe/core-map.txt",
+       "quote": "skills/shared/journal-cli.md — decisions"
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Файл описывает вызовы `journal.py`, коды выхода и маркеры — границу модуля `cli`; карта F-27 отнесла его к `decisions` до того, как F-33 вынес CLI в свой модуль."
+   },
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-06"
+   },
+   "reversibility": {
+    "level": "обратимо",
+    "why": "перенос одного файла внутри репозитория; установка кладёт его в `.symphysis/docs/` при любом решении"
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "Задача переноса общих файлов скиллов в `tasks.md`",
+   "evidence": [],
+   "comments": [],
+   "nodes": [
+    "coreMods"
+   ]
+  },
+  {
+   "id": "F-67",
+   "question": "Как устроен каталог модуля ядра внутри: где код, каталоги скиллов, водители и тесты?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-18",
+    "F-23",
+    "F-42"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Подкаталоги по роду файлов внутри модуля с прежними именами: код и данные — в корне каталога модуля, скиллы — `skills/<имя>/`, водители — `agents/`, тесты — `tests/`. Инсталлятор собирает скиллы по маске `<модуль>/skills/symphysis-*`, водителей — `<модуль>/agents/*.md`; канон тел скиллов меняет только префикс пути",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "installer/scripts/sync-payload.js",
+       "quote": "const AGENTS_DIR = \"agents\";"
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Всё в корне каталога модуля: каталог скилла `symphysis-<имя>/` и тело водителя лежат рядом с кодом, тесты — `tests/`. На ступень короче пути. Цена: в корне модуля смешаны код, каталоги скиллов и тела агентов, инсталлятор различает их по префиксу и суффиксу имени",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "installer/scripts/sync-payload.js",
+       "quote": ".filter((e) => e.isDirectory() && e.name.startsWith(\"symphysis-\"))"
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Прежние имена `skills/`, `agents/`, `tests/` внутри модуля делают перенос механическим: инсталлятор, канон тел скиллов и поиск скиллов клона (F-42) меняют только префикс; B смешивает в корне модуля три рода файлов и заставляет различать их по имени."
+   },
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-06"
+   },
+   "reversibility": {
+    "level": "обратимо",
+    "why": "раскладка внутри модуля — только исходники: меняются маска сбора в `sync-payload.js` и поиск скиллов клона в `step_help.py`"
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "Маска сбора скиллов и водителей в `sync-payload.js`, поиск скиллов клона в `step_help.py`",
+   "evidence": [],
+   "comments": [],
+   "nodes": [
+    "coreMods"
+   ]
   }
  ],
  "notes": [

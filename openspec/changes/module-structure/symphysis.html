@@ -212,15 +212,15 @@
 const JOURNAL = {
  "title": "Журнал решений: module-structure",
  "source": "decisions.json",
- "sha256": "584907a9a513a08e048bdf5b4b1c027313013056fe3ec7bdc85226b422bc4227",
+ "sha256": "7e2183e0d6f586ef6d96be7420030dc09e22765f11d18781fa1d747392c22328",
  "stats": {
-  "records": 65,
-  "forks": 46,
+  "records": 67,
+  "forks": 48,
   "facts": 19,
-  "decided": 46,
+  "decided": 48,
   "parked": 1,
-  "evidence_total": 151,
-  "evidence_found": 151
+  "evidence_total": 155,
+  "evidence_found": 155
  },
  "records": [
   {
@@ -4545,6 +4545,144 @@ const JOURNAL = {
    ],
    "comments": [],
    "finding": ""
+  },
+  {
+   "id": "F-66",
+   "question": "В каком модуле лежит `journal-cli.md` — справка скиллам о командах и кодах `journal.py`?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-27",
+    "F-33",
+    "F-35"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "В модуле `cli` вместе с `journal.py`: справка о командах и кодах выхода лежит рядом с точкой входа, которую описывает (F-33); установка по-прежнему кладёт её в `.symphysis/docs/`",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "skills/shared/journal-cli.md",
+       "quote": "# Команды журнала решений",
+       "line": 1,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "В модуле `decisions`, как в карте F-27: коды и маркеры говорят о журнале. Цена: справка о CLI отделена от CLI, а карта составлена до решения F-33 о модуле `cli`",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/changes/module-structure/research/F-27-probe/core-map.txt",
+       "quote": "skills/shared/journal-cli.md — decisions",
+       "line": 24,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Файл описывает вызовы `journal.py`, коды выхода и маркеры — границу модуля `cli`; карта F-27 отнесла его к `decisions` до того, как F-33 вынес CLI в свой модуль."
+   },
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-06"
+   },
+   "reversibility": {
+    "level": "обратимо",
+    "why": "перенос одного файла внутри репозитория; установка кладёт его в `.symphysis/docs/` при любом решении"
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "Задача переноса общих файлов скиллов в `tasks.md`",
+   "evidence": [],
+   "comments": [],
+   "nodes": [
+    "coreMods"
+   ],
+   "finding": ""
+  },
+  {
+   "id": "F-67",
+   "question": "Как устроен каталог модуля ядра внутри: где код, каталоги скиллов, водители и тесты?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-18",
+    "F-23",
+    "F-42"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Подкаталоги по роду файлов внутри модуля с прежними именами: код и данные — в корне каталога модуля, скиллы — `skills/<имя>/`, водители — `agents/`, тесты — `tests/`. Инсталлятор собирает скиллы по маске `<модуль>/skills/symphysis-*`, водителей — `<модуль>/agents/*.md`; канон тел скиллов меняет только префикс пути",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "installer/scripts/sync-payload.js",
+       "quote": "const AGENTS_DIR = \"agents\";",
+       "line": 30,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Всё в корне каталога модуля: каталог скилла `symphysis-<имя>/` и тело водителя лежат рядом с кодом, тесты — `tests/`. На ступень короче пути. Цена: в корне модуля смешаны код, каталоги скиллов и тела агентов, инсталлятор различает их по префиксу и суффиксу имени",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "installer/scripts/sync-payload.js",
+       "quote": ".filter((e) => e.isDirectory() && e.name.startsWith(\"symphysis-\"))",
+       "line": 58,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Прежние имена `skills/`, `agents/`, `tests/` внутри модуля делают перенос механическим: инсталлятор, канон тел скиллов и поиск скиллов клона (F-42) меняют только префикс; B смешивает в корне модуля три рода файлов и заставляет различать их по имени."
+   },
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-06"
+   },
+   "reversibility": {
+    "level": "обратимо",
+    "why": "раскладка внутри модуля — только исходники: меняются маска сбора в `sync-payload.js` и поиск скиллов клона в `step_help.py`"
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "Маска сбора скиллов и водителей в `sync-payload.js`, поиск скиллов клона в `step_help.py`",
+   "evidence": [],
+   "comments": [],
+   "nodes": [
+    "coreMods"
+   ],
+   "finding": ""
   }
  ],
  "notes": [
@@ -4588,7 +4726,7 @@ const SCHEME = {
 };
 const HELP = {
  "contract": 3,
- "taken_at": "2026-11-06T21:02:55+03:00",
+ "taken_at": "2026-11-06T21:38:51+03:00",
  "versions": {
   "openspec": "1.15.0-symphysis.4",
   "symphysis": null
@@ -4596,10 +4734,10 @@ const HELP = {
  "change": "module-structure",
  "changes": null,
  "error": null,
- "current_step": "design",
- "current_text": "Следующий шаг по файлам — `design`, ход модели.",
+ "current_step": "tasks",
+ "current_text": "Следующий шаг по файлам — `tasks`, ход модели.",
  "turn": "model",
- "next_by_status": "design",
+ "next_by_status": "tasks",
  "forks": {
   "open": 0,
   "parked": 0
@@ -4947,7 +5085,7 @@ const HELP = {
   },
   {
    "id": "design",
-   "state": "ready",
+   "state": "done",
    "turn": "model",
    "optional": false,
    "blocks": [
@@ -4959,10 +5097,10 @@ const HELP = {
    "files": [
     {
      "path": "openspec/changes/module-structure/design.md",
-     "exists": false
+     "exists": true
     }
    ],
-   "file_note": null,
+   "file_note": "файл есть, содержание не проверялось",
    "texts": {
     "title": "Дизайн",
     "why": "Как реализовать: решения журнала, риски и открытые вопросы в одном документе, от которого идут задачи.",
@@ -4979,7 +5117,7 @@ const HELP = {
   },
   {
    "id": "security",
-   "state": "ready",
+   "state": "done",
    "turn": "model",
    "optional": false,
    "blocks": [
@@ -4990,10 +5128,10 @@ const HELP = {
    "files": [
     {
      "path": "openspec/changes/module-structure/security.md",
-     "exists": false
+     "exists": true
     }
    ],
-   "file_note": null,
+   "file_note": "файл есть, содержание не проверялось",
    "texts": {
     "title": "Чек-лист безопасности",
     "why": "Канон информационной безопасности отмечается по спецификациям пункт за пунктом: чтобы инъекции, пути и токены не остались вопросом, который никто не задал.",
@@ -5010,16 +5148,14 @@ const HELP = {
   },
   {
    "id": "tasks",
-   "state": "blocked",
+   "state": "ready",
    "turn": "model",
    "optional": false,
    "blocks": [
     "attack-artifacts"
    ],
    "stops_apply": true,
-   "waits_for": [
-    "design"
-   ],
+   "waits_for": [],
    "files": [
     {
      "path": "openspec/changes/module-structure/tasks.md",
@@ -5049,8 +5185,6 @@ const HELP = {
    "blocks": [],
    "stops_apply": false,
    "waits_for": [
-    "design",
-    "security",
     "tasks"
    ],
    "files": [
@@ -5088,8 +5222,7 @@ const HELP = {
    "blocks": [],
    "stops_apply": false,
    "waits_for": [
-    "tasks",
-    "security"
+    "tasks"
    ],
    "files": [],
    "file_note": null,
@@ -5160,16 +5293,19 @@ const HELP = {
   "consequences.md": "openspec/changes/module-structure/consequences.md",
   "decisions.json": "openspec/changes/module-structure/decisions.json",
   "decisions.md": "openspec/changes/module-structure/decisions.md",
+  "design.md": "openspec/changes/module-structure/design.md",
   "edge-probe.md": "openspec/changes/module-structure/edge-probe.md",
   "intent.md": "openspec/changes/module-structure/intent.md",
   "openspec/changes/module-structure/consequences.md": "openspec/changes/module-structure/consequences.md",
   "openspec/changes/module-structure/decisions.json": "openspec/changes/module-structure/decisions.json",
+  "openspec/changes/module-structure/design.md": "openspec/changes/module-structure/design.md",
   "openspec/changes/module-structure/intent.md": "openspec/changes/module-structure/intent.md",
   "openspec/changes/module-structure/proposal.md": "openspec/changes/module-structure/proposal.md",
   "openspec/changes/module-structure/research/F-20.md": "openspec/changes/module-structure/research/F-20.md",
   "openspec/changes/module-structure/research/F-27.md": "openspec/changes/module-structure/research/F-27.md",
   "openspec/changes/module-structure/research/F-28.md": "openspec/changes/module-structure/research/F-28.md",
   "openspec/changes/module-structure/research/F-32.md": "openspec/changes/module-structure/research/F-32.md",
+  "openspec/changes/module-structure/security.md": "openspec/changes/module-structure/security.md",
   "openspec/changes/module-structure/specs/decision-viewer/spec.md": "openspec/changes/module-structure/specs/decision-viewer/spec.md",
   "openspec/changes/module-structure/specs/module-declaration/spec.md": "openspec/changes/module-structure/specs/module-declaration/spec.md",
   "openspec/changes/module-structure/specs/plugin-core-contract/spec.md": "openspec/changes/module-structure/specs/plugin-core-contract/spec.md",
@@ -5181,6 +5317,7 @@ const HELP = {
   "openspec/changes/module-structure/specs/trace-graph/spec.md": "openspec/changes/module-structure/specs/trace-graph/spec.md",
   "proposal.md": "openspec/changes/module-structure/proposal.md",
   "scheme.md": "openspec/changes/module-structure/scheme.md",
+  "security.md": "openspec/changes/module-structure/security.md",
   "symphysis.html": "openspec/changes/module-structure/symphysis.html"
  },
  "rebuild": "python tools/journal.py render-html openspec/changes/module-structure/decisions.json --out openspec/changes/module-structure/symphysis.html"
@@ -5196,6 +5333,7 @@ const LINKS = {
   "consequences.md": "consequences.md",
   "decisions.json": "decisions.json",
   "decisions.md": "decisions.md",
+  "design.md": "design.md",
   "docs/analysis/requirements-traceability-graph-of-symphysis.md": "../../../docs/analysis/requirements-traceability-graph-of-symphysis.md",
   "docs/journal.schema.json": "../../../docs/journal.schema.json",
   "docs/plan-implementation.tasks.md": "../../../docs/plan-implementation.tasks.md",
@@ -5212,6 +5350,7 @@ const LINKS = {
   "openspec/changes/archive/2026-11-06-trace-graph/decisions.json": "../archive/2026-11-06-trace-graph/decisions.json",
   "openspec/changes/module-structure/consequences.md": "consequences.md",
   "openspec/changes/module-structure/decisions.json": "decisions.json",
+  "openspec/changes/module-structure/design.md": "design.md",
   "openspec/changes/module-structure/intent.md": "intent.md",
   "openspec/changes/module-structure/proposal.md": "proposal.md",
   "openspec/changes/module-structure/research/F-20.md": "research/F-20.md",
@@ -5225,6 +5364,7 @@ const LINKS = {
   "openspec/changes/module-structure/research/F-32-probe/vsce-3.txt": "research/F-32-probe/vsce-3.txt",
   "openspec/changes/module-structure/research/F-32-probe/vsce.txt": "research/F-32-probe/vsce.txt",
   "openspec/changes/module-structure/research/F-32.md": "research/F-32.md",
+  "openspec/changes/module-structure/security.md": "security.md",
   "openspec/changes/module-structure/specs/decision-viewer/spec.md": "specs/decision-viewer/spec.md",
   "openspec/changes/module-structure/specs/module-declaration/spec.md": "specs/module-declaration/spec.md",
   "openspec/changes/module-structure/specs/plugin-core-contract/spec.md": "specs/plugin-core-contract/spec.md",
@@ -5250,7 +5390,9 @@ const LINKS = {
   "research/F-28.md": "research/F-28.md",
   "research/F-32.md": "research/F-32.md",
   "scheme.md": "scheme.md",
+  "security.md": "security.md",
   "skills/shared/driver.md": "../../../skills/shared/driver.md",
+  "skills/shared/journal-cli.md": "../../../skills/shared/journal-cli.md",
   "symphysis.html": "symphysis.html",
   "tests/conftest.py": "../../../tests/conftest.py",
   "tests/test_schema.py": "../../../tests/test_schema.py",

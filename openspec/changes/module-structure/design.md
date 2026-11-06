@@ -332,6 +332,20 @@
 - **Улики выбранного:** vscode/src/host/project.ts «const dir = withJournal([...toolsDirs(toolsPath), toolsPath]);»
 - **Отвергнуто:** B. Научить `findTools` плагина искать ядро в каталогах модулей клона: настройка на `<клон>/tools` и на `<клон>` без установки в себя продолжают работать. Цена: плагин знает раскладку исходников ядра
 
+### F-66 В каком модуле лежит `journal-cli.md` — справка скиллам о командах и кодах `journal.py`?
+
+- **Выбрано:** A. В модуле `cli` вместе с `journal.py`: справка о командах и кодах выхода лежит рядом с точкой входа, которую описывает (F-33); установка по-прежнему кладёт её в `.symphysis/docs/`
+- **Обратимость:** обратимо — перенос одного файла внутри репозитория; установка кладёт его в `.symphysis/docs/` при любом решении
+- **Улики выбранного:** skills/shared/journal-cli.md «# Команды журнала решений»
+- **Отвергнуто:** B. В модуле `decisions`, как в карте F-27: коды и маркеры говорят о журнале. Цена: справка о CLI отделена от CLI, а карта составлена до решения F-33 о модуле `cli`
+
+### F-67 Как устроен каталог модуля ядра внутри: где код, каталоги скиллов, водители и тесты?
+
+- **Выбрано:** A. Подкаталоги по роду файлов внутри модуля с прежними именами: код и данные — в корне каталога модуля, скиллы — `skills/<имя>/`, водители — `agents/`, тесты — `tests/`. Инсталлятор собирает скиллы по маске `<модуль>/skills/symphysis-*`, водителей — `<модуль>/agents/*.md`; канон тел скиллов меняет только префикс пути
+- **Обратимость:** обратимо — раскладка внутри модуля — только исходники: меняются маска сбора в `sync-payload.js` и поиск скиллов клона в `step_help.py`
+- **Улики выбранного:** installer/scripts/sync-payload.js «const AGENTS_DIR = "agents";»
+- **Отвергнуто:** B. Всё в корне каталога модуля: каталог скилла `symphysis-<имя>/` и тело водителя лежат рядом с кодом, тесты — `tests/`. На ступень короче пути. Цена: в корне модуля смешаны код, каталоги скиллов и тела агентов, инсталлятор различает их по префиксу и суффиксу имени
+
 ## Risks / Trade-offs
 
 - [Risk] `openspec/schemas/symphysis/` уже каталог, и там её ищет OpenSpec. Это будет модуль, чьё место задано извне. (F-17, отвергнут B: docs/analysis/requirements-traceability-graph-of-symphysis.md) → Mitigation: решение A
@@ -372,6 +386,8 @@
 - [Risk] src/extension.ts — не ложится одному: активация импортирует модули всех механик (F-43, отвергнут B: openspec/changes/module-structure/research/F-27-probe/plugin-map.txt) → Mitigation: решение A
 - [Risk] import type { RevealTarget } from "./protocol"; (F-44, отвергнут B: vscode/src/shared/search.ts) → Mitigation: решение A
 - [Risk] if (path.basename(dir) !== "tools" || withJournal(toolsDirs(dir))) return dir; (F-45, отвергнут B: vscode/src/host/project.ts) → Mitigation: решение A
+- [Risk] skills/shared/journal-cli.md — decisions (F-66, отвергнут B: openspec/changes/module-structure/research/F-27-probe/core-map.txt) → Mitigation: решение A
+- [Risk] .filter((e) => e.isDirectory() && e.name.startsWith("symphysis-")) (F-67, отвергнут B: installer/scripts/sync-payload.js) → Mitigation: решение A
 
 ## Migration Plan
 
