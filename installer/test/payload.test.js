@@ -4,7 +4,7 @@ import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { spawnSync } from "node:child_process";
-import { hasSources, payloadMatches, syncPayload, ROOT } from "../scripts/sync-payload.js";
+import { hasSources, payloadMatches, stripProvenance, syncPayload, ROOT } from "../scripts/sync-payload.js";
 import { tempDir } from "../test-support/temp-dir.js";
 
 const FILES = [
@@ -22,7 +22,16 @@ const FILES = [
   "tools/step_help.py",
   "tools/playground-template.html",
   "docs/journal.schema.json",
+  "docs/terms.md",
+  "docs/journal-cli.md",
+  "docs/config.md",
+  "docs/candidate.md",
+  "docs/attack-table.md",
+  "docs/THIRD-PARTY-NOTICES.md",
 ];
+
+/** Строки контура разработки, которых в тексте продукта нет (docs/skills-canon.md, раздел 1). */
+const DEV_ONLY = [/upstream\//, /docs\/analysis\//, /TRANSLATION-NOTES/, /sources\//, /слово владельца/, /\b2026-\d\d/, /F-\d+\.[A-Z]\b/, /<!--\s*(?:src|dev)\b/];
 
 const tmp = () => tempDir("symphysis-payload-");
 
@@ -111,4 +120,52 @@ test("файл mermaid не в git ядра (F-53)", () => {
   const listed = spawnSync("git", ["ls-files", "*mermaid.min.js", "*mermaid.LICENSE"], { cwd: ROOT, encoding: "utf8" });
   assert.equal(listed.status, 0, listed.stderr);
   assert.equal(listed.stdout.trim(), "");
+});
+
+test("payload не несёт sources/ и TRANSLATION-NOTES.md скиллов", () => {
+  const dest = tmp();
+  syncPayload(dest);
+  const files = [];
+  const walk = (d) => { for (const e of fs.readdirSync(d, { withFileTypes: true })) { const f = path.join(d, e.name); if (e.isDirectory()) walk(f); else files.push(f); } };
+  walk(path.join(dest, "skills"));
+  assert.ok(files.length > 0);
+  for (const f of files) {
+    assert.ok(!f.split(path.sep).includes("sources"), f);
+    assert.ok(path.basename(f) !== "TRANSLATION-NOTES.md", f);
+  }
+});
+
+test("stripProvenance: вырезает комментарии src и dev строкой и блоком, прочие комментарии оставляет", () => {
+  const text = [
+    "Правило один.",
+    "<!-- src: upstream/gsd-core/x.md:12; F-07.A -->",
+    "Правило два.",
+    "<!-- dev",
+    "  слово владельца 2026-11-05: так и было",
+    "-->",
+    "<!-- обычный комментарий шаблона -->",
+    "Правило три.",
+    "",
+  ].join("\n");
+  assert.equal(stripProvenance(text), ["Правило один.", "Правило два.", "<!-- обычный комментарий шаблона -->", "Правило три.", ""].join("\n"));
+});
+
+test("общие файлы docs/*.md в payload без строк контура разработки", () => {
+  const dest = tmp();
+  syncPayload(dest);
+  const docs = fs.readdirSync(path.join(dest, "docs")).filter((n) => n.endsWith(".md"));
+  assert.ok(docs.length >= 6, JSON.stringify(docs));
+  for (const name of docs) {
+    const text = fs.readFileSync(path.join(dest, "docs", name), "utf8");
+    for (const re of DEV_ONLY) assert.ok(!re.test(text), `${name}: ${re}`);
+  }
+});
+
+test("тела скиллов в payload без комментариев провенанса", () => {
+  const dest = tmp();
+  syncPayload(dest);
+  for (const s of fs.readdirSync(path.join(dest, "skills"))) {
+    const text = fs.readFileSync(path.join(dest, "skills", s, "SKILL.md"), "utf8");
+    assert.ok(!/<!--\s*(?:src|dev)\b/.test(text), s);
+  }
 });

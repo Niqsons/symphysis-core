@@ -123,9 +123,11 @@ export function check(project, { skillsDirs = [], payloadDir = DEFAULT_PAYLOAD, 
   }
 
   const toolsDir = path.join(t.toolsDir, "tools");
+  const payloadDocs = path.join(payloadDir, "docs");
   const toolFiles = [
     ...TOOL_MODULES.map((m) => path.join(toolsDir, m)),
-    path.join(t.toolsDir, "docs", "journal.schema.json"),
+    // `docs/` payload целиком: схема журнала, общие файлы скиллов, уведомления MIT.
+    ...walk(payloadDocs).map((f) => path.join(t.toolsDir, "docs", path.relative(payloadDocs, f))),
     path.join(toolsDir, "journal-roots.json"),
   ];
   for (const f of toolFiles) if (!fs.existsSync(f)) findings.push(`${rel(root, f)}: нет файла`);

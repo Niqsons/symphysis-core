@@ -189,7 +189,7 @@ which opencode
 
 ### 8. Проект
 
-Учебный проект лежит в `docs/guide/example/`: код `reminders.py`, его данные `reminders.json`, `README.md` и задача `intent.md`. Он копируется рядом с клоном, глобальных изменений здесь нет. `openspec init` создаёт `.claude/` и `openspec/`, `symphysis install` кладёт в проект схему, скиллы, инструменты журнала и личный `symphysis.yaml`.
+Учебный проект лежит в `docs/guide/example/`: код `reminders.py`, его данные `reminders.json`, `README.md` и задача `intent.md`. Он копируется рядом с клоном, глобальных изменений здесь нет. `openspec init` создаёт `.claude/` и `openspec/`, `symphysis install` кладёт в проект схему, скиллы, инструменты журнала, общие файлы скиллов с уведомлениями MIT в `.symphysis/docs/` и личный `symphysis.yaml`.
 
 Команды идут из каталога проекта. Параметр `--project` им не нужен; если он понадобится, путь относительный и с прямыми слешами. `git init` нужен, чтобы `symphysis.yaml` было от чего отделять: файл личный и в коммит не идёт.
 

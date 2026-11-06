@@ -148,6 +148,17 @@ test("инструменты: нет journal.py, схемы json, корней",
   }
 });
 
+test("общие файлы docs: нет terms.md или уведомлений — finding называет файл", () => {
+  const p = installed();
+  const t = targets(p).toolsDir;
+  fs.rmSync(path.join(t, "docs", "terms.md"));
+  fs.rmSync(path.join(t, "docs", "THIRD-PARTY-NOTICES.md"));
+  const r = runCheck(p);
+  for (const f of [".symphysis/docs/terms.md", ".symphysis/docs/THIRD-PARTY-NOTICES.md"]) {
+    assert.ok(r.findings.includes(`${f}: нет файла`), `${f}: ${JSON.stringify(r.findings)}`);
+  }
+});
+
 test("инструменты: каждый модуль из состава проверяется, три новых тоже", () => {
   const modules = ["journal_apply.py", "journal_cli.py", "journal_model.py", "journal_render.py", "journal_sites.py", "journal_consequences.py", "symphysis_config.py"];
   const p = installed();

@@ -44,6 +44,16 @@
   `tests/fixtures/settings-cases.json`.
 - `installer/` — npm-пакет `@niqsons/symphysis`: `install`/`check`/`config`;
   `payload/` генерируется из корня (`scripts/sync-payload.js`), не правится.
+- `docs/skills-canon.md` — канон тела скилла и агента: скелет, правило с уровнем
+  RFC 2119, таблицы только для справки, провенанс в `<!-- src: -->`, водитель по brief;
+  читать перед правкой `skills/`. Ревью, по которому он написан, —
+  `docs/analysis/skills-review-2026-11-05.md`; проверка терминов —
+  `docs/analysis/terms-check-2026-11-06.md`.
+- `skills/shared/*.md` — общие файлы скиллов (`terms.md`, `journal-cli.md`, `config.md`,
+  `candidate.md`, `attack-table.md`): payload кладёт их в `docs/`, инсталлятор —
+  в `.symphysis/docs/`. `skills/<имя>/sources/` — выписки доноров и заметки перевода,
+  контур разработки: в payload не идут, как и комментарии `<!-- src: -->` в телах;
+  уведомления MIT — `installer/THIRD-PARTY-NOTICES.md`.
 - `docs/analysis/step0-sources.md` — чтение источников шага 0
   с вердиктами: что берём как есть, что дорабатываем, что
   переписываем; при составлении instruction и формата журнала.

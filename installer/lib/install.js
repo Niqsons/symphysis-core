@@ -132,7 +132,8 @@ export function install(project, { skillsDirs = [], force = false, payloadDir = 
   const toolsSkipped = res.skipped.slice(skippedBefore).some((line) => line.startsWith(toolsPrefix));
   const versionFile = path.join(toolsDir, VERSION_FILE);
   if (!toolsSkipped || fs.existsSync(versionFile)) place(res, root, versionFile, Buffer.from(versionText(payloadDir, sourceRoot)), force);
-  place(res, root, path.join(t.toolsDir, "docs", "journal.schema.json"), fs.readFileSync(path.join(payloadDir, "docs", "journal.schema.json")), force);
+  // `docs/` payload целиком: схема журнала, общие файлы скиллов (`terms.md`, `journal-cli.md`, …), уведомления MIT.
+  copyTree(res, root, path.join(payloadDir, "docs"), path.join(t.toolsDir, "docs"), force);
   place(res, root, path.join(toolsDir, "journal-roots.json"), Buffer.from(ROOTS_CONTENT), force, { keepExisting: true });
 
   const oursBytes = fs.readFileSync(path.join(payloadDir, "openspec", "config.symphysis.yaml"));

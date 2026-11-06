@@ -67,10 +67,10 @@ def table_rows(text):
 
 SKILL_DIRS = sorted(p for p in SKILLS.glob("symphysis-*/") if p.is_dir())
 SKILLS_COUNT = 6
-# references/*.md без шапки GSD: с D4b таких нет — переложение гриля store из атаки убрано,
+# sources/*.md без шапки GSD: с D4b таких нет — переложение гриля store из атаки убрано,
 # все копии несут шапку MIT/Open GSD (исключение было бы явным, не по маске).
 OWN_REFERENCES = ()
-# Скиллы без источника GSD (F-26: просмотрщик — свой скилл, Playground — образец): references/ нет
+# Скиллы без источника GSD (F-26: просмотрщик — свой скилл, Playground — образец): sources/ нет
 # или без копий GSD — шапка MIT/Open GSD у них не проверяется, её быть не должно.
 OWN_SKILLS = ("symphysis-viewer",)
 # Вторая персона: целые слова. Кириллица — \w в Unicode-режиме re, границы слов работают.
@@ -95,22 +95,22 @@ def test_skill_shape(skill):
     assert "Применяй, когда" in fm["description"], "description без «Применяй, когда …»"
     assert "Не применяй" in fm["description"], "description без «Не применяй …»"
 
-    refs = sorted((skill / "references").glob("*.md"))
+    refs = sorted(r for r in (skill / "sources").glob("*.md") if r.name != "TRANSLATION-NOTES.md")
     if skill.name in OWN_SKILLS:
         for ref in refs:
-            assert not read(ref).startswith(GSD_HEADER), f"references/{ref.name}: копия GSD в своём скилле"
+            assert not read(ref).startswith(GSD_HEADER), f"sources/{ref.name}: копия GSD в своём скилле"
     else:
-        assert refs, "нет references/*.md"
+        assert refs, "нет sources/*.md"
     for ref in refs if skill.name not in OWN_SKILLS else ():
         first = read(ref).splitlines()[0]
         if (skill.name, ref.name) in OWN_REFERENCES:
             assert not first.startswith(GSD_HEADER), \
-                f"references/{ref.name} — своё: шапки MIT/Open GSD быть не должно"
+                f"sources/{ref.name} — своё: шапки MIT/Open GSD быть не должно"
             continue
-        assert first.startswith(GSD_HEADER), f"references/{ref.name}: первая строка не шапка MIT/Open GSD: {first!r}"
-        assert GSD_PIN in first, f"references/{ref.name}: в шапке нет пина {GSD_PIN}"
+        assert first.startswith(GSD_HEADER), f"sources/{ref.name}: первая строка не шапка MIT/Open GSD: {first!r}"
+        assert GSD_PIN in first, f"sources/{ref.name}: в шапке нет пина {GSD_PIN}"
 
-    notes = read(skill / "TRANSLATION-NOTES.md")
+    notes = read(skill / "sources" / "TRANSLATION-NOTES.md")
     assert notes.strip(), "TRANSLATION-NOTES.md пуст"
     rows = table_rows(notes)
     assert rows, "в TRANSLATION-NOTES.md нет таблицы"
@@ -135,7 +135,7 @@ def test_brainstorm_skill_shape():
         assert name in text, f"в SKILL.md нет перспективы {name}"
     assert "брейншторм закончен по решению человека" in text, "нет строки отказа от нового круга (F-07)"
 
-    notes = read(skill / "TRANSLATION-NOTES.md")
+    notes = read(skill / "sources" / "TRANSLATION-NOTES.md")
     rows = table_rows(notes)
     assert any("числов" in row.lower() or "ambiguity" in row.lower() for row in rows), \
         "в TRANSLATION-NOTES.md нет строки про снятый числовой гейт (ambiguity)"
@@ -165,7 +165,7 @@ def test_edge_probe_has_eight_categories():
         assert f"`{head}<" in text, f"в SKILL.md нет заголовка варианта с шаблоном текста: {head!r}"
     assert "Dismissal requires a reason string" in text, "нет цитаты edge-probe.md:89 об отказе без причины"
 
-    notes = read(skill / "TRANSLATION-NOTES.md")
+    notes = read(skill / "sources" / "TRANSLATION-NOTES.md")
     rows = table_rows(notes)
     assert any("unclassified" in row for row in rows), \
         "в TRANSLATION-NOTES.md нет строки про снятый кандидат `unclassified` (#1110)"
@@ -223,7 +223,7 @@ def test_prohibition_probe_question_verbatim():
     for head in PROHIBITION_OPTION_HEADS:
         assert f"`{head}<" in text, f"в SKILL.md нет заголовка варианта с шаблоном текста: {head!r}"
 
-    notes = read(skill / "TRANSLATION-NOTES.md")
+    notes = read(skill / "sources" / "TRANSLATION-NOTES.md")
     rows = table_rows(notes)
     assert any("PROB-06" in row or "гейт" in row.lower() for row in rows), \
         "в TRANSLATION-NOTES.md нет строки про снятый мягкий гейт PROB-06"
@@ -313,7 +313,7 @@ ABSTENTION_ROW = "по спеке не выводится"
 # Одно правило вердикта — то же, что в шаблонах (`tests/test_schema.py::VERDICT_RULE`), дословно в §5 и в приёмке.
 VERDICT_RULE = ("`status: passed` ставится, только когда в таблице нет ни одной строки с тяжестью `блокер`; "
                 "строки `предупреждение` идут человеку списком и `apply` не держат, строки `справка` не блокируют")
-# Копии слоя проверки GSD в references/ атаки: файл -> строка источника дословно.
+# Копии слоя проверки GSD в sources/ атаки: файл -> строка источника дословно.
 ATTACK_REFERENCES = {
     "plan-checker-dimensions.md": "Issues without a severity classification are not valid output",
     "claim-extraction.md": "Do NOT execute any commands. Existence check only.",
@@ -346,14 +346,14 @@ def test_attack_skill_writes_verdict_contract():
     artifacts_row = next(row for row in table_rows(text) if row.startswith("| `attack-artifacts`"))
     assert "decisions.json" in artifacts_row, "в строке `attack-artifacts` таблицы вызовов нет `decisions.json`"
 
-    force = read(skill / "references" / "force-stance.md")
+    force = read(skill / "sources" / "force-stance.md")
     for line in FORCE_LINES:
-        assert line in force, f"в references/force-stance.md нет строки «{line[:40]}…» дословно"
+        assert line in force, f"в sources/force-stance.md нет строки «{line[:40]}…» дословно"
     for name, quote in ATTACK_REFERENCES.items():
-        assert quote in read(skill / "references" / name), f"в references/{name} нет строки «{quote[:40]}…» дословно"
-    assert not (skill / "references" / "grill-lenses.md").exists(), "гриль store — не источник атаки (D4b)"
+        assert quote in read(skill / "sources" / name), f"в sources/{name} нет строки «{quote[:40]}…» дословно"
+    assert not (skill / "sources" / "grill-lenses.md").exists(), "гриль store — не источник атаки (D4b)"
 
-    notes = read(skill / "TRANSLATION-NOTES.md")
+    notes = read(skill / "sources" / "TRANSLATION-NOTES.md")
     assert any("store" in row for row in table_rows(notes)), \
         "в TRANSLATION-NOTES.md нет строки про заимствование из store"
 
@@ -496,7 +496,7 @@ def test_attack_skill_context_compliance_sees_the_setting():
                   "опора решения design на факт или на запись без решения", "блокер"):
         assert token in row, f"в строке `context-compliance` нет «{token}»"
     assert "словом человека" not in row, "справка при отступлении не требует слова человека (F-55.E)"
-    notes = flat(read(ATTACK_SKILL / "TRANSLATION-NOTES.md"))
+    notes = flat(read(ATTACK_SKILL / "sources" / "TRANSLATION-NOTES.md"))
     assert "с пометкой и словом человека" not in notes
     assert "с полем `deviation` у выбранного варианта — `справка`, слово человека не требуется" in notes
 
@@ -528,16 +528,16 @@ def test_attack_skill_target_paths_relative_to_change_dir():
 
 def test_attack_translation_notes_name_self_and_removed_dimensions():
     """`scenario-run` — измерение SELF; снятые измерения plan-checker — с причиной (F-07.A); выписки GSD помечены."""
-    notes = table_rows(read(ATTACK_SKILL / "TRANSLATION-NOTES.md"))
+    notes = table_rows(read(ATTACK_SKILL / "sources" / "TRANSLATION-NOTES.md"))
     assert any("`scenario-run`" in row and "SELF" in row and "F-03" in row for row in notes), \
         "в TRANSLATION-NOTES.md нет строки о `scenario-run` как измерении SELF"
     removed = [row for row in notes if "F-07.A" in row and all(f"`{s}`" in row for s in REMOVED_LENS_SLUGS)]
     assert removed, "в TRANSLATION-NOTES.md нет строки о снятых измерениях с причиной F-07.A"
     assert "`journal.py check`" in removed[0] and "`openspec validate --strict`" in removed[0]
     for name in ("plan-checker-dimensions.md", "honest-verifier.md"):
-        mark = read(ATTACK_SKILL / "references" / name).splitlines()[1]
-        assert "F-07.A" in mark and "не линз" in mark, f"references/{name}: нет пометки «не линза после F-07.A»"
-    assert "Requirement Coverage" in read(ATTACK_SKILL / "references" / "plan-checker-dimensions.md").splitlines()[1]
+        mark = read(ATTACK_SKILL / "sources" / name).splitlines()[1]
+        assert "F-07.A" in mark and "не линз" in mark, f"sources/{name}: нет пометки «не линза после F-07.A»"
+    assert "Requirement Coverage" in read(ATTACK_SKILL / "sources" / "plan-checker-dimensions.md").splitlines()[1]
 
 
 # --- просмотрщик: линзы атаки и перспективы интервью не смешиваются (слово владельца 2026-10-30) ---
@@ -605,7 +605,7 @@ VIEWER_MAIN_RULE = "вывод модели — развилка"
 def test_viewer_skill_shape():
     """D7: главное правило «вывод модели — развилка, а не строка поставки», три режима и что человек делает
     в каждом, порядок команд, правило разделения линз и перспектив одной фразой в «Главном правиле»;
-    references/ нет или без копий GSD; TRANSLATION-NOTES — по `playground/SKILL.md`: что взято как образец
+    sources/ нет или без копий GSD; TRANSLATION-NOTES — по `playground/SKILL.md`: что взято как образец
     и что сделано иначе."""
     skill = SKILLS / "symphysis-viewer"
     text = read(skill / "SKILL.md")
@@ -618,9 +618,9 @@ def test_viewer_skill_shape():
     main = text.split("## Главное правило")[1].split("\n## ")[0]
     assert "линз" in main and "перспектив" in main, "правило разделения линз и перспектив — в «Главном правиле»"
     assert "Playground" in text, "в SKILL.md не назван образец — Playground"
-    refs = sorted((skill / "references").glob("*.md")) if (skill / "references").is_dir() else []
+    refs = sorted(r for r in (skill / "sources").glob("*.md") if r.name != "TRANSLATION-NOTES.md") if (skill / "sources").is_dir() else []
     assert not any(read(r).startswith(GSD_HEADER) for r in refs), "своё: копий GSD нет"
-    notes = read(skill / "TRANSLATION-NOTES.md")
+    notes = read(skill / "sources" / "TRANSLATION-NOTES.md")
     assert any("playground/SKILL.md" in row for row in table_rows(notes)), \
         "в TRANSLATION-NOTES.md нет строки по playground/SKILL.md"
     for token in ("Single HTML file", "presets", "browser storage", "apply"):
@@ -754,7 +754,7 @@ def test_second_round_lives_at_the_end_of_research():
     for stale in ("instruction `attack-decisions`", "(спросит `attack-decisions`)", "второго круга перед атакой"):
         assert stale not in body, f"в SKILL.md брейншторма осталось «{stale}»"
     assert "в конце шага `research`" in body
-    notes = flat(read(BRAINSTORM / "TRANSLATION-NOTES.md"))
+    notes = flat(read(BRAINSTORM / "sources" / "TRANSLATION-NOTES.md"))
     for stale in ("второй круг из `attack-decisions`", "instruction артефакта `attack-decisions`",
                   "второй круг по схеме идёт из `attack-decisions`"):
         assert stale not in notes, f"в TRANSLATION-NOTES.md брейншторма осталось «{stale}»"

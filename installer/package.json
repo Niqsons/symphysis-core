@@ -11,7 +11,8 @@
     "bin",
     "lib",
     "payload",
-    "scripts"
+    "scripts",
+    "THIRD-PARTY-NOTICES.md"
   ],
   "engines": {
     "node": ">=20"

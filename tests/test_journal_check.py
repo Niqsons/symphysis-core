@@ -109,7 +109,8 @@ def test_check_path_outside_roots_is_reported(tmp_path):
 def test_default_roots_cover_symphysis_and_file():
     roots = journal.default_roots()
     assert roots["docs/"] == ROOT / "docs"
-    assert roots["upstream/"] == ROOT / "upstream"
+    # `upstream/` в worktree — соединение на основной клон (`.context/04-workflow.md`): сравнение по разрешённому пути
+    assert roots["upstream/"] == (ROOT / "upstream").resolve()
     assert roots["CLAUDE.md"] == ROOT / "CLAUDE.md"
     assert {"store/", "playground/", "md4h/"} <= set(roots)
     assert "" not in roots

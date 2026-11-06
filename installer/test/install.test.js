@@ -51,6 +51,9 @@ test("install в пустой проект: все цели существуют
   assert.ok(fs.existsSync(path.join(t.toolsDir, "tools", "journal.py")));
   assert.ok(fs.existsSync(path.join(t.toolsDir, "tools", "playground-template.html")));
   assert.ok(fs.existsSync(path.join(t.toolsDir, "docs", "journal.schema.json")));
+  for (const d of ["terms.md", "journal-cli.md", "config.md", "candidate.md", "attack-table.md", "THIRD-PARTY-NOTICES.md"]) {
+    assert.ok(fs.existsSync(path.join(t.toolsDir, "docs", d)), d);
+  }
   assert.equal(fs.readFileSync(path.join(t.toolsDir, "tools", "journal-roots.json"), "utf8"), '{"": "<root>/.."}\n');
   assert.deepEqual(r.merged, []);
   assert.ok(r.written.includes("openspec/config.yaml"));
