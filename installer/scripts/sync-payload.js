@@ -8,12 +8,17 @@ export const DEFAULT_DEST = path.resolve(here, "..", "payload");
 
 const DIRS = ["openspec/schemas/symphysis"];
 
+/** Файл лежит в каталоге тестов модуля (F-58): тесты и фикстуры — контур разработки, где бы каталог ни обходился. */
+function inTestsDir(rel) {
+  return rel.split("/").slice(0, -1).includes("tests");
+}
+
 /**
- * Каталог схемы проекта получает не всё: тесты модуля схемы (F-23 A) — контур разработки, образец конфига
- * `config.symphysis.yaml` идёт отдельным файлом по прежнему пути payload (F-37 A).
+ * Каталог схемы проекта получает не всё: тесты модуля схемы (F-23 A, F-58) и `README.md` модуля (F-36 A) —
+ * контур разработки, образец конфига `config.symphysis.yaml` идёт отдельным файлом по прежнему пути payload (F-37 A).
  */
 function schemaFileExcluded(rel) {
-  return rel.split("/")[0] === "tests" || rel === "config.symphysis.yaml";
+  return inTestsDir(rel) || rel === "README.md" || rel === "config.symphysis.yaml";
 }
 
 /**
@@ -78,7 +83,7 @@ export function stripProvenance(text) {
 
 /** Каталог `sources/` скилла (выписки доноров, заметки перевода) — контур разработки. */
 function skillFileExcluded(rel) {
-  return rel.split("/").includes("sources") || path.basename(rel) === "TRANSLATION-NOTES.md";
+  return inTestsDir(rel) || rel.split("/").includes("sources") || path.basename(rel) === "TRANSLATION-NOTES.md";
 }
 
 /** Каталоги первого уровня, где ищутся скиллы и водители: без точки в начале (`.claude/` — установка, не исходник). */
