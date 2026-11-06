@@ -1220,9 +1220,9 @@ def test_number_in_probe_trace_gives_link(tmp_path):
 
 
 def test_probe_trace_gives_link_for_any_outcome_and_word_boundary(tmp_path):
-    """Номер в следе пробы запретов при любом исходе даёт связь; граница слова (F-140): `UTF-8` и `UTF-16` номером не считаются."""
-    spec = spec_with("Текст SHALL.", "<!-- проба запретов: UTF-8, UTF-16, исходы: F-07.A Backstop, F-08 Defer, F-09 канон -->")
-    root, _ = make_change(tmp_path, journal=["F-07", "F-08", "F-09"], specs={"demo": spec})
+    """Номер в следе пробы запретов при любом исходе даёт связь; граница слова (F-140): `UTF-16` перед `F-16` после `исходы:` номера `F-16` не даёт."""
+    spec = spec_with("Текст SHALL.", "<!-- проба запретов: исходы: F-07.A Backstop, UTF-16 F-08 Defer, F-09 канон -->")
+    root, _ = make_change(tmp_path, journal=["F-07", "F-08", "F-09", "F-16"], specs={"demo": spec})
     assert [e[1] for e in edges_of(graph_of(root), "traces")] == ["rec:F-07", "rec:F-08", "rec:F-09"]
 
 
@@ -1246,3 +1246,10 @@ def test_probe_trace_carried_from_master_gives_no_link(tmp_path):
     (master / "spec.md").write_text("# demo\n\n## Requirements\n\n### Requirement: Один\nТекст SHALL.\n\n" + old + "\n\n"
                                     "#### Scenario: Первый\n- **WHEN** a\n- **THEN** b\n", encoding="utf-8", newline="\n")
     assert [e[1] for e in edges_of(graph_of(root), "traces")] == ["rec:F-19"]
+
+
+def test_probe_trace_on_the_line_of_text_number_gives_one_link(tmp_path):
+    """Текст перед комментарием остаётся телом требования: номер в тексте и в следе на одной строке даёт одну связь, не две."""
+    spec = spec_with("Текст (F-19) SHALL. <!-- проба краёв: исходы: F-19 Specify -->")
+    root, _ = make_change(tmp_path, journal=["F-19"], specs={"demo": spec})
+    assert edges_of(graph_of(root), "traces") == [("req:demo/Один", "rec:F-19", "traces", "specs/demo/spec.md:4")]

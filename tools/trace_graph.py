@@ -554,9 +554,10 @@ def _read_specs(base: Path, claims: list[dict], master: "_Master | None" = None)
             nodes.append(req_node)
             claims.append({"kind": "edge", "from": cap_node["id"], "src": cap_node["at"], "to": req_id,
                            "type": "contains", "at": req_node["at"]})
-            known = set()
+            known, master_traces = set(), set()
             if req.section == "MODIFIED":
                 entry, from_base = master.entry(cap, req.name)
+                master_traces = set(entry["traces"]) if entry else set()
                 if entry and not _carried_without_base(entry, from_base, req):
                     known = set(entry["numbers"])
                 elif entry:  # блок уже в мастере без базы: родитель с таким текстом номера дочернего не отсекает (F-150)
@@ -569,7 +570,7 @@ def _read_specs(base: Path, claims: list[dict], master: "_Master | None" = None)
                         claims.append({"kind": "parent", "from": req_id, "src": req_node["at"], "at": f"{rel}:{number}",
                                        "text": line, "cap": cap, "section": req.section})
             for number, comment, line in traces.get(req.line, ()):
-                if req.section == "MODIFIED" and (entry := master.entry(cap, req.name)[0]) and _hash(comment) in entry["traces"]:
+                if _hash(comment) in master_traces:
                     continue  # дословно стоит в том же требовании мастера: след прежнего изменения (F-147)
                 claims.append({"kind": "trace", "from": req_id, "src": req_node["at"], "at": f"{rel}:{number}",
                                "text": comment.split("исходы:", 1)[1]})
