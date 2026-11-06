@@ -7,7 +7,7 @@ import sys
 import journal
 from conftest import ROOT, fork_record, journal_of
 
-TOOL = ROOT / "tools" / "journal.py"
+TOOL = ROOT / "cli" / "journal.py"
 
 
 def run_sites(tmp_path, data):

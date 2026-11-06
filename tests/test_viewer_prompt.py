@@ -12,7 +12,7 @@ import pytest
 import journal
 from conftest import FIX, ROOT
 
-TEMPLATE = ROOT / "tools" / "playground-template.html"
+TEMPLATE = ROOT / "viewer" / "playground-template.html"
 node = shutil.which("node")
 pytestmark = pytest.mark.skipif(node is None, reason="нет node: функции шаблона не прогнать")
 
@@ -278,7 +278,7 @@ def test_other_dispute_goes_to_notes_and_leaves_the_attack_file_alone(tmp_path):
     # файл атаки проходит через путь, который мог бы его изменить: сборка страницы с `--attack`
     src = tmp_path / "decisions.json"
     journal.save_journal(src, work)
-    run = subprocess.run([sys.executable, str(ROOT / "tools" / "journal.py"), "render-html", str(src), "--out", str(tmp_path / "v.html"),
+    run = subprocess.run([sys.executable, str(ROOT / "cli" / "journal.py"), "render-html", str(src), "--out", str(tmp_path / "v.html"),
                           "--attack", str(attack_md)], capture_output=True, text=True, encoding="utf-8")
     assert run.returncode == 0, run.stderr
     assert attack_md.read_bytes() == before

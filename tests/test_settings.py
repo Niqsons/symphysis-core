@@ -10,12 +10,12 @@ import time
 
 import pytest
 
-from conftest import FIX, ROOT
+from conftest import FIX, ROOT, core_files
 
 import symphysis_config
 
-TOOL = ROOT / "tools" / "symphysis_config.py"
-JOURNAL_TOOL = ROOT / "tools" / "journal.py"
+TOOL = ROOT / "settings" / "symphysis_config.py"
+JOURNAL_TOOL = ROOT / "cli" / "journal.py"
 CASES = json.loads((FIX / "settings-cases.json").read_text(encoding="utf-8"))
 ALL_ON = {"failure_branches": True, "assumptions": True, "edge_probe": True}
 # Водители (Р11-A): атака и исследование по умолчанию вкл, пробы и опись выкл.
@@ -194,7 +194,7 @@ def test_model_learns_composition_from_the_script(tmp_path):
 
 def test_journal_does_not_read_settings():
     """F-128.A: модули журнала не импортируют ни скрипт настроек, ни пакет."""
-    for path in sorted((ROOT / "tools").glob("journal*.py")) + [ROOT / "tools" / n for n in ("roots.py", "viewer_render.py", "attack_table.py")]:
+    for path in [p for p in core_files() if p.suffix == ".py" and (p.name.startswith("journal") or p.name in ("roots.py", "viewer_render.py", "attack_table.py"))]:
         tree = ast.parse(path.read_text(encoding="utf-8"))
         imported = set()
         for node in ast.walk(tree):
@@ -227,11 +227,12 @@ def test_other_journal_commands_work_without_pyyaml(tmp_path):
 # --- корень проекта: параметр, префикс "" файла корней, ROOT (предположение е) ----
 
 def installed_tools(project, roots):
-    """Копия `tools/*.py` в `<project>/.symphysis/tools` с заданным файлом корней."""
+    """Копия кода модулей (`*.py`) в `<project>/.symphysis/tools` с заданным файлом корней — раскладка установки."""
     tools = project / ".symphysis" / "tools"
     tools.mkdir(parents=True)
-    for path in (ROOT / "tools").glob("*.py"):
-        shutil.copy(path, tools)
+    for path in core_files():
+        if path.suffix == ".py":
+            shutil.copy(path, tools)
     if roots is not None:
         (tools / "journal-roots.json").write_text(json.dumps(roots), encoding="utf-8")
     return tools / "symphysis_config.py"

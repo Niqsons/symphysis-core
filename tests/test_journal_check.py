@@ -7,7 +7,7 @@ from pathlib import Path
 import pytest
 
 import journal
-from conftest import ROOT, one_record_journal, requires_evidence_roots
+from conftest import ROOT, core_clone, core_files, one_record_journal, requires_evidence_roots
 
 
 def test_check_does_not_join_lines_for_a_one_line_quote(tmp_path):
@@ -155,7 +155,7 @@ def test_empty_prefix_is_default_root_only_when_configured(tmp_path):
 
 def run_check(*args):
     return subprocess.run(
-        [sys.executable, str(ROOT / "tools" / "journal.py"), "check", *map(str, args)],
+        [sys.executable, str(ROOT / "cli" / "journal.py"), "check", *map(str, args)],
         capture_output=True, text=True, encoding="utf-8")
 
 
@@ -546,7 +546,7 @@ def check_output(tmp_path, record_nodes=None, scheme=None):
     journal.save_journal(src, j)
     if scheme is not None:
         (tmp_path / "scheme.md").write_text(scheme, encoding="utf-8")
-    run = subprocess.run([sys.executable, "-X", "utf8", str(ROOT / "tools" / "journal.py"), "check", str(src), "--roots", str(roots)],
+    run = subprocess.run([sys.executable, "-X", "utf8", str(ROOT / "cli" / "journal.py"), "check", str(src), "--roots", str(roots)],
                          capture_output=True, text=True, encoding="utf-8")
     return run.returncode, run.stdout + run.stderr
 
@@ -654,20 +654,18 @@ import re
 
 
 def _copy_tools(into: Path, clone: bool = False) -> Path:
-    """Инструменты в раскладке инсталлятора: `<into>/.symphysis/tools`, файл корней с `"": "<root>/.."`.
-    `clone=True` — раскладка клона ядра: `<into>/tools`, файл корней настоящий, пустого префикса в нём нет."""
-    base = into if clone else into / ".symphysis"
-    tools = base / "tools"
-    tools.mkdir(parents=True)
-    for f in (ROOT / "tools").glob("*"):
-        if f.is_file() and re.match(r"journal.*\.py|roots\.py|viewer_render\.py|attack_table\.py|step_help\.py|openspec_run\.py|symphysis_config\.py|playground-template\.html|mermaid\.min\.js", f.name):
-            shutil.copy(f, tools / f.name)
-    (base / "docs").mkdir()
-    shutil.copy(ROOT / "docs" / "journal.schema.json", base / "docs" / "journal.schema.json")
+    """Каталог файла корней. Раскладка инсталлятора: код и схема журнала в `<into>/.symphysis/tools` (F-41 A), файл корней
+    с `"": "<root>/.."` там же. `clone=True` — клон ядра в модульной раскладке: код в `<into>/<модуль>/`, файл корней
+    настоящий в `<into>/tools`, пустого префикса в нём нет; `docs/` клона есть."""
     if clone:
-        shutil.copy(ROOT / "tools" / "journal-roots.json", tools / "journal-roots.json")
-    else:
-        (tools / "journal-roots.json").write_text('{"": "<root>/.."}\n', encoding="utf-8")
+        (into / "docs").mkdir(parents=True)
+        return core_clone(into) / "tools"
+    tools = into / ".symphysis" / "tools"
+    tools.mkdir(parents=True)
+    for f in core_files():
+        if re.match(r"journal.*\.(py|json)|roots\.py|viewer_render\.py|attack_table\.py|step_help\.py|openspec_run\.py|symphysis_config\.py|playground-template\.html", f.name):
+            shutil.copy(f, tools / f.name)
+    (tools / "journal-roots.json").write_text('{"": "<root>/.."}\n', encoding="utf-8")
     return tools
 
 
@@ -690,7 +688,9 @@ def _layout(tmp_path: Path, tools_in_project: bool, clone: bool = False):
 
 
 def _core(tools: Path, project: Path, *args):
-    return subprocess.run([sys.executable, "-X", "utf8", str(tools / "journal.py"), *map(str, args)], cwd=project,
+    """`journal.py` той раскладки, чей файл корней лежит в `tools`: у установки — рядом с ним, у клона — в модуле `cli`."""
+    script = tools / "journal.py" if (tools / "journal.py").is_file() else tools.parent / "cli" / "journal.py"
+    return subprocess.run([sys.executable, "-X", "utf8", str(script), *map(str, args)], cwd=project,
                           capture_output=True, encoding="utf-8", errors="replace")
 
 

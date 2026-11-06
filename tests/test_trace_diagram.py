@@ -5,6 +5,7 @@ import re
 import pytest
 
 import trace_graph
+from conftest import ROOT
 from test_trace_graph import CHANGE, make_change, run
 
 DEMO = """## ADDED Requirements
@@ -368,7 +369,7 @@ def hook_keys(text):
     """Находки шаблона `KEY` хука: тот же отбор, что в `gate_hook.py`."""
     import importlib.util
     from pathlib import Path
-    spec = importlib.util.spec_from_file_location("gate_hook_for_test", Path(trace_graph.__file__).parent / "hooks" / "gate_hook.py")
+    spec = importlib.util.spec_from_file_location("gate_hook_for_test", ROOT / "tools" / "hooks" / "gate_hook.py")
     hook = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(hook)
     return [m.group(0) for m in hook.KEY.finditer(text) if m.group(1) not in hook.KEY_ALLOW]

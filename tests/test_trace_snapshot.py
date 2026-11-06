@@ -15,7 +15,7 @@ from test_schema import make_project, run_openspec
 from test_trace_graph import CHANGE, make_change
 from test_trace_report import CLEAN, DONE, ONE_REQ, decided, journal, probe, with_shim
 
-SCRIPT = ROOT / "tools" / "trace_graph.py"
+SCRIPT = ROOT / "trace" / "trace_graph.py"
 GIT = ["git", "-c", "user.name=t", "-c", "user.email=t@t", "-c", "commit.gpgsign=false"]
 REPORT_REL = f"openspec/changes/{CHANGE}/graph/report.md"
 
@@ -699,7 +699,7 @@ def test_manual_check_of_archived_journal_names_evidence_missing_and_keeps_bytes
     proj, found, before = archived_project(tmp_path, monkeypatch)
     roots = tmp_path / "roots-proj.json"
     roots.write_text(json.dumps({"": str(proj)}), encoding="utf-8")
-    done = subprocess.run([sys.executable, "-X", "utf8", str(ROOT / "tools" / "journal.py"), "check", str(found / "decisions.json"),
+    done = subprocess.run([sys.executable, "-X", "utf8", str(ROOT / "cli" / "journal.py"), "check", str(found / "decisions.json"),
                            "--roots", str(roots)], capture_output=True, text=True, encoding="utf-8")
     assert done.returncode == 0, done.stderr
     assert "файла нет" in done.stdout and EVIDENCE in done.stdout

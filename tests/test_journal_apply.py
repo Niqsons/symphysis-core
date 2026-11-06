@@ -10,7 +10,7 @@ import journal
 from conftest import FIX, ROOT
 
 LIVE_JSON = ROOT / "docs" / "plan-implementation.journal.json"
-TEMPLATE = ROOT / "tools" / "playground-template.html"
+TEMPLATE = ROOT / "viewer" / "playground-template.html"
 DATE = "2026-10-30"
 
 HEADER_LINK = "### Решения по журналу [j.md](http://j.md), 2026-10-29:\n\n"
@@ -48,7 +48,7 @@ def embedded(html):
 
 def run_cli(*args):
     return subprocess.run(
-        [sys.executable, str(ROOT / "tools" / "journal.py"), *map(str, args)],
+        [sys.executable, str(ROOT / "cli" / "journal.py"), *map(str, args)],
         capture_output=True, text=True, encoding="utf-8")
 
 

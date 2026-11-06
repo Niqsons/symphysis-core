@@ -15,10 +15,10 @@ import pytest
 import attack_table
 import journal
 import viewer_render
-from conftest import (FIX, ROOT, fake_apply, fake_status, fork_calls, fork_env, fork_record, fork_reply, install_fork_shim,
+from conftest import (FIX, ROOT, core_files, fake_apply, fake_status, fork_calls, fork_env, fork_record, fork_reply, install_fork_shim,
                       journal_of, one_record_journal, real_fork, real_project, requires_fork)
 
-TEMPLATE = ROOT / "tools" / "playground-template.html"
+TEMPLATE = ROOT / "viewer" / "playground-template.html"
 LIVE_JSON = ROOT / "docs" / "plan-implementation.journal.json"
 LIVE_MD = ROOT / "docs" / "plan-implementation.journal.md"
 
@@ -58,7 +58,7 @@ def embedded(html):
 
 def run_cli(*args):
     return subprocess.run(
-        [sys.executable, str(ROOT / "tools" / "journal.py"), *map(str, args)],
+        [sys.executable, str(ROOT / "cli" / "journal.py"), *map(str, args)],
         capture_output=True, text=True, encoding="utf-8")
 
 
@@ -78,7 +78,7 @@ def test_render_md_has_anchor_per_record():
 
 def test_render_html_embeds_json(tmp_path):
     j = journal.import_md(FIX / "journal-plan.md")
-    html = journal.render_html(j, ROOT / "tools/playground-template.html")
+    html = journal.render_html(j, ROOT / "viewer" / "playground-template.html")
     assert "__JOURNAL_JSON__" not in html and '"F-19"' in html and "</script>" in html
 
 
@@ -206,7 +206,7 @@ TEXT_OF_RECOMMENDATION = re.compile(
 def test_tools_do_not_read_the_text_of_a_recommendation():
     """Страховка F-30: поле осталось только старым журналам, новое чтение вернуло бы ловушку F-08, F-09.
     Снимается вместе с полем."""
-    files = [*(ROOT / "tools").rglob("*.py"), TEMPLATE]
+    files = [*(path for path in core_files() if path.suffix == ".py"), TEMPLATE]
     reads = [f"{path.relative_to(ROOT)}:{number}"
              for path in files
              for number, line in enumerate(path.read_text(encoding="utf-8").splitlines(), 1)
@@ -520,7 +520,7 @@ def test_cli_render_html_attack_flag(tmp_path):
 def test_cli_render_html_attack_template_with_composition_and_empty_table(tmp_path, name):
     """`artifact-attack`: «Выключены все линзы» — файл со строкой `**Состав:**` и таблицей без строк
     (заголовок остаётся) собирается страницей, код 0, строк нет (F-106)."""
-    template = (Path(__file__).resolve().parent.parent / "openspec" / "schemas" / "symphysis" / "templates"
+    template = (ROOT / "openspec" / "schemas" / "symphysis" / "templates"
                 / name).read_text(encoding="utf-8")
     head, tail = template.split("| Утверждение |", 1)
     header = "| Утверждение |" + tail.splitlines()[0] + "\n| --- | --- | --- | --- | --- | --- | --- |\n"
@@ -1287,7 +1287,7 @@ def test_park_hint_says_the_agent_looks_in_files_or_by_a_probe():
 
 # --- снимок справки в `render-html`: метка шаблона, корень из пути журнала, сбой страницу не роняет, команда пересборки ---
 
-JOURNAL_PY = ROOT / "tools" / "journal.py"
+JOURNAL_PY = ROOT / "cli" / "journal.py"
 
 
 def help_of(html: str) -> dict:
@@ -1506,13 +1506,14 @@ def test_dangerous_directory_of_the_journal(tmp_path):
 
 
 def copy_of_tools_without_the_script(home: Path) -> Path:
-    """Инструменты журнала в `home/tools`, схема журнала в `home/docs`, как их ставит инсталлятор: возвращает `journal.py`."""
+    """Инструменты журнала и схема журнала рядом в `home/tools`, как их ставит инсталлятор (F-41 A), и файл корней ядра:
+    возвращает `journal.py`."""
     (home / "tools").mkdir(parents=True)
-    (home / "docs").mkdir()
-    for file in (*(ROOT / "tools").glob("journal*"), *(ROOT / "tools" / name for name in ("roots.py", "viewer_render.py", "attack_table.py"))):
-        shutil.copy(file, home / "tools")
+    for file in core_files():
+        if file.name.startswith("journal") or file.name in ("roots.py", "viewer_render.py", "attack_table.py"):
+            shutil.copy(file, home / "tools")
+    shutil.copy(ROOT / "tools" / "journal-roots.json", home / "tools")
     shutil.copy(TEMPLATE, home / "tools")
-    shutil.copy(ROOT / "docs" / "journal.schema.json", home / "docs")
     return home / "tools" / "journal.py"
 
 
@@ -1644,8 +1645,8 @@ def test_rebuild_command_names_the_script_it_ran_from(tmp_path):
     """Сборка инструментами самого проекта: путь скрипта от корня, а не установленный по умолчанию."""
     project, src, env = shim_project(tmp_path)
     script = copy_of_tools_without_the_script(project)
-    shutil.copy(ROOT / "tools" / "step_help.py", script.parent)
-    shutil.copy(ROOT / "tools" / "openspec_run.py", script.parent)
+    shutil.copy(ROOT / "step-help" / "step_help.py", script.parent)
+    shutil.copy(ROOT / "openspec-run" / "openspec_run.py", script.parent)
     snapshot, _ = built(src, env, script=script)
     assert shlex.split(snapshot["rebuild"])[1] == "tools/journal.py"
 
@@ -1661,8 +1662,8 @@ def test_rebuild_command_run_from_the_root_builds_the_same_page(tmp_path):
     """Команда, выполненная из корня, собирает страницу с тем же составом режимов и тем же файлом."""
     project, src, env = shim_project(tmp_path)
     installed = copy_of_tools_without_the_script(project / ".symphysis")
-    shutil.copy(ROOT / "tools" / "step_help.py", installed.parent)
-    shutil.copy(ROOT / "tools" / "openspec_run.py", installed.parent)
+    shutil.copy(ROOT / "step-help" / "step_help.py", installed.parent)
+    shutil.copy(ROOT / "openspec-run" / "openspec_run.py", installed.parent)
     (src.parent / "attack").mkdir()
     attack = src.parent / "attack" / "decisions.md"
     shutil.copy(ATTACK_FIX / "decisions.md", attack)

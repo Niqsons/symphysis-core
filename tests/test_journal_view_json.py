@@ -15,11 +15,11 @@ import journal_render
 from conftest import FIX, ROOT, fake_apply, fake_status, fork_env, fork_reply, install_fork_shim, one_record_journal
 
 ATTACK_FIX = FIX / "attack"
-TEMPLATE = ROOT / "tools" / "playground-template.html"
+TEMPLATE = ROOT / "viewer" / "playground-template.html"
 
 
 def run_cli(*args, env=None):
-    return subprocess.run([sys.executable, str(ROOT / "tools" / "journal.py"), *map(str, args)],
+    return subprocess.run([sys.executable, str(ROOT / "cli" / "journal.py"), *map(str, args)],
                           capture_output=True, text=True, encoding="utf-8", env=env)
 
 
@@ -101,7 +101,7 @@ def project_with_attack(tmp_path):
 
 
 def run_in(project, command, *args):
-    return subprocess.run([sys.executable, str(ROOT / "tools" / "journal.py"), command, *map(str, args)], cwd=project,
+    return subprocess.run([sys.executable, str(ROOT / "cli" / "journal.py"), command, *map(str, args)], cwd=project,
                           capture_output=True, text=True, encoding="utf-8")
 
 
@@ -273,7 +273,7 @@ def test_one_number_in_both_outputs(tmp_path):
     project = tmp_path / "proj"
     (project / "openspec" / "changes" / "demo").mkdir(parents=True)
     install_fork_shim(tmp_path / "bin", status=fork_reply(fake_status(project, ready=("intent",))), apply=fork_reply(fake_apply()))
-    done = subprocess.run([sys.executable, str(ROOT / "tools" / "step_help.py"), "--change", "demo"], cwd=project,
+    done = subprocess.run([sys.executable, str(ROOT / "step-help" / "step_help.py"), "--change", "demo"], cwd=project,
                           env=fork_env(tmp_path / "bin"), capture_output=True)
     assert done.returncode == 0, done.stderr
     from_help = json.loads(done.stdout.decode("utf-8"))["contract"]

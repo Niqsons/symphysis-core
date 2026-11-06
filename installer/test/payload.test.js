@@ -26,7 +26,7 @@ const FILES = [
   "tools/openspec_run.py",
   "tools/trace_graph.py",
   "tools/playground-template.html",
-  "docs/journal.schema.json",
+  "tools/journal.schema.json",
   "docs/terms.md",
   "docs/journal-cli.md",
   "docs/config.md",

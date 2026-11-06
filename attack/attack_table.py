@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""Файл атаки для просмотрщика — файл будущего модуля `attack`: `parse_attack_md` и разбор строк
+"""Файл атаки для просмотрщика — модуль `attack`: `parse_attack_md` и разбор строк
 таблицы (`_attack_frontmatter`, `_attack_rows`, `_scan_row`). Строки файла считает `_lines` журнала
 (модуль `decisions`): attack зависит от decisions, не наоборот."""
 from __future__ import annotations

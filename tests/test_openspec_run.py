@@ -14,8 +14,8 @@ import pytest
 import openspec_run
 from conftest import ROOT, fork_calls, fork_env, fork_reply, install_fork_shim
 
-OPENSPEC_RUN = ROOT / "tools" / "openspec_run.py"
-STEP_HELP = ROOT / "tools" / "step_help.py"
+OPENSPEC_RUN = ROOT / "openspec-run" / "openspec_run.py"
+STEP_HELP = ROOT / "step-help" / "step_help.py"
 
 requires_node = pytest.mark.skipif(shutil.which("node") is None, reason="нет node в PATH")
 

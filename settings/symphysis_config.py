@@ -16,7 +16,13 @@ import sys
 from dataclasses import dataclass, field
 from pathlib import Path
 
-from roots import ROOT, default_roots
+# Исходник ядра (F-20 A): код модулей лежит в соседних каталогах первого уровня, точка входа ставит нужные ей в `sys.path`.
+# В установке весь код рядом в `.symphysis/tools/`: `roots.py` лежит возле этого файла, и путь не меняется.
+_HERE = Path(__file__).resolve().parent
+if not (_HERE / "roots.py").is_file():
+    sys.path[1:1] = [str(_HERE.parent / "roots")]
+
+from roots import ROOT, default_roots  # noqa: E402  (после правки sys.path)
 
 __all__ = ["Settings", "read_settings", "composition_line", "lenses_line", "LENSES", "build_parser", "main"]
 
@@ -145,7 +151,7 @@ def lenses_line(settings: Settings) -> str:
 
 def _default_project() -> Path:
     """Корень проекта без параметра: пустой префикс файла корней (у установленной копии это проект
-    над `.symphysis/`), иначе каталог над `tools/`."""
+    над `.symphysis/`), иначе `ROOT` — каталог над каталогом кода."""
     try:
         return default_roots().get("", ROOT)
     except (OSError, ValueError):

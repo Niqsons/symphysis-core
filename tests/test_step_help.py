@@ -16,11 +16,12 @@ import pytest
 import journal_render
 import openspec_run
 import step_help
-from conftest import (ALL_STEPS, FORK_VERSION, OPTIONAL_ARTIFACTS, ROOT, SCHEMA_GRAPH, fake_apply, fake_status,
+from conftest import (ALL_STEPS, FORK_VERSION, MODULE_DIRS, OPTIONAL_ARTIFACTS, ROOT, SCHEMA_GRAPH, core_clone, core_files,
+                      fake_apply, fake_status,
                       fake_status_all, fork_calls, fork_env, fork_record, fork_reply, install_fork_shim, journal_of, real_env,
                       real_fork, real_project, requires_fork, steps_text)
 
-STEP_HELP = ROOT / "tools" / "step_help.py"
+STEP_HELP = ROOT / "step-help" / "step_help.py"
 BEFORE_SPECS = ("intent", "decisions", "research", "proposal")
 PLANNED = (*BEFORE_SPECS, "specs", "consequences", "design", "security", "tasks")
 
@@ -80,7 +81,7 @@ def compute_with_limit(project: Path, env: dict, limit: int, change="demo"):
               "sys.stdout.buffer.write(json.dumps(step_help.compute(sys.argv[1], sys.argv[3])).encode('utf-8'))")
     started = time.monotonic()
     done = subprocess.run([sys.executable, "-c", script, str(project), str(limit), change], capture_output=True,
-                          env={**env, "PYTHONPATH": str(ROOT / "tools")}, timeout=60)
+                          env={**env, "PYTHONPATH": os.pathsep.join(map(str, MODULE_DIRS))}, timeout=60)
     return time.monotonic() - started, done
 
 
@@ -835,9 +836,11 @@ def test_symphysis_version_absent_is_null(tmp_path):
 
 
 def copy_of_tools(directory: Path) -> Path:
+    """Справка и то, что она импортирует, одним каталогом, как в установке."""
     directory.mkdir()
-    for name in ("step_help.py", "openspec_run.py", "journal_render.py", "journal_model.py", "journal_apply.py", "roots.py"):
-        shutil.copy(ROOT / "tools" / name, directory)
+    for file in core_files():
+        if file.name in ("step_help.py", "openspec_run.py", "journal_render.py", "journal_model.py", "journal_apply.py", "roots.py"):
+            shutil.copy(file, directory)
     return directory / "step_help.py"
 
 
@@ -1046,7 +1049,7 @@ def test_render_html_does_not_run_node_cmd_from_the_project_root(tmp_path):
     elsewhere = tmp_path / "elsewhere"
     elsewhere.mkdir()
     journal_file = project / "openspec" / "changes" / "demo" / "decisions.json"
-    done = subprocess.run([sys.executable, str(ROOT / "tools" / "journal.py"), "render-html", str(journal_file), "--out",
+    done = subprocess.run([sys.executable, str(ROOT / "cli" / "journal.py"), "render-html", str(journal_file), "--out",
                            str(project / "openspec" / "changes" / "demo" / "decisions.html")], cwd=elsewhere, env=env,
                           capture_output=True)
     assert done.returncode == 0, done.stderr.decode("utf-8", "replace")
@@ -1176,11 +1179,9 @@ def install_layout(tmp_path, nested=False):
     install = tmp_path / "установка"
     tools = install / ".symphysis" / "tools"
     tools.mkdir(parents=True)
-    for file in (ROOT / "tools").glob("*"):
-        if file.is_file() and re.match(r"journal.*\.py|roots\.py|viewer_render\.py|attack_table\.py|step_help\.py|openspec_run\.py|symphysis_config\.py", file.name):
-            shutil.copy(file, tools / file.name)
-    (install / ".symphysis" / "docs").mkdir()
-    shutil.copy(ROOT / "docs" / "journal.schema.json", install / ".symphysis" / "docs" / "journal.schema.json")
+    for file in core_files():
+        if re.match(r"journal.*\.(py|json)|roots\.py|viewer_render\.py|attack_table\.py|step_help\.py|openspec_run\.py|symphysis_config\.py", file.name):
+            shutil.copy(file, tools / file.name)   # схема журнала — рядом с кодом (F-41 A)
     (tools / "journal-roots.json").write_text('{"": "<root>/.."}\n', encoding="utf-8")
     (install / "src").mkdir()
     (install / "src" / "only_install.py").write_text("x\n", encoding="utf-8")
@@ -1212,15 +1213,11 @@ def test_scenario_root_with_tools_outside_the_project_step_help_half(tmp_path):
 
 
 def clone_layout(tmp_path):
-    """Инструменты в раскладке клона ядра вне проекта: файл корней настоящий, без пустого префикса; `docs/only_clone.md` есть только в клоне."""
-    clone = tmp_path / "клон ядра"
+    """Инструменты в модульной раскладке клона ядра вне проекта: файл корней настоящий в `tools/`, без пустого префикса;
+    `docs/only_clone.md` есть только в клоне. Возвращает каталог файла корней и проект."""
+    clone = core_clone(tmp_path / "клон ядра")
     tools = clone / "tools"
-    tools.mkdir(parents=True)
-    for file in (ROOT / "tools").glob("*"):
-        if file.is_file() and re.match(r"journal.*\.(py|json)|roots\.py|viewer_render\.py|attack_table\.py|step_help\.py|openspec_run\.py|symphysis_config\.py", file.name):
-            shutil.copy(file, tools / file.name)
     (clone / "docs").mkdir()
-    shutil.copy(ROOT / "docs" / "journal.schema.json", clone / "docs" / "journal.schema.json")
     (clone / "docs" / "only_clone.md").write_text("x\n", encoding="utf-8")
     project = make_project(tmp_path / "проект")
     (project / "src").mkdir()
@@ -1232,7 +1229,8 @@ def clone_layout(tmp_path):
 def run_clone_script(tmp_path, tools, project):
     status = fake_status(project, done=("intent",), ready=("decisions",))
     install_fork_shim(tmp_path / "bin", status=fork_reply(status), apply=fork_reply(fake_apply()))
-    done = subprocess.run([sys.executable, str(tools / "step_help.py"), "--change", "demo"], cwd=project, env=fork_env(tmp_path / "bin"),
+    script = tools.parent / "step-help" / "step_help.py"   # у клона справка лежит в своём модуле
+    done = subprocess.run([sys.executable, str(script), "--change", "demo"], cwd=project, env=fork_env(tmp_path / "bin"),
                           capture_output=True)
     assert done.returncode == 0, done.stderr.decode("utf-8", "replace")
     return json.loads(done.stdout.decode("utf-8"))

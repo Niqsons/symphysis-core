@@ -1,4 +1,4 @@
-"""Правило справки: у каждого входа `tools/*.py` `--help` отвечает, что делает, когда звать и что значат коды;
+"""Правило справки: у каждого входа ядра (скрипты модулей) `--help` отвечает, что делает, когда звать и что значат коды;
 у каждого аргумента своя строка помощи."""
 import ast
 import subprocess
@@ -8,9 +8,9 @@ import pytest
 
 import journal
 import trace_graph
-from conftest import ROOT
+from conftest import ROOT, core_files
 
-TOOLS = sorted((ROOT / "tools").glob("*.py"))
+TOOLS = [path for path in core_files() if path.suffix == ".py"]
 WHEN = "Звать, когда"
 CODES = "Коды:"
 SUBCOMMANDS = journal.build_parser()._subparsers._group_actions[0].choices
@@ -53,7 +53,7 @@ def test_entry_help_names_when_and_codes(path):
 
 @pytest.mark.parametrize("name", sorted(SUBCOMMANDS))
 def test_subcommand_help_names_when_and_codes(name):
-    done = run_help(ROOT / "tools" / "journal.py", name)
+    done = run_help(ROOT / "cli" / "journal.py", name)
     assert done.returncode == 0, done.stderr
     assert WHEN in done.stdout and CODES in done.stdout, done.stdout
 
@@ -63,7 +63,7 @@ TRACE_SUBCOMMANDS = trace_graph.build_parser()._subparsers._group_actions[0].cho
 
 @pytest.mark.parametrize("name", sorted(TRACE_SUBCOMMANDS))
 def test_trace_graph_subcommand_help_names_when_and_codes(name):
-    done = run_help(ROOT / "tools" / "trace_graph.py", name)
+    done = run_help(ROOT / "trace" / "trace_graph.py", name)
     assert done.returncode == 0, done.stderr
     assert WHEN in done.stdout and CODES in done.stdout, done.stdout
 
@@ -78,7 +78,7 @@ def test_subcommands_are_the_expected_ones():
 
 
 def help_of(*args):
-    return " ".join(run_help(ROOT / "tools" / "journal.py", *args).stdout.split())
+    return " ".join(run_help(ROOT / "cli" / "journal.py", *args).stdout.split())
 
 
 def test_code_one_names_all_its_causes():
@@ -94,6 +94,6 @@ def test_check_help_names_the_forms_it_recognises():
 
 
 def test_config_help_says_what_no_project_means():
-    text = " ".join(run_help(ROOT / "tools" / "symphysis_config.py").stdout.split())
+    text = " ".join(run_help(ROOT / "settings" / "symphysis_config.py").stdout.split())
     assert "без него — проект над .symphysis/" in text
     assert "пустой префикс" not in text

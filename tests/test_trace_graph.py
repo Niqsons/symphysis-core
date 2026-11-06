@@ -14,7 +14,7 @@ from conftest import ROOT, requires_fork
 from test_schema import make_project, run_openspec
 
 SCHEMA = ROOT / "openspec" / "schemas" / "symphysis" / "schema.yaml"
-SCRIPT = ROOT / "tools" / "trace_graph.py"
+SCRIPT = ROOT / "trace" / "trace_graph.py"
 CHANGE_COMMANDS = ["build", "report", "check", "freeze"]
 
 

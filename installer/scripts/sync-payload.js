@@ -7,24 +7,34 @@ export const ROOT = path.resolve(here, "..", "..");
 export const DEFAULT_DEST = path.resolve(here, "..", "payload");
 
 const DIRS = ["openspec/schemas/symphysis"];
+
+/**
+ * Код и данные модулей ядра: исходник `<модуль>/<файл>` -> `tools/<файл>` payload, в проекте `.symphysis/tools/`.
+ * Исходник разложен по модулям (F-18 A), установка плоская (F-19 A); схема журнала — рядом с кодом (F-41 A).
+ */
+const TOOLS_FILES = [
+  "cli/journal.py",
+  "cli/journal_cli.py",
+  "decisions/journal_model.py",
+  "decisions/journal_render.py",
+  "decisions/journal_apply.py",
+  "decisions/journal.schema.json",
+  "roots/roots.py",
+  "viewer/viewer_render.py",
+  "viewer/playground-template.html",
+  "attack/attack_table.py",
+  "consequences/journal_sites.py",
+  "consequences/journal_consequences.py",
+  "settings/symphysis_config.py",
+  "step-help/step_help.py",
+  "openspec-run/openspec_run.py",
+  "trace/trace_graph.py",
+];
+
+/** Отдельные файлы: [исходник, путь в payload]. */
 const FILES = [
-  "openspec/config.symphysis.yaml",
-  "tools/journal.py",
-  "tools/journal_model.py",
-  "tools/journal_render.py",
-  "tools/journal_apply.py",
-  "tools/roots.py",
-  "tools/viewer_render.py",
-  "tools/attack_table.py",
-  "tools/journal_cli.py",
-  "tools/journal_sites.py",
-  "tools/journal_consequences.py",
-  "tools/symphysis_config.py",
-  "tools/step_help.py",
-  "tools/openspec_run.py",
-  "tools/trace_graph.py",
-  "tools/playground-template.html",
-  "docs/journal.schema.json",
+  ["openspec/config.symphysis.yaml", "openspec/config.symphysis.yaml"],
+  ...TOOLS_FILES.map((src) => [src, `tools/${path.posix.basename(src)}`]),
 ];
 
 /** Общие файлы скиллов: `skills/shared/*.md` -> `docs/*.md`, в проекте `.symphysis/docs/`. */
@@ -82,7 +92,7 @@ export function removeTree(dir) {
 
 /** Есть ли рядом исходники: инсталлятор запущен из клона, а не из тарбола. */
 export function hasSources(root = ROOT) {
-  return fs.existsSync(path.join(root, "skills")) && FILES.every((rel) => fs.existsSync(path.join(root, rel)));
+  return fs.existsSync(path.join(root, "skills")) && FILES.every(([src]) => fs.existsSync(path.join(root, src)));
 }
 
 function mermaidDir(root) {
@@ -107,7 +117,7 @@ export function expectedPayload(root = ROOT) {
   if (fs.existsSync(path.join(root, AGENTS_DIR))) {
     for (const f of walk(path.join(root, AGENTS_DIR))) if (/^symphysis-.*-driver\.md$/.test(f)) map.set(`${AGENTS_DIR}/${f}`, readStripped(`${AGENTS_DIR}/${f}`));
   }
-  for (const rel of FILES) map.set(rel, read(rel));
+  for (const [src, rel] of FILES) map.set(rel, read(src));
   const [noticeFrom, noticeTo] = NOTICES;
   if (fs.existsSync(path.join(root, noticeFrom))) map.set(noticeTo, read(noticeFrom));
   for (const [from, rel] of MERMAID_FILES) map.set(rel, fs.readFileSync(path.join(mermaidDir(root), from)));
@@ -138,7 +148,7 @@ export function syncPayload(dest = DEFAULT_DEST, root = ROOT) {
       throw new Error(`syncPayload: нет ${path.join(mermaidDir(root), from)}: поставьте зависимости сборки (npm ci в installer), payload не тронут`);
     }
   }
-  const sources = [...DIRS, ...skillDirs(root), SHARED_DIR, ...FILES, NOTICES[1], ...MERMAID_FILES.map(([, rel]) => rel)];
+  const sources = [...DIRS, ...skillDirs(root), SHARED_DIR, ...FILES.map(([src]) => src), NOTICES[1], ...MERMAID_FILES.map(([, rel]) => rel)];
   // Уже совпадает — не трогать: `npm pack` зовёт `prepare`, пока параллельные тесты читают payload.
   if (payloadMatches(dest, root)) return sources;
   const expected = expectedPayload(root);

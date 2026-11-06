@@ -17,6 +17,11 @@ from dataclasses import dataclass, field
 from pathlib import Path
 
 sys.dont_write_bytecode = True  # как у соседних скриптов: `__pycache__` в проекте от инструментов не появляется (F-50)
+# Исходник ядра (F-20 A): код модулей лежит в соседних каталогах первого уровня, точка входа ставит нужные ей в `sys.path`.
+# В установке весь код рядом в `.symphysis/tools/`: `roots.py` лежит возле этого файла, и путь не меняется.
+_HERE = Path(__file__).resolve().parent
+if not (_HERE / "roots.py").is_file():
+    sys.path[1:1] = [str(_HERE.parent / name) for name in ("roots", "decisions", "openspec-run")]
 from roots import UNUSABLE_ROOTS, default_roots  # noqa: E402
 from journal_model import PROBE_OUTCOMES, validate_journal  # noqa: E402
 from openspec_run import ForkError, check_change_name, find_on_path, no_paths, run_fork  # noqa: E402

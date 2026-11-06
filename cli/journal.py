@@ -2,29 +2,31 @@
 # -*- coding: utf-8 -*-
 """Журнал решений symphysis: источник — JSON, markdown и HTML — рендер (F-01.B).
 
-Схема — `docs/journal.schema.json`. Ключи JSON английские, значения русские.
+Схема — `journal.schema.json` рядом с кодом журнала (модуль `decisions`, в установке — `.symphysis/tools/`).
+Ключи JSON английские, значения русские. Команды ниже — из корня ядра; в проекте скрипт лежит
+в `.symphysis/tools/journal.py`.
 
-    python tools/journal.py import-md docs/plan-implementation.journal.md \
+    python cli/journal.py import-md docs/plan-implementation.journal.md \
         --out docs/plan-implementation.journal.json
-    python tools/journal.py check docs/plan-implementation.journal.json [--strict] [--write]
-    python tools/journal.py render-md docs/plan-implementation.journal.json \
+    python cli/journal.py check docs/plan-implementation.journal.json [--strict] [--write]
+    python cli/journal.py render-md docs/plan-implementation.journal.json \
         --out docs/plan-implementation.journal.md
-    python tools/journal.py render-html docs/plan-implementation.journal.json \
-        --out docs/plan-implementation.html [--template tools/playground-template.html] \
+    python cli/journal.py render-html docs/plan-implementation.journal.json \
+        --out docs/plan-implementation.html [--template viewer/playground-template.html] \
         [--attack <каталог изменения>/attack/decisions.md [--attack <каталог изменения>/attack/artifacts.md]]
-    python tools/journal.py render-design docs/plan-implementation.journal.json \
+    python cli/journal.py render-design docs/plan-implementation.journal.json \
         --out design.md
-    python tools/journal.py view-json docs/plan-implementation.journal.json \
+    python cli/journal.py view-json docs/plan-implementation.journal.json \
         [--attack <каталог изменения>/attack/decisions.md]
-    python tools/journal.py apply docs/plan-implementation.journal.json answers.md \
+    python cli/journal.py apply docs/plan-implementation.journal.json answers.md \
         [--date YYYY-MM-DD] [--dry-run]
-    python tools/journal.py apply-md4h docs/plan-implementation.journal.json feedback.md \
+    python cli/journal.py apply-md4h docs/plan-implementation.journal.json feedback.md \
         --render docs/plan-implementation.journal.md
-    python tools/journal.py code-sites <каталог изменения>/decisions.json
+    python cli/journal.py code-sites <каталог изменения>/decisions.json
 
 Markdown, HTML и design.md — производные от JSON: правится JSON, потом рендер. Корни путей
 улик задаёт только `tools/journal-roots.json`: префикс -> каталог, в значении `<root>` —
-каталог над `tools/`, `<home>` и `~` — домашний. Путь улики, не подошедший ни под один
+каталог над каталогом кода (корень ядра или `.symphysis`), `<home>` и `~` — домашний. Путь улики, не подошедший ни под один
 префикс, получает вердикт «корня для пути нет»: отката на корень symphysis нет, неявного
 корня в коде нет. Корень по умолчанию существует, только если файл называет его пустым
 префиксом; у инсталлятора это `{"": "<root>/.."}` — проект над `.symphysis/`.
@@ -57,16 +59,24 @@ Markdown, HTML и design.md — производные от JSON: правитс
 from __future__ import annotations
 
 import sys
+from pathlib import Path
 
-from attack_table import parse_attack_md
-from journal_apply import REFUSED, apply_answers, apply_md4h, check_evidence, parse_answers, parse_md4h, sha256_file
-from journal_cli import build_parser, main
-from journal_consequences import check_consequences
-from journal_model import SCHEMA_PATH, _flat, _unquote, import_md, import_md_text, load_journal, save_journal, validate_journal
-from journal_render import anchor_lines, render_design, render_md, view_payload
-from journal_sites import code_sites, normalize_path
-from roots import ROOT, ROOTS_PATH, default_roots, file_links, find_quote, project_href
-from viewer_render import PLACEHOLDER, PLACEHOLDER_ATTACK, TEMPLATE_PATH, render_html
+# Исходник ядра (F-20 A): код модулей лежит в соседних каталогах первого уровня, точка входа ставит нужные ей в `sys.path`.
+# В установке весь код рядом в `.symphysis/tools/`: `roots.py` лежит возле этого файла, и путь не меняется.
+_HERE = Path(__file__).resolve().parent
+if not (_HERE / "roots.py").is_file():
+    sys.path[1:1] = [str(_HERE.parent / name) for name in
+                     ("cli", "decisions", "viewer", "attack", "consequences", "step-help", "openspec-run", "roots")]
+
+from attack_table import parse_attack_md  # noqa: E402  (после правки sys.path)
+from journal_apply import REFUSED, apply_answers, apply_md4h, check_evidence, parse_answers, parse_md4h, sha256_file  # noqa: E402
+from journal_cli import build_parser, main  # noqa: E402
+from journal_consequences import check_consequences  # noqa: E402
+from journal_model import SCHEMA_PATH, _flat, _unquote, import_md, import_md_text, load_journal, save_journal, validate_journal  # noqa: E402
+from journal_render import anchor_lines, render_design, render_md, view_payload  # noqa: E402
+from journal_sites import code_sites, normalize_path  # noqa: E402
+from roots import ROOT, ROOTS_PATH, default_roots, file_links, find_quote, project_href  # noqa: E402
+from viewer_render import PLACEHOLDER, PLACEHOLDER_ATTACK, TEMPLATE_PATH, render_html  # noqa: E402
 
 __all__ = [
     "ROOT", "SCHEMA_PATH", "ROOTS_PATH", "TEMPLATE_PATH", "PLACEHOLDER", "PLACEHOLDER_ATTACK", "REFUSED",

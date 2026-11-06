@@ -15,7 +15,7 @@ import journal_model
 import json
 from test_trace_graph import CHANGE, make_change as _make_change
 
-SCRIPT = ROOT / "tools" / "trace_graph.py"
+SCRIPT = ROOT / "trace" / "trace_graph.py"
 CLEAN = {"items": [{"id": CHANGE, "type": "change", "valid": True, "issues": [], "durationMs": 1}]}
 FOUND = {"items": [{"id": CHANGE, "type": "change", "valid": False, "durationMs": 1, "issues": [
     {"level": "ERROR", "path": "specs/demo/spec.md", "message": "Requirement «Один» must have at least one scenario"}]}]}
@@ -240,12 +240,12 @@ def test_step_help_and_report_run_the_same_fork_file(tmp_path):
     root, _ = make_change(tmp_path, specs={"demo": ONE_REQ}, tasks=DONE)
     shim_dir, env = with_shim(tmp_path, fork_reply(CLEAN))
     assert report(root, env=env).returncode == 0
-    subprocess.run([sys.executable, "-X", "utf8", str(ROOT / "tools" / "step_help.py"), "--change", CHANGE], cwd=root, env=env,
+    subprocess.run([sys.executable, "-X", "utf8", str(ROOT / "step-help" / "step_help.py"), "--change", CHANGE], cwd=root, env=env,
                    capture_output=True, text=True, encoding="utf-8")
     names = [call["argv"][0] for call in fork_calls(shim_dir)]
     assert "validate" in names and len(names) >= 2, names
-    for module in ("trace_graph.py", "step_help.py"):
-        tree = ast.parse((ROOT / "tools" / module).read_text(encoding="utf-8"))
+    for module in (ROOT / "trace" / "trace_graph.py", ROOT / "step-help" / "step_help.py"):
+        tree = ast.parse(module.read_text(encoding="utf-8"))
         assert any(isinstance(n, ast.ImportFrom) and n.module == "openspec_run" for n in ast.walk(tree)), module
 
 

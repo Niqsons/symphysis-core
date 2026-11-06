@@ -54,7 +54,7 @@ def page(tmp_path, scheme=SIMPLE, with_mermaid=True, j=None, env=None):
     if scheme is not None:
         (change / "scheme.md").write_bytes(scheme.encode("utf-8"))
     out = change / "symphysis.html"
-    run = subprocess.run([sys.executable, str(ROOT / "tools" / "journal.py"), "render-html", str(src), "--out", str(out)],
+    run = subprocess.run([sys.executable, str(ROOT / "cli" / "journal.py"), "render-html", str(src), "--out", str(out)],
                          capture_output=True, text=True, encoding="utf-8", env=env)
     assert run.returncode == 0, run.stderr
     return out
@@ -287,7 +287,7 @@ def with_snapshot(html, **fields):
     """Та же страница с полями снимка, которых шимом не получить: страницу пересобирает рендер из памяти."""
     src = Path(html).with_name("decisions.json")
     snapshot = {**snapshot_of(html), **fields}
-    Path(html).write_text(journal.render_html(journal.load_journal(src), ROOT / "tools" / "playground-template.html",
+    Path(html).write_text(journal.render_html(journal.load_journal(src), ROOT / "viewer" / "playground-template.html",
                                               help_snapshot=snapshot), encoding="utf-8", newline="\n")
     return html
 
@@ -429,7 +429,7 @@ def test_snapshot_stays_until_the_page_is_rebuilt(tmp_path):
                                                ready=("security",)))
     scenario.write_text(json.dumps(replies, ensure_ascii=False), encoding="utf-8")
     time.sleep(1.1)
-    run = subprocess.run([sys.executable, str(ROOT / "tools" / "journal.py"), "render-html", str(Path(html).with_name("decisions.json")),
+    run = subprocess.run([sys.executable, str(ROOT / "cli" / "journal.py"), "render-html", str(Path(html).with_name("decisions.json")),
                           "--out", str(html)], capture_output=True, text=True, encoding="utf-8", env=fork_env(tmp_path / "bin"))
     assert run.returncode == 0, run.stderr
     rebuilt = browser(html, "panel", "tab:help")["help"]
@@ -611,7 +611,7 @@ def test_jetbrains_preset_needs_the_project_root(tmp_path):
     def render_with_root(root):
         roots = tmp_path / "roots.json"
         roots.write_text(json.dumps({"": str(root)}), encoding="utf-8")
-        run = subprocess.run([sys.executable, str(ROOT / "tools" / "journal.py"), "render-html", str(html.with_name("decisions.json")), "--out", str(html), "--roots", str(roots)],
+        run = subprocess.run([sys.executable, str(ROOT / "cli" / "journal.py"), "render-html", str(html.with_name("decisions.json")), "--out", str(html), "--roots", str(roots)],
                              capture_output=True, text=True, encoding="utf-8")
         assert run.returncode == 0, run.stderr
 
@@ -636,7 +636,7 @@ def test_attack_filter_all_shows_every_lens_again(tmp_path):
     attack = {"path": "attack/decisions.md", "frontmatter": {"status": "gaps_found", "targets": [{"path": "decisions.json", "sha256": ""}]},
               "rows": [row(lens) for lens in lenses]}
     html = tmp_path / "attack.html"
-    html.write_text(journal.render_html(one_record_journal("a.md", "дв"), ROOT / "tools" / "playground-template.html", attacks=[attack],
+    html.write_text(journal.render_html(one_record_journal("a.md", "дв"), ROOT / "viewer" / "playground-template.html", attacks=[attack],
                                         journal_sha256="0" * 64), encoding="utf-8", newline="\n")
     one = browser(html, "mode:attack", "lens:claim-authority")["attack"]
     assert one == {"groups": ["claim-authority"], "active": "claim-authority"}

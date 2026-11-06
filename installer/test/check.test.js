@@ -147,10 +147,10 @@ test("инструменты: нет journal.py, схемы json, корней",
   const p = installed();
   const t = targets(p).toolsDir;
   fs.rmSync(path.join(t, "tools", "journal.py"));
-  fs.rmSync(path.join(t, "docs", "journal.schema.json"));
+  fs.rmSync(path.join(t, "tools", "journal.schema.json"));
   fs.rmSync(path.join(t, "tools", "journal-roots.json"));
   const r = runCheck(p);
-  for (const f of [".symphysis/tools/journal.py", ".symphysis/docs/journal.schema.json", ".symphysis/tools/journal-roots.json"]) {
+  for (const f of [".symphysis/tools/journal.py", ".symphysis/tools/journal.schema.json", ".symphysis/tools/journal-roots.json"]) {
     assert.ok(r.findings.includes(`${f}: нет файла`), `${f}: ${JSON.stringify(r.findings)}`);
   }
 });

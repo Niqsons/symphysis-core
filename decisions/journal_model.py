@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 """Модель журнала: загрузка и сохранение JSON, проверка по схеме и по правилам между
-записями, разбор markdown-журнала в словарь (`import_md`). От соседних файлов зависит только
-от `roots.py` (константа `ROOT`), внешних пакетов не требует: `tools/journal*.py` работают на голом Python."""
+записями, разбор markdown-журнала в словарь (`import_md`). От соседних файлов не зависит, внешних пакетов
+не требует: код журнала работает на голом Python. Схема журнала лежит рядом с кодом в обеих раскладках (F-41):
+в исходнике — в каталоге модуля `decisions/`, в установке — в `.symphysis/tools/`."""
 from __future__ import annotations
 
 import json
@@ -9,8 +10,6 @@ import re
 import sys
 from collections import Counter
 from pathlib import Path
-
-from roots import ROOT
 
 __all__ = [
     "SCHEMA_PATH", "RE_ANCHOR", "RE_REC", "ADDED_MARK", "PROBE_OUTCOMES", "DEVIATION_LABEL",
@@ -20,7 +19,7 @@ __all__ = [
 ]
 
 
-SCHEMA_PATH = ROOT / "docs" / "journal.schema.json"
+SCHEMA_PATH = Path(__file__).resolve().with_name("journal.schema.json")   # рядом с кодом (F-41)
 
 RE_TITLE = re.compile(r"^# (.*\S)\s*$")
 RE_REC = re.compile(r"^## (F-\d+)\s+(.*\S)\s*$")

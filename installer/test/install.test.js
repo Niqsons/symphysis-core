@@ -53,7 +53,8 @@ test("install в пустой проект: все цели существуют
   assert.ok(fs.existsSync(path.join(p, ".claude", "agents", "symphysis-research-driver.md")));
   assert.ok(fs.existsSync(path.join(t.toolsDir, "tools", "journal.py")));
   assert.ok(fs.existsSync(path.join(t.toolsDir, "tools", "playground-template.html")));
-  assert.ok(fs.existsSync(path.join(t.toolsDir, "docs", "journal.schema.json")));
+  assert.ok(fs.existsSync(path.join(t.toolsDir, "tools", "journal.schema.json")));   // схема журнала — рядом с кодом (F-41)
+  assert.ok(!fs.existsSync(path.join(t.toolsDir, "docs", "journal.schema.json")));
   for (const d of ["terms.md", "journal-cli.md", "config.md", "candidate.md", "attack-table.md", "THIRD-PARTY-NOTICES.md"]) {
     assert.ok(fs.existsSync(path.join(t.toolsDir, "docs", d)), d);
   }
@@ -805,6 +806,8 @@ test("Обновление без `--force`: новые файлы положе�
 });
 
 // Клон-образец: исходники и файлы mermaid во временном каталоге, чтобы хеш и свежесть payload задавались тестом.
+// Модули ядра с кодом и данными (F-18 A): payload собирается из них.
+const SOURCE_MODULES = ["cli", "decisions", "viewer", "attack", "consequences", "step-help", "trace", "openspec-run", "settings", "roots"];
 const REPO = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..", "..");
 const VERSION = JSON.parse(fs.readFileSync(path.join(REPO, "installer", "package.json"), "utf8")).version;
 const VERSION_REL = ".symphysis/tools/symphysis-version.txt";
@@ -815,7 +818,7 @@ const gitIn = (cwd, ...args) =>
 function makeClone({ git }) {
   const dir = tmp();
   const keep = (s) => path.basename(s) !== "__pycache__";
-  for (const rel of ["skills", "tools", "docs", path.join("openspec", "schemas", "symphysis")]) {
+  for (const rel of [...SOURCE_MODULES, "skills", "tools", "docs", path.join("openspec", "schemas", "symphysis")]) {
     fs.cpSync(path.join(REPO, rel), path.join(dir, rel), { recursive: true, filter: keep });
   }
   fs.copyFileSync(path.join(REPO, "openspec", "config.symphysis.yaml"), path.join(dir, "openspec", "config.symphysis.yaml"));
@@ -875,7 +878,7 @@ test("версия: клон обновлён, инструменты нет —
   const p = tmp();
   install(p, { payloadDir: pd, sourceRoot: clone });
   const first = versionOf(p);
-  fs.appendFileSync(path.join(clone, "tools", "journal.py"), "\n# правка\n");
+  fs.appendFileSync(path.join(clone, "cli", "journal.py"), "\n# правка\n");
   gitIn(clone, "add", "-A");
   gitIn(clone, "commit", "-qm", "два");
   syncPayload(pd, clone);
@@ -891,7 +894,7 @@ test("версия: payload старее исходников — только �
   const clone = makeClone({ git: true });
   const pd = tmp();
   syncPayload(pd, clone);
-  fs.appendFileSync(path.join(clone, "tools", "journal.py"), "\n# новее payload\n");
+  fs.appendFileSync(path.join(clone, "cli", "journal.py"), "\n# новее payload\n");
   gitIn(clone, "add", "-A");
   gitIn(clone, "commit", "-qm", "два");
   const p = tmp();

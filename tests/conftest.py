@@ -10,9 +10,37 @@ import pytest
 ROOT = Path(__file__).resolve().parent.parent
 FIX = ROOT / "tests" / "fixtures"
 
-sys.path.insert(0, str(ROOT / "tools"))
+# Модули ядра с кодом (F-18 A, F-20 A): тесты импортируют код из каталогов модулей, как точки входа в исходнике.
+# В установке тот же код лежит одним каталогом `.symphysis/tools/` (F-19 A) — его раскладку дают `core_files`
+# и `core_clone` ниже.
+CODE_MODULES = ("roots", "decisions", "viewer", "attack", "consequences", "cli", "step-help", "trace", "openspec-run",
+                "settings")
+MODULE_DIRS = [ROOT / name for name in CODE_MODULES]
+CORE_SUFFIXES = (".py", ".html", ".json")   # код и данные модуля; тексты `.md` установка кладёт в `docs/`
+
+sys.path[:0] = [str(directory) for directory in MODULE_DIRS]
 
 import journal  # noqa: E402  (после правки sys.path)
+
+
+def core_files() -> list[Path]:
+    """Код и данные модулей — то, что установка кладёт в `.symphysis/tools/`: скрипты, шаблон страницы, схема журнала
+    (F-41 A). Имена в модулях не повторяются: установка плоская."""
+    return sorted((file for directory in MODULE_DIRS for file in directory.iterdir()
+                   if file.is_file() and file.suffix in CORE_SUFFIXES), key=lambda file: file.name)
+
+
+def core_clone(clone: Path) -> Path:
+    """Клон ядра в модульной раскладке: код и данные модулей в `<clone>/<модуль>/`, настоящий файл корней
+    в `<clone>/tools/` (F-40 A). Возвращает `clone`."""
+    for directory in MODULE_DIRS:
+        (clone / directory.name).mkdir(parents=True, exist_ok=True)
+        for file in directory.iterdir():
+            if file.is_file() and file.suffix in CORE_SUFFIXES:
+                shutil.copy(file, clone / directory.name / file.name)
+    (clone / "tools").mkdir(exist_ok=True)
+    shutil.copy(ROOT / "tools" / "journal-roots.json", clone / "tools" / "journal-roots.json")
+    return clone
 
 
 def missing_evidence_roots() -> list[str]:

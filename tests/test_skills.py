@@ -278,7 +278,7 @@ def test_probe_fixture_candidates_carry_distinct_texts(tmp_path):
     каждый начинается своим токеном, тексты двух кандидатов не совпадают."""
     roots = tmp_path / "roots.json"
     roots.write_text(json.dumps({"": str(PROBE_FIXTURE)}), encoding="utf-8")
-    run = subprocess.run([sys.executable, str(ROOT / "tools" / "journal.py"), "check",
+    run = subprocess.run([sys.executable, str(ROOT / "cli" / "journal.py"), "check",
                           str(PROBE_FIXTURE / "decisions.json"), "--roots", str(roots)],
                          capture_output=True, text=True, encoding="utf-8")
     assert run.returncode == 0, run.stdout + run.stderr
@@ -658,7 +658,7 @@ def test_attack_translation_notes_name_self_and_removed_dimensions():
 
 # --- просмотрщик: линзы атаки и перспективы интервью не смешиваются (слово владельца 2026-10-30) ---
 
-TEMPLATE = ROOT / "tools" / "playground-template.html"
+TEMPLATE = ROOT / "viewer" / "playground-template.html"
 # Русские имена перспектив — таблица `symphysis-brainstorm/SKILL.md`, шаг 2 (взяты оттуда, не придуманы).
 PERSPECTIVES_RU = ("Исследователь", "Упрощатель", "Хранитель границ", "Аналитик отказов", "Закрывающий")
 
@@ -969,7 +969,7 @@ def test_round_one_on_an_intent_starts_with_a_setting_fact(tmp_path):
     побайтно равен эталону; развилка против сценария факта несёт `deviation`."""
     roots = tmp_path / "roots.json"
     roots.write_text(json.dumps({"openspec/changes/intent-demo/": str(INTENT_FIXTURE)}), encoding="utf-8")
-    run = subprocess.run([sys.executable, str(ROOT / "tools" / "journal.py"), "check",
+    run = subprocess.run([sys.executable, str(ROOT / "cli" / "journal.py"), "check",
                           str(INTENT_FIXTURE / "decisions.json"), "--roots", str(roots), "--strict"],
                          capture_output=True, text=True, encoding="utf-8")
     assert run.returncode == 0, run.stdout + run.stderr

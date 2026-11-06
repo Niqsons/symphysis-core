@@ -9,7 +9,7 @@ import pytest
 import journal
 from conftest import ROOT, fork_record, journal_of
 
-TOOL = ROOT / "tools" / "journal.py"
+TOOL = ROOT / "cli" / "journal.py"
 NOT_ANALYSED = "[!!] consequences.md: {} — нет ни разбора, ни исключения с причиной"
 
 
@@ -233,7 +233,7 @@ def test_check_output_still_starts_with_the_evidence_line(tmp_path):
 
 def test_module_does_not_read_settings():
     """F-128.A: сверка не смотрит на `symphysis.yaml`, строка `**Состав:**` ей не нужна."""
-    source = (ROOT / "tools" / "journal_consequences.py").read_text(encoding="utf-8")
+    source = (ROOT / "consequences" / "journal_consequences.py").read_text(encoding="utf-8")
     assert "symphysis_config" not in source and "symphysis.yaml" not in source and "**Состав:**" not in source
 
 

@@ -189,7 +189,7 @@ def test_validate_does_not_mutate_input():
 def test_cli_import_md_writes_valid_json(tmp_path):
     out = tmp_path / "plan.json"
     run = subprocess.run(
-        [sys.executable, str(ROOT / "tools" / "journal.py"), "import-md",
+        [sys.executable, str(ROOT / "cli" / "journal.py"), "import-md",
          str(FIX / "journal-plan.md"), "--out", str(out)],
         capture_output=True, text=True, encoding="utf-8")
     assert run.returncode == 0, run.stderr
@@ -359,7 +359,7 @@ def test_old_journal_without_deviation_has_no_such_key_after_import():
 def test_cli_check_rejects_a_bad_deviation_with_code_1(tmp_path):
     path = tmp_path / "j.json"
     journal.save_journal(path, deviating("F-09"))
-    run = subprocess.run([sys.executable, str(ROOT / "tools" / "journal.py"), "check", str(path)],
+    run = subprocess.run([sys.executable, str(ROOT / "cli" / "journal.py"), "check", str(path)],
                          capture_output=True, text=True, encoding="utf-8")
     assert run.returncode == 1
     assert "[!!] F-02: вариант B — отступление от постановки F-09 — такой записи нет" in run.stderr
@@ -378,7 +378,7 @@ def with_repeated_id(tmp_path):
 
 
 def journal_cli(*args):
-    return subprocess.run([sys.executable, "-X", "utf8", str(ROOT / "tools" / "journal.py"), *args],
+    return subprocess.run([sys.executable, "-X", "utf8", str(ROOT / "cli" / "journal.py"), *args],
                           capture_output=True, text=True, encoding="utf-8")
 
 
@@ -416,7 +416,7 @@ def test_real_journals_have_no_repeated_record_ids():
 # --- nodes: необязательная ссылка записи на узлы схемы (F-23, F-24, F-86) ------
 
 def run_check(path):
-    return subprocess.run([sys.executable, "-X", "utf8", str(ROOT / "tools" / "journal.py"), "check", str(path)],
+    return subprocess.run([sys.executable, "-X", "utf8", str(ROOT / "cli" / "journal.py"), "check", str(path)],
                           capture_output=True, text=True, encoding="utf-8")
 
 

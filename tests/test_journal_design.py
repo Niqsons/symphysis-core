@@ -12,7 +12,7 @@ SECTIONS = ["# Design", "## Context", "## Goals / Non-Goals", "## Decisions", "#
 
 def run_cli(*args):
     return subprocess.run(
-        [sys.executable, str(ROOT / "tools" / "journal.py"), *map(str, args)],
+        [sys.executable, str(ROOT / "cli" / "journal.py"), *map(str, args)],
         capture_output=True, text=True, encoding="utf-8")
 
 

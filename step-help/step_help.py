@@ -17,6 +17,11 @@ import sys
 from pathlib import Path
 
 sys.dont_write_bytecode = True  # скрипт пишет только в stdout (F-50): `__pycache__` в проекте от него не появляется
+# Исходник ядра (F-20 A): код модулей лежит в соседних каталогах первого уровня, точка входа ставит нужные ей в `sys.path`.
+# В установке весь код рядом в `.symphysis/tools/`: `roots.py` лежит возле этого файла, и путь не меняется.
+_HERE = Path(__file__).resolve().parent
+if not (_HERE / "roots.py").is_file():
+    sys.path[1:1] = [str(_HERE.parent / name) for name in ("decisions", "openspec-run", "roots")]
 from journal_render import CONTRACT  # noqa: E402
 from openspec_run import FORK_TIMEOUT, SAFE_NAME, ForkError, ForkReply, no_paths, run_fork  # noqa: E402
 

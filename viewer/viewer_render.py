@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""Страница просмотрщика — файл будущего модуля `viewer`: `render_html` (шаблон и пять меток), схема решения
+"""Страница просмотрщика — модуль `viewer`: `render_html` (шаблон и пять меток), схема решения
 (`scheme_payload`, `parse_scheme`), снимок «справки нет» (`no_help_snapshot`). Данные страницы собирает
 `journal_render._viewer_payload` (модуль `decisions`): viewer зависит от decisions, не наоборот."""
 from __future__ import annotations
@@ -9,7 +9,6 @@ import re
 from pathlib import Path
 
 from journal_render import CONTRACT, _viewer_payload
-from roots import ROOT
 
 __all__ = [
     "TEMPLATE_PATH", "PLACEHOLDER", "PLACEHOLDER_ATTACK", "PLACEHOLDER_SCHEME", "PLACEHOLDER_HELP", "PLACEHOLDER_LINKS",
@@ -17,7 +16,7 @@ __all__ = [
 ]
 
 
-TEMPLATE_PATH = ROOT / "tools" / "playground-template.html"
+TEMPLATE_PATH = Path(__file__).resolve().with_name("playground-template.html")   # рядом с кодом в обеих раскладках (F-20)
 PLACEHOLDER = "__JOURNAL_JSON__"
 PLACEHOLDER_ATTACK = "__ATTACK_JSON__"
 PLACEHOLDER_SCHEME = "__SCHEME_JSON__"
