@@ -6,7 +6,7 @@
 ## Requirements
 
 ### Requirement: `install` ставит схему, скиллы и инструменты в проект и сливает конфиг
-Команда `symphysis install --project <dir> [--skills-dir <dir>]…` SHALL положить схему в `openspec/schemas/symphysis/`, скиллы в каждый `--skills-dir` (по умолчанию `.claude/skills`), инструменты в `.symphysis/` и создать или слить `openspec/config.yaml` (`schema` → `symphysis`, `rules` объединяются, прочее сохраняется); повторный запуск SHALL ничего не менять, отличающийся файл SHALL пропускаться с подсказкой `--force` — при обновлении схемы каждый пропущенный файл схемы SHALL называться отдельной строкой, а `check` SHALL показывать расхождение байтов схемы как `[!!]`; файл корней SHALL NOT перезаписываться (журнал `symphysis-schema`: F-15.C, F-16.B; журнал `calibration-fixes`: F-50.E). Схема в payload SHALL нести артефакт `intent` и шаблон `intent.md`; вход изменения — `openspec/changes/<имя>/intent.md`; установщик SHALL NOT создавать и читать каталог `.gigacode/`; каталог инструментов SHALL оставаться `.symphysis/` (журнал `calibration-fixes`: F-13.A, F-15.B). Файл mermaid закреплённой версии SHALL ставиться в `.symphysis/tools/` и SHALL NOT лежать в git ядра (F-49, F-53). Каталог `.symphysis/viewer/` с черновиками человека SHALL NOT стираться и при `--force` (`docs/repo-contract.md`, F-20).
+Команда `symphysis install --project <dir> [--skills-dir <dir>]…` SHALL положить схему в `openspec/schemas/symphysis/`, скиллы в каждый `--skills-dir` (по умолчанию `.claude/skills`), тела агентов-водителей `symphysis-<скилл>-driver.md` в каждый `--agents-dir` (по умолчанию `agents` рядом с каждым каталогом скиллов: `.claude/agents`), инструменты в `.symphysis/` и создать или слить `openspec/config.yaml` (`schema` → `symphysis`, `rules` объединяются, прочее сохраняется); повторный запуск SHALL ничего не менять, отличающийся файл SHALL пропускаться с подсказкой `--force` — при обновлении схемы каждый пропущенный файл схемы SHALL называться отдельной строкой, а `check` SHALL показывать расхождение байтов схемы как `[!!]`; файл корней SHALL NOT перезаписываться (журнал `symphysis-schema`: F-15.C, F-16.B; журнал `calibration-fixes`: F-50.E). Схема в payload SHALL нести артефакт `intent` и шаблон `intent.md`; вход изменения — `openspec/changes/<имя>/intent.md`; установщик SHALL NOT создавать и читать каталог `.gigacode/`; каталог инструментов SHALL оставаться `.symphysis/` (журнал `calibration-fixes`: F-13.A, F-15.B). Файл mermaid закреплённой версии SHALL ставиться в `.symphysis/tools/` и SHALL NOT лежать в git ядра (F-49, F-53). Каталог `.symphysis/viewer/` с черновиками человека SHALL NOT стираться и при `--force` (`docs/repo-contract.md`, F-20).
 
 #### Scenario: Проект с конфигом другой схемы
 - **GIVEN** `openspec/config.yaml` со `schema: spec-driven` и комментариями
@@ -22,6 +22,11 @@
 - **GIVEN** существующий `config.yaml` без `context`
 - **WHEN** выполняется `install`
 - **THEN** `context` из `config.symphysis.yaml` в `config.yaml` не появляется — предположение: наблюдение прогона (шаг 5 дневника), слияние переносит только `schema` и `rules`; решить: переносить ли `context` при слиянии
+
+#### Scenario: Тела агентов рядом со скиллами
+- **GIVEN** проект без `.claude/`
+- **WHEN** выполняется `install --project <dir>` без `--agents-dir`
+- **THEN** в `.claude/agents/` лежат пять тел `symphysis-*-driver.md` без комментариев провенанса; с `--skills-dir a/skills` они лежат в `a/agents/`; с `--agents-dir x/agents` — только в `x/agents/`
 
 #### Scenario: Раскладка входа
 - **GIVEN** проект после `install` и новое изменение `openspec new change demo`
@@ -64,7 +69,7 @@
 <!-- проба запретов: исходы: F-113 Dismiss; канон — F-117 → security.md -->
 
 ### Requirement: `check` называет расхождения и версию форка, не чинит
-Команда `symphysis check --project <dir>` SHALL проверить версию форка против пина `1.15.0-symphysis.1`, байты схемы, `schema: symphysis`, `SKILL.md` в каталогах скиллов, инструменты и Python и прогнать `journal.py check` по каждому `openspec/changes/*/decisions.json`; расхождения — строки `[!!]`, код 2; сигналы сверки — `[..]` без влияния на код; `check` SHALL NOT ничего менять (F-15.A «ГЕЙТ НАЗЫВАЕТ, А НЕ ЧИНИТ», F-15.C).
+Команда `symphysis check --project <dir>` SHALL проверить версию форка против пина `1.15.0-symphysis.1`, байты схемы, `schema: symphysis`, `SKILL.md` в каталогах скиллов, тела агентов в каталогах агентов, инструменты и Python и прогнать `journal.py check` по каждому `openspec/changes/*/decisions.json`; расхождения — строки `[!!]`, код 2; сигналы сверки — `[..]` без влияния на код; `check` SHALL NOT ничего менять (F-15.A «ГЕЙТ НАЗЫВАЕТ, А НЕ ЧИНИТ», F-15.C).
 <!-- проба краёв: форма=text, io, исходы: F-58 открыт, F-59 открыт -->
 <!-- проба запретов: исходы: нет -->
 
@@ -249,7 +254,7 @@
 #### Scenario: Годный файл
 - **GIVEN** `symphysis.yaml`, где допущения выключены
 - **WHEN** выполняется `symphysis check --project <каталог>`
-- **THEN** stdout несёт `[..] symphysis.yaml: ветки отказа вкл, допущения выкл, проба краёв вкл`, эта строка на код выхода не влияет
+- **THEN** stdout несёт `[..] symphysis.yaml: ветки отказа вкл, допущения выкл, проба краёв вкл, водители: атака вкл, пробы выкл, опись выкл, исследование вкл`, эта строка на код выхода не влияет
 
 #### Scenario: Опечатка в ключе
 - **GIVEN** `symphysis.yaml` с неизвестным ключом `edge-probe`
@@ -264,7 +269,7 @@
 #### Scenario: У найденного Python нет PyYAML
 - **GIVEN** `symphysis.yaml` с выключенной пробой краёв и Python, который находит `check`, без пакета PyYAML (F-110.B)
 - **WHEN** выполняется `symphysis check --project <каталог>`
-- **THEN** stdout несёт `[..] symphysis.yaml: ветки отказа вкл, допущения вкл, проба краёв вкл` и `[!!] symphysis.yaml: нет пакета PyYAML — выполнить: python -m pip install pyyaml`, код 2: показан состав, который получит модель (F-135.B)
+- **THEN** stdout несёт `[..] symphysis.yaml: ветки отказа вкл, допущения вкл, проба краёв вкл, водители: атака вкл, пробы выкл, опись выкл, исследование вкл` и `[!!] symphysis.yaml: нет пакета PyYAML — выполнить: python -m pip install pyyaml`, код 2: показан состав, который получит модель (F-135.B)
 <!-- проба краёв: форма=text, исходы: F-85 Specify -->
 <!-- проба запретов: исходы: нет -->
 <!-- проба краёв, без кандидата: encoding — сценарий «Опечатка в ключе» и край значений F-51 -->

@@ -12,6 +12,7 @@
 | схема `symphysis` | `<проект>/openspec/schemas/symphysis/` | в проект, не в глобальный каталог (F-16.B) |
 | `openspec/config.yaml` | `<проект>/openspec/config.yaml` | сливается, см. ниже |
 | скиллы `symphysis-*` | `<skills-dir>/<имя>/SKILL.md` | в каждый `--skills-dir`; без параметра — `.claude/skills` |
+| тела агентов-водителей | `<agents-dir>/symphysis-<скилл>-driver.md` | в каждый `--agents-dir`; без параметра — `agents` рядом с каждым `--skills-dir` (`.claude/agents`); формат Claude Code, поле `skills:` грузит тело скилла |
 | инструменты журнала и настроек | `<проект>/.symphysis/` (`tools/`, `docs/`) | `journal.py`, модули, `symphysis_config.py`, `step_help.py` (справка о шаге), `trace_graph.py` (граф трассируемости), `openspec_run.py` (общий запуск форка), `symphysis-version.txt` (версия поставленных инструментов; не пишется, если часть инструментов пропущена), схема JSON, файл корней |
 | `symphysis.yaml` | `<проект>/symphysis.yaml` | личная настройка, всё включено; не перезаписывается и с `--force` |
 | строка `symphysis.yaml` | `<проект>/.gitignore` | файл создаётся при отсутствии; git не нужен; правка уходит в git вместе с работой |
@@ -72,7 +73,7 @@ symphysis install --project <каталог проекта>
 ## Команды
 
 Параметры: `--project <dir>` (по умолчанию текущий каталог) у всех трёх,
-`--skills-dir <dir>` (повторяемый) у `install` и `check`, `--force` у `install`.
+`--skills-dir <dir>` и `--agents-dir <dir>` (повторяемые) у `install` и `check`, `--force` у `install`.
 
 ### install
 
@@ -115,7 +116,7 @@ symphysis check --project .
 
 Называет расхождения, не чинит. Проверяет: версию форка, байты каждого
 файла схемы (расхождение — `[!!] схема: байты отличаются от payload: <путь>`),
-`config.yaml` (`schema: symphysis`), `SKILL.md` в каждом `--skills-dir`,
+`config.yaml` (`schema: symphysis`), `SKILL.md` в каждом `--skills-dir`, тела агентов в каждом `--agents-dir`,
 инструменты (в том числе `trace_graph.py` и `openspec_run.py`; каталог архива `check` не обходит), доступность Python, телеметрию форка и каждый
 `openspec/changes/*/decisions.json` через `journal.py check`. Кроме того:
 
@@ -124,8 +125,8 @@ symphysis check --project .
 | `[!!] continue: команда /opsx:continue не установлена у <клиент> — выполнить: symphysis install` | команды и скилла `openspec-continue-change` нет ни в одном выбранном каталоге |
 | `[!!] continue: клиент не настроен — выполнить: openspec init --tools <клиент>` | нет созданных форком `skills/openspec-*` и `commands/opsx/`; следом `[..]` с подсказкой `where.exe` и `which` |
 | `[..] <каталог>: файлов форка нет, туда поставлены только скиллы symphysis` | второй `--skills-dir` без файлов форка |
-| `[..] symphysis.yaml: ветки отказа вкл, допущения вкл, проба краёв вкл` | состав; строки дословно от `symphysis_config.py --strict`, файл `check` сам не разбирает |
-| `[!!] symphysis.yaml: ...` | неизвестный ключ, недопустимое значение, файл не разбирается, не UTF-8, нет PyYAML; выбор считается включённым |
+| `[..] symphysis.yaml: ветки отказа вкл, допущения вкл, проба краёв вкл, водители: атака вкл, пробы выкл, опись выкл, исследование вкл` | состав; строки дословно от `symphysis_config.py --strict`, файл `check` сам не разбирает |
+| `[!!] symphysis.yaml: ...` | неизвестный ключ, недопустимое значение, файл не разбирается, не UTF-8, нет PyYAML; действует умолчание ключа |
 | `[..] symphysis.yaml: нет файла, действует всё включено; создать: symphysis install` | файла нет |
 | `[!!] symphysis.yaml: отслеживается git — выполнить: git rm --cached symphysis.yaml` | файл уже вошёл в коммит проекта |
 | `[!!] payload старее исходников — выполнить: npm --prefix installer ci` | запуск из клона, `payload` не совпадает с исходниками; у инсталлятора из тарбола этой сверки нет |
@@ -155,7 +156,8 @@ symphysis config --project .
 ## Настройки: symphysis.yaml
 
 Файл в корне проекта, личный: в git не идёт, каждый решает сам. Отсутствие файла
-или ключа означает «включено». Читает его только `symphysis_config.py`.
+или ключа означает умолчание ключа: у частей шагов «включено», у водителей — как
+в примере. Читает его только `symphysis_config.py`.
 
 ```yaml
 consequences:
@@ -163,6 +165,11 @@ consequences:
   assumptions: true        # допущения в описи
 edge_probe:
   enabled: true            # проба краёв
+drivers:                   # шаг идёт субагенту-водителю по brief
+  attack: true             # атака
+  probes: false            # пробы краёв и запретов
+  consequences: false      # опись последствий
+  research: true           # исследование
 ```
 
 ## Вход изменения

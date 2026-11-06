@@ -79,9 +79,9 @@ export function findPython() {
  * Сверяет установку symphysis в проекте. Только называет расхождения, ничего не чинит.
  * `findings` — отказы (каждая строка начинается с имени файла или предмета); `notes` — сигналы (журналы).
  */
-export function check(project, { skillsDirs = [], payloadDir = DEFAULT_PAYLOAD, sourceRoot = ROOT } = {}) {
+export function check(project, { skillsDirs = [], agentsDirs = [], payloadDir = DEFAULT_PAYLOAD, sourceRoot = ROOT } = {}) {
   const root = path.resolve(project);
-  const t = targets(root, skillsDirs);
+  const t = targets(root, skillsDirs, agentsDirs);
   const findings = [];
   const notes = [];
 
@@ -121,11 +121,21 @@ export function check(project, { skillsDirs = [], payloadDir = DEFAULT_PAYLOAD, 
       if (!fs.existsSync(f)) findings.push(`${rel(root, f)}: нет файла`);
     }
   }
+  const agentsSrc = path.join(payloadDir, "agents");
+  const agentNames = fs.existsSync(agentsSrc) ? fs.readdirSync(agentsSrc).filter((n) => /^symphysis-.*-driver\.md$/.test(n)) : [];
+  for (const dir of t.agentsDirs) {
+    for (const name of agentNames) {
+      const f = path.join(dir, name);
+      if (!fs.existsSync(f)) findings.push(`${rel(root, f)}: нет файла`);
+    }
+  }
 
   const toolsDir = path.join(t.toolsDir, "tools");
+  const payloadDocs = path.join(payloadDir, "docs");
   const toolFiles = [
     ...TOOL_MODULES.map((m) => path.join(toolsDir, m)),
-    path.join(t.toolsDir, "docs", "journal.schema.json"),
+    // `docs/` payload целиком: схема журнала, общие файлы скиллов, уведомления MIT.
+    ...walk(payloadDocs).map((f) => path.join(t.toolsDir, "docs", path.relative(payloadDocs, f))),
     path.join(toolsDir, "journal-roots.json"),
   ];
   for (const f of toolFiles) if (!fs.existsSync(f)) findings.push(`${rel(root, f)}: нет файла`);

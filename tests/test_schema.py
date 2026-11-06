@@ -263,6 +263,7 @@ def test_instructions_name_skills_and_stay_short(tmp_path):
     assert "symphysis-attack" in text["attack-decisions"] and "symphysis-attack" in text["attack-artifacts"]
     assert "symphysis-edge-probe" in text["specs"] and "symphysis-prohibition-probe" in text["specs"]
     assert "symphysis-consequences" in text["consequences"]
+    assert text["research"].lstrip().startswith("Загрузи скилл `symphysis-research`")
     assert ".symphysis/tools/symphysis_config.py" in text["consequences"]
     assert ".symphysis/tools/journal.py code-sites" in text["consequences"]
     for i in ("intent", "design", "security", "tasks"):
@@ -675,7 +676,7 @@ def test_instruction_wording_from_task7_review():
     assert ("форк OpenSpec symphysis считает артефакт готовым только с `status: passed`"
             in schema_block("attack-artifacts"))
     security = schema_block("security")
-    assert "Канон (OWASP, инъекции, пути, токены) не записывается в журнал, а отмечается здесь" in security
+    assert "Канон (OWASP, инъекции, пути, токены, чувствительные данные) не записывается в журнал, а отмечается здесь" in security
     assert "prohibition probe" not in security
     research = schema_block("research")
     assert "«не найдено»" in research and "«искал: <шаблоны дословно>»" in research
@@ -796,7 +797,8 @@ RECORD_FIRST = ("утверждение о механике, цели или о�
 
 OTHER_RULES = {
     "specs": ["предположение помечается словом `предположение` и дорогой `проверить|решить`",
-              "у каждого требования хотя бы один сценарий GIVEN/WHEN/THEN"],
+              "у каждого требования хотя бы один сценарий GIVEN/WHEN/THEN",
+              "след проб — комментарии «проба краёв» и «проба запретов» — в общую спеку при синхронизации не переносится"],
     "proposal": [RECORD_FIRST],
     "design": ["решение излагается, не принимается", RECORD_FIRST],
     "tasks": [RECORD_FIRST],

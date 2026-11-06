@@ -22,6 +22,11 @@ consequences:
   assumptions: true
 edge_probe:
   enabled: true
+drivers:
+  attack: true
+  probes: false
+  consequences: false
+  research: true
 attack:
   context-compliance: true
   claim-authority: true
@@ -146,9 +151,9 @@ export function mergeConfig(existingText, oursText) {
  * вносит его в `.gitignore` и обновляет проект, если в нём нет `/opsx:continue`.
  * Пути в результате — от корня проекта, с «/». `messages` — строки для печати.
  */
-export function install(project, { skillsDirs = [], force = false, payloadDir = DEFAULT_PAYLOAD, sourceRoot = ROOT } = {}) {
+export function install(project, { skillsDirs = [], agentsDirs = [], force = false, payloadDir = DEFAULT_PAYLOAD, sourceRoot = ROOT } = {}) {
   const root = path.resolve(project);
-  const t = targets(root, skillsDirs);
+  const t = targets(root, skillsDirs, agentsDirs);
   const res = { written: [], merged: [], skipped: [], messages: [] };
   if (!fs.existsSync(path.join(payloadDir, "skills"))) {
     throw new Error(`payload не найден: ${payloadDir} (выполнить npm run prepare)`);
@@ -161,6 +166,12 @@ export function install(project, { skillsDirs = [], force = false, payloadDir = 
     if (!e.isDirectory() || !e.name.startsWith("symphysis-")) continue;
     for (const dir of t.skillsDirs) copyTree(res, root, path.join(skillsSrc, e.name), path.join(dir, e.name), force);
   }
+  // Тела агентов-водителей (`agents/symphysis-*-driver.md`): в каждый каталог агентов, по умолчанию `agents`
+  // рядом с каталогом скиллов — у Claude Code это `.claude/agents/` (канон тел, раздел 10).
+  const agentsSrc = path.join(payloadDir, "agents");
+  if (fs.existsSync(agentsSrc)) {
+    for (const dir of t.agentsDirs) copyTree(res, root, agentsSrc, dir, force, (f) => /^symphysis-.*-driver\.md$/.test(path.basename(f)));
+  }
 
   const toolsDir = path.join(t.toolsDir, "tools");
   const skippedBefore = res.skipped.length;
@@ -171,7 +182,8 @@ export function install(project, { skillsDirs = [], force = false, payloadDir = 
   const toolsSkipped = res.skipped.slice(skippedBefore).some((line) => line.startsWith(toolsPrefix));
   const versionFile = path.join(toolsDir, VERSION_FILE);
   if (!toolsSkipped || fs.existsSync(versionFile)) place(res, root, versionFile, Buffer.from(versionText(payloadDir, sourceRoot)), force);
-  place(res, root, path.join(t.toolsDir, "docs", "journal.schema.json"), fs.readFileSync(path.join(payloadDir, "docs", "journal.schema.json")), force);
+  // `docs/` payload целиком: схема журнала, общие файлы скиллов (`terms.md`, `journal-cli.md`, …), уведомления MIT.
+  copyTree(res, root, path.join(payloadDir, "docs"), path.join(t.toolsDir, "docs"), force);
   place(res, root, path.join(toolsDir, "journal-roots.json"), Buffer.from(ROOTS_CONTENT), force, { keepExisting: true });
 
   const oursBytes = fs.readFileSync(path.join(payloadDir, "openspec", "config.symphysis.yaml"));

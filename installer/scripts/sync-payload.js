@@ -24,11 +24,33 @@ const FILES = [
   "docs/journal.schema.json",
 ];
 
+/** Общие файлы скиллов: `skills/shared/*.md` -> `docs/*.md`, в проекте `.symphysis/docs/`. */
+const SHARED_DIR = "skills/shared";
+/** Тела агентов-водителей: `agents/symphysis-*-driver.md` -> `agents/` payload, без провенанса. */
+const AGENTS_DIR = "agents";
+/** Уведомления MIT о донорах: переведённые механики — производная работа, копий доноров в поставке нет. */
+const NOTICES = ["installer/THIRD-PARTY-NOTICES.md", "docs/THIRD-PARTY-NOTICES.md"];
+
 /** Файл mermaid и лицензия: приходят из зависимости сборки, в git ядра не лежат (F-53). */
 const MERMAID_FILES = [
   ["dist/mermaid.min.js", "tools/mermaid.min.js"],
   ["LICENSE", "tools/mermaid.LICENSE"],
 ];
+
+/**
+ * Провенанс в телах: комментарии `<!-- src: … -->` и `<!-- dev: … -->` отдельной строкой
+ * или блоком. Контур разработки, в продукт не идут (docs/skills-canon.md, раздел 9).
+ */
+const PROVENANCE = /^[ \t]*<!--[ \t]*(?:src|dev)\b[\s\S]*?-->[ \t]*\r?\n?/gm;
+
+export function stripProvenance(text) {
+  return text.replace(PROVENANCE, "");
+}
+
+/** Каталог `sources/` скилла (выписки доноров, заметки перевода) — контур разработки. */
+function skillFileExcluded(rel) {
+  return rel.split("/").includes("sources") || path.basename(rel) === "TRANSLATION-NOTES.md";
+}
 
 function skillDirs(root) {
   return fs
@@ -60,49 +82,69 @@ export function hasSources(root = ROOT) {
   return fs.existsSync(path.join(root, "skills")) && FILES.every((rel) => fs.existsSync(path.join(root, rel)));
 }
 
-/** Совпадает ли dest с исходниками побайтно: тот же состав файлов и те же байты. */
-export function payloadMatches(dest = DEFAULT_DEST, root = ROOT) {
-  const fromRoot = [...FILES, ...[...DIRS, ...skillDirs(root)].flatMap((rel) => walk(path.join(root, rel)).map((f) => `${rel}/${f}`))];
-  const mermaid = path.join(root, "installer", "node_modules", "mermaid");
-  const expected = [...fromRoot.map((rel) => [rel, path.join(root, rel)]), ...MERMAID_FILES.map(([from, rel]) => [rel, path.join(mermaid, from)])];
-  if (!fs.existsSync(dest) || walk(dest).length !== expected.length) return false;
-  return expected.every(([rel, source]) => {
-    const copy = path.join(dest, rel);
-    return fs.existsSync(copy) && fs.existsSync(source) && fs.readFileSync(copy).equals(fs.readFileSync(source));
-  });
+function mermaidDir(root) {
+  return path.join(root, "installer", "node_modules", "mermaid");
 }
 
-/** Стирает и пересоздаёт dest, копируя источники из корня symphysis с теми же относительными путями. */
+/** Карта payload по исходникам корня: относительный путь с «/» -> байты. Тела `.md` скиллов и общих файлов — без провенанса. */
+export function expectedPayload(root = ROOT) {
+  const map = new Map();
+  const read = (rel) => fs.readFileSync(path.join(root, rel));
+  const readStripped = (rel) => Buffer.from(stripProvenance(fs.readFileSync(path.join(root, rel), "utf8")));
+  for (const dir of DIRS) for (const f of walk(path.join(root, dir))) map.set(`${dir}/${f}`, read(`${dir}/${f}`));
+  for (const skill of skillDirs(root)) {
+    for (const f of walk(path.join(root, skill))) {
+      if (skillFileExcluded(f)) continue;
+      map.set(`${skill}/${f}`, f.endsWith(".md") ? readStripped(`${skill}/${f}`) : read(`${skill}/${f}`));
+    }
+  }
+  if (fs.existsSync(path.join(root, SHARED_DIR))) {
+    for (const f of walk(path.join(root, SHARED_DIR))) if (f.endsWith(".md")) map.set(`docs/${f}`, readStripped(`${SHARED_DIR}/${f}`));
+  }
+  if (fs.existsSync(path.join(root, AGENTS_DIR))) {
+    for (const f of walk(path.join(root, AGENTS_DIR))) if (/^symphysis-.*-driver\.md$/.test(f)) map.set(`${AGENTS_DIR}/${f}`, readStripped(`${AGENTS_DIR}/${f}`));
+  }
+  for (const rel of FILES) map.set(rel, read(rel));
+  const [noticeFrom, noticeTo] = NOTICES;
+  if (fs.existsSync(path.join(root, noticeFrom))) map.set(noticeTo, read(noticeFrom));
+  for (const [from, rel] of MERMAID_FILES) map.set(rel, fs.readFileSync(path.join(mermaidDir(root), from)));
+  return map;
+}
+
+/** Совпадает ли dest с исходниками побайтно: тот же состав файлов и те же байты. */
+export function payloadMatches(dest = DEFAULT_DEST, root = ROOT) {
+  if (!fs.existsSync(dest)) return false;
+  const expected = expectedPayload(root);
+  if (walk(dest).length !== expected.size) return false;
+  for (const [rel, bytes] of expected) {
+    const copy = path.join(dest, rel);
+    if (!fs.existsSync(copy) || !fs.readFileSync(copy).equals(bytes)) return false;
+  }
+  return true;
+}
+
+/** Стирает и пересоздаёт dest по карте `expectedPayload`. Возвращает список источников. */
 export function syncPayload(dest = DEFAULT_DEST, root = ROOT) {
   // Корень проверяется до очистки: неудачная синхронизация не оставляет пустой payload.
   if (!fs.existsSync(path.join(root, "skills"))) {
     throw new Error(`syncPayload: в корне ${root} нет каталога skills — payload не тронут`);
   }
   // Зависимость сборки тоже проверяется до очистки: без файла поставка не собирается (F-100).
-  const mermaid = path.join(root, "installer", "node_modules", "mermaid");
   for (const [from] of MERMAID_FILES) {
-    if (!fs.existsSync(path.join(mermaid, from))) {
-      throw new Error(`syncPayload: нет ${path.join(mermaid, from)}: поставьте зависимости сборки (npm ci в installer), payload не тронут`);
+    if (!fs.existsSync(path.join(mermaidDir(root), from))) {
+      throw new Error(`syncPayload: нет ${path.join(mermaidDir(root), from)}: поставьте зависимости сборки (npm ci в installer), payload не тронут`);
     }
   }
-  const skills = skillDirs(root);
-  const sources = [...DIRS, ...skills, ...FILES, ...MERMAID_FILES.map(([, rel]) => rel)];
+  const sources = [...DIRS, ...skillDirs(root), SHARED_DIR, ...FILES, NOTICES[1], ...MERMAID_FILES.map(([, rel]) => rel)];
   // Уже совпадает — не трогать: `npm pack` зовёт `prepare`, пока параллельные тесты читают payload.
   if (payloadMatches(dest, root)) return sources;
+  const expected = expectedPayload(root);
   if (fs.existsSync(dest)) removeTree(dest);
   fs.mkdirSync(dest, { recursive: true });
-  for (const rel of [...DIRS, ...skills]) {
-    fs.cpSync(path.join(root, rel), path.join(dest, rel), { recursive: true, filter: (s) => path.basename(s) !== "__pycache__" });
-  }
-  for (const rel of FILES) {
+  for (const [rel, bytes] of expected) {
     const to = path.join(dest, rel);
     fs.mkdirSync(path.dirname(to), { recursive: true });
-    fs.copyFileSync(path.join(root, rel), to);
-  }
-  for (const [from, rel] of MERMAID_FILES) {
-    const to = path.join(dest, rel);
-    fs.mkdirSync(path.dirname(to), { recursive: true });
-    fs.copyFileSync(path.join(mermaid, from), to);
+    fs.writeFileSync(to, bytes);
   }
   return sources;
 }

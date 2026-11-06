@@ -49,9 +49,14 @@ test("install в пустой проект: все цели существуют
   assert.ok(fs.existsSync(path.join(t.schemaDir, "schema.yaml")));
   assert.ok(fs.existsSync(t.configPath));
   for (const d of t.skillsDirs) assert.ok(fs.existsSync(path.join(d, "symphysis-brainstorm", "SKILL.md")));
+  for (const d of t.agentsDirs) assert.ok(fs.existsSync(path.join(d, "symphysis-attack-driver.md")));
+  assert.ok(fs.existsSync(path.join(p, ".claude", "agents", "symphysis-research-driver.md")));
   assert.ok(fs.existsSync(path.join(t.toolsDir, "tools", "journal.py")));
   assert.ok(fs.existsSync(path.join(t.toolsDir, "tools", "playground-template.html")));
   assert.ok(fs.existsSync(path.join(t.toolsDir, "docs", "journal.schema.json")));
+  for (const d of ["terms.md", "journal-cli.md", "config.md", "candidate.md", "attack-table.md", "THIRD-PARTY-NOTICES.md"]) {
+    assert.ok(fs.existsSync(path.join(t.toolsDir, "docs", d)), d);
+  }
   assert.equal(fs.readFileSync(path.join(t.toolsDir, "tools", "journal-roots.json"), "utf8"), '{"": "<root>/.."}\n');
   assert.deepEqual(r.merged, []);
   assert.ok(r.written.includes("openspec/config.yaml"));
@@ -233,11 +238,22 @@ test("существующий файл корней с другим содер�
   assert.ok(!r.written.includes(".symphysis/tools/journal-roots.json"));
 });
 
-test("два skillsDirs: скиллы в обоих", () => {
+test("два skillsDirs: скиллы в обоих, агенты рядом с каждым", () => {
   const p = tmp();
   install(p, { payloadDir, skillsDirs: ["a/skills", "b/skills"] });
   for (const d of ["a", "b"]) assert.ok(fs.existsSync(path.join(p, d, "skills", "symphysis-brainstorm", "SKILL.md")));
+  for (const d of ["a", "b"]) assert.ok(fs.existsSync(path.join(p, d, "agents", "symphysis-consequences-driver.md")));
   assert.ok(!fs.existsSync(path.join(p, ".claude")));
+});
+
+test("agentsDirs задан явно: агенты только туда", () => {
+  const p = tmp();
+  install(p, { payloadDir, skillsDirs: ["a/skills"], agentsDirs: ["x/agents"] });
+  assert.ok(fs.existsSync(path.join(p, "x", "agents", "symphysis-attack-driver.md")));
+  assert.ok(!fs.existsSync(path.join(p, "a", "agents")));
+  const names = fs.readdirSync(path.join(p, "x", "agents"));
+  assert.deepEqual(names.sort(), ["symphysis-attack-driver.md", "symphysis-consequences-driver.md",
+    "symphysis-edge-probe-driver.md", "symphysis-prohibition-probe-driver.md", "symphysis-research-driver.md"]);
 });
 
 test("CLI install: код 0, записано; изменённый файл — подсказка --force в stderr", () => {
@@ -617,14 +633,14 @@ test("Первая установка: symphysis.yaml создан, всё вк�
   const r = install(p, { payloadDir });
   assert.ok(r.written.includes("symphysis.yaml"));
   const text = fs.readFileSync(settingsFile(p), "utf8");
-  assert.match(text, /^consequences:\n {2}failure_branches: true\n {2}assumptions: true\nedge_probe:\n {2}enabled: true\n/m);
+  assert.match(text, /^consequences:\n {2}failure_branches: true\n {2}assumptions: true\nedge_probe:\n {2}enabled: true\ndrivers:\n {2}attack: true\n {2}probes: false\n {2}consequences: false\n {2}research: true\n/m);
   // Каждая линза атаки обоих файлов названа своим слугом и включена; claim-extraction одна (F-61, F-132).
   const lenses = ["context-compliance", "claim-authority", "claim-extraction", "coverage", "scenario-run", "trace-link"];
   assert.match(text, new RegExp(`\nattack:\n${lenses.map((s) => ` {2}${s}: true\n`).join("")}$`));
   const py = spawnSync("python", ["-X", "utf8", path.join(p, ".symphysis", "tools", "symphysis_config.py"), "--project", p, "--strict"], { encoding: "utf8" });
   assert.equal(py.status, 0, py.stdout + py.stderr);
   assert.deepEqual(py.stdout.trim().split(/\r?\n/), [
-    "[..] symphysis.yaml: ветки отказа вкл, допущения вкл, проба краёв вкл",
+    "[..] symphysis.yaml: ветки отказа вкл, допущения вкл, проба краёв вкл, водители: атака вкл, пробы выкл, опись выкл, исследование вкл",
     `[..] symphysis.yaml: линзы атаки: ${lenses.map((s) => `${s} вкл`).join(", ")}`,
   ]);
 });

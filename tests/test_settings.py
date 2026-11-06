@@ -18,6 +18,9 @@ TOOL = ROOT / "tools" / "symphysis_config.py"
 JOURNAL_TOOL = ROOT / "tools" / "journal.py"
 CASES = json.loads((FIX / "settings-cases.json").read_text(encoding="utf-8"))
 ALL_ON = {"failure_branches": True, "assumptions": True, "edge_probe": True}
+# Водители (Р11-A): атака и исследование по умолчанию вкл, пробы и опись выкл.
+DRIVER_DEFAULTS = {"driver_attack": True, "driver_probes": False, "driver_consequences": False,
+                   "driver_research": True}
 LENSES = ("context-compliance", "claim-authority", "claim-extraction", "coverage", "scenario-run", "trace-link")
 NO_PACKAGE = "symphysis.yaml: нет пакета PyYAML — выполнить: python -m pip install pyyaml"
 
@@ -28,9 +31,11 @@ def write_case(project, case):
 
 
 def composition_line(expected):
-    on = lambda key: "вкл" if expected[key] else "выкл"
+    on = lambda key: "вкл" if expected.get(key, DRIVER_DEFAULTS.get(key)) else "выкл"
     return (f"[..] symphysis.yaml: ветки отказа {on('failure_branches')}, допущения {on('assumptions')}, "
-            f"проба краёв {on('edge_probe')}")
+            f"проба краёв {on('edge_probe')}, водители: атака {on('driver_attack')}, "
+            f"пробы {on('driver_probes')}, опись {on('driver_consequences')}, "
+            f"исследование {on('driver_research')}")
 
 
 def lenses_line(expected):
@@ -58,6 +63,8 @@ def test_shared_cases(tmp_path, case):
     got = symphysis_config.read_settings(tmp_path)
     assert (got.failure_branches, got.assumptions, got.edge_probe) == (
         case["failure_branches"], case["assumptions"], case["edge_probe"])
+    for key, default in DRIVER_DEFAULTS.items():
+        assert getattr(got, key) == case.get(key, default), key
     assert got.signals == case["signals"]
     assert got.lenses == {s: s not in case.get("lenses_off", []) for s in LENSES}
 
@@ -68,6 +75,21 @@ def test_cli_prints_composition_and_signals(tmp_path, case):
     done = run_config("--project", tmp_path)
     assert done.returncode == 0, done.stderr
     assert done.stdout.splitlines() == [composition_line(case), lenses_line(case), *(f"[!!] {s}" for s in case["signals"])]
+
+
+def test_drivers_defaults_and_toggles(tmp_path):
+    """Р11-A: без ключа атака и исследование идут водителю, пробы и опись — в главной нити; `true` включает
+    выключенное по умолчанию, `false` выключает включённое, недопустимое значение оставляет умолчание."""
+    got = symphysis_config.read_settings(tmp_path)
+    assert {k: getattr(got, k) for k in DRIVER_DEFAULTS} == DRIVER_DEFAULTS
+    (tmp_path / "symphysis.yaml").write_text("drivers:\n  attack: false\n  probes: true\n  consequences: yes\n",
+                                             encoding="utf-8")
+    got = symphysis_config.read_settings(tmp_path)
+    assert (got.driver_attack, got.driver_probes, got.driver_consequences, got.driver_research) == (
+        False, True, False, True)
+    assert got.signals == ["symphysis.yaml: недопустимое значение yes"]
+    done = run_config("--project", tmp_path)
+    assert done.stdout.splitlines()[0].endswith("водители: атака выкл, пробы вкл, опись выкл, исследование вкл")
 
 
 def test_lone_surrogate_in_a_value_is_a_signal_not_a_crash(tmp_path):
@@ -268,8 +290,9 @@ def test_one_lens_off_is_named_off(tmp_path):
     (tmp_path / "symphysis.yaml").write_text("attack:\n  claim-authority: false\n", encoding="utf-8")
     done = run_config("--project", tmp_path)
     assert done.returncode == 0, done.stderr
-    assert "claim-authority выкл" in done.stdout
-    assert done.stdout.count("выкл") == 1 and done.stdout.count(" вкл") == 3 + len(LENSES) - 1
+    lenses = done.stdout.splitlines()[1]
+    assert "claim-authority выкл" in lenses
+    assert lenses.count("выкл") == 1 and lenses.count(" вкл") == len(LENSES) - 1
 
 
 def test_unknown_lens_signals_and_turns_nothing_off(tmp_path):
@@ -278,7 +301,7 @@ def test_unknown_lens_signals_and_turns_nothing_off(tmp_path):
     done = run_config("--project", tmp_path)
     assert done.returncode == 0, done.stderr
     assert "[!!] symphysis.yaml: неизвестная линза trace-lnik" in done.stdout.splitlines()
-    assert "выкл" not in done.stdout
+    assert "выкл" not in done.stdout.splitlines()[1]
     assert run_config("--project", tmp_path, "--strict").returncode == 2
 
 
@@ -286,4 +309,5 @@ def test_composition_line_is_unchanged_by_lenses(tmp_path):
     """Прежнюю строку состава читают скиллы дословно: линзы её не меняют."""
     (tmp_path / "symphysis.yaml").write_text("attack:\n  coverage: false\n", encoding="utf-8")
     assert symphysis_config.composition_line(symphysis_config.read_settings(tmp_path)) == (
-        "symphysis.yaml: ветки отказа вкл, допущения вкл, проба краёв вкл")
+        "symphysis.yaml: ветки отказа вкл, допущения вкл, проба краёв вкл, водители: атака вкл, пробы выкл, "
+        "опись выкл, исследование вкл")
