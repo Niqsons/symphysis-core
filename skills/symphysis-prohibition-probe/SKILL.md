@@ -164,7 +164,8 @@ recommendation: A — скрытый за фильтром блокер проп
   <decision.word дословно, может быть пустым>}`. `Backstop` у запретов не бывает, список
   значений не расширяется: ярус живёт в `consequences`, не в `value`.
 - `A` и `B`: в `spec.md` под той же capability, в `## ADDED Requirements`, — новое
-  `### Requirement:` с MUST NOT и `#### Scenario:` GIVEN/WHEN/THEN; меняется существующее —
+  `### Requirement:` с MUST NOT и `#### Scenario:` GIVEN/WHEN/THEN, со строкой `<!-- F-NN -->`
+  сразу под заголовком сценария по `candidate.md`; меняется существующее —
   `## MODIFIED Requirements`, требование целиком; след проб его блока остаётся ниже
   сценариев; у `A` THEN проверяет тест, у `B` THEN называет суждение и судью (ревью, атака
   `symphysis-attack`). `consequences` ← `проверка: test — <какой тест>` или `проверка:
@@ -174,7 +175,7 @@ recommendation: A — скрытый за фильтром блокер проп
 - `C`: `consequences` ← слово человека, а нет его — `why` рекомендации; `spec.md`
   не меняется.
 - Выбор мимо рекомендации без слова — вопрос человеку по `candidate.md`.
-<!-- src: prohibition-probe.md:233-234 «an explicit assumption the downstream planner must surface, not silently drop»; templates/spec.md:6,20 -->
+<!-- src: prohibition-probe.md:233-234 «an explicit assumption the downstream planner must surface, not silently drop»; templates/spec.md:6,20; F-45 изменения trace-graph -->
 
 ### 8. Оставь след и итог
 
@@ -231,7 +232,7 @@ recommendation: A — скрытый за фильтром блокер проп
 - `A` или `B` рекомендованы только при нарушении, которое тихо портит результат или
   необратимо, с этим в `why`; варианты `A` и `B` называют цену.
 - У каждого требования комментарий «проба запретов» в конце блока, после сценариев,
-  с исходами по номерам; на каждый `Specify` — требование MUST NOT со сценарием.
+  с исходами по номерам; на каждый `Specify` — требование MUST NOT со сценарием и `<!-- F-NN -->` под его заголовком.
 - Проба прошла и при выключенной пробе краёв.
 - Строка `notes[]` с R, K, M, a, b, d и датой; ноль у чистой утилиты — зелёный.
 

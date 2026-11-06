@@ -1,0 +1,59 @@
+# сигналы step-help
+
+## задача ни к чему: 5
+- 1.1 Шим форка для тестов в `tests/fixtures/`: отдаёт заданные `status --json`, `instructions apply --json`, `--ver
+- 1.3 Там же отказ на имени изменения вне `\w[\w.-]*` до вызова форка, откуда бы имя ни пришло: из `--change`, из пу
+- 8.1 Полный прогон ядра — проверка: `pytest` на Python с `jsonschema`, `npm --prefix installer test`, `openspec val
+- 8.2 Показ: страница этого изменения собрана настоящим форком и открыта в браузере и в плагине — проверка: человек 
+- 9.4 Плагин: `docs/design-part1-viewer.md`, строки 37, 340, 352, имя страницы по слову человека; строку 221 не трог
+
+## имя сценария неоднозначно: 1
+- «Форка нет» у 2 требований; задачи без capability: 1.2, 3.2
+
+## критерий без требования: 1
+- F-07 [не назван в proposal] Критерий готовности: базово её выведем в html
+
+## пункт security без имени: 1
+- security.md:10 Путь к форку из `SYMPHYSIS_OPENSPEC` (парковка F-52) — применимо частично — путь задаёт сам человек в своём окружении: тот, к
+
+## решение без требования и задачи: 1
+- F-38.A Как разойтись с активным `decision-scheme` до спек справки?
+
+## след отстал от журнала: 2
+- specs/decision-journal/spec.md:7 F-41 открыт, в журнале A
+- specs/decision-journal/spec.md:7 F-42 открыт, в журнале A
+
+## сценарий без задачи, MODIFIED, перенесён из мастера: 8
+- decision-journal / Рендер из годного журнала (specs/decision-journal/spec.md:10)
+- decision-journal / Негодный журнал не рендерится (specs/decision-journal/spec.md:15)
+- decision-journal / Повторный рендер без правок даёт тот же файл (specs/decision-journal/spec.md:20)
+- decision-viewer / Битый файл атаки (specs/decision-viewer/spec.md:13)
+- decision-viewer / Черта в backticks и экранированная черта (specs/decision-viewer/spec.md:18)
+- decision-viewer / Экранированная косая и незакрытый backtick (specs/decision-viewer/spec.md:23)
+- decision-viewer / Пустая ячейка (specs/decision-viewer/spec.md:28)
+- decision-viewer / Соседнего файла нет (specs/decision-viewer/spec.md:33)
+
+## требование без задачи, MODIFIED: 1
+- decision-journal / Журнал — JSON-источник, markdown и HTML — рендер из него (specs/decision-journal/spec.md:5)
+
+## улика разошлась, файл в задачах не назван: 5
+- F-30: skills/symphysis-brainstorm/SKILL.md «render-html <каталог изменения>/decisions.json --out <каталог изменения>/decisions.html» — цитаты нет
+- F-56: installer/lib/openspec-bin.js «r = chosen.endsWith(".js") ? spawnSync(process.execPath, [chosen, ...args], options) : spawnFile(chosen, arg
+- F-57: installer/lib/openspec-bin.js «const options = { encoding: "utf8", cwd, env: { ...process.env, OPENSPEC_TELEMETRY: "0" } };» — цитаты нет д
+- consequences.md: installer/lib/openspec-bin.js «r = chosen.endsWith(".js") ? spawnSync(process.execPath, [chosen, ...args], options) : spawnFile(
+- consequences.md: installer/lib/openspec-bin.js «const options = { encoding: "utf8", cwd, env: { ...process.env, OPENSPEC_TELEMETRY: "0" } };» — ц
+
+## улика разошлась, файл назван в задачах: 13
+- F-10: openspec/schemas/symphysis/schema.yaml «requires: [tasks, attack-artifacts]» — цитаты нет дословно
+- F-16: installer/lib/install.js «(journal.*\.py|symphysis_config\.py|playground-template\.html» — цитаты нет дословно
+- F-25: openspec/schemas/symphysis/schema.yaml «requires: [tasks, attack-artifacts]» — цитаты нет дословно
+- F-26: openspec/schemas/symphysis/schema.yaml «requires: [tasks, attack-artifacts]» — цитаты нет дословно
+- F-30: docs/GUIDE.md «1. Открой `openspec/changes/add-overdue/decisions.html` в браузере.» — цитаты нет дословно
+- F-32: tools/playground-template.html «id="btnScheme" title="схема решения рядом с карточками» — цитаты нет дословно
+- F-34: vscode/src/host/core.ts «const html = await step(["render-html", journal, "--out", rel(env, path.join(ref.dir, "decisions.html"))» — цитаты
+- F-35: docs/repo-contract.md «- пути файлов изменения;» — цитаты нет дословно
+- F-35: vscode/src/host/core.ts «const html = await step(["render-html", journal, "--out", rel(env, path.join(ref.dir, "decisions.html"))» — цитаты
+- F-36: tools/journal_render.py «CONTRACT = 1» — цитаты нет дословно
+- F-69: tools/playground-template.html «id="btnScheme" title="схема решения рядом с карточками» — цитаты нет дословно
+- consequences.md: installer/lib/install.js «/^(journal.*\.py|symphysis_config\.py|playground-template\.html» — цитаты нет дословно
+- consequences.md: vscode/src/host/core.ts «const html = await step(["render-html", journal, "--out", rel(env, path.join(ref.dir, "decisions.html")

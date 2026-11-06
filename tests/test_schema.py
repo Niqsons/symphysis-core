@@ -368,7 +368,7 @@ def test_attack_templates_table_and_verdict_rule(name):
 # Закрытые списки линз по файлу атаки — те же, что в SKILL.md `symphysis-attack` и в просмотрщике (F-07.A);
 # линзы присутствия сняты.
 TEMPLATE_LENSES = {"attack-decisions.md": ("context-compliance", "claim-authority", "claim-extraction", "coverage"),
-                   "attack-artifacts.md": ("scenario-run", "claim-extraction")}
+                   "attack-artifacts.md": ("scenario-run", "claim-extraction", "trace-link")}
 REMOVED_LENS_SLUGS = ("requirement-coverage", "task-completeness", "dependency-correctness", "key-links",
                       "scope-sanity", "verification-derivation", "scope-reduction", "data-contracts",
                       "research-resolution", "honest-verifier")
@@ -382,6 +382,33 @@ def test_attack_templates_name_own_closed_lens_list(name):
         f"шаблон {name} не называет свой список линз: {lenses}"
     for slug in REMOVED_LENS_SLUGS:
         assert slug not in text, f"в шаблоне {name} осталась снятая линза {slug}"
+
+
+@pytest.mark.parametrize("name", TEMPLATE_LENSES)
+def test_attack_templates_name_lens_composition(name):
+    """`artifact-attack`: «Всё включено», «Выключена линза», «Выключены все линзы» (F-61, F-63, F-106):
+    строка `**Состав:**` стоит в файле при любом составе, в ней только линзы этого файла."""
+    text = template_text(name)
+    lines = [line for line in text.splitlines() if line.startswith("**Состав:**")]
+    assert len(lines) == 1, f"в шаблоне {name} нужна одна строка `**Состав:**`"
+    assert lines[0] == "**Состав:** включены <слуги>; выключены <слуги или —>", lines[0]
+    comment = next(line for line in text.splitlines() if line.startswith("<!-- Состав"))
+    for token in ("python .symphysis/tools/symphysis_config.py", "при любом составе", "и при всех включённых",
+                  "выключенная линза строк не даёт", "таблица пуста", "заголовок остаётся", "status: passed",
+                  "модель состав не меняет"):
+        assert token in comment, f"в комментарии о составе шаблона {name} нет «{token}»"
+    for slug in TEMPLATE_LENSES[name]:
+        assert slug in comment, f"в комментарии о составе шаблона {name} нет линзы {slug}"
+    other = next(n for n in TEMPLATE_LENSES if n != name)
+    for slug in set(TEMPLATE_LENSES[other]) - set(TEMPLATE_LENSES[name]):
+        assert slug not in comment, f"в шаблоне {name} линза чужого файла {slug}"
+
+
+def test_attack_artifacts_template_goal_missing_is_claim_extraction():
+    """`artifact-attack`: «Цели нет» — строка `claim-extraction`, не `coverage`."""
+    text = template_text("attack-artifacts.md")
+    assert "Цели нет — строка claim-extraction с именем файла, опора «нет: файла нет», тяжесть блокер" in text
+    assert "trace-link" in text.split("| Утверждение |")[0], "комментарии шаблона не называют строку `trace-link`"
 
 
 def test_attack_decisions_template_keeps_coverage_rows():
@@ -554,6 +581,72 @@ def test_tasks_template_follows_openspec_checkbox_grammar():
     assert re.findall(r"^## (\d+)\. ", text, re.M) == ["1", "2"]
     assert re.findall(r"^- \[ \] (\d+\.\d+) ", text, re.M) == ["1.1", "1.2", "2.1", "2.2"]
     assert "проверка:" in text
+
+
+def instruction_text(tmp_path, artifact_id):
+    """Инструкция артефакта из `openspec instructions`, пробелы и переводы строк сжаты."""
+    out = run_openspec(make_project(tmp_path), "instructions", artifact_id, "--change", "demo", "--json")
+    return " ".join(out["instruction"].split())
+
+
+def test_specs_instruction_names_record_numbers_and_splitting(tmp_path):
+    """`trace-conventions`: «Требование из решения», «Требование не влезает в предел»,
+    «Старое длинное требование в MODIFIED», «Условие пропало при делении» (F-44, F-76, F-77, F-91, F-117, F-150)."""
+    text = instruction_text(tmp_path, "specs")
+    for token in ("`(F-NN)`", "500 знаков", "дочернее", "Часть требования «имя».",
+                  "``Часть требования `capability`: «имя».``", "MODIFIED", "сценарии родителя остаются при нём",
+                  "условия не теряются", "свой номер", "номер берётся из журнала",
+                  "записи нет — заведи кандидата", "номер без записи не ставь"):
+        assert token in text, token
+    assert len(text.split()) <= 150, len(text.split())
+
+
+def test_tasks_instruction_names_scenario_form_and_service_mark(tmp_path):
+    """`trace-conventions`: «Имя вписано ради отчёта» (F-42, F-43, F-89, F-90, F-115)."""
+    text = instruction_text(tmp_path, "tasks")
+    for token in ("`` `capability`: «сценарий» ``", "у каждого имени", "`` `служебная` ``", "в конце строки",
+                  "потому что задача закрывает сценарий", "`` `a`: «А», `a`: «Б» ``"):
+        assert token in text, token
+    assert len(text.split()) <= 150, len(text.split())
+
+
+FREEZE_COMMAND = "python .symphysis/tools/trace_graph.py freeze"
+
+
+def ready_apply_project(tmp_path):
+    """Проект с изменением, у которого есть всё для `apply` и одна неотмеченная задача: состояние `ready`."""
+    proj = make_project(tmp_path)
+    change = proj / "openspec" / "changes" / "demo"
+    for rel in ("intent.md", "decisions.json", "research/none.md", "proposal.md", "specs/a/spec.md",
+                "consequences.md", "design.md", "security.md"):
+        (change / rel).parent.mkdir(parents=True, exist_ok=True)
+        (change / rel).write_text("x\n", encoding="utf-8")
+    (change / "tasks.md").write_text("- [ ] 1.1 задача\n", encoding="utf-8")
+    return proj
+
+
+@requires_fork
+def test_apply_instruction_calls_freeze_and_hands_link(tmp_path):
+    """`trace-signals`: «Перед первой задачей», «После последней задачи», «Модель отдаёт отчёт», «Модель видит зазор»,
+    «Решение Specify у записи `[сигнал]`»; `trace-snapshot`: «Перед первой задачей», «Последняя задача отмечена»
+    (F-48, F-78, F-99, F-112, F-113, F-134). Прежние строки инструкции на месте, предел слов тот же."""
+    out = run_openspec(ready_apply_project(tmp_path), "instructions", "apply", "--change", "demo", "--json")
+    assert out["state"] == "ready"
+    text = " ".join(out["instruction"].split())
+    for token in (FREEZE_COMMAND + " <имя>", "Перед первой задачей", "последняя", "`graph/report.md`",
+                  "без пересказа и без отбора строк", "не повод править спеки и задачи без слова человека",
+                  "`[сигнал]`", "Specify", "`outcome`", "`<!-- F-NN -->`",
+                  "Строки `предупреждение` в файлах `attack/*.md`", "Остановись, если упёрся в блокер"):
+        assert token in text, token
+    assert len(text.split()) <= 150, len(text.split())
+
+
+def test_tasks_template_shows_scenario_form_and_service_mark():
+    """`trace-conventions`: «Имя вписано ради отчёта» (F-42, F-43, F-90): образцы формы в двойных обратных кавычках."""
+    text = template_text("tasks.md")
+    assert "`` `capability`: «сценарий» ``" in text
+    assert "`` `служебная` ``" in text
+    assert not re.search(r"(?<!`)`служебная`$", text, re.M), "пометка в шаблоне не должна быть живой"
 
 
 # --- schema.yaml: шаблоны, пути скриптов, формулировки ---------------------
@@ -792,6 +885,34 @@ def test_sample_config_selects_symphysis_schema(tmp_path):
     run_openspec(proj, "new", "change", "by-config")
     out = run_openspec(proj, "status", "--change", "by-config", "--json")
     assert out["schemaName"] == "symphysis"
+
+
+def operation_guidance(project):
+    return run_openspec(project, "instructions", "archive", "--change", "demo", "--json").get("operationGuidance")
+
+
+@requires_fork
+@pytest.mark.parametrize("config_path", [CONFIG_SAMPLE, ROOT / "openspec" / "config.yaml"], ids=["sample", "core"])
+def test_archive_guidance_reaches_instructions(tmp_path, config_path):
+    """`trace-snapshot`: «Снимка нет», «Снимок устарел», «Сборка не удалась», «Сборка при всех отмеченных задачах»,
+    «Синхронизация внутри архивации» (F-49, F-75, F-127, F-128, F-139): подсказка операции — список строк ключа
+    `operations.archive.guidance`, CLI отдаёт его полем `operationGuidance`."""
+    proj = make_project(tmp_path, config=config_path.read_text(encoding="utf-8"))
+    guidance = operation_guidance(proj)
+    assert isinstance(guidance, list) and guidance and all(isinstance(g, str) for g in guidance)
+    text = " ".join(guidance)
+    for token in (FREEZE_COMMAND + " <имя>", "до выбора синхронизации", "Граф собран заново", "Снимок свежий", "`graph/report.md`",
+                  "ошибку", "назови человеку", "архивацию не останавливай"):
+        assert token in text, token
+
+
+@requires_fork
+def test_sample_config_with_operations_raises_no_warning(tmp_path):
+    """Форма ключа `operations` верна: форк не предупреждает ни об ключе, ни о подсказке."""
+    proj = sample_project(tmp_path)
+    done = run_openspec_raw(proj, "instructions", "archive", "--change", "demo", "--json")
+    stderr = done.stderr.lower()
+    assert "guidance" not in stderr and "operation" not in stderr and "ignoring" not in stderr, done.stderr
 
 
 # --- заполненное изменение: фикстура change-demo ----------------------------

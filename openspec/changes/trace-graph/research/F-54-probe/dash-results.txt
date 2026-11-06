@@ -1,0 +1,6 @@
+12.2.0 | один штрих | stroke-dasharray:6 | годен | rgb(232, 121, 249) 2px штрих 6px
+11.17.2 | один штрих | stroke-dasharray:6 | годен | none 0px штрих 6px
+12.2.0 | запятая | stroke-dasharray:6\,3 | ОТКАЗ Lexical error on line 5. Unrecognized text.
+11.17.2 | запятая | stroke-dasharray:6\,3 | ОТКАЗ Lexical error on line 5. Unrecognized text.
+12.2.0 | рамка и заливка | fill:#fee2e2,stroke:#b91c1c,stroke-width:4px | годен | rgb(185, 28, 28) 4px штрих none
+11.17.2 | рамка и заливка | fill:#fee2e2,stroke:#b91c1c,stroke-width:4px | годен | none 0px штрих none

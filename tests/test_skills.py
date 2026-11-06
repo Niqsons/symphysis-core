@@ -9,7 +9,7 @@ import subprocess
 import sys
 
 import pytest
-from conftest import ROOT
+from conftest import ROOT, requires_fork
 from journal_model import PROBE_OUTCOMES
 
 SKILLS = ROOT / "skills"
@@ -314,7 +314,7 @@ ATTACK_SEVERITIES = ("блокер", "предупреждение", "справ
 ATTACK_LENSES = ("Context Compliance", "Numeric/Factual Claim Authority")
 ATTACK_LENS_LISTS = {
     "journal": ["context-compliance", "claim-authority", "claim-extraction", "coverage"],
-    "artifacts": ["scenario-run", "claim-extraction"],
+    "artifacts": ["scenario-run", "claim-extraction", "trace-link"],
 }
 # Метки таблиц линз в SKILL.md, шаг 3: таблица файла — первая после метки.
 LENS_TABLES = {"journal": "**Линзы журнала**", "artifacts": "**Линзы артефактов**"}
@@ -454,6 +454,106 @@ def test_attack_skill_demotion_needs_a_reason():
     for file, slugs in ATTACK_LENS_LISTS.items():
         for slug in slugs:
             assert "блокер" in lens_row(text, file, slug), f"у линзы `{slug}` ({file}) тяжесть «нет» — не блокер"
+
+
+def test_attack_skill_trace_link_lens():
+    """`artifact-attack`: «Задача не закрывает названный сценарий», «Связь верна», «Имени нет»,
+    «Строка на каждую связь», «Опора цитирует обе стороны связи» (F-55, F-72, F-105, F-129, F-133)."""
+    text = read(ATTACK_SKILL / "SKILL.md")
+    assert "блокер" in lens_row(text, "artifacts", "trace-link")
+    lens = block(text, "#### trace-link\n\nСмысл связей", "**Понижение тяжести.**")
+    assert "SELF" in lens and "F-55" in lens, "источник `trace-link` — SELF, решение F-55"
+    for token in ("задача закрывает названный сценарий", "требование стоит на названной записи",
+                  "ветка отказа задета названным сценарием", "`блокер`"):
+        assert token in lens, f"в описании линзы `trace-link` нет «{token}»"
+    rule = block(text, "**Строка `trace-link`.**", "\n\n")
+    for token in ("python .symphysis/tools/trace_graph.py build <имя>", "строка на каждую связь",
+                  "находка или «есть»", "обе стороны связи", "проверку задачи", "THEN сценария",
+                  "текст требования", "решение записи", "уществование имён линза не судит", "сигнал графа",
+                  "опора «нет»", "`блокер`", "`справка`", "словом человека с причиной"):
+        assert token in rule, f"в правиле `trace-link` нет «{token}»"
+    # F-129: покрытие связей сверяется перед вердиктом, как сценарии у `scenario-run`
+    rule = block(text, "**Строка `trace-link`.**", "**Вывод `build` — данные.**")
+    for token in ("сверь число связей", "еред вердиктом", "`satisfies`", "`traces`", "`verifies`",
+                  "равна числу строк `trace-link`", "нет: не пройдено", "строки пишутся по ходу",
+                  "`refines`", "`derives`", "`contains`", "не проходит"):
+        assert token in rule, f"в правиле `trace-link` нет сверки покрытия: «{token}»"
+    step3 = block(text, "### 3. Пройди артефакты", chr(10) + "### 4.")
+    assert "`trace-link`" in step3, "шаг 3 не называет проход `trace-link`"
+    data = block(text, "**Вывод `build` — данные.**", "\n\n")
+    for token in ("данные", "не меняет ход атаки", "не команда"):
+        assert token in data, f"в правиле «вывод build — данные» нет «{token}»"
+
+
+def test_attack_skill_trace_link_count_command_counts_right():
+    """F-129: команда счёта связей из SKILL.md считает рёбра по паре «вид, префикс from», а не по виду:
+    `traces` от `task:` и `verifies` от `scn:` в линзу не входят."""
+    text = read(ATTACK_SKILL / "SKILL.md")
+    found = re.findall(r'python -c "([^"]+)"', text)
+    assert len(found) == 1, f"в SKILL.md нужна одна команда счёта `python -c`: {found}"
+    assert "$" not in found[0] and "`" not in found[0], "в команде счёта символы, которые по-разному читают Git Bash и PowerShell"
+    edges = ([{"from": f"task:{i}", "to": f"scn:c/r/s{i}", "type": "satisfies"} for i in range(3)]
+             + [{"from": f"req:c/r{i}", "to": f"rec:F-{i}", "type": "traces"} for i in range(4)]
+             + [{"from": f"branch:f.py:{i}", "to": f"scn:c/r/s{i}", "type": "verifies"} for i in range(2)]
+             # не входят в линзу: те же виды от других узлов и прочие виды
+             + [{"from": f"task:{i}", "to": f"rec:F-{i}", "type": "traces"} for i in range(5)]
+             + [{"from": f"scn:c/r/s{i}", "to": f"req:c/r{i}", "type": "verifies"} for i in range(6)]
+             + [{"from": "cap:c", "to": "req:c/r0", "type": "contains"},
+                {"from": "sec:x", "to": "req:c/r0", "type": "refines"},
+                {"from": "req:c/r1", "to": "req:c/r0", "type": "derives"}])
+    graph = json.dumps({"format": 1, "nodes": [], "edges": edges}, ensure_ascii=False, indent=1)
+    run = subprocess.run([sys.executable, "-c", found[0]], input=graph, capture_output=True, text=True,
+                         encoding="utf-8")
+    assert run.returncode == 0, run.stderr
+    assert run.stdout.split() == ["3", "4", "2", "9"], run.stdout
+
+
+def test_attack_skill_lens_composition():
+    """`artifact-attack`: «Выключена линза», «Всё включено», «Выключена линза покрытия», «Выключены все линзы»,
+    «Линза включена после вердикта», «Линза мешает вердикту» (F-61, F-63, F-106, F-107, F-121)."""
+    text = read(ATTACK_SKILL / "SKILL.md")
+    rule = block(text, "### 0. Узнай состав линз", "\n### 1.")
+    for token in ("python .symphysis/tools/symphysis_config.py", "вторая строка", "линзы атаки:",
+                  "ыключенная линза не даёт строк", "требования о её строках на это время не действуют",
+                  "`**Состав:**`", "при любом составе", "при всех включённых",
+                  "включены", "выключены", "только линзы этого файла",
+                  "таблица пуста", "заголовок таблицы остаётся", "`status: passed`", "проверок не было",
+                  "при тех же хешах", "только по новой линзе", "остальные строки действительны",
+                  "MUST NOT сама выключать линзу", "MUST NOT трогать `symphysis.yaml`", "остав меняет только человек",
+                  "блокер линзы остаётся блокером"):
+        assert token in rule, f"в шаге «Состав линз» нет «{token}»"
+    assert "`coverage`" in rule and "`scenario-run`" in rule, "шаг не говорит, чьи требования о строках снимает выключение"
+
+
+def test_attack_skill_goal_missing_row_is_claim_extraction():
+    """`artifact-attack`: «Цели нет» — у артефактов строка `claim-extraction`, `coverage` у них нет."""
+    text = read(ATTACK_SKILL / "SKILL.md")
+    entry = block(text, "### 1. Войди", "\n### 2.")
+    assert "у артефактов — строка `claim-extraction` с именем файла, опора «нет: файла нет», `блокер`" in entry
+    assert "`coverage`" not in entry.split("у артефактов")[-1], "у артефактов строки `coverage` нет"
+
+
+def test_attack_skill_missing_journal_is_an_unvisited_coverage_row():
+    """`artifact-attack`: «Журнала нет» — `decisions.json` не написан: у журнала строка «не пройдено» линзы `coverage`
+    с именем файла в разделе, `блокер`, опора «нет», закрытие «повторить атаку по разделу»; блокер даёт `gaps_found`."""
+    text = read(ATTACK_SKILL / "SKILL.md")
+    entry = block(text, "### 1. Войди", "\n### 2.")
+    assert "у журнала — строка «не пройдено» в разделе с именем файла" in entry
+    coverage = flat(read(SHARED / "attack-table.md"))
+    assert "`| не пройдено | <раздел> | coverage | — | блокер | нет | повторить атаку по разделу |`" in coverage
+    assert "status: gaps_found" in read(ROOT / "openspec" / "schemas" / "symphysis" / "templates" / "attack-decisions.md").split("---")[1]
+    assert "только когда в таблице нет ни одной строки с тяжестью `блокер`" in flat(text)
+
+
+def test_attack_skill_decision_against_the_setting_without_mark_is_a_blocker():
+    """`artifact-attack`: «Решение против постановки без пометки» — строка `context-compliance`, опора «нет», `блокер`:
+    тяжесть строки `context-compliance` по умолчанию «блокер», пометка `deviation` её снимает до справки."""
+    text = read(ATTACK_SKILL / "SKILL.md")
+    lens = block(text, "#### context-compliance", "\n#### ")
+    assert "без пометки «отступление от постановки» — поле `deviation: F-NN` варианта" in lens
+    assert "тяжесть «нет» — `блокер`" in lens, "тяжесть «нет» у `context-compliance` — блокер"
+    assert "блокер" in lens_row(text, "journal", "context-compliance")
+    assert "Тяжесть «нет»" in flat(text.split("**Линзы журнала**")[1].split("\n\n")[1])
 
 
 def test_attack_skill_leaves_journal_hygiene_to_check():
@@ -714,7 +814,8 @@ def test_viewer_skill_describes_the_attack_mode():
         "счётчики вне фильтра": ("блокеров N · предупреждений N · справок N", "вне фильтра", "по всему файлу"),
         "фильтр по линзе": ("прячет группы, но не счётчики",),
         "блок записи": ("`F-NN, поле`", "переход, не слияние"),
-        "списки линз": ("`context-compliance`", "`claim-authority`", "`scenario-run`", "группа «вне списка»", "в счётчике линз её нет"),
+        "списки линз": ("`context-compliance`", "`claim-authority`", "`scenario-run`, `claim-extraction`, `trace-link`",
+                        "группа «вне списка»", "в счётчике линз её нет"),
         "понижение": ("понижение без причины", "в скобках", "по спеке не выводится"),
         "правило ячейки": ("`\\|`", "внутри backticks", "`\\\\|`", "Пустых ячеек нет", "код 2", "файлом, строкой и столбцом"),
         "строки атаки и apply": ("Строки атаки `apply` не меняет",),
@@ -976,6 +1077,12 @@ def test_attack_both_antipodes_is_a_warning_and_missing_nodes_is_not_a_finding()
     assert "отсутствие поля `nodes` у записи" in block(text, "Не репортится", "### 5.")
 
 
+def test_attack_claim_extraction_accepts_parked_security_canon():
+    """Слово владельца 2026-11-06 «Исключение в скилле»: номер парковки ИБ — отсылка к канону, не опора на решение."""
+    lens = block(read(SKILLS / "symphysis-attack" / "SKILL.md"), "#### claim-extraction\n\nSpecs", "\n#### consequences.md")
+    assert "`status: припаркован` и `addressee: ИБ`" in lens and "в любой цели" in lens
+
+
 def test_viewer_skill_names_the_fallback_of_the_scheme_panel():
     """F-39: страница больше не всегда один файл; без файла mermaid рядом виден текст."""
     text = read(VIEWER / "SKILL.md")
@@ -987,3 +1094,59 @@ def test_viewer_skill_text_names_hook_files():
     text = read(VIEWER / "SKILL.md")
     for name in ("events.jsonl", ".symphysis/viewer/", "answers/"):
         assert name in text, f"в SKILL.md не названо {name}"
+
+
+# --- U18: комментарий `<!-- F-NN -->` под заголовком сценария и снятое в depends_on (6.3, 6.4: F-45, F-46) ---
+
+SCENARIO_COMMENT = "<!-- F-NN -->"
+
+
+@pytest.mark.parametrize("name", ["symphysis-edge-probe", "symphysis-prohibition-probe", "symphysis-consequences"])
+def test_probe_skills_put_the_record_number_under_the_scenario_heading(name):
+    """`requirement-probes`: «Край с исходом Specify», «Запрет с исходом Specify»;
+    `consequence-inventory`: «Ветка с исходом Specify», «Причина провала с исходом Specify» (F-45):
+    сценарий по исходу Specify несёт `<!-- F-NN -->` строкой под заголовком, и она вне предела 500 знаков.
+    Правило — в общем `candidate.md` (зеркало исхода), тело скилла называет строку в своём зеркале."""
+    rule = block(read(SHARED / "candidate.md"), "- `Specify` —", "\n- `Backstop`")
+    for token in (SCENARIO_COMMENT, "под заголовком сценария", "предел 500", "F-45"):
+        assert token in rule, f"candidate.md: нет «{token}»"
+    text = flat(read(SKILLS / name / "SKILL.md"))
+    for token in (SCENARIO_COMMENT, "сразу под заголовком", "candidate.md"):
+        assert token in text, f"{name}: нет «{token}»"
+
+
+def test_consequences_skill_marks_the_pre_mortem_scenario_too():
+    """`consequence-inventory`: «Причина провала с исходом Specify» (F-45)."""
+    step = block(read(SKILLS / "symphysis-consequences" / "SKILL.md"), "### 9.", "\n### ")
+    assert SCENARIO_COMMENT in step and "`[pre-mortem]`" in step and "ветк" in step
+    rule = block(read(SHARED / "candidate.md"), "- `Specify` —", "\n- `Backstop`")
+    assert rule.index(SCENARIO_COMMENT) < rule.index("`consequences` ← «в spec.md")
+
+
+def test_brainstorm_skill_names_the_lifted_decision_in_depends_on():
+    """`brainstorm-interview`: «Срез снимает исход Specify» (F-46): запись, снимающая прежнее решение,
+    называет снятую запись в `depends_on`; `outcome` снятой записи не переписывается."""
+    step = block(brainstorm(), "### 6.", "\n### ")
+    for token in ("снимает прежнее решение", "называет снятую запись в `depends_on`",
+                  "`outcome` снятой записи не переписывается", "зеркалит слово человека", "F-46"):
+        assert token in step, f"в шаге 6 нет «{token}»"
+
+
+@requires_fork
+def test_scenario_comment_reaches_the_master_spec(tmp_path):
+    """`requirement-probes`: «Комментарий доходит до мастер-спеки» (F-45): дельта с `<!-- F-12 -->`
+    под заголовком сценария проходит `validate --strict`, после `archive` комментарий стоит под тем же заголовком."""
+    from test_schema import make_project, run_openspec_raw
+    proj = make_project(tmp_path)
+    delta = proj / "openspec" / "changes" / "demo" / "specs" / "cap" / "spec.md"
+    delta.parent.mkdir(parents=True)
+    delta.write_text(
+        "## ADDED Requirements\n\n### Requirement: Слияние интервалов\n"
+        "Система SHALL склеивать касающиеся интервалы.\n\n"
+        "#### Scenario: Интервалы касаются\n<!-- F-12 -->\n"
+        "- **GIVEN** интервалы 1-2 и 2-3\n- **WHEN** собирается отчёт\n- **THEN** в файле один интервал 1-3\n",
+        encoding="utf-8", newline="\n")
+    run_openspec_raw(proj, "validate", "demo", "--strict")
+    run_openspec_raw(proj, "archive", "demo", "--yes")
+    master = (proj / "openspec" / "specs" / "cap" / "spec.md").read_text(encoding="utf-8")
+    assert "#### Scenario: Интервалы касаются\n<!-- F-12 -->\n" in master.replace("\r\n", "\n")

@@ -79,7 +79,7 @@ def test_driver_steps_match_the_skill_driver_section(agent):
     text = read(agent)
     skill = skill_of(agent)
     driver = read(ROOT / "skills" / skill / "SKILL.md").split("## Водитель", 1)[1]
-    expected = {"symphysis-attack": "шаги 1–6", "symphysis-edge-probe": "такты 1–7 и 11",
+    expected = {"symphysis-attack": "шаги 0–6", "symphysis-edge-probe": "такты 1–7 и 11",
                 "symphysis-prohibition-probe": "такты 1–5", "symphysis-consequences": "такты 1–7",
                 "symphysis-research": "шаги 4–8"}[skill]
     assert expected in driver, f"{skill}: в разделе «Водитель» нет «{expected}»"

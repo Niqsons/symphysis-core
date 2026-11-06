@@ -3,6 +3,7 @@
 import fnmatch
 import re
 
+import openspec_run
 import step_help
 from conftest import ROOT
 
@@ -158,10 +159,29 @@ def test_text_does_not_say_the_step_is_running():
 
 def test_text_has_no_absolute_paths():
     """Текст шага попадает в снимок на странице, а она отслеживается git (F-51)."""
-    assert step_help.ABSOLUTE_PATH.search(steps_text()) is None
+    assert openspec_run.ABSOLUTE_PATH.search(steps_text()) is None
 
 
 def test_parser_reads_crlf_and_skips_fenced_headings():
     text = ("# Шапка\r\n\r\n## a\r\n\r\nНазвание\r\n\r\n### Команда\r\n\r\n```\r\n## не раздел\r\n```\r\n\r\n"
             "### Чужой\r\n\r\nмимо\r\n")
     assert step_help.parse_steps(text) == {"a": {"title": "Название", "command": "```\n## не раздел\n```"}}
+
+
+def test_apply_and_archive_sections_name_the_freeze():
+    """`trace-snapshot`: «Перед первой задачей», «Снимка нет» (F-134, F-139): механика заморозки и ссылка на отчёт
+    названы в разделах `apply` и `archive` — их текст отдаёт справка шага."""
+    sections = step_help.parse_steps(steps_text())
+    for step in ("apply", "archive"):
+        mechanics = sections[step]["mechanics"]
+        assert "заморозк" in mechanics.lower() and "`graph/report.md`" in mechanics, step
+        assert "trace_graph.py freeze" in mechanics, step
+    assert "когда отмечена последняя задача, модель зовёт" in sections["apply"]["mechanics"]
+
+
+def test_attack_artifacts_section_names_the_three_lenses():
+    """F-55: раздел `attack-artifacts` называет все три линзы артефактов, `trace-link` — третьей."""
+    mechanics = step_help.parse_steps(steps_text())["attack-artifacts"]["mechanics"]
+    line = next(l for l in mechanics.splitlines() if "Линзы артефактов:" in l)
+    positions = [line.index(f"`{lens}`") for lens in ("scenario-run", "claim-extraction", "trace-link")]
+    assert positions == sorted(positions)

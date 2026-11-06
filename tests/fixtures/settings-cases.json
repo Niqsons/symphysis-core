@@ -425,5 +425,82 @@
   "assumptions": true,
   "edge_probe": true,
   "signals": []
+ },
+ {
+  "name": "линза выключена",
+  "bytes_b64": "YXR0YWNrOgogIHRyYWNlLWxpbms6IGZhbHNlCg==",
+  "failure_branches": true,
+  "assumptions": true,
+  "edge_probe": true,
+  "lenses_off": [
+   "trace-link"
+  ],
+  "signals": []
+ },
+ {
+  "name": "claim-extraction выключена одним ключом",
+  "bytes_b64": "YXR0YWNrOgogIGNsYWltLWV4dHJhY3Rpb246IGZhbHNlCg==",
+  "failure_branches": true,
+  "assumptions": true,
+  "edge_probe": true,
+  "lenses_off": [
+   "claim-extraction"
+  ],
+  "signals": []
+ },
+ {
+  "name": "линза включена явно",
+  "bytes_b64": "YXR0YWNrOgogIGNvdmVyYWdlOiB0cnVlCiAgc2NlbmFyaW8tcnVuOgo=",
+  "failure_branches": true,
+  "assumptions": true,
+  "edge_probe": true,
+  "lenses_off": [],
+  "signals": []
+ },
+ {
+  "name": "неизвестная линза",
+  "bytes_b64": "YXR0YWNrOgogIHRyYWNlLWxuaWs6IGZhbHNlCg==",
+  "failure_branches": true,
+  "assumptions": true,
+  "edge_probe": true,
+  "lenses_off": [],
+  "signals": [
+   "symphysis.yaml: неизвестная линза trace-lnik"
+  ]
+ },
+ {
+  "name": "неизвестная линза не мешает выключенной",
+  "bytes_b64": "YXR0YWNrOgogIHRyYWNlLWxuaWs6IGZhbHNlCiAgY292ZXJhZ2U6IGZhbHNlCg==",
+  "failure_branches": true,
+  "assumptions": true,
+  "edge_probe": true,
+  "lenses_off": [
+   "coverage"
+  ],
+  "signals": [
+   "symphysis.yaml: неизвестная линза trace-lnik"
+  ]
+ },
+ {
+  "name": "недопустимое значение у линзы",
+  "bytes_b64": "YXR0YWNrOgogIHRyYWNlLWxpbms6IG5vCg==",
+  "failure_branches": true,
+  "assumptions": true,
+  "edge_probe": true,
+  "lenses_off": [],
+  "signals": [
+   "symphysis.yaml: недопустимое значение no"
+  ]
+ },
+ {
+  "name": "attack плоской записью",
+  "bytes_b64": "YXR0YWNrOiBmYWxzZQo=",
+  "failure_branches": true,
+  "assumptions": true,
+  "edge_probe": true,
+  "lenses_off": [],
+  "signals": [
+   "symphysis.yaml: attack — нужен вложенный ключ"
+  ]
  }
 ]

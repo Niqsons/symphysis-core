@@ -1,0 +1,386 @@
+# Покрытие пробы краёв: trace-graph
+
+- artifact-attack/Строка атаки валидна только с линзой, тяжестью, инвариантом и опорой · boundary · неприменимо: формы collection, text; boundary только для numeric-range
+- artifact-attack/Строка атаки валидна только с линзой, тяжестью, инвариантом и опорой · adjacency · не выбран: две строки об одной проблеме в разных разделах; зависимости между строками владелец отнёс в бэклог, в этом изменении ответ ничего не изменит
+- artifact-attack/Строка атаки валидна только с линзой, тяжестью, инвариантом и опорой · empty · не найдено: пустая таблица при включённой `coverage` — у каждого раздела журнала есть строка; все выключенные линзы разобраны у «Состав линз настраивается»
+- artifact-attack/Строка атаки валидна только с линзой, тяжестью, инвариантом и опорой · encoding · не найдено: слуг и тяжесть сравниваются как точные строки из закрытых списков
+- artifact-attack/Строка атаки валидна только с линзой, тяжестью, инвариантом и опорой · ordering · не найдено: порядок строк вердикта не меняет, просмотрщик сам группирует по линзе и тяжести
+- artifact-attack/Строка атаки валидна только с линзой, тяжестью, инвариантом и опорой · precision · неприменимо: формы collection, text; precision только для numeric-range
+- artifact-attack/Строка атаки валидна только с линзой, тяжестью, инвариантом и опорой · idempotency · неприменимо: формы collection, text; idempotency только для stateful
+- artifact-attack/Строка атаки валидна только с линзой, тяжестью, инвариантом и опорой · concurrency · неприменимо: формы collection, text; concurrency только для io, stateful
+- artifact-attack/Покрытие поимённо — у каждого раздела цели строка · boundary · неприменимо: формы collection; boundary только для numeric-range
+- artifact-attack/Покрытие поимённо — у каждого раздела цели строка · adjacency · не найдено: раздел журнала это пара «запись, поле»; две строки об одном разделе покрытию не мешают
+- artifact-attack/Покрытие поимённо — у каждого раздела цели строка · empty · не найдено: журнал без записей даёт строку на `title · source · intro`; файла нет — сценарии «Цели нет» и «Журнала нет»
+- artifact-attack/Покрытие поимённо — у каждого раздела цели строка · encoding · неприменимо: формы collection; encoding только для text
+- artifact-attack/Покрытие поимённо — у каждого раздела цели строка · ordering · не найдено: порядок разделов на счёт строк не влияет
+- artifact-attack/Покрытие поимённо — у каждого раздела цели строка · precision · неприменимо: формы collection; precision только для numeric-range
+- artifact-attack/Покрытие поимённо — у каждого раздела цели строка · idempotency · неприменимо: формы collection; idempotency только для stateful
+- artifact-attack/Покрытие поимённо — у каждого раздела цели строка · concurrency · неприменимо: формы collection; concurrency только для io, stateful
+- artifact-attack/Линзы атаки артефактов · boundary · неприменимо: формы collection; boundary только для numeric-range
+- artifact-attack/Линзы атаки артефактов · adjacency · не выбран: `claim-extraction` есть в обоих файлах атаки; слуги сверяются в пределах файла, другого исхода нет
+- artifact-attack/Линзы атаки артефактов · empty · не выбран: выключены все три линзы; вынесено кандидатом к «Состав линз настраивается», второй раз не поднимается
+- artifact-attack/Линзы атаки артефактов · encoding · неприменимо: формы collection; encoding только для text
+- artifact-attack/Линзы атаки артефактов · ordering · не найдено: порядок линз задан таблицей скилла
+- artifact-attack/Линзы атаки артефактов · precision · неприменимо: формы collection; precision только для numeric-range
+- artifact-attack/Линзы атаки артефактов · idempotency · неприменимо: формы collection; idempotency только для stateful
+- artifact-attack/Линзы атаки артефактов · concurrency · неприменимо: формы collection; concurrency только для io, stateful
+- artifact-attack/Линзы атаки журнала · boundary · неприменимо: формы collection; boundary только для numeric-range
+- artifact-attack/Линзы атаки журнала · adjacency · не найдено: у четырёх линз разные вопросы, одно утверждение идёт под одной линзой
+- artifact-attack/Линзы атаки журнала · empty · не найдено: при включённой `coverage` строк не меньше, чем разделов
+- artifact-attack/Линзы атаки журнала · encoding · неприменимо: формы collection; encoding только для text
+- artifact-attack/Линзы атаки журнала · ordering · не найдено: порядок линз задан таблицей скилла
+- artifact-attack/Линзы атаки журнала · precision · неприменимо: формы collection; precision только для numeric-range
+- artifact-attack/Линзы атаки журнала · idempotency · неприменимо: формы collection; idempotency только для stateful
+- artifact-attack/Линзы атаки журнала · concurrency · неприменимо: формы collection; concurrency только для io, stateful
+- artifact-attack/Черта в ячейке атаки экранируется · boundary · неприменимо: формы text; boundary только для numeric-range
+- artifact-attack/Черта в ячейке атаки экранируется · adjacency · неприменимо: формы text; adjacency только для collection
+- artifact-attack/Черта в ячейке атаки экранируется · empty · не найдено: пустая ячейка заменяется «—» по правилу скилла
+- artifact-attack/Черта в ячейке атаки экранируется · encoding · не выбран: `\\|` против `\|`; исход задан сценарием родителя «Обратная косая перед чертой в цитате кода»
+- artifact-attack/Черта в ячейке атаки экранируется · ordering · неприменимо: формы text; ordering только для collection
+- artifact-attack/Черта в ячейке атаки экранируется · precision · неприменимо: формы text; precision только для numeric-range
+- artifact-attack/Черта в ячейке атаки экранируется · idempotency · неприменимо: формы text; idempotency только для stateful
+- artifact-attack/Черта в ячейке атаки экранируется · concurrency · неприменимо: формы text; concurrency только для io, stateful
+- artifact-attack/Линза связей проверяет смысл названных связей · boundary · неприменимо: формы collection; boundary только для numeric-range
+- artifact-attack/Линза связей проверяет смысл названных связей · adjacency · кандидат F-105
+- artifact-attack/Линза связей проверяет смысл названных связей · empty · не найдено: связей нет — строк линзы нет, покрытие у артефактов держит `scenario-run`
+- artifact-attack/Линза связей проверяет смысл названных связей · encoding · неприменимо: формы collection; encoding только для text
+- artifact-attack/Линза связей проверяет смысл названных связей · ordering · не найдено: порядок строк вердикта не меняет
+- artifact-attack/Линза связей проверяет смысл названных связей · precision · неприменимо: формы collection; precision только для numeric-range
+- artifact-attack/Линза связей проверяет смысл названных связей · idempotency · неприменимо: формы collection; idempotency только для stateful
+- artifact-attack/Линза связей проверяет смысл названных связей · concurrency · неприменимо: формы collection; concurrency только для io, stateful
+- artifact-attack/Состав линз настраивается · boundary · неприменимо: формы collection, stateful; boundary только для numeric-range
+- artifact-attack/Состав линз настраивается · adjacency · не выбран: `scenario-run` и `trace-link` выключены вместе; каждая линза решает за себя, другого правила нет
+- artifact-attack/Состав линз настраивается · empty · кандидат F-106
+- artifact-attack/Состав линз настраивается · encoding · неприменимо: формы collection, stateful; encoding только для text
+- artifact-attack/Состав линз настраивается · ordering · не найдено: порядок линз в строке `**Состав:**` задан таблицей скилла
+- artifact-attack/Состав линз настраивается · precision · неприменимо: формы collection, stateful; precision только для numeric-range
+- artifact-attack/Состав линз настраивается · idempotency · кандидат F-107
+- artifact-attack/Состав линз настраивается · concurrency · не найдено: состав читается один раз в начале атаки, правка файла действует со следующего запуска
+- brainstorm-interview/Запись, снимающая решение, называет снятое · boundary · неприменимо: формы text; boundary только для numeric-range
+- brainstorm-interview/Запись, снимающая решение, называет снятое · adjacency · неприменимо: формы text; adjacency только для collection
+- brainstorm-interview/Запись, снимающая решение, называет снятое · empty · не найдено: снимать нечего — в `depends_on` этой записи снятого нет, и сигнал без подсказки назван сценарием
+- brainstorm-interview/Запись, снимающая решение, называет снятое · encoding · не найдено: номер записи это точная строка `F-NN`, неизвестный отвергает `check`
+- brainstorm-interview/Запись, снимающая решение, называет снятое · ordering · неприменимо: формы text; ordering только для collection
+- brainstorm-interview/Запись, снимающая решение, называет снятое · precision · неприменимо: формы text; precision только для numeric-range
+- brainstorm-interview/Запись, снимающая решение, называет снятое · idempotency · неприменимо: формы text; idempotency только для stateful
+- brainstorm-interview/Запись, снимающая решение, называет снятое · concurrency · неприменимо: формы text; concurrency только для io, stateful
+- consequence-inventory/Сценарий по ветке описи несёт номер записи · boundary · неприменимо: формы text; boundary только для numeric-range
+- consequence-inventory/Сценарий по ветке описи несёт номер записи · adjacency · неприменимо: формы text; adjacency только для collection
+- consequence-inventory/Сценарий по ветке описи несёт номер записи · empty · не найдено: у `[допущение]` и `[pre-mortem]` ветки нет, сценарий идёт в требование из улики; назван сценарием
+- consequence-inventory/Сценарий по ветке описи несёт номер записи · encoding · не выбран: комментарий с другими пробелами; форму пишет скилл, а отличие сразу даст сигнал «Specify без сценария»
+- consequence-inventory/Сценарий по ветке описи несёт номер записи · ordering · неприменимо: формы text; ordering только для collection
+- consequence-inventory/Сценарий по ветке описи несёт номер записи · precision · неприменимо: формы text; precision только для numeric-range
+- consequence-inventory/Сценарий по ветке описи несёт номер записи · idempotency · неприменимо: формы text; idempotency только для stateful
+- consequence-inventory/Сценарий по ветке описи несёт номер записи · concurrency · неприменимо: формы text; concurrency только для io, stateful
+- decision-viewer/Режим «атака» группирует строки по линзам и держит слуг вне списка отдельно · boundary · неприменимо: формы collection; boundary только для numeric-range
+- decision-viewer/Режим «атака» группирует строки по линзам и держит слуг вне списка отдельно · adjacency · не найдено: `claim-extraction` двух файлов идёт под шапкой своего файла
+- decision-viewer/Режим «атака» группирует строки по линзам и держит слуг вне списка отдельно · empty · не выбран: файл атаки без строк при всех выключенных линзах; шапка с нулями видна сразу, вердикт решается у «Состав линз настраивается»
+- decision-viewer/Режим «атака» группирует строки по линзам и держит слуг вне списка отдельно · encoding · неприменимо: формы collection; encoding только для text
+- decision-viewer/Режим «атака» группирует строки по линзам и держит слуг вне списка отдельно · ordering · не выбран: порядок строк; задан самим требованием: линза, затем тяжесть
+- decision-viewer/Режим «атака» группирует строки по линзам и держит слуг вне списка отдельно · precision · неприменимо: формы collection; precision только для numeric-range
+- decision-viewer/Режим «атака» группирует строки по линзам и держит слуг вне списка отдельно · idempotency · неприменимо: формы collection; idempotency только для stateful
+- decision-viewer/Режим «атака» группирует строки по линзам и держит слуг вне списка отдельно · concurrency · неприменимо: формы collection; concurrency только для io, stateful
+- decision-viewer/Шапка режима «атака» фильтрует по линзе и показывает запись · boundary · неприменимо: формы collection; boundary только для numeric-range
+- decision-viewer/Шапка режима «атака» фильтрует по линзе и показывает запись · adjacency · не найдено: фильтр идёт по слугам файла, дублей нет
+- decision-viewer/Шапка режима «атака» фильтрует по линзе и показывает запись · empty · не найдено: линзы без строк страница и плагин скрывают (F-61)
+- decision-viewer/Шапка режима «атака» фильтрует по линзе и показывает запись · encoding · неприменимо: формы collection; encoding только для text
+- decision-viewer/Шапка режима «атака» фильтрует по линзе и показывает запись · ordering · не найдено: порядок кнопок повторяет порядок линз
+- decision-viewer/Шапка режима «атака» фильтрует по линзе и показывает запись · precision · неприменимо: формы collection; precision только для numeric-range
+- decision-viewer/Шапка режима «атака» фильтрует по линзе и показывает запись · idempotency · неприменимо: формы collection; idempotency только для stateful
+- decision-viewer/Шапка режима «атака» фильтрует по линзе и показывает запись · concurrency · неприменимо: формы collection; concurrency только для io, stateful
+- decision-viewer/Промпт режима «атака» пересобирается из состояния · boundary · неприменимо: формы stateful, text; boundary только для numeric-range
+- decision-viewer/Промпт режима «атака» пересобирается из состояния · adjacency · неприменимо: формы stateful, text; adjacency только для collection
+- decision-viewer/Промпт режима «атака» пересобирается из состояния · empty · не найдено: очищенное поле ответа строки не даёт; назван сценарием родителя
+- decision-viewer/Промпт режима «атака» пересобирается из состояния · encoding · не найдено: ответ переносится дословно, грамматику держит `apply`
+- decision-viewer/Промпт режима «атака» пересобирается из состояния · ordering · неприменимо: формы stateful, text; ordering только для collection
+- decision-viewer/Промпт режима «атака» пересобирается из состояния · precision · неприменимо: формы stateful, text; precision только для numeric-range
+- decision-viewer/Промпт режима «атака» пересобирается из состояния · idempotency · не выбран: повторный `apply` того же ответа; исход назван сценарием родителя «Внесённое уходит из промпта»
+- decision-viewer/Промпт режима «атака» пересобирается из состояния · concurrency · не найдено: промпт собирает сама страница, параллельных писателей нет
+- onboarding-guide/Руководство описывает граф трассируемости · boundary · неприменимо: формы text; boundary только для numeric-range
+- onboarding-guide/Руководство описывает граф трассируемости · adjacency · неприменимо: формы text; adjacency только для collection
+- onboarding-guide/Руководство описывает граф трассируемости · empty · не найдено: у раздела руководства нет пустого случая: он пишется один раз
+- onboarding-guide/Руководство описывает граф трассируемости · encoding · не найдено: текст по-русски, машинные имена как в схеме, это держит `tests/test_guide.py`
+- onboarding-guide/Руководство описывает граф трассируемости · ordering · неприменимо: формы text; ordering только для collection
+- onboarding-guide/Руководство описывает граф трассируемости · precision · неприменимо: формы text; precision только для numeric-range
+- onboarding-guide/Руководство описывает граф трассируемости · idempotency · неприменимо: формы text; idempotency только для stateful
+- onboarding-guide/Руководство описывает граф трассируемости · concurrency · неприменимо: формы text; concurrency только для io, stateful
+- project-installer/`install` ставит скрипт графа · boundary · неприменимо: формы stateful, io; boundary только для numeric-range
+- project-installer/`install` ставит скрипт графа · adjacency · неприменимо: формы stateful, io; adjacency только для collection
+- project-installer/`install` ставит скрипт графа · empty · неприменимо: формы stateful, io; empty только для collection, text
+- project-installer/`install` ставит скрипт графа · encoding · неприменимо: формы stateful, io; encoding только для text
+- project-installer/`install` ставит скрипт графа · ordering · неприменимо: формы stateful, io; ordering только для collection
+- project-installer/`install` ставит скрипт графа · precision · неприменимо: формы stateful, io; precision только для numeric-range
+- project-installer/`install` ставит скрипт графа · idempotency · не выбран: повторный `install`; исход задан первым требованием и сценарием «Повторная установка»
+- project-installer/`install` ставит скрипт графа · concurrency · не найдено: файлы кладутся по одному, прерванную установку дополняет повторный запуск
+- project-installer/`install` переносит подсказки операций · boundary · неприменимо: формы collection, stateful; boundary только для numeric-range
+- project-installer/`install` переносит подсказки операций · adjacency · кандидат F-110
+- project-installer/`install` переносит подсказки операций · empty · не выбран: `operations: {}` в чужом конфиге; форк такое принимает, слияние добавляет список, как у `rules`, другого исхода нет
+- project-installer/`install` переносит подсказки операций · encoding · неприменимо: формы collection, stateful; encoding только для text
+- project-installer/`install` переносит подсказки операций · ordering · не найдено: подсказки независимы, порядок смысла не меняет
+- project-installer/`install` переносит подсказки операций · precision · неприменимо: формы collection, stateful; precision только для numeric-range
+- project-installer/`install` переносит подсказки операций · idempotency · не выбран: повторная установка; исход назван сценарием «Повторная установка не дублирует»
+- project-installer/`install` переносит подсказки операций · concurrency · не найдено: файл конфига пишется одной записью
+- project-settings/`symphysis.yaml` в корне проекта задаёт выбор перед запуском шага · boundary · неприменимо: формы text, collection; boundary только для numeric-range
+- project-settings/`symphysis.yaml` в корне проекта задаёт выбор перед запуском шага · adjacency · кандидат F-109
+- project-settings/`symphysis.yaml` в корне проекта задаёт выбор перед запуском шага · empty · не найдено: пустое значение равно отсутствию ключа, назван сценарием «Значение не из true и false»
+- project-settings/`symphysis.yaml` в корне проекта задаёт выбор перед запуском шага · encoding · кандидат F-108
+- project-settings/`symphysis.yaml` в корне проекта задаёт выбор перед запуском шага · ordering · не найдено: порядок ключей в файле не влияет
+- project-settings/`symphysis.yaml` в корне проекта задаёт выбор перед запуском шага · precision · неприменимо: формы text, collection; precision только для numeric-range
+- project-settings/`symphysis.yaml` в корне проекта задаёт выбор перед запуском шага · idempotency · неприменимо: формы text, collection; idempotency только для stateful
+- project-settings/`symphysis.yaml` в корне проекта задаёт выбор перед запуском шага · concurrency · неприменимо: формы text, collection; concurrency только для io, stateful
+- requirement-probes/Сценарий по исходу Specify несёт номер записи · boundary · неприменимо: формы text, stateful; boundary только для numeric-range
+- requirement-probes/Сценарий по исходу Specify несёт номер записи · adjacency · неприменимо: формы text, stateful; adjacency только для collection
+- requirement-probes/Сценарий по исходу Specify несёт номер записи · empty · не найдено: сценарий всегда с шагами: скилл пишет GIVEN, WHEN, THEN, один комментарий без них не бывает
+- requirement-probes/Сценарий по исходу Specify несёт номер записи · encoding · не выбран: комментарий внутри MODIFIED; блок едет в мастер-спеку целиком, исход назван сценарием «Комментарий доходит до мастер-спеки»
+- requirement-probes/Сценарий по исходу Specify несёт номер записи · ordering · неприменимо: формы text, stateful; ordering только для collection
+- requirement-probes/Сценарий по исходу Specify несёт номер записи · precision · неприменимо: формы text, stateful; precision только для numeric-range
+- requirement-probes/Сценарий по исходу Specify несёт номер записи · idempotency · не выбран: повтор пробы; запись сохраняет номер, комментарий остаётся по разделу «Повтор пробы» скилла
+- requirement-probes/Сценарий по исходу Specify несёт номер записи · concurrency · не найдено: скилл правит один файл спеки
+- trace-conventions/Требование называет свои записи журнала · boundary · неприменимо: формы text; boundary только для numeric-range
+- trace-conventions/Требование называет свои записи журнала · adjacency · неприменимо: формы text; adjacency только для collection
+- trace-conventions/Требование называет свои записи журнала · empty · кандидат F-83
+- trace-conventions/Требование называет свои записи журнала · encoding · кандидат F-84
+- trace-conventions/Требование называет свои записи журнала · ordering · неприменимо: формы text; ordering только для collection
+- trace-conventions/Требование называет свои записи журнала · precision · неприменимо: формы text; precision только для numeric-range
+- trace-conventions/Требование называет свои записи журнала · idempotency · неприменимо: формы text; idempotency только для stateful
+- trace-conventions/Требование называет свои записи журнала · concurrency · неприменимо: формы text; concurrency только для io, stateful
+- trace-conventions/Задача называет сценарий вместе с capability · boundary · неприменимо: формы collection, text; boundary только для numeric-range
+- trace-conventions/Задача называет сценарий вместе с capability · adjacency · кандидат F-89
+- trace-conventions/Задача называет сценарий вместе с capability · empty · не выбран: задача без имён; это служебная или сигнал, исход задан требованием о пометке
+- trace-conventions/Задача называет сценарий вместе с capability · encoding · не выбран: имя сценария с вложенными кавычками, 5 из 623; правило общее с кандидатом F-92
+- trace-conventions/Задача называет сценарий вместе с capability · ordering · не найдено: порядок имён в строке связей не меняет
+- trace-conventions/Задача называет сценарий вместе с capability · precision · неприменимо: формы collection, text; precision только для numeric-range
+- trace-conventions/Задача называет сценарий вместе с capability · idempotency · неприменимо: формы collection, text; idempotency только для stateful
+- trace-conventions/Задача называет сценарий вместе с capability · concurrency · неприменимо: формы collection, text; concurrency только для io, stateful
+- trace-conventions/Служебная задача несёт пометку · boundary · неприменимо: формы text; boundary только для numeric-range
+- trace-conventions/Служебная задача несёт пометку · adjacency · неприменимо: формы text; adjacency только для collection
+- trace-conventions/Служебная задача несёт пометку · empty · не найдено: задача без текста не проходит разбор `tasks.md`
+- trace-conventions/Служебная задача несёт пометку · encoding · кандидат F-90
+- trace-conventions/Служебная задача несёт пометку · ordering · неприменимо: формы text; ordering только для collection
+- trace-conventions/Служебная задача несёт пометку · precision · неприменимо: формы text; precision только для numeric-range
+- trace-conventions/Служебная задача несёт пометку · idempotency · неприменимо: формы text; idempotency только для stateful
+- trace-conventions/Служебная задача несёт пометку · concurrency · неприменимо: формы text; concurrency только для io, stateful
+- trace-conventions/Длинное требование делится на дочернее · boundary · кандидат F-91
+- trace-conventions/Длинное требование делится на дочернее · adjacency · неприменимо: формы numeric-range, text; adjacency только для collection
+- trace-conventions/Длинное требование делится на дочернее · empty · не найдено: короткому требованию правило ничего не говорит
+- trace-conventions/Длинное требование делится на дочернее · encoding · не выбран: что считать знаком; считает `validator.ts`, другого определения у нас нет
+- trace-conventions/Длинное требование делится на дочернее · ordering · неприменимо: формы numeric-range, text; ordering только для collection
+- trace-conventions/Длинное требование делится на дочернее · precision · не найдено: предел целое число, округления нет
+- trace-conventions/Длинное требование делится на дочернее · idempotency · неприменимо: формы numeric-range, text; idempotency только для stateful
+- trace-conventions/Длинное требование делится на дочернее · concurrency · неприменимо: формы numeric-range, text; concurrency только для io, stateful
+- trace-conventions/Дочернее требование называет родителя · boundary · неприменимо: формы text; boundary только для numeric-range
+- trace-conventions/Дочернее требование называет родителя · adjacency · неприменимо: формы text; adjacency только для collection
+- trace-conventions/Дочернее требование называет родителя · empty · не найдено: фразы нет — связи `derives` нет, требование читается как обычное
+- trace-conventions/Дочернее требование называет родителя · encoding · кандидат F-92
+- trace-conventions/Дочернее требование называет родителя · ordering · неприменимо: формы text; ordering только для collection
+- trace-conventions/Дочернее требование называет родителя · precision · неприменимо: формы text; precision только для numeric-range
+- trace-conventions/Дочернее требование называет родителя · idempotency · неприменимо: формы text; idempotency только для stateful
+- trace-conventions/Дочернее требование называет родителя · concurrency · неприменимо: формы text; concurrency только для io, stateful
+- trace-diagram/Скрипт выдаёт текст диаграммы по выбору · boundary · неприменимо: формы text, collection; boundary только для numeric-range
+- trace-diagram/Скрипт выдаёт текст диаграммы по выбору · adjacency · кандидат F-103
+- trace-diagram/Скрипт выдаёт текст диаграммы по выбору · empty · не выбран: `--capability` с именем, которого нет; отказ с кодом, другого разумного исхода нет
+- trace-diagram/Скрипт выдаёт текст диаграммы по выбору · encoding · не найдено: имя сравнивается точно, как в id
+- trace-diagram/Скрипт выдаёт текст диаграммы по выбору · ordering · не выбран: порядок блоков в тексте; следует порядку графа, кандидат F-81
+- trace-diagram/Скрипт выдаёт текст диаграммы по выбору · precision · неприменимо: формы text, collection; precision только для numeric-range
+- trace-diagram/Скрипт выдаёт текст диаграммы по выбору · idempotency · неприменимо: формы text, collection; idempotency только для stateful
+- trace-diagram/Скрипт выдаёт текст диаграммы по выбору · concurrency · неприменимо: формы text, collection; concurrency только для io, stateful
+- trace-diagram/Без выбора действует предел текста · boundary · кандидат F-104
+- trace-diagram/Без выбора действует предел текста · adjacency · неприменимо: формы numeric-range; adjacency только для collection
+- trace-diagram/Без выбора действует предел текста · empty · неприменимо: формы numeric-range; empty только для collection, text
+- trace-diagram/Без выбора действует предел текста · encoding · неприменимо: формы numeric-range; encoding только для text
+- trace-diagram/Без выбора действует предел текста · ordering · неприменимо: формы numeric-range; ordering только для collection
+- trace-diagram/Без выбора действует предел текста · precision · не выбран: знаки UTF-16 против кодовых точек; символов вне BMP в наших текстах почти нет, а запас у самого предела не обещан
+- trace-diagram/Без выбора действует предел текста · idempotency · неприменимо: формы numeric-range; idempotency только для stateful
+- trace-diagram/Без выбора действует предел текста · concurrency · неприменимо: формы numeric-range; concurrency только для io, stateful
+- trace-diagram/Конфиг задаёт виды сущностей · boundary · неприменимо: формы collection, text; boundary только для numeric-range
+- trace-diagram/Конфиг задаёт виды сущностей · adjacency · не найдено: узел имеет один вид
+- trace-diagram/Конфиг задаёт виды сущностей · empty · не найдено: вид без строки конфига поймает тест генератора
+- trace-diagram/Конфиг задаёт виды сущностей · encoding · не выбран: имя класса только латиницей без дефиса; это ограничение mermaid из `research/F-54.md`, конфиг пишем сами
+- trace-diagram/Конфиг задаёт виды сущностей · ordering · не выбран: `class` до объявления молча не действует; порядок задан требованием о разборе
+- trace-diagram/Конфиг задаёт виды сущностей · precision · неприменимо: формы collection, text; precision только для numeric-range
+- trace-diagram/Конфиг задаёт виды сущностей · idempotency · неприменимо: формы collection, text; idempotency только для stateful
+- trace-diagram/Конфиг задаёт виды сущностей · concurrency · неприменимо: формы collection, text; concurrency только для io, stateful
+- trace-diagram/Номер несёт вид и не упирается в гейт · boundary · неприменимо: формы text, collection; boundary только для numeric-range
+- trace-diagram/Номер несёт вид и не упирается в гейт · adjacency · не выбран: одинаковые имена сценариев; исход назван сценарием «Одинаковые имена сценариев»
+- trace-diagram/Номер несёт вид и не упирается в гейт · empty · не найдено: диаграмма без узлов номеров не несёт
+- trace-diagram/Номер несёт вид и не упирается в гейт · encoding · не выбран: `TASK_3.2` с точкой; проверено на обеих версиях в `research/F-58-probe/underscore-results.txt`
+- trace-diagram/Номер несёт вид и не упирается в гейт · ordering · не выбран: номер плывёт при добавлении соседа; принято в F-68: диаграмма живёт один показ
+- trace-diagram/Номер несёт вид и не упирается в гейт · precision · неприменимо: формы text, collection; precision только для numeric-range
+- trace-diagram/Номер несёт вид и не упирается в гейт · idempotency · неприменимо: формы text, collection; idempotency только для stateful
+- trace-diagram/Номер несёт вид и не упирается в гейт · concurrency · неприменимо: формы text, collection; concurrency только для io, stateful
+- trace-diagram/Текст диаграммы разбирается на настоящих именах · boundary · неприменимо: формы text; boundary только для numeric-range
+- trace-diagram/Текст диаграммы разбирается на настоящих именах · adjacency · неприменимо: формы text; adjacency только для collection
+- trace-diagram/Текст диаграммы разбирается на настоящих именах · empty · не найдено: пустых имён нет: заголовок требует текст
+- trace-diagram/Текст диаграммы разбирается на настоящих именах · encoding · не выбран: кавычка, апостроф, обратный апостроф; покрыто сценариями и пробами `research/F-54.md`
+- trace-diagram/Текст диаграммы разбирается на настоящих именах · ordering · неприменимо: формы text; ordering только для collection
+- trace-diagram/Текст диаграммы разбирается на настоящих именах · precision · неприменимо: формы text; precision только для numeric-range
+- trace-diagram/Текст диаграммы разбирается на настоящих именах · idempotency · неприменимо: формы text; idempotency только для stateful
+- trace-diagram/Текст диаграммы разбирается на настоящих именах · concurrency · неприменимо: формы text; concurrency только для io, stateful
+- trace-graph/Граф собирается из файлов изменения · boundary · неприменимо: формы collection, io; boundary только для numeric-range
+- trace-graph/Граф собирается из файлов изменения · adjacency · не найдено: одна запись, названная в двух файлах, это один узел `rec:F-NN`
+- trace-graph/Граф собирается из файлов изменения · empty · кандидат F-80
+- trace-graph/Граф собирается из файлов изменения · encoding · неприменимо: формы collection, io; encoding только для text
+- trace-graph/Граф собирается из файлов изменения · ordering · не выбран: порядок узлов; вынесено кандидатом F-81
+- trace-graph/Граф собирается из файлов изменения · precision · неприменимо: формы collection, io; precision только для numeric-range
+- trace-graph/Граф собирается из файлов изменения · idempotency · неприменимо: формы collection, io; idempotency только для stateful
+- trace-graph/Граф собирается из файлов изменения · concurrency · не найдено: сборка только читает; файл, правившийся во время чтения, поправит следующая сборка
+- trace-graph/Граф несёт связи артефактов с местом в файле · boundary · неприменимо: формы collection; boundary только для numeric-range
+- trace-graph/Граф несёт связи артефактов с местом в файле · adjacency · кандидат F-82
+- trace-graph/Граф несёт связи артефактов с местом в файле · empty · не найдено: артефакта нет — связей из него нет, требование их и не обещает
+- trace-graph/Граф несёт связи артефактов с местом в файле · encoding · неприменимо: формы collection; encoding только для text
+- trace-graph/Граф несёт связи артефактов с местом в файле · ordering · кандидат F-81
+- trace-graph/Граф несёт связи артефактов с местом в файле · precision · неприменимо: формы collection; precision только для numeric-range
+- trace-graph/Граф несёт связи артефактов с местом в файле · idempotency · неприменимо: формы collection; idempotency только для stateful
+- trace-graph/Граф несёт связи артефактов с местом в файле · concurrency · неприменимо: формы collection; concurrency только для io, stateful
+- trace-graph/Скрипт сам разбирает спеки с номерами строк · boundary · неприменимо: формы text; boundary только для numeric-range
+- trace-graph/Скрипт сам разбирает спеки с номерами строк · adjacency · неприменимо: формы text; adjacency только для collection
+- trace-graph/Скрипт сам разбирает спеки с номерами строк · empty · не найдено: пустая спека даёт ноль узлов, ошибку называет `openspec validate` в отчёте
+- trace-graph/Скрипт сам разбирает спеки с номерами строк · encoding · кандидат F-85
+- trace-graph/Скрипт сам разбирает спеки с номерами строк · ordering · неприменимо: формы text; ordering только для collection
+- trace-graph/Скрипт сам разбирает спеки с номерами строк · precision · неприменимо: формы text; precision только для numeric-range
+- trace-graph/Скрипт сам разбирает спеки с номерами строк · idempotency · неприменимо: формы text; idempotency только для stateful
+- trace-graph/Скрипт сам разбирает спеки с номерами строк · concurrency · неприменимо: формы text; concurrency только для io, stateful
+- trace-graph/Живой граф не лежит на диске · boundary · неприменимо: формы stateful, io; boundary только для numeric-range
+- trace-graph/Живой граф не лежит на диске · adjacency · неприменимо: формы stateful, io; adjacency только для collection
+- trace-graph/Живой граф не лежит на диске · empty · неприменимо: формы stateful, io; empty только для collection, text
+- trace-graph/Живой граф не лежит на диске · encoding · неприменимо: формы stateful, io; encoding только для text
+- trace-graph/Живой граф не лежит на диске · ordering · неприменимо: формы stateful, io; ordering только для collection
+- trace-graph/Живой граф не лежит на диске · precision · неприменимо: формы stateful, io; precision только для numeric-range
+- trace-graph/Живой граф не лежит на диске · idempotency · не найдено: `--out` на том же пути перезаписывает производный файл
+- trace-graph/Живой граф не лежит на диске · concurrency · не выбран: запись прервана, файл обрезан; проверка назовёт его по сценарию «Форма не та»
+- trace-graph/Сохранённый граф проверяется скриптом · boundary · неприменимо: формы collection, text; boundary только для numeric-range
+- trace-graph/Сохранённый граф проверяется скриптом · adjacency · кандидат F-86
+- trace-graph/Сохранённый граф проверяется скриптом · empty · не выбран: файл без полей; исход назван сценарием «Форма не та»
+- trace-graph/Сохранённый граф проверяется скриптом · encoding · кандидат F-87
+- trace-graph/Сохранённый граф проверяется скриптом · ordering · не найдено: хеши сверяются по имени файла, порядок не важен
+- trace-graph/Сохранённый граф проверяется скриптом · precision · неприменимо: формы collection, text; precision только для numeric-range
+- trace-graph/Сохранённый граф проверяется скриптом · idempotency · неприменимо: формы collection, text; idempotency только для stateful
+- trace-graph/Сохранённый граф проверяется скриптом · concurrency · неприменимо: формы collection, text; concurrency только для io, stateful
+- trace-graph/Id читаемы, файл несёт версию формата · boundary · неприменимо: формы text; boundary только для numeric-range
+- trace-graph/Id читаемы, файл несёт версию формата · adjacency · неприменимо: формы text; adjacency только для collection
+- trace-graph/Id читаемы, файл несёт версию формата · empty · не найдено: имя требования и сценария всегда есть
+- trace-graph/Id читаемы, файл несёт версию формата · encoding · не выбран: `/` в имени, 5 требований и 3 сценария, всё внутри путей в backticks; id только ключ, вложенных capability нет, столкновений нет
+- trace-graph/Id читаемы, файл несёт версию формата · ordering · неприменимо: формы text; ordering только для collection
+- trace-graph/Id читаемы, файл несёт версию формата · precision · неприменимо: формы text; precision только для numeric-range
+- trace-graph/Id читаемы, файл несёт версию формата · idempotency · неприменимо: формы text; idempotency только для stateful
+- trace-graph/Id читаемы, файл несёт версию формата · concurrency · неприменимо: формы text; concurrency только для io, stateful
+- trace-graph/Связи между требованиями вычисляются как кандидаты · boundary · неприменимо: формы collection; boundary только для numeric-range
+- trace-graph/Связи между требованиями вычисляются как кандидаты · adjacency · кандидат F-88
+- trace-graph/Связи между требованиями вычисляются как кандидаты · empty · не найдено: общих записей нет — кандидатов нет
+- trace-graph/Связи между требованиями вычисляются как кандидаты · encoding · неприменимо: формы collection; encoding только для text
+- trace-graph/Связи между требованиями вычисляются как кандидаты · ordering · не выбран: порядок в паре; следует порядку графа, кандидат F-81
+- trace-graph/Связи между требованиями вычисляются как кандидаты · precision · неприменимо: формы collection; precision только для numeric-range
+- trace-graph/Связи между требованиями вычисляются как кандидаты · idempotency · неприменимо: формы collection; idempotency только для stateful
+- trace-graph/Связи между требованиями вычисляются как кандидаты · concurrency · неприменимо: формы collection; concurrency только для io, stateful
+- trace-graph/Новый артефакт схемы проверяется на вход в граф · boundary · неприменимо: формы collection; boundary только для numeric-range
+- trace-graph/Новый артефакт схемы проверяется на вход в граф · adjacency · не выбран: строка реестра без артефакта; сверка множеств даёт красный в обе стороны, других исходов нет
+- trace-graph/Новый артефакт схемы проверяется на вход в граф · empty · не найдено: значение `ничего` законно, назван сценарием
+- trace-graph/Новый артефакт схемы проверяется на вход в граф · encoding · неприменимо: формы collection; encoding только для text
+- trace-graph/Новый артефакт схемы проверяется на вход в граф · ordering · не найдено: реестр и схема сверяются как множества
+- trace-graph/Новый артефакт схемы проверяется на вход в граф · precision · неприменимо: формы collection; precision только для numeric-range
+- trace-graph/Новый артефакт схемы проверяется на вход в граф · idempotency · неприменимо: формы collection; idempotency только для stateful
+- trace-graph/Новый артефакт схемы проверяется на вход в граф · concurrency · неприменимо: формы collection; concurrency только для io, stateful
+- trace-signals/Одна команда отчитывается и за граф, и за validate · boundary · неприменимо: формы io; boundary только для numeric-range
+- trace-signals/Одна команда отчитывается и за граф, и за validate · adjacency · неприменимо: формы io; adjacency только для collection
+- trace-signals/Одна команда отчитывается и за граф, и за validate · empty · неприменимо: формы io; empty только для collection, text
+- trace-signals/Одна команда отчитывается и за граф, и за validate · encoding · неприменимо: формы io; encoding только для text
+- trace-signals/Одна команда отчитывается и за граф, и за validate · ordering · неприменимо: формы io; ordering только для collection
+- trace-signals/Одна команда отчитывается и за граф, и за validate · precision · неприменимо: формы io; precision только для numeric-range
+- trace-signals/Одна команда отчитывается и за граф, и за validate · idempotency · неприменимо: формы io; idempotency только для stateful
+- trace-signals/Одна команда отчитывается и за граф, и за validate · concurrency · кандидат F-93
+- trace-signals/Сигналы не останавливают работу · boundary · неприменимо: формы io; boundary только для numeric-range
+- trace-signals/Сигналы не останавливают работу · adjacency · неприменимо: формы io; adjacency только для collection
+- trace-signals/Сигналы не останавливают работу · empty · неприменимо: формы io; empty только для collection, text
+- trace-signals/Сигналы не останавливают работу · encoding · неприменимо: формы io; encoding только для text
+- trace-signals/Сигналы не останавливают работу · ordering · неприменимо: формы io; ordering только для collection
+- trace-signals/Сигналы не останавливают работу · precision · неприменимо: формы io; precision только для numeric-range
+- trace-signals/Сигналы не останавливают работу · idempotency · неприменимо: формы io; idempotency только для stateful
+- trace-signals/Сигналы не останавливают работу · concurrency · не найдено: отчёт только читает файлы
+- trace-signals/Отчёт называет закрытый состав сигналов · boundary · неприменимо: формы collection; boundary только для numeric-range
+- trace-signals/Отчёт называет закрытый состав сигналов · adjacency · кандидат F-94
+- trace-signals/Отчёт называет закрытый состав сигналов · empty · не выбран: сигналов нет; исход назван сценарием «Находок нет»
+- trace-signals/Отчёт называет закрытый состав сигналов · encoding · неприменимо: формы collection; encoding только для text
+- trace-signals/Отчёт называет закрытый состав сигналов · ordering · не выбран: порядок строк внутри вида; человек ищет по виду, результат от этого не меняется
+- trace-signals/Отчёт называет закрытый состав сигналов · precision · неприменимо: формы collection; precision только для numeric-range
+- trace-signals/Отчёт называет закрытый состав сигналов · idempotency · неприменимо: формы collection; idempotency только для stateful
+- trace-signals/Отчёт называет закрытый состав сигналов · concurrency · неприменимо: формы collection; concurrency только для io, stateful
+- trace-signals/Шумные виды в отчёт не идут · boundary · неприменимо: формы collection; boundary только для numeric-range
+- trace-signals/Шумные виды в отчёт не идут · adjacency · кандидат F-95
+- trace-signals/Шумные виды в отчёт не идут · empty · не найдено: у изменения без MODIFIED снимать нечего
+- trace-signals/Шумные виды в отчёт не идут · encoding · неприменимо: формы collection; encoding только для text
+- trace-signals/Шумные виды в отчёт не идут · ordering · не найдено: порядок строк не важен, их в отчёте нет
+- trace-signals/Шумные виды в отчёт не идут · precision · неприменимо: формы collection; precision только для numeric-range
+- trace-signals/Шумные виды в отчёт не идут · idempotency · неприменимо: формы collection; idempotency только для stateful
+- trace-signals/Шумные виды в отчёт не идут · concurrency · неприменимо: формы collection; concurrency только для io, stateful
+- trace-signals/Сигнал о решении следует его исходу · boundary · неприменимо: формы collection, text; boundary только для numeric-range
+- trace-signals/Сигнал о решении следует его исходу · adjacency · кандидат F-96
+- trace-signals/Сигнал о решении следует его исходу · empty · кандидат F-97
+- trace-signals/Сигнал о решении следует его исходу · encoding · не выбран: комментарий с другими пробелами; форму пишет скилл, отличие сразу даст сигнал
+- trace-signals/Сигнал о решении следует его исходу · ordering · не найдено: порядок исходов не важен, связь по номеру
+- trace-signals/Сигнал о решении следует его исходу · precision · неприменимо: формы collection, text; precision только для numeric-range
+- trace-signals/Сигнал о решении следует его исходу · idempotency · неприменимо: формы collection, text; idempotency только для stateful
+- trace-signals/Сигнал о решении следует его исходу · concurrency · неприменимо: формы collection, text; concurrency только для io, stateful
+- trace-signals/Сигнал называет запись, снявшую исход · boundary · неприменимо: формы collection; boundary только для numeric-range
+- trace-signals/Сигнал называет запись, снявшую исход · adjacency · не выбран: на F-12 ссылаются две записи; называются обе со знаком вопроса, решает человек
+- trace-signals/Сигнал называет запись, снявшую исход · empty · не найдено: `depends_on` никого не называет — подсказки нет, назван сценарием `brainstorm-interview`
+- trace-signals/Сигнал называет запись, снявшую исход · encoding · неприменимо: формы collection; encoding только для text
+- trace-signals/Сигнал называет запись, снявшую исход · ordering · не найдено: порядок подсказок не важен
+- trace-signals/Сигнал называет запись, снявшую исход · precision · неприменимо: формы collection; precision только для numeric-range
+- trace-signals/Сигнал называет запись, снявшую исход · idempotency · неприменимо: формы collection; idempotency только для stateful
+- trace-signals/Сигнал называет запись, снявшую исход · concurrency · неприменимо: формы collection; concurrency только для io, stateful
+- trace-signals/Отчёт показывается перед реализацией и в её конце · boundary · неприменимо: формы stateful; boundary только для numeric-range
+- trace-signals/Отчёт показывается перед реализацией и в её конце · adjacency · неприменимо: формы stateful; adjacency только для collection
+- trace-signals/Отчёт показывается перед реализацией и в её конце · empty · неприменимо: формы stateful; empty только для collection, text
+- trace-signals/Отчёт показывается перед реализацией и в её конце · encoding · неприменимо: формы stateful; encoding только для text
+- trace-signals/Отчёт показывается перед реализацией и в её конце · ordering · неприменимо: формы stateful; ordering только для collection
+- trace-signals/Отчёт показывается перед реализацией и в её конце · precision · неприменимо: формы stateful; precision только для numeric-range
+- trace-signals/Отчёт показывается перед реализацией и в её конце · idempotency · не выбран: `/opsx:apply` продолжен после перерыва; первый показ не повторяется, сценарий задан «без отмеченных задач»
+- trace-signals/Отчёт показывается перед реализацией и в её конце · concurrency · не выбран: прервали после последней отметки; соберёт `/opsx:archive`, назван сценарием «Снимка нет»
+- trace-signals/Ответ на сигнал записывается в журнал · boundary · неприменимо: формы stateful, text; boundary только для numeric-range
+- trace-signals/Ответ на сигнал записывается в журнал · adjacency · неприменимо: формы stateful, text; adjacency только для collection
+- trace-signals/Ответ на сигнал записывается в журнал · empty · кандидат F-99
+- trace-signals/Ответ на сигнал записывается в журнал · encoding · кандидат F-98
+- trace-signals/Ответ на сигнал записывается в журнал · ordering · неприменимо: формы stateful, text; ordering только для collection
+- trace-signals/Ответ на сигнал записывается в журнал · precision · неприменимо: формы stateful, text; precision только для numeric-range
+- trace-signals/Ответ на сигнал записывается в журнал · idempotency · не выбран: две записи на один сигнал; сигнал молчит с первой, журнал показывает обе
+- trace-signals/Ответ на сигнал записывается в журнал · concurrency · не найдено: `apply` вносит всё или ничего
+- trace-snapshot/Снимок и отчёт лежат в каталоге graph · boundary · неприменимо: формы stateful, io; boundary только для numeric-range
+- trace-snapshot/Снимок и отчёт лежат в каталоге graph · adjacency · неприменимо: формы stateful, io; adjacency только для collection
+- trace-snapshot/Снимок и отчёт лежат в каталоге graph · empty · неприменимо: формы stateful, io; empty только для collection, text
+- trace-snapshot/Снимок и отчёт лежат в каталоге graph · encoding · неприменимо: формы stateful, io; encoding только для text
+- trace-snapshot/Снимок и отчёт лежат в каталоге graph · ordering · неприменимо: формы stateful, io; ordering только для collection
+- trace-snapshot/Снимок и отчёт лежат в каталоге graph · precision · неприменимо: формы stateful, io; precision только для numeric-range
+- trace-snapshot/Снимок и отчёт лежат в каталоге graph · idempotency · не найдено: повторная заморозка перезаписывает оба файла, история лежит в git
+- trace-snapshot/Снимок и отчёт лежат в каталоге graph · concurrency · кандидат F-100
+- trace-snapshot/Заморозка идёт перед первой задачей и в конце реализации · boundary · неприменимо: формы stateful; boundary только для numeric-range
+- trace-snapshot/Заморозка идёт перед первой задачей и в конце реализации · adjacency · неприменимо: формы stateful; adjacency только для collection
+- trace-snapshot/Заморозка идёт перед первой задачей и в конце реализации · empty · неприменимо: формы stateful; empty только для collection, text
+- trace-snapshot/Заморозка идёт перед первой задачей и в конце реализации · encoding · неприменимо: формы stateful; encoding только для text
+- trace-snapshot/Заморозка идёт перед первой задачей и в конце реализации · ordering · неприменимо: формы stateful; ordering только для collection
+- trace-snapshot/Заморозка идёт перед первой задачей и в конце реализации · precision · неприменимо: формы stateful; precision только для numeric-range
+- trace-snapshot/Заморозка идёт перед первой задачей и в конце реализации · idempotency · не выбран: новая задача после заморозки; снимок устарел по хешу `tasks.md`, соберёт `/opsx:archive`, сценарий «Снимок устарел»
+- trace-snapshot/Заморозка идёт перед первой задачей и в конце реализации · concurrency · не выбран: последняя задача оставлена неотмеченной; первая заморозка не идёт, соберёт `/opsx:archive`, сценарий «Снимка нет»
+- trace-snapshot/Архивация проверяет каталог graph · boundary · неприменимо: формы stateful, io; boundary только для numeric-range
+- trace-snapshot/Архивация проверяет каталог graph · adjacency · неприменимо: формы stateful, io; adjacency только для collection
+- trace-snapshot/Архивация проверяет каталог graph · empty · неприменимо: формы stateful, io; empty только для collection, text
+- trace-snapshot/Архивация проверяет каталог graph · encoding · неприменимо: формы stateful, io; encoding только для text
+- trace-snapshot/Архивация проверяет каталог graph · ordering · неприменимо: формы stateful, io; ordering только для collection
+- trace-snapshot/Архивация проверяет каталог graph · precision · неприменимо: формы stateful, io; precision только для numeric-range
+- trace-snapshot/Архивация проверяет каталог graph · idempotency · не найдено: повторный `/opsx:archive` снова обновит коммиты тем же значением
+- trace-snapshot/Архивация проверяет каталог graph · concurrency · не выбран: код не закоммичен и к архивации; F-79: работа вне процесса не защищается, слово владельца
+- trace-snapshot/Снимок называет только коммиты заморозки · boundary · неприменимо: формы collection; boundary только для numeric-range
+- trace-snapshot/Снимок называет только коммиты заморозки · adjacency · не найдено: `docs/` и `tools/` лежат в одном репозитории: одно значение, вреда нет
+- trace-snapshot/Снимок называет только коммиты заморозки · empty · кандидат F-101
+- trace-snapshot/Снимок называет только коммиты заморозки · encoding · неприменимо: формы collection; encoding только для text
+- trace-snapshot/Снимок называет только коммиты заморозки · ordering · не найдено: коммиты идут по имени корня
+- trace-snapshot/Снимок называет только коммиты заморозки · precision · неприменимо: формы collection; precision только для numeric-range
+- trace-snapshot/Снимок называет только коммиты заморозки · idempotency · неприменимо: формы collection; idempotency только для stateful
+- trace-snapshot/Снимок называет только коммиты заморозки · concurrency · неприменимо: формы collection; concurrency только для io, stateful
+- trace-snapshot/После архивации снимок не собирается · boundary · неприменимо: формы collection, io; boundary только для numeric-range
+- trace-snapshot/После архивации снимок не собирается · adjacency · не найдено: каждый каталог архива проверяется сам
+- trace-snapshot/После архивации снимок не собирается · empty · кандидат F-102
+- trace-snapshot/После архивации снимок не собирается · encoding · неприменимо: формы collection, io; encoding только для text
+- trace-snapshot/После архивации снимок не собирается · ordering · не найдено: порядок имён идёт от даты в каталоге
+- trace-snapshot/После архивации снимок не собирается · precision · неприменимо: формы collection, io; precision только для numeric-range
+- trace-snapshot/После архивации снимок не собирается · idempotency · неприменимо: формы collection, io; idempotency только для stateful
+- trace-snapshot/После архивации снимок не собирается · concurrency · не найдено: скрипт на архиве только читает

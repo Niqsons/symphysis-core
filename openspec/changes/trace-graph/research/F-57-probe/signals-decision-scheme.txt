@@ -1,0 +1,81 @@
+# сигналы decision-scheme
+
+## висячий номер: 2
+- specs/decision-viewer/spec.md:110 F-1
+- specs/decision-viewer/spec.md:110 F-2
+
+## задача ни к чему: 3
+- 5.5 Прогон ядра: `pytest`, `npm test` в `installer/`, `openspec validate decision-scheme`, гейт `check_names.py` п
+- 5.6 Показ страницы человеку на этом журнале: панель, граница, режимы, текст без файла mermaid — проверка: слово че
+- 8.4 Коммит плагина по слову человека (`52a59e9`): пакет правок вместе с лежащими незакоммиченными упаковкой и выно
+
+## имя сценария неоднозначно: 3
+- «Узла нет в схеме» у 2 требований; задачи без capability: 1.2, 7.6
+- «Журнал без `nodes`» у 2 требований; задачи без capability: 1.2, 7.6
+- «Схемы нет» у 2 требований; задачи без capability: 2.5, 4.2
+
+## пункт security без имени: 1
+- security.md:12 Инъекции через содержимое файлов: текст схемы в разметке страницы — применимо — `</script>` и `<!--` в `scheme.md` могли бы сломать разбор
+
+## решение «как есть» без требования и задачи: 1
+- F-43.B Что делать с заголовком «Замечания к схеме и плану», когда вшитой схемы на странице больше нет?
+
+## решение без требования и задачи: 2
+- F-19.A Покрывает ли изменение `decision-scheme` только ядро или ещё и вкладку плагина?
+- F-42.A Показывает ли плагин журналы из worktree без отдельного окна?
+
+## сценарий без задачи, ADDED: 2
+- plugin-scheme-view / Схема проспала смену журнала (specs/plugin-scheme-view/spec.md:53)
+- plugin-scheme-view / «Вписать» на маленькой схеме (specs/plugin-scheme-view/spec.md:98)
+
+## сценарий без задачи, MODIFIED, перенесён из мастера: 15
+- artifact-graph / Отчёт по парковке (specs/artifact-graph/spec.md:8)
+- artifact-graph / Отрицание без шаблонов не принимается (specs/artifact-graph/spec.md:13)
+- artifact-graph / Нуль парковок (specs/artifact-graph/spec.md:18)
+- artifact-graph / Парковка после none.md (specs/artifact-graph/spec.md:23)
+- brainstorm-interview / Отказ от нового круга (specs/brainstorm-interview/spec.md:10)
+- brainstorm-interview / Круг без нового при открытых развилках (specs/brainstorm-interview/spec.md:15)
+- decision-viewer / Сборка с атакой (specs/decision-viewer/spec.md:8)
+- decision-viewer / Битый файл атаки (specs/decision-viewer/spec.md:13)
+- decision-viewer / Черта в backticks и экранированная черта (specs/decision-viewer/spec.md:18)
+- decision-viewer / Экранированная косая и незакрытый backtick (specs/decision-viewer/spec.md:23)
+- decision-viewer / Пустая ячейка (specs/decision-viewer/spec.md:28)
+- project-installer / Проект с конфигом другой схемы (specs/project-installer/spec.md:8)
+- project-installer / Блок context при слиянии (specs/project-installer/spec.md:18)
+- project-installer / Раскладка входа (specs/project-installer/spec.md:23)
+- project-installer / Обновление схемы (specs/project-installer/spec.md:28)
+
+## улика разошлась, файл в задачах не назван: 4
+- F-15: vscode/src/host/page.ts «`style-src ${webview.cspSource}`» — цитаты нет дословно
+- F-48: openspec/changes/archive/2026-11-02-implementation-consequences/specs/project-settings/spec.md «SHALL задавать три выбора: ветки отказа, до
+- F-124: openspec/changes/decision-scheme/specs/plugin-scheme-view/spec.md «снято: перезагрузка окна — по F-26 сама не открывается» — цитаты нет до
+- F-125: openspec/changes/decision-scheme/specs/plugin-scheme-view/spec.md «снято: перезагрузка окна — по F-26 сама не открывается» — цитаты нет до
+
+## улика разошлась, файл назван в задачах: 27
+- F-16: docs/repo-contract.md «| номер контракта в выводе `view-json` | ядро |» — цитаты нет дословно
+- F-16: docs/repo-contract.md «| проверка номера: сегодня `src/host/core.ts:31` принимает JSON без проверки | плагин |» — цитаты нет дословно
+- F-16: docs/repo-contract.md «| контрактный тест из разовой сверки черновиков | плагин |» — цитаты нет дословно
+- F-16: docs/repo-contract.md «| дефект шаблона про новую развилку: на нём контрактный тест, по-видимому, покраснеет | ядро |» — цитаты нет дословн
+- F-16: docs/repo-contract.md «| заданный `SYMPHYSIS_ROOT` без ядра даёт падение, а не пропуск | плагин |» — цитаты нет дословно
+- F-16: docs/repo-contract.md «| `npm run e2e:vsix` после коммита упаковки | плагин |» — цитаты нет дословно
+- F-16: docs/repo-contract.md «| тест: инсталлятор не стирает `.symphysis/viewer/` | ядро |» — цитаты нет дословно
+- F-17: tools/playground-template.html «const waiting = deps.filter(x => x.kind !== 'removed' && !chosen(x.id)).map(x => x.id);» — цитаты нет досло
+- F-18: tools/playground-template.html «<h2>Схема работы — клик фильтрует</h2>» — цитаты нет дословно
+- F-18: tools/playground-template.html «if (!n.d.includes(rec.delivery)) return false;» — цитаты нет дословно
+- F-20: docs/repo-contract.md «| контрактный тест из разовой сверки черновиков | плагин |» — цитаты нет дословно
+- F-20: docs/repo-contract.md «| тест: инсталлятор не стирает `.symphysis/viewer/` | ядро |» — цитаты нет дословно
+- F-21: tools/playground-template.html «<h2>Схема работы — клик фильтрует</h2>» — цитаты нет дословно
+- F-25: docs/repo-contract.md «- вывод `view-json`;» — цитаты нет дословно
+- F-27: tools/playground-template.html «filter.node = (filter.node === n.id) ? null : n.id;» — цитаты нет дословно
+- F-30: vscode/test/e2e/vsix.mjs «const vsix = path.join(repo, `${pkg.name}-${pkg.version}.vsix`);» — цитаты нет дословно
+- F-30: vscode/package.json «"version": "0.1.0",» — цитаты нет дословно
+- F-37: tools/playground-template.html «ответ ищется в файлах (исследование)» — цитаты нет дословно
+- F-38: skills/symphysis-brainstorm/SKILL.md «N = 2 — брейншторм закончен» — цитаты нет дословно
+- F-38: skills/symphysis-brainstorm/SKILL.md «третьего круга нет» — цитаты нет дословно
+- F-41: vscode/src/webview/Card.tsx «ответ ищется в файлах (исследование)» — цитаты нет дословно
+- F-44: skills/symphysis-brainstorm/SKILL.md «N = 2 — брейншторм закончен» — цитаты нет дословно
+- F-44: skills/symphysis-brainstorm/SKILL.md «третьего круга нет» — цитаты нет дословно
+- F-53: installer/lib/install.js «/^(journal.*\.py|playground-template\.html)$/» — цитаты нет дословно
+- F-76: docs/repo-contract.md «проверка номера: сегодня `src/host/core.ts:31` принимает JSON без проверки» — цитаты нет дословно
+- F-82: vscode/test/unit/fixture-project.ts «process.env.SYMPHYSIS_ROOT ??» — цитаты нет дословно
+- F-124: vscode/package.json «"activationEvents": ["workspaceContains:openspec/changes/*/decisions.json"],» — цитаты нет дословно

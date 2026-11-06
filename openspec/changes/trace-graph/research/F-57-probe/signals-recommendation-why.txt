@@ -1,0 +1,69 @@
+# сигналы recommendation-why
+
+## ветка называет неизвестный сценарий: 1
+- consequences.md:42 Пустое why, основная спека `decision-journal`, в этом изменении не меняется
+
+## задача ни к чему: 10
+- 1.3 `_parse_recommendation` в `tools/journal_model.py` не пишет `text`; `test_recommendation_keeps_the_raw_line_as
+- 1.4 В `docs/journal.schema.json` описание `text`: только старые журналы, показ и поиск его не читают — проверка: `
+- 2.1 Тест в `tests/test_skills.py`: ни один скилл не называет `text` у рекомендации, в образцах его нет — проверка:
+- 2.2 `skills/symphysis-brainstorm/SKILL.md:178`: `recommendation {option, why}`, `why` описан как причина выбора эт
+- 2.3 `skills/symphysis-edge-probe/SKILL.md:274` и образец `skills/symphysis-consequences/SKILL.md:289` без `text` —
+- 2.4 `skills/symphysis-attack/SKILL.md`, линза `context-compliance`: находка о `why`, пересказывающем вариант; ново
+- 2.5 Полный прогон ядра — проверка: `py -3.13 -m pytest -q` и `npm test` в `installer/` зелёные; `check_names` по и
+- 2.6 По итогу ревью: `skills/symphysis-prohibition-probe/SKILL.md` и `skills/symphysis-consequences/SKILL.md` тоже 
+- 3.1 Рабочее дерево `X:\symphysis-vscode-recommendation-why`, ветка `feat/recommendation-why` от `main`, зависимост
+- 3.6 Прогон плагина на дереве ядра этого изменения — проверка: с `SYMPHYSIS_ROOT=X:\symphysis-recommendation-why` з
+
+## имя сценария неоднозначно: 2
+- «Есть поле `text`» у 2 требований; задачи без capability: 1.2, 1.5
+- «Поля `text` нет» у 2 требований; задачи без capability: 1.2
+
+## критерий без требования: 3
+- F-02 [назван в proposal] Критерий готовности: «должна быть зафиксирована в ядре, а не исправлена только в рамках этой сессии»
+- F-03 [назван в proposal] Критерий готовности: «если выбран ответ отличный от рекомендации, то нужно писать своё обоснование»
+- F-07 [назван в proposal] Критерий готовности: «Требование в спеке и тест»
+
+## решение без требования и задачи: 1
+- F-26.A Где делать механизм понижения и повышения тяжести у карточки атаки: кнопка и поле обоснования
+
+## сценарий без задачи, ADDED: 4
+- artifact-attack / `why` пересказывает вариант (specs/artifact-attack/spec.md:8)
+- artifact-attack / `why` называет причину (specs/artifact-attack/spec.md:13)
+- brainstorm-interview / Развилка брейншторма (specs/brainstorm-interview/spec.md:8)
+- brainstorm-interview / Кандидат пробы краёв (specs/brainstorm-interview/spec.md:13)
+
+## требование без задачи, ADDED: 2
+- artifact-attack / Атака считает находкой `why`, пересказывающий вариант (specs/artifact-attack/spec.md:5)
+- brainstorm-interview / Рекомендация записывается с причиной выбора (specs/brainstorm-interview/spec.md:5)
+
+## улика разошлась, файл в задачах не назван: 1
+- F-15: vscode/test/unit/card.test.tsx «test("составная рекомендация пишется строкой как написана", () => {» — цитаты нет дословно
+
+## улика разошлась, файл назван в задачах: 26
+- F-08: vscode/src/webview/Card.tsx «<div className="rec">рекомендация: {rec.recommendation.text» — цитаты нет дословно
+- F-08: vscode/src/webview/CheckView.tsx «<div className="rec">рекомендация: {rec.recommendation.text» — цитаты нет дословно
+- F-09: tools/journal_render.py «return rc.get("text") or " — ".join(part for part in (rc["option"], rc["why"]) if part)» — цитаты нет дословно
+- F-11: skills/symphysis-brainstorm/SKILL.md «проекта и дословная строка файла; `recommendation {option, why, text}` —» — цитаты нет дословно
+- F-11: skills/symphysis-edge-probe/SKILL.md «- `recommendation` — одна, после вариантов, `{option, why, text}`.» — цитаты нет дословно
+- F-12: docs/journal.schema.json «Строка рекомендации как написана; у составной» — цитаты нет дословно
+- F-12: tools/journal_model.py «`text` — строка как написана: у составной рекомендации» — цитаты нет дословно
+- F-15: tests/test_journal_render.py «def test_render_writes_recommendation_from_raw_text():» — цитаты нет дословно
+- F-18: vscode/src/shared/search.ts «{ field: "рекомендация", text: rec.recommendation?.text },» — цитаты нет дословно
+- F-19: tools/journal_render.py «return rc.get("text") or " — ".join(part for part in (rc["option"], rc["why"]) if part)» — цитаты нет дословно
+- F-19: tests/test_journal_render.py «def test_render_writes_recommendation_from_raw_text():» — цитаты нет дословно
+- F-19: vscode/src/webview/Card.tsx «<div className="rec">рекомендация: {rec.recommendation.text» — цитаты нет дословно
+- F-20: docs/journal.schema.json «Строка рекомендации как написана; у составной» — цитаты нет дословно
+- F-20: vscode/src/shared/search.ts «{ field: "рекомендация", text: rec.recommendation?.text },» — цитаты нет дословно
+- F-21: skills/symphysis-brainstorm/SKILL.md «проекта и дословная строка файла; `recommendation {option, why, text}` —» — цитаты нет дословно
+- F-23: vscode/src/shared/types.ts «recommendation: { option: string; why: string; text?: string } | null;» — цитаты нет дословно
+- F-27: tools/playground-template.html «md(rec.recommendation.why || rec.recommendation.text || '')» — цитаты нет дословно
+- F-28: tools/journal_model.py «return {"option": None, "why": val, "text": val}» — цитаты нет дословно
+- F-30: vscode/src/shared/types.ts «recommendation: { option: string; why: string; text?: string } | null;» — цитаты нет дословно
+- F-32: skills/symphysis-consequences/SKILL.md «"text": "A — сценарий на пустой ответ"}» — цитаты нет дословно
+- consequences.md: tools/journal_render.py «return rc.get("text") or " — ".join(part for part in (rc["option"], rc["why"]) if part)» — цитаты нет д
+- consequences.md: tools/playground-template.html «md(rec.recommendation.why || rec.recommendation.text || '')» — цитаты нет дословно
+- consequences.md: vscode/src/webview/Card.tsx «<div className="rec">рекомендация: {rec.recommendation.text» — цитаты нет дословно
+- consequences.md: vscode/src/webview/CheckView.tsx «<div className="rec">рекомендация: {rec.recommendation.text» — цитаты нет дословно
+- consequences.md: tools/journal_model.py «return {"option": None, "why": val, "text": val}» — цитаты нет дословно
+- consequences.md: tools/journal_model.py «return {"option": m.group(1), "why": m.group(2).strip(), "text": val}» — цитаты нет дословно

@@ -13,7 +13,7 @@
 | `openspec/config.yaml` | `<проект>/openspec/config.yaml` | сливается, см. ниже |
 | скиллы `symphysis-*` | `<skills-dir>/<имя>/SKILL.md` | в каждый `--skills-dir`; без параметра — `.claude/skills` |
 | тела агентов-водителей | `<agents-dir>/symphysis-<скилл>-driver.md` | в каждый `--agents-dir`; без параметра — `agents` рядом с каждым `--skills-dir` (`.claude/agents`); формат Claude Code, поле `skills:` грузит тело скилла |
-| инструменты журнала и настроек | `<проект>/.symphysis/` (`tools/`, `docs/`) | `journal.py`, модули, `symphysis_config.py`, `step_help.py` (справка о шаге), `symphysis-version.txt` (версия поставленных инструментов; не пишется, если часть инструментов пропущена), схема JSON, файл корней |
+| инструменты журнала и настроек | `<проект>/.symphysis/` (`tools/`, `docs/`) | `journal.py`, модули, `symphysis_config.py`, `step_help.py` (справка о шаге), `trace_graph.py` (граф трассируемости), `openspec_run.py` (общий запуск форка), `symphysis-version.txt` (версия поставленных инструментов; не пишется, если часть инструментов пропущена), схема JSON, файл корней |
 | `symphysis.yaml` | `<проект>/symphysis.yaml` | личная настройка, всё включено; не перезаписывается и с `--force` |
 | строка `symphysis.yaml` | `<проект>/.gitignore` | файл создаётся при отсутствии; git не нужен; правка уходит в git вместе с работой |
 
@@ -88,7 +88,8 @@ symphysis install --project . --skills-dir .claude/skills --skills-dir .agents/s
   stdout: `пропущен: <путь> — отличается, нужен --force`. Так обновление
   схемы (в payload новый `schema.yaml`, в проекте старый) не проходит молча.
 - `openspec/config.yaml` сливается: `schema` переключается на `symphysis`,
-  `rules` объединяются, комментарии и прочие ключи пользователя
+  `rules` и подсказки `operations.<операция>.guidance` объединяются (чужие строки
+  остаются, повтор не дублирует, не список — строка в выводе), комментарии и прочие ключи пользователя
   сохраняются. Запись — LF без BOM; длинные скаляры разворачиваются
   в одну строку.
 - Файл корней `.symphysis/tools/journal-roots.json` создаётся один раз
@@ -116,7 +117,7 @@ symphysis check --project .
 Называет расхождения, не чинит. Проверяет: версию форка, байты каждого
 файла схемы (расхождение — `[!!] схема: байты отличаются от payload: <путь>`),
 `config.yaml` (`schema: symphysis`), `SKILL.md` в каждом `--skills-dir`, тела агентов в каждом `--agents-dir`,
-инструменты, доступность Python, телеметрию форка и каждый
+инструменты (в том числе `trace_graph.py` и `openspec_run.py`; каталог архива `check` не обходит), доступность Python, телеметрию форка и каждый
 `openspec/changes/*/decisions.json` через `journal.py check`. Кроме того:
 
 | Строка | Когда |

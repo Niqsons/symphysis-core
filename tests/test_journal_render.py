@@ -515,6 +515,28 @@ def test_cli_render_html_attack_flag(tmp_path):
     assert embedded(html)["sha256"] == journal.sha256_file(src)   # хеш журнала — по байтам файла
 
 
+@pytest.mark.parametrize("name", ["attack-decisions.md", "attack-artifacts.md"])
+def test_cli_render_html_attack_template_with_composition_and_empty_table(tmp_path, name):
+    """`artifact-attack`: «Выключены все линзы» — файл со строкой `**Состав:**` и таблицей без строк
+    (заголовок остаётся) собирается страницей, код 0, строк нет (F-106)."""
+    template = (Path(__file__).resolve().parent.parent / "openspec" / "schemas" / "symphysis" / "templates"
+                / name).read_text(encoding="utf-8")
+    head, tail = template.split("| Утверждение |", 1)
+    header = "| Утверждение |" + tail.splitlines()[0] + "\n| --- | --- | --- | --- | --- | --- | --- |\n"
+    placeholder = "**Состав:** включены <слуги>; выключены <слуги или —>"
+    assert placeholder in head
+    body = (head.replace(placeholder, "**Состав:** включены —; выключены все линзы файла")
+            .replace("status: gaps_found", "status: passed", 1)) + header
+    att = tmp_path / "attack.md"
+    att.write_text(body, encoding="utf-8", newline="\n")
+    src, roots = html_fixture(tmp_path, "дв")
+    out = tmp_path / "view.html"
+    run = run_cli("render-html", src, "--out", out, "--roots", roots, "--attack", att)
+    assert run.returncode == 0, run.stderr
+    attacks = embedded_attack(out.read_text(encoding="utf-8"))
+    assert [a["rows"] for a in attacks] == [[]] and attacks[0]["frontmatter"]["status"] == "passed"
+
+
 def test_cli_render_html_attack_parse_error_exits_2(tmp_path):
     src, roots = html_fixture(tmp_path, "дв")
     broken = tmp_path / "attack.md"
@@ -790,6 +812,34 @@ def test_wrong_cell_count_reports_the_number(tmp_path):
         journal.parse_attack_md(path)
 
 
+@pytest.mark.parametrize("line, stray", [
+    ("| а | б | scenario-run | в | блокер | нет | чинить a|b |", "a|b"),
+    ("| а | б a|b | scenario-run | в | блокер | нет | чинить |", "a|b"),
+], ids=["в последней ячейке", "во второй ячейке"])
+def test_bare_pipe_outside_backticks_names_file_line_and_columns(tmp_path, line, stray):
+    """`artifact-attack`: «Черта вне backticks» — отказ называет файл, строку и столбцы, код 2. Какая черта лишняя,
+    по тексту не узнать: названы столбцы всех черт вне backticks (без граничных), лишняя — одна из них; каждое
+    названное число указывает на знак `|`."""
+    path = attack_file(tmp_path, line, name="bare-pipe.md")
+    stray_column = line.index(stray) + 2          # номер знака `|` внутри «a|b», с единицы
+    def named(message):
+        assert "bare-pipe.md:9:" in message and "ячеек 8" in message and "лишняя — одна из них" in message
+        found = re.search(r"в столбцах ([\d, ]+);", message)
+        assert found, message
+        return [int(n) for n in found.group(1).split(",")]
+    with pytest.raises(ValueError) as err:
+        journal.parse_attack_md(path)
+    columns = named(str(err.value))
+    assert stray_column in columns and all(line[c - 1] == "|" for c in columns)
+    assert len(columns) == 8 - 1                 # восемь ячеек — семь внутренних черт
+    src, roots = html_fixture(tmp_path, "дв")
+    out = tmp_path / "view.html"
+    run = run_cli("render-html", src, "--out", out, "--roots", roots, "--attack", path)
+    assert run.returncode == 2, run.stdout + run.stderr
+    assert named(run.stderr) == columns
+    assert not out.exists()
+
+
 def test_cli_render_html_broken_attack_file_exits_2_with_position(tmp_path):
     src, roots = html_fixture(tmp_path, "дв")
     broken = attack_file(tmp_path, "| `открыт | F-01 | coverage | x | справка | нет | — |", name="broken-cell.md")
@@ -861,17 +911,17 @@ def test_viewer_attack_filter_hides_groups_but_not_blocker_counters(tmp_path):
 @requires_node
 def test_viewer_attack_lens_lists_follow_the_target_of_the_file(tmp_path):
     """Журнал (`decisions.json` — единственная цель): context-compliance, claim-authority, claim-extraction, coverage;
-    артефакты: scenario-run, claim-extraction. Прочие слуги — «вне списка»: в тяжести считаются, в линзе нет."""
+    артефакты: scenario-run, claim-extraction, trace-link (F-55). Прочие слуги — «вне списка»: в тяжести считаются, в линзе нет."""
     jr = [arow(lens=s, claim=f"ж-{s}") for s in ("context-compliance", "claim-authority", "claim-extraction", "coverage", "scenario-run", "style")]
-    ar = [arow(section="design.md", lens=s, claim=f"а-{s}") for s in ("scenario-run", "claim-extraction", "coverage", "requirement-coverage")]
+    ar = [arow(section="design.md", lens=s, claim=f"а-{s}") for s in ("scenario-run", "claim-extraction", "trace-link", "coverage", "requirement-coverage")]
     attack = attack_view(tmp_path, [afile(jr), afile(ar, ARTIFACT_TARGETS, "attack/artifacts.md")])["attack"]
     groups = re.findall(r"<h2>(?:<code>([a-z-]+)</code>|(вне списка))", attack)
     assert groups == [("context-compliance", ""), ("claim-authority", ""), ("claim-extraction", ""), ("coverage", ""),
-                      ("", "вне списка"), ("scenario-run", ""), ("claim-extraction", ""), ("", "вне списка")]
+                      ("", "вне списка"), ("scenario-run", ""), ("claim-extraction", ""), ("trace-link", ""), ("", "вне списка")]
     outside_journal = attack.split("<h2>вне списка")[1]
     assert "ж-scenario-run" in outside_journal and "ж-style" in outside_journal and "строка невалидна" in outside_journal
     heads = without_rows(attack)
-    assert heads.count("блокеров <b>6</b>") == 1 and heads.count("блокеров <b>4</b>") == 1      # тяжесть — по всему файлу
+    assert heads.count("блокеров <b>6</b>") == 1 and heads.count("блокеров <b>5</b>") == 1      # тяжесть — по всему файлу
     assert "по линзе: <code>context-compliance</code> <b>1</b> · <code>claim-authority</code> <b>1</b>" in heads
     assert "строк вне списка (невалидны, в счётчике линз их нет): <b>2</b>" in heads
     assert 'data-lens="__outside__"' in attack and 'data-lens="requirement-coverage"' not in attack
@@ -1594,6 +1644,7 @@ def test_rebuild_command_names_the_script_it_ran_from(tmp_path):
     project, src, env = shim_project(tmp_path)
     script = copy_of_tools_without_the_script(project)
     shutil.copy(ROOT / "tools" / "step_help.py", script.parent)
+    shutil.copy(ROOT / "tools" / "openspec_run.py", script.parent)
     snapshot, _ = built(src, env, script=script)
     assert shlex.split(snapshot["rebuild"])[1] == "tools/journal.py"
 
@@ -1610,6 +1661,7 @@ def test_rebuild_command_run_from_the_root_builds_the_same_page(tmp_path):
     project, src, env = shim_project(tmp_path)
     installed = copy_of_tools_without_the_script(project / ".symphysis")
     shutil.copy(ROOT / "tools" / "step_help.py", installed.parent)
+    shutil.copy(ROOT / "tools" / "openspec_run.py", installed.parent)
     (src.parent / "attack").mkdir()
     attack = src.parent / "attack" / "decisions.md"
     shutil.copy(ATTACK_FIX / "decisions.md", attack)

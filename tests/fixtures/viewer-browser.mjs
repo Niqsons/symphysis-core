@@ -66,6 +66,8 @@ const MEASURE = `(() => {
     editor: (document.getElementById('editorPick') || {}).value || null, editorMask: (document.getElementById('editorMask') || {}).value ?? null,
     links: [...document.querySelectorAll('a.filelink')].map((a) => ({ href: a.href, text: a.textContent })),
     codes: [...document.querySelectorAll('.card code')].map((c) => c.textContent),
+    attack: { groups: [...document.querySelectorAll('#viewAttack .attack-rows h2 code')].map((n) => n.textContent),
+      active: (document.querySelector('#lensFilter button.active') || {}).dataset?.lens || null },
     mode: (document.querySelector('#modes button.active') || {}).textContent || null };
 })()`;
 
@@ -131,6 +133,7 @@ async function main() {
       await sleep(50);
     }
     if (name === "mode") { await click(`#modes button[data-mode="${args[0]}"]`); await settled(); }
+    if (name === "lens") { await click(`#lensFilter button[data-lens="${args[0]}"]`); await sleep(50); }
     if (name === "reload") { await send("Page.navigate", { url }); await loaded(); await settled(); }
     if (name === "choose") {
       await evaluate(`document.querySelector('input[name="${args[0]}"][value="${args[1]}"]').scrollIntoView({ block: 'center' })`);

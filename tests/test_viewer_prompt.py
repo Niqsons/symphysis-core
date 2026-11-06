@@ -5,6 +5,7 @@ import copy
 import json
 import shutil
 import subprocess
+import sys
 
 import pytest
 
@@ -245,6 +246,42 @@ def test_answer_to_an_undecided_record_goes_to_notes_and_leaves_it_open(tmp_path
     decided = prompt(tmp_path, j, state(), [attack_file(("F-02, decision", "у", "вопрос человеку"))],
                      {key(attack_file(("F-02, decision", "у", "вопрос человеку")), 0): "слово"})
     assert decided["undecidedKeys"] == [] and "- F-02: B — «слово»" in decided["text"]
+
+
+def test_other_dispute_goes_to_notes_and_leaves_the_attack_file_alone(tmp_path):
+    """`decision-viewer`: «Прочий спор идёт в замечания» — строка с закрытием «правка записи» и ответом в поле спора:
+    ответ в «Замечания к схеме:», после `apply` он в `notes[]`, решения нет, файл атаки не изменён."""
+    j = plan_journal()
+    att = attack_file(("F-02, decision", "утверждение", "правка записи"))
+    attack_md = tmp_path / "decisions.md"
+    attack_md.write_text(
+        "---\n"
+        "status: gaps_found\n"
+        "targets:\n"
+        "  - path: decisions.json\n"
+        "    sha256: ''\n"
+        "---\n"
+        "| Утверждение | Раздел | Линза | Инвариант | Тяжесть | Опора есть / нет | Чем закрыть |\n"
+        "| --- | --- | --- | --- | --- | --- | --- |\n"
+        "| утверждение | F-02, decision | context-compliance | и | блокер | нет | правка записи |\n"
+        , encoding="utf-8")
+    before = attack_md.read_bytes()
+    res = prompt(tmp_path, j, state(), [att], {key(att, 0): "мой ответ на строку"})
+    lines = res["text"].splitlines()
+    assert lines[-1].startswith("Замечания к схеме: ") and lines[-1].endswith("спор: мой ответ на строку")
+    assert not [l for l in lines if l.startswith("- F-02:")] and res["conflictKeys"] == [] and res["undecidedKeys"] == []
+    ops = apply_clean(j, res["text"])
+    assert [op["op"] for op in ops].count("note") == 1 and not [op for op in ops if op["op"] == "decide"]
+    work = copy.deepcopy(j)
+    journal.apply_answers(work, ops, DATE)
+    assert any("мой ответ на строку" in n["text"] for n in work["notes"])
+    # файл атаки проходит через путь, который мог бы его изменить: сборка страницы с `--attack`
+    src = tmp_path / "decisions.json"
+    journal.save_journal(src, work)
+    run = subprocess.run([sys.executable, str(ROOT / "tools" / "journal.py"), "render-html", str(src), "--out", str(tmp_path / "v.html"),
+                          "--attack", str(attack_md)], capture_output=True, text=True, encoding="utf-8")
+    assert run.returncode == 0, run.stderr
+    assert attack_md.read_bytes() == before
 
 
 def test_page_marks_undecided_row_and_skill_states_the_rule():

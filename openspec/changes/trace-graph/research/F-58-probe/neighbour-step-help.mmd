@@ -1,0 +1,188 @@
+requirementDiagram
+direction LR
+classDef kcap fill:#f1f5f9,stroke:#475569
+classDef kreq fill:#dbeafe,stroke:#1d4ed8,stroke-width:2px
+classDef kscn fill:#dcfce7,stroke:#15803d
+classDef ktask fill:#fef9c3,stroke:#a16207
+classDef krec fill:#f3e8ff,stroke:#7e22ce,stroke-dasharray:6
+requirement "CAP_1 step-help" {
+    id: "CAP_1"
+}
+requirement "REQ_1 Скрипт считает текущий шаг и чей ход" {
+    id: "REQ_1"
+    text: "`tools/step_help.py` SHALL называть один текущий шаг и чей ход по `openspec status`, журналу и задачам (F-19, "
+}
+element "SCN_1 Открытая развилка при готовом следующем шаге" {
+    type: "SCN_1"
+    docref: "specs/step-help/spec.md:11"
+}
+element "SCN_2 Припаркованная развилка" {
+    type: "SCN_2"
+    docref: "specs/step-help/spec.md:16"
+}
+element "SCN_3 Журнал не читается" {
+    type: "SCN_3"
+    docref: "specs/step-help/spec.md:21"
+}
+element "SCN_4 Несколько готовых шагов после `specs`" {
+    type: "SCN_4"
+    docref: "specs/step-help/spec.md:26"
+}
+element "SCN_5 Вызванная атака" {
+    type: "SCN_5"
+    docref: "specs/step-help/spec.md:31"
+}
+element "SCN_6 Задачи идут" {
+    type: "SCN_6"
+    docref: "specs/step-help/spec.md:36"
+}
+element "SCN_7 Задачи закрыты" {
+    type: "SCN_7"
+    docref: "specs/step-help/spec.md:41"
+}
+element "SCN_8 Реализация заблокирована" {
+    type: "SCN_8"
+    docref: "specs/step-help/spec.md:46"
+}
+element "SCN_9 Активных изменений нет" {
+    type: "SCN_9"
+    docref: "specs/step-help/spec.md:51"
+}
+element "SCN_10 Изменение только что создано" {
+    type: "SCN_10"
+    docref: "specs/step-help/spec.md:56"
+}
+element "SCN_11 Первые шаги пропущены" {
+    type: "SCN_11"
+    docref: "specs/step-help/spec.md:61"
+}
+element "SCN_12 Текущий шаг совпадает с командой" {
+    type: "SCN_12"
+    docref: "specs/step-help/spec.md:66"
+}
+element "REC_1 F-08 Готовность шага в `status` — наличие его файла: содержание и решения журнала ст" {
+    type: "REC_1"
+    docref: "decisions.json"
+}
+element "REC_2 F-09 После `specs` к работе готовы сразу три шага, `Next` называет один" {
+    type: "REC_2"
+    docref: "decisions.json"
+}
+element "REC_3 F-12 Прогресс задач отдаёт `instructions apply`: всего, закрыто, осталось" {
+    type: "REC_3"
+    docref: "decisions.json"
+}
+element "REC_4 F-13 `apply`, `sync` и `archive` не артефакты графа; признака «синхронизация сделана" {
+    type: "REC_4"
+    docref: "decisions.json"
+}
+element "REC_5 F-19 Откуда справка берёт «где мы и чей ход»?" {
+    type: "REC_5"
+    docref: "decisions.json"
+}
+element "REC_6 F-23 Где живёт расчёт и сборка страницы?" {
+    type: "REC_6"
+    docref: "decisions.json"
+}
+element "REC_7 F-27 Какие шаги получают страницу справки?" {
+    type: "REC_7"
+    docref: "decisions.json"
+}
+element "REC_8 F-40 [adjacency · collection] Скрипт считает текущий шаг и чей ход: у записи `status" {
+    type: "REC_8"
+    docref: "decisions.json"
+}
+element "REC_9 F-41 [empty · collection] Скрипт считает текущий шаг и чей ход: `decisions.json` рав" {
+    type: "REC_9"
+    docref: "decisions.json"
+}
+element "REC_10 F-55 Слово к F-41 приводит пример: первые шаги пропущены, сразу начат `proposal`. О" {
+    type: "REC_10"
+    docref: "decisions.json"
+}
+element "TASK_1 Задача 1.4" {
+    type: "TASK_1"
+    docref: "tasks.md:28"
+}
+element "TASK_2 Задача 1.7" {
+    type: "TASK_2"
+    docref: "tasks.md:31"
+}
+element "TASK_3 Задача 4.2" {
+    type: "TASK_3"
+    docref: "tasks.md:47"
+}
+element "TASK_4 Задача 9.1" {
+    type: "TASK_4"
+    docref: "tasks.md:73"
+}
+"CAP_1 step-help" - contains -> "REQ_1 Скрипт считает текущий шаг и чей ход"
+"SCN_1 Открытая развилка при готовом следующем шаге" - verifies -> "REQ_1 Скрипт считает текущий шаг и чей ход"
+"SCN_2 Припаркованная развилка" - verifies -> "REQ_1 Скрипт считает текущий шаг и чей ход"
+"SCN_3 Журнал не читается" - verifies -> "REQ_1 Скрипт считает текущий шаг и чей ход"
+"SCN_4 Несколько готовых шагов после `specs`" - verifies -> "REQ_1 Скрипт считает текущий шаг и чей ход"
+"SCN_5 Вызванная атака" - verifies -> "REQ_1 Скрипт считает текущий шаг и чей ход"
+"SCN_6 Задачи идут" - verifies -> "REQ_1 Скрипт считает текущий шаг и чей ход"
+"SCN_7 Задачи закрыты" - verifies -> "REQ_1 Скрипт считает текущий шаг и чей ход"
+"SCN_8 Реализация заблокирована" - verifies -> "REQ_1 Скрипт считает текущий шаг и чей ход"
+"SCN_9 Активных изменений нет" - verifies -> "REQ_1 Скрипт считает текущий шаг и чей ход"
+"SCN_10 Изменение только что создано" - verifies -> "REQ_1 Скрипт считает текущий шаг и чей ход"
+"SCN_11 Первые шаги пропущены" - verifies -> "REQ_1 Скрипт считает текущий шаг и чей ход"
+"SCN_12 Текущий шаг совпадает с командой" - verifies -> "REQ_1 Скрипт считает текущий шаг и чей ход"
+"REQ_1 Скрипт считает текущий шаг и чей ход" - traces -> "REC_1 F-08 Готовность шага в `status` — наличие его файла: содержание и решения журнала ст"
+"REQ_1 Скрипт считает текущий шаг и чей ход" - traces -> "REC_2 F-09 После `specs` к работе готовы сразу три шага, `Next` называет один"
+"REQ_1 Скрипт считает текущий шаг и чей ход" - traces -> "REC_3 F-12 Прогресс задач отдаёт `instructions apply`: всего, закрыто, осталось"
+"REQ_1 Скрипт считает текущий шаг и чей ход" - traces -> "REC_4 F-13 `apply`, `sync` и `archive` не артефакты графа; признака «синхронизация сделана"
+"REQ_1 Скрипт считает текущий шаг и чей ход" - traces -> "REC_5 F-19 Откуда справка берёт «где мы и чей ход»?"
+"REQ_1 Скрипт считает текущий шаг и чей ход" - traces -> "REC_6 F-23 Где живёт расчёт и сборка страницы?"
+"REQ_1 Скрипт считает текущий шаг и чей ход" - traces -> "REC_7 F-27 Какие шаги получают страницу справки?"
+"REQ_1 Скрипт считает текущий шаг и чей ход" - traces -> "REC_8 F-40 [adjacency · collection] Скрипт считает текущий шаг и чей ход: у записи `status"
+"REQ_1 Скрипт считает текущий шаг и чей ход" - traces -> "REC_9 F-41 [empty · collection] Скрипт считает текущий шаг и чей ход: `decisions.json` рав"
+"REQ_1 Скрипт считает текущий шаг и чей ход" - traces -> "REC_10 F-55 Слово к F-41 приводит пример: первые шаги пропущены, сразу начат `proposal`. О"
+"TASK_1 Задача 1.4" - satisfies -> "SCN_1 Открытая развилка при готовом следующем шаге"
+"TASK_1 Задача 1.4" - satisfies -> "SCN_2 Припаркованная развилка"
+"TASK_1 Задача 1.4" - satisfies -> "SCN_3 Журнал не читается"
+"TASK_1 Задача 1.4" - satisfies -> "SCN_4 Несколько готовых шагов после `specs`"
+"TASK_1 Задача 1.4" - satisfies -> "SCN_5 Вызванная атака"
+"TASK_1 Задача 1.4" - satisfies -> "SCN_6 Задачи идут"
+"TASK_1 Задача 1.4" - satisfies -> "SCN_7 Задачи закрыты"
+"TASK_1 Задача 1.4" - satisfies -> "SCN_8 Реализация заблокирована"
+"TASK_1 Задача 1.4" - satisfies -> "SCN_9 Активных изменений нет"
+"TASK_1 Задача 1.4" - satisfies -> "SCN_10 Изменение только что создано"
+"TASK_1 Задача 1.4" - satisfies -> "SCN_11 Первые шаги пропущены"
+"TASK_1 Задача 1.4" - traces -> "REC_5 F-19 Откуда справка берёт «где мы и чей ход»?"
+"TASK_1 Задача 1.4" - traces -> "REC_8 F-40 [adjacency · collection] Скрипт считает текущий шаг и чей ход: у записи `status"
+"TASK_1 Задача 1.4" - traces -> "REC_9 F-41 [empty · collection] Скрипт считает текущий шаг и чей ход: `decisions.json` рав"
+"TASK_1 Задача 1.4" - traces -> "REC_10 F-55 Слово к F-41 приводит пример: первые шаги пропущены, сразу начат `proposal`. О"
+"TASK_2 Задача 1.7" - satisfies -> "SCN_12 Текущий шаг совпадает с командой"
+"TASK_3 Задача 4.2" - satisfies -> "SCN_3 Журнал не читается"
+"TASK_3 Задача 4.2" - traces -> "REC_7 F-27 Какие шаги получают страницу справки?"
+"TASK_4 Задача 9.1" - satisfies -> "SCN_6 Задачи идут"
+class "CAP_1 step-help" kcap
+class "REQ_1 Скрипт считает текущий шаг и чей ход" kreq
+class "SCN_1 Открытая развилка при готовом следующем шаге" kscn
+class "SCN_2 Припаркованная развилка" kscn
+class "SCN_3 Журнал не читается" kscn
+class "SCN_4 Несколько готовых шагов после `specs`" kscn
+class "SCN_5 Вызванная атака" kscn
+class "SCN_6 Задачи идут" kscn
+class "SCN_7 Задачи закрыты" kscn
+class "SCN_8 Реализация заблокирована" kscn
+class "SCN_9 Активных изменений нет" kscn
+class "SCN_10 Изменение только что создано" kscn
+class "SCN_11 Первые шаги пропущены" kscn
+class "SCN_12 Текущий шаг совпадает с командой" kscn
+class "REC_1 F-08 Готовность шага в `status` — наличие его файла: содержание и решения журнала ст" krec
+class "REC_2 F-09 После `specs` к работе готовы сразу три шага, `Next` называет один" krec
+class "REC_3 F-12 Прогресс задач отдаёт `instructions apply`: всего, закрыто, осталось" krec
+class "REC_4 F-13 `apply`, `sync` и `archive` не артефакты графа; признака «синхронизация сделана" krec
+class "REC_5 F-19 Откуда справка берёт «где мы и чей ход»?" krec
+class "REC_6 F-23 Где живёт расчёт и сборка страницы?" krec
+class "REC_7 F-27 Какие шаги получают страницу справки?" krec
+class "REC_8 F-40 [adjacency · collection] Скрипт считает текущий шаг и чей ход: у записи `status" krec
+class "REC_9 F-41 [empty · collection] Скрипт считает текущий шаг и чей ход: `decisions.json` рав" krec
+class "REC_10 F-55 Слово к F-41 приводит пример: первые шаги пропущены, сразу начат `proposal`. О" krec
+class "TASK_1 Задача 1.4" ktask
+class "TASK_2 Задача 1.7" ktask
+class "TASK_3 Задача 4.2" ktask
+class "TASK_4 Задача 9.1" ktask
