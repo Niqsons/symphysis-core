@@ -836,7 +836,7 @@ def test_symphysis_version_absent_is_null(tmp_path):
 
 def copy_of_tools(directory: Path) -> Path:
     directory.mkdir()
-    for name in ("step_help.py", "openspec_run.py", "journal_render.py", "journal_model.py", "journal_apply.py"):
+    for name in ("step_help.py", "openspec_run.py", "journal_render.py", "journal_model.py", "journal_apply.py", "roots.py"):
         shutil.copy(ROOT / "tools" / name, directory)
     return directory / "step_help.py"
 
@@ -1177,7 +1177,7 @@ def install_layout(tmp_path, nested=False):
     tools = install / ".symphysis" / "tools"
     tools.mkdir(parents=True)
     for file in (ROOT / "tools").glob("*"):
-        if file.is_file() and re.match(r"journal.*\.py|step_help\.py|openspec_run\.py|symphysis_config\.py", file.name):
+        if file.is_file() and re.match(r"journal.*\.py|roots\.py|viewer_render\.py|attack_table\.py|step_help\.py|openspec_run\.py|symphysis_config\.py", file.name):
             shutil.copy(file, tools / file.name)
     (install / ".symphysis" / "docs").mkdir()
     shutil.copy(ROOT / "docs" / "journal.schema.json", install / ".symphysis" / "docs" / "journal.schema.json")
@@ -1217,7 +1217,7 @@ def clone_layout(tmp_path):
     tools = clone / "tools"
     tools.mkdir(parents=True)
     for file in (ROOT / "tools").glob("*"):
-        if file.is_file() and re.match(r"journal.*\.(py|json)|step_help\.py|openspec_run\.py|symphysis_config\.py", file.name):
+        if file.is_file() and re.match(r"journal.*\.(py|json)|roots\.py|viewer_render\.py|attack_table\.py|step_help\.py|openspec_run\.py|symphysis_config\.py", file.name):
             shutil.copy(file, tools / file.name)
     (clone / "docs").mkdir()
     shutil.copy(ROOT / "docs" / "journal.schema.json", clone / "docs" / "journal.schema.json")

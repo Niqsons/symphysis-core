@@ -7,7 +7,7 @@ from __future__ import annotations
 import re
 from pathlib import Path
 
-from journal_apply import OUTSIDE_ROOT, _resolve
+from roots import OUTSIDE_ROOT, _resolve
 
 __all__ = ["code_sites", "normalize_path"]
 

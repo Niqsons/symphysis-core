@@ -8,8 +8,8 @@ from __future__ import annotations
 import re
 from pathlib import Path
 
-from journal_apply import NOT_CHECKED, _read_text, find_quote
 from journal_sites import code_sites, normalize_path
+from roots import NOT_CHECKED, _read_text, find_quote
 
 __all__ = ["check_consequences"]
 

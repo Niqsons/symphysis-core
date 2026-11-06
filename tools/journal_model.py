@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """Модель журнала: загрузка и сохранение JSON, проверка по схеме и по правилам между
-записями, разбор markdown-журнала в словарь (`import_md`). От соседних модулей не зависит,
-внешних пакетов не требует: `tools/journal*.py` работают на голом Python."""
+записями, разбор markdown-журнала в словарь (`import_md`). От соседних файлов зависит только
+от `roots.py` (константа `ROOT`), внешних пакетов не требует: `tools/journal*.py` работают на голом Python."""
 from __future__ import annotations
 
 import json
@@ -10,15 +10,16 @@ import sys
 from collections import Counter
 from pathlib import Path
 
+from roots import ROOT
+
 __all__ = [
-    "ROOT", "SCHEMA_PATH", "RE_ANCHOR", "RE_REC", "ADDED_MARK", "PROBE_OUTCOMES", "DEVIATION_LABEL",
+    "SCHEMA_PATH", "RE_ANCHOR", "RE_REC", "ADDED_MARK", "PROBE_OUTCOMES", "DEVIATION_LABEL",
     "DEVIATION_TAIL", "SETTING",
     "load_journal", "save_journal", "validate_journal", "import_md", "import_md_text",
     "_unquote", "_flat", "_new_record", "_evidence_of",
 ]
 
 
-ROOT = Path(__file__).resolve().parent.parent
 SCHEMA_PATH = ROOT / "docs" / "journal.schema.json"
 
 RE_TITLE = re.compile(r"^# (.*\S)\s*$")

@@ -17,7 +17,7 @@ from dataclasses import dataclass, field
 from pathlib import Path
 
 sys.dont_write_bytecode = True  # как у соседних скриптов: `__pycache__` в проекте от инструментов не появляется (F-50)
-from journal_apply import UNUSABLE_ROOTS, default_roots  # noqa: E402
+from roots import UNUSABLE_ROOTS, default_roots  # noqa: E402
 from journal_model import PROBE_OUTCOMES, validate_journal  # noqa: E402
 from openspec_run import ForkError, check_change_name, find_on_path, no_paths, run_fork  # noqa: E402
 

@@ -509,7 +509,7 @@ Markdown Editor for Humans.
     - улика: `playground/SKILL.md` «Load the matching template»
   - B. Свой скилл `symphysis-viewer` и свой шаблон `tools/playground-template.html` в symphysis; Playground — образец, не точка расширения
     - улика: `playground/SKILL.md` «Single HTML file»
-    - улика: `tools/journal_render.py` «def render_html»
+    - улика: `tools/viewer_render.py` «def render_html»
 - антиподы: —
 - рекомендация: B — шаблон и рендер уже свои (`render-html`, F-17.D), плагин ничего из этого не знает; форк отдал бы инструкции просмотрщика чужому SKILL.md, а важные развилки должны показываться человеку по нашим правилам
 - решение: B — «нам стоит сделать свой скилл и шаблон на базе Playground, чтобы инструкции были четкие и мы могли ими управлять, а Playground будет как источник вдохновения, а не точка расширения.», 2026-10-30

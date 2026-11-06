@@ -15,13 +15,14 @@ import shlex
 import sys
 from pathlib import Path
 
-from journal_apply import (REFUSED, apply_answers, apply_md4h, change_of as _change_of, check_evidence, default_roots, file_links, parse_answers,
-                           parse_md4h, project_href, sha256_file)
+from attack_table import parse_attack_md
+from journal_apply import REFUSED, apply_answers, apply_md4h, check_evidence, parse_answers, parse_md4h, sha256_file
 from journal_consequences import check_consequences
 from journal_model import dependency_cycles, import_md, load_journal, save_journal, unexplained_choices, validate_journal
-from journal_render import (TEMPLATE_PATH, no_help_snapshot, parse_attack_md, render_design, render_html, render_md,
-                            scheme_payload, view_payload)
+from journal_render import render_design, render_md, view_payload
 from journal_sites import code_sites
+from roots import change_of as _change_of, default_roots, file_links, project_href
+from viewer_render import TEMPLATE_PATH, no_help_snapshot, render_html, scheme_payload
 
 __all__ = ["build_parser", "main"]
 

@@ -12,8 +12,9 @@ from urllib.parse import quote
 
 import pytest
 
+import attack_table
 import journal
-import journal_render
+import viewer_render
 from conftest import (FIX, ROOT, fake_apply, fake_status, fork_calls, fork_env, fork_record, fork_reply, install_fork_shim,
                       journal_of, one_record_journal, real_fork, real_project, requires_fork)
 
@@ -779,7 +780,7 @@ def test_escaped_backslash_and_unclosed_backtick(tmp_path):
     cells = journal.parse_attack_md(attack_file(tmp_path, ok))["rows"][0]
     assert cells["claim"] == r"`\|`"                        # в коде: \\ -> \, голая | — текст
     # вне кода \\| — литеральная косая и разделитель: ячейка «a\», следом «b»
-    assert journal_render._split_row(r"|a\\|b |") == (["a\\", "b "], None)
+    assert attack_table._split_row(r"|a\\|b |") == (["a\\", "b "], None)
     bad = attack_file(tmp_path, "| `открыт | F-01 | coverage | x | справка | нет | — |", name="bad.md")
     with pytest.raises(ValueError) as err:
         journal.parse_attack_md(bad)
@@ -1151,7 +1152,7 @@ SCHEME_CASES = json.loads((FIX / "scheme" / "cases.json").read_text(encoding="ut
 
 @pytest.mark.parametrize("case", SCHEME_CASES, ids=lambda c: c["name"])
 def test_parse_scheme_by_the_shared_cases(case):
-    assert journal_render.parse_scheme(case["text"]) == case["expect"]
+    assert viewer_render.parse_scheme(case["text"]) == case["expect"]
 
 
 def scheme_embedded(html):
@@ -1508,7 +1509,7 @@ def copy_of_tools_without_the_script(home: Path) -> Path:
     """Инструменты журнала в `home/tools`, схема журнала в `home/docs`, как их ставит инсталлятор: возвращает `journal.py`."""
     (home / "tools").mkdir(parents=True)
     (home / "docs").mkdir()
-    for file in (ROOT / "tools").glob("journal*"):
+    for file in (*(ROOT / "tools").glob("journal*"), *(ROOT / "tools" / name for name in ("roots.py", "viewer_render.py", "attack_table.py"))):
         shutil.copy(file, home / "tools")
     shutil.copy(TEMPLATE, home / "tools")
     shutil.copy(ROOT / "docs" / "journal.schema.json", home / "docs")
@@ -1833,3 +1834,54 @@ def test_project_href_falls_back_to_the_tools_parent():
     out = journal.ROOT / "docs" / "x.html"
     assert journal.project_href({}, out) == "../"
     assert journal.project_href({"": journal.ROOT / "docs"}, out) == "./"
+
+
+# --- сценарии `decision-viewer` после разреза journal_render (module-structure, 2.2) ----------
+
+def embedded_attack(html):
+    """Список атак, встроенный в страницу на место метки `__ATTACK_JSON__`."""
+    start = html.index("const ATTACK = ") + len("const ATTACK = ")
+    return json.JSONDecoder().raw_decode(html[start:].replace("<\\/", "</"))[0]
+
+
+def test_pipe_in_backticks_in_last_cell_makes_seven_cells_and_shows_text(tmp_path):
+    """`decision-viewer`: «Черта в backticks в последней ячейке» — семь ячеек, код 0, черта показана в ячейке текстом."""
+    src, roots = html_fixture(tmp_path, "дв")
+    path = attack_file(tmp_path, "| а | F-01 | coverage | x | справка | нет | закрыть `grep -c 'a|b'` |", name="last-cell.md")
+    out = tmp_path / "view.html"
+    run = run_cli("render-html", src, "--out", out, "--roots", roots, "--attack", path)
+    assert run.returncode == 0, run.stdout + run.stderr
+    row = embedded_attack(out.read_text(encoding="utf-8"))[0]["rows"][0]
+    assert len(row) == 7 and row["fix"] == "закрыть `grep -c 'a|b'`"
+
+
+def test_extra_cell_names_file_and_line_and_writes_no_html(tmp_path):
+    """`decision-viewer`: «Лишняя ячейка» — строка из восьми ячеек: ошибка называет файл и номер строки, код 2, HTML нет."""
+    src, roots = html_fixture(tmp_path, "дв")
+    attack = tmp_path / "attack"
+    attack.mkdir()
+    path = attack_file(attack, "| а | F-01 | coverage | x | справка | нет | — | лишняя |", name="decisions.md")
+    out = tmp_path / "view.html"
+    run = run_cli("render-html", src, "--out", out, "--roots", roots, "--attack", path)
+    assert run.returncode == 2, run.stdout + run.stderr
+    assert "decisions.md:9:" in run.stderr and "ячеек 8" in run.stderr
+    assert not out.exists()
+
+
+@requires_node
+def test_page_copied_out_of_the_project_shows_scheme_text_and_runs_modes(tmp_path):
+    """`decision-viewer`: «Страница перенесена из проекта» — страница вне проекта, где нет `.symphysis/tools/`: схема
+    решения показана текстом (путь к mermaid пуст), режимы и промпт возврата работают."""
+    html, _ = render_page(tmp_path, "```mermaid\nflowchart TD\n  A --> B\n```\n")
+    elsewhere = tmp_path / "elsewhere"
+    elsewhere.mkdir()
+    copied = elsewhere / "symphysis.html"
+    copied.write_text(html, encoding="utf-8", newline="\n")
+    assert not (tmp_path / ".symphysis" / "tools").exists()   # проекта рядом нет
+    page = copied.read_text(encoding="utf-8")
+    scheme = scheme_embedded(page)
+    assert scheme["mermaid"] is None and scheme["text"] == "flowchart TD\n  A --> B\n"
+    done = smoke(elsewhere, page)
+    assert "F-19" in done["cards"] and done["out"]
+    for mode in ("check", "attack"):
+        assert smoke(elsewhere, page, {"__suffixes__": {":mode": mode}})["modes"]

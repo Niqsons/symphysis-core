@@ -16,8 +16,7 @@ import sys
 from dataclasses import dataclass, field
 from pathlib import Path
 
-from journal_apply import default_roots
-from journal_model import ROOT
+from roots import ROOT, default_roots
 
 __all__ = ["Settings", "read_settings", "composition_line", "lenses_line", "LENSES", "build_parser", "main"]
 
