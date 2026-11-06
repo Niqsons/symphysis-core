@@ -148,6 +148,8 @@ def test_fresh_snapshot_only_updates_root_commits(tmp_path, fork):
 
 def test_no_absolute_paths_in_snapshot_and_report(tmp_path, monkeypatch):
     """`trace-snapshot`: «Абсолютных путей нет» — `openspec` падает с путём, имя узла и файл корней несут пути."""
+    # Из основного клона `X:\symphysis` путь пункта — текущий каталог, и `no_paths` даёт `<каталог>`, а не `<путь>`.
+    monkeypatch.chdir(tmp_path)
     security = "| Пункт | Статус |\n| --- | --- |\n| Чтение X:\\symphysis\\.context\\00-start-here.md | применимо |\n"
     root, base, roots, _ = frozen_project(tmp_path, security=security)
     env = shim_env(tmp_path, fork_reply("", code=2, stderr=f"ENOENT {tmp_path}\\proj\\x and {tmp_path.as_posix()}/proj/y"))
