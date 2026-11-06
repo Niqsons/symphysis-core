@@ -24,6 +24,8 @@ const FILES = [
 
 /** Общие файлы скиллов: `skills/shared/*.md` -> `docs/*.md`, в проекте `.symphysis/docs/`. */
 const SHARED_DIR = "skills/shared";
+/** Тела агентов-водителей: `agents/symphysis-*-driver.md` -> `agents/` payload, без провенанса. */
+const AGENTS_DIR = "agents";
 /** Уведомления MIT о донорах: переведённые механики — производная работа, копий доноров в поставке нет. */
 const NOTICES = ["installer/THIRD-PARTY-NOTICES.md", "docs/THIRD-PARTY-NOTICES.md"];
 
@@ -96,6 +98,9 @@ export function expectedPayload(root = ROOT) {
   }
   if (fs.existsSync(path.join(root, SHARED_DIR))) {
     for (const f of walk(path.join(root, SHARED_DIR))) if (f.endsWith(".md")) map.set(`docs/${f}`, readStripped(`${SHARED_DIR}/${f}`));
+  }
+  if (fs.existsSync(path.join(root, AGENTS_DIR))) {
+    for (const f of walk(path.join(root, AGENTS_DIR))) if (/^symphysis-.*-driver\.md$/.test(f)) map.set(`${AGENTS_DIR}/${f}`, readStripped(`${AGENTS_DIR}/${f}`));
   }
   for (const rel of FILES) map.set(rel, read(rel));
   const [noticeFrom, noticeTo] = NOTICES;

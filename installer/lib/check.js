@@ -79,9 +79,9 @@ export function findPython() {
  * Сверяет установку symphysis в проекте. Только называет расхождения, ничего не чинит.
  * `findings` — отказы (каждая строка начинается с имени файла или предмета); `notes` — сигналы (журналы).
  */
-export function check(project, { skillsDirs = [], payloadDir = DEFAULT_PAYLOAD, sourceRoot = ROOT } = {}) {
+export function check(project, { skillsDirs = [], agentsDirs = [], payloadDir = DEFAULT_PAYLOAD, sourceRoot = ROOT } = {}) {
   const root = path.resolve(project);
-  const t = targets(root, skillsDirs);
+  const t = targets(root, skillsDirs, agentsDirs);
   const findings = [];
   const notes = [];
 
@@ -118,6 +118,14 @@ export function check(project, { skillsDirs = [], payloadDir = DEFAULT_PAYLOAD, 
   for (const dir of t.skillsDirs) {
     for (const name of skillNames) {
       const f = path.join(dir, name, "SKILL.md");
+      if (!fs.existsSync(f)) findings.push(`${rel(root, f)}: нет файла`);
+    }
+  }
+  const agentsSrc = path.join(payloadDir, "agents");
+  const agentNames = fs.existsSync(agentsSrc) ? fs.readdirSync(agentsSrc).filter((n) => /^symphysis-.*-driver\.md$/.test(n)) : [];
+  for (const dir of t.agentsDirs) {
+    for (const name of agentNames) {
+      const f = path.join(dir, name);
       if (!fs.existsSync(f)) findings.push(`${rel(root, f)}: нет файла`);
     }
   }

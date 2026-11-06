@@ -112,9 +112,9 @@ export function mergeConfig(existingText, oursText) {
  * вносит его в `.gitignore` и обновляет проект, если в нём нет `/opsx:continue`.
  * Пути в результате — от корня проекта, с «/». `messages` — строки для печати.
  */
-export function install(project, { skillsDirs = [], force = false, payloadDir = DEFAULT_PAYLOAD, sourceRoot = ROOT } = {}) {
+export function install(project, { skillsDirs = [], agentsDirs = [], force = false, payloadDir = DEFAULT_PAYLOAD, sourceRoot = ROOT } = {}) {
   const root = path.resolve(project);
-  const t = targets(root, skillsDirs);
+  const t = targets(root, skillsDirs, agentsDirs);
   const res = { written: [], merged: [], skipped: [], messages: [] };
   if (!fs.existsSync(path.join(payloadDir, "skills"))) {
     throw new Error(`payload не найден: ${payloadDir} (выполнить npm run prepare)`);
@@ -126,6 +126,12 @@ export function install(project, { skillsDirs = [], force = false, payloadDir = 
   for (const e of fs.readdirSync(skillsSrc, { withFileTypes: true })) {
     if (!e.isDirectory() || !e.name.startsWith("symphysis-")) continue;
     for (const dir of t.skillsDirs) copyTree(res, root, path.join(skillsSrc, e.name), path.join(dir, e.name), force);
+  }
+  // Тела агентов-водителей (`agents/symphysis-*-driver.md`): в каждый каталог агентов, по умолчанию `agents`
+  // рядом с каталогом скиллов — у Claude Code это `.claude/agents/` (канон тел, раздел 10).
+  const agentsSrc = path.join(payloadDir, "agents");
+  if (fs.existsSync(agentsSrc)) {
+    for (const dir of t.agentsDirs) copyTree(res, root, agentsSrc, dir, force, (f) => /^symphysis-.*-driver\.md$/.test(path.basename(f)));
   }
 
   const toolsDir = path.join(t.toolsDir, "tools");

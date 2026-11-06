@@ -123,6 +123,13 @@ test("удалён SKILL.md: finding называет его", () => {
   assert.ok(r.findings.includes(".claude/skills/symphysis-attack/SKILL.md: нет файла"), JSON.stringify(r.findings));
 });
 
+test("удалено тело агента: finding называет его", () => {
+  const p = installed();
+  fs.rmSync(path.join(targets(p).agentsDirs[0], "symphysis-research-driver.md"));
+  const r = runCheck(p);
+  assert.ok(r.findings.includes(".claude/agents/symphysis-research-driver.md: нет файла"), JSON.stringify(r.findings));
+});
+
 test("скиллы проверяются в каждом skillsDir", () => {
   process.env.XDG_CONFIG_HOME = tmp();
   process.env.SYMPHYSIS_OPENSPEC = FORK;

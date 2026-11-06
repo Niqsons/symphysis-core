@@ -10,13 +10,14 @@ import { targets } from "../lib/paths.js";
 const USAGE = `symphysis — схема OpenSpec symphysis, скиллы и инструменты журнала в проект
 
 Использование:
-  symphysis install [--project <dir>] [--skills-dir <dir>]... [--force]
-  symphysis check   [--project <dir>] [--skills-dir <dir>]...
+  symphysis install [--project <dir>] [--skills-dir <dir>]... [--agents-dir <dir>]... [--force]
+  symphysis check   [--project <dir>] [--skills-dir <dir>]... [--agents-dir <dir>]...
   symphysis config  [--project <dir>]
   symphysis --help
 
 Команды:
-  install   поставить схему, скиллы и инструменты журнала в проект, создать личный
+  install   поставить схему, скиллы, тела агентов-водителей и инструменты журнала
+            в проект, создать личный
             symphysis.yaml и внести его в .gitignore; если нет /opsx:continue, обновить
             проект, не трогая профиль. Звать, когда symphysis ставится в проект впервые
             или обновляется
@@ -33,6 +34,8 @@ const USAGE = `symphysis — схема OpenSpec symphysis, скиллы и ин
                       путь — от --project; без параметра — один .claude/skills.
                       Какой клиент есть: where.exe claude, where.exe opencode в
                       PowerShell, which в bash
+  --agents-dir <dir>  каталог агентов-водителей выбранного клиента; повторяемый;
+                      без параметра — agents рядом с каждым --skills-dir (.claude/agents)
   --force             перезаписать существующее (install)
   -h, --help          эта справка
 
@@ -49,6 +52,7 @@ try {
     options: {
       project: { type: "string" },
       "skills-dir": { type: "string", multiple: true },
+      "agents-dir": { type: "string", multiple: true },
       force: { type: "boolean" },
       help: { type: "boolean", short: "h" },
     },
@@ -73,7 +77,7 @@ if (values.help || cmd === "help") {
 } else if (cmd === "install") {
   let r;
   try {
-    r = install(values.project ?? process.cwd(), { skillsDirs: values["skills-dir"] ?? [], force: Boolean(values.force) });
+    r = install(values.project ?? process.cwd(), { skillsDirs: values["skills-dir"] ?? [], agentsDirs: values["agents-dir"] ?? [], force: Boolean(values.force) });
   } catch (e) {
     process.stderr.write(`symphysis install: ${e.message}\n`);
     process.exit(1);
@@ -87,7 +91,7 @@ if (values.help || cmd === "help") {
 } else if (cmd === "check") {
   let r;
   try {
-    r = check(values.project ?? process.cwd(), { skillsDirs: values["skills-dir"] ?? [] });
+    r = check(values.project ?? process.cwd(), { skillsDirs: values["skills-dir"] ?? [], agentsDirs: values["agents-dir"] ?? [] });
   } catch (e) {
     process.stderr.write(`symphysis check: ${e.message}\n`);
     process.exit(1);

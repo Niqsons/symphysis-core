@@ -48,6 +48,8 @@ test("install в пустой проект: все цели существуют
   assert.ok(fs.existsSync(path.join(t.schemaDir, "schema.yaml")));
   assert.ok(fs.existsSync(t.configPath));
   for (const d of t.skillsDirs) assert.ok(fs.existsSync(path.join(d, "symphysis-brainstorm", "SKILL.md")));
+  for (const d of t.agentsDirs) assert.ok(fs.existsSync(path.join(d, "symphysis-attack-driver.md")));
+  assert.ok(fs.existsSync(path.join(p, ".claude", "agents", "symphysis-research-driver.md")));
   assert.ok(fs.existsSync(path.join(t.toolsDir, "tools", "journal.py")));
   assert.ok(fs.existsSync(path.join(t.toolsDir, "tools", "playground-template.html")));
   assert.ok(fs.existsSync(path.join(t.toolsDir, "docs", "journal.schema.json")));
@@ -143,11 +145,22 @@ test("существующий файл корней с другим содер�
   assert.ok(!r.written.includes(".symphysis/tools/journal-roots.json"));
 });
 
-test("два skillsDirs: скиллы в обоих", () => {
+test("два skillsDirs: скиллы в обоих, агенты рядом с каждым", () => {
   const p = tmp();
   install(p, { payloadDir, skillsDirs: ["a/skills", "b/skills"] });
   for (const d of ["a", "b"]) assert.ok(fs.existsSync(path.join(p, d, "skills", "symphysis-brainstorm", "SKILL.md")));
+  for (const d of ["a", "b"]) assert.ok(fs.existsSync(path.join(p, d, "agents", "symphysis-consequences-driver.md")));
   assert.ok(!fs.existsSync(path.join(p, ".claude")));
+});
+
+test("agentsDirs задан явно: агенты только туда", () => {
+  const p = tmp();
+  install(p, { payloadDir, skillsDirs: ["a/skills"], agentsDirs: ["x/agents"] });
+  assert.ok(fs.existsSync(path.join(p, "x", "agents", "symphysis-attack-driver.md")));
+  assert.ok(!fs.existsSync(path.join(p, "a", "agents")));
+  const names = fs.readdirSync(path.join(p, "x", "agents"));
+  assert.deepEqual(names.sort(), ["symphysis-attack-driver.md", "symphysis-consequences-driver.md",
+    "symphysis-edge-probe-driver.md", "symphysis-prohibition-probe-driver.md", "symphysis-research-driver.md"]);
 });
 
 test("CLI install: код 0, записано; изменённый файл — подсказка --force в stderr", () => {

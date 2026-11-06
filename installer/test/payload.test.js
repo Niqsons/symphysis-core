@@ -29,6 +29,11 @@ const FILES = [
   "docs/attack-table.md",
   "docs/driver.md",
   "docs/THIRD-PARTY-NOTICES.md",
+  "agents/symphysis-attack-driver.md",
+  "agents/symphysis-edge-probe-driver.md",
+  "agents/symphysis-prohibition-probe-driver.md",
+  "agents/symphysis-consequences-driver.md",
+  "agents/symphysis-research-driver.md",
 ];
 
 /** Строки контура разработки, которых в тексте продукта нет (docs/skills-canon.md, раздел 1). */
@@ -158,6 +163,17 @@ test("общие файлы docs/*.md в payload без строк контур�
   assert.ok(docs.length >= 6, JSON.stringify(docs));
   for (const name of docs) {
     const text = fs.readFileSync(path.join(dest, "docs", name), "utf8");
+    for (const re of DEV_ONLY) assert.ok(!re.test(text), `${name}: ${re}`);
+  }
+});
+
+test("тела агентов в payload без комментариев провенанса и строк контура разработки", () => {
+  const dest = tmp();
+  syncPayload(dest);
+  const agents = fs.readdirSync(path.join(dest, "agents"));
+  assert.equal(agents.length, 5, JSON.stringify(agents));
+  for (const name of agents) {
+    const text = fs.readFileSync(path.join(dest, "agents", name), "utf8");
     for (const re of DEV_ONLY) assert.ok(!re.test(text), `${name}: ${re}`);
   }
 });
