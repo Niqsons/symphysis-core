@@ -8,6 +8,11 @@ export const DEFAULT_DEST = path.resolve(here, "..", "payload");
 
 const DIRS = ["openspec/schemas/symphysis"];
 
+/** Контур разработки в каталоге схемы: тесты модуля схемы (F-23 A) — в payload и в проект не идут. */
+function schemaFileExcluded(rel) {
+  return rel.split("/")[0] === "tests";
+}
+
 /**
  * Код и данные модулей ядра: исходник `<модуль>/<файл>` -> `tools/<файл>` payload, в проекте `.symphysis/tools/`.
  * Исходник разложен по модулям (F-18 A), установка плоская (F-19 A); схема журнала — рядом с кодом (F-41 A).
@@ -152,7 +157,7 @@ export function expectedPayload(root = ROOT) {
   const map = new Map();
   const read = (rel) => fs.readFileSync(path.join(root, rel));
   const readStripped = (rel) => Buffer.from(stripProvenance(fs.readFileSync(path.join(root, rel), "utf8")));
-  for (const dir of DIRS) for (const f of walk(path.join(root, dir))) map.set(`${dir}/${f}`, read(`${dir}/${f}`));
+  for (const dir of DIRS) for (const f of walk(path.join(root, dir))) if (!schemaFileExcluded(f)) map.set(`${dir}/${f}`, read(`${dir}/${f}`));
   for (const { name, src } of uniqueNames(skillDirs(root), "скилл")) {
     for (const f of walk(path.join(root, src))) {
       if (skillFileExcluded(f)) continue;

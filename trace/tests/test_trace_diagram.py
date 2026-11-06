@@ -4,8 +4,9 @@ import re
 
 import pytest
 
-import trace_graph
+# conftest — первым: он ставит каталоги модулей в sys.path и при запуске одного файла (pytest.ini, pythonpath)
 from conftest import ROOT
+import trace_graph
 from test_trace_graph import CHANGE, make_change, run
 
 DEMO = """## ADDED Requirements

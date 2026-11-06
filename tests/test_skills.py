@@ -323,7 +323,7 @@ REMOVED_LENS_SLUGS = ("requirement-coverage", "task-completeness", "dependency-c
                       "research-resolution", "honest-verifier")
 # Воздержание honest-verifier: строка, которая не «есть» и не «нет» (`honest-verifier.md:43`).
 ABSTENTION_ROW = "по спеке не выводится"
-# Одно правило вердикта — то же, что в шаблонах (`tests/test_schema.py::VERDICT_RULE`), дословно в §5 и в приёмке.
+# Одно правило вердикта — то же, что в шаблонах (`openspec/schemas/symphysis/tests/test_schema.py::VERDICT_RULE`), дословно в §5 и в приёмке.
 VERDICT_RULE = ("`status: passed` ставится, только когда в таблице нет ни одной строки с тяжестью `блокер`; "
                 "строки `предупреждение` идут человеку списком и `apply` не держат, строки `справка` не блокируют")
 # Копии слоя проверки GSD в sources/ атаки: файл -> строка источника дословно.
@@ -1135,7 +1135,7 @@ def test_brainstorm_skill_names_the_lifted_decision_in_depends_on():
 def test_scenario_comment_reaches_the_master_spec(tmp_path):
     """`requirement-probes`: «Комментарий доходит до мастер-спеки» (F-45): дельта с `<!-- F-12 -->`
     под заголовком сценария проходит `validate --strict`, после `archive` комментарий стоит под тем же заголовком."""
-    from test_schema import make_project, run_openspec_raw
+    from conftest import make_project, run_openspec_raw
     proj = make_project(tmp_path)
     delta = proj / "openspec" / "changes" / "demo" / "specs" / "cap" / "spec.md"
     delta.parent.mkdir(parents=True)

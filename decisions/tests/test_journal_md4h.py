@@ -9,8 +9,9 @@ from pathlib import Path
 
 import pytest
 
-import journal
+# conftest — первым: он ставит каталоги модулей в sys.path и при запуске одного файла (pytest.ini, pythonpath)
 from conftest import FIX, ROOT, one_record_journal
+import journal
 
 FIXTURE = FIX / "md4h-feedback.md"
 FEEDBACK_TEXT = {  # то, что лежит в фикстуре под `### Feedback`

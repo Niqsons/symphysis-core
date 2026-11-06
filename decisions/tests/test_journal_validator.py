@@ -8,9 +8,10 @@ import sys
 
 import pytest
 
+# conftest — первым: он ставит каталоги модулей в sys.path и при запуске одного файла (pytest.ini, pythonpath)
+from conftest import FIX, ROOT
 import journal
 import journal_model
-from conftest import FIX, ROOT
 
 SCHEMA = json.loads(journal_model.SCHEMA_PATH.read_text(encoding="utf-8"))
 TOOLS = ROOT / "cli"   # точка входа `journal.py`; соседние модули она ставит в sys.path сама (F-20 A)

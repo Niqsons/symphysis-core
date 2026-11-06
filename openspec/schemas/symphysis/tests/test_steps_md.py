@@ -3,9 +3,10 @@
 import fnmatch
 import re
 
+# conftest — первым: он ставит каталоги модулей в sys.path и при запуске одного файла (pytest.ini, pythonpath)
+from conftest import ROOT, skill_dirs
 import openspec_run
 import step_help
-from conftest import ROOT, skill_dirs
 
 STEPS_MD = ROOT / "openspec" / "schemas" / "symphysis" / "steps.md"
 SCHEMA_YAML = ROOT / "openspec" / "schemas" / "symphysis" / "schema.yaml"

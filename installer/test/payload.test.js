@@ -57,6 +57,13 @@ test("payload содержит все перечисленные источни�
   assert.ok(fs.readdirSync(path.join(dest, "openspec", "schemas", "symphysis", "templates")).length > 0);
 });
 
+test("тесты модуля схемы в payload не идут: каталог схемы без tests/ (F-23)", () => {
+  assert.ok(fs.existsSync(path.join(ROOT, "openspec", "schemas", "symphysis", "tests", "test_schema.py")));
+  const dest = tmp();
+  syncPayload(dest);
+  assert.equal(fs.existsSync(path.join(dest, "openspec", "schemas", "symphysis", "tests")), false);
+});
+
 test("устаревший файл в payload удаляется", () => {
   const dest = tmp();
   fs.writeFileSync(path.join(dest, "stale.txt"), "x");

@@ -12,9 +12,10 @@ from urllib.parse import quote
 
 import pytest
 
-import journal
+# conftest — первым: он ставит каталоги модулей в sys.path и при запуске одного файла (pytest.ini, pythonpath)
 from conftest import (ALL_STEPS, FIX, FORK_VERSION, ROOT, fake_apply, fake_status, fork_env, fork_record, fork_reply,
                       install_fork_shim, journal_of, one_record_journal, steps_text)
+import journal
 
 MERMAID = ROOT / "installer" / "node_modules" / "mermaid" / "dist" / "mermaid.min.js"
 DRIVER = FIX / "viewer-browser.mjs"

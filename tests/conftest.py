@@ -236,13 +236,72 @@ def real_fork(project: Path, env: dict, *args) -> str:
     return done.stdout
 
 
+# --- проект OpenSpec со схемой из репозитория: тесты схемы, графа, скиллов ----
+
+SCHEMAS = ROOT / "openspec" / "schemas"
+# Каталог схемы в репозитории несёт и то, что установка в проект не кладёт: тесты модуля схемы (F-23 A).
+# Проект теста получает схему такой, какой её ставит инсталлятор.
+SCHEMA_DEV_ONLY = shutil.ignore_patterns("tests", "__pycache__")
+
+
+def run_openspec_raw(project, *args, returncode=0):
+    """`openspec <args>` из форка с `cwd=project`: `CompletedProcess` с обоими потоками.
+    Код выхода не равен ожидаемому `returncode` (по умолчанию 0) — AssertionError с обоими потоками.
+    Конфиг и данные пользователя подменены пустыми каталогами рядом с проектом: пользовательская
+    схема не заслонит проектную."""
+    env = dict(os.environ,
+               XDG_CONFIG_HOME=str(project.parent / "xdg-config"),
+               XDG_DATA_HOME=str(project.parent / "xdg-data"),
+               OPENSPEC_TELEMETRY="0", OPENSPEC_NO_UPDATE_CHECK="1",
+               OPENSPEC_NO_COMPLETIONS="1", NO_COLOR="1")
+    done = subprocess.run(["node", str(FORK_BIN), *args], cwd=project, env=env,
+                          capture_output=True, text=True, encoding="utf-8",
+                          stdin=subprocess.DEVNULL, timeout=120)
+    assert done.returncode == returncode, (
+        f"openspec {' '.join(args)} -> код {done.returncode}, ждали {returncode}\n"
+        f"stdout:\n{done.stdout}\nstderr:\n{done.stderr}")
+    return done
+
+
+def run_openspec(project, *args, returncode=0):
+    """`openspec <args>` из форка с `cwd=project`. С `--json` — разобранный JSON, иначе — stdout."""
+    done = run_openspec_raw(project, *args, returncode=returncode)
+    if "--json" not in args:
+        return done.stdout
+    # перед JSON CLI печатает строку-предупреждение («Schema commands are experimental…»)
+    return json.JSONDecoder().raw_decode(done.stdout[done.stdout.index("{"):])[0]
+
+
+def make_project(tmp_path, schema="symphysis", change="demo", config=None, change_fixture=None):
+    """Проект OpenSpec с пустым изменением: схема копируется из `openspec/schemas/<schema>`,
+    изменение создаётся через `openspec new change` (`openspec init` не нужен). `config` — текст
+    `openspec/config.yaml`; без него в конфиге одна строка `schema: <schema>`. `change_fixture` —
+    каталог с файлами готового изменения: он копируется в `openspec/changes/<change>/` вместо
+    `openspec new change`, так что `.openspec.yaml` берётся из фикстуры."""
+    src = SCHEMAS / schema
+    assert src.is_dir(), f"нет схемы {src.relative_to(ROOT)}"
+    proj = tmp_path / "proj"
+    (proj / "openspec" / "specs").mkdir(parents=True)
+    (proj / "openspec" / "changes").mkdir()
+    if config is None:
+        config = f"schema: {schema}\n"
+    (proj / "openspec" / "config.yaml").write_text(config, encoding="utf-8", newline="\n")
+    shutil.copytree(src, proj / "openspec" / "schemas" / schema, ignore=SCHEMA_DEV_ONLY)
+    if change_fixture is None:
+        run_openspec(proj, "new", "change", change, "--schema", schema)
+    else:
+        assert change_fixture.is_dir(), f"нет фикстуры {change_fixture.relative_to(ROOT)}"
+        shutil.copytree(change_fixture, proj / "openspec" / "changes" / change)
+    return proj
+
+
 def real_project(tmp_path: Path, *changes: str, name="proj") -> tuple[Path, dict]:
     """Проект со схемой symphysis из репозитория и изменениями `changes`, созданными настоящим форком."""
     project = tmp_path / name
     (project / "openspec" / "specs").mkdir(parents=True)
     (project / "openspec" / "changes").mkdir()
     (project / "openspec" / "config.yaml").write_text("schema: symphysis\n", encoding="utf-8", newline="\n")
-    shutil.copytree(ROOT / "openspec" / "schemas" / "symphysis", project / "openspec" / "schemas" / "symphysis")
+    shutil.copytree(SCHEMAS / "symphysis", project / "openspec" / "schemas" / "symphysis", ignore=SCHEMA_DEV_ONLY)
     env = real_env(tmp_path)
     for change in changes:
         real_fork(project, env, "new", "change", change, "--schema", "symphysis")

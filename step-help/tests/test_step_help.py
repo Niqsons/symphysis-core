@@ -1,4 +1,4 @@
-"""`tools/step_help.py`: текущий шаг конвейера и чей ход, страницы шагов, вызов форка. Форк подменён шимом
+"""`step-help/step_help.py`: текущий шаг конвейера и чей ход, страницы шагов, вызов форка. Форк подменён шимом
 `tests/fixtures/fork-shim/`; сверка с настоящим форком — в конце файла."""
 import datetime as dt
 import json
@@ -13,13 +13,14 @@ from pathlib import Path
 
 import pytest
 
-import journal_render
-import openspec_run
-import step_help
+# conftest — первым: он ставит каталоги модулей в sys.path и при запуске одного файла (pytest.ini, pythonpath)
 from conftest import (ALL_STEPS, FORK_VERSION, MODULE_DIRS, OPTIONAL_ARTIFACTS, ROOT, SCHEMA_GRAPH, SHARED_SKILL_FILES,
                       core_clone, core_files, fake_apply, fake_status,
                       fake_status_all, fork_calls, fork_env, fork_record, fork_reply, install_fork_shim, journal_of, real_env,
                       real_fork, real_project, requires_fork, skill_dirs, steps_text)
+import journal_render
+import openspec_run
+import step_help
 
 STEP_HELP = ROOT / "step-help" / "step_help.py"
 BEFORE_SPECS = ("intent", "decisions", "research", "proposal")

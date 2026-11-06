@@ -1,4 +1,4 @@
-"""Скрипт графа трассируемости `tools/trace_graph.py`: каркас подкоманд, проверка имени, реестр артефактов."""
+"""Скрипт графа трассируемости `trace/trace_graph.py`: каркас подкоманд, проверка имени, реестр артефактов."""
 import copy
 import hashlib
 import json
@@ -8,10 +8,10 @@ import sys
 
 import pytest
 
+# conftest — первым: он ставит каталоги модулей в sys.path и при запуске одного файла (pytest.ini, pythonpath)
+from conftest import ROOT, make_project, requires_fork, run_openspec
 import journal_model
 import trace_graph
-from conftest import ROOT, requires_fork
-from test_schema import make_project, run_openspec
 
 SCHEMA = ROOT / "openspec" / "schemas" / "symphysis" / "schema.yaml"
 SCRIPT = ROOT / "trace" / "trace_graph.py"

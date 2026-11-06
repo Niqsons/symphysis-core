@@ -1,4 +1,4 @@
-"""Команда `freeze` скрипта графа `tools/trace_graph.py`: снимок и отчёт в `graph/`, выбор «собрать или обновить коммиты»,
+"""Команда `freeze` скрипта графа `trace/trace_graph.py`: снимок и отчёт в `graph/`, выбор «собрать или обновить коммиты»,
 коммиты корней (U12, задачи 4.1 и 4.2)."""
 import hashlib
 import json
@@ -9,9 +9,9 @@ import sys
 
 import pytest
 
+# conftest — первым: он ставит каталоги модулей в sys.path и при запуске одного файла (pytest.ini, pythonpath)
+from conftest import FORK_BIN, ROOT, fork_reply, make_project, requires_fork, run_openspec
 import trace_graph
-from conftest import FORK_BIN, ROOT, fork_reply, requires_fork
-from test_schema import make_project, run_openspec
 from test_trace_graph import CHANGE, make_change
 from test_trace_report import CLEAN, DONE, ONE_REQ, decided, journal, probe, with_shim
 

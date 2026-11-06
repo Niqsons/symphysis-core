@@ -5,8 +5,9 @@ import sys
 
 import pytest
 
-import journal
+# conftest — первым: он ставит каталоги модулей в sys.path и при запуске одного файла (pytest.ini, pythonpath)
 from conftest import FIX, ROOT
+import journal
 
 
 def plan():

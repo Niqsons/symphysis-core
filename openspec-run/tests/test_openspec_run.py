@@ -1,4 +1,4 @@
-"""`tools/openspec_run.py`: общий запуск форка OpenSpec — поиск форка, правило имени изменения, телеметрия, предел времени,
+"""`openspec-run/openspec_run.py`: общий запуск форка OpenSpec — поиск форка, правило имени изменения, телеметрия, предел времени,
 снятие дерева процессов. Тесты переехали из `test_step_help.py` вместе с кодом (F-138); форк подменён шимом
 `tests/fixtures/fork-shim/`."""
 import ast
@@ -11,8 +11,9 @@ from pathlib import Path
 
 import pytest
 
-import openspec_run
+# conftest — первым: он ставит каталоги модулей в sys.path и при запуске одного файла (pytest.ini, pythonpath)
 from conftest import ROOT, fork_calls, fork_env, fork_reply, install_fork_shim
+import openspec_run
 
 OPENSPEC_RUN = ROOT / "openspec-run" / "openspec_run.py"
 STEP_HELP = ROOT / "step-help" / "step_help.py"

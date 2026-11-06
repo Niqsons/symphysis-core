@@ -2,8 +2,9 @@ import copy
 import subprocess
 import sys
 
-import journal
+# conftest — первым: он ставит каталоги модулей в sys.path и при запуске одного файла (pytest.ini, pythonpath)
 from conftest import ROOT, one_record_journal
+import journal
 
 LIVE_JSON = ROOT / "docs" / "plan-implementation.journal.json"
 SECTIONS = ["# Design", "## Context", "## Goals / Non-Goals", "## Decisions", "## Risks / Trade-offs",

@@ -1,4 +1,4 @@
-"""Команда `report` скрипта графа `tools/trace_graph.py`: находки `openspec validate` и сигналы графа одним отчётом (U09)."""
+"""Команда `report` скрипта графа `trace/trace_graph.py`: находки `openspec validate` и сигналы графа одним отчётом (U09)."""
 import ast
 import os
 import re
@@ -7,10 +7,10 @@ import sys
 
 import pytest
 
+# conftest — первым: он ставит каталоги модулей в sys.path и при запуске одного файла (pytest.ini, pythonpath)
+from conftest import ROOT, fork_calls, fork_env, fork_reply, install_fork_shim, make_project, requires_fork
 import openspec_run
 import trace_graph
-from conftest import ROOT, fork_calls, fork_env, fork_reply, install_fork_shim, requires_fork
-from test_schema import make_project
 import journal_model
 import json
 from test_trace_graph import CHANGE, make_change as _make_change

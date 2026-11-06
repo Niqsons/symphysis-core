@@ -4,8 +4,9 @@ import json
 import subprocess
 import sys
 
-import journal
+# conftest — первым: он ставит каталоги модулей в sys.path и при запуске одного файла (pytest.ini, pythonpath)
 from conftest import ROOT, fork_record, journal_of
+import journal
 
 TOOL = ROOT / "cli" / "journal.py"
 

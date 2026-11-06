@@ -1,5 +1,5 @@
 """Промпт возврата просмотрщика (`buildPrompt`) и экранирование (`esc`, `md`): чистые функции шаблона
-`tools/playground-template.html`, вырезанные между маркерами-комментариями и прогнанные через node.
+`viewer/playground-template.html`, вырезанные между маркерами-комментариями и прогнанные через node.
 Строки, которые функция пишет, должны оставаться пригодными для `journal.parse_answers` и `apply_answers`."""
 import copy
 import json
@@ -9,8 +9,9 @@ import sys
 
 import pytest
 
-import journal
+# conftest — первым: он ставит каталоги модулей в sys.path и при запуске одного файла (pytest.ini, pythonpath)
 from conftest import FIX, ROOT
+import journal
 
 TEMPLATE = ROOT / "viewer" / "playground-template.html"
 node = shutil.which("node")

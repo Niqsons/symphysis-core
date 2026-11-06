@@ -7,7 +7,7 @@ from pathlib import Path
 
 import pytest
 
-INSTALLER = Path(__file__).resolve().parent.parent / "installer"
+INSTALLER = Path(__file__).resolve().parent.parent   # тест лежит в `installer/test/` (F-23 A)
 
 
 @pytest.mark.skipif(shutil.which("node") is None, reason="node не найден в PATH")

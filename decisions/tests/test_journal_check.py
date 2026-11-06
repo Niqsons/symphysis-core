@@ -6,8 +6,9 @@ from pathlib import Path
 
 import pytest
 
-import journal
+# conftest — первым: он ставит каталоги модулей в sys.path и при запуске одного файла (pytest.ini, pythonpath)
 from conftest import ROOT, core_clone, core_files, one_record_journal, requires_evidence_roots
+import journal
 
 
 def test_check_does_not_join_lines_for_a_one_line_quote(tmp_path):

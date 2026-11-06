@@ -12,11 +12,12 @@ from urllib.parse import quote
 
 import pytest
 
+# conftest — первым: он ставит каталоги модулей в sys.path и при запуске одного файла (pytest.ini, pythonpath)
+from conftest import (FIX, ROOT, core_files, fake_apply, fake_status, fork_calls, fork_env, fork_record, fork_reply, install_fork_shim,
+                      journal_of, one_record_journal, real_fork, real_project, requires_fork)
 import attack_table
 import journal
 import viewer_render
-from conftest import (FIX, ROOT, core_files, fake_apply, fake_status, fork_calls, fork_env, fork_record, fork_reply, install_fork_shim,
-                      journal_of, one_record_journal, real_fork, real_project, requires_fork)
 
 TEMPLATE = ROOT / "viewer" / "playground-template.html"
 LIVE_JSON = ROOT / "docs" / "plan-implementation.journal.json"

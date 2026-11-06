@@ -10,9 +10,10 @@ import sys
 
 import pytest
 
+# conftest — первым: он ставит каталоги модулей в sys.path и при запуске одного файла (pytest.ini, pythonpath)
+from conftest import FIX, ROOT, fake_apply, fake_status, fork_env, fork_reply, install_fork_shim, one_record_journal
 import journal
 import journal_render
-from conftest import FIX, ROOT, fake_apply, fake_status, fork_env, fork_reply, install_fork_shim, one_record_journal
 
 ATTACK_FIX = FIX / "attack"
 TEMPLATE = ROOT / "viewer" / "playground-template.html"
