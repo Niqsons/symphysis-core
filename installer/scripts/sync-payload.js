@@ -8,9 +8,12 @@ export const DEFAULT_DEST = path.resolve(here, "..", "payload");
 
 const DIRS = ["openspec/schemas/symphysis"];
 
-/** Контур разработки в каталоге схемы: тесты модуля схемы (F-23 A) — в payload и в проект не идут. */
+/**
+ * Каталог схемы проекта получает не всё: тесты модуля схемы (F-23 A) — контур разработки, образец конфига
+ * `config.symphysis.yaml` идёт отдельным файлом по прежнему пути payload (F-37 A).
+ */
 function schemaFileExcluded(rel) {
-  return rel.split("/")[0] === "tests";
+  return rel.split("/")[0] === "tests" || rel === "config.symphysis.yaml";
 }
 
 /**
@@ -36,9 +39,9 @@ const TOOLS_FILES = [
   "trace/trace_graph.py",
 ];
 
-/** Отдельные файлы: [исходник, путь в payload]. */
+/** Отдельные файлы: [исходник, путь в payload]. Образец конфига лежит в модуле схемы, в payload — по прежнему пути (F-37 A). */
 const FILES = [
-  ["openspec/config.symphysis.yaml", "openspec/config.symphysis.yaml"],
+  ["openspec/schemas/symphysis/config.symphysis.yaml", "openspec/config.symphysis.yaml"],
   ...TOOLS_FILES.map((src) => [src, `tools/${path.posix.basename(src)}`]),
 ];
 

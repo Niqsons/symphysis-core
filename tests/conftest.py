@@ -239,9 +239,9 @@ def real_fork(project: Path, env: dict, *args) -> str:
 # --- проект OpenSpec со схемой из репозитория: тесты схемы, графа, скиллов ----
 
 SCHEMAS = ROOT / "openspec" / "schemas"
-# Каталог схемы в репозитории несёт и то, что установка в проект не кладёт: тесты модуля схемы (F-23 A).
-# Проект теста получает схему такой, какой её ставит инсталлятор.
-SCHEMA_DEV_ONLY = shutil.ignore_patterns("tests", "__pycache__")
+# Каталог схемы в репозитории несёт и то, что установка в каталог схемы проекта не кладёт: тесты модуля схемы (F-23 A)
+# и образец конфига (F-37 A). Проект теста получает схему такой, какой её ставит инсталлятор.
+SCHEMA_DEV_ONLY = shutil.ignore_patterns("tests", "__pycache__", "config.symphysis.yaml")
 
 
 def run_openspec_raw(project, *args, returncode=0):

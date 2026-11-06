@@ -27,7 +27,6 @@ export function makeClone(dir, { git }) {
   for (const rel of [...SOURCE_MODULES, path.join("openspec", "schemas", "symphysis")]) {
     fs.cpSync(path.join(REPO, rel), path.join(dir, rel), { recursive: true, filter: keep });
   }
-  fs.copyFileSync(path.join(REPO, "openspec", "config.symphysis.yaml"), path.join(dir, "openspec", "config.symphysis.yaml"));
   const mer = path.join(dir, "installer", "node_modules", "mermaid");
   fs.mkdirSync(path.join(mer, "dist"), { recursive: true });
   fs.copyFileSync(path.join(REPO, "installer", "node_modules", "mermaid", "dist", "mermaid.min.js"), path.join(mer, "dist", "mermaid.min.js"));

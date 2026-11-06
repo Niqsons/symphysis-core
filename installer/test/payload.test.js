@@ -57,6 +57,15 @@ test("payload содержит все перечисленные источни�
   assert.ok(fs.readdirSync(path.join(dest, "openspec", "schemas", "symphysis", "templates")).length > 0);
 });
 
+test("образец конфига: из каталога схемы в прежний путь payload, в каталог схемы payload не идёт (F-37)", () => {
+  const src = path.join(ROOT, "openspec", "schemas", "symphysis", "config.symphysis.yaml");
+  assert.equal(fs.existsSync(path.join(ROOT, "openspec", "config.symphysis.yaml")), false);
+  const dest = tmp();
+  syncPayload(dest);
+  assert.ok(fs.readFileSync(path.join(dest, "openspec", "config.symphysis.yaml")).equals(fs.readFileSync(src)));
+  assert.equal(fs.existsSync(path.join(dest, "openspec", "schemas", "symphysis", "config.symphysis.yaml")), false);
+});
+
 test("тесты модуля схемы в payload не идут: каталог схемы без tests/ (F-23)", () => {
   assert.ok(fs.existsSync(path.join(ROOT, "openspec", "schemas", "symphysis", "tests", "test_schema.py")));
   const dest = tmp();

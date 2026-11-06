@@ -48,6 +48,8 @@ test("install в пустой проект: все цели существуют
   const r = install(p, { payloadDir });
   const t = targets(p);
   assert.ok(fs.existsSync(path.join(t.schemaDir, "schema.yaml")));
+  assert.ok(!fs.existsSync(path.join(t.schemaDir, "config.symphysis.yaml")), "образец конфига — не файл схемы проекта (F-37)");
+  assert.ok(!fs.existsSync(path.join(t.schemaDir, "tests")), "тесты модуля схемы в проект не идут");
   assert.ok(fs.existsSync(t.configPath));
   for (const d of t.skillsDirs) assert.ok(fs.existsSync(path.join(d, "symphysis-brainstorm", "SKILL.md")));
   for (const d of t.agentsDirs) assert.ok(fs.existsSync(path.join(d, "symphysis-attack-driver.md")));

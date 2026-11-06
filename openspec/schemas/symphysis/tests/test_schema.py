@@ -732,7 +732,7 @@ def test_trail_above_the_scenario_would_colour_validation(tmp_path):
 
 # --- config.yaml проекта: rules на артефакт --------------------------------
 
-CONFIG_SAMPLE = ROOT / "openspec" / "config.symphysis.yaml"
+CONFIG_SAMPLE = SCHEMAS / "symphysis" / "config.symphysis.yaml"   # образец конфига — файл модуля схемы (F-37 A)
 
 DECISIONS_RULES = ["у каждого варианта улика — путь и цитата",
                    "маловероятный вариант показывается с причиной",
