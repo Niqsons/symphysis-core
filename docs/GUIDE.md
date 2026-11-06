@@ -527,7 +527,7 @@ python reminders.py overdue
 
 | Команда | Что даёт |
 | --- | --- |
-| `python .symphysis/tools/trace_graph.py build add-overdue` | граф в JSON в stdout: узлы, связи, кандидаты связей между требованиями |
+| `python .symphysis/tools/trace_graph.py build add-overdue` | граф в JSON в stdout: узлы, связи, кандидаты связей между требованиями (запись со статусом `припаркован` кандидатов не даёт, связь `traces` к ней остаётся) |
 | `python .symphysis/tools/trace_graph.py build add-overdue --out graph.json` | тот же граф в файле; каталоги пути создаются, файлы изменения не меняются |
 | `python .symphysis/tools/trace_graph.py build add-overdue --format mermaid` | текст `requirementDiagram` для Mermaid, предел 50 000 знаков |
 | `python .symphysis/tools/trace_graph.py report add-overdue` | отчёт Markdown: находки `openspec validate` и сигналы графа одним списком |

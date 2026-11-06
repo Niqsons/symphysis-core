@@ -997,6 +997,40 @@ def test_no_shared_record_gives_no_candidates_and_task_does_not_make_one(tmp_pat
     assert graph_of(root)["candidates"] == []
 
 
+def park(base, *numbers):
+    """Записи `F-NN` журнала изменения получают статус `припаркован`."""
+    path = base / "decisions.json"
+    data = json.loads(path.read_text(encoding="utf-8"))
+    for rec in data["records"]:
+        if rec["id"] in [f"F-{n}" for n in numbers]:
+            rec["status"] = "припаркован"
+    path.write_text(json.dumps(data, ensure_ascii=False, indent=1) + "\n", encoding="utf-8")
+
+
+CANON_TRACE = "<!-- проба запретов: исходы: канон — F-59 → security.md -->\n"
+
+
+def test_shared_parking_gives_links_but_no_candidate(tmp_path):
+    """`trace-graph`: «Общая парковка» — у обоих требований `traces` к `rec:F-59` (парковка), кандидата на пару нет (F-157)."""
+    spec = ("## ADDED Requirements\n\n### Requirement: Первое\nТекст SHALL.\n\n#### Scenario: А\n- **WHEN** a\n\n" + CANON_TRACE +
+            "\n### Requirement: Второе\nТекст SHALL.\n\n#### Scenario: Б\n- **WHEN** a\n\n" + CANON_TRACE)
+    root, base = make_change(tmp_path, journal=["F-59"], specs={"demo": spec})
+    park(base, 59)
+    graph = graph_of(root)
+    assert sorted(e[0] for e in edges_of(graph, "traces") if e[1] == "rec:F-59") == ["req:demo/Второе", "req:demo/Первое"]
+    assert graph["candidates"] == []
+
+
+def test_pair_with_parking_and_resolved_record_stays_candidate_without_parking(tmp_path):
+    """`trace-graph`: «Общая запись» — пара с общей парковкой и общей другой записью остаётся кандидатом, `shared` без парковки (F-157)."""
+    spec = ("## ADDED Requirements\n\n### Requirement: Первое\nТекст (F-19) SHALL.\n\n#### Scenario: А\n- **WHEN** a\n\n" + CANON_TRACE +
+            "\n### Requirement: Второе\nТекст (F-19) SHALL.\n\n#### Scenario: Б\n- **WHEN** a\n\n" + CANON_TRACE)
+    root, base = make_change(tmp_path, journal=["F-19", "F-59"], specs={"demo": spec})
+    park(base, 59)
+    assert graph_of(root)["candidates"] == [{"a": "req:demo/Второе", "b": "req:demo/Первое",
+                                             "source": "общие записи журнала", "shared": ["rec:F-19"]}]
+
+
 def files_state(base):
     return {str(p.relative_to(base)): hashlib.sha256(p.read_bytes()).hexdigest() for p in sorted(base.rglob("*")) if p.is_file()}
 

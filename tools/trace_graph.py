@@ -849,14 +849,25 @@ def _resolve_claims(root: Path, nodes: list[dict], places: dict, claims: list[di
 CANDIDATE_SOURCE_RECORDS = "общие записи журнала"
 
 
-def record_candidates(edges: list[dict]) -> list[dict]:
-    """Кандидаты связей между требованиями (F-23, F-71): два требования с `traces` к одной записи журнала. Кандидат —
+def parked_records(base: Path) -> set[str]:
+    """Id узлов записей журнала со статусом `припаркован` (F-157); нет файла или журнал не разбирается — пусто (отказ по
+    журналу даёт читатель записей раньше)."""
+    try:
+        journal = json.loads(_read_text(base, "decisions.json"))
+        return {"rec:" + r["id"] for r in journal["records"] if r.get("status") == "припаркован"}
+    except (OSError, ValueError, KeyError, TypeError):
+        return set()
+
+
+def record_candidates(edges: list[dict], parked: set[str] = frozenset()) -> list[dict]:
+    """Кандидаты связей между требованиями (F-23, F-71): два требования с `traces` к одной записи журнала. Запись из `parked`
+    (статус `припаркован`) кандидатов не даёт, её связь `traces` остаётся (F-157): парковка — другой механизм. Кандидат —
     `{"a", "b", "source", "shared"}`: пара неупорядоченная (`a` < `b`), встречает один раз, `shared` — общие записи по порядку,
     `source` называет способ вычисления; новый источник добавляет свои кандидаты с другим `source`, записанных связей не трогая.
     Порядок — по `(a, b)`."""
     by_record: dict[str, set[str]] = {}
     for e in edges:
-        if e["type"] == "traces" and e["from"].startswith("req:"):
+        if e["type"] == "traces" and e["from"].startswith("req:") and e["to"] not in parked:
             by_record.setdefault(e["to"], set()).add(e["from"])
     pairs: dict[tuple[str, str], list[str]] = {}
     for rec in sorted(by_record):
@@ -899,7 +910,7 @@ def build_graph_with_signals(root: Path, change: str, saved: dict | None = None)
     duplicates = [{"id": node_id, "at": at} for node_id, at in places.items() if len(at) > 1]
     edges, unresolved = _resolve_claims(root, nodes, places, claims, master)
     return {"format": GRAPH_FORMAT, "sources": source_hashes(base), "nodes": nodes, "edges": edges,
-            "candidates": record_candidates(edges)}, duplicates, unresolved
+            "candidates": record_candidates(edges, parked_records(base))}, duplicates, unresolved
 
 
 # --- состав исходников и проверка сохранённого файла (F-41, F-86, F-87, F-118) ---------------------------------------
