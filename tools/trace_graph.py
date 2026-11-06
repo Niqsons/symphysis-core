@@ -1325,7 +1325,8 @@ def signal_context(root: Path, change: str, saved: dict | None = None) -> dict:
     записей из комментариев `<!-- F-NN -->` под заголовками сценариев (F-45); сценарий MODIFIED, перенесённый из мастера без
     изменения, своих номеров не даёт: они из журнала другого изменения. `unbased` — `[(id требования, место)]` MODIFIED, у которых
     базы нет, а текст совпал с мастером (F-123). Мастер-спеку берёт из базы снимка, для требования без записи в ней — живую
-    (`_Master`); `saved` — готовая база вместо снимка. Только читает."""
+    (`_Master`); `saved` — готовая база вместо снимка. `trace_links` — `{(место следа, id записи)}`: связи `traces`, которые
+    дал след пробы, а не текст (F-158); номер, стоящий и в тексте той же строки, сюда не входит. Только читает."""
     base = root / "openspec" / "changes" / change
     if not base.is_dir():
         raise Refusal(f"изменения «{change}» нет: нет каталога openspec/changes/{change}")
@@ -1334,7 +1335,7 @@ def signal_context(root: Path, change: str, saved: dict | None = None) -> dict:
         records = json.loads(_read_text(base, "decisions.json"))["records"] if (base / "decisions.json").is_file() else []
     except (ValueError, KeyError, TypeError):
         records = []  # негодный журнал сборка графа уже назвала отказом
-    modified, traces, marks, unbased = {}, [], set(), []
+    modified, traces, marks, unbased, links = {}, [], set(), [], set()
     folders = sorted(p for p in (base / "specs").iterdir() if p.is_dir()) if (base / "specs").is_dir() else []
     for folder in folders:
         rel = f"specs/{folder.name}/spec.md"
@@ -1353,6 +1354,8 @@ def signal_context(root: Path, change: str, saved: dict | None = None) -> dict:
             if entry and _hash(comment) in entry["traces"]:
                 continue  # дословно стоит в том же требовании мастера: след прежнего изменения
             traces += [(f"{rel}:{number}", num, word) for num, word in pairs]
+            typed = set(_record_numbers(_TRACE_COMMENT.sub("", lines[number - 1])))  # номер и в тексте строки: связь из текста
+            links |= {(f"{rel}:{number}", f"rec:F-{num:02d}") for num, _ in pairs if num not in typed}
         for item in parsed.requirements:
             if item.section != "MODIFIED":
                 continue
@@ -1373,7 +1376,8 @@ def signal_context(root: Path, change: str, saved: dict | None = None) -> dict:
             for scn in item.scenarios:
                 if state.get(f"scn:{cap}/{item.name}/{scn.name}") != "same":
                     marks |= _scenario_marks(lines, mask, scn.line)
-    return {"records": records, "modified": modified, "traces": traces, "marks": marks, "unbased": unbased}
+    return {"records": records, "modified": modified, "traces": traces, "marks": marks, "unbased": unbased,
+            "trace_links": links}
 
 
 def _stale_trace(rec: dict, word: str) -> str | None:
@@ -1391,7 +1395,8 @@ def graph_signals(graph: dict, duplicates: list[dict] | None = None, unresolved:
                   context: dict | None = None) -> list[str]:
     """Сигналы графа строками `[!!] вид: ключ — место`, порядок по месту в файле (F-57, F-64, F-65, F-83, F-94, F-95). Ключ — id
     без префикса вида. Из графа и списков сборки: «требование без задачи» и «сценарий без задачи» (ADDED), «требование без
-    записи», «неоднозначное имя» (дубль id из `duplicates`; одно имя сценария у двух требований capability при задаче с этим
+    записи» (гасит только номер в тексте требования: связь из следа пробы и к записи-парковке нет, F-158; без `context`
+    след и парковку отличить нечем, гасит любая связь `traces`), «неоднозначное имя» (дубль id из `duplicates`; одно имя сценария у двух требований capability при задаче с этим
     именем), «неизвестное имя или номер» (`unresolved`), «задача ни к чему» (кроме служебной: `служебная` в конце строки). Из `context` (`signal_context`): «критерий без
     требования», «решение без требования и задачи», «след отстал от журнала», «Specify без сценария» (рядом «снято F-NN?» от решённой записи
     с этой в `depends_on`) и «Backstop без задачи» по исходу пробы, в MODIFIED новые сценарии («сценарий без
@@ -1421,7 +1426,11 @@ def graph_signals(graph: dict, duplicates: list[dict] | None = None, unresolved:
         if (_squash(kind), _squash(key)) not in answered:
             found.append((at, _md(f"[!!] {kind}: {key} — {places or at}")))
 
-    named_traces = {e["from"] for e in edges if e["type"] == "traces"}
+    parked = {"rec:" + r["id"] for r in context.get("records", []) if r.get("status") == "припаркован"}
+    trace_links = context.get("trace_links", set())
+    # опора сигнала — номер в тексте требования: связь из следа пробы и связь к парковке его не заменяют (F-158, F-157)
+    named_traces = {e["from"] for e in edges if e["type"] == "traces" and e["to"] not in parked
+                    and (e["at"], e["to"]) not in trace_links}
     bad_number = {u["from"] for u in unresolved if u["ref"].startswith("F-")}
     modified = context.get("modified", {})
     for req in (n for n in graph["nodes"] if n["kind"] == "req"):

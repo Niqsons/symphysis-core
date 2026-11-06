@@ -440,6 +440,44 @@ def test_requirement_without_number_is_named_and_with_number_is_not(tmp_path):
     assert len(found) == 1 and "demo/Без номера" in found[0] and "specs/demo/spec.md:" in found[0], found
 
 
+def test_probe_trace_does_not_replace_number_in_text(tmp_path):
+    """`trace-conventions`: «След пробы не заменяет номер в тексте» (F-158) — связь `traces` к `rec:F-85` из следа есть,
+    сигнал «требование без записи» называет требование."""
+    block = req("Без номера") + "<!-- проба краёв: форма=io, исходы: F-85 Backstop -->\n"
+    root, _ = make_change(tmp_path, journal=["F-01", "F-85"], specs={"demo": spec(block)}, tasks="- [ ] 1.1 `demo`: «Сц»\n")
+    graph = trace_graph.build_graph(root, CHANGE)
+    assert [(e["from"], e["to"]) for e in graph["edges"] if e["type"] == "traces"] == [("req:demo/Без номера", "rec:F-85")]
+    found = of_kind(lines_of(root), "требование без записи")
+    assert len(found) == 1 and "demo/Без номера" in found[0], found
+
+
+def test_number_in_text_holds_requirement_next_to_probe_trace(tmp_path):
+    """`trace-conventions`: «Требование без номера» (F-158) — номер в тексте гасит сигнал, след пробы рядом его не
+    возвращает; номер в тексте и в следе на одной строке остаётся опорой."""
+    block = req("Один", 1) + "<!-- проба краёв: форма=io, исходы: F-85 Backstop -->\n"
+    same = req("Два").replace("Текст SHALL.", "Текст (F-85) SHALL. <!-- проба краёв: исходы: F-85 Specify -->")
+    root, _ = make_change(tmp_path, journal=["F-01", "F-85"], specs={"demo": spec(block, same)}, tasks=DONE_SC)
+    assert of_kind(lines_of(root), "требование без записи") == []
+
+
+def test_parked_record_in_text_does_not_hold_requirement_but_decided_does(tmp_path):
+    """`trace-conventions`: «Требование без номера» (F-158, F-157) — в тексте только номер парковки: сигнал есть; рядом
+    номер решённой записи: сигнала нет."""
+    both = req("Оба", 59).replace("(F-59)", "(F-59, F-01)")
+    root, base = make_change(tmp_path, journal=["F-01", "F-59"], specs={"demo": spec(req("Парковка", 59), both)}, tasks=DONE_SC)
+    journal(base, {"id": "F-01"}, {"id": "F-59", "status": "припаркован"})
+    found = of_kind(lines_of(root), "требование без записи")
+    assert len(found) == 1 and "demo/Парковка" in found[0], found
+
+
+def test_number_cut_by_master_does_not_hold_requirement(tmp_path):
+    """`trace-conventions`: «Требование без номера» (F-84) — номер MODIFIED, стоящий в тексте мастера, опорой не служит."""
+    root, _ = make_change(tmp_path, specs={"demo": spec(req("Один", 1), section="MODIFIED")})
+    put_master(root, spec(req("Один", 1).replace("Текст", "Старый текст")))
+    found = of_kind(lines_of(root), "требование без записи")
+    assert len(found) == 1 and "demo/Один" in found[0], found
+
+
 def test_requirement_with_unknown_number_is_unknown_not_without_record(tmp_path):
     """`trace-conventions`: «Требование без номера» — номер есть, записи нет: «неизвестное имя или номер», а не «без записи»."""
     root, _ = make_change(tmp_path, specs={"demo": spec(req("Один", 99))}, tasks=DONE_SC)
