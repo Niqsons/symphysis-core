@@ -342,7 +342,7 @@ def destination(rec: dict) -> dict:
     """«Куда уйдёт» запись — проекция правил `render_design` для показа человеку: `{"label", "note"}`. Решённая развилка,
     не проба → Decisions («в одну сторону» — первыми); проба Specify* → spec.md; Backstop → тест-страховка в tasks.md;
     Dismiss → никуда; Defer и открытая развилка → Open Questions; факт → Context, спорный — ещё и Open Questions.
-    То же правило есть в шаблоне страницы (`destination`), сверка — `tests/test_journal_view_json.py`."""
+    То же правило есть в шаблоне страницы (`destination`), сверка — `decisions/tests/test_journal_view_json.py`."""
     if rec["kind"] == "факт":
         return {"label": "design.md › Context", "note": "спор → design.md › Open Questions" if rec["dispute"].strip() else ""}
     if _is_probe(rec):

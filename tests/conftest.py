@@ -26,8 +26,12 @@ import journal  # noqa: E402  (после правки sys.path)
 def core_files() -> list[Path]:
     """Код и данные модулей — то, что установка кладёт в `.symphysis/tools/`: скрипты, шаблон страницы, схема журнала
     (F-41 A). Имена в модулях не повторяются: установка плоская."""
-    return sorted((file for directory in MODULE_DIRS for file in directory.iterdir()
-                   if file.is_file() and file.suffix in CORE_SUFFIXES), key=lambda file: file.name)
+    files = sorted((file for directory in MODULE_DIRS for file in directory.iterdir()
+                    if file.is_file() and file.suffix in CORE_SUFFIXES), key=lambda file: file.name)
+    names = [file.name for file in files]
+    duplicates = sorted({name for name in names if names.count(name) > 1})
+    assert not duplicates, f"core_files: имя в двух модулях, установка плоская: {duplicates}"
+    return files
 
 
 def core_clone(clone: Path) -> Path:
@@ -241,7 +245,7 @@ def real_fork(project: Path, env: dict, *args) -> str:
 SCHEMAS = ROOT / "openspec" / "schemas"
 # Каталог схемы в репозитории несёт и то, что установка в каталог схемы проекта не кладёт: тесты модуля схемы (F-23 A)
 # и образец конфига (F-37 A). Проект теста получает схему такой, какой её ставит инсталлятор.
-SCHEMA_DEV_ONLY = shutil.ignore_patterns("tests", "__pycache__", "config.symphysis.yaml")
+SCHEMA_DEV_ONLY = shutil.ignore_patterns("tests", "__pycache__", "config.symphysis.yaml", "README.md")
 
 
 def run_openspec_raw(project, *args, returncode=0):

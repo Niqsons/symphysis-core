@@ -250,8 +250,8 @@ def save_journal(path: Path, journal: dict) -> None:
 
 # --- проверка --------------------------------------------------------------
 
-# Подмножество JSON Schema 2020-12, которым написан `docs/journal.schema.json`; сообщения — как у `jsonschema`,
-# он остался эталоном сверки в тестах (`tests/test_journal_validator.py`).
+# Подмножество JSON Schema 2020-12, которым написан `decisions/journal.schema.json`; сообщения — как у `jsonschema`,
+# он остался эталоном сверки в тестах (`decisions/tests/test_journal_validator.py`).
 SCHEMA_TYPES = {
     "object": lambda v: isinstance(v, dict),
     "array": lambda v: isinstance(v, list),

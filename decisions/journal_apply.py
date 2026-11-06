@@ -53,7 +53,7 @@ PARKING_ADDRESSEES = ("материалы", "человек", "ИБ")
 LETTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 REFUSED = "отказ"
 
-# Строки промпта — те, что пишет `updateOut()` в `tools/playground-template.html`.
+# Строки промпта — те, что пишет `updateOut()` в `viewer/playground-template.html`.
 RE_ITEM = re.compile(r"^- (F-N?\d+):[ \t]*(.*)$")
 RE_NEW_FORKS = re.compile(r"^Новые развилки:\s*$")
 RE_NOTES = re.compile(r"^Замечания к схеме:[ \t]*(.*)$")

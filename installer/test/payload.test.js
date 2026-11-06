@@ -4,7 +4,7 @@ import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { spawnSync } from "node:child_process";
-import { hasSources, payloadMatches, skillDirs, stripProvenance, syncPayload, ROOT } from "../scripts/sync-payload.js";
+import { hasSources, payloadMatches, skillDirs, stripProvenance, syncPayload, toolsFiles, ROOT } from "../scripts/sync-payload.js";
 import { tempDir } from "../test-support/temp-dir.js";
 
 const FILES = [
@@ -233,4 +233,10 @@ test("тела скиллов в payload без комментариев про�
     const text = fs.readFileSync(path.join(dest, "skills", s, "SKILL.md"), "utf8");
     assert.ok(!/<!--\s*(?:src|dev)\b/.test(text), s);
   }
+});
+
+test("файлы tools плоско по имени: повтор имени в двух модулях — ошибка с обоими путями (M5)", () => {
+  assert.throws(() => toolsFiles(["a/x.py", "b/y.py", "c/x.py"]), /x\.py.*a\/x\.py.*c\/x\.py/);
+  assert.equal(toolsFiles(["a/x.py", "b/y.py"]).length, 2);
+  assert.ok(toolsFiles().length > 0);
 });

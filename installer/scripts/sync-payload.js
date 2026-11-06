@@ -47,7 +47,7 @@ const TOOLS_FILES = [
 /** Отдельные файлы: [исходник, путь в payload]. Образец конфига лежит в модуле схемы, в payload — по прежнему пути (F-37 A). */
 const FILES = [
   ["openspec/schemas/symphysis/config.symphysis.yaml", "openspec/config.symphysis.yaml"],
-  ...TOOLS_FILES.map((src) => [src, `tools/${path.posix.basename(src)}`]),
+  ...toolsFiles().map(({ name, src }) => [src, `tools/${name}`]),
 ];
 
 /**
@@ -124,6 +124,11 @@ function uniqueNames(entries, what) {
     seen.set(name, src);
   }
   return entries;
+}
+
+/** Файлы кода и данных модулей плоским списком по имени: одно имя в двух модулях — ошибка с обоими путями. */
+export function toolsFiles(list = TOOLS_FILES) {
+  return uniqueNames(list.map((src) => ({ name: path.posix.basename(src), src })), "файл tools");
 }
 
 /** Все файлы дерева: пути от `dir` с «/». */
