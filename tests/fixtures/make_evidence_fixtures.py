@@ -6,7 +6,7 @@ import zlib
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
-PROBE = 8192   # порог journal_apply.BINARY_PROBE
+PROBE = 8192   # порог roots.BINARY_PROBE
 
 
 def png() -> bytes:

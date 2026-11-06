@@ -5,7 +5,7 @@
 промпт на выходе, чем заполнять. Первый инстанс —
 `docs/plan-implementation.html`, собранный из
 `docs/plan-implementation.journal.json` командой `cli/journal.py render-html`
-по шаблону `tools/playground-template.html`. Круг 1 обратной связи
+по шаблону `viewer/playground-template.html`. Круг 1 обратной связи
 человека (2026-10-29) внесён; что изменилось — в конце.
 
 ## Когда применять

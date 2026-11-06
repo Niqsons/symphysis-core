@@ -4,6 +4,11 @@
   "description": "Схема OpenSpec symphysis, скиллы и инструменты журнала — установка в проект",
   "type": "module",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Niqsons/symphysis-core.git",
+    "directory": "installer"
+  },
   "bin": {
     "symphysis": "./bin/symphysis.js"
   },
