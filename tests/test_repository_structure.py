@@ -312,3 +312,20 @@ def test_разные_файлы_с_одним_именем_не_копии(tmp_
     tree["viewer/x.txt"] = "два\n"
     build(tmp_path, tree)
     assert rs.check_copies(rs.Repo(tmp_path)) == []
+
+
+# --- чужой frontmatter не делает README модульным (R7)
+
+def test_чужой_frontmatter_в_контуре_не_красный(tmp_path):
+    tree = base_tree()
+    tree["docs/README.md"] = "---\ntitle: Документы\n---\n# Документы\n"
+    build(tmp_path, tree)
+    assert rs.check_repository(tmp_path) == []
+
+
+def test_чужой_frontmatter_глубже_первого_уровня_не_красный(tmp_path):
+    tree = base_tree()
+    tree["docs/sub/README.md"] = "---\ntitle: Раздел\n---\n"
+    tree["docs/sub/x.md"] = "x\n"
+    build(tmp_path, tree)
+    assert rs.check_repository(tmp_path) == []

@@ -87,8 +87,13 @@ def parse_frontmatter(text):
 
 
 def _has_frontmatter(repo, rel_readme):
+    """README модуля (R7): frontmatter несёт ключи `name` и `kind` (значение может быть и негодным —
+    его назовёт check_module_frontmatter); чужой frontmatter (`title:`) модулем не делает."""
     fm, _ = split_frontmatter(repo.read(rel_readme))
-    return fm is not None
+    if fm is None:
+        return False
+    keys = {m.group(1) for m in (re.match(r"^(name|kind)\s*:", line) for line in fm) if m}
+    return keys == {"name", "kind"}
 
 
 def root_marks(repo):
