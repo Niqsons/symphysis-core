@@ -711,14 +711,15 @@ def _resolve_task_line(claim: dict, scenarios: dict, put_edge, put_unresolved) -
 
 
 def _resolve_claims(root: Path, nodes: list[dict], places: dict, claims: list[dict],
-                    base_master: "_Master | None" = None) -> tuple[list[dict], list[dict]]:
+                    base_master: "_Master | None" = None) -> tuple[list[dict], list[dict], set[tuple[str, str]]]:
     """Связи и неразрешённые ссылки из заявок читателей. Заявка узла, который в граф не вошёл как дубль id, отбрасывается.
     Связь — `from`, `to`, `type`, `at` (место записи от каталога изменения); повтор `(from, to, type)` остаётся первым.
     Ссылка, которая не разрешилась (нет записи с таким номером, нет сценария с таким именем), связи не даёт и идёт в
     список `[{"ref", "from", "at", "why"}]`: что названо, чьё это, где и почему не связалось. Номер в тексте дочернего требования
     ADDED, который стоит в мастер-тексте его родителя (запись базы, а без неё живой мастер, `base_master`), связи не даёт
     (F-150, F-84 через `derives`); свой номер дочернего даёт. Родителя в мастере нет или он ADDED этого изменения — отсекать
-    нечего: после `/opsx:sync` мастер-текст ADDED-родителя был бы новым и ответ поменялся бы."""
+    нечего: после `/opsx:sync` мастер-текст ADDED-родителя был бы новым и ответ поменялся бы. Третье значение — `{(from, to)}`
+    связей `traces`, которые поставила заявка `rec` (номер в тексте требования, после отсечений), а не `trace` (F-158)."""
     records = {n["number"]: n["id"] for n in reversed(nodes) if n["kind"] == "rec" and n["number"] is not None}
     scenarios: dict[str, dict[str, list[str]]] = {}
     requirements: dict[str, dict[str, str]] = {}
@@ -733,6 +734,7 @@ def _resolve_claims(root: Path, nodes: list[dict], places: dict, claims: list[di
     masters: list = []  # мастер-спеки читаются один раз и только если нужны (F-84)
     edges: dict[tuple, dict] = {}
     unresolved: dict[tuple, dict] = {}
+    text_links: set[tuple[str, str]] = set()
 
     def put_edge(src: str, dst: str, kind: str, at: str, by_place: bool = False) -> None:
         """Повтор `(from, to, type)` остаётся первым; связь по следу пробы различается ещё и местом (F-82.B, F-156): две связи
@@ -750,6 +752,8 @@ def _resolve_claims(root: Path, nodes: list[dict], places: dict, claims: list[di
                 continue
             if number in records:
                 put_edge(claim["from"], records[number], "traces", claim["at"], by_place)
+                if claim["kind"] == "rec":
+                    text_links.add((claim["from"], records[number]))
             else:
                 put_unresolved(claim, f"F-{number:02d}", f"в журнале изменения нет записи F-{number:02d}")
 
@@ -843,10 +847,15 @@ def _resolve_claims(root: Path, nodes: list[dict], places: dict, claims: list[di
             put_records(claim, claim["text"], set())
     ordered = sorted(edges.values(), key=lambda e: (e["at"].rsplit(":", 1)[0], int(e["at"].rsplit(":", 1)[1]),
                                                     e["from"], e["to"], e["type"]))
-    return ordered, list(unresolved.values())
+    return ordered, list(unresolved.values()), text_links
 
 
 CANDIDATE_SOURCE_RECORDS = "общие записи журнала"
+
+
+def parked_ids(records: list[dict]) -> set[str]:
+    """Id узлов записей со статусом `припаркован` (F-157) из списка записей журнала; одно определение парковки для сборки и сигналов."""
+    return {"rec:" + r["id"] for r in records if r.get("status") == "припаркован"}
 
 
 def parked_records(base: Path) -> set[str]:
@@ -854,7 +863,7 @@ def parked_records(base: Path) -> set[str]:
     журналу даёт читатель записей раньше)."""
     try:
         journal = json.loads(_read_text(base, "decisions.json"))
-        return {"rec:" + r["id"] for r in journal["records"] if r.get("status") == "припаркован"}
+        return parked_ids(journal["records"])
     except (OSError, ValueError, KeyError, TypeError):
         return set()
 
@@ -879,7 +888,13 @@ def record_candidates(edges: list[dict], parked: set[str] = frozenset()) -> list
 
 
 def build_graph_with_signals(root: Path, change: str, saved: dict | None = None) -> tuple[dict, list[dict], list[dict]]:
-    """Граф изменения `change` проекта `root`, список дублей id и список неразрешённых ссылок. Граф: `format`, `nodes`, `edges`,
+    """Граф, дубли id и неразрешённые ссылки; описание — у `_build_all`, четвёртое значение которой здесь отброшено."""
+    return _build_all(root, change, saved)[:3]
+
+
+def _build_all(root: Path, change: str, saved: dict | None = None) -> tuple[dict, list[dict], list[dict], set]:
+    """Граф изменения `change` проекта `root`, список дублей id и список неразрешённых ссылок и множество `(id требования, id
+    записи)` связей `traces` из текста требования (`_resolve_claims`, F-158). Граф: `format`, `nodes`, `edges`,
     `sources` (исходники сборки с хешами, `source_hashes`), `candidates`; читает только артефакты, из которых `REGISTRY` что-то берёт (F-53). Читатель отдаёт узлы и заявки на связи за
     один проход по файлу; связи разрешаются, когда собраны узлы всех артефактов (`_resolve_claims`). Пункт security —
     `refines` к требованию, ветка описи — `verifies` к сценарию, дочернее требование — `derives` к родителю (U06); `candidates` —
@@ -908,9 +923,9 @@ def build_graph_with_signals(root: Path, change: str, saved: dict | None = None)
                 nodes.append(node)
     nodes.sort(key=lambda n: (n["at"].rsplit(":", 1)[0], int(n["at"].rsplit(":", 1)[1]), n["id"]))
     duplicates = [{"id": node_id, "at": at} for node_id, at in places.items() if len(at) > 1]
-    edges, unresolved = _resolve_claims(root, nodes, places, claims, master)
+    edges, unresolved, text_links = _resolve_claims(root, nodes, places, claims, master)
     return {"format": GRAPH_FORMAT, "sources": source_hashes(base), "nodes": nodes, "edges": edges,
-            "candidates": record_candidates(edges, parked_records(base))}, duplicates, unresolved
+            "candidates": record_candidates(edges, parked_records(base))}, duplicates, unresolved, text_links
 
 
 # --- состав исходников и проверка сохранённого файла (F-41, F-86, F-87, F-118) ---------------------------------------
@@ -1325,8 +1340,9 @@ def signal_context(root: Path, change: str, saved: dict | None = None) -> dict:
     записей из комментариев `<!-- F-NN -->` под заголовками сценариев (F-45); сценарий MODIFIED, перенесённый из мастера без
     изменения, своих номеров не даёт: они из журнала другого изменения. `unbased` — `[(id требования, место)]` MODIFIED, у которых
     базы нет, а текст совпал с мастером (F-123). Мастер-спеку берёт из базы снимка, для требования без записи в ней — живую
-    (`_Master`); `saved` — готовая база вместо снимка. `trace_links` — `{(место следа, id записи)}`: связи `traces`, которые
-    дал след пробы, а не текст (F-158); номер, стоящий и в тексте той же строки, сюда не входит. Только читает."""
+    (`_Master`); `saved` — готовая база вместо снимка. `text_links` — `{(id требования, id записи)}`: связи `traces`, которые дали
+    номера в тексте требования после всех отсечений F-84, F-147, F-150 (F-158); берётся из `_resolve_claims` той же сборки графа,
+    второго разбора нет (граф собирается ещё раз). Только читает."""
     base = root / "openspec" / "changes" / change
     if not base.is_dir():
         raise Refusal(f"изменения «{change}» нет: нет каталога openspec/changes/{change}")
@@ -1335,7 +1351,7 @@ def signal_context(root: Path, change: str, saved: dict | None = None) -> dict:
         records = json.loads(_read_text(base, "decisions.json"))["records"] if (base / "decisions.json").is_file() else []
     except (ValueError, KeyError, TypeError):
         records = []  # негодный журнал сборка графа уже назвала отказом
-    modified, traces, marks, unbased, links = {}, [], set(), [], set()
+    modified, traces, marks, unbased = {}, [], set(), []
     folders = sorted(p for p in (base / "specs").iterdir() if p.is_dir()) if (base / "specs").is_dir() else []
     for folder in folders:
         rel = f"specs/{folder.name}/spec.md"
@@ -1354,8 +1370,6 @@ def signal_context(root: Path, change: str, saved: dict | None = None) -> dict:
             if entry and _hash(comment) in entry["traces"]:
                 continue  # дословно стоит в том же требовании мастера: след прежнего изменения
             traces += [(f"{rel}:{number}", num, word) for num, word in pairs]
-            typed = set(_record_numbers(_TRACE_COMMENT.sub("", lines[number - 1])))  # номер и в тексте строки: связь из текста
-            links |= {(f"{rel}:{number}", f"rec:F-{num:02d}") for num, _ in pairs if num not in typed}
         for item in parsed.requirements:
             if item.section != "MODIFIED":
                 continue
@@ -1377,7 +1391,7 @@ def signal_context(root: Path, change: str, saved: dict | None = None) -> dict:
                 if state.get(f"scn:{cap}/{item.name}/{scn.name}") != "same":
                     marks |= _scenario_marks(lines, mask, scn.line)
     return {"records": records, "modified": modified, "traces": traces, "marks": marks, "unbased": unbased,
-            "trace_links": links}
+            "text_links": _build_all(root, change, saved)[3]}
 
 
 def _stale_trace(rec: dict, word: str) -> str | None:
@@ -1396,7 +1410,7 @@ def graph_signals(graph: dict, duplicates: list[dict] | None = None, unresolved:
     """Сигналы графа строками `[!!] вид: ключ — место`, порядок по месту в файле (F-57, F-64, F-65, F-83, F-94, F-95). Ключ — id
     без префикса вида. Из графа и списков сборки: «требование без задачи» и «сценарий без задачи» (ADDED), «требование без
     записи» (гасит только номер в тексте требования: связь из следа пробы и к записи-парковке нет, F-158; без `context`
-    след и парковку отличить нечем, гасит любая связь `traces`), «неоднозначное имя» (дубль id из `duplicates`; одно имя сценария у двух требований capability при задаче с этим
+    опоры нет и сигнал стоит у каждого требования), «неоднозначное имя» (дубль id из `duplicates`; одно имя сценария у двух требований capability при задаче с этим
     именем), «неизвестное имя или номер» (`unresolved`), «задача ни к чему» (кроме служебной: `служебная` в конце строки). Из `context` (`signal_context`): «критерий без
     требования», «решение без требования и задачи», «след отстал от журнала», «Specify без сценария» (рядом «снято F-NN?» от решённой записи
     с этой в `depends_on`) и «Backstop без задачи» по исходу пробы, в MODIFIED новые сценарии («сценарий без
@@ -1426,11 +1440,10 @@ def graph_signals(graph: dict, duplicates: list[dict] | None = None, unresolved:
         if (_squash(kind), _squash(key)) not in answered:
             found.append((at, _md(f"[!!] {kind}: {key} — {places or at}")))
 
-    parked = {"rec:" + r["id"] for r in context.get("records", []) if r.get("status") == "припаркован"}
-    trace_links = context.get("trace_links", set())
-    # опора сигнала — номер в тексте требования: связь из следа пробы и связь к парковке его не заменяют (F-158, F-157)
-    named_traces = {e["from"] for e in edges if e["type"] == "traces" and e["to"] not in parked
-                    and (e["at"], e["to"]) not in trace_links}
+    parked = parked_ids(context.get("records", []))
+    # опора сигнала — номер в тексте требования (`text_links` из сборки графа): след пробы и парковка её не дают (F-158, F-157);
+    # без `text_links` опоры нет
+    named_traces = {src for src, dst in context.get("text_links", set()) if dst not in parked}
     bad_number = {u["from"] for u in unresolved if u["ref"].startswith("F-")}
     modified = context.get("modified", {})
     for req in (n for n in graph["nodes"] if n["kind"] == "req"):

@@ -217,14 +217,14 @@ def test_requirement_and_scenario_without_task_are_signals_with_code_zero(tmp_pa
 def test_requirement_with_no_closed_scenario_is_named(tmp_path):
     """`trace-signals`: «Отчёт с сигналами» — требование без задачи названо вместе с его сценарием."""
     root, _ = make_change(tmp_path, specs={"demo": ONE_REQ})
-    signals = trace_graph.graph_signals(trace_graph.build_graph(root, CHANGE))
+    signals = lines_of(root)
     assert {s.split(":", 1)[0] for s in signals} == {"[!!] требование без задачи", "[!!] сценарий без задачи"}, signals
     assert all("demo/Один" in s and "specs/demo/spec.md:" in s for s in signals)
 
 
 def test_graph_signals_does_not_print(tmp_path, capsys):
     root, _ = make_change(tmp_path, specs={"demo": ONE_REQ}, tasks=DONE)
-    assert trace_graph.graph_signals(trace_graph.build_graph(root, CHANGE)) == []
+    assert lines_of(root) == []
     assert capsys.readouterr().out == ""
 
 
@@ -449,6 +449,28 @@ def test_probe_trace_does_not_replace_number_in_text(tmp_path):
     assert [(e["from"], e["to"]) for e in graph["edges"] if e["type"] == "traces"] == [("req:demo/Без номера", "rec:F-85")]
     found = of_kind(lines_of(root), "требование без записи")
     assert len(found) == 1 and "demo/Без номера" in found[0], found
+
+
+def test_number_without_outcome_in_probe_trace_does_not_hold_requirement(tmp_path):
+    """`trace-conventions`: «След пробы не заменяет номер в тексте» (F-158) — в следе `F-85 Backstop, F-86` (номер без
+    исхода) и `F-87.A Specify` (с буквой варианта) связи есть, сигнал «требование без записи» остаётся."""
+    for tail in ("F-85 Backstop, F-86", "F-85.A Specify"):
+        block = req("Без номера") + f"<!-- проба краёв: форма=io, исходы: {tail} -->\n"
+        root, _ = make_change(tmp_path / tail[:4] / tail[-3:], journal=["F-01", "F-85", "F-86"], specs={"demo": spec(block)},
+                              tasks="- [ ] 1.1 `demo`: «Сц»\n")
+        found = of_kind(lines_of(root), "требование без записи")
+        assert len(found) == 1 and "demo/Без номера" in found[0], (tail, found)
+
+
+def test_modified_number_cut_by_master_on_trace_line_does_not_hold_requirement(tmp_path):
+    """`trace-conventions`: «След пробы не заменяет номер в тексте» (F-84, F-158) — MODIFIED: `(F-85)` стоит в тексте мастера и
+    в тексте требования (связи не даёт), на той же строке новый след с F-85: сигнал «требование без записи» есть."""
+    line = "Текст (F-85) SHALL. {}"
+    new = req("Один").replace("Текст SHALL.", line.format("<!-- проба краёв: исходы: F-85 Specify -->"))
+    root, _ = make_change(tmp_path, journal=["F-01", "F-85"], specs={"demo": spec(new, section="MODIFIED")})
+    put_master(root, spec(req("Один").replace("Текст SHALL.", line.format("x"))))
+    found = of_kind(lines_of(root), "требование без записи")
+    assert len(found) == 1 and "demo/Один" in found[0], found
 
 
 def test_number_in_text_holds_requirement_next_to_probe_trace(tmp_path):
