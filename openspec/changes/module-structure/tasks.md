@@ -10,9 +10,9 @@
 
 ## 2. Разрез файлов ядра на прежнем месте
 
-- [ ] 2.1 Вынести корни улик и поиск цитат вместе с `ROOT` из `journal_apply.py` и `journal_model.py` в отдельный файл будущего модуля `roots`, остальные файлы импортируют его (F-34, `research/F-27.md`) — проверка: полный `python -X utf8 -m pytest` зелёный, `ROOT` определён только в файле `roots` `служебная`
-- [ ] 2.2 Разрезать `journal_render.py`: страница, схема решения и шаблон — в файл будущего модуля `viewer`, разбор файла атаки — в файл модуля `attack`, md, `render_design`, `view-json` и `CONTRACT` остаются в `decisions` (F-27, F-33) — проверка: полный pytest зелёный и новые тесты; `decision-viewer`: «Черта в backticks в последней ячейке», `decision-viewer`: «Лишняя ячейка», `decision-viewer`: «Страница перенесена из проекта»
-- [ ] 2.3 `journal.py` и `journal_cli.py` — файлы будущего модуля `cli`; подкоманды и аргументы `journal.py` не меняются (F-33, `docs/repo-contract.md`) — проверка: `tests/test_flag_help.py` зелёный, вывод `journal.py --help` и `journal.py <подкоманда> --help` байт в байт прежний `служебная`
+- [x] 2.1 Вынести корни улик и поиск цитат вместе с `ROOT` из `journal_apply.py` и `journal_model.py` в отдельный файл будущего модуля `roots`, остальные файлы импортируют его (F-34, `research/F-27.md`) — проверка: полный `python -X utf8 -m pytest` зелёный, `ROOT` определён только в файле `roots` `служебная`
+- [x] 2.2 Разрезать `journal_render.py`: страница, схема решения и шаблон — в файл будущего модуля `viewer`, разбор файла атаки — в файл модуля `attack`, md, `render_design`, `view-json` и `CONTRACT` остаются в `decisions` (F-27, F-33) — проверка: полный pytest зелёный и новые тесты; `decision-viewer`: «Черта в backticks в последней ячейке», `decision-viewer`: «Лишняя ячейка», `decision-viewer`: «Страница перенесена из проекта»
+- [x] 2.3 `journal.py` и `journal_cli.py` — файлы будущего модуля `cli`; подкоманды и аргументы `journal.py` не меняются (F-33, `docs/repo-contract.md`) — проверка: `tests/test_flag_help.py` зелёный, вывод `journal.py --help` и `journal.py <подкоманда> --help` байт в байт прежний `служебная`
 
 ## 3. Перенос ядра по модулям
 
