@@ -1,7 +1,7 @@
 {
  "title": "Журнал решений: module-structure",
  "source": "decisions.json",
- "intro": "Пути улик — от корня проекта, корни названы в `probes/journal-roots.json`: `upstream/` и `context/` ведут в основной клон, `vscode/` — в плагин. Материалы: `intent.md`, раздел «Компоненты и модули» разбора `docs/analysis/requirements-traceability-graph-of-symphysis.md` (определения Т20, README модуля Т21, разведка путей и импортов), `tools/`, `installer/scripts/sync-payload.js`, `installer/README.md`, `docs/repo-contract.md`, тесты ядра и плагина, мастер-спеки, `src/`, `build.mjs` и упаковка плагина.\n\nF-01 — критерий из `intent.md`, F-02–F-13 — факты о текущем состоянии ядра. F-14–F-16 — ответы владельца в чате 2026-11-06 на вопросы о критериях, до журнала; перенесены дословно файлом `answers/2026-11-06.md`. Развилки первого круга — F-17–F-26. F-29 — ответ владельца о плагине в объёме изменения (`answers/2026-11-06-2.md`), за ним F-30–F-32 о плагине. Парковки исследованию — F-20, F-27, F-28, F-32.\n\nВторой круг начинается с F-33: развилки подняты отчётами `research/F-20.md`, `research/F-27.md`, `research/F-28.md`, `research/F-32.md`; находки внесены в парковки F-20, F-27, F-28, F-32. Раскладка 3 графа модулей (`research/F-27-probe/module-graph.txt`) досчитана во втором круге. F-39 C снимает решение F-21 A.",
+ "intro": "Пути улик — от корня проекта, корни названы в `probes/journal-roots.json`: `upstream/` и `context/` ведут в основной клон, `vscode/` — в плагин. Материалы: `intent.md`, раздел «Компоненты и модули» разбора `docs/analysis/requirements-traceability-graph-of-symphysis.md` (определения Т20, README модуля Т21, разведка путей и импортов), `tools/`, `installer/scripts/sync-payload.js`, `installer/README.md`, `docs/repo-contract.md`, тесты ядра и плагина, мастер-спеки, `src/`, `build.mjs` и упаковка плагина.\n\nF-01 — критерий из `intent.md`, F-02–F-13 — факты о текущем состоянии ядра. F-14–F-16 — ответы владельца в чате 2026-11-06 на вопросы о критериях, до журнала; перенесены дословно файлом `answers/2026-11-06.md`. Развилки первого круга — F-17–F-26. F-29 — ответ владельца о плагине в объёме изменения (`answers/2026-11-06-2.md`), за ним F-30–F-32 о плагине. Парковки исследованию — F-20, F-27, F-28, F-32.\n\nВторой круг начинается с F-33: развилки подняты отчётами `research/F-20.md`, `research/F-27.md`, `research/F-28.md`, `research/F-32.md`; находки внесены в парковки F-20, F-27, F-28, F-32. Раскладка 3 графа модулей (`research/F-27-probe/module-graph.txt`) досчитана во втором круге. F-39 C снимает решение F-21 A.\n\nF-45 заведена на шаге proposal по находке модели и решена в чате: `answers/2026-11-06-5.md`.",
  "records": [
   {
    "id": "F-01",
@@ -2446,6 +2446,77 @@
    "comments": [],
    "nodes": [
     "plugMods"
+   ]
+  },
+  {
+   "id": "F-45",
+   "question": "Что с настройкой плагина `symphysis.toolsPath`, указывающей на `<клон>/tools`, если в `tools/` клона ядра не будет `journal.py`?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-17",
+    "F-22",
+    "F-29"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Принять как часть BREAKING контура разработки: настройка на `<клон>/tools` перестаёт находить ядро, настройка на `<клон>` находит его через `.symphysis/tools/` установки клона в себя. Плагин не меняется",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "vscode/src/host/project.ts",
+       "quote": "const dir = withJournal([...toolsDirs(toolsPath), toolsPath]);"
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Научить `findTools` плагина искать ядро в каталогах модулей клона: настройка на `<клон>/tools` и на `<клон>` без установки в себя продолжают работать. Цена: плагин знает раскладку исходников ядра",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "vscode/src/host/project.ts",
+       "quote": "if (path.basename(dir) !== \"tools\" || withJournal(toolsDirs(dir))) return dir;"
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Единственная установка — сам symphysis (F-14), а настройка плагина и так находит ядро клона через его установку; B учит плагин раскладке исходников ядра ради случая, которого нет."
+   },
+   "decision": {
+    "option": "A",
+    "word": "У меня нигде не настроено, symphysis установлен только здесь. Строку можно вернуть, риска нет.",
+    "date": "2026-11-06"
+   },
+   "reversibility": {
+    "level": "обратимо",
+    "why": "поиск ядра в модулях клона можно добавить в `findTools` плагина позже, без смены контракта"
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "Строка BREAKING в `proposal.md`, раздел What Changes",
+   "evidence": [
+    {
+     "path": "vscode/src/host/project.ts",
+     "quote": "const dir = withJournal([...toolsDirs(toolsPath), toolsPath]);"
+    },
+    {
+     "path": "vscode/src/host/project.ts",
+     "quote": "if (path.basename(dir) !== \"tools\" || withJournal(toolsDirs(dir))) return dir;"
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "contract"
    ]
   }
  ],
