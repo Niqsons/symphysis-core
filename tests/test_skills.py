@@ -1000,6 +1000,12 @@ def test_attack_both_antipodes_is_a_warning_and_missing_nodes_is_not_a_finding()
     assert "отсутствие поля `nodes` у записи" in block(text, "Не репортится", "### 4.")
 
 
+def test_attack_claim_extraction_accepts_parked_security_canon():
+    """Слово владельца 2026-11-06 «Исключение в скилле»: номер парковки ИБ — отсылка к канону, не опора на решение."""
+    row = lens_row(read(SKILLS / "symphysis-attack" / "SKILL.md"), "artifacts", "claim-extraction")
+    assert "`status: припаркован` и `addressee: ИБ`" in row and "в любой цели" in row
+
+
 def test_viewer_skill_names_the_fallback_of_the_scheme_panel():
     """F-39: страница больше не всегда один файл; без файла mermaid рядом виден текст."""
     text = read(VIEWER / "SKILL.md")
