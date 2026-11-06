@@ -6,7 +6,7 @@
 ## Requirements
 
 ### Requirement: `symphysis.yaml` в корне проекта задаёт выбор перед запуском шага
-Файл `symphysis.yaml` в корне проекта, вне `.symphysis/`, SHALL задавать три выбора вложенными ключами: `consequences.failure_branches`, `consequences.assumptions`, `edge_probe.enabled`; отсутствие файла или ключа SHALL означать «включено» (F-24.A, F-110.B, слова владельца к F-14 и F-18, F-23).
+Файл `symphysis.yaml` в корне проекта, вне `.symphysis/`, SHALL задавать выборы вложенными ключами: `consequences.failure_branches`, `consequences.assumptions`, `edge_probe.enabled` и `attack.<слуг линзы>` на каждую линзу атаки; отсутствие файла или ключа SHALL означать «включено» (F-24.A, F-110.B, F-61, F-63, F-132, слова владельца к F-14 и F-18, F-23).
 
 #### Scenario: Файла нет
 - **GIVEN** проект без `symphysis.yaml`
@@ -27,8 +27,27 @@
 - **GIVEN** непустое значение не из `true | false`; пустое значение равно отсутствию ключа (F-109.A)
 - **WHEN** файл читают `symphysis check` и скрипт настроек
 - **THEN** выбор считается включённым, оба дают `[!!] symphysis.yaml: недопустимое значение <значение>`; у `symphysis check` код 2, у скрипта код 0, с `--strict` 2
-<!-- проба краёв: форма=text, исходы: F-50 Backstop, F-51 Specify -->
-<!-- проба запретов: исходы: F-94 Specify; канон — F-103 → security.md -->
+
+#### Scenario: Линзы по умолчанию
+- **GIVEN** проект без `symphysis.yaml`
+- **WHEN** скилл атаки узнаёт состав скриптом настроек
+- **THEN** все линзы обоих файлов атаки включены
+
+#### Scenario: Выключена одна линза
+- **GIVEN** `symphysis.yaml`, где выключена одна линза
+- **WHEN** выполняется скрипт настроек
+- **THEN** вывод называет эту линзу выключенной, остальные включёнными
+
+#### Scenario: Новая установка называет линзы
+- **GIVEN** проект без `symphysis.yaml`
+- **WHEN** выполняется `symphysis install --project <каталог>`
+- **THEN** созданный файл несёт ключ каждой линзы, все включены
+
+#### Scenario: Неизвестная линза
+<!-- F-108 -->
+- **GIVEN** ключ линзы с неизвестным слугом
+- **WHEN** выполняются `symphysis check` и скрипт настроек
+- **THEN** `[!!] symphysis.yaml: неизвестная линза <имя>`, этот ключ ни одной линзы не выключает
 
 ### Requirement: `symphysis.yaml` читает один скрипт
 Файл `symphysis.yaml` SHALL читать только скрипт `.symphysis/tools/symphysis_config.py`, пакетом PyYAML, беря значения текстом; `symphysis config` и `symphysis check` SHALL звать этот скрипт и передавать его строки, сами файл MUST NOT разбирать (F-135.B, F-110.B, F-51.A, F-113, F-118.A). Сомнение в чтении SHALL решаться во включённую сторону сигналом, а не остановкой команд журнала (F-24.A, F-25.A).
