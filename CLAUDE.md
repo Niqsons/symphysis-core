@@ -50,10 +50,14 @@
   `docs/analysis/skills-review-2026-11-05.md`; проверка терминов —
   `docs/analysis/terms-check-2026-11-06.md`.
 - `skills/shared/*.md` — общие файлы скиллов (`terms.md`, `journal-cli.md`, `config.md`,
-  `candidate.md`, `attack-table.md`): payload кладёт их в `docs/`, инсталлятор —
+  `candidate.md`, `attack-table.md`, `driver.md`): payload кладёт их в `docs/`, инсталлятор —
   в `.symphysis/docs/`. `skills/<имя>/sources/` — выписки доноров и заметки перевода,
   контур разработки: в payload не идут, как и комментарии `<!-- src: -->` в телах;
   уведомления MIT — `installer/THIRD-PARTY-NOTICES.md`.
+- `agents/symphysis-*-driver.md` — тела агентов-водителей (атака, пробы, опись,
+  исследование) для `.claude/agents/`: называют скилл и brief, не пересказывают;
+  в payload не идут — носитель в инсталляторе и каталог у других клиентов — изменение
+  «диспетчер». Какой шаг идёт водителю — ключ `drivers` в `symphysis.yaml`.
 - `docs/analysis/step0-sources.md` — чтение источников шага 0
   с вердиктами: что берём как есть, что дорабатываем, что
   переписываем; при составлении instruction и формата журнала.

@@ -351,5 +351,79 @@
    "symphysis.yaml: недопустимое значение no",
    "symphysis.yaml: consequences — нужен вложенный ключ"
   ]
+ },
+ {
+  "name": "водители без значения",
+  "bytes_b64": "ZHJpdmVyczoK",
+  "failure_branches": true,
+  "assumptions": true,
+  "edge_probe": true,
+  "signals": []
+ },
+ {
+  "name": "водитель атаки выключен",
+  "bytes_b64": "ZHJpdmVyczoKICBhdHRhY2s6IGZhbHNlCg==",
+  "failure_branches": true,
+  "assumptions": true,
+  "edge_probe": true,
+  "signals": [],
+  "driver_attack": false
+ },
+ {
+  "name": "водитель проб включён",
+  "bytes_b64": "ZHJpdmVyczoKICBwcm9iZXM6IHRydWUK",
+  "failure_branches": true,
+  "assumptions": true,
+  "edge_probe": true,
+  "signals": [],
+  "driver_probes": true
+ },
+ {
+  "name": "водитель описи включён, исследования выключен",
+  "bytes_b64": "ZHJpdmVyczoKICBjb25zZXF1ZW5jZXM6IHRydWUKICByZXNlYXJjaDogZmFsc2UK",
+  "failure_branches": true,
+  "assumptions": true,
+  "edge_probe": true,
+  "signals": [],
+  "driver_consequences": true,
+  "driver_research": false
+ },
+ {
+  "name": "недопустимое значение у водителя проб",
+  "bytes_b64": "ZHJpdmVyczoKICBwcm9iZXM6IHllcwo=",
+  "failure_branches": true,
+  "assumptions": true,
+  "edge_probe": true,
+  "signals": [
+   "symphysis.yaml: недопустимое значение yes"
+  ]
+ },
+ {
+  "name": "плоская drivers",
+  "bytes_b64": "ZHJpdmVyczogdHJ1ZQo=",
+  "failure_branches": true,
+  "assumptions": true,
+  "edge_probe": true,
+  "signals": [
+   "symphysis.yaml: drivers — нужен вложенный ключ"
+  ]
+ },
+ {
+  "name": "неизвестный ключ водителя",
+  "bytes_b64": "ZHJpdmVyczoKICB2aWV3ZXI6IHRydWUK",
+  "failure_branches": true,
+  "assumptions": true,
+  "edge_probe": true,
+  "signals": [
+   "symphysis.yaml: неизвестный ключ drivers.viewer"
+  ]
+ },
+ {
+  "name": "true у включённого по умолчанию",
+  "bytes_b64": "ZWRnZV9wcm9iZToKICBlbmFibGVkOiB0cnVlCmRyaXZlcnM6CiAgYXR0YWNrOiB0cnVlCg==",
+  "failure_branches": true,
+  "assumptions": true,
+  "edge_probe": true,
+  "signals": []
  }
 ]

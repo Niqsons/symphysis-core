@@ -27,6 +27,7 @@ const FILES = [
   "docs/config.md",
   "docs/candidate.md",
   "docs/attack-table.md",
+  "docs/driver.md",
   "docs/THIRD-PARTY-NOTICES.md",
 ];
 

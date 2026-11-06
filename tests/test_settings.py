@@ -18,6 +18,9 @@ TOOL = ROOT / "tools" / "symphysis_config.py"
 JOURNAL_TOOL = ROOT / "tools" / "journal.py"
 CASES = json.loads((FIX / "settings-cases.json").read_text(encoding="utf-8"))
 ALL_ON = {"failure_branches": True, "assumptions": True, "edge_probe": True}
+# Водители (Р11-A): атака и исследование по умолчанию вкл, пробы и опись выкл.
+DRIVER_DEFAULTS = {"driver_attack": True, "driver_probes": False, "driver_consequences": False,
+                   "driver_research": True}
 NO_PACKAGE = "symphysis.yaml: нет пакета PyYAML — выполнить: python -m pip install pyyaml"
 
 
@@ -27,9 +30,11 @@ def write_case(project, case):
 
 
 def composition_line(expected):
-    on = lambda key: "вкл" if expected[key] else "выкл"
+    on = lambda key: "вкл" if expected.get(key, DRIVER_DEFAULTS.get(key)) else "выкл"
     return (f"[..] symphysis.yaml: ветки отказа {on('failure_branches')}, допущения {on('assumptions')}, "
-            f"проба краёв {on('edge_probe')}")
+            f"проба краёв {on('edge_probe')}, водители: атака {on('driver_attack')}, "
+            f"пробы {on('driver_probes')}, опись {on('driver_consequences')}, "
+            f"исследование {on('driver_research')}")
 
 
 def run_config(*args, env=None):
@@ -52,6 +57,8 @@ def test_shared_cases(tmp_path, case):
     got = symphysis_config.read_settings(tmp_path)
     assert (got.failure_branches, got.assumptions, got.edge_probe) == (
         case["failure_branches"], case["assumptions"], case["edge_probe"])
+    for key, default in DRIVER_DEFAULTS.items():
+        assert getattr(got, key) == case.get(key, default), key
     assert got.signals == case["signals"]
 
 
@@ -61,6 +68,21 @@ def test_cli_prints_composition_and_signals(tmp_path, case):
     done = run_config("--project", tmp_path)
     assert done.returncode == 0, done.stderr
     assert done.stdout.splitlines() == [composition_line(case), *(f"[!!] {s}" for s in case["signals"])]
+
+
+def test_drivers_defaults_and_toggles(tmp_path):
+    """Р11-A: без ключа атака и исследование идут водителю, пробы и опись — в главной нити; `true` включает
+    выключенное по умолчанию, `false` выключает включённое, недопустимое значение оставляет умолчание."""
+    got = symphysis_config.read_settings(tmp_path)
+    assert {k: getattr(got, k) for k in DRIVER_DEFAULTS} == DRIVER_DEFAULTS
+    (tmp_path / "symphysis.yaml").write_text("drivers:\n  attack: false\n  probes: true\n  consequences: yes\n",
+                                             encoding="utf-8")
+    got = symphysis_config.read_settings(tmp_path)
+    assert (got.driver_attack, got.driver_probes, got.driver_consequences, got.driver_research) == (
+        False, True, False, True)
+    assert got.signals == ["symphysis.yaml: недопустимое значение yes"]
+    done = run_config("--project", tmp_path)
+    assert done.stdout.splitlines()[0].endswith("водители: атака выкл, пробы вкл, опись выкл, исследование вкл")
 
 
 def test_lone_surrogate_in_a_value_is_a_signal_not_a_crash(tmp_path):

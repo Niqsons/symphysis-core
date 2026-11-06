@@ -22,6 +22,11 @@ consequences:
   assumptions: true
 edge_probe:
   enabled: true
+drivers:
+  attack: true
+  probes: false
+  consequences: false
+  research: true
 `;
 
 const rel = (project, p) => path.relative(project, p).split(path.sep).join("/");

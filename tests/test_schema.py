@@ -263,6 +263,7 @@ def test_instructions_name_skills_and_stay_short(tmp_path):
     assert "symphysis-attack" in text["attack-decisions"] and "symphysis-attack" in text["attack-artifacts"]
     assert "symphysis-edge-probe" in text["specs"] and "symphysis-prohibition-probe" in text["specs"]
     assert "symphysis-consequences" in text["consequences"]
+    assert text["research"].lstrip().startswith("Загрузи скилл `symphysis-research`")
     assert ".symphysis/tools/symphysis_config.py" in text["consequences"]
     assert ".symphysis/tools/journal.py code-sites" in text["consequences"]
     for i in ("intent", "design", "security", "tasks"):

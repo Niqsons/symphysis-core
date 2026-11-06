@@ -5,7 +5,9 @@
 Журнал этот модуль не импортирует и настройки не читает (F-128.A). Файл читается пакетом PyYAML,
 значения приходят текстом и сравниваются с `true` и `false` дословно (F-110.B, F-113); это единственный
 читатель файла, `symphysis config` и `symphysis check` зовут этот скрипт (F-135.B).
-Сомнение решается во включённую сторону сигналом, а не остановкой (F-24.A, F-25.A)."""
+Сомнение решается во включённую сторону сигналом, а не остановкой (F-24.A, F-25.A).
+Группа `drivers` — водители-субагенты (ревью скиллов 2026-11-05, Р11-A): у атаки и исследования умолчание
+`true`, у проб и описи `false`; недопустимое значение оставляет умолчание ключа и даёт сигнал."""
 from __future__ import annotations
 
 import argparse
@@ -28,6 +30,8 @@ SIGNAL_NO_PACKAGE = f"{FILE_NAME}: нет пакета PyYAML — выполни
 KEYS = {
     "consequences": {"failure_branches": "failure_branches", "assumptions": "assumptions"},
     "edge_probe": {"enabled": "edge_probe"},
+    "drivers": {"attack": "driver_attack", "probes": "driver_probes", "consequences": "driver_consequences",
+                "research": "driver_research"},
 }
 
 @dataclass
@@ -35,6 +39,10 @@ class Settings:
     failure_branches: bool = True
     assumptions: bool = True
     edge_probe: bool = True
+    driver_attack: bool = True
+    driver_probes: bool = False
+    driver_consequences: bool = False
+    driver_research: bool = True
     signals: list[str] = field(default_factory=list)
 
 
@@ -67,7 +75,9 @@ def _apply(data, settings: Settings) -> None:
                     settings.signals.append(f"{FILE_NAME}: неизвестный ключ {group}.{key}")
                 elif value == "false":
                     setattr(settings, fields[key], False)
-                elif value not in ("true", ""):
+                elif value == "true":
+                    setattr(settings, fields[key], True)
+                elif value != "":
                     settings.signals.append(f"{FILE_NAME}: недопустимое значение {_show(value)}")
 
 
@@ -106,7 +116,9 @@ def composition_line(settings: Settings) -> str:
     """Строка состава: та же у `symphysis config` и в `symphysis check`."""
     on = lambda value: "вкл" if value else "выкл"
     return (f"{FILE_NAME}: ветки отказа {on(settings.failure_branches)}, допущения {on(settings.assumptions)}, "
-            f"проба краёв {on(settings.edge_probe)}")
+            f"проба краёв {on(settings.edge_probe)}, водители: атака {on(settings.driver_attack)}, "
+            f"пробы {on(settings.driver_probes)}, опись {on(settings.driver_consequences)}, "
+            f"исследование {on(settings.driver_research)}")
 
 
 def _default_project() -> Path:
@@ -122,13 +134,15 @@ def build_parser() -> argparse.ArgumentParser:
     ap = argparse.ArgumentParser(
         prog="symphysis_config",
         formatter_class=argparse.RawDescriptionHelpFormatter,
-        description="Состав выбора из symphysis.yaml: ветки отказа, допущения, проба краёв.\n"
+        description="Состав выбора из symphysis.yaml: ветки отказа, допущения, проба краёв, водители.\n"
                     "Звать, когда шаг начинается и ему нужен состав: скилл зовёт скрипт, файл сам не разбирает\n"
                     "и человека о составе не спрашивает; правка файла действует со следующего запуска шага.",
         epilog="Порядок: один вызов в начале шага, дальше шаг идёт по напечатанному составу.\n"
-               "Исходы: файла нет или пустое значение — всё включено без сигнала; значение не из true и false,\n"
-               "  неизвестный ключ, плоская запись, файл не разбирается, не UTF-8, нет пакета PyYAML — выбор\n"
-               "  считается включённым и есть сигнал. Человеку тот же вывод даёт symphysis config.\n"
+               "Умолчания: ветки отказа, допущения, проба краёв, водители атаки и исследования — вкл;\n"
+               "  водители проб и описи — выкл.\n"
+               "Исходы: файла нет или пустое значение — умолчание ключа без сигнала; значение не из true и false,\n"
+               "  неизвестный ключ, плоская запись, файл не разбирается, не UTF-8, нет пакета PyYAML — умолчание\n"
+               "  ключа и сигнал. Человеку тот же вывод даёт symphysis config.\n"
                "Коды: 0 — состав напечатан, сигналы код не меняют; 2 — с --strict есть сигналы, либо вызов неверен.\n"
                "Маркеры: [..] строка состава, исходом не является; [!!] сигнал.")
     general = ap.add_argument_group("общие")

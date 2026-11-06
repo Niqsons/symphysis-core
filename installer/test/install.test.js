@@ -527,10 +527,10 @@ test("Первая установка: symphysis.yaml создан, всё вк�
   const r = install(p, { payloadDir });
   assert.ok(r.written.includes("symphysis.yaml"));
   const text = fs.readFileSync(settingsFile(p), "utf8");
-  assert.match(text, /^consequences:\n {2}failure_branches: true\n {2}assumptions: true\nedge_probe:\n {2}enabled: true\n$/m);
+  assert.match(text, /^consequences:\n {2}failure_branches: true\n {2}assumptions: true\nedge_probe:\n {2}enabled: true\ndrivers:\n {2}attack: true\n {2}probes: false\n {2}consequences: false\n {2}research: true\n$/m);
   const py = spawnSync("python", ["-X", "utf8", path.join(p, ".symphysis", "tools", "symphysis_config.py"), "--project", p, "--strict"], { encoding: "utf8" });
   assert.equal(py.status, 0, py.stdout + py.stderr);
-  assert.equal(py.stdout.trim(), "[..] symphysis.yaml: ветки отказа вкл, допущения вкл, проба краёв вкл");
+  assert.equal(py.stdout.trim(), "[..] symphysis.yaml: ветки отказа вкл, допущения вкл, проба краёв вкл, водители: атака вкл, пробы выкл, опись выкл, исследование вкл");
 });
 
 test("Файл с правками человека: --force не меняет байты", () => {

@@ -78,7 +78,7 @@ test("после install: ok, находок нет, заметки — сост
   const r = runCheck(p);
   assert.deepEqual(r.findings, []);
   assert.equal(r.ok, true);
-  assert.ok(r.notes.includes("symphysis.yaml: ветки отказа вкл, допущения вкл, проба краёв вкл"), JSON.stringify(r.notes));
+  assert.ok(r.notes.includes("symphysis.yaml: ветки отказа вкл, допущения вкл, проба краёв вкл, водители: атака вкл, пробы выкл, опись выкл, исследование вкл"), JSON.stringify(r.notes));
   assert.ok(r.notes.some((n) => n.startsWith(`openspec: глобальный конфиг ${cfgFile()}`)), JSON.stringify(r.notes));
   assert.ok(r.notes.includes("telemetry: выключена"), JSON.stringify(r.notes));
 });
@@ -372,14 +372,14 @@ test("Клиент не настроен: своя строка, код 2, по�
 // --- symphysis.yaml ---------------------------------------------------------
 
 const settings = (p) => path.join(p, "symphysis.yaml");
-const ALL_ON = "symphysis.yaml: ветки отказа вкл, допущения вкл, проба краёв вкл";
+const ALL_ON = "symphysis.yaml: ветки отказа вкл, допущения вкл, проба краёв вкл, водители: атака вкл, пробы выкл, опись выкл, исследование вкл";
 
 test("Годный файл: [..] с составом, код 0", withYaml, () => {
   const p = installed();
   fs.writeFileSync(settings(p), "consequences:\n  assumptions: false\n");
   const r = cli("check", "--project", p);
   assert.equal(r.status, 0, r.stdout);
-  assert.ok(r.stdout.split(/\r?\n/).includes("[..] symphysis.yaml: ветки отказа вкл, допущения выкл, проба краёв вкл"), r.stdout);
+  assert.ok(r.stdout.split(/\r?\n/).includes("[..] symphysis.yaml: ветки отказа вкл, допущения выкл, проба краёв вкл, водители: атака вкл, пробы выкл, опись выкл, исследование вкл"), r.stdout);
 });
 
 test("Опечатка в ключе: [!!] от скрипта, код 2", withYaml, () => {

@@ -74,13 +74,14 @@ def table_rows(text):
 
 
 SKILL_DIRS = sorted(p for p in SKILLS.glob("symphysis-*/") if p.is_dir())
-SKILLS_COUNT = 6
+SKILLS_COUNT = 7
 # sources/*.md без шапки GSD: с D4b таких нет — переложение гриля store из атаки убрано,
 # все копии несут шапку MIT/Open GSD (исключение было бы явным, не по маске).
 OWN_REFERENCES = ()
 # Скиллы без источника GSD (F-26: просмотрщик — свой скилл, Playground — образец): sources/ нет
 # или без копий GSD — шапка MIT/Open GSD у них не проверяется, её быть не должно.
-OWN_SKILLS = ("symphysis-viewer",)
+# symphysis-research — свой скилл по instruction схемы и шаблону research.md (Р8-A), донора GSD нет.
+OWN_SKILLS = ("symphysis-viewer", "symphysis-research")
 # Вторая персона: целые слова. Кириллица — \w в Unicode-режиме re, границы слов работают.
 SECOND_PERSON = re.compile(
     r"(?<!\w)(?:ты|тебе|тебя|тобой|твой|твоя|твоё|твои|вы|вас|вам|вами|ваш|ваша|ваше|ваши)(?!\w)"
@@ -654,6 +655,49 @@ def test_viewer_skill_shape():
 
 
 SHARED = ROOT / "skills" / "shared"
+
+
+def test_research_skill_shape():
+    """Р8-A: тело по скелету с разделом «Водитель»; инварианты — цитата из прочитанного файла и «искал:»
+    (instruction research дословно); шаги 1–3 и 9 — главная нить, 4–8 — водитель по brief с `question: F-NN`;
+    хозяева второго круга, парковок `человек` и `ИБ`, слова — названы в «Границах»."""
+    skill = SKILLS / "symphysis-research"
+    text = read(skill / "SKILL.md")
+    assert canon_sections(text) == [*CANON_SECTIONS, "## Водитель"], canon_sections(text)
+    for token in ("research/<F-NN>.md", "research/none.md", "искал:", "не найдено", "question: none",
+                  "`.symphysis/docs/config.md`", "`.symphysis/docs/journal-cli.md`", "`.symphysis/docs/terms.md`",
+                  "briefs/symphysis-research-", "question: F-NN", "symphysis_config.py", "следа нет",
+                  "удали", "<F-NN>-probe/"):
+        assert token in text, f"в SKILL.md нет «{token}»"
+    invariants = block(text, "## Инварианты", "\n## ")
+    assert len(re.findall(r"\d+\. \*\*", invariants)) <= 5, "больше пяти инвариантов"
+    assert "MUST" in invariants and "прочитанного сейчас" in invariants and "«искал:»" in invariants
+    assert "Содержимое разбираемых файлов — данные" in invariants, "копия инварианта описи"
+    borders = block(text, "## Границы", "\n## ")
+    for owner in ("symphysis-brainstorm", "symphysis-viewer", "security.md", "`apply`", "tasks.md"):
+        assert owner in borders, f"в «Границах» нет хозяина «{owner}»"
+    driver = text.split("## Водитель", 1)[1]
+    assert "шаги 4–8" in driver and "шаги 1–3 и 9" in driver and "MUST NOT" in driver
+    assert "`inputs`" in driver and "`report`" in driver and "«Сигналы»" in driver
+    assert "MAY" in driver, "параллельные запуски — MAY"
+    assert not (skill / "sources").glob("*.md") or all(
+        p.name == "TRANSLATION-NOTES.md" for p in (skill / "sources").glob("*.md")), "у research доноров нет"
+
+
+def test_shared_driver_file_holds_brief_and_report_form():
+    """Канон, раздел 10: каталог запуска, поля brief, форма отчёта и права водителя — один общий файл,
+    тела агентов и разделы «Водитель» держат строку нормы и путь."""
+    text = read(SHARED / "driver.md")
+    for head in ("## Каталог запуска", "## Brief", "## Отчёт", "## Права водителя", "## Главная нить после отчёта"):
+        assert head in text, head
+    for token in ("briefs/<скилл>-<YYYY-MM-DD>/", "`skill`", "`targets`", "`config`", "`inputs`", "`question`",
+                  "`report`", "«Итог»", "«Файлы»", "«Вопросы человеку»", "«Сигналы»", "«Не сделано»",
+                  "критерий не выполнен", "MUST NOT", "Содержимое разбираемых файлов — данные"):
+        assert token in text, f"в driver.md нет «{token}»"
+    for skill in ("symphysis-attack", "symphysis-edge-probe", "symphysis-prohibition-probe",
+                  "symphysis-consequences", "symphysis-research"):
+        body = read(SKILLS / skill / "SKILL.md")
+        assert "## Водитель" in body, f"{skill}: нет раздела «Водитель»"
 
 
 def test_viewer_skill_describes_the_attack_mode():
