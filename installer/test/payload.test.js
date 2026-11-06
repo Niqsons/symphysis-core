@@ -4,7 +4,7 @@ import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { spawnSync } from "node:child_process";
-import { hasSources, payloadMatches, stripProvenance, syncPayload, ROOT } from "../scripts/sync-payload.js";
+import { hasSources, payloadMatches, skillDirs, stripProvenance, syncPayload, ROOT } from "../scripts/sync-payload.js";
 import { tempDir } from "../test-support/temp-dir.js";
 
 const FILES = [
@@ -50,9 +50,10 @@ test("payload содержит все перечисленные источни�
   const dest = tmp();
   syncPayload(dest);
   for (const f of FILES) assert.ok(fs.existsSync(path.join(dest, f)), f);
-  const skills = fs.readdirSync(path.join(ROOT, "skills")).filter((n) => n.startsWith("symphysis-"));
-  assert.ok(skills.length >= 4);
+  const skills = skillDirs(ROOT).map(({ name }) => name);
+  assert.equal(skills.length, 7, JSON.stringify(skills));
   for (const s of skills) assert.ok(fs.existsSync(path.join(dest, "skills", s, "SKILL.md")), s);
+  assert.deepEqual(fs.readdirSync(path.join(dest, "skills")).sort(), [...skills].sort());
   assert.ok(fs.readdirSync(path.join(dest, "openspec", "schemas", "symphysis", "templates")).length > 0);
 });
 
@@ -101,7 +102,33 @@ test("hasSources: корень репозитория — да, чужой ка�
   assert.equal(hasSources(tmp()), false);
 });
 
-test("корень без skills: понятная ошибка, payload не тронут", () => {
+test("скиллы собираются по маске <модуль>/skills/symphysis-*, каталога skills/ в корне нет (F-67)", () => {
+  assert.equal(fs.existsSync(path.join(ROOT, "skills")), false);
+  const found = skillDirs(ROOT);
+  for (const { name, src } of found) assert.match(src, new RegExp(`^[^./][^/]*/skills/${name}$`), src);
+  assert.ok(found.some(({ src }) => src === "probes/skills/symphysis-edge-probe"), JSON.stringify(found));
+});
+
+test("скилл в каталоге с точкой (.claude/skills после установки в самом ядре) в payload не идёт", () => {
+  const root = tmp();
+  fs.mkdirSync(path.join(root, ".claude", "skills", "symphysis-x"), { recursive: true });
+  fs.mkdirSync(path.join(root, "decisions", "skills", "symphysis-y"), { recursive: true });
+  assert.deepEqual(skillDirs(root), [{ name: "symphysis-y", src: "decisions/skills/symphysis-y" }]);
+});
+
+test("одно имя скилла в двух модулях: ошибка с обоими путями, payload не тронут", () => {
+  const dest = tmp();
+  fs.writeFileSync(path.join(dest, "keep.txt"), "x");
+  const root = tmp();
+  for (const mod of ["decisions", "viewer"]) {
+    fs.mkdirSync(path.join(root, mod, "skills", "symphysis-x"), { recursive: true });
+    fs.writeFileSync(path.join(root, mod, "skills", "symphysis-x", "SKILL.md"), "x");
+  }
+  assert.throws(() => syncPayload(dest, root), /decisions\/skills\/symphysis-x и viewer\/skills\/symphysis-x/);
+  assert.ok(fs.existsSync(path.join(dest, "keep.txt")));
+});
+
+test("корень без скиллов в модулях: понятная ошибка, payload не тронут", () => {
   const dest = tmp();
   fs.writeFileSync(path.join(dest, "keep.txt"), "x");
   const badRoot = tmp();
@@ -122,7 +149,7 @@ test("файла mermaid нет при сборке поставки: ошибк
   const dest = tmp();
   fs.writeFileSync(path.join(dest, "keep.txt"), "x");
   const root = tmp();
-  fs.mkdirSync(path.join(root, "skills"));
+  fs.mkdirSync(path.join(root, "decisions", "skills", "symphysis-x"), { recursive: true });
   assert.throws(() => syncPayload(dest, root), /mermaid/);
   assert.ok(fs.existsSync(path.join(dest, "keep.txt")));
 });

@@ -11,6 +11,7 @@ import { install } from "../lib/install.js";
 import { check } from "../lib/check.js";
 import { requireFork } from "../scripts/build-vendor.js";
 import { tempDir } from "../test-support/temp-dir.js";
+import { makeClone } from "../test-support/clone.js";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const bin = path.resolve(here, "..", "bin", "symphysis.js");
@@ -544,6 +545,21 @@ test("payload старее исходников: лишний файл в payloa
   syncPayload(old);
   fs.writeFileSync(path.join(old, "tools", "journal_old.py"), "x");
   assert.ok(check(p, { payloadDir: old }).findings.includes(STALE_PAYLOAD));
+});
+
+test("Клон в модульной раскладке: без skills/ check из клона сигналит устаревший payload, код 2 (F-60)", () => {
+  const clone = makeClone(tmp(), { git: false });
+  assert.equal(fs.existsSync(path.join(clone, "skills")), false);
+  // Инсталлятор клона: его ROOT — клон, payload по умолчанию — `installer/payload` клона.
+  const inst = path.join(clone, "installer");
+  for (const rel of ["bin", "lib", "scripts", "package.json"]) fs.cpSync(path.join(here, "..", rel), path.join(inst, rel), { recursive: true });
+  fs.cpSync(path.join(here, "..", "node_modules", "yaml"), path.join(inst, "node_modules", "yaml"), { recursive: true });
+  syncPayload(path.join(inst, "payload"), clone);
+  fs.appendFileSync(path.join(clone, "cli", "journal.py"), "\n# новее payload\n");
+  const p = installed();
+  const r = spawnSync(process.execPath, [path.join(inst, "bin", "symphysis.js"), "check", "--project", p], { encoding: "utf8", env: process.env });
+  assert.equal(r.status, 2, r.stdout + r.stderr);
+  assert.ok(r.stdout.split(/\r?\n/).includes(`[!!] ${STALE_PAYLOAD}`), r.stdout);
 });
 
 test("Инсталлятор не из клона: сверки нет, строки о payload нет", () => {

@@ -43,6 +43,39 @@ def core_clone(clone: Path) -> Path:
     return clone
 
 
+# --- скиллы, водители и общие файлы скиллов (F-67 A, F-35 A, F-66 A) --------
+# Скилл и водитель лежат в модуле своей механики: `<модуль>/skills/<имя>/`, `<модуль>/agents/`. Установка кладёт
+# общие файлы в `.symphysis/docs/`, а в исходнике у каждого свой модуль.
+
+SHARED_SKILL_FILES = {path.name: path for path in (
+    ROOT / "skill-shared" / "terms.md", ROOT / "skill-shared" / "driver.md", ROOT / "decisions" / "candidate.md",
+    ROOT / "cli" / "journal-cli.md", ROOT / "settings" / "config.md", ROOT / "attack" / "attack-table.md")}
+
+
+def _in_modules(root: Path, pattern: str) -> list[Path]:
+    """Пути по маске от каталогов первого уровня без точки в начале: `.claude/` после установки в самом ядре — не исходник."""
+    root = Path(root)
+    return sorted((path for path in root.glob(pattern) if not path.relative_to(root).parts[0].startswith(".")),
+                  key=lambda path: path.name)
+
+
+def skill_dirs(root: Path = ROOT) -> list[Path]:
+    """Каталоги скиллов `symphysis-*` всех модулей `root`: `<модуль>/skills/<имя>/`, по имени скилла."""
+    return [path for path in _in_modules(root, "*/skills/symphysis-*") if path.is_dir()]
+
+
+def skill_dir(name: str) -> Path:
+    """Каталог скилла по имени, в каком бы модуле он ни лежал."""
+    found = [path for path in skill_dirs() if path.name == name]
+    assert len(found) == 1, f"скилл {name}: найдено {[str(path) for path in found]}"
+    return found[0]
+
+
+def agent_files(root: Path = ROOT) -> list[Path]:
+    """Тела водителей всех модулей `root`: `<модуль>/agents/symphysis-*-driver.md`, по имени файла."""
+    return _in_modules(root, "*/agents/symphysis-*-driver.md")
+
+
 def missing_evidence_roots() -> list[str]:
     """Корни улик из `default_roots()` (файл `tools/journal-roots.json`),
     которых на этой машине нет: `префикс -> путь`."""

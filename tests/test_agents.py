@@ -1,14 +1,13 @@
-"""Тела агентов-водителей `agents/symphysis-*-driver.md`: frontmatter Claude Code (`name`, `description`,
+"""Тела агентов-водителей `<модуль>/agents/symphysis-*-driver.md` (F-67 A): frontmatter Claude Code (`name`, `description`,
 `tools`, `skills`), скелет канона без раздела «Водитель», пять разделов отчёта, запреты водителя
 (docs/skills-canon.md, раздел 10; ревью 2026-11-05, раздел 6)."""
 import re
 
 import pytest
-from conftest import ROOT
+from conftest import agent_files, skill_dir
 from test_skills import SECOND_PERSON
 
-AGENTS = ROOT / "agents"
-AGENT_FILES = sorted(AGENTS.glob("symphysis-*-driver.md"))
+AGENT_FILES = agent_files()   # водитель лежит в модуле своего скилла
 DRIVEN = {"symphysis-attack", "symphysis-edge-probe", "symphysis-prohibition-probe", "symphysis-consequences",
           "symphysis-research"}
 SECTIONS = ("## Вход", "## Выход", "## Инварианты", "## Порядок", "## Коды и сигналы", "## Границы", "## Приёмка")
@@ -78,7 +77,7 @@ def test_driver_steps_match_the_skill_driver_section(agent):
     """Шаги или такты, названные телу агента, совпадают с разделом «Водитель» скилла."""
     text = read(agent)
     skill = skill_of(agent)
-    driver = read(ROOT / "skills" / skill / "SKILL.md").split("## Водитель", 1)[1]
+    driver = read(skill_dir(skill) / "SKILL.md").split("## Водитель", 1)[1]
     expected = {"symphysis-attack": "шаги 0–6", "symphysis-edge-probe": "такты 1–7 и 11",
                 "symphysis-prohibition-probe": "такты 1–5", "symphysis-consequences": "такты 1–7",
                 "symphysis-research": "шаги 4–8"}[skill]

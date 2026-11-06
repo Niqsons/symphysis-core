@@ -281,14 +281,22 @@ def _without_one_change(names: list[str]) -> dict:
 
 SKILL_NAME = re.compile(r"`(symphysis-[\w-]+)`")
 PROJECT_SKILL_DIRS = (".claude/skills", ".opencode/skills", ".agents/skills")
-INSTALL_SKILL_DIRS = (*PROJECT_SKILL_DIRS, "skills")  # R16: в клоне ядра скиллы лежат в `skills/`, в установке — как в проекте
 
 
-def _find_skill(name: str, root: Path, install_dir: Path | None) -> dict:
-    """Файл скилла: сначала проект, затем каталог установки; путь с `/` от того каталога, где найден (F-46, F-56)."""
-    for base, label, dirs in ((root, "project", PROJECT_SKILL_DIRS), (install_dir, "install", INSTALL_SKILL_DIRS)):
-        if base is None:
-            continue
+def _install_skill_dirs(install_dir: Path) -> tuple[str, ...]:
+    """Каталоги скиллов в каталоге установки: сначала как в проекте, затем `<модуль>/skills` клона ядра — каталоги первого
+    уровня без точки в начале имени, по алфавиту (F-42 A, F-67 A). Каталога нет или он не читается — только проектные."""
+    try:
+        modules = sorted(entry.name for entry in install_dir.iterdir()
+                         if not entry.name.startswith(".") and (entry / "skills").is_dir())
+    except OSError:
+        modules = []
+    return (*PROJECT_SKILL_DIRS, *(f"{module}/skills" for module in modules))
+
+
+def _find_skill(name: str, bases: list[tuple[Path, str, tuple[str, ...]]]) -> dict:
+    """Файл скилла: первый по порядку `bases` (проект, затем установка); путь с `/` от того каталога, где найден (F-46, F-56)."""
+    for base, label, dirs in bases:
         for directory in dirs:
             if (base / directory / name / "SKILL.md").is_file():
                 return {"name": name, "path": f"{directory}/{name}/SKILL.md", "base": label}
@@ -297,9 +305,12 @@ def _find_skill(name: str, root: Path, install_dir: Path | None) -> dict:
 
 def _add_skills(steps: list[dict], root: Path, install_dir: Path | None) -> None:
     """Поле `skills` у каждого шага: имена `symphysis-*` в обратных кавычках из его текстов, по одной записи на имя."""
+    bases = [(root, "project", PROJECT_SKILL_DIRS)]
+    if install_dir is not None:
+        bases.append((install_dir, "install", _install_skill_dirs(install_dir)))
     for page in steps:
         names = dict.fromkeys(name for text in page["texts"].values() for name in SKILL_NAME.findall(text))
-        page["skills"] = [_find_skill(name, root, install_dir) for name in names]
+        page["skills"] = [_find_skill(name, bases) for name in names]
 
 
 def _file_links(out: dict, root: Path, change: str | None) -> dict:

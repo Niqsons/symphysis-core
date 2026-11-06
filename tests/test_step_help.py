@@ -16,10 +16,10 @@ import pytest
 import journal_render
 import openspec_run
 import step_help
-from conftest import (ALL_STEPS, FORK_VERSION, MODULE_DIRS, OPTIONAL_ARTIFACTS, ROOT, SCHEMA_GRAPH, core_clone, core_files,
-                      fake_apply, fake_status,
+from conftest import (ALL_STEPS, FORK_VERSION, MODULE_DIRS, OPTIONAL_ARTIFACTS, ROOT, SCHEMA_GRAPH, SHARED_SKILL_FILES,
+                      core_clone, core_files, fake_apply, fake_status,
                       fake_status_all, fork_calls, fork_env, fork_record, fork_reply, install_fork_shim, journal_of, real_env,
-                      real_fork, real_project, requires_fork, steps_text)
+                      real_fork, real_project, requires_fork, skill_dirs, steps_text)
 
 STEP_HELP = ROOT / "step-help" / "step_help.py"
 BEFORE_SPECS = ("intent", "decisions", "research", "proposal")
@@ -822,11 +822,42 @@ def test_project_tree_stays_the_same(tmp_path):
     assert code == 0 and tree_of(project) == before
 
 
+def files_naming_the_script(root: Path, extra=()) -> list[Path]:
+    """Файлы скиллов `symphysis-*` всех модулей `root`, `schema.yaml` и `extra`, где стоит имя `step_help`. Поиск, не нашедший
+    ни одного `SKILL.md`, — AssertionError «скиллов ноль»: скиллы переехали, а поиск смотрит не туда (F-54)."""
+    skills = skill_dirs(root)
+    assert any((skill / "SKILL.md").is_file() for skill in skills), \
+        f"скиллов ноль: в {root.name} нет ни одного `<модуль>/skills/symphysis-*/SKILL.md`"
+    files = [root / "openspec" / "schemas" / "symphysis" / "schema.yaml", *(file for skill in skills for file in skill.rglob("*")),
+             *extra]
+    return [path for path in files if path.is_file() and b"step_help" in path.read_bytes()]
+
+
 def test_skills_do_not_know_the_script():
-    """Сценарий «Скиллы о скрипте не знают»."""
-    files = [ROOT / "openspec" / "schemas" / "symphysis" / "schema.yaml", *(ROOT / "skills").rglob("*")]
-    named = [path for path in files if path.is_file() and b"step_help" in path.read_bytes()]
-    assert named == []
+    """Сценарий «Скиллы о скрипте не знают»: скиллы всех модулей, их общие файлы и `schema.yaml`."""
+    assert files_naming_the_script(ROOT, SHARED_SKILL_FILES.values()) == []
+
+
+def search_fixture(root: Path, skill_rel: str | None, text="Скилл.\n") -> Path:
+    (root / "openspec" / "schemas" / "symphysis").mkdir(parents=True)
+    (root / "openspec" / "schemas" / "symphysis" / "schema.yaml").write_text("name: symphysis\n", encoding="utf-8")
+    if skill_rel:
+        (root / skill_rel).mkdir(parents=True)
+        (root / skill_rel / "SKILL.md").write_text(text, encoding="utf-8")
+    return root
+
+
+@pytest.mark.parametrize("skill_rel", [None, "skills/symphysis-brainstorm"], ids=["скиллов нет", "прежнее место skills/"])
+def test_search_that_found_no_skills_is_red(tmp_path, skill_rel):
+    """Сценарий «Поиск не нашёл скиллов» (F-54): раскладка, где поиск не нашёл ни одного `SKILL.md`, — красный, а не зелёный пусто."""
+    with pytest.raises(AssertionError, match="скиллов ноль"):
+        files_naming_the_script(search_fixture(tmp_path, skill_rel))
+
+
+def test_search_finds_the_name_in_a_skill_of_a_module(tmp_path):
+    """Поиск видит скилл в каталоге модуля: имя скрипта в его тексте найдено."""
+    root = search_fixture(tmp_path, "decisions/skills/symphysis-brainstorm", "Позови step_help.\n")
+    assert files_naming_the_script(root) == [root / "decisions" / "skills" / "symphysis-brainstorm" / "SKILL.md"]
 
 
 def test_symphysis_version_absent_is_null(tmp_path):
@@ -1301,7 +1332,8 @@ def test_skills_without_step_texts(tmp_path):
     assert code == 0 and all(item["skills"] == [] for item in data["steps"])
 
 
-def install_dir_with_skill(tmp_path, directory="skills"):
+def install_dir_with_skill(tmp_path, directory="decisions/skills"):
+    """Каталог установки со скиллом брейншторма; по умолчанию — клон ядра, скилл в каталоге своего модуля (F-42 A, F-67 A)."""
     install = tmp_path / "каталог установки"
     skill_file(install, directory, "symphysis-brainstorm")
     return install
@@ -1314,9 +1346,33 @@ def test_skill_only_in_install_dir(tmp_path):
     install = install_dir_with_skill(tmp_path)
     code, data, done = help_run(tmp_path, project, "--change", "demo", "--install-dir", str(install))
     assert code == 0
-    assert page(data, "decisions")["skills"] == [{"name": "symphysis-brainstorm", "path": "skills/symphysis-brainstorm/SKILL.md", "base": "install"}]
+    assert page(data, "decisions")["skills"] == [{"name": "symphysis-brainstorm", "path": "decisions/skills/symphysis-brainstorm/SKILL.md", "base": "install"}]
     assert install.name not in done.stdout.decode("utf-8")
-    assert "skills/symphysis-brainstorm/SKILL.md" not in data["file_links"]   # файл установки плагин открывает по `skills` (F-91)
+    assert "decisions/skills/symphysis-brainstorm/SKILL.md" not in data["file_links"]   # файл установки плагин открывает по `skills` (F-91)
+
+
+def test_core_clone_skills_are_found_in_module_directories(tmp_path):
+    """Тест-страховка F-63: клон ядра со `SKILL.md` в каталогах модулей как `--install-dir` — у каждого скилла `path` найден
+    от клона, `base: install`."""
+    clone = tmp_path / "клон ядра"
+    for skill in skill_dirs():
+        (clone / skill.relative_to(ROOT)).mkdir(parents=True)
+        shutil.copy(skill / "SKILL.md", clone / skill.relative_to(ROOT))
+    project = make_project(tmp_path / "proj")
+    steps_with(project, decisions=" ".join(f"`{skill.name}`" for skill in skill_dirs()))
+    code, data, _ = help_run(tmp_path, project, "--change", "demo", "--install-dir", str(clone))
+    assert code == 0
+    expected = [{"name": skill.name, "path": f"{skill.relative_to(ROOT).as_posix()}/SKILL.md", "base": "install"} for skill in skill_dirs()]
+    assert len(expected) == 7 and page(data, "decisions")["skills"] == expected
+
+
+def test_former_skills_directory_of_a_clone_is_not_searched(tmp_path):
+    """Каталог `skills/` прежней раскладки клона справка не смотрит: скиллы клона — в каталогах модулей (F-42 A)."""
+    project = make_project(tmp_path / "proj")
+    steps_with(project, decisions="`symphysis-brainstorm`")
+    install = install_dir_with_skill(tmp_path, "skills")
+    _, data, _ = help_run(tmp_path, project, "--change", "demo", "--install-dir", str(install))
+    assert page(data, "decisions")["skills"] == [{"name": "symphysis-brainstorm", "path": None, "base": None}]
 
 
 def test_skill_in_install_dir_dot_directory(tmp_path):

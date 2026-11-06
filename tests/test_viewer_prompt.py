@@ -288,7 +288,7 @@ def test_page_marks_undecided_row_and_skill_states_the_rule():
     """У строки с ответом к нерешённой записи — пометка до копирования промпта; скилл называет то же правило."""
     html = TEMPLATE.read_text(encoding="utf-8")
     assert "запись не решена — ответ уйдёт в замечания; выбери вариант в карточке" in html
-    skill = " ".join((ROOT / "skills" / "symphysis-viewer" / "SKILL.md").read_text(encoding="utf-8").split())
+    skill = " ".join((ROOT / "viewer" / "skills" / "symphysis-viewer" / "SKILL.md").read_text(encoding="utf-8").split())
     assert "У записи без решения слова нет, рекомендация не решение" in skill and "`F-NN: ответ`" in skill
 
 

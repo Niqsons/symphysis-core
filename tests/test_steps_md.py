@@ -1,15 +1,15 @@
 """`openspec/schemas/symphysis/steps.md`: раздел на шаг и подразделы (F-20, F-27), имена скиллов и файлов сверены со
-`skills/` и `schema.yaml` (тест-страховка F-68). Содержание не проверяется: человек ещё будет его менять."""
+скиллами модулей и `schema.yaml` (тест-страховка F-68). Содержание не проверяется: человек ещё будет его менять."""
 import fnmatch
 import re
 
 import openspec_run
 import step_help
-from conftest import ROOT
+from conftest import ROOT, skill_dirs
 
 STEPS_MD = ROOT / "openspec" / "schemas" / "symphysis" / "steps.md"
 SCHEMA_YAML = ROOT / "openspec" / "schemas" / "symphysis" / "schema.yaml"
-SKILLS = ROOT / "skills"
+SKILLS = {path.name: path for path in skill_dirs()}   # скиллы всех модулей по имени (F-67 A)
 REQUIRED = ("Зачем", "Механики", "Если пропустить", "Что смотреть", "Команда")
 
 # Файлы, которых нет ни в схеме, ни в скиллах: имя страницы задаёт спека `decision-viewer`,
@@ -48,12 +48,12 @@ def section_problems(text: str, artifacts: list[str]) -> list[str]:
 
 
 def dangling_names(text: str) -> list[str]:
-    """Имена, которых нет: скилл в backticks без каталога в `skills/`, файл в «Что смотреть» без места в схеме и скиллах."""
+    """Имена, которых нет: скилл в backticks без каталога скилла в модулях, файл в «Что смотреть» без места в схеме и скиллах."""
     schema = schema_text()
-    skills = "\n".join(file.read_text(encoding="utf-8") for file in SKILLS.glob("symphysis-*/SKILL.md"))
+    skills = "\n".join(file.read_text(encoding="utf-8") for file in (skill / "SKILL.md" for skill in SKILLS.values()) if file.is_file())
     outputs = [glob.replace("**/", "") for glob in re.findall(r'^    generates: "?(.+?)"?$', schema, re.M)]
     assert outputs, "в schema.yaml не нашлись выходы артефактов"
-    missing = [name for name in SKILL_TOKEN.findall(text) if not (SKILLS / name / "SKILL.md").is_file()]
+    missing = [name for name in SKILL_TOKEN.findall(text) if not (name in SKILLS and (SKILLS[name] / "SKILL.md").is_file())]
     for step, parts in step_help.parse_steps(text).items():
         for name in FILE_TOKEN.findall(parts.get("what_to_check", "")):
             plain = re.sub(r"<[^>]+>", "x", name)

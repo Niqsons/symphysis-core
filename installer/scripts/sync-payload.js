@@ -37,10 +37,18 @@ const FILES = [
   ...TOOLS_FILES.map((src) => [src, `tools/${path.posix.basename(src)}`]),
 ];
 
-/** Общие файлы скиллов: `skills/shared/*.md` -> `docs/*.md`, в проекте `.symphysis/docs/`. */
-const SHARED_DIR = "skills/shared";
-/** Тела агентов-водителей: `agents/symphysis-*-driver.md` -> `agents/` payload, без провенанса. */
-const AGENTS_DIR = "agents";
+/**
+ * Общие файлы скиллов: исходник в модуле -> `docs/<имя>` payload, в проекте `.symphysis/docs/`, без провенанса.
+ * Термины и форма водителя — в `skill-shared`, остальные — в модуле, чью механику описывают (F-35 A, F-66 A).
+ */
+const SHARED_FILES = [
+  "skill-shared/terms.md",
+  "skill-shared/driver.md",
+  "decisions/candidate.md",
+  "cli/journal-cli.md",
+  "settings/config.md",
+  "attack/attack-table.md",
+];
 /** Уведомления MIT о донорах: переведённые механики — производная работа, копий доноров в поставке нет. */
 const NOTICES = ["installer/THIRD-PARTY-NOTICES.md", "docs/THIRD-PARTY-NOTICES.md"];
 
@@ -65,11 +73,44 @@ function skillFileExcluded(rel) {
   return rel.split("/").includes("sources") || path.basename(rel) === "TRANSLATION-NOTES.md";
 }
 
-function skillDirs(root) {
+/** Каталоги первого уровня, где ищутся скиллы и водители: без точки в начале (`.claude/` — установка, не исходник). */
+function moduleDirs(root) {
   return fs
-    .readdirSync(path.join(root, "skills"), { withFileTypes: true })
-    .filter((e) => e.isDirectory() && e.name.startsWith("symphysis-"))
-    .map((e) => `skills/${e.name}`);
+    .readdirSync(root, { withFileTypes: true })
+    .filter((e) => e.isDirectory() && !e.name.startsWith("."))
+    .map((e) => e.name)
+    .sort();
+}
+
+/** Записи `<модуль>/<подкаталог>/` по маске имени: `{ name, src }`, `src` — путь от корня с «/». */
+function inModules(root, sub, match) {
+  const found = [];
+  for (const mod of moduleDirs(root)) {
+    const dir = path.join(root, mod, sub);
+    if (!fs.existsSync(dir)) continue;
+    for (const e of fs.readdirSync(dir, { withFileTypes: true })) if (match(e)) found.push({ name: e.name, src: `${mod}/${sub}/${e.name}` });
+  }
+  return found;
+}
+
+/** Скиллы по маске `<модуль>/skills/symphysis-*` (F-67 A): в payload — `skills/<имя>/`. */
+export function skillDirs(root = ROOT) {
+  return inModules(root, "skills", (e) => e.isDirectory() && e.name.startsWith("symphysis-"));
+}
+
+/** Тела агентов-водителей `<модуль>/agents/symphysis-*-driver.md` (F-67 A): в payload — `agents/`, без провенанса. */
+function agentFiles(root) {
+  return inModules(root, "agents", (e) => e.isFile() && /^symphysis-.*-driver\.md$/.test(e.name));
+}
+
+/** Одно имя в двух модулях установка плоская не различит: ошибка с обоими путями. */
+function uniqueNames(entries, what) {
+  const seen = new Map();
+  for (const { name, src } of entries) {
+    if (seen.has(name)) throw new Error(`syncPayload: ${what} ${name} в двух модулях: ${seen.get(name)} и ${src}`);
+    seen.set(name, src);
+  }
+  return entries;
 }
 
 /** Все файлы дерева: пути от `dir` с «/». */
@@ -90,9 +131,16 @@ export function removeTree(dir) {
   fs.rmdirSync(dir);
 }
 
-/** Есть ли рядом исходники: инсталлятор запущен из клона, а не из тарбола. */
+/**
+ * Есть ли рядом исходники: инсталлятор запущен из клона, а не из тарбола. Клон узнаётся по модульной раскладке —
+ * скиллы в `<модуль>/skills/`, код и общие файлы скиллов в модулях (F-60); каталога `skills/` в клоне нет.
+ */
 export function hasSources(root = ROOT) {
-  return fs.existsSync(path.join(root, "skills")) && FILES.every(([src]) => fs.existsSync(path.join(root, src)));
+  return (
+    skillDirs(root).length > 0 &&
+    FILES.every(([src]) => fs.existsSync(path.join(root, src))) &&
+    SHARED_FILES.every((src) => fs.existsSync(path.join(root, src)))
+  );
 }
 
 function mermaidDir(root) {
@@ -105,18 +153,14 @@ export function expectedPayload(root = ROOT) {
   const read = (rel) => fs.readFileSync(path.join(root, rel));
   const readStripped = (rel) => Buffer.from(stripProvenance(fs.readFileSync(path.join(root, rel), "utf8")));
   for (const dir of DIRS) for (const f of walk(path.join(root, dir))) map.set(`${dir}/${f}`, read(`${dir}/${f}`));
-  for (const skill of skillDirs(root)) {
-    for (const f of walk(path.join(root, skill))) {
+  for (const { name, src } of uniqueNames(skillDirs(root), "скилл")) {
+    for (const f of walk(path.join(root, src))) {
       if (skillFileExcluded(f)) continue;
-      map.set(`${skill}/${f}`, f.endsWith(".md") ? readStripped(`${skill}/${f}`) : read(`${skill}/${f}`));
+      map.set(`skills/${name}/${f}`, f.endsWith(".md") ? readStripped(`${src}/${f}`) : read(`${src}/${f}`));
     }
   }
-  if (fs.existsSync(path.join(root, SHARED_DIR))) {
-    for (const f of walk(path.join(root, SHARED_DIR))) if (f.endsWith(".md")) map.set(`docs/${f}`, readStripped(`${SHARED_DIR}/${f}`));
-  }
-  if (fs.existsSync(path.join(root, AGENTS_DIR))) {
-    for (const f of walk(path.join(root, AGENTS_DIR))) if (/^symphysis-.*-driver\.md$/.test(f)) map.set(`${AGENTS_DIR}/${f}`, readStripped(`${AGENTS_DIR}/${f}`));
-  }
+  for (const src of SHARED_FILES) map.set(`docs/${path.posix.basename(src)}`, readStripped(src));
+  for (const { name, src } of uniqueNames(agentFiles(root), "водитель")) map.set(`agents/${name}`, readStripped(src));
   for (const [src, rel] of FILES) map.set(rel, read(src));
   const [noticeFrom, noticeTo] = NOTICES;
   if (fs.existsSync(path.join(root, noticeFrom))) map.set(noticeTo, read(noticeFrom));
@@ -139,8 +183,9 @@ export function payloadMatches(dest = DEFAULT_DEST, root = ROOT) {
 /** Стирает и пересоздаёт dest по карте `expectedPayload`. Возвращает список источников. */
 export function syncPayload(dest = DEFAULT_DEST, root = ROOT) {
   // Корень проверяется до очистки: неудачная синхронизация не оставляет пустой payload.
-  if (!fs.existsSync(path.join(root, "skills"))) {
-    throw new Error(`syncPayload: в корне ${root} нет каталога skills — payload не тронут`);
+  uniqueNames(agentFiles(root), "водитель");
+  if (uniqueNames(skillDirs(root), "скилл").length === 0) {
+    throw new Error(`syncPayload: в корне ${root} нет скиллов <модуль>/skills/symphysis-* — payload не тронут`);
   }
   // Зависимость сборки тоже проверяется до очистки: без файла поставка не собирается (F-100).
   for (const [from] of MERMAID_FILES) {
@@ -148,7 +193,15 @@ export function syncPayload(dest = DEFAULT_DEST, root = ROOT) {
       throw new Error(`syncPayload: нет ${path.join(mermaidDir(root), from)}: поставьте зависимости сборки (npm ci в installer), payload не тронут`);
     }
   }
-  const sources = [...DIRS, ...skillDirs(root), SHARED_DIR, ...FILES.map(([src]) => src), NOTICES[1], ...MERMAID_FILES.map(([, rel]) => rel)];
+  const sources = [
+    ...DIRS,
+    ...skillDirs(root).map(({ src }) => src),
+    ...SHARED_FILES,
+    ...agentFiles(root).map(({ src }) => src),
+    ...FILES.map(([src]) => src),
+    NOTICES[1],
+    ...MERMAID_FILES.map(([, rel]) => rel),
+  ];
   // Уже совпадает — не трогать: `npm pack` зовёт `prepare`, пока параллельные тесты читают payload.
   if (payloadMatches(dest, root)) return sources;
   const expected = expectedPayload(root);

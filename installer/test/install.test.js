@@ -11,6 +11,7 @@ import { targets } from "../lib/paths.js";
 import { install } from "../lib/install.js";
 import { requireFork } from "../scripts/build-vendor.js";
 import { tempDir } from "../test-support/temp-dir.js";
+import { REPO, gitIn, makeClone as makeCloneIn } from "../test-support/clone.js";
 import { parse } from "yaml";
 
 const bin = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..", "bin", "symphysis.js");
@@ -805,34 +806,11 @@ test("Обновление без `--force`: новые файлы положе�
   assert.equal(fs.readFileSync(path.join(t.schemaDir, "steps.md"), "utf8"), "своё");
 });
 
-// Клон-образец: исходники и файлы mermaid во временном каталоге, чтобы хеш и свежесть payload задавались тестом.
-// Модули ядра с кодом и данными (F-18 A): payload собирается из них.
-const SOURCE_MODULES = ["cli", "decisions", "viewer", "attack", "consequences", "step-help", "trace", "openspec-run", "settings", "roots"];
-const REPO = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..", "..");
+// Клон-образец в модульной раскладке: `test-support/clone.js`.
 const VERSION = JSON.parse(fs.readFileSync(path.join(REPO, "installer", "package.json"), "utf8")).version;
 const VERSION_REL = ".symphysis/tools/symphysis-version.txt";
 const VERSION_FILE_NAME = "symphysis-version.txt";
-const gitIn = (cwd, ...args) =>
-  spawnSync("git", ["-c", "user.name=t", "-c", "user.email=t@t", "-c", "commit.gpgsign=false", ...args], { cwd, encoding: "utf8" });
-
-function makeClone({ git }) {
-  const dir = tmp();
-  const keep = (s) => path.basename(s) !== "__pycache__";
-  for (const rel of [...SOURCE_MODULES, "skills", "tools", "docs", path.join("openspec", "schemas", "symphysis")]) {
-    fs.cpSync(path.join(REPO, rel), path.join(dir, rel), { recursive: true, filter: keep });
-  }
-  fs.copyFileSync(path.join(REPO, "openspec", "config.symphysis.yaml"), path.join(dir, "openspec", "config.symphysis.yaml"));
-  const mer = path.join(dir, "installer", "node_modules", "mermaid");
-  fs.mkdirSync(path.join(mer, "dist"), { recursive: true });
-  fs.copyFileSync(path.join(REPO, "installer", "node_modules", "mermaid", "dist", "mermaid.min.js"), path.join(mer, "dist", "mermaid.min.js"));
-  fs.copyFileSync(path.join(REPO, "installer", "node_modules", "mermaid", "LICENSE"), path.join(mer, "LICENSE"));
-  if (git) {
-    gitIn(dir, "init", "-q");
-    gitIn(dir, "add", "-A");
-    assert.equal(gitIn(dir, "commit", "-qm", "один").status, 0);
-  }
-  return dir;
-}
+const makeClone = ({ git }) => makeCloneIn(tmp(), { git });
 const head = (dir) => gitIn(dir, "rev-parse", "--short", "HEAD").stdout.trim();
 const versionOf = (p) => fs.readFileSync(path.join(p, VERSION_REL), "utf8").trim();
 
