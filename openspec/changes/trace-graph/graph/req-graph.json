@@ -67,7 +67,7 @@
   },
   {
    "path": "tasks.md",
-   "sha256": "89805391d33349be74a193df3244f3bf71a1a0df9cf9813c5a4795a25b9202bd"
+   "sha256": "2ccab25eb367be39ddcdb0ea7bbebe8569fd0b23adff862b49de92d1a9f3b970"
   }
  ],
  "nodes": [
@@ -3813,14 +3813,14 @@
    "kind": "task",
    "name": "Рабочее дерево `<путь>`, ветка `feat/trace-graph` от `main` плагина, зависимости через `npm ci` — проверка: `npm run typecheck` зелёный до правок `служебная`",
    "at": "tasks.md:75",
-   "done": false
+   "done": true
   },
   {
    "id": "task:10.2",
    "kind": "task",
    "name": "`trace-link` в списке линз `src/shared/attack.ts`, `EXPECTED_CONTRACT = 3` в `src/host/core.ts`, подстановка в `test/e2e/scenario.ts`, номер в `test/unit/core.test.ts`; коммит по слову владельца несёт `Needs: symphysis <хеш>` на коммит ядра с номером 3 (F-55) — `artifact-attack`: «Выключена линза» — проверка: с `SYMPHYSIS_ROOT=<каталог>` зелёные `npm run typecheck`, `npm test`, `npm run e2e`; группа линзы без строк не показана",
    "at": "tasks.md:76",
-   "done": false
+   "done": true
   },
   {
    "id": "task:11.1",
@@ -3862,7 +3862,7 @@
    "kind": "task",
    "name": "Снять строку о переводе улик на архивный путь из `<путь>`; задача последняя, потому что на эту строку опираются улики F-09 и F-122 (F-122) — `trace-snapshot`: «Журнал уезжает в архив без правок» — проверка: поиск «переводятся на архивный» по `<путь>` пуст",
    "at": "tasks.md:88",
-   "done": false
+   "done": true
   }
  ],
  "edges": [
@@ -9482,7 +9482,7 @@
  "roots": [
   {
    "prefix": "",
-   "commit": "4aead6643b2c21b3c3fcf8bf099de1a393a42dfe"
+   "commit": "f25524cc4146d30876f070c9a8e03ba7799a344d"
   },
   {
    "prefix": "docs/",

@@ -72,8 +72,8 @@
 
 ## 10. Плагин, своим рабочим деревом
 
-- [ ] 10.1 Рабочее дерево `X:\symphysis-vscode-trace-graph`, ветка `feat/trace-graph` от `main` плагина, зависимости через `npm ci` — проверка: `npm run typecheck` зелёный до правок `служебная`
-- [ ] 10.2 `trace-link` в списке линз `src/shared/attack.ts`, `EXPECTED_CONTRACT = 3` в `src/host/core.ts`, подстановка в `test/e2e/scenario.ts`, номер в `test/unit/core.test.ts`; коммит по слову владельца несёт `Needs: symphysis <хеш>` на коммит ядра с номером 3 (F-55) — `artifact-attack`: «Выключена линза» — проверка: с `SYMPHYSIS_ROOT=X:\symphysis-trace-graph` зелёные `npm run typecheck`, `npm test`, `npm run e2e`; группа линзы без строк не показана
+- [x] 10.1 Рабочее дерево `X:\symphysis-vscode-trace-graph`, ветка `feat/trace-graph` от `main` плагина, зависимости через `npm ci` — проверка: `npm run typecheck` зелёный до правок `служебная`
+- [x] 10.2 `trace-link` в списке линз `src/shared/attack.ts`, `EXPECTED_CONTRACT = 3` в `src/host/core.ts`, подстановка в `test/e2e/scenario.ts`, номер в `test/unit/core.test.ts`; коммит по слову владельца несёт `Needs: symphysis <хеш>` на коммит ядра с номером 3 (F-55) — `artifact-attack`: «Выключена линза» — проверка: с `SYMPHYSIS_ROOT=X:\symphysis-trace-graph` зелёные `npm run typecheck`, `npm test`, `npm run e2e`; группа линзы без строк не показана
 
 ## 11. Руководство и правила проекта
 
@@ -85,4 +85,4 @@
 - [x] 12.1 Сверка с разбором: пройти разделы `docs/analysis/requirements-traceability-graph-of-symphysis.md` и в `openspec/changes/trace-graph/analysis-check.md` назвать по каждому, что реализовано и что отступило; отступление без записи журнала становится развилкой для человека (F-56) — проверка: у каждого раздела разбора строка в файле, `journal.py check` без кода 1
 - [x] 12.2 Полный прогон — проверка: `python -X utf8 -m pytest` и `npm test` в `installer/` зелёные, красное, которое есть и на чистом `main`, названо по имени; `check_names.py` по изменённым файлам даёт код 0 `служебная`
 - [x] 12.3 Финальное ревью всей ветки от коммита `9f75ef8` (`tasks.md`) ревьювером на модели Fable 5.1 (`claude-fable-5-1`); находки чинит один проход исправлений с одним повторным ревью — проверка: открытых Critical и Important нет, остаток назван человеку с решением по каждому `служебная`
-- [ ] 12.4 Снять строку о переводе улик на архивный путь из `X:\symphysis\.context\06-related-changes.md:45`; задача последняя, потому что на эту строку опираются улики F-09 и F-122 (F-122) — `trace-snapshot`: «Журнал уезжает в архив без правок» — проверка: поиск «переводятся на архивный» по `X:\symphysis\.context\` пуст
+- [x] 12.4 Снять строку о переводе улик на архивный путь из `X:\symphysis\.context\06-related-changes.md:45`; задача последняя, потому что на эту строку опираются улики F-09 и F-122 (F-122) — `trace-snapshot`: «Журнал уезжает в архив без правок» — проверка: поиск «переводятся на архивный» по `X:\symphysis\.context\` пуст
