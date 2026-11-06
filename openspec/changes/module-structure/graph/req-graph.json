@@ -1,0 +1,3723 @@
+{
+ "format": 1,
+ "sources": [
+  {
+   "path": "consequences.md",
+   "sha256": "915603f7ae3371a2c968cf01b27c02a6e86988ab1458b941c6e2306158632e89"
+  },
+  {
+   "path": "decisions.json",
+   "sha256": "7e2183e0d6f586ef6d96be7420030dc09e22765f11d18781fa1d747392c22328"
+  },
+  {
+   "path": "security.md",
+   "sha256": "7351578cba04602dcc32f98305afe29b16ed87226269d821a201d859c4c08217"
+  },
+  {
+   "path": "specs/decision-viewer/spec.md",
+   "sha256": "28f9077d6d8da31b003fc3e7ef13d43a2a6723227f4e2140b10d5c598625ba00"
+  },
+  {
+   "path": "specs/module-declaration/spec.md",
+   "sha256": "1ca15ff8bb8e876b7219e0748e41fd2938f441fb5664ec590ec0ecaa12a5490e"
+  },
+  {
+   "path": "specs/plugin-core-contract/spec.md",
+   "sha256": "ae6928304a485b6e2fba7c635108dfe52704a3b19e40e57b68f302ab7cad6203"
+  },
+  {
+   "path": "specs/project-installer/spec.md",
+   "sha256": "dafdd16ed3aba7d42d8a1af8c36f748eea25fdca942411e9c0732ce1e7a647e9"
+  },
+  {
+   "path": "specs/repository-layout/spec.md",
+   "sha256": "94196d0190299a9cd8e3feee34d0e5caeebb0c5f2b96fcb9b5f11ce710b35f9b"
+  },
+  {
+   "path": "specs/requirement-probes/spec.md",
+   "sha256": "e377b6f1759e20043e35f9cb5383119768b9a9d0f4f2e92b7c36331d2a1a03b4"
+  },
+  {
+   "path": "specs/skill-transfer/spec.md",
+   "sha256": "e265965d6cef1bb1716385bf6cf2440bc958db3cce089344018c78b146b777b9"
+  },
+  {
+   "path": "specs/step-help/spec.md",
+   "sha256": "52ec03a72b63b302bd9a1e0c9fcda1aadce194389bebb2ce3b7035dda78bd534"
+  },
+  {
+   "path": "specs/trace-graph/spec.md",
+   "sha256": "a6ef0074af94ef4af21fdd2c46cbfcf190f9a06bc66f12a2b98905910f9e765f"
+  },
+  {
+   "path": "tasks.md",
+   "sha256": "5e61b08f405c06bcce41317f421340c76c9fbc68f914b06cc05c9cc504f10add"
+  }
+ ],
+ "nodes": [
+  {
+   "id": "branch:installer/scripts/sync-payload.js:82",
+   "kind": "branch",
+   "name": "Признак клона",
+   "at": "consequences.md:7"
+  },
+  {
+   "id": "branch:installer/lib/check.js:92",
+   "kind": "branch",
+   "name": "Сверка payload с исходниками",
+   "at": "consequences.md:11"
+  },
+  {
+   "id": "branch:installer/lib/install.js:86",
+   "kind": "branch",
+   "name": "Хеш клона в файле версии",
+   "at": "consequences.md:15"
+  },
+  {
+   "id": "branch:installer/lib/install.js:158",
+   "kind": "branch",
+   "name": "Проверка payload при установке",
+   "at": "consequences.md:19"
+  },
+  {
+   "id": "branch:vscode/test/unit/fixture-project.ts:10",
+   "kind": "branch",
+   "name": "Признак ядра в тестах плагина",
+   "at": "consequences.md:23"
+  },
+  {
+   "id": "branch:vscode/build.mjs:12",
+   "kind": "branch",
+   "name": "Сборка юнит-тестов плагина",
+   "at": "consequences.md:27"
+  },
+  {
+   "id": "branch:tools/step_help.py:290",
+   "kind": "branch",
+   "name": "Поиск скилла справкой",
+   "at": "consequences.md:31"
+  },
+  {
+   "id": "branch:vscode/src/host/project.ts:40",
+   "kind": "branch",
+   "name": "Настройка инструментов плагина",
+   "at": "consequences.md:35"
+  },
+  {
+   "id": "rec:F-01",
+   "kind": "rec",
+   "name": "Критерий готовности: структура symphysis теперь соответствует определениям",
+   "at": "decisions.json:7",
+   "record_kind": "факт",
+   "number": 1
+  },
+  {
+   "id": "rec:F-02",
+   "kind": "rec",
+   "name": "Определения приняты владельцем 2026-11-05 (Т20): компонент выпускается целиком; модуль — часть компонента с одной ответственностью, именем и границей, отдельно не выпускается; модули двух родов — доменный и технический.",
+   "at": "decisions.json:32",
+   "record_kind": "факт",
+   "number": 2
+  },
+  {
+   "id": "rec:F-03",
+   "kind": "rec",
+   "name": "Модуль в репозитории — каталог с README: описание модуля, ссылки и описание вложенных каталогов первого уровня (Т21). Файл принадлежит одному модулю. Id модуля — `репозиторий/модуль`; репозиторий ядра в таблице разбора — `symphysis-core`.",
+   "at": "decisions.json:65",
+   "record_kind": "факт",
+   "number": 3
+  },
+  {
+   "id": "rec:F-04",
+   "kind": "rec",
+   "name": "Сейчас репозиторий определениям не соответствует: README есть только у `installer/`, модули ядра лежат вперемешку в `tools/` и `skills/`, а `tools/journal_render.py` стоит сразу в двух модулях.",
+   "at": "decisions.json:102",
+   "record_kind": "факт",
+   "number": 4
+  },
+  {
+   "id": "rec:F-05",
+   "kind": "rec",
+   "name": "Скрипты `tools/` импортируют друг друга по имени из одного каталога; тесты кладут `tools/` в `sys.path`. Разнести их по каталогам модулей — не просто перенос файлов.",
+   "at": "decisions.json:131",
+   "record_kind": "факт",
+   "number": 5
+  },
+  {
+   "id": "rec:F-06",
+   "kind": "rec",
+   "name": "Свои файлы скрипты находят от каталога над `tools/`: схему журнала в `docs/`, шаблон страницы и файл корней в `tools/`. В исходнике этот каталог — корень репозитория, в установке — `.symphysis`; раскладка исходника `tools/` + `docs/journal.schema.json` повторяет раскладку установки.",
+   "at": "decisions.json:164",
+   "record_kind": "факт",
+   "number": 6
+  },
+  {
+   "id": "rec:F-07",
+   "kind": "rec",
+   "name": "Установка собирается списком: payload берёт файлы `tools/` и `docs/journal.schema.json` по именам, скиллы — из каталогов `skills/symphysis-*`, общие файлы — из `skills/shared`, схему — каталогом; в проекте всё ложится в `.symphysis/tools/` и `.symphysis/docs/`. Схема и скиллы зовут `.symphysis/tools/…`.",
+   "at": "decisions.json:201",
+   "record_kind": "факт",
+   "number": 7
+  },
+  {
+   "id": "rec:F-08",
+   "kind": "rec",
+   "name": "Плагин ищет ядро в `.symphysis/tools/journal.py`, затем в `tools/journal.py` папки; контракт называет `.symphysis/tools/` местом ядра в каждом проекте, а подкоманды `journal.py` — частью контракта.",
+   "at": "decisions.json:242",
+   "record_kind": "факт",
+   "number": 8
+  },
+  {
+   "id": "rec:F-09",
+   "kind": "rec",
+   "name": "Юнит-тесты плагина берут ядро из `tools/` клона symphysis: проверяют `tools/journal.py` и копируют файлы регуляркой по именам; таких мест четыре (`test/unit/fixture-project.ts`, `test/unit/step-help.test.ts`, `test/e2e/harness.mjs`, `test/e2e/demo.mjs`). Перенос `tools/` их ломает, коммиту плагина нужен `Needs:`.",
+   "at": "decisions.json:278",
+   "record_kind": "факт",
+   "number": 9
+  },
+  {
+   "id": "rec:F-10",
+   "kind": "rec",
+   "name": "Мастер-спеки называют исходные пути в телах требований: `tools/trace_graph.py`, `tools/step_help.py`, `tools/playground-template.html` и другие.",
+   "at": "decisions.json:310",
+   "record_kind": "факт",
+   "number": 10
+  },
+  {
+   "id": "rec:F-11",
+   "kind": "rec",
+   "name": "Улики прежних журналов называют пути `tools/…` (около 120 в девяти архивных журналах и в журнале плана) и `vscode/src/…` (около 60). Файлы корней сопоставляют префиксу один каталог.",
+   "at": "decisions.json:343",
+   "record_kind": "факт",
+   "number": 11
+  },
+  {
+   "id": "rec:F-12",
+   "kind": "rec",
+   "name": "Схема уже каталог `openspec/schemas/symphysis/`, её место задаёт OpenSpec; payload копирует этот каталог целиком.",
+   "at": "decisions.json:376",
+   "record_kind": "факт",
+   "number": 12
+  },
+  {
+   "id": "rec:F-13",
+   "kind": "rec",
+   "name": "В корне рядом с продуктом лежит контур разработки: установка в самого себя (`.symphysis/`, `.claude/`) производна и в git не лежит; хуки гейта имён и списки разрешённого — в `tools/`; тесты — в `tests/`.",
+   "at": "decisions.json:408",
+   "record_kind": "факт",
+   "number": 13
+  },
+  {
+   "id": "rec:F-14",
+   "kind": "rec",
+   "name": "Нужна ли миграция установленных копий, если раскладка `.symphysis/` изменится?",
+   "at": "decisions.json:444",
+   "record_kind": "развилка",
+   "number": 14
+  },
+  {
+   "id": "rec:F-15",
+   "kind": "rec",
+   "name": "Должны ли импорты прежней раскладки работать в установленных проектах без переустановки?",
+   "at": "decisions.json:487",
+   "record_kind": "развилка",
+   "number": 15
+  },
+  {
+   "id": "rec:F-16",
+   "kind": "rec",
+   "name": "Когда README модуля несёт имя и род в разборчивом для скрипта виде: в этом изменении или на этапе графа?",
+   "at": "decisions.json:530",
+   "record_kind": "развилка",
+   "number": 16
+  },
+  {
+   "id": "rec:F-17",
+   "kind": "rec",
+   "name": "Где в репозитории лежат каталоги модулей?",
+   "at": "decisions.json:573",
+   "record_kind": "развилка",
+   "number": 17
+  },
+  {
+   "id": "rec:F-18",
+   "kind": "rec",
+   "name": "Насколько мелко резать ядро на модули и где живут скиллы и водители?",
+   "at": "decisions.json:655",
+   "record_kind": "развилка",
+   "number": 18
+  },
+  {
+   "id": "rec:F-19",
+   "kind": "rec",
+   "name": "Как раскладывается установка `.symphysis/` после перестройки исходника?",
+   "at": "decisions.json:737",
+   "record_kind": "развилка",
+   "number": 19
+  },
+  {
+   "id": "rec:F-20",
+   "kind": "rec",
+   "name": "Как код модулей находит друг друга и свои файлы в исходнике?",
+   "at": "decisions.json:815",
+   "record_kind": "развилка",
+   "number": 20
+  },
+  {
+   "id": "rec:F-21",
+   "kind": "rec",
+   "name": "В каком виде README модуля несёт имя и род?",
+   "at": "decisions.json:912",
+   "record_kind": "развилка",
+   "number": 21
+  },
+  {
+   "id": "rec:F-22",
+   "kind": "rec",
+   "name": "Что в корне каждого репозитория описывает его самого и каталоги, которые не модули?",
+   "at": "decisions.json:991",
+   "record_kind": "развилка",
+   "number": 22
+  },
+  {
+   "id": "rec:F-23",
+   "kind": "rec",
+   "name": "Где лежат тесты модуля?",
+   "at": "decisions.json:1068",
+   "record_kind": "развилка",
+   "number": 23
+  },
+  {
+   "id": "rec:F-24",
+   "kind": "rec",
+   "name": "Что делать с уликами прежних журналов, которые называют старые пути `tools/…`?",
+   "at": "decisions.json:1131",
+   "record_kind": "развилка",
+   "number": 24
+  },
+  {
+   "id": "rec:F-25",
+   "kind": "rec",
+   "name": "Чем проверяется критерий «структура соответствует определениям»?",
+   "at": "decisions.json:1198",
+   "record_kind": "развилка",
+   "number": 25
+  },
+  {
+   "id": "rec:F-26",
+   "kind": "rec",
+   "name": "Как быть с исходными путями в требованиях мастер-спек?",
+   "at": "decisions.json:1271",
+   "record_kind": "развилка",
+   "number": 26
+  },
+  {
+   "id": "rec:F-27",
+   "kind": "rec",
+   "name": "Как файлы и функции ядра и плагина раскладываются по модулям выбранных в F-18 и F-31 вариантов и какие зависимости между модулями появятся?",
+   "at": "decisions.json:1341",
+   "record_kind": "факт",
+   "number": 27
+  },
+  {
+   "id": "rec:F-28",
+   "kind": "rec",
+   "name": "Как схема становится модулем, если её каталог задаёт OpenSpec?",
+   "at": "decisions.json:1387",
+   "record_kind": "факт",
+   "number": 28
+  },
+  {
+   "id": "rec:F-29",
+   "kind": "rec",
+   "name": "Что входит в готовый результат: только репозиторий ядра или и плагин?",
+   "at": "decisions.json:1433",
+   "record_kind": "развилка",
+   "number": 29
+  },
+  {
+   "id": "rec:F-30",
+   "kind": "rec",
+   "name": "Плагин разложен по слоям: `src/host` — сторона VS Code, `src/webview` — четыре страницы со своими точками сборки (решения, поиск, схема, справка), `src/shared` — общее. `hook/hook.py` лежит в пакете по пути, который читает код. README в репозитории один, корневой; это README пакета `.vsix`, его содержание проверяет тест.",
+   "at": "decisions.json:1480",
+   "record_kind": "факт",
+   "number": 30
+  },
+  {
+   "id": "rec:F-31",
+   "kind": "rec",
+   "name": "Как резать плагин на модули?",
+   "at": "decisions.json:1525",
+   "record_kind": "развилка",
+   "number": 31
+  },
+  {
+   "id": "rec:F-32",
+   "kind": "rec",
+   "name": "Как README модуля уживается с README пакета: `installer/README.md` — README пакета npm, корневой README плагина — README `.vsix`?",
+   "at": "decisions.json:1586",
+   "record_kind": "факт",
+   "number": 32
+  },
+  {
+   "id": "rec:F-33",
+   "kind": "rec",
+   "name": "Где живёт фасад CLI ядра — `journal.py` и `journal_cli.py`?",
+   "at": "decisions.json:1636",
+   "record_kind": "развилка",
+   "number": 33
+  },
+  {
+   "id": "rec:F-34",
+   "kind": "rec",
+   "name": "Где живут корни улик и поиск цитат — 26 имён `journal_apply.py`?",
+   "at": "decisions.json:1713",
+   "record_kind": "развилка",
+   "number": 34
+  },
+  {
+   "id": "rec:F-35",
+   "kind": "rec",
+   "name": "Куда идут общие файлы скиллов `terms.md`, `driver.md`, `candidate.md`?",
+   "at": "decisions.json:1778",
+   "record_kind": "развилка",
+   "number": 35
+  },
+  {
+   "id": "rec:F-36",
+   "kind": "rec",
+   "name": "Уходит ли README модуля схемы к пользователю вместе со схемой?",
+   "at": "decisions.json:1851",
+   "record_kind": "развилка",
+   "number": 36
+  },
+  {
+   "id": "rec:F-37",
+   "kind": "rec",
+   "name": "Где лежит `openspec/config.symphysis.yaml` — файл модуля схемы вне её каталога?",
+   "at": "decisions.json:1912",
+   "record_kind": "развилка",
+   "number": 37
+  },
+  {
+   "id": "rec:F-38",
+   "kind": "rec",
+   "name": "Где README пакета плагина, если корень описывает репозиторий?",
+   "at": "decisions.json:1973",
+   "record_kind": "развилка",
+   "number": 38
+  },
+  {
+   "id": "rec:F-39",
+   "kind": "rec",
+   "name": "README модуля `installer` — это страница пакета npm: в каком виде он несёт имя и род?",
+   "at": "decisions.json:2046",
+   "record_kind": "развилка",
+   "number": 39
+  },
+  {
+   "id": "rec:F-40",
+   "kind": "rec",
+   "name": "Где живёт исходный файл корней `tools/journal-roots.json`?",
+   "at": "decisions.json:2126",
+   "record_kind": "развилка",
+   "number": 40
+  },
+  {
+   "id": "rec:F-41",
+   "kind": "rec",
+   "name": "Где схема журнала `journal.schema.json` в исходнике и в установке?",
+   "at": "decisions.json:2191",
+   "record_kind": "развилка",
+   "number": 41
+  },
+  {
+   "id": "rec:F-42",
+   "kind": "rec",
+   "name": "Как справка о шаге находит скиллы в клоне ядра, если каталога `skills/` не будет?",
+   "at": "decisions.json:2265",
+   "record_kind": "развилка",
+   "number": 42
+  },
+  {
+   "id": "rec:F-43",
+   "kind": "rec",
+   "name": "Куда идут файлы плагина, которые не легли в модули F-31 A?",
+   "at": "decisions.json:2326",
+   "record_kind": "развилка",
+   "number": 43
+  },
+  {
+   "id": "rec:F-44",
+   "kind": "rec",
+   "name": "Как снять циклы типов `protocol` ↔ `search` и `protocol` ↔ `scheme` в плагине?",
+   "at": "decisions.json:2387",
+   "record_kind": "развилка",
+   "number": 44
+  },
+  {
+   "id": "rec:F-45",
+   "kind": "rec",
+   "name": "Что с настройкой плагина `symphysis.toolsPath`, указывающей на `<клон>/tools`, если в `tools/` клона ядра не будет `journal.py`?",
+   "at": "decisions.json:2452",
+   "record_kind": "развилка",
+   "number": 45
+  },
+  {
+   "id": "rec:F-46",
+   "kind": "rec",
+   "name": "Правка пути по F-26 даёт MODIFIED требования `decision-viewer` «Просмотрщик — один HTML из своего шаблона с тремя режимами» длиной 1077 знаков; по правилу схемы длинное требование в MODIFIED делится на дочернее, сценарии родителя остаются при нём (решения F-76 A и F-91 A журнала `trace-graph`).",
+   "at": "decisions.json:2523",
+   "record_kind": "факт",
+   "number": 46
+  },
+  {
+   "id": "rec:F-47",
+   "kind": "rec",
+   "name": "[empty · text] README модуля несёт имя и род во frontmatter: `name:` с пустым значением или из одних пробелов — тест структуры красный или модуль принят без имени?",
+   "at": "decisions.json:2554",
+   "record_kind": "развилка",
+   "number": 47
+  },
+  {
+   "id": "rec:F-48",
+   "kind": "rec",
+   "name": "[adjacency · collection] README модуля несёт имя и род во frontmatter: два модуля одного репозитория с одинаковым `name` (имя может отличаться от каталога, F-21) — тест красный или оба приняты?",
+   "at": "decisions.json:2623",
+   "record_kind": "развилка",
+   "number": 48
+  },
+  {
+   "id": "rec:F-49",
+   "kind": "rec",
+   "name": "[empty · collection] README модуля описывает вложенные каталоги первого уровня: каталог есть на диске, но не в git (`__pycache__/`, `.pytest_cache/` после прогона тестов) — README модуля обязан его описать?",
+   "at": "decisions.json:2691",
+   "record_kind": "развилка",
+   "number": 49
+  },
+  {
+   "id": "rec:F-50",
+   "kind": "rec",
+   "name": "[encoding · text] README модуля описывает вложенные каталоги первого уровня: ссылка на вложенный каталог в форме `./tests`, `tests` без косой или `tests/` — какие формы тест считает ссылкой на каталог?",
+   "at": "decisions.json:2759",
+   "record_kind": "развилка",
+   "number": 50
+  },
+  {
+   "id": "rec:F-51",
+   "kind": "rec",
+   "name": "[empty · collection] README корня называет каждый каталог первого уровня: каталоги корня, которых нет в git (`upstream/`, `.symphysis/`, `.claude/`, `node_modules/`, `out/` плагина), — README корня обязан их называть?",
+   "at": "decisions.json:2826",
+   "record_kind": "развилка",
+   "number": 51
+  },
+  {
+   "id": "rec:F-52",
+   "kind": "rec",
+   "name": "[adjacency · collection] Файл принадлежит одному модулю: `hook/hook.py` плагина — файл модуля `hook` (F-31, F-43), а лежит в корне: пакет кладёт его в `hook/`, и код читает этот путь — переносить в каталог модуля или оставить исключением?",
+   "at": "decisions.json:2894",
+   "record_kind": "развилка",
+   "number": 52
+  },
+  {
+   "id": "rec:F-53",
+   "kind": "rec",
+   "name": "[adjacency · collection] Тесты модуля лежат в его каталоге: два модуля ядра с одноимёнными файлами тестов (`decisions/tests/test_cli.py` и `viewer/tests/test_cli.py`) — по памяти модели, pytest без пакетов тестов называет конфликт имён при сборе (запуском не проверено): разрешать одноимённые или нет?",
+   "at": "decisions.json:2963",
+   "record_kind": "развилка",
+   "number": 53
+  },
+  {
+   "id": "rec:F-54",
+   "kind": "rec",
+   "name": "[empty · collection] Справка не становится гейтом и не меняет файлы: тест «Скиллы о скрипте не знают» не нашёл ни одного текста скилла (скиллы переехали в модули, а поиск смотрит старое место) — тест зелёный пусто или красный?",
+   "at": "decisions.json:3030",
+   "record_kind": "развилка",
+   "number": 54
+  },
+  {
+   "id": "rec:F-55",
+   "kind": "rec",
+   "name": "[запрет] README модуля описывает вложенные каталоги первого уровня: не должен называть вложенный каталог, которого в модуле уже нет",
+   "at": "decisions.json:3098",
+   "record_kind": "развилка",
+   "number": 55
+  },
+  {
+   "id": "rec:F-56",
+   "kind": "rec",
+   "name": "[запрет] README корня называет каждый каталог первого уровня: не должен называть каталог первого уровня, которого в корне уже нет",
+   "at": "decisions.json:3166",
+   "record_kind": "развилка",
+   "number": 56
+  },
+  {
+   "id": "rec:F-57",
+   "kind": "rec",
+   "name": "[запрет] Файл принадлежит одному модулю: не должен соблюдаться копией общего файла в каждый модуль, которому он нужен",
+   "at": "decisions.json:3234",
+   "record_kind": "развилка",
+   "number": 57
+  },
+  {
+   "id": "rec:F-58",
+   "kind": "rec",
+   "name": "[запрет] Тесты модуля лежат в его каталоге: тесты и фикстуры модуля не должны попадать в payload и в пакеты пользователя",
+   "at": "decisions.json:3305",
+   "record_kind": "развилка",
+   "number": 58
+  },
+  {
+   "id": "rec:F-59",
+   "kind": "rec",
+   "name": "[канон] README корня называет каждый каталог первого уровня: канон ИБ",
+   "at": "decisions.json:3373",
+   "record_kind": "факт",
+   "number": 59
+  },
+  {
+   "id": "rec:F-60",
+   "kind": "rec",
+   "name": "[ветка] Признак клона в инсталляторе: `hasSources` ищет каталог `skills/`, которого после переноса скиллов в модули (F-18) не будет, — `check` и `install` считают клон тарболом, и сигнал «payload старее исходников» пропадает молча?",
+   "at": "decisions.json:3405",
+   "record_kind": "развилка",
+   "number": 60
+  },
+  {
+   "id": "rec:F-61",
+   "kind": "rec",
+   "name": "[ветка] Признак ядра в тестах плагина: `hasCore` ищет `tools/journal.py` соседнего клона — после перестройки без `SYMPHYSIS_ROOT` тесты на настоящем ядре пропускаются, а прогон зелёный?",
+   "at": "decisions.json:3473",
+   "record_kind": "развилка",
+   "number": 61
+  },
+  {
+   "id": "rec:F-62",
+   "kind": "rec",
+   "name": "[ветка] Сборка юнит-тестов плагина: `build.mjs` берёт тесты только из `test/unit/` — юнит-тесты, перенесённые в каталоги модулей по F-23, не собираются и не запускаются, а `npm test` зелёный?",
+   "at": "decisions.json:3541",
+   "record_kind": "развилка",
+   "number": 62
+  },
+  {
+   "id": "rec:F-63",
+   "kind": "rec",
+   "name": "[ветка] Поиск скилла справкой: скилл не найден ни в проекте, ни в каталоге установки — `path: null`; при настройке плагина на клон ядра скиллы в каталогах модулей (F-42) не находятся, и ссылка на скилл пропадает?",
+   "at": "decisions.json:3609",
+   "record_kind": "развилка",
+   "number": 63
+  },
+  {
+   "id": "rec:F-64",
+   "kind": "rec",
+   "name": "[ветка] Проверка payload в `install`: отказ «payload не найден» срабатывает только без каталога `skills` — payload без `openspec/config.symphysis.yaml` после переноса файла в каталог схемы (F-37) падает на чтении, когда схема уже скопирована в проект?",
+   "at": "decisions.json:3676",
+   "record_kind": "развилка",
+   "number": 64
+  },
+  {
+   "id": "rec:F-65",
+   "kind": "rec",
+   "name": "[pre-mortem] Установка без файла, рождённого разрезом: payload собирается списком `FILES`, а исходник ядра запускается с каталогами модулей в `sys.path` (F-20) — новый файл модуля, не вписанный в список, проходит тесты ядра и падает на импорте только в `.symphysis/tools/` проекта пользователя?",
+   "at": "decisions.json:3743",
+   "record_kind": "развилка",
+   "number": 65
+  },
+  {
+   "id": "rec:F-66",
+   "kind": "rec",
+   "name": "В каком модуле лежит `journal-cli.md` — справка скиллам о командах и кодах `journal.py`?",
+   "at": "decisions.json:3812",
+   "record_kind": "развилка",
+   "number": 66
+  },
+  {
+   "id": "rec:F-67",
+   "kind": "rec",
+   "name": "Как устроен каталог модуля ядра внутри: где код, каталоги скиллов, водители и тесты?",
+   "at": "decisions.json:3874",
+   "record_kind": "развилка",
+   "number": 67
+  },
+  {
+   "id": "sec:Инъекции через содержимое файлов",
+   "kind": "sec",
+   "name": "Инъекции через содержимое файлов",
+   "at": "security.md:5"
+  },
+  {
+   "id": "sec:Пути с `../`",
+   "kind": "sec",
+   "name": "Пути с `../`",
+   "at": "security.md:6"
+  },
+  {
+   "id": "sec:Токены и срок их жизни",
+   "kind": "sec",
+   "name": "Токены и срок их жизни",
+   "at": "security.md:7"
+  },
+  {
+   "id": "sec:Права",
+   "kind": "sec",
+   "name": "Права",
+   "at": "security.md:8"
+  },
+  {
+   "id": "sec:Бинарные файлы",
+   "kind": "sec",
+   "name": "Бинарные файлы",
+   "at": "security.md:9"
+  },
+  {
+   "id": "sec:Чувствительные данные в журнале, артефактах и журналах прогона",
+   "kind": "sec",
+   "name": "Чувствительные данные в журнале, артефактах и журналах прогона",
+   "at": "security.md:10"
+  },
+  {
+   "id": "sec:Состав поставки: файлы разработки уходят пользователю",
+   "kind": "sec",
+   "name": "Состав поставки: файлы разработки уходят пользователю",
+   "at": "security.md:11"
+  },
+  {
+   "id": "cap:decision-viewer",
+   "kind": "cap",
+   "name": "decision-viewer",
+   "at": "specs/decision-viewer/spec.md:1"
+  },
+  {
+   "id": "req:decision-viewer/Просмотрщик — один HTML из своего шаблона с тремя режимами",
+   "kind": "req",
+   "name": "Просмотрщик — один HTML из своего шаблона с тремя режимами",
+   "at": "specs/decision-viewer/spec.md:5",
+   "section": "MODIFIED",
+   "capability": "decision-viewer"
+  },
+  {
+   "id": "scn:decision-viewer/Просмотрщик — один HTML из своего шаблона с тремя режимами/Сборка с атакой",
+   "kind": "scn",
+   "name": "Сборка с атакой",
+   "at": "specs/decision-viewer/spec.md:8",
+   "capability": "decision-viewer",
+   "requirement": "req:decision-viewer/Просмотрщик — один HTML из своего шаблона с тремя режимами"
+  },
+  {
+   "id": "scn:decision-viewer/Просмотрщик — один HTML из своего шаблона с тремя режимами/Битый файл атаки",
+   "kind": "scn",
+   "name": "Битый файл атаки",
+   "at": "specs/decision-viewer/spec.md:13",
+   "capability": "decision-viewer",
+   "requirement": "req:decision-viewer/Просмотрщик — один HTML из своего шаблона с тремя режимами"
+  },
+  {
+   "id": "scn:decision-viewer/Просмотрщик — один HTML из своего шаблона с тремя режимами/Черта в backticks и экранированная черта",
+   "kind": "scn",
+   "name": "Черта в backticks и экранированная черта",
+   "at": "specs/decision-viewer/spec.md:18",
+   "capability": "decision-viewer",
+   "requirement": "req:decision-viewer/Просмотрщик — один HTML из своего шаблона с тремя режимами"
+  },
+  {
+   "id": "scn:decision-viewer/Просмотрщик — один HTML из своего шаблона с тремя режимами/Экранированная косая и незакрытый backtick",
+   "kind": "scn",
+   "name": "Экранированная косая и незакрытый backtick",
+   "at": "specs/decision-viewer/spec.md:23",
+   "capability": "decision-viewer",
+   "requirement": "req:decision-viewer/Просмотрщик — один HTML из своего шаблона с тремя режимами"
+  },
+  {
+   "id": "scn:decision-viewer/Просмотрщик — один HTML из своего шаблона с тремя режимами/Пустая ячейка",
+   "kind": "scn",
+   "name": "Пустая ячейка",
+   "at": "specs/decision-viewer/spec.md:28",
+   "capability": "decision-viewer",
+   "requirement": "req:decision-viewer/Просмотрщик — один HTML из своего шаблона с тремя режимами"
+  },
+  {
+   "id": "scn:decision-viewer/Просмотрщик — один HTML из своего шаблона с тремя режимами/Соседнего файла нет",
+   "kind": "scn",
+   "name": "Соседнего файла нет",
+   "at": "specs/decision-viewer/spec.md:33",
+   "capability": "decision-viewer",
+   "requirement": "req:decision-viewer/Просмотрщик — один HTML из своего шаблона с тремя режимами"
+  },
+  {
+   "id": "req:decision-viewer/`render-html` встраивает снимок справки, сбой страницу не роняет",
+   "kind": "req",
+   "name": "`render-html` встраивает снимок справки, сбой страницу не роняет",
+   "at": "specs/decision-viewer/spec.md:40",
+   "section": "MODIFIED",
+   "capability": "decision-viewer"
+  },
+  {
+   "id": "scn:decision-viewer/`render-html` встраивает снимок справки, сбой страницу не роняет/Снимок на странице",
+   "kind": "scn",
+   "name": "Снимок на странице",
+   "at": "specs/decision-viewer/spec.md:43",
+   "capability": "decision-viewer",
+   "requirement": "req:decision-viewer/`render-html` встраивает снимок справки, сбой страницу не роняет"
+  },
+  {
+   "id": "scn:decision-viewer/`render-html` встраивает снимок справки, сбой страницу не роняет/Форка нет",
+   "kind": "scn",
+   "name": "Форка нет",
+   "at": "specs/decision-viewer/spec.md:48",
+   "capability": "decision-viewer",
+   "requirement": "req:decision-viewer/`render-html` встраивает снимок справки, сбой страницу не роняет"
+  },
+  {
+   "id": "scn:decision-viewer/`render-html` встраивает снимок справки, сбой страницу не роняет/Файлы изменились после снимка",
+   "kind": "scn",
+   "name": "Файлы изменились после снимка",
+   "at": "specs/decision-viewer/spec.md:53",
+   "capability": "decision-viewer",
+   "requirement": "req:decision-viewer/`render-html` встраивает снимок справки, сбой страницу не роняет"
+  },
+  {
+   "id": "scn:decision-viewer/`render-html` встраивает снимок справки, сбой страницу не роняет/Журнал из другого проекта",
+   "kind": "scn",
+   "name": "Журнал из другого проекта",
+   "at": "specs/decision-viewer/spec.md:58",
+   "capability": "decision-viewer",
+   "requirement": "req:decision-viewer/`render-html` встраивает снимок справки, сбой страницу не роняет"
+  },
+  {
+   "id": "scn:decision-viewer/`render-html` встраивает снимок справки, сбой страницу не роняет/Команда пересборки рядом со снимком",
+   "kind": "scn",
+   "name": "Команда пересборки рядом со снимком",
+   "at": "specs/decision-viewer/spec.md:63",
+   "capability": "decision-viewer",
+   "requirement": "req:decision-viewer/`render-html` встраивает снимок справки, сбой страницу не роняет"
+  },
+  {
+   "id": "req:decision-viewer/Скилл просмотрщика знает о внесении кнопкой",
+   "kind": "req",
+   "name": "Скилл просмотрщика знает о внесении кнопкой",
+   "at": "specs/decision-viewer/spec.md:70",
+   "section": "MODIFIED",
+   "capability": "decision-viewer"
+  },
+  {
+   "id": "scn:decision-viewer/Скилл просмотрщика знает о внесении кнопкой/Текст скилла",
+   "kind": "scn",
+   "name": "Текст скилла",
+   "at": "specs/decision-viewer/spec.md:73",
+   "capability": "decision-viewer",
+   "requirement": "req:decision-viewer/Скилл просмотрщика знает о внесении кнопкой"
+  },
+  {
+   "id": "scn:decision-viewer/Скилл просмотрщика знает о внесении кнопкой/Агент получил событие",
+   "kind": "scn",
+   "name": "Агент получил событие",
+   "at": "specs/decision-viewer/spec.md:78",
+   "capability": "decision-viewer",
+   "requirement": "req:decision-viewer/Скилл просмотрщика знает о внесении кнопкой"
+  },
+  {
+   "id": "scn:decision-viewer/Скилл просмотрщика знает о внесении кнопкой/Черновик не слово",
+   "kind": "scn",
+   "name": "Черновик не слово",
+   "at": "specs/decision-viewer/spec.md:83",
+   "capability": "decision-viewer",
+   "requirement": "req:decision-viewer/Скилл просмотрщика знает о внесении кнопкой"
+  },
+  {
+   "id": "scn:decision-viewer/Скилл просмотрщика знает о внесении кнопкой/Строка о схеме",
+   "kind": "scn",
+   "name": "Строка о схеме",
+   "at": "specs/decision-viewer/spec.md:88",
+   "capability": "decision-viewer",
+   "requirement": "req:decision-viewer/Скилл просмотрщика знает о внесении кнопкой"
+  },
+  {
+   "id": "req:decision-viewer/Строка таблицы атаки разбирается по соглашению markdown",
+   "kind": "req",
+   "name": "Строка таблицы атаки разбирается по соглашению markdown",
+   "at": "specs/decision-viewer/spec.md:97",
+   "section": "ADDED",
+   "capability": "decision-viewer"
+  },
+  {
+   "id": "scn:decision-viewer/Строка таблицы атаки разбирается по соглашению markdown/Черта в backticks в последней ячейке",
+   "kind": "scn",
+   "name": "Черта в backticks в последней ячейке",
+   "at": "specs/decision-viewer/spec.md:100",
+   "capability": "decision-viewer",
+   "requirement": "req:decision-viewer/Строка таблицы атаки разбирается по соглашению markdown"
+  },
+  {
+   "id": "req:decision-viewer/Негодная строка таблицы атаки — ошибка с местом",
+   "kind": "req",
+   "name": "Негодная строка таблицы атаки — ошибка с местом",
+   "at": "specs/decision-viewer/spec.md:107",
+   "section": "ADDED",
+   "capability": "decision-viewer"
+  },
+  {
+   "id": "scn:decision-viewer/Негодная строка таблицы атаки — ошибка с местом/Лишняя ячейка",
+   "kind": "scn",
+   "name": "Лишняя ячейка",
+   "at": "specs/decision-viewer/spec.md:110",
+   "capability": "decision-viewer",
+   "requirement": "req:decision-viewer/Негодная строка таблицы атаки — ошибка с местом"
+  },
+  {
+   "id": "req:decision-viewer/Страница `symphysis.html` работает без соседних файлов",
+   "kind": "req",
+   "name": "Страница `symphysis.html` работает без соседних файлов",
+   "at": "specs/decision-viewer/spec.md:117",
+   "section": "ADDED",
+   "capability": "decision-viewer"
+  },
+  {
+   "id": "scn:decision-viewer/Страница `symphysis.html` работает без соседних файлов/Страница перенесена из проекта",
+   "kind": "scn",
+   "name": "Страница перенесена из проекта",
+   "at": "specs/decision-viewer/spec.md:120",
+   "capability": "decision-viewer",
+   "requirement": "req:decision-viewer/Страница `symphysis.html` работает без соседних файлов"
+  },
+  {
+   "id": "cap:module-declaration",
+   "kind": "cap",
+   "name": "module-declaration",
+   "at": "specs/module-declaration/spec.md:1"
+  },
+  {
+   "id": "req:module-declaration/README модуля несёт имя и род во frontmatter",
+   "kind": "req",
+   "name": "README модуля несёт имя и род во frontmatter",
+   "at": "specs/module-declaration/spec.md:9",
+   "section": "ADDED",
+   "capability": "module-declaration"
+  },
+  {
+   "id": "scn:module-declaration/README модуля несёт имя и род во frontmatter/README модуля ядра",
+   "kind": "scn",
+   "name": "README модуля ядра",
+   "at": "specs/module-declaration/spec.md:12",
+   "capability": "module-declaration",
+   "requirement": "req:module-declaration/README модуля несёт имя и род во frontmatter"
+  },
+  {
+   "id": "scn:module-declaration/README модуля несёт имя и род во frontmatter/Род вне двух значений",
+   "kind": "scn",
+   "name": "Род вне двух значений",
+   "at": "specs/module-declaration/spec.md:17",
+   "capability": "module-declaration",
+   "requirement": "req:module-declaration/README модуля несёт имя и род во frontmatter"
+  },
+  {
+   "id": "scn:module-declaration/README модуля несёт имя и род во frontmatter/README без frontmatter",
+   "kind": "scn",
+   "name": "README без frontmatter",
+   "at": "specs/module-declaration/spec.md:22",
+   "capability": "module-declaration",
+   "requirement": "req:module-declaration/README модуля несёт имя и род во frontmatter"
+  },
+  {
+   "id": "scn:module-declaration/README модуля несёт имя и род во frontmatter/Пустое имя модуля",
+   "kind": "scn",
+   "name": "Пустое имя модуля",
+   "at": "specs/module-declaration/spec.md:27",
+   "capability": "module-declaration",
+   "requirement": "req:module-declaration/README модуля несёт имя и род во frontmatter"
+  },
+  {
+   "id": "scn:module-declaration/README модуля несёт имя и род во frontmatter/Два модуля с одним именем",
+   "kind": "scn",
+   "name": "Два модуля с одним именем",
+   "at": "specs/module-declaration/spec.md:33",
+   "capability": "module-declaration",
+   "requirement": "req:module-declaration/README модуля несёт имя и род во frontmatter"
+  },
+  {
+   "id": "req:module-declaration/README модуля описывает вложенные каталоги первого уровня",
+   "kind": "req",
+   "name": "README модуля описывает вложенные каталоги первого уровня",
+   "at": "specs/module-declaration/spec.md:41",
+   "section": "ADDED",
+   "capability": "module-declaration"
+  },
+  {
+   "id": "scn:module-declaration/README модуля описывает вложенные каталоги первого уровня/Вложенный каталог описан",
+   "kind": "scn",
+   "name": "Вложенный каталог описан",
+   "at": "specs/module-declaration/spec.md:44",
+   "capability": "module-declaration",
+   "requirement": "req:module-declaration/README модуля описывает вложенные каталоги первого уровня"
+  },
+  {
+   "id": "scn:module-declaration/README модуля описывает вложенные каталоги первого уровня/Каталог появился без описания",
+   "kind": "scn",
+   "name": "Каталог появился без описания",
+   "at": "specs/module-declaration/spec.md:49",
+   "capability": "module-declaration",
+   "requirement": "req:module-declaration/README модуля описывает вложенные каталоги первого уровня"
+  },
+  {
+   "id": "scn:module-declaration/README модуля описывает вложенные каталоги первого уровня/Вложенный каталог вне git",
+   "kind": "scn",
+   "name": "Вложенный каталог вне git",
+   "at": "specs/module-declaration/spec.md:54",
+   "capability": "module-declaration",
+   "requirement": "req:module-declaration/README модуля описывает вложенные каталоги первого уровня"
+  },
+  {
+   "id": "req:module-declaration/README модуля не называет каталог, которого нет",
+   "kind": "req",
+   "name": "README модуля не называет каталог, которого нет",
+   "at": "specs/module-declaration/spec.md:62",
+   "section": "ADDED",
+   "capability": "module-declaration"
+  },
+  {
+   "id": "scn:module-declaration/README модуля не называет каталог, которого нет/Ссылка на удалённый каталог",
+   "kind": "scn",
+   "name": "Ссылка на удалённый каталог",
+   "at": "specs/module-declaration/spec.md:65",
+   "capability": "module-declaration",
+   "requirement": "req:module-declaration/README модуля не называет каталог, которого нет"
+  },
+  {
+   "id": "cap:plugin-core-contract",
+   "kind": "cap",
+   "name": "plugin-core-contract",
+   "at": "specs/plugin-core-contract/spec.md:1"
+  },
+  {
+   "id": "req:plugin-core-contract/Заданный `SYMPHYSIS_ROOT` без ядра — падение, а не пропуск",
+   "kind": "req",
+   "name": "Заданный `SYMPHYSIS_ROOT` без ядра — падение, а не пропуск",
+   "at": "specs/plugin-core-contract/spec.md:5",
+   "section": "MODIFIED",
+   "capability": "plugin-core-contract"
+  },
+  {
+   "id": "scn:plugin-core-contract/Заданный `SYMPHYSIS_ROOT` без ядра — падение, а не пропуск/Опечатка в пути",
+   "kind": "scn",
+   "name": "Опечатка в пути",
+   "at": "specs/plugin-core-contract/spec.md:8",
+   "capability": "plugin-core-contract",
+   "requirement": "req:plugin-core-contract/Заданный `SYMPHYSIS_ROOT` без ядра — падение, а не пропуск"
+  },
+  {
+   "id": "scn:plugin-core-contract/Заданный `SYMPHYSIS_ROOT` без ядра — падение, а не пропуск/Пустая переменная",
+   "kind": "scn",
+   "name": "Пустая переменная",
+   "at": "specs/plugin-core-contract/spec.md:13",
+   "capability": "plugin-core-contract",
+   "requirement": "req:plugin-core-contract/Заданный `SYMPHYSIS_ROOT` без ядра — падение, а не пропуск"
+  },
+  {
+   "id": "scn:plugin-core-contract/Заданный `SYMPHYSIS_ROOT` без ядра — падение, а не пропуск/Соседний клон в модульной раскладке",
+   "kind": "scn",
+   "name": "Соседний клон в модульной раскладке",
+   "at": "specs/plugin-core-contract/spec.md:18",
+   "capability": "plugin-core-contract",
+   "requirement": "req:plugin-core-contract/Заданный `SYMPHYSIS_ROOT` без ядра — падение, а не пропуск"
+  },
+  {
+   "id": "cap:project-installer",
+   "kind": "cap",
+   "name": "project-installer",
+   "at": "specs/project-installer/spec.md:1"
+  },
+  {
+   "id": "req:project-installer/`check`, запущенный из клона, сигналит устаревший `payload`",
+   "kind": "req",
+   "name": "`check`, запущенный из клона, сигналит устаревший `payload`",
+   "at": "specs/project-installer/spec.md:5",
+   "section": "MODIFIED",
+   "capability": "project-installer"
+  },
+  {
+   "id": "scn:project-installer/`check`, запущенный из клона, сигналит устаревший `payload`/`payload` старее исходников",
+   "kind": "scn",
+   "name": "`payload` старее исходников",
+   "at": "specs/project-installer/spec.md:8",
+   "capability": "project-installer",
+   "requirement": "req:project-installer/`check`, запущенный из клона, сигналит устаревший `payload`"
+  },
+  {
+   "id": "scn:project-installer/`check`, запущенный из клона, сигналит устаревший `payload`/Инсталлятор не из клона",
+   "kind": "scn",
+   "name": "Инсталлятор не из клона",
+   "at": "specs/project-installer/spec.md:13",
+   "capability": "project-installer",
+   "requirement": "req:project-installer/`check`, запущенный из клона, сигналит устаревший `payload`"
+  },
+  {
+   "id": "scn:project-installer/`check`, запущенный из клона, сигналит устаревший `payload`/Клон в модульной раскладке",
+   "kind": "scn",
+   "name": "Клон в модульной раскладке",
+   "at": "specs/project-installer/spec.md:18",
+   "capability": "project-installer",
+   "requirement": "req:project-installer/`check`, запущенный из клона, сигналит устаревший `payload`"
+  },
+  {
+   "id": "req:project-installer/README модуля схемы в проект не ставится",
+   "kind": "req",
+   "name": "README модуля схемы в проект не ставится",
+   "at": "specs/project-installer/spec.md:28",
+   "section": "ADDED",
+   "capability": "project-installer"
+  },
+  {
+   "id": "scn:project-installer/README модуля схемы в проект не ставится/Установка без README схемы",
+   "kind": "scn",
+   "name": "Установка без README схемы",
+   "at": "specs/project-installer/spec.md:31",
+   "capability": "project-installer",
+   "requirement": "req:project-installer/README модуля схемы в проект не ставится"
+  },
+  {
+   "id": "scn:project-installer/README модуля схемы в проект не ставится/Сверка не ждёт README",
+   "kind": "scn",
+   "name": "Сверка не ждёт README",
+   "at": "specs/project-installer/spec.md:36",
+   "capability": "project-installer",
+   "requirement": "req:project-installer/README модуля схемы в проект не ставится"
+  },
+  {
+   "id": "cap:repository-layout",
+   "kind": "cap",
+   "name": "repository-layout",
+   "at": "specs/repository-layout/spec.md:1"
+  },
+  {
+   "id": "req:repository-layout/README корня называет каждый каталог первого уровня",
+   "kind": "req",
+   "name": "README корня называет каждый каталог первого уровня",
+   "at": "specs/repository-layout/spec.md:9",
+   "section": "ADDED",
+   "capability": "repository-layout"
+  },
+  {
+   "id": "scn:repository-layout/README корня называет каждый каталог первого уровня/Каталог без пометки",
+   "kind": "scn",
+   "name": "Каталог без пометки",
+   "at": "specs/repository-layout/spec.md:12",
+   "capability": "repository-layout",
+   "requirement": "req:repository-layout/README корня называет каждый каталог первого уровня"
+  },
+  {
+   "id": "scn:repository-layout/README корня называет каждый каталог первого уровня/Контур разработки с README модуля",
+   "kind": "scn",
+   "name": "Контур разработки с README модуля",
+   "at": "specs/repository-layout/spec.md:17",
+   "capability": "repository-layout",
+   "requirement": "req:repository-layout/README корня называет каждый каталог первого уровня"
+  },
+  {
+   "id": "scn:repository-layout/README корня называет каждый каталог первого уровня/Каталоги корня вне git",
+   "kind": "scn",
+   "name": "Каталоги корня вне git",
+   "at": "specs/repository-layout/spec.md:22",
+   "capability": "repository-layout",
+   "requirement": "req:repository-layout/README корня называет каждый каталог первого уровня"
+  },
+  {
+   "id": "req:repository-layout/Корень плагина описывает репозиторий, README пакета — отдельный файл",
+   "kind": "req",
+   "name": "Корень плагина описывает репозиторий, README пакета — отдельный файл",
+   "at": "specs/repository-layout/spec.md:30",
+   "section": "ADDED",
+   "capability": "repository-layout"
+  },
+  {
+   "id": "scn:repository-layout/Корень плагина описывает репозиторий, README пакета — отдельный файл/Пакет несёт README пакета",
+   "kind": "scn",
+   "name": "Пакет несёт README пакета",
+   "at": "specs/repository-layout/spec.md:33",
+   "capability": "repository-layout",
+   "requirement": "req:repository-layout/Корень плагина описывает репозиторий, README пакета — отдельный файл"
+  },
+  {
+   "id": "req:repository-layout/Модуль — каталог на своём месте",
+   "kind": "req",
+   "name": "Модуль — каталог на своём месте",
+   "at": "specs/repository-layout/spec.md:40",
+   "section": "ADDED",
+   "capability": "repository-layout"
+  },
+  {
+   "id": "scn:repository-layout/Модуль — каталог на своём месте/Модуль не на своём месте",
+   "kind": "scn",
+   "name": "Модуль не на своём месте",
+   "at": "specs/repository-layout/spec.md:43",
+   "capability": "repository-layout",
+   "requirement": "req:repository-layout/Модуль — каталог на своём месте"
+  },
+  {
+   "id": "req:repository-layout/Файл принадлежит одному модулю",
+   "kind": "req",
+   "name": "Файл принадлежит одному модулю",
+   "at": "specs/repository-layout/spec.md:50",
+   "section": "ADDED",
+   "capability": "repository-layout"
+  },
+  {
+   "id": "scn:repository-layout/Файл принадлежит одному модулю/Вложенный модуль",
+   "kind": "scn",
+   "name": "Вложенный модуль",
+   "at": "specs/repository-layout/spec.md:53",
+   "capability": "repository-layout",
+   "requirement": "req:repository-layout/Файл принадлежит одному модулю"
+  },
+  {
+   "id": "scn:repository-layout/Файл принадлежит одному модулю/Файл хука в каталоге своего модуля",
+   "kind": "scn",
+   "name": "Файл хука в каталоге своего модуля",
+   "at": "specs/repository-layout/spec.md:58",
+   "capability": "repository-layout",
+   "requirement": "req:repository-layout/Файл принадлежит одному модулю"
+  },
+  {
+   "id": "req:repository-layout/Тесты модуля лежат в его каталоге",
+   "kind": "req",
+   "name": "Тесты модуля лежат в его каталоге",
+   "at": "specs/repository-layout/spec.md:66",
+   "section": "ADDED",
+   "capability": "repository-layout"
+  },
+  {
+   "id": "scn:repository-layout/Тесты модуля лежат в его каталоге/Тест модуля находится общей командой",
+   "kind": "scn",
+   "name": "Тест модуля находится общей командой",
+   "at": "specs/repository-layout/spec.md:69",
+   "capability": "repository-layout",
+   "requirement": "req:repository-layout/Тесты модуля лежат в его каталоге"
+  },
+  {
+   "id": "scn:repository-layout/Тесты модуля лежат в его каталоге/Юнит-тест модуля плагина собирается",
+   "kind": "scn",
+   "name": "Юнит-тест модуля плагина собирается",
+   "at": "specs/repository-layout/spec.md:74",
+   "capability": "repository-layout",
+   "requirement": "req:repository-layout/Тесты модуля лежат в его каталоге"
+  },
+  {
+   "id": "req:repository-layout/Тест структуры в каждом репозитории",
+   "kind": "req",
+   "name": "Тест структуры в каждом репозитории",
+   "at": "specs/repository-layout/spec.md:82",
+   "section": "ADDED",
+   "capability": "repository-layout"
+  },
+  {
+   "id": "scn:repository-layout/Тест структуры в каждом репозитории/Новый каталог без описания",
+   "kind": "scn",
+   "name": "Новый каталог без описания",
+   "at": "specs/repository-layout/spec.md:85",
+   "capability": "repository-layout",
+   "requirement": "req:repository-layout/Тест структуры в каждом репозитории"
+  },
+  {
+   "id": "req:repository-layout/README корня не называет каталог, которого нет",
+   "kind": "req",
+   "name": "README корня не называет каталог, которого нет",
+   "at": "specs/repository-layout/spec.md:92",
+   "section": "ADDED",
+   "capability": "repository-layout"
+  },
+  {
+   "id": "scn:repository-layout/README корня не называет каталог, которого нет/Строка о каталоге, которого нет",
+   "kind": "scn",
+   "name": "Строка о каталоге, которого нет",
+   "at": "specs/repository-layout/spec.md:95",
+   "capability": "repository-layout",
+   "requirement": "req:repository-layout/README корня не называет каталог, которого нет"
+  },
+  {
+   "id": "req:repository-layout/Общий файл не копируется в модули",
+   "kind": "req",
+   "name": "Общий файл не копируется в модули",
+   "at": "specs/repository-layout/spec.md:102",
+   "section": "ADDED",
+   "capability": "repository-layout"
+  },
+  {
+   "id": "scn:repository-layout/Общий файл не копируется в модули/Копия в двух модулях",
+   "kind": "scn",
+   "name": "Копия в двух модулях",
+   "at": "specs/repository-layout/spec.md:105",
+   "capability": "repository-layout",
+   "requirement": "req:repository-layout/Общий файл не копируется в модули"
+  },
+  {
+   "id": "req:repository-layout/Тесты модулей не уходят пользователю",
+   "kind": "req",
+   "name": "Тесты модулей не уходят пользователю",
+   "at": "specs/repository-layout/spec.md:112",
+   "section": "ADDED",
+   "capability": "repository-layout"
+  },
+  {
+   "id": "scn:repository-layout/Тесты модулей не уходят пользователю/Тесты модуля схемы",
+   "kind": "scn",
+   "name": "Тесты модуля схемы",
+   "at": "specs/repository-layout/spec.md:115",
+   "capability": "repository-layout",
+   "requirement": "req:repository-layout/Тесты модулей не уходят пользователю"
+  },
+  {
+   "id": "cap:requirement-probes",
+   "kind": "cap",
+   "name": "requirement-probes",
+   "at": "specs/requirement-probes/spec.md:1"
+  },
+  {
+   "id": "req:requirement-probes/Текст пробы объясняет задачу подробнее",
+   "kind": "req",
+   "name": "Текст пробы объясняет задачу подробнее",
+   "at": "specs/requirement-probes/spec.md:5",
+   "section": "MODIFIED",
+   "capability": "requirement-probes"
+  },
+  {
+   "id": "scn:requirement-probes/Текст пробы объясняет задачу подробнее/Чтение текста скилла",
+   "kind": "scn",
+   "name": "Чтение текста скилла",
+   "at": "specs/requirement-probes/spec.md:8",
+   "capability": "requirement-probes",
+   "requirement": "req:requirement-probes/Текст пробы объясняет задачу подробнее"
+  },
+  {
+   "id": "cap:skill-transfer",
+   "kind": "cap",
+   "name": "skill-transfer",
+   "at": "specs/skill-transfer/spec.md:1"
+  },
+  {
+   "id": "req:skill-transfer/Скилл несёт копию источника с copyright notice и перечень смысловых отличий",
+   "kind": "req",
+   "name": "Скилл несёт копию источника с copyright notice и перечень смысловых отличий",
+   "at": "specs/skill-transfer/spec.md:5",
+   "section": "MODIFIED",
+   "capability": "skill-transfer"
+  },
+  {
+   "id": "scn:skill-transfer/Скилл несёт копию источника с copyright notice и перечень смысловых отличий/Состав каталога скилла",
+   "kind": "scn",
+   "name": "Состав каталога скилла",
+   "at": "specs/skill-transfer/spec.md:8",
+   "capability": "skill-transfer",
+   "requirement": "req:skill-transfer/Скилл несёт копию источника с copyright notice и перечень смысловых отличий"
+  },
+  {
+   "id": "scn:skill-transfer/Скилл несёт копию источника с copyright notice и перечень смысловых отличий/Скилл без источника GSD",
+   "kind": "scn",
+   "name": "Скилл без источника GSD",
+   "at": "specs/skill-transfer/spec.md:13",
+   "capability": "skill-transfer",
+   "requirement": "req:skill-transfer/Скилл несёт копию источника с copyright notice и перечень смысловых отличий"
+  },
+  {
+   "id": "cap:step-help",
+   "kind": "cap",
+   "name": "step-help",
+   "at": "specs/step-help/spec.md:1"
+  },
+  {
+   "id": "req:step-help/Скрипт считает текущий шаг и чей ход",
+   "kind": "req",
+   "name": "Скрипт считает текущий шаг и чей ход",
+   "at": "specs/step-help/spec.md:5",
+   "section": "MODIFIED",
+   "capability": "step-help"
+  },
+  {
+   "id": "scn:step-help/Скрипт считает текущий шаг и чей ход/Открытая развилка при готовом следующем шаге",
+   "kind": "scn",
+   "name": "Открытая развилка при готовом следующем шаге",
+   "at": "specs/step-help/spec.md:8",
+   "capability": "step-help",
+   "requirement": "req:step-help/Скрипт считает текущий шаг и чей ход"
+  },
+  {
+   "id": "scn:step-help/Скрипт считает текущий шаг и чей ход/Припаркованная развилка",
+   "kind": "scn",
+   "name": "Припаркованная развилка",
+   "at": "specs/step-help/spec.md:13",
+   "capability": "step-help",
+   "requirement": "req:step-help/Скрипт считает текущий шаг и чей ход"
+  },
+  {
+   "id": "scn:step-help/Скрипт считает текущий шаг и чей ход/Журнал не читается",
+   "kind": "scn",
+   "name": "Журнал не читается",
+   "at": "specs/step-help/spec.md:18",
+   "capability": "step-help",
+   "requirement": "req:step-help/Скрипт считает текущий шаг и чей ход"
+  },
+  {
+   "id": "scn:step-help/Скрипт считает текущий шаг и чей ход/Несколько готовых шагов после `specs`",
+   "kind": "scn",
+   "name": "Несколько готовых шагов после `specs`",
+   "at": "specs/step-help/spec.md:23",
+   "capability": "step-help",
+   "requirement": "req:step-help/Скрипт считает текущий шаг и чей ход"
+  },
+  {
+   "id": "scn:step-help/Скрипт считает текущий шаг и чей ход/Вызванная атака",
+   "kind": "scn",
+   "name": "Вызванная атака",
+   "at": "specs/step-help/spec.md:28",
+   "capability": "step-help",
+   "requirement": "req:step-help/Скрипт считает текущий шаг и чей ход"
+  },
+  {
+   "id": "scn:step-help/Скрипт считает текущий шаг и чей ход/Задачи идут",
+   "kind": "scn",
+   "name": "Задачи идут",
+   "at": "specs/step-help/spec.md:33",
+   "capability": "step-help",
+   "requirement": "req:step-help/Скрипт считает текущий шаг и чей ход"
+  },
+  {
+   "id": "scn:step-help/Скрипт считает текущий шаг и чей ход/Задачи закрыты",
+   "kind": "scn",
+   "name": "Задачи закрыты",
+   "at": "specs/step-help/spec.md:38",
+   "capability": "step-help",
+   "requirement": "req:step-help/Скрипт считает текущий шаг и чей ход"
+  },
+  {
+   "id": "scn:step-help/Скрипт считает текущий шаг и чей ход/Реализация заблокирована",
+   "kind": "scn",
+   "name": "Реализация заблокирована",
+   "at": "specs/step-help/spec.md:43",
+   "capability": "step-help",
+   "requirement": "req:step-help/Скрипт считает текущий шаг и чей ход"
+  },
+  {
+   "id": "scn:step-help/Скрипт считает текущий шаг и чей ход/Активных изменений нет",
+   "kind": "scn",
+   "name": "Активных изменений нет",
+   "at": "specs/step-help/spec.md:48",
+   "capability": "step-help",
+   "requirement": "req:step-help/Скрипт считает текущий шаг и чей ход"
+  },
+  {
+   "id": "scn:step-help/Скрипт считает текущий шаг и чей ход/Изменение только что создано",
+   "kind": "scn",
+   "name": "Изменение только что создано",
+   "at": "specs/step-help/spec.md:53",
+   "capability": "step-help",
+   "requirement": "req:step-help/Скрипт считает текущий шаг и чей ход"
+  },
+  {
+   "id": "scn:step-help/Скрипт считает текущий шаг и чей ход/Первые шаги пропущены",
+   "kind": "scn",
+   "name": "Первые шаги пропущены",
+   "at": "specs/step-help/spec.md:58",
+   "capability": "step-help",
+   "requirement": "req:step-help/Скрипт считает текущий шаг и чей ход"
+  },
+  {
+   "id": "scn:step-help/Скрипт считает текущий шаг и чей ход/Текущий шаг совпадает с командой",
+   "kind": "scn",
+   "name": "Текущий шаг совпадает с командой",
+   "at": "specs/step-help/spec.md:63",
+   "capability": "step-help",
+   "requirement": "req:step-help/Скрипт считает текущий шаг и чей ход"
+  },
+  {
+   "id": "req:step-help/Справка не становится гейтом и не меняет файлы",
+   "kind": "req",
+   "name": "Справка не становится гейтом и не меняет файлы",
+   "at": "specs/step-help/spec.md:70",
+   "section": "MODIFIED",
+   "capability": "step-help"
+  },
+  {
+   "id": "scn:step-help/Справка не становится гейтом и не меняет файлы/Дерево проекта не меняется",
+   "kind": "scn",
+   "name": "Дерево проекта не меняется",
+   "at": "specs/step-help/spec.md:73",
+   "capability": "step-help",
+   "requirement": "req:step-help/Справка не становится гейтом и не меняет файлы"
+  },
+  {
+   "id": "scn:step-help/Справка не становится гейтом и не меняет файлы/Скиллы о скрипте не знают",
+   "kind": "scn",
+   "name": "Скиллы о скрипте не знают",
+   "at": "specs/step-help/spec.md:78",
+   "capability": "step-help",
+   "requirement": "req:step-help/Справка не становится гейтом и не меняет файлы"
+  },
+  {
+   "id": "scn:step-help/Справка не становится гейтом и не меняет файлы/Поиск не нашёл скиллов",
+   "kind": "scn",
+   "name": "Поиск не нашёл скиллов",
+   "at": "specs/step-help/spec.md:83",
+   "capability": "step-help",
+   "requirement": "req:step-help/Справка не становится гейтом и не меняет файлы"
+  },
+  {
+   "id": "cap:trace-graph",
+   "kind": "cap",
+   "name": "trace-graph",
+   "at": "specs/trace-graph/spec.md:1"
+  },
+  {
+   "id": "req:trace-graph/Граф собирается из файлов изменения",
+   "kind": "req",
+   "name": "Граф собирается из файлов изменения",
+   "at": "specs/trace-graph/spec.md:5",
+   "section": "MODIFIED",
+   "capability": "trace-graph"
+  },
+  {
+   "id": "scn:trace-graph/Граф собирается из файлов изменения/Только что созданное изменение",
+   "kind": "scn",
+   "name": "Только что созданное изменение",
+   "at": "specs/trace-graph/spec.md:8",
+   "capability": "trace-graph",
+   "requirement": "req:trace-graph/Граф собирается из файлов изменения"
+  },
+  {
+   "id": "scn:trace-graph/Граф собирается из файлов изменения/Граф растёт вместе с артефактами",
+   "kind": "scn",
+   "name": "Граф растёт вместе с артефактами",
+   "at": "specs/trace-graph/spec.md:13",
+   "capability": "trace-graph",
+   "requirement": "req:trace-graph/Граф собирается из файлов изменения"
+  },
+  {
+   "id": "scn:trace-graph/Граф собирается из файлов изменения/Связь правится через файл",
+   "kind": "scn",
+   "name": "Связь правится через файл",
+   "at": "specs/trace-graph/spec.md:18",
+   "capability": "trace-graph",
+   "requirement": "req:trace-graph/Граф собирается из файлов изменения"
+  },
+  {
+   "id": "scn:trace-graph/Граф собирается из файлов изменения/Журнал не разбирается",
+   "kind": "scn",
+   "name": "Журнал не разбирается",
+   "at": "specs/trace-graph/spec.md:23",
+   "capability": "trace-graph",
+   "requirement": "req:trace-graph/Граф собирается из файлов изменения"
+  },
+  {
+   "id": "scn:trace-graph/Граф собирается из файлов изменения/Журнал негоден по схеме",
+   "kind": "scn",
+   "name": "Журнал негоден по схеме",
+   "at": "specs/trace-graph/spec.md:29",
+   "capability": "trace-graph",
+   "requirement": "req:trace-graph/Граф собирается из файлов изменения"
+  },
+  {
+   "id": "task:1.1",
+   "kind": "task",
+   "name": "Проверка README корня в общем каталоге тестов ядра: каталоги первого уровня берутся из git, у каждого — строка README корня с пометкой «модуль» или «контур разработки»; строка о каталоге, которого нет, и README модуля у каталога контура дают красный (F-22, F-25, F-51, F-56) — проверка: тесты проверки на деревьях-фикстурах в `tmp_path` зелёные; `repository-layout`: «Каталог без пометки», `repository-layout`: «Каталоги корня вне git», `repository-layout`: «Контур разработки с README модуля», `repository-layout`: «Строка о каталоге, которого нет»",
+   "at": "tasks.md:5",
+   "done": false
+  },
+  {
+   "id": "task:1.2",
+   "kind": "task",
+   "name": "Проверка frontmatter README модуля: разбираются только скалярные `name` и `kind` без загрузчика YAML, исполняющего теги; `kind` — `доменный` или `технический`; пустое имя и повтор имени в репозитории — красный (F-21, F-39, F-47, F-48; `security.md`, «Инъекции через содержимое файлов») — проверка: тесты на фикстурах, в том числе README с тегом YAML; `module-declaration`: «README модуля ядра», `module-declaration`: «Род вне двух значений», `module-declaration`: «README без frontmatter», `module-declaration`: «Пустое имя модуля», `module-declaration`: «Два модуля с одним именем»",
+   "at": "tasks.md:6",
+   "done": false
+  },
+  {
+   "id": "task:1.3",
+   "kind": "task",
+   "name": "Проверка вложенных каталогов модуля: ссылка формы `[имя/](имя/)` на каждый вложенный каталог из git, сверка в обе стороны, путь ссылки нормализуется и засчитывается только внутри модуля (F-03, F-49, F-50, F-55; `security.md`, «Пути с `../`») — проверка: тесты на фикстурах, в том числе ссылка `../`; `module-declaration`: «Вложенный каталог описан», `module-declaration`: «Каталог появился без описания», `module-declaration`: «Вложенный каталог вне git», `module-declaration`: «Ссылка на удалённый каталог»",
+   "at": "tasks.md:7",
+   "done": false
+  },
+  {
+   "id": "task:1.4",
+   "kind": "task",
+   "name": "Проверка места модуля: каталог с README модуля — первого уровня или `openspec/schemas/symphysis/`, модуль внутри модуля — красный с обоими каталогами (F-12, F-17, F-37) — проверка: тесты на фикстурах; `repository-layout`: «Модуль не на своём месте», `repository-layout`: «Вложенный модуль»",
+   "at": "tasks.md:8",
+   "done": false
+  },
+  {
+   "id": "task:1.5",
+   "kind": "task",
+   "name": "Проверка копий: хеш байтов каждого непустого файла модулей, совпадение в двух модулях — красный с обоими путями (F-57; `security.md`, «Бинарные файлы») — проверка: тесты на фикстурах, в том числе с бинарным файлом; `repository-layout`: «Копия в двух модулях»",
+   "at": "tasks.md:9",
+   "done": false
+  },
+  {
+   "id": "task:2.1",
+   "kind": "task",
+   "name": "Вынести корни улик и поиск цитат вместе с `ROOT` из `journal_apply.py` и `journal_model.py` в отдельный файл будущего модуля `roots`, остальные файлы импортируют его (F-34, `research/F-27.md`) — проверка: полный `python -X utf8 -m pytest` зелёный, `ROOT` определён только в файле `roots` `служебная`",
+   "at": "tasks.md:13",
+   "done": false
+  },
+  {
+   "id": "task:2.2",
+   "kind": "task",
+   "name": "Разрезать `journal_render.py`: страница, схема решения и шаблон — в файл будущего модуля `viewer`, разбор файла атаки — в файл модуля `attack`, md, `render_design`, `view-json` и `CONTRACT` остаются в `decisions` (F-27, F-33) — проверка: полный pytest зелёный и новые тесты; `decision-viewer`: «Черта в backticks в последней ячейке», `decision-viewer`: «Лишняя ячейка», `decision-viewer`: «Страница перенесена из проекта»",
+   "at": "tasks.md:14",
+   "done": false
+  },
+  {
+   "id": "task:2.3",
+   "kind": "task",
+   "name": "`journal.py` и `journal_cli.py` — файлы будущего модуля `cli`; подкоманды и аргументы `journal.py` не меняются (F-33, `docs/repo-contract.md`) — проверка: `tests/test_flag_help.py` зелёный, вывод `journal.py --help` и `journal.py <подкоманда> --help` байт в байт прежний `служебная`",
+   "at": "tasks.md:15",
+   "done": false
+  },
+  {
+   "id": "task:3.1",
+   "kind": "task",
+   "name": "Создать каталоги модулей первого уровня и перенести код и данные по карте `research/F-27-probe/core-map.txt` с поправками F-33, F-34, F-35, F-66: схема журнала — в `decisions` (F-41), шаблон страницы — в `viewer`; в `tools/` остаются хуки гейта имён, `allowed-*.txt` и файл корней (F-22, F-40) — проверка: `git ls-files tools` называет только хуки, списки разрешённого и `journal-roots.json` `служебная`",
+   "at": "tasks.md:19",
+   "done": false
+  },
+  {
+   "id": "task:3.2",
+   "kind": "task",
+   "name": "Точки входа `journal.py`, `trace_graph.py`, `step_help.py`, `symphysis_config.py` в исходнике добавляют каталоги модулей в `sys.path`; файлы модуля ищутся рядом с кодом; `tests/conftest.py` и тесты с `ROOT / \"tools\"` — на новые места (F-20, F-40, F-41, `research/F-20.md`) — проверка: `journal.py --help` из корня ядра работает, полный pytest зелёный `служебная`",
+   "at": "tasks.md:20",
+   "done": false
+  },
+  {
+   "id": "task:3.3",
+   "kind": "task",
+   "name": "Скиллы — в `<модуль>/skills/<имя>/`, водители — в `<модуль>/agents/` модуля своей механики; `terms.md` и `driver.md` — в `skill-shared`, `candidate.md` — в `decisions`, `journal-cli.md` — в `cli` (F-18, F-35, F-66, F-67); `tests/test_skills.py`, `tests/test_agents.py` — на новые пути — проверка: тесты скиллов и агентов зелёные; `skill-transfer`: «Состав каталога скилла», `skill-transfer`: «Скилл без источника GSD», `requirement-probes`: «Чтение текста скилла»",
+   "at": "tasks.md:21",
+   "done": false
+  },
+  {
+   "id": "task:3.4",
+   "kind": "task",
+   "name": "Тест «Скиллы о скрипте не знают» ищет тексты скиллов во всех модулях и красный, когда не нашёл ни одного (F-54) — проверка: тест зелёный на дереве ядра и красный на фикстуре без скиллов; `step-help`: «Скиллы о скрипте не знают», `step-help`: «Поиск не нашёл скиллов»",
+   "at": "tasks.md:22",
+   "done": false
+  },
+  {
+   "id": "task:3.5",
+   "kind": "task",
+   "name": "Справка ищет скиллы клона в `<модуль>/skills/<имя>/SKILL.md` вместо `skills/` (F-42, F-67); тест-страховка F-63 подаёт клон со `SKILL.md` в каталоге модуля как `--install-dir` и утверждает найденный `path` и `base: install` — проверка: тест-страховка зелёный `служебная`",
+   "at": "tasks.md:23",
+   "done": false
+  },
+  {
+   "id": "task:3.6",
+   "kind": "task",
+   "name": "Тесты модулей — в `<модуль>/tests/`, общие фикстуры и шим форка — в общем каталоге тестов; `pytest.ini` собирает тесты модулей (F-23, F-53) — проверка: `python -X utf8 -m pytest --collect-only -q` находит не меньше тестов, чем до переноса; `repository-layout`: «Тест модуля находится общей командой»",
+   "at": "tasks.md:24",
+   "done": false
+  },
+  {
+   "id": "task:3.7",
+   "kind": "task",
+   "name": "`openspec/config.symphysis.yaml` — в каталог схемы `openspec/schemas/symphysis/` (F-37) — проверка: `tests/test_schema.py` на новом пути зелёный `служебная`",
+   "at": "tasks.md:25",
+   "done": false
+  },
+  {
+   "id": "task:4.1",
+   "kind": "task",
+   "name": "`installer/scripts/sync-payload.js` собирает payload из модулей: код и данные — в прежние `tools/` и `docs/` payload, схема журнала — в `tools/` (F-19, F-41), скиллы — по маске `<модуль>/skills/symphysis-*`, водители — из `<модуль>/agents/` (F-67), общие файлы скиллов — в `docs/` (F-35, F-66), `config.symphysis.yaml` — из каталога схемы в прежний путь payload (F-37) — проверка: `installer/test/payload.test.js` зелёный, состав payload прежний, кроме места схемы журнала `служебная`",
+   "at": "tasks.md:29",
+   "done": false
+  },
+  {
+   "id": "task:4.2",
+   "kind": "task",
+   "name": "Payload пропускает README каталога схемы и каталоги тестов модулей (F-36, F-58) — проверка: тесты инсталлятора и состава payload; `project-installer`: «Установка без README схемы», `project-installer`: «Сверка не ждёт README», `repository-layout`: «Тесты модуля схемы»",
+   "at": "tasks.md:30",
+   "done": false
+  },
+  {
+   "id": "task:4.3",
+   "kind": "task",
+   "name": "Признак клона `hasSources` опознаёт модульную раскладку, `check` и `install` из клона работают как из клона (F-60) — проверка: тест на клоне модульной раскладки; `project-installer`: «Клон в модульной раскладке»",
+   "at": "tasks.md:31",
+   "done": false
+  },
+  {
+   "id": "task:4.4",
+   "kind": "task",
+   "name": "Тест-страховка F-65: ядро ставится во временный проект, `--help` каждой точки входа из `.symphysis/tools/` даёт код 0 — проверка: тест-страховка зелёный `служебная`",
+   "at": "tasks.md:32",
+   "done": false
+  },
+  {
+   "id": "task:5.1",
+   "kind": "task",
+   "name": "README корня ядра: компонент «ядро», репозиторий `symphysis-core`, выпуск пакетом npm `@niqsons/symphysis`, контракт с плагином — `docs/repo-contract.md`; каждый каталог первого уровня с пометкой модуль или контур разработки (F-22) — проверка: живой тест структуры (задача 5.3), гейт имён на коммите (`security.md`, «Чувствительные данные…») `служебная`",
+   "at": "tasks.md:36",
+   "done": false
+  },
+  {
+   "id": "task:5.2",
+   "kind": "task",
+   "name": "README каждого модуля ядра: frontmatter `name` и `kind` по родам F-18, F-33, F-34, F-35, описание и ссылки на вложенные каталоги (F-03, F-21, F-39); README модуля `installer` — он же страница пакета npm (F-39) — проверка: живой тест структуры, гейт имён на коммите `служебная`",
+   "at": "tasks.md:37",
+   "done": false
+  },
+  {
+   "id": "task:5.3",
+   "kind": "task",
+   "name": "Живой тест структуры на дереве ядра в общем прогоне (F-25) — проверка: `python -X utf8 -m pytest` зелёный вместе с тестом структуры `служебная`",
+   "at": "tasks.md:38",
+   "done": false
+  },
+  {
+   "id": "task:6.1",
+   "kind": "task",
+   "name": "Тест структуры плагина: те же проверки, что в задачах 1.1–1.5, для корня плагина и модулей в `src/` (F-25, F-31) — проверка: тесты проверки на фикстурах зелёные; `repository-layout`: «Новый каталог без описания»",
+   "at": "tasks.md:42",
+   "done": false
+  },
+  {
+   "id": "task:6.2",
+   "kind": "task",
+   "name": "Перенести `src/` по модулям `viewer`, `search`, `scheme`, `step-help`, `hook`, `core`, `changes`, `journal`, `file-links`, `ui`, `activation`, `protocol`: у модуля в одном каталоге части стороны VS Code и страницы (F-31, F-43, `research/F-27-probe/plugin-map.txt`) — проверка: `npm run typecheck` и `npm test` зелёные; коммит несёт `Needs:` на коммит ядра (F-29) `служебная`",
+   "at": "tasks.md:43",
+   "done": false
+  },
+  {
+   "id": "task:6.3",
+   "kind": "task",
+   "name": "Типы `SearchOutcome` и `ParsedScheme` — в модуль `protocol` (F-44) — проверка: `npm run typecheck`; файлы `protocol` не импортируют `search` и `scheme` `служебная`",
+   "at": "tasks.md:44",
+   "done": false
+  },
+  {
+   "id": "task:6.4",
+   "kind": "task",
+   "name": "`build.mjs` берёт точки входа страниц из модулей и собирает юнит-тесты из каталогов модулей (F-31, F-62) — проверка: `npm test` собирает и запускает тест из каталога модуля; `repository-layout`: «Юнит-тест модуля плагина собирается»",
+   "at": "tasks.md:45",
+   "done": false
+  },
+  {
+   "id": "task:6.5",
+   "kind": "task",
+   "name": "`hook.py` — в каталог модуля `hook`, сборка кладёт его в пакет по пути `hook/hook.py`, который читает код (F-52) — проверка: тест упаковки видит `hook/hook.py` в `.vsix`; `repository-layout`: «Файл хука в каталоге своего модуля»",
+   "at": "tasks.md:46",
+   "done": false
+  },
+  {
+   "id": "task:6.6",
+   "kind": "task",
+   "name": "README пакета — отдельный файл: `package.mjs` передаёт его `--readme-path`, `.vscodeignore` не пропускает корневой `README.md`, `test/unit/package-readme.test.ts` читает новый путь (F-38) — проверка: тест упаковки и `npm run e2e:vsix` зелёные; `repository-layout`: «Пакет несёт README пакета»",
+   "at": "tasks.md:47",
+   "done": false
+  },
+  {
+   "id": "task:6.7",
+   "kind": "task",
+   "name": "Тесты плагина опознают ядро клона в модульной раскладке и копируют его файлы из модулей в `.symphysis/tools/` (F-09, F-61) — проверка: `npm test` без `SYMPHYSIS_ROOT` при соседнем клоне запускает тесты на ядре, с ошибочным `SYMPHYSIS_ROOT` падает; `plugin-core-contract`: «Соседний клон в модульной раскладке», `plugin-core-contract`: «Опечатка в пути»",
+   "at": "tasks.md:48",
+   "done": false
+  },
+  {
+   "id": "task:6.8",
+   "kind": "task",
+   "name": "README корня плагина — описание репозитория, README модулей с frontmatter, живой тест структуры в `npm test` (F-22, F-38) — проверка: `npm test` зелёный, гейт имён на коммите `служебная`",
+   "at": "tasks.md:49",
+   "done": false
+  },
+  {
+   "id": "task:6.9",
+   "kind": "task",
+   "name": "Полный прогон e2e плагина на ядре модульной раскладки — проверка: `npm run e2e` зелёный; `npm run e2e:hook` не запускается: он шлёт данные во внешнюю модель `служебная`",
+   "at": "tasks.md:50",
+   "done": false
+  },
+  {
+   "id": "task:7.1",
+   "kind": "task",
+   "name": "Пути исходников в `CLAUDE.md`, `docs/GUIDE.md`, `docs/skills-canon.md`, `installer/README.md` (схема журнала в `.symphysis/tools/`, F-41); пути хуков в `docs/repo-contract.md` не меняются (F-22); архивные журналы не правятся (F-24) — проверка: поиск `tools/journal`, `skills/symphysis-`, `skills/shared` по этим файлам пуст `служебная`",
+   "at": "tasks.md:54",
+   "done": false
+  },
+  {
+   "id": "task:7.2",
+   "kind": "task",
+   "name": "Переустановить ядро в себя `symphysis install --force`, затем `symphysis check` (F-14) — проверка: `check` без строк `[!!]`, кроме ожидаемой строки о включённой телеметрии `служебная`",
+   "at": "tasks.md:55",
+   "done": false
+  },
+  {
+   "id": "task:7.3",
+   "kind": "task",
+   "name": "Полный прогон ядра: pytest и тесты инсталлятора; `trace_graph.py report module-structure` без сигналов «сценарий без задачи» — проверка: вывод прогонов и отчёта `служебная`",
+   "at": "tasks.md:56",
+   "done": false
+  }
+ ],
+ "edges": [
+  {
+   "from": "sec:Инъекции через содержимое файлов",
+   "to": "req:module-declaration/README модуля несёт имя и род во frontmatter",
+   "type": "refines",
+   "at": "security.md:5"
+  },
+  {
+   "from": "sec:Пути с `../`",
+   "to": "req:module-declaration/README модуля описывает вложенные каталоги первого уровня",
+   "type": "refines",
+   "at": "security.md:6"
+  },
+  {
+   "from": "sec:Бинарные файлы",
+   "to": "req:repository-layout/Общий файл не копируется в модули",
+   "type": "refines",
+   "at": "security.md:9"
+  },
+  {
+   "from": "sec:Чувствительные данные в журнале, артефактах и журналах прогона",
+   "to": "req:module-declaration/README модуля описывает вложенные каталоги первого уровня",
+   "type": "refines",
+   "at": "security.md:10"
+  },
+  {
+   "from": "sec:Чувствительные данные в журнале, артефактах и журналах прогона",
+   "to": "req:repository-layout/README корня называет каждый каталог первого уровня",
+   "type": "refines",
+   "at": "security.md:10"
+  },
+  {
+   "from": "sec:Состав поставки: файлы разработки уходят пользователю",
+   "to": "req:project-installer/README модуля схемы в проект не ставится",
+   "type": "refines",
+   "at": "security.md:11"
+  },
+  {
+   "from": "sec:Состав поставки: файлы разработки уходят пользователю",
+   "to": "req:repository-layout/Тесты модулей не уходят пользователю",
+   "type": "refines",
+   "at": "security.md:11"
+  },
+  {
+   "from": "cap:decision-viewer",
+   "to": "req:decision-viewer/Просмотрщик — один HTML из своего шаблона с тремя режимами",
+   "type": "contains",
+   "at": "specs/decision-viewer/spec.md:5"
+  },
+  {
+   "from": "scn:decision-viewer/Просмотрщик — один HTML из своего шаблона с тремя режимами/Сборка с атакой",
+   "to": "req:decision-viewer/Просмотрщик — один HTML из своего шаблона с тремя режимами",
+   "type": "verifies",
+   "at": "specs/decision-viewer/spec.md:8"
+  },
+  {
+   "from": "scn:decision-viewer/Просмотрщик — один HTML из своего шаблона с тремя режимами/Битый файл атаки",
+   "to": "req:decision-viewer/Просмотрщик — один HTML из своего шаблона с тремя режимами",
+   "type": "verifies",
+   "at": "specs/decision-viewer/spec.md:13"
+  },
+  {
+   "from": "scn:decision-viewer/Просмотрщик — один HTML из своего шаблона с тремя режимами/Черта в backticks и экранированная черта",
+   "to": "req:decision-viewer/Просмотрщик — один HTML из своего шаблона с тремя режимами",
+   "type": "verifies",
+   "at": "specs/decision-viewer/spec.md:18"
+  },
+  {
+   "from": "scn:decision-viewer/Просмотрщик — один HTML из своего шаблона с тремя режимами/Экранированная косая и незакрытый backtick",
+   "to": "req:decision-viewer/Просмотрщик — один HTML из своего шаблона с тремя режимами",
+   "type": "verifies",
+   "at": "specs/decision-viewer/spec.md:23"
+  },
+  {
+   "from": "scn:decision-viewer/Просмотрщик — один HTML из своего шаблона с тремя режимами/Пустая ячейка",
+   "to": "req:decision-viewer/Просмотрщик — один HTML из своего шаблона с тремя режимами",
+   "type": "verifies",
+   "at": "specs/decision-viewer/spec.md:28"
+  },
+  {
+   "from": "scn:decision-viewer/Просмотрщик — один HTML из своего шаблона с тремя режимами/Соседнего файла нет",
+   "to": "req:decision-viewer/Просмотрщик — один HTML из своего шаблона с тремя режимами",
+   "type": "verifies",
+   "at": "specs/decision-viewer/spec.md:33"
+  },
+  {
+   "from": "cap:decision-viewer",
+   "to": "req:decision-viewer/`render-html` встраивает снимок справки, сбой страницу не роняет",
+   "type": "contains",
+   "at": "specs/decision-viewer/spec.md:40"
+  },
+  {
+   "from": "req:decision-viewer/`render-html` встраивает снимок справки, сбой страницу не роняет",
+   "to": "rec:F-26",
+   "type": "traces",
+   "at": "specs/decision-viewer/spec.md:41"
+  },
+  {
+   "from": "scn:decision-viewer/`render-html` встраивает снимок справки, сбой страницу не роняет/Снимок на странице",
+   "to": "req:decision-viewer/`render-html` встраивает снимок справки, сбой страницу не роняет",
+   "type": "verifies",
+   "at": "specs/decision-viewer/spec.md:43"
+  },
+  {
+   "from": "scn:decision-viewer/`render-html` встраивает снимок справки, сбой страницу не роняет/Форка нет",
+   "to": "req:decision-viewer/`render-html` встраивает снимок справки, сбой страницу не роняет",
+   "type": "verifies",
+   "at": "specs/decision-viewer/spec.md:48"
+  },
+  {
+   "from": "scn:decision-viewer/`render-html` встраивает снимок справки, сбой страницу не роняет/Файлы изменились после снимка",
+   "to": "req:decision-viewer/`render-html` встраивает снимок справки, сбой страницу не роняет",
+   "type": "verifies",
+   "at": "specs/decision-viewer/spec.md:53"
+  },
+  {
+   "from": "scn:decision-viewer/`render-html` встраивает снимок справки, сбой страницу не роняет/Журнал из другого проекта",
+   "to": "req:decision-viewer/`render-html` встраивает снимок справки, сбой страницу не роняет",
+   "type": "verifies",
+   "at": "specs/decision-viewer/spec.md:58"
+  },
+  {
+   "from": "scn:decision-viewer/`render-html` встраивает снимок справки, сбой страницу не роняет/Команда пересборки рядом со снимком",
+   "to": "req:decision-viewer/`render-html` встраивает снимок справки, сбой страницу не роняет",
+   "type": "verifies",
+   "at": "specs/decision-viewer/spec.md:63"
+  },
+  {
+   "from": "cap:decision-viewer",
+   "to": "req:decision-viewer/Скилл просмотрщика знает о внесении кнопкой",
+   "type": "contains",
+   "at": "specs/decision-viewer/spec.md:70"
+  },
+  {
+   "from": "req:decision-viewer/Скилл просмотрщика знает о внесении кнопкой",
+   "to": "rec:F-26",
+   "type": "traces",
+   "at": "specs/decision-viewer/spec.md:71"
+  },
+  {
+   "from": "scn:decision-viewer/Скилл просмотрщика знает о внесении кнопкой/Текст скилла",
+   "to": "req:decision-viewer/Скилл просмотрщика знает о внесении кнопкой",
+   "type": "verifies",
+   "at": "specs/decision-viewer/spec.md:73"
+  },
+  {
+   "from": "scn:decision-viewer/Скилл просмотрщика знает о внесении кнопкой/Агент получил событие",
+   "to": "req:decision-viewer/Скилл просмотрщика знает о внесении кнопкой",
+   "type": "verifies",
+   "at": "specs/decision-viewer/spec.md:78"
+  },
+  {
+   "from": "scn:decision-viewer/Скилл просмотрщика знает о внесении кнопкой/Черновик не слово",
+   "to": "req:decision-viewer/Скилл просмотрщика знает о внесении кнопкой",
+   "type": "verifies",
+   "at": "specs/decision-viewer/spec.md:83"
+  },
+  {
+   "from": "scn:decision-viewer/Скилл просмотрщика знает о внесении кнопкой/Строка о схеме",
+   "to": "req:decision-viewer/Скилл просмотрщика знает о внесении кнопкой",
+   "type": "verifies",
+   "at": "specs/decision-viewer/spec.md:88"
+  },
+  {
+   "from": "cap:decision-viewer",
+   "to": "req:decision-viewer/Строка таблицы атаки разбирается по соглашению markdown",
+   "type": "contains",
+   "at": "specs/decision-viewer/spec.md:97"
+  },
+  {
+   "from": "req:decision-viewer/Строка таблицы атаки разбирается по соглашению markdown",
+   "to": "req:decision-viewer/Просмотрщик — один HTML из своего шаблона с тремя режимами",
+   "type": "derives",
+   "at": "specs/decision-viewer/spec.md:98"
+  },
+  {
+   "from": "scn:decision-viewer/Строка таблицы атаки разбирается по соглашению markdown/Черта в backticks в последней ячейке",
+   "to": "req:decision-viewer/Строка таблицы атаки разбирается по соглашению markdown",
+   "type": "verifies",
+   "at": "specs/decision-viewer/spec.md:100"
+  },
+  {
+   "from": "cap:decision-viewer",
+   "to": "req:decision-viewer/Негодная строка таблицы атаки — ошибка с местом",
+   "type": "contains",
+   "at": "specs/decision-viewer/spec.md:107"
+  },
+  {
+   "from": "req:decision-viewer/Негодная строка таблицы атаки — ошибка с местом",
+   "to": "req:decision-viewer/Просмотрщик — один HTML из своего шаблона с тремя режимами",
+   "type": "derives",
+   "at": "specs/decision-viewer/spec.md:108"
+  },
+  {
+   "from": "scn:decision-viewer/Негодная строка таблицы атаки — ошибка с местом/Лишняя ячейка",
+   "to": "req:decision-viewer/Негодная строка таблицы атаки — ошибка с местом",
+   "type": "verifies",
+   "at": "specs/decision-viewer/spec.md:110"
+  },
+  {
+   "from": "cap:decision-viewer",
+   "to": "req:decision-viewer/Страница `symphysis.html` работает без соседних файлов",
+   "type": "contains",
+   "at": "specs/decision-viewer/spec.md:117"
+  },
+  {
+   "from": "req:decision-viewer/Страница `symphysis.html` работает без соседних файлов",
+   "to": "req:decision-viewer/Просмотрщик — один HTML из своего шаблона с тремя режимами",
+   "type": "derives",
+   "at": "specs/decision-viewer/spec.md:118"
+  },
+  {
+   "from": "scn:decision-viewer/Страница `symphysis.html` работает без соседних файлов/Страница перенесена из проекта",
+   "to": "req:decision-viewer/Страница `symphysis.html` работает без соседних файлов",
+   "type": "verifies",
+   "at": "specs/decision-viewer/spec.md:120"
+  },
+  {
+   "from": "cap:module-declaration",
+   "to": "req:module-declaration/README модуля несёт имя и род во frontmatter",
+   "type": "contains",
+   "at": "specs/module-declaration/spec.md:9"
+  },
+  {
+   "from": "req:module-declaration/README модуля несёт имя и род во frontmatter",
+   "to": "rec:F-02",
+   "type": "traces",
+   "at": "specs/module-declaration/spec.md:10"
+  },
+  {
+   "from": "req:module-declaration/README модуля несёт имя и род во frontmatter",
+   "to": "rec:F-03",
+   "type": "traces",
+   "at": "specs/module-declaration/spec.md:10"
+  },
+  {
+   "from": "req:module-declaration/README модуля несёт имя и род во frontmatter",
+   "to": "rec:F-16",
+   "type": "traces",
+   "at": "specs/module-declaration/spec.md:10"
+  },
+  {
+   "from": "req:module-declaration/README модуля несёт имя и род во frontmatter",
+   "to": "rec:F-21",
+   "type": "traces",
+   "at": "specs/module-declaration/spec.md:10"
+  },
+  {
+   "from": "req:module-declaration/README модуля несёт имя и род во frontmatter",
+   "to": "rec:F-39",
+   "type": "traces",
+   "at": "specs/module-declaration/spec.md:10"
+  },
+  {
+   "from": "scn:module-declaration/README модуля несёт имя и род во frontmatter/README модуля ядра",
+   "to": "req:module-declaration/README модуля несёт имя и род во frontmatter",
+   "type": "verifies",
+   "at": "specs/module-declaration/spec.md:12"
+  },
+  {
+   "from": "scn:module-declaration/README модуля несёт имя и род во frontmatter/Род вне двух значений",
+   "to": "req:module-declaration/README модуля несёт имя и род во frontmatter",
+   "type": "verifies",
+   "at": "specs/module-declaration/spec.md:17"
+  },
+  {
+   "from": "scn:module-declaration/README модуля несёт имя и род во frontmatter/README без frontmatter",
+   "to": "req:module-declaration/README модуля несёт имя и род во frontmatter",
+   "type": "verifies",
+   "at": "specs/module-declaration/spec.md:22"
+  },
+  {
+   "from": "scn:module-declaration/README модуля несёт имя и род во frontmatter/Пустое имя модуля",
+   "to": "req:module-declaration/README модуля несёт имя и род во frontmatter",
+   "type": "verifies",
+   "at": "specs/module-declaration/spec.md:27"
+  },
+  {
+   "from": "scn:module-declaration/README модуля несёт имя и род во frontmatter/Два модуля с одним именем",
+   "to": "req:module-declaration/README модуля несёт имя и род во frontmatter",
+   "type": "verifies",
+   "at": "specs/module-declaration/spec.md:33"
+  },
+  {
+   "from": "req:module-declaration/README модуля несёт имя и род во frontmatter",
+   "to": "rec:F-47",
+   "type": "traces",
+   "at": "specs/module-declaration/spec.md:38"
+  },
+  {
+   "from": "req:module-declaration/README модуля несёт имя и род во frontmatter",
+   "to": "rec:F-48",
+   "type": "traces",
+   "at": "specs/module-declaration/spec.md:38"
+  },
+  {
+   "from": "cap:module-declaration",
+   "to": "req:module-declaration/README модуля описывает вложенные каталоги первого уровня",
+   "type": "contains",
+   "at": "specs/module-declaration/spec.md:41"
+  },
+  {
+   "from": "req:module-declaration/README модуля описывает вложенные каталоги первого уровня",
+   "to": "rec:F-03",
+   "type": "traces",
+   "at": "specs/module-declaration/spec.md:42"
+  },
+  {
+   "from": "scn:module-declaration/README модуля описывает вложенные каталоги первого уровня/Вложенный каталог описан",
+   "to": "req:module-declaration/README модуля описывает вложенные каталоги первого уровня",
+   "type": "verifies",
+   "at": "specs/module-declaration/spec.md:44"
+  },
+  {
+   "from": "scn:module-declaration/README модуля описывает вложенные каталоги первого уровня/Каталог появился без описания",
+   "to": "req:module-declaration/README модуля описывает вложенные каталоги первого уровня",
+   "type": "verifies",
+   "at": "specs/module-declaration/spec.md:49"
+  },
+  {
+   "from": "scn:module-declaration/README модуля описывает вложенные каталоги первого уровня/Вложенный каталог вне git",
+   "to": "req:module-declaration/README модуля описывает вложенные каталоги первого уровня",
+   "type": "verifies",
+   "at": "specs/module-declaration/spec.md:54"
+  },
+  {
+   "from": "req:module-declaration/README модуля описывает вложенные каталоги первого уровня",
+   "to": "rec:F-49",
+   "type": "traces",
+   "at": "specs/module-declaration/spec.md:59"
+  },
+  {
+   "from": "req:module-declaration/README модуля описывает вложенные каталоги первого уровня",
+   "to": "rec:F-50",
+   "type": "traces",
+   "at": "specs/module-declaration/spec.md:59"
+  },
+  {
+   "from": "req:module-declaration/README модуля описывает вложенные каталоги первого уровня",
+   "to": "rec:F-55",
+   "type": "traces",
+   "at": "specs/module-declaration/spec.md:60"
+  },
+  {
+   "from": "cap:module-declaration",
+   "to": "req:module-declaration/README модуля не называет каталог, которого нет",
+   "type": "contains",
+   "at": "specs/module-declaration/spec.md:62"
+  },
+  {
+   "from": "req:module-declaration/README модуля не называет каталог, которого нет",
+   "to": "rec:F-03",
+   "type": "traces",
+   "at": "specs/module-declaration/spec.md:63"
+  },
+  {
+   "from": "req:module-declaration/README модуля не называет каталог, которого нет",
+   "to": "rec:F-55",
+   "type": "traces",
+   "at": "specs/module-declaration/spec.md:63"
+  },
+  {
+   "from": "scn:module-declaration/README модуля не называет каталог, которого нет/Ссылка на удалённый каталог",
+   "to": "req:module-declaration/README модуля не называет каталог, которого нет",
+   "type": "verifies",
+   "at": "specs/module-declaration/spec.md:65"
+  },
+  {
+   "from": "cap:plugin-core-contract",
+   "to": "req:plugin-core-contract/Заданный `SYMPHYSIS_ROOT` без ядра — падение, а не пропуск",
+   "type": "contains",
+   "at": "specs/plugin-core-contract/spec.md:5"
+  },
+  {
+   "from": "scn:plugin-core-contract/Заданный `SYMPHYSIS_ROOT` без ядра — падение, а не пропуск/Опечатка в пути",
+   "to": "req:plugin-core-contract/Заданный `SYMPHYSIS_ROOT` без ядра — падение, а не пропуск",
+   "type": "verifies",
+   "at": "specs/plugin-core-contract/spec.md:8"
+  },
+  {
+   "from": "scn:plugin-core-contract/Заданный `SYMPHYSIS_ROOT` без ядра — падение, а не пропуск/Пустая переменная",
+   "to": "req:plugin-core-contract/Заданный `SYMPHYSIS_ROOT` без ядра — падение, а не пропуск",
+   "type": "verifies",
+   "at": "specs/plugin-core-contract/spec.md:13"
+  },
+  {
+   "from": "scn:plugin-core-contract/Заданный `SYMPHYSIS_ROOT` без ядра — падение, а не пропуск/Соседний клон в модульной раскладке",
+   "to": "req:plugin-core-contract/Заданный `SYMPHYSIS_ROOT` без ядра — падение, а не пропуск",
+   "type": "verifies",
+   "at": "specs/plugin-core-contract/spec.md:18"
+  },
+  {
+   "from": "cap:project-installer",
+   "to": "req:project-installer/`check`, запущенный из клона, сигналит устаревший `payload`",
+   "type": "contains",
+   "at": "specs/project-installer/spec.md:5"
+  },
+  {
+   "from": "scn:project-installer/`check`, запущенный из клона, сигналит устаревший `payload`/`payload` старее исходников",
+   "to": "req:project-installer/`check`, запущенный из клона, сигналит устаревший `payload`",
+   "type": "verifies",
+   "at": "specs/project-installer/spec.md:8"
+  },
+  {
+   "from": "scn:project-installer/`check`, запущенный из клона, сигналит устаревший `payload`/Инсталлятор не из клона",
+   "to": "req:project-installer/`check`, запущенный из клона, сигналит устаревший `payload`",
+   "type": "verifies",
+   "at": "specs/project-installer/spec.md:13"
+  },
+  {
+   "from": "scn:project-installer/`check`, запущенный из клона, сигналит устаревший `payload`/Клон в модульной раскладке",
+   "to": "req:project-installer/`check`, запущенный из клона, сигналит устаревший `payload`",
+   "type": "verifies",
+   "at": "specs/project-installer/spec.md:18"
+  },
+  {
+   "from": "req:project-installer/`check`, запущенный из клона, сигналит устаревший `payload`",
+   "to": "rec:F-60",
+   "type": "traces",
+   "at": "specs/project-installer/spec.md:23"
+  },
+  {
+   "from": "cap:project-installer",
+   "to": "req:project-installer/README модуля схемы в проект не ставится",
+   "type": "contains",
+   "at": "specs/project-installer/spec.md:28"
+  },
+  {
+   "from": "req:project-installer/README модуля схемы в проект не ставится",
+   "to": "rec:F-36",
+   "type": "traces",
+   "at": "specs/project-installer/spec.md:29"
+  },
+  {
+   "from": "scn:project-installer/README модуля схемы в проект не ставится/Установка без README схемы",
+   "to": "req:project-installer/README модуля схемы в проект не ставится",
+   "type": "verifies",
+   "at": "specs/project-installer/spec.md:31"
+  },
+  {
+   "from": "scn:project-installer/README модуля схемы в проект не ставится/Сверка не ждёт README",
+   "to": "req:project-installer/README модуля схемы в проект не ставится",
+   "type": "verifies",
+   "at": "specs/project-installer/spec.md:36"
+  },
+  {
+   "from": "cap:repository-layout",
+   "to": "req:repository-layout/README корня называет каждый каталог первого уровня",
+   "type": "contains",
+   "at": "specs/repository-layout/spec.md:9"
+  },
+  {
+   "from": "req:repository-layout/README корня называет каждый каталог первого уровня",
+   "to": "rec:F-22",
+   "type": "traces",
+   "at": "specs/repository-layout/spec.md:10"
+  },
+  {
+   "from": "scn:repository-layout/README корня называет каждый каталог первого уровня/Каталог без пометки",
+   "to": "req:repository-layout/README корня называет каждый каталог первого уровня",
+   "type": "verifies",
+   "at": "specs/repository-layout/spec.md:12"
+  },
+  {
+   "from": "scn:repository-layout/README корня называет каждый каталог первого уровня/Контур разработки с README модуля",
+   "to": "req:repository-layout/README корня называет каждый каталог первого уровня",
+   "type": "verifies",
+   "at": "specs/repository-layout/spec.md:17"
+  },
+  {
+   "from": "scn:repository-layout/README корня называет каждый каталог первого уровня/Каталоги корня вне git",
+   "to": "req:repository-layout/README корня называет каждый каталог первого уровня",
+   "type": "verifies",
+   "at": "specs/repository-layout/spec.md:22"
+  },
+  {
+   "from": "req:repository-layout/README корня называет каждый каталог первого уровня",
+   "to": "rec:F-51",
+   "type": "traces",
+   "at": "specs/repository-layout/spec.md:27"
+  },
+  {
+   "from": "req:repository-layout/README корня называет каждый каталог первого уровня",
+   "to": "rec:F-56",
+   "type": "traces",
+   "at": "specs/repository-layout/spec.md:28"
+  },
+  {
+   "from": "req:repository-layout/README корня называет каждый каталог первого уровня",
+   "to": "rec:F-59",
+   "type": "traces",
+   "at": "specs/repository-layout/spec.md:28"
+  },
+  {
+   "from": "cap:repository-layout",
+   "to": "req:repository-layout/Корень плагина описывает репозиторий, README пакета — отдельный файл",
+   "type": "contains",
+   "at": "specs/repository-layout/spec.md:30"
+  },
+  {
+   "from": "req:repository-layout/Корень плагина описывает репозиторий, README пакета — отдельный файл",
+   "to": "rec:F-38",
+   "type": "traces",
+   "at": "specs/repository-layout/spec.md:31"
+  },
+  {
+   "from": "scn:repository-layout/Корень плагина описывает репозиторий, README пакета — отдельный файл/Пакет несёт README пакета",
+   "to": "req:repository-layout/Корень плагина описывает репозиторий, README пакета — отдельный файл",
+   "type": "verifies",
+   "at": "specs/repository-layout/spec.md:33"
+  },
+  {
+   "from": "cap:repository-layout",
+   "to": "req:repository-layout/Модуль — каталог на своём месте",
+   "type": "contains",
+   "at": "specs/repository-layout/spec.md:40"
+  },
+  {
+   "from": "req:repository-layout/Модуль — каталог на своём месте",
+   "to": "rec:F-12",
+   "type": "traces",
+   "at": "specs/repository-layout/spec.md:41"
+  },
+  {
+   "from": "req:repository-layout/Модуль — каталог на своём месте",
+   "to": "rec:F-17",
+   "type": "traces",
+   "at": "specs/repository-layout/spec.md:41"
+  },
+  {
+   "from": "req:repository-layout/Модуль — каталог на своём месте",
+   "to": "rec:F-31",
+   "type": "traces",
+   "at": "specs/repository-layout/spec.md:41"
+  },
+  {
+   "from": "scn:repository-layout/Модуль — каталог на своём месте/Модуль не на своём месте",
+   "to": "req:repository-layout/Модуль — каталог на своём месте",
+   "type": "verifies",
+   "at": "specs/repository-layout/spec.md:43"
+  },
+  {
+   "from": "cap:repository-layout",
+   "to": "req:repository-layout/Файл принадлежит одному модулю",
+   "type": "contains",
+   "at": "specs/repository-layout/spec.md:50"
+  },
+  {
+   "from": "req:repository-layout/Файл принадлежит одному модулю",
+   "to": "rec:F-03",
+   "type": "traces",
+   "at": "specs/repository-layout/spec.md:51"
+  },
+  {
+   "from": "req:repository-layout/Файл принадлежит одному модулю",
+   "to": "rec:F-37",
+   "type": "traces",
+   "at": "specs/repository-layout/spec.md:51"
+  },
+  {
+   "from": "scn:repository-layout/Файл принадлежит одному модулю/Вложенный модуль",
+   "to": "req:repository-layout/Файл принадлежит одному модулю",
+   "type": "verifies",
+   "at": "specs/repository-layout/spec.md:53"
+  },
+  {
+   "from": "scn:repository-layout/Файл принадлежит одному модулю/Файл хука в каталоге своего модуля",
+   "to": "req:repository-layout/Файл принадлежит одному модулю",
+   "type": "verifies",
+   "at": "specs/repository-layout/spec.md:58"
+  },
+  {
+   "from": "req:repository-layout/Файл принадлежит одному модулю",
+   "to": "rec:F-52",
+   "type": "traces",
+   "at": "specs/repository-layout/spec.md:63"
+  },
+  {
+   "from": "req:repository-layout/Файл принадлежит одному модулю",
+   "to": "rec:F-57",
+   "type": "traces",
+   "at": "specs/repository-layout/spec.md:64"
+  },
+  {
+   "from": "cap:repository-layout",
+   "to": "req:repository-layout/Тесты модуля лежат в его каталоге",
+   "type": "contains",
+   "at": "specs/repository-layout/spec.md:66"
+  },
+  {
+   "from": "req:repository-layout/Тесты модуля лежат в его каталоге",
+   "to": "rec:F-23",
+   "type": "traces",
+   "at": "specs/repository-layout/spec.md:67"
+  },
+  {
+   "from": "scn:repository-layout/Тесты модуля лежат в его каталоге/Тест модуля находится общей командой",
+   "to": "req:repository-layout/Тесты модуля лежат в его каталоге",
+   "type": "verifies",
+   "at": "specs/repository-layout/spec.md:69"
+  },
+  {
+   "from": "scn:repository-layout/Тесты модуля лежат в его каталоге/Юнит-тест модуля плагина собирается",
+   "to": "req:repository-layout/Тесты модуля лежат в его каталоге",
+   "type": "verifies",
+   "at": "specs/repository-layout/spec.md:74"
+  },
+  {
+   "from": "req:repository-layout/Тесты модуля лежат в его каталоге",
+   "to": "rec:F-53",
+   "type": "traces",
+   "at": "specs/repository-layout/spec.md:79"
+  },
+  {
+   "from": "req:repository-layout/Тесты модуля лежат в его каталоге",
+   "to": "rec:F-58",
+   "type": "traces",
+   "at": "specs/repository-layout/spec.md:80"
+  },
+  {
+   "from": "cap:repository-layout",
+   "to": "req:repository-layout/Тест структуры в каждом репозитории",
+   "type": "contains",
+   "at": "specs/repository-layout/spec.md:82"
+  },
+  {
+   "from": "req:repository-layout/Тест структуры в каждом репозитории",
+   "to": "rec:F-25",
+   "type": "traces",
+   "at": "specs/repository-layout/spec.md:83"
+  },
+  {
+   "from": "scn:repository-layout/Тест структуры в каждом репозитории/Новый каталог без описания",
+   "to": "req:repository-layout/Тест структуры в каждом репозитории",
+   "type": "verifies",
+   "at": "specs/repository-layout/spec.md:85"
+  },
+  {
+   "from": "cap:repository-layout",
+   "to": "req:repository-layout/README корня не называет каталог, которого нет",
+   "type": "contains",
+   "at": "specs/repository-layout/spec.md:92"
+  },
+  {
+   "from": "req:repository-layout/README корня не называет каталог, которого нет",
+   "to": "rec:F-22",
+   "type": "traces",
+   "at": "specs/repository-layout/spec.md:93"
+  },
+  {
+   "from": "req:repository-layout/README корня не называет каталог, которого нет",
+   "to": "rec:F-56",
+   "type": "traces",
+   "at": "specs/repository-layout/spec.md:93"
+  },
+  {
+   "from": "scn:repository-layout/README корня не называет каталог, которого нет/Строка о каталоге, которого нет",
+   "to": "req:repository-layout/README корня не называет каталог, которого нет",
+   "type": "verifies",
+   "at": "specs/repository-layout/spec.md:95"
+  },
+  {
+   "from": "cap:repository-layout",
+   "to": "req:repository-layout/Общий файл не копируется в модули",
+   "type": "contains",
+   "at": "specs/repository-layout/spec.md:102"
+  },
+  {
+   "from": "req:repository-layout/Общий файл не копируется в модули",
+   "to": "rec:F-03",
+   "type": "traces",
+   "at": "specs/repository-layout/spec.md:103"
+  },
+  {
+   "from": "req:repository-layout/Общий файл не копируется в модули",
+   "to": "rec:F-57",
+   "type": "traces",
+   "at": "specs/repository-layout/spec.md:103"
+  },
+  {
+   "from": "scn:repository-layout/Общий файл не копируется в модули/Копия в двух модулях",
+   "to": "req:repository-layout/Общий файл не копируется в модули",
+   "type": "verifies",
+   "at": "specs/repository-layout/spec.md:105"
+  },
+  {
+   "from": "cap:repository-layout",
+   "to": "req:repository-layout/Тесты модулей не уходят пользователю",
+   "type": "contains",
+   "at": "specs/repository-layout/spec.md:112"
+  },
+  {
+   "from": "req:repository-layout/Тесты модулей не уходят пользователю",
+   "to": "rec:F-23",
+   "type": "traces",
+   "at": "specs/repository-layout/spec.md:113"
+  },
+  {
+   "from": "req:repository-layout/Тесты модулей не уходят пользователю",
+   "to": "rec:F-58",
+   "type": "traces",
+   "at": "specs/repository-layout/spec.md:113"
+  },
+  {
+   "from": "scn:repository-layout/Тесты модулей не уходят пользователю/Тесты модуля схемы",
+   "to": "req:repository-layout/Тесты модулей не уходят пользователю",
+   "type": "verifies",
+   "at": "specs/repository-layout/spec.md:115"
+  },
+  {
+   "from": "cap:requirement-probes",
+   "to": "req:requirement-probes/Текст пробы объясняет задачу подробнее",
+   "type": "contains",
+   "at": "specs/requirement-probes/spec.md:5"
+  },
+  {
+   "from": "scn:requirement-probes/Текст пробы объясняет задачу подробнее/Чтение текста скилла",
+   "to": "req:requirement-probes/Текст пробы объясняет задачу подробнее",
+   "type": "verifies",
+   "at": "specs/requirement-probes/spec.md:8"
+  },
+  {
+   "from": "cap:skill-transfer",
+   "to": "req:skill-transfer/Скилл несёт копию источника с copyright notice и перечень смысловых отличий",
+   "type": "contains",
+   "at": "specs/skill-transfer/spec.md:5"
+  },
+  {
+   "from": "scn:skill-transfer/Скилл несёт копию источника с copyright notice и перечень смысловых отличий/Состав каталога скилла",
+   "to": "req:skill-transfer/Скилл несёт копию источника с copyright notice и перечень смысловых отличий",
+   "type": "verifies",
+   "at": "specs/skill-transfer/spec.md:8"
+  },
+  {
+   "from": "scn:skill-transfer/Скилл несёт копию источника с copyright notice и перечень смысловых отличий/Скилл без источника GSD",
+   "to": "req:skill-transfer/Скилл несёт копию источника с copyright notice и перечень смысловых отличий",
+   "type": "verifies",
+   "at": "specs/skill-transfer/spec.md:13"
+  },
+  {
+   "from": "cap:step-help",
+   "to": "req:step-help/Скрипт считает текущий шаг и чей ход",
+   "type": "contains",
+   "at": "specs/step-help/spec.md:5"
+  },
+  {
+   "from": "req:step-help/Скрипт считает текущий шаг и чей ход",
+   "to": "rec:F-26",
+   "type": "traces",
+   "at": "specs/step-help/spec.md:6"
+  },
+  {
+   "from": "scn:step-help/Скрипт считает текущий шаг и чей ход/Открытая развилка при готовом следующем шаге",
+   "to": "req:step-help/Скрипт считает текущий шаг и чей ход",
+   "type": "verifies",
+   "at": "specs/step-help/spec.md:8"
+  },
+  {
+   "from": "scn:step-help/Скрипт считает текущий шаг и чей ход/Припаркованная развилка",
+   "to": "req:step-help/Скрипт считает текущий шаг и чей ход",
+   "type": "verifies",
+   "at": "specs/step-help/spec.md:13"
+  },
+  {
+   "from": "scn:step-help/Скрипт считает текущий шаг и чей ход/Журнал не читается",
+   "to": "req:step-help/Скрипт считает текущий шаг и чей ход",
+   "type": "verifies",
+   "at": "specs/step-help/spec.md:18"
+  },
+  {
+   "from": "scn:step-help/Скрипт считает текущий шаг и чей ход/Несколько готовых шагов после `specs`",
+   "to": "req:step-help/Скрипт считает текущий шаг и чей ход",
+   "type": "verifies",
+   "at": "specs/step-help/spec.md:23"
+  },
+  {
+   "from": "scn:step-help/Скрипт считает текущий шаг и чей ход/Вызванная атака",
+   "to": "req:step-help/Скрипт считает текущий шаг и чей ход",
+   "type": "verifies",
+   "at": "specs/step-help/spec.md:28"
+  },
+  {
+   "from": "scn:step-help/Скрипт считает текущий шаг и чей ход/Задачи идут",
+   "to": "req:step-help/Скрипт считает текущий шаг и чей ход",
+   "type": "verifies",
+   "at": "specs/step-help/spec.md:33"
+  },
+  {
+   "from": "scn:step-help/Скрипт считает текущий шаг и чей ход/Задачи закрыты",
+   "to": "req:step-help/Скрипт считает текущий шаг и чей ход",
+   "type": "verifies",
+   "at": "specs/step-help/spec.md:38"
+  },
+  {
+   "from": "scn:step-help/Скрипт считает текущий шаг и чей ход/Реализация заблокирована",
+   "to": "req:step-help/Скрипт считает текущий шаг и чей ход",
+   "type": "verifies",
+   "at": "specs/step-help/spec.md:43"
+  },
+  {
+   "from": "scn:step-help/Скрипт считает текущий шаг и чей ход/Активных изменений нет",
+   "to": "req:step-help/Скрипт считает текущий шаг и чей ход",
+   "type": "verifies",
+   "at": "specs/step-help/spec.md:48"
+  },
+  {
+   "from": "scn:step-help/Скрипт считает текущий шаг и чей ход/Изменение только что создано",
+   "to": "req:step-help/Скрипт считает текущий шаг и чей ход",
+   "type": "verifies",
+   "at": "specs/step-help/spec.md:53"
+  },
+  {
+   "from": "scn:step-help/Скрипт считает текущий шаг и чей ход/Первые шаги пропущены",
+   "to": "req:step-help/Скрипт считает текущий шаг и чей ход",
+   "type": "verifies",
+   "at": "specs/step-help/spec.md:58"
+  },
+  {
+   "from": "scn:step-help/Скрипт считает текущий шаг и чей ход/Текущий шаг совпадает с командой",
+   "to": "req:step-help/Скрипт считает текущий шаг и чей ход",
+   "type": "verifies",
+   "at": "specs/step-help/spec.md:63"
+  },
+  {
+   "from": "cap:step-help",
+   "to": "req:step-help/Справка не становится гейтом и не меняет файлы",
+   "type": "contains",
+   "at": "specs/step-help/spec.md:70"
+  },
+  {
+   "from": "scn:step-help/Справка не становится гейтом и не меняет файлы/Дерево проекта не меняется",
+   "to": "req:step-help/Справка не становится гейтом и не меняет файлы",
+   "type": "verifies",
+   "at": "specs/step-help/spec.md:73"
+  },
+  {
+   "from": "scn:step-help/Справка не становится гейтом и не меняет файлы/Скиллы о скрипте не знают",
+   "to": "req:step-help/Справка не становится гейтом и не меняет файлы",
+   "type": "verifies",
+   "at": "specs/step-help/spec.md:78"
+  },
+  {
+   "from": "scn:step-help/Справка не становится гейтом и не меняет файлы/Поиск не нашёл скиллов",
+   "to": "req:step-help/Справка не становится гейтом и не меняет файлы",
+   "type": "verifies",
+   "at": "specs/step-help/spec.md:83"
+  },
+  {
+   "from": "req:step-help/Справка не становится гейтом и не меняет файлы",
+   "to": "rec:F-54",
+   "type": "traces",
+   "at": "specs/step-help/spec.md:88"
+  },
+  {
+   "from": "cap:trace-graph",
+   "to": "req:trace-graph/Граф собирается из файлов изменения",
+   "type": "contains",
+   "at": "specs/trace-graph/spec.md:5"
+  },
+  {
+   "from": "req:trace-graph/Граф собирается из файлов изменения",
+   "to": "rec:F-26",
+   "type": "traces",
+   "at": "specs/trace-graph/spec.md:6"
+  },
+  {
+   "from": "scn:trace-graph/Граф собирается из файлов изменения/Только что созданное изменение",
+   "to": "req:trace-graph/Граф собирается из файлов изменения",
+   "type": "verifies",
+   "at": "specs/trace-graph/spec.md:8"
+  },
+  {
+   "from": "scn:trace-graph/Граф собирается из файлов изменения/Граф растёт вместе с артефактами",
+   "to": "req:trace-graph/Граф собирается из файлов изменения",
+   "type": "verifies",
+   "at": "specs/trace-graph/spec.md:13"
+  },
+  {
+   "from": "scn:trace-graph/Граф собирается из файлов изменения/Связь правится через файл",
+   "to": "req:trace-graph/Граф собирается из файлов изменения",
+   "type": "verifies",
+   "at": "specs/trace-graph/spec.md:18"
+  },
+  {
+   "from": "scn:trace-graph/Граф собирается из файлов изменения/Журнал не разбирается",
+   "to": "req:trace-graph/Граф собирается из файлов изменения",
+   "type": "verifies",
+   "at": "specs/trace-graph/spec.md:23"
+  },
+  {
+   "from": "scn:trace-graph/Граф собирается из файлов изменения/Журнал негоден по схеме",
+   "to": "req:trace-graph/Граф собирается из файлов изменения",
+   "type": "verifies",
+   "at": "specs/trace-graph/spec.md:29"
+  },
+  {
+   "from": "task:1.1",
+   "to": "rec:F-22",
+   "type": "traces",
+   "at": "tasks.md:5"
+  },
+  {
+   "from": "task:1.1",
+   "to": "rec:F-25",
+   "type": "traces",
+   "at": "tasks.md:5"
+  },
+  {
+   "from": "task:1.1",
+   "to": "rec:F-51",
+   "type": "traces",
+   "at": "tasks.md:5"
+  },
+  {
+   "from": "task:1.1",
+   "to": "rec:F-56",
+   "type": "traces",
+   "at": "tasks.md:5"
+  },
+  {
+   "from": "task:1.1",
+   "to": "scn:repository-layout/README корня называет каждый каталог первого уровня/Каталог без пометки",
+   "type": "satisfies",
+   "at": "tasks.md:5"
+  },
+  {
+   "from": "task:1.1",
+   "to": "scn:repository-layout/README корня называет каждый каталог первого уровня/Каталоги корня вне git",
+   "type": "satisfies",
+   "at": "tasks.md:5"
+  },
+  {
+   "from": "task:1.1",
+   "to": "scn:repository-layout/README корня называет каждый каталог первого уровня/Контур разработки с README модуля",
+   "type": "satisfies",
+   "at": "tasks.md:5"
+  },
+  {
+   "from": "task:1.1",
+   "to": "scn:repository-layout/README корня не называет каталог, которого нет/Строка о каталоге, которого нет",
+   "type": "satisfies",
+   "at": "tasks.md:5"
+  },
+  {
+   "from": "task:1.2",
+   "to": "rec:F-21",
+   "type": "traces",
+   "at": "tasks.md:6"
+  },
+  {
+   "from": "task:1.2",
+   "to": "rec:F-39",
+   "type": "traces",
+   "at": "tasks.md:6"
+  },
+  {
+   "from": "task:1.2",
+   "to": "rec:F-47",
+   "type": "traces",
+   "at": "tasks.md:6"
+  },
+  {
+   "from": "task:1.2",
+   "to": "rec:F-48",
+   "type": "traces",
+   "at": "tasks.md:6"
+  },
+  {
+   "from": "task:1.2",
+   "to": "scn:module-declaration/README модуля несёт имя и род во frontmatter/README без frontmatter",
+   "type": "satisfies",
+   "at": "tasks.md:6"
+  },
+  {
+   "from": "task:1.2",
+   "to": "scn:module-declaration/README модуля несёт имя и род во frontmatter/README модуля ядра",
+   "type": "satisfies",
+   "at": "tasks.md:6"
+  },
+  {
+   "from": "task:1.2",
+   "to": "scn:module-declaration/README модуля несёт имя и род во frontmatter/Два модуля с одним именем",
+   "type": "satisfies",
+   "at": "tasks.md:6"
+  },
+  {
+   "from": "task:1.2",
+   "to": "scn:module-declaration/README модуля несёт имя и род во frontmatter/Пустое имя модуля",
+   "type": "satisfies",
+   "at": "tasks.md:6"
+  },
+  {
+   "from": "task:1.2",
+   "to": "scn:module-declaration/README модуля несёт имя и род во frontmatter/Род вне двух значений",
+   "type": "satisfies",
+   "at": "tasks.md:6"
+  },
+  {
+   "from": "task:1.3",
+   "to": "rec:F-03",
+   "type": "traces",
+   "at": "tasks.md:7"
+  },
+  {
+   "from": "task:1.3",
+   "to": "rec:F-49",
+   "type": "traces",
+   "at": "tasks.md:7"
+  },
+  {
+   "from": "task:1.3",
+   "to": "rec:F-50",
+   "type": "traces",
+   "at": "tasks.md:7"
+  },
+  {
+   "from": "task:1.3",
+   "to": "rec:F-55",
+   "type": "traces",
+   "at": "tasks.md:7"
+  },
+  {
+   "from": "task:1.3",
+   "to": "scn:module-declaration/README модуля не называет каталог, которого нет/Ссылка на удалённый каталог",
+   "type": "satisfies",
+   "at": "tasks.md:7"
+  },
+  {
+   "from": "task:1.3",
+   "to": "scn:module-declaration/README модуля описывает вложенные каталоги первого уровня/Вложенный каталог вне git",
+   "type": "satisfies",
+   "at": "tasks.md:7"
+  },
+  {
+   "from": "task:1.3",
+   "to": "scn:module-declaration/README модуля описывает вложенные каталоги первого уровня/Вложенный каталог описан",
+   "type": "satisfies",
+   "at": "tasks.md:7"
+  },
+  {
+   "from": "task:1.3",
+   "to": "scn:module-declaration/README модуля описывает вложенные каталоги первого уровня/Каталог появился без описания",
+   "type": "satisfies",
+   "at": "tasks.md:7"
+  },
+  {
+   "from": "task:1.4",
+   "to": "rec:F-12",
+   "type": "traces",
+   "at": "tasks.md:8"
+  },
+  {
+   "from": "task:1.4",
+   "to": "rec:F-17",
+   "type": "traces",
+   "at": "tasks.md:8"
+  },
+  {
+   "from": "task:1.4",
+   "to": "rec:F-37",
+   "type": "traces",
+   "at": "tasks.md:8"
+  },
+  {
+   "from": "task:1.4",
+   "to": "scn:repository-layout/Модуль — каталог на своём месте/Модуль не на своём месте",
+   "type": "satisfies",
+   "at": "tasks.md:8"
+  },
+  {
+   "from": "task:1.4",
+   "to": "scn:repository-layout/Файл принадлежит одному модулю/Вложенный модуль",
+   "type": "satisfies",
+   "at": "tasks.md:8"
+  },
+  {
+   "from": "task:1.5",
+   "to": "rec:F-57",
+   "type": "traces",
+   "at": "tasks.md:9"
+  },
+  {
+   "from": "task:1.5",
+   "to": "scn:repository-layout/Общий файл не копируется в модули/Копия в двух модулях",
+   "type": "satisfies",
+   "at": "tasks.md:9"
+  },
+  {
+   "from": "task:2.1",
+   "to": "rec:F-27",
+   "type": "traces",
+   "at": "tasks.md:13"
+  },
+  {
+   "from": "task:2.1",
+   "to": "rec:F-34",
+   "type": "traces",
+   "at": "tasks.md:13"
+  },
+  {
+   "from": "task:2.2",
+   "to": "rec:F-27",
+   "type": "traces",
+   "at": "tasks.md:14"
+  },
+  {
+   "from": "task:2.2",
+   "to": "rec:F-33",
+   "type": "traces",
+   "at": "tasks.md:14"
+  },
+  {
+   "from": "task:2.2",
+   "to": "scn:decision-viewer/Негодная строка таблицы атаки — ошибка с местом/Лишняя ячейка",
+   "type": "satisfies",
+   "at": "tasks.md:14"
+  },
+  {
+   "from": "task:2.2",
+   "to": "scn:decision-viewer/Страница `symphysis.html` работает без соседних файлов/Страница перенесена из проекта",
+   "type": "satisfies",
+   "at": "tasks.md:14"
+  },
+  {
+   "from": "task:2.2",
+   "to": "scn:decision-viewer/Строка таблицы атаки разбирается по соглашению markdown/Черта в backticks в последней ячейке",
+   "type": "satisfies",
+   "at": "tasks.md:14"
+  },
+  {
+   "from": "task:2.3",
+   "to": "rec:F-33",
+   "type": "traces",
+   "at": "tasks.md:15"
+  },
+  {
+   "from": "task:3.1",
+   "to": "rec:F-22",
+   "type": "traces",
+   "at": "tasks.md:19"
+  },
+  {
+   "from": "task:3.1",
+   "to": "rec:F-27",
+   "type": "traces",
+   "at": "tasks.md:19"
+  },
+  {
+   "from": "task:3.1",
+   "to": "rec:F-33",
+   "type": "traces",
+   "at": "tasks.md:19"
+  },
+  {
+   "from": "task:3.1",
+   "to": "rec:F-34",
+   "type": "traces",
+   "at": "tasks.md:19"
+  },
+  {
+   "from": "task:3.1",
+   "to": "rec:F-35",
+   "type": "traces",
+   "at": "tasks.md:19"
+  },
+  {
+   "from": "task:3.1",
+   "to": "rec:F-40",
+   "type": "traces",
+   "at": "tasks.md:19"
+  },
+  {
+   "from": "task:3.1",
+   "to": "rec:F-41",
+   "type": "traces",
+   "at": "tasks.md:19"
+  },
+  {
+   "from": "task:3.1",
+   "to": "rec:F-66",
+   "type": "traces",
+   "at": "tasks.md:19"
+  },
+  {
+   "from": "task:3.2",
+   "to": "rec:F-20",
+   "type": "traces",
+   "at": "tasks.md:20"
+  },
+  {
+   "from": "task:3.2",
+   "to": "rec:F-40",
+   "type": "traces",
+   "at": "tasks.md:20"
+  },
+  {
+   "from": "task:3.2",
+   "to": "rec:F-41",
+   "type": "traces",
+   "at": "tasks.md:20"
+  },
+  {
+   "from": "task:3.3",
+   "to": "rec:F-18",
+   "type": "traces",
+   "at": "tasks.md:21"
+  },
+  {
+   "from": "task:3.3",
+   "to": "rec:F-35",
+   "type": "traces",
+   "at": "tasks.md:21"
+  },
+  {
+   "from": "task:3.3",
+   "to": "rec:F-66",
+   "type": "traces",
+   "at": "tasks.md:21"
+  },
+  {
+   "from": "task:3.3",
+   "to": "rec:F-67",
+   "type": "traces",
+   "at": "tasks.md:21"
+  },
+  {
+   "from": "task:3.3",
+   "to": "scn:requirement-probes/Текст пробы объясняет задачу подробнее/Чтение текста скилла",
+   "type": "satisfies",
+   "at": "tasks.md:21"
+  },
+  {
+   "from": "task:3.3",
+   "to": "scn:skill-transfer/Скилл несёт копию источника с copyright notice и перечень смысловых отличий/Скилл без источника GSD",
+   "type": "satisfies",
+   "at": "tasks.md:21"
+  },
+  {
+   "from": "task:3.3",
+   "to": "scn:skill-transfer/Скилл несёт копию источника с copyright notice и перечень смысловых отличий/Состав каталога скилла",
+   "type": "satisfies",
+   "at": "tasks.md:21"
+  },
+  {
+   "from": "task:3.4",
+   "to": "rec:F-54",
+   "type": "traces",
+   "at": "tasks.md:22"
+  },
+  {
+   "from": "task:3.4",
+   "to": "scn:step-help/Справка не становится гейтом и не меняет файлы/Поиск не нашёл скиллов",
+   "type": "satisfies",
+   "at": "tasks.md:22"
+  },
+  {
+   "from": "task:3.4",
+   "to": "scn:step-help/Справка не становится гейтом и не меняет файлы/Скиллы о скрипте не знают",
+   "type": "satisfies",
+   "at": "tasks.md:22"
+  },
+  {
+   "from": "task:3.5",
+   "to": "rec:F-42",
+   "type": "traces",
+   "at": "tasks.md:23"
+  },
+  {
+   "from": "task:3.5",
+   "to": "rec:F-63",
+   "type": "traces",
+   "at": "tasks.md:23"
+  },
+  {
+   "from": "task:3.5",
+   "to": "rec:F-67",
+   "type": "traces",
+   "at": "tasks.md:23"
+  },
+  {
+   "from": "task:3.6",
+   "to": "rec:F-23",
+   "type": "traces",
+   "at": "tasks.md:24"
+  },
+  {
+   "from": "task:3.6",
+   "to": "rec:F-53",
+   "type": "traces",
+   "at": "tasks.md:24"
+  },
+  {
+   "from": "task:3.6",
+   "to": "scn:repository-layout/Тесты модуля лежат в его каталоге/Тест модуля находится общей командой",
+   "type": "satisfies",
+   "at": "tasks.md:24"
+  },
+  {
+   "from": "task:3.7",
+   "to": "rec:F-37",
+   "type": "traces",
+   "at": "tasks.md:25"
+  },
+  {
+   "from": "task:4.1",
+   "to": "rec:F-19",
+   "type": "traces",
+   "at": "tasks.md:29"
+  },
+  {
+   "from": "task:4.1",
+   "to": "rec:F-35",
+   "type": "traces",
+   "at": "tasks.md:29"
+  },
+  {
+   "from": "task:4.1",
+   "to": "rec:F-37",
+   "type": "traces",
+   "at": "tasks.md:29"
+  },
+  {
+   "from": "task:4.1",
+   "to": "rec:F-41",
+   "type": "traces",
+   "at": "tasks.md:29"
+  },
+  {
+   "from": "task:4.1",
+   "to": "rec:F-66",
+   "type": "traces",
+   "at": "tasks.md:29"
+  },
+  {
+   "from": "task:4.1",
+   "to": "rec:F-67",
+   "type": "traces",
+   "at": "tasks.md:29"
+  },
+  {
+   "from": "task:4.2",
+   "to": "rec:F-36",
+   "type": "traces",
+   "at": "tasks.md:30"
+  },
+  {
+   "from": "task:4.2",
+   "to": "rec:F-58",
+   "type": "traces",
+   "at": "tasks.md:30"
+  },
+  {
+   "from": "task:4.2",
+   "to": "scn:project-installer/README модуля схемы в проект не ставится/Сверка не ждёт README",
+   "type": "satisfies",
+   "at": "tasks.md:30"
+  },
+  {
+   "from": "task:4.2",
+   "to": "scn:project-installer/README модуля схемы в проект не ставится/Установка без README схемы",
+   "type": "satisfies",
+   "at": "tasks.md:30"
+  },
+  {
+   "from": "task:4.2",
+   "to": "scn:repository-layout/Тесты модулей не уходят пользователю/Тесты модуля схемы",
+   "type": "satisfies",
+   "at": "tasks.md:30"
+  },
+  {
+   "from": "task:4.3",
+   "to": "rec:F-60",
+   "type": "traces",
+   "at": "tasks.md:31"
+  },
+  {
+   "from": "task:4.3",
+   "to": "scn:project-installer/`check`, запущенный из клона, сигналит устаревший `payload`/Клон в модульной раскладке",
+   "type": "satisfies",
+   "at": "tasks.md:31"
+  },
+  {
+   "from": "task:4.4",
+   "to": "rec:F-65",
+   "type": "traces",
+   "at": "tasks.md:32"
+  },
+  {
+   "from": "task:5.1",
+   "to": "rec:F-22",
+   "type": "traces",
+   "at": "tasks.md:36"
+  },
+  {
+   "from": "task:5.2",
+   "to": "rec:F-03",
+   "type": "traces",
+   "at": "tasks.md:37"
+  },
+  {
+   "from": "task:5.2",
+   "to": "rec:F-18",
+   "type": "traces",
+   "at": "tasks.md:37"
+  },
+  {
+   "from": "task:5.2",
+   "to": "rec:F-21",
+   "type": "traces",
+   "at": "tasks.md:37"
+  },
+  {
+   "from": "task:5.2",
+   "to": "rec:F-33",
+   "type": "traces",
+   "at": "tasks.md:37"
+  },
+  {
+   "from": "task:5.2",
+   "to": "rec:F-34",
+   "type": "traces",
+   "at": "tasks.md:37"
+  },
+  {
+   "from": "task:5.2",
+   "to": "rec:F-35",
+   "type": "traces",
+   "at": "tasks.md:37"
+  },
+  {
+   "from": "task:5.2",
+   "to": "rec:F-39",
+   "type": "traces",
+   "at": "tasks.md:37"
+  },
+  {
+   "from": "task:5.3",
+   "to": "rec:F-25",
+   "type": "traces",
+   "at": "tasks.md:38"
+  },
+  {
+   "from": "task:6.1",
+   "to": "rec:F-25",
+   "type": "traces",
+   "at": "tasks.md:42"
+  },
+  {
+   "from": "task:6.1",
+   "to": "rec:F-31",
+   "type": "traces",
+   "at": "tasks.md:42"
+  },
+  {
+   "from": "task:6.1",
+   "to": "scn:repository-layout/Тест структуры в каждом репозитории/Новый каталог без описания",
+   "type": "satisfies",
+   "at": "tasks.md:42"
+  },
+  {
+   "from": "task:6.2",
+   "to": "rec:F-27",
+   "type": "traces",
+   "at": "tasks.md:43"
+  },
+  {
+   "from": "task:6.2",
+   "to": "rec:F-29",
+   "type": "traces",
+   "at": "tasks.md:43"
+  },
+  {
+   "from": "task:6.2",
+   "to": "rec:F-31",
+   "type": "traces",
+   "at": "tasks.md:43"
+  },
+  {
+   "from": "task:6.2",
+   "to": "rec:F-43",
+   "type": "traces",
+   "at": "tasks.md:43"
+  },
+  {
+   "from": "task:6.3",
+   "to": "rec:F-44",
+   "type": "traces",
+   "at": "tasks.md:44"
+  },
+  {
+   "from": "task:6.4",
+   "to": "rec:F-31",
+   "type": "traces",
+   "at": "tasks.md:45"
+  },
+  {
+   "from": "task:6.4",
+   "to": "rec:F-62",
+   "type": "traces",
+   "at": "tasks.md:45"
+  },
+  {
+   "from": "task:6.4",
+   "to": "scn:repository-layout/Тесты модуля лежат в его каталоге/Юнит-тест модуля плагина собирается",
+   "type": "satisfies",
+   "at": "tasks.md:45"
+  },
+  {
+   "from": "task:6.5",
+   "to": "rec:F-52",
+   "type": "traces",
+   "at": "tasks.md:46"
+  },
+  {
+   "from": "task:6.5",
+   "to": "scn:repository-layout/Файл принадлежит одному модулю/Файл хука в каталоге своего модуля",
+   "type": "satisfies",
+   "at": "tasks.md:46"
+  },
+  {
+   "from": "task:6.6",
+   "to": "rec:F-38",
+   "type": "traces",
+   "at": "tasks.md:47"
+  },
+  {
+   "from": "task:6.6",
+   "to": "scn:repository-layout/Корень плагина описывает репозиторий, README пакета — отдельный файл/Пакет несёт README пакета",
+   "type": "satisfies",
+   "at": "tasks.md:47"
+  },
+  {
+   "from": "task:6.7",
+   "to": "rec:F-09",
+   "type": "traces",
+   "at": "tasks.md:48"
+  },
+  {
+   "from": "task:6.7",
+   "to": "rec:F-61",
+   "type": "traces",
+   "at": "tasks.md:48"
+  },
+  {
+   "from": "task:6.7",
+   "to": "scn:plugin-core-contract/Заданный `SYMPHYSIS_ROOT` без ядра — падение, а не пропуск/Опечатка в пути",
+   "type": "satisfies",
+   "at": "tasks.md:48"
+  },
+  {
+   "from": "task:6.7",
+   "to": "scn:plugin-core-contract/Заданный `SYMPHYSIS_ROOT` без ядра — падение, а не пропуск/Соседний клон в модульной раскладке",
+   "type": "satisfies",
+   "at": "tasks.md:48"
+  },
+  {
+   "from": "task:6.8",
+   "to": "rec:F-22",
+   "type": "traces",
+   "at": "tasks.md:49"
+  },
+  {
+   "from": "task:6.8",
+   "to": "rec:F-38",
+   "type": "traces",
+   "at": "tasks.md:49"
+  },
+  {
+   "from": "task:7.1",
+   "to": "rec:F-22",
+   "type": "traces",
+   "at": "tasks.md:54"
+  },
+  {
+   "from": "task:7.1",
+   "to": "rec:F-24",
+   "type": "traces",
+   "at": "tasks.md:54"
+  },
+  {
+   "from": "task:7.1",
+   "to": "rec:F-41",
+   "type": "traces",
+   "at": "tasks.md:54"
+  },
+  {
+   "from": "task:7.2",
+   "to": "rec:F-14",
+   "type": "traces",
+   "at": "tasks.md:55"
+  }
+ ],
+ "candidates": [
+  {
+   "a": "req:decision-viewer/`render-html` встраивает снимок справки, сбой страницу не роняет",
+   "b": "req:decision-viewer/Скилл просмотрщика знает о внесении кнопкой",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-26"
+   ]
+  },
+  {
+   "a": "req:decision-viewer/`render-html` встраивает снимок справки, сбой страницу не роняет",
+   "b": "req:step-help/Скрипт считает текущий шаг и чей ход",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-26"
+   ]
+  },
+  {
+   "a": "req:decision-viewer/`render-html` встраивает снимок справки, сбой страницу не роняет",
+   "b": "req:trace-graph/Граф собирается из файлов изменения",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-26"
+   ]
+  },
+  {
+   "a": "req:decision-viewer/Скилл просмотрщика знает о внесении кнопкой",
+   "b": "req:step-help/Скрипт считает текущий шаг и чей ход",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-26"
+   ]
+  },
+  {
+   "a": "req:decision-viewer/Скилл просмотрщика знает о внесении кнопкой",
+   "b": "req:trace-graph/Граф собирается из файлов изменения",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-26"
+   ]
+  },
+  {
+   "a": "req:module-declaration/README модуля не называет каталог, которого нет",
+   "b": "req:module-declaration/README модуля несёт имя и род во frontmatter",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-03"
+   ]
+  },
+  {
+   "a": "req:module-declaration/README модуля не называет каталог, которого нет",
+   "b": "req:module-declaration/README модуля описывает вложенные каталоги первого уровня",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-03",
+    "rec:F-55"
+   ]
+  },
+  {
+   "a": "req:module-declaration/README модуля не называет каталог, которого нет",
+   "b": "req:repository-layout/Общий файл не копируется в модули",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-03"
+   ]
+  },
+  {
+   "a": "req:module-declaration/README модуля не называет каталог, которого нет",
+   "b": "req:repository-layout/Файл принадлежит одному модулю",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-03"
+   ]
+  },
+  {
+   "a": "req:module-declaration/README модуля несёт имя и род во frontmatter",
+   "b": "req:module-declaration/README модуля описывает вложенные каталоги первого уровня",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-03"
+   ]
+  },
+  {
+   "a": "req:module-declaration/README модуля несёт имя и род во frontmatter",
+   "b": "req:repository-layout/Общий файл не копируется в модули",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-03"
+   ]
+  },
+  {
+   "a": "req:module-declaration/README модуля несёт имя и род во frontmatter",
+   "b": "req:repository-layout/Файл принадлежит одному модулю",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-03"
+   ]
+  },
+  {
+   "a": "req:module-declaration/README модуля описывает вложенные каталоги первого уровня",
+   "b": "req:repository-layout/Общий файл не копируется в модули",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-03"
+   ]
+  },
+  {
+   "a": "req:module-declaration/README модуля описывает вложенные каталоги первого уровня",
+   "b": "req:repository-layout/Файл принадлежит одному модулю",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-03"
+   ]
+  },
+  {
+   "a": "req:repository-layout/README корня называет каждый каталог первого уровня",
+   "b": "req:repository-layout/README корня не называет каталог, которого нет",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-22",
+    "rec:F-56"
+   ]
+  },
+  {
+   "a": "req:repository-layout/Общий файл не копируется в модули",
+   "b": "req:repository-layout/Файл принадлежит одному модулю",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-03",
+    "rec:F-57"
+   ]
+  },
+  {
+   "a": "req:repository-layout/Тесты модулей не уходят пользователю",
+   "b": "req:repository-layout/Тесты модуля лежат в его каталоге",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-23",
+    "rec:F-58"
+   ]
+  },
+  {
+   "a": "req:step-help/Скрипт считает текущий шаг и чей ход",
+   "b": "req:trace-graph/Граф собирается из файлов изменения",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-26"
+   ]
+  }
+ ],
+ "roots": [
+  {
+   "prefix": "docs/",
+   "commit": ""
+  },
+  {
+   "prefix": "tools/",
+   "commit": ""
+  },
+  {
+   "prefix": "upstream/",
+   "commit": ""
+  },
+  {
+   "prefix": "CLAUDE.md",
+   "commit": ""
+  },
+  {
+   "prefix": "store/",
+   "commit": "531a2e84807eb4f3abe8fa3dacc3a53c6de95660"
+  },
+  {
+   "prefix": "playground/",
+   "commit": ""
+  },
+  {
+   "prefix": "md4h/",
+   "commit": ""
+  }
+ ],
+ "base": {
+  "decision-viewer": {
+   "Просмотрщик — один HTML из своего шаблона с тремя режимами": {
+    "numbers": [
+     17,
+     23,
+     26,
+     35,
+     39,
+     45,
+     46
+    ],
+    "scenarios": {
+     "Сборка с атакой": "087d2306058d6062e1e87c171f0d919e99b37fdd0209ad800fc0cec283f7f330",
+     "Битый файл атаки": "72f17133b0913b67c0fe71f077350bc9d01c3c5353440e37fa663e5e4cadd1a9",
+     "Черта в backticks и экранированная черта": "0971777e9accf736c0178a2b294777d10e232b0f787db58e45dbd4e481f5a0be",
+     "Экранированная косая и незакрытый backtick": "3bb4e77eaa49d9b79bb65eb35407b7c51a5a522fde73d02b4095eb09800238de",
+     "Пустая ячейка": "56d34af1f397fc18c6ea8d85dac32cd076c1ddf0b110b82c5d0185ba07384d42",
+     "Соседнего файла нет": "23e62c66a58aef415e8982c52554b9ac8cc9574b2c39f79232590c65c10904cd"
+    },
+    "text": "70bc8b4dd031fabaabd8815810dc6ad059dab79588b0f5a45d105311d893c64c",
+    "traces": [
+     "562eb5768cd0fdae1681d8f83798b445894b27b9543ba7a9c3fd10a8f36e3366",
+     "612e0ca6a4cfc25cc0b925f344dc45d93f9391a94cbe820039fbe68a98442d06",
+     "96437f29201f5a3b92b3c85c208e34ec3a91ec1117b4901dae5010a3c390e9e9",
+     "bac16bd2a106d13e64bd62ff7a27940ad6031644db7fd10e8b19a163245c13ab",
+     "d84e6fb16744d0f868ea936ad384e43061ceda5517ff413de765b6b61276bc6e",
+     "ef1b68dcec5db24746c690813c54fd1dc86c33ac26d78b58cfb0795e0fd1539c"
+    ]
+   },
+   "`render-html` встраивает снимок справки, сбой страницу не роняет": {
+    "numbers": [
+     21,
+     30,
+     34,
+     58,
+     67
+    ],
+    "scenarios": {
+     "Снимок на странице": "8af9aa12e003ffbd76a1cf64739cdb676fe0980d9eb5195c8fd419485b7e5592",
+     "Форка нет": "4086cf237131b54b065b52a4deed8db8f650849bca9c8f5320593bd43bc529a2",
+     "Файлы изменились после снимка": "b476d50a415e7d829ebc69a08e7f03f6ae032ceb28bd59fe50d50e7626fe3d37",
+     "Журнал из другого проекта": "17eb4f7c0c176004815d1e0809edae5c9c59a8ace47335da6c1de02308250e2f",
+     "Команда пересборки рядом со снимком": "8762128f1273e5ebf82829db41d141571ec79fdca11c7dd0b7bd7caf36e60f08"
+    },
+    "text": "8e9eb1573f7a9037f572b278a21543c987e6aab90e8d3fe3072decd9e0f378da",
+    "traces": [
+     "c78b2a847be86f89d76b60a6da79d6f4385c05d53b30ccd1311913a25ea7541c",
+     "e4dd379f34ed45e52b1fa5021e5a588b334b4a062701b3b209a942621e831b12"
+    ]
+   },
+   "Скилл просмотрщика знает о внесении кнопкой": {
+    "numbers": [
+     34,
+     74
+    ],
+    "scenarios": {
+     "Текст скилла": "f2729bf4d4a7a32c5f3bd7b50d0dac1c272a6e377e3f8e7318b8020d8347dd7a",
+     "Агент получил событие": "7358eff330ab3b1e588ce0ef976f6d37469bb2da07621e8b4e17eb4802093c5d",
+     "Черновик не слово": "e37dfa84c2b69ccc596e9ea457b50609875464a904e523cd898735f9dfb4c4ec",
+     "Строка о схеме": "45ae3fef3fd89b2799422dce89d643afc91166122c2c11c96c8cbb555a74d48a"
+    },
+    "text": "c4d39c6de8d75a274f041639f549a44fb3219fa09069a951eff5425f185c8eff",
+    "traces": [
+     "96437f29201f5a3b92b3c85c208e34ec3a91ec1117b4901dae5010a3c390e9e9",
+     "9d16e7cfb3bf17e348ef99982bb65b039a419a52353e448b3a13a486102b0002"
+    ]
+   }
+  },
+  "plugin-core-contract": {
+   "Заданный `SYMPHYSIS_ROOT` без ядра — падение, а не пропуск": {
+    "numbers": [
+     20
+    ],
+    "scenarios": {
+     "Опечатка в пути": "be444552468fcd1f97654bde0ec606faef9e226c8f0f62b5b76113836f188ca4",
+     "Пустая переменная": "53536b3f01437175988402b1816c95767f406b1bb171e2b6c7016ae31868463e"
+    },
+    "text": "624fae8ca41ff87a9da23fdf425ed5d04e30d6a667ebf4b1ca2dca293cfe6955",
+    "traces": [
+     "6171212cdaf478a02ea80cf57e819f79246c69bc09c38da40a5baa65e402df55",
+     "96437f29201f5a3b92b3c85c208e34ec3a91ec1117b4901dae5010a3c390e9e9"
+    ]
+   }
+  },
+  "project-installer": {
+   "`check`, запущенный из клона, сигналит устаревший `payload`": {
+    "numbers": [
+     114
+    ],
+    "scenarios": {
+     "`payload` старее исходников": "f74f393e0d150d836431fc00135d895db70984f88382917f0421b089f6875a18",
+     "Инсталлятор не из клона": "7ec64e772c804dbef6e20adfe6598035994d0169cb5bc8df2f6ce942ba281d32"
+    },
+    "text": "9f4250c809cf98a85aca050d333426a5be2e71ea5969e18f43a88e877291af7f",
+    "traces": []
+   }
+  },
+  "requirement-probes": {
+   "Текст пробы объясняет задачу подробнее": {
+    "numbers": [
+     18
+    ],
+    "scenarios": {
+     "Чтение текста скилла": "eb330b10c2376624aaf8e6ce073fb10bc472a1569cdca6b33d5841b7bc8fc127"
+    },
+    "text": "3247ec546906d39f46ff520928aac18ca8d20008d155873a72b4d513c45e9ef0",
+    "traces": [
+     "04ee83b8a4b05f8c39791f172f406db4a6344d446c42740b0c8672df5046823a",
+     "96437f29201f5a3b92b3c85c208e34ec3a91ec1117b4901dae5010a3c390e9e9"
+    ]
+   }
+  },
+  "skill-transfer": {
+   "Скилл несёт копию источника с copyright notice и перечень смысловых отличий": {
+    "numbers": [
+     14
+    ],
+    "scenarios": {
+     "Состав каталога скилла": "e81f9383c7aea631b59f3d6e9085a852b7046538ba1bb94b28f567442449abbf",
+     "Скилл без источника GSD": "1ab89e2a35ea68fa5595065b52135eef418e33d9fc76166020a0ffa6d65d2d74"
+    },
+    "text": "f68206d2016e4c72d1a94265a719cc3aae3c390c5d5770cf5920beb864bb60f0",
+    "traces": [
+     "9a22bc7f8ac393484030e19705edf3513878bf96f39ed0995be6d390a819a599",
+     "aba6c9b09f68c5d43fd3536ad95233d545cb0f0a0bd43d58987789bc517ef381"
+    ]
+   }
+  },
+  "step-help": {
+   "Скрипт считает текущий шаг и чей ход": {
+    "numbers": [
+     8,
+     9,
+     12,
+     13,
+     19,
+     23,
+     27,
+     40,
+     41,
+     55
+    ],
+    "scenarios": {
+     "Открытая развилка при готовом следующем шаге": "e1c66cb5f5c1755b4390989cf2b02e388848290a329ae043c4f7bdab688b6c04",
+     "Припаркованная развилка": "3372a4acbcee8980d797afc4e3d209d22b246550fac651b6dd9617c44ce0a495",
+     "Журнал не читается": "73521833ea3c4b8937aec8a31ff180bac9c3ded44ed15d74e393352cccd05f73",
+     "Несколько готовых шагов после `specs`": "59f4714b8fd117d8ba284e5a3c28763b5be90700dd856aa8092adc69c4a2dac6",
+     "Вызванная атака": "c405c17312f3251683bde6d7fb751ea7f49d61337db4e16a61aeb081ed5defa4",
+     "Задачи идут": "58c30d8cdbbf7326d9cbd2df8a3f7b30ec078237370cc5ce6c13bf6f2004d751",
+     "Задачи закрыты": "bd36ec87133200f781bd14fb5bd81fd0ede525deb823311efceb4d58e3a8d908",
+     "Реализация заблокирована": "815c4ffa17ac24de8168f85575d2b3c8b7e296d9c8160313fb3416d5cda1ba5f",
+     "Активных изменений нет": "9da92fe144de9bf618e1689c019a59bb55e0dc7dfa99019ce64269378d472627",
+     "Изменение только что создано": "2083456fd153f0b93f9780118d1c7e6c8fe6476931617adb96e57d9b9fff35d3",
+     "Первые шаги пропущены": "8d75ac8cbe754d60af61ecf4ceba686fd4d67b5a73c0c0f5215a8188189d7780",
+     "Текущий шаг совпадает с командой": "882236fdd23c8909474af5f389f748cb0827d25ad4d417961e162265d3f5a965"
+    },
+    "text": "08333bc0190d459400988c175ea32c153b4b2daf8271101319eb1fdbf0c15799",
+    "traces": [
+     "48cfe1fdb84500e6f1dcbc46f5f75eb58f3ea9fee2c34cb374f2d9f07c7404f7",
+     "4ef9a1b02875aa84fa20bed6430497f75c6e42d1cedce18e2e4d1b46d56ca6d4"
+    ]
+   },
+   "Справка не становится гейтом и не меняет файлы": {
+    "numbers": [
+     50
+    ],
+    "scenarios": {
+     "Дерево проекта не меняется": "f59bd91b1c594bcffa6a58c1bfb1e86fa6354bcc96c056460d4ead7e2a8a1f15",
+     "Скиллы о скрипте не знают": "d335c5804174b5431d14d29eb1cf34c80d37faac264db95ed6db84c5cacfb971"
+    },
+    "text": "95dbb18d4aa20a6fd60751c61bed248392bbc4a32c2989c27b46274deef65ee3",
+    "traces": [
+     "48cfe1fdb84500e6f1dcbc46f5f75eb58f3ea9fee2c34cb374f2d9f07c7404f7",
+     "fce921b73d0f31e3a9c148c15c183e27f7f8ced8fb93adf443dabf98f3dfe0f3"
+    ]
+   }
+  },
+  "trace-graph": {
+   "Граф собирается из файлов изменения": {
+    "numbers": [
+     18,
+     25,
+     30,
+     39
+    ],
+    "scenarios": {
+     "Только что созданное изменение": "ef1bf9e02567fe5a58be9c0c412f345c5cbbe7e720c1e2989a6cb068bea5def3",
+     "Граф растёт вместе с артефактами": "aef5ae842e82aed3d2dc92f7ec27fe4fb8271cae0564b04aad278885c9adc876",
+     "Связь правится через файл": "5b00ec57b61e9c2063016ba385dceb1c26beb17e8ed63015bda39c21b5af5f30",
+     "Журнал не разбирается": "9ed9c65a80d3c9c2defe884a6963ee8a2366f45b3dd607bc5cc1fd8326ca017d",
+     "Журнал негоден по схеме": "1f58ad844b0f9833940bd23129ee9e88fd397a2e2032279976c370cb967e334f"
+    },
+    "text": "785e470354fec5921b61db02ac64a473a10c1fbb746e7bc1c30ba40ac5f88c37",
+    "traces": []
+   }
+  }
+ }
+}
