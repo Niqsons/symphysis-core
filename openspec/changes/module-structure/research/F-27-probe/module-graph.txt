@@ -75,3 +75,19 @@ _expand_value:32 -> ['ROOT']
 file_links:159 -> ['ROOT']
 project_href:175 -> ['ROOT']
 ROOT определён в tools/journal_model.py:21; без этих ссылок ребро roots -> decisions пропадает, и цикл decisions <-> roots тоже
+
+### Раскладка 3: CLI — модуль cli, корни улик и поиск цитат остаются в decisions — по ссылкам функций
+attack -> decisions: 1 ссылок, например tools/journal_render.py:403 parse_attack_md -> _lines
+cli -> attack: 1 ссылок, например tools/journal_cli.py:130 _read_attack -> journal_render.parse_attack_md
+cli -> consequences: 2 ссылок, например tools/journal_cli.py:57 cmd_check -> journal_consequences.check_consequences
+cli -> decisions: 34 ссылок, например tools/journal_cli.py:31 _valid_journal -> journal_model.load_journal
+cli -> step-help: 1 ссылок, например tools/journal_cli.py:191 _help_calculation -> step_help.*
+cli -> viewer: 3 ссылок, например tools/journal_cli.py:208 cmd_render_html -> journal_render.scheme_payload
+consequences -> decisions: 5 ссылок, например tools/journal_consequences.py:46 check_consequences -> journal_apply.NOT_CHECKED
+settings -> decisions: 2 ссылок, например tools/symphysis_config.py:147 _default_project -> journal_model.ROOT
+step-help -> decisions: 3 ссылок, например tools/step_help.py:300 _file_links -> journal_apply.project_roots
+step-help -> openspec-run: 9 ссылок, например tools/step_help.py:58 _reason -> openspec_run.ForkReply
+trace -> decisions: 4 ссылок, например tools/trace_graph.py:379 _read_records -> journal_model.validate_journal
+trace -> openspec-run: 15 ссылок, например tools/trace_graph.py:994 _pathless -> openspec_run.no_paths
+viewer -> decisions: 3 ссылок, например tools/journal_render.py:21 TEMPLATE_PATH -> journal_model.ROOT
+циклов: 0

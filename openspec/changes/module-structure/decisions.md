@@ -6,6 +6,8 @@
 
 F-01 — критерий из `intent.md`, F-02–F-13 — факты о текущем состоянии ядра. F-14–F-16 — ответы владельца в чате 2026-11-06 на вопросы о критериях, до журнала; перенесены дословно файлом `answers/2026-11-06.md`. Развилки первого круга — F-17–F-26. F-29 — ответ владельца о плагине в объёме изменения (`answers/2026-11-06-2.md`), за ним F-30–F-32 о плагине. Парковки исследованию — F-20, F-27, F-28, F-32.
 
+Второй круг начинается с F-33: развилки подняты отчётами `research/F-20.md`, `research/F-27.md`, `research/F-28.md`, `research/F-32.md`; находки внесены в парковки F-20, F-27, F-28, F-32. Раскладка 3 графа модулей (`research/F-27-probe/module-graph.txt`) досчитана во втором круге. F-39 C снимает решение F-21 A.
+
 ## F-01 Критерий готовности: структура symphysis теперь соответствует определениям
 <!-- journal:F-01 -->
 - вид: факт
@@ -276,6 +278,10 @@ F-01 — критерий из `intent.md`, F-02–F-13 — факты о тек
 - антиподы: A ↔ F-19.B; B ↔ F-19.B
 - рекомендация: A — Запуск из исходника нужен разработке сегодня: команды `CLAUDE.md`, заморозка графа исходным `tools/trace_graph.py` из-за `<root>` файлов корней. B переводит каждый запуск на установку и меняет `<root>`; C ломает плоскую установку. Окончательно — после карты из парковки.
 - парковка: материалы — «Перечислить в `tools/*.py` все места, где код находит файлы от `ROOT` или `__file__` (схема JSON, шаблон страницы, файл корней, файл версии, путь `journal.py` для подсказок), и все точки запуска из исходника (`CLAUDE.md`, `docs/repo-contract.md`, правила архивации в `openspec/config.yaml`, хуки `tools/hooks/`, тесты ядра и плагина). Для вариантов A и B — что меняется в каждом месте и как `<root>` файла корней ведёт себя в исходнике и в установке.»
+- находка: `research/F-20.md`: `ROOT` — каталог над кодом; при модулях первого уровня он и из каталога модуля — корень репозитория, `<root>` исходника прежний. «Рядом с кодом» совпадает в обеих раскладках для файлов, которые установка кладёт в `.symphysis/tools/` (шаблон, файл версии, `journal.py`); исключения — схема журнала (в установке `.symphysis/docs/`), исходный файл корней `tools/journal-roots.json` и скиллы клона в `skills/`. Исходник запускают `CLAUDE.md`, 23 файла тестов ядра и четыре места тестов плагина; хуки остаются в `tools/hooks/`; правило архивации зовёт установку. Развилки — F-40, F-41, F-42.
+- улики:
+  - улика: `tools/step_help.py` «INSTALL_SKILL_DIRS = (*PROJECT_SKILL_DIRS, "skills")»
+  - улика: `CLAUDE.md` «`tools/journal.py render-html` из шаблона `tools/playground-template.html`.»
 - решение: A, 2026-11-06
 - следствия: При F-19.B развилка теряет смысл: раскладка одна, в исходнике и в установке
 
@@ -293,7 +299,7 @@ F-01 — критерий из `intent.md`, F-02–F-13 — факты о тек
   - C. Отдельный `module.yaml` рядом с README
     - улика: `docs/analysis/requirements-traceability-graph-of-symphysis.md` «Хорошо описанный модуль это каталог с README: описание модуля, а также ссылки и описание вложенных каталогов первого уровня (Т21).»
     - маловероятно: владелец описал модуль README (Т21), второй файл объявления на каждый модуль определение не просит
-- антиподы: —
+- антиподы: A ↔ F-39.C
 - рекомендация: A — Frontmatter отделяет данные для скрипта от текста для человека: правка описания не ломает разбор. У B форма строки держится только договорённостью, C добавляет второй файл на модуль, хотя модуль описан README.
 - решение: A, 2026-11-06
 - следствия: F-25
@@ -389,23 +395,29 @@ F-01 — критерий из `intent.md`, F-02–F-13 — факты о тек
 ## F-27 Как файлы и функции ядра и плагина раскладываются по модулям выбранных в F-18 и F-31 вариантов и какие зависимости между модулями появятся?
 <!-- journal:F-27 -->
 - вид: факт
-- статус: припаркован
+- статус: решён
 - адресат: материалы
 - зависит от: F-18, F-31
 - парковка: материалы — «Разложить по модулям каждый файл `tools/`, `skills/`, `skills/shared/`, `agents/`, а также `docs/journal.schema.json` и `openspec/config.symphysis.yaml` — каждый к одному модулю. Для `tools/journal_render.py`, `tools/journal_cli.py` и `tools/journal_apply.py` — по функциям: какие уходят в другой модуль, какие импорты между будущими модулями появятся, нет ли циклов (например, `decisions` и `viewer` через `render-html`), куда идут `view-json` и номер контракта. Итог: таблица файлов и граф зависимостей модулей; развилки резки — во втором круге. В плагине — каждый файл `src/`, `hook/`, `media/icon.svg`, `build.mjs`, `package.mjs` к модулю F-31: импорты между модулями, общее для стороны VS Code и страниц, путь `hook/hook.py`, который читает код.»
+- находка: `research/F-27.md`, таблицы `research/F-27-probe/core-map.txt` и `plugin-map.txt`: ядро — 25 из 33 файлов к одному модулю, два делятся по функциям (`journal_apply.py`: корни улик и поиск цитат против `apply`; `journal_render.py`: md, design, `view-json` и `CONTRACT` — decisions, страница — viewer, разбор атаки — attack); не ложатся одному фасад CLI и `driver.md`, `terms.md`, `candidate.md`. Граф: CLI в `decisions` — цикл attack, consequences, decisions, step-help, viewer; CLI отдельным модулем — циклов нет и с корнями в `decisions` (раскладка 3, досчитана во втором круге), и с отдельным модулем корней (тогда `ROOT` идёт в него). Плагин — 32 из 51 файла к одному модулю F-31 A; без модуля активация, дерево изменений, хранилище, логика журнала, общие части страниц; циклы типов `protocol` ↔ `search` и `protocol` ↔ `scheme`. Развилки — F-33, F-34, F-35, F-43, F-44.
 - улики:
   - улика: `docs/analysis/requirements-traceability-graph-of-symphysis.md` «Сейчас файл стоит сразу в двух модулях.»
+  - улика: `openspec/changes/module-structure/research/F-27-probe/module-graph.txt` «цикл: attack <-> consequences <-> decisions <-> step-help <-> viewer»
+  - улика: `openspec/changes/module-structure/research/F-27-probe/module-graph.txt` «### Раскладка 3: CLI — модуль cli, корни улик и поиск цитат остаются в decisions — по ссылкам функций»
 
 ## F-28 Как схема становится модулем, если её каталог задаёт OpenSpec?
 <!-- journal:F-28 -->
 - вид: факт
-- статус: припаркован
+- статус: решён
 - адресат: материалы
 - зависит от: —
 - парковка: материалы — «Читает ли форк лишние файлы в `openspec/schemas/symphysis/` (README.md рядом со `schema.yaml`) и не ломает ли это `openspec schemas`, `status`, `instructions`; уходит ли README в payload по `DIRS` и в проекты пользователей; можно ли перенести `openspec/config.symphysis.yaml` внутрь каталога схемы и где его читает инсталлятор. Где читать: `upstream/openspec/src/core/artifact-graph/`, `installer/scripts/sync-payload.js`, `installer/lib/`.»
+- находка: `research/F-28.md`: форк читает из каталога схемы только `schema.yaml` и `templates/`; проба с `README.md` в каталоге схемы дала тот же вывод `schemas`, `status`, `instructions`. Инсталлятор копирует каталог схемы целиком, `check` сверяет каждый его файл — README модуля уедет к пользователю. `config.symphysis.yaml` читают по прежнему пути инсталлятор и два теста; форк его не читает. Развилки — F-36, F-37.
 - улики:
   - улика: `docs/analysis/requirements-traceability-graph-of-symphysis.md` «`openspec/schemas/symphysis/` уже каталог, и там её ищет OpenSpec. Это будет модуль, чьё место задано извне.»
   - улика: `installer/scripts/sync-payload.js` «const DIRS = ["openspec/schemas/symphysis"];»
+  - улика: `upstream/openspec/src/core/artifact-graph/resolver.ts` «const schemaPath = path.join(schemaDir, 'schema.yaml');»
+  - улика: `installer/lib/install.js` «copyTree(res, root, path.join(payloadDir, "openspec", "schemas", "symphysis"), t.schemaDir, force, () => true, { schemaDir: t.schemaDir });»
 
 ## F-29 Что входит в готовый результат: только репозиторий ядра или и плагин?
 <!-- journal:F-29 -->
@@ -454,15 +466,221 @@ F-01 — критерий из `intent.md`, F-02–F-13 — факты о тек
 ## F-32 Как README модуля уживается с README пакета: `installer/README.md` — README пакета npm, корневой README плагина — README `.vsix`?
 <!-- journal:F-32 -->
 - вид: факт
-- статус: припаркован
+- статус: решён
 - адресат: материалы
 - зависит от: —
 - парковка: материалы — «Как страница пакета npm и вкладка расширения VS Code показывают YAML frontmatter в README — проверить сборкой пакета (`npm pack`, `vsce package`) и кодом показа, не по памяти. Умеет ли `vsce package` брать README не из корня (`--readme-path`) и что тогда читает `test/package-readme.ts`. Где в обоих случаях может жить описание модуля или репозитория, не попадая на страницу пакета. Где читать: `vscode/package.mjs`, `vscode/test/package-readme.ts`, `installer/package.json`.»
+- находка: `research/F-32.md`: `vsce` 4.0.0 кладёт README в пакет как есть, frontmatter не трогает; `--readme-path` работает, только когда корневой `README.md` исключён из пакета (`.vscodeignore` без `!README.md`; юнит-тест этого не пускает). npm кладёт README из корня пакета всегда, другого файла не выбрать. Как страницы npm и VS Code показывают frontmatter — не проверено. Развилки — F-38, F-39.
 - улики:
   - улика: `installer/README.md` «# @niqsons/symphysis»
   - улика: `vscode/.vscodeignore` «!README.md»
   - улика: `vscode/test/package-readme.ts` «// Что должно быть в README.md пакета (F-82, F-87).»
+  - улика: `openspec/changes/module-structure/research/F-32-probe/vsce-3.txt` «файлы readme в пакете: ['extension/readme.md']»
+  - улика: `openspec/changes/module-structure/research/F-32-probe/npm-pack.txt` «README в пакете: ['README.md']»
 - следствия: F-21, F-22
+
+## F-33 Где живёт фасад CLI ядра — `journal.py` и `journal_cli.py`?
+<!-- journal:F-33 -->
+- вид: развилка
+- статус: решён
+- адресат: человек
+- зависит от: F-18, F-27
+- варианты:
+  - A. Отдельный технический модуль (рабочее имя `cli`): точка входа `journal.py` из контракта с плагином остаётся одним файлом и в установке лежит, как сейчас, в `.symphysis/tools/`. Модуль зависит от доменных, они от него — нет: цикла нет
+    - улика: `openspec/changes/module-structure/research/F-27-probe/module-graph.txt` «### Раскладка 3: CLI — модуль cli, корни улик и поиск цитат остаются в decisions — по ссылкам функций»
+    - улика: `docs/repo-contract.md` «подкоманды и аргументы `journal.py`, которые вызывает плагин, в том числе `--out`, `--attack`, `--dry-run`;»
+  - B. В `decisions`: на модуль меньше. Цена: `decisions` зовёт подкоманды страницы, описи, атаки и справки, а они зовут `decisions` — все доменные модули журнала в одном цикле, граница `decisions` не держится
+    - улика: `openspec/changes/module-structure/research/F-27-probe/module-graph.txt` «цикл: attack <-> consequences <-> decisions <-> step-help <-> viewer»
+  - C. У каждого модуля своя точка входа (`viewer.py render-html`, `consequences.py code-sites` и так далее)
+    - улика: `docs/repo-contract.md` «подкоманды и аргументы `journal.py`, которые вызывает плагин, в том числе `--out`, `--attack`, `--dry-run`;»
+    - маловероятно: подкоманды `journal.py` — часть контракта с плагином, а `.symphysis/tools/journal.py` зовут схема и скиллы: смена контракта и всех вызовов
+- антиподы: —
+- рекомендация: A — A снимает цикл и оставляет контракт `journal.py` как есть; B держит цикл всех доменных модулей журнала, C меняет контракт с плагином.
+- решение: A, 2026-11-06
+- следствия: F-34
+
+## F-34 Где живут корни улик и поиск цитат — 26 имён `journal_apply.py`?
+<!-- journal:F-34 -->
+- вид: развилка
+- статус: решён
+- адресат: человек
+- зависит от: F-27, F-33
+- варианты:
+  - A. Технический модуль (рабочее имя `roots`) вместе с константой `ROOT`: разбор файла корней, `_resolve`, `file_links`, `find_quote`. Им пользуются `decisions`, `consequences`, `trace`, `step-help`, `settings` — переиспользуемое живёт в техническом модуле. `<root>` файла корней раскрывается от `ROOT`, поэтому константа идёт сюда же; цикла нет
+    - улика: `openspec/changes/module-structure/research/F-27-probe/defs.txt` «default_roots:74 — journal:61, journal_cli:18, symphysis_config:19, trace_graph:20»
+    - улика: `docs/analysis/requirements-traceability-graph-of-symphysis.md` «Доменный отвечает за область, технический ни за какую, и переиспользуемое живёт в таких.»
+  - B. Оставить в `decisions`: `trace`, `settings`, `step-help`, `consequences` зависят от доменного модуля журнала ради технической функции. Цикла и так нет, если CLI отдельно (F-33 A)
+    - улика: `openspec/changes/module-structure/research/F-27-probe/module-graph.txt` «settings -> decisions: 2 ссылок, например tools/symphysis_config.py:147 _default_project -> journal_model.ROOT»
+- антиподы: —
+- рекомендация: A — Цикла нет в обоих вариантах, выбор — по определению: переиспользуемое живёт в техническом модуле. В B четыре модуля зависят от журнала только ради корней, и граница `decisions` шире его ответственности.
+- решение: A, 2026-11-06
+- следствия: F-40
+
+## F-35 Куда идут общие файлы скиллов `terms.md`, `driver.md`, `candidate.md`?
+<!-- journal:F-35 -->
+- вид: развилка
+- статус: решён
+- адресат: человек
+- зависит от: F-18, F-27
+- варианты:
+  - A. `terms.md` и `driver.md` — технический модуль общих файлов скиллов (рабочее имя `skill-shared`); `candidate.md` — в `decisions`: это формат записи журнала, который пишут пробы и опись. Установка по-прежнему кладёт все три в `.symphysis/docs/`
+    - улика: `openspec/changes/module-structure/research/F-27-probe/core-map.txt` «skills/shared/candidate.md — не ложится одному: probes и consequences пишут запись-кандидат журнала (decisions)»
+  - B. Все три — в технический модуль общих файлов скиллов, включая `candidate.md`
+    - улика: `openspec/changes/module-structure/research/F-27-probe/core-map.txt` «skills/shared/terms.md — не ложится одному»
+  - C. Каждый — своему хозяину: `candidate.md` — `decisions`, `driver.md` — технический модуль водителей, `terms.md` — технический модуль терминов. Цена: два модуля из одного файла
+    - улика: `skills/shared/driver.md` «# Водитель: brief и отчёт»
+- антиподы: —
+- рекомендация: A — `candidate.md` описывает запись журнала — это область `decisions`; `terms.md` и `driver.md` ни к одной области не относятся и читаются всеми — ровно технический модуль. B кладёт доменный формат в технический модуль, C плодит модули из одного файла.
+- решение: A, 2026-11-06
+
+## F-36 Уходит ли README модуля схемы к пользователю вместе со схемой?
+<!-- journal:F-36 -->
+- вид: развилка
+- статус: решён
+- адресат: человек
+- зависит от: F-28
+- варианты:
+  - A. Нет: payload пропускает README каталога схемы (фильтр в `installer/scripts/sync-payload.js`). README описывает модуль репозитория; в проект уходят `schema.yaml`, `templates/`, `steps.md`
+    - улика: `installer/scripts/sync-payload.js` «const DIRS = ["openspec/schemas/symphysis"];»
+  - B. Да: в каждом проекте `openspec/schemas/symphysis/README.md`, его сверяет `check`. Цена: в проекте пользователя — описание модуля репозитория со ссылками на каталоги, которых там нет
+    - улика: `installer/lib/install.js` «copyTree(res, root, path.join(payloadDir, "openspec", "schemas", "symphysis"), t.schemaDir, force, () => true, { schemaDir: t.schemaDir });»
+- антиподы: —
+- рекомендация: A — README модуля говорит об устройстве репозитория, пользователю схемы он не нужен; B кладёт его в каждый проект и в сверку `check`.
+- решение: A, 2026-11-06
+- следствия: F-37
+
+## F-37 Где лежит `openspec/config.symphysis.yaml` — файл модуля схемы вне её каталога?
+<!-- journal:F-37 -->
+- вид: развилка
+- статус: решён
+- адресат: человек
+- зависит от: F-28, F-36
+- варианты:
+  - A. В каталоге схемы `openspec/schemas/symphysis/`: файл внутри модуля. Payload берёт его оттуда и кладёт по прежнему пути payload `openspec/config.symphysis.yaml`, в каталог схемы проекта он не идёт — тот же фильтр, что у README (F-36). Правка `sync-payload.js` и тестов `installer/test/payload.test.js`, `installer/test/install.test.js`, `tests/test_schema.py`
+    - улика: `installer/lib/install.js` «const oursBytes = fs.readFileSync(path.join(payloadDir, "openspec", "config.symphysis.yaml"));»
+  - B. Оставить как есть: файл модуля схемы лежит вне его каталога, README модуля его называет. Цена: тест структуры помнит исключение «файл модуля вне каталога»
+    - улика: `installer/scripts/sync-payload.js` «"openspec/config.symphysis.yaml",»
+- антиподы: —
+- рекомендация: A — Модуль — каталог, файл принадлежит одному модулю (F-03): A держит правило без исключений, путь в payload и чтение инсталлятора прежние. B оставляет исключение, которое тест структуры будет помнить.
+- решение: A, 2026-11-06
+
+## F-38 Где README пакета плагина, если корень описывает репозиторий?
+<!-- journal:F-38 -->
+- вид: развилка
+- статус: решён
+- адресат: человек
+- зависит от: F-22, F-32
+- варианты:
+  - A. Корень плагина — под README репозитория (как в ядре, F-22 A); README пакета — отдельный файл: `package.mjs` передаёт его `--readme-path`, `.vscodeignore` перестаёт пропускать корневой `README.md`, юнит-тест `package-readme.test.ts` читает новый путь. Проба: пакет собирается, в нём один `readme.md` — README пакета
+    - улика: `openspec/changes/module-structure/research/F-32-probe/vsce-3.txt` «файлы readme в пакете: ['extension/readme.md']»
+  - B. Корневой README остаётся README пакета; описание репозитория — другим файлом в корне. Упаковка и тесты не меняются. Цена: корень плагина описан не README, в отличие от ядра
+    - улика: `vscode/.vscodeignore` «!README.md»
+  - C. Один корневой README: текст пакета и раздел о репозитории вместе
+    - улика: `openspec/changes/module-structure/research/F-32-probe/vsce.txt` «name: symphysis-vscode»
+    - маловероятно: пользователи расширения увидят на странице пакета устройство репозитория, а имя и род модуля лягут в пакет как есть
+- антиподы: —
+- рекомендация: A — Одно правило для обоих репозиториев — корень описан README; проба показала, что упаковка с отдельным README пакета работает. B оставляет плагину исключение, C выносит устройство репозитория на страницу пакета.
+- решение: A, 2026-11-06
+
+## F-39 README модуля `installer` — это страница пакета npm: в каком виде он несёт имя и род?
+<!-- journal:F-39 -->
+- вид: развилка
+- статус: решён
+- адресат: человек
+- зависит от: F-21, F-32, F-38
+- варианты:
+  - A. Оставить как есть: frontmatter, как у всех модулей (F-21 A). Как страница npm его покажет — не проверено; npm берёт README из корня пакета как есть
+    - улика: `openspec/changes/module-structure/research/F-32-probe/npm-pack.txt` «README в пакете: ['README.md']»
+  - B. Исключение для `installer`: имя и род — строкой-комментарием HTML (`<!-- module: installer; kind: технический -->`), её не показывает ни один рендер; тест структуры и граф знают обе формы
+    - улика: `installer/README.md` «# @niqsons/symphysis»
+  - C. Одна форма для всех модулей — строка-комментарий HTML вместо frontmatter: не видна на GitHub, на странице npm и во вкладке VS Code, тест и граф знают одну форму. Снимает F-21 A; на нём ещё ничего не построено
+    - улика: `docs/analysis/requirements-traceability-graph-of-symphysis.md` «Если README несёт имя и род в разборчивом для скрипта виде, граф возьмёт их оттуда.»
+- антиподы: C ↔ F-21.A
+- рекомендация: C — Показ frontmatter на странице npm не проверен, а C снимает вопрос для всех рендеров одной формой, пока на F-21 A ничего не построено. A оставляет риск на странице пакета, B вводит две формы, которые тест и граф должны знать.
+- решение: A — «Да нормально всё будет с отображением на github, он поддерживает frontmatter в yaml», 2026-11-06
+
+## F-40 Где живёт исходный файл корней `tools/journal-roots.json`?
+<!-- journal:F-40 -->
+- вид: развилка
+- статус: решён
+- адресат: человек
+- зависит от: F-20, F-34
+- варианты:
+  - A. Оставить как есть: в `tools/` контура разработки. Формула `ROOT / "tools" / "journal-roots.json"` верна в обеих раскладках: в исходнике `ROOT` — корень репозитория, в установке — `.symphysis`
+    - улика: `tools/journal_apply.py` «ROOTS_PATH = ROOT / "tools" / "journal-roots.json"»
+    - улика: `tools/journal-roots.json` «"docs/": "<root>/docs",»
+  - B. Файл корней ищется рядом с кодом модуля корней, исходный файл переезжает в его каталог. Цена: файл разработки этого репозитория — в каталоге модуля продукта
+    - улика: `tools/journal_apply.py` «ROOTS_PATH = ROOT / "tools" / "journal-roots.json"»
+- антиподы: —
+- рекомендация: A — Исходный файл корней служит журналам самого репозитория, а формула пути и так верна в обеих раскладках; B кладёт файл разработки в модуль продукта.
+- решение: A, 2026-11-06
+
+## F-41 Где схема журнала `journal.schema.json` в исходнике и в установке?
+<!-- journal:F-41 -->
+- вид: развилка
+- статус: решён
+- адресат: человек
+- зависит от: F-20, F-19
+- варианты:
+  - A. В каталоге модуля `decisions`; установка кладёт её в `.symphysis/tools/` рядом с кодом — одно правило «рядом с кодом» в обеих раскладках. Цена: путь в установке меняется (`.symphysis/docs/` → `.symphysis/tools/`), правка `sync-payload.js`, README и тестов инсталлятора; путь схемы в контракт с плагином не входит
+    - улика: `tools/journal_model.py` «SCHEMA_PATH = ROOT / "docs" / "journal.schema.json"»
+  - B. В каталоге модуля `decisions`; в установке остаётся в `.symphysis/docs/`, код ищет её в двух местах: рядом с кодом в исходнике, `ROOT / "docs"` в установке
+    - улика: `installer/README.md` «инструменты журнала и настроек | `<проект>/.symphysis/` (`tools/`, `docs/`)»
+  - C. В исходнике остаётся в `docs/journal.schema.json`
+    - улика: `docs/analysis/requirements-traceability-graph-of-symphysis.md` «`skills/symphysis-brainstorm/` | доменный |»
+    - маловероятно: `docs/` — контур разработки (F-22 A), файл модуля `decisions` лежал бы вне его каталога
+- антиподы: —
+- рекомендация: A — Одно правило поиска без ветвления по раскладке, а путь схемы в установке никто снаружи не читает. B держит две ветки поиска ради прежнего пути, C оставляет файл модуля в контуре разработки.
+- решение: A, 2026-11-06
+
+## F-42 Как справка о шаге находит скиллы в клоне ядра, если каталога `skills/` не будет?
+<!-- journal:F-42 -->
+- вид: развилка
+- статус: решён
+- адресат: человек
+- зависит от: F-18, F-20
+- варианты:
+  - A. Ищет `SKILL.md` скилла в каталогах модулей клона вместо `skills/<имя>/SKILL.md`: плагин с настройкой на клон находит скиллы, как раньше
+    - улика: `tools/step_help.py` «INSTALL_SKILL_DIRS = (*PROJECT_SKILL_DIRS, "skills")»
+  - B. Клон без установки в себя не поддерживается: справка ищет скиллы клона, как в проекте (`.claude/skills` и другие); `skills` из поиска уходит. Цена: снимается прежнее решение R16 о клоне ядра
+    - улика: `tools/step_help.py` «PROJECT_SKILL_DIRS = (".claude/skills", ".opencode/skills", ".agents/skills")»
+- антиподы: —
+- рекомендация: A — A сохраняет решённое раньше R16: плагин с настройкой на клон находит скиллы. B снимает его ради более простого поиска, хотя прежнее поведение стоит дёшево.
+- решение: A, 2026-11-06
+
+## F-43 Куда идут файлы плагина, которые не легли в модули F-31 A?
+<!-- journal:F-43 -->
+- вид: развилка
+- статус: решён
+- адресат: человек
+- зависит от: F-27, F-31
+- варианты:
+  - A. Ещё пять модулей: доменные `changes` (дерево изменений и хранилище журналов: `host/sidebar.ts`, `host/store.ts`), `journal` (логика журнала на стороне плагина: `shared/logic.ts`, `shared/ops.ts`, `shared/attack.ts`), `file-links` (ссылки на файлы: `host/links.ts`, `host/openFile.ts`, `shared/links.ts` — как capability `plugin-file-links`); технические `ui` (общие части страниц и панелей: `Text.tsx`, `Segmented.tsx`, `colors.ts`, `FailureText.tsx`, `style.css`, `host/page.ts`, `host/tabs.ts`) и `activation` (`extension.ts`). Сборка и упаковка (`build.mjs`, `package.mjs`, `media/icon.svg`) — контур сборки в корне, не модуль
+    - улика: `openspec/changes/module-structure/research/F-27-probe/plugin-map.txt` «src/host/sidebar.ts — не ложится одному: дерево изменений в боковой панели, в F-31 A модуля для него нет»
+  - B. Один технический модуль `common` для всего общего (логика, ссылки, части страниц, хранилище), дерево изменений — доменный `changes`, активация — в `core`. Цена: `common` отвечает за несколько областей; `core` с активацией импортирует все модули, а `viewer` и `step-help` зовут `core` — цикл
+    - улика: `openspec/changes/module-structure/research/F-27-probe/plugin-map.txt` «src/extension.ts — не ложится одному: активация импортирует модули всех механик»
+- антиподы: —
+- рекомендация: A — Одна ответственность на модуль, как требует определение, и `file-links` уже есть capability. B собирает разное в `common` и даёт цикл через активацию в `core`.
+- решение: A, 2026-11-06
+- следствия: F-44
+
+## F-44 Как снять циклы типов `protocol` ↔ `search` и `protocol` ↔ `scheme` в плагине?
+<!-- journal:F-44 -->
+- вид: развилка
+- статус: решён
+- адресат: человек
+- зависит от: F-31, F-43
+- варианты:
+  - A. Типы сообщений `SearchOutcome` и `ParsedScheme` переезжают в `protocol`: `protocol` перестаёт зависеть от `search` и `scheme`
+    - улика: `vscode/src/shared/protocol.ts` «import type { SearchOutcome } from "./search";»
+    - улика: `vscode/src/shared/protocol.ts` «import type { ParsedScheme } from "./scheme";»
+  - B. Оставить как есть: циклы только по типам и в собранный код не попадают. Цена: граф модулей плагина с циклами, тест структуры или граф должны их терпеть
+    - улика: `vscode/src/shared/search.ts` «import type { RevealTarget } from "./protocol";»
+- антиподы: —
+- рекомендация: A — `protocol` — технический модуль, на котором стоят все страницы; в A он не зависит от доменных, и граф модулей без циклов. B оставляет исключение, которое должен помнить каждый читатель графа.
+- решение: A, 2026-11-06
 
 ## Заметки
 - 2026-11-06 — круг 1 закончен: решений 15, фактов 14, открытых развилок 0, парковок материалам 4, антиподов 4
+- 2026-11-06 — круг 2 закончен: решений 12, фактов 0, открытых развилок 0, парковок материалам 0, антиподов 1
+- 2026-11-06 — брейншторм закончен по решению человека
