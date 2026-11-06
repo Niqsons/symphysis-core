@@ -2,7 +2,7 @@
 """Шим форка OpenSpec для тестов: отвечает по `scenario.json` рядом с собой и дописывает каждый вызов в `calls.jsonl`.
 
 Запись: `argv`, `env`, `cwd`, `pid`. Ключ ответа: `version`, `status_all` (`status --all`), `status`, `apply`
-(`instructions apply`). Ответ: `stdout`, `stderr`, `stderr_encoding`, `code`, `hang` — сколько секунд висеть до ответа.
+(`instructions apply`), `validate` (`validate …`). Ответ: `stdout`, `stderr`, `stderr_encoding`, `code`, `hang` — сколько секунд висеть до ответа.
 Кладёт и наполняет его `install_fork_shim` из `tests/conftest.py`."""
 import json
 import os
@@ -16,6 +16,8 @@ HERE = Path(__file__).parent
 def reply_key(argv: list[str]) -> str:
     if argv[:1] == ["--version"]:
         return "version"
+    if argv[:1] == ["validate"]:
+        return "validate"
     if argv[:2] == ["instructions", "apply"]:
         return "apply"
     return "status_all" if "--all" in argv else "status"

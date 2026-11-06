@@ -69,3 +69,44 @@ def test_guide_has_no_address_with_credentials():
 
 def test_guide_names_the_package_pyyaml():
     assert set(re.findall(r"pip install ([\w.-]+)", text())) == {"pyyaml"}
+
+
+GRAPH_HEADING = "## Граф трассируемости"
+
+
+def graph_section() -> str:
+    """Раздел руководства о графе: от своего заголовка до следующего `## `."""
+    body = text()
+    assert GRAPH_HEADING in body, "в руководстве нет раздела о графе"
+    start = body.index(GRAPH_HEADING)
+    following = re.search(r"^## ", body[start + len(GRAPH_HEADING):], re.MULTILINE)
+    return body[start:start + len(GRAPH_HEADING) + following.start()] if following else body[start:]
+
+
+def test_guide_graph_section_tells_what_the_graph_gives():
+    """`onboarding-guide`: «Читатель ищет, что даёт граф» (F-04, F-05)."""
+    section = graph_section()
+    for name in ("python .symphysis/tools/trace_graph.py report",   # команда отчёта
+                 "build", "--out", "req-graph.json",                  # файл `--out`
+                 "python .symphysis/tools/trace_graph.py check",     # проверка файла
+                 "--format mermaid", "requirementDiagram",           # текст диаграммы
+                 "graph/", "report.md", "freeze",                    # каталог и заморозка
+                 "/opsx:apply", "/opsx:archive",                     # шаги, где они появляются
+                 "openspec validate",                                # связь с проверкой OpenSpec
+                 "[сигнал]"):                                        # ответ на сигнал (F-47)
+        assert name in section, name
+
+
+def test_guide_graph_section_tells_how_links_resolve():
+    """`onboarding-guide`: «Читатель ищет, что даёт граф» — правила разбора связей F-140–F-150."""
+    section = graph_section()
+    for name in ("F-NN", "служебная", "Часть требования «", "<!-- F-NN -->", "depends_on",
+                 "границе слова", "самое длинное", "ближайший сценарий"):
+        assert name in section, name
+
+
+def test_guide_names_the_script_that_finds_changes_without_snapshot():
+    """`onboarding-guide`: «Читатель ищет изменения без снимка» (F-62)."""
+    section = graph_section()
+    assert "python .symphysis/tools/trace_graph.py archive-gaps" in section
+    assert "symphysis check" in section

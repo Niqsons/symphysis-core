@@ -1,0 +1,43 @@
+Проба F-54. requirementDiagram: classDef, id, стереотипы. Случаи — в render.py этого каталога.
+
+12.2.0 | база: requirement и element | годен | узлов 2 | заливка rgb(253, 244, 255) рамка rgb(232, 121, 249) толщина 2px штрих none | <<Requirement>>Вход по паролюID: REQ-1Text: Система SHALL пу
+11.17.2 | база: requirement и element | годен | узлов 2 | заливка rgb(236, 236, 255) рамка none толщина 0px штрих none | <<Requirement>>Вход по паролюID: REQ-1Text: Система SHALL пу
+12.2.0 | classDef и class по имени в кавычках | годен | узлов 2 | заливка rgb(254, 226, 226) рамка rgb(185, 28, 28) толщина 3px штрих 63px | <<Requirement>>Вход по паролюID: REQ-1Text: Система SHALL пу
+11.17.2 | classDef и class по имени в кавычках | годен | узлов 2 | заливка rgb(254, 226, 226) рамка none толщина 0px штрих 63px | <<Requirement>>Вход по паролюID: REQ-1Text: Система SHALL пу
+12.2.0 | ::: в объявлении, имя в кавычках | годен | узлов 2 | заливка rgb(254, 226, 226) рамка rgb(185, 28, 28) толщина 3px штрих 63px | <<Requirement>>Вход по паролюID: REQ-1Text: t
+11.17.2 | ::: в объявлении, имя в кавычках | годен | узлов 2 | заливка rgb(254, 226, 226) рамка none толщина 0px штрих 63px | <<Requirement>>Вход по паролюID: REQ-1Text: t
+12.2.0 | class со списком имён | годен | узлов 2 | заливка rgb(254, 226, 226) рамка rgb(185, 28, 28) толщина 3px штрих 63px | <<Requirement>>Вход по паролюID: REQ-1Text: Система SHALL пу
+11.17.2 | class со списком имён | годен | узлов 2 | заливка rgb(254, 226, 226) рамка none толщина 0px штрих 63px | <<Requirement>>Вход по паролюID: REQ-1Text: Система SHALL пу
+12.2.0 | style по имени | годен | узлов 1 | заливка rgb(219, 234, 254) рамка rgb(29, 78, 216) толщина 2px штрих none | <<Requirement>>Вход по паролюID: REQ-1Text: Система SHALL пу
+11.17.2 | style по имени | годен | узлов 1 | заливка rgb(219, 234, 254) рамка none толщина 0px штрих none | <<Requirement>>Вход по паролюID: REQ-1Text: Система SHALL пу
+12.2.0 | id у element | ОТКАЗ | Parse error on line 3: ...нарий успеха" {    id: "SCN-3"    type ----------------------^ Expecting 'NEWLINE', 'STRUCT_STOP', 'TYPE', 'DOCREF', got 'ID'
+11.17.2 | id у element | ОТКАЗ | Parse error on line 3: ...нарий успеха" {    id: "SCN-3"    type ----------------------^ Expecting 'NEWLINE', 'STRUCT_STOP', 'TYPE', 'DOCREF', got 'ID'
+12.2.0 | id в type у element | годен | узлов 1 | заливка rgb(253, 244, 255) рамка rgb(232, 121, 249) толщина 2px штрих none | <<Element>>Сценарий успехаType: SCN-3Doc Ref: spec.md:8
+11.17.2 | id в type у element | годен | узлов 1 | заливка rgb(236, 236, 255) рамка none толщина 0px штрих none | <<Element>>Сценарий успехаType: SCN-3Doc Ref: spec.md:8
+12.2.0 | id без кавычек: SEC-3 | ОТКАЗ | Parse error on line 3: ...екции" {    id: SEC-3    text: "t"} ----------------------^ Expecting 'NEWLINE', got 'LINE'
+11.17.2 | id без кавычек: SEC-3 | ОТКАЗ | Parse error on line 3: ...екции" {    id: SEC-3    text: "t"} ----------------------^ Expecting 'NEWLINE', got 'LINE'
+12.2.0 | id в кавычках: SEC-3 | годен | узлов 1 | заливка rgb(253, 244, 255) рамка rgb(232, 121, 249) толщина 2px штрих none | <<Design Constraint>>ИнъекцииID: SEC-3Text: t
+11.17.2 | id в кавычках: SEC-3 | годен | узлов 1 | заливка rgb(236, 236, 255) рамка none толщина 0px штрих none | <<Design Constraint>>ИнъекцииID: SEC-3Text: t
+12.2.0 | шесть типов требований | годен | узлов 6 | заливка rgb(253, 244, 255) рамка rgb(232, 121, 249) толщина 2px штрих none | <<Requirement>>requirement имяID: X-1Text: t
+11.17.2 | шесть типов требований | годен | узлов 6 | заливка rgb(236, 236, 255) рамка none толщина 0px штрих none | <<Requirement>>requirement имяID: X-1Text: t
+12.2.0 | имя класса кириллицей | ОТКАЗ | Lexical error on line 6. Unrecognized text. ...пускать"}classDef безопасность fill:#f ---------------------^
+11.17.2 | имя класса кириллицей | ОТКАЗ | Lexical error on line 6. Unrecognized text. ...пускать"}classDef безопасность fill:#f ---------------------^
+12.2.0 | имя класса с дефисом | ОТКАЗ | Parse error on line 7: ...Вход по паролю" kind-sec -----------------------^ Expecting 'NEWLINE', 'EOF', 'acc_title', 'acc_descr', 'acc_descr_multiline_value', 'direction_
+11.17.2 | имя класса с дефисом | ОТКАЗ | Parse error on line 7: ...Вход по паролю" kind-sec -----------------------^ Expecting 'NEWLINE', 'EOF', 'acc_title', 'acc_descr', 'acc_descr_multiline_value', 'direction_
+12.2.0 | классы до объявлений | годен | узлов 1 | заливка rgb(253, 244, 255) рамка rgb(232, 121, 249) толщина 2px штрих none | <<Requirement>>Вход по паролюID: REQ-1Text: Система SHALL пу
+11.17.2 | классы до объявлений | годен | узлов 1 | заливка rgb(236, 236, 255) рамка none толщина 0px штрих none | <<Requirement>>Вход по паролюID: REQ-1Text: Система SHALL пу
+12.2.0 | direction LR и связь contains | годен | узлов 2 | заливка rgb(253, 244, 255) рамка rgb(232, 121, 249) толщина 2px штрих none | <<Requirement>>РодительID: CAP-1
+11.17.2 | direction LR и связь contains | годен | узлов 2 | заливка rgb(236, 236, 255) рамка none толщина 0px штрих none | <<Requirement>>РодительID: CAP-1
+
+12.2.0 | образец пяти видов | годен
+    rgb(219, 234, 254) rgb(29, 78, 216) 2px штрих none | <<Requirement>>Плагин показывает рекомендацию с причинойID: REQ-1Text:
+    rgb(254, 226, 226) rgb(185, 28, 28) 3px штрих none | <<Design Constraint>>Инъекции через содержимое файловID: SEC-1Text: За
+    rgb(220, 252, 231) rgb(21, 128, 61) 2px штрих none | <<Element>>Карточка при поле textType: SCN-1Doc Ref: specs/plugin-deci
+    rgb(254, 249, 195) rgb(161, 98, 7) 2px штрих none | <<Element>>Задача 3.2Type: TASK-3.2Doc Ref: tasks.md:24
+    rgb(243, 232, 255) rgb(126, 34, 206) 2px штрих 63px | <<Element>>F-19 всегда вариант и whyType: REC-19Doc Ref: decisions.jso
+11.17.2 | образец пяти видов | годен
+    rgb(219, 234, 254) none 0px штрих none | <<Requirement>>Плагин показывает рекомендацию с причинойID: REQ-1Text:
+    rgb(254, 226, 226) none 0px штрих none | <<Design Constraint>>Инъекции через содержимое файловID: SEC-1Text: За
+    rgb(220, 252, 231) none 0px штрих none | <<Element>>Карточка при поле textType: SCN-1Doc Ref: specs/plugin-deci
+    rgb(254, 249, 195) none 0px штрих none | <<Element>>Задача 3.2Type: TASK-3.2Doc Ref: tasks.md:24
+    rgb(243, 232, 255) none 0px штрих 63px | <<Element>>F-19 всегда вариант и whyType: REC-19Doc Ref: decisions.jso

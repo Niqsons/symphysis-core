@@ -20,6 +20,8 @@ const FILES = [
   "tools/journal_consequences.py",
   "tools/symphysis_config.py",
   "tools/step_help.py",
+  "tools/openspec_run.py",
+  "tools/trace_graph.py",
   "tools/playground-template.html",
   "docs/journal.schema.json",
 ];

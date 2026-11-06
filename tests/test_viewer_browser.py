@@ -623,3 +623,22 @@ def test_jetbrains_preset_needs_the_project_root(tmp_path):
     r = browser(html, "editor:jetbrains")
     assert arrow in editor_arrows(r)
     assert r["errors"] == []
+
+
+# --- режим «атака»: фильтр по линзе (decision-viewer) ---------------------------------------------
+
+def test_attack_filter_all_shows_every_lens_again(tmp_path):
+    """`decision-viewer`: «Фильтр «все»» — выбрана одна линза, человек нажимает «все»: видны строки всех линз файла."""
+    def row(lens):
+        return {"claim": f"утверждение {lens}", "section": "F-01, decision", "lens": lens, "invariant": "и",
+                "severity": "блокер", "support": "нет", "fix": "правка записи"}
+    lenses = ["context-compliance", "claim-authority", "coverage"]
+    attack = {"path": "attack/decisions.md", "frontmatter": {"status": "gaps_found", "targets": [{"path": "decisions.json", "sha256": ""}]},
+              "rows": [row(lens) for lens in lenses]}
+    html = tmp_path / "attack.html"
+    html.write_text(journal.render_html(one_record_journal("a.md", "дв"), ROOT / "tools" / "playground-template.html", attacks=[attack],
+                                        journal_sha256="0" * 64), encoding="utf-8", newline="\n")
+    one = browser(html, "mode:attack", "lens:claim-authority")["attack"]
+    assert one == {"groups": ["claim-authority"], "active": "claim-authority"}
+    everything = browser(html, "mode:attack", "lens:claim-authority", "lens:all")["attack"]
+    assert everything == {"groups": lenses, "active": "all"}

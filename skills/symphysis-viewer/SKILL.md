@@ -135,7 +135,7 @@ Open Questions; факт → Context; парковка → Open Questions, от�
 по тяжести и по линзе; строки сгруппированы линза → тяжесть. Закрытый
 список линз зависит от файла: у журнала (цель — один `decisions.json`) —
 `context-compliance`, `claim-authority`, `claim-extraction`, `coverage`;
-у артефактов — `scenario-run`, `claim-extraction`. Слуг не из списка
+у артефактов — `scenario-run`, `claim-extraction`, `trace-link`. Слуг не из списка
 своего файла — группа «вне списка», строка невалидна: в счётчике линз
 её нет, в счётчике тяжести есть.
 

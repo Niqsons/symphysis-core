@@ -42,6 +42,12 @@
   читатель файла: журнал этот модуль не импортирует и настройки не читает, а
   `symphysis config` и `symphysis check` зовут его. Случаи —
   `tests/fixtures/settings-cases.json`.
+- `tools/trace_graph.py` — граф трассируемости изменения: подкоманды `build` (JSON,
+  `--format mermaid`), `report`, `check`, `freeze`, `archive-gaps`; `graph/req-graph.json` и
+  `graph/report.md` пишет только `freeze`. Описание — в `docs/GUIDE.md`, «Граф трассируемости».
+- `tools/openspec_run.py` — общий запуск форка OpenSpec (F-138): зовут его `trace_graph.py`
+  (`openspec validate --json` для отчёта) и `step_help.py`; поиск форка, таймаут и ошибки
+  запуска живут здесь, а не в скриптах.
 - `installer/` — npm-пакет `@niqsons/symphysis`: `install`/`check`/`config`;
   `payload/` генерируется из корня (`scripts/sync-payload.js`), не правится.
 - `docs/analysis/step0-sources.md` — чтение источников шага 0
@@ -86,6 +92,10 @@
   `/opsx:continue <изменение> attack-artifacts`. Вызванная атака гейтует
   зависимые артефакты и apply, пока вердикт не `passed`; вердикт с чужим
   хешем целей — `stale` (F-06.A, F-26.E).
+- Новый артефакт схемы проверяется на вход в граф (F-53): в реестре `tools/trace_graph.py`
+  (`REGISTRY`) на него заводится строка — что граф из него берёт; значение `ничего` законно, но
+  с доводом. Тест `tests/test_trace_graph.py` сверяет реестр со `schema.yaml`: артефакт без
+  строки или `ничего` без довода даёт красный.
 - Перед архивом дельты изменения переносятся в `openspec/specs/`
   операцией агента `/opsx:sync` (F-20.B).
 - Ванильный CLI считает артефакт готовым, когда файл существует;

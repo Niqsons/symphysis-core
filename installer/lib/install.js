@@ -22,6 +22,13 @@ consequences:
   assumptions: true
 edge_probe:
   enabled: true
+attack:
+  context-compliance: true
+  claim-authority: true
+  claim-extraction: true
+  coverage: true
+  scenario-run: true
+  trace-link: true
 `;
 
 const rel = (project, p) => path.relative(project, p).split(path.sep).join("/");
@@ -76,7 +83,7 @@ function versionText(payloadDir, sourceRoot) {
 `;
 }
 
-/** Слияние чужого config.yaml со своим: схема переключается, rules объединяются, остальное не трогается. */
+/** Слияние чужого config.yaml со своим: схема переключается, rules и подсказки operations объединяются, остальное не трогается. */
 export function mergeConfig(existingText, oursText) {
   const doc = parseDocument(existingText);
   const ours = parseDocument(oursText).toJS();
@@ -94,6 +101,38 @@ export function mergeConfig(existingText, oursText) {
     if (!isSeq(seq)) {
       if (!rules.has(key)) rules.set(key, doc.createNode(list));
       else warnings.push(`rules.${key} не список — правила symphysis не добавлены`);
+      continue;
+    }
+    const have = new Set(seq.items.map((i) => (isScalar(i) ? i.value : i)));
+    for (const s of list) if (!have.has(s)) seq.add(doc.createNode(s));
+  }
+
+  // Подсказки операций (F-49, F-110): как rules — чужие строки остаются, наши добавляются, если их ещё нет.
+  for (const [op, body] of Object.entries(ours.operations ?? {})) {
+    const list = body?.guidance;
+    if (!Array.isArray(list)) continue;
+    let operations = doc.get("operations", true);
+    if (!isMap(operations)) {
+      if (doc.has("operations")) {
+        warnings.push("operations не словарь — подсказки symphysis не добавлены");
+        break;
+      }
+      doc.set("operations", doc.createNode({}));
+      operations = doc.get("operations", true);
+    }
+    let entry = operations.get(op, true);
+    if (!isMap(entry)) {
+      if (operations.has(op)) {
+        warnings.push(`operations.${op} не словарь — подсказки symphysis не добавлены`);
+        continue;
+      }
+      operations.set(op, doc.createNode({}));
+      entry = operations.get(op, true);
+    }
+    const seq = entry.get("guidance", true);
+    if (!isSeq(seq)) {
+      if (!entry.has("guidance")) entry.set("guidance", doc.createNode(list));
+      else warnings.push(`operations.${op}.guidance не список — подсказка symphysis не добавлена`);
       continue;
     }
     const have = new Set(seq.items.map((i) => (isScalar(i) ? i.value : i)));
@@ -125,7 +164,7 @@ export function install(project, { skillsDirs = [], force = false, payloadDir = 
 
   const toolsDir = path.join(t.toolsDir, "tools");
   const skippedBefore = res.skipped.length;
-  copyTree(res, root, path.join(payloadDir, "tools"), toolsDir, force, (f) => /^(journal.*\.py|symphysis_config\.py|step_help\.py|playground-template\.html|mermaid\.min\.js|mermaid\.LICENSE)$/.test(path.basename(f)));
+  copyTree(res, root, path.join(payloadDir, "tools"), toolsDir, force, (f) => /^(journal.*\.py|symphysis_config\.py|step_help\.py|trace_graph\.py|openspec_run\.py|playground-template\.html|mermaid\.min\.js|mermaid\.LICENSE)$/.test(path.basename(f)));
   // Файл версии описывает поставленные инструменты: если часть пропущена, а файла не было, писать его значило бы
   // назвать версией то, чего в проекте нет. Панель покажет «неизвестно». Уже лежащий файл идёт по общему правилу.
   const toolsPrefix = `${rel(root, toolsDir)}/`;

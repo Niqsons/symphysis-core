@@ -264,7 +264,7 @@ def test_destination_matches_the_template(tmp_path):
 def test_output_carries_the_contract_number(tmp_path):
     src, roots = journal_file(tmp_path)
     number = view(src, "--roots", roots)["contract"]
-    assert type(number) is int and number == 2
+    assert type(number) is int and number == 3
 
 
 def test_one_number_in_both_outputs(tmp_path):
@@ -278,7 +278,7 @@ def test_one_number_in_both_outputs(tmp_path):
     assert done.returncode == 0, done.stderr
     from_help = json.loads(done.stdout.decode("utf-8"))["contract"]
     from_view = view(src, "--roots", roots)["contract"]
-    assert type(from_help) is int and from_help == from_view == journal_render.CONTRACT == 2
+    assert type(from_help) is int and from_help == from_view == journal_render.CONTRACT == 3
 
 
 def test_a_new_field_does_not_raise_the_number_and_reaches_the_output(tmp_path):

@@ -17,17 +17,22 @@ from pathlib import Path
 from journal_apply import default_roots
 from journal_model import ROOT
 
-__all__ = ["Settings", "read_settings", "composition_line", "build_parser", "main"]
+__all__ = ["Settings", "read_settings", "composition_line", "lenses_line", "LENSES", "build_parser", "main"]
 
 FILE_NAME = "symphysis.yaml"
 SIGNAL_UNPARSED = f"{FILE_NAME}: не разбирается"
 SIGNAL_NOT_UTF8 = f"{FILE_NAME}: не UTF-8"
 SIGNAL_NO_PACKAGE = f"{FILE_NAME}: нет пакета PyYAML — выполнить: python -m pip install pyyaml"
 
-# Группа -> вложенный ключ -> поле `Settings`.
+# Линзы атаки обоих файлов: ключ группы `attack` равен слугу (F-132.A). `claim-extraction` стоит в обоих
+# файлах и включается одним ключом (F-109.B). Порядок — порядок строки состава.
+LENSES = ("context-compliance", "claim-authority", "claim-extraction", "coverage", "scenario-run", "trace-link")
+
+# Группа -> вложенный ключ -> поле `Settings` (у линзы — её слуг в `Settings.lenses`).
 KEYS = {
     "consequences": {"failure_branches": "failure_branches", "assumptions": "assumptions"},
     "edge_probe": {"enabled": "edge_probe"},
+    "attack": {slug: slug for slug in LENSES},
 }
 
 @dataclass
@@ -35,6 +40,7 @@ class Settings:
     failure_branches: bool = True
     assumptions: bool = True
     edge_probe: bool = True
+    lenses: dict[str, bool] = field(default_factory=lambda: dict.fromkeys(LENSES, True))
     signals: list[str] = field(default_factory=list)
 
 
@@ -63,10 +69,16 @@ def _apply(data, settings: Settings) -> None:
             settings.signals.append(f"{FILE_NAME}: {group} — нужен вложенный ключ")
         else:
             for key, value in inner.items():
-                if key not in fields:
+                if key not in fields and group == "attack":
+                    # Опечатка в слуге: линза работает, а человек считает её выключенной (F-108.A).
+                    settings.signals.append(f"{FILE_NAME}: неизвестная линза {_show(key)}")
+                elif key not in fields:
                     settings.signals.append(f"{FILE_NAME}: неизвестный ключ {group}.{key}")
                 elif value == "false":
-                    setattr(settings, fields[key], False)
+                    if fields[key] in LENSES:
+                        settings.lenses[fields[key]] = False
+                    else:
+                        setattr(settings, fields[key], False)
                 elif value not in ("true", ""):
                     settings.signals.append(f"{FILE_NAME}: недопустимое значение {_show(value)}")
 
@@ -109,6 +121,14 @@ def composition_line(settings: Settings) -> str:
             f"проба краёв {on(settings.edge_probe)}")
 
 
+def lenses_line(settings: Settings) -> str:
+    """Строка состава линз атаки: каждая линза названа включённой или выключенной, в порядке `LENSES`.
+    Скилл атаки берёт из неё строку `**Состав:**` файла атаки (F-61.D, F-63.A). Прежняя строка состава
+    не меняется: скиллы описи и пробы краёв читают её дословно."""
+    on = lambda value: "вкл" if value else "выкл"
+    return f"{FILE_NAME}: линзы атаки: " + ", ".join(f"{slug} {on(settings.lenses[slug])}" for slug in LENSES)
+
+
 def _default_project() -> Path:
     """Корень проекта без параметра: пустой префикс файла корней (у установленной копии это проект
     над `.symphysis/`), иначе каталог над `tools/`."""
@@ -122,15 +142,15 @@ def build_parser() -> argparse.ArgumentParser:
     ap = argparse.ArgumentParser(
         prog="symphysis_config",
         formatter_class=argparse.RawDescriptionHelpFormatter,
-        description="Состав выбора из symphysis.yaml: ветки отказа, допущения, проба краёв.\n"
+        description="Состав выбора из symphysis.yaml: ветки отказа, допущения, проба краёв, линзы атаки.\n"
                     "Звать, когда шаг начинается и ему нужен состав: скилл зовёт скрипт, файл сам не разбирает\n"
                     "и человека о составе не спрашивает; правка файла действует со следующего запуска шага.",
         epilog="Порядок: один вызов в начале шага, дальше шаг идёт по напечатанному составу.\n"
                "Исходы: файла нет или пустое значение — всё включено без сигнала; значение не из true и false,\n"
-               "  неизвестный ключ, плоская запись, файл не разбирается, не UTF-8, нет пакета PyYAML — выбор\n"
+               "  неизвестный ключ или линза, плоская запись, файл не разбирается, не UTF-8, нет пакета PyYAML — выбор\n"
                "  считается включённым и есть сигнал. Человеку тот же вывод даёт symphysis config.\n"
                "Коды: 0 — состав напечатан, сигналы код не меняют; 2 — с --strict есть сигналы, либо вызов неверен.\n"
-               "Маркеры: [..] строка состава, исходом не является; [!!] сигнал.")
+               "Маркеры: [..] строки состава (выбор шага и линзы атаки), исходом не является; [!!] сигнал.")
     general = ap.add_argument_group("общие")
     general.add_argument("--project", type=Path, metavar="ПУТЬ",
                          help="корень проекта; без него — проект над .symphysis/")
@@ -146,6 +166,7 @@ def main(argv: list[str] | None = None) -> int:
         ap.error(f"--project: каталога нет: {args.project}")
     settings = read_settings(args.project if args.project is not None else _default_project())
     print(f"[..] {composition_line(settings)}")
+    print(f"[..] {lenses_line(settings)}")
     for signal in settings.signals:
         print(f"[!!] {signal}")
     return 2 if args.strict and settings.signals else 0

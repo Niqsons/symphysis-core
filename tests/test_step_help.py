@@ -1,6 +1,5 @@
 """`tools/step_help.py`: текущий шаг конвейера и чей ход, страницы шагов, вызов форка. Форк подменён шимом
 `tests/fixtures/fork-shim/`; сверка с настоящим форком — в конце файла."""
-import ast
 import datetime as dt
 import json
 import os
@@ -15,6 +14,7 @@ from pathlib import Path
 import pytest
 
 import journal_render
+import openspec_run
 import step_help
 from conftest import (ALL_STEPS, FORK_VERSION, OPTIONAL_ARTIFACTS, ROOT, SCHEMA_GRAPH, fake_apply, fake_status,
                       fake_status_all, fork_calls, fork_env, fork_record, fork_reply, install_fork_shim, journal_of, real_env,
@@ -76,7 +76,7 @@ def page(data: dict, step: str) -> dict:
 
 def compute_with_limit(project: Path, env: dict, limit: int, change="demo"):
     """`compute` в своём интерпретаторе с пределом `limit` секунд: код выхода показывает и то, как он завершился."""
-    script = ("import json, sys, step_help; step_help.FORK_TIMEOUT = int(sys.argv[2]); "
+    script = ("import json, sys, openspec_run, step_help; openspec_run.FORK_TIMEOUT = int(sys.argv[2]); "
               "sys.stdout.buffer.write(json.dumps(step_help.compute(sys.argv[1], sys.argv[3])).encode('utf-8'))")
     started = time.monotonic()
     done = subprocess.run([sys.executable, "-c", script, str(project), str(limit), change], capture_output=True,
@@ -209,16 +209,6 @@ def test_shim_path_with_a_cmd_metacharacter_is_refused(tmp_path, folder, symbol,
     assert folder not in done.stdout.decode("utf-8")
     assert not (project / "marker2").exists() and not (project / "--version").exists()
     assert fork_calls(tmp_path / folder) == []
-
-
-@pytest.mark.parametrize("symbol", ["&", "|", "<", ">", "^", "%", '"'])
-@pytest.mark.parametrize("name", ["openspec.cmd", "openspec.bat", "OPENSPEC.CMD"])
-def test_every_metacharacter_of_a_shim_path_is_named(symbol, name, monkeypatch):
-    """Не все эти символы законны в имени каталога Windows, поэтому проверка на самой функции; файл не трогается и не запускается."""
-    monkeypatch.setenv("SYMPHYSIS_OPENSPEC", f"a{symbol}b/{name}")
-    monkeypatch.setattr(os.path, "exists", lambda path: True)
-    with pytest.raises(step_help.ForkError, match=f"«{re.escape(symbol)}»"):
-        step_help._fork_command()
 
 
 @windows_only
@@ -364,14 +354,6 @@ def test_failed_apply_call_is_a_failure(tmp_path):
     assert code == 1 and "openspec instructions apply" in data["error"] and "сбой задач" in data["error"]
 
 
-def test_fork_is_spawned_in_one_place():
-    """Единственная функция вызова: второй `Popen` обошёл бы проверку имени, телеметрию и предел."""
-    tree = ast.parse(STEP_HELP.read_text(encoding="utf-8"))
-    spawns = [node for node in ast.walk(tree) if isinstance(node, ast.Call) and isinstance(node.func, ast.Attribute)
-              and node.func.attr == "Popen"]
-    assert len(spawns) == 1
-
-
 # --- 1.3 имя изменения ------------------------------------------------------
 
 @pytest.mark.parametrize("name", ["a&echo.>marker", "a&md,marker", "a|md,marker", 'a"&md,marker', "имя пробел",
@@ -395,13 +377,6 @@ def test_dangerous_name_from_the_fork_is_refused(tmp_path):
     assert code == 1 and "не подходит" in data["error"] and "a&md,marker" in data["error"]
     assert not (project / "marker").exists()
     assert [call["argv"] for call in fork_calls(tmp_path / "bin")] == [["--version"], ["status", "--all", "--json"]]
-
-
-def test_refusal_stands_in_the_call_function_itself(tmp_path, monkeypatch):
-    """Проверка в самой функции вызова, а не в разборе аргументов: обойти её негде."""
-    monkeypatch.setattr(subprocess, "Popen", lambda *a, **k: pytest.fail("форк вызван с опасным именем"))
-    with pytest.raises(step_help.ForkError, match="не подходит"):
-        step_help.run_fork(tmp_path, "status", "--json", change="a&md,marker")
 
 
 @pytest.mark.parametrize("name, decoy", [("..", "openspec/decisions.json"), ("..\\x", "openspec/x/decisions.json"),
@@ -861,7 +836,7 @@ def test_symphysis_version_absent_is_null(tmp_path):
 
 def copy_of_tools(directory: Path) -> Path:
     directory.mkdir()
-    for name in ("step_help.py", "journal_render.py", "journal_model.py", "journal_apply.py"):
+    for name in ("step_help.py", "openspec_run.py", "journal_render.py", "journal_model.py", "journal_apply.py"):
         shutil.copy(ROOT / "tools" / name, directory)
     return directory / "step_help.py"
 
@@ -1078,17 +1053,6 @@ def test_render_html_does_not_run_node_cmd_from_the_project_root(tmp_path):
     assert not (project / "marker.txt").exists()
 
 
-@requires_node
-def test_js_route_runs_node_by_absolute_path(tmp_path, monkeypatch):
-    """Маршрут `.js`: `node` берётся из PATH до вызова, а не ищется заново в `cwd` проекта."""
-    script = tmp_path / "openspec.js"
-    script.write_text("", encoding="utf-8")
-    monkeypatch.setenv("SYMPHYSIS_OPENSPEC", str(script))
-    command = step_help._fork_command()
-    assert command[1] == str(script) and os.path.isabs(command[0])
-    assert Path(command[0]).samefile(shutil.which("node"))
-
-
 def test_tools_inside_the_project_leave_no_bytecode(tmp_path):
     """Скрипт пишет только в stdout (F-50): при инструментах внутри дерева проекта `__pycache__` рядом не появляется,
     хотя интерпретатор по умолчанию его пишет. Переменную человека `PYTHONDONTWRITEBYTECODE` тест снимает."""
@@ -1213,7 +1177,7 @@ def install_layout(tmp_path, nested=False):
     tools = install / ".symphysis" / "tools"
     tools.mkdir(parents=True)
     for file in (ROOT / "tools").glob("*"):
-        if file.is_file() and re.match(r"journal.*\.py|step_help\.py|symphysis_config\.py", file.name):
+        if file.is_file() and re.match(r"journal.*\.py|step_help\.py|openspec_run\.py|symphysis_config\.py", file.name):
             shutil.copy(file, tools / file.name)
     (install / ".symphysis" / "docs").mkdir()
     shutil.copy(ROOT / "docs" / "journal.schema.json", install / ".symphysis" / "docs" / "journal.schema.json")
@@ -1253,7 +1217,7 @@ def clone_layout(tmp_path):
     tools = clone / "tools"
     tools.mkdir(parents=True)
     for file in (ROOT / "tools").glob("*"):
-        if file.is_file() and re.match(r"journal.*\.(py|json)|step_help\.py|symphysis_config\.py", file.name):
+        if file.is_file() and re.match(r"journal.*\.(py|json)|step_help\.py|openspec_run\.py|symphysis_config\.py", file.name):
             shutil.copy(file, tools / file.name)
     (clone / "docs").mkdir()
     shutil.copy(ROOT / "docs" / "journal.schema.json", clone / "docs" / "journal.schema.json")

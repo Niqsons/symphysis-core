@@ -1,0 +1,266 @@
+requirementDiagram
+direction LR
+classDef kcap fill:#f1f5f9,stroke:#475569
+classDef kreq fill:#dbeafe,stroke:#1d4ed8,stroke-width:2px
+classDef kscn fill:#dcfce7,stroke:#15803d
+classDef ktask fill:#fef9c3,stroke:#a16207
+classDef krec fill:#f3e8ff,stroke:#7e22ce,stroke-dasharray:6
+requirement "CAP_1 artifact-attack" {
+    id: "CAP_1"
+}
+requirement "REQ_1 Атака считает находкой `why`, пересказывающий вариант" {
+    id: "REQ_1"
+    text: "Атака журнала SHALL писать строку под линзой `context-compliance`, когда `why` рекомендации пересказывает вари"
+}
+element "SCN_1 `why` пересказывает вариант" {
+    type: "SCN_1"
+    docref: "specs/artifact-attack/spec.md:8"
+}
+element "SCN_2 `why` называет причину" {
+    type: "SCN_2"
+    docref: "specs/artifact-attack/spec.md:13"
+}
+element "REC_1 F-13 `check` следит только за тем, что `why` не пуст. Виден ли он человеку и что в н" {
+    type: "REC_1"
+    docref: "decisions.json"
+}
+element "REC_2 F-21 Чем держать смысл `why`, кроме проверки на пустоту" {
+    type: "REC_2"
+    docref: "decisions.json"
+}
+requirement "CAP_2 brainstorm-interview" {
+    id: "CAP_2"
+}
+requirement "REQ_2 Рекомендация записывается с причиной выбора" {
+    id: "REQ_2"
+    text: "Скиллы, которые пишут развилки журнала, SHALL записывать рекомендацию полями `option` и `why` и MUST NOT писат"
+}
+element "SCN_3 Развилка брейншторма" {
+    type: "SCN_3"
+    docref: "specs/brainstorm-interview/spec.md:8"
+}
+element "SCN_4 Кандидат пробы краёв" {
+    type: "SCN_4"
+    docref: "specs/brainstorm-interview/spec.md:13"
+}
+element "REC_3 F-01 Критерий готовности: «у рекомендации есть обоснование»" {
+    type: "REC_3"
+    docref: "decisions.json"
+}
+element "REC_4 F-05 Критерий готовности: «Скилл перестаёт называть `text`, и `why` описан как причи" {
+    type: "REC_4"
+    docref: "decisions.json"
+}
+requirement "CAP_3 decision-journal" {
+    id: "CAP_3"
+}
+requirement "REQ_3 `decisions.md` показывает рекомендацию с причиной" {
+    id: "REQ_3"
+    text: "`render-md` SHALL писать рекомендацию как `вариант — why` и MUST NOT заменять причину полем `text`, даже если "
+}
+element "SCN_5 Есть поле `text`" {
+    type: "SCN_5"
+    docref: "specs/decision-journal/spec.md:8"
+}
+element "SCN_6 Поля `text` нет" {
+    type: "SCN_6"
+    docref: "specs/decision-journal/spec.md:13"
+}
+element "REC_5 F-04 Критерий готовности: «Показ всегда `вариант — why`, как уже делает страница: в " {
+    type: "REC_5"
+    docref: "decisions.json"
+}
+element "REC_6 F-19 Что показывать, если у рекомендации есть `text`" {
+    type: "REC_6"
+    docref: "decisions.json"
+}
+requirement "REQ_4 Поле `text` не читается и новыми записями не пишется" {
+    id: "REQ_4"
+    text: "Импорт из markdown SHALL разбирать строку рекомендации только в `option` и `why` и MUST NOT писать `text`. Жур"
+}
+element "SCN_7 Импорт составной рекомендации" {
+    type: "SCN_7"
+    docref: "specs/decision-journal/spec.md:24"
+}
+element "SCN_8 Круговой разбор" {
+    type: "SCN_8"
+    docref: "specs/decision-journal/spec.md:29"
+}
+element "SCN_9 Старый журнал с полем `text`" {
+    type: "SCN_9"
+    docref: "specs/decision-journal/spec.md:34"
+}
+element "REC_7 F-06 Критерий готовности: «Старые журналы остаются в силе»" {
+    type: "REC_7"
+    docref: "decisions.json"
+}
+element "REC_8 F-20 Что дальше с полем `text`" {
+    type: "REC_8"
+    docref: "decisions.json"
+}
+requirement "CAP_4 decision-viewer" {
+    id: "CAP_4"
+}
+requirement "REQ_5 Страница показывает рекомендацию с причиной" {
+    id: "REQ_5"
+    text: "Карточка страницы SHALL показывать рекомендацию как `вариант — why` и MUST NOT показывать вместо причины поле "
+}
+element "SCN_10 Есть поле `text`" {
+    type: "SCN_10"
+    docref: "specs/decision-viewer/spec.md:8"
+}
+element "REC_9 F-10 Страница всегда показывает вариант и причину, `text` не читает" {
+    type: "REC_9"
+    docref: "decisions.json"
+}
+requirement "CAP_5 plugin-decision-view" {
+    id: "CAP_5"
+}
+requirement "REQ_6 Плагин показывает рекомендацию с причиной" {
+    id: "REQ_6"
+    text: "Карточка плагина SHALL показывать рекомендацию как `вариант — why` и MUST NOT показывать вместо причины поле `"
+}
+element "SCN_11 Карточка при поле `text`" {
+    type: "SCN_11"
+    docref: "specs/plugin-decision-view/spec.md:8"
+}
+element "SCN_12 Поля `text` нет" {
+    type: "SCN_12"
+    docref: "specs/plugin-decision-view/spec.md:13"
+}
+element "REC_10 F-08 Плагин при наличии `text` показывает его вместо причины, в карточке и в режиме" {
+    type: "REC_10"
+    docref: "decisions.json"
+}
+requirement "REQ_7 Поиск плагина не читает поле `text`" {
+    id: "REQ_7"
+    text: "Поиск плагина SHALL искать по причине рекомендации и MUST NOT находить запись только по полю `text`: найденное"
+}
+element "SCN_13 Слово только в `text`" {
+    type: "SCN_13"
+    docref: "specs/plugin-decision-view/spec.md:24"
+}
+element "SCN_14 Слово в причине" {
+    type: "SCN_14"
+    docref: "specs/plugin-decision-view/spec.md:29"
+}
+element "REC_11 F-18 Поиск плагина ищет и по `text`: если поле не показывать, найденное совпадение " {
+    type: "REC_11"
+    docref: "decisions.json"
+}
+element "TASK_1 Задача 1.1" {
+    type: "TASK_1"
+    docref: "tasks.md:5"
+}
+element "TASK_2 Задача 1.2" {
+    type: "TASK_2"
+    docref: "tasks.md:6"
+}
+element "TASK_3 Задача 1.5" {
+    type: "TASK_3"
+    docref: "tasks.md:9"
+}
+element "TASK_4 Задача 3.2" {
+    type: "TASK_4"
+    docref: "tasks.md:24"
+}
+element "TASK_5 Задача 3.4" {
+    type: "TASK_5"
+    docref: "tasks.md:26"
+}
+"CAP_1 artifact-attack" - contains -> "REQ_1 Атака считает находкой `why`, пересказывающий вариант"
+"SCN_1 `why` пересказывает вариант" - verifies -> "REQ_1 Атака считает находкой `why`, пересказывающий вариант"
+"SCN_2 `why` называет причину" - verifies -> "REQ_1 Атака считает находкой `why`, пересказывающий вариант"
+"REQ_1 Атака считает находкой `why`, пересказывающий вариант" - traces -> "REC_1 F-13 `check` следит только за тем, что `why` не пуст. Виден ли он человеку и что в н"
+"REQ_1 Атака считает находкой `why`, пересказывающий вариант" - traces -> "REC_2 F-21 Чем держать смысл `why`, кроме проверки на пустоту"
+"CAP_2 brainstorm-interview" - contains -> "REQ_2 Рекомендация записывается с причиной выбора"
+"SCN_3 Развилка брейншторма" - verifies -> "REQ_2 Рекомендация записывается с причиной выбора"
+"SCN_4 Кандидат пробы краёв" - verifies -> "REQ_2 Рекомендация записывается с причиной выбора"
+"REQ_2 Рекомендация записывается с причиной выбора" - traces -> "REC_3 F-01 Критерий готовности: «у рекомендации есть обоснование»"
+"REQ_2 Рекомендация записывается с причиной выбора" - traces -> "REC_4 F-05 Критерий готовности: «Скилл перестаёт называть `text`, и `why` описан как причи"
+"REQ_2 Рекомендация записывается с причиной выбора" - traces -> "REC_2 F-21 Чем держать смысл `why`, кроме проверки на пустоту"
+"CAP_3 decision-journal" - contains -> "REQ_3 `decisions.md` показывает рекомендацию с причиной"
+"SCN_5 Есть поле `text`" - verifies -> "REQ_3 `decisions.md` показывает рекомендацию с причиной"
+"SCN_6 Поля `text` нет" - verifies -> "REQ_3 `decisions.md` показывает рекомендацию с причиной"
+"REQ_3 `decisions.md` показывает рекомендацию с причиной" - traces -> "REC_3 F-01 Критерий готовности: «у рекомендации есть обоснование»"
+"REQ_3 `decisions.md` показывает рекомендацию с причиной" - traces -> "REC_5 F-04 Критерий готовности: «Показ всегда `вариант — why`, как уже делает страница: в "
+"REQ_3 `decisions.md` показывает рекомендацию с причиной" - traces -> "REC_6 F-19 Что показывать, если у рекомендации есть `text`"
+"CAP_3 decision-journal" - contains -> "REQ_4 Поле `text` не читается и новыми записями не пишется"
+"SCN_7 Импорт составной рекомендации" - verifies -> "REQ_4 Поле `text` не читается и новыми записями не пишется"
+"SCN_8 Круговой разбор" - verifies -> "REQ_4 Поле `text` не читается и новыми записями не пишется"
+"SCN_9 Старый журнал с полем `text`" - verifies -> "REQ_4 Поле `text` не читается и новыми записями не пишется"
+"REQ_4 Поле `text` не читается и новыми записями не пишется" - traces -> "REC_7 F-06 Критерий готовности: «Старые журналы остаются в силе»"
+"REQ_4 Поле `text` не читается и новыми записями не пишется" - traces -> "REC_6 F-19 Что показывать, если у рекомендации есть `text`"
+"REQ_4 Поле `text` не читается и новыми записями не пишется" - traces -> "REC_8 F-20 Что дальше с полем `text`"
+"CAP_4 decision-viewer" - contains -> "REQ_5 Страница показывает рекомендацию с причиной"
+"SCN_10 Есть поле `text`" - verifies -> "REQ_5 Страница показывает рекомендацию с причиной"
+"REQ_5 Страница показывает рекомендацию с причиной" - traces -> "REC_5 F-04 Критерий готовности: «Показ всегда `вариант — why`, как уже делает страница: в "
+"REQ_5 Страница показывает рекомендацию с причиной" - traces -> "REC_9 F-10 Страница всегда показывает вариант и причину, `text` не читает"
+"REQ_5 Страница показывает рекомендацию с причиной" - traces -> "REC_6 F-19 Что показывать, если у рекомендации есть `text`"
+"CAP_5 plugin-decision-view" - contains -> "REQ_6 Плагин показывает рекомендацию с причиной"
+"SCN_11 Карточка при поле `text`" - verifies -> "REQ_6 Плагин показывает рекомендацию с причиной"
+"SCN_12 Поля `text` нет" - verifies -> "REQ_6 Плагин показывает рекомендацию с причиной"
+"REQ_6 Плагин показывает рекомендацию с причиной" - traces -> "REC_5 F-04 Критерий готовности: «Показ всегда `вариант — why`, как уже делает страница: в "
+"REQ_6 Плагин показывает рекомендацию с причиной" - traces -> "REC_10 F-08 Плагин при наличии `text` показывает его вместо причины, в карточке и в режиме"
+"REQ_6 Плагин показывает рекомендацию с причиной" - traces -> "REC_6 F-19 Что показывать, если у рекомендации есть `text`"
+"CAP_5 plugin-decision-view" - contains -> "REQ_7 Поиск плагина не читает поле `text`"
+"SCN_13 Слово только в `text`" - verifies -> "REQ_7 Поиск плагина не читает поле `text`"
+"SCN_14 Слово в причине" - verifies -> "REQ_7 Поиск плагина не читает поле `text`"
+"REQ_7 Поиск плагина не читает поле `text`" - traces -> "REC_11 F-18 Поиск плагина ищет и по `text`: если поле не показывать, найденное совпадение "
+"REQ_7 Поиск плагина не читает поле `text`" - traces -> "REC_8 F-20 Что дальше с полем `text`"
+"TASK_1 Задача 1.1" - satisfies -> "SCN_5 Есть поле `text`"
+"TASK_1 Задача 1.1" - satisfies -> "SCN_7 Импорт составной рекомендации"
+"TASK_1 Задача 1.1" - satisfies -> "SCN_8 Круговой разбор"
+"TASK_1 Задача 1.1" - satisfies -> "SCN_9 Старый журнал с полем `text`"
+"TASK_1 Задача 1.1" - satisfies -> "SCN_10 Есть поле `text`"
+"TASK_2 Задача 1.2" - satisfies -> "SCN_5 Есть поле `text`"
+"TASK_2 Задача 1.2" - satisfies -> "SCN_6 Поля `text` нет"
+"TASK_2 Задача 1.2" - satisfies -> "SCN_10 Есть поле `text`"
+"TASK_2 Задача 1.2" - satisfies -> "SCN_12 Поля `text` нет"
+"TASK_3 Задача 1.5" - satisfies -> "SCN_5 Есть поле `text`"
+"TASK_3 Задача 1.5" - satisfies -> "SCN_10 Есть поле `text`"
+"TASK_4 Задача 3.2" - satisfies -> "SCN_11 Карточка при поле `text`"
+"TASK_5 Задача 3.4" - satisfies -> "SCN_13 Слово только в `text`"
+"TASK_5 Задача 3.4" - satisfies -> "SCN_14 Слово в причине"
+class "CAP_1 artifact-attack" kcap
+class "REQ_1 Атака считает находкой `why`, пересказывающий вариант" kreq
+class "SCN_1 `why` пересказывает вариант" kscn
+class "SCN_2 `why` называет причину" kscn
+class "REC_1 F-13 `check` следит только за тем, что `why` не пуст. Виден ли он человеку и что в н" krec
+class "REC_2 F-21 Чем держать смысл `why`, кроме проверки на пустоту" krec
+class "CAP_2 brainstorm-interview" kcap
+class "REQ_2 Рекомендация записывается с причиной выбора" kreq
+class "SCN_3 Развилка брейншторма" kscn
+class "SCN_4 Кандидат пробы краёв" kscn
+class "REC_3 F-01 Критерий готовности: «у рекомендации есть обоснование»" krec
+class "REC_4 F-05 Критерий готовности: «Скилл перестаёт называть `text`, и `why` описан как причи" krec
+class "CAP_3 decision-journal" kcap
+class "REQ_3 `decisions.md` показывает рекомендацию с причиной" kreq
+class "SCN_5 Есть поле `text`" kscn
+class "SCN_6 Поля `text` нет" kscn
+class "REC_5 F-04 Критерий готовности: «Показ всегда `вариант — why`, как уже делает страница: в " krec
+class "REC_6 F-19 Что показывать, если у рекомендации есть `text`" krec
+class "REQ_4 Поле `text` не читается и новыми записями не пишется" kreq
+class "SCN_7 Импорт составной рекомендации" kscn
+class "SCN_8 Круговой разбор" kscn
+class "SCN_9 Старый журнал с полем `text`" kscn
+class "REC_7 F-06 Критерий готовности: «Старые журналы остаются в силе»" krec
+class "REC_8 F-20 Что дальше с полем `text`" krec
+class "CAP_4 decision-viewer" kcap
+class "REQ_5 Страница показывает рекомендацию с причиной" kreq
+class "SCN_10 Есть поле `text`" kscn
+class "REC_9 F-10 Страница всегда показывает вариант и причину, `text` не читает" krec
+class "CAP_5 plugin-decision-view" kcap
+class "REQ_6 Плагин показывает рекомендацию с причиной" kreq
+class "SCN_11 Карточка при поле `text`" kscn
+class "SCN_12 Поля `text` нет" kscn
+class "REC_10 F-08 Плагин при наличии `text` показывает его вместо причины, в карточке и в режиме" krec
+class "REQ_7 Поиск плагина не читает поле `text`" kreq
+class "SCN_13 Слово только в `text`" kscn
+class "SCN_14 Слово в причине" kscn
+class "REC_11 F-18 Поиск плагина ищет и по `text`: если поле не показывать, найденное совпадение " krec
+class "TASK_1 Задача 1.1" ktask
+class "TASK_2 Задача 1.2" ktask
+class "TASK_3 Задача 1.5" ktask
+class "TASK_4 Задача 3.2" ktask
+class "TASK_5 Задача 3.4" ktask
