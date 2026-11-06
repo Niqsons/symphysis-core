@@ -36,6 +36,9 @@ SHIM_UNSAFE = re.compile(r'[&|<>^%"]')
 # Абсолютный путь в тексте форка: диск, UNC или корень POSIX. Пробелы тут не ловятся, поэтому известные каталоги
 # снимаются раньше, по значению (`no_paths`).
 ABSOLUTE_PATH = re.compile(r"""[A-Za-z]:[\\/][^\s"'`«»,;]*|\\\\[^\s"'`«»,;]+|(?<![\w.~:/>-])/[^\s"'`«»,;:/]+/[^\s"'`«»,;:]*""")
+# Известный каталог кончается разделителем, концом текста или символом, на котором кончается путь в `ABSOLUTE_PATH`:
+# иначе `X:\symphysis` резал бы `X:\symphysis-vscode` в `<каталог>-vscode`.
+_FOLDER_END = r"""(?=[\\/\s"'`«»,;]|$)"""
 
 
 class ForkError(Exception):
@@ -174,5 +177,6 @@ def no_paths(text: str, root: Path | str) -> str:
     if os.environ.get("SYMPHYSIS_OPENSPEC"):
         known.append(os.path.dirname(os.path.abspath(os.environ["SYMPHYSIS_OPENSPEC"])))
     for folder in sorted((folder for folder in known if len(folder) > 3), key=len, reverse=True):
-        text = text.replace(folder, "<каталог>").replace(folder.replace("\\", "/"), "<каталог>")
+        for form in (folder, folder.replace("\\", "/")):
+            text = re.sub(re.escape(form) + _FOLDER_END, "<каталог>", text)
     return ABSOLUTE_PATH.sub("<путь>", text)

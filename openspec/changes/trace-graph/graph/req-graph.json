@@ -3811,14 +3811,14 @@
   {
    "id": "task:10.1",
    "kind": "task",
-   "name": "Рабочее дерево `<каталог>-vscode-trace-graph`, ветка `feat/trace-graph` от `main` плагина, зависимости через `npm ci` — проверка: `npm run typecheck` зелёный до правок `служебная`",
+   "name": "Рабочее дерево `<путь>`, ветка `feat/trace-graph` от `main` плагина, зависимости через `npm ci` — проверка: `npm run typecheck` зелёный до правок `служебная`",
    "at": "tasks.md:75",
    "done": true
   },
   {
    "id": "task:10.2",
    "kind": "task",
-   "name": "`trace-link` в списке линз `src/shared/attack.ts`, `EXPECTED_CONTRACT = 3` в `src/host/core.ts`, подстановка в `test/e2e/scenario.ts`, номер в `test/unit/core.test.ts`; коммит по слову владельца несёт `Needs: symphysis <хеш>` на коммит ядра с номером 3 (F-55) — `artifact-attack`: «Выключена линза» — проверка: с `SYMPHYSIS_ROOT=<каталог>-trace-graph` зелёные `npm run typecheck`, `npm test`, `npm run e2e`; группа линзы без строк не показана",
+   "name": "`trace-link` в списке линз `src/shared/attack.ts`, `EXPECTED_CONTRACT = 3` в `src/host/core.ts`, подстановка в `test/e2e/scenario.ts`, номер в `test/unit/core.test.ts`; коммит по слову владельца несёт `Needs: symphysis <хеш>` на коммит ядра с номером 3 (F-55) — `artifact-attack`: «Выключена линза» — проверка: с `SYMPHYSIS_ROOT=<путь>` зелёные `npm run typecheck`, `npm test`, `npm run e2e`; группа линзы без строк не показана",
    "at": "tasks.md:76",
    "done": true
   },
@@ -9482,7 +9482,7 @@
  "roots": [
   {
    "prefix": "",
-   "commit": "a3a2c0c5f97737639f1adfdc1ac2041f902bc235"
+   "commit": "8e2f9034ef66bd78af115eadcd885b8354d1fc7c"
   },
   {
    "prefix": "docs/",

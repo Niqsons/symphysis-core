@@ -140,3 +140,16 @@ def test_no_paths_keeps_the_closing_backtick(tmp_path):
     """Сценарий «Абсолютные пути в выводе форка»: путь в обратных апострофах снимается, закрывающий апостроф остаётся."""
     got = openspec_run.no_paths(r"Рабочее дерево `X:\a`, ветка и `/srv/x/y` тут", tmp_path)
     assert got == "Рабочее дерево `<путь>`, ветка и `<путь>` тут"
+
+
+def test_no_paths_replaces_known_folder_only_at_path_boundary(tmp_path, monkeypatch):
+    r"""Каталог, чьё имя лишь начинается с имени корня, известным не считается: из `X:\symphysis` строка
+    `X:\symphysis-vscode-trace-graph` давала `<каталог>-vscode-trace-graph`, и снимок графа зависел от места заморозки."""
+    root = tmp_path / "core"
+    root.mkdir()
+    monkeypatch.chdir(root)
+    got = openspec_run.no_paths(f"соседи {root}-plugin\\src и {root.as_posix()}-plugin/src; свой {root}\\tools\\a.py; корень {root}",
+                                root)
+    assert "<каталог>-plugin" not in got, got
+    assert str(root) not in got and root.as_posix() not in got, got
+    assert "свой <каталог>\\tools\\a.py; корень <каталог>" in got, got
