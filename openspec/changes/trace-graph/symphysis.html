@@ -212,15 +212,15 @@
 const JOURNAL = {
  "title": "Журнал решений: trace-graph",
  "source": "decisions.json",
- "sha256": "287b50d5f03b80a24bbbb45912d5d53058df1c57e264ba4880e0ddfb855e87ff",
+ "sha256": "b254f03cd1596a0d603123e89657a95e150943e8ea22b2392a9c30c2bb3d19a5",
  "stats": {
-  "records": 156,
-  "forks": 135,
+  "records": 157,
+  "forks": 136,
   "facts": 21,
   "decided": 135,
   "parked": 4,
-  "evidence_total": 317,
-  "evidence_found": 152
+  "evidence_total": 319,
+  "evidence_found": 153
  },
  "records": [
   {
@@ -10112,7 +10112,7 @@ const JOURNAL = {
       {
        "path": "tools/trace_graph.py",
        "quote": "берётся самое длинное, которое стоит в строке целиком вместе с закрывающей `»`",
-       "line": 646,
+       "line": 658,
        "verdict": "сверено",
        "found": true
       }
@@ -10240,7 +10240,7 @@ const JOURNAL = {
       {
        "path": "tools/trace_graph.py",
        "quote": "elif name not in in_master:",
-       "line": 788,
+       "line": 804,
        "verdict": "сверено",
        "found": true
       }
@@ -10503,7 +10503,7 @@ const JOURNAL = {
       {
        "path": "tools/trace_graph.py",
        "quote": "def _trace_comments(lines: list[str]) -> list[tuple[int, str, list[tuple[int, str]]]]:",
-       "line": 1258,
+       "line": 1276,
        "verdict": "сверено",
        "found": true
       }
@@ -10575,7 +10575,7 @@ const JOURNAL = {
       {
        "path": "tools/trace_graph.py",
        "quote": "в графе остался первый",
-       "line": 1171,
+       "line": 1189,
        "verdict": "сверено",
        "found": true
       }
@@ -11193,6 +11193,81 @@ const JOURNAL = {
    ],
    "comments": [],
    "finding": ""
+  },
+  {
+   "id": "F-157",
+   "question": "[связи] После F-156 номер канона в следе пробы запретов (`канон — F-59 → security.md`) даёт связь `traces`, и пять требований с этим следом стали попарно кандидатами: 10 из 14 новых пар — только «у обоих есть канон ИБ». Кандидаты считаются по общим записям журнала (F-71). Считать ли кандидатов по парковке ИБ? Найдено ревью задачи 2.10.",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-71",
+    "F-156",
+    "F-59"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Записи, припаркованные адресату ИБ (отсылка канона в чек-лист `security.md`), кандидатов не дают; связь `traces` по ним остаётся. Цена: правило и тест в `tools/trace_graph.py`, строка о кандидатах в спеке `trace-graph`, вердикт атаки артефактов уже `stale`",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Связь из следа пробы кандидатов не даёт вовсе, только связь из текста требования. Цена: уходят и 4 осмысленные пары (F-83, F-115, F-118 — проба или решение на два требования), правило и тест",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Оставить: кандидаты — подсказка, в отчёт не идут (F-71); шум виден только в JSON и у соседей выбора `--requirement`. Цена: пар с каноном n(n-1)/2, на этом изменении 10, растёт с числом требований с каноном",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Отложить до другого источника кандидатов (F-23, векторы): тогда пересмотреть, что считать общим",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Убирает ровно шум и сохраняет 4 осмысленные пары, которых нет у B. Общая отсылка в чек-лист ИБ не говорит, что требования повторяют друг друга, а C оставит клику, растущую квадратично с каждым требованием под каноном."
+   },
+   "decision": null,
+   "reversibility": {
+    "level": "обратимо",
+    "why": "правило источника кандидатов, граф производный, архивных снимков ещё нет"
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "tools/trace_graph.py",
+     "quote": "CANDIDATE_SOURCE_RECORDS = \"общие записи журнала\"",
+     "line": 849,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "openspec/changes/trace-graph/specs/trace-signals/spec.md",
+     "quote": "\u003c!-- проба запретов: исходы: нет; канон — F-59 → security.md -->",
+     "line": null,
+     "verdict": "корня для пути нет",
+     "found": false
+    }
+   ],
+   "comments": [],
+   "finding": ""
   }
  ],
  "notes": [
@@ -11276,7 +11351,7 @@ const SCHEME = {
 };
 const HELP = {
  "contract": 3,
- "taken_at": "2026-11-06T10:41:00+03:00",
+ "taken_at": "2026-11-06T10:51:10+03:00",
  "versions": {
   "openspec": "1.15.0-symphysis.4",
   "symphysis": null
@@ -11284,19 +11359,19 @@ const HELP = {
  "change": "trace-graph",
  "changes": null,
  "error": null,
- "current_step": "apply",
- "current_text": "Следующий шаг по файлам — `apply`, ход модели.",
- "turn": "model",
+ "current_step": "viewer",
+ "current_text": "Следующий шаг по файлам — `viewer`, ход человека: открытых развилок 1, решаются на странице журнала. После них по файлам идёт `apply`.",
+ "turn": "human",
  "next_by_status": "apply",
  "forks": {
-  "open": 0,
+  "open": 1,
   "parked": 0
  },
  "tasks": {
   "state": "ready",
   "total": 49,
-  "complete": 44,
-  "remaining": 5
+  "complete": 45,
+  "remaining": 4
  },
  "steps": [
   {
@@ -11369,7 +11444,7 @@ const HELP = {
   },
   {
    "id": "viewer",
-   "state": "idle",
+   "state": "ready",
    "turn": "human",
    "optional": false,
    "blocks": [],
