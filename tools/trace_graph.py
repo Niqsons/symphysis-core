@@ -524,7 +524,8 @@ def _carried_without_base(entry: dict | None, from_base: bool, req) -> bool:
 
 def _read_specs(base: Path, claims: list[dict], master: "_Master | None" = None) -> list[dict]:
     """Capability, требования и сценарии `specs/<capability>/spec.md`; capability — имя каталога (F-131). Связи — в `claims`:
-    capability — требование (`contains`), сценарий — требование (`verifies`), требование — запись по `(F-NN)` в тексте. Номера,
+    capability — требование (`contains`), сценарий — требование (`verifies`), требование — запись по `(F-NN)` в тексте и по
+    номерам в следе пробы (`trace`, F-156; след, дословно стоящий в мастере, связи не даёт, F-147). Номера,
     которые уже стоят в тексте требования MODIFIED у мастера, связи не дают (F-84): мастер — запись базы снимка, а без неё живой
     (`_Master`, F-123)."""
     nodes = []
@@ -542,6 +543,11 @@ def _read_specs(base: Path, claims: list[dict], master: "_Master | None" = None)
         cap = folder.name
         cap_node = _node(f"cap:{cap}", "cap", cap, rel, 1)
         nodes.append(cap_node)
+        traces: dict[int, list[tuple[int, str, str]]] = {}  # след пробы по строке заголовка требования-владельца (F-156)
+        for number, comment, _ in _trace_comments(lines):
+            owner = max((r for r in parsed.requirements if r.line <= number), key=lambda r: r.line, default=None)
+            if owner and _REQ_HEADER.match(lines[owner.line - 1]):
+                traces.setdefault(owner.line, []).append((number, comment, lines[number - 1]))
         for req in parsed.requirements:
             req_id = f"req:{cap}/{req.name}"
             req_node = _node(req_id, "req", req.name, rel, req.line, section=req.section, capability=cap)
@@ -562,6 +568,11 @@ def _read_specs(base: Path, claims: list[dict], master: "_Master | None" = None)
                     if _PARENT.match(line):
                         claims.append({"kind": "parent", "from": req_id, "src": req_node["at"], "at": f"{rel}:{number}",
                                        "text": line, "cap": cap, "section": req.section})
+            for number, comment, line in traces.get(req.line, ()):
+                if req.section == "MODIFIED" and (entry := master.entry(cap, req.name)[0]) and _hash(comment) in entry["traces"]:
+                    continue  # дословно стоит в том же требовании мастера: след прежнего изменения (F-147)
+                claims.append({"kind": "trace", "from": req_id, "src": req_node["at"], "at": f"{rel}:{number}",
+                               "text": comment.split("исходы:", 1)[1]})
             for scn in req.scenarios:
                 scn_node = _node(f"scn:{cap}/{req.name}/{scn.name}", "scn", scn.name, rel, scn.line,
                                  capability=cap, requirement=req_id)
@@ -722,18 +733,22 @@ def _resolve_claims(root: Path, nodes: list[dict], places: dict, claims: list[di
     edges: dict[tuple, dict] = {}
     unresolved: dict[tuple, dict] = {}
 
-    def put_edge(src: str, dst: str, kind: str, at: str) -> None:
-        edges.setdefault((src, dst, kind), {"from": src, "to": dst, "type": kind, "at": at})
+    def put_edge(src: str, dst: str, kind: str, at: str, by_place: bool = False) -> None:
+        """Повтор `(from, to, type)` остаётся первым; связь по следу пробы различается ещё и местом (F-82.B, F-156): две связи
+        к одной записи с разными `at` — не дубль, но та же строка, что у связи из текста, второй связи не даёт."""
+        if by_place and (src, dst, kind) in edges and edges[(src, dst, kind)]["at"] == at:
+            return
+        edges.setdefault((src, dst, kind, at) if by_place else (src, dst, kind), {"from": src, "to": dst, "type": kind, "at": at})
 
     def put_unresolved(claim: dict, ref: str, why: str) -> None:
         unresolved.setdefault((claim["from"], ref), {"ref": ref, "from": claim["from"], "at": claim["at"], "why": why})
 
-    def put_records(claim: dict, text: str, skip: set) -> None:
+    def put_records(claim: dict, text: str, skip: set, by_place: bool = False) -> None:
         for number in _record_numbers(text):
             if number in skip:
                 continue
             if number in records:
-                put_edge(claim["from"], records[number], "traces", claim["at"])
+                put_edge(claim["from"], records[number], "traces", claim["at"], by_place)
             else:
                 put_unresolved(claim, f"F-{number:02d}", f"в журнале изменения нет записи F-{number:02d}")
 
@@ -820,6 +835,8 @@ def _resolve_claims(root: Path, nodes: list[dict], places: dict, claims: list[di
             put_edge(claim["from"], claim["to"], claim["type"], claim["at"])
         elif claim["kind"] == "rec":
             put_records(claim, claim["text"], claim["skip"] | cut.get(claim["from"], set()))
+        elif claim["kind"] == "trace":
+            put_records(claim, claim["text"], set(), by_place=True)
         else:
             _resolve_task_line(claim, scenarios, put_edge, put_unresolved)
             put_records(claim, claim["text"], set())

@@ -1202,3 +1202,47 @@ def test_check_missing_change_and_bad_name_are_refusals(tmp_path):
 def test_check_help_names_arguments_and_codes():
     text = run("check", "--help").stdout
     assert "ФАЙЛ" in text and "ещё не реализована" not in text and "Коды:" in text
+
+
+# --- build: связь по следу пробы (U27, F-82.B, F-156) ---------------------------
+
+def test_number_in_probe_trace_gives_link(tmp_path):
+    """`trace-graph`: «Номер в следе пробы даёт связь» — `(F-19)` в строке 6 и след с `F-19 Specify, F-20 Dismiss` в строке 12:
+    к `rec:F-19` две связи с разным `at`, к `rec:F-20` одна."""
+    spec = ("## ADDED Requirements\n\n### Requirement: Один\nТекст SHALL.\n\nИз решения (F-19).\n\n"
+            "#### Scenario: Первый\n- **WHEN** a\n- **THEN** b\n\n"
+            "<!-- проба краёв: 8 категорий, исходы: F-19 Specify, F-20 Dismiss -->\n")
+    root, _ = make_change(tmp_path, journal=["F-19", "F-20"], specs={"demo": spec})
+    got = edges_of(graph_of(root), "traces")
+    assert got == [("req:demo/Один", "rec:F-19", "traces", "specs/demo/spec.md:6"),
+                   ("req:demo/Один", "rec:F-19", "traces", "specs/demo/spec.md:12"),
+                   ("req:demo/Один", "rec:F-20", "traces", "specs/demo/spec.md:12")]
+
+
+def test_probe_trace_gives_link_for_any_outcome_and_word_boundary(tmp_path):
+    """Номер в следе пробы запретов при любом исходе даёт связь; граница слова (F-140): `UTF-8` и `UTF-16` номером не считаются."""
+    spec = spec_with("Текст SHALL.", "<!-- проба запретов: UTF-8, UTF-16, исходы: F-07.A Backstop, F-08 Defer, F-09 канон -->")
+    root, _ = make_change(tmp_path, journal=["F-07", "F-08", "F-09"], specs={"demo": spec})
+    assert [e[1] for e in edges_of(graph_of(root), "traces")] == ["rec:F-07", "rec:F-08", "rec:F-09"]
+
+
+def test_unknown_number_in_probe_trace_is_named(tmp_path):
+    """Номер следа, которого нет в журнале, связи не даёт и идёт сигналом, как номер в тексте (F-148)."""
+    spec = spec_with("Текст SHALL.", "<!-- проба краёв: исходы: F-77 Specify -->")
+    root, _ = make_change(tmp_path, journal=["F-19"], specs={"demo": spec})
+    assert edges_of(graph_of(root), "traces") == []
+    done = run("report", CHANGE, cwd=root)
+    assert "F-77" in done.stdout and "неизвестное имя или номер" in done.stdout
+
+
+def test_probe_trace_carried_from_master_gives_no_link(tmp_path):
+    """След MODIFIED, дословно стоящий в том же требовании мастера, связи не даёт (F-147); новый след в нём даёт."""
+    old = "<!-- проба краёв: исходы: F-07 Specify -->"
+    modified = ("## MODIFIED Requirements\n\n### Requirement: Один\nТекст SHALL.\n\n" + old + "\n"
+                "<!-- проба запретов: исходы: F-19 Specify -->\n\n#### Scenario: Первый\n- **WHEN** a\n- **THEN** b\n")
+    root, _ = make_change(tmp_path, journal=["F-07", "F-19"], specs={"demo": modified})
+    master = root / "openspec" / "specs" / "demo"
+    master.mkdir(parents=True)
+    (master / "spec.md").write_text("# demo\n\n## Requirements\n\n### Requirement: Один\nТекст SHALL.\n\n" + old + "\n\n"
+                                    "#### Scenario: Первый\n- **WHEN** a\n- **THEN** b\n", encoding="utf-8", newline="\n")
+    assert [e[1] for e in edges_of(graph_of(root), "traces")] == ["rec:F-19"]
