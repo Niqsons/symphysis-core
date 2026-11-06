@@ -51,6 +51,6 @@
 
 ## 7. Документы и переустановка
 
-- [ ] 7.1 Пути исходников в `CLAUDE.md`, `docs/GUIDE.md`, `docs/skills-canon.md`, `installer/README.md` (схема журнала в `.symphysis/tools/`, F-41); пути хуков в `docs/repo-contract.md` не меняются (F-22); архивные журналы не правятся (F-24) — проверка: поиск `tools/journal`, `skills/symphysis-`, `skills/shared` по этим файлам пуст `служебная`
-- [ ] 7.2 Переустановить ядро в себя `symphysis install --force`, затем `symphysis check` (F-14) — проверка: `check` без строк `[!!]`, кроме ожидаемой строки о включённой телеметрии `служебная`
-- [ ] 7.3 Полный прогон ядра: pytest и тесты инсталлятора; `trace_graph.py report module-structure` без сигналов «сценарий без задачи» — проверка: вывод прогонов и отчёта `служебная`
+- [x] 7.1 Пути исходников в `CLAUDE.md`, `docs/GUIDE.md`, `docs/skills-canon.md`, `installer/README.md` (схема журнала в `.symphysis/tools/`, F-41); пути хуков в `docs/repo-contract.md` не меняются (F-22); архивные журналы не правятся (F-24) — проверка: поиск `tools/journal`, `skills/symphysis-`, `skills/shared` по этим файлам пуст `служебная`
+- [x] 7.2 Переустановить ядро в себя `symphysis install --force`, затем `symphysis check` (F-14) — проверка: `check` без строк `[!!]`, кроме ожидаемой строки о включённой телеметрии `служебная`
+- [x] 7.3 Полный прогон ядра: pytest и тесты инсталлятора; `trace_graph.py report module-structure` без сигналов «сценарий без задачи» — проверка: вывод прогонов и отчёта `служебная`

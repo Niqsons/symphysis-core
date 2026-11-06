@@ -51,7 +51,7 @@
   },
   {
    "path": "tasks.md",
-   "sha256": "5e61b08f405c06bcce41317f421340c76c9fbc68f914b06cc05c9cc504f10add"
+   "sha256": "7df52acd15bfa04b2c11c5a8a9a8cbb3c1151a1ba5303d6f5f4572fa4efc18e5"
   }
  ],
  "nodes": [
@@ -1516,238 +1516,238 @@
    "kind": "task",
    "name": "Проверка README корня в общем каталоге тестов ядра: каталоги первого уровня берутся из git, у каждого — строка README корня с пометкой «модуль» или «контур разработки»; строка о каталоге, которого нет, и README модуля у каталога контура дают красный (F-22, F-25, F-51, F-56) — проверка: тесты проверки на деревьях-фикстурах в `tmp_path` зелёные; `repository-layout`: «Каталог без пометки», `repository-layout`: «Каталоги корня вне git», `repository-layout`: «Контур разработки с README модуля», `repository-layout`: «Строка о каталоге, которого нет»",
    "at": "tasks.md:5",
-   "done": false
+   "done": true
   },
   {
    "id": "task:1.2",
    "kind": "task",
    "name": "Проверка frontmatter README модуля: разбираются только скалярные `name` и `kind` без загрузчика YAML, исполняющего теги; `kind` — `доменный` или `технический`; пустое имя и повтор имени в репозитории — красный (F-21, F-39, F-47, F-48; `security.md`, «Инъекции через содержимое файлов») — проверка: тесты на фикстурах, в том числе README с тегом YAML; `module-declaration`: «README модуля ядра», `module-declaration`: «Род вне двух значений», `module-declaration`: «README без frontmatter», `module-declaration`: «Пустое имя модуля», `module-declaration`: «Два модуля с одним именем»",
    "at": "tasks.md:6",
-   "done": false
+   "done": true
   },
   {
    "id": "task:1.3",
    "kind": "task",
    "name": "Проверка вложенных каталогов модуля: ссылка формы `[имя/](имя/)` на каждый вложенный каталог из git, сверка в обе стороны, путь ссылки нормализуется и засчитывается только внутри модуля (F-03, F-49, F-50, F-55; `security.md`, «Пути с `../`») — проверка: тесты на фикстурах, в том числе ссылка `../`; `module-declaration`: «Вложенный каталог описан», `module-declaration`: «Каталог появился без описания», `module-declaration`: «Вложенный каталог вне git», `module-declaration`: «Ссылка на удалённый каталог»",
    "at": "tasks.md:7",
-   "done": false
+   "done": true
   },
   {
    "id": "task:1.4",
    "kind": "task",
    "name": "Проверка места модуля: каталог с README модуля — первого уровня или `openspec/schemas/symphysis/`, модуль внутри модуля — красный с обоими каталогами (F-12, F-17, F-37) — проверка: тесты на фикстурах; `repository-layout`: «Модуль не на своём месте», `repository-layout`: «Вложенный модуль»",
    "at": "tasks.md:8",
-   "done": false
+   "done": true
   },
   {
    "id": "task:1.5",
    "kind": "task",
    "name": "Проверка копий: хеш байтов каждого непустого файла модулей, совпадение в двух модулях — красный с обоими путями (F-57; `security.md`, «Бинарные файлы») — проверка: тесты на фикстурах, в том числе с бинарным файлом; `repository-layout`: «Копия в двух модулях»",
    "at": "tasks.md:9",
-   "done": false
+   "done": true
   },
   {
    "id": "task:2.1",
    "kind": "task",
    "name": "Вынести корни улик и поиск цитат вместе с `ROOT` из `journal_apply.py` и `journal_model.py` в отдельный файл будущего модуля `roots`, остальные файлы импортируют его (F-34, `research/F-27.md`) — проверка: полный `python -X utf8 -m pytest` зелёный, `ROOT` определён только в файле `roots` `служебная`",
    "at": "tasks.md:13",
-   "done": false
+   "done": true
   },
   {
    "id": "task:2.2",
    "kind": "task",
    "name": "Разрезать `journal_render.py`: страница, схема решения и шаблон — в файл будущего модуля `viewer`, разбор файла атаки — в файл модуля `attack`, md, `render_design`, `view-json` и `CONTRACT` остаются в `decisions` (F-27, F-33) — проверка: полный pytest зелёный и новые тесты; `decision-viewer`: «Черта в backticks в последней ячейке», `decision-viewer`: «Лишняя ячейка», `decision-viewer`: «Страница перенесена из проекта»",
    "at": "tasks.md:14",
-   "done": false
+   "done": true
   },
   {
    "id": "task:2.3",
    "kind": "task",
    "name": "`journal.py` и `journal_cli.py` — файлы будущего модуля `cli`; подкоманды и аргументы `journal.py` не меняются (F-33, `docs/repo-contract.md`) — проверка: `tests/test_flag_help.py` зелёный, вывод `journal.py --help` и `journal.py <подкоманда> --help` байт в байт прежний `служебная`",
    "at": "tasks.md:15",
-   "done": false
+   "done": true
   },
   {
    "id": "task:3.1",
    "kind": "task",
    "name": "Создать каталоги модулей первого уровня и перенести код и данные по карте `research/F-27-probe/core-map.txt` с поправками F-33, F-34, F-35, F-66: схема журнала — в `decisions` (F-41), шаблон страницы — в `viewer`; в `tools/` остаются хуки гейта имён, `allowed-*.txt` и файл корней (F-22, F-40) — проверка: `git ls-files tools` называет только хуки, списки разрешённого и `journal-roots.json` `служебная`",
    "at": "tasks.md:19",
-   "done": false
+   "done": true
   },
   {
    "id": "task:3.2",
    "kind": "task",
    "name": "Точки входа `journal.py`, `trace_graph.py`, `step_help.py`, `symphysis_config.py` в исходнике добавляют каталоги модулей в `sys.path`; файлы модуля ищутся рядом с кодом; `tests/conftest.py` и тесты с `ROOT / \"tools\"` — на новые места (F-20, F-40, F-41, `research/F-20.md`) — проверка: `journal.py --help` из корня ядра работает, полный pytest зелёный `служебная`",
    "at": "tasks.md:20",
-   "done": false
+   "done": true
   },
   {
    "id": "task:3.3",
    "kind": "task",
    "name": "Скиллы — в `<модуль>/skills/<имя>/`, водители — в `<модуль>/agents/` модуля своей механики; `terms.md` и `driver.md` — в `skill-shared`, `candidate.md` — в `decisions`, `journal-cli.md` — в `cli` (F-18, F-35, F-66, F-67); `tests/test_skills.py`, `tests/test_agents.py` — на новые пути — проверка: тесты скиллов и агентов зелёные; `skill-transfer`: «Состав каталога скилла», `skill-transfer`: «Скилл без источника GSD», `requirement-probes`: «Чтение текста скилла»",
    "at": "tasks.md:21",
-   "done": false
+   "done": true
   },
   {
    "id": "task:3.4",
    "kind": "task",
    "name": "Тест «Скиллы о скрипте не знают» ищет тексты скиллов во всех модулях и красный, когда не нашёл ни одного (F-54) — проверка: тест зелёный на дереве ядра и красный на фикстуре без скиллов; `step-help`: «Скиллы о скрипте не знают», `step-help`: «Поиск не нашёл скиллов»",
    "at": "tasks.md:22",
-   "done": false
+   "done": true
   },
   {
    "id": "task:3.5",
    "kind": "task",
    "name": "Справка ищет скиллы клона в `<модуль>/skills/<имя>/SKILL.md` вместо `skills/` (F-42, F-67); тест-страховка F-63 подаёт клон со `SKILL.md` в каталоге модуля как `--install-dir` и утверждает найденный `path` и `base: install` — проверка: тест-страховка зелёный `служебная`",
    "at": "tasks.md:23",
-   "done": false
+   "done": true
   },
   {
    "id": "task:3.6",
    "kind": "task",
    "name": "Тесты модулей — в `<модуль>/tests/`, общие фикстуры и шим форка — в общем каталоге тестов; `pytest.ini` собирает тесты модулей (F-23, F-53) — проверка: `python -X utf8 -m pytest --collect-only -q` находит не меньше тестов, чем до переноса; `repository-layout`: «Тест модуля находится общей командой»",
    "at": "tasks.md:24",
-   "done": false
+   "done": true
   },
   {
    "id": "task:3.7",
    "kind": "task",
    "name": "`openspec/config.symphysis.yaml` — в каталог схемы `openspec/schemas/symphysis/` (F-37) — проверка: `tests/test_schema.py` на новом пути зелёный `служебная`",
    "at": "tasks.md:25",
-   "done": false
+   "done": true
   },
   {
    "id": "task:4.1",
    "kind": "task",
    "name": "`installer/scripts/sync-payload.js` собирает payload из модулей: код и данные — в прежние `tools/` и `docs/` payload, схема журнала — в `tools/` (F-19, F-41), скиллы — по маске `<модуль>/skills/symphysis-*`, водители — из `<модуль>/agents/` (F-67), общие файлы скиллов — в `docs/` (F-35, F-66), `config.symphysis.yaml` — из каталога схемы в прежний путь payload (F-37) — проверка: `installer/test/payload.test.js` зелёный, состав payload прежний, кроме места схемы журнала `служебная`",
    "at": "tasks.md:29",
-   "done": false
+   "done": true
   },
   {
    "id": "task:4.2",
    "kind": "task",
    "name": "Payload пропускает README каталога схемы и каталоги тестов модулей (F-36, F-58) — проверка: тесты инсталлятора и состава payload; `project-installer`: «Установка без README схемы», `project-installer`: «Сверка не ждёт README», `repository-layout`: «Тесты модуля схемы»",
    "at": "tasks.md:30",
-   "done": false
+   "done": true
   },
   {
    "id": "task:4.3",
    "kind": "task",
    "name": "Признак клона `hasSources` опознаёт модульную раскладку, `check` и `install` из клона работают как из клона (F-60) — проверка: тест на клоне модульной раскладки; `project-installer`: «Клон в модульной раскладке»",
    "at": "tasks.md:31",
-   "done": false
+   "done": true
   },
   {
    "id": "task:4.4",
    "kind": "task",
    "name": "Тест-страховка F-65: ядро ставится во временный проект, `--help` каждой точки входа из `.symphysis/tools/` даёт код 0 — проверка: тест-страховка зелёный `служебная`",
    "at": "tasks.md:32",
-   "done": false
+   "done": true
   },
   {
    "id": "task:5.1",
    "kind": "task",
    "name": "README корня ядра: компонент «ядро», репозиторий `symphysis-core`, выпуск пакетом npm `@niqsons/symphysis`, контракт с плагином — `docs/repo-contract.md`; каждый каталог первого уровня с пометкой модуль или контур разработки (F-22) — проверка: живой тест структуры (задача 5.3), гейт имён на коммите (`security.md`, «Чувствительные данные…») `служебная`",
    "at": "tasks.md:36",
-   "done": false
+   "done": true
   },
   {
    "id": "task:5.2",
    "kind": "task",
    "name": "README каждого модуля ядра: frontmatter `name` и `kind` по родам F-18, F-33, F-34, F-35, описание и ссылки на вложенные каталоги (F-03, F-21, F-39); README модуля `installer` — он же страница пакета npm (F-39) — проверка: живой тест структуры, гейт имён на коммите `служебная`",
    "at": "tasks.md:37",
-   "done": false
+   "done": true
   },
   {
    "id": "task:5.3",
    "kind": "task",
    "name": "Живой тест структуры на дереве ядра в общем прогоне (F-25) — проверка: `python -X utf8 -m pytest` зелёный вместе с тестом структуры `служебная`",
    "at": "tasks.md:38",
-   "done": false
+   "done": true
   },
   {
    "id": "task:6.1",
    "kind": "task",
    "name": "Тест структуры плагина: те же проверки, что в задачах 1.1–1.5, для корня плагина и модулей в `src/` (F-25, F-31) — проверка: тесты проверки на фикстурах зелёные; `repository-layout`: «Новый каталог без описания»",
    "at": "tasks.md:42",
-   "done": false
+   "done": true
   },
   {
    "id": "task:6.2",
    "kind": "task",
    "name": "Перенести `src/` по модулям `viewer`, `search`, `scheme`, `step-help`, `hook`, `core`, `changes`, `journal`, `file-links`, `ui`, `activation`, `protocol`: у модуля в одном каталоге части стороны VS Code и страницы (F-31, F-43, `research/F-27-probe/plugin-map.txt`) — проверка: `npm run typecheck` и `npm test` зелёные; коммит несёт `Needs:` на коммит ядра (F-29) `служебная`",
    "at": "tasks.md:43",
-   "done": false
+   "done": true
   },
   {
    "id": "task:6.3",
    "kind": "task",
    "name": "Типы `SearchOutcome` и `ParsedScheme` — в модуль `protocol` (F-44) — проверка: `npm run typecheck`; файлы `protocol` не импортируют `search` и `scheme` `служебная`",
    "at": "tasks.md:44",
-   "done": false
+   "done": true
   },
   {
    "id": "task:6.4",
    "kind": "task",
    "name": "`build.mjs` берёт точки входа страниц из модулей и собирает юнит-тесты из каталогов модулей (F-31, F-62) — проверка: `npm test` собирает и запускает тест из каталога модуля; `repository-layout`: «Юнит-тест модуля плагина собирается»",
    "at": "tasks.md:45",
-   "done": false
+   "done": true
   },
   {
    "id": "task:6.5",
    "kind": "task",
    "name": "`hook.py` — в каталог модуля `hook`, сборка кладёт его в пакет по пути `hook/hook.py`, который читает код (F-52) — проверка: тест упаковки видит `hook/hook.py` в `.vsix`; `repository-layout`: «Файл хука в каталоге своего модуля»",
    "at": "tasks.md:46",
-   "done": false
+   "done": true
   },
   {
    "id": "task:6.6",
    "kind": "task",
    "name": "README пакета — отдельный файл: `package.mjs` передаёт его `--readme-path`, `.vscodeignore` не пропускает корневой `README.md`, `test/unit/package-readme.test.ts` читает новый путь (F-38) — проверка: тест упаковки и `npm run e2e:vsix` зелёные; `repository-layout`: «Пакет несёт README пакета»",
    "at": "tasks.md:47",
-   "done": false
+   "done": true
   },
   {
    "id": "task:6.7",
    "kind": "task",
    "name": "Тесты плагина опознают ядро клона в модульной раскладке и копируют его файлы из модулей в `.symphysis/tools/` (F-09, F-61) — проверка: `npm test` без `SYMPHYSIS_ROOT` при соседнем клоне запускает тесты на ядре, с ошибочным `SYMPHYSIS_ROOT` падает; `plugin-core-contract`: «Соседний клон в модульной раскладке», `plugin-core-contract`: «Опечатка в пути»",
    "at": "tasks.md:48",
-   "done": false
+   "done": true
   },
   {
    "id": "task:6.8",
    "kind": "task",
    "name": "README корня плагина — описание репозитория, README модулей с frontmatter, живой тест структуры в `npm test` (F-22, F-38) — проверка: `npm test` зелёный, гейт имён на коммите `служебная`",
    "at": "tasks.md:49",
-   "done": false
+   "done": true
   },
   {
    "id": "task:6.9",
    "kind": "task",
    "name": "Полный прогон e2e плагина на ядре модульной раскладки — проверка: `npm run e2e` зелёный; `npm run e2e:hook` не запускается: он шлёт данные во внешнюю модель `служебная`",
    "at": "tasks.md:50",
-   "done": false
+   "done": true
   },
   {
    "id": "task:7.1",
    "kind": "task",
    "name": "Пути исходников в `CLAUDE.md`, `docs/GUIDE.md`, `docs/skills-canon.md`, `installer/README.md` (схема журнала в `.symphysis/tools/`, F-41); пути хуков в `docs/repo-contract.md` не меняются (F-22); архивные журналы не правятся (F-24) — проверка: поиск `tools/journal`, `skills/symphysis-`, `skills/shared` по этим файлам пуст `служебная`",
    "at": "tasks.md:54",
-   "done": false
+   "done": true
   },
   {
    "id": "task:7.2",
    "kind": "task",
    "name": "Переустановить ядро в себя `symphysis install --force`, затем `symphysis check` (F-14) — проверка: `check` без строк `[!!]`, кроме ожидаемой строки о включённой телеметрии `служебная`",
    "at": "tasks.md:55",
-   "done": false
+   "done": true
   },
   {
    "id": "task:7.3",
    "kind": "task",
    "name": "Полный прогон ядра: pytest и тесты инсталлятора; `trace_graph.py report module-structure` без сигналов «сценарий без задачи» — проверка: вывод прогонов и отчёта `служебная`",
    "at": "tasks.md:56",
-   "done": false
+   "done": true
   }
  ],
  "edges": [
