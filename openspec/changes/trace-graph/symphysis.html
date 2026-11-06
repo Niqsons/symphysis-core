@@ -212,12 +212,12 @@
 const JOURNAL = {
  "title": "Журнал решений: trace-graph",
  "source": "decisions.json",
- "sha256": "acb4137b42144679c6706277d389d33de5ce40e2215467e8ad20737226d3139b",
+ "sha256": "4083fb33c91335b22a80cd4619afb3d8265fed77638f0265621a0c320b485df0",
  "stats": {
   "records": 159,
   "forks": 138,
   "facts": 21,
-  "decided": 136,
+  "decided": 138,
   "parked": 4,
   "evidence_total": 323,
   "evidence_found": 154
@@ -10503,7 +10503,7 @@ const JOURNAL = {
       {
        "path": "tools/trace_graph.py",
        "quote": "def _trace_comments(lines: list[str]) -> list[tuple[int, str, list[tuple[int, str]]]]:",
-       "line": 1287,
+       "line": 1289,
        "verdict": "сверено",
        "found": true
       }
@@ -11277,7 +11277,7 @@ const JOURNAL = {
    "id": "F-158",
    "question": "[связи] После F-156 сигнал «требование без записи» гасит любая связь `traces`, в том числе из следа пробы (`исходы: F-85 Backstop`) и к парковке (`канон — F-59`). Сценарий F-83.A говорит о требовании без `(F-NN)` в тексте. Требование без единого номера в тексте, но со следом пробы, сигнала не получит. На этом изменении таких требований ноль. Найдено финальным ревью ветки. Что гасит сигнал?",
    "kind": "развилка",
-   "status": "открыт",
+   "status": "решён",
    "addressee": "человек",
    "depends_on": [
     "F-83",
@@ -11314,7 +11314,11 @@ const JOURNAL = {
     "option": "A",
     "why": "Номер в тексте называет решение, из которого требование выросло (F-44); запись пробы называет край, найденный над уже написанным требованием, а не его происхождение. B и C оставят требование без истоков молча, если на нём сработала проба."
    },
-   "decision": null,
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-06"
+   },
    "reversibility": {
     "level": "обратимо",
     "why": "правило сигнала в одном месте, архивных снимков ещё нет"
@@ -11322,7 +11326,7 @@ const JOURNAL = {
    "outcome": null,
    "parking": [],
    "dispute": "",
-   "consequences": "",
+   "consequences": "Задача 2.12: опора сигнала «требование без записи» — номер в теле требования, а не любая связь `traces`. Спека `trace-conventions`: требование «Требование называет свои записи журнала» называет правило, новый сценарий «След пробы не заменяет номер в тексте».",
    "evidence": [
     {
      "path": "openspec/changes/trace-graph/specs/trace-conventions/spec.md",
@@ -11334,7 +11338,7 @@ const JOURNAL = {
     {
      "path": "tools/trace_graph.py",
      "quote": "named_traces = {e[\"from\"] for e in edges if e[\"type\"] == \"traces\"}",
-     "line": 1422,
+     "line": 1424,
      "verdict": "сверено",
      "found": true
     }
@@ -11346,7 +11350,7 @@ const JOURNAL = {
    "id": "F-159",
    "question": "[связи] Отчёт `trace-graph` называет четыре дочерних требования без записи: `artifact-attack` «Линзы атаки журнала», «Черта в ячейке атаки экранируется», `decision-viewer` «Шапка режима «атака» фильтрует по линзе и показывает запись», «Промпт режима «атака» пересобирается из состояния». По F-150.A им нужен номер решения о делении; номер мастера родителя связи не даёт. Чем закрыть до архива?",
    "kind": "развилка",
-   "status": "открыт",
+   "status": "решён",
    "addressee": "человек",
    "depends_on": [
     "F-150",
@@ -11390,7 +11394,11 @@ const JOURNAL = {
     "option": "A",
     "why": "Деление сделано по решению F-76.A, и это решение уже в журнале; B завела бы записи, повторяющие F-76, а C и D оставили бы требования без истока, которое известно."
    },
-   "decision": null,
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-06"
+   },
    "reversibility": {
     "level": "обратимо",
     "why": "правка текста четырёх требований"
@@ -11398,7 +11406,7 @@ const JOURNAL = {
    "outcome": null,
    "parking": [],
    "dispute": "",
-   "consequences": "",
+   "consequences": "В текст четырёх дочерних требований вписан `(F-76)`: `artifact-attack` «Линзы атаки журнала», «Черта в ячейке атаки экранируется», `decision-viewer` «Шапка режима «атака» фильтрует по линзе и показывает запись», «Промпт режима «атака» пересобирается из состояния». Сигналы «требование без записи» на изменении ушли; `validate --strict` проходит. `docs/GUIDE.md` называет F-76 рядом с F-150.",
    "evidence": [
     {
      "path": "openspec/changes/trace-graph/specs/artifact-attack/spec.md",
@@ -11500,7 +11508,7 @@ const SCHEME = {
 };
 const HELP = {
  "contract": 3,
- "taken_at": "2026-11-06T11:40:20+03:00",
+ "taken_at": "2026-11-06T12:37:52+03:00",
  "versions": {
   "openspec": "1.15.0-symphysis.4",
   "symphysis": null
@@ -11508,18 +11516,18 @@ const HELP = {
  "change": "trace-graph",
  "changes": null,
  "error": null,
- "current_step": "viewer",
- "current_text": "Следующий шаг по файлам — `viewer`, ход человека: открытых развилок 2, решаются на странице журнала. После них по файлам идёт `apply`.",
- "turn": "human",
+ "current_step": "apply",
+ "current_text": "Следующий шаг по файлам — `apply`, ход модели.",
+ "turn": "model",
  "next_by_status": "apply",
  "forks": {
-  "open": 2,
+  "open": 0,
   "parked": 0
  },
  "tasks": {
   "state": "ready",
-  "total": 50,
-  "complete": 46,
+  "total": 51,
+  "complete": 47,
   "remaining": 4
  },
  "steps": [
@@ -11593,7 +11601,7 @@ const HELP = {
   },
   {
    "id": "viewer",
-   "state": "ready",
+   "state": "idle",
    "turn": "human",
    "optional": false,
    "blocks": [],
