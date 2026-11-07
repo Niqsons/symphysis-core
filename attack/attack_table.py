@@ -17,6 +17,14 @@ ATTACK_FIRST_COLUMN = "Утверждение"
 RE_FRONT_KEY = re.compile(r"^(\w+):\s*(.*?)\s*$")
 RE_TARGET_PATH = re.compile(r"^\s+-\s+path:\s*(.*?)\s*$")
 RE_TARGET_SHA = re.compile(r"^\s+sha256:\s*(.*?)\s*$")
+RE_COMPOSITION = re.compile(r"^\*\*Состав:\*\*\s*(.*?)\s*$")
+
+
+def _composition(lines: list[str], start: int) -> str | None:
+    """Строка `**Состав:**` файла атаки после frontmatter — текст после метки; файлы до неё строки не несут,
+    и `None` читается как «все линзы включены» (F-10). Текст — данные: расчёт состава берёт из него только слово
+    `coverage` в части «выключены»."""
+    return next((m.group(1) for line in lines[start:] if (m := RE_COMPOSITION.match(line))), None)
 
 
 def _attack_frontmatter(lines: list[str], name: str) -> tuple[dict, int]:
@@ -139,11 +147,13 @@ def parse_attack_md(path: Path) -> dict:
     """Файл атаки (`attack/decisions.md`, `attack/artifacts.md`) -> словарь для режима «атака»
     просмотрщика: `path` — как подан парсеру (CLI приводит его к пути от корня проекта, F-72); `frontmatter` — `status` и `targets[]` (`path`, `sha256`);
     `rows` — строки первой таблицы с семью колонками после D4b (`claim`, `section`, `lens`,
-    `invariant`, `severity`, `support`, `fix`), ячейки `strip()`. Слуг линзы здесь не проверяется:
+    `invariant`, `severity`, `support`, `fix`), ячейки `strip()`; `composition` — текст строки
+    `**Состав:**` или `None` (нужен расчёту состава вердикта, `attack_scope`). Слуг линзы здесь не проверяется:
     строка вне закрытого списка — невалидная строка атаки, просмотрщик показывает её группой
     «вне списка»; падать на ней разбору незачем. Без frontmatter или без таблицы — `ValueError`
     с именем файла и причиной."""
     name = str(path)
     lines = _lines(Path(path).read_text(encoding="utf-8-sig"))
     frontmatter, end = _attack_frontmatter(lines, name)
-    return {"path": name, "frontmatter": frontmatter, "rows": _attack_rows(lines, name, end + 1)}
+    return {"path": name, "frontmatter": frontmatter, "rows": _attack_rows(lines, name, end + 1),
+            "composition": _composition(lines, end + 1)}

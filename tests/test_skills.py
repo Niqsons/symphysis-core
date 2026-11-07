@@ -524,6 +524,29 @@ def test_attack_skill_lens_composition():
     assert "`coverage`" in rule and "`scenario-run`" in rule, "шаг не говорит, чьи требования о строках снимает выключение"
 
 
+def test_attack_skill_repeats_by_scope():
+    """`artifact-attack`: «Записи добавлены после вердикта», «Стык по номерам в consequences», «Ноль добавленных без новых
+    сигналов», «Ноль добавленных с новым сигналом улики», «Файл ответа новее атаки», «Состав неполон»; у артефактов —
+    «Цель изменена после атаки»: с начала (изменение attack-stale-scope, F-21, F-22, F-31, F-32)."""
+    text = read(ATTACK_SKILL / "SKILL.md")
+    entry = block(text, "### 1. Войди", "\n### 2.")
+    for token in ("[..] атака журнала", "состав", "стык", "`depends_on`", "`antipodes`", "`consequences`", "дословно",
+                  "диапазон", "остальные строки", "`answers/`", "новых `[!!]` нет", "состав неполон", "`target_sha256`",
+                  "вводный текст"):
+        assert token in entry, f"в шаге «Войди» нет «{token}»"
+    for bullet in entry.split("\n- ")[1:]:
+        if "с начала" in bullet:
+            assert "артефакт" in bullet or "неполон" in bullet, f"«с начала» вне артефактов и неполного состава: {bullet[:80]}"
+    codes = block(text, "## Коды и сигналы", "\n## Границы")
+    for token in ("[..] атака журнала", "файл атаки не разбирается", "по составу"):
+        assert token in codes, f"в «Кодах и сигналах» нет «{token}»"
+    acceptance = block(text, "## Приёмка", "\n## Водитель")
+    assert "вне состава" in acceptance and "байт в байт" in acceptance, "приёмка не держит прежние строки вне состава"
+    driver = text.split("## Водитель", 1)[1]
+    assert "Пройти:" in driver, "раздел «Водитель» не говорит, как brief повтора называет состав"
+    assert "Пройти:" in read(ROOT / "attack" / "agents" / "symphysis-attack-driver.md"), "водитель не читает строку «Пройти:»"
+
+
 def test_attack_skill_goal_missing_row_is_claim_extraction():
     """`artifact-attack`: «Цели нет» — у артефактов строка `claim-extraction`, `coverage` у них нет."""
     text = read(ATTACK_SKILL / "SKILL.md")
@@ -1149,6 +1172,7 @@ def test_scenario_comment_reaches_the_master_spec(tmp_path):
     run_openspec_raw(proj, "archive", "demo", "--yes")
     master = (proj / "openspec" / "specs" / "cap" / "spec.md").read_text(encoding="utf-8")
     assert "#### Scenario: Интервалы касаются\n<!-- F-12 -->\n" in master.replace("\r\n", "\n")
+
 
 def test_attack_skill_rebuilds_the_page_after_the_verdict():
     """После вердикта страница пересобирается с `--attack` на каждый файл атаки: иначе режим «атака» пишет

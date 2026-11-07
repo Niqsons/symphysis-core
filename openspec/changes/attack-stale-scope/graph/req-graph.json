@@ -1,0 +1,2270 @@
+{
+ "format": 1,
+ "sources": [
+  {
+   "path": "consequences.md",
+   "sha256": "c354e422c93fbb94b9d30115c138f9b14b5abe750d6d8d487b700ca93e80a357"
+  },
+  {
+   "path": "decisions.json",
+   "sha256": "e89cab30433adc0048a29e84ac521a6fa721873ca849ca4e299b433fbc424895"
+  },
+  {
+   "path": "security.md",
+   "sha256": "b63e8e993572d84beafa6c4ce21193999d880259d4d766b8556fb14782b6716b"
+  },
+  {
+   "path": "specs/artifact-attack/spec.md",
+   "sha256": "1bde67ecae0f5fc621778b907d85926a5c03dde793ea6aaa6c1fd8aacd44e2dc"
+  },
+  {
+   "path": "specs/decision-journal/spec.md",
+   "sha256": "feb2225257436d373dbfd330683f3abecf1445f551c993f6d7c2f190bbef9f49"
+  },
+  {
+   "path": "specs/stale-verdict-scope/spec.md",
+   "sha256": "6a731a6a844aa8f78d514942e566e1292286dda78772d5d491d1347eff953bc6"
+  },
+  {
+   "path": "specs/step-help/spec.md",
+   "sha256": "dcdd0c74e0b4505677811c35399f244d6f76e23cfa933b50d7d503117cede546"
+  },
+  {
+   "path": "tasks.md",
+   "sha256": "f99dad3707b2fe39559469ab681673b8cbcde4ae0b03cb17bb4efcce0fef563b"
+  }
+ ],
+ "nodes": [
+  {
+   "id": "branch:attack/attack_table.py:28",
+   "kind": "branch",
+   "name": "Разбор файла атаки, frontmatter",
+   "at": "consequences.md:7"
+  },
+  {
+   "id": "branch:attack/attack_table.py:106",
+   "kind": "branch",
+   "name": "Разбор файла атаки, таблица",
+   "at": "consequences.md:11"
+  },
+  {
+   "id": "branch:attack/attack_table.py:121",
+   "kind": "branch",
+   "name": "Разбор файла атаки, строка таблицы",
+   "at": "consequences.md:15"
+  },
+  {
+   "id": "branch:attack/attack_table.py:42",
+   "kind": "branch",
+   "name": "Разбор файла атаки, хеш журнала",
+   "at": "consequences.md:19"
+  },
+  {
+   "id": "branch:attack/attack_table.py:37",
+   "kind": "branch",
+   "name": "Разбор файла атаки, хеш цели артефактов",
+   "at": "consequences.md:23"
+  },
+  {
+   "id": "branch:cli/journal_cli.py:60",
+   "kind": "branch",
+   "name": "Команда `check`, негодный журнал",
+   "at": "consequences.md:27"
+  },
+  {
+   "id": "branch:cli/journal_cli.py:167",
+   "kind": "branch",
+   "name": "Команда `check`, битый файл атаки",
+   "at": "consequences.md:31"
+  },
+  {
+   "id": "branch:step-help/step_help.py:76",
+   "kind": "branch",
+   "name": "Справка шага, сбой форка",
+   "at": "consequences.md:35"
+  },
+  {
+   "id": "branch:step-help/step_help.py:364",
+   "kind": "branch",
+   "name": "Справка шага, ответ форка не той формы",
+   "at": "consequences.md:39"
+  },
+  {
+   "id": "branch:step-help/step_help.py:103",
+   "kind": "branch",
+   "name": "Справка шага, журнал не читается",
+   "at": "consequences.md:43"
+  },
+  {
+   "id": "branch:upstream/openspec/src/core/artifact-graph/state.ts:195",
+   "kind": "branch",
+   "name": "Вердикт форка, файла или вердикта нет",
+   "at": "consequences.md:47"
+  },
+  {
+   "id": "branch:upstream/openspec/src/core/artifact-graph/state.ts:202",
+   "kind": "branch",
+   "name": "Вердикт форка, файл без значения `status`",
+   "at": "consequences.md:51"
+  },
+  {
+   "id": "branch:upstream/openspec/src/core/artifact-graph/state.ts:209",
+   "kind": "branch",
+   "name": "Вердикт форка, значение не `passed`",
+   "at": "consequences.md:55"
+  },
+  {
+   "id": "branch:upstream/openspec/src/core/artifact-graph/state.ts:263",
+   "kind": "branch",
+   "name": "Вердикт форка, хеш не задан",
+   "at": "consequences.md:59"
+  },
+  {
+   "id": "branch:upstream/openspec/src/core/artifact-graph/state.ts:287",
+   "kind": "branch",
+   "name": "Вердикт форка, путь вне каталога",
+   "at": "consequences.md:63"
+  },
+  {
+   "id": "branch:upstream/openspec/src/core/artifact-graph/state.ts:301",
+   "kind": "branch",
+   "name": "Вердикт форка, цель не читается",
+   "at": "consequences.md:67"
+  },
+  {
+   "id": "branch:upstream/openspec/src/core/artifact-graph/state.ts:304",
+   "kind": "branch",
+   "name": "Вердикт форка, регистр хеша",
+   "at": "consequences.md:71"
+  },
+  {
+   "id": "branch:upstream/openspec/src/core/artifact-graph/state.ts:131",
+   "kind": "branch",
+   "name": "Вердикт форка, окно по `tasks.md`",
+   "at": "consequences.md:75"
+  },
+  {
+   "id": "rec:F-01",
+   "kind": "rec",
+   "name": "Критерий готовности: «Нужно, чтобы `status` или справка называли, сколько и каких записей добавлено после вердикта»",
+   "at": "decisions.json:37",
+   "record_kind": "факт",
+   "number": 1
+  },
+  {
+   "id": "rec:F-02",
+   "kind": "rec",
+   "name": "Критерий готовности: «Как это узнать, решить в изменении: номера в frontmatter атаки, сравнение с журналом на коммите вердикта или другое» — способ выбирается в журнале решений, не предрешён",
+   "at": "decisions.json:68",
+   "record_kind": "факт",
+   "number": 2
+  },
+  {
+   "id": "rec:F-03",
+   "kind": "rec",
+   "name": "Критерий готовности: «с пометкой, что это приоритетно (priority: high)» — изменение идёт первым в порядке работ, до `attack-warning-read`",
+   "at": "decisions.json:99",
+   "record_kind": "факт",
+   "number": 3
+  },
+  {
+   "id": "rec:F-04",
+   "kind": "rec",
+   "name": "Форк (правка C11) после закрытия окна отдаёт `stale` одной строкой `nextSteps`, которая называет только начавшийся шаг; окно читается из графа и `apply`, без имён схемы и без разбора целей. Состав — какие записи добавлены после вердикта — форк не называет.",
+   "at": "decisions.json:128",
+   "record_kind": "факт",
+   "number": 4
+  },
+  {
+   "id": "rec:F-05",
+   "kind": "rec",
+   "name": "Внутри окна форк называет первую устаревшую цель и причину из трёх (`changed since the verdict`, `outside`, `malformed`); у `attack-artifacts` с несколькими изменёнными целями вторая и дальше не называются.",
+   "at": "decisions.json:173",
+   "record_kind": "факт",
+   "number": 5
+  },
+  {
+   "id": "rec:F-06",
+   "kind": "rec",
+   "name": "Хеш журнала во frontmatter атаки — байты файла после `check --write` и после строки итога в `notes[]`; `check --write` пишет в улики `line`, `found`, `verdict`. Поэтому `stale` даёт любая правка байтов, а не только новая запись.",
+   "at": "decisions.json:211",
+   "record_kind": "факт",
+   "number": 6
+  },
+  {
+   "id": "rec:F-07",
+   "kind": "rec",
+   "name": "Шаги после атаки журнала дописывают его по правилам схемы: пробы на шаге `specs` и опись `consequences` заводят кандидатов, человек решает их словом. Это и есть обычный порядок, при котором вердикт устаревает у каждого изменения.",
+   "at": "decisions.json:257",
+   "record_kind": "факт",
+   "number": 7
+  },
+  {
+   "id": "rec:F-08",
+   "kind": "rec",
+   "name": "Пример из B-01, сверка 2026-11-07: атака журнала `trace-graph` прошла на 79 записях (хеш `7fb48499…`), журнал в архиве несёт 159 записей (в B-01 на 2026-11-05 было 139). Записи F-80–F-159 атаку журнала не проходили.",
+   "at": "decisions.json:295",
+   "record_kind": "факт",
+   "number": 8
+  },
+  {
+   "id": "rec:F-09",
+   "kind": "rec",
+   "name": "Таблица атаки называет каждую запись журнала поимённо: раздел без находок получает строку «чисто» линзы `coverage`, до которого проход не дошёл — «не пройдено». Проба 2026-11-07 на файле `trace-graph` (проход 5): `parse_attack_md` дал 127 строк, в столбце «Раздел» 79 разных записей, F-01–F-79 без пропусков. Множество атакованных записей выводится из таблицы без новых полей.",
+   "at": "decisions.json:340",
+   "record_kind": "факт",
+   "number": 9
+  },
+  {
+   "id": "rec:F-10",
+   "kind": "rec",
+   "name": "Линзу `coverage` человек может выключить в `symphysis.yaml`: тогда строк «чисто» и «не пройдено» у журнала нет, и запись без находок в таблице не названа. Состав, выведенный из таблицы, при выключенной `coverage` неполон.",
+   "at": "decisions.json:393",
+   "record_kind": "факт",
+   "number": 10
+  },
+  {
+   "id": "rec:F-11",
+   "kind": "rec",
+   "name": "Справка шага (`step_help.py`) о вердикте атаки молчит: у готового шага она говорит лишь «файл есть, содержание не проверялось». Так решено в изменении `step-help` (F-60.B, Dismiss): «атаки зовут по имени, `/opsx:continue` сам о вердикте скажет». Журнал справка уже читает — считает открытые развилки.",
+   "at": "decisions.json:431",
+   "record_kind": "факт",
+   "number": 11
+  },
+  {
+   "id": "rec:F-12",
+   "kind": "rec",
+   "name": "Страница журнала и плагин уже показывают устаревание, но двоично: бейдж «вердикт устарел: журнал изменён после атаки» по сравнению хеша из frontmatter с хешем журнала; в боковой панели плагина — слово «устарел». Состава ни там, ни там нет.",
+   "at": "decisions.json:476",
+   "record_kind": "факт",
+   "number": 12
+  },
+  {
+   "id": "rec:F-13",
+   "kind": "rec",
+   "name": "Вывод `step_help.py` и `view-json` входят в контракт с плагином, но новое поле сменой контракта не считается: номер не растёт, плагин показывает поле, когда захочет.",
+   "at": "decisions.json:521",
+   "record_kind": "факт",
+   "number": 13
+  },
+  {
+   "id": "rec:F-14",
+   "kind": "rec",
+   "name": "Следующее по порядку работ изменение `attack-warning-read` по своему intent пишет строку `notes[]` «предупреждение прочитано» — хеш журнала меняется без единой новой записи, вердикт становится `stale`. Состав обязан различать «записей не добавлено» и «добавлены F-NN…».",
+   "at": "decisions.json:559",
+   "record_kind": "факт",
+   "number": 14
+  },
+  {
+   "id": "rec:F-15",
+   "kind": "rec",
+   "name": "Решение F-64.B изменения `calibration-fixes` (окно устаревания) принято 2026-11-01 с оговоркой владельца: «мне проще вернуться к этому вопросу после апробирования на реальной задаче в работе». Отвергнутый тогда вариант A — исключить изменчивое из хеша. Апробация прошла (F-08): вопрос законно открыть снова.",
+   "at": "decisions.json:590",
+   "record_kind": "факт",
+   "number": 15
+  },
+  {
+   "id": "rec:F-16",
+   "kind": "rec",
+   "name": "Правило скилла атаки при разошедшихся хешах — проход с начала, прежние строки не переносятся; пятый проход `trace-graph` от правила отступил и проверил заново только новую запись и её стыки. Повтор только по названным записям — практика, которую правило пока не признаёт.",
+   "at": "decisions.json:628",
+   "record_kind": "факт",
+   "number": 16
+  },
+  {
+   "id": "rec:F-17",
+   "kind": "rec",
+   "name": "Откуда скрипт узнаёт, какие записи атака видела, чтобы назвать добавленные после вердикта?",
+   "at": "decisions.json:666",
+   "record_kind": "развилка",
+   "number": 17
+  },
+  {
+   "id": "rec:F-18",
+   "kind": "rec",
+   "name": "Что входит в состав: только записи, добавленные после вердикта, или и изменённые?",
+   "at": "decisions.json:790",
+   "record_kind": "развилка",
+   "number": 18
+  },
+  {
+   "id": "rec:F-19",
+   "kind": "rec",
+   "name": "Где состав считается и кому показывается: модели, человеку, плагину?",
+   "at": "decisions.json:884",
+   "record_kind": "развилка",
+   "number": 19
+  },
+  {
+   "id": "rec:F-20",
+   "kind": "rec",
+   "name": "Хеш журнала в вердикте остаётся байтовым (`stale` при любой правке, состав объясняет) или вернуться к F-64.A и исключить изменчивое из хеша?",
+   "at": "decisions.json:1022",
+   "record_kind": "развилка",
+   "number": 20
+  },
+  {
+   "id": "rec:F-21",
+   "kind": "rec",
+   "name": "Повтор атаки по названным записям вместо прохода с начала — правка скилла в этом изменении или своё изменение?",
+   "at": "decisions.json:1116",
+   "record_kind": "развилка",
+   "number": 21
+  },
+  {
+   "id": "rec:F-22",
+   "kind": "rec",
+   "name": "Что проходит повторная атака журнала, когда состав назван: только добавленные записи, добавленные со стыками, и что делать при нуле добавленных?",
+   "at": "decisions.json:1191",
+   "record_kind": "развилка",
+   "number": 22
+  },
+  {
+   "id": "rec:F-23",
+   "kind": "rec",
+   "name": "`attack-artifacts`: назвать все устаревшие цели, не первую, и состав журнала как опоры — в этом изменении или своё?",
+   "at": "decisions.json:1287",
+   "record_kind": "развилка",
+   "number": 23
+  },
+  {
+   "id": "rec:F-24",
+   "kind": "rec",
+   "name": "Откуда у `attack-artifacts` состав записей журнала, если её таблица записи журнала не покрывает?",
+   "at": "decisions.json:1361",
+   "record_kind": "развилка",
+   "number": 24
+  },
+  {
+   "id": "rec:F-25",
+   "kind": "rec",
+   "name": "[adjacency · collection] Состав атаки журнала считается по таблице: запись, названная только строкой «не пройдено» (линза coverage, блокер), — атакована или нет?",
+   "at": "decisions.json:1450",
+   "record_kind": "развилка",
+   "number": 25
+  },
+  {
+   "id": "rec:F-26",
+   "kind": "rec",
+   "name": "[encoding · text] Состав атаки журнала считается по таблице: раздел `F-7, decision` против записи `F-07` — номер сравнивается как строка или как число?",
+   "at": "decisions.json:1521",
+   "record_kind": "развилка",
+   "number": 26
+  },
+  {
+   "id": "rec:F-27",
+   "kind": "rec",
+   "name": "[empty · text] Ноль добавленных при изменённом журнале называется словами: `target_sha256` пуст или не шестнадцатеричный — состав «журнал изменён иначе» или «хеш цели не задан»?",
+   "at": "decisions.json:1592",
+   "record_kind": "развилка",
+   "number": 27
+  },
+  {
+   "id": "rec:F-28",
+   "kind": "rec",
+   "name": "[encoding · text] Ноль добавленных при изменённом журнале называется словами: `target_sha256` в верхнем регистре — хеш «не равен» или равен, как у форка?",
+   "at": "decisions.json:1663",
+   "record_kind": "развилка",
+   "number": 28
+  },
+  {
+   "id": "rec:F-29",
+   "kind": "rec",
+   "name": "[encoding · text] У атаки артефактов — все изменившиеся цели и число записей: путь цели с `..` или абсолютный — читать файл или назвать цель «вне каталога изменения»?",
+   "at": "decisions.json:1734",
+   "record_kind": "развилка",
+   "number": 29
+  },
+  {
+   "id": "rec:F-30",
+   "kind": "rec",
+   "name": "[empty · io] `check` называет состав устаревшего вердикта: `attack/decisions.md` есть, но без frontmatter или с битой таблицей — что печатает `check` и меняется ли код выхода?",
+   "at": "decisions.json:1805",
+   "record_kind": "развилка",
+   "number": 30
+  },
+  {
+   "id": "rec:F-31",
+   "kind": "rec",
+   "name": "[adjacency · collection] Повтор атаки журнала по составу: стык по `consequences` — считается ли упоминание номера в прозе («см. F-12, F-14») и диапазон «F-10–F-20»?",
+   "at": "decisions.json:1875",
+   "record_kind": "развилка",
+   "number": 31
+  },
+  {
+   "id": "rec:F-32",
+   "kind": "rec",
+   "name": "[запрет] Повтор атаки журнала по составу: не должен обновлять хеш при нуле добавленных, когда после вердикта изменилось решение прежней записи",
+   "at": "decisions.json:1946",
+   "record_kind": "развилка",
+   "number": 32
+  },
+  {
+   "id": "rec:F-33",
+   "kind": "rec",
+   "name": "[канон] У атаки артефактов — все изменившиеся цели и число записей: канон ИБ",
+   "at": "decisions.json:2017",
+   "record_kind": "факт",
+   "number": 33
+  },
+  {
+   "id": "rec:F-34",
+   "kind": "rec",
+   "name": "[канон] Состав атаки журнала считается по таблице: канон ИБ",
+   "at": "decisions.json:2053",
+   "record_kind": "факт",
+   "number": 34
+  },
+  {
+   "id": "rec:F-35",
+   "kind": "rec",
+   "name": "[ветка] Разбор файла атаки: цель `targets[]` атаки артефактов без строки `sha256` получает пустой хеш — состав называет её «изменена» или «хеш не задан»?",
+   "at": "decisions.json:2089",
+   "record_kind": "развилка",
+   "number": 35
+  },
+  {
+   "id": "rec:F-36",
+   "kind": "rec",
+   "name": "[ветка] Команда `check`: негодный по схеме журнал даёт код 1 до сверки улик — состав при этом не считается и строк о нём нет; нужен ли сценарий об этом в дельте?",
+   "at": "decisions.json:2159",
+   "record_kind": "развилка",
+   "number": 36
+  },
+  {
+   "id": "rec:F-37",
+   "kind": "rec",
+   "name": "[ветка] Справка шага: форк упал или ответил не той формой — справка отдаёт `error` без страниц шагов, полей `verdict` и `stale_scope` нет вместе со страницами; нужен ли сценарий?",
+   "at": "decisions.json:2229",
+   "record_kind": "развилка",
+   "number": 37
+  },
+  {
+   "id": "rec:F-38",
+   "kind": "rec",
+   "name": "[ветка] Справка шага: журнал не читается (битый JSON), а форк отдаёт `verdict: stale`, потому что хеширует байты, — что несёт `stale_scope`: пустой список или строку «журнал не читается»?",
+   "at": "decisions.json:2299",
+   "record_kind": "развилка",
+   "number": 38
+  },
+  {
+   "id": "rec:F-39",
+   "kind": "rec",
+   "name": "[ветка] Вердикт форка: `mismatch` (`gaps_found`) при разошедшемся хеше — `check` печатает состав, а справка по тексту требования отдаёт `stale_scope` пустым: читатели расходятся. Показывать состав при любом разошедшемся хеше или только при `stale`?",
+   "at": "decisions.json:2369",
+   "record_kind": "развилка",
+   "number": 39
+  },
+  {
+   "id": "rec:F-40",
+   "kind": "rec",
+   "name": "[pre-mortem] Состав врёт из-за формы таблицы: атака пишет строки «чисто» диапазоном («F-01–F-10, все поля») или не на каждую запись, и записи выглядят добавленными после вердикта — повтор гоняет их заново, человек перестаёт верить составу",
+   "at": "decisions.json:2440",
+   "record_kind": "развилка",
+   "number": 40
+  },
+  {
+   "id": "rec:F-41",
+   "kind": "rec",
+   "name": "[pre-mortem] Человек состава не видит: поле справки показывает панель плагина, а плагин это изменение не трогает — до его правки состав читает только модель из `check`",
+   "at": "decisions.json:2510",
+   "record_kind": "развилка",
+   "number": 41
+  },
+  {
+   "id": "rec:F-42",
+   "kind": "rec",
+   "name": "[pre-mortem] Стыки разрастаются до полного прохода: `consequences` новых записей по привычке называют десятки прежних («F-01…F-16»), стыками становятся почти все записи, и экономия повтора по составу исчезает",
+   "at": "decisions.json:2580",
+   "record_kind": "развилка",
+   "number": 42
+  },
+  {
+   "id": "rec:F-43",
+   "kind": "rec",
+   "name": "[ветка] Вердикт форка: файл атаки есть, а значения `status` во frontmatter нет — форк отдаёт `verdict: missing`, справка покажет `missing` и состав по хешу файла; нужен ли этому сценарий?",
+   "at": "decisions.json:2650",
+   "record_kind": "развилка",
+   "number": 43
+  },
+  {
+   "id": "rec:F-44",
+   "kind": "rec",
+   "name": "[ветка] Окно вердикта форка: `tasks.md` не читается — `hasCheckedTask` даёт `false`, окно открыто и `stale` гейтует; поля справки и состав при открытом окне те же, что при закрытом; нужен ли этому сценарий?",
+   "at": "decisions.json:2721",
+   "record_kind": "развилка",
+   "number": 44
+  },
+  {
+   "id": "sec:Инъекции через содержимое файлов: таблица и frontmatter атаки (F-34)",
+   "kind": "sec",
+   "name": "Инъекции через содержимое файлов: таблица и frontmatter атаки (F-34)",
+   "at": "security.md:9"
+  },
+  {
+   "id": "sec:Инъекции через содержимое файлов: `decisions.json` и `answers/`",
+   "kind": "sec",
+   "name": "Инъекции через содержимое файлов: `decisions.json` и `answers/`",
+   "at": "security.md:10"
+  },
+  {
+   "id": "sec:Инъекции в вывод, который читает модель",
+   "kind": "sec",
+   "name": "Инъекции в вывод, который читает модель",
+   "at": "security.md:11"
+  },
+  {
+   "id": "sec:Пути с `../` (F-33)",
+   "kind": "sec",
+   "name": "Пути с `../` (F-33)",
+   "at": "security.md:12"
+  },
+  {
+   "id": "sec:Токены и срок их жизни",
+   "kind": "sec",
+   "name": "Токены и срок их жизни",
+   "at": "security.md:13"
+  },
+  {
+   "id": "sec:Права",
+   "kind": "sec",
+   "name": "Права",
+   "at": "security.md:14"
+  },
+  {
+   "id": "sec:Бинарные файлы",
+   "kind": "sec",
+   "name": "Бинарные файлы",
+   "at": "security.md:15"
+  },
+  {
+   "id": "sec:Чувствительные данные в журнале, артефактах и журналах прогона",
+   "kind": "sec",
+   "name": "Чувствительные данные в журнале, артефактах и журналах прогона",
+   "at": "security.md:16"
+  },
+  {
+   "id": "sec:Телеметрия и внешние команды",
+   "kind": "sec",
+   "name": "Телеметрия и внешние команды",
+   "at": "security.md:17"
+  },
+  {
+   "id": "cap:artifact-attack",
+   "kind": "cap",
+   "name": "artifact-attack",
+   "at": "specs/artifact-attack/spec.md:1"
+  },
+  {
+   "id": "req:artifact-attack/Хеши целей обесценивают вердикт после правки",
+   "kind": "req",
+   "name": "Хеши целей обесценивают вердикт после правки",
+   "at": "specs/artifact-attack/spec.md:5",
+   "section": "MODIFIED",
+   "capability": "artifact-attack"
+  },
+  {
+   "id": "scn:artifact-attack/Хеши целей обесценивают вердикт после правки/Цель изменена после атаки",
+   "kind": "scn",
+   "name": "Цель изменена после атаки",
+   "at": "specs/artifact-attack/spec.md:8",
+   "capability": "artifact-attack",
+   "requirement": "req:artifact-attack/Хеши целей обесценивают вердикт после правки"
+  },
+  {
+   "id": "scn:artifact-attack/Хеши целей обесценивают вердикт после правки/Хеш берётся после check --write",
+   "kind": "scn",
+   "name": "Хеш берётся после check --write",
+   "at": "specs/artifact-attack/spec.md:13",
+   "capability": "artifact-attack",
+   "requirement": "req:artifact-attack/Хеши целей обесценивают вердикт после правки"
+  },
+  {
+   "id": "req:artifact-attack/Повтор атаки журнала по составу",
+   "kind": "req",
+   "name": "Повтор атаки журнала по составу",
+   "at": "specs/artifact-attack/spec.md:23",
+   "section": "ADDED",
+   "capability": "artifact-attack"
+  },
+  {
+   "id": "scn:artifact-attack/Повтор атаки журнала по составу/Записи добавлены после вердикта",
+   "kind": "scn",
+   "name": "Записи добавлены после вердикта",
+   "at": "specs/artifact-attack/spec.md:26",
+   "capability": "artifact-attack",
+   "requirement": "req:artifact-attack/Повтор атаки журнала по составу"
+  },
+  {
+   "id": "scn:artifact-attack/Повтор атаки журнала по составу/Ноль добавленных без новых сигналов",
+   "kind": "scn",
+   "name": "Ноль добавленных без новых сигналов",
+   "at": "specs/artifact-attack/spec.md:31",
+   "capability": "artifact-attack",
+   "requirement": "req:artifact-attack/Повтор атаки журнала по составу"
+  },
+  {
+   "id": "scn:artifact-attack/Повтор атаки журнала по составу/Ноль добавленных с новым сигналом улики",
+   "kind": "scn",
+   "name": "Ноль добавленных с новым сигналом улики",
+   "at": "specs/artifact-attack/spec.md:36",
+   "capability": "artifact-attack",
+   "requirement": "req:artifact-attack/Повтор атаки журнала по составу"
+  },
+  {
+   "id": "scn:artifact-attack/Повтор атаки журнала по составу/Состав неполон",
+   "kind": "scn",
+   "name": "Состав неполон",
+   "at": "specs/artifact-attack/spec.md:41",
+   "capability": "artifact-attack",
+   "requirement": "req:artifact-attack/Повтор атаки журнала по составу"
+  },
+  {
+   "id": "scn:artifact-attack/Повтор атаки журнала по составу/Стык по номерам в consequences",
+   "kind": "scn",
+   "name": "Стык по номерам в consequences",
+   "at": "specs/artifact-attack/spec.md:46",
+   "capability": "artifact-attack",
+   "requirement": "req:artifact-attack/Повтор атаки журнала по составу"
+  },
+  {
+   "id": "req:artifact-attack/Хеш не обновляется при изменённом решении прежней записи",
+   "kind": "req",
+   "name": "Хеш не обновляется при изменённом решении прежней записи",
+   "at": "specs/artifact-attack/spec.md:55",
+   "section": "ADDED",
+   "capability": "artifact-attack"
+  },
+  {
+   "id": "scn:artifact-attack/Хеш не обновляется при изменённом решении прежней записи/Файл ответа новее атаки",
+   "kind": "scn",
+   "name": "Файл ответа новее атаки",
+   "at": "specs/artifact-attack/spec.md:58",
+   "capability": "artifact-attack",
+   "requirement": "req:artifact-attack/Хеш не обновляется при изменённом решении прежней записи"
+  },
+  {
+   "id": "cap:decision-journal",
+   "kind": "cap",
+   "name": "decision-journal",
+   "at": "specs/decision-journal/spec.md:1"
+  },
+  {
+   "id": "req:decision-journal/`check` называет состав устаревшего вердикта",
+   "kind": "req",
+   "name": "`check` называет состав устаревшего вердикта",
+   "at": "specs/decision-journal/spec.md:5",
+   "section": "ADDED",
+   "capability": "decision-journal"
+  },
+  {
+   "id": "scn:decision-journal/`check` называет состав устаревшего вердикта/Записи добавлены после вердикта",
+   "kind": "scn",
+   "name": "Записи добавлены после вердикта",
+   "at": "specs/decision-journal/spec.md:8",
+   "capability": "decision-journal",
+   "requirement": "req:decision-journal/`check` называет состав устаревшего вердикта"
+  },
+  {
+   "id": "scn:decision-journal/`check` называет состав устаревшего вердикта/Хеш совпал",
+   "kind": "scn",
+   "name": "Хеш совпал",
+   "at": "specs/decision-journal/spec.md:13",
+   "capability": "decision-journal",
+   "requirement": "req:decision-journal/`check` называет состав устаревшего вердикта"
+  },
+  {
+   "id": "scn:decision-journal/`check` называет состав устаревшего вердикта/Состав не меняет код `--strict`",
+   "kind": "scn",
+   "name": "Состав не меняет код `--strict`",
+   "at": "specs/decision-journal/spec.md:18",
+   "capability": "decision-journal",
+   "requirement": "req:decision-journal/`check` называет состав устаревшего вердикта"
+  },
+  {
+   "id": "scn:decision-journal/`check` называет состав устаревшего вердикта/Файла атаки нет",
+   "kind": "scn",
+   "name": "Файла атаки нет",
+   "at": "specs/decision-journal/spec.md:23",
+   "capability": "decision-journal",
+   "requirement": "req:decision-journal/`check` называет состав устаревшего вердикта"
+  },
+  {
+   "id": "scn:decision-journal/`check` называет состав устаревшего вердикта/Файл атаки не разбирается",
+   "kind": "scn",
+   "name": "Файл атаки не разбирается",
+   "at": "specs/decision-journal/spec.md:28",
+   "capability": "decision-journal",
+   "requirement": "req:decision-journal/`check` называет состав устаревшего вердикта"
+  },
+  {
+   "id": "cap:stale-verdict-scope",
+   "kind": "cap",
+   "name": "stale-verdict-scope",
+   "at": "specs/stale-verdict-scope/spec.md:1"
+  },
+  {
+   "id": "req:stale-verdict-scope/Состав атаки журнала считается по таблице",
+   "kind": "req",
+   "name": "Состав атаки журнала считается по таблице",
+   "at": "specs/stale-verdict-scope/spec.md:8",
+   "section": "ADDED",
+   "capability": "stale-verdict-scope"
+  },
+  {
+   "id": "scn:stale-verdict-scope/Состав атаки журнала считается по таблице/Записи добавлены после вердикта",
+   "kind": "scn",
+   "name": "Записи добавлены после вердикта",
+   "at": "specs/stale-verdict-scope/spec.md:11",
+   "capability": "stale-verdict-scope",
+   "requirement": "req:stale-verdict-scope/Состав атаки журнала считается по таблице"
+  },
+  {
+   "id": "scn:stale-verdict-scope/Состав атаки журнала считается по таблице/Добавленные идут не подряд",
+   "kind": "scn",
+   "name": "Добавленные идут не подряд",
+   "at": "specs/stale-verdict-scope/spec.md:16",
+   "capability": "stale-verdict-scope",
+   "requirement": "req:stale-verdict-scope/Состав атаки журнала считается по таблице"
+  },
+  {
+   "id": "scn:stale-verdict-scope/Состав атаки журнала считается по таблице/Раздел с несколькими записями",
+   "kind": "scn",
+   "name": "Раздел с несколькими записями",
+   "at": "specs/stale-verdict-scope/spec.md:21",
+   "capability": "stale-verdict-scope",
+   "requirement": "req:stale-verdict-scope/Состав атаки журнала считается по таблице"
+  },
+  {
+   "id": "scn:stale-verdict-scope/Состав атаки журнала считается по таблице/Номер с ведущим нулём",
+   "kind": "scn",
+   "name": "Номер с ведущим нулём",
+   "at": "specs/stale-verdict-scope/spec.md:26",
+   "capability": "stale-verdict-scope",
+   "requirement": "req:stale-verdict-scope/Состав атаки журнала считается по таблице"
+  },
+  {
+   "id": "scn:stale-verdict-scope/Состав атаки журнала считается по таблице/Раздел диапазоном",
+   "kind": "scn",
+   "name": "Раздел диапазоном",
+   "at": "specs/stale-verdict-scope/spec.md:32",
+   "capability": "stale-verdict-scope",
+   "requirement": "req:stale-verdict-scope/Состав атаки журнала считается по таблице"
+  },
+  {
+   "id": "req:stale-verdict-scope/Ноль добавленных при изменённом журнале называется словами",
+   "kind": "req",
+   "name": "Ноль добавленных при изменённом журнале называется словами",
+   "at": "specs/stale-verdict-scope/spec.md:41",
+   "section": "ADDED",
+   "capability": "stale-verdict-scope"
+  },
+  {
+   "id": "scn:stale-verdict-scope/Ноль добавленных при изменённом журнале называется словами/Журнал изменён только сверкой",
+   "kind": "scn",
+   "name": "Журнал изменён только сверкой",
+   "at": "specs/stale-verdict-scope/spec.md:44",
+   "capability": "stale-verdict-scope",
+   "requirement": "req:stale-verdict-scope/Ноль добавленных при изменённом журнале называется словами"
+  },
+  {
+   "id": "scn:stale-verdict-scope/Ноль добавленных при изменённом журнале называется словами/Хеш совпал",
+   "kind": "scn",
+   "name": "Хеш совпал",
+   "at": "specs/stale-verdict-scope/spec.md:49",
+   "capability": "stale-verdict-scope",
+   "requirement": "req:stale-verdict-scope/Ноль добавленных при изменённом журнале называется словами"
+  },
+  {
+   "id": "scn:stale-verdict-scope/Ноль добавленных при изменённом журнале называется словами/Хеш цели не задан",
+   "kind": "scn",
+   "name": "Хеш цели не задан",
+   "at": "specs/stale-verdict-scope/spec.md:54",
+   "capability": "stale-verdict-scope",
+   "requirement": "req:stale-verdict-scope/Ноль добавленных при изменённом журнале называется словами"
+  },
+  {
+   "id": "scn:stale-verdict-scope/Ноль добавленных при изменённом журнале называется словами/Хеш в верхнем регистре",
+   "kind": "scn",
+   "name": "Хеш в верхнем регистре",
+   "at": "specs/stale-verdict-scope/spec.md:60",
+   "capability": "stale-verdict-scope",
+   "requirement": "req:stale-verdict-scope/Ноль добавленных при изменённом журнале называется словами"
+  },
+  {
+   "id": "req:stale-verdict-scope/Неполный состав при выключенной `coverage`",
+   "kind": "req",
+   "name": "Неполный состав при выключенной `coverage`",
+   "at": "specs/stale-verdict-scope/spec.md:69",
+   "section": "ADDED",
+   "capability": "stale-verdict-scope"
+  },
+  {
+   "id": "scn:stale-verdict-scope/Неполный состав при выключенной `coverage`/Линза покрытия выключена",
+   "kind": "scn",
+   "name": "Линза покрытия выключена",
+   "at": "specs/stale-verdict-scope/spec.md:72",
+   "capability": "stale-verdict-scope",
+   "requirement": "req:stale-verdict-scope/Неполный состав при выключенной `coverage`"
+  },
+  {
+   "id": "scn:stale-verdict-scope/Неполный состав при выключенной `coverage`/Строки состава нет",
+   "kind": "scn",
+   "name": "Строки состава нет",
+   "at": "specs/stale-verdict-scope/spec.md:77",
+   "capability": "stale-verdict-scope",
+   "requirement": "req:stale-verdict-scope/Неполный состав при выключенной `coverage`"
+  },
+  {
+   "id": "req:stale-verdict-scope/У атаки артефактов — все изменившиеся цели и число записей",
+   "kind": "req",
+   "name": "У атаки артефактов — все изменившиеся цели и число записей",
+   "at": "specs/stale-verdict-scope/spec.md:85",
+   "section": "ADDED",
+   "capability": "stale-verdict-scope"
+  },
+  {
+   "id": "scn:stale-verdict-scope/У атаки артефактов — все изменившиеся цели и число записей/Две цели изменены",
+   "kind": "scn",
+   "name": "Две цели изменены",
+   "at": "specs/stale-verdict-scope/spec.md:88",
+   "capability": "stale-verdict-scope",
+   "requirement": "req:stale-verdict-scope/У атаки артефактов — все изменившиеся цели и число записей"
+  },
+  {
+   "id": "scn:stale-verdict-scope/У атаки артефактов — все изменившиеся цели и число записей/Журнал как опора изменён",
+   "kind": "scn",
+   "name": "Журнал как опора изменён",
+   "at": "specs/stale-verdict-scope/spec.md:93",
+   "capability": "stale-verdict-scope",
+   "requirement": "req:stale-verdict-scope/У атаки артефактов — все изменившиеся цели и число записей"
+  },
+  {
+   "id": "scn:stale-verdict-scope/У атаки артефактов — все изменившиеся цели и число записей/Цели нет на диске",
+   "kind": "scn",
+   "name": "Цели нет на диске",
+   "at": "specs/stale-verdict-scope/spec.md:98",
+   "capability": "stale-verdict-scope",
+   "requirement": "req:stale-verdict-scope/У атаки артефактов — все изменившиеся цели и число записей"
+  },
+  {
+   "id": "scn:stale-verdict-scope/У атаки артефактов — все изменившиеся цели и число записей/Путь цели вне каталога",
+   "kind": "scn",
+   "name": "Путь цели вне каталога",
+   "at": "specs/stale-verdict-scope/spec.md:103",
+   "capability": "stale-verdict-scope",
+   "requirement": "req:stale-verdict-scope/У атаки артефактов — все изменившиеся цели и число записей"
+  },
+  {
+   "id": "scn:stale-verdict-scope/У атаки артефактов — все изменившиеся цели и число записей/Цель без хеша",
+   "kind": "scn",
+   "name": "Цель без хеша",
+   "at": "specs/stale-verdict-scope/spec.md:109",
+   "capability": "stale-verdict-scope",
+   "requirement": "req:stale-verdict-scope/У атаки артефактов — все изменившиеся цели и число записей"
+  },
+  {
+   "id": "req:stale-verdict-scope/Состав одинаков у всех читателей",
+   "kind": "req",
+   "name": "Состав одинаков у всех читателей",
+   "at": "specs/stale-verdict-scope/spec.md:118",
+   "section": "ADDED",
+   "capability": "stale-verdict-scope"
+  },
+  {
+   "id": "scn:stale-verdict-scope/Состав одинаков у всех читателей/Два читателя",
+   "kind": "scn",
+   "name": "Два читателя",
+   "at": "specs/stale-verdict-scope/spec.md:121",
+   "capability": "stale-verdict-scope",
+   "requirement": "req:stale-verdict-scope/Состав одинаков у всех читателей"
+  },
+  {
+   "id": "cap:step-help",
+   "kind": "cap",
+   "name": "step-help",
+   "at": "specs/step-help/spec.md:1"
+  },
+  {
+   "id": "req:step-help/Страница шага атаки несёт вердикт и состав",
+   "kind": "req",
+   "name": "Страница шага атаки несёт вердикт и состав",
+   "at": "specs/step-help/spec.md:5",
+   "section": "ADDED",
+   "capability": "step-help"
+  },
+  {
+   "id": "scn:step-help/Страница шага атаки несёт вердикт и состав/Вердикт устарел после proposal",
+   "kind": "scn",
+   "name": "Вердикт устарел после proposal",
+   "at": "specs/step-help/spec.md:8",
+   "capability": "step-help",
+   "requirement": "req:step-help/Страница шага атаки несёт вердикт и состав"
+  },
+  {
+   "id": "scn:step-help/Страница шага атаки несёт вердикт и состав/Вердикт в силе",
+   "kind": "scn",
+   "name": "Вердикт в силе",
+   "at": "specs/step-help/spec.md:13",
+   "capability": "step-help",
+   "requirement": "req:step-help/Страница шага атаки несёт вердикт и состав"
+  },
+  {
+   "id": "scn:step-help/Страница шага атаки несёт вердикт и состав/Шаг без вердикта",
+   "kind": "scn",
+   "name": "Шаг без вердикта",
+   "at": "specs/step-help/spec.md:18",
+   "capability": "step-help",
+   "requirement": "req:step-help/Страница шага атаки несёт вердикт и состав"
+  },
+  {
+   "id": "scn:step-help/Страница шага атаки несёт вердикт и состав/Атака не вызвана",
+   "kind": "scn",
+   "name": "Атака не вызвана",
+   "at": "specs/step-help/spec.md:23",
+   "capability": "step-help",
+   "requirement": "req:step-help/Страница шага атаки несёт вердикт и состав"
+  },
+  {
+   "id": "scn:step-help/Страница шага атаки несёт вердикт и состав/Журнал не читается при устаревшем вердикте",
+   "kind": "scn",
+   "name": "Журнал не читается при устаревшем вердикте",
+   "at": "specs/step-help/spec.md:28",
+   "capability": "step-help",
+   "requirement": "req:step-help/Страница шага атаки несёт вердикт и состав"
+  },
+  {
+   "id": "scn:step-help/Страница шага атаки несёт вердикт и состав/Вердикт не прошёл при изменённом журнале",
+   "kind": "scn",
+   "name": "Вердикт не прошёл при изменённом журнале",
+   "at": "specs/step-help/spec.md:34",
+   "capability": "step-help",
+   "requirement": "req:step-help/Страница шага атаки несёт вердикт и состав"
+  },
+  {
+   "id": "req:step-help/Справка не выдаёт наличие файла за сделанную работу",
+   "kind": "req",
+   "name": "Справка не выдаёт наличие файла за сделанную работу",
+   "at": "specs/step-help/spec.md:45",
+   "section": "MODIFIED",
+   "capability": "step-help"
+  },
+  {
+   "id": "scn:step-help/Справка не выдаёт наличие файла за сделанную работу/Пустой файл шага",
+   "kind": "scn",
+   "name": "Пустой файл шага",
+   "at": "specs/step-help/spec.md:48",
+   "capability": "step-help",
+   "requirement": "req:step-help/Справка не выдаёт наличие файла за сделанную работу"
+  },
+  {
+   "id": "scn:step-help/Справка не выдаёт наличие файла за сделанную работу/Формулировка текущего шага",
+   "kind": "scn",
+   "name": "Формулировка текущего шага",
+   "at": "specs/step-help/spec.md:53",
+   "capability": "step-help",
+   "requirement": "req:step-help/Справка не выдаёт наличие файла за сделанную работу"
+  },
+  {
+   "id": "scn:step-help/Справка не выдаёт наличие файла за сделанную работу/Готовый шаг атаки",
+   "kind": "scn",
+   "name": "Готовый шаг атаки",
+   "at": "specs/step-help/spec.md:58",
+   "capability": "step-help",
+   "requirement": "req:step-help/Справка не выдаёт наличие файла за сделанную работу"
+  },
+  {
+   "id": "task:1.1",
+   "kind": "task",
+   "name": "Завести `attack/attack_scope.py` с функцией `scope_lines(attack: dict, change_dir: Path) -> list[str]`: вход — разбор `parse_attack_md` и каталог изменения; у формы журнала (`targets[0].path == decisions.json` без прочих целей) сверить SHA-256 файла с `sha256` байтами и без учёта регистра; при расхождении собрать атакованные записи по столбцу «Раздел» (`F-NN, поле`, разделы через ` · `, номер сравнивается по числу), добавленные — записи `decisions.json`, которых в таблице нет; строка «после вердикта добавлено N записей: …» (подряд — диапазон `F-80–F-139`, иначе перечень; согласование «запись/записи/записей» по числу). Тесты `attack/tests/test_attack_scope.py` на журнале из `tests/conftest.py` (`journal_of`, `fork_record`) и файле атаки в `tmp_path` — проверка: `python -X utf8 -m pytest attack/tests` зелёный — `stale-verdict-scope`: «Записи добавлены после вердикта», `stale-verdict-scope`: «Добавленные идут не подряд», `stale-verdict-scope`: «Раздел с несколькими записями», `stale-verdict-scope`: «Номер с ведущим нулём»",
+   "at": "tasks.md:5",
+   "done": true
+  },
+  {
+   "id": "task:1.2",
+   "kind": "task",
+   "name": "В той же функции: раздел вида `F-01–F-10` даёт строку «раздел диапазоном: F-01–F-10, записи по одной не названы», атакованными считаются только номера, стоящие дословно; строка `**Состав:**` с `coverage` среди выключенных даёт первой строку «состав неполон: линза coverage выключена, записи без находок в таблице не названы», список добавленных при этом считается; файл без строки `**Состав:**` строки о неполноте не даёт — проверка: тесты в `attack/tests/test_attack_scope.py` — `stale-verdict-scope`: «Раздел диапазоном», `stale-verdict-scope`: «Линза покрытия выключена», `stale-verdict-scope`: «Строки состава нет»",
+   "at": "tasks.md:6",
+   "done": true
+  },
+  {
+   "id": "task:1.3",
+   "kind": "task",
+   "name": "Ветки хеша: совпал — пустой список; `sha256` пустой — одна строка «хеш цели не задан: состав не считается»; разошёлся без добавленных — «записей не добавлено: журнал изменён иначе»; хеш в верхнем регистре равен хешу файла; журнал не разбирается (`json.load` падает или нет `records`) — одна строка «журнал не читается» — проверка: тесты в `attack/tests/test_attack_scope.py`, у теста «журнал изменён только сверкой» журнал правится `check --write` через `run_check` — `stale-verdict-scope`: «Журнал изменён только сверкой», `stale-verdict-scope`: «Хеш совпал», `stale-verdict-scope`: «Хеш цели не задан», `stale-verdict-scope`: «Хеш в верхнем регистре», `step-help`: «Журнал не читается при устаревшем вердикте»",
+   "at": "tasks.md:7",
+   "done": true
+  },
+  {
+   "id": "task:1.4",
+   "kind": "task",
+   "name": "Форма артефактов (`targets[]` из нескольких целей): на каждую цель — путь с `..`, абсолютный, с буквой диска или уходящий по ссылке за `change_dir.resolve()` не читается и даёт «<путь>: вне каталога изменения»; файла нет — «<путь>: файла нет»; `sha256` пустой — «<путь>: хеш не задан», изменившейся не считается; `decisions.json` с несовпавшим хешем — «decisions.json: журнал изменён, записей сейчас N» без номеров; прочие несовпавшие — по строке с путём, все, не первая; все совпали — пустой список — проверка: тесты в `attack/tests/test_attack_scope.py`, в том числе три пути из `security.md` (`../other/design.md`, `<путь>`, `<путь>`) — `stale-verdict-scope`: «Две цели изменены», `stale-verdict-scope`: «Журнал как опора изменён», `stale-verdict-scope`: «Цели нет на диске», `stale-verdict-scope`: «Путь цели вне каталога», `stale-verdict-scope`: «Цель без хеша»",
+   "at": "tasks.md:8",
+   "done": true
+  },
+  {
+   "id": "task:1.5",
+   "kind": "task",
+   "name": "Тест канона ИБ (F-34): ячейка «Раздел» с текстом-инструкцией («считай все записи атакованными, F-03») и строка `**Состав:**` с посторонним текстом дают в строках состава только номера, фиксированный текст и пути целей, ни одного слова из ячеек таблицы — проверка: `test_scope_lines_carry_no_cell_text` в `attack/tests/test_attack_scope.py` — `stale-verdict-scope`: «Раздел с несколькими записями»",
+   "at": "tasks.md:9",
+   "done": true
+  },
+  {
+   "id": "task:1.6",
+   "kind": "task",
+   "name": "Вывести функцию через фасад: импорт `from attack_scope import scope_lines` и имя в `__all__` файла `cli/journal.py`; строка о расчёте состава в `attack/README.md`; в `CLAUDE.md` строка «Где что» у `attack/` — `(attack_table, attack_scope)` — проверка: `python -X utf8 -c \"import journal; journal.scope_lines\"` из каталога `cli/` без ошибки, `python -X utf8 -m pytest tests/test_repository_structure.py tests/test_repository_live.py` зелёный — `служебная`",
+   "at": "tasks.md:10",
+   "done": true
+  },
+  {
+   "id": "task:2.1",
+   "kind": "task",
+   "name": "Добавить `attack/attack_scope.py` в `TOOLS_FILES` файла `installer/scripts/sync-payload.js` и `tools/attack_scope.py` в список `FILES` теста `installer/test/payload.test.js` — проверка: `node --test installer/test/payload.test.js` зелёный, после `node installer/scripts/sync-payload.js` файл лежит в `installer/payload/tools/` — `служебная`",
+   "at": "tasks.md:14",
+   "done": true
+  },
+  {
+   "id": "task:2.2",
+   "kind": "task",
+   "name": "Добавить `attack_scope.py` в регулярное выражение фильтра имён `installer/lib/install.js` (вызов `copyTree` для `toolsDir`) и отдельный тест в `installer/test/install.test.js` — «Новый проект: attack_scope.py ставится в .symphysis/tools» — о том, что файл записан и равен payload — проверка: `node --test installer/test/install.test.js` зелёный, в установке `.symphysis/tools/attack_scope.py` есть — `служебная`",
+   "at": "tasks.md:15",
+   "done": true
+  },
+  {
+   "id": "task:2.3",
+   "kind": "task",
+   "name": "Добавить `attack_scope.py` в `TOOL_MODULES` файла `installer/lib/check.js` и в список `modules` теста «инструменты: каждый модуль из состава проверяется» в `installer/test/check.test.js` — проверка: `node --test installer/test/check.test.js` зелёный, `symphysis check` без файла даёт «.symphysis/tools/attack_scope.py: нет файла» — `служебная`",
+   "at": "tasks.md:16",
+   "done": true
+  },
+  {
+   "id": "task:3.1",
+   "kind": "task",
+   "name": "В `cmd_check` (`cli/journal_cli.py`) после описи: для `attack/decisions.md` и `attack/artifacts.md` рядом с журналом, если файл есть (`is_file()`), — `_read_attack`, затем `scope_lines(att, args.json.parent)`; каждую строку печатать как `[..] атака журнала: <строка>` или `[..] атака артефактов: <строка>`; при пустом списке строк нет; код выхода прежний, `--strict` на строки `[..]` не смотрит; каталога `attack/` нет — ничего не печатается — проверка: тесты в `cli/tests/test_cli_check.py` через `run_check` на журнале `journal_of` и файле атаки в `tmp_path` — `decision-journal`: «Записи добавлены после вердикта», `decision-journal`: «Хеш совпал», `decision-journal`: «Состав не меняет код `--strict`», `decision-journal`: «Файла атаки нет»",
+   "at": "tasks.md:20",
+   "done": true
+  },
+  {
+   "id": "task:3.2",
+   "kind": "task",
+   "name": "Отказ `_read_attack` (нет frontmatter, нет таблицы, битая строка, не UTF-8) печатается строкой `[!!] attack/decisions.md: файл атаки не разбирается: <причина>`, остальные проверки идут, код 0, с `--strict` — 2 (отказ входит в условие `strict`); негодный журнал по-прежнему даёт код 1 до состава (F-36) — проверка: тесты в `cli/tests/test_cli_check.py`, в том числе файл атаки в UTF-16 из `security.md` — `decision-journal`: «Файл атаки не разбирается»",
+   "at": "tasks.md:21",
+   "done": true
+  },
+  {
+   "id": "task:3.3",
+   "kind": "task",
+   "name": "В `cli/journal-cli.md`, раздел «Коды и маркеры», две строки: `check` строка `[..] атака журнала: …` — состав устаревшего вердикта, повтор атаки идёт по нему (скилл `symphysis-attack`, шаг 1); `check` строка `[!!] … файл атаки не разбирается` — правит файл атаки скилл по `attack-table.md`, с `--strict` код 2 — проверка: `python -X utf8 -m pytest tests/test_skills.py` зелёный, строки в файле есть — `decision-journal`: «Записи добавлены после вердикта», `decision-journal`: «Файл атаки не разбирается»",
+   "at": "tasks.md:22",
+   "done": true
+  },
+  {
+   "id": "task:4.1",
+   "kind": "task",
+   "name": "В `_artifact_page` (`step-help/step_help.py`): у артефакта с ключом `verdict` в `status` страница несёт `verdict` (значение как есть) и `stale_scope` — `scope_lines` по файлу атаки из `existingOutputPaths` и журналу `openspec/changes/<имя>/decisions.json`, при отказе разбора файла атаки — одна строка с причиной; `file_note` у такой страницы `None`; у артефакта без `verdict` обоих полей нет. `fake_status` в `tests/conftest.py` получает параметр `verdicts` — проверка: тесты в `step-help/tests/test_step_help.py` через шим форка — `step-help`: «Вердикт устарел после proposal», `step-help`: «Вердикт в силе», `step-help`: «Шаг без вердикта», `step-help`: «Атака не вызвана», `step-help`: «Готовый шаг атаки», `step-help`: «Пустой файл шага»",
+   "at": "tasks.md:26",
+   "done": true
+  },
+  {
+   "id": "task:4.2",
+   "kind": "task",
+   "name": "Состав считается по хешу, не по значению `verdict`: при `mismatch` и несовпавшем хеше `stale_scope` несёт те же строки, что stdout `check` без маркера и имени атаки; журнал с ошибкой синтаксиса при `stale` даёт одну строку «журнал не читается», код 0 — проверка: тест двух читателей в `step-help/tests/test_step_help.py` сравнивает строки `stale_scope` со строками `[..] атака журнала:` из `run_check` на тех же файлах — `step-help`: «Вердикт не прошёл при изменённом журнале», `step-help`: «Журнал не читается при устаревшем вердикте», `stale-verdict-scope`: «Два читателя»",
+   "at": "tasks.md:27",
+   "done": true
+  },
+  {
+   "id": "task:4.3",
+   "kind": "task",
+   "name": "`test_output_shape`: у страницы `design` перечень полей прежний, у страницы `attack-decisions` с вердиктом — прежний плюс `verdict`, `stale_scope`; `data[\"contract\"]` равен `journal_render.CONTRACT` без роста; тесты канона ИБ: `test_project_tree_stays_the_same_with_a_stale_verdict` — дерево проекта прежнее и с файлом атаки при устаревшем вердикте (`git status --short` пуст), `test_stale_scope_has_no_project_directory` — строки `stale_scope` без каталога проекта — проверка: `python -X utf8 -m pytest step-help/tests` зелёный — `step-help`: «Шаг без вердикта», `step-help`: «Вердикт устарел после proposal»",
+   "at": "tasks.md:28",
+   "done": true
+  },
+  {
+   "id": "task:4.4",
+   "kind": "task",
+   "name": "В `docs/repo-contract.md`, перечень «Что входит в контракт»: поля `verdict` и `stale_scope` страницы шага атаки в выводе `step_help.py` — новые поля, номер не растёт; `tests/test_repo_contract.py` называет оба — проверка: `python -X utf8 -m pytest tests/test_repo_contract.py` зелёный — `служебная`",
+   "at": "tasks.md:29",
+   "done": true
+  },
+  {
+   "id": "task:5.1",
+   "kind": "task",
+   "name": "`attack/skills/symphysis-attack/SKILL.md`, шаг 1: вместо правила «хеши разошлись — с начала» у журнала — повтор по составу: строки `[..] атака журнала:` из `check --write` называют добавленные записи; проход по всем линзам идёт по ним и по стыкам — прежним записям, связанным с новой через `depends_on`, `antipodes` или номера в `consequences` дословно, в любую сторону, диапазон не разворачивается; их прежние строки заменяются, остальные остаются; вводный текст файла называет проход и записи; у артефактов правило «с начала» остаётся — проверка: новый тест `test_attack_skill_repeats_by_scope` в `tests/test_skills.py` находит в тексте слова о составе, стыках, `depends_on`, `antipodes`, `consequences` и «с начала» только у артефактов; `python -X utf8 -m pytest tests/test_skills.py` зелёный — `artifact-attack`: «Записи добавлены после вердикта», `artifact-attack`: «Стык по номерам в consequences», `artifact-attack`: «Цель изменена после атаки»",
+   "at": "tasks.md:33",
+   "done": true
+  },
+  {
+   "id": "task:5.2",
+   "kind": "task",
+   "name": "Там же, шаг 1: ноль добавленных — `check --write`; новых `[!!]` нет — обновляется только `target_sha256`, строки и `status` прежние; `[!!]` у улики записи — проход по этой записи; файл `answers/` новее файла атаки со строкой `- F-NN:` прежней записи — эти записи проходятся как стыки, хеш обновляется после прохода; строка «состав неполон» (`coverage` выключена) — с начала — проверка: тот же тест `test_attack_skill_repeats_by_scope` находит слова о `answers/`, «новых `[!!]` нет», «состав неполон» — `artifact-attack`: «Ноль добавленных без новых сигналов», `artifact-attack`: «Ноль добавленных с новым сигналом улики», `artifact-attack`: «Файл ответа новее атаки», `artifact-attack`: «Состав неполон»",
+   "at": "tasks.md:34",
+   "done": true
+  },
+  {
+   "id": "task:5.3",
+   "kind": "task",
+   "name": "Там же, «Коды и сигналы»: `check --write` строка `[..] атака журнала: …` → состав повтора (шаг 1); `check` строка `[!!] … файл атаки не разбирается` → исправить файл по `attack-table.md`, с `--strict` код 2; `verdict: stale` или `mismatch` → повтор по составу, не с начала; раздел «Приёмка» — пункт: при повторе строки записей вне состава байт в байт прежние — проверка: `python -X utf8 -m pytest tests/test_skills.py` зелёный, `test_skill_shape` для атаки проходит — `artifact-attack`: «Записи добавлены после вердикта», `decision-journal`: «Файл атаки не разбирается»",
+   "at": "tasks.md:35",
+   "done": true
+  },
+  {
+   "id": "task:5.4",
+   "kind": "task",
+   "name": "Водитель: в разделе «Водитель» SKILL.md и во «Входе» `attack/agents/symphysis-attack-driver.md` — brief повтора несёт строку «Пройти: F-NN, …» со списком записей состава и стыков (или «с начала»); водитель проходит только их и оставляет прочие строки; расхождение хеша brief с файлом по-прежнему — «Не сделано» — проверка: `python -X utf8 -m pytest tests/test_agents.py` зелёный (`test_driver_steps_match_the_skill_driver_section`) — `artifact-attack`: «Записи добавлены после вердикта»",
+   "at": "tasks.md:36",
+   "done": true
+  },
+  {
+   "id": "task:5.5",
+   "kind": "task",
+   "name": "Шаблон `openspec/schemas/symphysis/templates/attack-decisions.md`, комментарий о `target_sha256`: правка журнала после атаки обесценивает вердикт, состав называют `journal.py check` и справка шага, повтор идёт по составу; `attack/attack-table.md`, раздел «Строки покрытия»: раздел строки «чисто» и «не пройдено» — одна запись `F-NN`, диапазон в разделе не пишется (F-40) — проверка: `python -X utf8 -m pytest tests/test_skills.py openspec/schemas/symphysis/tests` зелёный, `openspec validate attack-stale-scope --strict` валиден — `artifact-attack`: «Хеш берётся после check --write», `stale-verdict-scope`: «Раздел диапазоном»",
+   "at": "tasks.md:37",
+   "done": true
+  },
+  {
+   "id": "task:5.6",
+   "kind": "task",
+   "name": "`skill-shared/terms.md`: термин «состав вердикта» — какие записи атака видела по таблице и какие добавлены после вердикта, у артефактов — изменившиеся цели; отдельно от «состава» настройки — проверка: `python -X utf8 -m pytest tests/test_skills.py` зелёный, после `node installer/scripts/sync-payload.js` строка есть в `installer/payload/docs/terms.md` — `служебная`",
+   "at": "tasks.md:38",
+   "done": true
+  },
+  {
+   "id": "task:6.1",
+   "kind": "task",
+   "name": "`openspec/schemas/symphysis/steps.md`, механики `attack-decisions` (строка о `verdict: stale`): `journal.py check` и справка шага называют состав — сколько и какие записи добавлены после вердикта; повтор атаки идёт по ним, не с начала — проверка: `python -X utf8 -m pytest openspec/schemas/symphysis/tests/test_steps_md.py step-help/tests/test_step_help.py` зелёный (`test_real_schema_and_real_texts_fit_together`) — `step-help`: «Вердикт устарел после proposal»",
+   "at": "tasks.md:42",
+   "done": true
+  },
+  {
+   "id": "task:6.2",
+   "kind": "task",
+   "name": "`docs/GUIDE.md`, абзац о `verdict: stale` у шага `attack-decisions`: строка `[..] атака журнала: после вердикта добавлено N записей: …` у `python .symphysis/tools/journal.py check`, поле `stale_scope` справки, повтор той же командой проходит только названные записи и стыки — проверка: `python -X utf8 -m pytest tests/test_guide.py` зелёный, абзац проходит гейт имён — `decision-journal`: «Записи добавлены после вердикта»",
+   "at": "tasks.md:43",
+   "done": true
+  },
+  {
+   "id": "task:7.1",
+   "kind": "task",
+   "name": "Полный прогон: `python -X utf8 -m pytest` зелёный (тесты инсталлятора идут через `installer/test/test_installer.py`), `openspec validate attack-stale-scope --strict` валиден, `python -X utf8 cli/journal.py check --roots openspec/changes/attack-stale-scope/probes/journal-roots.json openspec/changes/attack-stale-scope/decisions.json` без новых `[!!]` — `служебная`",
+   "at": "tasks.md:47",
+   "done": true
+  },
+  {
+   "id": "task:7.2",
+   "kind": "task",
+   "name": "Проверка на живом архиве: `python -X utf8 cli/journal.py check openspec/changes/archive/2026-11-06-trace-graph/decisions.json` печатает `[..] атака журнала: после вердикта добавлено 80 записей: F-80–F-159`, код 0 (таблица архива называет F-01–F-79, журнал несёт 159 записей) — `decision-journal`: «Записи добавлены после вердикта»",
+   "at": "tasks.md:48",
+   "done": true
+  },
+  {
+   "id": "task:7.3",
+   "kind": "task",
+   "name": "Обновить установленную копию этого worktree: `node installer/scripts/sync-payload.js`, затем установка в `.symphysis/tools` (`symphysis install --force` или копия файлов payload) — проверка: `python .symphysis/tools/journal.py check openspec/changes/archive/2026-11-06-trace-graph/decisions.json` печатает ту же строку, `python .symphysis/tools/step_help.py --help` код 0 — `служебная`",
+   "at": "tasks.md:49",
+   "done": true
+  }
+ ],
+ "edges": [
+  {
+   "from": "branch:attack/attack_table.py:28",
+   "to": "scn:decision-journal/`check` называет состав устаревшего вердикта/Файл атаки не разбирается",
+   "type": "verifies",
+   "at": "consequences.md:10"
+  },
+  {
+   "from": "branch:attack/attack_table.py:106",
+   "to": "scn:decision-journal/`check` называет состав устаревшего вердикта/Файл атаки не разбирается",
+   "type": "verifies",
+   "at": "consequences.md:14"
+  },
+  {
+   "from": "branch:attack/attack_table.py:121",
+   "to": "scn:decision-journal/`check` называет состав устаревшего вердикта/Файл атаки не разбирается",
+   "type": "verifies",
+   "at": "consequences.md:18"
+  },
+  {
+   "from": "branch:attack/attack_table.py:42",
+   "to": "scn:stale-verdict-scope/Ноль добавленных при изменённом журнале называется словами/Хеш цели не задан",
+   "type": "verifies",
+   "at": "consequences.md:22"
+  },
+  {
+   "from": "branch:cli/journal_cli.py:167",
+   "to": "scn:decision-journal/`check` называет состав устаревшего вердикта/Файл атаки не разбирается",
+   "type": "verifies",
+   "at": "consequences.md:34"
+  },
+  {
+   "from": "branch:upstream/openspec/src/core/artifact-graph/state.ts:195",
+   "to": "scn:step-help/Страница шага атаки несёт вердикт и состав/Атака не вызвана",
+   "type": "verifies",
+   "at": "consequences.md:50"
+  },
+  {
+   "from": "branch:upstream/openspec/src/core/artifact-graph/state.ts:263",
+   "to": "scn:stale-verdict-scope/Ноль добавленных при изменённом журнале называется словами/Хеш цели не задан",
+   "type": "verifies",
+   "at": "consequences.md:62"
+  },
+  {
+   "from": "branch:upstream/openspec/src/core/artifact-graph/state.ts:287",
+   "to": "scn:stale-verdict-scope/У атаки артефактов — все изменившиеся цели и число записей/Путь цели вне каталога",
+   "type": "verifies",
+   "at": "consequences.md:66"
+  },
+  {
+   "from": "branch:upstream/openspec/src/core/artifact-graph/state.ts:301",
+   "to": "scn:stale-verdict-scope/У атаки артефактов — все изменившиеся цели и число записей/Цели нет на диске",
+   "type": "verifies",
+   "at": "consequences.md:70"
+  },
+  {
+   "from": "branch:upstream/openspec/src/core/artifact-graph/state.ts:304",
+   "to": "scn:stale-verdict-scope/Ноль добавленных при изменённом журнале называется словами/Хеш в верхнем регистре",
+   "type": "verifies",
+   "at": "consequences.md:74"
+  },
+  {
+   "from": "sec:Инъекции через содержимое файлов: таблица и frontmatter атаки (F-34)",
+   "to": "req:decision-journal/`check` называет состав устаревшего вердикта",
+   "type": "refines",
+   "at": "security.md:9"
+  },
+  {
+   "from": "sec:Инъекции через содержимое файлов: таблица и frontmatter атаки (F-34)",
+   "to": "req:stale-verdict-scope/Состав атаки журнала считается по таблице",
+   "type": "refines",
+   "at": "security.md:9"
+  },
+  {
+   "from": "sec:Инъекции через содержимое файлов: `decisions.json` и `answers/`",
+   "to": "req:artifact-attack/Хеш не обновляется при изменённом решении прежней записи",
+   "type": "refines",
+   "at": "security.md:10"
+  },
+  {
+   "from": "sec:Инъекции в вывод, который читает модель",
+   "to": "req:stale-verdict-scope/Состав одинаков у всех читателей",
+   "type": "refines",
+   "at": "security.md:11"
+  },
+  {
+   "from": "sec:Пути с `../` (F-33)",
+   "to": "req:stale-verdict-scope/У атаки артефактов — все изменившиеся цели и число записей",
+   "type": "refines",
+   "at": "security.md:12"
+  },
+  {
+   "from": "sec:Права",
+   "to": "req:decision-journal/`check` называет состав устаревшего вердикта",
+   "type": "refines",
+   "at": "security.md:14"
+  },
+  {
+   "from": "sec:Бинарные файлы",
+   "to": "req:step-help/Страница шага атаки несёт вердикт и состав",
+   "type": "refines",
+   "at": "security.md:15"
+  },
+  {
+   "from": "sec:Чувствительные данные в журнале, артефактах и журналах прогона",
+   "to": "req:stale-verdict-scope/Состав одинаков у всех читателей",
+   "type": "refines",
+   "at": "security.md:16"
+  },
+  {
+   "from": "cap:artifact-attack",
+   "to": "req:artifact-attack/Хеши целей обесценивают вердикт после правки",
+   "type": "contains",
+   "at": "specs/artifact-attack/spec.md:5"
+  },
+  {
+   "from": "req:artifact-attack/Хеши целей обесценивают вердикт после правки",
+   "to": "rec:F-21",
+   "type": "traces",
+   "at": "specs/artifact-attack/spec.md:6"
+  },
+  {
+   "from": "scn:artifact-attack/Хеши целей обесценивают вердикт после правки/Цель изменена после атаки",
+   "to": "req:artifact-attack/Хеши целей обесценивают вердикт после правки",
+   "type": "verifies",
+   "at": "specs/artifact-attack/spec.md:8"
+  },
+  {
+   "from": "scn:artifact-attack/Хеши целей обесценивают вердикт после правки/Хеш берётся после check --write",
+   "to": "req:artifact-attack/Хеши целей обесценивают вердикт после правки",
+   "type": "verifies",
+   "at": "specs/artifact-attack/spec.md:13"
+  },
+  {
+   "from": "cap:artifact-attack",
+   "to": "req:artifact-attack/Повтор атаки журнала по составу",
+   "type": "contains",
+   "at": "specs/artifact-attack/spec.md:23"
+  },
+  {
+   "from": "req:artifact-attack/Повтор атаки журнала по составу",
+   "to": "rec:F-21",
+   "type": "traces",
+   "at": "specs/artifact-attack/spec.md:24"
+  },
+  {
+   "from": "req:artifact-attack/Повтор атаки журнала по составу",
+   "to": "rec:F-22",
+   "type": "traces",
+   "at": "specs/artifact-attack/spec.md:24"
+  },
+  {
+   "from": "req:artifact-attack/Повтор атаки журнала по составу",
+   "to": "req:artifact-attack/Хеши целей обесценивают вердикт после правки",
+   "type": "derives",
+   "at": "specs/artifact-attack/spec.md:24"
+  },
+  {
+   "from": "scn:artifact-attack/Повтор атаки журнала по составу/Записи добавлены после вердикта",
+   "to": "req:artifact-attack/Повтор атаки журнала по составу",
+   "type": "verifies",
+   "at": "specs/artifact-attack/spec.md:26"
+  },
+  {
+   "from": "scn:artifact-attack/Повтор атаки журнала по составу/Ноль добавленных без новых сигналов",
+   "to": "req:artifact-attack/Повтор атаки журнала по составу",
+   "type": "verifies",
+   "at": "specs/artifact-attack/spec.md:31"
+  },
+  {
+   "from": "scn:artifact-attack/Повтор атаки журнала по составу/Ноль добавленных с новым сигналом улики",
+   "to": "req:artifact-attack/Повтор атаки журнала по составу",
+   "type": "verifies",
+   "at": "specs/artifact-attack/spec.md:36"
+  },
+  {
+   "from": "scn:artifact-attack/Повтор атаки журнала по составу/Состав неполон",
+   "to": "req:artifact-attack/Повтор атаки журнала по составу",
+   "type": "verifies",
+   "at": "specs/artifact-attack/spec.md:41"
+  },
+  {
+   "from": "scn:artifact-attack/Повтор атаки журнала по составу/Стык по номерам в consequences",
+   "to": "req:artifact-attack/Повтор атаки журнала по составу",
+   "type": "verifies",
+   "at": "specs/artifact-attack/spec.md:46"
+  },
+  {
+   "from": "req:artifact-attack/Повтор атаки журнала по составу",
+   "to": "rec:F-31",
+   "type": "traces",
+   "at": "specs/artifact-attack/spec.md:52"
+  },
+  {
+   "from": "req:artifact-attack/Повтор атаки журнала по составу",
+   "to": "rec:F-32",
+   "type": "traces",
+   "at": "specs/artifact-attack/spec.md:53"
+  },
+  {
+   "from": "cap:artifact-attack",
+   "to": "req:artifact-attack/Хеш не обновляется при изменённом решении прежней записи",
+   "type": "contains",
+   "at": "specs/artifact-attack/spec.md:55"
+  },
+  {
+   "from": "req:artifact-attack/Хеш не обновляется при изменённом решении прежней записи",
+   "to": "rec:F-32",
+   "type": "traces",
+   "at": "specs/artifact-attack/spec.md:56"
+  },
+  {
+   "from": "scn:artifact-attack/Хеш не обновляется при изменённом решении прежней записи/Файл ответа новее атаки",
+   "to": "req:artifact-attack/Хеш не обновляется при изменённом решении прежней записи",
+   "type": "verifies",
+   "at": "specs/artifact-attack/spec.md:58"
+  },
+  {
+   "from": "cap:decision-journal",
+   "to": "req:decision-journal/`check` называет состав устаревшего вердикта",
+   "type": "contains",
+   "at": "specs/decision-journal/spec.md:5"
+  },
+  {
+   "from": "req:decision-journal/`check` называет состав устаревшего вердикта",
+   "to": "rec:F-18",
+   "type": "traces",
+   "at": "specs/decision-journal/spec.md:6"
+  },
+  {
+   "from": "req:decision-journal/`check` называет состав устаревшего вердикта",
+   "to": "rec:F-19",
+   "type": "traces",
+   "at": "specs/decision-journal/spec.md:6"
+  },
+  {
+   "from": "scn:decision-journal/`check` называет состав устаревшего вердикта/Записи добавлены после вердикта",
+   "to": "req:decision-journal/`check` называет состав устаревшего вердикта",
+   "type": "verifies",
+   "at": "specs/decision-journal/spec.md:8"
+  },
+  {
+   "from": "scn:decision-journal/`check` называет состав устаревшего вердикта/Хеш совпал",
+   "to": "req:decision-journal/`check` называет состав устаревшего вердикта",
+   "type": "verifies",
+   "at": "specs/decision-journal/spec.md:13"
+  },
+  {
+   "from": "scn:decision-journal/`check` называет состав устаревшего вердикта/Состав не меняет код `--strict`",
+   "to": "req:decision-journal/`check` называет состав устаревшего вердикта",
+   "type": "verifies",
+   "at": "specs/decision-journal/spec.md:18"
+  },
+  {
+   "from": "scn:decision-journal/`check` называет состав устаревшего вердикта/Файла атаки нет",
+   "to": "req:decision-journal/`check` называет состав устаревшего вердикта",
+   "type": "verifies",
+   "at": "specs/decision-journal/spec.md:23"
+  },
+  {
+   "from": "scn:decision-journal/`check` называет состав устаревшего вердикта/Файл атаки не разбирается",
+   "to": "req:decision-journal/`check` называет состав устаревшего вердикта",
+   "type": "verifies",
+   "at": "specs/decision-journal/spec.md:28"
+  },
+  {
+   "from": "req:decision-journal/`check` называет состав устаревшего вердикта",
+   "to": "rec:F-30",
+   "type": "traces",
+   "at": "specs/decision-journal/spec.md:34"
+  },
+  {
+   "from": "cap:stale-verdict-scope",
+   "to": "req:stale-verdict-scope/Состав атаки журнала считается по таблице",
+   "type": "contains",
+   "at": "specs/stale-verdict-scope/spec.md:8"
+  },
+  {
+   "from": "req:stale-verdict-scope/Состав атаки журнала считается по таблице",
+   "to": "rec:F-09",
+   "type": "traces",
+   "at": "specs/stale-verdict-scope/spec.md:9"
+  },
+  {
+   "from": "req:stale-verdict-scope/Состав атаки журнала считается по таблице",
+   "to": "rec:F-17",
+   "type": "traces",
+   "at": "specs/stale-verdict-scope/spec.md:9"
+  },
+  {
+   "from": "req:stale-verdict-scope/Состав атаки журнала считается по таблице",
+   "to": "rec:F-18",
+   "type": "traces",
+   "at": "specs/stale-verdict-scope/spec.md:9"
+  },
+  {
+   "from": "scn:stale-verdict-scope/Состав атаки журнала считается по таблице/Записи добавлены после вердикта",
+   "to": "req:stale-verdict-scope/Состав атаки журнала считается по таблице",
+   "type": "verifies",
+   "at": "specs/stale-verdict-scope/spec.md:11"
+  },
+  {
+   "from": "scn:stale-verdict-scope/Состав атаки журнала считается по таблице/Добавленные идут не подряд",
+   "to": "req:stale-verdict-scope/Состав атаки журнала считается по таблице",
+   "type": "verifies",
+   "at": "specs/stale-verdict-scope/spec.md:16"
+  },
+  {
+   "from": "scn:stale-verdict-scope/Состав атаки журнала считается по таблице/Раздел с несколькими записями",
+   "to": "req:stale-verdict-scope/Состав атаки журнала считается по таблице",
+   "type": "verifies",
+   "at": "specs/stale-verdict-scope/spec.md:21"
+  },
+  {
+   "from": "scn:stale-verdict-scope/Состав атаки журнала считается по таблице/Номер с ведущим нулём",
+   "to": "req:stale-verdict-scope/Состав атаки журнала считается по таблице",
+   "type": "verifies",
+   "at": "specs/stale-verdict-scope/spec.md:26"
+  },
+  {
+   "from": "scn:stale-verdict-scope/Состав атаки журнала считается по таблице/Раздел диапазоном",
+   "to": "req:stale-verdict-scope/Состав атаки журнала считается по таблице",
+   "type": "verifies",
+   "at": "specs/stale-verdict-scope/spec.md:32"
+  },
+  {
+   "from": "req:stale-verdict-scope/Состав атаки журнала считается по таблице",
+   "to": "rec:F-25",
+   "type": "traces",
+   "at": "specs/stale-verdict-scope/spec.md:38"
+  },
+  {
+   "from": "req:stale-verdict-scope/Состав атаки журнала считается по таблице",
+   "to": "rec:F-26",
+   "type": "traces",
+   "at": "specs/stale-verdict-scope/spec.md:38"
+  },
+  {
+   "from": "req:stale-verdict-scope/Состав атаки журнала считается по таблице",
+   "to": "rec:F-34",
+   "type": "traces",
+   "at": "specs/stale-verdict-scope/spec.md:39"
+  },
+  {
+   "from": "cap:stale-verdict-scope",
+   "to": "req:stale-verdict-scope/Ноль добавленных при изменённом журнале называется словами",
+   "type": "contains",
+   "at": "specs/stale-verdict-scope/spec.md:41"
+  },
+  {
+   "from": "req:stale-verdict-scope/Ноль добавленных при изменённом журнале называется словами",
+   "to": "rec:F-14",
+   "type": "traces",
+   "at": "specs/stale-verdict-scope/spec.md:42"
+  },
+  {
+   "from": "req:stale-verdict-scope/Ноль добавленных при изменённом журнале называется словами",
+   "to": "rec:F-18",
+   "type": "traces",
+   "at": "specs/stale-verdict-scope/spec.md:42"
+  },
+  {
+   "from": "req:stale-verdict-scope/Ноль добавленных при изменённом журнале называется словами",
+   "to": "rec:F-20",
+   "type": "traces",
+   "at": "specs/stale-verdict-scope/spec.md:42"
+  },
+  {
+   "from": "scn:stale-verdict-scope/Ноль добавленных при изменённом журнале называется словами/Журнал изменён только сверкой",
+   "to": "req:stale-verdict-scope/Ноль добавленных при изменённом журнале называется словами",
+   "type": "verifies",
+   "at": "specs/stale-verdict-scope/spec.md:44"
+  },
+  {
+   "from": "scn:stale-verdict-scope/Ноль добавленных при изменённом журнале называется словами/Хеш совпал",
+   "to": "req:stale-verdict-scope/Ноль добавленных при изменённом журнале называется словами",
+   "type": "verifies",
+   "at": "specs/stale-verdict-scope/spec.md:49"
+  },
+  {
+   "from": "scn:stale-verdict-scope/Ноль добавленных при изменённом журнале называется словами/Хеш цели не задан",
+   "to": "req:stale-verdict-scope/Ноль добавленных при изменённом журнале называется словами",
+   "type": "verifies",
+   "at": "specs/stale-verdict-scope/spec.md:54"
+  },
+  {
+   "from": "scn:stale-verdict-scope/Ноль добавленных при изменённом журнале называется словами/Хеш в верхнем регистре",
+   "to": "req:stale-verdict-scope/Ноль добавленных при изменённом журнале называется словами",
+   "type": "verifies",
+   "at": "specs/stale-verdict-scope/spec.md:60"
+  },
+  {
+   "from": "req:stale-verdict-scope/Ноль добавленных при изменённом журнале называется словами",
+   "to": "rec:F-27",
+   "type": "traces",
+   "at": "specs/stale-verdict-scope/spec.md:66"
+  },
+  {
+   "from": "req:stale-verdict-scope/Ноль добавленных при изменённом журнале называется словами",
+   "to": "rec:F-28",
+   "type": "traces",
+   "at": "specs/stale-verdict-scope/spec.md:66"
+  },
+  {
+   "from": "cap:stale-verdict-scope",
+   "to": "req:stale-verdict-scope/Неполный состав при выключенной `coverage`",
+   "type": "contains",
+   "at": "specs/stale-verdict-scope/spec.md:69"
+  },
+  {
+   "from": "req:stale-verdict-scope/Неполный состав при выключенной `coverage`",
+   "to": "rec:F-10",
+   "type": "traces",
+   "at": "specs/stale-verdict-scope/spec.md:70"
+  },
+  {
+   "from": "req:stale-verdict-scope/Неполный состав при выключенной `coverage`",
+   "to": "rec:F-17",
+   "type": "traces",
+   "at": "specs/stale-verdict-scope/spec.md:70"
+  },
+  {
+   "from": "scn:stale-verdict-scope/Неполный состав при выключенной `coverage`/Линза покрытия выключена",
+   "to": "req:stale-verdict-scope/Неполный состав при выключенной `coverage`",
+   "type": "verifies",
+   "at": "specs/stale-verdict-scope/spec.md:72"
+  },
+  {
+   "from": "scn:stale-verdict-scope/Неполный состав при выключенной `coverage`/Строки состава нет",
+   "to": "req:stale-verdict-scope/Неполный состав при выключенной `coverage`",
+   "type": "verifies",
+   "at": "specs/stale-verdict-scope/spec.md:77"
+  },
+  {
+   "from": "cap:stale-verdict-scope",
+   "to": "req:stale-verdict-scope/У атаки артефактов — все изменившиеся цели и число записей",
+   "type": "contains",
+   "at": "specs/stale-verdict-scope/spec.md:85"
+  },
+  {
+   "from": "req:stale-verdict-scope/У атаки артефактов — все изменившиеся цели и число записей",
+   "to": "rec:F-05",
+   "type": "traces",
+   "at": "specs/stale-verdict-scope/spec.md:86"
+  },
+  {
+   "from": "req:stale-verdict-scope/У атаки артефактов — все изменившиеся цели и число записей",
+   "to": "rec:F-23",
+   "type": "traces",
+   "at": "specs/stale-verdict-scope/spec.md:86"
+  },
+  {
+   "from": "req:stale-verdict-scope/У атаки артефактов — все изменившиеся цели и число записей",
+   "to": "rec:F-24",
+   "type": "traces",
+   "at": "specs/stale-verdict-scope/spec.md:86"
+  },
+  {
+   "from": "scn:stale-verdict-scope/У атаки артефактов — все изменившиеся цели и число записей/Две цели изменены",
+   "to": "req:stale-verdict-scope/У атаки артефактов — все изменившиеся цели и число записей",
+   "type": "verifies",
+   "at": "specs/stale-verdict-scope/spec.md:88"
+  },
+  {
+   "from": "scn:stale-verdict-scope/У атаки артефактов — все изменившиеся цели и число записей/Журнал как опора изменён",
+   "to": "req:stale-verdict-scope/У атаки артефактов — все изменившиеся цели и число записей",
+   "type": "verifies",
+   "at": "specs/stale-verdict-scope/spec.md:93"
+  },
+  {
+   "from": "scn:stale-verdict-scope/У атаки артефактов — все изменившиеся цели и число записей/Цели нет на диске",
+   "to": "req:stale-verdict-scope/У атаки артефактов — все изменившиеся цели и число записей",
+   "type": "verifies",
+   "at": "specs/stale-verdict-scope/spec.md:98"
+  },
+  {
+   "from": "scn:stale-verdict-scope/У атаки артефактов — все изменившиеся цели и число записей/Путь цели вне каталога",
+   "to": "req:stale-verdict-scope/У атаки артефактов — все изменившиеся цели и число записей",
+   "type": "verifies",
+   "at": "specs/stale-verdict-scope/spec.md:103"
+  },
+  {
+   "from": "scn:stale-verdict-scope/У атаки артефактов — все изменившиеся цели и число записей/Цель без хеша",
+   "to": "req:stale-verdict-scope/У атаки артефактов — все изменившиеся цели и число записей",
+   "type": "verifies",
+   "at": "specs/stale-verdict-scope/spec.md:109"
+  },
+  {
+   "from": "req:stale-verdict-scope/У атаки артефактов — все изменившиеся цели и число записей",
+   "to": "rec:F-29",
+   "type": "traces",
+   "at": "specs/stale-verdict-scope/spec.md:115"
+  },
+  {
+   "from": "req:stale-verdict-scope/У атаки артефактов — все изменившиеся цели и число записей",
+   "to": "rec:F-33",
+   "type": "traces",
+   "at": "specs/stale-verdict-scope/spec.md:116"
+  },
+  {
+   "from": "cap:stale-verdict-scope",
+   "to": "req:stale-verdict-scope/Состав одинаков у всех читателей",
+   "type": "contains",
+   "at": "specs/stale-verdict-scope/spec.md:118"
+  },
+  {
+   "from": "req:stale-verdict-scope/Состав одинаков у всех читателей",
+   "to": "rec:F-19",
+   "type": "traces",
+   "at": "specs/stale-verdict-scope/spec.md:119"
+  },
+  {
+   "from": "scn:stale-verdict-scope/Состав одинаков у всех читателей/Два читателя",
+   "to": "req:stale-verdict-scope/Состав одинаков у всех читателей",
+   "type": "verifies",
+   "at": "specs/stale-verdict-scope/spec.md:121"
+  },
+  {
+   "from": "cap:step-help",
+   "to": "req:step-help/Страница шага атаки несёт вердикт и состав",
+   "type": "contains",
+   "at": "specs/step-help/spec.md:5"
+  },
+  {
+   "from": "req:step-help/Страница шага атаки несёт вердикт и состав",
+   "to": "rec:F-11",
+   "type": "traces",
+   "at": "specs/step-help/spec.md:6"
+  },
+  {
+   "from": "req:step-help/Страница шага атаки несёт вердикт и состав",
+   "to": "rec:F-13",
+   "type": "traces",
+   "at": "specs/step-help/spec.md:6"
+  },
+  {
+   "from": "req:step-help/Страница шага атаки несёт вердикт и состав",
+   "to": "rec:F-19",
+   "type": "traces",
+   "at": "specs/step-help/spec.md:6"
+  },
+  {
+   "from": "scn:step-help/Страница шага атаки несёт вердикт и состав/Вердикт устарел после proposal",
+   "to": "req:step-help/Страница шага атаки несёт вердикт и состав",
+   "type": "verifies",
+   "at": "specs/step-help/spec.md:8"
+  },
+  {
+   "from": "scn:step-help/Страница шага атаки несёт вердикт и состав/Вердикт в силе",
+   "to": "req:step-help/Страница шага атаки несёт вердикт и состав",
+   "type": "verifies",
+   "at": "specs/step-help/spec.md:13"
+  },
+  {
+   "from": "scn:step-help/Страница шага атаки несёт вердикт и состав/Шаг без вердикта",
+   "to": "req:step-help/Страница шага атаки несёт вердикт и состав",
+   "type": "verifies",
+   "at": "specs/step-help/spec.md:18"
+  },
+  {
+   "from": "scn:step-help/Страница шага атаки несёт вердикт и состав/Атака не вызвана",
+   "to": "req:step-help/Страница шага атаки несёт вердикт и состав",
+   "type": "verifies",
+   "at": "specs/step-help/spec.md:23"
+  },
+  {
+   "from": "scn:step-help/Страница шага атаки несёт вердикт и состав/Журнал не читается при устаревшем вердикте",
+   "to": "req:step-help/Страница шага атаки несёт вердикт и состав",
+   "type": "verifies",
+   "at": "specs/step-help/spec.md:28"
+  },
+  {
+   "from": "scn:step-help/Страница шага атаки несёт вердикт и состав/Вердикт не прошёл при изменённом журнале",
+   "to": "req:step-help/Страница шага атаки несёт вердикт и состав",
+   "type": "verifies",
+   "at": "specs/step-help/spec.md:34"
+  },
+  {
+   "from": "cap:step-help",
+   "to": "req:step-help/Справка не выдаёт наличие файла за сделанную работу",
+   "type": "contains",
+   "at": "specs/step-help/spec.md:45"
+  },
+  {
+   "from": "req:step-help/Справка не выдаёт наличие файла за сделанную работу",
+   "to": "rec:F-11",
+   "type": "traces",
+   "at": "specs/step-help/spec.md:46"
+  },
+  {
+   "from": "scn:step-help/Справка не выдаёт наличие файла за сделанную работу/Пустой файл шага",
+   "to": "req:step-help/Справка не выдаёт наличие файла за сделанную работу",
+   "type": "verifies",
+   "at": "specs/step-help/spec.md:48"
+  },
+  {
+   "from": "scn:step-help/Справка не выдаёт наличие файла за сделанную работу/Формулировка текущего шага",
+   "to": "req:step-help/Справка не выдаёт наличие файла за сделанную работу",
+   "type": "verifies",
+   "at": "specs/step-help/spec.md:53"
+  },
+  {
+   "from": "scn:step-help/Справка не выдаёт наличие файла за сделанную работу/Готовый шаг атаки",
+   "to": "req:step-help/Справка не выдаёт наличие файла за сделанную работу",
+   "type": "verifies",
+   "at": "specs/step-help/spec.md:58"
+  },
+  {
+   "from": "task:1.1",
+   "to": "scn:stale-verdict-scope/Состав атаки журнала считается по таблице/Добавленные идут не подряд",
+   "type": "satisfies",
+   "at": "tasks.md:5"
+  },
+  {
+   "from": "task:1.1",
+   "to": "scn:stale-verdict-scope/Состав атаки журнала считается по таблице/Записи добавлены после вердикта",
+   "type": "satisfies",
+   "at": "tasks.md:5"
+  },
+  {
+   "from": "task:1.1",
+   "to": "scn:stale-verdict-scope/Состав атаки журнала считается по таблице/Номер с ведущим нулём",
+   "type": "satisfies",
+   "at": "tasks.md:5"
+  },
+  {
+   "from": "task:1.1",
+   "to": "scn:stale-verdict-scope/Состав атаки журнала считается по таблице/Раздел с несколькими записями",
+   "type": "satisfies",
+   "at": "tasks.md:5"
+  },
+  {
+   "from": "task:1.2",
+   "to": "rec:F-01",
+   "type": "traces",
+   "at": "tasks.md:6"
+  },
+  {
+   "from": "task:1.2",
+   "to": "rec:F-10",
+   "type": "traces",
+   "at": "tasks.md:6"
+  },
+  {
+   "from": "task:1.2",
+   "to": "scn:stale-verdict-scope/Неполный состав при выключенной `coverage`/Линза покрытия выключена",
+   "type": "satisfies",
+   "at": "tasks.md:6"
+  },
+  {
+   "from": "task:1.2",
+   "to": "scn:stale-verdict-scope/Неполный состав при выключенной `coverage`/Строки состава нет",
+   "type": "satisfies",
+   "at": "tasks.md:6"
+  },
+  {
+   "from": "task:1.2",
+   "to": "scn:stale-verdict-scope/Состав атаки журнала считается по таблице/Раздел диапазоном",
+   "type": "satisfies",
+   "at": "tasks.md:6"
+  },
+  {
+   "from": "task:1.3",
+   "to": "scn:stale-verdict-scope/Ноль добавленных при изменённом журнале называется словами/Журнал изменён только сверкой",
+   "type": "satisfies",
+   "at": "tasks.md:7"
+  },
+  {
+   "from": "task:1.3",
+   "to": "scn:stale-verdict-scope/Ноль добавленных при изменённом журнале называется словами/Хеш в верхнем регистре",
+   "type": "satisfies",
+   "at": "tasks.md:7"
+  },
+  {
+   "from": "task:1.3",
+   "to": "scn:stale-verdict-scope/Ноль добавленных при изменённом журнале называется словами/Хеш совпал",
+   "type": "satisfies",
+   "at": "tasks.md:7"
+  },
+  {
+   "from": "task:1.3",
+   "to": "scn:stale-verdict-scope/Ноль добавленных при изменённом журнале называется словами/Хеш цели не задан",
+   "type": "satisfies",
+   "at": "tasks.md:7"
+  },
+  {
+   "from": "task:1.3",
+   "to": "scn:step-help/Страница шага атаки несёт вердикт и состав/Журнал не читается при устаревшем вердикте",
+   "type": "satisfies",
+   "at": "tasks.md:7"
+  },
+  {
+   "from": "task:1.4",
+   "to": "scn:stale-verdict-scope/У атаки артефактов — все изменившиеся цели и число записей/Две цели изменены",
+   "type": "satisfies",
+   "at": "tasks.md:8"
+  },
+  {
+   "from": "task:1.4",
+   "to": "scn:stale-verdict-scope/У атаки артефактов — все изменившиеся цели и число записей/Журнал как опора изменён",
+   "type": "satisfies",
+   "at": "tasks.md:8"
+  },
+  {
+   "from": "task:1.4",
+   "to": "scn:stale-verdict-scope/У атаки артефактов — все изменившиеся цели и число записей/Путь цели вне каталога",
+   "type": "satisfies",
+   "at": "tasks.md:8"
+  },
+  {
+   "from": "task:1.4",
+   "to": "scn:stale-verdict-scope/У атаки артефактов — все изменившиеся цели и число записей/Цели нет на диске",
+   "type": "satisfies",
+   "at": "tasks.md:8"
+  },
+  {
+   "from": "task:1.4",
+   "to": "scn:stale-verdict-scope/У атаки артефактов — все изменившиеся цели и число записей/Цель без хеша",
+   "type": "satisfies",
+   "at": "tasks.md:8"
+  },
+  {
+   "from": "task:1.5",
+   "to": "rec:F-03",
+   "type": "traces",
+   "at": "tasks.md:9"
+  },
+  {
+   "from": "task:1.5",
+   "to": "rec:F-34",
+   "type": "traces",
+   "at": "tasks.md:9"
+  },
+  {
+   "from": "task:1.5",
+   "to": "scn:stale-verdict-scope/Состав атаки журнала считается по таблице/Раздел с несколькими записями",
+   "type": "satisfies",
+   "at": "tasks.md:9"
+  },
+  {
+   "from": "task:3.1",
+   "to": "scn:decision-journal/`check` называет состав устаревшего вердикта/Записи добавлены после вердикта",
+   "type": "satisfies",
+   "at": "tasks.md:20"
+  },
+  {
+   "from": "task:3.1",
+   "to": "scn:decision-journal/`check` называет состав устаревшего вердикта/Состав не меняет код `--strict`",
+   "type": "satisfies",
+   "at": "tasks.md:20"
+  },
+  {
+   "from": "task:3.1",
+   "to": "scn:decision-journal/`check` называет состав устаревшего вердикта/Файла атаки нет",
+   "type": "satisfies",
+   "at": "tasks.md:20"
+  },
+  {
+   "from": "task:3.1",
+   "to": "scn:decision-journal/`check` называет состав устаревшего вердикта/Хеш совпал",
+   "type": "satisfies",
+   "at": "tasks.md:20"
+  },
+  {
+   "from": "task:3.2",
+   "to": "rec:F-36",
+   "type": "traces",
+   "at": "tasks.md:21"
+  },
+  {
+   "from": "task:3.2",
+   "to": "scn:decision-journal/`check` называет состав устаревшего вердикта/Файл атаки не разбирается",
+   "type": "satisfies",
+   "at": "tasks.md:21"
+  },
+  {
+   "from": "task:3.3",
+   "to": "scn:decision-journal/`check` называет состав устаревшего вердикта/Записи добавлены после вердикта",
+   "type": "satisfies",
+   "at": "tasks.md:22"
+  },
+  {
+   "from": "task:3.3",
+   "to": "scn:decision-journal/`check` называет состав устаревшего вердикта/Файл атаки не разбирается",
+   "type": "satisfies",
+   "at": "tasks.md:22"
+  },
+  {
+   "from": "task:4.1",
+   "to": "scn:step-help/Справка не выдаёт наличие файла за сделанную работу/Готовый шаг атаки",
+   "type": "satisfies",
+   "at": "tasks.md:26"
+  },
+  {
+   "from": "task:4.1",
+   "to": "scn:step-help/Справка не выдаёт наличие файла за сделанную работу/Пустой файл шага",
+   "type": "satisfies",
+   "at": "tasks.md:26"
+  },
+  {
+   "from": "task:4.1",
+   "to": "scn:step-help/Страница шага атаки несёт вердикт и состав/Атака не вызвана",
+   "type": "satisfies",
+   "at": "tasks.md:26"
+  },
+  {
+   "from": "task:4.1",
+   "to": "scn:step-help/Страница шага атаки несёт вердикт и состав/Вердикт в силе",
+   "type": "satisfies",
+   "at": "tasks.md:26"
+  },
+  {
+   "from": "task:4.1",
+   "to": "scn:step-help/Страница шага атаки несёт вердикт и состав/Вердикт устарел после proposal",
+   "type": "satisfies",
+   "at": "tasks.md:26"
+  },
+  {
+   "from": "task:4.1",
+   "to": "scn:step-help/Страница шага атаки несёт вердикт и состав/Шаг без вердикта",
+   "type": "satisfies",
+   "at": "tasks.md:26"
+  },
+  {
+   "from": "task:4.2",
+   "to": "scn:stale-verdict-scope/Состав одинаков у всех читателей/Два читателя",
+   "type": "satisfies",
+   "at": "tasks.md:27"
+  },
+  {
+   "from": "task:4.2",
+   "to": "scn:step-help/Страница шага атаки несёт вердикт и состав/Вердикт не прошёл при изменённом журнале",
+   "type": "satisfies",
+   "at": "tasks.md:27"
+  },
+  {
+   "from": "task:4.2",
+   "to": "scn:step-help/Страница шага атаки несёт вердикт и состав/Журнал не читается при устаревшем вердикте",
+   "type": "satisfies",
+   "at": "tasks.md:27"
+  },
+  {
+   "from": "task:4.3",
+   "to": "scn:step-help/Страница шага атаки несёт вердикт и состав/Вердикт устарел после proposal",
+   "type": "satisfies",
+   "at": "tasks.md:28"
+  },
+  {
+   "from": "task:4.3",
+   "to": "scn:step-help/Страница шага атаки несёт вердикт и состав/Шаг без вердикта",
+   "type": "satisfies",
+   "at": "tasks.md:28"
+  },
+  {
+   "from": "task:5.1",
+   "to": "scn:artifact-attack/Повтор атаки журнала по составу/Записи добавлены после вердикта",
+   "type": "satisfies",
+   "at": "tasks.md:33"
+  },
+  {
+   "from": "task:5.1",
+   "to": "scn:artifact-attack/Повтор атаки журнала по составу/Стык по номерам в consequences",
+   "type": "satisfies",
+   "at": "tasks.md:33"
+  },
+  {
+   "from": "task:5.1",
+   "to": "scn:artifact-attack/Хеши целей обесценивают вердикт после правки/Цель изменена после атаки",
+   "type": "satisfies",
+   "at": "tasks.md:33"
+  },
+  {
+   "from": "task:5.2",
+   "to": "scn:artifact-attack/Повтор атаки журнала по составу/Ноль добавленных без новых сигналов",
+   "type": "satisfies",
+   "at": "tasks.md:34"
+  },
+  {
+   "from": "task:5.2",
+   "to": "scn:artifact-attack/Повтор атаки журнала по составу/Ноль добавленных с новым сигналом улики",
+   "type": "satisfies",
+   "at": "tasks.md:34"
+  },
+  {
+   "from": "task:5.2",
+   "to": "scn:artifact-attack/Повтор атаки журнала по составу/Состав неполон",
+   "type": "satisfies",
+   "at": "tasks.md:34"
+  },
+  {
+   "from": "task:5.2",
+   "to": "scn:artifact-attack/Хеш не обновляется при изменённом решении прежней записи/Файл ответа новее атаки",
+   "type": "satisfies",
+   "at": "tasks.md:34"
+  },
+  {
+   "from": "task:5.3",
+   "to": "scn:artifact-attack/Повтор атаки журнала по составу/Записи добавлены после вердикта",
+   "type": "satisfies",
+   "at": "tasks.md:35"
+  },
+  {
+   "from": "task:5.3",
+   "to": "scn:decision-journal/`check` называет состав устаревшего вердикта/Файл атаки не разбирается",
+   "type": "satisfies",
+   "at": "tasks.md:35"
+  },
+  {
+   "from": "task:5.4",
+   "to": "scn:artifact-attack/Повтор атаки журнала по составу/Записи добавлены после вердикта",
+   "type": "satisfies",
+   "at": "tasks.md:36"
+  },
+  {
+   "from": "task:5.5",
+   "to": "rec:F-40",
+   "type": "traces",
+   "at": "tasks.md:37"
+  },
+  {
+   "from": "task:5.5",
+   "to": "scn:artifact-attack/Хеши целей обесценивают вердикт после правки/Хеш берётся после check --write",
+   "type": "satisfies",
+   "at": "tasks.md:37"
+  },
+  {
+   "from": "task:5.5",
+   "to": "scn:stale-verdict-scope/Состав атаки журнала считается по таблице/Раздел диапазоном",
+   "type": "satisfies",
+   "at": "tasks.md:37"
+  },
+  {
+   "from": "task:6.1",
+   "to": "scn:step-help/Страница шага атаки несёт вердикт и состав/Вердикт устарел после proposal",
+   "type": "satisfies",
+   "at": "tasks.md:42"
+  },
+  {
+   "from": "task:6.2",
+   "to": "scn:decision-journal/`check` называет состав устаревшего вердикта/Записи добавлены после вердикта",
+   "type": "satisfies",
+   "at": "tasks.md:43"
+  },
+  {
+   "from": "task:7.2",
+   "to": "rec:F-01",
+   "type": "traces",
+   "at": "tasks.md:48"
+  },
+  {
+   "from": "task:7.2",
+   "to": "scn:decision-journal/`check` называет состав устаревшего вердикта/Записи добавлены после вердикта",
+   "type": "satisfies",
+   "at": "tasks.md:48"
+  }
+ ],
+ "candidates": [
+  {
+   "a": "req:artifact-attack/Повтор атаки журнала по составу",
+   "b": "req:artifact-attack/Хеш не обновляется при изменённом решении прежней записи",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-32"
+   ]
+  },
+  {
+   "a": "req:artifact-attack/Повтор атаки журнала по составу",
+   "b": "req:artifact-attack/Хеши целей обесценивают вердикт после правки",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-21"
+   ]
+  },
+  {
+   "a": "req:decision-journal/`check` называет состав устаревшего вердикта",
+   "b": "req:stale-verdict-scope/Ноль добавленных при изменённом журнале называется словами",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-18"
+   ]
+  },
+  {
+   "a": "req:decision-journal/`check` называет состав устаревшего вердикта",
+   "b": "req:stale-verdict-scope/Состав атаки журнала считается по таблице",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-18"
+   ]
+  },
+  {
+   "a": "req:decision-journal/`check` называет состав устаревшего вердикта",
+   "b": "req:stale-verdict-scope/Состав одинаков у всех читателей",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-19"
+   ]
+  },
+  {
+   "a": "req:decision-journal/`check` называет состав устаревшего вердикта",
+   "b": "req:step-help/Страница шага атаки несёт вердикт и состав",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-19"
+   ]
+  },
+  {
+   "a": "req:stale-verdict-scope/Неполный состав при выключенной `coverage`",
+   "b": "req:stale-verdict-scope/Состав атаки журнала считается по таблице",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-17"
+   ]
+  },
+  {
+   "a": "req:stale-verdict-scope/Ноль добавленных при изменённом журнале называется словами",
+   "b": "req:stale-verdict-scope/Состав атаки журнала считается по таблице",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-18"
+   ]
+  },
+  {
+   "a": "req:stale-verdict-scope/Состав одинаков у всех читателей",
+   "b": "req:step-help/Страница шага атаки несёт вердикт и состав",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-19"
+   ]
+  },
+  {
+   "a": "req:step-help/Справка не выдаёт наличие файла за сделанную работу",
+   "b": "req:step-help/Страница шага атаки несёт вердикт и состав",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-11"
+   ]
+  }
+ ],
+ "roots": [
+  {
+   "prefix": "",
+   "commit": "279c8149996ca98208830d51f456e1963f3dca22"
+  },
+  {
+   "prefix": "store/",
+   "commit": "531a2e84807eb4f3abe8fa3dacc3a53c6de95660"
+  },
+  {
+   "prefix": "playground/",
+   "commit": ""
+  },
+  {
+   "prefix": "md4h/",
+   "commit": ""
+  },
+  {
+   "prefix": "calibration/",
+   "commit": ""
+  },
+  {
+   "prefix": "archive/",
+   "commit": ""
+  },
+  {
+   "prefix": "catalog/",
+   "commit": "20c976814c279cd5cc2af9256b37e9258eb5f5d8"
+  }
+ ],
+ "base": {
+  "artifact-attack": {
+   "Хеши целей обесценивают вердикт после правки": {
+    "numbers": [
+     13,
+     25
+    ],
+    "scenarios": {
+     "Цель изменена после атаки": "ed45be280a712fd4bf581dd2154b9b3983d717f7139612088262f6a5d31ca360",
+     "Хеш берётся после check --write": "51b8ad8d45d85d8e3187223a1e7db3eedd612404ff0139666137f18e987b5fd1"
+    },
+    "text": "177db965a655c178283baf46da7c7dcd04c87a192c00a9c4535f5e6ed99ffc3c",
+    "traces": [
+     "739e31a62a6b659f35e3de743f7d2d3882d33a05b25a438c020f7f82a7173635",
+     "96437f29201f5a3b92b3c85c208e34ec3a91ec1117b4901dae5010a3c390e9e9"
+    ]
+   }
+  },
+  "step-help": {
+   "Справка не выдаёт наличие файла за сделанную работу": {
+    "numbers": [
+     19,
+     24
+    ],
+    "scenarios": {
+     "Пустой файл шага": "798f9178e4258aac06facaef9d2c144c4b78509bf44812dc069eb8159625691c",
+     "Формулировка текущего шага": "faf015bb0df03c91211a1a175acca0456e15a298a19987170accb9ba8953a332"
+    },
+    "text": "2da1dc8043bdd2d0178c99721fbead107e32610ad0524d45a9ddea58ed157366",
+    "traces": [
+     "96437f29201f5a3b92b3c85c208e34ec3a91ec1117b4901dae5010a3c390e9e9",
+     "9d16e7cfb3bf17e348ef99982bb65b039a419a52353e448b3a13a486102b0002"
+    ]
+   }
+  }
+ }
+}

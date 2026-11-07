@@ -18,6 +18,18 @@
   {
    "date": "2026-11-07",
    "text": "проба запретов: требований 10, оставлено 1, канон → ИБ 2, Specify 1, Dismiss 0, Defer 0"
+  },
+  {
+   "date": "2026-11-07",
+   "text": "атака артефактов: строк 235, блокеров 9, предупреждений 1, справок 225, не выводится 0 — gaps_found"
+  },
+  {
+   "date": "2026-11-07",
+   "text": "атака openspec/changes/attack-stale-scope/attack/artifacts.md · claim-extraction · «design.md:56 F-16, улика attack/skills/symphysis-attack/SKI…» — спор: Дрейф улик, нужно заменить цитату на текущую строку. · атака openspec/changes/attack-stale-scope/attack/artifacts.md · claim-extraction · «design.md:135 F-21, улика выбранного варианта — та же цитат…» — спор: Дрейф улик, нужно заменить цитату на текущую строку. · атака openspec/changes/attack-stale-scope/attack/artifacts.md · claim-extraction · «tasks.md:15 задача 2.2 — «утверждение о файле в тест устано…» — спор: Требуется исправление формулировков tasks.md · атака openspec/changes/attack-stale-scope/attack/artifacts.md · trace-link · «task:1.5 → scn:stale-verdict-scope/Состав одинаков у всех ч…» — спор: Нужна правка артефакта. · атака openspec/changes/attack-stale-scope/attack/artifacts.md · trace-link · «req:artifact-attack/Хеши целей обесценивают вердикт после п…» — спор: Нужна правка артефакта. · атака openspec/changes/attack-stale-scope/attack/artifacts.md · trace-link · «req:artifact-attack/Хеши целей обесценивают вердикт после п…» — спор: Нужна правка артефакта. · атака openspec/changes/attack-stale-scope/attack/artifacts.md · trace-link · «branch:cli/journal_cli.py:134 → scn:decision-journal/`check…» — спор: Нужна правка артефакта. · атака openspec/changes/attack-stale-scope/attack/artifacts.md · trace-link · «branch:upstream/openspec/src/core/artifact-graph/state.ts:1…» — спор: Нужна правка артефакта. · атака openspec/changes/attack-stale-scope/attack/artifacts.md · trace-link · «branch:upstream/openspec/src/core/artifact-graph/state.ts:1…» — спор: Нужна правка артефакта.\n\nСлово владельца в чате, 2026-11-07: «концептуальный проблем у блокеров я не увидел.»"
+  },
+  {
+   "date": "2026-11-07",
+   "text": "атака артефактов: строк 183, блокеров 4, предупреждений 0, справок 179, не выводится 0 — gaps_found"
   }
  ],
  "records": [
@@ -41,7 +53,10 @@
    "evidence": [
     {
      "path": "openspec/changes/attack-stale-scope/intent.md",
-     "quote": "«Нужно, чтобы `status` или справка называли, сколько и каких записей добавлено после вердикта» (слова модели в B-01, владелец принял 2026-11-05)"
+     "quote": "«Нужно, чтобы `status` или справка называли, сколько и каких записей добавлено после вердикта» (слова модели в B-01, владелец принял 2026-11-05)",
+     "line": 24,
+     "verdict": "сверено",
+     "found": true
     }
    ],
    "comments": [],
@@ -69,7 +84,10 @@
    "evidence": [
     {
      "path": "openspec/changes/attack-stale-scope/intent.md",
-     "quote": "«Как это узнать, решить в изменении: номера в frontmatter атаки, сравнение с журналом на коммите вердикта или другое» — способ выбирается в журнале решений, не предрешён (слова модели в B-01, владелец принял 2026-11-05)"
+     "quote": "«Как это узнать, решить в изменении: номера в frontmatter атаки, сравнение с журналом на коммите вердикта или другое» — способ выбирается в журнале решений, не предрешён (слова модели в B-01, владелец принял 2026-11-05)",
+     "line": 25,
+     "verdict": "сверено",
+     "found": true
     }
    ],
    "comments": [],
@@ -97,7 +115,10 @@
    "evidence": [
     {
      "path": "openspec/changes/attack-stale-scope/intent.md",
-     "quote": "«с пометкой, что это приоритетно (priority: high)» — изменение идёт первым в порядке работ, до `attack-warning-read` (слово владельца, 2026-11-05; порядок работ бэклога, 2026-11-07)"
+     "quote": "«с пометкой, что это приоритетно (priority: high)» — изменение идёт первым в порядке работ, до `attack-warning-read` (слово владельца, 2026-11-05; порядок работ бэклога, 2026-11-07)",
+     "line": 26,
+     "verdict": "сверено",
+     "found": true
     }
    ],
    "comments": [],
@@ -123,15 +144,24 @@
    "evidence": [
     {
      "path": "upstream/openspec/src/core/artifact-graph/instruction-loader.ts",
-     "quote": "verdict is stale (signal, not a gate: ${begun}) — re-run it by name if needed"
+     "quote": "verdict is stale (signal, not a gate: ${begun}) — re-run it by name if needed",
+     "line": 642,
+     "verdict": "сверено",
+     "found": true
     },
     {
      "path": "upstream/openspec/src/core/artifact-graph/state.ts",
-     "quote": "The window is read from the graph and the apply phase, never from artifact ids."
+     "quote": "The window is read from the graph and the apply phase, never from artifact ids.",
+     "line": 82,
+     "verdict": "сверено",
+     "found": true
     },
     {
      "path": "upstream/openspec/UPSTREAM.md",
-     "quote": "C11 — окно устаревания вердикта (F-64.B): `stale` гейтует, пока у зависимого артефакта нет файла"
+     "quote": "C11 — окно устаревания вердикта (F-64.B): `stale` гейтует, пока у зависимого артефакта нет файла",
+     "line": 37,
+     "verdict": "сверено",
+     "found": true
     }
    ],
    "comments": [],
@@ -159,11 +189,17 @@
    "evidence": [
     {
      "path": "upstream/openspec/src/core/artifact-graph/state.ts",
-     "quote": "the first declared target that makes the verdict"
+     "quote": "the first declared target that makes the verdict",
+     "line": 176,
+     "verdict": "сверено",
+     "found": true
     },
     {
      "path": "upstream/openspec/src/core/artifact-graph/instruction-loader.ts",
-     "quote": "changed: 'changed since the verdict',"
+     "quote": "changed: 'changed since the verdict',",
+     "line": 585,
+     "verdict": "сверено",
+     "found": true
     }
    ],
    "comments": [],
@@ -191,15 +227,24 @@
    "evidence": [
     {
      "path": "attack/skills/symphysis-attack/SKILL.md",
-     "quote": "check --write пишет line/found/verdict — хеш после него"
+     "quote": "check --write пишет line/found/verdict — хеш после него",
+     "line": 110,
+     "verdict": "сверено",
+     "found": true
     },
     {
      "path": "openspec/specs/artifact-attack/spec.md",
-     "quote": "значение равно `sha256sum decisions.json` после `check --write` и после строки итога в `notes[]`, а не до них"
+     "quote": "значение равно `sha256sum decisions.json` после `check --write` и после строки итога в `notes[]`, а не до них",
+     "line": 64,
+     "verdict": "сверено",
+     "found": true
     },
     {
      "path": "upstream/openspec/src/core/artifact-graph/state.ts",
-     "quote": "Compares the SHA-256 of a target's raw bytes (what `sha256sum` prints) with"
+     "quote": "Compares the SHA-256 of a target's raw bytes (what `sha256sum` prints) with",
+     "line": 274,
+     "verdict": "сверено",
+     "found": true
     }
    ],
    "comments": [],
@@ -228,11 +273,17 @@
    "evidence": [
     {
      "path": "openspec/schemas/symphysis/schema.yaml",
-     "quote": "Ветка без сценария в `specs/` — кандидат журнала; решает человек, не ты."
+     "quote": "Ветка без сценария в `specs/` — кандидат журнала; решает человек, не ты.",
+     "line": 95,
+     "verdict": "сверено",
+     "found": true
     },
     {
      "path": "openspec/changes/archive/2026-11-02-calibration-fixes/decisions.json",
-     "quote": "пробы на шаге specs дописывают кандидатов в `decisions.json` после атаки журнала, обе атаки пишут итог в `notes[]` журнала"
+     "quote": "пробы на шаге specs дописывают кандидатов в `decisions.json` после атаки журнала, обе атаки пишут итог в `notes[]` журнала",
+     "line": 4999,
+     "verdict": "сверено",
+     "found": true
     }
    ],
    "comments": [],
@@ -260,15 +311,24 @@
    "evidence": [
     {
      "path": "openspec/changes/archive/2026-11-06-trace-graph/attack/decisions.md",
-     "quote": "Цель: `decisions.json` изменения `trace-graph`, 79 записей (59 развилок, 20 фактов), 209 улик"
+     "quote": "Цель: `decisions.json` изменения `trace-graph`, 79 записей (59 развилок, 20 фактов), 209 улик",
+     "line": 9,
+     "verdict": "сверено",
+     "found": true
     },
     {
      "path": "openspec/changes/archive/2026-11-06-trace-graph/attack/decisions.md",
-     "quote": "target_sha256: 7fb4849971637b8034b3703e3b97ec8f6a64249aecf362c9a98487ee757d3e0f"
+     "quote": "target_sha256: 7fb4849971637b8034b3703e3b97ec8f6a64249aecf362c9a98487ee757d3e0f",
+     "line": 4,
+     "verdict": "сверено",
+     "found": true
     },
     {
      "path": "openspec/changes/archive/2026-11-06-trace-graph/decisions.json",
-     "quote": "\"id\": \"F-159\""
+     "quote": "\"id\": \"F-159\"",
+     "line": 10930,
+     "verdict": "сверено",
+     "found": true
     }
    ],
    "comments": [],
@@ -296,19 +356,31 @@
    "evidence": [
     {
      "path": ".symphysis/docs/attack-table.md",
-     "quote": "Раздел журнала без находок — `| чисто | <раздел> | coverage | — | справка | есть | — |`."
+     "quote": "Раздел журнала без находок — `| чисто | <раздел> | coverage | — | справка | есть | — |`.",
+     "line": 39,
+     "verdict": "сверено",
+     "found": true
     },
     {
      "path": "openspec/specs/artifact-attack/spec.md",
-     "quote": "У каждого раздела журнала SHALL быть строка таблицы — находка, «чисто» (линза `coverage`, справка, опора есть) или «не пройдено»"
+     "quote": "У каждого раздела журнала SHALL быть строка таблицы — находка, «чисто» (линза `coverage`, справка, опора есть) или «не пройдено»",
+     "line": 67,
+     "verdict": "сверено",
+     "found": true
     },
     {
      "path": "openspec/changes/archive/2026-11-06-trace-graph/attack/decisions.md",
-     "quote": "| чисто | F-01, все поля | coverage | — | справка | есть | — |"
+     "quote": "| чисто | F-01, все поля | coverage | — | справка | есть | — |",
+     "line": 66,
+     "verdict": "сверено",
+     "found": true
     },
     {
      "path": "attack/attack_table.py",
-     "quote": "`frontmatter` — `status` и `targets[]` (`path`, `sha256`)"
+     "quote": "`frontmatter` — `status` и `targets[]` (`path`, `sha256`)",
+     "line": 148,
+     "verdict": "сверено",
+     "found": true
     }
    ],
    "comments": [],
@@ -337,11 +409,17 @@
    "evidence": [
     {
      "path": "attack/skills/symphysis-attack/SKILL.md",
-     "quote": "выключенная `coverage` снимает у журнала строки «чисто» и «не пройдено»"
+     "quote": "выключенная `coverage` снимает у журнала строки «чисто» и «не пройдено»",
+     "line": 89,
+     "verdict": "сверено",
+     "found": true
     },
     {
      "path": "attack/skills/symphysis-attack/SKILL.md",
-     "quote": "**Файл несёт строку `**Состав:**`** сразу под заголовком, при любом составе и при всех"
+     "quote": "**Файл несёт строку `**Состав:**`** сразу под заголовком, при любом составе и при всех",
+     "line": 91,
+     "verdict": "сверено",
+     "found": true
     }
    ],
    "comments": [],
@@ -369,15 +447,24 @@
    "evidence": [
     {
      "path": "step-help/step_help.py",
-     "quote": "FILE_NOT_CHECKED = \"файл есть, содержание не проверялось\""
+     "quote": "FILE_NOT_CHECKED = \"файл есть, содержание не проверялось\"",
+     "line": 36,
+     "verdict": "сверено",
+     "found": true
     },
     {
      "path": "openspec/changes/archive/2026-11-03-step-help/decisions.json",
-     "quote": "Dismiss — справка молчит; допустимо: атаки зовут по имени, `/opsx:continue` сам о вердикте скажет, а F-24 выбрал минимум"
+     "quote": "Dismiss — справка молчит; допустимо: атаки зовут по имени, `/opsx:continue` сам о вердикте скажет, а F-24 выбрал минимум",
+     "line": 3804,
+     "verdict": "сверено",
+     "found": true
     },
     {
      "path": "step-help/step_help.py",
-     "quote": "Развилки журнала: открытой считается только `status: открыт`, припаркованные отдельно (F-40)."
+     "quote": "Развилки журнала: открытой считается только `status: открыт`, припаркованные отдельно (F-40).",
+     "line": 96,
+     "verdict": "сверено",
+     "found": true
     }
    ],
    "comments": [],
@@ -405,15 +492,24 @@
    "evidence": [
     {
      "path": "viewer/playground-template.html",
-     "quote": "вердикт устарел: журнал изменён после атаки"
+     "quote": "вердикт устарел: журнал изменён после атаки",
+     "line": 808,
+     "verdict": "сверено",
+     "found": true
     },
     {
      "path": "vscode/src/changes/sidebar.ts",
-     "quote": "const stale = verdictState(a, state.payload?.sha256) === \"stale\" ? \", устарел\" : \"\";"
+     "quote": "const stale = verdictState(a, state.payload?.sha256) === \"stale\" ? \", устарел\" : \"\";",
+     "line": 29,
+     "verdict": "сверено",
+     "found": true
     },
     {
      "path": "openspec/specs/artifact-attack/spec.md",
-     "quote": "просмотрщик SHALL помечать «вердикт устарел», если журнал изменён после атаки"
+     "quote": "просмотрщик SHALL помечать «вердикт устарел», если журнал изменён после атаки",
+     "line": 52,
+     "verdict": "сверено",
+     "found": true
     }
    ],
    "comments": [],
@@ -441,11 +537,17 @@
    "evidence": [
     {
      "path": "docs/repo-contract.md",
-     "quote": "вывод `step_help.py`: поле `contract` то же самое число"
+     "quote": "вывод `step_help.py`: поле `contract` то же самое число",
+     "line": 49,
+     "verdict": "сверено",
+     "found": true
     },
     {
      "path": "docs/repo-contract.md",
-     "quote": "**Что считается сменой.** Новое поле сменой не считается."
+     "quote": "**Что считается сменой.** Новое поле сменой не считается.",
+     "line": 61,
+     "verdict": "сверено",
+     "found": true
     }
    ],
    "comments": [],
@@ -473,7 +575,10 @@
    "evidence": [
     {
      "path": "openspec/changes/attack-warning-read/intent.md",
-     "quote": "хеш журнала меняется — вердикт атаки журнала станет `stale` по той же строке (окно C11)"
+     "quote": "хеш журнала меняется — вердикт атаки журнала станет `stale` по той же строке (окно C11)",
+     "line": 10,
+     "verdict": "сверено",
+     "found": true
     }
    ],
    "comments": [],
@@ -501,11 +606,17 @@
    "evidence": [
     {
      "path": "openspec/changes/archive/2026-11-02-calibration-fixes/decisions.json",
-     "quote": "Давай попробуем вариант два. Делать вариант один выглядит дорого, мне проще вернуться к этому вопросу после апробирования на реальной задаче в работе."
+     "quote": "Давай попробуем вариант два. Делать вариант один выглядит дорого, мне проще вернуться к этому вопросу после апробирования на реальной задаче в работе.",
+     "line": 5047,
+     "verdict": "сверено",
+     "found": true
     },
     {
      "path": "openspec/changes/archive/2026-11-02-calibration-fixes/decisions.json",
-     "quote": "Исключить изменчивое из хеша: журнал без `notes[]` и полей проб, `tasks.md` без отметок."
+     "quote": "Исключить изменчивое из хеша: журнал без `notes[]` и полей проб, `tasks.md` без отметок.",
+     "line": 5011,
+     "verdict": "сверено",
+     "found": true
     }
    ],
    "comments": [],
@@ -529,15 +640,21 @@
    "outcome": null,
    "parking": [],
    "dispute": "",
-   "consequences": "F-19 (парковка о повторе атаки по названным записям)",
+   "consequences": "F-19 (парковка о повторе атаки по названным записям) Улика заменена 2026-11-07 после задачи 5.1 этого изменения: прежняя строка правила «атака MUST идти с начала» стала правилом повтора по составу; вопрос факта описывает правило до изменения.",
    "evidence": [
     {
      "path": "attack/skills/symphysis-attack/SKILL.md",
-     "quote": "Если хеши разошлись (у `attack-artifacts` — и хеш журнала) — атака MUST идти с начала,"
+     "quote": "Если у `attack-decisions` разошёлся хеш журнала — повтор MUST идти по составу, не с начала.",
+     "line": 135,
+     "verdict": "сверено",
+     "found": true
     },
     {
      "path": "openspec/changes/archive/2026-11-06-trace-graph/attack/decisions.md",
-     "quote": "Отступление от правила «атака с начала, прежние строки не переносятся». Между проходами 4 и 5 добавлена запись F-79"
+     "quote": "Отступление от правила «атака с начала, прежние строки не переносятся». Между проходами 4 и 5 добавлена запись F-79",
+     "line": 11,
+     "verdict": "сверено",
+     "found": true
     }
    ],
    "comments": [],
@@ -562,11 +679,17 @@
      "evidence": [
       {
        "path": ".symphysis/docs/attack-table.md",
-       "quote": "Раздел журнала без находок — `| чисто | <раздел> | coverage | — | справка | есть | — |`."
+       "quote": "Раздел журнала без находок — `| чисто | <раздел> | coverage | — | справка | есть | — |`.",
+       "line": 39,
+       "verdict": "сверено",
+       "found": true
       },
       {
        "path": "attack/attack_table.py",
-       "quote": "`frontmatter` — `status` и `targets[]` (`path`, `sha256`)"
+       "quote": "`frontmatter` — `status` и `targets[]` (`path`, `sha256`)",
+       "line": 148,
+       "verdict": "сверено",
+       "found": true
       }
      ]
     },
@@ -578,11 +701,17 @@
      "evidence": [
       {
        "path": "openspec/changes/attack-stale-scope/intent.md",
-       "quote": "номера в frontmatter атаки, сравнение с журналом на коммите вердикта или другое"
+       "quote": "номера в frontmatter атаки, сравнение с журналом на коммите вердикта или другое",
+       "line": 12,
+       "verdict": "сверено",
+       "found": true
       },
       {
        "path": "openspec/schemas/symphysis/templates/attack-decisions.md",
-       "quote": "target_sha256:"
+       "quote": "target_sha256:",
+       "line": 4,
+       "verdict": "сверено",
+       "found": true
       }
      ]
     },
@@ -594,11 +723,17 @@
      "evidence": [
       {
        "path": "openspec/changes/attack-stale-scope/intent.md",
-       "quote": "номера в frontmatter атаки, сравнение с журналом на коммите вердикта или другое"
+       "quote": "номера в frontmatter атаки, сравнение с журналом на коммите вердикта или другое",
+       "line": 12,
+       "verdict": "сверено",
+       "found": true
       },
       {
        "path": "step-help/step_help.py",
-       "quote": "Скрипт пишет только в stdout,"
+       "quote": "Скрипт пишет только в stdout,",
+       "line": 5,
+       "verdict": "сверено",
+       "found": true
       }
      ]
     },
@@ -610,7 +745,10 @@
      "evidence": [
       {
        "path": "attack/skills/symphysis-attack/SKILL.md",
-       "quote": "Строка итога в `notes[]` журнала, до `check --write` и хешей:"
+       "quote": "Строка итога в `notes[]` журнала, до `check --write` и хешей:",
+       "line": 42,
+       "verdict": "сверено",
+       "found": true
       }
      ]
     }
@@ -667,7 +805,10 @@
      "evidence": [
       {
        "path": "openspec/changes/attack-stale-scope/intent.md",
-       "quote": "«Нужно, чтобы `status` или справка называли, сколько и каких записей добавлено после вердикта»"
+       "quote": "«Нужно, чтобы `status` или справка называли, сколько и каких записей добавлено после вердикта»",
+       "line": 24,
+       "verdict": "сверено",
+       "found": true
       }
      ]
     },
@@ -679,7 +820,10 @@
      "evidence": [
       {
        "path": "openspec/changes/archive/2026-11-02-calibration-fixes/decisions.json",
-       "quote": "Исключить изменчивое из хеша: журнал без `notes[]` и полей проб, `tasks.md` без отметок."
+       "quote": "Исключить изменчивое из хеша: журнал без `notes[]` и полей проб, `tasks.md` без отметок.",
+       "line": 5011,
+       "verdict": "сверено",
+       "found": true
       }
      ]
     },
@@ -691,7 +835,10 @@
      "evidence": [
       {
        "path": ".symphysis/tools/journal.schema.json",
-       "quote": "\"required\": [\"option\", \"word\", \"date\"],"
+       "quote": "\"required\": [\"option\", \"word\", \"date\"],",
+       "line": 73,
+       "verdict": "сверено",
+       "found": true
       }
      ]
     }
@@ -752,7 +899,10 @@
      "evidence": [
       {
        "path": "cli/journal_cli.py",
-       "quote": "inventory = check_consequences(journal, args.json.parent / \"consequences.md\", roots)"
+       "quote": "inventory = check_consequences(journal, args.json.parent / \"consequences.md\", roots)",
+       "line": 85,
+       "verdict": "сверено",
+       "found": true
       }
      ]
     },
@@ -764,11 +914,17 @@
      "evidence": [
       {
        "path": "openspec/changes/archive/2026-11-03-step-help/decisions.json",
-       "quote": "Dismiss — справка молчит; допустимо: атаки зовут по имени, `/opsx:continue` сам о вердикте скажет, а F-24 выбрал минимум"
+       "quote": "Dismiss — справка молчит; допустимо: атаки зовут по имени, `/opsx:continue` сам о вердикте скажет, а F-24 выбрал минимум",
+       "line": 3804,
+       "verdict": "сверено",
+       "found": true
       },
       {
        "path": "docs/repo-contract.md",
-       "quote": "**Что считается сменой.** Новое поле сменой не считается."
+       "quote": "**Что считается сменой.** Новое поле сменой не считается.",
+       "line": 61,
+       "verdict": "сверено",
+       "found": true
       }
      ]
     },
@@ -780,7 +936,10 @@
      "evidence": [
       {
        "path": "upstream/openspec/src/core/artifact-graph/state.ts",
-       "quote": "The window is read from the graph and the apply phase, never from artifact ids."
+       "quote": "The window is read from the graph and the apply phase, never from artifact ids.",
+       "line": 82,
+       "verdict": "сверено",
+       "found": true
       }
      ]
     },
@@ -792,7 +951,10 @@
      "evidence": [
       {
        "path": "viewer/playground-template.html",
-       "quote": "вердикт устарел: журнал изменён после атаки"
+       "quote": "вердикт устарел: журнал изменён после атаки",
+       "line": 808,
+       "verdict": "сверено",
+       "found": true
       }
      ]
     },
@@ -804,11 +966,17 @@
      "evidence": [
       {
        "path": "cli/journal_cli.py",
-       "quote": "from attack_table import parse_attack_md"
+       "quote": "from attack_table import parse_attack_md",
+       "line": 19,
+       "verdict": "сверено",
+       "found": true
       },
       {
        "path": "step-help/step_help.py",
-       "quote": "Развилки журнала: открытой считается только `status: открыт`, припаркованные отдельно (F-40)."
+       "quote": "Развилки журнала: открытой считается только `status: открыт`, припаркованные отдельно (F-40).",
+       "line": 96,
+       "verdict": "сверено",
+       "found": true
       }
      ]
     }
@@ -867,11 +1035,17 @@
      "evidence": [
       {
        "path": "upstream/openspec/src/core/artifact-graph/state.ts",
-       "quote": "Compares the SHA-256 of a target's raw bytes (what `sha256sum` prints) with"
+       "quote": "Compares the SHA-256 of a target's raw bytes (what `sha256sum` prints) with",
+       "line": 274,
+       "verdict": "сверено",
+       "found": true
       },
       {
        "path": "openspec/specs/artifact-attack/spec.md",
-       "quote": "значение равно `sha256sum decisions.json` после `check --write` и после строки итога в `notes[]`, а не до них"
+       "quote": "значение равно `sha256sum decisions.json` после `check --write` и после строки итога в `notes[]`, а не до них",
+       "line": 64,
+       "verdict": "сверено",
+       "found": true
       }
      ]
     },
@@ -883,11 +1057,17 @@
      "evidence": [
       {
        "path": "openspec/changes/archive/2026-11-02-calibration-fixes/decisions.json",
-       "quote": "Исключить изменчивое из хеша: журнал без `notes[]` и полей проб, `tasks.md` без отметок."
+       "quote": "Исключить изменчивое из хеша: журнал без `notes[]` и полей проб, `tasks.md` без отметок.",
+       "line": 5011,
+       "verdict": "сверено",
+       "found": true
       },
       {
        "path": "openspec/changes/archive/2026-11-02-calibration-fixes/decisions.json",
-       "quote": "мне проще вернуться к этому вопросу после апробирования на реальной задаче в работе"
+       "quote": "мне проще вернуться к этому вопросу после апробирования на реальной задаче в работе",
+       "line": 5047,
+       "verdict": "сверено",
+       "found": true
       }
      ]
     },
@@ -899,7 +1079,10 @@
      "evidence": [
       {
        "path": "docs/analysis/upstream-gsd-core-1.20.1-2026-11-07.md",
-       "quote": "GSD держит «устарел — значит не завершён» без окна; у нас F-64.B"
+       "quote": "GSD держит «устарел — значит не завершён» без окна; у нас F-64.B",
+       "line": 306,
+       "verdict": "сверено",
+       "found": true
       }
      ]
     }
@@ -949,11 +1132,17 @@
      "evidence": [
       {
        "path": "attack/skills/symphysis-attack/SKILL.md",
-       "quote": "Если хеши разошлись (у `attack-artifacts` — и хеш журнала) — атака MUST идти с начала,"
+       "quote": "Если у `attack-decisions` разошёлся хеш журнала — повтор MUST идти по составу, не с начала.",
+       "line": 135,
+       "verdict": "сверено",
+       "found": true
       },
       {
        "path": "openspec/specs/artifact-attack/spec.md",
-       "quote": "при повторной атаке скилл SHALL сравнивать хеши и при расхождении SHALL проходить цель с начала, не перенося прежние строки"
+       "quote": "при повторной атаке скилл SHALL сравнивать хеши и при расхождении SHALL проходить цель с начала, не перенося прежние строки",
+       "line": 52,
+       "verdict": "сверено",
+       "found": true
       }
      ]
     },
@@ -965,7 +1154,10 @@
      "evidence": [
       {
        "path": "context/backlog/symphysis-backlog.md",
-       "quote": "**Объём:** `change` — отдельное изменение по схеме symphysis (`/opsx:continue`)"
+       "quote": "**Объём:** `change` — отдельное изменение по схеме symphysis (`/opsx:continue`)",
+       "line": 9,
+       "verdict": "сверено",
+       "found": true
       }
      ]
     }
@@ -1016,11 +1208,17 @@
      "evidence": [
       {
        "path": "openspec/changes/archive/2026-11-06-trace-graph/attack/decisions.md",
-       "quote": "их проход 5 проверил заново вместе со стыками, а остальные строки взял из прохода 4"
+       "quote": "их проход 5 проверил заново вместе со стыками, а остальные строки взял из прохода 4",
+       "line": 11,
+       "verdict": "сверено",
+       "found": true
       },
       {
        "path": "attack/skills/symphysis-attack/SKILL.md",
-       "quote": "`decision.word` против варианта по смыслу; `consequences` не из решения; решённая запись"
+       "quote": "`decision.word` против варианта по смыслу; `consequences` не из решения; решённая запись",
+       "line": 297,
+       "verdict": "сверено",
+       "found": true
       }
      ]
     },
@@ -1032,7 +1230,10 @@
      "evidence": [
       {
        "path": "attack/skills/symphysis-attack/SKILL.md",
-       "quote": "`decision.word` против варианта по смыслу; `consequences` не из решения; решённая запись"
+       "quote": "`decision.word` против варианта по смыслу; `consequences` не из решения; решённая запись",
+       "line": 297,
+       "verdict": "сверено",
+       "found": true
       }
      ]
     },
@@ -1044,7 +1245,10 @@
      "evidence": [
       {
        "path": "openspec/changes/attack-stale-scope/intent.md",
-       "quote": "сколько и каких записей добавлено после вердикта"
+       "quote": "сколько и каких записей добавлено после вердикта",
+       "line": 12,
+       "verdict": "сверено",
+       "found": true
       }
      ]
     }
@@ -1098,11 +1302,17 @@
      "evidence": [
       {
        "path": "upstream/openspec/src/core/artifact-graph/state.ts",
-       "quote": "the first declared target that makes the verdict"
+       "quote": "the first declared target that makes the verdict",
+       "line": 176,
+       "verdict": "сверено",
+       "found": true
       },
       {
        "path": "attack/skills/symphysis-attack/SKILL.md",
-       "quote": "с `path` и `sha256` на файл, журнал первым"
+       "quote": "с `path` и `sha256` на файл, журнал первым",
+       "line": 28,
+       "verdict": "сверено",
+       "found": true
       }
      ]
     },
@@ -1114,7 +1324,10 @@
      "evidence": [
       {
        "path": "context/backlog/symphysis-backlog.md",
-       "quote": "**Объём:** `change` — отдельное изменение по схеме symphysis (`/opsx:continue`)"
+       "quote": "**Объём:** `change` — отдельное изменение по схеме symphysis (`/opsx:continue`)",
+       "line": 9,
+       "verdict": "сверено",
+       "found": true
       }
      ]
     }
@@ -1164,11 +1377,17 @@
      "evidence": [
       {
        "path": "openspec/schemas/symphysis/templates/attack-artifacts.md",
-       "quote": "  - path: decisions.json"
+       "quote": "  - path: decisions.json",
+       "line": 4,
+       "verdict": "сверено",
+       "found": true
       },
       {
        "path": "attack/skills/symphysis-attack/SKILL.md",
-       "quote": "с `path` и `sha256` на файл, журнал первым"
+       "quote": "с `path` и `sha256` на файл, журнал первым",
+       "line": 28,
+       "verdict": "сверено",
+       "found": true
       }
      ]
     },
@@ -1180,7 +1399,10 @@
      "evidence": [
       {
        "path": "attack/skills/symphysis-attack/SKILL.md",
-       "quote": "Вызов `attack-artifacts`: цели — `decisions.json` (опора, не атакуется)"
+       "quote": "Вызов `attack-artifacts`: цели — `decisions.json` (опора, не атакуется)",
+       "line": 25,
+       "verdict": "сверено",
+       "found": true
       }
      ]
     },
@@ -1192,7 +1414,10 @@
      "evidence": [
       {
        "path": ".symphysis/docs/attack-table.md",
-       "quote": "**Раздел** — у журнала `<F-NN>, <поле>`; у артефактов `<файл>, <место>`"
+       "quote": "**Раздел** — у журнала `<F-NN>, <поле>`; у артефактов `<файл>, <место>`",
+       "line": 16,
+       "verdict": "сверено",
+       "found": true
       }
      ]
     }
@@ -1284,7 +1509,10 @@
    "evidence": [
     {
      "path": "openspec/changes/attack-stale-scope/specs/stale-verdict-scope/spec.md",
-     "quote": "### Requirement: Состав атаки журнала считается по таблице"
+     "quote": "### Requirement: Состав атаки журнала считается по таблице",
+     "line": 8,
+     "verdict": "сверено",
+     "found": true
     }
    ],
    "comments": []
@@ -1352,7 +1580,10 @@
    "evidence": [
     {
      "path": "openspec/changes/attack-stale-scope/specs/stale-verdict-scope/spec.md",
-     "quote": "### Requirement: Состав атаки журнала считается по таблице"
+     "quote": "### Requirement: Состав атаки журнала считается по таблице",
+     "line": 8,
+     "verdict": "сверено",
+     "found": true
     }
    ],
    "comments": []
@@ -1420,7 +1651,10 @@
    "evidence": [
     {
      "path": "openspec/changes/attack-stale-scope/specs/stale-verdict-scope/spec.md",
-     "quote": "### Requirement: Ноль добавленных при изменённом журнале называется словами"
+     "quote": "### Requirement: Ноль добавленных при изменённом журнале называется словами",
+     "line": 41,
+     "verdict": "сверено",
+     "found": true
     }
    ],
    "comments": []
@@ -1488,7 +1722,10 @@
    "evidence": [
     {
      "path": "openspec/changes/attack-stale-scope/specs/stale-verdict-scope/spec.md",
-     "quote": "### Requirement: Ноль добавленных при изменённом журнале называется словами"
+     "quote": "### Requirement: Ноль добавленных при изменённом журнале называется словами",
+     "line": 41,
+     "verdict": "сверено",
+     "found": true
     }
    ],
    "comments": []
@@ -1556,7 +1793,10 @@
    "evidence": [
     {
      "path": "openspec/changes/attack-stale-scope/specs/stale-verdict-scope/spec.md",
-     "quote": "### Requirement: У атаки артефактов — все изменившиеся цели и число записей"
+     "quote": "### Requirement: У атаки артефактов — все изменившиеся цели и число записей",
+     "line": 85,
+     "verdict": "сверено",
+     "found": true
     }
    ],
    "comments": []
@@ -1623,7 +1863,10 @@
    "evidence": [
     {
      "path": "openspec/changes/attack-stale-scope/specs/decision-journal/spec.md",
-     "quote": "### Requirement: `check` называет состав устаревшего вердикта"
+     "quote": "### Requirement: `check` называет состав устаревшего вердикта",
+     "line": 5,
+     "verdict": "сверено",
+     "found": true
     }
    ],
    "comments": []
@@ -1691,7 +1934,10 @@
    "evidence": [
     {
      "path": "openspec/changes/attack-stale-scope/specs/artifact-attack/spec.md",
-     "quote": "### Requirement: Повтор атаки журнала по составу"
+     "quote": "### Requirement: Повтор атаки журнала по составу",
+     "line": 23,
+     "verdict": "сверено",
+     "found": true
     }
    ],
    "comments": []
@@ -1759,7 +2005,10 @@
    "evidence": [
     {
      "path": "openspec/changes/attack-stale-scope/specs/artifact-attack/spec.md",
-     "quote": "### Requirement: Повтор атаки журнала по составу"
+     "quote": "### Requirement: Повтор атаки журнала по составу",
+     "line": 23,
+     "verdict": "сверено",
+     "found": true
     }
    ],
    "comments": []
@@ -1792,7 +2041,10 @@
    "evidence": [
     {
      "path": "openspec/changes/attack-stale-scope/specs/stale-verdict-scope/spec.md",
-     "quote": "### Requirement: У атаки артефактов — все изменившиеся цели и число записей"
+     "quote": "### Requirement: У атаки артефактов — все изменившиеся цели и число записей",
+     "line": 85,
+     "verdict": "сверено",
+     "found": true
     }
    ],
    "comments": []
@@ -1825,7 +2077,10 @@
    "evidence": [
     {
      "path": "openspec/changes/attack-stale-scope/specs/stale-verdict-scope/spec.md",
-     "quote": "### Requirement: Состав атаки журнала считается по таблице"
+     "quote": "### Requirement: Состав атаки журнала считается по таблице",
+     "line": 8,
+     "verdict": "сверено",
+     "found": true
     }
    ],
    "comments": []
@@ -1892,7 +2147,10 @@
    "evidence": [
     {
      "path": "attack/attack_table.py",
-     "quote": "elif (m := RE_TARGET_SHA.match(line)) and targets:"
+     "quote": "elif (m := RE_TARGET_SHA.match(line)) and targets:",
+     "line": 45,
+     "verdict": "сверено",
+     "found": true
     }
    ],
    "comments": []
@@ -1959,7 +2217,10 @@
    "evidence": [
     {
      "path": "cli/journal_cli.py",
-     "quote": "if journal is None:"
+     "quote": "if journal is None:",
+     "line": 61,
+     "verdict": "сверено",
+     "found": true
     }
    ],
    "comments": []
@@ -2026,7 +2287,10 @@
    "evidence": [
     {
      "path": "step-help/step_help.py",
-     "quote": "if reply.code != 0 and not (data and usable_on_failure and data.get(usable_on_failure)):"
+     "quote": "if reply.code != 0 and not (data and usable_on_failure and data.get(usable_on_failure)):",
+     "line": 78,
+     "verdict": "сверено",
+     "found": true
     }
    ],
    "comments": []
@@ -2093,7 +2357,10 @@
    "evidence": [
     {
      "path": "step-help/step_help.py",
-     "quote": "return {\"open\": UNREADABLE, \"parked\": UNREADABLE}"
+     "quote": "return {\"open\": UNREADABLE, \"parked\": UNREADABLE}",
+     "line": 105,
+     "verdict": "сверено",
+     "found": true
     }
    ],
    "comments": []
@@ -2161,7 +2428,10 @@
    "evidence": [
     {
      "path": "upstream/openspec/src/core/artifact-graph/state.ts",
-     "quote": "return { state: 'mismatch' };"
+     "quote": "return { state: 'mismatch' };",
+     "line": 209,
+     "verdict": "сверено",
+     "found": true
     }
    ],
    "comments": []
@@ -2228,7 +2498,10 @@
    "evidence": [
     {
      "path": ".symphysis/docs/attack-table.md",
-     "quote": "Раздел журнала без находок — `| чисто | <раздел> | coverage | — | справка | есть | — |`."
+     "quote": "Раздел журнала без находок — `| чисто | <раздел> | coverage | — | справка | есть | — |`.",
+     "line": 39,
+     "verdict": "сверено",
+     "found": true
     }
    ],
    "comments": []
@@ -2295,7 +2568,10 @@
    "evidence": [
     {
      "path": "step-help/step_help.py",
-     "quote": "Расчёт отделён от разбора аргументов: `compute(корень, имя)` зовёт и `render-html` (F-34)."
+     "quote": "Расчёт отделён от разбора аргументов: `compute(корень, имя)` зовёт и `render-html` (F-34).",
+     "line": 5,
+     "verdict": "сверено",
+     "found": true
     }
    ],
    "comments": []
@@ -2362,7 +2638,152 @@
    "evidence": [
     {
      "path": "openspec/changes/attack-stale-scope/specs/artifact-attack/spec.md",
-     "quote": "### Requirement: Повтор атаки журнала по составу"
+     "quote": "### Requirement: Повтор атаки журнала по составу",
+     "line": 23,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-43",
+   "question": "[ветка] Вердикт форка: файл атаки есть, а значения `status` во frontmatter нет — форк отдаёт `verdict: missing`, справка покажет `missing` и состав по хешу файла; нужен ли этому сценарий?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-20",
+    "F-23"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN `attack/decisions.md` без строки `status`, `target_sha256` совпал WHEN выполняется `step_help.py --change demo` THEN `verdict` равно `missing`, `stale_scope` пуст; цена: сценарий в `step-help`, тест в `test_step_help.py`, сопровождение при смене значений вердикта форка",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — файл атаки без `status` не покрывается; допустимо: шаблон атаки всегда несёт `status`, файл без него — сломанный файл атаки, который чинит скилл по `attack-table.md`; `missing` виден в `openspec status` и на странице сразу, тихой порчи нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест `step_help.py` подаёт файл атаки без `status` при `verdict: missing` от шима и утверждает: поле `verdict` равно `missing`, `stale_scope` — список; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — остаётся открытым до правки шаблонов атаки или форка; пока tasks считает `missing` значением, которое справка отдаёт как есть",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "B",
+    "why": "Файл без `status` — поломка файла атаки, не состояние конвейера: шаблон несёт `status` всегда, а `missing` виден в `openspec status` и на странице сразу, тихой порчи нет; против A — сценарий закрепил бы поведение форка, которого изменение не касается (F-20); против C — тест без сценария проверял бы то же чужое поведение."
+   },
+   "decision": {
+    "option": "B",
+    "word": "",
+    "date": "2026-11-07"
+   },
+   "reversibility": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Dismiss",
+    "reason": ""
+   },
+   "parking": [],
+   "dispute": "",
+   "consequences": "Файл без `status` — поломка файла атаки, не состояние конвейера: шаблон несёт `status` всегда, а `missing` виден в `openspec status` и на странице сразу, тихой порчи нет; против A — сценарий закрепил бы поведение форка, которого изменение не касается (F-20); против C — тест без сценария проверял бы то же чужое поведение.",
+   "evidence": [
+    {
+     "path": "upstream/openspec/src/core/artifact-graph/state.ts",
+     "quote": "if (!frontmatter || !Object.hasOwn(frontmatter, verdict.frontmatter)) {",
+     "line": 202,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-44",
+   "question": "[ветка] Окно вердикта форка: `tasks.md` не читается — `hasCheckedTask` даёт `false`, окно открыто и `stale` гейтует; поля справки и состав при открытом окне те же, что при закрытом; нужен ли этому сценарий?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-20",
+    "F-23"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN `attack/artifacts.md` со `status: passed`, `tasks.md` не читается, журнал дописан WHEN выполняется `step_help.py --change demo` THEN `verdict` равно `stale`, `stale_scope` несёт те же строки, что при закрытом окне; цена: сценарий `step-help`, тест с нечитаемым `tasks.md`, сопровождение при смене правила окна форка",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — окно не покрывается; допустимо: расчёт состава `tasks.md` как условие не читает (только как цель по хешу), окно меняет лишь гейт форка и видно в `status`; поведение окна держат тесты форка (правка C11)",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест `step_help.py` с шимом: `verdict: stale` при нечитаемом `tasks.md` даёт те же `stale_scope`, что без него; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — остаётся открытым до изменения окна C11 (`attack-warning-read` трогает ту же строку `notes[]`); пока tasks считает окно делом форка",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "B",
+    "why": "Окно — гейт форка, а состав считается по хешу без оглядки на окно и на значение вердикта (F-39): тихой порчи нет, расхождение видно в `status`; против A — сценарий здесь закрепил бы поведение форка, которое изменение не трогает (F-20); против C — тот же чужой инвариант без строки в спеке."
+   },
+   "decision": {
+    "option": "B",
+    "word": "(без слова) Слово владельца в чате, 2026-11-07: «Можно коммитить. Насчет третьего прохода атаки думаю не нужно.»",
+    "date": "2026-11-07"
+   },
+   "reversibility": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Dismiss",
+    "reason": "(без слова) Слово владельца в чате, 2026-11-07: «Можно коммитить. Насчет третьего прохода атаки думаю не нужно.»"
+   },
+   "parking": [],
+   "dispute": "",
+   "consequences": "Окно — гейт форка, а состав считается по хешу без оглядки на окно и на значение вердикта (F-39): тихой порчи нет, расхождение видно в `status`; против A — сценарий здесь закрепил бы поведение форка, которое изменение не трогает (F-20); против C — тот же чужой инвариант без строки в спеке.",
+   "evidence": [
+    {
+     "path": "upstream/openspec/src/core/artifact-graph/state.ts",
+     "quote": " * gating. Only `stale` has a window: `mismatch` and `missing` always gate.",
+     "line": 81,
+     "verdict": "сверено",
+     "found": true
     }
    ],
    "comments": []

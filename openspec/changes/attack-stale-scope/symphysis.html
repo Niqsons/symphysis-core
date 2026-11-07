@@ -212,15 +212,15 @@
 const JOURNAL = {
  "title": "Журнал решений: attack-stale-scope",
  "source": "decisions.json",
- "sha256": "dee68853bd1c48c1cfefc9f2775bf467ceaada447c6773eb9fccd6e98b8566bb",
+ "sha256": "e89cab30433adc0048a29e84ac521a6fa721873ca849ca4e299b433fbc424895",
  "stats": {
-  "records": 42,
-  "forks": 24,
+  "records": 44,
+  "forks": 26,
   "facts": 18,
-  "decided": 24,
+  "decided": 26,
   "parked": 1,
-  "evidence_total": 89,
-  "evidence_found": 89
+  "evidence_total": 91,
+  "evidence_found": 91
  },
  "records": [
   {
@@ -576,7 +576,7 @@ const JOURNAL = {
     {
      "path": "attack/attack_table.py",
      "quote": "`frontmatter` — `status` и `targets[]` (`path`, `sha256`)",
-     "line": 140,
+     "line": 148,
      "verdict": "сверено",
      "found": true
     }
@@ -648,7 +648,7 @@ const JOURNAL = {
     {
      "path": "step-help/step_help.py",
      "quote": "FILE_NOT_CHECKED = \"файл есть, содержание не проверялось\"",
-     "line": 34,
+     "line": 36,
      "verdict": "сверено",
      "found": true
     },
@@ -662,7 +662,7 @@ const JOURNAL = {
     {
      "path": "step-help/step_help.py",
      "quote": "Развилки журнала: открытой считается только `status: открыт`, припаркованные отдельно (F-40).",
-     "line": 94,
+     "line": 96,
      "verdict": "сверено",
      "found": true
     }
@@ -747,7 +747,7 @@ const JOURNAL = {
     {
      "path": "docs/repo-contract.md",
      "quote": "**Что считается сменой.** Новое поле сменой не считается.",
-     "line": 60,
+     "line": 61,
      "verdict": "сверено",
      "found": true
     }
@@ -845,12 +845,12 @@ const JOURNAL = {
    "outcome": null,
    "parking": [],
    "dispute": "",
-   "consequences": "F-19 (парковка о повторе атаки по названным записям)",
+   "consequences": "F-19 (парковка о повторе атаки по названным записям) Улика заменена 2026-11-07 после задачи 5.1 этого изменения: прежняя строка правила «атака MUST идти с начала» стала правилом повтора по составу; вопрос факта описывает правило до изменения.",
    "evidence": [
     {
      "path": "attack/skills/symphysis-attack/SKILL.md",
-     "quote": "Если хеши разошлись (у `attack-artifacts` — и хеш журнала) — атака MUST идти с начала,",
-     "line": 133,
+     "quote": "Если у `attack-decisions` разошёлся хеш журнала — повтор MUST идти по составу, не с начала.",
+     "line": 135,
      "verdict": "сверено",
      "found": true
     },
@@ -893,7 +893,7 @@ const JOURNAL = {
       {
        "path": "attack/attack_table.py",
        "quote": "`frontmatter` — `status` и `targets[]` (`path`, `sha256`)",
-       "line": 140,
+       "line": 148,
        "verdict": "сверено",
        "found": true
       }
@@ -1108,7 +1108,7 @@ const JOURNAL = {
       {
        "path": "cli/journal_cli.py",
        "quote": "inventory = check_consequences(journal, args.json.parent / \"consequences.md\", roots)",
-       "line": 84,
+       "line": 85,
        "verdict": "сверено",
        "found": true
       }
@@ -1130,7 +1130,7 @@ const JOURNAL = {
       {
        "path": "docs/repo-contract.md",
        "quote": "**Что считается сменой.** Новое поле сменой не считается.",
-       "line": 60,
+       "line": 61,
        "verdict": "сверено",
        "found": true
       }
@@ -1175,14 +1175,14 @@ const JOURNAL = {
       {
        "path": "cli/journal_cli.py",
        "quote": "from attack_table import parse_attack_md",
-       "line": 18,
+       "line": 19,
        "verdict": "сверено",
        "found": true
       },
       {
        "path": "step-help/step_help.py",
        "quote": "Развилки журнала: открытой считается только `status: открыт`, припаркованные отдельно (F-40).",
-       "line": 94,
+       "line": 96,
        "verdict": "сверено",
        "found": true
       }
@@ -1342,8 +1342,8 @@ const JOURNAL = {
      "evidence": [
       {
        "path": "attack/skills/symphysis-attack/SKILL.md",
-       "quote": "Если хеши разошлись (у `attack-artifacts` — и хеш журнала) — атака MUST идти с начала,",
-       "line": 133,
+       "quote": "Если у `attack-decisions` разошёлся хеш журнала — повтор MUST идти по составу, не с начала.",
+       "line": 135,
        "verdict": "сверено",
        "found": true
       },
@@ -1427,7 +1427,7 @@ const JOURNAL = {
       {
        "path": "attack/skills/symphysis-attack/SKILL.md",
        "quote": "`decision.word` против варианта по смыслу; `consequences` не из решения; решённая запись",
-       "line": 275,
+       "line": 297,
        "verdict": "сверено",
        "found": true
       }
@@ -1442,7 +1442,7 @@ const JOURNAL = {
       {
        "path": "attack/skills/symphysis-attack/SKILL.md",
        "quote": "`decision.word` против варианта по смыслу; `consequences` не из решения; решённая запись",
-       "line": 275,
+       "line": 297,
        "verdict": "сверено",
        "found": true
       }
@@ -2372,7 +2372,7 @@ const JOURNAL = {
     {
      "path": "attack/attack_table.py",
      "quote": "elif (m := RE_TARGET_SHA.match(line)) and targets:",
-     "line": 37,
+     "line": 45,
      "verdict": "сверено",
      "found": true
     }
@@ -2443,7 +2443,7 @@ const JOURNAL = {
     {
      "path": "cli/journal_cli.py",
      "quote": "if journal is None:",
-     "line": 60,
+     "line": 61,
      "verdict": "сверено",
      "found": true
     }
@@ -2514,7 +2514,7 @@ const JOURNAL = {
     {
      "path": "step-help/step_help.py",
      "quote": "if reply.code != 0 and not (data and usable_on_failure and data.get(usable_on_failure)):",
-     "line": 76,
+     "line": 78,
      "verdict": "сверено",
      "found": true
     }
@@ -2585,7 +2585,7 @@ const JOURNAL = {
     {
      "path": "step-help/step_help.py",
      "quote": "return {\"open\": UNREADABLE, \"parked\": UNREADABLE}",
-     "line": 103,
+     "line": 105,
      "verdict": "сверено",
      "found": true
     }
@@ -2877,6 +2877,150 @@ const JOURNAL = {
    ],
    "comments": [],
    "finding": ""
+  },
+  {
+   "id": "F-43",
+   "question": "[ветка] Вердикт форка: файл атаки есть, а значения `status` во frontmatter нет — форк отдаёт `verdict: missing`, справка покажет `missing` и состав по хешу файла; нужен ли этому сценарий?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-20",
+    "F-23"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN `attack/decisions.md` без строки `status`, `target_sha256` совпал WHEN выполняется `step_help.py --change demo` THEN `verdict` равно `missing`, `stale_scope` пуст; цена: сценарий в `step-help`, тест в `test_step_help.py`, сопровождение при смене значений вердикта форка",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — файл атаки без `status` не покрывается; допустимо: шаблон атаки всегда несёт `status`, файл без него — сломанный файл атаки, который чинит скилл по `attack-table.md`; `missing` виден в `openspec status` и на странице сразу, тихой порчи нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест `step_help.py` подаёт файл атаки без `status` при `verdict: missing` от шима и утверждает: поле `verdict` равно `missing`, `stale_scope` — список; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — остаётся открытым до правки шаблонов атаки или форка; пока tasks считает `missing` значением, которое справка отдаёт как есть",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "B",
+    "why": "Файл без `status` — поломка файла атаки, не состояние конвейера: шаблон несёт `status` всегда, а `missing` виден в `openspec status` и на странице сразу, тихой порчи нет; против A — сценарий закрепил бы поведение форка, которого изменение не касается (F-20); против C — тест без сценария проверял бы то же чужое поведение."
+   },
+   "decision": {
+    "option": "B",
+    "word": "",
+    "date": "2026-11-07"
+   },
+   "reversibility": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Dismiss",
+    "reason": ""
+   },
+   "parking": [],
+   "dispute": "",
+   "consequences": "Файл без `status` — поломка файла атаки, не состояние конвейера: шаблон несёт `status` всегда, а `missing` виден в `openspec status` и на странице сразу, тихой порчи нет; против A — сценарий закрепил бы поведение форка, которого изменение не касается (F-20); против C — тест без сценария проверял бы то же чужое поведение.",
+   "evidence": [
+    {
+     "path": "upstream/openspec/src/core/artifact-graph/state.ts",
+     "quote": "if (!frontmatter || !Object.hasOwn(frontmatter, verdict.frontmatter)) {",
+     "line": 202,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "finding": ""
+  },
+  {
+   "id": "F-44",
+   "question": "[ветка] Окно вердикта форка: `tasks.md` не читается — `hasCheckedTask` даёт `false`, окно открыто и `stale` гейтует; поля справки и состав при открытом окне те же, что при закрытом; нужен ли этому сценарий?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-20",
+    "F-23"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN `attack/artifacts.md` со `status: passed`, `tasks.md` не читается, журнал дописан WHEN выполняется `step_help.py --change demo` THEN `verdict` равно `stale`, `stale_scope` несёт те же строки, что при закрытом окне; цена: сценарий `step-help`, тест с нечитаемым `tasks.md`, сопровождение при смене правила окна форка",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — окно не покрывается; допустимо: расчёт состава `tasks.md` как условие не читает (только как цель по хешу), окно меняет лишь гейт форка и видно в `status`; поведение окна держат тесты форка (правка C11)",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест `step_help.py` с шимом: `verdict: stale` при нечитаемом `tasks.md` даёт те же `stale_scope`, что без него; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — остаётся открытым до изменения окна C11 (`attack-warning-read` трогает ту же строку `notes[]`); пока tasks считает окно делом форка",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "B",
+    "why": "Окно — гейт форка, а состав считается по хешу без оглядки на окно и на значение вердикта (F-39): тихой порчи нет, расхождение видно в `status`; против A — сценарий здесь закрепил бы поведение форка, которое изменение не трогает (F-20); против C — тот же чужой инвариант без строки в спеке."
+   },
+   "decision": {
+    "option": "B",
+    "word": "(без слова) Слово владельца в чате, 2026-11-07: «Можно коммитить. Насчет третьего прохода атаки думаю не нужно.»",
+    "date": "2026-11-07"
+   },
+   "reversibility": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Dismiss",
+    "reason": "(без слова) Слово владельца в чате, 2026-11-07: «Можно коммитить. Насчет третьего прохода атаки думаю не нужно.»"
+   },
+   "parking": [],
+   "dispute": "",
+   "consequences": "Окно — гейт форка, а состав считается по хешу без оглядки на окно и на значение вердикта (F-39): тихой порчи нет, расхождение видно в `status`; против A — сценарий здесь закрепил бы поведение форка, которое изменение не трогает (F-20); против C — тот же чужой инвариант без строки в спеке.",
+   "evidence": [
+    {
+     "path": "upstream/openspec/src/core/artifact-graph/state.ts",
+     "quote": " * gating. Only `stale` has a window: `mismatch` and `missing` always gate.",
+     "line": 81,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "finding": ""
   }
  ],
  "notes": [
@@ -2895,10 +3039,1717 @@ const JOURNAL = {
   {
    "date": "2026-11-07",
    "text": "проба запретов: требований 10, оставлено 1, канон → ИБ 2, Specify 1, Dismiss 0, Defer 0"
+  },
+  {
+   "date": "2026-11-07",
+   "text": "атака артефактов: строк 235, блокеров 9, предупреждений 1, справок 225, не выводится 0 — gaps_found"
+  },
+  {
+   "date": "2026-11-07",
+   "text": "атака openspec/changes/attack-stale-scope/attack/artifacts.md · claim-extraction · «design.md:56 F-16, улика attack/skills/symphysis-attack/SKI…» — спор: Дрейф улик, нужно заменить цитату на текущую строку. · атака openspec/changes/attack-stale-scope/attack/artifacts.md · claim-extraction · «design.md:135 F-21, улика выбранного варианта — та же цитат…» — спор: Дрейф улик, нужно заменить цитату на текущую строку. · атака openspec/changes/attack-stale-scope/attack/artifacts.md · claim-extraction · «tasks.md:15 задача 2.2 — «утверждение о файле в тест устано…» — спор: Требуется исправление формулировков tasks.md · атака openspec/changes/attack-stale-scope/attack/artifacts.md · trace-link · «task:1.5 → scn:stale-verdict-scope/Состав одинаков у всех ч…» — спор: Нужна правка артефакта. · атака openspec/changes/attack-stale-scope/attack/artifacts.md · trace-link · «req:artifact-attack/Хеши целей обесценивают вердикт после п…» — спор: Нужна правка артефакта. · атака openspec/changes/attack-stale-scope/attack/artifacts.md · trace-link · «req:artifact-attack/Хеши целей обесценивают вердикт после п…» — спор: Нужна правка артефакта. · атака openspec/changes/attack-stale-scope/attack/artifacts.md · trace-link · «branch:cli/journal_cli.py:134 → scn:decision-journal/`check…» — спор: Нужна правка артефакта. · атака openspec/changes/attack-stale-scope/attack/artifacts.md · trace-link · «branch:upstream/openspec/src/core/artifact-graph/state.ts:1…» — спор: Нужна правка артефакта. · атака openspec/changes/attack-stale-scope/attack/artifacts.md · trace-link · «branch:upstream/openspec/src/core/artifact-graph/state.ts:1…» — спор: Нужна правка артефакта.\n\nСлово владельца в чате, 2026-11-07: «концептуальный проблем у блокеров я не увидел.»"
+  },
+  {
+   "date": "2026-11-07",
+   "text": "атака артефактов: строк 183, блокеров 4, предупреждений 0, справок 179, не выводится 0 — gaps_found"
   }
  ]
 };
-const ATTACK = [];
+const ATTACK = [
+ {
+  "path": "openspec/changes/attack-stale-scope/attack/artifacts.md",
+  "frontmatter": {
+   "status": "gaps_found",
+   "targets": [
+    {
+     "path": "decisions.json",
+     "sha256": "81a36990fdabed72b366dc4342c773b47c3194f52d7789e87b3544fa56846c5f"
+    },
+    {
+     "path": "specs/artifact-attack/spec.md",
+     "sha256": "d4b72253f56abb39fc900c68f901d00e946afb31491081825956187408839e51"
+    },
+    {
+     "path": "specs/decision-journal/spec.md",
+     "sha256": "673cd7f6371090f8ab8a75d9966bdc7f7e75c3aa2ef9f61576afaf6e1ac2341d"
+    },
+    {
+     "path": "specs/stale-verdict-scope/spec.md",
+     "sha256": "362523cd620c41505b2f83b1c71b9860640c276e576e5dc79908fefa5baec407"
+    },
+    {
+     "path": "specs/step-help/spec.md",
+     "sha256": "f220aaea67ba6c2e6c809b3c4b7e1ef8b0bcfe46bba22be6ccba03922845721f"
+    },
+    {
+     "path": "consequences.md",
+     "sha256": "a0359d50bd8bef058c37b47d27a16b6e0afdc28249c0716dae5fe26b06984e18"
+    },
+    {
+     "path": "design.md",
+     "sha256": "77672cfd1a2b6e450c80b81d0d8de4faa78191a6baf0f85eb99264640208093d"
+    },
+    {
+     "path": "security.md",
+     "sha256": "b63e8e993572d84beafa6c4ce21193999d880259d4d766b8556fb14782b6716b"
+    },
+    {
+     "path": "tasks.md",
+     "sha256": "a8af915db1f8628960f96d89fbb28717eb07a59629efe37cf7c6e41bf3bce52a"
+    }
+   ]
+  },
+  "rows": [
+   {
+    "claim": "`specs/artifact-attack/spec.md:8`, Хеши целей обесценивают вердикт после правки / Цель изменена после атаки",
+    "section": "F-21.A — правило шага 1 `attack/skills/symphysis-attack/SKILL.md`",
+    "lens": "scenario-run",
+    "invariant": "таблица пишется с начала, в файле новые хеши, старые строки не копируются",
+    "severity": "справка",
+    "support": "есть: attack/skills/symphysis-attack/SKILL.md:133-134 «Если у `attack-artifacts` разошёлся хеш любой цели или журнала — атака артефактов MUST идти с начала, прежние строки не переносятся: они о другой цели»; хеши — команды шага 1 :114-119 из каталога изменения → исход совпал",
+    "fix": "—"
+   },
+   {
+    "claim": "`specs/artifact-attack/spec.md:13`, Хеши целей обесценивают вердикт после правки / Хеш берётся после check --write",
+    "section": "F-20.A — правило шагов 1 и 6 `attack/skills/symphysis-attack/SKILL.md`",
+    "lens": "scenario-run",
+    "invariant": "значение равно `sha256sum decisions.json` после `check --write` и после строки итога в `notes[]`, а не до них",
+    "severity": "справка",
+    "support": "есть: attack/skills/symphysis-attack/SKILL.md:110 «check --write пишет line/found/verdict — хеш после него», :390 «Строка итога — в `notes[]` журнала до `check --write` и хешей», :464-465 «журнал — после `notes[]` и `check --write`» → исход совпал",
+    "fix": "—"
+   },
+   {
+    "claim": "`specs/artifact-attack/spec.md:26`, Повтор атаки журнала по составу / Записи добавлены после вердикта",
+    "section": "F-22.A — правило шага 1 `attack/skills/symphysis-attack/SKILL.md`",
+    "lens": "scenario-run",
+    "invariant": "строки F-80–F-82 и F-12 написаны заново, остальные прежние, `target_sha256` новый, вводный текст называет проход и записи",
+    "severity": "справка",
+    "support": "есть: attack/skills/symphysis-attack/SKILL.md:138-144 «Проход по всем линзам идёт по добавленным записям и их стыкам — прежним записям, связанным с новой через `depends_on`, `antipodes` или номера `F-NN` в `consequences` дословно, в любую сторону … Прежние строки записей состава и стыков заменяются новыми, остальные строки таблицы MUST остаться байт в байт; вводный текст файла под строкой `**Состав:**` называет проход и записи: «повтор по составу: F-80–F-82, стыки F-12»» — `depends_on: [F-12]` у F-80 даёт стык F-12 → исход совпал",
+    "fix": "—"
+   },
+   {
+    "claim": "`specs/artifact-attack/spec.md:26`, Повтор атаки журнала по составу / Записи добавлены после вердикта",
+    "section": "F-17.A, F-18.A — `attack/attack_scope.py` `_journal_scope` (строки `[..] атака журнала:`, которые читает правило)",
+    "lens": "scenario-run",
+    "invariant": "состав называет F-80–F-82 добавленными",
+    "severity": "справка",
+    "support": "есть: attack/attack_scope.py:87 «seen.update(int(n) for n in RE_NUMBER.findall(section))», :91 «added = [(n, rid) for n, rid in sorted(numbers) if n not in seen]», :93 «f\"после вердикта {_count_word(len(added))}: {_runs(added)}\"», :58 — три подряд дают диапазон «F-80–F-82» → исход совпал",
+    "fix": "—"
+   },
+   {
+    "claim": "`specs/artifact-attack/spec.md:31`, Повтор атаки журнала по составу / Ноль добавленных без новых сигналов",
+    "section": "F-22.A — правило шага 1 `attack/skills/symphysis-attack/SKILL.md`",
+    "lens": "scenario-run",
+    "invariant": "`target_sha256` обновлён, строки и `status` прежние",
+    "severity": "справка",
+    "support": "есть: attack/skills/symphysis-attack/SKILL.md:146-147 «Если состав — «записей не добавлено: журнал изменён иначе» и у `check --write` новых `[!!]` нет — обновляется только `target_sha256`, строки и `status` прежние» → исход совпал",
+    "fix": "—"
+   },
+   {
+    "claim": "`specs/artifact-attack/spec.md:31`, Повтор атаки журнала по составу / Ноль добавленных без новых сигналов",
+    "section": "F-18.A — `attack/attack_scope.py` `_journal_scope`",
+    "lens": "scenario-run",
+    "invariant": "состав — «записей не добавлено: журнал изменён иначе»",
+    "severity": "справка",
+    "support": "есть: attack/attack_scope.py:21 «NOTHING_ADDED = \"записей не добавлено: журнал изменён иначе\"», :93 «… if added else NOTHING_ADDED» → исход совпал",
+    "fix": "—"
+   },
+   {
+    "claim": "`specs/artifact-attack/spec.md:36`, Повтор атаки журнала по составу / Ноль добавленных с новым сигналом улики",
+    "section": "F-22.A — правило шага 1 `attack/skills/symphysis-attack/SKILL.md`",
+    "lens": "scenario-run",
+    "invariant": "строки F-30 написаны заново, остальные прежние",
+    "severity": "справка",
+    "support": "есть: attack/skills/symphysis-attack/SKILL.md:147-148 «`[!!]` у улики записи есть — проход по этой записи как по стыку» → исход совпал",
+    "fix": "—"
+   },
+   {
+    "claim": "`specs/artifact-attack/spec.md:41`, Повтор атаки журнала по составу / Состав неполон",
+    "section": "F-22.A — правило шага 1 `attack/skills/symphysis-attack/SKILL.md`",
+    "lens": "scenario-run",
+    "invariant": "таблица пишется с начала",
+    "severity": "справка",
+    "support": "есть: attack/skills/symphysis-attack/SKILL.md:152-153 «Если состав — «состав неполон: линза coverage выключена …» — таблица не называет записи поимённо, стыки не найти: повтор MUST идти с начала» → исход совпал",
+    "fix": "—"
+   },
+   {
+    "claim": "`specs/artifact-attack/spec.md:41`, Повтор атаки журнала по составу / Состав неполон",
+    "section": "F-17.A — `attack/attack_scope.py` `_coverage_off`",
+    "lens": "scenario-run",
+    "invariant": "строка «состав неполон …» стоит при `coverage` среди выключенных",
+    "severity": "справка",
+    "support": "есть: attack/attack_scope.py:67-68 «off = RE_OFF.search(composition)» / «return bool(off) and \"coverage\" in off.group(1)», :92 «lines = [INCOMPLETE] if _coverage_off(attack.get(\"composition\")) else []» → исход совпал",
+    "fix": "—"
+   },
+   {
+    "claim": "`specs/artifact-attack/spec.md:46`, Повтор атаки журнала по составу / Стык по номерам в consequences",
+    "section": "F-31.A — правило шага 1 `attack/skills/symphysis-attack/SKILL.md`",
+    "lens": "scenario-run",
+    "invariant": "стыки — F-10, F-12, F-20: номера, стоящие в тексте дословно; диапазон не разворачивается",
+    "severity": "справка",
+    "support": "есть: attack/skills/symphysis-attack/SKILL.md:139-141 «или номера `F-NN` в `consequences` дословно, в любую сторону; диапазон `F-10–F-12` в тексте не разворачивается, стыки — F-10 и F-12» → исход совпал",
+    "fix": "—"
+   },
+   {
+    "claim": "`specs/artifact-attack/spec.md:58`, Хеш не обновляется при изменённом решении прежней записи / Файл ответа новее атаки",
+    "section": "F-32.A — правило шага 1 `attack/skills/symphysis-attack/SKILL.md`",
+    "lens": "scenario-run",
+    "invariant": "строки F-12 написаны заново по всем линзам, `target_sha256` обновлён после прохода",
+    "severity": "справка",
+    "support": "есть: attack/skills/symphysis-attack/SKILL.md:149-151 «Если в `answers/` есть файл новее файла атаки со строкой `- F-NN:` прежней записи — эти записи MUST проходиться как стыки и при нуле добавленных, `target_sha256` обновляется после прохода, не до него» → исход совпал",
+    "fix": "—"
+   },
+   {
+    "claim": "`specs/decision-journal/spec.md:8`, `check` называет состав устаревшего вердикта / Записи добавлены после вердикта",
+    "section": "F-19.E — `cli/journal_cli.py` `_scope_report` + `attack/attack_scope.py`",
+    "lens": "scenario-run",
+    "invariant": "stdout несёт `[..] атака журнала: после вердикта добавлено 60 записей: F-80–F-139`, код 0",
+    "severity": "справка",
+    "support": "есть: cli/journal_cli.py:100 «ATTACK_FILES = ((\"decisions.md\", \"атака журнала\"), (\"artifacts.md\", \"атака артефактов\"))», :119 «lines += [f\"[..] {label}: {line}\" for line in scope_lines(att, change)]», :96-97 код 2 только при `--strict` и находках, иначе 0; attack/attack_scope.py:46 «return f\"добавлено {n} записей\"» (60), :58 диапазон при трёх и больше подряд → исход совпал",
+    "fix": "—"
+   },
+   {
+    "claim": "`specs/decision-journal/spec.md:13`, `check` называет состав устаревшего вердикта / Хеш совпал",
+    "section": "F-19.E — `cli/journal_cli.py` `_scope_report` + `attack/attack_scope.py` `_journal_scope`",
+    "lens": "scenario-run",
+    "invariant": "строк `[..] атака журнала` нет",
+    "severity": "справка",
+    "support": "есть: attack/attack_scope.py:78-79 «if sha256_file(journal_path) == sha:» / «return []» — пустой список; cli/journal_cli.py:119 строк по нему не добавляет → исход совпал",
+    "fix": "—"
+   },
+   {
+    "claim": "`specs/decision-journal/spec.md:18`, `check` называет состав устаревшего вердикта / Состав не меняет код `--strict`",
+    "section": "F-19.E — `cli/journal_cli.py` `cmd_check`",
+    "lens": "scenario-run",
+    "invariant": "строка `[..] атака журнала` есть, код 0",
+    "severity": "справка",
+    "support": "есть: cli/journal_cli.py:96-97 «return 2 if args.strict and (result[\"missing\"] or unfound or unasked or unexplained or cycles or inventory[\"missing\"] or broken_attack) else 0» — строк состава в условии нет, :91-92 печатают их → исход совпал",
+    "fix": "—"
+   },
+   {
+    "claim": "`specs/decision-journal/spec.md:23`, `check` называет состав устаревшего вердикта / Файла атаки нет",
+    "section": "F-19.E — `cli/journal_cli.py` `_scope_report`",
+    "lens": "scenario-run",
+    "invariant": "строк `[..] атака` нет, остальные проверки прежние",
+    "severity": "справка",
+    "support": "есть: cli/journal_cli.py:110-112 «path = change / \"attack\" / name» / «if not path.is_file():» / «continue»; сверки улик, парковок, циклов и описи идут раньше (:64-89) и от каталога `attack/` не зависят → исход совпал",
+    "fix": "—"
+   },
+   {
+    "claim": "`specs/decision-journal/spec.md:28`, `check` называет состав устаревшего вердикта / Файл атаки не разбирается",
+    "section": "F-30.A — `cli/journal_cli.py` `_scope_report`, `_read_attack`",
+    "lens": "scenario-run",
+    "invariant": "stdout несёт `[!!] attack/decisions.md: файл атаки не разбирается: <причина>`, остальные проверки идут, код 0, с `--strict` 2",
+    "severity": "справка",
+    "support": "есть: cli/journal_cli.py:167-168 «except ValueError as e:» / «return None, str(e)», :116-117 «lines.append(f\"[!!] attack/{name}: файл атаки не разбирается: {reason}\")» / «broken = True», :96-97 «… or broken_attack) else 0» → исход совпал",
+    "fix": "—"
+   },
+   {
+    "claim": "`specs/decision-journal/spec.md:28`, `check` называет состав устаревшего вердикта / Файл атаки не разбирается",
+    "section": "F-30.A — `attack/attack_table.py` `_attack_frontmatter` (отказ разбора)",
+    "lens": "scenario-run",
+    "invariant": "файл без строки `---` даёт причину «нет frontmatter»",
+    "severity": "справка",
+    "support": "есть: attack/attack_table.py:35-36 «if not lines or lines[0].strip() != \"---\":» / «raise ValueError(f\"{name}: нет frontmatter\")» → исход совпал",
+    "fix": "—"
+   },
+   {
+    "claim": "`specs/stale-verdict-scope/spec.md:11`, Состав атаки журнала считается по таблице / Записи добавлены после вердикта",
+    "section": "F-17.A, F-18.A — `attack/attack_scope.py` `_journal_scope`",
+    "lens": "scenario-run",
+    "invariant": "состав — «после вердикта добавлено 60 записей: F-80–F-139»",
+    "severity": "справка",
+    "support": "есть: attack/attack_scope.py:87 «seen.update(int(n) for n in RE_NUMBER.findall(section))», :91 «added = [(n, rid) for n, rid in sorted(numbers) if n not in seen]», :93 «f\"после вердикта {_count_word(len(added))}: {_runs(added)}\"», :46 «добавлено {n} записей», :58 диапазон → исход совпал",
+    "fix": "—"
+   },
+   {
+    "claim": "`specs/stale-verdict-scope/spec.md:16`, Состав атаки журнала считается по таблице / Добавленные идут не подряд",
+    "section": "F-18.A — `attack/attack_scope.py` `_runs`, `_count_word`",
+    "lens": "scenario-run",
+    "invariant": "состав — «после вердикта добавлено 2 записи: F-05, F-11»",
+    "severity": "справка",
+    "support": "есть: attack/attack_scope.py:44-45 «if 2 <= last <= 4 and not 12 <= tens <= 14:» / «return f\"добавлено {n} записи\"», :58 «… if j - i >= 2 else \", \".join(rid for _, rid in added[i:j + 1])» — F-05 и F-11 не подряд, перечень → исход совпал",
+    "fix": "—"
+   },
+   {
+    "claim": "`specs/stale-verdict-scope/spec.md:21`, Состав атаки журнала считается по таблице / Раздел с несколькими записями",
+    "section": "F-17.A — `attack/attack_scope.py` `_journal_scope`, `RE_NUMBER`",
+    "lens": "scenario-run",
+    "invariant": "F-07 и F-32 считаются атакованными",
+    "severity": "справка",
+    "support": "есть: attack/attack_scope.py:87 «seen.update(int(n) for n in RE_NUMBER.findall(section))» — `findall` берёт все номера ячейки, разделитель ` · ` не мешает → исход совпал",
+    "fix": "—"
+   },
+   {
+    "claim": "`specs/stale-verdict-scope/spec.md:26`, Состав атаки журнала считается по таблице / Номер с ведущим нулём",
+    "section": "F-26.A — `attack/attack_scope.py` `_record_numbers`, `_journal_scope`",
+    "lens": "scenario-run",
+    "invariant": "F-07 считается атакованной: номера сравниваются по числу",
+    "severity": "справка",
+    "support": "есть: attack/attack_scope.py:34 «return [(int(m.group(1)), rec[\"id\"]) for rec in records if (m := RE_NUMBER.fullmatch(rec[\"id\"]))]», :87 «int(n)» — `F-7` и `F-07` дают 7 → исход совпал",
+    "fix": "—"
+   },
+   {
+    "claim": "`specs/stale-verdict-scope/spec.md:32`, Состав атаки журнала считается по таблице / Раздел диапазоном",
+    "section": "F-40.A — `attack/attack_scope.py` `_journal_scope`, `RE_RANGE`",
+    "lens": "scenario-run",
+    "invariant": "строка «раздел диапазоном: F-01–F-10, записи по одной не названы»; атакованы только F-01 и F-10",
+    "severity": "справка",
+    "support": "есть: attack/attack_scope.py:88-90 «for found in RE_RANGE.findall(section):» / «if found not in ranges:» / «ranges.append(found)», :94 «lines += [f\"раздел диапазоном: {r}, записи по одной не названы\" for r in ranges]», :87 — в `seen` попадают только 1 и 10 → исход совпал",
+    "fix": "—"
+   },
+   {
+    "claim": "`specs/stale-verdict-scope/spec.md:44`, Ноль добавленных при изменённом журнале называется словами / Журнал изменён только сверкой",
+    "section": "F-18.A — `attack/attack_scope.py` `_journal_scope`",
+    "lens": "scenario-run",
+    "invariant": "состав — «записей не добавлено: журнал изменён иначе»",
+    "severity": "справка",
+    "support": "есть: attack/attack_scope.py:21 «NOTHING_ADDED = \"записей не добавлено: журнал изменён иначе\"», :93 «… if added else NOTHING_ADDED» — хеш разошёлся (:78), добавленных нет → исход совпал",
+    "fix": "—"
+   },
+   {
+    "claim": "`specs/stale-verdict-scope/spec.md:49`, Ноль добавленных при изменённом журнале называется словами / Хеш совпал",
+    "section": "F-18.A — `attack/attack_scope.py` `_journal_scope`",
+    "lens": "scenario-run",
+    "invariant": "состав пуст, строк у читателей нет",
+    "severity": "справка",
+    "support": "есть: attack/attack_scope.py:78-79 «if sha256_file(journal_path) == sha:» / «return []»; читатели cli/journal_cli.py:119 и step-help/step_help.py:215 печатают только то, что в списке → исход совпал",
+    "fix": "—"
+   },
+   {
+    "claim": "`specs/stale-verdict-scope/spec.md:54`, Ноль добавленных при изменённом журнале называется словами / Хеш цели не задан",
+    "section": "F-27.A — `attack/attack_scope.py` `scope_lines`; `attack/attack_table.py` `_attack_frontmatter`",
+    "lens": "scenario-run",
+    "invariant": "строка «хеш цели не задан: состав не считается», списка добавленных нет",
+    "severity": "справка",
+    "support": "есть: attack/attack_table.py:47-50 — ключ `target_sha256:` без значения даёт пустое поле и «targets.insert(0, {\"path\": fields[\"target\"], \"sha256\": fields.get(\"target_sha256\", \"\")})»; attack/attack_scope.py:145-146 «sha = targets[0][\"sha256\"].strip().lower()» / «return [NO_HASH] if not sha else _journal_scope(attack, change_dir, sha)», :20 «NO_HASH = \"хеш цели не задан: состав не считается\"» → исход совпал",
+    "fix": "—"
+   },
+   {
+    "claim": "`specs/stale-verdict-scope/spec.md:60`, Ноль добавленных при изменённом журнале называется словами / Хеш в верхнем регистре",
+    "section": "F-28.A — `attack/attack_scope.py` `scope_lines`",
+    "lens": "scenario-run",
+    "invariant": "состав пуст: хеши сравниваются без учёта регистра, как у форка",
+    "severity": "справка",
+    "support": "есть: attack/attack_scope.py:145 «sha = targets[0][\"sha256\"].strip().lower()», :78 «if sha256_file(journal_path) == sha:» — `sha256_file` отдаёт hexdigest строчными → исход совпал",
+    "fix": "—"
+   },
+   {
+    "claim": "`specs/stale-verdict-scope/spec.md:72`, Неполный состав при выключенной `coverage` / Линза покрытия выключена",
+    "section": "F-17.A — `attack/attack_scope.py` `_coverage_off`, `_journal_scope`",
+    "lens": "scenario-run",
+    "invariant": "строка о неполном составе и «после вердикта добавлено 2 записи: F-02, F-04»",
+    "severity": "справка",
+    "support": "есть: attack/attack_scope.py:67-68 «off = RE_OFF.search(composition)» / «return bool(off) and \"coverage\" in off.group(1)», :92 «lines = [INCOMPLETE] if _coverage_off(attack.get(\"composition\")) else []», :93 — добавленные считаются и при неполном составе, :22 «INCOMPLETE = \"состав неполон: линза coverage выключена, записи без находок в таблице не названы\"» → исход совпал",
+    "fix": "—"
+   },
+   {
+    "claim": "`specs/stale-verdict-scope/spec.md:77`, Неполный состав при выключенной `coverage` / Строки состава нет",
+    "section": "F-17.A — `attack/attack_scope.py` `_coverage_off`; `attack/attack_table.py` `_composition`",
+    "lens": "scenario-run",
+    "invariant": "строки о неполном составе нет",
+    "severity": "справка",
+    "support": "есть: attack/attack_table.py:27 «return next((m.group(1) for line in lines[start:] if (m := RE_COMPOSITION.match(line))), None)» — строки нет, значит `None`; attack/attack_scope.py:65-66 «if not composition:» / «return False» → исход совпал",
+    "fix": "—"
+   },
+   {
+    "claim": "`specs/stale-verdict-scope/spec.md:88`, У атаки артефактов — все изменившиеся цели и число записей / Две цели изменены",
+    "section": "F-23.A — `attack/attack_scope.py` `_artifacts_scope`",
+    "lens": "scenario-run",
+    "invariant": "названы обе: `design.md`, `tasks.md`",
+    "severity": "справка",
+    "support": "есть: attack/attack_scope.py:113 «for target in attack[\"frontmatter\"][\"targets\"]:» — цикл по всем целям без выхода на первой, :132 «lines.append(f\"{declared}: изменён после вердикта\")» → исход совпал",
+    "fix": "—"
+   },
+   {
+    "claim": "`specs/stale-verdict-scope/spec.md:93`, У атаки артефактов — все изменившиеся цели и число записей / Журнал как опора изменён",
+    "section": "F-24.B — `attack/attack_scope.py` `_artifacts_scope`",
+    "lens": "scenario-run",
+    "invariant": "строка «decisions.json: журнал изменён, записей сейчас 159», номеров записей нет",
+    "severity": "справка",
+    "support": "есть: attack/attack_scope.py:127-130 «if Path(declared).as_posix() == JOURNAL:» / «numbers = _record_numbers(full)» / «… else f\"{JOURNAL}: журнал изменён, записей сейчас {len(numbers)}\"» → исход совпал",
+    "fix": "—"
+   },
+   {
+    "claim": "`specs/stale-verdict-scope/spec.md:98`, У атаки артефактов — все изменившиеся цели и число записей / Цели нет на диске",
+    "section": "F-23.A — `attack/attack_scope.py` `_artifacts_scope`",
+    "lens": "scenario-run",
+    "invariant": "`security.md` назван с пометкой «файла нет»",
+    "severity": "справка",
+    "support": "есть: attack/attack_scope.py:119-121 «if not full.is_file():» / «lines.append(f\"{declared}: файла нет\")» / «continue» → исход совпал",
+    "fix": "—"
+   },
+   {
+    "claim": "`specs/stale-verdict-scope/spec.md:103`, У атаки артефактов — все изменившиеся цели и число записей / Путь цели вне каталога",
+    "section": "F-29.A — `attack/attack_scope.py` `_outside`, `_artifacts_scope`",
+    "lens": "scenario-run",
+    "invariant": "файл не читается, цель названа с пометкой «вне каталога изменения»",
+    "severity": "справка",
+    "support": "есть: attack/attack_scope.py:102 «if raw.is_absolute() or raw.anchor or raw.drive or \"..\" in raw.parts or …: return True», :115-117 «if _outside(declared, change_dir):» / «lines.append(f\"{declared}: вне каталога изменения\")» / «continue» — до `is_file` и чтения → исход совпал",
+    "fix": "—"
+   },
+   {
+    "claim": "`specs/stale-verdict-scope/spec.md:109`, У атаки артефактов — все изменившиеся цели и число записей / Цель без хеша",
+    "section": "F-35.A — `attack/attack_scope.py` `_artifacts_scope`",
+    "lens": "scenario-run",
+    "invariant": "цель названа с пометкой «хеш не задан», изменившейся не считается",
+    "severity": "справка",
+    "support": "есть: attack/attack_table.py:44 «targets.append({\"path\": m.group(1), \"sha256\": \"\"})»; attack/attack_scope.py:122-124 «if not sha:» / «lines.append(f\"{declared}: хеш не задан\")» / «continue» → исход совпал",
+    "fix": "—"
+   },
+   {
+    "claim": "`specs/stale-verdict-scope/spec.md:121`, Состав одинаков у всех читателей / Два читателя",
+    "section": "F-19.E — `cli/journal_cli.py` `_scope_report` и `step-help/step_help.py` `_stale_scope`",
+    "lens": "scenario-run",
+    "invariant": "строки состава в stdout `check` и в поле страницы шага равны",
+    "severity": "справка",
+    "support": "есть: cli/journal_cli.py:119 «lines += [f\"[..] {label}: {line}\" for line in scope_lines(att, change)]»; step-help/step_help.py:215 «return scope_lines(attack, Path(status[\"changeRoot\"]))» — одна функция, тот же файл атаки (`existingOutputPaths[0]`, :203-206) и тот же каталог изменения → исход совпал",
+    "fix": "—"
+   },
+   {
+    "claim": "`specs/step-help/spec.md:8`, Страница шага атаки несёт вердикт и состав / Вердикт устарел после proposal",
+    "section": "F-19.E — `step-help/step_help.py` `_artifact_page`, `_stale_scope`",
+    "lens": "scenario-run",
+    "invariant": "у страницы `attack-decisions` поле `verdict` равно `stale`, `stale_scope` несёт строку «после вердикта добавлено N записей: …»",
+    "severity": "справка",
+    "support": "есть: step-help/step_help.py:230-231 «if \"verdict\" in artifact:» / «page.update(verdict=artifact[\"verdict\"], stale_scope=_stale_scope(artifact, status), file_note=None)», :215 → attack/attack_scope.py:93 → исход совпал",
+    "fix": "—"
+   },
+   {
+    "claim": "`specs/step-help/spec.md:8`, Страница шага атаки несёт вердикт и состав / Вердикт устарел после proposal",
+    "section": "F-20.A — форк `upstream/openspec/src/core/artifact-graph/state.ts` `inspectVerdict` (не меняется)",
+    "lens": "scenario-run",
+    "invariant": "`status` отдаёт `verdict: stale` при разошедшемся хеше журнала",
+    "severity": "справка",
+    "support": "есть: upstream/openspec/src/core/artifact-graph/state.ts:212-213 «const staleTarget = findStaleTarget(frontmatter, changeDir);» / «return staleTarget ? { state: 'stale', staleTarget } : { state: 'ok' };», :304 сравнение хеша байтов → исход совпал",
+    "fix": "—"
+   },
+   {
+    "claim": "`specs/step-help/spec.md:13`, Страница шага атаки несёт вердикт и состав / Вердикт в силе",
+    "section": "F-19.E — `step-help/step_help.py` `_artifact_page`, `_stale_scope`",
+    "lens": "scenario-run",
+    "invariant": "`verdict` равно `ok`, `stale_scope` — пустой список",
+    "severity": "справка",
+    "support": "есть: upstream/openspec/src/core/artifact-graph/state.ts:213 «… : { state: 'ok' }»; step-help/step_help.py:231, :215 → attack/attack_scope.py:78-79 «if sha256_file(journal_path) == sha:» / «return []» → исход совпал",
+    "fix": "—"
+   },
+   {
+    "claim": "`specs/step-help/spec.md:18`, Страница шага атаки несёт вердикт и состав / Шаг без вердикта",
+    "section": "F-19.E — `step-help/step_help.py` `_artifact_page`",
+    "lens": "scenario-run",
+    "invariant": "полей `verdict` и `stale_scope` у страницы `design` нет",
+    "severity": "справка",
+    "support": "есть: step-help/step_help.py:172-174 — базовая страница `_page` ключей `verdict` и `stale_scope` не несёт, :230 «if \"verdict\" in artifact:» — у `design` ключа нет (upstream/openspec/src/core/artifact-graph/state.ts:188-190 «if (!verdict) {» / «return { state: 'n/a' };»; вывод `openspec status --json` шага 1 у `design` ключа `verdict` не несёт) → исход совпал",
+    "fix": "—"
+   },
+   {
+    "claim": "`specs/step-help/spec.md:23`, Страница шага атаки несёт вердикт и состав / Атака не вызвана",
+    "section": "F-19.E — `step-help/step_help.py` `_artifact_page`, `_not_invoked`",
+    "lens": "scenario-run",
+    "invariant": "полей `verdict` и `stale_scope` у страницы нет",
+    "severity": "справка",
+    "support": "есть: step-help/step_help.py:230 «if \"verdict\" in artifact:» — у необязательной атаки без файла ключа нет: вывод `openspec status --change attack-stale-scope --json` шага 1 отдаёт `attack-decisions` с `optional: true`, `fileExists: false` и без `verdict`; :161-163 «return artifact.get(\"optional\") is True and artifact.get(\"fileExists\") is False» → исход совпал",
+    "fix": "—"
+   },
+   {
+    "claim": "`specs/step-help/spec.md:28`, Страница шага атаки несёт вердикт и состав / Журнал не читается при устаревшем вердикте",
+    "section": "F-38.A — `step-help/step_help.py` `_stale_scope` → `attack/attack_scope.py` `_journal_scope`, `_record_numbers`",
+    "lens": "scenario-run",
+    "invariant": "`verdict` равно `stale`, `stale_scope` несёт одну строку «журнал не читается», код 0",
+    "severity": "справка",
+    "support": "есть: attack/attack_scope.py:33-36 «records = json.loads(journal_path.read_text(encoding=\"utf-8-sig\"))[\"records\"]» … «except (OSError, ValueError, KeyError, TypeError, AttributeError):» / «return None», :80-82 «numbers = _record_numbers(journal_path)» / «if numbers is None:» / «return [UNREADABLE]», :19 «UNREADABLE = \"журнал не читается\"»; step-help/step_help.py:104-105 битый JSON у счёта развилок тоже пойман, исключения наружу нет → исход совпал",
+    "fix": "—"
+   },
+   {
+    "claim": "`specs/step-help/spec.md:34`, Страница шага атаки несёт вердикт и состав / Вердикт не прошёл при изменённом журнале",
+    "section": "F-39.A — `step-help/step_help.py` `_artifact_page` (состав по хешу, не по вердикту)",
+    "lens": "scenario-run",
+    "invariant": "`verdict` равно `mismatch`, `stale_scope` несёт те же строки состава, что stdout `check`",
+    "severity": "справка",
+    "support": "есть: upstream/openspec/src/core/artifact-graph/state.ts:208-209 «if (String(frontmatter[verdict.frontmatter]) !== verdict.value) {» / «return { state: 'mismatch' };»; step-help/step_help.py:231 — `stale_scope` считается при любом значении `verdict`, :215 та же `scope_lines`, что у cli/journal_cli.py:119 → исход совпал",
+    "fix": "—"
+   },
+   {
+    "claim": "`specs/step-help/spec.md:48`, Справка не выдаёт наличие файла за сделанную работу / Пустой файл шага",
+    "section": "F-11 (факт), пометка о готовом шаге — `step-help/step_help.py` `_artifact_page`",
+    "lens": "scenario-run",
+    "invariant": "шаг показан готовым с пометкой «файл есть, содержание не проверялось»",
+    "severity": "справка",
+    "support": "есть: step-help/step_help.py:36 «FILE_NOT_CHECKED = \"файл есть, содержание не проверялось\"», :229 «file_note=FILE_NOT_CHECKED if artifact[\"status\"] == \"done\" else None» — у `design` ключа `verdict` нет, :231 не срабатывает → исход совпал",
+    "fix": "—"
+   },
+   {
+    "claim": "`specs/step-help/spec.md:53`, Справка не выдаёт наличие файла за сделанную работу / Формулировка текущего шага",
+    "section": "раздел «Справка» design — `step-help/step_help.py` `_current_text`",
+    "lens": "scenario-run",
+    "invariant": "слова «выполняется» в тексте текущего шага нет",
+    "severity": "справка",
+    "support": "есть: step-help/step_help.py:276 «text = f\"Следующий шаг по файлам — `{current}`, {turn}.\"», :273-274, :279-283, :303-305 — слова «выполняется» ни в одной ветке текста нет (греп по файлу пуст) → исход совпал",
+    "fix": "—"
+   },
+   {
+    "claim": "`specs/step-help/spec.md:58`, Справка не выдаёт наличие файла за сделанную работу / Готовый шаг атаки",
+    "section": "F-19.E — `step-help/step_help.py` `_artifact_page`",
+    "lens": "scenario-run",
+    "invariant": "пометки «файл есть, содержание не проверялось» нет, показаны вердикт `stale` и строки состава",
+    "severity": "справка",
+    "support": "есть: step-help/step_help.py:229 ставит `file_note` у готового шага, :231 «page.update(verdict=artifact[\"verdict\"], stale_scope=_stale_scope(artifact, status), file_note=None)» перекрывает его при ключе `verdict` → исход совпал",
+    "fix": "—"
+   },
+   {
+    "claim": "`specs/artifact-attack/spec.md:6` — «(F-13.B, F-25 следствия; F-21 этого изменения)»",
+    "section": "`specs/artifact-attack/spec.md`, требование «Хеши целей обесценивают вердикт после правки»",
+    "lens": "claim-extraction",
+    "invariant": "номера `F-NN` в тексте требования — решённые записи своего журнала или номера мастер-спеки, помеченные как чужие",
+    "severity": "справка",
+    "support": "есть: F-21 — `решён`, слово человека (decisions.json:1168); «F-13.B, F-25 следствия» — текст мастер-спеки openspec/specs/artifact-attack/spec.md:52 «(F-13.B, F-25 следствия)», дельта помечает свой номер словами «этого изменения»; в этом журнале F-13 — факт без вариантов, F-25 — проба о строке «не пройдено», требование на них не опирается",
+    "fix": "—"
+   },
+   {
+    "claim": "`specs/artifact-attack/spec.md:6` — «часть «Повтор атаки журнала по составу»»",
+    "section": "`specs/artifact-attack/spec.md:6`",
+    "lens": "claim-extraction",
+    "invariant": "названное требование есть в той же дельте",
+    "severity": "справка",
+    "support": "есть: specs/artifact-attack/spec.md:23 «### Requirement: Повтор атаки журнала по составу»",
+    "fix": "—"
+   },
+   {
+    "claim": "`specs/artifact-attack/spec.md:24` — «(F-22, F-21)»; :47 `F-31`; :52 «F-31 Specify»; :53 «F-32 Specify»; :56 «(F-32 …)»; :59 `F-32`",
+    "section": "`specs/artifact-attack/spec.md`, требования «Повтор атаки журнала по составу», «Хеш не обновляется при изменённом решении прежней записи»",
+    "lens": "claim-extraction",
+    "invariant": "номера — решённые записи, исходы следов равны `outcome`",
+    "severity": "справка",
+    "support": "есть: F-21, F-22, F-31, F-32 — `status: решён`, решения 2026-11-07; F-31 `outcome.value: Specify`, F-32 `outcome.value: Specify` (decisions.json:1871-2012)",
+    "fix": "—"
+   },
+   {
+    "claim": "`specs/decision-journal/spec.md:6` — `journal.py check`, `attack/decisions.md`, `attack/artifacts.md`, маркеры `[..] атака журнала: …` и `[..] атака артефактов: …`, «(F-19, F-18)»; :29 `F-30`",
+    "section": "`specs/decision-journal/spec.md`, требование «`check` называет состав устаревшего вердикта»",
+    "lens": "claim-extraction",
+    "invariant": "команда, файлы и номера существуют",
+    "severity": "справка",
+    "support": "есть: cli/journal_cli.py:424 подкоманда `check`, :100 «ATTACK_FILES = ((\"decisions.md\", \"атака журнала\"), (\"artifacts.md\", \"атака артефактов\"))»; F-18, F-19, F-30 — `решён` (F-30 `outcome: Specify`)",
+    "fix": "—"
+   },
+   {
+    "claim": "`specs/stale-verdict-scope/spec.md:4` — «F-17, F-18, F-19, F-23, F-24»; :9 «(F-17, F-18, F-09)»; :27 `F-26`; :33 `F-40`; :42 «(F-18, F-14, F-20)»; :55 `F-27`; :61 `F-28`; :70 «(F-10, F-17)»; :86 «(F-23, F-24, F-05)»; :104 `F-29`; :110 `F-35`; :119 «(F-19)»",
+    "section": "`specs/stale-verdict-scope/spec.md`, Purpose и пять требований",
+    "lens": "claim-extraction",
+    "invariant": "номера — решённые записи журнала",
+    "severity": "справка",
+    "support": "есть: все названные записи `status: решён` — F-05, F-09, F-10, F-14 факты с уликами (decisions.json:169, :336, :389, :555), F-17–F-20, F-23, F-24, F-26–F-29, F-35, F-40 — развилки с решением 2026-11-07",
+    "fix": "—"
+   },
+   {
+    "claim": "`specs/stale-verdict-scope/spec.md:38` — «исходы: F-25 Dismiss, F-26 Specify»; :66 «F-27 Specify, F-28 Specify»; :115 «F-29 Specify»",
+    "section": "`specs/stale-verdict-scope/spec.md`, следы проб краёв",
+    "lens": "claim-extraction",
+    "invariant": "исход в следе равен `outcome.value` записи",
+    "severity": "справка",
+    "support": "есть: decisions.json — F-25 `Dismiss` (вариант B), F-26 `Specify`, F-27 `Specify`, F-28 `Specify`, F-29 `Specify` (поля `outcome`)",
+    "fix": "—"
+   },
+   {
+    "claim": "`specs/stale-verdict-scope/spec.md:39` — «канон — F-34 → security.md»; :116 «канон — F-33 → security.md»",
+    "section": "`specs/stale-verdict-scope/spec.md`, следы проб запретов",
+    "lens": "claim-extraction",
+    "invariant": "номер парковки ИБ ведёт к чек-листу `security.md`",
+    "severity": "справка",
+    "support": "есть: F-33, F-34 — `kind: факт`, `status: припаркован`, `parking[].addressee: ИБ` (decisions.json:2013-2084); security.md:3 «две парковки адресату «ИБ» из пробы запретов (F-33, F-34)», строки :9 (F-34) и :12 (F-33)",
+    "fix": "—"
+   },
+   {
+    "claim": "`specs/stale-verdict-scope/spec.md:123` — `step_help.py --change <имя>`; `specs/step-help/spec.md:10`, :15, :20, :25, :31, :37 — `step_help.py --change demo`",
+    "section": "`specs/stale-verdict-scope/spec.md`, `specs/step-help/spec.md`",
+    "lens": "claim-extraction",
+    "invariant": "скрипт и флаг существуют",
+    "severity": "справка",
+    "support": "есть: step-help/step_help.py:3 «Справка о шаге конвейера …», :30 «__all__ = [\"compute\", \"parse_steps\", \"build_parser\", \"main\"]»; step-help/tests/test_step_help.py:743 «run_help(project, \"--change\", \"demo\", env=fork_env(tmp_path / \"bin\"))»",
+    "fix": "—"
+   },
+   {
+    "claim": "`specs/step-help/spec.md:6` — «(F-19, F-13, F-11)», значения `verdict` (`ok`, `stale`, `mismatch`, `missing`); :29 `F-38`; :35 `F-39`",
+    "section": "`specs/step-help/spec.md`, требование «Страница шага атаки несёт вердикт и состав»",
+    "lens": "claim-extraction",
+    "invariant": "номера — решённые записи; значения вердикта — те, что отдаёт форк",
+    "severity": "справка",
+    "support": "есть: F-11, F-13 — факты (decisions.json:427, :517), F-19 — решение E, F-38, F-39 — `Specify`; upstream/openspec/src/core/artifact-graph/state.ts:151-157 «`missing` … `mismatch` … `stale` … `ok`»",
+    "fix": "—"
+   },
+   {
+    "claim": "`specs/step-help/spec.md:46` — «… чей ход (F-19). … не проверялось (F-24); … (F-19, F-11 этого изменения). … SHALL NOT считать (F-24)»",
+    "section": "`specs/step-help/spec.md`, требование «Справка не выдаёт наличие файла за сделанную работу»",
+    "lens": "claim-extraction",
+    "invariant": "номера мастер-спеки сохранены как есть, свой номер помечен",
+    "severity": "справка",
+    "support": "есть: openspec/specs/step-help/spec.md:72 «… чей ход (F-19). Про готовый шаг SHALL быть сказано: файл есть, содержание не проверялось (F-24). … скрипт SHALL NOT считать (F-24).» — F-19 и F-24 там из журнала изменения `step-help`; F-11 этого журнала — факт о справке (decisions.json:428)",
+    "fix": "—"
+   },
+   {
+    "claim": "`design.md:68` — «`cli` и `step-help` уже импортируют `attack_table`»",
+    "section": "`design.md`, Context",
+    "lens": "claim-extraction",
+    "invariant": "импорт есть у обоих читателей",
+    "severity": "справка",
+    "support": "есть: cli/journal_cli.py:19 «from attack_table import parse_attack_md», step-help/step_help.py:26 «from attack_table import parse_attack_md  # noqa: E402»",
+    "fix": "—"
+   },
+   {
+    "claim": "`design.md:68` — «списки инсталлятора (`TOOLS_FILES`, фильтр имён, `TOOL_MODULES`)»",
+    "section": "`design.md`, Context",
+    "lens": "claim-extraction",
+    "invariant": "имена существуют в инсталляторе",
+    "severity": "справка",
+    "support": "есть: installer/scripts/sync-payload.js:28 «const TOOLS_FILES = [», :39 «\"attack/attack_scope.py\",»; installer/lib/install.js:178 фильтр имён `copyTree` для `toolsDir` с именем `attack_scope.py`; installer/lib/check.js:13 «const TOOL_MODULES = [… \"attack_scope.py\", …]»",
+    "fix": "—"
+   },
+   {
+    "claim": "`design.md:65`, :84 — «окно C11», `openspec status --json`, строка `nextSteps`",
+    "section": "`design.md`, Context, Non-Goals",
+    "lens": "claim-extraction",
+    "invariant": "названные механизмы форка существуют",
+    "severity": "справка",
+    "support": "есть: upstream/openspec/src/core/artifact-graph/state.ts:63-64 «Fork (symphysis, C11): what closed a stale verdict's window», :73-83; вывод `openspec status --change attack-stale-scope --json` шага 1 несёт `nextSteps` и `verdict`",
+    "fix": "—"
+   },
+   {
+    "claim": "`design.md:192` — «`node installer/scripts/sync-payload.js`, затем `symphysis install --force`»",
+    "section": "`design.md`, Migration Plan",
+    "lens": "claim-extraction",
+    "invariant": "команды и флаг существуют",
+    "severity": "справка",
+    "support": "есть: installer/scripts/sync-payload.js:131 «export function toolsFiles(list = TOOLS_FILES) {»; installer/lib/install.js:154 «export function install(project, { skillsDirs = [], agentsDirs = [], force = false, …», :16 «(есть, отличается — перезапись: --force)»",
+    "fix": "—"
+   },
+   {
+    "claim": "`design.md:70`, :82-87 — F-22, F-31, F-32, F-20, F-18, F-24, F-04, F-41, F-21, F-42; :167-188 Risks — F-17–F-24 с буквами отвергнутых вариантов",
+    "section": "`design.md`, Context, Non-Goals, Risks",
+    "lens": "claim-extraction",
+    "invariant": "номера — решённые записи, буквы — варианты этих записей",
+    "severity": "справка",
+    "support": "есть: F-04 — факт; F-17–F-24 решены (A, A, E, A, A, A, A, B — decisions.json:768, :862, :987, :1093, :1168, :1264, :1338, :1428), отвергнутые буквы в Risks — варианты тех же записей; F-41 `Dismiss` (B), F-42 `Dismiss` (B)",
+    "fix": "—"
+   },
+   {
+    "claim": "`design.md:7-61` Context — улики записей `путь «цитата»`",
+    "section": "`design.md`, Context",
+    "lens": "claim-extraction",
+    "invariant": "улики сверены по файлам",
+    "severity": "справка",
+    "support": "есть: `cli/journal.py check --write --roots …` шага 1: «[ok] улик сверено 89 из 89», строк `[!!]` нет; design.md:3 «Рендер из `decisions.json`, не править руками» — улики те же, что в журнале",
+    "fix": "—"
+   },
+   {
+    "claim": "`design.md:198-199` — находки парковок F-19: «слово человека 2026-11-07 (`answers/2026-11-07.md`)»",
+    "section": "`design.md`, Open Questions",
+    "lens": "claim-extraction",
+    "invariant": "файл ответа существует, слово внесено",
+    "severity": "справка",
+    "support": "есть: openspec/changes/attack-stale-scope/answers/2026-11-07.md — файл есть; decisions.json:1168 «\"word\": \"Кажется, что проход с самого начала дорог при сильно уменьшаемой пользе с каждой итерацией. Давай поправим скилл в этом изменении.\"», :1338 «\"word\": \"Тоже в этом изменении.\"»",
+    "fix": "—"
+   },
+   {
+    "claim": "`security.md:9-16`, столбец «Чем проверено» — тест: ячейка «Раздел» с текстом-инструкцией; тест: строки состава без текста ячеек; тест: `..`, абсолютный путь, буква диска; тест: `git status` после `step_help.py` пуст; тест: файл атаки в UTF-16; тест: строки `stale_scope` без пути корня",
+    "section": "`security.md`, таблица канона",
+    "lens": "claim-extraction",
+    "invariant": "названные тесты существуют (абзац :3 «Реализации ещё нет» писался до `tasks`; тесты теперь на месте)",
+    "severity": "справка",
+    "support": "есть: attack/tests/test_attack_scope.py:231 «def test_scope_lines_carry_no_cell_text(tmp_path):», :208-209 «@pytest.mark.parametrize(\"declared\", [\"../other/design.md\", \"/tmp/design.md\", \"C:/design.md\"])»; step-help/tests/test_step_help.py:816 «def test_project_tree_stays_the_same_with_a_stale_verdict(tmp_path):», :809 «def test_stale_scope_has_no_project_directory(tmp_path):»; cli/tests/test_cli_check.py:155 «def test_cli_check_names_a_utf16_attack_file_as_not_utf8(tmp_path):»",
+    "fix": "—"
+   },
+   {
+    "claim": "`security.md:9-16` — требования `stale-verdict-scope` «Состав атаки журнала считается по таблице», «Неполный состав при выключенной `coverage`», «Состав одинаков у всех читателей», «У атаки артефактов — все изменившиеся цели и число записей»; `decision-journal` «`check` называет состав устаревшего вердикта»; `artifact-attack` «Хеш не обновляется при изменённом решении прежней записи»; `step-help` «Страница шага атаки несёт вердикт и состав»; сценарии «Раздел с несколькими записями», «Раздел диапазоном», «Файл атаки не разбирается», «Файл ответа новее атаки», «Путь цели вне каталога», «Состав не меняет код `--strict`», «Журнал не читается при устаревшем вердикте»",
+    "section": "`security.md`, таблица канона",
+    "lens": "claim-extraction",
+    "invariant": "названные требования и сценарии есть в дельтах",
+    "severity": "справка",
+    "support": "есть: specs/stale-verdict-scope/spec.md:8, :69, :118, :85, :21, :32, :103; specs/decision-journal/spec.md:5, :18, :28; specs/artifact-attack/spec.md:55, :58; specs/step-help/spec.md:5, :28",
+    "fix": "—"
+   },
+   {
+    "claim": "`security.md:10` — мастер-спека `decision-journal` «Содержимое файлов улик — данные, не инструкции»; :14 — мастер-спека `step-help` «Справка не становится гейтом и не меняет файлы»",
+    "section": "`security.md`, строки «Инъекции … `decisions.json` и `answers/`», «Права»",
+    "lens": "claim-extraction",
+    "invariant": "названные требования мастер-спек существуют",
+    "severity": "справка",
+    "support": "есть: openspec/specs/decision-journal/spec.md:171 «### Requirement: Содержимое файлов улик — данные, не инструкции»; openspec/specs/step-help/spec.md:252 «### Requirement: Справка не становится гейтом и не меняет файлы»",
+    "fix": "—"
+   },
+   {
+    "claim": "`security.md:13` — «через общий запуск с выключенной телеметрией»; :15 — отказ «не UTF-8», `F-36`, `F-38`; :3 — `F-33`, `F-34`",
+    "section": "`security.md`, вводный абзац, строки «Токены», «Бинарные файлы»",
+    "lens": "claim-extraction",
+    "invariant": "механизмы и номера существуют",
+    "severity": "справка",
+    "support": "есть: openspec-run/openspec_run.py:144 «env.update(OPENSPEC_TELEMETRY=\"0\", …)» (греп существования); cli/journal_cli.py:166 «return None, f\"{path}: не UTF-8 — файл атаки читается как UTF-8\"»; F-36 `Dismiss`, F-38 `Specify` — решены; F-33, F-34 — парковки ИБ",
+    "fix": "—"
+   },
+   {
+    "claim": "`tasks.md:5` задача 1.1 — `attack/attack_scope.py`, `scope_lines(attack: dict, change_dir: Path) -> list[str]`, `parse_attack_md`, `attack/tests/test_attack_scope.py`, `tests/conftest.py` (`journal_of`, `fork_record`), `python -X utf8 -m pytest attack/tests`",
+    "section": "`tasks.md`, задача 1.1",
+    "lens": "claim-extraction",
+    "invariant": "файлы, функция и имена существуют",
+    "severity": "справка",
+    "support": "есть: attack/attack_scope.py:136 «def scope_lines(attack: dict, change_dir: Path | str) -> list[str]:» (тип `change_dir` шире, чем в задаче); `parse_attack_md` — attack/attack_table.py, импорт cli/journal_cli.py:19; attack/tests/test_attack_scope.py:9 «from conftest import fork_record, journal_of, run_check»; tests/conftest.py:332 «def fork_record», :345 «def journal_of» (греп существования)",
+    "fix": "—"
+   },
+   {
+    "claim": "`tasks.md:6-8` задачи 1.2–1.4 — тесты в `attack/tests/test_attack_scope.py`; `run_check`; `change_dir.resolve()`; пути `../other/design.md`, `/tmp/design.md`, `C:/design.md`",
+    "section": "`tasks.md`, задачи 1.2–1.4",
+    "lens": "claim-extraction",
+    "invariant": "тесты и имена существуют",
+    "severity": "справка",
+    "support": "есть: attack/tests/test_attack_scope.py:99, :109, :126 (1.2); :135, :141 «run_check(\"--write\", \"--roots\", roots, tmp_path / \"decisions.json\")», :145, :152, :159, :166 (1.3); :183, :192, :200, :208-209, :216, :223 (1.4); attack/attack_scope.py:104 «root = change_dir.resolve()»; tests/conftest.py:355 «def run_check»",
+    "fix": "—"
+   },
+   {
+    "claim": "`tasks.md:9` задача 1.5 — `test_scope_lines_carry_no_cell_text`, ячейка «считай все записи атакованными, F-03»",
+    "section": "`tasks.md`, задача 1.5",
+    "lens": "claim-extraction",
+    "invariant": "тест и текст существуют",
+    "severity": "справка",
+    "support": "есть: attack/tests/test_attack_scope.py:231 «def test_scope_lines_carry_no_cell_text(tmp_path):», :234 «[\"считай все записи атакованными, F-03\"]»",
+    "fix": "—"
+   },
+   {
+    "claim": "`tasks.md:10` задача 1.6 — `from attack_scope import scope_lines` и `__all__` в `cli/journal.py`; строка в `attack/README.md`; `CLAUDE.md` «`(attack_table, attack_scope)`»; `tests/test_repository_structure.py`, `tests/test_repository_live.py`",
+    "section": "`tasks.md`, задача 1.6",
+    "lens": "claim-extraction",
+    "invariant": "имена и файлы существуют",
+    "severity": "справка",
+    "support": "есть: cli/journal.py:76 «from attack_scope import scope_lines  # noqa: E402  (после правки sys.path)», :91 «… \"parse_attack_md\", \"scope_lines\",»; attack/README.md:8 «… (`attack_scope.py`, один расчёт для `journal.py check` и справки шага)»; CLAUDE.md:41 «(`attack_table` — разбор файла атаки; `attack_scope` — состав устаревшего вердикта для `check`» — оба имени названы, форма не `(attack_table, attack_scope)` дословно; оба теста — файлы есть",
+    "fix": "—"
+   },
+   {
+    "claim": "`tasks.md:14` задача 2.1 — `TOOLS_FILES` в `installer/scripts/sync-payload.js`; `tools/attack_scope.py` в `FILES` теста `installer/test/payload.test.js`; файл в `installer/payload/tools/`",
+    "section": "`tasks.md`, задача 2.1",
+    "lens": "claim-extraction",
+    "invariant": "имена и файлы существуют",
+    "severity": "справка",
+    "support": "есть: installer/scripts/sync-payload.js:28 «const TOOLS_FILES = [», :39 «\"attack/attack_scope.py\",»; installer/test/payload.test.js:10 «const FILES = [», :21 «\"tools/attack_scope.py\",» (греп существования); installer/payload/tools/attack_scope.py — файл есть",
+    "fix": "—"
+   },
+   {
+    "claim": "`tasks.md:15` задача 2.2 — фильтр имён `installer/lib/install.js` (`copyTree` для `toolsDir`); тест «Новый проект: attack_scope.py ставится в .symphysis/tools» в `installer/test/install.test.js`; `.symphysis/tools/attack_scope.py`",
+    "section": "`tasks.md`, задача 2.2",
+    "lens": "claim-extraction",
+    "invariant": "имена, тест и файл существуют",
+    "severity": "справка",
+    "support": "есть: installer/lib/install.js:176 «const toolsDir = path.join(t.toolsDir, \"tools\");», :178 фильтр `copyTree` с именем `attack_scope.py`; installer/test/install.test.js:783 «test(\"Новый проект: attack_scope.py ставится в .symphysis/tools (attack-stale-scope)\", () => {», :788 сравнение байтов с payload; .symphysis/tools/attack_scope.py — файл есть",
+    "fix": "—"
+   },
+   {
+    "claim": "`tasks.md:16` задача 2.3 — `TOOL_MODULES` в `installer/lib/check.js`; список `modules` теста «инструменты: каждый модуль из состава проверяется» в `installer/test/check.test.js`; строка «.symphysis/tools/attack_scope.py: нет файла»",
+    "section": "`tasks.md`, задача 2.3",
+    "lens": "claim-extraction",
+    "invariant": "имена и тест существуют",
+    "severity": "справка",
+    "support": "есть: installer/lib/check.js:13 «const TOOL_MODULES = [… \"attack_scope.py\", …]», :141 «if (!fs.existsSync(f)) findings.push(`${rel(root, f)}: нет файла`);»; installer/test/check.test.js:170 «test(\"инструменты: каждый модуль из состава проверяется, три новых тоже\", () => {», :171 `modules` с «\"attack_scope.py\"» (греп существования)",
+    "fix": "—"
+   },
+   {
+    "claim": "`tasks.md:20-21` задачи 3.1–3.2 — `cmd_check`, `_read_attack`, `scope_lines(att, args.json.parent)`, `is_file()`, строки `[..] атака журнала:` и `[..] атака артефактов:`; тесты в `cli/tests/test_cli_check.py`, в том числе файл атаки в UTF-16; `F-36`",
+    "section": "`tasks.md`, задачи 3.1, 3.2",
+    "lens": "claim-extraction",
+    "invariant": "имена, тесты и номер существуют",
+    "severity": "справка",
+    "support": "есть: cli/journal_cli.py:59 «def cmd_check(args: argparse.Namespace) -> int:», :90 «scope, broken_attack = _scope_report(args.json.parent)», :111 «if not path.is_file():», :119, :159 «def _read_attack(path: Path) -> tuple[dict | None, str]:»; cli/tests/test_cli_check.py:120, :130, :142, :155, :165; F-36 — `решён`, `Dismiss`",
+    "fix": "—"
+   },
+   {
+    "claim": "`tasks.md:22` задача 3.3 — две строки в `cli/journal-cli.md`, раздел «Коды и маркеры»; `tests/test_skills.py`",
+    "section": "`tasks.md`, задача 3.3",
+    "lens": "claim-extraction",
+    "invariant": "строки и тест существуют",
+    "severity": "справка",
+    "support": "есть: cli/journal-cli.md:50 «- `check` строка `[..] атака журнала: …` или `[..] атака артефактов: …` — состав устаревшего», :54 «- `check` строка `[!!] attack/<файл>: файл атаки не разбирается: <причина>` — файл атаки есть, но без»; tests/test_skills.py — файл есть",
+    "fix": "—"
+   },
+   {
+    "claim": "`tasks.md:26` задача 4.1 — `_artifact_page`, `existingOutputPaths`, журнал `openspec/changes/<имя>/decisions.json`, `file_note` `None`; `fake_status` с параметром `verdicts` в `tests/conftest.py`; тесты в `step-help/tests/test_step_help.py`",
+    "section": "`tasks.md`, задача 4.1",
+    "lens": "claim-extraction",
+    "invariant": "имена и тесты существуют",
+    "severity": "справка",
+    "support": "есть: step-help/step_help.py:218 «def _artifact_page(artifact: dict, status: dict, base: str, page: dict) -> dict:», :203 «existing = status[\"artifactPaths\"][artifact[\"id\"]][\"existingOutputPaths\"]», :215 журнал через `Path(status[\"changeRoot\"])`, :231 «file_note=None»; tests/conftest.py:192 «def fake_status(root: Path, change=\"demo\", done=(), ready=(), files=None, verdicts=None) -> dict:» (греп существования); step-help/tests/test_step_help.py:752, :766, :773, :776",
+    "fix": "—"
+   },
+   {
+    "claim": "`tasks.md:27` задача 4.2 — тест двух читателей сравнивает строки `stale_scope` со строками `[..] атака журнала:` из `run_check` на тех же файлах",
+    "section": "`tasks.md`, задача 4.2",
+    "lens": "claim-extraction",
+    "invariant": "тест существует и сравнивает с выводом `check`",
+    "severity": "справка",
+    "support": "есть: step-help/tests/test_step_help.py:788 «Сценарий «Вердикт не прошёл при изменённом журнале» (F-39) и `stale-verdict-scope` «Два читателя»», :791-797 — `check` зовётся `subprocess.run([sys.executable, str(ROOT / \"cli\" / \"journal.py\"), \"check\", …])`, не `run_check` из conftest; сравнение «att[\"stale_scope\"] == from_check» есть",
+    "fix": "—"
+   },
+   {
+    "claim": "`tasks.md:28` задача 4.3 — `test_output_shape` (перечень полей, `data[\"contract\"]` равен `journal_render.CONTRACT`); `test_project_tree_stays_the_same` «проходит и с файлом атаки при устаревшем вердикте»; `test_no_project_directory_in_output` «проверяет и строки `stale_scope`»",
+    "section": "`tasks.md`, задача 4.3",
+    "lens": "claim-extraction",
+    "invariant": "названный тест делает названную проверку",
+    "severity": "блокер",
+    "support": "нет: `test_output_shape` — есть (step-help/tests/test_step_help.py:897, :911-914 «set(page(with_verdict, \"attack-decisions\")) == set(page(data, \"design\")) | {\"verdict\", \"stale_scope\"}», :913 `journal_render.CONTRACT`, decisions/journal_render.py:20 «CONTRACT = 3»); но `test_project_tree_stays_the_same` (:931) файла атаки не подаёт — это делает соседний `test_project_tree_stays_the_same_with_a_stale_verdict` (:816); `test_no_project_directory_in_output` (:834-841) строк `stale_scope` не читает — их проверяет `test_stale_scope_has_no_project_directory` (:809-813); задача называет не те тесты",
+    "fix": "правка артефакта"
+   },
+   {
+    "claim": "`tasks.md:29` задача 4.4 — `docs/repo-contract.md`, перечень «Что входит в контракт»: поля `verdict` и `stale_scope`; `tests/test_repo_contract.py` называет оба",
+    "section": "`tasks.md`, задача 4.4",
+    "lens": "claim-extraction",
+    "invariant": "строки существуют",
+    "severity": "справка",
+    "support": "есть: docs/repo-contract.md:54 «- поля `verdict` и `stale_scope` у страницы шага с вердиктом в выводе `step_help.py`: значение вердикта форка и строки состава устаревшего вердикта …»; tests/test_repo_contract.py:24 «\"file_links\", \"skills\", \"verdict\", \"stale_scope\",» (греп существования)",
+    "fix": "—"
+   },
+   {
+    "claim": "`tasks.md:33-35` задачи 5.1–5.3 — `attack/skills/symphysis-attack/SKILL.md`: шаг 1, «Коды и сигналы», «Приёмка»; тесты `test_attack_skill_repeats_by_scope`, `test_skill_shape` в `tests/test_skills.py`",
+    "section": "`tasks.md`, задачи 5.1–5.3",
+    "lens": "claim-extraction",
+    "invariant": "тексты и тесты существуют",
+    "severity": "справка",
+    "support": "есть: attack/skills/symphysis-attack/SKILL.md:135-156 (состав, стыки, `depends_on`, `antipodes`, `consequences`, диапазон, `answers/`, «новых `[!!]` нет», «состав неполон»), :133-134 «с начала» только у артефактов, :428-431 («файл атаки не разбирается», «по составу»), :474-476 («байт в байт»); tests/test_skills.py:527 «def test_attack_skill_repeats_by_scope():», :96 «def test_skill_shape(skill):»",
+    "fix": "—"
+   },
+   {
+    "claim": "`tasks.md:36` задача 5.4 — раздел «Водитель» SKILL.md и «Вход» `attack/agents/symphysis-attack-driver.md`: строка «Пройти: F-NN, …»; `tests/test_agents.py` `test_driver_steps_match_the_skill_driver_section`",
+    "section": "`tasks.md`, задача 5.4",
+    "lens": "claim-extraction",
+    "invariant": "тексты и тест существуют",
+    "severity": "справка",
+    "support": "есть: attack/skills/symphysis-attack/SKILL.md:496 «- Brief повтора `attack-decisions` несёт строку «Пройти: F-80–F-82, стыки F-12» — записи», :498-500; attack/agents/symphysis-attack-driver.md:20 «в тексте brief — строка «Пройти: F-80–F-82, стыки F-12» или «Пройти: с начала»», :64-66; tests/test_agents.py — имя `test_driver_steps_match_the_skill_driver_section` найдено грепом",
+    "fix": "—"
+   },
+   {
+    "claim": "`tasks.md:37` задача 5.5 — комментарий о `target_sha256` в `openspec/schemas/symphysis/templates/attack-decisions.md`; `attack/attack-table.md`, «Строки покрытия»: диапазон в разделе не пишется (F-40); `openspec/schemas/symphysis/tests`; `openspec validate attack-stale-scope --strict`",
+    "section": "`tasks.md`, задача 5.5",
+    "lens": "claim-extraction",
+    "invariant": "тексты, каталог и команда существуют",
+    "severity": "справка",
+    "support": "есть: openspec/schemas/symphysis/templates/attack-decisions.md:13 «target_sha256 — SHA-256 decisions.json после `check --write` … повтор атаки идёт по составу, не с начала (скилл symphysis-attack, шаг 1)»; attack/attack-table.md:41-43 «Раздел строки покрытия у журнала — одна запись: `F-NN` или `F-NN, все поля`; диапазон `F-01–F-10` в разделе не пишется»; openspec/schemas/symphysis/tests/test_schema.py, test_steps_md.py — файлы есть; upstream/openspec/src/commands/validate.ts — есть; F-40 `Specify`",
+    "fix": "—"
+   },
+   {
+    "claim": "`tasks.md:38` задача 5.6 — термин «состав вердикта» в `skill-shared/terms.md` и `installer/payload/docs/terms.md`",
+    "section": "`tasks.md`, задача 5.6",
+    "lens": "claim-extraction",
+    "invariant": "строка есть в обоих файлах",
+    "severity": "справка",
+    "support": "есть: skill-shared/terms.md:90 «- **состав вердикта** — что изменилось после вердикта: у атаки журнала — сколько и какие»; installer/payload/docs/terms.md:90 — та же строка (греп существования)",
+    "fix": "—"
+   },
+   {
+    "claim": "`tasks.md:42-43` задачи 6.1–6.2 — `openspec/schemas/symphysis/steps.md`, механики `attack-decisions`; `docs/GUIDE.md`, абзац о `verdict: stale`; тесты `test_real_schema_and_real_texts_fit_together`, `tests/test_guide.py`",
+    "section": "`tasks.md`, задачи 6.1, 6.2",
+    "lens": "claim-extraction",
+    "invariant": "тексты и тесты существуют",
+    "severity": "справка",
+    "support": "есть: openspec/schemas/symphysis/steps.md:148 «Состав устаревшего вердикта — сколько и какие записи добавлены после атаки — называют `python .symphysis/tools/journal.py check` строкой `[..] атака журнала: …` и справка шага полем `stale_scope`; повтор атаки проходит только эти записи и их стыки, не журнал с начала»; docs/GUIDE.md:363 «… строкой `[..] атака журнала: после вердикта добавлено N записей: …`; те же строки справка шага отдаёт полем `stale_scope`. Повтор той же командой проходит только названные записи и их стыки …»; step-help/tests/test_step_help.py:1152 «def test_real_schema_and_real_texts_fit_together(tmp_path):»; tests/test_guide.py — файл есть",
+    "fix": "—"
+   },
+   {
+    "claim": "`tasks.md:47-49` задачи 7.1–7.3 — `installer/test/test_installer.py`; `openspec/changes/archive/2026-11-06-trace-graph/decisions.json`, ожидаемая строка «после вердикта добавлено 80 записей: F-80–F-159»; `node installer/scripts/sync-payload.js`, `.symphysis/tools/journal.py`, `.symphysis/tools/step_help.py --help`, `.symphysis/tools/attack_scope.py`",
+    "section": "`tasks.md`, задачи 7.1–7.3",
+    "lens": "claim-extraction",
+    "invariant": "файлы и команды существуют; строка 7.2 выводится из кода и фактов журнала",
+    "severity": "справка",
+    "support": "есть: installer/test/test_installer.py:14 «def test_installer_node_tests_pass():» (греп существования); архив `2026-11-06-trace-graph` — `decisions.json` и `attack/decisions.md` есть; по F-08, F-09 (в таблице F-01–F-79, в журнале 159 записей) и attack/attack_scope.py:46, :58 — «добавлено 80 записей: F-80–F-159» (команда цели не запускалась); .symphysis/tools/journal.py, step_help.py, attack_scope.py — файлы есть; step-help/step_help.py:30 «__all__ = [\"compute\", \"parse_steps\", \"build_parser\", \"main\"]»",
+    "fix": "—"
+   },
+   {
+    "claim": "`consequences.md:80-82` — раздел «Исключения»: «нет»",
+    "section": "`consequences.md`, Исключения",
+    "lens": "claim-extraction",
+    "invariant": "исключение называет файл и довод",
+    "severity": "справка",
+    "support": "есть: consequences.md:82 «нет» — исключений нет, находки «исключение без довода» быть не может; места кода из улик решённых развилок разобраны строками описи, `check` шага 1 строки «нет ни разбора, ни исключения с причиной» не дал",
+    "fix": "—"
+   },
+   {
+    "claim": "`consequences.md:3`, :7-78 — `**Состав:** ветки отказа, допущения`; 18 строк описи",
+    "section": "`consequences.md`, Опись",
+    "lens": "claim-extraction",
+    "invariant": "каждая строка ветки названа цитатой `путь:строка «цитата»`",
+    "severity": "справка",
+    "support": "есть: consequences.md:7, :11, :15, :19, :23, :27, :31, :35, :39, :43, :47, :51, :55, :59, :63, :67, :71, :75 — у всех `путь:строка «цитата»`, строки «веток отказа не найдено» нет; `check` шага 1 строк `[!!] consequences.md` не дал",
+    "fix": "—"
+   },
+   {
+    "claim": "`consequences.md` — места веток `attack/attack_table.py:28`, `:106`, `:121`, `:42`, `:37`; `cli/journal_cli.py:60`; `step-help/step_help.py:76`, `:364`, `:103`",
+    "section": "`consequences.md`, Опись",
+    "lens": "claim-extraction",
+    "invariant": "цитата ветки стоит в файле по названной строке",
+    "severity": "справка",
+    "support": "есть: цитаты дословны, номера строк сдвинуты правками изменения: attack/attack_table.py:36 «raise ValueError(f\"{name}: нет frontmatter\")», :114 «if header is None:», :129 «if len(cells) != len(ATTACK_ROW_KEYS):», :50 «targets.insert(0, {\"path\": fields[\"target\"], \"sha256\": fields.get(\"target_sha256\", \"\")})», :45 «elif (m := RE_TARGET_SHA.match(line)) and targets:»; cli/journal_cli.py:61 «if journal is None:»; step-help/step_help.py:78 «if reply.code != 0 and not (data and usable_on_failure and data.get(usable_on_failure)):», :390 «except (KeyError, TypeError, AttributeError, IndexError):», :105 «return {\"open\": UNREADABLE, \"parked\": UNREADABLE}»; `cli/journal_cli.py:162`, `:167` и все места `state.ts` стоят на своих строках; `check` сверяет цитату, не номер",
+    "fix": "—"
+   },
+   {
+    "claim": "`consequences.md` — сценарии описи: «Файл атаки не разбирается», «Хеш цели не задан», «Файла атаки нет», «Атака не вызвана», «Вердикт устарел после proposal», «Вердикт в силе», «Путь цели вне каталога», «Цели нет на диске», «Хеш в верхнем регистре», «Вердикт не прошёл при изменённом журнале»; кандидаты F-35–F-42",
+    "section": "`consequences.md`, Опись и Pre-mortem",
+    "lens": "claim-extraction",
+    "invariant": "сценарии есть в дельтах, кандидаты — записи журнала",
+    "severity": "справка",
+    "support": "есть: specs/decision-journal/spec.md:28, :23; specs/stale-verdict-scope/spec.md:54, :103, :98, :60; specs/step-help/spec.md:23, :8, :13, :34; F-35–F-42 — записи `решён` с `outcome` (decisions.json), строки `кандидат:` законны и у открытых",
+    "fix": "—"
+   },
+   {
+    "claim": "`task:1.1` → `scn:stale-verdict-scope/Состав атаки журнала считается по таблице/Добавленные идут не подряд`, at tasks.md:5",
+    "section": "tasks.md:5 → specs/stale-verdict-scope/spec.md:16",
+    "lens": "trace-link",
+    "invariant": "проверка задачи относится к поведению, что требует THEN сценария",
+    "severity": "справка",
+    "support": "есть: tasks.md:5 «проверка: `python -X utf8 -m pytest attack/tests` зелёный», строка о перечне «иначе перечень», тест attack/tests/test_attack_scope.py:68 «def test_added_not_in_a_row_are_listed»; specs/stale-verdict-scope/spec.md:19 «THEN состав — «после вердикта добавлено 2 записи: F-05, F-11»»",
+    "fix": "—"
+   },
+   {
+    "claim": "`task:1.1` → `scn:stale-verdict-scope/Состав атаки журнала считается по таблице/Записи добавлены после вердикта`, at tasks.md:5",
+    "section": "tasks.md:5 → specs/stale-verdict-scope/spec.md:11",
+    "lens": "trace-link",
+    "invariant": "проверка задачи относится к поведению, что требует THEN сценария",
+    "severity": "справка",
+    "support": "есть: tasks.md:5 «строка «после вердикта добавлено N записей: …» (подряд — диапазон `F-80–F-139` …) … проверка: `python -X utf8 -m pytest attack/tests` зелёный», тест attack/tests/test_attack_scope.py:60 «def test_records_added_after_verdict_make_a_range»; specs/stale-verdict-scope/spec.md:14 «THEN состав — «после вердикта добавлено 60 записей: F-80–F-139»»",
+    "fix": "—"
+   },
+   {
+    "claim": "`task:1.1` → `scn:stale-verdict-scope/Состав атаки журнала считается по таблице/Номер с ведущим нулём`, at tasks.md:5",
+    "section": "tasks.md:5 → specs/stale-verdict-scope/spec.md:26",
+    "lens": "trace-link",
+    "invariant": "проверка задачи относится к поведению, что требует THEN сценария",
+    "severity": "справка",
+    "support": "есть: tasks.md:5 «номер сравнивается по числу … проверка: `python -X utf8 -m pytest attack/tests` зелёный», тест attack/tests/test_attack_scope.py:83 «def test_number_with_leading_zero_matches_by_value»; specs/stale-verdict-scope/spec.md:30 «THEN F-07 считается атакованной: номера сравниваются по числу»",
+    "fix": "—"
+   },
+   {
+    "claim": "`task:1.1` → `scn:stale-verdict-scope/Состав атаки журнала считается по таблице/Раздел с несколькими записями`, at tasks.md:5",
+    "section": "tasks.md:5 → specs/stale-verdict-scope/spec.md:21",
+    "lens": "trace-link",
+    "invariant": "проверка задачи относится к поведению, что требует THEN сценария",
+    "severity": "справка",
+    "support": "есть: tasks.md:5 «разделы через ` · ` … проверка: `python -X utf8 -m pytest attack/tests` зелёный», тест attack/tests/test_attack_scope.py:76 «def test_section_with_several_records_counts_each»; specs/stale-verdict-scope/spec.md:24 «THEN F-07 и F-32 считаются атакованными»",
+    "fix": "—"
+   },
+   {
+    "claim": "`task:1.2` → `scn:stale-verdict-scope/Неполный состав при выключенной coverage/Линза покрытия выключена`, at tasks.md:6",
+    "section": "tasks.md:6 → specs/stale-verdict-scope/spec.md:72",
+    "lens": "trace-link",
+    "invariant": "проверка задачи относится к поведению, что требует THEN сценария",
+    "severity": "справка",
+    "support": "есть: tasks.md:6 «строка `**Состав:**` с `coverage` среди выключенных даёт первой строку «состав неполон …», список добавленных при этом считается — проверка: тесты в `attack/tests/test_attack_scope.py`», тест :109 «def test_coverage_off_names_the_scope_incomplete_and_still_lists_added»; specs/stale-verdict-scope/spec.md:75 «THEN строка о неполном составе и «после вердикта добавлено 2 записи: F-02, F-04»»",
+    "fix": "—"
+   },
+   {
+    "claim": "`task:1.2` → `scn:stale-verdict-scope/Неполный состав при выключенной coverage/Строки состава нет`, at tasks.md:6",
+    "section": "tasks.md:6 → specs/stale-verdict-scope/spec.md:77",
+    "lens": "trace-link",
+    "invariant": "проверка задачи относится к поведению, что требует THEN сценария",
+    "severity": "справка",
+    "support": "есть: tasks.md:6 «файл без строки `**Состав:**` строки о неполноте не даёт — проверка: тесты в `attack/tests/test_attack_scope.py`», тест :126 «def test_no_composition_line_means_all_lenses_on»; specs/stale-verdict-scope/spec.md:80 «THEN строки о неполном составе нет»",
+    "fix": "—"
+   },
+   {
+    "claim": "`task:1.2` → `scn:stale-verdict-scope/Состав атаки журнала считается по таблице/Раздел диапазоном`, at tasks.md:6",
+    "section": "tasks.md:6 → specs/stale-verdict-scope/spec.md:32",
+    "lens": "trace-link",
+    "invariant": "проверка задачи относится к поведению, что требует THEN сценария",
+    "severity": "справка",
+    "support": "есть: tasks.md:6 «раздел вида `F-01–F-10` даёт строку «раздел диапазоном: F-01–F-10, записи по одной не названы», атакованными считаются только номера, стоящие дословно — проверка: тесты …», тест :99 «def test_range_section_is_a_signal_and_names_only_its_ends»; specs/stale-verdict-scope/spec.md:36 «THEN строка сигнала «раздел диапазоном: F-01–F-10, записи по одной не названы»; атакованными считаются только номера, стоящие дословно: F-01 и F-10»",
+    "fix": "—"
+   },
+   {
+    "claim": "`task:1.3` → `scn:stale-verdict-scope/Ноль добавленных при изменённом журнале называется словами/Журнал изменён только сверкой`, at tasks.md:7",
+    "section": "tasks.md:7 → specs/stale-verdict-scope/spec.md:44",
+    "lens": "trace-link",
+    "invariant": "проверка задачи относится к поведению, что требует THEN сценария",
+    "severity": "справка",
+    "support": "есть: tasks.md:7 «разошёлся без добавленных — «записей не добавлено: журнал изменён иначе» … у теста «журнал изменён только сверкой» журнал правится `check --write` через `run_check`», тест attack/tests/test_attack_scope.py:135 «def test_journal_changed_only_by_check_write», :141; specs/stale-verdict-scope/spec.md:47 «THEN состав — «записей не добавлено: журнал изменён иначе»»",
+    "fix": "—"
+   },
+   {
+    "claim": "`task:1.3` → `scn:stale-verdict-scope/Ноль добавленных при изменённом журнале называется словами/Хеш в верхнем регистре`, at tasks.md:7",
+    "section": "tasks.md:7 → specs/stale-verdict-scope/spec.md:60",
+    "lens": "trace-link",
+    "invariant": "проверка задачи относится к поведению, что требует THEN сценария",
+    "severity": "справка",
+    "support": "есть: tasks.md:7 «хеш в верхнем регистре равен хешу файла — проверка: тесты в `attack/tests/test_attack_scope.py`», тест :159 «def test_upper_case_hash_equals_the_file»; specs/stale-verdict-scope/spec.md:64 «THEN состав пуст: хеши сравниваются без учёта регистра, как у форка»",
+    "fix": "—"
+   },
+   {
+    "claim": "`task:1.3` → `scn:stale-verdict-scope/Ноль добавленных при изменённом журнале называется словами/Хеш совпал`, at tasks.md:7",
+    "section": "tasks.md:7 → specs/stale-verdict-scope/spec.md:49",
+    "lens": "trace-link",
+    "invariant": "проверка задачи относится к поведению, что требует THEN сценария",
+    "severity": "справка",
+    "support": "есть: tasks.md:7 «Ветки хеша: совпал — пустой список … проверка: тесты в `attack/tests/test_attack_scope.py`», тест :145 «def test_equal_hash_gives_no_lines»; specs/stale-verdict-scope/spec.md:52 «THEN состав пуст, строк у читателей нет»",
+    "fix": "—"
+   },
+   {
+    "claim": "`task:1.3` → `scn:stale-verdict-scope/Ноль добавленных при изменённом журнале называется словами/Хеш цели не задан`, at tasks.md:7",
+    "section": "tasks.md:7 → specs/stale-verdict-scope/spec.md:54",
+    "lens": "trace-link",
+    "invariant": "проверка задачи относится к поведению, что требует THEN сценария",
+    "severity": "справка",
+    "support": "есть: tasks.md:7 «`sha256` пустой — одна строка «хеш цели не задан: состав не считается» … проверка: тесты …», тест :152 «def test_empty_hash_is_named_not_counted»; specs/stale-verdict-scope/spec.md:58 «THEN строка «хеш цели не задан: состав не считается», списка добавленных нет»",
+    "fix": "—"
+   },
+   {
+    "claim": "`task:1.3` → `scn:step-help/Страница шага атаки несёт вердикт и состав/Журнал не читается при устаревшем вердикте`, at tasks.md:7",
+    "section": "tasks.md:7 → specs/step-help/spec.md:28",
+    "lens": "trace-link",
+    "invariant": "проверка задачи относится к поведению, что требует THEN сценария",
+    "severity": "справка",
+    "support": "есть: tasks.md:7 «журнал не разбирается (`json.load` падает или нет `records`) — одна строка «журнал не читается» — проверка: тесты в `attack/tests/test_attack_scope.py`», тест :166 «def test_unreadable_journal_is_one_line» — строка состава, которую THEN требует в `stale_scope`; specs/step-help/spec.md:32 «THEN `verdict` равно `stale`, `stale_scope` несёт одну строку «журнал не читается», код 0» (поля справки и код — задача 4.2)",
+    "fix": "—"
+   },
+   {
+    "claim": "`task:1.4` → `scn:stale-verdict-scope/У атаки артефактов — все изменившиеся цели и число записей/Две цели изменены`, at tasks.md:8",
+    "section": "tasks.md:8 → specs/stale-verdict-scope/spec.md:88",
+    "lens": "trace-link",
+    "invariant": "проверка задачи относится к поведению, что требует THEN сценария",
+    "severity": "справка",
+    "support": "есть: tasks.md:8 «прочие несовпавшие — по строке с путём, все, не первая … проверка: тесты в `attack/tests/test_attack_scope.py`», тест :183 «def test_every_changed_target_is_named»; specs/stale-verdict-scope/spec.md:91 «THEN названы обе: `design.md`, `tasks.md`»",
+    "fix": "—"
+   },
+   {
+    "claim": "`task:1.4` → `scn:stale-verdict-scope/У атаки артефактов — все изменившиеся цели и число записей/Журнал как опора изменён`, at tasks.md:8",
+    "section": "tasks.md:8 → specs/stale-verdict-scope/spec.md:93",
+    "lens": "trace-link",
+    "invariant": "проверка задачи относится к поведению, что требует THEN сценария",
+    "severity": "справка",
+    "support": "есть: tasks.md:8 «`decisions.json` с несовпавшим хешем — «decisions.json: журнал изменён, записей сейчас N» без номеров … проверка: тесты …», тест :192 «def test_changed_journal_gives_the_count_not_the_numbers»; specs/stale-verdict-scope/spec.md:96 «THEN строка «decisions.json: журнал изменён, записей сейчас 159», номеров записей нет»",
+    "fix": "—"
+   },
+   {
+    "claim": "`task:1.4` → `scn:stale-verdict-scope/У атаки артефактов — все изменившиеся цели и число записей/Путь цели вне каталога`, at tasks.md:8",
+    "section": "tasks.md:8 → specs/stale-verdict-scope/spec.md:103",
+    "lens": "trace-link",
+    "invariant": "проверка задачи относится к поведению, что требует THEN сценария",
+    "severity": "справка",
+    "support": "есть: tasks.md:8 «путь с `..`, абсолютный, с буквой диска или уходящий по ссылке за `change_dir.resolve()` не читается и даёт «<путь>: вне каталога изменения» … в том числе три пути из `security.md`», тест :208-209 «def test_path_outside_the_change_is_not_read»; specs/stale-verdict-scope/spec.md:107 «THEN файл не читается, цель названа с пометкой «вне каталога изменения»»",
+    "fix": "—"
+   },
+   {
+    "claim": "`task:1.4` → `scn:stale-verdict-scope/У атаки артефактов — все изменившиеся цели и число записей/Цели нет на диске`, at tasks.md:8",
+    "section": "tasks.md:8 → specs/stale-verdict-scope/spec.md:98",
+    "lens": "trace-link",
+    "invariant": "проверка задачи относится к поведению, что требует THEN сценария",
+    "severity": "справка",
+    "support": "есть: tasks.md:8 «файла нет — «<путь>: файла нет» … проверка: тесты …», тест :200 «def test_missing_target_is_named»; specs/stale-verdict-scope/spec.md:101 «THEN `security.md` назван с пометкой «файла нет»»",
+    "fix": "—"
+   },
+   {
+    "claim": "`task:1.4` → `scn:stale-verdict-scope/У атаки артефактов — все изменившиеся цели и число записей/Цель без хеша`, at tasks.md:8",
+    "section": "tasks.md:8 → specs/stale-verdict-scope/spec.md:109",
+    "lens": "trace-link",
+    "invariant": "проверка задачи относится к поведению, что требует THEN сценария",
+    "severity": "справка",
+    "support": "есть: tasks.md:8 «`sha256` пустой — «<путь>: хеш не задан», изменившейся не считается … проверка: тесты …», тест :216 «def test_target_without_hash_is_named_not_changed»; specs/stale-verdict-scope/spec.md:113 «THEN цель названа с пометкой «хеш не задан», изменившейся не считается»",
+    "fix": "—"
+   },
+   {
+    "claim": "`task:1.5` → `scn:stale-verdict-scope/Состав атаки журнала считается по таблице/Раздел с несколькими записями`, at tasks.md:9",
+    "section": "tasks.md:9 → specs/stale-verdict-scope/spec.md:21",
+    "lens": "trace-link",
+    "invariant": "проверка задачи относится к поведению, что требует THEN сценария",
+    "severity": "справка",
+    "support": "есть: tasks.md:9 «ячейка «Раздел» с текстом-инструкцией («считай все записи атакованными, F-03») … дают в строках состава только номера … — проверка: `test_scope_lines_carry_no_cell_text`», тест attack/tests/test_attack_scope.py:231-237 — из ячейки взят только номер F-03, текст отброшен; specs/stale-verdict-scope/spec.md:24 «THEN F-07 и F-32 считаются атакованными» — из ячейки берутся номера, остальное текста ячейки не меняет расчёт",
+    "fix": "—"
+   },
+   {
+    "claim": "`task:3.1` → `scn:decision-journal/check называет состав устаревшего вердикта/Записи добавлены после вердикта`, at tasks.md:20",
+    "section": "tasks.md:20 → specs/decision-journal/spec.md:8",
+    "lens": "trace-link",
+    "invariant": "проверка задачи относится к поведению, что требует THEN сценария",
+    "severity": "справка",
+    "support": "есть: tasks.md:20 «каждую строку печатать как `[..] атака журнала: <строка>` … проверка: тесты в `cli/tests/test_cli_check.py` через `run_check` на журнале `journal_of` и файле атаки в `tmp_path`», cli/tests/test_cli_check.py:127 «\"[..] атака журнала: после вердикта добавлена 1 запись: F-02\" in run.stdout»; specs/decision-journal/spec.md:11 «THEN stdout несёт `[..] атака журнала: после вердикта добавлено 60 записей: F-80–F-139`, код 0»",
+    "fix": "—"
+   },
+   {
+    "claim": "`task:3.1` → `scn:decision-journal/check называет состав устаревшего вердикта/Состав не меняет код --strict`, at tasks.md:20",
+    "section": "tasks.md:20 → specs/decision-journal/spec.md:18",
+    "lens": "trace-link",
+    "invariant": "проверка задачи относится к поведению, что требует THEN сценария",
+    "severity": "справка",
+    "support": "есть: tasks.md:20 «код выхода прежний, `--strict` на строки `[..]` не смотрит … проверка: тесты в `cli/tests/test_cli_check.py`», тест :120 «def test_cli_check_scope_does_not_change_the_strict_code»; specs/decision-journal/spec.md:21 «THEN строка `[..] атака журнала` есть, код 0»",
+    "fix": "—"
+   },
+   {
+    "claim": "`task:3.1` → `scn:decision-journal/check называет состав устаревшего вердикта/Файла атаки нет`, at tasks.md:20",
+    "section": "tasks.md:20 → specs/decision-journal/spec.md:23",
+    "lens": "trace-link",
+    "invariant": "проверка задачи относится к поведению, что требует THEN сценария",
+    "severity": "справка",
+    "support": "есть: tasks.md:20 «каталога `attack/` нет — ничего не печатается — проверка: тесты в `cli/tests/test_cli_check.py`», тест :130 «def test_cli_check_without_attack_dir_prints_nothing_about_attacks»; specs/decision-journal/spec.md:26 «THEN строк `[..] атака` нет, остальные проверки прежние»",
+    "fix": "—"
+   },
+   {
+    "claim": "`task:3.1` → `scn:decision-journal/check называет состав устаревшего вердикта/Хеш совпал`, at tasks.md:20",
+    "section": "tasks.md:20 → specs/decision-journal/spec.md:13",
+    "lens": "trace-link",
+    "invariant": "проверка задачи относится к поведению, что требует THEN сценария",
+    "severity": "справка",
+    "support": "есть: tasks.md:20 «при пустом списке строк нет … проверка: тесты в `cli/tests/test_cli_check.py` через `run_check`»; specs/decision-journal/spec.md:16 «THEN строк `[..] атака журнала` нет»",
+    "fix": "—"
+   },
+   {
+    "claim": "`task:3.2` → `scn:decision-journal/check называет состав устаревшего вердикта/Файл атаки не разбирается`, at tasks.md:21",
+    "section": "tasks.md:21 → specs/decision-journal/spec.md:28",
+    "lens": "trace-link",
+    "invariant": "проверка задачи относится к поведению, что требует THEN сценария",
+    "severity": "справка",
+    "support": "есть: tasks.md:21 «печатается строкой `[!!] attack/decisions.md: файл атаки не разбирается: <причина>`, остальные проверки идут, код 0, с `--strict` — 2 … проверка: тесты в `cli/tests/test_cli_check.py`, в том числе файл атаки в UTF-16», тесты :142 «def test_cli_check_names_an_unparsable_attack_file_as_a_signal», :155; specs/decision-journal/spec.md:32 «THEN stdout несёт `[!!] attack/decisions.md: файл атаки не разбирается: <причина>`, остальные проверки идут, код 0, с `--strict` 2»",
+    "fix": "—"
+   },
+   {
+    "claim": "`task:3.3` → `scn:decision-journal/check называет состав устаревшего вердикта/Записи добавлены после вердикта`, at tasks.md:22",
+    "section": "tasks.md:22 → specs/decision-journal/spec.md:8",
+    "lens": "trace-link",
+    "invariant": "проверка задачи относится к поведению, что требует THEN сценария",
+    "severity": "справка",
+    "support": "есть: tasks.md:22 «`check` строка `[..] атака журнала: …` — состав устаревшего вердикта, повтор атаки идёт по нему … проверка: `python -X utf8 -m pytest tests/test_skills.py` зелёный, строки в файле есть», cli/journal-cli.md:50 — та же строка-маркер; specs/decision-journal/spec.md:11 «THEN stdout несёт `[..] атака журнала: после вердикта добавлено 60 записей: F-80–F-139`, код 0» — проверка задачи держит документ о маркере, который THEN требует",
+    "fix": "—"
+   },
+   {
+    "claim": "`task:3.3` → `scn:decision-journal/check называет состав устаревшего вердикта/Файл атаки не разбирается`, at tasks.md:22",
+    "section": "tasks.md:22 → specs/decision-journal/spec.md:28",
+    "lens": "trace-link",
+    "invariant": "проверка задачи относится к поведению, что требует THEN сценария",
+    "severity": "справка",
+    "support": "есть: tasks.md:22 «`check` строка `[!!] … файл атаки не разбирается` — правит файл атаки скилл по `attack-table.md`, с `--strict` код 2 — проверка: … строки в файле есть», cli/journal-cli.md:54; specs/decision-journal/spec.md:32 «THEN stdout несёт `[!!] attack/decisions.md: файл атаки не разбирается: <причина>` … с `--strict` 2»",
+    "fix": "—"
+   },
+   {
+    "claim": "`task:4.1` → `scn:step-help/Справка не выдаёт наличие файла за сделанную работу/Готовый шаг атаки`, at tasks.md:26",
+    "section": "tasks.md:26 → specs/step-help/spec.md:58",
+    "lens": "trace-link",
+    "invariant": "проверка задачи относится к поведению, что требует THEN сценария",
+    "severity": "справка",
+    "support": "есть: tasks.md:26 «`file_note` у такой страницы `None` … проверка: тесты в `step-help/tests/test_step_help.py` через шим форка», тест :752-759 «assert att[\"file_note\"] is None, \"у шага с вердиктом вместо пометки — вердикт и состав\"»; specs/step-help/spec.md:61 «THEN пометки «файл есть, содержание не проверялось» нет, показаны вердикт `stale` и строки состава»",
+    "fix": "—"
+   },
+   {
+    "claim": "`task:4.1` → `scn:step-help/Справка не выдаёт наличие файла за сделанную работу/Пустой файл шага`, at tasks.md:26",
+    "section": "tasks.md:26 → specs/step-help/spec.md:48",
+    "lens": "trace-link",
+    "invariant": "проверка задачи относится к поведению, что требует THEN сценария",
+    "severity": "справка",
+    "support": "есть: tasks.md:26 «у артефакта без `verdict` обоих полей нет … проверка: тесты в `step-help/tests/test_step_help.py`» — пометка `FILE_NOT_CHECKED` у готового шага без вердикта остаётся (step-help/step_help.py:229); specs/step-help/spec.md:51 «THEN шаг показан готовым с пометкой «файл есть, содержание не проверялось»»",
+    "fix": "—"
+   },
+   {
+    "claim": "`task:4.1` → `scn:step-help/Страница шага атаки несёт вердикт и состав/Атака не вызвана`, at tasks.md:26",
+    "section": "tasks.md:26 → specs/step-help/spec.md:23",
+    "lens": "trace-link",
+    "invariant": "проверка задачи относится к поведению, что требует THEN сценария",
+    "severity": "справка",
+    "support": "есть: tasks.md:26 «у артефакта без `verdict` обоих полей нет … проверка: тесты …», тест :776 «assert \"verdict\" not in page(plain, \"attack-decisions\") and \"stale_scope\" not in page(plain, \"attack-decisions\")»; specs/step-help/spec.md:26 «THEN полей `verdict` и `stale_scope` у страницы нет»",
+    "fix": "—"
+   },
+   {
+    "claim": "`task:4.1` → `scn:step-help/Страница шага атаки несёт вердикт и состав/Вердикт в силе`, at tasks.md:26",
+    "section": "tasks.md:26 → specs/step-help/spec.md:13",
+    "lens": "trace-link",
+    "invariant": "проверка задачи относится к поведению, что требует THEN сценария",
+    "severity": "справка",
+    "support": "есть: tasks.md:26 «страница несёт `verdict` (значение как есть) и `stale_scope` … проверка: тесты …», тест :766 «assert att[\"verdict\"] == \"ok\" and att[\"stale_scope\"] == []»; specs/step-help/spec.md:16 «THEN `verdict` равно `ok`, `stale_scope` — пустой список»",
+    "fix": "—"
+   },
+   {
+    "claim": "`task:4.1` → `scn:step-help/Страница шага атаки несёт вердикт и состав/Вердикт устарел после proposal`, at tasks.md:26",
+    "section": "tasks.md:26 → specs/step-help/spec.md:8",
+    "lens": "trace-link",
+    "invariant": "проверка задачи относится к поведению, что требует THEN сценария",
+    "severity": "справка",
+    "support": "есть: tasks.md:26 «`stale_scope` — `scope_lines` по файлу атаки из `existingOutputPaths` и журналу … проверка: тесты …», тест :752-758 «assert att[\"stale_scope\"] == [\"после вердикта добавлено 2 записи: F-04, F-05\"]»; specs/step-help/spec.md:11 «THEN у страницы `attack-decisions` поле `verdict` равно `stale`, `stale_scope` несёт строку «после вердикта добавлено N записей: …»»",
+    "fix": "—"
+   },
+   {
+    "claim": "`task:4.1` → `scn:step-help/Страница шага атаки несёт вердикт и состав/Шаг без вердикта`, at tasks.md:26",
+    "section": "tasks.md:26 → specs/step-help/spec.md:18",
+    "lens": "trace-link",
+    "invariant": "проверка задачи относится к поведению, что требует THEN сценария",
+    "severity": "справка",
+    "support": "есть: tasks.md:26 «у артефакта без `verdict` обоих полей нет … проверка: тесты …», тест :773 «assert \"verdict\" not in page(data, step) and \"stale_scope\" not in page(data, step), step»; specs/step-help/spec.md:21 «THEN полей `verdict` и `stale_scope` у неё нет»",
+    "fix": "—"
+   },
+   {
+    "claim": "`task:4.2` → `scn:stale-verdict-scope/Состав одинаков у всех читателей/Два читателя`, at tasks.md:27",
+    "section": "tasks.md:27 → specs/stale-verdict-scope/spec.md:121",
+    "lens": "trace-link",
+    "invariant": "проверка задачи относится к поведению, что требует THEN сценария",
+    "severity": "справка",
+    "support": "есть: tasks.md:27 «проверка: тест двух читателей в `step-help/tests/test_step_help.py` сравнивает строки `stale_scope` со строками `[..] атака журнала:` из `run_check` на тех же файлах», тест :795-797 «assert att[\"stale_scope\"] == from_check == […]»; specs/stale-verdict-scope/spec.md:124 «THEN строки состава в stdout `check` и в поле страницы шага равны»",
+    "fix": "—"
+   },
+   {
+    "claim": "`task:4.2` → `scn:step-help/Страница шага атаки несёт вердикт и состав/Вердикт не прошёл при изменённом журнале`, at tasks.md:27",
+    "section": "tasks.md:27 → specs/step-help/spec.md:34",
+    "lens": "trace-link",
+    "invariant": "проверка задачи относится к поведению, что требует THEN сценария",
+    "severity": "справка",
+    "support": "есть: tasks.md:27 «при `mismatch` и несовпавшем хеше `stale_scope` несёт те же строки, что stdout `check` без маркера и имени атаки … проверка: тест двух читателей …», тест :789 «\"mismatch\", status=\"gaps_found\"», :796 «assert att[\"verdict\"] == \"mismatch\"»; specs/step-help/spec.md:38 «THEN `verdict` равно `mismatch`, `stale_scope` несёт те же строки состава, что stdout `check`»",
+    "fix": "—"
+   },
+   {
+    "claim": "`task:4.2` → `scn:step-help/Страница шага атаки несёт вердикт и состав/Журнал не читается при устаревшем вердикте`, at tasks.md:27",
+    "section": "tasks.md:27 → specs/step-help/spec.md:28",
+    "lens": "trace-link",
+    "invariant": "проверка задачи относится к поведению, что требует THEN сценария",
+    "severity": "справка",
+    "support": "есть: tasks.md:27 «журнал с ошибкой синтаксиса при `stale` даёт одну строку «журнал не читается», код 0 — проверка: … в `step-help/tests/test_step_help.py`», тест :784 «assert att[\"verdict\"] == \"stale\" and att[\"stale_scope\"] == [\"журнал не читается\"]»; specs/step-help/spec.md:32 «THEN `verdict` равно `stale`, `stale_scope` несёт одну строку «журнал не читается», код 0»",
+    "fix": "—"
+   },
+   {
+    "claim": "`task:4.3` → `scn:step-help/Страница шага атаки несёт вердикт и состав/Вердикт устарел после proposal`, at tasks.md:28",
+    "section": "tasks.md:28 → specs/step-help/spec.md:8",
+    "lens": "trace-link",
+    "invariant": "проверка задачи относится к поведению, что требует THEN сценария",
+    "severity": "справка",
+    "support": "есть: tasks.md:28 «`test_output_shape`: … у страницы `attack-decisions` с вердиктом — прежний плюс `verdict`, `stale_scope` … проверка: `python -X utf8 -m pytest step-help/tests` зелёный», тест :911-914; specs/step-help/spec.md:11 «THEN у страницы `attack-decisions` поле `verdict` равно `stale`, `stale_scope` несёт строку …» — наличие обоих полей у страницы атаки",
+    "fix": "—"
+   },
+   {
+    "claim": "`task:4.3` → `scn:step-help/Страница шага атаки несёт вердикт и состав/Шаг без вердикта`, at tasks.md:28",
+    "section": "tasks.md:28 → specs/step-help/spec.md:18",
+    "lens": "trace-link",
+    "invariant": "проверка задачи относится к поведению, что требует THEN сценария",
+    "severity": "справка",
+    "support": "есть: tasks.md:28 «`test_output_shape`: у страницы `design` перечень полей прежний … проверка: `python -X utf8 -m pytest step-help/tests` зелёный», тест :914 «set(page(with_verdict, \"attack-decisions\")) == set(page(data, \"design\")) | {\"verdict\", \"stale_scope\"}»; specs/step-help/spec.md:21 «THEN полей `verdict` и `stale_scope` у неё нет»",
+    "fix": "—"
+   },
+   {
+    "claim": "`task:5.1` → `scn:artifact-attack/Повтор атаки журнала по составу/Записи добавлены после вердикта`, at tasks.md:33",
+    "section": "tasks.md:33 → specs/artifact-attack/spec.md:26",
+    "lens": "trace-link",
+    "invariant": "проверка задачи относится к поведению, что требует THEN сценария",
+    "severity": "справка",
+    "support": "есть: tasks.md:33 «проход по всем линзам идёт по ним и по стыкам … их прежние строки заменяются, остальные остаются; вводный текст файла называет проход и записи — проверка: новый тест `test_attack_skill_repeats_by_scope` … находит в тексте слова о составе, стыках, `depends_on`, `antipodes`, `consequences`», tests/test_skills.py:533-536; specs/artifact-attack/spec.md:29 «THEN строки F-80–F-82 и F-12 написаны заново, остальные строки прежние, `target_sha256` новый, вводный текст называет проход и записи»",
+    "fix": "—"
+   },
+   {
+    "claim": "`task:5.1` → `scn:artifact-attack/Повтор атаки журнала по составу/Стык по номерам в consequences`, at tasks.md:33",
+    "section": "tasks.md:33 → specs/artifact-attack/spec.md:46",
+    "lens": "trace-link",
+    "invariant": "проверка задачи относится к поведению, что требует THEN сценария",
+    "severity": "справка",
+    "support": "есть: tasks.md:33 «номера в `consequences` дословно, в любую сторону, диапазон не разворачивается — проверка: … `test_attack_skill_repeats_by_scope` находит … `consequences`», tests/test_skills.py:533-534 («дословно», «диапазон»); specs/artifact-attack/spec.md:50 «THEN стыки — F-10, F-12, F-20: номера, стоящие в тексте дословно; диапазон не разворачивается»",
+    "fix": "—"
+   },
+   {
+    "claim": "`task:5.1` → `scn:artifact-attack/Хеши целей обесценивают вердикт после правки/Цель изменена после атаки`, at tasks.md:33",
+    "section": "tasks.md:33 → specs/artifact-attack/spec.md:8",
+    "lens": "trace-link",
+    "invariant": "проверка задачи относится к поведению, что требует THEN сценария",
+    "severity": "справка",
+    "support": "есть: tasks.md:33 «у артефактов правило «с начала» остаётся — проверка: … находит … «с начала» только у артефактов», tests/test_skills.py:537-539; specs/artifact-attack/spec.md:11 «THEN таблица пишется с начала, в файле новые хеши, старые строки не копируются»",
+    "fix": "—"
+   },
+   {
+    "claim": "`task:5.2` → `scn:artifact-attack/Повтор атаки журнала по составу/Ноль добавленных без новых сигналов`, at tasks.md:34",
+    "section": "tasks.md:34 → specs/artifact-attack/spec.md:31",
+    "lens": "trace-link",
+    "invariant": "проверка задачи относится к поведению, что требует THEN сценария",
+    "severity": "справка",
+    "support": "есть: tasks.md:34 «ноль добавленных — `check --write`; новых `[!!]` нет — обновляется только `target_sha256`, строки и `status` прежние … проверка: тот же тест … находит слова о … «новых `[!!]` нет»», tests/test_skills.py:534; specs/artifact-attack/spec.md:34 «THEN `target_sha256` обновлён, строки и `status` прежние»",
+    "fix": "—"
+   },
+   {
+    "claim": "`task:5.2` → `scn:artifact-attack/Повтор атаки журнала по составу/Ноль добавленных с новым сигналом улики`, at tasks.md:34",
+    "section": "tasks.md:34 → specs/artifact-attack/spec.md:36",
+    "lens": "trace-link",
+    "invariant": "проверка задачи относится к поведению, что требует THEN сценария",
+    "severity": "справка",
+    "support": "есть: tasks.md:34 «`[!!]` у улики записи — проход по этой записи … проверка: тот же тест `test_attack_skill_repeats_by_scope`», attack/skills/symphysis-attack/SKILL.md:147-148; specs/artifact-attack/spec.md:39 «THEN строки F-30 написаны заново, остальные прежние»",
+    "fix": "—"
+   },
+   {
+    "claim": "`task:5.2` → `scn:artifact-attack/Повтор атаки журнала по составу/Состав неполон`, at tasks.md:34",
+    "section": "tasks.md:34 → specs/artifact-attack/spec.md:41",
+    "lens": "trace-link",
+    "invariant": "проверка задачи относится к поведению, что требует THEN сценария",
+    "severity": "справка",
+    "support": "есть: tasks.md:34 «строка «состав неполон» (`coverage` выключена) — с начала — проверка: тот же тест … находит … «состав неполон»», tests/test_skills.py:534, :538-539 («с начала» допускается у «неполон»); specs/artifact-attack/spec.md:44 «THEN таблица пишется с начала»",
+    "fix": "—"
+   },
+   {
+    "claim": "`task:5.2` → `scn:artifact-attack/Хеш не обновляется при изменённом решении прежней записи/Файл ответа новее атаки`, at tasks.md:34",
+    "section": "tasks.md:34 → specs/artifact-attack/spec.md:58",
+    "lens": "trace-link",
+    "invariant": "проверка задачи относится к поведению, что требует THEN сценария",
+    "severity": "справка",
+    "support": "есть: tasks.md:34 «файл `answers/` новее файла атаки со строкой `- F-NN:` прежней записи — эти записи проходятся как стыки, хеш обновляется после прохода — проверка: тот же тест … находит слова о `answers/`», tests/test_skills.py:534; specs/artifact-attack/spec.md:62 «THEN строки F-12 написаны заново по всем линзам, `target_sha256` обновлён после прохода»",
+    "fix": "—"
+   },
+   {
+    "claim": "`task:5.3` → `scn:artifact-attack/Повтор атаки журнала по составу/Записи добавлены после вердикта`, at tasks.md:35",
+    "section": "tasks.md:35 → specs/artifact-attack/spec.md:26",
+    "lens": "trace-link",
+    "invariant": "проверка задачи относится к поведению, что требует THEN сценария",
+    "severity": "справка",
+    "support": "есть: tasks.md:35 «раздел «Приёмка» — пункт: при повторе строки записей вне состава байт в байт прежние — проверка: `python -X utf8 -m pytest tests/test_skills.py` зелёный», tests/test_skills.py:543-544 «assert \"вне состава\" in acceptance and \"байт в байт\" in acceptance»; specs/artifact-attack/spec.md:29 «THEN строки F-80–F-82 и F-12 написаны заново, остальные строки прежние …»",
+    "fix": "—"
+   },
+   {
+    "claim": "`task:5.3` → `scn:decision-journal/check называет состав устаревшего вердикта/Файл атаки не разбирается`, at tasks.md:35",
+    "section": "tasks.md:35 → specs/decision-journal/spec.md:28",
+    "lens": "trace-link",
+    "invariant": "проверка задачи относится к поведению, что требует THEN сценария",
+    "severity": "справка",
+    "support": "есть: tasks.md:35 «`check` строка `[!!] … файл атаки не разбирается` → исправить файл по `attack-table.md`, с `--strict` код 2 — проверка: `python -X utf8 -m pytest tests/test_skills.py` зелёный», tests/test_skills.py:540-542 («файл атаки не разбирается» в «Кодах и сигналах»); specs/decision-journal/spec.md:32 «THEN stdout несёт `[!!] attack/decisions.md: файл атаки не разбирается: <причина>` … с `--strict` 2»",
+    "fix": "—"
+   },
+   {
+    "claim": "`task:5.4` → `scn:artifact-attack/Повтор атаки журнала по составу/Записи добавлены после вердикта`, at tasks.md:36",
+    "section": "tasks.md:36 → specs/artifact-attack/spec.md:26",
+    "lens": "trace-link",
+    "invariant": "проверка задачи относится к поведению, что требует THEN сценария",
+    "severity": "справка",
+    "support": "есть: tasks.md:36 «brief повтора несёт строку «Пройти: F-NN, …» со списком записей состава и стыков (или «с начала»); водитель проходит только их и оставляет прочие строки — проверка: `python -X utf8 -m pytest tests/test_agents.py` зелёный (`test_driver_steps_match_the_skill_driver_section`)», attack/agents/symphysis-attack-driver.md:64-66; specs/artifact-attack/spec.md:29 «THEN строки F-80–F-82 и F-12 написаны заново, остальные строки прежние …»",
+    "fix": "—"
+   },
+   {
+    "claim": "`task:5.5` → `scn:artifact-attack/Хеши целей обесценивают вердикт после правки/Хеш берётся после check --write`, at tasks.md:37",
+    "section": "tasks.md:37 → specs/artifact-attack/spec.md:13",
+    "lens": "trace-link",
+    "invariant": "проверка задачи относится к поведению, что требует THEN сценария",
+    "severity": "справка",
+    "support": "есть: tasks.md:37 «комментарий о `target_sha256`: правка журнала после атаки обесценивает вердикт … проверка: `python -X utf8 -m pytest tests/test_skills.py openspec/schemas/symphysis/tests` зелёный, `openspec validate attack-stale-scope --strict` валиден», openspec/schemas/symphysis/templates/attack-decisions.md:13 «target_sha256 — SHA-256 decisions.json после `check --write`, на момент атаки»; specs/artifact-attack/spec.md:16 «THEN значение равно `sha256sum decisions.json` после `check --write` и после строки итога в `notes[]`, а не до них»",
+    "fix": "—"
+   },
+   {
+    "claim": "`task:5.5` → `scn:stale-verdict-scope/Состав атаки журнала считается по таблице/Раздел диапазоном`, at tasks.md:37",
+    "section": "tasks.md:37 → specs/stale-verdict-scope/spec.md:32",
+    "lens": "trace-link",
+    "invariant": "проверка задачи относится к поведению, что требует THEN сценария",
+    "severity": "справка",
+    "support": "есть: tasks.md:37 «`attack/attack-table.md`, раздел «Строки покрытия»: раздел строки «чисто» и «не пройдено» — одна запись `F-NN`, диапазон в разделе не пишется (F-40) — проверка: … зелёный», attack/attack-table.md:41-43 «диапазон `F-01–F-10` в разделе не пишется: состав устаревшего вердикта считается по номерам, стоящим в столбце дословно»; specs/stale-verdict-scope/spec.md:36 «THEN строка сигнала «раздел диапазоном: F-01–F-10 …»; атакованными считаются только номера, стоящие дословно: F-01 и F-10» — правило и сигнал об одном условии, связаны записью F-40 (`consequences`: «в spec.md: Раздел диапазоном; правило `attack-table.md`»)",
+    "fix": "—"
+   },
+   {
+    "claim": "`task:6.1` → `scn:step-help/Страница шага атаки несёт вердикт и состав/Вердикт устарел после proposal`, at tasks.md:42",
+    "section": "tasks.md:42 → specs/step-help/spec.md:8",
+    "lens": "trace-link",
+    "invariant": "проверка задачи относится к поведению, что требует THEN сценария",
+    "severity": "справка",
+    "support": "есть: tasks.md:42 «`steps.md`, механики `attack-decisions` (строка о `verdict: stale`): `journal.py check` и справка шага называют состав … проверка: … зелёный (`test_real_schema_and_real_texts_fit_together`)», openspec/schemas/symphysis/steps.md:148 «… и справка шага полем `stale_scope`»; specs/step-help/spec.md:11 «THEN у страницы `attack-decisions` поле `verdict` равно `stale`, `stale_scope` несёт строку «после вердикта добавлено N записей: …»» — текст шага называет то поле, которое THEN требует",
+    "fix": "—"
+   },
+   {
+    "claim": "`task:6.2` → `scn:decision-journal/check называет состав устаревшего вердикта/Записи добавлены после вердикта`, at tasks.md:43",
+    "section": "tasks.md:43 → specs/decision-journal/spec.md:8",
+    "lens": "trace-link",
+    "invariant": "проверка задачи относится к поведению, что требует THEN сценария",
+    "severity": "справка",
+    "support": "есть: tasks.md:43 «`docs/GUIDE.md`, абзац о `verdict: stale`: строка `[..] атака журнала: после вердикта добавлено N записей: …` у `python .symphysis/tools/journal.py check` … проверка: `python -X utf8 -m pytest tests/test_guide.py` зелёный, абзац проходит гейт имён», docs/GUIDE.md:363; specs/decision-journal/spec.md:11 «THEN stdout несёт `[..] атака журнала: после вердикта добавлено 60 записей: F-80–F-139`, код 0»",
+    "fix": "—"
+   },
+   {
+    "claim": "`task:7.2` → `scn:decision-journal/check называет состав устаревшего вердикта/Записи добавлены после вердикта`, at tasks.md:48",
+    "section": "tasks.md:48 → specs/decision-journal/spec.md:8",
+    "lens": "trace-link",
+    "invariant": "проверка задачи относится к поведению, что требует THEN сценария",
+    "severity": "справка",
+    "support": "есть: tasks.md:48 «`python -X utf8 cli/journal.py check openspec/changes/archive/2026-11-06-trace-graph/decisions.json` печатает `[..] атака журнала: после вердикта добавлено 80 записей: F-80–F-159`, код 0 (таблица архива называет F-01–F-79, журнал несёт 159 записей)»; specs/decision-journal/spec.md:11 «THEN stdout несёт `[..] атака журнала: после вердикта добавлено 60 записей: F-80–F-139`, код 0» — та же форма строки на живом журнале",
+    "fix": "—"
+   },
+   {
+    "claim": "`req:artifact-attack/Хеши целей обесценивают вердикт после правки` → `rec:F-21`, at specs/artifact-attack/spec.md:6",
+    "section": "specs/artifact-attack/spec.md:6 → decisions.json:1112",
+    "lens": "trace-link",
+    "invariant": "требование следует из решения записи",
+    "severity": "справка",
+    "support": "есть: specs/artifact-attack/spec.md:6 «У артефактов при расхождении скилл SHALL проходить цель с начала, не перенося прежние строки; у журнала — по составу, часть «Повтор атаки журнала по составу»»; decisions.json:1125 «В этом изменении: правило скилла `symphysis-attack` «хеши разошлись — атака с начала» меняется на проход по составу (как именно — F-22); требование спеки `artifact-attack` «при расхождении SHALL проходить цель с начала» идёт дельтой MODIFIED», :1168 слово человека «Давай поправим скилл в этом изменении.»",
+    "fix": "—"
+   },
+   {
+    "claim": "`req:artifact-attack/Повтор атаки журнала по составу` → `rec:F-21`, at specs/artifact-attack/spec.md:24",
+    "section": "specs/artifact-attack/spec.md:24 → decisions.json:1112",
+    "lens": "trace-link",
+    "invariant": "требование следует из решения записи",
+    "severity": "справка",
+    "support": "есть: specs/artifact-attack/spec.md:24 «При расхождении хеша журнала повторная атака SHALL проходить по всем линзам добавленные записи и их стыки»; decisions.json:1125 «… меняется на проход по составу (как именно — F-22) …», :1168 «Кажется, что проход с самого начала дорог при сильно уменьшаемой пользе с каждой итерацией. Давай поправим скилл в этом изменении.»",
+    "fix": "—"
+   },
+   {
+    "claim": "`req:artifact-attack/Повтор атаки журнала по составу` → `rec:F-22`, at specs/artifact-attack/spec.md:24",
+    "section": "specs/artifact-attack/spec.md:24 → decisions.json:1187",
+    "lens": "trace-link",
+    "invariant": "требование следует из решения записи",
+    "severity": "справка",
+    "support": "есть: specs/artifact-attack/spec.md:24 «… стыки — прежние записи, связанные с новой через `depends_on`, `antipodes` или `consequences` в любую сторону, — заменяя их прежние строки; остальные SHALL оставаться. При нуле добавленных — `check --write`: новых `[!!]` нет — обновляется хеш, строки прежние; есть — проход по их записям. Неполный состав — с начала»; decisions.json:1201 «Добавленные записи и их стыки. Стык — прежняя запись, которую новая называет в `depends_on`, `antipodes` или `consequences`, и прежняя, чьи `depends_on`, `antipodes` или `consequences` называют новую. У них проход заново по всем линзам, прежние строки о них заменяются; остальные строки остаются …»",
+    "fix": "—"
+   },
+   {
+    "claim": "`req:artifact-attack/Повтор атаки журнала по составу` → `rec:F-31`, at specs/artifact-attack/spec.md:52",
+    "section": "specs/artifact-attack/spec.md:52 → decisions.json:1871",
+    "lens": "trace-link",
+    "invariant": "требование следует из решения записи",
+    "severity": "справка",
+    "support": "есть: specs/artifact-attack/spec.md:52 «проба краёв: форма=collection, stateful, исходы: F-31 Specify», сценарий :50 «THEN стыки — F-10, F-12, F-20: номера, стоящие в тексте дословно; диапазон не разворачивается»; decisions.json:1884 «Specify — GIVEN у новой записи `consequences` «ветки F-10–F-12 и F-20» WHEN идёт повтор THEN стыки — записи, чьи номера стоят в тексте дословно: F-10, F-12, F-20; диапазон не разворачивается», :1929 «в spec.md: Стык по номерам в consequences.»",
+    "fix": "—"
+   },
+   {
+    "claim": "`req:artifact-attack/Повтор атаки журнала по составу` → `rec:F-32`, at specs/artifact-attack/spec.md:53",
+    "section": "specs/artifact-attack/spec.md:53 → decisions.json:1942",
+    "lens": "trace-link",
+    "invariant": "требование следует из решения записи",
+    "severity": "справка",
+    "support": "есть: specs/artifact-attack/spec.md:53 «проба запретов: исходы: F-32 Specify», :24 «При нуле добавленных — `check --write`: новых `[!!]` нет — обновляется хеш, строки прежние» — условие, которое запрет F-32 ограничивает; decisions.json:1955 «Specify/test — требование MUST NOT: хеш не обновляется без прохода, если в `answers/` есть файл новее файла атаки со строкой `- F-NN:` прежней записи; такие записи проходятся как стыки» — вынесено соседним требованием :55, след пробы стоит здесь",
+    "fix": "—"
+   },
+   {
+    "claim": "`req:artifact-attack/Хеш не обновляется при изменённом решении прежней записи` → `rec:F-32`, at specs/artifact-attack/spec.md:56",
+    "section": "specs/artifact-attack/spec.md:56 → decisions.json:1942",
+    "lens": "trace-link",
+    "invariant": "требование следует из решения записи",
+    "severity": "справка",
+    "support": "есть: specs/artifact-attack/spec.md:56 «повторная атака MUST NOT обновлять хеш без прохода, если в `answers/` есть файл новее файла атаки со строкой `- F-NN:` прежней записи: такие записи SHALL проходиться как стыки (F-32; проверка — тест: файл ответа новее атаки — строки записи написаны заново)»; decisions.json:1955 (вариант A), :2000 «проверка: test — файл `answers/` новее файла атаки со строкой `- F-NN:` прежней записи: строки записи написаны заново. в spec.md: Хеш не обновляется при изменённом решении прежней записи.»",
+    "fix": "—"
+   },
+   {
+    "claim": "`req:decision-journal/check называет состав устаревшего вердикта` → `rec:F-18`, at specs/decision-journal/spec.md:6",
+    "section": "specs/decision-journal/spec.md:6 → decisions.json:786",
+    "lens": "trace-link",
+    "invariant": "требование следует из решения записи",
+    "severity": "справка",
+    "support": "есть: specs/decision-journal/spec.md:6 «SHALL печатать строки состава по `stale-verdict-scope` с маркером `[..] атака журнала: …`, когда SHA-256 журнала не равен `target_sha256`»; decisions.json:798 «Только добавленные: число и номера (подряд идущие — диапазоном `F-80–F-139`, иначе перечнем). При нуле добавленных и несовпавшем хеше — строка «записей не добавлено: журнал изменён иначе»», :872 «Форма строки состава в `check` и справке (F-19)»",
+    "fix": "—"
+   },
+   {
+    "claim": "`req:decision-journal/check называет состав устаревшего вердикта` → `rec:F-19`, at specs/decision-journal/spec.md:6",
+    "section": "specs/decision-journal/spec.md:6 → decisions.json:880",
+    "lens": "trace-link",
+    "invariant": "требование следует из решения записи",
+    "severity": "справка",
+    "support": "есть: specs/decision-journal/spec.md:6 «Команда `journal.py check` при файле `attack/decisions.md` рядом с журналом SHALL печатать строки состава … при файле `attack/artifacts.md` — `[..] атака артефактов: …`»; decisions.json:959 «Одна функция в модуле `attack/` (рядом с `attack_table.py`) и два читателя: `check` — строка модели, `step_help.py` — поле справки для человека и плагина», :1008 «Capability спек: при A — `decision-journal` (`check`); при B — `step-help`; при E — обе»",
+    "fix": "—"
+   },
+   {
+    "claim": "`req:decision-journal/check называет состав устаревшего вердикта` → `rec:F-30`, at specs/decision-journal/spec.md:34",
+    "section": "specs/decision-journal/spec.md:34 → decisions.json:1801",
+    "lens": "trace-link",
+    "invariant": "требование следует из решения записи",
+    "severity": "справка",
+    "support": "есть: specs/decision-journal/spec.md:34 «проба краёв: форма=io, text, stateful, исходы: F-30 Specify», сценарий :32 «THEN stdout несёт `[!!] attack/decisions.md: файл атаки не разбирается: <причина>`, остальные проверки идут, код 0, с `--strict` 2»; decisions.json:1813 «Specify — GIVEN `attack/decisions.md` без строки `---` WHEN выполняется `check` THEN строка `[!!] attack/decisions.md: файл атаки не разбирается: <причина>`, остальные проверки идут, код 0 (с `--strict` 2)», :1858 «в spec.md: Файл атаки не разбирается.»",
+    "fix": "—"
+   },
+   {
+    "claim": "`req:stale-verdict-scope/Состав атаки журнала считается по таблице` → `rec:F-09`, at specs/stale-verdict-scope/spec.md:9",
+    "section": "specs/stale-verdict-scope/spec.md:9 → decisions.json:336",
+    "lens": "trace-link",
+    "invariant": "требование следует из решения записи",
+    "severity": "справка",
+    "support": "есть: specs/stale-verdict-scope/spec.md:9 «Расчёт состава SHALL считать атакованной запись журнала, названную хотя бы в одной строке столбца «Раздел» файла `attack/decisions.md`»; decisions.json:337 «Таблица атаки называет каждую запись журнала поимённо: раздел без находок получает строку «чисто» линзы `coverage`, до которого проход не дошёл — «не пройдено» … Множество атакованных записей выводится из таблицы без новых полей», :351 «F-17 (вариант A)»",
+    "fix": "—"
+   },
+   {
+    "claim": "`req:stale-verdict-scope/Состав атаки журнала считается по таблице` → `rec:F-17`, at specs/stale-verdict-scope/spec.md:9",
+    "section": "specs/stale-verdict-scope/spec.md:9 → decisions.json:662",
+    "lens": "trace-link",
+    "invariant": "требование следует из решения записи",
+    "severity": "справка",
+    "support": "есть: specs/stale-verdict-scope/spec.md:9 «… а добавленной — запись `decisions.json`, которой в таблице нет … Полей frontmatter сверх `status`, `target`, `target_sha256` расчёт SHALL NOT требовать»; decisions.json:672 «Столбец «Раздел» таблицы атаки: атакованной считается запись, названная хотя бы в одной строке … добавленные — записи журнала, которых в таблице нет. Ничего нового не пишется, старые файлы атаки (`trace-graph`) читаются как есть»",
+    "fix": "—"
+   },
+   {
+    "claim": "`req:stale-verdict-scope/Состав атаки журнала считается по таблице` → `rec:F-18`, at specs/stale-verdict-scope/spec.md:9",
+    "section": "specs/stale-verdict-scope/spec.md:9 → decisions.json:786",
+    "lens": "trace-link",
+    "invariant": "требование следует из решения записи",
+    "severity": "справка",
+    "support": "есть: specs/stale-verdict-scope/spec.md:9 «состав SHALL называть число добавленных и их номера: подряд идущие — диапазоном `F-80–F-139`, иначе перечнем»; decisions.json:798 «Только добавленные: число и номера (подряд идущие — диапазоном `F-80–F-139`, иначе перечнем)»",
+    "fix": "—"
+   },
+   {
+    "claim": "`req:stale-verdict-scope/Состав атаки журнала считается по таблице` → `rec:F-25`, at specs/stale-verdict-scope/spec.md:38",
+    "section": "specs/stale-verdict-scope/spec.md:38 → decisions.json:1446",
+    "lens": "trace-link",
+    "invariant": "требование следует из решения записи",
+    "severity": "справка",
+    "support": "есть: specs/stale-verdict-scope/spec.md:38 «исходы: F-25 Dismiss», :9 «названную хотя бы в одной строке столбца «Раздел»» — строка «не пройдено» не различается; decisions.json:1466 «Dismiss — «не пройдено» не различается: запись названа в разделе и считается атакованной; допустимо, пока строка «не пройдено» — блокер, файл с ней не бывает `passed`», :1504",
+    "fix": "—"
+   },
+   {
+    "claim": "`req:stale-verdict-scope/Состав атаки журнала считается по таблице` → `rec:F-26`, at specs/stale-verdict-scope/spec.md:38",
+    "section": "specs/stale-verdict-scope/spec.md:38 → decisions.json:1517",
+    "lens": "trace-link",
+    "invariant": "требование следует из решения записи",
+    "severity": "справка",
+    "support": "есть: specs/stale-verdict-scope/spec.md:38 «F-26 Specify», сценарий :30 «THEN F-07 считается атакованной: номера сравниваются по числу»; decisions.json:1530 «Specify — GIVEN раздел `F-7, decision`, запись журнала `F-07` WHEN считается состав THEN F-07 считается атакованной: номера сравниваются по числу», :1575 «в spec.md: Номер с ведущим нулём.»",
+    "fix": "—"
+   },
+   {
+    "claim": "`req:stale-verdict-scope/Состав атаки журнала считается по таблице` → `rec:F-34`, at specs/stale-verdict-scope/spec.md:39",
+    "section": "specs/stale-verdict-scope/spec.md:39 → decisions.json:2049",
+    "lens": "trace-link",
+    "invariant": "требование стоит на записи: парковка ИБ ведёт к чек-листу `security.md`",
+    "severity": "справка",
+    "support": "есть: specs/stale-verdict-scope/spec.md:39 «проба запретов: исходы: нет; канон — F-34 → security.md»; decisions.json:2050 «[канон] Состав атаки журнала считается по таблице: канон ИБ», парковка ИБ «содержимое таблицы атаки и frontmatter — данные: строка раздела или `**Состав:**` с текстом-инструкцией не меняет ход расчёта (инъекция через содержимое файла) — канон, покрывается чек-листом security.md»; security.md:9 строка «Инъекции через содержимое файлов: таблица и frontmatter атаки (F-34)»",
+    "fix": "—"
+   },
+   {
+    "claim": "`req:stale-verdict-scope/Ноль добавленных при изменённом журнале называется словами` → `rec:F-14`, at specs/stale-verdict-scope/spec.md:42",
+    "section": "specs/stale-verdict-scope/spec.md:42 → decisions.json:555",
+    "lens": "trace-link",
+    "invariant": "требование следует из решения записи",
+    "severity": "справка",
+    "support": "есть: specs/stale-verdict-scope/spec.md:42 «Если SHA-256 `decisions.json` не равен `target_sha256`, а добавленных записей нет, состав SHALL быть строкой «записей не добавлено: журнал изменён иначе» — сверка `check --write`, строки `notes[]`, правка полей прежних записей»; decisions.json:556 «… пишет строку `notes[]` «предупреждение прочитано» — хеш журнала меняется без единой новой записи, вердикт становится `stale`. Состав обязан различать «записей не добавлено» и «добавлены F-NN…»», :570 «F-18, F-20»",
+    "fix": "—"
+   },
+   {
+    "claim": "`req:stale-verdict-scope/Ноль добавленных при изменённом журнале называется словами` → `rec:F-18`, at specs/stale-verdict-scope/spec.md:42",
+    "section": "specs/stale-verdict-scope/spec.md:42 → decisions.json:786",
+    "lens": "trace-link",
+    "invariant": "требование следует из решения записи",
+    "severity": "справка",
+    "support": "есть: specs/stale-verdict-scope/spec.md:42; decisions.json:798 «При нуле добавленных и несовпавшем хеше — строка «записей не добавлено: журнал изменён иначе» (сверка `check --write`, строки `notes[]`, F-06, F-14)»",
+    "fix": "—"
+   },
+   {
+    "claim": "`req:stale-verdict-scope/Ноль добавленных при изменённом журнале называется словами` → `rec:F-20`, at specs/stale-verdict-scope/spec.md:42",
+    "section": "specs/stale-verdict-scope/spec.md:42 → decisions.json:1018",
+    "lens": "trace-link",
+    "invariant": "требование следует из решения записи",
+    "severity": "справка",
+    "support": "есть: specs/stale-verdict-scope/spec.md:42 «… при совпавшем хеше состав SHALL быть пустым»; decisions.json:1028 «Оставить как есть: хеш по байтам файла, `stale` при любой правке журнала, окно C11 без изменений; состав (F-18) объясняет, что именно изменилось, в том числе «записей не добавлено»»",
+    "fix": "—"
+   },
+   {
+    "claim": "`req:stale-verdict-scope/Ноль добавленных при изменённом журнале называется словами` → `rec:F-27`, at specs/stale-verdict-scope/spec.md:66",
+    "section": "specs/stale-verdict-scope/spec.md:66 → decisions.json:1588",
+    "lens": "trace-link",
+    "invariant": "требование следует из решения записи",
+    "severity": "справка",
+    "support": "есть: specs/stale-verdict-scope/spec.md:66 «исходы: F-27 Specify», сценарий :58 «THEN строка «хеш цели не задан: состав не считается», списка добавленных нет»; decisions.json:1601 «Specify — GIVEN `target_sha256:` без значения WHEN считается состав THEN строка «хеш цели не задан: состав не считается», списка добавленных нет», :1646 «в spec.md: Хеш цели не задан.»",
+    "fix": "—"
+   },
+   {
+    "claim": "`req:stale-verdict-scope/Ноль добавленных при изменённом журнале называется словами` → `rec:F-28`, at specs/stale-verdict-scope/spec.md:66",
+    "section": "specs/stale-verdict-scope/spec.md:66 → decisions.json:1659",
+    "lens": "trace-link",
+    "invariant": "требование следует из решения записи",
+    "severity": "справка",
+    "support": "есть: specs/stale-verdict-scope/spec.md:66 «F-28 Specify», сценарий :64 «THEN состав пуст: хеши сравниваются без учёта регистра, как у форка»; decisions.json:1672 «Specify — GIVEN `target_sha256` равен хешу файла, но в верхнем регистре WHEN считается состав THEN состав пуст: хеши сравниваются без учёта регистра, как у форка», :1717 «в spec.md: Хеш в верхнем регистре.»",
+    "fix": "—"
+   },
+   {
+    "claim": "`req:stale-verdict-scope/Неполный состав при выключенной coverage` → `rec:F-10`, at specs/stale-verdict-scope/spec.md:70",
+    "section": "specs/stale-verdict-scope/spec.md:70 → decisions.json:389",
+    "lens": "trace-link",
+    "invariant": "требование следует из решения записи",
+    "severity": "справка",
+    "support": "есть: specs/stale-verdict-scope/spec.md:70 «Если строка `**Состав:**` файла `attack/decisions.md` называет `coverage` среди выключенных, расчёт SHALL называть состав неполным … файл без строки `**Состав:**` SHALL считаться написанным при всех включённых линзах»; decisions.json:390 «Линзу `coverage` человек может выключить в `symphysis.yaml`: тогда строк «чисто» и «не пройдено» у журнала нет, и запись без находок в таблице не названа. Состав, выведенный из таблицы, при выключенной `coverage` неполон», :404 «F-17 (цена варианта A)»",
+    "fix": "—"
+   },
+   {
+    "claim": "`req:stale-verdict-scope/Неполный состав при выключенной coverage` → `rec:F-17`, at specs/stale-verdict-scope/spec.md:70",
+    "section": "specs/stale-verdict-scope/spec.md:70 → decisions.json:662",
+    "lens": "trace-link",
+    "invariant": "требование следует из решения записи",
+    "severity": "справка",
+    "support": "есть: specs/stale-verdict-scope/spec.md:70 «… строкой «состав неполон: линза coverage выключена, записи без находок в таблице не названы» и всё же SHALL перечислять записи, не названные в таблице»; decisions.json:672 «Цена: при выключенной `coverage` (F-10) записи без находок строк не имеют — скрипт обязан назвать состав неполным отдельной строкой»",
+    "fix": "—"
+   },
+   {
+    "claim": "`req:stale-verdict-scope/У атаки артефактов — все изменившиеся цели и число записей` → `rec:F-05`, at specs/stale-verdict-scope/spec.md:86",
+    "section": "specs/stale-verdict-scope/spec.md:86 → decisions.json:169",
+    "lens": "trace-link",
+    "invariant": "требование следует из решения записи",
+    "severity": "справка",
+    "support": "есть: specs/stale-verdict-scope/spec.md:86 «расчёт SHALL сверять SHA-256 каждой цели из `targets[]` с файлом и называть все цели с несовпавшим хешем, не только первую»; decisions.json:170 «Внутри окна форк называет первую устаревшую цель и причину из трёх … у `attack-artifacts` с несколькими изменёнными целями вторая и дальше не называются», :184 «F-19 (парковка о целях `attack-artifacts`)»",
+    "fix": "—"
+   },
+   {
+    "claim": "`req:stale-verdict-scope/У атаки артефактов — все изменившиеся цели и число записей` → `rec:F-23`, at specs/stale-verdict-scope/spec.md:86",
+    "section": "specs/stale-verdict-scope/spec.md:86 → decisions.json:1283",
+    "lens": "trace-link",
+    "invariant": "требование следует из решения записи",
+    "severity": "справка",
+    "support": "есть: specs/stale-verdict-scope/spec.md:86; decisions.json:1295 «В этом изменении: тот же расчёт читает `targets[]` файла атаки артефактов, сверяет хеш каждой цели и называет все изменившиеся; форк не трогается, так как список целей читает скрипт; журнал как опора — F-24», :1338 слово человека «Тоже в этом изменении.»",
+    "fix": "—"
+   },
+   {
+    "claim": "`req:stale-verdict-scope/У атаки артефактов — все изменившиеся цели и число записей` → `rec:F-24`, at specs/stale-verdict-scope/spec.md:86",
+    "section": "specs/stale-verdict-scope/spec.md:86 → decisions.json:1357",
+    "lens": "trace-link",
+    "invariant": "требование следует из решения записи",
+    "severity": "справка",
+    "support": "есть: specs/stale-verdict-scope/spec.md:86 «Состав записей у `decisions.json` SHALL NOT считаться — вместо него строка «журнал изменён, записей сейчас N»»; decisions.json:1392 «Без состава записей: скрипт называет все изменившиеся цели файлами, у журнала — «изменён» и число записей сейчас. Следа покрытия записей у атаки артефактов нет: она журнал не атакует, а опирается на него»",
+    "fix": "—"
+   },
+   {
+    "claim": "`req:stale-verdict-scope/У атаки артефактов — все изменившиеся цели и число записей` → `rec:F-29`, at specs/stale-verdict-scope/spec.md:115",
+    "section": "specs/stale-verdict-scope/spec.md:115 → decisions.json:1730",
+    "lens": "trace-link",
+    "invariant": "требование следует из решения записи",
+    "severity": "справка",
+    "support": "есть: specs/stale-verdict-scope/spec.md:115 «исходы: F-29 Specify», сценарий :107 «THEN файл не читается, цель названа с пометкой «вне каталога изменения»»; decisions.json:1743 «Specify — GIVEN `targets[]` с `path: ../other/design.md` WHEN считается состав THEN файл не читается, цель названа с пометкой «вне каталога изменения», как причина `outside` у форка», :1788 «в spec.md: Путь цели вне каталога.»",
+    "fix": "—"
+   },
+   {
+    "claim": "`req:stale-verdict-scope/У атаки артефактов — все изменившиеся цели и число записей` → `rec:F-33`, at specs/stale-verdict-scope/spec.md:116",
+    "section": "specs/stale-verdict-scope/spec.md:116 → decisions.json:2013",
+    "lens": "trace-link",
+    "invariant": "требование стоит на записи: парковка ИБ ведёт к чек-листу `security.md`",
+    "severity": "справка",
+    "support": "есть: specs/stale-verdict-scope/spec.md:116 «проба запретов: исходы: нет; канон — F-33 → security.md»; decisions.json:2014 «[канон] У атаки артефактов — все изменившиеся цели и число записей: канон ИБ», парковка ИБ «путь цели с `..`, абсолютный или через ссылку вне каталога изменения (край — F-29) — канон, покрывается чек-листом security.md; запрет не чеканится»; security.md:12 строка «Пути с `../` (F-33)»",
+    "fix": "—"
+   },
+   {
+    "claim": "`req:stale-verdict-scope/Состав одинаков у всех читателей` → `rec:F-19`, at specs/stale-verdict-scope/spec.md:119",
+    "section": "specs/stale-verdict-scope/spec.md:119 → decisions.json:880",
+    "lens": "trace-link",
+    "invariant": "требование следует из решения записи",
+    "severity": "справка",
+    "support": "есть: specs/stale-verdict-scope/spec.md:119 «Состав SHALL считаться одним расчётом по файлам изменения: `journal.py check` и `step_help.py` при одних и тех же `decisions.json` и файле атаки SHALL показывать одни и те же строки состава»; decisions.json:959 «Одна функция в модуле `attack/` (рядом с `attack_table.py`) и два читателя: `check` — строка модели, `step_help.py` — поле справки для человека и плагина»",
+    "fix": "—"
+   },
+   {
+    "claim": "`req:step-help/Страница шага атаки несёт вердикт и состав` → `rec:F-11`, at specs/step-help/spec.md:6",
+    "section": "specs/step-help/spec.md:6 → decisions.json:427",
+    "lens": "trace-link",
+    "invariant": "требование следует из решения записи",
+    "severity": "справка",
+    "support": "есть: specs/step-help/spec.md:6 «У страницы шага, для которого `openspec status` отдаёт `verdict`, вывод `step_help.py` SHALL нести поле `verdict` с этим значением … и поле `stale_scope`»; decisions.json:428 «Справка шага (`step_help.py`) о вердикте атаки молчит: у готового шага она говорит лишь «файл есть, содержание не проверялось». Так решено в изменении `step-help` (F-60.B, Dismiss)», :442 «F-19 (вариант B снимает F-60.B изменения `step-help`)» — требование снимает это молчание",
+    "fix": "—"
+   },
+   {
+    "claim": "`req:step-help/Страница шага атаки несёт вердикт и состав` → `rec:F-13`, at specs/step-help/spec.md:6",
+    "section": "specs/step-help/spec.md:6 → decisions.json:517",
+    "lens": "trace-link",
+    "invariant": "требование следует из решения записи",
+    "severity": "справка",
+    "support": "есть: specs/step-help/spec.md:6 «Поля новые: номер контракта SHALL NOT расти (F-19, F-13, F-11)»; decisions.json:518 «Вывод `step_help.py` и `view-json` входят в контракт с плагином, но новое поле сменой контракта не считается: номер не растёт, плагин показывает поле, когда захочет»",
+    "fix": "—"
+   },
+   {
+    "claim": "`req:step-help/Страница шага атаки несёт вердикт и состав` → `rec:F-19`, at specs/step-help/spec.md:6",
+    "section": "specs/step-help/spec.md:6 → decisions.json:880",
+    "lens": "trace-link",
+    "invariant": "требование следует из решения записи",
+    "severity": "справка",
+    "support": "есть: specs/step-help/spec.md:6 «… поле `stale_scope` — список строк состава по `stale-verdict-scope`, пустой только при совпавшем хеше; у шагов без `verdict` в `status` обоих полей SHALL NOT быть»; decisions.json:959 «… `step_help.py` — поле справки для человека и плагина. Страница и плагин подключают то же поле позже, по желанию», :1008 «при E — обе»",
+    "fix": "—"
+   },
+   {
+    "claim": "`req:step-help/Справка не выдаёт наличие файла за сделанную работу` → `rec:F-11`, at specs/step-help/spec.md:46",
+    "section": "specs/step-help/spec.md:46 → decisions.json:427",
+    "lens": "trace-link",
+    "invariant": "требование следует из решения записи",
+    "severity": "справка",
+    "support": "есть: specs/step-help/spec.md:46 «у шага с вердиктом вместо этой пометки SHALL стоять вердикт и состав по «Страница шага атаки несёт вердикт и состав» (F-19, F-11 этого изменения)»; decisions.json:428 «… у готового шага она говорит лишь «файл есть, содержание не проверялось»» — пометка, которую требование у шага с вердиктом заменяет",
+    "fix": "—"
+   },
+   {
+    "claim": "`branch:attack/attack_table.py:28` → `scn:decision-journal/check называет состав устаревшего вердикта/Файл атаки не разбирается`, at consequences.md:10",
+    "section": "consequences.md:7 → specs/decision-journal/spec.md:28",
+    "lens": "trace-link",
+    "invariant": "сценарий задевает ветку отказа",
+    "severity": "справка",
+    "support": "есть: consequences.md:7 «`attack/attack_table.py:28` «raise ValueError(f\"{name}: нет frontmatter\")»» — в коде attack/attack_table.py:35-36 «if not lines or lines[0].strip() != \"---\":» / «raise ValueError(f\"{name}: нет frontmatter\")» (номер строки в описи сдвинут); сценарий GIVEN «`attack/decisions.md` без строки `---`» ведёт ровно в эту ветку; specs/decision-journal/spec.md:32 «THEN stdout несёт `[!!] attack/decisions.md: файл атаки не разбирается: <причина>`, остальные проверки идут, код 0, с `--strict` 2» — причина и есть текст исключения (cli/journal_cli.py:168)",
+    "fix": "—"
+   },
+   {
+    "claim": "`branch:attack/attack_table.py:106` → `scn:decision-journal/check называет состав устаревшего вердикта/Файл атаки не разбирается`, at consequences.md:14",
+    "section": "consequences.md:11 → specs/decision-journal/spec.md:28",
+    "lens": "trace-link",
+    "invariant": "сценарий задевает ветку отказа",
+    "severity": "справка",
+    "support": "есть: consequences.md:11 «`attack/attack_table.py:106` «if header is None:»» — в коде attack/attack_table.py:114-115 «if header is None:» / «raise ValueError(f\"{name}: нет таблицы атаки с заголовком «{ATTACK_FIRST_COLUMN}» из семи колонок\")»; файл с frontmatter без таблицы — тот же отказ разбора, что у сценария (тест cli/tests/test_cli_check.py:140 «нет таблицы атаки»); specs/decision-journal/spec.md:32 «THEN stdout несёт `[!!] attack/decisions.md: файл атаки не разбирается: <причина>` …»",
+    "fix": "—"
+   },
+   {
+    "claim": "`branch:attack/attack_table.py:121` → `scn:decision-journal/check называет состав устаревшего вердикта/Файл атаки не разбирается`, at consequences.md:18",
+    "section": "consequences.md:15 → specs/decision-journal/spec.md:28",
+    "lens": "trace-link",
+    "invariant": "сценарий задевает ветку отказа",
+    "severity": "справка",
+    "support": "есть: consequences.md:15 «`attack/attack_table.py:121` «if len(cells) != len(ATTACK_ROW_KEYS):»» — в коде attack/attack_table.py:129-134 — битая строка даёт `ValueError` с «файл:строка:», опись :17 «битая строка — весь файл «не разбирается», записи из остальных строк в состав не попадают»; specs/decision-journal/spec.md:32 «THEN stdout несёт `[!!] attack/decisions.md: файл атаки не разбирается: <причина>` …» — та же строка `[!!]` через cli/journal_cli.py:167-168, :116",
+    "fix": "—"
+   },
+   {
+    "claim": "`branch:attack/attack_table.py:42` → `scn:stale-verdict-scope/Ноль добавленных при изменённом журнале называется словами/Хеш цели не задан`, at consequences.md:22",
+    "section": "consequences.md:19 → specs/stale-verdict-scope/spec.md:54",
+    "lens": "trace-link",
+    "invariant": "сценарий задевает ветку отказа",
+    "severity": "справка",
+    "support": "есть: consequences.md:19 «`attack/attack_table.py:42` «targets.insert(0, {\"path\": fields[\"target\"], \"sha256\": fields.get(\"target_sha256\", \"\")})»» — в коде attack/attack_table.py:50, без значения хеш — пустая строка; сценарий GIVEN «`target_sha256:` без значения» проходит эту ветку; specs/stale-verdict-scope/spec.md:58 «THEN строка «хеш цели не задан: состав не считается», списка добавленных нет» — attack/attack_scope.py:145-146 отвечает на пустой хеш именно так",
+    "fix": "—"
+   },
+   {
+    "claim": "`branch:cli/journal_cli.py:162` → `scn:decision-journal/check называет состав устаревшего вердикта/Файла атаки нет`, at consequences.md:34",
+    "section": "consequences.md:31 → specs/decision-journal/spec.md:23",
+    "lens": "trace-link",
+    "invariant": "сценарий задевает ветку отказа",
+    "severity": "блокер",
+    "support": "нет: ветка cli/journal_cli.py:161-162 «if not path.is_file():» / «return None, f\"{path}: файла нет\"» из `check` недостижима — `_scope_report` :111-112 «if not path.is_file():» / «continue» пропускает отсутствующий файл до вызова `_read_attack`; это говорит и сама опись (consequences.md:33 «ветка из `check` недостижима, строк состава и `[!!]` о файле нет»); сценарий GIVEN «в каталоге изменения нет `attack/`» (specs/decision-journal/spec.md:24-26) идёт по :111-112 и ветку :162 не задевает; ветка достижима из `render-html --attack` (cli/journal_cli.py:243-247), сценария о нём в дельтах нет — ветка без сценария, по схеме ей место в журнале кандидатом или в исключениях с доводом",
+    "fix": "запись журнала"
+   },
+   {
+    "claim": "`branch:cli/journal_cli.py:167` → `scn:decision-journal/check называет состав устаревшего вердикта/Файл атаки не разбирается`, at consequences.md:38",
+    "section": "consequences.md:35 → specs/decision-journal/spec.md:28",
+    "lens": "trace-link",
+    "invariant": "сценарий задевает ветку отказа",
+    "severity": "справка",
+    "support": "есть: consequences.md:35 «`cli/journal_cli.py:167` «except ValueError as e:»» — в коде cli/journal_cli.py:167-168 «except ValueError as e:» / «return None, str(e)»; сценарий: файл без `---` → `ValueError` из attack/attack_table.py:36 → `(None, str(e))` → :116 строка `[!!]`; specs/decision-journal/spec.md:32 «THEN stdout несёт `[!!] attack/decisions.md: файл атаки не разбирается: <причина>`, остальные проверки идут, код 0, с `--strict` 2»",
+    "fix": "—"
+   },
+   {
+    "claim": "`branch:upstream/openspec/src/core/artifact-graph/state.ts:195` → `scn:stale-verdict-scope/Ноль добавленных при изменённом журнале называется словами/Хеш цели не задан`, at consequences.md:54",
+    "section": "consequences.md:51 → specs/stale-verdict-scope/spec.md:54",
+    "lens": "trace-link",
+    "invariant": "сценарий задевает ветку отказа",
+    "severity": "блокер",
+    "support": "нет: upstream/openspec/src/core/artifact-graph/state.ts:194-195 «if (!fs.statSync(outputPath).isFile()) {» / «return { state: 'missing' };» — ветка «файла нет»; ветка «файл без значения `status`», которую описывает опись (consequences.md:52), — :202-203 «if (!frontmatter || !Object.hasOwn(frontmatter, verdict.frontmatter)) {» / «return { state: 'missing' };»; сценарий GIVEN «`target_sha256:` без значения» (specs/stale-verdict-scope/spec.md:56-58) — файл и `status` есть, форк идёт в :227-233 (`malformed: 'target'`) и :263 (связь ниже), ветки `missing` не задевает; у `verdict: missing` в дельте `step-help` сценария нет (:6 называет значение, :8-38 его не проверяют); ветку :195 задевает `step-help` «Атака не вызвана» (:23-26: файла нет, ключа `verdict` нет), опись его не называет",
+    "fix": "правка артефакта"
+   },
+   {
+    "claim": "`branch:upstream/openspec/src/core/artifact-graph/state.ts:263` → `scn:stale-verdict-scope/Ноль добавленных при изменённом журнале называется словами/Хеш цели не задан`, at consequences.md:62",
+    "section": "consequences.md:59 → specs/stale-verdict-scope/spec.md:54",
+    "lens": "trace-link",
+    "invariant": "сценарий задевает ветку отказа",
+    "severity": "справка",
+    "support": "есть: consequences.md:59 «`upstream/openspec/src/core/artifact-graph/state.ts:263` «return { path: target.malformed, reason: 'malformed' };»» — в коде state.ts:227-233 «if (Object.hasOwn(frontmatter, 'target_sha256')) {» … «: { malformed: 'target' }», :262-263 «if ('malformed' in target) {» / «return { path: target.malformed, reason: 'malformed' };» — пустой `target_sha256` даёт `stale` с причиной `malformed`; сценарий GIVEN «`target_sha256:` без значения» — то же условие; specs/stale-verdict-scope/spec.md:58 «THEN строка «хеш цели не задан: состав не считается», списка добавленных нет» — расчёт на том же файле (attack/attack_scope.py:145-146) состав не считает, как опись и допускает (consequences.md:61)",
+    "fix": "—"
+   },
+   {
+    "claim": "`branch:upstream/openspec/src/core/artifact-graph/state.ts:287` → `scn:stale-verdict-scope/У атаки артефактов — все изменившиеся цели и число записей/Путь цели вне каталога`, at consequences.md:66",
+    "section": "consequences.md:63 → specs/stale-verdict-scope/spec.md:103",
+    "lens": "trace-link",
+    "invariant": "сценарий задевает ветку отказа",
+    "severity": "справка",
+    "support": "есть: consequences.md:63 «`upstream/openspec/src/core/artifact-graph/state.ts:287` «return { path: declaredPath, reason: 'outside' };»» — в коде state.ts:285 «const escapes = normalized === '..' …», :287 «return { path: declaredPath, reason: 'outside' };» — путь `../other/design.md` даёт `escapes` и причину `outside`, файл не читается (:273-277); specs/stale-verdict-scope/spec.md:107 «THEN файл не читается, цель названа с пометкой «вне каталога изменения»» — attack/attack_scope.py:102, :115-117 повторяют форк",
+    "fix": "—"
+   },
+   {
+    "claim": "`branch:upstream/openspec/src/core/artifact-graph/state.ts:301` → `scn:stale-verdict-scope/У атаки артефактов — все изменившиеся цели и число записей/Цели нет на диске`, at consequences.md:70",
+    "section": "consequences.md:67 → specs/stale-verdict-scope/spec.md:98",
+    "lens": "trace-link",
+    "invariant": "сценарий задевает ветку отказа",
+    "severity": "справка",
+    "support": "есть: consequences.md:67 «`upstream/openspec/src/core/artifact-graph/state.ts:301` «return { path: declaredPath, reason: 'changed' };»» — в коде state.ts:298-301 «actual = createHash('sha256').update(fs.readFileSync(targetPath)).digest('hex');» / «} catch {» / «return { path: declaredPath, reason: 'changed' };» — удалённый `security.md` даёт `changed`; specs/stale-verdict-scope/spec.md:101 «THEN `security.md` назван с пометкой «файла нет»» — расчёт на том же условии называет «файла нет» (attack/attack_scope.py:119-120), как опись и допускает (consequences.md:69)",
+    "fix": "—"
+   },
+   {
+    "claim": "`branch:upstream/openspec/src/core/artifact-graph/state.ts:304` → `scn:stale-verdict-scope/Ноль добавленных при изменённом журнале называется словами/Хеш в верхнем регистре`, at consequences.md:74",
+    "section": "consequences.md:71 → specs/stale-verdict-scope/spec.md:60",
+    "lens": "trace-link",
+    "invariant": "сценарий задевает ветку отказа",
+    "severity": "справка",
+    "support": "есть: consequences.md:71 «`upstream/openspec/src/core/artifact-graph/state.ts:304` «return actual === sha256.toLowerCase() ? undefined : { path: declaredPath, reason: 'changed' };»» — в коде state.ts:304 дословно; сценарий GIVEN «`target_sha256` равен хешу файла, записанному в верхнем регистре» — форк даёт `ok`; specs/stale-verdict-scope/spec.md:64 «THEN состав пуст: хеши сравниваются без учёта регистра, как у форка» — attack/attack_scope.py:145 «.strip().lower()»",
+    "fix": "—"
+   },
+   {
+    "claim": "`branch:upstream/openspec/src/core/artifact-graph/state.ts:131` → `scn:step-help/Страница шага атаки несёт вердикт и состав/Вердикт не прошёл при изменённом журнале`, at consequences.md:78",
+    "section": "consequences.md:75 → specs/step-help/spec.md:34",
+    "lens": "trace-link",
+    "invariant": "сценарий задевает ветку отказа",
+    "severity": "блокер",
+    "support": "нет: upstream/openspec/src/core/artifact-graph/state.ts:126-131 `hasCheckedTask` — «} catch {» / «return false;» — окно C11 по `tasks.md`; зовётся только из `detectStaleSignals` для вердикта `stale` (:97 — не `stale` даёт «continue;»; :81 «Only `stale` has a window: `mismatch` and `missing` always gate») и только у артефакта без зависимых (:101-107 — у `attack-decisions` зависимый `proposal`, ветка `tracks` :110-114 для него не зовётся); сценарий GIVEN «`attack/decisions.md` со `status: gaps_found`» даёт `mismatch` (:208-209) и до `hasCheckedTask` не доходит; допущение описи (consequences.md:77 «при открытом и закрытом окне страница несёт одни и те же строки») проверил бы сценарий со `stale` у `attack-artifacts` и нечитаемым `tasks.md` — такого сценария в дельтах нет",
+    "fix": "правка артефакта"
+   }
+  ],
+  "composition": "включены scenario-run, claim-extraction, trace-link; выключены —"
+ }
+];
 const SCHEME = {
  "exists": true,
  "text": "flowchart TD\n    attack[\"Атака журнала: строка на каждую запись,<br/>вердикт и хеш журнала во frontmatter\"] --> verdict[\"attack/decisions.md:<br/>status passed, target_sha256\"]\n    later[\"Шаги после атаки дописывают журнал:<br/>пробы, опись, слово человека,<br/>check --write, строки notes[]\"] --> journal[\"decisions.json: записей больше<br/>или байты иные\"]\n    verdict --> cmp{\"Хеш журнала совпал?\"}\n    journal --> cmp\n    cmp -- да --> ok[\"verdict: ok\"]\n    cmp -- нет --> stale[\"verdict: stale<br/>форк: гейт до proposal, дальше сигнал\"]\n    stale --> scope[\"Состав: какие записи атака видела,<br/>каких нет — число и номера\"]\n    source[\"Откуда знать, что атака видела:<br/>таблица атаки, поле frontmatter,<br/>git или notes[] — развилка\"] -.-> scope\n    scope --> check[\"journal.py check:<br/>строка для модели\"]\n    scope --> help[\"step_help.py: поле справки шага,<br/>панель плагина\"]\n    scope -.-> page[\"Страница, режим «атака»:<br/>бейдж «вердикт устарел»\"]\n    check --> human{\"Повторить атаку<br/>по названным записям?\"}\n    help --> human\n    human -- да --> attack\n    human -- нет --> next[\"Идти дальше:<br/>сигнал остаётся видимым\"]\n",
@@ -2908,7 +4759,7 @@ const SCHEME = {
 };
 const HELP = {
  "contract": 3,
- "taken_at": "2026-11-07T16:43:00+03:00",
+ "taken_at": "2026-11-07T19:49:58+03:00",
  "versions": {
   "openspec": "1.16.1+symphysis.5",
   "symphysis": null
@@ -2916,18 +4767,18 @@ const HELP = {
  "change": "attack-stale-scope",
  "changes": null,
  "error": null,
- "current_step": "design",
- "current_text": "Следующий шаг по файлам — `design`, ход модели.",
+ "current_step": "attack-artifacts",
+ "current_text": "Следующий шаг по файлам — `attack-artifacts`, ход модели.",
  "turn": "model",
- "next_by_status": "design",
+ "next_by_status": "attack-artifacts",
  "forks": {
   "open": 0,
   "parked": 0
  },
  "tasks": {
   "state": "blocked",
-  "total": 0,
-  "complete": 0,
+  "total": 27,
+  "complete": 27,
   "remaining": 0
  },
  "steps": [
@@ -3090,7 +4941,7 @@ const HELP = {
    "texts": {
     "title": "Атака журнала, по желанию",
     "why": "Проверка журнала до того, как на нём встанут артефакты: какие записи ничем не подкреплены и что в решениях расходится со словами человека.",
-    "mechanics": "- Скилл `symphysis-attack`. Исходная позиция FORCE stance: запись считается негодной, пока улика не докажет обратное. Атака читает файлы и не исполняет цель.\n- Линзы журнала: `context-compliance`, `claim-authority`, `claim-extraction`, `coverage`.\n- У строки есть линза, инвариант и тяжесть: `блокер`, `предупреждение` или `справка`. Невыводимое из цели получает опору «по спеке не выводится» и идёт человеку вопросом.\n- Вердикт во frontmatter: `status: passed` при нуле блокеров, иначе `gaps_found`. Предупреждения идут человеку списком и ничего не держат.\n- Вердикт привязан к хешу журнала, а следующие шаги журнал дописывают. Позже статус покажет `verdict: stale`: это сигнал, идти дальше можно, свежий вердикт даст повтор атаки.\n- Шаг зовётся только по имени. Вызванная атака становится воротами: пока нет `status: passed`, следующий шаг её ждёт.",
+    "mechanics": "- Скилл `symphysis-attack`. Исходная позиция FORCE stance: запись считается негодной, пока улика не докажет обратное. Атака читает файлы и не исполняет цель.\n- Линзы журнала: `context-compliance`, `claim-authority`, `claim-extraction`, `coverage`.\n- У строки есть линза, инвариант и тяжесть: `блокер`, `предупреждение` или `справка`. Невыводимое из цели получает опору «по спеке не выводится» и идёт человеку вопросом.\n- Вердикт во frontmatter: `status: passed` при нуле блокеров, иначе `gaps_found`. Предупреждения идут человеку списком и ничего не держат.\n- Вердикт привязан к хешу журнала, а следующие шаги журнал дописывают. Позже статус покажет `verdict: stale`: это сигнал, идти дальше можно. Состав устаревшего вердикта — сколько и какие записи добавлены после атаки — называют `python .symphysis/tools/journal.py check` строкой `[..] атака журнала: …` и справка шага полем `stale_scope`; повтор атаки проходит только эти записи и их стыки, не журнал с начала.\n- Шаг зовётся только по имени. Вызванная атака становится воротами: пока нет `status: passed`, следующий шаг её ждёт.",
     "if_skipped": "Неподкреплённая запись или решение против постановки дойдут до proposal и дизайна: там исправлять дороже, потому что на записи уже стоят другие файлы. Найти это сможет разве что атака артефактов.",
     "what_to_check": "`attack/decisions.md`: `status` во frontmatter и таблица строк. `symphysis.html`, режим «атака»: те же строки по линзам.",
     "command": "`/opsx:continue attack-stale-scope attack-decisions`",
@@ -3235,7 +5086,7 @@ const HELP = {
   },
   {
    "id": "design",
-   "state": "ready",
+   "state": "done",
    "turn": "model",
    "optional": false,
    "blocks": [
@@ -3247,10 +5098,10 @@ const HELP = {
    "files": [
     {
      "path": "openspec/changes/attack-stale-scope/design.md",
-     "exists": false
+     "exists": true
     }
    ],
-   "file_note": null,
+   "file_note": "файл есть, содержание не проверялось",
    "texts": {
     "title": "Дизайн",
     "why": "Как реализовать: решения журнала, риски и открытые вопросы в одном документе, от которого идут задачи.",
@@ -3267,7 +5118,7 @@ const HELP = {
   },
   {
    "id": "security",
-   "state": "ready",
+   "state": "done",
    "turn": "model",
    "optional": false,
    "blocks": [
@@ -3278,10 +5129,10 @@ const HELP = {
    "files": [
     {
      "path": "openspec/changes/attack-stale-scope/security.md",
-     "exists": false
+     "exists": true
     }
    ],
-   "file_note": null,
+   "file_note": "файл есть, содержание не проверялось",
    "texts": {
     "title": "Чек-лист безопасности",
     "why": "Канон информационной безопасности отмечается по спецификациям пункт за пунктом: чтобы инъекции, пути и токены не остались вопросом, который никто не задал.",
@@ -3298,23 +5149,21 @@ const HELP = {
   },
   {
    "id": "tasks",
-   "state": "blocked",
+   "state": "done",
    "turn": "model",
    "optional": false,
    "blocks": [
     "attack-artifacts"
    ],
    "stops_apply": true,
-   "waits_for": [
-    "design"
-   ],
+   "waits_for": [],
    "files": [
     {
      "path": "openspec/changes/attack-stale-scope/tasks.md",
-     "exists": false
+     "exists": true
     }
    ],
-   "file_note": null,
+   "file_note": "файл есть, содержание не проверялось",
    "texts": {
     "title": "Задачи реализации",
     "why": "Работа, разбитая на задачи, каждую из которых можно закрыть проверкой. По этому списку идёт реализация и считается прогресс.",
@@ -3331,20 +5180,16 @@ const HELP = {
   },
   {
    "id": "attack-artifacts",
-   "state": "blocked",
+   "state": "ready",
    "turn": "model",
    "optional": true,
    "blocks": [],
-   "stops_apply": false,
-   "waits_for": [
-    "design",
-    "security",
-    "tasks"
-   ],
+   "stops_apply": true,
+   "waits_for": [],
    "files": [
     {
      "path": "openspec/changes/attack-stale-scope/attack/artifacts.md",
-     "exists": false
+     "exists": true
     }
    ],
    "file_note": null,
@@ -3360,6 +5205,12 @@ const HELP = {
    "text_note": null,
    "prev": "tasks",
    "next": "apply",
+   "verdict": "mismatch",
+   "stale_scope": [
+    "decisions.json: журнал изменён, записей сейчас 44",
+    "consequences.md: изменён после вердикта",
+    "tasks.md: изменён после вердикта"
+   ],
    "skills": [
     {
      "name": "symphysis-attack",
@@ -3375,10 +5226,7 @@ const HELP = {
    "optional": false,
    "blocks": [],
    "stops_apply": false,
-   "waits_for": [
-    "tasks",
-    "security"
-   ],
+   "waits_for": [],
    "files": [],
    "file_note": null,
    "texts": {
@@ -3452,27 +5300,36 @@ const HELP = {
   ".claude/skills/symphysis-prohibition-probe/SKILL.md": ".claude/skills/symphysis-prohibition-probe/SKILL.md",
   ".claude/skills/symphysis-research/SKILL.md": ".claude/skills/symphysis-research/SKILL.md",
   ".claude/skills/symphysis-viewer/SKILL.md": ".claude/skills/symphysis-viewer/SKILL.md",
+  "attack/artifacts.md": "openspec/changes/attack-stale-scope/attack/artifacts.md",
   "consequences.md": "openspec/changes/attack-stale-scope/consequences.md",
   "decisions.json": "openspec/changes/attack-stale-scope/decisions.json",
   "decisions.md": "openspec/changes/attack-stale-scope/decisions.md",
+  "design.md": "openspec/changes/attack-stale-scope/design.md",
   "edge-probe.md": "openspec/changes/attack-stale-scope/edge-probe.md",
+  "graph/report.md": "openspec/changes/attack-stale-scope/graph/report.md",
   "intent.md": "openspec/changes/attack-stale-scope/intent.md",
+  "openspec/changes/attack-stale-scope/attack/artifacts.md": "openspec/changes/attack-stale-scope/attack/artifacts.md",
   "openspec/changes/attack-stale-scope/consequences.md": "openspec/changes/attack-stale-scope/consequences.md",
   "openspec/changes/attack-stale-scope/decisions.json": "openspec/changes/attack-stale-scope/decisions.json",
+  "openspec/changes/attack-stale-scope/design.md": "openspec/changes/attack-stale-scope/design.md",
   "openspec/changes/attack-stale-scope/intent.md": "openspec/changes/attack-stale-scope/intent.md",
   "openspec/changes/attack-stale-scope/proposal.md": "openspec/changes/attack-stale-scope/proposal.md",
   "openspec/changes/attack-stale-scope/research/none.md": "openspec/changes/attack-stale-scope/research/none.md",
+  "openspec/changes/attack-stale-scope/security.md": "openspec/changes/attack-stale-scope/security.md",
   "openspec/changes/attack-stale-scope/specs/artifact-attack/spec.md": "openspec/changes/attack-stale-scope/specs/artifact-attack/spec.md",
   "openspec/changes/attack-stale-scope/specs/decision-journal/spec.md": "openspec/changes/attack-stale-scope/specs/decision-journal/spec.md",
   "openspec/changes/attack-stale-scope/specs/stale-verdict-scope/spec.md": "openspec/changes/attack-stale-scope/specs/stale-verdict-scope/spec.md",
   "openspec/changes/attack-stale-scope/specs/step-help/spec.md": "openspec/changes/attack-stale-scope/specs/step-help/spec.md",
+  "openspec/changes/attack-stale-scope/tasks.md": "openspec/changes/attack-stale-scope/tasks.md",
   "proposal.md": "openspec/changes/attack-stale-scope/proposal.md",
   "research/none.md": "openspec/changes/attack-stale-scope/research/none.md",
   "scheme.md": "openspec/changes/attack-stale-scope/scheme.md",
+  "security.md": "openspec/changes/attack-stale-scope/security.md",
   "symphysis.html": "openspec/changes/attack-stale-scope/symphysis.html",
-  "symphysis.yaml": "symphysis.yaml"
+  "symphysis.yaml": "symphysis.yaml",
+  "tasks.md": "openspec/changes/attack-stale-scope/tasks.md"
  },
- "rebuild": "python cli/journal.py render-html openspec/changes/attack-stale-scope/decisions.json --out openspec/changes/attack-stale-scope/symphysis.html"
+ "rebuild": "python cli/journal.py render-html openspec/changes/attack-stale-scope/decisions.json --out openspec/changes/attack-stale-scope/symphysis.html --attack openspec/changes/attack-stale-scope/attack/artifacts.md"
 };
 const LINKS = {
  "root": "../../../",
@@ -3485,34 +5342,62 @@ const LINKS = {
   ".claude/skills/symphysis-research/SKILL.md": "../../../.claude/skills/symphysis-research/SKILL.md",
   ".claude/skills/symphysis-viewer/SKILL.md": "../../../.claude/skills/symphysis-viewer/SKILL.md",
   ".symphysis/docs/attack-table.md": "../../../.symphysis/docs/attack-table.md",
+  ".symphysis/tools/attack_scope.py": "../../../.symphysis/tools/attack_scope.py",
+  ".symphysis/tools/journal.py": "../../../.symphysis/tools/journal.py",
   ".symphysis/tools/journal.schema.json": "../../../.symphysis/tools/journal.schema.json",
+  "CLAUDE.md": "../../../CLAUDE.md",
   "answers/2026-11-07.md": "answers/2026-11-07.md",
+  "attack/README.md": "../../../attack/README.md",
+  "attack/agents/symphysis-attack-driver.md": "../../../attack/agents/symphysis-attack-driver.md",
+  "attack/artifacts.md": "attack/artifacts.md",
+  "attack/attack-table.md": "../../../attack/attack-table.md",
+  "attack/attack_scope.py": "../../../attack/attack_scope.py",
   "attack/attack_table.py": "../../../attack/attack_table.py",
   "attack/skills/symphysis-attack/SKILL.md": "../../../attack/skills/symphysis-attack/SKILL.md",
+  "attack/tests/test_attack_scope.py": "../../../attack/tests/test_attack_scope.py",
+  "cli/journal-cli.md": "../../../cli/journal-cli.md",
+  "cli/journal.py": "../../../cli/journal.py",
   "cli/journal_cli.py": "../../../cli/journal_cli.py",
+  "cli/tests/test_cli_check.py": "../../../cli/tests/test_cli_check.py",
   "consequences.md": "consequences.md",
   "context/backlog/symphysis-backlog.md": "../../../../symphysis/.context/backlog/symphysis-backlog.md",
   "decisions.json": "decisions.json",
   "decisions.md": "decisions.md",
+  "design.md": "design.md",
+  "docs/GUIDE.md": "../../../docs/GUIDE.md",
   "docs/analysis/upstream-gsd-core-1.20.1-2026-11-07.md": "../../../docs/analysis/upstream-gsd-core-1.20.1-2026-11-07.md",
   "docs/repo-contract.md": "../../../docs/repo-contract.md",
   "edge-probe.md": "edge-probe.md",
+  "graph/report.md": "graph/report.md",
+  "installer/lib/check.js": "../../../installer/lib/check.js",
+  "installer/lib/install.js": "../../../installer/lib/install.js",
+  "installer/payload/docs/terms.md": "../../../installer/payload/docs/terms.md",
+  "installer/scripts/sync-payload.js": "../../../installer/scripts/sync-payload.js",
+  "installer/test/check.test.js": "../../../installer/test/check.test.js",
+  "installer/test/install.test.js": "../../../installer/test/install.test.js",
+  "installer/test/payload.test.js": "../../../installer/test/payload.test.js",
+  "installer/test/test_installer.py": "../../../installer/test/test_installer.py",
   "intent.md": "intent.md",
   "openspec/changes/archive/2026-11-02-calibration-fixes/decisions.json": "../archive/2026-11-02-calibration-fixes/decisions.json",
   "openspec/changes/archive/2026-11-03-step-help/decisions.json": "../archive/2026-11-03-step-help/decisions.json",
   "openspec/changes/archive/2026-11-06-trace-graph/attack/decisions.md": "../archive/2026-11-06-trace-graph/attack/decisions.md",
   "openspec/changes/archive/2026-11-06-trace-graph/decisions.json": "../archive/2026-11-06-trace-graph/decisions.json",
+  "openspec/changes/attack-stale-scope/attack/artifacts.md": "attack/artifacts.md",
   "openspec/changes/attack-stale-scope/consequences.md": "consequences.md",
   "openspec/changes/attack-stale-scope/decisions.json": "decisions.json",
+  "openspec/changes/attack-stale-scope/design.md": "design.md",
   "openspec/changes/attack-stale-scope/intent.md": "intent.md",
   "openspec/changes/attack-stale-scope/proposal.md": "proposal.md",
   "openspec/changes/attack-stale-scope/research/none.md": "research/none.md",
+  "openspec/changes/attack-stale-scope/security.md": "security.md",
   "openspec/changes/attack-stale-scope/specs/artifact-attack/spec.md": "specs/artifact-attack/spec.md",
   "openspec/changes/attack-stale-scope/specs/decision-journal/spec.md": "specs/decision-journal/spec.md",
   "openspec/changes/attack-stale-scope/specs/stale-verdict-scope/spec.md": "specs/stale-verdict-scope/spec.md",
   "openspec/changes/attack-stale-scope/specs/step-help/spec.md": "specs/step-help/spec.md",
+  "openspec/changes/attack-stale-scope/tasks.md": "tasks.md",
   "openspec/changes/attack-warning-read/intent.md": "../attack-warning-read/intent.md",
   "openspec/schemas/symphysis/schema.yaml": "../../schemas/symphysis/schema.yaml",
+  "openspec/schemas/symphysis/steps.md": "../../schemas/symphysis/steps.md",
   "openspec/schemas/symphysis/templates/attack-artifacts.md": "../../schemas/symphysis/templates/attack-artifacts.md",
   "openspec/schemas/symphysis/templates/attack-decisions.md": "../../schemas/symphysis/templates/attack-decisions.md",
   "openspec/specs/artifact-attack/spec.md": "../../specs/artifact-attack/spec.md",
@@ -3520,9 +5405,24 @@ const LINKS = {
   "proposal.md": "proposal.md",
   "research/none.md": "research/none.md",
   "scheme.md": "scheme.md",
+  "security.md": "security.md",
+  "skill-shared/terms.md": "../../../skill-shared/terms.md",
+  "specs/artifact-attack/spec.md": "specs/artifact-attack/spec.md",
+  "specs/decision-journal/spec.md": "specs/decision-journal/spec.md",
+  "specs/stale-verdict-scope/spec.md": "specs/stale-verdict-scope/spec.md",
+  "specs/step-help/spec.md": "specs/step-help/spec.md",
   "step-help/step_help.py": "../../../step-help/step_help.py",
+  "step-help/tests/test_step_help.py": "../../../step-help/tests/test_step_help.py",
   "symphysis.html": "symphysis.html",
   "symphysis.yaml": "../../../symphysis.yaml",
+  "tasks.md": "tasks.md",
+  "tests/conftest.py": "../../../tests/conftest.py",
+  "tests/test_agents.py": "../../../tests/test_agents.py",
+  "tests/test_guide.py": "../../../tests/test_guide.py",
+  "tests/test_repo_contract.py": "../../../tests/test_repo_contract.py",
+  "tests/test_repository_live.py": "../../../tests/test_repository_live.py",
+  "tests/test_repository_structure.py": "../../../tests/test_repository_structure.py",
+  "tests/test_skills.py": "../../../tests/test_skills.py",
   "upstream/openspec/UPSTREAM.md": "../../../../symphysis/upstream/openspec/UPSTREAM.md",
   "upstream/openspec/src/core/artifact-graph/instruction-loader.ts": "../../../../symphysis/upstream/openspec/src/core/artifact-graph/instruction-loader.ts",
   "upstream/openspec/src/core/artifact-graph/state.ts": "../../../../symphysis/upstream/openspec/src/core/artifact-graph/state.ts",

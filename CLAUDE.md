@@ -38,7 +38,8 @@
   правок; `journal.schema.json`), `viewer/` (`viewer_render`, `playground-template.html`),
   `consequences/` (`journal_sites` — места кода из улик, подкоманда `code-sites`;
   `journal_consequences` — две проверки описи `consequences.md` внутри `check`), `attack/`
-  (`attack_table`), `roots/` (`roots`); модули импортируют друг друга по имени, не через
+  (`attack_table` — разбор файла атаки; `attack_scope` — состав устаревшего вердикта для `check`
+  и справки шага), `roots/` (`roots`); модули импортируют друг друга по имени, не через
   фасад. Скиллы лежат в `<модуль>/skills/<имя>/`, водители — в `<модуль>/agents/`, тесты
   модуля — в `<модуль>/tests/`; в `tools/` остались хуки гейта имён, `allowed-*.txt` и
   `journal-roots.json`. Корневой `README.md` перечисляет каталоги и помечает, что модуль,

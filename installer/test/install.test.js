@@ -780,6 +780,14 @@ test("Новый проект: step_help.py и steps.md ставятся в пр
   assert.ok(r.written.includes("openspec/schemas/symphysis/steps.md"));
 });
 
+test("Новый проект: attack_scope.py ставится в .symphysis/tools (attack-stale-scope)", () => {
+  const p = tmp();
+  const r = install(p, { payloadDir });
+  const t = targets(p);
+  assert.ok(r.written.includes(".symphysis/tools/attack_scope.py"), JSON.stringify(r.written));
+  assert.ok(fs.readFileSync(path.join(t.toolsDir, "tools", "attack_scope.py")).equals(fs.readFileSync(path.join(payloadDir, "tools", "attack_scope.py"))));
+});
+
 test("Новый проект: после install скрипт справки печатает JSON, шаг intent, тексты не пусты", { skip: !fs.existsSync(FORK) }, () => {
   process.env.SYMPHYSIS_OPENSPEC = FORK;
   const p = tmp();

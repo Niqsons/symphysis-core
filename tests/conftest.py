@@ -189,10 +189,12 @@ def fork_env(bin_dir: Path | None = None, **extra) -> dict:
     return {**env, **extra}
 
 
-def fake_status(root: Path, change="demo", done=(), ready=(), files=None) -> dict:
+def fake_status(root: Path, change="demo", done=(), ready=(), files=None, verdicts=None) -> dict:
     """`status --change <имя> --json` в форме форка, пути абсолютные. `done` и `ready` — идентификаторы, остальные `blocked`.
-    `files` — артефакт -> файлы от каталога изменения; без него у готового файл по `outputPath`."""
+    `files` — артефакт -> файлы от каталога изменения; без него у готового файл по `outputPath`. `verdicts` — артефакт ->
+    значение `verdict` (`ok`, `stale`, `mismatch`, `missing`), как форк отдаёт у артефактов с вердиктом."""
     files = files or {}
+    verdicts = verdicts or {}
     change_dir = Path(root) / "openspec" / "changes" / change
     artifacts, paths = [], {}
     for artifact, (requires, output) in SCHEMA_GRAPH.items():
@@ -203,6 +205,8 @@ def fake_status(root: Path, change="demo", done=(), ready=(), files=None) -> dic
             entry["missingDeps"] = [need for need in requires if need not in done]
         if artifact in OPTIONAL_ARTIFACTS:
             entry.update(optional=True, fileExists=bool(existing))
+        if artifact in verdicts:
+            entry["verdict"] = verdicts[artifact]
         artifacts.append(entry)
         paths[artifact] = {"outputPath": output, "resolvedOutputPath": str(change_dir / output),
                            "existingOutputPaths": [str(change_dir / rel) for rel in existing]}

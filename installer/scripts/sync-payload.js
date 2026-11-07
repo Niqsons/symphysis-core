@@ -36,6 +36,7 @@ const TOOLS_FILES = [
   "viewer/viewer_render.py",
   "viewer/playground-template.html",
   "attack/attack_table.py",
+  "attack/attack_scope.py",
   "consequences/journal_sites.py",
   "consequences/journal_consequences.py",
   "settings/symphysis_config.py",

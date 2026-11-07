@@ -21,7 +21,7 @@ def test_contract_names_hook_records_and_new_fields():
     for name in (
         "events.jsonl", "курсор", "скрипт хука", ".symphysis/viewer/",
         ".claude/settings.local.json", ".opencode/plugins/", ".git/info/exclude",
-        "file_links", "skills",
+        "file_links", "skills", "verdict", "stale_scope",
     ):
         assert name in body, f"в контракте не названо {name}"
 

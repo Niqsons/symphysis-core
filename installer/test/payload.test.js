@@ -18,6 +18,7 @@ const FILES = [
   "tools/roots.py",
   "tools/viewer_render.py",
   "tools/attack_table.py",
+  "tools/attack_scope.py",
   "tools/journal_cli.py",
   "tools/journal_sites.py",
   "tools/journal_consequences.py",
