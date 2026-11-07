@@ -1,0 +1,1355 @@
+{
+ "title": "Журнал решений: attack-lens-conventions",
+ "source": "decisions.json",
+ "intro": "Пути улик — от корня проекта (worktree `symphysis-attack-lens-conventions`), корни названы в `probes/journal-roots.json` (сверка — `python -X utf8 cli/journal.py check --roots openspec/changes/attack-lens-conventions/probes/journal-roots.json <журнал>`): `vscode/` ведёт в плагин `symphysis-vscode` рядом с клоном, `context/` — в контекст-пакет основного клона `X:/symphysis/.context`. Материалы круга 1: `intent.md`; бэклог `context/backlog/symphysis-backlog.md` (B-18, B-16, B-26, B-44); скилл атаки `attack/skills/symphysis-attack/SKILL.md`, `attack/attack-table.md`, шаблон `attack-artifacts.md`; схема шагов `schema.yaml`, `steps.md`, `openspec/config.yaml`; мастер-спеки `artifact-attack`, `trace-conventions`, `project-settings`, `decision-viewer`, `plugin-core-contract`; страница `viewer/playground-template.html`; `settings/symphysis_config.py`; установщик `installer/lib/install.js`, `installer/scripts/sync-payload.js`; граф `trace/trace_graph.py`; договор `docs/repo-contract.md` с тестом и номером в `decisions/journal_render.py`; плагин `vscode/src/journal/attack.ts`, `vscode/src/core/core.ts`; архивные журналы `trace-graph` (F-117) и `parking-addressee-agent` (F-19); коммит `aa5afde`; намерение параллельного изменения `attack-severity-buttons`.",
+ "generated": "2026-11-08",
+ "notes": [
+  {
+   "date": "2026-11-08",
+   "text": "круг 1 закончен: решений 9, фактов 17, открытых развилок 0, парковок агенту 0, антиподов 0"
+  },
+  {
+   "date": "2026-11-08",
+   "text": "брейншторм закончен по решению человека"
+  }
+ ],
+ "records": [
+  {
+   "id": "F-01",
+   "question": "Критерий готовности: «новая линза о соответствии правил составления артефактов» — в списке линз атаки артефактов есть линза, которая сверяет артефакт с правилами составления",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "постановка",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "F-05, F-11, F-16, F-17, F-18, F-23",
+   "evidence": [
+    {
+     "path": "openspec/changes/attack-lens-conventions/intent.md",
+     "quote": "«новая линза о соответствии правил составления артефактов» — в списке линз атаки артефактов есть линза, которая сверяет артефакт с правилами составления (слово владельца, 2026-11-06)"
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "lens",
+    "rules"
+   ]
+  },
+  {
+   "id": "F-02",
+   "question": "Критерий готовности: «Участие деления должно быть в линзе» — деление длинного требования проверяется этой линзой: родитель и дочерние вместе несут всё, что нёс прежний текст мастер-спеки",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "постановка",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "F-09, F-10, F-19, F-20",
+   "evidence": [
+    {
+     "path": "openspec/changes/attack-lens-conventions/intent.md",
+     "quote": "«Участие деления должно быть в линзе» — деление длинного требования проверяется этой линзой: родитель и дочерние вместе несут всё, что нёс прежний текст мастер-спеки (слово владельца, 2026-11-06; F-117.B, 2026-11-05)"
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "split"
+   ]
+  },
+  {
+   "id": "F-03",
+   "question": "Критерий готовности: «Правила есть, но нет линзы» — линза называет правило, которое нарушено, а не выводит правило сама",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "постановка",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "F-11, F-18",
+   "evidence": [
+    {
+     "path": "openspec/changes/attack-lens-conventions/intent.md",
+     "quote": "«Правила есть, но нет линзы» — линза называет правило, которое нарушено, а не выводит правило сама (слово владельца, 2026-11-06)"
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "rules",
+    "row"
+   ]
+  },
+  {
+   "id": "F-04",
+   "question": "Критерий готовности: «Список линз входит в контракт с плагином, значит новая линза — новый номер контракта» — номер растёт, `Why:` в коммите ядра, плагин держит линзу в своём списке коммитом с `Needs:`",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "постановка",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "F-06, F-07, F-08, F-24",
+   "evidence": [
+    {
+     "path": "openspec/changes/attack-lens-conventions/intent.md",
+     "quote": "«Список линз входит в контракт с плагином, значит новая линза — новый номер контракта» — номер растёт, `Why:` в коммите ядра, плагин держит линзу в своём списке коммитом с `Needs:` (бэклог B-18, 2026-11-06; `docs/repo-contract.md`)"
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "contract",
+    "plugin"
+   ]
+  },
+  {
+   "id": "F-05",
+   "question": "Список линз атаки артефактов закрыт: три слуга, строка с чужим слугом невалидна и уходит в группу «вне списка». Список стоит в ядре в восьми местах — скилл атаки, общий файл таблицы, шаблон файла атаки, `steps.md`, страница, модуль настроек, установщик, мастер-спека `artifact-attack` — и в плагине; новая линза правится во всех сразу, тесты, которые их держат, найдёт опись `consequences`",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "агент",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "F-17 (имя линзы во всех местах), F-22 (умолчание), F-24 (плагин)",
+   "evidence": [
+    {
+     "path": "attack/attack-table.md",
+     "quote": "Slug не из списка — группа «вне списка», строка невалидна"
+    },
+    {
+     "path": "openspec/specs/artifact-attack/spec.md",
+     "quote": "Линз атаки артефактов SHALL быть три: `scenario-run`, `claim-extraction`, `trace-link`."
+    },
+    {
+     "path": "attack/skills/symphysis-attack/SKILL.md",
+     "quote": "**Линзы артефактов** — `attack/artifacts.md`:"
+    },
+    {
+     "path": "attack/attack-table.md",
+     "quote": "у артефактов `scenario-run`,"
+    },
+    {
+     "path": "openspec/schemas/symphysis/templates/attack-artifacts.md",
+     "quote": "Линзы этого файла: scenario-run, claim-extraction, trace-link."
+    },
+    {
+     "path": "openspec/schemas/symphysis/steps.md",
+     "quote": "- Линзы артефактов: `scenario-run` — сценарий проходится по коду механизма до исхода и сравнивается с THEN;"
+    },
+    {
+     "path": "viewer/playground-template.html",
+     "quote": "const ATTACK_LENSES = {"
+    },
+    {
+     "path": "settings/symphysis_config.py",
+     "quote": "LENSES = (\"context-compliance\", \"claim-authority\", \"claim-extraction\", \"coverage\", \"scenario-run\", \"trace-link\")"
+    },
+    {
+     "path": "installer/lib/install.js",
+     "quote": "trace-link: true"
+    },
+    {
+     "path": "vscode/src/journal/attack.ts",
+     "quote": "const LENSES = {"
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "lens",
+    "skill",
+    "settings",
+    "page",
+    "specs"
+   ]
+  },
+  {
+   "id": "F-06",
+   "question": "Списки линз входят в контракт ядра с плагином; новое значение линзы уже поднимало номер — номер 3, `trace-link`. Номер сейчас 4, тест сверяет абзацы «С номера N» договора с числом в коде",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "агент",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "F-04, F-07, F-24",
+   "evidence": [
+    {
+     "path": "docs/repo-contract.md",
+     "quote": "списки линз;"
+    },
+    {
+     "path": "docs/repo-contract.md",
+     "quote": "С номера 3 в списке линз атаки артефактов третья — `trace-link` (F-55)"
+    },
+    {
+     "path": "decisions/journal_render.py",
+     "quote": "CONTRACT = 4"
+    },
+    {
+     "path": "tests/test_repo_contract.py",
+     "quote": "line = next((l for l in body.splitlines() if l.startswith(\"С номера 4\")), None)"
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "contract"
+   ]
+  },
+  {
+   "id": "F-07",
+   "question": "Номер 5 у этого изменения — допущение очереди: B-18 стоит в группе 2 перед B-16, а `attack-severity-buttons` (B-16) идёт параллельно со сменой контракта и теми же файлами; номер 6 и разбор конфликтов в общих файлах берёт то из двух, что вливается вторым",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "агент",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "F-24",
+   "evidence": [
+    {
+     "path": "context/backlog/symphysis-backlog.md",
+     "quote": "Состояние 2026-11-08: строка 1 сделана, контракт уже номер 4; очередь — B-18."
+    },
+    {
+     "path": "openspec/changes/attack-lens-conventions/intent.md",
+     "quote": "допущение модели — это изменение берёт номер 5 как первое в очереди группы 2, B-16 — номер 6"
+    },
+    {
+     "path": "openspec/changes/attack-lens-conventions/intent.md",
+     "quote": "второе влитое разрешает конфликты в них"
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "contract"
+   ]
+  },
+  {
+   "id": "F-08",
+   "question": "Плагин ждёт контракт 3: половина номера 4 (адресат `агент`) — пункт B-44 группы 5, первым после B-42. Группа 2 бэклога — то, что должно стоять в ядре до сессии плагина; у `parking-addressee-agent` плагинная половина ушла в бэклог решением F-19.A",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "агент",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "F-24",
+   "evidence": [
+    {
+     "path": "vscode/src/core/core.ts",
+     "quote": "export const EXPECTED_CONTRACT = 3;"
+    },
+    {
+     "path": "context/backlog/symphysis-backlog.md",
+     "quote": "**B-44 первым после B-42:** адресат `агент` и `EXPECTED_CONTRACT = 4`; без него плагин с ядром номера 4 не вносит решения."
+    },
+    {
+     "path": "context/backlog/symphysis-backlog.md",
+     "quote": "Что должно стоять в ядре и контракте до того, как владелец уйдёт в разработку плагина."
+    },
+    {
+     "path": "openspec/changes/archive/2026-11-08-parking-addressee-agent/decisions.json",
+     "quote": "Порядок уже задан словом владельца в бэклоге и прецедентом `attack-warning-read`"
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "plugin"
+   ]
+  },
+  {
+   "id": "F-09",
+   "question": "Правило деления уже есть — в instruction шага `specs` и в мастер-спеке `trace-conventions`; судьёй там названа атака артефактов, но ни одна линза его не исполняет: `trace-link` рёбра `derives` не проходит",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "агент",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "F-02, F-19, F-20",
+   "evidence": [
+    {
+     "path": "openspec/schemas/symphysis/schema.yaml",
+     "quote": "Длинное в MODIFIED дели так же: сценарии родителя остаются при нём, условия не теряются."
+    },
+    {
+     "path": "openspec/specs/trace-conventions/spec.md",
+     "quote": "Требование MUST NOT терять условия, когда его сокращают ради предела: родитель и дочерние вместе SHALL нести всё, что нёс прежний текст"
+    },
+    {
+     "path": "openspec/specs/trace-conventions/spec.md",
+     "quote": "проверка — суждение: ревью и атака артефактов сверяют с мастер-спекой"
+    },
+    {
+     "path": "attack/skills/symphysis-attack/SKILL.md",
+     "quote": "а также `refines` и `derives` она не проходит."
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "split"
+   ]
+  },
+  {
+   "id": "F-10",
+   "question": "Связь `derives` граф даёт, только когда дочернее называет родителя фразой `Часть требования «имя».` и родитель есть в изменении. Требование MODIFIED, ужатое ради предела без дочерних, связи не даёт — а этого случая рекомендация F-117 боялась больше деления",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "агент",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "F-19",
+   "evidence": [
+    {
+     "path": "openspec/specs/trace-conventions/spec.md",
+     "quote": "граф SHALL давать связь `derives` от дочернего к родителю (F-42, F-77)."
+    },
+    {
+     "path": "trace/trace_graph.py",
+     "quote": "родитель в изменении — `derives`; только в мастере — ничего."
+    },
+    {
+     "path": "openspec/changes/archive/2026-11-06-trace-graph/decisions.json",
+     "quote": "Предел подталкивает ужать текст, а не разделить его: пропавшее условие никто не заметит, требование выглядит опрятным."
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "split"
+   ]
+  },
+  {
+   "id": "F-11",
+   "question": "Правила составления целей атаки артефактов стоят в `instruction` шагов `schema.yaml` и в `rules` шагов `openspec/config.yaml`; у `security` и `tasks` своего скилла нет, а `consequences.md` пишет скилл `symphysis-consequences` по своему телу",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "агент",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "F-18",
+   "evidence": [
+    {
+     "path": "openspec/schemas/symphysis/schema.yaml",
+     "quote": "Спецификация описывает наблюдаемое поведение, не реализацию."
+    },
+    {
+     "path": "openspec/schemas/symphysis/schema.yaml",
+     "quote": "Каждая задача называет проверку своего завершения (тест, команда, наблюдаемый результат, файл) прямо в строке."
+    },
+    {
+     "path": "openspec/config.yaml",
+     "quote": "предположение помечается словом `предположение` и дорогой `проверить|решить`"
+    },
+    {
+     "path": "openspec/schemas/symphysis/steps.md",
+     "quote": "Своего скилла у шага нет, правила стоят в инструкции схемы. Грамматика OpenSpec"
+    },
+    {
+     "path": "openspec/schemas/symphysis/schema.yaml",
+     "quote": "Загрузи скилл `symphysis-consequences` и напиши `consequences.md` по шаблону."
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "rules"
+   ]
+  },
+  {
+   "id": "F-12",
+   "question": "В проект клиента установка кладёт каталог схемы и сливает `rules` в его `config.yaml`; мастер-спек symphysis там нет: из `openspec/` пакет несёт только каталог схемы",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "агент",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "F-18",
+   "evidence": [
+    {
+     "path": "installer/scripts/sync-payload.js",
+     "quote": "const DIRS = [\"openspec/schemas/symphysis\"];"
+    },
+    {
+     "path": "installer/lib/install.js",
+     "quote": "rules и подсказки operations объединяются"
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "rules"
+   ]
+  },
+  {
+   "id": "F-13",
+   "question": "Атака не репортит то, что ловят `check` и `openspec validate --strict`, линзы присутствия сняты; длину требования ловит `--strict`. Новая линза, по образцу прочих, не проходит детерминируемые правила",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "агент",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "F-18, F-21",
+   "evidence": [
+    {
+     "path": "attack/skills/symphysis-attack/SKILL.md",
+     "quote": "OpenSpec; то, что ловят `check` и `openspec validate --strict`; отсутствие поля `nodes`"
+    },
+    {
+     "path": "attack/skills/symphysis-attack/SKILL.md",
+     "quote": "Линзы присутствия сняты: что из них детерминируемо,"
+    },
+    {
+     "path": "openspec/specs/trace-conventions/spec.md",
+     "quote": "`openspec validate --strict` не называет ни одно из них длинным"
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "lens",
+    "row"
+   ]
+  },
+  {
+   "id": "F-14",
+   "question": "Тяжесть строки с опорой «нет» у всех линз — блокер; две тяжести у одной линзы уже есть — у `coverage`. Владелец просил проверить, что атака ищет расхождение по существу, а не по букве (B-26)",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "агент",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "F-20",
+   "evidence": [
+    {
+     "path": "attack/skills/symphysis-attack/SKILL.md",
+     "quote": "Тяжесть строки с опорой «нет» — тяжесть линзы: у всех линз обоих"
+    },
+    {
+     "path": "attack/skills/symphysis-attack/SKILL.md",
+     "quote": "| `coverage` | справка у «чисто», блокер у «не пройдено» |"
+    },
+    {
+     "path": "context/backlog/symphysis-backlog.md",
+     "quote": "Слово владельца, 2026-11-07: «Проверить, что в атакующем скилле -- атака ищет расхождение по существу, а не по букве.»"
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "row"
+   ]
+  },
+  {
+   "id": "F-15",
+   "question": "Отсутствующий ключ линзы в `symphysis.yaml` читается как «включена», новая установка пишет ключ каждой линзы включённым; скилл атаки ждёт в строке состава шесть слугов",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "агент",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "F-22",
+   "evidence": [
+    {
+     "path": "settings/symphysis_config.py",
+     "quote": "lenses: dict[str, bool] = field(default_factory=lambda: dict.fromkeys(LENSES, True))"
+    },
+    {
+     "path": "openspec/specs/project-settings/spec.md",
+     "quote": "созданный файл несёт ключ каждой линзы, все включены"
+    },
+    {
+     "path": "attack/skills/symphysis-attack/SKILL.md",
+     "quote": "`[..] symphysis.yaml: линзы атаки: <слуг> вкл, <слуг> выкл, …`: шесть"
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "settings"
+   ]
+  },
+  {
+   "id": "F-16",
+   "question": "Цели атаки артефактов — specs, consequences, design, security, tasks; `proposal.md` не цель ни одной атаки, хотя у шага `proposal` свои правила составления",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "агент",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "F-23",
+   "evidence": [
+    {
+     "path": "attack/skills/symphysis-attack/SKILL.md",
+     "quote": "Вызов `attack-artifacts`: цели — `decisions.json` (опора, не атакуется), `specs/**/*.md`,"
+    },
+    {
+     "path": "openspec/schemas/symphysis/schema.yaml",
+     "quote": "Загрузи скилл `symphysis-attack` и атакуй `specs/`, `consequences.md`, `design.md`, `security.md` и `tasks.md`."
+    },
+    {
+     "path": "openspec/schemas/symphysis/schema.yaml",
+     "quote": "Отступления от постановки — в раздел «Отступления от постановки»"
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "lens"
+   ]
+  },
+  {
+   "id": "F-17",
+   "question": "Какой слуг и какую подпись получает новая линза: имя — значение контракта, его увидят файл атаки, страница, настройки и плагин",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "`rule-compliance`, подпись «правила составления»: слово владельца «правила», строка называет нарушенное правило (F-03); по форме — пара к `context-compliance` журнала. Имя — значение контракта: переименование после выпуска плагина — новый номер",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/changes/attack-lens-conventions/intent.md",
+       "quote": "Правила есть, но нет линзы."
+      },
+      {
+       "path": "attack/skills/symphysis-attack/SKILL.md",
+       "quote": "| `context-compliance` | блокер |"
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "`convention-compliance`, подпись «соглашения составления»: по имени изменения. Цена: «conventions» в этом проекте уже значит мастер-спеку `trace-conventions` — соглашения о связях графа, и линзу легко прочесть как проверку только их",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/specs/trace-conventions/spec.md",
+       "quote": "Как артефакты изменения объявляют связи, из которых собирается граф"
+      }
+     ]
+    },
+    {
+     "letter": "C",
+     "text": "`authoring-rules`, подпись «правила составления»: прямой перевод слов владельца без хвоста `-compliance`; имя выпадает из формы соседних слугов, но смысл тот же, что у A",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/changes/attack-lens-conventions/intent.md",
+       "quote": "новая линза о соответствии правил составления артефактов"
+      }
+     ]
+    },
+    {
+     "letter": "D",
+     "text": "`split-integrity`, подпись «деление без потерь»: линза только о делении",
+     "added": false,
+     "unlikely": "критерий F-01 просит линзу на правила составления вообще, деление — лишь один её случай (F-02)",
+     "evidence": [
+      {
+       "path": "openspec/changes/attack-lens-conventions/intent.md",
+       "quote": "«Участие деления должно быть в линзе» — деление длинного требования проверяется этой линзой: родитель и дочерние вместе несут всё, что нёс прежний текст мастер-спеки (слово владельца, 2026-11-06; F-117.B, 2026-11-05)"
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Слово «правило» — слово владельца и того, что строка называет (F-03), а B читается как проверка одной мастер-спеки `trace-conventions`; C верно по смыслу, но ломает форму имён рядом с `context-compliance`, D уже критерия F-01."
+   },
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-08"
+   },
+   "reversibility": {
+    "level": "дорого",
+    "why": "Слуг — значение контракта («списки линз» в `docs/repo-contract.md`): переименование после выпуска — новый номер, коммит плагина с `Needs:`, а строки уже записанных файлов атаки уйдут в группу «вне списка». Слово владельца, 2026-11-08: «Дорогое, но это не последнее добавление линзы в symphysis. Поэтому и создан механизм их отключения.»"
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "слуг и подпись — во всех местах списка (F-05), в абзаце «С номера 5» (F-06) и в ключе `attack.<слуг>` настроек (F-15)",
+   "evidence": [],
+   "comments": [],
+   "nodes": [
+    "lens",
+    "page",
+    "settings"
+   ]
+  },
+  {
+   "id": "F-18",
+   "question": "Откуда линза берёт правила составления, которые она называет в строке",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "То, что получил автор артефакта: `instruction` шага в `schema.yaml`, `rules` шага в `openspec/config.yaml` и шаблон шага. Строка цитирует правило `путь:строка «правило»` в «Инварианте» — это и есть нарушенное свойство. Правила, которые ловят `check` и `--strict`, линза не проходит (F-13). Работает одинаково у нас и в проекте клиента (F-12); правила описи из тела скилла `symphysis-consequences` вне линзы — две находки по описи уже держит `claim-extraction`",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "attack/attack-table.md",
+       "quote": "**Инвариант** — нарушенное свойство, не правка"
+      },
+      {
+       "path": "openspec/schemas/symphysis/schema.yaml",
+       "quote": "Длинное в MODIFIED дели так же: сценарии родителя остаются при нём, условия не теряются."
+      },
+      {
+       "path": "openspec/config.yaml",
+       "quote": "предположение помечается словом `предположение` и дорогой `проверить|решить`"
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "A плюс тела скиллов, которые instruction шага зовёт по имени: `symphysis-consequences` для описи, пробы краёв и запретов для следа в specs. Цена: правил в разы больше, часть уже держит `claim-extraction`; больше строк о форме, а не о смысле",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/schemas/symphysis/schema.yaml",
+       "quote": "Загрузи скилл `symphysis-consequences` и напиши `consequences.md` по шаблону."
+      }
+     ]
+    },
+    {
+     "letter": "C",
+     "text": "A плюс мастер-спеки symphysis о соглашениях — `trace-conventions` и соседние",
+     "added": false,
+     "unlikely": "в проекте клиента этих мастер-спек нет (F-12): линза вела бы себя у нас иначе, чем у клиента, а правило деления и так стоит в instruction шага `specs` (F-09)",
+     "evidence": [
+      {
+       "path": "openspec/specs/trace-conventions/spec.md",
+       "quote": "Требование MUST NOT терять условия, когда его сокращают ради предела: родитель и дочерние вместе SHALL нести всё, что нёс прежний текст"
+      }
+     ]
+    },
+    {
+     "letter": "D",
+     "text": "Любой документ проекта, где сказано правило: `docs/GUIDE.md`, канон скиллов, `CLAUDE.md`",
+     "added": false,
+     "unlikely": "источник не ограничен: линза сама решает, что считать правилом, — ровно то, что критерий F-03 запрещает",
+     "evidence": [
+      {
+       "path": "openspec/changes/attack-lens-conventions/intent.md",
+       "quote": "«Правила есть, но нет линзы» — линза называет правило, которое нарушено, а не выводит правило сама (слово владельца, 2026-11-06)"
+      }
+     ],
+     "deviation": "F-03"
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Линза сверяет артефакт с тем, что автору велели, и цитирует это дословно (F-03); у B правил в разы больше при той же пользе по описи, C расходится с проектом клиента, D выводит правило сам."
+   },
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-08"
+   },
+   "reversibility": {
+    "level": "обратимо",
+    "why": "Источник правил живёт в теле скилла атаки и в мастер-спеке `artifact-attack`: расширить его до тел скиллов — правка тела и дельта; формат таблицы атаки и контракт не меняются."
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "источники правил — в теле скилла атаки и в мастер-спеке `artifact-attack`; форма строки — в `attack-table.md`",
+   "evidence": [],
+   "comments": [],
+   "nodes": [
+    "rules",
+    "row"
+   ]
+  },
+  {
+   "id": "F-19",
+   "question": "Какие требования линза сверяет с мастер-текстом, чтобы поймать пропавшее условие",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-18"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Каждое требование MODIFIED — с его текстом в мастер-спеке, вместе с дочерними по `derives`: условие мастер-текста, которого нет ни в родителе, ни в дочерних и которое не снято решённой записью, названной в тексте, — находка. Ловит и деление, и ужатие без дочерних (F-10). Цена: мастер-текст читается на каждое MODIFIED; нарочно снятое условие без номера решения в тексте даёт строку, которую закрывает правка текста",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/schemas/symphysis/schema.yaml",
+       "quote": "Длинное в MODIFIED дели так же: сценарии родителя остаются при нём, условия не теряются."
+      },
+      {
+       "path": "openspec/changes/archive/2026-11-06-trace-graph/decisions.json",
+       "quote": "Предел подталкивает ужать текст, а не разделить его: пропавшее условие никто не заметит, требование выглядит опрятным."
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Только MODIFIED, у которых есть дочерние по `derives`, — деление в узком смысле. Дешевле: сверяются только разделённые. Ужатое без дочерних требование не сверяется (F-10)",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/specs/trace-conventions/spec.md",
+       "quote": "граф SHALL давать связь `derives` от дочернего к родителю (F-42, F-77)."
+      }
+     ]
+    },
+    {
+     "letter": "C",
+     "text": "A плюс разделённые требования ADDED: их сверять не с мастером, его нет, а с решениями записей, на которых стоит родитель",
+     "added": false,
+     "unlikely": "требование против решения записи — смысл связи `traces`, её уже судит `trace-link`; второй судья той же связи даст дубли строк",
+     "evidence": [
+      {
+       "path": "attack/skills/symphysis-attack/SKILL.md",
+       "quote": "а также `refines` и `derives` она не проходит."
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Ужатие без дочерних опаснее деления и не оставляет `derives` (F-10), поэтому B пропускает главный случай; C дублирует `trace-link`."
+   },
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-08"
+   },
+   "reversibility": {
+    "level": "обратимо",
+    "why": "Что сверяется — порядок прохода в теле скилла атаки и сценарий мастер-спеки `artifact-attack`; сузить до B — правка тела и дельта, контракт не затронут."
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "порядок прохода линзы в скилле атаки, сценарии «Условие пропало при делении» и ужатия в мастер-спеке `artifact-attack`",
+   "evidence": [],
+   "comments": [],
+   "nodes": [
+    "split"
+   ]
+  },
+  {
+   "id": "F-20",
+   "question": "Какую тяжесть получает строка новой линзы с опорой «нет»",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-19"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Блокер, как у всех линз (F-14): любое нарушенное правило составления держит `status` и `apply`; спор о строке идёт понижением по слову человека. Цена: правила о форме текста держат apply наравне с пропавшим условием",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "attack/skills/symphysis-attack/SKILL.md",
+       "quote": "Тяжесть строки с опорой «нет» — тяжесть линзы: у всех линз обоих"
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Предупреждение у всех строк линзы: идут человеку списком, apply не держат. Цена: пропавшее условие (случай `aa5afde`) apply тоже не держит — ровно то, что F-117.B поручил ловить",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/schemas/symphysis/templates/attack-artifacts.md",
+       "quote": "строки `предупреждение` идут человеку списком и `apply` не держат"
+      }
+     ]
+    },
+    {
+     "letter": "C",
+     "text": "Две тяжести, по образцу `coverage`: блокер — условие мастер-текста пропало (F-19); предупреждение — прочие правила составления. Деление фиксировано в скилле, модель тяжесть не выбирает. Цена: в таблице тяжестей скилла у линзы две строки, правило «у всех линз — блокер» получает исключение",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "attack/skills/symphysis-attack/SKILL.md",
+       "quote": "| `coverage` | справка у «чисто», блокер у «не пройдено» |"
+      },
+      {
+       "path": "context/backlog/symphysis-backlog.md",
+       "quote": "Слово владельца, 2026-11-07: «Проверить, что в атакующем скилле -- атака ищет расхождение по существу, а не по букве.»"
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "C",
+    "why": "Пропавшее условие молча доходит до реализации и должно держать apply, а нарушение прочих правил — качество текста: A делает блокером спор о букве, о котором владелец просил B-26, B отпускает главный случай F-117."
+   },
+   "decision": {
+    "option": "C",
+    "word": "",
+    "date": "2026-11-08"
+   },
+   "reversibility": {
+    "level": "обратимо",
+    "why": "Тяжесть линзы — строка таблицы тяжестей в теле скилла и сценарий `artifact-attack`; значения тяжести в контракте те же. Показ собственной тяжести на странице и в плагине — развилка F-26."
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "таблица тяжестей скилла атаки, сценарий тяжести в мастер-спеке `artifact-attack`, подсказки шаблона `attack-artifacts.md`",
+   "evidence": [],
+   "comments": [],
+   "nodes": [
+    "row"
+   ]
+  },
+  {
+   "id": "F-21",
+   "question": "Сколько строк пишет линза: только находки или и покрытие",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-19"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Строка на каждое сверенное требование MODIFIED (F-19): «есть» — справка, опора — цитаты условия мастер-текста и места в родителе или дочернем; строки находок по прочим правилам; строка «чисто» на файл цели без находок и «не пройдено», блокер, на файл, до которого проход не дошёл. Цена: строк — число MODIFIED плюс находки плюс файлы",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "attack/skills/symphysis-attack/SKILL.md",
+       "quote": "Одна строка на каждую связь"
+      },
+      {
+       "path": "attack/attack-table.md",
+       "quote": "Раздел журнала без находок —"
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Строка на каждую пару «правило × файл цели»: видно, какое правило где проверено. Цена: десятки правил на пять видов файлов — сотни строк, почти все «есть»",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "attack/skills/symphysis-attack/SKILL.md",
+       "quote": "строка на каждую связь, находка или «есть», сотни"
+      }
+     ]
+    },
+    {
+     "letter": "C",
+     "text": "Только находки, строк покрытия нет",
+     "added": false,
+     "unlikely": "«проверено, чисто» не отличить от «не дошли»: покрытие поимённо — правило таблицы атаки, и прерванный проход дал бы ложный `passed`",
+     "evidence": [
+      {
+       "path": "attack/attack-table.md",
+       "quote": "Раздел, до которого проход не дошёл, —"
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Требования MODIFIED — место главного риска, и их, как связи `trace-link`, видно поимённо, а прочие правила покрыты пофайлово без взрыва строк B; C прячет непройденное."
+   },
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-08"
+   },
+   "reversibility": {
+    "level": "обратимо",
+    "why": "Число строк задают тело скилла атаки и `attack/attack-table.md`; форма строки и семь столбцов не меняются, старые файлы атаки читаются как прежде."
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "покрытие линзы — в скилле атаки и в `attack-table.md`; сверка счёта перед вердиктом",
+   "evidence": [],
+   "comments": [],
+   "nodes": [
+    "row"
+   ]
+  },
+  {
+   "id": "F-22",
+   "question": "Включена ли новая линза по умолчанию в `symphysis.yaml`",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Включена, как все линзы: установка пишет ключ `attack.<слуг>: true`, а старый файл без ключа читается как «включена» (F-15). Цена: каждая атака артефактов дороже на проход линзы",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "settings/symphysis_config.py",
+       "quote": "lenses: dict[str, bool] = field(default_factory=lambda: dict.fromkeys(LENSES, True))"
+      },
+      {
+       "path": "openspec/specs/project-settings/spec.md",
+       "quote": "все линзы обоих файлов атаки включены"
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Выключена: человек включает сам. Цена: сценарий «Линзы по умолчанию» мастер-спеки `project-settings` меняется, умолчание читателя настроек получает исключение, а деление не проверяется, пока человек линзу не включит",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/specs/project-settings/spec.md",
+       "quote": "все линзы обоих файлов атаки включены"
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Изменение затевается ради проверки деления (F-02), а выключенная по умолчанию линза её не даст; B ещё и ломает единое правило «все линзы включены»."
+   },
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-08"
+   },
+   "reversibility": {
+    "level": "обратимо",
+    "why": "Умолчание — ключ в шаблоне установки и `LENSES` модуля настроек; человек меняет его своим `symphysis.yaml`, уже записанные ключи у проектов остаются."
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "ключ в шаблоне установки, `LENSES` в модуле настроек, слуги в строке состава скилла",
+   "evidence": [],
+   "comments": [],
+   "nodes": [
+    "settings"
+   ]
+  },
+  {
+   "id": "F-23",
+   "question": "Входит ли `proposal.md` в цели атаки артефактов вместе с новой линзой",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Оставить как есть: цели атаки не меняются, линза проверяет specs, consequences, design, security и tasks; правила `proposal` остаются без судьи, при нужде — пункт бэклога",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "attack/skills/symphysis-attack/SKILL.md",
+       "quote": "Вызов `attack-artifacts`: цели — `decisions.json` (опора, не атакуется), `specs/**/*.md`,"
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Добавить `proposal.md` в цели `attack-artifacts`: строка `targets[]` с хешем, правка proposal обесценивает вердикт. Цена: шаблон, скилл, мастер-спека `artifact-attack`, сценарии хешей; новая цель атаки шире критерия F-01",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/schemas/symphysis/schema.yaml",
+       "quote": "Отступления от постановки — в раздел «Отступления от постановки»"
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Критерий F-01 говорит о линзе, а не о целях атаки; новая цель меняет хеши и устаревание вердикта и могла бы быть своим изменением, а B растит объём этого."
+   },
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-08"
+   },
+   "reversibility": {
+    "level": "обратимо",
+    "why": "Цели атаки не меняются; добавить `proposal.md` позже — своё изменение со строкой `targets[]` шаблона и сценариями хешей."
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "при B — `targets[]` шаблона `attack-artifacts.md` и список целей в скилле атаки",
+   "evidence": [],
+   "comments": [],
+   "nodes": [
+    "lens"
+   ]
+  },
+  {
+   "id": "F-24",
+   "question": "Где делается плагинная половина — линза в `LENSES`, подпись, тест, `EXPECTED_CONTRACT`, коммит с `Needs:`",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Изменение кончается на ядре: линза, `CONTRACT = 5`, `Why:` в коммите, абзац «С номера 5»; плагинная половина — пункт бэклога группы 5 после B-44, с `Needs:` на коммит ядра, как F-19.A у `parking-addressee-agent`. Цена: до сессии плагина плагин с ядром 5 просит новый `.vsix`, как уже просит с ядром 4",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/changes/archive/2026-11-08-parking-addressee-agent/decisions.json",
+       "quote": "Порядок уже задан словом владельца в бэклоге и прецедентом `attack-warning-read`"
+      },
+      {
+       "path": "context/backlog/symphysis-backlog.md",
+       "quote": "Что должно стоять в ядре и контракте до того, как владелец уйдёт в разработку плагина."
+      }
+     ],
+     "deviation": "F-04"
+    },
+    {
+     "letter": "B",
+     "text": "Коммит в `symphysis-vscode` в этом изменении: линза в `LENSES`, подпись, тест, `Needs:`; `EXPECTED_CONTRACT` остаётся 3, пока B-44 не догнал номер 4. Цена: `tasks.md` не может нести правки чужого репозитория — работа идёт мимо артефактов схемы; плагин держит линзу, но номер ядра не принимает",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/changes/archive/2026-11-08-parking-addressee-agent/decisions.json",
+       "quote": "`tasks.md` изменения не может нести правки чужого репозитория — форк ограничивает правки этим проектом"
+      },
+      {
+       "path": "vscode/src/journal/attack.ts",
+       "quote": "const LENSES = {"
+      }
+     ]
+    },
+    {
+     "letter": "C",
+     "text": "B вместе с B-44 одним коммитом плагина: адресат `агент`, новая линза, `EXPECTED_CONTRACT = 5`",
+     "added": false,
+     "unlikely": "объём растёт на чужой пункт B-44, который владелец поставил в группу 5 после B-42",
+     "evidence": [
+      {
+       "path": "context/backlog/symphysis-backlog.md",
+       "quote": "**B-44 первым после B-42:** адресат `агент` и `EXPECTED_CONTRACT = 4`; без него плагин с ядром номера 4 не вносит решения."
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Группа 2 бэклога — работа ядра до сессии плагина, порядок плагина уже задан там (B-44 первым), и прецедент F-19.A этот путь прошёл; B оставляет плагин без номера и ведёт работу мимо схемы, C забирает чужой пункт."
+   },
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-08"
+   },
+   "reversibility": {
+    "level": "обратимо",
+    "why": "Плагинная половина — пункт бэклога для сессии плагина; сделать её раньше — ветка `symphysis-vscode`. Номер 5 ядро фиксирует в любом случае, `Needs:` плагина ссылается на коммит ядра независимо от срока."
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "при A — новый пункт бэклога группы 5; при B — ветка `symphysis-vscode` и `Needs:` в её коммите",
+   "evidence": [],
+   "comments": [],
+   "nodes": [
+    "plugin",
+    "contract"
+   ]
+  },
+  {
+   "id": "F-25",
+   "question": "Страница и плагин считают тяжесть источника любой строки с опорой «нет» блокером: строка ниже блокера без причины в скобках показана красным «понижение без причины», с причиной — «понижено: <причина>». Мастер-спека мерит понижение от тяжести своей линзы. Под F-20.C строки прочих правил новой линзы — предупреждение с опорой «нет», и показ назовёт каждую понижением без причины",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "агент",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "F-26",
+   "evidence": [
+    {
+     "path": "viewer/playground-template.html",
+     "quote": "при опоре «нет» тяжесть источника — блокер; ниже блокера без причины в скобках — понижение без причины"
+    },
+    {
+     "path": "vscode/src/journal/attack.ts",
+     "quote": "/** При опоре «нет» тяжесть источника — блокер; ниже блокера — понижение, причина в скобках или её нет. */"
+    },
+    {
+     "path": "openspec/specs/artifact-attack/spec.md",
+     "quote": "Скилл `symphysis-attack` MUST NOT ставить строке тяжесть ниже тяжести её линзы без причины в ячейке тяжести"
+    },
+    {
+     "path": "attack/skills/symphysis-attack/SKILL.md",
+     "quote": "оба антипода выбраны — `предупреждение (оба антипода выбраны)`"
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "row",
+    "page",
+    "plugin"
+   ]
+  },
+  {
+   "id": "F-26",
+   "question": "Как страница и плагин показывают собственное предупреждение новой линзы (F-20.C) у строки с опорой «нет», чтобы оно не читалось понижением без причины",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-20",
+    "F-24"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Показ знает тяжесть линзы: у `rule-compliance` понижением считается только строка ниже предупреждения; тяжесть по линзам — в шаблоне страницы и в `attack.ts`. Цена: правка шаблона страницы, его тестов и мастер-спеки `decision-viewer`; плагин догонит в пункте бэклога (F-24.A), до того он показывает такие строки красным; строка пропавшего условия, пониженная до предупреждения без причины, сигнала больше не даст — показ не отличит её от прочих",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "viewer/playground-template.html",
+       "quote": "при опоре «нет» тяжесть источника — блокер; ниже блокера без причины в скобках — понижение без причины"
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Строка прочих правил несёт причину в скобках постоянным текстом, по образцу `предупреждение (оба антипода выбраны)` у `context-compliance`: `предупреждение (правило составления)`. Страница и плагин не меняются и показывают «понижено: правило составления»; строка пропавшего условия ниже блокера без причины по-прежнему красная. Цена: значок говорит «понижено» о собственной тяжести линзы; второе после антиподов исключение из правила «причина называет решённую запись»",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "attack/skills/symphysis-attack/SKILL.md",
+       "quote": "оба антипода выбраны — `предупреждение (оба антипода выбраны)`"
+      },
+      {
+       "path": "vscode/src/journal/attack.ts",
+       "quote": "/** При опоре «нет» тяжесть источника — блокер; ниже блокера — понижение, причина в скобках или её нет. */"
+      }
+     ]
+    },
+    {
+     "letter": "C",
+     "text": "Пересмотреть F-20 на A: все строки линзы — блокер, конфликта показа нет. Цена: та, от которой уводил F-20.C, — нарушение правила о форме текста держит apply наравне с пропавшим условием; смена решения пишется строкой `- F-20: A (было C) — «слово»`",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "attack/skills/symphysis-attack/SKILL.md",
+       "quote": "Тяжесть строки с опорой «нет» — тяжесть линзы: у всех линз обоих"
+      }
+     ]
+    },
+    {
+     "letter": "D",
+     "text": "Оставить как есть: строки прочих правил показаны красным «понижение без причины»",
+     "added": false,
+     "unlikely": "ложная тревога на каждой строке предупреждения линзы, и настоящее понижение без причины в ней тонет",
+     "evidence": [
+      {
+       "path": "openspec/specs/artifact-attack/spec.md",
+       "quote": "Скилл `symphysis-attack` MUST NOT ставить строке тяжесть ниже тяжести её линзы без причины в ячейке тяжести"
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "B",
+    "why": "Образец уже есть в том же скилле, показ не меняется ни на странице, ни в плагине, который по F-24.A догонит не скоро, и пониженная строка пропавшего условия остаётся видна; A теряет этот сигнал и оставляет плагин красным до его сессии, C отменяет только что принятый F-20.C."
+   },
+   "decision": {
+    "option": "B",
+    "word": "",
+    "date": "2026-11-08"
+   },
+   "reversibility": {
+    "level": "обратимо",
+    "why": "Причина в скобках — текст строки в теле скилла атаки и в `attack/attack-table.md`; страница и плагин не меняются. Перейти на A позже — правка шаблона страницы, `attack.ts` плагина и мастер-спеки `decision-viewer`, номер контракта от этого не растёт."
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "при A — шаблон страницы, `attack.ts` плагина, мастер-спека `decision-viewer`; при B — текст причины в теле скилла и `attack-table.md`",
+   "evidence": [],
+   "comments": [],
+   "nodes": [
+    "row",
+    "page",
+    "plugin"
+   ]
+  }
+ ]
+}
