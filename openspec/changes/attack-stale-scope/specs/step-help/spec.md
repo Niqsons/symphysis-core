@@ -3,7 +3,7 @@
 ## ADDED Requirements
 
 ### Requirement: Страница шага атаки несёт вердикт и состав
-У страницы шага, для которого `openspec status` отдаёт `verdict`, вывод `step_help.py` SHALL нести поле `verdict` с этим значением (`ok`, `stale`, `mismatch`, `missing`) и поле `stale_scope` — список строк состава по `stale-verdict-scope` при `stale`, иначе пустой; у шагов без `verdict` в `status` обоих полей SHALL NOT быть. Поля новые: номер контракта SHALL NOT расти (F-19, F-13, F-11).
+У страницы шага, для которого `openspec status` отдаёт `verdict`, вывод `step_help.py` SHALL нести поле `verdict` с этим значением (`ok`, `stale`, `mismatch`, `missing`) и поле `stale_scope` — список строк состава по `stale-verdict-scope`, пустой только при совпавшем хеше; у шагов без `verdict` в `status` обоих полей SHALL NOT быть. Поля новые: номер контракта SHALL NOT расти (F-19, F-13, F-11).
 
 #### Scenario: Вердикт устарел после proposal
 - **GIVEN** `attack/decisions.md` со `status: passed`, журнал дописан, `proposal.md` есть
@@ -24,6 +24,18 @@
 - **GIVEN** `attack-decisions` без файла, `status` отдаёт его без `verdict`
 - **WHEN** выполняется `step_help.py --change demo`
 - **THEN** полей `verdict` и `stale_scope` у страницы нет
+
+#### Scenario: Журнал не читается при устаревшем вердикте
+<!-- F-38 -->
+- **GIVEN** `decisions.json` с ошибкой синтаксиса, `status` отдаёт `verdict: stale`
+- **WHEN** выполняется `step_help.py --change demo`
+- **THEN** `verdict` равно `stale`, `stale_scope` несёт одну строку «журнал не читается», код 0
+
+#### Scenario: Вердикт не прошёл при изменённом журнале
+<!-- F-39 -->
+- **GIVEN** `attack/decisions.md` со `status: gaps_found`, хеш журнала не совпал
+- **WHEN** выполняются `journal.py check` и `step_help.py --change demo`
+- **THEN** `verdict` равно `mismatch`, `stale_scope` несёт те же строки состава, что stdout `check`
 
 <!-- проба краёв: форма=io, collection, text, исходы: нет -->
 <!-- проба запретов: исходы: нет -->
