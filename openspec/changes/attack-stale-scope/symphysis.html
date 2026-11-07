@@ -212,15 +212,15 @@
 const JOURNAL = {
  "title": "Журнал решений: attack-stale-scope",
  "source": "decisions.json",
- "sha256": "c4d7bc140dd43ad660e57ffefd6251602d65efccdfe277a9ad9fb8e7c8aa0381",
+ "sha256": "1159fd188a057a13e5eef80389e8cabe95284df72fe42580be09eff077e6f260",
  "stats": {
-  "records": 24,
-  "forks": 8,
-  "facts": 16,
-  "decided": 8,
+  "records": 34,
+  "forks": 16,
+  "facts": 18,
+  "decided": 16,
   "parked": 1,
-  "evidence_total": 71,
-  "evidence_found": 71
+  "evidence_total": 81,
+  "evidence_found": 81
  },
  "records": [
   {
@@ -1659,6 +1659,655 @@ const JOURNAL = {
     "scope"
    ],
    "finding": ""
+  },
+  {
+   "id": "F-25",
+   "question": "[adjacency · collection] Состав атаки журнала считается по таблице: запись, названная только строкой «не пройдено» (линза coverage, блокер), — атакована или нет?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-17",
+    "F-18"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN таблица со строкой «не пройдено» для F-40 и без других строк F-40 WHEN считается состав THEN F-40 не считается атакованной и названа отдельно: «не пройдено: F-40»; цена: сценарий, тест расчёта на строку «не пройдено», сопровождение второго списка в составе",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — «не пройдено» не различается: запись названа в разделе и считается атакованной; допустимо, пока строка «не пройдено» — блокер, файл с ней не бывает `passed`, а повтор атаки по правилу скилла и так идёт по строкам «не пройдено»",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест подаёт таблицу с единственной строкой «не пройдено» для F-40 и утверждает, что F-40 отсутствует в списке атакованных; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — остаётся открытым до первого файла атаки `gaps_found` с устаревшим хешем в работе; пока tasks считает «не пройдено» атакованной записью",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "B",
+    "why": "Строка «не пройдено» — блокер: файл с ней не `passed`, и повтор атаки по правилу скилла и так идёт по строкам «не пройдено» при совпавших хешах; второй список в составе ничего не добавляет, а расхождение видно в самой таблице."
+   },
+   "decision": {
+    "option": "B",
+    "word": "",
+    "date": "2026-11-07"
+   },
+   "reversibility": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Dismiss",
+    "reason": ""
+   },
+   "parking": [],
+   "dispute": "",
+   "consequences": "Строка «не пройдено» — блокер: файл с ней не `passed`, и повтор атаки по правилу скилла и так идёт по строкам «не пройдено» при совпавших хешах; второй список в составе ничего не добавляет, а расхождение видно в самой таблице.",
+   "evidence": [
+    {
+     "path": "openspec/changes/attack-stale-scope/specs/stale-verdict-scope/spec.md",
+     "quote": "### Requirement: Состав атаки журнала считается по таблице",
+     "line": 8,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "finding": ""
+  },
+  {
+   "id": "F-26",
+   "question": "[encoding · text] Состав атаки журнала считается по таблице: раздел `F-7, decision` против записи `F-07` — номер сравнивается как строка или как число?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-17",
+    "F-18"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN раздел `F-7, decision`, запись журнала `F-07` WHEN считается состав THEN F-07 считается атакованной: номера сравниваются по числу; цена: сценарий, тест на ведущий ноль, сопровождение разбора номера",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — сравнение строковое: `F-7` не равен `F-07`, запись окажется «добавленной»; допустимо, если номер в разделе пишется как в журнале, а страница по разделу `F-7` переход к карточке не найдёт — расхождение видно там",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест подаёт раздел `F-7, decision` и журнал с `F-07` и утверждает, что F-07 нет среди добавленных; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — остаётся открытым до правила формы номера в `attack-table.md`; пока tasks считает сравнение строковым",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Запись с разделом `F-7` выглядела бы не атакованной, и повтор прошёл бы её второй раз, а при обратном написании пропустил бы; схема журнала допускает оба написания (`^F-\\d+$`), сравнение по числу — одна строка разбора; цена — сценарий и тест на ведущий ноль."
+   },
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-07"
+   },
+   "reversibility": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Specify",
+    "reason": ""
+   },
+   "parking": [],
+   "dispute": "",
+   "consequences": "в spec.md: Номер с ведущим нулём.",
+   "evidence": [
+    {
+     "path": "openspec/changes/attack-stale-scope/specs/stale-verdict-scope/spec.md",
+     "quote": "### Requirement: Состав атаки журнала считается по таблице",
+     "line": 8,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "finding": ""
+  },
+  {
+   "id": "F-27",
+   "question": "[empty · text] Ноль добавленных при изменённом журнале называется словами: `target_sha256` пуст или не шестнадцатеричный — состав «журнал изменён иначе» или «хеш цели не задан»?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-18",
+    "F-20"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN `target_sha256:` без значения WHEN считается состав THEN строка «хеш цели не задан: состав не считается», списка добавленных нет; цена: сценарий, тест на пустой хеш, сопровождение третьей строки состава",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — пустой хеш не равен хешу файла, состав считается как при изменённом журнале; допустимо, пока форк по такому файлу даёт `stale` с причиной `malformed`, и читатель видит её рядом в `nextSteps`",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест подаёт файл атаки с пустым `target_sha256` и утверждает, что расчёт не падает и не печатает «записей не добавлено»; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — остаётся открытым до первого файла атаки без хеша в работе; пока tasks считает пустой хеш «изменённым журналом»",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Шаблон кладёт пустое поле, и файл без хеша остаётся после каждой прерванной атаки: строка «записей не добавлено: журнал изменён иначе» тогда ложь, которую не отличить от правды; цена — сценарий и тест на пустой хеш."
+   },
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-07"
+   },
+   "reversibility": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Specify",
+    "reason": ""
+   },
+   "parking": [],
+   "dispute": "",
+   "consequences": "в spec.md: Хеш цели не задан.",
+   "evidence": [
+    {
+     "path": "openspec/changes/attack-stale-scope/specs/stale-verdict-scope/spec.md",
+     "quote": "### Requirement: Ноль добавленных при изменённом журнале называется словами",
+     "line": 34,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "finding": ""
+  },
+  {
+   "id": "F-28",
+   "question": "[encoding · text] Ноль добавленных при изменённом журнале называется словами: `target_sha256` в верхнем регистре — хеш «не равен» или равен, как у форка?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-18",
+    "F-20"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN `target_sha256` равен хешу файла, но в верхнем регистре WHEN считается состав THEN состав пуст: хеши сравниваются без учёта регистра, как у форка; цена: сценарий, тест на регистр, сопровождение одной строки сравнения",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — сравнение байт в байт: верхний регистр даёт «журнал изменён иначе»; допустимо, пока скилл пишет хеш из `sha256sum`, который печатает строчные",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест подаёт хеш в верхнем регистре и утверждает, что `check` не печатает строку состава; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — остаётся открытым до первого расхождения с форком в работе; пока tasks считает сравнение байтовым",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Форк считает такой вердикт `ok`, а `check` напечатал бы «изменён иначе»: два читателя разошлись бы на одном файле против требования «Состав одинаков у всех читателей»; цена — сценарий и тест на регистр."
+   },
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-07"
+   },
+   "reversibility": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Specify",
+    "reason": ""
+   },
+   "parking": [],
+   "dispute": "",
+   "consequences": "в spec.md: Хеш в верхнем регистре.",
+   "evidence": [
+    {
+     "path": "openspec/changes/attack-stale-scope/specs/stale-verdict-scope/spec.md",
+     "quote": "### Requirement: Ноль добавленных при изменённом журнале называется словами",
+     "line": 34,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "finding": ""
+  },
+  {
+   "id": "F-29",
+   "question": "[encoding · text] У атаки артефактов — все изменившиеся цели и число записей: путь цели с `..` или абсолютный — читать файл или назвать цель «вне каталога изменения»?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-23",
+    "F-24"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN `targets[]` с `path: ../other/design.md` WHEN считается состав THEN файл не читается, цель названа с пометкой «вне каталога изменения», как причина `outside` у форка; цена: сценарий, тест на `..` и абсолютный путь, сопровождение проверки пути",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — путь читается как есть; допустимо, если файлы атаки пишет только скилл, а он берёт пути из `sha256sum` внутри каталога изменения",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест подаёт абсолютный путь и утверждает, что расчёт не читает файл вне каталога изменения; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — остаётся открытым до чек-листа `security.md` этого изменения; пока tasks считает путь цели доверенным",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Файл атаки лежит в git и правится руками: чтение по чужому пути тихо вынесет хеш чужого файла в вывод, и этого не видно; форк такой путь не читает, расчёт повторяет его; цена — сценарий и тест."
+   },
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-07"
+   },
+   "reversibility": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Specify",
+    "reason": ""
+   },
+   "parking": [],
+   "dispute": "",
+   "consequences": "в spec.md: Путь цели вне каталога.",
+   "evidence": [
+    {
+     "path": "openspec/changes/attack-stale-scope/specs/stale-verdict-scope/spec.md",
+     "quote": "### Requirement: У атаки артефактов — все изменившиеся цели и число записей",
+     "line": 76,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "finding": ""
+  },
+  {
+   "id": "F-30",
+   "question": "[empty · io] `check` называет состав устаревшего вердикта: `attack/decisions.md` есть, но без frontmatter или с битой таблицей — что печатает `check` и меняется ли код выхода?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-19"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN `attack/decisions.md` без строки `---` WHEN выполняется `check` THEN строка `[!!] attack/decisions.md: файл атаки не разбирается: <причина>`, остальные проверки идут, код 0 (с `--strict` 2); цена: сценарий, тест на битый файл, сопровождение строки",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — битый файл атаки роняет `check` кодом 1; допустимо, если тот же файл уже отвергает `render-html` кодом 2 и страница без него не собирается",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест подаёт файл без frontmatter и утверждает, что `check` возвращает 0 и печатает остальные сверки; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — остаётся открытым до первого битого файла атаки в работе; пока tasks считает, что битый файл даёт код 1",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Код 1 у `check` значит «журнал негоден по схеме», и скиллы после него правят журнал, а не файл атаки: ложный код уводит правку не туда и прячет остальные сверки; цена — сценарий и тест на битый файл."
+   },
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-07"
+   },
+   "reversibility": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Specify",
+    "reason": ""
+   },
+   "parking": [],
+   "dispute": "",
+   "consequences": "в spec.md: Файл атаки не разбирается.",
+   "evidence": [
+    {
+     "path": "openspec/changes/attack-stale-scope/specs/decision-journal/spec.md",
+     "quote": "### Requirement: `check` называет состав устаревшего вердикта",
+     "line": 5,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "finding": ""
+  },
+  {
+   "id": "F-31",
+   "question": "[adjacency · collection] Повтор атаки журнала по составу: стык по `consequences` — считается ли упоминание номера в прозе («см. F-12, F-14») и диапазон «F-10–F-20»?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-22",
+    "F-21"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN у новой записи `consequences` «ветки F-10–F-12 и F-20» WHEN идёт повтор THEN стыки — записи, чьи номера стоят в тексте дословно: F-10, F-12, F-20; диапазон не разворачивается; цена: сценарий, тест на разбор номеров, сопровождение правила в скилле",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — стык по `consequences` не считается вовсе, только `depends_on` и `antipodes`; допустимо, если `consequences` — проза для человека, а связи держат поля",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест подаёт `consequences` с диапазоном и утверждает, что F-11 в стыках нет, а F-10 и F-20 есть; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — остаётся открытым до правила формы `consequences` в `journal.schema.json`; пока tasks считает стыком только `depends_on` и `antipodes`",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Пропущенный стык не проходит атаку молча, а диапазон в прозе редок; правило «номера дословно» одно, проверяется грепом и совпадает с тем, как строки атаки называют разделы; цена — сценарий и тест на разбор номеров."
+   },
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-07"
+   },
+   "reversibility": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Specify",
+    "reason": ""
+   },
+   "parking": [],
+   "dispute": "",
+   "consequences": "в spec.md: Стык по номерам в consequences.",
+   "evidence": [
+    {
+     "path": "openspec/changes/attack-stale-scope/specs/artifact-attack/spec.md",
+     "quote": "### Requirement: Повтор атаки журнала по составу",
+     "line": 23,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "finding": ""
+  },
+  {
+   "id": "F-32",
+   "question": "[запрет] Повтор атаки журнала по составу: не должен обновлять хеш при нуле добавленных, когда после вердикта изменилось решение прежней записи",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-22",
+    "F-21"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify/test — требование MUST NOT: хеш не обновляется без прохода, если в `answers/` есть файл новее файла атаки со строкой `- F-NN:` прежней записи; такие записи проходятся как стыки; тест скилла: файл ответа новее атаки — строки записи написаны заново; цена: сценарий, тест на `answers/`, сопровождение правила",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Specify/judgment — требование MUST NOT: хеш не обновляется, пока модель не сверила, что решения прежних записей не менялись; судит модель по `answers/` и `notes[]` новее файла атаки, атака артефактов проверяет это строкой `context-compliance`; цена: сценарий, суждение при каждом повторе, сопровождение формулировки",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Dismiss — запрет не нужен: решение прежней записи после `passed` меняется редко, а изменённые записи по F-18.A в состав не входят",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — остаётся открытым до отпечатка записи (F-18.B); пока tasks считает «ноль добавленных» достаточным для пересчёта хеша",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Переставленный хеш выглядит свежим вердиктом по решению, которого атака не видела, и этого никто не заметит до реализации; признак механический: файл `answers/` новее атаки, строки `- F-NN:` называют записи — против B, где тест возможен; цена — сценарий и тест на `answers/`."
+   },
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-07"
+   },
+   "reversibility": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Specify",
+    "reason": ""
+   },
+   "parking": [],
+   "dispute": "",
+   "consequences": "проверка: test — файл `answers/` новее файла атаки со строкой `- F-NN:` прежней записи: строки записи написаны заново. в spec.md: Хеш не обновляется при изменённом решении прежней записи.",
+   "evidence": [
+    {
+     "path": "openspec/changes/attack-stale-scope/specs/artifact-attack/spec.md",
+     "quote": "### Requirement: Повтор атаки журнала по составу",
+     "line": 23,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "finding": ""
+  },
+  {
+   "id": "F-33",
+   "question": "[канон] У атаки артефактов — все изменившиеся цели и число записей: канон ИБ",
+   "kind": "факт",
+   "status": "припаркован",
+   "addressee": "ИБ",
+   "depends_on": [
+    "F-23",
+    "F-24"
+   ],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [
+    {
+     "addressee": "ИБ",
+     "text": "путь цели с `..`, абсолютный или через ссылку вне каталога изменения (край — F-29) — канон, покрывается чек-листом security.md; запрет не чеканится"
+    }
+   ],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/attack-stale-scope/specs/stale-verdict-scope/spec.md",
+     "quote": "### Requirement: У атаки артефактов — все изменившиеся цели и число записей",
+     "line": 76,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "finding": ""
+  },
+  {
+   "id": "F-34",
+   "question": "[канон] Состав атаки журнала считается по таблице: канон ИБ",
+   "kind": "факт",
+   "status": "припаркован",
+   "addressee": "ИБ",
+   "depends_on": [
+    "F-17",
+    "F-18"
+   ],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [
+    {
+     "addressee": "ИБ",
+     "text": "содержимое таблицы атаки и frontmatter — данные: строка раздела или `**Состав:**` с текстом-инструкцией не меняет ход расчёта (инъекция через содержимое файла) — канон, покрывается чек-листом security.md; запрет не чеканится"
+    }
+   ],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/attack-stale-scope/specs/stale-verdict-scope/spec.md",
+     "quote": "### Requirement: Состав атаки журнала считается по таблице",
+     "line": 8,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "finding": ""
   }
  ],
  "notes": [
@@ -1669,6 +2318,14 @@ const JOURNAL = {
   {
    "date": "2026-11-07",
    "text": "брейншторм закончен по решению человека"
+  },
+  {
+   "date": "2026-11-07",
+   "text": "проба краёв: кандидатов 7, Specify 6, Dismiss 1, Backstop 0, Defer 0; не выбран 7: stale-verdict-scope/Состав атаки журнала считается по таблице, stale-verdict-scope/Неполный состав при выключенной `coverage`, decision-journal/`check` называет состав устаревшего вердикта, step-help/Страница шага атаки несёт вердикт и состав, artifact-attack/Хеши целей обесценивают вердикт после правки"
+  },
+  {
+   "date": "2026-11-07",
+   "text": "проба запретов: требований 10, оставлено 1, канон → ИБ 2, Specify 1, Dismiss 0, Defer 0"
   }
  ]
 };
@@ -1682,7 +2339,7 @@ const SCHEME = {
 };
 const HELP = {
  "contract": 3,
- "taken_at": "2026-11-07T15:40:57+03:00",
+ "taken_at": "2026-11-07T16:31:46+03:00",
  "versions": {
   "openspec": "1.16.1+symphysis.5",
   "symphysis": null
@@ -1690,10 +2347,10 @@ const HELP = {
  "change": "attack-stale-scope",
  "changes": null,
  "error": null,
- "current_step": "research",
- "current_text": "Следующий шаг по файлам — `research`, ход модели.",
+ "current_step": "consequences",
+ "current_text": "Следующий шаг по файлам — `consequences`, ход модели.",
  "turn": "model",
- "next_by_status": "research",
+ "next_by_status": "consequences",
  "forks": {
   "open": 0,
   "parked": 0
@@ -1805,7 +2462,7 @@ const HELP = {
   },
   {
    "id": "research",
-   "state": "ready",
+   "state": "done",
    "turn": "model",
    "optional": false,
    "blocks": [
@@ -1816,11 +2473,11 @@ const HELP = {
    "waits_for": [],
    "files": [
     {
-     "path": "openspec/changes/attack-stale-scope/research/**/*.md",
-     "exists": false
+     "path": "openspec/changes/attack-stale-scope/research/none.md",
+     "exists": true
     }
    ],
-   "file_note": null,
+   "file_note": "файл есть, содержание не проверялось",
    "texts": {
     "title": "Исследование и второй круг",
     "why": "Вопросы, припаркованные к материалам, получают ответ с цитатами из прочитанных файлов. Второй круг брейншторма закрывает по этим ответам записи журнала.",
@@ -1848,14 +2505,12 @@ const HELP = {
   },
   {
    "id": "attack-decisions",
-   "state": "blocked",
+   "state": "ready",
    "turn": "model",
    "optional": true,
    "blocks": [],
    "stops_apply": false,
-   "waits_for": [
-    "research"
-   ],
+   "waits_for": [],
    "files": [
     {
      "path": "openspec/changes/attack-stale-scope/attack/decisions.md",
@@ -1885,7 +2540,7 @@ const HELP = {
   },
   {
    "id": "proposal",
-   "state": "blocked",
+   "state": "done",
    "turn": "model",
    "optional": false,
    "blocks": [
@@ -1893,16 +2548,14 @@ const HELP = {
     "design"
    ],
    "stops_apply": false,
-   "waits_for": [
-    "research"
-   ],
+   "waits_for": [],
    "files": [
     {
      "path": "openspec/changes/attack-stale-scope/proposal.md",
-     "exists": false
+     "exists": true
     }
    ],
-   "file_note": null,
+   "file_note": "файл есть, содержание не проверялось",
    "texts": {
     "title": "Зачем изменение и что оно задевает",
     "why": "Договор об объёме: почему изменение нужно и какие capabilities оно затрагивает. По этому списку потом пишутся спецификации.",
@@ -1919,7 +2572,7 @@ const HELP = {
   },
   {
    "id": "specs",
-   "state": "blocked",
+   "state": "done",
    "turn": "model",
    "optional": false,
    "blocks": [
@@ -1929,16 +2582,26 @@ const HELP = {
     "attack-artifacts"
    ],
    "stops_apply": false,
-   "waits_for": [
-    "proposal"
-   ],
+   "waits_for": [],
    "files": [
     {
-     "path": "openspec/changes/attack-stale-scope/specs/**/*.md",
-     "exists": false
+     "path": "openspec/changes/attack-stale-scope/specs/artifact-attack/spec.md",
+     "exists": true
+    },
+    {
+     "path": "openspec/changes/attack-stale-scope/specs/decision-journal/spec.md",
+     "exists": true
+    },
+    {
+     "path": "openspec/changes/attack-stale-scope/specs/stale-verdict-scope/spec.md",
+     "exists": true
+    },
+    {
+     "path": "openspec/changes/attack-stale-scope/specs/step-help/spec.md",
+     "exists": true
     }
    ],
-   "file_note": null,
+   "file_note": "файл есть, содержание не проверялось",
    "texts": {
     "title": "Спецификации поведения",
     "why": "Наблюдаемое поведение, записанное требованиями и сценариями. По нему потом проверяют дизайн и код, поэтому всё, что не названо здесь, проверить будет нечем.",
@@ -1966,16 +2629,14 @@ const HELP = {
   },
   {
    "id": "consequences",
-   "state": "blocked",
+   "state": "ready",
    "turn": "model",
    "optional": false,
    "blocks": [
     "design"
    ],
    "stops_apply": false,
-   "waits_for": [
-    "specs"
-   ],
+   "waits_for": [],
    "files": [
     {
      "path": "openspec/changes/attack-stale-scope/consequences.md",
@@ -2014,7 +2675,6 @@ const HELP = {
    ],
    "stops_apply": false,
    "waits_for": [
-    "proposal",
     "consequences"
    ],
    "files": [
@@ -2040,16 +2700,14 @@ const HELP = {
   },
   {
    "id": "security",
-   "state": "blocked",
+   "state": "ready",
    "turn": "model",
    "optional": false,
    "blocks": [
     "attack-artifacts"
    ],
    "stops_apply": true,
-   "waits_for": [
-    "specs"
-   ],
+   "waits_for": [],
    "files": [
     {
      "path": "openspec/changes/attack-stale-scope/security.md",
@@ -2081,7 +2739,6 @@ const HELP = {
    ],
    "stops_apply": true,
    "waits_for": [
-    "specs",
     "design"
    ],
    "files": [
@@ -2113,7 +2770,6 @@ const HELP = {
    "blocks": [],
    "stops_apply": false,
    "waits_for": [
-    "specs",
     "design",
     "security",
     "tasks"
@@ -2231,9 +2887,18 @@ const HELP = {
   ".claude/skills/symphysis-viewer/SKILL.md": ".claude/skills/symphysis-viewer/SKILL.md",
   "decisions.json": "openspec/changes/attack-stale-scope/decisions.json",
   "decisions.md": "openspec/changes/attack-stale-scope/decisions.md",
+  "edge-probe.md": "openspec/changes/attack-stale-scope/edge-probe.md",
   "intent.md": "openspec/changes/attack-stale-scope/intent.md",
   "openspec/changes/attack-stale-scope/decisions.json": "openspec/changes/attack-stale-scope/decisions.json",
   "openspec/changes/attack-stale-scope/intent.md": "openspec/changes/attack-stale-scope/intent.md",
+  "openspec/changes/attack-stale-scope/proposal.md": "openspec/changes/attack-stale-scope/proposal.md",
+  "openspec/changes/attack-stale-scope/research/none.md": "openspec/changes/attack-stale-scope/research/none.md",
+  "openspec/changes/attack-stale-scope/specs/artifact-attack/spec.md": "openspec/changes/attack-stale-scope/specs/artifact-attack/spec.md",
+  "openspec/changes/attack-stale-scope/specs/decision-journal/spec.md": "openspec/changes/attack-stale-scope/specs/decision-journal/spec.md",
+  "openspec/changes/attack-stale-scope/specs/stale-verdict-scope/spec.md": "openspec/changes/attack-stale-scope/specs/stale-verdict-scope/spec.md",
+  "openspec/changes/attack-stale-scope/specs/step-help/spec.md": "openspec/changes/attack-stale-scope/specs/step-help/spec.md",
+  "proposal.md": "openspec/changes/attack-stale-scope/proposal.md",
+  "research/none.md": "openspec/changes/attack-stale-scope/research/none.md",
   "scheme.md": "openspec/changes/attack-stale-scope/scheme.md",
   "symphysis.html": "openspec/changes/attack-stale-scope/symphysis.html",
   "symphysis.yaml": "symphysis.yaml"
@@ -2261,6 +2926,7 @@ const LINKS = {
   "decisions.md": "decisions.md",
   "docs/analysis/upstream-gsd-core-1.20.1-2026-11-07.md": "../../../docs/analysis/upstream-gsd-core-1.20.1-2026-11-07.md",
   "docs/repo-contract.md": "../../../docs/repo-contract.md",
+  "edge-probe.md": "edge-probe.md",
   "intent.md": "intent.md",
   "openspec/changes/archive/2026-11-02-calibration-fixes/decisions.json": "../archive/2026-11-02-calibration-fixes/decisions.json",
   "openspec/changes/archive/2026-11-03-step-help/decisions.json": "../archive/2026-11-03-step-help/decisions.json",
@@ -2268,12 +2934,20 @@ const LINKS = {
   "openspec/changes/archive/2026-11-06-trace-graph/decisions.json": "../archive/2026-11-06-trace-graph/decisions.json",
   "openspec/changes/attack-stale-scope/decisions.json": "decisions.json",
   "openspec/changes/attack-stale-scope/intent.md": "intent.md",
+  "openspec/changes/attack-stale-scope/proposal.md": "proposal.md",
+  "openspec/changes/attack-stale-scope/research/none.md": "research/none.md",
+  "openspec/changes/attack-stale-scope/specs/artifact-attack/spec.md": "specs/artifact-attack/spec.md",
+  "openspec/changes/attack-stale-scope/specs/decision-journal/spec.md": "specs/decision-journal/spec.md",
+  "openspec/changes/attack-stale-scope/specs/stale-verdict-scope/spec.md": "specs/stale-verdict-scope/spec.md",
+  "openspec/changes/attack-stale-scope/specs/step-help/spec.md": "specs/step-help/spec.md",
   "openspec/changes/attack-warning-read/intent.md": "../attack-warning-read/intent.md",
   "openspec/schemas/symphysis/schema.yaml": "../../schemas/symphysis/schema.yaml",
   "openspec/schemas/symphysis/templates/attack-artifacts.md": "../../schemas/symphysis/templates/attack-artifacts.md",
   "openspec/schemas/symphysis/templates/attack-decisions.md": "../../schemas/symphysis/templates/attack-decisions.md",
   "openspec/specs/artifact-attack/spec.md": "../../specs/artifact-attack/spec.md",
   "probes/journal-roots.json": "probes/journal-roots.json",
+  "proposal.md": "proposal.md",
+  "research/none.md": "research/none.md",
   "scheme.md": "scheme.md",
   "step-help/step_help.py": "../../../step-help/step_help.py",
   "symphysis.html": "symphysis.html",

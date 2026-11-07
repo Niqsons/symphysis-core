@@ -1,0 +1,82 @@
+# Покрытие пробы краёв: attack-stale-scope
+
+- stale-verdict-scope/Состав атаки журнала считается по таблице · boundary · неприменимо: формы collection, text; boundary только для numeric-range
+- stale-verdict-scope/Состав атаки журнала считается по таблице · adjacency · кандидат F-25
+- stale-verdict-scope/Состав атаки журнала считается по таблице · empty · не выбран: таблица без строк при всех включённых линзах — все записи окажутся «добавленными», список виден сразу и исправляется повтором атаки; пустой журнал даёт «добавлено 0» и строку по «Ноль добавленных при изменённом журнале называется словами»
+- stale-verdict-scope/Состав атаки журнала считается по таблице · encoding · кандидат F-26
+- stale-verdict-scope/Состав атаки журнала считается по таблице · ordering · не найдено: порядок номеров в составе — по числу в номере, диапазон собирается по нему; равных номеров нет: повторный номер делает журнал негодным
+- stale-verdict-scope/Состав атаки журнала считается по таблице · precision · неприменимо: формы collection, text; precision только для numeric-range
+- stale-verdict-scope/Состав атаки журнала считается по таблице · idempotency · неприменимо: формы collection, text; idempotency только для stateful
+- stale-verdict-scope/Состав атаки журнала считается по таблице · concurrency · неприменимо: формы collection, text; concurrency только для stateful, io
+- stale-verdict-scope/Ноль добавленных при изменённом журнале называется словами · boundary · неприменимо: формы text, io; boundary только для numeric-range
+- stale-verdict-scope/Ноль добавленных при изменённом журнале называется словами · adjacency · неприменимо: формы text, io; adjacency только для collection
+- stale-verdict-scope/Ноль добавленных при изменённом журнале называется словами · empty · кандидат F-27
+- stale-verdict-scope/Ноль добавленных при изменённом журнале называется словами · encoding · кандидат F-28
+- stale-verdict-scope/Ноль добавленных при изменённом журнале называется словами · ordering · неприменимо: формы text, io; ordering только для collection
+- stale-verdict-scope/Ноль добавленных при изменённом журнале называется словами · precision · неприменимо: формы text, io; precision только для numeric-range
+- stale-verdict-scope/Ноль добавленных при изменённом журнале называется словами · idempotency · неприменимо: формы text, io; idempotency только для stateful
+- stale-verdict-scope/Ноль добавленных при изменённом журнале называется словами · concurrency · не найдено: правка журнала во время расчёта — читатели зовутся после правки, хеш считается по байтам одного чтения; следующий вызов даст новый
+- stale-verdict-scope/Неполный состав при выключенной `coverage` · boundary · неприменимо: формы text; boundary только для numeric-range
+- stale-verdict-scope/Неполный состав при выключенной `coverage` · adjacency · неприменимо: формы text; adjacency только для collection
+- stale-verdict-scope/Неполный состав при выключенной `coverage` · empty · не найдено: строка `**Состав:**` с «выключены —» — выключенных нет, состав полон; строки нет — требование считает все линзы включёнными
+- stale-verdict-scope/Неполный состав при выключенной `coverage` · encoding · не выбран: слово `coverage` стоит и в части «включены»; требование говорит «среди выключенных», сценарий «Линза покрытия выключена» несёт обе части строки — исход задан
+- stale-verdict-scope/Неполный состав при выключенной `coverage` · ordering · неприменимо: формы text; ordering только для collection
+- stale-verdict-scope/Неполный состав при выключенной `coverage` · precision · неприменимо: формы text; precision только для numeric-range
+- stale-verdict-scope/Неполный состав при выключенной `coverage` · idempotency · неприменимо: формы text; idempotency только для stateful
+- stale-verdict-scope/Неполный состав при выключенной `coverage` · concurrency · неприменимо: формы text; concurrency только для stateful, io
+- stale-verdict-scope/У атаки артефактов — все изменившиеся цели и число записей · boundary · неприменимо: формы collection, text, io; boundary только для numeric-range
+- stale-verdict-scope/У атаки артефактов — все изменившиеся цели и число записей · adjacency · не найдено: одна цель дважды в `targets[]` — названа столько раз, сколько стоит; скилл пишет каждую цель один раз
+- stale-verdict-scope/У атаки артефактов — все изменившиеся цели и число записей · empty · не найдено: пустой `targets[]` — сравнивать нечего, состав пуст; форк без хешей считает вердикт `ok`
+- stale-verdict-scope/У атаки артефактов — все изменившиеся цели и число записей · encoding · кандидат F-29
+- stale-verdict-scope/У атаки артефактов — все изменившиеся цели и число записей · ordering · не найдено: порядок названных целей — порядок `targets[]`, журнал первым по правилу скилла; равных путей нет
+- stale-verdict-scope/У атаки артефактов — все изменившиеся цели и число записей · precision · неприменимо: формы collection, text, io; precision только для numeric-range
+- stale-verdict-scope/У атаки артефактов — все изменившиеся цели и число записей · idempotency · неприменимо: формы collection, text, io; idempotency только для stateful
+- stale-verdict-scope/У атаки артефактов — все изменившиеся цели и число записей · concurrency · не найдено: цель правится во время расчёта — хеш по байтам одного чтения, следующий вызов читателя даст новый
+- stale-verdict-scope/Состав одинаков у всех читателей · boundary · неприменимо: формы text, io; boundary только для numeric-range
+- stale-verdict-scope/Состав одинаков у всех читателей · adjacency · неприменимо: формы text, io; adjacency только для collection
+- stale-verdict-scope/Состав одинаков у всех читателей · empty · не найдено: пустой состав у обоих читателей — `check` без строк, `stale_scope` пустой список
+- stale-verdict-scope/Состав одинаков у всех читателей · encoding · не найдено: строки сравниваются без маркера `[..]` и имени атаки — текст требования; CRLF в stdout Windows — сравнение построчно
+- stale-verdict-scope/Состав одинаков у всех читателей · ordering · неприменимо: формы text, io; ordering только для collection
+- stale-verdict-scope/Состав одинаков у всех читателей · precision · неприменимо: формы text, io; precision только для numeric-range
+- stale-verdict-scope/Состав одинаков у всех читателей · idempotency · неприменимо: формы text, io; idempotency только для stateful
+- stale-verdict-scope/Состав одинаков у всех читателей · concurrency · не найдено: читатели зовутся в разное время — требование о равенстве при одних и тех же файлах
+- decision-journal/`check` называет состав устаревшего вердикта · boundary · неприменимо: формы io, text, stateful; boundary только для numeric-range
+- decision-journal/`check` называет состав устаревшего вердикта · adjacency · неприменимо: формы io, text, stateful; adjacency только для collection
+- decision-journal/`check` называет состав устаревшего вердикта · empty · кандидат F-30
+- decision-journal/`check` называет состав устаревшего вердикта · encoding · не найдено: файл атаки с BOM и CRLF — разбор `utf-8-sig`, хеш журнала по байтам как у форка
+- decision-journal/`check` называет состав устаревшего вердикта · ordering · неприменимо: формы io, text, stateful; ordering только для collection
+- decision-journal/`check` называет состав устаревшего вердикта · precision · неприменимо: формы io, text, stateful; precision только для numeric-range
+- decision-journal/`check` называет состав устаревшего вердикта · idempotency · не найдено: два вызова `check` подряд печатают одно; `--write` меняет журнал только полями улик, состав от них не зависит
+- decision-journal/`check` называет состав устаревшего вердикта · concurrency · не выбран: при `--write` строка состава считается по файлу до записи и сразу устаревает; скилл атаки берёт хеш после `--write` и строку этого вызова не читает — исход задан сценарием «Хеш берётся после check --write»
+- step-help/Страница шага атаки несёт вердикт и состав · boundary · неприменимо: формы io, collection, text; boundary только для numeric-range
+- step-help/Страница шага атаки несёт вердикт и состав · adjacency · не найдено: двух шагов с вердиктом у одной страницы не бывает — поле у каждой страницы своё
+- step-help/Страница шага атаки несёт вердикт и состав · empty · не выбран: файл атаки не разбирается — строки читателя задаёт кандидат F-30 по «`check` называет состав устаревшего вердикта», равенство читателей — «Состав одинаков у всех читателей»
+- step-help/Страница шага атаки несёт вердикт и состав · encoding · не найдено: значения `verdict` — строки форка дословно (`ok`, `stale`, `mismatch`, `missing`)
+- step-help/Страница шага атаки несёт вердикт и состав · ordering · не найдено: порядок строк `stale_scope` — порядок расчёта, равных строк нет
+- step-help/Страница шага атаки несёт вердикт и состав · precision · неприменимо: формы io, collection, text; precision только для numeric-range
+- step-help/Страница шага атаки несёт вердикт и состав · idempotency · неприменимо: формы io, collection, text; idempotency только для stateful
+- step-help/Страница шага атаки несёт вердикт и состав · concurrency · не найдено: правка файлов между вызовом форка и чтением файлов — следующий вызов справки даст согласованную пару, справка ничего не кеширует
+- step-help/Справка не выдаёт наличие файла за сделанную работу · boundary · неприменимо: формы text, io; boundary только для numeric-range
+- step-help/Справка не выдаёт наличие файла за сделанную работу · adjacency · неприменимо: формы text, io; adjacency только для collection
+- step-help/Справка не выдаёт наличие файла за сделанную работу · empty · не найдено: пустой файл атаки — `status` отдаёт `verdict: missing`, страница показывает его вместо пометки о содержании
+- step-help/Справка не выдаёт наличие файла за сделанную работу · encoding · не найдено: пометка и вердикт — строки дословно из требования и форка
+- step-help/Справка не выдаёт наличие файла за сделанную работу · ordering · неприменимо: формы text, io; ordering только для collection
+- step-help/Справка не выдаёт наличие файла за сделанную работу · precision · неприменимо: формы text, io; precision только для numeric-range
+- step-help/Справка не выдаёт наличие файла за сделанную работу · idempotency · неприменимо: формы text, io; idempotency только для stateful
+- step-help/Справка не выдаёт наличие файла за сделанную работу · concurrency · не найдено: вердикт берётся из того же вызова `status`, что и статус шага
+- artifact-attack/Хеши целей обесценивают вердикт после правки · boundary · неприменимо: формы text, io, stateful; boundary только для numeric-range
+- artifact-attack/Хеши целей обесценивают вердикт после правки · adjacency · неприменимо: формы text, io, stateful; adjacency только для collection
+- artifact-attack/Хеши целей обесценивают вердикт после правки · empty · не найдено: `targets[]` без хешей — форк хеши не проверяет, вердикт по `status`
+- artifact-attack/Хеши целей обесценивают вердикт после правки · encoding · не выбран: CRLF/LF и BOM в байтах цели — край F-31 журнала `symphysis-schema`, открыт там; повтор здесь ничего не добавит
+- artifact-attack/Хеши целей обесценивают вердикт после правки · ordering · неприменимо: формы text, io, stateful; ordering только для collection
+- artifact-attack/Хеши целей обесценивают вердикт после правки · precision · неприменимо: формы text, io, stateful; precision только для numeric-range
+- artifact-attack/Хеши целей обесценивают вердикт после правки · idempotency · не выбран: повторный вызов при `passed` и совпавшем хеше — исход назван F-31 журнала `calibration-fixes`: файл не переписывается
+- artifact-attack/Хеши целей обесценивают вердикт после правки · concurrency · не выбран: цель правится между `check --write` и записью файла атаки — край F-32 журнала `symphysis-schema`, открыт там
+- artifact-attack/Повтор атаки журнала по составу · boundary · неприменимо: формы collection, stateful; boundary только для numeric-range
+- artifact-attack/Повтор атаки журнала по составу · adjacency · кандидат F-31
+- artifact-attack/Повтор атаки журнала по составу · empty · не найдено: новая запись без стыков — проход только по ней; нуль добавленных назван требованием
+- artifact-attack/Повтор атаки журнала по составу · encoding · неприменимо: формы collection, stateful; encoding только для text
+- artifact-attack/Повтор атаки журнала по составу · ordering · не найдено: порядок строк таблицы смысла не несёт — страница группирует по линзам, вердикт считается по тяжестям
+- artifact-attack/Повтор атаки журнала по составу · precision · неприменимо: формы collection, stateful; precision только для numeric-range
+- artifact-attack/Повтор атаки журнала по составу · idempotency · не найдено: повтор при совпавшем хеше — проходить нечего, файл не меняется (F-31 `calibration-fixes`)
+- artifact-attack/Повтор атаки журнала по составу · concurrency · не найдено: две атаки одной цели разом — водитель один на запуск, вторая увидит чужой хеш и начнёт с состава заново
