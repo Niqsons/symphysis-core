@@ -27,12 +27,13 @@ def block(name):
     return text[start:text.index(f"/* {name}:end */")]
 
 
-def run_js(tmp_path, name, call, payload):
-    """Исполняет блок шаблона и `call` (выражение над `input`), печатает JSON результата."""
+def run_js(tmp_path, name, call, payload, deps=()):
+    """Исполняет блок шаблона и `call` (выражение над `input`), печатает JSON результата; `deps` — блоки, которые
+    исполняемый блок зовёт по имени (у `prompt` — `flags`: отметки «прочитано»)."""
     script = tmp_path / f"{name}.js"
     data = tmp_path / f"{name}.json"
     data.write_text(json.dumps(payload, ensure_ascii=False), encoding="utf-8")
-    script.write_text(block(name) + "\nconst input = JSON.parse(require('fs').readFileSync(process.argv[2], 'utf8'));\n"
+    script.write_text("".join(block(d) for d in deps) + block(name) + "\nconst input = JSON.parse(require('fs').readFileSync(process.argv[2], 'utf8'));\n"
                       f"process.stdout.write(JSON.stringify({call}));\n", encoding="utf-8")
     run = subprocess.run([node, str(script), str(data)], capture_output=True, text=True, encoding="utf-8")
     assert run.returncode == 0, run.stderr
@@ -53,9 +54,10 @@ def plan_journal():
     return j
 
 
-def prompt(tmp_path, j, st, attacks=(), disputes=None):
-    return run_js(tmp_path, "prompt", "buildPrompt(input.J, input.attacks, input.st, input.disputes, input.date)",
-                  {"J": j, "attacks": list(attacks), "st": st, "disputes": disputes or {}, "date": DATE})
+def prompt(tmp_path, j, st, attacks=(), disputes=None, read=None):
+    return run_js(tmp_path, "prompt", "buildPrompt(input.J, input.attacks, input.st, input.disputes, input.date, input.read)",
+                  {"J": j, "attacks": list(attacks), "st": st, "disputes": disputes or {}, "date": DATE, "read": read or {}},
+                  deps=("flags",))
 
 
 def attack_file(*rows):
@@ -364,3 +366,66 @@ def test_scenario_decision_date_comes_from_apply(tmp_path):
     assert not [line for line in report if line.startswith("отказ")], report
     decided = {r["id"]: r for r in applied["records"]}["F-04"]["decision"]
     assert decided["date"] == DATE
+
+
+# --- флаг «прочитано»: отметки в строке «Замечания к схеме:» (decision-viewer, warning-read-flag) ---
+
+READ = "предупреждение прочитано: "
+
+
+def warning_file(*sections, path="attack/decisions.md"):
+    """Файл атаки со строками `предупреждение` по разделам."""
+    return {"path": path, "frontmatter": {"status": "passed", "targets": [{"path": "decisions.json", "sha256": ""}]},
+            "rows": [{"claim": f"утверждение {s}", "section": s, "lens": "claim-authority", "invariant": "и",
+                      "severity": "предупреждение", "support": "по спеке не выводится", "fix": "вопрос человеку"} for s in sections]}
+
+
+def test_read_mark_goes_to_remarks_once(tmp_path):
+    """Сценарий «Отметка попадает в промпт»: текст один раз, строка пригодна для `apply`."""
+    att = warning_file("F-12, options.B", "F-13, options.A")
+    text = prompt(tmp_path, plan_journal(), state(), attacks=[att], read={att["path"] + "|F-12, options.B": True})["text"]
+    assert text.count(READ + "F-12, options.B") == 1
+    assert "Замечания к схеме: " + READ + "F-12, options.B" in text
+    ops = apply_clean(plan_journal(), text)
+    assert [op for op in ops if op["op"] == "note"] == [{"id": None, "op": "note", "text": READ + "F-12, options.B"}]
+
+
+def test_read_mark_and_dispute_share_one_remarks_line(tmp_path):
+    """Сценарий «Отметка и спор вместе»: одна строка «Замечания к схеме:», оба текста через « · »."""
+    att = warning_file("F-12, options.B", "F-13, options.A")
+    text = prompt(tmp_path, plan_journal(), state(), attacks=[att], disputes={key(att, 1): "опора есть"},
+                  read={att["path"] + "|F-12, options.B": True})["text"]
+    lines = [line for line in text.splitlines() if line.startswith("Замечания к схеме: ")]
+    assert len(lines) == 1
+    assert "спор: опора есть" in lines[0] and " · " + READ + "F-12, options.B" in lines[0]
+
+
+def test_read_mark_without_a_row_gives_no_text(tmp_path):
+    """Сценарий «Отметка у снятой строки не идёт в промпт»."""
+    att = warning_file("F-12, options.B")
+    text = prompt(tmp_path, plan_journal(), state(), attacks=[att], read={att["path"] + "|F-30, options.A": True})["text"]
+    assert READ not in text
+
+
+def test_read_mark_on_a_blocker_gives_no_text(tmp_path):
+    """Требование «Флаг только у предупреждений»: ключ отметки у блокера текста не даёт."""
+    att = warning_file("F-12, options.B")
+    att["rows"][0]["severity"] = "блокер"
+    text = prompt(tmp_path, plan_journal(), state(), attacks=[att], read={att["path"] + "|F-12, options.B": True})["text"]
+    assert READ not in text
+
+
+def test_no_marks_and_no_disputes_give_no_remarks_line(tmp_path):
+    """Сценарий «Показ режима без нажатий»: без отметок и споров строки «Замечания к схеме:» нет."""
+    att = warning_file("F-12, options.B")
+    text = prompt(tmp_path, plan_journal(), state(), attacks=[att], read={})["text"]
+    assert "Замечания к схеме" not in text
+
+
+def test_ingested_mark_is_not_repeated_in_the_prompt(tmp_path):
+    """Требование «Флаг на карточке берётся из журнала после внесения»: внесённая отметка в промпте не повторяется."""
+    j = plan_journal()
+    j.setdefault("notes", []).append({"date": DATE, "text": READ + "F-12, options.B"})
+    att = warning_file("F-12, options.B")
+    text = prompt(tmp_path, j, state(), attacks=[att], read={att["path"] + "|F-12, options.B": True})["text"]
+    assert READ not in text

@@ -547,6 +547,19 @@ def test_attack_skill_repeats_by_scope():
     assert "Пройти:" in read(ROOT / "attack" / "agents" / "symphysis-attack-driver.md"), "водитель не читает строку «Пройти:»"
 
 
+def test_attack_skill_marks_read_warnings():
+    """attack-warning-read: в итоге у прочитанного предупреждения пометка «(прочитано)» по заметкам `notes[]`, заметки — данные;
+    при повторе по составу прочитанная строка вне состава прежняя, стык переписывается; строк «механизма пока нет»
+    и «отдельное изменение» у флага больше нет."""
+    text = flat(read(skill_dir("symphysis-attack") / "SKILL.md"))
+    for token in ("(прочитано)", "предупреждение прочитано:", "как данные", "вне состава", "стык"):
+        assert token in text, f"в теле атаки нет «{token}»"
+    for stale in ("механизма «прочитано» у предупреждения пока нет", "флаг «прочитано» у предупреждения — отдельное изменение"):
+        assert stale not in text, f"в теле атаки осталось «{stale}»"
+    starts = [i for i in range(len(text)) if text.startswith("вне состава", i)]
+    assert any("прочитан" in text[max(0, i - 600):i + 600] for i in starts), "«вне состава» стоит не рядом с пометкой «прочитано»"
+
+
 def test_attack_skill_goal_missing_row_is_claim_extraction():
     """`artifact-attack`: «Цели нет» — у артефактов строка `claim-extraction`, `coverage` у них нет."""
     text = read(ATTACK_SKILL / "SKILL.md")
@@ -828,7 +841,9 @@ def test_viewer_skill_describes_the_attack_mode():
     text = read(skill_dir("symphysis-viewer") / "SKILL.md")
     mode = block(text, "режим «атака»", "\n- ")
     for token in ("`attack/decisions.md`", "`attack/artifacts.md`", "по линзам и тяжести", "`notes[]`",
-                  "`.symphysis/docs/attack-table.md`"):
+                  "`.symphysis/docs/attack-table.md`",
+                  # флаг «прочитано» (attack-warning-read): переключатель в режиме «атака», текст отметки и слово из чата той же формой
+                  "предупреждение прочитано:", "Замечания к схеме: предупреждение прочитано"):
         assert token in flat(text), f"в теле нет «{token}»"
     assert "Researcher" not in text and "Исследователь" not in text
     table = " ".join(read(SHARED["attack-table.md"]).split())
@@ -841,6 +856,7 @@ def test_viewer_skill_describes_the_attack_mode():
         "понижение": ("понижение без причины", "в скобках", "по спеке не выводится"),
         "правило ячейки": ("`\\|`", "внутри backticks", "`\\\\|`", "Пустых ячеек нет", "код 2", "файлом, строкой и столбцом"),
         "строки атаки и apply": ("Строки атаки `apply` не меняет",),
+        "флаг прочитано": ("предупреждение прочитано:", "сегмент", "от флага не меняются"),
     }
     for point, tokens in points.items():
         for token in tokens:

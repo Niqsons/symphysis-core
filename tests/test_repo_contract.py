@@ -22,6 +22,7 @@ def test_contract_names_hook_records_and_new_fields():
         "events.jsonl", "курсор", "скрипт хука", ".symphysis/viewer/",
         ".claude/settings.local.json", ".opencode/plugins/", ".git/info/exclude",
         "file_links", "skills", "verdict", "stale_scope",
+        "предупреждение прочитано",   # форма заметки флага «прочитано» (attack-warning-read): значение, которое плагин разбирает
     ):
         assert name in body, f"в контракте не названо {name}"
 

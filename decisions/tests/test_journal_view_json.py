@@ -61,6 +61,19 @@ def test_payload_is_what_the_page_gets_plus_additions(tmp_path):
     assert data == page_payload(out.read_text(encoding="utf-8"))
 
 
+def test_read_flag_note_keeps_the_contract_number_and_passes_through(tmp_path):
+    """`warning-read-flag`: «Журнал с заметкой у прежнего номера» — заметка «предупреждение прочитано: <раздел>»
+    отдаётся в `notes` как есть, без разбора, а номер контракта остаётся прежним (3)."""
+    j = one_record_journal("a.md", "дв")
+    j["notes"] = [{"date": "2026-11-07", "text": "предупреждение прочитано: F-12, options.B"}]
+    (tmp_path / "a.md").write_text("раз\nдва\n", encoding="utf-8")
+    src = tmp_path / "decisions.json"
+    journal.save_journal(src, j)
+    data = view(src)
+    assert data["contract"] == journal_render.CONTRACT == 3
+    assert data["notes"] == j["notes"]
+
+
 def test_evidence_is_checked_in_memory(tmp_path):
     src, roots = journal_file(tmp_path)
     before = src.read_bytes()

@@ -68,6 +68,13 @@ const MEASURE = `(() => {
     codes: [...document.querySelectorAll('.card code')].map((c) => c.textContent),
     attack: { groups: [...document.querySelectorAll('#viewAttack .attack-rows h2 code')].map((n) => n.textContent),
       active: (document.querySelector('#lensFilter button.active') || {}).dataset?.lens || null },
+    attackRows: [...document.querySelectorAll('#viewAttack .attackrow')].map((c) => {
+      const cb = c.querySelector('input[data-read-key]'), badge = c.querySelector('.readflag'), und = c.querySelector('.undecided-note');
+      return { claim: c.dataset.claim ?? null, toggle: !!cb, checked: !!(cb && cb.checked), disabled: !!(cb && cb.disabled),
+        badge: badge ? badge.textContent : null, dispute: !!c.querySelector('textarea[data-att]'), undecidedNote: und ? !und.classList.contains('hidden') : null };
+    }),
+    attackCounters: [...document.querySelectorAll('#viewAttack .sevcounters')].map((n) => n.textContent),
+    attackState: (() => { try { const s = JSON.parse(localStorage.getItem(KEY + ':attack') || 'null'); return s ? { read: Object.keys(s.read || {}), disputes: Object.keys(s.disputes || {}) } : null; } catch (e) { return null; } })(),
     mode: (document.querySelector('#modes button.active') || {}).textContent || null };
 })()`;
 
@@ -141,6 +148,15 @@ async function main() {
       await sleep(50);
     }
     if (name === "open") { await send("Page.navigate", { url: pathToFileURL(args.join(":")).href }); await loaded(); await settled(); }
+    if (name === "read") {
+      // отметка «прочитано»: путь файла атаки и раздел строки (раздел может нести двоеточие)
+      const key = args[0] + "|" + args.slice(1).join(":").replace(/\s+/g, " ").trim();
+      const sel = `input[data-read-key=${JSON.stringify(key)}]`;
+      await evaluate(`document.querySelector(${JSON.stringify(sel)}).scrollIntoView({ block: 'center' })`);
+      await click(sel);
+      await sleep(50);
+    }
+    if (name === "attackstate") { await evaluate(`localStorage.setItem(KEY + ':attack', ${JSON.stringify(args.join(":"))})`); }
     if (name === "editor") {
       await evaluate(`(() => { const s = document.getElementById('editorPick'); s.value = ${JSON.stringify(args[0])}; s.dispatchEvent(new Event('change', { bubbles: true })); const m = ${JSON.stringify(args.slice(1).join(":"))}; if (m) { const i = document.getElementById('editorMask'); i.value = m; i.dispatchEvent(new Event('change', { bubbles: true })); } })()`);
       await sleep(50);
