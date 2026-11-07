@@ -643,3 +643,87 @@ def test_attack_filter_all_shows_every_lens_again(tmp_path):
     assert one == {"groups": ["claim-authority"], "active": "claim-authority"}
     everything = browser(html, "mode:attack", "lens:claim-authority", "lens:all")["attack"]
     assert everything == {"groups": lenses, "active": "all"}
+
+
+# --- режим «атака»: флаг «прочитано» (decision-viewer, warning-read-flag) ----------------------------
+
+READ = "предупреждение прочитано: "
+
+
+def warning_row(section, claim, severity="предупреждение", fix="вопрос человеку"):
+    return {"claim": claim, "section": section, "lens": "claim-authority", "invariant": "и", "severity": severity,
+            "support": "по спеке не выводится", "fix": fix}
+
+
+def attack_page(tmp_path, rows, notes=(), path="attack/decisions.md"):
+    """Страница с одним файлом атаки из строк `rows`; `notes` — тексты заметок журнала."""
+    j = one_record_journal("a.md", "дв")
+    j["notes"] = [{"date": "2026-11-07", "text": text} for text in notes]
+    attack = {"path": path, "frontmatter": {"status": "passed", "targets": [{"path": "decisions.json", "sha256": ""}]}, "rows": rows}
+    html = tmp_path / "attack.html"
+    html.write_text(journal.render_html(j, ROOT / "viewer" / "playground-template.html", attacks=[attack], journal_sha256="0" * 64),
+                    encoding="utf-8", newline="\n")
+    return html
+
+
+def test_read_toggle_on_one_row_marks_the_whole_section(tmp_path):
+    """`decision-viewer`: «Две строки одного раздела — одна отметка»."""
+    rows = [warning_row("design.md, Decisions", "первое"), warning_row("design.md, Decisions", "второе"), warning_row("F-02, options.A", "третье")]
+    r = browser(attack_page(tmp_path, rows, path="attack/artifacts.md"), "mode:attack", "read:attack/artifacts.md:design.md, Decisions")
+    by = {x["claim"]: x for x in r["attackRows"]}
+    assert by["первое"]["checked"] and by["второе"]["checked"] and not by["третье"]["checked"]
+    assert r["attackState"]["read"] == ["attack/artifacts.md|design.md, Decisions"]
+    assert r["out"].count(READ + "design.md, Decisions") == 1
+    assert r["errors"] == []
+
+
+def test_old_storage_without_read_field_keeps_disputes(tmp_path):
+    """`decision-viewer`: «Старое хранилище без поля отметок»."""
+    html = attack_page(tmp_path, [warning_row("F-02, options.A", "первое")])
+    old = json.dumps({"disputes": {"attack/decisions.md|F-02, options.A|первое": "опора есть"}}, ensure_ascii=False)
+    r = browser(html, "attackstate:" + old, "reload", "mode:attack")
+    assert r["attackState"] == {"read": [], "disputes": ["attack/decisions.md|F-02, options.A|первое"]}
+    assert "спор: опора есть" in r["out"]
+    assert r["errors"] == []
+
+
+def test_ingested_mark_leaves_the_state_and_shows_the_journal_badge(tmp_path):
+    """`decision-viewer`: «Внесённая отметка уходит из состояния», «Переключатель у внесённого флага неактивен»."""
+    html = attack_page(tmp_path, [warning_row("F-02, options.A", "первое")], notes=[READ + "F-02, options.A"])
+    preset = json.dumps({"disputes": {}, "read": {"attack/decisions.md|F-02, options.A": True}}, ensure_ascii=False)
+    r = browser(html, "attackstate:" + preset, "reload", "mode:attack")
+    assert r["attackState"]["read"] == []
+    assert READ not in r["out"]
+    row = r["attackRows"][0]
+    assert row["checked"] and row["disabled"] and "в журнале" in row["badge"]
+
+
+def test_mark_before_apply_shows_the_draft_badge(tmp_path):
+    """`decision-viewer`: «Отметка до внесения», «Две подписи»."""
+    rows = [warning_row("F-02, options.A", "первое"), warning_row("F-03, options.A", "второе")]
+    r = browser(attack_page(tmp_path, rows, notes=[READ + "F-03, options.A"]), "mode:attack", "read:attack/decisions.md:F-02, options.A")
+    by = {x["claim"]: x for x in r["attackRows"]}
+    assert "не внесено" in by["первое"]["badge"] and by["первое"]["checked"] and not by["первое"]["disabled"]
+    assert "в журнале" in by["второе"]["badge"] and by["второе"]["disabled"]
+    assert READ + "F-02, options.A" in r["out"] and READ + "F-03, options.A" not in r["out"]
+
+
+def test_flagged_rows_stay_in_place_with_the_same_counters(tmp_path):
+    """`decision-viewer`: «Число карточек при заметках»."""
+    rows = [warning_row("F-02, options.A", "первое"), warning_row("F-03, options.A", "второе"),
+            warning_row("F-01, decision", "блок", severity="блокер", fix="правка записи")]
+    plain = browser(attack_page(tmp_path, rows), "mode:attack")
+    flagged = browser(attack_page(tmp_path, rows, notes=[READ + "F-02, options.A"]), "mode:attack")
+    assert len(flagged["attackRows"]) == len(plain["attackRows"]) == 3
+    assert [x["claim"] for x in flagged["attackRows"]] == [x["claim"] for x in plain["attackRows"]]
+    assert flagged["attackCounters"] == plain["attackCounters"]
+    assert "предупреждений 2" in flagged["attackCounters"][0]
+    assert {x["claim"]: x["toggle"] for x in flagged["attackRows"]} == {"первое": True, "второе": True, "блок": False}
+
+
+def test_flagged_question_row_keeps_its_dispute_field(tmp_path):
+    """`warning-read-flag`: «Прочитанный вопрос человеку»."""
+    html = attack_page(tmp_path, [warning_row("F-02, options.A", "первое", fix="вопрос человеку")], notes=[READ + "F-02, options.A"])
+    row = browser(html, "mode:attack")["attackRows"][0]
+    assert row["dispute"] and "в журнале" in row["badge"]
+    assert row["undecidedNote"] is not None

@@ -83,6 +83,17 @@ def graph_section() -> str:
     return body[start:start + len(GRAPH_HEADING) + following.start()] if following else body[start:]
 
 
+def test_guide_tells_how_to_mark_a_warning_read():
+    """attack-warning-read: разделы атак говорят, что предупреждение можно отметить прочитанным на странице, отметка уходит
+    в `notes[]`, вердикт станет `stale` с составом «записей не добавлено», повтор назовёт прочитанные пометкой."""
+    body = text()
+    journal_attack = body.split("### Атака журнала, по желанию")[1].split("### Шаг `proposal`")[0]
+    for name in ("прочитан", "notes[]", "записей не добавлено", "(прочитано)"):
+        assert name in journal_attack, f"в разделе атаки журнала нет «{name}»"
+    artifacts_attack = body.split("### Атака артефактов, по желанию")[1]
+    assert "прочитан" in artifacts_attack.split("\n### ")[0], "в разделе атаки артефактов нет слова о прочтении"
+
+
 def test_guide_graph_section_tells_what_the_graph_gives():
     """`onboarding-guide`: «Читатель ищет, что даёт граф» (F-04, F-05)."""
     section = graph_section()

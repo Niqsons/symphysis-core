@@ -30,6 +30,20 @@ def test_cli_apply_writes_the_journal_in_place_with_the_given_date(workdir):
     assert "render-md" in run.stdout and "render-html" in run.stdout
 
 
+def test_cli_apply_puts_the_read_flag_text_into_one_note(workdir):
+    """attack-warning-read, «Отметка попадает в промпт» → заметка: строка «Замечания к схеме:» с текстом флага
+    и спором ложится одной заметкой `notes[]` с датой и текстом как есть — по ней страница ставит флаг."""
+    tmp, path = workdir
+    text = "предупреждение прочитано: F-12, options.B · атака attack/decisions.md · claim-authority · «…» — спор: опора есть"
+    answers = tmp / "a.md"
+    answers.write_text(HEADER_LINK + "Замечания к схеме: " + text + "\n", encoding="utf-8")
+    run = run_cli("apply", path, answers, "--date", "2026-11-07")
+    assert run.returncode == 0, run.stderr + run.stdout
+    notes = journal.load_journal(path).get("notes") or []
+    assert notes[-1] == {"date": "2026-11-07", "text": text}
+    assert sum(1 for n in notes if "предупреждение прочитано:" in n["text"]) == 1
+
+
 def test_cli_apply_dry_run_reports_and_does_not_write(workdir):
     tmp, path = workdir
     before_bytes = path.read_bytes()

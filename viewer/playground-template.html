@@ -118,6 +118,8 @@
   details.recblock { margin:6px 0; border:1px dashed var(--line); border-radius:8px; padding:4px 10px; }
   details.recblock summary { cursor:pointer; color:var(--acc); font-size:12.5px; }
   .attack-rows { margin-top:4px; }
+  .readtoggle { font-size:11px; color:var(--mute); margin-left:auto; display:inline-flex; gap:4px; align-items:center; cursor:pointer; white-space:nowrap; }
+  .readtoggle input { margin:0; }
   .counters { display:flex; gap:12px; flex-wrap:wrap; color:var(--mute); margin:6px 0 10px; font-size:12.5px; }
   .counters b { color:var(--fg); }
   /* панель схемы: поверх режимов, рядом с карточками; ширину держит --schemew */
@@ -238,7 +240,7 @@ const MODES = ['decisions','check','attack'];
 const MODE_LABELS = { decisions:'решения', check:'проверка', attack:'атака' };
 const ADDED_MARK = '(добавлен человеком';
 const ONE_WAY = 'в одну сторону';
-const ATTACK_HINT = 'Строки атаки apply не меняет — их закрывает правка цели (журнала или артефакта) и повторная атака. Спор по строке (почему опора есть, почему не блокер) уходит в промпт возврата одной строкой «Замечания к схеме:» и ложится в notes[] журнала; ответ на строку с закрытием «вопрос человеку» и разделом «F-NN, decision» уходит словом к решению. Фильтр по линзе прячет группы, но не счётчики тяжести в шапке файла.';
+const ATTACK_HINT = 'Строки атаки apply не меняет — их закрывает правка цели (журнала или артефакта) и повторная атака. Спор по строке (почему опора есть, почему не блокер) уходит в промпт возврата одной строкой «Замечания к схеме:» и ложится в notes[] журнала; ответ на строку с закрытием «вопрос человеку» и разделом «F-NN, decision» уходит словом к решению. Фильтр по линзе прячет группы, но не счётчики тяжести в шапке файла. Переключатель «прочитано» у строки предупреждение уходит текстом «предупреждение прочитано: <раздел>» в ту же строку «Замечания к схеме:» и после apply возвращается флагом по заметке журнала; тяжесть и вердикт он не меняет.';
 const PARK_HINT = 'Парковка — дополнительный вопрос, который нельзя закрыть сейчас: он уходит адресату. «материалы» — ответ ищет агент, в файлах или пробой (исследование), «человек» — нужно решение человека, «ИБ» — проверка по чек-листу безопасности. Решение по самой развилке парковка не снимает.';
 /* ключ — путь страницы: `source` у всех журналов один, и состояние одного журнала приходило бы в другой с теми же номерами F-NN */
 const KEY = 'symphysis:' + ((typeof location !== 'undefined' && location.pathname) || JOURNAL.title || JOURNAL.source || 'journal');
@@ -253,14 +255,39 @@ function save() { try { localStorage.setItem(KEY, JSON.stringify(state)); } catc
 /* режим страницы и споры по строкам атаки — свои ключи browser storage; в состояние режима 1 они не входят */
 let mode = 'decisions';
 try { const m = localStorage.getItem(KEY + ':mode'); if (MODES.includes(m)) mode = m; } catch (e) {}
-let attackState = { disputes:{} };
-try { const s = JSON.parse(localStorage.getItem(KEY + ':attack') || 'null'); if (s && s.disputes && typeof s.disputes === 'object') attackState.disputes = s.disputes; } catch (e) {}
+/* споры по строкам и отметки «прочитано» (ключ — файл атаки и раздел); старое хранилище без поля `read` читается как пустые отметки (F-31) */
+let attackState = { disputes:{}, read:{} };
+try {
+  const s = JSON.parse(localStorage.getItem(KEY + ':attack') || 'null');
+  if (s && s.disputes && typeof s.disputes === 'object') attackState.disputes = s.disputes;
+  if (s && s.read && typeof s.read === 'object') attackState.read = s.read;
+} catch (e) {}
 let attackLens = 'all';
 try { const l = localStorage.getItem(KEY + ':lens'); if (l) attackLens = l; } catch (e) {}
 function saveAttack() { try { localStorage.setItem(KEY + ':attack', JSON.stringify(attackState)); } catch (e) {} }
 function setMode(m) { mode = m; try { localStorage.setItem(KEY + ':mode', m); } catch (e) {} render(); }
 /* ключ спора — файл, раздел и утверждение строки: при повторной атаке спор остаётся у той же строки, не у того же номера */
 function disputeKey(att, row) { return att.path + '|' + row.section + '|' + row.claim; }
+/* flags:begin */
+/* флаг «прочитано» у строки `предупреждение` (warning-read-flag): заметка notes[] «предупреждение прочитано: <раздел>», раздел дословно
+   из столбца «Раздел»; текст флага — отдельный сегмент заметки: от начала или после « · » до конца или до следующего « · », не подстрока;
+   пробельные последовательности с обеих сторон схлопываются, как у споров. Тяжесть — первое слово ячейки без учёта регистра.
+   Блок стоит до первого вызова (уборка внесённого ниже): константы, в отличие от функций, не поднимаются. */
+const READ_PREFIX = 'предупреждение прочитано: ';
+const READ_SEP = ' · ';
+function normText(s) { return String(s == null ? '' : s).replace(/\s+/g, ' ').trim(); }
+/* тяжесть — первое слово ячейки; причина понижения — текст в скобках после него */
+function sevBase(s) { const m = /^(блокер|предупреждение|справка)(?![а-яёa-z])/i.exec(String(s || '').trim()); return m ? m[1].toLowerCase() : String(s || '').trim(); }
+function isWarning(row) { return sevBase(row && row.severity) === 'предупреждение'; }
+function readText(row) { return READ_PREFIX + normText(row && row.section); }
+/* ключ отметки — файл атаки и раздел: две строки одного раздела делят одну отметку (F-21) */
+function readKey(att, row) { return String(att && att.path || '') + '|' + normText(row && row.section); }
+function noteHasRead(noteText, text) {
+  const n = normText(noteText);
+  return n === text || n.startsWith(text + READ_SEP) || n.endsWith(READ_SEP + text) || n.includes(READ_SEP + text + READ_SEP);
+}
+function readByNotes(notes, row) { if (!isWarning(row)) return false; const t = readText(row); return (notes || []).some(n => noteHasRead(n && n.text, t)); }
+/* flags:end */
 /* то, что уже внесено в журнал, из состояния браузера убирается: слово к решению, парковка, спор, совпадающий выбор */
 (function cleanupIngested() {
   const norm = s => String(s || '').replace(/\s+/g, ' ').trim();
@@ -288,6 +315,15 @@ function disputeKey(att, row) { return att.path + '|' + row.section + '|' + row.
     const k = disputeKey(att, r), sp = norm(attackState.disputes[k]);
     if (sp && noteTexts.some(t => t.includes(sp))) { delete attackState.disputes[k]; dropped = true; }
   }
+  /* отметки «прочитано»: внесённая в notes[] (сегмент заметки) или оставшаяся без строки предупреждения в текущей сборке уходит из состояния (F-14, F-22) */
+  const liveReads = new Set();
+  for (const att of ATTACK) for (const r of (att.rows || [])) {
+    if (!isWarning(r)) continue;
+    const k = readKey(att, r);
+    if (readByNotes(JOURNAL.notes || [], r)) { if (attackState.read[k]) { delete attackState.read[k]; dropped = true; } }
+    else liveReads.add(k);
+  }
+  for (const k of Object.keys(attackState.read)) if (!liveReads.has(k)) { delete attackState.read[k]; dropped = true; }
   if (dropped) saveAttack();
 })();
 /* высота нижней панели — тянется за ручку, запоминается */
@@ -718,7 +754,7 @@ function localDate(d) {
   const p = n => String(n).padStart(2, '0');
   return d.getFullYear() + '-' + p(d.getMonth() + 1) + '-' + p(d.getDate());
 }
-function buildPrompt(J, attacks, st, disputes, date) {
+function buildPrompt(J, attacks, st, disputes, date, read) {
   const MARK = '(добавлен человеком';
   const norm = s => String(s == null ? '' : s).replace(/\s+/g, ' ').trim();
   const shorten = (s, n) => { s = String(s || ''); return s.length > n ? s.slice(0, n - 1) + '…' : s; };
@@ -767,15 +803,22 @@ function buildPrompt(J, attacks, st, disputes, date) {
     else if (distinct.length === 1) lines.push('- ' + rec.id + ': ' + letter + ' — «' + distinct[0] + '»');
   }
   if (st.newForks.length) { lines.push('Новые развилки:'); for (const f of st.newForks) lines.push('- ' + f.id + ': ' + f.question + ' — варианты: ' + f.options.replace(/\n+/g, ' | ') + (f.word ? ' — «' + f.word + '»' : '')); }
-  /* замечания к схеме одной строкой: замечания режима 1 первыми, споры по атаке, конфликты ответов; уже внесённое в notes[] журнала уходит */
+  /* отметки «прочитано» (warning-read-flag): один текст на раздел, только у строк предупреждение текущей сборки; внесённые в notes[] не повторяются */
+  const readTexts = [];
+  for (const att of (attacks || [])) for (const r of (att.rows || [])) {
+    if (!read || !isWarning(r) || !read[readKey(att, r)]) continue;
+    const t = readText(r);
+    if (!readTexts.includes(t) && !readByNotes(J.notes || [], r)) readTexts.push(t);
+  }
+  /* замечания к схеме одной строкой: замечания режима 1 первыми, споры по атаке, отметки «прочитано», конфликты ответов; уже внесённое в notes[] журнала уходит */
   const own = (st.notes || '').trim(), ingested = (J.notes || []).some(n => norm(n.text).includes(norm(own)));
-  const notes = [own && !ingested ? own : ''].concat(otherDisputes, conflicts.map(id => 'конфликт ответов к ' + id + ' — оставьте один')).filter(Boolean);
+  const notes = [own && !ingested ? own : ''].concat(otherDisputes, readTexts, conflicts.map(id => 'конфликт ответов к ' + id + ' — оставьте один')).filter(Boolean);
   if (notes.length) lines.push('Замечания к схеме: ' + notes.join(' · '));
   if (lines.length === 1) lines.push('(нового нет — решения из журнала остаются как есть, молчание по открытой развилке оставляет её открытой)');
   return { text: lines.join('\n'), conflictKeys, undecidedKeys };
 }
 /* prompt:end */
-function currentPrompt() { return buildPrompt(JOURNAL, ATTACK, state, attackState.disputes, localDate(new Date())); }
+function currentPrompt() { return buildPrompt(JOURNAL, ATTACK, state, attackState.disputes, localDate(new Date()), attackState.read); }
 function updateOut() { document.getElementById('out').value = currentPrompt().text; markConflicts(); }
 
 /* ---------- режимы: переключатель в шапке, видимость панелей ---------- */
@@ -900,8 +943,7 @@ function renderCheck() {
 function attackKind(att) { const t = (att.frontmatter || {}).targets || []; return t.length === 1 && t[0].path === 'decisions.json' ? 'journal' : 'artifacts'; }
 function lensList(att) { return ATTACK_LENSES[attackKind(att)]; }
 function lensLabel(att, slug) { const l = lensList(att).find(x => x.slug === slug); return l ? l.label : ''; }
-/* тяжесть — первое слово ячейки; причина понижения — текст в скобках после него */
-function sevBase(s) { const m = /^(блокер|предупреждение|справка)(?![а-яёa-z])/i.exec(String(s || '').trim()); return m ? m[1].toLowerCase() : String(s || '').trim(); }
+/* sevBase — в блоке flags: тяжесть читают и счётчики, и переключатель «прочитано» одним правилом */
 function sevReason(s) { const m = /\(([^)]+)\)/.exec(String(s || '')); return m ? m[1].trim() : ''; }
 function sevClass(s) { const b = sevBase(s); return b === 'блокер' ? 'bad' : b === 'предупреждение' ? 'warn' : b === 'справка' ? '' : 'park'; }
 /* при опоре «нет» тяжесть источника — блокер; ниже блокера без причины в скобках — понижение без причины, с причиной — понижение с видимой причиной (F-54.E) */
@@ -932,10 +974,19 @@ function recordBlock(section) {
             : '<div class="meta">решения нет — запись открыта</div>') +
     '<div class="meta"><a href="#' + id + '" data-goto="' + id + '">к карточке ' + id + ' в режиме «решения»</a></div></details>';
 }
+/* флаг «прочитано» у строки предупреждение: бейдж по заметке журнала («в журнале», переключатель неактивен) или по отметке состояния («не внесено»); у блокеров и справок ничего (F-12, F-14, F-23, F-28) */
+function readBadge(att, r) {
+  if (!isWarning(r)) return '';
+  const inJournal = readByNotes(JOURNAL.notes || [], r), k = readKey(att, r), inState = !!attackState.read[k];
+  const badge = inJournal ? '<span class="badge ok readflag" title="заметка notes[] журнала">прочитано · в журнале</span>'
+    : inState ? '<span class="badge warn readflag" title="отметка в браузере, в журнал ещё не внесена">прочитано · не внесено</span>' : '';
+  return badge + '<label class="readtoggle"' + (inJournal ? ' title="внесено в журнал"' : ' title="отметить прочитанным: текст уйдёт в «Замечания к схеме:» промпта возврата"') +
+    '><input type="checkbox" data-read-key="' + esc(k) + '"' + (inJournal || inState ? ' checked' : '') + (inJournal ? ' disabled' : '') + '> прочитано</label>';
+}
 function attackRow(att, ai, ri, r, conflict, undecided) {
   const key = disputeKey(att, r), known = lensList(att).some(l => l.slug === r.lens);
-  return '<div class="card attackrow' + (conflict ? ' conflict' : '') + '" data-card="' + ai + '|' + ri + '"><div class="head"><span class="badge ' + sevClass(r.severity) + '">' + esc(r.severity) + '</span>' + demotionBadge(r) +
-    '<span class="badge">' + sectionHtml(r.section) + '</span>' +
+  return '<div class="card attackrow' + (conflict ? ' conflict' : '') + '" data-card="' + ai + '|' + ri + '" data-claim="' + esc(r.claim) + '"><div class="head"><span class="badge ' + sevClass(r.severity) + '">' + esc(r.severity) + '</span>' + demotionBadge(r) +
+    '<span class="badge">' + sectionHtml(r.section) + '</span>' + readBadge(att, r) +
     (known ? '' : '<span class="badge bad">линза «' + esc(r.lens) + '» вне списка — строка невалидна</span>') + '</div>' +
     '<div class="q">' + md(r.claim) + '</div>' +
     '<div class="meta">инвариант: ' + md(r.invariant) + '</div><div class="meta">опора: ' + md(r.support) + '</div><div class="meta">чем закрыть: ' + md(r.fix) + '</div>' +
@@ -944,7 +995,7 @@ function attackRow(att, ai, ri, r, conflict, undecided) {
     '<div class="note bad conflict-note' + (conflict ? '' : ' hidden') + '">конфликт ответов к одному решению — оставь один, иначе слово к решению не уйдёт в промпт</div>' +
     '<div class="row"><textarea data-att="' + ai + '" data-row="' + ri + '" placeholder="спор: почему опора есть / почему не блокер — уйдёт в промпт возврата; при закрытии «вопрос человеку» и разделе F-NN, decision — слово к решению">' + esc(attackState.disputes[key] || '') + '</textarea></div></div>';
 }
-function currentFlags() { return buildPrompt(JOURNAL, ATTACK, state, attackState.disputes, ''); }
+function currentFlags() { return buildPrompt(JOURNAL, ATTACK, state, attackState.disputes, '', attackState.read); }
 /* страница подсвечивает конфликт ответов у строк, не пересобирая список: поле спора не теряет фокус */
 function markConflicts() {
   if (mode !== 'attack') return;
@@ -1009,6 +1060,12 @@ function renderAttack() {
   el.querySelectorAll('textarea[data-att]').forEach(t => t.oninput = () => {
     const att = ATTACK[+t.dataset.att], r = att.rows[+t.dataset.row], k = disputeKey(att, r);
     if (t.value.trim()) attackState.disputes[k] = t.value; else delete attackState.disputes[k]; saveAttack(); updateOut();
+  });
+  /* отметка «прочитано» — одна на файл и раздел: карточки одного раздела перерисовываются вместе (F-21) */
+  el.querySelectorAll('input[data-read-key]').forEach(cb => cb.onchange = () => {
+    const k = cb.dataset.readKey;
+    if (cb.checked) attackState.read[k] = true; else delete attackState.read[k];
+    saveAttack(); renderAttack(); updateOut();
   });
   el.querySelectorAll('a[data-goto]').forEach(a => a.onclick = e => { e.preventDefault(); setMode('decisions'); const c = document.getElementById(a.dataset.goto); if (c && c.scrollIntoView) c.scrollIntoView(); });
 }

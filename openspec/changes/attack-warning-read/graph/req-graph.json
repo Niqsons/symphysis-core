@@ -1,0 +1,1792 @@
+{
+ "format": 2,
+ "sources": [
+  {
+   "path": "consequences.md",
+   "sha256": "ac9302a3561c883b550c2e5ed3be439f89c0e4adb78b5b3e10d4be0ce014e6b3"
+  },
+  {
+   "path": "decisions.json",
+   "sha256": "bb4b1055a029749469d00c6f99ceac548af19f86da551ab52b064391458176d0"
+  },
+  {
+   "path": "security.md",
+   "sha256": "7d31adc138a11b3a62ba521411b58d38604d8abc8a4a69321e75c790f130d4ca"
+  },
+  {
+   "path": "specs/artifact-attack/spec.md",
+   "sha256": "6109a220951cb2ac9784d2e8174cec2c852435e3eff7efb917d701b7ac8ebc1c"
+  },
+  {
+   "path": "specs/decision-viewer/spec.md",
+   "sha256": "98545933439be46aa17da1ea09b4c5f8d740f06d1d684836b5dfa885057b7f55"
+  },
+  {
+   "path": "specs/warning-read-flag/spec.md",
+   "sha256": "0a035eaa8961d9b9594ebb260bf43f434d954835ce532625b47a6ff7ec84d5f7"
+  },
+  {
+   "path": "tasks.md",
+   "sha256": "64569c7474eb3bad9dd3c0e0636b4e637e057d1147e72e4cc9edc7343f56d8a8"
+  }
+ ],
+ "nodes": [
+  {
+   "id": "branch:viewer/playground-template.html:257",
+   "kind": "branch",
+   "name": "Восстановление состояния атаки",
+   "at": "consequences.md:9"
+  },
+  {
+   "id": "branch:viewer/playground-template.html:289",
+   "kind": "branch",
+   "name": "Уборка внесённого",
+   "at": "consequences.md:13"
+  },
+  {
+   "id": "branch:viewer/playground-template.html:732",
+   "kind": "branch",
+   "name": "Сборка промпта по строкам атаки",
+   "at": "consequences.md:17"
+  },
+  {
+   "id": "branch:viewer/playground-template.html:773",
+   "kind": "branch",
+   "name": "Строка замечаний",
+   "at": "consequences.md:21"
+  },
+  {
+   "id": "branch:viewer/playground-template.html:904",
+   "kind": "branch",
+   "name": "Чтение тяжести",
+   "at": "consequences.md:25"
+  },
+  {
+   "id": "branch:viewer/playground-template.html:962",
+   "kind": "branch",
+   "name": "Режим «атака» без файлов",
+   "at": "consequences.md:29"
+  },
+  {
+   "id": "branch:decisions/journal_apply.py:59",
+   "kind": "branch",
+   "name": "Разбор замечаний",
+   "at": "consequences.md:33"
+  },
+  {
+   "id": "branch:decisions/journal_apply.py:135",
+   "kind": "branch",
+   "name": "Пустая строка замечаний",
+   "at": "consequences.md:37"
+  },
+  {
+   "id": "branch:attack/attack_table.py:138",
+   "kind": "branch",
+   "name": "Разбор строки таблицы атаки",
+   "at": "consequences.md:41"
+  },
+  {
+   "id": "branch:attack/attack_scope.py:93",
+   "kind": "branch",
+   "name": "Состав при изменённом журнале",
+   "at": "consequences.md:45"
+  },
+  {
+   "id": "branch:decisions/journal_render.py:179",
+   "kind": "branch",
+   "name": "Полезная нагрузка страницы",
+   "at": "consequences.md:49"
+  },
+  {
+   "id": "rec:F-01",
+   "kind": "rec",
+   "name": "Критерий готовности: «Строка `notes[]` журнала «предупреждение прочитано: `<раздел>`» через «Замечания к схеме»»",
+   "at": "decisions.json:7",
+   "record_kind": "факт",
+   "number": 1
+  },
+  {
+   "id": "rec:F-02",
+   "kind": "rec",
+   "name": "Критерий готовности: «страница показывает флаг, сверяя `notes[]` с файлом атаки»",
+   "at": "decisions.json:36",
+   "record_kind": "факт",
+   "number": 2
+  },
+  {
+   "id": "rec:F-03",
+   "kind": "rec",
+   "name": "Критерий готовности: «Контракт таблицы не меняется, `apply` уже пишет заметки»",
+   "at": "decisions.json:64",
+   "record_kind": "факт",
+   "number": 3
+  },
+  {
+   "id": "rec:F-04",
+   "kind": "rec",
+   "name": "Сегодня реакции на предупреждение нет: итог атаки перечисляет строки `предупреждение` и при `passed`, тело скилла говорит «механизма «прочитано» у предупреждения пока нет», а в «Границах» относит флаг к отдельному изменению — этому. Ревью Р4 описывало то же состояние: предупреждение «идёт списком человеку и остаётся в файле».",
+   "at": "decisions.json:92",
+   "record_kind": "факт",
+   "number": 4
+  },
+  {
+   "id": "rec:F-05",
+   "kind": "rec",
+   "name": "`apply` уже пишет «Замечания к схеме:» одной заметкой `notes[]` с датой: строку промпта узнаёт регулярное выражение, текст до конца файла уходит в одну заметку. Схема журнала отводит `notes[]` заметкам человека к схеме и плану и служебным строкам скиллов; скилл просмотрщика посылает туда же споры по атаке.",
+   "at": "decisions.json:132",
+   "record_kind": "факт",
+   "number": 5
+  },
+  {
+   "id": "rec:F-06",
+   "kind": "rec",
+   "name": "Страница уже сверяет `notes[]` с файлом атаки — для споров: спор по строке, внесённый `apply`, уходит из состояния браузера, когда его текст найден подстрокой в заметке; строка «Замечания к схеме:» собирается из замечаний и споров через « · »; состояние человека живёт в хранилище браузера и переживает пересборку.",
+   "at": "decisions.json:173",
+   "record_kind": "факт",
+   "number": 6
+  },
+  {
+   "id": "rec:F-07",
+   "kind": "rec",
+   "name": "Строку атаки страница и плагин опознают ключом «путь файла | раздел | утверждение»; состав устаревшего вердикта считает атакованные записи по столбцу «Раздел»; раздел у журнала — `F-NN, поле`, у артефактов — `файл, место`.",
+   "at": "decisions.json:214",
+   "record_kind": "факт",
+   "number": 7
+  },
+  {
+   "id": "rec:F-08",
+   "kind": "rec",
+   "name": "Заметка `notes[]` меняет хеш журнала без новых записей: состав вердикта — «записей не добавлено: журнал изменён иначе», и повтор атаки при нуле новых сигналов `check --write` обновляет только `target_sha256`. Изменение `attack-stale-scope` закладывало это под строку «предупреждение прочитано» заранее; `intent.md` считает сигнал больше не немым.",
+   "at": "decisions.json:254",
+   "record_kind": "факт",
+   "number": 8
+  },
+  {
+   "id": "rec:F-09",
+   "kind": "rec",
+   "name": "Контракт с плагином: в нём грамматика строк `apply` и значения полей, которые плагин разбирает, включая текстовую метку «(добавлен человеком»; новое поле сменой не считается, новое значение существующего поля — считается; поля `verdict` и `stale_scope` вошли без роста номера; логика показа у страницы и плагина своя, удобства сверх слова — только в плагине.",
+   "at": "decisions.json:303",
+   "record_kind": "факт",
+   "number": 9
+  },
+  {
+   "id": "rec:F-10",
+   "kind": "rec",
+   "name": "Мастер-спеки сегодня: просмотрщик отправляет прочие споры в «Замечания к схеме:» и `notes[]`, не в файл атаки; атака обязана называть предупреждения списком, они не держат `apply` и при `apply` читаются заметками к задачам; текст журнала и атаки на странице экранируется.",
+   "at": "decisions.json:351",
+   "record_kind": "факт",
+   "number": 10
+  },
+  {
+   "id": "rec:F-11",
+   "kind": "rec",
+   "name": "Плагин собирает строку «Замечания к схеме:» тем же способом, что страница (замечания через « · »), и тем же ключом опознаёт строку атаки: заметка со страницы и заметка из плагина имеют одну форму в журнале; показ атаки у плагина свой (`vscode/src/viewer/AttackView.tsx`), ядро плагин не читает.",
+   "at": "decisions.json:392",
+   "record_kind": "факт",
+   "number": 11
+  },
+  {
+   "id": "rec:F-12",
+   "kind": "rec",
+   "name": "У каких строк атаки есть флаг «прочитано»?",
+   "at": "decisions.json:424",
+   "record_kind": "развилка",
+   "number": 12
+  },
+  {
+   "id": "rec:F-13",
+   "kind": "rec",
+   "name": "Чем заметка «прочитано» опознаёт строку атаки: разделом дословно, как в Р4-B, или разделом с утверждением?",
+   "at": "decisions.json:498",
+   "record_kind": "развилка",
+   "number": 13
+  },
+  {
+   "id": "rec:F-14",
+   "kind": "rec",
+   "name": "Как человек ставит флаг на странице и как флаг доходит до журнала и обратно?",
+   "at": "decisions.json:578",
+   "record_kind": "развилка",
+   "number": 14
+  },
+  {
+   "id": "rec:F-15",
+   "kind": "rec",
+   "name": "Что делает скилл атаки с флагами «прочитано»?",
+   "at": "decisions.json:667",
+   "record_kind": "развилка",
+   "number": 15
+  },
+  {
+   "id": "rec:F-16",
+   "kind": "rec",
+   "name": "Что показывает страница, когда у заметки «прочитано» нет строки с таким разделом — строка переписана или снята повтором атаки?",
+   "at": "decisions.json:744",
+   "record_kind": "развилка",
+   "number": 16
+  },
+  {
+   "id": "rec:F-17",
+   "kind": "rec",
+   "name": "Форма заметки «предупреждение прочитано: <раздел>» — часть контракта с плагином, и растёт ли номер?",
+   "at": "decisions.json:820",
+   "record_kind": "развилка",
+   "number": 17
+  },
+  {
+   "id": "rec:F-18",
+   "kind": "rec",
+   "name": "[adjacency · collection] Заметка «прочитано» опознаёт строку атаки по разделу: раздел строки `F-7, options.B` и заметка «предупреждение прочитано: F-07, options.B» равны по числу, но различны по тексту — флаг есть?",
+   "at": "decisions.json:901",
+   "record_kind": "развилка",
+   "number": 18
+  },
+  {
+   "id": "rec:F-19",
+   "kind": "rec",
+   "name": "[encoding · text] Заметка «прочитано» опознаёт строку атаки по разделу: заметка с двойным пробелом или переносом строки внутри раздела (многострочное «Замечания к схеме:», `F-12,  options.B`) — сравнивать дословно или после схлопывания пробельных символов, как споры?",
+   "at": "decisions.json:971",
+   "record_kind": "развилка",
+   "number": 19
+  },
+  {
+   "id": "rec:F-20",
+   "kind": "rec",
+   "name": "[adjacency · collection] Флаг только у предупреждений: строка с ячейкой тяжести `предупреждение (решено человеком в F-09)` — понижённый блокер — несёт переключатель «прочитано»?",
+   "at": "decisions.json:1044",
+   "record_kind": "развилка",
+   "number": 20
+  },
+  {
+   "id": "rec:F-21",
+   "kind": "rec",
+   "name": "[adjacency · collection] Переключатель «прочитано» у строки предупреждения: две строки `предупреждение` одного раздела в одном файле атаки — переключатель у каждой карточки свой или один на раздел?",
+   "at": "decisions.json:1114",
+   "record_kind": "развилка",
+   "number": 21
+  },
+  {
+   "id": "rec:F-22",
+   "kind": "rec",
+   "name": "[concurrency · stateful] Переключатель «прочитано» у строки предупреждения: отметка в хранилище браузера у строки, которую повтор атаки снял до `apply`, — идёт ли её текст в промпт после пересборки?",
+   "at": "decisions.json:1186",
+   "record_kind": "развилка",
+   "number": 22
+  },
+  {
+   "id": "rec:F-23",
+   "kind": "rec",
+   "name": "[idempotency · stateful] Флаг на карточке берётся из журнала после внесения: повторное нажатие переключателя у строки, чей флаг уже взят из журнала: заметки не удаляются — что делает переключатель?",
+   "at": "decisions.json:1258",
+   "record_kind": "развилка",
+   "number": 23
+  },
+  {
+   "id": "rec:F-24",
+   "kind": "rec",
+   "name": "[adjacency · collection] Вердикт атаки держат блокеры: прочитанное предупреждение у записи, попавшей в состав повтора (стык добавленной записи), — строку переписывать по правилу состава или оставить по правилу «прочитанные строки прежние»?",
+   "at": "decisions.json:1330",
+   "record_kind": "развилка",
+   "number": 24
+  },
+  {
+   "id": "rec:F-25",
+   "kind": "rec",
+   "name": "[запрет] Вердикт атаки держат блокеры: не должен превращать «прочитано» в «снято» — тяжесть прочитанной строки, счётчики файла и `status` от заметки не меняются",
+   "at": "decisions.json:1402",
+   "record_kind": "развилка",
+   "number": 25
+  },
+  {
+   "id": "rec:F-26",
+   "kind": "rec",
+   "name": "[запрет] Переключатель «прочитано» у строки предупреждения: не должен ставиться без явного действия человека — показ режима «атака», фильтр по линзе, прокрутка и пересборка страницы отметок не ставят",
+   "at": "decisions.json:1473",
+   "record_kind": "развилка",
+   "number": 26
+  },
+  {
+   "id": "rec:F-27",
+   "kind": "rec",
+   "name": "[запрет] Переключатель «прочитано» у строки предупреждения: не должен прятать прочитанные строки — строка с флагом остаётся в списке режима «атака» на своём месте, со своей тяжестью и полем спора",
+   "at": "decisions.json:1544",
+   "record_kind": "развилка",
+   "number": 27
+  },
+  {
+   "id": "rec:F-28",
+   "kind": "rec",
+   "name": "[запрет] Флаг на карточке берётся из журнала после внесения: не должен выдавать отметку состояния браузера за внесённую — до `apply` флаг виден как черновик",
+   "at": "decisions.json:1615",
+   "record_kind": "развилка",
+   "number": 28
+  },
+  {
+   "id": "rec:F-29",
+   "kind": "rec",
+   "name": "[запрет] Флаг только у предупреждений: не должен подменять ответ на «вопрос человеку» — прочитанная строка с закрытием «вопрос человеку» остаётся вопросом: поле спора и слово к решению по-прежнему нужны",
+   "at": "decisions.json:1687",
+   "record_kind": "развилка",
+   "number": 29
+  },
+  {
+   "id": "rec:F-30",
+   "kind": "rec",
+   "name": "[запрет] Вердикт атаки держат блокеры: не должен становиться воротами — непрочитанные предупреждения не держат `status` и `apply`",
+   "at": "decisions.json:1758",
+   "record_kind": "развилка",
+   "number": 30
+  },
+  {
+   "id": "rec:F-31",
+   "kind": "rec",
+   "name": "[ветка] Восстановление состояния атаки: хранилище браузера, записанное до изменения (ключ атаки со спорами, без поля отметок), — споры восстановлены и отметок нет, или сброс состояния?",
+   "at": "decisions.json:1829",
+   "record_kind": "развилка",
+   "number": 31
+  },
+  {
+   "id": "rec:F-32",
+   "kind": "rec",
+   "name": "[ветка] Чтение тяжести: ячейка тяжести вне трёх значений (`warning`, `предупреждения`) — строка идёт в группу «прочих» без переключателя «прочитано»; так и оставить?",
+   "at": "decisions.json:1900",
+   "record_kind": "развилка",
+   "number": 32
+  },
+  {
+   "id": "rec:F-33",
+   "kind": "rec",
+   "name": "[ветка] Разбор замечаний: строка файла ответа с текстом флага без префикса «Замечания к схеме:» (написана человеком руками) прилипает к предыдущей строке `- F-NN:` и уходит в её слово — так и оставить?",
+   "at": "decisions.json:1971",
+   "record_kind": "развилка",
+   "number": 33
+  },
+  {
+   "id": "rec:F-34",
+   "kind": "rec",
+   "name": "[pre-mortem] Флаг ставится по подстроке заметкой с другим смыслом: спор «не согласен, что предупреждение прочитано: F-12, options.B» или слово человека с этим текстом внутри даёт флаг без прочтения — сверка не различает текст флага и упоминание о нём",
+   "at": "decisions.json:2039",
+   "record_kind": "развилка",
+   "number": 34
+  },
+  {
+   "id": "rec:F-35",
+   "kind": "rec",
+   "name": "[pre-mortem] Каждое внесение отметок делает вердикт атаки `stale` и требует повтора; человек перестаёт ставить флаги, и механизм не используется",
+   "at": "decisions.json:2111",
+   "record_kind": "развилка",
+   "number": 35
+  },
+  {
+   "id": "sec:Инъекции через содержимое файлов: раздел строки атаки и текст заметки на странице (парковка ИБ F-14)",
+   "kind": "sec",
+   "name": "Инъекции через содержимое файлов: раздел строки атаки и текст заметки на странице (парковка ИБ F-14)",
+   "at": "security.md:9"
+  },
+  {
+   "id": "sec:Инъекции через текст заметок в итог атаки, который пишет модель",
+   "kind": "sec",
+   "name": "Инъекции через текст заметок в итог атаки, который пишет модель",
+   "at": "security.md:10"
+  },
+  {
+   "id": "sec:Пути с `../`",
+   "kind": "sec",
+   "name": "Пути с `../`",
+   "at": "security.md:11"
+  },
+  {
+   "id": "sec:Токены и срок их жизни",
+   "kind": "sec",
+   "name": "Токены и срок их жизни",
+   "at": "security.md:12"
+  },
+  {
+   "id": "sec:Права",
+   "kind": "sec",
+   "name": "Права",
+   "at": "security.md:13"
+  },
+  {
+   "id": "sec:Бинарные файлы",
+   "kind": "sec",
+   "name": "Бинарные файлы",
+   "at": "security.md:14"
+  },
+  {
+   "id": "sec:Чувствительные данные в журнале, артефактах и журналах прогона",
+   "kind": "sec",
+   "name": "Чувствительные данные в журнале, артефактах и журналах прогона",
+   "at": "security.md:15"
+  },
+  {
+   "id": "sec:Телеметрия и внешние команды",
+   "kind": "sec",
+   "name": "Телеметрия и внешние команды",
+   "at": "security.md:16"
+  },
+  {
+   "id": "cap:artifact-attack",
+   "kind": "cap",
+   "name": "artifact-attack",
+   "at": "specs/artifact-attack/spec.md:1"
+  },
+  {
+   "id": "req:artifact-attack/Вердикт атаки держат блокеры",
+   "kind": "req",
+   "name": "Вердикт атаки держат блокеры",
+   "at": "specs/artifact-attack/spec.md:5",
+   "section": "MODIFIED",
+   "capability": "artifact-attack"
+  },
+  {
+   "id": "scn:artifact-attack/Вердикт атаки держат блокеры/Только предупреждения",
+   "kind": "scn",
+   "name": "Только предупреждения",
+   "at": "specs/artifact-attack/spec.md:8",
+   "capability": "artifact-attack",
+   "requirement": "req:artifact-attack/Вердикт атаки держат блокеры"
+  },
+  {
+   "id": "scn:artifact-attack/Вердикт атаки держат блокеры/Есть блокер",
+   "kind": "scn",
+   "name": "Есть блокер",
+   "at": "specs/artifact-attack/spec.md:13",
+   "capability": "artifact-attack",
+   "requirement": "req:artifact-attack/Вердикт атаки держат блокеры"
+  },
+  {
+   "id": "scn:artifact-attack/Вердикт атаки держат блокеры/Прочитанное предупреждение в итоге",
+   "kind": "scn",
+   "name": "Прочитанное предупреждение в итоге",
+   "at": "specs/artifact-attack/spec.md:18",
+   "capability": "artifact-attack",
+   "requirement": "req:artifact-attack/Вердикт атаки держат блокеры"
+  },
+  {
+   "id": "scn:artifact-attack/Вердикт атаки держат блокеры/Повтор по составу не трогает прочитанную строку вне состава",
+   "kind": "scn",
+   "name": "Повтор по составу не трогает прочитанную строку вне состава",
+   "at": "specs/artifact-attack/spec.md:23",
+   "capability": "artifact-attack",
+   "requirement": "req:artifact-attack/Вердикт атаки держат блокеры"
+  },
+  {
+   "id": "scn:artifact-attack/Вердикт атаки держат блокеры/Прочитанное предупреждение у стыка переписывается",
+   "kind": "scn",
+   "name": "Прочитанное предупреждение у стыка переписывается",
+   "at": "specs/artifact-attack/spec.md:28",
+   "capability": "artifact-attack",
+   "requirement": "req:artifact-attack/Вердикт атаки держат блокеры"
+  },
+  {
+   "id": "req:artifact-attack/Заметка «прочитано» не меняет тяжесть и вердикт",
+   "kind": "req",
+   "name": "Заметка «прочитано» не меняет тяжесть и вердикт",
+   "at": "specs/artifact-attack/spec.md:38",
+   "section": "ADDED",
+   "capability": "artifact-attack"
+  },
+  {
+   "id": "scn:artifact-attack/Заметка «прочитано» не меняет тяжесть и вердикт/Прочитанная строка в счёте",
+   "kind": "scn",
+   "name": "Прочитанная строка в счёте",
+   "at": "specs/artifact-attack/spec.md:41",
+   "capability": "artifact-attack",
+   "requirement": "req:artifact-attack/Заметка «прочитано» не меняет тяжесть и вердикт"
+  },
+  {
+   "id": "cap:decision-viewer",
+   "kind": "cap",
+   "name": "decision-viewer",
+   "at": "specs/decision-viewer/spec.md:1"
+  },
+  {
+   "id": "req:decision-viewer/Переключатель «прочитано» у строки предупреждения",
+   "kind": "req",
+   "name": "Переключатель «прочитано» у строки предупреждения",
+   "at": "specs/decision-viewer/spec.md:5",
+   "section": "ADDED",
+   "capability": "decision-viewer"
+  },
+  {
+   "id": "scn:decision-viewer/Переключатель «прочитано» у строки предупреждения/Отметка попадает в промпт",
+   "kind": "scn",
+   "name": "Отметка попадает в промпт",
+   "at": "specs/decision-viewer/spec.md:8",
+   "capability": "decision-viewer",
+   "requirement": "req:decision-viewer/Переключатель «прочитано» у строки предупреждения"
+  },
+  {
+   "id": "scn:decision-viewer/Переключатель «прочитано» у строки предупреждения/Отметка и спор вместе",
+   "kind": "scn",
+   "name": "Отметка и спор вместе",
+   "at": "specs/decision-viewer/spec.md:13",
+   "capability": "decision-viewer",
+   "requirement": "req:decision-viewer/Переключатель «прочитано» у строки предупреждения"
+  },
+  {
+   "id": "scn:decision-viewer/Переключатель «прочитано» у строки предупреждения/Слово из чата",
+   "kind": "scn",
+   "name": "Слово из чата",
+   "at": "specs/decision-viewer/spec.md:18",
+   "capability": "decision-viewer",
+   "requirement": "req:decision-viewer/Переключатель «прочитано» у строки предупреждения"
+  },
+  {
+   "id": "scn:decision-viewer/Переключатель «прочитано» у строки предупреждения/Две строки одного раздела — одна отметка",
+   "kind": "scn",
+   "name": "Две строки одного раздела — одна отметка",
+   "at": "specs/decision-viewer/spec.md:23",
+   "capability": "decision-viewer",
+   "requirement": "req:decision-viewer/Переключатель «прочитано» у строки предупреждения"
+  },
+  {
+   "id": "scn:decision-viewer/Переключатель «прочитано» у строки предупреждения/Отметка у снятой строки не идёт в промпт",
+   "kind": "scn",
+   "name": "Отметка у снятой строки не идёт в промпт",
+   "at": "specs/decision-viewer/spec.md:29",
+   "capability": "decision-viewer",
+   "requirement": "req:decision-viewer/Переключатель «прочитано» у строки предупреждения"
+  },
+  {
+   "id": "scn:decision-viewer/Переключатель «прочитано» у строки предупреждения/Старое хранилище без поля отметок",
+   "kind": "scn",
+   "name": "Старое хранилище без поля отметок",
+   "at": "specs/decision-viewer/spec.md:35",
+   "capability": "decision-viewer",
+   "requirement": "req:decision-viewer/Переключатель «прочитано» у строки предупреждения"
+  },
+  {
+   "id": "req:decision-viewer/Флаг на карточке берётся из журнала после внесения",
+   "kind": "req",
+   "name": "Флаг на карточке берётся из журнала после внесения",
+   "at": "specs/decision-viewer/spec.md:43",
+   "section": "ADDED",
+   "capability": "decision-viewer"
+  },
+  {
+   "id": "scn:decision-viewer/Флаг на карточке берётся из журнала после внесения/Внесённая отметка уходит из состояния",
+   "kind": "scn",
+   "name": "Внесённая отметка уходит из состояния",
+   "at": "specs/decision-viewer/spec.md:46",
+   "capability": "decision-viewer",
+   "requirement": "req:decision-viewer/Флаг на карточке берётся из журнала после внесения"
+  },
+  {
+   "id": "scn:decision-viewer/Флаг на карточке берётся из журнала после внесения/Отметка до внесения",
+   "kind": "scn",
+   "name": "Отметка до внесения",
+   "at": "specs/decision-viewer/spec.md:51",
+   "capability": "decision-viewer",
+   "requirement": "req:decision-viewer/Флаг на карточке берётся из журнала после внесения"
+  },
+  {
+   "id": "scn:decision-viewer/Флаг на карточке берётся из журнала после внесения/Переключатель у внесённого флага неактивен",
+   "kind": "scn",
+   "name": "Переключатель у внесённого флага неактивен",
+   "at": "specs/decision-viewer/spec.md:56",
+   "capability": "decision-viewer",
+   "requirement": "req:decision-viewer/Флаг на карточке берётся из журнала после внесения"
+  },
+  {
+   "id": "req:decision-viewer/Отметка «прочитано» ставится только действием человека",
+   "kind": "req",
+   "name": "Отметка «прочитано» ставится только действием человека",
+   "at": "specs/decision-viewer/spec.md:64",
+   "section": "ADDED",
+   "capability": "decision-viewer"
+  },
+  {
+   "id": "scn:decision-viewer/Отметка «прочитано» ставится только действием человека/Показ режима без нажатий",
+   "kind": "scn",
+   "name": "Показ режима без нажатий",
+   "at": "specs/decision-viewer/spec.md:67",
+   "capability": "decision-viewer",
+   "requirement": "req:decision-viewer/Отметка «прочитано» ставится только действием человека"
+  },
+  {
+   "id": "req:decision-viewer/Прочитанные строки не прячутся",
+   "kind": "req",
+   "name": "Прочитанные строки не прячутся",
+   "at": "specs/decision-viewer/spec.md:74",
+   "section": "ADDED",
+   "capability": "decision-viewer"
+  },
+  {
+   "id": "scn:decision-viewer/Прочитанные строки не прячутся/Число карточек при заметках",
+   "kind": "scn",
+   "name": "Число карточек при заметках",
+   "at": "specs/decision-viewer/spec.md:77",
+   "capability": "decision-viewer",
+   "requirement": "req:decision-viewer/Прочитанные строки не прячутся"
+  },
+  {
+   "id": "req:decision-viewer/Флаг из состояния отличим от флага из журнала",
+   "kind": "req",
+   "name": "Флаг из состояния отличим от флага из журнала",
+   "at": "specs/decision-viewer/spec.md:84",
+   "section": "ADDED",
+   "capability": "decision-viewer"
+  },
+  {
+   "id": "scn:decision-viewer/Флаг из состояния отличим от флага из журнала/Две подписи",
+   "kind": "scn",
+   "name": "Две подписи",
+   "at": "specs/decision-viewer/spec.md:87",
+   "capability": "decision-viewer",
+   "requirement": "req:decision-viewer/Флаг из состояния отличим от флага из журнала"
+  },
+  {
+   "id": "cap:warning-read-flag",
+   "kind": "cap",
+   "name": "warning-read-flag",
+   "at": "specs/warning-read-flag/spec.md:1"
+  },
+  {
+   "id": "req:warning-read-flag/Заметка «прочитано» опознаёт строку атаки по разделу",
+   "kind": "req",
+   "name": "Заметка «прочитано» опознаёт строку атаки по разделу",
+   "at": "specs/warning-read-flag/spec.md:8",
+   "section": "ADDED",
+   "capability": "warning-read-flag"
+  },
+  {
+   "id": "scn:warning-read-flag/Заметка «прочитано» опознаёт строку атаки по разделу/Заметка с разделом журнала",
+   "kind": "scn",
+   "name": "Заметка с разделом журнала",
+   "at": "specs/warning-read-flag/spec.md:11",
+   "capability": "warning-read-flag",
+   "requirement": "req:warning-read-flag/Заметка «прочитано» опознаёт строку атаки по разделу"
+  },
+  {
+   "id": "scn:warning-read-flag/Заметка «прочитано» опознаёт строку атаки по разделу/Две строки одного раздела",
+   "kind": "scn",
+   "name": "Две строки одного раздела",
+   "at": "specs/warning-read-flag/spec.md:16",
+   "capability": "warning-read-flag",
+   "requirement": "req:warning-read-flag/Заметка «прочитано» опознаёт строку атаки по разделу"
+  },
+  {
+   "id": "scn:warning-read-flag/Заметка «прочитано» опознаёт строку атаки по разделу/Заметка в общей строке замечаний",
+   "kind": "scn",
+   "name": "Заметка в общей строке замечаний",
+   "at": "specs/warning-read-flag/spec.md:21",
+   "capability": "warning-read-flag",
+   "requirement": "req:warning-read-flag/Заметка «прочитано» опознаёт строку атаки по разделу"
+  },
+  {
+   "id": "scn:warning-read-flag/Заметка «прочитано» опознаёт строку атаки по разделу/Текст флага внутри спора флага не даёт",
+   "kind": "scn",
+   "name": "Текст флага внутри спора флага не даёт",
+   "at": "specs/warning-read-flag/spec.md:26",
+   "capability": "warning-read-flag",
+   "requirement": "req:warning-read-flag/Заметка «прочитано» опознаёт строку атаки по разделу"
+  },
+  {
+   "id": "scn:warning-read-flag/Заметка «прочитано» опознаёт строку атаки по разделу/Пробелы в заметке схлопываются",
+   "kind": "scn",
+   "name": "Пробелы в заметке схлопываются",
+   "at": "specs/warning-read-flag/spec.md:32",
+   "capability": "warning-read-flag",
+   "requirement": "req:warning-read-flag/Заметка «прочитано» опознаёт строку атаки по разделу"
+  },
+  {
+   "id": "req:warning-read-flag/Флаг только у предупреждений",
+   "kind": "req",
+   "name": "Флаг только у предупреждений",
+   "at": "specs/warning-read-flag/spec.md:40",
+   "section": "ADDED",
+   "capability": "warning-read-flag"
+  },
+  {
+   "id": "scn:warning-read-flag/Флаг только у предупреждений/Заметка с разделом блокера",
+   "kind": "scn",
+   "name": "Заметка с разделом блокера",
+   "at": "specs/warning-read-flag/spec.md:43",
+   "capability": "warning-read-flag",
+   "requirement": "req:warning-read-flag/Флаг только у предупреждений"
+  },
+  {
+   "id": "scn:warning-read-flag/Флаг только у предупреждений/Невыводимое",
+   "kind": "scn",
+   "name": "Невыводимое",
+   "at": "specs/warning-read-flag/spec.md:48",
+   "capability": "warning-read-flag",
+   "requirement": "req:warning-read-flag/Флаг только у предупреждений"
+  },
+  {
+   "id": "scn:warning-read-flag/Флаг только у предупреждений/Понижённый блокер несёт переключатель",
+   "kind": "scn",
+   "name": "Понижённый блокер несёт переключатель",
+   "at": "specs/warning-read-flag/spec.md:53",
+   "capability": "warning-read-flag",
+   "requirement": "req:warning-read-flag/Флаг только у предупреждений"
+  },
+  {
+   "id": "req:warning-read-flag/Заметка без строки флага не даёт",
+   "kind": "req",
+   "name": "Заметка без строки флага не даёт",
+   "at": "specs/warning-read-flag/spec.md:61",
+   "section": "ADDED",
+   "capability": "warning-read-flag"
+  },
+  {
+   "id": "scn:warning-read-flag/Заметка без строки флага не даёт/Строка снята повтором атаки",
+   "kind": "scn",
+   "name": "Строка снята повтором атаки",
+   "at": "specs/warning-read-flag/spec.md:64",
+   "capability": "warning-read-flag",
+   "requirement": "req:warning-read-flag/Заметка без строки флага не даёт"
+  },
+  {
+   "id": "req:warning-read-flag/Форма заметки в контракте без роста номера",
+   "kind": "req",
+   "name": "Форма заметки в контракте без роста номера",
+   "at": "specs/warning-read-flag/spec.md:71",
+   "section": "ADDED",
+   "capability": "warning-read-flag"
+  },
+  {
+   "id": "scn:warning-read-flag/Форма заметки в контракте без роста номера/Журнал с заметкой у прежнего номера",
+   "kind": "scn",
+   "name": "Журнал с заметкой у прежнего номера",
+   "at": "specs/warning-read-flag/spec.md:74",
+   "capability": "warning-read-flag",
+   "requirement": "req:warning-read-flag/Форма заметки в контракте без роста номера"
+  },
+  {
+   "id": "req:warning-read-flag/Флаг не подменяет ответ на «вопрос человеку»",
+   "kind": "req",
+   "name": "Флаг не подменяет ответ на «вопрос человеку»",
+   "at": "specs/warning-read-flag/spec.md:81",
+   "section": "ADDED",
+   "capability": "warning-read-flag"
+  },
+  {
+   "id": "scn:warning-read-flag/Флаг не подменяет ответ на «вопрос человеку»/Прочитанный вопрос человеку",
+   "kind": "scn",
+   "name": "Прочитанный вопрос человеку",
+   "at": "specs/warning-read-flag/spec.md:84",
+   "capability": "warning-read-flag",
+   "requirement": "req:warning-read-flag/Флаг не подменяет ответ на «вопрос человеку»"
+  },
+  {
+   "id": "task:1.1",
+   "kind": "task",
+   "name": "Завести в `viewer/playground-template.html` блок `/* flags:begin */ … /* flags:end */` с чистыми функциями: `READ_PREFIX = 'предупреждение прочитано: '`; `readText(row)` — префикс и `norm(row.section)` (схлопывание пробельных последовательностей в один пробел, обрезка краёв); `isWarning(row)` — `sevBase(row.severity) === 'предупреждение'`; `readByNotes(notes, row)` — `true`, когда у строки `isWarning` и хотя бы одна заметка после `norm` несёт `readText(row)` отдельным сегментом: от начала заметки или сразу после « · » и до конца заметки или до следующего « · » (сегмент на границах, не подстрока) — проверка: новый файл `viewer/tests/test_viewer_flags.py` по образцу `test_viewer_prompt.py` (`block(\"flags\")`, `run_js`): заметка с разделом журнала даёт флаг; две строки одного раздела — обе; заметка из нескольких замечаний через « · » — флаг у названного раздела; текст флага внутри спора («не согласен, что предупреждение прочитано: …») флага не даёт; заметка с переносом строки и двумя пробелами внутри раздела даёт флаг; заметка без строки флага никому не даёт — `warning-read-flag`: «Заметка с разделом журнала», `warning-read-flag`: «Две строки одного раздела», `warning-read-flag`: «Заметка в общей строке замечаний», `warning-read-flag`: «Текст флага внутри спора флага не даёт», `warning-read-flag`: «Пробелы в заметке схлопываются», `warning-read-flag`: «Строка снята повтором атаки»",
+   "at": "tasks.md:5",
+   "done": true
+  },
+  {
+   "id": "task:1.2",
+   "kind": "task",
+   "name": "Там же: `isWarning` читает тяжесть первым словом ячейки без учёта регистра через `sevBase` — `предупреждение (решено человеком в F-09)` и `Предупреждение` считаются предупреждением, `блокер` и `справка` — нет, даже при заметке с их разделом; строка с опорой «по спеке не выводится» и тяжестью `предупреждение` — предупреждение — проверка: тесты в `viewer/tests/test_viewer_flags.py` на три ячейки тяжести и на заметку с разделом блокера (`readByNotes` даёт `false`) — `warning-read-flag`: «Заметка с разделом блокера», `warning-read-flag`: «Невыводимое», `warning-read-flag`: «Понижённый блокер несёт переключатель»",
+   "at": "tasks.md:6",
+   "done": true
+  },
+  {
+   "id": "task:2.1",
+   "kind": "task",
+   "name": "Состояние: `attackState` получает поле `read` — объект с ключами `att.path + '|' + norm(row.section)` (одна отметка на файл и раздел); чтение из `localStorage` под ключом `KEY + ':attack'` остаётся под тем же `try`, поле берётся как `s.read && typeof s.read === 'object' ? s.read : {}` — старое состояние без поля читается без исключения, споры на месте; `saveAttack` пишет оба поля. На карточке строки с `isWarning` — переключатель «прочитано» (`<label><input type=\"checkbox\" data-read=\"ai|ri\">`), обработчик ставит или снимает ключ раздела, зовёт `saveAttack` и `updateOut`; две карточки одного раздела отражают одну отметку. Драйвер `tests/fixtures/viewer-browser.mjs` получает команду `read:<путь атаки>:<раздел>` и отдаёт в результат список отмеченных ключей `read` и число включённых переключателей — проверка: тесты в `viewer/tests/test_viewer_browser.py` (Chrome, пропуск без него): отметка на одной из двух строк раздела `design.md, Decisions` включает обе; состояние `{disputes:{…}}` без `read`, записанное в `localStorage` до открытия, даёт споры на месте, `read` пустой, консоль без ошибок — `decision-viewer`: «Две строки одного раздела — одна отметка», `decision-viewer`: «Старое хранилище без поля отметок»",
+   "at": "tasks.md:10",
+   "done": true
+  },
+  {
+   "id": "task:2.2",
+   "kind": "task",
+   "name": "Промпт: `buildPrompt(J, attacks, st, disputes, date, read)` — шестой аргумент необязательный; на каждый раздел с отметкой, у которого в `attacks` есть строка `isWarning` с этим разделом, — текст `readText(row)` в списке замечаний после споров, через « · » в одной строке «Замечания к схеме:»; отметка без строки в текущей сборке текста не даёт; без отметок и споров строки «Замечания к схеме:» нет; при сборке страницы ключи `read` без строки удираются из состояния (`saveAttack`) — проверка: тесты в `viewer/tests/test_viewer_prompt.py` через `prompt(...)` с `attacks` из `tests/fixtures` и `read` в аргументах: одна отметка — текст один раз, строка пригодна для `journal.parse_answers` (`op: note` с этим текстом); отметка и спор — оба текста через « · »; отметка у раздела, которого нет в `attacks`, — текста нет; пустые `read` и `disputes` — строки нет — `decision-viewer`: «Отметка попадает в промпт», `decision-viewer`: «Отметка и спор вместе», `decision-viewer`: «Отметка у снятой строки не идёт в промпт», `decision-viewer`: «Показ режима без нажатий»",
+   "at": "tasks.md:11",
+   "done": true
+  },
+  {
+   "id": "task:2.3",
+   "kind": "task",
+   "name": "Флаг на карточке: `cleanupIngested` убирает из `read` ключи, чей `readText` найден в `notes[]` правилом `readByNotes` (сегмент, как у 1.1); карточка показывает бейдж «прочитано · в журнале» при `readByNotes(JOURNAL.notes, row)` и «прочитано · не внесено» при отметке в состоянии; у флага из журнала переключатель `disabled` с `title` «внесено в журнал»; строка остаётся в своей группе линза → тяжесть, число карточек равно числу строк, счётчики тяжести прежние; поле спора и пометка «запись не решена» у строки с закрытием «вопрос человеку» не зависят от флага — проверка: тесты в `viewer/tests/test_viewer_browser.py`: журнал с заметкой «предупреждение прочитано: <раздел>» и отметка того же раздела в `localStorage` — после открытия ключа в `read` нет, промпт без текста, бейдж «в журнале», переключатель `disabled`; отметка без заметки — бейдж «не внесено», текст в промпте; число `.attackrow` равно числу строк файла и шапка «предупреждений N» прежняя; у строки с закрытием «вопрос человеку» и флагом есть `textarea` спора — `decision-viewer`: «Внесённая отметка уходит из состояния», `decision-viewer`: «Отметка до внесения», `decision-viewer`: «Переключатель у внесённого флага неактивен», `decision-viewer`: «Число карточек при заметках», `decision-viewer`: «Две подписи», `warning-read-flag`: «Прочитанный вопрос человеку»",
+   "at": "tasks.md:12",
+   "done": true
+  },
+  {
+   "id": "task:2.4",
+   "kind": "task",
+   "name": "`attack/attack-table.md`, раздел «Что считает страница»: строка о флаге — переключатель «прочитано» у строк `предупреждение`, отметка уходит заметкой «предупреждение прочитано: <раздел>» через «Замечания к схеме:», флаг сверяется с `notes[]` по сегменту « · », счётчики и тяжесть от флага не меняются; подсказка `ATTACK_HINT` шаблона — то же одной фразой — проверка: `tests/test_skills.py::test_viewer_skill_describes_the_attack_mode` получает точку «флаг прочитано» с токенами «предупреждение прочитано:», «сегмент», «счётчики … не меняются»; `python -X utf8 -m pytest tests/test_skills.py` зелёный — `warning-read-flag`: «Заметка с разделом журнала»",
+   "at": "tasks.md:13",
+   "done": true
+  },
+  {
+   "id": "task:3.1",
+   "kind": "task",
+   "name": "`viewer/skills/symphysis-viewer/SKILL.md`: в шаге 1 (режим «атака») — переключатель «прочитано» у строк `предупреждение` и флаг по заметкам журнала; в шаге 5 рядом со строкой о спорах — отметки идут в «Замечания к схеме:» текстом «предупреждение прочитано: <раздел>» и ложатся заметкой; слово из чата «прочитал …» главная нить MUST писать в файл ответа строкой «Замечания к схеме: предупреждение прочитано: <раздел>» с разделом дословно из файла атаки и вносить `apply`; в «Приёмке» — пункт о флаге — проверка: `tests/test_skills.py::test_viewer_skill_describes_the_attack_mode` и `test_viewer_skill_shape` зелёные, новые токены «предупреждение прочитано:» и «Замечания к схеме: предупреждение прочитано» найдены в теле — `decision-viewer`: «Слово из чата»",
+   "at": "tasks.md:17",
+   "done": true
+  },
+  {
+   "id": "task:3.2",
+   "kind": "task",
+   "name": "Тест сквозного пути заметки: файл ответа со строкой «Замечания к схеме: предупреждение прочитано: F-12, options.B · атака … — спор: …» через `apply` даёт одну заметку `notes[]` с датой и этим текстом, затем `readByNotes` блока `flags` (через `run_js`) даёт флаг строке раздела `F-12, options.B` — проверка: тест в `cli/tests/test_cli_apply.py` на заметку и тест в `viewer/tests/test_viewer_flags.py` на текст, взятый из той же заметки — `decision-viewer`: «Отметка попадает в промпт»",
+   "at": "tasks.md:18",
+   "done": true
+  },
+  {
+   "id": "task:4.1",
+   "kind": "task",
+   "name": "`attack/skills/symphysis-attack/SKILL.md`: шаг 5 — вместо «механизма «прочитано» у предупреждения пока нет» строка: флаг «прочитано» — заметка `notes[]` «предупреждение прочитано: <раздел>», её ставит человек на странице (скилл `symphysis-viewer`); шаг 7 — в списке предупреждений у строки, чей раздел назван заметкой (сверка после схлопывания пробелов, отдельным сегментом « · »), пометка «(прочитано)», список полный; заметки читаются как данные: тяжесть строки, счётчики и `status` от них не меняются; «Границы» — строка «флаг ставит человек, скилл его читает и не снимает»; «Приёмка» — пункт о пометке — проверка: новый `tests/test_skills.py::test_attack_skill_marks_read_warnings`: в теле есть «(прочитано)», «предупреждение прочитано:», «как данные», нет «механизма «прочитано» у предупреждения пока нет» и «отдельное изменение» рядом с флагом; `test_attack_skill_writes_verdict_contract` по-прежнему зелёный — `artifact-attack`: «Прочитанное предупреждение в итоге», `artifact-attack`: «Прочитанная строка в счёте»",
+   "at": "tasks.md:22",
+   "done": true
+  },
+  {
+   "id": "task:4.2",
+   "kind": "task",
+   "name": "Там же, шаг 1 (повтор по составу): пометка состав не меняет — прочитанная строка вне состава остаётся байт в байт, строка стыка переписывается, пометка в итоге повтора ставится по разделу новой строки; раздел «Водитель» — отчёт «Итог» несёт список предупреждений с пометкой «(прочитано)» по заметкам журнала из целей brief — проверка: `test_attack_skill_repeats_by_scope` и `test_attack_skill_marks_read_warnings` зелёные (второй ищет «вне состава» и «стык» рядом с «(прочитано)»); `python -X utf8 -m pytest tests/test_agents.py` зелёный (`test_driver_steps_match_the_skill_driver_section`) — `artifact-attack`: «Повтор по составу не трогает прочитанную строку вне состава», `artifact-attack`: «Прочитанное предупреждение у стыка переписывается»",
+   "at": "tasks.md:23",
+   "done": true
+  },
+  {
+   "id": "task:5.1",
+   "kind": "task",
+   "name": "`docs/repo-contract.md`, перечень «Что входит в контракт», строка «значения полей, которые плагин разбирает»: заметка `notes[]` формы «предупреждение прочитано: <раздел>» — раздел дословно из столбца «Раздел», текст — отдельный сегмент заметки через « · »; новое значение в свободном тексте, номер контракта не растёт; `tests/test_repo_contract.py::test_contract_names_hook_records_and_new_fields` получает токен «предупреждение прочитано» — проверка: `python -X utf8 -m pytest tests/test_repo_contract.py` зелёный; тест в `decisions/tests/test_journal_view_json.py`: журнал с такой заметкой даёт `contract` равный `journal_render.CONTRACT` и заметку в `notes` как есть — `warning-read-flag`: «Журнал с заметкой у прежнего номера»",
+   "at": "tasks.md:27",
+   "done": true
+  },
+  {
+   "id": "task:5.2",
+   "kind": "task",
+   "name": "`skill-shared/terms.md`: термин «флаг «прочитано»» — заметка `notes[]` «предупреждение прочитано: <раздел>», поставленная человеком на странице; свидетельство прочтения, не исход и не снятие строки; `docs/GUIDE.md`, раздел «Атака журнала, по желанию» после абзаца о `stale`: предупреждение можно отметить прочитанным на странице, отметка уходит в `notes[]` через промпт возврата, вердикт станет `stale` с составом «записей не добавлено», повтор обновит хеш и назовёт прочитанные с пометкой; раздел «Атака артефактов, по желанию» — та же фраза одной строкой — проверка: `python -X utf8 -m pytest tests/test_guide.py tests/test_skills.py` зелёный, новый `tests/test_guide.py::test_guide_tells_how_to_mark_a_warning_read` находит «прочитан» и «записей не добавлено» в разделе атаки — `artifact-attack`: «Повтор по составу не трогает прочитанную строку вне состава»",
+   "at": "tasks.md:28",
+   "done": true
+  },
+  {
+   "id": "task:5.3",
+   "kind": "task",
+   "name": "Пункт бэклога плагина `<путь>`: переключатель «прочитано» и флаг в `AttackView.tsx` и `logic.ts` плагина по строке контракта, где — плагин, объём — change, без `Needs:` — проверка: строка указателя с номером `B-NN` в таблице и раздел пункта с датой — `служебная`",
+   "at": "tasks.md:29",
+   "done": true
+  },
+  {
+   "id": "task:6.1",
+   "kind": "task",
+   "name": "Полный прогон: `python -X utf8 -m pytest` зелёный, `openspec validate attack-warning-read --strict` валиден, `python -X utf8 cli/journal.py check --roots openspec/changes/attack-warning-read/probes/journal-roots.json openspec/changes/attack-warning-read/decisions.json` без новых `[!!]`, `python -X utf8 trace/trace_graph.py report attack-warning-read` без строк «без задачи» — `служебная`",
+   "at": "tasks.md:33",
+   "done": true
+  },
+  {
+   "id": "task:6.2",
+   "kind": "task",
+   "name": "Живая проверка на копии архива `2026-11-02-symphysis-schema` (12 предупреждений в `attack/artifacts.md`) во временном каталоге: собрать страницу с `--attack`, отметить одно предупреждение, скопировать промпт в файл ответа, внести `apply`, пересобрать — у строки бейдж «в журнале», переключатель неактивен, в режиме «проверка» заметка видна; архив не меняется — проверка: `git status --short` пуст после прогона, в копии журнала одна новая заметка — `decision-viewer`: «Внесённая отметка уходит из состояния»",
+   "at": "tasks.md:34",
+   "done": true
+  },
+  {
+   "id": "task:6.3",
+   "kind": "task",
+   "name": "Обновить установленную копию этого worktree: `node installer/scripts/sync-payload.js`, затем `symphysis install --force` (или копия файлов payload в `.symphysis/` и `.claude/skills/`) — проверка: `.symphysis/tools/playground-template.html` несёт блок `flags:begin`, `.symphysis/docs/attack-table.md` — строку о флаге, `.claude/skills/symphysis-attack/SKILL.md` — без «механизма «прочитано» у предупреждения пока нет»; `python .symphysis/tools/journal.py render-html --help` код 0 — `служебная`",
+   "at": "tasks.md:35",
+   "done": true
+  }
+ ],
+ "edges": [
+  {
+   "from": "branch:viewer/playground-template.html:289",
+   "to": "scn:decision-viewer/Флаг на карточке берётся из журнала после внесения/Внесённая отметка уходит из состояния",
+   "type": "verifies",
+   "at": "consequences.md:16"
+  },
+  {
+   "from": "branch:viewer/playground-template.html:732",
+   "to": "scn:decision-viewer/Переключатель «прочитано» у строки предупреждения/Отметка у снятой строки не идёт в промпт",
+   "type": "verifies",
+   "at": "consequences.md:20"
+  },
+  {
+   "from": "branch:viewer/playground-template.html:773",
+   "to": "scn:decision-viewer/Отметка «прочитано» ставится только действием человека/Показ режима без нажатий",
+   "type": "verifies",
+   "at": "consequences.md:24"
+  },
+  {
+   "from": "branch:viewer/playground-template.html:962",
+   "to": "scn:warning-read-flag/Заметка без строки флага не даёт/Строка снята повтором атаки",
+   "type": "verifies",
+   "at": "consequences.md:32"
+  },
+  {
+   "from": "branch:decisions/journal_apply.py:135",
+   "to": "scn:decision-viewer/Отметка «прочитано» ставится только действием человека/Показ режима без нажатий",
+   "type": "verifies",
+   "at": "consequences.md:40"
+  },
+  {
+   "from": "branch:attack/attack_scope.py:93",
+   "to": "scn:artifact-attack/Вердикт атаки держат блокеры/Повтор по составу не трогает прочитанную строку вне состава",
+   "type": "verifies",
+   "at": "consequences.md:48"
+  },
+  {
+   "from": "branch:decisions/journal_render.py:179",
+   "to": "scn:warning-read-flag/Заметка без строки флага не даёт/Строка снята повтором атаки",
+   "type": "verifies",
+   "at": "consequences.md:52"
+  },
+  {
+   "from": "sec:Инъекции через содержимое файлов: раздел строки атаки и текст заметки на странице (парковка ИБ F-14)",
+   "to": "req:warning-read-flag/Заметка «прочитано» опознаёт строку атаки по разделу",
+   "type": "refines",
+   "at": "security.md:9"
+  },
+  {
+   "from": "sec:Инъекции через текст заметок в итог атаки, который пишет модель",
+   "to": "req:artifact-attack/Заметка «прочитано» не меняет тяжесть и вердикт",
+   "type": "refines",
+   "at": "security.md:10"
+  },
+  {
+   "from": "sec:Инъекции через текст заметок в итог атаки, который пишет модель",
+   "to": "req:decision-viewer/Отметка «прочитано» ставится только действием человека",
+   "type": "refines",
+   "at": "security.md:10"
+  },
+  {
+   "from": "sec:Права",
+   "to": "req:decision-viewer/Отметка «прочитано» ставится только действием человека",
+   "type": "refines",
+   "at": "security.md:13"
+  },
+  {
+   "from": "sec:Права",
+   "to": "req:warning-read-flag/Заметка «прочитано» опознаёт строку атаки по разделу",
+   "type": "refines",
+   "at": "security.md:13"
+  },
+  {
+   "from": "sec:Чувствительные данные в журнале, артефактах и журналах прогона",
+   "to": "req:decision-viewer/Флаг из состояния отличим от флага из журнала",
+   "type": "refines",
+   "at": "security.md:15"
+  },
+  {
+   "from": "cap:artifact-attack",
+   "to": "req:artifact-attack/Вердикт атаки держат блокеры",
+   "type": "contains",
+   "at": "specs/artifact-attack/spec.md:5"
+  },
+  {
+   "from": "req:artifact-attack/Вердикт атаки держат блокеры",
+   "to": "rec:F-13",
+   "type": "traces",
+   "at": "specs/artifact-attack/spec.md:6"
+  },
+  {
+   "from": "req:artifact-attack/Вердикт атаки держат блокеры",
+   "to": "rec:F-15",
+   "type": "traces",
+   "at": "specs/artifact-attack/spec.md:6"
+  },
+  {
+   "from": "req:artifact-attack/Вердикт атаки держат блокеры",
+   "to": "rec:F-24",
+   "type": "traces",
+   "at": "specs/artifact-attack/spec.md:6"
+  },
+  {
+   "from": "scn:artifact-attack/Вердикт атаки держат блокеры/Только предупреждения",
+   "to": "req:artifact-attack/Вердикт атаки держат блокеры",
+   "type": "verifies",
+   "at": "specs/artifact-attack/spec.md:8"
+  },
+  {
+   "from": "scn:artifact-attack/Вердикт атаки держат блокеры/Есть блокер",
+   "to": "req:artifact-attack/Вердикт атаки держат блокеры",
+   "type": "verifies",
+   "at": "specs/artifact-attack/spec.md:13"
+  },
+  {
+   "from": "scn:artifact-attack/Вердикт атаки держат блокеры/Прочитанное предупреждение в итоге",
+   "to": "req:artifact-attack/Вердикт атаки держат блокеры",
+   "type": "verifies",
+   "at": "specs/artifact-attack/spec.md:18"
+  },
+  {
+   "from": "scn:artifact-attack/Вердикт атаки держат блокеры/Повтор по составу не трогает прочитанную строку вне состава",
+   "to": "req:artifact-attack/Вердикт атаки держат блокеры",
+   "type": "verifies",
+   "at": "specs/artifact-attack/spec.md:23"
+  },
+  {
+   "from": "scn:artifact-attack/Вердикт атаки держат блокеры/Прочитанное предупреждение у стыка переписывается",
+   "to": "req:artifact-attack/Вердикт атаки держат блокеры",
+   "type": "verifies",
+   "at": "specs/artifact-attack/spec.md:28"
+  },
+  {
+   "from": "req:artifact-attack/Вердикт атаки держат блокеры",
+   "to": "rec:F-24",
+   "type": "traces",
+   "at": "specs/artifact-attack/spec.md:33"
+  },
+  {
+   "from": "req:artifact-attack/Вердикт атаки держат блокеры",
+   "to": "rec:F-25",
+   "type": "traces",
+   "at": "specs/artifact-attack/spec.md:34"
+  },
+  {
+   "from": "req:artifact-attack/Вердикт атаки держат блокеры",
+   "to": "rec:F-30",
+   "type": "traces",
+   "at": "specs/artifact-attack/spec.md:34"
+  },
+  {
+   "from": "cap:artifact-attack",
+   "to": "req:artifact-attack/Заметка «прочитано» не меняет тяжесть и вердикт",
+   "type": "contains",
+   "at": "specs/artifact-attack/spec.md:38"
+  },
+  {
+   "from": "req:artifact-attack/Заметка «прочитано» не меняет тяжесть и вердикт",
+   "to": "rec:F-25",
+   "type": "traces",
+   "at": "specs/artifact-attack/spec.md:39"
+  },
+  {
+   "from": "scn:artifact-attack/Заметка «прочитано» не меняет тяжесть и вердикт/Прочитанная строка в счёте",
+   "to": "req:artifact-attack/Заметка «прочитано» не меняет тяжесть и вердикт",
+   "type": "verifies",
+   "at": "specs/artifact-attack/spec.md:41"
+  },
+  {
+   "from": "cap:decision-viewer",
+   "to": "req:decision-viewer/Переключатель «прочитано» у строки предупреждения",
+   "type": "contains",
+   "at": "specs/decision-viewer/spec.md:5"
+  },
+  {
+   "from": "req:decision-viewer/Переключатель «прочитано» у строки предупреждения",
+   "to": "rec:F-12",
+   "type": "traces",
+   "at": "specs/decision-viewer/spec.md:6"
+  },
+  {
+   "from": "req:decision-viewer/Переключатель «прочитано» у строки предупреждения",
+   "to": "rec:F-13",
+   "type": "traces",
+   "at": "specs/decision-viewer/spec.md:6"
+  },
+  {
+   "from": "req:decision-viewer/Переключатель «прочитано» у строки предупреждения",
+   "to": "rec:F-14",
+   "type": "traces",
+   "at": "specs/decision-viewer/spec.md:6"
+  },
+  {
+   "from": "scn:decision-viewer/Переключатель «прочитано» у строки предупреждения/Отметка попадает в промпт",
+   "to": "req:decision-viewer/Переключатель «прочитано» у строки предупреждения",
+   "type": "verifies",
+   "at": "specs/decision-viewer/spec.md:8"
+  },
+  {
+   "from": "scn:decision-viewer/Переключатель «прочитано» у строки предупреждения/Отметка и спор вместе",
+   "to": "req:decision-viewer/Переключатель «прочитано» у строки предупреждения",
+   "type": "verifies",
+   "at": "specs/decision-viewer/spec.md:13"
+  },
+  {
+   "from": "scn:decision-viewer/Переключатель «прочитано» у строки предупреждения/Слово из чата",
+   "to": "req:decision-viewer/Переключатель «прочитано» у строки предупреждения",
+   "type": "verifies",
+   "at": "specs/decision-viewer/spec.md:18"
+  },
+  {
+   "from": "scn:decision-viewer/Переключатель «прочитано» у строки предупреждения/Две строки одного раздела — одна отметка",
+   "to": "req:decision-viewer/Переключатель «прочитано» у строки предупреждения",
+   "type": "verifies",
+   "at": "specs/decision-viewer/spec.md:23"
+  },
+  {
+   "from": "scn:decision-viewer/Переключатель «прочитано» у строки предупреждения/Отметка у снятой строки не идёт в промпт",
+   "to": "req:decision-viewer/Переключатель «прочитано» у строки предупреждения",
+   "type": "verifies",
+   "at": "specs/decision-viewer/spec.md:29"
+  },
+  {
+   "from": "scn:decision-viewer/Переключатель «прочитано» у строки предупреждения/Старое хранилище без поля отметок",
+   "to": "req:decision-viewer/Переключатель «прочитано» у строки предупреждения",
+   "type": "verifies",
+   "at": "specs/decision-viewer/spec.md:35"
+  },
+  {
+   "from": "req:decision-viewer/Переключатель «прочитано» у строки предупреждения",
+   "to": "rec:F-21",
+   "type": "traces",
+   "at": "specs/decision-viewer/spec.md:40"
+  },
+  {
+   "from": "req:decision-viewer/Переключатель «прочитано» у строки предупреждения",
+   "to": "rec:F-22",
+   "type": "traces",
+   "at": "specs/decision-viewer/spec.md:40"
+  },
+  {
+   "from": "req:decision-viewer/Переключатель «прочитано» у строки предупреждения",
+   "to": "rec:F-26",
+   "type": "traces",
+   "at": "specs/decision-viewer/spec.md:41"
+  },
+  {
+   "from": "req:decision-viewer/Переключатель «прочитано» у строки предупреждения",
+   "to": "rec:F-27",
+   "type": "traces",
+   "at": "specs/decision-viewer/spec.md:41"
+  },
+  {
+   "from": "cap:decision-viewer",
+   "to": "req:decision-viewer/Флаг на карточке берётся из журнала после внесения",
+   "type": "contains",
+   "at": "specs/decision-viewer/spec.md:43"
+  },
+  {
+   "from": "req:decision-viewer/Флаг на карточке берётся из журнала после внесения",
+   "to": "rec:F-06",
+   "type": "traces",
+   "at": "specs/decision-viewer/spec.md:44"
+  },
+  {
+   "from": "req:decision-viewer/Флаг на карточке берётся из журнала после внесения",
+   "to": "rec:F-14",
+   "type": "traces",
+   "at": "specs/decision-viewer/spec.md:44"
+  },
+  {
+   "from": "req:decision-viewer/Флаг на карточке берётся из журнала после внесения",
+   "to": "rec:F-16",
+   "type": "traces",
+   "at": "specs/decision-viewer/spec.md:44"
+  },
+  {
+   "from": "scn:decision-viewer/Флаг на карточке берётся из журнала после внесения/Внесённая отметка уходит из состояния",
+   "to": "req:decision-viewer/Флаг на карточке берётся из журнала после внесения",
+   "type": "verifies",
+   "at": "specs/decision-viewer/spec.md:46"
+  },
+  {
+   "from": "scn:decision-viewer/Флаг на карточке берётся из журнала после внесения/Отметка до внесения",
+   "to": "req:decision-viewer/Флаг на карточке берётся из журнала после внесения",
+   "type": "verifies",
+   "at": "specs/decision-viewer/spec.md:51"
+  },
+  {
+   "from": "scn:decision-viewer/Флаг на карточке берётся из журнала после внесения/Переключатель у внесённого флага неактивен",
+   "to": "req:decision-viewer/Флаг на карточке берётся из журнала после внесения",
+   "type": "verifies",
+   "at": "specs/decision-viewer/spec.md:56"
+  },
+  {
+   "from": "req:decision-viewer/Флаг на карточке берётся из журнала после внесения",
+   "to": "rec:F-23",
+   "type": "traces",
+   "at": "specs/decision-viewer/spec.md:61"
+  },
+  {
+   "from": "req:decision-viewer/Флаг на карточке берётся из журнала после внесения",
+   "to": "rec:F-28",
+   "type": "traces",
+   "at": "specs/decision-viewer/spec.md:62"
+  },
+  {
+   "from": "cap:decision-viewer",
+   "to": "req:decision-viewer/Отметка «прочитано» ставится только действием человека",
+   "type": "contains",
+   "at": "specs/decision-viewer/spec.md:64"
+  },
+  {
+   "from": "req:decision-viewer/Отметка «прочитано» ставится только действием человека",
+   "to": "rec:F-26",
+   "type": "traces",
+   "at": "specs/decision-viewer/spec.md:65"
+  },
+  {
+   "from": "scn:decision-viewer/Отметка «прочитано» ставится только действием человека/Показ режима без нажатий",
+   "to": "req:decision-viewer/Отметка «прочитано» ставится только действием человека",
+   "type": "verifies",
+   "at": "specs/decision-viewer/spec.md:67"
+  },
+  {
+   "from": "cap:decision-viewer",
+   "to": "req:decision-viewer/Прочитанные строки не прячутся",
+   "type": "contains",
+   "at": "specs/decision-viewer/spec.md:74"
+  },
+  {
+   "from": "req:decision-viewer/Прочитанные строки не прячутся",
+   "to": "rec:F-27",
+   "type": "traces",
+   "at": "specs/decision-viewer/spec.md:75"
+  },
+  {
+   "from": "scn:decision-viewer/Прочитанные строки не прячутся/Число карточек при заметках",
+   "to": "req:decision-viewer/Прочитанные строки не прячутся",
+   "type": "verifies",
+   "at": "specs/decision-viewer/spec.md:77"
+  },
+  {
+   "from": "cap:decision-viewer",
+   "to": "req:decision-viewer/Флаг из состояния отличим от флага из журнала",
+   "type": "contains",
+   "at": "specs/decision-viewer/spec.md:84"
+  },
+  {
+   "from": "req:decision-viewer/Флаг из состояния отличим от флага из журнала",
+   "to": "rec:F-28",
+   "type": "traces",
+   "at": "specs/decision-viewer/spec.md:85"
+  },
+  {
+   "from": "scn:decision-viewer/Флаг из состояния отличим от флага из журнала/Две подписи",
+   "to": "req:decision-viewer/Флаг из состояния отличим от флага из журнала",
+   "type": "verifies",
+   "at": "specs/decision-viewer/spec.md:87"
+  },
+  {
+   "from": "cap:warning-read-flag",
+   "to": "req:warning-read-flag/Заметка «прочитано» опознаёт строку атаки по разделу",
+   "type": "contains",
+   "at": "specs/warning-read-flag/spec.md:8"
+  },
+  {
+   "from": "req:warning-read-flag/Заметка «прочитано» опознаёт строку атаки по разделу",
+   "to": "rec:F-01",
+   "type": "traces",
+   "at": "specs/warning-read-flag/spec.md:9"
+  },
+  {
+   "from": "req:warning-read-flag/Заметка «прочитано» опознаёт строку атаки по разделу",
+   "to": "rec:F-02",
+   "type": "traces",
+   "at": "specs/warning-read-flag/spec.md:9"
+  },
+  {
+   "from": "req:warning-read-flag/Заметка «прочитано» опознаёт строку атаки по разделу",
+   "to": "rec:F-12",
+   "type": "traces",
+   "at": "specs/warning-read-flag/spec.md:9"
+  },
+  {
+   "from": "req:warning-read-flag/Заметка «прочитано» опознаёт строку атаки по разделу",
+   "to": "rec:F-13",
+   "type": "traces",
+   "at": "specs/warning-read-flag/spec.md:9"
+  },
+  {
+   "from": "req:warning-read-flag/Заметка «прочитано» опознаёт строку атаки по разделу",
+   "to": "rec:F-34",
+   "type": "traces",
+   "at": "specs/warning-read-flag/spec.md:9"
+  },
+  {
+   "from": "scn:warning-read-flag/Заметка «прочитано» опознаёт строку атаки по разделу/Заметка с разделом журнала",
+   "to": "req:warning-read-flag/Заметка «прочитано» опознаёт строку атаки по разделу",
+   "type": "verifies",
+   "at": "specs/warning-read-flag/spec.md:11"
+  },
+  {
+   "from": "scn:warning-read-flag/Заметка «прочитано» опознаёт строку атаки по разделу/Две строки одного раздела",
+   "to": "req:warning-read-flag/Заметка «прочитано» опознаёт строку атаки по разделу",
+   "type": "verifies",
+   "at": "specs/warning-read-flag/spec.md:16"
+  },
+  {
+   "from": "scn:warning-read-flag/Заметка «прочитано» опознаёт строку атаки по разделу/Заметка в общей строке замечаний",
+   "to": "req:warning-read-flag/Заметка «прочитано» опознаёт строку атаки по разделу",
+   "type": "verifies",
+   "at": "specs/warning-read-flag/spec.md:21"
+  },
+  {
+   "from": "scn:warning-read-flag/Заметка «прочитано» опознаёт строку атаки по разделу/Текст флага внутри спора флага не даёт",
+   "to": "req:warning-read-flag/Заметка «прочитано» опознаёт строку атаки по разделу",
+   "type": "verifies",
+   "at": "specs/warning-read-flag/spec.md:26"
+  },
+  {
+   "from": "scn:warning-read-flag/Заметка «прочитано» опознаёт строку атаки по разделу/Пробелы в заметке схлопываются",
+   "to": "req:warning-read-flag/Заметка «прочитано» опознаёт строку атаки по разделу",
+   "type": "verifies",
+   "at": "specs/warning-read-flag/spec.md:32"
+  },
+  {
+   "from": "req:warning-read-flag/Заметка «прочитано» опознаёт строку атаки по разделу",
+   "to": "rec:F-18",
+   "type": "traces",
+   "at": "specs/warning-read-flag/spec.md:37"
+  },
+  {
+   "from": "req:warning-read-flag/Заметка «прочитано» опознаёт строку атаки по разделу",
+   "to": "rec:F-19",
+   "type": "traces",
+   "at": "specs/warning-read-flag/spec.md:37"
+  },
+  {
+   "from": "req:warning-read-flag/Заметка «прочитано» опознаёт строку атаки по разделу",
+   "to": "rec:F-14",
+   "type": "traces",
+   "at": "specs/warning-read-flag/spec.md:38"
+  },
+  {
+   "from": "cap:warning-read-flag",
+   "to": "req:warning-read-flag/Флаг только у предупреждений",
+   "type": "contains",
+   "at": "specs/warning-read-flag/spec.md:40"
+  },
+  {
+   "from": "req:warning-read-flag/Флаг только у предупреждений",
+   "to": "rec:F-12",
+   "type": "traces",
+   "at": "specs/warning-read-flag/spec.md:41"
+  },
+  {
+   "from": "scn:warning-read-flag/Флаг только у предупреждений/Заметка с разделом блокера",
+   "to": "req:warning-read-flag/Флаг только у предупреждений",
+   "type": "verifies",
+   "at": "specs/warning-read-flag/spec.md:43"
+  },
+  {
+   "from": "scn:warning-read-flag/Флаг только у предупреждений/Невыводимое",
+   "to": "req:warning-read-flag/Флаг только у предупреждений",
+   "type": "verifies",
+   "at": "specs/warning-read-flag/spec.md:48"
+  },
+  {
+   "from": "scn:warning-read-flag/Флаг только у предупреждений/Понижённый блокер несёт переключатель",
+   "to": "req:warning-read-flag/Флаг только у предупреждений",
+   "type": "verifies",
+   "at": "specs/warning-read-flag/spec.md:53"
+  },
+  {
+   "from": "req:warning-read-flag/Флаг только у предупреждений",
+   "to": "rec:F-20",
+   "type": "traces",
+   "at": "specs/warning-read-flag/spec.md:58"
+  },
+  {
+   "from": "req:warning-read-flag/Флаг только у предупреждений",
+   "to": "rec:F-29",
+   "type": "traces",
+   "at": "specs/warning-read-flag/spec.md:59"
+  },
+  {
+   "from": "cap:warning-read-flag",
+   "to": "req:warning-read-flag/Заметка без строки флага не даёт",
+   "type": "contains",
+   "at": "specs/warning-read-flag/spec.md:61"
+  },
+  {
+   "from": "req:warning-read-flag/Заметка без строки флага не даёт",
+   "to": "rec:F-16",
+   "type": "traces",
+   "at": "specs/warning-read-flag/spec.md:62"
+  },
+  {
+   "from": "scn:warning-read-flag/Заметка без строки флага не даёт/Строка снята повтором атаки",
+   "to": "req:warning-read-flag/Заметка без строки флага не даёт",
+   "type": "verifies",
+   "at": "specs/warning-read-flag/spec.md:64"
+  },
+  {
+   "from": "cap:warning-read-flag",
+   "to": "req:warning-read-flag/Форма заметки в контракте без роста номера",
+   "type": "contains",
+   "at": "specs/warning-read-flag/spec.md:71"
+  },
+  {
+   "from": "req:warning-read-flag/Форма заметки в контракте без роста номера",
+   "to": "rec:F-03",
+   "type": "traces",
+   "at": "specs/warning-read-flag/spec.md:72"
+  },
+  {
+   "from": "req:warning-read-flag/Форма заметки в контракте без роста номера",
+   "to": "rec:F-09",
+   "type": "traces",
+   "at": "specs/warning-read-flag/spec.md:72"
+  },
+  {
+   "from": "req:warning-read-flag/Форма заметки в контракте без роста номера",
+   "to": "rec:F-17",
+   "type": "traces",
+   "at": "specs/warning-read-flag/spec.md:72"
+  },
+  {
+   "from": "scn:warning-read-flag/Форма заметки в контракте без роста номера/Журнал с заметкой у прежнего номера",
+   "to": "req:warning-read-flag/Форма заметки в контракте без роста номера",
+   "type": "verifies",
+   "at": "specs/warning-read-flag/spec.md:74"
+  },
+  {
+   "from": "cap:warning-read-flag",
+   "to": "req:warning-read-flag/Флаг не подменяет ответ на «вопрос человеку»",
+   "type": "contains",
+   "at": "specs/warning-read-flag/spec.md:81"
+  },
+  {
+   "from": "req:warning-read-flag/Флаг не подменяет ответ на «вопрос человеку»",
+   "to": "rec:F-29",
+   "type": "traces",
+   "at": "specs/warning-read-flag/spec.md:82"
+  },
+  {
+   "from": "scn:warning-read-flag/Флаг не подменяет ответ на «вопрос человеку»/Прочитанный вопрос человеку",
+   "to": "req:warning-read-flag/Флаг не подменяет ответ на «вопрос человеку»",
+   "type": "verifies",
+   "at": "specs/warning-read-flag/spec.md:84"
+  },
+  {
+   "from": "task:1.1",
+   "to": "scn:warning-read-flag/Заметка «прочитано» опознаёт строку атаки по разделу/Две строки одного раздела",
+   "type": "satisfies",
+   "at": "tasks.md:5"
+  },
+  {
+   "from": "task:1.1",
+   "to": "scn:warning-read-flag/Заметка «прочитано» опознаёт строку атаки по разделу/Заметка в общей строке замечаний",
+   "type": "satisfies",
+   "at": "tasks.md:5"
+  },
+  {
+   "from": "task:1.1",
+   "to": "scn:warning-read-flag/Заметка «прочитано» опознаёт строку атаки по разделу/Заметка с разделом журнала",
+   "type": "satisfies",
+   "at": "tasks.md:5"
+  },
+  {
+   "from": "task:1.1",
+   "to": "scn:warning-read-flag/Заметка «прочитано» опознаёт строку атаки по разделу/Пробелы в заметке схлопываются",
+   "type": "satisfies",
+   "at": "tasks.md:5"
+  },
+  {
+   "from": "task:1.1",
+   "to": "scn:warning-read-flag/Заметка «прочитано» опознаёт строку атаки по разделу/Текст флага внутри спора флага не даёт",
+   "type": "satisfies",
+   "at": "tasks.md:5"
+  },
+  {
+   "from": "task:1.1",
+   "to": "scn:warning-read-flag/Заметка без строки флага не даёт/Строка снята повтором атаки",
+   "type": "satisfies",
+   "at": "tasks.md:5"
+  },
+  {
+   "from": "task:1.2",
+   "to": "rec:F-09",
+   "type": "traces",
+   "at": "tasks.md:6"
+  },
+  {
+   "from": "task:1.2",
+   "to": "scn:warning-read-flag/Флаг только у предупреждений/Заметка с разделом блокера",
+   "type": "satisfies",
+   "at": "tasks.md:6"
+  },
+  {
+   "from": "task:1.2",
+   "to": "scn:warning-read-flag/Флаг только у предупреждений/Невыводимое",
+   "type": "satisfies",
+   "at": "tasks.md:6"
+  },
+  {
+   "from": "task:1.2",
+   "to": "scn:warning-read-flag/Флаг только у предупреждений/Понижённый блокер несёт переключатель",
+   "type": "satisfies",
+   "at": "tasks.md:6"
+  },
+  {
+   "from": "task:2.1",
+   "to": "scn:decision-viewer/Переключатель «прочитано» у строки предупреждения/Две строки одного раздела — одна отметка",
+   "type": "satisfies",
+   "at": "tasks.md:10"
+  },
+  {
+   "from": "task:2.1",
+   "to": "scn:decision-viewer/Переключатель «прочитано» у строки предупреждения/Старое хранилище без поля отметок",
+   "type": "satisfies",
+   "at": "tasks.md:10"
+  },
+  {
+   "from": "task:2.2",
+   "to": "scn:decision-viewer/Отметка «прочитано» ставится только действием человека/Показ режима без нажатий",
+   "type": "satisfies",
+   "at": "tasks.md:11"
+  },
+  {
+   "from": "task:2.2",
+   "to": "scn:decision-viewer/Переключатель «прочитано» у строки предупреждения/Отметка и спор вместе",
+   "type": "satisfies",
+   "at": "tasks.md:11"
+  },
+  {
+   "from": "task:2.2",
+   "to": "scn:decision-viewer/Переключатель «прочитано» у строки предупреждения/Отметка попадает в промпт",
+   "type": "satisfies",
+   "at": "tasks.md:11"
+  },
+  {
+   "from": "task:2.2",
+   "to": "scn:decision-viewer/Переключатель «прочитано» у строки предупреждения/Отметка у снятой строки не идёт в промпт",
+   "type": "satisfies",
+   "at": "tasks.md:11"
+  },
+  {
+   "from": "task:2.3",
+   "to": "scn:decision-viewer/Прочитанные строки не прячутся/Число карточек при заметках",
+   "type": "satisfies",
+   "at": "tasks.md:12"
+  },
+  {
+   "from": "task:2.3",
+   "to": "scn:decision-viewer/Флаг из состояния отличим от флага из журнала/Две подписи",
+   "type": "satisfies",
+   "at": "tasks.md:12"
+  },
+  {
+   "from": "task:2.3",
+   "to": "scn:decision-viewer/Флаг на карточке берётся из журнала после внесения/Внесённая отметка уходит из состояния",
+   "type": "satisfies",
+   "at": "tasks.md:12"
+  },
+  {
+   "from": "task:2.3",
+   "to": "scn:decision-viewer/Флаг на карточке берётся из журнала после внесения/Отметка до внесения",
+   "type": "satisfies",
+   "at": "tasks.md:12"
+  },
+  {
+   "from": "task:2.3",
+   "to": "scn:decision-viewer/Флаг на карточке берётся из журнала после внесения/Переключатель у внесённого флага неактивен",
+   "type": "satisfies",
+   "at": "tasks.md:12"
+  },
+  {
+   "from": "task:2.3",
+   "to": "scn:warning-read-flag/Флаг не подменяет ответ на «вопрос человеку»/Прочитанный вопрос человеку",
+   "type": "satisfies",
+   "at": "tasks.md:12"
+  },
+  {
+   "from": "task:2.4",
+   "to": "scn:warning-read-flag/Заметка «прочитано» опознаёт строку атаки по разделу/Заметка с разделом журнала",
+   "type": "satisfies",
+   "at": "tasks.md:13"
+  },
+  {
+   "from": "task:3.1",
+   "to": "scn:decision-viewer/Переключатель «прочитано» у строки предупреждения/Слово из чата",
+   "type": "satisfies",
+   "at": "tasks.md:17"
+  },
+  {
+   "from": "task:3.2",
+   "to": "rec:F-12",
+   "type": "traces",
+   "at": "tasks.md:18"
+  },
+  {
+   "from": "task:3.2",
+   "to": "scn:decision-viewer/Переключатель «прочитано» у строки предупреждения/Отметка попадает в промпт",
+   "type": "satisfies",
+   "at": "tasks.md:18"
+  },
+  {
+   "from": "task:4.1",
+   "to": "scn:artifact-attack/Вердикт атаки держат блокеры/Прочитанное предупреждение в итоге",
+   "type": "satisfies",
+   "at": "tasks.md:22"
+  },
+  {
+   "from": "task:4.1",
+   "to": "scn:artifact-attack/Заметка «прочитано» не меняет тяжесть и вердикт/Прочитанная строка в счёте",
+   "type": "satisfies",
+   "at": "tasks.md:22"
+  },
+  {
+   "from": "task:4.2",
+   "to": "scn:artifact-attack/Вердикт атаки держат блокеры/Повтор по составу не трогает прочитанную строку вне состава",
+   "type": "satisfies",
+   "at": "tasks.md:23"
+  },
+  {
+   "from": "task:4.2",
+   "to": "scn:artifact-attack/Вердикт атаки держат блокеры/Прочитанное предупреждение у стыка переписывается",
+   "type": "satisfies",
+   "at": "tasks.md:23"
+  },
+  {
+   "from": "task:5.1",
+   "to": "scn:warning-read-flag/Форма заметки в контракте без роста номера/Журнал с заметкой у прежнего номера",
+   "type": "satisfies",
+   "at": "tasks.md:27"
+  },
+  {
+   "from": "task:5.2",
+   "to": "scn:artifact-attack/Вердикт атаки держат блокеры/Повтор по составу не трогает прочитанную строку вне состава",
+   "type": "satisfies",
+   "at": "tasks.md:28"
+  },
+  {
+   "from": "task:6.2",
+   "to": "scn:decision-viewer/Флаг на карточке берётся из журнала после внесения/Внесённая отметка уходит из состояния",
+   "type": "satisfies",
+   "at": "tasks.md:34"
+  }
+ ],
+ "candidates": [
+  {
+   "a": "req:artifact-attack/Вердикт атаки держат блокеры",
+   "b": "req:artifact-attack/Заметка «прочитано» не меняет тяжесть и вердикт",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-25"
+   ]
+  },
+  {
+   "a": "req:artifact-attack/Вердикт атаки держат блокеры",
+   "b": "req:decision-viewer/Переключатель «прочитано» у строки предупреждения",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-13"
+   ]
+  },
+  {
+   "a": "req:artifact-attack/Вердикт атаки держат блокеры",
+   "b": "req:warning-read-flag/Заметка «прочитано» опознаёт строку атаки по разделу",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-13"
+   ]
+  },
+  {
+   "a": "req:decision-viewer/Отметка «прочитано» ставится только действием человека",
+   "b": "req:decision-viewer/Переключатель «прочитано» у строки предупреждения",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-26"
+   ]
+  },
+  {
+   "a": "req:decision-viewer/Переключатель «прочитано» у строки предупреждения",
+   "b": "req:decision-viewer/Прочитанные строки не прячутся",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-27"
+   ]
+  },
+  {
+   "a": "req:decision-viewer/Переключатель «прочитано» у строки предупреждения",
+   "b": "req:decision-viewer/Флаг на карточке берётся из журнала после внесения",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-14"
+   ]
+  },
+  {
+   "a": "req:decision-viewer/Переключатель «прочитано» у строки предупреждения",
+   "b": "req:warning-read-flag/Заметка «прочитано» опознаёт строку атаки по разделу",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-12",
+    "rec:F-13",
+    "rec:F-14"
+   ]
+  },
+  {
+   "a": "req:decision-viewer/Переключатель «прочитано» у строки предупреждения",
+   "b": "req:warning-read-flag/Флаг только у предупреждений",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-12"
+   ]
+  },
+  {
+   "a": "req:decision-viewer/Флаг из состояния отличим от флага из журнала",
+   "b": "req:decision-viewer/Флаг на карточке берётся из журнала после внесения",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-28"
+   ]
+  },
+  {
+   "a": "req:decision-viewer/Флаг на карточке берётся из журнала после внесения",
+   "b": "req:warning-read-flag/Заметка «прочитано» опознаёт строку атаки по разделу",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-14"
+   ]
+  },
+  {
+   "a": "req:decision-viewer/Флаг на карточке берётся из журнала после внесения",
+   "b": "req:warning-read-flag/Заметка без строки флага не даёт",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-16"
+   ]
+  },
+  {
+   "a": "req:warning-read-flag/Заметка «прочитано» опознаёт строку атаки по разделу",
+   "b": "req:warning-read-flag/Флаг только у предупреждений",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-12"
+   ]
+  },
+  {
+   "a": "req:warning-read-flag/Флаг не подменяет ответ на «вопрос человеку»",
+   "b": "req:warning-read-flag/Флаг только у предупреждений",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-29"
+   ]
+  }
+ ],
+ "roots": [
+  {
+   "prefix": "docs/",
+   "commit": ""
+  },
+  {
+   "prefix": "tools/",
+   "commit": ""
+  },
+  {
+   "prefix": "upstream/",
+   "commit": ""
+  },
+  {
+   "prefix": "CLAUDE.md",
+   "commit": ""
+  },
+  {
+   "prefix": "store/",
+   "commit": "531a2e84807eb4f3abe8fa3dacc3a53c6de95660"
+  },
+  {
+   "prefix": "playground/",
+   "commit": ""
+  },
+  {
+   "prefix": "md4h/",
+   "commit": ""
+  }
+ ],
+ "base": {
+  "artifact-attack": {
+   "Вердикт атаки держат блокеры": {
+    "numbers": [
+     "F-131.A"
+    ],
+    "scenarios": {
+     "Только предупреждения": "800a656c05587a20d0653b5133b4808c3886315b5936b072153d93a5e1efebd0",
+     "Есть блокер": "687ad63e7c523a79c5fca6e0b34b2bd91c64ac76c1db96c3e0db6d5fefa7be5d"
+    },
+    "text": "8c1ca6a325184f6b7f4b073d830438f857371f301b22632ea774d5c5bb926b17",
+    "traces": []
+   }
+  }
+ }
+}
