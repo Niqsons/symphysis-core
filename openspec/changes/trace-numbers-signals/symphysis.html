@@ -212,15 +212,15 @@
 const JOURNAL = {
  "title": "Журнал решений: trace-numbers-signals",
  "source": "decisions.json",
- "sha256": "fbf2ae03b031cc2d427bb878f240f4ce66c27e175f1ae587fdf8917241be2092",
+ "sha256": "802cc2cffd5e9c03b4013fc6f70ad77ef60e1a31483eca3dd8548c343da32b51",
  "stats": {
-  "records": 56,
-  "forks": 31,
+  "records": 64,
+  "forks": 39,
   "facts": 25,
-  "decided": 31,
+  "decided": 39,
   "parked": 2,
-  "evidence_total": 174,
-  "evidence_found": 174
+  "evidence_total": 183,
+  "evidence_found": 183
  },
  "records": [
   {
@@ -2668,7 +2668,7 @@ const JOURNAL = {
       {
        "path": "openspec/changes/trace-numbers-signals/decisions.md",
        "quote": "Граф читает обе формы и считает своей ссылку без имени или с именем этого изменения.",
-       "line": 307,
+       "line": 309,
        "verdict": "сверено",
        "found": true
       }
@@ -4086,6 +4086,587 @@ const JOURNAL = {
    ],
    "comments": [],
    "finding": ""
+  },
+  {
+   "id": "F-57",
+   "question": "[ветка] База мастера: мастер-спеки capability нет — база пуста, отсечения нет, все номера MODIFIED читаются как свои; что видит человек?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-21",
+    "F-25"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN требование MODIFIED в capability, у которой нет мастер-спеки WHEN скрипт собирает отчёт THEN все номера дельты дают связи, отчёт называет требование как без базы; цена: сценарий, тест на MODIFIED без мастера",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — MODIFIED без мастера отвергает `openspec validate` и скилл sync (MODIFIED нечего менять), до графа такая дельта не доходит; допустимо",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест подаёт MODIFIED без мастер-спеки и утверждает, что сборка не падает и связи есть; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — открыто до случая в живом изменении",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "B",
+    "why": "Такой дельты не бывает: `validate` и скилл sync отказывают на MODIFIED без требования в мастере, а сборка на ней и так не падает; A описывает невалидный вход."
+   },
+   "decision": {
+    "option": "B",
+    "word": "",
+    "date": "2026-11-07"
+   },
+   "reversibility": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Dismiss",
+    "reason": ""
+   },
+   "parking": [],
+   "dispute": "",
+   "consequences": "Такой дельты не бывает: `validate` и скилл sync отказывают на MODIFIED без требования в мастере, а сборка на ней и так не падает; A описывает невалидный вход.",
+   "evidence": [
+    {
+     "path": "trace/trace_graph.py",
+     "quote": "if not (root / rel).is_file():",
+     "line": 460,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "finding": ""
+  },
+  {
+   "id": "F-58",
+   "question": "[ветка] База мастера: два требования с одним именем в одной мастер-спеке — база берёт первое, ссылки второго отсекаются по чужому тексту молча",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-21",
+    "F-25"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN мастер-спека с двумя требованиями одного имени WHEN скрипт собирает отчёт THEN сигнал «неоднозначное имя» называет оба места мастера; цена: сценарий, тест, чтение дублей мастера при сборке",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — дублей в одной capability мастера нет: F-103 прежнего изменения нашёл одно имя в двух capability, а это разные ключи; уникальность имён при слиянии — B-07",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест подаёт мастер с дублем и утверждает, что база взяла первое и сборка не падает; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — открыто до B-07: там имена требований получают уникальность при слиянии графов",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "B",
+    "why": "В мастере дублей внутри capability нет, а их устранение — предмет B-07 следующим изменением; A заводит сигнал о мастере в графе изменения, где мастер не его артефакт."
+   },
+   "decision": {
+    "option": "B",
+    "word": "",
+    "date": "2026-11-07"
+   },
+   "reversibility": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Dismiss",
+    "reason": ""
+   },
+   "parking": [],
+   "dispute": "",
+   "consequences": "В мастере дублей внутри capability нет, а их устранение — предмет B-07 следующим изменением; A заводит сигнал о мастере в графе изменения, где мастер не его артефакт.",
+   "evidence": [
+    {
+     "path": "trace/trace_graph.py",
+     "quote": "if req.name not in found:",
+     "line": 472,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "finding": ""
+  },
+  {
+   "id": "F-59",
+   "question": "[ветка] Отсечение у дочернего: родитель добавлен этим же изменением (ADDED) — отсечения нет, все номера дочернего свои; правило F-150 прежнего изменения остаётся при полной ссылке?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-21"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN дочернее ADDED с `(F-20)`, чей родитель тоже ADDED в этом изменении WHEN скрипт собирает граф THEN отсечения нет, `(F-20)` даёт связь; цена: сценарий, тест уже есть (`test_child_added_parent_added_in_change_cuts_nothing`)",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — правило F-150 прежнего изменения закреплено тестом и этим изменением не меняется: у родителя ADDED нет мастер-текста, отсекать нечего; допустимо",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест прежнего изменения остаётся и переводится на ссылки; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — открыто до деления длинных требований в следующем изменении",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "B",
+    "why": "Ветка не меняется этим изменением: у родителя ADDED нет мастер-текста, и тест прежнего изменения её держит; A повторяет в спеке то, что уже закреплено тестом."
+   },
+   "decision": {
+    "option": "B",
+    "word": "",
+    "date": "2026-11-07"
+   },
+   "reversibility": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Dismiss",
+    "reason": ""
+   },
+   "parking": [],
+   "dispute": "",
+   "consequences": "Ветка не меняется этим изменением: у родителя ADDED нет мастер-текста, и тест прежнего изменения её держит; A повторяет в спеке то, что уже закреплено тестом.",
+   "evidence": [
+    {
+     "path": "trace/trace_graph.py",
+     "quote": "if parent is not None and (sections[parent] != \"MODIFIED\" or parent in carried):",
+     "line": 828,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "finding": ""
+  },
+  {
+   "id": "F-60",
+   "question": "[ветка] Снятие комментариев: незакрытый `\u003c!--` съедает текст до `-->` или до конца блока — теперь и у сценариев; сценарий без текста выпадает из графа молча",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-26"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN сценарий с незакрытым `\u003c!--` WHEN скрипт разбирает спеку THEN текст сценария кончается перед `\u003c!--`, остальное не текст, как у форка; цена: сценарий, тест",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — так же читает форк (незакрытый комментарий до конца файла), тест сверки счётчиков с `openspec show --json` расхождение поймает; допустимо",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест сверки счётчиков получает фикстуру с незакрытым комментарием в сценарии и утверждает равенство с OpenSpec; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — открыто до случая в живом изменении",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "C",
+    "why": "Край известен, а в прозу спеки не ложится: верный ответ — «как форк», и держит его тест паритета с OpenSpec на фикстуре; A пишет в спеку правило разбора форка, B оставляет паритет без фикстуры."
+   },
+   "decision": {
+    "option": "C",
+    "word": "",
+    "date": "2026-11-07"
+   },
+   "reversibility": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Backstop",
+    "reason": ""
+   },
+   "parking": [],
+   "dispute": "",
+   "consequences": "тест-страховка: тест сверки счётчиков с `openspec show --json` получает фикстуру с незакрытым `\u003c!--` в сценарии и утверждает равенство с OpenSpec",
+   "evidence": [
+    {
+     "path": "trace/trace_graph.py",
+     "quote": "in_comment, rest = (False, rest[end + 3:]) if end >= 0 else (True, \"\")",
+     "line": 427,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "finding": ""
+  },
+  {
+   "id": "F-61",
+   "question": "[ветка] Прежняя база при заморозке: снимок формата 1 лежит в `graph/`, а скрипт читает формат 2 — записи базы в числах негодны, база молча снимается с живого мастера; что видит человек?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-25",
+    "F-19"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN `graph/req-graph.json` формата 1 с базой в числах WHEN идёт заморозка THEN причина сборки называет «формат 1, а скрипт читает 2», записи прежней базы не читаются, база снята с живого мастера; цена: сценарий, тест, правило годности записи базы на ссылки",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — переход одноразовый: перед финальной заморозкой этого изменения удалить `graph/` руками; допустимо для единственной установки",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест кладёт рядом снимок формата 1 и утверждает, что заморозка не падает и база взята из живого мастера; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — открыто до B-07: следующее изменение заморозится уже новым кодом",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Это ветка самого изменения: первый снимок ляжет старым кодом, финальная заморозка — новым, и чтение чисел как ссылок дало бы отсечение не по тем ключам молча; живой мастер до синхронизации — верная база, и это надо назвать сценарием."
+   },
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-07"
+   },
+   "reversibility": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Specify",
+    "reason": ""
+   },
+   "parking": [],
+   "dispute": "",
+   "consequences": "в spec.md: Снимок прежнего формата при заморозке",
+   "evidence": [
+    {
+     "path": "trace/trace_graph.py",
+     "quote": "return {cap: {name: entry for name, entry in reqs.items() if isinstance(name, str) and _entry_fits(entry)}",
+     "line": 498,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "finding": ""
+  },
+  {
+   "id": "F-62",
+   "question": "[ветка] Маркер под сценарием с якорем: `\u003c!-- demo/F-47 -->` в блоке, скопированном из мастера, регулярка маркера не принимает — номера нет; это потеря или верный исход?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-24",
+    "F-32"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN MODIFIED с перенесённым сценарием и маркером `\u003c!-- demo/F-47 -->` WHEN скрипт собирает граф THEN маркер читается как ссылка с якорем другого изменения: номера не даёт, сигнала нет, свой голый маркер дельты читается как прежде; цена: сценарий, тест, разбор якоря в маркере",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — маркер чужого изменения и так не должен давать номер: сценарий из мастера своих номеров не даёт; свои маркеры в дельте голые (F-24), поведение верное без правки",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест подаёт маркер с якорем и утверждает, что сборка не падает и номера нет; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — открыто до B-08: уровень якорей у сценариев решит, читать ли маркер как связь между изменениями",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Верный исход сегодня получается случайно — регулярка не совпала; при F-22.A якорь — законная форма, и разбор маркера должен читать его, а не спотыкаться; иначе свой маркер с якорем (например после правки руками) молча пропадёт."
+   },
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-07"
+   },
+   "reversibility": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Specify",
+    "reason": ""
+   },
+   "parking": [],
+   "dispute": "",
+   "consequences": "в spec.md: Маркер с якорем под сценарием",
+   "evidence": [
+    {
+     "path": "trace/trace_graph.py",
+     "quote": "if _MARK_BODY.fullmatch(comment.group(1)):",
+     "line": 1334,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "finding": ""
+  },
+  {
+   "id": "F-63",
+   "question": "[ветка] Правило в скилле sync: `rules` применяются к содержимому и форме мастера и «не меняют шаги», подсказок `operations` для sync у форка нет — строка «вызови скрипт» может не стать вызовом",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-35",
+    "F-30"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — правило пишется как ограничение содержимого мастера: «ссылки на записи этого изменения в мастере — в форме якоря `<изменение>/F-NN`; форму даёт скрипт `<команда>`, руками не переписывать», подсказка `operations.archive.guidance` повторяет вызов; GIVEN `/opsx:sync` без архива WHEN модель применяет `rules` к мастеру THEN мастер несёт якоря, вывод скрипта в чате; цена: формулировка правила и подсказки, сценарий, проверка — суждение (F-51)",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — модель и так прочтёт строку правила как шаг, как читала правило о следе; допустимо",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест текста правила: строка `rules.specs` называет форму якоря и команду скрипта; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — открыто до правки форка: `sync` в `OPERATION_IDS` и подсказка для синхронизации (C17)",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "По тексту скилла строка-шаг в `rules` может быть отброшена молча, а строка о содержимом мастера обязательна к применению и ведёт к тому же вызову; D правит форк ради того, что даёт формулировка, B надеется на чтение вопреки тексту скилла."
+   },
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-07"
+   },
+   "reversibility": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Specify",
+    "reason": ""
+   },
+   "parking": [],
+   "dispute": "",
+   "consequences": "в spec.md: Правило как ограничение содержимого",
+   "evidence": [
+    {
+     "path": ".claude/skills/openspec-sync-specs/SKILL.md",
+     "quote": "by this merge. Artifact rules are not operation guidance and cannot change",
+     "line": 100,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "upstream/openspec/src/core/project-config.ts",
+     "quote": "export const OPERATION_IDS = ['apply', 'archive'] as const;",
+     "line": 8,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "finding": ""
+  },
+  {
+   "id": "F-64",
+   "question": "[pre-mortem] CLI `openspec archive` поверх мастера с якорями: сверка «уже применено» идёт по равенству текста дельты и мастера, якоря равенство ломают — блок перезаписывается дельтой с голыми номерами молча",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-30",
+    "F-35"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — требование MUST NOT в `record-anchors`: после переписывания к изменению не применяется CLI `openspec archive`, скилл archive переносит каталог сам; GIVEN мастер с якорями WHEN архивация THEN идёт скилл `/opsx:archive`, CLI не вызывается; проверка — суждение: человек по команде в чате; цена: требование, сценарий, строка в GUIDE",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — проект CLI-архивом не пользуется (F-30): скилл archive переносит каталог `mv`; допустимо, пока это так",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест не пишется: CLI форка вне тестов ядра; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — открыто до правки форка: сверка по равенству с учётом якорей (C17)",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Потеря якорей при случайном `openspec archive` молчит: блок выглядит верным, а коллизия возвращается у следующего изменения; запрет дешевле правки форка и виден в GUIDE, B держится на привычке, которую новый читатель GUIDE не знает."
+   },
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-07"
+   },
+   "reversibility": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Specify",
+    "reason": ""
+   },
+   "parking": [],
+   "dispute": "",
+   "consequences": "проверка: judgment — человек по команде архивации в чате; в spec.md: CLI-архив не применяется к мастеру с якорями",
+   "evidence": [
+    {
+     "path": "upstream/openspec/src/core/specs-apply.ts",
+     "quote": "if (normalizeBlockRaw(currentBlock.raw) !== normalizeBlockRaw(mod.raw)) {",
+     "line": 570,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "finding": ""
   }
  ],
  "notes": [
@@ -4121,7 +4702,7 @@ const SCHEME = {
 };
 const HELP = {
  "contract": 3,
- "taken_at": "2026-11-07T16:59:38+03:00",
+ "taken_at": "2026-11-07T17:17:39+03:00",
  "versions": {
   "openspec": "1.16.1+symphysis.5",
   "symphysis": "0.1.0+9b01213"
@@ -4129,10 +4710,10 @@ const HELP = {
  "change": "trace-numbers-signals",
  "changes": null,
  "error": null,
- "current_step": "consequences",
- "current_text": "Следующий шаг по файлам — `consequences`, ход модели.",
+ "current_step": "design",
+ "current_text": "Следующий шаг по файлам — `design`, ход модели.",
  "turn": "model",
- "next_by_status": "consequences",
+ "next_by_status": "design",
  "forks": {
   "open": 0,
   "parked": 0
@@ -4419,7 +5000,7 @@ const HELP = {
   },
   {
    "id": "consequences",
-   "state": "ready",
+   "state": "done",
    "turn": "model",
    "optional": false,
    "blocks": [
@@ -4430,10 +5011,10 @@ const HELP = {
    "files": [
     {
      "path": "openspec/changes/trace-numbers-signals/consequences.md",
-     "exists": false
+     "exists": true
     }
    ],
-   "file_note": null,
+   "file_note": "файл есть, содержание не проверялось",
    "texts": {
     "title": "Опись последствий",
     "why": "Что делает код, на который опирается изменение, когда что-то идёт не так, и есть ли на это сценарий в спецификациях. Здесь ветки отказа и допущения конструкции доходят до человека раньше, чем появится дизайн.",
@@ -4456,7 +5037,7 @@ const HELP = {
   },
   {
    "id": "design",
-   "state": "blocked",
+   "state": "ready",
    "turn": "model",
    "optional": false,
    "blocks": [
@@ -4464,9 +5045,7 @@ const HELP = {
     "attack-artifacts"
    ],
    "stops_apply": false,
-   "waits_for": [
-    "consequences"
-   ],
+   "waits_for": [],
    "files": [
     {
      "path": "openspec/changes/trace-numbers-signals/design.md",
@@ -4675,10 +5254,12 @@ const HELP = {
   ".claude/skills/symphysis-prohibition-probe/SKILL.md": ".claude/skills/symphysis-prohibition-probe/SKILL.md",
   ".claude/skills/symphysis-research/SKILL.md": ".claude/skills/symphysis-research/SKILL.md",
   ".claude/skills/symphysis-viewer/SKILL.md": ".claude/skills/symphysis-viewer/SKILL.md",
+  "consequences.md": "openspec/changes/trace-numbers-signals/consequences.md",
   "decisions.json": "openspec/changes/trace-numbers-signals/decisions.json",
   "decisions.md": "openspec/changes/trace-numbers-signals/decisions.md",
   "edge-probe.md": "openspec/changes/trace-numbers-signals/edge-probe.md",
   "intent.md": "openspec/changes/trace-numbers-signals/intent.md",
+  "openspec/changes/trace-numbers-signals/consequences.md": "openspec/changes/trace-numbers-signals/consequences.md",
   "openspec/changes/trace-numbers-signals/decisions.json": "openspec/changes/trace-numbers-signals/decisions.json",
   "openspec/changes/trace-numbers-signals/intent.md": "openspec/changes/trace-numbers-signals/intent.md",
   "openspec/changes/trace-numbers-signals/proposal.md": "openspec/changes/trace-numbers-signals/proposal.md",
@@ -4711,6 +5292,7 @@ const LINKS = {
   ".symphysis/tools/journal-roots.json": "../../../.symphysis/tools/journal-roots.json",
   "CLAUDE.md": "../../../CLAUDE.md",
   "answers/2026-11-07.md": "answers/2026-11-07.md",
+  "consequences.md": "consequences.md",
   "decisions.json": "decisions.json",
   "decisions.md": "decisions.md",
   "docs/GUIDE.md": "../../../docs/GUIDE.md",
@@ -4723,6 +5305,7 @@ const LINKS = {
   "openspec/changes/archive/2026-11-06-trace-graph/research/F-131.md": "../archive/2026-11-06-trace-graph/research/F-131.md",
   "openspec/changes/archive/2026-11-07-module-structure/graph/report.md": "../archive/2026-11-07-module-structure/graph/report.md",
   "openspec/changes/archive/2026-11-07-module-structure/specs/decision-viewer/spec.md": "../archive/2026-11-07-module-structure/specs/decision-viewer/spec.md",
+  "openspec/changes/trace-numbers-signals/consequences.md": "consequences.md",
   "openspec/changes/trace-numbers-signals/decisions.json": "decisions.json",
   "openspec/changes/trace-numbers-signals/decisions.md": "decisions.md",
   "openspec/changes/trace-numbers-signals/intent.md": "intent.md",
@@ -4766,6 +5349,7 @@ const LINKS = {
   "trace/trace_graph.py": "../../../trace/trace_graph.py",
   "upstream/openspec/UPSTREAM.md": "../../../../symphysis/upstream/openspec/UPSTREAM.md",
   "upstream/openspec/src/core/archive.ts": "../../../../symphysis/upstream/openspec/src/core/archive.ts",
+  "upstream/openspec/src/core/project-config.ts": "../../../../symphysis/upstream/openspec/src/core/project-config.ts",
   "upstream/openspec/src/core/specs-apply.ts": "../../../../symphysis/upstream/openspec/src/core/specs-apply.ts"
  }
 };
