@@ -1,0 +1,124 @@
+[!!] критерий без требования: F-01 «какой шаг конвейера сейчас выполняется?» — decisions.json:81
+[!!] критерий без требования: F-07 «базово её выведем в html» — decisions.json:249
+[!!] решение без требования и задачи: F-26.B Что делать с пропуском `security`? — decisions.json:1323
+[!!] решение без требования и задачи: F-38.A Как разойтись с активным `decision-scheme` до спек справки? — decisions.json:2229
+[!!] Specify без сценария: F-40 — decisions.json:2358
+[!!] Specify без сценария: F-41 — decisions.json:2439
+[!!] Specify без сценария: F-42 — decisions.json:2520
+[!!] Specify без сценария: F-43 — decisions.json:2593
+[!!] Specify без сценария: F-50 — decisions.json:3127
+[!!] Specify без сценария: F-51 — decisions.json:3200
+[!!] Specify без сценария: F-57 — decisions.json:3570
+[!!] Specify без сценария: F-58 — decisions.json:3641
+[!!] Specify без сценария: F-64 — decisions.json:4077
+[!!] Specify без сценария: F-67 — decisions.json:4308
+[!!] Specify без сценария: F-69 — decisions.json:4455
+[!!] требование без записи: decision-journal/Журнал — JSON-источник, markdown и HTML — рендер из него — specs/decision-journal/spec.md:5
+[!!] сценарий MODIFIED с прежним именем и другим текстом: decision-journal/Журнал — JSON-источник, markdown и HTML — рендер из него/Повторный рендер без правок даёт тот же файл — specs/decision-journal/spec.md:20
+[!!] сценарий MODIFIED с прежним именем и другим текстом: decision-viewer/Просмотрщик — один HTML из своего шаблона с тремя режимами/Сборка с атакой — specs/decision-viewer/spec.md:8
+[!!] сценарий MODIFIED с прежним именем и другим текстом: decision-viewer/Просмотрщик — один HTML из своего шаблона с тремя режимами/Соседнего файла нет — specs/decision-viewer/spec.md:33
+[!!] требование без задачи: decision-viewer/`render-html` встраивает снимок справки, сбой страницу не роняет — specs/decision-viewer/spec.md:47
+[!!] сценарий без задачи: decision-viewer/`render-html` встраивает снимок справки, сбой страницу не роняет/Снимок на странице — specs/decision-viewer/spec.md:50
+[!!] сценарий без задачи: decision-viewer/`render-html` встраивает снимок справки, сбой страницу не роняет/Форка нет — specs/decision-viewer/spec.md:55
+[!!] сценарий без задачи: decision-viewer/`render-html` встраивает снимок справки, сбой страницу не роняет/Файлы изменились после снимка — specs/decision-viewer/spec.md:60
+[!!] сценарий без задачи: decision-viewer/`render-html` встраивает снимок справки, сбой страницу не роняет/Журнал из другого проекта — specs/decision-viewer/spec.md:65
+[!!] сценарий без задачи: decision-viewer/`render-html` встраивает снимок справки, сбой страницу не роняет/Команда пересборки рядом со снимком — specs/decision-viewer/spec.md:70
+[!!] требование без задачи: decision-viewer/Панель показывает либо схему, либо справку — specs/decision-viewer/spec.md:78
+[!!] сценарий без задачи: decision-viewer/Панель показывает либо схему, либо справку/Переключение — specs/decision-viewer/spec.md:81
+[!!] сценарий без задачи: decision-viewer/Панель показывает либо схему, либо справку/Первое открытие панели — specs/decision-viewer/spec.md:86
+[!!] сценарий без задачи: decision-viewer/Панель показывает либо схему, либо справку/Выбор сохранился — specs/decision-viewer/spec.md:91
+[!!] сценарий без задачи: decision-viewer/Панель показывает либо схему, либо справку/Режимы страницы не тронуты — specs/decision-viewer/spec.md:96
+[!!] сценарий без задачи: decision-viewer/Панель показывает либо схему, либо справку/Схемы нет — specs/decision-viewer/spec.md:101
+[!!] сценарий без задачи: decision-viewer/Панель показывает либо схему, либо справку/Подпись кнопки панели — specs/decision-viewer/spec.md:106
+[!!] требование без задачи: decision-viewer/Другие шаги открываются листанием и выбором пункта — specs/decision-viewer/spec.md:114
+[!!] сценарий без задачи: decision-viewer/Другие шаги открываются листанием и выбором пункта/Открытие на текущем шаге — specs/decision-viewer/spec.md:117
+[!!] сценарий без задачи: decision-viewer/Другие шаги открываются листанием и выбором пункта/Выбор пункта — specs/decision-viewer/spec.md:122
+[!!] сценарий без задачи: decision-viewer/Другие шаги открываются листанием и выбором пункта/Листание до конца списка — specs/decision-viewer/spec.md:127
+[!!] требование без задачи: decision-viewer/Снимок справки не несёт абсолютных путей — specs/decision-viewer/spec.md:135
+[!!] сценарий без задачи: decision-viewer/Снимок справки не несёт абсолютных путей/Каталог с заметным именем — specs/decision-viewer/spec.md:138
+[!!] сценарий без задачи: decision-viewer/Снимок справки не несёт абсолютных путей/Причина сбоя без каталога — specs/decision-viewer/spec.md:143
+[!!] требование без задачи: decision-viewer/Шапка страницы показывает закрытые задачи — specs/decision-viewer/spec.md:151
+[!!] сценарий без задачи: decision-viewer/Шапка страницы показывает закрытые задачи/Задачи идут на странице — specs/decision-viewer/spec.md:154
+[!!] сценарий без задачи: decision-viewer/Шапка страницы показывает закрытые задачи/Задач в снимке нет — specs/decision-viewer/spec.md:159
+[!!] сценарий без задачи: decision-viewer/Шапка страницы показывает закрытые задачи/Чисел развилок на панели нет — specs/decision-viewer/spec.md:164
+[!!] требование без задачи: decision-viewer/`render-html` называет несформированную справку — specs/decision-viewer/spec.md:172
+[!!] сценарий без задачи: decision-viewer/`render-html` называет несформированную справку/Справка не сформирована — specs/decision-viewer/spec.md:175
+[!!] сценарий без задачи: decision-viewer/`render-html` называет несформированную справку/Журнал вне изменений — specs/decision-viewer/spec.md:180
+[!!] требование без задачи: decision-viewer/Путь атаки идёт от корня проекта — specs/decision-viewer/spec.md:188
+[!!] сценарий без задачи: decision-viewer/Путь атаки идёт от корня проекта/Абсолютный и относительный путь — specs/decision-viewer/spec.md:191
+[!!] сценарий без задачи: decision-viewer/Путь атаки идёт от корня проекта/Обратные косые — specs/decision-viewer/spec.md:196
+[!!] сценарий без задачи: decision-viewer/Путь атаки идёт от корня проекта/Файл атаки вне корня — specs/decision-viewer/spec.md:201
+[!!] требование без задачи: plugin-core-contract/Имя страницы и вывод справки входят в контракт — specs/plugin-core-contract/spec.md:5
+[!!] сценарий без задачи: plugin-core-contract/Имя страницы и вывод справки входят в контракт/Старый плагин и новое ядро — specs/plugin-core-contract/spec.md:8
+[!!] сценарий без задачи: plugin-core-contract/Имя страницы и вывод справки входят в контракт/Новый плагин и старое ядро — specs/plugin-core-contract/spec.md:13
+[!!] сценарий без задачи: plugin-core-contract/Имя страницы и вывод справки входят в контракт/Номера совпали — specs/plugin-core-contract/spec.md:18
+[!!] сценарий без задачи: plugin-core-contract/Имя страницы и вывод справки входят в контракт/Один номер в двух выводах — specs/plugin-core-contract/spec.md:23
+[!!] требование без задачи: project-installer/`install` ставит скрипт справки и тексты шагов — specs/project-installer/spec.md:5
+[!!] сценарий без задачи: project-installer/`install` ставит скрипт справки и тексты шагов/Новый проект — specs/project-installer/spec.md:8
+[!!] сценарий без задачи: project-installer/`install` ставит скрипт справки и тексты шагов/Обновление без `--force` — specs/project-installer/spec.md:13
+[!!] требование без задачи: project-installer/`install` записывает версию symphysis — specs/project-installer/spec.md:21
+[!!] сценарий без задачи: project-installer/`install` записывает версию symphysis/Установка из клона — specs/project-installer/spec.md:24
+[!!] сценарий без задачи: project-installer/`install` записывает версию symphysis/Установка без git — specs/project-installer/spec.md:29
+[!!] сценарий без задачи: project-installer/`install` записывает версию symphysis/Клон обновлён, инструменты нет — specs/project-installer/spec.md:34
+[!!] сценарий без задачи: project-installer/`install` записывает версию symphysis/Сигнала `check` нет — specs/project-installer/spec.md:39
+[!!] сценарий без задачи: project-installer/`install` записывает версию symphysis/Payload старее исходников — specs/project-installer/spec.md:44
+[!!] требование без задачи: step-help/Скрипт считает текущий шаг и чей ход — specs/step-help/spec.md:8
+[!!] сценарий без задачи: step-help/Скрипт считает текущий шаг и чей ход/Открытая развилка при готовом следующем шаге — specs/step-help/spec.md:11
+[!!] сценарий без задачи: step-help/Скрипт считает текущий шаг и чей ход/Припаркованная развилка — specs/step-help/spec.md:16
+[!!] сценарий без задачи: step-help/Скрипт считает текущий шаг и чей ход/Журнал не читается — specs/step-help/spec.md:21
+[!!] сценарий без задачи: step-help/Скрипт считает текущий шаг и чей ход/Несколько готовых шагов после `specs` — specs/step-help/spec.md:26
+[!!] сценарий без задачи: step-help/Скрипт считает текущий шаг и чей ход/Вызванная атака — specs/step-help/spec.md:31
+[!!] сценарий без задачи: step-help/Скрипт считает текущий шаг и чей ход/Задачи идут — specs/step-help/spec.md:36
+[!!] сценарий без задачи: step-help/Скрипт считает текущий шаг и чей ход/Задачи закрыты — specs/step-help/spec.md:41
+[!!] сценарий без задачи: step-help/Скрипт считает текущий шаг и чей ход/Реализация заблокирована — specs/step-help/spec.md:46
+[!!] сценарий без задачи: step-help/Скрипт считает текущий шаг и чей ход/Активных изменений нет — specs/step-help/spec.md:51
+[!!] сценарий без задачи: step-help/Скрипт считает текущий шаг и чей ход/Изменение только что создано — specs/step-help/spec.md:56
+[!!] сценарий без задачи: step-help/Скрипт считает текущий шаг и чей ход/Первые шаги пропущены — specs/step-help/spec.md:61
+[!!] сценарий без задачи: step-help/Скрипт считает текущий шаг и чей ход/Текущий шаг совпадает с командой — specs/step-help/spec.md:66
+[!!] требование без задачи: step-help/Справка не выдаёт наличие файла за сделанную работу — specs/step-help/spec.md:74
+[!!] сценарий без задачи: step-help/Справка не выдаёт наличие файла за сделанную работу/Пустой файл шага — specs/step-help/spec.md:77
+[!!] сценарий без задачи: step-help/Справка не выдаёт наличие файла за сделанную работу/Формулировка текущего шага — specs/step-help/spec.md:82
+[!!] требование без задачи: step-help/Скрипт отдаёт JSON и работает без журнала и без изменения — specs/step-help/spec.md:90
+[!!] сценарий без задачи: step-help/Скрипт отдаёт JSON и работает без журнала и без изменения/Журнала ещё нет — specs/step-help/spec.md:93
+[!!] сценарий без задачи: step-help/Скрипт отдаёт JSON и работает без журнала и без изменения/Одно активное изменение — specs/step-help/spec.md:98
+[!!] сценарий без задачи: step-help/Скрипт отдаёт JSON и работает без журнала и без изменения/Два активных изменения — specs/step-help/spec.md:103
+[!!] сценарий без задачи: step-help/Скрипт отдаёт JSON и работает без журнала и без изменения/Изменения с таким именем нет — specs/step-help/spec.md:108
+[!!] сценарий без задачи: step-help/Скрипт отдаёт JSON и работает без журнала и без изменения/Вызов `--help` — specs/step-help/spec.md:113
+[!!] требование без задачи: step-help/Скрипт находит форк как инсталлятор и называет сбой — specs/step-help/spec.md:120
+[!!] сценарий без задачи: step-help/Скрипт находит форк как инсталлятор и называет сбой/Форка нет — specs/step-help/spec.md:123
+[!!] сценарий без задачи: step-help/Скрипт находит форк как инсталлятор и называет сбой/В `PATH` не форк — specs/step-help/spec.md:128
+[!!] сценарий без задачи: step-help/Скрипт находит форк как инсталлятор и называет сбой/Заданный путь важнее `PATH` — specs/step-help/spec.md:133
+[!!] сценарий без задачи: step-help/Скрипт находит форк как инсталлятор и называет сбой/Шим на Windows — specs/step-help/spec.md:138
+[!!] сценарий без задачи: step-help/Скрипт находит форк как инсталлятор и называет сбой/`openspec` завис — specs/step-help/spec.md:143
+[!!] сценарий без задачи: step-help/Скрипт находит форк как инсталлятор и называет сбой/Телеметрия форка подавлена — specs/step-help/spec.md:148
+[!!] требование без задачи: step-help/Тексты шагов лежат в `steps.md`, раздел на шаг — specs/step-help/spec.md:156
+[!!] сценарий без задачи: step-help/Тексты шагов лежат в `steps.md`, раздел на шаг/Новый артефакт без текста — specs/step-help/spec.md:159
+[!!] сценарий без задачи: step-help/Тексты шагов лежат в `steps.md`, раздел на шаг/Раздел без подраздела — specs/step-help/spec.md:164
+[!!] сценарий без задачи: step-help/Тексты шагов лежат в `steps.md`, раздел на шаг/Старая схема в проекте — specs/step-help/spec.md:169
+[!!] требование без задачи: step-help/Страница шага отвечает на вопросы намерения — specs/step-help/spec.md:177
+[!!] сценарий без задачи: step-help/Страница шага отвечает на вопросы намерения/Шаг, от которого зависит другой — specs/step-help/spec.md:180
+[!!] сценарий без задачи: step-help/Страница шага отвечает на вопросы намерения/Шаг останавливает реализацию — specs/step-help/spec.md:185
+[!!] сценарий без задачи: step-help/Страница шага отвечает на вопросы намерения/Необязательный шаг — specs/step-help/spec.md:190
+[!!] сценарий без задачи: step-help/Страница шага отвечает на вопросы намерения/Файлов шага ещё нет и уже есть — specs/step-help/spec.md:195
+[!!] сценарий без задачи: step-help/Страница шага отвечает на вопросы намерения/Концы списка — specs/step-help/spec.md:200
+[!!] требование без задачи: step-help/Версии показаны справочно и не проверяются — specs/step-help/spec.md:208
+[!!] сценарий без задачи: step-help/Версии показаны справочно и не проверяются/Файла версии нет — specs/step-help/spec.md:211
+[!!] сценарий без задачи: step-help/Версии показаны справочно и не проверяются/Версии разошлись — specs/step-help/spec.md:216
+[!!] требование без задачи: step-help/Правила намерения открываются кнопкой и не зависят от шагов — specs/step-help/spec.md:224
+[!!] сценарий без задачи: step-help/Правила намерения открываются кнопкой и не зависят от шагов/Кнопка на любом шаге — specs/step-help/spec.md:227
+[!!] сценарий без задачи: step-help/Правила намерения открываются кнопкой и не зависят от шагов/Кнопка при сбое расчёта — specs/step-help/spec.md:232
+[!!] сценарий без задачи: step-help/Правила намерения открываются кнопкой и не зависят от шагов/Текст в выводе при сбое — specs/step-help/spec.md:237
+[!!] сценарий без задачи: step-help/Правила намерения открываются кнопкой и не зависят от шагов/Раздела нет — specs/step-help/spec.md:242
+[!!] сценарий без задачи: step-help/Правила намерения открываются кнопкой и не зависят от шагов/Текст поменялся — specs/step-help/spec.md:247
+[!!] требование без задачи: step-help/Справка не становится гейтом и не меняет файлы — specs/step-help/spec.md:255
+[!!] сценарий без задачи: step-help/Справка не становится гейтом и не меняет файлы/Дерево проекта не меняется — specs/step-help/spec.md:258
+[!!] сценарий без задачи: step-help/Справка не становится гейтом и не меняет файлы/Скиллы о скрипте не знают — specs/step-help/spec.md:263
+[!!] задача ни к чему: 1.1 — tasks.md:25
+[!!] задача ни к чему: 1.3 — tasks.md:27
+[!!] задача ни к чему: 1.7 — tasks.md:31
+[!!] задача ни к чему: 2.1 — tasks.md:35
+[!!] задача ни к чему: 6.1 — tasks.md:57
+[!!] задача ни к чему: 7.1 — tasks.md:63
+[!!] задача ни к чему: 8.1 — tasks.md:68
+[!!] задача ни к чему: 8.2 — tasks.md:69
+[!!] задача ни к чему: 9.4 — tasks.md:76

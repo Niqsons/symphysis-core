@@ -1,0 +1,7 @@
+до патча: связей traces от требований 42; после патча (правило A): 46
+только в «до патча»: 0
+только в «после патча (правило A)»: 4
+  req:decision-viewer/Негодная строка таблицы атаки — ошибка с местом -> rec:F-46 @ specs/decision-viewer/spec.md:108  запись: «Правка пути по F-26 даёт MODIFIED требования `decision-viewer` «Просмотрщик — один HTML из своего ша…»
+  req:decision-viewer/Просмотрщик — один HTML из своего шаблона с тремя режимами -> rec:F-26 @ specs/decision-viewer/spec.md:6  запись: «Как быть с исходными путями в требованиях мастер-спек?»
+  req:decision-viewer/Страница `symphysis.html` работает без соседних файлов -> rec:F-46 @ specs/decision-viewer/spec.md:118  запись: «Правка пути по F-26 даёт MODIFIED требования `decision-viewer` «Просмотрщик — один HTML из своего ша…»
+  req:decision-viewer/Строка таблицы атаки разбирается по соглашению markdown -> rec:F-46 @ specs/decision-viewer/spec.md:98  запись: «Правка пути по F-26 даёт MODIFIED требования `decision-viewer` «Просмотрщик — один HTML из своего ша…»

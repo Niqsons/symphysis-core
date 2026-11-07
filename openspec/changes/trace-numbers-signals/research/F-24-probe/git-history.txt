@@ -1,0 +1,187 @@
+# След истории git по openspec/specs/ (F-24). Команды — в research/F-24.md, раздел «Проба». Снято 2026-11-07, worktree feat/trace-numbers-signals.
+
+## 1. git log --format='%h %ad %s' --date=short -- openspec/specs/
+6c51cb8 2026-11-07 docs(openspec): дельты module-structure перенесены в мастер-спеки
+fd5f8bb 2026-11-06 docs(openspec): архивировано trace-graph
+43e74b7 2026-11-06 feat(installer): тела агентов-водителей в каталог агентов рядом со скиллами
+0c62b2f 2026-11-06 feat(skills): symphysis-research, тела водителей, ключ drivers (шаг 10 ревью)
+f962955 2026-11-05 fix(journal): check называет парковку человеку без ответа
+41427d7 2026-11-05 fix(journal): check называет цикл в depends_on сигналом
+b1341ed 2026-11-04 docs(openspec): архивировано recommendation-why
+ab99a3e 2026-11-04 docs(openspec): архивировано step-help-tab
+b9887aa 2026-11-03 feat(viewer): файлы на странице ссылками, выбор редактора в браузере
+37841d0 2026-11-03 docs(openspec): архивировано step-help
+519ac88 2026-11-02 fix(journal): слово нужно у выбора мимо рекомендации, а не у отказа
+d8703b4 2026-11-02 docs(openspec): архивировано decision-scheme
+2961908 2026-11-02 fix(schema): реализация ждёт чек-лист security
+e90cc33 2026-11-02 docs(openspec): архивировано implementation-consequences
+31e5489 2026-11-02 docs(openspec): архивированы symphysis-schema и calibration-fixes (задача 11.4)
+a9d2060 2026-10-31 docs(specs): база спек из дельт symphysis-schema (/opsx:sync, F-20.B)
+95514c2 2026-10-30 docs: сухой прогон схемы на себе — дневник и изменение symphysis-schema
+
+## 2. git log -1 --format=%B 6c51cb8
+docs(openspec): дельты module-structure перенесены в мастер-спеки
+
+Новые capability: module-declaration (README модуля с name и kind,
+вложенные каталоги) и repository-layout (корень, модули, тесты модулей,
+тест структуры). Заменены требования в decision-viewer, plugin-core-contract,
+project-installer, requirement-probes, skill-transfer, step-help, trace-graph;
+в decision-viewer и project-installer добавлены новые. След проб в мастер-спеки
+не переносился, ссылки <!-- F-NN --> под сценариями остались.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_013wBtE6mNbFNVK1ZyQpnUiC
+
+## 3. git show --stat --format= 6c51cb8
+ openspec/specs/decision-viewer/spec.md      |  43 ++++++-----
+ openspec/specs/module-declaration/spec.md   |  65 +++++++++++++++++
+ openspec/specs/plugin-core-contract/spec.md |  10 ++-
+ openspec/specs/project-installer/spec.md    |  20 +++++-
+ openspec/specs/repository-layout/spec.md    | 107 ++++++++++++++++++++++++++++
+ openspec/specs/requirement-probes/spec.md   |   5 +-
+ openspec/specs/skill-transfer/spec.md       |   6 +-
+ openspec/specs/step-help/spec.md            |  14 ++--
+ openspec/specs/trace-graph/spec.md          |   2 +-
+ 9 files changed, 236 insertions(+), 36 deletions(-)
+
+## 4. git log -1 --format=%B fd5f8bb
+docs(openspec): архивировано trace-graph
+
+Дельты синхронизированы в openspec/specs агентом: пять новых capability (trace-conventions,
+trace-diagram, trace-graph, trace-signals, trace-snapshot), ADDED и MODIFIED в восьми прежних.
+След проб («проба краёв», «проба запретов») в мастер не перенесён по правилу rules.specs,
+104 строки; MODIFIED сценариев мастера не теряют. Перед синхронизацией снимок заморожен
+исходным tools/trace_graph.py с файлом корней изменения: снимок свежий, обновлён коммит корня
+ядра. Необязательная attack-artifacts в изменении не сделана: атака шла в отдельном клоне,
+её блокеры разобраны отдельно.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_013wBtE6mNbFNVK1ZyQpnUiC
+
+## 5. git show --stat --format= fd5f8bb -- openspec/specs/
+ openspec/specs/artifact-attack/spec.md       | 109 +++++++++++++++-
+ openspec/specs/brainstorm-interview/spec.md  |  13 ++
+ openspec/specs/consequence-inventory/spec.md |  13 ++
+ openspec/specs/decision-viewer/spec.md       |  20 ++-
+ openspec/specs/onboarding-guide/spec.md      |  13 ++
+ openspec/specs/project-installer/spec.md     |  37 ++++++
+ openspec/specs/project-settings/spec.md      |  25 +++-
+ openspec/specs/requirement-probes/spec.md    |  18 +++
+ openspec/specs/trace-conventions/spec.md     | 126 ++++++++++++++++++
+ openspec/specs/trace-diagram/spec.md         | 103 +++++++++++++++
+ openspec/specs/trace-graph/spec.md           | 180 ++++++++++++++++++++++++++
+ openspec/specs/trace-signals/spec.md         | 185 +++++++++++++++++++++++++++
+ openspec/specs/trace-snapshot/spec.md        | 155 ++++++++++++++++++++++
+ 13 files changed, 984 insertions(+), 13 deletions(-)
+
+## 6. git log -1 --format=%B a9d2060
+docs(specs): база спек из дельт symphysis-schema (/opsx:sync, F-20.B)
+
+Девять главных спек openspec/specs/<capability>/spec.md перенесены из дельт ADDED
+symphysis-schema дословно (заголовок и раздел Requirements вместо шапки дельты).
+Изменение остаётся в changes/, архив не делался.
+
+Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>
+
+## 7. git log --oneline -S'<!-- проба' -- openspec/specs/
+6c51cb8 docs(openspec): дельты module-structure перенесены в мастер-спеки
+fd5f8bb docs(openspec): архивировано trace-graph
+b1341ed docs(openspec): архивировано recommendation-why
+ab99a3e docs(openspec): архивировано step-help-tab
+37841d0 docs(openspec): архивировано step-help
+d8703b4 docs(openspec): архивировано decision-scheme
+e90cc33 docs(openspec): архивировано implementation-consequences
+31e5489 docs(openspec): архивированы symphysis-schema и calibration-fixes (задача 11.4)
+a9d2060 docs(specs): база спек из дельт symphysis-schema (/opsx:sync, F-20.B)
+
+## 8. git log --oneline -S'<!-- F-' -- openspec/specs/
+6c51cb8 docs(openspec): дельты module-structure перенесены в мастер-спеки
+fd5f8bb docs(openspec): архивировано trace-graph
+
+## 9. Строки с '<!-- проба', добавленные (+) и убранные (-) каждым коммитом в openspec/specs/: git show <c> -- openspec/specs/ | grep -cE '^\+.*<!-- проба' и '^-.*<!-- проба'
+a9d2060 +проба=46 -проба=0
+31e5489 +проба=42 -проба=18
+e90cc33 +проба=76 -проба=8
+d8703b4 +проба=67 -проба=8
+37841d0 +проба=42 -проба=0
+ab99a3e +проба=68 -проба=4
+b1341ed +проба=14 -проба=0
+fd5f8bb +проба=0 -проба=8
+6c51cb8 +проба=0 -проба=21
+
+## 10. Строки с '<!-- F-', добавленные (+) каждым коммитом: grep -cE '^\+<!-- F-'
+a9d2060 +маркеров=0
+31e5489 +маркеров=0
+e90cc33 +маркеров=0
+d8703b4 +маркеров=0
+37841d0 +маркеров=0
+ab99a3e +маркеров=0
+b1341ed +маркеров=0
+fd5f8bb +маркеров=38
+6c51cb8 +маркеров=13
+
+## 11. git show 6c51cb8 -- openspec/specs/ | grep -nE '^[-+].*<!--' (первые 40)
+34:-<!-- проба краёв, журнал `calibration-fixes`: форма=io, text, исходы: F-45 Specify, F-46 Specify -->
+35:-<!-- проба запретов, журнал `calibration-fixes`: исходы: нет -->
+36:-<!-- проба краёв: форма=io, исходы: кандидатов нет; снято: concurrency — страницу пишет только `render-html`; перенос закрывает сценарий «Соседнего файла нет» -->
+37:-<!-- проба запретов: исходы: нет -->
+38:-<!-- проба краёв, журнал `step-help`: форма=io, stateful, collection, исходы: F-48 Dismiss, F-49 Dismiss -->
+39:-<!-- проба запретов, журнал `step-help`: исходы: нет -->
+57:-<!-- проба краёв: форма=stateful, io, collection, исходы: F-45 Dismiss, F-46 Dismiss, F-47 Dismiss -->
+58:-<!-- проба запретов: исходы: F-51 Specify; канон — F-53 → security.md -->
+76:-<!-- проба краёв: форма=text, исходы: нет -->
+77:-<!-- проба запретов: исходы: нет -->
+142:+<!-- F-47 -->
+148:+<!-- F-48 -->
+167:+<!-- F-49 -->
+176:+<!-- F-55 -->
+180:+<!-- требование из F-55; пробами не проходило -->
+189:-<!-- проба краёв: форма=text, исходы: F-82 Specify; снято: encoding — путь сравнивается как есть -->
+190:-<!-- проба запретов: исходы: нет -->
+203:+<!-- F-61 -->
+219:-<!-- требование из F-114; пробами не проходило -->
+222:+<!-- F-60 -->
+273:+<!-- F-51 -->
+303:+<!-- F-52 -->
+317:+<!-- F-62 -->
+334:+<!-- F-56 -->
+338:+<!-- требование из F-56; пробами не проходило -->
+344:+<!-- F-57 -->
+348:+<!-- требование из F-57; пробами не проходило -->
+354:+<!-- F-58 -->
+358:+<!-- требование из F-58; пробами не проходило -->
+371:-<!-- проба краёв: форма=text, исходы: F-69 Backstop -->
+372:-<!-- проба запретов: исходы: нет -->
+373:-<!-- проба краёв, без кандидата: encoding — смысл перевода ведёт `TRANSLATION-NOTES.md` -->
+385:-<!-- проба краёв: форма=collection, исходы: F-64 открыт, F-65 открыт -->
+386:-<!-- проба запретов: исходы: F-78 открыт -->
+417:-<!-- проба краёв: форма=collection, io, исходы: F-40 Specify, F-41 Specify; F-55 решён: C -->
+418:-<!-- проба запретов: исходы: F-50 Specify -->
+432:-<!-- проба краёв: форма=io, исходы: нет -->
+433:-<!-- проба запретов: исходы: F-50 Specify -->
+435:+<!-- F-54 -->
+
+## 12. git show fd5f8bb -- openspec/specs/ | grep -nE '^[-+].*<!--' (первые 20)
+35:-<!-- проба краёв: форма=collection, text, исходы: F-32 Specify, F-33 Specify, F-34 Specify -->
+36:-<!-- проба запретов: исходы: F-53 Specify, F-54 Specify -->
+45:-<!-- проба краёв: форма=collection, исходы: F-33 открыт -->
+46:-<!-- проба запретов: исходы: нет -->
+110:+<!-- F-105 -->
+116:+<!-- F-129 -->
+140:+<!-- F-106 -->
+146:+<!-- F-107 -->
+155:+<!-- F-121 -->
+159:+<!-- требование из F-121; пробами не проходило -->
+191:+Скилл `symphysis-consequences` SHALL ставить комментарий `<!-- F-NN -->` под заголовком сценария, который появился по исходу Specify кандидата F-NN (F-45).
+196:+- **THEN** под заголовком сценария стоит `<!-- F-14 -->`, сигнала «Specify без сценария» о F-14 нет
+201:+- **THEN** под заголовком сценария стоит `<!-- F-15 -->`
+211:-<!-- проба краёв: форма=collection, text, stateful, исходы: F-47 Specify, F-48 Specify -->
+212:-<!-- проба запретов: исходы: F-56 Specify -->
+281:+<!-- F-126 -->
+320:-<!-- проба краёв: форма=text, исходы: F-50 Backstop, F-51 Specify -->
+321:-<!-- проба запретов: исходы: F-94 Specify; канон — F-103 → security.md -->
+339:+<!-- F-108 -->
+356:+Скиллы `symphysis-edge-probe` и `symphysis-prohibition-probe` SHALL ставить комментарий `<!-- F-NN -->` под заголовком сценария, который появился по исходу Specify записи F-NN (F-45). Запись в предел 500 знаков SHALL NOT считаться: комментарий стоит под заголовком сценария.
+
+## 13. git log --format='%h %ad %s' --date=short -S'след проб' -- openspec/config.yaml
+e1e3c55 2026-11-06 chore(config): правило о следе проб при синхронизации в конфиге проекта

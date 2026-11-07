@@ -1,0 +1,4 @@
+== module-structure: корень C:\Users\User\AppData\Local\Temp/f21-probe/module-structure, мастер на 9b012131bfffcbf84aefb596f6c71e32ad2f99c2, specs: 26 каталогов
+build (до патча) код 0
+== trace-graph: корень C:\Users\User\AppData\Local\Temp/f21-probe/trace-graph, мастер на e1e3c551f6fb035fcc03622bc2b091adc9679146, specs: 21 каталогов
+build (до патча) код 0
