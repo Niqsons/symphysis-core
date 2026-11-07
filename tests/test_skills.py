@@ -1200,3 +1200,70 @@ def test_attack_skill_rebuilds_the_page_after_the_verdict():
     assert "водител" in summary, "шаг не говорит, что страницу собирает главная нить, а не водитель"
     acceptance = block(text, "## Приёмка", "\n## Водитель")
     assert "--attack" in acceptance and "атака не подана" in acceptance, "приёмка не проверяет сборку страницы"
+
+
+# --- parking-addressee-agent: адресат парковки — `агент`, старое значение только у старых журналов
+# (F-17.A, F-25; сценарии «Материалов нет», «Круг с парковками агенту закрыт без вопроса», «Глоссарий и подсказка
+# называют агента исследования») ---
+
+# Старое значение адресата в записи: в кавычках или ёлочках. Голое слово «материалы» — материалы изменения,
+# другой смысл («Прочитай материалы», «где искать материалы»), оно остаётся.
+OLD_ADDRESSEE_MARKS = ("`материалы`", "«материалы»", "addressee: материалы", "материалам P", "`материалы |")
+
+
+def test_terms_define_the_agent_addressee_as_the_research_driver():
+    """F-25: адресат `агент` — не любой агент с моделью (плагин, хук, главная нить), а водитель шага `research`;
+    оговорка о переименовании отдельным изменением снята."""
+    text = read(SHARED["terms.md"])
+    term = block(text, "- **адресат**", "\n- **")
+    assert "`агент` (водитель шага `research`" in term, "глоссарий не определяет адресата `агент` как водителя research"
+    assert "`человек`" in term and "`ИБ`" in term and "`addressee`" in term
+    assert "идёт отдельным изменением" not in text, "оговорка о переименовании отдельным изменением осталась"
+    for mark in OLD_ADDRESSEE_MARKS:
+        assert mark not in text, f"в terms.md старое значение адресата «{mark}»"
+
+
+def test_brainstorm_parks_to_the_agent_and_counts_parkings_to_the_agent():
+    """Сценарии «Материалов нет», «Круг с парковками агенту закрыт без вопроса», «Только парковки»: парковка
+    `агент` в маршруте, факт `addressee: агент`, список адресатов и строка счёта круга с «парковок агенту P»;
+    шаг 1 — факт постановки на каждый критерий, уточнение критерия без противоречия — без `deviation` (3.4)."""
+    text = brainstorm()
+    body = flat(text)
+    for token in ("парковка `агент`", "`addressee: агент`", "`агент | человек | ИБ`", "P — парковок `агент`",
+                  "парковок агенту P", "Исследование парковок `агент`", "не задан при парковках `агент`",
+                  "по одному на критерий", "уточняет ли", "Уточнение без противоречия"):
+        assert token in body, f"в SKILL.md брейншторма нет «{token}»"
+    for mark in OLD_ADDRESSEE_MARKS:
+        assert mark not in text, f"в SKILL.md брейншторма старое значение адресата «{mark}»"
+    assert "### 3. Прочитай материалы" in text, "материалы изменения — другой смысл, заголовок остаётся"
+    assert "отдельным изменением (Р2-A)" not in text, "оговорка Р2-A в провенансе осталась"
+
+
+def test_research_texts_read_the_agent_addressee():
+    """Сценарии «Отчёт по парковке», «Нуль парковок»: тело research, водитель, README, атака и просмотрщик читают
+    адресата `агент`; старое значение в теле research — один раз, в «Границах», как слово о старых журналах."""
+    text = read(skill_dir("symphysis-research") / "SKILL.md")
+    assert "парковка адресату `агент` без `finding`" in frontmatter(text)["description"]
+    head, _, rest = text.partition("## Границы")
+    borders, _, tail = rest.partition("\n## ")
+    for mark in OLD_ADDRESSEE_MARKS:
+        assert mark not in head + tail, f"в теле research вне «Границ» старое значение адресата «{mark}»"
+    assert borders.count("`материалы`") == 1 and "старое значение `материалы`" in flat(borders)
+    assert "только в старых журналах" in flat(borders) and "сигнал `check`" in flat(borders)
+    assert "появится отдельным изменением" not in text and "отдельным изменением" not in text
+    for token in ("`addressee: агент`", "парковка «агент» без finding при research/F-NN.md",
+                  "парковки адресату `агент` в decisions.json", "закрывает записи `агент` по файлам"):
+        assert token in flat(text), f"в SKILL.md research нет «{token}»"
+    others = {
+        "research-driver": read(ROOT / "research" / "agents" / "symphysis-research-driver.md"),
+        "research/README.md": read(ROOT / "research" / "README.md"),
+        "symphysis-attack": read(ATTACK_SKILL / "SKILL.md"),
+        "symphysis-viewer": read(VIEWER / "SKILL.md"),
+    }
+    assert "парковка «агент» без finding" in flat(others["research-driver"])
+    assert "адресованным агенту" in others["research/README.md"]
+    assert "парковка `агент` без `finding`" in flat(others["symphysis-attack"])
+    assert "`агент | человек | ИБ`" in others["symphysis-viewer"]
+    for name, body in others.items():
+        for mark in OLD_ADDRESSEE_MARKS:
+            assert mark not in body, f"{name}: старое значение адресата «{mark}»"

@@ -96,7 +96,7 @@ def test_viewer_drops_ingested_parking_from_the_browser_state(tmp_path):
     html.write_text(journal.render_html(j, TEMPLATE), encoding="utf-8", newline="\n")
     first, second = [p["text"] for p in rec_of(j, "F-01")["parking"]]
     state.write_text(json.dumps({"decisions": {"F-01": {"choice": None, "word": "", "parked": [
-        {"text": first, "addressee": "материалы"}, {"text": second, "addressee": "ИБ"},
+        {"text": first, "addressee": "агент"}, {"text": second, "addressee": "ИБ"},
         {"text": "ещё не внесённый вопрос", "addressee": "человек"}]}}}, ensure_ascii=False), encoding="utf-8")
     run = subprocess.run([node, str(FIX / "viewer-smoke.js"), str(html), str(state)],
                          capture_output=True, text=True, encoding="utf-8")
@@ -288,6 +288,8 @@ def test_viewer_check_mode_projects_records_like_render_design(tmp_path):
     recs["F-02"]["reversibility"] = {"level": "в одну сторону", "why": "контракт"}
     recs["F-04"]["outcome"] = {"kind": "проба", "value": "Specify", "reason": ""}
     recs["F-05"]["outcome"] = {"kind": "проба", "value": "Dismiss", "reason": "пары равных нет"}
+    for park in recs["F-01"]["parking"]:     # адресат — свой, не из фикстуры: режим показывает только адресатов из ADDRESSEES
+        park["addressee"] = "агент"
     out = smoke(tmp_path, journal.render_html(j, TEMPLATE, journal_sha256=FAKE_SHA), {"__suffixes__": {":mode": "check"}})
     check = out["check"]
     assert FAKE_SHA[:12] in check and "атака не подана" in check and "вердиктом не считается" in check
@@ -298,7 +300,8 @@ def test_viewer_check_mode_projects_records_like_render_design(tmp_path):
     assert "→ design.md › Decisions · в одну сторону — первой" in check
     assert "→ spec.md · исход Specify" in check and "→ никуда · причина: пары равных нет" in check
     assert "→ design.md › Context" in check and check.count("design.md › Context") == 5
-    assert "design.md › Open Questions → research/" in check     # парковка F-01 «материалы»
+    assert "design.md › Open Questions → research/" in check     # парковка F-01 «агент»
+    assert "припарковано: агент <b>1</b>" in check
     assert "Researcher" not in check and "Исследователь" not in check
     assert out["modes"].count("<button") == 3 and 'class="small active" data-mode="check"' in out["modes"]
 
@@ -636,8 +639,8 @@ def facts_journal(status="решён", dispute=""):
     j = one_record_journal("a.md", "дв")
     fork = j["records"][0]
     fact = json.loads(json.dumps(fork))
-    fact.update(id="F-02", kind="факт", status=status, addressee="материалы", options=[], dispute=dispute,
-                parking=[{"addressee": "материалы", "text": "вопрос"}] if status == "припаркован" else [])
+    fact.update(id="F-02", kind="факт", status=status, addressee="агент", options=[], dispute=dispute,
+                parking=[{"addressee": "агент", "text": "вопрос"}] if status == "припаркован" else [])
     fork["depends_on"] = ["F-02"]
     j["records"].append(fact)
     return j
@@ -665,10 +668,21 @@ def test_dependency_on_an_undecided_fork_is_still_waiting(tmp_path):
     assert "предпосылка не решена: F-02" in smoke(tmp_path, journal.render_html(j, TEMPLATE))["cards"]
 
 
-def test_park_hint_says_the_agent_looks_in_files_or_by_a_probe():
+def test_park_hint_says_the_research_agent_looks_in_files_or_by_a_probe():
+    """`artifact-graph`: «Подсказка адресата», `decision-journal`: «Глоссарий и подсказка называют агента
+    исследования» — у «агент» сказано, что ответ ищет агент исследования; список адресатов без `материалы`."""
     template = TEMPLATE.read_text(encoding="utf-8")
-    assert "«материалы» — ответ ищет агент, в файлах или пробой" in template
-    assert "const ADDRESSEES = ['материалы','человек','ИБ'];" in template
+    assert "«агент» — ответ ищет агент исследования, в файлах или пробой" in template
+    assert "const ADDRESSEES = ['агент','человек','ИБ'];" in template
+    assert "«материалы»" not in template
+
+
+def test_parking_destination_map_keeps_the_old_addressee_next_to_the_new_one():
+    """Страховка F-29: карта `parkingDestination` в шаблоне ведёт и `агент`, и `материалы` старых журналов в `research/`;
+    в счётчики и разделы по `ADDRESSEES` старое значение не входит (F-23), поэтому проверяется сама карта."""
+    template = TEMPLATE.read_text(encoding="utf-8")
+    line = next(l for l in template.splitlines() if l.startswith("function parkingDestination("))
+    assert "'агент':'research/'" in line and "'материалы':'research/'" in line
 
 
 JOURNAL_PY = ROOT / "cli" / "journal.py"

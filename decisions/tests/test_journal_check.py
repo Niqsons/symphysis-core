@@ -90,10 +90,10 @@ def test_fact_without_evidence_is_an_error(tmp_path):
 
 def test_parked_fact_without_evidence_is_fine(tmp_path):
     """Сценарий «Припаркованный факт без улики»: ни парковка, ни статус «припаркован» не дают ошибки."""
-    parked = fact_journal(parking=[{"addressee": "материалы", "text": "найти"}])
+    parked = fact_journal(parking=[{"addressee": "агент", "text": "найти"}])
     parked["records"][0]["status"] = "припаркован"
     assert journal.validate_journal(parked) == []
-    assert journal.validate_journal(fact_journal(parking=[{"addressee": "материалы", "text": "найти"}])) == []
+    assert journal.validate_journal(fact_journal(parking=[{"addressee": "агент", "text": "найти"}])) == []
     only_status = fact_journal()
     only_status["records"][0]["status"] = "припаркован"
     assert journal.validate_journal(only_status) == []
@@ -132,7 +132,7 @@ def test_old_journal_with_text_stays_valid(tmp_path):
     assert "text" not in run.stdout + run.stderr
 
 
-def parking_fixture(tmp_path, with_research=True, finding=None, addressee="материалы"):
+def parking_fixture(tmp_path, with_research=True, finding=None, addressee="агент"):
     j = one_record_journal(path="a.md", quote="раз")
     parking = {"addressee": addressee, "text": "найти"}
     if finding is not None:
@@ -150,12 +150,13 @@ def parking_fixture(tmp_path, with_research=True, finding=None, addressee="ма�
 
 
 def test_parking_without_finding_at_research_file_is_a_signal(tmp_path):
-    """Сценарий «Парковка без находки при файле»: код 0, с --strict — 2."""
+    """Сценарии «Парковка без находки при файле» и «Сигнал о парковке агенту при --strict»: код 0, с --strict — 2."""
     path, roots = parking_fixture(tmp_path)
     run = run_check(path, "--roots", roots)
     assert run.returncode == 0, run.stderr
-    assert "[!!] F-01: парковка «материалы» без finding при research/F-01.md" in run.stdout
-    assert run_check(path, "--roots", roots, "--strict").returncode == 2
+    assert "[!!] F-01: парковка «агент» без finding при research/F-01.md" in run.stdout
+    strict = run_check(path, "--roots", roots, "--strict")
+    assert strict.returncode == 2 and "[!!] F-01: парковка «агент» без finding при research/F-01.md" in strict.stdout
 
 
 def test_parking_signal_needs_the_research_file_and_no_finding(tmp_path):
@@ -200,6 +201,78 @@ def test_each_human_parking_is_counted_on_its_own(tmp_path):
     journal.save_journal(path, j)
     lines = [line for line in run_check(path, "--roots", roots).stdout.splitlines() if "без finding" in line]
     assert lines == ["[!!] F-01: парковка «человек» без finding: вторая"]
+
+
+# --- старое значение адресата «материалы»: читается, не пишется (parking-addressee-agent: F-22) ---------------------
+
+OLD_ADDRESSEE_SIGNAL = "адресат «материалы» — старое значение, новые записи пишут «агент»"
+LEGACY_FIX = FIX / "journal-legacy" / "decisions.json"
+
+
+def addressee_fixture(tmp_path, record="", parking=None):
+    """Журнал одной развилки с адресатом записи `record` и парковкой адресату `parking` (с находкой, файла `research/`
+    нет); улика сходится — других сигналов журнал не даёт."""
+    j = one_record_journal(path="a.md", quote="раз")
+    rec = j["records"][0]
+    rec["addressee"] = record
+    if parking is not None:
+        rec["parking"] = [{"addressee": parking, "text": "найти", "finding": "нашли"}]
+    (tmp_path / "a.md").write_text("раз\n", encoding="utf-8")
+    roots = tmp_path / "roots.json"
+    roots.write_text(json.dumps({"": str(tmp_path)}), encoding="utf-8")
+    path = tmp_path / "j.json"
+    journal.save_journal(path, j)
+    return path, roots
+
+
+def test_old_addressee_at_a_parking_is_a_signal_not_a_schema_error(tmp_path):
+    """Сценарий «Старое значение в журнале активного изменения»: строка `[!!]`, код 0, с --strict — 2;
+    в stderr ничего — это не ошибка схемы."""
+    path, roots = addressee_fixture(tmp_path, parking="материалы")
+    run = run_check(path, "--roots", roots)
+    assert run.returncode == 0, run.stdout + run.stderr
+    assert f"[!!] F-01: {OLD_ADDRESSEE_SIGNAL}" in run.stdout and run.stderr == ""
+    assert run_check(path, "--roots", roots, "--strict").returncode == 2
+
+
+def test_old_addressee_at_a_record_is_a_signal(tmp_path):
+    path, roots = addressee_fixture(tmp_path, record="материалы")
+    run = run_check(path, "--roots", roots)
+    assert run.returncode == 0, run.stdout + run.stderr
+    assert f"[!!] F-01: {OLD_ADDRESSEE_SIGNAL}" in run.stdout
+    assert run_check(path, "--roots", roots, "--strict").returncode == 2
+
+
+def test_old_addressee_at_a_record_and_its_parking_gives_one_line(tmp_path):
+    path, roots = addressee_fixture(tmp_path, record="материалы", parking="материалы")
+    lines = [line for line in run_check(path, "--roots", roots).stdout.splitlines() if OLD_ADDRESSEE_SIGNAL in line]
+    assert lines == [f"[!!] F-01: {OLD_ADDRESSEE_SIGNAL}"]
+
+
+def test_agent_addressee_gives_no_signal(tmp_path):
+    """Журнал только с `агент` у записи и у парковки — молчание: ни строки о старом значении, ни другой `[!!]`."""
+    path, roots = addressee_fixture(tmp_path, record="агент", parking="агент")
+    run = run_check(path, "--roots", roots, "--strict")
+    assert run.returncode == 0, run.stdout + run.stderr
+    assert "[!!]" not in run.stdout + run.stderr
+
+
+def test_old_addressee_is_compared_exactly(tmp_path):
+    """Сравнение точное (F-36 Dismiss): «Материалы» — не старое значение, а ошибка схемы, код 1."""
+    path, roots = addressee_fixture(tmp_path, parking="Материалы")
+    run = run_check(path, "--roots", roots)
+    assert run.returncode == 1 and "parking/0/addressee" in run.stderr and OLD_ADDRESSEE_SIGNAL not in run.stdout
+
+
+def test_legacy_fixture_journal_passes_check_with_a_line_per_record():
+    """Сценарий «Старый журнал годен» на фикстуре `journal-legacy`: без `--roots` улика сходится через корень `docs/`,
+    единственные строки `[!!]` — о старом значении у факта F-01 и у парковки F-02; код 0, с --strict — 2."""
+    run = run_check(LEGACY_FIX)
+    assert run.returncode == 0, run.stdout + run.stderr
+    assert run.stderr == "" and "[ok] улик сверено 1 из 1" in run.stdout
+    assert [line for line in run.stdout.splitlines() if line.startswith("[!!]")] == [
+        f"[!!] F-01: {OLD_ADDRESSEE_SIGNAL}", f"[!!] F-02: {OLD_ADDRESSEE_SIGNAL}"]
+    assert run_check(LEGACY_FIX, "--strict").returncode == 2
 
 
 # --- бинарные файлы (5.4) -----------------------------------------------------
@@ -326,7 +399,8 @@ def test_choice_past_the_recommendation_without_a_word_is_a_signal(tmp_path):
 
 @pytest.mark.parametrize("choice, word, added", [("A", "", False), ("B", "потому что", False), ("B", "", True)])
 def test_no_signal_for_recommended_worded_or_own_choice(tmp_path, choice, word, added):
-    """Сценарии «Рекомендованный отказ без слова» и «Вариант, добавленный человеком»."""
+    """Сценарии «Рекомендованный отказ без слова», «Слово к выбору мимо рекомендации внесено» (B со словом — молчание
+    и с --strict код 0) и «Вариант, добавленный человеком»."""
     path, roots = word_fixture(tmp_path, choice, word, added)
     run = run_check(path, "--roots", roots, "--strict")
     assert run.returncode == 0, run.stdout + run.stderr

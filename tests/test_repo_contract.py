@@ -27,11 +27,23 @@ def test_contract_names_hook_records_and_new_fields():
         assert name in body, f"в контракте не названо {name}"
 
 
-def test_contract_three_is_named_and_matches_the_code():
-    """F-55: линза `trace-link` — новое значение списка линз, смена контракта: номер 3 назван в
-    `docs/repo-contract.md` с тем, что изменилось, и равен `CONTRACT` в `journal_render.py`."""
-    assert journal_render.CONTRACT == 3
+def test_contract_three_is_named():
+    """F-55 (`trace-graph`): линза `trace-link` — новое значение списка линз, смена контракта: номер 3
+    назван в `docs/repo-contract.md` с тем, что изменилось. Абзац исторический и остаётся при любом
+    текущем номере; равенство кода и последнего абзаца держит тест в `decisions/tests/test_journal_render.py`."""
     body = text()
     line = next((l for l in body.splitlines() if l.startswith("С номера 3")), None)
     assert line is not None, "в контракте нет строки «С номера 3»"
     assert "trace-link" in line and "линз" in line, "строка о номере 3 не называет, что изменилось: список линз"
+
+
+def test_contract_four_is_named_and_matches_the_code():
+    """`parking-addressee-agent` (F-09, F-17.A): адресат парковки и записи `материалы` → `агент` — новое
+    значение существующего поля, смена контракта: номер 4 назван в `docs/repo-contract.md` с тем, что
+    изменилось, и равен `CONTRACT` в `journal_render.py`; сценарий `plugin-core-contract`
+    «Новое значение адресата поднимает номер»."""
+    assert journal_render.CONTRACT == 4
+    body = text()
+    line = next((l for l in body.splitlines() if l.startswith("С номера 4")), None)
+    assert line is not None, "в контракте нет строки «С номера 4»"
+    assert "агент" in line and "материалы" in line, "строка о номере 4 не называет, что изменилось: адресат"

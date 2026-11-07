@@ -1,0 +1,74 @@
+{
+ "title": "Журнал решений: старый журнал с адресатом «материалы»",
+ "source": "decisions.json",
+ "intro": "Учебный старый журнал — до переименования адресата «материалы» в «агент»: старое значение стоит у факта F-01 и у парковки F-02. Схема его читает, `check` сигналит строкой `[!!]` на каждую такую запись, новые записи его не пишут.",
+ "records": [
+  {
+   "id": "F-01",
+   "question": "Журнал плана хранит парковки адресату «материалы»",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "материалы",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "F-02",
+   "evidence": [
+    {
+     "path": "docs/plan-implementation.journal.json",
+     "quote": "\"addressee\": \"материалы\""
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-02",
+   "question": "Как читать парковки старых журналов после переименования адресата?",
+   "kind": "развилка",
+   "status": "припаркован",
+   "addressee": "человек",
+   "depends_on": [
+    "F-01"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "оставить значение как есть: схема читает оба, новые записи пишут только новое",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "переписать архив и журнал плана на новое значение",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [
+    {
+     "addressee": "материалы",
+     "text": "Сколько журналов архива несут старое значение и где оно стоит — у записи или у парковки?"
+    }
+   ],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [],
+   "comments": []
+  }
+ ]
+}

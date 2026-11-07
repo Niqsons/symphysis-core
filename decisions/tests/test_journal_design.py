@@ -303,11 +303,21 @@ def test_parking_and_dispute_lines_appear():
 
 def test_open_questions_order_is_forks_then_parking_then_disputes():
     undecided = record("F-02", "открытая?", [opt("A", "раз")])
-    parked = decided("F-01", "A", [opt("A", "раз")], parking=[{"addressee": "материалы", "text": "что с материалами?"}])
+    parked = decided("F-01", "A", [opt("A", "раз")], parking=[{"addressee": "агент", "text": "что в коде?"}])
     fact = record("F-20", "факт", kind="факт", dispute="спорим")
     questions = section(design_of(parked, undecided, fact), "Open Questions")
-    assert (questions.index("— открыта") < questions.index("→ материалы")
+    assert (questions.index("— открыта") < questions.index("→ агент")
             < questions.index("— спор: спорим"))
+
+
+def test_open_questions_carry_both_the_new_and_the_old_parking_addressee():
+    """`decision-journal`: «Назначение старой парковки» — парковка `материалы` старого журнала идёт в Open Questions
+    рядом с парковкой `агент`, значение пишется как в журнале, не переводится."""
+    parked = decided("F-01", "A", [opt("A", "раз")], parking=[
+        {"addressee": "агент", "text": "новый вопрос"}, {"addressee": "материалы", "text": "вопрос старого журнала"}])
+    questions = section(design_of(parked), "Open Questions")
+    assert "- F-01 → агент: «новый вопрос»" in questions
+    assert "- F-01 → материалы: «вопрос старого журнала»" in questions
 
 
 # --- чистота ----------------------------------------------------------------

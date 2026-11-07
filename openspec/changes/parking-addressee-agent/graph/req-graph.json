@@ -1,0 +1,2732 @@
+{
+ "format": 2,
+ "sources": [
+  {
+   "path": "consequences.md",
+   "sha256": "4c892c10e75ed3a8207d892ef728bddd8ce8db980ecd0554fb9dd306e55c0099"
+  },
+  {
+   "path": "decisions.json",
+   "sha256": "6f8d798d3f7cb74a0063551798211509c905d714eea2698126274e146ffc4e06"
+  },
+  {
+   "path": "security.md",
+   "sha256": "5496b6c64dc18216d5c3f2103767d7f49207d8d7de66c9f9633549f9aab27223"
+  },
+  {
+   "path": "specs/artifact-graph/spec.md",
+   "sha256": "3b53a3f571b91f7d3363c1d345d5a374855134c83ae48ea7009f104bcddbbefc"
+  },
+  {
+   "path": "specs/brainstorm-interview/spec.md",
+   "sha256": "0969d6c087124c3a40b6e55af6983db444771cdcdc87aec1086451e5b524ebb0"
+  },
+  {
+   "path": "specs/decision-journal/spec.md",
+   "sha256": "ebeded8f712ff4ce3a623d3544ad6647e2480b346f73e50fff426d5bf6061ef8"
+  },
+  {
+   "path": "specs/plugin-core-contract/spec.md",
+   "sha256": "c10e047cd5c141acd793ca1b12ab18b16c0f97be738a0e6d402190d04321c9f4"
+  },
+  {
+   "path": "tasks.md",
+   "sha256": "33ded0baff66367d42e94f1321ed0e3d9de9f026ccda709edacc992b43388965"
+  }
+ ],
+ "nodes": [
+  {
+   "id": "branch:decisions/journal_apply.py:206",
+   "kind": "branch",
+   "name": "Проверка адресата при `apply`",
+   "at": "consequences.md:7"
+  },
+  {
+   "id": "branch:decisions/journal_model.py:298",
+   "kind": "branch",
+   "name": "Проверка значения по enum схемы",
+   "at": "consequences.md:11"
+  },
+  {
+   "id": "branch:cli/journal_cli.py:48",
+   "kind": "branch",
+   "name": "Сигнал о парковке без находки",
+   "at": "consequences.md:15"
+  },
+  {
+   "id": "branch:cli/journal_cli.py:96",
+   "kind": "branch",
+   "name": "Код выхода `check` при `--strict`",
+   "at": "consequences.md:19"
+  },
+  {
+   "id": "branch:decisions/journal_render.py:371",
+   "kind": "branch",
+   "name": "Назначение парковки в рендере",
+   "at": "consequences.md:23"
+  },
+  {
+   "id": "branch:viewer/playground-template.html:875",
+   "kind": "branch",
+   "name": "Назначение парковки на странице",
+   "at": "consequences.md:27"
+  },
+  {
+   "id": "branch:viewer/playground-template.html:919",
+   "kind": "branch",
+   "name": "Счёт парковок по адресатам на странице",
+   "at": "consequences.md:31"
+  },
+  {
+   "id": "branch:trace/trace_graph.py:633",
+   "kind": "branch",
+   "name": "База мастера у требования MODIFIED",
+   "at": "consequences.md:35"
+  },
+  {
+   "id": "rec:F-01",
+   "kind": "rec",
+   "name": "Критерий готовности: «адресация идет к кому-то, а не к чему-то» — значение адресата `агент` вместо `материалы`",
+   "at": "decisions.json:30",
+   "record_kind": "факт",
+   "number": 1
+  },
+  {
+   "id": "rec:F-02",
+   "kind": "rec",
+   "name": "Критерий готовности: «человеку, который выбирает парковку \"материалы\" слабо понятно, что это означает» — на странице и в плагине адресат называется `агент`",
+   "at": "decisions.json:58",
+   "record_kind": "факт",
+   "number": 2
+  },
+  {
+   "id": "rec:F-03",
+   "kind": "rec",
+   "name": "Критерий готовности: «Переименовать значение `материалы` → `агент` везде; номер контракта растёт; плагин обновляется»",
+   "at": "decisions.json:87",
+   "record_kind": "факт",
+   "number": 3
+  },
+  {
+   "id": "rec:F-04",
+   "kind": "rec",
+   "name": "Критерий готовности: «с `Needs:` у плагина»",
+   "at": "decisions.json:116",
+   "record_kind": "факт",
+   "number": 4
+  },
+  {
+   "id": "rec:F-05",
+   "kind": "rec",
+   "name": "Критерий готовности: «агент для исследования по умолчанию это не explore-like, а general-propose» — тело `symphysis-research` и водитель читают, ищут, ставят пробы",
+   "at": "decisions.json:144",
+   "record_kind": "факт",
+   "number": 5
+  },
+  {
+   "id": "rec:F-06",
+   "kind": "rec",
+   "name": "Значение `материалы` стоит в двух перечислениях схемы журнала — у адресата парковки и у адресата записи (факт из файлов), и мастер-спека `decision-journal` называет оба списка; `journal_model.py` литерала не несёт, адресата проверяет enum. Смысл адресата записи — кто отвечает за запись: постановка, человек, ИБ или агент по файлам",
+   "at": "decisions.json:172",
+   "record_kind": "факт",
+   "number": 6
+  },
+  {
+   "id": "rec:F-07",
+   "kind": "rec",
+   "name": "Грамматика `apply` держит значение в кортеже `PARKING_ADDRESSEES` и отказывает кодом 1 на чужой адресат; строку «припарковано → <адресат> — «текст»» пишут и страница, и плагин, поэтому она в контракте, а тест плагина проверяет её с литералом `материалы`",
+   "at": "decisions.json:212",
+   "record_kind": "факт",
+   "number": 7
+  },
+  {
+   "id": "rec:F-08",
+   "kind": "rec",
+   "name": "Рендер, CLI и страница несут значение как ключ: назначение парковки `research/` в `PARKING_ANSWERS` и в `parkingDestination`, текст сигнала «парковка «материалы» без finding», список `ADDRESSEES` и подсказка `PARK_HINT` на странице; тест страницы сверяет строку списка дословно",
+   "at": "decisions.json:256",
+   "record_kind": "факт",
+   "number": 8
+  },
+  {
+   "id": "rec:F-09",
+   "kind": "rec",
+   "name": "Контракт ядра с плагином сейчас номер 3 (`CONTRACT` в `journal_render.py`, его же отдаёт `step_help.py`); по `docs/repo-contract.md` новое значение существующего поля — смена контракта: номер растёт, коммит ядра называет смену в `Why:`, коммит плагина несёт `Needs: symphysis <хеш>`; прецедент абзаца «С номера 3 …» задаёт форму записи о номере 4",
+   "at": "decisions.json:305",
+   "record_kind": "факт",
+   "number": 9
+  },
+  {
+   "id": "rec:F-10",
+   "kind": "rec",
+   "name": "Плагин держит значение в семи файлах: список `ADDRESSEES` в протоколе, подсказка `PARK_HINT` в карточке, счётчик парковок по ключу адресата и строка `apply` в тестах, сценарий e2e; ожидаемый контракт — `EXPECTED_CONTRACT = 3`, при расхождении плагин не показывает новый вывод и просит новый `.vsix`; в e2e номер подставляется строкой `CONTRACT = N`",
+   "at": "decisions.json:357",
+   "record_kind": "факт",
+   "number": 10
+  },
+  {
+   "id": "rec:F-11",
+   "kind": "rec",
+   "name": "Старое значение несут данные, которые схема сверяет тестом `LIVE_JOURNALS`: 13 архивных журналов (27 парковок и 219 записей с `addressee: материалы`) и `docs/plan-implementation.journal.json` (1 парковка, 5 записей); смена enum без оговорки роняет этот тест. Прецедент значения «только для старых журналов» в схеме есть — `recommendation.text`; правило F-36 сравнивает значение точно, без нормализации; вердикты атак архива привязаны к хешу журнала, правка журнала их обесценивает",
+   "at": "decisions.json:409",
+   "record_kind": "факт",
+   "number": 11
+  },
+  {
+   "id": "rec:F-12",
+   "kind": "rec",
+   "name": "Слово «материалы» стоит в текстах и в другом смысле — материалы изменения («Прочитай материалы», «где искать материалы», тест на порядок чтения), а значение адресата встречается ещё и в дательном падеже «материалам» (строка счёта круга в скилле и тестах рендера, `docs/GUIDE.md`, `steps.md`, мастер-спека `brainstorm-interview`, `research/README.md`): переименование идёт по значению, не по слову, и поиск литерала `материалы` этих мест не находит; сверка в `intent.md` «в `docs/GUIDE.md` значения уже нет» неверна — оно там в дательном падеже",
+   "at": "decisions.json:461",
+   "record_kind": "факт",
+   "number": 12
+  },
+  {
+   "id": "rec:F-13",
+   "kind": "rec",
+   "name": "Пятый критерий код уже выполняет: тело `symphysis-research` называет водителя агентом общего назначения, который читает, грепает и ставит пробы, шаг 6 тела — проба, у водителя в `tools` стоят Bash, Write и WebFetch, провенанс ссылается на слово владельца F2; ревью зафиксировало это как итог Р2 для Р8. Это изменение права водителя не меняет — переименовывает значение",
+   "at": "decisions.json:530",
+   "record_kind": "факт",
+   "number": 13
+  },
+  {
+   "id": "rec:F-14",
+   "kind": "rec",
+   "name": "Глоссарий и тела скиллов уже объявляют переименование отдельным изменением: `terms.md` в определении адресата, провенанс `symphysis-brainstorm` и `symphysis-research`, ревью в плане готовности; после переименования эти оговорки снимаются вместе со значением",
+   "at": "decisions.json:574",
+   "record_kind": "факт",
+   "number": 14
+  },
+  {
+   "id": "rec:F-15",
+   "kind": "rec",
+   "name": "Копии инструментов и скиллов в проектах — производные: `installer/payload/` генерируется `scripts/sync-payload.js`, `install --force` обновляет `.symphysis/` и каталоги скиллов и агентов проекта; форк `upstream/openspec` значения не несёт (поиск по `src/` и `schemas/` пуст) и этим изменением не правится",
+   "at": "decisions.json:614",
+   "record_kind": "факт",
+   "number": 15
+  },
+  {
+   "id": "rec:F-16",
+   "kind": "rec",
+   "name": "Порядок владельца в бэклоге: контракт меняется до плагинной сессии, не во время неё, изменение стоит в группе «Перед сессией плагина», а плагинная половина прошлого изменения (`attack-warning-read`) ушла пунктом в группу 5; форк OpenSpec ограничивает правки изменения этим репозиторием",
+   "at": "decisions.json:650",
+   "record_kind": "факт",
+   "number": 16
+  },
+  {
+   "id": "rec:F-17",
+   "kind": "rec",
+   "name": "Что делать со старым значением `материалы` в архивных журналах и `docs/plan-implementation.journal.json`, которые схема сверяет тестом `LIVE_JOURNALS`?",
+   "at": "decisions.json:691",
+   "record_kind": "развилка",
+   "number": 17
+  },
+  {
+   "id": "rec:F-18",
+   "kind": "rec",
+   "name": "Где граница переименования в текстах: трогать ли датированные разборы `docs/analysis/`, отчёты прогонов `docs/dry-run-*.md`, планы `docs/plan-*.md` и `docs/recieve-answers.md`, где «материалы» стоит как значение адресата?",
+   "at": "decisions.json:803",
+   "record_kind": "развилка",
+   "number": 18
+  },
+  {
+   "id": "rec:F-19",
+   "kind": "rec",
+   "name": "Где делается плагинная половина — `ADDRESSEES`, `PARK_HINT`, `EXPECTED_CONTRACT = 4`, тесты, e2e, коммит с `Needs:`: в этом изменении или в сессии плагина?",
+   "at": "decisions.json:903",
+   "record_kind": "развилка",
+   "number": 19
+  },
+  {
+   "id": "rec:F-20",
+   "kind": "rec",
+   "name": "Четыре мастер-требования, которые правит переименование, длиннее предела 500 знаков: «Обратимость, адресат парковки и исход…» (`decision-journal`) — 1507, «Вопрос, ответ на который есть в файлах…» (`brainstorm-interview`) — 1030, «Круг кончается счётом…» — 645, «Исследование — файл на каждую парковку…» (`artifact-graph`) — 927. По правилу схемы и спеки `trace-conventions` старое длинное требование в MODIFIED делится на дочерние: текст родителя укладывается в предел, вынесенное идёт в дочерние со своими сценариями, сценарии родителя остаются при нём, условия не теряются; дочернее называет родителя фразой «Часть требования «имя».» и несёт номер этой записи как решение о делении (прецедент — факт F-46 журнала `module-structure`)",
+   "at": "decisions.json:1003",
+   "record_kind": "факт",
+   "number": 20
+  },
+  {
+   "id": "rec:F-21",
+   "kind": "rec",
+   "name": "Заголовок требования «Исследование — файл на каждую парковку «материалы» с жанром» несёт переименуемое значение; форк поддерживает секцию `RENAMED Requirements` (пара FROM/TO, архив применяет переименование до MODIFIED, MODIFIED пишется под новым именем), граф трассируемости разбирает эту секцию; в архиве изменений секция ни разу не применялась — первое применение здесь, `openspec validate --strict` и отчёт графа ошибок по ней не дали",
+   "at": "decisions.json:1051",
+   "record_kind": "факт",
+   "number": 21
+  },
+  {
+   "id": "rec:F-22",
+   "kind": "rec",
+   "name": "[adjacency · collection] Старое значение адресата читается, новыми записями не пишется: в журнале активного изменения запись или парковка со значением `материалы`, записанная моделью прямо в JSON мимо `apply`, — `check` принимает её молча как значение старых журналов или сигналит?",
+   "at": "decisions.json:1091",
+   "record_kind": "развилка",
+   "number": 22
+  },
+  {
+   "id": "rec:F-23",
+   "kind": "rec",
+   "name": "[adjacency · collection] Просмотрщик и рендер при двух значениях адресата: парковки `материалы` старого журнала в счёте парковок по адресатам (режим «проверка» страницы, `stats` у `view-json`) — отдельная группа, слиты с `агент` или не считаются?",
+   "at": "decisions.json:1162",
+   "record_kind": "развилка",
+   "number": 23
+  },
+  {
+   "id": "rec:F-24",
+   "kind": "rec",
+   "name": "[adjacency · collection] Исследование — файл на каждую парковку «агент» с жанром: у одной записи две парковки `агент` без `finding` — один файл `research/F-NN.md` на обе или по файлу на парковку, если имя файла — номер записи?",
+   "at": "decisions.json:1232",
+   "record_kind": "развилка",
+   "number": 24
+  },
+  {
+   "id": "rec:F-25",
+   "kind": "rec",
+   "name": "[запрет] Обратимость, адресат парковки и исход — из закрытых списков с причиной: не должен адресат `агент` читаться как кто угодно с моделью — плагин, хук, главная нить чата — вместо агента исследования шага `research`",
+   "at": "decisions.json:1302",
+   "record_kind": "развилка",
+   "number": 25
+  },
+  {
+   "id": "rec:F-26",
+   "kind": "rec",
+   "name": "[запрет] `view-json` отдаёт номер контракта: не должен номер контракта расти без записи в `docs/repo-contract.md` — абзаца «С номера N …» и `Why:` в коммите ядра",
+   "at": "decisions.json:1374",
+   "record_kind": "развилка",
+   "number": 26
+  },
+  {
+   "id": "rec:F-27",
+   "kind": "rec",
+   "name": "[ветка] База мастера у требования MODIFIED: граф ищет её по имени требования, пары RENAMED не смотрит — у переименованного «Исследование — файл на каждую парковку «агент» с жанром» базы нет, отсечение `known` и сверка сценариев с мастером молча не идут; чинить здесь или нет?",
+   "at": "decisions.json:1445",
+   "record_kind": "развилка",
+   "number": 27
+  },
+  {
+   "id": "rec:F-28",
+   "kind": "rec",
+   "name": "[ветка] Сигнал о парковке без находки: после переименования условие проверяет `агент` — парковка `материалы` старого журнала без `finding` при файле `research/F-NN.md` строки не получает; сигналить и о ней?",
+   "at": "decisions.json:1513",
+   "record_kind": "развилка",
+   "number": 28
+  },
+  {
+   "id": "rec:F-29",
+   "kind": "rec",
+   "name": "[ветка] Назначение парковки на странице: карта в `parkingDestination` своя, не `PARKING_ANSWERS`; если при переименовании ключ `материалы` заменят на `агент`, старая парковка на странице получает «—» вместо `research/`; чем это закрыть?",
+   "at": "decisions.json:1583",
+   "record_kind": "развилка",
+   "number": 29
+  },
+  {
+   "id": "sec:Инъекции через содержимое файлов: адресат из промпта возврата и строки журнала",
+   "kind": "sec",
+   "name": "Инъекции через содержимое файлов: адресат из промпта возврата и строки журнала",
+   "at": "security.md:9"
+  },
+  {
+   "id": "sec:Инъекции через содержимое файлов: договор репозиториев в тесте",
+   "kind": "sec",
+   "name": "Инъекции через содержимое файлов: договор репозиториев в тесте",
+   "at": "security.md:10"
+  },
+  {
+   "id": "sec:Инъекции через тексты для модели и страницы",
+   "kind": "sec",
+   "name": "Инъекции через тексты для модели и страницы",
+   "at": "security.md:11"
+  },
+  {
+   "id": "sec:Пути с `../`",
+   "kind": "sec",
+   "name": "Пути с `../`",
+   "at": "security.md:12"
+  },
+  {
+   "id": "sec:Токены и срок их жизни",
+   "kind": "sec",
+   "name": "Токены и срок их жизни",
+   "at": "security.md:13"
+  },
+  {
+   "id": "sec:Права",
+   "kind": "sec",
+   "name": "Права",
+   "at": "security.md:14"
+  },
+  {
+   "id": "sec:Бинарные файлы",
+   "kind": "sec",
+   "name": "Бинарные файлы",
+   "at": "security.md:15"
+  },
+  {
+   "id": "sec:Чувствительные данные в журнале, артефактах и журналах прогона",
+   "kind": "sec",
+   "name": "Чувствительные данные в журнале, артефактах и журналах прогона",
+   "at": "security.md:16"
+  },
+  {
+   "id": "sec:Телеметрия и внешние команды",
+   "kind": "sec",
+   "name": "Телеметрия и внешние команды",
+   "at": "security.md:17"
+  },
+  {
+   "id": "cap:artifact-graph",
+   "kind": "cap",
+   "name": "artifact-graph",
+   "at": "specs/artifact-graph/spec.md:1"
+  },
+  {
+   "id": "req:artifact-graph/Исследование — файл на каждую парковку «агент» с жанром",
+   "kind": "req",
+   "name": "Исследование — файл на каждую парковку «агент» с жанром",
+   "at": "specs/artifact-graph/spec.md:9",
+   "section": "MODIFIED",
+   "capability": "artifact-graph"
+  },
+  {
+   "id": "scn:artifact-graph/Исследование — файл на каждую парковку «агент» с жанром/Отчёт по парковке",
+   "kind": "scn",
+   "name": "Отчёт по парковке",
+   "at": "specs/artifact-graph/spec.md:12",
+   "capability": "artifact-graph",
+   "requirement": "req:artifact-graph/Исследование — файл на каждую парковку «агент» с жанром"
+  },
+  {
+   "id": "scn:artifact-graph/Исследование — файл на каждую парковку «агент» с жанром/Отрицание без шаблонов не принимается",
+   "kind": "scn",
+   "name": "Отрицание без шаблонов не принимается",
+   "at": "specs/artifact-graph/spec.md:17",
+   "capability": "artifact-graph",
+   "requirement": "req:artifact-graph/Исследование — файл на каждую парковку «агент» с жанром"
+  },
+  {
+   "id": "scn:artifact-graph/Исследование — файл на каждую парковку «агент» с жанром/Нуль парковок",
+   "kind": "scn",
+   "name": "Нуль парковок",
+   "at": "specs/artifact-graph/spec.md:22",
+   "capability": "artifact-graph",
+   "requirement": "req:artifact-graph/Исследование — файл на каждую парковку «агент» с жанром"
+  },
+  {
+   "id": "scn:artifact-graph/Исследование — файл на каждую парковку «агент» с жанром/Парковка после none.md",
+   "kind": "scn",
+   "name": "Парковка после none.md",
+   "at": "specs/artifact-graph/spec.md:27",
+   "capability": "artifact-graph",
+   "requirement": "req:artifact-graph/Исследование — файл на каждую парковку «агент» с жанром"
+  },
+  {
+   "id": "scn:artifact-graph/Исследование — файл на каждую парковку «агент» с жанром/Ответ добыт пробой",
+   "kind": "scn",
+   "name": "Ответ добыт пробой",
+   "at": "specs/artifact-graph/spec.md:32",
+   "capability": "artifact-graph",
+   "requirement": "req:artifact-graph/Исследование — файл на каждую парковку «агент» с жанром"
+  },
+  {
+   "id": "scn:artifact-graph/Исследование — файл на каждую парковку «агент» с жанром/Подсказка адресата",
+   "kind": "scn",
+   "name": "Подсказка адресата",
+   "at": "specs/artifact-graph/spec.md:37",
+   "capability": "artifact-graph",
+   "requirement": "req:artifact-graph/Исследование — файл на каждую парковку «агент» с жанром"
+  },
+  {
+   "id": "scn:artifact-graph/Исследование — файл на каждую парковку «агент» с жанром/Проба без следа",
+   "kind": "scn",
+   "name": "Проба без следа",
+   "at": "specs/artifact-graph/spec.md:42",
+   "capability": "artifact-graph",
+   "requirement": "req:artifact-graph/Исследование — файл на каждую парковку «агент» с жанром"
+  },
+  {
+   "id": "req:artifact-graph/Файл-отрицание при нуле парковок агенту",
+   "kind": "req",
+   "name": "Файл-отрицание при нуле парковок агенту",
+   "at": "specs/artifact-graph/spec.md:51",
+   "section": "ADDED",
+   "capability": "artifact-graph"
+  },
+  {
+   "id": "scn:artifact-graph/Файл-отрицание при нуле парковок агенту/Перечень записей в файле-отрицании",
+   "kind": "scn",
+   "name": "Перечень записей в файле-отрицании",
+   "at": "specs/artifact-graph/spec.md:54",
+   "capability": "artifact-graph",
+   "requirement": "req:artifact-graph/Файл-отрицание при нуле парковок агенту"
+  },
+  {
+   "id": "req:artifact-graph/Итог пробы в отчёте исследования",
+   "kind": "req",
+   "name": "Итог пробы в отчёте исследования",
+   "at": "specs/artifact-graph/spec.md:61",
+   "section": "ADDED",
+   "capability": "artifact-graph"
+  },
+  {
+   "id": "scn:artifact-graph/Итог пробы в отчёте исследования/Проба упала",
+   "kind": "scn",
+   "name": "Проба упала",
+   "at": "specs/artifact-graph/spec.md:64",
+   "capability": "artifact-graph",
+   "requirement": "req:artifact-graph/Итог пробы в отчёте исследования"
+  },
+  {
+   "id": "cap:brainstorm-interview",
+   "kind": "cap",
+   "name": "brainstorm-interview",
+   "at": "specs/brainstorm-interview/spec.md:1"
+  },
+  {
+   "id": "req:brainstorm-interview/Вопрос, ответ на который есть в файлах, человеку не задаётся",
+   "kind": "req",
+   "name": "Вопрос, ответ на который есть в файлах, человеку не задаётся",
+   "at": "specs/brainstorm-interview/spec.md:5",
+   "section": "MODIFIED",
+   "capability": "brainstorm-interview"
+  },
+  {
+   "id": "scn:brainstorm-interview/Вопрос, ответ на который есть в файлах, человеку не задаётся/Ответ лежит в файле",
+   "kind": "scn",
+   "name": "Ответ лежит в файле",
+   "at": "specs/brainstorm-interview/spec.md:8",
+   "capability": "brainstorm-interview",
+   "requirement": "req:brainstorm-interview/Вопрос, ответ на который есть в файлах, человеку не задаётся"
+  },
+  {
+   "id": "scn:brainstorm-interview/Вопрос, ответ на который есть в файлах, человеку не задаётся/Материалов нет",
+   "kind": "scn",
+   "name": "Материалов нет",
+   "at": "specs/brainstorm-interview/spec.md:13",
+   "capability": "brainstorm-interview",
+   "requirement": "req:brainstorm-interview/Вопрос, ответ на который есть в файлах, человеку не задаётся"
+  },
+  {
+   "id": "scn:brainstorm-interview/Вопрос, ответ на который есть в файлах, человеку не задаётся/Намерение прочитано первым",
+   "kind": "scn",
+   "name": "Намерение прочитано первым",
+   "at": "specs/brainstorm-interview/spec.md:18",
+   "capability": "brainstorm-interview",
+   "requirement": "req:brainstorm-interview/Вопрос, ответ на который есть в файлах, человеку не задаётся"
+  },
+  {
+   "id": "scn:brainstorm-interview/Вопрос, ответ на который есть в файлах, человеку не задаётся/Отступление от постановки помечено",
+   "kind": "scn",
+   "name": "Отступление от постановки помечено",
+   "at": "specs/brainstorm-interview/spec.md:23",
+   "capability": "brainstorm-interview",
+   "requirement": "req:brainstorm-interview/Вопрос, ответ на который есть в файлах, человеку не задаётся"
+  },
+  {
+   "id": "scn:brainstorm-interview/Вопрос, ответ на который есть в файлах, человеку не задаётся/Предписание в следствиях факта",
+   "kind": "scn",
+   "name": "Предписание в следствиях факта",
+   "at": "specs/brainstorm-interview/spec.md:28",
+   "capability": "brainstorm-interview",
+   "requirement": "req:brainstorm-interview/Вопрос, ответ на который есть в файлах, человеку не задаётся"
+  },
+  {
+   "id": "scn:brainstorm-interview/Вопрос, ответ на который есть в файлах, человеку не задаётся/Намерение без критериев",
+   "kind": "scn",
+   "name": "Намерение без критериев",
+   "at": "specs/brainstorm-interview/spec.md:33",
+   "capability": "brainstorm-interview",
+   "requirement": "req:brainstorm-interview/Вопрос, ответ на который есть в файлах, человеку не задаётся"
+  },
+  {
+   "id": "scn:brainstorm-interview/Вопрос, ответ на который есть в файлах, человеку не задаётся/Круг 2 перечитывает намерение",
+   "kind": "scn",
+   "name": "Круг 2 перечитывает намерение",
+   "at": "specs/brainstorm-interview/spec.md:38",
+   "capability": "brainstorm-interview",
+   "requirement": "req:brainstorm-interview/Вопрос, ответ на который есть в файлах, человеку не задаётся"
+  },
+  {
+   "id": "req:brainstorm-interview/Круг кончается счётом и словом человека, не числом",
+   "kind": "req",
+   "name": "Круг кончается счётом и словом человека, не числом",
+   "at": "specs/brainstorm-interview/spec.md:45",
+   "section": "MODIFIED",
+   "capability": "brainstorm-interview"
+  },
+  {
+   "id": "scn:brainstorm-interview/Круг кончается счётом и словом человека, не числом/Отказ от нового круга",
+   "kind": "scn",
+   "name": "Отказ от нового круга",
+   "at": "specs/brainstorm-interview/spec.md:48",
+   "capability": "brainstorm-interview",
+   "requirement": "req:brainstorm-interview/Круг кончается счётом и словом человека, не числом"
+  },
+  {
+   "id": "scn:brainstorm-interview/Круг кончается счётом и словом человека, не числом/Круг без нового при открытых развилках",
+   "kind": "scn",
+   "name": "Круг без нового при открытых развилках",
+   "at": "specs/brainstorm-interview/spec.md:53",
+   "capability": "brainstorm-interview",
+   "requirement": "req:brainstorm-interview/Круг кончается счётом и словом человека, не числом"
+  },
+  {
+   "id": "scn:brainstorm-interview/Круг кончается счётом и словом человека, не числом/Третий круг",
+   "kind": "scn",
+   "name": "Третий круг",
+   "at": "specs/brainstorm-interview/spec.md:58",
+   "capability": "brainstorm-interview",
+   "requirement": "req:brainstorm-interview/Круг кончается счётом и словом человека, не числом"
+  },
+  {
+   "id": "scn:brainstorm-interview/Круг кончается счётом и словом человека, не числом/Круг без нового",
+   "kind": "scn",
+   "name": "Круг без нового",
+   "at": "specs/brainstorm-interview/spec.md:63",
+   "capability": "brainstorm-interview",
+   "requirement": "req:brainstorm-interview/Круг кончается счётом и словом человека, не числом"
+  },
+  {
+   "id": "scn:brainstorm-interview/Круг кончается счётом и словом человека, не числом/Только парковки",
+   "kind": "scn",
+   "name": "Только парковки",
+   "at": "specs/brainstorm-interview/spec.md:68",
+   "capability": "brainstorm-interview",
+   "requirement": "req:brainstorm-interview/Круг кончается счётом и словом человека, не числом"
+  },
+  {
+   "id": "scn:brainstorm-interview/Круг кончается счётом и словом человека, не числом/Круг после конца брейншторма",
+   "kind": "scn",
+   "name": "Круг после конца брейншторма",
+   "at": "specs/brainstorm-interview/spec.md:73",
+   "capability": "brainstorm-interview",
+   "requirement": "req:brainstorm-interview/Круг кончается счётом и словом человека, не числом"
+  },
+  {
+   "id": "req:brainstorm-interview/Интервью начинается с намерения",
+   "kind": "req",
+   "name": "Интервью начинается с намерения",
+   "at": "specs/brainstorm-interview/spec.md:82",
+   "section": "ADDED",
+   "capability": "brainstorm-interview"
+  },
+  {
+   "id": "scn:brainstorm-interview/Интервью начинается с намерения/Два критерия — два факта",
+   "kind": "scn",
+   "name": "Два критерия — два факта",
+   "at": "specs/brainstorm-interview/spec.md:85",
+   "capability": "brainstorm-interview",
+   "requirement": "req:brainstorm-interview/Интервью начинается с намерения"
+  },
+  {
+   "id": "req:brainstorm-interview/Отступление и конструкция записываются развилкой",
+   "kind": "req",
+   "name": "Отступление и конструкция записываются развилкой",
+   "at": "specs/brainstorm-interview/spec.md:92",
+   "section": "ADDED",
+   "capability": "brainstorm-interview"
+  },
+  {
+   "id": "scn:brainstorm-interview/Отступление и конструкция записываются развилкой/Уточнение без противоречия",
+   "kind": "scn",
+   "name": "Уточнение без противоречия",
+   "at": "specs/brainstorm-interview/spec.md:95",
+   "capability": "brainstorm-interview",
+   "requirement": "req:brainstorm-interview/Отступление и конструкция записываются развилкой"
+  },
+  {
+   "id": "req:brainstorm-interview/Парковки агенту переносят вопрос о круге в research",
+   "kind": "req",
+   "name": "Парковки агенту переносят вопрос о круге в research",
+   "at": "specs/brainstorm-interview/spec.md:102",
+   "section": "ADDED",
+   "capability": "brainstorm-interview"
+  },
+  {
+   "id": "scn:brainstorm-interview/Парковки агенту переносят вопрос о круге в research/Круг с парковками агенту закрыт без вопроса",
+   "kind": "scn",
+   "name": "Круг с парковками агенту закрыт без вопроса",
+   "at": "specs/brainstorm-interview/spec.md:105",
+   "capability": "brainstorm-interview",
+   "requirement": "req:brainstorm-interview/Парковки агенту переносят вопрос о круге в research"
+  },
+  {
+   "id": "cap:decision-journal",
+   "kind": "cap",
+   "name": "decision-journal",
+   "at": "specs/decision-journal/spec.md:1"
+  },
+  {
+   "id": "req:decision-journal/Обратимость, адресат парковки и исход — из закрытых списков с причиной",
+   "kind": "req",
+   "name": "Обратимость, адресат парковки и исход — из закрытых списков с причиной",
+   "at": "specs/decision-journal/spec.md:5",
+   "section": "MODIFIED",
+   "capability": "decision-journal"
+  },
+  {
+   "id": "scn:decision-journal/Обратимость, адресат парковки и исход — из закрытых списков с причиной/Рекомендованный отказ без слова",
+   "kind": "scn",
+   "name": "Рекомендованный отказ без слова",
+   "at": "specs/decision-journal/spec.md:8",
+   "capability": "decision-journal",
+   "requirement": "req:decision-journal/Обратимость, адресат парковки и исход — из закрытых списков с причиной"
+  },
+  {
+   "id": "scn:decision-journal/Обратимость, адресат парковки и исход — из закрытых списков с причиной/Выбор мимо рекомендации без слова",
+   "kind": "scn",
+   "name": "Выбор мимо рекомендации без слова",
+   "at": "specs/decision-journal/spec.md:13",
+   "capability": "decision-journal",
+   "requirement": "req:decision-journal/Обратимость, адресат парковки и исход — из закрытых списков с причиной"
+  },
+  {
+   "id": "scn:decision-journal/Обратимость, адресат парковки и исход — из закрытых списков с причиной/Вариант, добавленный человеком",
+   "kind": "scn",
+   "name": "Вариант, добавленный человеком",
+   "at": "specs/decision-journal/spec.md:18",
+   "capability": "decision-journal",
+   "requirement": "req:decision-journal/Обратимость, адресат парковки и исход — из закрытых списков с причиной"
+  },
+  {
+   "id": "scn:decision-journal/Обратимость, адресат парковки и исход — из закрытых списков с причиной/Адресат вне списка",
+   "kind": "scn",
+   "name": "Адресат вне списка",
+   "at": "specs/decision-journal/spec.md:23",
+   "capability": "decision-journal",
+   "requirement": "req:decision-journal/Обратимость, адресат парковки и исход — из закрытых списков с причиной"
+  },
+  {
+   "id": "scn:decision-journal/Обратимость, адресат парковки и исход — из закрытых списков с причиной/Факт постановки",
+   "kind": "scn",
+   "name": "Факт постановки",
+   "at": "specs/decision-journal/spec.md:28",
+   "capability": "decision-journal",
+   "requirement": "req:decision-journal/Обратимость, адресат парковки и исход — из закрытых списков с причиной"
+  },
+  {
+   "id": "scn:decision-journal/Обратимость, адресат парковки и исход — из закрытых списков с причиной/Факт без улики",
+   "kind": "scn",
+   "name": "Факт без улики",
+   "at": "specs/decision-journal/spec.md:33",
+   "capability": "decision-journal",
+   "requirement": "req:decision-journal/Обратимость, адресат парковки и исход — из закрытых списков с причиной"
+  },
+  {
+   "id": "scn:decision-journal/Обратимость, адресат парковки и исход — из закрытых списков с причиной/Припаркованный факт без улики",
+   "kind": "scn",
+   "name": "Припаркованный факт без улики",
+   "at": "specs/decision-journal/spec.md:38",
+   "capability": "decision-journal",
+   "requirement": "req:decision-journal/Обратимость, адресат парковки и исход — из закрытых списков с причиной"
+  },
+  {
+   "id": "scn:decision-journal/Обратимость, адресат парковки и исход — из закрытых списков с причиной/Пустое why",
+   "kind": "scn",
+   "name": "Пустое why",
+   "at": "specs/decision-journal/spec.md:43",
+   "capability": "decision-journal",
+   "requirement": "req:decision-journal/Обратимость, адресат парковки и исход — из закрытых списков с причиной"
+  },
+  {
+   "id": "scn:decision-journal/Обратимость, адресат парковки и исход — из закрытых списков с причиной/Парковка без находки при файле",
+   "kind": "scn",
+   "name": "Парковка без находки при файле",
+   "at": "specs/decision-journal/spec.md:48",
+   "capability": "decision-journal",
+   "requirement": "req:decision-journal/Обратимость, адресат парковки и исход — из закрытых списков с причиной"
+  },
+  {
+   "id": "req:decision-journal/Старое значение адресата читается, новыми записями не пишется",
+   "kind": "req",
+   "name": "Старое значение адресата читается, новыми записями не пишется",
+   "at": "specs/decision-journal/spec.md:57",
+   "section": "ADDED",
+   "capability": "decision-journal"
+  },
+  {
+   "id": "scn:decision-journal/Старое значение адресата читается, новыми записями не пишется/Старый журнал годен",
+   "kind": "scn",
+   "name": "Старый журнал годен",
+   "at": "specs/decision-journal/spec.md:60",
+   "capability": "decision-journal",
+   "requirement": "req:decision-journal/Старое значение адресата читается, новыми записями не пишется"
+  },
+  {
+   "id": "scn:decision-journal/Старое значение адресата читается, новыми записями не пишется/Строка apply со старым значением",
+   "kind": "scn",
+   "name": "Строка apply со старым значением",
+   "at": "specs/decision-journal/spec.md:65",
+   "capability": "decision-journal",
+   "requirement": "req:decision-journal/Старое значение адресата читается, новыми записями не пишется"
+  },
+  {
+   "id": "scn:decision-journal/Старое значение адресата читается, новыми записями не пишется/Старое значение в журнале активного изменения",
+   "kind": "scn",
+   "name": "Старое значение в журнале активного изменения",
+   "at": "specs/decision-journal/spec.md:70",
+   "capability": "decision-journal",
+   "requirement": "req:decision-journal/Старое значение адресата читается, новыми записями не пишется"
+  },
+  {
+   "id": "req:decision-journal/Просмотрщик и рендер при двух значениях адресата",
+   "kind": "req",
+   "name": "Просмотрщик и рендер при двух значениях адресата",
+   "at": "specs/decision-journal/spec.md:78",
+   "section": "ADDED",
+   "capability": "decision-journal"
+  },
+  {
+   "id": "scn:decision-journal/Просмотрщик и рендер при двух значениях адресата/Назначение старой парковки",
+   "kind": "scn",
+   "name": "Назначение старой парковки",
+   "at": "specs/decision-journal/spec.md:81",
+   "capability": "decision-journal",
+   "requirement": "req:decision-journal/Просмотрщик и рендер при двух значениях адресата"
+  },
+  {
+   "id": "req:decision-journal/Слово к решению мимо рекомендации",
+   "kind": "req",
+   "name": "Слово к решению мимо рекомендации",
+   "at": "specs/decision-journal/spec.md:88",
+   "section": "ADDED",
+   "capability": "decision-journal"
+  },
+  {
+   "id": "scn:decision-journal/Слово к решению мимо рекомендации/Слово к выбору мимо рекомендации внесено",
+   "kind": "scn",
+   "name": "Слово к выбору мимо рекомендации внесено",
+   "at": "specs/decision-journal/spec.md:91",
+   "capability": "decision-journal",
+   "requirement": "req:decision-journal/Слово к решению мимо рекомендации"
+  },
+  {
+   "id": "req:decision-journal/Пометка отступления стоит у варианта",
+   "kind": "req",
+   "name": "Пометка отступления стоит у варианта",
+   "at": "specs/decision-journal/spec.md:98",
+   "section": "ADDED",
+   "capability": "decision-journal"
+  },
+  {
+   "id": "scn:decision-journal/Пометка отступления стоит у варианта/Пометка у отступающего варианта",
+   "kind": "scn",
+   "name": "Пометка у отступающего варианта",
+   "at": "specs/decision-journal/spec.md:101",
+   "capability": "decision-journal",
+   "requirement": "req:decision-journal/Пометка отступления стоит у варианта"
+  },
+  {
+   "id": "req:decision-journal/`check` отвергает факт без улики и пустую причину, парковку без находки сигналит",
+   "kind": "req",
+   "name": "`check` отвергает факт без улики и пустую причину, парковку без находки сигналит",
+   "at": "specs/decision-journal/spec.md:108",
+   "section": "ADDED",
+   "capability": "decision-journal"
+  },
+  {
+   "id": "scn:decision-journal/`check` отвергает факт без улики и пустую причину, парковку без находки сигналит/Сигнал о парковке агенту при --strict",
+   "kind": "scn",
+   "name": "Сигнал о парковке агенту при --strict",
+   "at": "specs/decision-journal/spec.md:111",
+   "capability": "decision-journal",
+   "requirement": "req:decision-journal/`check` отвергает факт без улики и пустую причину, парковку без находки сигналит"
+  },
+  {
+   "id": "req:decision-journal/Адресат `агент` означает агента исследования",
+   "kind": "req",
+   "name": "Адресат `агент` означает агента исследования",
+   "at": "specs/decision-journal/spec.md:118",
+   "section": "ADDED",
+   "capability": "decision-journal"
+  },
+  {
+   "id": "scn:decision-journal/Адресат `агент` означает агента исследования/Глоссарий и подсказка называют агента исследования",
+   "kind": "scn",
+   "name": "Глоссарий и подсказка называют агента исследования",
+   "at": "specs/decision-journal/spec.md:121",
+   "capability": "decision-journal",
+   "requirement": "req:decision-journal/Адресат `агент` означает агента исследования"
+  },
+  {
+   "id": "cap:plugin-core-contract",
+   "kind": "cap",
+   "name": "plugin-core-contract",
+   "at": "specs/plugin-core-contract/spec.md:1"
+  },
+  {
+   "id": "req:plugin-core-contract/`view-json` отдаёт номер контракта",
+   "kind": "req",
+   "name": "`view-json` отдаёт номер контракта",
+   "at": "specs/plugin-core-contract/spec.md:5",
+   "section": "MODIFIED",
+   "capability": "plugin-core-contract"
+  },
+  {
+   "id": "scn:plugin-core-contract/`view-json` отдаёт номер контракта/Вывод содержит номер",
+   "kind": "scn",
+   "name": "Вывод содержит номер",
+   "at": "specs/plugin-core-contract/spec.md:8",
+   "capability": "plugin-core-contract",
+   "requirement": "req:plugin-core-contract/`view-json` отдаёт номер контракта"
+  },
+  {
+   "id": "scn:plugin-core-contract/`view-json` отдаёт номер контракта/Новое поле номер не поднимает",
+   "kind": "scn",
+   "name": "Новое поле номер не поднимает",
+   "at": "specs/plugin-core-contract/spec.md:13",
+   "capability": "plugin-core-contract",
+   "requirement": "req:plugin-core-contract/`view-json` отдаёт номер контракта"
+  },
+  {
+   "id": "scn:plugin-core-contract/`view-json` отдаёт номер контракта/Новое значение адресата поднимает номер",
+   "kind": "scn",
+   "name": "Новое значение адресата поднимает номер",
+   "at": "specs/plugin-core-contract/spec.md:18",
+   "capability": "plugin-core-contract",
+   "requirement": "req:plugin-core-contract/`view-json` отдаёт номер контракта"
+  },
+  {
+   "id": "req:plugin-core-contract/Номер контракта не растёт без записи в договоре",
+   "kind": "req",
+   "name": "Номер контракта не растёт без записи в договоре",
+   "at": "specs/plugin-core-contract/spec.md:27",
+   "section": "ADDED",
+   "capability": "plugin-core-contract"
+  },
+  {
+   "id": "scn:plugin-core-contract/Номер контракта не растёт без записи в договоре/Номер выше последнего абзаца",
+   "kind": "scn",
+   "name": "Номер выше последнего абзаца",
+   "at": "specs/plugin-core-contract/spec.md:30",
+   "capability": "plugin-core-contract",
+   "requirement": "req:plugin-core-contract/Номер контракта не растёт без записи в договоре"
+  },
+  {
+   "id": "task:1.1",
+   "kind": "task",
+   "name": "`decisions/journal.schema.json`: в оба enum адресата — у парковки и у записи — добавить `агент` первым значением, `материалы` оставить с `description` «только старые журналы: новые записи его не пишут, `check` сигналит» (F-17.A, F-22); `decisions/tests/test_journal_schema.py`: журнал с `агент` у парковки и записи годен, архив и журнал плана годны по `LIVE_JOURNALS`, `архитектор` даёт код 1 с путём `parking/0/addressee`, вариант с `deviation` на факт постановки годен — проверка: `python -X utf8 -m pytest decisions/tests/test_journal_schema.py` зелёный; `decision-journal`: «Старый журнал годен», `decision-journal`: «Адресат вне списка», `decision-journal`: «Припаркованный факт без улики», `decision-journal`: «Пометка у отступающего варианта»",
+   "at": "tasks.md:5",
+   "done": false
+  },
+  {
+   "id": "task:1.2",
+   "kind": "task",
+   "name": "`decisions/journal_apply.py`: `PARKING_ADDRESSEES = (\"агент\", \"человек\", \"ИБ\")`, отказ «адресат «материалы» — допустимы агент | человек | ИБ»; `decisions/tests/test_journal_apply.py`: строка `- F-01: припарковано → материалы — «вопрос»` даёт код 1 и журнал байт в байт прежний, строка с `агент` вносится и ставит `status: припаркован` — проверка: `python -X utf8 -m pytest decisions/tests/test_journal_apply.py` зелёный; `decision-journal`: «Строка apply со старым значением»",
+   "at": "tasks.md:6",
+   "done": false
+  },
+  {
+   "id": "task:1.3",
+   "kind": "task",
+   "name": "`cli/journal_cli.py`: `_parkings_without_finding` проверяет `агент` и печатает «парковка «агент» без finding при research/F-NN.md»; новая проверка на каждое `материалы` у записи и у парковки — строка `[!!] F-NN: адресат «материалы» — старое значение, новые записи пишут «агент»`, код 0, входит в условие `--strict` (код 2); `decisions/tests/test_journal_check.py`: оба сигнала, код 2 при `--strict`, молчание на журнале только с `агент`, решение мимо рекомендации со словом сигнала не даёт — проверка: `python -X utf8 -m pytest decisions/tests/test_journal_check.py` зелёный; `decision-journal`: «Парковка без находки при файле», `decision-journal`: «Сигнал о парковке агенту при --strict», `decision-journal`: «Старое значение в журнале активного изменения», `decision-journal`: «Слово к выбору мимо рекомендации внесено»",
+   "at": "tasks.md:7",
+   "done": false
+  },
+  {
+   "id": "task:1.4",
+   "kind": "task",
+   "name": "`cli/journal-cli.md`, раздел «Код → действие»: строка о сигнале «адресат «материалы» — старое значение» (сигнал, не стоп: старые журналы законны, новая запись переписывается на `агент`) и переименованная строка о парковке «агент» без `finding` — проверка: обе строки в файле, `python -X utf8 -m pytest cli` зелёный; `decision-journal`: «Старое значение в журнале активного изменения»",
+   "at": "tasks.md:8",
+   "done": false
+  },
+  {
+   "id": "task:1.5",
+   "kind": "task",
+   "name": "Фикстуры на `агент`: `tests/fixtures/change-demo/decisions.json`, `change-demo-attack/decisions.json`, `change-demo-none/decisions.json` и `change-demo-none/research/none.md`, `answers-round1.md`, `journal-plan.md`, `journal-plan-before-round1.md`; новая фикстура `tests/fixtures/journal-legacy/decisions.json` с `материалы` у парковки и у записи — для сценария о старом журнале; ожидания в `tests/conftest.py` и `decisions/tests/test_journal_schema.py` (строка 57) — проверка: `python -X utf8 -m pytest decisions tests` зелёный; `decision-journal`: «Старый журнал годен»",
+   "at": "tasks.md:9",
+   "done": false
+  },
+  {
+   "id": "task:2.1",
+   "kind": "task",
+   "name": "`decisions/journal_render.py`: `PARKING_ANSWERS` с ключами `агент` и `материалы` → `research/`; `CONTRACT = 4` с комментарием о смене значения адресата (F-09); `decisions/tests/test_journal_render.py` и `test_journal_design.py`: назначение `design.md › Open Questions → research/` у парковок обоих значений, фикстуры заметок со строкой «парковок агенту 1»; `decisions/tests/test_journal_view_json.py`: `contract == 4` — проверка: `python -X utf8 -m pytest decisions` зелёный; `decision-journal`: «Назначение старой парковки», `plugin-core-contract`: «Новое значение адресата поднимает номер»",
+   "at": "tasks.md:13",
+   "done": false
+  },
+  {
+   "id": "task:2.2",
+   "kind": "task",
+   "name": "`step-help/tests/test_step_help.py`: `contract == 4` в выводе `step_help.py` (импорт `CONTRACT` не меняется), тексты «где искать материалы» прежние — слово в другом смысле (F-12) — проверка: `python -X utf8 -m pytest step-help` зелёный; `plugin-core-contract`: «Новое значение адресата поднимает номер», `plugin-core-contract`: «Новое поле номер не поднимает»",
+   "at": "tasks.md:14",
+   "done": false
+  },
+  {
+   "id": "task:2.3",
+   "kind": "task",
+   "name": "`viewer/playground-template.html`: `ADDRESSEES = ['агент','человек','ИБ']`; `PARK_HINT` — «агент» — ответ ищет агент исследования, в файлах или пробой; карта `parkingDestination` несёт `агент` и `материалы` → `research/`; `viewer/tests/test_viewer_page.py`: строка `ADDRESSEES` дословно, подсказка со словами «агент исследования», карта с обоими ключами (тест-страховка F-29); `viewer/tests/test_viewer_browser.py`: текст «где искать материалы» прежний — проверка: `python -X utf8 -m pytest viewer` зелёный; `artifact-graph`: «Подсказка адресата», `decision-journal`: «Глоссарий и подсказка называют агента исследования»",
+   "at": "tasks.md:15",
+   "done": false
+  },
+  {
+   "id": "task:2.4",
+   "kind": "task",
+   "name": "`docs/repo-contract.md`: абзац «С номера 4 адресат парковки и записи — `агент`; `материалы` читается только у старых журналов, строка `apply` с ним отвергается» по образцу абзацев о номерах 2 и 3; строка «значения полей, которые плагин разбирает» дополнена значением адресата; тест в `decisions/tests/test_journal_render.py` читает файл, берёт наибольшее N из абзацев «С номера N» и сравнивает с `CONTRACT` (F-26) — проверка: тест зелёный, а при `CONTRACT = 5` без абзаца красный с обоими числами; `plugin-core-contract`: «Номер выше последнего абзаца»",
+   "at": "tasks.md:16",
+   "done": false
+  },
+  {
+   "id": "task:2.5",
+   "kind": "task",
+   "name": "`docs/playground-template-llm-pipeline.md`, строки 69 и 109: значение `агент`, адресаты — `агент, человек, ИБ` — проверка: `grep -n материалы docs/playground-template-llm-pipeline.md` пуст — `служебная`",
+   "at": "tasks.md:17",
+   "done": false
+  },
+  {
+   "id": "task:3.1",
+   "kind": "task",
+   "name": "`openspec/schemas/symphysis/schema.yaml` (instruction `research` и `proposal`), `steps.md` (маршрут «не прочитать сейчас — парковка адресату `агент`», «припаркованные к агенту», файл на каждую парковку агенту), `config.symphysis.yaml` и `openspec/config.yaml` (правило «адресат парковки — агент, человек, ИБ»), `templates/research.md` (комментарий о `none.md`); `openspec/schemas/symphysis/tests/test_schema.py` — ожидания с `агент` — проверка: `python -X utf8 -m pytest openspec/schemas/symphysis/tests` зелёный; `artifact-graph`: «Отчёт по парковке», `artifact-graph`: «Нуль парковок», `artifact-graph`: «Парковка после none.md», `artifact-graph`: «Перечень записей в файле-отрицании»",
+   "at": "tasks.md:21",
+   "done": false
+  },
+  {
+   "id": "task:3.2",
+   "kind": "task",
+   "name": "Тела скиллов: `decisions/skills/symphysis-brainstorm/SKILL.md` (парковка `агент`, факт `addressee: агент`, строка счёта «парковок агенту P», оговорка Р2-A снята из `<!-- src -->`), `research/skills/symphysis-research/SKILL.md` и `research/agents/symphysis-research-driver.md` (парковка `агент`, сигнал «парковка «агент» без finding», строка «Границ» о значении `агент` отдельным изменением снята), `research/README.md`, `attack/skills/symphysis-attack/SKILL.md`, `viewer/skills/symphysis-viewer/SKILL.md`; `tests/test_skills.py` — токены с `агент`, заголовок «Прочитай материалы» прежний — проверка: `python -X utf8 -m pytest tests/test_skills.py` зелёный; `brainstorm-interview`: «Материалов нет», `brainstorm-interview`: «Круг с парковками агенту закрыт без вопроса», `brainstorm-interview`: «Только парковки», `brainstorm-interview`: «Круг без нового», `artifact-graph`: «Ответ добыт пробой», `artifact-graph`: «Проба упала», `artifact-graph`: «Проба без следа», `artifact-graph`: «Отрицание без шаблонов не принимается»",
+   "at": "tasks.md:22",
+   "done": false
+  },
+  {
+   "id": "task:3.3",
+   "kind": "task",
+   "name": "`skill-shared/terms.md`: термин «адресат» — `агент` (водитель шага `research`: читает, грепает, ставит пробы), `человек`, `ИБ`; строка «Переименование `материалы` → `агент` идёт отдельным изменением» снята; `tests/test_skills.py` ищет определение «агент — водитель шага `research`» (F-25) — проверка: тест зелёный; `decision-journal`: «Глоссарий и подсказка называют агента исследования»",
+   "at": "tasks.md:23",
+   "done": false
+  },
+  {
+   "id": "task:3.4",
+   "kind": "task",
+   "name": "Сценарии брейншторма, закрытые текстом скилла: шаг 1 — факт постановки на каждый критерий, правило `deviation` — у варианта, уточняющего критерий, поля нет; `tests/test_skills.py` держит токены «по одному на критерий» и «уточняет ли» — проверка: тест зелёный; `brainstorm-interview`: «Два критерия — два факта», `brainstorm-interview`: «Уточнение без противоречия»",
+   "at": "tasks.md:24",
+   "done": false
+  },
+  {
+   "id": "task:3.5",
+   "kind": "task",
+   "name": "`CLAUDE.md`, «Ограничения схемы»: «Адресаты парковки — агент, человек, ИБ»; `docs/GUIDE.md`, строка 353: «припаркованную к агенту» — проверка: `grep -rn 'материалы\\|материалам'` по живым файлам находит только legacy-ключи схемы и карт, текст сигнала `check`, фикстуру `journal-legacy`, журнал этого изменения и датированные документы `docs/analysis`, `docs/dry-run-*`, `docs/plan-*`, `docs/recieve-answers.md` — `служебная`",
+   "at": "tasks.md:25",
+   "done": false
+  },
+  {
+   "id": "task:4.1",
+   "kind": "task",
+   "name": "Полный прогон: `python -X utf8 -m pytest` зелёный; `openspec validate parking-addressee-agent --strict` валиден; `python -X utf8 cli/journal.py check --roots openspec/changes/parking-addressee-agent/probes/journal-roots.json openspec/changes/parking-addressee-agent/decisions.json` — код 0, строки `[!!]` только о старом значении у фактов этого журнала (F-22, норма по design); `python -X utf8 trace/trace_graph.py report parking-addressee-agent` без «неизвестное имя или номер» и «требование без задачи» — `служебная`",
+   "at": "tasks.md:29",
+   "done": false
+  },
+  {
+   "id": "task:4.2",
+   "kind": "task",
+   "name": "Выкладка: `node installer/scripts/sync-payload.js`, затем `symphysis install --force` в этом worktree — проверка: `grep -rn материалы .symphysis/tools .claude/skills .claude/agents` находит только legacy-ключи схемы, карт и сигнала; `.claude/skills/symphysis-research/SKILL.md` несёт `агент` — `служебная`",
+   "at": "tasks.md:30",
+   "done": false
+  },
+  {
+   "id": "task:4.3",
+   "kind": "task",
+   "name": "Бэклог `<путь>`: пункт B-44 в группе 5 — плагинная половина по F-10 и F-19.A: `src/protocol/types.ts` `ADDRESSEES`, `src/viewer/Card.tsx` `PARK_HINT`, `src/core/core.ts` `EXPECTED_CONTRACT = 4`, тесты `logic`, `card`, `check`, `contract`, подстановка `CONTRACT = 4` в `test/e2e/scenario.ts`, коммит с `Needs: symphysis <хеш коммита ядра>`; пункт B-45 в группе 4 — модуль `trace`: база мастера у MODIFIED под RENAMED берётся по имени FROM, отсечение и сверка сценариев как у обычного MODIFIED (F-27); запись о сделанном в группе 2 — проверка: строки в таблице и разделы с датой — `служебная`",
+   "at": "tasks.md:31",
+   "done": false
+  },
+  {
+   "id": "task:4.4",
+   "kind": "task",
+   "name": "Коммит ядра одним изменением с `Why:` о смене контракта по `docs/repo-contract.md` («Подпись коммита»); пуш и пауза — по слову человека — проверка: `git log -1 --format=%B` несёт строку `Why:` в последнем абзаце — `служебная`",
+   "at": "tasks.md:32",
+   "done": false
+  },
+  {
+   "id": "task:4.5",
+   "kind": "task",
+   "name": "После `/opsx:sync`: мастер `openspec/specs/artifact-graph/spec.md` несёт одно требование «Исследование — файл на каждую парковку «агент» с жанром», старого имени нет, все семь сценариев при нём; `python anchors/anchor_refs.py parking-addressee-agent` показан человеку; `trace_graph.py report` без «неизвестное имя или номер» (F-21, F-27) — проверка: `grep -c 'парковку «материалы» с жанром' openspec/specs/artifact-graph/spec.md` равен 0 — `служебная`",
+   "at": "tasks.md:33",
+   "done": false
+  },
+  {
+   "id": "task:4.6",
+   "kind": "task",
+   "name": "Контекст-пакет `<путь>`, строка «парковка»: адресаты `агент`, `человек`, `ИБ` с пометкой даты и хеша коммита ядра; `verified_at` слота — по правилу пакета — проверка: `grep материалы <путь>` пуст — `служебная`",
+   "at": "tasks.md:34",
+   "done": false
+  }
+ ],
+ "edges": [
+  {
+   "from": "branch:decisions/journal_apply.py:206",
+   "to": "scn:decision-journal/Старое значение адресата читается, новыми записями не пишется/Строка apply со старым значением",
+   "type": "verifies",
+   "at": "consequences.md:10"
+  },
+  {
+   "from": "branch:decisions/journal_model.py:298",
+   "to": "scn:decision-journal/Обратимость, адресат парковки и исход — из закрытых списков с причиной/Адресат вне списка",
+   "type": "verifies",
+   "at": "consequences.md:14"
+  },
+  {
+   "from": "branch:cli/journal_cli.py:96",
+   "to": "scn:decision-journal/Старое значение адресата читается, новыми записями не пишется/Старое значение в журнале активного изменения",
+   "type": "verifies",
+   "at": "consequences.md:22"
+  },
+  {
+   "from": "branch:decisions/journal_render.py:371",
+   "to": "scn:decision-journal/Просмотрщик и рендер при двух значениях адресата/Назначение старой парковки",
+   "type": "verifies",
+   "at": "consequences.md:26"
+  },
+  {
+   "from": "sec:Инъекции через содержимое файлов: адресат из промпта возврата и строки журнала",
+   "to": "req:decision-journal/Старое значение адресата читается, новыми записями не пишется",
+   "type": "refines",
+   "at": "security.md:9"
+  },
+  {
+   "from": "sec:Инъекции через содержимое файлов: договор репозиториев в тесте",
+   "to": "req:plugin-core-contract/Номер контракта не растёт без записи в договоре",
+   "type": "refines",
+   "at": "security.md:10"
+  },
+  {
+   "from": "sec:Инъекции через тексты для модели и страницы",
+   "to": "req:decision-journal/Адресат `агент` означает агента исследования",
+   "type": "refines",
+   "at": "security.md:11"
+  },
+  {
+   "from": "sec:Права",
+   "to": "req:decision-journal/Старое значение адресата читается, новыми записями не пишется",
+   "type": "refines",
+   "at": "security.md:14"
+  },
+  {
+   "from": "sec:Чувствительные данные в журнале, артефактах и журналах прогона",
+   "to": "req:decision-journal/Старое значение адресата читается, новыми записями не пишется",
+   "type": "refines",
+   "at": "security.md:16"
+  },
+  {
+   "from": "cap:artifact-graph",
+   "to": "req:artifact-graph/Исследование — файл на каждую парковку «агент» с жанром",
+   "type": "contains",
+   "at": "specs/artifact-graph/spec.md:9"
+  },
+  {
+   "from": "req:artifact-graph/Исследование — файл на каждую парковку «агент» с жанром",
+   "to": "rec:F-05",
+   "type": "traces",
+   "at": "specs/artifact-graph/spec.md:10"
+  },
+  {
+   "from": "req:artifact-graph/Исследование — файл на каждую парковку «агент» с жанром",
+   "to": "rec:F-12",
+   "type": "traces",
+   "at": "specs/artifact-graph/spec.md:10"
+  },
+  {
+   "from": "req:artifact-graph/Исследование — файл на каждую парковку «агент» с жанром",
+   "to": "rec:F-13",
+   "type": "traces",
+   "at": "specs/artifact-graph/spec.md:10"
+  },
+  {
+   "from": "req:artifact-graph/Исследование — файл на каждую парковку «агент» с жанром",
+   "to": "rec:F-17",
+   "type": "traces",
+   "at": "specs/artifact-graph/spec.md:10"
+  },
+  {
+   "from": "scn:artifact-graph/Исследование — файл на каждую парковку «агент» с жанром/Отчёт по парковке",
+   "to": "req:artifact-graph/Исследование — файл на каждую парковку «агент» с жанром",
+   "type": "verifies",
+   "at": "specs/artifact-graph/spec.md:12"
+  },
+  {
+   "from": "scn:artifact-graph/Исследование — файл на каждую парковку «агент» с жанром/Отрицание без шаблонов не принимается",
+   "to": "req:artifact-graph/Исследование — файл на каждую парковку «агент» с жанром",
+   "type": "verifies",
+   "at": "specs/artifact-graph/spec.md:17"
+  },
+  {
+   "from": "scn:artifact-graph/Исследование — файл на каждую парковку «агент» с жанром/Нуль парковок",
+   "to": "req:artifact-graph/Исследование — файл на каждую парковку «агент» с жанром",
+   "type": "verifies",
+   "at": "specs/artifact-graph/spec.md:22"
+  },
+  {
+   "from": "scn:artifact-graph/Исследование — файл на каждую парковку «агент» с жанром/Парковка после none.md",
+   "to": "req:artifact-graph/Исследование — файл на каждую парковку «агент» с жанром",
+   "type": "verifies",
+   "at": "specs/artifact-graph/spec.md:27"
+  },
+  {
+   "from": "scn:artifact-graph/Исследование — файл на каждую парковку «агент» с жанром/Ответ добыт пробой",
+   "to": "req:artifact-graph/Исследование — файл на каждую парковку «агент» с жанром",
+   "type": "verifies",
+   "at": "specs/artifact-graph/spec.md:32"
+  },
+  {
+   "from": "scn:artifact-graph/Исследование — файл на каждую парковку «агент» с жанром/Подсказка адресата",
+   "to": "req:artifact-graph/Исследование — файл на каждую парковку «агент» с жанром",
+   "type": "verifies",
+   "at": "specs/artifact-graph/spec.md:37"
+  },
+  {
+   "from": "scn:artifact-graph/Исследование — файл на каждую парковку «агент» с жанром/Проба без следа",
+   "to": "req:artifact-graph/Исследование — файл на каждую парковку «агент» с жанром",
+   "type": "verifies",
+   "at": "specs/artifact-graph/spec.md:42"
+  },
+  {
+   "from": "req:artifact-graph/Исследование — файл на каждую парковку «агент» с жанром",
+   "to": "rec:F-24",
+   "type": "traces",
+   "at": "specs/artifact-graph/spec.md:46"
+  },
+  {
+   "from": "cap:artifact-graph",
+   "to": "req:artifact-graph/Файл-отрицание при нуле парковок агенту",
+   "type": "contains",
+   "at": "specs/artifact-graph/spec.md:51"
+  },
+  {
+   "from": "req:artifact-graph/Файл-отрицание при нуле парковок агенту",
+   "to": "rec:F-12",
+   "type": "traces",
+   "at": "specs/artifact-graph/spec.md:52"
+  },
+  {
+   "from": "req:artifact-graph/Файл-отрицание при нуле парковок агенту",
+   "to": "rec:F-20",
+   "type": "traces",
+   "at": "specs/artifact-graph/spec.md:52"
+  },
+  {
+   "from": "req:artifact-graph/Файл-отрицание при нуле парковок агенту",
+   "to": "req:artifact-graph/Исследование — файл на каждую парковку «агент» с жанром",
+   "type": "derives",
+   "at": "specs/artifact-graph/spec.md:52"
+  },
+  {
+   "from": "scn:artifact-graph/Файл-отрицание при нуле парковок агенту/Перечень записей в файле-отрицании",
+   "to": "req:artifact-graph/Файл-отрицание при нуле парковок агенту",
+   "type": "verifies",
+   "at": "specs/artifact-graph/spec.md:54"
+  },
+  {
+   "from": "cap:artifact-graph",
+   "to": "req:artifact-graph/Итог пробы в отчёте исследования",
+   "type": "contains",
+   "at": "specs/artifact-graph/spec.md:61"
+  },
+  {
+   "from": "req:artifact-graph/Итог пробы в отчёте исследования",
+   "to": "rec:F-20",
+   "type": "traces",
+   "at": "specs/artifact-graph/spec.md:62"
+  },
+  {
+   "from": "req:artifact-graph/Итог пробы в отчёте исследования",
+   "to": "req:artifact-graph/Исследование — файл на каждую парковку «агент» с жанром",
+   "type": "derives",
+   "at": "specs/artifact-graph/spec.md:62"
+  },
+  {
+   "from": "scn:artifact-graph/Итог пробы в отчёте исследования/Проба упала",
+   "to": "req:artifact-graph/Итог пробы в отчёте исследования",
+   "type": "verifies",
+   "at": "specs/artifact-graph/spec.md:64"
+  },
+  {
+   "from": "cap:brainstorm-interview",
+   "to": "req:brainstorm-interview/Вопрос, ответ на который есть в файлах, человеку не задаётся",
+   "type": "contains",
+   "at": "specs/brainstorm-interview/spec.md:5"
+  },
+  {
+   "from": "req:brainstorm-interview/Вопрос, ответ на который есть в файлах, человеку не задаётся",
+   "to": "rec:F-06",
+   "type": "traces",
+   "at": "specs/brainstorm-interview/spec.md:6"
+  },
+  {
+   "from": "req:brainstorm-interview/Вопрос, ответ на который есть в файлах, человеку не задаётся",
+   "to": "rec:F-17",
+   "type": "traces",
+   "at": "specs/brainstorm-interview/spec.md:6"
+  },
+  {
+   "from": "req:brainstorm-interview/Вопрос, ответ на который есть в файлах, человеку не задаётся",
+   "to": "rec:F-18",
+   "type": "traces",
+   "at": "specs/brainstorm-interview/spec.md:6"
+  },
+  {
+   "from": "scn:brainstorm-interview/Вопрос, ответ на который есть в файлах, человеку не задаётся/Ответ лежит в файле",
+   "to": "req:brainstorm-interview/Вопрос, ответ на который есть в файлах, человеку не задаётся",
+   "type": "verifies",
+   "at": "specs/brainstorm-interview/spec.md:8"
+  },
+  {
+   "from": "scn:brainstorm-interview/Вопрос, ответ на который есть в файлах, человеку не задаётся/Материалов нет",
+   "to": "req:brainstorm-interview/Вопрос, ответ на который есть в файлах, человеку не задаётся",
+   "type": "verifies",
+   "at": "specs/brainstorm-interview/spec.md:13"
+  },
+  {
+   "from": "scn:brainstorm-interview/Вопрос, ответ на который есть в файлах, человеку не задаётся/Намерение прочитано первым",
+   "to": "req:brainstorm-interview/Вопрос, ответ на который есть в файлах, человеку не задаётся",
+   "type": "verifies",
+   "at": "specs/brainstorm-interview/spec.md:18"
+  },
+  {
+   "from": "scn:brainstorm-interview/Вопрос, ответ на который есть в файлах, человеку не задаётся/Отступление от постановки помечено",
+   "to": "req:brainstorm-interview/Вопрос, ответ на который есть в файлах, человеку не задаётся",
+   "type": "verifies",
+   "at": "specs/brainstorm-interview/spec.md:23"
+  },
+  {
+   "from": "scn:brainstorm-interview/Вопрос, ответ на который есть в файлах, человеку не задаётся/Предписание в следствиях факта",
+   "to": "req:brainstorm-interview/Вопрос, ответ на который есть в файлах, человеку не задаётся",
+   "type": "verifies",
+   "at": "specs/brainstorm-interview/spec.md:28"
+  },
+  {
+   "from": "scn:brainstorm-interview/Вопрос, ответ на который есть в файлах, человеку не задаётся/Намерение без критериев",
+   "to": "req:brainstorm-interview/Вопрос, ответ на который есть в файлах, человеку не задаётся",
+   "type": "verifies",
+   "at": "specs/brainstorm-interview/spec.md:33"
+  },
+  {
+   "from": "scn:brainstorm-interview/Вопрос, ответ на который есть в файлах, человеку не задаётся/Круг 2 перечитывает намерение",
+   "to": "req:brainstorm-interview/Вопрос, ответ на который есть в файлах, человеку не задаётся",
+   "type": "verifies",
+   "at": "specs/brainstorm-interview/spec.md:38"
+  },
+  {
+   "from": "cap:brainstorm-interview",
+   "to": "req:brainstorm-interview/Круг кончается счётом и словом человека, не числом",
+   "type": "contains",
+   "at": "specs/brainstorm-interview/spec.md:45"
+  },
+  {
+   "from": "req:brainstorm-interview/Круг кончается счётом и словом человека, не числом",
+   "to": "rec:F-12",
+   "type": "traces",
+   "at": "specs/brainstorm-interview/spec.md:46"
+  },
+  {
+   "from": "req:brainstorm-interview/Круг кончается счётом и словом человека, не числом",
+   "to": "rec:F-18",
+   "type": "traces",
+   "at": "specs/brainstorm-interview/spec.md:46"
+  },
+  {
+   "from": "scn:brainstorm-interview/Круг кончается счётом и словом человека, не числом/Отказ от нового круга",
+   "to": "req:brainstorm-interview/Круг кончается счётом и словом человека, не числом",
+   "type": "verifies",
+   "at": "specs/brainstorm-interview/spec.md:48"
+  },
+  {
+   "from": "scn:brainstorm-interview/Круг кончается счётом и словом человека, не числом/Круг без нового при открытых развилках",
+   "to": "req:brainstorm-interview/Круг кончается счётом и словом человека, не числом",
+   "type": "verifies",
+   "at": "specs/brainstorm-interview/spec.md:53"
+  },
+  {
+   "from": "scn:brainstorm-interview/Круг кончается счётом и словом человека, не числом/Третий круг",
+   "to": "req:brainstorm-interview/Круг кончается счётом и словом человека, не числом",
+   "type": "verifies",
+   "at": "specs/brainstorm-interview/spec.md:58"
+  },
+  {
+   "from": "scn:brainstorm-interview/Круг кончается счётом и словом человека, не числом/Круг без нового",
+   "to": "req:brainstorm-interview/Круг кончается счётом и словом человека, не числом",
+   "type": "verifies",
+   "at": "specs/brainstorm-interview/spec.md:63"
+  },
+  {
+   "from": "scn:brainstorm-interview/Круг кончается счётом и словом человека, не числом/Только парковки",
+   "to": "req:brainstorm-interview/Круг кончается счётом и словом человека, не числом",
+   "type": "verifies",
+   "at": "specs/brainstorm-interview/spec.md:68"
+  },
+  {
+   "from": "scn:brainstorm-interview/Круг кончается счётом и словом человека, не числом/Круг после конца брейншторма",
+   "to": "req:brainstorm-interview/Круг кончается счётом и словом человека, не числом",
+   "type": "verifies",
+   "at": "specs/brainstorm-interview/spec.md:73"
+  },
+  {
+   "from": "cap:brainstorm-interview",
+   "to": "req:brainstorm-interview/Интервью начинается с намерения",
+   "type": "contains",
+   "at": "specs/brainstorm-interview/spec.md:82"
+  },
+  {
+   "from": "req:brainstorm-interview/Интервью начинается с намерения",
+   "to": "rec:F-20",
+   "type": "traces",
+   "at": "specs/brainstorm-interview/spec.md:83"
+  },
+  {
+   "from": "req:brainstorm-interview/Интервью начинается с намерения",
+   "to": "req:brainstorm-interview/Вопрос, ответ на который есть в файлах, человеку не задаётся",
+   "type": "derives",
+   "at": "specs/brainstorm-interview/spec.md:83"
+  },
+  {
+   "from": "scn:brainstorm-interview/Интервью начинается с намерения/Два критерия — два факта",
+   "to": "req:brainstorm-interview/Интервью начинается с намерения",
+   "type": "verifies",
+   "at": "specs/brainstorm-interview/spec.md:85"
+  },
+  {
+   "from": "cap:brainstorm-interview",
+   "to": "req:brainstorm-interview/Отступление и конструкция записываются развилкой",
+   "type": "contains",
+   "at": "specs/brainstorm-interview/spec.md:92"
+  },
+  {
+   "from": "req:brainstorm-interview/Отступление и конструкция записываются развилкой",
+   "to": "rec:F-20",
+   "type": "traces",
+   "at": "specs/brainstorm-interview/spec.md:93"
+  },
+  {
+   "from": "req:brainstorm-interview/Отступление и конструкция записываются развилкой",
+   "to": "req:brainstorm-interview/Вопрос, ответ на который есть в файлах, человеку не задаётся",
+   "type": "derives",
+   "at": "specs/brainstorm-interview/spec.md:93"
+  },
+  {
+   "from": "scn:brainstorm-interview/Отступление и конструкция записываются развилкой/Уточнение без противоречия",
+   "to": "req:brainstorm-interview/Отступление и конструкция записываются развилкой",
+   "type": "verifies",
+   "at": "specs/brainstorm-interview/spec.md:95"
+  },
+  {
+   "from": "cap:brainstorm-interview",
+   "to": "req:brainstorm-interview/Парковки агенту переносят вопрос о круге в research",
+   "type": "contains",
+   "at": "specs/brainstorm-interview/spec.md:102"
+  },
+  {
+   "from": "req:brainstorm-interview/Парковки агенту переносят вопрос о круге в research",
+   "to": "rec:F-12",
+   "type": "traces",
+   "at": "specs/brainstorm-interview/spec.md:103"
+  },
+  {
+   "from": "req:brainstorm-interview/Парковки агенту переносят вопрос о круге в research",
+   "to": "rec:F-20",
+   "type": "traces",
+   "at": "specs/brainstorm-interview/spec.md:103"
+  },
+  {
+   "from": "req:brainstorm-interview/Парковки агенту переносят вопрос о круге в research",
+   "to": "req:brainstorm-interview/Круг кончается счётом и словом человека, не числом",
+   "type": "derives",
+   "at": "specs/brainstorm-interview/spec.md:103"
+  },
+  {
+   "from": "scn:brainstorm-interview/Парковки агенту переносят вопрос о круге в research/Круг с парковками агенту закрыт без вопроса",
+   "to": "req:brainstorm-interview/Парковки агенту переносят вопрос о круге в research",
+   "type": "verifies",
+   "at": "specs/brainstorm-interview/spec.md:105"
+  },
+  {
+   "from": "cap:decision-journal",
+   "to": "req:decision-journal/Обратимость, адресат парковки и исход — из закрытых списков с причиной",
+   "type": "contains",
+   "at": "specs/decision-journal/spec.md:5"
+  },
+  {
+   "from": "req:decision-journal/Обратимость, адресат парковки и исход — из закрытых списков с причиной",
+   "to": "rec:F-01",
+   "type": "traces",
+   "at": "specs/decision-journal/spec.md:6"
+  },
+  {
+   "from": "req:decision-journal/Обратимость, адресат парковки и исход — из закрытых списков с причиной",
+   "to": "rec:F-03",
+   "type": "traces",
+   "at": "specs/decision-journal/spec.md:6"
+  },
+  {
+   "from": "req:decision-journal/Обратимость, адресат парковки и исход — из закрытых списков с причиной",
+   "to": "rec:F-06",
+   "type": "traces",
+   "at": "specs/decision-journal/spec.md:6"
+  },
+  {
+   "from": "req:decision-journal/Обратимость, адресат парковки и исход — из закрытых списков с причиной",
+   "to": "rec:F-17",
+   "type": "traces",
+   "at": "specs/decision-journal/spec.md:6"
+  },
+  {
+   "from": "scn:decision-journal/Обратимость, адресат парковки и исход — из закрытых списков с причиной/Рекомендованный отказ без слова",
+   "to": "req:decision-journal/Обратимость, адресат парковки и исход — из закрытых списков с причиной",
+   "type": "verifies",
+   "at": "specs/decision-journal/spec.md:8"
+  },
+  {
+   "from": "scn:decision-journal/Обратимость, адресат парковки и исход — из закрытых списков с причиной/Выбор мимо рекомендации без слова",
+   "to": "req:decision-journal/Обратимость, адресат парковки и исход — из закрытых списков с причиной",
+   "type": "verifies",
+   "at": "specs/decision-journal/spec.md:13"
+  },
+  {
+   "from": "scn:decision-journal/Обратимость, адресат парковки и исход — из закрытых списков с причиной/Вариант, добавленный человеком",
+   "to": "req:decision-journal/Обратимость, адресат парковки и исход — из закрытых списков с причиной",
+   "type": "verifies",
+   "at": "specs/decision-journal/spec.md:18"
+  },
+  {
+   "from": "scn:decision-journal/Обратимость, адресат парковки и исход — из закрытых списков с причиной/Адресат вне списка",
+   "to": "req:decision-journal/Обратимость, адресат парковки и исход — из закрытых списков с причиной",
+   "type": "verifies",
+   "at": "specs/decision-journal/spec.md:23"
+  },
+  {
+   "from": "scn:decision-journal/Обратимость, адресат парковки и исход — из закрытых списков с причиной/Факт постановки",
+   "to": "req:decision-journal/Обратимость, адресат парковки и исход — из закрытых списков с причиной",
+   "type": "verifies",
+   "at": "specs/decision-journal/spec.md:28"
+  },
+  {
+   "from": "scn:decision-journal/Обратимость, адресат парковки и исход — из закрытых списков с причиной/Факт без улики",
+   "to": "req:decision-journal/Обратимость, адресат парковки и исход — из закрытых списков с причиной",
+   "type": "verifies",
+   "at": "specs/decision-journal/spec.md:33"
+  },
+  {
+   "from": "scn:decision-journal/Обратимость, адресат парковки и исход — из закрытых списков с причиной/Припаркованный факт без улики",
+   "to": "req:decision-journal/Обратимость, адресат парковки и исход — из закрытых списков с причиной",
+   "type": "verifies",
+   "at": "specs/decision-journal/spec.md:38"
+  },
+  {
+   "from": "scn:decision-journal/Обратимость, адресат парковки и исход — из закрытых списков с причиной/Пустое why",
+   "to": "req:decision-journal/Обратимость, адресат парковки и исход — из закрытых списков с причиной",
+   "type": "verifies",
+   "at": "specs/decision-journal/spec.md:43"
+  },
+  {
+   "from": "scn:decision-journal/Обратимость, адресат парковки и исход — из закрытых списков с причиной/Парковка без находки при файле",
+   "to": "req:decision-journal/Обратимость, адресат парковки и исход — из закрытых списков с причиной",
+   "type": "verifies",
+   "at": "specs/decision-journal/spec.md:48"
+  },
+  {
+   "from": "req:decision-journal/Обратимость, адресат парковки и исход — из закрытых списков с причиной",
+   "to": "rec:F-25",
+   "type": "traces",
+   "at": "specs/decision-journal/spec.md:53"
+  },
+  {
+   "from": "cap:decision-journal",
+   "to": "req:decision-journal/Старое значение адресата читается, новыми записями не пишется",
+   "type": "contains",
+   "at": "specs/decision-journal/spec.md:57"
+  },
+  {
+   "from": "req:decision-journal/Старое значение адресата читается, новыми записями не пишется",
+   "to": "rec:F-07",
+   "type": "traces",
+   "at": "specs/decision-journal/spec.md:58"
+  },
+  {
+   "from": "req:decision-journal/Старое значение адресата читается, новыми записями не пишется",
+   "to": "rec:F-11",
+   "type": "traces",
+   "at": "specs/decision-journal/spec.md:58"
+  },
+  {
+   "from": "req:decision-journal/Старое значение адресата читается, новыми записями не пишется",
+   "to": "rec:F-17",
+   "type": "traces",
+   "at": "specs/decision-journal/spec.md:58"
+  },
+  {
+   "from": "req:decision-journal/Старое значение адресата читается, новыми записями не пишется",
+   "to": "rec:F-20",
+   "type": "traces",
+   "at": "specs/decision-journal/spec.md:58"
+  },
+  {
+   "from": "req:decision-journal/Старое значение адресата читается, новыми записями не пишется",
+   "to": "rec:F-22",
+   "type": "traces",
+   "at": "specs/decision-journal/spec.md:58"
+  },
+  {
+   "from": "req:decision-journal/Старое значение адресата читается, новыми записями не пишется",
+   "to": "req:decision-journal/Обратимость, адресат парковки и исход — из закрытых списков с причиной",
+   "type": "derives",
+   "at": "specs/decision-journal/spec.md:58"
+  },
+  {
+   "from": "scn:decision-journal/Старое значение адресата читается, новыми записями не пишется/Старый журнал годен",
+   "to": "req:decision-journal/Старое значение адресата читается, новыми записями не пишется",
+   "type": "verifies",
+   "at": "specs/decision-journal/spec.md:60"
+  },
+  {
+   "from": "scn:decision-journal/Старое значение адресата читается, новыми записями не пишется/Строка apply со старым значением",
+   "to": "req:decision-journal/Старое значение адресата читается, новыми записями не пишется",
+   "type": "verifies",
+   "at": "specs/decision-journal/spec.md:65"
+  },
+  {
+   "from": "scn:decision-journal/Старое значение адресата читается, новыми записями не пишется/Старое значение в журнале активного изменения",
+   "to": "req:decision-journal/Старое значение адресата читается, новыми записями не пишется",
+   "type": "verifies",
+   "at": "specs/decision-journal/spec.md:70"
+  },
+  {
+   "from": "req:decision-journal/Старое значение адресата читается, новыми записями не пишется",
+   "to": "rec:F-22",
+   "type": "traces",
+   "at": "specs/decision-journal/spec.md:75"
+  },
+  {
+   "from": "cap:decision-journal",
+   "to": "req:decision-journal/Просмотрщик и рендер при двух значениях адресата",
+   "type": "contains",
+   "at": "specs/decision-journal/spec.md:78"
+  },
+  {
+   "from": "req:decision-journal/Просмотрщик и рендер при двух значениях адресата",
+   "to": "rec:F-02",
+   "type": "traces",
+   "at": "specs/decision-journal/spec.md:79"
+  },
+  {
+   "from": "req:decision-journal/Просмотрщик и рендер при двух значениях адресата",
+   "to": "rec:F-08",
+   "type": "traces",
+   "at": "specs/decision-journal/spec.md:79"
+  },
+  {
+   "from": "req:decision-journal/Просмотрщик и рендер при двух значениях адресата",
+   "to": "rec:F-17",
+   "type": "traces",
+   "at": "specs/decision-journal/spec.md:79"
+  },
+  {
+   "from": "req:decision-journal/Просмотрщик и рендер при двух значениях адресата",
+   "to": "rec:F-20",
+   "type": "traces",
+   "at": "specs/decision-journal/spec.md:79"
+  },
+  {
+   "from": "req:decision-journal/Просмотрщик и рендер при двух значениях адресата",
+   "to": "req:decision-journal/Обратимость, адресат парковки и исход — из закрытых списков с причиной",
+   "type": "derives",
+   "at": "specs/decision-journal/spec.md:79"
+  },
+  {
+   "from": "scn:decision-journal/Просмотрщик и рендер при двух значениях адресата/Назначение старой парковки",
+   "to": "req:decision-journal/Просмотрщик и рендер при двух значениях адресата",
+   "type": "verifies",
+   "at": "specs/decision-journal/spec.md:81"
+  },
+  {
+   "from": "req:decision-journal/Просмотрщик и рендер при двух значениях адресата",
+   "to": "rec:F-23",
+   "type": "traces",
+   "at": "specs/decision-journal/spec.md:85"
+  },
+  {
+   "from": "cap:decision-journal",
+   "to": "req:decision-journal/Слово к решению мимо рекомендации",
+   "type": "contains",
+   "at": "specs/decision-journal/spec.md:88"
+  },
+  {
+   "from": "req:decision-journal/Слово к решению мимо рекомендации",
+   "to": "rec:F-20",
+   "type": "traces",
+   "at": "specs/decision-journal/spec.md:89"
+  },
+  {
+   "from": "req:decision-journal/Слово к решению мимо рекомендации",
+   "to": "req:decision-journal/Обратимость, адресат парковки и исход — из закрытых списков с причиной",
+   "type": "derives",
+   "at": "specs/decision-journal/spec.md:89"
+  },
+  {
+   "from": "scn:decision-journal/Слово к решению мимо рекомендации/Слово к выбору мимо рекомендации внесено",
+   "to": "req:decision-journal/Слово к решению мимо рекомендации",
+   "type": "verifies",
+   "at": "specs/decision-journal/spec.md:91"
+  },
+  {
+   "from": "cap:decision-journal",
+   "to": "req:decision-journal/Пометка отступления стоит у варианта",
+   "type": "contains",
+   "at": "specs/decision-journal/spec.md:98"
+  },
+  {
+   "from": "req:decision-journal/Пометка отступления стоит у варианта",
+   "to": "rec:F-20",
+   "type": "traces",
+   "at": "specs/decision-journal/spec.md:99"
+  },
+  {
+   "from": "req:decision-journal/Пометка отступления стоит у варианта",
+   "to": "req:decision-journal/Обратимость, адресат парковки и исход — из закрытых списков с причиной",
+   "type": "derives",
+   "at": "specs/decision-journal/spec.md:99"
+  },
+  {
+   "from": "scn:decision-journal/Пометка отступления стоит у варианта/Пометка у отступающего варианта",
+   "to": "req:decision-journal/Пометка отступления стоит у варианта",
+   "type": "verifies",
+   "at": "specs/decision-journal/spec.md:101"
+  },
+  {
+   "from": "cap:decision-journal",
+   "to": "req:decision-journal/`check` отвергает факт без улики и пустую причину, парковку без находки сигналит",
+   "type": "contains",
+   "at": "specs/decision-journal/spec.md:108"
+  },
+  {
+   "from": "req:decision-journal/`check` отвергает факт без улики и пустую причину, парковку без находки сигналит",
+   "to": "rec:F-08",
+   "type": "traces",
+   "at": "specs/decision-journal/spec.md:109"
+  },
+  {
+   "from": "req:decision-journal/`check` отвергает факт без улики и пустую причину, парковку без находки сигналит",
+   "to": "rec:F-20",
+   "type": "traces",
+   "at": "specs/decision-journal/spec.md:109"
+  },
+  {
+   "from": "req:decision-journal/`check` отвергает факт без улики и пустую причину, парковку без находки сигналит",
+   "to": "req:decision-journal/Обратимость, адресат парковки и исход — из закрытых списков с причиной",
+   "type": "derives",
+   "at": "specs/decision-journal/spec.md:109"
+  },
+  {
+   "from": "scn:decision-journal/`check` отвергает факт без улики и пустую причину, парковку без находки сигналит/Сигнал о парковке агенту при --strict",
+   "to": "req:decision-journal/`check` отвергает факт без улики и пустую причину, парковку без находки сигналит",
+   "type": "verifies",
+   "at": "specs/decision-journal/spec.md:111"
+  },
+  {
+   "from": "cap:decision-journal",
+   "to": "req:decision-journal/Адресат `агент` означает агента исследования",
+   "type": "contains",
+   "at": "specs/decision-journal/spec.md:118"
+  },
+  {
+   "from": "req:decision-journal/Адресат `агент` означает агента исследования",
+   "to": "rec:F-25",
+   "type": "traces",
+   "at": "specs/decision-journal/spec.md:119"
+  },
+  {
+   "from": "scn:decision-journal/Адресат `агент` означает агента исследования/Глоссарий и подсказка называют агента исследования",
+   "to": "req:decision-journal/Адресат `агент` означает агента исследования",
+   "type": "verifies",
+   "at": "specs/decision-journal/spec.md:121"
+  },
+  {
+   "from": "cap:plugin-core-contract",
+   "to": "req:plugin-core-contract/`view-json` отдаёт номер контракта",
+   "type": "contains",
+   "at": "specs/plugin-core-contract/spec.md:5"
+  },
+  {
+   "from": "req:plugin-core-contract/`view-json` отдаёт номер контракта",
+   "to": "rec:F-03",
+   "type": "traces",
+   "at": "specs/plugin-core-contract/spec.md:6"
+  },
+  {
+   "from": "req:plugin-core-contract/`view-json` отдаёт номер контракта",
+   "to": "rec:F-04",
+   "type": "traces",
+   "at": "specs/plugin-core-contract/spec.md:6"
+  },
+  {
+   "from": "req:plugin-core-contract/`view-json` отдаёт номер контракта",
+   "to": "rec:F-09",
+   "type": "traces",
+   "at": "specs/plugin-core-contract/spec.md:6"
+  },
+  {
+   "from": "req:plugin-core-contract/`view-json` отдаёт номер контракта",
+   "to": "rec:F-10",
+   "type": "traces",
+   "at": "specs/plugin-core-contract/spec.md:6"
+  },
+  {
+   "from": "req:plugin-core-contract/`view-json` отдаёт номер контракта",
+   "to": "rec:F-19",
+   "type": "traces",
+   "at": "specs/plugin-core-contract/spec.md:6"
+  },
+  {
+   "from": "scn:plugin-core-contract/`view-json` отдаёт номер контракта/Вывод содержит номер",
+   "to": "req:plugin-core-contract/`view-json` отдаёт номер контракта",
+   "type": "verifies",
+   "at": "specs/plugin-core-contract/spec.md:8"
+  },
+  {
+   "from": "scn:plugin-core-contract/`view-json` отдаёт номер контракта/Новое поле номер не поднимает",
+   "to": "req:plugin-core-contract/`view-json` отдаёт номер контракта",
+   "type": "verifies",
+   "at": "specs/plugin-core-contract/spec.md:13"
+  },
+  {
+   "from": "scn:plugin-core-contract/`view-json` отдаёт номер контракта/Новое значение адресата поднимает номер",
+   "to": "req:plugin-core-contract/`view-json` отдаёт номер контракта",
+   "type": "verifies",
+   "at": "specs/plugin-core-contract/spec.md:18"
+  },
+  {
+   "from": "req:plugin-core-contract/`view-json` отдаёт номер контракта",
+   "to": "rec:F-26",
+   "type": "traces",
+   "at": "specs/plugin-core-contract/spec.md:23"
+  },
+  {
+   "from": "cap:plugin-core-contract",
+   "to": "req:plugin-core-contract/Номер контракта не растёт без записи в договоре",
+   "type": "contains",
+   "at": "specs/plugin-core-contract/spec.md:27"
+  },
+  {
+   "from": "req:plugin-core-contract/Номер контракта не растёт без записи в договоре",
+   "to": "rec:F-26",
+   "type": "traces",
+   "at": "specs/plugin-core-contract/spec.md:28"
+  },
+  {
+   "from": "scn:plugin-core-contract/Номер контракта не растёт без записи в договоре/Номер выше последнего абзаца",
+   "to": "req:plugin-core-contract/Номер контракта не растёт без записи в договоре",
+   "type": "verifies",
+   "at": "specs/plugin-core-contract/spec.md:30"
+  },
+  {
+   "from": "task:1.1",
+   "to": "rec:F-17",
+   "type": "traces",
+   "at": "tasks.md:5"
+  },
+  {
+   "from": "task:1.1",
+   "to": "rec:F-22",
+   "type": "traces",
+   "at": "tasks.md:5"
+  },
+  {
+   "from": "task:1.1",
+   "to": "scn:decision-journal/Обратимость, адресат парковки и исход — из закрытых списков с причиной/Адресат вне списка",
+   "type": "satisfies",
+   "at": "tasks.md:5"
+  },
+  {
+   "from": "task:1.1",
+   "to": "scn:decision-journal/Обратимость, адресат парковки и исход — из закрытых списков с причиной/Припаркованный факт без улики",
+   "type": "satisfies",
+   "at": "tasks.md:5"
+  },
+  {
+   "from": "task:1.1",
+   "to": "scn:decision-journal/Пометка отступления стоит у варианта/Пометка у отступающего варианта",
+   "type": "satisfies",
+   "at": "tasks.md:5"
+  },
+  {
+   "from": "task:1.1",
+   "to": "scn:decision-journal/Старое значение адресата читается, новыми записями не пишется/Старый журнал годен",
+   "type": "satisfies",
+   "at": "tasks.md:5"
+  },
+  {
+   "from": "task:1.2",
+   "to": "rec:F-01",
+   "type": "traces",
+   "at": "tasks.md:6"
+  },
+  {
+   "from": "task:1.2",
+   "to": "scn:decision-journal/Старое значение адресата читается, новыми записями не пишется/Строка apply со старым значением",
+   "type": "satisfies",
+   "at": "tasks.md:6"
+  },
+  {
+   "from": "task:1.3",
+   "to": "scn:decision-journal/`check` отвергает факт без улики и пустую причину, парковку без находки сигналит/Сигнал о парковке агенту при --strict",
+   "type": "satisfies",
+   "at": "tasks.md:7"
+  },
+  {
+   "from": "task:1.3",
+   "to": "scn:decision-journal/Обратимость, адресат парковки и исход — из закрытых списков с причиной/Парковка без находки при файле",
+   "type": "satisfies",
+   "at": "tasks.md:7"
+  },
+  {
+   "from": "task:1.3",
+   "to": "scn:decision-journal/Слово к решению мимо рекомендации/Слово к выбору мимо рекомендации внесено",
+   "type": "satisfies",
+   "at": "tasks.md:7"
+  },
+  {
+   "from": "task:1.3",
+   "to": "scn:decision-journal/Старое значение адресата читается, новыми записями не пишется/Старое значение в журнале активного изменения",
+   "type": "satisfies",
+   "at": "tasks.md:7"
+  },
+  {
+   "from": "task:1.4",
+   "to": "scn:decision-journal/Старое значение адресата читается, новыми записями не пишется/Старое значение в журнале активного изменения",
+   "type": "satisfies",
+   "at": "tasks.md:8"
+  },
+  {
+   "from": "task:1.5",
+   "to": "scn:decision-journal/Старое значение адресата читается, новыми записями не пишется/Старый журнал годен",
+   "type": "satisfies",
+   "at": "tasks.md:9"
+  },
+  {
+   "from": "task:2.1",
+   "to": "rec:F-09",
+   "type": "traces",
+   "at": "tasks.md:13"
+  },
+  {
+   "from": "task:2.1",
+   "to": "scn:decision-journal/Просмотрщик и рендер при двух значениях адресата/Назначение старой парковки",
+   "type": "satisfies",
+   "at": "tasks.md:13"
+  },
+  {
+   "from": "task:2.1",
+   "to": "scn:plugin-core-contract/`view-json` отдаёт номер контракта/Новое значение адресата поднимает номер",
+   "type": "satisfies",
+   "at": "tasks.md:13"
+  },
+  {
+   "from": "task:2.2",
+   "to": "rec:F-12",
+   "type": "traces",
+   "at": "tasks.md:14"
+  },
+  {
+   "from": "task:2.2",
+   "to": "scn:plugin-core-contract/`view-json` отдаёт номер контракта/Новое значение адресата поднимает номер",
+   "type": "satisfies",
+   "at": "tasks.md:14"
+  },
+  {
+   "from": "task:2.2",
+   "to": "scn:plugin-core-contract/`view-json` отдаёт номер контракта/Новое поле номер не поднимает",
+   "type": "satisfies",
+   "at": "tasks.md:14"
+  },
+  {
+   "from": "task:2.3",
+   "to": "rec:F-29",
+   "type": "traces",
+   "at": "tasks.md:15"
+  },
+  {
+   "from": "task:2.3",
+   "to": "scn:artifact-graph/Исследование — файл на каждую парковку «агент» с жанром/Подсказка адресата",
+   "type": "satisfies",
+   "at": "tasks.md:15"
+  },
+  {
+   "from": "task:2.3",
+   "to": "scn:decision-journal/Адресат `агент` означает агента исследования/Глоссарий и подсказка называют агента исследования",
+   "type": "satisfies",
+   "at": "tasks.md:15"
+  },
+  {
+   "from": "task:2.4",
+   "to": "rec:F-26",
+   "type": "traces",
+   "at": "tasks.md:16"
+  },
+  {
+   "from": "task:2.4",
+   "to": "scn:plugin-core-contract/Номер контракта не растёт без записи в договоре/Номер выше последнего абзаца",
+   "type": "satisfies",
+   "at": "tasks.md:16"
+  },
+  {
+   "from": "task:3.1",
+   "to": "scn:artifact-graph/Исследование — файл на каждую парковку «агент» с жанром/Нуль парковок",
+   "type": "satisfies",
+   "at": "tasks.md:21"
+  },
+  {
+   "from": "task:3.1",
+   "to": "scn:artifact-graph/Исследование — файл на каждую парковку «агент» с жанром/Отчёт по парковке",
+   "type": "satisfies",
+   "at": "tasks.md:21"
+  },
+  {
+   "from": "task:3.1",
+   "to": "scn:artifact-graph/Исследование — файл на каждую парковку «агент» с жанром/Парковка после none.md",
+   "type": "satisfies",
+   "at": "tasks.md:21"
+  },
+  {
+   "from": "task:3.1",
+   "to": "scn:artifact-graph/Файл-отрицание при нуле парковок агенту/Перечень записей в файле-отрицании",
+   "type": "satisfies",
+   "at": "tasks.md:21"
+  },
+  {
+   "from": "task:3.2",
+   "to": "scn:artifact-graph/Исследование — файл на каждую парковку «агент» с жанром/Ответ добыт пробой",
+   "type": "satisfies",
+   "at": "tasks.md:22"
+  },
+  {
+   "from": "task:3.2",
+   "to": "scn:artifact-graph/Исследование — файл на каждую парковку «агент» с жанром/Отрицание без шаблонов не принимается",
+   "type": "satisfies",
+   "at": "tasks.md:22"
+  },
+  {
+   "from": "task:3.2",
+   "to": "scn:artifact-graph/Исследование — файл на каждую парковку «агент» с жанром/Проба без следа",
+   "type": "satisfies",
+   "at": "tasks.md:22"
+  },
+  {
+   "from": "task:3.2",
+   "to": "scn:artifact-graph/Итог пробы в отчёте исследования/Проба упала",
+   "type": "satisfies",
+   "at": "tasks.md:22"
+  },
+  {
+   "from": "task:3.2",
+   "to": "scn:brainstorm-interview/Вопрос, ответ на который есть в файлах, человеку не задаётся/Материалов нет",
+   "type": "satisfies",
+   "at": "tasks.md:22"
+  },
+  {
+   "from": "task:3.2",
+   "to": "scn:brainstorm-interview/Круг кончается счётом и словом человека, не числом/Круг без нового",
+   "type": "satisfies",
+   "at": "tasks.md:22"
+  },
+  {
+   "from": "task:3.2",
+   "to": "scn:brainstorm-interview/Круг кончается счётом и словом человека, не числом/Только парковки",
+   "type": "satisfies",
+   "at": "tasks.md:22"
+  },
+  {
+   "from": "task:3.2",
+   "to": "scn:brainstorm-interview/Парковки агенту переносят вопрос о круге в research/Круг с парковками агенту закрыт без вопроса",
+   "type": "satisfies",
+   "at": "tasks.md:22"
+  },
+  {
+   "from": "task:3.3",
+   "to": "rec:F-25",
+   "type": "traces",
+   "at": "tasks.md:23"
+  },
+  {
+   "from": "task:3.3",
+   "to": "scn:decision-journal/Адресат `агент` означает агента исследования/Глоссарий и подсказка называют агента исследования",
+   "type": "satisfies",
+   "at": "tasks.md:23"
+  },
+  {
+   "from": "task:3.4",
+   "to": "scn:brainstorm-interview/Интервью начинается с намерения/Два критерия — два факта",
+   "type": "satisfies",
+   "at": "tasks.md:24"
+  },
+  {
+   "from": "task:3.4",
+   "to": "scn:brainstorm-interview/Отступление и конструкция записываются развилкой/Уточнение без противоречия",
+   "type": "satisfies",
+   "at": "tasks.md:24"
+  },
+  {
+   "from": "task:4.1",
+   "to": "rec:F-22",
+   "type": "traces",
+   "at": "tasks.md:29"
+  },
+  {
+   "from": "task:4.3",
+   "to": "rec:F-10",
+   "type": "traces",
+   "at": "tasks.md:31"
+  },
+  {
+   "from": "task:4.3",
+   "to": "rec:F-19",
+   "type": "traces",
+   "at": "tasks.md:31"
+  },
+  {
+   "from": "task:4.3",
+   "to": "rec:F-27",
+   "type": "traces",
+   "at": "tasks.md:31"
+  },
+  {
+   "from": "task:4.5",
+   "to": "rec:F-21",
+   "type": "traces",
+   "at": "tasks.md:33"
+  },
+  {
+   "from": "task:4.5",
+   "to": "rec:F-27",
+   "type": "traces",
+   "at": "tasks.md:33"
+  }
+ ],
+ "candidates": [
+  {
+   "a": "req:artifact-graph/Исследование — файл на каждую парковку «агент» с жанром",
+   "b": "req:artifact-graph/Файл-отрицание при нуле парковок агенту",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-12"
+   ]
+  },
+  {
+   "a": "req:artifact-graph/Исследование — файл на каждую парковку «агент» с жанром",
+   "b": "req:brainstorm-interview/Вопрос, ответ на который есть в файлах, человеку не задаётся",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-17"
+   ]
+  },
+  {
+   "a": "req:artifact-graph/Исследование — файл на каждую парковку «агент» с жанром",
+   "b": "req:brainstorm-interview/Круг кончается счётом и словом человека, не числом",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-12"
+   ]
+  },
+  {
+   "a": "req:artifact-graph/Исследование — файл на каждую парковку «агент» с жанром",
+   "b": "req:brainstorm-interview/Парковки агенту переносят вопрос о круге в research",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-12"
+   ]
+  },
+  {
+   "a": "req:artifact-graph/Исследование — файл на каждую парковку «агент» с жанром",
+   "b": "req:decision-journal/Обратимость, адресат парковки и исход — из закрытых списков с причиной",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-17"
+   ]
+  },
+  {
+   "a": "req:artifact-graph/Исследование — файл на каждую парковку «агент» с жанром",
+   "b": "req:decision-journal/Просмотрщик и рендер при двух значениях адресата",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-17"
+   ]
+  },
+  {
+   "a": "req:artifact-graph/Исследование — файл на каждую парковку «агент» с жанром",
+   "b": "req:decision-journal/Старое значение адресата читается, новыми записями не пишется",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-17"
+   ]
+  },
+  {
+   "a": "req:artifact-graph/Итог пробы в отчёте исследования",
+   "b": "req:artifact-graph/Файл-отрицание при нуле парковок агенту",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-20"
+   ]
+  },
+  {
+   "a": "req:artifact-graph/Итог пробы в отчёте исследования",
+   "b": "req:brainstorm-interview/Интервью начинается с намерения",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-20"
+   ]
+  },
+  {
+   "a": "req:artifact-graph/Итог пробы в отчёте исследования",
+   "b": "req:brainstorm-interview/Отступление и конструкция записываются развилкой",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-20"
+   ]
+  },
+  {
+   "a": "req:artifact-graph/Итог пробы в отчёте исследования",
+   "b": "req:brainstorm-interview/Парковки агенту переносят вопрос о круге в research",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-20"
+   ]
+  },
+  {
+   "a": "req:artifact-graph/Итог пробы в отчёте исследования",
+   "b": "req:decision-journal/`check` отвергает факт без улики и пустую причину, парковку без находки сигналит",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-20"
+   ]
+  },
+  {
+   "a": "req:artifact-graph/Итог пробы в отчёте исследования",
+   "b": "req:decision-journal/Пометка отступления стоит у варианта",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-20"
+   ]
+  },
+  {
+   "a": "req:artifact-graph/Итог пробы в отчёте исследования",
+   "b": "req:decision-journal/Просмотрщик и рендер при двух значениях адресата",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-20"
+   ]
+  },
+  {
+   "a": "req:artifact-graph/Итог пробы в отчёте исследования",
+   "b": "req:decision-journal/Слово к решению мимо рекомендации",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-20"
+   ]
+  },
+  {
+   "a": "req:artifact-graph/Итог пробы в отчёте исследования",
+   "b": "req:decision-journal/Старое значение адресата читается, новыми записями не пишется",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-20"
+   ]
+  },
+  {
+   "a": "req:artifact-graph/Файл-отрицание при нуле парковок агенту",
+   "b": "req:brainstorm-interview/Интервью начинается с намерения",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-20"
+   ]
+  },
+  {
+   "a": "req:artifact-graph/Файл-отрицание при нуле парковок агенту",
+   "b": "req:brainstorm-interview/Круг кончается счётом и словом человека, не числом",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-12"
+   ]
+  },
+  {
+   "a": "req:artifact-graph/Файл-отрицание при нуле парковок агенту",
+   "b": "req:brainstorm-interview/Отступление и конструкция записываются развилкой",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-20"
+   ]
+  },
+  {
+   "a": "req:artifact-graph/Файл-отрицание при нуле парковок агенту",
+   "b": "req:brainstorm-interview/Парковки агенту переносят вопрос о круге в research",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-12",
+    "rec:F-20"
+   ]
+  },
+  {
+   "a": "req:artifact-graph/Файл-отрицание при нуле парковок агенту",
+   "b": "req:decision-journal/`check` отвергает факт без улики и пустую причину, парковку без находки сигналит",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-20"
+   ]
+  },
+  {
+   "a": "req:artifact-graph/Файл-отрицание при нуле парковок агенту",
+   "b": "req:decision-journal/Пометка отступления стоит у варианта",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-20"
+   ]
+  },
+  {
+   "a": "req:artifact-graph/Файл-отрицание при нуле парковок агенту",
+   "b": "req:decision-journal/Просмотрщик и рендер при двух значениях адресата",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-20"
+   ]
+  },
+  {
+   "a": "req:artifact-graph/Файл-отрицание при нуле парковок агенту",
+   "b": "req:decision-journal/Слово к решению мимо рекомендации",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-20"
+   ]
+  },
+  {
+   "a": "req:artifact-graph/Файл-отрицание при нуле парковок агенту",
+   "b": "req:decision-journal/Старое значение адресата читается, новыми записями не пишется",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-20"
+   ]
+  },
+  {
+   "a": "req:brainstorm-interview/Вопрос, ответ на который есть в файлах, человеку не задаётся",
+   "b": "req:brainstorm-interview/Круг кончается счётом и словом человека, не числом",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-18"
+   ]
+  },
+  {
+   "a": "req:brainstorm-interview/Вопрос, ответ на который есть в файлах, человеку не задаётся",
+   "b": "req:decision-journal/Обратимость, адресат парковки и исход — из закрытых списков с причиной",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-06",
+    "rec:F-17"
+   ]
+  },
+  {
+   "a": "req:brainstorm-interview/Вопрос, ответ на который есть в файлах, человеку не задаётся",
+   "b": "req:decision-journal/Просмотрщик и рендер при двух значениях адресата",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-17"
+   ]
+  },
+  {
+   "a": "req:brainstorm-interview/Вопрос, ответ на который есть в файлах, человеку не задаётся",
+   "b": "req:decision-journal/Старое значение адресата читается, новыми записями не пишется",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-17"
+   ]
+  },
+  {
+   "a": "req:brainstorm-interview/Интервью начинается с намерения",
+   "b": "req:brainstorm-interview/Отступление и конструкция записываются развилкой",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-20"
+   ]
+  },
+  {
+   "a": "req:brainstorm-interview/Интервью начинается с намерения",
+   "b": "req:brainstorm-interview/Парковки агенту переносят вопрос о круге в research",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-20"
+   ]
+  },
+  {
+   "a": "req:brainstorm-interview/Интервью начинается с намерения",
+   "b": "req:decision-journal/`check` отвергает факт без улики и пустую причину, парковку без находки сигналит",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-20"
+   ]
+  },
+  {
+   "a": "req:brainstorm-interview/Интервью начинается с намерения",
+   "b": "req:decision-journal/Пометка отступления стоит у варианта",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-20"
+   ]
+  },
+  {
+   "a": "req:brainstorm-interview/Интервью начинается с намерения",
+   "b": "req:decision-journal/Просмотрщик и рендер при двух значениях адресата",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-20"
+   ]
+  },
+  {
+   "a": "req:brainstorm-interview/Интервью начинается с намерения",
+   "b": "req:decision-journal/Слово к решению мимо рекомендации",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-20"
+   ]
+  },
+  {
+   "a": "req:brainstorm-interview/Интервью начинается с намерения",
+   "b": "req:decision-journal/Старое значение адресата читается, новыми записями не пишется",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-20"
+   ]
+  },
+  {
+   "a": "req:brainstorm-interview/Круг кончается счётом и словом человека, не числом",
+   "b": "req:brainstorm-interview/Парковки агенту переносят вопрос о круге в research",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-12"
+   ]
+  },
+  {
+   "a": "req:brainstorm-interview/Отступление и конструкция записываются развилкой",
+   "b": "req:brainstorm-interview/Парковки агенту переносят вопрос о круге в research",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-20"
+   ]
+  },
+  {
+   "a": "req:brainstorm-interview/Отступление и конструкция записываются развилкой",
+   "b": "req:decision-journal/`check` отвергает факт без улики и пустую причину, парковку без находки сигналит",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-20"
+   ]
+  },
+  {
+   "a": "req:brainstorm-interview/Отступление и конструкция записываются развилкой",
+   "b": "req:decision-journal/Пометка отступления стоит у варианта",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-20"
+   ]
+  },
+  {
+   "a": "req:brainstorm-interview/Отступление и конструкция записываются развилкой",
+   "b": "req:decision-journal/Просмотрщик и рендер при двух значениях адресата",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-20"
+   ]
+  },
+  {
+   "a": "req:brainstorm-interview/Отступление и конструкция записываются развилкой",
+   "b": "req:decision-journal/Слово к решению мимо рекомендации",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-20"
+   ]
+  },
+  {
+   "a": "req:brainstorm-interview/Отступление и конструкция записываются развилкой",
+   "b": "req:decision-journal/Старое значение адресата читается, новыми записями не пишется",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-20"
+   ]
+  },
+  {
+   "a": "req:brainstorm-interview/Парковки агенту переносят вопрос о круге в research",
+   "b": "req:decision-journal/`check` отвергает факт без улики и пустую причину, парковку без находки сигналит",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-20"
+   ]
+  },
+  {
+   "a": "req:brainstorm-interview/Парковки агенту переносят вопрос о круге в research",
+   "b": "req:decision-journal/Пометка отступления стоит у варианта",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-20"
+   ]
+  },
+  {
+   "a": "req:brainstorm-interview/Парковки агенту переносят вопрос о круге в research",
+   "b": "req:decision-journal/Просмотрщик и рендер при двух значениях адресата",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-20"
+   ]
+  },
+  {
+   "a": "req:brainstorm-interview/Парковки агенту переносят вопрос о круге в research",
+   "b": "req:decision-journal/Слово к решению мимо рекомендации",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-20"
+   ]
+  },
+  {
+   "a": "req:brainstorm-interview/Парковки агенту переносят вопрос о круге в research",
+   "b": "req:decision-journal/Старое значение адресата читается, новыми записями не пишется",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-20"
+   ]
+  },
+  {
+   "a": "req:decision-journal/`check` отвергает факт без улики и пустую причину, парковку без находки сигналит",
+   "b": "req:decision-journal/Пометка отступления стоит у варианта",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-20"
+   ]
+  },
+  {
+   "a": "req:decision-journal/`check` отвергает факт без улики и пустую причину, парковку без находки сигналит",
+   "b": "req:decision-journal/Просмотрщик и рендер при двух значениях адресата",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-08",
+    "rec:F-20"
+   ]
+  },
+  {
+   "a": "req:decision-journal/`check` отвергает факт без улики и пустую причину, парковку без находки сигналит",
+   "b": "req:decision-journal/Слово к решению мимо рекомендации",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-20"
+   ]
+  },
+  {
+   "a": "req:decision-journal/`check` отвергает факт без улики и пустую причину, парковку без находки сигналит",
+   "b": "req:decision-journal/Старое значение адресата читается, новыми записями не пишется",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-20"
+   ]
+  },
+  {
+   "a": "req:decision-journal/Адресат `агент` означает агента исследования",
+   "b": "req:decision-journal/Обратимость, адресат парковки и исход — из закрытых списков с причиной",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-25"
+   ]
+  },
+  {
+   "a": "req:decision-journal/Обратимость, адресат парковки и исход — из закрытых списков с причиной",
+   "b": "req:decision-journal/Просмотрщик и рендер при двух значениях адресата",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-17"
+   ]
+  },
+  {
+   "a": "req:decision-journal/Обратимость, адресат парковки и исход — из закрытых списков с причиной",
+   "b": "req:decision-journal/Старое значение адресата читается, новыми записями не пишется",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-17"
+   ]
+  },
+  {
+   "a": "req:decision-journal/Обратимость, адресат парковки и исход — из закрытых списков с причиной",
+   "b": "req:plugin-core-contract/`view-json` отдаёт номер контракта",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-03"
+   ]
+  },
+  {
+   "a": "req:decision-journal/Пометка отступления стоит у варианта",
+   "b": "req:decision-journal/Просмотрщик и рендер при двух значениях адресата",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-20"
+   ]
+  },
+  {
+   "a": "req:decision-journal/Пометка отступления стоит у варианта",
+   "b": "req:decision-journal/Слово к решению мимо рекомендации",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-20"
+   ]
+  },
+  {
+   "a": "req:decision-journal/Пометка отступления стоит у варианта",
+   "b": "req:decision-journal/Старое значение адресата читается, новыми записями не пишется",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-20"
+   ]
+  },
+  {
+   "a": "req:decision-journal/Просмотрщик и рендер при двух значениях адресата",
+   "b": "req:decision-journal/Слово к решению мимо рекомендации",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-20"
+   ]
+  },
+  {
+   "a": "req:decision-journal/Просмотрщик и рендер при двух значениях адресата",
+   "b": "req:decision-journal/Старое значение адресата читается, новыми записями не пишется",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-17",
+    "rec:F-20"
+   ]
+  },
+  {
+   "a": "req:decision-journal/Слово к решению мимо рекомендации",
+   "b": "req:decision-journal/Старое значение адресата читается, новыми записями не пишется",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-20"
+   ]
+  },
+  {
+   "a": "req:plugin-core-contract/`view-json` отдаёт номер контракта",
+   "b": "req:plugin-core-contract/Номер контракта не растёт без записи в договоре",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-26"
+   ]
+  }
+ ],
+ "roots": [
+  {
+   "prefix": "docs/",
+   "commit": ""
+  },
+  {
+   "prefix": "tools/",
+   "commit": ""
+  },
+  {
+   "prefix": "upstream/",
+   "commit": ""
+  },
+  {
+   "prefix": "CLAUDE.md",
+   "commit": ""
+  },
+  {
+   "prefix": "store/",
+   "commit": "531a2e84807eb4f3abe8fa3dacc3a53c6de95660"
+  },
+  {
+   "prefix": "playground/",
+   "commit": ""
+  },
+  {
+   "prefix": "md4h/",
+   "commit": ""
+  }
+ ],
+ "base": {
+  "brainstorm-interview": {
+   "Вопрос, ответ на который есть в файлах, человеку не задаётся": {
+    "numbers": [
+     "F-06.D",
+     "F-08.A",
+     "F-09.A",
+     "F-13.A",
+     "F-17.A",
+     "F-43.E",
+     "F-44.E"
+    ],
+    "scenarios": {
+     "Ответ лежит в файле": "3ff519d818f69fe78ae39ed0bfb3bd2526cd1e7bd2cb052467785a2a3240698f",
+     "Материалов нет": "46bdc2dd210c3c34781173fc3861ed67e24aedb3198993ed513820782d654105",
+     "Намерение прочитано первым": "d4f6c519ed521acf2c3cb47ba0f39fcb06543eee83824da9dd627ee8b1e5eca4",
+     "Отступление от постановки помечено": "ddf135c4c36b881a122f1f3c3f1ce7d1ab2631bbf60543a78dbb1080990028c6",
+     "Предписание в следствиях факта": "7e0d9f475db6fabcc2122a68d753627923ae8d274a68093023c72ca09d4c214e",
+     "Намерение без критериев": "54ed20cebaa3117d1467504d5216392163993028d0e5f5e2b2a3c0199fdb9e7f",
+     "Круг 2 перечитывает намерение": "20d789337f38f46da2a6c4959f8e7c21a805e8114d23497f9dc2d1eb2bbf5dce"
+    },
+    "text": "81e5384950efca95f5a0b864d8c85454a07c4279b0c652d29fa358e8793e8830",
+    "traces": [
+     "96437f29201f5a3b92b3c85c208e34ec3a91ec1117b4901dae5010a3c390e9e9",
+     "98c798c608fe86851c5ddfb4df8eca93ec7c5f4c93d761cd9242df1ed260d7cf"
+    ]
+   },
+   "Круг кончается счётом и словом человека, не числом": {
+    "numbers": [
+     "F-38",
+     "F-44",
+     "F-95",
+     "symphysis-schema/F-07.B"
+    ],
+    "scenarios": {
+     "Отказ от нового круга": "f3e57c7cd55f7b04758c5fd97f8e2a28ae31880fa286834679f7693c6a156ecd",
+     "Круг без нового при открытых развилках": "2fc93a4b07e5a97ddcddacadbc0f3337ddc87bd44e867cc943b43c265b083a85",
+     "Третий круг": "61c3034e3a407e69b6e7681bf0f410203086373494f6677d6d4d3c78de010868",
+     "Круг без нового": "79bb234276df6fb647caf8db796e47b3e4b3c2b74e95cbb9c68e13f3f4c71ae4",
+     "Только парковки": "0d820a5f369d76f321e495386aaedafbdec7355b813dbb8fd8f9b36acecc0059",
+     "Круг после конца брейншторма": "09f409bc66a1765f927214d917f283d254e2e67366a29add462ce478755183f3"
+    },
+    "text": "2077ba181cc79bb0b10cfa84d2a15942250d61f6b02fbc45e83a4dabfa6333c0",
+    "traces": [
+     "da09c629dd4067f87f2e3a6e554a9005478cabf96cea40f1df4cba74532ed267",
+     "fac5369a9cfa5e2268297772fe2fd2df5b06e3bd3f31dd997dca1ce542a17d62"
+    ]
+   }
+  },
+  "decision-journal": {
+   "Обратимость, адресат парковки и исход — из закрытых списков с причиной": {
+    "numbers": [
+     "F-08.A",
+     "F-09.C",
+     "F-10.A",
+     "F-11.D",
+     "F-12.A",
+     "F-17.A",
+     "F-28.E",
+     "F-35.E",
+     "F-36",
+     "F-62.A"
+    ],
+    "scenarios": {
+     "Рекомендованный отказ без слова": "16d111cf0752fd64435ace969a2bd2bc75cd9cfddaf3b8b7181be3ba6840d6e2",
+     "Выбор мимо рекомендации без слова": "d2de2a3d19d7d651a87374bc383de32ac382d02444a52b05536348c062866e9f",
+     "Вариант, добавленный человеком": "8c74fcfd664e5b6d5a62f31882ef483bec90cdf7ffc0e3ccefe876ce6eebba64",
+     "Адресат вне списка": "fe6d696bd69229cfa2d7eae3c126b0b592d75bb73d4af1684b4d6470a47eaf3e",
+     "Факт постановки": "9975e1cdd9de98659eb32279ef0f528945a008e6f8f1bb98db583c4d7a2840d1",
+     "Факт без улики": "c6b9165dd43f47e9dd1688d300f9f91c350db76a23365ea68a79c37542dc7b29",
+     "Припаркованный факт без улики": "4855852e96e3121c47baf96258056bfa1ec6bc90e293cea19b45b648a84c5d0b",
+     "Пустое why": "2ccdc1e777ed4c6e62065f00056214fa8be753d85fbcc82abdf2a16d1d431c84",
+     "Парковка без находки при файле": "460f0d515a9043c6a220633c044f4f723797fc8efc4cc5b6ad9c1143c26662a5"
+    },
+    "text": "49db9adf8b9139e8bd79923df5b0f742f738312c3fad11cde2bb0a2358f51bc2",
+    "traces": [
+     "9827d5d0a1306131578176812b6aa3955631b4b054779098d0d9e12a40d3a619",
+     "f2b403963b8f79da94551b45c3137b73caf68a4dc8578b7cd964f5cf97661997"
+    ]
+   }
+  },
+  "plugin-core-contract": {
+   "`view-json` отдаёт номер контракта": {
+    "numbers": [
+     "F-08"
+    ],
+    "scenarios": {
+     "Вывод содержит номер": "3a90be96a32da053ce3d997628570794b2ae1dedf4702c2efba0053e5d4031e3",
+     "Новое поле номер не поднимает": "9ea3cac173b1ee3e3638d915a48a09aa32e3036653b5a9ef6cbde35827c56c61"
+    },
+    "text": "c4f0d26618144e6e31d3eb8e7cddf476da4796227a5b524d8cd06daaec548496",
+    "traces": [
+     "0fa2989614e56cf58513eff67711d8063c3e6d6faebe285c7f0bba3e8be5ab5e",
+     "96437f29201f5a3b92b3c85c208e34ec3a91ec1117b4901dae5010a3c390e9e9"
+    ]
+   }
+  }
+ }
+}

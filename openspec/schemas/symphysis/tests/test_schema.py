@@ -221,11 +221,11 @@ def test_instructions_name_skills_and_stay_short(tmp_path):
     research = text["research"]
     second = research.index("Второй круг брейншторма")
     assert research.index("research/<F-NN>.md") < research.index("research/none.md") < second
-    assert second < research.index("материалы", second) < research.index("research/", second) < research.index("symphysis-brainstorm")
+    assert second < research.index("агент", second) < research.index("research/", second) < research.index("symphysis-brainstorm")
     assert research.rstrip().endswith("«брейншторм закончен по решению человека».")
     # финальное ревью, minor 11: вопрос о новом круге — только без строки отказа в notes[]
     assert "Нет в `notes[]` строки «брейншторм закончен по решению человека» — спроси, нужен ли новый круг" in research
-    assert "Записи с парковкой «материалы» без `finding` при файлах `research/` — сначала второй круг" in text["proposal"]
+    assert "Записи с парковкой «агент» без `finding` при файлах `research/` — сначала второй круг" in text["proposal"]
     attack = text["attack-decisions"].lstrip()
     assert attack.startswith("Загрузи скилл `symphysis-attack`"), attack[:60]
     for gone in ("Второй круг", "брейншторм закончен", "новый круг"):
@@ -633,11 +633,11 @@ def test_instruction_wording_from_task7_review():
 
 def test_research_instruction_and_template_carry_none_rule():
     """F-16.A: нуль парковок — `research/none.md` (`question: none`, отрицание по рецепту); первая парковка
-    «материалы» удаляет `none.md`. Оба правила — и в instruction, и в шаблоне."""
+    «агент» удаляет `none.md`. Оба правила — и в instruction, и в шаблоне."""
     for text in (schema_block("research"), template_text("research.md")):
         assert "research/none.md" in text and "question: none" in text
         assert "не найдено" in text and "искал: <шаблоны дословно>" in text
-        assert "addressee: материалы" in text
+        assert "addressee: агент" in text
         assert "удали `none.md`" in text
 
 
@@ -736,7 +736,7 @@ CONFIG_SAMPLE = SCHEMAS / "symphysis" / "config.symphysis.yaml"   # образе
 
 DECISIONS_RULES = ["у каждого варианта улика — путь и цитата",
                    "маловероятный вариант показывается с причиной",
-                   "адресат парковки — материалы, человек, ИБ"]
+                   "адресат парковки — агент, человек, ИБ"]
 
 FORCE_STANCE = "FORCE stance: считай каждое утверждение неподкреплённым, пока улика не доказала обратное"
 # Правило «сначала запись» (D7, F-26): вывод модели — развилка, а не строка поставки; стоит у артефактов,
@@ -871,13 +871,13 @@ def test_sample_config_with_operations_raises_no_warning(tmp_path):
 
 def test_change_demo_journal_is_valid():
     """Журнал фикстуры проходит `validate_journal` без форка; номер исследования указывает на запись,
-    которой адресована парковка «материалы» (иначе фикстура непоследовательна)."""
+    которой адресована парковка «агент» (иначе фикстура непоследовательна)."""
     data = journal.load_journal(CHANGE_DEMO / "decisions.json")
     assert journal.validate_journal(data) == []
     records = {r["id"]: r for r in data["records"]}
     assert [(r["kind"], r["status"]) for r in records.values()] == [
         ("развилка", "решён"), ("развилка", "припаркован"), ("факт", "решён")]
-    assert [p["addressee"] for p in records["F-02"]["parking"]] == ["материалы"]
+    assert [p["addressee"] for p in records["F-02"]["parking"]] == ["агент"]
     report = lf_text(CHANGE_DEMO / "research" / "F-02.md")
     assert re.search(r"^question: F-02$", frontmatter(report), re.M)
     assert re.search(r"^genre: устройство$", frontmatter(report), re.M)
@@ -988,7 +988,7 @@ def test_validate_all_rejects_change_without_deltas(tmp_path):
     assert '"skip_specs: true"' in issue["message"], issue
 
 
-# --- decision-scheme: схема не артефакт, «материалы» добывает агент (F-12, F-41, F-99, F-112) ---
+# --- decision-scheme: схема не артефакт, ответ парковке «агент» добывает агент исследования (F-12, F-41, F-99, F-112) ---
 
 def test_scheme_is_not_an_artifact_and_blocks_nothing(tmp_path):
     """Сценарий «Схемы нет»: без `scheme.md` ни один шаг не заблокирован из-за него."""
@@ -1007,3 +1007,35 @@ def test_research_answer_may_come_from_a_probe():
         assert token in research, f"в instruction research нет «{token}»"
     template = (ROOT / "openspec" / "schemas" / "symphysis" / "templates" / "research.md").read_text(encoding="utf-8")
     assert "## Проба" in template and "«следа нет»" in template
+
+
+# --- parking-addressee-agent: адресат парковки — «агент», старое значение только у старых журналов (F-17.A) ---
+
+OLD_ADDRESSEE_MARKS = ("«материалы»", "`материалы`", "addressee: материалы", "парковки — материалы", "к материалам")
+
+
+def test_schema_texts_name_the_agent_addressee_not_the_old_value():
+    """Сценарии «Отчёт по парковке», «Нуль парковок», «Парковка после none.md»: instruction `research` и `proposal`,
+    `steps.md`, шаблон и оба конфига читают адресата `агент`; «материалы» остаётся только словом о материалах
+    изменения («где искать материалы»), не значением адресата."""
+    symphysis = ROOT / "openspec" / "schemas" / "symphysis"
+    live = {
+        "schema.yaml": (symphysis / "schema.yaml").read_text(encoding="utf-8"),
+        "steps.md": (symphysis / "steps.md").read_text(encoding="utf-8"),
+        "templates/research.md": template_text("research.md"),
+        "config.symphysis.yaml": CONFIG_SAMPLE.read_text(encoding="utf-8"),
+        "openspec/config.yaml": (ROOT / "openspec" / "config.yaml").read_text(encoding="utf-8"),
+    }
+    for name, text in live.items():
+        for mark in OLD_ADDRESSEE_MARKS:
+            assert mark not in text, f"{name}: старое значение адресата «{mark}»"
+    research = schema_block("research")
+    assert "На каждую парковку с адресатом «агент»" in research and "`addressee: агент`" in research
+    assert "закрой записи с адресатом «агент»" in research
+    assert "Записи с парковкой «агент» без `finding`" in schema_block("proposal")
+    assert "парковка адресату `агент`, её разберёт исследование" in live["steps.md"]
+    assert "Парковку адресату «агент» закрывает шаг `research`" in live["steps.md"]
+    assert "где искать материалы" in live["steps.md"], "материалы изменения — другой смысл, слово остаётся"
+    assert "Нуль парковок «агент»" in live["templates/research.md"]
+    for name in ("config.symphysis.yaml", "openspec/config.yaml"):
+        assert "адресат парковки — агент, человек, ИБ" in live[name], name

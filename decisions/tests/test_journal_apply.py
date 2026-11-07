@@ -4,7 +4,7 @@ import json
 import pytest
 
 # conftest — первым: он ставит каталоги модулей в sys.path и при запуске одного файла (pytest.ini, pythonpath)
-from conftest import FIX, HEADER_LINK, plan, rec_of, ROOT
+from conftest import FIX, HEADER_LINK, plan, rec_of, ROOT, run_cli
 import journal
 
 
@@ -73,11 +73,15 @@ def test_round1_has_no_refusals_and_leaves_a_valid_journal():
 
 
 def test_round1_f01_is_parked_and_undecided():
-    # круг 1 припарковал F-01; решение B пришло в круге 2, словом в чате, — в промпте его нет
+    # круг 1 припарковал F-01; решение B пришло в круге 2, словом в чате, — в промпте его нет.
+    # Адресат в фикстуре промпта новый («агент»), в живом журнале плана — старый («материалы»): старое значение
+    # читается, а строку `apply` с ним скрипт отвергает, поэтому сверяются тексты парковок, значения названы порознь.
     j, _, now = round1()
     f01, live = rec_of(j, "F-01"), rec_of(now, "F-01")
     assert f01["decision"] is None and f01["status"] == "припаркован"
-    assert [(p["addressee"], p["text"]) for p in f01["parking"]] == [(p["addressee"], p["text"]) for p in live["parking"]]
+    assert [p["text"] for p in f01["parking"]] == [p["text"] for p in live["parking"]]
+    assert [p["addressee"] for p in f01["parking"]] == ["агент"]
+    assert [p["addressee"] for p in live["parking"]] == ["материалы"]
 
 
 def test_round1_words_dates_and_disputes_match_the_live_journal():
@@ -112,8 +116,8 @@ def test_round1_added_options_match_the_live_letters():
      {"id": "F-02", "op": "decide", "option": "B", "was": "A", "word": "слово «внутри» ещё"}),
     ("- F-04: A — (без слова)",
      {"id": "F-04", "op": "decide", "option": "A", "was": None, "word": ""}),
-    ("- F-01: припарковано → материалы — «вопрос?»",
-     {"id": "F-01", "op": "park", "addressee": "материалы", "text": "вопрос?"}),
+    ("- F-01: припарковано → агент — «вопрос?»",
+     {"id": "F-01", "op": "park", "addressee": "агент", "text": "вопрос?"}),
     ("- F-05: добавлен вариант C. Вариант А + жанры",
      {"id": "F-05", "op": "add_option", "letter": "C", "text": "Вариант А + жанры"}),
     ("- F-05: зависимость добавлена F-07",
@@ -156,7 +160,7 @@ def test_parse_tolerates_the_markdown_linked_header_and_the_plain_one(header):
 def test_parse_real_round1_prompt():
     ops = journal.parse_answers((FIX / "answers-round1.md").read_text(encoding="utf-8"))
     assert len(ops) == 29      # 29 строк `- F-NN:`; многострочное слово F-07 — одна из них
-    assert ops[0] == {"id": "F-01", "op": "park", "addressee": "материалы",
+    assert ops[0] == {"id": "F-01", "op": "park", "addressee": "агент",
                       "text": ops[0]["text"]} and ops[0]["text"].startswith("json разбирать проще")
     assert [o["op"] for o in ops if o["id"] == "F-05"] == ["add_option", "decide"]
     assert sum(1 for o in ops if o["op"] == "dispute") == 5
@@ -263,6 +267,7 @@ def test_decision_on_a_fact_is_refused():
     ("- F-99: A — «x»", "F-99"),
     ("- F-05: Я — «x»", "Я"),
     ("- F-05: припарковано → бухгалтерия — «x»", "бухгалтерия"),
+    ("- F-05: припарковано → материалы — «x»", "материалы"),
     ("- F-05: зависимость добавлена F-99", "F-99"),
     ("- F-05: зависимость снята F-99", "F-99"),
     ("- F-05: зависимость добавлена F-05", "F-05"),
@@ -353,6 +358,44 @@ def test_parking_on_a_fact_is_refused():
     before_ = snapshot(j)
     report = apply(j, "- F-20: припарковано → человек — «x»")
     assert any("F-20" in r for r in report) and snapshot(j) == before_
+
+
+# --- адресат «агент» и старое «материалы» (parking-addressee-agent: F-17.A) ---------------------------------------
+
+OLD_ADDRESSEE_LINE = "- F-01: припарковано → материалы — «вопрос»"
+OLD_ADDRESSEE_REFUSAL = "F-01: адресат «материалы» — допустимы агент | человек | ИБ"
+
+
+def test_parking_to_the_agent_marks_an_undecided_fork_parked():
+    """Строка с `агент` вносится: парковка в `parking[]`, статус `припаркован`, журнал годен."""
+    j = before()
+    assert apply(j, "- F-04: припарковано → агент — «найти в коде»") == ["F-04: припарковано → агент"]
+    r = rec_of(j, "F-04")
+    assert r["parking"] == [{"addressee": "агент", "text": "найти в коде"}]
+    assert r["decision"] is None and r["status"] == "припаркован"
+    assert journal.validate_journal(j) == []
+
+
+def test_parking_to_the_old_addressee_is_refused_with_the_three_allowed():
+    """Сценарий «Строка apply со старым значением»: отказ называет запись, старое значение и три допустимых."""
+    j = before()
+    before_ = snapshot(j)
+    report = apply(j, OLD_ADDRESSEE_LINE)
+    assert report[0] == f"отказ: {OLD_ADDRESSEE_REFUSAL}", report
+    assert snapshot(j) == before_
+
+
+def test_apply_cli_refuses_the_old_addressee_and_leaves_the_file_byte_for_byte(tmp_path):
+    """Сценарий «Строка apply со старым значением» через командную строку: код 1, файл журнала прежний."""
+    path = tmp_path / "decisions.json"
+    journal.save_journal(path, before())
+    raw = path.read_bytes()
+    answers = tmp_path / "answers.md"
+    answers.write_text(OLD_ADDRESSEE_LINE + "\n", encoding="utf-8")
+    done = run_cli("apply", path, answers)
+    assert done.returncode == 1, done.stdout + done.stderr
+    assert f"[!!] отказ: {OLD_ADDRESSEE_REFUSAL}" in done.stderr
+    assert path.read_bytes() == raw
 
 
 # --- вариант ----------------------------------------------------------------
