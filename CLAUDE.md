@@ -88,8 +88,8 @@
   как восстановить.
 - BMAD и spec-kit — клоны вне проекта; коммиты — в разборе
   proactive-design, по ним клоны восстанавливаются.
-- OpenSpec 1.13.1 — глобальный пакет
-  `%APPDATA%\npm\node_modules\@fission-ai\openspec\`; разборы
+- Глобальный пакет `%APPDATA%\npm\node_modules\@fission-ai\openspec\` — с 2026-11-07
+  форк `1.16.1+symphysis.5` из `vendor/`; ванильный 1.13.1 стоял там до него: разборы
   2026-10-29 читали его, `step0-sources.md` — уже 1.15.0.
 
 ## Ограничения схемы
