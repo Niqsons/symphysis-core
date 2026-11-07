@@ -3494,20 +3494,8 @@
  ],
  "roots": [
   {
-   "prefix": "docs/",
-   "commit": ""
-  },
-  {
-   "prefix": "tools/",
-   "commit": ""
-  },
-  {
-   "prefix": "upstream/",
-   "commit": ""
-  },
-  {
-   "prefix": "CLAUDE.md",
-   "commit": ""
+   "prefix": "",
+   "commit": "9b012131bfffcbf84aefb596f6c71e32ad2f99c2"
   },
   {
    "prefix": "store/",
@@ -3520,6 +3508,18 @@
   {
    "prefix": "md4h/",
    "commit": ""
+  },
+  {
+   "prefix": "calibration/",
+   "commit": ""
+  },
+  {
+   "prefix": "archive/",
+   "commit": ""
+  },
+  {
+   "prefix": "catalog/",
+   "commit": "20c976814c279cd5cc2af9256b37e9258eb5f5d8"
   }
  ],
  "base": {
