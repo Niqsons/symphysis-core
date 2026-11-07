@@ -8,7 +8,7 @@
 
 Механики интервью по перспективам, пробы краёв и запретов, исходов Specify / Dismiss /
 Backstop / Defer, анализа допущений, pre-mortem и установки проверяющих (FORCE stance)
-перенесены из GSD Core (проект Open GSD, версия e2cd587).
+перенесены из GSD Core (проект Open GSD, версия v1.20.1).
 
 MIT License
 

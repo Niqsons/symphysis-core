@@ -1,6 +1,6 @@
 # symphysis-brainstorm — где перевод меняет смысл источника
 
-Источник — GSD Core @ e2cd587 (MIT, Copyright (c) 2026 Open GSD):
+Источник — GSD Core @ v1.20.1 (MIT, Copyright (c) 2026 Open GSD):
 `gsd-core/workflows/spec-phase.md`, `gsd-core/workflows/discuss-phase.md`,
 `gsd-core/workflows/discuss-phase/templates/context.md`. Копии взятых
 разделов — `references/`. Перевод — не механический, а инструкция

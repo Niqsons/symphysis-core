@@ -1,4 +1,4 @@
-<!-- MIT License, Copyright (c) 2026 Open GSD; источник: upstream/gsd-core/gsd-core/references/thinking-models-planning.md @ e2cd587; выписка: строки 7-15 и 73-80, Pre-Mortem Analysis и «When NOT to Think»; пропуски помечены комментарием «пропущено», текст между пометками дословный, английский. -->
+<!-- MIT License, Copyright (c) 2026 Open GSD; источник: upstream/gsd-core/gsd-core/references/thinking-models-planning.md @ v1.20.1; выписка: строки 7-15 и 73-80, Pre-Mortem Analysis и «When NOT to Think»; пропуски помечены комментарием «пропущено», текст между пометками дословный, английский. -->
 <!-- пропущено: строки 1-6 -->
 ## Conflict Resolution
 

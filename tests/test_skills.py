@@ -14,7 +14,7 @@ from journal_model import PROBE_OUTCOMES
 
 # Шапка копии файла GSD: первая строка файла, с пином коммита источника.
 GSD_HEADER = "<!-- MIT License, Copyright (c) 2026 Open GSD; источник: upstream/gsd-core/"
-GSD_PIN = "@ e2cd587"
+GSD_PIN = "@ v1.20.1"
 # Заголовок таблицы отличий перевода — «место · в источнике · у нас · почему смысл изменён».
 NOTES_HEADER = ("место", "в источнике", "у нас", "почему смысл изменён")
 PERSPECTIVES = ("Researcher", "Simplifier", "Boundary Keeper", "Failure Analyst", "Seed Closer")

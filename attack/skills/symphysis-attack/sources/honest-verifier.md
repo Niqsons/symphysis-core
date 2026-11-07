@@ -1,4 +1,4 @@
-<!-- MIT License, Copyright (c) 2026 Open GSD; источник: upstream/gsd-core/gsd-core/references/honest-verifier.md @ e2cd587; выписка: строки 1-56, 92-95; заголовок с вводом, разделы «The problem it solves», «The two properties that define the design», «The disposition (the protocol)», пункт «Explicit non-goals» раздела «Evidence and scope»; пропуски помечены комментарием «пропущено», текст между пометками дословный, английский. -->
+<!-- MIT License, Copyright (c) 2026 Open GSD; источник: upstream/gsd-core/gsd-core/references/honest-verifier.md @ v1.20.1; выписка: строки 1-56, 92-95; заголовок с вводом, разделы «The problem it solves», «The two properties that define the design», «The disposition (the protocol)», пункт «Explicit non-goals» раздела «Evidence and scope»; пропуски помечены комментарием «пропущено», текст между пометками дословный, английский. -->
 <!-- symphysis: после F-07.A не линза — линза `honest-verifier` снята; выписка остаётся источником правила воздержания «по спеке не выводится» (SKILL.md, «Главное правило»). Текст выписки ниже — источник без правки. -->
 # Honest Verifier — Abstention on Non-Inferable Checks
 

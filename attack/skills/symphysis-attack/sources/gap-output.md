@@ -1,4 +1,4 @@
-<!-- MIT License, Copyright (c) 2026 Open GSD; источник: upstream/gsd-core/agents/gsd-verifier.md @ e2cd587; выписка: строки 603-646, 828-839; хвост Step 9b (дерево статуса после отсева), Step 10 Structure Gap Output целиком до </verification_process>, раздел «Self-check the written status (#5118)»; пропуски помечены комментарием «пропущено», текст между пометками дословный, английский. -->
+<!-- MIT License, Copyright (c) 2026 Open GSD; источник: upstream/gsd-core/agents/gsd-verifier.md @ v1.20.1; выписка: строки 603-646, 828-839; хвост Step 9b (дерево статуса после отсева), Step 10 Structure Gap Output целиком до </verification_process>, раздел «Self-check the written status (#5118)»; пропуски помечены комментарием «пропущено», текст между пометками дословный, английский. -->
 <!-- пропущено: строки 1-602 -->
 **Deferred items do NOT affect the status determination.** After filtering, recalculate:
 

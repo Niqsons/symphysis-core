@@ -561,7 +561,7 @@ it('continue skill and command carry the verdict step before artifact creation',
 
 ## Часть D — скиллы из GSD (П3)
 
-Общее для D1–D4: каталог `skills/<имя>/`: `SKILL.md` (frontmatter `name`, `description` по-русски с «Применяй, когда…» и «Не применяй…»), `references/<оригинал>.md` — копия файла GSD с шапкой `<!-- MIT License, Copyright (c) 2026 Open GSD; источник: upstream/gsd-core/<путь> @ e2cd587 -->`, `TRANSLATION-NOTES.md` — таблица «место · в источнике · у нас · почему смысл изменён» (F-14). Тест общий — `tests/test_skills.py`.
+Общее для D1–D4: каталог `skills/<имя>/`: `SKILL.md` (frontmatter `name`, `description` по-русски с «Применяй, когда…» и «Не применяй…»), `references/<оригинал>.md` — копия файла GSD с шапкой `<!-- MIT License, Copyright (c) 2026 Open GSD; источник: upstream/gsd-core/<путь> @ v1.20.1 -->`, `TRANSLATION-NOTES.md` — таблица «место · в источнике · у нас · почему смысл изменён» (F-14). Тест общий — `tests/test_skills.py`.
 
 ### Task 16 (D1): `symphysis-brainstorm` — интервью и журнал
 

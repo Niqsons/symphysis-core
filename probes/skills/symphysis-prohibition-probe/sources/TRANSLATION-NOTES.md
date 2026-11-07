@@ -1,6 +1,6 @@
 # symphysis-prohibition-probe — где перевод меняет смысл источника
 
-Источник — GSD Core @ e2cd587 (MIT, Copyright (c) 2026 Open GSD):
+Источник — GSD Core @ v1.20.1 (MIT, Copyright (c) 2026 Open GSD):
 `gsd-core/references/prohibition-probe.md` (копия целиком — `references/`)
 и Step 5.6 «Prohibition-Completeness Probe (must-NOT)»
 в `gsd-core/workflows/spec-phase.md` (`:384-470`, в копию не взят: это шаг
