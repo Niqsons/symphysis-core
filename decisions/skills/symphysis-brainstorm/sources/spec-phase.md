@@ -1,4 +1,4 @@
-<!-- MIT License, Copyright (c) 2026 Open GSD; источник: upstream/gsd-core/gsd-core/workflows/spec-phase.md @ e2cd587; взяты разделы: <purpose> (строки 1–6), <interview_perspectives> (25–52), Step 4 «Socratic Interview Loop» (134–187). Текст дословный, английский; пропуски помечены комментариями. -->
+<!-- MIT License, Copyright (c) 2026 Open GSD; источник: upstream/gsd-core/gsd-core/workflows/spec-phase.md @ v1.20.1; взяты разделы: <purpose> (строки 1–6), <interview_perspectives> (25–52), Step 4 «Socratic Interview Loop» (134–187). Текст дословный, английский; пропуски помечены комментариями. -->
 
 <purpose>
 Clarify WHAT a phase delivers through a Socratic interview loop with quantitative ambiguity scoring.

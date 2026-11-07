@@ -1,6 +1,6 @@
 # symphysis-attack — где перевод меняет смысл источника
 
-Источник — GSD Core @ e2cd587 (MIT, Copyright (c) 2026 Open GSD), слой
+Источник — GSD Core @ v1.20.1 (MIT, Copyright (c) 2026 Open GSD), слой
 проверки артефактов: `agents/gsd-plan-checker.md` (установка, классификация
 находок, измерения), `agents/gsd-verifier.md` (форма разрыва, статус,
 самопроверка), `agents/gsd-doc-verifier.md` (извлечение утверждений),

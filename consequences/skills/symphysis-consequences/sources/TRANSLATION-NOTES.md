@@ -1,6 +1,6 @@
 # symphysis-consequences — где перевод меняет смысл источника
 
-Источник — GSD Core @ e2cd587 (MIT, Copyright (c) 2026 Open GSD): анализатор
+Источник — GSD Core @ v1.20.1 (MIT, Copyright (c) 2026 Open GSD): анализатор
 допущений `agents/gsd-assumptions-analyzer.md` (F-02) и pre-mortem
 `gsd-core/references/thinking-models-planning.md:15` (F-03); выписки с шапкой —
 `references/`. Перевод — не механический, а инструкция агенту на русском

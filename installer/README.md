@@ -31,12 +31,12 @@ kind: технический
 
 ## Требование: форк OpenSpec
 
-`check` ждёт `openspec` версии `1.15.0-symphysis.4` (пин — поле
+`check` ждёт `openspec` версии `1.16.1+symphysis.5` (пин — поле
 `symphysis.openspecPin` в `package.json`). Форк лежит тарболом в `vendor/`
 репозитория, путь — поле `symphysis.openspecSource`:
 
 ```
-npm i -g ./vendor/fission-ai-openspec-1.15.0-symphysis.4.tgz
+npm i -g ./vendor/fission-ai-openspec-1.16.1+symphysis.5.tgz
 ```
 
 Сборки на машине пользователя нет, исходники форка не нужны; из сети берутся

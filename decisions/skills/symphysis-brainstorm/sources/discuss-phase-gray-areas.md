@@ -1,4 +1,4 @@
-<!-- MIT License, Copyright (c) 2026 Open GSD; источник: upstream/gsd-core/gsd-core/workflows/discuss-phase.md @ e2cd587; взяты разделы: <philosophy> (строки 52–60), <scope_guardrail> (62–80), <gray_area_identification> (82–99). Текст дословный, английский; пропуски помечены комментариями. -->
+<!-- MIT License, Copyright (c) 2026 Open GSD; источник: upstream/gsd-core/gsd-core/workflows/discuss-phase.md @ v1.20.1; взяты разделы: <philosophy> (строки 52–60), <scope_guardrail> (62–80), <gray_area_identification> (82–99). Текст дословный, английский; пропуски помечены комментариями. -->
 
 <!-- строки 1–51 (шапка loop-host, <purpose>, <required_reading>, <progressive_disclosure>, <downstream_awareness>) не взяты -->
 

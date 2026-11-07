@@ -1,4 +1,4 @@
-<!-- MIT License, Copyright (c) 2026 Open GSD; источник: upstream/gsd-core/gsd-core/references/edge-probe.md @ e2cd587; файл целиком, текст дословный, английский. -->
+<!-- MIT License, Copyright (c) 2026 Open GSD; источник: upstream/gsd-core/gsd-core/references/edge-probe.md @ v1.20.1; файл целиком, текст дословный, английский. -->
 # Edge-Probe — Spec-Completeness Reference
 
 Shared reference for the spec/requirements phase. Companion to

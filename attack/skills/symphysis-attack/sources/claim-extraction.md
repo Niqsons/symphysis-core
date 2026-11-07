@@ -1,4 +1,4 @@
-<!-- MIT License, Copyright (c) 2026 Open GSD; источник: upstream/gsd-core/agents/gsd-doc-verifier.md @ e2cd587; выписка: строки 38-41, 58-98, 100-110; классификация исходов из <adversarial_stance>, блок <claim_extraction> целиком, блок <skip_rules> целиком; пропуски помечены комментарием «пропущено», текст между пометками дословный, английский. -->
+<!-- MIT License, Copyright (c) 2026 Open GSD; источник: upstream/gsd-core/agents/gsd-doc-verifier.md @ v1.20.1; выписка: строки 38-41, 58-98, 100-110; классификация исходов из <adversarial_stance>, блок <claim_extraction> целиком, блок <skip_rules> целиком; пропуски помечены комментарием «пропущено», текст между пометками дословный, английский. -->
 <!-- пропущено: строки 1-37 -->
 **Required finding classification:**
 - **BLOCKER** — a claim is demonstrably false (file missing, function doesn't exist, command not in package.json); doc will mislead readers

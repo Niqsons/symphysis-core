@@ -545,7 +545,8 @@ test("В PATH другая версия OpenSpec: update не зовётся, с
   const r = symphysis(commandEnv(xdg, { SYMPHYSIS_OPENSPEC: js }), "install", "--project", p);
   assert.equal(r.status, 0, r.stdout + r.stderr);
   assert.doesNotMatch(fs.readFileSync(log, "utf8"), /update/);
-  assert.match(r.stdout, /^continue: openspec версии 1\.13\.1, нужен форк 1\.15\.0-symphysis\.\d+ — выполнить потом: openspec update$/m);
+  const pin = JSON.parse(fs.readFileSync(fileURLToPath(new URL("../package.json", import.meta.url)), "utf8")).symphysis.openspecPin;
+  assert.ok(r.stdout.split(/\r?\n/).includes(`continue: openspec версии 1.13.1, нужен форк ${pin} — выполнить потом: openspec update`), r.stdout);
 });
 
 test("SYMPHYSIS_OPENSPEC относительным путём: форк находится и при cwd проекта", () => {

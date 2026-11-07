@@ -1,4 +1,4 @@
-<!-- MIT License, Copyright (c) 2026 Open GSD; источник: upstream/gsd-core/agents/gsd-assumptions-analyzer.md @ e2cd587; выписка: строки 65-109, форма вывода, правила и антипаттерны анализатора допущений; пропуски помечены комментарием «пропущено», текст между пометками дословный, английский. -->
+<!-- MIT License, Copyright (c) 2026 Open GSD; источник: upstream/gsd-core/agents/gsd-assumptions-analyzer.md @ v1.20.1; выписка: строки 65-109, форма вывода, правила и антипаттерны анализатора допущений; пропуски помечены комментарием «пропущено», текст между пометками дословный, английский. -->
 <!-- пропущено: строки 1-64 -->
 <output_format>
 Return EXACTLY this structure:

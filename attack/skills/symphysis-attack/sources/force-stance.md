@@ -1,4 +1,4 @@
-<!-- MIT License, Copyright (c) 2026 Open GSD; источник: upstream/gsd-core/agents/gsd-plan-checker.md:30, upstream/gsd-core/agents/gsd-code-reviewer.md:22, upstream/gsd-core/agents/gsd-doc-verifier.md:29 @ e2cd587; взяты строки «FORCE stance» из <adversarial_stance> трёх проверяющих агентов, текст дословный, английский; остальное тело агентов не взято. -->
+<!-- MIT License, Copyright (c) 2026 Open GSD; источник: upstream/gsd-core/agents/gsd-plan-checker.md:30, upstream/gsd-core/agents/gsd-code-reviewer.md:22, upstream/gsd-core/agents/gsd-doc-verifier.md:29 @ v1.20.1; взяты строки «FORCE stance» из <adversarial_stance> трёх проверяющих агентов, текст дословный, английский; остальное тело агентов не взято. -->
 # FORCE stance — установка проверяющих GSD
 
 Три строки, по одной на проверяющего: планов, кода, документации.
