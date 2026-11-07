@@ -215,15 +215,15 @@ const JOURNAL = {
  "title": "Журнал решений: parking-addressee-agent",
  "source": "decisions.json",
  "generated": "2026-11-07",
- "sha256": "c73c039706b73e06380afc2822bd8517e4d55162cf042c2152647a0dcec022e7",
+ "sha256": "38d69c5db0c245c6626c97ff9b3bb3b5ee9b943a5f1534a352e9a2057f8c1871",
  "stats": {
-  "records": 26,
-  "forks": 8,
+  "records": 29,
+  "forks": 11,
   "facts": 18,
-  "decided": 8,
+  "decided": 11,
   "parked": 0,
-  "evidence_total": 106,
-  "evidence_found": 106
+  "evidence_total": 109,
+  "evidence_found": 109
  },
  "records": [
   {
@@ -1984,6 +1984,226 @@ const JOURNAL = {
     "contract"
    ],
    "finding": ""
+  },
+  {
+   "id": "F-27",
+   "question": "[ветка] База мастера у требования MODIFIED: граф ищет её по имени требования, пары RENAMED не смотрит — у переименованного «Исследование — файл на каждую парковку «агент» с жанром» базы нет, отсечение `known` и сверка сценариев с мастером молча не идут; чинить здесь или нет?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN дельта с парой RENAMED и MODIFIED под новым именем WHEN граф собирается THEN база мастера берётся по имени FROM, отсечение чужих номеров и сверка сценариев идут как у обычного MODIFIED; цена: пятая дельта (`trace-conventions`), правка `trace_graph.py` и тест в `trace/tests`",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — в этом изменении ложных связей нет: в переименованном родителе все чужие ссылки названы журналом, свои номера голые; потерянная сверка сценариев одного требования — дефект графа, не переименования, и уходит пунктом бэклога в модуль `trace`",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест `trace/tests` на пару RENAMED + MODIFIED, падающий сегодня и помеченный ожидаемым падением до правки графа; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — до следующего изменения с RENAMED; пока tasks считает, что у переименованного требования базы нет и чужие ссылки в нём называются журналом",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "B",
+    "why": "Порчи здесь нет: голых унаследованных номеров в переименованном родителе не осталось, связи графа верны. A тянет в изменение о значении адресата пятую дельту и код модуля `trace`; C закрепляет падающий тест без правки. Дефект графа заслуживает своего пункта бэклога и своего изменения."
+   },
+   "decision": {
+    "option": "B",
+    "word": "",
+    "date": "2026-11-08"
+   },
+   "reversibility": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Dismiss",
+    "reason": ""
+   },
+   "parking": [],
+   "dispute": "",
+   "consequences": "Порчи здесь нет: голых унаследованных номеров в переименованном родителе не осталось, связи графа верны. A тянет в изменение о значении адресата пятую дельту и код модуля `trace`; C закрепляет падающий тест без правки. Дефект графа заслуживает своего пункта бэклога и своего изменения.",
+   "evidence": [
+    {
+     "path": "trace/trace_graph.py",
+     "quote": "entry, from_base = master.entry(cap, req.name)",
+     "line": 633,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "specs"
+   ],
+   "finding": ""
+  },
+  {
+   "id": "F-28",
+   "question": "[ветка] Сигнал о парковке без находки: после переименования условие проверяет `агент` — парковка `материалы` старого журнала без `finding` при файле `research/F-NN.md` строки не получает; сигналить и о ней?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-17"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN старый журнал с парковкой `материалы` без `finding` и `research/F-NN.md` WHEN выполняется `check` THEN строка «парковка «материалы» без finding при research/F-NN.md», как у `агент`; цена: сценарий, условие на оба значения, тест `test_journal_check`",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — старые журналы `check` в работе не проверяет, а в новом журнале старое значение уже даёт строку F-22: вторая строка о той же парковке дублировала бы первую",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест `check` на старом журнале с файлом `research/F-NN.md` утверждает код 0 и ровно одну строку о старом значении (F-22), без строки о находке; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — до первого повторного исследования архивного журнала; пока tasks считает, что условие проверяет только `агент`",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "B",
+    "why": "Нарушения нет: парковка со старым значением уже названа сигналом F-22, и человек видит её; A добавляет второй сигнал на ту же запись, C проверяет отсутствие строки, которого никто не требовал."
+   },
+   "decision": {
+    "option": "B",
+    "word": "",
+    "date": "2026-11-08"
+   },
+   "reversibility": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Dismiss",
+    "reason": ""
+   },
+   "parking": [],
+   "dispute": "",
+   "consequences": "Нарушения нет: парковка со старым значением уже названа сигналом F-22, и человек видит её; A добавляет второй сигнал на ту же запись, C проверяет отсутствие строки, которого никто не требовал.",
+   "evidence": [
+    {
+     "path": "cli/journal_cli.py",
+     "quote": "and any(p[\"addressee\"] == \"материалы\" and not p.get(\"finding\") for p in rec[\"parking\"])]",
+     "line": 48,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "render"
+   ],
+   "finding": ""
+  },
+  {
+   "id": "F-29",
+   "question": "[ветка] Назначение парковки на странице: карта в `parkingDestination` своя, не `PARKING_ANSWERS`; если при переименовании ключ `материалы` заменят на `агент`, старая парковка на странице получает «—» вместо `research/`; чем это закрыть?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-17"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN старый журнал с парковкой `материалы` WHEN выполняется `render-html` THEN у парковки на странице назначение `research/`, как у `агент`; цена: сценарий, строка карты, тест страницы",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — страница старых журналов не пересобирается (решение F-23), у новых журналов старого значения нет; «—» никто не увидит",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест `test_viewer_page` утверждает, что карта назначений шаблона несёт оба ключа, `агент` и `материалы`, с `research/`; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — до первой пересборки архивного журнала инструментами номера 4; пока tasks считает, что карта страницы повторяет `PARKING_ANSWERS`",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "C",
+    "why": "Требование «Просмотрщик и рендер при двух значениях адресата» уже обязывает страницу вести оба значения в `research/`, а его сценарий проверяет только `render-md`: тест карты закрывает страницу без второго сценария. Против A — по решению F-23 показ старых журналов не пересобирают, сценарий на него избыточен; против B — текст требования без проверки остался бы словами."
+   },
+   "decision": {
+    "option": "C",
+    "word": "",
+    "date": "2026-11-08"
+   },
+   "reversibility": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Backstop",
+    "reason": ""
+   },
+   "parking": [],
+   "dispute": "",
+   "consequences": "тест-страховка: `test_viewer_page` читает шаблон и утверждает, что карта `parkingDestination` несёт ключи `агент` и `материалы` с назначением `research/`; строки в spec.md нет",
+   "evidence": [
+    {
+     "path": "viewer/playground-template.html",
+     "quote": "function parkingDestination(addressee) { return 'design.md › Open Questions → ' + ({ 'ИБ':'security.md', 'материалы':'research/', 'человек':'вопрос человеку' }[addressee] || '—'); }",
+     "line": 875,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "page"
+   ],
+   "finding": ""
   }
  ],
  "notes": [
@@ -2002,6 +2222,10 @@ const JOURNAL = {
   {
    "date": "2026-11-08",
    "text": "проба запретов: требований 15, оставлено 2, канон → ИБ 0, Specify 2, Dismiss 0, Defer 0"
+  },
+  {
+   "date": "2026-11-08",
+   "text": "опись последствий: мест 8 разобрано (2 из code-sites, 6 добавлено), исключено 0, веток 8, кандидатов 3 — Dismiss 2, Backstop 1; pre-mortem 3 причины по записям F-22, F-19, F-27"
   }
  ]
 };
@@ -2015,7 +2239,7 @@ const SCHEME = {
 };
 const HELP = {
  "contract": 3,
- "taken_at": "2026-11-08T00:04:38+03:00",
+ "taken_at": "2026-11-08T00:13:32+03:00",
  "versions": {
   "openspec": "1.16.1+symphysis.5",
   "symphysis": null
@@ -2023,10 +2247,10 @@ const HELP = {
  "change": "parking-addressee-agent",
  "changes": null,
  "error": null,
- "current_step": "consequences",
- "current_text": "Следующий шаг по файлам — `consequences`, ход модели.",
+ "current_step": "design",
+ "current_text": "Следующий шаг по файлам — `design`, ход модели.",
  "turn": "model",
- "next_by_status": "consequences",
+ "next_by_status": "design",
  "forks": {
   "open": 0,
   "parked": 0
@@ -2305,7 +2529,7 @@ const HELP = {
   },
   {
    "id": "consequences",
-   "state": "ready",
+   "state": "done",
    "turn": "model",
    "optional": false,
    "blocks": [
@@ -2316,10 +2540,10 @@ const HELP = {
    "files": [
     {
      "path": "openspec/changes/parking-addressee-agent/consequences.md",
-     "exists": false
+     "exists": true
     }
    ],
-   "file_note": null,
+   "file_note": "файл есть, содержание не проверялось",
    "texts": {
     "title": "Опись последствий",
     "why": "Что делает код, на который опирается изменение, когда что-то идёт не так, и есть ли на это сценарий в спецификациях. Здесь ветки отказа и допущения конструкции доходят до человека раньше, чем появится дизайн.",
@@ -2342,7 +2566,7 @@ const HELP = {
   },
   {
    "id": "design",
-   "state": "blocked",
+   "state": "ready",
    "turn": "model",
    "optional": false,
    "blocks": [
@@ -2350,9 +2574,7 @@ const HELP = {
     "attack-artifacts"
    ],
    "stops_apply": false,
-   "waits_for": [
-    "consequences"
-   ],
+   "waits_for": [],
    "files": [
     {
      "path": "openspec/changes/parking-addressee-agent/design.md",
@@ -2561,10 +2783,12 @@ const HELP = {
   ".claude/skills/symphysis-prohibition-probe/SKILL.md": ".claude/skills/symphysis-prohibition-probe/SKILL.md",
   ".claude/skills/symphysis-research/SKILL.md": ".claude/skills/symphysis-research/SKILL.md",
   ".claude/skills/symphysis-viewer/SKILL.md": ".claude/skills/symphysis-viewer/SKILL.md",
+  "consequences.md": "openspec/changes/parking-addressee-agent/consequences.md",
   "decisions.json": "openspec/changes/parking-addressee-agent/decisions.json",
   "decisions.md": "openspec/changes/parking-addressee-agent/decisions.md",
   "edge-probe.md": "openspec/changes/parking-addressee-agent/edge-probe.md",
   "intent.md": "openspec/changes/parking-addressee-agent/intent.md",
+  "openspec/changes/parking-addressee-agent/consequences.md": "openspec/changes/parking-addressee-agent/consequences.md",
   "openspec/changes/parking-addressee-agent/decisions.json": "openspec/changes/parking-addressee-agent/decisions.json",
   "openspec/changes/parking-addressee-agent/intent.md": "openspec/changes/parking-addressee-agent/intent.md",
   "openspec/changes/parking-addressee-agent/proposal.md": "openspec/changes/parking-addressee-agent/proposal.md",
@@ -2593,6 +2817,7 @@ const LINKS = {
   ".claude/skills/symphysis-viewer/SKILL.md": "../../../.claude/skills/symphysis-viewer/SKILL.md",
   "CLAUDE.md": "../../../CLAUDE.md",
   "cli/journal_cli.py": "../../../cli/journal_cli.py",
+  "consequences.md": "consequences.md",
   "context/06-related-changes.md": "../../../../symphysis/.context/06-related-changes.md",
   "context/backlog/symphysis-backlog.md": "../../../../symphysis/.context/backlog/symphysis-backlog.md",
   "decisions.json": "decisions.json",
@@ -2616,6 +2841,7 @@ const LINKS = {
   "openspec/changes/archive/2026-11-02-calibration-fixes/attack/decisions.md": "../archive/2026-11-02-calibration-fixes/attack/decisions.md",
   "openspec/changes/archive/2026-11-04-reverse-hook/decisions.json": "../archive/2026-11-04-reverse-hook/decisions.json",
   "openspec/changes/archive/2026-11-07-module-structure/decisions.json": "../archive/2026-11-07-module-structure/decisions.json",
+  "openspec/changes/parking-addressee-agent/consequences.md": "consequences.md",
   "openspec/changes/parking-addressee-agent/decisions.json": "decisions.json",
   "openspec/changes/parking-addressee-agent/intent.md": "intent.md",
   "openspec/changes/parking-addressee-agent/proposal.md": "proposal.md",
