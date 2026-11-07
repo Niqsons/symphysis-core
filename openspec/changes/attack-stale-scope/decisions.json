@@ -1,0 +1,1217 @@
+{
+ "title": "Журнал решений: attack-stale-scope",
+ "source": "decisions.json",
+ "intro": "Пути улик — от корня проекта, корни названы в `probes/journal-roots.json` (сверка — `python cli/journal.py check --roots`): `upstream/` ведёт в форк OpenSpec основного клона, `vscode/` — в плагин `symphysis-vscode`. Материалы круга 1: `intent.md`, пункт B-01 бэклога, форк (правка C11: `state.ts`, `instruction-loader.ts`, `UPSTREAM.md`), `step-help/step_help.py`, скилл `symphysis-attack` и шаблон `attack-decisions.md`, `attack/attack_table.py`, `cli/journal_cli.py`, просмотрщик и плагин, `docs/repo-contract.md`, архив `trace-graph` (пример из B-01), журналы `calibration-fixes` (F-64) и `step-help` (F-60), intent открытого `attack-warning-read`.\n\nПервые записи — факты постановки F-01–F-03, за ними факты о текущем состоянии F-04–F-16. Развилки первого круга — F-17–F-20; F-21–F-24 заведены из ответов человека 2026-11-07 на парковки F-19 (`answers/2026-11-07.md`).",
+ "notes": [
+  {
+   "date": "2026-11-07",
+   "text": "круг 1 закончен: решений 8, фактов 16, открытых развилок 0, парковок материалам 0, антиподов 3"
+  },
+  {
+   "date": "2026-11-07",
+   "text": "брейншторм закончен по решению человека"
+  }
+ ],
+ "records": [
+  {
+   "id": "F-01",
+   "question": "Критерий готовности: «Нужно, чтобы `status` или справка называли, сколько и каких записей добавлено после вердикта»",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "постановка",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "F-17, F-18, F-19",
+   "evidence": [
+    {
+     "path": "openspec/changes/attack-stale-scope/intent.md",
+     "quote": "«Нужно, чтобы `status` или справка называли, сколько и каких записей добавлено после вердикта» (слова модели в B-01, владелец принял 2026-11-05)"
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "scope"
+   ]
+  },
+  {
+   "id": "F-02",
+   "question": "Критерий готовности: «Как это узнать, решить в изменении: номера в frontmatter атаки, сравнение с журналом на коммите вердикта или другое» — способ выбирается в журнале решений, не предрешён",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "постановка",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "F-17",
+   "evidence": [
+    {
+     "path": "openspec/changes/attack-stale-scope/intent.md",
+     "quote": "«Как это узнать, решить в изменении: номера в frontmatter атаки, сравнение с журналом на коммите вердикта или другое» — способ выбирается в журнале решений, не предрешён (слова модели в B-01, владелец принял 2026-11-05)"
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "source"
+   ]
+  },
+  {
+   "id": "F-03",
+   "question": "Критерий готовности: «с пометкой, что это приоритетно (priority: high)» — изменение идёт первым в порядке работ, до `attack-warning-read`",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "постановка",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "F-14, F-20",
+   "evidence": [
+    {
+     "path": "openspec/changes/attack-stale-scope/intent.md",
+     "quote": "«с пометкой, что это приоритетно (priority: high)» — изменение идёт первым в порядке работ, до `attack-warning-read` (слово владельца, 2026-11-05; порядок работ бэклога, 2026-11-07)"
+    }
+   ],
+   "comments": [],
+   "nodes": []
+  },
+  {
+   "id": "F-04",
+   "question": "Форк (правка C11) после закрытия окна отдаёт `stale` одной строкой `nextSteps`, которая называет только начавшийся шаг; окно читается из графа и `apply`, без имён схемы и без разбора целей. Состав — какие записи добавлены после вердикта — форк не называет.",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "материалы",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "F-19 (вариант C маловероятен), F-20",
+   "evidence": [
+    {
+     "path": "upstream/openspec/src/core/artifact-graph/instruction-loader.ts",
+     "quote": "verdict is stale (signal, not a gate: ${begun}) — re-run it by name if needed"
+    },
+    {
+     "path": "upstream/openspec/src/core/artifact-graph/state.ts",
+     "quote": "The window is read from the graph and the apply phase, never from artifact ids."
+    },
+    {
+     "path": "upstream/openspec/UPSTREAM.md",
+     "quote": "C11 — окно устаревания вердикта (F-64.B): `stale` гейтует, пока у зависимого артефакта нет файла"
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "stale"
+   ]
+  },
+  {
+   "id": "F-05",
+   "question": "Внутри окна форк называет первую устаревшую цель и причину из трёх (`changed since the verdict`, `outside`, `malformed`); у `attack-artifacts` с несколькими изменёнными целями вторая и дальше не называются.",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "материалы",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "F-19 (парковка о целях `attack-artifacts`)",
+   "evidence": [
+    {
+     "path": "upstream/openspec/src/core/artifact-graph/state.ts",
+     "quote": "the first declared target that makes the verdict"
+    },
+    {
+     "path": "upstream/openspec/src/core/artifact-graph/instruction-loader.ts",
+     "quote": "changed: 'changed since the verdict',"
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "stale"
+   ]
+  },
+  {
+   "id": "F-06",
+   "question": "Хеш журнала во frontmatter атаки — байты файла после `check --write` и после строки итога в `notes[]`; `check --write` пишет в улики `line`, `found`, `verdict`. Поэтому `stale` даёт любая правка байтов, а не только новая запись.",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "материалы",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "F-18 (случай нуля добавленных), F-20",
+   "evidence": [
+    {
+     "path": "attack/skills/symphysis-attack/SKILL.md",
+     "quote": "check --write пишет line/found/verdict — хеш после него"
+    },
+    {
+     "path": "openspec/specs/artifact-attack/spec.md",
+     "quote": "значение равно `sha256sum decisions.json` после `check --write` и после строки итога в `notes[]`, а не до них"
+    },
+    {
+     "path": "upstream/openspec/src/core/artifact-graph/state.ts",
+     "quote": "Compares the SHA-256 of a target's raw bytes (what `sha256sum` prints) with"
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "later",
+    "cmp"
+   ]
+  },
+  {
+   "id": "F-07",
+   "question": "Шаги после атаки журнала дописывают его по правилам схемы: пробы на шаге `specs` и опись `consequences` заводят кандидатов, человек решает их словом. Это и есть обычный порядок, при котором вердикт устаревает у каждого изменения.",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "материалы",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "F-18, F-20",
+   "evidence": [
+    {
+     "path": "openspec/schemas/symphysis/schema.yaml",
+     "quote": "Ветка без сценария в `specs/` — кандидат журнала; решает человек, не ты."
+    },
+    {
+     "path": "openspec/changes/archive/2026-11-02-calibration-fixes/decisions.json",
+     "quote": "пробы на шаге specs дописывают кандидатов в `decisions.json` после атаки журнала, обе атаки пишут итог в `notes[]` журнала"
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "later"
+   ]
+  },
+  {
+   "id": "F-08",
+   "question": "Пример из B-01, сверка 2026-11-07: атака журнала `trace-graph` прошла на 79 записях (хеш `7fb48499…`), журнал в архиве несёт 159 записей (в B-01 на 2026-11-05 было 139). Записи F-80–F-159 атаку журнала не проходили.",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "материалы",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "F-17 (вариант A проверен на этом файле)",
+   "evidence": [
+    {
+     "path": "openspec/changes/archive/2026-11-06-trace-graph/attack/decisions.md",
+     "quote": "Цель: `decisions.json` изменения `trace-graph`, 79 записей (59 развилок, 20 фактов), 209 улик"
+    },
+    {
+     "path": "openspec/changes/archive/2026-11-06-trace-graph/attack/decisions.md",
+     "quote": "target_sha256: 7fb4849971637b8034b3703e3b97ec8f6a64249aecf362c9a98487ee757d3e0f"
+    },
+    {
+     "path": "openspec/changes/archive/2026-11-06-trace-graph/decisions.json",
+     "quote": "\"id\": \"F-159\""
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "journal"
+   ]
+  },
+  {
+   "id": "F-09",
+   "question": "Таблица атаки называет каждую запись журнала поимённо: раздел без находок получает строку «чисто» линзы `coverage`, до которого проход не дошёл — «не пройдено». Проба 2026-11-07 на файле `trace-graph` (проход 5): `parse_attack_md` дал 127 строк, в столбце «Раздел» 79 разных записей, F-01–F-79 без пропусков. Множество атакованных записей выводится из таблицы без новых полей.",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "материалы",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "F-17 (вариант A)",
+   "evidence": [
+    {
+     "path": ".symphysis/docs/attack-table.md",
+     "quote": "Раздел журнала без находок — `| чисто | <раздел> | coverage | — | справка | есть | — |`."
+    },
+    {
+     "path": "openspec/specs/artifact-attack/spec.md",
+     "quote": "У каждого раздела журнала SHALL быть строка таблицы — находка, «чисто» (линза `coverage`, справка, опора есть) или «не пройдено»"
+    },
+    {
+     "path": "openspec/changes/archive/2026-11-06-trace-graph/attack/decisions.md",
+     "quote": "| чисто | F-01, все поля | coverage | — | справка | есть | — |"
+    },
+    {
+     "path": "attack/attack_table.py",
+     "quote": "`frontmatter` — `status` и `targets[]` (`path`, `sha256`)"
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "source",
+    "attack"
+   ]
+  },
+  {
+   "id": "F-10",
+   "question": "Линзу `coverage` человек может выключить в `symphysis.yaml`: тогда строк «чисто» и «не пройдено» у журнала нет, и запись без находок в таблице не названа. Состав, выведенный из таблицы, при выключенной `coverage` неполон.",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "материалы",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "F-17 (цена варианта A)",
+   "evidence": [
+    {
+     "path": "attack/skills/symphysis-attack/SKILL.md",
+     "quote": "выключенная `coverage` снимает у журнала строки «чисто» и «не пройдено»"
+    },
+    {
+     "path": "attack/skills/symphysis-attack/SKILL.md",
+     "quote": "**Файл несёт строку `**Состав:**`** сразу под заголовком, при любом составе и при всех"
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "source"
+   ]
+  },
+  {
+   "id": "F-11",
+   "question": "Справка шага (`step_help.py`) о вердикте атаки молчит: у готового шага она говорит лишь «файл есть, содержание не проверялось». Так решено в изменении `step-help` (F-60.B, Dismiss): «атаки зовут по имени, `/opsx:continue` сам о вердикте скажет». Журнал справка уже читает — считает открытые развилки.",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "материалы",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "F-19 (вариант B снимает F-60.B изменения `step-help`)",
+   "evidence": [
+    {
+     "path": "step-help/step_help.py",
+     "quote": "FILE_NOT_CHECKED = \"файл есть, содержание не проверялось\""
+    },
+    {
+     "path": "openspec/changes/archive/2026-11-03-step-help/decisions.json",
+     "quote": "Dismiss — справка молчит; допустимо: атаки зовут по имени, `/opsx:continue` сам о вердикте скажет, а F-24 выбрал минимум"
+    },
+    {
+     "path": "step-help/step_help.py",
+     "quote": "Развилки журнала: открытой считается только `status: открыт`, припаркованные отдельно (F-40)."
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "help"
+   ]
+  },
+  {
+   "id": "F-12",
+   "question": "Страница журнала и плагин уже показывают устаревание, но двоично: бейдж «вердикт устарел: журнал изменён после атаки» по сравнению хеша из frontmatter с хешем журнала; в боковой панели плагина — слово «устарел». Состава ни там, ни там нет.",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "материалы",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "F-19 (вариант D)",
+   "evidence": [
+    {
+     "path": "viewer/playground-template.html",
+     "quote": "вердикт устарел: журнал изменён после атаки"
+    },
+    {
+     "path": "vscode/src/changes/sidebar.ts",
+     "quote": "const stale = verdictState(a, state.payload?.sha256) === \"stale\" ? \", устарел\" : \"\";"
+    },
+    {
+     "path": "openspec/specs/artifact-attack/spec.md",
+     "quote": "просмотрщик SHALL помечать «вердикт устарел», если журнал изменён после атаки"
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "page"
+   ]
+  },
+  {
+   "id": "F-13",
+   "question": "Вывод `step_help.py` и `view-json` входят в контракт с плагином, но новое поле сменой контракта не считается: номер не растёт, плагин показывает поле, когда захочет.",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "материалы",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "F-19 (цена вариантов B, D, E)",
+   "evidence": [
+    {
+     "path": "docs/repo-contract.md",
+     "quote": "вывод `step_help.py`: поле `contract` то же самое число"
+    },
+    {
+     "path": "docs/repo-contract.md",
+     "quote": "**Что считается сменой.** Новое поле сменой не считается."
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "help"
+   ]
+  },
+  {
+   "id": "F-14",
+   "question": "Следующее по порядку работ изменение `attack-warning-read` по своему intent пишет строку `notes[]` «предупреждение прочитано» — хеш журнала меняется без единой новой записи, вердикт становится `stale`. Состав обязан различать «записей не добавлено» и «добавлены F-NN…».",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "материалы",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "F-18, F-20",
+   "evidence": [
+    {
+     "path": "openspec/changes/attack-warning-read/intent.md",
+     "quote": "хеш журнала меняется — вердикт атаки журнала станет `stale` по той же строке (окно C11)"
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "later"
+   ]
+  },
+  {
+   "id": "F-15",
+   "question": "Решение F-64.B изменения `calibration-fixes` (окно устаревания) принято 2026-11-01 с оговоркой владельца: «мне проще вернуться к этому вопросу после апробирования на реальной задаче в работе». Отвергнутый тогда вариант A — исключить изменчивое из хеша. Апробация прошла (F-08): вопрос законно открыть снова.",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "материалы",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "F-20",
+   "evidence": [
+    {
+     "path": "openspec/changes/archive/2026-11-02-calibration-fixes/decisions.json",
+     "quote": "Давай попробуем вариант два. Делать вариант один выглядит дорого, мне проще вернуться к этому вопросу после апробирования на реальной задаче в работе."
+    },
+    {
+     "path": "openspec/changes/archive/2026-11-02-calibration-fixes/decisions.json",
+     "quote": "Исключить изменчивое из хеша: журнал без `notes[]` и полей проб, `tasks.md` без отметок."
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "cmp"
+   ]
+  },
+  {
+   "id": "F-16",
+   "question": "Правило скилла атаки при разошедшихся хешах — проход с начала, прежние строки не переносятся; пятый проход `trace-graph` от правила отступил и проверил заново только новую запись и её стыки. Повтор только по названным записям — практика, которую правило пока не признаёт.",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "материалы",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "F-19 (парковка о повторе атаки по названным записям)",
+   "evidence": [
+    {
+     "path": "attack/skills/symphysis-attack/SKILL.md",
+     "quote": "Если хеши разошлись (у `attack-artifacts` — и хеш журнала) — атака MUST идти с начала,"
+    },
+    {
+     "path": "openspec/changes/archive/2026-11-06-trace-graph/attack/decisions.md",
+     "quote": "Отступление от правила «атака с начала, прежние строки не переносятся». Между проходами 4 и 5 добавлена запись F-79"
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "human"
+   ]
+  },
+  {
+   "id": "F-17",
+   "question": "Откуда скрипт узнаёт, какие записи атака видела, чтобы назвать добавленные после вердикта?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Столбец «Раздел» таблицы атаки: атакованной считается запись, названная хотя бы в одной строке (покрытие поимённо даёт строку каждой записи, F-09); добавленные — записи журнала, которых в таблице нет. Ничего нового не пишется, старые файлы атаки (`trace-graph`) читаются как есть. Цена: при выключенной `coverage` (F-10) записи без находок строк не имеют — скрипт обязан назвать состав неполным отдельной строкой. Обратимо: расчёт в скрипте, формат файлов не меняется.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": ".symphysis/docs/attack-table.md",
+       "quote": "Раздел журнала без находок — `| чисто | <раздел> | coverage | — | справка | есть | — |`."
+      },
+      {
+       "path": "attack/attack_table.py",
+       "quote": "`frontmatter` — `status` и `targets[]` (`path`, `sha256`)"
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Явное поле во frontmatter файла атаки, например `records: F-01–F-79` или `last_record: F-79`, которое пишет скилл атаки рядом с хешем; добавленные — номера журнала вне поля. Не зависит от состава линз. Цена: правка шаблона `attack-decisions.md`, скилла и brief водителя, парсера `attack_table.py`; у старых файлов поля нет; номер — слово модели, а не след прохода: ошибка в поле не видна. Дорого отменять: поле уходит в файлы атаки всех изменений.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/changes/attack-stale-scope/intent.md",
+       "quote": "номера в frontmatter атаки, сравнение с журналом на коммите вердикта или другое"
+      },
+      {
+       "path": "openspec/schemas/symphysis/templates/attack-decisions.md",
+       "quote": "target_sha256:"
+      }
+     ]
+    },
+    {
+     "letter": "C",
+     "text": "Журнал на коммите вердикта через git: последний коммит файла атаки, `git show <коммит>:…/decisions.json`, разница по номерам и содержимому. Ловит и изменённые записи, не только добавленные.",
+     "added": false,
+     "unlikely": "вердикт до коммита в git не виден, а инструменты журнала git не зовут; коммит атаки может уже нести поздние записи, если журнал и атаку закоммитили вместе; после архива путь файла другой",
+     "evidence": [
+      {
+       "path": "openspec/changes/attack-stale-scope/intent.md",
+       "quote": "номера в frontmatter атаки, сравнение с журналом на коммите вердикта или другое"
+      },
+      {
+       "path": "step-help/step_help.py",
+       "quote": "Скрипт пишет только в stdout,"
+      }
+     ]
+    },
+    {
+     "letter": "D",
+     "text": "Строка итога атаки в `notes[]` журнала несёт диапазон записей («атака decisions.json: записи F-01–F-79, строк N…»); состав считается по одному журналу, без файла атаки.",
+     "added": false,
+     "unlikely": "строка итога — след для человека, не контракт; два источника истины с файлом атаки; при нескольких проходах строк несколько, и скрипту пришлось бы выбирать последнюю",
+     "evidence": [
+      {
+       "path": "attack/skills/symphysis-attack/SKILL.md",
+       "quote": "Строка итога в `notes[]` журнала, до `check --write` и хешей:"
+      }
+     ]
+    }
+   ],
+   "antipodes": [
+    {
+     "option": "A",
+     "other": "F-18.B"
+    },
+    {
+     "option": "D",
+     "other": "F-18.B"
+    }
+   ],
+   "recommendation": {
+    "option": "A",
+    "why": "Против B — поле пишет модель, а таблица уже есть след прохода, и старые файлы атаки читаются без правки шаблона и скилла. Против C — git и незакоммиченный вердикт. Против D — второй источник истины. Цена A — сигнал при выключенной `coverage`, но её выключение и по правилам скилла снимает покрытие поимённо: состав честно повторяет то, что атака оставила."
+   },
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-07"
+   },
+   "reversibility": {
+    "level": "обратимо",
+    "why": "расчёт в скрипте читает таблицу атаки; формат файлов атаки не меняется, смена источника — правка одной функции"
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "F-18 стоит на выбранном источнике; при A расчёт — чтение таблицы `parse_attack_md`; при B — правка шаблона и скилла атаки.",
+   "evidence": [],
+   "comments": [],
+   "nodes": [
+    "source"
+   ]
+  },
+  {
+   "id": "F-18",
+   "question": "Что входит в состав: только записи, добавленные после вердикта, или и изменённые?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-17"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Только добавленные: число и номера (подряд идущие — диапазоном `F-80–F-139`, иначе перечнем). При нуле добавленных и несовпавшем хеше — строка «записей не добавлено: журнал изменён иначе» (сверка `check --write`, строки `notes[]`, F-06, F-14). Это слова критерия F-01. Обратимо: расчёт в скрипте.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/changes/attack-stale-scope/intent.md",
+       "quote": "«Нужно, чтобы `status` или справка называли, сколько и каких записей добавлено после вердикта»"
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Добавленные и изменённые: атака кладёт во frontmatter отпечаток каждой записи без полей сверки (`line`, `found`, `verdict`), скрипт сравнивает. Ловит правку слова или варианта после вердикта. Цена: frontmatter на 80–160 строк, правило нормализации, которое F-64.A отложил (F-15), правка скилла и парсера; без F-17.B или F-17.C не сделать. Дорого отменять: отпечатки уходят в файлы атаки.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/changes/archive/2026-11-02-calibration-fixes/decisions.json",
+       "quote": "Исключить изменчивое из хеша: журнал без `notes[]` и полей проб, `tasks.md` без отметок."
+      }
+     ]
+    },
+    {
+     "letter": "C",
+     "text": "Добавленные и изменённые по дате: запись считается изменённой, если `decision.date` или дата заметки позже даты атаки.",
+     "added": false,
+     "unlikely": "дата дня, не времени: атака и правка в один день неразличимы, а правка текста варианта или следствий даты не меняет",
+     "evidence": [
+      {
+       "path": ".symphysis/tools/journal.schema.json",
+       "quote": "\"required\": [\"option\", \"word\", \"date\"],"
+      }
+     ]
+    }
+   ],
+   "antipodes": [
+    {
+     "option": "B",
+     "other": "F-17.A"
+    },
+    {
+     "option": "B",
+     "other": "F-17.D"
+    },
+    {
+     "option": "A",
+     "other": "F-22.C"
+    }
+   ],
+   "recommendation": {
+    "option": "A",
+    "why": "Против B — отпечаток на запись удваивает frontmatter и требует правила нормализации, которое владелец отложил в F-64; против C — дата дня. Правки прежних записей после `passed` редки: слово к кандидату — новая запись, спор по строкам атаки идёт до вердикта. Строка о нуле добавленных снимает ложное чтение «ничего не изменилось» после `attack-warning-read`."
+   },
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-07"
+   },
+   "reversibility": {
+    "level": "обратимо",
+    "why": "состав считает скрипт; расширение на изменённые записи потребует поля во frontmatter атаки (F-18.B), и прежние файлы атаки останутся без него"
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "Форма строки состава в `check` и справке (F-19); при B — вторая правка шаблона атаки.",
+   "evidence": [],
+   "comments": [],
+   "nodes": [
+    "scope"
+   ]
+  },
+  {
+   "id": "F-19",
+   "question": "Где состав считается и кому показывается: модели, человеку, плагину?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-17"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Только `journal.py check`: при файле `attack/decisions.md` рядом с журналом печатает строку `[..] атака журнала: после вердикта добавлено N записей: F-80–F-139` (и строку о неполном составе при выключенной `coverage`). Читатель — модель после каждой правки журнала; человек видит через итог модели. Прецедент: `check` уже читает соседний `consequences.md`. Плагин не затронут. Обратимо.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "cli/journal_cli.py",
+       "quote": "inventory = check_consequences(journal, args.json.parent / \"consequences.md\", roots)"
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Только `step_help.py`: у страницы шага `attack-decisions` поле с вердиктом и составом (`verdict`, число и номера); читатель — человек в панели плагина и на странице журнала. Снимает F-60.B изменения `step-help` («справка молчит»). Цена: поле вывода и тест формы; новое поле — не смена контракта (F-13); модель, которая зовёт атаку, справку не читает.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/changes/archive/2026-11-03-step-help/decisions.json",
+       "quote": "Dismiss — справка молчит; допустимо: атаки зовут по имени, `/opsx:continue` сам о вердикте скажет, а F-24 выбрал минимум"
+      },
+      {
+       "path": "docs/repo-contract.md",
+       "quote": "**Что считается сменой.** Новое поле сменой не считается."
+      }
+     ]
+    },
+    {
+     "letter": "C",
+     "text": "Форк: строка `nextSteps` у `stale` называет записи.",
+     "added": false,
+     "unlikely": "окно форка читается из графа и `apply`, без имён схемы (F-04); чтобы назвать записи, форку пришлось бы разбирать `decisions.json` — знание схемы symphysis в общем CLI",
+     "evidence": [
+      {
+       "path": "upstream/openspec/src/core/artifact-graph/state.ts",
+       "quote": "The window is read from the graph and the apply phase, never from artifact ids."
+      }
+     ]
+    },
+    {
+     "letter": "D",
+     "text": "Только страница журнала: бейдж «вердикт устарел» в режиме «атака» называет записи; поле в `view-json`, плагин показывает по-своему. Цена: правка общего шаблона страницы; человек видит только открыв режим «атака», модель — не видит.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "viewer/playground-template.html",
+       "quote": "вердикт устарел: журнал изменён после атаки"
+      }
+     ]
+    },
+    {
+     "letter": "E",
+     "text": "Одна функция в модуле `attack/` (рядом с `attack_table.py`) и два читателя: `check` — строка модели, `step_help.py` — поле справки для человека и плагина. Страница и плагин подключают то же поле позже, по желанию (новое поле `view-json` — не смена контракта). Цена: два места вывода, тест на каждое; снимает F-60.B. Обратимо: формат файлов не меняется.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "cli/journal_cli.py",
+       "quote": "from attack_table import parse_attack_md"
+      },
+      {
+       "path": "step-help/step_help.py",
+       "quote": "Развилки журнала: открытой считается только `status: открыт`, припаркованные отдельно (F-40)."
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "E",
+    "why": "Intent называет `status` или справку: `status` — форк, и он имён схемы не знает (C). Справка одна (B) не дойдёт до модели, которая зовёт атаку; `check` один (A) не дойдёт до человека в плагине; страница (D) требует открыть режим «атака». Один расчёт на двух читателей не даёт им разойтись и не трогает ни форк, ни контракт."
+   },
+   "decision": {
+    "option": "E",
+    "word": "",
+    "date": "2026-11-07"
+   },
+   "reversibility": {
+    "level": "обратимо",
+    "why": "строка `check` и поле `step_help.py` — новые поля, номер контракта не растёт; перенос на страницу или отказ — правка двух мест вывода и их тестов"
+   },
+   "outcome": null,
+   "parking": [
+    {
+     "addressee": "человек",
+     "text": "новая возможность: повтор атаки только по названным записям и их стыкам вместо прохода с начала — правило скилла сейчас требует проход с начала, пятый проход `trace-graph` от него отступил (F-16); своё изменение или правка скилла здесь?",
+     "finding": "слово человека 2026-11-07 (`answers/2026-11-07.md`): «Кажется, что проход с самого начала дорог при сильно уменьшаемой пользе с каждой итерацией. Давай поправим скилл в этом изменении.» — записи F-21 и F-22"
+    },
+    {
+     "addressee": "человек",
+     "text": "новая возможность: у `attack-artifacts` называть все устаревшие цели, не первую (F-05), и состав журнала как опоры (журнал стоит первым в `targets[]`) — тем же расчётом; своё изменение или сюда?",
+     "finding": "слово человека 2026-11-07 (`answers/2026-11-07.md`): «Тоже в этом изменении.» — записи F-23 и F-24"
+    }
+   ],
+   "dispute": "",
+   "consequences": "Capability спек: при A — `decision-journal` (`check`); при B — `step-help`; при E — обе. Плагин показывает поле отдельной работой в своём репозитории.",
+   "evidence": [],
+   "comments": [],
+   "nodes": [
+    "check",
+    "help",
+    "page"
+   ]
+  },
+  {
+   "id": "F-20",
+   "question": "Хеш журнала в вердикте остаётся байтовым (`stale` при любой правке, состав объясняет) или вернуться к F-64.A и исключить изменчивое из хеша?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Оставить как есть: хеш по байтам файла, `stale` при любой правке журнала, окно C11 без изменений; состав (F-18) объясняет, что именно изменилось, в том числе «записей не добавлено». Форк и спека `artifact-attack` не трогаются. Обратимо.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "upstream/openspec/src/core/artifact-graph/state.ts",
+       "quote": "Compares the SHA-256 of a target's raw bytes (what `sha256sum` prints) with"
+      },
+      {
+       "path": "openspec/specs/artifact-attack/spec.md",
+       "quote": "значение равно `sha256sum decisions.json` после `check --write` и после строки итога в `notes[]`, а не до них"
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "F-64.A заново: хеш по журналу без `notes[]` и полей сверки улик — `stale` только при правке записей. Цена: форк считает байты файла и JSON не разбирает, так что нормализация идёт либо в форк (знание схемы журнала в общем CLI), либо вторым хешем, который считает `journal.py`, а форк не проверяет; правка спеки `artifact-attack`, скилла атаки, brief водителя. Отменять дорого: хеши во всех файлах атаки станут другого рода.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/changes/archive/2026-11-02-calibration-fixes/decisions.json",
+       "quote": "Исключить изменчивое из хеша: журнал без `notes[]` и полей проб, `tasks.md` без отметок."
+      },
+      {
+       "path": "openspec/changes/archive/2026-11-02-calibration-fixes/decisions.json",
+       "quote": "мне проще вернуться к этому вопросу после апробирования на реальной задаче в работе"
+      }
+     ]
+    },
+    {
+     "letter": "C",
+     "text": "Строже, как GSD: устаревший вердикт не считается завершённым нигде, окна нет.",
+     "added": false,
+     "unlikely": "окно F-64.B решено 2026-11-01 и живёт в форке C11; intent просит состав, а не замок; запись GSD — довод к сведению, не наша боль",
+     "evidence": [
+      {
+       "path": "docs/analysis/upstream-gsd-core-1.20.1-2026-11-07.md",
+       "quote": "GSD держит «устарел — значит не завершён» без окна; у нас F-64.B"
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Против B — форк считает байты и журнала не разбирает: нормализация тянет знание схемы в форк или заводит второй хеш, который форк не проверяет. Против C — intent просит состав, не замок. С составом `stale` при нуле добавленных записей читается как «журнал тронут сверкой», и цена байтового хеша исчезает."
+   },
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-07"
+   },
+   "reversibility": {
+    "level": "обратимо",
+    "why": "форк и спека `artifact-attack` не меняются; переход к нормализованному хешу — отдельное изменение форка и всех файлов атаки"
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "При A форк не меняется и изменение остаётся в Python-модулях; при B — правка форка, спеки `artifact-attack` и скилла атаки, `attack-warning-read` теряет свою оговорку о `stale`.",
+   "evidence": [],
+   "comments": [],
+   "nodes": [
+    "cmp",
+    "stale"
+   ]
+  },
+  {
+   "id": "F-21",
+   "question": "Повтор атаки по названным записям вместо прохода с начала — правка скилла в этом изменении или своё изменение?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-17",
+    "F-18"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "В этом изменении: правило скилла `symphysis-attack` «хеши разошлись — атака с начала» меняется на проход по составу (как именно — F-22); требование спеки `artifact-attack` «при расхождении SHALL проходить цель с начала» идёт дельтой MODIFIED; brief водителя и `attack-table.md` сверяются на то же правило. Цена: объём изменения растёт на capability `artifact-attack`. Обратимо: текст правила и дельта, файлы атаки от него не зависят.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "attack/skills/symphysis-attack/SKILL.md",
+       "quote": "Если хеши разошлись (у `attack-artifacts` — и хеш журнала) — атака MUST идти с начала,"
+      },
+      {
+       "path": "openspec/specs/artifact-attack/spec.md",
+       "quote": "при повторной атаке скилл SHALL сравнивать хеши и при расхождении SHALL проходить цель с начала, не перенося прежние строки"
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Своё изменение: здесь только состав, повтор по составу — пункт бэклога; правило скилла пока с начала.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "context/backlog/symphysis-backlog.md",
+       "quote": "**Объём:** `change` — отдельное изменение по схеме symphysis (`/opsx:continue`)"
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Состав без повтора по нему — половина пользы: модель узнаёт, что не атаковано, и всё равно идёт с начала. Пятый проход `trace-graph` уже так работал (F-16); правка — текст правила и дельта спеки, не код."
+   },
+   "decision": {
+    "option": "A",
+    "word": "Кажется, что проход с самого начала дорог при сильно уменьшаемой пользе с каждой итерацией. Давай поправим скилл в этом изменении.",
+    "date": "2026-11-07"
+   },
+   "reversibility": {
+    "level": "обратимо",
+    "why": "правило скилла и требование спеки `artifact-attack`: вернуть проход с начала — правка текста, файлы атаки от правила не зависят"
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "F-22 — что проходит повтор; дельта MODIFIED требования «Хеши целей обесценивают вердикт после правки» в `artifact-attack`; правка шага 1 скилла и brief водителя.",
+   "evidence": [],
+   "comments": [],
+   "nodes": [
+    "human",
+    "attack"
+   ]
+  },
+  {
+   "id": "F-22",
+   "question": "Что проходит повторная атака журнала, когда состав назван: только добавленные записи, добавленные со стыками, и что делать при нуле добавленных?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-17",
+    "F-18",
+    "F-21"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Добавленные записи и их стыки. Стык — прежняя запись, которую новая называет в `depends_on`, `antipodes` или `consequences`, и прежняя, чьи `depends_on`, `antipodes` или `consequences` называют новую. У них проход заново по всем линзам, прежние строки о них заменяются; остальные строки остаются из прошлого прохода, проход называется во вводном тексте файла, как в `trace-graph`. При нуле добавленных — `check --write` заново: новых `[!!]` у улик нет — обновить хеш, строки прежние; появились — проход по их записям. Состав неполон (`coverage` выключена, F-10) — проход с начала. Обратимо: текст правила.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/changes/archive/2026-11-06-trace-graph/attack/decisions.md",
+       "quote": "их проход 5 проверил заново вместе со стыками, а остальные строки взял из прохода 4"
+      },
+      {
+       "path": "attack/skills/symphysis-attack/SKILL.md",
+       "quote": "`decision.word` против варианта по смыслу; `consequences` не из решения; решённая запись"
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Только добавленные записи: проход по новым, прежние строки остаются все, стыки не смотрятся.",
+     "added": false,
+     "unlikely": "линза `context-compliance` живёт на стыке: решение новой записи против следствий прежней не увидит никто",
+     "evidence": [
+      {
+       "path": "attack/skills/symphysis-attack/SKILL.md",
+       "quote": "`decision.word` против варианта по смыслу; `consequences` не из решения; решённая запись"
+      }
+     ]
+    },
+    {
+     "letter": "C",
+     "text": "Добавленные и все изменённые после вердикта записи.",
+     "added": false,
+     "unlikely": "по F-18.A скрипт изменённые записи не называет; без отпечатка на запись (F-18.B) правило не исполнить",
+     "evidence": [
+      {
+       "path": "openspec/changes/attack-stale-scope/intent.md",
+       "quote": "сколько и каких записей добавлено после вердикта"
+      }
+     ]
+    }
+   ],
+   "antipodes": [
+    {
+     "option": "C",
+     "other": "F-18.A"
+    }
+   ],
+   "recommendation": {
+    "option": "A",
+    "why": "Против B — стык и есть место `context-compliance`: пропуск стыка делает повтор слепым там, где новая запись спорит со старой. Против C — F-18.A изменённых не даёт. Нуль добавленных без новых `[!!]` — пересчёт хеша, не проход: иначе `attack-warning-read` и `check --write` гоняли бы атаку впустую."
+   },
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-07"
+   },
+   "reversibility": {
+    "level": "обратимо",
+    "why": "правило шага 1 скилла и сценарии спеки `artifact-attack`; столбцы таблицы и frontmatter не меняются"
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "Правило шага 1 скилла `symphysis-attack` и сценарии требования спеки; столбцы таблицы не меняются (контракт с плагином).",
+   "evidence": [],
+   "comments": [],
+   "nodes": [
+    "human",
+    "attack"
+   ]
+  },
+  {
+   "id": "F-23",
+   "question": "`attack-artifacts`: назвать все устаревшие цели, не первую, и состав журнала как опоры — в этом изменении или своё?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-19"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "В этом изменении: тот же расчёт читает `targets[]` файла атаки артефактов, сверяет хеш каждой цели и называет все изменившиеся; форк не трогается, так как список целей читает скрипт; журнал как опора — F-24. Цена: объём растёт на второй файл атаки. Обратимо: расчёт в скрипте.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "upstream/openspec/src/core/artifact-graph/state.ts",
+       "quote": "the first declared target that makes the verdict"
+      },
+      {
+       "path": "attack/skills/symphysis-attack/SKILL.md",
+       "quote": "с `path` и `sha256` на файл, журнал первым"
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Своё изменение, пункт бэклога; здесь только атака журнала.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "context/backlog/symphysis-backlog.md",
+       "quote": "**Объём:** `change` — отдельное изменение по схеме symphysis (`/opsx:continue`)"
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Расчёт по `targets[]` общий для обоих файлов атаки: вторая запись в бэклог дороже строк кода, которые всё равно читают тот же frontmatter. Форк не трогается."
+   },
+   "decision": {
+    "option": "A",
+    "word": "Тоже в этом изменении.",
+    "date": "2026-11-07"
+   },
+   "reversibility": {
+    "level": "обратимо",
+    "why": "границы изменения: перенос в своё изменение — правка proposal до specs"
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "F-24 — откуда состав записей у атаки артефактов; capability `artifact-attack` или та, где решится F-19.",
+   "evidence": [],
+   "comments": [],
+   "nodes": [
+    "stale",
+    "scope"
+   ]
+  },
+  {
+   "id": "F-24",
+   "question": "Откуда у `attack-artifacts` состав записей журнала, если её таблица записи журнала не покрывает?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-23",
+    "F-17"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Поле во frontmatter атаки артефактов, например `records: F-01–F-139`: пишет скилл на шаге 1 из журнала после `check --write`; состав — номера вне поля, как у журнала (F-18.A). Цена: строка шаблона `attack-artifacts.md`, шаг скилла, brief водителя, регулярное выражение в `attack_table.py`; старые файлы без поля дают «состав не назван»; у двух файлов атаки два источника — таблица и поле. Дорого отменять: поле уходит в файлы атаки.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/schemas/symphysis/templates/attack-artifacts.md",
+       "quote": "  - path: decisions.json"
+      },
+      {
+       "path": "attack/skills/symphysis-attack/SKILL.md",
+       "quote": "с `path` и `sha256` на файл, журнал первым"
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Без состава записей: скрипт называет все изменившиеся цели файлами, у журнала — «изменён» и число записей сейчас. Следа покрытия записей у атаки артефактов нет: она журнал не атакует, а опирается на него. Обратимо: расчёт в скрипте.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "attack/skills/symphysis-attack/SKILL.md",
+       "quote": "Вызов `attack-artifacts`: цели — `decisions.json` (опора, не атакуется)"
+      }
+     ]
+    },
+    {
+     "letter": "C",
+     "text": "Состав по упоминаниям `F-NN` в таблице атаки артефактов: опора строк и раздел `scenario-run`.",
+     "added": false,
+     "unlikely": "упоминание — не покрытие: запись, на которую ни одна строка не сослалась, выглядела бы добавленной после вердикта",
+     "evidence": [
+      {
+       "path": ".symphysis/docs/attack-table.md",
+       "quote": "**Раздел** — у журнала `<F-NN>, <поле>`; у артефактов `<файл>, <место>`"
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "B",
+    "why": "Против A — поле пишет модель, а F-17 выбрал след прохода; у атаки артефактов следа по записям нет, и поле завело бы второй источник рядом с таблицей. После `tasks` журнал меняют редко и почти всегда не записями: `outcome` от `apply`, строки `notes[]`; число записей рядом со словом «изменён» даёт человеку то же, что состав. Против C — упоминание не покрытие."
+   },
+   "decision": {
+    "option": "B",
+    "word": "",
+    "date": "2026-11-07"
+   },
+   "reversibility": {
+    "level": "обратимо",
+    "why": "расчёт в скрипте; поле во frontmatter атаки артефактов можно завести позже своим изменением"
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "При B расчёт у артефактов — только цели и число записей; при A — правка шаблона и скилла атаки артефактов.",
+   "evidence": [],
+   "comments": [],
+   "nodes": [
+    "scope"
+   ]
+  }
+ ]
+}
