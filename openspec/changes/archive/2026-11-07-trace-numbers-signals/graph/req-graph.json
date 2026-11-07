@@ -15,11 +15,11 @@
   },
   {
    "path": "specs/record-anchors/spec.md",
-   "sha256": "d0a773fe4d579138f137dd13bdd713c6dfff1343fdb0d9be6c6d8edc0824c2c3"
+   "sha256": "75b5b8ce91d641abbc999c251cd1033d9aadeaa52349625ca56823caa60b3fe4"
   },
   {
    "path": "specs/trace-conventions/spec.md",
-   "sha256": "066b1932dd953bbd9a8cf2d26cca062d1c230873ecc5e115d87b387476a14c63"
+   "sha256": "19d29ec00f6eb7c78149b480045482854d3792e949d7bba4b8edf723d546c4ac"
   },
   {
    "path": "specs/trace-graph/spec.md",
@@ -31,7 +31,7 @@
   },
   {
    "path": "specs/trace-snapshot/spec.md",
-   "sha256": "decbf50b68573cccbf883edf9caac62b905a27ef5282e5b33c3901347714c962"
+   "sha256": "bae16903f65ad01e20be38511823630a48f17a9cb00009fe85e89d219479760c"
   },
   {
    "path": "tasks.md",
@@ -3246,7 +3246,7 @@
  "roots": [
   {
    "prefix": "",
-   "commit": "ad2545dd783f3fc40c74aed2795e280c81d64acb"
+   "commit": "bdc91d68381cff24d56e31d62829968b93a22885"
   },
   {
    "prefix": "store/",
