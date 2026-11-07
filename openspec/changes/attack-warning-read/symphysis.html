@@ -212,15 +212,15 @@
 const JOURNAL = {
  "title": "Журнал решений: attack-warning-read",
  "source": "decisions.json",
- "sha256": "08938a64df7c4a0606e64d6eff7fedf261c19daedb00285d2fce0c5867840764",
+ "sha256": "326f315fb22e23b3d849bc7391169ac8cb0cf9fc07dd50974173c9e788adc7bd",
  "stats": {
-  "records": 30,
-  "forks": 19,
+  "records": 35,
+  "forks": 24,
   "facts": 11,
-  "decided": 19,
+  "decided": 24,
   "parked": 1,
-  "evidence_total": 77,
-  "evidence_found": 77
+  "evidence_total": 83,
+  "evidence_found": 83
  },
  "records": [
   {
@@ -1539,7 +1539,7 @@ const JOURNAL = {
     {
      "path": "openspec/changes/attack-warning-read/specs/warning-read-flag/spec.md",
      "quote": "### Requirement: Флаг только у предупреждений",
-     "line": 34,
+     "line": 40,
      "verdict": "сверено",
      "found": true
     }
@@ -1766,7 +1766,7 @@ const JOURNAL = {
     {
      "path": "openspec/changes/attack-warning-read/specs/decision-viewer/spec.md",
      "quote": "### Requirement: Флаг на карточке берётся из журнала после внесения",
-     "line": 37,
+     "line": 43,
      "verdict": "сверено",
      "found": true
     }
@@ -2143,7 +2143,7 @@ const JOURNAL = {
     {
      "path": "openspec/changes/attack-warning-read/specs/decision-viewer/spec.md",
      "quote": "### Requirement: Флаг на карточке берётся из журнала после внесения",
-     "line": 37,
+     "line": 43,
      "verdict": "сверено",
      "found": true
     }
@@ -2219,7 +2219,7 @@ const JOURNAL = {
     {
      "path": "openspec/changes/attack-warning-read/specs/warning-read-flag/spec.md",
      "quote": "### Requirement: Флаг только у предупреждений",
-     "line": 34,
+     "line": 40,
      "verdict": "сверено",
      "found": true
     }
@@ -2304,6 +2304,387 @@ const JOURNAL = {
     "stale"
    ],
    "finding": ""
+  },
+  {
+   "id": "F-31",
+   "question": "[ветка] Восстановление состояния атаки: хранилище браузера, записанное до изменения (ключ атаки со спорами, без поля отметок), — споры восстановлены и отметок нет, или сброс состояния?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-14",
+    "F-16"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN хранилище браузера с ключом атаки, записанным до изменения: споры есть, поля отметок нет WHEN страница открывается THEN споры восстановлены, отметок нет, ошибок в консоли нет; цена: сценарий, тест страницы на старое состояние",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — старое состояние не покрывается: страницу пересобирают после установки новой версии, а споры живут недолго — до ближайшего `apply`",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест подаёт старое состояние без поля отметок и утверждает, что споры после загрузки на месте; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — до первой жалобы на пропавшие споры; пока tasks считает поле отметок необязательным при чтении",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Порча тихая: чтение поля отметок без защиты бросит исключение в пустой `catch`, и споры человека молча пропадут из браузера при первом открытии новой страницы; защита — одна строка и тест; против B — споры пишутся до круга часами, терять их нельзя; против C — сценарий короче теста без строки в спеке."
+   },
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-07"
+   },
+   "reversibility": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Specify",
+    "reason": ""
+   },
+   "parking": [],
+   "dispute": "",
+   "consequences": "в spec.md: Старое хранилище без поля отметок.",
+   "evidence": [
+    {
+     "path": "viewer/playground-template.html",
+     "quote": "try { const s = JSON.parse(localStorage.getItem(KEY + ':attack') || 'null'); if (s && s.disputes && typeof s.disputes === 'object') attackState.disputes = s.disputes; } catch (e) {}",
+     "line": 257,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "state"
+   ],
+   "finding": ""
+  },
+  {
+   "id": "F-32",
+   "question": "[ветка] Чтение тяжести: ячейка тяжести вне трёх значений (`warning`, `предупреждения`) — строка идёт в группу «прочих» без переключателя «прочитано»; так и оставить?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-14",
+    "F-16"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN строка с тяжестью `warning` WHEN страница собирает режим «атака» THEN строка в счётчике «прочих», переключателя «прочитано» нет, заметка с её разделом флага не даёт; цена: сценарий, тест страницы",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — тяжесть вне трёх — невалидная строка по правилу таблицы атаки; страница показывает её в «прочих» со счётчиком в шапке файла, человек видит сразу, чинит файл атака",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест подаёт строку с тяжестью `warning` и утверждает, что переключателей на странице столько же, сколько строк `предупреждение`; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — до появления тяжести вне трёх в реальном файле атаки; пока tasks считает такую строку без переключателя",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "B",
+    "why": "Нарушение видно сразу: строка стоит в «прочих» со счётчиком, ничего не портится, а правило трёх тяжестей — требование таблицы атаки, не этого изменения; против A — сценарий закрепил бы поведение невалидной строки; против C — тест ради строки, которой по правилу не бывает."
+   },
+   "decision": {
+    "option": "B",
+    "word": "",
+    "date": "2026-11-07"
+   },
+   "reversibility": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Dismiss",
+    "reason": ""
+   },
+   "parking": [],
+   "dispute": "",
+   "consequences": "Нарушение видно сразу: строка стоит в «прочих» со счётчиком, ничего не портится, а правило трёх тяжестей — требование таблицы атаки, не этого изменения; против A — сценарий закрепил бы поведение невалидной строки; против C — тест ради строки, которой по правилу не бывает.",
+   "evidence": [
+    {
+     "path": "viewer/playground-template.html",
+     "quote": "function sevBase(s) { const m = /^(блокер|предупреждение|справка)(?![а-яёa-z])/i.exec(String(s || '').trim()); return m ? m[1].toLowerCase() : String(s || '').trim(); }",
+     "line": 904,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "flag"
+   ],
+   "finding": ""
+  },
+  {
+   "id": "F-33",
+   "question": "[ветка] Разбор замечаний: строка файла ответа с текстом флага без префикса «Замечания к схеме:» (написана человеком руками) прилипает к предыдущей строке `- F-NN:` и уходит в её слово — так и оставить?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN файл ответа со строкой «предупреждение прочитано: F-12, options.B» без префикса после строки `- F-12: A — (без слова)` WHEN `apply` читает файл THEN отказ с именем записи F-12 и причиной «строка не по форме», журнал не изменён; цена: сценарий у чужой capability `decision-journal`, правка разбора `apply` и его тест — вне этого изменения",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — страница и главная нить ставят префикс сами; рукописная строка без префикса — ошибка ввода, её текст виден словом на карточке записи и в `decisions.md`, снимается новым словом через `apply`",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест подаёт строку без префикса и утверждает, что слово записи после `apply` не содержит текста флага; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — до первого рукописного файла ответа с флагом; пока tasks считает префикс обязательным",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "B",
+    "why": "Виновник вне изменения: это правило разбора `apply` для любых строк, а не флага; страница и главная нить ставят префикс по F-14; правка `apply` — своё изменение, если владелец захочет; против A — сценарий чужой capability без решения о ней; против C — тест закрепил бы поведение, которое владелец, возможно, захочет изменить."
+   },
+   "decision": {
+    "option": "B",
+    "word": "",
+    "date": "2026-11-07"
+   },
+   "reversibility": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Dismiss",
+    "reason": ""
+   },
+   "parking": [],
+   "dispute": "",
+   "consequences": "Виновник вне изменения: это правило разбора `apply` для любых строк, а не флага; страница и главная нить ставят префикс по F-14; правка `apply` — своё изменение, если владелец захочет; против A — сценарий чужой capability без решения о ней; против C — тест закрепил бы поведение, которое владелец, возможно, захочет изменить.",
+   "evidence": [
+    {
+     "path": "decisions/journal_apply.py",
+     "quote": "RE_NOTES = re.compile(r\"^Замечания к схеме:[ \\t]*(.*)$\")",
+     "line": 59,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "apply"
+   ],
+   "finding": ""
+  },
+  {
+   "id": "F-34",
+   "question": "[pre-mortem] Флаг ставится по подстроке заметкой с другим смыслом: спор «не согласен, что предупреждение прочитано: F-12, options.B» или слово человека с этим текстом внутри даёт флаг без прочтения — сверка не различает текст флага и упоминание о нём",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-13",
+    "F-14"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN заметка «атака attack/decisions.md · claim-authority · «…» — спор: не согласен, что предупреждение прочитано: F-12, options.B» WHEN страница сверяет заметки с файлом атаки THEN флага нет: текст флага засчитывается только в начале заметки или сразу после « · », внутри другого замечания — нет; цена: сценарий, тест сверки, уточнение слов «сверка подстрокой» в требовании",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — упоминание текста флага внутри спора маловероятно: споры говорят об опоре и тяжести, а не о прочтении; ложный флаг человек увидит на карточке",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест подаёт заметку со словами «не согласен, что предупреждение прочитано: F-12, options.B» и утверждает, что флага нет; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — до первого ложного флага; пока tasks сверяет подстрокой",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Порча тихая: ложный флаг неотличим от честного, а на честность флага опирается итог атаки (F-15, F-26); граница сегмента « · » уже есть в промпте, проверка по ней стоит одной строки и теста; против B — «маловероятно» не причина при тихой порче; против C — без строки в спеке правило живёт только в тесте."
+   },
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-07"
+   },
+   "reversibility": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Specify",
+    "reason": ""
+   },
+   "parking": [],
+   "dispute": "",
+   "consequences": "в spec.md: Текст флага внутри спора флага не даёт; формулировка требования «Заметка «прочитано» опознаёт строку атаки по разделу» уточнена: текст флага засчитывается в начале заметки или сразу после « · ».",
+   "evidence": [
+    {
+     "path": "viewer/playground-template.html",
+     "quote": "if (sp && noteTexts.some(t => t.includes(sp))) { delete attackState.disputes[k]; dropped = true; }",
+     "line": 289,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "flag",
+    "apply"
+   ],
+   "finding": ""
+  },
+  {
+   "id": "F-35",
+   "question": "[pre-mortem] Каждое внесение отметок делает вердикт атаки `stale` и требует повтора; человек перестаёт ставить флаги, и механизм не используется",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-08",
+    "F-15"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN три отметки на странице WHEN человек копирует промпт и вносит его THEN одна заметка, один `apply`, один `stale`, повтор атаки обновляет хеш без новых строк; цена: сценарий в `decision-viewer`, тест промпта на одну строку замечаний",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — цена названа и принята владельцем в intent: `stale` стал не немым, состав говорит «записей не добавлено», повтор — обновление хеша; отметки собираются в один промпт по конструкции",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест состава подаёт журнал с заметкой «прочитано» и утверждает строку «записей не добавлено: журнал изменён иначе»; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — до наблюдения, ставят ли флаги на реальном изменении; пока tasks считает цену принятой",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "B",
+    "why": "Исход виден и назван: intent принимает `stale`, состав его объясняет, повтор дёшев (F-08); сценарий одной заметки на несколько отметок уже есть («Отметка и спор вместе»); против A — дубль сценария; против C — тест состава уже существует в `attack-stale-scope`."
+   },
+   "decision": {
+    "option": "B",
+    "word": "",
+    "date": "2026-11-07"
+   },
+   "reversibility": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Dismiss",
+    "reason": ""
+   },
+   "parking": [],
+   "dispute": "",
+   "consequences": "Исход виден и назван: intent принимает `stale`, состав его объясняет, повтор дёшев (F-08); сценарий одной заметки на несколько отметок уже есть («Отметка и спор вместе»); против A — дубль сценария; против C — тест состава уже существует в `attack-stale-scope`.",
+   "evidence": [
+    {
+     "path": "openspec/changes/attack-warning-read/intent.md",
+     "quote": "хеш журнала меняется — вердикт атаки журнала станет `stale` по той же строке (окно C11)",
+     "line": 10,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "attack/attack_scope.py",
+     "quote": "NOTHING_ADDED = \"записей не добавлено: журнал изменён иначе\"",
+     "line": 21,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "stale",
+    "repeat"
+   ],
+   "finding": ""
   }
  ],
  "notes": [
@@ -2335,7 +2716,7 @@ const SCHEME = {
 };
 const HELP = {
  "contract": 3,
- "taken_at": "2026-11-07T22:02:08+03:00",
+ "taken_at": "2026-11-07T22:14:13+03:00",
  "versions": {
   "openspec": "1.16.1+symphysis.5",
   "symphysis": null
@@ -2343,10 +2724,10 @@ const HELP = {
  "change": "attack-warning-read",
  "changes": null,
  "error": null,
- "current_step": "consequences",
- "current_text": "Следующий шаг по файлам — `consequences`, ход модели.",
+ "current_step": "design",
+ "current_text": "Следующий шаг по файлам — `design`, ход модели.",
  "turn": "model",
- "next_by_status": "consequences",
+ "next_by_status": "design",
  "forks": {
   "open": 0,
   "parked": 0
@@ -2621,7 +3002,7 @@ const HELP = {
   },
   {
    "id": "consequences",
-   "state": "ready",
+   "state": "done",
    "turn": "model",
    "optional": false,
    "blocks": [
@@ -2632,10 +3013,10 @@ const HELP = {
    "files": [
     {
      "path": "openspec/changes/attack-warning-read/consequences.md",
-     "exists": false
+     "exists": true
     }
    ],
-   "file_note": null,
+   "file_note": "файл есть, содержание не проверялось",
    "texts": {
     "title": "Опись последствий",
     "why": "Что делает код, на который опирается изменение, когда что-то идёт не так, и есть ли на это сценарий в спецификациях. Здесь ветки отказа и допущения конструкции доходят до человека раньше, чем появится дизайн.",
@@ -2658,7 +3039,7 @@ const HELP = {
   },
   {
    "id": "design",
-   "state": "blocked",
+   "state": "ready",
    "turn": "model",
    "optional": false,
    "blocks": [
@@ -2666,9 +3047,7 @@ const HELP = {
     "attack-artifacts"
    ],
    "stops_apply": false,
-   "waits_for": [
-    "consequences"
-   ],
+   "waits_for": [],
    "files": [
     {
      "path": "openspec/changes/attack-warning-read/design.md",
@@ -2877,10 +3256,12 @@ const HELP = {
   ".claude/skills/symphysis-prohibition-probe/SKILL.md": ".claude/skills/symphysis-prohibition-probe/SKILL.md",
   ".claude/skills/symphysis-research/SKILL.md": ".claude/skills/symphysis-research/SKILL.md",
   ".claude/skills/symphysis-viewer/SKILL.md": ".claude/skills/symphysis-viewer/SKILL.md",
+  "consequences.md": "openspec/changes/attack-warning-read/consequences.md",
   "decisions.json": "openspec/changes/attack-warning-read/decisions.json",
   "decisions.md": "openspec/changes/attack-warning-read/decisions.md",
   "edge-probe.md": "openspec/changes/attack-warning-read/edge-probe.md",
   "intent.md": "openspec/changes/attack-warning-read/intent.md",
+  "openspec/changes/attack-warning-read/consequences.md": "openspec/changes/attack-warning-read/consequences.md",
   "openspec/changes/attack-warning-read/decisions.json": "openspec/changes/attack-warning-read/decisions.json",
   "openspec/changes/attack-warning-read/intent.md": "openspec/changes/attack-warning-read/intent.md",
   "openspec/changes/attack-warning-read/proposal.md": "openspec/changes/attack-warning-read/proposal.md",
@@ -2911,6 +3292,7 @@ const LINKS = {
   "attack/skills/symphysis-attack/SKILL.md": "../../../attack/skills/symphysis-attack/SKILL.md",
   "attack/tests/test_attack_scope.py": "../../../attack/tests/test_attack_scope.py",
   "cli/journal-cli.md": "../../../cli/journal-cli.md",
+  "consequences.md": "consequences.md",
   "decisions.json": "decisions.json",
   "decisions.md": "decisions.md",
   "decisions/journal.schema.json": "../../../decisions/journal.schema.json",
@@ -2920,6 +3302,7 @@ const LINKS = {
   "edge-probe.md": "edge-probe.md",
   "intent.md": "intent.md",
   "openspec/changes/archive/2026-11-07-attack-stale-scope/decisions.json": "../archive/2026-11-07-attack-stale-scope/decisions.json",
+  "openspec/changes/attack-warning-read/consequences.md": "consequences.md",
   "openspec/changes/attack-warning-read/decisions.json": "decisions.json",
   "openspec/changes/attack-warning-read/intent.md": "intent.md",
   "openspec/changes/attack-warning-read/proposal.md": "proposal.md",
