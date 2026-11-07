@@ -21,7 +21,9 @@ sys.dont_write_bytecode = True  # скрипт пишет только в stdout
 # В установке весь код рядом в `.symphysis/tools/`: `roots.py` лежит возле этого файла, и путь не меняется.
 _HERE = Path(__file__).resolve().parent
 if not (_HERE / "roots.py").is_file():
-    sys.path[1:1] = [str(_HERE.parent / name) for name in ("decisions", "openspec-run", "roots")]
+    sys.path[1:1] = [str(_HERE.parent / name) for name in ("attack", "decisions", "openspec-run", "roots")]
+from attack_scope import scope_lines  # noqa: E402
+from attack_table import parse_attack_md  # noqa: E402
 from journal_render import CONTRACT  # noqa: E402
 from openspec_run import FORK_TIMEOUT, SAFE_NAME, ForkError, ForkReply, no_paths, run_fork  # noqa: E402
 
@@ -193,9 +195,31 @@ def _artifact_files(artifact: str, status: dict, base: str) -> list[dict]:
     return [{"path": _from_root(paths["resolvedOutputPath"], base), "exists": False}]
 
 
+def _stale_scope(artifact: dict, status: dict) -> list[str]:
+    """Строки состава устаревшего вердикта (`scope_lines`, модуль `attack`) по файлу атаки из `existingOutputPaths`
+    и журналу каталога изменения `changeRoot`: те же строки, что печатает `journal.py check`, без маркера и имени атаки
+    (`stale-verdict-scope`, F-19); считается по хешу, не по значению `verdict` (F-39). Файла нет — пусто; файл
+    не разбирается — одна строка с причиной без пути к файлу."""
+    existing = status["artifactPaths"][artifact["id"]]["existingOutputPaths"]
+    if not existing:
+        return []
+    path = Path(existing[0])
+    try:
+        attack = parse_attack_md(path)
+    except UnicodeDecodeError:  # подкласс ValueError — раньше него
+        return ["файл атаки не разбирается: не UTF-8"]
+    except ValueError as e:
+        reason = str(e)
+        reason = reason[len(str(path)):].lstrip(":").strip() if reason.startswith(str(path)) else reason
+        return [f"файл атаки не разбирается: {reason}"]
+    return scope_lines(attack, Path(status["changeRoot"]))
+
+
 def _artifact_page(artifact: dict, status: dict, base: str, page: dict) -> dict:
     """Что заблокируется, необязателен ли шаг и держит ли он `apply` — из графа, не из текста (F-25). Невызванная атака
-    ничего не держит, хотя `requires` её называет: так считает сам форк."""
+    ничего не держит, хотя `requires` её называет: так считает сам форк. У артефакта с `verdict` в `status` — поля
+    `verdict` (как отдал форк) и `stale_scope` вместо пометки «файл есть, содержание не проверялось»; у остальных
+    этих полей нет (`step-help`, «Страница шага атаки несёт вердикт и состав»)."""
     step = artifact["id"]
     idle = _not_invoked(artifact)
     page.update(state=artifact["status"], optional=artifact.get("optional") is True,
@@ -203,6 +227,8 @@ def _artifact_page(artifact: dict, status: dict, base: str, page: dict) -> dict:
                 stops_apply=not idle and step in status["applyRequires"], waits_for=artifact.get("missingDeps", []),
                 files=_artifact_files(step, status, base),
                 file_note=FILE_NOT_CHECKED if artifact["status"] == "done" else None)
+    if "verdict" in artifact:
+        page.update(verdict=artifact["verdict"], stale_scope=_stale_scope(artifact, status), file_note=None)
     return page
 
 

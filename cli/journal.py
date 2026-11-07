@@ -55,6 +55,11 @@ Markdown, HTML и design.md — производные от JSON: правитс
 сверяет опись с этим списком и цитаты `путь:строка «цитата»` с кодом: сигнал, не стоп; файл со строкой
 `**Причина:**` сверки мест не даёт, форму файла сверх этого скрипт не разбирает (F-128.A). Настройки
 журнал не читает: это `symphysis_config.py`.
+
+`check` при файлах `attack/decisions.md` и `attack/artifacts.md` рядом с журналом печатает состав устаревшего
+вердикта (`scope_lines`, модуль `attack`): `[..] атака журнала: после вердикта добавлено N записей: …`, у артефактов —
+все изменившиеся цели; при совпавших хешах строк нет, код выхода они не меняют. Файл атаки, который не
+разбирается, — `[!!] attack/<файл>: файл атаки не разбирается: <причина>`, с `--strict` код 2.
 """
 from __future__ import annotations
 
@@ -68,7 +73,8 @@ if not (_HERE / "roots.py").is_file():
     sys.path[1:1] = [str(_HERE.parent / name) for name in
                      ("cli", "decisions", "viewer", "attack", "consequences", "step-help", "openspec-run", "roots")]
 
-from attack_table import parse_attack_md  # noqa: E402  (после правки sys.path)
+from attack_scope import scope_lines  # noqa: E402  (после правки sys.path)
+from attack_table import parse_attack_md  # noqa: E402
 from journal_apply import REFUSED, apply_answers, apply_md4h, check_evidence, parse_answers, parse_md4h, sha256_file  # noqa: E402
 from journal_cli import build_parser, main  # noqa: E402
 from journal_consequences import check_consequences  # noqa: E402
@@ -82,7 +88,7 @@ __all__ = [
     "ROOT", "SCHEMA_PATH", "ROOTS_PATH", "TEMPLATE_PATH", "PLACEHOLDER", "PLACEHOLDER_ATTACK", "REFUSED",
     "load_journal", "save_journal", "validate_journal", "import_md", "import_md_text",
     "default_roots", "find_quote", "check_evidence", "file_links", "project_href",
-    "render_md", "render_html", "render_design", "view_payload", "anchor_lines", "parse_attack_md",
+    "render_md", "render_html", "render_design", "view_payload", "anchor_lines", "parse_attack_md", "scope_lines",
     "parse_answers", "apply_answers", "parse_md4h", "apply_md4h", "sha256_file",
     "code_sites", "normalize_path", "check_consequences",
     "build_parser", "main", "_unquote", "_flat",

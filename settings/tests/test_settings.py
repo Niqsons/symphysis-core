@@ -194,7 +194,7 @@ def test_model_learns_composition_from_the_script(tmp_path):
 
 def test_journal_does_not_read_settings():
     """F-128.A: модули журнала не импортируют ни скрипт настроек, ни пакет."""
-    for path in [p for p in core_files() if p.suffix == ".py" and (p.name.startswith("journal") or p.name in ("roots.py", "viewer_render.py", "attack_table.py"))]:
+    for path in [p for p in core_files() if p.suffix == ".py" and (p.name.startswith("journal") or p.name in ("roots.py", "viewer_render.py", "attack_table.py", "attack_scope.py"))]:
         tree = ast.parse(path.read_text(encoding="utf-8"))
         imported = set()
         for node in ast.walk(tree):

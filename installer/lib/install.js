@@ -175,7 +175,7 @@ export function install(project, { skillsDirs = [], agentsDirs = [], force = fal
 
   const toolsDir = path.join(t.toolsDir, "tools");
   const skippedBefore = res.skipped.length;
-  copyTree(res, root, path.join(payloadDir, "tools"), toolsDir, force, (f) => /^(journal.*\.py|journal\.schema\.json|roots\.py|viewer_render\.py|attack_table\.py|symphysis_config\.py|step_help\.py|trace_graph\.py|openspec_run\.py|playground-template\.html|mermaid\.min\.js|mermaid\.LICENSE)$/.test(path.basename(f)));
+  copyTree(res, root, path.join(payloadDir, "tools"), toolsDir, force, (f) => /^(journal.*\.py|journal\.schema\.json|roots\.py|viewer_render\.py|attack_table\.py|attack_scope\.py|symphysis_config\.py|step_help\.py|trace_graph\.py|openspec_run\.py|playground-template\.html|mermaid\.min\.js|mermaid\.LICENSE)$/.test(path.basename(f)));
   // Файл версии описывает поставленные инструменты: если часть пропущена, а файла не было, писать его значило бы
   // назвать версией то, чего в проекте нет. Панель покажет «неизвестно». Уже лежащий файл идёт по общему правилу.
   const toolsPrefix = `${rel(root, toolsDir)}/`;

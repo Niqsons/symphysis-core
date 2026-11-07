@@ -15,6 +15,7 @@ import shlex
 import sys
 from pathlib import Path
 
+from attack_scope import scope_lines
 from attack_table import parse_attack_md
 from journal_apply import REFUSED, apply_answers, apply_md4h, check_evidence, parse_answers, parse_md4h, sha256_file
 from journal_consequences import check_consequences
@@ -86,10 +87,37 @@ def cmd_check(args: argparse.Namespace) -> int:
         print(f"[!!] {m}")
     for m in inventory["unchecked"]:
         print(f"[--] {m}")
+    scope, broken_attack = _scope_report(args.json.parent)
+    for m in scope:
+        print(m)
     if args.write:
         save_journal(args.json, journal)
         print(f"[ok] {args.json}")
-    return 2 if args.strict and (result["missing"] or unfound or unasked or unexplained or cycles or inventory["missing"]) else 0
+    return 2 if args.strict and (result["missing"] or unfound or unasked or unexplained or cycles or inventory["missing"]
+                                 or broken_attack) else 0
+
+
+ATTACK_FILES = (("decisions.md", "атака журнала"), ("artifacts.md", "атака артефактов"))
+
+
+def _scope_report(change: Path) -> tuple[list[str], bool]:
+    """Состав устаревшего вердикта по файлам атаки рядом с журналом (`stale-verdict-scope`, F-19): строки
+    `[..] атака журнала: …` и `[..] атака артефактов: …` — сведения, код выхода они не меняют; при совпавших хешах
+    строк нет. Файл есть, а не разбирается — `[!!] attack/<файл>: файл атаки не разбирается: <причина>` без пути
+    к файлу (F-30), второй элемент `True`: с `--strict` это код 2. Каталога `attack/` или файла нет — ничего."""
+    lines, broken = [], False
+    for name, label in ATTACK_FILES:
+        path = change / "attack" / name
+        if not path.is_file():
+            continue
+        att, refusal = _read_attack(path)
+        if att is None:
+            reason = refusal[len(str(path)):].lstrip(":").strip() if refusal.startswith(str(path)) else refusal
+            lines.append(f"[!!] attack/{name}: файл атаки не разбирается: {reason}")
+            broken = True
+            continue
+        lines += [f"[..] {label}: {line}" for line in scope_lines(att, change)]
+    return lines, broken
 
 
 def cmd_code_sites(args: argparse.Namespace) -> int:

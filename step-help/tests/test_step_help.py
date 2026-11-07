@@ -1,6 +1,7 @@
 """`step-help/step_help.py`: текущий шаг конвейера и чей ход, страницы шагов, вызов форка. Форк подменён шимом
 `tests/fixtures/fork-shim/`; сверка с настоящим форком — в конце файла."""
 import datetime as dt
+import hashlib
 import json
 import os
 import re
@@ -710,6 +711,116 @@ def test_done_step_says_content_was_not_checked(tmp_path):
     assert page(data, "decisions")["file_note"] is None and page(data, "viewer")["file_note"] is None
 
 
+# --- Страница шага атаки несёт вердикт и состав (stale-verdict-scope, изменение attack-stale-scope) ---
+
+ATTACK_HEADER = ("| Утверждение | Раздел | Линза | Инвариант | Тяжесть | Опора есть / нет | Чем закрыть |\n"
+                 "| --- | --- | --- | --- | --- | --- | --- |\n")
+AFTER_ATTACK = ("intent", "decisions", "research", "attack-decisions", "proposal")
+
+
+def attack_files(tmp_path, at_attack, now, status="passed", attack_text=None, name="proj"):
+    """Проект с атакой журнала на записях `at_attack` и журналом `now` после неё (строка — как есть, битый JSON);
+    `attack_text` — готовый файл атаки вместо сборки. Возвращает проект."""
+    project = make_project(tmp_path / name)
+    change = project / "openspec" / "changes" / "demo"
+    write_journal(project, journal_of(*[fork_record(n, A=[]) for n in at_attack]))
+    sha = hashlib.sha256((change / "decisions.json").read_bytes()).hexdigest()
+    rows = "".join(f"| чисто | {n}, решение | coverage | — | справка | есть | — |\n" for n in at_attack)
+    (change / "attack").mkdir()
+    (change / "attack" / "decisions.md").write_text(
+        attack_text if attack_text is not None else
+        f"---\nstatus: {status}\ntarget: decisions.json\ntarget_sha256: {sha}\n---\n\n# Атака журнала решений\n\n{ATTACK_HEADER}{rows}",
+        encoding="utf-8")
+    write_journal(project, now if isinstance(now, str) else journal_of(*[fork_record(n, A=[]) for n in now]))
+    return project
+
+
+def run_with_verdict(tmp_path, project, verdict):
+    """Шим форка, у которого `attack-decisions` сделан, с файлом и `verdict`; возвращает код, JSON и вызов."""
+    fake = fake_status(project, done=AFTER_ATTACK, ready=("specs",), files={"attack-decisions": ["attack/decisions.md"]},
+                       verdicts={"attack-decisions": verdict})
+    install_fork_shim(tmp_path / "bin", status=fork_reply(fake), apply=fork_reply(fake_apply()))
+    return run_help(project, "--change", "demo", env=fork_env(tmp_path / "bin"))
+
+
+def attack_project(tmp_path, at_attack, now, verdict, status="passed", attack_text=None, name="proj"):
+    project = attack_files(tmp_path, at_attack, now, status, attack_text, name)
+    code, data, done = run_with_verdict(tmp_path, project, verdict)
+    return project, code, data, done
+
+
+def test_stale_verdict_page_carries_verdict_and_scope(tmp_path):
+    """Сценарии «Вердикт устарел после proposal» и «Готовый шаг атаки»."""
+    _, code, data, _ = attack_project(tmp_path, ["F-01", "F-02", "F-03"], ["F-01", "F-02", "F-03", "F-04", "F-05"], "stale")
+    assert code == 0
+    att = page(data, "attack-decisions")
+    assert att["state"] == "done" and att["verdict"] == "stale"
+    assert att["stale_scope"] == ["после вердикта добавлено 2 записи: F-04, F-05"]
+    assert att["file_note"] is None, "у шага с вердиктом вместо пометки — вердикт и состав"
+
+
+def test_valid_verdict_gives_an_empty_scope(tmp_path):
+    """Сценарий «Вердикт в силе»."""
+    _, _, data, _ = attack_project(tmp_path, ["F-01"], ["F-01"], "ok")
+    att = page(data, "attack-decisions")
+    assert att["verdict"] == "ok" and att["stale_scope"] == []
+
+
+def test_steps_without_a_verdict_have_no_verdict_fields(tmp_path):
+    """Сценарии «Шаг без вердикта» и «Атака не вызвана»; «Пустой файл шага»: пометка у готового шага без вердикта прежняя."""
+    _, _, data, _ = attack_project(tmp_path, ["F-01"], ["F-01"], "ok")
+    for step in ("design", "attack-artifacts", "proposal", "viewer"):
+        assert "verdict" not in page(data, step) and "stale_scope" not in page(data, step), step
+    assert page(data, "proposal")["file_note"] == "файл есть, содержание не проверялось"
+    _, plain = with_shim(tmp_path / "plain", done=("intent", "decisions", "research"), ready=("proposal",))
+    assert "verdict" not in page(plain, "attack-decisions") and "stale_scope" not in page(plain, "attack-decisions")
+
+
+def test_unreadable_journal_under_a_stale_verdict_is_named(tmp_path):
+    """Сценарий «Журнал не читается при устаревшем вердикте» (F-38)."""
+    _, code, data, _ = attack_project(tmp_path, ["F-01"], "{не json", "stale")
+    assert code == 0
+    att = page(data, "attack-decisions")
+    assert att["verdict"] == "stale" and att["stale_scope"] == ["журнал не читается"]
+
+
+def test_mismatch_with_a_changed_journal_shows_the_same_lines_as_check(tmp_path):
+    """Сценарий «Вердикт не прошёл при изменённом журнале» (F-39) и `stale-verdict-scope` «Два читателя»."""
+    project, _, data, _ = attack_project(tmp_path, ["F-01"], ["F-01", "F-02", "F-03"], "mismatch", status="gaps_found")
+    att = page(data, "attack-decisions")
+    check = subprocess.run([sys.executable, str(ROOT / "cli" / "journal.py"), "check",
+                            str(project / "openspec" / "changes" / "demo" / "decisions.json")],
+                           capture_output=True, text=True, encoding="utf-8")
+    assert check.returncode == 0, check.stderr
+    from_check = [line[len("[..] атака журнала: "):] for line in check.stdout.splitlines() if line.startswith("[..] атака журнала: ")]
+    assert att["verdict"] == "mismatch"
+    assert att["stale_scope"] == from_check == ["после вердикта добавлено 2 записи: F-02, F-03"]
+
+
+def test_unparsable_attack_file_under_a_verdict_is_one_line(tmp_path):
+    """Файл атаки не разбирается — одна строка с причиной, без пути; справка не падает."""
+    _, code, data, done = attack_project(tmp_path, ["F-01"], ["F-01"], "stale", attack_text="# Атака\n\n" + ATTACK_HEADER,
+                                         name="unparsable-probe")
+    assert code == 0
+    assert page(data, "attack-decisions")["stale_scope"] == ["файл атаки не разбирается: нет frontmatter"]
+    assert b"unparsable-probe" not in done.stdout, "причина отказа без каталога проекта"
+
+
+def test_stale_scope_has_no_project_directory(tmp_path):
+    """Требование «Снимок справки не несёт абсолютных путей», тест канона ИБ: строки состава без каталога проекта."""
+    _, code, data, done = attack_project(tmp_path, ["F-01"], ["F-01", "F-02"], "stale", name="probe-machine-name")
+    assert code == 0 and b"probe-machine-name" not in done.stdout
+    assert page(data, "attack-decisions")["stale_scope"] == ["после вердикта добавлена 1 запись: F-02"]
+
+
+def test_project_tree_stays_the_same_with_a_stale_verdict(tmp_path):
+    """Сценарий «Дерево проекта не меняется» при файле атаки и устаревшем вердикте: справка только читает."""
+    project = attack_files(tmp_path, ["F-01"], ["F-01", "F-02"])
+    before = tree_of(project)
+    code, _, _ = run_with_verdict(tmp_path, project, "stale")
+    assert code == 0 and tree_of(project) == before
+
+
 def test_command_gets_the_change_name(tmp_path):
     project = make_project(tmp_path / "proj")
     steps = project / "openspec" / "schemas" / "symphysis" / "steps.md"
@@ -797,6 +908,11 @@ def test_output_shape(tmp_path):
                                          "file_note", "texts", "text_note", "prev", "next", "skills"}
     assert set(page(data, "design")["texts"]) == {"title", "why", "mechanics", "if_skipped", "what_to_check", "command",
                                                   "how_to_prepare"}
+    # страница шага с вердиктом (`stale-verdict-scope`): прежний перечень плюс `verdict` и `stale_scope`, номер контракта тот же
+    _, _, with_verdict, _ = attack_project(tmp_path / "verdict", ["F-01"], ["F-01", "F-02"], "stale")
+    assert with_verdict["contract"] == journal_render.CONTRACT
+    assert set(page(with_verdict, "attack-decisions")) == set(page(data, "design")) | {"verdict", "stale_scope"}
+    assert set(page(with_verdict, "design")) == set(page(data, "design"))
 
 
 def test_help(tmp_path):
@@ -871,7 +987,8 @@ def copy_of_tools(directory: Path) -> Path:
     """Справка и то, что она импортирует, одним каталогом, как в установке."""
     directory.mkdir()
     for file in core_files():
-        if file.name in ("step_help.py", "openspec_run.py", "journal_render.py", "journal_model.py", "journal_apply.py", "roots.py"):
+        if file.name in ("step_help.py", "openspec_run.py", "journal_render.py", "journal_model.py", "journal_apply.py", "roots.py",
+                         "attack_scope.py", "attack_table.py"):
             shutil.copy(file, directory)
     return directory / "step_help.py"
 
@@ -1212,7 +1329,7 @@ def install_layout(tmp_path, nested=False):
     tools = install / ".symphysis" / "tools"
     tools.mkdir(parents=True)
     for file in core_files():
-        if re.match(r"journal.*\.(py|json)|roots\.py|viewer_render\.py|attack_table\.py|step_help\.py|openspec_run\.py|symphysis_config\.py", file.name):
+        if re.match(r"journal.*\.(py|json)|roots\.py|viewer_render\.py|attack_table\.py|attack_scope\.py|step_help\.py|openspec_run\.py|symphysis_config\.py", file.name):
             shutil.copy(file, tools / file.name)   # схема журнала — рядом с кодом (F-41 A)
     (tools / "journal-roots.json").write_text('{"": "<root>/.."}\n', encoding="utf-8")
     (install / "src").mkdir()
