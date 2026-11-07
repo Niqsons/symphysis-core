@@ -1,6 +1,7 @@
 # Форк OpenSpec для symphysis
 
-upstream: Fission-AI/OpenSpec @ 6d04a1b5 (1.15.0, 2026-10-24)
+upstream: Fission-AI/OpenSpec @ 0fa4a970 (1.16.1, 2026-11-07); база форка — 6d04a1b5
+(1.15.0, 2026-10-24), выпуски upstream втягиваются мержем в ветку `symphysis` (C15)
 ветка форка: `symphysis`
 
 Правило (слово человека 2026-10-29, F-03): «Форк бы отставал, но не каждый
@@ -36,13 +37,16 @@ upstream: Fission-AI/OpenSpec @ 6d04a1b5 (1.15.0, 2026-10-24)
 | C11 — окно устаревания вердикта (F-64.B): `stale` гейтует, пока у зависимого артефакта нет файла, а у артефакта без зависимых в `apply.requires` — пока в `apply.tracks` нет отмеченной задачи; дальше артефакт `done` с `verdict: "stale"` и строкой-сигналом в `nextSteps`; окно — из графа и `apply.tracks`, без имён схемы (`state.ts` `detectStaleSignals`, `instruction-loader.ts`, `change-status-policy.ts`, `status.ts`; документы `docs/agent-contract.md`, `docs/cli.md`; противоречие §4.4 и §4.6 о `missingArtifacts` снято) | 9b2acf6f |
 | C12 — `continue` выбирает тот же следующий артефакт, что CLI (`NEXT_ARTIFACT`: пропускается только optional без файла), по имени `done` без вердикта или `skipped` — STOP; `apply` называет сигнал stale (`STALE_SIGNAL`) (`continue-change.ts`, `apply-change.ts`, пины парити, два SKILL.md) | e0d02a2b |
 | C13 — версия форка 1.15.0-symphysis.3 (package.json) | 18ae8ba1 |
-| C14 — `continue` в `CORE_WORKFLOWS` (F-126.A, `profiles.ts`): развилки `optionalWorkflow` сами дают `/opsx:continue` на core, запасной путь CLI остаётся для custom без него; тесты паритета под семь workflow. Состав core поправлен в `docs-lab/customize/profiles.md` (его читает тест), `docs-lab/reference/skills.md`, `docs/glossary.md`. В `README.md`, `docs/supported-tools.md`, `faq.md`, `how-commands-work.md`, `opsx.md` прежний состав: в тарбол они не входят, а правка поднимала гейт имён на чужих адресах всего файла. Версия форка 1.15.0-symphysis.4 (package.json) | этот коммит |
+| C14 — `continue` в `CORE_WORKFLOWS` (F-126.A, `profiles.ts`): развилки `optionalWorkflow` сами дают `/opsx:continue` на core, запасной путь CLI остаётся для custom без него; тесты паритета под семь workflow. Состав core поправлен в `docs-lab/customize/profiles.md` (его читает тест), `docs-lab/reference/skills.md`, `docs/glossary.md`. В `README.md`, `docs/supported-tools.md`, `faq.md`, `how-commands-work.md`, `opsx.md` прежний состав: в тарбол они не входят, а правка поднимала гейт имён на чужих адресах всего файла. Версия форка 1.15.0-symphysis.4 (package.json) | 2a64d727 |
+| C15 — мерж upstream v1.16.1 (`0fa4a970`, 26 коммитов от базы): конфликт один — строка `version` в package.json; область C1–C14 upstream не трогал (`artifact-graph`, шаблоны workflow, `status`, `instructions`, `profiles`); версия форка 1.16.1-symphysis.5 (package.json), engines upstream `node >=22.12.0`. Разбор — symphysis `docs/analysis/upstream-openspec-1.16.1-2026-11-07.md` | ecad6db2 |
 
 ## Выпуски upstream
 
 | Выпуск | Разобран | Решение |
 | --- | --- | --- |
 | 1.15.0 `6d04a1b5` | 2026-10-29 (`docs/analysis/step0-sources.md` symphysis) | база форка |
+| 1.16.0 `27c05157` | 2026-11-07 (symphysis `docs/analysis/upstream-openspec-1.16.1-2026-11-07.md`) | втянут мержем вместе с 1.16.1 (C15); слово владельца о порядке и Node 22.14 — symphysis `docs/plan-flexible-pipeline.md`, «Сверка с upstream — 2026-11-07» |
+| 1.16.1 `0fa4a970` | 2026-11-07 (там же) | втянут мержем (C15): исправления валидатора и парсеров, Node ≥ 22.12 → порог инсталлятора и GUIDE symphysis поднят до 22.14; `validate --strict` в `trace_graph.py` теперь красный на сценарии без WHEN/GIVEN или THEN (в корпусе symphysis нарушений нет) |
 
 ## Прогоны тестов
 
@@ -53,3 +57,4 @@ upstream: Fission-AI/OpenSpec @ 6d04a1b5 (1.15.0, 2026-10-24)
 | 2026-10-31 | C1–C10, после сборки `dist/` (версия 1.15.0-symphysis.2) | 6698 passed, 154 skipped, **8 failed — те же восемь EPERM symlink** (`update.test.ts` ×1, `schema.test.ts` ×1, `resolver.test.ts` ×6); девятое падение (`update.test.ts` «should embed generatedBy», регэксп не принимал `-symphysis.N` после C6) снято правкой регэкспа в C10; `pnpm regen:parity-hashes` после сборки сдвинул пины `continue`/`apply`, `pnpm generate:skills` обновил два SKILL.md |
 | 2026-11-01 | C1–C13, после сборки `dist/` (версия 1.15.0-symphysis.3) | с `XDG_CONFIG_HOME` во временном каталоге: 6719 passed, 154 skipped, **8 failed — те же восемь EPERM symlink** (`update.test.ts` ×1, `schema.test.ts` ×1, `resolver.test.ts` ×6). Без изоляции ещё 11 красных в `test/core/version-check.test.ts`: глобальный конфиг машины несёт `telemetry.enabled: false`, и проверка обновлений отключена (`isCheckEnabled`) — среда, не правка; в изоляции 67/67. `pnpm regen:parity-hashes` сдвинул пины `continue`/`apply`, `pnpm generate:skills` обновил два SKILL.md |
 | 2026-11-02 | C1–C14, после сборки `dist/` (версия 1.15.0-symphysis.4) | с `XDG_CONFIG_HOME` во временном каталоге: 6719 passed, 154 skipped, **8 failed — те же восемь EPERM symlink** (`update.test.ts` ×1, `schema.test.ts` ×1, `resolver.test.ts` ×6). До правки тестов под новый состав core падало 46, из них 38 — ожидания прежних шести workflow. `pnpm regen:parity-hashes`: «already match the build», `pnpm generate:skills`: `git status` без новых файлов |
+| 2026-11-07 | C1–C15, после мержа v1.16.1 и сборки `dist/` (версия 1.16.1-symphysis.5; vitest 5, vite 8) | с `XDG_CONFIG_HOME` во временном каталоге: 6855 passed, 157 skipped, **12 failed — те же восемь EPERM symlink** (`update.test.ts` ×1, `schema.test.ts` ×1, `resolver.test.ts` ×6) **и четыре новых в `version-check.test.ts` «standalone update check»** (`:1567`, `:1597`, `:1611`, `:1663`): тест строит ленту релизов GitHub из собственной версии пакета и ждёт `current`, а проверка standalone пропускает prerelease-теги — `1.16.1-symphysis.5` по SemVer prerelease, лента пуста, `checkForCliUpdate` отдаёт `offline` (`version-check.ts:410`). Это форма версии форка, не правка; standalone-бинарник форк не поставляет. Снимется формой `+symphysis.N` (build metadata — не prerelease) или правкой четырёх тестов — решение открыто. `pnpm regen:parity-hashes`: «already match», `pnpm generate:skills`: `git status` чист |
