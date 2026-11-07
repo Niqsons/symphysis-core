@@ -26,6 +26,7 @@ const FILES = [
   "tools/step_help.py",
   "tools/openspec_run.py",
   "tools/trace_graph.py",
+  "tools/anchor_refs.py",
   "tools/playground-template.html",
   "tools/journal.schema.json",
   "docs/terms.md",

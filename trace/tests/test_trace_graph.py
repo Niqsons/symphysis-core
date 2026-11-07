@@ -197,6 +197,18 @@ def test_spec_parse_lines_are_one_based_as_in_an_editor():
     assert (spec.requirements[0].line, spec.requirements[0].scenarios[0].line) == (2, 3)
 
 
+def test_scenario_text_has_no_html_comments():
+    """`trace-graph`: «След проб после последнего сценария» (F-26) — текст сценария без комментариев: маркер под заголовком,
+    многострочный комментарий, след проб после THEN; `<!--` в блоке кода — текст блока. Сценарий из одних комментариев —
+    не сценарий (F-47)."""
+    spec = ("## ADDED Requirements\n\n### Requirement: Один\nТекст SHALL.\n\n#### Scenario: Первый\n<!-- F-12 -->\n- **WHEN** a\n"
+            "<!--\nдва\n-->\n- **THEN** b\n```\n<!-- в коде -->\n```\n<!-- проба краёв: форма=text, исходы: нет -->\n"
+            "<!-- проба запретов: исходы: нет -->\n\n#### Scenario: Пустой\n<!-- F-12 -->\n")
+    scenarios = trace_graph.parse_spec(spec).requirements[0].scenarios
+    assert [s.name for s in scenarios] == ["Первый"]
+    assert scenarios[0].text == "- **WHEN** a\n- **THEN** b\n```\n<!-- в коде -->\n```"
+
+
 def test_spec_parse_counts_lines_the_same_with_bom_and_crlf():
     raw = (TRACE / "plain" / "specs" / "alpha" / "spec.md").read_bytes().decode("utf-8").replace("\r\n", "\n")
     mixed = "﻿" + raw.replace("\n", "\r\n")
@@ -327,7 +339,7 @@ SPEC = """## ADDED Requirements
 def test_build_of_fresh_change_is_empty_graph_with_code_zero(tmp_path):
     """`trace-graph`: «Только что созданное изменение» — граф пуст, код 0."""
     root, _ = make_change(tmp_path)
-    assert graph_of(root) == {"format": 1, "sources": [], "nodes": [], "edges": [], "candidates": []}
+    assert graph_of(root) == {"format": 2, "sources": [], "nodes": [], "edges": [], "candidates": []}
 
 
 def test_build_missing_change_is_refused_with_name(tmp_path):
@@ -650,6 +662,160 @@ def test_requirement_takes_numbers_from_its_text_only(tmp_path):
             "<!--\nF-03\n-->\nХвост F-05.\n\n#### Scenario: Первый\n- **WHEN** F-04\n- **THEN** b\n")
     root, _ = make_change(tmp_path, journal=["F-01", "F-02", "F-03", "F-04", "F-05"], specs={"demo": spec})
     assert [e[1] for e in edges_of(graph_of(root), "traces")] == ["rec:F-01", "rec:F-05"]
+
+
+# --- разбор ссылок по полной форме (F-21, F-22, F-37, F-39, F-44, F-45) ----------------------------------------------
+
+Ref = trace_graph.Ref
+
+
+def test_record_refs_read_bare_anchor_and_journal_list():
+    """`trace-conventions`: «Граница списка после имени» (F-45) — список метки длится, пока за запятой идёт номер; `;` и `)`
+    закрывают; голая и якорь читаются с буквой варианта и без."""
+    text = "(журнал `x`: F-15.C, F-16.B; журнал `y`: F-50.E, F-20) и (F-07.A), (trace-graph/F-26), голое F-44"
+    assert trace_graph.record_refs(text) == [Ref("x", 15, "C"), Ref("x", 16, "B"), Ref("y", 50, "E"), Ref("y", 20, None),
+                                              Ref(None, 7, "A"), Ref("trace-graph", 26, None), Ref(None, 44, None)]
+
+
+def test_record_refs_list_ends_at_first_non_number():
+    """Слово между номерами или якорь с именем закрывают список метки: дальше ссылки голые."""
+    assert trace_graph.record_refs("журнал `x`: F-15.C и F-20") == [Ref("x", 15, "C"), Ref(None, 20, None)]
+    assert trace_graph.record_refs("журнала `x`: F-15, слово F-20") == [Ref("x", 15, None), Ref(None, 20, None)]
+    assert trace_graph.record_refs("Журнал `x`: F-15, y/F-16, F-17") == [Ref("x", 15, None), Ref("y", 16, None), Ref(None, 17, None)]
+
+
+def test_record_ref_spans_skip_sample_in_double_backticks_and_carry_bounds():
+    """`record-anchors`: «Образец в обратных кавычках» (F-41) — образец в двойных обратных кавычках не ссылка, в одинарных —
+    ссылка; границы совпадений — для замены в тексте."""
+    text = "образец ``<!-- F-14 -->`` и живой `<!-- F-14 -->`"
+    start = text.rindex("F-14")
+    assert trace_graph.record_ref_spans(text) == [(Ref(None, 14, None), start, start + 4)]
+
+
+def test_record_refs_name_after_list_without_colon_is_bare():
+    """Имя журнала после списка без двоеточия именем не считается (F-37): ссылка голая, с буквой."""
+    assert trace_graph.record_refs("(F-12.A; слово владельца, журнал `trace-graph`)") == [Ref(None, 12, "A")]
+
+
+def test_record_refs_path_with_number_and_utf8_are_not_references():
+    """`record-anchors`: «Путь с номером в тексте» (F-39) — точка и строчные буквы после числа: не ссылка; `UTF-8` не `F-8`."""
+    assert trace_graph.record_refs("след `research/F-01.md` и файл F-02.txt в UTF-8") == []
+    assert trace_graph.record_refs("(F-07.A) и F-07.Ab и F-7") == [Ref(None, 7, "A"), Ref(None, 7, None), Ref(None, 7, None)]
+
+
+def test_ref_text_is_anchor_form_with_two_digit_number():
+    """Строка базы — форма якоря, число двузначное, как id записи (F-22, F-25, F-44); разбор строки обратен."""
+    assert [trace_graph.ref_text(r) for r in (Ref("x", 7, "C"), Ref(None, 7, None), Ref("trace-graph", 150, None))] == [
+        "x/F-07.C", "F-07", "trace-graph/F-150"]
+    assert trace_graph.parse_ref("x/F-07.C") == Ref("x", 7, "C") and trace_graph.parse_ref("F-7") == Ref(None, 7, None)
+    assert trace_graph.parse_ref("F-07.md") is None and trace_graph.parse_ref("7") is None
+
+
+# --- своя, чужая и несуществующая ссылка (F-21, F-22, F-36, F-53) ----------------------------------------------------
+
+def archived(root, name, date="2026-11-06"):
+    """Каталог архива изменения `name` с датой: якорь даты не несёт."""
+    (root / "openspec" / "changes" / "archive" / f"{date}-{name}").mkdir(parents=True, exist_ok=True)
+
+
+def test_anchor_of_other_change_gives_no_link_and_no_unresolved(tmp_path):
+    """`record-anchors`: «Ссылка на чужой журнал в дельте», `record-anchors`: «Якорь без даты архива», `trace-conventions`:
+    «Якорь другого изменения» — `(trace-graph/F-84)` при своей F-84: ни связи, ни неразрешённой; изменение в архиве с датой."""
+    root, _ = make_change(tmp_path, journal=["F-84"], specs={"demo": spec_with("Текст SHALL (trace-graph/F-84).")})
+    archived(root, "trace-graph")
+    assert edges_of(graph_of(root), "traces") == [] and unresolved_of(root) == []
+
+
+def test_anchor_of_active_change_is_silent_and_own_number_next_to_it_links(tmp_path):
+    root, _ = make_change(tmp_path, journal=["F-84"], specs={"demo": spec_with("Текст SHALL (other/F-84) и (F-84).")})
+    (root / "openspec" / "changes" / "other").mkdir()
+    assert [e[1] for e in edges_of(graph_of(root), "traces")] == ["rec:F-84"] and unresolved_of(root) == []
+
+
+def test_anchor_and_journal_label_of_own_change_are_own_links(tmp_path):
+    """`record-anchors`: «Якорь своего изменения», `trace-conventions`: «Своё имя в своей дельте» (F-36) — `(demo/F-21)`
+    и ``(журнал `demo`: F-35)`` в дельте изменения `demo` дают связи `traces`."""
+    root, _ = make_change(tmp_path, journal=["F-21", "F-35"],
+                          specs={"demo": spec_with("Текст SHALL (demo/F-21), (журнал `demo`: F-35).")})
+    assert [e[1] for e in edges_of(graph_of(root), "traces")] == ["rec:F-21", "rec:F-35"]
+
+
+def test_anchor_with_unknown_change_name_is_unresolved_with_the_name(tmp_path):
+    """`trace-conventions`: «Опечатка в имени изменения» (F-53) — `(trace-grpah/F-26)` без такого изменения: неразрешённая
+    ссылка называет имя, запись F-26 связи не получает."""
+    root, _ = make_change(tmp_path, journal=["F-26"], specs={"demo": spec_with("Текст SHALL (trace-grpah/F-26).")})
+    archived(root, "trace-graph")
+    assert edges_of(graph_of(root), "traces") == []
+    assert [(u["ref"], u["at"]) for u in unresolved_of(root)] == [("trace-grpah/F-26", "specs/demo/spec.md:4")]
+    assert "trace-grpah" in unresolved_of(root)[0]["why"]
+
+
+def test_task_line_reads_anchor_of_other_change_as_silent(tmp_path):
+    """Строка задачи с якорем чужого изменения: ни связи, ни неразрешённой; свой номер рядом связь даёт."""
+    root, _ = make_change(tmp_path, journal=["F-19"], specs={"demo": SPEC},
+                          tasks="- [ ] 1.1 сделать `demo`: «Первый» (F-19, trace-graph/F-150)\n")
+    archived(root, "trace-graph")
+    assert [e[1] for e in edges_of(graph_of(root), "traces")] == ["rec:F-19"] and unresolved_of(root) == []
+
+
+# --- отсечение по полному ключу: число, буква, имя (F-21, F-34, F-44) ------------------------------------------------
+
+def modified_with_master(tmp_path, master_text, delta_text, journal):
+    """Требование `Один` MODIFIED с текстом `delta_text` и мастер-спекой с текстом `master_text`, до `/opsx:sync`."""
+    scn = "\n\n#### Scenario: Первый\n- **WHEN** a\n- **THEN** b\n"
+    root, base = make_change(tmp_path, journal=journal,
+                             specs={"demo": "## MODIFIED Requirements\n\n### Requirement: Один\n" + delta_text + scn})
+    master_spec(base, "demo", "## Requirements\n\n### Requirement: Один\n" + master_text + scn)
+    return root
+
+
+def test_variant_letter_in_master_does_not_cut_bare_own_number(tmp_path):
+    """`trace-conventions`: «Буква варианта отличает ссылку» — мастер `F-26.E` без имени, дельта добавила `(F-26)`: связь есть,
+    `F-26.E` связи не даёт."""
+    root = modified_with_master(tmp_path, "Текст SHALL F-26.E.", "Текст SHALL F-26.E и (F-26).", ["F-26"])
+    assert [e[1] for e in edges_of(graph_of(root), "traces")] == ["rec:F-26"] and unresolved_of(root) == []
+
+
+def test_bare_against_bare_is_cut(tmp_path):
+    """`trace-conventions`: «Голое против голого» — мастер `(F-20)`, дельта то же `(F-20)` и ничего нового: связи нет."""
+    root = modified_with_master(tmp_path, "Текст SHALL (F-20).", "Текст SHALL (F-20) и ещё.", ["F-20"])
+    assert edges_of(graph_of(root), "traces") == [] and unresolved_of(root) == []
+
+
+def test_number_without_leading_zero_is_the_same_key(tmp_path):
+    """`trace-conventions`: «Число без ведущего нуля» (F-44) — мастер `F-7`, дельта `(F-07)`: ключи равны, связи нет."""
+    root = modified_with_master(tmp_path, "Текст SHALL F-7.", "Текст SHALL F-7 и (F-07).", ["F-07"])
+    assert edges_of(graph_of(root), "traces") == [] and unresolved_of(root) == []
+
+
+def test_other_journal_name_before_list_does_not_cut_own_bare_number(tmp_path):
+    """`trace-conventions`: «Чужое имя перед списком» — мастер ``(журнал `symphysis-schema`: F-26.B, F-17.D)``, дельта
+    добавила `(F-26)`: связь одна, к F-26; F-26.B и F-17.D ни связи, ни неразрешённой."""
+    inherited = "Текст SHALL (журнал `symphysis-schema`: F-26.B, F-17.D)."
+    root = modified_with_master(tmp_path, inherited, inherited + " Новое (F-26).", ["F-17", "F-26"])
+    archived(root, "symphysis-schema", "2026-11-02")
+    assert [e[1] for e in edges_of(graph_of(root), "traces")] == ["rec:F-26"] and unresolved_of(root) == []
+
+
+def test_name_after_list_without_colon_is_bare_and_differs_by_letter(tmp_path):
+    """`trace-conventions`: «Имя после списка» (F-37) — мастер ``(F-12.A; слово владельца, журнал `trace-graph`)`` читается
+    голой `F-12.A`; дельта `(F-12)` даёт связь."""
+    inherited = "Текст SHALL (F-12.A; слово владельца, журнал `trace-graph`)."
+    root = modified_with_master(tmp_path, inherited, inherited + " Новое (F-12).", ["F-12"])
+    assert [e[1] for e in edges_of(graph_of(root), "traces")] == ["rec:F-12"] and unresolved_of(root) == []
+
+
+def test_child_added_cuts_parent_master_references_by_full_key(tmp_path):
+    """`trace-conventions`: «Свой номер при чужом у родителя», `trace-conventions`: «Голый номер родителя» — родитель MODIFIED
+    несёт в мастере ``журнал `calibration-fixes`: F-46.E`` и голое `(F-39)`: дочернее `(F-46)` даёт связь, `(F-39)` — нет."""
+    body = "Текст SHALL (журнал `calibration-fixes`: F-46.E) и (F-39)"
+    scn = "\n\n#### Scenario: {}\n- **WHEN** a\n- **THEN** b\n"
+    spec = ("## MODIFIED Requirements\n\n### Requirement: Родитель\n" + body + " и ещё." + scn.format("Сц")
+            + "\n## ADDED Requirements\n\n### Requirement: Дитя\nЧасть требования «Родитель». Номера (F-46) и (F-39)." + scn.format("Сц1"))
+    root, base = make_change(tmp_path, journal=["F-39", "F-46"], specs={"demo": spec})
+    master_spec(base, "demo", "## Requirements\n\n### Requirement: Родитель\n" + body + "." + scn.format("Сц"))
+    archived(root, "calibration-fixes", "2026-11-02")
+    assert traced(root, "Дитя") == ["rec:F-46"] and unresolved_of(root) == []
 
 
 def test_number_from_master_spec_gives_no_link(tmp_path):
@@ -1144,9 +1310,11 @@ def test_check_changed_source_names_the_file_with_code_zero(tmp_path):
     (lambda d: d.pop("edges"), "edges"),
     (lambda d: d.pop("sources"), "sources"),
     (lambda d: d.update(nodes={}), "nodes"),
+    (lambda d: d.update(format=1), "формат 1, а скрипт читает 2"),
 ])
 def test_check_wrong_shape_names_file_and_what_is_missing(tmp_path, mutate, expect):
-    """`trace-graph`: «Форма не та» — сигнал называет файл и что в нём не так, код 0."""
+    """`trace-graph`: «Форма не та», `trace-graph`: «Снимок прежнего формата» — сигнал называет файл и что в нём не так
+    (у снимка другой версии — обе версии), код 0."""
     root, _, path = checked_change(tmp_path)
     data = json.loads(path.read_text(encoding="utf-8"))
     mutate(data)

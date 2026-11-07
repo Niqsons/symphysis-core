@@ -1,0 +1,5 @@
+== step-help: корень C:\Users\User\AppData\Local\Temp/f21-probe/step-help, мастер на 5508872109b4c4bf18c1543607fd320040b6370f (37841d0^), specs: 16 каталогов; graph/ в изменении: нет
+build (до патча) код 0
+build (после патча) код 0
+signals (до) код 0
+signals (после) код 0

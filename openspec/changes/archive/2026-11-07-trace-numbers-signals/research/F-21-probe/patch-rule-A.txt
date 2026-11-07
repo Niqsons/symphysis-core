@@ -1,0 +1,5 @@
+патч применён: 9 замен, C:\Users\User\AppData\Local\Temp\f21-probe\tools-A\trace_graph.py
+build (после патча) module-structure код 0
+signals (после) module-structure код 0
+build (после патча) trace-graph код 0
+signals (после) trace-graph код 0

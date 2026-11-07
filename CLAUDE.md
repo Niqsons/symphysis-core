@@ -51,6 +51,10 @@
 - `trace/trace_graph.py` — граф трассируемости изменения: подкоманды `build` (JSON,
   `--format mermaid`), `report`, `check`, `freeze`, `archive-gaps`; `graph/req-graph.json` и
   `graph/report.md` пишет только `freeze`. Описание — в `docs/GUIDE.md`, «Граф трассируемости».
+- `anchors/anchor_refs.py` — якоря записей в мастер-спеках: после `/opsx:sync` голые `F-NN` блоков
+  изменения в `openspec/specs/<capability>/spec.md` переписываются в `<изменение>/F-NN`; зовётся
+  моделью по строке `rules.specs` и подсказке архива `openspec/config.yaml`, печатает каждую замену,
+  повторяем; разбор ссылок берёт из `trace_graph.py`, правило имени — из `openspec_run.py`.
 - `openspec-run/openspec_run.py` — общий запуск форка OpenSpec (F-138): зовут его `trace_graph.py`
   (`openspec validate --json` для отчёта) и `step-help/step_help.py`; поиск форка, таймаут и ошибки
   запуска живут здесь, а не в скриптах.

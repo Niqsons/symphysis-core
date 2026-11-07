@@ -11,7 +11,7 @@ export const REPO = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "
  * водители `<модуль>/agents/`, общие файлы скиллов. Каталога `skills/` у клона нет.
  */
 export const SOURCE_MODULES = [
-  "attack", "cli", "consequences", "decisions", "openspec-run", "probes", "research", "roots", "settings",
+  "anchors", "attack", "cli", "consequences", "decisions", "openspec-run", "probes", "research", "roots", "settings",
   "skill-shared", "step-help", "trace", "viewer",
 ];
 

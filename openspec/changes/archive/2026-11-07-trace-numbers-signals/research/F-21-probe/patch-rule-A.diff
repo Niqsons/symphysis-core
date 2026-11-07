@@ -1,0 +1,109 @@
+--- "C:\\Users\\User\\AppData\\Local\\Temp/f21-probe/tools/trace_graph.py"	2026-11-07 15:58:29.763891400 +0300
++++ "C:\\Users\\User\\AppData\\Local\\Temp/f21-probe/tools-A/trace_graph.py"	2026-11-07 16:03:24.429943400 +0300
+@@ -352,7 +352,9 @@
+ _TASK_LINE = re.compile(r"^- \[[ xX]\] (\d+(?:\.\d+)+)\s+(.*?)\s*$")
+ _TABLE_ROW = re.compile(r"^\|(.*)$")
+ _TABLE_RULE = re.compile(r"^\|[\s:|-]+\|?\s*$")
+-_REC_REF = re.compile(r"(?<![\w-])F-(\d+)(?!\d)")  # граница слова слева: `UTF-8` не даёт `F-8`; `.A` у `F-07.A` остаётся за числом
++_REC_REF = re.compile(r"(?<![\w-])F-(\d+)(?!\d)(?:\.([A-Z])(?![A-Za-z]))?")  # проба F-21, правило A: группа 2 — буква варианта
++_JOURNAL_LABEL = re.compile(r"журнал[а-я]*\s+`([^`]+)`\s*:")  # проба F-21: имя журнала перед списком ссылок
++_LIST_END = re.compile(r"[;)]")  # проба F-21: конец списка после метки журнала  # граница слова слева: `UTF-8` не даёт `F-8`; `.A` у `F-07.A` остаётся за числом
+ _CAP_NAME = re.compile(r"`([^`]+)`:\s*«")  # `capability`: «имя…
+ _NEXT_NAME = re.compile(r"\s*,\s*«")  # следующее имя той же строки: своей capability у него нет (F-89)
+ _SEC_REQ = re.compile(r"`([^`]+)`:?\s*«")  # `capability` «имя» или `capability`: «имя» в любой колонке строки security (F-131)
+@@ -438,6 +440,20 @@
+     return [int(m.group(1)) for m in _REC_REF.finditer(text)]
+ 
+ 
++def _record_refs(text: str, own: str | None = None) -> list[tuple[int, str | None, str | None]]:
++    """Проба F-21, правило A: ссылки `(номер, буква варианта или None, имя журнала или None)`; имя — из ближайшей слева
++    метки ``журнал `имя`:`` той же строки до `;`, `)` или конца строки; имя, равное `own`, — своё (None)."""
++    scopes = []
++    for m in _JOURNAL_LABEL.finditer(text):
++        end = _LIST_END.search(text, m.end())
++        scopes.append((m.end(), end.start() if end else len(text), m.group(1)))
++    out = []
++    for m in _REC_REF.finditer(text):
++        journal = next((name for start, stop, name in scopes if start <= m.start() < stop), None)
++        out.append((int(m.group(1)), m.group(2), None if journal == own else journal))
++    return out
++
++
+ def _master_lines(root: Path, rel: str) -> list[str]:
+     """Строки мастер-спеки без CRLF и BOM; она пишет `## Requirements`, а `parse_spec` читает секции дельты: заголовок читается
+     как `ADDED`. Перевод строк нормализуется раньше подмены: `$` не стоит перед возвратом каретки, и спека с CRLF осталась бы
+@@ -472,6 +488,7 @@
+         if req.name not in found:
+             found[req.name] = {
+                 "numbers": sorted({n for _, line in _requirement_body(lines, mask, req.line) for n in _record_numbers(line)}),
++                "refs": sorted({r for _, line in _requirement_body(lines, mask, req.line) for r in _record_refs(line)}, key=str),  # проба F-21
+                 "scenarios": {s.name: _hash(s.text) for s in req.scenarios}, "text": _hash(req.text),
+                 "traces": sorted(traces.get(req.name, ()))}
+     return found
+@@ -479,7 +496,7 @@
+ 
+ def _entry_fits(entry) -> bool:
+     """Запись базы годна, если все четыре поля на месте и нужного вида; иной записью база не служит."""
+-    return (isinstance(entry, dict) and set(entry) == {"numbers", "scenarios", "text", "traces"}
++    return (isinstance(entry, dict) and set(entry) - {"refs"} == {"numbers", "scenarios", "text", "traces"}
+             and isinstance(entry["numbers"], list) and all(type(n) is int for n in entry["numbers"])
+             and isinstance(entry["scenarios"], dict) and all(isinstance(k, str) and isinstance(v, str) for k, v in entry["scenarios"].items())
+             and isinstance(entry["text"], str) and isinstance(entry["traces"], list) and all(isinstance(t, str) for t in entry["traces"]))
+@@ -507,10 +524,14 @@
+         self.root, self.saved, self.live = root, saved, {}
+ 
+     def entry(self, cap: str, name: str) -> tuple[dict | None, bool]:
+-        if name in self.saved.get(cap, {}):
+-            return self.saved[cap][name], True
+         if cap not in self.live:
+             self.live[cap] = master_base(self.root, cap)
++        if name in self.saved.get(cap, {}):
++            saved = self.saved[cap][name]
++            if "refs" not in saved:  # проба F-21: база снимка несёт только числа; ключи правила A — из мастера на коммите снимка
++                live = self.live[cap].get(name)
++                saved = {**saved, "refs": live["refs"] if live else [(n, None, None) for n in saved["numbers"]]}
++            return saved, True
+         return self.live[cap].get(name), False
+ 
+ 
+@@ -564,13 +585,13 @@
+                 entry, from_base = master.entry(cap, req.name)
+                 master_traces = set(entry["traces"]) if entry else set()
+                 if entry and not _carried_without_base(entry, from_base, req):
+-                    known = set(entry["numbers"])
++                    known = {(n, l, None if j == base.name else j) for n, l, j in entry["refs"]}  # проба F-21: полные ключи
+                 elif entry:  # блок уже в мастере без базы: родитель с таким текстом номера дочернего не отсекает (F-150)
+                     claims.append({"kind": "carried", "from": req_id, "src": req_node["at"], "at": req_node["at"]})
+             if _REQ_HEADER.match(lines[req.line - 1]):  # у записи REMOVED строкой-маркером тела нет
+                 for number, line in _requirement_body(lines, mask, req.line):
+                     claims.append({"kind": "rec", "from": req_id, "src": req_node["at"], "at": f"{rel}:{number}",
+-                                   "text": line, "skip": known})
++                                   "text": line, "skip": known, "own": base.name})  # проба F-21
+                     if _PARENT.match(line):
+                         claims.append({"kind": "parent", "from": req_id, "src": req_node["at"], "at": f"{rel}:{number}",
+                                        "text": line, "cap": cap, "section": req.section})
+@@ -752,9 +773,12 @@
+         unresolved.setdefault((claim["from"], ref), {"ref": ref, "from": claim["from"], "at": claim["at"], "why": why})
+ 
+     def put_records(claim: dict, text: str, skip: set, by_place: bool = False) -> None:
+-        for number in _record_numbers(text):
+-            if number in skip:
+-                continue
++        if claim["kind"] == "rec":  # проба F-21, правило A: чужая ссылка — не ссылка этого журнала; ключ отсечения полный
++            refs = [(n, l, j) for n, l, j in _record_refs(text, claim.get("own")) if j is None]
++            numbers = [n for n, l, j in refs if (n, l, None) not in skip]
++        else:
++            numbers = _record_numbers(text)
++        for number in numbers:
+             if number in records:
+                 put_edge(claim["from"], records[number], "traces", claim["at"], by_place)
+                 if claim["kind"] == "rec":
+@@ -829,7 +853,7 @@
+             continue
+         entry = base_master.entry(cap, name)[0]
+         if entry:
+-            cut.setdefault(claim["from"], set()).update(entry["numbers"])
++            cut.setdefault(claim["from"], set()).update((n, l, j) for n, l, j in entry["refs"])  # проба F-21: полные ключи
+     for claim in claims:
+         if not live(claim):
+             continue

@@ -1,0 +1,41 @@
+{
+  "changeName": "trace-numbers-signals",
+  "artifactId": "specs",
+  "schemaName": "symphysis",
+  "changeDir": "C:\\Users\\User\\AppData\\Local\\Temp\\f24-probe-a00A83\\openspec\\changes\\trace-numbers-signals",
+  "planningHome": {
+    "kind": "repo",
+    "root": "C:\\Users\\User\\AppData\\Local\\Temp\\f24-probe-a00A83",
+    "changesDir": "C:\\Users\\User\\AppData\\Local\\Temp\\f24-probe-a00A83\\openspec\\changes",
+    "defaultSchema": "spec-driven"
+  },
+  "outputPath": "specs/**/*.md",
+  "resolvedOutputPath": "C:\\Users\\User\\AppData\\Local\\Temp\\f24-probe-a00A83\\openspec\\changes\\trace-numbers-signals\\specs\\**\\*.md",
+  "existingOutputPaths": [],
+  "description": "Спецификации поведения — что система должна делать",
+  "instruction": "Напиши спецификации поведения по грамматике OpenSpec: по файлу `specs/<capability>/spec.md` на каждую capability из proposal.\nТребование — `### Requirement: <имя>` с SHALL или MUST; у каждого есть сценарий `#### Scenario: <имя>` (ровно четыре `#`) в виде GIVEN / WHEN / THEN.\nДельты — секции `## ADDED|MODIFIED|REMOVED Requirements`; MODIFIED несёт требование целиком.\nСпецификация описывает наблюдаемое поведение, не реализацию.\nТребование называет в тексте номера записей журнала, на которых стоит: `(F-NN)`.\nДлиннее 500 знаков вместе с номерами — раздели: часть вынеси в дочернее требование со своим сценарием, свой номер оно несёт как решение о делении: номер берётся из журнала, записи нет — заведи кандидата, номер без записи не ставь; в начале его текста фраза `Часть требования «имя».`, при другой capability ``Часть требования `capability`: «имя».``.\nДлинное в MODIFIED дели так же: сценарии родителя остаются при нём, условия не теряются.\nПосле написания на каждое требование позови скиллы `symphysis-edge-probe` и `symphysis-prohibition-probe`.\n",
+  "rules": [
+    "предположение помечается словом `предположение` и дорогой `проверить|решить`",
+    "у каждого требования хотя бы один сценарий GIVEN/WHEN/THEN",
+    "след проб — комментарии «проба краёв» и «проба запретов» — в общую спеку при синхронизации не переносится"
+  ],
+  "template": "# Spec Delta\r\n\r\n## Purpose\r\n<!-- Только для новой capability: одно-два предложения (от 50 символов) о том, для чего она. У существующей capability раздел удали. -->\r\n\r\n## ADDED Requirements\r\n\r\n### Requirement: <имя требования>\r\nСистема SHALL <наблюдаемое поведение>.\r\n\r\n#### Scenario: <имя сценария>\r\n- **GIVEN** <исходное состояние — необязательно>\r\n- **WHEN** <условие>\r\n- **THEN** <наблюдаемый результат>\r\n<!-- проба краёв: форма=<numeric-range | collection | text | stateful | io>, исходы: <по кандидатам: Specify | Dismiss с причиной | Backstop | Defer; записи журнала F-NN> -->\r\n<!-- проба запретов: исходы: <по кандидатам: Specify/test | Specify/judgment | Dismiss с причиной | Defer; записи журнала F-NN; канон — парковка с адресатом ИБ, не здесь> -->\r\n\r\n<!-- След проб стоит в конце блока требования, после всех сценариев: так он не идёт в предел 500 символов текста требования. Проба краёв выключена настройкой — вместо её строки комментарий с текстом «проба краёв: выключена настройкой». -->\r\n\r\n<!-- Для существующей capability вместо ADDED (или рядом): `## MODIFIED Requirements` — требование целиком, со всеми сценариями;\r\n     `## REMOVED Requirements` — с **Reason** и **Migration**; `## RENAMED Requirements` — FROM / TO. -->\r\n",
+  "dependencies": [
+    {
+      "id": "proposal",
+      "done": false,
+      "path": "proposal.md",
+      "description": "Зачем нужно изменение и какие capabilities оно затрагивает"
+    }
+  ],
+  "unlocks": [
+    "consequences",
+    "security",
+    "tasks",
+    "attack-artifacts"
+  ],
+  "root": {
+    "path": "C:\\Users\\User\\AppData\\Local\\Temp\\f24-probe-a00A83",
+    "source": "nearest"
+  }
+}

@@ -1,0 +1,4024 @@
+{
+ "title": "Журнал решений: trace-numbers-signals",
+ "source": "decisions.json",
+ "intro": "Пути улик — от корня проекта; корни названы в `.symphysis/tools/journal-roots.json`. Материалы: `intent.md`, `trace/trace_graph.py` (разбор ссылок `_record_numbers`, отсечение `known` и `cut`, `_scenarios`, `_requirement_body`, `graph_signals`, `build_report`), тесты `trace/tests/`, мастер-спеки `openspec/specs/decision-viewer/`, `trace-signals/`, `trace-snapshot/`, архивные журнал и отчёты изменений `trace-graph` и `module-structure`, разбор `docs/analysis/requirements-traceability-graph-of-symphysis.md`, исследование `research/F-131.md` изменения `trace-graph`, `docs/GUIDE.md`, `openspec/config.yaml`, скилл `probes/skills/symphysis-edge-probe/`.\n\nF-01–F-04 — критерии из `intent.md`. F-05 и F-06 — слово владельца в чате 2026-11-07 на чтение intent, перенесено файлом `answers/2026-11-07.md`. F-07–F-20 — факты о текущем состоянии графа, мастер-спек и прежних решений. Развилки первого круга — F-21–F-29: B-02 — F-21, F-22, F-24, F-25; хеши узлов — F-23; B-03 — F-26; B-04 — F-27, F-28, F-29. Парковки исследованию — F-21, F-24.\n\nВторой круг начинается с F-30: находки `research/F-21.md` (проба правила A на архивных изменениях, счёт ссылок в мастере) и `research/F-24.md` (кто переносит дельту в мастер, что уходит с блоком) внесены в парковки F-21 и F-24; F-30–F-34 — факты исследования; F-35–F-38 — развилки из открывшихся вопросов.\n\nПроба краёв шага `specs` — кандидаты F-39–F-47; проба запретов — кандидаты F-48–F-54, канон ИБ — F-55, F-56.\n\nОпись последствий — кандидаты веток F-57–F-63, pre-mortem F-64; вторая и первая причины pre-mortem совпали с F-61 и F-63. Шаг design: F-65 — место скрипта переписывания. F-66 — ветка списка payload после F-65.",
+ "records": [
+  {
+   "id": "F-01",
+   "question": "Критерий готовности: номер своего журнала не пропадает молча — у требования MODIFIED и у дочернего требования он связывается с записью, даже если то же число стоит в мастер-тексте с именем чужого журнала или с буквой варианта (B-02)",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "постановка",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "F-05, F-21, F-22, F-24, F-25",
+   "evidence": [
+    {
+     "path": "openspec/changes/trace-numbers-signals/intent.md",
+     "quote": "не пропадает: у требования MODIFIED и у дочернего требования номер своего журнала связывается с записью, даже если то же число стоит в мастер-тексте с именем чужого журнала или с буквой варианта"
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-02",
+   "question": "Критерий готовности: решение о хешах у узлов графа принято в журнале этого изменения, в любую сторону",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "постановка",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "F-06, F-22, F-23",
+   "evidence": [
+    {
+     "path": "openspec/changes/trace-numbers-signals/intent.md",
+     "quote": "решение о хешах у узлов графа принято в журнале этого изменения, в любую сторону"
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-03",
+   "question": "Критерий готовности: след проб в конце блока требования не делает последний сценарий «изменённым» при сверке с мастером (B-03)",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "постановка",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "F-26",
+   "evidence": [
+    {
+     "path": "openspec/changes/trace-numbers-signals/intent.md",
+     "quote": "след проб в конце блока требования не делает последний сценарий «изменённым» при сверке с мастером"
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-04",
+   "question": "Критерий готовности: отчёт `trace_graph.py report` группирует и упорядочивает сигналы (B-04)",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "постановка",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "F-27, F-28, F-29",
+   "evidence": [
+    {
+     "path": "openspec/changes/trace-numbers-signals/intent.md",
+     "quote": "отчёт `trace_graph.py report` группирует и упорядочивает сигналы"
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-05",
+   "question": "Периметр починки B-02: правило графа читает мастер-спеки и снимки прежних изменений как есть, или их текст мигрирует в однозначную форму ссылок?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-01"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Правило графа читает мастер как есть: с именами чужих журналов, буквами вариантов и голыми номерами прежних изменений. Мастер-спеки, архивные снимки и журналы не переписываются. Новых коллизий не появляется за счёт правила отсечения (F-21) и, если решено, соглашения о ссылках в мастере (F-24). Цена: голый номер прежнего изменения против голого своего в старом тексте остаётся неразличим, это видно сигналом «требование без записи».",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/changes/trace-numbers-signals/intent.md",
+       "quote": "Растёт с каждым MODIFIED старого требования и каждым делением."
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Миграция: ссылки в мастер-спеках переписываются в однозначную форму одним проходом, после чего правило графа проще. Цена: правка всех мастер-спек вне изменения их содержания, diff на сотни строк, архивные снимки с базой по старому тексту расходятся с мастером.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/specs/decision-viewer/spec.md",
+       "quote": "(журнал `symphysis-schema`: F-26.B, F-17.D)"
+      }
+     ]
+    },
+    {
+     "letter": "C",
+     "text": "Оставить как есть: сигналы «требование без записи» человек закрывает записью `[сигнал]` на каждом изменении.",
+     "added": false,
+     "unlikely": "критерий F-01 требует связи, а не записи-ответа; число таких записей растёт с каждым MODIFIED",
+     "deviation": "F-01",
+     "evidence": [
+      {
+       "path": "docs/GUIDE.md",
+       "quote": "Чтобы записать решение по сигналу, скажи его модели: она заведёт запись журнала, чей вопрос начинается так: `[сигнал] <вид> · <ключ>`."
+      }
+     ]
+    }
+   ],
+   "antipodes": [
+    {
+     "option": "A",
+     "other": "F-38.C"
+    }
+   ],
+   "recommendation": {
+    "option": "A",
+    "why": "Старый текст уже лежит в архивных снимках как база: миграция B разошлась бы с ними, а C копит записи-ответы вместо связей. A закрывает критерий F-01 на существующем тексте и не трогает архив."
+   },
+   "decision": {
+    "option": "A",
+    "word": "Есть старые изменения, наша задача в первую очередь сделать так, чтобы не появились новые проблемы.",
+    "date": "2026-11-07"
+   },
+   "reversibility": {
+    "level": "обратимо",
+    "why": "правило отсечения живёт в `trace/trace_graph.py`; миграция текста мастер-спек остаётся возможной позже отдельным изменением, архивные снимки она не трогает"
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "F-21 отсекает по тексту мастера как есть; F-24 решает, появляются ли в мастере новые голые номера",
+   "evidence": [],
+   "comments": [],
+   "nodes": [
+    "master",
+    "cut"
+   ]
+  },
+  {
+   "id": "F-06",
+   "question": "Что у узла графа даёт идентичность, а что проверяемость: якорь, хеш содержимого или читаемое имя, как сейчас?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-02"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Якорь даёт идентичность, хеш содержимого — проверяемость. Якорь — имя сущности, привязанное к изменению; хеш — детектор правки, не имя. Из чего собирается якорь — F-22; хеши у узлов — F-23.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/changes/archive/2026-11-06-trace-graph/research/F-131.md",
+       "quote": "Якорь не место в тексте, а имя сущности."
+      },
+      {
+       "path": "openspec/changes/archive/2026-11-06-trace-graph/research/F-131.md",
+       "quote": "Хеш считается по содержимому."
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Хеш содержимого служит и идентичностью: id узла — хеш.",
+     "added": false,
+     "unlikely": "F-70.B изменения `trace-graph` отвергнут: в файле ничего не прочитать; правка текста меняет id, узел теряет историю",
+     "evidence": [
+      {
+       "path": "openspec/changes/archive/2026-11-06-trace-graph/decisions.md",
+       "quote": "B. Хеш-id: устойчивы к переименованию, но в файле ничего не прочитать, и модель не сверит связь глазами"
+      }
+     ]
+    },
+    {
+     "letter": "C",
+     "text": "Только имя, как сейчас: идентичность — читаемый id, проверяемость — хеши исходников по файлу. Цена: правка одного требования меняет хеш файла, какой узел изменился, снимок не называет.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/changes/archive/2026-11-06-trace-graph/research/F-131.md",
+       "quote": "Снимок уже несёт хеши исходников по файлу, с приведением концов строк (F-87)."
+      }
+     ]
+    }
+   ],
+   "antipodes": [
+    {
+     "option": "A",
+     "other": "F-22.C"
+    },
+    {
+     "option": "A",
+     "other": "F-23.D"
+    }
+   ],
+   "recommendation": {
+    "option": "A",
+    "why": "Разделение ролей снимает спор F-70 и F-131: id остаётся читаемым, а правку ловит хеш узла, не файла. C не называет, что изменилось; B ломает читаемость."
+   },
+   "decision": {
+    "option": "A",
+    "word": "я думал с помощью якоря на изменение + хэш решить проблему идентичности. Якорь дает идентичность, хэш проверяемость. А вот из чего формировать якорь уже варианты. Но пр отсечения я не подумал сразу, тут ты молодец, что подумал об этом.",
+    "date": "2026-11-07"
+   },
+   "reversibility": {
+    "level": "обратимо",
+    "why": "принцип без поля: в формат снимка `req-graph.json` он войдёт только решением F-23 и реализацией B-08, до того отмена ничего не стоит"
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "F-22 — форма якоря; F-23 — хеши у узлов",
+   "evidence": [],
+   "comments": [],
+   "nodes": [
+    "anchor"
+   ]
+  },
+  {
+   "id": "F-07",
+   "question": "Ссылка на запись читается как число: буква варианта отбрасывается, имя журнала перед номером не читается вовсе; так во всём тексте изменения — требования, задачи, следы проб.",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "материалы",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "F-21, F-22",
+   "evidence": [
+    {
+     "path": "trace/trace_graph.py",
+     "quote": "Номера записей `F-NN` по границе слова: `UTF-8` не даёт `F-8`; суффикс варианта (`F-07.A`) отбрасывается."
+    },
+    {
+     "path": "trace/trace_graph.py",
+     "quote": "# граница слова слева: `UTF-8` не даёт `F-8`; `.A` у `F-07.A` остаётся за числом"
+    },
+    {
+     "path": "docs/GUIDE.md",
+     "quote": "Суффикс варианта отбрасывается: `F-07.A` ведёт к записи `F-07`."
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-08",
+   "question": "У требования MODIFIED отсекаются номера базы мастера (`known`), у дочернего ADDED — номера мастер-текста родителя (`cut`); база снимка хранит номера числами, и тесты закрепляют оба отсечения.",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "материалы",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "F-21, F-25",
+   "evidence": [
+    {
+     "path": "trace/trace_graph.py",
+     "quote": "known = set(entry[\"numbers\"])"
+    },
+    {
+     "path": "trace/trace_graph.py",
+     "quote": "cut: dict[str, set[int]] = {}  # номера мастер-текста родителя по id дочернего требования ADDED (F-150)"
+    },
+    {
+     "path": "trace/trace_graph.py",
+     "quote": "`{\"numbers\": [F-NN, ...], \"scenarios\": {имя сценария: хеш текста}, \"text\": хеш текста требования, \"traces\": [хеши следов"
+    },
+    {
+     "path": "trace/tests/test_trace_graph.py",
+     "quote": "def test_number_from_master_spec_gives_no_link(tmp_path):"
+    },
+    {
+     "path": "trace/tests/test_trace_graph.py",
+     "quote": "def test_child_added_numbers_of_modified_parent_master_text_give_no_link(tmp_path):"
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-09",
+   "question": "Мастер-спека несёт в одной строке требования и голый номер своего прежнего изменения, и номер чужого журнала с тем же числом; имя журнала стоит один раз перед списком номеров с буквами вариантов.",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "материалы",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "F-21, F-22, F-24",
+   "evidence": [
+    {
+     "path": "openspec/specs/decision-viewer/spec.md",
+     "quote": "по шаблону `playground-template.html` (F-26) в один файл"
+    },
+    {
+     "path": "openspec/specs/decision-viewer/spec.md",
+     "quote": "(журнал `symphysis-schema`: F-26.B, F-17.D)"
+    },
+    {
+     "path": "openspec/specs/decision-viewer/spec.md",
+     "quote": "Часть требования «Просмотрщик — один HTML из своего шаблона с тремя режимами» (F-46)."
+    },
+    {
+     "path": "openspec/specs/decision-viewer/spec.md",
+     "quote": "(журнал `calibration-fixes`: F-23.A, F-45.E, F-46.E)"
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-10",
+   "question": "Отсечение введено решениями F-84.A (MODIFIED) и F-150.A (дочернее) изменения `trace-graph`, база снимка — F-123.A; владелец принял F-150 словами «иначе это избыточная абстракция»: цель отсечения — не дать чужому номеру стать своей связью.",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "материалы",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "F-21, F-25",
+   "evidence": [
+    {
+     "path": "openspec/changes/archive/2026-11-06-trace-graph/decisions.md",
+     "quote": "MODIFIED несёт текст мастер-спеки с `(F-07.A)` из журнала другого изменения, а F-07 этого журнала о другом: считать это связью?"
+    },
+    {
+     "path": "openspec/changes/archive/2026-11-06-trace-graph/decisions.md",
+     "quote": "решение: A — «Да, связи не дает, иначе это избыточная абстракция», 2026-11-06"
+    },
+    {
+     "path": "openspec/changes/archive/2026-11-06-trace-graph/decisions.md",
+     "quote": "Снимок несёт базу: при заморозке в него пишутся номера и сценарии мастер-спеки по каждому требованию MODIFIED."
+    },
+    {
+     "path": "openspec/changes/archive/2026-11-06-trace-graph/decisions.md",
+     "quote": "Граф молча свяжет требование с чужой записью того же номера, и выглядеть это будет верно"
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-11",
+   "question": "Отчёт `module-structure` подтверждает оба дефекта intent: «требование без записи» у требования с `(F-26)` при верной спеке и «сценарий MODIFIED с прежним именем и другим текстом» у сценария, за которым стоит только след проб.",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "материалы",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "F-21, F-26",
+   "evidence": [
+    {
+     "path": "openspec/changes/archive/2026-11-07-module-structure/graph/report.md",
+     "quote": "[!!] требование без записи: decision-viewer/Просмотрщик — один HTML из своего шаблона с тремя режимами — specs/decision-viewer/spec.md:5"
+    },
+    {
+     "path": "openspec/changes/archive/2026-11-07-module-structure/graph/report.md",
+     "quote": "[!!] сценарий MODIFIED с прежним именем и другим текстом: decision-viewer/Просмотрщик — один HTML из своего шаблона с тремя режимами/Соседнего файла нет — specs/decision-viewer/spec.md:33"
+    },
+    {
+     "path": "openspec/changes/archive/2026-11-07-module-structure/specs/decision-viewer/spec.md",
+     "quote": "- **THEN** все режимы и промпт возврата работают"
+    },
+    {
+     "path": "openspec/changes/archive/2026-11-07-module-structure/specs/decision-viewer/spec.md",
+     "quote": "<!-- проба краёв: форма=io, исходы: нет -->"
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-12",
+   "question": "`_scenarios` берёт текст сценария от заголовка до следующего заголовка вместе с HTML-комментариями, а `_requirement_body` комментарии вырезает: след пробы не текст требования (F-44), но текст сценария.",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "материалы",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "F-26",
+   "evidence": [
+    {
+     "path": "trace/trace_graph.py",
+     "quote": "text = \"\\n\".join(lines[i + 1:end]).strip()"
+    },
+    {
+     "path": "trace/trace_graph.py",
+     "quote": "без строк в блоках кода и без HTML-комментариев (след пробы `<!-- проба краёв … -->` не текст требования, F-44)."
+    },
+    {
+     "path": "trace/trace_graph.py",
+     "quote": "\"scenarios\": {s.name: _hash(s.text) for s in req.scenarios}, \"text\": _hash(req.text),"
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-13",
+   "question": "След проб стоит в конце блока требования после всех сценариев, а в общую спеку при синхронизации по правилу `rules.specs` не переносится: у дельты след есть, у мастера нет.",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "материалы",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "F-26",
+   "evidence": [
+    {
+     "path": "probes/skills/symphysis-edge-probe/SKILL.md",
+     "quote": "След стоит в конце блока каждого требования, после всех его сценариев"
+    },
+    {
+     "path": "openspec/config.yaml",
+     "quote": "след проб — комментарии «проба краёв» и «проба запретов» — в общую спеку при синхронизации не переносится"
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-14",
+   "question": "Сигналы графа идут одним плоским списком по месту в файле; `build_report` делит отчёт только на разделы «Находки openspec validate», «Сигналы графа», «Расхождения сценариев MODIFIED» и требования без базы; порядок по месту закреплён тестом.",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "материалы",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "F-27, F-29",
+   "evidence": [
+    {
+     "path": "trace/trace_graph.py",
+     "quote": "Сигналы графа строками `[!!] вид: ключ — место`, порядок по месту в файле"
+    },
+    {
+     "path": "trace/trace_graph.py",
+     "quote": "found.sort(key=lambda f: (f[0].rsplit(\":\", 1)[0], int(f[0].rsplit(\":\", 1)[1])))"
+    },
+    {
+     "path": "trace/trace_graph.py",
+     "quote": "sections = [(\"Находки openspec validate\", findings, \"Находок нет.\"), (\"Сигналы графа\", signals, \"Сигналов графа нет.\")]"
+    },
+    {
+     "path": "trace/tests/test_trace_report.py",
+     "quote": "def test_signals_come_in_order_of_place(tmp_path):"
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-15",
+   "question": "Состав видов сигналов закрыт спекой `trace-signals`, расхождения сценариев MODIFIED идут отдельным разделом по слову владельца (F-95); в коде есть виды сверх перечня спеки: «Specify без сценария», «Backstop без задачи», требование без базы (F-123).",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "материалы",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "F-27, F-28, F-29",
+   "evidence": [
+    {
+     "path": "openspec/specs/trace-signals/spec.md",
+     "quote": "Отчёт SHALL называть: критерий без требования; требование и сценарий без задачи; требование без записи (F-83); решение без требования и задачи; неоднозначное имя; неизвестное имя или номер; задачу ни к чему; след, отставший от журнала (F-64); сценарий MODIFIED с прежним именем и другим текстом (F-95)."
+    },
+    {
+     "path": "openspec/specs/trace-signals/spec.md",
+     "quote": "- **THEN** сигнал называет сценарий, в сохранённом отчёте такие расхождения идут отдельным разделом"
+    },
+    {
+     "path": "openspec/changes/archive/2026-11-06-trace-graph/decisions.md",
+     "quote": "решение: A — «в сохраняемом отчете расхождения в сценариях надо показывать отдельно», 2026-11-05"
+    },
+    {
+     "path": "trace/trace_graph.py",
+     "quote": "add(at, \"Specify без сценария\", rec[\"id\"], \", \".join([at, *(f\"снято {i}?\" for i in lifting)]))"
+    },
+    {
+     "path": "trace/trace_graph.py",
+     "quote": "UNBASED = \"у требования MODIFIED нет базы мастер-спеки, текст совпал с мастером, номера в нём не отсечены\"  # F-123"
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-16",
+   "question": "Запись `[сигнал] <вид> · <ключ>` гасит сигнал по виду и ключу, скопированным из строки отчёта: формат строки `[!!] вид: ключ — место` — контракт с человеком и журналом, перестановка строк его не трогает, правка строки — трогает.",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "материалы",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "F-27, F-29",
+   "evidence": [
+    {
+     "path": "docs/GUIDE.md",
+     "quote": "Вид и ключ копируются из строки отчёта: ключ — ровно то, что стоит между `вид: ` и ` — место`."
+    },
+    {
+     "path": "trace/trace_graph.py",
+     "quote": "Сигнал, на который есть запись `[сигнал] <вид> · <ключ>` с решением, молчит (вид и ключ как в строке, пробелы приведены; F-47,"
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-17",
+   "question": "«Сигналы по важности» — предложение разбора; F-155.B изменения `trace-graph` отправил его в бэклог без решения о форме, владелец поставил `high` 2026-11-07.",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "материалы",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "F-27, F-28",
+   "evidence": [
+    {
+     "path": "docs/analysis/requirements-traceability-graph-of-symphysis.md",
+     "quote": "- **Сигналы по важности.** Список группируется и упорядочивается, чтобы регламент соблюдался не только формально."
+    },
+    {
+     "path": "openspec/changes/archive/2026-11-06-trace-graph/decisions.md",
+     "quote": "метка доверия у снимка, отложенная проверка (отказ от атаки пишется как Defer), сигналы по важности. Что с ними?"
+    },
+    {
+     "path": "openspec/changes/trace-numbers-signals/intent.md",
+     "quote": "владелец поставил `high` в бэклоге 2026-11-07"
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-18",
+   "question": "Исследование F-131: якорь — имя сущности, хеш — провенанс по содержимому; дорого не считать хеш, а держать реестр машинных id и разбирать вал переподтверждений; снимок уже несёт хеши исходников по файлу (F-87).",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "материалы",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "F-06, F-22, F-23",
+   "evidence": [
+    {
+     "path": "openspec/changes/archive/2026-11-06-trace-graph/research/F-131.md",
+     "quote": "`PIPELINE.md:98` «Провенанс — хеш нормализованного содержимого, не позиция»"
+    },
+    {
+     "path": "openspec/changes/archive/2026-11-06-trace-graph/research/F-131.md",
+     "quote": "Это мой вывод: дорого не считать хеш, а держать реестр id и разбирать вал переподтверждений."
+    },
+    {
+     "path": "openspec/changes/archive/2026-11-06-trace-graph/research/F-131.md",
+     "quote": "Пока снимки не сверяются между собой (F-38), сдвиг ничего не ломает."
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-19",
+   "question": "Id узлов читаемы (`req:capability/имя`, `rec:F-NN`), файл графа несёт `format: 1`, снимок другой версии проверка отвергает строкой «формат N, а скрипт читает M»; смена формы id признана дорогой, потому что архивные снимки не пересобираются (F-70, F-131).",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "материалы",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "F-22, F-23, F-25",
+   "evidence": [
+    {
+     "path": "openspec/changes/archive/2026-11-06-trace-graph/decisions.md",
+     "quote": "A. Читаемые id: `req:capability/имя`, `scn:capability/требование/имя`, `rec:F-NN`, `task:N.M`. В файле поле `format: 1`"
+    },
+    {
+     "path": "trace/trace_graph.py",
+     "quote": "GRAPH_FORMAT = 1"
+    },
+    {
+     "path": "trace/trace_graph.py",
+     "quote": "problems.append(f\"формат {data['format']}, а скрипт читает {GRAPH_FORMAT}\")"
+    },
+    {
+     "path": "openspec/changes/archive/2026-11-06-trace-graph/decisions.json",
+     "quote": "id лежат в снимках `req-graph.json`, архивные снимки не пересобираются, поэтому смена формы даст второй номер `format`"
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-20",
+   "question": "По порядку бэклога B-07 и B-08 (уникальные имена требований при слиянии графов, уровень якорей и хешей) идут следующим изменением после этого; решение о хешах здесь задаёт им форму.",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "материалы",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "F-22, F-23",
+   "evidence": [
+    {
+     "path": "openspec/changes/trace-numbers-signals/intent.md",
+     "quote": "Связь: B-07 и B-08 (уникальные имена требований при слиянии графов, уровень якорей и хешей) идут следующим изменением; если здесь принимается решение о хешах у всех узлов графа, оно задаёт им форму."
+    },
+    {
+     "path": "openspec/changes/archive/2026-11-06-trace-graph/decisions.md",
+     "quote": "Раз у нас нет uuid, чтобы обеспечить уникальность идентификаторов, то придется разрешать возможные конфликты переименованием требований"
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-21",
+   "question": "Как граф отличает номер своего журнала от номера мастер-текста при одном числе — у MODIFIED (`known`) и у дочернего ADDED (`cut`)?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-05"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "По полной ссылке: ключ отсечения — номер с буквой варианта и с именем журнала, если оно стоит перед списком (``журнал `x`: F-23.A, F-45.E``). Ссылка с чужим именем журнала не ссылка этого журнала ни в мастере, ни в дельте: связи и сигнала «неизвестный номер» не даёт. Голый номер мастера против голого своего отсекается, как сейчас, и виден сигналом «требование без записи». Цена: разбор формы с именем журнала в `_record_numbers`, база снимка хранит ссылки строками (F-25), тесты на обе формы; коллизия голый-против-голого в старом тексте остаётся.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "trace/trace_graph.py",
+       "quote": "# граница слова слева: `UTF-8` не даёт `F-8`; `.A` у `F-07.A` остаётся за числом"
+      },
+      {
+       "path": "openspec/specs/decision-viewer/spec.md",
+       "quote": "(журнал `calibration-fixes`: F-23.A, F-45.E, F-46.E)"
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "По строке: база хранит хеши строк тела требования; номер в строке дельты, дословно стоящей в мастере, связи не даёт, номер в новой или изменённой строке даёт связь любой. Цена: поле хешей строк в базе, правка `known` и `cut`; текст требования часто одна длинная строка со многими ссылками, и её правка делает все старые номера «новыми»: чужой голый номер молча становится связью к своему журналу — то, от чего ушёл F-84.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/changes/archive/2026-11-06-trace-graph/decisions.md",
+       "quote": "Граф молча свяжет требование с чужой записью того же номера, и выглядеть это будет верно"
+      },
+      {
+       "path": "openspec/specs/decision-viewer/spec.md",
+       "quote": "`render-html` SHALL собирать `symphysis.html` из `decisions.json` по шаблону `playground-template.html` (F-26)"
+      }
+     ]
+    },
+    {
+     "letter": "C",
+     "text": "Оба правила: унаследованная дословно строка связей не даёт вовсе, в новой или изменённой строке отсекаются только ссылки с чужим именем журнала или буквой варианта. Цена: оба поля в базе и два правила; дыра B для изменённых строк остаётся.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/changes/archive/2026-11-06-trace-graph/decisions.md",
+       "quote": "Граф молча свяжет требование с чужой записью того же номера, и выглядеть это будет верно"
+      }
+     ]
+    },
+    {
+     "letter": "D",
+     "text": "Оставить как есть: отсечение по числу.",
+     "added": false,
+     "unlikely": "ровно это даёт четыре сигнала intent на `module-structure`",
+     "deviation": "F-01",
+     "evidence": [
+      {
+       "path": "openspec/changes/trace-numbers-signals/intent.md",
+       "quote": "поэтому номер своего журнала с тем же числом пропадает молча"
+      }
+     ]
+    },
+    {
+     "letter": "E",
+     "text": "Не отсекать: каждый номер в тексте — связь этого журнала.",
+     "added": false,
+     "unlikely": "F-84.B изменения `trace-graph` отвергнут: ложные связи выглядят верными",
+     "evidence": [
+      {
+       "path": "openspec/changes/archive/2026-11-06-trace-graph/decisions.md",
+       "quote": "Dismiss — каждый номер считается связью этого журнала: ложные связи с записями того же номера принимаются"
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Отказ A виден: своя запись не связалась, и сигнал об этом есть. Отказ B и C молчит: чужой номер в изменённой строке становится своей связью. A закрывает оба случая критерия F-01 — имя чужого журнала и букву варианта, а голый-против-голого в новом тексте снимает соглашение F-24."
+   },
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-07"
+   },
+   "reversibility": {
+    "level": "обратимо",
+    "why": "правило разбора и отсечения в одном месте `trace/trace_graph.py`; форма базы снимка — F-25, возврат к числам — чтение ссылок как чисел"
+   },
+   "outcome": null,
+   "parking": [
+    {
+     "addressee": "материалы",
+     "text": "Прогнать сборку графа с правилом A на архивных изменениях `module-structure`, `trace-graph`, `step-help` (`trace_graph.py build` из архива, база — их `graph/req-graph.json`) и сравнить связи `traces` и сигналы «требование без записи» со снимками: какие связи появятся, какие пропадут, есть ли ложные. Посчитать по `openspec/specs/*/spec.md`, сколько голых номеров прежних изменений стоит в требованиях и сколько ссылок с именем журнала перед списком: насколько велика оставшаяся дыра голый-против-голого.",
+     "finding": "`research/F-21.md`: мастер — 683 ссылки в телах 241 требований, голых 664 (172 с буквой), с именем журнала перед списком 19 в четырёх capability; четыре требования несут одно число и голым, и с именем чужого журнала. Проба правила A на временных корнях: сборка до патча воспроизводит снимки (42 и 212 связей), после — у `module-structure` +4 связи и −4 сигнала «требование без записи», ложных связей и «неизвестного номера» нет; `trace-graph` и `step-help` без изменений. Остаток — голое против голого: два сигнала `module-structure` (`F-20`, `F-14.A`), один у `step-help` (`F-01.B`); чужие голые номера без своей записи (`F-74`, `F-114.A`) прячет только база. Ключ правила A нельзя взять из живого мастера после sync — нужна база со ссылками (F-25.B). Открылось: своё имя в своей дельте (F-36), имя после списка без двоеточия (F-37); следы с именем журнала идут через хеш следа (F-147), не через `known`/`cut` — вне правила A."
+    }
+   ],
+   "dispute": "",
+   "consequences": "F-25 — форма базы для A; F-24 — откуда берутся новые голые номера; Сверка после выбора: с F-22.A полная ссылка включает и форму якоря `<изменение>/F-NN`, чужое имя изменения — не ссылка этого журнала; проба F-34: правило A закрывает четыре сигнала intent, остаток голый-против-голого виден сигналом",
+   "evidence": [
+    {
+     "path": "openspec/changes/trace-numbers-signals/research/F-21-probe/count-refs.txt",
+     "quote": "ИТОГО | 241 | 239 | 683 | 664 | 172 | 19 | 4"
+    },
+    {
+     "path": "openspec/changes/trace-numbers-signals/research/F-21-probe/before-vs-snapshot-module-structure.txt",
+     "quote": "снимок module-structure: связей traces от требований 42; сборка до патча: 42"
+    },
+    {
+     "path": "openspec/changes/trace-numbers-signals/research/F-21-probe/after-vs-before-module-structure.txt",
+     "quote": "до патча: связей traces от требований 42; после патча (правило A): 46"
+    },
+    {
+     "path": "openspec/changes/trace-numbers-signals/research/F-21-probe/after-vs-before-trace-graph.txt",
+     "quote": "до патча: связей traces от требований 212; после патча (правило A): 212"
+    },
+    {
+     "path": "openspec/changes/trace-numbers-signals/research/F-21-probe/layout-module-structure.txt",
+     "quote": "совпадение F-20 (стр. 6): в мастере ['F-20']; своя запись F-20: «Как код модулей находит друг друга и свои файлы в исходнике?»; A: голый против голого — отсекается, как сейчас"
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "refs",
+    "cut"
+   ]
+  },
+  {
+   "id": "F-22",
+   "question": "Из чего собирается якорь записи журнала в тексте требования, когда ссылка идёт на журнал другого изменения или стоит в мастере?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-06"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Имя изменения и номер: `<изменение>/F-NN` (`trace-graph/F-26`), с буквой варианта по желанию. В дельте ссылка на свой журнал остаётся `(F-NN)`, полная форма — для чужого журнала и для мастера. Граф читает обе формы и считает своей ссылку без имени или с именем этого изменения. Цена: разбор формы в `_record_numbers`; якорь не несёт дату архива (`archive/<дата>-<имя>`), поэтому имя изменения должно быть уникально в архиве — это и так условие B-07.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "docs/GUIDE.md",
+       "quote": "- Требование называет решения журнала номером в скобках: `(F-NN)` в его тексте."
+      },
+      {
+       "path": "openspec/changes/trace-numbers-signals/intent.md",
+       "quote": "если здесь принимается решение о хешах у всех узлов графа, оно задаёт им форму"
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Прозаическая форма, которой уже пишут: ``журнал `имя`: F-NN.X, F-MM.Y`` — узаконить её как якорь, ничего нового не вводить. Цена: форма многословна, имя стоит один раз на список, разбор идёт по контексту строки; буква варианта — часть якоря или нет, решать отдельно.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/specs/decision-viewer/spec.md",
+       "quote": "(журнал `symphysis-schema`: F-26.B, F-17.D)"
+      }
+     ]
+    },
+    {
+     "letter": "C",
+     "text": "Хеш записи (её вопроса) как якорь.",
+     "added": false,
+     "unlikely": "вопрос записи правится, хеш плывёт; F-131: хеш — детектор правки, не имя",
+     "evidence": [
+      {
+       "path": "openspec/changes/archive/2026-11-06-trace-graph/research/F-131.md",
+       "quote": "Хеш считается по содержимому."
+      }
+     ]
+    },
+    {
+     "letter": "D",
+     "text": "Машинный id (uuid) в записи журнала, новое поле схемы журнала, в тексте требования — он.",
+     "added": false,
+     "unlikely": "F-70 выбрал читаемые id; uuid в тексте требования нечитаем, а журналы без него уже у десяти изменений",
+     "evidence": [
+      {
+       "path": "openspec/changes/archive/2026-11-06-trace-graph/decisions.md",
+       "quote": "Раз у нас нет uuid, чтобы обеспечить уникальность идентификаторов, то придется разрешать возможные конфликты переименованием требований"
+      }
+     ]
+    }
+   ],
+   "antipodes": [
+    {
+     "option": "C",
+     "other": "F-06.A"
+    }
+   ],
+   "recommendation": {
+    "option": "A",
+    "why": "Имя изменения уникально в архиве и уже служит ключом снимков, парковок и отчётов; форма короткая, читается человеком, и граф отличает чужой якорь от своего одним сравнением с именем изменения. B узаконивает многословную форму с разбором по контексту; C и D теряют читаемость."
+   },
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-07"
+   },
+   "reversibility": {
+    "level": "дорого",
+    "why": "форма `<изменение>/F-NN` уходит в мастер-спеки `openspec/specs/` через F-24 и в снимки; смена формы потребует переписать мастер или читать две формы якоря"
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "F-24 стоит на форме якоря; якоря требований и сценариев — B-07, B-08",
+   "evidence": [],
+   "comments": [],
+   "nodes": [
+    "anchor",
+    "refs"
+   ]
+  },
+  {
+   "id": "F-23",
+   "question": "Хеши у всех узлов графа: решение здесь, а реализация — здесь или в B-08?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-06",
+    "F-02"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Да: у каждого узла снимка (`req`, `scn`, `rec`, `task`, `sec`, `branch`, `cap`) поле `hash` — `_hash` по тексту узла; id остаётся якорем. Реализация — B-07 и B-08 следующим изменением, здесь только решение о форме. Цена: нет; риск: B-08 переопределит, по какому тексту считать хеш у требования (с сценариями или без) и у задачи.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "trace/trace_graph.py",
+       "quote": "sha256 текста с приведением пробелов и концов строк (как сверка в `_squash`): в базу идут хеши, а не текст мастер-спеки."
+      },
+      {
+       "path": "openspec/changes/trace-numbers-signals/intent.md",
+       "quote": "если здесь принимается решение о хешах у всех узлов графа, оно задаёт им форму"
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Да, и реализуется здесь вместе с правкой базы снимка (F-25): формат меняется один раз. Цена: поле без читателя, пока снимки не сверяются между собой (F-38); объём изменения растёт на определение хеша по каждому виду узла и тесты.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/changes/archive/2026-11-06-trace-graph/research/F-131.md",
+       "quote": "Пока снимки не сверяются между собой (F-38), сдвиг ничего не ломает."
+      }
+     ]
+    },
+    {
+     "letter": "C",
+     "text": "Нет: хешей у узлов не будет; проверяемость — хеши исходников по файлу (F-87) и база мастера, B-08 ищет другой детектор. Цена: правку одного требования снимок видит как правку файла, узел не назван.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/changes/archive/2026-11-06-trace-graph/research/F-131.md",
+       "quote": "Снимок уже несёт хеши исходников по файлу, с приведением концов строк (F-87). Это тот же дешёвый детектор, отдельного уровня для него не нужно."
+      }
+     ]
+    },
+    {
+     "letter": "D",
+     "text": "Хеш вместо id.",
+     "added": false,
+     "unlikely": "отвергнут дважды: F-70.B изменения `trace-graph` и F-06.B здесь",
+     "evidence": [
+      {
+       "path": "openspec/changes/archive/2026-11-06-trace-graph/decisions.md",
+       "quote": "B. Хеш-id: устойчивы к переименованию, но в файле ничего не прочитать, и модель не сверит связь глазами"
+      }
+     ]
+    }
+   ],
+   "antipodes": [
+    {
+     "option": "D",
+     "other": "F-06.A"
+    }
+   ],
+   "recommendation": {
+    "option": "A",
+    "why": "Слово F-06 уже разделило роли, и B-08 получает форму до того, как накопятся снимки без неё. B кладёт в снимок поле без читателя и раздувает это изменение; C оставляет B-08 без детектора на уровне узла, хотя `_hash` уже есть и считается по той же базе."
+   },
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-07"
+   },
+   "reversibility": {
+    "level": "обратимо",
+    "why": "решение о форме без поля в снимке; реализация в B-08, до неё отмена ничего не стоит"
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "B-08 берёт форму отсюда; при B меняется объём F-25; Сверка после выбора: F-25.B растит версию формата до 2 здесь, реализация хешей в B-08 даст следующий номер — цена, названная в варианте B",
+   "evidence": [],
+   "comments": [],
+   "nodes": [
+    "anchor",
+    "base"
+   ]
+  },
+  {
+   "id": "F-24",
+   "question": "Как ссылки на записи попадают в мастер-спеку при синхронизации: голыми `(F-NN)`, как сейчас, или в форме якоря?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-22",
+    "F-05"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "При `/opsx:sync` голые `F-NN` блока требования, включая маркеры `<!-- F-NN -->`, переписываются в мастере в форму якоря (`<изменение>/F-NN`); дельта пишется по-прежнему; старые голые номера мастера остаются (F-05). Мастер с этого момента не копит голых номеров. Цена: где переписывать — код форка `specs-apply.ts` по перечню `UPSTREAM.md` или шаг скрипта после синхронизации до архива; парковка.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "docs/analysis/requirements-traceability-graph-of-symphysis.md",
+       "quote": "Форк применяет их в порядке «RENAMED → REMOVED → MODIFIED → ADDED» (`upstream/openspec/src/core/specs-apply.ts:446`), сверка увидит итог."
+      },
+      {
+       "path": "openspec/config.yaml",
+       "quote": "след проб — комментарии «проба краёв» и «проба запретов» — в общую спеку при синхронизации не переносится"
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Модель пишет якорь уже в дельте: правило `rules.specs` — ссылка на запись пишется `(<изменение>/F-NN)`; синхронизация ничего не переписывает. Цена: длиннее текст требований, соглашение GUIDE `(F-NN)` меняется, правило держится памятью модели.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "docs/GUIDE.md",
+       "quote": "- Требование называет решения журнала номером в скобках: `(F-NN)` в его тексте."
+      }
+     ]
+    },
+    {
+     "letter": "C",
+     "text": "Ничего не переписывать: мастер несёт голые номера, различение — только правило F-21; новые коллизии голый-против-голого возможны и видны сигналом. Цена: каждая синхронизация кладёт в мастер голые номера, с которыми столкнётся следующее изменение с тем же числом.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/specs/decision-viewer/spec.md",
+       "quote": "по шаблону `playground-template.html` (F-26) в один файл"
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Дельта остаётся короткой, как велит GUIDE, а мастер перестаёт копить голые номера: это и есть «не появились новые проблемы» из F-05. B перекладывает форму на память модели; C оставляет источник коллизий."
+   },
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-07"
+   },
+   "reversibility": {
+    "level": "дорого",
+    "why": "переписанные ссылки лежат в мастер-спеках `openspec/specs/`; отмена оставляет мастер с двумя формами ссылок навсегда, а правка форка идёт по перечню `upstream/openspec/UPSTREAM.md`"
+   },
+   "outcome": null,
+   "parking": [
+    {
+     "addressee": "материалы",
+     "text": "Как `/opsx:sync` переносит текст требования в мастер: код форка `upstream/openspec/src/core/specs-apply.ts` дословно, с комментариями, или модель по правилу; чем выполняется правило `rules.specs` о следе проб — кодом или моделью (F-147 изменения `trace-graph` говорит, что след в мастер попадал). Где дешевле переписать ссылки — правка форка по перечню `upstream/openspec/UPSTREAM.md` или шаг `trace_graph.py` после синхронизации до архива.",
+     "finding": "`research/F-24.md`: переносит текст модель — скилл `/opsx:sync` «agent-driven», `/opsx:archive` зовёт его инлайн и переносит каталог `mv`; код форка `specs-apply.ts` работает только у CLI `openspec archive`, которым проект не пользовался (три синка — скиллом). Правило о следе проб исполняет модель по полю `rules` команды `openspec instructions specs`: до правила след шёл в мастер (21 из 28 спек), после — ни строки; CLI блок переносит `raw` целиком с комментариями. Значит, переписывать ссылки можно правилом `rules.specs` (модель), скриптом после синка или правкой шаблона скилла (это правка форка, `openspec update` перезапишет) — развилка F-35. Граф сегодня якорь от голого номера не отличает: `/` в `_REC_REF` не граница, маркер с якорем `_MARK_BODY` не примет (F-32). Открылось: MODIFIED без следа стирает прежний след мастера (F-38); комментарий «требование из F-NN; пробами не проходило» в мастер переносится — при переписывании это тоже голый номер блока."
+    }
+   ],
+   "dispute": "",
+   "consequences": "При A или B коллизия голый-против-голого не растёт; при C F-21.A остаётся единственной защитой; F-35 — чем исполняется переписывание, раз переносит модель",
+   "evidence": [
+    {
+     "path": ".claude/skills/openspec-sync-specs/SKILL.md",
+     "quote": "This is an **agent-driven** operation - you will read delta specs and directly edit main specs to apply the changes."
+    },
+    {
+     "path": ".claude/skills/openspec-archive-change/SKILL.md",
+     "quote": "Then run the `openspec-sync-specs` workflow inline (agent-driven intelligent merge) for change '<name>'"
+    },
+    {
+     "path": "openspec/changes/trace-numbers-signals/research/F-24-probe/git-history.txt",
+     "quote": "fd5f8bb +проба=0 -проба=8"
+    },
+    {
+     "path": "openspec/changes/trace-numbers-signals/research/F-24-probe/instructions-specs.json",
+     "quote": "\"след проб — комментарии «проба краёв» и «проба запретов» — в общую спеку при синхронизации не переносится\""
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "master",
+    "anchor"
+   ]
+  },
+  {
+   "id": "F-25",
+   "question": "Как база снимка хранит ссылки мастера после F-21.A: новым полем рядом с `numbers` или вместо него с ростом версии формата?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-21"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Новое поле `refs` (строки ссылок) рядом с `numbers`; снимок без `refs` читается по `numbers`, как сегодня; `format` не растёт. Цена: два пути чтения в `known` и `cut` навсегда, архивные снимки продолжают отсекать по числу.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "trace/trace_graph.py",
+       "quote": "if not problems and data[\"format\"] != GRAPH_FORMAT:"
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "`numbers` становится списком строк ссылок, `GRAPH_FORMAT` растёт до 2; снимок формата 1 проверка отвергает строкой «формат 1, а скрипт читает 2». Цена: два вида снимков в архиве; `check` архивного снимка даёт отказ, но после архива снимки скрипт не читает (F-74).",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "trace/trace_graph.py",
+       "quote": "problems.append(f\"формат {data['format']}, а скрипт читает {GRAPH_FORMAT}\")"
+      },
+      {
+       "path": "openspec/changes/archive/2026-11-06-trace-graph/decisions.md",
+       "quote": "В файле поле `format: 1`"
+      }
+     ]
+    },
+    {
+     "letter": "C",
+     "text": "Базу не менять: ссылки с именем журнала читать из живой мастер-спеки при сборке.",
+     "added": false,
+     "unlikely": "F-123: после синхронизации живой мастер уже несёт номера этого изменения, база для того и введена",
+     "evidence": [
+      {
+       "path": "openspec/changes/archive/2026-11-06-trace-graph/decisions.md",
+       "quote": "Снимок несёт базу: при заморозке в него пишутся номера и сценарии мастер-спеки по каждому требованию MODIFIED."
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "B",
+    "why": "Версия формата заведена ради этого (F-70), а после архива снимки скрипт не читает: два читателя навсегда в A дороже одного отказа на снимке, который никто не проверяет. При F-23.B хеши узлов входят в тот же рост версии."
+   },
+   "decision": {
+    "option": "B",
+    "word": "",
+    "date": "2026-11-07"
+   },
+   "reversibility": {
+    "level": "дорого",
+    "why": "версия формата снимка `req-graph.json` растёт до 2; архивные снимки формата 1 не пересобираются, два вида снимков остаются в архиве, как при F-123"
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "При F-21.B или C вместо ссылок в базу идут хеши строк, развилка та же: рядом или вместо",
+   "evidence": [],
+   "comments": [],
+   "nodes": [
+    "base"
+   ]
+  },
+  {
+   "id": "F-26",
+   "question": "Чем снять след проб из текста сценария при сверке с мастером (B-03)?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-03"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "`_scenarios` вырезает HTML-комментарии из текста сценария тем же правилом, что `_requirement_body` (с учётом блоков кода). Мастер и дельта идут через одну функцию, хеши сценариев в базе считаются по тексту без комментариев, включая маркер `<!-- F-NN -->`. Цена: правка одной функции, тест «след после последнего сценария — сценарий не изменён»; базы архивных снимков считали хеш с хвостом следа и с маркером: при пересборке по старой базе такой сценарий один раз читался бы как `changed`, но архивные снимки не пересобираются (F-74).",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "trace/trace_graph.py",
+       "quote": "без строк в блоках кода и без HTML-комментариев (след пробы `<!-- проба краёв … -->` не текст требования, F-44)."
+      },
+      {
+       "path": "openspec/config.yaml",
+       "quote": "след проб — комментарии «проба краёв» и «проба запретов» — в общую спеку при синхронизации не переносится"
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Текст сценария обрезается перед первым комментарием `<!-- проба`; маркеры `<!-- F-NN -->` остаются текстом. Цена: два правила для комментариев в одном разборщике; след не на месте (ошибка модели) оставляет хвост.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "probes/skills/symphysis-edge-probe/SKILL.md",
+       "quote": "След стоит в конце блока каждого требования, после всех его сценариев"
+      }
+     ]
+    },
+    {
+     "letter": "C",
+     "text": "Конец блока требования считать по первой строке `<!-- проба` ещё в `parse_spec`: сценарий кончается там же. Цена: `_scenarios` всё равно правится ради `end`, а `_trace_comments` уже находит след по строкам отдельно.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "trace/trace_graph.py",
+       "quote": "след пробы по строке заголовка требования-владельца (F-156)"
+      }
+     ]
+    },
+    {
+     "letter": "D",
+     "text": "Оставить как есть.",
+     "added": false,
+     "unlikely": "пять ложных сигналов на одном изменении, и по одному на каждый MODIFIED со следом",
+     "deviation": "F-03",
+     "evidence": [
+      {
+       "path": "openspec/changes/archive/2026-11-07-module-structure/graph/report.md",
+       "quote": "[!!] сценарий MODIFIED с прежним именем и другим текстом: trace-graph/Граф собирается из файлов изменения/Журнал негоден по схеме — specs/trace-graph/spec.md:29"
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Одно правило на комментарии во всём разборщике, то же, что F-44 дал тексту требования. B и C делят комментарии на виды и оставляют хвост, если след стоит не на месте."
+   },
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-07"
+   },
+   "reversibility": {
+    "level": "обратимо",
+    "why": "одна функция `_scenarios` в `trace/trace_graph.py`; хеши сценариев базы пересчитываются следующей заморозкой, архивные снимки не трогаются"
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [],
+   "comments": [],
+   "nodes": [
+    "scn"
+   ]
+  },
+  {
+   "id": "F-27",
+   "question": "Как отчёт упорядочивает сигналы графа: группы по тяжести, группы по виду или плоский список (B-04)?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-04"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Группы по тяжести в закреплённом порядке (принцип деления — F-28), каждая группа названа и сосчитана (вид показа — F-29); внутри группы — по месту в файле, как сейчас; строка `[!!] вид: ключ — место` не меняется; разделы «Расхождения сценариев MODIFIED» (F-95) и требований без базы (F-123) остаются своими. Цена: правка `build_report` и `graph_signals`, MODIFIED требования «Отчёт называет закрытый состав сигналов», тест порядка переписывается.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "trace/trace_graph.py",
+       "quote": "found.sort(key=lambda f: (f[0].rsplit(\":\", 1)[0], int(f[0].rsplit(\":\", 1)[1])))"
+      },
+      {
+       "path": "openspec/specs/trace-signals/spec.md",
+       "quote": "- **THEN** сигнал называет сценарий, в сохранённом отчёте такие расхождения идут отдельным разделом"
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Группы по виду в порядке перечня спеки, без тяжести: подраздел на каждый вид. Цена: длинный отчёт по-прежнему прячет единичный «неизвестный номер» за десятком «без задачи».",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/specs/trace-signals/spec.md",
+       "quote": "Отчёт SHALL называть: критерий без требования; требование и сценарий без задачи; требование без записи (F-83); решение без требования и задачи; неоднозначное имя; неизвестное имя или номер; задачу ни к чему; след, отставший от журнала (F-64); сценарий MODIFIED с прежним именем и другим текстом (F-95)."
+      }
+     ]
+    },
+    {
+     "letter": "C",
+     "text": "Сортировка по тяжести без заголовков: список один, порядок — тяжесть, потом место. Цена: границы групп не видны, счёта нет.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "trace/trace_graph.py",
+       "quote": "Сигналы графа строками `[!!] вид: ключ — место`, порядок по месту в файле"
+      }
+     ]
+    },
+    {
+     "letter": "D",
+     "text": "Оставить как есть: плоский список по месту.",
+     "added": false,
+     "unlikely": "F-155.B отправил предложение в бэклог, владелец поставил `high`",
+     "deviation": "F-04",
+     "evidence": [
+      {
+       "path": "openspec/changes/trace-numbers-signals/intent.md",
+       "quote": "отчёт `trace_graph.py report` группирует и упорядочивает сигналы"
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Регламент — человек читает отчёт и отвечает записями `[сигнал]` (F-16): важное впереди и со счётом видно сразу, а строка сигнала прежняя, записи `[сигнал]` и тесты по строкам не ломаются. B группирует, но не ранжирует; C ранжирует, но не показывает границ."
+   },
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-07"
+   },
+   "reversibility": {
+    "level": "обратимо",
+    "why": "`build_report` и спека `trace-signals`; сохранённые `report.md` архива остаются в прежнем виде, скрипт их не перечитывает"
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "F-28 — принцип групп, F-29 — вид показа",
+   "evidence": [],
+   "comments": [],
+   "nodes": [
+    "signals",
+    "report"
+   ]
+  },
+  {
+   "id": "F-28",
+   "question": "По какому принципу виды сигналов делятся на группы тяжести?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-27"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "По тому, что сломано. 1) Связь не разрешена или двусмысленна: «неизвестное имя или номер», «неоднозначное имя». 2) Опоры нет: «критерий без требования», «требование без записи», «решение без требования и задачи», «след отстал от журнала». 3) Реализация не закрывает: «требование без задачи», «сценарий без задачи», «Backstop без задачи», «Specify без сценария», «задача ни к чему». Разделы F-95 и F-123 остаются отдельными. Цена: таблица видов и групп в спеке `trace-signals` и константой в коде.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/specs/trace-signals/spec.md",
+       "quote": "Отчёт SHALL называть: критерий без требования; требование и сценарий без задачи; требование без записи (F-83); решение без требования и задачи; неоднозначное имя; неизвестное имя или номер; задачу ни к чему; след, отставший от журнала (F-64); сценарий MODIFIED с прежним именем и другим текстом (F-95)."
+      },
+      {
+       "path": "trace/trace_graph.py",
+       "quote": "UNBASED = \"у требования MODIFIED нет базы мастер-спеки, текст совпал с мастером, номера в нём не отсечены\"  # F-123"
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "По тому, кто чинит. 1) Правит модель в файле: опечатка имени или номера, повтор id. 2) Решает человек об объёме: без задачи, без сценария, без записи. 3) Справка о мастере и журнале: след отстал, расхождения. Цена: «требование без записи» спорно — правит и модель, и человек; регламент и так отдаёт решение человеку (F-31).",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "docs/GUIDE.md",
+       "quote": "Сигнал отчёта не повод править спеки и задачи без твоего слова."
+      }
+     ]
+    },
+    {
+     "letter": "C",
+     "text": "Порядок перечня спеки без тяжести.",
+     "added": false,
+     "unlikely": "это F-27.B, а не принцип деления",
+     "evidence": [
+      {
+       "path": "openspec/specs/trace-signals/spec.md",
+       "quote": "### Requirement: Отчёт называет закрытый состав сигналов"
+      }
+     ]
+    },
+    {
+     "letter": "D",
+     "text": "Порядок и группы задаёт личная настройка `symphysis.yaml`.",
+     "added": false,
+     "unlikely": "порядок — часть формата отчёта, закреплённого спекой и тестом; настройка сделала бы его непроверяемым и разным в проектах",
+     "evidence": [
+      {
+       "path": "CLAUDE.md",
+       "quote": "`settings/symphysis_config.py` — состав выбора из личного `symphysis.yaml`, единственный"
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Группы A отвечают на вопрос отчёта «чем держится требование»: сначала то, что граф не смог связать, потом то, чему опоры нет, потом зазор реализации. B делит по ответственности, которую регламент и так целиком отдаёт человеку (F-31), и спотыкается на «требовании без записи»."
+   },
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-07"
+   },
+   "reversibility": {
+    "level": "обратимо",
+    "why": "таблица видов и групп константой в коде и в спеке `trace-signals`; смена принципа — правка таблицы, строки сигналов те же"
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [],
+   "comments": [],
+   "nodes": [
+    "signals"
+   ]
+  },
+  {
+   "id": "F-29",
+   "question": "Как группы показаны в `report.md`: подзаголовки со счётом, разрывы или пометка в строке?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-27"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Подзаголовки третьего уровня с именем группы и счётом строк (`### Связь не разрешена (2)`), пустая группа опускается; `## Сигналы графа` остаётся разделом-родителем; строка сигнала прежняя. Цена: сценарий и тест формата.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "trace/trace_graph.py",
+       "quote": "parts += [f\"## {title}\", \"\", *(lines or [none]), \"\"]"
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Пустая строка между группами без заголовков. Цена: читатель не знает, что означает разрыв; счёта нет.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "trace/trace_graph.py",
+       "quote": "parts += [f\"## {title}\", \"\", *(lines or [none]), \"\"]"
+      }
+     ]
+    },
+    {
+     "letter": "C",
+     "text": "Пометка тяжести внутри строки сигнала (`[!!] 1 неизвестное имя…`).",
+     "added": false,
+     "unlikely": "меняет строку, из которой копируются вид и ключ записи `[сигнал]` (F-16)",
+     "evidence": [
+      {
+       "path": "docs/GUIDE.md",
+       "quote": "Вид и ключ копируются из строки отчёта: ключ — ровно то, что стоит между `вид: ` и ` — место`."
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Заголовок называет группу и считает строки, а строка сигнала не меняется: C ломает копирование вида и ключа, B не объясняет разрыв."
+   },
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-07"
+   },
+   "reversibility": {
+    "level": "обратимо",
+    "why": "вид заголовков в `build_report`; строка сигнала не меняется, записи `[сигнал]` от заголовков не зависят"
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [],
+   "comments": [],
+   "nodes": [
+    "report"
+   ]
+  },
+  {
+   "id": "F-30",
+   "question": "Синхронизацию дельт в мастер делает модель: скилл `/opsx:sync` «agent-driven», `/opsx:archive` зовёт его инлайн и переносит каталог командой `mv`; код форка `specs-apply.ts` работает только у CLI `openspec archive`, которым проект не пользовался. Правило о следе проб исполняет модель по полю `rules`: до правила след шёл в мастер, после — ни строки.",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "материалы",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "F-35 — переписывание ссылок исполняет модель, скрипт или форк; F-38",
+   "evidence": [
+    {
+     "path": ".claude/skills/openspec-sync-specs/SKILL.md",
+     "quote": "This is an **agent-driven** operation - you will read delta specs and directly edit main specs to apply the changes."
+    },
+    {
+     "path": ".claude/skills/openspec-archive-change/SKILL.md",
+     "quote": "mv \"<changeRoot>\" \"<planningHome.changesDir>/archive/<target-name>\""
+    },
+    {
+     "path": ".claude/skills/openspec-sync-specs/SKILL.md",
+     "quote": "Apply returned `rules` only to the content and form of the main specs produced"
+    },
+    {
+     "path": "upstream/openspec/src/core/archive.ts",
+     "quote": "skipSpecs?: boolean;"
+    },
+    {
+     "path": "openspec/changes/trace-numbers-signals/research/F-24-probe/git-history.txt",
+     "quote": "a9d2060 +проба=46 -проба=0"
+    },
+    {
+     "path": "openspec/changes/trace-numbers-signals/research/F-24-probe/git-history.txt",
+     "quote": "6c51cb8 +проба=0 -проба=21"
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "master"
+   ]
+  },
+  {
+   "id": "F-31",
+   "question": "Код CLI переносит блок требования полем `raw` целиком, с комментариями; по факту мастер несёт следы проб из синков до правила и маркеры `<!-- F-NN -->` из синков после него, а MODIFIED без следа стирает прежний след мастера вместе с заменённым блоком.",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "материалы",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "F-26 — хеш сценария с маркером считается по тексту без комментариев с обеих сторон; F-38",
+   "evidence": [
+    {
+     "path": "upstream/openspec/src/core/specs-apply.ts",
+     "quote": ".concat(keptOrder.map((b) => b.raw))"
+    },
+    {
+     "path": "upstream/openspec/src/core/specs-apply.ts",
+     "quote": "// the original lines so an author's own comments and fences survive intact."
+    },
+    {
+     "path": "openspec/specs/artifact-attack/spec.md",
+     "quote": "<!-- проба краёв: форма=text, io, исходы: F-31 открыт, F-32 открыт -->"
+    },
+    {
+     "path": "openspec/specs/module-declaration/spec.md",
+     "quote": "<!-- F-47 -->"
+    },
+    {
+     "path": "openspec/changes/trace-numbers-signals/research/F-24-probe/git-history.txt",
+     "quote": "fd5f8bb +маркеров=38"
+    },
+    {
+     "path": "openspec/changes/trace-numbers-signals/research/F-24-probe/git-history.txt",
+     "quote": "34:-<!-- проба краёв, журнал `calibration-fixes`: форма=io, text, исходы: F-45 Specify, F-46 Specify -->"
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "master",
+    "scn"
+   ]
+  },
+  {
+   "id": "F-32",
+   "question": "Граф не отличает якорь от голого номера: в `_REC_REF` косая черта не граница, `<изменение>/F-NN` читается как `F-NN`; маркер `<!-- <изменение>/F-NN -->` под сценарием регулярка маркера целиком не примет. Формы `(F-NN)` и `<!-- F-NN -->` закреплены instruction схемы и GUIDE; в мастере `<!-- F-14 -->` стоит и как текст сценария, не маркер.",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "материалы",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "F-21, F-22 — разбор обеих форм ссылки и маркера с якорем; F-35 — переписывание отличает маркер-строку от упоминания формы в тексте",
+   "evidence": [
+    {
+     "path": "openspec/changes/trace-numbers-signals/research/F-24.md",
+     "quote": "`_REC_REF` не считает `/` границей, и `<изменение>/F-NN` читается как `F-NN`"
+    },
+    {
+     "path": "trace/trace_graph.py",
+     "quote": "if _MARK_BODY.fullmatch(comment.group(1)):"
+    },
+    {
+     "path": "trace/trace_graph.py",
+     "quote": "# комментарий на всю строку; сам номер — по `_REC_REF`"
+    },
+    {
+     "path": "openspec/schemas/symphysis/schema.yaml",
+     "quote": "Требование называет в тексте номера записей журнала, на которых стоит: `(F-NN)`."
+    },
+    {
+     "path": "docs/GUIDE.md",
+     "quote": "- Под заголовком сценария, появившегося по исходу Specify, стоит комментарий `<!-- F-NN -->` с номером записи."
+    },
+    {
+     "path": "openspec/specs/consequence-inventory/spec.md",
+     "quote": "- **THEN** под заголовком сценария стоит `<!-- F-14 -->`, сигнала «Specify без сценария» о F-14 нет"
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "refs",
+    "anchor"
+   ]
+  },
+  {
+   "id": "F-33",
+   "question": "Мастер-спеки: в телах 241 требований 683 ссылки на записи, голых 664 (из них 172 с буквой варианта), с именем журнала перед списком 19 — все в четырёх capability; четыре требования несут одно число и голым, и с именем чужого журнала. Есть формы, которых правило A не читает: имя после списка без двоеточия и два списка в одних скобках через `;`.",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "материалы",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "F-21 — размер оставшейся дыры голый-против-голого; F-37 — имя после списка",
+   "evidence": [
+    {
+     "path": "openspec/changes/trace-numbers-signals/research/F-21-probe/count-refs.txt",
+     "quote": "ИТОГО | 241 | 239 | 683 | 664 | 172 | 19 | 4"
+    },
+    {
+     "path": "openspec/changes/trace-numbers-signals/research/F-21-probe/count-refs.txt",
+     "quote": "decision-viewer | 28 | 26 | 76 | 67 | 11 | 9 | 3"
+    },
+    {
+     "path": "openspec/changes/trace-numbers-signals/research/F-21-probe/count-refs.txt",
+     "quote": "## Требования, где одно число стоит и голым, и с именем журнала: 4"
+    },
+    {
+     "path": "openspec/specs/decision-journal/spec.md",
+     "quote": "(F-12.A; слово владельца, журнал `trace-graph`)"
+    },
+    {
+     "path": "openspec/specs/project-installer/spec.md",
+     "quote": "(журнал `symphysis-schema`: F-15.C, F-16.B; журнал `calibration-fixes`: F-50.E)"
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "master",
+    "refs"
+   ]
+  },
+  {
+   "id": "F-34",
+   "question": "Проба правила A на архивных изменениях: сборка до патча воспроизводит снимки (42 и 212 связей `traces`); после патча у `module-structure` +4 связи (`F-26` у родителя, `F-46` у трёх дочерних) и −4 сигнала «требование без записи», ложных связей и «неизвестного номера» нет, ни одна связь не пропала; `trace-graph` и `step-help` без изменений. Остаток — голое против голого: `F-20` и `F-14.A` у `module-structure`, `F-01.B` у `step-help`.",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "материалы",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "F-21 — правило A закрывает критерий F-01 на примерах intent; остаток виден сигналом, решает человек по отчёту",
+   "evidence": [
+    {
+     "path": "openspec/changes/trace-numbers-signals/research/F-21-probe/before-vs-snapshot-trace-graph.txt",
+     "quote": "снимок trace-graph: связей traces от требований 212; сборка до патча: 212"
+    },
+    {
+     "path": "openspec/changes/trace-numbers-signals/research/F-21-probe/after-vs-before-module-structure.txt",
+     "quote": "до патча: связей traces от требований 42; после патча (правило A): 46"
+    },
+    {
+     "path": "openspec/changes/trace-numbers-signals/research/F-21-probe/after-vs-before-module-structure.txt",
+     "quote": "req:decision-viewer/Просмотрщик — один HTML из своего шаблона с тремя режимами -> rec:F-26 @ specs/decision-viewer/spec.md:6  запись: «Как быть с исходными путями в требованиях мастер-спек?»"
+    },
+    {
+     "path": "openspec/changes/trace-numbers-signals/research/F-21-probe/after-signals-module-structure.txt",
+     "quote": "[!!] требование без записи: plugin-core-contract/Заданный `SYMPHYSIS_ROOT` без ядра — падение, а не пропуск — specs/plugin-core-contract/spec.md:5"
+    },
+    {
+     "path": "openspec/changes/trace-numbers-signals/research/F-21-probe/after-vs-before-step-help.txt",
+     "quote": "до патча: связей traces от требований 76; после патча (правило A): 76"
+    },
+    {
+     "path": "openspec/changes/trace-numbers-signals/research/F-21-probe/layout-module-structure.txt",
+     "quote": "совпадение F-26.B @symphysis-schema (стр. 6): в мастере ['F-26.B @symphysis-schema']; своя запись F-26: «Как быть с исходными путями в требованиях мастер-спек?»; A: ссылка с чужим именем журнала — связи и сигнала не даёт"
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "cut",
+    "links"
+   ]
+  },
+  {
+   "id": "F-35",
+   "question": "Чем исполняется переписывание голых `F-NN` блока в форму якоря при синхронизации (F-24.A), раз текст в мастер переносит модель, а не код?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-24",
+    "F-30"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Правило `rules.specs` в `openspec/config.yaml`: при переносе блока в мастер модель переписывает все голые `F-NN` своего журнала — в тексте, сценариях, маркерах и комментариях блока — в `<изменение>/F-NN`. Механизм тот же, что у правила о следе, и история показывает, что он работает. Цена: держится памятью модели, проверки нет — пропуск узнает только следующее изменение сигналом; одна строка конфига.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/config.yaml",
+       "quote": "след проб — комментарии «проба краёв» и «проба запретов» — в общую спеку при синхронизации не переносится"
+      },
+      {
+       "path": "openspec/changes/trace-numbers-signals/research/F-24-probe/git-history.txt",
+       "quote": "fd5f8bb +проба=0 -проба=8"
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Скрипт после синхронизации: новая подкоманда отдельного скрипта (не `trace_graph.py` — его область «артефакты не правит») детерминированно переписывает голые номера своего журнала в блоках требований изменения в мастере и печатает, что переписал; зовёт его модель по строке правила `rules.specs` и подсказке `operations.archive.guidance`, как `freeze`. Цена: скрипт с тестами, строка правила и подсказки; точка вызова всё равно у модели, но результат проверяем и повторяем.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "trace/trace_graph.py",
+       "quote": "\"Область — расчёт и заморозка графа изменения; артефакты изменения не правит, решений за человека не \""
+      },
+      {
+       "path": "openspec/config.yaml",
+       "quote": "до выбора синхронизации вызови `python .symphysis/tools/trace_graph.py freeze <имя>`"
+      }
+     ]
+    },
+    {
+     "letter": "C",
+     "text": "Правка форка: шаблон workflow-скилла sync в `upstream/openspec/src/core/templates/workflows/` переписывает ссылки; правка C17 по образцу C4.",
+     "added": false,
+     "unlikely": "правило форка: остальное — схема, `rules` и свои скиллы; локальную правку скилла `openspec update` перезапишет",
+     "evidence": [
+      {
+       "path": "upstream/openspec/UPSTREAM.md",
+       "quote": "и шаг вердикта в шаблоне `continue`. Остальное — схема, `rules`"
+      },
+      {
+       "path": "docs/GUIDE.md",
+       "quote": "затем `openspec update` в проекте."
+      }
+     ]
+    },
+    {
+     "letter": "D",
+     "text": "Код CLI `specs-apply.ts` при `openspec archive`.",
+     "added": false,
+     "unlikely": "проект CLI-архивом не пользуется, а сверка «уже синхронизировано» по равенству текста после переписывания сломается",
+     "evidence": [
+      {
+       "path": "upstream/openspec/src/core/specs-apply.ts",
+       "quote": "if (normalizeBlockRaw(currentBlock.raw) !== normalizeBlockRaw(mod.raw)) {"
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "B",
+    "why": "Переписывание — точная замена без суждения, и по правилу владельца такое отдают скрипту: он идемпотентен, печатает след и покрыт тестом. A дешевле на скрипт, но пропуск модели ничем не ловится, кроме сигнала у следующего изменения; C и D правят форк ради того, чем проект не пользуется."
+   },
+   "decision": {
+    "option": "B",
+    "word": "",
+    "date": "2026-11-07"
+   },
+   "reversibility": {
+    "level": "обратимо",
+    "why": "отдельный скрипт и строка правила `rules.specs` в `openspec/config.yaml`; уже переписанные ссылки в мастере остаются законной формой по F-21.A, отмена скрипта их не трогает"
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "При A или B правило `rules.specs` — общая точка вызова для `/opsx:sync` и архива; при B — размещение скрипта в design; сверка после выбора: при B правило `rules.specs` зовёт скрипт — общая точка для `/opsx:sync` и архива (F-30), скрипт переписывает только номера своего журнала в блоках своего изменения (F-05.A)",
+   "evidence": [],
+   "comments": [],
+   "nodes": [
+    "master",
+    "anchor"
+   ]
+  },
+  {
+   "id": "F-36",
+   "question": "Своё имя в своей дельте: `step-help` написал ``журнал `step-help`: F-35`` в собственной дельте. Ссылка с именем, равным имени изменения, — своя или ошибка автора?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-21",
+    "F-22"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Своя: имя, равное имени изменения, читается как голый номер — так считала проба, и так же читается якорь `<изменение>/F-NN` своего изменения по F-22.A. Цена: ничего.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/changes/archive/2026-11-03-step-help/specs/decision-viewer/spec.md",
+       "quote": "(журнал `step-help`: F-35)"
+      },
+      {
+       "path": "openspec/changes/trace-numbers-signals/research/F-21.md",
+       "quote": "проба считала имя, равное имени изменения, своим"
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Чужая: любое имя в дельте — не ссылка этого журнала; своё имя в дельте — ошибка автора, которая видна сигналом «требование без записи». Цена: якорь своего изменения в дельте (F-22.A) тоже перестаёт быть ссылкой.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/changes/trace-numbers-signals/decisions.md",
+       "quote": "Граф читает обе формы и считает своей ссылку без имени или с именем этого изменения."
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "F-22.A уже объявил полную форму с именем своего изменения законной своей ссылкой; B делает ошибкой то, что F-22.A разрешает."
+   },
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-07"
+   },
+   "reversibility": {
+    "level": "обратимо",
+    "why": "правило разбора ссылок в одном месте `trace/trace_graph.py`; единственный случай в архиве — `step-help` без снимка"
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [],
+   "comments": [],
+   "nodes": [
+    "refs"
+   ]
+  },
+  {
+   "id": "F-37",
+   "question": "Имя журнала после списка без двоеточия — ``(F-12.A; слово владельца, журнал `trace-graph`)``, три места в `decision-journal` — именованная ссылка или голая?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-21",
+    "F-05"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Голая: правило A читает имя только перед списком с двоеточием; три места остаются в дыре голый-против-голого, старый текст не переписывается (F-05). Цена: ничего.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/specs/decision-journal/spec.md",
+       "quote": "(F-12.A; слово владельца, журнал `trace-graph`)"
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Именованная: разбор учитывает имя и после списка в тех же скобках. Цена: разбор по контексту скобок с произвольным текстом между, ложные имена у фраз вроде «журнал решений».",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/changes/trace-numbers-signals/research/F-21-probe/count-refs.txt",
+       "quote": "# Разбор — refparse.py: голая = без метки ``журнал `имя`:`` перед списком; «с буквой» — подмножество голых вида F-NN.X"
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Форма единичная, три места одной capability, и F-05 старое не переписывает; разбор по контексту скобок плодит ложные имена."
+   },
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-07"
+   },
+   "reversibility": {
+    "level": "обратимо",
+    "why": "код не меняется, три места старого текста `openspec/specs/decision-journal/spec.md` остаются как есть"
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [],
+   "comments": [],
+   "nodes": [
+    "refs"
+   ]
+  },
+  {
+   "id": "F-38",
+   "question": "MODIFIED без следа стирает в мастере прежний след проб заменённого блока (так было дважды: −8 и −21 строк). След прежних изменений при замене блока — стирать, сохранять или вычистить разом?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-30",
+    "F-31"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Стирать, как по факту: правило о следе хочет мастер без следов, замена блока к этому и ведёт без отдельной миграции; `F-147` (след мастера по хешу) остаётся для старых блоков. Цена: ничего.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/changes/trace-numbers-signals/research/F-24-probe/git-history.txt",
+       "quote": "6c51cb8 +проба=0 -проба=21"
+      },
+      {
+       "path": "openspec/config.yaml",
+       "quote": "след проб — комментарии «проба краёв» и «проба запретов» — в общую спеку при синхронизации не переносится"
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Сохранять: при замене блока след прежних изменений остаётся в мастере, новый не добавляется. Цена: мастер копит следы, которые правило велело не переносить; правило о следе усложняется словами о сохранении.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/specs/artifact-attack/spec.md",
+       "quote": "<!-- проба краёв: форма=text, io, исходы: F-31 открыт, F-32 открыт -->"
+      }
+     ]
+    },
+    {
+     "letter": "C",
+     "text": "Вычистить следы из мастера одним проходом.",
+     "added": false,
+     "unlikely": "F-05.A: старое не переписывается; следы уходят сами при каждом MODIFIED",
+     "evidence": [
+      {
+       "path": "openspec/changes/trace-numbers-signals/research/F-24-probe/git-history.txt",
+       "quote": "a9d2060 +проба=46 -проба=0"
+      }
+     ]
+    }
+   ],
+   "antipodes": [
+    {
+     "option": "C",
+     "other": "F-05.A"
+    }
+   ],
+   "recommendation": {
+    "option": "A",
+    "why": "Мастер по правилу следов не несёт, и стирание при замене блока ведёт туда без миграции; B копит то, что правило запретило, C противоречит F-05."
+   },
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-07"
+   },
+   "reversibility": {
+    "level": "обратимо",
+    "why": "конструкция не меняется: ни правило `rules.specs`, ни скилл sync не правятся; стёртый след восстановим из истории git"
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [],
+   "comments": [],
+   "nodes": [
+    "master"
+   ]
+  },
+  {
+   "id": "F-39",
+   "question": "[encoding · text] Ссылка на запись несёт якорь изменения: путь `openspec/changes/demo/research/F-01.md` в тексте требования — якорь изменения `research` с записью F-01, голый номер, как сегодня, или не ссылка?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-22",
+    "F-32"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN текст требования с путём `research/F-01.md` и запись F-01 в журнале WHEN скрипт собирает граф THEN ни связи, ни сигнала: за номером стоят точка и строчные буквы, это не ссылка; цена: правило правой границы в разборе ссылок, сценарий, тест на путь в тексте",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — путь читается как якорь изменения `research`: связи нет и сигнала нет; допустимо, пока имя каталога не совпадёт с именем изменения",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест подаёт требование с `research/F-01.md` и утверждает, что связи к `rec:F-01` нет; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — правая граница ссылки остаётся открытой до B-07 (уникальные имена): пока путь читается как якорь",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Сегодня такой путь даёт связь к записи по голому числу молча: `trace-snapshot/spec.md` несёт `research/F-01.md`, и F-01 есть в любом журнале. B лечит случайно, именем каталога; A называет правило — точка со строчной буквой после номера не ссылка; цена — правило и тест."
+   },
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-07"
+   },
+   "reversibility": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Specify",
+    "reason": ""
+   },
+   "parking": [],
+   "dispute": "",
+   "consequences": "в spec.md: Путь с номером в тексте",
+   "evidence": [
+    {
+     "path": "openspec/changes/trace-numbers-signals/specs/record-anchors/spec.md",
+     "quote": "### Requirement: Ссылка на запись несёт якорь изменения"
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-40",
+   "question": "[adjacency · collection] Голые номера блока переписываются в мастере при синхронизации: блок несёт унаследованный голый `(F-20)` журнала прежнего изменения, и F-20 есть в журнале этого изменения — скрипт припишет чужой номер этому изменению?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-35",
+    "F-25",
+    "F-05"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN блок после синхронизации с унаследованным голым `(F-20)`, которое стоит в базе снимка `graph/req-graph.json`, и новым `(F-21)`; оба номера есть в журнале WHEN выполняется скрипт THEN `(F-21)` переписан в якорь, `(F-20)` остался голым; без снимка переписываются все голые номера журнала, и вывод это называет; цена: скрипт читает базу снимка, сценарий, тест на унаследованный номер",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — унаследованный голый номер переписывается в якорь этого изменения: он и так был неразличим, а в мастере станет хотя бы именованным; допустимо, пока таких совпадений единицы (`F-20`, `F-14.A` у `module-structure`)",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест подаёт блок с унаследованным голым номером, который есть в журнале, и утверждает, что строка не изменилась; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — открыто до B-08: уровень якорей у требований даст провенанс строк, без него скрипт не знает, чья строка",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Приписать чужой номер своему изменению — ложная ссылка в мастере навсегда, которую граф потом прочтёт как верную (F-84); база снимка уже лежит рядом и говорит, какие ссылки были в мастере до синхронизации. B узаконивает ложную атрибуцию; цена A — чтение базы и тест."
+   },
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-07"
+   },
+   "reversibility": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Specify",
+    "reason": ""
+   },
+   "parking": [],
+   "dispute": "",
+   "consequences": "в spec.md: Унаследованный голый номер",
+   "evidence": [
+    {
+     "path": "openspec/changes/trace-numbers-signals/specs/record-anchors/spec.md",
+     "quote": "### Requirement: Голые номера блока переписываются в мастере при синхронизации"
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-41",
+   "question": "[encoding · text] Голые номера блока переписываются в мастере при синхронизации: `<!-- F-14 -->` в обратных кавычках внутри текста сценария — образец формы или ссылка, которую переписать?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-35",
+    "F-32"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN перенесённый сценарий с текстом «под заголовком сценария стоит `<!-- F-14 -->`» и запись F-14 в журнале WHEN выполняется скрипт THEN текст стал `<!-- demo/F-14 -->`: что граф читает как ссылку, то скрипт и переписывает, образец в двойных обратных кавычках не трогается; цена: одно правило разбора на граф и скрипт, сценарий, тест",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — текст в обратных кавычках не переписывается, образец остаётся как есть; допустимо, только если граф тоже перестанет читать одинарные кавычки как ссылку, иначе мастер и граф разойдутся",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест утверждает, что скрипт и граф дают один набор ссылок на одном тексте; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — открыто до правила о кавычках в GUIDE «Соглашения в артефактах»",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Расхождение между тем, что читает граф, и тем, что переписал скрипт, молча вернёт коллизию голый-против-голого у следующего изменения; одно правило разбора на обоих снимает вопрос. Цена — сценарий и тест."
+   },
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-07"
+   },
+   "reversibility": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Specify",
+    "reason": ""
+   },
+   "parking": [],
+   "dispute": "",
+   "consequences": "в spec.md: Образец в обратных кавычках",
+   "evidence": [
+    {
+     "path": "openspec/changes/trace-numbers-signals/specs/record-anchors/spec.md",
+     "quote": "### Requirement: Голые номера блока переписываются в мастере при синхронизации"
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-42",
+   "question": "[concurrency · io] Голые номера блока переписываются в мастере при синхронизации: скрипт прерван посреди записи `spec.md` мастера — файл обрезан?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-35"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN скрипт прерван во время записи мастер-спеки WHEN человек смотрит файл THEN он либо прежний, либо переписанный целиком: запись идёт во временный файл с переименованием; цена: правило записи в скрипте, сценарий, проверка по коду без теста обрыва",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — обрезанный файл виден сразу: `git diff` и `openspec validate` называют его, мастер под версионированием восстанавливается; допустимо для инструмента разработчика",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест подменяет запись падением после части байтов и утверждает, что исходный файл цел; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — открыто до общего правила записи файлов у скриптов ядра: `trace_graph.py` пишет снимок напрямую",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "B",
+    "why": "Мастер под git, обрезанный файл виден `git diff` и `openspec validate` сразу, ничего не портится молча; A вводит правило записи, которого нет у остальных скриптов ядра, ради случая, который чинится `git checkout`."
+   },
+   "decision": {
+    "option": "B",
+    "word": "",
+    "date": "2026-11-07"
+   },
+   "reversibility": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Dismiss",
+    "reason": ""
+   },
+   "parking": [],
+   "dispute": "",
+   "consequences": "Мастер под git, обрезанный файл виден `git diff` и `openspec validate` сразу, ничего не портится молча; A вводит правило записи, которого нет у остальных скриптов ядра, ради случая, который чинится `git checkout`.",
+   "evidence": [
+    {
+     "path": "openspec/changes/trace-numbers-signals/specs/record-anchors/spec.md",
+     "quote": "### Requirement: Голые номера блока переписываются в мастере при синхронизации"
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-43",
+   "question": "[empty · text] Переписывание зовётся правилом синхронизации: в проекте строки правила о вызове нет — установка сделана до этого изменения; кто ставит строку и что видит человек?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-35",
+    "F-30"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN проект с `.symphysis/` и `openspec/config.yaml` без строки правила о вызове WHEN выполняется `symphysis check` THEN сигнал называет недостающую строку и команду, как у других проверок установки; цена: проверка в инсталляторе, сценарий, тест",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — строку ставит человек по GUIDE при обновлении; допустимо, пока единственная установка — этот проект: слово владельца в `module-structure`, установок кроме этой нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест инсталлятора утверждает, что `install` кладёт строку в `config.yaml` проекта; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — открыто до первого проекта с установкой вне ядра",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "B",
+    "why": "Других установок нет, а `openspec/config.yaml` — файл проекта, который инсталлятор не правит; A и C расширяют инсталлятор ради проекта, которого нет, и пропуск строки виден по сигналу «требование без записи» у следующего изменения."
+   },
+   "decision": {
+    "option": "B",
+    "word": "",
+    "date": "2026-11-07"
+   },
+   "reversibility": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Dismiss",
+    "reason": ""
+   },
+   "parking": [],
+   "dispute": "",
+   "consequences": "Других установок нет, а `openspec/config.yaml` — файл проекта, который инсталлятор не правит; A и C расширяют инсталлятор ради проекта, которого нет, и пропуск строки виден по сигналу «требование без записи» у следующего изменения.",
+   "evidence": [
+    {
+     "path": "openspec/changes/trace-numbers-signals/specs/record-anchors/spec.md",
+     "quote": "### Requirement: Переписывание зовётся правилом синхронизации"
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-44",
+   "question": "[encoding · text] Требование называет свои записи журнала: `F-7` в мастер-тексте и `(F-07)` в дельте — одна ссылка или две?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-21",
+    "F-25"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN мастер-текст с голым `F-7`, дельта с `(F-07)` и запись F-07 в журнале WHEN скрипт собирает граф до `/opsx:sync` THEN ключи равны после приведения числа: `(F-07)` отсечён, связи нет, сигнал «требование без записи» называет требование; цена: приведение числа в ключе, сценарий, тест",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — ключ сравнивается строкой: `F-7` и `F-07` разные, `(F-07)` даёт связь; допустимо, потому что в мастере номеров без ведущего нуля нет (счёт F-33, формы `F-NN`)",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест подаёт `F-7` против `F-07` и утверждает, что ссылка отсечена; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — открыто до формы якоря в B-07: там число может стать частью машинного id",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Две записи одного числа дали бы связь там, где сегодня числа совпадают и связи нет, и никто бы этого не заметил; приведение числа — одна строка кода. B опирается на то, как написан мастер сегодня, а не на правило."
+   },
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-07"
+   },
+   "reversibility": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Specify",
+    "reason": ""
+   },
+   "parking": [],
+   "dispute": "",
+   "consequences": "в spec.md: Число без ведущего нуля",
+   "evidence": [
+    {
+     "path": "openspec/changes/trace-numbers-signals/specs/trace-conventions/spec.md",
+     "quote": "### Requirement: Требование называет свои записи журнала"
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-45",
+   "question": "[adjacency · collection] Ссылка с именем другого изменения не ссылка этого журнала: где кончается список после имени — ``(журнал `x`: F-15.C, F-16.B; журнал `y`: F-50.E, F-20)`` при F-20 в журнале изменения?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-21",
+    "F-33"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN текст ``(журнал `x`: F-15.C, F-16.B; журнал `y`: F-50.E, F-20)`` и запись F-20 в журнале изменения WHEN скрипт собирает граф THEN список имени длится, пока за запятой идёт `F-NN` с буквой или без: F-15.C и F-16.B — журнал `x`, F-50.E и F-20 — журнал `y`, связи к своему F-20 нет; `;` и `)` закрывают список; цена: правило границы списка, сценарий, тест",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — имя действует до закрывающей скобки или конца строки, всё после `журнал `x`:` в скобках чужое; допустимо, пока автор не смешивает свои и чужие номера в одних скобках",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест подаёт две именованные группы через `;` и свой номер после них и утверждает, что ни одна чужая не дала связи; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — открыто до формы якоря в дельтах: с якорем списков после имени больше не пишут (F-22, F-24)",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Без правила границы свой голый номер после именованного списка молча читается как чужой, а чужой — как свой, смотря где поставить границу; правило «пока идёт F-NN» совпадает со всеми 19 именованными местами мастера (F-33). Цена — правило и тест."
+   },
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-07"
+   },
+   "reversibility": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Specify",
+    "reason": ""
+   },
+   "parking": [],
+   "dispute": "",
+   "consequences": "в spec.md: Граница списка после имени",
+   "evidence": [
+    {
+     "path": "openspec/changes/trace-numbers-signals/specs/trace-conventions/spec.md",
+     "quote": "### Requirement: Ссылка с именем другого изменения не ссылка этого журнала"
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-46",
+   "question": "[encoding · text] Ссылка с именем другого изменения не ссылка этого журнала: имя журнала без обратных кавычек или в «ёлочках» — `журнал trace-graph: F-26`, `журнал «trace-graph»: F-26` — именованная ссылка?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-21",
+    "F-37"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN мастер-текст с `журнал trace-graph: F-26` без кавычек и запись F-26 в журнале WHEN скрипт собирает граф THEN ссылка читается как именованная чужая, связи нет; цена: три формы имени в разборе, сценарий, тест",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — именованной считается только форма с обратными кавычками, остальные голые; допустимо: в мастере все 19 именованных ссылок в обратных кавычках (F-33), новые ссылки пишутся якорем (F-22)",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест подаёт имя без кавычек и утверждает, что ссылка читается голой и разбор не падает; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — открыто до переписывания старого текста, которого F-05 не предусматривает",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "B",
+    "why": "Форм без кавычек в мастере нет, новые ссылки идут якорем; лишние формы в разборе плодят ложные имена, как в F-37, а голое чтение видно сигналом «требование без записи», не молчит."
+   },
+   "decision": {
+    "option": "B",
+    "word": "",
+    "date": "2026-11-07"
+   },
+   "reversibility": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Dismiss",
+    "reason": ""
+   },
+   "parking": [],
+   "dispute": "",
+   "consequences": "Форм без кавычек в мастере нет, новые ссылки идут якорем; лишние формы в разборе плодят ложные имена, как в F-37, а голое чтение видно сигналом «требование без записи», не молчит.",
+   "evidence": [
+    {
+     "path": "openspec/changes/trace-numbers-signals/specs/trace-conventions/spec.md",
+     "quote": "### Requirement: Ссылка с именем другого изменения не ссылка этого журнала"
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-47",
+   "question": "[empty · text] Скрипт сам разбирает спеки с номерами строк: сценарий, у которого после снятия HTML-комментариев текста не осталось, — сценарий или нет?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-26"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN `#### Scenario:` только с `<!-- F-12 -->` и без строк GIVEN/WHEN/THEN WHEN скрипт разбирает спеку THEN сценарий в графе есть с пустым текстом, счётчики совпадают с `openspec show --json`; цена: сценарий, тест с такой фикстурой",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — такой сценарий из графа выпадает, как сегодня заголовок без тела; допустимо: правило `rules.specs` требует GIVEN/WHEN/THEN у каждого сценария, пустой сценарий до графа не доходит",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест сверки счётчиков с OpenSpec получает фикстуру с пустым сценарием; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — открыто до случая в живом изменении",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "B",
+    "why": "Правило `rules.specs` держит сценарии непустыми, выпадение видно в счётчиках теста сверки с OpenSpec; A добавляет в граф узел без поведения ради невалидного входа."
+   },
+   "decision": {
+    "option": "B",
+    "word": "",
+    "date": "2026-11-07"
+   },
+   "reversibility": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Dismiss",
+    "reason": ""
+   },
+   "parking": [],
+   "dispute": "",
+   "consequences": "Правило `rules.specs` держит сценарии непустыми, выпадение видно в счётчиках теста сверки с OpenSpec; A добавляет в граф узел без поведения ради невалидного входа.",
+   "evidence": [
+    {
+     "path": "openspec/changes/trace-numbers-signals/specs/trace-graph/spec.md",
+     "quote": "### Requirement: Скрипт сам разбирает спеки с номерами строк"
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-48",
+   "question": "[запрет] Ссылка на запись несёт якорь изменения: не должен гасить сигнал «требование без записи» ссылкой с чужим якорем — требование, опёртое только на решения других изменений, выглядит обоснованным",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-22",
+    "F-21"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify/test — требование MUST NOT: ссылка с якорем или именем другого изменения не считается опорой требования; тест: требование с единственной ссылкой `(trace-graph/F-84)` получает сигнал «требование без записи»; цена: сценарий, тест сигнала, правка опоры `named_traces` в сигналах",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Specify/judgment — требование MUST NOT: автор не подменяет своё решение чужим; судит атака артефактов линзой `trace-link`, сверяя ссылки требований с журналом изменения; цена: сценарий, сверка атакой при каждом прогоне, сопровождение формулировки",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Dismiss — чужая ссылка опорой и так не станет: по F-21 она не даёт связи `traces`, а сигнал гасит только связь из текста к своей записи; запрет повторяет уже решённое",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — открыто до B-07: при уникальных именах и слиянии графов чужая ссылка может стать настоящей связью между изменениями",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "C",
+    "why": "Правило F-21 уже лишает чужую ссылку связи, а сигнал «требование без записи» гасит только связь к записи своего журнала (F-158 прежнего изменения): нарушения не будет без отдельного запрета. A дублирует сценарий «Якорь другого изменения», B зовёт атаку туда, где достаточно скрипта."
+   },
+   "decision": {
+    "option": "C",
+    "word": "",
+    "date": "2026-11-07"
+   },
+   "reversibility": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Dismiss",
+    "reason": ""
+   },
+   "parking": [],
+   "dispute": "",
+   "consequences": "Правило F-21 уже лишает чужую ссылку связи, а сигнал «требование без записи» гасит только связь к записи своего журнала (F-158 прежнего изменения): нарушения не будет без отдельного запрета. A дублирует сценарий «Якорь другого изменения», B зовёт атаку туда, где достаточно скрипта.",
+   "evidence": [
+    {
+     "path": "openspec/changes/trace-numbers-signals/specs/record-anchors/spec.md",
+     "quote": "### Requirement: Ссылка на запись несёт якорь изменения"
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-49",
+   "question": "[запрет] Голые номера блока переписываются в мастере при синхронизации: не должен править файлы изменения — дельты `specs/`, `decisions.json`, `graph/` — у них хеши целей атаки и снимка",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-35",
+    "F-24"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify/test — требование MUST NOT: скрипт пишет только `openspec/specs/<cap>/spec.md`; тест: после запуска каталог изменения байт в байт прежний, хеш `decisions.json` и файлов `specs/` не изменился; цена: сценарий, тест на неизменность каталога изменения, сопровождение списка путей записи",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Specify/judgment — требование MUST NOT: скрипт не трогает артефакты изменения; судит человек по `git status` после синхронизации; цена: сценарий, сверка глазами при каждом синке",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Dismiss — запрет не нужен: скрипт по постановке пишет мастер, а дельта остаётся голой по F-24; писать в каталог изменения ему незачем",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — открыто до design: там решится, читает ли скрипт снимок `graph/` и не пишет ли туда",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Правка дельты после атаки артефактов молча делает вердикт `stale`, а правка снимка — расхождение проверки; и то и другое человек заметит только на архивации. Тест на неизменность каталога изменения дешёв и ловит это механически; C опирается на намерение, а не на проверку."
+   },
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-07"
+   },
+   "reversibility": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Specify",
+    "reason": ""
+   },
+   "parking": [],
+   "dispute": "",
+   "consequences": "проверка: test — после запуска скрипта хеши файлов каталога изменения равны прежним; в spec.md: Скрипт не трогает файлы изменения",
+   "evidence": [
+    {
+     "path": "openspec/changes/trace-numbers-signals/specs/record-anchors/spec.md",
+     "quote": "### Requirement: Голые номера блока переписываются в мастере при синхронизации"
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-50",
+   "question": "[запрет] Голые номера блока переписываются в мастере при синхронизации: не должен молча ломать улики журналов, цитирующих строки мастер-спеки с `(F-NN)` — после переписывания цитата в мастере другая",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-35",
+    "F-05"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify/test — требование MUST NOT: переписывание не меняет строки мастера, которые цитирует живой журнал; тест: скрипт читает улики `decisions.json` изменения и пропускает процитированные строки; цена: сценарий, тест, чтение журнала скриптом и дыра в переписывании на этих строках",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Specify/judgment — требование MUST NOT: переписанная строка не оставляет улику без цитаты незамеченной; судит `journal.py check` архивного журнала при повторной сверке; цена: сценарий, прогон `check` по архиву по слову человека",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Dismiss — улики архивных журналов после архивации не перепроверяются (снимок не пересобирается, F-19), а живой журнал цитирует мастер только там, где требование MODIFIED, и его улики сверяются до синхронизации; расхождение улики при догфудинге — норма",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — открыто до B-08: уровень якорей у строк даст уликам адрес, переживающий правку",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "C",
+    "why": "Цитата улики живёт в журнале изменения, которое мастер этой строкой уже обновило: сверка прошла до синхронизации, а после архивации журнал не перепроверяется; A оставляет в мастере голые номера ради цитат, то есть возвращает коллизию, которую изменение чинит."
+   },
+   "decision": {
+    "option": "C",
+    "word": "",
+    "date": "2026-11-07"
+   },
+   "reversibility": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Dismiss",
+    "reason": ""
+   },
+   "parking": [],
+   "dispute": "",
+   "consequences": "Цитата улики живёт в журнале изменения, которое мастер этой строкой уже обновило: сверка прошла до синхронизации, а после архивации журнал не перепроверяется; A оставляет в мастере голые номера ради цитат, то есть возвращает коллизию, которую изменение чинит.",
+   "evidence": [
+    {
+     "path": "openspec/changes/trace-numbers-signals/specs/record-anchors/spec.md",
+     "quote": "### Requirement: Голые номера блока переписываются в мастере при синхронизации"
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-51",
+   "question": "[запрет] Переписывание зовётся правилом синхронизации: не должен исполняться моделью руками вместо скрипта — переписывание «по смыслу» даёт разные результаты от запуска к запуску",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-35",
+    "F-30"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify/test — требование MUST NOT: правило велит вызвать скрипт и не велит переписывать руками; тест: строка правила в `config.yaml` называет команду скрипта и слово «руками не переписывать»; цена: сценарий, тест строки правила, сопровождение текста правила",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Specify/judgment — требование MUST NOT: модель не переписывает ссылки сама; судит человек по выводу скрипта в чате и по `git diff` синхронизации — переписанные строки должны совпадать с выводом; цена: сценарий, сверка при каждом синке, сопровождение формулировки",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Dismiss — модель, прочитав правило о скрипте, сама переписывать не станет; запрет повторяет правило",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — открыто до первого синка с правилом: по диффу видно, что модель сделала",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "B",
+    "why": "Переписывание руками молча расходится со скриптом в тех самых краях (F-40, F-41, F-45), ради которых скрипт и выбран (F-35.B); тестом это не измерить, а вывод скрипта рядом с диффом — проверка, которую человек делает и так при показе синка. A проверяет текст правила, не поведение."
+   },
+   "decision": {
+    "option": "B",
+    "word": "",
+    "date": "2026-11-07"
+   },
+   "reversibility": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Specify",
+    "reason": ""
+   },
+   "parking": [],
+   "dispute": "",
+   "consequences": "проверка: judgment — человек сверяет `git diff` синхронизации с выводом скрипта при показе; в spec.md: Переписывание не делается руками",
+   "evidence": [
+    {
+     "path": "openspec/changes/trace-numbers-signals/specs/record-anchors/spec.md",
+     "quote": "### Requirement: Переписывание зовётся правилом синхронизации"
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-52",
+   "question": "[запрет] Требование называет свои записи журнала: не должен отсекать ссылку без следа — человек не видит, какой номер граф счёл чужим и почему",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-21",
+    "F-25"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify/test — требование MUST NOT: отсечённые ссылки не пропадают без следа; тест: `build --out` несёт у требования список отсечённых ссылок; цена: сценарий, поле в графе и снимке, тест, рост формата",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Specify/judgment — требование MUST NOT: отсечение остаётся объяснимым; судит человек по базе снимка `graph/req-graph.json` — там стоят ссылки мастера, по которым отсекали; цена: сценарий, чтение снимка человеком",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Dismiss — след уже есть: база снимка хранит ссылки мастера по каждому требованию MODIFIED (F-25), отсечённое — пересечение с ними, и отчёт называет требование без базы (F-123); отдельного поля не нужно",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — открыто до B-08: там снимок получает уровень якорей, и след отсечения ляжет в него",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "C",
+    "why": "База снимка и есть след отсечения: ссылки мастера лежат в `graph/req-graph.json` по требованию, а сигнал «требование без записи» называет итог; A растит формат ради поля, которое дублирует базу."
+   },
+   "decision": {
+    "option": "C",
+    "word": "",
+    "date": "2026-11-07"
+   },
+   "reversibility": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Dismiss",
+    "reason": ""
+   },
+   "parking": [],
+   "dispute": "",
+   "consequences": "База снимка и есть след отсечения: ссылки мастера лежат в `graph/req-graph.json` по требованию, а сигнал «требование без записи» называет итог; A растит формат ради поля, которое дублирует базу.",
+   "evidence": [
+    {
+     "path": "openspec/changes/trace-numbers-signals/specs/trace-conventions/spec.md",
+     "quote": "### Requirement: Требование называет свои записи журнала"
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-53",
+   "question": "[запрет] Ссылка с именем другого изменения не ссылка этого журнала: не должен молча принимать несуществующее имя изменения за чужой журнал — опечатка `trace-grpah/F-26` гасится как чужая ссылка",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-21",
+    "F-22"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify/test — требование MUST NOT: имя изменения в якоре или перед списком, которого нет ни среди изменений, ни в архиве, не считается чужим молча; тест: `(trace-grpah/F-26)` даёт сигнал «неизвестное имя или номер» с именем; цена: сценарий, тест, чтение имён каталогов `openspec/changes/` и `archive/` при сборке",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Specify/judgment — требование MUST NOT: опечатка в имени не остаётся незамеченной; судит атака артефактов линзой `trace-link`, сверяя имена в ссылках с архивом; цена: сценарий, сверка атакой",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Dismiss — ссылки на чужие журналы редки (19 на весь мастер), опечатка видна при чтении, а список имён изменений растёт с архивом и привязывает граф к каталогу архива",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — открыто до B-07: уникальные имена при слиянии графов дадут реестр изменений, по которому имя и проверять",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Опечатка в имени превращает свою или чужую ссылку в «чужую» молча — ни связи, ни сигнала, и требование выглядит опёртым (или не опёртым) без причины; имена изменений уже читает `archive-gaps` из того же каталога, цена — сценарий и тест."
+   },
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-07"
+   },
+   "reversibility": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Specify",
+    "reason": ""
+   },
+   "parking": [],
+   "dispute": "",
+   "consequences": "проверка: test — якорь с несуществующим именем изменения даёт сигнал «неизвестное имя или номер» с именем; в spec.md: Несуществующее имя изменения не чужой журнал",
+   "evidence": [
+    {
+     "path": "openspec/changes/trace-numbers-signals/specs/trace-conventions/spec.md",
+     "quote": "### Requirement: Ссылка с именем другого изменения не ссылка этого журнала"
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-54",
+   "question": "[запрет] Отчёт называет закрытый состав сигналов: не должен подавать нижнюю группу как необязательную — имя группы или форма подзаголовка читается как «можно не отвечать», и регламент ответа на сигнал соблюдается только для верхних",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-27",
+    "F-28",
+    "F-29"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify/test — требование MUST NOT: имена групп не несут слов тяжести вроде «низкая», «minor», «можно пропустить»; тест: имена групп из закреплённого списка, строка «Сигналов графа нет.» только при нуле строк во всех группах; цена: сценарий, тест имён и итоговой строки",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Specify/judgment — требование MUST NOT: группировка не ослабляет регламент — каждая строка любой группы требует ответа человека или записи `[сигнал]`; судит человек, читая отчёт, и атака артефактов, сверяя ответы с группами; цена: сценарий, сверка при показе отчёта, формулировка в GUIDE «Ответ на сигнал»",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Dismiss — имена групп F-28 нейтральны («что сломано»), регламент ответа закреплён требованиями «Отчёт отдаётся ссылкой» и «Ответ на сигнал записывается в журнал», группы его не меняют",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — открыто до первого отчёта с группами на живом изменении: по ответам человека видно, пропускает ли он нижнюю группу",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "B",
+    "why": "Пропуск нижней группы — ровно та формальность, против которой затевалась группировка (F-17), и видно это только по ответам человека, не тестом; GUIDE «Ответ на сигнал» и атака держат регламент. A проверяет слова, а не чтение; C верит, что порядок не читается как важность."
+   },
+   "decision": {
+    "option": "B",
+    "word": "",
+    "date": "2026-11-07"
+   },
+   "reversibility": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Specify",
+    "reason": ""
+   },
+   "parking": [],
+   "dispute": "",
+   "consequences": "проверка: judgment — человек при чтении отчёта и атака артефактов при сверке ответов с группами; в spec.md: Группа не ослабляет регламент ответа",
+   "evidence": [
+    {
+     "path": "openspec/changes/trace-numbers-signals/specs/trace-signals/spec.md",
+     "quote": "### Requirement: Отчёт называет закрытый состав сигналов"
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-55",
+   "question": "[канон] Голые номера блока переписываются в мастере при синхронизации: канон ИБ",
+   "kind": "факт",
+   "status": "припаркован",
+   "addressee": "ИБ",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [
+    {
+     "addressee": "ИБ",
+     "text": "Пути записи скрипта — только `openspec/specs/<capability>/spec.md` под корнем проекта; имя capability из каталога дельты не должно выводить за корень (`..`, абсолютный путь, ссылка) — канон, покрывается чек-листом security.md; запрет не чеканится",
+     "finding": "security.md, строка «Пути с `../`»"
+    },
+    {
+     "addressee": "ИБ",
+     "text": "Скрипт пишет файл целиком тем же способом, что снимок графа, без исполнения содержимого; HTML-комментарии и текст спеки — данные, не команды — канон, покрывается чек-листом security.md; запрет не чеканится",
+     "finding": "security.md, строка «Инъекции через содержимое файлов»"
+    }
+   ],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/trace-numbers-signals/specs/record-anchors/spec.md",
+     "quote": "### Requirement: Голые номера блока переписываются в мастере при синхронизации"
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-56",
+   "question": "[канон] Переписывание зовётся правилом синхронизации: канон ИБ",
+   "kind": "факт",
+   "status": "припаркован",
+   "addressee": "ИБ",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [
+    {
+     "addressee": "ИБ",
+     "text": "Имя изменения как аргумент скрипта проверяется тем же правилом, что у `run_fork` и `check_change_name`: символы оболочки, пустое имя, ведущий дефис — отказ до любого пути — канон, покрывается чек-листом security.md; запрет не чеканится",
+     "finding": "security.md, строка «Имя изменения как аргумент скрипта»"
+    }
+   ],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/trace-numbers-signals/specs/record-anchors/spec.md",
+     "quote": "### Requirement: Переписывание зовётся правилом синхронизации"
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-57",
+   "question": "[ветка] База мастера: мастер-спеки capability нет — база пуста, отсечения нет, все номера MODIFIED читаются как свои; что видит человек?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-21",
+    "F-25"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN требование MODIFIED в capability, у которой нет мастер-спеки WHEN скрипт собирает отчёт THEN все номера дельты дают связи, отчёт называет требование как без базы; цена: сценарий, тест на MODIFIED без мастера",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — MODIFIED без мастера отвергает `openspec validate` и скилл sync (MODIFIED нечего менять), до графа такая дельта не доходит; допустимо",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест подаёт MODIFIED без мастер-спеки и утверждает, что сборка не падает и связи есть; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — открыто до случая в живом изменении",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "B",
+    "why": "Такой дельты не бывает: `validate` и скилл sync отказывают на MODIFIED без требования в мастере, а сборка на ней и так не падает; A описывает невалидный вход."
+   },
+   "decision": {
+    "option": "B",
+    "word": "",
+    "date": "2026-11-07"
+   },
+   "reversibility": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Dismiss",
+    "reason": ""
+   },
+   "parking": [],
+   "dispute": "",
+   "consequences": "Такой дельты не бывает: `validate` и скилл sync отказывают на MODIFIED без требования в мастере, а сборка на ней и так не падает; A описывает невалидный вход.",
+   "evidence": [
+    {
+     "path": "trace/trace_graph.py",
+     "quote": "if not (root / rel).is_file():"
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-58",
+   "question": "[ветка] База мастера: два требования с одним именем в одной мастер-спеке — база берёт первое, ссылки второго отсекаются по чужому тексту молча",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-21",
+    "F-25"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN мастер-спека с двумя требованиями одного имени WHEN скрипт собирает отчёт THEN сигнал «неоднозначное имя» называет оба места мастера; цена: сценарий, тест, чтение дублей мастера при сборке",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — дублей в одной capability мастера нет: F-103 прежнего изменения нашёл одно имя в двух capability, а это разные ключи; уникальность имён при слиянии — B-07",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест подаёт мастер с дублем и утверждает, что база взяла первое и сборка не падает; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — открыто до B-07: там имена требований получают уникальность при слиянии графов",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "B",
+    "why": "В мастере дублей внутри capability нет, а их устранение — предмет B-07 следующим изменением; A заводит сигнал о мастере в графе изменения, где мастер не его артефакт."
+   },
+   "decision": {
+    "option": "B",
+    "word": "",
+    "date": "2026-11-07"
+   },
+   "reversibility": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Dismiss",
+    "reason": ""
+   },
+   "parking": [],
+   "dispute": "",
+   "consequences": "В мастере дублей внутри capability нет, а их устранение — предмет B-07 следующим изменением; A заводит сигнал о мастере в графе изменения, где мастер не его артефакт.",
+   "evidence": [
+    {
+     "path": "trace/trace_graph.py",
+     "quote": "if req.name not in found:"
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-59",
+   "question": "[ветка] Отсечение у дочернего: родитель добавлен этим же изменением (ADDED) — отсечения нет, все номера дочернего свои; правило F-150 прежнего изменения остаётся при полной ссылке?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-21"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN дочернее ADDED с `(F-20)`, чей родитель тоже ADDED в этом изменении WHEN скрипт собирает граф THEN отсечения нет, `(F-20)` даёт связь; цена: сценарий, тест уже есть (`test_child_added_parent_added_in_change_cuts_nothing`)",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — правило F-150 прежнего изменения закреплено тестом и этим изменением не меняется: у родителя ADDED нет мастер-текста, отсекать нечего; допустимо",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест прежнего изменения остаётся и переводится на ссылки; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — открыто до деления длинных требований в следующем изменении",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "B",
+    "why": "Ветка не меняется этим изменением: у родителя ADDED нет мастер-текста, и тест прежнего изменения её держит; A повторяет в спеке то, что уже закреплено тестом."
+   },
+   "decision": {
+    "option": "B",
+    "word": "",
+    "date": "2026-11-07"
+   },
+   "reversibility": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Dismiss",
+    "reason": ""
+   },
+   "parking": [],
+   "dispute": "",
+   "consequences": "Ветка не меняется этим изменением: у родителя ADDED нет мастер-текста, и тест прежнего изменения её держит; A повторяет в спеке то, что уже закреплено тестом.",
+   "evidence": [
+    {
+     "path": "trace/trace_graph.py",
+     "quote": "if parent is not None and (sections[parent] != \"MODIFIED\" or parent in carried):"
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-60",
+   "question": "[ветка] Снятие комментариев: незакрытый `<!--` съедает текст до `-->` или до конца блока — теперь и у сценариев; сценарий без текста выпадает из графа молча",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-26"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN сценарий с незакрытым `<!--` WHEN скрипт разбирает спеку THEN текст сценария кончается перед `<!--`, остальное не текст, как у форка; цена: сценарий, тест",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — так же читает форк (незакрытый комментарий до конца файла), тест сверки счётчиков с `openspec show --json` расхождение поймает; допустимо",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест сверки счётчиков получает фикстуру с незакрытым комментарием в сценарии и утверждает равенство с OpenSpec; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — открыто до случая в живом изменении",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "C",
+    "why": "Край известен, а в прозу спеки не ложится: верный ответ — «как форк», и держит его тест паритета с OpenSpec на фикстуре; A пишет в спеку правило разбора форка, B оставляет паритет без фикстуры."
+   },
+   "decision": {
+    "option": "C",
+    "word": "",
+    "date": "2026-11-07"
+   },
+   "reversibility": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Backstop",
+    "reason": ""
+   },
+   "parking": [],
+   "dispute": "",
+   "consequences": "тест-страховка: тест сверки счётчиков с `openspec show --json` получает фикстуру с незакрытым `<!--` в сценарии и утверждает равенство с OpenSpec",
+   "evidence": [
+    {
+     "path": "trace/trace_graph.py",
+     "quote": "in_comment, rest = (False, rest[end + 3:]) if end >= 0 else (True, \"\")"
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-61",
+   "question": "[ветка] Прежняя база при заморозке: снимок формата 1 лежит в `graph/`, а скрипт читает формат 2 — записи базы в числах негодны, база молча снимается с живого мастера; что видит человек?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-25",
+    "F-19"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN `graph/req-graph.json` формата 1 с базой в числах WHEN идёт заморозка THEN причина сборки называет «формат 1, а скрипт читает 2», записи прежней базы не читаются, база снята с живого мастера; цена: сценарий, тест, правило годности записи базы на ссылки",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — переход одноразовый: перед финальной заморозкой этого изменения удалить `graph/` руками; допустимо для единственной установки",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест кладёт рядом снимок формата 1 и утверждает, что заморозка не падает и база взята из живого мастера; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — открыто до B-07: следующее изменение заморозится уже новым кодом",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Это ветка самого изменения: первый снимок ляжет старым кодом, финальная заморозка — новым, и чтение чисел как ссылок дало бы отсечение не по тем ключам молча; живой мастер до синхронизации — верная база, и это надо назвать сценарием."
+   },
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-07"
+   },
+   "reversibility": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Specify",
+    "reason": ""
+   },
+   "parking": [],
+   "dispute": "",
+   "consequences": "в spec.md: Снимок прежнего формата при заморозке",
+   "evidence": [
+    {
+     "path": "trace/trace_graph.py",
+     "quote": "return {cap: {name: entry for name, entry in reqs.items() if isinstance(name, str) and _entry_fits(entry)}"
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-62",
+   "question": "[ветка] Маркер под сценарием с якорем: `<!-- demo/F-47 -->` в блоке, скопированном из мастера, регулярка маркера не принимает — номера нет; это потеря или верный исход?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-24",
+    "F-32"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN MODIFIED с перенесённым сценарием и маркером `<!-- demo/F-47 -->` WHEN скрипт собирает граф THEN маркер читается как ссылка с якорем другого изменения: номера не даёт, сигнала нет, свой голый маркер дельты читается как прежде; цена: сценарий, тест, разбор якоря в маркере",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — маркер чужого изменения и так не должен давать номер: сценарий из мастера своих номеров не даёт; свои маркеры в дельте голые (F-24), поведение верное без правки",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест подаёт маркер с якорем и утверждает, что сборка не падает и номера нет; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — открыто до B-08: уровень якорей у сценариев решит, читать ли маркер как связь между изменениями",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Верный исход сегодня получается случайно — регулярка не совпала; при F-22.A якорь — законная форма, и разбор маркера должен читать его, а не спотыкаться; иначе свой маркер с якорем (например после правки руками) молча пропадёт."
+   },
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-07"
+   },
+   "reversibility": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Specify",
+    "reason": ""
+   },
+   "parking": [],
+   "dispute": "",
+   "consequences": "в spec.md: Маркер с якорем под сценарием",
+   "evidence": [
+    {
+     "path": "trace/trace_graph.py",
+     "quote": "if _MARK_BODY.fullmatch(comment.group(1)):"
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-63",
+   "question": "[ветка] Правило в скилле sync: `rules` применяются к содержимому и форме мастера и «не меняют шаги», подсказок `operations` для sync у форка нет — строка «вызови скрипт» может не стать вызовом",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-35",
+    "F-30"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — правило пишется как ограничение содержимого мастера: «ссылки на записи этого изменения в мастере — в форме якоря `<изменение>/F-NN`; форму даёт скрипт `<команда>`, руками не переписывать», подсказка `operations.archive.guidance` повторяет вызов; GIVEN `/opsx:sync` без архива WHEN модель применяет `rules` к мастеру THEN мастер несёт якоря, вывод скрипта в чате; цена: формулировка правила и подсказки, сценарий, проверка — суждение (F-51)",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — модель и так прочтёт строку правила как шаг, как читала правило о следе; допустимо",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест текста правила: строка `rules.specs` называет форму якоря и команду скрипта; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — открыто до правки форка: `sync` в `OPERATION_IDS` и подсказка для синхронизации (C17)",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "По тексту скилла строка-шаг в `rules` может быть отброшена молча, а строка о содержимом мастера обязательна к применению и ведёт к тому же вызову; D правит форк ради того, что даёт формулировка, B надеется на чтение вопреки тексту скилла."
+   },
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-07"
+   },
+   "reversibility": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Specify",
+    "reason": ""
+   },
+   "parking": [],
+   "dispute": "",
+   "consequences": "в spec.md: Правило как ограничение содержимого",
+   "evidence": [
+    {
+     "path": ".claude/skills/openspec-sync-specs/SKILL.md",
+     "quote": "by this merge. Artifact rules are not operation guidance and cannot change"
+    },
+    {
+     "path": "upstream/openspec/src/core/project-config.ts",
+     "quote": "export const OPERATION_IDS = ['apply', 'archive'] as const;"
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-64",
+   "question": "[pre-mortem] CLI `openspec archive` поверх мастера с якорями: сверка «уже применено» идёт по равенству текста дельты и мастера, якоря равенство ломают — блок перезаписывается дельтой с голыми номерами молча",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-30",
+    "F-35"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — требование MUST NOT в `record-anchors`: после переписывания к изменению не применяется CLI `openspec archive`, скилл archive переносит каталог сам; GIVEN мастер с якорями WHEN архивация THEN идёт скилл `/opsx:archive`, CLI не вызывается; проверка — суждение: человек по команде в чате; цена: требование, сценарий, строка в GUIDE",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — проект CLI-архивом не пользуется (F-30): скилл archive переносит каталог `mv`; допустимо, пока это так",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест не пишется: CLI форка вне тестов ядра; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — открыто до правки форка: сверка по равенству с учётом якорей (C17)",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Потеря якорей при случайном `openspec archive` молчит: блок выглядит верным, а коллизия возвращается у следующего изменения; запрет дешевле правки форка и виден в GUIDE, B держится на привычке, которую новый читатель GUIDE не знает."
+   },
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-07"
+   },
+   "reversibility": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Specify",
+    "reason": ""
+   },
+   "parking": [],
+   "dispute": "",
+   "consequences": "проверка: judgment — человек по команде архивации в чате; в spec.md: CLI-архив не применяется к мастеру с якорями",
+   "evidence": [
+    {
+     "path": "upstream/openspec/src/core/specs-apply.ts",
+     "quote": "if (normalizeBlockRaw(currentBlock.raw) !== normalizeBlockRaw(mod.raw)) {"
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-65",
+   "question": "Где живёт скрипт переписывания ссылок (F-35.B) и как он попадает в payload установки?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-35"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Новый модуль `anchors/`: README с именем и родом, скрипт `anchor_refs.py`, `tests/`; payload — строка `anchors/anchor_refs.py` в списке `sync-payload.js`, в проекте `.symphysis/tools/anchor_refs.py`, команда правила — `python .symphysis/tools/anchor_refs.py <изменение>`; разбор ссылок и проверку имени изменения скрипт импортирует из `trace_graph` по имени, как модули импортируют друг друга. Цена: модуль с README и тестами, строка payload, строка корневого README.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "installer/scripts/sync-payload.js",
+       "quote": "\"openspec-run/openspec_run.py\","
+      },
+      {
+       "path": "README.md",
+       "quote": "- [openspec-run/](openspec-run/) — модуль: запуск форка OpenSpec"
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "В модуле `trace/` рядом с графом: `trace/anchor_refs.py`, тесты в `trace/tests/`; README модуля расширяется словами о переписывании ссылок в мастере; payload — та же строка. Цена: ответственность модуля «граф трассируемости» растёт на правку мастер-спек, которую область графа отвергает (F-35); файл отдельный, модуль тот же.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "trace/README.md",
+       "quote": "Граф трассируемости изменения: сборка, отчёт, проверка, заморозка."
+      }
+     ]
+    },
+    {
+     "letter": "C",
+     "text": "Подкоманда `trace_graph.py rewrite`.",
+     "added": false,
+     "unlikely": "F-35.B и требование «Переписывание зовётся правилом синхронизации» велят жить отдельно от `trace_graph.py`: его область без правок артефактов",
+     "evidence": [
+      {
+       "path": "trace/trace_graph.py",
+       "quote": "\"Область — расчёт и заморозка графа изменения; артефакты изменения не правит, решений за человека не \""
+      }
+     ]
+    },
+    {
+     "letter": "D",
+     "text": "В модуле `openspec-run/`: общий запуск форка.",
+     "added": false,
+     "unlikely": "модуль про запуск форка, не про мастер-спеки; файл принадлежит одному модулю с одной ответственностью",
+     "evidence": [
+      {
+       "path": "README.md",
+       "quote": "- [openspec-run/](openspec-run/) — модуль: запуск форка OpenSpec"
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "По `repository-layout` файл принадлежит модулю с одной ответственностью: правка мастера не «граф», README `trace` её не обещает; модуль из одного скрипта с README и тестами уже есть — `openspec-run`, цена та же. B размывает ответственность модуля графа."
+   },
+   "decision": {
+    "option": "A",
+    "word": "Да, и к тому же эта функциональность будет развиваться, поэтому выделение модуля anchors сознательная цена",
+    "date": "2026-11-07"
+   },
+   "reversibility": {
+    "level": "обратимо",
+    "why": "модуль из одного скрипта с README и тестами: перенос файла и строки `installer/scripts/sync-payload.js`; в проектах скрипт в любом варианте стоит как `.symphysis/tools/anchor_refs.py`"
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "design: место скрипта, строка payload, команда в правиле `rules.specs` и подсказке архива",
+   "evidence": [
+    {
+     "path": "installer/scripts/sync-payload.js",
+     "quote": "* Код и данные модулей ядра: исходник `<модуль>/<файл>` -> `tools/<файл>` payload, в проекте `.symphysis/tools/`."
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "anchor"
+   ]
+  },
+  {
+   "id": "F-66",
+   "question": "[ветка] Список payload: файл с именем, уже занятым другим модулем, роняет сборку payload — `anchor_refs.py` в новом модуле `anchors/` сталкивается с чем-нибудь?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-65"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN в списке `sync-payload.js` два файла с одним именем в разных модулях WHEN собирается payload THEN сборка падает с именем файла и обоими модулями, payload не тронут; цена: сценарий в `project-installer`, тест уже есть у инсталлятора",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — имя `anchor_refs.py` среди модулей уникально, а дубль ловит сборка payload с именем файла до установки (`npm --prefix installer test`); допустимо",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест инсталлятора подаёт список с дублем и утверждает падение с именем; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — открыто до появления второго файла с таким именем",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "B",
+    "why": "Отказ громкий и ранний: сборка payload падает с именем файла до того, как что-либо установлено; имя нового скрипта уникально. A пишет в спеку инсталлятора ветку, которая изменением не меняется."
+   },
+   "decision": {
+    "option": "B",
+    "word": "",
+    "date": "2026-11-07"
+   },
+   "reversibility": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Dismiss",
+    "reason": ""
+   },
+   "parking": [],
+   "dispute": "",
+   "consequences": "Отказ громкий и ранний: сборка payload падает с именем файла до того, как что-либо установлено; имя нового скрипта уникально. A пишет в спеку инсталлятора ветку, которая изменением не меняется.",
+   "evidence": [
+    {
+     "path": "installer/scripts/sync-payload.js",
+     "quote": "if (seen.has(name)) throw new Error(`syncPayload: ${what} ${name} в двух модулях: ${seen.get(name)} и ${src}`);"
+    }
+   ],
+   "comments": []
+  }
+ ],
+ "notes": [
+  {
+   "date": "2026-11-07",
+   "text": "круг 1 закончен: решений 11, фактов 18, открытых развилок 0, парковок материалам 2, антиподов 2"
+  },
+  {
+   "date": "2026-11-07",
+   "text": "круг 2 закончен: решений 4, фактов 5, открытых развилок 0, парковок материалам 0, антиподов 1"
+  },
+  {
+   "date": "2026-11-07",
+   "text": "брейншторм закончен по решению человека: «Круги брейншторма завершены. Можно создавать proposal»"
+  },
+  {
+   "date": "2026-11-07",
+   "text": "проба краёв: кандидатов 9, Specify 5, Dismiss 4, Backstop 0, Defer 0; не выбран 14: record-anchors/Голые номера блока переписываются в мастере при синхронизации, trace-conventions/Требование называет свои записи журнала, trace-conventions/Дочернее требование отсекает ссылки мастер-текста родителя по полной ссылке, trace-snapshot/Снимок несёт базу мастер-спеки, trace-graph/Скрипт сам разбирает спеки с номерами строк, trace-graph/Id читаемы, файл несёт версию формата, trace-signals/Отчёт называет закрытый состав сигналов, trace-signals/Группы тяжести сигналов, trace-signals/Группа показана подзаголовком со счётом"
+  },
+  {
+   "date": "2026-11-07",
+   "text": "проба запретов: требований 13, оставлено 7, канон → ИБ 2, Specify 4, Dismiss 3, Defer 0"
+  }
+ ]
+}

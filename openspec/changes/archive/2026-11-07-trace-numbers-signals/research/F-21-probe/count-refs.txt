@@ -1,0 +1,301 @@
+# Счёт ссылок на записи в теле требований openspec/specs/*/spec.md (рабочая копия, HEAD ветки feat/trace-numbers-signals)
+# Разбор — refparse.py: голая = без метки ``журнал `имя`:`` перед списком; «с буквой» — подмножество голых вида F-NN.X
+
+capability | требований | с ссылками | ссылок | голых | из них с буквой | с именем журнала | требований с одним числом голым и с именем
+artifact-attack | 13 | 13 | 34 | 34 | 16 | 0 | 0
+artifact-graph | 6 | 6 | 23 | 19 | 15 | 4 | 1
+brainstorm-interview | 6 | 6 | 23 | 22 | 8 | 1 | 0
+consequence-inventory | 10 | 10 | 22 | 22 | 19 | 0 | 0
+decision-journal | 18 | 18 | 45 | 45 | 31 | 0 | 0
+decision-scheme | 4 | 4 | 7 | 7 | 0 | 0 | 0
+decision-viewer | 28 | 26 | 76 | 67 | 11 | 9 | 3
+module-declaration | 3 | 3 | 9 | 9 | 0 | 0 | 0
+onboarding-guide | 7 | 7 | 18 | 18 | 11 | 0 | 0
+plugin-agent-hook | 11 | 11 | 33 | 33 | 0 | 0 | 0
+plugin-core-contract | 9 | 9 | 13 | 13 | 0 | 0 | 0
+plugin-decision-view | 4 | 4 | 12 | 12 | 0 | 0 | 0
+plugin-file-links | 4 | 4 | 13 | 13 | 0 | 0 | 0
+plugin-packaging | 2 | 2 | 6 | 6 | 0 | 0 | 0
+plugin-scheme-view | 8 | 8 | 21 | 21 | 0 | 0 | 0
+plugin-step-help-view | 7 | 7 | 25 | 25 | 0 | 0 | 0
+project-installer | 18 | 18 | 50 | 45 | 23 | 5 | 0
+project-settings | 5 | 5 | 19 | 19 | 12 | 0 | 0
+repository-layout | 9 | 9 | 15 | 15 | 0 | 0 | 0
+requirement-probes | 10 | 10 | 16 | 16 | 12 | 0 | 0
+skill-transfer | 2 | 2 | 4 | 4 | 2 | 0 | 0
+step-help | 13 | 13 | 51 | 51 | 0 | 0 | 0
+trace-conventions | 8 | 8 | 20 | 20 | 0 | 0 | 0
+trace-diagram | 6 | 6 | 23 | 23 | 0 | 0 | 0
+trace-graph | 10 | 10 | 32 | 32 | 0 | 0 | 0
+trace-signals | 11 | 11 | 32 | 32 | 0 | 0 | 0
+trace-snapshot | 6 | 6 | 28 | 28 | 0 | 0 | 0
+verdict-readiness | 3 | 3 | 13 | 13 | 12 | 0 | 0
+ИТОГО | 241 | 239 | 683 | 664 | 172 | 19 | 4
+
+## Ссылки с именем журнала перед списком: 19
+openspec/specs/artifact-graph/spec.md:9 F-26.B @step-help
+openspec/specs/artifact-graph/spec.md:64 F-05.C @symphysis-schema
+openspec/specs/artifact-graph/spec.md:64 F-16.A @calibration-fixes
+openspec/specs/artifact-graph/spec.md:64 F-27.E @calibration-fixes
+openspec/specs/brainstorm-interview/spec.md:49 F-07.B @symphysis-schema
+openspec/specs/decision-viewer/spec.md:9 F-26.B @symphysis-schema
+openspec/specs/decision-viewer/spec.md:9 F-17.D @symphysis-schema
+openspec/specs/decision-viewer/spec.md:517 F-23.A @calibration-fixes
+openspec/specs/decision-viewer/spec.md:517 F-45.E @calibration-fixes
+openspec/specs/decision-viewer/spec.md:517 F-46.E @calibration-fixes
+openspec/specs/decision-viewer/spec.md:525 F-23.A @calibration-fixes
+openspec/specs/decision-viewer/spec.md:525 F-45.E @calibration-fixes
+openspec/specs/decision-viewer/spec.md:525 F-46.E @calibration-fixes
+openspec/specs/decision-viewer/spec.md:533 F-35 @step-help
+openspec/specs/project-installer/spec.md:9 F-15.C @symphysis-schema
+openspec/specs/project-installer/spec.md:9 F-16.B @symphysis-schema
+openspec/specs/project-installer/spec.md:9 F-50.E @calibration-fixes
+openspec/specs/project-installer/spec.md:9 F-13.A @calibration-fixes
+openspec/specs/project-installer/spec.md:9 F-15.B @calibration-fixes
+
+## Требования, где одно число стоит и голым, и с именем журнала: 4
+openspec/specs/artifact-graph/spec.md:8 «Граф схемы начинается журналом и кончается атакой артефактов»: F-26 голым ['F-26.E'] и с именем ['F-26.B @step-help']
+openspec/specs/decision-viewer/spec.md:8 «Просмотрщик — один HTML из своего шаблона с тремя режимами»: F-26 голым ['F-26'] и с именем ['F-26.B @symphysis-schema']
+openspec/specs/decision-viewer/spec.md:516 «Строка таблицы атаки разбирается по соглашению markdown»: F-46 голым ['F-46'] и с именем ['F-46.E @calibration-fixes']
+openspec/specs/decision-viewer/spec.md:524 «Негодная строка таблицы атаки — ошибка с местом»: F-46 голым ['F-46'] и с именем ['F-46.E @calibration-fixes']
+
+## Все строки тел требований со ссылками: 239
+openspec/specs/artifact-attack/spec.md:9 голые: F-25.B, F-131.A, F-76 | с именем: —
+openspec/specs/artifact-attack/spec.md:52 голые: F-13.B, F-25 | с именем: —
+openspec/specs/artifact-attack/spec.md:67 голые: F-25.B, F-61 | с именем: —
+openspec/specs/artifact-attack/spec.md:80 голые: F-53.E | с именем: —
+openspec/specs/artifact-attack/spec.md:90 голые: F-136.B, F-54.E | с именем: —
+openspec/specs/artifact-attack/spec.md:105 голые: F-131.A | с именем: —
+openspec/specs/artifact-attack/spec.md:119 голые: F-13, F-21 | с именем: —
+openspec/specs/artifact-attack/spec.md:135 голые: F-07.A, F-32.E, F-33.E, F-55 | с именем: —
+openspec/specs/artifact-attack/spec.md:143 голые: F-76, F-12.A, F-09.A, F-08.A | с именем: —
+openspec/specs/artifact-attack/spec.md:151 голые: F-76, F-23.A, F-34.E | с именем: —
+openspec/specs/artifact-attack/spec.md:159 голые: F-55, F-72, F-129, F-133 | с именем: —
+openspec/specs/artifact-attack/spec.md:189 голые: F-61, F-63, F-61 | с именем: —
+openspec/specs/artifact-attack/spec.md:219 голые: F-61, F-63, F-121 | с именем: —
+openspec/specs/artifact-graph/spec.md:9 голые: F-13.A, F-19.A, F-24.E, F-06.A, F-26.E, F-64.B, F-04.A, F-13.B, F-06.A, F-64.B | с именем: F-26.B @step-help
+openspec/specs/artifact-graph/spec.md:64 голые: F-37, F-41 | с именем: F-05.C @symphysis-schema, F-16.A @calibration-fixes, F-27.E @calibration-fixes
+openspec/specs/artifact-graph/spec.md:107 голые: F-08.A, F-17.A, F-28.E | с именем: —
+openspec/specs/artifact-graph/spec.md:127 голые: F-52.E | с именем: —
+openspec/specs/artifact-graph/spec.md:137 голые: F-13.A, F-04 | с именем: —
+openspec/specs/artifact-graph/spec.md:169 голые: F-112 | с именем: —
+openspec/specs/brainstorm-interview/spec.md:9 голые: F-06.D, F-13.A, F-08.A, F-17.A, F-43.E, F-44.E, F-08.A, F-09.A | с именем: —
+openspec/specs/brainstorm-interview/spec.md:49 голые: F-38, F-44, F-95, F-44, F-95 | с именем: F-07.B @symphysis-schema
+openspec/specs/brainstorm-interview/spec.md:84 голые: F-46, F-50, F-51 | с именем: —
+openspec/specs/brainstorm-interview/spec.md:119 голые: F-110 | с именем: —
+openspec/specs/brainstorm-interview/spec.md:128 голые: F-01, F-05, F-21 | с именем: —
+openspec/specs/brainstorm-interview/spec.md:144 голые: F-11, F-46 | с именем: —
+openspec/specs/consequence-inventory/spec.md:9 голые: F-13.A, F-14.C, F-16.A | с именем: —
+openspec/specs/consequence-inventory/spec.md:34 голые: F-38, F-90.A, F-38.A, F-128.A | с именем: —
+openspec/specs/consequence-inventory/spec.md:43 голые: F-14.C, F-24.A | с именем: —
+openspec/specs/consequence-inventory/spec.md:59 голые: F-15.D, F-25.A | с именем: —
+openspec/specs/consequence-inventory/spec.md:75 голые: F-91.B | с именем: —
+openspec/specs/consequence-inventory/spec.md:84 голые: F-16.A, F-43.A, F-07 | с именем: —
+openspec/specs/consequence-inventory/spec.md:116 голые: F-46.A, F-17.A, F-47.A | с именем: —
+openspec/specs/consequence-inventory/spec.md:133 голые: F-93.B | с именем: —
+openspec/specs/consequence-inventory/spec.md:142 голые: F-13.A, F-24.A | с именем: —
+openspec/specs/consequence-inventory/spec.md:159 голые: F-45 | с именем: —
+openspec/specs/decision-journal/spec.md:9 голые: F-01.B | с именем: —
+openspec/specs/decision-journal/spec.md:31 голые: F-12.A | с именем: —
+openspec/specs/decision-journal/spec.md:51 голые: F-17.D, F-01 | с именем: —
+openspec/specs/decision-journal/spec.md:66 голые: F-10.A, F-11.D, F-09.C, F-17.A, F-36, F-08.A, F-62.A, F-28.E, F-12.A, F-35.E | с именем: —
+openspec/specs/decision-journal/spec.md:116 голые: F-12.A | с именем: —
+openspec/specs/decision-journal/spec.md:129 голые: F-12.A | с именем: —
+openspec/specs/decision-journal/spec.md:147 голые: F-09.A, F-37.E, F-38.E | с именем: —
+openspec/specs/decision-journal/spec.md:172 голые: F-21.A, F-39.E, F-81 | с именем: —
+openspec/specs/decision-journal/spec.md:187 голые: F-21.A, F-40.E, F-41.E, F-80 | с именем: —
+openspec/specs/decision-journal/spec.md:212 голые: F-21.A, F-42 | с именем: —
+openspec/specs/decision-journal/spec.md:222 голые: F-55.E, F-08.B | с именем: —
+openspec/specs/decision-journal/spec.md:237 голые: F-15.D | с именем: —
+openspec/specs/decision-journal/spec.md:278 голые: F-75.A, F-128.A, F-25.A, F-15.D | с именем: —
+openspec/specs/decision-journal/spec.md:314 голые: F-138.A | с именем: —
+openspec/specs/decision-journal/spec.md:323 голые: F-23, F-24 | с именем: —
+openspec/specs/decision-journal/spec.md:353 голые: F-114 | с именем: —
+openspec/specs/decision-journal/spec.md:362 голые: F-01, F-04, F-19 | с именем: —
+openspec/specs/decision-journal/spec.md:378 голые: F-06, F-19, F-20 | с именем: —
+openspec/specs/decision-scheme/spec.md:9 голые: F-01, F-57 | с именем: —
+openspec/specs/decision-scheme/spec.md:39 голые: F-12 | с именем: —
+openspec/specs/decision-scheme/spec.md:69 голые: F-07, F-22, F-32 | с именем: —
+openspec/specs/decision-scheme/spec.md:84 голые: F-102 | с именем: —
+openspec/specs/decision-viewer/spec.md:9 голые: F-26 | с именем: F-26.B @symphysis-schema, F-17.D @symphysis-schema
+openspec/specs/decision-viewer/spec.md:42 голые: F-26.B, F-17.D | с именем: —
+openspec/specs/decision-viewer/spec.md:52 голые: F-26, F-07.A, F-55, F-76 | с именем: —
+openspec/specs/decision-viewer/spec.md:95 голые: F-21.A, F-49.E, F-82 | с именем: —
+openspec/specs/decision-viewer/spec.md:138 голые: F-56.E | с именем: —
+openspec/specs/decision-viewer/spec.md:148 голые: F-21, F-54, F-91, F-21, F-39, F-122, F-25 | с именем: —
+openspec/specs/decision-viewer/spec.md:198 голые: F-34, F-39 | с именем: —
+openspec/specs/decision-viewer/spec.md:213 голые: F-52 | с именем: —
+openspec/specs/decision-viewer/spec.md:223 голые: F-17 | с именем: —
+openspec/specs/decision-viewer/spec.md:238 голые: F-17, F-94 | с именем: —
+openspec/specs/decision-viewer/spec.md:258 голые: F-109 | с именем: —
+openspec/specs/decision-viewer/spec.md:292 голые: F-26, F-21, F-34, F-58, F-67, F-34, F-21, F-30 | с именем: —
+openspec/specs/decision-viewer/spec.md:320 голые: F-29, F-32, F-32, F-69 | с именем: —
+openspec/specs/decision-viewer/spec.md:356 голые: F-05, F-06, F-06, F-28 | с именем: —
+openspec/specs/decision-viewer/spec.md:377 голые: F-51 | с именем: —
+openspec/specs/decision-viewer/spec.md:393 голые: F-70, F-70 | с именем: —
+openspec/specs/decision-viewer/spec.md:414 голые: F-34, F-51, F-71, F-71 | с именем: —
+openspec/specs/decision-viewer/spec.md:430 голые: F-72 | с именем: —
+openspec/specs/decision-viewer/spec.md:451 голые: F-64 | с именем: —
+openspec/specs/decision-viewer/spec.md:467 голые: F-26, F-34, F-74 | с именем: —
+openspec/specs/decision-viewer/spec.md:490 голые: F-04, F-10, F-19 | с именем: —
+openspec/specs/decision-viewer/spec.md:501 голые: F-76, F-18.A | с именем: —
+openspec/specs/decision-viewer/spec.md:509 голые: F-76, F-18.A, F-47.E, F-48.E, F-63.B | с именем: —
+openspec/specs/decision-viewer/spec.md:517 голые: F-46 | с именем: F-23.A @calibration-fixes, F-45.E @calibration-fixes, F-46.E @calibration-fixes
+openspec/specs/decision-viewer/spec.md:525 голые: F-46 | с именем: F-23.A @calibration-fixes, F-45.E @calibration-fixes, F-46.E @calibration-fixes
+openspec/specs/decision-viewer/spec.md:533 голые: F-46, F-39 | с именем: F-35 @step-help
+openspec/specs/module-declaration/spec.md:9 голые: F-02, F-03, F-16, F-21, F-39, F-21 | с именем: —
+openspec/specs/module-declaration/spec.md:39 голые: F-03 | с именем: —
+openspec/specs/module-declaration/spec.md:58 голые: F-03, F-55 | с именем: —
+openspec/specs/onboarding-guide/spec.md:9 голые: F-31.A, F-36.A, F-34.A, F-22, F-110.B, F-114.A, F-117.A, F-125.A | с именем: —
+openspec/specs/onboarding-guide/spec.md:50 голые: F-97.B | с именем: —
+openspec/specs/onboarding-guide/spec.md:59 голые: F-34.A | с именем: —
+openspec/specs/onboarding-guide/spec.md:80 голые: F-98.A, F-104 | с именем: —
+openspec/specs/onboarding-guide/spec.md:94 голые: F-34, F-24.A | с именем: —
+openspec/specs/onboarding-guide/spec.md:120 голые: F-34 | с именем: —
+openspec/specs/onboarding-guide/spec.md:131 голые: F-04, F-05, F-62 | с именем: —
+openspec/specs/plugin-agent-hook/spec.md:9 голые: F-15, F-32, F-33 | с именем: —
+openspec/specs/plugin-agent-hook/spec.md:35 голые: F-32, F-50, F-52 | с именем: —
+openspec/specs/plugin-agent-hook/spec.md:81 голые: F-32, F-74 | с именем: —
+openspec/specs/plugin-agent-hook/spec.md:112 голые: F-52, F-69 | с именем: —
+openspec/specs/plugin-agent-hook/spec.md:143 голые: F-47, F-60, F-65, F-76, F-75, F-98, F-92, F-58 | с именем: —
+openspec/specs/plugin-agent-hook/spec.md:204 голые: F-31, F-63, F-68 | с именем: —
+openspec/specs/plugin-agent-hook/spec.md:225 голые: F-31, F-48, F-52, F-57 | с именем: —
+openspec/specs/plugin-agent-hook/spec.md:266 голые: F-49, F-67, F-68, F-49 | с именем: —
+openspec/specs/plugin-agent-hook/spec.md:302 голые: F-66 | с именем: —
+openspec/specs/plugin-agent-hook/spec.md:353 голые: F-61 | с именем: —
+openspec/specs/plugin-agent-hook/spec.md:399 голые: F-82, F-87 | с именем: —
+openspec/specs/plugin-core-contract/spec.md:9 голые: F-08 | с именем: —
+openspec/specs/plugin-core-contract/spec.md:24 голые: F-08, F-31 | с именем: —
+openspec/specs/plugin-core-contract/spec.md:59 голые: F-20 | с именем: —
+openspec/specs/plugin-core-contract/spec.md:74 голые: F-20 | с именем: —
+openspec/specs/plugin-core-contract/spec.md:93 голые: F-105 | с именем: —
+openspec/specs/plugin-core-contract/spec.md:102 голые: F-106 | с именем: —
+openspec/specs/plugin-core-contract/spec.md:111 голые: F-22, F-35, F-35 | с именем: —
+openspec/specs/plugin-core-contract/spec.md:137 голые: F-44, F-35 | с именем: —
+openspec/specs/plugin-core-contract/spec.md:163 голые: F-35 | с именем: —
+openspec/specs/plugin-decision-view/spec.md:9 голые: F-12, F-29 | с именем: —
+openspec/specs/plugin-decision-view/spec.md:50 голые: F-13, F-30, F-43, F-43, F-55 | с именем: —
+openspec/specs/plugin-decision-view/spec.md:86 голые: F-04, F-08, F-19 | с именем: —
+openspec/specs/plugin-decision-view/spec.md:102 голые: F-18, F-20 | с именем: —
+openspec/specs/plugin-file-links/spec.md:9 голые: F-11, F-27, F-28, F-44 | с именем: —
+openspec/specs/plugin-file-links/spec.md:40 голые: F-44, F-54 | с именем: —
+openspec/specs/plugin-file-links/spec.md:56 голые: F-45, F-14 | с именем: —
+openspec/specs/plugin-file-links/spec.md:82 голые: F-09, F-36, F-46, F-56, F-62 | с именем: —
+openspec/specs/plugin-packaging/spec.md:9 голые: F-10, F-30, F-84, F-123 | с именем: —
+openspec/specs/plugin-packaging/spec.md:34 голые: F-09, F-55 | с именем: —
+openspec/specs/plugin-scheme-view/spec.md:9 голые: F-17, F-40, F-02, F-26, F-125 | с именем: —
+openspec/specs/plugin-scheme-view/spec.md:40 голые: F-24, F-124, F-125 | с именем: —
+openspec/specs/plugin-scheme-view/spec.md:76 голые: F-11, F-25, F-26, F-40 | с именем: —
+openspec/specs/plugin-scheme-view/spec.md:91 голые: F-04, F-29 | с именем: —
+openspec/specs/plugin-scheme-view/spec.md:116 голые: F-05, F-28 | с именем: —
+openspec/specs/plugin-scheme-view/spec.md:146 голые: F-03, F-27, F-06 | с именем: —
+openspec/specs/plugin-scheme-view/spec.md:181 голые: F-103 | с именем: —
+openspec/specs/plugin-scheme-view/spec.md:190 голые: F-104 | с именем: —
+openspec/specs/plugin-step-help-view/spec.md:9 голые: F-17, F-40 | с именем: —
+openspec/specs/plugin-step-help-view/spec.md:30 голые: F-18, F-40, F-23, F-39, F-24 | с именем: —
+openspec/specs/plugin-step-help-view/spec.md:61 голые: F-01, F-09, F-20, F-38, F-37 | с именем: —
+openspec/specs/plugin-step-help-view/spec.md:97 голые: F-21, F-41 | с именем: —
+openspec/specs/plugin-step-help-view/spec.md:138 голые: F-16, F-26, F-42, F-25, F-53 | с именем: —
+openspec/specs/plugin-step-help-view/spec.md:174 голые: F-22, F-39, F-53, F-38 | с именем: —
+openspec/specs/plugin-step-help-view/spec.md:205 голые: F-62, F-59 | с именем: —
+openspec/specs/project-installer/spec.md:9 голые: F-49, F-53, F-20 | с именем: F-15.C @symphysis-schema, F-16.B @symphysis-schema, F-50.E @calibration-fixes, F-13.A @calibration-fixes, F-15.B @calibration-fixes
+openspec/specs/project-installer/spec.md:72 голые: F-15.A, F-15.C | с именем: —
+openspec/specs/project-installer/spec.md:87 голые: F-21.A, F-51.E, F-57.E, F-79 | с именем: —
+openspec/specs/project-installer/spec.md:107 голые: F-126.A, F-123, F-32.A | с именем: —
+openspec/specs/project-installer/spec.md:152 голые: F-100.A, F-107.A, F-116.A, F-126.A | с именем: —
+openspec/specs/project-installer/spec.md:166 голые: F-115.D, F-124.A, F-32.A, F-29 | с именем: —
+openspec/specs/project-installer/spec.md:197 голые: F-24.A, F-23 | с именем: —
+openspec/specs/project-installer/spec.md:218 голые: F-94.E, F-111.A | с именем: —
+openspec/specs/project-installer/spec.md:252 голые: F-135.B, F-24.A | с именем: —
+openspec/specs/project-installer/spec.md:278 голые: F-122 | с именем: —
+openspec/specs/project-installer/spec.md:297 голые: F-114.A | с именем: —
+openspec/specs/project-installer/spec.md:316 голые: F-31.A, F-36.A | с именем: —
+openspec/specs/project-installer/spec.md:352 голые: F-101.A | с именем: —
+openspec/specs/project-installer/spec.md:371 голые: F-16, F-20, F-23 | с именем: —
+openspec/specs/project-installer/spec.md:387 голые: F-36, F-64, F-36 | с именем: —
+openspec/specs/project-installer/spec.md:418 голые: F-39, F-138, F-126 | с именем: —
+openspec/specs/project-installer/spec.md:437 голые: F-08, F-49, F-110, F-124 | с именем: —
+openspec/specs/project-installer/spec.md:455 голые: F-36 | с именем: —
+openspec/specs/project-settings/spec.md:9 голые: F-24.A, F-110.B, F-61, F-63, F-132, F-14, F-18, F-23 | с именем: —
+openspec/specs/project-settings/spec.md:53 голые: F-135.B, F-110.B, F-51.A, F-113, F-118.A, F-24.A, F-25.A | с именем: —
+openspec/specs/project-settings/spec.md:97 голые: F-94.E | с именем: —
+openspec/specs/project-settings/spec.md:106 голые: F-24.A, F-118.A | с именем: —
+openspec/specs/project-settings/spec.md:117 голые: F-24.A | с именем: —
+openspec/specs/repository-layout/spec.md:9 голые: F-22 | с именем: —
+openspec/specs/repository-layout/spec.md:28 голые: F-38 | с именем: —
+openspec/specs/repository-layout/spec.md:36 голые: F-12, F-17, F-31 | с именем: —
+openspec/specs/repository-layout/spec.md:44 голые: F-03, F-37 | с именем: —
+openspec/specs/repository-layout/spec.md:58 голые: F-23 | с именем: —
+openspec/specs/repository-layout/spec.md:72 голые: F-25 | с именем: —
+openspec/specs/repository-layout/spec.md:80 голые: F-22, F-56 | с именем: —
+openspec/specs/repository-layout/spec.md:90 голые: F-03, F-57 | с именем: —
+openspec/specs/repository-layout/spec.md:100 голые: F-23, F-58 | с именем: —
+openspec/specs/requirement-probes/spec.md:9 голые: F-18.B, F-08.D, F-09.C, F-22 | с именем: —
+openspec/specs/requirement-probes/spec.md:24 голые: F-24, F-11.D | с именем: —
+openspec/specs/requirement-probes/spec.md:39 голые: F-18.B | с именем: —
+openspec/specs/requirement-probes/spec.md:50 голые: F-18.B, F-11 | с именем: —
+openspec/specs/requirement-probes/spec.md:66 голые: F-99.A | с именем: —
+openspec/specs/requirement-probes/spec.md:75 голые: F-130.A | с именем: —
+openspec/specs/requirement-probes/spec.md:84 голые: F-112.A | с именем: —
+openspec/specs/requirement-probes/spec.md:98 голые: F-18.B | с именем: —
+openspec/specs/requirement-probes/spec.md:106 голые: F-18.B, F-24.A | с именем: —
+openspec/specs/requirement-probes/spec.md:127 голые: F-45 | с именем: —
+openspec/specs/skill-transfer/spec.md:9 голые: F-14.A | с именем: —
+openspec/specs/skill-transfer/spec.md:22 голые: F-08.D, F-22, F-24 | с именем: —
+openspec/specs/step-help/spec.md:9 голые: F-19, F-23, F-26, F-08, F-40, F-09, F-27, F-55, F-12, F-13, F-41 | с именем: —
+openspec/specs/step-help/spec.md:72 голые: F-19, F-24, F-24 | с именем: —
+openspec/specs/step-help/spec.md:88 голые: F-33, F-34, F-42, F-23, F-34 | с именем: —
+openspec/specs/step-help/spec.md:118 голые: F-23, F-34, F-43, F-57 | с именем: —
+openspec/specs/step-help/spec.md:154 голые: F-20, F-27, F-31, F-20 | с именем: —
+openspec/specs/step-help/spec.md:175 голые: F-02, F-03, F-04, F-28, F-25, F-28 | с именем: —
+openspec/specs/step-help/spec.md:206 голые: F-27, F-36, F-36, F-27 | с именем: —
+openspec/specs/step-help/spec.md:222 голые: F-54, F-55, F-54 | с именем: —
+openspec/specs/step-help/spec.md:253 голые: F-50 | с именем: —
+openspec/specs/step-help/spec.md:272 голые: F-44, F-51 | с именем: —
+openspec/specs/step-help/spec.md:303 голые: F-46, F-56, F-51 | с именем: —
+openspec/specs/step-help/spec.md:334 голые: F-46, F-62, F-35 | с именем: —
+openspec/specs/step-help/spec.md:360 голые: F-43, F-55 | с именем: —
+openspec/specs/trace-conventions/spec.md:9 голые: F-06, F-44, F-84, F-83, F-158 | с именем: —
+openspec/specs/trace-conventions/spec.md:34 голые: F-06, F-42 | с именем: —
+openspec/specs/trace-conventions/spec.md:42 голые: F-43, F-115 | с именем: —
+openspec/specs/trace-conventions/spec.md:52 голые: F-43, F-90 | с именем: —
+openspec/specs/trace-conventions/spec.md:71 голые: F-43, F-116 | с именем: —
+openspec/specs/trace-conventions/spec.md:81 голые: F-91, F-44, F-76 | с именем: —
+openspec/specs/trace-conventions/spec.md:95 голые: F-76, F-117 | с именем: —
+openspec/specs/trace-conventions/spec.md:105 голые: F-42, F-77 | с именем: —
+openspec/specs/trace-diagram/spec.md:9 голые: F-02, F-54, F-71, F-103 | с именем: —
+openspec/specs/trace-diagram/spec.md:28 голые: F-54, F-71, F-120, F-135 | с именем: —
+openspec/specs/trace-diagram/spec.md:38 голые: F-34, F-58, F-66, F-104 | с именем: —
+openspec/specs/trace-diagram/spec.md:57 голые: F-54, F-67, F-54, F-53, F-136 | с именем: —
+openspec/specs/trace-diagram/spec.md:70 голые: F-68, F-73, F-67, F-137 | с именем: —
+openspec/specs/trace-diagram/spec.md:88 голые: F-15, F-54 | с именем: —
+openspec/specs/trace-graph/spec.md:9 голые: F-26, F-18, F-25, F-39, F-30 | с именем: —
+openspec/specs/trace-graph/spec.md:39 голые: F-82, F-156, F-06, F-56, F-70, F-19 | с именем: —
+openspec/specs/trace-graph/spec.md:63 голые: F-40, F-14, F-40 | с именем: —
+openspec/specs/trace-graph/spec.md:76 голые: F-03, F-41 | с именем: —
+openspec/specs/trace-graph/spec.md:89 голые: F-03, F-31, F-41, F-86, F-87 | с именем: —
+openspec/specs/trace-graph/spec.md:119 голые: F-30, F-118 | с именем: —
+openspec/specs/trace-graph/spec.md:129 голые: F-70, F-131, F-23, F-70 | с именем: —
+openspec/specs/trace-graph/spec.md:147 голые: F-71, F-157 | с именем: —
+openspec/specs/trace-graph/spec.md:160 голые: F-53 | с именем: —
+openspec/specs/trace-graph/spec.md:173 голые: F-53, F-119 | с именем: —
+openspec/specs/trace-signals/spec.md:9 голые: F-05, F-07, F-32, F-138 | с именем: —
+openspec/specs/trace-signals/spec.md:38 голые: F-31 | с именем: —
+openspec/specs/trace-signals/spec.md:46 голые: F-31, F-112 | с именем: —
+openspec/specs/trace-signals/spec.md:56 голые: F-83, F-64, F-95, F-65 | с именем: —
+openspec/specs/trace-signals/spec.md:75 голые: F-57, F-64, F-95 | с именем: —
+openspec/specs/trace-signals/spec.md:104 голые: F-64, F-45 | с именем: —
+openspec/specs/trace-signals/spec.md:122 голые: F-11, F-46, F-69 | с именем: —
+openspec/specs/trace-signals/spec.md:130 голые: F-48, F-78, F-113, F-134 | с именем: —
+openspec/specs/trace-signals/spec.md:143 голые: F-31, F-113 | с именем: —
+openspec/specs/trace-signals/spec.md:153 голые: F-30, F-47, F-98, F-99 | с именем: —
+openspec/specs/trace-signals/spec.md:178 голые: F-30, F-47, F-114 | с именем: —
+openspec/specs/trace-snapshot/spec.md:9 голые: F-41, F-52, F-74, F-79, F-100, F-139 | с именем: —
+openspec/specs/trace-snapshot/spec.md:33 голые: F-74, F-75, F-78, F-134 | с именем: —
+openspec/specs/trace-snapshot/spec.md:56 голые: F-78, F-84, F-95, F-118, F-123 | с именем: —
+openspec/specs/trace-snapshot/spec.md:75 голые: F-49, F-75, F-78, F-79, F-127, F-128, F-139 | с именем: —
+openspec/specs/trace-snapshot/spec.md:110 голые: F-51 | с именем: —
+openspec/specs/trace-snapshot/spec.md:124 голые: F-102, F-25, F-62, F-74, F-122 | с именем: —
+openspec/specs/verdict-readiness/spec.md:9 голые: F-02.B, F-13.B, F-06.A, F-29.E, F-26.E, F-64.B | с именем: —
+openspec/specs/verdict-readiness/spec.md:59 голые: F-03.C, F-06.A, F-30.E, F-31.E, F-64.B | с именем: —
+openspec/specs/verdict-readiness/spec.md:84 голые: F-03.C, F-21 | с именем: —
