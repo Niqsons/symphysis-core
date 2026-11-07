@@ -212,7 +212,7 @@
 const JOURNAL = {
  "title": "Журнал решений: attack-warning-read",
  "source": "decisions.json",
- "sha256": "326f315fb22e23b3d849bc7391169ac8cb0cf9fc07dd50974173c9e788adc7bd",
+ "sha256": "5dc476cf96ddaa4da0e86c96daf0340fa2f267f6a00c75d33e504a2db92c7ce4",
  "stats": {
   "records": 35,
   "forks": 24,
@@ -1035,7 +1035,8 @@ const JOURNAL = {
    "parking": [
     {
      "addressee": "ИБ",
-     "text": "Текст раздела из файла атаки попадает в заметку журнала и обратно на страницу: сверить по чек-листу `security.md`, что показ флага и заметки экранирован (требование «Текст журнала и атаки экранируется в HTML» спеки `decision-viewer`) и что сверка подстрокой не исполняет разметку из заметки."
+     "text": "Текст раздела из файла атаки попадает в заметку журнала и обратно на страницу: сверить по чек-листу `security.md`, что показ флага и заметки экранирован (требование «Текст журнала и атаки экранируется в HTML» спеки `decision-viewer`) и что сверка подстрокой не исполняет разметку из заметки.",
+     "finding": "security.md, строка «Инъекции через содержимое файлов: раздел строки атаки и текст заметки на странице»: показ экранирован по мастер-спеке decision-viewer «Текст журнала и атаки экранируется в HTML» (тесты esc и md), сверка флага — сравнение строк после схлопывания пробелов по границе сегмента « · », разметка не разбирается и не исполняется."
     }
    ],
    "dispute": "",
@@ -1047,7 +1048,7 @@ const JOURNAL = {
     "prompt",
     "flag"
    ],
-   "finding": ""
+   "finding": "security.md, строка «Инъекции через содержимое файлов: раздел строки атаки и текст заметки на странице»: показ экранирован по мастер-спеке decision-viewer «Текст журнала и атаки экранируется в HTML» (тесты esc и md), сверка флага — сравнение строк после схлопывания пробелов по границе сегмента « · », разметка не разбирается и не исполняется."
   },
   {
    "id": "F-15",
@@ -2716,7 +2717,7 @@ const SCHEME = {
 };
 const HELP = {
  "contract": 3,
- "taken_at": "2026-11-07T22:14:13+03:00",
+ "taken_at": "2026-11-07T22:23:50+03:00",
  "versions": {
   "openspec": "1.16.1+symphysis.5",
   "symphysis": null
@@ -2724,10 +2725,10 @@ const HELP = {
  "change": "attack-warning-read",
  "changes": null,
  "error": null,
- "current_step": "design",
- "current_text": "Следующий шаг по файлам — `design`, ход модели.",
+ "current_step": "tasks",
+ "current_text": "Следующий шаг по файлам — `tasks`, ход модели.",
  "turn": "model",
- "next_by_status": "design",
+ "next_by_status": "tasks",
  "forks": {
   "open": 0,
   "parked": 0
@@ -3039,7 +3040,7 @@ const HELP = {
   },
   {
    "id": "design",
-   "state": "ready",
+   "state": "done",
    "turn": "model",
    "optional": false,
    "blocks": [
@@ -3051,10 +3052,10 @@ const HELP = {
    "files": [
     {
      "path": "openspec/changes/attack-warning-read/design.md",
-     "exists": false
+     "exists": true
     }
    ],
-   "file_note": null,
+   "file_note": "файл есть, содержание не проверялось",
    "texts": {
     "title": "Дизайн",
     "why": "Как реализовать: решения журнала, риски и открытые вопросы в одном документе, от которого идут задачи.",
@@ -3071,7 +3072,7 @@ const HELP = {
   },
   {
    "id": "security",
-   "state": "ready",
+   "state": "done",
    "turn": "model",
    "optional": false,
    "blocks": [
@@ -3082,10 +3083,10 @@ const HELP = {
    "files": [
     {
      "path": "openspec/changes/attack-warning-read/security.md",
-     "exists": false
+     "exists": true
     }
    ],
-   "file_note": null,
+   "file_note": "файл есть, содержание не проверялось",
    "texts": {
     "title": "Чек-лист безопасности",
     "why": "Канон информационной безопасности отмечается по спецификациям пункт за пунктом: чтобы инъекции, пути и токены не остались вопросом, который никто не задал.",
@@ -3102,16 +3103,14 @@ const HELP = {
   },
   {
    "id": "tasks",
-   "state": "blocked",
+   "state": "ready",
    "turn": "model",
    "optional": false,
    "blocks": [
     "attack-artifacts"
    ],
    "stops_apply": true,
-   "waits_for": [
-    "design"
-   ],
+   "waits_for": [],
    "files": [
     {
      "path": "openspec/changes/attack-warning-read/tasks.md",
@@ -3141,8 +3140,6 @@ const HELP = {
    "blocks": [],
    "stops_apply": false,
    "waits_for": [
-    "design",
-    "security",
     "tasks"
    ],
    "files": [
@@ -3180,8 +3177,7 @@ const HELP = {
    "blocks": [],
    "stops_apply": false,
    "waits_for": [
-    "tasks",
-    "security"
+    "tasks"
    ],
    "files": [],
    "file_note": null,
@@ -3259,19 +3255,23 @@ const HELP = {
   "consequences.md": "openspec/changes/attack-warning-read/consequences.md",
   "decisions.json": "openspec/changes/attack-warning-read/decisions.json",
   "decisions.md": "openspec/changes/attack-warning-read/decisions.md",
+  "design.md": "openspec/changes/attack-warning-read/design.md",
   "edge-probe.md": "openspec/changes/attack-warning-read/edge-probe.md",
   "intent.md": "openspec/changes/attack-warning-read/intent.md",
   "openspec/changes/attack-warning-read/consequences.md": "openspec/changes/attack-warning-read/consequences.md",
   "openspec/changes/attack-warning-read/decisions.json": "openspec/changes/attack-warning-read/decisions.json",
+  "openspec/changes/attack-warning-read/design.md": "openspec/changes/attack-warning-read/design.md",
   "openspec/changes/attack-warning-read/intent.md": "openspec/changes/attack-warning-read/intent.md",
   "openspec/changes/attack-warning-read/proposal.md": "openspec/changes/attack-warning-read/proposal.md",
   "openspec/changes/attack-warning-read/research/none.md": "openspec/changes/attack-warning-read/research/none.md",
+  "openspec/changes/attack-warning-read/security.md": "openspec/changes/attack-warning-read/security.md",
   "openspec/changes/attack-warning-read/specs/artifact-attack/spec.md": "openspec/changes/attack-warning-read/specs/artifact-attack/spec.md",
   "openspec/changes/attack-warning-read/specs/decision-viewer/spec.md": "openspec/changes/attack-warning-read/specs/decision-viewer/spec.md",
   "openspec/changes/attack-warning-read/specs/warning-read-flag/spec.md": "openspec/changes/attack-warning-read/specs/warning-read-flag/spec.md",
   "proposal.md": "openspec/changes/attack-warning-read/proposal.md",
   "research/none.md": "openspec/changes/attack-warning-read/research/none.md",
   "scheme.md": "openspec/changes/attack-warning-read/scheme.md",
+  "security.md": "openspec/changes/attack-warning-read/security.md",
   "symphysis.html": "openspec/changes/attack-warning-read/symphysis.html",
   "symphysis.yaml": "symphysis.yaml"
  },
@@ -3297,6 +3297,7 @@ const LINKS = {
   "decisions.md": "decisions.md",
   "decisions/journal.schema.json": "../../../decisions/journal.schema.json",
   "decisions/journal_apply.py": "../../../decisions/journal_apply.py",
+  "design.md": "design.md",
   "docs/analysis/skills-review-2026-11-05.md": "../../../docs/analysis/skills-review-2026-11-05.md",
   "docs/repo-contract.md": "../../../docs/repo-contract.md",
   "edge-probe.md": "edge-probe.md",
@@ -3304,9 +3305,11 @@ const LINKS = {
   "openspec/changes/archive/2026-11-07-attack-stale-scope/decisions.json": "../archive/2026-11-07-attack-stale-scope/decisions.json",
   "openspec/changes/attack-warning-read/consequences.md": "consequences.md",
   "openspec/changes/attack-warning-read/decisions.json": "decisions.json",
+  "openspec/changes/attack-warning-read/design.md": "design.md",
   "openspec/changes/attack-warning-read/intent.md": "intent.md",
   "openspec/changes/attack-warning-read/proposal.md": "proposal.md",
   "openspec/changes/attack-warning-read/research/none.md": "research/none.md",
+  "openspec/changes/attack-warning-read/security.md": "security.md",
   "openspec/changes/attack-warning-read/specs/artifact-attack/spec.md": "specs/artifact-attack/spec.md",
   "openspec/changes/attack-warning-read/specs/decision-viewer/spec.md": "specs/decision-viewer/spec.md",
   "openspec/changes/attack-warning-read/specs/warning-read-flag/spec.md": "specs/warning-read-flag/spec.md",
@@ -3317,6 +3320,7 @@ const LINKS = {
   "proposal.md": "proposal.md",
   "research/none.md": "research/none.md",
   "scheme.md": "scheme.md",
+  "security.md": "security.md",
   "symphysis.html": "symphysis.html",
   "symphysis.yaml": "../../../symphysis.yaml",
   "viewer/playground-template.html": "../../../viewer/playground-template.html",
