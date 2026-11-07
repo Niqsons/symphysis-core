@@ -15,15 +15,15 @@
   },
   {
    "path": "specs/artifact-attack/spec.md",
-   "sha256": "6109a220951cb2ac9784d2e8174cec2c852435e3eff7efb917d701b7ac8ebc1c"
+   "sha256": "c4167bfd0f573e2a0f1fca5c7995d8eaeac246fedd20ea93e5b3682bfb42d956"
   },
   {
    "path": "specs/decision-viewer/spec.md",
-   "sha256": "98545933439be46aa17da1ea09b4c5f8d740f06d1d684836b5dfa885057b7f55"
+   "sha256": "311641c4ee54ab50b6e6dc923835981002e4adb201dc5152943506ca10a0d303"
   },
   {
    "path": "specs/warning-read-flag/spec.md",
-   "sha256": "0a035eaa8961d9b9594ebb260bf43f434d954835ce532625b47a6ff7ec84d5f7"
+   "sha256": "7df5d27f829e4817868c551b26bf6543b2907f8b106758fecda73800bbc60575"
   },
   {
    "path": "tasks.md",
@@ -971,12 +971,6 @@
   },
   {
    "from": "req:artifact-attack/Вердикт атаки держат блокеры",
-   "to": "rec:F-13",
-   "type": "traces",
-   "at": "specs/artifact-attack/spec.md:6"
-  },
-  {
-   "from": "req:artifact-attack/Вердикт атаки держат блокеры",
    "to": "rec:F-15",
    "type": "traces",
    "at": "specs/artifact-attack/spec.md:6"
@@ -1260,12 +1254,6 @@
   {
    "from": "req:warning-read-flag/Заметка «прочитано» опознаёт строку атаки по разделу",
    "to": "rec:F-02",
-   "type": "traces",
-   "at": "specs/warning-read-flag/spec.md:9"
-  },
-  {
-   "from": "req:warning-read-flag/Заметка «прочитано» опознаёт строку атаки по разделу",
-   "to": "rec:F-12",
    "type": "traces",
    "at": "specs/warning-read-flag/spec.md:9"
   },
@@ -1646,22 +1634,6 @@
    ]
   },
   {
-   "a": "req:artifact-attack/Вердикт атаки держат блокеры",
-   "b": "req:decision-viewer/Переключатель «прочитано» у строки предупреждения",
-   "source": "общие записи журнала",
-   "shared": [
-    "rec:F-13"
-   ]
-  },
-  {
-   "a": "req:artifact-attack/Вердикт атаки держат блокеры",
-   "b": "req:warning-read-flag/Заметка «прочитано» опознаёт строку атаки по разделу",
-   "source": "общие записи журнала",
-   "shared": [
-    "rec:F-13"
-   ]
-  },
-  {
    "a": "req:decision-viewer/Отметка «прочитано» ставится только действием человека",
    "b": "req:decision-viewer/Переключатель «прочитано» у строки предупреждения",
    "source": "общие записи журнала",
@@ -1690,7 +1662,6 @@
    "b": "req:warning-read-flag/Заметка «прочитано» опознаёт строку атаки по разделу",
    "source": "общие записи журнала",
    "shared": [
-    "rec:F-12",
     "rec:F-13",
     "rec:F-14"
    ]
@@ -1725,14 +1696,6 @@
    "source": "общие записи журнала",
    "shared": [
     "rec:F-16"
-   ]
-  },
-  {
-   "a": "req:warning-read-flag/Заметка «прочитано» опознаёт строку атаки по разделу",
-   "b": "req:warning-read-flag/Флаг только у предупреждений",
-   "source": "общие записи журнала",
-   "shared": [
-    "rec:F-12"
    ]
   },
   {
