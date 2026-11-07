@@ -215,7 +215,7 @@ const JOURNAL = {
  "title": "Журнал решений: attack-lens-conventions",
  "source": "decisions.json",
  "generated": "2026-11-08",
- "sha256": "074c55f3e5f04ac6a1e8ce6a951c4314dce59121006f50fc9be8881061dc94b0",
+ "sha256": "689da7f73795cbccb5cc58a8986f112f1507345463e23e1c132f820e9cf2a4fb",
  "stats": {
   "records": 39,
   "forks": 21,
@@ -1708,7 +1708,7 @@ const JOURNAL = {
   },
   {
    "id": "F-25",
-   "question": "Страница и плагин считают тяжесть источника любой строки с опорой «нет» блокером: строка ниже блокера без причины в скобках показана красным «понижение без причины», с причиной — «понижено: <причина>». Мастер-спека мерит понижение от тяжести своей линзы. Под F-20.C строки прочих правил новой линзы — предупреждение с опорой «нет», и показ назовёт каждую понижением без причины",
+   "question": "Страница и плагин считают тяжесть источника любой строки с опорой «нет» блокером: строка ниже блокера без причины в скобках показана красным «понижение без причины», с причиной — «понижено» с текстом причины. Мастер-спека мерит понижение от тяжести своей линзы. Под F-20.C строки прочих правил новой линзы — предупреждение с опорой «нет», и показ назовёт каждую понижением без причины",
    "kind": "факт",
    "status": "решён",
    "addressee": "агент",
@@ -2473,7 +2473,8 @@ const JOURNAL = {
    "parking": [
     {
      "addressee": "ИБ",
-     "text": "инъекция через текст правил: `rules` в `openspec/config.yaml` проекта и instruction шага — данные, фраза в них, похожая на указание модели, не меняет ход атаки — канон, покрывается чек-листом security.md; запрет не чеканится"
+     "text": "инъекция через текст правил: `rules` в `openspec/config.yaml` проекта и instruction шага — данные, фраза в них, похожая на указание модели, не меняет ход атаки — канон, покрывается чек-листом security.md; запрет не чеканится",
+     "finding": "Разобрано в `security.md`: пункт «Инъекции через содержимое файлов: текст правил, мастер-текст и артефакты, которые читает модель (F-35)» — строка «текст — данные» в теле скилла идёт задачей."
     }
    ],
    "dispute": "",
@@ -2489,7 +2490,7 @@ const JOURNAL = {
    ],
    "comments": [],
    "nodes": [],
-   "finding": ""
+   "finding": "Разобрано в `security.md`: пункт «Инъекции через содержимое файлов: текст правил, мастер-текст и артефакты, которые читает модель (F-35)» — строка «текст — данные» в теле скилла идёт задачей."
   },
   {
    "id": "F-36",
@@ -2815,7 +2816,7 @@ const SCHEME = {
 };
 const HELP = {
  "contract": 4,
- "taken_at": "2026-11-08T02:34:59+03:00",
+ "taken_at": "2026-11-08T02:40:23+03:00",
  "versions": {
   "openspec": "1.16.1+symphysis.5",
   "symphysis": null
@@ -2823,10 +2824,10 @@ const HELP = {
  "change": "attack-lens-conventions",
  "changes": null,
  "error": null,
- "current_step": "design",
- "current_text": "Следующий шаг по файлам — `design`, ход модели.",
+ "current_step": "tasks",
+ "current_text": "Следующий шаг по файлам — `tasks`, ход модели.",
  "turn": "model",
- "next_by_status": "design",
+ "next_by_status": "tasks",
  "forks": {
   "open": 0,
   "parked": 0
@@ -3138,7 +3139,7 @@ const HELP = {
   },
   {
    "id": "design",
-   "state": "ready",
+   "state": "done",
    "turn": "model",
    "optional": false,
    "blocks": [
@@ -3150,10 +3151,10 @@ const HELP = {
    "files": [
     {
      "path": "openspec/changes/attack-lens-conventions/design.md",
-     "exists": false
+     "exists": true
     }
    ],
-   "file_note": null,
+   "file_note": "файл есть, содержание не проверялось",
    "texts": {
     "title": "Дизайн",
     "why": "Как реализовать: решения журнала, риски и открытые вопросы в одном документе, от которого идут задачи.",
@@ -3170,7 +3171,7 @@ const HELP = {
   },
   {
    "id": "security",
-   "state": "ready",
+   "state": "done",
    "turn": "model",
    "optional": false,
    "blocks": [
@@ -3181,10 +3182,10 @@ const HELP = {
    "files": [
     {
      "path": "openspec/changes/attack-lens-conventions/security.md",
-     "exists": false
+     "exists": true
     }
    ],
-   "file_note": null,
+   "file_note": "файл есть, содержание не проверялось",
    "texts": {
     "title": "Чек-лист безопасности",
     "why": "Канон информационной безопасности отмечается по спецификациям пункт за пунктом: чтобы инъекции, пути и токены не остались вопросом, который никто не задал.",
@@ -3201,16 +3202,14 @@ const HELP = {
   },
   {
    "id": "tasks",
-   "state": "blocked",
+   "state": "ready",
    "turn": "model",
    "optional": false,
    "blocks": [
     "attack-artifacts"
    ],
    "stops_apply": true,
-   "waits_for": [
-    "design"
-   ],
+   "waits_for": [],
    "files": [
     {
      "path": "openspec/changes/attack-lens-conventions/tasks.md",
@@ -3240,8 +3239,6 @@ const HELP = {
    "blocks": [],
    "stops_apply": false,
    "waits_for": [
-    "design",
-    "security",
     "tasks"
    ],
    "files": [
@@ -3279,8 +3276,7 @@ const HELP = {
    "blocks": [],
    "stops_apply": false,
    "waits_for": [
-    "tasks",
-    "security"
+    "tasks"
    ],
    "files": [],
    "file_note": null,
@@ -3358,19 +3354,23 @@ const HELP = {
   "consequences.md": "openspec/changes/attack-lens-conventions/consequences.md",
   "decisions.json": "openspec/changes/attack-lens-conventions/decisions.json",
   "decisions.md": "openspec/changes/attack-lens-conventions/decisions.md",
+  "design.md": "openspec/changes/attack-lens-conventions/design.md",
   "edge-probe.md": "openspec/changes/attack-lens-conventions/edge-probe.md",
   "intent.md": "openspec/changes/attack-lens-conventions/intent.md",
   "openspec/changes/attack-lens-conventions/consequences.md": "openspec/changes/attack-lens-conventions/consequences.md",
   "openspec/changes/attack-lens-conventions/decisions.json": "openspec/changes/attack-lens-conventions/decisions.json",
+  "openspec/changes/attack-lens-conventions/design.md": "openspec/changes/attack-lens-conventions/design.md",
   "openspec/changes/attack-lens-conventions/intent.md": "openspec/changes/attack-lens-conventions/intent.md",
   "openspec/changes/attack-lens-conventions/proposal.md": "openspec/changes/attack-lens-conventions/proposal.md",
   "openspec/changes/attack-lens-conventions/research/none.md": "openspec/changes/attack-lens-conventions/research/none.md",
+  "openspec/changes/attack-lens-conventions/security.md": "openspec/changes/attack-lens-conventions/security.md",
   "openspec/changes/attack-lens-conventions/specs/artifact-attack/spec.md": "openspec/changes/attack-lens-conventions/specs/artifact-attack/spec.md",
   "openspec/changes/attack-lens-conventions/specs/decision-viewer/spec.md": "openspec/changes/attack-lens-conventions/specs/decision-viewer/spec.md",
   "openspec/changes/attack-lens-conventions/specs/plugin-core-contract/spec.md": "openspec/changes/attack-lens-conventions/specs/plugin-core-contract/spec.md",
   "proposal.md": "openspec/changes/attack-lens-conventions/proposal.md",
   "research/none.md": "openspec/changes/attack-lens-conventions/research/none.md",
   "scheme.md": "openspec/changes/attack-lens-conventions/scheme.md",
+  "security.md": "openspec/changes/attack-lens-conventions/security.md",
   "symphysis.html": "openspec/changes/attack-lens-conventions/symphysis.html",
   "symphysis.yaml": "symphysis.yaml"
  },
@@ -3394,6 +3394,7 @@ const LINKS = {
   "decisions.json": "decisions.json",
   "decisions.md": "decisions.md",
   "decisions/journal_render.py": "../../../decisions/journal_render.py",
+  "design.md": "design.md",
   "docs/GUIDE.md": "../../../docs/GUIDE.md",
   "docs/repo-contract.md": "../../../docs/repo-contract.md",
   "edge-probe.md": "edge-probe.md",
@@ -3404,9 +3405,11 @@ const LINKS = {
   "openspec/changes/archive/2026-11-08-parking-addressee-agent/decisions.json": "../archive/2026-11-08-parking-addressee-agent/decisions.json",
   "openspec/changes/attack-lens-conventions/consequences.md": "consequences.md",
   "openspec/changes/attack-lens-conventions/decisions.json": "decisions.json",
+  "openspec/changes/attack-lens-conventions/design.md": "design.md",
   "openspec/changes/attack-lens-conventions/intent.md": "intent.md",
   "openspec/changes/attack-lens-conventions/proposal.md": "proposal.md",
   "openspec/changes/attack-lens-conventions/research/none.md": "research/none.md",
+  "openspec/changes/attack-lens-conventions/security.md": "security.md",
   "openspec/changes/attack-lens-conventions/specs/artifact-attack/spec.md": "specs/artifact-attack/spec.md",
   "openspec/changes/attack-lens-conventions/specs/decision-viewer/spec.md": "specs/decision-viewer/spec.md",
   "openspec/changes/attack-lens-conventions/specs/plugin-core-contract/spec.md": "specs/plugin-core-contract/spec.md",
@@ -3421,6 +3424,7 @@ const LINKS = {
   "proposal.md": "proposal.md",
   "research/none.md": "research/none.md",
   "scheme.md": "scheme.md",
+  "security.md": "security.md",
   "settings/symphysis_config.py": "../../../settings/symphysis_config.py",
   "symphysis.html": "symphysis.html",
   "symphysis.yaml": "../../../symphysis.yaml",
