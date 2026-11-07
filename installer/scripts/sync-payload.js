@@ -42,6 +42,7 @@ const TOOLS_FILES = [
   "step-help/step_help.py",
   "openspec-run/openspec_run.py",
   "trace/trace_graph.py",
+  "anchors/anchor_refs.py",
 ];
 
 /** Отдельные файлы: [исходник, путь в payload]. Образец конфига лежит в модуле схемы, в payload — по прежнему пути (F-37 A). */

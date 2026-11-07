@@ -119,15 +119,18 @@ test("слияние: rules.<key> скаляр — сообщение, знач�
 });
 
 const GUIDANCE_MARK = "trace_graph.py freeze";
+const ANCHORS_MARK = "anchor_refs.py <имя>";
 const archiveGuidance = (text) => parse(text)?.operations?.archive?.guidance;
 
-test("`project-installer`: «Новый проект»: скрипт графа и openspec_run.py ставятся, --help даёт код 0 (F-39, F-138)", () => {
+test("`project-installer`: «Новый проект»: скрипт графа, openspec_run.py и anchor_refs.py ставятся, --help даёт код 0 (F-39, F-138, trace-numbers-signals/F-65)", () => {
   const p = tmp();
   const r = install(p, { payloadDir });
-  for (const f of ["trace_graph.py", "openspec_run.py"]) assert.ok(r.written.includes(`.symphysis/tools/${f}`), `${f}: ${JSON.stringify(r.written)}`);
-  const h = spawnSync("python", ["-X", "utf8", path.join(".symphysis", "tools", "trace_graph.py"), "--help"], { cwd: p, encoding: "utf8" });
-  assert.equal(h.status, 0, h.stdout + h.stderr);
-  assert.ok(h.stdout.trim() !== "");
+  for (const f of ["trace_graph.py", "openspec_run.py", "anchor_refs.py"]) assert.ok(r.written.includes(`.symphysis/tools/${f}`), `${f}: ${JSON.stringify(r.written)}`);
+  for (const f of ["trace_graph.py", "anchor_refs.py"]) {
+    const h = spawnSync("python", ["-X", "utf8", path.join(".symphysis", "tools", f), "--help"], { cwd: p, encoding: "utf8" });
+    assert.equal(h.status, 0, f + ": " + h.stdout + h.stderr);
+    assert.ok(h.stdout.trim() !== "");
+  }
 });
 
 test("`project-installer`: «Обновление без `--force`»: скрипт графа положен, отличающийся назван пропущенным", () => {
@@ -149,8 +152,9 @@ test("`project-installer`: «Конфиг без подсказок»: слия�
   fs.writeFileSync(cfg, "# мой\nschema: spec-driven\n");
   install(p, { payloadDir });
   const g = archiveGuidance(fs.readFileSync(cfg, "utf8"));
-  assert.equal(g.length, 2, JSON.stringify(g));
+  assert.equal(g.length, 3, JSON.stringify(g));  // заморозка, ошибка скрипта, якоря (trace-numbers-signals/F-35)
   assert.ok(g[0].includes(GUIDANCE_MARK), g[0]);
+  assert.ok(g[2].includes(ANCHORS_MARK), g[2]);
 });
 
 test("`project-installer`: «Конфиг без подсказок»: форк отдаёт подсказку полем operationGuidance", { skip: !fs.existsSync(FORK) }, () => {
@@ -177,8 +181,8 @@ test("`project-installer`: «У проекта своя подсказка»: с
   const parsed = parse(fs.readFileSync(cfg, "utf8"));
   const g = parsed.operations.archive.guidance;
   assert.equal(g[0], "своя строка");
-  assert.equal(g.length, 3, JSON.stringify(g));
-  assert.ok(g[1].includes(GUIDANCE_MARK));
+  assert.equal(g.length, 4, JSON.stringify(g));
+  assert.ok(g[1].includes(GUIDANCE_MARK) && g[3].includes(ANCHORS_MARK), JSON.stringify(g));
   assert.deepEqual(parsed.operations.apply.guidance, ["чужая операция"]);
 });
 

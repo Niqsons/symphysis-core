@@ -1,5 +1,6 @@
 """Команда `report` скрипта графа `trace/trace_graph.py`: находки `openspec validate` и сигналы графа одним отчётом (U09)."""
 import ast
+import inspect
 import os
 import re
 import subprocess
@@ -509,6 +510,26 @@ def test_requirement_with_unknown_number_is_unknown_not_without_record(tmp_path)
     assert len(unknown) == 1 and "F-99" in unknown[0]
 
 
+def test_requirement_with_unknown_change_name_is_unknown_name_not_without_record(tmp_path):
+    """`trace-conventions`: «Опечатка в имени изменения» (F-53) — сигнал «неизвестное имя или номер» называет имя; «без записи» нет."""
+    block = "### Requirement: Один\nТекст SHALL (trace-grpah/F-01).\n\n#### Scenario: Сц\n- **WHEN** a\n- **THEN** b\n\n"
+    root, _ = make_change(tmp_path, specs={"demo": spec(block)}, tasks=DONE_SC)
+    signals = lines_of(root)
+    assert of_kind(signals, "требование без записи") == []
+    unknown = of_kind(signals, "неизвестное имя или номер")
+    assert len(unknown) == 1 and "trace-grpah" in unknown[0], unknown
+
+
+def test_anchor_of_other_change_gives_no_signal_and_does_not_hold_requirement(tmp_path):
+    """`trace-conventions`: «Якорь другого изменения» — сигнала «неизвестное имя или номер» нет; своего номера нет — «без записи»."""
+    block = "### Requirement: Один\nТекст SHALL (trace-graph/F-01).\n\n#### Scenario: Сц\n- **WHEN** a\n- **THEN** b\n\n"
+    root, _ = make_change(tmp_path, specs={"demo": spec(block)}, tasks=DONE_SC)
+    (root / "openspec" / "changes" / "archive" / "2026-11-06-trace-graph").mkdir(parents=True)
+    signals = lines_of(root)
+    assert of_kind(signals, "неизвестное имя или номер") == []
+    assert len(of_kind(signals, "требование без записи")) == 1
+
+
 def test_unknown_parent_is_named_with_place(tmp_path):
     """`trace-conventions`: «Такого родителя нет» — сигнал «неизвестное имя» называет это место."""
     child = ("### Requirement: Дочернее\nЧасть требования «Нет такого». Текст SHALL (F-01).\n\n#### Scenario: Сц\n"
@@ -581,6 +602,82 @@ def test_signals_come_in_order_of_place(tmp_path):
     places = [s.rsplit(" — ", 1)[1].split(", ")[0] for s in lines_of(root)]
     keys = [(p.rsplit(":", 1)[0], int(p.rsplit(":", 1)[1])) for p in places]
     assert keys == sorted(keys) and len(keys) >= 3
+
+
+# --- группы тяжести в отчёте (F-27, F-28, F-29, F-54) -------------------------------------------------------------------
+
+def report_text(tmp_path, monkeypatch, root):
+    use_shim(tmp_path, monkeypatch, fork_reply(CLEAN))
+    return trace_graph.build_report(root, CHANGE)
+
+
+def headings(text):
+    return [line for line in text.splitlines() if line.startswith("### ")]
+
+
+def test_every_signal_kind_is_in_exactly_one_group():
+    """`trace-signals`: «Вид вне перечня групп» (F-28) — виды, которые ставит `graph_signals`, и виды таблицы групп — одно
+    множество; повторов между группами нет; `DIVERGED` в группах нет; имена групп — три, в порядке «что сломано»."""
+    in_code = set(re.findall(r'add\([^,\n]+,\s*"([^"]+)"', inspect.getsource(trace_graph.graph_signals)))
+    assert in_code == set(trace_graph.SIGNAL_KINDS), in_code ^ set(trace_graph.SIGNAL_KINDS)
+    listed = [kind for _, kinds in trace_graph.SIGNAL_GROUPS for kind in kinds]
+    assert len(listed) == len(set(listed)) and trace_graph.DIVERGED not in listed
+    assert [name for name, _ in trace_graph.SIGNAL_GROUPS] == ["Связь не разрешена", "Опоры нет", "Реализация не закрывает"]
+
+
+def test_kind_outside_the_table_is_shown_not_lost():
+    """Строка вида, которого в таблице нет, идёт последней группой: видна, а не потеряна."""
+    rows = ["[!!] задача ни к чему: 1.2 — tasks.md:2", "[!!] новый вид: x — a.md:1"]
+    assert trace_graph.grouped_signals(rows) == [("Реализация не закрывает", rows[:1]), (trace_graph.UNGROUPED_TITLE, rows[1:])]
+
+
+def test_report_groups_come_in_severity_order(tmp_path, monkeypatch):
+    """`trace-signals`: «Три группы по порядку» — по сигналу «неоднозначное имя», «требование без записи», «задача ни к чему»:
+    три подзаголовка в порядке таблицы, у каждого своя строка."""
+    root, _ = make_change(tmp_path, specs={"demo": spec(req("Один", 1), req("Один", 1), req("Два", scenarios=("Другой",)))},
+                          tasks="- [ ] 1.1 `demo`: «Сц», `demo`: «Другой»\n- [ ] 1.2 ничего\n")
+    text = report_text(tmp_path, monkeypatch, root)  # дубль требования — дубль и его сценария: две строки в первой группе
+    assert headings(text) == ["### Связь не разрешена (2)", "### Опоры нет (1)", "### Реализация не закрывает (1)"], text
+    assert text.index("неоднозначное имя") < text.index("требование без записи") < text.index("задача ни к чему")
+
+
+def test_heavier_group_comes_before_earlier_place(tmp_path, monkeypatch):
+    """`trace-signals`: «Тяжёлое раньше, чем раннее по файлу» — «требование без задачи» на строке 3 спеки и «неизвестное имя
+    или номер» ниже по файлу: в отчёте неизвестное раньше, в своей группе, «без задачи» — в своей."""
+    root, _ = make_change(tmp_path, specs={"demo": spec(req("А", 1), req("Б", 99, scenarios=("Другой",)))},
+                          tasks="- [ ] 1.1 `demo`: «Другой» (F-01)\n")
+    text = report_text(tmp_path, monkeypatch, root)
+    assert headings(text) == ["### Связь не разрешена (1)", "### Реализация не закрывает (2)"], text
+    assert text.index("неизвестное имя или номер: F-99") < text.index("требование без задачи: demo/А — specs/demo/spec.md:3")
+
+
+def test_group_heading_carries_count_and_empty_groups_are_omitted(tmp_path, monkeypatch):
+    """`trace-signals`: «Подзаголовок со счётом» — два сигнала «требование без задачи» и ничего больше: один подзаголовок
+    `### Реализация не закрывает (2)` с двумя строками, других подзаголовков нет."""
+    root, _ = make_change(tmp_path, specs={"demo": spec(req("Один", 1, ()), req("Два", 1, ()))}, tasks="- [ ] 1.1 (F-01)\n")
+    text = report_text(tmp_path, monkeypatch, root)
+    assert headings(text) == ["### Реализация не закрывает (2)"], text
+    assert text.count("[!!] требование без задачи:") == 2 and text.count("[!!]") == 2
+
+
+def test_signal_line_inside_group_is_unchanged_and_record_silences_it(tmp_path, monkeypatch):
+    """`trace-signals`: «Строка сигнала прежняя» (F-16) — строка внутри группы — `[!!] вид: ключ — место`; запись
+    `[сигнал] вид · ключ` с решением гасит её, счёт подзаголовка считает оставшиеся."""
+    root, base = make_change(tmp_path, specs={"demo": spec(req("Один", 1, ()), req("Два", 1, ()))}, tasks="- [ ] 1.1 (F-01)\n")
+    text = report_text(tmp_path, monkeypatch, root)
+    assert "[!!] требование без задачи: demo/Один — specs/demo/spec.md:3" in text.splitlines()
+    journal(base, {"id": "F-01"}, signal_record("F-02", "[сигнал] требование без задачи · demo/Один"))
+    text = report_text(tmp_path, monkeypatch, root)
+    assert headings(text) == ["### Реализация не закрывает (1)"] and "demo/Один" not in text, text
+
+
+def test_no_graph_signals_with_validate_finding_says_so_without_headings(tmp_path, monkeypatch):
+    """`trace-signals`: «Сигналов графа нет» — находка validate есть, сигналов графа нет: строка «Сигналов графа нет.»,
+    подзаголовков нет."""
+    root, _ = make_change(tmp_path, specs={"demo": ONE_REQ}, tasks=DONE)
+    use_shim(tmp_path, monkeypatch, fork_reply(FOUND))
+    text = trace_graph.build_report(root, CHANGE)
+    assert "Сигналов графа нет." in text and headings(text) == [] and "must have at least one scenario" in text, text
 
 
 def test_trace_carried_from_master_is_silent_new_trace_is_checked(tmp_path):
@@ -671,6 +768,19 @@ def test_outcome_specify_with_comment_is_silent(tmp_path):
     """`trace-signals`: «Specify с комментарием» — комментарий с номером записи сразу под заголовком сценария: сигнала нет."""
     root, _ = specify_change(tmp_path, "<!-- F-12 -->\n")
     assert of_kind(lines_of(root), "Specify без сценария") == []
+
+
+@pytest.mark.parametrize("under, silent", [("<!-- demo/F-12 -->\n", True), ("<!-- other/F-12 -->\n", False),
+                                           ("<!-- other/F-13, F-12 -->\n", True), ("<!-- demo/F-12.A -->\n", True)],
+                         ids=["own-anchor", "other-anchor", "other-and-own", "own-anchor-with-letter"])
+def test_outcome_specify_marker_with_anchor(tmp_path, under, silent):
+    """`trace-graph`: «Маркер с якорем под сценарием» (F-62) — якорь своего изменения даёт номер, как голый маркер; якорь
+    другого изменения — ссылка чужого журнала: номера не даёт, сигнала о нём нет."""
+    root, _ = specify_change(tmp_path, under)
+    (root / "openspec" / "changes" / "other").mkdir()
+    signals = lines_of(root)
+    assert (of_kind(signals, "Specify без сценария") == []) is silent, signals
+    assert of_kind(signals, "неизвестное имя или номер") == []
 
 
 def test_outcome_specify_without_comment_is_named(tmp_path):

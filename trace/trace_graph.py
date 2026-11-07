@@ -15,6 +15,7 @@ import subprocess
 import sys
 from dataclasses import dataclass, field
 from pathlib import Path
+from typing import NamedTuple
 
 sys.dont_write_bytecode = True  # как у соседних скриптов: `__pycache__` в проекте от инструментов не появляется (F-50)
 # Исходник ядра (F-20 A): код модулей лежит в соседних каталогах первого уровня, точка входа ставит нужные ей в `sys.path`.
@@ -242,7 +243,7 @@ def _scenarios(lines: list[str], mask: list[bool], first: int, last: int) -> lis
         stack.append(level)
     result = []
     for i, end in kids:
-        text = "\n".join(lines[i + 1:end]).strip()
+        text = "\n".join(text for _, text in _plain_text(lines, mask, i + 1, end)).strip()  # без HTML-комментариев (F-26)
         if text:
             title = _ANY_HEADER.match(lines[i]).group(2).strip()
             name = re.sub(r"^Scenario:\s*", "", re.sub(r"[ \t]+#+[ \t]*$", "", title), flags=re.IGNORECASE).strip()
@@ -348,11 +349,15 @@ class Refusal(Exception):
 # байт в байт (F-81). Узел с уже виденным id в граф не входит: id — ключ графа, остаётся первый по порядку чтения, а дубль
 # уходит в список `build_graph_with_duplicates` и сигналом в stderr у `build`.
 
-GRAPH_FORMAT = 1
+GRAPH_FORMAT = 2  # 2 (F-25): база мастер-спеки хранит ссылки строками формы якоря; снимки формата 1 проверка отвергает
 _TASK_LINE = re.compile(r"^- \[[ xX]\] (\d+(?:\.\d+)+)\s+(.*?)\s*$")
 _TABLE_ROW = re.compile(r"^\|(.*)$")
 _TABLE_RULE = re.compile(r"^\|[\s:|-]+\|?\s*$")
-_REC_REF = re.compile(r"(?<![\w-])F-(\d+)(?!\d)")  # граница слова слева: `UTF-8` не даёт `F-8`; `.A` у `F-07.A` остаётся за числом
+# Ссылка на запись журнала (F-21, F-22, F-39, F-44): голая `F-NN[.X]` и якорь `<изменение>/F-NN[.X]`; граница слова слева — `UTF-8`
+# не даёт `F-8`; буква варианта — одна заглавная за точкой; точка со строчной буквой после числа (`research/F-01.md`) — не ссылка.
+_REC_REF = re.compile(r"(?<![\w/-])(?:(\w[\w.-]*)/)?F-(\d+)(?!\d)(?:\.([A-Z])(?![A-Za-z]))?(?!\.[a-z])")
+_JOURNAL_LABEL = re.compile(r"[Жж]урнал[а-я]*\s+`(\w[\w.-]*)`\s*:")  # имя журнала перед списком: ``журнал `имя`: F-NN, …`` (F-21, F-37)
+_LIST_SEP = re.compile(r"\s*,\s*")  # список после метки длится, пока за запятой идёт номер (F-45)
 _CAP_NAME = re.compile(r"`([^`]+)`:\s*«")  # `capability`: «имя…
 _NEXT_NAME = re.compile(r"\s*,\s*«")  # следующее имя той же строки: своей capability у него нет (F-89)
 _SEC_REQ = re.compile(r"`([^`]+)`:?\s*«")  # `capability` «имя» или `capability`: «имя» в любой колонке строки security (F-131)
@@ -411,15 +416,15 @@ def _spec_lines(text: str) -> list[str]:
     return re.sub(r"\r\n?", "\n", text.removeprefix("\ufeff")).split("\n")
 
 
-def _requirement_body(lines: list[str], mask: list[bool], heading: int) -> list[tuple[int, str]]:
-    """Тело требования с заголовком в строке `heading` (с 1) как `(номер строки, текст)`: до первого заголовка вне блока кода,
-    без строк в блоках кода и без HTML-комментариев (след пробы `<!-- проба краёв … -->` не текст требования, F-44)."""
-    body, in_comment = [], False
-    for i in range(heading, len(lines)):
+def _plain_text(lines: list[str], mask: list[bool], first: int, last: int) -> list[tuple[int, str]]:
+    """Строки `[first, last)` (индексы с 0) без HTML-комментариев как `(номер строки с 1, текст)` — одно правило для тела
+    требования и текста сценария (F-26, F-44): комментарий бывает многострочным; строка блока кода идёт как есть, `<!--` в ней
+    не комментарий; строка, от которой остались одни пробелы, выпадает, пустая строка исходника остаётся."""
+    found, in_comment = [], False
+    for i in range(first, last):
         if mask[i]:
+            found.append((i + 1, lines[i]))
             continue
-        if re.match(r"^#{1,6}\s", lines[i]):
-            break
         rest, kept = lines[i], ""
         while rest:
             if in_comment:
@@ -428,14 +433,69 @@ def _requirement_body(lines: list[str], mask: list[bool], heading: int) -> list[
             else:
                 start = rest.find("<!--")
                 kept, rest, in_comment = (kept + rest, "", False) if start < 0 else (kept + rest[:start], rest[start + 4:], True)
-        if kept.strip():
-            body.append((i + 1, kept))
-    return body
+        if kept.strip() or not lines[i].strip():
+            found.append((i + 1, kept))
+    return found
+
+
+def _requirement_body(lines: list[str], mask: list[bool], heading: int) -> list[tuple[int, str]]:
+    """Тело требования с заголовком в строке `heading` (с 1) как `(номер строки, текст)`: до первого заголовка вне блока кода,
+    без строк в блоках кода, без пустых и без HTML-комментариев (след пробы `<!-- проба краёв … -->` не текст требования, F-44)."""
+    last = next((i for i in range(heading, len(lines)) if not mask[i] and re.match(r"^#{1,6}\s", lines[i])), len(lines))
+    return [(number, text) for number, text in _plain_text(lines, mask, heading, last) if not mask[number - 1] and text.strip()]
+
+
+class Ref(NamedTuple):
+    """Ссылка на запись журнала (F-21): имя изменения из якоря или метки журнала (`None` — голая), число без ведущих нулей,
+    буква варианта или `None`. Равенство по трём полям — ключ отсечения (F-44)."""
+    change: str | None
+    number: int
+    letter: str | None
+
+
+def ref_text(ref: Ref) -> str:
+    """Строка ссылки в форме якоря, как её хранит база снимка (F-22, F-25): `имя/F-NN.X`, у голой `F-NN.X`; число двузначное,
+    как id записи (`F-7` и `F-07` — одна ссылка, F-44)."""
+    return (f"{ref.change}/" if ref.change else "") + f"F-{ref.number:02d}" + (f".{ref.letter}" if ref.letter else "")
+
+
+def parse_ref(text: str) -> Ref | None:
+    """Ссылка из строки базы снимка: не по форме — `None`."""
+    m = _REC_REF.fullmatch(text)
+    return Ref(m.group(1), int(m.group(2)), m.group(3)) if m else None
+
+
+def record_ref_spans(text: str) -> list[tuple[Ref, int, int]]:
+    """Ссылки на записи в строке с границами `(ссылка, начало, конец)` по порядку (F-21, F-22, F-45): голые `F-NN[.X]`, якоря
+    `<изменение>/F-NN[.X]` и списки после метки ``журнал `имя`:`` — имя метки получают номера, идущие за ней через запятую,
+    пока за запятой стоит номер; `;`, `)` и любой другой текст список закрывают. Имя после списка без двоеточия именем
+    не считается (F-37). Образец формы в двойных обратных кавычках не ссылка (F-41): граф не читает, скрипт якорей не правит."""
+    samples = [(m.start(), m.end()) for m in _SAMPLE_FORM.finditer(text)]
+    named: dict[int, str] = {}  # позиция номера в списке метки -> имя журнала
+    for label in _JOURNAL_LABEL.finditer(text):
+        pos = label.end()
+        while True:
+            pos = len(text) - len(text[pos:].lstrip())
+            m = _REC_REF.match(text, pos)
+            if not m or m.group(1):  # не номер или якорь с именем: список метки кончился
+                break
+            named[m.start()] = label.group(1)
+            sep = _LIST_SEP.match(text, m.end())
+            if not sep:
+                break
+            pos = sep.end()
+    return [(Ref(m.group(1) or named.get(m.start()), int(m.group(2)), m.group(3)), m.start(), m.end())
+            for m in _REC_REF.finditer(text) if not any(start <= m.start() < end for start, end in samples)]
+
+
+def record_refs(text: str) -> list[Ref]:
+    """Ссылки на записи в строке по порядку, без границ: `record_ref_spans`."""
+    return [ref for ref, _, _ in record_ref_spans(text)]
 
 
 def _record_numbers(text: str) -> list[int]:
-    """Номера записей `F-NN` по границе слова: `UTF-8` не даёт `F-8`; суффикс варианта (`F-07.A`) отбрасывается."""
-    return [int(m.group(1)) for m in _REC_REF.finditer(text)]
+    """Числа ссылок строки без имени и буквы: `UTF-8` не даёт `F-8`, `research/F-01.md` не ссылка (F-39)."""
+    return [ref.number for ref in record_refs(text)]
 
 
 def _master_lines(root: Path, rel: str) -> list[str]:
@@ -452,10 +512,10 @@ def _hash(text: str) -> str:
 
 def master_base(root: Path, cap: str) -> dict[str, dict]:
     """Что нужно знать о каждом требовании живой мастер-спеки `openspec/specs/<cap>/spec.md` (F-84, F-95, F-123): запись базы
-    `{"numbers": [F-NN, ...], "scenarios": {имя сценария: хеш текста}, "text": хеш текста требования, "traces": [хеши следов
-    проб]}` по имени требования; при повторе имени остаётся первое. Мастер-спека пишет `## Requirements`, а `parse_spec` читает
-    секции дельты: заголовок читается как `ADDED`. Хеш — `_hash`; следы — комментарии `<!-- проба …, исходы: … -->` внутри
-    требования."""
+    `{"numbers": ["F-NN.X", "имя/F-NN", ...], "scenarios": {имя сценария: хеш текста}, "text": хеш текста требования, "traces":
+    [хеши следов проб]}` по имени требования; при повторе имени остаётся первое. Ссылки — строками формы якоря (`ref_text`):
+    по ним идёт отсечение полным ключом (F-21, F-25). Мастер-спека пишет `## Requirements`, а `parse_spec` читает секции дельты:
+    заголовок читается как `ADDED`. Хеш — `_hash`; следы — комментарии `<!-- проба …, исходы: … -->` внутри требования."""
     rel = f"openspec/specs/{cap}/spec.md"
     if not (root / rel).is_file():
         return {}
@@ -471,28 +531,37 @@ def master_base(root: Path, cap: str) -> dict[str, dict]:
     for req in reqs:
         if req.name not in found:
             found[req.name] = {
-                "numbers": sorted({n for _, line in _requirement_body(lines, mask, req.line) for n in _record_numbers(line)}),
+                "numbers": sorted({ref_text(r) for _, line in _requirement_body(lines, mask, req.line) for r in record_refs(line)}),
                 "scenarios": {s.name: _hash(s.text) for s in req.scenarios}, "text": _hash(req.text),
                 "traces": sorted(traces.get(req.name, ()))}
     return found
 
 
+def _base_keys(entry: dict, own: str) -> set[Ref]:
+    """Ключи отсечения из записи базы (F-21): ссылки строками, имя своего изменения снято — после `/opsx:sync` мастер несёт якорь
+    `own/F-NN`, а дельта то же голое `(F-NN)` (F-36, F-40). Строка не по форме ключа не даёт."""
+    refs = (parse_ref(text) for text in entry["numbers"])
+    return {Ref(None if ref.change == own else ref.change, ref.number, ref.letter) for ref in refs if ref}
+
+
 def _entry_fits(entry) -> bool:
-    """Запись базы годна, если все четыре поля на месте и нужного вида; иной записью база не служит."""
+    """Запись базы годна, если все четыре поля на месте и нужного вида: ссылки — строки формы якоря (формат 2, F-25); иной
+    записью база не служит."""
     return (isinstance(entry, dict) and set(entry) == {"numbers", "scenarios", "text", "traces"}
-            and isinstance(entry["numbers"], list) and all(type(n) is int for n in entry["numbers"])
+            and isinstance(entry["numbers"], list) and all(isinstance(n, str) and parse_ref(n) for n in entry["numbers"])
             and isinstance(entry["scenarios"], dict) and all(isinstance(k, str) and isinstance(v, str) for k, v in entry["scenarios"].items())
             and isinstance(entry["text"], str) and isinstance(entry["traces"], list) and all(isinstance(t, str) for t in entry["traces"]))
 
 
 def saved_base(base: Path) -> dict[str, dict[str, dict]]:
     """База из снимка `graph/req-graph.json` изменения `base`: `{capability: {имя требования: запись}}` только из годных записей.
-    Нет снимка, он не JSON или у него нет поля `base` — база пуста, и сборка читает живой мастер (F-123)."""
+    Нет снимка, он не JSON, у него нет поля `base` или его `format` не `GRAPH_FORMAT` (снимок формата 1 хранит числа, F-25, F-61) —
+    база пуста, и сборка читает живой мастер (F-123)."""
     try:
         data = json.loads((base / "graph" / "req-graph.json").read_bytes().decode("utf-8-sig"))
     except (OSError, ValueError):
         return {}
-    raw = data.get("base") if isinstance(data, dict) else None
+    raw = data.get("base") if isinstance(data, dict) and data.get("format") == GRAPH_FORMAT else None
     if not isinstance(raw, dict):
         return {}
     return {cap: {name: entry for name, entry in reqs.items() if isinstance(name, str) and _entry_fits(entry)}
@@ -564,7 +633,7 @@ def _read_specs(base: Path, claims: list[dict], master: "_Master | None" = None)
                 entry, from_base = master.entry(cap, req.name)
                 master_traces = set(entry["traces"]) if entry else set()
                 if entry and not _carried_without_base(entry, from_base, req):
-                    known = set(entry["numbers"])
+                    known = _base_keys(entry, base.name)  # полные ключи: число, буква, имя (F-21)
                 elif entry:  # блок уже в мастере без базы: родитель с таким текстом номера дочернего не отсекает (F-150)
                     claims.append({"kind": "carried", "from": req_id, "src": req_node["at"], "at": req_node["at"]})
             if _REQ_HEADER.match(lines[req.line - 1]):  # у записи REMOVED строкой-маркером тела нет
@@ -715,8 +784,18 @@ def _resolve_task_line(claim: dict, scenarios: dict, put_edge, put_unresolved) -
         pos = end
 
 
+def _change_names(root: Path) -> set[str]:
+    """Имена изменений проекта (F-53): каталоги `openspec/changes/` без `archive` и каталоги архива без даты `ГГГГ-ММ-ДД-`
+    (якорь даты не несёт, F-22); каталог архива без даты в имени — как есть."""
+    changes = root / "openspec" / "changes"
+    found = {p.name for p in changes.iterdir() if p.is_dir() and p.name != "archive"} if changes.is_dir() else set()
+    if (changes / "archive").is_dir():
+        found |= {_ARCHIVE_DATE.sub("", p.name, count=1) for p in (changes / "archive").iterdir() if p.is_dir()}
+    return found
+
+
 def _resolve_claims(root: Path, nodes: list[dict], places: dict, claims: list[dict],
-                    base_master: "_Master | None" = None) -> tuple[list[dict], list[dict], set[tuple[str, str]]]:
+                    base_master: "_Master | None" = None, change: str | None = None) -> tuple[list[dict], list[dict], set[tuple[str, str]]]:
     """Связи и неразрешённые ссылки из заявок читателей. Заявка узла, который в граф не вошёл как дубль id, отбрасывается.
     Связь — `from`, `to`, `type`, `at` (место записи от каталога изменения); повтор `(from, to, type)` остаётся первым.
     Ссылка, которая не разрешилась (нет записи с таким номером, нет сценария с таким именем), связи не даёт и идёт в
@@ -724,7 +803,9 @@ def _resolve_claims(root: Path, nodes: list[dict], places: dict, claims: list[di
     ADDED, который стоит в мастер-тексте его родителя (запись базы, а без неё живой мастер, `base_master`), связи не даёт
     (F-150, F-84 через `derives`); свой номер дочернего даёт. Родителя в мастере нет или он ADDED этого изменения — отсекать
     нечего: после `/opsx:sync` мастер-текст ADDED-родителя был бы новым и ответ поменялся бы. Третье значение — `{(from, to)}`
-    связей `traces`, которые поставила заявка `rec` (номер в тексте требования, после отсечений), а не `trace` (F-158)."""
+    связей `traces`, которые поставила заявка `rec` (номер в тексте требования, после отсечений), а не `trace` (F-158).
+    `change` — имя этого изменения: ссылка с ним — своя, как голая (F-36); с именем другого изменения проекта — не ссылка
+    этого журнала, ни связи, ни сигнала; с именем, которого нет ни в `openspec/changes/`, ни в архиве, — неразрешённая (F-53)."""
     records = {n["number"]: n["id"] for n in reversed(nodes) if n["kind"] == "rec" and n["number"] is not None}
     scenarios: dict[str, dict[str, list[str]]] = {}
     requirements: dict[str, dict[str, str]] = {}
@@ -737,6 +818,7 @@ def _resolve_claims(root: Path, nodes: list[dict], places: dict, claims: list[di
         elif n["kind"] == "req":
             requirements.setdefault(n["capability"], {})[n["name"]] = n["id"]
     masters: list = []  # мастер-спеки читаются один раз и только если нужны (F-84)
+    names: list = []  # имена изменений проекта читаются один раз и только при ссылке с чужим именем (F-53)
     edges: dict[tuple, dict] = {}
     unresolved: dict[tuple, dict] = {}
     text_links: set[tuple[str, str]] = set()
@@ -752,8 +834,16 @@ def _resolve_claims(root: Path, nodes: list[dict], places: dict, claims: list[di
         unresolved.setdefault((claim["from"], ref), {"ref": ref, "from": claim["from"], "at": claim["at"], "why": why})
 
     def put_records(claim: dict, text: str, skip: set, by_place: bool = False) -> None:
-        for number in _record_numbers(text):
-            if number in skip:
+        """Ссылки строки (F-21, F-22, F-36, F-53): без имени или с именем этого изменения — свои, число ищется в журнале; с именем
+        другого изменения проекта — не ссылка этого журнала: ни связи, ни сигнала; с именем, которого нет нигде, — неразрешённая
+        с этим именем. `skip` — ключи отсечения: своя ссылка без имени, число и буква (F-21)."""
+        for ref in record_refs(text):
+            if ref.change is not None and ref.change != change:
+                if ref.change not in change_names():
+                    put_unresolved(claim, ref_text(ref), f"изменения «{ref.change}» нет ни в openspec/changes/, ни в архиве")
+                continue
+            number = ref.number
+            if Ref(None, number, ref.letter) in skip:
                 continue
             if number in records:
                 put_edge(claim["from"], records[number], "traces", claim["at"], by_place)
@@ -766,6 +856,11 @@ def _resolve_claims(root: Path, nodes: list[dict], places: dict, claims: list[di
         if not masters:
             masters.append(_master_names(root))
         return masters[0]
+
+    def change_names() -> set[str]:
+        if not names:
+            names.append(_change_names(root))
+        return names[0]
 
     def parent_of(claim: dict) -> tuple[re.Match, str, str, bool]:
         """Родитель из фразы дочернего: `(совпадение фразы, capability, имя, известно ли имя)`; известны имена изменения и мастера."""
@@ -817,7 +912,7 @@ def _resolve_claims(root: Path, nodes: list[dict], places: dict, claims: list[di
         return places[claim["from"]][0] == claim["src"]
 
     carried = {c["from"] for c in claims if c["kind"] == "carried" and live(c)}
-    cut: dict[str, set[int]] = {}  # номера мастер-текста родителя по id дочернего требования ADDED (F-150)
+    cut: dict[str, set[Ref]] = {}  # ключи ссылок мастер-текста родителя по id дочернего требования ADDED (F-150, F-21)
     for claim in claims:
         if claim["kind"] != "parent" or claim["section"] != "ADDED" or not live(claim) or base_master is None:
             continue
@@ -829,7 +924,7 @@ def _resolve_claims(root: Path, nodes: list[dict], places: dict, claims: list[di
             continue
         entry = base_master.entry(cap, name)[0]
         if entry:
-            cut.setdefault(claim["from"], set()).update(entry["numbers"])
+            cut.setdefault(claim["from"], set()).update(_base_keys(entry, change or ""))
     for claim in claims:
         if not live(claim):
             continue
@@ -928,7 +1023,7 @@ def _build_all(root: Path, change: str, saved: dict | None = None) -> tuple[dict
                 nodes.append(node)
     nodes.sort(key=lambda n: (n["at"].rsplit(":", 1)[0], int(n["at"].rsplit(":", 1)[1]), n["id"]))
     duplicates = [{"id": node_id, "at": at} for node_id, at in places.items() if len(at) > 1]
-    edges, unresolved, text_links = _resolve_claims(root, nodes, places, claims, master)
+    edges, unresolved, text_links = _resolve_claims(root, nodes, places, claims, master, change)
     return {"format": GRAPH_FORMAT, "sources": source_hashes(base), "nodes": nodes, "edges": edges,
             "candidates": record_candidates(edges, parked_records(base))}, duplicates, unresolved, text_links
 
@@ -1280,6 +1375,17 @@ def validate_findings(root: Path, change: str) -> list[str]:
 
 DIVERGED = "сценарий MODIFIED с прежним именем и другим текстом"  # вид F-95: в отчёте идёт отдельным разделом
 DIVERGED_TITLE = "Расхождения сценариев MODIFIED"
+# Группы тяжести сигналов графа в порядке «что сломано» (F-27, F-28): каждый вид закрытого состава ровно в одной группе, `DIVERGED`
+# и требования без базы идут своими разделами. Имя группы — подзаголовок отчёта со счётом строк (F-29); слов тяжести в именах
+# нет: строка любой группы ждёт ответа человека или записи `[сигнал]` (F-54).
+SIGNAL_GROUPS = (
+    ("Связь не разрешена", ("неизвестное имя или номер", "неоднозначное имя")),
+    ("Опоры нет", ("критерий без требования", "требование без записи", "решение без требования и задачи", "след отстал от журнала")),
+    ("Реализация не закрывает", ("требование без задачи", "сценарий без задачи", "Backstop без задачи", "Specify без сценария",
+                                 "задача ни к чему")),
+)
+SIGNAL_KINDS = frozenset(kind for _, kinds in SIGNAL_GROUPS for kind in kinds)  # закрытый состав видов сигналов графа без `DIVERGED`
+UNGROUPED_TITLE = "Вне перечня групп"  # вид, которого в таблице нет: виден, а не потерян; тест состава такого не пропускает
 UNBASED = "у требования MODIFIED нет базы мастер-спеки, текст совпал с мастером, номера в нём не отсечены"  # F-123
 UNBASED_TITLE = "Требования MODIFIED без базы мастер-спеки"
 _TRACE_COMMENT = re.compile(r"<!--(.*?)-->")
@@ -1287,7 +1393,7 @@ _TRACE_PAIR = re.compile(r"(?<![\w-])F-(\d+)\s+(открыт|" + "|".join(PROBE_
 _QUOTE_LIMIT = 110
 _SERVICE_MARK = re.compile(r"(?<!`)`служебная`$")  # пометка служебной задачи: только в backticks и только в конце строки (F-43, F-90)
 _SCENARIO_MARK = re.compile(r"^\s*<!--\s*(.*?)\s*-->\s*$")  # комментарий на всю строку; сам номер — по `_REC_REF`
-_MARK_BODY = re.compile(r"F-\d+(?:\s*,\s*F-\d+)*")
+_MARK_BODY = re.compile(r"(?:[\w.-]+/)?F-\d+(?:\.[A-Z])?(?:\s*,\s*(?:[\w.-]+/)?F-\d+(?:\.[A-Z])?)*")  # номера и якоря через запятую (F-62)
 _SIGNAL_QUESTION = re.compile(r"^\[сигнал\]\s+(.+?)\s+·\s+(.+)$")  # `[сигнал] <вид> · <ключ>` (F-47, F-98)
 
 
@@ -1318,10 +1424,11 @@ def _trace_comments(lines: list[str]) -> list[tuple[int, str, list[tuple[int, st
     return found
 
 
-def _scenario_marks(lines: list[str], mask: list[bool], heading: int) -> set[int]:
+def _scenario_marks(lines: list[str], mask: list[bool], heading: int, own: str | None = None) -> set[int]:
     """Номера записей из комментариев `<!-- F-NN -->` сразу под заголовком сценария (строка `heading`, с 1; F-45): подряд идущие
     строки-комментарии, пустые строки между ними не мешают, первая другая строка или блок кода обрывает. Комментарий не из
-    номеров (`<!-- требование из F-116 -->`) пропускается и не обрывает."""
+    номеров (`<!-- требование из F-116 -->`) пропускается и не обрывает. Якорь `<!-- имя/F-NN -->` (F-62): с именем этого
+    изменения `own` — номер, с именем другого — ссылка чужого журнала, номера не даёт."""
     found = set()
     for i in range(heading, len(lines)):
         if mask[i]:
@@ -1332,7 +1439,7 @@ def _scenario_marks(lines: list[str], mask: list[bool], heading: int) -> set[int
         if not comment:
             break
         if _MARK_BODY.fullmatch(comment.group(1)):
-            found.update(_record_numbers(comment.group(1)))
+            found.update(ref.number for ref in record_refs(comment.group(1)) if ref.change in (None, own))
     return found
 
 
@@ -1394,7 +1501,7 @@ def signal_context(root: Path, change: str, saved: dict | None = None) -> dict:
             state = modified.get(f"req:{cap}/{item.name}", {}).get("scenarios", {}) if item.section == "MODIFIED" else {}
             for scn in item.scenarios:
                 if state.get(f"scn:{cap}/{item.name}/{scn.name}") != "same":
-                    marks |= _scenario_marks(lines, mask, scn.line)
+                    marks |= _scenario_marks(lines, mask, scn.line, change)
     return {"records": records, "modified": modified, "traces": traces, "marks": marks, "unbased": unbased,
             "text_links": _build_all(root, change, saved)[3]}
 
@@ -1449,7 +1556,7 @@ def graph_signals(graph: dict, duplicates: list[dict] | None = None, unresolved:
     # опора сигнала — номер в тексте требования (`text_links` из сборки графа): след пробы и парковка её не дают (F-158, F-157);
     # без `text_links` опоры нет
     named_traces = {src for src, dst in context.get("text_links", set()) if dst not in parked}
-    bad_number = {u["from"] for u in unresolved if u["ref"].startswith("F-")}
+    bad_number = {u["from"] for u in unresolved if parse_ref(u["ref"])}  # номер вне журнала или якорь с именем, которого нет (F-53)
     modified = context.get("modified", {})
     for req in (n for n in graph["nodes"] if n["kind"] == "req"):
         scenarios, key = by_req.get(req["id"], []), req["id"][4:]
@@ -1518,6 +1625,24 @@ def graph_signals(graph: dict, duplicates: list[dict] | None = None, unresolved:
     return [line for _, line in found]
 
 
+def signal_kind(line: str) -> str:
+    """Вид сигнала из строки `[!!] вид: ключ — место`."""
+    return line.removeprefix("[!!] ").split(":", 1)[0]
+
+
+def grouped_signals(lines: list[str]) -> list[tuple[str, list[str]]]:
+    """Строки сигналов графа группами тяжести по `SIGNAL_GROUPS` (F-27, F-28): `[(имя группы, строки)]` в порядке таблицы, внутри
+    группы порядок строк прежний (по месту); пустая группа опущена. Строка вида вне таблицы идёт последней группой
+    `UNGROUPED_TITLE`, чтобы не пропасть молча. Строки не меняются (F-16)."""
+    by_kind: dict[str, list[str]] = {}
+    for line in lines:
+        by_kind.setdefault(signal_kind(line), []).append(line)
+    found = [(name, [line for kind in kinds for line in by_kind.pop(kind, [])]) for name, kinds in SIGNAL_GROUPS]
+    if by_kind:
+        found.append((UNGROUPED_TITLE, [line for rows in by_kind.values() for line in rows]))
+    return [(name, rows) for name, rows in found if rows]
+
+
 def service_tasks(graph: dict) -> list[str]:
     """Номера задач с пометкой `служебная` в конце строки, по порядку в `tasks.md` (F-43, F-90)."""
     return [n["id"][5:] for n in graph["nodes"] if n["kind"] == "task" and _SERVICE_MARK.search(n["name"])]
@@ -1530,8 +1655,9 @@ def service_line(graph: dict) -> str:
 
 
 def build_report(root: Path, change: str, saved: dict | None = None) -> str:
-    """Текст отчёта изменения `change`: находки `openspec validate`, сигналы графа и отдельным разделом расхождения сценариев
-    MODIFIED (F-95); без всех трёх — фраза, что сигналов нет. Ничего не печатает и не пишет (её зовёт `freeze` для
+    """Текст отчёта изменения `change`: находки `openspec validate`, сигналы графа группами тяжести — подзаголовок третьего уровня
+    с именем группы и счётом строк, пустая группа опущена (`grouped_signals`, F-27–F-29) — и отдельным разделом расхождения
+    сценариев MODIFIED (F-95); без всех трёх — фраза, что сигналов нет. Ничего не печатает и не пишет (её зовёт `freeze` для
     `graph/report.md`); абсолютных путей в тексте нет (F-59). Имя проверяется до любого пути и вызова форка; нет изменения или
     негоден журнал — `Refusal`, форк тогда не вызван. Мастер-спека — из базы снимка, для требования без записи в ней живая; MODIFIED
     без базы, чей текст уже совпал с мастером, называется отдельным разделом (`UNBASED_TITLE`, F-123). `saved` — готовая база
@@ -1548,13 +1674,15 @@ def build_report(root: Path, change: str, saved: dict | None = None) -> str:
     service = service_line(graph)  # сведение отдельной строкой, «Сигналов нет.» не отменяет (F-116)
     if not findings and not every and not unbased:
         return "\n".join([*parts, NO_SIGNALS, "", *([service, ""] if service else [])])
-    sections = [("Находки openspec validate", findings, "Находок нет."), ("Сигналы графа", signals, "Сигналов графа нет.")]
+    grouped = [line for name, rows in grouped_signals(signals) for line in (f"### {name} ({len(rows)})", "", *rows, "")]
+    sections = [("Находки openspec validate", [*findings, ""] if findings else ["Находок нет.", ""]),
+                ("Сигналы графа", grouped or ["Сигналов графа нет.", ""])]
     if diverged:
-        sections.append((DIVERGED_TITLE, diverged, ""))
+        sections.append((DIVERGED_TITLE, [*diverged, ""]))
     if unbased:
-        sections.append((UNBASED_TITLE, unbased, ""))
-    for title, lines, none in sections:
-        parts += [f"## {title}", "", *(lines or [none]), ""]
+        sections.append((UNBASED_TITLE, [*unbased, ""]))
+    for title, lines in sections:
+        parts += [f"## {title}", "", *lines]
     return "\n".join([*parts, *([service, ""] if service else [])])
 
 
@@ -1786,7 +1914,9 @@ SUBCOMMAND_HELP = {
     "report": ("Печатает отчёт Markdown по изменению: находки `openspec validate --json` (форк запускается сам) и сигналы "
                "графа закрытого состава (F-64): критерий без требования, требование и сценарий без задачи (в MODIFIED только новые "
                "сценарии), требование без записи, решение без требования и задачи, неоднозначное имя, неизвестное имя или "
-               "номер, задача ни к чему, след пробы, отставший от журнала; расхождения сценариев MODIFIED с мастером идут "
+               "номер, задача ни к чему, след пробы, отставший от журнала. Сигналы графа идут группами тяжести в порядке «что "
+               "сломано» — «Связь не разрешена», «Опоры нет», «Реализация не закрывает» — подзаголовком со счётом строк, внутри "
+               "группы по месту в файле; строка сигнала от групп не зависит (F-27–F-29). Расхождения сценариев MODIFIED с мастером идут "
                "отдельным разделом, как и требования MODIFIED без базы мастер-спеки, чей текст совпал с мастером (F-123). Без находок и сигналов — «Сигналов нет.»; если validate не запустился, в отчёте строка "
                "«validate не запустился» с причиной.",
                "Звать, когда нужен список разрывов человеку; отчёт отдаётся ссылкой, модель его не читает. Форк берётся "

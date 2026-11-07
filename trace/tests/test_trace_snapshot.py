@@ -315,12 +315,16 @@ def test_write_leaves_no_temporary_file_and_replaces_atomically(tmp_path, fork, 
 
 TRACE = "<!-- проба краёв: форма=io, исходы: F-07 открыт -->\n"
 SCN = "#### Scenario: {}\n{}- **WHEN** a\n- **THEN** {}\n\n"
-MASTER_BEFORE = ("## Requirements\n\n### Requirement: Один\nТекст SHALL (F-07.A).\n" + TRACE + "\n"
+# Мастер несёт голую ссылку с буквой и ссылку с именем журнала `old` и буквой рядом (F-25): дельта добавляет голое `(F-19)`,
+# и оно даёт связь при `F-19.B` чужого журнала в том же тексте (F-21).
+MASTER_BEFORE = ("## Requirements\n\n### Requirement: Один\nТекст SHALL (F-07.A) и (журнал `old`: F-19.B).\n" + TRACE + "\n"
                  + SCN.format("Старый", "<!-- F-07 -->\n", "b") + SCN.format("Меняется", "", "b"))
-MODIFIED = ("## MODIFIED Requirements\n\n### Requirement: Один\nТекст SHALL (F-07.A) и новый (F-19).\n" + TRACE + "\n"
-            + SCN.format("Старый", "<!-- F-07 -->\n", "b") + SCN.format("Меняется", "", "другое") + SCN.format("Новый", "", "b"))
-CARRIED = ("## MODIFIED Requirements\n\n### Requirement: Один\nТекст SHALL (F-07.A).\n" + TRACE + "\n"
+MODIFIED = ("## MODIFIED Requirements\n\n### Requirement: Один\nТекст SHALL (F-07.A) и (журнал `old`: F-19.B) и новый (F-19).\n"
+            + TRACE + "\n" + SCN.format("Старый", "<!-- F-07 -->\n", "b") + SCN.format("Меняется", "", "другое")
+            + SCN.format("Новый", "", "b"))
+CARRIED = ("## MODIFIED Requirements\n\n### Requirement: Один\nТекст SHALL (F-07.A) и (журнал `old`: F-19.B).\n" + TRACE + "\n"
            + SCN.format("Старый", "<!-- F-07 -->\n", "b") + SCN.format("Меняется", "", "b"))
+BASE_REFS = ["F-07.A", "old/F-19.B"]  # строки базы по `MASTER_BEFORE`
 TEXT_EQUAL_NEW_SCENARIO = CARRIED + SCN.format("Новый", "", "b")  # текст равен мастеру, набор сценариев шире
 ONE = "req:demo/Один"
 
@@ -335,6 +339,7 @@ def modified_project(tmp_path, spec_text=MODIFIED, tasks="- [ ] 1.1 сделат
     journal(base, decided("F-07", outcome=probe("Specify")), {"id": "F-19"})
     master_path(root).parent.mkdir(parents=True)
     master_path(root).write_text(MASTER_BEFORE, encoding="utf-8", newline="\n")
+    (root / "openspec" / "changes" / "archive" / "2026-11-01-old").mkdir(parents=True)  # журнал `old` — изменение из архива
     return root, base
 
 
@@ -357,8 +362,8 @@ def test_base_freeze_writes_numbers_scenarios_text_traces(tmp_path, fork):
     root, base = modified_project(tmp_path)
     freeze(root)
     entry = snapshot(base)["base"]["demo"]["Один"]
-    assert set(entry) == {"numbers", "scenarios", "text", "traces"}
-    assert entry["numbers"] == [7] and sorted(entry["scenarios"]) == ["Меняется", "Старый"]
+    assert set(entry) == {"numbers", "scenarios", "text", "traces"} and snapshot(base)["format"] == 2
+    assert entry["numbers"] == BASE_REFS and sorted(entry["scenarios"]) == ["Меняется", "Старый"]
     assert all(len(h) == 64 for h in [entry["text"], *entry["scenarios"].values(), *entry["traces"]]) and len(entry["traces"]) == 1
     assert "SHALL" not in json.dumps(snapshot(base)["base"], ensure_ascii=False)
 
@@ -377,7 +382,7 @@ def test_base_rebuild_after_sync_keeps_links_and_signals(tmp_path, fork):
     (base / "tasks.md").write_text("- [x] 1.1 сделать\n", encoding="utf-8", newline="\n")  # заморозку конца пропустили
     assert freeze(root).action == "build"
     assert view(root) == before
-    assert snapshot(base)["base"]["demo"]["Один"]["numbers"] == [7]  # база прежняя, мастер уже новый
+    assert snapshot(base)["base"]["demo"]["Один"]["numbers"] == BASE_REFS  # база прежняя, мастер уже новый
 
 
 def test_base_without_a_snapshot_after_sync_would_differ(tmp_path, fork):
@@ -450,7 +455,7 @@ def test_base_missed_end_freeze_keeps_the_old_base(tmp_path, fork):
                                  encoding="utf-8", newline="\n")
     freeze(root)
     again = snapshot(base)["base"]["demo"]
-    assert again["Один"] == old["demo"]["Один"] and set(again) == {"Один", "Второе"} and again["Второе"]["numbers"] == [19]
+    assert again["Один"] == old["demo"]["Один"] and set(again) == {"Один", "Второе"} and again["Второе"]["numbers"] == ["F-19"]
 
 
 def test_base_dropped_when_requirement_is_no_longer_modified(tmp_path, fork):
@@ -493,9 +498,11 @@ def test_base_present_after_freeze_so_report_does_not_name_requirement(tmp_path,
     assert (ONE, "rec:F-07", "traces") not in view(root)[0] and (ONE, "rec:F-19", "traces") in view(root)[0]
 
 
-@pytest.mark.parametrize("broken", [{"numbers": [7]}, {"numbers": ["7"], "scenarios": {}, "text": "x", "traces": []}, "строка", None])
+@pytest.mark.parametrize("broken", [{"numbers": [7]}, {"numbers": ["7"], "scenarios": {}, "text": "x", "traces": []},
+                                    {"numbers": [7], "scenarios": {}, "text": "x", "traces": []}, "строка", None])
 def test_base_with_bad_shape_is_not_used(broken, tmp_path, fork):
-    """`trace-snapshot`: «Базы на требование нет» — запись базы негодной формы не служит, читается живой мастер."""
+    """`trace-snapshot`: «Базы на требование нет» — запись базы негодной формы (в том числе числа формата 1) не служит,
+    читается живой мастер."""
     root, base = modified_project(tmp_path)
     freeze(root)
     good = view(root)
@@ -507,6 +514,52 @@ def test_base_with_bad_shape_is_not_used(broken, tmp_path, fork):
     assert view(root) != good
     (base / "graph" / "req-graph.json").write_text("не json", encoding="utf-8")
     assert view(root) != good
+
+
+def test_probe_trace_after_last_scenario_does_not_change_it(tmp_path, fork):
+    """`trace-signals`: «След проб после последнего сценария», `trace-signals`: «MODIFIED несёт прежний сценарий` (F-03, F-26) —
+    след проб за последним сценарием дельты и маркер под заголовком не делают сценарий изменённым: до и после синхронизации
+    состояние `same`, сигнала «прежним именем и другим текстом» нет; текст, изменённый по делу, остаётся `changed`."""
+    tail = "<!-- проба краёв: форма=text, исходы: нет -->\n<!-- проба запретов: исходы: нет -->\n"
+    root, base = modified_project(tmp_path, spec_text=CARRIED + tail)
+    same = {"scn:demo/Один/Старый": "same", "scn:demo/Один/Меняется": "same"}
+    _, signals, modified, _ = view(root)
+    assert modified[ONE]["scenarios"] == same and not any(trace_graph.DIVERGED in s for s in signals), signals
+    freeze(root)
+    sync(root, CARRIED)
+    assert view(root)[2][ONE]["scenarios"] == same
+    changed = CARRIED.replace(SCN.format("Меняется", "", "b"), SCN.format("Меняется", "", "иначе")) + tail
+    (base / "specs" / "demo" / "spec.md").write_text(changed, encoding="utf-8", newline="\n")
+    assert view(root)[2][ONE]["scenarios"] == {**same, "scn:demo/Один/Меняется": "changed"}
+
+
+def test_base_stores_references_as_anchor_strings(tmp_path, fork):
+    """`trace-snapshot`: «База хранит ссылку с именем» (F-25) — мастер ``журнал `calibration-fixes`: F-46.E`` и голое `(F-39)`:
+    запись базы несёт строки формы якоря, не числа 46 и 39."""
+    master = ("## Requirements\n\n### Requirement: Один\nТекст SHALL (журнал `calibration-fixes`: F-46.E) и (F-39).\n\n"
+              + SCN.format("Старый", "", "b"))
+    delta = master.replace("## Requirements", "## MODIFIED Requirements").replace("(F-39).", "(F-39) и (F-07).")
+    root, base = make_change(tmp_path, specs={"demo": delta}, tasks="- [ ] 1.1 сделать\n", journal=["F-07", "F-39", "F-46"])
+    master_path(root).parent.mkdir(parents=True)
+    master_path(root).write_text(master, encoding="utf-8", newline="\n")
+    (root / "openspec" / "changes" / "archive" / "2026-11-02-calibration-fixes").mkdir(parents=True)
+    freeze(root)
+    assert snapshot(base)["base"]["demo"]["Один"]["numbers"] == ["F-39", "calibration-fixes/F-46.E"]
+    assert [e[1] for e in view(root)[0] if e[2] == "traces"] == ["rec:F-07"]
+
+
+def test_format_one_snapshot_is_rebuilt_with_base_from_live_master(tmp_path, fork):
+    """`trace-snapshot`: «Снимок прежнего формата при заморозке» (F-61) — снимок формата 1 с базой в числах: прежняя база
+    не читается, причина сборки называет обе версии, новая база снята с живого мастера строками."""
+    root, base = modified_project(tmp_path)
+    freeze(root)
+    snap = snapshot(base)
+    snap["format"], snap["base"] = 1, {"demo": {"Один": {"numbers": [99], "scenarios": {}, "text": "x", "traces": []}}}
+    (base / "graph" / "req-graph.json").write_text(json.dumps(snap, ensure_ascii=False), encoding="utf-8")
+    assert trace_graph.saved_base(base) == {}
+    done = cli(root, env=shim_env(tmp_path, fork_reply(CLEAN)))
+    assert done.returncode == 0 and "формат 1, а скрипт читает 2" in done.stdout, done.stdout + done.stderr
+    assert snapshot(base)["format"] == 2 and snapshot(base)["base"]["demo"]["Один"]["numbers"] == BASE_REFS
 
 
 def test_base_first_freeze_after_sync_does_not_take_a_base_from_the_synced_master(tmp_path, fork):

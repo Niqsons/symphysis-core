@@ -10,7 +10,7 @@ import { telemetryState, TELEMETRY_OFF_COMMAND } from "./telemetry.js";
 import { hasSources, payloadMatches, ROOT } from "../scripts/sync-payload.js";
 
 const SETTINGS_FILE = "symphysis.yaml";
-const TOOL_MODULES = ["journal.py", "journal_apply.py", "journal_cli.py", "journal_model.py", "journal_render.py", "journal.schema.json", "roots.py", "viewer_render.py", "attack_table.py", "journal_sites.py", "journal_consequences.py", "symphysis_config.py", "openspec_run.py", "trace_graph.py"];
+const TOOL_MODULES = ["journal.py", "journal_apply.py", "journal_cli.py", "journal_model.py", "journal_render.py", "journal.schema.json", "roots.py", "viewer_render.py", "attack_table.py", "journal_sites.py", "journal_consequences.py", "symphysis_config.py", "openspec_run.py", "trace_graph.py", "anchor_refs.py"];
 
 const rel = (project, p) => path.relative(project, p).split(path.sep).join("/");
 
