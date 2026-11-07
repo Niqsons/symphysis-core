@@ -305,7 +305,12 @@
 - **GIVEN** инсталлятор из тарбола, исходников рядом с ним нет
 - **WHEN** выполняется `symphysis check --project <каталог>`
 - **THEN** этой сверки нет, строки о `payload` нет
-<!-- требование из F-114; пробами не проходило -->
+
+#### Scenario: Клон в модульной раскладке
+<!-- F-60 -->
+- **GIVEN** клон в модульной раскладке без каталога `skills/` и прежний `installer/payload`
+- **WHEN** из клона выполняется `symphysis check --project <каталог>`
+- **THEN** stdout несёт `[!!] payload старее исходников — выполнить: npm --prefix installer ci`, код 2
 
 ### Requirement: Скрипт сборки кладёт тарбол форка в `vendor/`
 Скрипт сборки выпуска SHALL собирать тарбол форка и класть его в каталог `vendor/` репозитория; файл SHALL входить в git, а установка из него SHALL давать форк версии пина (F-31.A, F-36.A); предположение: скрипт живёт в `installer/scripts/`; решить при реализации.
@@ -445,3 +450,16 @@
 - **GIVEN** проект после `symphysis install`
 - **WHEN** `symphysis install` выполняется снова
 - **THEN** подсказка заморозки стоит в списке один раз
+
+### Requirement: README модуля схемы в проект не ставится
+`symphysis install` SHALL ставить из каталога схемы только файлы схемы: `README.md` модуля схемы SHALL NOT попадать ни в payload, ни в `openspec/schemas/symphysis/` проекта, а `symphysis check` SHALL NOT называть его отсутствие расхождением (F-36).
+
+#### Scenario: Установка без README схемы
+- **GIVEN** в каталоге схемы репозитория лежит `README.md` модуля
+- **WHEN** выполняется `symphysis install --project <каталог>`
+- **THEN** в `openspec/schemas/symphysis/` проекта есть `schema.yaml`, `templates/` и `steps.md`, а `README.md` нет
+
+#### Scenario: Сверка не ждёт README
+- **GIVEN** проект после `symphysis install`
+- **WHEN** выполняется `symphysis check`
+- **THEN** строки о `README.md` каталога схемы нет
