@@ -1,0 +1,122 @@
+# Покрытие пробы краёв: parking-addressee-agent
+
+- decision-journal/Обратимость, адресат парковки и исход — из закрытых списков с причиной · boundary · неприменимо: формы text, collection; boundary только для numeric-range
+- decision-journal/Обратимость, адресат парковки и исход — из закрытых списков с причиной · adjacency · не выбран: два значения одного адресата, `агент` и `материалы`, в одном журнале; исход определит кандидат F-22 у требования «Старое значение адресата читается, новыми записями не пишется»
+- decision-journal/Обратимость, адресат парковки и исход — из закрытых списков с причиной · empty · не выбран: `parking[].addressee: ""`; enum парковки пустого значения не содержит — код 1 по сценарию «Адресат вне списка», ответ человека его не изменит
+- decision-journal/Обратимость, адресат парковки и исход — из закрытых списков с причиной · encoding · не выбран: `Агент`, `агент ` с пробелом; сравнение точное, без нормализации (журнал `calibration-fixes`: F-36 Dismiss) — значение вне списка, код 1
+- decision-journal/Обратимость, адресат парковки и исход — из закрытых списков с причиной · ordering · не найдено: порядок значений в enum ничего не задаёт — сравнение по равенству, равных элементов на выходе нет
+- decision-journal/Обратимость, адресат парковки и исход — из закрытых списков с причиной · precision · неприменимо: формы text, collection; precision только для numeric-range
+- decision-journal/Обратимость, адресат парковки и исход — из закрытых списков с причиной · idempotency · неприменимо: формы text, collection; idempotency только для stateful
+- decision-journal/Обратимость, адресат парковки и исход — из закрытых списков с причиной · concurrency · неприменимо: формы text, collection; concurrency только для stateful, io
+- decision-journal/Старое значение адресата читается, новыми записями не пишется · boundary · неприменимо: формы text, collection, stateful; boundary только для numeric-range
+- decision-journal/Старое значение адресата читается, новыми записями не пишется · adjacency · кандидат F-22
+- decision-journal/Старое значение адресата читается, новыми записями не пишется · empty · не выбран: строка `припарковано → материалы —` без текста; `apply` отвергает «парковка без вопроса» при любом адресате — код 1, ответ человека его не изменит
+- decision-journal/Старое значение адресата читается, новыми записями не пишется · encoding · не выбран: `Материалы` с заглавной; сравнение точное, значение вне обоих списков — код 1 как у «Адресат вне списка»
+- decision-journal/Старое значение адресата читается, новыми записями не пишется · ordering · не найдено: порядок парковок у записи — порядок внесения; равных парковок `apply` не добавляет («парковка → агент уже есть»)
+- decision-journal/Старое значение адресата читается, новыми записями не пишется · precision · неприменимо: формы text, collection, stateful; precision только для numeric-range
+- decision-journal/Старое значение адресата читается, новыми записями не пишется · idempotency · не выбран: та же строка парковки внесена дважды; `apply` отвечает «парковка → агент уже есть», второй элемент не появляется — исход определён кодом `apply`
+- decision-journal/Старое значение адресата читается, новыми записями не пишется · concurrency · не найдено: два `apply` на один журнал — всё или ничего на файле, одновременного запуска у журнала нет: одна главная нить
+- decision-journal/Просмотрщик и рендер при двух значениях адресата · boundary · неприменимо: формы collection, io; boundary только для numeric-range
+- decision-journal/Просмотрщик и рендер при двух значениях адресата · adjacency · кандидат F-23
+- decision-journal/Просмотрщик и рендер при двух значениях адресата · empty · не найдено: журнал без парковок — назначений нет, список адресатов на странице константа `ADDRESSEES`, страница собирается
+- decision-journal/Просмотрщик и рендер при двух значениях адресата · encoding · неприменимо: формы collection, io; encoding только для text
+- decision-journal/Просмотрщик и рендер при двух значениях адресата · ordering · не найдено: порядок адресатов в списке страницы задан константой, равных элементов нет
+- decision-journal/Просмотрщик и рендер при двух значениях адресата · precision · неприменимо: формы collection, io; precision только для numeric-range
+- decision-journal/Просмотрщик и рендер при двух значениях адресата · idempotency · неприменимо: формы collection, io; idempotency только для stateful
+- decision-journal/Просмотрщик и рендер при двух значениях адресата · concurrency · не найдено: две сборки страницы одного журнала подряд дают один и тот же файл; `render-html` журнал не меняет
+- decision-journal/Слово к решению мимо рекомендации · boundary · неприменимо: формы stateful, text; boundary только для numeric-range
+- decision-journal/Слово к решению мимо рекомендации · adjacency · неприменимо: формы stateful, text; adjacency только для collection
+- decision-journal/Слово к решению мимо рекомендации · empty · не выбран: слово из одних пробелов к выбору мимо рекомендации; `apply` схлопывает пробелы, пустое слово равно отсутствию — сигнал `[!!]` остаётся, ответ человека его не изменит
+- decision-journal/Слово к решению мимо рекомендации · encoding · не найдено: слово ни с чем не сравнивается — хранится текстом, сигнал зависит только от его наличия
+- decision-journal/Слово к решению мимо рекомендации · ordering · неприменимо: формы stateful, text; ordering только для collection
+- decision-journal/Слово к решению мимо рекомендации · precision · неприменимо: формы stateful, text; precision только для numeric-range
+- decision-journal/Слово к решению мимо рекомендации · idempotency · не выбран: слово к решению внесено дважды; `apply` отвечает «слово добавлено к решению» и хранит одно слово — состояние после второго раза то же
+- decision-journal/Слово к решению мимо рекомендации · concurrency · не найдено: одновременных `apply` у одного журнала нет — всё или ничего на файле
+- decision-journal/Пометка отступления стоит у варианта · boundary · неприменимо: формы collection, text; boundary только для numeric-range
+- decision-journal/Пометка отступления стоит у варианта · adjacency · не выбран: `deviation` указывает на развилку или на факт не постановки; `validate_journal` отвергает кодом 1 «запись не факт `addressee: постановка`», закреплено тестом `test_deviation_must_point_at_a_setting_fact`
+- decision-journal/Пометка отступления стоит у варианта · empty · не выбран: `deviation` на несуществующую запись; код 1 «такой записи нет», закреплено тестом `test_deviation_to_a_missing_record`
+- decision-journal/Пометка отступления стоит у варианта · encoding · не найдено: номер записи — по шаблону схемы `F-` и цифры, нормализации нет, иное написание отвергает схема
+- decision-journal/Пометка отступления стоит у варианта · ordering · не найдено: у варианта одно поле `deviation`; порядка нескольких пометок нет
+- decision-journal/Пометка отступления стоит у варианта · precision · неприменимо: формы collection, text; precision только для numeric-range
+- decision-journal/Пометка отступления стоит у варианта · idempotency · неприменимо: формы collection, text; idempotency только для stateful
+- decision-journal/Пометка отступления стоит у варианта · concurrency · неприменимо: формы collection, text; concurrency только для stateful, io
+- decision-journal/`check` отвергает факт без улики и пустую причину, парковку без находки сигналит · boundary · неприменимо: формы collection, io; boundary только для numeric-range
+- decision-journal/`check` отвергает факт без улики и пустую причину, парковку без находки сигналит · adjacency · не выбран: у записи две парковки `агент`, одна с `finding`, другая без, при одном `research/F-NN.md`; сигнал даёт любая парковка без `finding`, строка одна на запись — код тот же
+- decision-journal/`check` отвергает факт без улики и пустую причину, парковку без находки сигналит · empty · не выбран: `finding: ""`; код читает пустую строку как отсутствие — сигнал есть, ответ человека его не изменит
+- decision-journal/`check` отвергает факт без улики и пустую причину, парковку без находки сигналит · encoding · неприменимо: формы collection, io; encoding только для text
+- decision-journal/`check` отвергает факт без улики и пустую причину, парковку без находки сигналит · ordering · не найдено: строки `[!!]` идут в порядке записей журнала, равных строк нет
+- decision-journal/`check` отвергает факт без улики и пустую причину, парковку без находки сигналит · precision · неприменимо: формы collection, io; precision только для numeric-range
+- decision-journal/`check` отвергает факт без улики и пустую причину, парковку без находки сигналит · idempotency · неприменимо: формы collection, io; idempotency только для stateful
+- decision-journal/`check` отвергает факт без улики и пустую причину, парковку без находки сигналит · concurrency · не найдено: `check` только читает; файл `research/F-NN.md`, появившийся во время проверки, попадёт в следующий вызов
+- brainstorm-interview/Вопрос, ответ на который есть в файлах, человеку не задаётся · boundary · неприменимо: формы io, text, stateful; boundary только для numeric-range
+- brainstorm-interview/Вопрос, ответ на который есть в файлах, человеку не задаётся · adjacency · неприменимо: формы io, text, stateful; adjacency только для collection
+- brainstorm-interview/Вопрос, ответ на который есть в файлах, человеку не задаётся · empty · не выбран: материалов нет вовсе — ни файла, ни каталога из `intent.md`; парковка агенту с брифом по сценарию «Материалов нет», ответ человека его не изменит
+- brainstorm-interview/Вопрос, ответ на который есть в файлах, человеку не задаётся · encoding · не найдено: цитата улики копируется из файла дословно, равенство сверяет `check` — своей нормализации у скилла нет
+- brainstorm-interview/Вопрос, ответ на который есть в файлах, человеку не задаётся · ordering · неприменимо: формы io, text, stateful; ordering только для collection
+- brainstorm-interview/Вопрос, ответ на который есть в файлах, человеку не задаётся · precision · неприменимо: формы io, text, stateful; precision только для numeric-range
+- brainstorm-interview/Вопрос, ответ на который есть в файлах, человеку не задаётся · idempotency · не выбран: второй круг по тем же материалам; факт с той же цитатой второй раз не заводится — сценарий «Круг 2 перечитывает намерение»
+- brainstorm-interview/Вопрос, ответ на который есть в файлах, человеку не задаётся · concurrency · не найдено: интервью идёт в одной главной нити, водителя у брейншторма нет («Границы» скилла)
+- brainstorm-interview/Круг кончается счётом и словом человека, не числом · boundary · не выбран: P = 0 при K = M = D = 0 — конец без вопроса, P = 1 — вопрос уходит в `research`; оба исхода названы сценариями «Круг без нового» и «Только парковки»
+- brainstorm-interview/Круг кончается счётом и словом человека, не числом · adjacency · неприменимо: формы numeric-range, stateful; adjacency только для collection
+- brainstorm-interview/Круг кончается счётом и словом человека, не числом · empty · неприменимо: формы numeric-range, stateful; empty только для collection, text
+- brainstorm-interview/Круг кончается счётом и словом человека, не числом · encoding · неприменимо: формы numeric-range, stateful; encoding только для text
+- brainstorm-interview/Круг кончается счётом и словом человека, не числом · ordering · неприменимо: формы numeric-range, stateful; ordering только для collection
+- brainstorm-interview/Круг кончается счётом и словом человека, не числом · precision · не найдено: счётчики K, M, D, P — целые числа записей, округления и переполнения нет
+- brainstorm-interview/Круг кончается счётом и словом человека, не числом · idempotency · не выбран: вторая строка «круг N закончен» о том же круге; номер круга — число строк «круг … закончен» плюс один, повтор дал бы N+1 — порядок скилла, шаг 10, ответ человека его не изменит
+- brainstorm-interview/Круг кончается счётом и словом человека, не числом · concurrency · не найдено: один круг за раз в одной нити; параллельных кругов схема не предусматривает
+- brainstorm-interview/Интервью начинается с намерения · boundary · неприменимо: формы text, stateful, io; boundary только для numeric-range
+- brainstorm-interview/Интервью начинается с намерения · adjacency · неприменимо: формы text, stateful, io; adjacency только для collection
+- brainstorm-interview/Интервью начинается с намерения · empty · не выбран: `intent.md` 0 байт или одна строка заголовка; скилл сначала спрашивает намерение и сохраняет его дословно по шаблону, закреплено тестом `tests/test_skills.py` («`intent.md` пуст»)
+- brainstorm-interview/Интервью начинается с намерения · encoding · не найдено: цитата критерия — строка файла дословно; сверку равенства держит `check`
+- brainstorm-interview/Интервью начинается с намерения · ordering · неприменимо: формы text, stateful, io; ordering только для collection
+- brainstorm-interview/Интервью начинается с намерения · precision · неприменимо: формы text, stateful, io; precision только для numeric-range
+- brainstorm-interview/Интервью начинается с намерения · idempotency · не выбран: повторный круг с тем же `intent.md` — факт с той же цитатой второй раз не заводится (сценарий «Круг 2 перечитывает намерение»)
+- brainstorm-interview/Интервью начинается с намерения · concurrency · не выбран: человек правит `intent.md` по ходу круга; изменённый текст даёт новый факт только по слову человека — сценарий «Круг 2 перечитывает намерение», ответ ничего не изменит
+- brainstorm-interview/Отступление и конструкция записываются развилкой · boundary · неприменимо: формы collection, stateful; boundary только для numeric-range
+- brainstorm-interview/Отступление и конструкция записываются развилкой · adjacency · не выбран: вариант уточняет критерий, не противореча ему; поля `deviation` нет — исход назван сценарием «Уточнение без противоречия»
+- brainstorm-interview/Отступление и конструкция записываются развилкой · empty · не выбран: журнал без фактов постановки — противоречить нечему, `deviation` не ставится; ответ человека ничего не изменит
+- brainstorm-interview/Отступление и конструкция записываются развилкой · encoding · неприменимо: формы collection, stateful; encoding только для text
+- brainstorm-interview/Отступление и конструкция записываются развилкой · ordering · не найдено: порядок вариантов задаёт буква; «образец X» и «иной путь» различимы текстом, равных нет
+- brainstorm-interview/Отступление и конструкция записываются развилкой · precision · неприменимо: формы collection, stateful; precision только для numeric-range
+- brainstorm-interview/Отступление и конструкция записываются развилкой · idempotency · не выбран: та же находка во втором круге; развилка о том же крае второй раз не заводится — правило `candidate.md` и шаг 8 скилла брейншторма
+- brainstorm-interview/Отступление и конструкция записываются развилкой · concurrency · не найдено: одна нить, записи пишет только главная нить
+- brainstorm-interview/Парковки агенту переносят вопрос о круге в research · boundary · не выбран: P = 1 при K = M = D = 0; исход назван сценарием «Только парковки» (журнал `decision-scheme`: F-95 Specify)
+- brainstorm-interview/Парковки агенту переносят вопрос о круге в research · adjacency · неприменимо: формы numeric-range, stateful; adjacency только для collection
+- brainstorm-interview/Парковки агенту переносят вопрос о круге в research · empty · неприменимо: формы numeric-range, stateful; empty только для collection, text
+- brainstorm-interview/Парковки агенту переносят вопрос о круге в research · encoding · неприменимо: формы numeric-range, stateful; encoding только для text
+- brainstorm-interview/Парковки агенту переносят вопрос о круге в research · ordering · неприменимо: формы numeric-range, stateful; ordering только для collection
+- brainstorm-interview/Парковки агенту переносят вопрос о круге в research · precision · не найдено: P — число парковок, целое
+- brainstorm-interview/Парковки агенту переносят вопрос о круге в research · idempotency · не выбран: `research` спросил о круге, человек отказал, во втором круге новая парковка при строке «брейншторм закончен» — сценарий «Круг после конца брейншторма»: круг идёт по слову человека, строка остаётся
+- brainstorm-interview/Парковки агенту переносят вопрос о круге в research · concurrency · не найдено: один шаг за раз
+- artifact-graph/Исследование — файл на каждую парковку «агент» с жанром · boundary · неприменимо: формы collection, io; boundary только для numeric-range
+- artifact-graph/Исследование — файл на каждую парковку «агент» с жанром · adjacency · кандидат F-24
+- artifact-graph/Исследование — файл на каждую парковку «агент» с жанром · empty · не выбран: нуль парковок — `none.md` по сценарию «Нуль парковок» и требованию «Файл-отрицание при нуле парковок агенту»
+- artifact-graph/Исследование — файл на каждую парковку «агент» с жанром · encoding · неприменимо: формы collection, io; encoding только для text
+- artifact-graph/Исследование — файл на каждую парковку «агент» с жанром · ordering · не найдено: файлы названы номерами записей, порядок каталога не значим
+- artifact-graph/Исследование — файл на каждую парковку «агент» с жанром · precision · неприменимо: формы collection, io; precision только для numeric-range
+- artifact-graph/Исследование — файл на каждую парковку «агент» с жанром · idempotency · неприменимо: формы collection, io; idempotency только для stateful
+- artifact-graph/Исследование — файл на каждую парковку «агент» с жанром · concurrency · не выбран: запуски водителей по разным парковкам параллельно — файлы не пересекаются (тело скилла, раздел «Водитель»), ответ человека ничего не изменит
+- artifact-graph/Файл-отрицание при нуле парковок агенту · boundary · неприменимо: формы collection, io; boundary только для numeric-range
+- artifact-graph/Файл-отрицание при нуле парковок агенту · adjacency · не выбран: `none.md` и `research/F-NN.md` рядом — `none.md` удаляется при первой парковке (сценарий «Парковка после none.md»)
+- artifact-graph/Файл-отрицание при нуле парковок агенту · empty · не выбран: нуль записей с `addressee: агент` на уровне записи — перечень из строки «нет» по телу скилла (шаг 2); видно сразу, ничего не портится
+- artifact-graph/Файл-отрицание при нуле парковок агенту · encoding · неприменимо: формы collection, io; encoding только для text
+- artifact-graph/Файл-отрицание при нуле парковок агенту · ordering · не найдено: перечень в порядке номеров журнала; повторный номер отвергает схема
+- artifact-graph/Файл-отрицание при нуле парковок агенту · precision · неприменимо: формы collection, io; precision только для numeric-range
+- artifact-graph/Файл-отрицание при нуле парковок агенту · idempotency · неприменимо: формы collection, io; idempotency только для stateful
+- artifact-graph/Файл-отрицание при нуле парковок агенту · concurrency · не найдено: один файл пишет одна нить
+- artifact-graph/Итог пробы в отчёте исследования · boundary · неприменимо: формы io, stateful; boundary только для numeric-range
+- artifact-graph/Итог пробы в отчёте исследования · adjacency · неприменимо: формы io, stateful; adjacency только для collection
+- artifact-graph/Итог пробы в отчёте исследования · empty · не выбран: проба без вывода — файл следа пуст; ссылка на след есть, цитировать нечего — находка идёт в «Не найдено» с причиной по телу скилла (шаг 6)
+- artifact-graph/Итог пробы в отчёте исследования · encoding · неприменимо: формы io, stateful; encoding только для text
+- artifact-graph/Итог пробы в отчёте исследования · ordering · неприменимо: формы io, stateful; ordering только для collection
+- artifact-graph/Итог пробы в отчёте исследования · precision · неприменимо: формы io, stateful; precision только для numeric-range
+- artifact-graph/Итог пробы в отчёте исследования · idempotency · не выбран: повтор пробы с тем же brief перезаписывает тот же след; файл `research/F-NN.md` переписывается только по слову человека (шаг 1 скилла)
+- artifact-graph/Итог пробы в отчёте исследования · concurrency · не выбран: пробы двух парковок одновременно — каждая во временном каталоге и в своём `research/<F-NN>-probe/` (инвариант 4 водителя)
+- plugin-core-contract/`view-json` отдаёт номер контракта · boundary · не выбран: плагин 3 при ядре 4 и плагин 5 при ядре 4; оба исхода названы требованием «Плагин сверяет номер и говорит, что обновить»
+- plugin-core-contract/`view-json` отдаёт номер контракта · adjacency · неприменимо: формы numeric-range, io; adjacency только для collection
+- plugin-core-contract/`view-json` отдаёт номер контракта · empty · неприменимо: формы numeric-range, io; empty только для collection, text
+- plugin-core-contract/`view-json` отдаёт номер контракта · encoding · неприменимо: формы numeric-range, io; encoding только для text
+- plugin-core-contract/`view-json` отдаёт номер контракта · ordering · неприменимо: формы numeric-range, io; ordering только для collection
+- plugin-core-contract/`view-json` отдаёт номер контракта · precision · не выбран: номер — целое; дробный или строковый номер плагин считает расхождением (прежняя проба мастер-спеки: «precision — номер целый»)
+- plugin-core-contract/`view-json` отдаёт номер контракта · idempotency · неприменимо: формы numeric-range, io; idempotency только для stateful
+- plugin-core-contract/`view-json` отдаёт номер контракта · concurrency · не найдено: `view-json` только читает журнал; два вызова подряд дают один номер

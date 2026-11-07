@@ -54,7 +54,7 @@ def test_import_fields_of_f01():
     assert r["decision"]["option"] == "B" and r["decision"]["date"] == "2026-10-29"
     assert r["decision"]["word"].startswith("видимо тогда вариант B")
     assert len(r["parking"]) == 1
-    assert r["parking"][0]["addressee"] == "материалы"
+    assert r["parking"][0]["addressee"] == "агент"
     assert r["parking"][0]["finding"].startswith("Markdown Editor for Humans")
     assert len(r["evidence"]) == 5
     assert r["reversibility"] is None and r["outcome"] is None and r["comments"] == []
@@ -253,6 +253,60 @@ def test_setting_is_not_a_parking_addressee():
     assert any(e.startswith("F-02: parking/0/addressee:") for e in journal.validate_journal(j))
 
 
+# --- адресат «агент»: новое имя адресата исследования; «материалы» — только старые журналы (1.1, 1.5) ---------------
+
+LEGACY_JOURNAL = FIX / "journal-legacy" / "decisions.json"
+OLD_ADDRESSEE = "материалы"
+
+
+def test_agent_addressee_at_a_parking_and_at_a_record_is_valid():
+    """`агент` — значение и парковки, и записи: припаркованный факт без улики с парковкой `агент` годен
+    (сценарий «Припаркованный факт без улики»)."""
+    j = setting_journal()
+    j["records"][0].update(addressee="агент", status="припаркован", evidence=[],
+                           parking=[{"addressee": "агент", "text": "найти в коде"}])
+    j["records"][1]["parking"] = [{"addressee": "агент", "text": "что в схеме?"}]
+    assert journal.validate_journal(j) == []
+
+
+@pytest.mark.parametrize("value", ["архитектор", "Агент", "агент ", "постановка"])
+def test_parking_addressee_outside_the_list_names_the_record_and_the_field(value):
+    """Сценарий «Адресат вне списка»: ошибка схемы с именем записи и полем `parking/0/addressee`, без нормализации."""
+    j = setting_journal()
+    j["records"][1]["parking"] = [{"addressee": value, "text": "вопрос"}]
+    errors = journal.validate_journal(j)
+    assert errors and all(e.startswith("F-02: parking/0/addressee:") for e in errors), errors
+    assert repr(value) in errors[0]
+
+
+def test_check_answers_code_1_on_a_parking_addressee_outside_the_list(tmp_path):
+    """Сценарий «Адресат вне списка» через командную строку: код 1, строка в stderr называет запись и поле."""
+    j = setting_journal()
+    j["records"][1]["parking"] = [{"addressee": "архитектор", "text": "вопрос"}]
+    path = tmp_path / "decisions.json"
+    journal.save_journal(path, j)
+    done = journal_cli("check", str(path))
+    assert done.returncode == 1
+    assert "[!!] F-02: parking/0/addressee:" in done.stderr and "архитектор" in done.stderr
+
+
+def test_legacy_journal_with_the_old_addressee_is_valid():
+    """Сценарий «Старый журнал годен»: `материалы` у записи и у парковки читается — ошибки схемы нет."""
+    j = journal.load_journal(LEGACY_JOURNAL)
+    assert journal.validate_journal(j) == []
+    assert [r["id"] for r in j["records"] if r["addressee"] == OLD_ADDRESSEE] == ["F-01"]
+    assert [r["id"] for r in j["records"] if any(p["addressee"] == OLD_ADDRESSEE for p in r["parking"])] == ["F-02"]
+
+
+def test_live_journals_still_carry_the_old_addressee():
+    """Живые журналы (архив, журнал плана) хранят `материалы`: их годность по `LIVE_JOURNALS` и есть сверка того,
+    что старое значение читается; переписывать их изменение не велит."""
+    old = [path.name for path in LIVE_JOURNALS
+           if any(r["addressee"] == OLD_ADDRESSEE or any(p["addressee"] == OLD_ADDRESSEE for p in r["parking"])
+                  for r in journal.load_journal(path)["records"])]
+    assert old, "ни один живой журнал не несёт старого значения — проверка стала пустой"
+
+
 @pytest.mark.parametrize("path", FIXTURE_JOURNALS + LIVE_JOURNALS, ids=lambda p: p.relative_to(ROOT).as_posix())
 def test_fixture_and_live_journals_stay_valid(path):
     """Журналы плеч (fixtures) и живые журналы годны: без `постановка` и `options[].deviation` — как прежде
@@ -304,7 +358,7 @@ def test_deviation_to_a_missing_record():
 
 
 @pytest.mark.parametrize("change, what", [
-    ({"addressee": "материалы"}, "факт с адресатом «материалы»"),
+    ({"addressee": "агент"}, "факт с адресатом «агент»"),
     ({"kind": "развилка", "status": "открыт", "evidence": [],
       "options": [{"letter": "A", "text": "а", "added": False, "unlikely": None, "evidence": []}]}, "развилка"),
 ])

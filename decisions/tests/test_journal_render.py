@@ -7,6 +7,7 @@ import pytest
 from conftest import (core_files, deviation_journal, FIX, one_record_journal, plan, render_page, requires_node, ROOT,
                       run_cli, scheme_embedded, smoke, strip_check_fields, TEMPLATE)
 import journal
+import journal_render
 
 
 LIVE_JSON = ROOT / "docs" / "plan-implementation.journal.json"
@@ -212,9 +213,10 @@ def test_render_writes_word_and_parking_back_in_guillemets():
     lines = md.splitlines()
     assert any(line.startswith("- решение: B — «видимо тогда вариант B") and line.endswith("», 2026-10-29")
                for line in lines)
-    assert any(line.startswith("- парковка: материалы — «json разбирать") and line.endswith("»")
-               for line in lines)
     assert "- решение: A, 2026-10-29" in lines          # F-04: слова нет, кавычек нет
+    j = one_record_journal("a.md", "q")                 # парковка — своя, не из фикстуры: значение адресата здесь не предмет
+    j["records"][0]["parking"] = [{"addressee": "агент", "text": "json разбирать проще, но правки не вернутся"}]
+    assert "- парковка: агент — «json разбирать проще, но правки не вернутся»" in journal.render_md(j).splitlines()
 
 
 def test_inner_guillemets_survive_the_roundtrip():
@@ -264,7 +266,7 @@ def test_renderers_do_not_mutate_the_journal():
 
 NOTES = [
     {"date": "2026-10-30",
-     "text": "круг 1 закончен: решений 2, фактов 1, открытых развилок 0, парковок материалам 1"},
+     "text": "круг 1 закончен: решений 2, фактов 1, открытых развилок 0, парковок агенту 1"},
     {"date": "2026-10-31", "text": "стрелка F-03 → F-15 лишняя\nи вторая строка"},
 ]
 
@@ -277,7 +279,7 @@ def test_render_md_writes_notes_as_the_last_section():
     assert md.index("## Заметки") > md.index("## F-01")
     tail = md.split("\n## Заметки\n")[1]
     assert tail.splitlines() == [
-        "- 2026-10-30 — круг 1 закончен: решений 2, фактов 1, открытых развилок 0, парковок материалам 1",
+        "- 2026-10-30 — круг 1 закончен: решений 2, фактов 1, открытых развилок 0, парковок агенту 1",
         "- 2026-10-31 — стрелка F-03 → F-15 лишняя",
         "  и вторая строка",
     ]
@@ -291,6 +293,35 @@ def test_import_reads_the_notes_section_back_into_notes():
     assert journal.validate_journal(back) == []
     assert list(back).index("notes") < list(back).index("records")
     assert "notes" not in roundtrip(one_record_journal("a.md", "q"))
+
+
+# --- парковка: адресат `агент` и старое значение `материалы` (parking-addressee-agent) ---------------
+
+def test_old_and_new_parking_addressee_lead_to_the_same_destination():
+    """`decision-journal`: «Назначение старой парковки» — у парковки `материалы` старого журнала назначение
+    то же, что у парковки `агент`: `design.md › Open Questions → research/`; `render-md` пишет оба значения как есть."""
+    j = one_record_journal("a.md", "q")
+    j["records"][0]["parking"] = [{"addressee": "агент", "text": "новый вопрос"},
+                                  {"addressee": "материалы", "text": "вопрос старого журнала"}]
+    new, old = (p["destination"] for p in journal_render.view_payload(j)["records"][0]["parking"])
+    assert new == old == "design.md › Open Questions → research/"
+    lines = journal.render_md(j).splitlines()
+    assert "- парковка: агент — «новый вопрос»" in lines
+    assert "- парковка: материалы — «вопрос старого журнала»" in lines
+
+
+# --- номер контракта и договор двух репозиториев (F-26) -------------------------------------------------
+
+def test_contract_number_equals_the_last_numbered_paragraph_of_the_repo_contract():
+    """`plugin-core-contract`: «Номер выше последнего абзаца» — `CONTRACT` равен наибольшему N в абзацах
+    «С номера N» файла `docs/repo-contract.md`: смена номера без абзаца о ней — расхождение кода с договором."""
+    body = (ROOT / "docs" / "repo-contract.md").read_text(encoding="utf-8")
+    numbers = [int(n) for n in re.findall(r"^С номера (\d+)\b", body, re.MULTILINE)]
+    assert numbers, "в docs/repo-contract.md нет ни одного абзаца «С номера N»"
+    last = max(numbers)
+    assert journal_render.CONTRACT == last, (
+        f"CONTRACT = {journal_render.CONTRACT} в journal_render.py, а последний абзац договора — «С номера {last}»: "
+        "смена контракта описывается абзацем в docs/repo-contract.md")
 
 
 # --- исход: строка «- исход:» между решением и следствиями --------------------

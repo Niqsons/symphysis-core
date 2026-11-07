@@ -40,20 +40,32 @@ def _valid_journal(path: Path) -> dict | None:
 
 
 def _parkings_without_finding(journal: dict, base: Path) -> list[str]:
-    """Парковка «материалы» без `finding` при файле `research/<F-NN>.md` рядом с журналом —
+    """Парковка «агент» без `finding` при файле `research/<F-NN>.md` рядом с журналом —
     сигнал: исследование есть, находка в журнал не внесена."""
-    return [f"{rec['id']}: парковка «материалы» без finding при research/{rec['id']}.md"
+    return [f"{rec['id']}: парковка «агент» без finding при research/{rec['id']}.md"
             for rec in journal["records"]
             if (base / "research" / f"{rec['id']}.md").is_file()
-            and any(p["addressee"] == "материалы" and not p.get("finding") for p in rec["parking"])]
+            and any(p["addressee"] == "агент" and not p.get("finding") for p in rec["parking"])]
 
 
 def _human_parkings_without_finding(journal: dict) -> list[str]:
-    """Парковка «человек» без `finding` — сигнал: у «материалов» и «ИБ» есть свои шаги, а у этого адресата нет,
+    """Парковка «человек» без `finding` — сигнал: у «агента» и «ИБ» есть свои шаги, а у этого адресата нет,
     и без сигнала вопрос так и остался бы строкой в Open Questions."""
     return [f"{rec['id']}: парковка «человек» без finding: {p['text']}"
             for rec in journal["records"] for p in rec["parking"]
             if p["addressee"] == "человек" and not p.get("finding")]
+
+
+LEGACY_ADDRESSEE = "материалы"   # имя адресата «агент» до переименования: схема читает, новые записи не пишут
+
+
+def _legacy_addressees(journal: dict) -> list[str]:
+    """Старое значение адресата «материалы» у записи или у её парковки — сигнал, не ошибка схемы: у старых журналов
+    (архив, журнал плана) оно законно, в журнале активного изменения запись переписывается на «агент»
+    (parking-addressee-agent: F-22). Одна строка на запись; сравнение точное, без нормализации."""
+    return [f"{rec['id']}: адресат «{LEGACY_ADDRESSEE}» — старое значение, новые записи пишут «агент»"
+            for rec in journal["records"]
+            if rec["addressee"] == LEGACY_ADDRESSEE or any(p["addressee"] == LEGACY_ADDRESSEE for p in rec["parking"])]
 
 
 def cmd_check(args: argparse.Namespace) -> int:
@@ -76,6 +88,9 @@ def cmd_check(args: argparse.Namespace) -> int:
     unasked = _human_parkings_without_finding(journal)
     for m in unasked:
         print(f"[!!] {m}")
+    legacy = _legacy_addressees(journal)
+    for m in legacy:
+        print(f"[!!] {m}")
     unexplained = unexplained_choices(journal)
     for m in unexplained:
         print(f"[!!] {m}")
@@ -93,8 +108,8 @@ def cmd_check(args: argparse.Namespace) -> int:
     if args.write:
         save_journal(args.json, journal)
         print(f"[ok] {args.json}")
-    return 2 if args.strict and (result["missing"] or unfound or unasked or unexplained or cycles or inventory["missing"]
-                                 or broken_attack) else 0
+    return 2 if args.strict and (result["missing"] or unfound or unasked or legacy or unexplained or cycles
+                                 or inventory["missing"] or broken_attack) else 0
 
 
 ATTACK_FILES = (("decisions.md", "атака журнала"), ("artifacts.md", "атака артефактов"))
@@ -423,7 +438,7 @@ def build_parser() -> argparse.ArgumentParser:
 
     p = _command(sub, "check", "сверить улики грепом по цитате (сигнал, не стоп); при consequences.md — и опись; "
                                "негодный по схеме журнал — код 1",
-                 "Сверяет улики грепом по цитате, называет циклы в depends_on и парковки человеку без finding. При consequences.md рядом с журналом — ещё две проверки описи:\n"
+                 "Сверяет улики грепом по цитате, называет циклы в depends_on, парковки без finding и старое значение адресата «материалы». При consequences.md рядом с журналом — ещё две проверки описи:\n"
                  "место из code-sites названо путём в файле, цитата «путь:строка «цитата»» стоит в коде дословно.\n"
                  "Файл со строкой **Причина:** сверки мест не даёт; **Причина:** считается только в начале строки,\n"
                  "цитата сверяется только в форме путь:строка «цитата», форму файла сверх этого скрипт не разбирает.",
@@ -431,7 +446,7 @@ def build_parser() -> argparse.ArgumentParser:
                  "0 — сверка прошла, сигналы код не меняют; 1 — нет файла, битый JSON или негодный по схеме журнал;\n"
                  "  2 — с --strict есть строки [!!].",
                  extra="Маркеры: [ok] итог сверки; [!!] несверенная улика, парковка без finding, выбор мимо рекомендации\n"
-                       "  без слова, место или цитата описи;\n"
+                       "  без слова, старое значение адресата «материалы», место или цитата описи;\n"
                        "  [--] не проверить: бинарный файл или не UTF-8.")
     given = p.add_argument_group("вход")
     given.add_argument("json", type=Path, help=JOURNAL_HELP)
