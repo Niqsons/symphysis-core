@@ -1,0 +1,8 @@
+{
+ "": "<root>",
+ "docs/": "<root>/docs",
+ "tools/": "<root>/tools",
+ "upstream/": "<root>/upstream",
+ "context/": "<root>/../symphysis/.context",
+ "vscode/": "<root>/../symphysis-vscode"
+}
