@@ -19,7 +19,7 @@ INSTALLER_PACKAGE = ROOT / "installer" / "package.json"
 # Следы материалов замеров: имя прогона, скрипт и каталог плеча, пункты чек-листа.
 MEASURE_SAMPLES = (r"c\d-[a-z]\d", r"arm\.ps1", r"judge/", r"П\d+", r"Т\d+")
 TOKEN_ADDRESS = re.compile(r"://[^/]*@")
-FORK_VERSION = re.compile(r"\d+\.\d+\.\d+-symphysis\.\d+")
+FORK_VERSION = re.compile(r"\d+\.\d+\.\d+[-+]symphysis\.\d+")
 
 
 def text() -> str:

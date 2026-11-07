@@ -28,8 +28,8 @@
     "test": "node --test"
   },
   "symphysis": {
-    "openspecPin": "1.16.1-symphysis.5",
-    "openspecSource": "vendor/fission-ai-openspec-1.16.1-symphysis.5.tgz"
+    "openspecPin": "1.16.1+symphysis.5",
+    "openspecSource": "vendor/fission-ai-openspec-1.16.1+symphysis.5.tgz"
   },
   "dependencies": {
     "yaml": "^2.9.1"
