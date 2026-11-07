@@ -215,15 +215,15 @@ const JOURNAL = {
  "title": "Журнал решений: parking-addressee-agent",
  "source": "decisions.json",
  "generated": "2026-11-07",
- "sha256": "a1124244a7dec55e30ac172661e9f0abf5ff23c4755835e9ab570f648b40b724",
+ "sha256": "c73c039706b73e06380afc2822bd8517e4d55162cf042c2152647a0dcec022e7",
  "stats": {
-  "records": 19,
-  "forks": 3,
-  "facts": 16,
-  "decided": 3,
+  "records": 26,
+  "forks": 8,
+  "facts": 18,
+  "decided": 8,
   "parked": 0,
-  "evidence_total": 91,
-  "evidence_found": 91
+  "evidence_total": 106,
+  "evidence_found": 106
  },
  "records": [
   {
@@ -1490,6 +1490,500 @@ const JOURNAL = {
     "plugin"
    ],
    "finding": ""
+  },
+  {
+   "id": "F-20",
+   "question": "Четыре мастер-требования, которые правит переименование, длиннее предела 500 знаков: «Обратимость, адресат парковки и исход…» (`decision-journal`) — 1507, «Вопрос, ответ на который есть в файлах…» (`brainstorm-interview`) — 1030, «Круг кончается счётом…» — 645, «Исследование — файл на каждую парковку…» (`artifact-graph`) — 927. По правилу схемы и спеки `trace-conventions` старое длинное требование в MODIFIED делится на дочерние: текст родителя укладывается в предел, вынесенное идёт в дочерние со своими сценариями, сценарии родителя остаются при нём, условия не теряются; дочернее называет родителя фразой «Часть требования «имя».» и несёт номер этой записи как решение о делении (прецедент — факт F-46 журнала `module-structure`)",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "материалы",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "дельты `decision-journal` (родитель и пять дочерних), `brainstorm-interview` (два родителя и три дочерних), `artifact-graph` (родитель и два дочерних) ссылаются на эту запись",
+   "evidence": [
+    {
+     "path": "openspec/specs/trace-conventions/spec.md",
+     "quote": "Старое требование в MODIFIED SHALL делиться так же (F-91).",
+     "line": 149,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "openspec/specs/trace-conventions/spec.md",
+     "quote": "- **THEN** текст родителя укладывается в предел, вынесенное стоит в дочерних со своими новыми сценариями, сценарии родителя остаются при нём",
+     "line": 160,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "openspec/specs/trace-conventions/spec.md",
+     "quote": "Требование MUST NOT терять условия, когда его сокращают ради предела: родитель и дочерние вместе SHALL нести всё, что нёс прежний текст",
+     "line": 163,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "openspec/specs/trace-conventions/spec.md",
+     "quote": "Дочернее требование SHALL называть родителя в своём тексте фразой `Часть требования «имя».`",
+     "line": 173,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "openspec/schemas/symphysis/schema.yaml",
+     "quote": "Длинное в MODIFIED дели так же: сценарии родителя остаются при нём, условия не теряются.",
+     "line": 82,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "openspec/changes/archive/2026-11-07-module-structure/decisions.json",
+     "quote": "по правилу схемы длинное требование в MODIFIED делится на дочернее, сценарии родителя остаются при нём",
+     "line": 2524,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "specs"
+   ],
+   "finding": ""
+  },
+  {
+   "id": "F-21",
+   "question": "Заголовок требования «Исследование — файл на каждую парковку «материалы» с жанром» несёт переименуемое значение; форк поддерживает секцию `RENAMED Requirements` (пара FROM/TO, архив применяет переименование до MODIFIED, MODIFIED пишется под новым именем), граф трассируемости разбирает эту секцию; в архиве изменений секция ни разу не применялась — первое применение здесь, `openspec validate --strict` и отчёт графа ошибок по ней не дали",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "материалы",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "дельта `artifact-graph`: RENAMED + MODIFIED под новым именем; дочерние называют родителя новым именем",
+   "evidence": [
+    {
+     "path": "upstream/openspec/src/core/validation/validator.ts",
+     "quote": "MODIFIED references old name from RENAMED. Use new header for",
+     "line": 449,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "upstream/openspec/src/core/validation/validator.ts",
+     "quote": "// Archive applies RENAMED before MODIFIED, so a MODIFIED naming the new",
+     "line": 753,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "upstream/openspec/src/core/parsers/requirement-blocks.ts",
+     "quote": "const fromMatch = line.match(/^\\s*[-*+]?\\s*FROM:\\s*`?###\\s*Requirement:\\s*(.+?)`?\\s*$/);",
+     "line": 597,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "trace/trace_graph.py",
+     "quote": "renames: list[SpecRename] = field(default_factory=list)  # секция `RENAMED Requirements`: у переименования тела нет",
+     "line": 194,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "specs"
+   ],
+   "finding": ""
+  },
+  {
+   "id": "F-22",
+   "question": "[adjacency · collection] Старое значение адресата читается, новыми записями не пишется: в журнале активного изменения запись или парковка со значением `материалы`, записанная моделью прямо в JSON мимо `apply`, — `check` принимает её молча как значение старых журналов или сигналит?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-17"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN журнал активного изменения с парковкой `addressee: материалы` WHEN выполняется `check` THEN строка `[!!] F-NN: адресат «материалы» — старое значение, новые записи пишут «агент»`, код 0, с `--strict` — 2; цена: сценарий, тест в `test_journal_check`, строка в `journal-cli.md`; на архивных журналах `check` не зовут, а позовут — это сигнал, не стоп",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — старое значение в новом журнале не сигналится: `apply` его отвергает, скиллы после переименования пишут `агент`, а парковку, которую `research` не закрыл, увидит атака журнала линзой `context-compliance`",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест `tests/test_skills.py` утверждает, что ни одно тело скилла, `steps.md` и шаблон `research.md` не несут `addressee: материалы` как инструкцию модели; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — открыто до первого изменения, прошедшего схему после переименования: не появится старое значение — сигнал не нужен; пока tasks считает, что сигнала нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Тихая порча: парковка со старым значением проходит `check` без строки, а instruction `research` ищет только «агент» — парковка остаётся без исследования, и этого никто не видит до proposal. B полагается на дисциплину текстов, C проверяет тексты, а не журнал; цена A — сценарий и тест `check`."
+   },
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-08"
+   },
+   "reversibility": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Specify",
+    "reason": ""
+   },
+   "parking": [],
+   "dispute": "",
+   "consequences": "в spec.md: Старое значение в журнале активного изменения",
+   "evidence": [
+    {
+     "path": "openspec/changes/parking-addressee-agent/specs/decision-journal/spec.md",
+     "quote": "### Requirement: Старое значение адресата читается, новыми записями не пишется",
+     "line": 57,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "enum",
+    "render"
+   ],
+   "finding": ""
+  },
+  {
+   "id": "F-23",
+   "question": "[adjacency · collection] Просмотрщик и рендер при двух значениях адресата: парковки `материалы` старого журнала в счёте парковок по адресатам (режим «проверка» страницы, `stats` у `view-json`) — отдельная группа, слиты с `агент` или не считаются?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-17"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN старый журнал с одной парковкой `материалы` WHEN страница собирается в режиме «проверка» THEN парковка считается в группе `агент` с пометкой старого значения; цена: сценарий, правка шаблона страницы и плагина, тест страницы",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — старые журналы заархивированы, страница по ним не пересобирается; у новых журналов старого значения нет; группы счёта — показ, не решение, а назначение `research/` у обоих значений одно",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест `test_viewer_page` подаёт журнал с парковкой `материалы` и утверждает, что `render-html` даёт код 0 и парковка видна в карточке записи; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — до первой пересборки архивного журнала инструментами номера 4; пока tasks считает, что счёт по адресатам знает только три новых значения",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "B",
+    "why": "Порчи нет: пересборки архива в работе не бывает, а в карточке записи парковка видна при любом значении. A тратит правку шаблона и плагина на случай, которого нет, C проверяет сборку старого журнала, которую уже покрывает сценарий «Назначение старой парковки»."
+   },
+   "decision": {
+    "option": "B",
+    "word": "",
+    "date": "2026-11-08"
+   },
+   "reversibility": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Dismiss",
+    "reason": ""
+   },
+   "parking": [],
+   "dispute": "",
+   "consequences": "Порчи нет: пересборки архива в работе не бывает, а в карточке записи парковка видна при любом значении. A тратит правку шаблона и плагина на случай, которого нет, C проверяет сборку старого журнала, которую уже покрывает сценарий «Назначение старой парковки».",
+   "evidence": [
+    {
+     "path": "openspec/changes/parking-addressee-agent/specs/decision-journal/spec.md",
+     "quote": "### Requirement: Просмотрщик и рендер при двух значениях адресата",
+     "line": 78,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "page"
+   ],
+   "finding": ""
+  },
+  {
+   "id": "F-24",
+   "question": "[adjacency · collection] Исследование — файл на каждую парковку «агент» с жанром: у одной записи две парковки `агент` без `finding` — один файл `research/F-NN.md` на обе или по файлу на парковку, если имя файла — номер записи?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-17"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN запись F-NN с двумя парковками `агент` WHEN идёт шаг `research` THEN один файл `research/F-NN.md`, brief и раздел «Найдено» — на каждую парковку своей группой; цена: сценарий, правка тела скилла и шаблона `research.md`, тест схемы",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — край не этого изменения: переименование значения не меняет ни имени файла, ни числа парковок у записи; тот же край открыт кандидатом журнала `symphysis-schema` (F-37, без решения)",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест `test_schema.py` подаёт журнал с двумя парковками `агент` у одной записи и утверждает, что `status` требует ровно один файл `research/F-NN.md`; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — до первого журнала с двумя парковками агенту у одной записи; пока tasks считает, что у записи одна парковка агенту",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "B",
+    "why": "Переименование значения имени файла и числа парковок не касается; решать чужой открытый край здесь — расширять изменение. A платит правкой скилла и шаблона, C закрепляет тестом счёт форка по файлу, который и так есть."
+   },
+   "decision": {
+    "option": "B",
+    "word": "",
+    "date": "2026-11-08"
+   },
+   "reversibility": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Dismiss",
+    "reason": ""
+   },
+   "parking": [],
+   "dispute": "",
+   "consequences": "Переименование значения имени файла и числа парковок не касается; решать чужой открытый край здесь — расширять изменение. A платит правкой скилла и шаблона, C закрепляет тестом счёт форка по файлу, который и так есть.",
+   "evidence": [
+    {
+     "path": "openspec/changes/parking-addressee-agent/specs/artifact-graph/spec.md",
+     "quote": "### Requirement: Исследование — файл на каждую парковку «агент» с жанром",
+     "line": 5,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "skills"
+   ],
+   "finding": ""
+  },
+  {
+   "id": "F-25",
+   "question": "[запрет] Обратимость, адресат парковки и исход — из закрытых списков с причиной: не должен адресат `агент` читаться как кто угодно с моделью — плагин, хук, главная нить чата — вместо агента исследования шага `research`",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-17",
+    "F-18"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify/test — требование MUST NOT: глоссарий `terms.md` и подсказка страницы называют адресата `агент` агентом исследования артефакта `research`, а не агентом вообще; тест `tests/test_skills.py` ищет в `terms.md` определение «агент — водитель шага research» и в шаблоне страницы слова «агент исследования»; цена: сценарий, тест на две строки, сопровождение формулировок",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Specify/judgment — требование MUST NOT: значение `агент` в текстах схемы и скиллов не означает никого, кроме агента исследования; судит ревью и атака артефактов линзой `claim-extraction`, читая глоссарий и подсказку; цена: сценарий, суждение при каждой правке текстов",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Dismiss — запрет не нужен: слово владельца «адресация идёт к кому-то» уже задаёт адресата, подсказка страницы и так говорит «ответ ищет агент исследования»",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — до появления второго агента-адресата (например, водителя атаки), когда слово «агент» станет двусмысленным; пока tasks считает, что адресат один",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Двусмысленность тихо портит то, ради чего переименование: человек паркует «агенту», думая о плагине или о модели в чате, и ждёт ответа не оттуда. Строки глоссария и подсказки проверяются тестом, судья не нужен — против B; C оставляет смысл неписаным, D ждёт поломки."
+   },
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-08"
+   },
+   "reversibility": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Specify",
+    "reason": ""
+   },
+   "parking": [],
+   "dispute": "",
+   "consequences": "проверка: test — тесты текстов ищут в `terms.md` определение адресата `агент` как водителя шага `research`, в шаблоне страницы — слова «агент исследования»; в spec.md: Адресат `агент` означает агента исследования",
+   "evidence": [
+    {
+     "path": "openspec/changes/parking-addressee-agent/specs/decision-journal/spec.md",
+     "quote": "### Requirement: Обратимость, адресат парковки и исход — из закрытых списков с причиной",
+     "line": 5,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "skills",
+    "page"
+   ],
+   "finding": ""
+  },
+  {
+   "id": "F-26",
+   "question": "[запрет] `view-json` отдаёт номер контракта: не должен номер контракта расти без записи в `docs/repo-contract.md` — абзаца «С номера N …» и `Why:` в коммите ядра",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-09",
+    "F-19"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify/test — требование MUST NOT: `CONTRACT` не выше наибольшего N в абзацах «С номера N» файла `docs/repo-contract.md`; тест читает файл и сравнивает; цена: сценарий, тест на пять строк, абзац при каждой смене",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Specify/judgment — требование MUST NOT: смена номера без абзаца в `repo-contract.md` и `Why:` в коммите; судит ревью коммита и атака артефактов по `tasks.md`; цена: сценарий, суждение на каждой смене",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Dismiss — правило уже живёт в `docs/repo-contract.md` по слову владельца «где живёт текст — в этом файле, копий нет»; спека, повторяющая документ, даёт второй источник и расхождение",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — до выпуска плагина под номер 4: абзац не забудут — запрет не нужен",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Забытый абзац тихо ломает договор двух репозиториев: плагинная сессия читает `repo-contract.md` и не узнаёт о смене. Тест «наибольшее N в абзацах равно CONTRACT» не копирует текст договора, а сверяет его с кодом — против C; B требует судьи там, где хватает сравнения."
+   },
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-08"
+   },
+   "reversibility": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Specify",
+    "reason": ""
+   },
+   "parking": [],
+   "dispute": "",
+   "consequences": "проверка: test — тест читает `docs/repo-contract.md`, берёт наибольшее N из абзацев «С номера N» и сравнивает с `CONTRACT`; в spec.md: Номер контракта не растёт без записи в договоре",
+   "evidence": [
+    {
+     "path": "openspec/changes/parking-addressee-agent/specs/plugin-core-contract/spec.md",
+     "quote": "### Requirement: `view-json` отдаёт номер контракта",
+     "line": 5,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "contract"
+   ],
+   "finding": ""
   }
  ],
  "notes": [
@@ -1500,6 +1994,14 @@ const JOURNAL = {
   {
    "date": "2026-11-07",
    "text": "брейншторм закончен по решению человека"
+  },
+  {
+   "date": "2026-11-08",
+   "text": "проба краёв: кандидатов 3, Specify 1, Dismiss 2, Backstop 0, Defer 0; не выбран 33: decision-journal/Обратимость, адресат парковки и исход — из закрытых списков с причиной, decision-journal/Старое значение адресата читается, новыми записями не пишется, decision-journal/Слово к решению мимо рекомендации, decision-journal/Пометка отступления стоит у варианта, decision-journal/`check` отвергает факт без улики и пустую причину, парковку без находки сигналит, brainstorm-interview/Вопрос, ответ на который есть в файлах, человеку не задаётся, brainstorm-interview/Круг кончается счётом и словом человека, не числом, brainstorm-interview/Интервью начинается с намерения, brainstorm-interview/Отступление и конструкция записываются развилкой, brainstorm-interview/Парковки агенту переносят вопрос о круге в research, artifact-graph/Исследование — файл на каждую парковку «агент» с жанром, artifact-graph/Файл-отрицание при нуле парковок агенту, artifact-graph/Итог пробы в отчёте исследования, plugin-core-contract/`view-json` отдаёт номер контракта"
+  },
+  {
+   "date": "2026-11-08",
+   "text": "проба запретов: требований 15, оставлено 2, канон → ИБ 0, Specify 2, Dismiss 0, Defer 0"
   }
  ]
 };
@@ -1513,7 +2015,7 @@ const SCHEME = {
 };
 const HELP = {
  "contract": 3,
- "taken_at": "2026-11-07T23:35:50+03:00",
+ "taken_at": "2026-11-08T00:04:38+03:00",
  "versions": {
   "openspec": "1.16.1+symphysis.5",
   "symphysis": null
@@ -1521,10 +2023,10 @@ const HELP = {
  "change": "parking-addressee-agent",
  "changes": null,
  "error": null,
- "current_step": "research",
- "current_text": "Следующий шаг по файлам — `research`, ход модели.",
+ "current_step": "consequences",
+ "current_text": "Следующий шаг по файлам — `consequences`, ход модели.",
  "turn": "model",
- "next_by_status": "research",
+ "next_by_status": "consequences",
  "forks": {
   "open": 0,
   "parked": 0
@@ -1636,7 +2138,7 @@ const HELP = {
   },
   {
    "id": "research",
-   "state": "ready",
+   "state": "done",
    "turn": "model",
    "optional": false,
    "blocks": [
@@ -1647,11 +2149,11 @@ const HELP = {
    "waits_for": [],
    "files": [
     {
-     "path": "openspec/changes/parking-addressee-agent/research/**/*.md",
-     "exists": false
+     "path": "openspec/changes/parking-addressee-agent/research/none.md",
+     "exists": true
     }
    ],
-   "file_note": null,
+   "file_note": "файл есть, содержание не проверялось",
    "texts": {
     "title": "Исследование и второй круг",
     "why": "Вопросы, припаркованные к материалам, получают ответ с цитатами из прочитанных файлов. Второй круг брейншторма закрывает по этим ответам записи журнала.",
@@ -1679,14 +2181,12 @@ const HELP = {
   },
   {
    "id": "attack-decisions",
-   "state": "blocked",
+   "state": "ready",
    "turn": "model",
    "optional": true,
    "blocks": [],
    "stops_apply": false,
-   "waits_for": [
-    "research"
-   ],
+   "waits_for": [],
    "files": [
     {
      "path": "openspec/changes/parking-addressee-agent/attack/decisions.md",
@@ -1716,7 +2216,7 @@ const HELP = {
   },
   {
    "id": "proposal",
-   "state": "blocked",
+   "state": "done",
    "turn": "model",
    "optional": false,
    "blocks": [
@@ -1724,16 +2224,14 @@ const HELP = {
     "design"
    ],
    "stops_apply": false,
-   "waits_for": [
-    "research"
-   ],
+   "waits_for": [],
    "files": [
     {
      "path": "openspec/changes/parking-addressee-agent/proposal.md",
-     "exists": false
+     "exists": true
     }
    ],
-   "file_note": null,
+   "file_note": "файл есть, содержание не проверялось",
    "texts": {
     "title": "Зачем изменение и что оно задевает",
     "why": "Договор об объёме: почему изменение нужно и какие capabilities оно затрагивает. По этому списку потом пишутся спецификации.",
@@ -1750,7 +2248,7 @@ const HELP = {
   },
   {
    "id": "specs",
-   "state": "blocked",
+   "state": "done",
    "turn": "model",
    "optional": false,
    "blocks": [
@@ -1760,16 +2258,26 @@ const HELP = {
     "attack-artifacts"
    ],
    "stops_apply": false,
-   "waits_for": [
-    "proposal"
-   ],
+   "waits_for": [],
    "files": [
     {
-     "path": "openspec/changes/parking-addressee-agent/specs/**/*.md",
-     "exists": false
+     "path": "openspec/changes/parking-addressee-agent/specs/artifact-graph/spec.md",
+     "exists": true
+    },
+    {
+     "path": "openspec/changes/parking-addressee-agent/specs/brainstorm-interview/spec.md",
+     "exists": true
+    },
+    {
+     "path": "openspec/changes/parking-addressee-agent/specs/decision-journal/spec.md",
+     "exists": true
+    },
+    {
+     "path": "openspec/changes/parking-addressee-agent/specs/plugin-core-contract/spec.md",
+     "exists": true
     }
    ],
-   "file_note": null,
+   "file_note": "файл есть, содержание не проверялось",
    "texts": {
     "title": "Спецификации поведения",
     "why": "Наблюдаемое поведение, записанное требованиями и сценариями. По нему потом проверяют дизайн и код, поэтому всё, что не названо здесь, проверить будет нечем.",
@@ -1797,16 +2305,14 @@ const HELP = {
   },
   {
    "id": "consequences",
-   "state": "blocked",
+   "state": "ready",
    "turn": "model",
    "optional": false,
    "blocks": [
     "design"
    ],
    "stops_apply": false,
-   "waits_for": [
-    "specs"
-   ],
+   "waits_for": [],
    "files": [
     {
      "path": "openspec/changes/parking-addressee-agent/consequences.md",
@@ -1845,7 +2351,6 @@ const HELP = {
    ],
    "stops_apply": false,
    "waits_for": [
-    "proposal",
     "consequences"
    ],
    "files": [
@@ -1871,16 +2376,14 @@ const HELP = {
   },
   {
    "id": "security",
-   "state": "blocked",
+   "state": "ready",
    "turn": "model",
    "optional": false,
    "blocks": [
     "attack-artifacts"
    ],
    "stops_apply": true,
-   "waits_for": [
-    "specs"
-   ],
+   "waits_for": [],
    "files": [
     {
      "path": "openspec/changes/parking-addressee-agent/security.md",
@@ -1912,7 +2415,6 @@ const HELP = {
    ],
    "stops_apply": true,
    "waits_for": [
-    "specs",
     "design"
    ],
    "files": [
@@ -1944,7 +2446,6 @@ const HELP = {
    "blocks": [],
    "stops_apply": false,
    "waits_for": [
-    "specs",
     "design",
     "security",
     "tasks"
@@ -2062,9 +2563,18 @@ const HELP = {
   ".claude/skills/symphysis-viewer/SKILL.md": ".claude/skills/symphysis-viewer/SKILL.md",
   "decisions.json": "openspec/changes/parking-addressee-agent/decisions.json",
   "decisions.md": "openspec/changes/parking-addressee-agent/decisions.md",
+  "edge-probe.md": "openspec/changes/parking-addressee-agent/edge-probe.md",
   "intent.md": "openspec/changes/parking-addressee-agent/intent.md",
   "openspec/changes/parking-addressee-agent/decisions.json": "openspec/changes/parking-addressee-agent/decisions.json",
   "openspec/changes/parking-addressee-agent/intent.md": "openspec/changes/parking-addressee-agent/intent.md",
+  "openspec/changes/parking-addressee-agent/proposal.md": "openspec/changes/parking-addressee-agent/proposal.md",
+  "openspec/changes/parking-addressee-agent/research/none.md": "openspec/changes/parking-addressee-agent/research/none.md",
+  "openspec/changes/parking-addressee-agent/specs/artifact-graph/spec.md": "openspec/changes/parking-addressee-agent/specs/artifact-graph/spec.md",
+  "openspec/changes/parking-addressee-agent/specs/brainstorm-interview/spec.md": "openspec/changes/parking-addressee-agent/specs/brainstorm-interview/spec.md",
+  "openspec/changes/parking-addressee-agent/specs/decision-journal/spec.md": "openspec/changes/parking-addressee-agent/specs/decision-journal/spec.md",
+  "openspec/changes/parking-addressee-agent/specs/plugin-core-contract/spec.md": "openspec/changes/parking-addressee-agent/specs/plugin-core-contract/spec.md",
+  "proposal.md": "openspec/changes/parking-addressee-agent/proposal.md",
+  "research/none.md": "openspec/changes/parking-addressee-agent/research/none.md",
   "scheme.md": "openspec/changes/parking-addressee-agent/scheme.md",
   "symphysis.html": "openspec/changes/parking-addressee-agent/symphysis.html",
   "symphysis.yaml": "symphysis.yaml"
@@ -2101,19 +2611,31 @@ const LINKS = {
   "docs/playground-template-llm-pipeline.md": "../../../docs/playground-template-llm-pipeline.md",
   "docs/recieve-answers.md": "../../../docs/recieve-answers.md",
   "docs/repo-contract.md": "../../../docs/repo-contract.md",
+  "edge-probe.md": "edge-probe.md",
   "intent.md": "intent.md",
   "openspec/changes/archive/2026-11-02-calibration-fixes/attack/decisions.md": "../archive/2026-11-02-calibration-fixes/attack/decisions.md",
   "openspec/changes/archive/2026-11-04-reverse-hook/decisions.json": "../archive/2026-11-04-reverse-hook/decisions.json",
+  "openspec/changes/archive/2026-11-07-module-structure/decisions.json": "../archive/2026-11-07-module-structure/decisions.json",
   "openspec/changes/parking-addressee-agent/decisions.json": "decisions.json",
   "openspec/changes/parking-addressee-agent/intent.md": "intent.md",
+  "openspec/changes/parking-addressee-agent/proposal.md": "proposal.md",
+  "openspec/changes/parking-addressee-agent/research/none.md": "research/none.md",
+  "openspec/changes/parking-addressee-agent/specs/artifact-graph/spec.md": "specs/artifact-graph/spec.md",
+  "openspec/changes/parking-addressee-agent/specs/brainstorm-interview/spec.md": "specs/brainstorm-interview/spec.md",
+  "openspec/changes/parking-addressee-agent/specs/decision-journal/spec.md": "specs/decision-journal/spec.md",
+  "openspec/changes/parking-addressee-agent/specs/plugin-core-contract/spec.md": "specs/plugin-core-contract/spec.md",
   "openspec/config.yaml": "../../config.yaml",
   "openspec/schemas/symphysis/config.symphysis.yaml": "../../schemas/symphysis/config.symphysis.yaml",
+  "openspec/schemas/symphysis/schema.yaml": "../../schemas/symphysis/schema.yaml",
   "openspec/schemas/symphysis/steps.md": "../../schemas/symphysis/steps.md",
   "openspec/specs/brainstorm-interview/spec.md": "../../specs/brainstorm-interview/spec.md",
   "openspec/specs/decision-journal/spec.md": "../../specs/decision-journal/spec.md",
+  "openspec/specs/trace-conventions/spec.md": "../../specs/trace-conventions/spec.md",
   "probes/journal-roots.json": "probes/journal-roots.json",
+  "proposal.md": "proposal.md",
   "research/README.md": "../../../research/README.md",
   "research/agents/symphysis-research-driver.md": "../../../research/agents/symphysis-research-driver.md",
+  "research/none.md": "research/none.md",
   "research/skills/symphysis-research/SKILL.md": "../../../research/skills/symphysis-research/SKILL.md",
   "scheme.md": "scheme.md",
   "skill-shared/terms.md": "../../../skill-shared/terms.md",
@@ -2121,7 +2643,10 @@ const LINKS = {
   "symphysis.html": "symphysis.html",
   "symphysis.yaml": "../../../symphysis.yaml",
   "tests/test_skills.py": "../../../tests/test_skills.py",
+  "trace/trace_graph.py": "../../../trace/trace_graph.py",
   "upstream/openspec/src/core/change-status-policy.ts": "../../../../symphysis/upstream/openspec/src/core/change-status-policy.ts",
+  "upstream/openspec/src/core/parsers/requirement-blocks.ts": "../../../../symphysis/upstream/openspec/src/core/parsers/requirement-blocks.ts",
+  "upstream/openspec/src/core/validation/validator.ts": "../../../../symphysis/upstream/openspec/src/core/validation/validator.ts",
   "viewer/playground-template.html": "../../../viewer/playground-template.html",
   "viewer/tests/test_viewer_page.py": "../../../viewer/tests/test_viewer_page.py",
   "vscode/src/changes/sidebar.ts": "../../../../symphysis-vscode/src/changes/sidebar.ts",
