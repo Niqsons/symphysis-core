@@ -14,12 +14,22 @@ export interface RequirementsSectionParts {
   after: string;
 }
 
+/**
+ * Drop an ATX heading's closing run of `#`s: `## Purpose ##` renders as
+ * `Purpose`, so the run is not part of the title. As for scenario names, only a
+ * run preceded by a space or tab closes the heading, so `C#` keeps its `#`, and
+ * `[ \t]` rather than `\s` keeps an NBSP-separated run in the title.
+ */
+export function stripClosingSequence(title: string): string {
+  return title.replace(/[ \t]+#+[ \t]*$/, '').trim();
+}
+
+/** The main spec's `## Requirements` header, closing run allowed (`## Requirements ##`). */
+export const REQUIREMENTS_SECTION_HEADER_REGEX = /^##\s+Requirements(?:[ \t]+#+)?\s*$/i;
+
 export function normalizeRequirementName(name: string): string {
-  // An ATX heading may end in a closing run of `#`s: `### Requirement: Foo ###`
-  // renders as `Foo`, so the run is not part of the name. As for scenario names,
-  // only a run preceded by a space or tab closes the heading, so `C#` keeps its
-  // `#`, and `[ \t]` rather than `\s` keeps an NBSP-separated run in the name.
-  return name.replace(/[ \t]+#+[ \t]*$/, '').trim();
+  // `### Requirement: Foo ###` names the requirement `Foo`.
+  return stripClosingSequence(name);
 }
 
 /**
@@ -44,7 +54,7 @@ export function extractRequirementsSection(content: string): RequirementsSection
   const normalized = normalizeLineEndings(content);
   const lines = normalized.split('\n');
   const fenceMask = buildCodeFenceMask(lines);
-  const reqHeaderIndex = lines.findIndex((l, i) => !fenceMask[i] && /^##\s+Requirements\s*$/i.test(l));
+  const reqHeaderIndex = lines.findIndex((l, i) => !fenceMask[i] && REQUIREMENTS_SECTION_HEADER_REGEX.test(l));
 
   if (reqHeaderIndex === -1) {
     // No requirements section; create an empty one at the end
@@ -292,30 +302,48 @@ const DELTA_SECTION_TITLES = new Set(
 );
 
 /**
+ * True when an orphaned requirement sits under a `## ... Requirements` header
+ * that is not one of the four delta sections - `## DEPRECATED Requirements`,
+ * `## Add Requirements`, `## Requirements`. Such a header reads as a delta
+ * operation, so its requirements were meant to be applied: validate reports
+ * them as an ERROR and archive refuses (#2195). Orphans under prose sections
+ * (`## Notes`, `## Behavior`) or above the first `## ` stay warnings.
+ */
+export function isUnrecognizedDeltaSection(section: string | null): boolean {
+  return (
+    section !== null &&
+    /\brequirements?$/i.test(section) &&
+    !DELTA_SECTION_TITLES.has(section.toLowerCase())
+  );
+}
+
+/**
  * Every canonical `### Requirement:` header that is not inside a delta section,
  * in document order.
  *
  * Walks the whole file rather than the parsed sections so a requirement written
  * ABOVE the first `## ` header is reported too - it is dropped just as silently
  * as one under `## Notes`. Fenced lines are skipped, so a requirement shown
- * inside a markdown example is not mistaken for an authored one.
+ * inside a markdown example is not mistaken for an authored one, and so are
+ * HTML comments, so a commented-out draft is not reported as dropped.
  */
 function findOrphanedRequirements(
   lines: string[],
   fenceMask: boolean[]
 ): OrphanedRequirement[] {
   const orphans: OrphanedRequirement[] = [];
+  const masked = maskHtmlComments(lines, fenceMask);
   let section: string | null = null;
   for (let i = 0; i < lines.length; i++) {
     if (fenceMask[i]) continue;
     // The same `## ` test splitTopLevelSections uses, so both agree on sections.
     const sectionMatch = lines[i].match(/^(##)\s+(.+)$/);
     if (sectionMatch) {
-      section = sectionMatch[2].trim();
+      section = stripClosingSequence(sectionMatch[2]);
       continue;
     }
     if (section !== null && DELTA_SECTION_TITLES.has(section.toLowerCase())) continue;
-    const header = lines[i].match(REQUIREMENT_HEADER_REGEX);
+    const header = masked[i].match(REQUIREMENT_HEADER_REGEX);
     if (header) {
       orphans.push({
         name: normalizeRequirementName(header[1]),
@@ -341,18 +369,25 @@ export function describeUnappliedContent(content: UnappliedContent, sentenceStar
  * (warned about separately), REMOVED/RENAMED bodies, and stray `###` headers
  * before the first requirement (INFO since #498) are not reported.
  */
-function findUnappliedContent(lines: string[], fenceMask: boolean[]): UnappliedContent[] {
-  // Blank out comments outside fences, keeping line count; an unterminated one
-  // runs to EOF. Comments only decide whether a line holds text: sections come
-  // from the same split the merge reads, where a `## ` line inside a comment is
-  // still a boundary. Fenced lines keep their text, so a `<!--` in a code sample
-  // never hides what follows the fence.
+/**
+ * Blank out comments outside fences, keeping line count; an unterminated one
+ * runs to EOF. Fenced lines keep their text, so a `<!--` in a code sample never
+ * hides what follows the fence.
+ */
+function maskHtmlComments(lines: string[], fenceMask: boolean[]): string[] {
   const comments = lines
     .map((line, i) => (fenceMask[i] ? '' : line))
     .join('\n')
     .replace(/<!--[\s\S]*?(?:--!?>|$)/g, (m) => m.replace(/[^\n]/g, ' '))
     .split('\n');
-  const masked = lines.map((line, i) => (fenceMask[i] ? line : comments[i]));
+  return lines.map((line, i) => (fenceMask[i] ? line : comments[i]));
+}
+
+function findUnappliedContent(lines: string[], fenceMask: boolean[]): UnappliedContent[] {
+  // Comments only decide whether a line holds text: sections come from the
+  // same split the merge reads, where a `## ` line inside a comment is still a
+  // boundary.
+  const masked = maskHtmlComments(lines, fenceMask);
   const sections = splitTopLevelSections(lines, fenceMask);
   const firstText = (from: number, to: number, skip?: RegExp) => {
     for (let i = from; i < to; i++) if (masked[i].trim() && !skip?.test(masked[i])) return i;
@@ -399,7 +434,8 @@ function splitTopLevelSections(lines: string[], fenceMask: boolean[]): DeltaSect
     if (fenceMask[i]) continue;
     const m = lines[i].match(/^(##)\s+(.+)$/);
     if (m) {
-      indices.push({ title: m[2].trim(), index: i });
+      // `## ADDED Requirements ##` is the same section as `## ADDED Requirements`.
+      indices.push({ title: stripClosingSequence(m[2]), index: i });
     }
   }
   for (let i = 0; i < indices.length; i++) {
@@ -577,7 +613,13 @@ function parseRenamedPairs(
   return pairs;
 }
 
-interface ScenarioBlock {
+/**
+ * One `#### ` child of a requirement block: its rendered name and its lines,
+ * header included. Exported because the validator's scenario-step check walks
+ * the same blocks the loss comparison does — a second reader of the same
+ * format is how the two drifted apart before.
+ */
+export interface ScenarioBlock {
   name: string;
   raw: string;
 }
@@ -714,16 +756,30 @@ export function scenarioNameFromHeaderText(headerText: string): string {
     .trim();
 }
 
-function parseScenarioBlocks(requirementRaw: string): ScenarioBlock[] {
+/**
+ * Whether a `#### ` header line carries the canonical `Scenario:` label. Any
+ * level-4 child counts as a scenario for counting and loss purposes (the
+ * parity the SCENARIO_HEADER comment protects), but the step check warns only
+ * about blocks that claim to be scenarios: a `#### Notes` child is prose on
+ * purpose, and a missing WHEN/THEN there is noise, not a finding.
+ */
+export function isScenarioLabeledHeader(headerLine: string): boolean {
+  return /^Scenario:\s*/i.test(headerLine.replace(SCENARIO_HEADER, ''));
+}
+
+/**
+ * Every `#### ` child of a requirement block, header line included in `raw`,
+ * in document order. A scenario is ANY non-fenced `#### ` header, matching the
+ * spec path's SCENARIO_HEADER / countScenarios (requirement-text.ts) exactly —
+ * not only `#### Scenario:`. The two MUST agree: a level-4 child whose header
+ * is not literally `Scenario:` (e.g. `#### Edge case`) is still a scenario the
+ * spec path counts, so a MODIFIED block that drops it would otherwise slip past
+ * the loss check and be deleted by archive with no error (the parity the
+ * SCENARIO_HEADER comment warns not to break). A `####` inside a fenced example
+ * is masked out, matching countScenarios.
+ */
+export function parseScenarioBlocks(requirementRaw: string): ScenarioBlock[] {
   const lines = requirementRaw.replace(/\r\n?/g, '\n').split('\n');
-  // A scenario is ANY non-fenced `#### ` header, matching the spec path's
-  // SCENARIO_HEADER / countScenarios (requirement-text.ts) exactly — not only
-  // `#### Scenario:`. The two MUST agree: a level-4 child whose header is not
-  // literally `Scenario:` (e.g. `#### Edge case`) is still a scenario the spec
-  // path counts, so a MODIFIED block that drops it would otherwise slip past
-  // this loss check and be deleted by archive with no error (the parity the
-  // SCENARIO_HEADER comment warns not to break). A `####` inside a fenced
-  // example is masked out, matching countScenarios.
   const mask = buildCodeFenceMask(lines);
   const scenarios: ScenarioBlock[] = [];
   let index = 0;
