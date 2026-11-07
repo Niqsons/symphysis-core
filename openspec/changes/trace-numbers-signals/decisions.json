@@ -1,7 +1,7 @@
 {
  "title": "Журнал решений: trace-numbers-signals",
  "source": "decisions.json",
- "intro": "Пути улик — от корня проекта; корни названы в `.symphysis/tools/journal-roots.json`. Материалы: `intent.md`, `trace/trace_graph.py` (разбор ссылок `_record_numbers`, отсечение `known` и `cut`, `_scenarios`, `_requirement_body`, `graph_signals`, `build_report`), тесты `trace/tests/`, мастер-спеки `openspec/specs/decision-viewer/`, `trace-signals/`, `trace-snapshot/`, архивные журнал и отчёты изменений `trace-graph` и `module-structure`, разбор `docs/analysis/requirements-traceability-graph-of-symphysis.md`, исследование `research/F-131.md` изменения `trace-graph`, `docs/GUIDE.md`, `openspec/config.yaml`, скилл `probes/skills/symphysis-edge-probe/`.\n\nF-01–F-04 — критерии из `intent.md`. F-05 и F-06 — слово владельца в чате 2026-11-07 на чтение intent, перенесено файлом `answers/2026-11-07.md`. F-07–F-20 — факты о текущем состоянии графа, мастер-спек и прежних решений. Развилки первого круга — F-21–F-29: B-02 — F-21, F-22, F-24, F-25; хеши узлов — F-23; B-03 — F-26; B-04 — F-27, F-28, F-29. Парковки исследованию — F-21, F-24.\n\nВторой круг начинается с F-30: находки `research/F-21.md` (проба правила A на архивных изменениях, счёт ссылок в мастере) и `research/F-24.md` (кто переносит дельту в мастер, что уходит с блоком) внесены в парковки F-21 и F-24; F-30–F-34 — факты исследования; F-35–F-38 — развилки из открывшихся вопросов.\n\nПроба краёв шага `specs` — кандидаты F-39–F-47; проба запретов — кандидаты F-48–F-54, канон ИБ — F-55, F-56.\n\nОпись последствий — кандидаты веток F-57–F-63, pre-mortem F-64; вторая и первая причины pre-mortem совпали с F-61 и F-63.",
+ "intro": "Пути улик — от корня проекта; корни названы в `.symphysis/tools/journal-roots.json`. Материалы: `intent.md`, `trace/trace_graph.py` (разбор ссылок `_record_numbers`, отсечение `known` и `cut`, `_scenarios`, `_requirement_body`, `graph_signals`, `build_report`), тесты `trace/tests/`, мастер-спеки `openspec/specs/decision-viewer/`, `trace-signals/`, `trace-snapshot/`, архивные журнал и отчёты изменений `trace-graph` и `module-structure`, разбор `docs/analysis/requirements-traceability-graph-of-symphysis.md`, исследование `research/F-131.md` изменения `trace-graph`, `docs/GUIDE.md`, `openspec/config.yaml`, скилл `probes/skills/symphysis-edge-probe/`.\n\nF-01–F-04 — критерии из `intent.md`. F-05 и F-06 — слово владельца в чате 2026-11-07 на чтение intent, перенесено файлом `answers/2026-11-07.md`. F-07–F-20 — факты о текущем состоянии графа, мастер-спек и прежних решений. Развилки первого круга — F-21–F-29: B-02 — F-21, F-22, F-24, F-25; хеши узлов — F-23; B-03 — F-26; B-04 — F-27, F-28, F-29. Парковки исследованию — F-21, F-24.\n\nВторой круг начинается с F-30: находки `research/F-21.md` (проба правила A на архивных изменениях, счёт ссылок в мастере) и `research/F-24.md` (кто переносит дельту в мастер, что уходит с блоком) внесены в парковки F-21 и F-24; F-30–F-34 — факты исследования; F-35–F-38 — развилки из открывшихся вопросов.\n\nПроба краёв шага `specs` — кандидаты F-39–F-47; проба запретов — кандидаты F-48–F-54, канон ИБ — F-55, F-56.\n\nОпись последствий — кандидаты веток F-57–F-63, pre-mortem F-64; вторая и первая причины pre-mortem совпали с F-61 и F-63. Шаг design: F-65 — место скрипта переписывания. F-66 — ветка списка payload после F-65.",
  "records": [
   {
    "id": "F-01",
@@ -3242,11 +3242,13 @@
    "parking": [
     {
      "addressee": "ИБ",
-     "text": "Пути записи скрипта — только `openspec/specs/<capability>/spec.md` под корнем проекта; имя capability из каталога дельты не должно выводить за корень (`..`, абсолютный путь, ссылка) — канон, покрывается чек-листом security.md; запрет не чеканится"
+     "text": "Пути записи скрипта — только `openspec/specs/<capability>/spec.md` под корнем проекта; имя capability из каталога дельты не должно выводить за корень (`..`, абсолютный путь, ссылка) — канон, покрывается чек-листом security.md; запрет не чеканится",
+     "finding": "security.md, строка «Пути с `../`»"
     },
     {
      "addressee": "ИБ",
-     "text": "Скрипт пишет файл целиком тем же способом, что снимок графа, без исполнения содержимого; HTML-комментарии и текст спеки — данные, не команды — канон, покрывается чек-листом security.md; запрет не чеканится"
+     "text": "Скрипт пишет файл целиком тем же способом, что снимок графа, без исполнения содержимого; HTML-комментарии и текст спеки — данные, не команды — канон, покрывается чек-листом security.md; запрет не чеканится",
+     "finding": "security.md, строка «Инъекции через содержимое файлов»"
     }
    ],
    "dispute": "",
@@ -3276,7 +3278,8 @@
    "parking": [
     {
      "addressee": "ИБ",
-     "text": "Имя изменения как аргумент скрипта проверяется тем же правилом, что у `run_fork` и `check_change_name`: символы оболочки, пустое имя, ведущий дефис — отказ до любого пути — канон, покрывается чек-листом security.md; запрет не чеканится"
+     "text": "Имя изменения как аргумент скрипта проверяется тем же правилом, что у `run_fork` и `check_change_name`: символы оболочки, пустое имя, ведущий дефис — отказ до любого пути — канон, покрывается чек-листом security.md; запрет не чеканится",
+     "finding": "security.md, строка «Имя изменения как аргумент скрипта»"
     }
    ],
    "dispute": "",
@@ -3831,6 +3834,166 @@
     {
      "path": "upstream/openspec/src/core/specs-apply.ts",
      "quote": "if (normalizeBlockRaw(currentBlock.raw) !== normalizeBlockRaw(mod.raw)) {"
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-65",
+   "question": "Где живёт скрипт переписывания ссылок (F-35.B) и как он попадает в payload установки?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-35"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Новый модуль `anchors/`: README с именем и родом, скрипт `anchor_refs.py`, `tests/`; payload — строка `anchors/anchor_refs.py` в списке `sync-payload.js`, в проекте `.symphysis/tools/anchor_refs.py`, команда правила — `python .symphysis/tools/anchor_refs.py <изменение>`; разбор ссылок и проверку имени изменения скрипт импортирует из `trace_graph` по имени, как модули импортируют друг друга. Цена: модуль с README и тестами, строка payload, строка корневого README.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "installer/scripts/sync-payload.js",
+       "quote": "\"openspec-run/openspec_run.py\","
+      },
+      {
+       "path": "README.md",
+       "quote": "- [openspec-run/](openspec-run/) — модуль: запуск форка OpenSpec"
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "В модуле `trace/` рядом с графом: `trace/anchor_refs.py`, тесты в `trace/tests/`; README модуля расширяется словами о переписывании ссылок в мастере; payload — та же строка. Цена: ответственность модуля «граф трассируемости» растёт на правку мастер-спек, которую область графа отвергает (F-35); файл отдельный, модуль тот же.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "trace/README.md",
+       "quote": "Граф трассируемости изменения: сборка, отчёт, проверка, заморозка."
+      }
+     ]
+    },
+    {
+     "letter": "C",
+     "text": "Подкоманда `trace_graph.py rewrite`.",
+     "added": false,
+     "unlikely": "F-35.B и требование «Переписывание зовётся правилом синхронизации» велят жить отдельно от `trace_graph.py`: его область без правок артефактов",
+     "evidence": [
+      {
+       "path": "trace/trace_graph.py",
+       "quote": "\"Область — расчёт и заморозка графа изменения; артефакты изменения не правит, решений за человека не \""
+      }
+     ]
+    },
+    {
+     "letter": "D",
+     "text": "В модуле `openspec-run/`: общий запуск форка.",
+     "added": false,
+     "unlikely": "модуль про запуск форка, не про мастер-спеки; файл принадлежит одному модулю с одной ответственностью",
+     "evidence": [
+      {
+       "path": "README.md",
+       "quote": "- [openspec-run/](openspec-run/) — модуль: запуск форка OpenSpec"
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "По `repository-layout` файл принадлежит модулю с одной ответственностью: правка мастера не «граф», README `trace` её не обещает; модуль из одного скрипта с README и тестами уже есть — `openspec-run`, цена та же. B размывает ответственность модуля графа."
+   },
+   "decision": {
+    "option": "A",
+    "word": "Да, и к тому же эта функциональность будет развиваться, поэтому выделение модуля anchors сознательная цена",
+    "date": "2026-11-07"
+   },
+   "reversibility": {
+    "level": "обратимо",
+    "why": "модуль из одного скрипта с README и тестами: перенос файла и строки `installer/scripts/sync-payload.js`; в проектах скрипт в любом варианте стоит как `.symphysis/tools/anchor_refs.py`"
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "design: место скрипта, строка payload, команда в правиле `rules.specs` и подсказке архива",
+   "evidence": [
+    {
+     "path": "installer/scripts/sync-payload.js",
+     "quote": "* Код и данные модулей ядра: исходник `<модуль>/<файл>` -> `tools/<файл>` payload, в проекте `.symphysis/tools/`."
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "anchor"
+   ]
+  },
+  {
+   "id": "F-66",
+   "question": "[ветка] Список payload: файл с именем, уже занятым другим модулем, роняет сборку payload — `anchor_refs.py` в новом модуле `anchors/` сталкивается с чем-нибудь?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-65"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN в списке `sync-payload.js` два файла с одним именем в разных модулях WHEN собирается payload THEN сборка падает с именем файла и обоими модулями, payload не тронут; цена: сценарий в `project-installer`, тест уже есть у инсталлятора",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — имя `anchor_refs.py` среди модулей уникально, а дубль ловит сборка payload с именем файла до установки (`npm --prefix installer test`); допустимо",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест инсталлятора подаёт список с дублем и утверждает падение с именем; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — открыто до появления второго файла с таким именем",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "B",
+    "why": "Отказ громкий и ранний: сборка payload падает с именем файла до того, как что-либо установлено; имя нового скрипта уникально. A пишет в спеку инсталлятора ветку, которая изменением не меняется."
+   },
+   "decision": {
+    "option": "B",
+    "word": "",
+    "date": "2026-11-07"
+   },
+   "reversibility": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Dismiss",
+    "reason": ""
+   },
+   "parking": [],
+   "dispute": "",
+   "consequences": "Отказ громкий и ранний: сборка payload падает с именем файла до того, как что-либо установлено; имя нового скрипта уникально. A пишет в спеку инсталлятора ветку, которая изменением не меняется.",
+   "evidence": [
+    {
+     "path": "installer/scripts/sync-payload.js",
+     "quote": "if (seen.has(name)) throw new Error(`syncPayload: ${what} ${name} в двух модулях: ${seen.get(name)} и ${src}`);"
     }
    ],
    "comments": []

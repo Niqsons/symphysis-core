@@ -212,15 +212,15 @@
 const JOURNAL = {
  "title": "Журнал решений: trace-numbers-signals",
  "source": "decisions.json",
- "sha256": "802cc2cffd5e9c03b4013fc6f70ad77ef60e1a31483eca3dd8548c343da32b51",
+ "sha256": "88a74644b8c2b2954a2bb2d5a556a8e09dc67caaf1d547da468a91fd7db06180",
  "stats": {
-  "records": 64,
-  "forks": 39,
+  "records": 66,
+  "forks": 41,
   "facts": 25,
-  "decided": 39,
+  "decided": 41,
   "parked": 2,
-  "evidence_total": 183,
-  "evidence_found": 183
+  "evidence_total": 190,
+  "evidence_found": 190
  },
  "records": [
   {
@@ -4032,11 +4032,13 @@ const JOURNAL = {
    "parking": [
     {
      "addressee": "ИБ",
-     "text": "Пути записи скрипта — только `openspec/specs/<capability>/spec.md` под корнем проекта; имя capability из каталога дельты не должно выводить за корень (`..`, абсолютный путь, ссылка) — канон, покрывается чек-листом security.md; запрет не чеканится"
+     "text": "Пути записи скрипта — только `openspec/specs/<capability>/spec.md` под корнем проекта; имя capability из каталога дельты не должно выводить за корень (`..`, абсолютный путь, ссылка) — канон, покрывается чек-листом security.md; запрет не чеканится",
+     "finding": "security.md, строка «Пути с `../`»"
     },
     {
      "addressee": "ИБ",
-     "text": "Скрипт пишет файл целиком тем же способом, что снимок графа, без исполнения содержимого; HTML-комментарии и текст спеки — данные, не команды — канон, покрывается чек-листом security.md; запрет не чеканится"
+     "text": "Скрипт пишет файл целиком тем же способом, что снимок графа, без исполнения содержимого; HTML-комментарии и текст спеки — данные, не команды — канон, покрывается чек-листом security.md; запрет не чеканится",
+     "finding": "security.md, строка «Инъекции через содержимое файлов»"
     }
    ],
    "dispute": "",
@@ -4051,7 +4053,7 @@ const JOURNAL = {
     }
    ],
    "comments": [],
-   "finding": ""
+   "finding": "security.md, строка «Пути с `../`» · security.md, строка «Инъекции через содержимое файлов»"
   },
   {
    "id": "F-56",
@@ -4070,7 +4072,8 @@ const JOURNAL = {
    "parking": [
     {
      "addressee": "ИБ",
-     "text": "Имя изменения как аргумент скрипта проверяется тем же правилом, что у `run_fork` и `check_change_name`: символы оболочки, пустое имя, ведущий дефис — отказ до любого пути — канон, покрывается чек-листом security.md; запрет не чеканится"
+     "text": "Имя изменения как аргумент скрипта проверяется тем же правилом, что у `run_fork` и `check_change_name`: символы оболочки, пустое имя, ведущий дефис — отказ до любого пути — канон, покрывается чек-листом security.md; запрет не чеканится",
+     "finding": "security.md, строка «Имя изменения как аргумент скрипта»"
     }
    ],
    "dispute": "",
@@ -4085,7 +4088,7 @@ const JOURNAL = {
     }
    ],
    "comments": [],
-   "finding": ""
+   "finding": "security.md, строка «Имя изменения как аргумент скрипта»"
   },
   {
    "id": "F-57",
@@ -4667,6 +4670,189 @@ const JOURNAL = {
    ],
    "comments": [],
    "finding": ""
+  },
+  {
+   "id": "F-65",
+   "question": "Где живёт скрипт переписывания ссылок (F-35.B) и как он попадает в payload установки?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-35"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Новый модуль `anchors/`: README с именем и родом, скрипт `anchor_refs.py`, `tests/`; payload — строка `anchors/anchor_refs.py` в списке `sync-payload.js`, в проекте `.symphysis/tools/anchor_refs.py`, команда правила — `python .symphysis/tools/anchor_refs.py <изменение>`; разбор ссылок и проверку имени изменения скрипт импортирует из `trace_graph` по имени, как модули импортируют друг друга. Цена: модуль с README и тестами, строка payload, строка корневого README.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "installer/scripts/sync-payload.js",
+       "quote": "\"openspec-run/openspec_run.py\",",
+       "line": 43,
+       "verdict": "сверено",
+       "found": true
+      },
+      {
+       "path": "README.md",
+       "quote": "- [openspec-run/](openspec-run/) — модуль: запуск форка OpenSpec",
+       "line": 14,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "В модуле `trace/` рядом с графом: `trace/anchor_refs.py`, тесты в `trace/tests/`; README модуля расширяется словами о переписывании ссылок в мастере; payload — та же строка. Цена: ответственность модуля «граф трассируемости» растёт на правку мастер-спек, которую область графа отвергает (F-35); файл отдельный, модуль тот же.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "trace/README.md",
+       "quote": "Граф трассируемости изменения: сборка, отчёт, проверка, заморозка.",
+       "line": 8,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "C",
+     "text": "Подкоманда `trace_graph.py rewrite`.",
+     "added": false,
+     "unlikely": "F-35.B и требование «Переписывание зовётся правилом синхронизации» велят жить отдельно от `trace_graph.py`: его область без правок артефактов",
+     "evidence": [
+      {
+       "path": "trace/trace_graph.py",
+       "quote": "\"Область — расчёт и заморозка графа изменения; артефакты изменения не правит, решений за человека не \"",
+       "line": 1834,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "D",
+     "text": "В модуле `openspec-run/`: общий запуск форка.",
+     "added": false,
+     "unlikely": "модуль про запуск форка, не про мастер-спеки; файл принадлежит одному модулю с одной ответственностью",
+     "evidence": [
+      {
+       "path": "README.md",
+       "quote": "- [openspec-run/](openspec-run/) — модуль: запуск форка OpenSpec",
+       "line": 14,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "По `repository-layout` файл принадлежит модулю с одной ответственностью: правка мастера не «граф», README `trace` её не обещает; модуль из одного скрипта с README и тестами уже есть — `openspec-run`, цена та же. B размывает ответственность модуля графа."
+   },
+   "decision": {
+    "option": "A",
+    "word": "Да, и к тому же эта функциональность будет развиваться, поэтому выделение модуля anchors сознательная цена",
+    "date": "2026-11-07"
+   },
+   "reversibility": {
+    "level": "обратимо",
+    "why": "модуль из одного скрипта с README и тестами: перенос файла и строки `installer/scripts/sync-payload.js`; в проектах скрипт в любом варианте стоит как `.symphysis/tools/anchor_refs.py`"
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "design: место скрипта, строка payload, команда в правиле `rules.specs` и подсказке архива",
+   "evidence": [
+    {
+     "path": "installer/scripts/sync-payload.js",
+     "quote": "* Код и данные модулей ядра: исходник `<модуль>/<файл>` -> `tools/<файл>` payload, в проекте `.symphysis/tools/`.",
+     "line": 25,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "anchor"
+   ],
+   "finding": ""
+  },
+  {
+   "id": "F-66",
+   "question": "[ветка] Список payload: файл с именем, уже занятым другим модулем, роняет сборку payload — `anchor_refs.py` в новом модуле `anchors/` сталкивается с чем-нибудь?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-65"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN в списке `sync-payload.js` два файла с одним именем в разных модулях WHEN собирается payload THEN сборка падает с именем файла и обоими модулями, payload не тронут; цена: сценарий в `project-installer`, тест уже есть у инсталлятора",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — имя `anchor_refs.py` среди модулей уникально, а дубль ловит сборка payload с именем файла до установки (`npm --prefix installer test`); допустимо",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест инсталлятора подаёт список с дублем и утверждает падение с именем; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — открыто до появления второго файла с таким именем",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "B",
+    "why": "Отказ громкий и ранний: сборка payload падает с именем файла до того, как что-либо установлено; имя нового скрипта уникально. A пишет в спеку инсталлятора ветку, которая изменением не меняется."
+   },
+   "decision": {
+    "option": "B",
+    "word": "",
+    "date": "2026-11-07"
+   },
+   "reversibility": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Dismiss",
+    "reason": ""
+   },
+   "parking": [],
+   "dispute": "",
+   "consequences": "Отказ громкий и ранний: сборка payload падает с именем файла до того, как что-либо установлено; имя нового скрипта уникально. A пишет в спеку инсталлятора ветку, которая изменением не меняется.",
+   "evidence": [
+    {
+     "path": "installer/scripts/sync-payload.js",
+     "quote": "if (seen.has(name)) throw new Error(`syncPayload: ${what} ${name} в двух модулях: ${seen.get(name)} и ${src}`);",
+     "line": 123,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "finding": ""
   }
  ],
  "notes": [
@@ -4702,7 +4888,7 @@ const SCHEME = {
 };
 const HELP = {
  "contract": 3,
- "taken_at": "2026-11-07T17:17:39+03:00",
+ "taken_at": "2026-11-07T17:36:57+03:00",
  "versions": {
   "openspec": "1.16.1+symphysis.5",
   "symphysis": "0.1.0+9b01213"
@@ -4710,10 +4896,10 @@ const HELP = {
  "change": "trace-numbers-signals",
  "changes": null,
  "error": null,
- "current_step": "design",
- "current_text": "Следующий шаг по файлам — `design`, ход модели.",
+ "current_step": "tasks",
+ "current_text": "Следующий шаг по файлам — `tasks`, ход модели.",
  "turn": "model",
- "next_by_status": "design",
+ "next_by_status": "tasks",
  "forks": {
   "open": 0,
   "parked": 0
@@ -5037,7 +5223,7 @@ const HELP = {
   },
   {
    "id": "design",
-   "state": "ready",
+   "state": "done",
    "turn": "model",
    "optional": false,
    "blocks": [
@@ -5049,10 +5235,10 @@ const HELP = {
    "files": [
     {
      "path": "openspec/changes/trace-numbers-signals/design.md",
-     "exists": false
+     "exists": true
     }
    ],
-   "file_note": null,
+   "file_note": "файл есть, содержание не проверялось",
    "texts": {
     "title": "Дизайн",
     "why": "Как реализовать: решения журнала, риски и открытые вопросы в одном документе, от которого идут задачи.",
@@ -5069,7 +5255,7 @@ const HELP = {
   },
   {
    "id": "security",
-   "state": "ready",
+   "state": "done",
    "turn": "model",
    "optional": false,
    "blocks": [
@@ -5080,10 +5266,10 @@ const HELP = {
    "files": [
     {
      "path": "openspec/changes/trace-numbers-signals/security.md",
-     "exists": false
+     "exists": true
     }
    ],
-   "file_note": null,
+   "file_note": "файл есть, содержание не проверялось",
    "texts": {
     "title": "Чек-лист безопасности",
     "why": "Канон информационной безопасности отмечается по спецификациям пункт за пунктом: чтобы инъекции, пути и токены не остались вопросом, который никто не задал.",
@@ -5100,16 +5286,14 @@ const HELP = {
   },
   {
    "id": "tasks",
-   "state": "blocked",
+   "state": "ready",
    "turn": "model",
    "optional": false,
    "blocks": [
     "attack-artifacts"
    ],
    "stops_apply": true,
-   "waits_for": [
-    "design"
-   ],
+   "waits_for": [],
    "files": [
     {
      "path": "openspec/changes/trace-numbers-signals/tasks.md",
@@ -5139,8 +5323,6 @@ const HELP = {
    "blocks": [],
    "stops_apply": false,
    "waits_for": [
-    "design",
-    "security",
     "tasks"
    ],
    "files": [
@@ -5178,8 +5360,7 @@ const HELP = {
    "blocks": [],
    "stops_apply": false,
    "waits_for": [
-    "tasks",
-    "security"
+    "tasks"
    ],
    "files": [],
    "file_note": null,
@@ -5257,14 +5438,17 @@ const HELP = {
   "consequences.md": "openspec/changes/trace-numbers-signals/consequences.md",
   "decisions.json": "openspec/changes/trace-numbers-signals/decisions.json",
   "decisions.md": "openspec/changes/trace-numbers-signals/decisions.md",
+  "design.md": "openspec/changes/trace-numbers-signals/design.md",
   "edge-probe.md": "openspec/changes/trace-numbers-signals/edge-probe.md",
   "intent.md": "openspec/changes/trace-numbers-signals/intent.md",
   "openspec/changes/trace-numbers-signals/consequences.md": "openspec/changes/trace-numbers-signals/consequences.md",
   "openspec/changes/trace-numbers-signals/decisions.json": "openspec/changes/trace-numbers-signals/decisions.json",
+  "openspec/changes/trace-numbers-signals/design.md": "openspec/changes/trace-numbers-signals/design.md",
   "openspec/changes/trace-numbers-signals/intent.md": "openspec/changes/trace-numbers-signals/intent.md",
   "openspec/changes/trace-numbers-signals/proposal.md": "openspec/changes/trace-numbers-signals/proposal.md",
   "openspec/changes/trace-numbers-signals/research/F-21.md": "openspec/changes/trace-numbers-signals/research/F-21.md",
   "openspec/changes/trace-numbers-signals/research/F-24.md": "openspec/changes/trace-numbers-signals/research/F-24.md",
+  "openspec/changes/trace-numbers-signals/security.md": "openspec/changes/trace-numbers-signals/security.md",
   "openspec/changes/trace-numbers-signals/specs/record-anchors/spec.md": "openspec/changes/trace-numbers-signals/specs/record-anchors/spec.md",
   "openspec/changes/trace-numbers-signals/specs/trace-conventions/spec.md": "openspec/changes/trace-numbers-signals/specs/trace-conventions/spec.md",
   "openspec/changes/trace-numbers-signals/specs/trace-graph/spec.md": "openspec/changes/trace-numbers-signals/specs/trace-graph/spec.md",
@@ -5272,6 +5456,7 @@ const HELP = {
   "openspec/changes/trace-numbers-signals/specs/trace-snapshot/spec.md": "openspec/changes/trace-numbers-signals/specs/trace-snapshot/spec.md",
   "proposal.md": "openspec/changes/trace-numbers-signals/proposal.md",
   "scheme.md": "openspec/changes/trace-numbers-signals/scheme.md",
+  "security.md": "openspec/changes/trace-numbers-signals/security.md",
   "symphysis.html": "openspec/changes/trace-numbers-signals/symphysis.html",
   "symphysis.yaml": "symphysis.yaml"
  },
@@ -5291,13 +5476,16 @@ const LINKS = {
   ".claude/skills/symphysis-viewer/SKILL.md": "../../../.claude/skills/symphysis-viewer/SKILL.md",
   ".symphysis/tools/journal-roots.json": "../../../.symphysis/tools/journal-roots.json",
   "CLAUDE.md": "../../../CLAUDE.md",
+  "README.md": "../../../README.md",
   "answers/2026-11-07.md": "answers/2026-11-07.md",
   "consequences.md": "consequences.md",
   "decisions.json": "decisions.json",
   "decisions.md": "decisions.md",
+  "design.md": "design.md",
   "docs/GUIDE.md": "../../../docs/GUIDE.md",
   "docs/analysis/requirements-traceability-graph-of-symphysis.md": "../../../docs/analysis/requirements-traceability-graph-of-symphysis.md",
   "edge-probe.md": "edge-probe.md",
+  "installer/scripts/sync-payload.js": "../../../installer/scripts/sync-payload.js",
   "intent.md": "intent.md",
   "openspec/changes/archive/2026-11-03-step-help/specs/decision-viewer/spec.md": "../archive/2026-11-03-step-help/specs/decision-viewer/spec.md",
   "openspec/changes/archive/2026-11-06-trace-graph/decisions.json": "../archive/2026-11-06-trace-graph/decisions.json",
@@ -5308,6 +5496,7 @@ const LINKS = {
   "openspec/changes/trace-numbers-signals/consequences.md": "consequences.md",
   "openspec/changes/trace-numbers-signals/decisions.json": "decisions.json",
   "openspec/changes/trace-numbers-signals/decisions.md": "decisions.md",
+  "openspec/changes/trace-numbers-signals/design.md": "design.md",
   "openspec/changes/trace-numbers-signals/intent.md": "intent.md",
   "openspec/changes/trace-numbers-signals/proposal.md": "proposal.md",
   "openspec/changes/trace-numbers-signals/research/F-21-probe/after-signals-module-structure.txt": "research/F-21-probe/after-signals-module-structure.txt",
@@ -5322,6 +5511,7 @@ const LINKS = {
   "openspec/changes/trace-numbers-signals/research/F-24-probe/git-history.txt": "research/F-24-probe/git-history.txt",
   "openspec/changes/trace-numbers-signals/research/F-24-probe/instructions-specs.json": "research/F-24-probe/instructions-specs.json",
   "openspec/changes/trace-numbers-signals/research/F-24.md": "research/F-24.md",
+  "openspec/changes/trace-numbers-signals/security.md": "security.md",
   "openspec/changes/trace-numbers-signals/specs/record-anchors/spec.md": "specs/record-anchors/spec.md",
   "openspec/changes/trace-numbers-signals/specs/trace-conventions/spec.md": "specs/trace-conventions/spec.md",
   "openspec/changes/trace-numbers-signals/specs/trace-graph/spec.md": "specs/trace-graph/spec.md",
@@ -5341,9 +5531,11 @@ const LINKS = {
   "research/F-21.md": "research/F-21.md",
   "research/F-24.md": "research/F-24.md",
   "scheme.md": "scheme.md",
+  "security.md": "security.md",
   "settings/symphysis_config.py": "../../../settings/symphysis_config.py",
   "symphysis.html": "symphysis.html",
   "symphysis.yaml": "../../../symphysis.yaml",
+  "trace/README.md": "../../../trace/README.md",
   "trace/tests/test_trace_graph.py": "../../../trace/tests/test_trace_graph.py",
   "trace/tests/test_trace_report.py": "../../../trace/tests/test_trace_report.py",
   "trace/trace_graph.py": "../../../trace/trace_graph.py",
