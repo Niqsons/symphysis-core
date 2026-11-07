@@ -1149,3 +1149,14 @@ def test_scenario_comment_reaches_the_master_spec(tmp_path):
     run_openspec_raw(proj, "archive", "demo", "--yes")
     master = (proj / "openspec" / "specs" / "cap" / "spec.md").read_text(encoding="utf-8")
     assert "#### Scenario: Интервалы касаются\n<!-- F-12 -->\n" in master.replace("\r\n", "\n")
+
+def test_attack_skill_rebuilds_the_page_after_the_verdict():
+    """После вердикта страница пересобирается с `--attack` на каждый файл атаки: иначе режим «атака» пишет
+    «атака не подана», и строки до человека не доходят (слово владельца, 2026-11-07)."""
+    text = read(ATTACK_SKILL / "SKILL.md")
+    summary = block(text, "### 7. Отдай итог", "\n## Коды и сигналы")
+    for token in ("render-html", "--attack", "атака не подана", "symphysis-viewer", "ссылк"):
+        assert token in summary, f"в шаге «Отдай итог» нет «{token}»"
+    assert "водител" in summary, "шаг не говорит, что страницу собирает главная нить, а не водитель"
+    acceptance = block(text, "## Приёмка", "\n## Водитель")
+    assert "--attack" in acceptance and "атака не подана" in acceptance, "приёмка не проверяет сборку страницы"
