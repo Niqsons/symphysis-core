@@ -215,15 +215,15 @@ const JOURNAL = {
  "title": "Журнал решений: attack-lens-conventions",
  "source": "decisions.json",
  "generated": "2026-11-08",
- "sha256": "f841899929599bc0eb2d8272288a2b5a667f68e9cfd16f34f3b7e2648f78a60e",
+ "sha256": "604afc18724870dfc294a171d28473c9ec33e43c164dbb38cb65a0ba7fb1b3d8",
  "stats": {
-  "records": 26,
-  "forks": 9,
-  "facts": 17,
-  "decided": 9,
+  "records": 35,
+  "forks": 17,
+  "facts": 18,
+  "decided": 17,
   "parked": 0,
-  "evidence_total": 93,
-  "evidence_found": 93
+  "evidence_total": 103,
+  "evidence_found": 103
  },
  "records": [
   {
@@ -1867,12 +1867,647 @@ const JOURNAL = {
     "plugin"
    ],
    "finding": ""
+  },
+  {
+   "id": "F-27",
+   "question": "[adjacency · collection] Линза правил составления сверяет артефакт с правилами его шага: задача `tasks.md` без проверки в строке нарушает правило шага `tasks` и даёт связь `task → scn`, у которой `trace-link` не найдёт проверки и напишет блокер, — писать ли рядом вторую строку `rule-compliance` о той же задаче?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-18",
+    "F-21"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN задача без проверки в строке, связь которой со сценарием `trace-link` уже назвал блокером WHEN линза `rule-compliance` проходит `tasks.md` THEN строки `rule-compliance` о той же задаче нет; цена: сценарий, правило «место уже названо другой линзой» в теле скилла, проход одной линзы зависит от строк другой",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — обе строки остаются: блокер `trace-link` и предупреждение `rule-compliance` о той же задаче стоят рядом и закрываются одной правкой задачи; дубль не держит вердикт сверх блокера, который и так есть",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест тела скилла утверждает, что раздел `rule-compliance` не запрещает строку о месте, уже названном другой линзой; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — открыто до B-17 «зависимости между строками атаки», где связь строк разных линз станет частью таблицы; пока tasks считает, что обе строки пишутся",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "B",
+    "why": "Дубль виден сразу и закрывается той же правкой задачи, ничего не портится; A вводит зависимость прохода одной линзы от строк другой — ту связь строк, которую бэклог вынес в B-17, а C страхует то, что и так видно."
+   },
+   "decision": {
+    "option": "B",
+    "word": "",
+    "date": "2026-11-08"
+   },
+   "reversibility": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Dismiss",
+    "reason": ""
+   },
+   "parking": [],
+   "dispute": "",
+   "consequences": "Дубль виден сразу и закрывается той же правкой задачи, ничего не портится; A вводит зависимость прохода одной линзы от строк другой — ту связь строк, которую бэклог вынес в B-17, а C страхует то, что и так видно.",
+   "evidence": [
+    {
+     "path": "openspec/changes/attack-lens-conventions/specs/artifact-attack/spec.md",
+     "quote": "### Requirement: Линза правил составления сверяет артефакт с правилами его шага",
+     "line": 27,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [],
+   "finding": ""
+  },
+  {
+   "id": "F-28",
+   "question": "[adjacency · collection] Линза правил составления сверяет MODIFIED с мастер-текстом: условие мастер-текста стоит в дельте пересказом без уточнения — мастер «плагин догоняет своим коммитом с `Needs:` на коммит ядра», дельта «плагин догоняет коммитом с `Needs:`», — это «есть» или пропавшее условие?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-19",
+    "F-20"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN условие мастер-текста, у которого в дельте пропало уточнение, и ни одно другое требование спеки его не держит WHEN линза сверяет требование THEN строка «нет», `блокер`, называет пропавшее уточнение; уточнение, которое держит другое требование, — «есть» с его цитатой; цена: сценарий, суждение линзы над каждым пересказом, споры о том, условие ли уточнение",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — пересказ судится по смыслу, как связи у `trace-link`: «есть», если смысл условия сохранён, отдельного правила об уточнениях нет; допустимо, пока дельты переносят мастер-текст дословно и ужимают его редко",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест тела скилла утверждает, что раздел `rule-compliance` называет пересказ без уточнения находкой; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — открыто до первой атаки с линзой на изменении, которое ужимало мастер-текст; пока tasks считает пересказ «есть»",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Пересказ, потерявший уточнение, — тот же путь тихой потери, что и `aa5afde`, только мельче, и без правила линза пропустит его как «есть»; так ужималась и дельта `plugin-core-contract` этого изменения. Цена — сценарий и суждение над каждым пересказом; B оставляет главный путь потери на усмотрение, C проверяет только текст скилла."
+   },
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-08"
+   },
+   "reversibility": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Specify",
+    "reason": ""
+   },
+   "parking": [],
+   "dispute": "",
+   "consequences": "в spec.md: Пересказ потерял уточнение",
+   "evidence": [
+    {
+     "path": "openspec/changes/attack-lens-conventions/specs/artifact-attack/spec.md",
+     "quote": "### Requirement: Линза правил составления сверяет MODIFIED с мастер-текстом",
+     "line": 62,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [],
+   "finding": ""
+  },
+  {
+   "id": "F-29",
+   "question": "[empty · collection] Линза правил составления сверяет MODIFIED с мастер-текстом: требование переименовано секцией RENAMED и правлено в MODIFIED той же дельты — под новым именем мастер-текста нет: с чем линза его сверяет?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-19"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN дельта с `RENAMED` FROM «Старое» TO «Новое» и MODIFIED «Новое» WHEN линза сверяет «Новое» THEN сверка идёт с мастер-текстом «Старое», как форк применяет RENAMED раньше MODIFIED; цена: сценарий, чтение секции RENAMED в проходе, тест на переименованное требование",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — переименование вместе с правкой не покрывается: мастер-текста под новым именем нет, линза пишет «не пройдено», `блокер`, и человек видит его сразу",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест тела скилла утверждает, что проход MODIFIED называет секцию RENAMED; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — открыто до B-45 «граф и RENAMED»: граф научится связывать новое имя со старым, линза возьмёт ту же связь; пока tasks считает, что RENAMED с правкой не встречается",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Без правила требование с новым именем выглядит новым — сравнивать не с чем, и пропавшее условие проходит молча; форк применяет RENAMED раньше MODIFIED, так что старое имя в мастер-спеке всегда есть. Цена — сценарий и тест; B надеется, что модель напишет «не пройдено», а не пропустит строку, D ждёт граф, хотя линза читает дельту сама."
+   },
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-08"
+   },
+   "reversibility": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Specify",
+    "reason": ""
+   },
+   "parking": [],
+   "dispute": "",
+   "consequences": "в spec.md: Переименовано и правлено",
+   "evidence": [
+    {
+     "path": "openspec/changes/attack-lens-conventions/specs/artifact-attack/spec.md",
+     "quote": "### Requirement: Линза правил составления сверяет MODIFIED с мастер-текстом",
+     "line": 62,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "upstream/openspec/src/core/specs-apply.ts",
+     "quote": "// Apply operations in order: RENAMED → REMOVED → MODIFIED → ADDED",
+     "line": 457,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [],
+   "finding": ""
+  },
+  {
+   "id": "F-30",
+   "question": "[concurrency · io] Линза правил составления сверяет MODIFIED с мастер-текстом: другое изменение влило в `main` новое условие того же мастер-требования после ветвления — в worktree мастер-спека на диске старая, линза пропажи не видит, а `/opsx:sync` дельтой MODIFIED затрёт это условие",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-19",
+    "F-07"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN мастер-требование, которое `main` изменил после ветвления, и дельта MODIFIED по старому тексту WHEN линза сверяет требование THEN сверка идёт с текстом из `main`, его условие без пары в дельте — `блокер`; цена: сценарий, линза читает мастер-спеку из `main` через `git show`, имя основной ветки у клиента — настройка; условие, влитое после атаки, так не ловится",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — линза сверяет с мастер-спекой на диске; условие, влитое в `main` после атаки, не ловит ни один вариант линзы, его место — `/opsx:sync`; допустимо, пока изменения одного требования вливаются по очереди и второе разбирает общие файлы (F-07)",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — страховка вне линзы: перед `/opsx:sync` скрипт сверяет мастер-текст каждого MODIFIED с текстом на момент атаки и называет расхождение; строки в spec.md нет, это новая проверка вне этого изменения",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — открыто до отдельного изменения о сверке мастер-текста при `/opsx:sync`; пока tasks считает, что линза сверяет с мастер-спекой на диске",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "B",
+    "why": "Порча тихая, но ни один вариант линзы не ловит условие, влитое в `main` после атаки, а затирается при sync именно оно; A закрывает лишь раннюю гонку ценой имени ветки, которого нет в проекте клиента, C — новая проверка sync вне этого изменения: её место — пункт бэклога."
+   },
+   "decision": {
+    "option": "B",
+    "word": "",
+    "date": "2026-11-08"
+   },
+   "reversibility": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Dismiss",
+    "reason": ""
+   },
+   "parking": [],
+   "dispute": "",
+   "consequences": "Порча тихая, но ни один вариант линзы не ловит условие, влитое в `main` после атаки, а затирается при sync именно оно; A закрывает лишь раннюю гонку ценой имени ветки, которого нет в проекте клиента, C — новая проверка sync вне этого изменения: её место — пункт бэклога.",
+   "evidence": [
+    {
+     "path": "openspec/changes/attack-lens-conventions/specs/artifact-attack/spec.md",
+     "quote": "### Requirement: Линза правил составления сверяет MODIFIED с мастер-текстом",
+     "line": 62,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [],
+   "finding": ""
+  },
+  {
+   "id": "F-31",
+   "question": "[empty · collection] Строки линзы правил составления покрывают требования и файлы: цели нет — `security.md` не написан или `consequences.md` законно отсутствует, потому что изменение начато до шага описи, — писать ли строку «не пройдено» `rule-compliance` о таком файле?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-21"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN `security.md` не написан, а `consequences.md` нет, потому что изменение начато до шага описи WHEN линза ставит вердикт THEN строк `rule-compliance` об этих файлах нет: ненаписанную цель называет `claim-extraction`, а `consequences.md` вне `targets[]` не цель; цена: сценарий, оговорка в счёте файлов цели",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — линза пишет «не пройдено», `блокер`, на каждый отсутствующий файл: о `security.md` это второй блокер рядом с `claim-extraction`, закрывается тем же — написать файл",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест тела скилла утверждает, что раздел `rule-compliance` считает файлы цели по `targets[]` frontmatter файла атаки; строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — открыто до первой атаки с линзой на изменении без описи; пока tasks считает файлами цели `targets[]`",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "B ставит блокер на `consequences.md`, которого по правилу атаки нет в `targets[]`: такой стоп `apply` нечем закрыть на законном изменении, и два требования спорят друг с другом. Цена A — сценарий и оговорка в счёте; C страхует только текст скилла."
+   },
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-08"
+   },
+   "reversibility": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Specify",
+    "reason": ""
+   },
+   "parking": [],
+   "dispute": "",
+   "consequences": "в spec.md: Цели нет",
+   "evidence": [
+    {
+     "path": "openspec/changes/attack-lens-conventions/specs/artifact-attack/spec.md",
+     "quote": "### Requirement: Строки линзы правил составления покрывают требования и файлы",
+     "line": 99,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [],
+   "finding": ""
+  },
+  {
+   "id": "F-32",
+   "question": "[запрет] Линза правил составления сверяет артефакт с правилами его шага: не должна судить по букве — называть нарушением текст, который выполняет правило шага своими словами",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-18",
+    "F-20"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify/test — требование MUST NOT: строка `rule-compliance` не называет нарушением текст, выполняющий правило по смыслу; тест тела скилла утверждает, что раздел линзы велит судить по существу и несёт пример пересказа, выполняющего правило; цена: сценарий, тест текста скилла, сопровождение примера",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Specify/judgment — требование MUST NOT: находка `rule-compliance` — только когда нарушение правила что-то ломает у человека или в поставке, а не когда не совпала формулировка; судят человек в режиме «атака» и ревью транскрипта атаки; цена: сценарий, суждение на каждой строке, сопровождение формулировки",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Dismiss — запрет не нужен: прочие правила у линзы получают `предупреждение (правило составления)` (F-20.C), строка о букве видна сразу, apply не держит и стоит человеку одного прочтения",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — открыто до B-26 «атака по существу, а не по букве», который проверит всё тело скилла атаки; пока tasks считает, что линза судит по существу, как прочие",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "C",
+    "why": "Цену буквы уже снял F-20.C: строка прочего правила — предупреждение, она видна сразу и apply не держит, ничего не портится; принцип «по существу» касается всего тела скилла и стоит в B-26, отдельный запрет одной линзы его раздробит."
+   },
+   "decision": {
+    "option": "C",
+    "word": "",
+    "date": "2026-11-08"
+   },
+   "reversibility": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Dismiss",
+    "reason": ""
+   },
+   "parking": [],
+   "dispute": "",
+   "consequences": "Цену буквы уже снял F-20.C: строка прочего правила — предупреждение, она видна сразу и apply не держит, ничего не портится; принцип «по существу» касается всего тела скилла и стоит в B-26, отдельный запрет одной линзы его раздробит.",
+   "evidence": [
+    {
+     "path": "openspec/changes/attack-lens-conventions/specs/artifact-attack/spec.md",
+     "quote": "### Requirement: Линза правил составления сверяет артефакт с правилами его шага",
+     "line": 27,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [],
+   "finding": ""
+  },
+  {
+   "id": "F-33",
+   "question": "[запрет] Собственное предупреждение линзы правил составления: не должно становиться способом понизить пропавшее условие — в сомнении модель отнесёт пропажу к прочим правилам и поставит `предупреждение (правило составления)` вместо блокера",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-20",
+    "F-26"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify/test — требование MUST NOT: строка `rule-compliance`, чей «Инвариант» цитирует правило «условия не теряются», не несёт тяжести `предупреждение (правило составления)`; новая проверка разбора файла атаки даёт сигнал на такую строку, тест подаёт её и ждёт сигнала; цена: сценарий, новая проверка в разборе таблицы, тест",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Specify/judgment — требование MUST NOT: пропажа условия мастер-текста не записывается нарушением прочего правила, сомнение «пропало ли условие» идёт блокером; судят человек по строкам `rule-compliance` о MODIFIED и ревью транскрипта атаки; цена: сценарий, суждение на каждой строке о MODIFIED, сопровождение формулировки",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Dismiss — запрет не нужен: правило «своё суждение модели тяжесть не снижает» уже стоит в скилле и в мастер-спеке `artifact-attack`",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — открыто до B-16 «кнопки тяжести»: человек поднимет строку кнопкой, когда увидит; пока tasks считает, что вид находки модель выбирает верно",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "B",
+    "why": "Путаница тихая: предупреждение apply не держит, и пропавшее условие уходит в реализацию, как в `aa5afde`; правило о понижении здесь не сработает — модель не понижает, а относит находку к другому виду. Цена — сценарий и суждение над строками о MODIFIED; A потребовал бы новой проверки разбора, C не видит подмены вида."
+   },
+   "decision": {
+    "option": "B",
+    "word": "",
+    "date": "2026-11-08"
+   },
+   "reversibility": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Specify",
+    "reason": ""
+   },
+   "parking": [],
+   "dispute": "",
+   "consequences": "проверка: judgment — человек по строкам `rule-compliance` о требованиях MODIFIED и ревью транскрипта атаки; в spec.md: Пропавшее условие не записывается прочим правилом",
+   "evidence": [
+    {
+     "path": "openspec/changes/attack-lens-conventions/specs/artifact-attack/spec.md",
+     "quote": "### Requirement: Собственное предупреждение линзы правил составления",
+     "line": 47,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [],
+   "finding": ""
+  },
+  {
+   "id": "F-34",
+   "question": "[запрет] Линза правил составления сверяет MODIFIED с мастер-текстом: не должна пропускать условие, ушедшее через REMOVED и новое ADDED вместо MODIFIED, — дельта, переписавшая требование под новым именем без RENAMED, обходит сверку",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-19"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify/test — требование MUST NOT: условие требования REMOVED, которого нет ни в одном требовании дельты той же capability, — находка; тест тела скилла утверждает, что проход MODIFIED называет и секцию REMOVED; цена: сценарий, тест текста скилла, сверка REMOVED со всеми ADDED capability",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Specify/judgment — требование MUST NOT: линза сверяет требование REMOVED с тем, что называет его **Migration**, пропавшее условие — блокер; судят линза по смыслу и человек по строкам; цена: сценарий, чтение REMOVED и Migration в проходе, суждение о замене",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Dismiss — запрет не нужен: REMOVED несёт **Reason** и **Migration**, удаление требования видно в дельте, и его судит человек при чтении спеки",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — открыто до первого изменения, которое заменит требование через REMOVED и ADDED; пока tasks считает, что линза REMOVED не читает",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "B",
+    "why": "Обход тихий: сверки нет, и условие пропадает так же, как при ужатии; **Migration** уже называет замену, линзе есть с чем сверить. Цена — сценарий и чтение REMOVED; A проверяет лишь текст скилла, C полагается на чтение, которое пропустило `aa5afde`."
+   },
+   "decision": {
+    "option": "B",
+    "word": "",
+    "date": "2026-11-08"
+   },
+   "reversibility": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Specify",
+    "reason": ""
+   },
+   "parking": [],
+   "dispute": "",
+   "consequences": "проверка: judgment — линза по смыслу сверяет требование REMOVED с заменой, которую называет **Migration**, человек — по строкам; в spec.md: Замена через REMOVED и ADDED не обходит сверку",
+   "evidence": [
+    {
+     "path": "openspec/changes/attack-lens-conventions/specs/artifact-attack/spec.md",
+     "quote": "### Requirement: Линза правил составления сверяет MODIFIED с мастер-текстом",
+     "line": 62,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [],
+   "finding": ""
+  },
+  {
+   "id": "F-35",
+   "question": "[канон] Линза правил составления сверяет артефакт с правилами его шага: канон ИБ",
+   "kind": "факт",
+   "status": "припаркован",
+   "addressee": "ИБ",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [
+    {
+     "addressee": "ИБ",
+     "text": "инъекция через текст правил: `rules` в `openspec/config.yaml` проекта и instruction шага — данные, фраза в них, похожая на указание модели, не меняет ход атаки — канон, покрывается чек-листом security.md; запрет не чеканится"
+    }
+   ],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/attack-lens-conventions/specs/artifact-attack/spec.md",
+     "quote": "### Requirement: Линза правил составления сверяет артефакт с правилами его шага",
+     "line": 27,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [],
+   "finding": ""
   }
  ],
  "notes": [
   {
    "date": "2026-11-08",
    "text": "круг 1 закончен: решений 9, фактов 17, открытых развилок 0, парковок агенту 0, антиподов 0"
+  },
+  {
+   "date": "2026-11-08",
+   "text": "брейншторм закончен по решению человека"
+  },
+  {
+   "date": "2026-11-08",
+   "text": "проба краёв: кандидатов 5, Specify 3, Dismiss 2, Backstop 0, Defer 0; не выбран 19: artifact-attack/Линзы атаки артефактов, artifact-attack/Линза правил составления сверяет артефакт с правилами его шага, artifact-attack/Собственное предупреждение линзы правил составления, artifact-attack/Линза правил составления сверяет MODIFIED с мастер-текстом, artifact-attack/Строки линзы правил составления покрывают требования и файлы, decision-viewer/Режим «атака» группирует строки по линзам и держит слуг вне списка отдельно, decision-viewer/Списки линз режима «атака», plugin-core-contract/`view-json` отдаёт номер контракта, plugin-core-contract/Новая линза поднимает номер контракта"
+  },
+  {
+   "date": "2026-11-08",
+   "text": "проба запретов: требований 9, оставлено 3, канон → ИБ 1, Specify 2, Dismiss 1, Defer 0"
   }
  ]
 };
@@ -1886,7 +2521,7 @@ const SCHEME = {
 };
 const HELP = {
  "contract": 4,
- "taken_at": "2026-11-08T01:45:45+03:00",
+ "taken_at": "2026-11-08T02:19:40+03:00",
  "versions": {
   "openspec": "1.16.1+symphysis.5",
   "symphysis": null
@@ -1894,10 +2529,10 @@ const HELP = {
  "change": "attack-lens-conventions",
  "changes": null,
  "error": null,
- "current_step": "research",
- "current_text": "Следующий шаг по файлам — `research`, ход модели.",
+ "current_step": "consequences",
+ "current_text": "Следующий шаг по файлам — `consequences`, ход модели.",
  "turn": "model",
- "next_by_status": "research",
+ "next_by_status": "consequences",
  "forks": {
   "open": 0,
   "parked": 0
@@ -2009,7 +2644,7 @@ const HELP = {
   },
   {
    "id": "research",
-   "state": "ready",
+   "state": "done",
    "turn": "model",
    "optional": false,
    "blocks": [
@@ -2020,11 +2655,11 @@ const HELP = {
    "waits_for": [],
    "files": [
     {
-     "path": "openspec/changes/attack-lens-conventions/research/**/*.md",
-     "exists": false
+     "path": "openspec/changes/attack-lens-conventions/research/none.md",
+     "exists": true
     }
    ],
-   "file_note": null,
+   "file_note": "файл есть, содержание не проверялось",
    "texts": {
     "title": "Исследование и второй круг",
     "why": "Вопросы, припаркованные к агенту, получают ответ с цитатами из прочитанных файлов. Второй круг брейншторма закрывает по этим ответам записи журнала.",
@@ -2052,14 +2687,12 @@ const HELP = {
   },
   {
    "id": "attack-decisions",
-   "state": "blocked",
+   "state": "ready",
    "turn": "model",
    "optional": true,
    "blocks": [],
    "stops_apply": false,
-   "waits_for": [
-    "research"
-   ],
+   "waits_for": [],
    "files": [
     {
      "path": "openspec/changes/attack-lens-conventions/attack/decisions.md",
@@ -2089,7 +2722,7 @@ const HELP = {
   },
   {
    "id": "proposal",
-   "state": "blocked",
+   "state": "done",
    "turn": "model",
    "optional": false,
    "blocks": [
@@ -2097,16 +2730,14 @@ const HELP = {
     "design"
    ],
    "stops_apply": false,
-   "waits_for": [
-    "research"
-   ],
+   "waits_for": [],
    "files": [
     {
      "path": "openspec/changes/attack-lens-conventions/proposal.md",
-     "exists": false
+     "exists": true
     }
    ],
-   "file_note": null,
+   "file_note": "файл есть, содержание не проверялось",
    "texts": {
     "title": "Зачем изменение и что оно задевает",
     "why": "Договор об объёме: почему изменение нужно и какие capabilities оно затрагивает. По этому списку потом пишутся спецификации.",
@@ -2123,7 +2754,7 @@ const HELP = {
   },
   {
    "id": "specs",
-   "state": "blocked",
+   "state": "done",
    "turn": "model",
    "optional": false,
    "blocks": [
@@ -2133,16 +2764,22 @@ const HELP = {
     "attack-artifacts"
    ],
    "stops_apply": false,
-   "waits_for": [
-    "proposal"
-   ],
+   "waits_for": [],
    "files": [
     {
-     "path": "openspec/changes/attack-lens-conventions/specs/**/*.md",
-     "exists": false
+     "path": "openspec/changes/attack-lens-conventions/specs/artifact-attack/spec.md",
+     "exists": true
+    },
+    {
+     "path": "openspec/changes/attack-lens-conventions/specs/decision-viewer/spec.md",
+     "exists": true
+    },
+    {
+     "path": "openspec/changes/attack-lens-conventions/specs/plugin-core-contract/spec.md",
+     "exists": true
     }
    ],
-   "file_note": null,
+   "file_note": "файл есть, содержание не проверялось",
    "texts": {
     "title": "Спецификации поведения",
     "why": "Наблюдаемое поведение, записанное требованиями и сценариями. По нему потом проверяют дизайн и код, поэтому всё, что не названо здесь, проверить будет нечем.",
@@ -2170,16 +2807,14 @@ const HELP = {
   },
   {
    "id": "consequences",
-   "state": "blocked",
+   "state": "ready",
    "turn": "model",
    "optional": false,
    "blocks": [
     "design"
    ],
    "stops_apply": false,
-   "waits_for": [
-    "specs"
-   ],
+   "waits_for": [],
    "files": [
     {
      "path": "openspec/changes/attack-lens-conventions/consequences.md",
@@ -2218,7 +2853,6 @@ const HELP = {
    ],
    "stops_apply": false,
    "waits_for": [
-    "proposal",
     "consequences"
    ],
    "files": [
@@ -2244,16 +2878,14 @@ const HELP = {
   },
   {
    "id": "security",
-   "state": "blocked",
+   "state": "ready",
    "turn": "model",
    "optional": false,
    "blocks": [
     "attack-artifacts"
    ],
    "stops_apply": true,
-   "waits_for": [
-    "specs"
-   ],
+   "waits_for": [],
    "files": [
     {
      "path": "openspec/changes/attack-lens-conventions/security.md",
@@ -2285,7 +2917,6 @@ const HELP = {
    ],
    "stops_apply": true,
    "waits_for": [
-    "specs",
     "design"
    ],
    "files": [
@@ -2317,7 +2948,6 @@ const HELP = {
    "blocks": [],
    "stops_apply": false,
    "waits_for": [
-    "specs",
     "design",
     "security",
     "tasks"
@@ -2435,9 +3065,17 @@ const HELP = {
   ".claude/skills/symphysis-viewer/SKILL.md": ".claude/skills/symphysis-viewer/SKILL.md",
   "decisions.json": "openspec/changes/attack-lens-conventions/decisions.json",
   "decisions.md": "openspec/changes/attack-lens-conventions/decisions.md",
+  "edge-probe.md": "openspec/changes/attack-lens-conventions/edge-probe.md",
   "intent.md": "openspec/changes/attack-lens-conventions/intent.md",
   "openspec/changes/attack-lens-conventions/decisions.json": "openspec/changes/attack-lens-conventions/decisions.json",
   "openspec/changes/attack-lens-conventions/intent.md": "openspec/changes/attack-lens-conventions/intent.md",
+  "openspec/changes/attack-lens-conventions/proposal.md": "openspec/changes/attack-lens-conventions/proposal.md",
+  "openspec/changes/attack-lens-conventions/research/none.md": "openspec/changes/attack-lens-conventions/research/none.md",
+  "openspec/changes/attack-lens-conventions/specs/artifact-attack/spec.md": "openspec/changes/attack-lens-conventions/specs/artifact-attack/spec.md",
+  "openspec/changes/attack-lens-conventions/specs/decision-viewer/spec.md": "openspec/changes/attack-lens-conventions/specs/decision-viewer/spec.md",
+  "openspec/changes/attack-lens-conventions/specs/plugin-core-contract/spec.md": "openspec/changes/attack-lens-conventions/specs/plugin-core-contract/spec.md",
+  "proposal.md": "openspec/changes/attack-lens-conventions/proposal.md",
+  "research/none.md": "openspec/changes/attack-lens-conventions/research/none.md",
   "scheme.md": "openspec/changes/attack-lens-conventions/scheme.md",
   "symphysis.html": "openspec/changes/attack-lens-conventions/symphysis.html",
   "symphysis.yaml": "symphysis.yaml"
@@ -2463,6 +3101,7 @@ const LINKS = {
   "decisions/journal_render.py": "../../../decisions/journal_render.py",
   "docs/GUIDE.md": "../../../docs/GUIDE.md",
   "docs/repo-contract.md": "../../../docs/repo-contract.md",
+  "edge-probe.md": "edge-probe.md",
   "installer/lib/install.js": "../../../installer/lib/install.js",
   "installer/scripts/sync-payload.js": "../../../installer/scripts/sync-payload.js",
   "intent.md": "intent.md",
@@ -2470,6 +3109,11 @@ const LINKS = {
   "openspec/changes/archive/2026-11-08-parking-addressee-agent/decisions.json": "../archive/2026-11-08-parking-addressee-agent/decisions.json",
   "openspec/changes/attack-lens-conventions/decisions.json": "decisions.json",
   "openspec/changes/attack-lens-conventions/intent.md": "intent.md",
+  "openspec/changes/attack-lens-conventions/proposal.md": "proposal.md",
+  "openspec/changes/attack-lens-conventions/research/none.md": "research/none.md",
+  "openspec/changes/attack-lens-conventions/specs/artifact-attack/spec.md": "specs/artifact-attack/spec.md",
+  "openspec/changes/attack-lens-conventions/specs/decision-viewer/spec.md": "specs/decision-viewer/spec.md",
+  "openspec/changes/attack-lens-conventions/specs/plugin-core-contract/spec.md": "specs/plugin-core-contract/spec.md",
   "openspec/config.yaml": "../../config.yaml",
   "openspec/schemas/symphysis/schema.yaml": "../../schemas/symphysis/schema.yaml",
   "openspec/schemas/symphysis/steps.md": "../../schemas/symphysis/steps.md",
@@ -2478,12 +3122,15 @@ const LINKS = {
   "openspec/specs/project-settings/spec.md": "../../specs/project-settings/spec.md",
   "openspec/specs/trace-conventions/spec.md": "../../specs/trace-conventions/spec.md",
   "probes/journal-roots.json": "probes/journal-roots.json",
+  "proposal.md": "proposal.md",
+  "research/none.md": "research/none.md",
   "scheme.md": "scheme.md",
   "settings/symphysis_config.py": "../../../settings/symphysis_config.py",
   "symphysis.html": "symphysis.html",
   "symphysis.yaml": "../../../symphysis.yaml",
   "tests/test_repo_contract.py": "../../../tests/test_repo_contract.py",
   "trace/trace_graph.py": "../../../trace/trace_graph.py",
+  "upstream/openspec/src/core/specs-apply.ts": "../../../../symphysis/upstream/openspec/src/core/specs-apply.ts",
   "viewer/playground-template.html": "../../../viewer/playground-template.html",
   "vscode/src/core/core.ts": "../../../../symphysis-vscode/src/core/core.ts",
   "vscode/src/journal/attack.ts": "../../../../symphysis-vscode/src/journal/attack.ts"
