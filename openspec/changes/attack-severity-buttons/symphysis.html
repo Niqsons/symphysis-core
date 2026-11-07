@@ -1,0 +1,3242 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline' file:; style-src 'unsafe-inline'; img-src data:; font-src data:">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>symphysis — журнал решений</title>
+<style>
+  :root { --bg:#0f1115; --panel:#171a21; --card:#1c2028; --line:#2a303b; --fg:#e6e8ec; --mute:#9aa3b2;
+          --acc:#6ea8fe; --ok:#3fb950; --warn:#d29922; --bad:#f85149; --park:#a371f7; --unlikely:#8b949e; --left:250px; --right:0px; --schemew:40vw; --outh:170px; --headh:48px; }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--bg); color:var(--fg); font:14px/1.45 system-ui, -apple-system, "Segoe UI", sans-serif; }
+  code, .mono { font-family: ui-monospace, Consolas, "Cascadia Mono", monospace; font-size:12.5px; }
+  header { display:flex; gap:16px; align-items:center; padding:10px 16px; border-bottom:1px solid var(--line); background:var(--panel); position:sticky; top:0; z-index:5; }
+  header h1 { font-size:15px; margin:0; font-weight:600; }
+  header .stats { color:var(--mute); }
+  header .editorpick { color:var(--mute); font-size:12px; white-space:nowrap; }
+  #editorMask { width:260px; }
+  header .stats b { color:var(--fg); }
+  header .spacer { flex:1; }
+  button { background:#232834; color:var(--fg); border:1px solid var(--line); border-radius:6px; padding:5px 10px; cursor:pointer; font:inherit; }
+  button:hover { border-color:var(--acc); }
+  button.primary { background:var(--acc); color:#0b1020; border-color:var(--acc); font-weight:600; }
+  button.small { padding:2px 8px; font-size:12px; }
+  .layout { display:grid; grid-template-columns: var(--left) minmax(0,1fr) var(--right); min-height: calc(100vh - var(--headh)); }
+  aside { background:var(--panel); position:sticky; top:var(--headh); height:calc(100vh - var(--headh)); display:flex; flex-direction:column; min-height:0; }
+  aside.left { border-right:1px solid var(--line); }
+  aside .head { display:flex; gap:6px; align-items:center; margin-bottom:6px; }
+  aside .head h2 { flex:1; margin:0; }
+  aside h2, main h2 { font-size:12px; text-transform:uppercase; letter-spacing:.06em; color:var(--mute); margin:0 0 6px; }
+  .tocbox { flex:1 1 auto; min-height:100px; overflow:auto; padding:8px 10px; }
+  .toc a { display:grid; grid-template-columns: 10px 42px 1fr; gap:6px; align-items:baseline; color:var(--fg); text-decoration:none; padding:2px 4px; border-radius:5px; font-size:12.5px; }
+  .toc a:hover { background:rgba(255,255,255,.04); }
+  .toc .dot { width:8px; height:8px; border-radius:50%; background:var(--mute); display:inline-block; }
+  .toc .dot.ok { background:var(--ok); } .toc .dot.park { background:var(--park); } .toc .dot.fact { background:var(--warn); } .toc .dot.changed { background:var(--acc); }
+  .toc .id { color:var(--acc); font-family:ui-monospace, Consolas, monospace; font-size:12px; }
+  .toc .q { color:var(--mute); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .evstats { color:var(--mute); font-size:11.5px; padding:6px 10px; border-top:1px solid var(--line); flex:0 0 auto; }
+  main { padding:12px 16px calc(var(--outh) + 48px); min-width:0; }
+  .card { background:var(--card); border:1px solid var(--line); border-radius:10px; padding:12px 14px; margin:0 0 12px; }
+  .card.parked { border-color:var(--park); }
+  .card.decided { border-color:var(--ok); }
+  .card.changed { border-color:var(--acc); }
+  .card.fact { border-style:dashed; }
+  .card .head { display:flex; gap:8px; align-items:baseline; flex-wrap:wrap; }
+  .card .id { color:var(--acc); font-weight:700; }
+  .badge { font-size:11px; padding:1px 7px; border-radius:10px; border:1px solid var(--line); color:var(--mute); }
+  .badge.fact { color:var(--warn); border-color:var(--warn); }
+  .badge.ok { color:var(--ok); border-color:var(--ok); }
+  .badge.park { color:var(--park); border-color:var(--park); }
+  .badge.changed { color:var(--acc); border-color:var(--acc); }
+  .card .q { font-size:15px; font-weight:600; margin:4px 0 6px; }
+  .meta { color:var(--mute); font-size:12px; margin-bottom:8px; display:flex; gap:6px; align-items:center; flex-wrap:wrap; }
+  .meta a { color:var(--acc); text-decoration:none; }
+  .chip { display:inline-flex; gap:4px; align-items:center; border:1px solid var(--line); border-radius:10px; padding:0 6px; font-size:11.5px; }
+  .chip.added { border-color:var(--park); color:var(--park); }
+  .chip.removed { text-decoration:line-through; opacity:.6; }
+  .chip button { padding:0 4px; font-size:11px; border:none; background:transparent; color:var(--mute); }
+  .chip button:hover { color:var(--bad); }
+  .meta input { width:64px; padding:1px 6px; font-size:12px; }
+  .note { padding:6px 10px; border-radius:6px; margin:6px 0; font-size:12.5px; }
+  .note.warn { background:rgba(210,153,34,.12); color:var(--warn); }
+  .note.bad { background:rgba(248,81,73,.12); color:var(--bad); }
+  .note.info { background:rgba(110,168,254,.10); color:var(--fg); }
+  .note.park { background:rgba(163,113,247,.12); color:var(--fg); }
+  .opt { display:grid; grid-template-columns: 22px 1fr; gap:6px; padding:6px 6px; border-radius:6px; margin:2px 0; }
+  .opt:hover { background:rgba(255,255,255,.03); }
+  .opt.chosen { background:rgba(63,185,80,.10); }
+  .opt .letter { font-weight:700; color:var(--acc); }
+  .opt .tag { font-size:11px; padding:0 6px; border-radius:8px; margin-left:6px; border:1px solid; }
+  .tag.unlikely { color:var(--unlikely); border-color:var(--unlikely); }
+  .tag.added { color:var(--park); border-color:var(--park); }
+  .tag.anti { color:var(--bad); border-color:var(--bad); }
+  .tag.rec { color:var(--ok); border-color:var(--ok); }
+  .tag.journal { color:var(--ok); border-color:var(--ok); }
+  .tag.deviation { color:var(--warn); border-color:var(--warn); }
+  .ev { display:block; color:var(--mute); font-size:12px; margin:2px 0 0 2px; }
+  .ev code { color:#c9d1d9; }
+  a.filelink code { text-decoration:underline; }
+  a.filelink.editor { margin-left:4px; font-size:11px; text-decoration:none; }
+  .ev .ok { color:var(--ok); } .ev .bad { color:var(--bad); }
+  .rec { color:var(--mute); font-size:12.5px; margin:6px 0; }
+  .rec b { color:var(--ok); }
+  textarea, input[type=text], select { width:100%; background:#10131a; color:var(--fg); border:1px solid var(--line); border-radius:6px; padding:6px 8px; font:inherit; }
+  textarea { min-height:52px; resize:vertical; }
+  .row { display:flex; gap:8px; align-items:center; margin:6px 0; flex-wrap:wrap; }
+  .row > * { flex:1; }
+  .row > button, .row > select, .row > label { flex:0 0 auto; }
+  .cons { color:var(--mute); font-size:12px; margin-top:6px; }
+  details.park { margin:8px 0; border:1px dashed var(--park); border-radius:8px; padding:4px 10px; }
+  details.park summary { cursor:pointer; color:var(--park); font-size:12.5px; }
+  .parkitem { display:flex; gap:8px; align-items:baseline; font-size:12.5px; margin:3px 0; }
+  .parkitem .who { color:var(--park); flex:0 0 auto; }
+  .parkitem button { flex:0 0 auto; }
+  .outpanel { position:fixed; left:var(--left); right:var(--right); bottom:0; height:var(--outh); background:var(--panel); border-top:1px solid var(--line); padding:8px 16px; z-index:6; display:flex; flex-direction:column; }
+  .outpanel textarea { flex:1 1 auto; min-height:40px; font-family:ui-monospace, Consolas, monospace; font-size:12px; resize:none; }
+  .outhandle { position:absolute; left:0; right:0; top:-4px; height:9px; cursor:ns-resize; }
+  .outhandle::after { content:''; display:block; width:48px; height:3px; margin:3px auto 0; border-radius:2px; background:var(--line); }
+  .outhandle:hover::after { background:var(--acc); }
+  .outpanel .row { margin:4px 0; }
+  .hidden { display:none; }
+  .newfork { border:1px dashed var(--line); border-radius:10px; padding:10px 14px; margin:0 0 12px; }
+  .ok-flash { color:var(--ok); font-size:12px; }
+  /* режимы: решения · проверка · атака */
+  header .modes { display:flex; gap:4px; }
+  header .modes button.active { border-color:var(--acc); color:var(--acc); }
+  .view { padding:12px 16px calc(var(--outh) + 48px); max-width:1100px; margin:0 auto; min-width:0; }
+  #viewCheck { padding-bottom:40px; }
+  .view h2 { margin:18px 0 8px; }
+  .view h3 { font-size:12.5px; color:var(--mute); margin:12px 0 6px; font-weight:600; }
+  .view ul { margin:4px 0; padding-left:20px; }
+  .badge.bad { color:var(--bad); border-color:var(--bad); }
+  .badge.warn { color:var(--warn); border-color:var(--warn); }
+  .badge.dest { color:var(--acc); border-color:var(--acc); }
+  .mute { color:var(--mute); }
+  .lensfilter button.active { border-color:var(--acc); color:var(--acc); }
+  .card.conflict { border-color:var(--bad); }
+  details.recblock { margin:6px 0; border:1px dashed var(--line); border-radius:8px; padding:4px 10px; }
+  details.recblock summary { cursor:pointer; color:var(--acc); font-size:12.5px; }
+  .attack-rows { margin-top:4px; }
+  .readtoggle { font-size:11px; color:var(--mute); margin-left:auto; display:inline-flex; gap:4px; align-items:center; cursor:pointer; white-space:nowrap; }
+  .readtoggle input { margin:0; }
+  .counters { display:flex; gap:12px; flex-wrap:wrap; color:var(--mute); margin:6px 0 10px; font-size:12.5px; }
+  .counters b { color:var(--fg); }
+  /* панель схемы: поверх режимов, рядом с карточками; ширину держит --schemew */
+  body.scheme-on { --right:var(--schemew); }
+  body.scheme-on .view { margin:0 var(--right) 0 0; max-width:none; }
+  #schemePanel { position:fixed; top:var(--headh); right:0; bottom:0; width:var(--schemew); background:var(--panel); border-left:1px solid var(--line); z-index:4; display:flex; flex-direction:column; }
+  #schemePanel.hidden { display:none; }
+  .schemehandle { position:absolute; left:-4px; top:0; bottom:0; width:9px; cursor:ew-resize; }
+  .schemehandle:hover { background:rgba(110,168,254,.25); }
+  #schemeBody { flex:1 1 auto; min-height:0; overflow:auto; padding:8px 10px; }
+  #schemeBody svg { display:block; }
+  #schemeBody pre { margin:0; font-family:ui-monospace, Consolas, "Cascadia Mono", monospace; font-size:12.5px; }
+  #schemeBody .note { white-space:pre-wrap; }
+  header #btnScheme.active, aside .head button.active { border-color:var(--acc); color:var(--acc); }
+  /* справка о шаге: та же панель, свой контейнер */
+  .paneltabs { display:flex; gap:4px; padding:6px 10px; border-bottom:1px solid var(--line); flex:0 0 auto; }
+  .paneltabs button.active { border-color:var(--acc); color:var(--acc); }
+  #helpBody { flex:1 1 auto; min-height:0; overflow:auto; padding:8px 10px; }
+  #helpBody h3 { font-size:12.5px; color:var(--mute); margin:12px 0 4px; font-weight:600; }
+  #helpBody p { margin:4px 0; }
+  #helpBody ul { margin:4px 0; padding-left:20px; }
+  .helpsnap { color:var(--mute); font-size:11.5px; margin:6px 0; }
+  .helpsnap code { font-size:11.5px; overflow-wrap:anywhere; }
+  .helpver { color:var(--mute); font-size:11px; opacity:.7; margin-top:14px; }
+  .helpsteps { display:flex; flex-wrap:wrap; gap:4px; margin:8px 0; }
+  .helpstep { padding:2px 7px; font-size:12px; }
+  .helpstep .who { color:var(--mute); font-size:11px; }
+  .helpstep.current { border-color:var(--ok); color:var(--ok); }
+  .helpstep.open { background:rgba(110,168,254,.16); }
+  .helppage { border-top:1px solid var(--line); margin-top:8px; padding-top:8px; }
+  .helptitle { font-size:15px; font-weight:600; margin-bottom:4px; }
+  .helphead { display:flex; gap:6px; align-items:baseline; flex-wrap:wrap; margin-bottom:6px; }
+  @media (max-width: 900px) { .layout { grid-template-columns:1fr; } aside { position:static; height:auto; } .outpanel { left:0; right:0; }
+    body.scheme-on { --right:0px; } #schemePanel { position:static; width:auto; height:45vh; border-left:0; border-bottom:1px solid var(--line); } .schemehandle { display:none; } }
+</style>
+</head>
+<body>
+<header id="pageHeader">
+  <h1 id="title">symphysis — журнал решений</h1>
+  <div class="modes" id="modes" title="решения — круг просмотрщика; проверка — снимок перед proposal, только чтение; атака — строки attack/*.md по линзам"></div>
+  <button id="btnScheme" title="рядом с карточками: схема решения из scheme.md или справка о шаге конвейера">схема · справка</button>
+  <label class="editorpick" title="куда ведёт значок ↗ у ссылки на файл; выбор хранится в этом браузере">↗ <select id="editorPick"><option value="vscode">VS Code</option><option value="cursor">Cursor</option><option value="jetbrains">IDEA / GIGA IDE</option><option value="custom">своя маска</option><option value="none">не показывать</option></select></label>
+  <input type="text" id="editorMask" class="hidden" placeholder="схема://…{path}…{line}" title="подстановки: {path}, {relpath}, {project}, {line}, {line0}">
+  <div class="stats" id="stats"></div>
+  <div class="spacer"></div>
+  <button id="btnExport" title="JSON состояния — для переноса в другой браузер">Экспорт JSON</button>
+  <button id="btnImport">Импорт JSON</button>
+  <input type="file" id="fileImport" accept="application/json" class="hidden">
+  <button id="btnReset">Сбросить</button>
+</header>
+<div id="schemePanel" class="hidden">
+  <div class="schemehandle" id="schemehandle" title="тяни, чтобы изменить ширину панели"></div>
+  <div class="paneltabs" id="panelTabs"><button class="small" data-panel="scheme">схема</button><button class="small" data-panel="help">справка</button></div>
+  <div id="schemeBody"></div>
+  <div id="helpBody" class="hidden"></div>
+</div>
+<div class="layout" id="viewDecisions">
+  <aside class="left">
+    <div class="tocbox"><div class="head"><h2>Оглавление</h2><button class="small" id="btnAll">все</button><button class="small" id="btnOpen">открытые</button></div><div class="toc" id="toc"></div></div>
+    <div class="evstats mono" id="evstats"></div>
+  </aside>
+  <main>
+    <div class="newfork">
+      <div class="row"><b>Развилка, которой нет в журнале</b><button class="small" id="btnToggleNew">добавить</button></div>
+      <div id="newForkForm" class="hidden">
+        <input type="text" id="nfQuestion" placeholder="вопрос">
+        <textarea id="nfOptions" placeholder="варианты — по одному на строку"></textarea>
+        <textarea id="nfWord" placeholder="слово: почему это развилка и что рекомендуешь"></textarea>
+        <div class="row"><button class="primary small" id="btnAddFork">внести</button></div>
+      </div>
+      <div id="newForks"></div>
+    </div>
+    <div id="cards"></div>
+    <h2>Замечания к схеме и плану</h2>
+    <textarea id="notes" placeholder="что не так в схеме работы, в поставках, в этапах"></textarea>
+  </main>
+</div>
+<main class="view hidden" id="viewCheck"></main>
+<main class="view hidden" id="viewAttack"></main>
+<div class="outpanel" id="outpanel">
+  <div class="outhandle" id="outhandle" title="тяни, чтобы изменить высоту панели"></div>
+  <div class="row">
+    <b style="flex:0 0 auto">Возврат решений</b>
+    <span class="ok-flash" id="copied" style="flex:0 0 auto"></span>
+    <span style="flex:1"></span>
+    <button class="primary" id="btnCopy" style="flex:0 0 auto">Скопировать промпт</button>
+  </div>
+  <textarea id="out" readonly></textarea>
+</div>
+
+<script>
+const JOURNAL = {
+ "title": "Журнал решений: attack-severity-buttons",
+ "source": "decisions.json",
+ "sha256": "e5d7f1559149257926b1602b346b6df9b1426f8c0c03834d942d5e1e16e3043d",
+ "stats": {
+  "records": 24,
+  "forks": 8,
+  "facts": 16,
+  "decided": 8,
+  "parked": 1,
+  "evidence_total": 82,
+  "evidence_found": 82
+ },
+ "records": [
+  {
+   "id": "F-01",
+   "question": "Критерий готовности: «у карточки атаки должна быть кнопка понизить или повысить»",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "постановка",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "F-18, F-24",
+   "evidence": [
+    {
+     "path": "openspec/changes/attack-severity-buttons/intent.md",
+     "quote": "«у карточки атаки должна быть кнопка понизить или повысить» — у строки атаки на странице и в плагине две кнопки, тяжесть меняется в обе стороны (слово владельца, 2026-11-04)",
+     "line": 17,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "row",
+    "btn"
+   ],
+   "finding": ""
+  },
+  {
+   "id": "F-02",
+   "question": "Критерий готовности: «и поле ввода обоснования»",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "постановка",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "F-22",
+   "evidence": [
+    {
+     "path": "openspec/changes/attack-severity-buttons/intent.md",
+     "quote": "«и поле ввода обоснования» — без обоснования смена тяжести не вносится (слово владельца, 2026-11-04)",
+     "line": 18,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "why",
+    "stop"
+   ],
+   "finding": ""
+  },
+  {
+   "id": "F-03",
+   "question": "Критерий готовности: «своя строка `apply`»",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "постановка",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "F-17, F-20",
+   "evidence": [
+    {
+     "path": "openspec/changes/attack-severity-buttons/intent.md",
+     "quote": "«своя строка `apply`» — смена тяжести приходит в журнал или файл атаки строкой `apply`, а не повторной атакой (слова модели в варианте F-26.A, владелец его выбрал, 2026-11-04)",
+     "line": 19,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "prompt",
+    "apply"
+   ],
+   "finding": ""
+  },
+  {
+   "id": "F-04",
+   "question": "Критерий готовности: «правка скилла атаки»",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "постановка",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "F-21",
+   "evidence": [
+    {
+     "path": "openspec/changes/attack-severity-buttons/intent.md",
+     "quote": "«правка скилла атаки» — при повторе атаки скилл держит тяжесть, выставленную человеком, и причину (слова модели в варианте F-26.A, 2026-11-04)",
+     "line": 20,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "repeat"
+   ],
+   "finding": ""
+  },
+  {
+   "id": "F-05",
+   "question": "Критерий готовности: «новый номер контракта»",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "постановка",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "F-23, F-24",
+   "evidence": [
+    {
+     "path": "openspec/changes/attack-severity-buttons/intent.md",
+     "quote": "«новый номер контракта» — номер растёт, `Why:` в коммите ядра, плагин догоняет коммитом с `Needs:` (слова модели в варианте F-26.A, 2026-11-04; `docs/repo-contract.md`)",
+     "line": 21,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "contract"
+   ],
+   "finding": ""
+  },
+  {
+   "id": "F-06",
+   "question": "Сегодня тяжесть ниже тяжести линзы ставит только модель при атаке и только по слову человека: причина в скобках называет решённую запись журнала, своё суждение модели тяжесть не снижает, потому что `status` держат только блокеры.",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "агент",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "F-17, F-21",
+   "evidence": [
+    {
+     "path": "attack/attack-table.md",
+     "quote": "только по слову человека, причина в скобках в той же ячейке: `предупреждение (решено человеком",
+     "line": 26,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "attack/skills/symphysis-attack/SKILL.md",
+     "quote": "модели тяжесть не снижает: `status` держат только блокеры, и такое понижение открыло бы",
+     "line": 351,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "cell",
+    "repeat"
+   ],
+   "finding": ""
+  },
+  {
+   "id": "F-07",
+   "question": "Страница и плагин понижение только показывают: бейдж «понижено: <причина>» или «понижение без причины» по тексту ячейки. Кнопок нет; поле у строки — поле спора, его текст уходит замечанием или словом к решению; `apply` строк атаки не меняет. Разбор нынешнего пути: шага «нажал и записано» нет.",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "агент",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "F-17, F-22",
+   "evidence": [
+    {
+     "path": "viewer/playground-template.html",
+     "quote": "понижено: ' + esc(d.reason)",
+     "line": 959,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "vscode/src/viewer/AttackView.tsx",
+     "quote": "<span className=\"badge signal\">понижение без причины<\/span>",
+     "line": 69,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "viewer/playground-template.html",
+     "quote": "спор: почему опора есть / почему не блокер — уйдёт в промпт возврата",
+     "line": 997,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "attack/attack-table.md",
+     "quote": "Строки атаки `apply` не меняет: их закрывает правка цели и повторная атака.",
+     "line": 69,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "openspec/changes/archive/2026-11-04-recommendation-why/research/F-24.md",
+     "quote": "Ни шага «нажал и записано», ни самостоятельного обоснования у строки нет.",
+     "line": 38,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "row",
+    "btn",
+    "why"
+   ],
+   "finding": ""
+  },
+  {
+   "id": "F-08",
+   "question": "Показ понижения на странице и в плагине смотрит только строки с опорой «нет» и тяжестью ниже блокера; повышения показ не знает: у блокера бейджа нет вовсе.",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "агент",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "F-18",
+   "evidence": [
+    {
+     "path": "viewer/playground-template.html",
+     "quote": "if (!noSupport || sevBase(r.severity) === 'блокер') return null;",
+     "line": 953,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "vscode/src/journal/attack.ts",
+     "quote": "sevBase(row.severity) === \"блокер\" ? null",
+     "line": 51,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "row",
+    "cell"
+   ],
+   "finding": ""
+  },
+  {
+   "id": "F-09",
+   "question": "Пункт промпта, который разбирает `apply`, начинается с `- F-NN:`; прочее идёт строкой «Замечания к схеме:». Строки о строке атаки в грамматике нет. Грамматика `apply` входит в контракт с плагином, а новое значение или новый смысл поля — смена контракта.",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "агент",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "F-17, F-23",
+   "evidence": [
+    {
+     "path": "decisions/journal_apply.py",
+     "quote": "RE_ITEM = re.compile(r\"^- (F-N?",
+     "line": 59,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "docs/repo-contract.md",
+     "quote": "грамматика строк `apply`: плагин сам пишет эти строки, и они попадают в журнал;",
+     "line": 46,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "docs/repo-contract.md",
+     "quote": "Новое поле сменой не считается. Удаление, переименование, смена смысла и новое значение существующего поля считаются.",
+     "line": 61,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "prompt",
+    "apply",
+    "contract"
+   ],
+   "finding": ""
+  },
+  {
+   "id": "F-10",
+   "question": "Вердикт атаки — `status` во frontmatter файла атаки: `passed` только при нуле строк `блокер`, и форк читает только его. Тяжесть меняет вердикт лишь на границе «блокер — не блокер».",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "агент",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "F-17, F-18",
+   "evidence": [
+    {
+     "path": "attack/skills/symphysis-attack/SKILL.md",
+     "quote": "`status: passed` ставится, только когда в таблице нет ни одной строки с тяжестью `блокер`;",
+     "line": 385,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "attack/skills/symphysis-attack/SKILL.md",
+     "quote": "Форк читает только `status`; при `mismatch`, `missing` или `stale` `/opsx:continue` снова",
+     "line": 397,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "verdict"
+   ],
+   "finding": ""
+  },
+  {
+   "id": "F-11",
+   "question": "`decisions.json` — первая цель атаки артефактов: любая правка журнала обесценивает её вердикт, и повтор идёт с начала. До первой отмеченной задачи `stale` держит `apply`. У атаки журнала правка без новых записей стоит дешевле: обновляется только `target_sha256`. Сам флаг «прочитано» журнал не трогает: он кладёт текст в промпт возврата, а `apply` штатно пишет заметку в `notes[]`. Но заметка меняет байты журнала, и вердикт атаки артефактов устаревает. Опыт модели на временной копии изменения, 2026-11-08: до внесения отметки у строки `attack/artifacts.md` `attack-artifacts` — `done`, `verdict: ok`; после `apply` — `ready`, `verdict: stale`, планирование не полно.",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "агент",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "F-17",
+   "evidence": [
+    {
+     "path": "openspec/schemas/symphysis/templates/attack-artifacts.md",
+     "quote": "decisions.json первым (опора артефактов — его правка обесценивает и этот вердикт",
+     "line": 24,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "attack/skills/symphysis-attack/SKILL.md",
+     "quote": "Если у `attack-artifacts` разошёлся хеш любой цели или журнала — атака артефактов MUST идти",
+     "line": 133,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "attack/skills/symphysis-attack/SKILL.md",
+     "quote": "— обновляется только `target_sha256`, строки и `status` прежние; `[!!]` у улики записи",
+     "line": 147,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "upstream/openspec/src/core/artifact-graph/state.ts",
+     "quote": "Only `stale` has a window: `mismatch` and `missing` always gate.",
+     "line": 81,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "openspec/specs/stale-verdict-scope/spec.md",
+     "quote": "сверка `check --write`, строки `notes[]`, правка полей прежних записей",
+     "line": 39,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "store",
+    "rerun",
+    "verdict"
+   ],
+   "finding": ""
+  },
+  {
+   "id": "F-12",
+   "question": "Образец рядом — флаг «прочитано» (`attack-warning-read`): заметка `notes[]` известной формы, строка опознаётся по разделу дословно, номер контракта от формы заметки не вырос.",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "агент",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "F-17, F-20",
+   "evidence": [
+    {
+     "path": "openspec/specs/warning-read-flag/spec.md",
+     "quote": "Прочитанной SHALL считаться каждая строка тяжести `предупреждение` файлов атаки, чей раздел равен разделу заметки",
+     "line": 9,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "docs/repo-contract.md",
+     "quote": "новое значение в свободном тексте заметки, номер контракта не растёт",
+     "line": 51,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "store"
+   ],
+   "finding": ""
+  },
+  {
+   "id": "F-13",
+   "question": "Страница ключует спор строки по файлу атаки, разделу и утверждению, а в промпт спора утверждение уходит обрезанным до 60 знаков. Замер модели по шести архивным файлам атак, 2026-11-08: строк 779, из них 94 делят раздел с другой строкой, пар «раздел + утверждение» с повтором нет.",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "агент",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "F-20",
+   "evidence": [
+    {
+     "path": "viewer/playground-template.html",
+     "quote": "function disputeKey(att, row) { return att.path + '|' + row.section + '|' + row.claim; }",
+     "line": 270,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "viewer/playground-template.html",
+     "quote": "shorten(r.claim, 60)",
+     "line": 777,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "prompt"
+   ],
+   "finding": ""
+  },
+  {
+   "id": "F-14",
+   "question": "Нынешний путь понижения словом человека в архиве не применялся ни разу. Замер модели по тем же шести файлам: 14 ячеек тяжести с причиной в скобках, все — довод модели в двух изменениях 2026-11-02, до правила F-136.B; ячеек «решено человеком в F-NN» нет.",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "агент",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "F-17",
+   "evidence": [
+    {
+     "path": "openspec/changes/archive/2026-11-02-symphysis-schema/attack/artifacts.md",
+     "quote": "предупреждение (по линзе блокер; снижено: рендер показывает все парковки, ответ в `finding`)",
+     "line": 80,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "cell"
+   ],
+   "finding": ""
+  },
+  {
+   "id": "F-15",
+   "question": "Плагин ждёт контракт 3 и сверяет номер равенством, а ядро уже на 4. Плагинная половина номера 4 стоит в бэклоге пунктом B-44.",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "агент",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "F-23, F-24",
+   "evidence": [
+    {
+     "path": "vscode/src/core/core.ts",
+     "quote": "export const EXPECTED_CONTRACT = 3;",
+     "line": 9,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "vscode/src/core/core.ts",
+     "quote": "if (contract === EXPECTED_CONTRACT) return null;",
+     "line": 29,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "decisions/journal_render.py",
+     "quote": "CONTRACT = 4",
+     "line": 22,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "context/backlog/symphysis-backlog.md",
+     "quote": "### B-44. Адресат `агент` и контракт 4 в плагине",
+     "line": 427,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "contract"
+   ],
+   "finding": ""
+  },
+  {
+   "id": "F-16",
+   "question": "В очереди группы 2 бэклога B-18 стоит перед B-16. Изменение B-18 (`attack-lens-conventions`) в своём намерении берёт номер 5 и отдаёт этому изменению номер 6.",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "агент",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "F-23",
+   "evidence": [
+    {
+     "path": "context/backlog/symphysis-backlog.md",
+     "quote": "2. B-18",
+     "line": 33,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "context/backlog/symphysis-backlog.md",
+     "quote": "3. B-16",
+     "line": 34,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "lens/openspec/changes/attack-lens-conventions/intent.md",
+     "quote": "B-16 — номер 6",
+     "line": 13,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "contract"
+   ],
+   "finding": ""
+  },
+  {
+   "id": "F-17",
+   "question": "Где живёт тяжесть, которую сменил человек, и когда она меняет вердикт: в журнале до повтора атаки или в файле атаки сразу",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Журнал, заметка `notes[]` известной формы, как флаг «прочитано»: своя строка `apply` кладёт заметку с файлом атаки, ключом строки, новой тяжестью и обоснованием. Повтор атаки читает заметку и пишет ячейку; вердикт меняется только после повтора. Правка журнала обесценивает вердикт атаки артефактов, и до `apply` каждое слово стоит её повтора с начала. Страница, плагин и скилл разбирают свободный текст заметки по сегментам « · ». Обратимость: форма заметки остаётся в журналах навсегда.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/specs/warning-read-flag/spec.md",
+       "quote": "Прочитанной SHALL считаться каждая строка тяжести `предупреждение` файлов атаки, чей раздел равен разделу заметки",
+       "line": 9,
+       "verdict": "сверено",
+       "found": true
+      },
+      {
+       "path": "openspec/schemas/symphysis/templates/attack-artifacts.md",
+       "quote": "decisions.json первым (опора артефактов — его правка обесценивает и этот вердикт",
+       "line": 24,
+       "verdict": "сверено",
+       "found": true
+      },
+      {
+       "path": "attack/skills/symphysis-attack/SKILL.md",
+       "quote": "Если у `attack-artifacts` разошёлся хеш любой цели или журнала — атака артефактов MUST идти",
+       "line": 133,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Журнал, запись: своя строка `apply` заводит запись с одним вариантом и решением, слово — обоснование. Ячейка сохраняет нынешнюю форму «предупреждение (решено человеком в F-NN)», разбор страницы и плагина не меняется. Цена: служебные записи попадают в Decisions `design.md` и в состав повтора атаки журнала. Обесценивание атаки артефактов и повтор — как в A.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "attack/attack-table.md",
+       "quote": "только по слову человека, причина в скобках в той же ячейке: `предупреждение (решено человеком",
+       "line": 26,
+       "verdict": "сверено",
+       "found": true
+      },
+      {
+       "path": "cli/journal-cli.md",
+       "quote": "шаг design: Decisions, Risks / Trade-offs, Open Questions из журнала",
+       "line": 28,
+       "verdict": "сверено",
+       "found": true
+      },
+      {
+       "path": "attack/skills/symphysis-attack/SKILL.md",
+       "quote": "Если у `attack-artifacts` разошёлся хеш любой цели или журнала — атака артефактов MUST идти",
+       "line": 133,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "C",
+     "text": "Журнал, новое поле верхнего уровня со списком слов о тяжести: файл атаки, ключ строки, было, стало, обоснование, дата. Схема проверяет форму, `check` может сверить, что строка есть. Новое поле само номер не поднимает, его поднимает новая строка `apply`. Обесценивание атаки артефактов и повтор — как в A.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "docs/repo-contract.md",
+       "quote": "Новое поле сменой не считается. Удаление, переименование, смена смысла и новое значение существующего поля считаются.",
+       "line": 61,
+       "verdict": "сверено",
+       "found": true
+      },
+      {
+       "path": "decisions/journal.schema.json",
+       "quote": "\"additionalProperties\": false,",
+       "line": 7,
+       "verdict": "сверено",
+       "found": true
+      },
+      {
+       "path": "attack/skills/symphysis-attack/SKILL.md",
+       "quote": "Если у `attack-artifacts` разошёлся хеш любой цели или журнала — атака артефактов MUST идти",
+       "line": 133,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "D",
+     "text": "Файл атаки: своя строка `apply` переписывает ячейку тяжести строки с обоснованием и пересчитывает `status`; журнал не меняется. Вердикт меняется в момент `apply`, ни одна атака не устаревает: файлы атаки не входят в цели. Цена: `apply` становится вторым писателем файла атаки, нужно внесение «всё или ничего» на несколько файлов, а слово лежит в ячейке и в `answers/`, но не в журнале. Обратимость: снять второго писателя потом дороже, чем не заводить.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "attack/attack-table.md",
+       "quote": "Строки атаки `apply` не меняет: их закрывает правка цели и повторная атака.",
+       "line": 69,
+       "verdict": "сверено",
+       "found": true
+      },
+      {
+       "path": "attack/attack-table.md",
+       "quote": "Чинит файл атаки тот, кто",
+       "line": 58,
+       "verdict": "сверено",
+       "found": true
+      },
+      {
+       "path": "decisions/journal_apply.py",
+       "quote": "оставляет журнал как был —",
+       "line": 302,
+       "verdict": "сверено",
+       "found": true
+      },
+      {
+       "path": "attack/skills/symphysis-attack/SKILL.md",
+       "quote": "Форк читает только `status`; при `mismatch`, `missing` или `stale` `/opsx:continue` снова",
+       "line": 397,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "D",
+    "why": "Только D меняет вердикт в момент `apply`. A, B и C правят `decisions.json`, первую цель атаки артефактов, и каждое слово о тяжести до `apply` стоит её повтора с начала (F-11): щелчок не станет «нажал и записано». Правило, по которому повтор держит слово человека, нужно во всех четырёх вариантах, так что лишняя цена D — второй вид файла у `apply`. Против B ещё и служебные записи в Decisions, против A — разбор свободного текста заметки."
+   },
+   "decision": {
+    "option": "D",
+    "word": "",
+    "date": "2026-11-08"
+   },
+   "reversibility": {
+    "level": "дорого",
+    "why": "`apply` становится вторым писателем файлов атаки, строка о тяжести входит в грамматику контракта (номер 6) и в промпт плагина; отказ от этого — новый номер контракта, а ячейки, записанные `apply`, останутся в файлах атаки и архиве"
+   },
+   "outcome": null,
+   "parking": [
+    {
+     "addressee": "ИБ",
+     "text": "При D путь файла атаки приходит строкой промпта, и `apply` пишет по нему: ограничить запись файлами `attack/decisions.md` и `attack/artifacts.md` каталога изменения. Обоснование ложится в ячейку таблицы: черта, backtick, скобка и перевод строки ломают разбор (`attack/attack-table.md`, «Правило ячейки»)."
+    },
+    {
+     "addressee": "человек",
+     "text": "Соседняя задача, не этого изменения: отметка «прочитано» у строки `attack/artifacts.md` после `apply` ложится заметкой в `notes[]` журнала, и вердикт атаки артефактов устаревает; до первой отмеченной задачи это держит `apply` и требует повтора атаки артефактов с начала (F-11). Записать в бэклог отдельным пунктом?",
+     "finding": "Записано в бэклог пунктом B-46 «Заметка журнала после атаки артефактов обесценивает её вердикт», приоритет low, группа 6. Слово владельца, 2026-11-08: «Да, запиши в бэклог, но с приоритетом Low. окно, когда артефакты созданы, и можно к ним применить линзу до касания первой из задач -- небольшое. А большинство решений принимается после брейншторма(несколько кругов) и после создания specs(чаще всего один заход обработки развилок).» Уточнение владельца к «применить линзу», 2026-11-08: «я имел ввиду, что применить атаку с включенной линзой да.»"
+    }
+   ],
+   "dispute": "",
+   "consequences": "решение задаёт форму строки `apply` (F-09) и место, откуда повтор атаки берёт слово (F-21)",
+   "evidence": [],
+   "comments": [],
+   "nodes": [
+    "store",
+    "apply",
+    "rerun",
+    "cell"
+   ],
+   "finding": "Записано в бэклог пунктом B-46 «Заметка журнала после атаки артефактов обесценивает её вердикт», приоритет low, группа 6. Слово владельца, 2026-11-08: «Да, запиши в бэклог, но с приоритетом Low. окно, когда артефакты созданы, и можно к ним применить линзу до касания первой из задач -- небольшое. А большинство решений принимается после брейншторма(несколько кругов) и после создания specs(чаще всего один заход обработки развилок).» Уточнение владельца к «применить линзу», 2026-11-08: «я имел ввиду, что применить атаку с включенной линзой да.»"
+  },
+  {
+   "id": "F-18",
+   "question": "Между какими тяжестями ходят две кнопки",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Три ступени, щелчок — шаг на одну: блокер ↔ предупреждение ↔ справка, у любой строки. Повысить справку с опорой «есть» — человек не верит опоре; понизить предупреждение до справки — близко к флагу «прочитано».",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "attack/skills/symphysis-attack/SKILL.md",
+       "quote": "`status: passed` ставится, только когда в таблице нет ни одной строки с тяжестью `блокер`;",
+       "line": 385,
+       "verdict": "сверено",
+       "found": true
+      },
+      {
+       "path": "openspec/specs/warning-read-flag/spec.md",
+       "quote": "Прочитанной SHALL считаться каждая строка тяжести `предупреждение` файлов атаки, чей раздел равен разделу заметки",
+       "line": 9,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Только граница вердикта: «понизить» у блокера, «повысить» у предупреждения, у справки кнопок нет. Повышение держит `apply`, понижение открывает; спор с опорой справки идёт полем спора, как сейчас.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "attack/skills/symphysis-attack/SKILL.md",
+       "quote": "`status: passed` ставится, только когда в таблице нет ни одной строки с тяжестью `блокер`;",
+       "line": 385,
+       "verdict": "сверено",
+       "found": true
+      },
+      {
+       "path": "attack/skills/symphysis-attack/SKILL.md",
+       "quote": "Форк читает только `status`; при `mismatch`, `missing` или `stale` `/opsx:continue` снова",
+       "line": 397,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "C",
+     "text": "Любая тяжесть выбором из списка вместо двух кнопок.",
+     "added": false,
+     "unlikely": "слово владельца — «кнопка понизить или повысить», список его не исполняет",
+     "evidence": [
+      {
+       "path": "viewer/playground-template.html",
+       "quote": "if (!noSupport || sevBase(r.severity) === 'блокер') return null;",
+       "line": 953,
+       "verdict": "сверено",
+       "found": true
+      }
+     ],
+     "deviation": "F-01"
+    }
+   ],
+   "antipodes": [
+    {
+     "option": "A",
+     "other": "F-21.B"
+    }
+   ],
+   "recommendation": {
+    "option": "B",
+    "why": "Вердикт держат только блокеры (F-10): B исполняет обе стороны слова владельца ровно там, где тяжесть что-то открывает или держит. Ступень «предупреждение ↔ справка» из A вердикт не меняет, а понижение до справки повторяет флаг «прочитано». C идёт против слова «кнопка»."
+   },
+   "decision": {
+    "option": "B",
+    "word": "",
+    "date": "2026-11-08"
+   },
+   "reversibility": {
+    "level": "дорого",
+    "why": "расширение до ступени «справка» — новое значение тяжести в строке `apply`, то есть смена контракта и коммит плагина с `Needs:`"
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "задаёт, у каких строк есть кнопки (F-19) и что показ знает о повышении (F-08)",
+   "evidence": [],
+   "comments": [],
+   "nodes": [
+    "btn"
+   ],
+   "finding": ""
+  },
+  {
+   "id": "F-19",
+   "question": "Есть ли кнопки у строк покрытия «не пройдено» и «файла нет»: это блокеры без находки",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-18"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Кнопок нет: такой блокер говорит, что раздел не проверен, и закрывает его только повтор атаки. Отказаться от проверки человек может составом линз, не тяжестью строки.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "attack/attack-table.md",
+       "quote": "Раздел, до которого проход не дошёл",
+       "line": 40,
+       "verdict": "сверено",
+       "found": true
+      },
+      {
+       "path": "openspec/schemas/symphysis/templates/attack-artifacts.md",
+       "quote": "Состав меняет только человек: модель состав не меняет и symphysis.yaml не трогает.",
+       "line": 22,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Кнопки как у любой строки: человек может принять раздел без атаки, обоснование стоит в ячейке.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "attack/attack-table.md",
+       "quote": "Раздел, до которого проход не дошёл",
+       "line": 40,
+       "verdict": "сверено",
+       "found": true
+      },
+      {
+       "path": "attack/attack-table.md",
+       "quote": "опора `нет: файла нет`, `блокер`",
+       "line": 47,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Понижение «не пройдено» дало бы `passed` атаке, которая раздел не прошла, и вердикт перестал бы значить «проверено». Для отказа от проверки у человека уже есть состав линз, а B открывал бы второй путь к тому же без следа в составе."
+   },
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-08"
+   },
+   "reversibility": {
+    "level": "обратимо",
+    "why": "форма строки `apply` та же: добавить кнопки у строк покрытия позже — правило показа страницы и плагина и снятие отказа `apply` по таким строкам, без миграции данных"
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [],
+   "comments": [],
+   "nodes": [
+    "row",
+    "btn"
+   ],
+   "finding": ""
+  },
+  {
+   "id": "F-20",
+   "question": "Чем опознаётся строка, у которой человек сменил тяжесть: для `apply` и для повтора атаки",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Файл атаки и раздел, как у флага «прочитано». По замеру 94 строки из 779 делят раздел: одно слово сменило бы тяжесть и соседних строк раздела.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/specs/warning-read-flag/spec.md",
+       "quote": "Прочитанной SHALL считаться каждая строка тяжести `предупреждение` файлов атаки, чей раздел равен разделу заметки",
+       "line": 9,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Файл атаки, раздел и утверждение дословно, как ключ спора на странице; повторов пары в замере нет. Утверждение идёт в строку промпта целиком, не обрезанным, как у спора. Повтор, переписавший утверждение, теряет связь: строка возвращается к тяжести линзы, итог атаки называет слово без строки.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "viewer/playground-template.html",
+       "quote": "function disputeKey(att, row) { return att.path + '|' + row.section + '|' + row.claim; }",
+       "line": 270,
+       "verdict": "сверено",
+       "found": true
+      },
+      {
+       "path": "viewer/playground-template.html",
+       "quote": "shorten(r.claim, 60)",
+       "line": 777,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "C",
+     "text": "Файл атаки, раздел, линза и утверждение: B плюс линза. По замеру линза ничего не добавляет, B уже уникален.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "viewer/playground-template.html",
+       "quote": "function disputeKey(att, row) { return att.path + '|' + row.section + '|' + row.claim; }",
+       "line": 270,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "D",
+     "text": "Новый столбец с номером строки в таблице атаки: номер переживает переписанное утверждение. Меняет таблицу на восемь столбцов, разбор, плагин и форму всех архивных файлов; ближе к B-17.",
+     "added": false,
+     "unlikely": "формат таблицы — контракт и архив, менять его ради ключа, который B уже даёт уникальным, дорого; обратимость — в одну сторону",
+     "evidence": [
+      {
+       "path": "attack/attack-table.md",
+       "quote": "Чинит файл атаки тот, кто",
+       "line": 58,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "B",
+    "why": "Этот ключ страница уже держит для спора (F-13), и в замере он уникален. A ошибается на каждой из 94 строк с общим разделом, C ничего не добавляет к B, D меняет таблицу и архив ради того же."
+   },
+   "decision": {
+    "option": "B",
+    "word": "",
+    "date": "2026-11-08"
+   },
+   "reversibility": {
+    "level": "дорого",
+    "why": "ключ строки — часть грамматики строки `apply` (контракт) и правила переноса в скилле атаки; другой ключ — новый номер контракта, а файлы `answers/` со старой формой строки останутся"
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "задаёт форму строки `apply` и сверку при повторе атаки (F-21)",
+   "evidence": [],
+   "comments": [],
+   "nodes": [
+    "prompt",
+    "apply",
+    "repeat"
+   ],
+   "finding": ""
+  },
+  {
+   "id": "F-21",
+   "question": "Когда слово человека о тяжести перестаёт действовать при повторе атаки",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-20"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Пока в таблице есть строка с тем же ключом: тяжесть человека и причина переносятся при любом повторе, даже когда опора стала «есть». Строки с ключом нет — слово не действует, итог атаки его называет.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "attack/skills/symphysis-attack/SKILL.md",
+       "quote": "модели тяжесть не снижает: `status` держат только блокеры, и такое понижение открыло бы",
+       "line": 351,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Пока строка с тем же ключом есть и опора у неё не «есть». Опора стала «есть» — строка `справка`, слово больше не действует: повышенный блокер, чью дыру закрыла правка цели, перестаёт держать `apply`. Строки с ключом нет — как в A.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "attack/skills/symphysis-attack/SKILL.md",
+       "quote": "модели тяжесть не снижает: `status` держат только блокеры, и такое понижение открыло бы",
+       "line": 351,
+       "verdict": "сверено",
+       "found": true
+      },
+      {
+       "path": "attack/skills/symphysis-attack/SKILL.md",
+       "quote": "`status: passed` ставится, только когда в таблице нет ни одной строки с тяжестью `блокер`;",
+       "line": 385,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "C",
+     "text": "До следующего повтора: повтор пишет тяжесть линзы, человек жмёт снова.",
+     "added": false,
+     "unlikely": "против критерия «при повторе атаки скилл держит тяжесть, выставленную человеком»",
+     "evidence": [
+      {
+       "path": "attack/attack-table.md",
+       "quote": "только по слову человека, причина в скобках в той же ячейке: `предупреждение (решено человеком",
+       "line": 26,
+       "verdict": "сверено",
+       "found": true
+      }
+     ],
+     "deviation": "F-04"
+    }
+   ],
+   "antipodes": [
+    {
+     "option": "B",
+     "other": "F-18.A"
+    }
+   ],
+   "recommendation": {
+    "option": "B",
+    "why": "Повышение должно держать `apply` до правки цели, не дольше. В A оно держало бы его и после того, как правка закрыла дыру, и человеку пришлось бы понижать строку заново. Для понижения A и B совпадают: опора «есть» и так даёт справку. C идёт против критерия."
+   },
+   "decision": {
+    "option": "B",
+    "word": "",
+    "date": "2026-11-08"
+   },
+   "reversibility": {
+    "level": "обратимо",
+    "why": "правило тела скилла `symphysis-attack` и сценарий мастер-спеки `artifact-attack`; ячейки переписываются при каждом повторе атаки, данных для миграции нет"
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [],
+   "comments": [],
+   "nodes": [
+    "repeat"
+   ],
+   "finding": ""
+  },
+  {
+   "id": "F-22",
+   "question": "Где человек пишет обоснование: своё поле у кнопок или поле спора",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Своё поле рядом с кнопками: его текст уходит только в строку о тяжести, кнопка без текста строки не даёт. Поле спора остаётся как есть.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "viewer/playground-template.html",
+       "quote": "спор: почему опора есть / почему не блокер — уйдёт в промпт возврата",
+       "line": 997,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Поле спора и есть обоснование: нажатая кнопка забирает его текст в строку о тяжести, отдельного замечания по спору тогда нет.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "viewer/playground-template.html",
+       "quote": "спор: почему опора есть / почему не блокер — уйдёт в промпт возврата",
+       "line": 997,
+       "verdict": "сверено",
+       "found": true
+      },
+      {
+       "path": "openspec/specs/decision-viewer/spec.md",
+       "quote": "Ответ у строки с закрытием «вопрос человеку» и разделом `F-NN, decision` SHALL давать слово к решению",
+       "line": 509,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Текст спора уже уходит замечанием или словом к решению (F-07). Одно поле с двумя путями дало бы одному тексту два прочтения в промпте, а у строки «вопрос человеку» — ещё и третье. Отдельное поле стоит одного элемента карточки."
+   },
+   "decision": {
+    "option": "A",
+    "word": "Но поле скрываемое, как например парковка у решения. Иначе слишком много полей.",
+    "date": "2026-11-08"
+   },
+   "reversibility": {
+    "level": "обратимо",
+    "why": "показ шаблона страницы и вида атаки плагина; строка промпта от выбора поля не зависит, контракт не задет"
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [],
+   "comments": [],
+   "nodes": [
+    "why",
+    "stop"
+   ],
+   "finding": ""
+  },
+  {
+   "id": "F-23",
+   "question": "Какой номер контракта берёт это изменение, если параллельно B-18 тоже меняет контракт",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Номер 6 сразу, по очереди группы 2: B-18 вливается первым и берёт 5. Вольётся это изменение раньше — номер в `main` прыгнет с 4 на 6, а B-18 при мерже возьмёт 7.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "context/backlog/symphysis-backlog.md",
+       "quote": "2. B-18",
+       "line": 33,
+       "verdict": "сверено",
+       "found": true
+      },
+      {
+       "path": "context/backlog/symphysis-backlog.md",
+       "quote": "3. B-16",
+       "line": 34,
+       "verdict": "сверено",
+       "found": true
+      },
+      {
+       "path": "lens/openspec/changes/attack-lens-conventions/intent.md",
+       "quote": "B-16 — номер 6",
+       "line": 13,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Номер 5 в ветке, окончательный номер решает мерж: второе влитое из двух переписывает свой номер, абзац «С номера N» и тест.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "tests/test_repo_contract.py",
+       "quote": "assert journal_render.CONTRACT == 4",
+       "line": 45,
+       "verdict": "сверено",
+       "found": true
+      },
+      {
+       "path": "decisions/journal_render.py",
+       "quote": "CONTRACT = 4",
+       "line": 22,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "C",
+     "text": "Один номер 5 на оба изменения.",
+     "added": false,
+     "unlikely": "каждая смена контракта — свой абзац «С номера N» и свой тест, а плагин догоняет их по отдельности",
+     "evidence": [
+      {
+       "path": "tests/test_repo_contract.py",
+       "quote": "assert journal_render.CONTRACT == 4",
+       "line": 45,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Бэклог и оба намерения уже ставят B-18 первым (F-16), и при этом порядке ни одно изменение свой номер не переписывает. B заранее обещает конфликт в одних и тех же строках `repo-contract.md` и теста, C нарушает правило «один номер — одна смена»."
+   },
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-08"
+   },
+   "reversibility": {
+    "level": "обратимо",
+    "why": "до вливания номер — константа `CONTRACT`, абзац «С номера 6» в `docs/repo-contract.md` и тест; после вливания и выпуска плагина с `Needs:` номер уже не переписывается"
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [],
+   "comments": [],
+   "nodes": [
+    "contract"
+   ],
+   "finding": ""
+  },
+  {
+   "id": "F-24",
+   "question": "Делается ли плагинная половина в этом изменении",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Да: кнопки, поле, строка промпта и `EXPECTED_CONTRACT` в плагине, коммит с `Needs:`. Плагин сверяет номер равенством и стоит на 3: прежде ему нужны плагинные половины номеров 4 (B-44) и 5 (B-18).",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "vscode/src/core/core.ts",
+       "quote": "export const EXPECTED_CONTRACT = 3;",
+       "line": 9,
+       "verdict": "сверено",
+       "found": true
+      },
+      {
+       "path": "vscode/src/core/core.ts",
+       "quote": "if (contract === EXPECTED_CONTRACT) return null;",
+       "line": 29,
+       "verdict": "сверено",
+       "found": true
+      },
+      {
+       "path": "context/backlog/symphysis-backlog.md",
+       "quote": "### B-44. Адресат `агент` и контракт 4 в плагине",
+       "line": 427,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Нет: отдельный пункт бэклога плагина, как B-44. Ядро делает страницу, `apply`, скилл и контракт; плагин догоняет своим изменением с `Needs:` после B-44 и плагинной половины B-18.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "context/backlog/symphysis-backlog.md",
+       "quote": "### B-44. Адресат `агент` и контракт 4 в плагине",
+       "line": 427,
+       "verdict": "сверено",
+       "found": true
+      },
+      {
+       "path": "vscode/src/core/core.ts",
+       "quote": "if (contract === EXPECTED_CONTRACT) return null;",
+       "line": 29,
+       "verdict": "сверено",
+       "found": true
+      }
+     ],
+     "deviation": "F-01"
+    },
+    {
+     "letter": "C",
+     "text": "Кнопки только в плагине, страница без них.",
+     "added": false,
+     "unlikely": "на странице доступны все виды слова, и плагин без кнопок ещё долго был бы единственным путём",
+     "evidence": [
+      {
+       "path": "docs/repo-contract.md",
+       "quote": "На странице доступны все виды слова.",
+       "line": 82,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "B",
+    "why": "Плагин сверяет номер равенством (F-15): номер 6 он возьмёт только вместе с 4 и 5, а их половины ещё стоят в его очереди. A тянул бы сюда чужие изменения плагина. Так уже сделали с адресатом «агент» (B-44)."
+   },
+   "decision": {
+    "option": "B",
+    "word": "",
+    "date": "2026-11-08"
+   },
+   "reversibility": {
+    "level": "обратимо",
+    "why": "плагинная половина — пункт бэклога плагина, кода нет; вернуть её в изменение можно до начала реализации"
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [],
+   "comments": [],
+   "nodes": [
+    "row",
+    "contract"
+   ],
+   "finding": ""
+  }
+ ],
+ "notes": [
+  {
+   "date": "2026-11-08",
+   "text": "круг 1 закончен: решений 8, фактов 16, открытых развилок 0, парковок агенту 0, антиподов 1"
+  },
+  {
+   "date": "2026-11-08",
+   "text": "брейншторм закончен по решению человека"
+  }
+ ]
+};
+const ATTACK = [];
+const SCHEME = {
+ "exists": true,
+ "text": "flowchart TD\n  row[\"Строка атаки на карточке: страница symphysis.html и плагин\"] --> btn{\"Кнопка: понизить или повысить\"}\n  btn --> why[\"Поле обоснования у строки\"]\n  why -->|пусто| stop[\"Смена тяжести не вносится\"]\n  why -->|текст| prompt[\"Промпт возврата: своя строка apply о тяжести\"]\n  prompt --> apply[\"journal.py apply: всё или ничего\"]\n  apply --> store{\"Где живёт сменённая тяжесть: журнал или файл атаки\"}\n  store -->|журнал| rerun[\"Повтор атаки читает слово и пишет ячейку\"]\n  store -->|файл атаки| cell[\"Ячейка тяжести с причиной и status во frontmatter\"]\n  rerun --> cell\n  cell --> verdict[\"Вердикт: status по счёту блокеров, форк читает только его\"]\n  verdict --> repeat[\"Следующий повтор атаки держит тяжесть человека и причину\"]\n  apply -.-> contract[\"Новый номер контракта: Why в коммите ядра, Needs в коммите плагина\"]\n",
+ "blocks": 1,
+ "first_line": 9,
+ "mermaid": "../../../.symphysis/tools/mermaid.min.js"
+};
+const HELP = {
+ "contract": 4,
+ "taken_at": "2026-11-08T01:49:23+03:00",
+ "versions": {
+  "openspec": "1.16.1+symphysis.5",
+  "symphysis": null
+ },
+ "change": "attack-severity-buttons",
+ "changes": null,
+ "error": null,
+ "current_step": "proposal",
+ "current_text": "Следующий шаг по файлам — `proposal`, ход модели.",
+ "turn": "model",
+ "next_by_status": "proposal",
+ "forks": {
+  "open": 0,
+  "parked": 0
+ },
+ "tasks": {
+  "state": "blocked",
+  "total": 0,
+  "complete": 0,
+  "remaining": 0
+ },
+ "steps": [
+  {
+   "id": "intent",
+   "state": "done",
+   "turn": "human",
+   "optional": false,
+   "blocks": [
+    "decisions"
+   ],
+   "stops_apply": false,
+   "waits_for": [],
+   "files": [
+    {
+     "path": "openspec/changes/attack-severity-buttons/intent.md",
+     "exists": true
+    }
+   ],
+   "file_note": "файл есть, содержание не проверялось",
+   "texts": {
+    "title": "Намерение человека",
+    "why": "Весь конвейер идёт от слов человека: что нужно и по каким признакам работа считается готовой. Критерии из этого файла становятся первыми записями журнала, и с ними потом сверяются решения.",
+    "mechanics": "- Файл пишет человек: приносит готовый или отвечает на вопрос модели. Ответ сохраняется дословно по шаблону: слова в раздел «Намерение», критерии в «Критерии готовности». Модель содержания не добавляет.\n- «Без критериев готовности» — законное значение.\n- Дальше файл не правится: переработанное намерение живёт записями журнала, файл остаётся словами человека на входе.\n- Пустой файл шаг закрывает, потому что готовность считается по наличию файла. Тогда намерение спросит следующий шаг, до первого круга брейншторма.",
+    "if_skipped": "Модель работает от своего пересказа задачи, а сверить его не с чем. Без критериев готовности нельзя будет заметить отступление от постановки: пометка `deviation` у варианта ссылается на факт, взятый из этого файла.",
+    "what_to_check": "`intent.md`: совпадают ли слова с тем, что человек имел в виду, и названы ли критерии готовности.",
+    "command": "`openspec new change attack-severity-buttons` создаёт изменение, файл кладётся в его каталог. Либо `/opsx:continue attack-severity-buttons`: модель спросит намерение и сохранит ответ.",
+    "how_to_prepare": "Модели, которая работает с symphysis, на входе нужно больше ясности:\n\n- с чем работаем;\n- где искать материалы;\n- какие компоненты участвуют;\n- побольше литералов, чтобы по ним грепать.\n\nК этому добавляется наличие контекст-пакетов для репозиториев, с которыми ведётся работа. Например, в intent сказано: «Добавить API метод для бэкенд, а для фронтэнд добавить форму отчёта». Значит, это уже два проекта, контекст-пакет которых надо брать."
+   },
+   "text_note": null,
+   "prev": null,
+   "next": "decisions",
+   "skills": []
+  },
+  {
+   "id": "decisions",
+   "state": "done",
+   "turn": "model",
+   "optional": false,
+   "blocks": [
+    "research"
+   ],
+   "stops_apply": false,
+   "waits_for": [],
+   "files": [
+    {
+     "path": "openspec/changes/attack-severity-buttons/decisions.json",
+     "exists": true
+    }
+   ],
+   "file_note": "файл есть, содержание не проверялось",
+   "texts": {
+    "title": "Журнал решений",
+    "why": "Все развилки изменения собираются в одном месте с вариантами и уликами, и решает по ним человек. Следующие шаги стоят на решённых записях, а не на догадках модели.",
+    "mechanics": "- Скилл `symphysis-brainstorm`. Интервью идёт по пяти перспективам: исследователь, упрощатель, хранитель границ, аналитик отказов, закрывающий. Вопросы человеку идут порциями по 2–3.\n- Первые записи — факты постановки: по одному на критерий готовности из `intent.md`, с цитатой.\n- У каждого вопроса свой маршрут. Ответ есть в файлах — факт с уликой, человека не спрашивают. Выбор между вариантами — развилка с вариантами, уликами и одной рекомендацией. Знает только человек — вопрос в чат. Канон безопасности (инъекции, пути, токены, права, чувствительные данные) — парковка адресату `ИБ`. Не прочитать сейчас — парковка адресату `агент`, её разберёт исследование.\n- Находка, из которой напрашивается конструкция, пишется двумя записями: факт-наблюдение и развилка.\n- `journal.py check` сверяет улики с файлами дословно: это сигнал, не стоп.\n- Решение появляется только из слова человека: `decision` пишет `journal.py apply`. Числового гейта ясности нет: круг кончается счётом новых решений и фактов, новый круг — по слову человека.",
+    "if_skipped": "Выбор модели уходит в артефакты минуя человека: увидеть его получится уже в коде. Proposal ссылается на решённые записи `F-NN`, а требований сверх решений в нём быть не должно, поэтому без журнала ему не на что опереться. Статус считает шаг готовым по наличию файла, поэтому журнал без единой записи тоже выглядит готовым.",
+    "what_to_check": "`decisions.json` — сам журнал. `decisions.md` — он же для чтения. `scheme.md` — схема решения, шаги от неё не зависят.",
+    "command": "`/opsx:continue attack-severity-buttons`",
+    "how_to_prepare": ""
+   },
+   "text_note": null,
+   "prev": "intent",
+   "next": "viewer",
+   "skills": [
+    {
+     "name": "symphysis-brainstorm",
+     "path": ".claude/skills/symphysis-brainstorm/SKILL.md",
+     "base": "project"
+    }
+   ]
+  },
+  {
+   "id": "viewer",
+   "state": "idle",
+   "turn": "human",
+   "optional": false,
+   "blocks": [],
+   "stops_apply": false,
+   "waits_for": [],
+   "files": [],
+   "file_note": null,
+   "texts": {
+    "title": "Круг просмотрщика",
+    "why": "Здесь решает человек. Страница — единственное место, где развилки видны целиком: все варианты, включая маловероятные с причиной, рекомендация под списком, антиподы, зависимости, парковки, факты с уликами.",
+    "mechanics": "- Скилл `symphysis-viewer`. Круг идёт после брейншторма и проб на шагах `decisions`, `specs`, `consequences` и всякий раз, когда в журнале появилась новая развилка.\n- Режимы страницы: «решения» — круг просмотрщика; «проверка» — снимок решений перед proposal, только чтение; «атака» — строки файлов атаки по линзам.\n- Человек выбирает вариант, пишет слово, добавляет вариант или развилку, паркует вопрос с адресатом, оспаривает факт и копирует промпт кнопкой. Слово к выбору необязательно; при выборе мимо рекомендации страница его просит, но внести запись это не мешает.\n- Парковку адресату «агент» закрывает шаг `research`, адресату `ИБ` шаг `security`. У адресата «человек» своего шага нет, поэтому модель разбирает её сразу после `apply`: выполняет поручение из текста или спрашивает в чате, итог пишет в `finding`. Пока его нет, `check` называет такую парковку сигналом.\n- Зависимости идут в одну сторону: запись называет те записи, без решения которых выбор в ней был бы догадкой. Стрелка говорит, что на чём стоит и что чем снято, поэтому новая запись, снимающая прежнее решение, называет его у себя, а при перевыборе старой записи в пользу новой у старой зависимость не добавляется. Обратная стрелка даёт цикл: каждая запись ждёт другую, у открытых страница покажет «предпосылка не решена», а читатель журнала не поймёт, что было решено первым. `check` журнал с циклом не отвергает, но называет цикл сигналом `[!!]`.\n- Модель сохраняет промпт как есть в `answers/<дата>.md` и вносит его `journal.py apply`: всё или ничего, отказ называет запись и причину. JSON руками не правится.\n- Решить можно и в чате: слово вносит тот же `apply`. Кому удобно работать только в чате или только на странице, напишет об этом, и этого достаточно.\n- «Реши сам» — тоже слово человека: вносится рекомендованный вариант, и в журнале видно, что решение отдано модели.",
+    "if_skipped": "Открытая развилка следующие шаги не держит: граф считает только файлы, поэтому модель может идти дальше. Вопрос остаётся без решения человека, его подхватят только атака и Open Questions дизайна, а реализация пойдёт на допущении.",
+    "what_to_check": "`symphysis.html` — страница. `decisions.json` — поле `decision` у решённых записей. `answers/<дата>.md` — промпт возврата как есть.",
+    "command": "`python .symphysis/tools/journal.py render-html openspec/changes/attack-severity-buttons/decisions.json --out openspec/changes/attack-severity-buttons/symphysis.html` собирает страницу; если она собиралась с атакой, полная команда с `--attack` стоит рядом со снимком. Промпт вносит `python .symphysis/tools/journal.py apply openspec/changes/attack-severity-buttons/decisions.json openspec/changes/attack-severity-buttons/answers/<дата>.md`.",
+    "how_to_prepare": ""
+   },
+   "text_note": null,
+   "prev": "decisions",
+   "next": "research",
+   "skills": [
+    {
+     "name": "symphysis-viewer",
+     "path": ".claude/skills/symphysis-viewer/SKILL.md",
+     "base": "project"
+    }
+   ]
+  },
+  {
+   "id": "research",
+   "state": "done",
+   "turn": "model",
+   "optional": false,
+   "blocks": [
+    "attack-decisions",
+    "proposal"
+   ],
+   "stops_apply": false,
+   "waits_for": [],
+   "files": [
+    {
+     "path": "openspec/changes/attack-severity-buttons/research/none.md",
+     "exists": true
+    }
+   ],
+   "file_note": "файл есть, содержание не проверялось",
+   "texts": {
+    "title": "Исследование и второй круг",
+    "why": "Вопросы, припаркованные к агенту, получают ответ с цитатами из прочитанных файлов. Второй круг брейншторма закрывает по этим ответам записи журнала.",
+    "mechanics": "- Скилл `symphysis-research`: на каждую парковку — brief (слово человека, что выяснить, область чтения) и файл исследования. По умолчанию исследование идёт субагенту-водителю, выключается ключом `drivers.research` в `symphysis.yaml`.\n- На каждую парковку адресату «агент» — файл `research/<F-NN>.md`, во frontmatter `genre` (устройство, размещение, края, проверка или аналоги), `question` и `brief`.\n- Найденное — путь, строка и дословная цитата. Ненайденное — «не найдено» и «искал:» с шаблонами дословно.\n- Ответ можно добыть пробой: раздел «Проба» с условиями и следом в каталоге изменения. След не сохранён — находка идёт в «Не найдено» с причиной «следа нет».\n- Парковок нет — один файл `research/none.md`: это законный исход.\n- Второй круг идёт скиллом `symphysis-brainstorm` после отчётов: ответ вносится в запись, улики — путём и цитатой. О новом круге модель спрашивает, отказ ложится в журнал строкой «брейншторм закончен по решению человека».",
+    "if_skipped": "Припаркованные вопросы дойдут до proposal без ответа, и решения встанут на том, что никто не проверил. Без второго круга находки останутся в файлах и не попадут в записи журнала, на которые опираются следующие шаги.",
+    "what_to_check": "`research/<F-NN>.md` или `research/none.md`: есть ли цитаты и честно ли названо ненайденное. `decisions.json`: поле `finding` у парковок и строка о конце брейншторма в `notes[]`.",
+    "command": "`/opsx:continue attack-severity-buttons`",
+    "how_to_prepare": ""
+   },
+   "text_note": null,
+   "prev": "viewer",
+   "next": "attack-decisions",
+   "skills": [
+    {
+     "name": "symphysis-research",
+     "path": ".claude/skills/symphysis-research/SKILL.md",
+     "base": "project"
+    },
+    {
+     "name": "symphysis-brainstorm",
+     "path": ".claude/skills/symphysis-brainstorm/SKILL.md",
+     "base": "project"
+    }
+   ]
+  },
+  {
+   "id": "attack-decisions",
+   "state": "ready",
+   "turn": "model",
+   "optional": true,
+   "blocks": [],
+   "stops_apply": false,
+   "waits_for": [],
+   "files": [
+    {
+     "path": "openspec/changes/attack-severity-buttons/attack/decisions.md",
+     "exists": false
+    }
+   ],
+   "file_note": null,
+   "texts": {
+    "title": "Атака журнала, по желанию",
+    "why": "Проверка журнала до того, как на нём встанут артефакты: какие записи ничем не подкреплены и что в решениях расходится со словами человека.",
+    "mechanics": "- Скилл `symphysis-attack`. Исходная позиция FORCE stance: запись считается негодной, пока улика не докажет обратное. Атака читает файлы и не исполняет цель.\n- Линзы журнала: `context-compliance`, `claim-authority`, `claim-extraction`, `coverage`.\n- У строки есть линза, инвариант и тяжесть: `блокер`, `предупреждение` или `справка`. Невыводимое из цели получает опору «по спеке не выводится» и идёт человеку вопросом.\n- Вердикт во frontmatter: `status: passed` при нуле блокеров, иначе `gaps_found`. Предупреждения идут человеку списком и ничего не держат.\n- Вердикт привязан к хешу журнала, а следующие шаги журнал дописывают. Позже статус покажет `verdict: stale`: это сигнал, идти дальше можно. Состав устаревшего вердикта — сколько и какие записи добавлены после атаки — называют `python .symphysis/tools/journal.py check` строкой `[..] атака журнала: …` и справка шага полем `stale_scope`; повтор атаки проходит только эти записи и их стыки, не журнал с начала.\n- Шаг зовётся только по имени. Вызванная атака становится воротами: пока нет `status: passed`, следующий шаг её ждёт.",
+    "if_skipped": "Неподкреплённая запись или решение против постановки дойдут до proposal и дизайна: там исправлять дороже, потому что на записи уже стоят другие файлы. Найти это сможет разве что атака артефактов.",
+    "what_to_check": "`attack/decisions.md`: `status` во frontmatter и таблица строк. `symphysis.html`, режим «атака»: те же строки по линзам.",
+    "command": "`/opsx:continue attack-severity-buttons attack-decisions`",
+    "how_to_prepare": ""
+   },
+   "text_note": null,
+   "prev": "research",
+   "next": "proposal",
+   "skills": [
+    {
+     "name": "symphysis-attack",
+     "path": ".claude/skills/symphysis-attack/SKILL.md",
+     "base": "project"
+    }
+   ]
+  },
+  {
+   "id": "proposal",
+   "state": "ready",
+   "turn": "model",
+   "optional": false,
+   "blocks": [
+    "specs",
+    "design"
+   ],
+   "stops_apply": false,
+   "waits_for": [],
+   "files": [
+    {
+     "path": "openspec/changes/attack-severity-buttons/proposal.md",
+     "exists": false
+    }
+   ],
+   "file_note": null,
+   "texts": {
+    "title": "Зачем изменение и что оно задевает",
+    "why": "Договор об объёме: почему изменение нужно и какие capabilities оно затрагивает. По этому списку потом пишутся спецификации.",
+    "mechanics": "- Своего скилла у шага нет, правила стоят в инструкции схемы. Разделы шаблона: Why, What Changes, Capabilities, Impact, «Отступления от постановки».\n- Основание — решённые записи журнала: на них ссылаются номером `F-NN`, не пересказывая. Требований, которых нет в решениях, не добавляют.\n- Capabilities — контракт со спецификациями: каждая получит свой файл. Называют её по устойчивому поведению системы, а не по работе в этом изменении.\n- Новые capabilities дели по смыслу, а не по объёму. Часть поведения становится своей capability, если следующее изменение сможет поправить её, не открывая остальные, даже когда всё уместилось бы в одну. Не дроби ради числа и не записывай одно поведение в двух capabilities.\n- В «Отступления от постановки» идут решённые развилки, у выбранного варианта которых есть поле `deviation`.\n- Перед шагом удобно открыть режим «проверка» на странице журнала: снимок принятых решений, только чтение.",
+    "if_skipped": "Спецификациям не из чего взять список capabilities, и объём изменения определит сама модель, по ходу письма. Отступления от постановки никто не соберёт в одном месте, и человек не увидит их списком.",
+    "what_to_check": "`proposal.md`: совпадает ли объём с тем, что решал человек, и правда ли нет отступлений, если там написано «нет».",
+    "command": "`/opsx:continue attack-severity-buttons`",
+    "how_to_prepare": ""
+   },
+   "text_note": null,
+   "prev": "attack-decisions",
+   "next": "specs",
+   "skills": []
+  },
+  {
+   "id": "specs",
+   "state": "blocked",
+   "turn": "model",
+   "optional": false,
+   "blocks": [
+    "consequences",
+    "security",
+    "tasks",
+    "attack-artifacts"
+   ],
+   "stops_apply": false,
+   "waits_for": [
+    "proposal"
+   ],
+   "files": [
+    {
+     "path": "openspec/changes/attack-severity-buttons/specs/**/*.md",
+     "exists": false
+    }
+   ],
+   "file_note": null,
+   "texts": {
+    "title": "Спецификации поведения",
+    "why": "Наблюдаемое поведение, записанное требованиями и сценариями. По нему потом проверяют дизайн и код, поэтому всё, что не названо здесь, проверить будет нечем.",
+    "mechanics": "- Грамматика OpenSpec: `### Requirement:` с SHALL или MUST, у каждого сценарий `#### Scenario:` в виде GIVEN / WHEN / THEN, дельты в секциях `ADDED`, `MODIFIED`, `REMOVED`. `MODIFIED` несёт требование целиком.\n- Проба краёв, скилл `symphysis-edge-probe`: каждое требование проходит закрытую таксономию из восьми категорий (boundary, adjacency, empty, encoding, ordering, precision, idempotency, concurrency), на каждую пару требования и категории — строка файла покрытия. Выключается настройкой в `symphysis.yaml`.\n- Проба запретов, скилл `symphysis-prohibition-probe`: каждому требованию задаётся вопрос, чем оно может тихо стать, чего автор не хотел бы, а спека не запрещает. Инженерная гигиена отсеивается, канон безопасности паркуется адресату `ИБ`.\n- Найденное идёт кандидатами в журнал, у каждого конкретный край или запрет и варианты исхода; выбирает человек в круге просмотрщика. Исход Specify становится новым сценарием.\n- Повтор пробы после правки требования — вызов скилла по имени: сделанный шаг `continue` не открывает.\n- Связи для графа трассируемости: требование называет в тексте номера записей журнала `(F-NN)`, запись другого изменения — якорем `(<изменение>/F-NN)` без даты архива. Требование длиннее 500 знаков вместе с номерами делится: часть уходит в дочернее со своим сценарием и фразой `Часть требования «имя».` в начале; длинное в `MODIFIED` делится так же, сценарии родителя остаются при нём, условия не теряются.",
+    "if_skipped": "Реализации и атаке не с чем сверяться: модель строит по своему прочтению решений. Края и запреты, которых спека не назвала, проверяющий не увидит, а код поведёт себя на них как получится.",
+    "what_to_check": "`specs/<capability>/spec.md`: сценарии и след проб в комментариях. `edge-probe.md`: покрытие по парам. `decisions.json`: кандидаты проб и их исходы.",
+    "command": "`/opsx:continue attack-severity-buttons`",
+    "how_to_prepare": ""
+   },
+   "text_note": null,
+   "prev": "proposal",
+   "next": "consequences",
+   "skills": [
+    {
+     "name": "symphysis-edge-probe",
+     "path": ".claude/skills/symphysis-edge-probe/SKILL.md",
+     "base": "project"
+    },
+    {
+     "name": "symphysis-prohibition-probe",
+     "path": ".claude/skills/symphysis-prohibition-probe/SKILL.md",
+     "base": "project"
+    }
+   ]
+  },
+  {
+   "id": "consequences",
+   "state": "blocked",
+   "turn": "model",
+   "optional": false,
+   "blocks": [
+    "design"
+   ],
+   "stops_apply": false,
+   "waits_for": [
+    "specs"
+   ],
+   "files": [
+    {
+     "path": "openspec/changes/attack-severity-buttons/consequences.md",
+     "exists": false
+    }
+   ],
+   "file_note": null,
+   "texts": {
+    "title": "Опись последствий",
+    "why": "Что делает код, на который опирается изменение, когда что-то идёт не так, и есть ли на это сценарий в спецификациях. Здесь ветки отказа и допущения конструкции доходят до человека раньше, чем появится дизайн.",
+    "mechanics": "- Скилл `symphysis-consequences`. Состав шага модель берёт скриптом `symphysis_config.py` и человека о нём не спрашивает; выбор лежит в личном `symphysis.yaml`.\n- Места кода предлагает `journal.py code-sites`, выбирает модель: разобрать, дополнить или исключить с доводом о конкретном файле.\n- Строка описи — одна на ветку отказа: цитата из кода, что код делает при отказе, что конструкция об этом считает, и итог сверки со сценариями.\n- Ветка или допущение без сценария в `specs/` — кандидат журнала с исходами Specify, Dismiss, Backstop, Defer; выбирает человек в круге просмотрщика.\n- Конец шага — pre-mortem: три причины провала всего изменения, тоже кандидатами.\n- Кандидаты пишутся первыми, файл последним: статус считает шаг сделанным по наличию файла. Разбирать нечего или все колонки выключены — файл с причиной, это законный исход.\n- Повтор описи по слову человека — вызов скилла по имени: сделанный шаг `continue` не открывает.",
+    "if_skipped": "Поведение на сбоях останется тем, что получится в коде: например, битый файл данных прочитается как пустой список, и этого никто не заметит. Допущения конструкции о чужом коде так и останутся непроверенными до первого отказа.",
+    "what_to_check": "`consequences.md`: разделы «Опись», «Исключения», «Pre-mortem» и строка `**Состав:**`. `decisions.json`: кандидаты с префиксами `[ветка]`, `[допущение]`, `[pre-mortem]`.",
+    "command": "`/opsx:continue attack-severity-buttons`",
+    "how_to_prepare": ""
+   },
+   "text_note": null,
+   "prev": "specs",
+   "next": "design",
+   "skills": [
+    {
+     "name": "symphysis-consequences",
+     "path": ".claude/skills/symphysis-consequences/SKILL.md",
+     "base": "project"
+    }
+   ]
+  },
+  {
+   "id": "design",
+   "state": "blocked",
+   "turn": "model",
+   "optional": false,
+   "blocks": [
+    "tasks",
+    "attack-artifacts"
+   ],
+   "stops_apply": false,
+   "waits_for": [
+    "proposal",
+    "consequences"
+   ],
+   "files": [
+    {
+     "path": "openspec/changes/attack-severity-buttons/design.md",
+     "exists": false
+    }
+   ],
+   "file_note": null,
+   "texts": {
+    "title": "Дизайн",
+    "why": "Как реализовать: решения журнала, риски и открытые вопросы в одном документе, от которого идут задачи.",
+    "mechanics": "- Своего скилла у шага нет. Файл собирает `journal.py render-design`: Decisions, Risks / Trade-offs и Open Questions приходят из журнала.\n- Context и Goals / Non-Goals модель вписывает руками после последнего рендера. Повторная сборка эти разделы стирает, поэтому после правки журнала их вписывают заново.\n- Решение излагается, а не принимается: его уже принял человек. Чтобы изменить решение, правят журнал и рендерят заново.",
+    "if_skipped": "Задачам не от чего идти: что строить, скажут спецификации, а как и с какими рисками, останется в журнале, который при реализации не читают. Открытые вопросы не окажутся перед глазами до начала работы.",
+    "what_to_check": "`design.md`: Open Questions, не осталось ли там важного без решения, и Context с границами, которые модель написала сама.",
+    "command": "`/opsx:continue attack-severity-buttons`",
+    "how_to_prepare": ""
+   },
+   "text_note": null,
+   "prev": "consequences",
+   "next": "security",
+   "skills": []
+  },
+  {
+   "id": "security",
+   "state": "blocked",
+   "turn": "model",
+   "optional": false,
+   "blocks": [
+    "attack-artifacts"
+   ],
+   "stops_apply": true,
+   "waits_for": [
+    "specs"
+   ],
+   "files": [
+    {
+     "path": "openspec/changes/attack-severity-buttons/security.md",
+     "exists": false
+    }
+   ],
+   "file_note": null,
+   "texts": {
+    "title": "Чек-лист безопасности",
+    "why": "Канон информационной безопасности отмечается по спецификациям пункт за пунктом: чтобы инъекции, пути и токены не остались вопросом, который никто не задал.",
+    "mechanics": "- Своего скилла у шага нет, правила стоят в инструкции схемы. Канон не записывается в журнал, а отмечается здесь.\n- Пункты: инъекции через содержимое файлов, пути с `../`, токены и срок их жизни, права, бинарные файлы, чувствительные данные в журнале, артефактах и журналах прогона.\n- Таблица: пункт, «применимо / неприменимо — причина», чем проверено. Неприменимый пункт остаётся в таблице с причиной; применимый называет требование из спецификаций, которое его закрывает.\n- Сюда приходят парковки адресату `ИБ` из проб и брейншторма.",
+    "if_skipped": "Канон остаётся непроверенным: уязвимость обнаружится уже в готовом коде, если обнаружится вообще. Парковки адресату `ИБ` останутся без ответа.",
+    "what_to_check": "`security.md`: у каждого применимого пункта названо требование и чем он проверен.",
+    "command": "`/opsx:continue attack-severity-buttons`",
+    "how_to_prepare": ""
+   },
+   "text_note": null,
+   "prev": "design",
+   "next": "tasks",
+   "skills": []
+  },
+  {
+   "id": "tasks",
+   "state": "blocked",
+   "turn": "model",
+   "optional": false,
+   "blocks": [
+    "attack-artifacts"
+   ],
+   "stops_apply": true,
+   "waits_for": [
+    "specs",
+    "design"
+   ],
+   "files": [
+    {
+     "path": "openspec/changes/attack-severity-buttons/tasks.md",
+     "exists": false
+    }
+   ],
+   "file_note": null,
+   "texts": {
+    "title": "Задачи реализации",
+    "why": "Работа, разбитая на задачи, каждую из которых можно закрыть проверкой. По этому списку идёт реализация и считается прогресс.",
+    "mechanics": "- Своего скилла у шага нет, правила стоят в инструкции схемы. Грамматика OpenSpec: группы `## N. Название`, задачи `- [ ] N.M Описание`; прогресс считается только по чекбоксам.\n- Каждая задача называет проверку своего завершения прямо в строке: тест, команду, наблюдаемый результат или файл.\n- Тесты и документацию несёт та группа, чью работу они проверяют, а не последняя.\n- Сценарий задача называет формой `` `capability`: «сценарий» `` у каждого имени, capability не наследуется. Служебная задача без сценария несёт `` `служебная` `` в конце строки. Имя вписывается потому, что задача закрывает сценарий, а не ради исчезновения сигнала.\n- Порядок — по зависимости, задача укладывается в один сеанс.\n- Открытый вопрос дизайна, меняющий задачи, решается с человеком до списка.",
+    "if_skipped": "Порядок и объём реализации определит модель по ходу работы, а закрывать задачу будет нечем, кроме её собственного слова. Прогресс считать не по чему.",
+    "what_to_check": "`tasks.md`: у каждой задачи есть проверка, порядок идёт по зависимости.",
+    "command": "`/opsx:continue attack-severity-buttons`",
+    "how_to_prepare": ""
+   },
+   "text_note": null,
+   "prev": "security",
+   "next": "attack-artifacts",
+   "skills": []
+  },
+  {
+   "id": "attack-artifacts",
+   "state": "blocked",
+   "turn": "model",
+   "optional": true,
+   "blocks": [],
+   "stops_apply": false,
+   "waits_for": [
+    "specs",
+    "design",
+    "security",
+    "tasks"
+   ],
+   "files": [
+    {
+     "path": "openspec/changes/attack-severity-buttons/attack/artifacts.md",
+     "exists": false
+    }
+   ],
+   "file_note": null,
+   "texts": {
+    "title": "Атака артефактов, по желанию",
+    "why": "Проверка спецификаций, описи, дизайна, чек-листа и задач перед реализацией: проходит ли каждый сценарий по коду того механизма, который назвал дизайн, и существует ли то, что названо.",
+    "mechanics": "- Скилл `symphysis-attack`, исходная позиция та же: утверждение считается ложным, пока улика не докажет обратное. Атака читает файлы и грепает, код не запускает.\n- Линзы артефактов: `scenario-run` — сценарий проходится по коду механизма до исхода и сравнивается с THEN; `claim-extraction` — пути, команды, номера `F-NN` и имена модулей проверяются грепом; `trace-link` — связи изменения из графа (проверка задачи против THEN, требование против решения записи) читаются по смыслу.\n- Вердикт: `status: passed` при нуле блокеров, иначе `gaps_found`. Блокер закрывается правкой файла, а если не хватает решения — новой развилкой журнала; затем атака повторяется. На учебном проекте первый вызов дал `gaps_found`, второй `passed`: такой круг ожидаем.\n- Предупреждения идут человеку списком и при реализации читаются как заметки к задачам.\n- Хеши целей лежат в файле атаки: правка цели обесценивает вердикт.\n- Шаг зовётся только по имени. Вызванная атака становится воротами: пока у неё `gaps_found`, реализация не начнётся. Невызванную реализация только называет.",
+    "if_skipped": "Сценарий, который код по этому дизайну не пройдёт, и несуществующий путь найдутся уже при реализации, когда на них потрачена работа. Проверкой остаётся только чтение артефактов человеком.",
+    "what_to_check": "`attack/artifacts.md`: `status` во frontmatter, блокеры и предупреждения. `symphysis.html`, режим «атака»: те же строки по линзам.",
+    "command": "`/opsx:continue attack-severity-buttons attack-artifacts`",
+    "how_to_prepare": ""
+   },
+   "text_note": null,
+   "prev": "tasks",
+   "next": "apply",
+   "skills": [
+    {
+     "name": "symphysis-attack",
+     "path": ".claude/skills/symphysis-attack/SKILL.md",
+     "base": "project"
+    }
+   ]
+  },
+  {
+   "id": "apply",
+   "state": "blocked",
+   "turn": "model",
+   "optional": false,
+   "blocks": [],
+   "stops_apply": false,
+   "waits_for": [
+    "tasks",
+    "security"
+   ],
+   "files": [],
+   "file_note": null,
+   "texts": {
+    "title": "Реализация",
+    "why": "Код по списку задач: модель идёт по `tasks.md` и закрывает задачи их проверками.",
+    "mechanics": "- Работа идёт по `tasks.md` по порядку, задача отмечается `- [x]`, закрывает её проверка из её строки.\n- Строки `предупреждение` в файлах `attack/*.md` читаются до начала работы как заметки к задачам.\n- Модель останавливается, если упёрлась в блокер или нужно уточнение.\n- Заморозка: перед первой задачей и когда отмечена последняя задача, модель зовёт `python .symphysis/tools/trace_graph.py freeze attack-severity-buttons` и отдаёт человеку ссылку на `graph/report.md` из вывода команды, без пересказа и отбора строк. Сигнал отчёта не повод править спеки и задачи без слова человека.\n- Запись журнала `[сигнал]` с решением Specify: модель пишет `outcome` и сценарий с `\u003c!-- F-NN -->`.",
+    "if_skipped": "Спецификации опишут поведение, которого в коде нет: синхронизация и архив перенесут его в общие спеки как состоявшееся.",
+    "what_to_check": "`tasks.md`: отметки задач. Код и тесты, которые названы в проверках задач.",
+    "command": "`/opsx:apply attack-severity-buttons`",
+    "how_to_prepare": ""
+   },
+   "text_note": null,
+   "prev": "attack-artifacts",
+   "next": "sync",
+   "skills": []
+  },
+  {
+   "id": "sync",
+   "state": "waiting",
+   "turn": "model",
+   "optional": false,
+   "blocks": [],
+   "stops_apply": false,
+   "waits_for": [],
+   "files": [],
+   "file_note": null,
+   "texts": {
+    "title": "Синхронизация спек",
+    "why": "Дельты из `specs/` изменения переходят в общие спеки `openspec/specs/`: туда, откуда следующее изменение узнает, как система ведёт себя сейчас.",
+    "mechanics": "- Команда сливает дельты изменения с общими спеками; изменение при этом остаётся активным.\n- Следа в файлах изменения синхронизация не оставляет, поэтому сделана ли она, справка не видит. Спеки сравнивает сама команда архива.\n- След проб — комментарии «проба краёв» и «проба запретов» в конце блока требования — в общую спеку не переносится: его номера записей живут в изменении, после архива по ним ничего не найти.",
+    "if_skipped": "Общие спеки не узнают о новом поведении, и следующее изменение будет проектироваться от устаревшего описания. Архив заметит расхождение сам и предложит синхронизацию.",
+    "what_to_check": "`openspec/specs/`, от корня проекта: появились ли там требования из `specs/<capability>/spec.md` этого изменения.",
+    "command": "`/opsx:sync attack-severity-buttons`",
+    "how_to_prepare": ""
+   },
+   "text_note": null,
+   "prev": "apply",
+   "next": "archive",
+   "skills": []
+  },
+  {
+   "id": "archive",
+   "state": "waiting",
+   "turn": "model",
+   "optional": false,
+   "blocks": [],
+   "stops_apply": false,
+   "waits_for": [],
+   "files": [],
+   "file_note": null,
+   "texts": {
+    "title": "Архивация",
+    "why": "Завершённое изменение уходит из активных и остаётся в архиве целиком, со всеми решениями и артефактами.",
+    "mechanics": "- Изменение переезжает в `openspec/changes/archive/<дата>-attack-severity-buttons/`.\n- Команда сама сверяет артефакты и задачи: незавершённое показывает предупреждением и просит подтвердить.\n- Спеки уже синхронизированы — команда спросит `Archive now`, `Sync anyway` или `Cancel`, обычно подходит `Archive now`. Без синхронизации она предложит сделать её сама.\n- Заморозка: подсказка `operations.archive.guidance` велит до выбора синхронизации позвать `python .symphysis/tools/trace_graph.py freeze attack-severity-buttons`; при новой сборке модель отдаёт ссылку на `graph/report.md`. Ошибку скрипта она называет человеку, архивация не останавливается.",
+    "if_skipped": "Изменение остаётся активным. Когда появится следующее, команды без имени начнут спрашивать, какое брать, а справка без `--change` перестанет называть шаг.",
+    "what_to_check": "`openspec/changes/archive/<дата>-attack-severity-buttons/`, от корня проекта: каталог изменения на новом месте. `openspec/specs/`: итоговые спеки.",
+    "command": "`/opsx:archive attack-severity-buttons`",
+    "how_to_prepare": ""
+   },
+   "text_note": null,
+   "prev": "sync",
+   "next": null,
+   "skills": []
+  }
+ ],
+ "file_links": {
+  ".claude/skills/symphysis-attack/SKILL.md": ".claude/skills/symphysis-attack/SKILL.md",
+  ".claude/skills/symphysis-brainstorm/SKILL.md": ".claude/skills/symphysis-brainstorm/SKILL.md",
+  ".claude/skills/symphysis-consequences/SKILL.md": ".claude/skills/symphysis-consequences/SKILL.md",
+  ".claude/skills/symphysis-edge-probe/SKILL.md": ".claude/skills/symphysis-edge-probe/SKILL.md",
+  ".claude/skills/symphysis-prohibition-probe/SKILL.md": ".claude/skills/symphysis-prohibition-probe/SKILL.md",
+  ".claude/skills/symphysis-research/SKILL.md": ".claude/skills/symphysis-research/SKILL.md",
+  ".claude/skills/symphysis-viewer/SKILL.md": ".claude/skills/symphysis-viewer/SKILL.md",
+  "decisions.json": "openspec/changes/attack-severity-buttons/decisions.json",
+  "decisions.md": "openspec/changes/attack-severity-buttons/decisions.md",
+  "intent.md": "openspec/changes/attack-severity-buttons/intent.md",
+  "openspec/changes/attack-severity-buttons/decisions.json": "openspec/changes/attack-severity-buttons/decisions.json",
+  "openspec/changes/attack-severity-buttons/intent.md": "openspec/changes/attack-severity-buttons/intent.md",
+  "openspec/changes/attack-severity-buttons/research/none.md": "openspec/changes/attack-severity-buttons/research/none.md",
+  "research/none.md": "openspec/changes/attack-severity-buttons/research/none.md",
+  "scheme.md": "openspec/changes/attack-severity-buttons/scheme.md",
+  "symphysis.html": "openspec/changes/attack-severity-buttons/symphysis.html",
+  "symphysis.yaml": "symphysis.yaml"
+ },
+ "rebuild": "python cli/journal.py render-html openspec/changes/attack-severity-buttons/decisions.json --out openspec/changes/attack-severity-buttons/symphysis.html"
+};
+const LINKS = {
+ "root": "../../../",
+ "files": {
+  ".claude/skills/symphysis-attack/SKILL.md": "../../../.claude/skills/symphysis-attack/SKILL.md",
+  ".claude/skills/symphysis-brainstorm/SKILL.md": "../../../.claude/skills/symphysis-brainstorm/SKILL.md",
+  ".claude/skills/symphysis-consequences/SKILL.md": "../../../.claude/skills/symphysis-consequences/SKILL.md",
+  ".claude/skills/symphysis-edge-probe/SKILL.md": "../../../.claude/skills/symphysis-edge-probe/SKILL.md",
+  ".claude/skills/symphysis-prohibition-probe/SKILL.md": "../../../.claude/skills/symphysis-prohibition-probe/SKILL.md",
+  ".claude/skills/symphysis-research/SKILL.md": "../../../.claude/skills/symphysis-research/SKILL.md",
+  ".claude/skills/symphysis-viewer/SKILL.md": "../../../.claude/skills/symphysis-viewer/SKILL.md",
+  "attack/attack-table.md": "../../../attack/attack-table.md",
+  "attack/skills/symphysis-attack/SKILL.md": "../../../attack/skills/symphysis-attack/SKILL.md",
+  "cli/journal-cli.md": "../../../cli/journal-cli.md",
+  "context/backlog/symphysis-backlog.md": "../../../../symphysis/.context/backlog/symphysis-backlog.md",
+  "decisions.json": "decisions.json",
+  "decisions.md": "decisions.md",
+  "decisions/journal.schema.json": "../../../decisions/journal.schema.json",
+  "decisions/journal_apply.py": "../../../decisions/journal_apply.py",
+  "decisions/journal_render.py": "../../../decisions/journal_render.py",
+  "docs/repo-contract.md": "../../../docs/repo-contract.md",
+  "intent.md": "intent.md",
+  "lens/openspec/changes/attack-lens-conventions/intent.md": "../../../../symphysis-attack-lens-conventions/openspec/changes/attack-lens-conventions/intent.md",
+  "openspec/changes/archive/2026-11-02-symphysis-schema/attack/artifacts.md": "../archive/2026-11-02-symphysis-schema/attack/artifacts.md",
+  "openspec/changes/archive/2026-11-04-recommendation-why/research/F-24.md": "../archive/2026-11-04-recommendation-why/research/F-24.md",
+  "openspec/changes/attack-severity-buttons/decisions.json": "decisions.json",
+  "openspec/changes/attack-severity-buttons/intent.md": "intent.md",
+  "openspec/changes/attack-severity-buttons/research/none.md": "research/none.md",
+  "openspec/schemas/symphysis/schema.yaml": "../../schemas/symphysis/schema.yaml",
+  "openspec/schemas/symphysis/templates/attack-artifacts.md": "../../schemas/symphysis/templates/attack-artifacts.md",
+  "openspec/specs/decision-viewer/spec.md": "../../specs/decision-viewer/spec.md",
+  "openspec/specs/stale-verdict-scope/spec.md": "../../specs/stale-verdict-scope/spec.md",
+  "openspec/specs/warning-read-flag/spec.md": "../../specs/warning-read-flag/spec.md",
+  "probes/journal-roots.json": "probes/journal-roots.json",
+  "research/none.md": "research/none.md",
+  "scheme.md": "scheme.md",
+  "symphysis.html": "symphysis.html",
+  "symphysis.yaml": "../../../symphysis.yaml",
+  "tests/test_repo_contract.py": "../../../tests/test_repo_contract.py",
+  "upstream/openspec/src/core/artifact-graph/state.ts": "../../../../symphysis/upstream/openspec/src/core/artifact-graph/state.ts",
+  "viewer/playground-template.html": "../../../viewer/playground-template.html",
+  "vscode/src/core/core.ts": "../../../../symphysis-vscode/src/core/core.ts",
+  "vscode/src/journal/attack.ts": "../../../../symphysis-vscode/src/journal/attack.ts",
+  "vscode/src/viewer/AttackView.tsx": "../../../../symphysis-vscode/src/viewer/AttackView.tsx"
+ }
+};
+const ADDRESSEES = ['агент','человек','ИБ'];
+/* линзы атаки — закрытые списки скилла symphysis-attack, по файлу атаки: журнал (`attack/decisions.md`, цель — один `decisions.json`)
+   и артефакты (`attack/artifacts.md`, всё прочее); порядок — порядок списка, подписи — чем ищется. Слуг не из списка своего файла —
+   группа «вне списка», строка невалидна (F-07.A). Перспектив интервью брейншторма здесь нет: запись журнала и строка атаки — разные
+   сущности (слово владельца 2026-10-30) */
+const ATTACK_LENSES = {
+  journal: [
+    {slug:'context-compliance', label:'соответствие журналу'},
+    {slug:'claim-authority',    label:'числа и факты'},
+    {slug:'claim-extraction',   label:'существование имён'},
+    {slug:'coverage',           label:'покрытие разделов'},
+  ],
+  artifacts: [
+    {slug:'scenario-run',       label:'прогон сценария'},
+    {slug:'claim-extraction',   label:'существование имён'},
+    {slug:'trace-link',         label:'связи изменения'},
+  ],
+};
+const OUTSIDE = '__outside__';   /* значение фильтра для группы «вне списка» */
+const SEVERITY = ['блокер','предупреждение','справка'];
+const MODES = ['decisions','check','attack'];
+const MODE_LABELS = { decisions:'решения', check:'проверка', attack:'атака' };
+const ADDED_MARK = '(добавлен человеком';
+const ONE_WAY = 'в одну сторону';
+const ATTACK_HINT = 'Строки атаки apply не меняет — их закрывает правка цели (журнала или артефакта) и повторная атака. Спор по строке (почему опора есть, почему не блокер) уходит в промпт возврата одной строкой «Замечания к схеме:» и ложится в notes[] журнала; ответ на строку с закрытием «вопрос человеку» и разделом «F-NN, decision» уходит словом к решению. Фильтр по линзе прячет группы, но не счётчики тяжести в шапке файла. Переключатель «прочитано» у строки предупреждение уходит текстом «предупреждение прочитано: <раздел>» в ту же строку «Замечания к схеме:» и после apply возвращается флагом по заметке журнала; тяжесть и вердикт он не меняет.';
+const PARK_HINT = 'Парковка — дополнительный вопрос, который нельзя закрыть сейчас: он уходит адресату. «агент» — ответ ищет агент исследования, в файлах или пробой (шаг research), «человек» — нужно решение человека, «ИБ» — проверка по чек-листу безопасности. Решение по самой развилке парковка не снимает.';
+/* ключ — путь страницы: `source` у всех журналов один, и состояние одного журнала приходило бы в другой с теми же номерами F-NN */
+const KEY = 'symphysis:' + ((typeof location !== 'undefined' && location.pathname) || JOURNAL.title || JOURNAL.source || 'journal');
+const byId = Object.fromEntries(JOURNAL.records.map(r => [r.id, r]));
+
+const EMPTY = () => ({ decisions:{}, added:{}, newForks:[], disputes:{}, deps:{}, notes:'' });
+let state = EMPTY();
+let filter = { openOnly:false };
+try { const s = localStorage.getItem(KEY); if (s) state = Object.assign(EMPTY(), JSON.parse(s)); } catch (e) {}
+for (const k in state.decisions) { const d = state.decisions[k]; if (!Array.isArray(d.parked)) d.parked = d.parked ? [{ text:'', addressee:d.addressee || 'человек' }] : []; }
+function save() { try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {} }
+/* режим страницы и споры по строкам атаки — свои ключи browser storage; в состояние режима 1 они не входят */
+let mode = 'decisions';
+try { const m = localStorage.getItem(KEY + ':mode'); if (MODES.includes(m)) mode = m; } catch (e) {}
+/* споры по строкам и отметки «прочитано» (ключ — файл атаки и раздел); старое хранилище без поля `read` читается как пустые отметки (F-31) */
+let attackState = { disputes:{}, read:{} };
+try {
+  const s = JSON.parse(localStorage.getItem(KEY + ':attack') || 'null');
+  if (s && s.disputes && typeof s.disputes === 'object') attackState.disputes = s.disputes;
+  if (s && s.read && typeof s.read === 'object') attackState.read = s.read;
+} catch (e) {}
+let attackLens = 'all';
+try { const l = localStorage.getItem(KEY + ':lens'); if (l) attackLens = l; } catch (e) {}
+function saveAttack() { try { localStorage.setItem(KEY + ':attack', JSON.stringify(attackState)); } catch (e) {} }
+function setMode(m) { mode = m; try { localStorage.setItem(KEY + ':mode', m); } catch (e) {} render(); }
+/* ключ спора — файл, раздел и утверждение строки: при повторной атаке спор остаётся у той же строки, не у того же номера */
+function disputeKey(att, row) { return att.path + '|' + row.section + '|' + row.claim; }
+/* flags:begin */
+/* флаг «прочитано» у строки `предупреждение` (warning-read-flag): заметка notes[] «предупреждение прочитано: <раздел>», раздел дословно
+   из столбца «Раздел»; текст флага — отдельный сегмент заметки: от начала или после « · » до конца или до следующего « · », не подстрока;
+   пробельные последовательности с обеих сторон схлопываются, как у споров. Тяжесть — первое слово ячейки без учёта регистра.
+   Блок стоит до первого вызова (уборка внесённого ниже): константы, в отличие от функций, не поднимаются. */
+const READ_PREFIX = 'предупреждение прочитано: ';
+const READ_SEP = ' · ';
+function normText(s) { return String(s == null ? '' : s).replace(/\s+/g, ' ').trim(); }
+/* тяжесть — первое слово ячейки; причина понижения — текст в скобках после него */
+function sevBase(s) { const m = /^(блокер|предупреждение|справка)(?![а-яёa-z])/i.exec(String(s || '').trim()); return m ? m[1].toLowerCase() : String(s || '').trim(); }
+function isWarning(row) { return sevBase(row && row.severity) === 'предупреждение'; }
+function readText(row) { return READ_PREFIX + normText(row && row.section); }
+/* ключ отметки — файл атаки и раздел: две строки одного раздела делят одну отметку (F-21) */
+function readKey(att, row) { return String(att && att.path || '') + '|' + normText(row && row.section); }
+function noteHasRead(noteText, text) {
+  const n = normText(noteText);
+  return n === text || n.startsWith(text + READ_SEP) || n.endsWith(READ_SEP + text) || n.includes(READ_SEP + text + READ_SEP);
+}
+function readByNotes(notes, row) { if (!isWarning(row)) return false; const t = readText(row); return (notes || []).some(n => noteHasRead(n && n.text, t)); }
+/* flags:end */
+/* то, что уже внесено в журнал, из состояния браузера убирается: слово к решению, парковка, спор, совпадающий выбор */
+(function cleanupIngested() {
+  const norm = s => String(s || '').replace(/\s+/g, ' ').trim();
+  for (const rec of JOURNAL.records) {
+    /* вариант, добавленный человеком и уже внесённый apply (та же буква, тот же текст), из состояния уходит */
+    if (state.added[rec.id]) state.added[rec.id] = state.added[rec.id].filter(o => !(rec.options || []).some(x => x.letter === o.letter && norm(String(x.text).split(ADDED_MARK)[0]) === norm(o.text)));
+    const d = state.decisions[rec.id]; if (!d) continue;
+    const jpark = (rec.parking || []).map(p => norm(p.text));
+    const sameDecision = rec.decision && (!d.choice || d.choice === rec.decision.option);
+    if (d.word && ((sameDecision && wordIngested(rec.decision.word, d.word)) || jpark.includes(norm(d.word)))) d.word = '';
+    d.parked = (d.parked || []).filter(p => norm(p.text) && !jpark.includes(norm(p.text)));
+    if (rec.decision && rec.decision.option && d.choice === rec.decision.option) d.choice = null;
+    const sp = norm(state.disputes[rec.id]); if (sp && rec.dispute && norm(rec.dispute).includes(sp)) delete state.disputes[rec.id];
+  }
+  /* новая развилка, уже внесённая apply, из состояния уходит; поправленная человеком остаётся: вопрос другой */
+  const questions = new Set(JOURNAL.records.map(r => norm(r.question)));
+  state.newForks = (state.newForks || []).filter(f => !questions.has(norm(f.question)));
+  const ownNotes = norm(state.notes);
+  if (ownNotes && (JOURNAL.notes || []).some(n => norm(n.text).includes(ownNotes))) state.notes = '';
+  save();
+  /* спор по строке атаки, уже внесённый apply в notes[] журнала, тоже убирается */
+  const noteTexts = (JOURNAL.notes || []).map(n => norm(n.text));
+  let dropped = false;
+  for (const att of ATTACK) for (const r of (att.rows || [])) {
+    const k = disputeKey(att, r), sp = norm(attackState.disputes[k]);
+    if (sp && noteTexts.some(t => t.includes(sp))) { delete attackState.disputes[k]; dropped = true; }
+  }
+  /* отметки «прочитано»: внесённая в notes[] (сегмент заметки) или оставшаяся без строки предупреждения в текущей сборке уходит из состояния (F-14, F-22) */
+  const liveReads = new Set();
+  for (const att of ATTACK) for (const r of (att.rows || [])) {
+    if (!isWarning(r)) continue;
+    const k = readKey(att, r);
+    if (readByNotes(JOURNAL.notes || [], r)) { if (attackState.read[k]) { delete attackState.read[k]; dropped = true; } }
+    else liveReads.add(k);
+  }
+  for (const k of Object.keys(attackState.read)) if (!liveReads.has(k)) { delete attackState.read[k]; dropped = true; }
+  if (dropped) saveAttack();
+})();
+/* высота нижней панели — тянется за ручку, запоминается */
+(function outHeight() {
+  const root = document.documentElement, hd = document.getElementById('outhandle');
+  let h = 170; try { h = +localStorage.getItem(KEY + ':outh') || 170; } catch (e) {}
+  root.style.setProperty('--outh', h + 'px');
+  let drag = null;
+  hd.onmousedown = e => { drag = { y:e.clientY, h }; e.preventDefault(); };
+  window.addEventListener('mousemove', e => { if (!drag) return; h = Math.max(70, Math.min(window.innerHeight - 140, drag.h + (drag.y - e.clientY))); root.style.setProperty('--outh', h + 'px'); });
+  window.addEventListener('mouseup', () => { if (!drag) return; drag = null; try { localStorage.setItem(KEY + ':outh', String(h)); } catch (e) {} });
+})();
+
+/* панель схемы: включается поверх режимов, рисунок — файлом mermaid рядом, иначе текст; файл грузится при первом включении (F-39, F-54, F-122) */
+let schemeOn = false, schemeLoaded = false;
+try { schemeOn = localStorage.getItem(KEY + ':scheme') === '1'; } catch (e) {}
+(function schemeWidth() {
+  const root = document.documentElement, hd = document.getElementById('schemehandle');
+  let w = 0; try { w = +localStorage.getItem(KEY + ':schemew') || 0; } catch (e) {}
+  if (w) root.style.setProperty('--schemew', w + 'px');
+  let drag = null;
+  hd.onmousedown = e => { drag = { x:e.clientX, w:document.getElementById('schemePanel').offsetWidth }; e.preventDefault(); };
+  window.addEventListener('mousemove', e => { if (!drag) return; w = Math.max(240, Math.min(window.innerWidth - 480, drag.w + (drag.x - e.clientX))); root.style.setProperty('--schemew', w + 'px'); });
+  window.addEventListener('mouseup', () => { if (!drag) return; drag = null; try { localStorage.setItem(KEY + ':schemew', String(w)); } catch (e) {} });
+})();
+function schemeShow(st, notes, content) {
+  const made = notes.map(([cls, text]) => { const n = document.createElement('div'); n.className = 'note ' + cls; n.textContent = text; return n; });
+  document.getElementById('schemeBody').replaceChildren(...made, ...(content ? [content] : []));
+  document.getElementById('schemePanel').dataset.state = st;
+}
+function schemeBlocksNote() {
+  const n = SCHEME.blocks;
+  return n > 1 ? [['warn', 'в файле ' + n + ' ' + (n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 12 || n % 100 > 14) ? 'блока' : 'блоков') + ', показан первый']] : [];
+}
+function schemeText(notes) {
+  const pre = document.createElement('pre'); pre.textContent = SCHEME.text;
+  schemeShow('text', [...schemeBlocksNote(), ...notes], pre);
+}
+/* сообщение mermaid при незакрытой скобке называет конец текста: верная строка — в hash.loc, от начала блока (F-28, F-61) */
+function schemeError(e) {
+  const loc = e && e.hash && e.hash.loc;
+  const line = loc && Number.isInteger(loc.first_line) ? loc.first_line + SCHEME.first_line - 1 : null;
+  const text = String((e && e.message) || e).replace(/^Parse error on line \d+:?\s*/, '');
+  return 'Ошибка mermaid' + (line ? ', строка ' + line + ' в scheme.md' : '') + ':\n' + text;
+}
+async function schemeDraw() {
+  try {
+    mermaid.initialize({ startOnLoad:false, securityLevel:'strict', theme:'dark', suppressErrorRendering:true });
+    const { svg } = await mermaid.render('schemeDrawing', SCHEME.text);
+    const holder = document.createElement('div'); holder.innerHTML = svg;
+    schemeShow('svg', schemeBlocksNote(), holder);
+    const el = holder.querySelector('svg'), vb = el.viewBox && el.viewBox.baseVal;
+    if (vb && vb.width) { el.style.width = vb.width + 'px'; el.style.height = vb.height + 'px'; el.style.maxWidth = 'none'; }
+    /* натуральный размер шире панели: вначале виден верхний узел посередине, иначе панель пуста, пока не прокрутишь (F-35) */
+    const body = document.getElementById('schemeBody'), box = n => n.getBoundingClientRect();
+    const nodes = [...el.querySelectorAll('g.node')];
+    if (nodes.length) {
+      const top = nodes.reduce((a, b) => box(b).top < box(a).top ? b : a);
+      body.scrollLeft += box(top).left + box(top).width / 2 - box(body).left - body.clientWidth / 2;
+      body.scrollTop = 0;
+    }
+  } catch (e) { schemeText([['bad', schemeError(e)]]); }
+}
+function schemeLoad() {
+  if (schemeLoaded) return;
+  schemeLoaded = true;
+  if (!SCHEME.exists) return schemeShow('missing', [['info', 'Схема не создана']]);
+  if (SCHEME.text === null) return schemeShow('empty', [['info', 'В scheme.md нет схемы']]);
+  const noFile = () => schemeText([['info', 'Файла mermaid рядом нет: показан текст схемы']]);
+  if (!SCHEME.mermaid) return noFile();
+  const s = document.createElement('script');
+  s.src = SCHEME.mermaid; s.onload = schemeDraw; s.onerror = noFile;
+  document.head.appendChild(s);
+}
+function headerHeight() {
+  const h = document.getElementById('pageHeader').offsetHeight;
+  if (h) document.documentElement.style.setProperty('--headh', h + 'px');
+}
+window.addEventListener('resize', headerHeight);
+/* панель показывает схему или справку в одной области; выбор помнит браузер, без выбора — схема (F-29, F-32). Схема при открытой
+   справке не рисуется: прокрутка к верхнему узлу считается на видимом контейнере (F-35) */
+let panelView = 'scheme';
+try { if (localStorage.getItem(KEY + ':panel') === 'help') panelView = 'help'; } catch (e) {}
+function renderSchemePanel() {
+  const panel = document.getElementById('schemePanel'), help = panelView === 'help';
+  panel.classList.toggle('hidden', !schemeOn);
+  panel.dataset.view = panelView;
+  document.body.classList.toggle('scheme-on', schemeOn);
+  document.getElementById('btnScheme').classList.toggle('active', schemeOn);
+  document.getElementById('schemeBody').classList.toggle('hidden', help);
+  document.getElementById('helpBody').classList.toggle('hidden', !help);
+  document.querySelectorAll('#panelTabs button').forEach(b => b.classList.toggle('active', b.dataset.panel === panelView));
+  if (schemeOn && !help) schemeLoad();
+}
+
+/* ---------- справка о шаге: снимок от render-html, страница его не обновляет (F-21) ---------- */
+/* текст снимка — данные: на страницу только через esc и md, как текст журнала (F-53). Свой контейнер: дорисовка схемы справку не заменит (F-63) */
+const HELP_SECTIONS = [['Как готовить','how_to_prepare'], ['Зачем','why'], ['Механики','mechanics'], ['Если пропустить','if_skipped'], ['Что смотреть','what_to_check'], ['Команда','command']];
+const HELP_STATES = { done:'готов', ready:'готов к работе', blocked:'ждёт других шагов', skipped:'пропущен', waiting:'задачи не закрыты', idle:'открытых развилок нет', unknown:'журнал не читается', all_done:'задачи закрыты' };
+let helpOpen = HELP.current_step;
+function helpFind(id) { return (HELP.steps || []).find(s => s.id === id) || null; }
+function helpState(s) {
+  if (s.id === 'viewer' && s.state === 'ready') return 'есть открытые развилки';
+  if (s.id === 'apply' && s.state === 'ready') return 'задачи не закрыты';
+  if (s.id === 'apply' && s.state === 'blocked') return 'реализация заблокирована';
+  return HELP_STATES[s.state] || String(s.state);
+}
+/* подраздел `steps.md`: абзацы и списки `- `; единственная разметка в строке — backticks, как в журнале */
+function helpMarkup(text) {
+  return String(text || '').split(/\n\s*\n/).map(block => {
+    const lines = block.split('\n');
+    return lines.every(l => l.startsWith('- ')) ? '<ul>' + lines.map(l => '<li>' + md(l.slice(2)) + '</li>').join('') + '</ul>' : '<p>' + md(block) + '</p>';
+  }).join('');
+}
+/* что заблокируется и остановит ли шаг реализацию — из графа; что теряется по смыслу — из текста (F-25) */
+function helpGraphFacts(s) {
+  const facts = [];
+  if (s.optional) facts.push('Шаг необязательный, зовётся только по имени.');
+  if (s.blocks.length) facts.push('Без него не начнутся: ' + s.blocks.join(', ') + '.');
+  if (s.stops_apply) facts.push('Без него не начнётся `apply`.');
+  if (s.waits_for.length) facts.push('Ждёт: ' + s.waits_for.join(', ') + '.');
+  return facts.length ? '<ul>' + facts.map(f => '<li>' + md(f) + '</li>').join('') + '</ul>' : '';
+}
+function helpFiles(s) {
+  return s.files.length ? '<ul>' + s.files.map(f => '<li>' + (f.exists ? fileLink(esc(f.path), f.path) : '<code>' + esc(f.path) + '</code> — файла ещё нет') + '</li>').join('') + '</ul>' : '';
+}
+function helpPageHtml(id) {
+  const s = helpFind(id), open = '<div class="helppage" data-page="' + esc(id) + '">';
+  if (!s) return open + '<div class="note info">Текста нет</div></div>';
+  let html = open + '<div class="helptitle">' + md(s.texts.title || s.id) + '</div><div class="helphead"><code>' + esc(s.id) + '</code>' +
+    (id === HELP.current_step ? '<span class="badge ok">следующий по файлам</span>' : '') +
+    (s.state ? '<span class="badge">' + esc(helpState(s)) + '</span>' : '') +
+    '<span class="badge">ход ' + (s.turn === 'human' ? 'человека' : 'модели') + '</span>' +
+    (s.optional ? '<span class="badge">необязательный</span>' : '') + '</div>';
+  if (s.file_note) html += '<div class="note warn">' + esc(s.file_note) + '</div>';
+  if (s.text_note) html += '<div class="note info">' + esc(s.text_note) + '</div>';
+  for (const [title, key] of HELP_SECTIONS) {
+    const extra = key === 'if_skipped' ? helpGraphFacts(s) : key === 'what_to_check' ? helpFiles(s) : '';
+    if (s.texts[key] || extra) html += '<h3>' + esc(title) + '</h3>' + extra + helpMarkup(s.texts[key]);
+  }
+  const nav = (el, label, to) => '<button class="small" id="' + el + '"' + (to ? ' data-step="' + esc(to) + '"' : ' disabled') + '>' + label + (to ? ': ' + esc(to) : '') + '</button>';
+  return html + '<div class="row">' + nav('helpPrev', 'предыдущий', s.prev) + nav('helpNext', 'следующий', s.next) + '</div></div>';
+}
+/* при сбое панель даёт только причину и кнопку правил намерения (F-47); кнопка не зависит от расчёта и отметку не двигает (F-54) */
+function renderHelp() {
+  const v = HELP.versions || {}, steps = HELP.error ? [] : (HELP.steps || []);
+  let html = HELP.error ? '<div class="note bad" id="helpError">' + md(HELP.error) + '</div>' : '';
+  if (HELP.current_text) html += '<div class="note info">' + md(HELP.current_text) + '</div>';
+  html += '<div class="helpsnap">снимок: <span id="helpTime">' + esc(HELP.taken_at || 'не снимался') + '</span>, страница его не обновляет' +
+    (HELP.rebuild ? '. Новый снимок, из корня проекта: <code id="helpRebuild">' + esc(HELP.rebuild) + '</code>' : '') + '</div>';
+  html += '<div class="row"><button class="small" id="helpHowTo" style="flex:0 0 auto">Как готовить intent.md?</button></div>';
+  if (steps.length) html += '<div class="helpsteps">' + steps.map(s => '<button class="helpstep' + (s.id === HELP.current_step ? ' current' : '') + (s.id === helpOpen ? ' open' : '') + '" data-step="' + esc(s.id) + '">' +
+    (s.id === HELP.current_step ? '● ' : '') + esc(s.id) + ' <span class="who">' + (s.turn === 'human' ? 'человек' : 'модель') + '</span></button>').join('') + '</div>';
+  if (helpOpen) html += helpPageHtml(helpOpen);
+  html += '<div class="helpver" id="helpVersions">форк ' + esc(v.openspec || 'неизвестно') + ' · symphysis ' + esc(v.symphysis || 'неизвестно') + '</div>';
+  document.getElementById('helpBody').innerHTML = html;
+}
+document.getElementById('helpBody').onclick = e => {
+  const hit = e.target.closest('[data-step], #helpHowTo');
+  if (!hit) return;
+  helpOpen = hit.id === 'helpHowTo' ? 'intent' : hit.dataset.step;
+  renderHelp();
+  const page = document.querySelector('#helpBody .helppage');
+  if (page) page.scrollIntoView({ block:'nearest' });
+};
+document.getElementById('panelTabs').onclick = e => {
+  const hit = e.target.closest('button[data-panel]');
+  if (!hit) return;
+  panelView = hit.dataset.panel;
+  try { localStorage.setItem(KEY + ':panel', panelView); } catch (err) {}
+  renderSchemePanel();
+};
+
+function dec(id) { return state.decisions[id] || (state.decisions[id] = { choice:null, word:'', parked:[] }); }
+function journalChoice(rec) { return rec.decision && rec.decision.option ? rec.decision.option : null; }
+function chosen(id) { const d = state.decisions[id]; if (d && d.choice) return d.choice; return journalChoice(byId[id] || {}); }
+function effectiveDeps(rec) {
+  const u = state.deps[rec.id] || { add:[], remove:[] };
+  const base = (rec.depends_on || []).map(x => ({ id:x, kind: u.remove.includes(x) ? 'removed' : 'journal' }));
+  return base.concat(u.add.map(x => ({ id:x, kind:'added' })));
+}
+function allOptions(rec) { return rec.options.concat((state.added[rec.id] || []).map(o => Object.assign({ evidence:[], unlikely:null, added:true, local:true }, o))); }
+function antipodesOf(id, letter) {
+  const out = new Set();
+  for (const a of (byId[id].antipodes || [])) if (a.option === letter) out.add(a.other);
+  for (const r of JOURNAL.records) for (const a of (r.antipodes || [])) if (a.other === id + '.' + letter) out.add(r.id + '.' + a.option);
+  return [...out];
+}
+/* выбор мимо рекомендации просит слово: без него читатель журнала не поймёт выбор; это сигнал, внести можно и без слова */
+function wordMissing(rec) {
+  const rc = rec.recommendation, cur = chosen(rec.id);
+  if (!rc || !rc.option || !cur || cur === rc.option) return false;
+  if (allOptions(rec).some(o => o.letter === cur && o.added)) return false;
+  const saved = rec.decision && rec.decision.option === cur ? rec.decision.word : '';
+  return !String((state.decisions[rec.id] || {}).word || '').trim() && !String(saved || '').trim();
+}
+function chosenAntipodes(id, letter) { return antipodesOf(id, letter).filter(k => { const [oid, ol] = k.split('.'); return chosen(oid) === ol; }); }
+/* text:begin */
+function esc(s) { return String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+/* текст журнала и атаки: единственная разметка данных — пары backticks; сначала экранирование, потом `код` -> <code> */
+function md(s) { return esc(s).replace(/`([^`]+)`/g, (m, code) => typeof codeHtml === 'function' ? codeHtml(code) : '<code>' + code + '</code>'); }
+/* text:end */
+/* файл из журнала — ссылка: адрес только из карты LINKS, её собирает render-html; label уже экранирован. ↗ — тот же файл в VS Code на нужной строке */
+/* редактор значка ↗ — свойство человека и его машины, поэтому хранится в браузере, а не в файле, который уходит в git */
+const EDITOR_KEY = 'symphysis:editor';
+const EDITOR_MASKS = { vscode: 'vscode://file/{path}:{line}', cursor: 'cursor://file/{path}:{line}',
+  jetbrains: 'jetbrains://idea/navigate/reference?project={project}&path={relpath}:{line0}' };
+function editorChoice() { try { return JSON.parse(localStorage.getItem(EDITOR_KEY)) || {}; } catch (e) { return {}; } }
+function maskIsUsable(mask) { return /^[a-z][a-z0-9+.-]*:/i.test(mask) && !/^(javascript|data|vbscript|file|blob):/i.test(mask) && /\{(path|relpath)\}/.test(mask); }
+function editorMask() {
+  const c = editorChoice();
+  if (c.editor === 'none') return '';
+  if (c.editor === 'custom') return maskIsUsable(c.mask || '') ? c.mask : '';
+  return Object.prototype.hasOwnProperty.call(EDITOR_MASKS, c.editor) ? EDITOR_MASKS[c.editor] : EDITOR_MASKS.vscode;
+}
+/* {path} — абсолютный путь, {relpath} и {project} — от корня проекта, {line} — строка, {line0} — она же со счётом от нуля */
+function editorUrl(mask, href, line) {
+  const abs = new URL(href, location.href).pathname;
+  const root = LINKS.root === null ? null : new URL(LINKS.root, location.href).pathname;
+  const inside = root !== null && abs.startsWith(root);
+  if (!inside && /\{(relpath|project)\}/.test(mask)) return '';
+  const values = { path: abs.replace(/^\//, ''), line: String(line || 1), line0: String(Math.max(Number(line || 1) - 1, 0)),
+    relpath: inside ? abs.slice(root.length) : '', project: inside ? root.replace(/\/$/, '').split('/').pop() : '' };
+  return mask.replace(/\{(path|line0|line|relpath|project)\}/g, (m, key) => values[key]);
+}
+function editorLink(href, line) {
+  const mask = editorMask();
+  if (!mask || location.protocol !== 'file:') return '';
+  const url = editorUrl(mask, href, line);
+  if (!url) return '';
+  return ' <a class="filelink editor" href="' + esc(url) + '"' + (/^https?:/i.test(url) ? ' target="_blank" rel="noopener"' : '') + ' title="открыть в редакторе; из встроенного браузера редактора может не сработать">↗</a>';
+}
+function fileLink(label, path, line) {
+  const code = '<code>' + label + '</code>';
+  if (!Object.prototype.hasOwnProperty.call(LINKS.files, path)) return code;
+  const href = LINKS.files[path];
+  return '<a class="filelink" href="' + esc(href) + '" target="_blank" rel="noopener">' + code + '</a>' + editorLink(href, line);
+}
+function codeHtml(code) {
+  const raw = code.replace(/&(amp|lt|gt|quot|#39);/g, (m, c) => ({ amp:'&', lt:'<', gt:'>', quot:'"', '#39':"'" }[c]));
+  const parts = /^(.+?)(?::(\d+)(?:-\d+)?)?$/.exec(raw);
+  return fileLink(code, parts[1], parts[2]);
+}
+function evHtml(ev) {
+  const loc = ev.line ? ev.path + ':' + ev.line : ev.path;
+  /* found: null — файл не текст (бинарный, не UTF-8): сверить нельзя, это не пропажа цитаты */
+  const v = ev.found ? '<b class="ok">сверено</b>'
+    : ev.found === null ? '<b class="mute">' + esc(/^не проверить/.test(ev.verdict || '') ? ev.verdict : 'не проверить: ' + (ev.verdict || 'файл не текст')) + '</b>'
+    : '<b class="bad">не найдено: ' + esc(ev.verdict || '') + '</b>';
+  return '<span class="ev">улика: ' + fileLink(esc(loc), ev.path, ev.line) + ' «' + esc(ev.quote) + '» ' + v + '</span>';
+}
+
+function visible(rec) {
+  if (filter.openOnly) { if (rec.kind === 'факт' || chosen(rec.id)) return false; }
+  return true;
+}
+
+/* ---------- карточки ---------- */
+function renderCards() {
+  const el = document.getElementById('cards');
+  el.innerHTML = JOURNAL.records.filter(visible).map(rec => {
+    const d = dec(rec.id);
+    const isFact = rec.kind === 'факт';
+    const jc = journalChoice(rec);
+    const localChoice = d.choice;
+    const changed = !!(localChoice && jc && localChoice !== jc);
+    const jpark = (rec.parking || []).map(p => ({ text:p.text, addressee:p.addressee, journal:true }));
+    const parkedAll = jpark.concat(d.parked || []);
+    const cls = ['card', isFact ? 'fact' : '', changed ? 'changed' : (chosen(rec.id) ? 'decided' : ''), parkedAll.length ? 'parked' : ''].join(' ');
+    let status = isFact ? '<span class="badge fact">факт · закрыт уликами</span>'
+      : changed ? '<span class="badge changed">изменено: ' + esc(jc) + ' → ' + esc(localChoice) + '</span>'
+      : localChoice ? '<span class="badge ok">решено здесь: ' + esc(localChoice) + '</span>'
+      : jc ? '<span class="badge ok">решено в журнале: ' + esc(jc) + '</span>' : '<span class="badge">открыто</span>';
+    if (parkedAll.length) status += '<span class="badge park">парковка: ' + parkedAll.length + '</span>';
+    const deps = effectiveDeps(rec);
+    /* факт решения не требует: предпосылка ждёт только у развилки без выбора и у припаркованного факта */
+    const settled = id => chosen(id) || (byId[id] && byId[id].kind === 'факт' && byId[id].status === 'решён');
+    const waiting = deps.filter(x => x.kind !== 'removed' && !settled(x.id)).map(x => x.id);
+    let html = '<div class="' + cls + '" id="' + esc(rec.id) + '"><div class="head"><span class="id mono">' + esc(rec.id) + '</span>' + status +
+      '<span class="badge">' + esc(rec.delivery || '—') + '</span>' + (rec.addressee ? '<span class="badge">адресат: ' + esc(rec.addressee) + '</span>' : '') + '</div>' +
+      '<div class="q">' + md(rec.question) + '</div>';
+    html += '<div class="meta">зависит от: ' + (deps.length ? deps.map(x => '<span class="chip ' + x.kind + '"><a href="#' + esc(x.id) + '">' + esc(x.id) + '</a>' +
+      (x.kind === 'removed' ? '<button data-undep="' + esc(rec.id) + '|' + esc(x.id) + '" title="вернуть">↺</button>' : '<button data-rmdep="' + esc(rec.id) + '|' + esc(x.id) + '" title="снять зависимость">×</button>') + '</span>').join('') : '—') +
+      '<input type="text" data-deptext="' + esc(rec.id) + '" placeholder="F-NN" title="добавить зависимость"><button class="small" data-adddep="' + esc(rec.id) + '">+ зависимость</button></div>';
+    if (waiting.length) html += '<div class="note warn">предпосылка не решена: ' + waiting.map(esc).join(', ') + ' — выбирать можно, но ответ до неё — догадка</div>';
+    if (rec.evidence && rec.evidence.length && !isFact) html += '<div class="note info"><b>улики записи</b>' + rec.evidence.map(evHtml).join('') + '</div>';
+    if (rec.finding) html += '<div class="note info"><b>находка:</b> ' + md(rec.finding) + '</div>';
+    if (isFact) {
+      html += rec.evidence.map(evHtml).join('');
+      if (rec.dispute) html += '<div class="note park"><b>спор в журнале:</b> ' + md(rec.dispute) + '</div>';
+      html += '<div class="cons">следствия: ' + md(rec.consequences || '—') + '</div>';
+      html += '<div class="row"><textarea data-dispute="' + esc(rec.id) + '" placeholder="оспорить факт: что не так и чем это подтверждается">' + esc(state.disputes[rec.id] || '') + '</textarea></div>';
+    } else {
+      const cur = chosen(rec.id);
+      for (const o of allOptions(rec)) {
+        const paired = chosenAntipodes(rec.id, o.letter);
+        const anti = antipodesOf(rec.id, o.letter);
+        const tags = (rec.recommendation && rec.recommendation.option === o.letter ? '<span class="tag rec">рекомендация</span>' : '') +
+          (jc === o.letter ? '<span class="tag journal">в журнале</span>' : '') +
+          (o.unlikely ? '<span class="tag unlikely" title="' + esc(o.unlikely) + '">маловероятно</span>' : '') +
+          (o.added ? '<span class="tag added">добавлен человеком</span>' : '') +
+          deviationTag(o) +
+          (anti.length ? '<span class="tag anti" title="нельзя вместе с: ' + esc(anti.join(', ')) + '">антипод ' + esc(anti.join(', ')) + '</span>' : '');
+        html += '<label class="opt' + (cur === o.letter ? ' chosen' : '') + '">' +
+          '<input type="radio" name="' + esc(rec.id) + '" value="' + esc(o.letter) + '"' + (cur === o.letter ? ' checked' : '') + '>' +
+          '<div class="t"><span class="letter">' + esc(o.letter) + '.</span> ' + md(o.text) + tags +
+          (o.unlikely ? '<span class="ev">маловероятно: ' + md(o.unlikely) + '</span>' : '') +
+          (paired.length ? '<span class="note warn" data-antipode-warning="' + esc(rec.id + '.' + o.letter) + '">антипод уже выбран: ' + esc(paired.join(', ')) + '. Выбрать можно, но вместе они станут строкой атаки.</span>' : '') +
+          (o.evidence || []).map(evHtml).join('') + '</div></label>';
+      }
+      if (rec.recommendation) html += '<div class="rec">рекомендация: <b>' + esc(rec.recommendation.option) + '</b> — ' + md(rec.recommendation.why) + '</div>';
+      if (rec.decision && rec.decision.word) html += '<div class="note info"><b>слово в журнале (' + esc(rec.decision.date || '') + '):</b> «' + md(rec.decision.word) + '»</div>';
+      html += '<div class="note bad hidden" data-msg="' + esc(rec.id) + '"></div>';
+      html += '<div class="note warn' + (wordMissing(rec) ? '' : ' hidden') + '" data-word-needed="' + esc(rec.id) + '">Выбран не рекомендованный вариант: напиши, почему. Так выбор поймёт читатель журнала; внести можно и без слова.</div>';
+      html += '<div class="row"><textarea data-word="' + esc(rec.id) + '" placeholder="слово человека дословно — почему так (или что изменить в решении из журнала)">' + esc(d.word || '') + '</textarea></div>';
+      html += '<div class="row"><input type="text" data-addtext="' + esc(rec.id) + '" placeholder="вариант, которого здесь нет"><button class="small" data-addopt="' + esc(rec.id) + '">добавить вариант</button></div>';
+      html += '<details class="park"' + (parkedAll.length ? ' open' : '') + '><summary title="' + esc(PARK_HINT) + '">парковка — дополнительный вопрос с адресатом (' + parkedAll.length + ')</summary>' +
+        '<div class="note park" style="margin:6px 0">' + esc(PARK_HINT) + '</div>' +
+        parkedAll.map((p, i) => '<div class="parkitem"><span class="who">→ ' + esc(p.addressee || '?') + (p.journal ? ' · в журнале' : '') + '</span><span>' + md(p.text || '(без текста)') + '</span>' +
+          (p.journal ? '' : '<button class="small" data-unpark="' + esc(rec.id) + '|' + (i - jpark.length) + '">снять</button>') + '</div>').join('') +
+        '<div class="row"><input type="text" data-parktext="' + esc(rec.id) + '" placeholder="что именно надо узнать или решить отдельно">' +
+        '<select data-addressee="' + esc(rec.id) + '" title="' + esc(PARK_HINT) + '">' + ADDRESSEES.map(a => '<option>' + a + '</option>').join('') + '</select>' +
+        '<button class="small" data-park="' + esc(rec.id) + '">припарковать</button></div></details>';
+      html += '<div class="cons">следствия: ' + md(rec.consequences || '—') + '</div>';
+    }
+    return html + '</div>';
+  }).join('');
+
+  el.querySelectorAll('input[type=radio]').forEach(r => r.onchange = () => {
+    const id = r.name, letter = r.value;
+    const d = dec(id); d.choice = (letter === journalChoice(byId[id])) ? null : letter; save(); render();
+  });
+  el.querySelectorAll('textarea[data-word]').forEach(t => t.oninput = () => {
+    dec(t.dataset.word).word = t.value; save();
+    el.querySelector('[data-word-needed="' + t.dataset.word + '"]').classList.toggle('hidden', !wordMissing(byId[t.dataset.word]));
+    updateOut();
+  });
+  el.querySelectorAll('textarea[data-dispute]').forEach(t => t.oninput = () => { state.disputes[t.dataset.dispute] = t.value; save(); updateOut(); });
+  el.querySelectorAll('button[data-addopt]').forEach(b => b.onclick = () => {
+    const id = b.dataset.addopt, inp = el.querySelector('input[data-addtext="' + id + '"]');
+    const text = (inp.value || '').trim(); if (!text) return;
+    const letters = allOptions(byId[id]).map(o => o.letter);
+    const next = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('').find(l => !letters.includes(l));
+    (state.added[id] = state.added[id] || []).push({ letter: next, text }); save(); render();
+  });
+  el.querySelectorAll('button[data-park]').forEach(b => b.onclick = () => {
+    const id = b.dataset.park, text = (el.querySelector('input[data-parktext="' + id + '"]').value || '').trim();
+    const addressee = el.querySelector('select[data-addressee="' + id + '"]').value;
+    if (!text) { const m = el.querySelector('[data-msg="' + id + '"]'); m.textContent = 'парковка без вопроса — нечего адресовать'; m.classList.remove('hidden'); return; }
+    dec(id).parked.push({ text, addressee }); save(); render();
+  });
+  el.querySelectorAll('button[data-unpark]').forEach(b => b.onclick = () => { const [id, i] = b.dataset.unpark.split('|'); dec(id).parked.splice(+i, 1); save(); render(); });
+  el.querySelectorAll('button[data-adddep]').forEach(b => b.onclick = () => {
+    const id = b.dataset.adddep, inp = el.querySelector('input[data-deptext="' + id + '"]');
+    const dep = (inp.value || '').trim().toUpperCase().replace(/^F(\d)/, 'F-$1');
+    const m = el.querySelector('[data-msg="' + id + '"]');
+    if (!byId[dep]) { m.textContent = 'нет записи ' + dep; m.classList.remove('hidden'); return; }
+    if (dep === id) { m.textContent = 'запись не может зависеть от себя'; m.classList.remove('hidden'); return; }
+    const u = state.deps[id] = state.deps[id] || { add:[], remove:[] };
+    if (byId[id].depends_on.includes(dep)) { u.remove = u.remove.filter(x => x !== dep); }
+    else if (!u.add.includes(dep)) u.add.push(dep);
+    save(); render();
+  });
+  el.querySelectorAll('button[data-rmdep]').forEach(b => b.onclick = () => {
+    const [id, dep] = b.dataset.rmdep.split('|');
+    const u = state.deps[id] = state.deps[id] || { add:[], remove:[] };
+    if (u.add.includes(dep)) u.add = u.add.filter(x => x !== dep); else if (!u.remove.includes(dep)) u.remove.push(dep);
+    save(); render();
+  });
+  el.querySelectorAll('button[data-undep]').forEach(b => b.onclick = () => {
+    const [id, dep] = b.dataset.undep.split('|');
+    const u = state.deps[id]; if (u) u.remove = u.remove.filter(x => x !== dep); save(); render();
+  });
+}
+
+function renderNewForks() {
+  document.getElementById('newForks').innerHTML = state.newForks.map((f, i) =>
+    '<div class="card" style="margin-top:8px"><div class="head"><span class="id mono">' + esc(f.id) + '</span><span class="badge added">добавлена человеком</span>' +
+    '<button class="small" data-delfork="' + i + '" style="margin-left:auto">убрать</button></div><div class="q">' + md(f.question) + '</div>' +
+    '<div class="meta">варианты: ' + md(f.options.replace(/\n+/g, ' · ')) + '</div><div class="cons">' + md(f.word) + '</div></div>').join('');
+  document.querySelectorAll('button[data-delfork]').forEach(b => b.onclick = () => { state.newForks.splice(+b.dataset.delfork, 1); save(); render(); });
+}
+
+function renderToc() {
+  document.getElementById('toc').innerHTML = JOURNAL.records.map(rec => {
+    const d = state.decisions[rec.id];
+    const jc = journalChoice(rec);
+    const dot = rec.kind === 'факт' ? 'fact' : (d && d.choice && jc && d.choice !== jc) ? 'changed' : chosen(rec.id) ? 'ok' : (((rec.parking && rec.parking.length) || (d && d.parked && d.parked.length)) ? 'park' : '');
+    return '<a href="#' + esc(rec.id) + '"><span class="dot ' + dot + '"></span><span class="id">' + esc(rec.id) + '</span><span class="q" title="' + esc(rec.question) + '">' + esc(rec.question) + '</span></a>';
+  }).join('');
+}
+
+/* «Задач закрыто N из N» в шапке: из снимка справки; без снимка, при сбое расчёта и без задач части нет (F-70) */
+function helpTasksPart() {
+  const t = HELP && !HELP.error && HELP.tasks;
+  return t && t.total > 0 ? ' · Задач закрыто <b>' + esc(t.complete) + ' из ' + esc(t.total) + '</b>' : '';
+}
+function renderStats() {
+  const forks = JOURNAL.records.filter(r => r.kind !== 'факт');
+  const decided = forks.filter(r => chosen(r.id)).length;
+  const changed = forks.filter(r => { const d = state.decisions[r.id]; const jc = journalChoice(r); return d && d.choice && jc && d.choice !== jc; }).length;
+  const parked = forks.filter(r => (r.parking && r.parking.length) || (state.decisions[r.id] && state.decisions[r.id].parked.length)).length;
+  const disputed = Object.values(state.disputes).filter(v => v && v.trim()).length;
+  document.getElementById('stats').innerHTML =
+    'развилок <b>' + forks.length + '</b> · решено <b>' + decided + '</b>' + (changed ? ' · изменено здесь <b>' + changed + '</b>' : '') +
+    ' · открыто <b>' + (forks.length - decided) + '</b> · с парковкой <b>' + parked + '</b> · фактов <b>' + (JOURNAL.records.length - forks.length) + '</b>' +
+    (disputed ? ' · оспорено <b>' + disputed + '</b>' : '') + (state.newForks.length ? ' · добавлено развилок <b>' + state.newForks.length + '</b>' : '') + helpTasksPart();
+  const s = JOURNAL.stats || {};
+  document.getElementById('evstats').textContent = 'улик сверено ' + (s.evidence_found ?? '?') + ' из ' + (s.evidence_total ?? '?') + ' · собрано ' + (JOURNAL.generated || '');
+}
+
+/* prompt:begin */
+/* Промпт возврата — чистая функция состояния: без DOM, без обращения к страницам. Строки пишутся по грамматике `journal_apply.parse_answers`.
+   Уходит всё, что `apply` уже внёс в журнал: вариант с тем же текстом, слово, равное слову решения, парковка, зависимость, замечание.
+   Ответ в поле спора строки атаки (закрытие «вопрос человека», раздел `F-NN, decision`) — слово к решению `- F-NN: <буква> — «…»`, одна строка
+   на запись; два разных ответа — конфликт: строки нет, в замечаниях «конфликт ответов к F-NN — оставьте один», `conflictKeys` — ключи спора
+   строк, которые его составили. Ответ к записи без решения — замечание `F-NN: ответ`, ключи — `undecidedKeys`. Возвращает { text, conflictKeys, undecidedKeys }. */
+/* слово уже в решении журнала: `apply` дописывает новое слово к прежнему (`journal_apply._merge`, проверка вхождением),
+   поэтому внесённое — вхождение в слово решения, а не равенство; пробелы схлопываются, как в `_flat` */
+function wordIngested(journalWord, word) {
+  const n = s => String(s == null ? '' : s).replace(/\s+/g, ' ').trim();
+  const w = n(word);
+  return w !== '' && n(journalWord).includes(w);
+}
+/* Местная дата для заголовка промпта, как у плагина: по UTC в первые часы суток вышла бы вчерашняя (F-64).
+   Дату решения в журнале ставит `apply`, заголовок на неё не влияет. */
+function localDate(d) {
+  const p = n => String(n).padStart(2, '0');
+  return d.getFullYear() + '-' + p(d.getMonth() + 1) + '-' + p(d.getDate());
+}
+function buildPrompt(J, attacks, st, disputes, date, read) {
+  const MARK = '(добавлен человеком';
+  const norm = s => String(s == null ? '' : s).replace(/\s+/g, ' ').trim();
+  const shorten = (s, n) => { s = String(s || ''); return s.length > n ? s.slice(0, n - 1) + '…' : s; };
+  const byId = Object.fromEntries(J.records.map(r => [r.id, r]));
+  const jchoice = rec => (rec.decision && rec.decision.option) || null;
+  /* рекомендация не решение: буква — выбор в состоянии или решение журнала, иначе её нет */
+  const letterOf = (rec, d) => (d && d.choice) || jchoice(rec) || null;
+  const lines = ['Решения по журналу ' + (J.source || '') + ', ' + date + ':'];
+  /* споры по строкам атаки: слово к решению или заметка */
+  const answers = {}, otherDisputes = [], undecidedKeys = [];
+  for (const att of (attacks || [])) for (const r of (att.rows || [])) {
+    const key = att.path + '|' + r.section + '|' + r.claim, sp = norm((disputes || {})[key]);
+    if (!sp) continue;
+    const m = /^(F-\d+),\s*decision\b/.exec(norm(r.section)), rec = m && byId[m[1]];
+    const askHuman = rec && rec.kind === 'развилка' && norm(r.fix).toLowerCase() === 'вопрос человеку';
+    if (askHuman && letterOf(rec, st.decisions[rec.id])) {
+      (answers[rec.id] = answers[rec.id] || []).push({ key, text: sp });
+    } else if (askHuman) {   /* запись без решения: слова без выбора нет, ответ — замечание `F-NN: …`, запись остаётся открытой */
+      undecidedKeys.push(key); otherDisputes.push(rec.id + ': ' + sp);
+    } else otherDisputes.push('атака ' + att.path + ' · ' + r.lens + ' · «' + shorten(r.claim, 60) + '» — спор: ' + sp);
+  }
+  const conflicts = [], conflictKeys = [];
+  for (const rec of J.records) {
+    const d = st.decisions[rec.id];
+    if (rec.kind === 'факт') { const sp = norm(st.disputes[rec.id]); if (sp) lines.push('- ' + rec.id + ': факт оспорен — «' + sp + '»'); continue; }
+    const jc = jchoice(rec), jword = rec.decision ? norm(rec.decision.word) : '';
+    for (const o of (st.added[rec.id] || [])) {
+      const known = (rec.options || []).some(x => x.letter === o.letter && norm(String(x.text).split(MARK)[0]) === norm(o.text));
+      if (!known) lines.push('- ' + rec.id + ': добавлен вариант ' + o.letter + '. ' + o.text);
+    }
+    const u = st.deps[rec.id], deps = rec.depends_on || [];
+    if (u) {
+      for (const x of u.add) if (!deps.includes(x)) lines.push('- ' + rec.id + ': зависимость добавлена ' + x);
+      for (const x of u.remove) if (deps.includes(x)) lines.push('- ' + rec.id + ': зависимость снята ' + x);
+    }
+    if (d) {
+      const w = (d.word || '').trim(), jpark = (rec.parking || []).map(p => norm(p.text));
+      for (const p of (d.parked || [])) if (!jpark.includes(norm(p.text))) lines.push('- ' + rec.id + ': припарковано → ' + p.addressee + ' — «' + p.text + '»');
+      if (d.choice && d.choice !== jc) lines.push('- ' + rec.id + ': ' + d.choice + (jc ? ' (было ' + jc + ')' : '') + (w ? ' — «' + w + '»' : ' — (без слова)'));
+      else if (w && !wordIngested(jword, w)) lines.push('- ' + rec.id + ': ' + (jc ? 'к решению ' + jc : 'без выбора') + ' — «' + w + '»');
+    }
+    const letter = letterOf(rec, d);
+    const ans = (answers[rec.id] || []).filter(a => !(jc && letter === jc && wordIngested(jword, a.text)));   /* слово, уже вошедшее в decision, — не добавляется */
+    const distinct = [...new Set(ans.map(a => a.text))];
+    if (distinct.length > 1) { conflicts.push(rec.id); ans.forEach(a => conflictKeys.push(a.key)); }
+    else if (distinct.length === 1) lines.push('- ' + rec.id + ': ' + letter + ' — «' + distinct[0] + '»');
+  }
+  if (st.newForks.length) { lines.push('Новые развилки:'); for (const f of st.newForks) lines.push('- ' + f.id + ': ' + f.question + ' — варианты: ' + f.options.replace(/\n+/g, ' | ') + (f.word ? ' — «' + f.word + '»' : '')); }
+  /* отметки «прочитано» (warning-read-flag): один текст на раздел, только у строк предупреждение текущей сборки; внесённые в notes[] не повторяются */
+  const readTexts = [];
+  for (const att of (attacks || [])) for (const r of (att.rows || [])) {
+    if (!read || !isWarning(r) || !read[readKey(att, r)]) continue;
+    const t = readText(r);
+    if (!readTexts.includes(t) && !readByNotes(J.notes || [], r)) readTexts.push(t);
+  }
+  /* замечания к схеме одной строкой: замечания режима 1 первыми, споры по атаке, отметки «прочитано», конфликты ответов; уже внесённое в notes[] журнала уходит */
+  const own = (st.notes || '').trim(), ingested = (J.notes || []).some(n => norm(n.text).includes(norm(own)));
+  const notes = [own && !ingested ? own : ''].concat(otherDisputes, readTexts, conflicts.map(id => 'конфликт ответов к ' + id + ' — оставьте один')).filter(Boolean);
+  if (notes.length) lines.push('Замечания к схеме: ' + notes.join(' · '));
+  if (lines.length === 1) lines.push('(нового нет — решения из журнала остаются как есть, молчание по открытой развилке оставляет её открытой)');
+  return { text: lines.join('\n'), conflictKeys, undecidedKeys };
+}
+/* prompt:end */
+function currentPrompt() { return buildPrompt(JOURNAL, ATTACK, state, attackState.disputes, localDate(new Date()), attackState.read); }
+function updateOut() { document.getElementById('out').value = currentPrompt().text; markConflicts(); }
+
+/* ---------- режимы: переключатель в шапке, видимость панелей ---------- */
+function renderModes() {
+  const el = document.getElementById('modes');
+  const rows = ATTACK.reduce((n, a) => n + (a.rows || []).length, 0);
+  el.innerHTML = MODES.map(m => '<button class="small' + (mode === m ? ' active' : '') + '" data-mode="' + m + '">' + MODE_LABELS[m] + (m === 'attack' && rows ? ' · ' + rows : '') + '</button>').join('');
+  el.querySelectorAll('button').forEach(b => b.onclick = () => setMode(b.dataset.mode));
+  document.getElementById('viewDecisions').classList.toggle('hidden', mode !== 'decisions');
+  document.getElementById('viewCheck').classList.toggle('hidden', mode !== 'check');
+  document.getElementById('viewAttack').classList.toggle('hidden', mode !== 'attack');
+  document.getElementById('outpanel').classList.toggle('hidden', mode === 'check');   /* проверка ничего не возвращает */
+}
+
+/* ---------- общее для режимов 2 и 3 ---------- */
+function isProbe(rec) { return !!(rec.outcome && rec.outcome.kind === 'проба'); }
+function isAdded(o) { return !!o.added || String(o.text || '').includes(ADDED_MARK); }
+/* тег «отступление от F-NN» у варианта с `deviation` — один вид в карточке, «проверке» и блоке записи «атаки» */
+function deviationTag(o) { return o && o.deviation ? '<span class="tag deviation">отступление от ' + esc(o.deviation) + '</span>' : ''; }
+function isOneWay(rec) { return !!(rec.reversibility && rec.reversibility.level === ONE_WAY); }
+function num(id) { return parseInt(String(id).slice(2), 10) || 0; }
+function allEvidence(rec) { return (rec.evidence || []).concat(...(rec.options || []).map(o => o.evidence || [])); }
+function shaChip(sha, missing) { return sha ? '<code title="' + esc(sha) + '">' + esc(sha.slice(0, 12)) + '</code>' : '<span class="mute">' + esc(missing) + '</span>'; }
+function journalTarget(att) { return ((att.frontmatter || {}).targets || []).find(t => t.path === 'decisions.json'); }
+/* сверка хеша цели decisions.json из frontmatter атаки с хешем файла журнала, который встроил render-html (ключ sha256) */
+function verdictNote(att) {
+  const t = journalTarget(att);
+  if (!t || !JOURNAL.sha256) return '';
+  if (!t.sha256) return '<span class="badge warn">хеш журнала в атаке не записан</span>';
+  return t.sha256 === JOURNAL.sha256 ? '<span class="badge ok">хеш журнала совпал</span>' : '<span class="badge bad">вердикт устарел: журнал изменён после атаки</span>';
+}
+
+/* ---------- режим 2 — проверка: снимок решений перед proposal, только чтение ---------- */
+/* проекция «куда уйдёт» — зеркало render_design (tools/journal_render.py): решённая развилка, не проба → Decisions
+   («в одну сторону» — первыми); проба Specify* → spec.md; Backstop → тест-страховка в tasks.md, в design.md её нет;
+   Dismiss → никуда, с причиной; Defer и открытая развилка → Open Questions; факт → Context, спорный — ещё и Open Questions */
+function destination(rec) {
+  if (rec.kind === 'факт') return { label:'design.md › Context', note: (rec.dispute || '').trim() ? 'спор → design.md › Open Questions' : '' };
+  if (isProbe(rec)) {
+    const v = String(rec.outcome.value || ''), reason = (rec.outcome.reason || '').trim();
+    if (v.startsWith('Specify')) return { label:'spec.md', note:'исход ' + v };
+    if (v === 'Backstop') return { label:'tasks.md › тест-страховка', note:'в design.md не попадает' };
+    if (v === 'Dismiss') {
+      const rc = rec.recommendation, why = reason || (rc && rec.decision && rec.decision.option === rc.option ? String(rc.why || '').trim() : '');
+      return { label:'никуда', note: why ? 'причина: ' + why : 'причина не записана' };
+    }
+    if (v === 'Defer') return { label:'design.md › Open Questions', note:'отложена (Defer)' };
+    return { label:'никуда', note:'исход «' + v + '» вне четырёх' };
+  }
+  if (rec.decision && rec.decision.option) return { label:'design.md › Decisions', note: isOneWay(rec) ? 'в одну сторону — первой' : '' };
+  return { label:'design.md › Open Questions', note:'открыта' };
+}
+/* парковки: render_design кладёт каждую в Open Questions; адресат говорит, где ищется ответ */
+// 'материалы' — старое значение адресата у старых журналов: ведёт туда же, куда 'агент'
+function parkingDestination(addressee) { return 'design.md › Open Questions → ' + ({ 'ИБ':'security.md', 'агент':'research/', 'материалы':'research/', 'человек':'вопрос человеку' }[addressee] || '—'); }
+
+function checkCard(rec) {
+  const d = destination(rec), isFact = rec.kind === 'факт';
+  const picked = rec.decision && rec.decision.option ? (rec.options || []).find(o => o.letter === rec.decision.option) : null;
+  let html = '<div class="card' + (isFact ? ' fact' : picked ? ' decided' : '') + '"><div class="head"><span class="id mono">' + esc(rec.id) + '</span>' +
+    '<span class="badge">' + esc(rec.kind) + ' · ' + esc(rec.status) + '</span><span class="badge">' + esc(rec.delivery || '—') + '</span>' +
+    (isOneWay(rec) ? '<span class="badge warn">в одну сторону</span>' : '') +
+    '<span class="badge dest" title="куда уйдёт — по правилам render-design">→ ' + esc(d.label) + (d.note ? ' · ' + esc(d.note) : '') + '</span></div>' +
+    '<div class="q">' + md(rec.question) + '</div>';
+  if (picked) html += '<div class="opt chosen"><span class="letter">' + esc(picked.letter) + '.</span><div>' + md(picked.text) + (isAdded(picked) ? '<span class="tag added">добавлен человеком</span>' : '') + deviationTag(picked) + '</div></div>';
+  if (rec.decision && rec.decision.word) html += '<div class="note info"><b>слово (' + esc(rec.decision.date || 'без даты') + '):</b> «' + md(rec.decision.word) + '»</div>';
+  if (rec.reversibility) html += '<div class="meta">обратимость: ' + esc(rec.reversibility.level) + (rec.reversibility.why ? ' — ' + md(rec.reversibility.why) : '') + '</div>';
+  if (rec.outcome) html += '<div class="meta">исход: ' + esc(rec.outcome.kind) + ' — <b>' + esc(rec.outcome.value) + '</b>' + (rec.outcome.reason ? ' — ' + md(rec.outcome.reason) : '') + '</div>';
+  if (!picked && !isFact) {
+    html += (rec.options || []).map(o => '<div class="opt"><span class="letter">' + esc(o.letter) + '.</span><div>' + md(o.text) +
+      (o.unlikely ? '<span class="tag unlikely">маловероятно: ' + md(o.unlikely) + '</span>' : '') + (isAdded(o) ? '<span class="tag added">добавлен человеком</span>' : '') + deviationTag(o) + '</div></div>').join('');
+    if (rec.recommendation) html += '<div class="rec">рекомендация: <b>' + esc(rec.recommendation.option || '') + '</b> — ' + md(rec.recommendation.why || '') + '</div>';
+  } else if (picked) {
+    const added = (rec.options || []).filter(o => isAdded(o) && o.letter !== picked.letter);
+    if (added.length) html += '<div class="meta">добавлены человеком: ' + esc(added.map(o => o.letter + '. ' + o.text).join('; ')) + '</div>';
+  }
+  if (isFact) {
+    html += (rec.evidence || []).map(evHtml).join('');
+    html += (rec.dispute || '').trim() ? '<div class="note park"><b>спор:</b> ' + md(rec.dispute) + '</div>' : '<div class="meta">спора нет</div>';
+  }
+  if (rec.consequences) html += '<div class="cons">следствия: ' + md(rec.consequences) + '</div>';
+  return html + '</div>';
+}
+
+function renderCheck() {
+  const recs = JOURNAL.records, forks = recs.filter(r => r.kind === 'развилка');
+  const decidedAll = forks.filter(r => r.decision && r.decision.option);
+  const decided = decidedAll.filter(r => !isProbe(r)), probes = recs.filter(isProbe);
+  const open = forks.filter(r => !(r.decision && r.decision.option)), facts = recs.filter(r => r.kind === 'факт');
+  const parkings = recs.flatMap(r => (r.parking || []).map(p => Object.assign({ rec:r.id }, p)));
+  const snapshot = ATTACK.find(journalTarget);
+  let html = '<div class="card"><div class="head"><span class="id mono">снимок</span><span class="badge">' + esc(JOURNAL.source || '') + '</span>' +
+    '<span class="badge">sha256 журнала: ' + shaChip(JOURNAL.sha256, 'не подан — рендер не из файла') + '</span>' +
+    (snapshot ? '<span class="badge ' + (snapshot.frontmatter.status === 'passed' ? 'ok' : 'park') + '">атака: ' + esc(snapshot.frontmatter.status || '—') + '</span>' + verdictNote(snapshot)
+              : '<span class="badge">атака не подана</span>') +
+    '</div><div class="q">' + md(JOURNAL.title || '') + '</div>' +
+    '<div class="meta">только чтение: режим ничего не пишет и вердиктом не считается — снимок решений перед proposal и spec.md; «→» у записи — куда она уйдёт по правилам render-design</div></div>';
+  html += '<div class="counters">решено <b>' + decidedAll.length + '</b> · открыто <b>' + open.length + '</b> · припарковано: ' +
+    ADDRESSEES.map(a => esc(a) + ' <b>' + parkings.filter(p => p.addressee === a).length + '</b>').join(' / ') +
+    ' · фактов оспорено <b>' + facts.filter(r => (r.dispute || '').trim()).length + '</b>' +
+    ' · улик не найдено <b>' + recs.flatMap(allEvidence).filter(ev => ev.found === false).length + '</b></div>';
+  const dates = [...new Set(decided.map(r => r.decision.date || ''))].sort((a, b) => a < b ? 1 : a > b ? -1 : 0);
+  html += '<h2>Решено — по дате решения · ' + decided.length + '</h2>' + (dates.length ? '' : '<div class="meta">—</div>');
+  for (const date of dates) {
+    const group = decided.filter(r => (r.decision.date || '') === date).sort((a, b) => (isOneWay(b) - isOneWay(a)) || (num(a.id) - num(b.id)));
+    html += '<h3>' + (date ? esc(date) : 'без даты') + ' · ' + group.length + '</h3>' + group.map(checkCard).join('');
+  }
+  const section = (title, list) => '<h2>' + title + ' · ' + list.length + '</h2>' + (list.length ? list.map(checkCard).join('') : '<div class="meta">—</div>');
+  html += section('Открытые развилки — с рекомендацией', open) + section('Пробы — с исходом', probes) + section('Факты — улики и спор', facts);
+  html += '<h2>Парковки — по адресатам · ' + parkings.length + '</h2>' + (parkings.length ? '' : '<div class="meta">—</div>');
+  for (const a of ADDRESSEES) {
+    const ps = parkings.filter(p => p.addressee === a); if (!ps.length) continue;
+    html += '<h3>→ ' + esc(a) + ' · ' + ps.length + ' <span class="badge dest">' + esc(parkingDestination(a)) + '</span></h3>' +
+      ps.map(p => '<div class="parkitem"><span class="who mono">' + esc(p.rec) + '</span><span>' + md(p.text) + (p.finding ? ' — <b>находка:</b> ' + md(p.finding) : '') + '</span></div>').join('');
+  }
+  const notes = JOURNAL.notes || [];
+  html += '<h2>Заметки · ' + notes.length + '</h2>' + (notes.length ? '<ul>' + notes.map(n => '<li><span class="mono">' + esc(n.date) + '</span> — ' + md(n.text) + '</li>').join('') + '</ul>' : '<div class="meta">—</div>');
+  document.getElementById('viewCheck').innerHTML = html;
+}
+
+/* ---------- режим 3 — атака: строки attack/*.md, фильтр по линзе, линза → тяжесть → строки ---------- */
+/* какой закрытый список линз у файла: журнал — единственная цель `decisions.json`, иначе артефакты */
+function attackKind(att) { const t = (att.frontmatter || {}).targets || []; return t.length === 1 && t[0].path === 'decisions.json' ? 'journal' : 'artifacts'; }
+function lensList(att) { return ATTACK_LENSES[attackKind(att)]; }
+function lensLabel(att, slug) { const l = lensList(att).find(x => x.slug === slug); return l ? l.label : ''; }
+/* sevBase — в блоке flags: тяжесть читают и счётчики, и переключатель «прочитано» одним правилом */
+function sevReason(s) { const m = /\(([^)]+)\)/.exec(String(s || '')); return m ? m[1].trim() : ''; }
+function sevClass(s) { const b = sevBase(s); return b === 'блокер' ? 'bad' : b === 'предупреждение' ? 'warn' : b === 'справка' ? '' : 'park'; }
+/* при опоре «нет» тяжесть источника — блокер; ниже блокера без причины в скобках — понижение без причины, с причиной — понижение с видимой причиной (F-54.E) */
+function demotion(r) {
+  const noSupport = /^нет(?![а-яёa-z0-9])/i.test(String(r.support || '').trim());
+  if (!noSupport || sevBase(r.severity) === 'блокер') return null;
+  return { reason: sevReason(r.severity) };
+}
+function demotionBadge(r) {
+  const d = demotion(r);
+  if (!d) return '';
+  return d.reason ? '<span class="badge warn">понижено: ' + esc(d.reason) + '</span>' : '<span class="badge bad">понижение без причины</span>';
+}
+/* раздел вида `F-NN, поле` с записью в журнале — переход к карточке в режиме 1, не слияние сущностей; якорь строится только из `F-NN` */
+function recordIdOf(section) { const m = /^(F-\d+)(?!\d)/.exec(String(section || '').trim()); return m && byId[m[1]] ? m[1] : null; }
+function sectionHtml(section) {
+  const id = recordIdOf(section);
+  if (id) return '<a href="#' + id + '" data-goto="' + id + '" title="к записи ' + id + ' в режиме «решения»">' + esc(section) + '</a>';
+  return esc(section);
+}
+/* скрываемый блок с текстом записи, на которую ссылается раздел строки: вопрос, выбранный вариант, переход к карточке (F-18.A) */
+function recordBlock(section) {
+  const id = recordIdOf(section);
+  if (!id) return '';
+  const rec = byId[id], picked = rec.decision && rec.decision.option ? (rec.options || []).find(o => o.letter === rec.decision.option) : null;
+  return '<details class="recblock"><summary>запись ' + id + ' — текст вопроса</summary><div class="q">' + md(rec.question) + '</div>' +
+    (picked ? '<div class="opt chosen"><span class="letter">' + esc(picked.letter) + '.</span><div>' + md(picked.text) + deviationTag(picked) + '</div></div>'
+            : '<div class="meta">решения нет — запись открыта</div>') +
+    '<div class="meta"><a href="#' + id + '" data-goto="' + id + '">к карточке ' + id + ' в режиме «решения»</a></div></details>';
+}
+/* флаг «прочитано» у строки предупреждение: бейдж по заметке журнала («в журнале», переключатель неактивен) или по отметке состояния («не внесено»); у блокеров и справок ничего (F-12, F-14, F-23, F-28) */
+function readBadge(att, r) {
+  if (!isWarning(r)) return '';
+  const inJournal = readByNotes(JOURNAL.notes || [], r), k = readKey(att, r), inState = !!attackState.read[k];
+  const badge = inJournal ? '<span class="badge ok readflag" title="заметка notes[] журнала">прочитано · в журнале</span>'
+    : inState ? '<span class="badge warn readflag" title="отметка в браузере, в журнал ещё не внесена">прочитано · не внесено</span>' : '';
+  return badge + '<label class="readtoggle"' + (inJournal ? ' title="внесено в журнал"' : ' title="отметить прочитанным: текст уйдёт в «Замечания к схеме:» промпта возврата"') +
+    '><input type="checkbox" data-read-key="' + esc(k) + '"' + (inJournal || inState ? ' checked' : '') + (inJournal ? ' disabled' : '') + '> прочитано</label>';
+}
+function attackRow(att, ai, ri, r, conflict, undecided) {
+  const key = disputeKey(att, r), known = lensList(att).some(l => l.slug === r.lens);
+  return '<div class="card attackrow' + (conflict ? ' conflict' : '') + '" data-card="' + ai + '|' + ri + '" data-claim="' + esc(r.claim) + '"><div class="head"><span class="badge ' + sevClass(r.severity) + '">' + esc(r.severity) + '</span>' + demotionBadge(r) +
+    '<span class="badge">' + sectionHtml(r.section) + '</span>' + readBadge(att, r) +
+    (known ? '' : '<span class="badge bad">линза «' + esc(r.lens) + '» вне списка — строка невалидна</span>') + '</div>' +
+    '<div class="q">' + md(r.claim) + '</div>' +
+    '<div class="meta">инвариант: ' + md(r.invariant) + '</div><div class="meta">опора: ' + md(r.support) + '</div><div class="meta">чем закрыть: ' + md(r.fix) + '</div>' +
+    recordBlock(r.section) +
+    '<div class="note warn undecided-note' + (undecided ? '' : ' hidden') + '">запись не решена — ответ уйдёт в замечания; выбери вариант в карточке</div>' +
+    '<div class="note bad conflict-note' + (conflict ? '' : ' hidden') + '">конфликт ответов к одному решению — оставь один, иначе слово к решению не уйдёт в промпт</div>' +
+    '<div class="row"><textarea data-att="' + ai + '" data-row="' + ri + '" placeholder="спор: почему опора есть / почему не блокер — уйдёт в промпт возврата; при закрытии «вопрос человеку» и разделе F-NN, decision — слово к решению">' + esc(attackState.disputes[key] || '') + '</textarea></div></div>';
+}
+function currentFlags() { return buildPrompt(JOURNAL, ATTACK, state, attackState.disputes, '', attackState.read); }
+/* страница подсвечивает конфликт ответов у строк, не пересобирая список: поле спора не теряет фокус */
+function markConflicts() {
+  if (mode !== 'attack') return;
+  const flags = currentFlags(), bad = new Set(flags.conflictKeys), und = new Set(flags.undecidedKeys);
+  document.querySelectorAll('#viewAttack .attackrow').forEach(c => {
+    const [ai, ri] = String(c.dataset.card).split('|').map(Number), att = ATTACK[ai], r = att && att.rows[ri];
+    const on = !!r && bad.has(disputeKey(att, r));
+    c.classList.toggle('conflict', on);
+    const n = c.querySelector('.conflict-note'); if (n) n.classList.toggle('hidden', !on);
+    const u = c.querySelector('.undecided-note'); if (u) u.classList.toggle('hidden', !(r && und.has(disputeKey(att, r))));
+  });
+}
+function renderAttack() {
+  const el = document.getElementById('viewAttack');
+  if (!ATTACK.length) { el.innerHTML = '<div class="card"><div class="q">атака не подана: <code>render-html --attack &lt;attack/decisions.md&gt; [--attack &lt;attack/artifacts.md&gt;]</code></div></div>'; return; }
+  const flags = currentFlags(), bad = new Set(flags.conflictKeys), und = new Set(flags.undecidedKeys);
+  /* группы по файлам: линзы списка файла в его порядке, затем «вне списка» */
+  const files = ATTACK.map((att, ai) => {
+    const rows = att.rows || [], list = lensList(att), slugs = list.map(l => l.slug);
+    const indexed = rows.map((r, ri) => ({ r, ri }));
+    const groups = list.map(l => ({ slug:l.slug, rows:indexed.filter(x => x.r.lens === l.slug) })).filter(g => g.rows.length);
+    const outside = indexed.filter(x => !slugs.includes(x.r.lens));
+    if (outside.length) groups.push({ slug:OUTSIDE, rows:outside });
+    return { att, ai, rows, groups, outside };
+  });
+  const available = [], count = {};
+  for (const f of files) for (const g of f.groups) { if (!available.includes(g.slug)) available.push(g.slug); count[g.slug] = (count[g.slug] || 0) + g.rows.length; }
+  if (attackLens !== 'all' && !available.includes(attackLens)) attackLens = 'all';
+  const total = files.reduce((n, f) => n + f.rows.length, 0);
+  let html = '<div class="note info">' + esc(ATTACK_HINT) + '</div>' +
+    '<div class="row lensfilter" id="lensFilter"><b style="flex:0 0 auto">линза:</b>' +
+    '<button class="small' + (attackLens === 'all' ? ' active' : '') + '" data-lens="all">все · ' + total + '</button>' +
+    available.map(slug => '<button class="small' + (attackLens === slug ? ' active' : '') + '" data-lens="' + esc(slug) + '">' +
+      (slug === OUTSIDE ? 'вне списка' : esc(slug)) + ' · ' + count[slug] + '</button>').join('') + '</div>';
+  for (const f of files) {
+    const { att, ai, rows, groups, outside } = f, fm = att.frontmatter || {};
+    const sev = SEVERITY.map(s => rows.filter(r => sevBase(r.severity) === s).length);
+    const otherSev = rows.filter(r => !SEVERITY.includes(sevBase(r.severity))).length;
+    /* счётчики тяжести — по всему файлу, в шапке файла, вне контейнера строк: фильтр их не трогает (F-56.E) */
+    html += '<div class="card"><div class="head"><span class="id mono">' + esc(att.path) + '</span><span class="badge ' + (fm.status === 'passed' ? 'ok' : 'park') + '">status: ' + esc(fm.status || '—') + '</span>' + verdictNote(att) +
+      '<span class="badge">' + (attackKind(att) === 'journal' ? 'линзы журнала' : 'линзы артефактов') + '</span></div>' +
+      '<div class="meta">цели: ' + (fm.targets || []).map(t => '<span class="chip">' + esc(t.path) + ' ' + shaChip(t.sha256, 'без хеша') + '</span>').join('') + '</div>' +
+      '<div class="counters sevcounters">по тяжести, весь файл: блокеров <b>' + sev[0] + '</b> · предупреждений <b>' + sev[1] + '</b> · справок <b>' + sev[2] + '</b>' +
+      (otherSev ? ' · прочих <b>' + otherSev + '</b>' : '') + '</div>' +
+      '<div class="counters">по линзе: ' + groups.filter(g => g.slug !== OUTSIDE).map(g => '<code>' + esc(g.slug) + '</code> <b>' + g.rows.length + '</b>').join(' · ') +
+      (outside.length ? ' · строк вне списка (невалидны, в счётчике линз их нет): <b>' + outside.length + '</b>' : '') + '</div></div>';
+    html += '<div class="attack-rows">';
+    const shown = groups.filter(g => attackLens === 'all' || g.slug === attackLens);
+    if (!shown.length) html += '<div class="meta">по фильтру в этом файле строк нет</div>';
+    for (const g of shown) {
+      html += '<h2>' + (g.slug === OUTSIDE ? 'вне списка — слуг не из закрытого списка линз файла' : '<code>' + esc(g.slug) + '</code> · ' + esc(lensLabel(att, g.slug))) + ' · ' + g.rows.length + '</h2>';
+      const sevs = SEVERITY.concat([...new Set(g.rows.map(x => sevBase(x.r.severity)))].filter(s => !SEVERITY.includes(s)));
+      for (const sv of sevs) {
+        const part = g.rows.filter(x => sevBase(x.r.severity) === sv);
+        if (part.length) html += '<h3>' + esc(sv) + ' · ' + part.length + '</h3>' + part.map(x => attackRow(att, ai, x.ri, x.r, bad.has(disputeKey(att, x.r)), und.has(disputeKey(att, x.r)))).join('');
+      }
+    }
+    html += '</div><!' + '--/attack-rows-->';
+  }
+  el.innerHTML = html;
+  el.querySelectorAll('button[data-lens]').forEach(b => b.onclick = () => { attackLens = b.dataset.lens; try { localStorage.setItem(KEY + ':lens', attackLens); } catch (e) {} renderAttack(); });
+  el.querySelectorAll('textarea[data-att]').forEach(t => t.oninput = () => {
+    const att = ATTACK[+t.dataset.att], r = att.rows[+t.dataset.row], k = disputeKey(att, r);
+    if (t.value.trim()) attackState.disputes[k] = t.value; else delete attackState.disputes[k]; saveAttack(); updateOut();
+  });
+  /* отметка «прочитано» — одна на файл и раздел: карточки одного раздела перерисовываются вместе (F-21) */
+  el.querySelectorAll('input[data-read-key]').forEach(cb => cb.onchange = () => {
+    const k = cb.dataset.readKey;
+    if (cb.checked) attackState.read[k] = true; else delete attackState.read[k];
+    saveAttack(); renderAttack(); updateOut();
+  });
+  el.querySelectorAll('a[data-goto]').forEach(a => a.onclick = e => { e.preventDefault(); setMode('decisions'); const c = document.getElementById(a.dataset.goto); if (c && c.scrollIntoView) c.scrollIntoView(); });
+}
+
+function render() { renderModes(); renderSchemePanel(); document.getElementById('btnOpen').classList.toggle('active', filter.openOnly); renderCards(); renderNewForks(); renderToc(); renderStats(); headerHeight(); if (mode === 'check') renderCheck(); if (mode === 'attack') renderAttack(); updateOut(); }
+
+document.getElementById('notes').value = state.notes || '';
+document.getElementById('notes').oninput = e => { state.notes = e.target.value; save(); updateOut(); };
+document.getElementById('btnAll').onclick = () => { filter = { openOnly:false }; render(); };
+document.getElementById('btnOpen').onclick = () => { filter.openOnly = !filter.openOnly; render(); };
+(function () {
+  const pick = document.getElementById('editorPick'), maskInput = document.getElementById('editorMask');
+  const show = () => {
+    const c = editorChoice();
+    pick.value = Object.keys(EDITOR_MASKS).concat('custom', 'none').includes(c.editor) ? c.editor : 'vscode';
+    maskInput.value = c.mask || '';
+    maskInput.classList.toggle('hidden', pick.value !== 'custom');
+  };
+  const save = () => { try { localStorage.setItem(EDITOR_KEY, JSON.stringify({ editor: pick.value, mask: maskInput.value.trim() })); } catch (e) {} show(); render(); };
+  pick.onchange = save; maskInput.onchange = save; show();
+})();
+document.getElementById('btnScheme').onclick = () => { schemeOn = !schemeOn; try { localStorage.setItem(KEY + ':scheme', schemeOn ? '1' : '0'); } catch (e) {} renderSchemePanel(); };
+document.getElementById('btnToggleNew').onclick = () => document.getElementById('newForkForm').classList.toggle('hidden');
+document.getElementById('btnAddFork').onclick = () => {
+  const q = document.getElementById('nfQuestion').value.trim(); if (!q) return;
+  state.newForks.push({ id: 'F-N' + (state.newForks.length + 1), question: q, options: document.getElementById('nfOptions').value.trim(), word: document.getElementById('nfWord').value.trim() });
+  ['nfQuestion','nfOptions','nfWord'].forEach(i => document.getElementById(i).value = ''); save(); render();
+};
+document.getElementById('btnCopy').onclick = async () => {
+  const t = document.getElementById('out'); let ok = false;
+  try { await navigator.clipboard.writeText(t.value); ok = true; } catch (e) { t.select(); ok = document.execCommand('copy'); }
+  const c = document.getElementById('copied'); c.textContent = ok ? 'скопировано' : 'не удалось — выдели и скопируй руками'; setTimeout(() => c.textContent = '', 2000);
+};
+document.getElementById('btnExport').onclick = () => {
+  const blob = new Blob([JSON.stringify(state, null, 1)], { type:'application/json' });
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'symphysis-decisions.json'; a.click();
+};
+document.getElementById('btnImport').onclick = () => document.getElementById('fileImport').click();
+document.getElementById('fileImport').onchange = e => {
+  const f = e.target.files[0]; if (!f) return;
+  f.text().then(txt => { try { state = Object.assign(EMPTY(), JSON.parse(txt)); save(); render(); document.getElementById('notes').value = state.notes || ''; } catch (err) { alert('не JSON состояния'); } });
+};
+document.getElementById('btnReset').onclick = () => { if (confirm('Стереть все решения и споры из браузера? Решения, уже внесённые в журнал, останутся.')) { state = EMPTY(); save(); attackState = { disputes:{} }; saveAttack(); document.getElementById('notes').value = ''; render(); } };
+document.getElementById('title').textContent = JOURNAL.title || document.title;
+renderHelp();
+render();
+</script>
+</body>
+</html>

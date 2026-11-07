@@ -1,0 +1,1239 @@
+{
+ "title": "Журнал решений: attack-severity-buttons",
+ "source": "decisions.json",
+ "intro": "Пути улик — от корня проекта (worktree изменения), корни названы в `probes/journal-roots.json` (сверка — `python cli/journal.py check --roots openspec/changes/attack-severity-buttons/probes/journal-roots.json`): `vscode/` ведёт в плагин `symphysis-vscode`, `context/` — в пакет контекста основного клона (бэклог), `lens/` — в worktree изменения `attack-lens-conventions`. Материалы круга 1: `intent.md`; `attack/attack-table.md`; тело `attack/skills/symphysis-attack/SKILL.md` (шаги 1, 4–6); шаблон `openspec/schemas/symphysis/templates/attack-artifacts.md`; `openspec/schemas/symphysis/schema.yaml`; окно `stale` форка `upstream/openspec/src/core/artifact-graph/state.ts`; страница `viewer/playground-template.html` (режим «атака», спор, сборка промпта); `decisions/journal_apply.py` (грамматика); `decisions/journal_render.py`; `decisions/journal.schema.json`; `docs/repo-contract.md` и `tests/test_repo_contract.py`; мастер-спеки `artifact-attack`, `decision-viewer`, `plugin-core-contract`, `warning-read-flag`; плагин `src/journal/attack.ts`, `src/viewer/AttackView.tsx`, `src/core/core.ts`; журнал и разбор F-24 архива `recommendation-why`; бэклог B-16, B-17, B-18, B-44; намерение `attack-lens-conventions`. Замер модели по шести архивным файлам атак — факты F-13 и F-14. Критерии готовности — факты постановки F-01–F-05.",
+ "records": [
+  {
+   "id": "F-01",
+   "question": "Критерий готовности: «у карточки атаки должна быть кнопка понизить или повысить»",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "постановка",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "F-18, F-24",
+   "evidence": [
+    {
+     "path": "openspec/changes/attack-severity-buttons/intent.md",
+     "quote": "«у карточки атаки должна быть кнопка понизить или повысить» — у строки атаки на странице и в плагине две кнопки, тяжесть меняется в обе стороны (слово владельца, 2026-11-04)"
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "row",
+    "btn"
+   ]
+  },
+  {
+   "id": "F-02",
+   "question": "Критерий готовности: «и поле ввода обоснования»",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "постановка",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "F-22",
+   "evidence": [
+    {
+     "path": "openspec/changes/attack-severity-buttons/intent.md",
+     "quote": "«и поле ввода обоснования» — без обоснования смена тяжести не вносится (слово владельца, 2026-11-04)"
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "why",
+    "stop"
+   ]
+  },
+  {
+   "id": "F-03",
+   "question": "Критерий готовности: «своя строка `apply`»",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "постановка",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "F-17, F-20",
+   "evidence": [
+    {
+     "path": "openspec/changes/attack-severity-buttons/intent.md",
+     "quote": "«своя строка `apply`» — смена тяжести приходит в журнал или файл атаки строкой `apply`, а не повторной атакой (слова модели в варианте F-26.A, владелец его выбрал, 2026-11-04)"
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "prompt",
+    "apply"
+   ]
+  },
+  {
+   "id": "F-04",
+   "question": "Критерий готовности: «правка скилла атаки»",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "постановка",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "F-21",
+   "evidence": [
+    {
+     "path": "openspec/changes/attack-severity-buttons/intent.md",
+     "quote": "«правка скилла атаки» — при повторе атаки скилл держит тяжесть, выставленную человеком, и причину (слова модели в варианте F-26.A, 2026-11-04)"
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "repeat"
+   ]
+  },
+  {
+   "id": "F-05",
+   "question": "Критерий готовности: «новый номер контракта»",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "постановка",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "F-23, F-24",
+   "evidence": [
+    {
+     "path": "openspec/changes/attack-severity-buttons/intent.md",
+     "quote": "«новый номер контракта» — номер растёт, `Why:` в коммите ядра, плагин догоняет коммитом с `Needs:` (слова модели в варианте F-26.A, 2026-11-04; `docs/repo-contract.md`)"
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "contract"
+   ]
+  },
+  {
+   "id": "F-06",
+   "question": "Сегодня тяжесть ниже тяжести линзы ставит только модель при атаке и только по слову человека: причина в скобках называет решённую запись журнала, своё суждение модели тяжесть не снижает, потому что `status` держат только блокеры.",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "агент",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "F-17, F-21",
+   "evidence": [
+    {
+     "path": "attack/attack-table.md",
+     "quote": "только по слову человека, причина в скобках в той же ячейке: `предупреждение (решено человеком"
+    },
+    {
+     "path": "attack/skills/symphysis-attack/SKILL.md",
+     "quote": "модели тяжесть не снижает: `status` держат только блокеры, и такое понижение открыло бы"
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "cell",
+    "repeat"
+   ]
+  },
+  {
+   "id": "F-07",
+   "question": "Страница и плагин понижение только показывают: бейдж «понижено: <причина>» или «понижение без причины» по тексту ячейки. Кнопок нет; поле у строки — поле спора, его текст уходит замечанием или словом к решению; `apply` строк атаки не меняет. Разбор нынешнего пути: шага «нажал и записано» нет.",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "агент",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "F-17, F-22",
+   "evidence": [
+    {
+     "path": "viewer/playground-template.html",
+     "quote": "понижено: ' + esc(d.reason)"
+    },
+    {
+     "path": "vscode/src/viewer/AttackView.tsx",
+     "quote": "<span className=\"badge signal\">понижение без причины</span>"
+    },
+    {
+     "path": "viewer/playground-template.html",
+     "quote": "спор: почему опора есть / почему не блокер — уйдёт в промпт возврата"
+    },
+    {
+     "path": "attack/attack-table.md",
+     "quote": "Строки атаки `apply` не меняет: их закрывает правка цели и повторная атака."
+    },
+    {
+     "path": "openspec/changes/archive/2026-11-04-recommendation-why/research/F-24.md",
+     "quote": "Ни шага «нажал и записано», ни самостоятельного обоснования у строки нет."
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "row",
+    "btn",
+    "why"
+   ]
+  },
+  {
+   "id": "F-08",
+   "question": "Показ понижения на странице и в плагине смотрит только строки с опорой «нет» и тяжестью ниже блокера; повышения показ не знает: у блокера бейджа нет вовсе.",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "агент",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "F-18",
+   "evidence": [
+    {
+     "path": "viewer/playground-template.html",
+     "quote": "if (!noSupport || sevBase(r.severity) === 'блокер') return null;"
+    },
+    {
+     "path": "vscode/src/journal/attack.ts",
+     "quote": "sevBase(row.severity) === \"блокер\" ? null"
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "row",
+    "cell"
+   ]
+  },
+  {
+   "id": "F-09",
+   "question": "Пункт промпта, который разбирает `apply`, начинается с `- F-NN:`; прочее идёт строкой «Замечания к схеме:». Строки о строке атаки в грамматике нет. Грамматика `apply` входит в контракт с плагином, а новое значение или новый смысл поля — смена контракта.",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "агент",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "F-17, F-23",
+   "evidence": [
+    {
+     "path": "decisions/journal_apply.py",
+     "quote": "RE_ITEM = re.compile(r\"^- (F-N?"
+    },
+    {
+     "path": "docs/repo-contract.md",
+     "quote": "грамматика строк `apply`: плагин сам пишет эти строки, и они попадают в журнал;"
+    },
+    {
+     "path": "docs/repo-contract.md",
+     "quote": "Новое поле сменой не считается. Удаление, переименование, смена смысла и новое значение существующего поля считаются."
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "prompt",
+    "apply",
+    "contract"
+   ]
+  },
+  {
+   "id": "F-10",
+   "question": "Вердикт атаки — `status` во frontmatter файла атаки: `passed` только при нуле строк `блокер`, и форк читает только его. Тяжесть меняет вердикт лишь на границе «блокер — не блокер».",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "агент",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "F-17, F-18",
+   "evidence": [
+    {
+     "path": "attack/skills/symphysis-attack/SKILL.md",
+     "quote": "`status: passed` ставится, только когда в таблице нет ни одной строки с тяжестью `блокер`;"
+    },
+    {
+     "path": "attack/skills/symphysis-attack/SKILL.md",
+     "quote": "Форк читает только `status`; при `mismatch`, `missing` или `stale` `/opsx:continue` снова"
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "verdict"
+   ]
+  },
+  {
+   "id": "F-11",
+   "question": "`decisions.json` — первая цель атаки артефактов: любая правка журнала обесценивает её вердикт, и повтор идёт с начала. До первой отмеченной задачи `stale` держит `apply`. У атаки журнала правка без новых записей стоит дешевле: обновляется только `target_sha256`. Сам флаг «прочитано» журнал не трогает: он кладёт текст в промпт возврата, а `apply` штатно пишет заметку в `notes[]`. Но заметка меняет байты журнала, и вердикт атаки артефактов устаревает. Опыт модели на временной копии изменения, 2026-11-08: до внесения отметки у строки `attack/artifacts.md` `attack-artifacts` — `done`, `verdict: ok`; после `apply` — `ready`, `verdict: stale`, планирование не полно.",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "агент",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "F-17",
+   "evidence": [
+    {
+     "path": "openspec/schemas/symphysis/templates/attack-artifacts.md",
+     "quote": "decisions.json первым (опора артефактов — его правка обесценивает и этот вердикт"
+    },
+    {
+     "path": "attack/skills/symphysis-attack/SKILL.md",
+     "quote": "Если у `attack-artifacts` разошёлся хеш любой цели или журнала — атака артефактов MUST идти"
+    },
+    {
+     "path": "attack/skills/symphysis-attack/SKILL.md",
+     "quote": "— обновляется только `target_sha256`, строки и `status` прежние; `[!!]` у улики записи"
+    },
+    {
+     "path": "upstream/openspec/src/core/artifact-graph/state.ts",
+     "quote": "Only `stale` has a window: `mismatch` and `missing` always gate."
+    },
+    {
+     "path": "openspec/specs/stale-verdict-scope/spec.md",
+     "quote": "сверка `check --write`, строки `notes[]`, правка полей прежних записей"
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "store",
+    "rerun",
+    "verdict"
+   ]
+  },
+  {
+   "id": "F-12",
+   "question": "Образец рядом — флаг «прочитано» (`attack-warning-read`): заметка `notes[]` известной формы, строка опознаётся по разделу дословно, номер контракта от формы заметки не вырос.",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "агент",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "F-17, F-20",
+   "evidence": [
+    {
+     "path": "openspec/specs/warning-read-flag/spec.md",
+     "quote": "Прочитанной SHALL считаться каждая строка тяжести `предупреждение` файлов атаки, чей раздел равен разделу заметки"
+    },
+    {
+     "path": "docs/repo-contract.md",
+     "quote": "новое значение в свободном тексте заметки, номер контракта не растёт"
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "store"
+   ]
+  },
+  {
+   "id": "F-13",
+   "question": "Страница ключует спор строки по файлу атаки, разделу и утверждению, а в промпт спора утверждение уходит обрезанным до 60 знаков. Замер модели по шести архивным файлам атак, 2026-11-08: строк 779, из них 94 делят раздел с другой строкой, пар «раздел + утверждение» с повтором нет.",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "агент",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "F-20",
+   "evidence": [
+    {
+     "path": "viewer/playground-template.html",
+     "quote": "function disputeKey(att, row) { return att.path + '|' + row.section + '|' + row.claim; }"
+    },
+    {
+     "path": "viewer/playground-template.html",
+     "quote": "shorten(r.claim, 60)"
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "prompt"
+   ]
+  },
+  {
+   "id": "F-14",
+   "question": "Нынешний путь понижения словом человека в архиве не применялся ни разу. Замер модели по тем же шести файлам: 14 ячеек тяжести с причиной в скобках, все — довод модели в двух изменениях 2026-11-02, до правила F-136.B; ячеек «решено человеком в F-NN» нет.",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "агент",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "F-17",
+   "evidence": [
+    {
+     "path": "openspec/changes/archive/2026-11-02-symphysis-schema/attack/artifacts.md",
+     "quote": "предупреждение (по линзе блокер; снижено: рендер показывает все парковки, ответ в `finding`)"
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "cell"
+   ]
+  },
+  {
+   "id": "F-15",
+   "question": "Плагин ждёт контракт 3 и сверяет номер равенством, а ядро уже на 4. Плагинная половина номера 4 стоит в бэклоге пунктом B-44.",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "агент",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "F-23, F-24",
+   "evidence": [
+    {
+     "path": "vscode/src/core/core.ts",
+     "quote": "export const EXPECTED_CONTRACT = 3;"
+    },
+    {
+     "path": "vscode/src/core/core.ts",
+     "quote": "if (contract === EXPECTED_CONTRACT) return null;"
+    },
+    {
+     "path": "decisions/journal_render.py",
+     "quote": "CONTRACT = 4"
+    },
+    {
+     "path": "context/backlog/symphysis-backlog.md",
+     "quote": "### B-44. Адресат `агент` и контракт 4 в плагине"
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "contract"
+   ]
+  },
+  {
+   "id": "F-16",
+   "question": "В очереди группы 2 бэклога B-18 стоит перед B-16. Изменение B-18 (`attack-lens-conventions`) в своём намерении берёт номер 5 и отдаёт этому изменению номер 6.",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "агент",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "F-23",
+   "evidence": [
+    {
+     "path": "context/backlog/symphysis-backlog.md",
+     "quote": "2. B-18"
+    },
+    {
+     "path": "context/backlog/symphysis-backlog.md",
+     "quote": "3. B-16"
+    },
+    {
+     "path": "lens/openspec/changes/attack-lens-conventions/intent.md",
+     "quote": "B-16 — номер 6"
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "contract"
+   ]
+  },
+  {
+   "id": "F-17",
+   "question": "Где живёт тяжесть, которую сменил человек, и когда она меняет вердикт: в журнале до повтора атаки или в файле атаки сразу",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Журнал, заметка `notes[]` известной формы, как флаг «прочитано»: своя строка `apply` кладёт заметку с файлом атаки, ключом строки, новой тяжестью и обоснованием. Повтор атаки читает заметку и пишет ячейку; вердикт меняется только после повтора. Правка журнала обесценивает вердикт атаки артефактов, и до `apply` каждое слово стоит её повтора с начала. Страница, плагин и скилл разбирают свободный текст заметки по сегментам « · ». Обратимость: форма заметки остаётся в журналах навсегда.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/specs/warning-read-flag/spec.md",
+       "quote": "Прочитанной SHALL считаться каждая строка тяжести `предупреждение` файлов атаки, чей раздел равен разделу заметки"
+      },
+      {
+       "path": "openspec/schemas/symphysis/templates/attack-artifacts.md",
+       "quote": "decisions.json первым (опора артефактов — его правка обесценивает и этот вердикт"
+      },
+      {
+       "path": "attack/skills/symphysis-attack/SKILL.md",
+       "quote": "Если у `attack-artifacts` разошёлся хеш любой цели или журнала — атака артефактов MUST идти"
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Журнал, запись: своя строка `apply` заводит запись с одним вариантом и решением, слово — обоснование. Ячейка сохраняет нынешнюю форму «предупреждение (решено человеком в F-NN)», разбор страницы и плагина не меняется. Цена: служебные записи попадают в Decisions `design.md` и в состав повтора атаки журнала. Обесценивание атаки артефактов и повтор — как в A.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "attack/attack-table.md",
+       "quote": "только по слову человека, причина в скобках в той же ячейке: `предупреждение (решено человеком"
+      },
+      {
+       "path": "cli/journal-cli.md",
+       "quote": "шаг design: Decisions, Risks / Trade-offs, Open Questions из журнала"
+      },
+      {
+       "path": "attack/skills/symphysis-attack/SKILL.md",
+       "quote": "Если у `attack-artifacts` разошёлся хеш любой цели или журнала — атака артефактов MUST идти"
+      }
+     ]
+    },
+    {
+     "letter": "C",
+     "text": "Журнал, новое поле верхнего уровня со списком слов о тяжести: файл атаки, ключ строки, было, стало, обоснование, дата. Схема проверяет форму, `check` может сверить, что строка есть. Новое поле само номер не поднимает, его поднимает новая строка `apply`. Обесценивание атаки артефактов и повтор — как в A.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "docs/repo-contract.md",
+       "quote": "Новое поле сменой не считается. Удаление, переименование, смена смысла и новое значение существующего поля считаются."
+      },
+      {
+       "path": "decisions/journal.schema.json",
+       "quote": "\"additionalProperties\": false,"
+      },
+      {
+       "path": "attack/skills/symphysis-attack/SKILL.md",
+       "quote": "Если у `attack-artifacts` разошёлся хеш любой цели или журнала — атака артефактов MUST идти"
+      }
+     ]
+    },
+    {
+     "letter": "D",
+     "text": "Файл атаки: своя строка `apply` переписывает ячейку тяжести строки с обоснованием и пересчитывает `status`; журнал не меняется. Вердикт меняется в момент `apply`, ни одна атака не устаревает: файлы атаки не входят в цели. Цена: `apply` становится вторым писателем файла атаки, нужно внесение «всё или ничего» на несколько файлов, а слово лежит в ячейке и в `answers/`, но не в журнале. Обратимость: снять второго писателя потом дороже, чем не заводить.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "attack/attack-table.md",
+       "quote": "Строки атаки `apply` не меняет: их закрывает правка цели и повторная атака."
+      },
+      {
+       "path": "attack/attack-table.md",
+       "quote": "Чинит файл атаки тот, кто"
+      },
+      {
+       "path": "decisions/journal_apply.py",
+       "quote": "оставляет журнал как был —"
+      },
+      {
+       "path": "attack/skills/symphysis-attack/SKILL.md",
+       "quote": "Форк читает только `status`; при `mismatch`, `missing` или `stale` `/opsx:continue` снова"
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "D",
+    "why": "Только D меняет вердикт в момент `apply`. A, B и C правят `decisions.json`, первую цель атаки артефактов, и каждое слово о тяжести до `apply` стоит её повтора с начала (F-11): щелчок не станет «нажал и записано». Правило, по которому повтор держит слово человека, нужно во всех четырёх вариантах, так что лишняя цена D — второй вид файла у `apply`. Против B ещё и служебные записи в Decisions, против A — разбор свободного текста заметки."
+   },
+   "decision": {
+    "option": "D",
+    "word": "",
+    "date": "2026-11-08"
+   },
+   "reversibility": {
+    "level": "дорого",
+    "why": "`apply` становится вторым писателем файлов атаки, строка о тяжести входит в грамматику контракта (номер 6) и в промпт плагина; отказ от этого — новый номер контракта, а ячейки, записанные `apply`, останутся в файлах атаки и архиве"
+   },
+   "outcome": null,
+   "parking": [
+    {
+     "addressee": "ИБ",
+     "text": "При D путь файла атаки приходит строкой промпта, и `apply` пишет по нему: ограничить запись файлами `attack/decisions.md` и `attack/artifacts.md` каталога изменения. Обоснование ложится в ячейку таблицы: черта, backtick, скобка и перевод строки ломают разбор (`attack/attack-table.md`, «Правило ячейки»)."
+    },
+    {
+     "addressee": "человек",
+     "text": "Соседняя задача, не этого изменения: отметка «прочитано» у строки `attack/artifacts.md` после `apply` ложится заметкой в `notes[]` журнала, и вердикт атаки артефактов устаревает; до первой отмеченной задачи это держит `apply` и требует повтора атаки артефактов с начала (F-11). Записать в бэклог отдельным пунктом?",
+     "finding": "Записано в бэклог пунктом B-46 «Заметка журнала после атаки артефактов обесценивает её вердикт», приоритет low, группа 6. Слово владельца, 2026-11-08: «Да, запиши в бэклог, но с приоритетом Low. окно, когда артефакты созданы, и можно к ним применить линзу до касания первой из задач -- небольшое. А большинство решений принимается после брейншторма(несколько кругов) и после создания specs(чаще всего один заход обработки развилок).» Уточнение владельца к «применить линзу», 2026-11-08: «я имел ввиду, что применить атаку с включенной линзой да.»"
+    }
+   ],
+   "dispute": "",
+   "consequences": "решение задаёт форму строки `apply` (F-09) и место, откуда повтор атаки берёт слово (F-21)",
+   "evidence": [],
+   "comments": [],
+   "nodes": [
+    "store",
+    "apply",
+    "rerun",
+    "cell"
+   ]
+  },
+  {
+   "id": "F-18",
+   "question": "Между какими тяжестями ходят две кнопки",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Три ступени, щелчок — шаг на одну: блокер ↔ предупреждение ↔ справка, у любой строки. Повысить справку с опорой «есть» — человек не верит опоре; понизить предупреждение до справки — близко к флагу «прочитано».",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "attack/skills/symphysis-attack/SKILL.md",
+       "quote": "`status: passed` ставится, только когда в таблице нет ни одной строки с тяжестью `блокер`;"
+      },
+      {
+       "path": "openspec/specs/warning-read-flag/spec.md",
+       "quote": "Прочитанной SHALL считаться каждая строка тяжести `предупреждение` файлов атаки, чей раздел равен разделу заметки"
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Только граница вердикта: «понизить» у блокера, «повысить» у предупреждения, у справки кнопок нет. Повышение держит `apply`, понижение открывает; спор с опорой справки идёт полем спора, как сейчас.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "attack/skills/symphysis-attack/SKILL.md",
+       "quote": "`status: passed` ставится, только когда в таблице нет ни одной строки с тяжестью `блокер`;"
+      },
+      {
+       "path": "attack/skills/symphysis-attack/SKILL.md",
+       "quote": "Форк читает только `status`; при `mismatch`, `missing` или `stale` `/opsx:continue` снова"
+      }
+     ]
+    },
+    {
+     "letter": "C",
+     "text": "Любая тяжесть выбором из списка вместо двух кнопок.",
+     "added": false,
+     "unlikely": "слово владельца — «кнопка понизить или повысить», список его не исполняет",
+     "evidence": [
+      {
+       "path": "viewer/playground-template.html",
+       "quote": "if (!noSupport || sevBase(r.severity) === 'блокер') return null;"
+      }
+     ],
+     "deviation": "F-01"
+    }
+   ],
+   "antipodes": [
+    {
+     "option": "A",
+     "other": "F-21.B"
+    }
+   ],
+   "recommendation": {
+    "option": "B",
+    "why": "Вердикт держат только блокеры (F-10): B исполняет обе стороны слова владельца ровно там, где тяжесть что-то открывает или держит. Ступень «предупреждение ↔ справка» из A вердикт не меняет, а понижение до справки повторяет флаг «прочитано». C идёт против слова «кнопка»."
+   },
+   "decision": {
+    "option": "B",
+    "word": "",
+    "date": "2026-11-08"
+   },
+   "reversibility": {
+    "level": "дорого",
+    "why": "расширение до ступени «справка» — новое значение тяжести в строке `apply`, то есть смена контракта и коммит плагина с `Needs:`"
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "задаёт, у каких строк есть кнопки (F-19) и что показ знает о повышении (F-08)",
+   "evidence": [],
+   "comments": [],
+   "nodes": [
+    "btn"
+   ]
+  },
+  {
+   "id": "F-19",
+   "question": "Есть ли кнопки у строк покрытия «не пройдено» и «файла нет»: это блокеры без находки",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-18"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Кнопок нет: такой блокер говорит, что раздел не проверен, и закрывает его только повтор атаки. Отказаться от проверки человек может составом линз, не тяжестью строки.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "attack/attack-table.md",
+       "quote": "Раздел, до которого проход не дошёл"
+      },
+      {
+       "path": "openspec/schemas/symphysis/templates/attack-artifacts.md",
+       "quote": "Состав меняет только человек: модель состав не меняет и symphysis.yaml не трогает."
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Кнопки как у любой строки: человек может принять раздел без атаки, обоснование стоит в ячейке.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "attack/attack-table.md",
+       "quote": "Раздел, до которого проход не дошёл"
+      },
+      {
+       "path": "attack/attack-table.md",
+       "quote": "опора `нет: файла нет`, `блокер`"
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Понижение «не пройдено» дало бы `passed` атаке, которая раздел не прошла, и вердикт перестал бы значить «проверено». Для отказа от проверки у человека уже есть состав линз, а B открывал бы второй путь к тому же без следа в составе."
+   },
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-08"
+   },
+   "reversibility": {
+    "level": "обратимо",
+    "why": "форма строки `apply` та же: добавить кнопки у строк покрытия позже — правило показа страницы и плагина и снятие отказа `apply` по таким строкам, без миграции данных"
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [],
+   "comments": [],
+   "nodes": [
+    "row",
+    "btn"
+   ]
+  },
+  {
+   "id": "F-20",
+   "question": "Чем опознаётся строка, у которой человек сменил тяжесть: для `apply` и для повтора атаки",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Файл атаки и раздел, как у флага «прочитано». По замеру 94 строки из 779 делят раздел: одно слово сменило бы тяжесть и соседних строк раздела.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/specs/warning-read-flag/spec.md",
+       "quote": "Прочитанной SHALL считаться каждая строка тяжести `предупреждение` файлов атаки, чей раздел равен разделу заметки"
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Файл атаки, раздел и утверждение дословно, как ключ спора на странице; повторов пары в замере нет. Утверждение идёт в строку промпта целиком, не обрезанным, как у спора. Повтор, переписавший утверждение, теряет связь: строка возвращается к тяжести линзы, итог атаки называет слово без строки.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "viewer/playground-template.html",
+       "quote": "function disputeKey(att, row) { return att.path + '|' + row.section + '|' + row.claim; }"
+      },
+      {
+       "path": "viewer/playground-template.html",
+       "quote": "shorten(r.claim, 60)"
+      }
+     ]
+    },
+    {
+     "letter": "C",
+     "text": "Файл атаки, раздел, линза и утверждение: B плюс линза. По замеру линза ничего не добавляет, B уже уникален.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "viewer/playground-template.html",
+       "quote": "function disputeKey(att, row) { return att.path + '|' + row.section + '|' + row.claim; }"
+      }
+     ]
+    },
+    {
+     "letter": "D",
+     "text": "Новый столбец с номером строки в таблице атаки: номер переживает переписанное утверждение. Меняет таблицу на восемь столбцов, разбор, плагин и форму всех архивных файлов; ближе к B-17.",
+     "added": false,
+     "unlikely": "формат таблицы — контракт и архив, менять его ради ключа, который B уже даёт уникальным, дорого; обратимость — в одну сторону",
+     "evidence": [
+      {
+       "path": "attack/attack-table.md",
+       "quote": "Чинит файл атаки тот, кто"
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "B",
+    "why": "Этот ключ страница уже держит для спора (F-13), и в замере он уникален. A ошибается на каждой из 94 строк с общим разделом, C ничего не добавляет к B, D меняет таблицу и архив ради того же."
+   },
+   "decision": {
+    "option": "B",
+    "word": "",
+    "date": "2026-11-08"
+   },
+   "reversibility": {
+    "level": "дорого",
+    "why": "ключ строки — часть грамматики строки `apply` (контракт) и правила переноса в скилле атаки; другой ключ — новый номер контракта, а файлы `answers/` со старой формой строки останутся"
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "задаёт форму строки `apply` и сверку при повторе атаки (F-21)",
+   "evidence": [],
+   "comments": [],
+   "nodes": [
+    "prompt",
+    "apply",
+    "repeat"
+   ]
+  },
+  {
+   "id": "F-21",
+   "question": "Когда слово человека о тяжести перестаёт действовать при повторе атаки",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-20"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Пока в таблице есть строка с тем же ключом: тяжесть человека и причина переносятся при любом повторе, даже когда опора стала «есть». Строки с ключом нет — слово не действует, итог атаки его называет.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "attack/skills/symphysis-attack/SKILL.md",
+       "quote": "модели тяжесть не снижает: `status` держат только блокеры, и такое понижение открыло бы"
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Пока строка с тем же ключом есть и опора у неё не «есть». Опора стала «есть» — строка `справка`, слово больше не действует: повышенный блокер, чью дыру закрыла правка цели, перестаёт держать `apply`. Строки с ключом нет — как в A.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "attack/skills/symphysis-attack/SKILL.md",
+       "quote": "модели тяжесть не снижает: `status` держат только блокеры, и такое понижение открыло бы"
+      },
+      {
+       "path": "attack/skills/symphysis-attack/SKILL.md",
+       "quote": "`status: passed` ставится, только когда в таблице нет ни одной строки с тяжестью `блокер`;"
+      }
+     ]
+    },
+    {
+     "letter": "C",
+     "text": "До следующего повтора: повтор пишет тяжесть линзы, человек жмёт снова.",
+     "added": false,
+     "unlikely": "против критерия «при повторе атаки скилл держит тяжесть, выставленную человеком»",
+     "evidence": [
+      {
+       "path": "attack/attack-table.md",
+       "quote": "только по слову человека, причина в скобках в той же ячейке: `предупреждение (решено человеком"
+      }
+     ],
+     "deviation": "F-04"
+    }
+   ],
+   "antipodes": [
+    {
+     "option": "B",
+     "other": "F-18.A"
+    }
+   ],
+   "recommendation": {
+    "option": "B",
+    "why": "Повышение должно держать `apply` до правки цели, не дольше. В A оно держало бы его и после того, как правка закрыла дыру, и человеку пришлось бы понижать строку заново. Для понижения A и B совпадают: опора «есть» и так даёт справку. C идёт против критерия."
+   },
+   "decision": {
+    "option": "B",
+    "word": "",
+    "date": "2026-11-08"
+   },
+   "reversibility": {
+    "level": "обратимо",
+    "why": "правило тела скилла `symphysis-attack` и сценарий мастер-спеки `artifact-attack`; ячейки переписываются при каждом повторе атаки, данных для миграции нет"
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [],
+   "comments": [],
+   "nodes": [
+    "repeat"
+   ]
+  },
+  {
+   "id": "F-22",
+   "question": "Где человек пишет обоснование: своё поле у кнопок или поле спора",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Своё поле рядом с кнопками: его текст уходит только в строку о тяжести, кнопка без текста строки не даёт. Поле спора остаётся как есть.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "viewer/playground-template.html",
+       "quote": "спор: почему опора есть / почему не блокер — уйдёт в промпт возврата"
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Поле спора и есть обоснование: нажатая кнопка забирает его текст в строку о тяжести, отдельного замечания по спору тогда нет.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "viewer/playground-template.html",
+       "quote": "спор: почему опора есть / почему не блокер — уйдёт в промпт возврата"
+      },
+      {
+       "path": "openspec/specs/decision-viewer/spec.md",
+       "quote": "Ответ у строки с закрытием «вопрос человеку» и разделом `F-NN, decision` SHALL давать слово к решению"
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Текст спора уже уходит замечанием или словом к решению (F-07). Одно поле с двумя путями дало бы одному тексту два прочтения в промпте, а у строки «вопрос человеку» — ещё и третье. Отдельное поле стоит одного элемента карточки."
+   },
+   "decision": {
+    "option": "A",
+    "word": "Но поле скрываемое, как например парковка у решения. Иначе слишком много полей.",
+    "date": "2026-11-08"
+   },
+   "reversibility": {
+    "level": "обратимо",
+    "why": "показ шаблона страницы и вида атаки плагина; строка промпта от выбора поля не зависит, контракт не задет"
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [],
+   "comments": [],
+   "nodes": [
+    "why",
+    "stop"
+   ]
+  },
+  {
+   "id": "F-23",
+   "question": "Какой номер контракта берёт это изменение, если параллельно B-18 тоже меняет контракт",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Номер 6 сразу, по очереди группы 2: B-18 вливается первым и берёт 5. Вольётся это изменение раньше — номер в `main` прыгнет с 4 на 6, а B-18 при мерже возьмёт 7.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "context/backlog/symphysis-backlog.md",
+       "quote": "2. B-18"
+      },
+      {
+       "path": "context/backlog/symphysis-backlog.md",
+       "quote": "3. B-16"
+      },
+      {
+       "path": "lens/openspec/changes/attack-lens-conventions/intent.md",
+       "quote": "B-16 — номер 6"
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Номер 5 в ветке, окончательный номер решает мерж: второе влитое из двух переписывает свой номер, абзац «С номера N» и тест.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "tests/test_repo_contract.py",
+       "quote": "assert journal_render.CONTRACT == 4"
+      },
+      {
+       "path": "decisions/journal_render.py",
+       "quote": "CONTRACT = 4"
+      }
+     ]
+    },
+    {
+     "letter": "C",
+     "text": "Один номер 5 на оба изменения.",
+     "added": false,
+     "unlikely": "каждая смена контракта — свой абзац «С номера N» и свой тест, а плагин догоняет их по отдельности",
+     "evidence": [
+      {
+       "path": "tests/test_repo_contract.py",
+       "quote": "assert journal_render.CONTRACT == 4"
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Бэклог и оба намерения уже ставят B-18 первым (F-16), и при этом порядке ни одно изменение свой номер не переписывает. B заранее обещает конфликт в одних и тех же строках `repo-contract.md` и теста, C нарушает правило «один номер — одна смена»."
+   },
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-08"
+   },
+   "reversibility": {
+    "level": "обратимо",
+    "why": "до вливания номер — константа `CONTRACT`, абзац «С номера 6» в `docs/repo-contract.md` и тест; после вливания и выпуска плагина с `Needs:` номер уже не переписывается"
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [],
+   "comments": [],
+   "nodes": [
+    "contract"
+   ]
+  },
+  {
+   "id": "F-24",
+   "question": "Делается ли плагинная половина в этом изменении",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Да: кнопки, поле, строка промпта и `EXPECTED_CONTRACT` в плагине, коммит с `Needs:`. Плагин сверяет номер равенством и стоит на 3: прежде ему нужны плагинные половины номеров 4 (B-44) и 5 (B-18).",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "vscode/src/core/core.ts",
+       "quote": "export const EXPECTED_CONTRACT = 3;"
+      },
+      {
+       "path": "vscode/src/core/core.ts",
+       "quote": "if (contract === EXPECTED_CONTRACT) return null;"
+      },
+      {
+       "path": "context/backlog/symphysis-backlog.md",
+       "quote": "### B-44. Адресат `агент` и контракт 4 в плагине"
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Нет: отдельный пункт бэклога плагина, как B-44. Ядро делает страницу, `apply`, скилл и контракт; плагин догоняет своим изменением с `Needs:` после B-44 и плагинной половины B-18.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "context/backlog/symphysis-backlog.md",
+       "quote": "### B-44. Адресат `агент` и контракт 4 в плагине"
+      },
+      {
+       "path": "vscode/src/core/core.ts",
+       "quote": "if (contract === EXPECTED_CONTRACT) return null;"
+      }
+     ],
+     "deviation": "F-01"
+    },
+    {
+     "letter": "C",
+     "text": "Кнопки только в плагине, страница без них.",
+     "added": false,
+     "unlikely": "на странице доступны все виды слова, и плагин без кнопок ещё долго был бы единственным путём",
+     "evidence": [
+      {
+       "path": "docs/repo-contract.md",
+       "quote": "На странице доступны все виды слова."
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "B",
+    "why": "Плагин сверяет номер равенством (F-15): номер 6 он возьмёт только вместе с 4 и 5, а их половины ещё стоят в его очереди. A тянул бы сюда чужие изменения плагина. Так уже сделали с адресатом «агент» (B-44)."
+   },
+   "decision": {
+    "option": "B",
+    "word": "",
+    "date": "2026-11-08"
+   },
+   "reversibility": {
+    "level": "обратимо",
+    "why": "плагинная половина — пункт бэклога плагина, кода нет; вернуть её в изменение можно до начала реализации"
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [],
+   "comments": [],
+   "nodes": [
+    "row",
+    "contract"
+   ]
+  }
+ ],
+ "notes": [
+  {
+   "date": "2026-11-08",
+   "text": "круг 1 закончен: решений 8, фактов 16, открытых развилок 0, парковок агенту 0, антиподов 1"
+  },
+  {
+   "date": "2026-11-08",
+   "text": "брейншторм закончен по решению человека"
+  }
+ ]
+}
