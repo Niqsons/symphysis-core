@@ -8,7 +8,7 @@ symphysis — схема для OpenSpec: задача идёт от намер�
 
 ## Что понадобится
 
-- Node 20 или новее, Python с `pip`, git, клиент Claude Code.
+- Node 22.14 или новее, Python с `pip`, git, клиент Claude Code.
 - Доступ к репозиторию symphysis и к реестру npm и индексу pip или их зеркалу. Что делать без них — в разделе «Сбои».
 
 Команды даны отдельно для PowerShell и bash. В PowerShell зови именно `where.exe`: `where` там псевдоним `Where-Object` и ничего не покажет. В Git Bash пути пиши прямыми слешами: `..\reminders` без кавычек станет `..reminders`, установка молча уйдёт не туда, а `check` там же ответит `ok`.
@@ -56,14 +56,14 @@ PowerShell:
 
 ```powershell
 npm ls -g @fission-ai/openspec
-npm i -g ./vendor/fission-ai-openspec-1.15.0-symphysis.4.tgz
+npm i -g ./vendor/fission-ai-openspec-1.16.1-symphysis.5.tgz
 ```
 
 bash:
 
 ```bash
 npm ls -g @fission-ai/openspec
-npm i -g ./vendor/fission-ai-openspec-1.15.0-symphysis.4.tgz
+npm i -g ./vendor/fission-ai-openspec-1.16.1-symphysis.5.tgz
 ```
 
 Следующая команда форка — только шаг 3: иначе первая же команда запишет идентификатор установки и отправит событие телеметрии.
@@ -104,7 +104,7 @@ Set telemetry.enabled = false
     "enabled": false
   }
 }
-1.15.0-symphysis.4
+1.16.1-symphysis.5
 ```
 
 Ключа `anonymousId` в файле нет. Если версия другая, раньше в `PATH` стоит другой `openspec`: `where.exe openspec` в PowerShell, `which openspec` в bash.

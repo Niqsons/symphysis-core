@@ -16,7 +16,7 @@ import { makeClone } from "../test-support/clone.js";
 const here = path.dirname(fileURLToPath(import.meta.url));
 const bin = path.resolve(here, "..", "bin", "symphysis.js");
 const FORK = path.resolve(here, "..", "..", "upstream", "openspec", "bin", "openspec.js");
-const PIN = "1.15.0-symphysis.4";
+const PIN = "1.16.1-symphysis.5";
 let payloadDir;
 const tmp = () => tempDir("symphysis-check-");
 const saved = { openspec: process.env.SYMPHYSIS_OPENSPEC, path: process.env.PATH, Path: process.env.Path, xdg: process.env.XDG_CONFIG_HOME };

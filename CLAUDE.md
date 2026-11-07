@@ -73,7 +73,7 @@
 - `docs/analysis/step0-sources.md` — чтение источников шага 0
   с вердиктами: что берём как есть, что дорабатываем, что
   переписываем; при составлении instruction и формата журнала.
-- `upstream/openspec` — исходники OpenSpec 1.15.0, форк для правок:
+- `upstream/openspec` — исходники OpenSpec 1.16.1, форк для правок:
   встроенная схема — `schemas/spec-driven/`, workflow-скиллы —
   `src/core/templates/workflows/*.ts`, статус артефакта —
   `src/core/artifact-graph/instruction-loader.ts`.
@@ -99,7 +99,7 @@
   перезаписывает. Правки самого OpenSpec — в форке
   `upstream/openspec`; решением 2026-10-29 (F-02, F-03) форк
   меняется не в двух точках, как решалось сначала, а по перечню правок
-  в `upstream/openspec/UPSTREAM.md` (версия форка `1.15.0-symphysis.4`).
+  в `upstream/openspec/UPSTREAM.md` (версия форка `1.16.1-symphysis.5`).
   Каждый выпуск upstream сначала разбирается, потом решается, втягивать ли.
 - Первый артефакт схемы — `intent` (`intent.md`: намерение словами
   человека); без него `decisions` заблокирован (F-13.A). Второй круг
