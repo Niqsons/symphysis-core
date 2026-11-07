@@ -248,6 +248,20 @@ def test_crlf_master_keeps_line_endings_and_bom(tmp_path):
     assert "(demo/F-21)" in data.decode("utf-8")
 
 
+@pytest.mark.parametrize("tail", ["\n\n", "\n", ""])
+def test_rewrite_keeps_line_count_and_file_tail(tmp_path, tail):
+    """После переписывания в файле столько же строк и тот же хвост, что до него: дифф — только ссылки (F-51). Строки
+    режутся по переводу строки, и `join` сам восстанавливает концевой перевод; второй, добавленный отдельно, удлинял бы файл
+    пустой строкой при каждом запуске с заменами."""
+    root, _, path = project(tmp_path, master=MASTER.rstrip("\n") + tail)
+    before = path.read_bytes()
+    assert run(root).returncode == 0
+    after = path.read_bytes()
+    assert after.count(b"\n") == before.count(b"\n")
+    assert after.endswith(tail.encode()) and not after.endswith((tail + "\n").encode())
+    assert b"(demo/F-21)" in after
+
+
 # --- справка (F-35, F-65) ---------------------------------------------------------------------------------------------
 
 def test_help_names_when_codes_markers_and_order():

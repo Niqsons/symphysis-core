@@ -177,7 +177,9 @@ def anchor_change(root: Path, change: str) -> list[str]:
         if done:
             newline = "\r\n" if "\r\n" in raw else "\n"
             bom = "﻿" if raw.startswith("﻿") else ""
-            _write_master(target, bom + newline.join(rewritten) + (newline if raw.endswith(("\n", "\r\n")) else ""))
+            # `_spec_lines` режет по переводу строки: у файла с переводом в конце последний элемент пустой, и `join`
+            # сам восстанавливает концевой перевод; добавлять его отдельно — удлинять файл пустой строкой при каждом запуске
+            _write_master(target, bom + newline.join(rewritten))
             total, files = total + len(done), files + 1
     lines_out.append(f"Переписано ссылок: {total}, файлов: {files}." if total else NOTHING)
     return lines_out
