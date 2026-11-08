@@ -826,6 +826,7 @@ function buildPrompt(J, attacks, st, disputes, date, read, sev) {
   if (st.newForks.length) { lines.push('Новые развилки:'); for (const f of st.newForks) lines.push('- ' + f.id + ': ' + f.question + ' — варианты: ' + f.options.replace(/\n+/g, ' | ') + (f.word ? ' — «' + f.word + '»' : '')); }
   /* строки о тяжести (F-47.A): отметка `{ to, why }` у строки текущей сборки, с обоснованием, с ходом, который примет `apply`, и ещё не внесённая;
      после решений и новых развилок, до замечаний (F-40.B); обоснование в замечания не идёт, спор в строку не идёт */
+  /* `sevIngested` здесь — страховка: при ходе `sevMove` она сегодня ложна всегда (`to` хода противоположен ячейке); смысл у неё в очистке внесённого, тест — `test_sev_ingested_*` */
   for (const att of (attacks || [])) for (const r of (att.rows || [])) {
     const mark = sev && sev[rowKey(att, r)], mv = sevMove(r);
     if (!mark || !normText(mark.why) || !mv || mv.to !== mark.to || sevIngested(r, mark)) continue;

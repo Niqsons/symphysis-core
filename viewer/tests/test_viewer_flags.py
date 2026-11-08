@@ -187,3 +187,24 @@ def test_severity_line_long_claim_parses(tmp_path):
     assert item[0]["path"] == "attack/decisions.md" and item[0]["section"] == "F-12, options.B"
     assert item[0]["claim"] == claim and item[0]["severity"] == "блокер"
     assert item[0]["why"] == "Обоснование (со скобками) | с чертой и переводом строки"
+
+
+# --- sevIngested: ячейка после настоящей записи ядром (attack-severity-buttons, 2.2) ---
+
+SEV_TEXT = ("---\nstatus: gaps_found\ntarget: decisions.json\ntarget_sha256: abc123\n---\n\n"
+            "| Утверждение | Раздел | Линза | Инвариант | Тяжесть | Опора есть / нет | Чем закрыть |\n"
+            "| --- | --- | --- | --- | --- | --- | --- |\n"
+            "| а | F-01 | scenario-run | инв | блокер (старая причина) | нет | чинить |\n\nхвост\n")
+
+
+def test_sev_ingested_after_the_real_core_wrote_the_cell(tmp_path):
+    """Ячейка, записанная `set_severity` и перечитанная разбором, несёт ту же тяжесть и то же обоснование (с `|`, скобками, переносом)."""
+    why = "см. сценарий (раздел B) | ок\n  вторая строка"
+    out = journal.set_severity(SEV_TEXT, "a.md", "F-01", "а", "предупреждение", why)
+    r = journal.parse_attack_text(out, "a.md")["rows"][0]
+
+    def call(mark):
+        return run_js(tmp_path, "flags", "sevIngested(input.row, input.mark)", {"row": r, "mark": mark})
+    assert call({"to": "предупреждение", "why": why}) is True
+    assert call({"to": "предупреждение", "why": "другое обоснование"}) is False
+    assert call({"to": "блокер", "why": why}) is False
