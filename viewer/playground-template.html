@@ -114,6 +114,7 @@
   .badge.dest { color:var(--acc); border-color:var(--acc); }
   .mute { color:var(--mute); }
   .lensfilter button.active { border-color:var(--acc); color:var(--acc); }
+  .sevrow button.active { border-color:var(--acc); color:var(--acc); }
   .card.conflict { border-color:var(--bad); }
   details.recblock { margin:6px 0; border:1px dashed var(--line); border-radius:8px; padding:4px 10px; }
   details.recblock summary { cursor:pointer; color:var(--acc); font-size:12.5px; }
@@ -241,7 +242,7 @@ const MODES = ['decisions','check','attack'];
 const MODE_LABELS = { decisions:'решения', check:'проверка', attack:'атака' };
 const ADDED_MARK = '(добавлен человеком';
 const ONE_WAY = 'в одну сторону';
-const ATTACK_HINT = 'Строки атаки apply не меняет — их закрывает правка цели (журнала или артефакта) и повторная атака. Спор по строке (почему опора есть, почему не блокер) уходит в промпт возврата одной строкой «Замечания к схеме:» и ложится в notes[] журнала; ответ на строку с закрытием «вопрос человеку» и разделом «F-NN, decision» уходит словом к решению. Фильтр по линзе прячет группы, но не счётчики тяжести в шапке файла. Переключатель «прочитано» у строки предупреждение уходит текстом «предупреждение прочитано: <раздел>» в ту же строку «Замечания к схеме:» и после apply возвращается флагом по заметке журнала; тяжесть и вердикт он не меняет.';
+const ATTACK_HINT = 'По спору apply строку атаки не меняет: её закрывает правка цели (журнала или артефакта) и повторная атака. Исключение — тяжесть: у блокера кнопка «понизить», у предупреждения «повысить»; обоснование пишется в своём скрытом поле (не в поле спора), кнопка берёт его при нажатии, без текста строки о тяжести не будет, а повторное нажатие снимает отметку вместе с обоснованием. Отметка уходит строкой «- тяжесть: <файл> · <раздел> · «<утверждение>» → <тяжесть> — «<обоснование>»» над «Замечания к схеме:»; apply вписывает в ячейку «<тяжесть> (<обоснование>)» и пересчитывает status файла атаки, журнал не меняется. У справки и строк покрытия кнопки нет. Спор по строке (почему опора есть, почему не блокер) уходит в промпт возврата одной строкой «Замечания к схеме:» и ложится в notes[] журнала; ответ на строку с закрытием «вопрос человеку» и разделом «F-NN, decision» уходит словом к решению. Фильтр по линзе прячет группы, но не счётчики тяжести в шапке файла. Переключатель «прочитано» у строки предупреждение уходит текстом «предупреждение прочитано: <раздел>» в ту же строку «Замечания к схеме:» и после apply возвращается флагом по заметке журнала; тяжесть и вердикт он не меняет.';
 const PARK_HINT = 'Парковка — дополнительный вопрос, который нельзя закрыть сейчас: он уходит адресату. «агент» — ответ ищет агент исследования, в файлах или пробой (шаг research), «человек» — нужно решение человека, «ИБ» — проверка по чек-листу безопасности. Решение по самой развилке парковка не снимает.';
 /* ключ — путь страницы: `source` у всех журналов один, и состояние одного журнала приходило бы в другой с теми же номерами F-NN */
 const KEY = 'symphysis:' + ((typeof location !== 'undefined' && location.pathname) || JOURNAL.title || JOURNAL.source || 'journal');
@@ -256,12 +257,13 @@ function save() { try { localStorage.setItem(KEY, JSON.stringify(state)); } catc
 /* режим страницы и споры по строкам атаки — свои ключи browser storage; в состояние режима 1 они не входят */
 let mode = 'decisions';
 try { const m = localStorage.getItem(KEY + ':mode'); if (MODES.includes(m)) mode = m; } catch (e) {}
-/* споры по строкам и отметки «прочитано» (ключ — файл атаки и раздел); старое хранилище без поля `read` читается как пустые отметки (F-31) */
-let attackState = { disputes:{}, read:{} };
+/* споры по строкам, отметки «прочитано» (ключ — файл атаки и раздел) и отметки тяжести `rowKey → { to, why }`; старое хранилище без поля `read` или `sev` читается как пустые отметки (F-31, F-43.B) */
+let attackState = { disputes:{}, read:{}, sev:{} };
 try {
   const s = JSON.parse(localStorage.getItem(KEY + ':attack') || 'null');
   if (s && s.disputes && typeof s.disputes === 'object') attackState.disputes = s.disputes;
   if (s && s.read && typeof s.read === 'object') attackState.read = s.read;
+  if (s && s.sev && typeof s.sev === 'object') attackState.sev = s.sev;
 } catch (e) {}
 let attackLens = 'all';
 try { const l = localStorage.getItem(KEY + ':lens'); if (l) attackLens = l; } catch (e) {}
@@ -279,6 +281,26 @@ const READ_SEP = ' · ';
 function normText(s) { return String(s == null ? '' : s).replace(/\s+/g, ' ').trim(); }
 /* тяжесть — первое слово ячейки; причина понижения — текст в скобках после него */
 function sevBase(s) { const m = /^(блокер|предупреждение|справка)(?![а-яёa-z])/i.exec(String(s || '').trim()); return m ? m[1].toLowerCase() : String(s || '').trim(); }
+/* причина в ячейке — от первой «(» до последней «)», скобки внутри остаются; без пары — пусто */
+function sevReason(s) { const v = String(s || ''), a = v.indexOf('('), b = v.lastIndexOf(')'); return a >= 0 && b > a ? v.slice(a + 1, b).trim() : ''; }
+/* строка покрытия (F-19.A): тяжесть у неё не меняется; те же признаки, что у `_is_coverage` в attack_table.py */
+function isCoverageGap(row) { return !!row && (row.claim === 'не пройдено' || row.support === 'нет: не пройдено' || row.support === 'нет: файла нет'); }
+/* ход тяжести (F-18.B): кнопка там, где `set_severity` примет ход — первое слово ячейки строчными, регистр и скобка вплотную значимы, как у `_severity_word` */
+function sevMove(row) {
+  if (!row || isCoverageGap(row)) return null;
+  const w = (String(row.severity == null ? '' : row.severity).split(/\s+/).filter(Boolean)[0]) || '';
+  return w === 'блокер' ? { label: 'понизить', to: 'предупреждение' } : w === 'предупреждение' ? { label: 'повысить', to: 'блокер' } : null;
+}
+/* строка о тяжести в промпте возврата (F-47.A): утверждение целиком, обоснование одной строкой */
+function severityLine(att, row, to, why) {
+  return '- тяжесть: ' + att.path + ' · ' + row.section + ' · «' + row.claim + '» → ' + to + ' — «' + normText(why) + '»';
+}
+/* ключ отметки тяжести — как у спора: файл атаки, раздел и утверждение целиком (F-20.B) */
+function rowKey(att, row) { return att.path + '|' + row.section + '|' + row.claim; }
+/* отметка уже внесена: ячейка несёт ту же тяжесть и то же обоснование (после `apply`: `<тяжесть> (<обоснование>)`) */
+function sevIngested(row, mark) {
+  return !!row && !!mark && sevBase(row.severity) === mark.to && normText(sevReason(row.severity)) === normText(mark.why);
+}
 function isWarning(row) { return sevBase(row && row.severity) === 'предупреждение'; }
 function readText(row) { return READ_PREFIX + normText(row && row.section); }
 /* ключ отметки — файл атаки и раздел: две строки одного раздела делят одну отметку (F-21) */
@@ -325,6 +347,16 @@ function readByNotes(notes, row) { if (!isWarning(row)) return false; const t = 
     else liveReads.add(k);
   }
   for (const k of Object.keys(attackState.read)) if (!liveReads.has(k)) { delete attackState.read[k]; dropped = true; }
+  /* отметка тяжести: ячейка уже несёт эту тяжесть и это обоснование (внесла apply) или строки в текущей сборке нет (снял повтор атаки) уходит из состояния (F-35) */
+  const liveRows = new Map();
+  for (const att of ATTACK) for (const r of (att.rows || [])) liveRows.set(rowKey(att, r), r);
+  /* без строки уходит отметка лишь файла, что есть в сборке: сборка без `--attack` отметок с обоснованиями не стирает */
+  const livePaths = ATTACK.map(att => att.path + '|');
+  for (const k of Object.keys(attackState.sev)) {
+    const row = liveRows.get(k);
+    if (!row && !livePaths.some(p => k.startsWith(p))) continue;
+    if (!row || sevIngested(row, attackState.sev[k])) { delete attackState.sev[k]; dropped = true; }
+  }
   if (dropped) saveAttack();
 })();
 /* высота нижней панели — тянется за ручку, запоминается */
@@ -741,7 +773,8 @@ function renderStats() {
    Уходит всё, что `apply` уже внёс в журнал: вариант с тем же текстом, слово, равное слову решения, парковка, зависимость, замечание.
    Ответ в поле спора строки атаки (закрытие «вопрос человека», раздел `F-NN, decision`) — слово к решению `- F-NN: <буква> — «…»`, одна строка
    на запись; два разных ответа — конфликт: строки нет, в замечаниях «конфликт ответов к F-NN — оставьте один», `conflictKeys` — ключи спора
-   строк, которые его составили. Ответ к записи без решения — замечание `F-NN: ответ`, ключи — `undecidedKeys`. Возвращает { text, conflictKeys, undecidedKeys }. */
+   строк, которые его составили. Ответ к записи без решения — замечание `F-NN: ответ`, ключи — `undecidedKeys`. Отметка тяжести `sev[ключ строки] = { to, why }`
+   с обоснованием — строка `- тяжесть: …` после решений и новых развилок, до «Замечания к схеме:»; без обоснования, без хода у строки или уже внесённая — строки нет. Возвращает { text, conflictKeys, undecidedKeys }. */
 /* слово уже в решении журнала: `apply` дописывает новое слово к прежнему (`journal_apply._merge`, проверка вхождением),
    поэтому внесённое — вхождение в слово решения, а не равенство; пробелы схлопываются, как в `_flat` */
 function wordIngested(journalWord, word) {
@@ -755,7 +788,7 @@ function localDate(d) {
   const p = n => String(n).padStart(2, '0');
   return d.getFullYear() + '-' + p(d.getMonth() + 1) + '-' + p(d.getDate());
 }
-function buildPrompt(J, attacks, st, disputes, date, read) {
+function buildPrompt(J, attacks, st, disputes, date, read, sev) {
   const MARK = '(добавлен человеком';
   const norm = s => String(s == null ? '' : s).replace(/\s+/g, ' ').trim();
   const shorten = (s, n) => { s = String(s || ''); return s.length > n ? s.slice(0, n - 1) + '…' : s; };
@@ -804,6 +837,14 @@ function buildPrompt(J, attacks, st, disputes, date, read) {
     else if (distinct.length === 1) lines.push('- ' + rec.id + ': ' + letter + ' — «' + distinct[0] + '»');
   }
   if (st.newForks.length) { lines.push('Новые развилки:'); for (const f of st.newForks) lines.push('- ' + f.id + ': ' + f.question + ' — варианты: ' + f.options.replace(/\n+/g, ' | ') + (f.word ? ' — «' + f.word + '»' : '')); }
+  /* строки о тяжести (F-47.A): отметка `{ to, why }` у строки текущей сборки, с обоснованием, с ходом, который примет `apply`, и ещё не внесённая;
+     после решений и новых развилок, до замечаний (F-40.B); обоснование в замечания не идёт, спор в строку не идёт */
+  /* `sevIngested` здесь — страховка: при ходе `sevMove` она сегодня ложна всегда (`to` хода противоположен ячейке); смысл у неё в очистке внесённого, тест — `test_sev_ingested_*` */
+  for (const att of (attacks || [])) for (const r of (att.rows || [])) {
+    const mark = sev && sev[rowKey(att, r)], mv = sevMove(r);
+    if (!mark || !normText(mark.why) || !mv || mv.to !== mark.to || sevIngested(r, mark)) continue;
+    lines.push(severityLine(att, r, mark.to, mark.why));
+  }
   /* отметки «прочитано» (warning-read-flag): один текст на раздел, только у строк предупреждение текущей сборки; внесённые в notes[] не повторяются */
   const readTexts = [];
   for (const att of (attacks || [])) for (const r of (att.rows || [])) {
@@ -819,7 +860,7 @@ function buildPrompt(J, attacks, st, disputes, date, read) {
   return { text: lines.join('\n'), conflictKeys, undecidedKeys };
 }
 /* prompt:end */
-function currentPrompt() { return buildPrompt(JOURNAL, ATTACK, state, attackState.disputes, localDate(new Date()), attackState.read); }
+function currentPrompt() { return buildPrompt(JOURNAL, ATTACK, state, attackState.disputes, localDate(new Date()), attackState.read, attackState.sev); }
 function updateOut() { document.getElementById('out').value = currentPrompt().text; markConflicts(); }
 
 /* ---------- режимы: переключатель в шапке, видимость панелей ---------- */
@@ -945,8 +986,7 @@ function renderCheck() {
 function attackKind(att) { const t = (att.frontmatter || {}).targets || []; return t.length === 1 && t[0].path === 'decisions.json' ? 'journal' : 'artifacts'; }
 function lensList(att) { return ATTACK_LENSES[attackKind(att)]; }
 function lensLabel(att, slug) { const l = lensList(att).find(x => x.slug === slug); return l ? l.label : ''; }
-/* sevBase — в блоке flags: тяжесть читают и счётчики, и переключатель «прочитано» одним правилом */
-function sevReason(s) { const m = /\(([^)]+)\)/.exec(String(s || '')); return m ? m[1].trim() : ''; }
+/* sevBase и sevReason — в блоке flags: тяжесть читают и счётчики, и переключатель «прочитано» одним правилом */
 function sevClass(s) { const b = sevBase(s); return b === 'блокер' ? 'bad' : b === 'предупреждение' ? 'warn' : b === 'справка' ? '' : 'park'; }
 /* при опоре «нет» тяжесть источника — блокер; ниже блокера без причины в скобках — понижение без причины, с причиной — понижение с видимой причиной (F-54.E) */
 function demotion(r) {
@@ -985,6 +1025,18 @@ function readBadge(att, r) {
   return badge + '<label class="readtoggle"' + (inJournal ? ' title="внесено в журнал"' : ' title="отметить прочитанным: текст уйдёт в «Замечания к схеме:» промпта возврата"') +
     '><input type="checkbox" data-read-key="' + esc(k) + '"' + (inJournal || inState ? ' checked' : '') + (inJournal ? ' disabled' : '') + '> прочитано</label>';
 }
+/* блок тяжести у строки: кнопка по ходу `sevMove`, свёрнутое поле обоснования, пометка без текста (F-39); нажатой кнопка считается, пока ход отметки совпадает с ходом строки */
+function sevPressed(att, r) { const mark = attackState.sev[rowKey(att, r)], mv = sevMove(r); return !!(mark && mv && mark.to === mv.to); }
+function sevBlock(att, ai, ri, r) {
+  const mv = sevMove(r);
+  if (!mv) return '';
+  const mark = attackState.sev[rowKey(att, r)], on = sevPressed(att, r), empty = on && !normText(mark.why);
+  const at = ' data-sev-att="' + ai + '" data-sev-row="' + ri + '"';
+  return '<div class="row sevrow"><button class="small' + (on ? ' active' : '') + '"' + at + ' data-sev-btn="1" aria-pressed="' + on + '" title="ход тяжести: строка о тяжести уйдёт в промпт возврата, если есть обоснование">' + esc(mv.label) + '</button></div>' +
+    '<div class="note warn sev-note' + (empty ? '' : ' hidden') + '">нет обоснования, строки о тяжести не будет</div>' +
+    '<details class="park sevwhy"' + (on ? ' open' : '') + '><summary>обоснование тяжести — почему ' + esc(mv.label) + '</summary>' +
+    '<div class="row"><textarea' + at + ' data-sev-why="1" placeholder="обоснование хода тяжести: уйдёт в промпт возврата и в ячейку тяжести">' + esc(on ? (mark.why || '') : '') + '</textarea></div></details>';
+}
 function attackRow(att, ai, ri, r, conflict, undecided) {
   const key = disputeKey(att, r), known = lensList(att).some(l => l.slug === r.lens);
   return '<div class="card attackrow' + (conflict ? ' conflict' : '') + '" data-card="' + ai + '|' + ri + '" data-claim="' + esc(r.claim) + '"><div class="head"><span class="badge ' + sevClass(r.severity) + '">' + esc(r.severity) + '</span>' + demotionBadge(r) +
@@ -992,12 +1044,12 @@ function attackRow(att, ai, ri, r, conflict, undecided) {
     (known ? '' : '<span class="badge bad">линза «' + esc(r.lens) + '» вне списка — строка невалидна</span>') + '</div>' +
     '<div class="q">' + md(r.claim) + '</div>' +
     '<div class="meta">инвариант: ' + md(r.invariant) + '</div><div class="meta">опора: ' + md(r.support) + '</div><div class="meta">чем закрыть: ' + md(r.fix) + '</div>' +
-    recordBlock(r.section) +
+    recordBlock(r.section) + sevBlock(att, ai, ri, r) +
     '<div class="note warn undecided-note' + (undecided ? '' : ' hidden') + '">запись не решена — ответ уйдёт в замечания; выбери вариант в карточке</div>' +
     '<div class="note bad conflict-note' + (conflict ? '' : ' hidden') + '">конфликт ответов к одному решению — оставь один, иначе слово к решению не уйдёт в промпт</div>' +
     '<div class="row"><textarea data-att="' + ai + '" data-row="' + ri + '" placeholder="спор: почему опора есть / почему не блокер — уйдёт в промпт возврата; при закрытии «вопрос человеку» и разделе F-NN, decision — слово к решению">' + esc(attackState.disputes[key] || '') + '</textarea></div></div>';
 }
-function currentFlags() { return buildPrompt(JOURNAL, ATTACK, state, attackState.disputes, '', attackState.read); }
+function currentFlags() { return buildPrompt(JOURNAL, ATTACK, state, attackState.disputes, '', attackState.read, attackState.sev); }
 /* страница подсвечивает конфликт ответов у строк, не пересобирая список: поле спора не теряет фокус */
 function markConflicts() {
   if (mode !== 'attack') return;
@@ -1063,6 +1115,21 @@ function renderAttack() {
     const att = ATTACK[+t.dataset.att], r = att.rows[+t.dataset.row], k = disputeKey(att, r);
     if (t.value.trim()) attackState.disputes[k] = t.value; else delete attackState.disputes[k]; saveAttack(); updateOut();
   });
+  /* кнопка тяжести: нажатие ставит отметку (обоснование берётся из поля карточки), повторное снимает (F-39) */
+  el.querySelectorAll('button[data-sev-btn]').forEach(b => b.onclick = () => {
+    const att = ATTACK[+b.dataset.sevAtt], r = att.rows[+b.dataset.sevRow], k = rowKey(att, r), mv = sevMove(r);
+    if (!mv) return;
+    if (sevPressed(att, r)) delete attackState.sev[k];
+    else { const ta = b.closest('.attackrow').querySelector('textarea[data-sev-why]'); attackState.sev[k] = { to: mv.to, why: ta ? ta.value : '' }; }  /* обоснование — из поля карточки, набранное до нажатия (ruling 11) */
+    saveAttack(); renderAttack(); updateOut();
+  });
+  /* поле обоснования пишет в отметку только пока она есть; пометку обновляем без перерисовки — фокус остаётся */
+  el.querySelectorAll('textarea[data-sev-why]').forEach(t => t.oninput = () => {
+    const att = ATTACK[+t.dataset.sevAtt], r = att.rows[+t.dataset.sevRow], mark = attackState.sev[rowKey(att, r)];
+    if (!mark || !sevPressed(att, r)) return;
+    mark.why = t.value; saveAttack(); updateOut();
+    const n = t.closest('.attackrow').querySelector('.sev-note'); if (n) n.classList.toggle('hidden', !(sevPressed(att, r) && !normText(t.value)));
+  });
   /* отметка «прочитано» — одна на файл и раздел: карточки одного раздела перерисовываются вместе (F-21) */
   el.querySelectorAll('input[data-read-key]').forEach(cb => cb.onchange = () => {
     const k = cb.dataset.readKey;
@@ -1110,7 +1177,7 @@ document.getElementById('fileImport').onchange = e => {
   const f = e.target.files[0]; if (!f) return;
   f.text().then(txt => { try { state = Object.assign(EMPTY(), JSON.parse(txt)); save(); render(); document.getElementById('notes').value = state.notes || ''; } catch (err) { alert('не JSON состояния'); } });
 };
-document.getElementById('btnReset').onclick = () => { if (confirm('Стереть все решения и споры из браузера? Решения, уже внесённые в журнал, останутся.')) { state = EMPTY(); save(); attackState = { disputes:{} }; saveAttack(); document.getElementById('notes').value = ''; render(); } };
+document.getElementById('btnReset').onclick = () => { if (confirm('Стереть все решения и споры из браузера? Решения, уже внесённые в журнал, останутся.')) { state = EMPTY(); save(); attackState = { disputes:{}, read:{}, sev:{} }; saveAttack(); document.getElementById('notes').value = ''; render(); } };
 document.getElementById('title').textContent = JOURNAL.title || document.title;
 renderHelp();
 render();

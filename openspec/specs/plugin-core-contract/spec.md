@@ -208,3 +208,21 @@
 - **WHEN** выполняется тест договора
 - **THEN** тест красный и называет оба числа; с абзацем «С номера 4 …» — зелёный
 <!-- требование из parking-addressee-agent/F-26; пробами не проходило -->
+
+### Requirement: Строка `apply` о тяжести поднимает номер контракта до 6
+Строка `apply` о тяжести строки атаки — новая форма грамматики `apply`, смена контракта: номер в выводе `view-json` и `step_help.py` SHALL стать 6, абзац «С номера 6» в `docs/repo-contract.md` SHALL называть эту строку; коммит ядра называет смену в `Why:`, а плагин догоняет своим изменением с `Needs:` на коммит ядра (attack-severity-buttons/F-23.A, attack-severity-buttons/F-09, attack-severity-buttons/F-05, attack-severity-buttons/F-24.B).
+
+#### Scenario: Номер в двух выводах
+- **GIVEN** ядро, в котором `apply` принимает строку о тяжести
+- **WHEN** выполняются `journal.py view-json` и `step_help.py`
+- **THEN** в обоих выводах `contract` равен 6
+
+#### Scenario: Плагин прежнего номера
+- **GIVEN** плагин с `EXPECTED_CONTRACT = 3` и ядро номера 6
+- **WHEN** плагин обновляет журнал
+- **THEN** плагин просит поставить новый `.vsix`, решений не вносит, на экране прежние данные
+
+#### Scenario: Абзац договора
+- **GIVEN** `CONTRACT = 6` в `journal_render.py`
+- **WHEN** выполняется тест договора
+- **THEN** в `docs/repo-contract.md` есть абзац, начинающийся «С номера 6», и он называет строку `apply` о тяжести

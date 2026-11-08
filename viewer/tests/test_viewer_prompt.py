@@ -54,9 +54,9 @@ def plan_journal():
     return j
 
 
-def prompt(tmp_path, j, st, attacks=(), disputes=None, read=None):
-    return run_js(tmp_path, "prompt", "buildPrompt(input.J, input.attacks, input.st, input.disputes, input.date, input.read)",
-                  {"J": j, "attacks": list(attacks), "st": st, "disputes": disputes or {}, "date": DATE, "read": read or {}},
+def prompt(tmp_path, j, st, attacks=(), disputes=None, read=None, sev=None):
+    return run_js(tmp_path, "prompt", "buildPrompt(input.J, input.attacks, input.st, input.disputes, input.date, input.read, input.sev)",
+                  {"J": j, "attacks": list(attacks), "st": st, "disputes": disputes or {}, "date": DATE, "read": read or {}, "sev": sev},
                   deps=("flags",))
 
 
@@ -429,3 +429,144 @@ def test_ingested_mark_is_not_repeated_in_the_prompt(tmp_path):
     att = warning_file("F-12, options.B")
     text = prompt(tmp_path, j, state(), attacks=[att], read={att["path"] + "|F-12, options.B": True})["text"]
     assert READ not in text
+
+
+# --- строка о тяжести (decision-viewer, attack-severity-buttons) ---
+
+def sev_att():
+    return attack_file(("F-12, options.B", "утверждение один", "уточнить"), ("F-13, options.A", "утверждение два", "уточнить"))
+
+
+def sev_line(att, i, to, why):
+    r = att["rows"][i]
+    return f"- тяжесть: {att['path']} · {r['section']} · «{r['claim']}» → {to} — «{why}»"
+
+
+def test_severity_line_sits_above_the_remarks_and_is_one_item(tmp_path):
+    """Сценарий «Строка о тяжести»: выше «Замечания к схеме:», `apply_clean` принимает, пункт `severity` один."""
+    att = sev_att()
+    text = prompt(tmp_path, plan_journal(), state(notes="моё замечание"), attacks=[att],
+                  sev={key(att, 0): {"to": "предупреждение", "why": "уточнено\n в спеке"}})["text"]
+    assert sev_line(att, 0, "предупреждение", "уточнено в спеке") in text.splitlines()
+    assert text.index("- тяжесть:") < text.index("Замечания к схеме:")
+    ops = apply_clean(plan_journal(), text)
+    assert len([op for op in ops if op["op"] == "severity"]) == 1
+
+
+def test_severity_mark_without_a_justification_gives_no_line(tmp_path):
+    """Сценарий «Кнопка без обоснования»: строки нет, остаётся заглушка «нового нет»."""
+    att = sev_att()
+    text = prompt(tmp_path, plan_journal(), state(), attacks=[att], sev={key(att, 0): {"to": "предупреждение", "why": "  \n "}})["text"]
+    assert "тяжесть" not in text and "(нового нет" in text
+
+
+def test_dispute_and_justification_stay_apart(tmp_path):
+    """Сценарий «Спор и обоснование у одной строки»: спор в замечаниях, обоснование только в строке о тяжести."""
+    att = sev_att()
+    text = prompt(tmp_path, plan_journal(), state(), attacks=[att], disputes={key(att, 0): "спорный довод"},
+                  sev={key(att, 0): {"to": "предупреждение", "why": "обоснование тяжести"}})["text"]
+    remarks = [line for line in text.splitlines() if line.startswith("Замечания к схеме: ")]
+    sev_lines = [line for line in text.splitlines() if line.startswith("- тяжесть:")]
+    assert len(remarks) == 1 and "спорный довод" in remarks[0] and "обоснование тяжести" not in remarks[0]
+    assert len(sev_lines) == 1 and "обоснование тяжести" in sev_lines[0] and "спорный довод" not in sev_lines[0]
+
+
+def test_ingested_severity_leaves_the_prompt(tmp_path):
+    """Сценарий «Внесённое слово уходит из промпта»: ячейка уже несёт тяжесть и обоснование — строки нет."""
+    att = sev_att()
+    att["rows"][0]["severity"] = "предупреждение (обоснование  тяжести)"
+    text = prompt(tmp_path, plan_journal(), state(), attacks=[att], sev={key(att, 0): {"to": "предупреждение", "why": "обоснование тяжести"}})["text"]
+    assert "тяжесть" not in text
+
+
+def test_severity_mark_on_a_removed_row_gives_no_line(tmp_path):
+    """Сценарий «Отметка у строки, которую снял повтор атаки»: строки в `attacks` нет — строки нет."""
+    att = sev_att()
+    gone = {f"{att['path']}|F-99, x|нет такого": {"to": "предупреждение", "why": "причина"}}
+    assert "тяжесть" not in prompt(tmp_path, plan_journal(), state(), attacks=[att], sev=gone)["text"]
+
+
+def test_severity_mark_without_a_move_gives_no_line(tmp_path):
+    """Отметка с чужим ходом и отметка у строки покрытия строк не дают."""
+    att = sev_att()
+    att["rows"][1]["claim"] = "не пройдено"
+    sev = {key(att, 0): {"to": "блокер", "why": "причина"}, key(att, 1): {"to": "предупреждение", "why": "причина"}}
+    assert "тяжесть" not in prompt(tmp_path, plan_journal(), state(), attacks=[att], sev=sev)["text"]
+
+
+def test_severity_lines_follow_file_and_row_order(tmp_path):
+    """Порядок строк — файлы в порядке `attacks`, строки в порядке файла, а не порядке ключей отметок."""
+    a, b = sev_att(), sev_att()
+    b["path"] = "attack/artifacts.md"
+    sev = {key(b, 0): {"to": "предупреждение", "why": "в"}, key(a, 1): {"to": "предупреждение", "why": "б"}, key(a, 0): {"to": "предупреждение", "why": "а"}}
+    lines = [x for x in prompt(tmp_path, plan_journal(), state(), attacks=[a, b], sev=sev)["text"].splitlines() if x.startswith("- тяжесть:")]
+    assert [x.rsplit("«", 1)[1] for x in lines] == ["а»", "б»", "в»"]
+
+
+def test_severity_line_alone_has_no_placeholder(tmp_path):
+    att = sev_att()
+    text = prompt(tmp_path, plan_journal(), state(), attacks=[att], sev={key(att, 0): {"to": "предупреждение", "why": "причина"}})["text"]
+    assert "(нового нет" not in text
+
+
+# --- страховка F-30: настоящие утверждения архива проходят весь путь страница -> промпт -> ядро ---
+
+ARCHIVE_ATTACKS = sorted((ROOT / "openspec" / "changes" / "archive").glob("*/attack/*.md"))
+F30_WHY = "страховка F-30 (архив) | проверка"
+
+
+def test_f30_archive_claims_survive_page_prompt_core(tmp_path):
+    """Все строки архивных файлов атаки: `severityLine` -> `parse_answers` возвращает ключ и обоснование как были (вне зависимости
+    от тяжести); у строк с ходом дальше `set_severity` находит свою строку, ячейка становится `<ход> (<обоснование>)`, `status`
+    пересчитан. Строка, чей ключ (раздел, утверждение) в файле повторяется под другой линзой, — законный вход: `set_severity`
+    на ней даёт отказ «строк с этим ключом две» (сценарий `attack-severity-word` «Две строки одного ключа»; такие строки есть
+    в архиве `attack-lens-conventions`). Отказ называет файл и строку; все числа прогона — в сообщении."""
+    assert ARCHIVE_ATTACKS, "в архиве нет файлов атаки"
+    parsed, moved, doubled, classes, failures = 0, 0, 0, {"«»": 0, "backticks": 0, " — «": 0, " · в разделе": 0}, []
+    for n, path in enumerate(ARCHIVE_ATTACKS):
+        name = f"{path.parts[-3]}/attack/{path.name}"
+        text = path.read_text(encoding="utf-8-sig")
+        att = journal.parse_attack_text(text, name)
+        sub = tmp_path / str(n)
+        sub.mkdir()
+        # сторона страницы: строки для всех строк файла за один прогон node
+        res = run_js(sub, "flags",
+                     "(() => { const a = input.att; return a.rows.map(r => { const m = sevMove(r); const to = m ? m.to : 'предупреждение';"
+                     " return {to, move: !!m, line: severityLine(a, r, to, input.why)}; }); })()",
+                     {"att": att, "why": F30_WHY})
+        assert len(res) == len(att["rows"])
+        keys = [(r["section"], r["claim"]) for r in att["rows"]]
+        for row, item in zip(att["rows"], res):
+            parsed += 1
+            claim = row["claim"]
+            classes["«»"] += "«" in claim or "»" in claim
+            classes["backticks"] += "`" in claim
+            classes[" — «"] += " — «" in claim
+            classes[" · в разделе"] += " · " in row["section"]
+            moved += item["move"]
+            label = f"{name} · {row['section']} · «{claim}»"
+            try:
+                sev = [op for op in journal.parse_answers(item["line"]) if op["op"] != "ignored"]
+                assert len(sev) == 1 and sev[0]["op"] == "severity", f"разбор строки: {sev}"
+                got = sev[0]
+                want = (name, row["section"], claim, item["to"], F30_WHY)
+                assert (got["path"], got["section"], got["claim"], got["severity"], got["why"]) == want, f"разобрано иначе: {got}"
+                if not item["move"]:
+                    continue
+                if keys.count((row["section"], claim)) > 1:
+                    doubled += 1
+                    with pytest.raises(ValueError, match="строк с этим ключом две"):
+                        journal.set_severity(text, name, got["section"], got["claim"], got["severity"], got["why"])
+                    continue
+                new = journal.set_severity(text, name, got["section"], got["claim"], got["severity"], got["why"])
+                after = journal.parse_attack_text(new, name)
+                same = [r for r in after["rows"] if r["section"] == row["section"] and r["claim"] == claim]
+                assert len(same) == 1 and same[0]["severity"] == f"{item['to']} ({F30_WHY})", f"ячейка: {same}"
+                blockers = any(r["severity"].split()[:1] == ["блокер"] for r in after["rows"])
+                assert after["frontmatter"]["status"] == ("gaps_found" if blockers else "passed"), f"status: {after['frontmatter']['status']}"
+            except (AssertionError, ValueError) as err:
+                failures.append(f"{label}: {err}")
+    stat = f"разобрано строк {parsed}, с ходом {moved}, из них с двойным ключом {doubled}; классы по разобранным: {classes}"
+    assert not failures, stat + chr(10) + chr(10).join(failures)
+    assert parsed > 0 and moved > 0 and all(classes.values()), stat
+    print(stat)

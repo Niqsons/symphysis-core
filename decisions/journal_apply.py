@@ -58,6 +58,10 @@ REFUSED = "отказ"
 # Строки промпта — те, что пишет `updateOut()` в `viewer/playground-template.html`.
 RE_ITEM = re.compile(r"^- (F-N?\d+):[ \t]*(.*)$")
 RE_NEW_FORKS = re.compile(r"^Новые развилки:\s*$")
+# Строка о тяжести (F-47.A): путь до первой « · », раздел до первой « · «», утверждение до последнего
+# «» → <слово> — «», обоснование — в «». Начало узнаёт RE_SEVERITY_START, форму — RE_SEVERITY.
+RE_SEVERITY_START = re.compile(r"^- тяжесть:")
+RE_SEVERITY = re.compile(r"^- тяжесть:[ \t]*(.+?) · (.+?) · «(.*)» → (\S+) — («.*»|\(без слова\))$", re.S)
 RE_NOTES = re.compile(r"^Замечания к схеме:[ \t]*(.*)$")
 RE_ADD_OPTION = re.compile(r"^добавлен вариант ([A-ZА-Я])\.\s*(.*)$", re.S)
 RE_DEP = re.compile(r"^зависимость (добавлена|снята)\s+(F-\d+)$")
@@ -75,7 +79,19 @@ def _human_word(rest: str | None) -> str:
     return "" if rest == "(без слова)" else _unquote(rest)
 
 
-def _parse_item(rid: str, body: str) -> dict:
+def _severity_why(group: str) -> str:
+    """Обоснование строки о тяжести: текст между внешними «» последней группы, как её даёт RE_SEVERITY.
+    Одинокая » внутри не делает пару «внутренней»: `«a » b»` -> `a » b` (`_unquote` тут не годится)."""
+    return "" if group == "(без слова)" else group[1:-1]
+
+
+def _parse_item(rid: str | None, body: str) -> dict:
+    if rid is None:   # строка о тяжести: body — вся строка с продолжением
+        m = RE_SEVERITY.match(body)
+        if m:
+            return {"id": None, "op": "severity", "path": m.group(1).strip(), "section": m.group(2).strip(),
+                    "claim": m.group(3), "severity": m.group(4), "why": _severity_why(m.group(5))}
+        return {"id": None, "op": "unknown", "raw": body}
     if rid.startswith("F-N"):
         m = RE_NEW_FORK.match(body)
         if m:
@@ -111,10 +127,12 @@ def parse_answers(text: str) -> list[dict]:
     Строка начинается с `- F-NN: ` (новая развилка — `- F-N1: `) и продолжается до следующей
     такой строки: слово человека бывает многострочным. Всё до первой такой строки (шапка
     `Решения по журналу …:` в простой и в markdown-ссылочной форме) пропускается;
-    `Замечания к схеме:` идут последними и забирают текст до конца. Строка не по форме
+    строка `- тяжесть: …` (F-47.A) — свой пункт `op: severity` в любом месте выше замечаний: она
+    закрывает предыдущий пункт, продолжение идёт в её обоснование, после неё снова узнаётся
+    `- F-NN:`; не по форме — `op: unknown`; `Замечания к схеме:` идут последними и забирают текст до конца. Строка не по форме
     даёт `op: unknown` — `apply_answers` откажет по ней поимённо."""
-    items: list[list[str]] = []
-    cur: list[str] | None = None
+    items: list[list] = []
+    cur: list | None = None
     notes: list[str] | None = None
     for line in re.split(r"\r\n|\r|\n", text.lstrip("﻿")):
         if notes is not None:
@@ -126,6 +144,10 @@ def parse_answers(text: str) -> list[dict]:
             continue
         if RE_NEW_FORKS.match(line):
             cur = None
+            continue
+        if RE_SEVERITY_START.match(line):
+            cur = [None, line]
+            items.append(cur)
             continue
         m = RE_ITEM.match(line)
         if m:
@@ -286,7 +308,7 @@ def _do_note(work: dict, by_id: dict, a: dict, date: str) -> str:
 
 
 def _do_unknown(work: dict, by_id: dict, a: dict, date: str) -> str:
-    raise _Refusal(f"{a['id']}: строка не по форме просмотрщика — «{_flat(a.get('raw', a['op']))[:80]}»")
+    raise _Refusal(f"{a['id'] or 'строка о тяжести'}: строка не по форме просмотрщика — «{_flat(a.get('raw', a['op']))[:80]}»")
 
 
 _APPLY = {"decide": _do_decide, "word": _do_word, "park": _do_park, "add_option": _do_add_option,
@@ -309,6 +331,8 @@ def apply_answers(journal: dict, answers: list[dict], date: str) -> list[str]:
     report: list[str] = []
     refusals: list[str] = []
     for answer in answers:
+        if answer["op"] == "severity":   # строку вносит план файлов атаки (F-17.D), журнал она не меняет
+            continue
         handler = _APPLY.get(answer["op"], _do_unknown)
         try:
             report.append(handler(work, by_id, answer, date))

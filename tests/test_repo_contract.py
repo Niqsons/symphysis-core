@@ -54,12 +54,23 @@ def test_contract_four_is_named():
     assert "коммит ядра называет смену в `Why:`" in rule, "правило «Что делать при смене» не велит называть смену в Why:"
 
 
-def test_contract_five_is_named_and_matches_the_code():
+def test_contract_five_is_named():
     """`attack-lens-conventions` (F-17, F-24.A): линза `rule-compliance` — новое значение списка линз, смена
-    контракта: номер 5 назван в `docs/repo-contract.md` с тем, что изменилось, и равен `CONTRACT` в
-    `journal_render.py`; сценарий `plugin-core-contract` «Линза правил составления поднимает номер»."""
-    assert journal_render.CONTRACT == 5
+    контракта: номер 5 назван в `docs/repo-contract.md` с тем, что изменилось; сценарий `plugin-core-contract`
+    «Линза правил составления поднимает номер». Абзац исторический: `attack-severity-buttons` влито раньше
+    с номером 6, и номер 5 есть только в истории ветки `attack-lens-conventions`."""
     body = text()
     line = next((l for l in body.splitlines() if l.startswith("С номера 5")), None)
     assert line is not None, "в контракте нет строки «С номера 5»"
     assert "rule-compliance" in line and "линз" in line, "строка о номере 5 не называет, что изменилось: линза"
+
+
+def test_contract_six_is_named_and_matches_the_code():
+    """`attack-severity-buttons` (F-23.A, F-47.A): строка `apply` о тяжести — новая форма грамматики, смена
+    контракта: номер 6 назван в `docs/repo-contract.md` с тем, что изменилось, и равен `CONTRACT` в
+    `journal_render.py`; сценарии `plugin-core-contract` «Номер в двух выводах» и «Абзац договора»."""
+    assert journal_render.CONTRACT == 6
+    body = text()
+    line = next((l for l in body.splitlines() if l.startswith("С номера 6")), None)
+    assert line is not None, "в контракте нет строки «С номера 6»"
+    assert "тяжесть" in line and "`apply`" in line, "строка о номере 6 не называет, что изменилось: строка `apply` о тяжести"

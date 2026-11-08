@@ -727,3 +727,32 @@ def test_flagged_question_row_keeps_its_dispute_field(tmp_path):
     row = browser(html, "mode:attack")["attackRows"][0]
     assert row["dispute"] and "в журнале" in row["badge"]
     assert row["undecidedNote"] is not None
+
+
+# --- режим «атака»: кнопка тяжести и поле обоснования (decision-viewer) ------------------------------
+
+def test_severity_button_keeps_text_typed_before_the_press_and_warns_live(tmp_path):
+    """`decision-viewer`: «Нажатие без текста»: текст, набранный до нажатия, остаётся; очистка возвращает пометку и убирает строку
+    о тяжести, отметка живёт; повторное нажатие её снимает; фокус при вводе не теряется (ruling 11)."""
+    html = attack_page(tmp_path, [warning_row("F-02, options.A", "первое", severity="блокер")])
+    sev = lambda r: r["attackRows"][0]["sev"]
+    r = browser(html, "mode:attack", "sevwhy:0:0:причина человека")
+    assert sev(r)["focused"] and not sev(r)["active"] and not r["attackSev"]        # ввод без нажатия отметку не создаёт
+    r = browser(html, "mode:attack", "sevwhy:0:0:причина человека", "sev:0:0")
+    assert sev(r)["active"] and sev(r)["text"] == "причина человека" and not sev(r)["note"] and sev(r)["open"]
+    assert "- тяжесть: attack/decisions.md · F-02, options.A · «первое» → предупреждение — «причина человека»" in r["out"]
+    r = browser(html, "mode:attack", "sevwhy:0:0:причина человека", "sev:0:0", "sevwhy:0:0:")
+    assert sev(r)["note"] and sev(r)["focused"] and sev(r)["text"] == "" and "- тяжесть:" not in r["out"]
+    assert list(r["attackSev"].values()) == [{"to": "предупреждение", "why": ""}]
+    r = browser(html, "mode:attack", "sevwhy:0:0:причина человека", "sev:0:0", "sev:0:0")
+    assert r["attackSev"] == {} and not sev(r)["active"] and "- тяжесть:" not in r["out"]
+    assert r["errors"] == []
+
+
+def test_pressed_severity_button_looks_different(tmp_path):
+    """Нажатая кнопка тяжести отличается от ненажатой цветом текста, при свёрнутом поле тоже."""
+    html = attack_page(tmp_path, [warning_row("F-02, options.A", "первое", severity="блокер")])
+    off = browser(html, "mode:attack")["attackRows"][0]["sev"]
+    on = browser(html, "mode:attack", "sevwhy:0:0:причина", "sev:0:0")["attackRows"][0]["sev"]
+    assert on["active"] and not off["active"]
+    assert on["color"] != off["color"]            # указатель уведён с кнопки: :hover рамку не красит, цвет текста меняет только .active

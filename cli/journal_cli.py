@@ -16,10 +16,10 @@ import sys
 from pathlib import Path
 
 from attack_scope import scope_lines
-from attack_table import parse_attack_md
+from attack_table import parse_attack_md, set_severity
 from journal_apply import REFUSED, apply_answers, apply_md4h, check_evidence, parse_answers, parse_md4h, sha256_file
 from journal_consequences import check_consequences
-from journal_model import dependency_cycles, import_md, load_journal, save_journal, unexplained_choices, validate_journal
+from journal_model import _flat, dependency_cycles, import_md, load_journal, save_journal, unexplained_choices, validate_journal
 from journal_render import render_design, render_md, view_payload
 from journal_sites import code_sites
 from roots import change_of as _change_of, default_roots, file_links, project_href
@@ -340,20 +340,84 @@ def cmd_apply(args: argparse.Namespace) -> int:
     if not answers:
         print("[ok] в промпте нет строк для внесения — журнал не тронут")
         return 0
-    report = apply_answers(journal, answers, args.date or dt.date.today().isoformat())
-    if any(line.startswith(REFUSED) for line in report):
-        for line in report:
+    severities = [a for a in answers if a["op"] == "severity"]
+    has_journal_lines = len(severities) < len(answers)
+    report = apply_answers(journal, answers, args.date or dt.date.today().isoformat()) if has_journal_lines else []
+    refusals = report if any(line.startswith(REFUSED) for line in report) else []
+    writes, plan_report, plan_refusals = _plan_attacks(severities, args.json)
+    if refusals or plan_refusals:
+        for line in refusals + plan_refusals:
             print(f"[!!] {line}", file=sys.stderr)
         return 1
-    for line in report:
+    for line in report + plan_report:
         print(f"[ok] {line}")
     if args.dry_run:
-        print(f"[..] --dry-run: {args.json} не записан")
+        for path in [args.json if has_journal_lines else None, *writes]:
+            if path is not None:
+                print(f"[..] --dry-run: {path} не записан")
         return 0
-    save_journal(args.json, journal)
-    print(f"[ok] {args.json}")
+    # Порядок записи (F-32.B): журнал, затем файлы атаки. Обрыв между записями чинится так: пересобрать страницу и внести
+    # её новый промпт, где осталась только строка о тяжести. Тот же файл ответа второй раз положит заметку «Замечания к
+    # схеме:» и новые развилки вторично, а строку с добавленным вариантом `apply` отвергнет (слово владельца, 2026-11-08:
+    # «Изменение которое будет основываться на текущем получит объяснение»).
+    if has_journal_lines:  # промпт из одних строк о тяжести журнал не трогает и не переписывает (F-17.D)
+        save_journal(args.json, journal)
+        print(f"[ok] {args.json}")
+    for path, new_text in writes.items():
+        path.write_bytes(new_text.encode("utf-8"))   # точный текст `set_severity`, BOM внутри, если он был
+        print(f"[ok] {path}")
     print("[..] apply не рендерит: дальше render-md и render-html")
     return 0
+
+
+def _plan_attacks(severities: list[dict], journal_path: Path) -> tuple[dict[Path, str], list[str], list[str]]:
+    """План файлов атаки до любой записи (F-17.D, F-27, F-45.B): `(новые тексты по файлам, отчёт, отказы)`. Путь строки
+    принимается, только если равен `_attack_path` одного из двух файлов атаки каталога журнала — той форме, что страница
+    даёт в `att.path`; путь не нормализуется. Строки одного файла применяются по очереди в памяти."""
+    folder = Path(journal_path).parent
+    allowed = {_attack_path(folder / "attack" / name, journal_path): folder / "attack" / name
+               for name in ("decisions.md", "artifacts.md")}
+    texts: dict[Path, str] = {}
+    changed: dict[Path, str] = {}
+    seen: set[tuple[str, str, str]] = set()
+    report: list[str] = []
+    refusals: list[str] = []
+    for item in severities:
+        claim_start = item["claim"] if len(item["claim"]) <= 40 else item["claim"][:40] + "…"
+        label = f"тяжесть: {item['path']} · {item['section']} · «{claim_start}» → {item['severity']}"
+        file = allowed.get(item["path"])
+        key = (item["path"], item["section"], item["claim"])
+        if file is None:
+            reason = f"путь {item['path']!r} не файл атаки этого изменения (принимается: {', '.join(allowed)})"
+        elif key in seen:
+            reason = "две строки о тяжести для одной строки атаки"
+        elif not _flat(item["why"]):
+            reason = "нет обоснования"
+        else:
+            reason = ""
+        seen.add(key)
+        if not reason:
+            if file not in texts:
+                if not file.is_file():
+                    reason = f"{file}: файла нет"
+                else:
+                    try:
+                        texts[file] = file.read_bytes().decode("utf-8")   # BOM остаётся в тексте: запись вернёт его
+                    except UnicodeDecodeError:
+                        reason = f"{file}: не UTF-8 — файл атаки читается как UTF-8"
+        if not reason:
+            try:
+                texts[file] = set_severity(texts[file], str(file), item["section"], item["claim"], item["severity"],
+                                           item["why"])
+                changed[file] = texts[file]
+                report.append(label)
+            except ValueError as e:
+                reason = str(e)
+        if reason:
+            refusals.append(f"{REFUSED}: {label} — {reason}")
+    if refusals:
+        refusals.append(f"{REFUSED}: журнал не записан, файлы атаки не изменены — отказов по строкам о тяжести {len(refusals)}")
+    return changed, report, refusals
 
 
 def _comment_count(journal: dict) -> int:
@@ -472,7 +536,9 @@ def build_parser() -> argparse.ArgumentParser:
     p = _command(sub, "apply", "внести промпт возврата просмотрщика в JSON (потом render-md, render-html)",
                  "Вносит промпт возврата просмотрщика (кнопка «Скопировать промпт») в JSON журнала. Всё или ничего:\n"
                  "любая строка с отказом называет запись, журнал не меняется. apply не рендерит: после него\n"
-                 "render-md и render-html. Слова человека сворачиваются в одну строку.",
+                 "render-md и render-html. Слова человека сворачиваются в одну строку.\n"
+                 "Строка «- тяжесть: …» правит файл атаки этого изменения (ячейку тяжести и status), журнал она\n"
+                 "не меняет; отказ по ней оставляет без изменений и журнал, и файлы атаки.",
                  "человек вернул промпт из просмотрщика и его слово надо внести в журнал.",
                  "0 — внесено или вносить нечего; 1 — негодный журнал, нет файла, не UTF-8, отказ по строке.")
     given = p.add_argument_group("вход")
@@ -480,7 +546,7 @@ def build_parser() -> argparse.ArgumentParser:
     given.add_argument("answers", type=Path, help="файл с промптом возврата (UTF-8)")
     given.add_argument("--date", type=_iso_date, help="YYYY-MM-DD в decision.date и notes[].date; по умолчанию сегодня")
     result = p.add_argument_group("исход")
-    result.add_argument("--dry-run", action="store_true", help="показать отчёт, JSON не записывать")
+    result.add_argument("--dry-run", action="store_true", help="показать отчёт, JSON и файлы атаки не записывать")
     p.set_defaults(func=cmd_apply)
 
     p = _command(sub, "apply-md4h", "внести комментарии человека из связки md4h к рендеру в comments[] JSON",

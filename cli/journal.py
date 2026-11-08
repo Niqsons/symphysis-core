@@ -33,6 +33,9 @@ Markdown, HTML и design.md — производные от JSON: правитс
 
 `apply` вносит промпт возврата просмотрщика (кнопка «Скопировать промпт») в JSON: всё или
 ничего, отказ называет запись; сам он не рендерит — после него `render-md` и `render-html`.
+Строка `- тяжесть: <путь файла атаки> · <раздел> · «<утверждение>» → <тяжесть> — «<обоснование>»` журнал не меняет:
+`apply` правит по ней файл атаки этого изменения, всё или ничего вместе со строками журнала; порядок записи —
+журнал, потом файлы атаки; `--dry-run` не пишет ничего.
 
 `apply-md4h` вносит комментарии человека из связки Markdown Editor for Humans (`md4h-feedback/v2`)
 в `comments[]` записей: рендер -> комментарии в md4h -> `apply-md4h` -> агент действует по
@@ -43,7 +46,9 @@ Markdown, HTML и design.md — производные от JSON: правитс
 `render-html --attack <файл>` (повторяемый) подаёт просмотрщику файлы атаки для режима «атака»:
 `parse_attack_md` читает frontmatter (`status`, цели с хешами) и таблицу строк; хеш файла журнала
 встраивается в страницу, по нему режимы «проверка» и «атака» видят, устарел ли вердикт. Битый файл
-атаки — код 2, HTML не пишется. Строки атаки `apply` не меняет: их закрывает правка цели и повторная атака.
+атаки — код 2, HTML не пишется. По спору строку атаки `apply` не меняет: спор уходит заметкой в журнал, строку закрывает правка цели
+и повторная атака. Исключение — строка о тяжести (F-47.A): `apply` правит в файле атаки ячейку тяжести и `status`
+(`parse_attack_text`, `set_severity`, модуль `attack`).
 
 `view-json` отдаёт на stdout те же данные, что получает страница, для показа вне неё (расширение VS Code):
 улики сверены в памяти, у записи и парковки `destination` — «куда уйдёт», в `attacks` — разобранные файлы
@@ -74,7 +79,7 @@ if not (_HERE / "roots.py").is_file():
                      ("cli", "decisions", "viewer", "attack", "consequences", "step-help", "openspec-run", "roots")]
 
 from attack_scope import scope_lines  # noqa: E402  (после правки sys.path)
-from attack_table import parse_attack_md  # noqa: E402
+from attack_table import parse_attack_md, parse_attack_text, set_severity  # noqa: E402
 from journal_apply import REFUSED, apply_answers, apply_md4h, check_evidence, parse_answers, parse_md4h, sha256_file  # noqa: E402
 from journal_cli import build_parser, main  # noqa: E402
 from journal_consequences import check_consequences  # noqa: E402
@@ -88,7 +93,7 @@ __all__ = [
     "ROOT", "SCHEMA_PATH", "ROOTS_PATH", "TEMPLATE_PATH", "PLACEHOLDER", "PLACEHOLDER_ATTACK", "REFUSED",
     "load_journal", "save_journal", "validate_journal", "import_md", "import_md_text",
     "default_roots", "find_quote", "check_evidence", "file_links", "project_href",
-    "render_md", "render_html", "render_design", "view_payload", "anchor_lines", "parse_attack_md", "scope_lines",
+    "render_md", "render_html", "render_design", "view_payload", "anchor_lines", "parse_attack_md", "parse_attack_text", "set_severity", "scope_lines",
     "parse_answers", "apply_answers", "parse_md4h", "apply_md4h", "sha256_file",
     "code_sites", "normalize_path", "check_consequences",
     "build_parser", "main", "_unquote", "_flat",

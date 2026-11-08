@@ -1,6 +1,7 @@
 // Прогон страницы просмотрщика в настоящем Chrome: чистый профиль, страница из file://, флагов, ослабляющих проверки, нет.
 // Использование: node viewer-browser.mjs <chrome> <страница.html> <ширина> <высота> <действие>...
 // Действия: panel — включить панель и дождаться рисунка или текста; mode:<режим> — кнопка режима; drag:<dx> — тянуть границу панели;
+// sev:<файл>:<строка> — нажать кнопку тяжести; sevwhy:<файл>:<строка>:<текст> — ввод в поле обоснования (пусто — стереть);
 // reload — открыть страницу снова; choose:<запись>:<буква> — выбрать вариант; word:<запись>:<текст> — написать слово; buttons — экспорт, импорт, копирование;
 // tab:<scheme|help> — переключатель панели; step:<шаг> — пункт списка справки; helpnext, helpprev — листание; howto — кнопка «Как готовить intent.md?»;
 // clicklink — ссылка на файл внутри варианта; editor:<значение>[:<маска>] — выбор редактора; open:<страница> — другая страница в том же профиле.
@@ -71,8 +72,11 @@ const MEASURE = `(() => {
     attackRows: [...document.querySelectorAll('#viewAttack .attackrow')].map((c) => {
       const cb = c.querySelector('input[data-read-key]'), badge = c.querySelector('.readflag'), und = c.querySelector('.undecided-note');
       return { claim: c.dataset.claim ?? null, toggle: !!cb, checked: !!(cb && cb.checked), disabled: !!(cb && cb.disabled),
-        badge: badge ? badge.textContent : null, dispute: !!c.querySelector('textarea[data-att]'), undecidedNote: und ? !und.classList.contains('hidden') : null };
+        badge: badge ? badge.textContent : null, dispute: !!c.querySelector('textarea[data-att]'), sev: (() => { const btn = c.querySelector('button[data-sev-btn]'), ta = c.querySelector('textarea[data-sev-why]'), n = c.querySelector('.sev-note');
+          return btn ? { active: btn.classList.contains('active'), color: getComputedStyle(btn).color, border: getComputedStyle(btn).borderTopColor, text: ta.value, open: ta.closest('details').open,
+            note: !n.classList.contains('hidden'), focused: document.activeElement === ta } : null; })(), undecidedNote: und ? !und.classList.contains('hidden') : null };
     }),
+    attackSev: (() => { try { const s = JSON.parse(localStorage.getItem(KEY + ':attack') || 'null'); return s ? s.sev || {} : null; } catch (e) { return null; } })(),
     attackCounters: [...document.querySelectorAll('#viewAttack .sevcounters')].map((n) => n.textContent),
     attackState: (() => { try { const s = JSON.parse(localStorage.getItem(KEY + ':attack') || 'null'); return s ? { read: Object.keys(s.read || {}), disputes: Object.keys(s.disputes || {}) } : null; } catch (e) { return null; } })(),
     mode: (document.querySelector('#modes button.active') || {}).textContent || null };
@@ -154,6 +158,22 @@ async function main() {
       const sel = `input[data-read-key=${JSON.stringify(key)}]`;
       await evaluate(`document.querySelector(${JSON.stringify(sel)}).scrollIntoView({ block: 'center' })`);
       await click(sel);
+      await sleep(50);
+    }
+    if (name === "sev") {
+      // кнопка тяжести строки: номер файла атаки и номер строки
+      const sel = `button[data-sev-btn][data-sev-att="${args[0]}"][data-sev-row="${args[1]}"]`;
+      await evaluate(`document.querySelector(${JSON.stringify(sel)}).scrollIntoView({ block: 'center' })`);
+      await click(sel);
+      await send("Input.dispatchMouseEvent", { type: "mouseMoved", x: 0, y: 0 });   // указатель уходит с кнопки: замер цвета без :hover
+      await sleep(50);
+    }
+    if (name === "sevwhy") {
+      // поле обоснования: раскрыть, сфокусировать, вставить текст как ввод; пустой текст — выделить всё и стереть
+      const sel = `textarea[data-sev-why][data-sev-att="${args[0]}"][data-sev-row="${args[1]}"]`, text = args.slice(2).join(":");
+      await evaluate(`(() => { const t = document.querySelector(${JSON.stringify(sel)}); t.closest('details').open = true; t.scrollIntoView({ block: 'center' }); t.focus(); t.select(); })()`);
+      if (text) await send("Input.insertText", { text });
+      else { await send("Input.dispatchKeyEvent", { type: "rawKeyDown", key: "Backspace", code: "Backspace", windowsVirtualKeyCode: 8 }); await send("Input.dispatchKeyEvent", { type: "keyUp", key: "Backspace", code: "Backspace", windowsVirtualKeyCode: 8 }); }
       await sleep(50);
     }
     if (name === "attackstate") { await evaluate(`localStorage.setItem(KEY + ':attack', ${JSON.stringify(args.join(":"))})`); }

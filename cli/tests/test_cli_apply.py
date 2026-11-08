@@ -1,4 +1,5 @@
 """`journal.py apply` и `apply-md4h` как команды: коды выхода, `--dry-run`, дата, кодировка, отказы."""
+import hashlib
 import itertools
 import json
 import re
@@ -218,3 +219,168 @@ def test_cli_apply_md4h_requires_the_render_argument(tmp_path):
     fb = write_feedback(tmp_path, md, (f3 + 1, f3 + 1))
     run = run_cli("apply-md4h", src, fb)
     assert run.returncode == 2 and "--render" in run.stderr
+
+
+# --- строки о тяжести (`attack-severity-word`, F-17, F-27, F-32.B, F-42, F-45.B) ---
+
+SEV_HEAD = ("---\nstatus: gaps_found\ntarget: decisions.json\ntarget_sha256: abc123\n---\n\n"
+            "| Утверждение | Раздел | Линза | Инвариант | Тяжесть | Опора есть / нет | Чем закрыть |\n"
+            "| --- | --- | --- | --- | --- | --- | --- |\n")
+ROW_BLOCK = "| а | F-01 | scenario-run | инв | блокер (старая причина) | нет | чинить |"
+ROW_WARN = "| б | F-02 | honest-verifier | инв | предупреждение | нет | чинить |"
+DECISIONS = "openspec/changes/ch/attack/decisions.md"
+ARTIFACTS = "openspec/changes/ch/attack/artifacts.md"
+
+
+def sha(path):
+    return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+def sev_line(path, claim, severity, why, section="F-01"):
+    return f"- тяжесть: {path} · {section} · «{claim}» → {severity} — «{why}»\n"
+
+
+@pytest.fixture
+def project(tmp_path):
+    change = tmp_path / "openspec" / "changes" / "ch"
+    (change / "attack").mkdir(parents=True)
+    j = plan()
+    path = change / "decisions.json"
+    journal.save_journal(path, j)
+    for name in ("decisions", "artifacts"):
+        (change / "attack" / f"{name}.md").write_bytes((SEV_HEAD + ROW_BLOCK + "\n" + ROW_WARN + "\n").encode("utf-8"))
+    return tmp_path, change, path
+
+
+def apply_sev(project, prompt, *flags):
+    tmp, change, path = project
+    answers = tmp / "a.md"
+    answers.write_text(HEADER_LINK + prompt, encoding="utf-8")
+    return run_cli("apply", path, answers, *flags, "--date", "2026-11-08")
+
+
+def snapshot(project):
+    _, change, path = project
+    return {p: sha(p) for p in (path, change / "attack" / "decisions.md", change / "attack" / "artifacts.md")}
+
+
+def test_apply_lowers_the_last_blocker_and_leaves_the_journal_alone(project):
+    """«Понижен последний блокер» — status passed, SHA-256 decisions.json прежний."""
+    _, change, path = project
+    before = snapshot(project)
+    run = apply_sev(project, sev_line(DECISIONS, "а", "предупреждение", "решено человеком"))
+    assert run.returncode == 0, run.stderr + run.stdout
+    text = (change / "attack" / "decisions.md").read_text(encoding="utf-8")
+    assert "status: passed" in text and "предупреждение (решено человеком) |" in text
+    assert sha(path) == before[path]
+    assert sha(change / "attack" / "artifacts.md") == before[change / "attack" / "artifacts.md"]
+    assert "→ предупреждение" in run.stdout and "«а»" in run.stdout
+
+
+@pytest.mark.parametrize("bad", ["../other/attack/decisions.md", "C:/x/attack/decisions.md",
+                                 "openspec/changes/other/attack/decisions.md",
+                                 "openspec/changes/ch/../ch/attack/decisions.md"])
+def test_apply_refuses_a_path_outside_the_change(project, bad):
+    """«Путь вне каталога изменения» — код 1, ни один файл не изменён."""
+    before = snapshot(project)
+    run = apply_sev(project, sev_line(bad, "а", "предупреждение", "слово"))
+    assert run.returncode == 1 and bad in run.stderr and "[!!]" in run.stderr
+    assert DECISIONS in run.stderr and "openspec/changes/ch/attack/artifacts.md" in run.stderr   # названа принимаемая форма
+    assert snapshot(project) == before
+
+
+@pytest.mark.parametrize("why", ["   ", None])
+def test_apply_refuses_an_empty_justification(project, why):
+    """«Пустое обоснование» — из пробелов и из `(без слова)`."""
+    before = snapshot(project)
+    line = (sev_line(DECISIONS, "а", "предупреждение", why) if why
+            else f"- тяжесть: {DECISIONS} · F-01 · «а» → предупреждение — (без слова)\n")
+    run = apply_sev(project, line)
+    assert run.returncode == 1 and "нет обоснования" in run.stderr
+    assert snapshot(project) == before
+
+
+def test_apply_refuses_two_lines_for_one_attack_row(project):
+    before = snapshot(project)
+    run = apply_sev(project, sev_line(DECISIONS, "а", "предупреждение", "раз") + sev_line(DECISIONS, "а", "блокер", "два"))
+    assert run.returncode == 1 and "две строки о тяжести для одной строки атаки" in run.stderr
+    assert snapshot(project) == before
+
+
+def test_apply_good_journal_line_and_bad_severity_line_write_nothing(project):
+    """«Годное решение и негодная строка о тяжести» — F-03 открыт, строка о нём годна сама по себе; пустое обоснование
+    строки о тяжести — код 1, ничего не записано, решение F-03 пусто."""
+    _, _, path = project
+    j = journal.load_journal(path)
+    rec = rec_of(j, "F-03")
+    rec["decision"], rec["status"] = None, "открыт"
+    journal.save_journal(path, j)
+    before = snapshot(project)
+    run = apply_sev(project, "- F-03: A — «слово»\n" + sev_line(DECISIONS, "а", "предупреждение", "   "))
+    assert run.returncode == 1 and "нет обоснования" in run.stderr
+    assert "F-03" not in run.stderr
+    assert snapshot(project) == before
+    assert rec_of(journal.load_journal(path), "F-03")["decision"] is None
+
+
+def test_apply_good_line_with_unparsable_attack_file_is_refused(project):
+    _, change, _ = project
+    (change / "attack" / "artifacts.md").write_text("не файл атаки\n", encoding="utf-8")
+    before = snapshot(project)
+    run = apply_sev(project, sev_line(ARTIFACTS, "а", "предупреждение", "слово"))
+    assert run.returncode == 1 and "artifacts.md" in run.stderr
+    assert snapshot(project) == before
+    (change / "attack" / "artifacts.md").unlink()
+    run = apply_sev(project, sev_line(ARTIFACTS, "а", "предупреждение", "слово"))
+    assert run.returncode == 1 and "файла нет" in run.stderr
+
+
+def test_apply_good_line_for_one_file_and_bad_for_the_other_changes_neither(project):
+    before = snapshot(project)
+    run = apply_sev(project, sev_line(DECISIONS, "а", "предупреждение", "слово")
+                    + sev_line(ARTIFACTS, "нет такой", "предупреждение", "слово"))
+    assert run.returncode == 1
+    assert snapshot(project) == before
+
+
+def test_apply_writes_both_attack_files_and_the_journal_first(project):
+    """«Строки о двух файлах атаки» — оба файла правятся, журнал со своей строкой пишется."""
+    _, change, path = project
+    run = apply_sev(project, "- F-03: A (было C) — «слово»\n" + sev_line(DECISIONS, "а", "предупреждение", "раз")
+                    + sev_line(ARTIFACTS, "б", "блокер", "два", section="F-02"))
+    assert run.returncode == 0, run.stderr + run.stdout
+    assert rec_of(journal.load_journal(path), "F-03")["decision"]["option"] == "A"  # было C
+    assert "status: passed" in (change / "attack" / "decisions.md").read_text(encoding="utf-8")
+    assert "блокер (два) |" in (change / "attack" / "artifacts.md").read_text(encoding="utf-8")
+
+
+def test_apply_dry_run_touches_no_file_and_names_the_line(project):
+    """«Пробное внесение не трогает файл атаки»."""
+    before = snapshot(project)
+    run = apply_sev(project, "- F-03: A (было C) — «слово»\n" + sev_line(DECISIONS, "а", "предупреждение", "раз"), "--dry-run")
+    assert run.returncode == 0 and "→ предупреждение" in run.stdout and "decisions.md" in run.stdout
+    assert "не записан" in run.stdout
+    assert snapshot(project) == before
+
+
+def test_apply_keeps_crlf_and_bom_of_the_attack_file(project):
+    _, change, _ = project
+    file = change / "attack" / "decisions.md"
+    file.write_bytes(b"\xef\xbb\xbf" + file.read_bytes().replace(b"\n", b"\r\n"))
+    run = apply_sev(project, sev_line(DECISIONS, "а", "предупреждение", "слово"))
+    assert run.returncode == 0, run.stderr
+    raw = file.read_bytes()
+    assert raw.startswith(b"\xef\xbb\xbf") and raw.count(b"\r\n") == raw.count(b"\n")
+    assert b"status: passed" in raw
+
+
+def test_apply_two_severity_lines_for_two_rows_of_one_file(project):
+    """Две строки о тяжести для разных строк одного файла — применяются за один запуск по цепочке в памяти."""
+    _, change, path = project
+    before = snapshot(project)
+    run = apply_sev(project, sev_line(DECISIONS, "а", "предупреждение", "раз") + sev_line(DECISIONS, "б", "блокер", "два", "F-02"))
+    assert run.returncode == 0, run.stderr + run.stdout
+    text = (change / "attack" / "decisions.md").read_text(encoding="utf-8")
+    assert "предупреждение (раз) |" in text and "блокер (два) |" in text
+    assert "status: passed" not in text and "status: gaps_found" in text
+    assert sha(path) == before[path]

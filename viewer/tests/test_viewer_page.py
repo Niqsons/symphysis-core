@@ -1202,3 +1202,102 @@ def test_viewer_smoke_walks_a_page_with_a_file_link(tmp_path):
     cards = smoke(tmp_path, html)["cards"]
     assert 'href="../a.md"' in cards
     assert "filelink editor" not in cards
+
+
+@requires_node
+def test_viewer_attack_sev_marks_cleanup_and_prompt(tmp_path):
+    """`decision-viewer`: «Отметка у строки, которую снял повтор атаки»: отметка без строки и отметка, уже внесённая в ячейку,
+    уходят из хранилища; живая отметка остаётся и даёт строку о тяжести в промпте (F-35)."""
+    live = arow(claim="живая", severity="блокер (старая причина)")
+    done = arow(claim="внесённая", severity="предупреждение (внесено apply)")
+    file = afile([live, done])
+    key = lambda r: f'{file["path"]}|{r["section"]}|{r["claim"]}'
+    marks = {key(live): {"to": "предупреждение", "why": "причина человека"},
+             key(done): {"to": "предупреждение", "why": "внесено apply"},
+             file["path"] + "|F-99, decision|снятая атакой": {"to": "блокер", "why": "нет строки"}}
+    out = attack_view(tmp_path, [file], {":attack": {"disputes": {}, "read": {}, "sev": marks}})
+    assert list(json.loads(out["savedAttack"])["sev"]) == [key(live)]
+    assert out["out"].count("- тяжесть:") == 1
+    assert "· «живая» → предупреждение — «причина человека»" in out["out"]
+    assert "снятая атакой" not in out["out"] and "внесённая" not in out["out"].split("- тяжесть:")[1]
+
+
+@requires_node
+def test_viewer_attack_sev_mark_of_an_absent_file_survives_cleanup(tmp_path):
+    """Отметка файла атаки, которого нет в сборке (собрано без `--attack` для него), остаётся с обоснованием;
+    отметка снятой строки присутствующего файла уходит."""
+    live = arow(claim="живая", severity="блокер (старая причина)")
+    file = afile([live])
+    foreign = "openspec/changes/other/attack/artifacts.md|F-01|чужая"
+    gone = file["path"] + "|F-99, decision|снятая атакой"
+    marks = {foreign: {"to": "предупреждение", "why": "слово человека"}, gone: {"to": "блокер", "why": "нет строки"}}
+    out = attack_view(tmp_path, [file], {":attack": {"disputes": {}, "read": {}, "sev": marks}})
+    assert list(json.loads(out["savedAttack"])["sev"]) == [foreign]
+
+
+@requires_node
+def test_viewer_attack_old_storage_without_sev_builds_the_page(tmp_path):
+    """`decision-viewer`: хранилище только с `disputes` и `read` — страница собирается, споры на месте, отметок тяжести нет (F-43.B)."""
+    row = arow(claim="спорная")
+    file = afile([row])
+    key = f'{file["path"]}|{row["section"]}|{row["claim"]}'
+    out = attack_view(tmp_path, [file], {":attack": {"disputes": {key: "опора есть"}, "read": {}}})
+    assert "спорная" in out["attack"] and "спор: опора есть" in out["out"]
+    assert "- тяжесть:" not in out["out"]
+
+
+def cards_by_claim(attack):
+    cards = attack.split('<div class="card attackrow')[1:]
+    return {re.search(r'<div class="q">([^<]*)</div>', c).group(1): c for c in cards}
+
+
+@requires_node
+def test_viewer_attack_severity_buttons_by_move(tmp_path):
+    """`decision-viewer`: «Блокер и предупреждение», «Справка и строки покрытия», «Поле скрыто по умолчанию»: у блокера только
+    «понизить», у предупреждения только «повысить»; у справки и строк покрытия кнопок нет; пустое хранилище — поля свёрнуты."""
+    rows = [arow(claim="блок"), arow(claim="пред", severity="предупреждение"), arow(claim="справ", severity="справка", support="есть"),
+            arow(claim="не пройдено", support="нет: не пройдено"), arow(claim="нет файла", support="нет: файла нет")]
+    by = cards_by_claim(attack_view(tmp_path, [afile(rows)])["attack"])
+    assert ">понизить</button>" in by["блок"] and "повысить" not in by["блок"]
+    assert ">повысить</button>" in by["пред"] and "понизить</button>" not in by["пред"]
+    for c in ("справ", "не пройдено", "нет файла"):
+        assert "data-sev-btn" not in by[c], c
+    for c in ("блок", "пред"):
+        assert '<details class="park sevwhy">' in by[c] and "<textarea data-att=" in by[c]
+        assert 'sev-note hidden' in by[c] and 'class="small active"' not in by[c]
+
+
+@requires_node
+def test_viewer_attack_severity_pressed_without_why_warns_and_opens(tmp_path):
+    """`decision-viewer`: «Нажатие без текста» — нажатая кнопка без обоснования: пометка и раскрытое поле, строки о тяжести нет;
+    с текстом пометки нет; ход, не совпавший с ходом строки, кнопку не нажимает (ruling 10)."""
+    empty, full, stale = arow(claim="пустая"), arow(claim="полная"), arow(claim="устаревшая", severity="предупреждение")
+    file = afile([empty, full, stale])
+    key = lambda r: f'{file["path"]}|{r["section"]}|{r["claim"]}'
+    marks = {key(empty): {"to": "предупреждение", "why": ""}, key(full): {"to": "предупреждение", "why": "причина"},
+             key(stale): {"to": "предупреждение", "why": "ход не тот"}}
+    out = attack_view(tmp_path, [file], {":attack": {"disputes": {}, "read": {}, "sev": marks}})
+    by = cards_by_claim(out["attack"])
+    assert 'sev-note hidden' not in by["пустая"] and "нет обоснования, строки о тяжести не будет" in by["пустая"]
+    assert '<details class="park sevwhy" open>' in by["пустая"] and 'class="small active"' in by["пустая"]
+    assert 'sev-note hidden' in by["полная"] and 'class="small active"' in by["полная"]
+    assert 'sev-note hidden' in by["устаревшая"] and 'class="small active"' not in by["устаревшая"]
+    assert out["out"].count("- тяжесть:") == 1 and "«полная» → предупреждение — «причина»" in out["out"]
+    assert "«пустая»" not in out["out"].split("- тяжесть:")[1]
+
+
+@requires_node
+def test_viewer_attack_demotion_badge_shows_the_whole_reason(tmp_path):
+    """`artifact-attack`: «Понижение кнопкой» и «Понижение без причины»: ячейка с вложенными скобками — причина целиком."""
+    rows = [arow(severity="предупреждение (дыра закрыта соседним сценарием)", claim="с причиной"),
+            arow(severity="предупреждение (дыра (частично) закрыта)", claim="вложенная")]
+    by = cards_by_claim(attack_view(tmp_path, [afile(rows)])["attack"])
+    assert "понижено: дыра закрыта соседним сценарием" in by["с причиной"] and "понижение без причины" not in by["с причиной"]
+    assert "понижено: дыра (частично) закрыта" in by["вложенная"]
+
+
+def test_viewer_template_reset_clears_every_attack_field():
+    """`decision-viewer`: кнопка «Стереть» сбрасывает споры, отметки «прочитано» и тяжести; без `read` `readBadge` падал."""
+    text = TEMPLATE.read_text(encoding="utf-8")
+    assert "attackState = { disputes:{}, read:{}, sev:{} }; saveAttack();" in text
+    assert "attackState.sev)" in text.split("function currentFlags()")[1].split("\n")[0]

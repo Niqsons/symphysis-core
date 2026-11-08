@@ -146,3 +146,65 @@ def test_note_with_a_blocker_section_does_not_flag(tmp_path):
     notes = [note(PREFIX + "F-20, options.A")]
     assert read_by_notes(tmp_path, notes, row("F-20, options.A", severity="блокер")) is False
     assert read_by_notes(tmp_path, notes, row("F-20, options.A", severity="справка")) is False
+
+
+# --- задача 2.1: ход тяжести, причина в ячейке, строка о тяжести (decision-viewer, attack-severity-word) ---
+
+def sev_move(tmp_path, r):
+    return run_js(tmp_path, "flags", "sevMove(input.row)", {"row": r})
+
+
+def test_sev_move_blocker_and_warning(tmp_path):
+    assert sev_move(tmp_path, row("F-1", severity="блокер")) == {"label": "понизить", "to": "предупреждение"}
+    assert sev_move(tmp_path, row("F-1", severity="предупреждение (причина)")) == {"label": "повысить", "to": "блокер"}
+
+
+@pytest.mark.parametrize("severity", ["справка", "критично", "Блокер", "блокер(причина)", ""])
+def test_sev_move_none_outside_two_words(tmp_path, severity):
+    assert sev_move(tmp_path, row("F-1", severity=severity)) is None
+
+
+@pytest.mark.parametrize("kw", [{"claim": "не пройдено"}, {"support": "нет: не пройдено"}, {"support": "нет: файла нет"}])
+def test_sev_move_none_on_coverage_row(tmp_path, kw):
+    assert sev_move(tmp_path, row("F-1", severity="блокер", **kw)) is None
+
+
+def test_sev_reason_whole_cell_tail(tmp_path):
+    call = "sevReason(input.s)"
+    assert run_js(tmp_path, "flags", call, {"s": "предупреждение (см. сценарий (раздел B) | ок)"}) == "см. сценарий (раздел B) | ок"
+    assert run_js(tmp_path, "flags", call, {"s": "блокер"}) == ""
+
+
+def test_severity_line_long_claim_parses(tmp_path):
+    claim = "утверждение длиннее шестидесяти знаков, с запятыми и (скобками) — чтобы его не укоротили"
+    assert len(claim) > 60
+    att, r = {"path": "attack/decisions.md"}, row("F-12, options.B", claim=claim)
+    why = "Обоснование (со скобками) | с чертой\nи переводом строки"
+    line = run_js(tmp_path, "flags", "severityLine(input.att, input.row, 'блокер', input.why)", {"att": att, "row": r, "why": why})
+    assert "\n" not in line
+    item = [i for i in journal.parse_answers(line + "\n") if i["op"] == "severity"]
+    assert len(item) == 1
+    assert item[0]["path"] == "attack/decisions.md" and item[0]["section"] == "F-12, options.B"
+    assert item[0]["claim"] == claim and item[0]["severity"] == "блокер"
+    assert item[0]["why"] == "Обоснование (со скобками) | с чертой и переводом строки"
+
+
+# --- sevIngested: ячейка после настоящей записи ядром (attack-severity-buttons, 2.2) ---
+
+SEV_TEXT = ("---\nstatus: gaps_found\ntarget: decisions.json\ntarget_sha256: abc123\n---\n\n"
+            "| Утверждение | Раздел | Линза | Инвариант | Тяжесть | Опора есть / нет | Чем закрыть |\n"
+            "| --- | --- | --- | --- | --- | --- | --- |\n"
+            "| а | F-01 | scenario-run | инв | блокер (старая причина) | нет | чинить |\n\nхвост\n")
+
+
+def test_sev_ingested_after_the_real_core_wrote_the_cell(tmp_path):
+    """Ячейка, записанная `set_severity` и перечитанная разбором, несёт ту же тяжесть и то же обоснование (с `|`, скобками, переносом)."""
+    why = "см. сценарий (раздел B) | ок\n  вторая строка"
+    out = journal.set_severity(SEV_TEXT, "a.md", "F-01", "а", "предупреждение", why)
+    r = journal.parse_attack_text(out, "a.md")["rows"][0]
+
+    def call(mark):
+        return run_js(tmp_path, "flags", "sevIngested(input.row, input.mark)", {"row": r, "mark": mark})
+    assert call({"to": "предупреждение", "why": why}) is True
+    assert call({"to": "предупреждение", "why": "другое обоснование"}) is False
+    assert call({"to": "блокер", "why": why}) is False

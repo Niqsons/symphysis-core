@@ -171,3 +171,105 @@ def test_extra_cell_names_file_and_line_and_writes_no_html(tmp_path):
     assert run.returncode == 2, run.stdout + run.stderr
     assert "decisions.md:9:" in run.stderr and "ячеек 8" in run.stderr
     assert not out.exists()
+
+
+# --- set_severity (`attack-severity-word`, F-17, F-18.B, F-19.A, F-28, F-29.B, F-31.B) ---
+
+SEV_HEAD = ("---\nstatus: gaps_found\ntarget: decisions.json\ntarget_sha256: abc123\n---\n\n"
+            "| Утверждение | Раздел | Линза | Инвариант | Тяжесть | Опора есть / нет | Чем закрыть |\n"
+            "| --- | --- | --- | --- | --- | --- | --- |\n")
+ROW_BLOCK = "| а  | F-01 | scenario-run |  инв  | блокер (старая причина) |  нет | чинить |"
+ROW_WARN = "| б | F-02 | honest-verifier | инв | предупреждение | по спеке не выводится | чинить |"
+ROW_REF = "| в | F-03 | coverage | — | справка | нет | — |"
+
+
+def sev_text(*rows, nl="\n"):
+    return (SEV_HEAD + "".join(r + "\n" for r in rows) + "\nхвост\n").replace("\n", nl)
+
+
+def test_set_severity_lowers_last_blocker_to_passed_keeping_other_bytes():
+    text = sev_text(ROW_BLOCK, ROW_WARN)
+    out = attack_table.set_severity(text, "a.md", "F-01", "а", "предупреждение", "решено человеком")
+    assert out == text.replace("status: gaps_found", "status: passed").replace(
+        "блокер (старая причина) |", "предупреждение (решено человеком) |")
+    att = attack_table.parse_attack_text(out, "a.md")
+    assert att["frontmatter"]["status"] == "passed"
+    assert att["frontmatter"]["targets"][0]["sha256"] == "abc123"
+    assert att["rows"][0]["severity"] == "предупреждение (решено человеком)"
+
+
+@pytest.mark.parametrize("cell", ["Блокер", "блокер(причина)", "БЛОКЕР (причина)"])
+def test_set_severity_status_counts_blockers_by_the_page_rule(cell):
+    """Другая строка `Блокер` / `блокер(…)` не слово для хода, но блокер для status: после понижения единственной
+    строчной `блокер` статус остаётся gaps_found."""
+    other = ROW_WARN.replace("| предупреждение |", f"| {cell} |")
+    out = attack_table.set_severity(sev_text(ROW_BLOCK, other), "a.md", "F-01", "а", "предупреждение", "слово")
+    assert "status: gaps_found" in out and "предупреждение (слово) |" in out
+
+
+def test_set_severity_raises_warning_to_gaps_found_other_rows_unchanged():
+    text = sev_text(ROW_REF, ROW_WARN).replace("status: gaps_found", "status: passed")
+    out = attack_table.set_severity(text, "a.md", "F-02", "б", "блокер", "не годится")
+    assert out == text.replace("status: passed", "status: gaps_found").replace(
+        "| предупреждение |", "| блокер (не годится) |")
+
+
+def test_set_severity_same_claim_two_lenses_is_refused():
+    twin = ROW_WARN.replace("honest-verifier", "scenario-run")
+    with pytest.raises(ValueError, match="строк с этим ключом две"):
+        attack_table.set_severity(sev_text(ROW_WARN, twin), "a.md", "F-02", "б", "блокер", "x")
+
+
+def test_set_severity_flattens_why_and_escapes_pipe_and_backslash():
+    out = attack_table.set_severity(sev_text(ROW_BLOCK), "a.md", "F-01", "а", "предупреждение",
+                                    "см. сценарий (раздел B) | ок\nи c:\\d")
+    line = next(ln for ln in out.split("\n") if ln.startswith("| а"))
+    assert r"предупреждение (см. сценарий (раздел B) \| ок и c:\\d) |" in line
+    assert attack_table.parse_attack_text(out, "a.md")["rows"][0]["severity"] == \
+        "предупреждение (см. сценарий (раздел B) | ок и c:\\d)"
+
+
+def test_set_severity_new_why_replaces_old_reason():
+    text = sev_text(ROW_BLOCK.replace("блокер (старая причина)", "предупреждение (решено человеком в F-09)"))
+    out = attack_table.set_severity(text, "a.md", "F-01", "а", "блокер", "кнопка")
+    assert "блокер (кнопка)" in out and "F-09" not in out and "старая" not in out
+
+
+@pytest.mark.parametrize("row, target, reason", [
+    (ROW_BLOCK, "справка", "не ставится"),
+    (ROW_REF, "блокер", "строка покрытия|вне хода"),
+    (ROW_BLOCK, "блокер", "уже"),
+    (ROW_BLOCK.replace("блокер (старая причина)", "Блокер"), "предупреждение", "вне хода"),
+    (ROW_BLOCK.replace("блокер (старая причина)", "критично"), "предупреждение", "вне хода"),
+    ("| не пройдено | F-01 | coverage | — | блокер | нет: не пройдено | — |", "предупреждение", "строка покрытия"),
+    ("| а | F-01 | coverage | — | блокер | нет: файла нет | — |", "предупреждение", "строка покрытия"),
+], ids=["цель справка", "справка в строке", "та же тяжесть", "заглавная", "слово вне трёх",
+        "не пройдено", "файла нет"])
+def test_set_severity_refusals_name_the_reason(row, target, reason):
+    claim = "не пройдено" if row.startswith("| не пройдено") else "а" if row is not ROW_REF else "в"
+    section = "F-03" if row is ROW_REF else "F-01"
+    with pytest.raises(ValueError, match=reason):
+        attack_table.set_severity(sev_text(row), "a.md", section, claim, target, "x")
+
+
+def test_set_severity_missing_claim_after_rewrite_is_refused():
+    with pytest.raises(ValueError, match="строки нет"):
+        attack_table.set_severity(sev_text(ROW_BLOCK), "a.md", "F-01", "переписано", "предупреждение", "x")
+    with pytest.raises(ValueError, match="строки нет"):
+        attack_table.set_severity(sev_text(ROW_BLOCK), "a.md", "F-99", "а", "предупреждение", "x")
+
+
+def test_set_severity_unclosed_backtick_is_unparsable():
+    with pytest.raises(ValueError, match="ячейка не разбирается: .*backtick"):
+        attack_table.set_severity(sev_text(ROW_BLOCK), "a.md", "F-01", "а", "предупреждение", "один ` знак")
+
+
+def test_set_severity_keeps_crlf_bom_and_requires_status():
+    text = "\ufeff" + sev_text(ROW_BLOCK, nl="\r\n")
+    out = attack_table.set_severity(text, "a.md", "F-01", "а", "предупреждение", "ок")
+    assert out.startswith("\ufeff---\r\nstatus: passed\r\n") and "\n" not in out.replace("\r\n", "")
+    assert out == text.replace("gaps_found", "passed").replace(
+        "блокер (старая причина)", "предупреждение (ок)")
+    with pytest.raises(ValueError, match="status"):
+        attack_table.set_severity(sev_text(ROW_BLOCK).replace("status: gaps_found\n", ""),
+                                  "a.md", "F-01", "а", "предупреждение", "ок")
