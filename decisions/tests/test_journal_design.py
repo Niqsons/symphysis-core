@@ -251,6 +251,23 @@ def test_multiline_quotes_stay_on_one_line_in_every_section():
     assert [line for line in lines if line.startswith("## ")] == SECTIONS[1:]
 
 
+def test_html_in_evidence_is_escaped_in_context_and_risks():
+    quote = "<h2>Заметки</h2><ul><li>&</li></ul>"
+    escaped = "&lt;h2&gt;Заметки&lt;/h2&gt;&lt;ul&gt;&lt;li&gt;&amp;&lt;/li&gt;&lt;/ul&gt;"
+    fact = record("F-10", "факт с HTML", kind="факт", evidence=[ev("viewer/page.html", quote)])
+    rec = decided("F-15", "A", [
+        opt("A", "выбранный"),
+        opt("B", "отвергнутый", [ev("viewer/page.html", quote)]),
+    ])
+    md = design_of(fact, rec)
+    context = section(md, "Context")
+    risks = section(md, "Risks / Trade-offs")
+    assert f"viewer/page.html «{escaped}»" in context
+    assert f"[Risk] {escaped} " in risks
+    for rendered in (context, risks):
+        assert "<h2>" not in rendered and "<ul>" not in rendered and "<li>" not in rendered
+
+
 # --- Risks / Trade-offs -----------------------------------------------------
 
 def test_risks_are_rejected_options_evidence_with_the_chosen_letter_as_mitigation():
@@ -273,10 +290,10 @@ def test_risks_include_the_evidence_of_unlikely_rejected_options():
     assert "- [Risk] всё же довод (F-05, отвергнут B: docs/b.md) → Mitigation: решение A" in risks
 
 
-def test_risk_quote_with_markdown_markup_is_kept_verbatim():
+def test_risk_quote_escapes_html_and_preserves_markdown_text():
     options = [opt("A", "раз", [ev("docs/f.md", "## F-01 <вопрос>")]), opt("B", "два")]
     risks = section(design_of(decided("F-01", "B", options)), "Risks / Trade-offs")
-    assert "- [Risk] ## F-01 <вопрос> (F-01, отвергнут A: docs/f.md) → Mitigation: решение B" in risks
+    assert "- [Risk] ## F-01 &lt;вопрос&gt; (F-01, отвергнут A: docs/f.md) → Mitigation: решение B" in risks
 
 
 def test_risks_follow_the_decision_order():
