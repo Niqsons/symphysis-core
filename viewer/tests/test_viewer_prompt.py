@@ -518,9 +518,11 @@ F30_WHY = "страховка F-30 (архив) | проверка"
 def test_f30_archive_claims_survive_page_prompt_core(tmp_path):
     """Все строки архивных файлов атаки: `severityLine` -> `parse_answers` возвращает ключ и обоснование как были (вне зависимости
     от тяжести); у строк с ходом дальше `set_severity` находит свою строку, ячейка становится `<ход> (<обоснование>)`, `status`
-    пересчитан. Отказ называет файл и строку; все числа прогона — в сообщении."""
+    пересчитан. Строка, чей ключ (раздел, утверждение) в файле повторяется под другой линзой, — законный вход: `set_severity`
+    на ней даёт отказ «строк с этим ключом две» (сценарий `attack-severity-word` «Две строки одного ключа»; такие строки есть
+    в архиве `attack-lens-conventions`). Отказ называет файл и строку; все числа прогона — в сообщении."""
     assert ARCHIVE_ATTACKS, "в архиве нет файлов атаки"
-    parsed, moved, classes, failures = 0, 0, {"«»": 0, "backticks": 0, " — «": 0, " · в разделе": 0}, []
+    parsed, moved, doubled, classes, failures = 0, 0, 0, {"«»": 0, "backticks": 0, " — «": 0, " · в разделе": 0}, []
     for n, path in enumerate(ARCHIVE_ATTACKS):
         name = f"{path.parts[-3]}/attack/{path.name}"
         text = path.read_text(encoding="utf-8-sig")
@@ -533,6 +535,7 @@ def test_f30_archive_claims_survive_page_prompt_core(tmp_path):
                      " return {to, move: !!m, line: severityLine(a, r, to, input.why)}; }); })()",
                      {"att": att, "why": F30_WHY})
         assert len(res) == len(att["rows"])
+        keys = [(r["section"], r["claim"]) for r in att["rows"]]
         for row, item in zip(att["rows"], res):
             parsed += 1
             claim = row["claim"]
@@ -550,6 +553,11 @@ def test_f30_archive_claims_survive_page_prompt_core(tmp_path):
                 assert (got["path"], got["section"], got["claim"], got["severity"], got["why"]) == want, f"разобрано иначе: {got}"
                 if not item["move"]:
                     continue
+                if keys.count((row["section"], claim)) > 1:
+                    doubled += 1
+                    with pytest.raises(ValueError, match="строк с этим ключом две"):
+                        journal.set_severity(text, name, got["section"], got["claim"], got["severity"], got["why"])
+                    continue
                 new = journal.set_severity(text, name, got["section"], got["claim"], got["severity"], got["why"])
                 after = journal.parse_attack_text(new, name)
                 same = [r for r in after["rows"] if r["section"] == row["section"] and r["claim"] == claim]
@@ -558,7 +566,7 @@ def test_f30_archive_claims_survive_page_prompt_core(tmp_path):
                 assert after["frontmatter"]["status"] == ("gaps_found" if blockers else "passed"), f"status: {after['frontmatter']['status']}"
             except (AssertionError, ValueError) as err:
                 failures.append(f"{label}: {err}")
-    stat = f"разобрано строк {parsed}, с ходом {moved}; классы по разобранным: {classes}"
+    stat = f"разобрано строк {parsed}, с ходом {moved}, из них с двойным ключом {doubled}; классы по разобранным: {classes}"
     assert not failures, stat + chr(10) + chr(10).join(failures)
     assert parsed > 0 and moved > 0 and all(classes.values()), stat
     print(stat)

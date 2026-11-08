@@ -40,12 +40,29 @@ def test_contract_three_is_named():
 def test_contract_four_is_named():
     """`parking-addressee-agent` (F-09, F-17.A): адресат парковки и записи `материалы` → `агент` — новое
     значение существующего поля, смена контракта: номер 4 назван в `docs/repo-contract.md` с тем, что
-    изменилось. Абзац исторический и остаётся при любом текущем номере; сценарий `plugin-core-contract`
-    «Новое значение адресата поднимает номер»."""
+    изменилось; сценарий `plugin-core-contract` «Новое значение адресата поднимает номер» и сценарий
+    `plugin-core-contract` «Договор называет смену адресата»: абзац «С номера 4» называет `Needs:` на коммит ядра,
+    правило «Что делать при смене» велит коммиту ядра называть смену в `Why:`. Абзац
+    исторический и остаётся при любом текущем номере."""
     body = text()
     line = next((l for l in body.splitlines() if l.startswith("С номера 4")), None)
     assert line is not None, "в контракте нет строки «С номера 4»"
     assert "агент" in line and "материалы" in line, "строка о номере 4 не называет, что изменилось: адресат"
+    assert "Needs:" in line and "коммит ядра" in line, "строка о номере 4 не называет Needs: на коммит ядра"
+    rule = next((l for l in body.splitlines() if l.startswith("**Что делать при смене.**")), None)
+    assert rule is not None, "в контракте нет строки «**Что делать при смене.**»"
+    assert "коммит ядра называет смену в `Why:`" in rule, "правило «Что делать при смене» не велит называть смену в Why:"
+
+
+def test_contract_five_is_named():
+    """`attack-lens-conventions` (F-17, F-24.A): линза `rule-compliance` — новое значение списка линз, смена
+    контракта: номер 5 назван в `docs/repo-contract.md` с тем, что изменилось; сценарий `plugin-core-contract`
+    «Линза правил составления поднимает номер». Абзац исторический: `attack-severity-buttons` влито раньше
+    с номером 6, и номер 5 есть только в истории ветки `attack-lens-conventions`."""
+    body = text()
+    line = next((l for l in body.splitlines() if l.startswith("С номера 5")), None)
+    assert line is not None, "в контракте нет строки «С номера 5»"
+    assert "rule-compliance" in line and "линз" in line, "строка о номере 5 не называет, что изменилось: линза"
 
 
 def test_contract_six_is_named_and_matches_the_code():

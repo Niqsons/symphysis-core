@@ -116,6 +116,18 @@ def test_guide_graph_section_tells_how_links_resolve():
         assert name in section, name
 
 
+def test_guide_lens_section_tells_about_rule_compliance():
+    """`attack-lens-conventions`: раздел о линзах называет `rule-compliance`, тяжести и выключение."""
+    body = text()
+    heading = "### Линзы `trace-link`, `rule-compliance` и настройки атаки"
+    assert heading in body, "нет заголовка раздела о линзах"
+    section = body.split(heading)[1].split("\n## ")[0]
+    for name in ("правила составления", "блокер", "предупреждение (правило составления)",
+                 "attack.rule-compliance: false", "MODIFIED", "мастер-спек"):
+        assert name in section, f"в разделе о линзах нет «{name}»"
+    assert "`attack.rule-compliance`," in section, "линза не в перечне остальных"
+
+
 def test_guide_names_the_script_that_finds_changes_without_snapshot():
     """`onboarding-guide`: «Читатель ищет изменения без снимка» (F-62)."""
     section = graph_section()

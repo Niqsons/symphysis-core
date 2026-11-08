@@ -438,6 +438,17 @@
   "signals": []
  },
  {
+  "name": "линза правил составления выключена",
+  "bytes_b64": "YXR0YWNrOgogIHJ1bGUtY29tcGxpYW5jZTogZmFsc2UK",
+  "failure_branches": true,
+  "assumptions": true,
+  "edge_probe": true,
+  "lenses_off": [
+   "rule-compliance"
+  ],
+  "signals": []
+ },
+ {
   "name": "claim-extraction выключена одним ключом",
   "bytes_b64": "YXR0YWNrOgogIGNsYWltLWV4dHJhY3Rpb246IGZhbHNlCg==",
   "failure_branches": true,

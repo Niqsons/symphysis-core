@@ -895,8 +895,9 @@ def test_compute_takes_root_and_name(tmp_path, monkeypatch):
 # --- 1.6 вывод и область ----------------------------------------------------
 
 def test_output_shape(tmp_path):
-    """Сценарий «Перечень полей»: `file_links` в перечне, номер контракта — тот же, что у `view-json`: 6 после смены
-    строки apply о тяжести (`plugin-core-contract`: «Новое значение адресата поднимает номер» — так росли и прежние номера)."""
+    """Сценарий «Перечень полей»: `file_links` в перечне, номер контракта — тот же, что у `view-json`: 6 после строки
+    apply о тяжести (`attack-severity-buttons`); не ниже 4 после смены значения адресата `материалы` → `агент`
+    (`plugin-core-contract`: «Новое значение адресата поднимает номер»)."""
     code, data = with_shim(tmp_path, done=("intent",), ready=("decisions",))
     assert code == 0
     assert data["contract"] == journal_render.CONTRACT == 6

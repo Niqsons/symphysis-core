@@ -624,7 +624,7 @@ python .symphysis/tools/trace_graph.py archive-gaps
 
 Без аргумента он читает `openspec/changes/archive`, с аргументом — любой каталог архива. Изменения без `graph/req-graph.json` он называет строками `Без снимка: <имя>`; изменения старше первого снимка идут одной строкой со счётом, поимённо только более новые. Скрипт только читает: снимок не собирает и файлов не прибавляет. `symphysis check` его не зовёт и таких изменений сам не ищет, поэтому запускай `archive-gaps` сам, например после ручного `openspec archive`.
 
-### Линза `trace-link` и настройки атаки
+### Линзы `trace-link`, `rule-compliance` и настройки атаки
 
 Атака артефактов проверяет связи графа линзой `trace-link`: модель берёт связи из вывода `trace_graph.py build` и судит, закрывает ли задача названный сценарий и задета ли сценарием названная ветка отказа. Включение линзы личное и лежит в `symphysis.yaml` в группе `attack`: ключ равен слугу линзы.
 
@@ -633,7 +633,9 @@ attack:
   trace-link: false
 ```
 
-Остальные линзы настраиваются так же: `attack.context-compliance`, `attack.claim-authority`, `attack.claim-extraction`, `attack.coverage`, `attack.scenario-run`. Нет файла или ключа — линза включена. Состав показывает `symphysis config`.
+Линза `rule-compliance` («правила составления») сверяет артефакт с правилами составления его шага и требование `MODIFIED` — с текстом мастер-спеки: при делении и ужатии не должны пропасть условия. Пропавшее условие мастер-текста в её строке идёт с тяжестью `блокер`, прочие нарушения правил — с причиной `предупреждение (правило составления)`. Выключается ключом `attack.rule-compliance: false`.
+
+Остальные линзы настраиваются так же: `attack.rule-compliance`, `attack.context-compliance`, `attack.claim-authority`, `attack.claim-extraction`, `attack.coverage`, `attack.scenario-run`. Нет файла или ключа — линза включена. Состав показывает `symphysis config`.
 
 ## Остальные команды
 

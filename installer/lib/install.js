@@ -34,6 +34,7 @@ attack:
   coverage: true
   scenario-run: true
   trace-link: true
+  rule-compliance: true
 `;
 
 const rel = (project, p) => path.relative(project, p).split(path.sep).join("/");

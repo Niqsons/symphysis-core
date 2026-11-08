@@ -1,0 +1,82 @@
+# Покрытие пробы краёв: attack-lens-conventions
+
+- artifact-attack/Линзы атаки артефактов · boundary · неприменимо: формы collection, text; boundary только для numeric-range
+- artifact-attack/Линзы атаки артефактов · adjacency · не выбран: слуг `claim-extraction` стоит в обоих списках, `rule-compliance` — только у артефактов; исход назван сценарием «У атаки журнала линзы правил составления нет» и требованием «Линзы атаки журнала»
+- artifact-attack/Линзы атаки артефактов · empty · не выбран: `rule-compliance` выключена в `symphysis.yaml`; исход назван требованием «Состав линз настраивается» — строк нет, `**Состав:**` называет её выключенной
+- artifact-attack/Линзы атаки артефактов · encoding · не выбран: слуг `Rule-Compliance` или `rule_compliance` в строке или ключе настроек; сравнение точное — строка в группе «вне списка», ключ даёт `[!!] неизвестная линза` (`project-settings`, «Неизвестная линза»)
+- artifact-attack/Линзы атаки артефактов · ordering · не найдено: порядок равных — порядок линз задан перечнем требования, `rule-compliance` четвёртая, равных слугов в списке нет
+- artifact-attack/Линзы атаки артефактов · precision · неприменимо: формы collection, text; precision только для numeric-range
+- artifact-attack/Линзы атаки артефактов · idempotency · неприменимо: формы collection, text; idempotency только для stateful
+- artifact-attack/Линзы атаки артефактов · concurrency · неприменимо: формы collection, text; concurrency только для stateful, io
+- artifact-attack/Линза правил составления сверяет артефакт с правилами его шага · boundary · неприменимо: формы collection, text; boundary только для numeric-range
+- artifact-attack/Линза правил составления сверяет артефакт с правилами его шага · adjacency · кандидат F-27
+- artifact-attack/Линза правил составления сверяет артефакт с правилами его шага · empty · не выбран: у `consequences.md` instruction шага отсылает к скиллу `symphysis-consequences`, своих правил у шага почти нет; исход назван решением F-18.A — тела скиллов не источник
+- artifact-attack/Линза правил составления сверяет артефакт с правилами его шага · encoding · не выбран: правило с чертой — `rules` шага `specs` «дорогой `проверить|решить`»; черта внутри backticks в цитате допустима, голая рушит строку отказом разбора с кодом 2 (`attack-table.md`, «Правило ячейки»)
+- artifact-attack/Линза правил составления сверяет артефакт с правилами его шага · ordering · не выбран: одно правило и в instruction, и в `rules` шага `design` («Решение излагается, а не принимается» и «решение излагается, не принимается»); строка — одно утверждение цели, на нарушение одна строка, любая из двух цитат называет то же правило
+- artifact-attack/Линза правил составления сверяет артефакт с правилами его шага · precision · неприменимо: формы collection, text; precision только для numeric-range
+- artifact-attack/Линза правил составления сверяет артефакт с правилами его шага · idempotency · неприменимо: формы collection, text; idempotency только для stateful
+- artifact-attack/Линза правил составления сверяет артефакт с правилами его шага · concurrency · неприменимо: формы collection, text; concurrency только для stateful, io
+- artifact-attack/Собственное предупреждение линзы правил составления · boundary · неприменимо: формы text; boundary только для numeric-range
+- artifact-attack/Собственное предупреждение линзы правил составления · adjacency · неприменимо: формы text; adjacency только для collection
+- artifact-attack/Собственное предупреждение линзы правил составления · empty · не выбран: пустые скобки `предупреждение ()`; страница не видит причины и показывает «понижение без причины» — исход назван сценарием «Без постоянной причины»
+- artifact-attack/Собственное предупреждение линзы правил составления · encoding · не найдено: равенство текста причины — страница и плагин текст в скобках не сравнивают и показывают как есть, тяжесть берут по первому слову ячейки
+- artifact-attack/Собственное предупреждение линзы правил составления · ordering · неприменимо: формы text; ordering только для collection
+- artifact-attack/Собственное предупреждение линзы правил составления · precision · неприменимо: формы text; precision только для numeric-range
+- artifact-attack/Собственное предупреждение линзы правил составления · idempotency · неприменимо: формы text; idempotency только для stateful
+- artifact-attack/Собственное предупреждение линзы правил составления · concurrency · неприменимо: формы text; concurrency только для stateful, io
+- artifact-attack/Линза правил составления сверяет MODIFIED с мастер-текстом · boundary · неприменимо: формы collection, text, io; boundary только для numeric-range
+- artifact-attack/Линза правил составления сверяет MODIFIED с мастер-текстом · adjacency · кандидат F-28
+- artifact-attack/Линза правил составления сверяет MODIFIED с мастер-текстом · empty · кандидат F-29
+- artifact-attack/Линза правил составления сверяет MODIFIED с мастер-текстом · encoding · не выбран: из дельты пропал номер записи мастер-текста, например `(F-07.A, F-32.E)`; номер — опора, а не условие поведения, требование сверяет условия, ссылки мастер-текста граф отсекает сам (`trace-conventions`, «Номер пришёл из мастер-спеки»)
+- artifact-attack/Линза правил составления сверяет MODIFIED с мастер-текстом · ordering · не найдено: порядок условий — линза ищет условие в родителе или любом дочернем, порядок текста и дочерних роли не играет
+- artifact-attack/Линза правил составления сверяет MODIFIED с мастер-текстом · precision · неприменимо: формы collection, text, io; precision только для numeric-range
+- artifact-attack/Линза правил составления сверяет MODIFIED с мастер-текстом · idempotency · неприменимо: формы collection, text, io; idempotency только для stateful
+- artifact-attack/Линза правил составления сверяет MODIFIED с мастер-текстом · concurrency · кандидат F-30
+- artifact-attack/Строки линзы правил составления покрывают требования и файлы · boundary · неприменимо: формы collection, stateful; boundary только для numeric-range
+- artifact-attack/Строки линзы правил составления покрывают требования и файлы · adjacency · не выбран: у одного MODIFIED пропали два условия; по F-21.A строка — на требование, её утверждение — требование, опора называет оба условия, равенство счёта держится
+- artifact-attack/Строки линзы правил составления покрывают требования и файлы · empty · кандидат F-31
+- artifact-attack/Строки линзы правил составления покрывают требования и файлы · encoding · неприменимо: формы collection, stateful; encoding только для text
+- artifact-attack/Строки линзы правил составления покрывают требования и файлы · ordering · не найдено: порядок строк в файле — страница группирует строки по линзе и тяжести, порядок записи на показ не влияет
+- artifact-attack/Строки линзы правил составления покрывают требования и файлы · precision · неприменимо: формы collection, stateful; precision только для numeric-range
+- artifact-attack/Строки линзы правил составления покрывают требования и файлы · idempotency · не выбран: повтор атаки; при тех же хешах проход идёт только по строкам «не пройдено», при разошедшемся — с начала (шаг 1 скилла атаки, требование «Хеши целей обесценивают вердикт после правки»)
+- artifact-attack/Строки линзы правил составления покрывают требования и файлы · concurrency · не выбран: проход прерван на середине файлов; исход назван сценарием «Проход прерван» — строки «не пройдено» на недошедшие файлы, `gaps_found`
+- decision-viewer/Режим «атака» группирует строки по линзам и держит слуг вне списка отдельно · boundary · неприменимо: формы collection, text; boundary только для numeric-range
+- decision-viewer/Режим «атака» группирует строки по линзам и держит слуг вне списка отдельно · adjacency · не выбран: слуг `claim-extraction` в двух файлах атаки; группа строится по файлу, списки названы в дочернем «Списки линз режима «атака»», новая линза этого не меняет
+- decision-viewer/Режим «атака» группирует строки по линзам и держит слуг вне списка отдельно · empty · не выбран: файл атаки без строк `rule-compliance`; линза без строк ведёт себя как прочие линзы списка, новая линза поведения режима не меняет
+- decision-viewer/Режим «атака» группирует строки по линзам и держит слуг вне списка отдельно · encoding · не найдено: равенство слуга — сравнение точное, как у прочих линз; подпись «правила составления» — текст шаблона страницы, а не данные файла атаки
+- decision-viewer/Режим «атака» группирует строки по линзам и держит слуг вне списка отдельно · ordering · не найдено: порядок групп — порядок списка дочернего требования, `rule-compliance` после `trace-link`
+- decision-viewer/Режим «атака» группирует строки по линзам и держит слуг вне списка отдельно · precision · неприменимо: формы collection, text; precision только для numeric-range
+- decision-viewer/Режим «атака» группирует строки по линзам и держит слуг вне списка отдельно · idempotency · неприменимо: формы collection, text; idempotency только для stateful
+- decision-viewer/Режим «атака» группирует строки по линзам и держит слуг вне списка отдельно · concurrency · неприменимо: формы collection, text; concurrency только для stateful, io
+- decision-viewer/Списки линз режима «атака» · boundary · неприменимо: формы collection, text; boundary только для numeric-range
+- decision-viewer/Списки линз режима «атака» · adjacency · не найдено: общий фильтр линз по двум файлам — `rule-compliance` приходит только из `attack/artifacts.md`, слияния со слугом журнала нет
+- decision-viewer/Списки линз режима «атака» · empty · не выбран: `attack/artifacts.md` с пустой таблицей; поведение режима при пустом файле прежнее, новая линза его не меняет
+- decision-viewer/Списки линз режима «атака» · encoding · не выбран: плагин со старым списком при ядре 5 показывает строки `rule-compliance` «вне списка»; исход назван решением F-24.A и требованием «Плагин сверяет номер и говорит, что обновить» — плагин просит новый `.vsix`
+- decision-viewer/Списки линз режима «атака» · ordering · не найдено: порядок списков задан перечнем требования, равных слугов в одном списке нет
+- decision-viewer/Списки линз режима «атака» · precision · неприменимо: формы collection, text; precision только для numeric-range
+- decision-viewer/Списки линз режима «атака» · idempotency · неприменимо: формы collection, text; idempotency только для stateful
+- decision-viewer/Списки линз режима «атака» · concurrency · неприменимо: формы collection, text; concurrency только для stateful, io
+- plugin-core-contract/`view-json` отдаёт номер контракта · boundary · не выбран: ядро 5 при плагине, ждущем 4; исход назван требованием «Плагин сверяет номер и говорит, что обновить» — выше ожидаемого: новый `.vsix`; сценарий номера 4 говорит «не ниже 4»
+- plugin-core-contract/`view-json` отдаёт номер контракта · adjacency · неприменимо: формы numeric-range, io; adjacency только для collection
+- plugin-core-contract/`view-json` отдаёт номер контракта · empty · неприменимо: формы numeric-range, io; empty только для collection, text
+- plugin-core-contract/`view-json` отдаёт номер контракта · encoding · неприменимо: формы numeric-range, io; encoding только для text
+- plugin-core-contract/`view-json` отдаёт номер контракта · ordering · неприменимо: формы numeric-range, io; ordering только для collection
+- plugin-core-contract/`view-json` отдаёт номер контракта · precision · не найдено: номер — целое число, дробей, округления и переполнения нет
+- plugin-core-contract/`view-json` отдаёт номер контракта · idempotency · неприменимо: формы numeric-range, io; idempotency только для stateful
+- plugin-core-contract/`view-json` отдаёт номер контракта · concurrency · не найдено: два вывода с номером — `step_help.py` берёт `CONTRACT` из `journal_render`, источник один
+- plugin-core-contract/Новая линза поднимает номер контракта · boundary · не выбран: `main` уже 5 от другой смены контракта; исход назван сценарием «Другая смена контракта влита раньше» — номер 6
+- plugin-core-contract/Новая линза поднимает номер контракта · adjacency · неприменимо: формы numeric-range, stateful, io; adjacency только для collection
+- plugin-core-contract/Новая линза поднимает номер контракта · empty · неприменимо: формы numeric-range, stateful, io; empty только для collection, text
+- plugin-core-contract/Новая линза поднимает номер контракта · encoding · неприменимо: формы numeric-range, stateful, io; encoding только для text
+- plugin-core-contract/Новая линза поднимает номер контракта · ordering · неприменимо: формы numeric-range, stateful, io; ordering только для collection
+- plugin-core-contract/Новая линза поднимает номер контракта · precision · не найдено: номер растёт на целую единицу, округления нет
+- plugin-core-contract/Новая линза поднимает номер контракта · idempotency · не выбран: после мержа `main` в ветку два абзаца «С номера 5» — от другого изменения и от этого; исход назван тем же сценарием — абзац этого изменения становится «С номера 6», общие файлы разбирает второе влитое (F-07)
+- plugin-core-contract/Новая линза поднимает номер контракта · concurrency · не выбран: окно, когда ядро 5, а плагин догоняет пунктом бэклога; исход назван решением F-24.A и требованием «Плагин сверяет номер и говорит, что обновить» — плагин просит новый `.vsix` и решений не вносит
+- plugin-core-contract/Смена адресата поднимает номер контракта до 4 · boundary · не выбран: номер после следующей смены контракта выше 4 (сейчас 5); исход назван сценарием родителя «Новое значение адресата поднимает номер» — `contract` не ниже 4, ответ человека его не изменит
+- plugin-core-contract/Смена адресата поднимает номер контракта до 4 · adjacency · неприменимо: формы numeric-range, io; adjacency только для collection
+- plugin-core-contract/Смена адресата поднимает номер контракта до 4 · empty · неприменимо: формы numeric-range, io; empty только для collection, text
+- plugin-core-contract/Смена адресата поднимает номер контракта до 4 · encoding · неприменимо: формы numeric-range, io; encoding только для text
+- plugin-core-contract/Смена адресата поднимает номер контракта до 4 · ordering · неприменимо: формы numeric-range, io; ordering только для collection
+- plugin-core-contract/Смена адресата поднимает номер контракта до 4 · precision · не найдено: номер — целое число 4, дробей, округления и переполнения нет
+- plugin-core-contract/Смена адресата поднимает номер контракта до 4 · idempotency · неприменимо: формы numeric-range, io; idempotency только для stateful
+- plugin-core-contract/Смена адресата поднимает номер контракта до 4 · concurrency · не выбран: ядро номера 4 при плагине, ждущем 3; исход назван сценарием родителя «Новое значение адресата поднимает номер» — плагин просит новый `.vsix` и решений не вносит, ответ человека его не изменит

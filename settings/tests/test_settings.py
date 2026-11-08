@@ -21,7 +21,8 @@ ALL_ON = {"failure_branches": True, "assumptions": True, "edge_probe": True}
 # Водители (Р11-A): атака и исследование по умолчанию вкл, пробы и опись выкл.
 DRIVER_DEFAULTS = {"driver_attack": True, "driver_probes": False, "driver_consequences": False,
                    "driver_research": True}
-LENSES = ("context-compliance", "claim-authority", "claim-extraction", "coverage", "scenario-run", "trace-link")
+LENSES = ("context-compliance", "claim-authority", "claim-extraction", "coverage", "scenario-run", "trace-link",
+          "rule-compliance")
 NO_PACKAGE = "symphysis.yaml: нет пакета PyYAML — выполнить: python -m pip install pyyaml"
 
 

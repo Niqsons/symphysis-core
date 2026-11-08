@@ -33,7 +33,8 @@ SIGNAL_NO_PACKAGE = f"{FILE_NAME}: нет пакета PyYAML — выполни
 
 # Линзы атаки обоих файлов: ключ группы `attack` равен слугу (F-132.A). `claim-extraction` стоит в обоих
 # файлах и включается одним ключом (F-109.B). Порядок — порядок строки состава.
-LENSES = ("context-compliance", "claim-authority", "claim-extraction", "coverage", "scenario-run", "trace-link")
+LENSES = ("context-compliance", "claim-authority", "claim-extraction", "coverage", "scenario-run", "trace-link",
+          "rule-compliance")
 
 # Группа -> вложенный ключ -> поле `Settings` (у линзы — её слуг в `Settings.lenses`).
 KEYS = {
