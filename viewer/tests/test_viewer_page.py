@@ -1175,3 +1175,39 @@ def test_viewer_smoke_walks_a_page_with_a_file_link(tmp_path):
     cards = smoke(tmp_path, html)["cards"]
     assert 'href="../a.md"' in cards
     assert "filelink editor" not in cards
+
+
+@requires_node
+def test_viewer_attack_sev_marks_cleanup_and_prompt(tmp_path):
+    """`decision-viewer`: «Отметка у строки, которую снял повтор атаки»: отметка без строки и отметка, уже внесённая в ячейку,
+    уходят из хранилища; живая отметка остаётся и даёт строку о тяжести в промпте (F-35)."""
+    live = arow(claim="живая", severity="блокер (старая причина)")
+    done = arow(claim="внесённая", severity="предупреждение (внесено apply)")
+    file = afile([live, done])
+    key = lambda r: f'{file["path"]}|{r["section"]}|{r["claim"]}'
+    marks = {key(live): {"to": "предупреждение", "why": "причина человека"},
+             key(done): {"to": "предупреждение", "why": "внесено apply"},
+             file["path"] + "|F-99, decision|снятая атакой": {"to": "блокер", "why": "нет строки"}}
+    out = attack_view(tmp_path, [file], {":attack": {"disputes": {}, "read": {}, "sev": marks}})
+    assert list(json.loads(out["savedAttack"])["sev"]) == [key(live)]
+    assert out["out"].count("- тяжесть:") == 1
+    assert "· «живая» → предупреждение — «причина человека»" in out["out"]
+    assert "снятая атакой" not in out["out"] and "внесённая" not in out["out"].split("- тяжесть:")[1]
+
+
+@requires_node
+def test_viewer_attack_old_storage_without_sev_builds_the_page(tmp_path):
+    """`decision-viewer`: хранилище только с `disputes` и `read` — страница собирается, споры на месте, отметок тяжести нет (F-43.B)."""
+    row = arow(claim="спорная")
+    file = afile([row])
+    key = f'{file["path"]}|{row["section"]}|{row["claim"]}'
+    out = attack_view(tmp_path, [file], {":attack": {"disputes": {key: "опора есть"}, "read": {}}})
+    assert "спорная" in out["attack"] and "спор: опора есть" in out["out"]
+    assert "- тяжесть:" not in out["out"]
+
+
+def test_viewer_template_reset_clears_every_attack_field():
+    """`decision-viewer`: кнопка «Стереть» сбрасывает споры, отметки «прочитано» и тяжести; без `read` `readBadge` падал."""
+    text = TEMPLATE.read_text(encoding="utf-8")
+    assert "attackState = { disputes:{}, read:{}, sev:{} }; saveAttack();" in text
+    assert "attackState.sev)" in text.split("function currentFlags()")[1].split("\n")[0]
