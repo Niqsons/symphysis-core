@@ -114,6 +114,7 @@
   .badge.dest { color:var(--acc); border-color:var(--acc); }
   .mute { color:var(--mute); }
   .lensfilter button.active { border-color:var(--acc); color:var(--acc); }
+  .sevrow button.active { border-color:var(--acc); color:var(--acc); }
   .card.conflict { border-color:var(--bad); }
   details.recblock { margin:6px 0; border:1px dashed var(--line); border-radius:8px; padding:4px 10px; }
   details.recblock summary { cursor:pointer; color:var(--acc); font-size:12.5px; }
@@ -1115,7 +1116,7 @@ function renderAttack() {
     const att = ATTACK[+b.dataset.sevAtt], r = att.rows[+b.dataset.sevRow], k = rowKey(att, r), mv = sevMove(r);
     if (!mv) return;
     if (sevPressed(att, r)) delete attackState.sev[k];
-    else attackState.sev[k] = { to: mv.to, why: attackState.sev[k] ? (attackState.sev[k].why || '') : '' };
+    else { const ta = b.closest('.attackrow').querySelector('textarea[data-sev-why]'); attackState.sev[k] = { to: mv.to, why: ta ? ta.value : '' }; }  /* обоснование — из поля карточки, набранное до нажатия (ruling 11) */
     saveAttack(); renderAttack(); updateOut();
   });
   /* поле обоснования пишет в отметку только пока она есть; пометку обновляем без перерисовки — фокус остаётся */
