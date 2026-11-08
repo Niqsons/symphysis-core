@@ -1,6 +1,6 @@
 // Прогон страницы просмотрщика в настоящем Chrome: чистый профиль, страница из file://, флагов, ослабляющих проверки, нет.
 // Использование: node viewer-browser.mjs <chrome> <страница.html> <ширина> <высота> <действие>...
-// Действия: panel — включить панель и дождаться рисунка или текста; mode:<режим> — кнопка режима; drag:<dx> — тянуть границу панели;
+// Действия: panel — включить панель и дождаться рисунка или текста; mode:<режим> — кнопка режима; drag:<dx> — тянуть границу панели; tocdrag:<dx> — тянуть границу оглавления;
 // sev:<файл>:<строка> — нажать кнопку тяжести; sevwhy:<файл>:<строка>:<текст> — ввод в поле обоснования (пусто — стереть);
 // reload — открыть страницу снова; choose:<запись>:<буква> — выбрать вариант; word:<запись>:<текст> — написать слово; buttons — экспорт, импорт, копирование;
 // tab:<scheme|help> — переключатель панели; step:<шаг> — пункт списка справки; helpnext, helpprev — листание; howto — кнопка «Как готовить intent.md?»;
@@ -26,6 +26,8 @@ const MEASURE = `(() => {
   const rect = shown ? panel.getBoundingClientRect() : null;
   const main = document.querySelector('.layout main');
   const mainRect = main && main.offsetParent ? main.getBoundingClientRect() : null;
+  const toc = document.querySelector('aside.left');
+  const tocRect = toc && toc.offsetParent ? toc.getBoundingClientRect() : null;
   const view = document.querySelector('main.view:not(.hidden)');
   const svg = shown ? panel.querySelector('svg') : null;
   const scroller = document.getElementById('schemeBody');
@@ -55,6 +57,7 @@ const MEASURE = `(() => {
     viewport: innerWidth, headerBottom: document.querySelector('header').getBoundingClientRect().bottom, shown, state: panel ? panel.dataset.state || null : null,
     panel: rect && { left: rect.left, top: rect.top, width: rect.width, height: rect.height, bottom: rect.bottom },
     cards: mainRect && { left: mainRect.left, right: mainRect.right, top: mainRect.top, width: mainRect.width },
+    toc: tocRect && { left: tocRect.left, right: tocRect.right, width: tocRect.width },
     view: view ? view.getBoundingClientRect().width : null,
     hasSvg: !!svg, total, topVisible, labelPx,
     messages: shown ? [...scroller.querySelectorAll('.note')].map((n) => n.textContent) : [],
@@ -188,6 +191,13 @@ async function main() {
     }
     if (name === "word") {
       await evaluate(`(() => { const t = document.querySelector('textarea[data-word="${args[0]}"]'); t.value = ${JSON.stringify(args[1])}; t.dispatchEvent(new Event('input', { bubbles: true })); })()`);
+      await sleep(50);
+    }
+    if (name === "tocdrag") {
+      const [x, y] = await center("#tochandle");
+      await mouse("mousePressed", x, y);
+      await send("Input.dispatchMouseEvent", { type: "mouseMoved", x: x + Number(args[0]), y, button: "left" });
+      await mouse("mouseReleased", x + Number(args[0]), y);
       await sleep(50);
     }
     if (name === "drag") {

@@ -25,6 +25,8 @@
   .layout { display:grid; grid-template-columns: var(--left) minmax(0,1fr) var(--right); min-height: calc(100vh - var(--headh)); }
   aside { background:var(--panel); position:sticky; top:var(--headh); height:calc(100vh - var(--headh)); display:flex; flex-direction:column; min-height:0; }
   aside.left { border-right:1px solid var(--line); }
+  .tochandle { position:absolute; right:-4px; top:0; bottom:0; width:9px; cursor:ew-resize; z-index:7; }
+  .tochandle:hover { background:rgba(110,168,254,.25); }
   aside .head { display:flex; gap:6px; align-items:center; margin-bottom:6px; }
   aside .head h2 { flex:1; margin:0; }
   aside h2, main h2 { font-size:12px; text-transform:uppercase; letter-spacing:.06em; color:var(--mute); margin:0 0 6px; }
@@ -154,7 +156,7 @@
   .helptitle { font-size:15px; font-weight:600; margin-bottom:4px; }
   .helphead { display:flex; gap:6px; align-items:baseline; flex-wrap:wrap; margin-bottom:6px; }
   @media (max-width: 900px) { .layout { grid-template-columns:1fr; } aside { position:static; height:auto; } .outpanel { left:0; right:0; }
-    body.scheme-on { --right:0px; } #schemePanel { position:static; width:auto; height:45vh; border-left:0; border-bottom:1px solid var(--line); } .schemehandle { display:none; } }
+    body.scheme-on { --right:0px; } #schemePanel { position:static; width:auto; height:45vh; border-left:0; border-bottom:1px solid var(--line); } .schemehandle, .tochandle { display:none; } }
 </style>
 </head>
 <body>
@@ -179,6 +181,7 @@
 </div>
 <div class="layout" id="viewDecisions">
   <aside class="left">
+    <div class="tochandle" id="tochandle" title="тяни, чтобы изменить ширину оглавления"></div>
     <div class="tocbox"><div class="head"><h2>Оглавление</h2><button class="small" id="btnAll">все</button><button class="small" id="btnOpen">открытые</button></div><div class="toc" id="toc"></div></div>
     <div class="evstats mono" id="evstats"></div>
   </aside>
@@ -368,6 +371,17 @@ function readByNotes(notes, row) { if (!isWarning(row)) return false; const t = 
   hd.onmousedown = e => { drag = { y:e.clientY, h }; e.preventDefault(); };
   window.addEventListener('mousemove', e => { if (!drag) return; h = Math.max(70, Math.min(window.innerHeight - 140, drag.h + (drag.y - e.clientY))); root.style.setProperty('--outh', h + 'px'); });
   window.addEventListener('mouseup', () => { if (!drag) return; drag = null; try { localStorage.setItem(KEY + ':outh', String(h)); } catch (e) {} });
+})();
+
+/* ширина оглавления — тянется за правую границу и запоминается у страницы; в узком окне жест выключен */
+(function tocWidth() {
+  const root = document.documentElement, hd = document.getElementById('tochandle');
+  let w = 250; try { w = +localStorage.getItem(KEY + ':tocw') || 250; } catch (e) {}
+  root.style.setProperty('--left', w + 'px');
+  let drag = null;
+  hd.onmousedown = e => { drag = { x:e.clientX, w:document.querySelector('aside.left').offsetWidth }; e.preventDefault(); };
+  window.addEventListener('mousemove', e => { if (!drag) return; w = Math.max(180, Math.min(window.innerWidth - 480, drag.w + (e.clientX - drag.x))); root.style.setProperty('--left', w + 'px'); });
+  window.addEventListener('mouseup', () => { if (!drag) return; drag = null; try { localStorage.setItem(KEY + ':tocw', String(w)); } catch (e) {} });
 })();
 
 /* панель схемы: включается поверх режимов, рисунок — файлом mermaid рядом, иначе текст; файл грузится при первом включении (F-39, F-54, F-122) */

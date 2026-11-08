@@ -166,6 +166,16 @@ def test_dragged_border_is_remembered(tmp_path):
     assert r["cards"]["right"] <= r["panel"]["left"] + 1
 
 
+def test_toc_width_can_be_dragged_and_is_remembered(tmp_path):
+    html = page(tmp_path)
+    first = browser(html)
+    assert first["toc"]["width"] == pytest.approx(250, abs=1)
+    changed = browser(html, "tocdrag:120", "reload")
+    assert changed["toc"]["width"] == pytest.approx(370, abs=1)
+    assert changed["cards"]["left"] >= changed["toc"]["right"]
+    assert changed["errors"] == []
+
+
 def test_narrow_window_puts_the_panel_above_the_cards(tmp_path):
     r = browser(page(tmp_path), "panel", size=(800, 900))
     assert r["shown"] is True
