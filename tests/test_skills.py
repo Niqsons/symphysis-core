@@ -350,6 +350,9 @@ def test_attack_skill_writes_verdict_contract():
     for slug in {s for lenses in ATTACK_LENS_LISTS.values() for s in lenses}:
         assert f"`{slug}`" in text, f"в SKILL.md нет слуга линзы `{slug}`"
     assert ABSTENTION_ROW in text, f"в SKILL.md нет строки воздержания «{ABSTENTION_ROW}»"
+    inv4 = block(text, "4. **Невыводимое — не «есть».**", "5. **Читает")
+    for token in ("кроме слова человека, внесённого `apply` строкой", "`блокер (<обоснование>)` MUST остаться"):
+        assert token in inv4, f"в инварианте 4 нет «{token}»"
     # правило переносится через строку в §5 — сравнение по схлопнутым пробелам, как `check` сверяет цитаты
     assert " ".join(text.split()).count(VERDICT_RULE) == 2, "правило вердикта — дословно в §5 и в строке приёмки"
     assert "инварианта не несут" in text, "в SKILL.md нет исключения для строк покрытия"
@@ -449,7 +452,8 @@ def test_attack_skill_demotion_needs_a_reason():
     text = read(ATTACK_SKILL / "SKILL.md")
     rule = block(text, "**Понижение тяжести.**", "\n\n")
     for token in ("тяжесть линзы", "`блокер`", "`предупреждение (решено человеком в F-NN)`", "в той же ячейке",
-                  "нарушение правила", "«понижение без причины»", "обоснование человека", "`apply`"):
+                  "нарушение правила", "«понижение без причины»", "обоснование человека", "внесённое `apply` строкой о тяжести",
+                  "`<тяжесть> (<обоснование>)`"):
         assert token in rule, f"в правиле понижения тяжести нет «{token}»"
     for file, slugs in ATTACK_LENS_LISTS.items():
         for slug in slugs:

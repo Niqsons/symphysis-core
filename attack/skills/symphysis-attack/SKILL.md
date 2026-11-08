@@ -64,7 +64,9 @@ description: >-
    пересказ выглядит проверенным, а проверить его нечем.
 4. **Невыводимое — не «есть».** Если ответ на утверждение не следует из цели и её улик —
    опора MUST быть «по спеке не выводится», тяжесть `предупреждение`, закрыть — `вопрос
-   человеку`; такая строка `status` не держит. Повод внешний, не самооценка: у `scenario-run`
+   человеку`; такая строка `status` не держит, кроме слова человека, внесённого `apply` строкой
+о тяжести: повышенный им `блокер (<обоснование>)` MUST остаться и держит `status`, повтор
+атаки его не сбрасывает. Повод внешний, не самооценка: у `scenario-run`
    — сценарий стоит на крае с исходом `Defer` в журнале; у `claim-authority` — число, которого
    не измерить. Остальное — «есть» или «нет»: воздержание без повода прячет дыру.
 5. **Читает, не исполняет.** Разрешены чтение файлов и греп: `claim-extraction` —
@@ -74,7 +76,7 @@ description: >-
    посчитать записи запуском команды цели (`python app.py list | wc -l`) — тоже запуск,
    считай по файлу данных (`grep -c`). Проверка правила — суждение: ревью транскрипта атаки,
    в нём нет вызовов сборки, тестов и запуска цели.
-<!-- src: FORCE stance — gsd-plan-checker.md:30 «Assume every plan set is flawed until evidence proves otherwise…», :9 «do not credit effort or intent, only verifiable coverage»; :43-44 «Issues without a severity classification are not valid output…»; :933-934 инвариант не правка; honest-verifier.md:25-29, :41; F-53.E читает, не исполняет -->
+<!-- src: FORCE stance — gsd-plan-checker.md:30 «Assume every plan set is flawed until evidence proves otherwise…», :9 «do not credit effort or intent, only verifiable coverage»; :43-44 «Issues without a severity classification are not valid output…»; :933-934 инвариант не правка; honest-verifier.md:25-29, :41; F-53.E читает, не исполняет; attack-severity-buttons: F-17 -->
 
 ## Порядок
 
