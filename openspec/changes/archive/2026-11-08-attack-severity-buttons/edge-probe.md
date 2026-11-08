@@ -1,0 +1,82 @@
+# Покрытие пробы краёв: attack-severity-buttons
+
+- attack-severity-word/Строка о тяжести меняет ячейку и вердикт файла атаки · boundary · неприменимо: формы stateful, io, text, collection; boundary только для numeric-range
+- attack-severity-word/Строка о тяжести меняет ячейку и вердикт файла атаки · adjacency · кандидат F-25
+- attack-severity-word/Строка о тяжести меняет ячейку и вердикт файла атаки · empty · не найдено: файл атаки без строк и отсутствующий файл атаки — строки с ключом нет, это отказ требования «Строка о тяжести без обоснования или без строки отвергается»
+- attack-severity-word/Строка о тяжести меняет ячейку и вердикт файла атаки · encoding · кандидат F-26
+- attack-severity-word/Строка о тяжести меняет ячейку и вердикт файла атаки · ordering · кандидат F-27
+- attack-severity-word/Строка о тяжести меняет ячейку и вердикт файла атаки · precision · неприменимо: формы stateful, io, text, collection; precision только для numeric-range
+- attack-severity-word/Строка о тяжести меняет ячейку и вердикт файла атаки · idempotency · кандидат F-28
+- attack-severity-word/Строка о тяжести меняет ячейку и вердикт файла атаки · concurrency · не выбран: `apply` пишет файл атаки, пока повтор атаки переписывает тот же файл; `apply` и атаку зовёт агент в одной нити по очереди, плагинная половина с кнопкой «Внести» вне изменения (F-24.B) — ответ человека исход не изменит
+- attack-severity-word/Тяжесть меняется только между блокером и предупреждением · boundary · неприменимо: формы text, stateful; boundary только для numeric-range
+- attack-severity-word/Тяжесть меняется только между блокером и предупреждением · adjacency · неприменимо: формы text, stateful; adjacency только для collection
+- attack-severity-word/Тяжесть меняется только между блокером и предупреждением · empty · не найдено: строка о тяжести без новой тяжести — не по форме грамматики, общий отказ `apply` «строка не по форме просмотрщика»
+- attack-severity-word/Тяжесть меняется только между блокером и предупреждением · encoding · кандидат F-29
+- attack-severity-word/Тяжесть меняется только между блокером и предупреждением · ordering · неприменимо: формы text, stateful; ordering только для collection
+- attack-severity-word/Тяжесть меняется только между блокером и предупреждением · precision · неприменимо: формы text, stateful; precision только для numeric-range
+- attack-severity-word/Тяжесть меняется только между блокером и предупреждением · idempotency · не найдено: повторное понижение строки, которая уже `предупреждение`, — по требованию это не понижение блокера, отказ; двойного понижения до справки нет
+- attack-severity-word/Тяжесть меняется только между блокером и предупреждением · concurrency · не выбран: промпт собран, пока строка была блокером, а повтор атаки сменил ей тяжесть; исход назван требованием — ступень сверяется с ячейкой файла на момент `apply`, строка не блокер — отказ
+- attack-severity-word/Строка о тяжести без обоснования или без строки отвергается · boundary · неприменимо: формы text, stateful; boundary только для numeric-range
+- attack-severity-word/Строка о тяжести без обоснования или без строки отвергается · adjacency · неприменимо: формы text, stateful; adjacency только для collection
+- attack-severity-word/Строка о тяжести без обоснования или без строки отвергается · empty · не найдено: обоснование из пробелов — сценарий «Пустое обоснование»; пустого раздела и утверждения у строки атаки нет — пустую ячейку отвергает парсер таблицы
+- attack-severity-word/Строка о тяжести без обоснования или без строки отвергается · encoding · кандидат F-30
+- attack-severity-word/Строка о тяжести без обоснования или без строки отвергается · ordering · неприменимо: формы text, stateful; ordering только для collection
+- attack-severity-word/Строка о тяжести без обоснования или без строки отвергается · precision · неприменимо: формы text, stateful; precision только для numeric-range
+- attack-severity-word/Строка о тяжести без обоснования или без строки отвергается · idempotency · не найдено: тот же отказ на той же строке повторяется тем же отказом, файлы не меняются ни разу
+- attack-severity-word/Строка о тяжести без обоснования или без строки отвергается · concurrency · не выбран: промпт собран до повтора атаки, переписавшего утверждение; исход назван сценарием «Утверждение переписано повтором атаки», ответ человека его не изменит
+- attack-severity-word/Внесение «всё или ничего» на журнал и файлы атаки · boundary · неприменимо: формы stateful, io; boundary только для numeric-range
+- attack-severity-word/Внесение «всё или ничего» на журнал и файлы атаки · adjacency · неприменимо: формы stateful, io; adjacency только для collection
+- attack-severity-word/Внесение «всё или ничего» на журнал и файлы атаки · empty · неприменимо: формы stateful, io; empty только для collection или text
+- attack-severity-word/Внесение «всё или ничего» на журнал и файлы атаки · encoding · неприменимо: формы stateful, io; encoding только для text
+- attack-severity-word/Внесение «всё или ничего» на журнал и файлы атаки · ordering · неприменимо: формы stateful, io; ordering только для collection
+- attack-severity-word/Внесение «всё или ничего» на журнал и файлы атаки · precision · неприменимо: формы stateful, io; precision только для numeric-range
+- attack-severity-word/Внесение «всё или ничего» на журнал и файлы атаки · idempotency · кандидат F-31
+- attack-severity-word/Внесение «всё или ничего» на журнал и файлы атаки · concurrency · кандидат F-32
+- artifact-attack/Понижение тяжести только с названной причиной · boundary · неприменимо: формы text; boundary только для numeric-range
+- artifact-attack/Понижение тяжести только с названной причиной · adjacency · неприменимо: формы text; adjacency только для collection
+- artifact-attack/Понижение тяжести только с названной причиной · empty · не найдено: пустые скобки в ячейке — причины нет, строка показана как понижение без причины по сценарию «Понижение без причины»; `apply` пустого обоснования не пишет
+- artifact-attack/Понижение тяжести только с названной причиной · encoding · кандидат F-26
+- artifact-attack/Понижение тяжести только с названной причиной · ordering · неприменимо: формы text; ordering только для collection
+- artifact-attack/Понижение тяжести только с названной причиной · precision · неприменимо: формы text; precision только для numeric-range
+- artifact-attack/Понижение тяжести только с названной причиной · idempotency · неприменимо: формы text; idempotency только для stateful
+- artifact-attack/Понижение тяжести только с названной причиной · concurrency · неприменимо: формы text; concurrency только для io или stateful
+- artifact-attack/Повтор атаки держит тяжесть, выставленную человеком · boundary · неприменимо: формы stateful, collection, text; boundary только для numeric-range
+- artifact-attack/Повтор атаки держит тяжесть, выставленную человеком · adjacency · кандидат F-33
+- artifact-attack/Повтор атаки держит тяжесть, выставленную человеком · empty · не найдено: пустая таблица при всех выключенных линзах — строк с ключом нет, слово не действует, итог атаки называет его по требованию
+- artifact-attack/Повтор атаки держит тяжесть, выставленную человеком · encoding · не выбран: повтор переписал утверждение, изменив только пробелы, — ключ не совпал; исход назван требованием: слово не действует, итог атаки называет его, блокер виден
+- artifact-attack/Повтор атаки держит тяжесть, выставленную человеком · ordering · не найдено: перенос идёт по ключу строки, порядок строк в таблице на него не влияет
+- artifact-attack/Повтор атаки держит тяжесть, выставленную человеком · precision · неприменимо: формы stateful, collection, text; precision только для numeric-range
+- artifact-attack/Повтор атаки держит тяжесть, выставленную человеком · idempotency · не выбран: опора стала «есть», затем при следующем повторе снова «нет» — слово уже снято; исход решён F-21.B, а хранить снятое слово негде: журнал от строки о тяжести не меняется (F-17.D)
+- artifact-attack/Повтор атаки держит тяжесть, выставленную человеком · concurrency · не выбран: слово внесено, пока повтор атаки переписывает тот же файл; `apply` и атаку зовёт агент по очереди, плагинная половина вне изменения (F-24.B) — ответ человека исход не изменит
+- decision-viewer/Кнопки тяжести у строки атаки · boundary · неприменимо: формы collection, text; boundary только для numeric-range
+- decision-viewer/Кнопки тяжести у строки атаки · adjacency · кандидат F-25
+- decision-viewer/Кнопки тяжести у строки атаки · empty · кандидат F-34
+- decision-viewer/Кнопки тяжести у строки атаки · encoding · кандидат F-29
+- decision-viewer/Кнопки тяжести у строки атаки · ordering · не найдено: кнопки стоят у каждой строки по её тяжести, порядок групп линза → тяжесть их не меняет
+- decision-viewer/Кнопки тяжести у строки атаки · precision · неприменимо: формы collection, text; precision только для numeric-range
+- decision-viewer/Кнопки тяжести у строки атаки · idempotency · неприменимо: формы collection, text; idempotency только для stateful
+- decision-viewer/Кнопки тяжести у строки атаки · concurrency · неприменимо: формы collection, text; concurrency только для io или stateful
+- decision-viewer/Скрываемое поле обоснования у кнопок тяжести · boundary · неприменимо: формы text, stateful; boundary только для numeric-range
+- decision-viewer/Скрываемое поле обоснования у кнопок тяжести · adjacency · неприменимо: формы text, stateful; adjacency только для collection
+- decision-viewer/Скрываемое поле обоснования у кнопок тяжести · empty · не выбран: обоснование из одних пробелов на странице; страница не даёт строки, которую `apply` отвергнет, — пустота считается после обрезки пробелов, как в требовании «Строка о тяжести без обоснования или без строки отвергается», ответ человека исход не изменит
+- decision-viewer/Скрываемое поле обоснования у кнопок тяжести · encoding · кандидат F-26
+- decision-viewer/Скрываемое поле обоснования у кнопок тяжести · ordering · неприменимо: формы text, stateful; ordering только для collection
+- decision-viewer/Скрываемое поле обоснования у кнопок тяжести · precision · неприменимо: формы text, stateful; precision только для numeric-range
+- decision-viewer/Скрываемое поле обоснования у кнопок тяжести · idempotency · не выбран: повторное нажатие той же кнопки снимает отметку, как переключатель «прочитано», и строка уходит из промпта; отметка одна на строку, ответ человека исход не изменит
+- decision-viewer/Скрываемое поле обоснования у кнопок тяжести · concurrency · кандидат F-35
+- decision-viewer/Строка о тяжести в промпте возврата · boundary · неприменимо: формы text, stateful; boundary только для numeric-range
+- decision-viewer/Строка о тяжести в промпте возврата · adjacency · неприменимо: формы text, stateful; adjacency только для collection
+- decision-viewer/Строка о тяжести в промпте возврата · empty · не найдено: пустого утверждения у строки атаки нет — пустую ячейку отвергает парсер таблицы
+- decision-viewer/Строка о тяжести в промпте возврата · encoding · кандидат F-30
+- decision-viewer/Строка о тяжести в промпте возврата · ordering · неприменимо: формы text, stateful; ordering только для collection
+- decision-viewer/Строка о тяжести в промпте возврата · precision · неприменимо: формы text, stateful; precision только для numeric-range
+- decision-viewer/Строка о тяжести в промпте возврата · idempotency · не выбран: строка уходит из промпта, когда ячейка несёт ту тяжесть и то обоснование; сверка идёт в той форме, в какой `apply` пишет ячейку (кандидат F-26), ответ человека исход не изменит
+- decision-viewer/Строка о тяжести в промпте возврата · concurrency · кандидат F-35
+- plugin-core-contract/Строка `apply` о тяжести поднимает номер контракта до 6 · boundary · не выбран: это изменение вливается раньше B-18, и номер 5 пропущен; исход решён F-23.A — номер в `main` прыгает с 4 на 6, B-18 при мерже берёт 7
+- plugin-core-contract/Строка `apply` о тяжести поднимает номер контракта до 6 · adjacency · неприменимо: формы numeric-range; adjacency только для collection
+- plugin-core-contract/Строка `apply` о тяжести поднимает номер контракта до 6 · empty · неприменимо: формы numeric-range; empty только для collection или text
+- plugin-core-contract/Строка `apply` о тяжести поднимает номер контракта до 6 · encoding · неприменимо: формы numeric-range; encoding только для text
+- plugin-core-contract/Строка `apply` о тяжести поднимает номер контракта до 6 · ordering · неприменимо: формы numeric-range; ordering только для collection
+- plugin-core-contract/Строка `apply` о тяжести поднимает номер контракта до 6 · precision · не найдено: номер целый и сравнивается равенством, округления нет
+- plugin-core-contract/Строка `apply` о тяжести поднимает номер контракта до 6 · idempotency · неприменимо: формы numeric-range; idempotency только для stateful
+- plugin-core-contract/Строка `apply` о тяжести поднимает номер контракта до 6 · concurrency · неприменимо: формы numeric-range; concurrency только для io или stateful

@@ -529,3 +529,79 @@ def test_apply_does_not_touch_the_arguments_it_was_given():
     answers_before = copy.deepcopy(answers)
     journal.apply_answers(j, answers, date=DATE)
     assert answers == answers_before
+
+
+# --- строка о тяжести (F-47.A) ----------------------------------------------
+
+SEV_A = ("- тяжесть: openspec/changes/x/attack.md · Утверждения · "
+         "«опора `a · b`: «цитата» → не то — «слово»» → предупреждение — «не критично»")
+SEV_B = "- тяжесть: openspec/changes/x/attack.md · Раздел · «второе» → блокер — «ломает»"
+
+
+def severities(text):
+    return [a for a in journal.parse_answers(text) if a["op"] == "severity"]
+
+
+def test_severity_lines_before_first_item_and_after_decision_give_two_items():
+    text = HEADER_PLAIN + SEV_A + "\n- F-03: A — «слово»\n" + SEV_B + "\n"
+    ops = journal.parse_answers(text)
+    assert [a["op"] for a in ops] == ["severity", "decide", "severity"]
+    assert ops[1]["word"] == "слово"
+    assert "слово" not in str(ops[0]) .replace("«слово»", "") and "слово" not in str(ops[2])
+    assert ops[2]["why"] == "ломает"
+
+
+def test_severity_fields_verbatim():
+    a = severities(SEV_A)[0]
+    assert a == {"id": None, "op": "severity", "path": "openspec/changes/x/attack.md", "section": "Утверждения",
+                 "claim": "опора `a · b`: «цитата» → не то — «слово»", "severity": "предупреждение",
+                 "why": "не критично"}
+
+
+@pytest.mark.parametrize("group, why", [("«a » b»", "a » b"), ("«»»", "»"), ("«»", ""), ("«обычное слово»", "обычное слово"),
+                                        ("«а» и «б»", "а» и «б")])
+def test_severity_why_is_text_between_the_outer_quotes(group, why):
+    """Одинокая » в обосновании остаётся в тексте: слово человека не теряется при повторе."""
+    assert severities(f"- тяжесть: p.md · Р · «у» → блокер — {group}")[0]["why"] == why
+
+
+def test_severity_section_with_separator_goes_to_field():
+    a = severities("- тяжесть: p.md · Разд · ел · «у» → блокер — «п»")[0]
+    assert (a["path"], a["section"], a["claim"]) == ("p.md", "Разд · ел", "у")
+
+
+def test_severity_two_line_why_is_one_field_and_next_item_resumes():
+    text = "- тяжесть: p.md · Р · «у» → блокер — «первая\nвторая»\n- F-03: A\n"
+    ops = journal.parse_answers(text)
+    assert [a["op"] for a in ops] == ["severity", "decide"]
+    assert ops[0]["why"] == "первая\nвторая"
+
+
+def test_severity_without_word_is_empty_why_and_after_new_forks():
+    text = "Новые развилки:\n- F-N1: вопрос — варианты: a | b\n- тяжесть: p.md · Р · «у» → блокер — (без слова)\n"
+    ops = journal.parse_answers(text)
+    assert [a["op"] for a in ops] == ["new_fork", "severity"]
+    assert ops[1]["why"] == ""
+
+
+def test_severity_stops_at_notes():
+    ops = journal.parse_answers(SEV_B + "\nЗамечания к схеме:\n" + SEV_A + "\n")
+    assert [a["op"] for a in ops] == ["severity", "note"]
+
+
+def test_apply_skips_severity_item_without_change_or_refusal():
+    j = before()
+    snap = snapshot(j)
+    report = apply(j, HEADER_PLAIN + SEV_A + "\n" + SEV_B + "\n")
+    assert snapshot(j) == snap
+    assert report == []
+
+
+def test_severity_line_off_form_is_refused_by_name():
+    j = before()
+    snap = snapshot(j)
+    bad = "- тяжесть: p.md · Р · «у» → блокер — обоснование без кавычек"
+    assert journal.parse_answers(bad)[0]["op"] == "unknown"
+    report = apply(j, bad + "\n- F-03: A\n")
+    assert snapshot(j) == snap
+    assert report[0].startswith("отказ: строка о тяжести:") and "обоснование без кавычек" in report[0]

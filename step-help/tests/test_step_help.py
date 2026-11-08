@@ -895,11 +895,11 @@ def test_compute_takes_root_and_name(tmp_path, monkeypatch):
 # --- 1.6 вывод и область ----------------------------------------------------
 
 def test_output_shape(tmp_path):
-    """Сценарий «Перечень полей»: `file_links` в перечне, номер контракта — тот же, что у `view-json`: 4 после смены
-    значения адресата `материалы` → `агент` (`plugin-core-contract`: «Новое значение адресата поднимает номер»)."""
+    """Сценарий «Перечень полей»: `file_links` в перечне, номер контракта — тот же, что у `view-json`: 6 после смены
+    строки apply о тяжести (`plugin-core-contract`: «Новое значение адресата поднимает номер» — так росли и прежние номера)."""
     code, data = with_shim(tmp_path, done=("intent",), ready=("decisions",))
     assert code == 0
-    assert data["contract"] == journal_render.CONTRACT == 4
+    assert data["contract"] == journal_render.CONTRACT == 6
     assert dt.datetime.fromisoformat(data["taken_at"]).tzinfo is not None
     assert data["versions"] == {"openspec": FORK_VERSION, "symphysis": None}
     assert set(data) == {"contract", "taken_at", "versions", "change", "changes", "error", "current_step", "current_text",
