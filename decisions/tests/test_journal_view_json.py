@@ -63,14 +63,14 @@ def test_payload_is_what_the_page_gets_plus_additions(tmp_path):
 
 def test_read_flag_note_keeps_the_contract_number_and_passes_through(tmp_path):
     """`warning-read-flag`: «Журнал с заметкой у прежнего номера» — заметка «предупреждение прочитано: <раздел>»
-    отдаётся в `notes` как есть, без разбора, а номер контракта от заметки не растёт (остаётся текущим, 6)."""
+    отдаётся в `notes` как есть, без разбора, а номер контракта от заметки не растёт (остаётся текущим, `CONTRACT`)."""
     j = one_record_journal("a.md", "дв")
     j["notes"] = [{"date": "2026-11-07", "text": "предупреждение прочитано: F-12, options.B"}]
     (tmp_path / "a.md").write_text("раз\nдва\n", encoding="utf-8")
     src = tmp_path / "decisions.json"
     journal.save_journal(src, j)
     data = view(src)
-    assert data["contract"] == journal_render.CONTRACT == 6
+    assert data["contract"] == journal_render.CONTRACT
     assert data["notes"] == j["notes"]
 
 
@@ -279,7 +279,9 @@ def test_destination_matches_the_template(tmp_path):
 def test_output_carries_the_contract_number(tmp_path):
     src, roots = journal_file(tmp_path)
     number = view(src, "--roots", roots)["contract"]
-    assert type(number) is int and number == 6     # `plugin-core-contract`: «Номер в двух выводах»
+    # `plugin-core-contract`: «Номер в двух выводах» — не ниже 6, «Линза правил составления поднимает номер» — не ниже 5;
+    # равенство текущему номеру держит только тест наибольшего N («Номер контракта в сценариях — не ниже N»)
+    assert type(number) is int and number == journal_render.CONTRACT and number >= 6
 
 
 def test_one_number_in_both_outputs(tmp_path):
@@ -293,7 +295,7 @@ def test_one_number_in_both_outputs(tmp_path):
     assert done.returncode == 0, done.stderr
     from_help = json.loads(done.stdout.decode("utf-8"))["contract"]
     from_view = view(src, "--roots", roots)["contract"]
-    assert type(from_help) is int and from_help == from_view == journal_render.CONTRACT == 6
+    assert type(from_help) is int and from_help == from_view == journal_render.CONTRACT
 
 
 def test_a_new_field_does_not_raise_the_number_and_reaches_the_output(tmp_path):
