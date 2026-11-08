@@ -79,12 +79,18 @@ def _human_word(rest: str | None) -> str:
     return "" if rest == "(без слова)" else _unquote(rest)
 
 
+def _severity_why(group: str) -> str:
+    """Обоснование строки о тяжести: текст между внешними «» последней группы, как её даёт RE_SEVERITY.
+    Одинокая » внутри не делает пару «внутренней»: `«a » b»` -> `a » b` (`_unquote` тут не годится)."""
+    return "" if group == "(без слова)" else group[1:-1]
+
+
 def _parse_item(rid: str | None, body: str) -> dict:
     if rid is None:   # строка о тяжести: body — вся строка с продолжением
         m = RE_SEVERITY.match(body)
         if m:
             return {"id": None, "op": "severity", "path": m.group(1).strip(), "section": m.group(2).strip(),
-                    "claim": m.group(3), "severity": m.group(4), "why": _human_word(m.group(5))}
+                    "claim": m.group(3), "severity": m.group(4), "why": _severity_why(m.group(5))}
         return {"id": None, "op": "unknown", "raw": body}
     if rid.startswith("F-N"):
         m = RE_NEW_FORK.match(body)

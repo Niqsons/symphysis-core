@@ -1196,6 +1196,19 @@ def test_viewer_attack_sev_marks_cleanup_and_prompt(tmp_path):
 
 
 @requires_node
+def test_viewer_attack_sev_mark_of_an_absent_file_survives_cleanup(tmp_path):
+    """Отметка файла атаки, которого нет в сборке (собрано без `--attack` для него), остаётся с обоснованием;
+    отметка снятой строки присутствующего файла уходит."""
+    live = arow(claim="живая", severity="блокер (старая причина)")
+    file = afile([live])
+    foreign = "openspec/changes/other/attack/artifacts.md|F-01|чужая"
+    gone = file["path"] + "|F-99, decision|снятая атакой"
+    marks = {foreign: {"to": "предупреждение", "why": "слово человека"}, gone: {"to": "блокер", "why": "нет строки"}}
+    out = attack_view(tmp_path, [file], {":attack": {"disputes": {}, "read": {}, "sev": marks}})
+    assert list(json.loads(out["savedAttack"])["sev"]) == [foreign]
+
+
+@requires_node
 def test_viewer_attack_old_storage_without_sev_builds_the_page(tmp_path):
     """`decision-viewer`: хранилище только с `disputes` и `read` — страница собирается, споры на месте, отметок тяжести нет (F-43.B)."""
     row = arow(claim="спорная")

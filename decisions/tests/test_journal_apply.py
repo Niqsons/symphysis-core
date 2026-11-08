@@ -558,6 +558,13 @@ def test_severity_fields_verbatim():
                  "why": "не критично"}
 
 
+@pytest.mark.parametrize("group, why", [("«a » b»", "a » b"), ("«»»", "»"), ("«»", ""), ("«обычное слово»", "обычное слово"),
+                                        ("«а» и «б»", "а» и «б")])
+def test_severity_why_is_text_between_the_outer_quotes(group, why):
+    """Одинокая » в обосновании остаётся в тексте: слово человека не теряется при повторе."""
+    assert severities(f"- тяжесть: p.md · Р · «у» → блокер — {group}")[0]["why"] == why
+
+
 def test_severity_section_with_separator_goes_to_field():
     a = severities("- тяжесть: p.md · Разд · ел · «у» → блокер — «п»")[0]
     assert (a["path"], a["section"], a["claim"]) == ("p.md", "Разд · ел", "у")

@@ -179,6 +179,15 @@ def _severity_word(cell: str) -> str:
     return cell.split(maxsplit=1)[0] if cell.split() else ""
 
 
+RE_BLOCKER_CELL = re.compile(r"блокер(?![а-яёa-z])", re.I)
+
+
+def _counts_as_blocker(cell: str) -> bool:
+    """Счёт блокеров для `status` — по правилу страницы: первое слово `блокер` без учёта регистра, дальше не буква
+    (`Блокер`, `блокер(причина)`); ход тяжести берёт `_severity_word` — только точное слово."""
+    return bool(RE_BLOCKER_CELL.match(cell.strip()))
+
+
 def _is_coverage(row: dict) -> bool:
     """Строка покрытия (F-19.A): утверждение «не пройдено» или опора «нет: не пройдено» / «нет: файла нет»."""
     return row["claim"] == "не пройдено" or row["support"] in ("нет: не пройдено", "нет: файла нет")
@@ -228,7 +237,7 @@ def set_severity(text: str, name: str, section: str, claim: str, severity: str, 
     again = [r for r in rows if r["section"] == section and r["claim"] == claim]
     if len(again) != 1 or _severity_word(again[0]["severity"]) != severity:
         raise ValueError(f"{name}: ячейка не разбирается: после правки строка не находится с тяжестью «{severity}»")
-    status = "gaps_found" if any(_severity_word(r["severity"]) == SEVERITY_BLOCKER for r in rows) else "passed"
+    status = "gaps_found" if any(_counts_as_blocker(r["severity"]) for r in rows) else "passed"
     at = next((i for i in range(1, frontmatter_end) if RE_STATUS_LINE.match(lines[i])), None)
     if at is None:
         raise ValueError(f"{name}: во frontmatter нет строки status:")

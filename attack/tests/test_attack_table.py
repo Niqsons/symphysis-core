@@ -198,6 +198,15 @@ def test_set_severity_lowers_last_blocker_to_passed_keeping_other_bytes():
     assert att["rows"][0]["severity"] == "предупреждение (решено человеком)"
 
 
+@pytest.mark.parametrize("cell", ["Блокер", "блокер(причина)", "БЛОКЕР (причина)"])
+def test_set_severity_status_counts_blockers_by_the_page_rule(cell):
+    """Другая строка `Блокер` / `блокер(…)` не слово для хода, но блокер для status: после понижения единственной
+    строчной `блокер` статус остаётся gaps_found."""
+    other = ROW_WARN.replace("| предупреждение |", f"| {cell} |")
+    out = attack_table.set_severity(sev_text(ROW_BLOCK, other), "a.md", "F-01", "а", "предупреждение", "слово")
+    assert "status: gaps_found" in out and "предупреждение (слово) |" in out
+
+
 def test_set_severity_raises_warning_to_gaps_found_other_rows_unchanged():
     text = sev_text(ROW_REF, ROW_WARN).replace("status: gaps_found", "status: passed")
     out = attack_table.set_severity(text, "a.md", "F-02", "б", "блокер", "не годится")

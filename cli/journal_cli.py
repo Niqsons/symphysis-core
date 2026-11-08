@@ -388,7 +388,7 @@ def _plan_attacks(severities: list[dict], journal_path: Path) -> tuple[dict[Path
         file = allowed.get(item["path"])
         key = (item["path"], item["section"], item["claim"])
         if file is None:
-            reason = f"путь {item['path']!r} не файл атаки этого изменения (attack/decisions.md, attack/artifacts.md)"
+            reason = f"путь {item['path']!r} не файл атаки этого изменения (принимается: {', '.join(allowed)})"
         elif key in seen:
             reason = "две строки о тяжести для одной строки атаки"
         elif not _flat(item["why"]):
@@ -416,7 +416,7 @@ def _plan_attacks(severities: list[dict], journal_path: Path) -> tuple[dict[Path
         if reason:
             refusals.append(f"{REFUSED}: {label} — {reason}")
     if refusals:
-        refusals.append(f"{REFUSED}: файлы атаки не изменены — отказов по строкам о тяжести {len(refusals)}")
+        refusals.append(f"{REFUSED}: журнал не записан, файлы атаки не изменены — отказов по строкам о тяжести {len(refusals)}")
     return changed, report, refusals
 
 

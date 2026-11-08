@@ -349,8 +349,11 @@ function readByNotes(notes, row) { if (!isWarning(row)) return false; const t = 
   /* отметка тяжести: ячейка уже несёт эту тяжесть и это обоснование (внесла apply) или строки в текущей сборке нет (снял повтор атаки) уходит из состояния (F-35) */
   const liveRows = new Map();
   for (const att of ATTACK) for (const r of (att.rows || [])) liveRows.set(rowKey(att, r), r);
+  /* без строки уходит отметка лишь файла, что есть в сборке: сборка без `--attack` отметок с обоснованиями не стирает */
+  const livePaths = ATTACK.map(att => att.path + '|');
   for (const k of Object.keys(attackState.sev)) {
     const row = liveRows.get(k);
+    if (!row && !livePaths.some(p => k.startsWith(p))) continue;
     if (!row || sevIngested(row, attackState.sev[k])) { delete attackState.sev[k]; dropped = true; }
   }
   if (dropped) saveAttack();

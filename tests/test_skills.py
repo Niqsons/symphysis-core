@@ -564,6 +564,8 @@ def test_attack_skill_repeat_reads_human_word_before_overwrite():
     for token in ("Исключение", "слово человека", "до перезаписи файла", "MUST прочитать прежний файл", "ячейки со словом человека"):
         assert token in bullet, f"в пункте «с начала» нет «{token}»"
     assert bullet.index("прежние строки не переносятся") < bullet.index("Исключение"), "исключение стоит до правила"
+    nohash = flat(raw[raw.index("считается ненаписанной"):])
+    assert "слово человека — по пункту «Слово человека при повторе с начала»" in nohash.split("- Если цели нет")[0],         "ветка таблицы без хеша не отсылает к слову человека при повторе с начала"
 
 
 def test_attack_skill_carries_human_word_by_exact_key():

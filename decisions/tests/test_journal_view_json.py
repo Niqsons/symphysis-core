@@ -63,7 +63,7 @@ def test_payload_is_what_the_page_gets_plus_additions(tmp_path):
 
 def test_read_flag_note_keeps_the_contract_number_and_passes_through(tmp_path):
     """`warning-read-flag`: «Журнал с заметкой у прежнего номера» — заметка «предупреждение прочитано: <раздел>»
-    отдаётся в `notes` как есть, без разбора, а номер контракта от заметки не растёт (4 — по `parking-addressee-agent`)."""
+    отдаётся в `notes` как есть, без разбора, а номер контракта от заметки не растёт (остаётся текущим, 6)."""
     j = one_record_journal("a.md", "дв")
     j["notes"] = [{"date": "2026-11-07", "text": "предупреждение прочитано: F-12, options.B"}]
     (tmp_path / "a.md").write_text("раз\nдва\n", encoding="utf-8")

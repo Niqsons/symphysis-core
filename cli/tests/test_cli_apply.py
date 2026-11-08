@@ -285,6 +285,7 @@ def test_apply_refuses_a_path_outside_the_change(project, bad):
     before = snapshot(project)
     run = apply_sev(project, sev_line(bad, "а", "предупреждение", "слово"))
     assert run.returncode == 1 and bad in run.stderr and "[!!]" in run.stderr
+    assert DECISIONS in run.stderr and "openspec/changes/ch/attack/artifacts.md" in run.stderr   # названа принимаемая форма
     assert snapshot(project) == before
 
 
@@ -371,3 +372,15 @@ def test_apply_keeps_crlf_and_bom_of_the_attack_file(project):
     raw = file.read_bytes()
     assert raw.startswith(b"\xef\xbb\xbf") and raw.count(b"\r\n") == raw.count(b"\n")
     assert b"status: passed" in raw
+
+
+def test_apply_two_severity_lines_for_two_rows_of_one_file(project):
+    """Две строки о тяжести для разных строк одного файла — применяются за один запуск по цепочке в памяти."""
+    _, change, path = project
+    before = snapshot(project)
+    run = apply_sev(project, sev_line(DECISIONS, "а", "предупреждение", "раз") + sev_line(DECISIONS, "б", "блокер", "два", "F-02"))
+    assert run.returncode == 0, run.stderr + run.stdout
+    text = (change / "attack" / "decisions.md").read_text(encoding="utf-8")
+    assert "предупреждение (раз) |" in text and "блокер (два) |" in text
+    assert "status: passed" not in text and "status: gaps_found" in text
+    assert sha(path) == before[path]
