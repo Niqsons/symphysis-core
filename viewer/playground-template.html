@@ -1020,6 +1020,18 @@ function readBadge(att, r) {
   return badge + '<label class="readtoggle"' + (inJournal ? ' title="внесено в журнал"' : ' title="отметить прочитанным: текст уйдёт в «Замечания к схеме:» промпта возврата"') +
     '><input type="checkbox" data-read-key="' + esc(k) + '"' + (inJournal || inState ? ' checked' : '') + (inJournal ? ' disabled' : '') + '> прочитано</label>';
 }
+/* блок тяжести у строки: кнопка по ходу `sevMove`, свёрнутое поле обоснования, пометка без текста (F-39); нажатой кнопка считается, пока ход отметки совпадает с ходом строки */
+function sevPressed(att, r) { const mark = attackState.sev[rowKey(att, r)], mv = sevMove(r); return !!(mark && mv && mark.to === mv.to); }
+function sevBlock(att, ai, ri, r) {
+  const mv = sevMove(r);
+  if (!mv) return '';
+  const mark = attackState.sev[rowKey(att, r)], on = sevPressed(att, r), empty = on && !normText(mark.why);
+  const at = ' data-sev-att="' + ai + '" data-sev-row="' + ri + '"';
+  return '<div class="row sevrow"><button class="small' + (on ? ' active' : '') + '"' + at + ' data-sev-btn="1" aria-pressed="' + on + '" title="ход тяжести: строка о тяжести уйдёт в промпт возврата, если есть обоснование">' + esc(mv.label) + '</button></div>' +
+    '<div class="note warn sev-note' + (empty ? '' : ' hidden') + '">нет обоснования, строки о тяжести не будет</div>' +
+    '<details class="park sevwhy"' + (on ? ' open' : '') + '><summary>обоснование тяжести — почему ' + esc(mv.label) + '</summary>' +
+    '<div class="row"><textarea' + at + ' data-sev-why="1" placeholder="обоснование хода тяжести: уйдёт в промпт возврата и в ячейку тяжести">' + esc(on ? (mark.why || '') : '') + '</textarea></div></details>';
+}
 function attackRow(att, ai, ri, r, conflict, undecided) {
   const key = disputeKey(att, r), known = lensList(att).some(l => l.slug === r.lens);
   return '<div class="card attackrow' + (conflict ? ' conflict' : '') + '" data-card="' + ai + '|' + ri + '" data-claim="' + esc(r.claim) + '"><div class="head"><span class="badge ' + sevClass(r.severity) + '">' + esc(r.severity) + '</span>' + demotionBadge(r) +
@@ -1027,7 +1039,7 @@ function attackRow(att, ai, ri, r, conflict, undecided) {
     (known ? '' : '<span class="badge bad">линза «' + esc(r.lens) + '» вне списка — строка невалидна</span>') + '</div>' +
     '<div class="q">' + md(r.claim) + '</div>' +
     '<div class="meta">инвариант: ' + md(r.invariant) + '</div><div class="meta">опора: ' + md(r.support) + '</div><div class="meta">чем закрыть: ' + md(r.fix) + '</div>' +
-    recordBlock(r.section) +
+    recordBlock(r.section) + sevBlock(att, ai, ri, r) +
     '<div class="note warn undecided-note' + (undecided ? '' : ' hidden') + '">запись не решена — ответ уйдёт в замечания; выбери вариант в карточке</div>' +
     '<div class="note bad conflict-note' + (conflict ? '' : ' hidden') + '">конфликт ответов к одному решению — оставь один, иначе слово к решению не уйдёт в промпт</div>' +
     '<div class="row"><textarea data-att="' + ai + '" data-row="' + ri + '" placeholder="спор: почему опора есть / почему не блокер — уйдёт в промпт возврата; при закрытии «вопрос человеку» и разделе F-NN, decision — слово к решению">' + esc(attackState.disputes[key] || '') + '</textarea></div></div>';
@@ -1097,6 +1109,21 @@ function renderAttack() {
   el.querySelectorAll('textarea[data-att]').forEach(t => t.oninput = () => {
     const att = ATTACK[+t.dataset.att], r = att.rows[+t.dataset.row], k = disputeKey(att, r);
     if (t.value.trim()) attackState.disputes[k] = t.value; else delete attackState.disputes[k]; saveAttack(); updateOut();
+  });
+  /* кнопка тяжести: нажатие ставит отметку (прежнее обоснование ключа сохраняется), повторное снимает (F-39) */
+  el.querySelectorAll('button[data-sev-btn]').forEach(b => b.onclick = () => {
+    const att = ATTACK[+b.dataset.sevAtt], r = att.rows[+b.dataset.sevRow], k = rowKey(att, r), mv = sevMove(r);
+    if (!mv) return;
+    if (sevPressed(att, r)) delete attackState.sev[k];
+    else attackState.sev[k] = { to: mv.to, why: attackState.sev[k] ? (attackState.sev[k].why || '') : '' };
+    saveAttack(); renderAttack(); updateOut();
+  });
+  /* поле обоснования пишет в отметку только пока она есть; пометку обновляем без перерисовки — фокус остаётся */
+  el.querySelectorAll('textarea[data-sev-why]').forEach(t => t.oninput = () => {
+    const att = ATTACK[+t.dataset.sevAtt], r = att.rows[+t.dataset.sevRow], mark = attackState.sev[rowKey(att, r)];
+    if (!mark || !sevPressed(att, r)) return;
+    mark.why = t.value; saveAttack(); updateOut();
+    const n = t.closest('.attackrow').querySelector('.sev-note'); if (n) n.classList.toggle('hidden', !(sevPressed(att, r) && !normText(t.value)));
   });
   /* отметка «прочитано» — одна на файл и раздел: карточки одного раздела перерисовываются вместе (F-21) */
   el.querySelectorAll('input[data-read-key]').forEach(cb => cb.onchange = () => {
