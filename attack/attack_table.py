@@ -7,9 +7,10 @@ from __future__ import annotations
 import re
 from pathlib import Path
 
+from journal_model import _flat
 from journal_render import _lines
 
-__all__ = ["ATTACK_ROW_KEYS", "parse_attack_md"]
+__all__ = ["ATTACK_ROW_KEYS", "parse_attack_md", "parse_attack_text", "set_severity"]
 
 
 ATTACK_ROW_KEYS = ("claim", "section", "lens", "invariant", "severity", "support", "fix")
@@ -103,6 +104,10 @@ def _cells(line: str) -> list[str]:
 
 
 def _attack_rows(lines: list[str], name: str, start: int) -> list[dict]:
+    return [row for row, _ in _attack_rows_at(lines, name, start)]
+
+
+def _attack_rows_at(lines: list[str], name: str, start: int) -> list[tuple[dict, int]]:
     """Строки первой pipe-таблицы после `start`, у которой заголовок из семи колонок и первая —
     «Утверждение». Ячейка разбирается `_split_row`. Разделитель заголовка и строки-подстановки
     шаблона (первая ячейка `<…>`) пропускаются. Ошибка — `ValueError` с `файл:строка:`: число
@@ -114,7 +119,7 @@ def _attack_rows(lines: list[str], name: str, start: int) -> list[dict]:
     if header is None:
         raise ValueError(f"{name}: нет таблицы атаки с заголовком «{ATTACK_FIRST_COLUMN}» из семи колонок")
     columns = _cells(lines[header])
-    rows: list[dict] = []
+    rows: list[tuple[dict, int]] = []
     for n in range(header + 1, len(lines)):
         line = lines[n]
         if not line.startswith("|"):
@@ -139,7 +144,7 @@ def _attack_rows(lines: list[str], name: str, start: int) -> list[dict]:
         if empty is not None:
             raise ValueError(f"{name}:{n + 1}: в столбце «{columns[empty]}» (ячейка {empty + 1}) пусто;"
                              " все семь ячеек обязательны, нет содержимого — «—»")
-        rows.append(dict(zip(ATTACK_ROW_KEYS, cells)))
+        rows.append((dict(zip(ATTACK_ROW_KEYS, cells)), n))
     return rows
 
 
@@ -152,8 +157,80 @@ def parse_attack_md(path: Path) -> dict:
     строка вне закрытого списка — невалидная строка атаки, просмотрщик показывает её группой
     «вне списка»; падать на ней разбору незачем. Без frontmatter или без таблицы — `ValueError`
     с именем файла и причиной."""
-    name = str(path)
-    lines = _lines(Path(path).read_text(encoding="utf-8-sig"))
+    return parse_attack_text(Path(path).read_text(encoding="utf-8-sig"), str(path))
+
+
+def parse_attack_text(text: str, name: str) -> dict:
+    """Тот же разбор из текста: `name` идёт в `path` и в сообщения об ошибках; BOM в начале снимается."""
+    lines = _lines(text.removeprefix("\ufeff"))
     frontmatter, end = _attack_frontmatter(lines, name)
     return {"path": name, "frontmatter": frontmatter, "rows": _attack_rows(lines, name, end + 1),
             "composition": _composition(lines, end + 1)}
+
+
+SEVERITY_BLOCKER, SEVERITY_WARNING = "блокер", "предупреждение"
+SEVERITY_COLUMN = ATTACK_ROW_KEYS.index("severity")
+RE_STATUS_LINE = re.compile(r"^status:.*$")
+
+
+def _severity_word(cell: str) -> str:
+    """Первое слово ячейки тяжести, регистр сохранён: «Блокер» с заглавной не слово (F-29.B)."""
+    return cell.split(maxsplit=1)[0] if cell.split() else ""
+
+
+def _is_coverage(row: dict) -> bool:
+    """Строка покрытия (F-19.A): утверждение «не пройдено» или опора «нет: не пройдено» / «нет: файла нет»."""
+    return row["claim"] == "не пройдено" or row["support"] in ("нет: не пройдено", "нет: файла нет")
+
+
+def set_severity(text: str, name: str, section: str, claim: str, severity: str, why: str) -> str:
+    """Слово человека о тяжести (F-17, F-47.A): новый текст файла атаки без записи на диск. Строка ищется по
+    разобранным `section` и `claim` дословно; ход только `блокер` <-> `предупреждение` (F-18.B, F-29.B, F-31.B),
+    строка покрытия и `справка` — отказ (F-19.A). Ячейка тяжести правится в сыром тексте по местам разделителей,
+    становясь `<тяжесть> (<обоснование>)` одной строкой (F-28); `status` пересчитывается: `passed` при нуле
+    строк `блокер`, иначе `gaps_found`. Остальные байты и концы строк целы. Любой отказ — `ValueError` с причиной."""
+    bom = "\ufeff" if text.startswith("\ufeff") else ""
+    parts = re.split(r"(\r?\n)", text.removeprefix(bom))       # чётные — строки, нечётные — их концы
+    lines = parts[0::2]
+    frontmatter_end = _attack_frontmatter(lines, name)[1]
+    found = [(row, n) for row, n in _attack_rows_at(lines, name, frontmatter_end + 1)
+             if row["section"] == section and row["claim"] == claim]
+    if not found:
+        raise ValueError(f"{name}: строки нет: раздел «{section}», утверждение «{claim}»")
+    if len(found) > 1:
+        raise ValueError(f"{name}: строк с этим ключом две ({len(found)}): раздел «{section}», утверждение «{claim}»")
+    row, n = found[0]
+    if _is_coverage(row):
+        raise ValueError(f"{name}: строка покрытия «{claim}» тяжесть не меняет")
+    current = _severity_word(row["severity"])
+    if severity not in (SEVERITY_BLOCKER, SEVERITY_WARNING):
+        raise ValueError(f"{name}: тяжесть «{severity}» не ставится: только {SEVERITY_BLOCKER} или {SEVERITY_WARNING}")
+    if current not in (SEVERITY_BLOCKER, SEVERITY_WARNING):
+        raise ValueError(f"{name}: текущая тяжесть «{row['severity']}» вне хода блокер <-> предупреждение")
+    if current == severity:
+        raise ValueError(f"{name}: тяжесть у строки уже «{severity}»")
+    reason = _flat(why)
+    if not reason:
+        raise ValueError(f"{name}: обоснование пусто")
+    cell = " " + f"{severity} ({reason})".replace("\\", "\\\\").replace("|", "\\|") + " "
+    line = lines[n]
+    body = line.strip()
+    lead = line[:len(line) - len(line.lstrip())]
+    trail = line[len(line.rstrip()):]
+    cuts = _scan_row(line)[2]
+    body = body[:cuts[SEVERITY_COLUMN - 1]] + cell + body[cuts[SEVERITY_COLUMN] - 1:]
+    lines[n] = lead + body + trail
+    try:
+        rows = _attack_rows(lines, name, frontmatter_end + 1)
+    except ValueError as err:
+        raise ValueError(f"{name}: ячейка не разбирается: {err}") from None
+    again = [r for r in rows if r["section"] == section and r["claim"] == claim]
+    if len(again) != 1 or _severity_word(again[0]["severity"]) != severity:
+        raise ValueError(f"{name}: ячейка не разбирается: после правки строка не находится с тяжестью «{severity}»")
+    status = "gaps_found" if any(_severity_word(r["severity"]) == SEVERITY_BLOCKER for r in rows) else "passed"
+    at = next((i for i in range(1, frontmatter_end) if RE_STATUS_LINE.match(lines[i])), None)
+    if at is None:
+        raise ValueError(f"{name}: во frontmatter нет строки status:")
+    lines[at] = f"status: {status}"
+    parts[0::2] = lines
+    return bom + "".join(parts)
