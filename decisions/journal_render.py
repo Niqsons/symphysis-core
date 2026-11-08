@@ -6,6 +6,7 @@
 from __future__ import annotations
 
 import re
+from html import escape
 
 from journal_model import ADDED_MARK, DEVIATION_LABEL, DEVIATION_TAIL, RE_ANCHOR, _evidence_of, _flat
 
@@ -215,10 +216,15 @@ def _unmatched(ev: dict) -> str:
     return ""
 
 
+def _escaped_quote(text: str) -> str:
+    """Цитата — текст markdown, а не HTML: после сплющивания `&`, `<` и `>` экранируются."""
+    return escape(_flat(text), quote=False)
+
+
 def _cite(ev: dict) -> str:
     """`путь:строка «цитата»` с вердиктом несверенной. Цитата сплющена в одну строку: перенос
     внутри неё оборвал бы пункт списка, а строка `## …` в ней — раздел."""
-    return f"{_ref(ev)} «{_flat(ev['quote'])}»{_unmatched(ev)}"
+    return f"{_ref(ev)} «{_escaped_quote(ev['quote'])}»{_unmatched(ev)}"
 
 
 def _design_context(facts: list[dict]) -> list[str]:
@@ -261,7 +267,7 @@ def _design_risks(rec: dict) -> list[str]:
     """Улика за отвергнутую опцию — довод против выбранной: в Decisions она читается как
     обоснование, здесь — как то, чем плох выбранный путь (`fork-form.md`, «Разделы постановки»)."""
     chosen = rec["decision"]["option"]
-    return [f"- [Risk] {_flat(ev['quote'])} ({rec['id']}, отвергнут {opt['letter']}: {_ref(ev)}{_unmatched(ev)})"
+    return [f"- [Risk] {_escaped_quote(ev['quote'])} ({rec['id']}, отвергнут {opt['letter']}: {_ref(ev)}{_unmatched(ev)})"
             f" → Mitigation: решение {chosen}"
             for opt in rec["options"] if opt["letter"] != chosen for ev in opt["evidence"]]
 
