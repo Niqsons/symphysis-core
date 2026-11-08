@@ -516,43 +516,49 @@ F30_WHY = "страховка F-30 (архив) | проверка"
 
 
 def test_f30_archive_claims_survive_page_prompt_core(tmp_path):
-    """Каждая строка `блокер`/`предупреждение` (не покрытия) архивных файлов атаки: `severityLine` -> `parse_answers` -> `set_severity`
-    находит свою строку, тяжесть сменилась, `status` пересчитан. Отказ называет файл и строку; число прогнанных строк — в сообщении."""
+    """Все строки архивных файлов атаки: `severityLine` -> `parse_answers` возвращает ключ и обоснование как были (вне зависимости
+    от тяжести); у строк с ходом дальше `set_severity` находит свою строку, ячейка становится `<ход> (<обоснование>)`, `status`
+    пересчитан. Отказ называет файл и строку; все числа прогона — в сообщении."""
     assert ARCHIVE_ATTACKS, "в архиве нет файлов атаки"
-    total, guillemets, backticks, dashes, failures = 0, 0, 0, 0, []
+    parsed, moved, classes, failures = 0, 0, {"«»": 0, "backticks": 0, " — «": 0, " · в разделе": 0}, []
     for n, path in enumerate(ARCHIVE_ATTACKS):
         name = f"{path.parts[-3]}/attack/{path.name}"
         text = path.read_text(encoding="utf-8-sig")
         att = journal.parse_attack_text(text, name)
         sub = tmp_path / str(n)
         sub.mkdir()
-        # сторона страницы: строки и ходы для всех подходящих строк за один прогон node
+        # сторона страницы: строки для всех строк файла за один прогон node
         res = run_js(sub, "flags",
-                     "(() => { const a = input.att; return a.rows.map(r => { const m = sevMove(r); return m ? {to: m.to, line: severityLine(a, r, m.to, input.why)} : null; }); })()",
+                     "(() => { const a = input.att; return a.rows.map(r => { const m = sevMove(r); const to = m ? m.to : 'предупреждение';"
+                     " return {to, move: !!m, line: severityLine(a, r, to, input.why)}; }); })()",
                      {"att": att, "why": F30_WHY})
         assert len(res) == len(att["rows"])
         for row, item in zip(att["rows"], res):
-            if item is None:
-                continue
-            total += 1
-            guillemets += "«" in row["claim"] or "»" in row["claim"]
-            backticks += "`" in row["claim"]
-            dashes += " — «" in row["claim"]
-            label = f"{name} · {row['section']} · «{row['claim']}»"
+            parsed += 1
+            claim = row["claim"]
+            classes["«»"] += "«" in claim or "»" in claim
+            classes["backticks"] += "`" in claim
+            classes[" — «"] += " — «" in claim
+            classes[" · в разделе"] += " · " in row["section"]
+            moved += item["move"]
+            label = f"{name} · {row['section']} · «{claim}»"
             try:
                 sev = [op for op in journal.parse_answers(item["line"]) if op["op"] != "ignored"]
                 assert len(sev) == 1 and sev[0]["op"] == "severity", f"разбор строки: {sev}"
                 got = sev[0]
-                assert (got["path"], got["section"], got["claim"], got["severity"]) == (name, row["section"], row["claim"], item["to"]), f"ключ разобран иначе: {got}"
+                want = (name, row["section"], claim, item["to"], F30_WHY)
+                assert (got["path"], got["section"], got["claim"], got["severity"], got["why"]) == want, f"разобрано иначе: {got}"
+                if not item["move"]:
+                    continue
                 new = journal.set_severity(text, name, got["section"], got["claim"], got["severity"], got["why"])
                 after = journal.parse_attack_text(new, name)
-                same = [r for r in after["rows"] if r["section"] == row["section"] and r["claim"] == row["claim"]]
-                assert len(same) == 1 and same[0]["severity"].split()[0] == item["to"], f"тяжесть не сменилась: {same}"
+                same = [r for r in after["rows"] if r["section"] == row["section"] and r["claim"] == claim]
+                assert len(same) == 1 and same[0]["severity"] == f"{item['to']} ({F30_WHY})", f"ячейка: {same}"
                 blockers = any(r["severity"].split()[:1] == ["блокер"] for r in after["rows"])
                 assert after["frontmatter"]["status"] == ("gaps_found" if blockers else "passed"), f"status: {after['frontmatter']['status']}"
             except (AssertionError, ValueError) as err:
                 failures.append(f"{label}: {err}")
-    stat = f"прогнано строк {total}; с «» {guillemets}, с backticks {backticks}, с « — «» {dashes}"
-    assert not failures, stat + "\n" + "\n".join(failures)
-    assert total > 0 and guillemets > 0 and backticks > 0 and dashes > 0, stat
+    stat = f"разобрано строк {parsed}, с ходом {moved}; классы по разобранным: {classes}"
+    assert not failures, stat + chr(10) + chr(10).join(failures)
+    assert parsed > 0 and moved > 0 and all(classes.values()), stat
     print(stat)
