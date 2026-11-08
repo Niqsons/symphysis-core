@@ -176,6 +176,16 @@ def test_toc_width_can_be_dragged_and_is_remembered(tmp_path):
     assert changed["errors"] == []
 
 
+def test_light_theme_can_be_selected_and_is_remembered(tmp_path):
+    html = page(tmp_path)
+    dark = browser(html)
+    assert dark["theme"] == "dark" and dark["background"] == "rgb(15, 17, 21)"
+    light = browser(html, "theme:light", "reload")
+    assert light["theme"] == "light" and light["themePick"] == "light"
+    assert light["background"] == "rgb(245, 247, 250)"
+    assert light["errors"] == []
+
+
 def test_narrow_window_puts_the_panel_above_the_cards(tmp_path):
     r = browser(page(tmp_path), "panel", size=(800, 900))
     assert r["shown"] is True

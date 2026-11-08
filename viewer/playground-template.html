@@ -8,6 +8,12 @@
 <style>
   :root { --bg:#0f1115; --panel:#171a21; --card:#1c2028; --line:#2a303b; --fg:#e6e8ec; --mute:#9aa3b2;
           --acc:#6ea8fe; --ok:#3fb950; --warn:#d29922; --bad:#f85149; --park:#a371f7; --unlikely:#8b949e; --left:250px; --right:0px; --schemew:40vw; --outh:170px; --headh:48px; }
+  :root[data-theme=light] { --bg:#f5f7fa; --panel:#ffffff; --card:#ffffff; --line:#c9d1d9; --fg:#1f2328;
+          --acc:#0969da; --ok:#1a7f37; --warn:#9a6700; --bad:#cf222e; --park:#8250df; --unlikely:#59636e; }
+  :root[data-theme=light] button { background:#f0f3f6; }
+  :root[data-theme=light] button.primary { color:#ffffff; }
+  :root[data-theme=light] textarea, :root[data-theme=light] input[type=text], :root[data-theme=light] select { background:#ffffff; }
+  :root[data-theme=light] .ev code { color:#24292f; }
   * { box-sizing:border-box; }
   body { margin:0; background:var(--bg); color:var(--fg); font:14px/1.45 system-ui, -apple-system, "Segoe UI", sans-serif; }
   code, .mono { font-family: ui-monospace, Consolas, "Cascadia Mono", monospace; font-size:12.5px; }
@@ -163,6 +169,7 @@
 <header id="pageHeader">
   <h1 id="title">symphysis — журнал решений</h1>
   <div class="modes" id="modes" title="решения — круг просмотрщика; проверка — снимок перед proposal, только чтение; атака — строки attack/*.md по линзам"></div>
+  <label class="editorpick" title="цветовая раскладка страницы; выбор хранится в браузере">тема <select id="themePick"><option value="dark">тёмная</option><option value="light">светлая</option></select></label>
   <button id="btnScheme" title="рядом с карточками: схема решения из scheme.md или справка о шаге конвейера">схема · справка</button>
   <label class="editorpick" title="куда ведёт значок ↗ у ссылки на файл; выбор хранится в этом браузере">↗ <select id="editorPick"><option value="vscode">VS Code</option><option value="cursor">Cursor</option><option value="jetbrains">IDEA / GIGA IDE</option><option value="custom">своя маска</option><option value="none">не показывать</option></select></label>
   <input type="text" id="editorMask" class="hidden" placeholder="схема://…{path}…{line}" title="подстановки: {path}, {relpath}, {project}, {line}, {line0}">
@@ -418,7 +425,7 @@ function schemeError(e) {
 }
 async function schemeDraw() {
   try {
-    mermaid.initialize({ startOnLoad:false, securityLevel:'strict', theme:'dark', suppressErrorRendering:true });
+    mermaid.initialize({ startOnLoad:false, securityLevel:'strict', theme:document.documentElement.dataset.theme === 'light' ? 'default' : 'dark', suppressErrorRendering:true });
     const { svg } = await mermaid.render('schemeDrawing', SCHEME.text);
     const holder = document.createElement('div'); holder.innerHTML = svg;
     schemeShow('svg', schemeBlocksNote(), holder);
@@ -1159,6 +1166,17 @@ document.getElementById('notes').value = state.notes || '';
 document.getElementById('notes').oninput = e => { state.notes = e.target.value; save(); updateOut(); };
 document.getElementById('btnAll').onclick = () => { filter = { openOnly:false }; render(); };
 document.getElementById('btnOpen').onclick = () => { filter.openOnly = !filter.openOnly; render(); };
+(function themeChoice() {
+  const pick = document.getElementById('themePick');
+  let theme = 'dark';
+  try { const saved = localStorage.getItem('symphysis:theme'); if (['dark','light'].includes(saved)) theme = saved; } catch (e) {}
+  const show = () => { document.documentElement.dataset.theme = theme; pick.value = theme; };
+  pick.onchange = () => {
+    theme = pick.value; try { localStorage.setItem('symphysis:theme', theme); } catch (e) {}
+    show(); if (schemeLoaded && SCHEME.mermaid) schemeDraw();
+  };
+  show();
+})();
 (function () {
   const pick = document.getElementById('editorPick'), maskInput = document.getElementById('editorMask');
   const show = () => {

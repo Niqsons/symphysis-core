@@ -3,7 +3,7 @@
 // Действия: panel — включить панель и дождаться рисунка или текста; mode:<режим> — кнопка режима; drag:<dx> — тянуть границу панели; tocdrag:<dx> — тянуть границу оглавления;
 // sev:<файл>:<строка> — нажать кнопку тяжести; sevwhy:<файл>:<строка>:<текст> — ввод в поле обоснования (пусто — стереть);
 // reload — открыть страницу снова; choose:<запись>:<буква> — выбрать вариант; word:<запись>:<текст> — написать слово; buttons — экспорт, импорт, копирование;
-// tab:<scheme|help> — переключатель панели; step:<шаг> — пункт списка справки; helpnext, helpprev — листание; howto — кнопка «Как готовить intent.md?»;
+// tab:<scheme|help> — переключатель панели; step:<шаг> — пункт списка справки; helpnext, helpprev — листание; howto — кнопка «Как готовить intent.md?»; theme:<dark|light> — цветовая раскладка;
 // clicklink — ссылка на файл внутри варианта; editor:<значение>[:<маска>] — выбор редактора; open:<страница> — другая страница в том же профиле.
 // Итог на stdout: JSON с замером страницы, запросами наружу (`http`), запросами, которые заблокировала CSP (`blocked`), нарушениями и ошибками.
 import { spawn } from "node:child_process";
@@ -68,6 +68,8 @@ const MEASURE = `(() => {
     recommendations: [...document.querySelectorAll('div.rec')].map((n) => n.textContent),
     chosen: [...document.querySelectorAll('input[type=radio]:checked')].map((r) => r.name + '.' + r.value),
     editor: (document.getElementById('editorPick') || {}).value || null, editorMask: (document.getElementById('editorMask') || {}).value ?? null,
+    theme: document.documentElement.dataset.theme || 'dark', themePick: (document.getElementById('themePick') || {}).value || null,
+    background: getComputedStyle(document.body).backgroundColor,
     links: [...document.querySelectorAll('a.filelink')].map((a) => ({ href: a.href, text: a.textContent })),
     codes: [...document.querySelectorAll('.card code')].map((c) => c.textContent),
     attack: { groups: [...document.querySelectorAll('#viewAttack .attack-rows h2 code')].map((n) => n.textContent),
@@ -180,6 +182,10 @@ async function main() {
       await sleep(50);
     }
     if (name === "attackstate") { await evaluate(`localStorage.setItem(KEY + ':attack', ${JSON.stringify(args.join(":"))})`); }
+    if (name === "theme") {
+      await evaluate(`(() => { const s = document.getElementById('themePick'); s.value = ${JSON.stringify(args[0])}; s.dispatchEvent(new Event('change', { bubbles: true })); })()`);
+      await sleep(50);
+    }
     if (name === "editor") {
       await evaluate(`(() => { const s = document.getElementById('editorPick'); s.value = ${JSON.stringify(args[0])}; s.dispatchEvent(new Event('change', { bubbles: true })); const m = ${JSON.stringify(args.slice(1).join(":"))}; if (m) { const i = document.getElementById('editorMask'); i.value = m; i.dispatchEvent(new Event('change', { bubbles: true })); } })()`);
       await sleep(50);

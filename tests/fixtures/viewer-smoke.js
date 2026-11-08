@@ -29,7 +29,7 @@ function node(id) {
   });
 }
 const document = {
-  getElementById: node, title: '', documentElement: { style: { setProperty() {} } }, body: node('body'), head: node('head'),
+  getElementById: node, title: '', documentElement: { dataset: {}, style: { setProperty() {} } }, body: node('body'), head: node('head'),
   querySelectorAll() { return []; }, createElement() { return node('created'); }, execCommand() { return false; },
 };
 const context = {
