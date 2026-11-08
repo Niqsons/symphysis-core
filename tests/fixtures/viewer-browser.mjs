@@ -1,10 +1,11 @@
 // Прогон страницы просмотрщика в настоящем Chrome: чистый профиль, страница из file://, флагов, ослабляющих проверки, нет.
 // Использование: node viewer-browser.mjs <chrome> <страница.html> <ширина> <высота> <действие>...
-// Действия: panel — включить панель и дождаться рисунка или текста; mode:<режим> — кнопка режима; drag:<dx> — тянуть границу панели;
+// Действия: panel — включить панель и дождаться рисунка или текста; mode:<режим> — кнопка режима; drag:<dx> — тянуть границу панели; tocdrag:<dx> — тянуть границу оглавления;
 // sev:<файл>:<строка> — нажать кнопку тяжести; sevwhy:<файл>:<строка>:<текст> — ввод в поле обоснования (пусто — стереть);
 // reload — открыть страницу снова; choose:<запись>:<буква> — выбрать вариант; word:<запись>:<текст> — написать слово; buttons — экспорт, импорт, копирование;
-// tab:<scheme|help> — переключатель панели; step:<шаг> — пункт списка справки; helpnext, helpprev — листание; howto — кнопка «Как готовить intent.md?»;
+// tab:<scheme|help> — переключатель панели; step:<шаг> — пункт списка справки; helpnext, helpprev — листание; howto — кнопка «Как готовить intent.md?»; theme:<dark|light> — цветовая раскладка;
 // clicklink — ссылка на файл внутри варианта; editor:<значение>[:<маска>] — выбор редактора; open:<страница> — другая страница в том же профиле.
+// layout:<journal|snapshot> — раскладка режима «решения».
 // Итог на stdout: JSON с замером страницы, запросами наружу (`http`), запросами, которые заблокировала CSP (`blocked`), нарушениями и ошибками.
 import { spawn } from "node:child_process";
 import { existsSync, mkdirSync, mkdtempSync, readdirSync, readFileSync, writeFileSync } from "node:fs";
@@ -26,6 +27,8 @@ const MEASURE = `(() => {
   const rect = shown ? panel.getBoundingClientRect() : null;
   const main = document.querySelector('.layout main');
   const mainRect = main && main.offsetParent ? main.getBoundingClientRect() : null;
+  const toc = document.querySelector('aside.left');
+  const tocRect = toc && toc.offsetParent ? toc.getBoundingClientRect() : null;
   const view = document.querySelector('main.view:not(.hidden)');
   const svg = shown ? panel.querySelector('svg') : null;
   const scroller = document.getElementById('schemeBody');
@@ -55,6 +58,7 @@ const MEASURE = `(() => {
     viewport: innerWidth, headerBottom: document.querySelector('header').getBoundingClientRect().bottom, shown, state: panel ? panel.dataset.state || null : null,
     panel: rect && { left: rect.left, top: rect.top, width: rect.width, height: rect.height, bottom: rect.bottom },
     cards: mainRect && { left: mainRect.left, right: mainRect.right, top: mainRect.top, width: mainRect.width },
+    toc: tocRect && { left: tocRect.left, right: tocRect.right, width: tocRect.width },
     view: view ? view.getBoundingClientRect().width : null,
     hasSvg: !!svg, total, topVisible, labelPx,
     messages: shown ? [...scroller.querySelectorAll('.note')].map((n) => n.textContent) : [],
@@ -65,6 +69,8 @@ const MEASURE = `(() => {
     recommendations: [...document.querySelectorAll('div.rec')].map((n) => n.textContent),
     chosen: [...document.querySelectorAll('input[type=radio]:checked')].map((r) => r.name + '.' + r.value),
     editor: (document.getElementById('editorPick') || {}).value || null, editorMask: (document.getElementById('editorMask') || {}).value ?? null,
+    theme: document.documentElement.dataset.theme || 'dark', themePick: (document.getElementById('themePick') || {}).value || null,
+    background: getComputedStyle(document.body).backgroundColor,
     links: [...document.querySelectorAll('a.filelink')].map((a) => ({ href: a.href, text: a.textContent })),
     codes: [...document.querySelectorAll('.card code')].map((c) => c.textContent),
     attack: { groups: [...document.querySelectorAll('#viewAttack .attack-rows h2 code')].map((n) => n.textContent),
@@ -79,7 +85,8 @@ const MEASURE = `(() => {
     attackSev: (() => { try { const s = JSON.parse(localStorage.getItem(KEY + ':attack') || 'null'); return s ? s.sev || {} : null; } catch (e) { return null; } })(),
     attackCounters: [...document.querySelectorAll('#viewAttack .sevcounters')].map((n) => n.textContent),
     attackState: (() => { try { const s = JSON.parse(localStorage.getItem(KEY + ':attack') || 'null'); return s ? { read: Object.keys(s.read || {}), disputes: Object.keys(s.disputes || {}) } : null; } catch (e) { return null; } })(),
-    mode: (document.querySelector('#modes button.active') || {}).textContent || null };
+    mode: (document.querySelector('#modes button.active') || {}).textContent || null,
+    layout: (document.querySelector('#layouts button.active') || {}).textContent || null };
 })()`;
 
 // Chrome создаёт файл порта раньше, чем отпускает его: под нагрузкой чтение падает с EBUSY, поэтому читается, пока порт не прочитается.
@@ -143,6 +150,7 @@ async function main() {
       await click(inHelp);
       await sleep(50);
     }
+    if (name === "layout") { await click(`#layouts button[data-layout="${args[0]}"]`); await settled(); }
     if (name === "mode") { await click(`#modes button[data-mode="${args[0]}"]`); await settled(); }
     if (name === "lens") { await click(`#lensFilter button[data-lens="${args[0]}"]`); await sleep(50); }
     if (name === "reload") { await send("Page.navigate", { url }); await loaded(); await settled(); }
@@ -177,6 +185,10 @@ async function main() {
       await sleep(50);
     }
     if (name === "attackstate") { await evaluate(`localStorage.setItem(KEY + ':attack', ${JSON.stringify(args.join(":"))})`); }
+    if (name === "theme") {
+      await evaluate(`(() => { const s = document.getElementById('themePick'); s.value = ${JSON.stringify(args[0])}; s.dispatchEvent(new Event('change', { bubbles: true })); })()`);
+      await sleep(50);
+    }
     if (name === "editor") {
       await evaluate(`(() => { const s = document.getElementById('editorPick'); s.value = ${JSON.stringify(args[0])}; s.dispatchEvent(new Event('change', { bubbles: true })); const m = ${JSON.stringify(args.slice(1).join(":"))}; if (m) { const i = document.getElementById('editorMask'); i.value = m; i.dispatchEvent(new Event('change', { bubbles: true })); } })()`);
       await sleep(50);
@@ -188,6 +200,13 @@ async function main() {
     }
     if (name === "word") {
       await evaluate(`(() => { const t = document.querySelector('textarea[data-word="${args[0]}"]'); t.value = ${JSON.stringify(args[1])}; t.dispatchEvent(new Event('input', { bubbles: true })); })()`);
+      await sleep(50);
+    }
+    if (name === "tocdrag") {
+      const [x, y] = await center("#tochandle");
+      await mouse("mousePressed", x, y);
+      await send("Input.dispatchMouseEvent", { type: "mouseMoved", x: x + Number(args[0]), y, button: "left" });
+      await mouse("mouseReleased", x + Number(args[0]), y);
       await sleep(50);
     }
     if (name === "drag") {

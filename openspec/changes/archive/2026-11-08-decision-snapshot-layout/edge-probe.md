@@ -1,0 +1,106 @@
+# Покрытие пробы краёв: decision-snapshot-layout
+
+- decision-viewer/Просмотрщик — один HTML из своего шаблона · boundary · неприменимо: формы collection, stateful, io; boundary только для numeric-range
+- decision-viewer/Просмотрщик — один HTML из своего шаблона · adjacency · не найдено: «решения» и «атака» — разные предметные режимы, раскладки относятся только к «решениям» и не сливаются
+- decision-viewer/Просмотрщик — один HTML из своего шаблона · empty · не выбран: журнал с пустым `records`; страница с двумя режимами и двумя раскладками создаётся без записей, данные не теряются
+- decision-viewer/Просмотрщик — один HTML из своего шаблона · encoding · неприменимо: формы collection, stateful, io; encoding только для text
+- decision-viewer/Просмотрщик — один HTML из своего шаблона · ordering · не выбран: порядок кнопок; требование фиксирует «решения», «атака» и «по журналу», «снимок», другой порядок сценарием не допускается
+- decision-viewer/Просмотрщик — один HTML из своего шаблона · precision · неприменимо: формы collection, stateful, io; precision только для numeric-range
+- decision-viewer/Просмотрщик — один HTML из своего шаблона · idempotency · не выбран: повторное открытие страницы; режим и состояние читаются из browser storage заново, новых режимов или строк журнала не появляется
+- decision-viewer/Просмотрщик — один HTML из своего шаблона · concurrency · не выбран: два параллельных `render-html`; изменение затрагивает состав показа, а не прежнюю запись выходного файла, ответ человека эту часть не меняет
+- decision-viewer/Панель схемы показывает `scheme.md` рядом с карточками · boundary · неприменимо: формы stateful, io; boundary только для numeric-range
+- decision-viewer/Панель схемы показывает `scheme.md` рядом с карточками · adjacency · неприменимо: формы stateful, io; adjacency только для collection
+- decision-viewer/Панель схемы показывает `scheme.md` рядом с карточками · empty · неприменимо: формы stateful, io; empty только для collection и text
+- decision-viewer/Панель схемы показывает `scheme.md` рядом с карточками · encoding · неприменимо: формы stateful, io; encoding только для text
+- decision-viewer/Панель схемы показывает `scheme.md` рядом с карточками · ordering · неприменимо: формы stateful, io; ordering только для collection
+- decision-viewer/Панель схемы показывает `scheme.md` рядом с карточками · precision · неприменимо: формы stateful, io; precision только для numeric-range
+- decision-viewer/Панель схемы показывает `scheme.md` рядом с карточками · idempotency · не выбран: повторный показ той же схемы; панель использует встроенный при сборке текст и не создаёт копий схемы или записей
+- decision-viewer/Панель схемы показывает `scheme.md` рядом с карточками · concurrency · не выбран: файл mermaid появился после сборки; страница не обновляет встроенный снимок сама, повторная сборка — прежний контракт справки и схемы
+- decision-viewer/Панель показывает либо схему, либо справку · boundary · неприменимо: форма stateful; boundary только для numeric-range
+- decision-viewer/Панель показывает либо схему, либо справку · adjacency · неприменимо: форма stateful; adjacency только для collection
+- decision-viewer/Панель показывает либо схему, либо справку · empty · неприменимо: форма stateful; empty только для collection и text
+- decision-viewer/Панель показывает либо схему, либо справку · encoding · неприменимо: форма stateful; encoding только для text
+- decision-viewer/Панель показывает либо схему, либо справку · ordering · неприменимо: форма stateful; ordering только для collection
+- decision-viewer/Панель показывает либо схему, либо справку · precision · неприменимо: форма stateful; precision только для numeric-range
+- decision-viewer/Панель показывает либо схему, либо справку · idempotency · не выбран: повторный выбор «справка»; панель остаётся в том же состоянии, сценарий «Выбор сохранился» уже закрепляет результат
+- decision-viewer/Панель показывает либо схему, либо справку · concurrency · не выбран: выбор панели в двух вкладках; меняется только локальное предпочтение показа, журнал и файлы не затрагиваются
+- decision-viewer/Строка таблицы атаки разбирается по соглашению markdown · boundary · неприменимо: формы text, io; boundary только для numeric-range
+- decision-viewer/Строка таблицы атаки разбирается по соглашению markdown · adjacency · неприменимо: формы text, io; adjacency только для collection
+- decision-viewer/Строка таблицы атаки разбирается по соглашению markdown · empty · не выбран: пустая ячейка; требование «Негодная строка таблицы атаки — ошибка с местом» уже назначает ошибку и код 2
+- decision-viewer/Строка таблицы атаки разбирается по соглашению markdown · encoding · не найдено: Unicode внутри ячейки сравнивается как текст после экранирования, длина и нормализация в правиле разбора не используются
+- decision-viewer/Строка таблицы атаки разбирается по соглашению markdown · ordering · неприменимо: формы text, io; ordering только для collection
+- decision-viewer/Строка таблицы атаки разбирается по соглашению markdown · precision · неприменимо: формы text, io; precision только для numeric-range
+- decision-viewer/Строка таблицы атаки разбирается по соглашению markdown · idempotency · неприменимо: формы text, io; idempotency только для stateful
+- decision-viewer/Строка таблицы атаки разбирается по соглашению markdown · concurrency · не найдено: разбор читает поданную строку без общего изменяемого состояния; запись HTML находится вне этого правила
+- decision-viewer/Негодная строка таблицы атаки — ошибка с местом · boundary · неприменимо: формы text, io; boundary только для numeric-range
+- decision-viewer/Негодная строка таблицы атаки — ошибка с местом · adjacency · неприменимо: формы text, io; adjacency только для collection
+- decision-viewer/Негодная строка таблицы атаки — ошибка с местом · empty · не выбран: пустая обязательная ячейка прямо названа условием ошибки, сценарий основного требования закрепляет код 2
+- decision-viewer/Негодная строка таблицы атаки — ошибка с местом · encoding · не найдено: имя файла, строка и столбец выводятся текстом, числовые преобразования и нормализация не применяются
+- decision-viewer/Негодная строка таблицы атаки — ошибка с местом · ordering · неприменимо: формы text, io; ordering только для collection
+- decision-viewer/Негодная строка таблицы атаки — ошибка с местом · precision · неприменимо: формы text, io; precision только для numeric-range
+- decision-viewer/Негодная строка таблицы атаки — ошибка с местом · idempotency · неприменимо: формы text, io; idempotency только для stateful
+- decision-viewer/Негодная строка таблицы атаки — ошибка с местом · concurrency · не найдено: ошибка формируется до записи HTML, поэтому параллельного частично записанного результата это требование не создаёт
+- decision-viewer/Страница `symphysis.html` работает без соседних файлов · boundary · неприменимо: форма io; boundary только для numeric-range
+- decision-viewer/Страница `symphysis.html` работает без соседних файлов · adjacency · неприменимо: форма io; adjacency только для collection
+- decision-viewer/Страница `symphysis.html` работает без соседних файлов · empty · неприменимо: форма io; empty только для collection и text
+- decision-viewer/Страница `symphysis.html` работает без соседних файлов · encoding · неприменимо: форма io; encoding только для text
+- decision-viewer/Страница `symphysis.html` работает без соседних файлов · ordering · неприменимо: форма io; ordering только для collection
+- decision-viewer/Страница `symphysis.html` работает без соседних файлов · precision · неприменимо: форма io; precision только для numeric-range
+- decision-viewer/Страница `symphysis.html` работает без соседних файлов · idempotency · неприменимо: форма io; idempotency только для stateful
+- decision-viewer/Страница `symphysis.html` работает без соседних файлов · concurrency · не выбран: соседний файл исчез после открытия; уже загруженная страница сохраняет встроенные данные и не обязана перечитывать файл
+- decision-viewer/Состояние и геометрия панели схемы · boundary · не выбран: ширина ровно 900 и 901 пиксель; действующий CSS `max-width: 900px` уже ставит панель над карточками при не более 900 и рядом при большей ширине, изменение это сохраняет
+- decision-viewer/Состояние и геометрия панели схемы · adjacency · неприменимо: формы numeric-range, stateful; adjacency только для collection
+- decision-viewer/Состояние и геометрия панели схемы · empty · неприменимо: формы numeric-range, stateful; empty только для collection и text
+- decision-viewer/Состояние и геометрия панели схемы · encoding · неприменимо: формы numeric-range, stateful; encoding только для text
+- decision-viewer/Состояние и геометрия панели схемы · ordering · неприменимо: формы numeric-range, stateful; ordering только для collection
+- decision-viewer/Состояние и геометрия панели схемы · precision · не выбран: дробные пиксели при 40 %; округление CSS меняет только визуальную долю пикселя и не затрагивает данные или порог 900
+- decision-viewer/Состояние и геометрия панели схемы · idempotency · не выбран: повторное открытие после смены раскладки; сценарий «Геометрия сохраняется между раскладками» уже задаёт прежние включённость и ширину
+- decision-viewer/Состояние и геометрия панели схемы · concurrency · не выбран: изменение ширины в двух вкладках; это локальная настройка показа в browser storage, журнал и файлы она не меняет
+- decision-viewer/Раскладка «снимок» только для чтения · boundary · неприменимо: форма stateful; boundary только для numeric-range
+- decision-viewer/Раскладка «снимок» только для чтения · adjacency · неприменимо: форма stateful; adjacency только для collection
+- decision-viewer/Раскладка «снимок» только для чтения · empty · неприменимо: форма stateful; empty только для collection и text
+- decision-viewer/Раскладка «снимок» только для чтения · encoding · неприменимо: форма stateful; encoding только для text
+- decision-viewer/Раскладка «снимок» только для чтения · ordering · неприменимо: форма stateful; ordering только для collection
+- decision-viewer/Раскладка «снимок» только для чтения · precision · неприменимо: форма stateful; precision только для numeric-range
+- decision-viewer/Раскладка «снимок» только для чтения · idempotency · не выбран: повторный вход в «снимок»; read-only показ не пишет журнал и не создаёт строк промпта, повтор имеет тот же результат
+- decision-viewer/Раскладка «снимок» только для чтения · concurrency · не найдено: параллельного эффекта на журнал нет — снимок не пишет файл и промпт, ввод доступен только в другой раскладке
+- decision-viewer/Снимок использует общую карточку и группировку журнала · boundary · неприменимо: формы collection, stateful; boundary только для numeric-range
+- decision-viewer/Снимок использует общую карточку и группировку журнала · adjacency · не выбран: одинаковые даты решения; записи входят в одну группу даты, это прямо следует из группировки и не даёт альтернативного исхода
+- decision-viewer/Снимок использует общую карточку и группировку журнала · empty · не выбран: пустая группа записей; нынешняя проверка показывает нулевой счёт и «—», а F-03 сохраняет её группировку без нового поведения
+- decision-viewer/Снимок использует общую карточку и группировку журнала · encoding · неприменимо: формы collection, stateful; encoding только для text
+- decision-viewer/Снимок использует общую карточку и группировку журнала · ordering · не выбран: равная дата и обратимость; нынешняя проверка затем сравнивает номера записей, а F-03 сохраняет эту группировку
+- decision-viewer/Снимок использует общую карточку и группировку журнала · precision · неприменимо: формы collection, stateful; precision только для numeric-range
+- decision-viewer/Снимок использует общую карточку и группировку журнала · idempotency · не выбран: повторный показ одного журнала; снимок не меняет ни журнал, ни черновик, поэтому состав групп и карточек не дублируется
+- decision-viewer/Снимок использует общую карточку и группировку журнала · concurrency · не выбран: черновик изменился в другой вкладке; требование прямо исключает невнесённый черновик из данных и счётчиков снимка
+- decision-viewer/Назначение, счётчики и заметки имеют постоянные места · boundary · неприменимо: форма collection; boundary только для numeric-range
+- decision-viewer/Назначение, счётчики и заметки имеют постоянные места · adjacency · не выбран: две одинаковые заметки; требование показывает элементы `notes[]` и не разрешает слияние или удаление дублей
+- decision-viewer/Назначение, счётчики и заметки имеют постоянные места · empty · кандидат F-16
+- decision-viewer/Назначение, счётчики и заметки имеют постоянные места · encoding · неприменимо: форма collection; encoding только для text
+- decision-viewer/Назначение, счётчики и заметки имеют постоянные места · ordering · не выбран: порядок заметок; нынешняя проверка проходит массив `notes[]` по порядку, перенос сохраняет этот показ
+- decision-viewer/Назначение, счётчики и заметки имеют постоянные места · precision · неприменимо: форма collection; precision только для numeric-range
+- decision-viewer/Назначение, счётчики и заметки имеют постоянные места · idempotency · неприменимо: форма collection; idempotency только для stateful
+- decision-viewer/Назначение, счётчики и заметки имеют постоянные места · concurrency · неприменимо: форма collection; concurrency только для stateful и io
+- decision-viewer/Сохранённый режим проверки переводится в журнальную раскладку · boundary · неприменимо: форма stateful; boundary только для numeric-range
+- decision-viewer/Сохранённый режим проверки переводится в журнальную раскладку · adjacency · неприменимо: форма stateful; adjacency только для collection
+- decision-viewer/Сохранённый режим проверки переводится в журнальную раскладку · empty · неприменимо: форма stateful; empty только для collection и text
+- decision-viewer/Сохранённый режим проверки переводится в журнальную раскладку · encoding · неприменимо: форма stateful; encoding только для text
+- decision-viewer/Сохранённый режим проверки переводится в журнальную раскладку · ordering · неприменимо: форма stateful; ordering только для collection
+- decision-viewer/Сохранённый режим проверки переводится в журнальную раскладку · precision · неприменимо: форма stateful; precision только для numeric-range
+- decision-viewer/Сохранённый режим проверки переводится в журнальную раскладку · idempotency · не выбран: второе открытие после миграции; читается уже `decisions`, повторной замены `check` и нового эффекта нет
+- decision-viewer/Сохранённый режим проверки переводится в журнальную раскладку · concurrency · не выбран: две вкладки читают старый `check` одновременно; обе записывают одинаковые `decisions` и `journal`, итог совпадает
+- decision-viewer/Документы называют бывшую проверку раскладкой снимок · boundary · неприменимо: форма text; boundary только для numeric-range
+- decision-viewer/Документы называют бывшую проверку раскладкой снимок · adjacency · неприменимо: форма text; adjacency только для collection
+- decision-viewer/Документы называют бывшую проверку раскладкой снимок · empty · не выбран: пустой скилл или `steps.md`; такой файл не содержит обязательной терминологии и уже нарушает SHALL без отдельного выбора
+- decision-viewer/Документы называют бывшую проверку раскладкой снимок · encoding · не найдено: русские термины сверяются как точный текст UTF-8, нормализация и другая длина строки на требование не влияют
+- decision-viewer/Документы называют бывшую проверку раскладкой снимок · ordering · неприменимо: форма text; ordering только для collection
+- decision-viewer/Документы называют бывшую проверку раскладкой снимок · precision · неприменимо: форма text; precision только для numeric-range
+- decision-viewer/Документы называют бывшую проверку раскладкой снимок · idempotency · неприменимо: форма text; idempotency только для stateful
+- decision-viewer/Документы называют бывшую проверку раскладкой снимок · concurrency · неприменимо: форма text; concurrency только для stateful и io
+- decision-viewer/Бейдж назначения не выдаёт проекцию за записанный артефакт · boundary · неприменимо: форма text; boundary только для numeric-range
+- decision-viewer/Бейдж назначения не выдаёт проекцию за записанный артефакт · adjacency · неприменимо: форма text; adjacency только для collection
+- decision-viewer/Бейдж назначения не выдаёт проекцию за записанный артефакт · empty · не выбран: пустая подпись бейджа; в ней нет обязательной «куда уйдёт», поэтому SHALL уже отвергает такой результат без отдельного выбора
+- decision-viewer/Бейдж назначения не выдаёт проекцию за записанный артефакт · encoding · не найдено: русские подписи проверяются как точный текст UTF-8, нормализация и вычисление длины на запрет не влияют
+- decision-viewer/Бейдж назначения не выдаёт проекцию за записанный артефакт · ordering · неприменимо: форма text; ordering только для collection
+- decision-viewer/Бейдж назначения не выдаёт проекцию за записанный артефакт · precision · неприменимо: форма text; precision только для numeric-range
+- decision-viewer/Бейдж назначения не выдаёт проекцию за записанный артефакт · idempotency · неприменимо: форма text; idempotency только для stateful
+- decision-viewer/Бейдж назначения не выдаёт проекцию за записанный артефакт · concurrency · неприменимо: форма text; concurrency только для stateful и io
