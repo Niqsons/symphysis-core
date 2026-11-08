@@ -403,19 +403,21 @@ def test_viewer_attack_filter_hides_groups_but_not_blocker_counters(tmp_path):
 @requires_node
 def test_viewer_attack_lens_lists_follow_the_target_of_the_file(tmp_path):
     """Журнал (`decisions.json` — единственная цель): context-compliance, claim-authority, claim-extraction, coverage;
-    артефакты: scenario-run, claim-extraction, trace-link (F-55). Прочие слуги — «вне списка»: в тяжести считаются, в линзе нет."""
-    jr = [arow(lens=s, claim=f"ж-{s}") for s in ("context-compliance", "claim-authority", "claim-extraction", "coverage", "scenario-run", "style")]
-    ar = [arow(section="design.md", lens=s, claim=f"а-{s}") for s in ("scenario-run", "claim-extraction", "trace-link", "coverage", "requirement-coverage")]
+    артефакты: scenario-run, claim-extraction, trace-link, rule-compliance (F-55, F-17). Прочие слуги — «вне списка»: в тяжести считаются, в линзе нет."""
+    jr = [arow(lens=s, claim=f"ж-{s}") for s in ("context-compliance", "claim-authority", "claim-extraction", "coverage", "scenario-run", "rule-compliance", "style")]
+    ar = [arow(section="design.md", lens=s, claim=f"а-{s}") for s in ("scenario-run", "claim-extraction", "trace-link", "rule-compliance", "coverage", "requirement-coverage")]
     attack = attack_view(tmp_path, [afile(jr), afile(ar, ARTIFACT_TARGETS, "attack/artifacts.md")])["attack"]
     groups = re.findall(r"<h2>(?:<code>([a-z-]+)</code>|(вне списка))", attack)
     assert groups == [("context-compliance", ""), ("claim-authority", ""), ("claim-extraction", ""), ("coverage", ""),
-                      ("", "вне списка"), ("scenario-run", ""), ("claim-extraction", ""), ("trace-link", ""), ("", "вне списка")]
+                      ("", "вне списка"), ("scenario-run", ""), ("claim-extraction", ""), ("trace-link", ""), ("rule-compliance", ""), ("", "вне списка")]
     outside_journal = attack.split("<h2>вне списка")[1]
     assert "ж-scenario-run" in outside_journal and "ж-style" in outside_journal and "строка невалидна" in outside_journal
+    assert "ж-rule-compliance" in outside_journal      # линза артефактов в файле журнала — вне списка (F-17)
+    assert "правила составления" in attack          # подпись линзы артефактов
     heads = without_rows(attack)
-    assert heads.count("блокеров <b>6</b>") == 1 and heads.count("блокеров <b>5</b>") == 1      # тяжесть — по всему файлу
+    assert heads.count("блокеров <b>7</b>") == 1 and heads.count("блокеров <b>6</b>") == 1      # тяжесть — по всему файлу
     assert "по линзе: <code>context-compliance</code> <b>1</b> · <code>claim-authority</code> <b>1</b>" in heads
-    assert "строк вне списка (невалидны, в счётчике линз их нет): <b>2</b>" in heads
+    assert "строк вне списка (невалидны, в счётчике линз их нет): <b>3</b>" in heads
     assert 'data-lens="__outside__"' in attack and 'data-lens="requirement-coverage"' not in attack
 
 
@@ -454,6 +456,31 @@ def test_viewer_attack_demotion_without_reason_is_visible(tmp_path):
     for claim in ("блокер", "есть опора", "не выводится"):
         assert "понижени" not in by_claim[claim], claim
     assert "блокеров <b>1</b> · предупреждений <b>3</b>" in without_rows(attack)       # скобка тяжесть не меняет
+
+
+@requires_node
+def test_viewer_attack_rule_compliance_own_warning_shows_its_reason(tmp_path):
+    """`artifact-attack`: «Без постоянной причины» (F-20, F-26.B, F-36): строка `rule-compliance` прочего правила с опорой
+    «нет» и `предупреждение (правило составления)` показана «понижено: правило составления» и стоит в счётчике
+    предупреждений; та же строка с голым `предупреждение` — «понижение без причины»; пропавшее условие — блокер без значка.
+    Логика показа не меняется: тест держит её исход на строках новой линзы."""
+    rule = dict(section="design.md, Decisions", lens="rule-compliance", fix="правка артефакта",
+                invariant="openspec/config.yaml:15 «решение излагается, не принимается»",
+                support="нет: design.md:40 «выбираем вариант B» — решение принимается")
+    rows = [arow(severity="предупреждение (правило составления)", claim="с постоянной причиной", **rule),
+            arow(severity="предупреждение", claim="без скобок", **rule),
+            arow(section="specs/a/spec.md, Требование", lens="rule-compliance", severity="блокер", claim="условие пропало",
+                 invariant="schema.yaml:82 «условия не теряются»", support="нет: openspec/specs/a/spec.md:7 «условие»",
+                 fix="правка артефакта")]
+    attack = attack_view(tmp_path, [afile(rows, ARTIFACT_TARGETS, "attack/artifacts.md")])["attack"]
+    cards = attack.split('<div class="card attackrow')[1:]
+    by_claim = {re.search(r'<div class="q">([^<]*)</div>', c).group(1): c for c in cards}
+    own = by_claim["с постоянной причиной"]
+    assert "понижено: правило составления" in own and "понижение без причины" not in own
+    bare = by_claim["без скобок"]
+    assert "понижение без причины" in bare and "понижено:" not in bare
+    assert "понижени" not in by_claim["условие пропало"]
+    assert "блокеров <b>1</b> · предупреждений <b>2</b>" in without_rows(attack)       # своя причина — в счётчике предупреждений
 
 
 @requires_node

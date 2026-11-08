@@ -19,6 +19,22 @@
   {
    "date": "2026-11-08",
    "text": "проба запретов: требований 9, оставлено 3, канон → ИБ 1, Specify 2, Dismiss 1, Defer 0"
+  },
+  {
+   "date": "2026-11-08",
+   "text": "атака artifacts: строк 118, блокеров 7, предупреждений 8, справок 103, не выводится 0 — gaps_found"
+  },
+  {
+   "date": "2026-11-08",
+   "text": "проба краёв (дочернее plugin-core-contract/Смена адресата поднимает номер контракта до 4, деление по F-40): кандидатов 0, Specify 0, Dismiss 0, Backstop 0, Defer 0; не выбран 2: plugin-core-contract/Смена адресата поднимает номер контракта до 4"
+  },
+  {
+   "date": "2026-11-08",
+   "text": "проба запретов (дочернее plugin-core-contract/Смена адресата поднимает номер контракта до 4): требований 1, оставлено 0, канон → ИБ 0, Specify 0, Dismiss 0, Defer 0"
+  },
+  {
+   "date": "2026-11-08",
+   "text": "атака artifacts: строк 147, блокеров 0, предупреждений 10, справок 137, не выводится 1 — passed"
   }
  ],
  "records": [
@@ -42,7 +58,10 @@
    "evidence": [
     {
      "path": "openspec/changes/attack-lens-conventions/intent.md",
-     "quote": "«новая линза о соответствии правил составления артефактов» — в списке линз атаки артефактов есть линза, которая сверяет артефакт с правилами составления (слово владельца, 2026-11-06)"
+     "quote": "«новая линза о соответствии правил составления артефактов» — в списке линз атаки артефактов есть линза, которая сверяет артефакт с правилами составления (слово владельца, 2026-11-06)",
+     "line": 17,
+     "verdict": "сверено",
+     "found": true
     }
    ],
    "comments": [],
@@ -71,7 +90,10 @@
    "evidence": [
     {
      "path": "openspec/changes/attack-lens-conventions/intent.md",
-     "quote": "«Участие деления должно быть в линзе» — деление длинного требования проверяется этой линзой: родитель и дочерние вместе несут всё, что нёс прежний текст мастер-спеки (слово владельца, 2026-11-06; F-117.B, 2026-11-05)"
+     "quote": "«Участие деления должно быть в линзе» — деление длинного требования проверяется этой линзой: родитель и дочерние вместе несут всё, что нёс прежний текст мастер-спеки (слово владельца, 2026-11-06; F-117.B, 2026-11-05)",
+     "line": 18,
+     "verdict": "сверено",
+     "found": true
     }
    ],
    "comments": [],
@@ -99,7 +121,10 @@
    "evidence": [
     {
      "path": "openspec/changes/attack-lens-conventions/intent.md",
-     "quote": "«Правила есть, но нет линзы» — линза называет правило, которое нарушено, а не выводит правило сама (слово владельца, 2026-11-06)"
+     "quote": "«Правила есть, но нет линзы» — линза называет правило, которое нарушено, а не выводит правило сама (слово владельца, 2026-11-06)",
+     "line": 19,
+     "verdict": "сверено",
+     "found": true
     }
    ],
    "comments": [],
@@ -128,7 +153,10 @@
    "evidence": [
     {
      "path": "openspec/changes/attack-lens-conventions/intent.md",
-     "quote": "«Список линз входит в контракт с плагином, значит новая линза — новый номер контракта» — номер растёт, `Why:` в коммите ядра, плагин держит линзу в своём списке коммитом с `Needs:` (бэклог B-18, 2026-11-06; `docs/repo-contract.md`)"
+     "quote": "«Список линз входит в контракт с плагином, значит новая линза — новый номер контракта» — номер растёт, `Why:` в коммите ядра, плагин держит линзу в своём списке коммитом с `Needs:` (бэклог B-18, 2026-11-06; `docs/repo-contract.md`)",
+     "line": 20,
+     "verdict": "сверено",
+     "found": true
     }
    ],
    "comments": [],
@@ -157,43 +185,73 @@
    "evidence": [
     {
      "path": "attack/attack-table.md",
-     "quote": "Slug не из списка — группа «вне списка», строка невалидна"
+     "quote": "Slug не из списка — группа «вне списка», строка невалидна",
+     "line": 20,
+     "verdict": "сверено",
+     "found": true
     },
     {
      "path": "openspec/specs/artifact-attack/spec.md",
-     "quote": "Линз атаки артефактов SHALL быть три: `scenario-run`, `claim-extraction`, `trace-link`."
+     "quote": "Линз атаки артефактов SHALL быть три: `scenario-run`, `claim-extraction`, `trace-link`.",
+     "line": 148,
+     "verdict": "сверено",
+     "found": true
     },
     {
      "path": "attack/skills/symphysis-attack/SKILL.md",
-     "quote": "**Линзы артефактов** — `attack/artifacts.md`:"
+     "quote": "**Линзы артефактов** — `attack/artifacts.md`:",
+     "line": 398,
+     "verdict": "сверено",
+     "found": true
     },
     {
      "path": "attack/attack-table.md",
-     "quote": "у артефактов `scenario-run`,"
+     "quote": "у артефактов `scenario-run`,",
+     "line": 19,
+     "verdict": "сверено",
+     "found": true
     },
     {
      "path": "openspec/schemas/symphysis/templates/attack-artifacts.md",
-     "quote": "Линзы этого файла: scenario-run, claim-extraction, trace-link."
+     "quote": "Линзы этого файла: scenario-run, claim-extraction, trace-link.",
+     "line": null,
+     "verdict": "цитаты нет дословно",
+     "found": false
     },
     {
      "path": "openspec/schemas/symphysis/steps.md",
-     "quote": "- Линзы артефактов: `scenario-run` — сценарий проходится по коду механизма до исхода и сравнивается с THEN;"
+     "quote": "- Линзы артефактов: `scenario-run` — сценарий проходится по коду механизма до исхода и сравнивается с THEN;",
+     "line": 344,
+     "verdict": "сверено",
+     "found": true
     },
     {
      "path": "viewer/playground-template.html",
-     "quote": "const ATTACK_LENSES = {"
+     "quote": "const ATTACK_LENSES = {",
+     "line": 224,
+     "verdict": "сверено",
+     "found": true
     },
     {
      "path": "settings/symphysis_config.py",
-     "quote": "LENSES = (\"context-compliance\", \"claim-authority\", \"claim-extraction\", \"coverage\", \"scenario-run\", \"trace-link\")"
+     "quote": "LENSES = (\"context-compliance\", \"claim-authority\", \"claim-extraction\", \"coverage\", \"scenario-run\", \"trace-link\")",
+     "line": null,
+     "verdict": "цитаты нет дословно",
+     "found": false
     },
     {
      "path": "installer/lib/install.js",
-     "quote": "trace-link: true"
+     "quote": "trace-link: true",
+     "line": 36,
+     "verdict": "сверено",
+     "found": true
     },
     {
      "path": "vscode/src/journal/attack.ts",
-     "quote": "const LENSES = {"
+     "quote": "const LENSES = {",
+     "line": 5,
+     "verdict": "сверено",
+     "found": true
     }
    ],
    "comments": [],
@@ -225,19 +283,31 @@
    "evidence": [
     {
      "path": "docs/repo-contract.md",
-     "quote": "списки линз;"
+     "quote": "списки линз;",
+     "line": 58,
+     "verdict": "сверено",
+     "found": true
     },
     {
      "path": "docs/repo-contract.md",
-     "quote": "С номера 3 в списке линз атаки артефактов третья — `trace-link` (F-55)"
+     "quote": "С номера 3 в списке линз атаки артефактов третья — `trace-link` (F-55)",
+     "line": 65,
+     "verdict": "сверено",
+     "found": true
     },
     {
      "path": "decisions/journal_render.py",
-     "quote": "CONTRACT = 4"
+     "quote": "CONTRACT = 4",
+     "line": null,
+     "verdict": "цитаты нет дословно",
+     "found": false
     },
     {
      "path": "tests/test_repo_contract.py",
-     "quote": "line = next((l for l in body.splitlines() if l.startswith(\"С номера 4\")), None)"
+     "quote": "line = next((l for l in body.splitlines() if l.startswith(\"С номера 4\")), None)",
+     "line": 48,
+     "verdict": "сверено",
+     "found": true
     }
    ],
    "comments": [],
@@ -265,15 +335,24 @@
    "evidence": [
     {
      "path": "context/backlog/symphysis-backlog.md",
-     "quote": "Состояние 2026-11-08: строка 1 сделана, контракт уже номер 4; очередь — B-18."
+     "quote": "Состояние 2026-11-08: строка 1 сделана, контракт уже номер 4; очередь — B-18.",
+     "line": 30,
+     "verdict": "сверено",
+     "found": true
     },
     {
      "path": "openspec/changes/attack-lens-conventions/intent.md",
-     "quote": "допущение модели — это изменение берёт номер 5 как первое в очереди группы 2, B-16 — номер 6"
+     "quote": "допущение модели — это изменение берёт номер 5 как первое в очереди группы 2, B-16 — номер 6",
+     "line": 13,
+     "verdict": "сверено",
+     "found": true
     },
     {
      "path": "openspec/changes/attack-lens-conventions/intent.md",
-     "quote": "второе влитое разрешает конфликты в них"
+     "quote": "второе влитое разрешает конфликты в них",
+     "line": 13,
+     "verdict": "сверено",
+     "found": true
     }
    ],
    "comments": [],
@@ -301,19 +380,31 @@
    "evidence": [
     {
      "path": "vscode/src/core/core.ts",
-     "quote": "export const EXPECTED_CONTRACT = 3;"
+     "quote": "export const EXPECTED_CONTRACT = 3;",
+     "line": 9,
+     "verdict": "сверено",
+     "found": true
     },
     {
      "path": "context/backlog/symphysis-backlog.md",
-     "quote": "**B-44 первым после B-42:** адресат `агент` и `EXPECTED_CONTRACT = 4`; без него плагин с ядром номера 4 не вносит решения."
+     "quote": "**B-44 первым после B-42:** адресат `агент` и `EXPECTED_CONTRACT = 4`; без него плагин с ядром номера 4 не вносит решения.",
+     "line": 64,
+     "verdict": "сверено",
+     "found": true
     },
     {
      "path": "context/backlog/symphysis-backlog.md",
-     "quote": "Что должно стоять в ядре и контракте до того, как владелец уйдёт в разработку плагина."
+     "quote": "Что должно стоять в ядре и контракте до того, как владелец уйдёт в разработку плагина.",
+     "line": 30,
+     "verdict": "сверено",
+     "found": true
     },
     {
      "path": "openspec/changes/archive/2026-11-08-parking-addressee-agent/decisions.json",
-     "quote": "Порядок уже задан словом владельца в бэклоге и прецедентом `attack-warning-read`"
+     "quote": "Порядок уже задан словом владельца в бэклоге и прецедентом `attack-warning-read`",
+     "line": 981,
+     "verdict": "сверено",
+     "found": true
     }
    ],
    "comments": [],
@@ -341,19 +432,31 @@
    "evidence": [
     {
      "path": "openspec/schemas/symphysis/schema.yaml",
-     "quote": "Длинное в MODIFIED дели так же: сценарии родителя остаются при нём, условия не теряются."
+     "quote": "Длинное в MODIFIED дели так же: сценарии родителя остаются при нём, условия не теряются.",
+     "line": 82,
+     "verdict": "сверено",
+     "found": true
     },
     {
      "path": "openspec/specs/trace-conventions/spec.md",
-     "quote": "Требование MUST NOT терять условия, когда его сокращают ради предела: родитель и дочерние вместе SHALL нести всё, что нёс прежний текст"
+     "quote": "Требование MUST NOT терять условия, когда его сокращают ради предела: родитель и дочерние вместе SHALL нести всё, что нёс прежний текст",
+     "line": 163,
+     "verdict": "сверено",
+     "found": true
     },
     {
      "path": "openspec/specs/trace-conventions/spec.md",
-     "quote": "проверка — суждение: ревью и атака артефактов сверяют с мастер-спекой"
+     "quote": "проверка — суждение: ревью и атака артефактов сверяют с мастер-спекой",
+     "line": 163,
+     "verdict": "сверено",
+     "found": true
     },
     {
      "path": "attack/skills/symphysis-attack/SKILL.md",
-     "quote": "а также `refines` и `derives` она не проходит."
+     "quote": "а также `refines` и `derives` она не проходит.",
+     "line": 257,
+     "verdict": "сверено",
+     "found": true
     }
    ],
    "comments": [],
@@ -381,15 +484,24 @@
    "evidence": [
     {
      "path": "openspec/specs/trace-conventions/spec.md",
-     "quote": "граф SHALL давать связь `derives` от дочернего к родителю (F-42, F-77)."
+     "quote": "граф SHALL давать связь `derives` от дочернего к родителю (F-42, F-77).",
+     "line": 173,
+     "verdict": "сверено",
+     "found": true
     },
     {
      "path": "trace/trace_graph.py",
-     "quote": "родитель в изменении — `derives`; только в мастере — ничего."
+     "quote": "родитель в изменении — `derives`; только в мастере — ничего.",
+     "line": 874,
+     "verdict": "сверено",
+     "found": true
     },
     {
      "path": "openspec/changes/archive/2026-11-06-trace-graph/decisions.json",
-     "quote": "Предел подталкивает ужать текст, а не разделить его: пропавшее условие никто не заметит, требование выглядит опрятным."
+     "quote": "Предел подталкивает ужать текст, а не разделить его: пропавшее условие никто не заметит, требование выглядит опрятным.",
+     "line": 7986,
+     "verdict": "сверено",
+     "found": true
     }
    ],
    "comments": [],
@@ -417,23 +529,38 @@
    "evidence": [
     {
      "path": "openspec/schemas/symphysis/schema.yaml",
-     "quote": "Спецификация описывает наблюдаемое поведение, не реализацию."
+     "quote": "Спецификация описывает наблюдаемое поведение, не реализацию.",
+     "line": 79,
+     "verdict": "сверено",
+     "found": true
     },
     {
      "path": "openspec/schemas/symphysis/schema.yaml",
-     "quote": "Каждая задача называет проверку своего завершения (тест, команда, наблюдаемый результат, файл) прямо в строке."
+     "quote": "Каждая задача называет проверку своего завершения (тест, команда, наблюдаемый результат, файл) прямо в строке.",
+     "line": 132,
+     "verdict": "сверено",
+     "found": true
     },
     {
      "path": "openspec/config.yaml",
-     "quote": "предположение помечается словом `предположение` и дорогой `проверить|решить`"
+     "quote": "предположение помечается словом `предположение` и дорогой `проверить|решить`",
+     "line": 10,
+     "verdict": "сверено",
+     "found": true
     },
     {
      "path": "openspec/schemas/symphysis/steps.md",
-     "quote": "Своего скилла у шага нет, правила стоят в инструкции схемы. Грамматика OpenSpec"
+     "quote": "Своего скилла у шага нет, правила стоят в инструкции схемы. Грамматика OpenSpec",
+     "line": 314,
+     "verdict": "сверено",
+     "found": true
     },
     {
      "path": "openspec/schemas/symphysis/schema.yaml",
-     "quote": "Загрузи скилл `symphysis-consequences` и напиши `consequences.md` по шаблону."
+     "quote": "Загрузи скилл `symphysis-consequences` и напиши `consequences.md` по шаблону.",
+     "line": 92,
+     "verdict": "сверено",
+     "found": true
     }
    ],
    "comments": [],
@@ -461,11 +588,17 @@
    "evidence": [
     {
      "path": "installer/scripts/sync-payload.js",
-     "quote": "const DIRS = [\"openspec/schemas/symphysis\"];"
+     "quote": "const DIRS = [\"openspec/schemas/symphysis\"];",
+     "line": 9,
+     "verdict": "сверено",
+     "found": true
     },
     {
      "path": "installer/lib/install.js",
-     "quote": "rules и подсказки operations объединяются"
+     "quote": "rules и подсказки operations объединяются",
+     "line": 92,
+     "verdict": "сверено",
+     "found": true
     }
    ],
    "comments": [],
@@ -493,15 +626,24 @@
    "evidence": [
     {
      "path": "attack/skills/symphysis-attack/SKILL.md",
-     "quote": "OpenSpec; то, что ловят `check` и `openspec validate --strict`; отсутствие поля `nodes`"
+     "quote": "OpenSpec; то, что ловят `check` и `openspec validate --strict`; отсутствие поля `nodes`",
+     "line": null,
+     "verdict": "цитаты нет дословно",
+     "found": false
     },
     {
      "path": "attack/skills/symphysis-attack/SKILL.md",
-     "quote": "Линзы присутствия сняты: что из них детерминируемо,"
+     "quote": "Линзы присутствия сняты: что из них детерминируемо,",
+     "line": 385,
+     "verdict": "сверено",
+     "found": true
     },
     {
      "path": "openspec/specs/trace-conventions/spec.md",
-     "quote": "`openspec validate --strict` не называет ни одно из них длинным"
+     "quote": "`openspec validate --strict` не называет ни одно из них длинным",
+     "line": 154,
+     "verdict": "сверено",
+     "found": true
     }
    ],
    "comments": [],
@@ -530,15 +672,24 @@
    "evidence": [
     {
      "path": "attack/skills/symphysis-attack/SKILL.md",
-     "quote": "Тяжесть строки с опорой «нет» — тяжесть линзы: у всех линз обоих"
+     "quote": "Тяжесть строки с опорой «нет» — тяжесть линзы: у всех линз обоих",
+     "line": 472,
+     "verdict": "сверено",
+     "found": true
     },
     {
      "path": "attack/skills/symphysis-attack/SKILL.md",
-     "quote": "| `coverage` | справка у «чисто», блокер у «не пройдено» |"
+     "quote": "| `coverage` | справка у «чисто», блокер у «не пройдено» |",
+     "line": 396,
+     "verdict": "сверено",
+     "found": true
     },
     {
      "path": "context/backlog/symphysis-backlog.md",
-     "quote": "Слово владельца, 2026-11-07: «Проверить, что в атакующем скилле -- атака ищет расхождение по существу, а не по букве.»"
+     "quote": "Слово владельца, 2026-11-07: «Проверить, что в атакующем скилле -- атака ищет расхождение по существу, а не по букве.»",
+     "line": 346,
+     "verdict": "сверено",
+     "found": true
     }
    ],
    "comments": [],
@@ -566,15 +717,24 @@
    "evidence": [
     {
      "path": "settings/symphysis_config.py",
-     "quote": "lenses: dict[str, bool] = field(default_factory=lambda: dict.fromkeys(LENSES, True))"
+     "quote": "lenses: dict[str, bool] = field(default_factory=lambda: dict.fromkeys(LENSES, True))",
+     "line": 57,
+     "verdict": "сверено",
+     "found": true
     },
     {
      "path": "openspec/specs/project-settings/spec.md",
-     "quote": "созданный файл несёт ключ каждой линзы, все включены"
+     "quote": "созданный файл несёт ключ каждой линзы, все включены",
+     "line": 44,
+     "verdict": "сверено",
+     "found": true
     },
     {
      "path": "attack/skills/symphysis-attack/SKILL.md",
-     "quote": "`[..] symphysis.yaml: линзы атаки: <слуг> вкл, <слуг> выкл, …`: шесть"
+     "quote": "`[..] symphysis.yaml: линзы атаки: <слуг> вкл, <слуг> выкл, …`: шесть",
+     "line": null,
+     "verdict": "цитаты нет дословно",
+     "found": false
     }
    ],
    "comments": [],
@@ -602,15 +762,24 @@
    "evidence": [
     {
      "path": "attack/skills/symphysis-attack/SKILL.md",
-     "quote": "Вызов `attack-artifacts`: цели — `decisions.json` (опора, не атакуется), `specs/**/*.md`,"
+     "quote": "Вызов `attack-artifacts`: цели — `decisions.json` (опора, не атакуется), `specs/**/*.md`,",
+     "line": 25,
+     "verdict": "сверено",
+     "found": true
     },
     {
      "path": "openspec/schemas/symphysis/schema.yaml",
-     "quote": "Загрузи скилл `symphysis-attack` и атакуй `specs/`, `consequences.md`, `design.md`, `security.md` и `tasks.md`."
+     "quote": "Загрузи скилл `symphysis-attack` и атакуй `specs/`, `consequences.md`, `design.md`, `security.md` и `tasks.md`.",
+     "line": 152,
+     "verdict": "сверено",
+     "found": true
     },
     {
      "path": "openspec/schemas/symphysis/schema.yaml",
-     "quote": "Отступления от постановки — в раздел «Отступления от постановки»"
+     "quote": "Отступления от постановки — в раздел «Отступления от постановки»",
+     "line": 66,
+     "verdict": "сверено",
+     "found": true
     }
    ],
    "comments": [],
@@ -635,11 +804,17 @@
      "evidence": [
       {
        "path": "openspec/changes/attack-lens-conventions/intent.md",
-       "quote": "Правила есть, но нет линзы."
+       "quote": "Правила есть, но нет линзы.",
+       "line": 5,
+       "verdict": "сверено",
+       "found": true
       },
       {
        "path": "attack/skills/symphysis-attack/SKILL.md",
-       "quote": "| `context-compliance` | блокер |"
+       "quote": "| `context-compliance` | блокер |",
+       "line": 393,
+       "verdict": "сверено",
+       "found": true
       }
      ]
     },
@@ -651,7 +826,10 @@
      "evidence": [
       {
        "path": "openspec/specs/trace-conventions/spec.md",
-       "quote": "Как артефакты изменения объявляют связи, из которых собирается граф"
+       "quote": "Как артефакты изменения объявляют связи, из которых собирается граф",
+       "line": 4,
+       "verdict": "сверено",
+       "found": true
       }
      ]
     },
@@ -663,7 +841,10 @@
      "evidence": [
       {
        "path": "openspec/changes/attack-lens-conventions/intent.md",
-       "quote": "новая линза о соответствии правил составления артефактов"
+       "quote": "новая линза о соответствии правил составления артефактов",
+       "line": 5,
+       "verdict": "сверено",
+       "found": true
       }
      ]
     },
@@ -675,7 +856,10 @@
      "evidence": [
       {
        "path": "openspec/changes/attack-lens-conventions/intent.md",
-       "quote": "«Участие деления должно быть в линзе» — деление длинного требования проверяется этой линзой: родитель и дочерние вместе несут всё, что нёс прежний текст мастер-спеки (слово владельца, 2026-11-06; F-117.B, 2026-11-05)"
+       "quote": "«Участие деления должно быть в линзе» — деление длинного требования проверяется этой линзой: родитель и дочерние вместе несут всё, что нёс прежний текст мастер-спеки (слово владельца, 2026-11-06; F-117.B, 2026-11-05)",
+       "line": 18,
+       "verdict": "сверено",
+       "found": true
       }
      ]
     }
@@ -723,15 +907,24 @@
      "evidence": [
       {
        "path": "attack/attack-table.md",
-       "quote": "**Инвариант** — нарушенное свойство, не правка"
+       "quote": "**Инвариант** — нарушенное свойство, не правка",
+       "line": 22,
+       "verdict": "сверено",
+       "found": true
       },
       {
        "path": "openspec/schemas/symphysis/schema.yaml",
-       "quote": "Длинное в MODIFIED дели так же: сценарии родителя остаются при нём, условия не теряются."
+       "quote": "Длинное в MODIFIED дели так же: сценарии родителя остаются при нём, условия не теряются.",
+       "line": 82,
+       "verdict": "сверено",
+       "found": true
       },
       {
        "path": "openspec/config.yaml",
-       "quote": "предположение помечается словом `предположение` и дорогой `проверить|решить`"
+       "quote": "предположение помечается словом `предположение` и дорогой `проверить|решить`",
+       "line": 10,
+       "verdict": "сверено",
+       "found": true
       }
      ]
     },
@@ -743,7 +936,10 @@
      "evidence": [
       {
        "path": "openspec/schemas/symphysis/schema.yaml",
-       "quote": "Загрузи скилл `symphysis-consequences` и напиши `consequences.md` по шаблону."
+       "quote": "Загрузи скилл `symphysis-consequences` и напиши `consequences.md` по шаблону.",
+       "line": 92,
+       "verdict": "сверено",
+       "found": true
       }
      ]
     },
@@ -755,7 +951,10 @@
      "evidence": [
       {
        "path": "openspec/specs/trace-conventions/spec.md",
-       "quote": "Требование MUST NOT терять условия, когда его сокращают ради предела: родитель и дочерние вместе SHALL нести всё, что нёс прежний текст"
+       "quote": "Требование MUST NOT терять условия, когда его сокращают ради предела: родитель и дочерние вместе SHALL нести всё, что нёс прежний текст",
+       "line": 163,
+       "verdict": "сверено",
+       "found": true
       }
      ]
     },
@@ -767,7 +966,10 @@
      "evidence": [
       {
        "path": "openspec/changes/attack-lens-conventions/intent.md",
-       "quote": "«Правила есть, но нет линзы» — линза называет правило, которое нарушено, а не выводит правило сама (слово владельца, 2026-11-06)"
+       "quote": "«Правила есть, но нет линзы» — линза называет правило, которое нарушено, а не выводит правило сама (слово владельца, 2026-11-06)",
+       "line": 19,
+       "verdict": "сверено",
+       "found": true
       }
      ],
      "deviation": "F-03"
@@ -817,11 +1019,17 @@
      "evidence": [
       {
        "path": "openspec/schemas/symphysis/schema.yaml",
-       "quote": "Длинное в MODIFIED дели так же: сценарии родителя остаются при нём, условия не теряются."
+       "quote": "Длинное в MODIFIED дели так же: сценарии родителя остаются при нём, условия не теряются.",
+       "line": 82,
+       "verdict": "сверено",
+       "found": true
       },
       {
        "path": "openspec/changes/archive/2026-11-06-trace-graph/decisions.json",
-       "quote": "Предел подталкивает ужать текст, а не разделить его: пропавшее условие никто не заметит, требование выглядит опрятным."
+       "quote": "Предел подталкивает ужать текст, а не разделить его: пропавшее условие никто не заметит, требование выглядит опрятным.",
+       "line": 7986,
+       "verdict": "сверено",
+       "found": true
       }
      ]
     },
@@ -833,7 +1041,10 @@
      "evidence": [
       {
        "path": "openspec/specs/trace-conventions/spec.md",
-       "quote": "граф SHALL давать связь `derives` от дочернего к родителю (F-42, F-77)."
+       "quote": "граф SHALL давать связь `derives` от дочернего к родителю (F-42, F-77).",
+       "line": 173,
+       "verdict": "сверено",
+       "found": true
       }
      ]
     },
@@ -845,7 +1056,10 @@
      "evidence": [
       {
        "path": "attack/skills/symphysis-attack/SKILL.md",
-       "quote": "а также `refines` и `derives` она не проходит."
+       "quote": "а также `refines` и `derives` она не проходит.",
+       "line": 257,
+       "verdict": "сверено",
+       "found": true
       }
      ]
     }
@@ -893,7 +1107,10 @@
      "evidence": [
       {
        "path": "attack/skills/symphysis-attack/SKILL.md",
-       "quote": "Тяжесть строки с опорой «нет» — тяжесть линзы: у всех линз обоих"
+       "quote": "Тяжесть строки с опорой «нет» — тяжесть линзы: у всех линз обоих",
+       "line": 472,
+       "verdict": "сверено",
+       "found": true
       }
      ]
     },
@@ -905,7 +1122,10 @@
      "evidence": [
       {
        "path": "openspec/schemas/symphysis/templates/attack-artifacts.md",
-       "quote": "строки `предупреждение` идут человеку списком и `apply` не держат"
+       "quote": "строки `предупреждение` идут человеку списком и `apply` не держат",
+       "line": 32,
+       "verdict": "сверено",
+       "found": true
       }
      ]
     },
@@ -917,11 +1137,17 @@
      "evidence": [
       {
        "path": "attack/skills/symphysis-attack/SKILL.md",
-       "quote": "| `coverage` | справка у «чисто», блокер у «не пройдено» |"
+       "quote": "| `coverage` | справка у «чисто», блокер у «не пройдено» |",
+       "line": 396,
+       "verdict": "сверено",
+       "found": true
       },
       {
        "path": "context/backlog/symphysis-backlog.md",
-       "quote": "Слово владельца, 2026-11-07: «Проверить, что в атакующем скилле -- атака ищет расхождение по существу, а не по букве.»"
+       "quote": "Слово владельца, 2026-11-07: «Проверить, что в атакующем скилле -- атака ищет расхождение по существу, а не по букве.»",
+       "line": 346,
+       "verdict": "сверено",
+       "found": true
       }
      ]
     }
@@ -969,11 +1195,17 @@
      "evidence": [
       {
        "path": "attack/skills/symphysis-attack/SKILL.md",
-       "quote": "Одна строка на каждую связь"
+       "quote": "Одна строка на каждую связь",
+       "line": 248,
+       "verdict": "сверено",
+       "found": true
       },
       {
        "path": "attack/attack-table.md",
-       "quote": "Раздел журнала без находок —"
+       "quote": "Раздел журнала без находок —",
+       "line": 44,
+       "verdict": "сверено",
+       "found": true
       }
      ]
     },
@@ -985,7 +1217,10 @@
      "evidence": [
       {
        "path": "attack/skills/symphysis-attack/SKILL.md",
-       "quote": "строка на каждую связь, находка или «есть», сотни"
+       "quote": "строка на каждую связь, находка или «есть», сотни",
+       "line": 248,
+       "verdict": "сверено",
+       "found": true
       }
      ]
     },
@@ -997,7 +1232,10 @@
      "evidence": [
       {
        "path": "attack/attack-table.md",
-       "quote": "Раздел, до которого проход не дошёл, —"
+       "quote": "Раздел, до которого проход не дошёл, —",
+       "line": 45,
+       "verdict": "сверено",
+       "found": true
       }
      ]
     }
@@ -1043,11 +1281,17 @@
      "evidence": [
       {
        "path": "settings/symphysis_config.py",
-       "quote": "lenses: dict[str, bool] = field(default_factory=lambda: dict.fromkeys(LENSES, True))"
+       "quote": "lenses: dict[str, bool] = field(default_factory=lambda: dict.fromkeys(LENSES, True))",
+       "line": 57,
+       "verdict": "сверено",
+       "found": true
       },
       {
        "path": "openspec/specs/project-settings/spec.md",
-       "quote": "все линзы обоих файлов атаки включены"
+       "quote": "все линзы обоих файлов атаки включены",
+       "line": 34,
+       "verdict": "сверено",
+       "found": true
       }
      ]
     },
@@ -1059,7 +1303,10 @@
      "evidence": [
       {
        "path": "openspec/specs/project-settings/spec.md",
-       "quote": "все линзы обоих файлов атаки включены"
+       "quote": "все линзы обоих файлов атаки включены",
+       "line": 34,
+       "verdict": "сверено",
+       "found": true
       }
      ]
     }
@@ -1105,7 +1352,10 @@
      "evidence": [
       {
        "path": "attack/skills/symphysis-attack/SKILL.md",
-       "quote": "Вызов `attack-artifacts`: цели — `decisions.json` (опора, не атакуется), `specs/**/*.md`,"
+       "quote": "Вызов `attack-artifacts`: цели — `decisions.json` (опора, не атакуется), `specs/**/*.md`,",
+       "line": 25,
+       "verdict": "сверено",
+       "found": true
       }
      ]
     },
@@ -1117,7 +1367,10 @@
      "evidence": [
       {
        "path": "openspec/schemas/symphysis/schema.yaml",
-       "quote": "Отступления от постановки — в раздел «Отступления от постановки»"
+       "quote": "Отступления от постановки — в раздел «Отступления от постановки»",
+       "line": 66,
+       "verdict": "сверено",
+       "found": true
       }
      ]
     }
@@ -1163,11 +1416,17 @@
      "evidence": [
       {
        "path": "openspec/changes/archive/2026-11-08-parking-addressee-agent/decisions.json",
-       "quote": "Порядок уже задан словом владельца в бэклоге и прецедентом `attack-warning-read`"
+       "quote": "Порядок уже задан словом владельца в бэклоге и прецедентом `attack-warning-read`",
+       "line": 981,
+       "verdict": "сверено",
+       "found": true
       },
       {
        "path": "context/backlog/symphysis-backlog.md",
-       "quote": "Что должно стоять в ядре и контракте до того, как владелец уйдёт в разработку плагина."
+       "quote": "Что должно стоять в ядре и контракте до того, как владелец уйдёт в разработку плагина.",
+       "line": 30,
+       "verdict": "сверено",
+       "found": true
       }
      ],
      "deviation": "F-04"
@@ -1180,11 +1439,17 @@
      "evidence": [
       {
        "path": "openspec/changes/archive/2026-11-08-parking-addressee-agent/decisions.json",
-       "quote": "`tasks.md` изменения не может нести правки чужого репозитория — форк ограничивает правки этим проектом"
+       "quote": "`tasks.md` изменения не может нести правки чужого репозитория — форк ограничивает правки этим проектом",
+       "line": 933,
+       "verdict": "сверено",
+       "found": true
       },
       {
        "path": "vscode/src/journal/attack.ts",
-       "quote": "const LENSES = {"
+       "quote": "const LENSES = {",
+       "line": 5,
+       "verdict": "сверено",
+       "found": true
       }
      ]
     },
@@ -1196,7 +1461,10 @@
      "evidence": [
       {
        "path": "context/backlog/symphysis-backlog.md",
-       "quote": "**B-44 первым после B-42:** адресат `агент` и `EXPECTED_CONTRACT = 4`; без него плагин с ядром номера 4 не вносит решения."
+       "quote": "**B-44 первым после B-42:** адресат `агент` и `EXPECTED_CONTRACT = 4`; без него плагин с ядром номера 4 не вносит решения.",
+       "line": 64,
+       "verdict": "сверено",
+       "found": true
       }
      ]
     }
@@ -1246,19 +1514,31 @@
    "evidence": [
     {
      "path": "viewer/playground-template.html",
-     "quote": "при опоре «нет» тяжесть источника — блокер; ниже блокера без причины в скобках — понижение без причины"
+     "quote": "при опоре «нет» тяжесть источника — блокер; ниже блокера без причины в скобках — понижение без причины",
+     "line": 951,
+     "verdict": "сверено",
+     "found": true
     },
     {
      "path": "vscode/src/journal/attack.ts",
-     "quote": "/** При опоре «нет» тяжесть источника — блокер; ниже блокера — понижение, причина в скобках или её нет. */"
+     "quote": "/** При опоре «нет» тяжесть источника — блокер; ниже блокера — понижение, причина в скобках или её нет. */",
+     "line": 48,
+     "verdict": "сверено",
+     "found": true
     },
     {
      "path": "openspec/specs/artifact-attack/spec.md",
-     "quote": "Скилл `symphysis-attack` MUST NOT ставить строке тяжесть ниже тяжести её линзы без причины в ячейке тяжести"
+     "quote": "Скилл `symphysis-attack` MUST NOT ставить строке тяжесть ниже тяжести её линзы без причины в ячейке тяжести",
+     "line": 88,
+     "verdict": "сверено",
+     "found": true
     },
     {
      "path": "attack/skills/symphysis-attack/SKILL.md",
-     "quote": "оба антипода выбраны — `предупреждение (оба антипода выбраны)`"
+     "quote": "оба антипода выбраны — `предупреждение (оба антипода выбраны)`",
+     "line": 413,
+     "verdict": "сверено",
+     "found": true
     }
    ],
    "comments": [],
@@ -1288,7 +1568,10 @@
      "evidence": [
       {
        "path": "viewer/playground-template.html",
-       "quote": "при опоре «нет» тяжесть источника — блокер; ниже блокера без причины в скобках — понижение без причины"
+       "quote": "при опоре «нет» тяжесть источника — блокер; ниже блокера без причины в скобках — понижение без причины",
+       "line": 951,
+       "verdict": "сверено",
+       "found": true
       }
      ]
     },
@@ -1300,11 +1583,17 @@
      "evidence": [
       {
        "path": "attack/skills/symphysis-attack/SKILL.md",
-       "quote": "оба антипода выбраны — `предупреждение (оба антипода выбраны)`"
+       "quote": "оба антипода выбраны — `предупреждение (оба антипода выбраны)`",
+       "line": 413,
+       "verdict": "сверено",
+       "found": true
       },
       {
        "path": "vscode/src/journal/attack.ts",
-       "quote": "/** При опоре «нет» тяжесть источника — блокер; ниже блокера — понижение, причина в скобках или её нет. */"
+       "quote": "/** При опоре «нет» тяжесть источника — блокер; ниже блокера — понижение, причина в скобках или её нет. */",
+       "line": 48,
+       "verdict": "сверено",
+       "found": true
       }
      ]
     },
@@ -1316,7 +1605,10 @@
      "evidence": [
       {
        "path": "attack/skills/symphysis-attack/SKILL.md",
-       "quote": "Тяжесть строки с опорой «нет» — тяжесть линзы: у всех линз обоих"
+       "quote": "Тяжесть строки с опорой «нет» — тяжесть линзы: у всех линз обоих",
+       "line": 472,
+       "verdict": "сверено",
+       "found": true
       }
      ]
     },
@@ -1328,7 +1620,10 @@
      "evidence": [
       {
        "path": "openspec/specs/artifact-attack/spec.md",
-       "quote": "Скилл `symphysis-attack` MUST NOT ставить строке тяжесть ниже тяжести её линзы без причины в ячейке тяжести"
+       "quote": "Скилл `symphysis-attack` MUST NOT ставить строке тяжесть ниже тяжести её линзы без причины в ячейке тяжести",
+       "line": 88,
+       "verdict": "сверено",
+       "found": true
       }
      ]
     }
@@ -1422,7 +1717,10 @@
    "evidence": [
     {
      "path": "openspec/changes/attack-lens-conventions/specs/artifact-attack/spec.md",
-     "quote": "### Requirement: Линза правил составления сверяет артефакт с правилами его шага"
+     "quote": "### Requirement: Линза правил составления сверяет артефакт с правилами его шага",
+     "line": 27,
+     "verdict": "сверено",
+     "found": true
     }
    ],
    "comments": [],
@@ -1491,7 +1789,10 @@
    "evidence": [
     {
      "path": "openspec/changes/attack-lens-conventions/specs/artifact-attack/spec.md",
-     "quote": "### Requirement: Линза правил составления сверяет MODIFIED с мастер-текстом"
+     "quote": "### Requirement: Линза правил составления сверяет MODIFIED с мастер-текстом",
+     "line": 62,
+     "verdict": "сверено",
+     "found": true
     }
    ],
    "comments": [],
@@ -1559,11 +1860,17 @@
    "evidence": [
     {
      "path": "openspec/changes/attack-lens-conventions/specs/artifact-attack/spec.md",
-     "quote": "### Requirement: Линза правил составления сверяет MODIFIED с мастер-текстом"
+     "quote": "### Requirement: Линза правил составления сверяет MODIFIED с мастер-текстом",
+     "line": 62,
+     "verdict": "сверено",
+     "found": true
     },
     {
      "path": "upstream/openspec/src/core/specs-apply.ts",
-     "quote": "// Apply operations in order: RENAMED → REMOVED → MODIFIED → ADDED"
+     "quote": "// Apply operations in order: RENAMED → REMOVED → MODIFIED → ADDED",
+     "line": 457,
+     "verdict": "сверено",
+     "found": true
     }
    ],
    "comments": [],
@@ -1632,7 +1939,10 @@
    "evidence": [
     {
      "path": "openspec/changes/attack-lens-conventions/specs/artifact-attack/spec.md",
-     "quote": "### Requirement: Линза правил составления сверяет MODIFIED с мастер-текстом"
+     "quote": "### Requirement: Линза правил составления сверяет MODIFIED с мастер-текстом",
+     "line": 62,
+     "verdict": "сверено",
+     "found": true
     }
    ],
    "comments": [],
@@ -1700,7 +2010,10 @@
    "evidence": [
     {
      "path": "openspec/changes/attack-lens-conventions/specs/artifact-attack/spec.md",
-     "quote": "### Requirement: Строки линзы правил составления покрывают требования и файлы"
+     "quote": "### Requirement: Строки линзы правил составления покрывают требования и файлы",
+     "line": 105,
+     "verdict": "сверено",
+     "found": true
     }
    ],
    "comments": [],
@@ -1769,7 +2082,10 @@
    "evidence": [
     {
      "path": "openspec/changes/attack-lens-conventions/specs/artifact-attack/spec.md",
-     "quote": "### Requirement: Линза правил составления сверяет артефакт с правилами его шага"
+     "quote": "### Requirement: Линза правил составления сверяет артефакт с правилами его шага",
+     "line": 27,
+     "verdict": "сверено",
+     "found": true
     }
    ],
    "comments": [],
@@ -1838,7 +2154,10 @@
    "evidence": [
     {
      "path": "openspec/changes/attack-lens-conventions/specs/artifact-attack/spec.md",
-     "quote": "### Requirement: Собственное предупреждение линзы правил составления"
+     "quote": "### Requirement: Собственное предупреждение линзы правил составления",
+     "line": 47,
+     "verdict": "сверено",
+     "found": true
     }
    ],
    "comments": [],
@@ -1906,7 +2225,10 @@
    "evidence": [
     {
      "path": "openspec/changes/attack-lens-conventions/specs/artifact-attack/spec.md",
-     "quote": "### Requirement: Линза правил составления сверяет MODIFIED с мастер-текстом"
+     "quote": "### Requirement: Линза правил составления сверяет MODIFIED с мастер-текстом",
+     "line": 62,
+     "verdict": "сверено",
+     "found": true
     }
    ],
    "comments": [],
@@ -1938,7 +2260,10 @@
    "evidence": [
     {
      "path": "openspec/changes/attack-lens-conventions/specs/artifact-attack/spec.md",
-     "quote": "### Requirement: Линза правил составления сверяет артефакт с правилами его шага"
+     "quote": "### Requirement: Линза правил составления сверяет артефакт с правилами его шага",
+     "line": 27,
+     "verdict": "сверено",
+     "found": true
     }
    ],
    "comments": [],
@@ -2006,11 +2331,17 @@
    "evidence": [
     {
      "path": "viewer/playground-template.html",
-     "quote": "return { reason: sevReason(r.severity) };"
+     "quote": "return { reason: sevReason(r.severity) };",
+     "line": 955,
+     "verdict": "сверено",
+     "found": true
     },
     {
      "path": "vscode/src/journal/attack.ts",
-     "quote": "return !noSupport || sevBase(row.severity) === \"блокер\" ? null : { reason: sevReason(row.severity) };"
+     "quote": "return !noSupport || sevBase(row.severity) === \"блокер\" ? null : { reason: sevReason(row.severity) };",
+     "line": 51,
+     "verdict": "сверено",
+     "found": true
     }
    ],
    "comments": [],
@@ -2076,7 +2407,10 @@
    "evidence": [
     {
      "path": "upstream/openspec/src/core/project-config.ts",
-     "quote": "console.warn(describeRulesShapeError(artifactId, rules));"
+     "quote": "console.warn(describeRulesShapeError(artifactId, rules));",
+     "line": 392,
+     "verdict": "сверено",
+     "found": true
     }
    ],
    "comments": [],
@@ -2145,7 +2479,10 @@
    "evidence": [
     {
      "path": "openspec/changes/attack-lens-conventions/specs/artifact-attack/spec.md",
-     "quote": "### Requirement: Линза правил составления сверяет MODIFIED с мастер-текстом"
+     "quote": "### Requirement: Линза правил составления сверяет MODIFIED с мастер-текстом",
+     "line": 62,
+     "verdict": "сверено",
+     "found": true
     }
    ],
    "comments": [],
@@ -2213,11 +2550,46 @@
    "evidence": [
     {
      "path": "openspec/schemas/symphysis/schema.yaml",
-     "quote": "description: Атака specs, consequences, design, security и tasks с вердиктом (вызывается по имени)"
+     "quote": "description: Атака specs, consequences, design, security и tasks с вердиктом (вызывается по имени)",
+     "line": 145,
+     "verdict": "сверено",
+     "found": true
     }
    ],
    "comments": [],
    "nodes": []
+  },
+  {
+   "id": "F-40",
+   "question": "Слово владельца: требование, которое при написании или правке превысило 500 знаков, делится на дочернее; ужимать, компоновать и сокращать текст ради предела нельзя — так делится MODIFIED «`view-json` отдаёт номер контракта»: смена адресата уходит в дочернее «Смена адресата поднимает номер контракта до 4»",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "в spec.md: Смена адресата поднимает номер контракта до 4; явное правило деления в instruction шага `specs` — пункт бэклога",
+   "evidence": [
+    {
+     "path": "openspec/changes/attack-lens-conventions/answers/2026-11-08-5.md",
+     "quote": "При написании или модификации требования превысился лимит в 500 символов? Создавай дочернее. (без развилок).",
+     "line": 7,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "split",
+    "contract"
+   ]
   }
  ]
 }

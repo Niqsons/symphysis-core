@@ -644,7 +644,7 @@ test("Первая установка: symphysis.yaml создан, всё вк�
   const text = fs.readFileSync(settingsFile(p), "utf8");
   assert.match(text, /^consequences:\n {2}failure_branches: true\n {2}assumptions: true\nedge_probe:\n {2}enabled: true\ndrivers:\n {2}attack: true\n {2}probes: false\n {2}consequences: false\n {2}research: true\n/m);
   // Каждая линза атаки обоих файлов названа своим слугом и включена; claim-extraction одна (F-61, F-132).
-  const lenses = ["context-compliance", "claim-authority", "claim-extraction", "coverage", "scenario-run", "trace-link"];
+  const lenses = ["context-compliance", "claim-authority", "claim-extraction", "coverage", "scenario-run", "trace-link", "rule-compliance"];
   assert.match(text, new RegExp(`\nattack:\n${lenses.map((s) => ` {2}${s}: true\n`).join("")}$`));
   const py = spawnSync("python", ["-X", "utf8", path.join(p, ".symphysis", "tools", "symphysis_config.py"), "--project", p, "--strict"], { encoding: "utf8" });
   assert.equal(py.status, 0, py.stdout + py.stderr);

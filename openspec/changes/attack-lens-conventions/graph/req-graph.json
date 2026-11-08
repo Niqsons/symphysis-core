@@ -1,0 +1,1948 @@
+{
+ "format": 2,
+ "sources": [
+  {
+   "path": "consequences.md",
+   "sha256": "3092b872b47f0f257b94de64497433ee83d01c942a5c84a46dc2fb0eea2b6109"
+  },
+  {
+   "path": "decisions.json",
+   "sha256": "689da7f73795cbccb5cc58a8986f112f1507345463e23e1c132f820e9cf2a4fb"
+  },
+  {
+   "path": "security.md",
+   "sha256": "0edd28131d0c03fddc9d1a775cbb86e42be187b95ed8f08c4dcf9a681317386a"
+  },
+  {
+   "path": "specs/artifact-attack/spec.md",
+   "sha256": "bef69df76d7a3dc941e6a515794fcf750ba2d0909e2ad14c849fbe2ec4de74ab"
+  },
+  {
+   "path": "specs/decision-viewer/spec.md",
+   "sha256": "5ab1ffad15b5f9060f1aaf1d64538f3549111dee69eaf4c33e8299cd15f82b99"
+  },
+  {
+   "path": "specs/plugin-core-contract/spec.md",
+   "sha256": "96e6b926841472c89d0f2e1dc1faf81431086d7ddbb454e0aaff4aaa2f92e74a"
+  },
+  {
+   "path": "tasks.md",
+   "sha256": "69cd80fb12bb09c7dd79d4bd24ca568694396fbb1805d7ea15f540a2ad651a24"
+  }
+ ],
+ "nodes": [
+  {
+   "id": "branch:settings/symphysis_config.py:56",
+   "kind": "branch",
+   "name": "Умолчание состава линз",
+   "at": "consequences.md:9"
+  },
+  {
+   "id": "branch:upstream/openspec/src/core/project-config.ts:392",
+   "kind": "branch",
+   "name": "Разбор `rules` форком",
+   "at": "consequences.md:13"
+  },
+  {
+   "id": "branch:viewer/playground-template.html:954",
+   "kind": "branch",
+   "name": "Значок понижения на странице",
+   "at": "consequences.md:17"
+  },
+  {
+   "id": "branch:vscode/src/journal/attack.ts:51",
+   "kind": "branch",
+   "name": "Значок понижения в плагине",
+   "at": "consequences.md:21"
+  },
+  {
+   "id": "branch:vscode/src/core/core.ts:31",
+   "kind": "branch",
+   "name": "Сверка номера контракта в плагине",
+   "at": "consequences.md:25"
+  },
+  {
+   "id": "rec:F-01",
+   "kind": "rec",
+   "name": "Критерий готовности: «новая линза о соответствии правил составления артефактов» — в списке линз атаки артефактов есть линза, которая сверяет артефакт с правилами составления",
+   "at": "decisions.json:26",
+   "record_kind": "факт",
+   "number": 1
+  },
+  {
+   "id": "rec:F-02",
+   "kind": "rec",
+   "name": "Критерий готовности: «Участие деления должно быть в линзе» — деление длинного требования проверяется этой линзой: родитель и дочерние вместе несут всё, что нёс прежний текст мастер-спеки",
+   "at": "decisions.json:55",
+   "record_kind": "факт",
+   "number": 2
+  },
+  {
+   "id": "rec:F-03",
+   "kind": "rec",
+   "name": "Критерий готовности: «Правила есть, но нет линзы» — линза называет правило, которое нарушено, а не выводит правило сама",
+   "at": "decisions.json:83",
+   "record_kind": "факт",
+   "number": 3
+  },
+  {
+   "id": "rec:F-04",
+   "kind": "rec",
+   "name": "Критерий готовности: «Список линз входит в контракт с плагином, значит новая линза — новый номер контракта» — номер растёт, `Why:` в коммите ядра, плагин держит линзу в своём списке коммитом с `Needs:`",
+   "at": "decisions.json:112",
+   "record_kind": "факт",
+   "number": 4
+  },
+  {
+   "id": "rec:F-05",
+   "kind": "rec",
+   "name": "Список линз атаки артефактов закрыт: три слуга, строка с чужим слугом невалидна и уходит в группу «вне списка». Список стоит в ядре в восьми местах — скилл атаки, общий файл таблицы, шаблон файла атаки, `steps.md`, страница, модуль настроек, установщик, мастер-спека `artifact-attack` — и в плагине; новая линза правится во всех сразу, тесты, которые их держат, найдёт опись `consequences`",
+   "at": "decisions.json:141",
+   "record_kind": "факт",
+   "number": 5
+  },
+  {
+   "id": "rec:F-06",
+   "kind": "rec",
+   "name": "Списки линз входят в контракт ядра с плагином; новое значение линзы уже поднимало номер — номер 3, `trace-link`. Номер сейчас 4, тест сверяет абзацы «С номера N» договора с числом в коде",
+   "at": "decisions.json:209",
+   "record_kind": "факт",
+   "number": 6
+  },
+  {
+   "id": "rec:F-07",
+   "kind": "rec",
+   "name": "Номер 5 у этого изменения — допущение очереди: B-18 стоит в группе 2 перед B-16, а `attack-severity-buttons` (B-16) идёт параллельно со сменой контракта и теми же файлами; номер 6 и разбор конфликтов в общих файлах берёт то из двух, что вливается вторым",
+   "at": "decisions.json:249",
+   "record_kind": "факт",
+   "number": 7
+  },
+  {
+   "id": "rec:F-08",
+   "kind": "rec",
+   "name": "Плагин ждёт контракт 3: половина номера 4 (адресат `агент`) — пункт B-44 группы 5, первым после B-42. Группа 2 бэклога — то, что должно стоять в ядре до сессии плагина; у `parking-addressee-agent` плагинная половина ушла в бэклог решением F-19.A",
+   "at": "decisions.json:285",
+   "record_kind": "факт",
+   "number": 8
+  },
+  {
+   "id": "rec:F-09",
+   "kind": "rec",
+   "name": "Правило деления уже есть — в instruction шага `specs` и в мастер-спеке `trace-conventions`; судьёй там названа атака артефактов, но ни одна линза его не исполняет: `trace-link` рёбра `derives` не проходит",
+   "at": "decisions.json:325",
+   "record_kind": "факт",
+   "number": 9
+  },
+  {
+   "id": "rec:F-10",
+   "kind": "rec",
+   "name": "Связь `derives` граф даёт, только когда дочернее называет родителя фразой `Часть требования «имя».` и родитель есть в изменении. Требование MODIFIED, ужатое ради предела без дочерних, связи не даёт — а этого случая рекомендация F-117 боялась больше деления",
+   "at": "decisions.json:365",
+   "record_kind": "факт",
+   "number": 10
+  },
+  {
+   "id": "rec:F-11",
+   "kind": "rec",
+   "name": "Правила составления целей атаки артефактов стоят в `instruction` шагов `schema.yaml` и в `rules` шагов `openspec/config.yaml`; у `security` и `tasks` своего скилла нет, а `consequences.md` пишет скилл `symphysis-consequences` по своему телу",
+   "at": "decisions.json:401",
+   "record_kind": "факт",
+   "number": 11
+  },
+  {
+   "id": "rec:F-12",
+   "kind": "rec",
+   "name": "В проект клиента установка кладёт каталог схемы и сливает `rules` в его `config.yaml`; мастер-спек symphysis там нет: из `openspec/` пакет несёт только каталог схемы",
+   "at": "decisions.json:445",
+   "record_kind": "факт",
+   "number": 12
+  },
+  {
+   "id": "rec:F-13",
+   "kind": "rec",
+   "name": "Атака не репортит то, что ловят `check` и `openspec validate --strict`, линзы присутствия сняты; длину требования ловит `--strict`. Новая линза, по образцу прочих, не проходит детерминируемые правила",
+   "at": "decisions.json:477",
+   "record_kind": "факт",
+   "number": 13
+  },
+  {
+   "id": "rec:F-14",
+   "kind": "rec",
+   "name": "Тяжесть строки с опорой «нет» у всех линз — блокер; две тяжести у одной линзы уже есть — у `coverage`. Владелец просил проверить, что атака ищет расхождение по существу, а не по букве (B-26)",
+   "at": "decisions.json:514",
+   "record_kind": "факт",
+   "number": 14
+  },
+  {
+   "id": "rec:F-15",
+   "kind": "rec",
+   "name": "Отсутствующий ключ линзы в `symphysis.yaml` читается как «включена», новая установка пишет ключ каждой линзы включённым; скилл атаки ждёт в строке состава шесть слугов",
+   "at": "decisions.json:550",
+   "record_kind": "факт",
+   "number": 15
+  },
+  {
+   "id": "rec:F-16",
+   "kind": "rec",
+   "name": "Цели атаки артефактов — specs, consequences, design, security, tasks; `proposal.md` не цель ни одной атаки, хотя у шага `proposal` свои правила составления",
+   "at": "decisions.json:586",
+   "record_kind": "факт",
+   "number": 16
+  },
+  {
+   "id": "rec:F-17",
+   "kind": "rec",
+   "name": "Какой слуг и какую подпись получает новая линза: имя — значение контракта, его увидят файл атаки, страница, настройки и плагин",
+   "at": "decisions.json:622",
+   "record_kind": "развилка",
+   "number": 17
+  },
+  {
+   "id": "rec:F-18",
+   "kind": "rec",
+   "name": "Откуда линза берёт правила составления, которые она называет в строке",
+   "at": "decisions.json:710",
+   "record_kind": "развилка",
+   "number": 18
+  },
+  {
+   "id": "rec:F-19",
+   "kind": "rec",
+   "name": "Какие требования линза сверяет с мастер-текстом, чтобы поймать пропавшее условие",
+   "at": "decisions.json:802",
+   "record_kind": "развилка",
+   "number": 19
+  },
+  {
+   "id": "rec:F-20",
+   "kind": "rec",
+   "name": "Какую тяжесть получает строка новой линзы с опорой «нет»",
+   "at": "decisions.json:878",
+   "record_kind": "развилка",
+   "number": 20
+  },
+  {
+   "id": "rec:F-21",
+   "kind": "rec",
+   "name": "Сколько строк пишет линза: только находки или и покрытие",
+   "at": "decisions.json:954",
+   "record_kind": "развилка",
+   "number": 21
+  },
+  {
+   "id": "rec:F-22",
+   "kind": "rec",
+   "name": "Включена ли новая линза по умолчанию в `symphysis.yaml`",
+   "at": "decisions.json:1030",
+   "record_kind": "развилка",
+   "number": 22
+  },
+  {
+   "id": "rec:F-23",
+   "kind": "rec",
+   "name": "Входит ли `proposal.md` в цели атаки артефактов вместе с новой линзой",
+   "at": "decisions.json:1092",
+   "record_kind": "развилка",
+   "number": 23
+  },
+  {
+   "id": "rec:F-24",
+   "kind": "rec",
+   "name": "Где делается плагинная половина — линза в `LENSES`, подпись, тест, `EXPECTED_CONTRACT`, коммит с `Needs:`",
+   "at": "decisions.json:1150",
+   "record_kind": "развилка",
+   "number": 24
+  },
+  {
+   "id": "rec:F-25",
+   "kind": "rec",
+   "name": "Страница и плагин считают тяжесть источника любой строки с опорой «нет» блокером: строка ниже блокера без причины в скобках показана красным «понижение без причины», с причиной — «понижено» с текстом причины. Мастер-спека мерит понижение от тяжести своей линзы. Под F-20.C строки прочих правил новой линзы — предупреждение с опорой «нет», и показ назовёт каждую понижением без причины",
+   "at": "decisions.json:1230",
+   "record_kind": "факт",
+   "number": 25
+  },
+  {
+   "id": "rec:F-26",
+   "kind": "rec",
+   "name": "Как страница и плагин показывают собственное предупреждение новой линзы (F-20.C) у строки с опорой «нет», чтобы оно не читалось понижением без причины",
+   "at": "decisions.json:1272",
+   "record_kind": "развилка",
+   "number": 26
+  },
+  {
+   "id": "rec:F-27",
+   "kind": "rec",
+   "name": "[adjacency · collection] Линза правил составления сверяет артефакт с правилами его шага: задача `tasks.md` без проверки в строке нарушает правило шага `tasks` и даёт связь `task → scn`, у которой `trace-link` не найдёт проверки и напишет блокер, — писать ли рядом вторую строку `rule-compliance` о той же задаче?",
+   "at": "decisions.json:1363",
+   "record_kind": "развилка",
+   "number": 27
+  },
+  {
+   "id": "rec:F-28",
+   "kind": "rec",
+   "name": "[adjacency · collection] Линза правил составления сверяет MODIFIED с мастер-текстом: условие мастер-текста стоит в дельте пересказом без уточнения — мастер «плагин догоняет своим коммитом с `Needs:` на коммит ядра», дельта «плагин догоняет коммитом с `Needs:`», — это «есть» или пропавшее условие?",
+   "at": "decisions.json:1432",
+   "record_kind": "развилка",
+   "number": 28
+  },
+  {
+   "id": "rec:F-29",
+   "kind": "rec",
+   "name": "[empty · collection] Линза правил составления сверяет MODIFIED с мастер-текстом: требование переименовано секцией RENAMED и правлено в MODIFIED той же дельты — под новым именем мастер-текста нет: с чем линза его сверяет?",
+   "at": "decisions.json:1501",
+   "record_kind": "развилка",
+   "number": 29
+  },
+  {
+   "id": "rec:F-30",
+   "kind": "rec",
+   "name": "[concurrency · io] Линза правил составления сверяет MODIFIED с мастер-текстом: другое изменение влило в `main` новое условие того же мастер-требования после ветвления — в worktree мастер-спека на диске старая, линза пропажи не видит, а `/opsx:sync` дельтой MODIFIED затрёт это условие",
+   "at": "decisions.json:1573",
+   "record_kind": "развилка",
+   "number": 30
+  },
+  {
+   "id": "rec:F-31",
+   "kind": "rec",
+   "name": "[empty · collection] Строки линзы правил составления покрывают требования и файлы: цели нет — `security.md` не написан или `consequences.md` законно отсутствует, потому что изменение начато до шага описи, — писать ли строку «не пройдено» `rule-compliance` о таком файле?",
+   "at": "decisions.json:1642",
+   "record_kind": "развилка",
+   "number": 31
+  },
+  {
+   "id": "rec:F-32",
+   "kind": "rec",
+   "name": "[запрет] Линза правил составления сверяет артефакт с правилами его шага: не должна судить по букве — называть нарушением текст, который выполняет правило шага своими словами",
+   "at": "decisions.json:1710",
+   "record_kind": "развилка",
+   "number": 32
+  },
+  {
+   "id": "rec:F-33",
+   "kind": "rec",
+   "name": "[запрет] Собственное предупреждение линзы правил составления: не должно становиться способом понизить пропавшее условие — в сомнении модель отнесёт пропажу к прочим правилам и поставит `предупреждение (правило составления)` вместо блокера",
+   "at": "decisions.json:1779",
+   "record_kind": "развилка",
+   "number": 33
+  },
+  {
+   "id": "rec:F-34",
+   "kind": "rec",
+   "name": "[запрет] Линза правил составления сверяет MODIFIED с мастер-текстом: не должна пропускать условие, ушедшее через REMOVED и новое ADDED вместо MODIFIED, — дельта, переписавшая требование под новым именем без RENAMED, обходит сверку",
+   "at": "decisions.json:1848",
+   "record_kind": "развилка",
+   "number": 34
+  },
+  {
+   "id": "rec:F-35",
+   "kind": "rec",
+   "name": "[канон] Линза правил составления сверяет артефакт с правилами его шага: канон ИБ",
+   "at": "decisions.json:1916",
+   "record_kind": "факт",
+   "number": 35
+  },
+  {
+   "id": "rec:F-36",
+   "kind": "rec",
+   "name": "[ветка] Значок понижения: строка `rule-compliance` прочего правила с `предупреждение (правило составления)` получает на странице и в плагине «понижено: правило составления» — сценарии называют тяжесть и красный значок без скобок, но не этот исход",
+   "at": "decisions.json:1948",
+   "record_kind": "развилка",
+   "number": 36
+  },
+  {
+   "id": "rec:F-37",
+   "kind": "rec",
+   "name": "[ветка] Разбор `rules` форком: элемент списка `rules` шага не строка — форк отбрасывает весь список шага с предупреждением, автор артефакта этих правил не получает, а линза, читая `openspec/config.yaml`, судит по ним",
+   "at": "decisions.json:2020",
+   "record_kind": "развилка",
+   "number": 37
+  },
+  {
+   "id": "rec:F-38",
+   "kind": "rec",
+   "name": "[pre-mortem] Сверка MODIFIED судит длинный мастер-текст на глаз: опора «есть» цитирует одно условие из многих, остальные не сверены, и пропавшее условие проходит, как в `aa5afde`",
+   "at": "decisions.json:2086",
+   "record_kind": "развилка",
+   "number": 38
+  },
+  {
+   "id": "rec:F-39",
+   "kind": "rec",
+   "name": "[pre-mortem] Линза не запускается: атака артефактов необязательна, `/opsx:continue` без имени её пропускает, и изменение с ужатым MODIFIED доходит до `apply`, не встретив `rule-compliance`",
+   "at": "decisions.json:2155",
+   "record_kind": "развилка",
+   "number": 39
+  },
+  {
+   "id": "sec:Инъекции через содержимое файлов: текст правил, мастер-текст и артефакты, которые читает модель (F-35)",
+   "kind": "sec",
+   "name": "Инъекции через содержимое файлов: текст правил, мастер-текст и артефакты, которые читает модель (F-35)",
+   "at": "security.md:9"
+  },
+  {
+   "id": "sec:Инъекции через содержимое файлов: цитата правила в ячейке файла атаки",
+   "kind": "sec",
+   "name": "Инъекции через содержимое файлов: цитата правила в ячейке файла атаки",
+   "at": "security.md:10"
+  },
+  {
+   "id": "sec:Пути с `../`",
+   "kind": "sec",
+   "name": "Пути с `../`",
+   "at": "security.md:11"
+  },
+  {
+   "id": "sec:Токены и срок их жизни",
+   "kind": "sec",
+   "name": "Токены и срок их жизни",
+   "at": "security.md:12"
+  },
+  {
+   "id": "sec:Права",
+   "kind": "sec",
+   "name": "Права",
+   "at": "security.md:13"
+  },
+  {
+   "id": "sec:Бинарные файлы",
+   "kind": "sec",
+   "name": "Бинарные файлы",
+   "at": "security.md:14"
+  },
+  {
+   "id": "sec:Чувствительные данные в журнале, артефактах и журналах прогона",
+   "kind": "sec",
+   "name": "Чувствительные данные в журнале, артефактах и журналах прогона",
+   "at": "security.md:15"
+  },
+  {
+   "id": "sec:Телеметрия и внешние команды",
+   "kind": "sec",
+   "name": "Телеметрия и внешние команды",
+   "at": "security.md:16"
+  },
+  {
+   "id": "cap:artifact-attack",
+   "kind": "cap",
+   "name": "artifact-attack",
+   "at": "specs/artifact-attack/spec.md:1"
+  },
+  {
+   "id": "req:artifact-attack/Линзы атаки артефактов",
+   "kind": "req",
+   "name": "Линзы атаки артефактов",
+   "at": "specs/artifact-attack/spec.md:5",
+   "section": "MODIFIED",
+   "capability": "artifact-attack"
+  },
+  {
+   "id": "scn:artifact-attack/Линзы атаки артефактов/Линза вне списка у артефактов",
+   "kind": "scn",
+   "name": "Линза вне списка у артефактов",
+   "at": "specs/artifact-attack/spec.md:8",
+   "capability": "artifact-attack",
+   "requirement": "req:artifact-attack/Линзы атаки артефактов"
+  },
+  {
+   "id": "scn:artifact-attack/Линзы атаки артефактов/Линза правил составления у артефактов",
+   "kind": "scn",
+   "name": "Линза правил составления у артефактов",
+   "at": "specs/artifact-attack/spec.md:13",
+   "capability": "artifact-attack",
+   "requirement": "req:artifact-attack/Линзы атаки артефактов"
+  },
+  {
+   "id": "scn:artifact-attack/Линзы атаки артефактов/У атаки журнала линзы правил составления нет",
+   "kind": "scn",
+   "name": "У атаки журнала линзы правил составления нет",
+   "at": "specs/artifact-attack/spec.md:18",
+   "capability": "artifact-attack",
+   "requirement": "req:artifact-attack/Линзы атаки артефактов"
+  },
+  {
+   "id": "req:artifact-attack/Линза правил составления сверяет артефакт с правилами его шага",
+   "kind": "req",
+   "name": "Линза правил составления сверяет артефакт с правилами его шага",
+   "at": "specs/artifact-attack/spec.md:27",
+   "section": "ADDED",
+   "capability": "artifact-attack"
+  },
+  {
+   "id": "scn:artifact-attack/Линза правил составления сверяет артефакт с правилами его шага/Задача без проверки в строке",
+   "kind": "scn",
+   "name": "Задача без проверки в строке",
+   "at": "specs/artifact-attack/spec.md:30",
+   "capability": "artifact-attack",
+   "requirement": "req:artifact-attack/Линза правил составления сверяет артефакт с правилами его шага"
+  },
+  {
+   "id": "scn:artifact-attack/Линза правил составления сверяет артефакт с правилами его шага/Правило вне источников шага",
+   "kind": "scn",
+   "name": "Правило вне источников шага",
+   "at": "specs/artifact-attack/spec.md:35",
+   "capability": "artifact-attack",
+   "requirement": "req:artifact-attack/Линза правил составления сверяет артефакт с правилами его шага"
+  },
+  {
+   "id": "scn:artifact-attack/Линза правил составления сверяет артефакт с правилами его шага/Правило ловит validate --strict",
+   "kind": "scn",
+   "name": "Правило ловит validate --strict",
+   "at": "specs/artifact-attack/spec.md:40",
+   "capability": "artifact-attack",
+   "requirement": "req:artifact-attack/Линза правил составления сверяет артефакт с правилами его шага"
+  },
+  {
+   "id": "req:artifact-attack/Собственное предупреждение линзы правил составления",
+   "kind": "req",
+   "name": "Собственное предупреждение линзы правил составления",
+   "at": "specs/artifact-attack/spec.md:47",
+   "section": "ADDED",
+   "capability": "artifact-attack"
+  },
+  {
+   "id": "scn:artifact-attack/Собственное предупреждение линзы правил составления/Решение принимается в design",
+   "kind": "scn",
+   "name": "Решение принимается в design",
+   "at": "specs/artifact-attack/spec.md:50",
+   "capability": "artifact-attack",
+   "requirement": "req:artifact-attack/Собственное предупреждение линзы правил составления"
+  },
+  {
+   "id": "scn:artifact-attack/Собственное предупреждение линзы правил составления/Без постоянной причины",
+   "kind": "scn",
+   "name": "Без постоянной причины",
+   "at": "specs/artifact-attack/spec.md:55",
+   "capability": "artifact-attack",
+   "requirement": "req:artifact-attack/Собственное предупреждение линзы правил составления"
+  },
+  {
+   "id": "req:artifact-attack/Линза правил составления сверяет MODIFIED с мастер-текстом",
+   "kind": "req",
+   "name": "Линза правил составления сверяет MODIFIED с мастер-текстом",
+   "at": "specs/artifact-attack/spec.md:62",
+   "section": "ADDED",
+   "capability": "artifact-attack"
+  },
+  {
+   "id": "scn:artifact-attack/Линза правил составления сверяет MODIFIED с мастер-текстом/Условие пропало при делении",
+   "kind": "scn",
+   "name": "Условие пропало при делении",
+   "at": "specs/artifact-attack/spec.md:65",
+   "capability": "artifact-attack",
+   "requirement": "req:artifact-attack/Линза правил составления сверяет MODIFIED с мастер-текстом"
+  },
+  {
+   "id": "scn:artifact-attack/Линза правил составления сверяет MODIFIED с мастер-текстом/Ужато без дочерних",
+   "kind": "scn",
+   "name": "Ужато без дочерних",
+   "at": "specs/artifact-attack/spec.md:70",
+   "capability": "artifact-attack",
+   "requirement": "req:artifact-attack/Линза правил составления сверяет MODIFIED с мастер-текстом"
+  },
+  {
+   "id": "scn:artifact-attack/Линза правил составления сверяет MODIFIED с мастер-текстом/Условие ушло в дочернее",
+   "kind": "scn",
+   "name": "Условие ушло в дочернее",
+   "at": "specs/artifact-attack/spec.md:75",
+   "capability": "artifact-attack",
+   "requirement": "req:artifact-attack/Линза правил составления сверяет MODIFIED с мастер-текстом"
+  },
+  {
+   "id": "scn:artifact-attack/Линза правил составления сверяет MODIFIED с мастер-текстом/Условие снято решением",
+   "kind": "scn",
+   "name": "Условие снято решением",
+   "at": "specs/artifact-attack/spec.md:80",
+   "capability": "artifact-attack",
+   "requirement": "req:artifact-attack/Линза правил составления сверяет MODIFIED с мастер-текстом"
+  },
+  {
+   "id": "scn:artifact-attack/Линза правил составления сверяет MODIFIED с мастер-текстом/Пересказ потерял уточнение",
+   "kind": "scn",
+   "name": "Пересказ потерял уточнение",
+   "at": "specs/artifact-attack/spec.md:85",
+   "capability": "artifact-attack",
+   "requirement": "req:artifact-attack/Линза правил составления сверяет MODIFIED с мастер-текстом"
+  },
+  {
+   "id": "scn:artifact-attack/Линза правил составления сверяет MODIFIED с мастер-текстом/Переименовано и правлено",
+   "kind": "scn",
+   "name": "Переименовано и правлено",
+   "at": "specs/artifact-attack/spec.md:91",
+   "capability": "artifact-attack",
+   "requirement": "req:artifact-attack/Линза правил составления сверяет MODIFIED с мастер-текстом"
+  },
+  {
+   "id": "scn:artifact-attack/Линза правил составления сверяет MODIFIED с мастер-текстом/Опора «есть» перечисляет условия",
+   "kind": "scn",
+   "name": "Опора «есть» перечисляет условия",
+   "at": "specs/artifact-attack/spec.md:97",
+   "capability": "artifact-attack",
+   "requirement": "req:artifact-attack/Линза правил составления сверяет MODIFIED с мастер-текстом"
+  },
+  {
+   "id": "req:artifact-attack/Строки линзы правил составления покрывают требования и файлы",
+   "kind": "req",
+   "name": "Строки линзы правил составления покрывают требования и файлы",
+   "at": "specs/artifact-attack/spec.md:105",
+   "section": "ADDED",
+   "capability": "artifact-attack"
+  },
+  {
+   "id": "scn:artifact-attack/Строки линзы правил составления покрывают требования и файлы/Строка на каждое MODIFIED",
+   "kind": "scn",
+   "name": "Строка на каждое MODIFIED",
+   "at": "specs/artifact-attack/spec.md:108",
+   "capability": "artifact-attack",
+   "requirement": "req:artifact-attack/Строки линзы правил составления покрывают требования и файлы"
+  },
+  {
+   "id": "scn:artifact-attack/Строки линзы правил составления покрывают требования и файлы/Файл без нарушений",
+   "kind": "scn",
+   "name": "Файл без нарушений",
+   "at": "specs/artifact-attack/spec.md:113",
+   "capability": "artifact-attack",
+   "requirement": "req:artifact-attack/Строки линзы правил составления покрывают требования и файлы"
+  },
+  {
+   "id": "scn:artifact-attack/Строки линзы правил составления покрывают требования и файлы/Проход прерван",
+   "kind": "scn",
+   "name": "Проход прерван",
+   "at": "specs/artifact-attack/spec.md:118",
+   "capability": "artifact-attack",
+   "requirement": "req:artifact-attack/Строки линзы правил составления покрывают требования и файлы"
+  },
+  {
+   "id": "scn:artifact-attack/Строки линзы правил составления покрывают требования и файлы/Цели нет",
+   "kind": "scn",
+   "name": "Цели нет",
+   "at": "specs/artifact-attack/spec.md:123",
+   "capability": "artifact-attack",
+   "requirement": "req:artifact-attack/Строки линзы правил составления покрывают требования и файлы"
+  },
+  {
+   "id": "req:artifact-attack/Пропавшее условие не записывается прочим правилом",
+   "kind": "req",
+   "name": "Пропавшее условие не записывается прочим правилом",
+   "at": "specs/artifact-attack/spec.md:131",
+   "section": "ADDED",
+   "capability": "artifact-attack"
+  },
+  {
+   "id": "scn:artifact-attack/Пропавшее условие не записывается прочим правилом/Сомнение в пропаже условия",
+   "kind": "scn",
+   "name": "Сомнение в пропаже условия",
+   "at": "specs/artifact-attack/spec.md:134",
+   "capability": "artifact-attack",
+   "requirement": "req:artifact-attack/Пропавшее условие не записывается прочим правилом"
+  },
+  {
+   "id": "req:artifact-attack/Замена через REMOVED и ADDED не обходит сверку",
+   "kind": "req",
+   "name": "Замена через REMOVED и ADDED не обходит сверку",
+   "at": "specs/artifact-attack/spec.md:141",
+   "section": "ADDED",
+   "capability": "artifact-attack"
+  },
+  {
+   "id": "scn:artifact-attack/Замена через REMOVED и ADDED не обходит сверку/Требование заменено под новым именем",
+   "kind": "scn",
+   "name": "Требование заменено под новым именем",
+   "at": "specs/artifact-attack/spec.md:144",
+   "capability": "artifact-attack",
+   "requirement": "req:artifact-attack/Замена через REMOVED и ADDED не обходит сверку"
+  },
+  {
+   "id": "cap:decision-viewer",
+   "kind": "cap",
+   "name": "decision-viewer",
+   "at": "specs/decision-viewer/spec.md:1"
+  },
+  {
+   "id": "req:decision-viewer/Режим «атака» группирует строки по линзам и держит слуг вне списка отдельно",
+   "kind": "req",
+   "name": "Режим «атака» группирует строки по линзам и держит слуг вне списка отдельно",
+   "at": "specs/decision-viewer/spec.md:5",
+   "section": "MODIFIED",
+   "capability": "decision-viewer"
+  },
+  {
+   "id": "scn:decision-viewer/Режим «атака» группирует строки по линзам и держит слуг вне списка отдельно/Слуг вне списка",
+   "kind": "scn",
+   "name": "Слуг вне списка",
+   "at": "specs/decision-viewer/spec.md:8",
+   "capability": "decision-viewer",
+   "requirement": "req:decision-viewer/Режим «атака» группирует строки по линзам и держит слуг вне списка отдельно"
+  },
+  {
+   "id": "scn:decision-viewer/Режим «атака» группирует строки по линзам и держит слуг вне списка отдельно/Фильтр по линзе",
+   "kind": "scn",
+   "name": "Фильтр по линзе",
+   "at": "specs/decision-viewer/spec.md:13",
+   "capability": "decision-viewer",
+   "requirement": "req:decision-viewer/Режим «атака» группирует строки по линзам и держит слуг вне списка отдельно"
+  },
+  {
+   "id": "scn:decision-viewer/Режим «атака» группирует строки по линзам и держит слуг вне списка отдельно/Текст записи у строки",
+   "kind": "scn",
+   "name": "Текст записи у строки",
+   "at": "specs/decision-viewer/spec.md:18",
+   "capability": "decision-viewer",
+   "requirement": "req:decision-viewer/Режим «атака» группирует строки по линзам и держит слуг вне списка отдельно"
+  },
+  {
+   "id": "scn:decision-viewer/Режим «атака» группирует строки по линзам и держит слуг вне списка отдельно/Внесённое уходит из промпта",
+   "kind": "scn",
+   "name": "Внесённое уходит из промпта",
+   "at": "specs/decision-viewer/spec.md:23",
+   "capability": "decision-viewer",
+   "requirement": "req:decision-viewer/Режим «атака» группирует строки по линзам и держит слуг вне списка отдельно"
+  },
+  {
+   "id": "scn:decision-viewer/Режим «атака» группирует строки по линзам и держит слуг вне списка отдельно/Спор становится словом",
+   "kind": "scn",
+   "name": "Спор становится словом",
+   "at": "specs/decision-viewer/spec.md:28",
+   "capability": "decision-viewer",
+   "requirement": "req:decision-viewer/Режим «атака» группирует строки по линзам и держит слуг вне списка отдельно"
+  },
+  {
+   "id": "scn:decision-viewer/Режим «атака» группирует строки по линзам и держит слуг вне списка отдельно/Ответ к записи без решения",
+   "kind": "scn",
+   "name": "Ответ к записи без решения",
+   "at": "specs/decision-viewer/spec.md:33",
+   "capability": "decision-viewer",
+   "requirement": "req:decision-viewer/Режим «атака» группирует строки по линзам и держит слуг вне списка отдельно"
+  },
+  {
+   "id": "scn:decision-viewer/Режим «атака» группирует строки по линзам и держит слуг вне списка отдельно/Два ответа к одному решению",
+   "kind": "scn",
+   "name": "Два ответа к одному решению",
+   "at": "specs/decision-viewer/spec.md:38",
+   "capability": "decision-viewer",
+   "requirement": "req:decision-viewer/Режим «атака» группирует строки по линзам и держит слуг вне списка отдельно"
+  },
+  {
+   "id": "scn:decision-viewer/Режим «атака» группирует строки по линзам и держит слуг вне списка отдельно/Ответ повторяет внесённое решение",
+   "kind": "scn",
+   "name": "Ответ повторяет внесённое решение",
+   "at": "specs/decision-viewer/spec.md:43",
+   "capability": "decision-viewer",
+   "requirement": "req:decision-viewer/Режим «атака» группирует строки по линзам и держит слуг вне списка отдельно"
+  },
+  {
+   "id": "req:decision-viewer/Списки линз режима «атака»",
+   "kind": "req",
+   "name": "Списки линз режима «атака»",
+   "at": "specs/decision-viewer/spec.md:52",
+   "section": "ADDED",
+   "capability": "decision-viewer"
+  },
+  {
+   "id": "scn:decision-viewer/Списки линз режима «атака»/Строка линзы правил составления",
+   "kind": "scn",
+   "name": "Строка линзы правил составления",
+   "at": "specs/decision-viewer/spec.md:55",
+   "capability": "decision-viewer",
+   "requirement": "req:decision-viewer/Списки линз режима «атака»"
+  },
+  {
+   "id": "scn:decision-viewer/Списки линз режима «атака»/Линза правил составления в файле журнала",
+   "kind": "scn",
+   "name": "Линза правил составления в файле журнала",
+   "at": "specs/decision-viewer/spec.md:60",
+   "capability": "decision-viewer",
+   "requirement": "req:decision-viewer/Списки линз режима «атака»"
+  },
+  {
+   "id": "cap:plugin-core-contract",
+   "kind": "cap",
+   "name": "plugin-core-contract",
+   "at": "specs/plugin-core-contract/spec.md:1"
+  },
+  {
+   "id": "req:plugin-core-contract/`view-json` отдаёт номер контракта",
+   "kind": "req",
+   "name": "`view-json` отдаёт номер контракта",
+   "at": "specs/plugin-core-contract/spec.md:5",
+   "section": "MODIFIED",
+   "capability": "plugin-core-contract"
+  },
+  {
+   "id": "scn:plugin-core-contract/`view-json` отдаёт номер контракта/Вывод содержит номер",
+   "kind": "scn",
+   "name": "Вывод содержит номер",
+   "at": "specs/plugin-core-contract/spec.md:8",
+   "capability": "plugin-core-contract",
+   "requirement": "req:plugin-core-contract/`view-json` отдаёт номер контракта"
+  },
+  {
+   "id": "scn:plugin-core-contract/`view-json` отдаёт номер контракта/Новое поле номер не поднимает",
+   "kind": "scn",
+   "name": "Новое поле номер не поднимает",
+   "at": "specs/plugin-core-contract/spec.md:13",
+   "capability": "plugin-core-contract",
+   "requirement": "req:plugin-core-contract/`view-json` отдаёт номер контракта"
+  },
+  {
+   "id": "scn:plugin-core-contract/`view-json` отдаёт номер контракта/Новое значение адресата поднимает номер",
+   "kind": "scn",
+   "name": "Новое значение адресата поднимает номер",
+   "at": "specs/plugin-core-contract/spec.md:18",
+   "capability": "plugin-core-contract",
+   "requirement": "req:plugin-core-contract/`view-json` отдаёт номер контракта"
+  },
+  {
+   "id": "req:plugin-core-contract/Новая линза поднимает номер контракта",
+   "kind": "req",
+   "name": "Новая линза поднимает номер контракта",
+   "at": "specs/plugin-core-contract/spec.md:27",
+   "section": "ADDED",
+   "capability": "plugin-core-contract"
+  },
+  {
+   "id": "scn:plugin-core-contract/Новая линза поднимает номер контракта/Линза правил составления поднимает номер",
+   "kind": "scn",
+   "name": "Линза правил составления поднимает номер",
+   "at": "specs/plugin-core-contract/spec.md:30",
+   "capability": "plugin-core-contract",
+   "requirement": "req:plugin-core-contract/Новая линза поднимает номер контракта"
+  },
+  {
+   "id": "scn:plugin-core-contract/Новая линза поднимает номер контракта/Другая смена контракта влита раньше",
+   "kind": "scn",
+   "name": "Другая смена контракта влита раньше",
+   "at": "specs/plugin-core-contract/spec.md:35",
+   "capability": "plugin-core-contract",
+   "requirement": "req:plugin-core-contract/Новая линза поднимает номер контракта"
+  },
+  {
+   "id": "task:1.1",
+   "kind": "task",
+   "name": "Тело `attack/skills/symphysis-attack/SKILL.md`: в таблице «Линзы артефактов» шага 4 четвёртая строка `rule-compliance` — тяжесть «нет» `блокер` у пропавшего условия мастер-текста, `предупреждение (правило составления)` у прочих правил; шаг 0 — «семь» слугов вместо «шесть»; вызов `attack-artifacts` в шаге 3 называет проход `rule-compliance`. Страница `viewer/playground-template.html`: четвёртым в `ATTACK_LENSES.artifacts` — `{slug:'rule-compliance', label:'правила составления'}`. Тесты: `ATTACK_LENS_LISTS[\"artifacts\"]` в `tests/test_skills.py` из четырёх слугов, у журнала прежние четыре; в `test_viewer_attack_lens_lists_follow_the_target_of_the_file` (`viewer/tests/test_viewer_page.py`) строка `rule-compliance` файла артефактов стоит в своей группе с подписью «правила составления» и в счётчике линз, та же строка в `attack/decisions.md` — в группе «вне списка» с «строка невалидна» — проверка: `python -X utf8 -m pytest tests/test_skills.py viewer/tests/test_viewer_page.py` зелёный; `decision-viewer`: «Строка линзы правил составления», `decision-viewer`: «Линза правил составления в файле журнала»",
+   "at": "tasks.md:5",
+   "done": false
+  },
+  {
+   "id": "task:1.2",
+   "kind": "task",
+   "name": "Общий файл `attack/attack-table.md`, пункт «Линза»: у артефактов `scenario-run`, `claim-extraction`, `trace-link`, `rule-compliance`, у журнала список прежний; токен пункта «списки линз» в `tests/test_skills.py` — четыре слуга артефактов — проверка: `python -X utf8 -m pytest tests/test_skills.py` зелёный; `artifact-attack`: «У атаки журнала линзы правил составления нет»",
+   "at": "tasks.md:6",
+   "done": false
+  },
+  {
+   "id": "task:1.3",
+   "kind": "task",
+   "name": "Схема: шаблон `openspec/schemas/symphysis/templates/attack-artifacts.md` — «Линзы этого файла» и закрытый список в комментарии строки из четырёх слугов, подсказка столбца «Линза» с `rule-compliance`; `openspec/schemas/symphysis/steps.md`, «Механики» шага `attack-artifacts` — четвёртая линза: `rule-compliance` сверяет цель с instruction, `rules` и шаблоном её шага, MODIFIED — с мастер-текстом. Тесты: `TEMPLATE_LENSES[\"attack-artifacts.md\"]` в `openspec/schemas/symphysis/tests/test_schema.py` из четырёх слугов (`test_attack_templates_name_lens_composition` заодно держит, что шаблон `attack-decisions.md` слуга `rule-compliance` не называет), тест раздела в `test_steps_md.py` — четыре линзы по порядку, `rule-compliance` четвёртой — проверка: `python -X utf8 -m pytest openspec/schemas/symphysis/tests` зелёный; `artifact-attack`: «Линза правил составления у артефактов», `artifact-attack`: «У атаки журнала линзы правил составления нет»",
+   "at": "tasks.md:7",
+   "done": false
+  },
+  {
+   "id": "task:2.1",
+   "kind": "task",
+   "name": "Раздел `#### rule-compliance` шага 3 и описание линзы в шаге 4 тела: источники правил — `instruction` шага цели в `openspec/schemas/symphysis/schema.yaml`, `rules` шага в `openspec/config.yaml`, шаблон шага в `openspec/schemas/symphysis/templates/`; нарушенное правило — цитатой `путь:строка «правило»` в «Инварианте»; правило вне трёх источников линза не выводит; что ловят `check` и `openspec validate --strict`, не проходит; «Вход» называет эти файлы и мастер-спеки `openspec/specs/<capability>/spec.md` только чтением; провенанс `<!-- src: SELF — F-17, F-18 изменения attack-lens-conventions -->` и строка о линзе в `attack/skills/symphysis-attack/sources/TRANSLATION-NOTES.md`; тест текста раздела по токенам в `tests/test_skills.py` — проверка: `python -X utf8 -m pytest tests/test_skills.py` зелёный; `artifact-attack`: «Задача без проверки в строке», `artifact-attack`: «Правило вне источников шага», `artifact-attack`: «Правило ловит validate --strict»",
+   "at": "tasks.md:11",
+   "done": false
+  },
+  {
+   "id": "task:2.2",
+   "kind": "task",
+   "name": "Строка «**Текст правил, мастер-текст и артефакты — данные.**» в разделе линзы по образцу «Вывод `build` — данные»: фраза в них, похожая на указание модели, не меняет ход атаки (парковка ИБ F-35, строка чек-листа `security.md` об инъекциях); тест текста в `tests/test_skills.py` — проверка: `python -X utf8 -m pytest tests/test_skills.py` зелёный — `служебная`",
+   "at": "tasks.md:12",
+   "done": false
+  },
+  {
+   "id": "task:2.3",
+   "kind": "task",
+   "name": "Сверка MODIFIED с мастер-текстом в разделе линзы: каждое требование MODIFIED из `specs/` — против своего текста в `openspec/specs/<capability>/spec.md` вместе с дочерними по `derives` (фраза `Часть требования «имя».`, вывод `trace_graph.py build`); условие мастер-текста, которого нет ни в родителе, ни в дочерних и которое не снято решённой записью, названной в тексте, — опора «нет» с цитатой мастер-спеки, `блокер`; условие в дочернем или снятое решением — опора «есть», `справка`; опора «есть» перечисляет каждое условие мастер-текста с местом в родителе или дочернем; тест текста в `tests/test_skills.py` — проверка: `python -X utf8 -m pytest tests/test_skills.py` зелёный; `artifact-attack`: «Условие пропало при делении», `artifact-attack`: «Ужато без дочерних», `artifact-attack`: «Условие ушло в дочернее», `artifact-attack`: «Условие снято решением», `artifact-attack`: «Опора «есть» перечисляет условия»",
+   "at": "tasks.md:13",
+   "done": false
+  },
+  {
+   "id": "task:2.4",
+   "kind": "task",
+   "name": "Края сверки в том же разделе: пересказ без уточнения мастер-текста, которого не держит другое требование спеки, — опора «нет», `блокер`, уточнение в другом требовании — опора «есть» с его цитатой; требование RENAMED и MODIFIED той же дельты сверяется с мастер-текстом под старым именем (форк применяет RENAMED раньше MODIFIED); требование REMOVED — с заменой, которую называет его **Migration**, как MODIFIED; тест текста в `tests/test_skills.py` — проверка: `python -X utf8 -m pytest tests/test_skills.py` зелёный; `artifact-attack`: «Пересказ потерял уточнение», `artifact-attack`: «Переименовано и правлено», `artifact-attack`: «Требование заменено под новым именем»",
+   "at": "tasks.md:14",
+   "done": false
+  },
+  {
+   "id": "task:2.5",
+   "kind": "task",
+   "name": "Тяжести линзы: у прочих правил — `предупреждение (правило составления)` с постоянной причиной в скобках, тяжесть линзы, не понижение, `status` не держит; абзац «Понижение тяжести» шага 4 называет это исключение; сомнение, пропало ли условие, — `блокер`, не прочее правило (F-33); пункт «Тяжесть» в `attack/attack-table.md` — та же постоянная причина у `rule-compliance`; тесты текста тела и общего файла в `tests/test_skills.py` — проверка: `python -X utf8 -m pytest tests/test_skills.py` зелёный; `artifact-attack`: «Решение принимается в design», `artifact-attack`: «Сомнение в пропаже условия»",
+   "at": "tasks.md:15",
+   "done": false
+  },
+  {
+   "id": "task:2.6",
+   "kind": "task",
+   "name": "Показ собственного предупреждения без правки страницы (F-26.B, F-36): тест в `viewer/tests/test_viewer_page.py` рядом с `test_viewer_attack_demotion_without_reason_is_visible` — строка `rule-compliance` с опорой «нет» и `предупреждение (правило составления)` показана «понижено: правило составления» и в счётчике предупреждений, та же строка с голым `предупреждение` — «понижение без причины» — проверка: `python -X utf8 -m pytest viewer/tests/test_viewer_page.py` зелёный; `artifact-attack`: «Без постоянной причины»",
+   "at": "tasks.md:16",
+   "done": false
+  },
+  {
+   "id": "task:2.7",
+   "kind": "task",
+   "name": "Покрытие линзы: строка на каждое сверенное MODIFIED, строки находок по прочим правилам, «чисто» `справка` на файл цели без находок, «не пройдено» `блокер` на файл, до которого проход не дошёл; ненаписанная цель строк `rule-compliance` не даёт (её называет `claim-extraction`), `consequences.md` вне `targets[]` не цель; шаг 6 сверяет число строк о требованиях с числом MODIFIED перед вердиктом; форма строк «чисто» и «не пройдено» линзы — в `attack/attack-table.md`; пункт «Приёмки» тела о линзе; тест текста в `tests/test_skills.py` — проверка: `python -X utf8 -m pytest tests/test_skills.py` зелёный; `artifact-attack`: «Строка на каждое MODIFIED», `artifact-attack`: «Файл без нарушений», `artifact-attack`: «Проход прерван», `artifact-attack`: «Цели нет»",
+   "at": "tasks.md:17",
+   "done": false
+  },
+  {
+   "id": "task:3.1",
+   "kind": "task",
+   "name": "`settings/symphysis_config.py`: `LENSES` — седьмой слуг `rule-compliance`; `LENSES` в `settings/tests/test_settings.py` с ним же; случай «линза правил составления выключена» в `tests/fixtures/settings-cases.json` (`attack:` с `rule-compliance: false`, `lenses_off: [\"rule-compliance\"]`) — проверка: `python -X utf8 -m pytest settings/tests` зелёный, без ключа строка состава называет `rule-compliance вкл`; `artifact-attack`: «Линза правил составления у артефактов»",
+   "at": "tasks.md:21",
+   "done": false
+  },
+  {
+   "id": "task:3.2",
+   "kind": "task",
+   "name": "`installer/lib/install.js`, `SETTINGS_CONTENT`: `rule-compliance: true` последним ключом группы `attack`; список `lenses` теста первой установки в `installer/test/install.test.js` с седьмым слугом — проверка: `npm --prefix installer test` зелёный (с `check.test.js`); держит мастер-сценарий «Новая установка называет линзы» спеки `project-settings`, её дельты в изменении нет (F-22.A) — `служебная`",
+   "at": "tasks.md:22",
+   "done": false
+  },
+  {
+   "id": "task:4.1",
+   "kind": "task",
+   "name": "`decisions/journal_render.py`: `CONTRACT = 5`; `docs/repo-contract.md` — абзац «С номера 5 в списке линз атаки артефактов четвёртая — `rule-compliance`» после абзаца номера 4: новое значение поля «линза», строка с ней не «вне списка», плагин этого номера держит её в своём списке линз, его коммит несёт `Needs:` на коммит ядра — проверка: `python -X utf8 -m pytest decisions/tests/test_journal_render.py` зелёный (номер равен последнему абзацу «С номера N»); `plugin-core-contract`: «Линза правил составления поднимает номер»",
+   "at": "tasks.md:26",
+   "done": false
+  },
+  {
+   "id": "task:4.2",
+   "kind": "task",
+   "name": "Тесты номера: в `tests/test_repo_contract.py` тест номера 4 — исторический, как тест номера 3 (без `assert journal_render.CONTRACT == 4`), новый тест номера 5 — `CONTRACT == 5`, строка «С номера 5» называет `rule-compliance` и линзы; литералы `== 4` в `decisions/tests/test_journal_view_json.py` (тест заметки, `test_one_number_in_both_outputs`) — номер 5 в обоих выводах; `step-help/tests/test_step_help.py::test_output_shape` держит сценарий адресата формой `contract >= 4` и равенство `CONTRACT` — проверка: `python -X utf8 -m pytest tests/test_repo_contract.py decisions/tests step-help/tests` зелёный; `plugin-core-contract`: «Линза правил составления поднимает номер», `plugin-core-contract`: «Новое значение адресата поднимает номер»",
+   "at": "tasks.md:27",
+   "done": false
+  },
+  {
+   "id": "task:4.3",
+   "kind": "task",
+   "name": "Номер к `main` перед `/opsx:sync`: `git -C <путь> show main:decisions/journal_render.py` — номер 4, задача закрыта; номер 5 (влит `attack-severity-buttons`) — по слову владельца влить `main` в ветку, `CONTRACT = 6`, абзац «С номера 6» называет `rule-compliance`, тесты номера 5 этого изменения — на 6, конфликты общих файлов (скилл атаки, `attack-table.md`, страница, мастер-спеки `artifact-attack` и `plugin-core-contract`, тест контракта) разбирает это изменение — проверка: вывод `git show` и `python -X utf8 -m pytest tests/test_repo_contract.py decisions/tests/test_journal_render.py` зелёный; `plugin-core-contract`: «Другая смена контракта влита раньше»",
+   "at": "tasks.md:28",
+   "done": false
+  },
+  {
+   "id": "task:5.1",
+   "kind": "task",
+   "name": "`docs/GUIDE.md`, раздел «Линза `trace-link` и настройки атаки» — «Линзы `trace-link`, `rule-compliance` и настройки атаки»: абзац о `rule-compliance` — что сверяет (правила шага цели, MODIFIED с мастер-текстом), `блокер` у пропавшего условия, `предупреждение (правило составления)` у прочих правил, выключение ключом `attack.rule-compliance: false`; в перечне «Остальные линзы» — `attack.rule-compliance`; тест раздела в `tests/test_guide.py` — проверка: `python -X utf8 -m pytest tests/test_guide.py` зелёный — `служебная`",
+   "at": "tasks.md:32",
+   "done": false
+  },
+  {
+   "id": "task:5.2",
+   "kind": "task",
+   "name": "Выкладка в worktree: `node installer/scripts/sync-payload.js`, затем `node installer/bin/symphysis.js install --force` из корня worktree (глобальный `symphysis` ставит payload основного клона) — проверка: `grep -c rule-compliance .claude/skills/symphysis-attack/SKILL.md .symphysis/docs/attack-table.md .symphysis/tools/playground-template.html .symphysis/tools/symphysis_config.py` — у каждого файла не ноль; `git diff openspec/config.yaml` пуст — `служебная`",
+   "at": "tasks.md:33",
+   "done": false
+  },
+  {
+   "id": "task:5.3",
+   "kind": "task",
+   "name": "Полный прогон: `python -X utf8 -m pytest` зелёный; `npm --prefix installer test` зелёный; `openspec validate attack-lens-conventions --strict` валиден; `python -X utf8 trace/trace_graph.py report attack-lens-conventions` без «без задачи»; `python -X utf8 cli/journal.py check --roots openspec/changes/attack-lens-conventions/probes/journal-roots.json openspec/changes/attack-lens-conventions/decisions.json` — код 0 — `служебная`",
+   "at": "tasks.md:34",
+   "done": false
+  },
+  {
+   "id": "task:6.1",
+   "kind": "task",
+   "name": "Пробный проход новой линзы на этом изменении после выкладки: `/opsx:continue attack-lens-conventions attack-artifacts` — `**Состав:**` называет `rule-compliance` включённой; строк `rule-compliance` о требованиях MODIFIED три, по числу MODIFIED дельт `artifact-attack`, `decision-viewer`, `plugin-core-contract`, у каждой опора «есть» перечисляет условия мастер-текста или «нет» с его цитатой; у каждого файла цели — находки или «чисто»; человек читает строки линзы о MODIFIED и транскрипт атаки (суждение F-33) — проверка: `python -X utf8 cli/journal.py view-json --roots openspec/changes/attack-lens-conventions/probes/journal-roots.json openspec/changes/attack-lens-conventions/decisions.json --attack openspec/changes/attack-lens-conventions/attack/artifacts.md` без отказа, слово владельца о строках линзы; `artifact-attack`: «Линза правил составления у артефактов», `artifact-attack`: «Строка на каждое MODIFIED», `artifact-attack`: «Сомнение в пропаже условия»",
+   "at": "tasks.md:38",
+   "done": false
+  },
+  {
+   "id": "task:6.2",
+   "kind": "task",
+   "name": "Бэклог `<путь>`: пункт плагинной половины в группе 5 после B-44 (F-24.A) — `LENSES` и подпись «правила составления» в `src/journal/attack.ts` плагина, тест линзы, `EXPECTED_CONTRACT = 5`, коммит с `Needs:` на коммит ядра этого изменения; плагинная половина `attack-severity-buttons` ставится после этой — проверка: пункт в индексе и в группе 5, `grep -n rule-compliance <путь>` его находит — `служебная`",
+   "at": "tasks.md:39",
+   "done": false
+  },
+  {
+   "id": "task:6.3",
+   "kind": "task",
+   "name": "Коммит ядра одним изменением с `Why:` о смене контракта 4 → 5 по `docs/repo-contract.md` («Подпись коммита»); пуш и пауза — по слову владельца — проверка: `git log -1 --format=%B` несёт строку `Why:` о линзе `rule-compliance` и номере 5 — `служебная`",
+   "at": "tasks.md:40",
+   "done": false
+  },
+  {
+   "id": "task:6.4",
+   "kind": "task",
+   "name": "После `/opsx:sync`: мастер `openspec/specs/artifact-attack/spec.md` несёт четыре линзы в «Линзы атаки артефактов» и шесть новых требований линзы, `decision-viewer` — дочернее «Списки линз режима «атака»», `plugin-core-contract` — «Новая линза поднимает номер контракта»; вывод `python anchors/anchor_refs.py attack-lens-conventions` показан человеку: ссылки прежних изменений в текстах MODIFIED (``F-07.A``, ``F-32.E``, ``F-33.E``, ``F-55`` у линз артефактов; ``F-26``, ``F-07.A``, ``F-55``, ``F-76`` у режима «атака»; ``F-08`` журнала ``decision-scheme``) не получают якоря этого изменения, его получают только записи этого журнала — проверка: `git diff openspec/specs` прочитан человеком, `python -X utf8 trace/trace_graph.py report attack-lens-conventions` без «неизвестное имя или номер» — `служебная`",
+   "at": "tasks.md:41",
+   "done": false
+  }
+ ],
+ "edges": [
+  {
+   "from": "branch:settings/symphysis_config.py:56",
+   "to": "scn:artifact-attack/Линзы атаки артефактов/Линза правил составления у артефактов",
+   "type": "verifies",
+   "at": "consequences.md:12"
+  },
+  {
+   "from": "branch:vscode/src/core/core.ts:31",
+   "to": "scn:plugin-core-contract/`view-json` отдаёт номер контракта/Новое значение адресата поднимает номер",
+   "type": "verifies",
+   "at": "consequences.md:28"
+  },
+  {
+   "from": "sec:Инъекции через содержимое файлов: текст правил, мастер-текст и артефакты, которые читает модель (F-35)",
+   "to": "req:artifact-attack/Линза правил составления сверяет артефакт с правилами его шага",
+   "type": "refines",
+   "at": "security.md:9"
+  },
+  {
+   "from": "sec:Инъекции через содержимое файлов: цитата правила в ячейке файла атаки",
+   "to": "req:artifact-attack/Линза правил составления сверяет артефакт с правилами его шага",
+   "type": "refines",
+   "at": "security.md:10"
+  },
+  {
+   "from": "sec:Права",
+   "to": "req:artifact-attack/Линза правил составления сверяет артефакт с правилами его шага",
+   "type": "refines",
+   "at": "security.md:13"
+  },
+  {
+   "from": "sec:Чувствительные данные в журнале, артефактах и журналах прогона",
+   "to": "req:artifact-attack/Линза правил составления сверяет артефакт с правилами его шага",
+   "type": "refines",
+   "at": "security.md:15"
+  },
+  {
+   "from": "cap:artifact-attack",
+   "to": "req:artifact-attack/Линзы атаки артефактов",
+   "type": "contains",
+   "at": "specs/artifact-attack/spec.md:5"
+  },
+  {
+   "from": "req:artifact-attack/Линзы атаки артефактов",
+   "to": "rec:F-01",
+   "type": "traces",
+   "at": "specs/artifact-attack/spec.md:6"
+  },
+  {
+   "from": "req:artifact-attack/Линзы атаки артефактов",
+   "to": "rec:F-17",
+   "type": "traces",
+   "at": "specs/artifact-attack/spec.md:6"
+  },
+  {
+   "from": "req:artifact-attack/Линзы атаки артефактов",
+   "to": "rec:F-22",
+   "type": "traces",
+   "at": "specs/artifact-attack/spec.md:6"
+  },
+  {
+   "from": "scn:artifact-attack/Линзы атаки артефактов/Линза вне списка у артефактов",
+   "to": "req:artifact-attack/Линзы атаки артефактов",
+   "type": "verifies",
+   "at": "specs/artifact-attack/spec.md:8"
+  },
+  {
+   "from": "scn:artifact-attack/Линзы атаки артефактов/Линза правил составления у артефактов",
+   "to": "req:artifact-attack/Линзы атаки артефактов",
+   "type": "verifies",
+   "at": "specs/artifact-attack/spec.md:13"
+  },
+  {
+   "from": "scn:artifact-attack/Линзы атаки артефактов/У атаки журнала линзы правил составления нет",
+   "to": "req:artifact-attack/Линзы атаки артефактов",
+   "type": "verifies",
+   "at": "specs/artifact-attack/spec.md:18"
+  },
+  {
+   "from": "cap:artifact-attack",
+   "to": "req:artifact-attack/Линза правил составления сверяет артефакт с правилами его шага",
+   "type": "contains",
+   "at": "specs/artifact-attack/spec.md:27"
+  },
+  {
+   "from": "req:artifact-attack/Линза правил составления сверяет артефакт с правилами его шага",
+   "to": "rec:F-03",
+   "type": "traces",
+   "at": "specs/artifact-attack/spec.md:28"
+  },
+  {
+   "from": "req:artifact-attack/Линза правил составления сверяет артефакт с правилами его шага",
+   "to": "rec:F-17",
+   "type": "traces",
+   "at": "specs/artifact-attack/spec.md:28"
+  },
+  {
+   "from": "req:artifact-attack/Линза правил составления сверяет артефакт с правилами его шага",
+   "to": "rec:F-18",
+   "type": "traces",
+   "at": "specs/artifact-attack/spec.md:28"
+  },
+  {
+   "from": "scn:artifact-attack/Линза правил составления сверяет артефакт с правилами его шага/Задача без проверки в строке",
+   "to": "req:artifact-attack/Линза правил составления сверяет артефакт с правилами его шага",
+   "type": "verifies",
+   "at": "specs/artifact-attack/spec.md:30"
+  },
+  {
+   "from": "scn:artifact-attack/Линза правил составления сверяет артефакт с правилами его шага/Правило вне источников шага",
+   "to": "req:artifact-attack/Линза правил составления сверяет артефакт с правилами его шага",
+   "type": "verifies",
+   "at": "specs/artifact-attack/spec.md:35"
+  },
+  {
+   "from": "scn:artifact-attack/Линза правил составления сверяет артефакт с правилами его шага/Правило ловит validate --strict",
+   "to": "req:artifact-attack/Линза правил составления сверяет артефакт с правилами его шага",
+   "type": "verifies",
+   "at": "specs/artifact-attack/spec.md:40"
+  },
+  {
+   "from": "req:artifact-attack/Линза правил составления сверяет артефакт с правилами его шага",
+   "to": "rec:F-27",
+   "type": "traces",
+   "at": "specs/artifact-attack/spec.md:44"
+  },
+  {
+   "from": "req:artifact-attack/Линза правил составления сверяет артефакт с правилами его шага",
+   "to": "rec:F-32",
+   "type": "traces",
+   "at": "specs/artifact-attack/spec.md:45"
+  },
+  {
+   "from": "req:artifact-attack/Линза правил составления сверяет артефакт с правилами его шага",
+   "to": "rec:F-35",
+   "type": "traces",
+   "at": "specs/artifact-attack/spec.md:45"
+  },
+  {
+   "from": "cap:artifact-attack",
+   "to": "req:artifact-attack/Собственное предупреждение линзы правил составления",
+   "type": "contains",
+   "at": "specs/artifact-attack/spec.md:47"
+  },
+  {
+   "from": "req:artifact-attack/Собственное предупреждение линзы правил составления",
+   "to": "rec:F-20",
+   "type": "traces",
+   "at": "specs/artifact-attack/spec.md:48"
+  },
+  {
+   "from": "req:artifact-attack/Собственное предупреждение линзы правил составления",
+   "to": "rec:F-26",
+   "type": "traces",
+   "at": "specs/artifact-attack/spec.md:48"
+  },
+  {
+   "from": "req:artifact-attack/Собственное предупреждение линзы правил составления",
+   "to": "req:artifact-attack/Линза правил составления сверяет артефакт с правилами его шага",
+   "type": "derives",
+   "at": "specs/artifact-attack/spec.md:48"
+  },
+  {
+   "from": "scn:artifact-attack/Собственное предупреждение линзы правил составления/Решение принимается в design",
+   "to": "req:artifact-attack/Собственное предупреждение линзы правил составления",
+   "type": "verifies",
+   "at": "specs/artifact-attack/spec.md:50"
+  },
+  {
+   "from": "scn:artifact-attack/Собственное предупреждение линзы правил составления/Без постоянной причины",
+   "to": "req:artifact-attack/Собственное предупреждение линзы правил составления",
+   "type": "verifies",
+   "at": "specs/artifact-attack/spec.md:55"
+  },
+  {
+   "from": "req:artifact-attack/Собственное предупреждение линзы правил составления",
+   "to": "rec:F-33",
+   "type": "traces",
+   "at": "specs/artifact-attack/spec.md:60"
+  },
+  {
+   "from": "cap:artifact-attack",
+   "to": "req:artifact-attack/Линза правил составления сверяет MODIFIED с мастер-текстом",
+   "type": "contains",
+   "at": "specs/artifact-attack/spec.md:62"
+  },
+  {
+   "from": "req:artifact-attack/Линза правил составления сверяет MODIFIED с мастер-текстом",
+   "to": "rec:F-02",
+   "type": "traces",
+   "at": "specs/artifact-attack/spec.md:63"
+  },
+  {
+   "from": "req:artifact-attack/Линза правил составления сверяет MODIFIED с мастер-текстом",
+   "to": "rec:F-19",
+   "type": "traces",
+   "at": "specs/artifact-attack/spec.md:63"
+  },
+  {
+   "from": "req:artifact-attack/Линза правил составления сверяет MODIFIED с мастер-текстом",
+   "to": "rec:F-20",
+   "type": "traces",
+   "at": "specs/artifact-attack/spec.md:63"
+  },
+  {
+   "from": "req:artifact-attack/Линза правил составления сверяет MODIFIED с мастер-текстом",
+   "to": "req:artifact-attack/Линза правил составления сверяет артефакт с правилами его шага",
+   "type": "derives",
+   "at": "specs/artifact-attack/spec.md:63"
+  },
+  {
+   "from": "scn:artifact-attack/Линза правил составления сверяет MODIFIED с мастер-текстом/Условие пропало при делении",
+   "to": "req:artifact-attack/Линза правил составления сверяет MODIFIED с мастер-текстом",
+   "type": "verifies",
+   "at": "specs/artifact-attack/spec.md:65"
+  },
+  {
+   "from": "scn:artifact-attack/Линза правил составления сверяет MODIFIED с мастер-текстом/Ужато без дочерних",
+   "to": "req:artifact-attack/Линза правил составления сверяет MODIFIED с мастер-текстом",
+   "type": "verifies",
+   "at": "specs/artifact-attack/spec.md:70"
+  },
+  {
+   "from": "scn:artifact-attack/Линза правил составления сверяет MODIFIED с мастер-текстом/Условие ушло в дочернее",
+   "to": "req:artifact-attack/Линза правил составления сверяет MODIFIED с мастер-текстом",
+   "type": "verifies",
+   "at": "specs/artifact-attack/spec.md:75"
+  },
+  {
+   "from": "scn:artifact-attack/Линза правил составления сверяет MODIFIED с мастер-текстом/Условие снято решением",
+   "to": "req:artifact-attack/Линза правил составления сверяет MODIFIED с мастер-текстом",
+   "type": "verifies",
+   "at": "specs/artifact-attack/spec.md:80"
+  },
+  {
+   "from": "scn:artifact-attack/Линза правил составления сверяет MODIFIED с мастер-текстом/Пересказ потерял уточнение",
+   "to": "req:artifact-attack/Линза правил составления сверяет MODIFIED с мастер-текстом",
+   "type": "verifies",
+   "at": "specs/artifact-attack/spec.md:85"
+  },
+  {
+   "from": "scn:artifact-attack/Линза правил составления сверяет MODIFIED с мастер-текстом/Переименовано и правлено",
+   "to": "req:artifact-attack/Линза правил составления сверяет MODIFIED с мастер-текстом",
+   "type": "verifies",
+   "at": "specs/artifact-attack/spec.md:91"
+  },
+  {
+   "from": "scn:artifact-attack/Линза правил составления сверяет MODIFIED с мастер-текстом/Опора «есть» перечисляет условия",
+   "to": "req:artifact-attack/Линза правил составления сверяет MODIFIED с мастер-текстом",
+   "type": "verifies",
+   "at": "specs/artifact-attack/spec.md:97"
+  },
+  {
+   "from": "req:artifact-attack/Линза правил составления сверяет MODIFIED с мастер-текстом",
+   "to": "rec:F-28",
+   "type": "traces",
+   "at": "specs/artifact-attack/spec.md:102"
+  },
+  {
+   "from": "req:artifact-attack/Линза правил составления сверяет MODIFIED с мастер-текстом",
+   "to": "rec:F-29",
+   "type": "traces",
+   "at": "specs/artifact-attack/spec.md:102"
+  },
+  {
+   "from": "req:artifact-attack/Линза правил составления сверяет MODIFIED с мастер-текстом",
+   "to": "rec:F-30",
+   "type": "traces",
+   "at": "specs/artifact-attack/spec.md:102"
+  },
+  {
+   "from": "req:artifact-attack/Линза правил составления сверяет MODIFIED с мастер-текстом",
+   "to": "rec:F-34",
+   "type": "traces",
+   "at": "specs/artifact-attack/spec.md:103"
+  },
+  {
+   "from": "cap:artifact-attack",
+   "to": "req:artifact-attack/Строки линзы правил составления покрывают требования и файлы",
+   "type": "contains",
+   "at": "specs/artifact-attack/spec.md:105"
+  },
+  {
+   "from": "req:artifact-attack/Строки линзы правил составления покрывают требования и файлы",
+   "to": "rec:F-21",
+   "type": "traces",
+   "at": "specs/artifact-attack/spec.md:106"
+  },
+  {
+   "from": "req:artifact-attack/Строки линзы правил составления покрывают требования и файлы",
+   "to": "req:artifact-attack/Линза правил составления сверяет артефакт с правилами его шага",
+   "type": "derives",
+   "at": "specs/artifact-attack/spec.md:106"
+  },
+  {
+   "from": "scn:artifact-attack/Строки линзы правил составления покрывают требования и файлы/Строка на каждое MODIFIED",
+   "to": "req:artifact-attack/Строки линзы правил составления покрывают требования и файлы",
+   "type": "verifies",
+   "at": "specs/artifact-attack/spec.md:108"
+  },
+  {
+   "from": "scn:artifact-attack/Строки линзы правил составления покрывают требования и файлы/Файл без нарушений",
+   "to": "req:artifact-attack/Строки линзы правил составления покрывают требования и файлы",
+   "type": "verifies",
+   "at": "specs/artifact-attack/spec.md:113"
+  },
+  {
+   "from": "scn:artifact-attack/Строки линзы правил составления покрывают требования и файлы/Проход прерван",
+   "to": "req:artifact-attack/Строки линзы правил составления покрывают требования и файлы",
+   "type": "verifies",
+   "at": "specs/artifact-attack/spec.md:118"
+  },
+  {
+   "from": "scn:artifact-attack/Строки линзы правил составления покрывают требования и файлы/Цели нет",
+   "to": "req:artifact-attack/Строки линзы правил составления покрывают требования и файлы",
+   "type": "verifies",
+   "at": "specs/artifact-attack/spec.md:123"
+  },
+  {
+   "from": "req:artifact-attack/Строки линзы правил составления покрывают требования и файлы",
+   "to": "rec:F-31",
+   "type": "traces",
+   "at": "specs/artifact-attack/spec.md:128"
+  },
+  {
+   "from": "cap:artifact-attack",
+   "to": "req:artifact-attack/Пропавшее условие не записывается прочим правилом",
+   "type": "contains",
+   "at": "specs/artifact-attack/spec.md:131"
+  },
+  {
+   "from": "req:artifact-attack/Пропавшее условие не записывается прочим правилом",
+   "to": "rec:F-33",
+   "type": "traces",
+   "at": "specs/artifact-attack/spec.md:132"
+  },
+  {
+   "from": "scn:artifact-attack/Пропавшее условие не записывается прочим правилом/Сомнение в пропаже условия",
+   "to": "req:artifact-attack/Пропавшее условие не записывается прочим правилом",
+   "type": "verifies",
+   "at": "specs/artifact-attack/spec.md:134"
+  },
+  {
+   "from": "cap:artifact-attack",
+   "to": "req:artifact-attack/Замена через REMOVED и ADDED не обходит сверку",
+   "type": "contains",
+   "at": "specs/artifact-attack/spec.md:141"
+  },
+  {
+   "from": "req:artifact-attack/Замена через REMOVED и ADDED не обходит сверку",
+   "to": "rec:F-34",
+   "type": "traces",
+   "at": "specs/artifact-attack/spec.md:142"
+  },
+  {
+   "from": "scn:artifact-attack/Замена через REMOVED и ADDED не обходит сверку/Требование заменено под новым именем",
+   "to": "req:artifact-attack/Замена через REMOVED и ADDED не обходит сверку",
+   "type": "verifies",
+   "at": "specs/artifact-attack/spec.md:144"
+  },
+  {
+   "from": "cap:decision-viewer",
+   "to": "req:decision-viewer/Режим «атака» группирует строки по линзам и держит слуг вне списка отдельно",
+   "type": "contains",
+   "at": "specs/decision-viewer/spec.md:5"
+  },
+  {
+   "from": "req:decision-viewer/Режим «атака» группирует строки по линзам и держит слуг вне списка отдельно",
+   "to": "rec:F-17",
+   "type": "traces",
+   "at": "specs/decision-viewer/spec.md:6"
+  },
+  {
+   "from": "scn:decision-viewer/Режим «атака» группирует строки по линзам и держит слуг вне списка отдельно/Слуг вне списка",
+   "to": "req:decision-viewer/Режим «атака» группирует строки по линзам и держит слуг вне списка отдельно",
+   "type": "verifies",
+   "at": "specs/decision-viewer/spec.md:8"
+  },
+  {
+   "from": "scn:decision-viewer/Режим «атака» группирует строки по линзам и держит слуг вне списка отдельно/Фильтр по линзе",
+   "to": "req:decision-viewer/Режим «атака» группирует строки по линзам и держит слуг вне списка отдельно",
+   "type": "verifies",
+   "at": "specs/decision-viewer/spec.md:13"
+  },
+  {
+   "from": "scn:decision-viewer/Режим «атака» группирует строки по линзам и держит слуг вне списка отдельно/Текст записи у строки",
+   "to": "req:decision-viewer/Режим «атака» группирует строки по линзам и держит слуг вне списка отдельно",
+   "type": "verifies",
+   "at": "specs/decision-viewer/spec.md:18"
+  },
+  {
+   "from": "scn:decision-viewer/Режим «атака» группирует строки по линзам и держит слуг вне списка отдельно/Внесённое уходит из промпта",
+   "to": "req:decision-viewer/Режим «атака» группирует строки по линзам и держит слуг вне списка отдельно",
+   "type": "verifies",
+   "at": "specs/decision-viewer/spec.md:23"
+  },
+  {
+   "from": "scn:decision-viewer/Режим «атака» группирует строки по линзам и держит слуг вне списка отдельно/Спор становится словом",
+   "to": "req:decision-viewer/Режим «атака» группирует строки по линзам и держит слуг вне списка отдельно",
+   "type": "verifies",
+   "at": "specs/decision-viewer/spec.md:28"
+  },
+  {
+   "from": "scn:decision-viewer/Режим «атака» группирует строки по линзам и держит слуг вне списка отдельно/Ответ к записи без решения",
+   "to": "req:decision-viewer/Режим «атака» группирует строки по линзам и держит слуг вне списка отдельно",
+   "type": "verifies",
+   "at": "specs/decision-viewer/spec.md:33"
+  },
+  {
+   "from": "scn:decision-viewer/Режим «атака» группирует строки по линзам и держит слуг вне списка отдельно/Два ответа к одному решению",
+   "to": "req:decision-viewer/Режим «атака» группирует строки по линзам и держит слуг вне списка отдельно",
+   "type": "verifies",
+   "at": "specs/decision-viewer/spec.md:38"
+  },
+  {
+   "from": "scn:decision-viewer/Режим «атака» группирует строки по линзам и держит слуг вне списка отдельно/Ответ повторяет внесённое решение",
+   "to": "req:decision-viewer/Режим «атака» группирует строки по линзам и держит слуг вне списка отдельно",
+   "type": "verifies",
+   "at": "specs/decision-viewer/spec.md:43"
+  },
+  {
+   "from": "cap:decision-viewer",
+   "to": "req:decision-viewer/Списки линз режима «атака»",
+   "type": "contains",
+   "at": "specs/decision-viewer/spec.md:52"
+  },
+  {
+   "from": "req:decision-viewer/Списки линз режима «атака»",
+   "to": "rec:F-17",
+   "type": "traces",
+   "at": "specs/decision-viewer/spec.md:53"
+  },
+  {
+   "from": "req:decision-viewer/Списки линз режима «атака»",
+   "to": "req:decision-viewer/Режим «атака» группирует строки по линзам и держит слуг вне списка отдельно",
+   "type": "derives",
+   "at": "specs/decision-viewer/spec.md:53"
+  },
+  {
+   "from": "scn:decision-viewer/Списки линз режима «атака»/Строка линзы правил составления",
+   "to": "req:decision-viewer/Списки линз режима «атака»",
+   "type": "verifies",
+   "at": "specs/decision-viewer/spec.md:55"
+  },
+  {
+   "from": "scn:decision-viewer/Списки линз режима «атака»/Линза правил составления в файле журнала",
+   "to": "req:decision-viewer/Списки линз режима «атака»",
+   "type": "verifies",
+   "at": "specs/decision-viewer/spec.md:60"
+  },
+  {
+   "from": "cap:plugin-core-contract",
+   "to": "req:plugin-core-contract/`view-json` отдаёт номер контракта",
+   "type": "contains",
+   "at": "specs/plugin-core-contract/spec.md:5"
+  },
+  {
+   "from": "req:plugin-core-contract/`view-json` отдаёт номер контракта",
+   "to": "rec:F-24",
+   "type": "traces",
+   "at": "specs/plugin-core-contract/spec.md:6"
+  },
+  {
+   "from": "scn:plugin-core-contract/`view-json` отдаёт номер контракта/Вывод содержит номер",
+   "to": "req:plugin-core-contract/`view-json` отдаёт номер контракта",
+   "type": "verifies",
+   "at": "specs/plugin-core-contract/spec.md:8"
+  },
+  {
+   "from": "scn:plugin-core-contract/`view-json` отдаёт номер контракта/Новое поле номер не поднимает",
+   "to": "req:plugin-core-contract/`view-json` отдаёт номер контракта",
+   "type": "verifies",
+   "at": "specs/plugin-core-contract/spec.md:13"
+  },
+  {
+   "from": "scn:plugin-core-contract/`view-json` отдаёт номер контракта/Новое значение адресата поднимает номер",
+   "to": "req:plugin-core-contract/`view-json` отдаёт номер контракта",
+   "type": "verifies",
+   "at": "specs/plugin-core-contract/spec.md:18"
+  },
+  {
+   "from": "cap:plugin-core-contract",
+   "to": "req:plugin-core-contract/Новая линза поднимает номер контракта",
+   "type": "contains",
+   "at": "specs/plugin-core-contract/spec.md:27"
+  },
+  {
+   "from": "req:plugin-core-contract/Новая линза поднимает номер контракта",
+   "to": "rec:F-04",
+   "type": "traces",
+   "at": "specs/plugin-core-contract/spec.md:28"
+  },
+  {
+   "from": "req:plugin-core-contract/Новая линза поднимает номер контракта",
+   "to": "rec:F-07",
+   "type": "traces",
+   "at": "specs/plugin-core-contract/spec.md:28"
+  },
+  {
+   "from": "req:plugin-core-contract/Новая линза поднимает номер контракта",
+   "to": "rec:F-17",
+   "type": "traces",
+   "at": "specs/plugin-core-contract/spec.md:28"
+  },
+  {
+   "from": "req:plugin-core-contract/Новая линза поднимает номер контракта",
+   "to": "rec:F-24",
+   "type": "traces",
+   "at": "specs/plugin-core-contract/spec.md:28"
+  },
+  {
+   "from": "req:plugin-core-contract/Новая линза поднимает номер контракта",
+   "to": "req:plugin-core-contract/`view-json` отдаёт номер контракта",
+   "type": "derives",
+   "at": "specs/plugin-core-contract/spec.md:28"
+  },
+  {
+   "from": "scn:plugin-core-contract/Новая линза поднимает номер контракта/Линза правил составления поднимает номер",
+   "to": "req:plugin-core-contract/Новая линза поднимает номер контракта",
+   "type": "verifies",
+   "at": "specs/plugin-core-contract/spec.md:30"
+  },
+  {
+   "from": "scn:plugin-core-contract/Новая линза поднимает номер контракта/Другая смена контракта влита раньше",
+   "to": "req:plugin-core-contract/Новая линза поднимает номер контракта",
+   "type": "verifies",
+   "at": "specs/plugin-core-contract/spec.md:35"
+  },
+  {
+   "from": "task:1.1",
+   "to": "scn:decision-viewer/Списки линз режима «атака»/Линза правил составления в файле журнала",
+   "type": "satisfies",
+   "at": "tasks.md:5"
+  },
+  {
+   "from": "task:1.1",
+   "to": "scn:decision-viewer/Списки линз режима «атака»/Строка линзы правил составления",
+   "type": "satisfies",
+   "at": "tasks.md:5"
+  },
+  {
+   "from": "task:1.2",
+   "to": "scn:artifact-attack/Линзы атаки артефактов/У атаки журнала линзы правил составления нет",
+   "type": "satisfies",
+   "at": "tasks.md:6"
+  },
+  {
+   "from": "task:1.3",
+   "to": "scn:artifact-attack/Линзы атаки артефактов/Линза правил составления у артефактов",
+   "type": "satisfies",
+   "at": "tasks.md:7"
+  },
+  {
+   "from": "task:1.3",
+   "to": "scn:artifact-attack/Линзы атаки артефактов/У атаки журнала линзы правил составления нет",
+   "type": "satisfies",
+   "at": "tasks.md:7"
+  },
+  {
+   "from": "task:2.1",
+   "to": "rec:F-17",
+   "type": "traces",
+   "at": "tasks.md:11"
+  },
+  {
+   "from": "task:2.1",
+   "to": "rec:F-18",
+   "type": "traces",
+   "at": "tasks.md:11"
+  },
+  {
+   "from": "task:2.1",
+   "to": "scn:artifact-attack/Линза правил составления сверяет артефакт с правилами его шага/Задача без проверки в строке",
+   "type": "satisfies",
+   "at": "tasks.md:11"
+  },
+  {
+   "from": "task:2.1",
+   "to": "scn:artifact-attack/Линза правил составления сверяет артефакт с правилами его шага/Правило вне источников шага",
+   "type": "satisfies",
+   "at": "tasks.md:11"
+  },
+  {
+   "from": "task:2.1",
+   "to": "scn:artifact-attack/Линза правил составления сверяет артефакт с правилами его шага/Правило ловит validate --strict",
+   "type": "satisfies",
+   "at": "tasks.md:11"
+  },
+  {
+   "from": "task:2.2",
+   "to": "rec:F-35",
+   "type": "traces",
+   "at": "tasks.md:12"
+  },
+  {
+   "from": "task:2.3",
+   "to": "scn:artifact-attack/Линза правил составления сверяет MODIFIED с мастер-текстом/Опора «есть» перечисляет условия",
+   "type": "satisfies",
+   "at": "tasks.md:13"
+  },
+  {
+   "from": "task:2.3",
+   "to": "scn:artifact-attack/Линза правил составления сверяет MODIFIED с мастер-текстом/Ужато без дочерних",
+   "type": "satisfies",
+   "at": "tasks.md:13"
+  },
+  {
+   "from": "task:2.3",
+   "to": "scn:artifact-attack/Линза правил составления сверяет MODIFIED с мастер-текстом/Условие пропало при делении",
+   "type": "satisfies",
+   "at": "tasks.md:13"
+  },
+  {
+   "from": "task:2.3",
+   "to": "scn:artifact-attack/Линза правил составления сверяет MODIFIED с мастер-текстом/Условие снято решением",
+   "type": "satisfies",
+   "at": "tasks.md:13"
+  },
+  {
+   "from": "task:2.3",
+   "to": "scn:artifact-attack/Линза правил составления сверяет MODIFIED с мастер-текстом/Условие ушло в дочернее",
+   "type": "satisfies",
+   "at": "tasks.md:13"
+  },
+  {
+   "from": "task:2.4",
+   "to": "scn:artifact-attack/Замена через REMOVED и ADDED не обходит сверку/Требование заменено под новым именем",
+   "type": "satisfies",
+   "at": "tasks.md:14"
+  },
+  {
+   "from": "task:2.4",
+   "to": "scn:artifact-attack/Линза правил составления сверяет MODIFIED с мастер-текстом/Переименовано и правлено",
+   "type": "satisfies",
+   "at": "tasks.md:14"
+  },
+  {
+   "from": "task:2.4",
+   "to": "scn:artifact-attack/Линза правил составления сверяет MODIFIED с мастер-текстом/Пересказ потерял уточнение",
+   "type": "satisfies",
+   "at": "tasks.md:14"
+  },
+  {
+   "from": "task:2.5",
+   "to": "rec:F-33",
+   "type": "traces",
+   "at": "tasks.md:15"
+  },
+  {
+   "from": "task:2.5",
+   "to": "scn:artifact-attack/Пропавшее условие не записывается прочим правилом/Сомнение в пропаже условия",
+   "type": "satisfies",
+   "at": "tasks.md:15"
+  },
+  {
+   "from": "task:2.5",
+   "to": "scn:artifact-attack/Собственное предупреждение линзы правил составления/Решение принимается в design",
+   "type": "satisfies",
+   "at": "tasks.md:15"
+  },
+  {
+   "from": "task:2.6",
+   "to": "rec:F-26",
+   "type": "traces",
+   "at": "tasks.md:16"
+  },
+  {
+   "from": "task:2.6",
+   "to": "rec:F-36",
+   "type": "traces",
+   "at": "tasks.md:16"
+  },
+  {
+   "from": "task:2.6",
+   "to": "scn:artifact-attack/Собственное предупреждение линзы правил составления/Без постоянной причины",
+   "type": "satisfies",
+   "at": "tasks.md:16"
+  },
+  {
+   "from": "task:2.7",
+   "to": "scn:artifact-attack/Строки линзы правил составления покрывают требования и файлы/Проход прерван",
+   "type": "satisfies",
+   "at": "tasks.md:17"
+  },
+  {
+   "from": "task:2.7",
+   "to": "scn:artifact-attack/Строки линзы правил составления покрывают требования и файлы/Строка на каждое MODIFIED",
+   "type": "satisfies",
+   "at": "tasks.md:17"
+  },
+  {
+   "from": "task:2.7",
+   "to": "scn:artifact-attack/Строки линзы правил составления покрывают требования и файлы/Файл без нарушений",
+   "type": "satisfies",
+   "at": "tasks.md:17"
+  },
+  {
+   "from": "task:2.7",
+   "to": "scn:artifact-attack/Строки линзы правил составления покрывают требования и файлы/Цели нет",
+   "type": "satisfies",
+   "at": "tasks.md:17"
+  },
+  {
+   "from": "task:3.1",
+   "to": "scn:artifact-attack/Линзы атаки артефактов/Линза правил составления у артефактов",
+   "type": "satisfies",
+   "at": "tasks.md:21"
+  },
+  {
+   "from": "task:3.2",
+   "to": "rec:F-22",
+   "type": "traces",
+   "at": "tasks.md:22"
+  },
+  {
+   "from": "task:4.1",
+   "to": "scn:plugin-core-contract/Новая линза поднимает номер контракта/Линза правил составления поднимает номер",
+   "type": "satisfies",
+   "at": "tasks.md:26"
+  },
+  {
+   "from": "task:4.2",
+   "to": "scn:plugin-core-contract/`view-json` отдаёт номер контракта/Новое значение адресата поднимает номер",
+   "type": "satisfies",
+   "at": "tasks.md:27"
+  },
+  {
+   "from": "task:4.2",
+   "to": "scn:plugin-core-contract/Новая линза поднимает номер контракта/Линза правил составления поднимает номер",
+   "type": "satisfies",
+   "at": "tasks.md:27"
+  },
+  {
+   "from": "task:4.3",
+   "to": "scn:plugin-core-contract/Новая линза поднимает номер контракта/Другая смена контракта влита раньше",
+   "type": "satisfies",
+   "at": "tasks.md:28"
+  },
+  {
+   "from": "task:6.1",
+   "to": "rec:F-33",
+   "type": "traces",
+   "at": "tasks.md:38"
+  },
+  {
+   "from": "task:6.1",
+   "to": "scn:artifact-attack/Линзы атаки артефактов/Линза правил составления у артефактов",
+   "type": "satisfies",
+   "at": "tasks.md:38"
+  },
+  {
+   "from": "task:6.1",
+   "to": "scn:artifact-attack/Пропавшее условие не записывается прочим правилом/Сомнение в пропаже условия",
+   "type": "satisfies",
+   "at": "tasks.md:38"
+  },
+  {
+   "from": "task:6.1",
+   "to": "scn:artifact-attack/Строки линзы правил составления покрывают требования и файлы/Строка на каждое MODIFIED",
+   "type": "satisfies",
+   "at": "tasks.md:38"
+  },
+  {
+   "from": "task:6.2",
+   "to": "rec:F-24",
+   "type": "traces",
+   "at": "tasks.md:39"
+  }
+ ],
+ "candidates": [
+  {
+   "a": "req:artifact-attack/Замена через REMOVED и ADDED не обходит сверку",
+   "b": "req:artifact-attack/Линза правил составления сверяет MODIFIED с мастер-текстом",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-34"
+   ]
+  },
+  {
+   "a": "req:artifact-attack/Линза правил составления сверяет MODIFIED с мастер-текстом",
+   "b": "req:artifact-attack/Собственное предупреждение линзы правил составления",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-20"
+   ]
+  },
+  {
+   "a": "req:artifact-attack/Линза правил составления сверяет артефакт с правилами его шага",
+   "b": "req:artifact-attack/Линзы атаки артефактов",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-17"
+   ]
+  },
+  {
+   "a": "req:artifact-attack/Линза правил составления сверяет артефакт с правилами его шага",
+   "b": "req:decision-viewer/Режим «атака» группирует строки по линзам и держит слуг вне списка отдельно",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-17"
+   ]
+  },
+  {
+   "a": "req:artifact-attack/Линза правил составления сверяет артефакт с правилами его шага",
+   "b": "req:decision-viewer/Списки линз режима «атака»",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-17"
+   ]
+  },
+  {
+   "a": "req:artifact-attack/Линза правил составления сверяет артефакт с правилами его шага",
+   "b": "req:plugin-core-contract/Новая линза поднимает номер контракта",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-17"
+   ]
+  },
+  {
+   "a": "req:artifact-attack/Линзы атаки артефактов",
+   "b": "req:decision-viewer/Режим «атака» группирует строки по линзам и держит слуг вне списка отдельно",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-17"
+   ]
+  },
+  {
+   "a": "req:artifact-attack/Линзы атаки артефактов",
+   "b": "req:decision-viewer/Списки линз режима «атака»",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-17"
+   ]
+  },
+  {
+   "a": "req:artifact-attack/Линзы атаки артефактов",
+   "b": "req:plugin-core-contract/Новая линза поднимает номер контракта",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-17"
+   ]
+  },
+  {
+   "a": "req:artifact-attack/Пропавшее условие не записывается прочим правилом",
+   "b": "req:artifact-attack/Собственное предупреждение линзы правил составления",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-33"
+   ]
+  },
+  {
+   "a": "req:decision-viewer/Режим «атака» группирует строки по линзам и держит слуг вне списка отдельно",
+   "b": "req:decision-viewer/Списки линз режима «атака»",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-17"
+   ]
+  },
+  {
+   "a": "req:decision-viewer/Режим «атака» группирует строки по линзам и держит слуг вне списка отдельно",
+   "b": "req:plugin-core-contract/Новая линза поднимает номер контракта",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-17"
+   ]
+  },
+  {
+   "a": "req:decision-viewer/Списки линз режима «атака»",
+   "b": "req:plugin-core-contract/Новая линза поднимает номер контракта",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-17"
+   ]
+  },
+  {
+   "a": "req:plugin-core-contract/`view-json` отдаёт номер контракта",
+   "b": "req:plugin-core-contract/Новая линза поднимает номер контракта",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-24"
+   ]
+  }
+ ],
+ "roots": [
+  {
+   "prefix": "",
+   "commit": "4521831b0dd9ad28521df8827bfc19adbcaae86e"
+  },
+  {
+   "prefix": "store/",
+   "commit": "531a2e84807eb4f3abe8fa3dacc3a53c6de95660"
+  },
+  {
+   "prefix": "playground/",
+   "commit": ""
+  },
+  {
+   "prefix": "md4h/",
+   "commit": ""
+  },
+  {
+   "prefix": "calibration/",
+   "commit": ""
+  },
+  {
+   "prefix": "archive/",
+   "commit": ""
+  },
+  {
+   "prefix": "catalog/",
+   "commit": "20c976814c279cd5cc2af9256b37e9258eb5f5d8"
+  }
+ ],
+ "base": {
+  "artifact-attack": {
+   "Линзы атаки артефактов": {
+    "numbers": [
+     "F-07.A",
+     "F-32.E",
+     "F-33.E",
+     "F-55"
+    ],
+    "scenarios": {
+     "Линза вне списка у артефактов": "7cca7205347ff54d226564a05dc95cc9db0ebcd38606d72b5b6468e333d60e59"
+    },
+    "text": "c6193097589405eefd3642d385d05a4c8f07ea76da211119576f33d0e9656ee0",
+    "traces": []
+   }
+  },
+  "decision-viewer": {
+   "Режим «атака» группирует строки по линзам и держит слуг вне списка отдельно": {
+    "numbers": [
+     "F-07.A",
+     "F-26",
+     "F-55",
+     "F-76"
+    ],
+    "scenarios": {
+     "Слуг вне списка": "292df18755a0b11166048d426fdcb027fa5d58e2bf6a2baa39bb5d02190a2e00",
+     "Фильтр по линзе": "291fcecf3dc1fcaa6826a411b60da5885788a637083f16a995f0df186c3ef692",
+     "Текст записи у строки": "766334a6db5828a673874e849b71894b83b26ec5d2fbe0716ab5c11ca1de8f0b",
+     "Внесённое уходит из промпта": "010a56cba53d321b78489f2781ab89c81cf77e5bd4163b403e78cfbbf38de804",
+     "Спор становится словом": "b25086e71c729385b8f7883c30ef6686e718963f546619d49eca74578f302549",
+     "Ответ к записи без решения": "611dff851c9d7ca6c870d207da81cfbcba058c19f9648eee64c5afab8f754579",
+     "Два ответа к одному решению": "117f8d1b2984b67a66ae7a5f09785d104475ade1ba46880d3e0d1d0c484804af",
+     "Ответ повторяет внесённое решение": "a87e15076e36ee2acd3faa5c8a8585540a7e636b9bd08b711d243a66722d96db"
+    },
+    "text": "917de84e3ebf64890f734760839980db455ce6aed8b7cfcf99934b60942babb4",
+    "traces": []
+   }
+  },
+  "plugin-core-contract": {
+   "`view-json` отдаёт номер контракта": {
+    "numbers": [
+     "decision-scheme/F-08",
+     "parking-addressee-agent/F-03",
+     "parking-addressee-agent/F-04",
+     "parking-addressee-agent/F-09",
+     "parking-addressee-agent/F-10",
+     "parking-addressee-agent/F-19"
+    ],
+    "scenarios": {
+     "Вывод содержит номер": "3a90be96a32da053ce3d997628570794b2ae1dedf4702c2efba0053e5d4031e3",
+     "Новое поле номер не поднимает": "9ea3cac173b1ee3e3638d915a48a09aa32e3036653b5a9ef6cbde35827c56c61",
+     "Новое значение адресата поднимает номер": "cf8d4bf1ea61d2618bc657fd05b582cdb2a7d12b8944dbeebb0b75820187f59a"
+    },
+    "text": "aaaffdb6a860fb4da695ed165bf6f6842e634f3ef257795b5dd156d027a00971",
+    "traces": [
+     "0fa2989614e56cf58513eff67711d8063c3e6d6faebe285c7f0bba3e8be5ab5e",
+     "96437f29201f5a3b92b3c85c208e34ec3a91ec1117b4901dae5010a3c390e9e9"
+    ]
+   }
+  }
+ }
+}

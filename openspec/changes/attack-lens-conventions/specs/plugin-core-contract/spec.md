@@ -3,7 +3,7 @@
 ## MODIFIED Requirements
 
 ### Requirement: `view-json` отдаёт номер контракта
-Вывод `journal.py view-json` SHALL нести целый номер контракта, который растёт при смене контракта и не растёт от нового поля (`docs/repo-contract.md`; журнал `decision-scheme`: F-08; F-24). Смена адресата `материалы` → `агент` — смена контракта: номер SHALL стать 4, `Why:` в коммите ядра, плагин догоняет своим коммитом с `Needs:` на коммит ядра (parking-addressee-agent/F-03, parking-addressee-agent/F-04, parking-addressee-agent/F-09, parking-addressee-agent/F-10, parking-addressee-agent/F-19).
+Вывод `journal.py view-json` SHALL содержать номер контракта, целое число. Номер SHALL расти при смене контракта и SHALL NOT расти от нового поля (`docs/repo-contract.md`; журнал `decision-scheme`: F-08; F-24).
 
 #### Scenario: Вывод содержит номер
 - **GIVEN** годный `decisions.json`
@@ -37,4 +37,14 @@
 - **WHEN** изменение вливается в `main`
 - **THEN** номер ядра 6, абзац «С номера 6» называет `rule-compliance`
 <!-- проба краёв: форма=numeric-range, stateful, io, исходы: нет -->
+<!-- проба запретов: исходы: нет -->
+
+### Requirement: Смена адресата поднимает номер контракта до 4
+Часть требования «`view-json` отдаёт номер контракта». Смена значения адресата `материалы` → `агент` — смена контракта: номер SHALL стать 4, коммит ядра называет смену в `Why:`, а плагин догоняет своим коммитом с `Needs:` на коммит ядра (parking-addressee-agent/F-03, parking-addressee-agent/F-04, parking-addressee-agent/F-09, parking-addressee-agent/F-10, parking-addressee-agent/F-19; F-40).
+
+#### Scenario: Договор называет смену адресата
+- **GIVEN** ядро, где адресат парковки и записи — `агент`, и договор `docs/repo-contract.md`
+- **WHEN** человек или тест читает абзац «С номера 4» и правило «Что делать при смене»
+- **THEN** абзац «С номера 4» называет смену `материалы` → `агент` и `Needs:` плагина на коммит ядра, правило велит коммиту ядра называть смену в `Why:`
+<!-- проба краёв: форма=numeric-range, io, исходы: нет -->
 <!-- проба запретов: исходы: нет -->

@@ -317,7 +317,7 @@ def test_attack_templates_table_and_verdict_rule(name):
 # Закрытые списки линз по файлу атаки — те же, что в SKILL.md `symphysis-attack` и в просмотрщике (F-07.A);
 # линзы присутствия сняты.
 TEMPLATE_LENSES = {"attack-decisions.md": ("context-compliance", "claim-authority", "claim-extraction", "coverage"),
-                   "attack-artifacts.md": ("scenario-run", "claim-extraction", "trace-link")}
+                   "attack-artifacts.md": ("scenario-run", "claim-extraction", "trace-link", "rule-compliance")}
 REMOVED_LENS_SLUGS = ("requirement-coverage", "task-completeness", "dependency-correctness", "key-links",
                       "scope-sanity", "verification-derivation", "scope-reduction", "data-contracts",
                       "research-resolution", "honest-verifier")
@@ -358,6 +358,7 @@ def test_attack_artifacts_template_goal_missing_is_claim_extraction():
     text = template_text("attack-artifacts.md")
     assert "Цели нет — строка claim-extraction с именем файла, опора «нет: файла нет», тяжесть блокер" in text
     assert "trace-link" in text.split("| Утверждение |")[0], "комментарии шаблона не называют строку `trace-link`"
+    assert "Строка rule-compliance" in text.split("| Утверждение |")[0], "комментарии шаблона не называют строку `rule-compliance`"
 
 
 def test_attack_decisions_template_keeps_coverage_rows():

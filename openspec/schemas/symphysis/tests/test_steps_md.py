@@ -180,9 +180,9 @@ def test_apply_and_archive_sections_name_the_freeze():
     assert "когда отмечена последняя задача, модель зовёт" in sections["apply"]["mechanics"]
 
 
-def test_attack_artifacts_section_names_the_three_lenses():
-    """F-55: раздел `attack-artifacts` называет все три линзы артефактов, `trace-link` — третьей."""
+def test_attack_artifacts_section_names_the_four_lenses():
+    """F-55: раздел `attack-artifacts` называет все четыре линзы артефактов, `rule-compliance` — четвёртой."""
     mechanics = step_help.parse_steps(steps_text())["attack-artifacts"]["mechanics"]
     line = next(l for l in mechanics.splitlines() if "Линзы артефактов:" in l)
-    positions = [line.index(f"`{lens}`") for lens in ("scenario-run", "claim-extraction", "trace-link")]
+    positions = [line.index(f"`{lens}`") for lens in ("scenario-run", "claim-extraction", "trace-link", "rule-compliance")]
     assert positions == sorted(positions)
