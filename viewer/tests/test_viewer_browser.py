@@ -114,8 +114,9 @@ def test_panel_starts_below_a_wrapped_header(tmp_path):
 
 
 def test_without_the_mermaid_file_the_text_shows_and_the_page_works(tmp_path):
-    r = browser(page(tmp_path, with_mermaid=False), "panel", "mode:check", "mode:decisions")
+    r = browser(page(tmp_path, with_mermaid=False), "panel", "layout:snapshot", "layout:journal")
     assert r["state"] == "text" and not r["hasSvg"]
+    assert r["layout"] == "по журналу"
     assert "A[начало] --> B[конец]" in r["text"]
     assert "Решения по журналу" in r["out"]
     assert r["http"] == [] and r["errors"] == []
@@ -152,10 +153,11 @@ def test_two_blocks_draw_the_first_and_say_so(tmp_path):
     assert any("в файле 2 блока, показан первый" in m for m in r["messages"]), r["messages"]
 
 
-def test_panel_stays_on_in_the_check_mode(tmp_path):
-    r = browser(page(tmp_path), "panel", "mode:check")
+def test_panel_stays_on_in_the_snapshot_layout(tmp_path):
+    r = browser(page(tmp_path), "panel", "layout:snapshot")
     assert r["shown"] is True and r["state"] == "svg"
-    assert r["view"] <= 1400 - r["panel"]["width"] + 1
+    assert r["layout"] == "снимок"
+    assert r["cards"]["width"] <= 1400 - r["panel"]["width"] + 1
 
 
 def test_dragged_border_is_remembered(tmp_path):
@@ -217,8 +219,8 @@ def test_buttons_work_under_csp(tmp_path):
 
 @pytest.mark.parametrize("with_mermaid", [True, False], ids=["с файлом", "без файла"])
 def test_no_network_requests_at_all(tmp_path, with_mermaid):
-    r = browser(page(tmp_path, WIDE, with_mermaid), "panel", "mode:attack", "mode:check", "mode:decisions")
-    assert r["http"] == []
+    r = browser(page(tmp_path, WIDE, with_mermaid), "panel", "mode:attack", "mode:decisions", "layout:snapshot", "layout:journal")
+    assert r["http"] == [] and r["layout"] == "по журналу"
 
 
 def test_choosing_the_second_antipode_goes_through_with_a_warning(tmp_path):
@@ -346,10 +348,11 @@ def test_choice_is_remembered(tmp_path):
 
 
 def test_modes_are_not_touched(tmp_path):
-    """Сценарий «Режимы страницы не тронуты»: кнопок режимов три, панель показывает справку в другом режиме."""
-    r = browser(help_page(tmp_path), "panel", "tab:help", "mode:check")
-    assert r["help"]["shown"] is True and r["modeButtons"] == 3
-    assert r["view"] <= 1400 - r["panel"]["width"] + 1
+    """Сценарий «Режимы страницы не тронуты»: кнопок режимов две, панель показывает справку в другой раскладке."""
+    r = browser(help_page(tmp_path), "panel", "tab:help", "layout:snapshot")
+    assert r["help"]["shown"] is True and r["modeButtons"] == 2
+    assert r["layout"] == "снимок"
+    assert r["cards"]["width"] <= 1400 - r["panel"]["width"] + 1
 
 
 def test_no_scheme_says_so_on_its_tab(tmp_path):

@@ -1,0 +1,1606 @@
+{
+ "format": 2,
+ "sources": [
+  {
+   "path": "consequences.md",
+   "sha256": "b9d8f3e5f6a1d355fdcfafa89ab83b7c26af22eb83b1255bf0502aaff73e174d"
+  },
+  {
+   "path": "decisions.json",
+   "sha256": "56e537a4cda55520144078527021fb116000e4ebf8c7a2219a66499573f4aa1f"
+  },
+  {
+   "path": "security.md",
+   "sha256": "1528826d46f66fd849d8f7bb46c5ffccff5b47609329de516666e138c657f9a5"
+  },
+  {
+   "path": "specs/decision-viewer/spec.md",
+   "sha256": "3942f4e2e723e20b248de7b0388b8e0628e8482ee84e27011df6b928914eeba5"
+  },
+  {
+   "path": "tasks.md",
+   "sha256": "06649106e50d4ee3bff1281a47079e96db87d3c356dac765cdf9b8db46d45db4"
+  }
+ ],
+ "nodes": [
+  {
+   "id": "branch:viewer/playground-template.html:259",
+   "kind": "branch",
+   "name": "Чтение сохранённого режима",
+   "at": "consequences.md:7"
+  },
+  {
+   "id": "branch:viewer/playground-template.html:271",
+   "kind": "branch",
+   "name": "Запись миграции режима",
+   "at": "consequences.md:11"
+  },
+  {
+   "id": "branch:viewer/playground-template.html:971",
+   "kind": "branch",
+   "name": "Пустая группа снимка",
+   "at": "consequences.md:15"
+  },
+  {
+   "id": "rec:F-01",
+   "kind": "rec",
+   "name": "Критерий готовности: Изменение ядра выполняется через спеки: «попробуем все таки через спеки сделать» (слово владельца 2026-11-07).",
+   "at": "decisions.json:26",
+   "record_kind": "факт",
+   "number": 1
+  },
+  {
+   "id": "rec:F-02",
+   "kind": "rec",
+   "name": "Критерий готовности: В ядре остаются два режима по предмету — «решения» и «атака»; отдельный режим «проверка» уходит (план, принятый словом «согласен» 2026-11-07).",
+   "at": "decisions.json:54",
+   "record_kind": "факт",
+   "number": 2
+  },
+  {
+   "id": "rec:F-03",
+   "kind": "rec",
+   "name": "Критерий готовности: У режима «решения» появляются раскладки «по журналу» и «снимок»; «снимок» сохраняет группировку нынешней проверки и использует ту же карточку без органов управления, только для чтения (принятый план B-14).",
+   "at": "decisions.json:82",
+   "record_kind": "факт",
+   "number": 3
+  },
+  {
+   "id": "rec:F-04",
+   "kind": "rec",
+   "name": "Критерий готовности: «→ назначение» становится бейджем карточки, счётчики снимка переносятся в шапку к хешу журнала, а `notes[]` журнала показываются раскрывающимся блоком под полем заметок (принятый план B-14).",
+   "at": "decisions.json:112",
+   "record_kind": "факт",
+   "number": 4
+  },
+  {
+   "id": "rec:F-05",
+   "kind": "rec",
+   "name": "Критерий готовности: Отдельная карточка `checkCard` уходит из `viewer/playground-template.html`; дублирование карточки ради раскладки «снимок» не сохраняется (принятый план B-14).",
+   "at": "decisions.json:142",
+   "record_kind": "факт",
+   "number": 5
+  },
+  {
+   "id": "rec:F-06",
+   "kind": "rec",
+   "name": "Критерий готовности: Мастер-спека `decision-viewer` описывает два режима и две раскладки; скилл `symphysis-viewer` и `openspec/schemas/symphysis/steps.md` называют бывшую проверку «раскладкой снимок» (принятый план B-14).",
+   "at": "decisions.json:170",
+   "record_kind": "факт",
+   "number": 6
+  },
+  {
+   "id": "rec:F-07",
+   "kind": "rec",
+   "name": "Критерий готовности: Протокол `view-json` не меняется: необходимые поля `destination` и `notes` в нём уже есть (сверка B-14 в бэклоге).",
+   "at": "decisions.json:198",
+   "record_kind": "факт",
+   "number": 7
+  },
+  {
+   "id": "rec:F-08",
+   "kind": "rec",
+   "name": "Критерий готовности: Изменение затрагивает только ядро; `CheckView.tsx`, `check.ts`, `Card.tsx` и мастер-спека `plugin-decision-view` относятся к следующему отдельному изменению плагина (принятый порядок B-14: сначала ядро, затем плагин).",
+   "at": "decisions.json:223",
+   "record_kind": "факт",
+   "number": 8
+  },
+  {
+   "id": "rec:F-09",
+   "kind": "rec",
+   "name": "Сейчас шаблон держит три предметных режима — `decisions`, `check`, `attack`; сохранённое значение режима принимается из browser storage, если оно входит в `MODES`.",
+   "at": "decisions.json:251",
+   "record_kind": "факт",
+   "number": 9
+  },
+  {
+   "id": "rec:F-10",
+   "kind": "rec",
+   "name": "Редактирующие карточки сейчас собираются внутри `renderCards`, а раскладка проверки вызывает отдельную функцию `checkCard`.",
+   "at": "decisions.json:284",
+   "record_kind": "факт",
+   "number": 10
+  },
+  {
+   "id": "rec:F-11",
+   "kind": "rec",
+   "name": "Нынешняя проверка считает решёнными только записи с `rec.decision`, группирует решённые по дате, а открытые развилки, пробы, факты, парковки и заметки показывает отдельными разделами `viewCheck`.",
+   "at": "decisions.json:321",
+   "record_kind": "факт",
+   "number": 11
+  },
+  {
+   "id": "rec:F-12",
+   "kind": "rec",
+   "name": "В текущем шаблоне проверка скрывает панель возврата, тогда как рабочая область решений содержит форму новой развилки и редактируемое поле замечаний.",
+   "at": "decisions.json:362",
+   "record_kind": "факт",
+   "number": 12
+  },
+  {
+   "id": "rec:F-13",
+   "kind": "rec",
+   "name": "Текущие тесты страницы и браузера прямо закрепляют режим `check`, три кнопки режимов и сохранение панели схемы при переходе в проверку.",
+   "at": "decisions.json:400",
+   "record_kind": "факт",
+   "number": 13
+  },
+  {
+   "id": "rec:F-14",
+   "kind": "rec",
+   "name": "Что страница должна показать после обновления, если в browser storage уже сохранён старый `mode=check`?",
+   "at": "decisions.json:433",
+   "record_kind": "развилка",
+   "number": 14
+  },
+  {
+   "id": "rec:F-15",
+   "kind": "rec",
+   "name": "Что остаётся доступным в раскладке «снимок» помимо чтения записей: форма новой развилки, поле замечаний и панель возврата?",
+   "at": "decisions.json:522",
+   "record_kind": "развилка",
+   "number": 15
+  },
+  {
+   "id": "rec:F-16",
+   "kind": "rec",
+   "name": "[empty · collection] Назначение, счётчики и заметки имеют постоянные места: при пустом `notes[]` — показывать под полем пустой раскрывающийся блок «Заметки · 0» или не показывать блок?",
+   "at": "decisions.json:616",
+   "record_kind": "развилка",
+   "number": 16
+  },
+  {
+   "id": "rec:F-17",
+   "kind": "rec",
+   "name": "[запрет] Назначение, счётчики и заметки имеют постоянные места: бейдж «→ назначение» не должен выдавать будущую проекцию `render-design` за уже записанный артефакт",
+   "at": "decisions.json:684",
+   "record_kind": "развилка",
+   "number": 17
+  },
+  {
+   "id": "rec:F-18",
+   "kind": "rec",
+   "name": "[ветка] Чтение сохранённого режима: если `localStorage.getItem(KEY + ':mode')` бросает исключение, какая раскладка должна открыться и что происходит с черновиком?",
+   "at": "decisions.json:751",
+   "record_kind": "развилка",
+   "number": 18
+  },
+  {
+   "id": "rec:F-19",
+   "kind": "rec",
+   "name": "[ветка] Запись миграции режима: если `localStorage.setItem(KEY + ':mode', …)` бросает исключение, должна ли страница показать ошибку или продолжить в журнальной раскладке без сохранения?",
+   "at": "decisions.json:819",
+   "record_kind": "развилка",
+   "number": 19
+  },
+  {
+   "id": "rec:F-20",
+   "kind": "rec",
+   "name": "[ветка] Группировка снимка: когда список записей группы пуст, должна ли новая раскладка сохранять заголовок с нулём и «—» или убирать группу?",
+   "at": "decisions.json:887",
+   "record_kind": "развилка",
+   "number": 20
+  },
+  {
+   "id": "rec:F-21",
+   "kind": "rec",
+   "name": "[pre-mortem] Раскладка «снимок» только для чтения: если общая карточка лишь скроет органы управления CSS, а обработчики останутся активны, как не допустить скрытого изменения черновика?",
+   "at": "decisions.json:955",
+   "record_kind": "развилка",
+   "number": 21
+  },
+  {
+   "id": "rec:F-22",
+   "kind": "rec",
+   "name": "[pre-mortem] Назначение, счётчики и заметки имеют постоянные места: если хеш и счётчики переполнят узкую шапку и вытеснят переключатели режима и раскладки, нужен ли отдельный сценарий доступности управления?",
+   "at": "decisions.json:1023",
+   "record_kind": "развилка",
+   "number": 22
+  },
+  {
+   "id": "sec:Инъекции через содержимое файлов",
+   "kind": "sec",
+   "name": "Инъекции через содержимое файлов",
+   "at": "security.md:5"
+  },
+  {
+   "id": "sec:Пути с `../`",
+   "kind": "sec",
+   "name": "Пути с `../`",
+   "at": "security.md:6"
+  },
+  {
+   "id": "sec:Токены и срок их жизни",
+   "kind": "sec",
+   "name": "Токены и срок их жизни",
+   "at": "security.md:7"
+  },
+  {
+   "id": "sec:Права",
+   "kind": "sec",
+   "name": "Права",
+   "at": "security.md:8"
+  },
+  {
+   "id": "sec:Бинарные файлы",
+   "kind": "sec",
+   "name": "Бинарные файлы",
+   "at": "security.md:9"
+  },
+  {
+   "id": "sec:Чувствительные данные в журнале, артефактах и журналах прогона",
+   "kind": "sec",
+   "name": "Чувствительные данные в журнале, артефактах и журналах прогона",
+   "at": "security.md:10"
+  },
+  {
+   "id": "cap:decision-viewer",
+   "kind": "cap",
+   "name": "decision-viewer",
+   "at": "specs/decision-viewer/spec.md:1"
+  },
+  {
+   "id": "req:decision-viewer/Просмотрщик — один HTML из своего шаблона",
+   "kind": "req",
+   "name": "Просмотрщик — один HTML из своего шаблона",
+   "at": "specs/decision-viewer/spec.md:10",
+   "section": "MODIFIED",
+   "capability": "decision-viewer"
+  },
+  {
+   "id": "scn:decision-viewer/Просмотрщик — один HTML из своего шаблона/Сборка с атакой",
+   "kind": "scn",
+   "name": "Сборка с атакой",
+   "at": "specs/decision-viewer/spec.md:13",
+   "capability": "decision-viewer",
+   "requirement": "req:decision-viewer/Просмотрщик — один HTML из своего шаблона"
+  },
+  {
+   "id": "scn:decision-viewer/Просмотрщик — один HTML из своего шаблона/Битый файл атаки",
+   "kind": "scn",
+   "name": "Битый файл атаки",
+   "at": "specs/decision-viewer/spec.md:18",
+   "capability": "decision-viewer",
+   "requirement": "req:decision-viewer/Просмотрщик — один HTML из своего шаблона"
+  },
+  {
+   "id": "scn:decision-viewer/Просмотрщик — один HTML из своего шаблона/Черта в backticks и экранированная черта",
+   "kind": "scn",
+   "name": "Черта в backticks и экранированная черта",
+   "at": "specs/decision-viewer/spec.md:23",
+   "capability": "decision-viewer",
+   "requirement": "req:decision-viewer/Просмотрщик — один HTML из своего шаблона"
+  },
+  {
+   "id": "scn:decision-viewer/Просмотрщик — один HTML из своего шаблона/Экранированная косая и незакрытый backtick",
+   "kind": "scn",
+   "name": "Экранированная косая и незакрытый backtick",
+   "at": "specs/decision-viewer/spec.md:28",
+   "capability": "decision-viewer",
+   "requirement": "req:decision-viewer/Просмотрщик — один HTML из своего шаблона"
+  },
+  {
+   "id": "scn:decision-viewer/Просмотрщик — один HTML из своего шаблона/Пустая ячейка",
+   "kind": "scn",
+   "name": "Пустая ячейка",
+   "at": "specs/decision-viewer/spec.md:33",
+   "capability": "decision-viewer",
+   "requirement": "req:decision-viewer/Просмотрщик — один HTML из своего шаблона"
+  },
+  {
+   "id": "scn:decision-viewer/Просмотрщик — один HTML из своего шаблона/Соседнего файла нет",
+   "kind": "scn",
+   "name": "Соседнего файла нет",
+   "at": "specs/decision-viewer/spec.md:38",
+   "capability": "decision-viewer",
+   "requirement": "req:decision-viewer/Просмотрщик — один HTML из своего шаблона"
+  },
+  {
+   "id": "req:decision-viewer/Панель схемы показывает `scheme.md` рядом с карточками",
+   "kind": "req",
+   "name": "Панель схемы показывает `scheme.md` рядом с карточками",
+   "at": "specs/decision-viewer/spec.md:45",
+   "section": "MODIFIED",
+   "capability": "decision-viewer"
+  },
+  {
+   "id": "scn:decision-viewer/Панель схемы показывает `scheme.md` рядом с карточками/Файл mermaid рядом",
+   "kind": "scn",
+   "name": "Файл mermaid рядом",
+   "at": "specs/decision-viewer/spec.md:48",
+   "capability": "decision-viewer",
+   "requirement": "req:decision-viewer/Панель схемы показывает `scheme.md` рядом с карточками"
+  },
+  {
+   "id": "scn:decision-viewer/Панель схемы показывает `scheme.md` рядом с карточками/Файла mermaid нет",
+   "kind": "scn",
+   "name": "Файла mermaid нет",
+   "at": "specs/decision-viewer/spec.md:53",
+   "capability": "decision-viewer",
+   "requirement": "req:decision-viewer/Панель схемы показывает `scheme.md` рядом с карточками"
+  },
+  {
+   "id": "scn:decision-viewer/Панель схемы показывает `scheme.md` рядом с карточками/Текст не разбирается",
+   "kind": "scn",
+   "name": "Текст не разбирается",
+   "at": "specs/decision-viewer/spec.md:58",
+   "capability": "decision-viewer",
+   "requirement": "req:decision-viewer/Панель схемы показывает `scheme.md` рядом с карточками"
+  },
+  {
+   "id": "scn:decision-viewer/Панель схемы показывает `scheme.md` рядом с карточками/Схемы нет",
+   "kind": "scn",
+   "name": "Схемы нет",
+   "at": "specs/decision-viewer/spec.md:63",
+   "capability": "decision-viewer",
+   "requirement": "req:decision-viewer/Панель схемы показывает `scheme.md` рядом с карточками"
+  },
+  {
+   "id": "scn:decision-viewer/Панель схемы показывает `scheme.md` рядом с карточками/Панель читается в режиме проверки",
+   "kind": "scn",
+   "name": "Панель читается в режиме проверки",
+   "at": "specs/decision-viewer/spec.md:68",
+   "capability": "decision-viewer",
+   "requirement": "req:decision-viewer/Панель схемы показывает `scheme.md` рядом с карточками"
+  },
+  {
+   "id": "scn:decision-viewer/Панель схемы показывает `scheme.md` рядом с карточками/Рисунок читается рядом с карточками",
+   "kind": "scn",
+   "name": "Рисунок читается рядом с карточками",
+   "at": "specs/decision-viewer/spec.md:73",
+   "capability": "decision-viewer",
+   "requirement": "req:decision-viewer/Панель схемы показывает `scheme.md` рядом с карточками"
+  },
+  {
+   "id": "scn:decision-viewer/Панель схемы показывает `scheme.md` рядом с карточками/Граница панели",
+   "kind": "scn",
+   "name": "Граница панели",
+   "at": "specs/decision-viewer/spec.md:78",
+   "capability": "decision-viewer",
+   "requirement": "req:decision-viewer/Панель схемы показывает `scheme.md` рядом с карточками"
+  },
+  {
+   "id": "scn:decision-viewer/Панель схемы показывает `scheme.md` рядом с карточками/Первое открытие",
+   "kind": "scn",
+   "name": "Первое открытие",
+   "at": "specs/decision-viewer/spec.md:83",
+   "capability": "decision-viewer",
+   "requirement": "req:decision-viewer/Панель схемы показывает `scheme.md` рядом с карточками"
+  },
+  {
+   "id": "scn:decision-viewer/Панель схемы показывает `scheme.md` рядом с карточками/Узкое окно",
+   "kind": "scn",
+   "name": "Узкое окно",
+   "at": "specs/decision-viewer/spec.md:88",
+   "capability": "decision-viewer",
+   "requirement": "req:decision-viewer/Панель схемы показывает `scheme.md` рядом с карточками"
+  },
+  {
+   "id": "req:decision-viewer/Панель показывает либо схему, либо справку",
+   "kind": "req",
+   "name": "Панель показывает либо схему, либо справку",
+   "at": "specs/decision-viewer/spec.md:95",
+   "section": "MODIFIED",
+   "capability": "decision-viewer"
+  },
+  {
+   "id": "scn:decision-viewer/Панель показывает либо схему, либо справку/Переключение",
+   "kind": "scn",
+   "name": "Переключение",
+   "at": "specs/decision-viewer/spec.md:98",
+   "capability": "decision-viewer",
+   "requirement": "req:decision-viewer/Панель показывает либо схему, либо справку"
+  },
+  {
+   "id": "scn:decision-viewer/Панель показывает либо схему, либо справку/Первое открытие панели",
+   "kind": "scn",
+   "name": "Первое открытие панели",
+   "at": "specs/decision-viewer/spec.md:103",
+   "capability": "decision-viewer",
+   "requirement": "req:decision-viewer/Панель показывает либо схему, либо справку"
+  },
+  {
+   "id": "scn:decision-viewer/Панель показывает либо схему, либо справку/Выбор сохранился",
+   "kind": "scn",
+   "name": "Выбор сохранился",
+   "at": "specs/decision-viewer/spec.md:108",
+   "capability": "decision-viewer",
+   "requirement": "req:decision-viewer/Панель показывает либо схему, либо справку"
+  },
+  {
+   "id": "scn:decision-viewer/Панель показывает либо схему, либо справку/Режимы страницы не тронуты",
+   "kind": "scn",
+   "name": "Режимы страницы не тронуты",
+   "at": "specs/decision-viewer/spec.md:113",
+   "capability": "decision-viewer",
+   "requirement": "req:decision-viewer/Панель показывает либо схему, либо справку"
+  },
+  {
+   "id": "scn:decision-viewer/Панель показывает либо схему, либо справку/Схемы нет",
+   "kind": "scn",
+   "name": "Схемы нет",
+   "at": "specs/decision-viewer/spec.md:118",
+   "capability": "decision-viewer",
+   "requirement": "req:decision-viewer/Панель показывает либо схему, либо справку"
+  },
+  {
+   "id": "scn:decision-viewer/Панель показывает либо схему, либо справку/Подпись кнопки панели",
+   "kind": "scn",
+   "name": "Подпись кнопки панели",
+   "at": "specs/decision-viewer/spec.md:123",
+   "capability": "decision-viewer",
+   "requirement": "req:decision-viewer/Панель показывает либо схему, либо справку"
+  },
+  {
+   "id": "req:decision-viewer/Строка таблицы атаки разбирается по соглашению markdown",
+   "kind": "req",
+   "name": "Строка таблицы атаки разбирается по соглашению markdown",
+   "at": "specs/decision-viewer/spec.md:130",
+   "section": "MODIFIED",
+   "capability": "decision-viewer"
+  },
+  {
+   "id": "scn:decision-viewer/Строка таблицы атаки разбирается по соглашению markdown/Черта в backticks в последней ячейке",
+   "kind": "scn",
+   "name": "Черта в backticks в последней ячейке",
+   "at": "specs/decision-viewer/spec.md:133",
+   "capability": "decision-viewer",
+   "requirement": "req:decision-viewer/Строка таблицы атаки разбирается по соглашению markdown"
+  },
+  {
+   "id": "req:decision-viewer/Негодная строка таблицы атаки — ошибка с местом",
+   "kind": "req",
+   "name": "Негодная строка таблицы атаки — ошибка с местом",
+   "at": "specs/decision-viewer/spec.md:140",
+   "section": "MODIFIED",
+   "capability": "decision-viewer"
+  },
+  {
+   "id": "scn:decision-viewer/Негодная строка таблицы атаки — ошибка с местом/Лишняя ячейка",
+   "kind": "scn",
+   "name": "Лишняя ячейка",
+   "at": "specs/decision-viewer/spec.md:143",
+   "capability": "decision-viewer",
+   "requirement": "req:decision-viewer/Негодная строка таблицы атаки — ошибка с местом"
+  },
+  {
+   "id": "req:decision-viewer/Страница `symphysis.html` работает без соседних файлов",
+   "kind": "req",
+   "name": "Страница `symphysis.html` работает без соседних файлов",
+   "at": "specs/decision-viewer/spec.md:150",
+   "section": "MODIFIED",
+   "capability": "decision-viewer"
+  },
+  {
+   "id": "scn:decision-viewer/Страница `symphysis.html` работает без соседних файлов/Страница перенесена из проекта",
+   "kind": "scn",
+   "name": "Страница перенесена из проекта",
+   "at": "specs/decision-viewer/spec.md:153",
+   "capability": "decision-viewer",
+   "requirement": "req:decision-viewer/Страница `symphysis.html` работает без соседних файлов"
+  },
+  {
+   "id": "req:decision-viewer/Состояние и геометрия панели схемы",
+   "kind": "req",
+   "name": "Состояние и геометрия панели схемы",
+   "at": "specs/decision-viewer/spec.md:162",
+   "section": "ADDED",
+   "capability": "decision-viewer"
+  },
+  {
+   "id": "scn:decision-viewer/Состояние и геометрия панели схемы/Геометрия сохраняется между раскладками",
+   "kind": "scn",
+   "name": "Геометрия сохраняется между раскладками",
+   "at": "specs/decision-viewer/spec.md:165",
+   "capability": "decision-viewer",
+   "requirement": "req:decision-viewer/Состояние и геометрия панели схемы"
+  },
+  {
+   "id": "req:decision-viewer/Раскладка «снимок» только для чтения",
+   "kind": "req",
+   "name": "Раскладка «снимок» только для чтения",
+   "at": "specs/decision-viewer/spec.md:172",
+   "section": "ADDED",
+   "capability": "decision-viewer"
+  },
+  {
+   "id": "scn:decision-viewer/Раскладка «снимок» только для чтения/Ввод недоступен в снимке",
+   "kind": "scn",
+   "name": "Ввод недоступен в снимке",
+   "at": "specs/decision-viewer/spec.md:175",
+   "capability": "decision-viewer",
+   "requirement": "req:decision-viewer/Раскладка «снимок» только для чтения"
+  },
+  {
+   "id": "scn:decision-viewer/Раскладка «снимок» только для чтения/Черновик сохраняется при смене раскладки",
+   "kind": "scn",
+   "name": "Черновик сохраняется при смене раскладки",
+   "at": "specs/decision-viewer/spec.md:180",
+   "capability": "decision-viewer",
+   "requirement": "req:decision-viewer/Раскладка «снимок» только для чтения"
+  },
+  {
+   "id": "scn:decision-viewer/Раскладка «снимок» только для чтения/Скрытые органы не меняют черновик",
+   "kind": "scn",
+   "name": "Скрытые органы не меняют черновик",
+   "at": "specs/decision-viewer/spec.md:185",
+   "capability": "decision-viewer",
+   "requirement": "req:decision-viewer/Раскладка «снимок» только для чтения"
+  },
+  {
+   "id": "req:decision-viewer/Снимок использует общую карточку и группировку журнала",
+   "kind": "req",
+   "name": "Снимок использует общую карточку и группировку журнала",
+   "at": "specs/decision-viewer/spec.md:193",
+   "section": "ADDED",
+   "capability": "decision-viewer"
+  },
+  {
+   "id": "scn:decision-viewer/Снимок использует общую карточку и группировку журнала/Состав карточки совпадает",
+   "kind": "scn",
+   "name": "Состав карточки совпадает",
+   "at": "specs/decision-viewer/spec.md:196",
+   "capability": "decision-viewer",
+   "requirement": "req:decision-viewer/Снимок использует общую карточку и группировку журнала"
+  },
+  {
+   "id": "scn:decision-viewer/Снимок использует общую карточку и группировку журнала/Группы и порядок",
+   "kind": "scn",
+   "name": "Группы и порядок",
+   "at": "specs/decision-viewer/spec.md:201",
+   "capability": "decision-viewer",
+   "requirement": "req:decision-viewer/Снимок использует общую карточку и группировку журнала"
+  },
+  {
+   "id": "scn:decision-viewer/Снимок использует общую карточку и группировку журнала/Невнесённый выбор не меняет снимок",
+   "kind": "scn",
+   "name": "Невнесённый выбор не меняет снимок",
+   "at": "specs/decision-viewer/spec.md:206",
+   "capability": "decision-viewer",
+   "requirement": "req:decision-viewer/Снимок использует общую карточку и группировку журнала"
+  },
+  {
+   "id": "req:decision-viewer/Назначение, счётчики и заметки имеют постоянные места",
+   "kind": "req",
+   "name": "Назначение, счётчики и заметки имеют постоянные места",
+   "at": "specs/decision-viewer/spec.md:213",
+   "section": "ADDED",
+   "capability": "decision-viewer"
+  },
+  {
+   "id": "scn:decision-viewer/Назначение, счётчики и заметки имеют постоянные места/Назначение у общей карточки",
+   "kind": "scn",
+   "name": "Назначение у общей карточки",
+   "at": "specs/decision-viewer/spec.md:216",
+   "capability": "decision-viewer",
+   "requirement": "req:decision-viewer/Назначение, счётчики и заметки имеют постоянные места"
+  },
+  {
+   "id": "scn:decision-viewer/Назначение, счётчики и заметки имеют постоянные места/Счётчики рядом с хешем",
+   "kind": "scn",
+   "name": "Счётчики рядом с хешем",
+   "at": "specs/decision-viewer/spec.md:221",
+   "capability": "decision-viewer",
+   "requirement": "req:decision-viewer/Назначение, счётчики и заметки имеют постоянные места"
+  },
+  {
+   "id": "scn:decision-viewer/Назначение, счётчики и заметки имеют постоянные места/Заметки под полем",
+   "kind": "scn",
+   "name": "Заметки под полем",
+   "at": "specs/decision-viewer/spec.md:226",
+   "capability": "decision-viewer",
+   "requirement": "req:decision-viewer/Назначение, счётчики и заметки имеют постоянные места"
+  },
+  {
+   "id": "req:decision-viewer/Сохранённый режим проверки переводится в журнальную раскладку",
+   "kind": "req",
+   "name": "Сохранённый режим проверки переводится в журнальную раскладку",
+   "at": "specs/decision-viewer/spec.md:233",
+   "section": "ADDED",
+   "capability": "decision-viewer"
+  },
+  {
+   "id": "scn:decision-viewer/Сохранённый режим проверки переводится в журнальную раскладку/Старое хранилище после обновления",
+   "kind": "scn",
+   "name": "Старое хранилище после обновления",
+   "at": "specs/decision-viewer/spec.md:236",
+   "capability": "decision-viewer",
+   "requirement": "req:decision-viewer/Сохранённый режим проверки переводится в журнальную раскладку"
+  },
+  {
+   "id": "req:decision-viewer/Документы называют бывшую проверку раскладкой снимок",
+   "kind": "req",
+   "name": "Документы называют бывшую проверку раскладкой снимок",
+   "at": "specs/decision-viewer/spec.md:243",
+   "section": "ADDED",
+   "capability": "decision-viewer"
+  },
+  {
+   "id": "scn:decision-viewer/Документы называют бывшую проверку раскладкой снимок/Тексты после изменения",
+   "kind": "scn",
+   "name": "Тексты после изменения",
+   "at": "specs/decision-viewer/spec.md:246",
+   "capability": "decision-viewer",
+   "requirement": "req:decision-viewer/Документы называют бывшую проверку раскладкой снимок"
+  },
+  {
+   "id": "req:decision-viewer/Бейдж назначения не выдаёт проекцию за записанный артефакт",
+   "kind": "req",
+   "name": "Бейдж назначения не выдаёт проекцию за записанный артефакт",
+   "at": "specs/decision-viewer/spec.md:253",
+   "section": "ADDED",
+   "capability": "decision-viewer"
+  },
+  {
+   "id": "scn:decision-viewer/Бейдж назначения не выдаёт проекцию за записанный артефакт/Проекция отличима от записи",
+   "kind": "scn",
+   "name": "Проекция отличима от записи",
+   "at": "specs/decision-viewer/spec.md:256",
+   "capability": "decision-viewer",
+   "requirement": "req:decision-viewer/Бейдж назначения не выдаёт проекцию за записанный артефакт"
+  },
+  {
+   "id": "task:1.1",
+   "kind": "task",
+   "name": "В `viewer/playground-template.html` оставить предметные режимы `decisions` и `attack`, добавить раскладки `journal` и `snapshot` внутри `decisions`, убрать отдельную панель `viewCheck`; выбор раскладки сохраняется у страницы, а старый `mode=check` переводится в `decisions` + `journal` без записи в основной черновик. Обновить `tests/fixtures/viewer-smoke.js` для состояния раскладки — проверка: `decision-viewer`: «Сборка с атакой», `decision-viewer`: «Старое хранилище после обновления», `decision-viewer`: «Режимы страницы не тронуты»",
+   "at": "tasks.md:5",
+   "done": true
+  },
+  {
+   "id": "task:1.2",
+   "kind": "task",
+   "name": "Реализовать Backstop F-19: тест подменяет запись ключа режима исключением и утверждает отсутствие сбоя, показ `decisions` + `journal` в текущей вкладке и неизменность основного ключа состояния — проверка: тест в `viewer/tests/test_viewer_page.py` зелёный; `служебная`",
+   "at": "tasks.md:6",
+   "done": true
+  },
+  {
+   "id": "task:2.1",
+   "kind": "task",
+   "name": "Выделить один рендер карточки для обеих раскладок и удалить `checkCard`; в снимке органы управления отсутствуют или неактивны, обработчики не меняют состояние и промпт. Бейдж назначения по `render-design` стоит у общей карточки и говорит «куда уйдёт», а не «записано в» — проверка: `decision-viewer`: «Состав карточки совпадает», `decision-viewer`: «Ввод недоступен в снимке», `decision-viewer`: «Скрытые органы не меняют черновик», `decision-viewer`: «Назначение у общей карточки», `decision-viewer`: «Проекция отличима от записи»",
+   "at": "tasks.md:10",
+   "done": true
+  },
+  {
+   "id": "task:2.2",
+   "kind": "task",
+   "name": "Перенести группировку нынешней проверки в раскладку `snapshot`: решённые по дате с записями «в одну сторону» первыми, затем открытые, пробы, факты и парковки по адресатам; пустые группы сохраняют прежний вид. Данные и счётчики читаются из журнала, невнесённый выбор в browser storage их не меняет — проверка: `decision-viewer`: «Группы и порядок», `decision-viewer`: «Невнесённый выбор не меняет снимок»",
+   "at": "tasks.md:11",
+   "done": true
+  },
+  {
+   "id": "task:2.3",
+   "kind": "task",
+   "name": "Перенести хеш и счётчики снимка в шапку, добавить раскрывающийся блок `notes[]` под полем замечаний в обеих раскладках; в снимке поле read-only, форма новой развилки недоступна, панель возврата скрыта, при возврате «по журналу» черновик сохраняется — проверка: `decision-viewer`: «Счётчики рядом с хешем», `decision-viewer`: «Заметки под полем», `decision-viewer`: «Черновик сохраняется при смене раскладки»",
+   "at": "tasks.md:12",
+   "done": true
+  },
+  {
+   "id": "task:3.1",
+   "kind": "task",
+   "name": "Обновить `viewer/skills/symphysis-viewer/SKILL.md` и `openspec/schemas/symphysis/steps.md`: бывшая проверка называется раскладкой «снимок», показ перед `proposal` и `attack-artifacts` направляет в неё из режима «решения»; обновить проверки текста скилла и схемы — проверка: `decision-viewer`: «Тексты после изменения», тесты этих файлов зелёные",
+   "at": "tasks.md:16",
+   "done": true
+  },
+  {
+   "id": "task:3.2",
+   "kind": "task",
+   "name": "Обновить `viewer/tests/test_viewer_page.py`, `viewer/tests/test_viewer_browser.py` и `tests/fixtures/viewer-browser.mjs`: сценарии прежнего `check` переведены на раскладку `snapshot`, панель схемы и справка сохраняют состояние, работа без соседних файлов и перенос страницы проверены в обеих раскладках — проверка: `decision-viewer`: «Панель читается в режиме проверки», `decision-viewer`: «Геометрия сохраняется между раскладками», `decision-viewer`: «Соседнего файла нет», `decision-viewer`: «Страница перенесена из проекта»",
+   "at": "tasks.md:17",
+   "done": true
+  },
+  {
+   "id": "task:4.1",
+   "kind": "task",
+   "name": "Выполнить `python -X utf8 -m pytest` с настроенным xdist, `python -X utf8 .symphysis/tools/journal.py check openspec/changes/decision-snapshot-layout/decisions.json` и `openspec validate decision-snapshot-layout --strict`; зафиксировать число тестов, пропуски и любые сигналы — проверка: полный набор зелёный, журнал сверен, изменение valid; `служебная`",
+   "at": "tasks.md:21",
+   "done": true
+  },
+  {
+   "id": "task:4.2",
+   "kind": "task",
+   "name": "Выполнить `node installer/scripts/sync-payload.js`, затем локальный `node installer/bin/symphysis.js install --force` и `node installer/bin/symphysis.js check`; сверить diff и убедиться, что установленная копия содержит текущие шаблон, скилл и `steps.md` — проверка: `check` не называет расхождения payload и установленных файлов, diff содержит только исходники изменения; `служебная`",
+   "at": "tasks.md:22",
+   "done": true
+  }
+ ],
+ "edges": [
+  {
+   "from": "cap:decision-viewer",
+   "to": "req:decision-viewer/Просмотрщик — один HTML из своего шаблона",
+   "type": "contains",
+   "at": "specs/decision-viewer/spec.md:10"
+  },
+  {
+   "from": "req:decision-viewer/Просмотрщик — один HTML из своего шаблона",
+   "to": "rec:F-02",
+   "type": "traces",
+   "at": "specs/decision-viewer/spec.md:11"
+  },
+  {
+   "from": "req:decision-viewer/Просмотрщик — один HTML из своего шаблона",
+   "to": "rec:F-03",
+   "type": "traces",
+   "at": "specs/decision-viewer/spec.md:11"
+  },
+  {
+   "from": "scn:decision-viewer/Просмотрщик — один HTML из своего шаблона/Сборка с атакой",
+   "to": "req:decision-viewer/Просмотрщик — один HTML из своего шаблона",
+   "type": "verifies",
+   "at": "specs/decision-viewer/spec.md:13"
+  },
+  {
+   "from": "scn:decision-viewer/Просмотрщик — один HTML из своего шаблона/Битый файл атаки",
+   "to": "req:decision-viewer/Просмотрщик — один HTML из своего шаблона",
+   "type": "verifies",
+   "at": "specs/decision-viewer/spec.md:18"
+  },
+  {
+   "from": "scn:decision-viewer/Просмотрщик — один HTML из своего шаблона/Черта в backticks и экранированная черта",
+   "to": "req:decision-viewer/Просмотрщик — один HTML из своего шаблона",
+   "type": "verifies",
+   "at": "specs/decision-viewer/spec.md:23"
+  },
+  {
+   "from": "scn:decision-viewer/Просмотрщик — один HTML из своего шаблона/Экранированная косая и незакрытый backtick",
+   "to": "req:decision-viewer/Просмотрщик — один HTML из своего шаблона",
+   "type": "verifies",
+   "at": "specs/decision-viewer/spec.md:28"
+  },
+  {
+   "from": "scn:decision-viewer/Просмотрщик — один HTML из своего шаблона/Пустая ячейка",
+   "to": "req:decision-viewer/Просмотрщик — один HTML из своего шаблона",
+   "type": "verifies",
+   "at": "specs/decision-viewer/spec.md:33"
+  },
+  {
+   "from": "scn:decision-viewer/Просмотрщик — один HTML из своего шаблона/Соседнего файла нет",
+   "to": "req:decision-viewer/Просмотрщик — один HTML из своего шаблона",
+   "type": "verifies",
+   "at": "specs/decision-viewer/spec.md:38"
+  },
+  {
+   "from": "cap:decision-viewer",
+   "to": "req:decision-viewer/Панель схемы показывает `scheme.md` рядом с карточками",
+   "type": "contains",
+   "at": "specs/decision-viewer/spec.md:45"
+  },
+  {
+   "from": "req:decision-viewer/Панель схемы показывает `scheme.md` рядом с карточками",
+   "to": "rec:F-06",
+   "type": "traces",
+   "at": "specs/decision-viewer/spec.md:46"
+  },
+  {
+   "from": "scn:decision-viewer/Панель схемы показывает `scheme.md` рядом с карточками/Файл mermaid рядом",
+   "to": "req:decision-viewer/Панель схемы показывает `scheme.md` рядом с карточками",
+   "type": "verifies",
+   "at": "specs/decision-viewer/spec.md:48"
+  },
+  {
+   "from": "scn:decision-viewer/Панель схемы показывает `scheme.md` рядом с карточками/Файла mermaid нет",
+   "to": "req:decision-viewer/Панель схемы показывает `scheme.md` рядом с карточками",
+   "type": "verifies",
+   "at": "specs/decision-viewer/spec.md:53"
+  },
+  {
+   "from": "scn:decision-viewer/Панель схемы показывает `scheme.md` рядом с карточками/Текст не разбирается",
+   "to": "req:decision-viewer/Панель схемы показывает `scheme.md` рядом с карточками",
+   "type": "verifies",
+   "at": "specs/decision-viewer/spec.md:58"
+  },
+  {
+   "from": "scn:decision-viewer/Панель схемы показывает `scheme.md` рядом с карточками/Схемы нет",
+   "to": "req:decision-viewer/Панель схемы показывает `scheme.md` рядом с карточками",
+   "type": "verifies",
+   "at": "specs/decision-viewer/spec.md:63"
+  },
+  {
+   "from": "scn:decision-viewer/Панель схемы показывает `scheme.md` рядом с карточками/Панель читается в режиме проверки",
+   "to": "req:decision-viewer/Панель схемы показывает `scheme.md` рядом с карточками",
+   "type": "verifies",
+   "at": "specs/decision-viewer/spec.md:68"
+  },
+  {
+   "from": "scn:decision-viewer/Панель схемы показывает `scheme.md` рядом с карточками/Рисунок читается рядом с карточками",
+   "to": "req:decision-viewer/Панель схемы показывает `scheme.md` рядом с карточками",
+   "type": "verifies",
+   "at": "specs/decision-viewer/spec.md:73"
+  },
+  {
+   "from": "scn:decision-viewer/Панель схемы показывает `scheme.md` рядом с карточками/Граница панели",
+   "to": "req:decision-viewer/Панель схемы показывает `scheme.md` рядом с карточками",
+   "type": "verifies",
+   "at": "specs/decision-viewer/spec.md:78"
+  },
+  {
+   "from": "scn:decision-viewer/Панель схемы показывает `scheme.md` рядом с карточками/Первое открытие",
+   "to": "req:decision-viewer/Панель схемы показывает `scheme.md` рядом с карточками",
+   "type": "verifies",
+   "at": "specs/decision-viewer/spec.md:83"
+  },
+  {
+   "from": "scn:decision-viewer/Панель схемы показывает `scheme.md` рядом с карточками/Узкое окно",
+   "to": "req:decision-viewer/Панель схемы показывает `scheme.md` рядом с карточками",
+   "type": "verifies",
+   "at": "specs/decision-viewer/spec.md:88"
+  },
+  {
+   "from": "cap:decision-viewer",
+   "to": "req:decision-viewer/Панель показывает либо схему, либо справку",
+   "type": "contains",
+   "at": "specs/decision-viewer/spec.md:95"
+  },
+  {
+   "from": "req:decision-viewer/Панель показывает либо схему, либо справку",
+   "to": "rec:F-06",
+   "type": "traces",
+   "at": "specs/decision-viewer/spec.md:96"
+  },
+  {
+   "from": "scn:decision-viewer/Панель показывает либо схему, либо справку/Переключение",
+   "to": "req:decision-viewer/Панель показывает либо схему, либо справку",
+   "type": "verifies",
+   "at": "specs/decision-viewer/spec.md:98"
+  },
+  {
+   "from": "scn:decision-viewer/Панель показывает либо схему, либо справку/Первое открытие панели",
+   "to": "req:decision-viewer/Панель показывает либо схему, либо справку",
+   "type": "verifies",
+   "at": "specs/decision-viewer/spec.md:103"
+  },
+  {
+   "from": "scn:decision-viewer/Панель показывает либо схему, либо справку/Выбор сохранился",
+   "to": "req:decision-viewer/Панель показывает либо схему, либо справку",
+   "type": "verifies",
+   "at": "specs/decision-viewer/spec.md:108"
+  },
+  {
+   "from": "scn:decision-viewer/Панель показывает либо схему, либо справку/Режимы страницы не тронуты",
+   "to": "req:decision-viewer/Панель показывает либо схему, либо справку",
+   "type": "verifies",
+   "at": "specs/decision-viewer/spec.md:113"
+  },
+  {
+   "from": "scn:decision-viewer/Панель показывает либо схему, либо справку/Схемы нет",
+   "to": "req:decision-viewer/Панель показывает либо схему, либо справку",
+   "type": "verifies",
+   "at": "specs/decision-viewer/spec.md:118"
+  },
+  {
+   "from": "scn:decision-viewer/Панель показывает либо схему, либо справку/Подпись кнопки панели",
+   "to": "req:decision-viewer/Панель показывает либо схему, либо справку",
+   "type": "verifies",
+   "at": "specs/decision-viewer/spec.md:123"
+  },
+  {
+   "from": "cap:decision-viewer",
+   "to": "req:decision-viewer/Строка таблицы атаки разбирается по соглашению markdown",
+   "type": "contains",
+   "at": "specs/decision-viewer/spec.md:130"
+  },
+  {
+   "from": "req:decision-viewer/Строка таблицы атаки разбирается по соглашению markdown",
+   "to": "rec:F-06",
+   "type": "traces",
+   "at": "specs/decision-viewer/spec.md:131"
+  },
+  {
+   "from": "req:decision-viewer/Строка таблицы атаки разбирается по соглашению markdown",
+   "to": "req:decision-viewer/Просмотрщик — один HTML из своего шаблона",
+   "type": "derives",
+   "at": "specs/decision-viewer/spec.md:131"
+  },
+  {
+   "from": "scn:decision-viewer/Строка таблицы атаки разбирается по соглашению markdown/Черта в backticks в последней ячейке",
+   "to": "req:decision-viewer/Строка таблицы атаки разбирается по соглашению markdown",
+   "type": "verifies",
+   "at": "specs/decision-viewer/spec.md:133"
+  },
+  {
+   "from": "cap:decision-viewer",
+   "to": "req:decision-viewer/Негодная строка таблицы атаки — ошибка с местом",
+   "type": "contains",
+   "at": "specs/decision-viewer/spec.md:140"
+  },
+  {
+   "from": "req:decision-viewer/Негодная строка таблицы атаки — ошибка с местом",
+   "to": "rec:F-06",
+   "type": "traces",
+   "at": "specs/decision-viewer/spec.md:141"
+  },
+  {
+   "from": "req:decision-viewer/Негодная строка таблицы атаки — ошибка с местом",
+   "to": "req:decision-viewer/Просмотрщик — один HTML из своего шаблона",
+   "type": "derives",
+   "at": "specs/decision-viewer/spec.md:141"
+  },
+  {
+   "from": "scn:decision-viewer/Негодная строка таблицы атаки — ошибка с местом/Лишняя ячейка",
+   "to": "req:decision-viewer/Негодная строка таблицы атаки — ошибка с местом",
+   "type": "verifies",
+   "at": "specs/decision-viewer/spec.md:143"
+  },
+  {
+   "from": "cap:decision-viewer",
+   "to": "req:decision-viewer/Страница `symphysis.html` работает без соседних файлов",
+   "type": "contains",
+   "at": "specs/decision-viewer/spec.md:150"
+  },
+  {
+   "from": "req:decision-viewer/Страница `symphysis.html` работает без соседних файлов",
+   "to": "rec:F-06",
+   "type": "traces",
+   "at": "specs/decision-viewer/spec.md:151"
+  },
+  {
+   "from": "req:decision-viewer/Страница `symphysis.html` работает без соседних файлов",
+   "to": "req:decision-viewer/Просмотрщик — один HTML из своего шаблона",
+   "type": "derives",
+   "at": "specs/decision-viewer/spec.md:151"
+  },
+  {
+   "from": "scn:decision-viewer/Страница `symphysis.html` работает без соседних файлов/Страница перенесена из проекта",
+   "to": "req:decision-viewer/Страница `symphysis.html` работает без соседних файлов",
+   "type": "verifies",
+   "at": "specs/decision-viewer/spec.md:153"
+  },
+  {
+   "from": "cap:decision-viewer",
+   "to": "req:decision-viewer/Состояние и геометрия панели схемы",
+   "type": "contains",
+   "at": "specs/decision-viewer/spec.md:162"
+  },
+  {
+   "from": "req:decision-viewer/Состояние и геометрия панели схемы",
+   "to": "rec:F-06",
+   "type": "traces",
+   "at": "specs/decision-viewer/spec.md:163"
+  },
+  {
+   "from": "req:decision-viewer/Состояние и геометрия панели схемы",
+   "to": "req:decision-viewer/Панель схемы показывает `scheme.md` рядом с карточками",
+   "type": "derives",
+   "at": "specs/decision-viewer/spec.md:163"
+  },
+  {
+   "from": "scn:decision-viewer/Состояние и геометрия панели схемы/Геометрия сохраняется между раскладками",
+   "to": "req:decision-viewer/Состояние и геометрия панели схемы",
+   "type": "verifies",
+   "at": "specs/decision-viewer/spec.md:165"
+  },
+  {
+   "from": "cap:decision-viewer",
+   "to": "req:decision-viewer/Раскладка «снимок» только для чтения",
+   "type": "contains",
+   "at": "specs/decision-viewer/spec.md:172"
+  },
+  {
+   "from": "req:decision-viewer/Раскладка «снимок» только для чтения",
+   "to": "rec:F-03",
+   "type": "traces",
+   "at": "specs/decision-viewer/spec.md:173"
+  },
+  {
+   "from": "req:decision-viewer/Раскладка «снимок» только для чтения",
+   "to": "rec:F-15",
+   "type": "traces",
+   "at": "specs/decision-viewer/spec.md:173"
+  },
+  {
+   "from": "scn:decision-viewer/Раскладка «снимок» только для чтения/Ввод недоступен в снимке",
+   "to": "req:decision-viewer/Раскладка «снимок» только для чтения",
+   "type": "verifies",
+   "at": "specs/decision-viewer/spec.md:175"
+  },
+  {
+   "from": "scn:decision-viewer/Раскладка «снимок» только для чтения/Черновик сохраняется при смене раскладки",
+   "to": "req:decision-viewer/Раскладка «снимок» только для чтения",
+   "type": "verifies",
+   "at": "specs/decision-viewer/spec.md:180"
+  },
+  {
+   "from": "scn:decision-viewer/Раскладка «снимок» только для чтения/Скрытые органы не меняют черновик",
+   "to": "req:decision-viewer/Раскладка «снимок» только для чтения",
+   "type": "verifies",
+   "at": "specs/decision-viewer/spec.md:185"
+  },
+  {
+   "from": "cap:decision-viewer",
+   "to": "req:decision-viewer/Снимок использует общую карточку и группировку журнала",
+   "type": "contains",
+   "at": "specs/decision-viewer/spec.md:193"
+  },
+  {
+   "from": "req:decision-viewer/Снимок использует общую карточку и группировку журнала",
+   "to": "rec:F-03",
+   "type": "traces",
+   "at": "specs/decision-viewer/spec.md:194"
+  },
+  {
+   "from": "req:decision-viewer/Снимок использует общую карточку и группировку журнала",
+   "to": "rec:F-05",
+   "type": "traces",
+   "at": "specs/decision-viewer/spec.md:194"
+  },
+  {
+   "from": "req:decision-viewer/Снимок использует общую карточку и группировку журнала",
+   "to": "rec:F-11",
+   "type": "traces",
+   "at": "specs/decision-viewer/spec.md:194"
+  },
+  {
+   "from": "scn:decision-viewer/Снимок использует общую карточку и группировку журнала/Состав карточки совпадает",
+   "to": "req:decision-viewer/Снимок использует общую карточку и группировку журнала",
+   "type": "verifies",
+   "at": "specs/decision-viewer/spec.md:196"
+  },
+  {
+   "from": "scn:decision-viewer/Снимок использует общую карточку и группировку журнала/Группы и порядок",
+   "to": "req:decision-viewer/Снимок использует общую карточку и группировку журнала",
+   "type": "verifies",
+   "at": "specs/decision-viewer/spec.md:201"
+  },
+  {
+   "from": "scn:decision-viewer/Снимок использует общую карточку и группировку журнала/Невнесённый выбор не меняет снимок",
+   "to": "req:decision-viewer/Снимок использует общую карточку и группировку журнала",
+   "type": "verifies",
+   "at": "specs/decision-viewer/spec.md:206"
+  },
+  {
+   "from": "cap:decision-viewer",
+   "to": "req:decision-viewer/Назначение, счётчики и заметки имеют постоянные места",
+   "type": "contains",
+   "at": "specs/decision-viewer/spec.md:213"
+  },
+  {
+   "from": "req:decision-viewer/Назначение, счётчики и заметки имеют постоянные места",
+   "to": "rec:F-04",
+   "type": "traces",
+   "at": "specs/decision-viewer/spec.md:214"
+  },
+  {
+   "from": "scn:decision-viewer/Назначение, счётчики и заметки имеют постоянные места/Назначение у общей карточки",
+   "to": "req:decision-viewer/Назначение, счётчики и заметки имеют постоянные места",
+   "type": "verifies",
+   "at": "specs/decision-viewer/spec.md:216"
+  },
+  {
+   "from": "scn:decision-viewer/Назначение, счётчики и заметки имеют постоянные места/Счётчики рядом с хешем",
+   "to": "req:decision-viewer/Назначение, счётчики и заметки имеют постоянные места",
+   "type": "verifies",
+   "at": "specs/decision-viewer/spec.md:221"
+  },
+  {
+   "from": "scn:decision-viewer/Назначение, счётчики и заметки имеют постоянные места/Заметки под полем",
+   "to": "req:decision-viewer/Назначение, счётчики и заметки имеют постоянные места",
+   "type": "verifies",
+   "at": "specs/decision-viewer/spec.md:226"
+  },
+  {
+   "from": "req:decision-viewer/Назначение, счётчики и заметки имеют постоянные места",
+   "to": "rec:F-16",
+   "type": "traces",
+   "at": "specs/decision-viewer/spec.md:230"
+  },
+  {
+   "from": "req:decision-viewer/Назначение, счётчики и заметки имеют постоянные места",
+   "to": "rec:F-17",
+   "type": "traces",
+   "at": "specs/decision-viewer/spec.md:231"
+  },
+  {
+   "from": "cap:decision-viewer",
+   "to": "req:decision-viewer/Сохранённый режим проверки переводится в журнальную раскладку",
+   "type": "contains",
+   "at": "specs/decision-viewer/spec.md:233"
+  },
+  {
+   "from": "req:decision-viewer/Сохранённый режим проверки переводится в журнальную раскладку",
+   "to": "rec:F-14",
+   "type": "traces",
+   "at": "specs/decision-viewer/spec.md:234"
+  },
+  {
+   "from": "scn:decision-viewer/Сохранённый режим проверки переводится в журнальную раскладку/Старое хранилище после обновления",
+   "to": "req:decision-viewer/Сохранённый режим проверки переводится в журнальную раскладку",
+   "type": "verifies",
+   "at": "specs/decision-viewer/spec.md:236"
+  },
+  {
+   "from": "cap:decision-viewer",
+   "to": "req:decision-viewer/Документы называют бывшую проверку раскладкой снимок",
+   "type": "contains",
+   "at": "specs/decision-viewer/spec.md:243"
+  },
+  {
+   "from": "req:decision-viewer/Документы называют бывшую проверку раскладкой снимок",
+   "to": "rec:F-06",
+   "type": "traces",
+   "at": "specs/decision-viewer/spec.md:244"
+  },
+  {
+   "from": "scn:decision-viewer/Документы называют бывшую проверку раскладкой снимок/Тексты после изменения",
+   "to": "req:decision-viewer/Документы называют бывшую проверку раскладкой снимок",
+   "type": "verifies",
+   "at": "specs/decision-viewer/spec.md:246"
+  },
+  {
+   "from": "cap:decision-viewer",
+   "to": "req:decision-viewer/Бейдж назначения не выдаёт проекцию за записанный артефакт",
+   "type": "contains",
+   "at": "specs/decision-viewer/spec.md:253"
+  },
+  {
+   "from": "req:decision-viewer/Бейдж назначения не выдаёт проекцию за записанный артефакт",
+   "to": "rec:F-17",
+   "type": "traces",
+   "at": "specs/decision-viewer/spec.md:254"
+  },
+  {
+   "from": "scn:decision-viewer/Бейдж назначения не выдаёт проекцию за записанный артефакт/Проекция отличима от записи",
+   "to": "req:decision-viewer/Бейдж назначения не выдаёт проекцию за записанный артефакт",
+   "type": "verifies",
+   "at": "specs/decision-viewer/spec.md:256"
+  },
+  {
+   "from": "req:decision-viewer/Бейдж назначения не выдаёт проекцию за записанный артефакт",
+   "to": "rec:F-17",
+   "type": "traces",
+   "at": "specs/decision-viewer/spec.md:262"
+  },
+  {
+   "from": "task:1.1",
+   "to": "scn:decision-viewer/Панель показывает либо схему, либо справку/Режимы страницы не тронуты",
+   "type": "satisfies",
+   "at": "tasks.md:5"
+  },
+  {
+   "from": "task:1.1",
+   "to": "scn:decision-viewer/Просмотрщик — один HTML из своего шаблона/Сборка с атакой",
+   "type": "satisfies",
+   "at": "tasks.md:5"
+  },
+  {
+   "from": "task:1.1",
+   "to": "scn:decision-viewer/Сохранённый режим проверки переводится в журнальную раскладку/Старое хранилище после обновления",
+   "type": "satisfies",
+   "at": "tasks.md:5"
+  },
+  {
+   "from": "task:1.2",
+   "to": "rec:F-19",
+   "type": "traces",
+   "at": "tasks.md:6"
+  },
+  {
+   "from": "task:2.1",
+   "to": "scn:decision-viewer/Бейдж назначения не выдаёт проекцию за записанный артефакт/Проекция отличима от записи",
+   "type": "satisfies",
+   "at": "tasks.md:10"
+  },
+  {
+   "from": "task:2.1",
+   "to": "scn:decision-viewer/Назначение, счётчики и заметки имеют постоянные места/Назначение у общей карточки",
+   "type": "satisfies",
+   "at": "tasks.md:10"
+  },
+  {
+   "from": "task:2.1",
+   "to": "scn:decision-viewer/Раскладка «снимок» только для чтения/Ввод недоступен в снимке",
+   "type": "satisfies",
+   "at": "tasks.md:10"
+  },
+  {
+   "from": "task:2.1",
+   "to": "scn:decision-viewer/Раскладка «снимок» только для чтения/Скрытые органы не меняют черновик",
+   "type": "satisfies",
+   "at": "tasks.md:10"
+  },
+  {
+   "from": "task:2.1",
+   "to": "scn:decision-viewer/Снимок использует общую карточку и группировку журнала/Состав карточки совпадает",
+   "type": "satisfies",
+   "at": "tasks.md:10"
+  },
+  {
+   "from": "task:2.2",
+   "to": "scn:decision-viewer/Снимок использует общую карточку и группировку журнала/Группы и порядок",
+   "type": "satisfies",
+   "at": "tasks.md:11"
+  },
+  {
+   "from": "task:2.2",
+   "to": "scn:decision-viewer/Снимок использует общую карточку и группировку журнала/Невнесённый выбор не меняет снимок",
+   "type": "satisfies",
+   "at": "tasks.md:11"
+  },
+  {
+   "from": "task:2.3",
+   "to": "scn:decision-viewer/Назначение, счётчики и заметки имеют постоянные места/Заметки под полем",
+   "type": "satisfies",
+   "at": "tasks.md:12"
+  },
+  {
+   "from": "task:2.3",
+   "to": "scn:decision-viewer/Назначение, счётчики и заметки имеют постоянные места/Счётчики рядом с хешем",
+   "type": "satisfies",
+   "at": "tasks.md:12"
+  },
+  {
+   "from": "task:2.3",
+   "to": "scn:decision-viewer/Раскладка «снимок» только для чтения/Черновик сохраняется при смене раскладки",
+   "type": "satisfies",
+   "at": "tasks.md:12"
+  },
+  {
+   "from": "task:3.1",
+   "to": "scn:decision-viewer/Документы называют бывшую проверку раскладкой снимок/Тексты после изменения",
+   "type": "satisfies",
+   "at": "tasks.md:16"
+  },
+  {
+   "from": "task:3.2",
+   "to": "scn:decision-viewer/Панель схемы показывает `scheme.md` рядом с карточками/Панель читается в режиме проверки",
+   "type": "satisfies",
+   "at": "tasks.md:17"
+  },
+  {
+   "from": "task:3.2",
+   "to": "scn:decision-viewer/Просмотрщик — один HTML из своего шаблона/Соседнего файла нет",
+   "type": "satisfies",
+   "at": "tasks.md:17"
+  },
+  {
+   "from": "task:3.2",
+   "to": "scn:decision-viewer/Состояние и геометрия панели схемы/Геометрия сохраняется между раскладками",
+   "type": "satisfies",
+   "at": "tasks.md:17"
+  },
+  {
+   "from": "task:3.2",
+   "to": "scn:decision-viewer/Страница `symphysis.html` работает без соседних файлов/Страница перенесена из проекта",
+   "type": "satisfies",
+   "at": "tasks.md:17"
+  }
+ ],
+ "candidates": [
+  {
+   "a": "req:decision-viewer/Бейдж назначения не выдаёт проекцию за записанный артефакт",
+   "b": "req:decision-viewer/Назначение, счётчики и заметки имеют постоянные места",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-17"
+   ]
+  },
+  {
+   "a": "req:decision-viewer/Документы называют бывшую проверку раскладкой снимок",
+   "b": "req:decision-viewer/Негодная строка таблицы атаки — ошибка с местом",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-06"
+   ]
+  },
+  {
+   "a": "req:decision-viewer/Документы называют бывшую проверку раскладкой снимок",
+   "b": "req:decision-viewer/Панель показывает либо схему, либо справку",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-06"
+   ]
+  },
+  {
+   "a": "req:decision-viewer/Документы называют бывшую проверку раскладкой снимок",
+   "b": "req:decision-viewer/Панель схемы показывает `scheme.md` рядом с карточками",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-06"
+   ]
+  },
+  {
+   "a": "req:decision-viewer/Документы называют бывшую проверку раскладкой снимок",
+   "b": "req:decision-viewer/Состояние и геометрия панели схемы",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-06"
+   ]
+  },
+  {
+   "a": "req:decision-viewer/Документы называют бывшую проверку раскладкой снимок",
+   "b": "req:decision-viewer/Страница `symphysis.html` работает без соседних файлов",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-06"
+   ]
+  },
+  {
+   "a": "req:decision-viewer/Документы называют бывшую проверку раскладкой снимок",
+   "b": "req:decision-viewer/Строка таблицы атаки разбирается по соглашению markdown",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-06"
+   ]
+  },
+  {
+   "a": "req:decision-viewer/Негодная строка таблицы атаки — ошибка с местом",
+   "b": "req:decision-viewer/Панель показывает либо схему, либо справку",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-06"
+   ]
+  },
+  {
+   "a": "req:decision-viewer/Негодная строка таблицы атаки — ошибка с местом",
+   "b": "req:decision-viewer/Панель схемы показывает `scheme.md` рядом с карточками",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-06"
+   ]
+  },
+  {
+   "a": "req:decision-viewer/Негодная строка таблицы атаки — ошибка с местом",
+   "b": "req:decision-viewer/Состояние и геометрия панели схемы",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-06"
+   ]
+  },
+  {
+   "a": "req:decision-viewer/Негодная строка таблицы атаки — ошибка с местом",
+   "b": "req:decision-viewer/Страница `symphysis.html` работает без соседних файлов",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-06"
+   ]
+  },
+  {
+   "a": "req:decision-viewer/Негодная строка таблицы атаки — ошибка с местом",
+   "b": "req:decision-viewer/Строка таблицы атаки разбирается по соглашению markdown",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-06"
+   ]
+  },
+  {
+   "a": "req:decision-viewer/Панель показывает либо схему, либо справку",
+   "b": "req:decision-viewer/Панель схемы показывает `scheme.md` рядом с карточками",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-06"
+   ]
+  },
+  {
+   "a": "req:decision-viewer/Панель показывает либо схему, либо справку",
+   "b": "req:decision-viewer/Состояние и геометрия панели схемы",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-06"
+   ]
+  },
+  {
+   "a": "req:decision-viewer/Панель показывает либо схему, либо справку",
+   "b": "req:decision-viewer/Страница `symphysis.html` работает без соседних файлов",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-06"
+   ]
+  },
+  {
+   "a": "req:decision-viewer/Панель показывает либо схему, либо справку",
+   "b": "req:decision-viewer/Строка таблицы атаки разбирается по соглашению markdown",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-06"
+   ]
+  },
+  {
+   "a": "req:decision-viewer/Панель схемы показывает `scheme.md` рядом с карточками",
+   "b": "req:decision-viewer/Состояние и геометрия панели схемы",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-06"
+   ]
+  },
+  {
+   "a": "req:decision-viewer/Панель схемы показывает `scheme.md` рядом с карточками",
+   "b": "req:decision-viewer/Страница `symphysis.html` работает без соседних файлов",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-06"
+   ]
+  },
+  {
+   "a": "req:decision-viewer/Панель схемы показывает `scheme.md` рядом с карточками",
+   "b": "req:decision-viewer/Строка таблицы атаки разбирается по соглашению markdown",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-06"
+   ]
+  },
+  {
+   "a": "req:decision-viewer/Просмотрщик — один HTML из своего шаблона",
+   "b": "req:decision-viewer/Раскладка «снимок» только для чтения",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-03"
+   ]
+  },
+  {
+   "a": "req:decision-viewer/Просмотрщик — один HTML из своего шаблона",
+   "b": "req:decision-viewer/Снимок использует общую карточку и группировку журнала",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-03"
+   ]
+  },
+  {
+   "a": "req:decision-viewer/Раскладка «снимок» только для чтения",
+   "b": "req:decision-viewer/Снимок использует общую карточку и группировку журнала",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-03"
+   ]
+  },
+  {
+   "a": "req:decision-viewer/Состояние и геометрия панели схемы",
+   "b": "req:decision-viewer/Страница `symphysis.html` работает без соседних файлов",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-06"
+   ]
+  },
+  {
+   "a": "req:decision-viewer/Состояние и геометрия панели схемы",
+   "b": "req:decision-viewer/Строка таблицы атаки разбирается по соглашению markdown",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-06"
+   ]
+  },
+  {
+   "a": "req:decision-viewer/Страница `symphysis.html` работает без соседних файлов",
+   "b": "req:decision-viewer/Строка таблицы атаки разбирается по соглашению markdown",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-06"
+   ]
+  }
+ ],
+ "roots": [
+  {
+   "prefix": "",
+   "commit": "338c96753687b714d072d7dc1ce5a4c1a0162c18"
+  },
+  {
+   "prefix": "store/",
+   "commit": "531a2e84807eb4f3abe8fa3dacc3a53c6de95660"
+  },
+  {
+   "prefix": "playground/",
+   "commit": ""
+  },
+  {
+   "prefix": "md4h/",
+   "commit": ""
+  },
+  {
+   "prefix": "calibration/",
+   "commit": ""
+  },
+  {
+   "prefix": "archive/",
+   "commit": ""
+  },
+  {
+   "prefix": "catalog/",
+   "commit": "20c976814c279cd5cc2af9256b37e9258eb5f5d8"
+  }
+ ],
+ "base": {
+  "decision-viewer": {
+   "Панель схемы показывает `scheme.md` рядом с карточками": {
+    "numbers": [
+     "F-122",
+     "F-21",
+     "F-25",
+     "F-39",
+     "F-54",
+     "F-91"
+    ],
+    "scenarios": {
+     "Файл mermaid рядом": "8b00ac87510cca12c2f9c1f7ee93f5e4ec2a07585a7a239650cd04e12e8fdad4",
+     "Файла mermaid нет": "5d10fd9823f22c0438b9a5264f1319a9f29fd4bac3f3e87acfd2402153eb29d9",
+     "Текст не разбирается": "4552ba9a8641f0b5d136196dfd6fff637dcf0b10b407d4430ca6e832b171eab2",
+     "Схемы нет": "c7edb5bc34c2ef0abdf5375559ae33fdf117aab55ae4c5427cac837c0d421249",
+     "Панель читается в режиме проверки": "cf99e0584abcfeabfc3417af934ddff234cd0ddd8d409f64ddd0f9b93fe326de",
+     "Рисунок читается рядом с карточками": "ecc8fd7eb64c5eb3b2e7f34ab53631b63d7b3ab487260fcd8c4840221c9d26ca",
+     "Граница панели": "a615bdcf8132290710d45b983291313a4d2841a3fe1208f9f797faffe036cc20",
+     "Первое открытие": "79df12360c37b6eb661089796fff9e639c208ed1e58d734b7662ef426d689aea",
+     "Узкое окно": "a921c4949ab7b61f3e3baee80a149598a86621fab57bc920365f34bcf699f062"
+    },
+    "text": "56e3798c3eb6d8ae9fb244e4c7b28bd6d6b1437eaaacdc0c73306b9ea3f0d267",
+    "traces": [
+     "066683788ee04dbcba9b71e35552dc0eac5d568056cf45d2f7446b3666e59837",
+     "65e26cfd053d6fcef9e5abaddb05fb8c15c33ce3d03067db137a1500d08ebda4"
+    ]
+   },
+   "Панель показывает либо схему, либо справку": {
+    "numbers": [
+     "F-29",
+     "F-32",
+     "F-69"
+    ],
+    "scenarios": {
+     "Переключение": "101f521912560628471353ca2007eac07617308f05421382b70ce627b12f4087",
+     "Первое открытие панели": "36430d5cdaaf2e8d061b396bb5f8e7e628ad9890f87a3b18fb91dc395a059765",
+     "Выбор сохранился": "8dee18e6cb4116ac560003f1e8a98048f95d5923e818c5138dc1066bd9f6b632",
+     "Режимы страницы не тронуты": "c402091063bdb5138213089de6937b8d3260df2cf2fe99b868175fdde706766f",
+     "Схемы нет": "2af8b5a67b6787d2d357e0a6c58f953a11710680d1e3b2bacfaa653aeb2bf915",
+     "Подпись кнопки панели": "7244bc7095d62d98c8a42d305eec58a0019c86409d54e7829f7b1ea5d1a14304"
+    },
+    "text": "c3078ca36615e90dfc3ad30a37e82463c6823c14849b57321b6c82fe0ee0d7cc",
+    "traces": [
+     "96437f29201f5a3b92b3c85c208e34ec3a91ec1117b4901dae5010a3c390e9e9",
+     "fc22202c44583806c473a06f3433efefb455a56cb89aa2791809f3815cb5a35a"
+    ]
+   },
+   "Строка таблицы атаки разбирается по соглашению markdown": {
+    "numbers": [
+     "F-46",
+     "calibration-fixes/F-23.A",
+     "calibration-fixes/F-45.E",
+     "calibration-fixes/F-46.E"
+    ],
+    "scenarios": {
+     "Черта в backticks в последней ячейке": "e717c33ba40dd6c125f854908f4e0158df034d9a1cc5462745840c4d7a6b4ff1"
+    },
+    "text": "41e4ad0d4d4d3f7038db451822b039da530a7f07f77d3c174033cf9b09cfecfe",
+    "traces": []
+   },
+   "Негодная строка таблицы атаки — ошибка с местом": {
+    "numbers": [
+     "F-46",
+     "calibration-fixes/F-23.A",
+     "calibration-fixes/F-45.E",
+     "calibration-fixes/F-46.E"
+    ],
+    "scenarios": {
+     "Лишняя ячейка": "e2bf702945f8db573662009ff9e5c66a3f7b73a12aa443fc13c2615ff071ffc6"
+    },
+    "text": "732b22c18c01e604d4f68159f6272cedc4a5ec4367942e9744954b624230465f",
+    "traces": []
+   },
+   "Страница `symphysis.html` работает без соседних файлов": {
+    "numbers": [
+     "F-39",
+     "F-46",
+     "step-help/F-35"
+    ],
+    "scenarios": {
+     "Страница перенесена из проекта": "28282aa7e5bd59d4827cdde6d1046527b7a90fedc51365f758b868b5151fd872"
+    },
+    "text": "7467bd908f96688d1070bd6e67265db52e8b154d2a6fb5706577e1ef23d8531d",
+    "traces": []
+   }
+  }
+ }
+}

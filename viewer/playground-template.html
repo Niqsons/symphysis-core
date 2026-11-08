@@ -113,7 +113,6 @@
   header .modes { display:flex; gap:4px; }
   header .modes button.active { border-color:var(--acc); color:var(--acc); }
   .view { padding:12px 16px calc(var(--outh) + 48px); max-width:1100px; margin:0 auto; min-width:0; }
-  #viewCheck { padding-bottom:40px; }
   .view h2 { margin:18px 0 8px; }
   .view h3 { font-size:12.5px; color:var(--mute); margin:12px 0 6px; font-weight:600; }
   .view ul { margin:4px 0; padding-left:20px; }
@@ -168,12 +167,14 @@
 <body>
 <header id="pageHeader">
   <h1 id="title">symphysis — журнал решений</h1>
-  <div class="modes" id="modes" title="решения — круг просмотрщика; проверка — снимок перед proposal, только чтение; атака — строки attack/*.md по линзам"></div>
+  <div class="modes" id="modes" title="решения — круг просмотрщика; атака — строки attack/*.md по линзам"></div>
+  <div class="modes" id="layouts" title="раскладка решений: по журналу — редактирование; снимок — группировка журнала, только чтение"></div>
   <label class="editorpick" title="цветовая раскладка страницы; выбор хранится в браузере">тема <select id="themePick"><option value="dark">тёмная</option><option value="light">светлая</option></select></label>
   <button id="btnScheme" title="рядом с карточками: схема решения из scheme.md или справка о шаге конвейера">схема · справка</button>
   <label class="editorpick" title="куда ведёт значок ↗ у ссылки на файл; выбор хранится в этом браузере">↗ <select id="editorPick"><option value="vscode">VS Code</option><option value="cursor">Cursor</option><option value="jetbrains">IDEA / GIGA IDE</option><option value="custom">своя маска</option><option value="none">не показывать</option></select></label>
   <input type="text" id="editorMask" class="hidden" placeholder="схема://…{path}…{line}" title="подстановки: {path}, {relpath}, {project}, {line}, {line0}">
   <div class="stats" id="stats"></div>
+  <div class="stats" id="snapshotStats"></div>
   <div class="spacer"></div>
   <button id="btnExport" title="JSON состояния — для переноса в другой браузер">Экспорт JSON</button>
   <button id="btnImport">Импорт JSON</button>
@@ -193,7 +194,7 @@
     <div class="evstats mono" id="evstats"></div>
   </aside>
   <main>
-    <div class="newfork">
+    <div class="newfork" id="newForkArea">
       <div class="row"><b>Развилка, которой нет в журнале</b><button class="small" id="btnToggleNew">добавить</button></div>
       <div id="newForkForm" class="hidden">
         <input type="text" id="nfQuestion" placeholder="вопрос">
@@ -206,9 +207,9 @@
     <div id="cards"></div>
     <h2>Замечания к схеме и плану</h2>
     <textarea id="notes" placeholder="что не так в схеме работы, в поставках, в этапах"></textarea>
+    <details class="recblock hidden" id="journalNotes"></details>
   </main>
 </div>
-<main class="view hidden" id="viewCheck"></main>
 <main class="view hidden" id="viewAttack"></main>
 <div class="outpanel" id="outpanel">
   <div class="outhandle" id="outhandle" title="тяни, чтобы изменить высоту панели"></div>
@@ -248,8 +249,10 @@ const ATTACK_LENSES = {
 };
 const OUTSIDE = '__outside__';   /* значение фильтра для группы «вне списка» */
 const SEVERITY = ['блокер','предупреждение','справка'];
-const MODES = ['decisions','check','attack'];
-const MODE_LABELS = { decisions:'решения', check:'проверка', attack:'атака' };
+const MODES = ['decisions','attack'];
+const MODE_LABELS = { decisions:'решения', attack:'атака' };
+const LAYOUTS = ['journal','snapshot'];
+const LAYOUT_LABELS = { journal:'по журналу', snapshot:'снимок' };
 const ADDED_MARK = '(добавлен человеком';
 const ONE_WAY = 'в одну сторону';
 const ATTACK_HINT = 'По спору apply строку атаки не меняет: её закрывает правка цели (журнала или артефакта) и повторная атака. Исключение — тяжесть: у блокера кнопка «понизить», у предупреждения «повысить»; обоснование пишется в своём скрытом поле (не в поле спора), кнопка берёт его при нажатии, без текста строки о тяжести не будет, а повторное нажатие снимает отметку вместе с обоснованием. Отметка уходит строкой «- тяжесть: <файл> · <раздел> · «<утверждение>» → <тяжесть> — «<обоснование>»» над «Замечания к схеме:»; apply вписывает в ячейку «<тяжесть> (<обоснование>)» и пересчитывает status файла атаки, журнал не меняется. У справки и строк покрытия кнопки нет. Спор по строке (почему опора есть, почему не блокер) уходит в промпт возврата одной строкой «Замечания к схеме:» и ложится в notes[] журнала; ответ на строку с закрытием «вопрос человеку» и разделом «F-NN, decision» уходит словом к решению. Фильтр по линзе прячет группы, но не счётчики тяжести в шапке файла. Переключатель «прочитано» у строки предупреждение уходит текстом «предупреждение прочитано: <раздел>» в ту же строку «Замечания к схеме:» и после apply возвращается флагом по заметке журнала; тяжесть и вердикт он не меняет.';
@@ -265,8 +268,17 @@ try { const s = localStorage.getItem(KEY); if (s) state = Object.assign(EMPTY(),
 for (const k in state.decisions) { const d = state.decisions[k]; if (!Array.isArray(d.parked)) d.parked = d.parked ? [{ text:'', addressee:d.addressee || 'человек' }] : []; }
 function save() { try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {} }
 /* режим страницы и споры по строкам атаки — свои ключи browser storage; в состояние режима 1 они не входят */
-let mode = 'decisions';
-try { const m = localStorage.getItem(KEY + ':mode'); if (MODES.includes(m)) mode = m; } catch (e) {}
+let mode = 'decisions', layout = 'journal';
+try {
+  const m = localStorage.getItem(KEY + ':mode');
+  if (MODES.includes(m)) mode = m;
+  const l = localStorage.getItem(KEY + ':layout');
+  if (LAYOUTS.includes(l)) layout = l;
+  if (m === 'check') {
+    mode = 'decisions'; layout = 'journal';
+    try { localStorage.setItem(KEY + ':mode', 'decisions'); localStorage.setItem(KEY + ':layout', 'journal'); } catch (e) {}
+  }
+} catch (e) {}
 /* споры по строкам, отметки «прочитано» (ключ — файл атаки и раздел) и отметки тяжести `rowKey → { to, why }`; старое хранилище без поля `read` или `sev` читается как пустые отметки (F-31, F-43.B) */
 let attackState = { disputes:{}, read:{}, sev:{} };
 try {
@@ -279,6 +291,7 @@ let attackLens = 'all';
 try { const l = localStorage.getItem(KEY + ':lens'); if (l) attackLens = l; } catch (e) {}
 function saveAttack() { try { localStorage.setItem(KEY + ':attack', JSON.stringify(attackState)); } catch (e) {} }
 function setMode(m) { mode = m; try { localStorage.setItem(KEY + ':mode', m); } catch (e) {} render(); }
+function setLayout(l) { layout = l; try { localStorage.setItem(KEY + ':layout', l); } catch (e) {} render(); }
 /* ключ спора — файл, раздел и утверждение строки: при повторной атаке спор остаётся у той же строки, не у того же номера */
 function disputeKey(att, row) { return att.path + '|' + row.section + '|' + row.claim; }
 /* flags:begin */
@@ -574,7 +587,7 @@ function wordMissing(rec) {
   const saved = rec.decision && rec.decision.option === cur ? rec.decision.word : '';
   return !String((state.decisions[rec.id] || {}).word || '').trim() && !String(saved || '').trim();
 }
-function chosenAntipodes(id, letter) { return antipodesOf(id, letter).filter(k => { const [oid, ol] = k.split('.'); return chosen(oid) === ol; }); }
+function chosenAntipodes(id, letter, readOnly = false) { return antipodesOf(id, letter).filter(k => { const [oid, ol] = k.split('.'); return (readOnly ? journalChoice(byId[oid] || {}) : chosen(oid)) === ol; }); }
 /* text:begin */
 function esc(s) { return String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
 /* текст журнала и атаки: единственная разметка данных — пары backticks; сначала экранирование, потом `код` -> <code> */
@@ -636,75 +649,86 @@ function visible(rec) {
 }
 
 /* ---------- карточки ---------- */
-function renderCards() {
-  const el = document.getElementById('cards');
-  el.innerHTML = JOURNAL.records.filter(visible).map(rec => {
-    const d = dec(rec.id);
-    const isFact = rec.kind === 'факт';
-    const jc = journalChoice(rec);
-    const localChoice = d.choice;
-    const changed = !!(localChoice && jc && localChoice !== jc);
-    const jpark = (rec.parking || []).map(p => ({ text:p.text, addressee:p.addressee, journal:true }));
-    const parkedAll = jpark.concat(d.parked || []);
-    const cls = ['card', isFact ? 'fact' : '', changed ? 'changed' : (chosen(rec.id) ? 'decided' : ''), parkedAll.length ? 'parked' : ''].join(' ');
-    let status = isFact ? '<span class="badge fact">факт · закрыт уликами</span>'
-      : changed ? '<span class="badge changed">изменено: ' + esc(jc) + ' → ' + esc(localChoice) + '</span>'
-      : localChoice ? '<span class="badge ok">решено здесь: ' + esc(localChoice) + '</span>'
-      : jc ? '<span class="badge ok">решено в журнале: ' + esc(jc) + '</span>' : '<span class="badge">открыто</span>';
-    if (parkedAll.length) status += '<span class="badge park">парковка: ' + parkedAll.length + '</span>';
-    const deps = effectiveDeps(rec);
-    /* факт решения не требует: предпосылка ждёт только у развилки без выбора и у припаркованного факта */
-    const settled = id => chosen(id) || (byId[id] && byId[id].kind === 'факт' && byId[id].status === 'решён');
-    const waiting = deps.filter(x => x.kind !== 'removed' && !settled(x.id)).map(x => x.id);
-    let html = '<div class="' + cls + '" id="' + esc(rec.id) + '"><div class="head"><span class="id mono">' + esc(rec.id) + '</span>' + status +
-      '<span class="badge">' + esc(rec.delivery || '—') + '</span>' + (rec.addressee ? '<span class="badge">адресат: ' + esc(rec.addressee) + '</span>' : '') + '</div>' +
-      '<div class="q">' + md(rec.question) + '</div>';
-    html += '<div class="meta">зависит от: ' + (deps.length ? deps.map(x => '<span class="chip ' + x.kind + '"><a href="#' + esc(x.id) + '">' + esc(x.id) + '</a>' +
-      (x.kind === 'removed' ? '<button data-undep="' + esc(rec.id) + '|' + esc(x.id) + '" title="вернуть">↺</button>' : '<button data-rmdep="' + esc(rec.id) + '|' + esc(x.id) + '" title="снять зависимость">×</button>') + '</span>').join('') : '—') +
-      '<input type="text" data-deptext="' + esc(rec.id) + '" placeholder="F-NN" title="добавить зависимость"><button class="small" data-adddep="' + esc(rec.id) + '">+ зависимость</button></div>';
-    if (waiting.length) html += '<div class="note warn">предпосылка не решена: ' + waiting.map(esc).join(', ') + ' — выбирать можно, но ответ до неё — догадка</div>';
-    if (rec.evidence && rec.evidence.length && !isFact) html += '<div class="note info"><b>улики записи</b>' + rec.evidence.map(evHtml).join('') + '</div>';
-    if (rec.finding) html += '<div class="note info"><b>находка:</b> ' + md(rec.finding) + '</div>';
-    if (isFact) {
-      html += rec.evidence.map(evHtml).join('');
-      if (rec.dispute) html += '<div class="note park"><b>спор в журнале:</b> ' + md(rec.dispute) + '</div>';
-      html += '<div class="cons">следствия: ' + md(rec.consequences || '—') + '</div>';
-      html += '<div class="row"><textarea data-dispute="' + esc(rec.id) + '" placeholder="оспорить факт: что не так и чем это подтверждается">' + esc(state.disputes[rec.id] || '') + '</textarea></div>';
-    } else {
-      const cur = chosen(rec.id);
-      for (const o of allOptions(rec)) {
-        const paired = chosenAntipodes(rec.id, o.letter);
-        const anti = antipodesOf(rec.id, o.letter);
-        const tags = (rec.recommendation && rec.recommendation.option === o.letter ? '<span class="tag rec">рекомендация</span>' : '') +
-          (jc === o.letter ? '<span class="tag journal">в журнале</span>' : '') +
-          (o.unlikely ? '<span class="tag unlikely" title="' + esc(o.unlikely) + '">маловероятно</span>' : '') +
-          (o.added ? '<span class="tag added">добавлен человеком</span>' : '') +
-          deviationTag(o) +
-          (anti.length ? '<span class="tag anti" title="нельзя вместе с: ' + esc(anti.join(', ')) + '">антипод ' + esc(anti.join(', ')) + '</span>' : '');
-        html += '<label class="opt' + (cur === o.letter ? ' chosen' : '') + '">' +
-          '<input type="radio" name="' + esc(rec.id) + '" value="' + esc(o.letter) + '"' + (cur === o.letter ? ' checked' : '') + '>' +
-          '<div class="t"><span class="letter">' + esc(o.letter) + '.</span> ' + md(o.text) + tags +
-          (o.unlikely ? '<span class="ev">маловероятно: ' + md(o.unlikely) + '</span>' : '') +
-          (paired.length ? '<span class="note warn" data-antipode-warning="' + esc(rec.id + '.' + o.letter) + '">антипод уже выбран: ' + esc(paired.join(', ')) + '. Выбрать можно, но вместе они станут строкой атаки.</span>' : '') +
-          (o.evidence || []).map(evHtml).join('') + '</div></label>';
-      }
-      if (rec.recommendation) html += '<div class="rec">рекомендация: <b>' + esc(rec.recommendation.option) + '</b> — ' + md(rec.recommendation.why) + '</div>';
-      if (rec.decision && rec.decision.word) html += '<div class="note info"><b>слово в журнале (' + esc(rec.decision.date || '') + '):</b> «' + md(rec.decision.word) + '»</div>';
+function cardHtml(rec, readOnly) {
+  const d = readOnly ? { choice:null, word:'', parked:[] } : dec(rec.id);
+  const isFact = rec.kind === 'факт';
+  const jc = journalChoice(rec);
+  const localChoice = readOnly ? null : d.choice;
+  const changed = !!(localChoice && jc && localChoice !== jc);
+  const jpark = (rec.parking || []).map(p => ({ text:p.text, addressee:p.addressee, journal:true }));
+  const parkedAll = jpark.concat(d.parked || []);
+  const cur = readOnly ? jc : chosen(rec.id);
+  const cls = ['card', isFact ? 'fact' : '', changed ? 'changed' : (cur ? 'decided' : ''), parkedAll.length ? 'parked' : ''].join(' ');
+  let status = isFact ? '<span class="badge fact">факт · закрыт уликами</span>'
+    : changed ? '<span class="badge changed">изменено: ' + esc(jc) + ' → ' + esc(localChoice) + '</span>'
+    : localChoice ? '<span class="badge ok">решено здесь: ' + esc(localChoice) + '</span>'
+    : jc ? '<span class="badge ok">решено в журнале: ' + esc(jc) + '</span>' : '<span class="badge">открыто</span>';
+  if (parkedAll.length) status += '<span class="badge park">парковка: ' + parkedAll.length + '</span>';
+  const deps = readOnly ? (rec.depends_on || []).map(x => ({ id:x, kind:'journal' })) : effectiveDeps(rec);
+  /* факт решения не требует: предпосылка ждёт только у развилки без выбора и у припаркованного факта */
+  const settled = id => (readOnly ? journalChoice(byId[id] || {}) : chosen(id)) || (byId[id] && byId[id].kind === 'факт' && byId[id].status === 'решён');
+  const waiting = deps.filter(x => x.kind !== 'removed' && !settled(x.id)).map(x => x.id);
+  const dest = destination(rec);
+  let html = '<div class="' + cls + '" id="' + esc(rec.id) + '"><div class="head"><span class="id mono">' + esc(rec.id) + '</span>' + status +
+    '<span class="badge">' + esc(rec.delivery || '—') + '</span>' + (rec.addressee ? '<span class="badge">адресат: ' + esc(rec.addressee) + '</span>' : '') +
+    (isOneWay(rec) ? '<span class="badge warn">в одну сторону</span>' : '') +
+    '<span class="badge dest" title="куда уйдёт — по правилам render-design">→ ' + esc(dest.label) + (dest.note ? ' · ' + esc(dest.note) : '') + '</span></div>' +
+    '<div class="q">' + md(rec.question) + '</div>';
+  html += '<div class="meta">зависит от: ' + (deps.length ? deps.map(x => '<span class="chip ' + x.kind + '"><a href="#' + esc(x.id) + '">' + esc(x.id) + '</a>' +
+    (!readOnly ? (x.kind === 'removed' ? '<button data-undep="' + esc(rec.id) + '|' + esc(x.id) + '" title="вернуть">↺</button>' : '<button data-rmdep="' + esc(rec.id) + '|' + esc(x.id) + '" title="снять зависимость">×</button>') : '') + '</span>').join('') : '—') +
+    (!readOnly ? '<input type="text" data-deptext="' + esc(rec.id) + '" placeholder="F-NN" title="добавить зависимость"><button class="small" data-adddep="' + esc(rec.id) + '">+ зависимость</button>' : '') + '</div>';
+  if (waiting.length) html += '<div class="note warn">предпосылка не решена: ' + waiting.map(esc).join(', ') + ' — выбирать можно, но ответ до неё — догадка</div>';
+  if (rec.evidence && rec.evidence.length && !isFact) html += '<div class="note info"><b>улики записи</b>' + rec.evidence.map(evHtml).join('') + '</div>';
+  if (rec.finding) html += '<div class="note info"><b>находка:</b> ' + md(rec.finding) + '</div>';
+  if (isFact) {
+    html += rec.evidence.map(evHtml).join('');
+    if (rec.dispute) html += '<div class="note park"><b>спор в журнале:</b> ' + md(rec.dispute) + '</div>';
+    else if (readOnly) html += '<div class="meta">спора нет</div>';
+    html += '<div class="cons">следствия: ' + md(rec.consequences || '—') + '</div>';
+    if (!readOnly) html += '<div class="row"><textarea data-dispute="' + esc(rec.id) + '" placeholder="оспорить факт: что не так и чем это подтверждается">' + esc(state.disputes[rec.id] || '') + '</textarea></div>';
+  } else {
+    const options = readOnly ? (rec.options || []) : allOptions(rec);
+    for (const o of options) {
+      const paired = chosenAntipodes(rec.id, o.letter, readOnly);
+      const anti = antipodesOf(rec.id, o.letter);
+      const tags = (rec.recommendation && rec.recommendation.option === o.letter ? '<span class="tag rec">рекомендация</span>' : '') +
+        (jc === o.letter ? '<span class="tag journal">в журнале</span>' : '') +
+        (o.unlikely ? '<span class="tag unlikely" title="' + esc(o.unlikely) + '">маловероятно</span>' : '') +
+        (o.added ? '<span class="tag added">добавлен человеком</span>' : '') +
+        deviationTag(o) +
+        (anti.length ? '<span class="tag anti" title="нельзя вместе с: ' + esc(anti.join(', ')) + '">антипод ' + esc(anti.join(', ')) + '</span>' : '');
+      html += '<label class="opt' + (cur === o.letter ? ' chosen' : '') + '">' +
+        (!readOnly ? '<input type="radio" name="' + esc(rec.id) + '" value="' + esc(o.letter) + '"' + (cur === o.letter ? ' checked' : '') + '>' : '') +
+        '<div class="t"><span class="letter">' + esc(o.letter) + '.</span> ' + md(o.text) + tags +
+        (o.unlikely ? '<span class="ev">маловероятно: ' + md(o.unlikely) + '</span>' : '') +
+        (paired.length ? '<span class="note warn" data-antipode-warning="' + esc(rec.id + '.' + o.letter) + '">антипод уже выбран: ' + esc(paired.join(', ')) + '. Выбрать можно, но вместе они станут строкой атаки.</span>' : '') +
+        (o.evidence || []).map(evHtml).join('') + '</div></label>';
+    }
+    if (rec.recommendation) html += '<div class="rec">рекомендация: <b>' + esc(rec.recommendation.option) + '</b> — ' + md(rec.recommendation.why) + '</div>';
+    if (rec.decision && rec.decision.word) html += '<div class="note info"><b>слово в журнале (' + esc(rec.decision.date || '') + '):</b> «' + md(rec.decision.word) + '»</div>';
+    if (rec.reversibility) html += '<div class="meta">обратимость: ' + esc(rec.reversibility.level) + (rec.reversibility.why ? ' — ' + md(rec.reversibility.why) : '') + '</div>';
+    if (rec.outcome) html += '<div class="meta">исход: ' + esc(rec.outcome.kind) + ' — <b>' + esc(rec.outcome.value) + '</b>' + (rec.outcome.reason ? ' — ' + md(rec.outcome.reason) : '') + '</div>';
+    if (!readOnly) {
       html += '<div class="note bad hidden" data-msg="' + esc(rec.id) + '"></div>';
       html += '<div class="note warn' + (wordMissing(rec) ? '' : ' hidden') + '" data-word-needed="' + esc(rec.id) + '">Выбран не рекомендованный вариант: напиши, почему. Так выбор поймёт читатель журнала; внести можно и без слова.</div>';
       html += '<div class="row"><textarea data-word="' + esc(rec.id) + '" placeholder="слово человека дословно — почему так (или что изменить в решении из журнала)">' + esc(d.word || '') + '</textarea></div>';
       html += '<div class="row"><input type="text" data-addtext="' + esc(rec.id) + '" placeholder="вариант, которого здесь нет"><button class="small" data-addopt="' + esc(rec.id) + '">добавить вариант</button></div>';
-      html += '<details class="park"' + (parkedAll.length ? ' open' : '') + '><summary title="' + esc(PARK_HINT) + '">парковка — дополнительный вопрос с адресатом (' + parkedAll.length + ')</summary>' +
-        '<div class="note park" style="margin:6px 0">' + esc(PARK_HINT) + '</div>' +
-        parkedAll.map((p, i) => '<div class="parkitem"><span class="who">→ ' + esc(p.addressee || '?') + (p.journal ? ' · в журнале' : '') + '</span><span>' + md(p.text || '(без текста)') + '</span>' +
-          (p.journal ? '' : '<button class="small" data-unpark="' + esc(rec.id) + '|' + (i - jpark.length) + '">снять</button>') + '</div>').join('') +
-        '<div class="row"><input type="text" data-parktext="' + esc(rec.id) + '" placeholder="что именно надо узнать или решить отдельно">' +
-        '<select data-addressee="' + esc(rec.id) + '" title="' + esc(PARK_HINT) + '">' + ADDRESSEES.map(a => '<option>' + a + '</option>').join('') + '</select>' +
-        '<button class="small" data-park="' + esc(rec.id) + '">припарковать</button></div></details>';
-      html += '<div class="cons">следствия: ' + md(rec.consequences || '—') + '</div>';
     }
-    return html + '</div>';
-  }).join('');
+    html += '<details class="park"' + (parkedAll.length ? ' open' : '') + '><summary title="' + esc(PARK_HINT) + '">парковка — дополнительный вопрос с адресатом (' + parkedAll.length + ')</summary>' +
+      '<div class="note park" style="margin:6px 0">' + esc(PARK_HINT) + '</div>' +
+      parkedAll.map((p, i) => '<div class="parkitem"><span class="who">→ ' + esc(p.addressee || '?') + (p.journal ? ' · в журнале' : '') + '</span><span>' + md(p.text || '(без текста)') + '</span>' +
+        (!readOnly && !p.journal ? '<button class="small" data-unpark="' + esc(rec.id) + '|' + (i - jpark.length) + '">снять</button>' : '') + '</div>').join('');
+    if (!readOnly) html += '<div class="row"><input type="text" data-parktext="' + esc(rec.id) + '" placeholder="что именно надо узнать или решить отдельно">' +
+      '<select data-addressee="' + esc(rec.id) + '" title="' + esc(PARK_HINT) + '">' + ADDRESSEES.map(a => '<option>' + a + '</option>').join('') + '</select>' +
+      '<button class="small" data-park="' + esc(rec.id) + '">припарковать</button></div>';
+    html += '</details><div class="cons">следствия: ' + md(rec.consequences || '—') + '</div>';
+  }
+  return html + '</div>';
+}
+
+function renderCards() {
+  const el = document.getElementById('cards');
+  el.innerHTML = JOURNAL.records.filter(visible).map(rec => cardHtml(rec, false)).join('');
 
   el.querySelectorAll('input[type=radio]').forEach(r => r.onchange = () => {
     const id = r.name, letter = r.value;
@@ -775,6 +799,23 @@ function helpTasksPart() {
   const t = HELP && !HELP.error && HELP.tasks;
   return t && t.total > 0 ? ' · Задач закрыто <b>' + esc(t.complete) + ' из ' + esc(t.total) + '</b>' : '';
 }
+function snapshotCounters() {
+  const recs = JOURNAL.records, forks = recs.filter(r => r.kind === 'развилка');
+  const decided = forks.filter(r => r.decision && r.decision.option).length;
+  const open = forks.filter(r => !(r.decision && r.decision.option)).length;
+  const facts = recs.filter(r => r.kind === 'факт');
+  const parkings = recs.flatMap(r => (r.parking || []).map(p => Object.assign({ rec:r.id }, p)));
+  return 'решено <b>' + decided + '</b> · открыто <b>' + open + '</b> · припарковано: ' +
+    ADDRESSEES.map(a => esc(a) + ' <b>' + parkings.filter(p => p.addressee === a).length + '</b>').join(' / ') +
+    ' · фактов оспорено <b>' + facts.filter(r => (r.dispute || '').trim()).length + '</b>' +
+    ' · улик не найдено <b>' + recs.flatMap(allEvidence).filter(ev => ev.found === false).length + '</b>';
+}
+function renderJournalNotes() {
+  const notes = JOURNAL.notes || [], el = document.getElementById('journalNotes');
+  el.classList.toggle('hidden', !notes.length);
+  el.innerHTML = '<summary>заметки журнала · ' + notes.length + '</summary>' + (notes.length ?
+    '<ul>' + notes.map(n => '<li><span class="mono">' + esc(n.date) + '</span> — ' + md(n.text) + '</li>').join('') + '</ul>' : '');
+}
 function renderStats() {
   const forks = JOURNAL.records.filter(r => r.kind !== 'факт');
   const decided = forks.filter(r => chosen(r.id)).length;
@@ -787,6 +828,8 @@ function renderStats() {
     (disputed ? ' · оспорено <b>' + disputed + '</b>' : '') + (state.newForks.length ? ' · добавлено развилок <b>' + state.newForks.length + '</b>' : '') + helpTasksPart();
   const s = JOURNAL.stats || {};
   document.getElementById('evstats').textContent = 'улик сверено ' + (s.evidence_found ?? '?') + ' из ' + (s.evidence_total ?? '?') + ' · собрано ' + (JOURNAL.generated || '');
+  const snapshot = mode === 'decisions' && layout === 'snapshot';
+  document.getElementById('snapshotStats').innerHTML = snapshot ? 'sha256 журнала: ' + shaChip(JOURNAL.sha256, 'не подан — рендер не из файла') + ' · ' + snapshotCounters() : '';
 }
 
 /* prompt:begin */
@@ -890,10 +933,17 @@ function renderModes() {
   const rows = ATTACK.reduce((n, a) => n + (a.rows || []).length, 0);
   el.innerHTML = MODES.map(m => '<button class="small' + (mode === m ? ' active' : '') + '" data-mode="' + m + '">' + MODE_LABELS[m] + (m === 'attack' && rows ? ' · ' + rows : '') + '</button>').join('');
   el.querySelectorAll('button').forEach(b => b.onclick = () => setMode(b.dataset.mode));
+  const layouts = document.getElementById('layouts');
+  layouts.innerHTML = LAYOUTS.map(l => '<button class="small' + (layout === l ? ' active' : '') + '" data-layout="' + l + '">' + LAYOUT_LABELS[l] + '</button>').join('');
+  layouts.querySelectorAll('button').forEach(b => b.onclick = () => setLayout(b.dataset.layout));
+  layouts.classList.toggle('hidden', mode !== 'decisions');
   document.getElementById('viewDecisions').classList.toggle('hidden', mode !== 'decisions');
-  document.getElementById('viewCheck').classList.toggle('hidden', mode !== 'check');
   document.getElementById('viewAttack').classList.toggle('hidden', mode !== 'attack');
-  document.getElementById('outpanel').classList.toggle('hidden', mode === 'check');   /* проверка ничего не возвращает */
+  const snapshot = mode === 'decisions' && layout === 'snapshot';
+  const out = document.getElementById('outpanel');
+  out.classList.toggle('hidden', snapshot); out.hidden = snapshot;   /* снимок ничего не возвращает */
+  document.getElementById('newForkArea').hidden = snapshot;
+  document.getElementById('notes').readOnly = snapshot;
 }
 
 /* ---------- общее для режимов 2 и 3 ---------- */
@@ -914,7 +964,7 @@ function verdictNote(att) {
   return t.sha256 === JOURNAL.sha256 ? '<span class="badge ok">хеш журнала совпал</span>' : '<span class="badge bad">вердикт устарел: журнал изменён после атаки</span>';
 }
 
-/* ---------- режим 2 — проверка: снимок решений перед proposal, только чтение ---------- */
+/* ---------- раскладка «снимок»: записи журнала перед proposal, только чтение ---------- */
 /* проекция «куда уйдёт» — зеркало render_design (tools/journal_render.py): решённая развилка, не проба → Decisions
    («в одну сторону» — первыми); проба Specify* → spec.md; Backstop → тест-страховка в tasks.md, в design.md её нет;
    Dismiss → никуда, с причиной; Defer и открытая развилка → Open Questions; факт → Context, спорный — ещё и Open Questions */
@@ -938,35 +988,7 @@ function destination(rec) {
 // 'материалы' — старое значение адресата у старых журналов: ведёт туда же, куда 'агент'
 function parkingDestination(addressee) { return 'design.md › Open Questions → ' + ({ 'ИБ':'security.md', 'агент':'research/', 'материалы':'research/', 'человек':'вопрос человеку' }[addressee] || '—'); }
 
-function checkCard(rec) {
-  const d = destination(rec), isFact = rec.kind === 'факт';
-  const picked = rec.decision && rec.decision.option ? (rec.options || []).find(o => o.letter === rec.decision.option) : null;
-  let html = '<div class="card' + (isFact ? ' fact' : picked ? ' decided' : '') + '"><div class="head"><span class="id mono">' + esc(rec.id) + '</span>' +
-    '<span class="badge">' + esc(rec.kind) + ' · ' + esc(rec.status) + '</span><span class="badge">' + esc(rec.delivery || '—') + '</span>' +
-    (isOneWay(rec) ? '<span class="badge warn">в одну сторону</span>' : '') +
-    '<span class="badge dest" title="куда уйдёт — по правилам render-design">→ ' + esc(d.label) + (d.note ? ' · ' + esc(d.note) : '') + '</span></div>' +
-    '<div class="q">' + md(rec.question) + '</div>';
-  if (picked) html += '<div class="opt chosen"><span class="letter">' + esc(picked.letter) + '.</span><div>' + md(picked.text) + (isAdded(picked) ? '<span class="tag added">добавлен человеком</span>' : '') + deviationTag(picked) + '</div></div>';
-  if (rec.decision && rec.decision.word) html += '<div class="note info"><b>слово (' + esc(rec.decision.date || 'без даты') + '):</b> «' + md(rec.decision.word) + '»</div>';
-  if (rec.reversibility) html += '<div class="meta">обратимость: ' + esc(rec.reversibility.level) + (rec.reversibility.why ? ' — ' + md(rec.reversibility.why) : '') + '</div>';
-  if (rec.outcome) html += '<div class="meta">исход: ' + esc(rec.outcome.kind) + ' — <b>' + esc(rec.outcome.value) + '</b>' + (rec.outcome.reason ? ' — ' + md(rec.outcome.reason) : '') + '</div>';
-  if (!picked && !isFact) {
-    html += (rec.options || []).map(o => '<div class="opt"><span class="letter">' + esc(o.letter) + '.</span><div>' + md(o.text) +
-      (o.unlikely ? '<span class="tag unlikely">маловероятно: ' + md(o.unlikely) + '</span>' : '') + (isAdded(o) ? '<span class="tag added">добавлен человеком</span>' : '') + deviationTag(o) + '</div></div>').join('');
-    if (rec.recommendation) html += '<div class="rec">рекомендация: <b>' + esc(rec.recommendation.option || '') + '</b> — ' + md(rec.recommendation.why || '') + '</div>';
-  } else if (picked) {
-    const added = (rec.options || []).filter(o => isAdded(o) && o.letter !== picked.letter);
-    if (added.length) html += '<div class="meta">добавлены человеком: ' + esc(added.map(o => o.letter + '. ' + o.text).join('; ')) + '</div>';
-  }
-  if (isFact) {
-    html += (rec.evidence || []).map(evHtml).join('');
-    html += (rec.dispute || '').trim() ? '<div class="note park"><b>спор:</b> ' + md(rec.dispute) + '</div>' : '<div class="meta">спора нет</div>';
-  }
-  if (rec.consequences) html += '<div class="cons">следствия: ' + md(rec.consequences) + '</div>';
-  return html + '</div>';
-}
-
-function renderCheck() {
+function renderSnapshot() {
   const recs = JOURNAL.records, forks = recs.filter(r => r.kind === 'развилка');
   const decidedAll = forks.filter(r => r.decision && r.decision.option);
   const decided = decidedAll.filter(r => !isProbe(r)), probes = recs.filter(isProbe);
@@ -974,22 +996,17 @@ function renderCheck() {
   const parkings = recs.flatMap(r => (r.parking || []).map(p => Object.assign({ rec:r.id }, p)));
   const snapshot = ATTACK.find(journalTarget);
   let html = '<div class="card"><div class="head"><span class="id mono">снимок</span><span class="badge">' + esc(JOURNAL.source || '') + '</span>' +
-    '<span class="badge">sha256 журнала: ' + shaChip(JOURNAL.sha256, 'не подан — рендер не из файла') + '</span>' +
     (snapshot ? '<span class="badge ' + (snapshot.frontmatter.status === 'passed' ? 'ok' : 'park') + '">атака: ' + esc(snapshot.frontmatter.status || '—') + '</span>' + verdictNote(snapshot)
               : '<span class="badge">атака не подана</span>') +
     '</div><div class="q">' + md(JOURNAL.title || '') + '</div>' +
     '<div class="meta">только чтение: режим ничего не пишет и вердиктом не считается — снимок решений перед proposal и spec.md; «→» у записи — куда она уйдёт по правилам render-design</div></div>';
-  html += '<div class="counters">решено <b>' + decidedAll.length + '</b> · открыто <b>' + open.length + '</b> · припарковано: ' +
-    ADDRESSEES.map(a => esc(a) + ' <b>' + parkings.filter(p => p.addressee === a).length + '</b>').join(' / ') +
-    ' · фактов оспорено <b>' + facts.filter(r => (r.dispute || '').trim()).length + '</b>' +
-    ' · улик не найдено <b>' + recs.flatMap(allEvidence).filter(ev => ev.found === false).length + '</b></div>';
   const dates = [...new Set(decided.map(r => r.decision.date || ''))].sort((a, b) => a < b ? 1 : a > b ? -1 : 0);
   html += '<h2>Решено — по дате решения · ' + decided.length + '</h2>' + (dates.length ? '' : '<div class="meta">—</div>');
   for (const date of dates) {
     const group = decided.filter(r => (r.decision.date || '') === date).sort((a, b) => (isOneWay(b) - isOneWay(a)) || (num(a.id) - num(b.id)));
-    html += '<h3>' + (date ? esc(date) : 'без даты') + ' · ' + group.length + '</h3>' + group.map(checkCard).join('');
+    html += '<h3>' + (date ? esc(date) : 'без даты') + ' · ' + group.length + '</h3>' + group.map(rec => cardHtml(rec, true)).join('');
   }
-  const section = (title, list) => '<h2>' + title + ' · ' + list.length + '</h2>' + (list.length ? list.map(checkCard).join('') : '<div class="meta">—</div>');
+  const section = (title, list) => '<h2>' + title + ' · ' + list.length + '</h2>' + (list.length ? list.map(rec => cardHtml(rec, true)).join('') : '<div class="meta">—</div>');
   html += section('Открытые развилки — с рекомендацией', open) + section('Пробы — с исходом', probes) + section('Факты — улики и спор', facts);
   html += '<h2>Парковки — по адресатам · ' + parkings.length + '</h2>' + (parkings.length ? '' : '<div class="meta">—</div>');
   for (const a of ADDRESSEES) {
@@ -999,7 +1016,7 @@ function renderCheck() {
   }
   const notes = JOURNAL.notes || [];
   html += '<h2>Заметки · ' + notes.length + '</h2>' + (notes.length ? '<ul>' + notes.map(n => '<li><span class="mono">' + esc(n.date) + '</span> — ' + md(n.text) + '</li>').join('') + '</ul>' : '<div class="meta">—</div>');
-  document.getElementById('viewCheck').innerHTML = html;
+  document.getElementById('cards').innerHTML = html;
 }
 
 /* ---------- режим 3 — атака: строки attack/*.md, фильтр по линзе, линза → тяжесть → строки ---------- */
@@ -1160,7 +1177,7 @@ function renderAttack() {
   el.querySelectorAll('a[data-goto]').forEach(a => a.onclick = e => { e.preventDefault(); setMode('decisions'); const c = document.getElementById(a.dataset.goto); if (c && c.scrollIntoView) c.scrollIntoView(); });
 }
 
-function render() { renderModes(); renderSchemePanel(); document.getElementById('btnOpen').classList.toggle('active', filter.openOnly); renderCards(); renderNewForks(); renderToc(); renderStats(); headerHeight(); if (mode === 'check') renderCheck(); if (mode === 'attack') renderAttack(); updateOut(); }
+function render() { renderModes(); renderSchemePanel(); document.getElementById('btnOpen').classList.toggle('active', filter.openOnly); renderCards(); renderNewForks(); renderToc(); renderStats(); renderJournalNotes(); headerHeight(); if (mode === 'decisions' && layout === 'snapshot') renderSnapshot(); if (mode === 'attack') renderAttack(); updateOut(); }
 
 document.getElementById('notes').value = state.notes || '';
 document.getElementById('notes').oninput = e => { state.notes = e.target.value; save(); updateOut(); };

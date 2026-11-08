@@ -941,7 +941,7 @@ def canon_sections(text):
 
 def test_viewer_skill_shape():
     """Канон: тело по скелету — инварианты (решает человек, всё показано, рендер не правится, запись и строка
-    атаки не смешиваются), три режима в шаге 1, команды в шаге 2, правило развилки — в «Границах» с хозяином;
+    атаки не смешиваются), два режима и две раскладки в шаге 1, команды в шаге 2, правило развилки — в «Границах» с хозяином;
     sources/ без копий GSD; TRANSLATION-NOTES — по `playground/SKILL.md`: что взято как образец и что сделано
     иначе; Playground в теле продукта не назван — провенанс."""
     skill = skill_dir("symphysis-viewer")
@@ -951,8 +951,10 @@ def test_viewer_skill_shape():
                   "вердиктом не считается", "`.symphysis/docs/terms.md`", "`.symphysis/docs/journal-cli.md`",
                   "`.symphysis/docs/attack-table.md`"):
         assert token in text, f"в SKILL.md нет «{token}»"
-    for mode in ("«решения»", "«проверка»", "«атака»"):
+    for mode in ("«решения»", "«атака»"):
         assert mode in block(text, "### 1.", "### 2."), f"в шаге 1 нет режима {mode}"
+    for layout in ("«по журналу»", "«снимок»"):
+        assert layout in block(text, "### 1.", "### 2."), f"в шаге 1 нет раскладки {layout}"
     invariants = block(text, "## Инварианты", "\n## ")
     assert "линз" in invariants and "строка атаки" in invariants, "разделение записи и строки атаки — инвариант"
     assert "MUST" in invariants, "инварианты без уровня RFC 2119"
@@ -1181,9 +1183,20 @@ def test_second_round_lives_at_the_end_of_research():
 
 def test_viewer_card_names_the_deviation_badge():
     """Вариант с `deviation` — бейдж «отступление от F-NN» у этого варианта; слово к выбору и тогда необязательно."""
-    card = block(read(VIEWER / "SKILL.md"), "режим «решения»", "режим «проверка»")
+    card = block(read(VIEWER / "SKILL.md"), "режим «решения»", "раскладка «снимок»")
     for token in ("`deviation`", "бейдж «отступление от F-NN»", "У варианта", "необязательно"):
         assert token in card, f"в разделе «Решения» нет «{token}»"
+
+
+def test_viewer_docs_name_the_snapshot_layout():
+    """`decision-viewer`: «Тексты после изменения» — скилл и steps.md направляют в «снимок» из «решений»."""
+    skill = read(VIEWER / "SKILL.md")
+    steps = read(ROOT / "openspec" / "schemas" / "symphysis" / "steps.md")
+    for text in (skill, steps):
+        assert "раскладк" in text and "«снимок»" in text and "«по журналу»" in text
+        assert "режим «проверка»" not in text and "режиме «проверка»" not in text
+    assert "режим «решения», раскладка «снимок»" in flat(skill)
+    assert "в режиме «решения» раскладку «снимок»" in steps
 
 
 # Fixture-изменение после круга 1: `intent.md` с критерием из сценария «Намерение прочитано первым» и журнал,

@@ -279,8 +279,76 @@ def test_viewer_state_belongs_to_one_page_not_to_every_journal(tmp_path):
 
 
 @requires_node
-def test_viewer_check_mode_projects_records_like_render_design(tmp_path):
-    """Режим «проверка»: снимок с хешем, счётчики, группа по дате решения («в одну сторону» первой, как
+def test_viewer_has_two_modes_and_a_layout_switch(tmp_path):
+    out = smoke(tmp_path, journal.render_html(plan(), TEMPLATE))
+    assert out["modes"].count("<button") == 2
+    assert 'data-mode="check"' not in out["modes"]
+    assert 'data-layout="journal"' in out["layouts"] and 'data-layout="snapshot"' in out["layouts"]
+    assert "по журналу" in out["layouts"] and "снимок" in out["layouts"]
+
+
+def test_old_check_mode_migrates_to_journal_layout_without_touching_the_draft(tmp_path):
+    state = {"notes": "черновик", "__suffixes__": {":mode": "check"}}
+    out = smoke(tmp_path, journal.render_html(plan(), TEMPLATE), state)
+    assert out["savedMode"] == "decisions" and out["savedLayout"] == "journal"
+    saved = json.loads(out["saved"])
+    assert saved["notes"] == "черновик" and saved["decisions"] == {}
+    assert out["modes"].count("<button") == 2 and 'data-mode="check"' not in out["modes"]
+
+
+def test_mode_write_failure_keeps_the_current_tab_and_the_draft(tmp_path):
+    """Backstop F-19: `setItem` падает; страница продолжает работать, основной ключ не меняется."""
+    state = {"notes": "черновик", "__suffixes__": {":mode": "check"}, "__fail_set__": ":mode"}
+    out = smoke(tmp_path, journal.render_html(plan(), TEMPLATE), state)
+    assert out["savedMode"] is None
+    assert 'class="small active" data-mode="decisions"' in out["modes"]
+    assert 'class="small active" data-layout="journal"' in out["layouts"]
+    saved = json.loads(out["saved"])
+    assert saved["notes"] == "черновик" and saved["decisions"] == {}
+
+
+def test_snapshot_uses_the_shared_card_without_controls(tmp_path):
+    out = smoke(tmp_path, journal.render_html(plan(), TEMPLATE), {"__suffixes__": {":layout": "snapshot"}})
+    cards = out["cards"]
+    assert '<span class="id mono">F-01</span>' in cards
+    assert '<span class="letter">A.</span>' in cards and '<span class="letter">B.</span>' in cards
+    assert 'title="куда уйдёт — по правилам render-design"' in cards
+    assert "записано в" not in cards
+    for control in ('type="radio"', 'data-word=', 'data-addopt=', 'data-parktext=', 'data-deptext='):
+        assert control not in cards
+    assert "function checkCard" not in TEMPLATE.read_text(encoding="utf-8")
+
+
+def test_snapshot_ignores_a_choice_that_was_not_applied(tmp_path):
+    j = plan()
+    rec_of(j, "F-01")["decision"] = None
+    rec_of(j, "F-01")["status"] = "открыт"
+    state = {"decisions": {"F-01": {"choice": "B", "word": "", "parked": []}},
+             "__suffixes__": {":layout": "snapshot"}}
+    out = smoke(tmp_path, journal.render_html(j, TEMPLATE), state)
+    cards = out["cards"]
+    assert "Открытые развилки — с рекомендацией · 1" in cards
+    assert "решено <b>18</b>" in out["snapshotStats"] and "открыто <b>1</b>" in out["snapshotStats"]
+
+
+def test_snapshot_moves_counters_to_the_header_and_makes_shared_controls_read_only(tmp_path):
+    j = plan()
+    j["notes"] = [{"date": "2026-11-08", "text": "заметка журнала"}]
+    html = journal.render_html(j, TEMPLATE, journal_sha256=FAKE_SHA)
+    snap = smoke(tmp_path, html, {"__suffixes__": {":layout": "snapshot"}})
+    assert FAKE_SHA[:12] in snap["snapshotStats"] and "sha256 журнала" in snap["snapshotStats"]
+    assert "решено <b>19</b>" in snap["snapshotStats"] and "открыто <b>0</b>" in snap["snapshotStats"]
+    assert "улик не найдено <b>" in snap["snapshotStats"]
+    assert snap["notesReadOnly"] is True and snap["newForkHidden"] is True and snap["outHidden"] is True
+    assert "заметка журнала" in snap["journalNotes"] and "2026-11-08" in snap["journalNotes"]
+    journal_view = smoke(tmp_path, html)
+    assert journal_view["notesReadOnly"] is False
+    assert journal_view["newForkHidden"] is False and journal_view["outHidden"] is False
+    assert "заметка журнала" in journal_view["journalNotes"]
+
+
+def test_snapshot_layout_projects_records_like_render_design(tmp_path):
+    """Раскладка «снимок»: хеш и счётчики в шапке, группа по дате решения («в одну сторону» первой, как
     `render_design`), проекция «куда уйдёт»: решение → Decisions, проба Specify → spec.md, Dismiss → никуда
     с причиной, факт → Context."""
     j = plan()
@@ -290,10 +358,12 @@ def test_viewer_check_mode_projects_records_like_render_design(tmp_path):
     recs["F-05"]["outcome"] = {"kind": "проба", "value": "Dismiss", "reason": "пары равных нет"}
     for park in recs["F-01"]["parking"]:     # адресат — свой, не из фикстуры: режим показывает только адресатов из ADDRESSEES
         park["addressee"] = "агент"
-    out = smoke(tmp_path, journal.render_html(j, TEMPLATE, journal_sha256=FAKE_SHA), {"__suffixes__": {":mode": "check"}})
-    check = out["check"]
-    assert FAKE_SHA[:12] in check and "атака не подана" in check and "вердиктом не считается" in check
-    assert "решено <b>19</b>" in check and "открыто <b>0</b>" in check and "улик не найдено <b>" in check
+    out = smoke(tmp_path, journal.render_html(j, TEMPLATE, journal_sha256=FAKE_SHA), {"__suffixes__": {":layout": "snapshot"}})
+    check = out["cards"]
+    assert FAKE_SHA[:12] in out["snapshotStats"] and "sha256 журнала" in out["snapshotStats"]
+    assert "атака не подана" in check and "вердиктом не считается" in check
+    assert "решено <b>19</b>" in out["snapshotStats"] and "открыто <b>0</b>" in out["snapshotStats"]
+    assert "улик не найдено <b>" in out["snapshotStats"]
     ids = re.findall(r'class="id mono">(F-\d+)<', check)
     assert ids[:3] == ["F-02", "F-01", "F-03"]          # F-02 «в одну сторону» — первой в группе 2026-10-29
     assert "<h3>2026-10-29 · 17</h3>" in check          # 19 решённых минус две пробы
@@ -301,9 +371,8 @@ def test_viewer_check_mode_projects_records_like_render_design(tmp_path):
     assert "→ spec.md · исход Specify" in check and "→ никуда · причина: пары равных нет" in check
     assert "→ design.md › Context" in check and check.count("design.md › Context") == 5
     assert "design.md › Open Questions → research/" in check     # парковка F-01 «агент»
-    assert "припарковано: агент <b>1</b>" in check
-    assert "Researcher" not in check and "Исследователь" not in check
-    assert out["modes"].count("<button") == 3 and 'class="small active" data-mode="check"' in out["modes"]
+    assert "припарковано: агент <b>1</b>" in out["snapshotStats"]
+    assert out["modes"].count("<button") == 2 and 'class="small active" data-mode="decisions"' in out["modes"]
 
 
 @requires_node
@@ -335,8 +404,8 @@ def test_viewer_attack_mode_groups_by_lens_and_returns_disputes_as_notes(tmp_pat
 def test_viewer_attack_mode_marks_stale_verdict_and_missing_attack(tmp_path):
     attacks = fixture_attacks()
     stale = smoke(tmp_path, journal.render_html(plan(), TEMPLATE, attacks=attacks, journal_sha256="ff" * 32),
-                  {"__suffixes__": {":mode": "check"}})
-    assert "атака: gaps_found" in stale["check"] and "вердикт устарел: журнал изменён после атаки" in stale["check"]
+                  {"__suffixes__": {":layout": "snapshot"}})
+    assert "атака: gaps_found" in stale["cards"] and "вердикт устарел: журнал изменён после атаки" in stale["cards"]
     none = smoke(tmp_path, journal.render_html(plan(), TEMPLATE), {"__suffixes__": {":mode": "attack"}})
     assert "атака не подана: <code>render-html --attack" in none["attack"]
     assert "Замечания к схеме" not in none["out"]
@@ -518,7 +587,7 @@ def test_viewer_escapes_journal_and_attack_text_in_every_mode(tmp_path):
     att = afile([arow(claim=XSS_IMG, invariant=XSS_SCRIPT, support=f"есть: `{XSS_IMG}`", fix="<b>x</b>", lens=XSS_IMG)])
     html = journal.render_html(xss_journal(), TEMPLATE, attacks=[att], journal_sha256=FAKE_SHA)
     cards = smoke(tmp_path, html)["cards"]
-    check = smoke(tmp_path, html, {"__suffixes__": {":mode": "check"}})["check"]
+    check = smoke(tmp_path, html, {"__suffixes__": {":layout": "snapshot"}})["cards"]
     attack = smoke(tmp_path, html, {"__suffixes__": {":mode": "attack"}})["attack"]
     for shown in (cards, check, attack):
         assert "<script" not in shown and "<img" not in shown and "<b>жирный" not in shown and "<b>x" not in shown
@@ -562,22 +631,22 @@ def test_viewer_check_and_attack_modes_tag_the_deviating_option(tmp_path):
     tag = '<span class="tag deviation">отступление от F-01</span>'
     j = deviation_journal()
     html = journal.render_html(j, TEMPLATE, attacks=[afile([arow(section="F-02, decision")])], journal_sha256=FAKE_SHA)
-    check = smoke(tmp_path, html, {"__suffixes__": {":mode": "check"}})["check"]
+    check = smoke(tmp_path, html, {"__suffixes__": {":layout": "snapshot"}})["cards"]
     assert check.count(tag) == 1 and tag in check.split('<span class="letter">B.</span>')[1]
     attack = smoke(tmp_path, html, {"__suffixes__": {":mode": "attack"}})["attack"]
     block = attack.split('<details class="recblock">')[1].split("</details>")[0]
     assert tag in block
 
     j["records"][1].update(status="открыт", decision=None)
-    check = smoke(tmp_path, journal.render_html(j, TEMPLATE), {"__suffixes__": {":mode": "check"}})["check"]
+    check = smoke(tmp_path, journal.render_html(j, TEMPLATE), {"__suffixes__": {":layout": "snapshot"}})["cards"]
     option_a, option_b = check.split('<span class="letter">A.</span>')[1].split('<span class="letter">B.</span>')
     assert tag in option_b and "отступление от" not in option_a
 
     j = deviation_journal()
     j["records"][1]["options"][1]["deviation"] = "<b>F-01</b>"          # в обход схемы: показ экранирован
     html = journal.render_html(j, TEMPLATE, attacks=[afile([arow(section="F-02, decision")])], journal_sha256=FAKE_SHA)
-    for mode in ("check", "attack"):
-        shown = smoke(tmp_path, html, {"__suffixes__": {":mode": mode}})[mode]
+    for layout in ("journal", "snapshot"):
+        shown = smoke(tmp_path, html, {"__suffixes__": {":layout": layout}})["cards"]
         assert "отступление от &lt;b&gt;F-01&lt;/b&gt;" in shown and "<b>F-01" not in shown
 
 
@@ -658,8 +727,8 @@ def test_page_without_the_embedded_scheme_still_runs_all_modes(tmp_path):
     html = journal.render_html(plan(), TEMPLATE, attacks=fixture_attacks(), journal_sha256=FAKE_SHA)
     done = smoke(tmp_path, html)
     assert "F-19" in done["cards"] and done["out"]
-    for mode in ("check", "attack"):
-        assert smoke(tmp_path, html, {"__suffixes__": {":mode": mode}})["modes"]
+    assert smoke(tmp_path, html, {"__suffixes__": {":layout": "snapshot"}})["cards"]
+    assert smoke(tmp_path, html, {"__suffixes__": {":mode": "attack"}})["attack"]
 
 
 def facts_journal(status="решён", dispute=""):
@@ -754,8 +823,8 @@ def shim_project(tmp_path, done=(), ready=("intent",), apply=None, name="proj", 
 
 def all_modes_work(tmp_path: Path, html: str):
     assert "F-01" in smoke(tmp_path, html)["cards"]
-    for mode in ("check", "attack"):
-        assert smoke(tmp_path, html, {"__suffixes__": {":mode": mode}})["modes"]
+    assert smoke(tmp_path, html, {"__suffixes__": {":layout": "snapshot"}})["cards"]
+    assert smoke(tmp_path, html, {"__suffixes__": {":mode": "attack"}})["attack"]
 
 
 def test_template_requires_the_help_mark(tmp_path):

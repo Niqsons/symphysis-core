@@ -13,9 +13,10 @@ const html = fs.readFileSync(process.argv[2], 'utf8');
 const parsed = process.argv[3] ? JSON.parse(fs.readFileSync(process.argv[3], 'utf8')) : null;
 const suffixes = (parsed && parsed.__suffixes__) || {};
 const pathname = parsed && parsed.__pathname__, onlyKey = parsed && parsed.__key__;
-if (parsed) { delete parsed.__suffixes__; delete parsed.__pathname__; delete parsed.__key__; }
+const failSet = parsed && parsed.__fail_set__;
+if (parsed) { delete parsed.__suffixes__; delete parsed.__pathname__; delete parsed.__key__; delete parsed.__fail_set__; }
 const stored = parsed ? JSON.stringify(parsed) : null;
-let saved = null, savedAttack = null;
+let saved = null, savedAttack = null, savedMode = null, savedLayout = null;
 const script = html.slice(html.indexOf('<script>') + '<script>'.length, html.lastIndexOf('</script>'));
 
 const suffix = k => k.slice(k.lastIndexOf(':'));
@@ -45,8 +46,11 @@ const context = {
     },
     setItem(k, v) {
       const s = suffix(k);
+      if (s === failSet) throw new Error('storage denied');
       if (s === ':attack') savedAttack = v;
-      else if (s !== ':outh' && s !== ':mode' && s !== ':lens' && s !== ':scheme' && s !== ':schemew' && s !== ':panel') saved = v;
+      else if (s === ':mode') savedMode = v;
+      else if (s === ':layout') savedLayout = v;
+      else if (s !== ':outh' && s !== ':lens' && s !== ':scheme' && s !== ':schemew' && s !== ':panel') saved = v;
     },
   },
   location: { pathname: pathname || '' },
@@ -58,4 +62,8 @@ process.stdout.write(JSON.stringify({
   cards: nodes.cards.innerHTML, toc: nodes.toc.innerHTML, stats: nodes.stats.innerHTML, saved,
   modes: node('modes').innerHTML, check: node('viewCheck').innerHTML, attack: node('viewAttack').innerHTML,
   help: node('helpBody').innerHTML, out: node('out').value, savedAttack,
+  layouts: node('layouts').innerHTML, savedMode, savedLayout,
+  snapshotStats: node('snapshotStats').innerHTML, journalNotes: node('journalNotes').innerHTML,
+  notesReadOnly: node('notes').readOnly || false, newForkHidden: node('newForkArea').hidden || false,
+  outHidden: node('outpanel').hidden || false,
 }));

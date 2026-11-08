@@ -5,6 +5,7 @@
 // reload — открыть страницу снова; choose:<запись>:<буква> — выбрать вариант; word:<запись>:<текст> — написать слово; buttons — экспорт, импорт, копирование;
 // tab:<scheme|help> — переключатель панели; step:<шаг> — пункт списка справки; helpnext, helpprev — листание; howto — кнопка «Как готовить intent.md?»; theme:<dark|light> — цветовая раскладка;
 // clicklink — ссылка на файл внутри варианта; editor:<значение>[:<маска>] — выбор редактора; open:<страница> — другая страница в том же профиле.
+// layout:<journal|snapshot> — раскладка режима «решения».
 // Итог на stdout: JSON с замером страницы, запросами наружу (`http`), запросами, которые заблокировала CSP (`blocked`), нарушениями и ошибками.
 import { spawn } from "node:child_process";
 import { existsSync, mkdirSync, mkdtempSync, readdirSync, readFileSync, writeFileSync } from "node:fs";
@@ -84,7 +85,8 @@ const MEASURE = `(() => {
     attackSev: (() => { try { const s = JSON.parse(localStorage.getItem(KEY + ':attack') || 'null'); return s ? s.sev || {} : null; } catch (e) { return null; } })(),
     attackCounters: [...document.querySelectorAll('#viewAttack .sevcounters')].map((n) => n.textContent),
     attackState: (() => { try { const s = JSON.parse(localStorage.getItem(KEY + ':attack') || 'null'); return s ? { read: Object.keys(s.read || {}), disputes: Object.keys(s.disputes || {}) } : null; } catch (e) { return null; } })(),
-    mode: (document.querySelector('#modes button.active') || {}).textContent || null };
+    mode: (document.querySelector('#modes button.active') || {}).textContent || null,
+    layout: (document.querySelector('#layouts button.active') || {}).textContent || null };
 })()`;
 
 // Chrome создаёт файл порта раньше, чем отпускает его: под нагрузкой чтение падает с EBUSY, поэтому читается, пока порт не прочитается.
@@ -148,6 +150,7 @@ async function main() {
       await click(inHelp);
       await sleep(50);
     }
+    if (name === "layout") { await click(`#layouts button[data-layout="${args[0]}"]`); await settled(); }
     if (name === "mode") { await click(`#modes button[data-mode="${args[0]}"]`); await settled(); }
     if (name === "lens") { await click(`#lensFilter button[data-lens="${args[0]}"]`); await sleep(50); }
     if (name === "reload") { await send("Page.navigate", { url }); await loaded(); await settled(); }
