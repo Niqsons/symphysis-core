@@ -37,13 +37,23 @@ def test_contract_three_is_named():
     assert "trace-link" in line and "линз" in line, "строка о номере 3 не называет, что изменилось: список линз"
 
 
-def test_contract_four_is_named_and_matches_the_code():
+def test_contract_four_is_named():
     """`parking-addressee-agent` (F-09, F-17.A): адресат парковки и записи `материалы` → `агент` — новое
     значение существующего поля, смена контракта: номер 4 назван в `docs/repo-contract.md` с тем, что
-    изменилось, и равен `CONTRACT` в `journal_render.py`; сценарий `plugin-core-contract`
+    изменилось. Абзац исторический и остаётся при любом текущем номере; сценарий `plugin-core-contract`
     «Новое значение адресата поднимает номер»."""
-    assert journal_render.CONTRACT == 4
     body = text()
     line = next((l for l in body.splitlines() if l.startswith("С номера 4")), None)
     assert line is not None, "в контракте нет строки «С номера 4»"
     assert "агент" in line and "материалы" in line, "строка о номере 4 не называет, что изменилось: адресат"
+
+
+def test_contract_six_is_named_and_matches_the_code():
+    """`attack-severity-buttons` (F-23.A, F-47.A): строка `apply` о тяжести — новая форма грамматики, смена
+    контракта: номер 6 назван в `docs/repo-contract.md` с тем, что изменилось, и равен `CONTRACT` в
+    `journal_render.py`; сценарии `plugin-core-contract` «Номер в двух выводах» и «Абзац договора»."""
+    assert journal_render.CONTRACT == 6
+    body = text()
+    line = next((l for l in body.splitlines() if l.startswith("С номера 6")), None)
+    assert line is not None, "в контракте нет строки «С номера 6»"
+    assert "тяжесть" in line and "`apply`" in line, "строка о номере 6 не называет, что изменилось: строка `apply` о тяжести"

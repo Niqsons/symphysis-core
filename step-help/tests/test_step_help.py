@@ -899,7 +899,7 @@ def test_output_shape(tmp_path):
     значения адресата `материалы` → `агент` (`plugin-core-contract`: «Новое значение адресата поднимает номер»)."""
     code, data = with_shim(tmp_path, done=("intent",), ready=("decisions",))
     assert code == 0
-    assert data["contract"] == journal_render.CONTRACT == 4
+    assert data["contract"] == journal_render.CONTRACT == 6
     assert dt.datetime.fromisoformat(data["taken_at"]).tzinfo is not None
     assert data["versions"] == {"openspec": FORK_VERSION, "symphysis": None}
     assert set(data) == {"contract", "taken_at", "versions", "change", "changes", "error", "current_step", "current_text",
