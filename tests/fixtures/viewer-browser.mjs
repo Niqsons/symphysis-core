@@ -165,6 +165,7 @@ async function main() {
       const sel = `button[data-sev-btn][data-sev-att="${args[0]}"][data-sev-row="${args[1]}"]`;
       await evaluate(`document.querySelector(${JSON.stringify(sel)}).scrollIntoView({ block: 'center' })`);
       await click(sel);
+      await send("Input.dispatchMouseEvent", { type: "mouseMoved", x: 0, y: 0 });   // указатель уходит с кнопки: замер цвета без :hover
       await sleep(50);
     }
     if (name === "sevwhy") {

@@ -1111,7 +1111,7 @@ function renderAttack() {
     const att = ATTACK[+t.dataset.att], r = att.rows[+t.dataset.row], k = disputeKey(att, r);
     if (t.value.trim()) attackState.disputes[k] = t.value; else delete attackState.disputes[k]; saveAttack(); updateOut();
   });
-  /* кнопка тяжести: нажатие ставит отметку (прежнее обоснование ключа сохраняется), повторное снимает (F-39) */
+  /* кнопка тяжести: нажатие ставит отметку (обоснование берётся из поля карточки), повторное снимает (F-39) */
   el.querySelectorAll('button[data-sev-btn]').forEach(b => b.onclick = () => {
     const att = ATTACK[+b.dataset.sevAtt], r = att.rows[+b.dataset.sevRow], k = rowKey(att, r), mv = sevMove(r);
     if (!mv) return;

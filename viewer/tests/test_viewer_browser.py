@@ -750,9 +750,9 @@ def test_severity_button_keeps_text_typed_before_the_press_and_warns_live(tmp_pa
 
 
 def test_pressed_severity_button_looks_different(tmp_path):
-    """Нажатая кнопка тяжести отличается от ненажатой цветом рамки и текста, при свёрнутом поле тоже."""
+    """Нажатая кнопка тяжести отличается от ненажатой цветом текста, при свёрнутом поле тоже."""
     html = attack_page(tmp_path, [warning_row("F-02, options.A", "первое", severity="блокер")])
     off = browser(html, "mode:attack")["attackRows"][0]["sev"]
     on = browser(html, "mode:attack", "sevwhy:0:0:причина", "sev:0:0")["attackRows"][0]["sev"]
     assert on["active"] and not off["active"]
-    assert (on["color"], on["border"]) != (off["color"], off["border"])
+    assert on["color"] != off["color"]            # указатель уведён с кнопки: :hover рамку не красит, цвет текста меняет только .active
