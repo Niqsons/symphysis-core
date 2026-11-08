@@ -97,7 +97,7 @@ def render_html(journal: dict, template: Path, attacks: list[dict] | None = None
     на место метки встаёт `[]`. `journal_sha256` — SHA-256 файла журнала по байтам, его считает
     CLI: в payload он ключ `sha256`, по нему просмотрщик сверяет хеш цели из frontmatter атаки
     с журналом; ключа нет, если хеш не подан — рендер из памяти файла не знает. `notes[]`
-    журнала отдаются режиму «проверка»; остальной payload прежний. Метки подставляются за один
+    журнала отдаются режиму «решения», обеим раскладкам; остальной payload прежний. Метки подставляются за один
     проход, чтобы текст журнала, похожий на метку, не был подставлен второй раз."""
     html = Path(template).read_text(encoding="utf-8")
     marks = (PLACEHOLDER, PLACEHOLDER_ATTACK, PLACEHOLDER_SCHEME, PLACEHOLDER_HELP, PLACEHOLDER_LINKS)
