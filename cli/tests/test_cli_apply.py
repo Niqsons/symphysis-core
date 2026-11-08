@@ -307,13 +307,19 @@ def test_apply_refuses_two_lines_for_one_attack_row(project):
 
 
 def test_apply_good_journal_line_and_bad_severity_line_write_nothing(project):
-    """«Годное решение и негодная строка о тяжести» — код 1, решение F-03 прежнее (в журнале без решения запись негодна)."""
+    """«Годное решение и негодная строка о тяжести» — F-03 открыт, строка о нём годна сама по себе; пустое обоснование
+    строки о тяжести — код 1, ничего не записано, решение F-03 пусто."""
     _, _, path = project
+    j = journal.load_journal(path)
+    rec = rec_of(j, "F-03")
+    rec["decision"], rec["status"] = None, "открыт"
+    journal.save_journal(path, j)
     before = snapshot(project)
-    run = apply_sev(project, "- F-03: A (было C) — «слово»\n" + sev_line(DECISIONS, "нет такой", "предупреждение", "слово"))
-    assert run.returncode == 1 and "строки нет" in run.stderr
+    run = apply_sev(project, "- F-03: A — «слово»\n" + sev_line(DECISIONS, "а", "предупреждение", "   "))
+    assert run.returncode == 1 and "нет обоснования" in run.stderr
+    assert "F-03" not in run.stderr
     assert snapshot(project) == before
-    assert rec_of(journal.load_journal(path), "F-03")["decision"]["option"] == "C"
+    assert rec_of(journal.load_journal(path), "F-03")["decision"] is None
 
 
 def test_apply_good_line_with_unparsable_attack_file_is_refused(project):
