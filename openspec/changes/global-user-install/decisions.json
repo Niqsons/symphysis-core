@@ -606,6 +606,271 @@
         }
       ],
       "comments": []
+    },
+    {
+      "id": "F-15",
+      "question": "[empty · text] Global-вызов проверяет совместимость store: у старого клонированного store нет декларации совместимости; разрешать global-вызов?",
+      "kind": "развилка",
+      "status": "решён",
+      "addressee": "человек",
+      "depends_on": [
+        "F-11"
+      ],
+      "delivery": "",
+      "options": [
+        {
+          "letter": "A",
+          "text": "Specify — GIVEN у store нет декларации совместимости WHEN global check или команда обращается к нему THEN операция не исполняется, названа неподтверждённая совместимость и явная инициализация либо миграция; цена: сценарий, тест старого store без декларации, поддержка диагностики.",
+          "added": false,
+          "unlikely": null,
+          "evidence": [
+            {
+              "path": "openspec/changes/global-user-install/specs/runtime-resolution/spec.md",
+              "quote": "### Requirement: Global-вызов проверяет совместимость store"
+            }
+          ]
+        },
+        {
+          "letter": "B",
+          "text": "Dismiss — отсутствие декларации отдельно не покрываем: проверка может считать старый store совместимым по умолчанию; принимаем риск изменения поведения старого проекта после общего обновления.",
+          "added": false,
+          "unlikely": null,
+          "evidence": [
+            {
+              "path": "openspec/changes/global-user-install/specs/runtime-resolution/spec.md",
+              "quote": "### Requirement: Global-вызов проверяет совместимость store"
+            }
+          ]
+        },
+        {
+          "letter": "C",
+          "text": "Backstop — сценарий в спеках не добавляется; интеграционный тест подаёт store без декларации и проверяет, что обычная команда не меняет его данные до явной инициализации; цена: отдельный защитный тест и его поддержка.",
+          "added": false,
+          "unlikely": null,
+          "evidence": [
+            {
+              "path": "openspec/changes/global-user-install/specs/runtime-resolution/spec.md",
+              "quote": "### Requirement: Global-вызов проверяет совместимость store"
+            }
+          ]
+        },
+        {
+          "letter": "D",
+          "text": "Defer — поведение без декларации остаётся открытым до проектирования формата совместимости; tasks помечает допустимость старого store допущением.",
+          "added": false,
+          "unlikely": null,
+          "evidence": [
+            {
+              "path": "openspec/changes/global-user-install/specs/runtime-resolution/spec.md",
+              "quote": "### Requirement: Global-вызов проверяет совместимость store"
+            }
+          ]
+        }
+      ],
+      "antipodes": [],
+      "recommendation": {
+        "option": "A",
+        "why": "Доверие отсутствующей декларации молча разрешит несовместимую пару runtime/store; явный отказ защищает старые данные и, в отличие от B/D, задаёт проверяемый результат. Цена — один сценарий и регрессионный тест отсутствующей декларации."
+      },
+      "decision": {
+        "option": "A",
+        "word": "",
+        "date": "2026-11-08"
+      },
+      "reversibility": null,
+      "outcome": {
+        "kind": "проба",
+        "value": "Specify",
+        "reason": ""
+      },
+      "parking": [],
+      "dispute": "",
+      "consequences": "в spec.md: У store нет декларации совместимости",
+      "evidence": [
+        {
+          "path": "openspec/changes/global-user-install/specs/runtime-resolution/spec.md",
+          "quote": "### Requirement: Global-вызов проверяет совместимость store"
+        }
+      ],
+      "comments": []
+    },
+    {
+      "id": "F-16",
+      "question": "[concurrency · stateful] Смена режима выполняется явно для выбранного store: после просмотра плана один собственный файл изменён пользователем до подтверждения миграции",
+      "kind": "развилка",
+      "status": "решён",
+      "addressee": "человек",
+      "depends_on": [
+        "F-12",
+        "F-13"
+      ],
+      "delivery": "",
+      "options": [
+        {
+          "letter": "A",
+          "text": "Specify — GIVEN после просмотра плана пользователь изменил один из файлов WHEN подтверждается переход store THEN прежнее подтверждение не применяется к изменившемуся состоянию, переключения нет, требуется новый просмотр конфликтов; цена: сценарий, тест изменения файла между просмотром и подтверждением.",
+          "added": false,
+          "unlikely": null,
+          "evidence": [
+            {
+              "path": "openspec/changes/global-user-install/specs/user-installation/spec.md",
+              "quote": "### Requirement: Смена режима выполняется явно для выбранного store"
+            }
+          ]
+        },
+        {
+          "letter": "B",
+          "text": "Dismiss — пригодность ранее показанного плана после изменения файлов отдельно не задаём; сохранение пользовательского файла обязательно, но успешность частичного перехода и разрешение нового конфликта остаются пользователю.",
+          "added": false,
+          "unlikely": null,
+          "evidence": [
+            {
+              "path": "openspec/changes/global-user-install/specs/user-installation/spec.md",
+              "quote": "### Requirement: Смена режима выполняется явно для выбранного store"
+            }
+          ]
+        },
+        {
+          "letter": "C",
+          "text": "Backstop — сценария в specs нет; тест изменяет файл после просмотра и утверждает, что байты пользователя сохранены и миграция не выдана за полностью успешную; цена: тест гонки плана и применения, поддержка фикстуры миграции.",
+          "added": false,
+          "unlikely": null,
+          "evidence": [
+            {
+              "path": "openspec/changes/global-user-install/specs/user-installation/spec.md",
+              "quote": "### Requirement: Смена режима выполняется явно для выбранного store"
+            }
+          ]
+        },
+        {
+          "letter": "D",
+          "text": "Defer — порядок при изменившемся плане открыт до реализации миграции; tasks явно считает частичное переключение допущением, требующим решения.",
+          "added": false,
+          "unlikely": null,
+          "evidence": [
+            {
+              "path": "openspec/changes/global-user-install/specs/user-installation/spec.md",
+              "quote": "### Requirement: Смена режима выполняется явно для выбранного store"
+            }
+          ]
+        }
+      ],
+      "antipodes": [],
+      "recommendation": {
+        "option": "A",
+        "why": "Ранее просмотренный план уже не описывает текущие файлы: продолжение может оставить выбранный global замаскированным остатками local. A сохраняет явность F-12/F-13 вместо неявного частичного перехода; цена — сценарий и тест смены файла между просмотром и применением."
+      },
+      "decision": {
+        "option": "A",
+        "word": "",
+        "date": "2026-11-08"
+      },
+      "reversibility": null,
+      "outcome": {
+        "kind": "проба",
+        "value": "Specify",
+        "reason": ""
+      },
+      "parking": [],
+      "dispute": "",
+      "consequences": "в spec.md: Файл изменён после просмотра плана миграции",
+      "evidence": [
+        {
+          "path": "openspec/changes/global-user-install/specs/user-installation/spec.md",
+          "quote": "### Requirement: Смена режима выполняется явно для выбранного store"
+        }
+      ],
+      "comments": []
+    },
+    {
+      "id": "F-17",
+      "question": "[канон] Установка сохраняет границы собственных файлов: канон ИБ",
+      "kind": "факт",
+      "status": "припаркован",
+      "addressee": "ИБ",
+      "depends_on": [],
+      "delivery": "",
+      "options": [],
+      "antipodes": [],
+      "recommendation": null,
+      "decision": null,
+      "reversibility": null,
+      "outcome": null,
+      "parking": [
+        {
+          "addressee": "ИБ",
+          "text": "Валидация целевых путей, reparse-точек и области собственных файлов при записи — канон ИБ; покрывается чек-листом security.md; запрет не чеканится"
+        }
+      ],
+      "dispute": "",
+      "consequences": "",
+      "evidence": [
+        {
+          "path": "openspec/changes/global-user-install/specs/user-installation/spec.md",
+          "quote": "### Requirement: Установка сохраняет границы собственных файлов"
+        }
+      ],
+      "comments": []
+    },
+    {
+      "id": "F-18",
+      "question": "[канон] Расположение runtime не определяет рабочий store: канон ИБ",
+      "kind": "факт",
+      "status": "припаркован",
+      "addressee": "ИБ",
+      "depends_on": [],
+      "delivery": "",
+      "options": [],
+      "antipodes": [],
+      "recommendation": null,
+      "decision": null,
+      "reversibility": null,
+      "outcome": null,
+      "parking": [
+        {
+          "addressee": "ИБ",
+          "text": "Изоляция корней чтения и записи store, обходы ../ и символьных ссылок — канон ИБ; покрывается чек-листом security.md; запрет не чеканится"
+        }
+      ],
+      "dispute": "",
+      "consequences": "",
+      "evidence": [
+        {
+          "path": "openspec/changes/global-user-install/specs/runtime-resolution/spec.md",
+          "quote": "### Requirement: Расположение runtime не определяет рабочий store"
+        }
+      ],
+      "comments": []
+    },
+    {
+      "id": "F-19",
+      "question": "[канон] Поддерживаемые агенты исполняют скилл в нативном формате: канон ИБ",
+      "kind": "факт",
+      "status": "припаркован",
+      "addressee": "ИБ",
+      "depends_on": [],
+      "delivery": "",
+      "options": [],
+      "antipodes": [],
+      "recommendation": null,
+      "decision": null,
+      "reversibility": null,
+      "outcome": null,
+      "parking": [
+        {
+          "addressee": "ИБ",
+          "text": "Права и инструменты нативного агента, инъекции в brief и отсутствие скрытого расширения полномочий — канон ИБ; покрывается чек-листом security.md; запрет не чеканится"
+        }
+      ],
+      "dispute": "",
+      "consequences": "",
+      "evidence": [
+        {
+          "path": "openspec/changes/global-user-install/specs/client-installation/spec.md",
+          "quote": "### Requirement: Поддерживаемые агенты исполняют скилл в нативном формате"
+        }
+      ],
+      "comments": []
     }
   ],
   "notes": [
@@ -624,6 +889,18 @@
     {
       "date": "2026-11-08",
       "text": "брейншторм закончен по решению человека"
+    },
+    {
+      "date": "2026-11-08",
+      "text": "проба краёв: кандидатов 2, Specify 0, Dismiss 0, Backstop 0, Defer 0; открыты F-15, F-16; не выбран 74: client-installation/Нативные коллизии смешанной установки остаются пользователю, client-installation/Поддерживаемые агенты исполняют скилл в нативном формате, client-installation/Проверка различает наличие файлов и готовность клиента, client-installation/Установленные скиллы обнаруживаются выбранным клиентом, decision-viewer/Общий runtime не объединяет состояние страниц разных store, decision-viewer/Ресурсы страницы берутся из выбранной поставки, decision-viewer/Снимок справки global runtime относится к store журнала, decision-viewer/Ссылки на скиллы страницы используют выбранную поставку, onboarding-guide/Руководство ведёт клонированный store до архивации, onboarding-guide/Руководство описывает явную миграцию и границу смешанной установки, onboarding-guide/Руководство разделяет обновление scope и смену режима, onboarding-guide/Руководство различает local и global установки, plugin-core-contract/Контракт разрешения сообщает несовместимость выбранной поставки, plugin-core-contract/Контракт сохраняет проектную принадлежность черновиков, plugin-core-contract/Контракт ядра предоставляет единое разрешение поставки для хостов, plugin-core-contract/Разрешение runtime не меняет рабочий store вызовов хоста, project-installer/Global-инициализация настраивает выбранный store отдельно от runtime, project-installer/Global-инициализация сохраняет проектное состояние, project-installer/Local остаётся самостоятельной полной установкой, project-installer/Проверка global не требует локальной копии runtime, runtime-resolution/Dispatcher и хосты используют единый выбор поставки, runtime-resolution/Global-вызов проверяет совместимость store, runtime-resolution/Resolver предпочитает local при наличии обеих установок, runtime-resolution/Расположение runtime не определяет рабочий store, runtime-resolution/Ресурсы принадлежат выбранной поставке, step-help/Источники справки принадлежат выбранной поставке, step-help/Каталог установки задаётся необязательным аргументом, step-help/Разрешение скиллов справкой не меняет нативную discovery клиента, step-help/Тексты шагов лежат в `steps.md`, раздел на шаг, step-help/У шага есть поле `skills`, user-installation/Local и global являются самостоятельными режимами, user-installation/Пользовательская установка содержит общий продукт, user-installation/Смена режима выполняется явно для выбранного store, user-installation/У пользователя одна активная global-поставка, user-installation/Установка сохраняет границы собственных файлов"
+    },
+    {
+      "date": "2026-11-08",
+      "text": "проба запретов: требований 35, оставлено 0, канон → ИБ 3, Specify 0, Dismiss 0, Defer 0"
+    },
+    {
+      "date": "2026-11-08",
+      "text": "проба краёв: кандидатов 2, Specify 2, Dismiss 0, Backstop 0, Defer 0; открытых нет; не выбран 74: client-installation/Нативные коллизии смешанной установки остаются пользователю, client-installation/Поддерживаемые агенты исполняют скилл в нативном формате, client-installation/Проверка различает наличие файлов и готовность клиента, client-installation/Установленные скиллы обнаруживаются выбранным клиентом, decision-viewer/Общий runtime не объединяет состояние страниц разных store, decision-viewer/Ресурсы страницы берутся из выбранной поставки, decision-viewer/Снимок справки global runtime относится к store журнала, decision-viewer/Ссылки на скиллы страницы используют выбранную поставку, onboarding-guide/Руководство ведёт клонированный store до архивации, onboarding-guide/Руководство описывает явную миграцию и границу смешанной установки, onboarding-guide/Руководство разделяет обновление scope и смену режима, onboarding-guide/Руководство различает local и global установки, plugin-core-contract/Контракт разрешения сообщает несовместимость выбранной поставки, plugin-core-contract/Контракт сохраняет проектную принадлежность черновиков, plugin-core-contract/Контракт ядра предоставляет единое разрешение поставки для хостов, plugin-core-contract/Разрешение runtime не меняет рабочий store вызовов хоста, project-installer/Global-инициализация настраивает выбранный store отдельно от runtime, project-installer/Global-инициализация сохраняет проектное состояние, project-installer/Local остаётся самостоятельной полной установкой, project-installer/Проверка global не требует локальной копии runtime, runtime-resolution/Dispatcher и хосты используют единый выбор поставки, runtime-resolution/Global-вызов проверяет совместимость store, runtime-resolution/Resolver предпочитает local при наличии обеих установок, runtime-resolution/Расположение runtime не определяет рабочий store, runtime-resolution/Ресурсы принадлежат выбранной поставке, step-help/Источники справки принадлежат выбранной поставке, step-help/Каталог установки задаётся необязательным аргументом, step-help/Разрешение скиллов справкой не меняет нативную discovery клиента, step-help/Тексты шагов лежат в `steps.md`, раздел на шаг, step-help/У шага есть поле `skills`, user-installation/Local и global являются самостоятельными режимами, user-installation/Пользовательская установка содержит общий продукт, user-installation/Смена режима выполняется явно для выбранного store, user-installation/У пользователя одна активная global-поставка, user-installation/Установка сохраняет границы собственных файлов"
     }
   ]
 }
