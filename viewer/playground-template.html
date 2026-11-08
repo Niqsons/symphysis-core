@@ -292,6 +292,12 @@ function sevMove(row) {
 function severityLine(att, row, to, why) {
   return '- тяжесть: ' + att.path + ' · ' + row.section + ' · «' + row.claim + '» → ' + to + ' — «' + normText(why) + '»';
 }
+/* ключ отметки тяжести — как у спора: файл атаки, раздел и утверждение целиком (F-20.B) */
+function rowKey(att, row) { return att.path + '|' + row.section + '|' + row.claim; }
+/* отметка уже внесена: ячейка несёт ту же тяжесть и то же обоснование (после `apply`: `<тяжесть> (<обоснование>)`) */
+function sevIngested(row, mark) {
+  return !!row && !!mark && sevBase(row.severity) === mark.to && normText(sevReason(row.severity)) === normText(mark.why);
+}
 function isWarning(row) { return sevBase(row && row.severity) === 'предупреждение'; }
 function readText(row) { return READ_PREFIX + normText(row && row.section); }
 /* ключ отметки — файл атаки и раздел: две строки одного раздела делят одну отметку (F-21) */
@@ -754,7 +760,8 @@ function renderStats() {
    Уходит всё, что `apply` уже внёс в журнал: вариант с тем же текстом, слово, равное слову решения, парковка, зависимость, замечание.
    Ответ в поле спора строки атаки (закрытие «вопрос человека», раздел `F-NN, decision`) — слово к решению `- F-NN: <буква> — «…»`, одна строка
    на запись; два разных ответа — конфликт: строки нет, в замечаниях «конфликт ответов к F-NN — оставьте один», `conflictKeys` — ключи спора
-   строк, которые его составили. Ответ к записи без решения — замечание `F-NN: ответ`, ключи — `undecidedKeys`. Возвращает { text, conflictKeys, undecidedKeys }. */
+   строк, которые его составили. Ответ к записи без решения — замечание `F-NN: ответ`, ключи — `undecidedKeys`. Отметка тяжести `sev[ключ строки] = { to, why }`
+   с обоснованием — строка `- тяжесть: …` после решений и новых развилок, до «Замечания к схеме:»; без обоснования, без хода у строки или уже внесённая — строки нет. Возвращает { text, conflictKeys, undecidedKeys }. */
 /* слово уже в решении журнала: `apply` дописывает новое слово к прежнему (`journal_apply._merge`, проверка вхождением),
    поэтому внесённое — вхождение в слово решения, а не равенство; пробелы схлопываются, как в `_flat` */
 function wordIngested(journalWord, word) {
@@ -768,7 +775,7 @@ function localDate(d) {
   const p = n => String(n).padStart(2, '0');
   return d.getFullYear() + '-' + p(d.getMonth() + 1) + '-' + p(d.getDate());
 }
-function buildPrompt(J, attacks, st, disputes, date, read) {
+function buildPrompt(J, attacks, st, disputes, date, read, sev) {
   const MARK = '(добавлен человеком';
   const norm = s => String(s == null ? '' : s).replace(/\s+/g, ' ').trim();
   const shorten = (s, n) => { s = String(s || ''); return s.length > n ? s.slice(0, n - 1) + '…' : s; };
@@ -817,6 +824,13 @@ function buildPrompt(J, attacks, st, disputes, date, read) {
     else if (distinct.length === 1) lines.push('- ' + rec.id + ': ' + letter + ' — «' + distinct[0] + '»');
   }
   if (st.newForks.length) { lines.push('Новые развилки:'); for (const f of st.newForks) lines.push('- ' + f.id + ': ' + f.question + ' — варианты: ' + f.options.replace(/\n+/g, ' | ') + (f.word ? ' — «' + f.word + '»' : '')); }
+  /* строки о тяжести (F-47.A): отметка `{ to, why }` у строки текущей сборки, с обоснованием, с ходом, который примет `apply`, и ещё не внесённая;
+     после решений и новых развилок, до замечаний (F-40.B); обоснование в замечания не идёт, спор в строку не идёт */
+  for (const att of (attacks || [])) for (const r of (att.rows || [])) {
+    const mark = sev && sev[rowKey(att, r)], mv = sevMove(r);
+    if (!mark || !normText(mark.why) || !mv || mv.to !== mark.to || sevIngested(r, mark)) continue;
+    lines.push(severityLine(att, r, mark.to, mark.why));
+  }
   /* отметки «прочитано» (warning-read-flag): один текст на раздел, только у строк предупреждение текущей сборки; внесённые в notes[] не повторяются */
   const readTexts = [];
   for (const att of (attacks || [])) for (const r of (att.rows || [])) {

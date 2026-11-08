@@ -54,9 +54,9 @@ def plan_journal():
     return j
 
 
-def prompt(tmp_path, j, st, attacks=(), disputes=None, read=None):
-    return run_js(tmp_path, "prompt", "buildPrompt(input.J, input.attacks, input.st, input.disputes, input.date, input.read)",
-                  {"J": j, "attacks": list(attacks), "st": st, "disputes": disputes or {}, "date": DATE, "read": read or {}},
+def prompt(tmp_path, j, st, attacks=(), disputes=None, read=None, sev=None):
+    return run_js(tmp_path, "prompt", "buildPrompt(input.J, input.attacks, input.st, input.disputes, input.date, input.read, input.sev)",
+                  {"J": j, "attacks": list(attacks), "st": st, "disputes": disputes or {}, "date": DATE, "read": read or {}, "sev": sev},
                   deps=("flags",))
 
 
@@ -429,3 +429,81 @@ def test_ingested_mark_is_not_repeated_in_the_prompt(tmp_path):
     att = warning_file("F-12, options.B")
     text = prompt(tmp_path, j, state(), attacks=[att], read={att["path"] + "|F-12, options.B": True})["text"]
     assert READ not in text
+
+
+# --- строка о тяжести (decision-viewer, attack-severity-buttons) ---
+
+def sev_att():
+    return attack_file(("F-12, options.B", "утверждение один", "уточнить"), ("F-13, options.A", "утверждение два", "уточнить"))
+
+
+def sev_line(att, i, to, why):
+    r = att["rows"][i]
+    return f"- тяжесть: {att['path']} · {r['section']} · «{r['claim']}» → {to} — «{why}»"
+
+
+def test_severity_line_sits_above_the_remarks_and_is_one_item(tmp_path):
+    """Сценарий «Строка о тяжести»: выше «Замечания к схеме:», `apply_clean` принимает, пункт `severity` один."""
+    att = sev_att()
+    text = prompt(tmp_path, plan_journal(), state(notes="моё замечание"), attacks=[att],
+                  sev={key(att, 0): {"to": "предупреждение", "why": "уточнено\n в спеке"}})["text"]
+    assert sev_line(att, 0, "предупреждение", "уточнено в спеке") in text.splitlines()
+    assert text.index("- тяжесть:") < text.index("Замечания к схеме:")
+    ops = apply_clean(plan_journal(), text)
+    assert len([op for op in ops if op["op"] == "severity"]) == 1
+
+
+def test_severity_mark_without_a_justification_gives_no_line(tmp_path):
+    """Сценарий «Кнопка без обоснования»: строки нет, остаётся заглушка «нового нет»."""
+    att = sev_att()
+    text = prompt(tmp_path, plan_journal(), state(), attacks=[att], sev={key(att, 0): {"to": "предупреждение", "why": "  \n "}})["text"]
+    assert "тяжесть" not in text and "(нового нет" in text
+
+
+def test_dispute_and_justification_stay_apart(tmp_path):
+    """Сценарий «Спор и обоснование у одной строки»: спор в замечаниях, обоснование только в строке о тяжести."""
+    att = sev_att()
+    text = prompt(tmp_path, plan_journal(), state(), attacks=[att], disputes={key(att, 0): "спорный довод"},
+                  sev={key(att, 0): {"to": "предупреждение", "why": "обоснование тяжести"}})["text"]
+    remarks = [line for line in text.splitlines() if line.startswith("Замечания к схеме: ")]
+    sev_lines = [line for line in text.splitlines() if line.startswith("- тяжесть:")]
+    assert len(remarks) == 1 and "спорный довод" in remarks[0] and "обоснование тяжести" not in remarks[0]
+    assert len(sev_lines) == 1 and "обоснование тяжести" in sev_lines[0] and "спорный довод" not in sev_lines[0]
+
+
+def test_ingested_severity_leaves_the_prompt(tmp_path):
+    """Сценарий «Внесённое слово уходит из промпта»: ячейка уже несёт тяжесть и обоснование — строки нет."""
+    att = sev_att()
+    att["rows"][0]["severity"] = "предупреждение (обоснование  тяжести)"
+    text = prompt(tmp_path, plan_journal(), state(), attacks=[att], sev={key(att, 0): {"to": "предупреждение", "why": "обоснование тяжести"}})["text"]
+    assert "тяжесть" not in text
+
+
+def test_severity_mark_on_a_removed_row_gives_no_line(tmp_path):
+    """Сценарий «Отметка у строки, которую снял повтор атаки»: строки в `attacks` нет — строки нет."""
+    att = sev_att()
+    gone = {f"{att['path']}|F-99, x|нет такого": {"to": "предупреждение", "why": "причина"}}
+    assert "тяжесть" not in prompt(tmp_path, plan_journal(), state(), attacks=[att], sev=gone)["text"]
+
+
+def test_severity_mark_without_a_move_gives_no_line(tmp_path):
+    """Отметка с чужим ходом и отметка у строки покрытия строк не дают."""
+    att = sev_att()
+    att["rows"][1]["claim"] = "не пройдено"
+    sev = {key(att, 0): {"to": "блокер", "why": "причина"}, key(att, 1): {"to": "предупреждение", "why": "причина"}}
+    assert "тяжесть" not in prompt(tmp_path, plan_journal(), state(), attacks=[att], sev=sev)["text"]
+
+
+def test_severity_lines_follow_file_and_row_order(tmp_path):
+    """Порядок строк — файлы в порядке `attacks`, строки в порядке файла, а не порядке ключей отметок."""
+    a, b = sev_att(), sev_att()
+    b["path"] = "attack/artifacts.md"
+    sev = {key(b, 0): {"to": "предупреждение", "why": "в"}, key(a, 1): {"to": "предупреждение", "why": "б"}, key(a, 0): {"to": "предупреждение", "why": "а"}}
+    lines = [x for x in prompt(tmp_path, plan_journal(), state(), attacks=[a, b], sev=sev)["text"].splitlines() if x.startswith("- тяжесть:")]
+    assert [x.rsplit("«", 1)[1] for x in lines] == ["а»", "б»", "в»"]
+
+
+def test_severity_line_alone_has_no_placeholder(tmp_path):
+    att = sev_att()
+    text = prompt(tmp_path, plan_journal(), state(), attacks=[att], sev={key(att, 0): {"to": "предупреждение", "why": "причина"}})["text"]
+    assert "(нового нет" not in text
