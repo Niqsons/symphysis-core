@@ -1,0 +1,2480 @@
+{
+ "format": 2,
+ "sources": [
+  {
+   "path": "consequences.md",
+   "sha256": "421690be8daed71c3e7b671736e869228b6307d0404bb95d3198a25ca8ae2cd3"
+  },
+  {
+   "path": "decisions.json",
+   "sha256": "c0d380e4c457a2ee52a66427d777981c5291c115bf6219c5c2bd2f706b310973"
+  },
+  {
+   "path": "security.md",
+   "sha256": "e9b4419fff0405c072b7774955d54a18874a9d8e65153f62ed4c1a9eb00a7a54"
+  },
+  {
+   "path": "specs/artifact-attack/spec.md",
+   "sha256": "585396cf0a4db729d6fcefb0a76935902ca1562be98596b21ae4549610720960"
+  },
+  {
+   "path": "specs/attack-severity-word/spec.md",
+   "sha256": "d963999f3d545be2eb37c69e6bfe69d27f7377b6d9220fa726bc5aa9b746ef4c"
+  },
+  {
+   "path": "specs/decision-viewer/spec.md",
+   "sha256": "e811211cded29bdb58752d460423e8d74446cc6743f463340102d11dadef01a2"
+  },
+  {
+   "path": "specs/plugin-core-contract/spec.md",
+   "sha256": "c8b732320e7356f21f5a45a35718ea3080eaf1d2550ccff6ca398cca139eee8e"
+  },
+  {
+   "path": "tasks.md",
+   "sha256": "e7db314e4f73e49e6a31735345d9a6b7bbbccdf61d7b05a75a359b46932b3a77"
+  }
+ ],
+ "nodes": [
+  {
+   "id": "branch:decisions/journal_apply.py:120",
+   "kind": "branch",
+   "name": "Разбор промпта, замечания",
+   "at": "consequences.md:7"
+  },
+  {
+   "id": "branch:decisions/journal_apply.py:134",
+   "kind": "branch",
+   "name": "Разбор промпта, продолжение пункта",
+   "at": "consequences.md:11"
+  },
+  {
+   "id": "branch:decisions/journal_apply.py:319",
+   "kind": "branch",
+   "name": "Отказ всего промпта",
+   "at": "consequences.md:15"
+  },
+  {
+   "id": "branch:cli/journal_cli.py:350",
+   "kind": "branch",
+   "name": "Пробное внесение",
+   "at": "consequences.md:19"
+  },
+  {
+   "id": "branch:viewer/playground-template.html:816",
+   "kind": "branch",
+   "name": "Сборка промпта, замечания",
+   "at": "consequences.md:23"
+  },
+  {
+   "id": "branch:viewer/playground-template.html:263",
+   "kind": "branch",
+   "name": "Загрузка состояния атаки",
+   "at": "consequences.md:27"
+  },
+  {
+   "id": "branch:viewer/playground-template.html:280",
+   "kind": "branch",
+   "name": "Чтение тяжести на странице",
+   "at": "consequences.md:31"
+  },
+  {
+   "id": "branch:vscode/src/core/core.ts:29",
+   "kind": "branch",
+   "name": "Сверка номера контракта в плагине",
+   "at": "consequences.md:35"
+  },
+  {
+   "id": "branch:attack/attack_table.py:134",
+   "kind": "branch",
+   "name": "Разбор файла атаки",
+   "at": "consequences.md:39"
+  },
+  {
+   "id": "branch:upstream/openspec/src/core/artifact-graph/state.ts:208",
+   "kind": "branch",
+   "name": "Вердикт форка, значение",
+   "at": "consequences.md:43"
+  },
+  {
+   "id": "branch:upstream/openspec/src/core/artifact-graph/state.ts:213",
+   "kind": "branch",
+   "name": "Вердикт форка, хеши",
+   "at": "consequences.md:47"
+  },
+  {
+   "id": "rec:F-01",
+   "kind": "rec",
+   "name": "Критерий готовности: «у карточки атаки должна быть кнопка понизить или повысить»",
+   "at": "decisions.json:7",
+   "record_kind": "факт",
+   "number": 1
+  },
+  {
+   "id": "rec:F-02",
+   "kind": "rec",
+   "name": "Критерий готовности: «и поле ввода обоснования»",
+   "at": "decisions.json:36",
+   "record_kind": "факт",
+   "number": 2
+  },
+  {
+   "id": "rec:F-03",
+   "kind": "rec",
+   "name": "Критерий готовности: «своя строка `apply`»",
+   "at": "decisions.json:65",
+   "record_kind": "факт",
+   "number": 3
+  },
+  {
+   "id": "rec:F-04",
+   "kind": "rec",
+   "name": "Критерий готовности: «правка скилла атаки»",
+   "at": "decisions.json:94",
+   "record_kind": "факт",
+   "number": 4
+  },
+  {
+   "id": "rec:F-05",
+   "kind": "rec",
+   "name": "Критерий готовности: «новый номер контракта»",
+   "at": "decisions.json:122",
+   "record_kind": "факт",
+   "number": 5
+  },
+  {
+   "id": "rec:F-06",
+   "kind": "rec",
+   "name": "Сегодня тяжесть ниже тяжести линзы ставит только модель при атаке и только по слову человека: причина в скобках называет решённую запись журнала, своё суждение модели тяжесть не снижает, потому что `status` держат только блокеры.",
+   "at": "decisions.json:150",
+   "record_kind": "факт",
+   "number": 6
+  },
+  {
+   "id": "rec:F-07",
+   "kind": "rec",
+   "name": "Страница и плагин понижение только показывают: бейдж «понижено: <причина>» или «понижение без причины» по тексту ячейки. Кнопок нет; поле у строки — поле спора, его текст уходит замечанием или словом к решению; `apply` строк атаки не меняет. Разбор нынешнего пути: шага «нажал и записано» нет.",
+   "at": "decisions.json:183",
+   "record_kind": "факт",
+   "number": 7
+  },
+  {
+   "id": "rec:F-08",
+   "kind": "rec",
+   "name": "Показ понижения на странице и в плагине смотрит только строки с опорой «нет» и тяжестью ниже блокера; повышения показ не знает: у блокера бейджа нет вовсе.",
+   "at": "decisions.json:229",
+   "record_kind": "факт",
+   "number": 8
+  },
+  {
+   "id": "rec:F-09",
+   "kind": "rec",
+   "name": "Пункт промпта, который разбирает `apply`, начинается с `- F-NN:`; прочее идёт строкой «Замечания к схеме:». Строки о строке атаки в грамматике нет. Грамматика `apply` входит в контракт с плагином, а новое значение или новый смысл поля — смена контракта.",
+   "at": "decisions.json:262",
+   "record_kind": "факт",
+   "number": 9
+  },
+  {
+   "id": "rec:F-10",
+   "kind": "rec",
+   "name": "Вердикт атаки — `status` во frontmatter файла атаки: `passed` только при нуле строк `блокер`, и форк читает только его. Тяжесть меняет вердикт лишь на границе «блокер — не блокер».",
+   "at": "decisions.json:300",
+   "record_kind": "факт",
+   "number": 10
+  },
+  {
+   "id": "rec:F-11",
+   "kind": "rec",
+   "name": "`decisions.json` — первая цель атаки артефактов: любая правка журнала обесценивает её вердикт, и повтор идёт с начала. До первой отмеченной задачи `stale` держит `apply`. У атаки журнала правка без новых записей стоит дешевле: обновляется только `target_sha256`. Сам флаг «прочитано» журнал не трогает: он кладёт текст в промпт возврата, а `apply` штатно пишет заметку в `notes[]`. Но заметка меняет байты журнала, и вердикт атаки артефактов устаревает. Опыт модели на временной копии изменения, 2026-11-08: до внесения отметки у строки `attack/artifacts.md` `attack-artifacts` — `done`, `verdict: ok`; после `apply` — `ready`, `verdict: stale`, планирование не полно.",
+   "at": "decisions.json:332",
+   "record_kind": "факт",
+   "number": 11
+  },
+  {
+   "id": "rec:F-12",
+   "kind": "rec",
+   "name": "Образец рядом — флаг «прочитано» (`attack-warning-read`): заметка `notes[]` известной формы, строка опознаётся по разделу дословно, номер контракта от формы заметки не вырос.",
+   "at": "decisions.json:378",
+   "record_kind": "факт",
+   "number": 12
+  },
+  {
+   "id": "rec:F-13",
+   "kind": "rec",
+   "name": "Страница ключует спор строки по файлу атаки, разделу и утверждению, а в промпт спора утверждение уходит обрезанным до 60 знаков. Замер модели по шести архивным файлам атак, 2026-11-08: строк 779, из них 94 делят раздел с другой строкой, пар «раздел + утверждение» с повтором нет.",
+   "at": "decisions.json:410",
+   "record_kind": "факт",
+   "number": 13
+  },
+  {
+   "id": "rec:F-14",
+   "kind": "rec",
+   "name": "Нынешний путь понижения словом человека в архиве не применялся ни разу. Замер модели по тем же шести файлам: 14 ячеек тяжести с причиной в скобках, все — довод модели в двух изменениях 2026-11-02, до правила F-136.B; ячеек «решено человеком в F-NN» нет.",
+   "at": "decisions.json:442",
+   "record_kind": "факт",
+   "number": 14
+  },
+  {
+   "id": "rec:F-15",
+   "kind": "rec",
+   "name": "Плагин ждёт контракт 3 и сверяет номер равенством, а ядро уже на 4. Плагинная половина номера 4 стоит в бэклоге пунктом B-44.",
+   "at": "decisions.json:470",
+   "record_kind": "факт",
+   "number": 15
+  },
+  {
+   "id": "rec:F-16",
+   "kind": "rec",
+   "name": "В очереди группы 2 бэклога B-18 стоит перед B-16. Изменение B-18 (`attack-lens-conventions`) в своём намерении берёт номер 5 и отдаёт этому изменению номер 6.",
+   "at": "decisions.json:510",
+   "record_kind": "факт",
+   "number": 16
+  },
+  {
+   "id": "rec:F-17",
+   "kind": "rec",
+   "name": "Где живёт тяжесть, которую сменил человек, и когда она меняет вердикт: в журнале до повтора атаки или в файле атаки сразу",
+   "at": "decisions.json:546",
+   "record_kind": "развилка",
+   "number": 17
+  },
+  {
+   "id": "rec:F-18",
+   "kind": "rec",
+   "name": "Между какими тяжестями ходят две кнопки",
+   "at": "decisions.json:678",
+   "record_kind": "развилка",
+   "number": 18
+  },
+  {
+   "id": "rec:F-19",
+   "kind": "rec",
+   "name": "Есть ли кнопки у строк покрытия «не пройдено» и «файла нет»: это блокеры без находки",
+   "at": "decisions.json:762",
+   "record_kind": "развилка",
+   "number": 19
+  },
+  {
+   "id": "rec:F-20",
+   "kind": "rec",
+   "name": "Чем опознаётся строка, у которой человек сменил тяжесть: для `apply` и для повтора атаки",
+   "at": "decisions.json:831",
+   "record_kind": "развилка",
+   "number": 20
+  },
+  {
+   "id": "rec:F-21",
+   "kind": "rec",
+   "name": "Когда слово человека о тяжести перестаёт действовать при повторе атаки",
+   "at": "decisions.json:919",
+   "record_kind": "развилка",
+   "number": 21
+  },
+  {
+   "id": "rec:F-22",
+   "kind": "rec",
+   "name": "Где человек пишет обоснование: своё поле у кнопок или поле спора",
+   "at": "decisions.json:1001",
+   "record_kind": "развилка",
+   "number": 22
+  },
+  {
+   "id": "rec:F-23",
+   "kind": "rec",
+   "name": "Какой номер контракта берёт это изменение, если параллельно B-18 тоже меняет контракт",
+   "at": "decisions.json:1064",
+   "record_kind": "развилка",
+   "number": 23
+  },
+  {
+   "id": "rec:F-24",
+   "kind": "rec",
+   "name": "Делается ли плагинная половина в этом изменении",
+   "at": "decisions.json:1146",
+   "record_kind": "развилка",
+   "number": 24
+  },
+  {
+   "id": "rec:F-25",
+   "kind": "rec",
+   "name": "[adjacency · collection] Строка о тяжести меняет ячейку и вердикт файла атаки: в файле атаки две строки с одним разделом и одним утверждением, но разными линзами — какую из них меняет `apply`?",
+   "at": "decisions.json:1230",
+   "record_kind": "развилка",
+   "number": 25
+  },
+  {
+   "id": "rec:F-26",
+   "kind": "rec",
+   "name": "[encoding · text] Строка о тяжести меняет ячейку и вердикт файла атаки: обоснование со скобками, чертой и переводом строки, например «см. сценарий (раздел B) | ок» в две строки, — что попадает в ячейку тяжести?",
+   "at": "decisions.json:1299",
+   "record_kind": "развилка",
+   "number": 26
+  },
+  {
+   "id": "rec:F-27",
+   "kind": "rec",
+   "name": "[ordering · collection] Строка о тяжести меняет ячейку и вердикт файла атаки: в одном промпте две строки о тяжести для одной строки атаки — сначала «предупреждение», затем «блокер», — что вносит `apply`?",
+   "at": "decisions.json:1368",
+   "record_kind": "развилка",
+   "number": 27
+  },
+  {
+   "id": "rec:F-28",
+   "kind": "rec",
+   "name": "[idempotency · stateful] Строка о тяжести меняет ячейку и вердикт файла атаки: у ячейки уже есть причина в скобках — «решено человеком в» записи журнала или прежнее обоснование кнопки — и тяжесть меняют снова: что остаётся в скобках?",
+   "at": "decisions.json:1437",
+   "record_kind": "развилка",
+   "number": 28
+  },
+  {
+   "id": "rec:F-29",
+   "kind": "rec",
+   "name": "[encoding · text] Тяжесть меняется только между блокером и предупреждением: ячейка тяжести «Блокер» с заглавной буквы — считает ли `apply` её блокером, как страница?",
+   "at": "decisions.json:1506",
+   "record_kind": "развилка",
+   "number": 29
+  },
+  {
+   "id": "rec:F-30",
+   "kind": "rec",
+   "name": "[encoding · text] Строка о тяжести без обоснования или без строки отвергается: утверждение строки атаки с кавычками «», текстом в backticks и сочетанием « — «» — находит ли `apply` по нему строку?",
+   "at": "decisions.json:1574",
+   "record_kind": "развилка",
+   "number": 30
+  },
+  {
+   "id": "rec:F-31",
+   "kind": "rec",
+   "name": "[idempotency · stateful] Внесение «всё или ничего» на журнал и файлы атаки: тот же файл ответа с решением и строкой о тяжести внесён второй раз — решение подтверждается, а строка о тяжести?",
+   "at": "decisions.json:1642",
+   "record_kind": "развилка",
+   "number": 31
+  },
+  {
+   "id": "rec:F-32",
+   "kind": "rec",
+   "name": "[concurrency · stateful] Внесение «всё или ничего» на журнал и файлы атаки: запись журнала прошла, а запись файла атаки оборвалась — что остаётся на диске?",
+   "at": "decisions.json:1709",
+   "record_kind": "развилка",
+   "number": 32
+  },
+  {
+   "id": "rec:F-33",
+   "kind": "rec",
+   "name": "[adjacency · collection] Повтор атаки держит тяжесть, выставленную человеком: повтор атаки пишет две строки с прежним разделом и утверждением, но разных линз — на какую переносится слово человека?",
+   "at": "decisions.json:1776",
+   "record_kind": "развилка",
+   "number": 33
+  },
+  {
+   "id": "rec:F-34",
+   "kind": "rec",
+   "name": "[empty · collection] Кнопки тяжести у строки атаки: строка с линзой вне закрытого списка — вырожденная строка таблицы — несёт ли кнопки тяжести?",
+   "at": "decisions.json:1845",
+   "record_kind": "развилка",
+   "number": 34
+  },
+  {
+   "id": "rec:F-35",
+   "kind": "rec",
+   "name": "[concurrency · stateful] Строка о тяжести в промпте возврата: отметка тяжести с обоснованием осталась в хранилище браузера, а повтор атаки снял строку — что уходит в промпт?",
+   "at": "decisions.json:1914",
+   "record_kind": "развилка",
+   "number": 35
+  },
+  {
+   "id": "rec:F-36",
+   "kind": "rec",
+   "name": "[запрет] Строка о тяжести меняет ячейку и вердикт файла атаки: не должна вноситься строка о тяжести, которой человек не писал: модель сама кладёт её в файл ответа и открывает `apply`",
+   "at": "decisions.json:1983",
+   "record_kind": "развилка",
+   "number": 36
+  },
+  {
+   "id": "rec:F-37",
+   "kind": "rec",
+   "name": "[запрет] Повтор атаки держит тяжесть, выставленную человеком: не должен переносить обоснование человека пересказом: в ячейке после повтора слова модели под видом слова человека",
+   "at": "decisions.json:2052",
+   "record_kind": "развилка",
+   "number": 37
+  },
+  {
+   "id": "rec:F-38",
+   "kind": "rec",
+   "name": "[запрет] Повтор атаки держит тяжесть, выставленную человеком: не должен переносить понижение на другую дыру: ключ строки тот же, опора по-прежнему «нет», но держится на другом основании",
+   "at": "decisions.json:2121",
+   "record_kind": "развилка",
+   "number": 38
+  },
+  {
+   "id": "rec:F-39",
+   "kind": "rec",
+   "name": "[запрет] Скрываемое поле обоснования у кнопок тяжести: не должно молча терять нажатую кнопку без обоснования: поле свёрнуто, строки нет, а человек думает, что понизил",
+   "at": "decisions.json:2190",
+   "record_kind": "развилка",
+   "number": 39
+  },
+  {
+   "id": "rec:F-40",
+   "kind": "rec",
+   "name": "[ветка] Разбор промпта `apply`: всё после строки «Замечания к схеме:» уходит в текст заметки — что вносит `apply`, если строка о тяжести стоит после замечаний?",
+   "at": "decisions.json:2258",
+   "record_kind": "развилка",
+   "number": 40
+  },
+  {
+   "id": "rec:F-41",
+   "kind": "rec",
+   "name": "[ветка] Разбор промпта `apply`: строка, не начинающаяся с «- F-NN:», дописывается к слову предыдущей строки, а до первой такой строки отбрасывается как шапка — где окажется строка о тяжести?",
+   "at": "decisions.json:2325",
+   "record_kind": "развилка",
+   "number": 41
+  },
+  {
+   "id": "rec:F-42",
+   "kind": "rec",
+   "name": "[ветка] `apply --dry-run`: журнал не пишется — а файл атаки со строкой о тяжести?",
+   "at": "decisions.json:2392",
+   "record_kind": "развилка",
+   "number": 42
+  },
+  {
+   "id": "rec:F-43",
+   "kind": "rec",
+   "name": "[ветка] Загрузка состояния режима «атака»: хранилище браузера записано до изменения и поля отметок тяжести не несёт — что восстановит страница?",
+   "at": "decisions.json:2459",
+   "record_kind": "развилка",
+   "number": 43
+  },
+  {
+   "id": "rec:F-44",
+   "kind": "rec",
+   "name": "[ветка] Чтение тяжести на странице: тяжесть вне трёх слов возвращается как есть — есть ли у такой строки кнопки?",
+   "at": "decisions.json:2527",
+   "record_kind": "развилка",
+   "number": 44
+  },
+  {
+   "id": "rec:F-45",
+   "kind": "rec",
+   "name": "[ветка] Разбор файла атаки при `apply`: файл негоден — ячеек не семь, нет frontmatter — что делает `apply` со строкой о тяжести?",
+   "at": "decisions.json:2595",
+   "record_kind": "развилка",
+   "number": 45
+  },
+  {
+   "id": "rec:F-46",
+   "kind": "rec",
+   "name": "[pre-mortem] Повтор атаки артефактов с начала теряет слова человека: правило шага 1 «прежние строки не переносятся» перевешивает правило переноса, и модель пишет файл заново, не прочитав прежних ячеек — что держит перенос?",
+   "at": "decisions.json:2660",
+   "record_kind": "развилка",
+   "number": 46
+  },
+  {
+   "id": "rec:F-47",
+   "kind": "rec",
+   "name": "Какая форма у строки о тяжести в промпте возврата: её пишет страница, позже плагин, разбирает `apply`, а грамматика входит в контракт (F-09); F-30, F-40 и F-41 ждали форму от design, design её не назвал",
+   "at": "decisions.json:2728",
+   "record_kind": "развилка",
+   "number": 47
+  },
+  {
+   "id": "sec:Инъекции через содержимое файлов: обоснование человека в ячейке таблицы (парковка ИБ F-17)",
+   "kind": "sec",
+   "name": "Инъекции через содержимое файлов: обоснование человека в ячейке таблицы (парковка ИБ F-17)",
+   "at": "security.md:9"
+  },
+  {
+   "id": "sec:Инъекции через содержимое файлов: раздел и утверждение строки как ключ",
+   "kind": "sec",
+   "name": "Инъекции через содержимое файлов: раздел и утверждение строки как ключ",
+   "at": "security.md:10"
+  },
+  {
+   "id": "sec:Инъекции через тексты для модели: обоснование при повторе атаки и строка, которую человек не писал",
+   "kind": "sec",
+   "name": "Инъекции через тексты для модели: обоснование при повторе атаки и строка, которую человек не писал",
+   "at": "security.md:11"
+  },
+  {
+   "id": "sec:Пути с `../` (парковка ИБ F-17)",
+   "kind": "sec",
+   "name": "Пути с `../` (парковка ИБ F-17)",
+   "at": "security.md:12"
+  },
+  {
+   "id": "sec:Токены и срок их жизни",
+   "kind": "sec",
+   "name": "Токены и срок их жизни",
+   "at": "security.md:13"
+  },
+  {
+   "id": "sec:Права",
+   "kind": "sec",
+   "name": "Права",
+   "at": "security.md:14"
+  },
+  {
+   "id": "sec:Бинарные файлы",
+   "kind": "sec",
+   "name": "Бинарные файлы",
+   "at": "security.md:15"
+  },
+  {
+   "id": "sec:Чувствительные данные в журнале, артефактах и журналах прогона",
+   "kind": "sec",
+   "name": "Чувствительные данные в журнале, артефактах и журналах прогона",
+   "at": "security.md:16"
+  },
+  {
+   "id": "sec:Телеметрия и внешние команды",
+   "kind": "sec",
+   "name": "Телеметрия и внешние команды",
+   "at": "security.md:17"
+  },
+  {
+   "id": "cap:artifact-attack",
+   "kind": "cap",
+   "name": "artifact-attack",
+   "at": "specs/artifact-attack/spec.md:1"
+  },
+  {
+   "id": "req:artifact-attack/Понижение тяжести только с названной причиной",
+   "kind": "req",
+   "name": "Понижение тяжести только с названной причиной",
+   "at": "specs/artifact-attack/spec.md:5",
+   "section": "MODIFIED",
+   "capability": "artifact-attack"
+  },
+  {
+   "id": "scn:artifact-attack/Понижение тяжести только с названной причиной/Понижение без причины",
+   "kind": "scn",
+   "name": "Понижение без причины",
+   "at": "specs/artifact-attack/spec.md:8",
+   "capability": "artifact-attack",
+   "requirement": "req:artifact-attack/Понижение тяжести только с названной причиной"
+  },
+  {
+   "id": "scn:artifact-attack/Понижение тяжести только с названной причиной/Понижение своим суждением",
+   "kind": "scn",
+   "name": "Понижение своим суждением",
+   "at": "specs/artifact-attack/spec.md:13",
+   "capability": "artifact-attack",
+   "requirement": "req:artifact-attack/Понижение тяжести только с названной причиной"
+  },
+  {
+   "id": "scn:artifact-attack/Понижение тяжести только с названной причиной/Понижение кнопкой",
+   "kind": "scn",
+   "name": "Понижение кнопкой",
+   "at": "specs/artifact-attack/spec.md:18",
+   "capability": "artifact-attack",
+   "requirement": "req:artifact-attack/Понижение тяжести только с названной причиной"
+  },
+  {
+   "id": "req:artifact-attack/Повтор атаки держит тяжесть, выставленную человеком",
+   "kind": "req",
+   "name": "Повтор атаки держит тяжесть, выставленную человеком",
+   "at": "specs/artifact-attack/spec.md:27",
+   "section": "ADDED",
+   "capability": "artifact-attack"
+  },
+  {
+   "id": "scn:artifact-attack/Повтор атаки держит тяжесть, выставленную человеком/Понижение переживает повтор с начала",
+   "kind": "scn",
+   "name": "Понижение переживает повтор с начала",
+   "at": "specs/artifact-attack/spec.md:30",
+   "capability": "artifact-attack",
+   "requirement": "req:artifact-attack/Повтор атаки держит тяжесть, выставленную человеком"
+  },
+  {
+   "id": "scn:artifact-attack/Повтор атаки держит тяжесть, выставленную человеком/Правка цели закрыла повышенную строку",
+   "kind": "scn",
+   "name": "Правка цели закрыла повышенную строку",
+   "at": "specs/artifact-attack/spec.md:35",
+   "capability": "artifact-attack",
+   "requirement": "req:artifact-attack/Повтор атаки держит тяжесть, выставленную человеком"
+  },
+  {
+   "id": "scn:artifact-attack/Повтор атаки держит тяжесть, выставленную человеком/Повтор переписал утверждение",
+   "kind": "scn",
+   "name": "Повтор переписал утверждение",
+   "at": "specs/artifact-attack/spec.md:40",
+   "capability": "artifact-attack",
+   "requirement": "req:artifact-attack/Повтор атаки держит тяжесть, выставленную человеком"
+  },
+  {
+   "id": "scn:artifact-attack/Повтор атаки держит тяжесть, выставленную человеком/Дубль ключа при повторе",
+   "kind": "scn",
+   "name": "Дубль ключа при повторе",
+   "at": "specs/artifact-attack/spec.md:45",
+   "capability": "artifact-attack",
+   "requirement": "req:artifact-attack/Повтор атаки держит тяжесть, выставленную человеком"
+  },
+  {
+   "id": "req:artifact-attack/Обоснование человека переносится без пересказа",
+   "kind": "req",
+   "name": "Обоснование человека переносится без пересказа",
+   "at": "specs/artifact-attack/spec.md:53",
+   "section": "ADDED",
+   "capability": "artifact-attack"
+  },
+  {
+   "id": "scn:artifact-attack/Обоснование человека переносится без пересказа/Ячейка после повтора",
+   "kind": "scn",
+   "name": "Ячейка после повтора",
+   "at": "specs/artifact-attack/spec.md:56",
+   "capability": "artifact-attack",
+   "requirement": "req:artifact-attack/Обоснование человека переносится без пересказа"
+  },
+  {
+   "id": "req:artifact-attack/Понижение не переносится на другую дыру",
+   "kind": "req",
+   "name": "Понижение не переносится на другую дыру",
+   "at": "specs/artifact-attack/spec.md:63",
+   "section": "ADDED",
+   "capability": "artifact-attack"
+  },
+  {
+   "id": "scn:artifact-attack/Понижение не переносится на другую дыру/Опора сменила основание",
+   "kind": "scn",
+   "name": "Опора сменила основание",
+   "at": "specs/artifact-attack/spec.md:66",
+   "capability": "artifact-attack",
+   "requirement": "req:artifact-attack/Понижение не переносится на другую дыру"
+  },
+  {
+   "id": "cap:attack-severity-word",
+   "kind": "cap",
+   "name": "attack-severity-word",
+   "at": "specs/attack-severity-word/spec.md:1"
+  },
+  {
+   "id": "req:attack-severity-word/Строка о тяжести меняет ячейку и вердикт файла атаки",
+   "kind": "req",
+   "name": "Строка о тяжести меняет ячейку и вердикт файла атаки",
+   "at": "specs/attack-severity-word/spec.md:8",
+   "section": "ADDED",
+   "capability": "attack-severity-word"
+  },
+  {
+   "id": "scn:attack-severity-word/Строка о тяжести меняет ячейку и вердикт файла атаки/Понижен последний блокер",
+   "kind": "scn",
+   "name": "Понижен последний блокер",
+   "at": "specs/attack-severity-word/spec.md:11",
+   "capability": "attack-severity-word",
+   "requirement": "req:attack-severity-word/Строка о тяжести меняет ячейку и вердикт файла атаки"
+  },
+  {
+   "id": "scn:attack-severity-word/Строка о тяжести меняет ячейку и вердикт файла атаки/Повышено предупреждение",
+   "kind": "scn",
+   "name": "Повышено предупреждение",
+   "at": "specs/attack-severity-word/spec.md:16",
+   "capability": "attack-severity-word",
+   "requirement": "req:attack-severity-word/Строка о тяжести меняет ячейку и вердикт файла атаки"
+  },
+  {
+   "id": "scn:attack-severity-word/Строка о тяжести меняет ячейку и вердикт файла атаки/Две строки одного ключа",
+   "kind": "scn",
+   "name": "Две строки одного ключа",
+   "at": "specs/attack-severity-word/spec.md:21",
+   "capability": "attack-severity-word",
+   "requirement": "req:attack-severity-word/Строка о тяжести меняет ячейку и вердикт файла атаки"
+  },
+  {
+   "id": "scn:attack-severity-word/Строка о тяжести меняет ячейку и вердикт файла атаки/Обоснование со скобками, чертой и переводом строки",
+   "kind": "scn",
+   "name": "Обоснование со скобками, чертой и переводом строки",
+   "at": "specs/attack-severity-word/spec.md:27",
+   "capability": "attack-severity-word",
+   "requirement": "req:attack-severity-word/Строка о тяжести меняет ячейку и вердикт файла атаки"
+  },
+  {
+   "id": "scn:attack-severity-word/Строка о тяжести меняет ячейку и вердикт файла атаки/Две строки о тяжести для одной строки атаки",
+   "kind": "scn",
+   "name": "Две строки о тяжести для одной строки атаки",
+   "at": "specs/attack-severity-word/spec.md:33",
+   "capability": "attack-severity-word",
+   "requirement": "req:attack-severity-word/Строка о тяжести меняет ячейку и вердикт файла атаки"
+  },
+  {
+   "id": "scn:attack-severity-word/Строка о тяжести меняет ячейку и вердикт файла атаки/Новое обоснование заменяет прежнюю причину",
+   "kind": "scn",
+   "name": "Новое обоснование заменяет прежнюю причину",
+   "at": "specs/attack-severity-word/spec.md:39",
+   "capability": "attack-severity-word",
+   "requirement": "req:attack-severity-word/Строка о тяжести меняет ячейку и вердикт файла атаки"
+  },
+  {
+   "id": "scn:attack-severity-word/Строка о тяжести меняет ячейку и вердикт файла атаки/Строки о тяжести в начале промпта и между решениями",
+   "kind": "scn",
+   "name": "Строки о тяжести в начале промпта и между решениями",
+   "at": "specs/attack-severity-word/spec.md:45",
+   "capability": "attack-severity-word",
+   "requirement": "req:attack-severity-word/Строка о тяжести меняет ячейку и вердикт файла атаки"
+  },
+  {
+   "id": "scn:attack-severity-word/Строка о тяжести меняет ячейку и вердикт файла атаки/Пробное внесение не трогает файл атаки",
+   "kind": "scn",
+   "name": "Пробное внесение не трогает файл атаки",
+   "at": "specs/attack-severity-word/spec.md:51",
+   "capability": "attack-severity-word",
+   "requirement": "req:attack-severity-word/Строка о тяжести меняет ячейку и вердикт файла атаки"
+  },
+  {
+   "id": "req:attack-severity-word/Тяжесть меняется только между блокером и предупреждением",
+   "kind": "req",
+   "name": "Тяжесть меняется только между блокером и предупреждением",
+   "at": "specs/attack-severity-word/spec.md:59",
+   "section": "ADDED",
+   "capability": "attack-severity-word"
+  },
+  {
+   "id": "scn:attack-severity-word/Тяжесть меняется только между блокером и предупреждением/Понижение до справки",
+   "kind": "scn",
+   "name": "Понижение до справки",
+   "at": "specs/attack-severity-word/spec.md:62",
+   "capability": "attack-severity-word",
+   "requirement": "req:attack-severity-word/Тяжесть меняется только между блокером и предупреждением"
+  },
+  {
+   "id": "scn:attack-severity-word/Тяжесть меняется только между блокером и предупреждением/Строка покрытия «не пройдено»",
+   "kind": "scn",
+   "name": "Строка покрытия «не пройдено»",
+   "at": "specs/attack-severity-word/spec.md:67",
+   "capability": "attack-severity-word",
+   "requirement": "req:attack-severity-word/Тяжесть меняется только между блокером и предупреждением"
+  },
+  {
+   "id": "req:attack-severity-word/Строка о тяжести без обоснования или без строки отвергается",
+   "kind": "req",
+   "name": "Строка о тяжести без обоснования или без строки отвергается",
+   "at": "specs/attack-severity-word/spec.md:74",
+   "section": "ADDED",
+   "capability": "attack-severity-word"
+  },
+  {
+   "id": "scn:attack-severity-word/Строка о тяжести без обоснования или без строки отвергается/Пустое обоснование",
+   "kind": "scn",
+   "name": "Пустое обоснование",
+   "at": "specs/attack-severity-word/spec.md:77",
+   "capability": "attack-severity-word",
+   "requirement": "req:attack-severity-word/Строка о тяжести без обоснования или без строки отвергается"
+  },
+  {
+   "id": "scn:attack-severity-word/Строка о тяжести без обоснования или без строки отвергается/Утверждение переписано повтором атаки",
+   "kind": "scn",
+   "name": "Утверждение переписано повтором атаки",
+   "at": "specs/attack-severity-word/spec.md:82",
+   "capability": "attack-severity-word",
+   "requirement": "req:attack-severity-word/Строка о тяжести без обоснования или без строки отвергается"
+  },
+  {
+   "id": "req:attack-severity-word/Внесение «всё или ничего» на журнал и файлы атаки",
+   "kind": "req",
+   "name": "Внесение «всё или ничего» на журнал и файлы атаки",
+   "at": "specs/attack-severity-word/spec.md:89",
+   "section": "ADDED",
+   "capability": "attack-severity-word"
+  },
+  {
+   "id": "scn:attack-severity-word/Внесение «всё или ничего» на журнал и файлы атаки/Годное решение и негодная строка о тяжести",
+   "kind": "scn",
+   "name": "Годное решение и негодная строка о тяжести",
+   "at": "specs/attack-severity-word/spec.md:92",
+   "capability": "attack-severity-word",
+   "requirement": "req:attack-severity-word/Внесение «всё или ничего» на журнал и файлы атаки"
+  },
+  {
+   "id": "scn:attack-severity-word/Внесение «всё или ничего» на журнал и файлы атаки/Строки о двух файлах атаки",
+   "kind": "scn",
+   "name": "Строки о двух файлах атаки",
+   "at": "specs/attack-severity-word/spec.md:97",
+   "capability": "attack-severity-word",
+   "requirement": "req:attack-severity-word/Внесение «всё или ничего» на журнал и файлы атаки"
+  },
+  {
+   "id": "req:attack-severity-word/Строку о тяжести пишет только человек",
+   "kind": "req",
+   "name": "Строку о тяжести пишет только человек",
+   "at": "specs/attack-severity-word/spec.md:104",
+   "section": "ADDED",
+   "capability": "attack-severity-word"
+  },
+  {
+   "id": "scn:attack-severity-word/Строку о тяжести пишет только человек/Правило в теле скилла просмотрщика",
+   "kind": "scn",
+   "name": "Правило в теле скилла просмотрщика",
+   "at": "specs/attack-severity-word/spec.md:107",
+   "capability": "attack-severity-word",
+   "requirement": "req:attack-severity-word/Строку о тяжести пишет только человек"
+  },
+  {
+   "id": "req:attack-severity-word/Строка о тяжести пишет только файлы атаки своего изменения",
+   "kind": "req",
+   "name": "Строка о тяжести пишет только файлы атаки своего изменения",
+   "at": "specs/attack-severity-word/spec.md:114",
+   "section": "ADDED",
+   "capability": "attack-severity-word"
+  },
+  {
+   "id": "scn:attack-severity-word/Строка о тяжести пишет только файлы атаки своего изменения/Путь вне каталога изменения",
+   "kind": "scn",
+   "name": "Путь вне каталога изменения",
+   "at": "specs/attack-severity-word/spec.md:117",
+   "capability": "attack-severity-word",
+   "requirement": "req:attack-severity-word/Строка о тяжести пишет только файлы атаки своего изменения"
+  },
+  {
+   "id": "scn:attack-severity-word/Строка о тяжести пишет только файлы атаки своего изменения/Ячейка, которая не разбирается",
+   "kind": "scn",
+   "name": "Ячейка, которая не разбирается",
+   "at": "specs/attack-severity-word/spec.md:122",
+   "capability": "attack-severity-word",
+   "requirement": "req:attack-severity-word/Строка о тяжести пишет только файлы атаки своего изменения"
+  },
+  {
+   "id": "cap:decision-viewer",
+   "kind": "cap",
+   "name": "decision-viewer",
+   "at": "specs/decision-viewer/spec.md:1"
+  },
+  {
+   "id": "req:decision-viewer/Кнопки тяжести у строки атаки",
+   "kind": "req",
+   "name": "Кнопки тяжести у строки атаки",
+   "at": "specs/decision-viewer/spec.md:5",
+   "section": "ADDED",
+   "capability": "decision-viewer"
+  },
+  {
+   "id": "scn:decision-viewer/Кнопки тяжести у строки атаки/Блокер и предупреждение",
+   "kind": "scn",
+   "name": "Блокер и предупреждение",
+   "at": "specs/decision-viewer/spec.md:8",
+   "capability": "decision-viewer",
+   "requirement": "req:decision-viewer/Кнопки тяжести у строки атаки"
+  },
+  {
+   "id": "scn:decision-viewer/Кнопки тяжести у строки атаки/Справка и строки покрытия",
+   "kind": "scn",
+   "name": "Справка и строки покрытия",
+   "at": "specs/decision-viewer/spec.md:13",
+   "capability": "decision-viewer",
+   "requirement": "req:decision-viewer/Кнопки тяжести у строки атаки"
+  },
+  {
+   "id": "req:decision-viewer/Скрываемое поле обоснования у кнопок тяжести",
+   "kind": "req",
+   "name": "Скрываемое поле обоснования у кнопок тяжести",
+   "at": "specs/decision-viewer/spec.md:20",
+   "section": "ADDED",
+   "capability": "decision-viewer"
+  },
+  {
+   "id": "scn:decision-viewer/Скрываемое поле обоснования у кнопок тяжести/Кнопка без обоснования",
+   "kind": "scn",
+   "name": "Кнопка без обоснования",
+   "at": "specs/decision-viewer/spec.md:23",
+   "capability": "decision-viewer",
+   "requirement": "req:decision-viewer/Скрываемое поле обоснования у кнопок тяжести"
+  },
+  {
+   "id": "scn:decision-viewer/Скрываемое поле обоснования у кнопок тяжести/Спор и обоснование у одной строки",
+   "kind": "scn",
+   "name": "Спор и обоснование у одной строки",
+   "at": "specs/decision-viewer/spec.md:28",
+   "capability": "decision-viewer",
+   "requirement": "req:decision-viewer/Скрываемое поле обоснования у кнопок тяжести"
+  },
+  {
+   "id": "scn:decision-viewer/Скрываемое поле обоснования у кнопок тяжести/Поле скрыто по умолчанию",
+   "kind": "scn",
+   "name": "Поле скрыто по умолчанию",
+   "at": "specs/decision-viewer/spec.md:33",
+   "capability": "decision-viewer",
+   "requirement": "req:decision-viewer/Скрываемое поле обоснования у кнопок тяжести"
+  },
+  {
+   "id": "req:decision-viewer/Строка о тяжести в промпте возврата",
+   "kind": "req",
+   "name": "Строка о тяжести в промпте возврата",
+   "at": "specs/decision-viewer/spec.md:40",
+   "section": "ADDED",
+   "capability": "decision-viewer"
+  },
+  {
+   "id": "scn:decision-viewer/Строка о тяжести в промпте возврата/Длинное утверждение",
+   "kind": "scn",
+   "name": "Длинное утверждение",
+   "at": "specs/decision-viewer/spec.md:43",
+   "capability": "decision-viewer",
+   "requirement": "req:decision-viewer/Строка о тяжести в промпте возврата"
+  },
+  {
+   "id": "scn:decision-viewer/Строка о тяжести в промпте возврата/Внесённое слово уходит из промпта",
+   "kind": "scn",
+   "name": "Внесённое слово уходит из промпта",
+   "at": "specs/decision-viewer/spec.md:48",
+   "capability": "decision-viewer",
+   "requirement": "req:decision-viewer/Строка о тяжести в промпте возврата"
+  },
+  {
+   "id": "scn:decision-viewer/Строка о тяжести в промпте возврата/Отметка у строки, которую снял повтор атаки",
+   "kind": "scn",
+   "name": "Отметка у строки, которую снял повтор атаки",
+   "at": "specs/decision-viewer/spec.md:53",
+   "capability": "decision-viewer",
+   "requirement": "req:decision-viewer/Строка о тяжести в промпте возврата"
+  },
+  {
+   "id": "req:decision-viewer/Нажатая кнопка без обоснования видна как незавершённая",
+   "kind": "req",
+   "name": "Нажатая кнопка без обоснования видна как незавершённая",
+   "at": "specs/decision-viewer/spec.md:61",
+   "section": "ADDED",
+   "capability": "decision-viewer"
+  },
+  {
+   "id": "scn:decision-viewer/Нажатая кнопка без обоснования видна как незавершённая/Нажатие без текста",
+   "kind": "scn",
+   "name": "Нажатие без текста",
+   "at": "specs/decision-viewer/spec.md:64",
+   "capability": "decision-viewer",
+   "requirement": "req:decision-viewer/Нажатая кнопка без обоснования видна как незавершённая"
+  },
+  {
+   "id": "cap:plugin-core-contract",
+   "kind": "cap",
+   "name": "plugin-core-contract",
+   "at": "specs/plugin-core-contract/spec.md:1"
+  },
+  {
+   "id": "req:plugin-core-contract/Строка `apply` о тяжести поднимает номер контракта до 6",
+   "kind": "req",
+   "name": "Строка `apply` о тяжести поднимает номер контракта до 6",
+   "at": "specs/plugin-core-contract/spec.md:5",
+   "section": "ADDED",
+   "capability": "plugin-core-contract"
+  },
+  {
+   "id": "scn:plugin-core-contract/Строка `apply` о тяжести поднимает номер контракта до 6/Номер в двух выводах",
+   "kind": "scn",
+   "name": "Номер в двух выводах",
+   "at": "specs/plugin-core-contract/spec.md:8",
+   "capability": "plugin-core-contract",
+   "requirement": "req:plugin-core-contract/Строка `apply` о тяжести поднимает номер контракта до 6"
+  },
+  {
+   "id": "scn:plugin-core-contract/Строка `apply` о тяжести поднимает номер контракта до 6/Плагин прежнего номера",
+   "kind": "scn",
+   "name": "Плагин прежнего номера",
+   "at": "specs/plugin-core-contract/spec.md:13",
+   "capability": "plugin-core-contract",
+   "requirement": "req:plugin-core-contract/Строка `apply` о тяжести поднимает номер контракта до 6"
+  },
+  {
+   "id": "scn:plugin-core-contract/Строка `apply` о тяжести поднимает номер контракта до 6/Абзац договора",
+   "kind": "scn",
+   "name": "Абзац договора",
+   "at": "specs/plugin-core-contract/spec.md:18",
+   "capability": "plugin-core-contract",
+   "requirement": "req:plugin-core-contract/Строка `apply` о тяжести поднимает номер контракта до 6"
+  },
+  {
+   "id": "task:1.1",
+   "kind": "task",
+   "name": "`decisions/journal_apply.py`: `RE_SEVERITY` по форме F-47.A `- тяжесть: <путь файла атаки> · <раздел> · «<утверждение>» → <тяжесть> — «<обоснование>»` — путь до первой « · », раздел до первой « · «», утверждение до последнего «» → <слово> — «», обоснование через `_human_word`; `parse_answers` узнаёт строку в любом месте выше «Замечания к схеме:»: она закрывает предыдущий пункт, строки продолжения идут в её обоснование, после неё снова узнаются `- F-NN:`; пункт `op: severity` с полями `path`, `section`, `claim`, `severity`, `why`; `apply_answers` журнал по нему не меняет (строку вносит план файлов атаки, 1.3) — проверка: тесты в `decisions/tests/test_journal_apply.py`: строка о тяжести перед первой строкой решения и вторая сразу после `- F-03: A — «слово»` дают два пункта `severity`, слово F-03 их текста не несёт; утверждение с «», backticks и « — «», раздел с « · » разбираются в поля дословно; обоснование в две строки — одно поле; `apply_answers` с пунктом `severity` журнал не меняет и отказа не даёт — `attack-severity-word`: «Строки о тяжести в начале промпта и между решениями»",
+   "at": "tasks.md:5",
+   "done": false
+  },
+  {
+   "id": "task:1.2",
+   "kind": "task",
+   "name": "`attack/attack_table.py`: `parse_attack_text(text, name)` — разбор из текста, `parse_attack_md` зовёт его; `set_severity(text, name, section, claim, severity, why) -> str` — строка ищется по разобранным разделу и утверждению дословно: нет — `ValueError` «строки нет», две — «строк с этим ключом две» (F-25); строка покрытия (утверждение «не пройдено», опора «нет: не пройдено» или «нет: файла нет») — отказ; ход только `блокер` → `предупреждение` и `предупреждение` → `блокер` по первому слову ячейки, иное (`справка` в строке или у строки, тяжесть та же, слово вне трёх) — отказ с причиной (F-18.B, F-19.A, F-29.B, F-31.B); ячейка тяжести меняется в сыром тексте строки по местам разделителей `_scan_row` на `<тяжесть> (<обоснование>)`: обоснование одной строкой (`_flat`), `\\` → `\\\\`, `|` → `\\|`, прежняя причина в скобках не остаётся (F-28); `status:` frontmatter — `passed` при нуле строк `блокер`, иначе `gaps_found`; прочие ячейки строки, прочие строки, frontmatter и концы строк (CRLF или LF) — байт в байт; новый текст разбирается заново, сбой — `ValueError` «ячейка не разбирается» с причиной разбора — проверка: тесты в `attack/tests/test_attack_table.py`: последний блокер понижен — `status: passed`, хеши целей прежние; предупреждение с опорой «по спеке не выводится» повышено — `status: gaps_found`, прочие строки байт в байт; две строки одного ключа разных линз — отказ; обоснование «см. сценарий (раздел B) | ок» в две строки — ячейка в одну строку с `\\|`, разбор возвращает обоснование целиком; ячейка `предупреждение (решено человеком в F-09)` и прежнее обоснование кнопки — в скобках только новое; цель `справка` — отказ; строка «не пройдено» с тяжестью `блокер` — отказ; утверждения нет — «строки нет»; обоснование с одним непарным backtick — «ячейка не разбирается» — `attack-severity-word`: «Понижен последний блокер», `attack-severity-word`: «Повышено предупреждение», `attack-severity-word`: «Две строки одного ключа», `attack-severity-word`: «Обоснование со скобками, чертой и переводом строки», `attack-severity-word`: «Новое обоснование заменяет прежнюю причину», `attack-severity-word`: «Понижение до справки», `attack-severity-word`: «Строка покрытия «не пройдено»», `attack-severity-word`: «Утверждение переписано повтором атаки», `attack-severity-word`: «Ячейка, которая не разбирается»",
+   "at": "tasks.md:6",
+   "done": false
+  },
+  {
+   "id": "task:1.3",
+   "kind": "task",
+   "name": "`cli/journal_cli.py`, `cmd_apply`: план файлов атаки до любой записи — путь строки принимается, только если равен `_attack_path` для `<каталог журнала>/attack/decisions.md` или `attack/artifacts.md` (та форма, что страница даёт в `att.path`), иное — отказ с путём и строкой; файла нет или он не разбирается — отказ с причиной разбора (F-45.B); пустое после `_flat` обоснование — «нет обоснования»; две строки о тяжести с одним ключом в промпте — «две строки о тяжести для одной строки атаки» (F-27); строки одного файла применяются по очереди в памяти; отказы журнала и плана — в один список, при любом — код 1 и ни одного записанного файла; `--dry-run` печатает строку о тяжести и новую тяжесть и ничего не пишет (F-42); запись — журнал, затем файлы атаки байтами (F-32.B); комментарий у порядка записи называет восстановление после обрыва между записями: пересобрать страницу и внести её новый промпт, где осталась только строка о тяжести; тот же файл ответа второй раз положит заметку «Замечания к схеме:» и новые развилки вторично, а строку с добавленным вариантом `apply` отвергнет (слово владельца, 2026-11-08: «Изменение которое будет основываться на текущем получит объяснение») — проверка: тесты в `cli/tests/test_cli_apply.py` с SHA-256 журнала и файлов атаки до и после: понижен последний блокер — `status: passed`, SHA-256 `decisions.json` прежний; `../other/attack/decisions.md`, абсолютный путь и `openspec/changes/<другое>/attack/decisions.md` — код 1, ни один файл не изменён; обоснование из пробелов — «нет обоснования»; две строки одного ключа (`предупреждение`, затем `блокер`) — отказ; `- F-03: A — «слово»` и негодная строка о тяжести — код 1, `decision` у F-03 пуст; годная строка для `attack/decisions.md` и негодная для `attack/artifacts.md` — оба файла байт в байт; `--dry-run` — все файлы байт в байт, вывод называет строку и тяжесть; CRLF файла атаки сохраняется — `attack-severity-word`: «Понижен последний блокер», `attack-severity-word`: «Путь вне каталога изменения», `attack-severity-word`: «Пустое обоснование», `attack-severity-word`: «Две строки о тяжести для одной строки атаки», `attack-severity-word`: «Годное решение и негодная строка о тяжести», `attack-severity-word`: «Строки о двух файлах атаки», `attack-severity-word`: «Пробное внесение не трогает файл атаки»",
+   "at": "tasks.md:7",
+   "done": false
+  },
+  {
+   "id": "task:1.4",
+   "kind": "task",
+   "name": "Документы модулей: `cli/journal-cli.md` — `apply` вносит строку о тяжести в файл атаки, отказы и `--dry-run`; «Кто что правит» — файл атаки правят скилл `symphysis-attack` и `apply` строкой о тяжести (ячейка тяжести и `status`); строка «Строки атаки `apply` не меняет» в докстринге `cli/journal.py` — о споре и строке о тяжести; `attack/README.md` называет `parse_attack_text` и `set_severity`, `cli/journal.py` — новые публичные имена, если они нужны фасаду — проверка: `python -X utf8 -m pytest cli decisions attack tests/test_flag_help.py` зелёный; `grep -n \"Строки атаки \\`apply\\` не меняет\" cli/` пусто — `служебная`",
+   "at": "tasks.md:8",
+   "done": false
+  },
+  {
+   "id": "task:2.1",
+   "kind": "task",
+   "name": "`viewer/playground-template.html`, блок `flags`: `sevMove(row)` — «понизить» → `предупреждение` у `блокер`, «повысить» → `блокер` у `предупреждение`, `null` у `справка`, у тяжести вне трёх и у строки покрытия (`isCoverageGap`: утверждение «не пройдено», опора «нет: не пройдено» или «нет: файла нет»); `sevReason` берёт текст от первой «(» после слова тяжести до последней «)» ячейки; `severityLine(att, row, to, why)` — строка F-47.A с утверждением целиком и обоснованием одной строкой — проверка: тесты в `viewer/tests/test_viewer_flags.py` через `block(\"flags\")`: ход у блокера и предупреждения, `null` у справки, у тяжести вне трёх слов (`критично`), у «не пройдено» и у «нет: файла нет»; `sevReason(\"предупреждение (см. сценарий (раздел B) | ок)\")` — причина целиком; строка `severityLine` с утверждением длиннее 60 знаков разбирается `journal.parse_answers` в пункт `severity` с тем же утверждением — `decision-viewer`: «Длинное утверждение», `attack-severity-word`: «Обоснование со скобками, чертой и переводом строки»",
+   "at": "tasks.md:12",
+   "done": false
+  },
+  {
+   "id": "task:2.2",
+   "kind": "task",
+   "name": "Блок `prompt`: `buildPrompt(J, attacks, st, disputes, date, read, sev)` — седьмой аргумент необязательный; на каждую отметку с непустым обоснованием у строки текущей сборки, чья ячейка ещё не несёт эту тяжесть и это обоснование, — `severityLine` после пунктов решений и новых развилок, до «Замечания к схеме:» (на этом стоит F-40.B); отметка без обоснования и отметка без строки строки не дают; обоснование в спор не идёт, спор в строку о тяжести не идёт — проверка: тесты в `viewer/tests/test_viewer_prompt.py` через `prompt(...)` с `sev`: строка о тяжести стоит выше «Замечания к схеме:», `apply_clean` принимает промпт, пункт `severity` один; кнопка без обоснования — строки нет; спор и обоснование у одной строки — спор в замечаниях, обоснование только в строке о тяжести; ячейка уже несёт тяжесть и обоснование — строки нет; отметка у строки, которой нет в `attacks`, — строки нет — `decision-viewer`: «Кнопка без обоснования», `decision-viewer`: «Спор и обоснование у одной строки», `decision-viewer`: «Внесённое слово уходит из промпта», `decision-viewer`: «Отметка у строки, которую снял повтор атаки»",
+   "at": "tasks.md:13",
+   "done": false
+  },
+  {
+   "id": "task:2.3",
+   "kind": "task",
+   "name": "Состояние: `attackState.sev` — объект «ключ `disputeKey` → `{ to, why }`», грузится из `KEY + ':attack'` под тем же `try` с проверкой `typeof s.sev === 'object'` (старое хранилище — пустые отметки, F-43.B); `cleanupIngested` убирает отметку, чья ячейка уже несёт эту тяжесть и это обоснование, и отметку без строки в текущей сборке (F-35); `currentPrompt` и `currentFlags` передают `attackState.sev`; кнопка «Стереть» сбрасывает `{ disputes:{}, read:{}, sev:{} }` — сейчас сброс теряет поле `read`, и `readBadge` падает на `attackState.read[k]` — проверка: тест в `viewer/tests/test_viewer_page.py` через `attack_view` с `:attack`, где отметка стоит у строки, которой нет в файле: промпт без строки о тяжести, после загрузки в хранилище отметки нет; хранилище только с `disputes` и `read` — страница собирается, споры на месте; текст шаблона: строка сброса несёт `read:{}` и `sev:{}` — `decision-viewer`: «Отметка у строки, которую снял повтор атаки»",
+   "at": "tasks.md:14",
+   "done": false
+  },
+  {
+   "id": "task:2.4",
+   "kind": "task",
+   "name": "Карточка строки атаки (`attackRow`): кнопка «понизить» или «повысить» по `sevMove`, нажатая — активна, повторное нажатие снимает отметку; своё поле обоснования в свёрнутом блоке, как поле парковки у решения, отдельно от поля спора; нажатая кнопка без текста — пометка «нет обоснования, строки о тяжести не будет» и раскрытое поле (F-39); `demotionBadge` показывает причину по `sevReason` целиком — проверка: тесты в `viewer/tests/test_viewer_page.py` через `attack_view`: у блокера только «понизить», у предупреждения только «повысить»; у справки, «не пройдено» и «нет: файла нет» кнопок нет; пустое хранилище — поля обоснования свёрнуты, поле спора видно; в `:attack` отметка без обоснования — пометка и раскрытое поле, промпт без строки о тяжести; строка с опорой «нет» и ячейкой `предупреждение (дыра закрыта соседним сценарием)` — «понижено: дыра закрыта соседним сценарием», не «понижение без причины»; прежний `test_viewer_attack_demotion_without_reason_is_visible` зелёный — `decision-viewer`: «Блокер и предупреждение», `decision-viewer`: «Справка и строки покрытия», `decision-viewer`: «Поле скрыто по умолчанию», `decision-viewer`: «Нажатие без текста», `artifact-attack`: «Понижение кнопкой», `artifact-attack`: «Понижение без причины»",
+   "at": "tasks.md:15",
+   "done": false
+  },
+  {
+   "id": "task:2.5",
+   "kind": "task",
+   "name": "Тексты страницы: `ATTACK_HINT` — кнопки у блокера и предупреждения, обоснование в своём поле, строка о тяжести, которую `apply` вносит в ячейку и `status` файла атаки; «строки атаки `apply` не меняет» остаётся только о споре; `attack/attack-table.md`, «Что считает страница», — кнопки, поле и строка F-47.A; строка «Строки атаки `apply` не меняет» — кроме ячейки тяжести и `status` по строке о тяжести — проверка: `python -X utf8 -m pytest viewer` зелёный; в тексте шаблона и `attack-table.md` есть «понизить», «повысить» и «- тяжесть:» — `служебная`",
+   "at": "tasks.md:16",
+   "done": false
+  },
+  {
+   "id": "task:2.6",
+   "kind": "task",
+   "name": "Тест-страховка F-30: утверждения всех архивных файлов атаки (`openspec/changes/archive/*<путь>`) у строк `блокер` и `предупреждение`, кроме строк покрытия, — `severityLine` блока `flags`, затем `journal.parse_answers` и `set_severity` на тексте того же файла: каждая строка находит свою (без «строки нет» и «строк с этим ключом две»), тяжесть сменилась, `status` пересчитан — проверка: тест в `viewer/tests/test_viewer_prompt.py` зелёный, число прогнанных строк печатается в сообщении и больше нуля; утверждения с «», backticks и « — «» в прогоне есть — `служебная`",
+   "at": "tasks.md:17",
+   "done": false
+  },
+  {
+   "id": "task:3.1",
+   "kind": "task",
+   "name": "`viewer/skills/symphysis-viewer/SKILL.md`: инвариант 2 «Решает человек» называет строку о тяжести рядом с решением — модель её в `answers/` не пишет, она приходит промптом страницы или строкой человека из чата дословно (F-36); шаг 1, режим «атака», — кнопки «понизить» и «повысить» со скрываемым полем обоснования; шаг 5 — строку о тяжести `apply` вносит в ячейку тяжести и `status` файла атаки, журнал не меняет, отказ правится в строке промпта; «Строки атаки `apply` не меняет» — только о споре; «Приёмка» — строка о тяжести в `answers/` дословно — проверка: новый тест в `tests/test_skills.py`: блок инварианта 2 несёт «строк» и «тяжест» рядом с «decision», «дословно» и «промпт»; `test_viewer_skill_describes_the_attack_mode` получает токены «понизить», «повысить», «- тяжесть:» вместо прежнего «Строки атаки `apply` не меняет» — `attack-severity-word`: «Правило в теле скилла просмотрщика»",
+   "at": "tasks.md:21",
+   "done": false
+  },
+  {
+   "id": "task:3.2",
+   "kind": "task",
+   "name": "`docs/GUIDE.md`, раздел атаки журнала после абзаца о «прочитано»: кнопки, поле обоснования, строка о тяжести, вердикт меняется в момент `apply`, журнал не меняется, повтор атаки держит слово, пока строка на месте и опора не «есть»; `skill-shared/terms.md` — термин «строка о тяжести» — проверка: `python -X utf8 -m pytest tests/test_guide.py tests/test_skills.py` зелёный; `grep -n \"строка о тяжести\" docs/GUIDE.md skill-shared/terms.md` находит обе — `служебная`",
+   "at": "tasks.md:22",
+   "done": false
+  },
+  {
+   "id": "task:4.1",
+   "kind": "task",
+   "name": "`attack/attack-table.md`, «Тяжесть»: тяжесть по опоре или слово человека — `<тяжесть> (<обоснование>)`, внесённое `apply` строкой о тяжести (понижение блокера, повышение предупреждения, у невыводимого тоже), или `предупреждение (решено человеком в F-NN)` по записи журнала, она остаётся годной; `attack/skills/symphysis-attack/SKILL.md`, «**Понижение тяжести.**», — причина называет решённую запись или несёт обоснование человека, внесённое `apply`; своё суждение тяжесть не снижает — проверка: `test_attack_skill_demotion_needs_a_reason` в `tests/test_skills.py` получает токены «обоснование человека» и «`apply`» и сохраняет прежние; `test_attack_skill_cell_rule` зелёный — `artifact-attack`: «Понижение своим суждением»",
+   "at": "tasks.md:26",
+   "done": false
+  },
+  {
+   "id": "task:4.2",
+   "kind": "task",
+   "name": "`attack/skills/symphysis-attack/SKILL.md`, шаг 1 и итог: при повторе с начала модель MUST до перезаписи файла прочитать ячейки со словом человека (тяжесть иная, чем по опоре, с причиной в скобках) — исключение из «прежние строки не переносятся»; слово идёт на строку с тем же файлом атаки, разделом и утверждением, ячейка байт в байт, без пересказа (F-37), пока опора не «есть» и держится на том же основании (F-38); опора «есть» — `справка`, слово снято; строки с ключом нет или основание другое — тяжесть по опоре, итог называет слово снятым; две строки ключа разных линз — слово только у строки прежней линзы (F-33); повтор журнала по составу: строки вне состава байт в байт, строки состава и стыков несут слово по тому же правилу; итог перечисляет перенесённые и снятые слова — проверка: тест-страховка F-46 в `tests/test_skills.py`: шаг «Войди» у пункта «с начала» велит прочитать ячейки со словом человека до перезаписи и делает исключение из «прежние строки не переносятся»; тест токенов шага 1 и итога: «тем же файлом атаки, разделом и утверждением», «байт в байт», «другом основании», «прежней линзы», «слово снято»; F-37 и F-38 судит атака артефактов по телу скилла и человек по итогу и `answers/` — `artifact-attack`: «Понижение переживает повтор с начала», `artifact-attack`: «Правка цели закрыла повышенную строку», `artifact-attack`: «Повтор переписал утверждение», `artifact-attack`: «Дубль ключа при повторе», `artifact-attack`: «Ячейка после повтора», `artifact-attack`: «Опора сменила основание»",
+   "at": "tasks.md:27",
+   "done": false
+  },
+  {
+   "id": "task:5.1",
+   "kind": "task",
+   "name": "`decisions/journal_render.py`: `CONTRACT = 6` с комментарием — строка `apply` о тяжести (F-23.A; номер 5 берёт `attack-lens-conventions`); `docs/repo-contract.md` — абзац «С номера 6 …»: строка `- тяжесть: …` формы F-47.A, `apply` по ней правит ячейку тяжести и `status` файла атаки своего изменения, журнал не меняется; плагин этого номера пишет её со своих кнопок, его коммит несёт `Needs:`; пункт «грамматика строк `apply`» называет строку о тяжести; `tests/test_repo_contract.py` — тест номера 4 становится историческим, как тест номера 3 (без `assert journal_render.CONTRACT == 4`), новый тест номера 6 сверяет код и абзац; `decisions/tests/test_journal_view_json.py` и `step-help/tests/test_step_help.py` — `== 6` — проверка: `python -X utf8 -m pytest tests/test_repo_contract.py decisions step-help` зелёный; тест «Номер выше последнего абзаца» в `decisions/tests/test_journal_render.py` зелёный — `plugin-core-contract`: «Номер в двух выводах», `plugin-core-contract`: «Абзац договора»",
+   "at": "tasks.md:31",
+   "done": false
+  },
+  {
+   "id": "task:5.2",
+   "kind": "task",
+   "name": "Плагин прежнего номера не правится: в `<путь>` тест «Номер ядра выше: просит поставить новый .vsix» (`src/core/test/core.test.ts`) зелёный без правок плагина, `contractFailure(6, env)` даёт `need: \"vsix\"` — проверка: `npm --prefix <путь> test` зелёный, `git -C <путь> status --short` пуст — `plugin-core-contract`: «Плагин прежнего номера»",
+   "at": "tasks.md:32",
+   "done": false
+  },
+  {
+   "id": "task:5.3",
+   "kind": "task",
+   "name": "Бэклог `<путь>`: пункт плагинной половины B-16 (F-24.B) — кнопки и скрываемое поле в виде атаки плагина, строка `- тяжесть:` формы F-47.A в промпте и файле ответа, `EXPECTED_CONTRACT = 6`, тесты; после B-44 и плагинной половины B-18, коммит с `Needs: symphysis <хеш коммита ядра>`; файл остаётся в LF — проверка: строка указателя с номером `B-NN` и раздел пункта в файле — `служебная`",
+   "at": "tasks.md:33",
+   "done": false
+  },
+  {
+   "id": "task:6.1",
+   "kind": "task",
+   "name": "Выкладка в этом worktree: `node installer/scripts/sync-payload.js`, затем локальный инсталлятор `node installer/bin/symphysis.js install --force` — проверка: `.symphysis/tools/playground-template.html` несёт «- тяжесть:», `.symphysis/docs/attack-table.md` — строку о кнопках, `.claude/skills/symphysis-viewer/SKILL.md` — строку о тяжести в инварианте 2; `python .symphysis/tools/journal.py apply --help` код 0 — `служебная`",
+   "at": "tasks.md:37",
+   "done": false
+  },
+  {
+   "id": "task:6.2",
+   "kind": "task",
+   "name": "Полный прогон: `python -X utf8 -m pytest` зелёный; `openspec validate attack-severity-buttons --strict` валиден; `python -X utf8 cli/journal.py check --roots openspec/changes/attack-severity-buttons/probes/journal-roots.json openspec/changes/attack-severity-buttons/decisions.json` без новых `[!!]`, кроме улик, ушедших от правок самого изменения («Строки атаки `apply` не меняет…» и подобные; их не чинить); `python -X utf8 trace/trace_graph.py report attack-severity-buttons` без строк «без задачи» — `служебная`",
+   "at": "tasks.md:38",
+   "done": false
+  },
+  {
+   "id": "task:6.3",
+   "kind": "task",
+   "name": "Живая проверка во временном проекте: копия изменения с `attack/artifacts.md`, где одна строка `блокер` и хеши целей совпали (`openspec status` — `verdict: mismatch`); страница с `--attack`, строка о тяжести, собранная блоком `flags`, в файле ответа, `apply`, пересборка — проверка: `openspec status --change <копия> --json` даёт у `attack-artifacts` `verdict: ok`, SHA-256 `decisions.json` прежний, у карточки «понижено: <обоснование>», строки о тяжести в новом промпте нет — `attack-severity-word`: «Понижен последний блокер», `decision-viewer`: «Внесённое слово уходит из промпта»",
+   "at": "tasks.md:39",
+   "done": false
+  },
+  {
+   "id": "task:6.4",
+   "kind": "task",
+   "name": "Коммит ядра одним изменением с `Why:` о смене контракта на 6 по `docs/repo-contract.md` («Подпись коммита»); пуш и мерж — по слову человека — проверка: `git log -1 --format=%B` несёт `Why:` в последнем абзаце — `служебная`",
+   "at": "tasks.md:40",
+   "done": false
+  }
+ ],
+ "edges": [
+  {
+   "from": "branch:decisions/journal_apply.py:319",
+   "to": "scn:attack-severity-word/Внесение «всё или ничего» на журнал и файлы атаки/Годное решение и негодная строка о тяжести",
+   "type": "verifies",
+   "at": "consequences.md:18"
+  },
+  {
+   "from": "branch:vscode/src/core/core.ts:29",
+   "to": "scn:plugin-core-contract/Строка `apply` о тяжести поднимает номер контракта до 6/Плагин прежнего номера",
+   "type": "verifies",
+   "at": "consequences.md:38"
+  },
+  {
+   "from": "branch:upstream/openspec/src/core/artifact-graph/state.ts:208",
+   "to": "scn:attack-severity-word/Строка о тяжести меняет ячейку и вердикт файла атаки/Понижен последний блокер",
+   "type": "verifies",
+   "at": "consequences.md:46"
+  },
+  {
+   "from": "branch:upstream/openspec/src/core/artifact-graph/state.ts:213",
+   "to": "scn:attack-severity-word/Строка о тяжести меняет ячейку и вердикт файла атаки/Понижен последний блокер",
+   "type": "verifies",
+   "at": "consequences.md:50"
+  },
+  {
+   "from": "sec:Инъекции через содержимое файлов: обоснование человека в ячейке таблицы (парковка ИБ F-17)",
+   "to": "req:attack-severity-word/Строка о тяжести меняет ячейку и вердикт файла атаки",
+   "type": "refines",
+   "at": "security.md:9"
+  },
+  {
+   "from": "sec:Инъекции через содержимое файлов: раздел и утверждение строки как ключ",
+   "to": "req:attack-severity-word/Строка о тяжести без обоснования или без строки отвергается",
+   "type": "refines",
+   "at": "security.md:10"
+  },
+  {
+   "from": "sec:Инъекции через тексты для модели: обоснование при повторе атаки и строка, которую человек не писал",
+   "to": "req:artifact-attack/Обоснование человека переносится без пересказа",
+   "type": "refines",
+   "at": "security.md:11"
+  },
+  {
+   "from": "sec:Инъекции через тексты для модели: обоснование при повторе атаки и строка, которую человек не писал",
+   "to": "req:attack-severity-word/Строку о тяжести пишет только человек",
+   "type": "refines",
+   "at": "security.md:11"
+  },
+  {
+   "from": "sec:Пути с `../` (парковка ИБ F-17)",
+   "to": "req:attack-severity-word/Строка о тяжести пишет только файлы атаки своего изменения",
+   "type": "refines",
+   "at": "security.md:12"
+  },
+  {
+   "from": "sec:Права",
+   "to": "req:attack-severity-word/Строка о тяжести меняет ячейку и вердикт файла атаки",
+   "type": "refines",
+   "at": "security.md:14"
+  },
+  {
+   "from": "cap:artifact-attack",
+   "to": "req:artifact-attack/Понижение тяжести только с названной причиной",
+   "type": "contains",
+   "at": "specs/artifact-attack/spec.md:5"
+  },
+  {
+   "from": "req:artifact-attack/Понижение тяжести только с названной причиной",
+   "to": "rec:F-17",
+   "type": "traces",
+   "at": "specs/artifact-attack/spec.md:6"
+  },
+  {
+   "from": "scn:artifact-attack/Понижение тяжести только с названной причиной/Понижение без причины",
+   "to": "req:artifact-attack/Понижение тяжести только с названной причиной",
+   "type": "verifies",
+   "at": "specs/artifact-attack/spec.md:8"
+  },
+  {
+   "from": "scn:artifact-attack/Понижение тяжести только с названной причиной/Понижение своим суждением",
+   "to": "req:artifact-attack/Понижение тяжести только с названной причиной",
+   "type": "verifies",
+   "at": "specs/artifact-attack/spec.md:13"
+  },
+  {
+   "from": "scn:artifact-attack/Понижение тяжести только с названной причиной/Понижение кнопкой",
+   "to": "req:artifact-attack/Понижение тяжести только с названной причиной",
+   "type": "verifies",
+   "at": "specs/artifact-attack/spec.md:18"
+  },
+  {
+   "from": "req:artifact-attack/Понижение тяжести только с названной причиной",
+   "to": "rec:F-26",
+   "type": "traces",
+   "at": "specs/artifact-attack/spec.md:22"
+  },
+  {
+   "from": "cap:artifact-attack",
+   "to": "req:artifact-attack/Повтор атаки держит тяжесть, выставленную человеком",
+   "type": "contains",
+   "at": "specs/artifact-attack/spec.md:27"
+  },
+  {
+   "from": "req:artifact-attack/Повтор атаки держит тяжесть, выставленную человеком",
+   "to": "rec:F-04",
+   "type": "traces",
+   "at": "specs/artifact-attack/spec.md:28"
+  },
+  {
+   "from": "req:artifact-attack/Повтор атаки держит тяжесть, выставленную человеком",
+   "to": "rec:F-20",
+   "type": "traces",
+   "at": "specs/artifact-attack/spec.md:28"
+  },
+  {
+   "from": "req:artifact-attack/Повтор атаки держит тяжесть, выставленную человеком",
+   "to": "rec:F-21",
+   "type": "traces",
+   "at": "specs/artifact-attack/spec.md:28"
+  },
+  {
+   "from": "scn:artifact-attack/Повтор атаки держит тяжесть, выставленную человеком/Понижение переживает повтор с начала",
+   "to": "req:artifact-attack/Повтор атаки держит тяжесть, выставленную человеком",
+   "type": "verifies",
+   "at": "specs/artifact-attack/spec.md:30"
+  },
+  {
+   "from": "scn:artifact-attack/Повтор атаки держит тяжесть, выставленную человеком/Правка цели закрыла повышенную строку",
+   "to": "req:artifact-attack/Повтор атаки держит тяжесть, выставленную человеком",
+   "type": "verifies",
+   "at": "specs/artifact-attack/spec.md:35"
+  },
+  {
+   "from": "scn:artifact-attack/Повтор атаки держит тяжесть, выставленную человеком/Повтор переписал утверждение",
+   "to": "req:artifact-attack/Повтор атаки держит тяжесть, выставленную человеком",
+   "type": "verifies",
+   "at": "specs/artifact-attack/spec.md:40"
+  },
+  {
+   "from": "scn:artifact-attack/Повтор атаки держит тяжесть, выставленную человеком/Дубль ключа при повторе",
+   "to": "req:artifact-attack/Повтор атаки держит тяжесть, выставленную человеком",
+   "type": "verifies",
+   "at": "specs/artifact-attack/spec.md:45"
+  },
+  {
+   "from": "req:artifact-attack/Повтор атаки держит тяжесть, выставленную человеком",
+   "to": "rec:F-33",
+   "type": "traces",
+   "at": "specs/artifact-attack/spec.md:50"
+  },
+  {
+   "from": "req:artifact-attack/Повтор атаки держит тяжесть, выставленную человеком",
+   "to": "rec:F-37",
+   "type": "traces",
+   "at": "specs/artifact-attack/spec.md:51"
+  },
+  {
+   "from": "req:artifact-attack/Повтор атаки держит тяжесть, выставленную человеком",
+   "to": "rec:F-38",
+   "type": "traces",
+   "at": "specs/artifact-attack/spec.md:51"
+  },
+  {
+   "from": "cap:artifact-attack",
+   "to": "req:artifact-attack/Обоснование человека переносится без пересказа",
+   "type": "contains",
+   "at": "specs/artifact-attack/spec.md:53"
+  },
+  {
+   "from": "req:artifact-attack/Обоснование человека переносится без пересказа",
+   "to": "rec:F-37",
+   "type": "traces",
+   "at": "specs/artifact-attack/spec.md:54"
+  },
+  {
+   "from": "scn:artifact-attack/Обоснование человека переносится без пересказа/Ячейка после повтора",
+   "to": "req:artifact-attack/Обоснование человека переносится без пересказа",
+   "type": "verifies",
+   "at": "specs/artifact-attack/spec.md:56"
+  },
+  {
+   "from": "cap:artifact-attack",
+   "to": "req:artifact-attack/Понижение не переносится на другую дыру",
+   "type": "contains",
+   "at": "specs/artifact-attack/spec.md:63"
+  },
+  {
+   "from": "req:artifact-attack/Понижение не переносится на другую дыру",
+   "to": "rec:F-38",
+   "type": "traces",
+   "at": "specs/artifact-attack/spec.md:64"
+  },
+  {
+   "from": "scn:artifact-attack/Понижение не переносится на другую дыру/Опора сменила основание",
+   "to": "req:artifact-attack/Понижение не переносится на другую дыру",
+   "type": "verifies",
+   "at": "specs/artifact-attack/spec.md:66"
+  },
+  {
+   "from": "cap:attack-severity-word",
+   "to": "req:attack-severity-word/Строка о тяжести меняет ячейку и вердикт файла атаки",
+   "type": "contains",
+   "at": "specs/attack-severity-word/spec.md:8"
+  },
+  {
+   "from": "req:attack-severity-word/Строка о тяжести меняет ячейку и вердикт файла атаки",
+   "to": "rec:F-03",
+   "type": "traces",
+   "at": "specs/attack-severity-word/spec.md:9"
+  },
+  {
+   "from": "req:attack-severity-word/Строка о тяжести меняет ячейку и вердикт файла атаки",
+   "to": "rec:F-17",
+   "type": "traces",
+   "at": "specs/attack-severity-word/spec.md:9"
+  },
+  {
+   "from": "req:attack-severity-word/Строка о тяжести меняет ячейку и вердикт файла атаки",
+   "to": "rec:F-20",
+   "type": "traces",
+   "at": "specs/attack-severity-word/spec.md:9"
+  },
+  {
+   "from": "scn:attack-severity-word/Строка о тяжести меняет ячейку и вердикт файла атаки/Понижен последний блокер",
+   "to": "req:attack-severity-word/Строка о тяжести меняет ячейку и вердикт файла атаки",
+   "type": "verifies",
+   "at": "specs/attack-severity-word/spec.md:11"
+  },
+  {
+   "from": "scn:attack-severity-word/Строка о тяжести меняет ячейку и вердикт файла атаки/Повышено предупреждение",
+   "to": "req:attack-severity-word/Строка о тяжести меняет ячейку и вердикт файла атаки",
+   "type": "verifies",
+   "at": "specs/attack-severity-word/spec.md:16"
+  },
+  {
+   "from": "scn:attack-severity-word/Строка о тяжести меняет ячейку и вердикт файла атаки/Две строки одного ключа",
+   "to": "req:attack-severity-word/Строка о тяжести меняет ячейку и вердикт файла атаки",
+   "type": "verifies",
+   "at": "specs/attack-severity-word/spec.md:21"
+  },
+  {
+   "from": "scn:attack-severity-word/Строка о тяжести меняет ячейку и вердикт файла атаки/Обоснование со скобками, чертой и переводом строки",
+   "to": "req:attack-severity-word/Строка о тяжести меняет ячейку и вердикт файла атаки",
+   "type": "verifies",
+   "at": "specs/attack-severity-word/spec.md:27"
+  },
+  {
+   "from": "scn:attack-severity-word/Строка о тяжести меняет ячейку и вердикт файла атаки/Две строки о тяжести для одной строки атаки",
+   "to": "req:attack-severity-word/Строка о тяжести меняет ячейку и вердикт файла атаки",
+   "type": "verifies",
+   "at": "specs/attack-severity-word/spec.md:33"
+  },
+  {
+   "from": "scn:attack-severity-word/Строка о тяжести меняет ячейку и вердикт файла атаки/Новое обоснование заменяет прежнюю причину",
+   "to": "req:attack-severity-word/Строка о тяжести меняет ячейку и вердикт файла атаки",
+   "type": "verifies",
+   "at": "specs/attack-severity-word/spec.md:39"
+  },
+  {
+   "from": "scn:attack-severity-word/Строка о тяжести меняет ячейку и вердикт файла атаки/Строки о тяжести в начале промпта и между решениями",
+   "to": "req:attack-severity-word/Строка о тяжести меняет ячейку и вердикт файла атаки",
+   "type": "verifies",
+   "at": "specs/attack-severity-word/spec.md:45"
+  },
+  {
+   "from": "scn:attack-severity-word/Строка о тяжести меняет ячейку и вердикт файла атаки/Пробное внесение не трогает файл атаки",
+   "to": "req:attack-severity-word/Строка о тяжести меняет ячейку и вердикт файла атаки",
+   "type": "verifies",
+   "at": "specs/attack-severity-word/spec.md:51"
+  },
+  {
+   "from": "req:attack-severity-word/Строка о тяжести меняет ячейку и вердикт файла атаки",
+   "to": "rec:F-25",
+   "type": "traces",
+   "at": "specs/attack-severity-word/spec.md:56"
+  },
+  {
+   "from": "req:attack-severity-word/Строка о тяжести меняет ячейку и вердикт файла атаки",
+   "to": "rec:F-26",
+   "type": "traces",
+   "at": "specs/attack-severity-word/spec.md:56"
+  },
+  {
+   "from": "req:attack-severity-word/Строка о тяжести меняет ячейку и вердикт файла атаки",
+   "to": "rec:F-27",
+   "type": "traces",
+   "at": "specs/attack-severity-word/spec.md:56"
+  },
+  {
+   "from": "req:attack-severity-word/Строка о тяжести меняет ячейку и вердикт файла атаки",
+   "to": "rec:F-28",
+   "type": "traces",
+   "at": "specs/attack-severity-word/spec.md:56"
+  },
+  {
+   "from": "req:attack-severity-word/Строка о тяжести меняет ячейку и вердикт файла атаки",
+   "to": "rec:F-17",
+   "type": "traces",
+   "at": "specs/attack-severity-word/spec.md:57"
+  },
+  {
+   "from": "req:attack-severity-word/Строка о тяжести меняет ячейку и вердикт файла атаки",
+   "to": "rec:F-36",
+   "type": "traces",
+   "at": "specs/attack-severity-word/spec.md:57"
+  },
+  {
+   "from": "cap:attack-severity-word",
+   "to": "req:attack-severity-word/Тяжесть меняется только между блокером и предупреждением",
+   "type": "contains",
+   "at": "specs/attack-severity-word/spec.md:59"
+  },
+  {
+   "from": "req:attack-severity-word/Тяжесть меняется только между блокером и предупреждением",
+   "to": "rec:F-18",
+   "type": "traces",
+   "at": "specs/attack-severity-word/spec.md:60"
+  },
+  {
+   "from": "req:attack-severity-word/Тяжесть меняется только между блокером и предупреждением",
+   "to": "rec:F-19",
+   "type": "traces",
+   "at": "specs/attack-severity-word/spec.md:60"
+  },
+  {
+   "from": "scn:attack-severity-word/Тяжесть меняется только между блокером и предупреждением/Понижение до справки",
+   "to": "req:attack-severity-word/Тяжесть меняется только между блокером и предупреждением",
+   "type": "verifies",
+   "at": "specs/attack-severity-word/spec.md:62"
+  },
+  {
+   "from": "scn:attack-severity-word/Тяжесть меняется только между блокером и предупреждением/Строка покрытия «не пройдено»",
+   "to": "req:attack-severity-word/Тяжесть меняется только между блокером и предупреждением",
+   "type": "verifies",
+   "at": "specs/attack-severity-word/spec.md:67"
+  },
+  {
+   "from": "req:attack-severity-word/Тяжесть меняется только между блокером и предупреждением",
+   "to": "rec:F-29",
+   "type": "traces",
+   "at": "specs/attack-severity-word/spec.md:71"
+  },
+  {
+   "from": "cap:attack-severity-word",
+   "to": "req:attack-severity-word/Строка о тяжести без обоснования или без строки отвергается",
+   "type": "contains",
+   "at": "specs/attack-severity-word/spec.md:74"
+  },
+  {
+   "from": "req:attack-severity-word/Строка о тяжести без обоснования или без строки отвергается",
+   "to": "rec:F-02",
+   "type": "traces",
+   "at": "specs/attack-severity-word/spec.md:75"
+  },
+  {
+   "from": "req:attack-severity-word/Строка о тяжести без обоснования или без строки отвергается",
+   "to": "rec:F-20",
+   "type": "traces",
+   "at": "specs/attack-severity-word/spec.md:75"
+  },
+  {
+   "from": "scn:attack-severity-word/Строка о тяжести без обоснования или без строки отвергается/Пустое обоснование",
+   "to": "req:attack-severity-word/Строка о тяжести без обоснования или без строки отвергается",
+   "type": "verifies",
+   "at": "specs/attack-severity-word/spec.md:77"
+  },
+  {
+   "from": "scn:attack-severity-word/Строка о тяжести без обоснования или без строки отвергается/Утверждение переписано повтором атаки",
+   "to": "req:attack-severity-word/Строка о тяжести без обоснования или без строки отвергается",
+   "type": "verifies",
+   "at": "specs/attack-severity-word/spec.md:82"
+  },
+  {
+   "from": "req:attack-severity-word/Строка о тяжести без обоснования или без строки отвергается",
+   "to": "rec:F-30",
+   "type": "traces",
+   "at": "specs/attack-severity-word/spec.md:86"
+  },
+  {
+   "from": "cap:attack-severity-word",
+   "to": "req:attack-severity-word/Внесение «всё или ничего» на журнал и файлы атаки",
+   "type": "contains",
+   "at": "specs/attack-severity-word/spec.md:89"
+  },
+  {
+   "from": "req:attack-severity-word/Внесение «всё или ничего» на журнал и файлы атаки",
+   "to": "rec:F-17",
+   "type": "traces",
+   "at": "specs/attack-severity-word/spec.md:90"
+  },
+  {
+   "from": "scn:attack-severity-word/Внесение «всё или ничего» на журнал и файлы атаки/Годное решение и негодная строка о тяжести",
+   "to": "req:attack-severity-word/Внесение «всё или ничего» на журнал и файлы атаки",
+   "type": "verifies",
+   "at": "specs/attack-severity-word/spec.md:92"
+  },
+  {
+   "from": "scn:attack-severity-word/Внесение «всё или ничего» на журнал и файлы атаки/Строки о двух файлах атаки",
+   "to": "req:attack-severity-word/Внесение «всё или ничего» на журнал и файлы атаки",
+   "type": "verifies",
+   "at": "specs/attack-severity-word/spec.md:97"
+  },
+  {
+   "from": "req:attack-severity-word/Внесение «всё или ничего» на журнал и файлы атаки",
+   "to": "rec:F-31",
+   "type": "traces",
+   "at": "specs/attack-severity-word/spec.md:101"
+  },
+  {
+   "from": "req:attack-severity-word/Внесение «всё или ничего» на журнал и файлы атаки",
+   "to": "rec:F-32",
+   "type": "traces",
+   "at": "specs/attack-severity-word/spec.md:101"
+  },
+  {
+   "from": "cap:attack-severity-word",
+   "to": "req:attack-severity-word/Строку о тяжести пишет только человек",
+   "type": "contains",
+   "at": "specs/attack-severity-word/spec.md:104"
+  },
+  {
+   "from": "req:attack-severity-word/Строку о тяжести пишет только человек",
+   "to": "rec:F-36",
+   "type": "traces",
+   "at": "specs/attack-severity-word/spec.md:105"
+  },
+  {
+   "from": "scn:attack-severity-word/Строку о тяжести пишет только человек/Правило в теле скилла просмотрщика",
+   "to": "req:attack-severity-word/Строку о тяжести пишет только человек",
+   "type": "verifies",
+   "at": "specs/attack-severity-word/spec.md:107"
+  },
+  {
+   "from": "cap:attack-severity-word",
+   "to": "req:attack-severity-word/Строка о тяжести пишет только файлы атаки своего изменения",
+   "type": "contains",
+   "at": "specs/attack-severity-word/spec.md:114"
+  },
+  {
+   "from": "req:attack-severity-word/Строка о тяжести пишет только файлы атаки своего изменения",
+   "to": "rec:F-17",
+   "type": "traces",
+   "at": "specs/attack-severity-word/spec.md:115"
+  },
+  {
+   "from": "scn:attack-severity-word/Строка о тяжести пишет только файлы атаки своего изменения/Путь вне каталога изменения",
+   "to": "req:attack-severity-word/Строка о тяжести пишет только файлы атаки своего изменения",
+   "type": "verifies",
+   "at": "specs/attack-severity-word/spec.md:117"
+  },
+  {
+   "from": "scn:attack-severity-word/Строка о тяжести пишет только файлы атаки своего изменения/Ячейка, которая не разбирается",
+   "to": "req:attack-severity-word/Строка о тяжести пишет только файлы атаки своего изменения",
+   "type": "verifies",
+   "at": "specs/attack-severity-word/spec.md:122"
+  },
+  {
+   "from": "cap:decision-viewer",
+   "to": "req:decision-viewer/Кнопки тяжести у строки атаки",
+   "type": "contains",
+   "at": "specs/decision-viewer/spec.md:5"
+  },
+  {
+   "from": "req:decision-viewer/Кнопки тяжести у строки атаки",
+   "to": "rec:F-01",
+   "type": "traces",
+   "at": "specs/decision-viewer/spec.md:6"
+  },
+  {
+   "from": "req:decision-viewer/Кнопки тяжести у строки атаки",
+   "to": "rec:F-18",
+   "type": "traces",
+   "at": "specs/decision-viewer/spec.md:6"
+  },
+  {
+   "from": "req:decision-viewer/Кнопки тяжести у строки атаки",
+   "to": "rec:F-19",
+   "type": "traces",
+   "at": "specs/decision-viewer/spec.md:6"
+  },
+  {
+   "from": "scn:decision-viewer/Кнопки тяжести у строки атаки/Блокер и предупреждение",
+   "to": "req:decision-viewer/Кнопки тяжести у строки атаки",
+   "type": "verifies",
+   "at": "specs/decision-viewer/spec.md:8"
+  },
+  {
+   "from": "scn:decision-viewer/Кнопки тяжести у строки атаки/Справка и строки покрытия",
+   "to": "req:decision-viewer/Кнопки тяжести у строки атаки",
+   "type": "verifies",
+   "at": "specs/decision-viewer/spec.md:13"
+  },
+  {
+   "from": "req:decision-viewer/Кнопки тяжести у строки атаки",
+   "to": "rec:F-25",
+   "type": "traces",
+   "at": "specs/decision-viewer/spec.md:17"
+  },
+  {
+   "from": "req:decision-viewer/Кнопки тяжести у строки атаки",
+   "to": "rec:F-29",
+   "type": "traces",
+   "at": "specs/decision-viewer/spec.md:17"
+  },
+  {
+   "from": "req:decision-viewer/Кнопки тяжести у строки атаки",
+   "to": "rec:F-34",
+   "type": "traces",
+   "at": "specs/decision-viewer/spec.md:17"
+  },
+  {
+   "from": "cap:decision-viewer",
+   "to": "req:decision-viewer/Скрываемое поле обоснования у кнопок тяжести",
+   "type": "contains",
+   "at": "specs/decision-viewer/spec.md:20"
+  },
+  {
+   "from": "req:decision-viewer/Скрываемое поле обоснования у кнопок тяжести",
+   "to": "rec:F-02",
+   "type": "traces",
+   "at": "specs/decision-viewer/spec.md:21"
+  },
+  {
+   "from": "req:decision-viewer/Скрываемое поле обоснования у кнопок тяжести",
+   "to": "rec:F-22",
+   "type": "traces",
+   "at": "specs/decision-viewer/spec.md:21"
+  },
+  {
+   "from": "scn:decision-viewer/Скрываемое поле обоснования у кнопок тяжести/Кнопка без обоснования",
+   "to": "req:decision-viewer/Скрываемое поле обоснования у кнопок тяжести",
+   "type": "verifies",
+   "at": "specs/decision-viewer/spec.md:23"
+  },
+  {
+   "from": "scn:decision-viewer/Скрываемое поле обоснования у кнопок тяжести/Спор и обоснование у одной строки",
+   "to": "req:decision-viewer/Скрываемое поле обоснования у кнопок тяжести",
+   "type": "verifies",
+   "at": "specs/decision-viewer/spec.md:28"
+  },
+  {
+   "from": "scn:decision-viewer/Скрываемое поле обоснования у кнопок тяжести/Поле скрыто по умолчанию",
+   "to": "req:decision-viewer/Скрываемое поле обоснования у кнопок тяжести",
+   "type": "verifies",
+   "at": "specs/decision-viewer/spec.md:33"
+  },
+  {
+   "from": "req:decision-viewer/Скрываемое поле обоснования у кнопок тяжести",
+   "to": "rec:F-26",
+   "type": "traces",
+   "at": "specs/decision-viewer/spec.md:37"
+  },
+  {
+   "from": "req:decision-viewer/Скрываемое поле обоснования у кнопок тяжести",
+   "to": "rec:F-35",
+   "type": "traces",
+   "at": "specs/decision-viewer/spec.md:37"
+  },
+  {
+   "from": "req:decision-viewer/Скрываемое поле обоснования у кнопок тяжести",
+   "to": "rec:F-39",
+   "type": "traces",
+   "at": "specs/decision-viewer/spec.md:38"
+  },
+  {
+   "from": "cap:decision-viewer",
+   "to": "req:decision-viewer/Строка о тяжести в промпте возврата",
+   "type": "contains",
+   "at": "specs/decision-viewer/spec.md:40"
+  },
+  {
+   "from": "req:decision-viewer/Строка о тяжести в промпте возврата",
+   "to": "rec:F-03",
+   "type": "traces",
+   "at": "specs/decision-viewer/spec.md:41"
+  },
+  {
+   "from": "req:decision-viewer/Строка о тяжести в промпте возврата",
+   "to": "rec:F-20",
+   "type": "traces",
+   "at": "specs/decision-viewer/spec.md:41"
+  },
+  {
+   "from": "scn:decision-viewer/Строка о тяжести в промпте возврата/Длинное утверждение",
+   "to": "req:decision-viewer/Строка о тяжести в промпте возврата",
+   "type": "verifies",
+   "at": "specs/decision-viewer/spec.md:43"
+  },
+  {
+   "from": "scn:decision-viewer/Строка о тяжести в промпте возврата/Внесённое слово уходит из промпта",
+   "to": "req:decision-viewer/Строка о тяжести в промпте возврата",
+   "type": "verifies",
+   "at": "specs/decision-viewer/spec.md:48"
+  },
+  {
+   "from": "scn:decision-viewer/Строка о тяжести в промпте возврата/Отметка у строки, которую снял повтор атаки",
+   "to": "req:decision-viewer/Строка о тяжести в промпте возврата",
+   "type": "verifies",
+   "at": "specs/decision-viewer/spec.md:53"
+  },
+  {
+   "from": "req:decision-viewer/Строка о тяжести в промпте возврата",
+   "to": "rec:F-30",
+   "type": "traces",
+   "at": "specs/decision-viewer/spec.md:58"
+  },
+  {
+   "from": "req:decision-viewer/Строка о тяжести в промпте возврата",
+   "to": "rec:F-35",
+   "type": "traces",
+   "at": "specs/decision-viewer/spec.md:58"
+  },
+  {
+   "from": "cap:decision-viewer",
+   "to": "req:decision-viewer/Нажатая кнопка без обоснования видна как незавершённая",
+   "type": "contains",
+   "at": "specs/decision-viewer/spec.md:61"
+  },
+  {
+   "from": "req:decision-viewer/Нажатая кнопка без обоснования видна как незавершённая",
+   "to": "rec:F-39",
+   "type": "traces",
+   "at": "specs/decision-viewer/spec.md:62"
+  },
+  {
+   "from": "scn:decision-viewer/Нажатая кнопка без обоснования видна как незавершённая/Нажатие без текста",
+   "to": "req:decision-viewer/Нажатая кнопка без обоснования видна как незавершённая",
+   "type": "verifies",
+   "at": "specs/decision-viewer/spec.md:64"
+  },
+  {
+   "from": "cap:plugin-core-contract",
+   "to": "req:plugin-core-contract/Строка `apply` о тяжести поднимает номер контракта до 6",
+   "type": "contains",
+   "at": "specs/plugin-core-contract/spec.md:5"
+  },
+  {
+   "from": "req:plugin-core-contract/Строка `apply` о тяжести поднимает номер контракта до 6",
+   "to": "rec:F-05",
+   "type": "traces",
+   "at": "specs/plugin-core-contract/spec.md:6"
+  },
+  {
+   "from": "req:plugin-core-contract/Строка `apply` о тяжести поднимает номер контракта до 6",
+   "to": "rec:F-09",
+   "type": "traces",
+   "at": "specs/plugin-core-contract/spec.md:6"
+  },
+  {
+   "from": "req:plugin-core-contract/Строка `apply` о тяжести поднимает номер контракта до 6",
+   "to": "rec:F-23",
+   "type": "traces",
+   "at": "specs/plugin-core-contract/spec.md:6"
+  },
+  {
+   "from": "req:plugin-core-contract/Строка `apply` о тяжести поднимает номер контракта до 6",
+   "to": "rec:F-24",
+   "type": "traces",
+   "at": "specs/plugin-core-contract/spec.md:6"
+  },
+  {
+   "from": "scn:plugin-core-contract/Строка `apply` о тяжести поднимает номер контракта до 6/Номер в двух выводах",
+   "to": "req:plugin-core-contract/Строка `apply` о тяжести поднимает номер контракта до 6",
+   "type": "verifies",
+   "at": "specs/plugin-core-contract/spec.md:8"
+  },
+  {
+   "from": "scn:plugin-core-contract/Строка `apply` о тяжести поднимает номер контракта до 6/Плагин прежнего номера",
+   "to": "req:plugin-core-contract/Строка `apply` о тяжести поднимает номер контракта до 6",
+   "type": "verifies",
+   "at": "specs/plugin-core-contract/spec.md:13"
+  },
+  {
+   "from": "scn:plugin-core-contract/Строка `apply` о тяжести поднимает номер контракта до 6/Абзац договора",
+   "to": "req:plugin-core-contract/Строка `apply` о тяжести поднимает номер контракта до 6",
+   "type": "verifies",
+   "at": "specs/plugin-core-contract/spec.md:18"
+  },
+  {
+   "from": "task:1.1",
+   "to": "rec:F-03",
+   "type": "traces",
+   "at": "tasks.md:5"
+  },
+  {
+   "from": "task:1.1",
+   "to": "rec:F-47",
+   "type": "traces",
+   "at": "tasks.md:5"
+  },
+  {
+   "from": "task:1.1",
+   "to": "scn:attack-severity-word/Строка о тяжести меняет ячейку и вердикт файла атаки/Строки о тяжести в начале промпта и между решениями",
+   "type": "satisfies",
+   "at": "tasks.md:5"
+  },
+  {
+   "from": "task:1.2",
+   "to": "rec:F-09",
+   "type": "traces",
+   "at": "tasks.md:6"
+  },
+  {
+   "from": "task:1.2",
+   "to": "rec:F-18",
+   "type": "traces",
+   "at": "tasks.md:6"
+  },
+  {
+   "from": "task:1.2",
+   "to": "rec:F-19",
+   "type": "traces",
+   "at": "tasks.md:6"
+  },
+  {
+   "from": "task:1.2",
+   "to": "rec:F-25",
+   "type": "traces",
+   "at": "tasks.md:6"
+  },
+  {
+   "from": "task:1.2",
+   "to": "rec:F-28",
+   "type": "traces",
+   "at": "tasks.md:6"
+  },
+  {
+   "from": "task:1.2",
+   "to": "rec:F-29",
+   "type": "traces",
+   "at": "tasks.md:6"
+  },
+  {
+   "from": "task:1.2",
+   "to": "rec:F-31",
+   "type": "traces",
+   "at": "tasks.md:6"
+  },
+  {
+   "from": "task:1.2",
+   "to": "scn:attack-severity-word/Строка о тяжести без обоснования или без строки отвергается/Утверждение переписано повтором атаки",
+   "type": "satisfies",
+   "at": "tasks.md:6"
+  },
+  {
+   "from": "task:1.2",
+   "to": "scn:attack-severity-word/Строка о тяжести меняет ячейку и вердикт файла атаки/Две строки одного ключа",
+   "type": "satisfies",
+   "at": "tasks.md:6"
+  },
+  {
+   "from": "task:1.2",
+   "to": "scn:attack-severity-word/Строка о тяжести меняет ячейку и вердикт файла атаки/Новое обоснование заменяет прежнюю причину",
+   "type": "satisfies",
+   "at": "tasks.md:6"
+  },
+  {
+   "from": "task:1.2",
+   "to": "scn:attack-severity-word/Строка о тяжести меняет ячейку и вердикт файла атаки/Обоснование со скобками, чертой и переводом строки",
+   "type": "satisfies",
+   "at": "tasks.md:6"
+  },
+  {
+   "from": "task:1.2",
+   "to": "scn:attack-severity-word/Строка о тяжести меняет ячейку и вердикт файла атаки/Повышено предупреждение",
+   "type": "satisfies",
+   "at": "tasks.md:6"
+  },
+  {
+   "from": "task:1.2",
+   "to": "scn:attack-severity-word/Строка о тяжести меняет ячейку и вердикт файла атаки/Понижен последний блокер",
+   "type": "satisfies",
+   "at": "tasks.md:6"
+  },
+  {
+   "from": "task:1.2",
+   "to": "scn:attack-severity-word/Строка о тяжести пишет только файлы атаки своего изменения/Ячейка, которая не разбирается",
+   "type": "satisfies",
+   "at": "tasks.md:6"
+  },
+  {
+   "from": "task:1.2",
+   "to": "scn:attack-severity-word/Тяжесть меняется только между блокером и предупреждением/Понижение до справки",
+   "type": "satisfies",
+   "at": "tasks.md:6"
+  },
+  {
+   "from": "task:1.2",
+   "to": "scn:attack-severity-word/Тяжесть меняется только между блокером и предупреждением/Строка покрытия «не пройдено»",
+   "type": "satisfies",
+   "at": "tasks.md:6"
+  },
+  {
+   "from": "task:1.3",
+   "to": "rec:F-03",
+   "type": "traces",
+   "at": "tasks.md:7"
+  },
+  {
+   "from": "task:1.3",
+   "to": "rec:F-27",
+   "type": "traces",
+   "at": "tasks.md:7"
+  },
+  {
+   "from": "task:1.3",
+   "to": "rec:F-32",
+   "type": "traces",
+   "at": "tasks.md:7"
+  },
+  {
+   "from": "task:1.3",
+   "to": "rec:F-42",
+   "type": "traces",
+   "at": "tasks.md:7"
+  },
+  {
+   "from": "task:1.3",
+   "to": "rec:F-45",
+   "type": "traces",
+   "at": "tasks.md:7"
+  },
+  {
+   "from": "task:1.3",
+   "to": "scn:attack-severity-word/Внесение «всё или ничего» на журнал и файлы атаки/Годное решение и негодная строка о тяжести",
+   "type": "satisfies",
+   "at": "tasks.md:7"
+  },
+  {
+   "from": "task:1.3",
+   "to": "scn:attack-severity-word/Внесение «всё или ничего» на журнал и файлы атаки/Строки о двух файлах атаки",
+   "type": "satisfies",
+   "at": "tasks.md:7"
+  },
+  {
+   "from": "task:1.3",
+   "to": "scn:attack-severity-word/Строка о тяжести без обоснования или без строки отвергается/Пустое обоснование",
+   "type": "satisfies",
+   "at": "tasks.md:7"
+  },
+  {
+   "from": "task:1.3",
+   "to": "scn:attack-severity-word/Строка о тяжести меняет ячейку и вердикт файла атаки/Две строки о тяжести для одной строки атаки",
+   "type": "satisfies",
+   "at": "tasks.md:7"
+  },
+  {
+   "from": "task:1.3",
+   "to": "scn:attack-severity-word/Строка о тяжести меняет ячейку и вердикт файла атаки/Понижен последний блокер",
+   "type": "satisfies",
+   "at": "tasks.md:7"
+  },
+  {
+   "from": "task:1.3",
+   "to": "scn:attack-severity-word/Строка о тяжести меняет ячейку и вердикт файла атаки/Пробное внесение не трогает файл атаки",
+   "type": "satisfies",
+   "at": "tasks.md:7"
+  },
+  {
+   "from": "task:1.3",
+   "to": "scn:attack-severity-word/Строка о тяжести пишет только файлы атаки своего изменения/Путь вне каталога изменения",
+   "type": "satisfies",
+   "at": "tasks.md:7"
+  },
+  {
+   "from": "task:2.1",
+   "to": "rec:F-47",
+   "type": "traces",
+   "at": "tasks.md:12"
+  },
+  {
+   "from": "task:2.1",
+   "to": "scn:attack-severity-word/Строка о тяжести меняет ячейку и вердикт файла атаки/Обоснование со скобками, чертой и переводом строки",
+   "type": "satisfies",
+   "at": "tasks.md:12"
+  },
+  {
+   "from": "task:2.1",
+   "to": "scn:decision-viewer/Строка о тяжести в промпте возврата/Длинное утверждение",
+   "type": "satisfies",
+   "at": "tasks.md:12"
+  },
+  {
+   "from": "task:2.2",
+   "to": "rec:F-40",
+   "type": "traces",
+   "at": "tasks.md:13"
+  },
+  {
+   "from": "task:2.2",
+   "to": "scn:decision-viewer/Скрываемое поле обоснования у кнопок тяжести/Кнопка без обоснования",
+   "type": "satisfies",
+   "at": "tasks.md:13"
+  },
+  {
+   "from": "task:2.2",
+   "to": "scn:decision-viewer/Скрываемое поле обоснования у кнопок тяжести/Спор и обоснование у одной строки",
+   "type": "satisfies",
+   "at": "tasks.md:13"
+  },
+  {
+   "from": "task:2.2",
+   "to": "scn:decision-viewer/Строка о тяжести в промпте возврата/Внесённое слово уходит из промпта",
+   "type": "satisfies",
+   "at": "tasks.md:13"
+  },
+  {
+   "from": "task:2.2",
+   "to": "scn:decision-viewer/Строка о тяжести в промпте возврата/Отметка у строки, которую снял повтор атаки",
+   "type": "satisfies",
+   "at": "tasks.md:13"
+  },
+  {
+   "from": "task:2.3",
+   "to": "rec:F-35",
+   "type": "traces",
+   "at": "tasks.md:14"
+  },
+  {
+   "from": "task:2.3",
+   "to": "rec:F-43",
+   "type": "traces",
+   "at": "tasks.md:14"
+  },
+  {
+   "from": "task:2.3",
+   "to": "scn:decision-viewer/Строка о тяжести в промпте возврата/Отметка у строки, которую снял повтор атаки",
+   "type": "satisfies",
+   "at": "tasks.md:14"
+  },
+  {
+   "from": "task:2.4",
+   "to": "rec:F-39",
+   "type": "traces",
+   "at": "tasks.md:15"
+  },
+  {
+   "from": "task:2.4",
+   "to": "scn:artifact-attack/Понижение тяжести только с названной причиной/Понижение без причины",
+   "type": "satisfies",
+   "at": "tasks.md:15"
+  },
+  {
+   "from": "task:2.4",
+   "to": "scn:artifact-attack/Понижение тяжести только с названной причиной/Понижение кнопкой",
+   "type": "satisfies",
+   "at": "tasks.md:15"
+  },
+  {
+   "from": "task:2.4",
+   "to": "scn:decision-viewer/Кнопки тяжести у строки атаки/Блокер и предупреждение",
+   "type": "satisfies",
+   "at": "tasks.md:15"
+  },
+  {
+   "from": "task:2.4",
+   "to": "scn:decision-viewer/Кнопки тяжести у строки атаки/Справка и строки покрытия",
+   "type": "satisfies",
+   "at": "tasks.md:15"
+  },
+  {
+   "from": "task:2.4",
+   "to": "scn:decision-viewer/Нажатая кнопка без обоснования видна как незавершённая/Нажатие без текста",
+   "type": "satisfies",
+   "at": "tasks.md:15"
+  },
+  {
+   "from": "task:2.4",
+   "to": "scn:decision-viewer/Скрываемое поле обоснования у кнопок тяжести/Поле скрыто по умолчанию",
+   "type": "satisfies",
+   "at": "tasks.md:15"
+  },
+  {
+   "from": "task:2.5",
+   "to": "rec:F-47",
+   "type": "traces",
+   "at": "tasks.md:16"
+  },
+  {
+   "from": "task:2.6",
+   "to": "rec:F-30",
+   "type": "traces",
+   "at": "tasks.md:17"
+  },
+  {
+   "from": "task:3.1",
+   "to": "rec:F-36",
+   "type": "traces",
+   "at": "tasks.md:21"
+  },
+  {
+   "from": "task:3.1",
+   "to": "scn:attack-severity-word/Строку о тяжести пишет только человек/Правило в теле скилла просмотрщика",
+   "type": "satisfies",
+   "at": "tasks.md:21"
+  },
+  {
+   "from": "task:4.1",
+   "to": "scn:artifact-attack/Понижение тяжести только с названной причиной/Понижение своим суждением",
+   "type": "satisfies",
+   "at": "tasks.md:26"
+  },
+  {
+   "from": "task:4.2",
+   "to": "rec:F-33",
+   "type": "traces",
+   "at": "tasks.md:27"
+  },
+  {
+   "from": "task:4.2",
+   "to": "rec:F-37",
+   "type": "traces",
+   "at": "tasks.md:27"
+  },
+  {
+   "from": "task:4.2",
+   "to": "rec:F-38",
+   "type": "traces",
+   "at": "tasks.md:27"
+  },
+  {
+   "from": "task:4.2",
+   "to": "rec:F-46",
+   "type": "traces",
+   "at": "tasks.md:27"
+  },
+  {
+   "from": "task:4.2",
+   "to": "scn:artifact-attack/Обоснование человека переносится без пересказа/Ячейка после повтора",
+   "type": "satisfies",
+   "at": "tasks.md:27"
+  },
+  {
+   "from": "task:4.2",
+   "to": "scn:artifact-attack/Повтор атаки держит тяжесть, выставленную человеком/Дубль ключа при повторе",
+   "type": "satisfies",
+   "at": "tasks.md:27"
+  },
+  {
+   "from": "task:4.2",
+   "to": "scn:artifact-attack/Повтор атаки держит тяжесть, выставленную человеком/Повтор переписал утверждение",
+   "type": "satisfies",
+   "at": "tasks.md:27"
+  },
+  {
+   "from": "task:4.2",
+   "to": "scn:artifact-attack/Повтор атаки держит тяжесть, выставленную человеком/Понижение переживает повтор с начала",
+   "type": "satisfies",
+   "at": "tasks.md:27"
+  },
+  {
+   "from": "task:4.2",
+   "to": "scn:artifact-attack/Повтор атаки держит тяжесть, выставленную человеком/Правка цели закрыла повышенную строку",
+   "type": "satisfies",
+   "at": "tasks.md:27"
+  },
+  {
+   "from": "task:4.2",
+   "to": "scn:artifact-attack/Понижение не переносится на другую дыру/Опора сменила основание",
+   "type": "satisfies",
+   "at": "tasks.md:27"
+  },
+  {
+   "from": "task:5.1",
+   "to": "rec:F-23",
+   "type": "traces",
+   "at": "tasks.md:31"
+  },
+  {
+   "from": "task:5.1",
+   "to": "rec:F-47",
+   "type": "traces",
+   "at": "tasks.md:31"
+  },
+  {
+   "from": "task:5.1",
+   "to": "scn:plugin-core-contract/Строка `apply` о тяжести поднимает номер контракта до 6/Абзац договора",
+   "type": "satisfies",
+   "at": "tasks.md:31"
+  },
+  {
+   "from": "task:5.1",
+   "to": "scn:plugin-core-contract/Строка `apply` о тяжести поднимает номер контракта до 6/Номер в двух выводах",
+   "type": "satisfies",
+   "at": "tasks.md:31"
+  },
+  {
+   "from": "task:5.2",
+   "to": "scn:plugin-core-contract/Строка `apply` о тяжести поднимает номер контракта до 6/Плагин прежнего номера",
+   "type": "satisfies",
+   "at": "tasks.md:32"
+  },
+  {
+   "from": "task:5.3",
+   "to": "rec:F-24",
+   "type": "traces",
+   "at": "tasks.md:33"
+  },
+  {
+   "from": "task:5.3",
+   "to": "rec:F-47",
+   "type": "traces",
+   "at": "tasks.md:33"
+  },
+  {
+   "from": "task:6.3",
+   "to": "scn:attack-severity-word/Строка о тяжести меняет ячейку и вердикт файла атаки/Понижен последний блокер",
+   "type": "satisfies",
+   "at": "tasks.md:39"
+  },
+  {
+   "from": "task:6.3",
+   "to": "scn:decision-viewer/Строка о тяжести в промпте возврата/Внесённое слово уходит из промпта",
+   "type": "satisfies",
+   "at": "tasks.md:39"
+  }
+ ],
+ "candidates": [
+  {
+   "a": "req:artifact-attack/Обоснование человека переносится без пересказа",
+   "b": "req:artifact-attack/Повтор атаки держит тяжесть, выставленную человеком",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-37"
+   ]
+  },
+  {
+   "a": "req:artifact-attack/Повтор атаки держит тяжесть, выставленную человеком",
+   "b": "req:artifact-attack/Понижение не переносится на другую дыру",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-38"
+   ]
+  },
+  {
+   "a": "req:artifact-attack/Повтор атаки держит тяжесть, выставленную человеком",
+   "b": "req:attack-severity-word/Строка о тяжести без обоснования или без строки отвергается",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-20"
+   ]
+  },
+  {
+   "a": "req:artifact-attack/Повтор атаки держит тяжесть, выставленную человеком",
+   "b": "req:attack-severity-word/Строка о тяжести меняет ячейку и вердикт файла атаки",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-20"
+   ]
+  },
+  {
+   "a": "req:artifact-attack/Повтор атаки держит тяжесть, выставленную человеком",
+   "b": "req:decision-viewer/Строка о тяжести в промпте возврата",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-20"
+   ]
+  },
+  {
+   "a": "req:artifact-attack/Понижение тяжести только с названной причиной",
+   "b": "req:attack-severity-word/Внесение «всё или ничего» на журнал и файлы атаки",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-17"
+   ]
+  },
+  {
+   "a": "req:artifact-attack/Понижение тяжести только с названной причиной",
+   "b": "req:attack-severity-word/Строка о тяжести меняет ячейку и вердикт файла атаки",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-17",
+    "rec:F-26"
+   ]
+  },
+  {
+   "a": "req:artifact-attack/Понижение тяжести только с названной причиной",
+   "b": "req:attack-severity-word/Строка о тяжести пишет только файлы атаки своего изменения",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-17"
+   ]
+  },
+  {
+   "a": "req:artifact-attack/Понижение тяжести только с названной причиной",
+   "b": "req:decision-viewer/Скрываемое поле обоснования у кнопок тяжести",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-26"
+   ]
+  },
+  {
+   "a": "req:attack-severity-word/Внесение «всё или ничего» на журнал и файлы атаки",
+   "b": "req:attack-severity-word/Строка о тяжести меняет ячейку и вердикт файла атаки",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-17"
+   ]
+  },
+  {
+   "a": "req:attack-severity-word/Внесение «всё или ничего» на журнал и файлы атаки",
+   "b": "req:attack-severity-word/Строка о тяжести пишет только файлы атаки своего изменения",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-17"
+   ]
+  },
+  {
+   "a": "req:attack-severity-word/Строка о тяжести без обоснования или без строки отвергается",
+   "b": "req:attack-severity-word/Строка о тяжести меняет ячейку и вердикт файла атаки",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-20"
+   ]
+  },
+  {
+   "a": "req:attack-severity-word/Строка о тяжести без обоснования или без строки отвергается",
+   "b": "req:decision-viewer/Скрываемое поле обоснования у кнопок тяжести",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-02"
+   ]
+  },
+  {
+   "a": "req:attack-severity-word/Строка о тяжести без обоснования или без строки отвергается",
+   "b": "req:decision-viewer/Строка о тяжести в промпте возврата",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-20",
+    "rec:F-30"
+   ]
+  },
+  {
+   "a": "req:attack-severity-word/Строка о тяжести меняет ячейку и вердикт файла атаки",
+   "b": "req:attack-severity-word/Строка о тяжести пишет только файлы атаки своего изменения",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-17"
+   ]
+  },
+  {
+   "a": "req:attack-severity-word/Строка о тяжести меняет ячейку и вердикт файла атаки",
+   "b": "req:attack-severity-word/Строку о тяжести пишет только человек",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-36"
+   ]
+  },
+  {
+   "a": "req:attack-severity-word/Строка о тяжести меняет ячейку и вердикт файла атаки",
+   "b": "req:decision-viewer/Кнопки тяжести у строки атаки",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-25"
+   ]
+  },
+  {
+   "a": "req:attack-severity-word/Строка о тяжести меняет ячейку и вердикт файла атаки",
+   "b": "req:decision-viewer/Скрываемое поле обоснования у кнопок тяжести",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-26"
+   ]
+  },
+  {
+   "a": "req:attack-severity-word/Строка о тяжести меняет ячейку и вердикт файла атаки",
+   "b": "req:decision-viewer/Строка о тяжести в промпте возврата",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-03",
+    "rec:F-20"
+   ]
+  },
+  {
+   "a": "req:attack-severity-word/Тяжесть меняется только между блокером и предупреждением",
+   "b": "req:decision-viewer/Кнопки тяжести у строки атаки",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-18",
+    "rec:F-19",
+    "rec:F-29"
+   ]
+  },
+  {
+   "a": "req:decision-viewer/Нажатая кнопка без обоснования видна как незавершённая",
+   "b": "req:decision-viewer/Скрываемое поле обоснования у кнопок тяжести",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-39"
+   ]
+  },
+  {
+   "a": "req:decision-viewer/Скрываемое поле обоснования у кнопок тяжести",
+   "b": "req:decision-viewer/Строка о тяжести в промпте возврата",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-35"
+   ]
+  }
+ ],
+ "roots": [
+  {
+   "prefix": "",
+   "commit": "97b02ac05ac0a68bfb68ec6dff0ad43a4b12307e"
+  },
+  {
+   "prefix": "store/",
+   "commit": "531a2e84807eb4f3abe8fa3dacc3a53c6de95660"
+  },
+  {
+   "prefix": "playground/",
+   "commit": ""
+  },
+  {
+   "prefix": "md4h/",
+   "commit": ""
+  },
+  {
+   "prefix": "calibration/",
+   "commit": ""
+  },
+  {
+   "prefix": "archive/",
+   "commit": ""
+  },
+  {
+   "prefix": "catalog/",
+   "commit": "20c976814c279cd5cc2af9256b37e9258eb5f5d8"
+  }
+ ],
+ "base": {
+  "artifact-attack": {
+   "Понижение тяжести только с названной причиной": {
+    "numbers": [
+     "F-136.B",
+     "F-54.E"
+    ],
+    "scenarios": {
+     "Понижение без причины": "54f205effa831c017f07cc88402c6129c6787c6d968bb991d9bab00340c9b87a",
+     "Понижение своим суждением": "bb478e308cdf949becd84817a683265fbbde9c7b13aaea165999c436cc37af2a"
+    },
+    "text": "2abbe5dd7111742ba3fd27314def4ce6647075c4ba62644d47a76ef2cedcc0d6",
+    "traces": [
+     "948ef29c09775d5bb46c220008225d795e951f06c1d8f334dd59926e0d9ee197",
+     "96437f29201f5a3b92b3c85c208e34ec3a91ec1117b4901dae5010a3c390e9e9"
+    ]
+   }
+  }
+ }
+}
