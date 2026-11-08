@@ -507,3 +507,52 @@ def test_severity_line_alone_has_no_placeholder(tmp_path):
     att = sev_att()
     text = prompt(tmp_path, plan_journal(), state(), attacks=[att], sev={key(att, 0): {"to": "предупреждение", "why": "причина"}})["text"]
     assert "(нового нет" not in text
+
+
+# --- страховка F-30: настоящие утверждения архива проходят весь путь страница -> промпт -> ядро ---
+
+ARCHIVE_ATTACKS = sorted((ROOT / "openspec" / "changes" / "archive").glob("*/attack/*.md"))
+F30_WHY = "страховка F-30 (архив) | проверка"
+
+
+def test_f30_archive_claims_survive_page_prompt_core(tmp_path):
+    """Каждая строка `блокер`/`предупреждение` (не покрытия) архивных файлов атаки: `severityLine` -> `parse_answers` -> `set_severity`
+    находит свою строку, тяжесть сменилась, `status` пересчитан. Отказ называет файл и строку; число прогнанных строк — в сообщении."""
+    assert ARCHIVE_ATTACKS, "в архиве нет файлов атаки"
+    total, guillemets, backticks, dashes, failures = 0, 0, 0, 0, []
+    for n, path in enumerate(ARCHIVE_ATTACKS):
+        name = f"{path.parts[-3]}/attack/{path.name}"
+        text = path.read_text(encoding="utf-8-sig")
+        att = journal.parse_attack_text(text, name)
+        sub = tmp_path / str(n)
+        sub.mkdir()
+        # сторона страницы: строки и ходы для всех подходящих строк за один прогон node
+        res = run_js(sub, "flags",
+                     "(() => { const a = input.att; return a.rows.map(r => { const m = sevMove(r); return m ? {to: m.to, line: severityLine(a, r, m.to, input.why)} : null; }); })()",
+                     {"att": att, "why": F30_WHY})
+        assert len(res) == len(att["rows"])
+        for row, item in zip(att["rows"], res):
+            if item is None:
+                continue
+            total += 1
+            guillemets += "«" in row["claim"] or "»" in row["claim"]
+            backticks += "`" in row["claim"]
+            dashes += " — «" in row["claim"]
+            label = f"{name} · {row['section']} · «{row['claim']}»"
+            try:
+                sev = [op for op in journal.parse_answers(item["line"]) if op["op"] != "ignored"]
+                assert len(sev) == 1 and sev[0]["op"] == "severity", f"разбор строки: {sev}"
+                got = sev[0]
+                assert (got["path"], got["section"], got["claim"], got["severity"]) == (name, row["section"], row["claim"], item["to"]), f"ключ разобран иначе: {got}"
+                new = journal.set_severity(text, name, got["section"], got["claim"], got["severity"], got["why"])
+                after = journal.parse_attack_text(new, name)
+                same = [r for r in after["rows"] if r["section"] == row["section"] and r["claim"] == row["claim"]]
+                assert len(same) == 1 and same[0]["severity"].split()[0] == item["to"], f"тяжесть не сменилась: {same}"
+                blockers = any(r["severity"].split()[:1] == ["блокер"] for r in after["rows"])
+                assert after["frontmatter"]["status"] == ("gaps_found" if blockers else "passed"), f"status: {after['frontmatter']['status']}"
+            except (AssertionError, ValueError) as err:
+                failures.append(f"{label}: {err}")
+    stat = f"прогнано строк {total}; с «» {guillemets}, с backticks {backticks}, с « — «» {dashes}"
+    assert not failures, stat + "\n" + "\n".join(failures)
+    assert total > 0 and guillemets > 0 and backticks > 0 and dashes > 0, stat
+    print(stat)
