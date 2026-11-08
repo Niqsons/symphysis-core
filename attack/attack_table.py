@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
-"""Файл атаки для просмотрщика — модуль `attack`: `parse_attack_md` и разбор строк
-таблицы (`_attack_frontmatter`, `_attack_rows`, `_scan_row`). Строки файла считает `_lines` журнала
+"""Файл атаки для просмотрщика — модуль `attack`: `parse_attack_md` (файл) и `parse_attack_text` (текст в памяти),
+`set_severity` (слово о тяжести: новый текст файла, F-47.A) и разбор строк таблицы (`_attack_frontmatter`,
+`_attack_rows`, `_scan_row`). Строки файла считает `_lines` журнала
 (модуль `decisions`): attack зависит от decisions, не наоборот."""
 from __future__ import annotations
 
