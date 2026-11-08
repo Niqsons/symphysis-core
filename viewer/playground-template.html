@@ -278,6 +278,20 @@ const READ_SEP = ' · ';
 function normText(s) { return String(s == null ? '' : s).replace(/\s+/g, ' ').trim(); }
 /* тяжесть — первое слово ячейки; причина понижения — текст в скобках после него */
 function sevBase(s) { const m = /^(блокер|предупреждение|справка)(?![а-яёa-z])/i.exec(String(s || '').trim()); return m ? m[1].toLowerCase() : String(s || '').trim(); }
+/* причина в ячейке — от первой «(» до последней «)», скобки внутри остаются; без пары — пусто */
+function sevReason(s) { const v = String(s || ''), a = v.indexOf('('), b = v.lastIndexOf(')'); return a >= 0 && b > a ? v.slice(a + 1, b).trim() : ''; }
+/* строка покрытия (F-19.A): тяжесть у неё не меняется; те же признаки, что у `_is_coverage` в attack_table.py */
+function isCoverageGap(row) { return !!row && (row.claim === 'не пройдено' || row.support === 'нет: не пройдено' || row.support === 'нет: файла нет'); }
+/* ход тяжести (F-18.B): кнопка там, где `set_severity` примет ход — первое слово ячейки строчными, регистр и скобка вплотную значимы, как у `_severity_word` */
+function sevMove(row) {
+  if (!row || isCoverageGap(row)) return null;
+  const w = (String(row.severity == null ? '' : row.severity).split(/\s+/).filter(Boolean)[0]) || '';
+  return w === 'блокер' ? { label: 'понизить', to: 'предупреждение' } : w === 'предупреждение' ? { label: 'повысить', to: 'блокер' } : null;
+}
+/* строка о тяжести в промпте возврата (F-47.A): утверждение целиком, обоснование одной строкой */
+function severityLine(att, row, to, why) {
+  return '- тяжесть: ' + att.path + ' · ' + row.section + ' · «' + row.claim + '» → ' + to + ' — «' + normText(why) + '»';
+}
 function isWarning(row) { return sevBase(row && row.severity) === 'предупреждение'; }
 function readText(row) { return READ_PREFIX + normText(row && row.section); }
 /* ключ отметки — файл атаки и раздел: две строки одного раздела делят одну отметку (F-21) */
@@ -944,8 +958,7 @@ function renderCheck() {
 function attackKind(att) { const t = (att.frontmatter || {}).targets || []; return t.length === 1 && t[0].path === 'decisions.json' ? 'journal' : 'artifacts'; }
 function lensList(att) { return ATTACK_LENSES[attackKind(att)]; }
 function lensLabel(att, slug) { const l = lensList(att).find(x => x.slug === slug); return l ? l.label : ''; }
-/* sevBase — в блоке flags: тяжесть читают и счётчики, и переключатель «прочитано» одним правилом */
-function sevReason(s) { const m = /\(([^)]+)\)/.exec(String(s || '')); return m ? m[1].trim() : ''; }
+/* sevBase и sevReason — в блоке flags: тяжесть читают и счётчики, и переключатель «прочитано» одним правилом */
 function sevClass(s) { const b = sevBase(s); return b === 'блокер' ? 'bad' : b === 'предупреждение' ? 'warn' : b === 'справка' ? '' : 'park'; }
 /* при опоре «нет» тяжесть источника — блокер; ниже блокера без причины в скобках — понижение без причины, с причиной — понижение с видимой причиной (F-54.E) */
 function demotion(r) {
