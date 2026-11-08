@@ -556,9 +556,10 @@ def test_attack_skill_repeat_reads_human_word_before_overwrite():
     """Страховка F-46: у пункта «с начала» шага «Войди» — прочитать ячейки со словом человека до перезаписи файла,
     исключение из «прежние строки не переносятся»."""
     text = read(ATTACK_SKILL / "SKILL.md")
-    entry = block(text, "### 1. Войди", "\n### 2.")
-    bullets = [b for b in entry.split("\n- ") if "прежние строки не переносятся" in flat(b)]
-    assert len(bullets) == 1, "пункта «прежние строки не переносятся» нет или он не один"
+    raw = text[text.index("### 1. Войди"):]
+    raw = raw[:raw.index("\n### 2.")]
+    bullets = [b for b in raw.split("\n- ") if "с начала" in flat(b) and "прежние строки не переносятся" in flat(b)]
+    assert len(bullets) == 1, "пункта «с начала» с «прежние строки не переносятся» нет или он не один"
     bullet = flat(bullets[0])
     for token in ("Исключение", "слово человека", "до перезаписи файла", "MUST прочитать прежний файл", "ячейки со словом человека"):
         assert token in bullet, f"в пункте «с начала» нет «{token}»"
@@ -577,7 +578,9 @@ def test_attack_skill_carries_human_word_by_exact_key():
     summary = flat(block(text, "### 7. Отдай итог", "\n## Коды и сигналы"))
     assert "перенесённые слова человека и снятые слова" in summary, "итог не называет перенесённые и снятые слова"
     driver = flat(text.split("## Водитель", 1)[1])
-    assert "повторно не спрашивают" in driver and "Перенос слова" in driver, "отчёт водителя не держит слово человека"
+    assert "повторно не спрашивают" in driver and "Перенос слова" not in driver, "отчёт водителя не держит слово человека"
+    assert "слова человека: ключ и причина" in driver, "«Итог» водителя не несёт перенесённые и снятые слова"
+    assert "`|` → `\\|`" in entry, "шаг 1 не сверяет ячейку по экранированию apply"
 
 
 def test_attack_skill_marks_read_warnings():
