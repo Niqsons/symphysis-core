@@ -17,10 +17,16 @@
   * { box-sizing:border-box; }
   body { margin:0; background:var(--bg); color:var(--fg); font:14px/1.45 system-ui, -apple-system, "Segoe UI", sans-serif; }
   code, .mono { font-family: ui-monospace, Consolas, "Cascadia Mono", monospace; font-size:12.5px; }
-  header { display:flex; gap:16px; align-items:center; padding:10px 16px; border-bottom:1px solid var(--line); background:var(--panel); position:sticky; top:0; z-index:5; }
+  header { display:flex; flex-wrap:wrap; gap:10px 16px; align-items:center; padding:10px 16px; border-bottom:1px solid var(--line); background:var(--panel); position:sticky; top:0; z-index:5; }
   header h1 { font-size:15px; margin:0; font-weight:600; }
   header .stats { color:var(--mute); }
-  header .editorpick { color:var(--mute); font-size:12px; white-space:nowrap; }
+  header .editorpick { display:inline-flex; align-items:center; gap:4px; color:var(--mute); font-size:12px; white-space:nowrap; }
+  header .editorpick select { width:auto; }
+  header > button, header .modes, header .editorpick, header .themeToggle { flex-shrink:0; }
+  header .themeToggle { display:inline-flex; gap:2px; padding:2px; border:1px solid var(--line); border-radius:8px; }
+  header .themeToggle button { display:grid; place-items:center; width:30px; height:28px; padding:4px; border-color:transparent; }
+  header .themeToggle button[aria-pressed=true] { background:var(--acc); color:var(--bg); }
+  header .themeToggle button:focus-visible { outline:2px solid var(--acc); outline-offset:2px; }
   #editorMask { width:260px; }
   header .stats b { color:var(--fg); }
   header .spacer { flex:1; }
@@ -169,7 +175,10 @@
   <h1 id="title">symphysis — журнал решений</h1>
   <div class="modes" id="modes" title="решения — круг просмотрщика; атака — строки attack/*.md по линзам"></div>
   <div class="modes" id="layouts" title="раскладка решений: по журналу — редактирование; снимок — группировка журнала, только чтение"></div>
-  <label class="editorpick" title="цветовая раскладка страницы; выбор хранится в браузере">тема <select id="themePick"><option value="dark">тёмная</option><option value="light">светлая</option></select></label>
+  <div class="themeToggle" id="themePick" role="group" aria-label="Тема страницы">
+    <button type="button" data-theme="light" aria-label="Светлая тема" aria-pressed="false" title="Светлая тема"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M2 12h2m16 0h2M5 5l1.5 1.5m11 11L19 19M5 19l1.5-1.5m11-11L19 5"/></svg></button>
+    <button type="button" data-theme="dark" aria-label="Тёмная тема" aria-pressed="true" title="Тёмная тема"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M20.9 13A9 9 0 0 1 11 3.1 9 9 0 1 0 20.9 13Z"/></svg></button>
+  </div>
   <button id="btnScheme" title="рядом с карточками: схема решения из scheme.md или справка о шаге конвейера">схема · справка</button>
   <label class="editorpick" title="куда ведёт значок ↗ у ссылки на файл; выбор хранится в этом браузере">↗ <select id="editorPick"><option value="vscode">VS Code</option><option value="cursor">Cursor</option><option value="jetbrains">IDEA / GIGA IDE</option><option value="custom">своя маска</option><option value="none">не показывать</option></select></label>
   <input type="text" id="editorMask" class="hidden" placeholder="схема://…{path}…{line}" title="подстановки: {path}, {relpath}, {project}, {line}, {line0}">
@@ -1187,11 +1196,14 @@ document.getElementById('btnOpen').onclick = () => { filter.openOnly = !filter.o
   const pick = document.getElementById('themePick');
   let theme = 'dark';
   try { const saved = localStorage.getItem('symphysis:theme'); if (['dark','light'].includes(saved)) theme = saved; } catch (e) {}
-  const show = () => { document.documentElement.dataset.theme = theme; pick.value = theme; };
-  pick.onchange = () => {
-    theme = pick.value; try { localStorage.setItem('symphysis:theme', theme); } catch (e) {}
-    show(); if (schemeLoaded && SCHEME.mermaid) schemeDraw();
+  const show = () => {
+    document.documentElement.dataset.theme = theme;
+    pick.querySelectorAll('button').forEach(button => button.setAttribute('aria-pressed', String(button.dataset.theme === theme)));
   };
+  pick.querySelectorAll('button').forEach(button => button.onclick = () => {
+    theme = button.dataset.theme; try { localStorage.setItem('symphysis:theme', theme); } catch (e) {}
+    show(); if (schemeLoaded && SCHEME.mermaid) schemeDraw();
+  });
   show();
 })();
 (function () {

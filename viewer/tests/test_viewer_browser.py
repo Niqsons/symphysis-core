@@ -186,6 +186,20 @@ def test_light_theme_can_be_selected_and_is_remembered(tmp_path):
     assert light["theme"] == "light" and light["themePick"] == "light"
     assert light["background"] == "rgb(245, 247, 250)"
     assert light["errors"] == []
+    assert light["themeButtons"] == [
+        {"theme": "light", "label": "Светлая тема", "pressed": "true"},
+        {"theme": "dark", "label": "Тёмная тема", "pressed": "false"},
+    ]
+    dark_again = browser(html, "theme:light", "theme:dark", "reload")
+    assert dark_again["theme"] == dark_again["themePick"] == "dark"
+    assert dark_again["errors"] == []
+
+
+@pytest.mark.parametrize("width", [1431, 1100, 800])
+def test_header_controls_do_not_overlap(tmp_path, width):
+    r = browser(page(tmp_path), size=(width, 900))
+    assert r["headerOverlaps"] == []
+    assert len(r["themeButtons"]) == 2
 
 
 def test_narrow_window_puts_the_panel_above_the_cards(tmp_path):
