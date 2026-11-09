@@ -257,7 +257,7 @@ Codex и OpenCode. На 2026-11-10 для проверяемых сборок п
 | --- | --- | --- |
 | Claude Code | local/global | Сохранён прежний учебный пример Claude/local; свежая native-приёмка не проводилась |
 | Codex 0.167.0 | local/global | Native discovery skills и workflow подтверждён; модельная приёмка заблокирована недоступным Windows MXC в тестовом окружении |
-| OpenCode CLI 2.2.5 | local/global | Модель получила brainstorm skill, research-driver и guard до записи проверены; полный intent→archive ещё выполняется и не зачтён; повторный вход водителя с готовыми выходами также не принят |
+| OpenCode CLI 2.2.5 | local/global | Модель получила brainstorm skill, research-driver и guard до записи проверены; полный intent→archive не завершён; повторный вход водителя с готовыми выходами также не принят |
 | Плагин VS Code | local/global | Пройдена приёмка установленной сборки |
 | Плагин GIGA IDE | local/global | Пройдена приёмка установленной сборки |
 | OpenCode IDE | Порт отложен | Приёмка установленного IDE-порта не завершена; проверка native CLI её не заменяет |

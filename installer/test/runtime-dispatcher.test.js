@@ -13,7 +13,7 @@ import { toolArguments } from "../lib/runtime-dispatcher.js";
 import { acquireWriter, managementRoot } from "../lib/runtime-leases.js";
 
 const bin = fileURLToPath(new URL("../bin/symphysis.js", import.meta.url));
-const fork = fileURLToPath(new URL("../../upstream/openspec/bin/openspec.js", import.meta.url));
+const fork = process.env.SYMPHYSIS_OPENSPEC || fileURLToPath(new URL("../../upstream/openspec/bin/openspec.js", import.meta.url));
 const schema = "name: symphysis\nversion: 1\ndescription: Fixture\nartifacts:\n  - id: intent\n    generates: intent.md\n    description: Intent\n    template: intent.md\n    requires: []\n";
 const echo = `import json, os, sys, time
 context = json.loads(os.environ['SYMPHYSIS_RUNTIME_CONTEXT'])
@@ -98,6 +98,30 @@ test("resource reads only the selected named text and unknown identifiers fail e
     const missing = cli("--project", store.root, "resource", "doc", id);
     assert.equal(missing.status, 2); assert.match(missing.stderr, /resource-missing/); assert.equal(missing.stdout, "");
   }
+});
+
+for (const scope of ["local", "global"]) test(`${scope}: journal schema doc returns installed canonical bytes and refuses a changed copy`, (t) => {
+  const f = createRuntimeFixture(path.join(os.tmpdir(), "symphysis-schema-resource"));
+  t.after(() => f.cleanup()); f.env.SYMPHYSIS_OPENSPEC = fork;
+  const store = f.store("store-a");
+  const payload = f.payload(scope, { store, payloadDir: fileURLToPath(new URL("../payload/", import.meta.url)) });
+  if (scope === "global") fs.cpSync(payload.schemaRoot, f.at("user-data", "openspec", "schemas", "symphysis"), { recursive: true });
+  const canonical = fs.readFileSync(new URL("../../decisions/journal.schema.json", import.meta.url));
+  const cli = (...args) => spawnSync(process.execPath, [bin, "--project", store.root, ...args], { cwd: f.root, env: f.env, timeout: 20000 });
+  const response = cli("resource", "doc", "journal.schema.json");
+  assert.equal(response.status, 0, response.stderr.toString());
+  assert.deepEqual(response.stdout, canonical);
+  const context = resolveRuntime({ project: store.root, env: f.env });
+  assert.equal(context.resources.docs["journal.schema.json"], path.join(payload.docsRoot, "journal.schema.json"));
+  assert.equal(context.runtime.runtimeApi, 1); assert.equal(context.runtime.schemaApi, 1);
+  const journal = cli("journal", "view-json", store.journal);
+  assert.equal(journal.status, 0, journal.stderr.toString());
+  assert.equal(JSON.parse(journal.stdout).title, "Fixture store-a");
+  fs.appendFileSync(path.join(payload.docsRoot, "journal.schema.json"), " ");
+  const changed = cli("resource", "doc", "journal.schema.json");
+  assert.equal(changed.status, 2); assert.equal(changed.stdout.length, 0);
+  assert.match(changed.stderr.toString(), scope === "local" ? /local-damaged/ : /resource-missing/);
+  assert.match(changed.stderr.toString(), /docs\/journal\.schema\.json/);
 });
 
 test("native OpenSpec runs the pinned fork in the chosen store and preserves its JSON", (t) => {

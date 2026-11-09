@@ -22,7 +22,9 @@ Read-only `symphysis resolve --json` показывает выбранные п�
 
 Общие инструкции читаются целиком из stdout `symphysis resource doc <имя.md>`, тело скилла —
 `symphysis resource skill <имя>`, шаблон схемы — `symphysis resource template <имя.md>`.
-Это команды получения ресурсов выбранной поставки, не пути в проекте. Для чтения самой схемы
+JSON-схема записей журнала — `symphysis resource doc journal.schema.json`;
+команда возвращает полный текст схемы выбранной поставки.
+Это команды получения ресурсов выбранной поставки, не пути в проекте. Для чтения схемы OpenSpec
 модель MUST взять `resources.schema.path` из `resolve --json` и прочитать там `schema.yaml`;
 копия `openspec/schemas/symphysis/` в global-only store не требуется. Текст ресурсов не меняет
 право принимать решения или ограничения на запись из тела скилла и brief.

@@ -20,7 +20,7 @@ let payloadDir;
 const tmp = () => tempDir("symphysis-install-");
 const run = (...args) => spawnSync(process.execPath, [bin, ...args], { encoding: "utf8" });
 
-const FORK = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..", "..", "upstream", "openspec", "bin", "openspec.js");
+const FORK = process.env.SYMPHYSIS_OPENSPEC || path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..", "..", "upstream", "openspec", "bin", "openspec.js");
 const OFF_COMMAND = "openspec config set telemetry.enabled false";
 const saved = { openspec: process.env.SYMPHYSIS_OPENSPEC, path: process.env.PATH, Path: process.env.Path, xdg: process.env.XDG_CONFIG_HOME };
 const cfgFile = () => path.join(process.env.XDG_CONFIG_HOME, "openspec", "config.json");
@@ -57,7 +57,10 @@ test("install в пустой проект: все цели существуют
   assert.ok(fs.existsSync(path.join(t.toolsDir, "tools", "journal.py")));
   assert.ok(fs.existsSync(path.join(t.toolsDir, "tools", "playground-template.html")));
   assert.ok(fs.existsSync(path.join(t.toolsDir, "tools", "journal.schema.json")));   // схема журнала — рядом с кодом (F-41)
-  assert.ok(!fs.existsSync(path.join(t.toolsDir, "docs", "journal.schema.json")));
+  const canonicalSchema = fs.readFileSync(new URL("../../decisions/journal.schema.json", import.meta.url));
+  for (const dir of ["tools", "docs"]) {
+    assert.deepEqual(fs.readFileSync(path.join(t.toolsDir, dir, "journal.schema.json")), canonicalSchema);
+  }
   for (const d of ["terms.md", "journal-cli.md", "config.md", "candidate.md", "attack-table.md", "THIRD-PARTY-NOTICES.md"]) {
     assert.ok(fs.existsSync(path.join(t.toolsDir, "docs", d)), d);
   }

@@ -52,6 +52,7 @@ const TOOLS_FILES = [
 const FILES = [
   ["openspec/schemas/symphysis/config.symphysis.yaml", "openspec/config.symphysis.yaml"],
   ["installer/generated/workflow-carriers.json", "docs/workflow-carriers.json"],
+  ["decisions/journal.schema.json", "docs/journal.schema.json"],
   ...toolsFiles().map(({ name, src }) => [src, `tools/${name}`]),
 ];
 
