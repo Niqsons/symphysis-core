@@ -1168,9 +1168,11 @@ def check_graph_file(root: Path, change: str, path: Path | str) -> list[str]:
 # связанные задачи, записи, пункты security и ветки, соседи по кандидатам связью `copies`). Конфиг — `DIAGRAM`. Номер узла
 # стоит в имени блока (`SCN_12 Есть поле`): имя и есть ключ узла в mermaid, номер делает его уникальным (F-67, F-68);
 # подчёркивание, а не дефис: хук принимает номер с дефисом за ключ задачи (F-73). Имя с номером не длиннее `DIAGRAM["имя"]`
-# знаков (F-137). Без выбора и с `--capability` текст длиннее `DIAGRAM["предел"]` не выдаётся (F-66, F-104).
+# знаков (F-137). У задачи подпись берётся только из явного начального `**Название** — тело`, без него остаётся номер;
+# полное `name` графа не меняется. Без выбора и с `--capability` текст длиннее `DIAGRAM["предел"]` не выдаётся (F-66, F-104).
 
 DIAGRAM_HEADER = "requirementDiagram"
+_TASK_TITLE = re.compile(r"^\*\*([^*\r\n]+)\*\*[ \t]+—[ \t]+\S")
 
 
 ENTITY = re.compile(r"#\w+;")  # коды сущностей mermaid: `#37;`, `#x25;`, `#lt;`, `#percnt;` декодируются в знак
@@ -1204,8 +1206,13 @@ def diagram_ident(node: dict, counters: dict[str, int]) -> str:
 
 
 def diagram_name(node: dict, ident: str) -> str:
-    """Имя блока: номер и начало подписи узла, вместе не длиннее `DIAGRAM["имя"]` знаков (F-137), очищено `clean_text`."""
-    return clean_text(f"{ident} {node['name']}")[:DIAGRAM["имя"]].rstrip()
+    """Имя блока: номер и подпись до `DIAGRAM["имя"]` знаков (F-137). Задача берёт только явное название;
+    старое тело задачи не становится подписью. Полные данные узла остаются прежними."""
+    label = node["name"]
+    if node["kind"] == "task":
+        title = _TASK_TITLE.match(label.lstrip())
+        label = title.group(1).strip() if title else ""
+    return clean_text(f"{ident} {label}")[:DIAGRAM["имя"]].rstrip()
 
 
 def _find_requirement(graph: dict, wanted: str) -> dict:
