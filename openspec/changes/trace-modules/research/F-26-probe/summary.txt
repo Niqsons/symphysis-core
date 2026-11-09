@@ -1,0 +1,12 @@
+F-26 isolated probe
+No source/build/install mutation; global config/data/home isolated in a fresh temporary directory; telemetry disabled.
+{"files": {"dist/core/change-metadata/schema.js": "5d5f98e3f79756443f926af59bfc49894f37dc40ca6877071c1d4123188eb91a", "dist/utils/change-metadata.js": "267d1ab9e49ba76aaff6b9c5b427e60957f2bbcf778c03a15c7d9fb788a8149d", "src/core/change-metadata/schema.ts": "df156cb3a79060e4f7bce6878b2b33bba49818ef13665f34a3b06d4b06b6b8df", "src/utils/change-metadata.ts": "f03cef11785c05af6a98ec83d30d85da7c81d6ae4fa17e70f890304420f140c0"}, "head": "71c41a656f284f87bb32b341f7713841ad63569d", "step": "runtime-fingerprints", "version": "1.16.1+symphysis.5"}
+{"archived": true, "result": "new creates only known metadata; repeated new refuses; status/instructions(json,text)/strict validation/archive preserve exact metadata bytes", "sha256": "e87555bc44738ab251c951d0da0ab937c58d952a9493fa8bc5b21d581a182bd4", "step": "metadata-retention"}
+{"command": ["C:\\Program Files\\nodejs\\node.EXE", "<TEMP>\\metadata-helper.mjs", "<TEMP>\\project\\openspec\\changes\\archive\\2026-11-09-metadata-probe", "<TEMP>\\project"], "exit": 0, "stderr": "", "stdout": "{\"keys\":[\"schema\",\"created\",\"skip_specs\"],\"unknown\":[]}\n{\"extensionAfterRewrite\":false}\n", "step": "metadata-helper"}
+{"result": "setup --no-init-git and declared store pointer new/status succeed; no .git exists", "step": "store-no-git"}
+{"result": "long prefix resolves nested path without Git; parent escape rejected; no personal roots file called", "step": "roots-explicit-map"}
+{"found": ["openspec/schemas/symphysis", "src/deep/marked", "top"], "notDetected": ["plain README without name/kind", "ignored README", "untracked README"], "placeSignals": ["src/deep/marked/: модуль не на своём месте (первый уровень или openspec/schemas/symphysis/)"], "step": "module-detection"}
+{"exit": 128, "result": "CalledProcessError from git ls-files; no fallback", "step": "module-detection-no-git"}
+{"result": "isolated Python has no PyYAML; following check calls _apply on an in-memory synthetic mapping", "signals": ["symphysis.yaml: нет пакета PyYAML — выполнить: python -m pip install pyyaml"], "step": "settings-reader-limitation"}
+{"result": "repos is not accepted as repository map", "signals": ["symphysis.yaml: неизвестный ключ repos"], "step": "settings-repos"}
+{"result": "PASS", "step": "final"}
