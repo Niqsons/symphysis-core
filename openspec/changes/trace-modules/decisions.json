@@ -1,0 +1,1429 @@
+{
+ "title": "Журнал решений: trace-modules",
+ "source": "decisions.json",
+ "generated": "2026-11-09",
+ "intro": "Пути улик считаются от корня этого worktree; переносимый файл корней — probes/journal-roots.json. Материалы: intent.md, разбор графа (Т8, Т20, Т21 и модель связей), README и мастер-спеки модулей, текущий сборщик trace, code-sites, обход структуры в тестах и сборка payload. F-01–F-07 — критерии постановки, F-08–F-15 — наблюдения по файлам, F-16–F-25 — развилки первого круга, F-26–F-27 — парковки исследованию. Рекомендации не являются решениями; все decision пока null. Критерии intent.md сформулированы по поручению владельца: наличие факта постановки не превращает конкретную конструкцию в принятое решение. Порядок перспектив: текущее состояние → минимальный состав → границы → отказы → оставшиеся вопросы.",
+ "notes": [
+  {
+   "date": "2026-11-09",
+   "text": "Первый круг подготовлен: 15 фактов, 10 открытых развилок, 2 парковки агенту, 2 пары антиподов. Перспективы пройдены; ожидается просмотр и слово человека. Итог круга будет записан после круга просмотрщика; брейншторм не объявлен законченным."
+  }
+ ],
+ "records": [
+  {
+   "id": "F-01",
+   "question": "Критерий готовности: В req graph появляются узлы модулей, определяемые по объявлениям в README, с именем и родом. Граф различает одноимённые модули разных репозиториев.",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "постановка",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "F-16",
+   "evidence": [
+    {
+     "path": "openspec/changes/trace-modules/intent.md",
+     "quote": "1. В req graph появляются узлы модулей, определяемые по объявлениям в README, с именем и родом. Граф различает одноимённые модули разных репозиториев.",
+     "line": 33
+    }
+   ],
+   "comments": [],
+   "nodes": []
+  },
+  {
+   "id": "F-02",
+   "question": "Критерий готовности: Ось структуры отражает различие компонента, репозитория, модуля и файла, а также связи между ними. Файл принадлежит одному модулю; каталоги контура разработки не становятся модулями только из-за наличия каталога или README.",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "постановка",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "F-16, F-18",
+   "evidence": [
+    {
+     "path": "openspec/changes/trace-modules/intent.md",
+     "quote": "2. Ось структуры отражает различие компонента, репозитория, модуля и файла, а также связи между ними. Файл принадлежит одному модулю; каталоги контура разработки не становятся модулями только из-за наличия каталога или README.",
+     "line": 34
+    }
+   ],
+   "comments": [],
+   "nodes": []
+  },
+  {
+   "id": "F-03",
+   "question": "Критерий готовности: В графе представлены связи модулей с реализуемыми требованиями и зависимости между модулями. Происхождение связей прослеживается до файлов-источников; наличие улики или упоминания пути само по себе не выдаётся за доказательство реализации требования.",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "постановка",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "F-19, F-20",
+   "evidence": [
+    {
+     "path": "openspec/changes/trace-modules/intent.md",
+     "quote": "3. В графе представлены связи модулей с реализуемыми требованиями и зависимости между модулями. Происхождение связей прослеживается до файлов-источников; наличие улики или упоминания пути само по себе не выдаётся за доказательство реализации требования.",
+     "line": 35
+    }
+   ],
+   "comments": [],
+   "nodes": []
+  },
+  {
+   "id": "F-04",
+   "question": "Критерий готовности: Сквозное требование может быть связано с несколькими модулями, в том числе из разных репозиториев и компонентов. Id требования не зависит от расположения модулей.",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "постановка",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/trace-modules/intent.md",
+     "quote": "4. Сквозное требование может быть связано с несколькими модулями, в том числе из разных репозиториев и компонентов. Id требования не зависит от расположения модулей.",
+     "line": 36
+    }
+   ],
+   "comments": [],
+   "nodes": []
+  },
+  {
+   "id": "F-05",
+   "question": "Критерий готовности: Поддержка модулей согласована с существующими сборкой, отчётом, проверкой, заморозкой графа и экспортом `requirementDiagram`. Граф остаётся производным от источников, без ручного наполнения JSON; проверки остаются сигналами.",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "постановка",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "F-19, F-20, F-21, F-22, F-23, F-24",
+   "evidence": [
+    {
+     "path": "openspec/changes/trace-modules/intent.md",
+     "quote": "5. Поддержка модулей согласована с существующими сборкой, отчётом, проверкой, заморозкой графа и экспортом `requirementDiagram`. Граф остаётся производным от источников, без ручного наполнения JSON; проверки остаются сигналами.",
+     "line": 37
+    }
+   ],
+   "comments": [],
+   "nodes": []
+  },
+  {
+   "id": "F-06",
+   "question": "Критерий готовности: На модулях самого symphysis выполнена и сохранена воспроизводимая проверка: построен граф с настоящими узлами модулей и связями с требованиями, проверены зависимости и случай одного требования в нескольких модулях. Подготовленная структура репозитория действительно используется графом.",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "постановка",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "F-25",
+   "evidence": [
+    {
+     "path": "openspec/changes/trace-modules/intent.md",
+     "quote": "6. На модулях самого symphysis выполнена и сохранена воспроизводимая проверка: построен граф с настоящими узлами модулей и связями с требованиями, проверены зависимости и случай одного требования в нескольких модулях. Подготовленная структура репозитория действительно используется графом.",
+     "line": 38
+    }
+   ],
+   "comments": [],
+   "nodes": []
+  },
+  {
+   "id": "F-07",
+   "question": "Критерий готовности: Работа новой оси, источники связей, ограничения и влияние на порядок работы описаны в `docs/GUIDE.md`. Расхождения с указанным разбором явно зафиксированы решениями, а не остаются молчаливыми пропусками.",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "постановка",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/trace-modules/intent.md",
+     "quote": "7. Работа новой оси, источники связей, ограничения и влияние на порядок работы описаны в `docs/GUIDE.md`. Расхождения с указанным разбором явно зафиксированы решениями, а не остаются молчаливыми пропусками.",
+     "line": 39
+    }
+   ],
+   "comments": [],
+   "nodes": []
+  },
+  {
+   "id": "F-08",
+   "question": "В разборе приняты определения компонента, репозитория и модуля; файлы модуля могут быть скриптами, JSON, markdown и шаблонами. Род модуля — доменный или технический.",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "агент",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "F-20",
+   "evidence": [
+    {
+     "path": "docs/analysis/requirements-traceability-graph-of-symphysis.md",
+     "quote": "это часть компонента с одной ответственностью, у которой есть имя и граница",
+     "line": 482
+    },
+    {
+     "path": "docs/analysis/requirements-traceability-graph-of-symphysis.md",
+     "quote": "Компонент и репозиторий это разные уровни.",
+     "line": 481
+    },
+    {
+     "path": "docs/analysis/requirements-traceability-graph-of-symphysis.md",
+     "quote": "Доменный отвечает за область, технический ни за какую",
+     "line": 483
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "component",
+    "repository",
+    "module"
+   ]
+  },
+  {
+   "id": "F-09",
+   "question": "Объявления модулей уже есть: README с name/kind; модуль схемы вложен в openspec, хотя сам openspec — контур разработки.",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "агент",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "F-16, F-18, F-21",
+   "evidence": [
+    {
+     "path": "openspec/specs/module-declaration/spec.md",
+     "quote": "README.md`, который начинается frontmatter YAML с полями `name`",
+     "line": 9
+    },
+    {
+     "path": "README.md",
+     "quote": "[openspec/](openspec/) — контур разработки: изменения и мастер-спеки; внутри лежит модуль схемы",
+     "line": 26
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "readmes",
+    "module"
+   ]
+  },
+  {
+   "id": "F-10",
+   "question": "В текущем сборщике семь видов узлов артефактов; компоненты, репозитории, модули и файлы отдельными узлами не создаются.",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "агент",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "trace/trace_graph.py",
+     "quote": "READERS = {\"decisions\": _read_records",
+     "line": 715
+    },
+    {
+     "path": "trace/trace_graph.py",
+     "quote": "# Узел — словарь: `id`, `kind` (`cap`, `req`, `scn`, `rec`, `task`, `sec`, `branch`)",
+     "line": 343
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "graph"
+   ]
+  },
+  {
+   "id": "F-11",
+   "question": "Состав sources перечисляет файлы артефактов изменения; freeze отдельно сохраняет префиксы корней и коммиты. README модулей и объявления структуры не входят в этот перечень источников. Сейчас GRAPH_FORMAT равен 2; проверка формы отвергает несовпадающий номер.",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "агент",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "F-22, F-23",
+   "evidence": [
+    {
+     "path": "trace/trace_graph.py",
+     "quote": "SOURCE_FILES = {\"decisions\": \"decisions.json\"",
+     "line": 1035
+    },
+    {
+     "path": "trace/trace_graph.py",
+     "quote": "return [{\"prefix\": no_paths(prefix, root), \"commit\": root_commit(folder)}",
+     "line": 1751
+    },
+    {
+     "path": "trace/trace_graph.py",
+     "quote": "GRAPH_FORMAT = 2",
+     "line": 352
+    },
+    {
+     "path": "trace/trace_graph.py",
+     "quote": "data[\"format\"] != GRAPH_FORMAT",
+     "line": 1066
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "snapshot"
+   ]
+  },
+  {
+   "id": "F-12",
+   "question": "code-sites берёт файлы улик выбранных вариантов, исключает markdown и не читает код. Его результат сам по себе не устанавливает, какие модули реализуют новое требование; markdown при этом может быть частью реализации модуля.",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "агент",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "F-19",
+   "evidence": [
+    {
+     "path": "consequences/journal_sites.py",
+     "quote": "Места кода из журнала: файлы из улик выбранных вариантов решённых развилок, кроме проб и фактов",
+     "line": 2
+    },
+    {
+     "path": "consequences/journal_sites.py",
+     "quote": "return not path.lower().endswith(\".md\")",
+     "line": 42
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "file",
+    "relation"
+   ]
+  },
+  {
+   "id": "F-13",
+   "question": "Инструменты ставятся плоско в .symphysis/tools, а существующий обход модулей находится в тестовом помощнике со специальным путём схемы symphysis. Перенос его правил в продукт без изменения привяжет граф к раскладке ядра.",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "агент",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "F-18",
+   "evidence": [
+    {
+     "path": "installer/scripts/sync-payload.js",
+     "quote": "Исходник разложен по модулям (F-18 A), установка плоская (F-19 A)",
+     "line": 26
+    },
+    {
+     "path": "tests/repository_structure.py",
+     "quote": "SCHEMA_MODULE = \"openspec/schemas/symphysis\"",
+     "line": 17
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "readmes",
+    "graph"
+   ]
+  },
+  {
+   "id": "F-14",
+   "question": "В разборе имя модуля уникально внутри репозитория; идентичность требования не включает модуль. Один компонент может объединять несколько репозиториев.",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "агент",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "F-17",
+   "evidence": [
+    {
+     "path": "docs/analysis/requirements-traceability-graph-of-symphysis.md",
+     "quote": "Поэтому id модуля это `репозиторий/модуль`.",
+     "line": 508
+    },
+    {
+     "path": "docs/analysis/requirements-traceability-graph-of-symphysis.md",
+     "quote": "Id требования в корне это `capability/имя`",
+     "line": 580
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "repository",
+    "module",
+    "requirement"
+   ]
+  },
+  {
+   "id": "F-15",
+   "question": "В предыдущем разборе предусмотрен x-symphysis-components в .openspec.yaml изменения: компонент содержит записи repo и необязательный commit. Сам разбор графа отмечает, что это ещё не реализовано.",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "агент",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "F-16, F-17",
+   "evidence": [
+    {
+     "path": "docs/analysis/requirements-traceability-graph-of-symphysis.md",
+     "quote": "компоненты и их репозитории называются в `.openspec.yaml` изменения",
+     "line": 581
+    },
+    {
+     "path": "docs/analysis/stores-and-context-pack-2026-11-02.md",
+     "quote": "x-symphysis-components:",
+     "line": 148
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "declarations",
+    "roots"
+   ]
+  },
+  {
+   "id": "F-16",
+   "question": "Какие модули входят в граф изменения?",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-01",
+    "F-02",
+    "F-09",
+    "F-15"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Все объявленные модули только участвующих в изменении репозиториев, включая модули без связи с требованиями. Так видны сама структура и отсутствие связей; чтение ограничено объявленным составом, диаграмма фильтруется отдельно.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/changes/trace-modules/intent.md",
+       "quote": "Подготовленная структура репозитория действительно используется графом.",
+       "line": 38
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Только модули, до которых дошли связи требований или зависимостей, и их структурные предки. Граф компактнее, но необнаруженный и не связанный модуль по результату не различить.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "trace/trace_graph.py",
+       "quote": "READERS = {\"decisions\": _read_records",
+       "line": 715
+      },
+      {
+       "path": "trace/trace_graph.py",
+       "quote": "# Узел — словарь: `id`, `kind` (`cap`, `req`, `scn`, `rec`, `task`, `sec`, `branch`)",
+       "line": 343
+      }
+     ]
+    },
+    {
+     "letter": "C",
+     "text": "Все модули всех локально доступных корней, даже не объявленных участниками изменения. Цена — посторонняя структура и зависимость результата от машины.",
+     "added": false,
+     "unlikely": "Доступность каталога не означает его участие в изменении; объём обхода становится неявным.",
+     "evidence": [
+      {
+       "path": "docs/analysis/requirements-traceability-graph-of-symphysis.md",
+       "quote": "компоненты и их репозитории называются в `.openspec.yaml` изменения",
+       "line": 581
+      },
+      {
+       "path": "docs/analysis/stores-and-context-pack-2026-11-02.md",
+       "quote": "x-symphysis-components:",
+       "line": 148
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "A показывает проверяемую структуру участвующих репозиториев, B прячет модули без связей, а C делает состав зависимым от локальной машины."
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [],
+   "comments": [],
+   "nodes": [
+    "declarations",
+    "module",
+    "graph"
+   ]
+  },
+  {
+   "id": "F-17",
+   "question": "Где объявлять компоненты и репозитории и как отделить их имена от локальных путей?",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-14",
+    "F-15",
+    "F-26"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Развить предусмотренный x-symphysis-components в .openspec.yaml: переносимые имена и состав изменения — там; локальное разрешение пути — отдельно. Поле commit означает снятое состояние, а не текущее содержимое рабочей копии. Точное сопряжение с OpenSpec и картой путей проверяет F-26.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "docs/analysis/requirements-traceability-graph-of-symphysis.md",
+       "quote": "компоненты и их репозитории называются в `.openspec.yaml` изменения",
+       "line": 581
+      },
+      {
+       "path": "docs/analysis/stores-and-context-pack-2026-11-02.md",
+       "quote": "x-symphysis-components:",
+       "line": 148
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Завести отдельный переносимый файл структуры изменения, оставив .openspec.yaml только OpenSpec. Связать его с существующими repo/commit; цена — дополнительный файл и решение о единственном источнике состава.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/changes/trace-modules/intent.md",
+       "quote": "Формат объявления компонентов и репозиториев",
+       "line": 43
+      }
+     ]
+    },
+    {
+     "letter": "C",
+     "text": "Выводить компонент и имя репозитория из имени каталога, README или remote Git, не требуя объявления. Меньше подготовки, но worktree, порты и разные машины могут дать разные id.",
+     "added": false,
+     "unlikely": "Путь клона не определяет смысловой компонент; remote может отсутствовать.",
+     "evidence": [
+      {
+       "path": "docs/analysis/requirements-traceability-graph-of-symphysis.md",
+       "quote": "Поэтому id модуля это `репозиторий/модуль`.",
+       "line": 508
+      },
+      {
+       "path": "docs/analysis/requirements-traceability-graph-of-symphysis.md",
+       "quote": "Id требования в корне это `capability/имя`",
+       "line": 580
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "A продолжает уже зафиксированную форму и отделяет переносимую структуру от личной карты. B добавляет второй формат, C не обеспечивает устойчивую идентичность."
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [],
+   "comments": [],
+   "nodes": [
+    "declarations",
+    "roots",
+    "repository"
+   ]
+  },
+  {
+   "id": "F-18",
+   "question": "Как устанавливать границу модуля и принадлежность файла без правил, зашитых под symphysis?",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-02",
+    "F-09",
+    "F-13",
+    "F-26"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "В объявленных репозиториях находить README с валидным name/kind; граница — каталог README, файл относится к ближайшей содержащей границе. Посторонний README модулем не становится; повторы имён и конфликтующие объявления дают сигнал. Область поиска и исключения проверяет F-26.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/specs/module-declaration/spec.md",
+       "quote": "README.md`, который начинается frontmatter YAML с полями `name`",
+       "line": 9
+      },
+      {
+       "path": "README.md",
+       "quote": "[openspec/](openspec/) — контур разработки: изменения и мастер-спеки; внутри лежит модуль схемы",
+       "line": 26
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Явно перечислять пути модулей рядом с составом репозиториев, а имя и род читать из README. Обход меньше, но появление или перенос модуля требует правки ещё и перечня.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "docs/analysis/requirements-traceability-graph-of-symphysis.md",
+       "quote": "компоненты и их репозитории называются в `.openspec.yaml` изменения",
+       "line": 581
+      },
+      {
+       "path": "docs/analysis/stores-and-context-pack-2026-11-02.md",
+       "quote": "x-symphysis-components:",
+       "line": 148
+      }
+     ]
+    },
+    {
+     "letter": "C",
+     "text": "Повторить проверку структуры ядра: первый уровень плюс специальный openspec/schemas/symphysis. Это быстро для догфудинга, но такая раскладка становится условием продукта.",
+     "added": false,
+     "unlikely": "У клиента могут быть вложенные модули в других каталогах и другая схема.",
+     "evidence": [
+      {
+       "path": "installer/scripts/sync-payload.js",
+       "quote": "Исходник разложен по модулям (F-18 A), установка плоская (F-19 A)",
+       "line": 26
+      },
+      {
+       "path": "tests/repository_structure.py",
+       "quote": "SCHEMA_MODULE = \"openspec/schemas/symphysis\"",
+       "line": 17
+      }
+     ],
+     "deviation": "F-02"
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "A использует подготовленные объявления без списка каталогов ядра; B дублирует состав модулей, C переносит локальную раскладку в продукт."
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [],
+   "comments": [],
+   "nodes": [
+    "readmes",
+    "module",
+    "file"
+   ]
+  },
+  {
+   "id": "F-19",
+   "question": "Как отличать связь «модуль реализует требование» от упоминания прежнего кода в улике?",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-03",
+    "F-05",
+    "F-12"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Подтверждённую связь брать из явного соглашения в исходных артефактах, где названы требование и модуль или файл реализации. Улики и цепочки задача—сценарий—требование могут давать кандидатов с происхождением, но не превращаются в satisfies автоматически. Цена — дополнительная явная запись при проектировании или реализации; место и форма этой записи предстоит определить.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/changes/trace-modules/intent.md",
+       "quote": "наличие улики или упоминания пути само по себе не выдаётся за доказательство реализации требования.",
+       "line": 35
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Вычислять satisfies автоматически через требование—запись журнала—улика—файл—модуль, сохраняя путь вывода. Ручных записей меньше, но код, который только исследовали или собирались заменить, станет показан как реализация.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "consequences/journal_sites.py",
+       "quote": "Места кода из журнала: файлы из улик выбранных вариантов решённых развилок, кроме проб и фактов",
+       "line": 2
+      },
+      {
+       "path": "consequences/journal_sites.py",
+       "quote": "return not path.lower().endswith(\".md\")",
+       "line": 42
+      }
+     ],
+     "deviation": "F-03"
+    },
+    {
+     "letter": "C",
+     "text": "Собирать только кандидатов из существующих артефактов; подтверждённых связей реализации в этой поставке не вводить. Нет нового соглашения, но вопрос о том, какой модуль реализует требование, останется без подтверждённого ответа.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/changes/trace-modules/intent.md",
+       "quote": "В графе представлены связи модулей с реализуемыми требованиями",
+       "line": 35
+      }
+     ],
+     "deviation": "F-03"
+    }
+   ],
+   "antipodes": [
+    {
+     "option": "C",
+     "other": "F-25.A"
+    }
+   ],
+   "recommendation": {
+    "option": "A",
+    "why": "A даёт проверяемые связи и сохраняет полезные подсказки; B подменяет факт реализации уликой о старом коде, C откладывает часть поставленной цели."
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [],
+   "comments": [],
+   "nodes": [
+    "artifacts",
+    "relation",
+    "requirement",
+    "file"
+   ]
+  },
+  {
+   "id": "F-20",
+   "question": "Откуда брать зависимости модулей, состоящих из кода, JSON, markdown и шаблонов?",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-03",
+    "F-05",
+    "F-08"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Подтверждённые зависимости объявлять в файлах-источниках по одному соглашению; импорты и упоминания могут предлагать кандидатов с объяснением. Нет обязательного парсера для каждого языка, но зависимости нужно поддерживать вместе с кодом. Место объявления, направление и виды связи уточняются в проектировании.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "docs/analysis/requirements-traceability-graph-of-symphysis.md",
+       "quote": "это часть компонента с одной ответственностью, у которой есть имя и граница",
+       "line": 482
+      },
+      {
+       "path": "docs/analysis/requirements-traceability-graph-of-symphysis.md",
+       "quote": "Компонент и репозиторий это разные уровни.",
+       "line": 481
+      },
+      {
+       "path": "docs/analysis/requirements-traceability-graph-of-symphysis.md",
+       "quote": "Доменный отвечает за область, технический ни за какую",
+       "line": 483
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Разбирать импорты Python и TypeScript как основной источник зависимостей; для остальных файлов дать явное объявление. Меньше ручного труда на двух языках, но нужны правила разрешения импортов, алиасов и смешанных вызовов.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/changes/archive/2026-11-07-module-structure/research/F-27.md",
+       "quote": "cli -> decisions: 25 ссылок, например tools/journal_cli.py:31 _valid_journal -> journal_model.load_journal",
+       "line": 45
+      }
+     ]
+    },
+    {
+     "letter": "C",
+     "text": "Править зависимости непосредственно в req-graph.json. Быстро для первого примера, но производный граф становится отдельным редактируемым источником.",
+     "added": false,
+     "unlikely": "Противоречит правилу производного графа; пересборка сотрёт такие зависимости.",
+     "evidence": [
+      {
+       "path": "openspec/changes/trace-modules/intent.md",
+       "quote": "без ручного наполнения JSON",
+       "line": 37
+      }
+     ],
+     "deviation": "F-05"
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "A покрывает модули любого рода без универсального анализа кода; B расширяет поставку двумя языковыми анализаторами, C нарушает единый источник данных."
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [],
+   "comments": [],
+   "nodes": [
+    "dependency",
+    "readmes",
+    "file"
+   ]
+  },
+  {
+   "id": "F-21",
+   "question": "Что показывает граф, когда репозиторий недоступен, README некорректен или ссылка на модуль неоднозначна?",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-05",
+    "F-09",
+    "F-17",
+    "F-18"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Сигнал с источником и причиной; корректная часть графа остаётся доступной. Неразрешённая связь не назначается подходящему модулю по догадке; недоступный репозиторий и пустой репозиторий различаются. Ошибки самого входного JSON и вызова по-прежнему могут быть отказом.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "docs/GUIDE.md",
+       "quote": "Повторный id узла и неразрешённая ссылка не пропадают молча",
+       "line": 596
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Останавливать всю сборку при любой проблеме структуры. Граф всегда полный либо его нет, но один недоступный соседний репозиторий блокирует работу со всеми остальными.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/changes/trace-modules/intent.md",
+       "quote": "проверки остаются сигналами.",
+       "line": 37
+      }
+     ],
+     "deviation": "F-05"
+    },
+    {
+     "letter": "C",
+     "text": "Молча пропускать негодные модули и ссылки. Граф продолжит собираться, но пропуск будет выглядеть как отсутствие модуля или зависимости.",
+     "added": false,
+     "unlikely": "Человек не отличит отсутствие связи от ошибки входных данных.",
+     "evidence": [
+      {
+       "path": "openspec/changes/trace-modules/intent.md",
+       "quote": "Происхождение связей прослеживается до файлов-источников",
+       "line": 35
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "A сохраняет сигнальный характер проверок и видимость дыр; B вводит новый блокиратор, C скрывает неполноту результата."
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [],
+   "comments": [],
+   "nodes": [
+    "signals",
+    "roots",
+    "module"
+   ]
+  },
+  {
+   "id": "F-22",
+   "question": "Как снимок сохраняет структурную ось после переезда или изменения модулей?",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-05",
+    "F-11",
+    "F-27"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "При freeze сохранять собранную структуру, происхождение связей и достаточные данные источников для её проверки. Снимок описывает состояние заморозки; проверка живого графа может назвать дрейф, но не подменяет им историю. Существующие архивы автоматически не переписываются.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "trace/trace_graph.py",
+       "quote": "SOURCE_FILES = {\"decisions\": \"decisions.json\"",
+       "line": 1035
+      },
+      {
+       "path": "trace/trace_graph.py",
+       "quote": "return [{\"prefix\": no_paths(prefix, root), \"commit\": root_commit(folder)}",
+       "line": 1751
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Для воспроизведения перечитывать Git по сохранённым коммитам каждого репозитория. Точная история файлов доступна при наличии объектов Git; незакоммиченные изменения требуют отдельного решения, а недоступный клон осложняет просмотр.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "trace/trace_graph.py",
+       "quote": "\"commit\": root_commit(folder)",
+       "line": 1751
+      }
+     ]
+    },
+    {
+     "letter": "C",
+     "text": "В снимке сохранять только ссылки на README, а структуру при проверке брать из текущей рабочей копии. Файл меньше, но после переезда модулей архив покажет новое состояние вместо прежнего.",
+     "added": false,
+     "unlikely": "Противоречит смыслу замороженного снимка, ради которого граф уже сохраняется.",
+     "evidence": [
+      {
+       "path": "openspec/changes/trace-modules/intent.md",
+       "quote": "заморозкой графа",
+       "line": 37
+      }
+     ],
+     "deviation": "F-05"
+    }
+   ],
+   "antipodes": [
+    {
+     "option": "A",
+     "other": "F-23.C"
+    }
+   ],
+   "recommendation": {
+    "option": "A",
+    "why": "A позволяет читать историческую структуру независимо от нынешней раскладки; B требует доступной истории всех репозиториев, C делает снимок зависимым от живого кода."
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [],
+   "comments": [],
+   "nodes": [
+    "snapshot",
+    "readmes",
+    "graph"
+   ]
+  },
+  {
+   "id": "F-23",
+   "question": "Как поступить с форматом графа и уже сохранёнными снимками без модулей?",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-05",
+    "F-11",
+    "F-27"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Ввести явно различимую схему расширенного графа и чтение прежнего поддерживаемого формата без автоматической правки архивов. Старый снимок не обещает структурных связей; ранее снятые с поддержки форматы не оживляются автоматически. Цена — две ветки чтения, если понадобится новый номер.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "trace/trace_graph.py",
+       "quote": "GRAPH_FORMAT = 2",
+       "line": 352
+      },
+      {
+       "path": "trace/trace_graph.py",
+       "quote": "data[\"format\"] != GRAPH_FORMAT",
+       "line": 1066
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Оставить format 2, добавив необязательные поля и новые kind. Изменений меньше, но старые потребители должны корректно игнорировать неизвестные виды; это нужно подтвердить исследованием F-27.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "trace/trace_graph.py",
+       "quote": "READERS = {\"decisions\": _read_records",
+       "line": 715
+      },
+      {
+       "path": "trace/trace_graph.py",
+       "quote": "# Узел — словарь: `id`, `kind` (`cap`, `req`, `scn`, `rec`, `task`, `sec`, `branch`)",
+       "line": 343
+      }
+     ]
+    },
+    {
+     "letter": "C",
+     "text": "Пересобрать все архивные снимки текущим кодом и текущей структурой репозиториев. Один формат без ветки чтения, но снимки перестанут отражать исходный момент; это миграция истории отдельным объёмом.",
+     "added": false,
+     "unlikely": "Ретроспективная структура по текущему коду не является структурой на дату архивации.",
+     "evidence": [
+      {
+       "path": "trace/trace_graph.py",
+       "quote": "SOURCE_FILES = {\"decisions\": \"decisions.json\"",
+       "line": 1035
+      },
+      {
+       "path": "trace/trace_graph.py",
+       "quote": "return [{\"prefix\": no_paths(prefix, root), \"commit\": root_commit(folder)}",
+       "line": 1751
+      }
+     ]
+    }
+   ],
+   "antipodes": [
+    {
+     "option": "C",
+     "other": "F-22.A"
+    }
+   ],
+   "recommendation": {
+    "option": "A",
+    "why": "A обозначает возможности снимка и сохраняет историю. B безопасен лишь при доказанной совместимости потребителей, C переписывает исторические данные."
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [],
+   "comments": [],
+   "nodes": [
+    "snapshot",
+    "graph"
+   ]
+  },
+  {
+   "id": "F-24",
+   "question": "Что должно появиться в requirementDiagram и существующих выборках графа?",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-05",
+    "F-16",
+    "F-19",
+    "F-20"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Расширить существующий requirementDiagram структурными element и связями; при выборе требования или capability показывать связанную структуру с необходимыми предками. Полный обход зависимостей не втягивать в любую выборку автоматически; предел размера остаётся явным. Новая панель плагина не требуется.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "trace/trace_graph.py",
+       "quote": "DIAGRAM = {",
+       "line": 93
+      },
+      {
+       "path": "openspec/changes/trace-modules/intent.md",
+       "quote": "экспортом `requirementDiagram`",
+       "line": 37
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Оставить requirementDiagram поведенческим, а структуру выводить отдельной flowchart-диаграммой. Каждая схема проще, но оси и связи приходится сопоставлять между двумя представлениями.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "docs/analysis/requirements-traceability-graph-of-symphysis.md",
+       "quote": "У графа две оси: структура (где код) и поведение (что делает система)",
+       "line": 474
+      }
+     ]
+    },
+    {
+     "letter": "C",
+     "text": "В этой поставке добавить структуру только в JSON; экспорт оставить прежним. Объём меньше, но существующий путь просмотра не покажет новые узлы.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/changes/trace-modules/intent.md",
+       "quote": "экспортом `requirementDiagram`",
+       "line": 37
+      }
+     ],
+     "deviation": "F-05"
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "A расширяет уже доступный путь просмотра и сохраняет связь двух осей. B разводит их по картинкам, C оставляет критерий экспорта невыполненным."
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [],
+   "comments": [],
+   "nodes": [
+    "diagram",
+    "graph",
+    "requirement"
+   ]
+  },
+  {
+   "id": "F-25",
+   "question": "Какая проверка доказывает, что цель достигнута на самом symphysis?",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-06",
+    "F-19",
+    "F-20",
+    "F-24"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Собрать граф на настоящих README ядра и артефактах этого изменения: показать подтверждённую связь одного требования с несколькими модулями и зависимость между модулями; сохранить воспроизводимый след. Дополнительно — фикстура нескольких репозиториев с одинаковыми именами модулей и проверка установленного инструмента, JSON, freeze/check и mermaid. Новая функциональность плагинов не нужна.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/changes/trace-modules/intent.md",
+       "quote": "На модулях самого symphysis выполнена и сохранена воспроизводимая проверка",
+       "line": 38
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Включить реальные клоны ядра и всех портов плагина и пройти весь межрепозиторный сценарий на них. Ближе к рабочему масштабу, но потребуется согласование версий нескольких рабочих веток и больший объём подготовки.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "docs/analysis/requirements-traceability-graph-of-symphysis.md",
+       "quote": "Имя модуля единственно только внутри репозитория.",
+       "line": 508
+      }
+     ]
+    },
+    {
+     "letter": "C",
+     "text": "Ограничиться искусственными фикстурами и счётчиком новых узлов. Проще изолировать тест, но подготовленная структура самого symphysis не будет проверена.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/changes/trace-modules/intent.md",
+       "quote": "Подготовленная структура репозитория действительно используется графом.",
+       "line": 38
+      }
+     ],
+     "deviation": "F-06"
+    }
+   ],
+   "antipodes": [
+    {
+     "option": "A",
+     "other": "F-19.C"
+    }
+   ],
+   "recommendation": {
+    "option": "A",
+    "why": "A проверяет исходную цель на настоящих модулях и изолирует межрепозиторные края фикстурой. B зависит от соседних разработок, C не проверяет догфудинг."
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [],
+   "comments": [],
+   "nodes": [
+    "dogfood",
+    "snapshot",
+    "diagram"
+   ]
+  },
+  {
+   "id": "F-26",
+   "question": "Как текущий форк хранит расширения metadata изменения и как продукт может разрешить объявленные репозитории и модули?",
+   "kind": "развилка",
+   "status": "припаркован",
+   "addressee": "агент",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [
+    {
+     "addressee": "агент",
+     "text": "В research проверить чтением и пробой текущего закреплённого форка: сохранность x-symphysis-components при new/status/instructions/archive и допустимую форму расширения .openspec.yaml. В roots/roots.py, settings/symphysis_config.py, installer/lib/ и tests/repository_structure.py найти действующие источники имён и локальных путей, вложенные модули, игнорируемые каталоги и режим без Git. Сопоставить docs/analysis/stores-and-context-pack-2026-11-02.md с кодом; не предполагать реализованными repos или store-механики из разбора. Личные symphysis.yaml и .symphysis/tools/journal-roots.json не читать. Вернуть находки с путями, цитатами и следом пробы; конструкцию вынести во второй круг."
+    }
+   ],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "docs/analysis/requirements-traceability-graph-of-symphysis.md",
+     "quote": "компоненты и их репозитории называются в `.openspec.yaml` изменения",
+     "line": 581
+    },
+    {
+     "path": "docs/analysis/stores-and-context-pack-2026-11-02.md",
+     "quote": "x-symphysis-components:",
+     "line": 148
+    },
+    {
+     "path": "installer/scripts/sync-payload.js",
+     "quote": "Исходник разложен по модулям (F-18 A), установка плоская (F-19 A)",
+     "line": 26
+    },
+    {
+     "path": "tests/repository_structure.py",
+     "quote": "SCHEMA_MODULE = \"openspec/schemas/symphysis\"",
+     "line": 17
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "declarations",
+    "roots",
+    "readmes"
+   ]
+  },
+  {
+   "id": "F-27",
+   "question": "Какие потребители формата графа, правила снимка и списки установки затронет новая структурная ось?",
+   "kind": "развилка",
+   "status": "припаркован",
+   "addressee": "агент",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [
+    {
+     "addressee": "агент",
+     "text": "В research перечислить читателей JSON и kinds, фильтры requirementDiagram, check/freeze/base/sources/roots в trace/trace_graph.py; тестовые фикстуры и текущие форматы архивов; проводку установки и списки файлов ядра/плагина. Проверить на временных данных: изменение README после freeze, переезд модуля, отсутствие внешнего клона и чтение прежнего поддерживаемого снимка. Не менять реальные архивы или установку. Оценить, можно ли дополнить format 2 без ложной совместимости, какие данные нужны для воспроизводимости и какой минимальный dogfood связывает реальные требования с несколькими модулями. Выдать отчёт с уликами и следами, не принимать проектные решения."
+    }
+   ],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "trace/trace_graph.py",
+     "quote": "GRAPH_FORMAT = 2",
+     "line": 352
+    },
+    {
+     "path": "trace/trace_graph.py",
+     "quote": "data[\"format\"] != GRAPH_FORMAT",
+     "line": 1066
+    },
+    {
+     "path": "trace/trace_graph.py",
+     "quote": "SOURCE_FILES = {\"decisions\": \"decisions.json\"",
+     "line": 1035
+    },
+    {
+     "path": "trace/trace_graph.py",
+     "quote": "return [{\"prefix\": no_paths(prefix, root), \"commit\": root_commit(folder)}",
+     "line": 1751
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "snapshot",
+    "graph",
+    "diagram",
+    "dogfood"
+   ]
+  }
+ ]
+}
