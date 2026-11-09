@@ -79,6 +79,10 @@ const MEASURE = `(() => {
       }).map(b => [a.id || a.dataset.theme || a.textContent, b.id || b.dataset.theme || b.textContent]));
     })(),
     background: getComputedStyle(document.body).backgroundColor,
+    optionWidths: [...document.querySelectorAll('label.opt')].filter(n => n.offsetWidth).map(n => ({
+      row: n.getBoundingClientRect().width, text: n.querySelector('.t').getBoundingClientRect().width,
+      radio: !!n.querySelector('input[type=radio]')
+    })),
     links: [...document.querySelectorAll('a.filelink')].map((a) => ({ href: a.href, text: a.textContent })),
     codes: [...document.querySelectorAll('.card code')].map((c) => c.textContent),
     attack: { groups: [...document.querySelectorAll('#viewAttack .attack-rows h2 code')].map((n) => n.textContent),

@@ -160,6 +160,17 @@ def test_panel_stays_on_in_the_snapshot_layout(tmp_path):
     assert r["cards"]["width"] <= 1400 - r["panel"]["width"] + 1
 
 
+@pytest.mark.parametrize("width", [1397, 800])
+@pytest.mark.parametrize("layout", ["snapshot", "journal"])
+def test_option_text_uses_the_row_width(tmp_path, width, layout):
+    r = browser(page(tmp_path), "layout:" + layout, size=(width, 966))
+    assert r["optionWidths"]
+    for option in r["optionWidths"]:
+        assert option["text"] >= option["row"] - 45, option
+        assert option["radio"] == (layout == "journal")
+    assert r["errors"] == []
+
+
 def test_dragged_border_is_remembered(tmp_path):
     html = page(tmp_path)
     r = browser(html, "panel", "drag:-100", "reload")
