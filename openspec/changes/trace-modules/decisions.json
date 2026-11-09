@@ -2,7 +2,7 @@
  "title": "Журнал решений: trace-modules",
  "source": "decisions.json",
  "generated": "2026-11-09",
- "intro": "Пути улик считаются от корня этого worktree; переносимый файл корней — probes/journal-roots.json. Материалы: intent.md, разбор графа (Т8, Т20, Т21 и модель связей), README и мастер-спеки модулей, текущий сборщик trace, code-sites, обход структуры в тестах и сборка payload. F-01–F-07 — критерии постановки, F-08–F-15 — наблюдения по файлам, F-16–F-25 — развилки первого круга, F-26–F-27 — парковки исследованию. Рекомендации не являются решениями; все decision пока null. Критерии intent.md сформулированы по поручению владельца: наличие факта постановки не превращает конкретную конструкцию в принятое решение. Порядок перспектив: текущее состояние → минимальный состав → границы → отказы → оставшиеся вопросы.",
+ "intro": "Пути улик считаются от корня этого worktree; переносимый файл корней — probes/journal-roots.json. Материалы: intent.md, разбор графа (Т8, Т20, Т21 и модель связей), README и мастер-спеки модулей, текущий сборщик trace, code-sites, обход структуры в тестах и сборка payload. F-01–F-07 — критерии постановки, F-08–F-15 — наблюдения по файлам, F-16–F-25 — развилки первого круга, F-26–F-27 — парковки исследованию. Рекомендации не являются решениями; все decision пока null. Критерии intent.md сформулированы по поручению владельца: наличие факта постановки не превращает конкретную конструкцию в принятое решение. Порядок перспектив: текущее состояние → минимальный состав → границы → отказы → оставшиеся вопросы.\n\nКруг 2, по слову владельца 2026-11-09: F-28 — дополнительное наблюдение о проводке настоящего требования; F-29–F-37 — уточнения после research. Принятые решения F-16–F-26 сохранены; две новые пары антиподов показывают варианты, которые отменили бы F-17.A. Развилки не вводят реализацию. Политика отсутствия модулей и различие концептуального scheme/текстового requirementDiagram сохранены.",
  "notes": [
   {
    "date": "2026-11-09",
@@ -19,6 +19,14 @@
   {
    "date": "2026-11-09",
    "text": "Research завершён: F-26 — 28 находок, F-27 — 24, по 3 отрицания с поиском; цитаты сверены главной нитью. Finding обеих парковок внесены. F-26 сохраняет выбранный человеком вариант A; F-27 из вопроса исследования стала фактом с наблюдениями, решения человека у неё не появилось. Пробы временные, их ограничения сохранены. Для продолжения второго круга запрошено слово человека по instruction research; новые конструкции до ответа не внесены."
+  },
+  {
+   "date": "2026-11-09",
+   "text": "Круг 2 начат по слову владельца о втором круге после research: «давай запустим еще круг.»"
+  },
+  {
+   "date": "2026-11-09",
+   "text": "Круг 2 подготовлен: новых фактов 1, новых развилок 9, новых решений 0, парковок агенту 0, новых пар антиподов 2 (обе с выбранным F-17.A). Перспективы пройдены; ожидается просмотр и решения человека. Круг ещё не объявлен законченным."
   }
  ],
  "records": [
@@ -659,7 +667,16 @@
      ]
     }
    ],
-   "antipodes": [],
+   "antipodes": [
+    {
+     "option": "A",
+     "other": "F-31.C"
+    },
+    {
+     "option": "A",
+     "other": "F-36.D"
+    }
+   ],
    "recommendation": {
     "option": "A",
     "why": "A продолжает уже зафиксированную форму и отделяет переносимую структуру от личной карты. B добавляет второй формат, C не обеспечивает устойчивую идентичность."
@@ -1582,6 +1599,870 @@
     "graph",
     "diagram",
     "dogfood"
+   ]
+  },
+  {
+   "id": "F-28",
+   "question": "Код cmd_render_html явно связывает модули: CLI получает карту через roots.file_links, передаёт её viewer.render_html, а шаблон страницы берёт адрес из LINKS.files. Это уточняет найденный F-27 пример требования о ссылках; полный новый прогон CLI и DOM этим чтением не подменяется.",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "агент",
+   "depends_on": [
+    "F-27"
+   ],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "Уточняет опору F-25; полная новая проверка CLI/DOM и связи нового графа остаются задачами реализации.",
+   "evidence": [
+    {
+     "path": "cli/journal_cli.py",
+     "quote": "links = {\"root\": project_href(roots, args.out), \"files\": file_links(",
+     "line": 269
+    },
+    {
+     "path": "cli/journal_cli.py",
+     "quote": "html = render_html(journal, args.template, attacks=attacks,",
+     "line": 271
+    },
+    {
+     "path": "cli/journal_cli.py",
+     "quote": "help_snapshot=snapshot, links=links)",
+     "line": 273
+    },
+    {
+     "path": "viewer/playground-template.html",
+     "quote": "const href = LINKS.files[path];",
+     "line": 629
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "dogfood",
+    "file",
+    "relation"
+   ]
+  },
+  {
+   "id": "F-29",
+   "question": "На каком шаге модель впервые выясняет, есть ли модули в репозиториях изменения, и когда возвращается к этому вопросу?",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-16",
+    "F-18",
+    "F-26"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "В начале decisions, при чтении материалов по intent: назвать участвующие репозитории, проверить доступность и объявления README, сообщить результат. Research уточняет недоступное и вновь найденные репозитории; повтор анализа нужен при изменении состава или объявлений, а не на каждом обращении к модели. Это развитие существующих шагов без нового артефакта конвейера.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "decisions/skills/symphysis-brainstorm/SKILL.md",
+       "quote": "Затем выполни запрос данных: прочитай запрос человека, каталог изменения, файлы и каталоги,",
+       "line": 122
+      },
+      {
+       "path": "openspec/changes/trace-modules/research/F-26.md",
+       "quote": "4а. Текущие места чтения исходников: brainstorm, research и общий workflow propose",
+       "line": 54
+      },
+      {
+       "path": "openspec/changes/trace-modules/answers/2026-11-09.md",
+       "quote": "тут важно уточнить, что репозиторий symphysis Только для примера",
+       "line": 2
+      },
+      {
+       "path": "openspec/changes/trace-modules/answers/2026-11-09.md",
+       "quote": "думаю, что нужно определить момент, когда модель анализирует репозиторий",
+       "line": 13
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Выделить обязательный шаг анализа репозиториев перед decisions со своим артефактом и зависимостями. Момент и результат явно видны в статусе, но меняются схема, справка и реестр входов графа; даже изменение без модулей проходит ещё один шаг.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/schemas/symphysis/schema.yaml",
+       "quote": "- id: decisions",
+       "line": 14
+      },
+      {
+       "path": "openspec/changes/trace-modules/intent.md",
+       "quote": "Формат объявления компонентов и репозиториев",
+       "line": 43
+      }
+     ]
+    },
+    {
+     "letter": "C",
+     "text": "Выяснять наличие модулей только при составлении tasks или подготовке freeze. Ранний цикл короче, но проектирование до этого не использует структурную ось, а найденные модули могут заставить пересмотреть уже готовые артефакты.",
+     "added": false,
+     "unlikely": "Откладывает заявленный анализ репозиториев до конца проектирования, когда исправления дороже.",
+     "evidence": [
+      {
+       "path": "openspec/changes/trace-modules/intent.md",
+       "quote": "Граф должен позволять выяснить, какие модули реализуют требование",
+       "line": 21
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "A встраивает анализ туда, где уже читаются исходники, и сохраняет research для уточнений. B добавляет обязательный шаг всему процессу, C слишком поздно даёт структуру для проектирования."
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [],
+   "comments": [],
+   "nodes": [
+    "declarations",
+    "roots",
+    "readmes"
+   ]
+  },
+  {
+   "id": "F-30",
+   "question": "Что сохранять как результат анализа репозитория, чтобы «модулей нет» отличалось от «ещё не смотрели» и «нет доступа»?",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-17",
+    "F-21",
+    "F-26",
+    "F-29"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "В записи repo расширения x-symphysis-components хранить результат обследования: модули обнаружены, модулей нет, репозиторий недоступен либо ещё не обследован. Сам список модулей не дублировать: живой граф читает их README. При расхождении нового чтения с записанным результатом — сигнал и уточнение анализа; отсутствие metadata не считается доказанным отсутствием модулей.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/changes/trace-modules/answers/2026-11-09.md",
+       "quote": "тут важно уточнить, что репозиторий symphysis Только для примера",
+       "line": 2
+      },
+      {
+       "path": "openspec/changes/trace-modules/answers/2026-11-09.md",
+       "quote": "думаю, что нужно определить момент, когда модель анализирует репозиторий",
+       "line": 13
+      },
+      {
+       "path": "openspec/changes/trace-modules/research/F-26.md",
+       "quote": "обязательный машинный или инструкционный выход «модули есть/нет»",
+       "line": 74
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Сохранять отдельный инвентарный файл изменения с состоянием обследования, списком модулей и источниками. Граф читает его и сверяет с README; цена — новый артефакт данных, дополнительный цикл обновления и две согласуемые формы сведений о модулях.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/changes/trace-modules/intent.md",
+       "quote": "Граф остаётся производным от источников",
+       "line": 37
+      }
+     ]
+    },
+    {
+     "letter": "C",
+     "text": "Сообщать результат только текстом в журнале или чате; структурные узлы каждый раз брать прямым обходом репозиториев. Нет нового машинного состояния обследования, но инструмент не сможет отличить не сделанный моделью анализ от осознанного результата «модулей нет».",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "decisions/skills/symphysis-brainstorm/SKILL.md",
+       "quote": "Затем выполни запрос данных: прочитай запрос человека, каталог изменения, файлы и каталоги,",
+       "line": 122
+      },
+      {
+       "path": "openspec/changes/trace-modules/research/F-26.md",
+       "quote": "4а. Текущие места чтения исходников: brainstorm, research и общий workflow propose",
+       "line": 54
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "A сохраняет существенное различие состояний рядом с уже выбранным составом репозиториев и не создаёт второй список модулей. B добавляет синхронизацию инвентаря, C теряет проверяемый результат работы модели."
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [],
+   "comments": [],
+   "nodes": [
+    "declarations",
+    "roots",
+    "readmes",
+    "signals"
+   ]
+  },
+  {
+   "id": "F-31",
+   "question": "Как связать переносимое имя repo из metadata с его локальным каталогом без ещё не реализованной настройки repos?",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-17",
+    "F-21",
+    "F-26"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "В записи repo явно назвать псевдоним корня из существующей локальной карты корней улик; пустой префикс может обозначать текущий проект. Сборщик использует тот же resolver и явный --roots, когда нужен другой файл карты. Репозиториями считаются только объявленные repo, а не каждый префикс улик. В metadata и снимок абсолютные пути не входят.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "roots/roots.py",
+       "quote": "Префикс пути улики -> каталог — только из файла корней",
+       "line": 71
+      },
+      {
+       "path": "openspec/changes/trace-modules/research/F-26.md",
+       "quote": "синтетический repos отклонён",
+       "line": 33
+      },
+      {
+       "path": "openspec/changes/trace-modules/research/F-26.md",
+       "quote": "вложенный путь разрешается по самому длинному префиксу",
+       "line": 35
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Реализовать отдельную личную карту repos в symphysis.yaml, как предполагал старый разбор. Имена репозиториев отделены от префиксов улик, но потребуются новая группа настроек, правило поиска файла при локальной/глобальной установке и связь двух карт.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "docs/analysis/stores-and-context-pack-2026-11-02.md",
+       "quote": "Имя и путь: `repos:` в `symphysis.yaml`",
+       "line": 159
+      },
+      {
+       "path": "settings/symphysis_config.py",
+       "quote": "settings.signals.append(f\"{FILE_NAME}: неизвестный ключ {group}\")",
+       "line": 87
+      }
+     ]
+    },
+    {
+     "letter": "C",
+     "text": "Писать абсолютный каталог непосредственно в запись repo изменения. Нет второй локальной карты, но change и снимок привязываются к машине; это снимает F-17.A в части отделения локальных путей от переносимых данных.",
+     "added": false,
+     "unlikely": "Противоречит уже выбранному разделению переносимых имён и личных путей; затрудняет передачу изменения.",
+     "evidence": [
+      {
+       "path": "openspec/changes/trace-modules/intent.md",
+       "quote": "локальные пути, worktree и контекст-пакет разработки не становятся требованиями",
+       "line": 27
+      }
+     ]
+    }
+   ],
+   "antipodes": [
+    {
+     "option": "C",
+     "other": "F-17.A"
+    }
+   ],
+   "recommendation": {
+    "option": "A",
+    "why": "A использует работающий механизм разрешения путей с явной привязкой repo и не расширяет личные настройки. B чище разделяет роли ценой новой подсистемы, C делает данные изменения машинозависимыми."
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [],
+   "comments": [],
+   "nodes": [
+    "declarations",
+    "roots",
+    "repository"
+   ]
+  },
+  {
+   "id": "F-32",
+   "question": "По какому набору файлов искать README модулей на любой глубине, включая репозиторий без Git?",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-18",
+    "F-21",
+    "F-26",
+    "F-31"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Обходить рабочее дерево объявленного репозитория, включая сам корень, без обязательного Git. Исключить служебные каталоги вроде .git, node_modules и установленной .symphysis; дополнительные исключения задавать переносимо для repo. Принадлежность определяется валидными объявлениями README, а не именами src/modules или правилом первого уровня. Игнорирование файла Git само по себе модулем его не делает и не отменяет.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/changes/trace-modules/research/F-26.md",
+       "quote": "обход строится из Git index;",
+       "line": 47
+      },
+      {
+       "path": "openspec/changes/trace-modules/research/F-26.md",
+       "quote": "каталог без Git приводит к exit 128",
+       "line": 52
+      },
+      {
+       "path": "openspec/changes/trace-modules/intent.md",
+       "quote": "README, подготовленные в `module-structure`, должны стать опорой",
+       "line": 23
+      },
+      {
+       "path": "openspec/changes/trace-modules/answers/2026-11-09.md",
+       "quote": "тут важно уточнить, что репозиторий symphysis Только для примера",
+       "line": 2
+      },
+      {
+       "path": "openspec/changes/trace-modules/answers/2026-11-09.md",
+       "quote": "думаю, что нужно определить момент, когда модель анализирует репозиторий",
+       "line": 13
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "В Git-репозитории брать отслеживаемые и неигнорируемые новые файлы, а без Git применять обход рабочего дерева. Это сокращает чтение сборок и зависимостей, но .gitignore и наличие Git становятся частью правил обнаружения: один физический набор README может дать разные результаты.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "tests/repository_structure.py",
+       "quote": "out = subprocess.run([\"git\", \"-C\", str(self.root), \"ls-files\", \"-z\"]",
+       "line": 30
+      },
+      {
+       "path": "openspec/changes/trace-modules/research/F-26.md",
+       "quote": "не добавленные туда файлы, включая игнорируемые в пробе, не участвуют",
+       "line": 47
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "A поддерживает произвольные репозитории и одну семантику объявления независимо от Git. B экономит обход, но связывает модульность с политикой игнорирования и двумя способами получения файлов."
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [],
+   "comments": [],
+   "nodes": [
+    "readmes",
+    "module",
+    "file"
+   ]
+  },
+  {
+   "id": "F-33",
+   "question": "Нужны ли в графе все файлы каждого обнаруженного модуля или только файлы, участвующие в трассировке?",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-02",
+    "F-16",
+    "F-18",
+    "F-32"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Показывать все объявленные модули, но узлы файлов создавать для явно названных файлов реализации, источников связей и объявлений, которые граф использует. Принадлежность файла — ближайшая граница модуля. Неназванные исходники не перечисляются тысячами узлов; это не меняет выбранный состав модулей.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/changes/trace-modules/intent.md",
+       "quote": "Ось структуры отражает различие компонента, репозитория, модуля и файла",
+       "line": 34
+      },
+      {
+       "path": "openspec/changes/trace-modules/intent.md",
+       "quote": "Происхождение связей прослеживается до файлов-источников",
+       "line": 35
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Добавлять каждый файл каждого модуля в пределах выбранного обхода и исключений. Видна полная файловая структура, но размер JSON и проверка зависят от числа исходников; фильтры диаграммы должны отсекать несвязанное.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/changes/trace-modules/intent.md",
+       "quote": "Файл принадлежит одному модулю",
+       "line": 34
+      }
+     ]
+    },
+    {
+     "letter": "C",
+     "text": "Ограничиться узлами модулей и рёбрами к требованиям; отдельные файлы оставить только строками происхождения. Граф меньше, но уровень файла как узла структурной оси не реализуется.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/changes/trace-modules/intent.md",
+       "quote": "Ось структуры отражает различие компонента, репозитория, модуля и файла",
+       "line": 34
+      }
+     ],
+     "deviation": "F-02"
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "A сохраняет всю модульную структуру и проверяемые пути нужных связей без превращения req graph в полный файловый индекс. B добавляет объём вне основной трассировки, C срезает заявленный уровень файла."
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [],
+   "comments": [],
+   "nodes": [
+    "module",
+    "file",
+    "graph"
+   ]
+  },
+  {
+   "id": "F-34",
+   "question": "Где автор явно объявляет связь требования с модулем или файлом реализации?",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-03",
+    "F-04",
+    "F-19",
+    "F-33"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "В блоке самого требования дельты: отдельная распознаваемая аннотация со списком repo/module и, при необходимости, файлов реализации. Один блок может называть несколько модулей; при sync аннотация переносится вместе с требованием. Скрипт сохраняет место объявления, но не доказывает по коду истинность утверждения автора. Точный синтаксис закрепляется в specs/design.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "docs/GUIDE.md",
+       "quote": "Требование называет решения журнала номером в скобках",
+       "line": 576
+      },
+      {
+       "path": "openspec/changes/trace-modules/intent.md",
+       "quote": "наличие улики или упоминания пути само по себе не выдаётся за доказательство реализации требования.",
+       "line": 35
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "В строке задачи явно называть и требование, и модуль/файл; одной связи задачи со сценарием недостаточно. Сведения ближе к реализации, но один и тот же состав может повторяться в нескольких задачах, а перенос требования в master сам по себе декларацию не переносит.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "docs/GUIDE.md",
+       "quote": "Задача называет сценарий в форме",
+       "line": 578
+      },
+      {
+       "path": "trace/trace_graph.py",
+       "quote": "def _read_tasks(base: Path, claims: list[dict])",
+       "line": 660
+      }
+     ]
+    },
+    {
+     "letter": "C",
+     "text": "В отдельном файле связей изменения хранить пары «требование — модуль/файл» с явным происхождением. Это обычный вход графа, а не req-graph.json. Табличные данные удобнее проверять, но требуется новый файл и правило переноса/сохранения связей при sync; имена требований повторяются отдельно от их блоков.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/changes/trace-modules/intent.md",
+       "quote": "Граф остаётся производным от источников",
+       "line": 37
+      },
+      {
+       "path": "trace/trace_graph.py",
+       "quote": "Новый артефакт схемы без строки здесь даёт красный тест",
+       "line": 35
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "A держит утверждение рядом с требованием и переносит его тем же sync без отдельного реестра. B распределяет и дублирует состав по задачам, C добавляет ещё один источник, согласуемый с именами требований."
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [],
+   "comments": [],
+   "nodes": [
+    "artifacts",
+    "relation",
+    "requirement",
+    "file"
+   ]
+  },
+  {
+   "id": "F-35",
+   "question": "Где хранить явные зависимости модулей, чтобы соглашение работало для модулей любого рода?",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-03",
+    "F-18",
+    "F-20",
+    "F-31"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "В frontmatter README модуля добавить список логических repo/module, от которых он зависит. Имя и род остаются прежними; направления и цели связи читаются как данные. Изменение зависимости требует правки README, зато сведения о границе и зависимостях находятся рядом.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/specs/module-declaration/spec.md",
+       "quote": "frontmatter YAML с полями `name`",
+       "line": 9
+      },
+      {
+       "path": "openspec/changes/trace-modules/intent.md",
+       "quote": "Граф должен позволять выяснить",
+       "line": 21
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "В теле README использовать строго обозначенный раздел/строки зависимостей. Описание видно человеку без знания YAML, но нужен отдельный текстовый синтаксис, который нельзя спутать с обычными ссылками README.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/specs/module-declaration/spec.md",
+       "quote": "README модуля SHALL описывать модуль",
+       "line": 39
+      }
+     ]
+    },
+    {
+     "letter": "C",
+     "text": "В отдельном файле зависимостей репозитория перечислять пары repo/module. README не расширяется, но идентификаторы модулей повторяются в отдельном месте и требуют сверки при переименовании.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "docs/analysis/requirements-traceability-graph-of-symphysis.md",
+       "quote": "Поэтому id модуля это `репозиторий/модуль`.",
+       "line": 508
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "A использует уже выбранное машинное объявление модуля и не добавляет второй текстовый формат или отдельный реестр. B требует нового разбора тела, C разносит имя модуля и его зависимости."
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [],
+   "comments": [],
+   "nodes": [
+    "readmes",
+    "module",
+    "dependency"
+   ]
+  },
+  {
+   "id": "F-36",
+   "question": "Кто записывает x-symphysis-components с результатом анализа, учитывая, что writer форка предназначен для создания нового metadata?",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-17",
+    "F-26",
+    "F-30"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Модель в шаге анализа точечно обновляет своё x-symphysis-components существующими средствами редактирования файлов. Сборщик читает и проверяет объявления; writer создания OpenSpec для обновления не вызывается. Остальные данные metadata сохраняются, итоговый diff проверяется в том же шаге. Цена — явная операция записи и проверки в инструкции анализа; нового CLI или выпуска форка нет.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "docs/analysis/stores-and-context-pack-2026-11-02.md",
+       "quote": "x-symphysis-components:",
+       "line": 148
+      },
+      {
+       "path": "upstream/openspec/src/utils/change-metadata.ts",
+       "quote": "keys back from the raw YAML first or it silently deletes them.",
+       "line": 138
+      },
+      {
+       "path": "openspec/changes/trace-modules/research/F-26.md",
+       "quote": "status, обе формы instructions, strict validation и archive оставили все байты metadata прежними",
+       "line": 26
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Сделать узкую операцию ядра для обновления своего x-symphysis-components: безопасно разобрать YAML, изменить только собственное расширение и сохранить остальные данные. Не передавать прочитанный объект в writer создания OpenSpec. Цена — свой адаптер обновления metadata и проверки сохранности чужих ключей; новый выпуск форка ради этого не нужен.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "docs/analysis/stores-and-context-pack-2026-11-02.md",
+       "quote": "x-symphysis-components:",
+       "line": 148
+      },
+      {
+       "path": "upstream/openspec/src/utils/change-metadata.ts",
+       "quote": "keys back from the raw YAML first or it silently deletes them.",
+       "line": 138
+      },
+      {
+       "path": "openspec/changes/trace-modules/research/F-26.md",
+       "quote": "status, обе формы instructions, strict validation и archive оставили все байты metadata прежними",
+       "line": 26
+      }
+     ]
+    },
+    {
+     "letter": "C",
+     "text": "Добавить в форк отдельную публичную операцию обновления metadata с сохранением расширений и вызывать её из symphysis. Правило записи одно на стороне владельца формата, но потребуются новая версия/сборка/поставка форка и проверка его CLI-контракта.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "docs/analysis/stores-and-context-pack-2026-11-02.md",
+       "quote": "x-symphysis-components:",
+       "line": 148
+      },
+      {
+       "path": "upstream/openspec/src/utils/change-metadata.ts",
+       "quote": "keys back from the raw YAML first or it silently deletes them.",
+       "line": 138
+      }
+     ]
+    },
+    {
+     "letter": "D",
+     "text": "Перенести состав репозиториев и результат анализа в отдельный файл symphysis, не меняя .openspec.yaml. Writer OpenSpec больше не участвует, но это заменяет уже выбранный F-17.A и вводит другой канонический источник состава.",
+     "added": false,
+     "unlikely": "Обычные CLI-команды уже сохраняют расширение; полный перенос меняет принятое место данных ради ограниченного случая записи.",
+     "evidence": [
+      {
+       "path": "openspec/changes/trace-modules/intent.md",
+       "quote": "Формат объявления компонентов и репозиториев",
+       "line": 43
+      },
+      {
+       "path": "docs/analysis/stores-and-context-pack-2026-11-02.md",
+       "quote": "список фиксируется в `.openspec.yaml`",
+       "line": 145
+      }
+     ]
+    }
+   ],
+   "antipodes": [
+    {
+     "option": "D",
+     "other": "F-17.A"
+    }
+   ],
+   "recommendation": {
+    "option": "A",
+    "why": "A использует уже работающую роль модели как автора артефактов и обходится проверкой точечной правки. B добавляет отдельный адаптер записи, C требует выпуска форка, D отменяет принятое место состава без необходимости."
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [],
+   "comments": [],
+   "nodes": [
+    "declarations",
+    "graph"
+   ]
+  },
+  {
+   "id": "F-37",
+   "question": "Какие данные структурной оси сохранять в снимке помимо самих узлов и рёбер?",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-05",
+    "F-22",
+    "F-23",
+    "F-27",
+    "F-30",
+    "F-33",
+    "F-34",
+    "F-35"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Сохранять нормализованные объявления, логические repo/module, относительные пути, состояния обследования/доступности, источники связей и хеши прочитанных объявлений. Фиксировать также состав найденных README, чтобы новый модуль не терялся при проверке дрейфа. Этого достаточно для чтения прежней структуры без клона; проверка живых источников при их недоступности честно ограничена. Исходный код и полные README не копировать в snapshot.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "trace/trace_graph.py",
+       "quote": "return [{\"path\": rel, \"sha256\": _lf_hash(base / rel)}",
+       "line": 1057
+      },
+      {
+       "path": "openspec/changes/trace-modules/research/F-27.md",
+       "quote": "Предел воспроизводимости:",
+       "line": 48
+      },
+      {
+       "path": "openspec/changes/trace-modules/research/F-27.md",
+       "quote": "нынешние roots/sources/base этих различий не сохраняют",
+       "line": 93
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Вместе с нормализованной структурой хранить полные тексты README и блоков деклараций, прочитанных при freeze. Исходное объявление доступно офлайн, но снимок становится больше и дублирует описательные тексты; нужен точный состав копируемых источников.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/changes/trace-modules/research/F-27.md",
+       "quote": "сами bytes sources не хранятся",
+       "line": 48
+      }
+     ]
+    },
+    {
+     "letter": "C",
+     "text": "Хранить только узлы, рёбра, пути at и хеши, без извлечённых деклараций и состояний обследования. Формат компактнее, но без исходников нельзя отличить прежнее «модулей нет» от необследованного/недоступного repo и проверить, из какого объявления возникла структура.",
+     "added": false,
+     "unlikely": "Теряет существенные различия состояний, уже требуемые выбранной политикой сигналов и анализа.",
+     "evidence": [
+      {
+       "path": "openspec/changes/trace-modules/intent.md",
+       "quote": "Происхождение связей прослеживается до файлов-источников",
+       "line": 35
+      },
+      {
+       "path": "openspec/changes/trace-modules/research/F-27.md",
+       "quote": "По текущим roots нельзя восстановить",
+       "line": 48
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "A сохраняет данные, необходимые для происхождения и воспроизводимости структуры, без архива исходников. B копирует тексты сверх этих данных, C теряет контекст отсутствующих связей."
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [],
+   "comments": [],
+   "nodes": [
+    "snapshot",
+    "graph",
+    "readmes",
+    "signals"
    ]
   }
  ]
