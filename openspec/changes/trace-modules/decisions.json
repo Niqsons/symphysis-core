@@ -71,6 +71,10 @@
   {
    "date": "2026-11-09",
    "text": "Выбранные исходы F-38–F-45 сверены с принятыми решениями и друг с другом: несовместимых пар не найдено. Открытых развилок и нерешённых кандидатов нет; 2 парковки ИБ предназначены следующему шагу security."
+  },
+  {
+   "date": "2026-11-09",
+   "text": "consequences: ветки отказа и допущения включены, водитель описи выключен. code-sites с явной картой дал 3 файла: roots/roots.py и trace/trace_graph.py разобраны, change-metadata.ts исключён с конкретной причиной; installer/scripts/sync-payload.js добавлен по proposal. F-26 без улик кода: решённое обследование моделью, сканер ещё предстоит. Опись: 20 строк веток и 1 строка допущения о поставке. Новые кандидаты F-48–F-52 (5), pre-mortem 3 причины, совпавшие с F-48/F-51/F-52. Дополнительный риск установленной копии уже решён F-25; новые decision/outcome не созданы. Код и specs не менялись."
   }
  ],
  "records": [
@@ -3222,6 +3226,364 @@
    ],
    "comments": [],
    "nodes": []
+  },
+  {
+   "id": "F-48",
+   "question": "[ветка] Псевдоним repo отсутствует в карте: разрешать ли его как путь под пустым префиксом?",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-31"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN repo называет отсутствующий псевдоним при наличии пустого префикса WHEN разрешается его корень THEN источник назван недоступным с причиной отсутствия псевдонима, каталог текущего проекта не обследуется вместо него, другие repo сохранены; цена: сценарий, тест двух корней и сопровождение привязки repo",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — отдельный исход для отсутствующего псевдонима не записывается; разрешено обычное сопоставление пути по самому длинному префиксу, в том числе пустому, и обследование такого подкаталога",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест передаёт карту только с пустым префиксом и неизвестный псевдоним repo, утверждает, что подкаталог текущего проекта не прочитан вместо repo и причина видна; новой строки в spec.md нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — поведение неизвестного псевдонима остаётся открытым до design resolver repo; tasks пока учитывает риск подмены внешнего repo подкаталогом текущего",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "A: пустой префикс тихо превращает опечатку псевдонима в другой источник и даёт правдоподобные чужие модули. Против B — имя repo уже явно привязано к псевдониму; против C — граница источника выражается коротким сценарием. Цена — сценарий, тест двух корней и сопровождение точного выбора псевдонима."
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "roots/roots.py",
+     "quote": "if not path.startswith(prefix.replace(\"\\\\\", \"/\")):",
+     "line": 113
+    },
+    {
+     "path": "openspec/changes/trace-modules/specs/repository-survey/spec.md",
+     "quote": "### Requirement: Repo разрешается через явно названный корень",
+     "line": 65
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "roots",
+    "repository",
+    "signals"
+   ]
+  },
+  {
+   "id": "F-49",
+   "question": "[ветка] Чтение одного README вернуло VERDICT_UNREADABLE: как сохранить отличие от отсутствующего объявления?",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN в доступном repo один README не читается, соседний валидный README читается WHEN строится структура THEN соседний модуль сохранён, нечитаемый путь и причина названы сигналом, неизвестные объявления и зависимости не объявлены пустыми; цена: сценарий, имитация ошибки доступа и сопровождение чтения README",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — локальная ошибка доступа к README отдельно не описывается; допустим общий отказ сборки или отсутствие модуля при условии, что диагностику чтения разбирают вручную",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест подменяет чтение одного README ошибкой доступа и утверждает сохранность соседнего модуля и сигнала с негодным путём без выдуманного пустого списка; нового сценария нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — обработка VERDICT_UNREADABLE для отдельного объявления остаётся открытой до выбора читателя README; tasks пока считает локальную ошибку доступа возможной потерей структуры repo",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "A: если отбросить вердикт helper и оставить только None, недоступное объявление тихо станет отсутствующим и испортит состав модулей или зависимостей. Против B — это нарушает различение отсутствия и неполноты; против C — результат для соседнего модуля наблюдаем и помещается в сценарий. Цена — сценарий, тест ошибки доступа и сопровождение диагностик."
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "roots/roots.py",
+     "quote": "return None, VERDICT_UNREADABLE",
+     "line": 186
+    },
+    {
+     "path": "openspec/changes/trace-modules/specs/module-discovery/spec.md",
+     "quote": "### Requirement: Ошибка источника не стирает доступную структуру",
+     "line": 126
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "readmes",
+    "module",
+    "signals"
+   ]
+  },
+  {
+   "id": "F-50",
+   "question": "[ветка] Общий UTF-8 reader отказывает всей сборке: что делать с одним README в CP1251 среди корректных объявлений?",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-22",
+    "F-23",
+    "F-24",
+    "F-37"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN один README содержит явное объявление в CP1251, другой README того же repo валиден в UTF-8 WHEN собирается граф THEN первый даёт сигнал о кодировке и не переинтерпретируется другой кодировкой, второй модуль и требования сохранены без общего отказа графа; цена: сценарий, байтовая фикстура и сопровождение границы читателей",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — отдельный сценарий негодной кодировки объявления не нужен; допускается прежний общий отказ UTF-8 reader, а владелец сначала приводит README к UTF-8",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест подаёт CP1251 README рядом с валидным UTF-8 модулем и утверждает сигнал кодировки, сохранность второго модуля и отсутствие подстановки другой кодировки; новая строка spec.md не добавляется",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — область отказа при не-UTF-8 README остаётся открытой до design чтения frontmatter; tasks пока считает такую кодировку причиной общего отказа графа",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "A: перенос общего отказа артефактов на README обнуляет доступную структуру; попытка угадать кодировку может тихо дать другое имя. Против B — источник объявления уже должен давать частичный граф; против C — отличие объявлений от обязательных артефактов лучше зафиксировать сценарием. Цена — сценарий, байтовая фикстура и сопровождение раздельного поведения читателей."
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "trace/trace_graph.py",
+     "quote": "raise Refusal(f\"{rel}: файл не в UTF-8 ({e.reason}, байт {e.start}): граф не собран\") from None",
+     "line": 379
+    },
+    {
+     "path": "openspec/changes/trace-modules/specs/module-discovery/spec.md",
+     "quote": "### Requirement: Ошибка источника не стирает доступную структуру",
+     "line": 126
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "readmes",
+    "module",
+    "graph",
+    "signals"
+   ]
+  },
+  {
+   "id": "F-51",
+   "question": "[ветка] Freeze отдельно собирает граф и отчёт: что делать, если README изменился между двумя сборками?",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-22",
+    "F-23",
+    "F-24",
+    "F-37"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN README объявляет a при сборке графа и b при следующем чтении для отчёта WHEN выполняется один freeze THEN снимок и структурные утверждения отчёта относятся к одному прочитанному состоянию либо freeze явно сообщает несогласованность и не выдаёт пару за свежую; цена: сценарий, управляемая подмена README и сопровождение общей сборки",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — согласованность снимка с отчётом внутри одного freeze отдельно не обещается; каждый файл может правдиво описывать своё чтение, а расхождение устраняется повторным freeze",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест меняет README между build_graph и build_report и утверждает, что несовпавшая пара не признана свежим результатом одного freeze; сценарий spec.md не добавляется",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — согласованность двух результатов freeze остаётся открытой до design сборки отчёта; tasks пока считает пару снимок/отчёт потенциально относящейся к разным состояниям README",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "A: два файла могут выглядеть свежими, но один подтверждает другой модуль; повтор не гарантирует обнаружение такого тихого расхождения. Против B — отчёт сопровождает этот снимок, а не произвольное следующее чтение; против C — наблюдаемый результат укладывается в сценарий. Цена — сценарий, тест подмены README и сопровождение общего состояния сборки. Глобальная блокировка репозитория этим не требуется."
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "trace/trace_graph.py",
+     "quote": "text = build_report(root, change, frozen).rstrip(\"\\n\") + \"\\n\"",
+     "line": 1833
+    },
+    {
+     "path": "openspec/changes/trace-modules/specs/trace-snapshot/spec.md",
+     "quote": "### Requirement: Снимок и отчёт лежат в каталоге graph",
+     "line": 48
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "graph",
+    "signals",
+    "snapshot"
+   ]
+  },
+  {
+   "id": "F-52",
+   "question": "[ветка] saved_base сравнивает format с единственной GRAPH_FORMAT: должна ли база поддерживаемого снимка 2 пережить выпуск формата 3?",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-22",
+    "F-23",
+    "F-24",
+    "F-37"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN снимок формата 2 несёт валидную base MODIFIED, а master уже изменён sync WHEN новый сборщик формата 3 читает прежнюю базу THEN пригодная base формата 2 сохраняет прежний смысл ссылок, вместо неё не подставляется нынешний master только из-за номера формата; цена: сценарий, фикстура старого снимка после sync и сопровождение совместимости базы",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — обещание чтения формата 2 не распространяется на его base при новой живой сборке; допустимо взять нынешний master, даже если это меняет отсечение прежних ссылок MODIFIED",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест использует формат 2 с base и изменившийся после sync master, утверждает сохранение прежнего разрешения ссылок при новой сборке без новой строки в spec.md",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — совместимость base формата 2 остаётся открытой до design миграции читателя; tasks пока учитывает возможность ложных связей с записями нынешнего master",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "A: простая смена GRAPH_FORMAT на 3 заставит существующий guard вернуть пустую базу формата 2; это тихо подменит смысл старых ссылок нынешним master. Против B — прежний формат принят как поддерживаемый и база 2 уже содержит пригодные строковые якоря; против C — сохранение семантики описывается сценарием. Цена — сценарий, фикстура после sync и сопровождение двух поддерживаемых форматов базы."
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "trace/trace_graph.py",
+     "quote": "raw = data.get(\"base\") if isinstance(data, dict) and data.get(\"format\") == GRAPH_FORMAT else None",
+     "line": 564
+    },
+    {
+     "path": "openspec/changes/trace-modules/specs/trace-snapshot/spec.md",
+     "quote": "### Requirement: Предыдущий формат читается без дописывания модулей в историю",
+     "line": 36
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "artifacts",
+    "graph",
+    "snapshot"
+   ]
   }
  ]
 }
