@@ -22,7 +22,8 @@ from journal_consequences import check_consequences
 from journal_model import _flat, dependency_cycles, import_md, load_journal, save_journal, unexplained_choices, validate_journal
 from journal_render import render_design, render_md, view_payload
 from journal_sites import code_sites
-from roots import change_of as _change_of, default_roots, file_links, project_href
+from roots import RootsError, change_of as _change_of, default_roots, file_links, project_href
+from runtime_context import context as runtime_context
 from viewer_render import TEMPLATE_PATH, no_help_snapshot, render_html, scheme_payload
 
 __all__ = ["build_parser", "main"]
@@ -209,14 +210,31 @@ def _shell_word(word: str) -> str:
     return f'"{word}"'
 
 
-def _rebuild_command(args: argparse.Namespace, root: Path) -> str:
+def _rebuild_command(args: argparse.Namespace, root: Path) -> str | None:
     """Команда, которая из корня проекта соберёт эту же страницу заново: `--out` и `--attack` этой сборки (F-67)."""
-    script = _from_root(os.path.join(os.path.dirname(os.path.abspath(__file__)), "journal.py"), root)
-    if script.startswith("../") or "/" not in script:
-        script = ".symphysis/tools/journal.py"  # инструменты вне проекта: в проекте они лежат здесь
-    words = ["python", script, "render-html", _from_root(args.json, root), "--out", _from_root(args.out, root)]
-    for path in args.attack or []:
-        words += ["--attack", _from_root(path, root)]
+    selected = runtime_context()
+    if selected is not None:
+        # The command is run from the addressed store. Never expose the shared
+        # runtime path or invent a local copy of it in the exported page.
+        prefix = ["symphysis", "--project", ".", "journal", "render-html"]
+    else:
+        script = _from_root(os.path.join(os.path.dirname(os.path.abspath(__file__)), "journal.py"), root)
+        if script.startswith("../") or "/" not in script:
+            script = ".symphysis/tools/journal.py"
+        prefix = ["python", script, "render-html"]
+    def relative(path):
+        return os.path.relpath(os.path.abspath(path), root).replace("\\", "/")
+    try:
+        words = [*prefix, relative(args.json), "--out", relative(args.out)]
+        for path in args.attack or []:
+            words += ["--attack", relative(path)]
+        for flag, path in (("--roots", getattr(args, "roots", None)),
+                           ("--template", getattr(args, "template", None))):
+            if path is not None and (flag != "--template" or Path(path).resolve() != Path(TEMPLATE_PATH).resolve()):
+                words += [flag, relative(path)]
+    except ValueError:
+        # A resource on another drive has no truthful portable relative command.
+        return None
     return " ".join(_shell_word(word) for word in words)
 
 
@@ -239,6 +257,9 @@ def _help_calculation(args: argparse.Namespace) -> dict:
                                 "справка не считалась. Собери страницу из журнала активного изменения.")
     root, change = where
     try:
+        selected = runtime_context()
+        if selected is not None and "help" not in selected["resources"]["tools"]:
+            raise ImportError("helper is not a verified resource")
         import step_help
         snapshot = step_help.compute(root, change)
     except ImportError:
@@ -462,13 +483,16 @@ def cmd_apply_md4h(args: argparse.Namespace) -> int:
 
 
 JOURNAL_HELP = "файл журнала decisions.json"
-ROOTS_HELP = "файл корней вместо tools/journal-roots.json"
+ROOTS_HELP = "явная карта вместо .symphysis/tools/journal-roots.json выбранного store; <root> сохраняет проектную базу"
 
 MAIN_EPILOG = """\
 Порядок: журнал ведёт шаг decisions; check — после правки журнала или описи; после слова человека
   apply, затем render-md и render-html; code-sites — в начале шага consequences; render-design — на шаге design.
 Исходы: check и code-sites — сигнал, не стоп; apply и apply-md4h — всё или ничего; рендеры пишут
-  производные файлы, правится JSON. Корни путей улик — только tools/journal-roots.json.
+  производные файлы, правится JSON. Через dispatcher карта корней — .symphysis/tools/journal-roots.json store,
+  <root> — его .symphysis. После миграции плоской раскладки используется сохранённая tools/journal-roots.json
+  с <root> от store, только если канонической карты нет. Негодная каноническая карта не даёт fallback.
+  Без карты доступен только сам store. Прямой source/legacy-вызов сохраняет прежнюю базу tools/.
 Коды: 0 — шаг сделан; 1 — негодный журнал, нет или нечитаем вход, отказ apply; 2 — неверный вызов,
   check --strict при строках [!!], битый файл атаки у render-html, отказ связки у apply-md4h.
 Маркеры: [ok] сделано; [!!] расхождение или отказ; [--] не проверить; [..] сведения, исходом не являются.
@@ -587,7 +611,7 @@ def build_parser() -> argparse.ArgumentParser:
     given.add_argument("json", type=Path, help=JOURNAL_HELP)
     given.add_argument("--roots", type=Path, help=ROOTS_HELP)
     given.add_argument("--template", type=Path, default=TEMPLATE_PATH,
-                       help="по умолчанию tools/playground-template.html")
+                       help="шаблон HTML; по умолчанию playground-template.html выбранной поставки, не из cwd")
     given.add_argument("--attack", type=Path, action="append",
                        help="файл атаки для режима «атака» (attack/decisions.md, attack/artifacts.md); повторяемый")
     written = p.add_argument_group("выход")
@@ -621,4 +645,8 @@ def build_parser() -> argparse.ArgumentParser:
 
 def main(argv: list[str] | None = None) -> int:
     args = build_parser().parse_args(argv)
-    return args.func(args)
+    try:
+        return args.func(args)
+    except RootsError as error:
+        print(f"[!!] {error}", file=sys.stderr)
+        return 1

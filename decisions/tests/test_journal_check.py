@@ -463,7 +463,7 @@ def _copy_tools(into: Path, clone: bool = False) -> Path:
     tools = into / ".symphysis" / "tools"
     tools.mkdir(parents=True)
     for f in core_files():
-        if re.match(r"journal.*\.(py|json)|roots\.py|viewer_render\.py|attack_table\.py|attack_scope\.py|step_help\.py|openspec_run\.py|symphysis_config\.py|playground-template\.html", f.name):
+        if re.match(r"journal.*\.(py|json)|roots\.py|runtime_context\.py|viewer_render\.py|attack_table\.py|attack_scope\.py|step_help\.py|openspec_run\.py|symphysis_config\.py|playground-template\.html", f.name):
             shutil.copy(f, tools / f.name)
     (tools / "journal-roots.json").write_text('{"": "<root>/.."}\n', encoding="utf-8")
     return tools

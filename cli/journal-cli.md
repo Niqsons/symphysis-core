@@ -1,32 +1,66 @@
 # Команды журнала решений
 
-Общий файл скиллов `symphysis-*`: вызовы `python .symphysis/tools/journal.py`, коды выхода,
+Общий файл скиллов `symphysis-*`: вызовы `symphysis journal`, коды выхода,
 маркеры, кто что правит. `<каталог изменения>` — `openspec/changes/<имя>/`, пути от корня
-проекта. Справка скрипта — `journal.py --help` и `journal.py <подкоманда> --help`; строки
+проекта. Справка скрипта — `symphysis journal --help` и `symphysis journal <подкоманда> --help`; строки
 «Коды» и «Маркеры» ниже повторяют её дословно.
+
+## Выбранные store и поставка
+
+Все команды ниже вызываются через один bootstrap `symphysis`. Если рабочий каталог — не
+источник нужного store, селекторы ставятся перед подкомандой:
+`symphysis --project <источник> --store <id> journal check <каталог изменения>/decisions.json`.
+Те же селекторы MUST использоваться у `preflight`, `resolve`, `resource`, `config`, `trace`,
+`anchors`, `help` и `openspec`; поздний `--store` вложенного CLI не выбирает другую поставку.
+Пути данных идут от корня выбранного store; адрес журнала также проверяется dispatcher.
+
+До первой записи модель MUST выполнить `symphysis preflight --change <имя>` с теми же
+селекторами. Отказ dispatcher, несовместимость, занятая поставка или недоступный ресурс —
+остановка без записи файлов; диагностика передаётся человеку, другая поставка не подбирается.
+Read-only `symphysis resolve --json` показывает выбранные пути и диагностику; `status: blocked`
+не разрешает исполнение. Низкоуровневые коды ниже действуют после успешного preflight.
+
+Общие инструкции читаются целиком из stdout `symphysis resource doc <имя.md>`, тело скилла —
+`symphysis resource skill <имя>`, шаблон схемы — `symphysis resource template <имя.md>`.
+Это команды получения ресурсов выбранной поставки, не пути в проекте. Для чтения самой схемы
+модель MUST взять `resources.schema.path` из `resolve --json` и прочитать там `schema.yaml`;
+копия `openspec/schemas/symphysis/` в global-only store не требуется. Текст ресурсов не меняет
+право принимать решения или ограничения на запись из тела скилла и brief.
+
+Охраняемые носители workflow устанавливает symphysis из закреплённой поставки OpenSpec.
+Охраняемые `symphysis openspec init` и `symphysis openspec update` используют общий
+планировщик установки; нативный генератор не запускается в обход ownership. `init`
+может добавить поддерживаемый клиент через `--tools claude,codex,opencode`, а `update`
+сохраняет прежние назначения. Профиль выбирается из конфига OpenSpec; `init --profile`
+задаёт профиль только для этой операции. `update --dry-run --json` показывает план
+без установки. Селекторы `--project`/`--store` стоят перед `openspec`.
+Внешние `openspec init` и `openspec update` могут перезаписать носители: после такой
+перегенерации охрана не считается сохранённой. До работы нужны явный просмотр
+конфликтов и восстановление подтверждённых собственных носителей, затем успешный
+preflight; наличие команды в клиенте само по себе готовность не доказывает.
 
 ## Вызовы по шагам
 
 ```bash
 # после каждой правки журнала или описи: схема и правила, улики, опись
-python .symphysis/tools/journal.py check <каталог изменения>/decisions.json
-python .symphysis/tools/journal.py render-md <каталог изменения>/decisions.json --out <каталог изменения>/decisions.md
+symphysis journal check <каталог изменения>/decisions.json
+symphysis journal render-md <каталог изменения>/decisions.json --out <каталог изменения>/decisions.md
 
 # показ человеку: страница; --attack повторяемый, для режима «атака»
-python .symphysis/tools/journal.py render-html <каталог изменения>/decisions.json --out <каталог изменения>/symphysis.html \
+symphysis journal render-html <каталог изменения>/decisions.json --out <каталог изменения>/symphysis.html \
     [--attack <каталог изменения>/attack/decisions.md] [--attack <каталог изменения>/attack/artifacts.md]
 
 # слово человека: промпт возврата или строки из чата, сохранённые как есть
-python .symphysis/tools/journal.py apply <каталог изменения>/decisions.json <каталог изменения>/answers/<дата>.md
+symphysis journal apply <каталог изменения>/decisions.json <каталог изменения>/answers/<дата>.md
 
 # перед атакой журнала: line/found/verdict улик пишутся в JSON, хеш берётся после
-python .symphysis/tools/journal.py check --write <каталог изменения>/decisions.json
+symphysis journal check --write <каталог изменения>/decisions.json
 
 # начало шага consequences: места кода из улик решённых развилок
-python .symphysis/tools/journal.py code-sites <каталог изменения>/decisions.json
+symphysis journal code-sites <каталог изменения>/decisions.json
 
 # шаг design: Decisions, Risks / Trade-offs, Open Questions из журнала
-python .symphysis/tools/journal.py render-design <каталог изменения>/decisions.json --out <каталог изменения>/design.md
+symphysis journal render-design <каталог изменения>/decisions.json --out <каталог изменения>/design.md
 ```
 
 ## Коды и маркеры
@@ -96,5 +130,5 @@ python .symphysis/tools/journal.py render-design <каталог изменен�
 - После каждой правки журнала — `check`, затем `render-md`; после `apply` — `check`,
   `render-md`, `render-html`.
 - Непонятно, что делает подкоманда, когда её звать или что значит код, — зови
-  `journal.py <подкоманда> --help`; файл скрипта MUST NOT читать: справка короче и она контракт,
+  `symphysis journal <подкоманда> --help`; файл скрипта MUST NOT читать: справка короче и она контракт,
   а код — нет.

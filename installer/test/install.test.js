@@ -108,18 +108,17 @@ test("слияние: схема уже symphysis — иное сообщени�
   assert.deepEqual(r.messages.filter((m) => m.startsWith("config.yaml")), ["config.yaml уже был: схема symphysis, rules добавлены"]);
 });
 
-test("слияние: rules.<key> скаляр — сообщение, значение не тронуто", () => {
+test("слияние: rules.<key> скаляр — конфликт до записи", () => {
   const p = tmp();
   fs.mkdirSync(path.join(p, "openspec"));
   const cfg = path.join(p, "openspec", "config.yaml");
   fs.writeFileSync(cfg, "schema: symphysis\nrules:\n  specs: одна строка\n");
-  const r = install(p, { payloadDir });
-  assert.ok(r.messages.includes("rules.specs не список — правила symphysis не добавлены"), JSON.stringify(r.messages));
+  assert.throws(() => install(p, { payloadDir }), /rules.specs должен быть списком/);
   assert.match(fs.readFileSync(cfg, "utf8"), /specs: одна строка/);
 });
 
-const GUIDANCE_MARK = "trace_graph.py freeze";
-const ANCHORS_MARK = "anchor_refs.py <имя>";
+const GUIDANCE_MARK = "symphysis trace freeze";
+const ANCHORS_MARK = "symphysis anchors <имя>";
 const archiveGuidance = (text) => parse(text)?.operations?.archive?.guidance;
 
 test("`project-installer`: «Новый проект»: скрипт графа, openspec_run.py и anchor_refs.py ставятся, --help даёт код 0 (F-39, F-138, trace-numbers-signals/F-65)", () => {
@@ -133,16 +132,15 @@ test("`project-installer`: «Новый проект»: скрипт графа,
   }
 });
 
-test("`project-installer`: «Обновление без `--force`»: скрипт графа положен, отличающийся назван пропущенным", () => {
+test("`project-installer`: ownership-конфликт отменяет весь план без частичной установки", () => {
   const p = tmp();
   install(p, { payloadDir });
   const tools = path.join(targets(p).toolsDir, "tools");
   fs.rmSync(path.join(tools, "trace_graph.py"));
   fs.writeFileSync(path.join(tools, "openspec_run.py"), "# своё\n");
-  const r = install(p, { payloadDir });
-  assert.ok(fs.existsSync(path.join(tools, "trace_graph.py")));
-  assert.ok(r.written.includes(".symphysis/tools/trace_graph.py"), JSON.stringify(r.written));
-  assert.ok(r.skipped.includes(`.symphysis/tools/openspec_run.py ${SUFFIX}`), JSON.stringify(r.skipped));
+  assert.throws(() => install(p, { payloadDir }), /openspec_run.py.*сохранён/);
+  assert.ok(!fs.existsSync(path.join(tools, "trace_graph.py")));
+  assert.equal(fs.readFileSync(path.join(tools, "openspec_run.py"), "utf8"), "# своё\n");
 });
 
 test("`project-installer`: «Конфиг без подсказок»: слияние добавляет operations.archive.guidance", () => {
@@ -204,13 +202,12 @@ test("`project-installer`: «Повторная установка не дубл
   assert.equal(archiveGuidance(fs.readFileSync(path.join(q, "openspec", "config.yaml"), "utf8")).filter((l) => l.includes(GUIDANCE_MARK)).length, 1);
 });
 
-test("слияние: operations.archive.guidance не список — сообщение, значение не тронуто (F-124)", () => {
+test("слияние: operations.archive.guidance не список — конфликт без записи", () => {
   const p = tmp();
   fs.mkdirSync(path.join(p, "openspec"));
   const cfg = path.join(p, "openspec", "config.yaml");
   fs.writeFileSync(cfg, "schema: symphysis\noperations:\n  archive:\n    guidance: одна строка\n");
-  const r = install(p, { payloadDir });
-  assert.ok(r.messages.includes("operations.archive.guidance не список — подсказка symphysis не добавлена"), JSON.stringify(r.messages));
+  assert.throws(() => install(p, { payloadDir }), /operations.archive.guidance должен быть списком/);
   assert.match(fs.readFileSync(cfg, "utf8"), /guidance: одна строка/);
 });
 
@@ -222,18 +219,15 @@ test("слияние: в config.yaml нет schema — свой текст со�
   assert.deepEqual(r.messages.filter((m) => m.startsWith("config.yaml")), ["config.yaml уже был: схема установлена symphysis, rules добавлены"]);
 });
 
-test("изменённый файл скилла: skipped, без --force не тронут; с force — перезаписан", () => {
+test("изменённый файл скилла: конфликт сохраняет байты также с force", () => {
   const p = tmp();
   install(p, { payloadDir });
   const f = path.join(targets(p).skillsDirs[0], "symphysis-brainstorm", "SKILL.md");
   fs.writeFileSync(f, "моё");
-  const r = install(p, { payloadDir });
-  const rel = ".claude/skills/symphysis-brainstorm/SKILL.md";
-  assert.ok(r.skipped.includes(`${rel} ${SUFFIX}`), JSON.stringify(r.skipped));
+  assert.throws(() => install(p, { payloadDir }), /ownership/);
   assert.equal(fs.readFileSync(f, "utf8"), "моё");
-  const r2 = install(p, { payloadDir, force: true });
-  assert.ok(r2.written.includes(rel));
-  assert.notEqual(fs.readFileSync(f, "utf8"), "моё");
+  assert.throws(() => install(p, { payloadDir, force: true }), /ownership/);
+  assert.equal(fs.readFileSync(f, "utf8"), "моё");
 });
 
 test("существующий файл корней с другим содержимым переживает install", () => {
@@ -251,7 +245,8 @@ test("два skillsDirs: скиллы в обоих, агенты рядом с 
   install(p, { payloadDir, skillsDirs: ["a/skills", "b/skills"] });
   for (const d of ["a", "b"]) assert.ok(fs.existsSync(path.join(p, d, "skills", "symphysis-brainstorm", "SKILL.md")));
   for (const d of ["a", "b"]) assert.ok(fs.existsSync(path.join(p, d, "agents", "symphysis-consequences-driver.md")));
-  assert.ok(!fs.existsSync(path.join(p, ".claude")));
+  assert.ok(!fs.existsSync(path.join(p, ".claude", "skills")));
+  assert.ok(fs.existsSync(path.join(p, ".claude", "commands", "opsx", "continue.md")), "legacy overrides сохраняют Claude workflow carrier в native commands root");
 });
 
 test("agentsDirs задан явно: агенты только туда", () => {
@@ -264,16 +259,16 @@ test("agentsDirs задан явно: агенты только туда", () =>
     "symphysis-edge-probe-driver.md", "symphysis-prohibition-probe-driver.md", "symphysis-research-driver.md"]);
 });
 
-test("CLI install: код 0, записано; изменённый файл — подсказка --force в stderr", () => {
+test("CLI install: изменённый файл даёт ownership-конфликт и код 2", () => {
   const p = tmp();
   let r = run("install", "--project", p);
   assert.equal(r.status, 0, r.stderr);
   assert.match(r.stdout, /записано \d+/);
   fs.writeFileSync(path.join(p, ".claude", "skills", "symphysis-brainstorm", "SKILL.md"), "моё");
   r = run("install", "--project", p);
-  assert.equal(r.status, 0);
+  assert.equal(r.status, 2);
   assert.match(r.stderr, /--force/);
-  assert.match(r.stderr, /перезапись существующих файлов: --force/);
+  assert.match(r.stderr, /--force не отменяет ownership/);
 });
 
 test("Раскладка входа: intent первым в схеме payload, шаблон intent.md на месте, .gigacode/ нет", () => {
@@ -303,30 +298,27 @@ test("Раскладка входа: форк new change demo — первый �
   assert.ok(!fs.existsSync(path.join(p, ".gigacode")));
 });
 
-test("Обновление схемы: пропущенный файл схемы — отдельной строкой в stdout; с --force обновлён", () => {
+test("Обновление схемы: изменённый файл сохранён и конфликт назван CLI", () => {
   const p = tmp();
   run("install", "--project", p);
   const f = path.join(targets(p).schemaDir, "schema.yaml");
   fs.writeFileSync(f, "name: old\n");
-  const line = "пропущен: openspec/schemas/symphysis/schema.yaml — отличается, нужен --force";
-  const r = install(p, { payloadDir });
-  assert.ok(r.messages.includes(line), JSON.stringify(r.messages));
+  assert.throws(() => install(p, { payloadDir }), /schema.yaml.*сохранён/);
   assert.equal(fs.readFileSync(f, "utf8"), "name: old\n");
   const cli = run("install", "--project", p);
-  assert.ok(cli.stdout.split(/\r?\n/).includes(line), cli.stdout);
-  const r2 = install(p, { payloadDir, force: true });
-  assert.ok(r2.written.includes("openspec/schemas/symphysis/schema.yaml"));
-  assert.notEqual(fs.readFileSync(f, "utf8"), "name: old\n");
+  assert.equal(cli.status, 2);
+  assert.match(cli.stderr, /schema.yaml.*сохранён/);
+  assert.throws(() => install(p, { payloadDir, force: true }), /ownership/);
+  assert.equal(fs.readFileSync(f, "utf8"), "name: old\n");
 });
 
-test("Обновление схемы: пропущены два файла схемы — две строки; скилл в такие строки не попадает", () => {
+test("Обновление схемы: перечислены все ownership-конфликты схемы и скилла", () => {
   const p = tmp();
   install(p, { payloadDir });
   fs.writeFileSync(path.join(targets(p).schemaDir, "schema.yaml"), "a");
   fs.writeFileSync(path.join(targets(p).schemaDir, "templates", "intent.md"), "b");
   fs.writeFileSync(path.join(targets(p).skillsDirs[0], "symphysis-brainstorm", "SKILL.md"), "c");
-  const r = install(p, { payloadDir });
-  assert.equal(r.messages.filter((m) => m.startsWith("пропущен: ")).length, 2, JSON.stringify(r.messages));
+  assert.throws(() => install(p, { payloadDir }), (error) => ["schema.yaml", "intent.md", "SKILL.md"].every((name) => error.message.includes(name)));
 });
 
 test("telemetry: чистое окружение без ключа — install пишет enabled: false", { skip: !fs.existsSync(FORK) }, () => {
@@ -416,53 +408,53 @@ function loggingFork() {
 }
 
 for (const [name, cfg] of [["заданным", { profile: "core", delivery: "both", telemetry: { enabled: false } }], ["по умолчанию", null]]) {
-  test(`Чистая установка: профиль core ${name} — команда есть, профиль и список не изменены`, () => {
+  test(`Прежние native carriers: профиль core ${name} — конфликт до явного review`, () => {
     const xdg = tmp();
     if (cfg) writeConfig(xdg, cfg);
     const env = commandEnv(xdg);
     const p = initialized(env);
+    const before = fs.existsSync(configFile(xdg)) ? fs.readFileSync(configFile(xdg)) : null;
+    const command = fs.readFileSync(continueCommand(p));
     const r = symphysis(env, "install", "--project", p);
-    assert.equal(r.status, 0, r.stdout + r.stderr);
-    assert.ok(fs.existsSync(continueCommand(p)), r.stdout);
-    const after = readConfig(xdg);
-    assert.equal(after.profile, "core");
-    assert.equal(after.workflows, undefined);
+    assert.equal(r.status, 2, r.stdout + r.stderr);
+    assert.match(r.stderr, /install --preview/);
+    assert.deepEqual(fs.readFileSync(continueCommand(p)), command);
+    assert.deepEqual(fs.existsSync(configFile(xdg)) ? fs.readFileSync(configFile(xdg)) : null, before);
   });
 }
 
-test("Список человека сохраняется: список байт в байт, stdout и check называют continue", () => {
+test("Список человека и прежние native workflow сохраняются при конфликте", () => {
   const xdg = tmp();
   writeConfig(xdg, { featureFlags: {}, profile: "custom", delivery: "both", workflows: ["propose", "apply", "verify"], telemetry: { enabled: false } });
   const before = fs.readFileSync(configFile(xdg));
   const env = commandEnv(xdg);
   const p = initialized(env);
   const r = symphysis(env, "install", "--project", p);
-  assert.equal(r.status, 0, r.stdout + r.stderr);
+  assert.equal(r.status, 2, r.stdout + r.stderr);
   assert.deepEqual(fs.readFileSync(configFile(xdg)), before);
-  assert.match(r.stdout, /^continue: в профиле custom нет workflow continue — добавить: openspec config profile, затем openspec update$/m);
+  assert.match(r.stderr, /ownership/);
   assert.ok(!fs.existsSync(continueCommand(p)));
-  const c = symphysis(env, "check", "--project", p);
-  assert.equal(c.status, 2);
-  assert.match(c.stdout, /^\[!!\] continue: команда \/opsx:continue не установлена у claude — выполнить: symphysis install$/m);
+  assert.ok(!fs.existsSync(path.join(p, ".symphysis", "install-manifest.json")));
 });
 
-test("Список человека сохраняется: телеметрия не задана — правка её, список тот же", () => {
+test("Ownership-конфликт не запускает posthook телеметрии и сохраняет список человека", () => {
   const xdg = tmp();
   writeConfig(xdg, { profile: "custom", workflows: ["propose", "apply", "verify"] });
   const env = commandEnv(xdg);
   const p = initialized(env);
-  assert.equal(symphysis(env, "install", "--project", p).status, 0);
+  const before = fs.readFileSync(configFile(xdg));
+  assert.equal(symphysis(env, "install", "--project", p).status, 2);
+  assert.deepEqual(fs.readFileSync(configFile(xdg)), before);
   assert.deepEqual(readConfig(xdg).workflows, ["propose", "apply", "verify"]);
   assert.equal(readConfig(xdg).profile, "custom");
 });
 
 test("Тесты не трогают настоящий конфиг: байты до и после install с временным XDG_CONFIG_HOME", () => {
-  // Настоящий конфиг читается только в хеш: содержимое тесту не нужно и в вывод не попадает.
-  const real = [
-    process.env.APPDATA ? path.join(process.env.APPDATA, "openspec", "config.json") : null,
-    path.join(os.homedir(), ".config", "openspec", "config.json"),
-    saved.xdg ? path.join(saved.xdg, "openspec", "config.json") : null,
-  ].filter(Boolean);
+  // A neighboring synthetic config proves the write boundary without reading a real profile.
+  const other = path.join(tmp(), "neighbor", "config.json");
+  fs.mkdirSync(path.dirname(other));
+  fs.writeFileSync(other, '{"profile":"foreign"}\n');
+  const real = [other];
   const digest = () => real.map((f) => (fs.existsSync(f) ? createHash("sha256").update(fs.readFileSync(f)).digest("hex") : "нет файла"));
   const before = digest();
   const xdg = tmp();
@@ -472,13 +464,14 @@ test("Тесты не трогают настоящий конфиг: байты
   assert.equal(readConfig(xdg).telemetry.enabled, false, "запись ушла во временный каталог");
 });
 
-test("Команда уже есть: обновление проекта не зовётся", () => {
+test("Чужая команда с похожим именем не принимается и update не зовётся", () => {
   const fake = loggingFork();
   const p = tmp();
   fs.mkdirSync(path.dirname(continueCommand(p)), { recursive: true });
   fs.writeFileSync(continueCommand(p), "x");
   const r = symphysis(commandEnv(tmp(), { SYMPHYSIS_OPENSPEC: fake.js }), "install", "--project", p);
-  assert.equal(r.status, 0, r.stdout + r.stderr);
+  assert.equal(r.status, 2, r.stdout + r.stderr);
+  assert.equal(fs.readFileSync(continueCommand(p), "utf8"), "x");
   assert.doesNotMatch(fake.calls(), /update/);
 });
 
@@ -491,19 +484,19 @@ test("Команда уже есть: скилла openspec-continue-change до
   assert.doesNotMatch(fake.calls(), /update/);
 });
 
-test("Команды нет в этом проекте: обновление зовётся, команда появляется", () => {
+test("Прежние native файлы требуют review; отсутствующая команда не вызывает update", () => {
   const xdg = tmp();
   writeConfig(xdg, { profile: "core", telemetry: { enabled: false } });
   const env = commandEnv(xdg);
   const p = withoutContinue(env);
   const r = symphysis(env, "install", "--project", p);
-  assert.equal(r.status, 0, r.stdout + r.stderr);
-  assert.ok(fs.existsSync(continueCommand(p)), r.stdout);
-  assert.ok(fs.existsSync(path.join(continueSkill(p), "SKILL.md")), r.stdout);
-  assert.match(r.stdout, /^continue: проект обновлён: openspec update$/m);
+  assert.equal(r.status, 2, r.stdout + r.stderr);
+  assert.ok(!fs.existsSync(continueCommand(p)), r.stdout);
+  assert.ok(!fs.existsSync(path.join(continueSkill(p), "SKILL.md")), r.stdout);
+  assert.match(r.stderr, /install --preview/);
 });
 
-test("Форка нет: схема и скиллы поставлены, stdout — команда на потом и подсказка, код 0; check — [!!] continue", () => {
+test("Форка нет: local файлы поставлены с явной диагностикой зависимости", () => {
   const xdg = tmp();
   const env = emptyPathEnv(xdg);
   const p = tmp();
@@ -512,28 +505,22 @@ test("Форка нет: схема и скиллы поставлены, stdout
   assert.equal(r.status, 0, r.stdout + r.stderr);
   assert.ok(fs.existsSync(path.join(targets(p).schemaDir, "schema.yaml")));
   assert.ok(fs.existsSync(path.join(p, ".claude", "skills", "symphysis-brainstorm", "SKILL.md")));
-  assert.match(r.stdout, /^continue: openspec не найден — выполнить потом: openspec update$/m);
-  assert.match(r.stdout, /where\.exe claude/);
-  assert.match(r.stdout, /which/);
+  assert.match(r.stdout, /openspec: нужен закреплённый форк/);
+  assert.ok(fs.existsSync(continueCommand(p)));
   const c = symphysis(env, "check", "--project", p);
   assert.equal(c.status, 2);
-  assert.match(c.stdout, /^\[!!\] continue: /m);
+  assert.match(c.stdout, /\[!!\].*(?:OpenSpec|openspec|форк)/);
 });
 
-test("Клиент не настроен: stdout — openspec init и подсказка, код 0; check — [!!] continue", () => {
+test("Новый local проект получает guarded native workflows без предварительного openspec init", () => {
   const xdg = tmp();
   const env = commandEnv(xdg);
   const p = tmp();
   const r = symphysis(env, "install", "--project", p);
   assert.equal(r.status, 0, r.stdout + r.stderr);
   assert.ok(fs.existsSync(path.join(targets(p).schemaDir, "schema.yaml")));
-  assert.match(r.stdout, /^continue: клиент не настроен — выполнить потом: openspec init --tools claude$/m);
-  assert.match(r.stdout, /where\.exe claude/);
-  assert.match(r.stdout, /where\.exe opencode/);
-  assert.match(r.stdout, /which/);
-  const c = symphysis(env, "check", "--project", p);
-  assert.equal(c.status, 2);
-  assert.match(c.stdout, /^\[!!\] continue: клиент не настроен — выполнить: openspec init --tools claude$/m);
+  assert.match(fs.readFileSync(continueCommand(p), "utf8"), /run `symphysis [^\n]* preflight`/);
+  assert.match(r.stdout, /native discovery.*unconfirmed/);
 });
 
 test("В PATH другая версия OpenSpec: update не зовётся, сгенерированные файлы проекта не переписаны, код 0", () => {
@@ -550,39 +537,40 @@ test("В PATH другая версия OpenSpec: update не зовётся, с
   assert.equal(r.status, 0, r.stdout + r.stderr);
   assert.doesNotMatch(fs.readFileSync(log, "utf8"), /update/);
   const pin = JSON.parse(fs.readFileSync(fileURLToPath(new URL("../package.json", import.meta.url)), "utf8")).symphysis.openspecPin;
-  assert.ok(r.stdout.split(/\r?\n/).includes(`continue: openspec версии 1.13.1, нужен форк ${pin} — выполнить потом: openspec update`), r.stdout);
+  assert.ok(r.stdout.includes(`openspec: нужен закреплённый форк ${pin}`), r.stdout);
 });
 
-test("SYMPHYSIS_OPENSPEC относительным путём: форк находится и при cwd проекта", () => {
+test("SYMPHYSIS_OPENSPEC относительным путём: отказ usage без изменения проекта", () => {
   const xdg = tmp();
   writeConfig(xdg, { profile: "core", telemetry: { enabled: false } });
   const env = commandEnv(xdg);
   const p = withoutContinue(env);
   const rel = path.relative(process.cwd(), FORK);
   const r = symphysis({ ...env, SYMPHYSIS_OPENSPEC: rel }, "install", "--project", p);
-  assert.equal(r.status, 0, r.stdout + r.stderr);
-  assert.ok(fs.existsSync(continueCommand(p)), r.stdout);
+  assert.equal(r.status, 2, r.stdout + r.stderr);
+  assert.match(r.stderr, /абсолютный/);
+  assert.ok(!fs.existsSync(path.join(p, ".symphysis")));
 });
 
-test("Конфиг до и после: заданная человеком телеметрия не изменена, stdout называет путь", () => {
+test("Конфиг до и после native-конфликта: заданная человеком телеметрия не изменена", () => {
   const xdg = tmp();
   const was = { profile: "core", telemetry: { enabled: true } };
   writeConfig(xdg, was);
   const env = commandEnv(xdg);
   const p = withoutContinue(env);
   const r = symphysis(env, "install", "--project", p);
-  assert.equal(r.status, 0, r.stdout + r.stderr);
+  assert.equal(r.status, 2, r.stdout + r.stderr);
   assert.deepEqual(withForkDefaults(readConfig(xdg)), withForkDefaults(was));
-  assert.ok(r.stdout.split(/\r?\n/).includes(`openspec: глобальный конфиг ${configFile(xdg)}`), r.stdout);
+  assert.match(r.stderr, /ownership/);
   assert.doesNotMatch(r.stdout, /^telemetry: выключена/m);
 });
 
-test("Конфиг до и после: ключа нет — различие только telemetry.enabled: false, stdout называет правку и путь", () => {
+test("Конфиг до и после успешной установки: различие только telemetry.enabled: false", () => {
   const xdg = tmp();
   const was = { profile: "core" };
   writeConfig(xdg, was);
   const env = commandEnv(xdg);
-  const p = withoutContinue(env);
+  const p = tmp();
   const r = symphysis(env, "install", "--project", p);
   assert.equal(r.status, 0, r.stdout + r.stderr);
   assert.deepEqual(withForkDefaults(readConfig(xdg)), withForkDefaults({ ...was, telemetry: { enabled: false } }));
@@ -590,7 +578,7 @@ test("Конфиг до и после: ключа нет — различие т
   assert.ok(r.stdout.split(/\r?\n/).includes(`openspec: глобальный конфиг ${configFile(xdg)}`), r.stdout);
 });
 
-test("Профиль не задан, телеметрия задана: форк не зовётся, его разовая миграция не пишет в конфиг", () => {
+test("Профиль не задан: конфликт чужой команды не запускает update и сохраняет конфиг", () => {
   const xdg = tmp();
   writeConfig(xdg, { telemetry: { enabled: true } });
   const before = fs.readFileSync(configFile(xdg));
@@ -600,16 +588,16 @@ test("Профиль не задан, телеметрия задана: фор�
   fs.writeFileSync(path.join(p, ".claude", "commands", "opsx", "apply.md"), "x");
   const fake = loggingFork();
   const r = symphysis({ ...env, SYMPHYSIS_OPENSPEC: fake.js }, "install", "--project", p);
-  assert.equal(r.status, 0, r.stdout + r.stderr);
+  assert.equal(r.status, 2, r.stdout + r.stderr);
   assert.doesNotMatch(fake.calls(), /update/);
   assert.deepEqual(fs.readFileSync(configFile(xdg)), before);
-  assert.match(r.stdout, /^continue: в глобальном конфиге не задан профиль, openspec update записал бы туда свой список — выполнить: openspec config profile core, затем openspec update$/m);
+  assert.match(r.stderr, /ownership/);
 });
 
 test("Инсталлятор сам телеметрию не порождает: нет anonymousId и noticeSeen", () => {
   const xdg = tmp();
   const env = commandEnv(xdg);
-  const p = withoutContinue(env);
+  const p = tmp();
   const r = symphysis(env, "install", "--project", p);
   assert.equal(r.status, 0, r.stdout + r.stderr);
   const cfg = readConfig(xdg);
@@ -624,7 +612,7 @@ test("Соседи в XDG_CONFIG_HOME не тронуты: запись толь
   fs.mkdirSync(path.dirname(neighbour));
   fs.writeFileSync(neighbour, "{}\n");
   const env = commandEnv(xdg);
-  const r = symphysis(env, "install", "--project", withoutContinue(env));
+  const r = symphysis(env, "install", "--project", tmp());
   assert.equal(r.status, 0, r.stdout + r.stderr);
   assert.equal(fs.readFileSync(neighbour, "utf8"), "{}\n");
   assert.deepEqual(fs.readdirSync(xdg).sort(), ["openspec", "другая-программа"].sort());
@@ -636,6 +624,7 @@ test("Соседи в XDG_CONFIG_HOME не тронуты: запись толь
 const settingsFile = (p) => path.join(p, "symphysis.yaml");
 const gitignore = (p) => path.join(p, ".gitignore");
 const lines = (file) => fs.readFileSync(file, "utf8").split(/\r?\n/);
+const privateEntries = ["symphysis.yaml", ".symphysis/tools/journal-roots.json", "tools/journal-roots.json", ".symphysis/install-manifest.json", ".symphysis/.install-*", ".symphysis/.leases/", ".symphysis/store-init.json", ".symphysis/.store-init-*", ".symphysis/migration.json", ".symphysis/.migration-*", ".symphysis-install-*", ".symphysis-init-*", ".symphysis-migrate-*"];
 
 test("Первая установка: symphysis.yaml создан, всё включено, вложенные ключи", { skip: spawnSync("python", ["-c", "import yaml"]).status === 0 ? false : "у python из PATH нет PyYAML: python -m pip install pyyaml" }, () => {
   const p = tmp();
@@ -663,15 +652,15 @@ test("Файл с правками человека: --force не меняет �
   assert.ok(!r.written.includes("symphysis.yaml"));
 });
 
-test("Файл переживает обновление установки: файл тот же, .symphysis/ обновлён", () => {
+test("Файл настроек и изменённый инструмент сохраняются при ownership-конфликте", () => {
   const p = tmp();
   install(p, { payloadDir });
   fs.writeFileSync(settingsFile(p), "edge_probe:\n  enabled: false\n");
   const tool = path.join(p, ".symphysis", "tools", "journal.py");
   fs.writeFileSync(tool, "старый");
-  install(p, { payloadDir, force: true });
+  assert.throws(() => install(p, { payloadDir, force: true }), /ownership/);
   assert.equal(fs.readFileSync(settingsFile(p), "utf8"), "edge_probe:\n  enabled: false\n");
-  assert.notEqual(fs.readFileSync(tool, "utf8"), "старый");
+  assert.equal(fs.readFileSync(tool, "utf8"), "старый");
 });
 
 // --- .gitignore ------------------------------------------------------------
@@ -680,14 +669,14 @@ test("Установка вносит строку: прежние строки 
   const p = tmp();
   fs.writeFileSync(gitignore(p), "node_modules/\n*.log\n");
   install(p, { payloadDir });
-  assert.deepEqual(lines(gitignore(p)), ["node_modules/", "*.log", "symphysis.yaml", ""]);
+  assert.deepEqual(lines(gitignore(p)), ["node_modules/", "*.log", ...privateEntries, ""]);
 });
 
 test("Установка вносит строку: CRLF сохраняется, файл без конца строки не склеивается", () => {
   const p = tmp();
   fs.writeFileSync(gitignore(p), "a\r\nb");
   install(p, { payloadDir });
-  assert.equal(fs.readFileSync(gitignore(p), "utf8"), "a\r\nb\r\nsymphysis.yaml\r\n");
+  assert.equal(fs.readFileSync(gitignore(p), "utf8"), ["a", "b", ...privateEntries, ""].join("\r\n"));
 });
 
 test("Повторный запуск не дублирует строку", () => {
@@ -702,7 +691,7 @@ test("Повторный запуск не дублирует строку", () 
 test("Файла .gitignore нет: создан со строкой", () => {
   const p = tmp();
   install(p, { payloadDir });
-  assert.equal(fs.readFileSync(gitignore(p), "utf8"), "symphysis.yaml\n");
+  assert.deepEqual(lines(gitignore(p)), [...privateEntries, ""]);
 });
 
 test("Проект не под git: строка внесена, ошибки нет, код 0", () => {
@@ -735,7 +724,7 @@ test("git check-ignore называет symphysis.yaml после install", () =
   assert.equal(git(p, "check-ignore", "symphysis.yaml").trim(), "symphysis.yaml");
 });
 
-test("Выбор одного человека не доходит до другого: два клона", () => {
+test("Выбор человека и служебный manifest не приезжают с клоном, local install повторно привязывает точные байты", () => {
   const origin = tmp();
   git(origin, "init", "-q", "--bare");
   const first = tmp();
@@ -746,10 +735,12 @@ test("Выбор одного человека не доходит до друг
   git(first, "commit", "-qm", "работа");
   git(first, "push", "-q", "origin", "HEAD:main");
   assert.doesNotMatch(git(first, "ls-files"), /^symphysis\.yaml$/m);
+  assert.doesNotMatch(git(first, "ls-files"), /^\.symphysis\/(?:install-manifest\.json|tools\/journal-roots\.json)$/m);
 
   const second = tmp();
   git(second, "clone", "-q", "--branch", "main", origin, ".");
   assert.ok(!fs.existsSync(settingsFile(second)), "файл первого клона приехал");
+  assert.ok(!fs.existsSync(path.join(second, ".symphysis", "install-manifest.json")));
   install(second, { payloadDir });
   assert.match(fs.readFileSync(settingsFile(second), "utf8"), /enabled: true/);
 });
@@ -809,15 +800,14 @@ test("Новый проект: после install скрипт справки п
   }
 });
 
-test("Обновление без `--force`: новые файлы положены, отличающиеся пропущены", () => {
+test("Обновление без `--force`: ownership-конфликт не публикует даже недостающий файл", () => {
   const p = tmp();
   install(p, { payloadDir });
   const t = targets(p);
   fs.rmSync(path.join(t.toolsDir, "tools", "step_help.py"));
   fs.writeFileSync(path.join(t.schemaDir, "steps.md"), "своё");
-  const r = install(p, { payloadDir });
-  assert.ok(fs.existsSync(path.join(t.toolsDir, "tools", "step_help.py")));
-  assert.ok(r.skipped.includes(`openspec/schemas/symphysis/steps.md ${SUFFIX}`), JSON.stringify(r.skipped));
+  assert.throws(() => install(p, { payloadDir }), /steps.md.*сохранён/);
+  assert.ok(!fs.existsSync(path.join(t.toolsDir, "tools", "step_help.py")));
   assert.equal(fs.readFileSync(path.join(t.schemaDir, "steps.md"), "utf8"), "своё");
 });
 
@@ -864,7 +854,7 @@ test("версия: клон внутри чужого репозитория н
   assert.equal(versionOf(p), VERSION);
 });
 
-test("версия: клон обновлён, инструменты нет — без --force файл не меняется, с --force новый хеш (F-36)", () => {
+test("версия: неизменённая managed поставка обновляется целиком без force", () => {
   const clone = makeClone({ git: true });
   const pd = tmp();
   syncPayload(pd, clone);
@@ -875,9 +865,8 @@ test("версия: клон обновлён, инструменты нет —
   gitIn(clone, "add", "-A");
   gitIn(clone, "commit", "-qm", "два");
   syncPayload(pd, clone);
-  const r = install(p, { payloadDir: pd, sourceRoot: clone });
-  assert.equal(versionOf(p), first);
-  assert.ok(r.skipped.includes(`${VERSION_REL} ${SUFFIX}`), JSON.stringify(r.skipped));
+  install(p, { payloadDir: pd, sourceRoot: clone });
+  assert.equal(versionOf(p), `${VERSION}+${head(clone)}`);
   install(p, { payloadDir: pd, sourceRoot: clone, force: true });
   assert.equal(versionOf(p), `${VERSION}+${head(clone)}`);
   assert.notEqual(versionOf(p), first);
@@ -902,28 +891,26 @@ test("версия: тарбол без исходников — только в
 });
 
 // Файл версии описывает поставленные инструменты (project-installer: «Файл версии»).
-test("обновление без --force: пропущен инструмент, файла версии не было — файл не пишется", () => {
+test("ownership-конфликт инструмента не создаёт отсутствующий файл версии", () => {
   const p = tmp();
   install(p, { payloadDir });
   const t = targets(p);
   const tools = path.join(t.toolsDir, "tools");
   fs.writeFileSync(path.join(tools, "journal_cli.py"), "своё");
   fs.rmSync(path.join(tools, VERSION_FILE_NAME));
-  const r = install(p, { payloadDir });
-  assert.ok(r.skipped.some((line) => line.startsWith(".symphysis/tools/journal_cli.py")), JSON.stringify(r.skipped));
+  assert.throws(() => install(p, { payloadDir }), /journal_cli.py.*сохранён/);
   assert.equal(fs.existsSync(path.join(tools, VERSION_FILE_NAME)), false);
 });
 
-test("обновление без --force: пропущен инструмент, файл версии уже есть — остаётся как есть и назван пропущенным", () => {
+test("ownership-конфликт сохраняет изменённые инструмент и файл версии", () => {
   const p = tmp();
   install(p, { payloadDir });
   const t = targets(p);
   const tools = path.join(t.toolsDir, "tools");
   fs.writeFileSync(path.join(tools, "journal_cli.py"), "своё");
   fs.writeFileSync(path.join(tools, VERSION_FILE_NAME), "0.0.1\n");
-  const r = install(p, { payloadDir });
+  assert.throws(() => install(p, { payloadDir }), (error) => ["journal_cli.py", VERSION_FILE_NAME].every((name) => error.message.includes(name)));
   assert.equal(fs.readFileSync(path.join(tools, VERSION_FILE_NAME), "utf8"), "0.0.1\n");
-  assert.ok(r.skipped.includes(`.symphysis/tools/${VERSION_FILE_NAME} ${SUFFIX}`), JSON.stringify(r.skipped));
 });
 
 test("обновление без --force: ничего не пропущено — файл версии пишется", () => {

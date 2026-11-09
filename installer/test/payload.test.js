@@ -25,6 +25,7 @@ const FILES = [
   "tools/symphysis_config.py",
   "tools/step_help.py",
   "tools/openspec_run.py",
+  "tools/runtime_context.py",
   "tools/trace_graph.py",
   "tools/anchor_refs.py",
   "tools/playground-template.html",

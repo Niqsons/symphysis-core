@@ -9,3 +9,4 @@ mermaid.js.org  # документация mermaid, ссылка в docs/analysi
 docs.npmjs.com  # документация npm, область исследования module-structure
 code.visualstudio.com  # документация VS Code, область исследования module-structure
 learn.chatgpt.com  # официальная документация Codex: скиллы и агенты, global-user-install
+learn.microsoft.com  # Win32 process identity API для Windows venv redirector

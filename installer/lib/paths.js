@@ -2,6 +2,16 @@ import path from "node:path";
 
 export const DEFAULT_SKILLS_DIR = path.join(".claude", "skills");
 
+/** Independent of cwd and the current Windows drive; non-string inputs are invalid. */
+export function isFullyAbsolute(value, platform = process.platform) {
+  if (typeof value !== "string" || !value || value.includes("\0")) return false;
+  if (platform !== "win32") return path.posix.isAbsolute(value);
+  if (/^[a-z]:[\\/]/i.test(value)) return true;
+  if (!/^[\\/]{2}/.test(value)) return false;
+  const [server, share] = value.slice(2).split(/[\\/]/);
+  return Boolean(server && share && ![".", "..", "?"].includes(server) && ![".", "..", "?"].includes(share));
+}
+
 /** Каталог агентов рядом с каталогом скиллов: `.claude/skills` -> `.claude/agents`. */
 export function agentsDirFor(skillsDir) {
   return path.join(path.dirname(skillsDir), "agents");

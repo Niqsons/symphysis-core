@@ -10,6 +10,7 @@ import os
 import re
 from pathlib import Path
 from urllib.parse import quote
+from runtime_context import context as _runtime_context
 
 __all__ = [
     "ROOT", "ROOTS_PATH", "UNUSABLE_ROOTS", "OUTSIDE_ROOT", "NOT_CHECKED", "VERDICT_OUTSIDE",
@@ -19,8 +20,23 @@ __all__ = [
 
 # Каталог над каталогом кода (F-40): в исходнике — корень репозитория (над `roots/`), в установке — `.symphysis`
 # (над `tools/`); `<root>` файла корней раскрывается от него, файл корней в обеих раскладках — `tools/journal-roots.json`.
-ROOT = Path(__file__).resolve().parent.parent
+_CONTEXT = _runtime_context()
+ROOT = (Path(_CONTEXT["store"]["root"]) / ".symphysis" if _CONTEXT else Path(__file__).resolve().parent.parent)
+if _CONTEXT and _CONTEXT["runtime"].get("legacy") and Path(_CONTEXT["runtime"]["root"]) == Path(_CONTEXT["store"]["root"]):
+    ROOT = Path(_CONTEXT["store"]["root"])
+elif _CONTEXT:
+    store = Path(_CONTEXT["store"]["root"])
+    canonical = store / ".symphysis" / "tools" / "journal-roots.json"
+    flat = store / "tools" / "journal-roots.json"
+    # Retiring a flat runtime does not retire its private data map. A present
+    # bad canonical map, including a broken link, never selects another map.
+    if not os.path.lexists(canonical) and os.path.lexists(flat):
+        ROOT = store
 ROOTS_PATH = ROOT / "tools" / "journal-roots.json"
+
+
+class RootsError(ValueError):
+    """The selected store's roots map cannot be used; another map is not a fallback."""
 
 
 # --- корни и сверка цитат --------------------------------------------------
@@ -47,6 +63,8 @@ def change_of(journal_path: Path) -> tuple[Path, str] | None:
 
 def _roots_from_file(roots_file: Path | None) -> dict[str, Path]:
     raw = json.loads(Path(roots_file or ROOTS_PATH).read_text(encoding="utf-8"))
+    if not isinstance(raw, dict) or any(not isinstance(prefix, str) or not isinstance(value, str) for prefix, value in raw.items()):
+        raise RootsError("journal-roots.json: нужен словарь строковых префиксов и путей")
     return {prefix: _expand_value(value) for prefix, value in raw.items()}
 
 
@@ -73,6 +91,18 @@ def default_roots(roots_file: Path | None = None, journal_path: Path | None = No
     путь; пустой префикс `""` — корень по умолчанию, если файл его называет.
     Порядок: явный `roots_file`; журнал не из `openspec/changes/` или файл корней внутри проекта из пути журнала — файл корней;
     файл вне проекта — см. `_roots_around`; иначе инструменты вне проекта (`symphysis.toolsPath`, F-93, F-104): единственный корень — проект."""
+    if _CONTEXT:
+        store = Path(_CONTEXT["store"]["root"]).resolve()
+        if journal_path is not None:
+            where = change_of(journal_path)
+            if where is None or where[0].resolve() != store or not Path(journal_path).resolve().is_relative_to(store):
+                raise RootsError("Журнал не принадлежит выбранному store dispatcher")
+        if roots_file is None and not os.path.lexists(ROOTS_PATH):
+            return {"": store}
+        try:
+            return {"": store, **_roots_from_file(roots_file)}
+        except UNUSABLE_ROOTS as error:
+            raise RootsError("journal-roots.json: карта выбранного проекта не читается; runtime не используется как корень данных") from error
     where = change_of(journal_path) if journal_path is not None and roots_file is None else None
     if where is None or _inside(ROOTS_PATH, where[0]):
         return _roots_from_file(roots_file)
@@ -83,6 +113,10 @@ def project_roots(project: Path) -> dict[str, Path]:
     """Те же корни для вызова без журнала (`step_help.py`): корень проекта известен по каталогу вызова. Порядок тот же:
     файл корней внутри проекта — его корни, негодный файл — проект; файл вне проекта — см. `_roots_around`; иначе только проект."""
     project = Path(project)
+    if _CONTEXT:
+        if project.resolve() != Path(_CONTEXT["store"]["root"]).resolve():
+            raise RootsError("Проект не совпадает с выбранным store dispatcher")
+        return default_roots()
     own = {"": project.resolve()}
     if not _inside(ROOTS_PATH, project):
         return _roots_around(project) or own

@@ -1,0 +1,765 @@
+{
+  "format": 1,
+  "generations": [
+    {
+      "id": "pre-global-a19a427",
+      "sourceCommits": [
+        "a19a4272fcce49c3cbee1aec6feeb4193748947c"
+      ],
+      "mermaidVersion": "12.2.0",
+      "files": [
+        {
+          "source": "agents/symphysis-attack-driver.md",
+          "sha256": [
+            "13ad964c37cb568f5d607b8ba3d65becdadc98cfc334f0b745b7df7dcf819461",
+            "906b26dab592ef03954a0a5466fb413a34e83f0aaf7d5a9f769ead3746102e3a"
+          ]
+        },
+        {
+          "source": "agents/symphysis-consequences-driver.md",
+          "sha256": [
+            "41a1399cc60b0af77016c096c38d135ec94f9396feb816bd3bf4c50ea806687b",
+            "fa8f0b8195a52d1efa01b571060b0b35e9e686a5a2f52f1547a7b248cd794bc9"
+          ]
+        },
+        {
+          "source": "agents/symphysis-edge-probe-driver.md",
+          "sha256": [
+            "0efc1745d8c9a4584f674dbdf7b74aa7dc1ef7194887bdbe8a5c97c06f5520e9",
+            "41f0194d5a841a8de2bbae447d401be7e286e01025b9d7ad74add9a05786b43f"
+          ]
+        },
+        {
+          "source": "agents/symphysis-prohibition-probe-driver.md",
+          "sha256": [
+            "72bceb2a531efdf367e885c55a72f80060376ba9a6e9aa1f913965e2114e6bc4",
+            "aa306c89dadd67b60c47dcb54a7bebb2ef2579a7263cc1a5c03ef8562e613fdf"
+          ]
+        },
+        {
+          "source": "agents/symphysis-research-driver.md",
+          "sha256": [
+            "73505440ac4b1fdd53d493538c85620958383bef3bd8d1c57b648515296c849a",
+            "eb3d333731ca758e87d80ae3717122d16f92f6a2d65f53ea252edad7a4543165"
+          ]
+        },
+        {
+          "source": "docs/attack-table.md",
+          "sha256": [
+            "13175b514d3a0ca25efb94ee215f1708ed9dafeece1be570b3ff5afde867e0b1",
+            "a1e451a424665e533165f388f20e87aaf51852fbdfbab78a0be5422c4efef566"
+          ]
+        },
+        {
+          "source": "docs/candidate.md",
+          "sha256": [
+            "00f4652b50bcfc820f112a7e1ca724cded1d3accc6b33b61bd624c04f8a5f32a",
+            "11ab7e84b47b013f98843c9805ced74baae4d18328d2cfeb055e8a6ed4f432a4"
+          ]
+        },
+        {
+          "source": "docs/config.md",
+          "sha256": [
+            "38ef99f68c15484712044d67904a77c689b92d8f663a1cbf9f935966e1684c1f",
+            "86bac622bf60cc28af3950ebdd5f8dcc648d3c9735ec2a2b68ed671532abf69b"
+          ]
+        },
+        {
+          "source": "docs/driver.md",
+          "sha256": [
+            "886d2ea3c2ac45553961211c5de87b012cb69ce599b642ddf1afab3313834ff5",
+            "9e6f3e343f70c66815e88c1400c2e99b73d5c79293623f7c8aba8e8aa39a1671"
+          ]
+        },
+        {
+          "source": "docs/journal-cli.md",
+          "sha256": [
+            "32079b32834abca81842ac3862f2d6bdc29ad4f34c6e3ddc2199ce5c67866a10",
+            "3b0922d9975713e4367221fa3f4243f533dddb508eb7d5426794fe22de68b576"
+          ]
+        },
+        {
+          "source": "docs/terms.md",
+          "sha256": [
+            "bfb36be4c44cac1cc4c7f79a4866b14ee6c9053e35010ccb18348f84de83e8a4",
+            "cb1c0a7af4ffee5bdeedf56ff5b3deaefa9f37e775581ab73ddce3bca3ebb552"
+          ]
+        },
+        {
+          "source": "docs/THIRD-PARTY-NOTICES.md",
+          "sha256": [
+            "1e8fd6ab6a9981d38840cff6cb659deb58d6b76edf44a372a106983979e6af35",
+            "d7afa4f1218ecadd98be9937891f4fca2cfb4292d18a12a24f6157574ab4f009"
+          ]
+        },
+        {
+          "source": "openspec/schemas/symphysis/schema.yaml",
+          "sha256": [
+            "51ee2b1227f58dfc86ba147b12fe8c41c70bfaf9688e8ba5339504ff3ff188fc",
+            "702ca9cb386a9ab7f3ea39cf9651b6404b9399395a26de6a39ae0b2ec345f832"
+          ]
+        },
+        {
+          "source": "openspec/schemas/symphysis/steps.md",
+          "sha256": [
+            "97d6f91a6928ef6eff65bb2999756e1e1ffb9a959c08fa1ee5a9e45f2a111780",
+            "ffa8391455c0bf08e416bacfe8a3523f6813206c47380b7584f3fb837ad489db"
+          ]
+        },
+        {
+          "source": "openspec/schemas/symphysis/templates/attack-artifacts.md",
+          "sha256": [
+            "c56e815b855ddb80867e2d804bf475a6298f727194a479f0ade9d03d7566512d",
+            "e8d2adee577629ab01e46369cae44cf6b244a4cbdde7d83743a97819e242a5c9"
+          ]
+        },
+        {
+          "source": "openspec/schemas/symphysis/templates/attack-decisions.md",
+          "sha256": [
+            "9914a61f6f29ded7dbeb37ce4d721f90ab9b1dbea43337c46b1e65f481dbdbae",
+            "cba21562bd65ea5ecab560004c4e09a3af0df97d23b0fa2e453184c53e2b8110"
+          ]
+        },
+        {
+          "source": "openspec/schemas/symphysis/templates/consequences.md",
+          "sha256": [
+            "2debd7fb9d86a2f80ce91815c738d03cfb4222c75321047dcec24a185261a847",
+            "39f4e34e2eeb7109d7e400f93598d572393deb567b0732e6a59d1bb1e7a1f0b9"
+          ]
+        },
+        {
+          "source": "openspec/schemas/symphysis/templates/decisions.json",
+          "sha256": [
+            "ba917dd2fb27718c0e1681c75bd6330df6514441600bbc08a3ea06683606e8dc",
+            "f9d3811b8471edbbac6a045e2a8200abc4eef3d2371c2d8d924c22060233318a"
+          ]
+        },
+        {
+          "source": "openspec/schemas/symphysis/templates/design.md",
+          "sha256": [
+            "775b890782939a30b63af94dbecb2fbe44f6c1484232d6a7c43bd0ea26118f01",
+            "d6ba85592c0f57aab16b41c12f1740925a4c86317c9e251f5f358b087ce2c6a1"
+          ]
+        },
+        {
+          "source": "openspec/schemas/symphysis/templates/intent.md",
+          "sha256": [
+            "009d44c466050da45388dbc582d528e2779e6463bdd522a452ab3d50d695f03e",
+            "6c964063b00825252187a8aa7f29d17fdfd1f04a5a36f1de870d4d84caf2e427"
+          ]
+        },
+        {
+          "source": "openspec/schemas/symphysis/templates/proposal.md",
+          "sha256": [
+            "05dd6250d41c62057dd746a2bcc450ad017d26fe0402ae0c310ce39c5550efd9",
+            "7b14d1dcd490e823a19d1f3edb64427b2aca850c5824cc1d189818611be3b106"
+          ]
+        },
+        {
+          "source": "openspec/schemas/symphysis/templates/research.md",
+          "sha256": [
+            "954a0a6012334c676578cbfcd500f202e7edbcf9feb59ecd4892cfe8c481539f",
+            "f88d53ff2addf33d39d2ade4c7395493cd70399afff60c433dd0fbca556d45ae"
+          ]
+        },
+        {
+          "source": "openspec/schemas/symphysis/templates/security.md",
+          "sha256": [
+            "0ab2771547f1de05f018702b22678c78a042fce758ad4e6a8e1d273fac904af3",
+            "a3e2f7084cfa42cf72013e72ae346b0f282798d3d3d9ac2818dfbdd762e24261"
+          ]
+        },
+        {
+          "source": "openspec/schemas/symphysis/templates/spec.md",
+          "sha256": [
+            "6c575f5decd71f962d6c18049cc6eb2b06061e324c8f090b6ff0299df3c59a54",
+            "90756f2e77e88fe5800b84e3a169e0aa348d3d8f7ef9277bdfd801679236739b"
+          ]
+        },
+        {
+          "source": "openspec/schemas/symphysis/templates/tasks.md",
+          "sha256": [
+            "863e24f83e261a4f84bd9b6aea5a6cc1b2c69fd8a5a7f56ca6bcf8eea18f57a7",
+            "cf464849a3ae911a99425ee1317141fd986503005023b1ae903828f63d6e33d4"
+          ]
+        },
+        {
+          "source": "skills/symphysis-attack/SKILL.md",
+          "sha256": [
+            "824a6ff9bc6f5337ea921709a0b9f44d69b23514174c3c0a4d3e09c537120448",
+            "a11dc04540bec8c9031939b9e16aec346628f6b9a85804ed11edc98d3b3bcc50"
+          ]
+        },
+        {
+          "source": "skills/symphysis-brainstorm/SKILL.md",
+          "sha256": [
+            "0adcfe367aea97212b4367755c28e8ec03759922c70c8d44e9e6030211dc5d38",
+            "cadcf814746eafbd2e6ab967ae2b3fe447b853f715cbede6cb072f2200a083ee"
+          ]
+        },
+        {
+          "source": "skills/symphysis-consequences/SKILL.md",
+          "sha256": [
+            "296a738e045c3f871395a820f803486e5a591e9769e1029bfe44efe9c5ff0e1f",
+            "8688379a5bcdc6eb5ebd0e4ab16981de676851a83069f322389449091ba23556"
+          ]
+        },
+        {
+          "source": "skills/symphysis-edge-probe/SKILL.md",
+          "sha256": [
+            "7fd621bd0e00c8e82ad990d11769c19bb343ee9b49f4fa2173367a4adb5cd4c7",
+            "e4f886ccfb1ecc9169a7e2215637ad72825fe3630c347cba966c5e6478ca54c3"
+          ]
+        },
+        {
+          "source": "skills/symphysis-prohibition-probe/SKILL.md",
+          "sha256": [
+            "80318fa9169dd312ead6ec1cfde54f605c152de8913167308cd79830f01f7d3b",
+            "9f01dec02e8edfd57d8359f17dd645270d9cb3c8a1f68ad2a653a174c70ea899"
+          ]
+        },
+        {
+          "source": "skills/symphysis-research/SKILL.md",
+          "sha256": [
+            "92259a50dca694853ca47907252def1218ef5e10db2b781baa20a4c0cd1811f9",
+            "b018bed3430a25f77847d5bc7dacc0e2abaaa5044e0ee6787de1fdde0daec1a9"
+          ]
+        },
+        {
+          "source": "skills/symphysis-viewer/SKILL.md",
+          "sha256": [
+            "0616fde2052e91fe9317ce2d538c0121fe63a30a6a431aef8b3fe717145871cd",
+            "48d3da5bdd7d8fee5a94b3cce365797bbe320dd08773cbd5600bd711b4ad8ec1"
+          ]
+        },
+        {
+          "source": "tools/anchor_refs.py",
+          "sha256": [
+            "3703f4ac361916a35e96ff13dd4cde66912f4e91561a5cf7a50d5285fc96015b",
+            "9d8c221bcd59f33289fb791aeeffbb15acaaf2695d3d17493dbc2930e534ea6f"
+          ]
+        },
+        {
+          "source": "tools/attack_scope.py",
+          "sha256": [
+            "084990594fc88a5d349267cf3ab0e1e8a6f653c9b735edb740960ac2e8ded68a",
+            "308008871d4a564309f7bc6288d788c7d45dd2d3d755f36151af6f3d4162a521"
+          ]
+        },
+        {
+          "source": "tools/attack_table.py",
+          "sha256": [
+            "8e8ba111b01f27c3f05ecbed32e4353ffca99c8b58128ff8b8b599eff0263fa6",
+            "b0c78c08963d37d61409e49b3eabd1cf4b25f9961caaa36b04c1c8bef7ca0937"
+          ]
+        },
+        {
+          "source": "tools/journal_apply.py",
+          "sha256": [
+            "4fc7aa38d2b6043b96f8c4068a40635da6fe03979db042fe350ad9379d726fff",
+            "f0a04241fed421c5e33399b94f74510845c3962a5bbb429835485d4c21344714"
+          ]
+        },
+        {
+          "source": "tools/journal_cli.py",
+          "sha256": [
+            "558ab2fa628eefb954a94f47ec46b3ac51f8619b6ceb4aeeb0b10e3007212308",
+            "e64513981b95b4d917e0aa0b52ee2b5ee6f803a8e8c9a743a539c74ac4dd7ff0"
+          ]
+        },
+        {
+          "source": "tools/journal_consequences.py",
+          "sha256": [
+            "00da97cc0b2cc9daf1eb7c063711596e8609538c9c86e2850716508d0c2e5113",
+            "decb351a3ef425e0d119410e9c244d9244f60e817b5d781a1a9b00f144f8b073"
+          ]
+        },
+        {
+          "source": "tools/journal_model.py",
+          "sha256": [
+            "665ed0f2709d22208ba64a526826aa5a6bce3bc9cc990542c200f7cd4c9a7b97",
+            "f83212fcba07e28fd6d0bd5a899373a615cabed8b7ae6d9d9393c51fcc25334a"
+          ]
+        },
+        {
+          "source": "tools/journal_render.py",
+          "sha256": [
+            "1af8880ba9c3e469b3057a9f74b74e016f3bcf8ac2cee5f0dd7d5d871d6b3332",
+            "399817a02c4f29d14e7bfae914d395fbd53278bb03e5cd95b22a0c65e101757e"
+          ]
+        },
+        {
+          "source": "tools/journal_sites.py",
+          "sha256": [
+            "aaf5dd56483d89a176b58fe48894494da2a923e28f1f9174798b3630efa8ab03",
+            "ae065369652b685d3af3316885de6ab3ea42e7806693c3c181cfd2654df0c177"
+          ]
+        },
+        {
+          "source": "tools/journal.py",
+          "sha256": [
+            "7f211142f1b9e5abe87d747e4e146327c736dadb947e40d21254fd5bc81d35a1",
+            "9dee00cae70fefb5e43c867beccc0309e84c0eaaf03f1706153d02010099906f"
+          ]
+        },
+        {
+          "source": "tools/journal.schema.json",
+          "sha256": [
+            "21e9fd58cd63871f7a0c1c784b559936bb3c0ec1be315f8ca942a18d44a159bf",
+            "f6b27926c65bcbabe56dca212d770926ea1d133bf1d7dd17769f0ad7a9d84584"
+          ]
+        },
+        {
+          "source": "tools/mermaid.LICENSE",
+          "sha256": [
+            "ec9fb67dcb25eccc416ed56e1aab819222c805a2a4bfe4cb19e7556bf2ffde80"
+          ]
+        },
+        {
+          "source": "tools/mermaid.min.js",
+          "sha256": [
+            "a8a6a6f805b074a8261a2825c86f99c8054acb3b35f50bb7e24a4f9f2c3c3b9f"
+          ]
+        },
+        {
+          "source": "tools/openspec_run.py",
+          "sha256": [
+            "760faad909cc9608a4f10e93fe70400a6e53c1d1bfa780d59b8dbe47e5cb49cc",
+            "b7931438357890cc24ef9d55d2c7f6ba5f292b29449294ad6d3b86d3b689b763"
+          ]
+        },
+        {
+          "source": "tools/playground-template.html",
+          "sha256": [
+            "b53c05d5b7f7c743936a53e3254aafbd19ff2ba78e31b3157439bf22091f3033",
+            "fe8d9143acc6f6ab2c3d2a9f13c865773d52eafb54279340cfca76d0cc55c59b"
+          ]
+        },
+        {
+          "source": "tools/roots.py",
+          "sha256": [
+            "14a28d0c8fca07054fd7c9c8fb6679d5f04d97a63534b11addf5001466e3907b",
+            "667f3a6b88df72648f4054e05c60dfbd513148994552b5d2defa149afcccc746"
+          ]
+        },
+        {
+          "source": "tools/step_help.py",
+          "sha256": [
+            "0f2b5c6b38088fbcead06d3bcbf5919a0e002920a8979330f0574dd4832a08dd",
+            "1a8fc7454e8710c344484eff80ade583e105b09d703931321f4399eda5ca71a8"
+          ]
+        },
+        {
+          "source": "tools/symphysis_config.py",
+          "sha256": [
+            "4f68bb49e32c083054025d2297331974ca7803e39f40c6c60462a71e49831e01",
+            "c62e3e34db1393520394d09b86c755b3b2d748ce746d0c8c5adfe4ebc65c926f"
+          ]
+        },
+        {
+          "source": "tools/symphysis-version.txt",
+          "sha256": [
+            "1ed89863e36c7b537c9464d19a3b3b4a451ac4c8921ba041bdb162a940ef726b",
+            "3d097c315a1c543040f548da4c7051265e94c77211a2411ced1d4621344270de",
+            "9bd7e5447e7cc595ae64fa29cb269c1f54bcb579f4a37f61b8541bd3885309b7",
+            "e9dd8507f4bf0c6f42458e41aea833ad0bd3f6127272335eee9bf4d58541ed67"
+          ]
+        },
+        {
+          "source": "tools/trace_graph.py",
+          "sha256": [
+            "3a191f70ddd2ffbecba512676010f3f2baf8cf3c3ecad1b9876928cbf1ce795b",
+            "c7051d624c1ff7abdda87e036ade9bc7c53779513aad386567a8fe20c3dca6ae"
+          ]
+        },
+        {
+          "source": "tools/viewer_render.py",
+          "sha256": [
+            "74d583cbac4b3c9b9e8c8372c7b46b2cb52cb2ee9d32ee4bc4cf2d8391400297",
+            "ff03d1a27ecd40450571ddb55c0fee629ff169fa68e69a84fb650ce153e716a2"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "pre-global-f17434b",
+      "sourceCommits": [
+        "f17434beb5dbf68406bc76697b21cab65c91f409"
+      ],
+      "mermaidVersion": "12.2.0",
+      "files": [
+        {
+          "source": "agents/symphysis-attack-driver.md",
+          "sha256": [
+            "13ad964c37cb568f5d607b8ba3d65becdadc98cfc334f0b745b7df7dcf819461",
+            "906b26dab592ef03954a0a5466fb413a34e83f0aaf7d5a9f769ead3746102e3a"
+          ]
+        },
+        {
+          "source": "agents/symphysis-consequences-driver.md",
+          "sha256": [
+            "41a1399cc60b0af77016c096c38d135ec94f9396feb816bd3bf4c50ea806687b",
+            "fa8f0b8195a52d1efa01b571060b0b35e9e686a5a2f52f1547a7b248cd794bc9"
+          ]
+        },
+        {
+          "source": "agents/symphysis-edge-probe-driver.md",
+          "sha256": [
+            "0efc1745d8c9a4584f674dbdf7b74aa7dc1ef7194887bdbe8a5c97c06f5520e9",
+            "41f0194d5a841a8de2bbae447d401be7e286e01025b9d7ad74add9a05786b43f"
+          ]
+        },
+        {
+          "source": "agents/symphysis-prohibition-probe-driver.md",
+          "sha256": [
+            "72bceb2a531efdf367e885c55a72f80060376ba9a6e9aa1f913965e2114e6bc4",
+            "aa306c89dadd67b60c47dcb54a7bebb2ef2579a7263cc1a5c03ef8562e613fdf"
+          ]
+        },
+        {
+          "source": "agents/symphysis-research-driver.md",
+          "sha256": [
+            "73505440ac4b1fdd53d493538c85620958383bef3bd8d1c57b648515296c849a",
+            "eb3d333731ca758e87d80ae3717122d16f92f6a2d65f53ea252edad7a4543165"
+          ]
+        },
+        {
+          "source": "docs/attack-table.md",
+          "sha256": [
+            "13175b514d3a0ca25efb94ee215f1708ed9dafeece1be570b3ff5afde867e0b1",
+            "a1e451a424665e533165f388f20e87aaf51852fbdfbab78a0be5422c4efef566"
+          ]
+        },
+        {
+          "source": "docs/candidate.md",
+          "sha256": [
+            "00f4652b50bcfc820f112a7e1ca724cded1d3accc6b33b61bd624c04f8a5f32a",
+            "11ab7e84b47b013f98843c9805ced74baae4d18328d2cfeb055e8a6ed4f432a4"
+          ]
+        },
+        {
+          "source": "docs/config.md",
+          "sha256": [
+            "38ef99f68c15484712044d67904a77c689b92d8f663a1cbf9f935966e1684c1f",
+            "86bac622bf60cc28af3950ebdd5f8dcc648d3c9735ec2a2b68ed671532abf69b"
+          ]
+        },
+        {
+          "source": "docs/driver.md",
+          "sha256": [
+            "886d2ea3c2ac45553961211c5de87b012cb69ce599b642ddf1afab3313834ff5",
+            "9e6f3e343f70c66815e88c1400c2e99b73d5c79293623f7c8aba8e8aa39a1671"
+          ]
+        },
+        {
+          "source": "docs/journal-cli.md",
+          "sha256": [
+            "32079b32834abca81842ac3862f2d6bdc29ad4f34c6e3ddc2199ce5c67866a10",
+            "3b0922d9975713e4367221fa3f4243f533dddb508eb7d5426794fe22de68b576"
+          ]
+        },
+        {
+          "source": "docs/terms.md",
+          "sha256": [
+            "bfb36be4c44cac1cc4c7f79a4866b14ee6c9053e35010ccb18348f84de83e8a4",
+            "cb1c0a7af4ffee5bdeedf56ff5b3deaefa9f37e775581ab73ddce3bca3ebb552"
+          ]
+        },
+        {
+          "source": "docs/THIRD-PARTY-NOTICES.md",
+          "sha256": [
+            "1e8fd6ab6a9981d38840cff6cb659deb58d6b76edf44a372a106983979e6af35",
+            "d7afa4f1218ecadd98be9937891f4fca2cfb4292d18a12a24f6157574ab4f009"
+          ]
+        },
+        {
+          "source": "openspec/schemas/symphysis/schema.yaml",
+          "sha256": [
+            "51ee2b1227f58dfc86ba147b12fe8c41c70bfaf9688e8ba5339504ff3ff188fc",
+            "702ca9cb386a9ab7f3ea39cf9651b6404b9399395a26de6a39ae0b2ec345f832"
+          ]
+        },
+        {
+          "source": "openspec/schemas/symphysis/steps.md",
+          "sha256": [
+            "97d6f91a6928ef6eff65bb2999756e1e1ffb9a959c08fa1ee5a9e45f2a111780",
+            "ffa8391455c0bf08e416bacfe8a3523f6813206c47380b7584f3fb837ad489db"
+          ]
+        },
+        {
+          "source": "openspec/schemas/symphysis/templates/attack-artifacts.md",
+          "sha256": [
+            "c56e815b855ddb80867e2d804bf475a6298f727194a479f0ade9d03d7566512d",
+            "e8d2adee577629ab01e46369cae44cf6b244a4cbdde7d83743a97819e242a5c9"
+          ]
+        },
+        {
+          "source": "openspec/schemas/symphysis/templates/attack-decisions.md",
+          "sha256": [
+            "9914a61f6f29ded7dbeb37ce4d721f90ab9b1dbea43337c46b1e65f481dbdbae",
+            "cba21562bd65ea5ecab560004c4e09a3af0df97d23b0fa2e453184c53e2b8110"
+          ]
+        },
+        {
+          "source": "openspec/schemas/symphysis/templates/consequences.md",
+          "sha256": [
+            "2debd7fb9d86a2f80ce91815c738d03cfb4222c75321047dcec24a185261a847",
+            "39f4e34e2eeb7109d7e400f93598d572393deb567b0732e6a59d1bb1e7a1f0b9"
+          ]
+        },
+        {
+          "source": "openspec/schemas/symphysis/templates/decisions.json",
+          "sha256": [
+            "ba917dd2fb27718c0e1681c75bd6330df6514441600bbc08a3ea06683606e8dc",
+            "f9d3811b8471edbbac6a045e2a8200abc4eef3d2371c2d8d924c22060233318a"
+          ]
+        },
+        {
+          "source": "openspec/schemas/symphysis/templates/design.md",
+          "sha256": [
+            "775b890782939a30b63af94dbecb2fbe44f6c1484232d6a7c43bd0ea26118f01",
+            "d6ba85592c0f57aab16b41c12f1740925a4c86317c9e251f5f358b087ce2c6a1"
+          ]
+        },
+        {
+          "source": "openspec/schemas/symphysis/templates/intent.md",
+          "sha256": [
+            "009d44c466050da45388dbc582d528e2779e6463bdd522a452ab3d50d695f03e",
+            "6c964063b00825252187a8aa7f29d17fdfd1f04a5a36f1de870d4d84caf2e427"
+          ]
+        },
+        {
+          "source": "openspec/schemas/symphysis/templates/proposal.md",
+          "sha256": [
+            "05dd6250d41c62057dd746a2bcc450ad017d26fe0402ae0c310ce39c5550efd9",
+            "7b14d1dcd490e823a19d1f3edb64427b2aca850c5824cc1d189818611be3b106"
+          ]
+        },
+        {
+          "source": "openspec/schemas/symphysis/templates/research.md",
+          "sha256": [
+            "954a0a6012334c676578cbfcd500f202e7edbcf9feb59ecd4892cfe8c481539f",
+            "f88d53ff2addf33d39d2ade4c7395493cd70399afff60c433dd0fbca556d45ae"
+          ]
+        },
+        {
+          "source": "openspec/schemas/symphysis/templates/security.md",
+          "sha256": [
+            "0ab2771547f1de05f018702b22678c78a042fce758ad4e6a8e1d273fac904af3",
+            "a3e2f7084cfa42cf72013e72ae346b0f282798d3d3d9ac2818dfbdd762e24261"
+          ]
+        },
+        {
+          "source": "openspec/schemas/symphysis/templates/spec.md",
+          "sha256": [
+            "6c575f5decd71f962d6c18049cc6eb2b06061e324c8f090b6ff0299df3c59a54",
+            "90756f2e77e88fe5800b84e3a169e0aa348d3d8f7ef9277bdfd801679236739b"
+          ]
+        },
+        {
+          "source": "openspec/schemas/symphysis/templates/tasks.md",
+          "sha256": [
+            "863e24f83e261a4f84bd9b6aea5a6cc1b2c69fd8a5a7f56ca6bcf8eea18f57a7",
+            "cf464849a3ae911a99425ee1317141fd986503005023b1ae903828f63d6e33d4"
+          ]
+        },
+        {
+          "source": "skills/symphysis-attack/SKILL.md",
+          "sha256": [
+            "824a6ff9bc6f5337ea921709a0b9f44d69b23514174c3c0a4d3e09c537120448",
+            "a11dc04540bec8c9031939b9e16aec346628f6b9a85804ed11edc98d3b3bcc50"
+          ]
+        },
+        {
+          "source": "skills/symphysis-brainstorm/SKILL.md",
+          "sha256": [
+            "0adcfe367aea97212b4367755c28e8ec03759922c70c8d44e9e6030211dc5d38",
+            "cadcf814746eafbd2e6ab967ae2b3fe447b853f715cbede6cb072f2200a083ee"
+          ]
+        },
+        {
+          "source": "skills/symphysis-consequences/SKILL.md",
+          "sha256": [
+            "296a738e045c3f871395a820f803486e5a591e9769e1029bfe44efe9c5ff0e1f",
+            "8688379a5bcdc6eb5ebd0e4ab16981de676851a83069f322389449091ba23556"
+          ]
+        },
+        {
+          "source": "skills/symphysis-edge-probe/SKILL.md",
+          "sha256": [
+            "7fd621bd0e00c8e82ad990d11769c19bb343ee9b49f4fa2173367a4adb5cd4c7",
+            "e4f886ccfb1ecc9169a7e2215637ad72825fe3630c347cba966c5e6478ca54c3"
+          ]
+        },
+        {
+          "source": "skills/symphysis-prohibition-probe/SKILL.md",
+          "sha256": [
+            "80318fa9169dd312ead6ec1cfde54f605c152de8913167308cd79830f01f7d3b",
+            "9f01dec02e8edfd57d8359f17dd645270d9cb3c8a1f68ad2a653a174c70ea899"
+          ]
+        },
+        {
+          "source": "skills/symphysis-research/SKILL.md",
+          "sha256": [
+            "92259a50dca694853ca47907252def1218ef5e10db2b781baa20a4c0cd1811f9",
+            "b018bed3430a25f77847d5bc7dacc0e2abaaa5044e0ee6787de1fdde0daec1a9"
+          ]
+        },
+        {
+          "source": "skills/symphysis-viewer/SKILL.md",
+          "sha256": [
+            "0616fde2052e91fe9317ce2d538c0121fe63a30a6a431aef8b3fe717145871cd",
+            "48d3da5bdd7d8fee5a94b3cce365797bbe320dd08773cbd5600bd711b4ad8ec1"
+          ]
+        },
+        {
+          "source": "tools/anchor_refs.py",
+          "sha256": [
+            "3703f4ac361916a35e96ff13dd4cde66912f4e91561a5cf7a50d5285fc96015b",
+            "9d8c221bcd59f33289fb791aeeffbb15acaaf2695d3d17493dbc2930e534ea6f"
+          ]
+        },
+        {
+          "source": "tools/attack_scope.py",
+          "sha256": [
+            "084990594fc88a5d349267cf3ab0e1e8a6f653c9b735edb740960ac2e8ded68a",
+            "308008871d4a564309f7bc6288d788c7d45dd2d3d755f36151af6f3d4162a521"
+          ]
+        },
+        {
+          "source": "tools/attack_table.py",
+          "sha256": [
+            "8e8ba111b01f27c3f05ecbed32e4353ffca99c8b58128ff8b8b599eff0263fa6",
+            "b0c78c08963d37d61409e49b3eabd1cf4b25f9961caaa36b04c1c8bef7ca0937"
+          ]
+        },
+        {
+          "source": "tools/journal_apply.py",
+          "sha256": [
+            "4fc7aa38d2b6043b96f8c4068a40635da6fe03979db042fe350ad9379d726fff",
+            "f0a04241fed421c5e33399b94f74510845c3962a5bbb429835485d4c21344714"
+          ]
+        },
+        {
+          "source": "tools/journal_cli.py",
+          "sha256": [
+            "558ab2fa628eefb954a94f47ec46b3ac51f8619b6ceb4aeeb0b10e3007212308",
+            "e64513981b95b4d917e0aa0b52ee2b5ee6f803a8e8c9a743a539c74ac4dd7ff0"
+          ]
+        },
+        {
+          "source": "tools/journal_consequences.py",
+          "sha256": [
+            "00da97cc0b2cc9daf1eb7c063711596e8609538c9c86e2850716508d0c2e5113",
+            "decb351a3ef425e0d119410e9c244d9244f60e817b5d781a1a9b00f144f8b073"
+          ]
+        },
+        {
+          "source": "tools/journal_model.py",
+          "sha256": [
+            "665ed0f2709d22208ba64a526826aa5a6bce3bc9cc990542c200f7cd4c9a7b97",
+            "f83212fcba07e28fd6d0bd5a899373a615cabed8b7ae6d9d9393c51fcc25334a"
+          ]
+        },
+        {
+          "source": "tools/journal_render.py",
+          "sha256": [
+            "1af8880ba9c3e469b3057a9f74b74e016f3bcf8ac2cee5f0dd7d5d871d6b3332",
+            "399817a02c4f29d14e7bfae914d395fbd53278bb03e5cd95b22a0c65e101757e"
+          ]
+        },
+        {
+          "source": "tools/journal_sites.py",
+          "sha256": [
+            "aaf5dd56483d89a176b58fe48894494da2a923e28f1f9174798b3630efa8ab03",
+            "ae065369652b685d3af3316885de6ab3ea42e7806693c3c181cfd2654df0c177"
+          ]
+        },
+        {
+          "source": "tools/journal.py",
+          "sha256": [
+            "7f211142f1b9e5abe87d747e4e146327c736dadb947e40d21254fd5bc81d35a1",
+            "9dee00cae70fefb5e43c867beccc0309e84c0eaaf03f1706153d02010099906f"
+          ]
+        },
+        {
+          "source": "tools/journal.schema.json",
+          "sha256": [
+            "21e9fd58cd63871f7a0c1c784b559936bb3c0ec1be315f8ca942a18d44a159bf",
+            "f6b27926c65bcbabe56dca212d770926ea1d133bf1d7dd17769f0ad7a9d84584"
+          ]
+        },
+        {
+          "source": "tools/mermaid.LICENSE",
+          "sha256": [
+            "ec9fb67dcb25eccc416ed56e1aab819222c805a2a4bfe4cb19e7556bf2ffde80"
+          ]
+        },
+        {
+          "source": "tools/mermaid.min.js",
+          "sha256": [
+            "a8a6a6f805b074a8261a2825c86f99c8054acb3b35f50bb7e24a4f9f2c3c3b9f"
+          ]
+        },
+        {
+          "source": "tools/openspec_run.py",
+          "sha256": [
+            "760faad909cc9608a4f10e93fe70400a6e53c1d1bfa780d59b8dbe47e5cb49cc",
+            "b7931438357890cc24ef9d55d2c7f6ba5f292b29449294ad6d3b86d3b689b763"
+          ]
+        },
+        {
+          "source": "tools/playground-template.html",
+          "sha256": [
+            "b53c05d5b7f7c743936a53e3254aafbd19ff2ba78e31b3157439bf22091f3033",
+            "fe8d9143acc6f6ab2c3d2a9f13c865773d52eafb54279340cfca76d0cc55c59b"
+          ]
+        },
+        {
+          "source": "tools/roots.py",
+          "sha256": [
+            "14a28d0c8fca07054fd7c9c8fb6679d5f04d97a63534b11addf5001466e3907b",
+            "667f3a6b88df72648f4054e05c60dfbd513148994552b5d2defa149afcccc746"
+          ]
+        },
+        {
+          "source": "tools/step_help.py",
+          "sha256": [
+            "0f2b5c6b38088fbcead06d3bcbf5919a0e002920a8979330f0574dd4832a08dd",
+            "1a8fc7454e8710c344484eff80ade583e105b09d703931321f4399eda5ca71a8"
+          ]
+        },
+        {
+          "source": "tools/symphysis_config.py",
+          "sha256": [
+            "4f68bb49e32c083054025d2297331974ca7803e39f40c6c60462a71e49831e01",
+            "c62e3e34db1393520394d09b86c755b3b2d748ce746d0c8c5adfe4ebc65c926f"
+          ]
+        },
+        {
+          "source": "tools/symphysis-version.txt",
+          "sha256": [
+            "3d097c315a1c543040f548da4c7051265e94c77211a2411ced1d4621344270de",
+            "528be91630e41e3b1c37a75bee804f97df1c21dc1d8bdf75e60fafb6206aa6e7",
+            "cbe9bf33756d60dd9a0baff40b674e4ab11e1939871bc0d291e59a2f40052ac6",
+            "e9dd8507f4bf0c6f42458e41aea833ad0bd3f6127272335eee9bf4d58541ed67"
+          ]
+        },
+        {
+          "source": "tools/trace_graph.py",
+          "sha256": [
+            "3a191f70ddd2ffbecba512676010f3f2baf8cf3c3ecad1b9876928cbf1ce795b",
+            "c7051d624c1ff7abdda87e036ade9bc7c53779513aad386567a8fe20c3dca6ae"
+          ]
+        },
+        {
+          "source": "tools/viewer_render.py",
+          "sha256": [
+            "74d583cbac4b3c9b9e8c8372c7b46b2cb52cb2ee9d32ee4bc4cf2d8391400297",
+            "ff03d1a27ecd40450571ddb55c0fee629ff169fa68e69a84fb650ce153e716a2"
+          ]
+        }
+      ]
+    }
+  ]
+}

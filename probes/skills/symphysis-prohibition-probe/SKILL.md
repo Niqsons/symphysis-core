@@ -18,13 +18,18 @@ description: >-
 
 ## Вход
 
-- `<каталог изменения>` — `openspec/changes/<имя>/`; термины — `.symphysis/docs/terms.md`.
+- До первого изменяющего действия модель MUST выполнить `symphysis preflight --change <имя>`;
+  селекторы `--project` и `--store`, если нужны, стоят перед подкомандой и одинаковы
+  у всех вызовов. Отказ preflight или получения ресурса — остановка без записи файлов.
+- Ссылки вида `symphysis resource ...` — команды: модель MUST прочитать их вывод
+  целиком; это инструкции выбранной поставки, а не пути внутри store.
+- `<каталог изменения>` — `openspec/changes/<имя>/`; термины — `symphysis resource doc terms.md`.
 - Требования — `<каталог изменения>/specs/<capability>/spec.md`; журнал —
   `<каталог изменения>/decisions.json`, тот же, что у брейншторма и пробы краёв; номера
   `F-NN` продолжаются.
 - Форма записи-кандидата, правило рекомендации, зеркало исхода —
-  `.symphysis/docs/candidate.md`; команды и коды `journal.py` — `.symphysis/docs/journal-cli.md`.
-- Шаблон следа — комментарий «проба запретов» в `openspec/schemas/symphysis/templates/spec.md`.
+  `symphysis resource doc candidate.md`; команды и коды `journal.py` — `symphysis resource doc journal-cli.md`.
+- Шаблон следа — комментарий «проба запретов» в `symphysis resource template spec.md`.
 - Своего выбора в `symphysis.yaml` у пробы нет: скрипт состава она не зовёт и идёт
   независимо от пробы краёв.
 - У водителя — brief (раздел «Водитель»).
@@ -113,7 +118,7 @@ description: >-
 
 ### 5. Запиши кандидата
 
-На каждый оставленный особенный запрет — одна запись по `.symphysis/docs/candidate.md`;
+На каждый оставленный особенный запрет — одна запись по `symphysis resource doc candidate.md`;
 особенное для пробы запретов:
 
 - `question` — `[запрет] <требование>: не должен <чем стать>`: требование названо по имени,
@@ -157,7 +162,7 @@ recommendation: A — скрытый за фильтром блокер проп
 
 ### 7. Зеркало исхода
 
-После `apply` у каждой записи пробы с `decision` — зеркало по `.symphysis/docs/candidate.md`
+После `apply` у каждой записи пробы с `decision` — зеркало по `symphysis resource doc candidate.md`
 с отличиями пробы запретов:
 
 - `outcome` ← `{kind: "проба", value: <A и B → Specify, C → Dismiss, D → Defer>, reason:
@@ -192,7 +197,7 @@ recommendation: A — скрытый за фильтром блокер проп
 
 ## Коды и сигналы
 
-Коды и маркеры `journal.py` — `.symphysis/docs/journal-cli.md`. Особенное для пробы:
+Коды и маркеры `journal.py` — `symphysis resource doc journal-cli.md`. Особенное для пробы:
 
 - `check` код 1 после записи кандидата → поле схемы пропущено или `outcome.value` вне
   списка (`Backstop` у запрета): исправить запись до следующей.
@@ -239,7 +244,7 @@ recommendation: A — скрытый за фильтром блокер проп
 ## Водитель
 
 Водитель у пробы — по настройке, по умолчанию проба идёт в главной нити: без контекста
-решений журнала водитель заводит лишние кандидаты (состав — `.symphysis/docs/config.md`,
+решений журнала водитель заводит лишние кандидаты (состав — `symphysis resource doc config.md`,
 часть «водители»).
 
 - Водителю идут такты 1–5: от требований до записи кандидатов и парковок. Главной нити —

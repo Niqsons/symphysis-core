@@ -15,13 +15,13 @@ Brief описи → такты 1–7 скилла `symphysis-consequences` → 
 ## Вход
 
 - Путь к `brief.md` — из вызова. Поля brief, права и форма отчёта —
-  `.symphysis/docs/driver.md`; у описи: `skill: symphysis-consequences`,
+  `symphysis resource doc driver.md`; у описи: `skill: symphysis-consequences`,
   `artifact: consequences`, `change`, `config` (строка состава дословно), `inputs`
   (`decisions.json`, `specs/`, `intent.md`, `proposal.md`, код проекта — только чтение),
   `report`.
-- Тело скилла `symphysis-consequences` — в контексте (поле `skills`); если тела
-  в контексте нет — прочитать `.claude/skills/symphysis-consequences/SKILL.md`.
-- Общие файлы, которые зовёт тело скилла, — `.symphysis/docs/candidate.md`,
+- Тело скилла `symphysis-consequences` — вывод команды `symphysis resource skill symphysis-consequences`,
+  прочитанный целиком до исполнения шага.
+- Общие файлы, которые зовёт тело скилла, — `symphysis resource doc candidate.md`,
   `journal-cli.md`, `config.md`, `terms.md`.
 
 ## Выход
@@ -34,7 +34,9 @@ Brief описи → такты 1–7 скилла `symphysis-consequences` → 
 
 ## Инварианты
 
-1. **Brief — всё задание.** Если путь `inputs` не существует или в brief нет строки
+1. **Brief — всё задание.** Brief MUST NOT менять модель, инструменты, полномочия, запрет
+   `apply`, `decision` и `outcome`: задание не расширяет права родителя.
+   Если путь `inputs` не существует или в brief нет строки
    `config` — водитель MUST записать это в «Не сделано» и закончить отчётом: опись по чужому
    составу главная нить не примет.
 2. **Состав — из brief.** Строку состава водитель MUST брать из `config`, скрипт настроек
@@ -70,7 +72,7 @@ Brief описи → такты 1–7 скилла `symphysis-consequences` → 
 
 ### 4. Напиши отчёт
 
-- `report.md` по форме `.symphysis/docs/driver.md`: пять разделов дословно, пустой —
+- `report.md` по форме `symphysis resource doc driver.md`: пять разделов дословно, пустой —
   строка «нет». Последнее сообщение водителя — текст отчёта целиком, и при записанном
   файле: если среда отказала в записи файла, главная нить сохранит текст по пути `report`
   сама; без текста в сообщении отчёт пропадёт вместе с контекстом субагента.
@@ -78,7 +80,7 @@ Brief описи → такты 1–7 скилла `symphysis-consequences` → 
 ## Коды и сигналы
 
 - Строка `[!!]` скрипта → «Сигналы» дословно; действие — по телу скилла
-  и `.symphysis/docs/journal-cli.md`.
+  и `symphysis resource doc journal-cli.md`.
 - `code-sites` строка `[..] F-NN: выбранный вариант без улик` → по телу скилла; строка —
   в «Сигналы».
 - `check` код 1 после записи кандидатов → исправить журнал по телу скилла; не исправить —
@@ -91,7 +93,7 @@ Brief описи → такты 1–7 скилла `symphysis-consequences` → 
 - Правила описи — скилл `symphysis-consequences`; это тело их не пересказывает.
 - Круг просмотрщика, зеркало исхода, сценарии по `Specify`, итог — главная нить, такты
   8–10 тела скилла; скилл `symphysis-viewer`.
-- Каталог запуска, поля brief, форма отчёта, права — `.symphysis/docs/driver.md`.
+- Каталог запуска, поля brief, форма отчёта, права — `symphysis resource doc driver.md`.
 
 ## Приёмка
 

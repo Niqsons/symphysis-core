@@ -1000,7 +1000,7 @@ def copy_of_tools_without_the_script(home: Path) -> Path:
     возвращает `journal.py`."""
     (home / "tools").mkdir(parents=True)
     for file in core_files():
-        if file.name.startswith("journal") or file.name in ("roots.py", "viewer_render.py", "attack_table.py", "attack_scope.py"):
+        if file.name.startswith("journal") or file.name in ("roots.py", "runtime_context.py", "viewer_render.py", "attack_table.py", "attack_scope.py"):
             shutil.copy(file, home / "tools")
     shutil.copy(ROOT / "tools" / "journal-roots.json", home / "tools")
     shutil.copy(TEMPLATE, home / "tools")

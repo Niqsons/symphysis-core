@@ -2,12 +2,12 @@
 name: symphysis-attack
 description: >-
   Применяй, когда instruction артефакта `attack-decisions` или `attack-artifacts` зовёт
-  скилл по имени; когда `openspec status` показывает у артефакта атаки `verdict: mismatch`
+  скилл по имени; когда `symphysis openspec status` показывает у артефакта атаки `verdict: mismatch`
   или `stale`; когда человек просит «атакуй журнал», «атакуй спеку и дизайн», «что здесь
   ничем не подкреплено», «повтори атаку». Не применяй для поиска развилок и вопросов
   человеку — это `symphysis-brainstorm`; для краёв и запретов требований —
   `symphysis-edge-probe` и `symphysis-prohibition-probe`; для сверки цитат улик —
-  `journal.py check`: атака берёт его результат.
+  `symphysis journal check`: атака берёт его результат.
 ---
 
 # symphysis-attack
@@ -19,7 +19,12 @@ description: >-
 
 ## Вход
 
-- `<каталог изменения>` — `openspec/changes/<имя>/`; термины — `.symphysis/docs/terms.md`.
+- До первого изменяющего действия модель MUST выполнить `symphysis preflight --change <имя>`;
+  селекторы `--project` и `--store`, если нужны, стоят перед подкомандой и одинаковы
+  у всех вызовов. Отказ preflight или получения ресурса — остановка без записи файлов.
+- Ссылки вида `symphysis resource ...` — команды: модель MUST прочитать их вывод
+  целиком; это инструкции выбранной поставки, а не пути внутри store.
+- `<каталог изменения>` — `openspec/changes/<имя>/`; термины — `symphysis resource doc terms.md`.
 - Вызов `attack-decisions`: цель — `decisions.json`; выход — `attack/decisions.md`; шаблон —
   `attack-decisions.md`; frontmatter — `status`, `target: decisions.json`, `target_sha256`.
 - Вызов `attack-artifacts`: цели — `decisions.json` (опора, не атакуется), `specs/**/*.md`,
@@ -28,16 +33,17 @@ description: >-
   с `path` и `sha256` на файл, журнал первым, `consequences.md` в списке только при наличии
   файла.
 - Шаблон файла атаки — поле `template` вывода
-  `openspec instructions <артефакт> --change <имя> --json`.
-- Столбцы таблицы, строки покрытия и правило ячейки — `.symphysis/docs/attack-table.md`;
-  команды и коды `journal.py` — `.symphysis/docs/journal-cli.md`.
+  `symphysis openspec instructions <артефакт> --change <имя> --json`.
+- Столбцы таблицы, строки покрытия и правило ячейки — `symphysis resource doc attack-table.md`;
+  команды и коды `journal.py` — `symphysis resource doc journal-cli.md`.
 - Код механизмов design — только чтение и греп.
-- Состав линз — вторая строка вывода `python .symphysis/tools/symphysis_config.py` (шаг 0); связи
+- Состав линз — вторая строка вывода `symphysis config` (шаг 0); связи
   для `trace-link` и рёбра `derives` для `rule-compliance` — вывод
-  `python .symphysis/tools/trace_graph.py build <имя>`, только чтение.
-- Правила шага для `rule-compliance` — `openspec/schemas/symphysis/schema.yaml` (поля `generates`,
-  `instruction` и `template` шага), `openspec/config.yaml` (`rules` шага), шаблоны
-  `openspec/schemas/symphysis/templates/`; мастер-текст требований — `openspec/specs/<capability>/spec.md`;
+  `symphysis trace build <имя>`, только чтение.
+- Правила шага для `rule-compliance` — `schema.yaml` схемы symphysis выбранной поставки:
+  её фактический каталог — `resources.schema.path` из `symphysis resolve --json` (поля `generates`,
+  `instruction` и `template` шага), `openspec/config.yaml` (`rules` шага), шаблоны через
+  `symphysis resource template <имя шаблона>`; мастер-текст требований — `openspec/specs/<capability>/spec.md`;
   всё — только чтение.
 - У водителя — brief (раздел «Водитель»).
 
@@ -87,7 +93,7 @@ description: >-
 
 ### 0. Узнай состав линз
 
-В начале атаки, до входа, узнай состав: `python .symphysis/tools/symphysis_config.py`.
+В начале атаки, до входа, узнай состав: `symphysis config`.
 Состав — вторая строка вывода: `[..] symphysis.yaml: линзы атаки: <слуг> вкл, <слуг> выкл, …`: семь
 слугов, твоему файлу принадлежат те, что в таблице его списка (шаг 4). Файл `symphysis.yaml`
 не читай; скрипт не запустился или его нет — считай все линзы включёнными и назови это в итоге.
@@ -115,7 +121,7 @@ description: >-
 
 ```bash
 # журнал (у обоих вызовов): check --write пишет line/found/verdict — хеш после него
-python .symphysis/tools/journal.py check --write <каталог изменения>/decisions.json
+symphysis journal check --write <каталог изменения>/decisions.json
 # хеши — из каталога изменения; путь для `path:` — как печатает sha256sum, но без `*`
 # перед ним (Git Bash печатает `<хеш> *<путь>` — двоичный режим)
 (cd <каталог изменения> && sha256sum decisions.json)
@@ -125,8 +131,8 @@ python .symphysis/tools/journal.py check --write <каталог изменен�
 # опись — если файл есть
 (cd <каталог изменения> && sha256sum consequences.md)
 # связи для `trace-link` и `derives` для `rule-compliance` (артефакты): граф изменения, только чтение
-python .symphysis/tools/trace_graph.py build <имя>
-openspec status --change <имя> --json   # verdict: ok | missing | mismatch | stale
+symphysis trace build <имя>
+symphysis openspec status --change <имя> --json   # verdict: ok | missing | mismatch | stale
 ```
 
 - В `target:` и `path:` — путь относительно каталога изменения, как печатают команды выше
@@ -200,7 +206,7 @@ openspec status --change <имя> --json   # verdict: ok | missing | mismatch | 
   `verdict`; `found: true` — «есть».
 - Строка — одно утверждение: «Утверждение» — цитата или пересказ с номером строки; «Линза»
   — slug из списка журнала (шаг 4); столбцы, строки покрытия и правило ячейки —
-  `.symphysis/docs/attack-table.md`.
+  `symphysis resource doc attack-table.md`.
 - Покрытие — поимённо: раздел без находок — строка «чисто» (`coverage`, `справка`, опора
   «есть»); раздел, до которого проход не дошёл, — строка «не пройдено» (`coverage`,
   `блокер`, опора «нет», закрыть — `повторить атаку по разделу`); строки покрытия
@@ -264,7 +270,7 @@ Specs, design, security, tasks: пути, команды, номера `F-NN`, �
 
 Связь за связью из вывода `build`, строки пишутся по ходу прохода.
 
-**Строка `trace-link`.** Связи берёт вывод `python .symphysis/tools/trace_graph.py build <имя>`:
+**Строка `trace-link`.** Связи берёт вывод `symphysis trace build <имя>`:
 `task:` → `scn:` (вид `satisfies`) — задача закрывает сценарий; `req:` → `rec:` (вид `traces`) —
 требование стоит на записи; `branch:` → `scn:` (вид `verifies`) — ветка отказа задета сценарием; место —
 в поле `at`. Одна строка на каждую связь: строка на каждую связь, находка или «есть», сотни
@@ -284,7 +290,7 @@ Specs, design, security, tasks: пути, команды, номера `F-NN`, �
 печатает числа `satisfies`, `traces`, `verifies` и сумму:
 
 ```
-python .symphysis/tools/trace_graph.py build <имя> | python -c "import json,sys; d=json.load(sys.stdin); k={'satisfies':'task:','traces':'req:','verifies':'branch:'}; n=[sum(1 for e in d['edges'] if e['type']==t and e['from'].startswith(p)) for t,p in k.items()]; print(*n, sum(n))"
+symphysis trace build <имя> | python -c "import json,sys; d=json.load(sys.stdin); k={'satisfies':'task:','traces':'req:','verifies':'branch:'}; n=[sum(1 for e in d['edges'] if e['type']==t and e['from'].startswith(p)) for t,p in k.items()]; print(*n, sum(n))"
 ```
 
 Сумма должна быть равна числу строк `trace-link`.
@@ -302,17 +308,18 @@ python .symphysis/tools/trace_graph.py build <имя> | python -c "import json,s
 ещё сверка требований MODIFIED и REMOVED его дельты. Строки пишутся по ходу прохода.
 
 **Источники правил.** Правило шага цели линза берёт из трёх источников, только чтением. Шаг — тот,
-чьё поле `generates` в `openspec/schemas/symphysis/schema.yaml` даёт файл цели: `specs/**/*.md` — шаг
+чьё поле `generates` в `schema.yaml` схемы symphysis выбранной поставки даёт файл цели: `specs/**/*.md` — шаг
 `specs`; `consequences.md`, `design.md`, `security.md`, `tasks.md` — одноимённые шаги.
 
-- `instruction` шага в `openspec/schemas/symphysis/schema.yaml`;
+- `instruction` шага в `schema.yaml` выбранной поставки; фактический каталог —
+  `resources.schema.path` из `symphysis resolve --json`;
 - `rules` шага в `openspec/config.yaml`;
-- шаблон шага в `openspec/schemas/symphysis/templates/` — файл из поля `template` шага.
+- шаблон шага через `symphysis resource template <имя шаблона>` — имя из поля `template` шага.
 
 Правило вне трёх источников линза MUST NOT выводить и строку о его нарушении MUST NOT писать: форма
 текста, которую советуют руководство проекта, тело скилла или `CLAUDE.md`, — не правило шага; иначе
 линза сама решает, что считать правилом, и автор цели получает находку по правилу, которого
-не получал. Правило, которое ловят `journal.py check` и `openspec validate --strict` (требование без
+не получал. Правило, которое ловят `symphysis journal check` и `symphysis openspec validate --strict` (требование без
 сценария, длина требования), линза MUST NOT проходить: его называет сигнал скрипта, строка линзы о нём —
 дубль.
 <!-- src: SELF — F-17, F-18 изменения attack-lens-conventions -->
@@ -321,7 +328,7 @@ python .symphysis/tools/trace_graph.py build <имя> | python -c "import json,s
 мастер-текста (сверка MODIFIED ниже). Его нарушение — строка: «Утверждение» — место цели цитатой или
 пересказом с номером строки; «Раздел» — `<файл>, <место>`; «Инвариант» — нарушенное правило
 цитатой `путь:строка «правило»` из источника, например
-`openspec/schemas/symphysis/schema.yaml:<строка> «Каждая задача называет проверку своего завершения (тест, команда, наблюдаемый результат, файл) прямо в строке.»`;
+`schema.yaml:<строка> «Каждая задача называет проверку своего завершения (тест, команда, наблюдаемый результат, файл) прямо в строке.»` (схема symphysis выбранной поставки);
 опора `нет: <на чём держится>`; закрыть — `правка артефакта`; у правила, которое само ведёт через
 журнал (разделы `design.md` из журнала, утверждение без записи `F-NN`), — `запись журнала`. «Инвариант»
 без цитаты правила с номером строки MUST NOT стоять: правило без источника — правило, которое вывела линза.
@@ -340,14 +347,16 @@ MUST сверяться с его текстом в мастер-спеке `ope
 имя каталога дельты; мастер-спека читается с диска, без `git show`. Вместе с родителем сверяются его
 дочерние по `derives` — требования изменения, чей текст начинается фразой `Часть требования «<имя родителя>».`
 (у другой capability — ``Часть требования `<capability>`: «<имя родителя>».``); те же пары дают рёбра
-`derives` в выводе `python .symphysis/tools/trace_graph.py build <имя>`. Без сверки ужатое или
+`derives` в выводе `symphysis trace build <имя>`. Без сверки ужатое или
 разделённое требование теряет условие молча: MODIFIED несёт требование целиком, и синхронизация
 заменит им мастер-текст.
 
 Строка о требовании — одна на требование, все его пропавшие условия — в её опоре: «Утверждение» —
 `MODIFIED «<имя>»`; «Раздел» — `specs/<capability>/spec.md, <имя>`; «Инвариант» — правило деления
 цитатой из `instruction` шага `specs`:
-`openspec/schemas/symphysis/schema.yaml:<строка> «Длинное в MODIFIED дели так же: сценарии родителя остаются при нём, условия не теряются.»`.
+`schema.yaml:<строка> «Длинное в MODIFIED дели так же: сценарии родителя остаются при нём, условия не теряются.»`
+(схема symphysis выбранной поставки). Ссылка `schema.yaml:<строка>` называет источник правила,
+а не файл внутри store: действительный каталог уже получен из `resources.schema.path`.
 
 - Мастер-текст требования MUST разбираться на условия: каждое утверждение с SHALL или MUST, каждое
   ограничение, исключение, число и уточнение (кто, чем, на что) — отдельное условие.
@@ -382,7 +391,7 @@ MUST сверяться с его текстом в мастер-спеке `ope
 **Покрытие `rule-compliance`.** Строки линзы: одна на каждое сверенное требование MODIFIED и REMOVED
 с заменой — находка или «есть»; находки по прочим правилам; на файл цели без находок линзы —
 строка «чисто», `справка`; на файл, до которого проход не дошёл, — строка «не пройдено», `блокер`.
-Формы строк «чисто» и «не пройдено» — `.symphysis/docs/attack-table.md`, «Строки покрытия». Цель,
+Формы строк «чисто» и «не пройдено» — `symphysis resource doc attack-table.md`, «Строки покрытия». Цель,
 которой нет на диске, строк `rule-compliance` не даёт: её называет строка `claim-extraction` (шаг 1);
 `consequences.md`, которого нет в `targets[]`, — не цель.
 
@@ -405,7 +414,7 @@ MUST сверяться с его текстом в мастер-спеке `ope
 
 Списки закрыты; просмотрщик группирует строки по slug. Slug не из списка своего файла —
 группа «вне списка», строка невалидна. Линзы присутствия сняты: что из них детерминируемо,
-ловят `journal.py check` и `openspec validate --strict`.
+ловят `symphysis journal check` и `symphysis openspec validate --strict`.
 <!-- src: F-07.A — сняты requirement-coverage, task-completeness, dependency-correctness, key-links, scope-sanity, verification-derivation, scope-reduction, data-contracts, research-resolution, honest-verifier; перечень — sources/TRANSLATION-NOTES.md -->
 
 **Линзы журнала** — `attack/decisions.md`:
@@ -506,10 +515,10 @@ MUST сверяться с его текстом в мастер-спеке `ope
 <!-- src: F-54.E, F-136.B; attack-severity-buttons: F-17, F-21, F-20, F-33, F-37, F-38, F-46 -->
 
 **Не репортится:** стиль, кроме правила шага цели у `rule-compliance`; решённое человеком с причиной;
-примеры и подстановки `<…>`; термины OpenSpec; то, что ловят `check` и `openspec validate --strict`;
+примеры и подстановки `<…>`; термины OpenSpec; то, что ловят `check` и `symphysis openspec validate --strict`;
 отсутствие поля `nodes` у записи: поле необязательно. Гигиену журнала — парковка `агент` без `finding` при
 `research/<F-NN>.md`; `факт` без улики; `recommendation` с пустым `why`; буква решения вне
-вариантов — ловит `journal.py check` (код 1 / `[!!]`): строки атаки о ней нет. Находка вне
+вариантов — ловит `symphysis journal check` (код 1 / `[!!]`): строки атаки о ней нет. Находка вне
 линз — под ближайшей линзой своего файла, с причиной; нет и ближайшей — предпочтение,
 не дефект. Правило вне трёх источников шага (шаг 3, «Источники правил») — строки нет ни под какой
 линзой.
@@ -542,9 +551,9 @@ MUST сверяться с его текстом в мастер-спеке `ope
   и REMOVED с заменой, шаг 3) и сверить `status` с таблицей; после записи прочитать `status` заново:
   это счёт, не пересуждение; вердикт, не совпавший с таблицей, обманет форк.
 - После записи модель MUST проверить разбор таблицы:
-  `python .symphysis/tools/journal.py view-json <каталог изменения>/decisions.json --attack <файл атаки>`
+  `symphysis journal view-json <каталог изменения>/decisions.json --attack <файл атаки>`
   — у файла атаки в выводе нет отказа; отказ называет строку и столбец: исправить ячейку по
-  `.symphysis/docs/attack-table.md`, иначе страница не соберётся и строки до человека не дойдут.
+  `symphysis resource doc attack-table.md`, иначе страница не соберётся и строки до человека не дойдут.
 - Строка итога — в `notes[]` журнала до `check --write` и хешей:
   `{date, text: «атака <цель>: строк N, блокеров a, предупреждений b, справок c, не выводится d — <status>»}`.
 - Форк читает только `status`; при `mismatch`, `missing` или `stale` `/opsx:continue` снова
@@ -565,7 +574,7 @@ MUST сверяться с его текстом в мастер-спеке `ope
 После итога главная нить MUST собрать страницу с атакой и отдать человеку ссылку на неё:
 
 ```bash
-python .symphysis/tools/journal.py render-html <каталог изменения>/decisions.json --out <каталог изменения>/symphysis.html --attack <каталог изменения>/attack/<цель>.md
+symphysis journal render-html <каталог изменения>/decisions.json --out <каталог изменения>/symphysis.html --attack <каталог изменения>/attack/<цель>.md
 ```
 
 - `--attack` — на каждый существующий файл атаки (`attack/decisions.md`, `attack/artifacts.md`),
@@ -578,18 +587,18 @@ python .symphysis/tools/journal.py render-html <каталог изменени�
 
 ## Коды и сигналы
 
-Коды и маркеры `journal.py` — `.symphysis/docs/journal-cli.md`. Особенное для атаки:
+Коды и маркеры `journal.py` — `symphysis resource doc journal-cli.md`. Особенное для атаки:
 
 - `check --write` код 1 → журнал негоден по схеме: атака не начинается (шаг 1).
 - `check --write` строка `[!!]` у улики → `found: false`: строка «нет» с текстом `verdict`.
 - `render-html --attack` код 2 → файл атаки не разбирается: исправить строку по
-  `.symphysis/docs/attack-table.md`, страница без этого не соберётся.
+  `symphysis resource doc attack-table.md`, страница без этого не соберётся.
 - `check --write` строка `[..] атака журнала: …` → состав повтора: добавленные записи, «записей
   не добавлено», «состав неполон» — правило шага 1, у артефактов строка `[..] атака артефактов: …`
   называет изменившиеся цели.
 - `check` строка `[!!] attack/<файл>: файл атаки не разбирается: <причина>` → исправить файл по
-  `.symphysis/docs/attack-table.md`; с `--strict` код 2, пока файл не разбирается.
-- `openspec status` у артефакта атаки `verdict: stale` или `mismatch` → цель изменилась после
+  `symphysis resource doc attack-table.md`; с `--strict` код 2, пока файл не разбирается.
+- `symphysis openspec status` у артефакта атаки `verdict: stale` или `mismatch` → цель изменилась после
   вердикта: у журнала — повтор по составу, у артефактов — с начала (шаг 1).
 
 ## Границы
@@ -599,8 +608,8 @@ python .symphysis/tools/journal.py render-html <каталог изменени�
   артефактов: атака цель не правит и не предлагает добавить требование или решение.
 - Решение — только слово человека через `apply`; показ строк атаки и спор по ним —
   `symphysis-viewer`, режим «атака».
-- Гигиена журнала — `journal.py check`; структура спек — `openspec validate --strict`.
-- Форма строки, строки покрытия, правило ячейки — `.symphysis/docs/attack-table.md`.
+- Гигиена журнала — `symphysis journal check`; структура спек — `symphysis openspec validate --strict`.
+- Форма строки, строки покрытия, правило ячейки — `symphysis resource doc attack-table.md`.
 - Реакция на предупреждение — слово человека; флаг «прочитано» ставит человек на странице
   (скилл `symphysis-viewer`), скилл его читает в итоге и не снимает.
 
@@ -649,12 +658,13 @@ python .symphysis/tools/journal.py render-html <каталог изменени�
 ## Водитель
 
 Атака идёт водителю целиком: ей нужны файлы и хеши, не ход беседы. Водитель включён
-по умолчанию (состав — `.symphysis/docs/config.md`, часть «водители»).
+по умолчанию (состав — `symphysis resource doc config.md`, часть «водители»).
 
 - Brief — `<каталог изменения>/briefs/symphysis-attack-<YYYY-MM-DD>/brief.md`:
   `skill: symphysis-attack`, `artifact: attack-decisions | attack-artifacts`, `change: <имя>`,
   `targets` — пути и хеши целей, `inputs` — каталог изменения и код механизмов design, у
-  `attack-artifacts` с включённой `rule-compliance` ещё `openspec/schemas/symphysis/schema.yaml`,
+  `attack-artifacts` с включённой `rule-compliance` ещё действительный путь к `schema.yaml`
+  из `resources.schema.path` вывода `symphysis resolve --json`,
   `openspec/config.yaml` и мастер-спеки `openspec/specs/<capability>/spec.md` дельт с MODIFIED или
   REMOVED (только чтение), `report` — путь отчёта. Главная нить пишет brief, водитель читает только
   его и названные файлы.
