@@ -227,15 +227,15 @@ const JOURNAL = {
  "title": "Журнал решений: global-user-install",
  "source": "openspec/changes/global-user-install/decisions.json",
  "generated": "2026-11-08",
- "sha256": "e500e3778a4e39302af5a910d228168b6cd21e0c543eedd4cf6f8159dc777240",
+ "sha256": "784c923d096476f25dc07e524897edcd5276837268f95fe12117b22e80097997",
  "stats": {
-  "records": 19,
-  "forks": 7,
-  "facts": 12,
-  "decided": 7,
+  "records": 26,
+  "forks": 13,
+  "facts": 13,
+  "decided": 13,
   "parked": 0,
-  "evidence_total": 49,
-  "evidence_found": 49
+  "evidence_total": 65,
+  "evidence_found": 65
  },
  "records": [
   {
@@ -983,7 +983,7 @@ const JOURNAL = {
       {
        "path": "openspec/changes/global-user-install/specs/runtime-resolution/spec.md",
        "quote": "### Requirement: Global-вызов проверяет совместимость store",
-       "line": 57,
+       "line": 69,
        "verdict": "сверено",
        "found": true
       }
@@ -998,7 +998,7 @@ const JOURNAL = {
       {
        "path": "openspec/changes/global-user-install/specs/runtime-resolution/spec.md",
        "quote": "### Requirement: Global-вызов проверяет совместимость store",
-       "line": 57,
+       "line": 69,
        "verdict": "сверено",
        "found": true
       }
@@ -1013,7 +1013,7 @@ const JOURNAL = {
       {
        "path": "openspec/changes/global-user-install/specs/runtime-resolution/spec.md",
        "quote": "### Requirement: Global-вызов проверяет совместимость store",
-       "line": 57,
+       "line": 69,
        "verdict": "сверено",
        "found": true
       }
@@ -1028,7 +1028,7 @@ const JOURNAL = {
       {
        "path": "openspec/changes/global-user-install/specs/runtime-resolution/spec.md",
        "quote": "### Requirement: Global-вызов проверяет совместимость store",
-       "line": 57,
+       "line": 69,
        "verdict": "сверено",
        "found": true
       }
@@ -1058,7 +1058,7 @@ const JOURNAL = {
     {
      "path": "openspec/changes/global-user-install/specs/runtime-resolution/spec.md",
      "quote": "### Requirement: Global-вызов проверяет совместимость store",
-     "line": 57,
+     "line": 69,
      "verdict": "сверено",
      "found": true
     }
@@ -1230,7 +1230,7 @@ const JOURNAL = {
     {
      "path": "openspec/changes/global-user-install/specs/runtime-resolution/spec.md",
      "quote": "### Requirement: Расположение runtime не определяет рабочий store",
-     "line": 41,
+     "line": 47,
      "verdict": "сверено",
      "found": true
     }
@@ -1271,6 +1271,518 @@ const JOURNAL = {
    ],
    "comments": [],
    "finding": ""
+  },
+  {
+   "id": "F-20",
+   "question": "[ветка] default_roots: global runtime вне store теряет его префикс src/, а явная проектная карта с <root>/.. раскрывается от runtime — как сохранить карту выбранного store?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN два store имеют собственные карты корней с проектными значениями <root> и разными src/ WHEN общий runtime проверяет улики каждого без ручной передачи --roots THEN используются карта и проектная база выбранного store, префиксы не теряются и не подменяются соседним store либо runtime; цена: сценарий, интеграционный тест двух карт и совместимости старого <root>.",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — не покрывать автоматический выбор проектной карты при global: пользователь сам передаёт --roots и заменяет зависимые от прежнего <root> значения абсолютными путями; допустимо при ручной подготовке каждого store.",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — сценария нет; тест двух store с разными src/ утверждает, что внешний runtime не теряет префиксы и не расширяет корень чтения при старой проектной карте; цена: регрессионная фикстура двух карт и поддержка семантики <root>.",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — выбор карты и база <root> остаются открытыми до design resolver; tasks считает сохранение старых карт допущением.",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Тихая потеря префикса либо расширение пустого корня меняет проверяемые улики после одной смены размещения runtime. A сохраняет смысл проектной карты вместо ручного переписывания в B и отложенного допущения D; цена — сценарий и интеграционная регрессия двух store со старым <root>."
+   },
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-09"
+   },
+   "reversibility": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Specify",
+    "reason": ""
+   },
+   "parking": [],
+   "dispute": "",
+   "consequences": "в spec.md: Карты корней двух store сохраняют проектную семантику",
+   "evidence": [
+    {
+     "path": "roots/roots.py",
+     "quote": "return _roots_around(journal_path) or {\"\": where[0].resolve()}",
+     "line": 79,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "roots/roots.py",
+     "quote": "return (ROOT / value[len(\"<root>\"):].lstrip(\"/\\\\\")).resolve()",
+     "line": 32,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "openspec/changes/global-user-install/specs/runtime-resolution/spec.md",
+     "quote": "### Requirement: Расположение runtime не определяет рабочий store",
+     "line": 47,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "finding": ""
+  },
+  {
+   "id": "F-21",
+   "question": "[ветка] ensureContinue/continueLines: у выбранного Claude есть continue, у второго выбранного клиента его нет, но helper не сообщает расхождения — какой результат установки показывать по клиентам?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN для установки выбраны два клиента, у одного есть необходимый workflow continue, у другого его нет WHEN выполняется установка или проверка THEN отсутствие workflow названо для второго клиента и готовность первого не выдаётся за готовность второго; цена: сценарий, тест двух клиентских каталогов и поддержка перечня необходимых workflow.",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — проверку continue оставляем общей для всех выбранных каталогов: достаточно рабочего клиента, а неполный workflow второго пользователь обнаружит сам; допустимо, если готовность multi-client не обещается.",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — сценария нет; тест с двумя выбранными каталогами утверждает, что наличие continue у первого не скрывает его отсутствие у второго; цена: регрессия проверки и установка фикстур workflow для нескольких клиентов.",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — полнота workflow по каждому выбранному клиенту открыта до реализации клиентских адаптеров; tasks считает наличие continue у всех допущением.",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Существующий ранний возврат даёт пустой результат при неполном втором клиенте: сбой обнаружится лишь при продолжении флоу. A делает результат адресным, тогда как B принимает скрытую неполноту, а C не закрепляет её в продуктовой приёмке; цена — сценарий и тест нескольких выбранных клиентов."
+   },
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-09"
+   },
+   "reversibility": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Specify",
+    "reason": ""
+   },
+   "parking": [],
+   "dispute": "",
+   "consequences": "в spec.md: Готовность workflow проверяется для каждого выбранного клиента",
+   "evidence": [
+    {
+     "path": "installer/lib/clients.js",
+     "quote": "if (clients.some((c) => c.hasContinue)) return [];",
+     "line": 73,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "installer/lib/clients.js",
+     "quote": "if (!clients.some((c) => c.hasContinue)) {",
+     "line": 39,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "openspec/changes/global-user-install/specs/client-installation/spec.md",
+     "quote": "### Requirement: Проверка различает наличие файлов и готовность клиента",
+     "line": 40,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "finding": ""
+  },
+  {
+   "id": "F-22",
+   "question": "[ветка] _relative_link: store и пользовательская поставка на разных дисках, os.path.relpath даёт ValueError и найденный скилл остаётся без ссылки в HTML — поддерживать такую раскладку?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN store и выбранная global-поставка находятся на разных дисках и поставка содержит скилл и mermaid WHEN страница собирается и открывается локально THEN доступны тело найденного скилла и рисунок схемы без абсолютного пути установки в HTML и без сетевых запросов; цена: сценарий, проверка ветки разных дисков и браузерная приёмка доставки ресурсов.",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — раскладку store и global runtime на разных дисках не поддерживаем для ссылок HTML; допускаем текст вместо недоступного ресурса и явно указываем ограничение одного диска в руководстве.",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — сценария нет; тест ошибки разных дисков проверяет, что HTML не содержит запрещённого абсолютного пути, отсутствие доступа к ресурсу явно названо и другая поставка не подмешивается; цена: тест деградации, требование доступности ресурса этим не подтверждается.",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — поведение HTML на разных дисках открыто до выбора способа доставки ассетов в design; tasks считает один диск допущением.",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Установка на пользователя обычно размещается независимо от клонированного store; текущая ветка тихо отбрасывает ссылку. A сохраняет обещанный доступ без нового ограничения одного диска в B; цена — сценарий, регрессия ошибки разных дисков и браузерная приёмка. Способ доставки ресурсов остаётся design."
+   },
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-09"
+   },
+   "reversibility": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Specify",
+    "reason": ""
+   },
+   "parking": [],
+   "dispute": "",
+   "consequences": "в spec.md: Ресурсы страницы доступны с другого диска",
+   "evidence": [
+    {
+     "path": "roots/roots.py",
+     "quote": "except (OSError, ValueError):",
+     "line": 150,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "openspec/changes/global-user-install/specs/decision-viewer/spec.md",
+     "quote": "### Requirement: Ссылки на скиллы страницы используют выбранную поставку",
+     "line": 30,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "finding": ""
+  },
+  {
+   "id": "F-23",
+   "question": "[pre-mortem] Документированный клиентский путь вызывает openspec new change напрямую: он создаёт изменение в store без декларации совместимости, обходя проверку команды symphysis — где нужна проверка перед записью?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-10",
+    "F-11",
+    "F-15"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN global-store без декларации либо с несовместимой декларацией WHEN пользователь начинает документированный клиентский путь создания или продолжения изменения THEN интеграция проверяет совместимость до первого изменяющего действия этого пути, отказывает с явной инициализацией либо миграцией и не меняет данные store; цена: сценарий, интеграционные проверки клиентских точек входа и координация поставляемых workflow.",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — проверка гарантируется только явной команде symphysis; перед нативным workflow пользователь обязан сам запустить check, а прямой вход клиента может изменить неподготовленный store; ограничение явно описывается в руководстве.",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — сценария нет; интеграционный тест штатного клиентского пути с несовместимым store утверждает, что запись не происходит до проверки; цена: тест порядка действий, поддержка всех документированных точек входа.",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — граница проверки для нативных workflow открыта до согласования с отдельной сессией форка; tasks считает предварительный ручной check обязательным допущением.",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Отказ одного dispatcher не защищает штатный путь, который его не вызывает: изолированный запуск уже создал изменение без декларации. A закрывает обход в документированном продуктом пути, тогда как B переносит обязательный шаг в память пользователя; цена — сценарий и интеграционная проверка входов. Произвольные ручные команды OpenSpec вне этого пути не перехватываются."
+   },
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-09"
+   },
+   "reversibility": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Specify",
+    "reason": ""
+   },
+   "parking": [],
+   "dispute": "",
+   "consequences": "в spec.md: Клиентский путь проверяет совместимость до записи",
+   "evidence": [
+    {
+     "path": "upstream/openspec/src/core/templates/workflows/new-change.ts",
+     "quote": "openspec new change \"<name>\"",
+     "line": 63,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "openspec/changes/global-user-install/specs/runtime-resolution/spec.md",
+     "quote": "### Requirement: Global-вызов проверяет совместимость store",
+     "line": 69,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "finding": ""
+  },
+  {
+   "id": "F-24",
+   "question": "[ветка] getSchemaDir: в store осталась openspec/schemas/symphysis, но runtime выбран global; нативный OpenSpec предпочитает проектную схему — как не смешать две поставки?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN выбран global runtime, но одноимённая проектная схема перехватывает нативный выбор OpenSpec WHEN проверяется установка или запускается документированный клиентский путь THEN несогласованный источник схемы явно назван, смешанное выполнение не продолжается и конфликтующий файл не удаляется автоматически; цена: сценарий, проверка schema which и интеграционный тест остаточной схемы.",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — отдельную диагностику перехвата схемы не вводим: это конфликт смешанной установки, пользователь сам проверяет schema which и устраняет остаточную проектную схему; принимаем риск исполнения старых инструкций с новым runtime.",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — сценария нет; тест с остаточной проектной схемой утверждает, что при global runtime другой источник не выдаётся за согласованную поставку; цена: регрессия native schema discovery и поддержка фикстуры конфликта.",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — проверка источника схемы открыта до design и согласования с форком; tasks считает отсутствие одноимённой проектной схемы допущением.",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Нативный выбор схемы существует отдельно от resolver инструментов: без сверки старые инструкции могут исполняться с новым кодом молча. A даёт диагностику и отказ без автоматического разрешения конфликта, сохраняя ответственность пользователя из F-13; B оставляет риск незамеченным. Цена — сценарий и интеграционный тест остаточной схемы."
+   },
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-09"
+   },
+   "reversibility": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Specify",
+    "reason": ""
+   },
+   "parking": [],
+   "dispute": "",
+   "consequences": "в spec.md: Проектная схема перехватывает выбор global runtime",
+   "evidence": [
+    {
+     "path": "upstream/openspec/src/core/artifact-graph/resolver.ts",
+     "quote": "if (projectDir) {",
+     "line": 166,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "openspec/changes/global-user-install/specs/runtime-resolution/spec.md",
+     "quote": "### Requirement: Ресурсы принадлежат выбранной поставке",
+     "line": 30,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "finding": ""
+  },
+  {
+   "id": "F-25",
+   "question": "Config CLI уже передаёт явный --project; fallback к ROOT относится к прямому вызову скрипта и не должен использоваться dispatcher",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "",
+   "depends_on": [
+    "F-10"
+   ],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "installer/bin/symphysis.js",
+     "quote": "const r = spawnTool(py, [\"-X\", \"utf8\", tool, \"--project\", project], { encoding: \"utf8\" });",
+     "line": 117,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "settings/symphysis_config.py",
+     "quote": "return ROOT",
+     "line": 159,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "finding": ""
+  },
+  {
+   "id": "F-26",
+   "question": "[ветка] mergeConfig: rules не словарь заменяется пустой map, а несовместимые operations пропускаются — можно ли объявлять global-инициализацию завершённой при потере либо неприменении правил?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN существующий planning config имеет rules или operations неожиданной структуры WHEN store инициализируется для global THEN до записи показан конфликт структуры, исходный config сохранён и инициализация не объявлена завершённой; цена: сценарий, тесты некорректных map/sequence и поддержка диагностики без потери пользовательских полей.",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — global-инициализация сохраняет прежнее поведение mergeConfig: несловарный rules может быть заменён, несовместимые вложенные поля пропущены с предупреждением; пользователь заранее исправляет структуру, если эти значения ему нужны.",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — сценария нет; тест подаёт planning config с rules-строкой и operations-строкой, утверждает сохранение пользовательских данных и отсутствие ложного успешного результата; цена: регрессия разбора и слияния невалидного конфига.",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — поведение невалидной структуры planning config открыто до design инициализации; tasks считает корректную форму полей обязательным допущением.",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Ветка несловарного rules стирает значение без предупреждения, а пропуск нужных правил оставляет формально выбранную схему без её инструкций. A сохраняет данные и различает готовую инициализацию и конфликт вместо принятия потери в B; цена — сценарий, тесты неверной структуры и диагностика. Прежний local-контракт здесь не переписывается."
+   },
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-09"
+   },
+   "reversibility": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Specify",
+    "reason": ""
+   },
+   "parking": [],
+   "dispute": "",
+   "consequences": "в spec.md: Конфликт структуры planning config останавливает global-инициализацию",
+   "evidence": [
+    {
+     "path": "installer/lib/install.js",
+     "quote": "if (!isMap(rules)) {",
+     "line": 102,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "openspec/changes/global-user-install/specs/project-installer/spec.md",
+     "quote": "### Requirement: Global-инициализация настраивает выбранный store отдельно от runtime",
+     "line": 19,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "finding": ""
   }
  ],
  "notes": [
@@ -1301,6 +1813,18 @@ const JOURNAL = {
   {
    "date": "2026-11-08",
    "text": "проба краёв: кандидатов 2, Specify 2, Dismiss 0, Backstop 0, Defer 0; открытых нет; не выбран 74: client-installation/Нативные коллизии смешанной установки остаются пользователю, client-installation/Поддерживаемые агенты исполняют скилл в нативном формате, client-installation/Проверка различает наличие файлов и готовность клиента, client-installation/Установленные скиллы обнаруживаются выбранным клиентом, decision-viewer/Общий runtime не объединяет состояние страниц разных store, decision-viewer/Ресурсы страницы берутся из выбранной поставки, decision-viewer/Снимок справки global runtime относится к store журнала, decision-viewer/Ссылки на скиллы страницы используют выбранную поставку, onboarding-guide/Руководство ведёт клонированный store до архивации, onboarding-guide/Руководство описывает явную миграцию и границу смешанной установки, onboarding-guide/Руководство разделяет обновление scope и смену режима, onboarding-guide/Руководство различает local и global установки, plugin-core-contract/Контракт разрешения сообщает несовместимость выбранной поставки, plugin-core-contract/Контракт сохраняет проектную принадлежность черновиков, plugin-core-contract/Контракт ядра предоставляет единое разрешение поставки для хостов, plugin-core-contract/Разрешение runtime не меняет рабочий store вызовов хоста, project-installer/Global-инициализация настраивает выбранный store отдельно от runtime, project-installer/Global-инициализация сохраняет проектное состояние, project-installer/Local остаётся самостоятельной полной установкой, project-installer/Проверка global не требует локальной копии runtime, runtime-resolution/Dispatcher и хосты используют единый выбор поставки, runtime-resolution/Global-вызов проверяет совместимость store, runtime-resolution/Resolver предпочитает local при наличии обеих установок, runtime-resolution/Расположение runtime не определяет рабочий store, runtime-resolution/Ресурсы принадлежат выбранной поставке, step-help/Источники справки принадлежат выбранной поставке, step-help/Каталог установки задаётся необязательным аргументом, step-help/Разрешение скиллов справкой не меняет нативную discovery клиента, step-help/Тексты шагов лежат в `steps.md`, раздел на шаг, step-help/У шага есть поле `skills`, user-installation/Local и global являются самостоятельными режимами, user-installation/Пользовательская установка содержит общий продукт, user-installation/Смена режима выполняется явно для выбранного store, user-installation/У пользователя одна активная global-поставка, user-installation/Установка сохраняет границы собственных файлов"
+  },
+  {
+   "date": "2026-11-08",
+   "text": "Опись последствий: ветки отказа и допущения включены, водитель описи выключен; code-sites предложил 0 мест, поиск расширен вручную. Кандидаты F-20–F-24 открыты; F-25 — факт о существующей передаче --project, отдельного выбора поведения dispatcher не требует. Решения F-01–F-19 не изменены. Pre-mortem: F-23, F-20, F-21. Пробы — probes/consequences-probe.md."
+  },
+  {
+   "date": "2026-11-08",
+   "text": "Дополнение описи: F-26 — конфликт структуры planning config в global-инициализации; всего 6 открытых кандидатов F-20–F-24, F-26. F-25 остаётся фактом о явном проектном аргументе config. Новых решений человека не внесено."
+  },
+  {
+   "date": "2026-11-09",
+   "text": "Опись последствий: F-20.A, F-21.A, F-22.A, F-23.A, F-24.A, F-26.A выбраны человеком без слова и внесены apply. Specify 6, Dismiss 0, Backstop 0, Defer 0; открытых кандидатов нет. В дельта-спецификации добавлено 6 сценариев с якорями исходов, всего 73 сценария при 35 требованиях. Исходная consequences.md сохранена без изменений: её номера ведут к принятым исходам. F-25 остаётся фактом, не решением человека."
   }
  ]
 };
@@ -1314,7 +1838,7 @@ const SCHEME = {
 };
 const HELP = {
  "contract": 6,
- "taken_at": "2026-11-08T23:05:56+03:00",
+ "taken_at": "2026-11-09T04:02:32+03:00",
  "versions": {
   "openspec": "1.16.1+symphysis.5",
   "symphysis": null
@@ -1322,10 +1846,10 @@ const HELP = {
  "change": "global-user-install",
  "changes": null,
  "error": null,
- "current_step": "consequences",
- "current_text": "Следующий шаг по файлам — `consequences`, ход модели.",
+ "current_step": "design",
+ "current_text": "Следующий шаг по файлам — `design`, ход модели.",
  "turn": "model",
- "next_by_status": "consequences",
+ "next_by_status": "design",
  "forks": {
   "open": 0,
   "parked": 0
@@ -1620,7 +2144,7 @@ const HELP = {
   },
   {
    "id": "consequences",
-   "state": "ready",
+   "state": "done",
    "turn": "model",
    "optional": false,
    "blocks": [
@@ -1631,10 +2155,10 @@ const HELP = {
    "files": [
     {
      "path": "openspec/changes/global-user-install/consequences.md",
-     "exists": false
+     "exists": true
     }
    ],
-   "file_note": null,
+   "file_note": "файл есть, содержание не проверялось",
    "texts": {
     "title": "Опись последствий",
     "why": "Что делает код, на который опирается изменение, когда что-то идёт не так, и есть ли на это сценарий в спецификациях. Здесь ветки отказа и допущения конструкции доходят до человека раньше, чем появится дизайн.",
@@ -1657,7 +2181,7 @@ const HELP = {
   },
   {
    "id": "design",
-   "state": "blocked",
+   "state": "ready",
    "turn": "model",
    "optional": false,
    "blocks": [
@@ -1665,9 +2189,7 @@ const HELP = {
     "attack-artifacts"
    ],
    "stops_apply": false,
-   "waits_for": [
-    "consequences"
-   ],
+   "waits_for": [],
    "files": [
     {
      "path": "openspec/changes/global-user-install/design.md",
@@ -1869,10 +2391,12 @@ const HELP = {
   }
  ],
  "file_links": {
+  "consequences.md": "openspec/changes/global-user-install/consequences.md",
   "decisions.json": "openspec/changes/global-user-install/decisions.json",
   "decisions.md": "openspec/changes/global-user-install/decisions.md",
   "edge-probe.md": "openspec/changes/global-user-install/edge-probe.md",
   "intent.md": "openspec/changes/global-user-install/intent.md",
+  "openspec/changes/global-user-install/consequences.md": "openspec/changes/global-user-install/consequences.md",
   "openspec/changes/global-user-install/decisions.json": "openspec/changes/global-user-install/decisions.json",
   "openspec/changes/global-user-install/intent.md": "openspec/changes/global-user-install/intent.md",
   "openspec/changes/global-user-install/proposal.md": "openspec/changes/global-user-install/proposal.md",
@@ -1895,13 +2419,18 @@ const HELP = {
 const LINKS = {
  "root": "../../../",
  "files": {
+  "consequences.md": "consequences.md",
   "decisions.json": "decisions.json",
   "decisions.md": "decisions.md",
   "decisions/skills/symphysis-brainstorm/SKILL.md": "../../../decisions/skills/symphysis-brainstorm/SKILL.md",
   "edge-probe.md": "edge-probe.md",
+  "installer/bin/symphysis.js": "../../../installer/bin/symphysis.js",
+  "installer/lib/clients.js": "../../../installer/lib/clients.js",
+  "installer/lib/install.js": "../../../installer/lib/install.js",
   "installer/lib/paths.js": "../../../installer/lib/paths.js",
   "intent.md": "intent.md",
   "openspec/changes/global-user-install/answers/2026-11-08-2.md": "answers/2026-11-08-2.md",
+  "openspec/changes/global-user-install/consequences.md": "consequences.md",
   "openspec/changes/global-user-install/decisions.json": "decisions.json",
   "openspec/changes/global-user-install/intent.md": "intent.md",
   "openspec/changes/global-user-install/probes/client-matrix.md": "probes/client-matrix.md",
@@ -1921,7 +2450,10 @@ const LINKS = {
   "research/none.md": "research/none.md",
   "roots/roots.py": "../../../roots/roots.py",
   "scheme.md": "scheme.md",
-  "symphysis.html": "symphysis.html"
+  "settings/symphysis_config.py": "../../../settings/symphysis_config.py",
+  "symphysis.html": "symphysis.html",
+  "upstream/openspec/src/core/artifact-graph/resolver.ts": "../../../../symphysis/upstream/openspec/src/core/artifact-graph/resolver.ts",
+  "upstream/openspec/src/core/templates/workflows/new-change.ts": "../../../../symphysis/upstream/openspec/src/core/templates/workflows/new-change.ts"
  }
 };
 const ADDRESSEES = ['агент','человек','ИБ'];
