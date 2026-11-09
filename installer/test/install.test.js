@@ -125,8 +125,8 @@ const archiveGuidance = (text) => parse(text)?.operations?.archive?.guidance;
 test("`project-installer`: «Новый проект»: скрипт графа, openspec_run.py и anchor_refs.py ставятся, --help даёт код 0 (F-39, F-138, trace-numbers-signals/F-65)", () => {
   const p = tmp();
   const r = install(p, { payloadDir });
-  for (const f of ["trace_graph.py", "openspec_run.py", "anchor_refs.py"]) assert.ok(r.written.includes(`.symphysis/tools/${f}`), `${f}: ${JSON.stringify(r.written)}`);
-  for (const f of ["trace_graph.py", "anchor_refs.py"]) {
+  for (const f of ["trace_graph.py", "openspec_run.py", "anchor_refs.py", "sync_check.py"]) assert.ok(r.written.includes(`.symphysis/tools/${f}`), `${f}: ${JSON.stringify(r.written)}`);
+  for (const f of ["trace_graph.py", "anchor_refs.py", "sync_check.py"]) {
     const h = spawnSync("python", ["-X", "utf8", path.join(".symphysis", "tools", f), "--help"], { cwd: p, encoding: "utf8" });
     assert.equal(h.status, 0, f + ": " + h.stdout + h.stderr);
     assert.ok(h.stdout.trim() !== "");

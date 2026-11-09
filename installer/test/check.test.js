@@ -167,7 +167,7 @@ test("общие файлы docs: нет terms.md или уведомлений 
   }
 });
 
-test("инструменты: каждый модуль из состава проверяется, три новых тоже", () => {
+test("инструменты: каждый модуль из состава проверяется, граф, якоря и проверщик тоже", () => {
   const modules = ["journal_apply.py", "journal_cli.py", "journal_model.py", "journal_render.py", "roots.py", "viewer_render.py", "attack_table.py", "attack_scope.py", "journal_sites.py", "journal_consequences.py", "symphysis_config.py"];
   const p = installed();
   const t = targets(p).toolsDir;
@@ -181,9 +181,9 @@ test("инструменты: каждый модуль из состава пр
 test("`project-installer`: «Скрипта нет при проверке установки»: находка называет файл и «нет файла» (F-126)", () => {
   const p = installed();
   const t = targets(p).toolsDir;
-  for (const m of ["trace_graph.py", "openspec_run.py", "anchor_refs.py"]) fs.rmSync(path.join(t, "tools", m));
+  for (const m of ["trace_graph.py", "openspec_run.py", "anchor_refs.py", "sync_check.py"]) fs.rmSync(path.join(t, "tools", m));
   const r = runCheck(p);
-  for (const m of ["trace_graph.py", "openspec_run.py", "anchor_refs.py"]) assert.ok(r.findings.includes(`.symphysis/tools/${m}: нет файла`), `${m}: ${JSON.stringify(r.findings)}`);
+  for (const m of ["trace_graph.py", "openspec_run.py", "anchor_refs.py", "sync_check.py"]) assert.ok(r.findings.includes(`.symphysis/tools/${m}: нет файла`), `${m}: ${JSON.stringify(r.findings)}`);
   assert.equal(r.ok, false);
 });
 
