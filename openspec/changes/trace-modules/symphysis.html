@@ -227,15 +227,15 @@ const JOURNAL = {
  "title": "Журнал решений: trace-modules",
  "source": "decisions.json",
  "generated": "2026-11-09",
- "sha256": "38470d09c40b0cfbb9cd5dc279298cf4979cfd6cf004b1a6ecb7ed9734c7d518",
+ "sha256": "8358ac5611802d324010102a804c9436a8455ef408393eba132bd0f8763db319",
  "stats": {
-  "records": 37,
-  "forks": 20,
-  "facts": 17,
+  "records": 47,
+  "forks": 28,
+  "facts": 19,
   "decided": 20,
   "parked": 1,
-  "evidence_total": 151,
-  "evidence_found": 151
+  "evidence_total": 161,
+  "evidence_found": 161
  },
  "records": [
   {
@@ -3074,6 +3074,618 @@ const JOURNAL = {
     "signals"
    ],
    "finding": ""
+  },
+  {
+   "id": "F-38",
+   "question": "[concurrency · io] Модель изменяет только своё расширение metadata: после чтения metadata другой участник добавил repo в то же расширение; запись прежней копии может потерять его изменение",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-36"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN metadata изменён после чтения WHEN модель собирается сохранить прежнюю копию THEN она перечитывает и сохраняет новые данные либо отказывается затирать их до повторного анализа; цена: сценарий, тест/проба изменённой основы и сопровождение операции обновления",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — одновременное изменение metadata не покрывается; допустимо лишь при организационной работе одним писателем, которую продукт сейчас не обеспечивает",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест подставляет добавленный между чтением и записью repo и утверждает, что итог не теряет его; строки в спеке нет",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — правило остаётся открытым до выбора механики конкурентной записи; пока риск потери состава учитывается допущением",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Старая копия тихо удалит чужой repo и его связи; сохранение остальных данных без этого края неполно. Specify фиксирует наблюдаемый исход; цена — сценарий и проверка изменённой основы. Backstop оставит обязательство вне спеки, Dismiss допускает скрытую потерю."
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/trace-modules/specs/repository-survey/spec.md",
+     "quote": "### Requirement: Модель изменяет только своё расширение metadata",
+     "line": 74,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [],
+   "finding": ""
+  },
+  {
+   "id": "F-39",
+   "question": "[empty · collection] Результат обследования различает четыре состояния: дерево доступно, но единственный явный README содержит kind: служебный; валидных модулей ноль, хотя отсутствие модулей не подтверждено",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-21",
+    "F-26",
+    "F-30"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN единственное явное объявление негодно WHEN анализ завершает чтение THEN результат не объявляется «модулей нет»: сохраняется незавершённое обследование и сигнал негодного объявления; цена: сценарий, фикстура единственного неверного kind и сопровождение состояний",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — особое различие не покрывается; «модулей нет» может означать ноль валидных объявлений при отдельном сигнале об ошибке",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест создаёт доступный repo с одним негодным kind и проверяет наличие диагностики, не закрепляя состояние обследования в спеке",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — значение состояния при одних негодных объявлениях остаётся открытым до дизайна формата результата",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Ноль валидных объявлений может тихо выглядеть доказанным отсутствием модулей. Specify сохраняет смысл четырёх состояний; цена — сценарий и одна фикстура. Dismiss допускает смешение, Backstop не закрепляет трактовку результата."
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/trace-modules/specs/repository-survey/spec.md",
+     "quote": "### Requirement: Результат обследования различает четыре состояния",
+     "line": 39,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [],
+   "finding": ""
+  },
+  {
+   "id": "F-40",
+   "question": "[encoding · text] README явно объявляет имя и род модуля: README начинается UTF-8 BOM перед --- и имеет CRLF; невидимый префикс может превратить корректное объявление в обычный README",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-01",
+    "F-09",
+    "F-18"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN одинаковое валидное объявление записано UTF-8 с BOM/без BOM и LF/CRLF WHEN выполнено обнаружение THEN имя и род одинаковы во всех вариантах; цена: сценарий, параметризованная фикстура кодировки и сопровождение чтения README",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — BOM не поддерживается; владелец репозитория должен убрать его самостоятельно, что следует явно указать в GUIDE",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест подаёт UTF-8 BOM и CRLF и проверяет распознавание имени; контракт кодировки в spec не расширяется",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — поддержка BOM остаётся открытой до выбора YAML/frontmatter-читателя",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "BOM невидим, и модуль тихо пропадёт из структуры. Specify делает одинаковый текст одинаковым входом; цена — сценарий и параметризованная фикстура. Dismiss возлагает скрытое ограничение на клиента, Backstop не объяснит его владельцу."
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/trace-modules/specs/module-discovery/spec.md",
+     "quote": "### Requirement: README явно объявляет имя и род модуля",
+     "line": 9,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [],
+   "finding": ""
+  },
+  {
+   "id": "F-41",
+   "question": "[adjacency · collection] Зависимость читается из объявления README: два корректных модуля a и b явно объявляют зависимости a → b и b → a",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-20",
+    "F-35"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN явно объявлен цикл a → b → a WHEN граф и фильтр диаграммы собраны THEN граф сохраняет оба ребра, фильтр завершает обход, цикл сам по себе не превращается в запрет выпуска; цена: сценарий, фикстура двух модулей и тест завершения выборки",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — поведение на циклах не покрывается; допустимо только для клиентов, исключающих их соглашением вне продукта",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест строит два взаимно зависимых модуля и проверяет два ребра и завершение экспорта, не добавляя сценарий",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — допустимость циклических деклараций остаётся открытой до правил архитектурной проверки",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Отбрасывание одного ребра тихо исказит объявленную архитектуру; отказ или бесконечный обход тоже не следует из назначения графа. Specify фиксирует факты без нового архитектурного гейта; цена — сценарий и тест цикла. Dismiss и один Backstop не закрепляют семантику."
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/trace-modules/specs/module-discovery/spec.md",
+     "quote": "### Requirement: Зависимость читается из объявления README",
+     "line": 79,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [],
+   "finding": ""
+  },
+  {
+   "id": "F-42",
+   "question": "[encoding · text] Структурные id различают репозиторий и модуль: пары repo=api/x,module=m и repo=api,module=x/m дают одинаковую склейку api/x/m",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-04",
+    "F-14",
+    "F-17",
+    "F-31"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN две такие пары допустимы как логические имена WHEN строятся id THEN составные части кодируются однозначно и id различны, исходные имена сохраняются отдельно; цена: сценарий, тест коллизии разделителя и сопровождение кодирования id",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — имена с разделителем не покрываются; допустимо при явном ограничении формата имён, которое ещё предстоит задать",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест проверяет различие id на двух коллидирующих парах, но правило составного имени не добавляется в спецификацию",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — кодирование составных имён остаётся открытым до окончательного формата идентификаторов",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Коллизия тихо сольёт разные модули и их требования. Specify требует различия без навязывания конкретного codec; цена — сценарий и тест разделителя. Dismiss добавляет не принятое ограничение имён, Backstop оставляет контракт неясным."
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/trace-modules/specs/trace-graph/spec.md",
+     "quote": "### Requirement: Структурные id различают репозиторий и модуль",
+     "line": 20,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [],
+   "finding": ""
+  },
+  {
+   "id": "F-43",
+   "question": "[adjacency · collection] Явная реализация и зависимости сохраняют происхождение: одно объявление связывает модуль a и его файл, но ближайшая граница этого файла объявляет модуль b",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-19",
+    "F-20",
+    "F-34",
+    "F-35"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN в одной декларации модулю a приписан файл модуля b WHEN строится связь реализации THEN противоречивая пара даёт сигнал и не связывается по догадке; независимые декларации сохраняются; цена: сценарий, фикстура двух границ и тест отсутствия ложной связи",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — согласованность пары не покрывается; автор несёт ответственность, а модуль и файл могут трактоваться независимыми утверждениями",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест подаёт конфликт a/файл-b и проверяет, что файл не меняет фактического владельца; текст спеки не уточняется",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — трактовка противоречивой пары остаётся открытой до точного синтаксиса аннотации",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Предпочтение одного поля тихо приписывает реализацию другому модулю. Specify оставляет независимые данные и называет конфликт; цена — сценарий и тест границ. Dismiss и Backstop без контракта допускают неодинаковую интерпретацию аннотации."
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/trace-modules/specs/trace-graph/spec.md",
+     "quote": "### Requirement: Явная реализация и зависимости сохраняют происхождение",
+     "line": 35,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [],
+   "finding": ""
+  },
+  {
+   "id": "F-44",
+   "question": "[concurrency · io] Снимок сохраняет нормализованную структуру и состояния: README меняется между извлечением name и вычислением хеша; снимок может сохранить имя старой версии с хешем новой",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-22",
+    "F-37"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN README изменён между чтением и хешированием WHEN freeze сохраняет источник THEN декларация и хеш относятся к одним прочитанным байтам либо фиксируется невозможность согласованного чтения; цена: сценарий, управляемая подмена файла в тесте и сопровождение чтения источника",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — согласованность чтения и хеша не покрывается; допустимо только если клиент сам замораживает исходники на время freeze",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест меняет README между чтением и хешированием и не допускает смешанную пару, без добавления сценария",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — гарантия согласованности остаётся открытой до выбора атомарности сбора; tasks учитывает риск смешанного снимка",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Смешанные данные выглядят проверенными и тихо теряют воспроизводимость. Specify задаёт согласованность одного источника без обещания блокировать все repo; цена — сценарий и тест управляемой гонки. Dismiss перекладывает не заявленную блокировку на клиента, Backstop не закрепляет гарантию."
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/trace-modules/specs/trace-snapshot/spec.md",
+     "quote": "### Requirement: Снимок сохраняет нормализованную структуру и состояния",
+     "line": 5,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [],
+   "finding": ""
+  },
+  {
+   "id": "F-45",
+   "question": "[запрет] Структурная ось содержит все объявленные модули состава: модуль без аннотации в этом change не должен выдаваться за глобально нереализованный или лишённый требований",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-01",
+    "F-02",
+    "F-16",
+    "F-17"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify/test — MUST NOT объявлять модуль нереализованным или не имеющим требований во всей системе только из-за отсутствия связи в графе данного change; тест: второй модуль остаётся узлом, но не получает такой оценки в отчёте; цена: негативный сценарий, фикстура независимого модуля и сопровождение диагностик",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Specify/judgment — MUST NOT создавать впечатление глобальной оценки покрытия по графу одного change; человек при ревью отчёта сверяет язык выводов с границей изменения; цена: сценарий суждения и постоянное ревью формулировок",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Dismiss — запрет не нужен, если сообщение о модуле без связей явно является локальной диагностикой, а не утверждением о системе; допускается такая диагностика без отдельного отрицательного требования",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — граница оценок покрытия остаётся открытой до появления графа корня; пока отчёт может быть истолкован как более полный, чем его данные",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Все модули специально входят в граф, а требования — только из change: глобальная оценка по отсутствующей связи тихо навяжет лишнюю работу и ложный вывод о реализации. A проверяется негативной фикстурой; цена — сценарий и тест диагностики. B слабее механического ограничения, C полагается на трактовку текста."
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/trace-modules/specs/trace-graph/spec.md",
+     "quote": "### Requirement: Структурная ось содержит все объявленные модули состава",
+     "line": 5,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [],
+   "finding": ""
+  },
+  {
+   "id": "F-46",
+   "question": "[канон] Repo разрешается через явно названный корень: канон ИБ",
+   "kind": "факт",
+   "status": "припаркован",
+   "addressee": "ИБ",
+   "depends_on": [
+    "F-17",
+    "F-31"
+   ],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [
+    {
+     "addressee": "ИБ",
+     "text": "Пути и ссылки: выход за разрешённый корень, переход через reparse/symlink и обход служебных каталогов — канон, покрывается чек-листом security.md; запрет не чеканится"
+    },
+    {
+     "addressee": "ИБ",
+     "text": "Чувствительные данные: абсолютные локальные каталоги и личная карта корней не попадают в переносимые объявления и снимок — канон, покрывается чек-листом security.md; запрет не чеканится"
+    }
+   ],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/trace-modules/specs/repository-survey/spec.md",
+     "quote": "### Requirement: Repo разрешается через явно названный корень",
+     "line": 59,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [],
+   "finding": ""
+  },
+  {
+   "id": "F-47",
+   "question": "[канон] README явно объявляет имя и род модуля: канон ИБ",
+   "kind": "факт",
+   "status": "припаркован",
+   "addressee": "ИБ",
+   "depends_on": [
+    "F-01",
+    "F-09",
+    "F-18"
+   ],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [
+    {
+     "addressee": "ИБ",
+     "text": "Инъекции через README: инструкции внутри анализируемого файла остаются данными, не меняют полномочий модели — канон, покрывается чек-листом security.md; запрет не чеканится"
+    },
+    {
+     "addressee": "ИБ",
+     "text": "Безопасная десериализация YAML: теги объявления не исполняют код при чтении frontmatter — канон, покрывается чек-листом security.md; запрет не чеканится"
+    }
+   ],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/trace-modules/specs/module-discovery/spec.md",
+     "quote": "### Requirement: README явно объявляет имя и род модуля",
+     "line": 9,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [],
+   "finding": ""
   }
  ],
  "notes": [
@@ -3116,6 +3728,18 @@ const JOURNAL = {
   {
    "date": "2026-11-09",
    "text": "брейншторм закончен по решению человека"
+  },
+  {
+   "date": "2026-11-09",
+   "text": "проба краёв: кандидатов 7 (F-38–F-44), Specify 0, Dismiss 0, Backstop 0, Defer 0; не выбран 106: repository-survey/Обследование репозиториев начинается в decisions, repository-survey/Состав компонентов и репозиториев хранится переносимо, repository-survey/Результат обследования различает четыре состояния, repository-survey/Repo разрешается через явно названный корень, repository-survey/Модель изменяет только своё расширение metadata, repository-survey/Новое чтение не заменяется прежним результатом обследования, module-discovery/README явно объявляет имя и род модуля, module-discovery/Обход не зависит от первого уровня и Git, module-discovery/Файл относится к ближайшей объявленной границе, module-discovery/Неоднозначное имя модуля не разрешается догадкой, module-discovery/Зависимость читается из объявления README, module-discovery/Сторонние README остаются входными данными, module-discovery/Ошибка источника не стирает доступную структуру, trace-graph/Граф собирается из файлов изменения, trace-graph/Id читаемы, файл несёт версию формата, trace-graph/Структурная ось содержит все объявленные модули состава, trace-graph/Структурные id различают репозиторий и модуль, trace-graph/Явная реализация и зависимости сохраняют происхождение, trace-graph/Файловые узлы ограничены используемой трассировкой, trace-conventions/Требование явно объявляет модули и файлы реализации, trace-conventions/Синхронизация сохраняет аннотацию реализации при требовании, trace-snapshot/Снимок и отчёт лежат в каталоге graph, trace-snapshot/Снимок сохраняет нормализованную структуру и состояния, trace-snapshot/Состав README входит в проверку дрейфа, trace-snapshot/Предыдущий формат читается без дописывания модулей в историю, trace-signals/Отчёт называет закрытый состав сигналов, trace-signals/Структурные сигналы используют существующие группы, trace-signals/Отчёт различает отсутствие и неполноту структурных данных, trace-diagram/Скрипт выдаёт текст диаграммы по выбору, trace-diagram/Конфиг экспорта знает структурные виды. Требований 30, строк покрытия 240; решения кандидатов ожидаются."
+  },
+  {
+   "date": "2026-11-09",
+   "text": "проба запретов: требований 30, оставлено 1 (F-45), канон → ИБ 2 записи (F-46, F-47; 4 пункта), Specify 0, Dismiss 0, Defer 0. Для каждого требования рассмотрены тихие подмены результата, навязывание изменений, ложное доказательство, расширение области, скрытая оценка покрытия, выдача неполноты за отсутствие, неподтверждённые связи, потеря происхождения, ретроспективное обогащение и превращение сигнала в гейт. Уже запрещённое требованиями повторно не чеканилось; гигиена отброшена, канон передан ИБ. F-45 остаётся открытым."
+  },
+  {
+   "date": "2026-11-09",
+   "text": "Парные антиподы новых кандидатов сверены с принятыми решениями и между собой: новых несовместимых пар не найдено. Варианты среза кандидатов обозначают цену непокрытого края, но не отменяют прежние решения молча. Specified-исходов до слова человека не внесено; security.md не создан."
   }
  ]
 };
@@ -3129,7 +3753,7 @@ const SCHEME = {
 };
 const HELP = {
  "contract": 6,
- "taken_at": "2026-11-09T21:20:08+03:00",
+ "taken_at": "2026-11-09T21:48:01+03:00",
  "versions": {
   "openspec": "1.16.1+symphysis.5",
   "symphysis": null
@@ -3137,12 +3761,12 @@ const HELP = {
  "change": "trace-modules",
  "changes": null,
  "error": null,
- "current_step": "specs",
- "current_text": "Следующий шаг по файлам — `specs`, ход модели.",
- "turn": "model",
- "next_by_status": "specs",
+ "current_step": "viewer",
+ "current_text": "Следующий шаг по файлам — `viewer`, ход человека: открытых развилок 8, решаются на странице журнала. После них по файлам идёт `consequences`.",
+ "turn": "human",
+ "next_by_status": "consequences",
  "forks": {
-  "open": 0,
+  "open": 8,
   "parked": 0
  },
  "tasks": {
@@ -3222,7 +3846,7 @@ const HELP = {
   },
   {
    "id": "viewer",
-   "state": "idle",
+   "state": "ready",
    "turn": "human",
    "optional": false,
    "blocks": [],
@@ -3366,7 +3990,7 @@ const HELP = {
   },
   {
    "id": "specs",
-   "state": "ready",
+   "state": "done",
    "turn": "model",
    "optional": false,
    "blocks": [
@@ -3379,11 +4003,35 @@ const HELP = {
    "waits_for": [],
    "files": [
     {
-     "path": "openspec/changes/trace-modules/specs/**/*.md",
-     "exists": false
+     "path": "openspec/changes/trace-modules/specs/module-discovery/spec.md",
+     "exists": true
+    },
+    {
+     "path": "openspec/changes/trace-modules/specs/repository-survey/spec.md",
+     "exists": true
+    },
+    {
+     "path": "openspec/changes/trace-modules/specs/trace-conventions/spec.md",
+     "exists": true
+    },
+    {
+     "path": "openspec/changes/trace-modules/specs/trace-diagram/spec.md",
+     "exists": true
+    },
+    {
+     "path": "openspec/changes/trace-modules/specs/trace-graph/spec.md",
+     "exists": true
+    },
+    {
+     "path": "openspec/changes/trace-modules/specs/trace-signals/spec.md",
+     "exists": true
+    },
+    {
+     "path": "openspec/changes/trace-modules/specs/trace-snapshot/spec.md",
+     "exists": true
     }
    ],
-   "file_note": null,
+   "file_note": "файл есть, содержание не проверялось",
    "texts": {
     "title": "Спецификации поведения",
     "why": "Наблюдаемое поведение, записанное требованиями и сценариями. По нему потом проверяют дизайн и код, поэтому всё, что не названо здесь, проверить будет нечем.",
@@ -3411,16 +4059,14 @@ const HELP = {
   },
   {
    "id": "consequences",
-   "state": "blocked",
+   "state": "ready",
    "turn": "model",
    "optional": false,
    "blocks": [
     "design"
    ],
    "stops_apply": false,
-   "waits_for": [
-    "specs"
-   ],
+   "waits_for": [],
    "files": [
     {
      "path": "openspec/changes/trace-modules/consequences.md",
@@ -3484,16 +4130,14 @@ const HELP = {
   },
   {
    "id": "security",
-   "state": "blocked",
+   "state": "ready",
    "turn": "model",
    "optional": false,
    "blocks": [
     "attack-artifacts"
    ],
    "stops_apply": true,
-   "waits_for": [
-    "specs"
-   ],
+   "waits_for": [],
    "files": [
     {
      "path": "openspec/changes/trace-modules/security.md",
@@ -3525,7 +4169,6 @@ const HELP = {
    ],
    "stops_apply": true,
    "waits_for": [
-    "specs",
     "design"
    ],
    "files": [
@@ -3557,7 +4200,6 @@ const HELP = {
    "blocks": [],
    "stops_apply": false,
    "waits_for": [
-    "specs",
     "design",
     "security",
     "tasks"
@@ -3675,12 +4317,20 @@ const HELP = {
   ".claude/skills/symphysis-viewer/SKILL.md": ".claude/skills/symphysis-viewer/SKILL.md",
   "decisions.json": "openspec/changes/trace-modules/decisions.json",
   "decisions.md": "openspec/changes/trace-modules/decisions.md",
+  "edge-probe.md": "openspec/changes/trace-modules/edge-probe.md",
   "intent.md": "openspec/changes/trace-modules/intent.md",
   "openspec/changes/trace-modules/decisions.json": "openspec/changes/trace-modules/decisions.json",
   "openspec/changes/trace-modules/intent.md": "openspec/changes/trace-modules/intent.md",
   "openspec/changes/trace-modules/proposal.md": "openspec/changes/trace-modules/proposal.md",
   "openspec/changes/trace-modules/research/F-26.md": "openspec/changes/trace-modules/research/F-26.md",
   "openspec/changes/trace-modules/research/F-27.md": "openspec/changes/trace-modules/research/F-27.md",
+  "openspec/changes/trace-modules/specs/module-discovery/spec.md": "openspec/changes/trace-modules/specs/module-discovery/spec.md",
+  "openspec/changes/trace-modules/specs/repository-survey/spec.md": "openspec/changes/trace-modules/specs/repository-survey/spec.md",
+  "openspec/changes/trace-modules/specs/trace-conventions/spec.md": "openspec/changes/trace-modules/specs/trace-conventions/spec.md",
+  "openspec/changes/trace-modules/specs/trace-diagram/spec.md": "openspec/changes/trace-modules/specs/trace-diagram/spec.md",
+  "openspec/changes/trace-modules/specs/trace-graph/spec.md": "openspec/changes/trace-modules/specs/trace-graph/spec.md",
+  "openspec/changes/trace-modules/specs/trace-signals/spec.md": "openspec/changes/trace-modules/specs/trace-signals/spec.md",
+  "openspec/changes/trace-modules/specs/trace-snapshot/spec.md": "openspec/changes/trace-modules/specs/trace-snapshot/spec.md",
   "proposal.md": "openspec/changes/trace-modules/proposal.md",
   "scheme.md": "openspec/changes/trace-modules/scheme.md",
   "symphysis.html": "openspec/changes/trace-modules/symphysis.html",
@@ -3708,6 +4358,7 @@ const LINKS = {
   "docs/GUIDE.md": "../../../docs/GUIDE.md",
   "docs/analysis/requirements-traceability-graph-of-symphysis.md": "../../../docs/analysis/requirements-traceability-graph-of-symphysis.md",
   "docs/analysis/stores-and-context-pack-2026-11-02.md": "../../../docs/analysis/stores-and-context-pack-2026-11-02.md",
+  "edge-probe.md": "edge-probe.md",
   "installer/scripts/sync-payload.js": "../../../installer/scripts/sync-payload.js",
   "intent.md": "intent.md",
   "openspec/changes/archive/2026-11-07-module-structure/research/F-27.md": "../archive/2026-11-07-module-structure/research/F-27.md",
@@ -3719,6 +4370,13 @@ const LINKS = {
   "openspec/changes/trace-modules/research/F-26.md": "research/F-26.md",
   "openspec/changes/trace-modules/research/F-27-probe/results.txt": "research/F-27-probe/results.txt",
   "openspec/changes/trace-modules/research/F-27.md": "research/F-27.md",
+  "openspec/changes/trace-modules/specs/module-discovery/spec.md": "specs/module-discovery/spec.md",
+  "openspec/changes/trace-modules/specs/repository-survey/spec.md": "specs/repository-survey/spec.md",
+  "openspec/changes/trace-modules/specs/trace-conventions/spec.md": "specs/trace-conventions/spec.md",
+  "openspec/changes/trace-modules/specs/trace-diagram/spec.md": "specs/trace-diagram/spec.md",
+  "openspec/changes/trace-modules/specs/trace-graph/spec.md": "specs/trace-graph/spec.md",
+  "openspec/changes/trace-modules/specs/trace-signals/spec.md": "specs/trace-signals/spec.md",
+  "openspec/changes/trace-modules/specs/trace-snapshot/spec.md": "specs/trace-snapshot/spec.md",
   "openspec/schemas/symphysis/schema.yaml": "../../schemas/symphysis/schema.yaml",
   "openspec/specs/module-declaration/spec.md": "../../specs/module-declaration/spec.md",
   "proposal.md": "proposal.md",
