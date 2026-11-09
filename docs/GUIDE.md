@@ -214,10 +214,21 @@ symphysis --project ./my-store journal check openspec/changes/first-change/decis
 symphysis --project ./my-store trace freeze first-change
 ```
 
-Пути аргументов journal разрешаются от исходного каталога `--project`, затем
-dispatcher запускает инструмент с cwd store. При pointer для адреса файла можно
-передать абсолютный путь в самом store. Селекторы dispatcher ставь перед именем
-инструмента; собственные параметры инструмента — после него.
+Пути journal, файла ответов и `--out` разрешаются от исходного каталога `--project`
+(без него — от cwd вызова), затем инструмент запускается с cwd выбранного store.
+При запуске из pointer-source бери абсолютный `changeRoot` из JSON команды
+`symphysis --project <source> openspec status --change <имя> --json`;
+в JSON инструкций артефакта тот же каталог называется `changeDir`.
+Используй его для входных и выходных файлов, например после создания журнала:
+
+```text
+symphysis --project <source> journal check "<changeRoot>/decisions.json"
+symphysis --project <source> journal render-md "<changeRoot>/decisions.json" --out "<changeRoot>/decisions.md"
+```
+
+Можно открыть терминал в самом store и использовать обычные относительные пути.
+Pointer уже выбирает связанный store; дополнительный `--store` для этого не нужен.
+Селекторы dispatcher ставь перед именем инструмента, собственные параметры — после него.
 
 Global runtime находится в `SYMPHYSIS_HOME/runtime`, если задан `SYMPHYSIS_HOME`;
 иначе в `XDG_DATA_HOME/symphysis/runtime`, а без этих переменных — в
@@ -238,8 +249,22 @@ Global runtime находится в `SYMPHYSIS_HOME/runtime`, если зада
 
 `check` разделяет целостность файлов, наличие workflow каждого клиента и подтверждение
 реальной сессии. Скопированные носители ещё не доказывают native discovery.
-Учебный цикл ниже пока имеет прежнюю приёмку Claude/local; global и другие клиенты
-нужно принимать реальными сессиями, их файловые tests не заменяют эту проверку.
+
+Установщик поддерживает самостоятельные local/global носители для Claude Code,
+Codex и OpenCode. На 2026-11-10 для проверяемых сборок подтверждён следующий объём:
+
+| Среда | Установка | Подтверждённая приёмка и её предел |
+| --- | --- | --- |
+| Claude Code | local/global | Сохранён прежний учебный пример Claude/local; свежая native-приёмка не проводилась |
+| Codex 0.167.0 | local/global | Native discovery skills и workflow подтверждён; модельная приёмка заблокирована недоступным Windows MXC в тестовом окружении |
+| OpenCode CLI 2.2.5 | local/global | Модель получила brainstorm skill, research-driver и guard до записи проверены; полный intent→archive ещё выполняется и не зачтён; повторный вход водителя с готовыми выходами также не принят |
+| Плагин VS Code | local/global | Пройдена приёмка установленной сборки |
+| Плагин GIGA IDE | local/global | Пройдена приёмка установленной сборки |
+| OpenCode IDE | Порт отложен | Приёмка установленного IDE-порта не завершена; проверка native CLI её не заменяет |
+
+Ограничение проверки Codex относится к использованному Windows-окружению и не
+становится требованием продукта. IDE-плагин не требуется для работы native-клиента;
+его установленная приёмка также не подтверждает модельный флоу другого клиента.
 
 Local и global не требуют друг друга. Если установлены оба, resolver выбирает local,
 в том числе повреждённый: global не скрывает поломку. Конфликты native обнаружения
@@ -375,6 +400,7 @@ PowerShell:
 
 ```powershell
 where.exe claude
+where.exe codex
 where.exe opencode
 ```
 
@@ -382,10 +408,13 @@ bash:
 
 ```bash
 which claude
+which codex
 which opencode
 ```
 
-Прохождение этого руководства шло только на Claude Code, поэтому дальше команды для него. opencode и другие клиенты — раздел «Другой клиент»; opencode этим прохождением не проверен.
+Ниже сохранён учебный пример с командами Claude Code. У OpenCode имена workflow
+отличаются: раздел «Другой клиент». Подтверждённый объём работы каждого клиента и
+IDE указан в матрице готовности выше.
 
 ### 8. Проект
 
@@ -940,15 +969,20 @@ symphysis install --scope local --client opencode
 symphysis check --scope local --client opencode
 ```
 
-Имя команды у клиента своё: у opencode это `/opsx-continue`, файл `.opencode/commands/opsx-continue.md`. Список имён `--tools` показывает `openspec init --help`.
+Имя команды у клиента своё: у OpenCode это `/opsx-continue`, файл
+`.opencode/commands/opsx-continue.md` при local-установке. Остальные обязательные
+команды — `/opsx-new`, `/opsx-apply`, `/opsx-sync`, `/opsx-archive`.
+Список имён `--tools` показывает `symphysis openspec init --help`.
 
 Для Codex укажи `--client codex`: local skills идут в `.agents/skills`, агенты — в
 `.codex/agents`; `.agents/agents` не используется. Для Claude ставится родное тело
 с preload, для Codex — TOML, для OpenCode — Markdown subagent. Два последних тела
 явно получают нужный skill через resource API. Установка не меняет модель и права
-родительской сессии; native discovery ещё требует проверки в реальном клиенте.
+родительской сессии. После установки проверь обнаружение в своём клиенте.
 
-Прохождение этого руководства шло только на Claude Code. Установка для opencode выше проверена до `check: ok`, сам проект на нём не проходился.
+OpenCode CLI проверен реальными модельными сессиями в local/global для получения
+скилла и работы исследовательского водителя. Текущий объём приёмки полного флоу
+указан в матрице готовности; он не распространяется автоматически на OpenCode IDE.
 
 ## Разработчику
 
@@ -997,7 +1031,20 @@ python -m pip config set global.index-url <адрес зеркала>
 
 **`[!!] symphysis.yaml: нет пакета PyYAML`.** Шаг 5 пропущен или `python` в `PATH` другой. Настройки при этом считаются включёнными.
 
-**`[!!] continue: клиент не настроен`.** В проекте не было `openspec init`: выполни команду из строки.
+**Нет ожидаемой native-команды или скилла.** Проверь выбранную поставку через
+`symphysis resolve --project <source> --json` и `symphysis check` с выбранными scope
+и client. `filesystem ready` не подтверждает обнаружение в работающем клиенте:
+проверь его собственный список skills/commands и выбранный client root.
+Используй диагностику управляемого install/init; внешний `openspec init/update`
+может перегенерировать носители без guard.
+
+**`declaration-missing` в global-store.** Выполни явный
+`symphysis init --project <source>` для нужного существующего store, затем повтори
+check/preflight. Global install сам store не инициализирует.
+
+**`selector-conflict` у journal из pointer-source.** Проверь абсолютные пути журнала,
+ответов и `--out` по `changeRoot`/`changeDir` выбранного изменения. Относительный
+путь от store не становится таким путём от открытого source автоматически.
 
 **Значок ↗ не открывает IDEA или GIGA IDE.** В Windows не зарегистрирован протокол `jetbrains`. Регистрация только для твоего пользователя, путь — к своей IDE:
 
