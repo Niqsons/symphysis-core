@@ -331,3 +331,49 @@ Codex модельная проверка заблокирована отдел�
 Сырые auth-ответы, ключи, account labels, cookies и содержимое клиентских credential stores
 не являются свидетельствами этого отчёта и не включаются в git. Локальные metadata receipts
 и точные команды продолжения перечислены в текущем handoff вне git.
+
+## Межрепозиторная матрица реализации, 2026-11-10
+
+После конкретного плана документально свести 12 оставшихся пунктов и завершить
+реальное изменение через sync/archive владелец ответил: «это придется сделать».
+Предмет согласия — завершение реализации с честным учётом перенесённых проверок,
+а не PASS всех клиентов. Функциональные требования и целевой путь до архивации
+сохраняются. Последний продуктовый коммит ядра этой сверки — `0333122d`.
+
+| Компонент | Проверенная реализация / документация | Сборка и SHA-256 | Свидетельство и предел |
+| --- | --- | --- | --- |
+| Core | Последний product `0333122d`; bootstrap/runtime/schema API 1, journal CONTRACT 6 | npm-пакет 0.1.0; актуальный resource fix не меняет API/CONTRACT | [Security baseline](../security.md): 2039 passed, 3 исторических skipped. После resource fix: 108/108 Node и 37 Python с xdist, strict/names прошли; см. раздел об ограничении приёмки выше. Это не новый полный модельный прогон |
+| VS Code | Implementation/docs `8fe4dad`; Needs `d3fc0e8efdd2a326e9175d2a72b2e7eccb3d4748`, API 1 / CONTRACT 6 | VSIX `0.2.0+3838163.dirty`; SHA `6ca65bbfaf19703d8fcf39aec65aea949e4242881bd451c06c17de158762aa54` | [Needs и порядок проверки](X:/symphysis-vscode-global-user-install/README.md), [свидетельства потребителей](../security.md): 688 unit, отдельный sameJournal с побайтным равенством, E2E 108/108, установленный VSIX local/global по 14/14, reload 16/16, activation 7/7 |
+| GIGA IDE | Implementation `4f52e9e`, docs HEAD `aebfc83`; Needs `d3fc0e8efdd2a326e9175d2a72b2e7eccb3d4748`, API 1 / CONTRACT 6 | ZIP `0.0.1`; SHA `662065e467502022bd512441ce20df3b31faf903f44738ade46cee0ff02d381e` | [Установленная ZIP-приёмка](X:/symphysis-giga-global-user-install/docs/acceptance-2026-11-09.md), [Needs](X:/symphysis-giga-global-user-install/README.md): 27 tests, verifier Compatible с сохранёнными предупреждениями, global/local first и restore/dispose — четыре успешные фазы |
+| OpenCode IDE adapter | Implementation `cc78abf`, docs HEAD `aa94610`; adapter API 1 / CONTRACT 6, core dependency `d3fc0e8efdd2a326e9175d2a72b2e7eccb3d4748` | GUI bundle SHA `e580293d3c53cf8fa4d354a4961533b8fe17fbabd4ca939aab03ba7e0ac32bb4` | [Сводка потребителей](../security.md): 134 unit и отдельный повтор устранённых дефектов adapter. Установленная IDE-приёмка **не выполнена**; help/host/harness остаются в B-64. Bundle hash и unit tests не объявляют IDE global-ready |
+
+Суффикс `.dirty` — часть версии **проверенного исторического VSIX**, не утверждение
+о текущем git-status VS Code. Пины сборок относятся к фактически проверенным байтам;
+последующий docs HEAD не подменяет implementation commit или receipt сборки.
+Приватные native logs и credential stores в матрицу не включаются.
+
+### Сверка активных задач и ledger
+
+В [tasks.md](../tasks.md) осталось 50 активных задач реализации. Исходные 9.2–9.4
+переданы в [B-64](X:/symphysis/.context/backlog/symphysis-backlog.md), 10.3/10.4 — в
+[B-66](X:/symphysis/.context/backlog/symphysis-backlog.md); 10.2 исключён владельцем.
+Их полные исходные формулировки сохранены без checkbox и без PASS.
+10.1 закрывает подготовку двух разрешённых клиентов, 10.5 — только доказанные
+26/26 инфраструктурных CLI-проверок двух store/pointer/update/idempotence на той же
+версии 0.1.0, не межрелизную миграцию и не модельный archive. 10.6 закрывает честную
+сверку [GUIDE](../../../../docs/GUIDE.md). 11.2 закрывает эту implementation matrix,
+11.3 — сверку фактического [security status](../security.md), не полноту F-19/F-23.
+11.4 завершена 2026-11-10 настоящим финальным freeze (код 0) и передачей ссылки владельцу
+без чтения отчёта. Архивация реального изменения не завершает учебный native-флоу,
+остановленный на 3/9, и не превращает Claude exclusion или Codex MXC blocker в PASS.
+
+### Release integration после merge ядра — не выполнено
+
+Достижимость Needs из main и post-merge main-проверки не требуются заранее от ещё
+не влитого ядра: это создало бы циклический порядок. Они сохраняются отдельным
+незавершённым release checklist в tasks.md: после merge ядра проверить достижимость
+Needs и контракт, выполнить требуемые проверки потребителей с явным SYMPHYSIS_ROOT
+на main, сверить выпускные пакеты с проверенными hash и сохранить новые свидетельства.
+До этого матрица реализации не считается матрицей принятого выпуска. Отсутствующая
+установленная OpenCode IDE-приёмка и полные native Codex/OpenCode проверки остаются
+в backlog; их независимый статус не меняется от готовности ядра или его архива.
