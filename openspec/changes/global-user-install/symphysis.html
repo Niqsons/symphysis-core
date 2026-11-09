@@ -1838,7 +1838,7 @@ const SCHEME = {
 };
 const HELP = {
  "contract": 6,
- "taken_at": "2026-11-09T04:25:41+03:00",
+ "taken_at": "2026-11-09T04:43:30+03:00",
  "versions": {
   "openspec": "1.16.1+symphysis.5",
   "symphysis": null
@@ -1846,19 +1846,19 @@ const HELP = {
  "change": "global-user-install",
  "changes": null,
  "error": null,
- "current_step": "tasks",
- "current_text": "Следующий шаг по файлам — `tasks`, ход модели.",
+ "current_step": "apply",
+ "current_text": "Следующий шаг по файлам — `apply`, ход модели.",
  "turn": "model",
- "next_by_status": "tasks",
+ "next_by_status": "apply",
  "forks": {
   "open": 0,
   "parked": 0
  },
  "tasks": {
-  "state": "blocked",
-  "total": 0,
+  "state": "ready",
+  "total": 56,
   "complete": 0,
-  "remaining": 0
+  "remaining": 56
  },
  "steps": [
   {
@@ -2244,7 +2244,7 @@ const HELP = {
   },
   {
    "id": "tasks",
-   "state": "ready",
+   "state": "done",
    "turn": "model",
    "optional": false,
    "blocks": [
@@ -2255,10 +2255,10 @@ const HELP = {
    "files": [
     {
      "path": "openspec/changes/global-user-install/tasks.md",
-     "exists": false
+     "exists": true
     }
    ],
-   "file_note": null,
+   "file_note": "файл есть, содержание не проверялось",
    "texts": {
     "title": "Задачи реализации",
     "why": "Работа, разбитая на задачи, каждую из которых можно закрыть проверкой. По этому списку идёт реализация и считается прогресс.",
@@ -2275,14 +2275,12 @@ const HELP = {
   },
   {
    "id": "attack-artifacts",
-   "state": "blocked",
+   "state": "ready",
    "turn": "model",
    "optional": true,
    "blocks": [],
    "stops_apply": false,
-   "waits_for": [
-    "tasks"
-   ],
+   "waits_for": [],
    "files": [
     {
      "path": "openspec/changes/global-user-install/attack/artifacts.md",
@@ -2312,14 +2310,12 @@ const HELP = {
   },
   {
    "id": "apply",
-   "state": "blocked",
+   "state": "ready",
    "turn": "model",
    "optional": false,
    "blocks": [],
    "stops_apply": false,
-   "waits_for": [
-    "tasks"
-   ],
+   "waits_for": [],
    "files": [],
    "file_note": null,
    "texts": {
@@ -2407,11 +2403,13 @@ const HELP = {
   "openspec/changes/global-user-install/specs/runtime-resolution/spec.md": "openspec/changes/global-user-install/specs/runtime-resolution/spec.md",
   "openspec/changes/global-user-install/specs/step-help/spec.md": "openspec/changes/global-user-install/specs/step-help/spec.md",
   "openspec/changes/global-user-install/specs/user-installation/spec.md": "openspec/changes/global-user-install/specs/user-installation/spec.md",
+  "openspec/changes/global-user-install/tasks.md": "openspec/changes/global-user-install/tasks.md",
   "proposal.md": "openspec/changes/global-user-install/proposal.md",
   "research/none.md": "openspec/changes/global-user-install/research/none.md",
   "scheme.md": "openspec/changes/global-user-install/scheme.md",
   "security.md": "openspec/changes/global-user-install/security.md",
-  "symphysis.html": "openspec/changes/global-user-install/symphysis.html"
+  "symphysis.html": "openspec/changes/global-user-install/symphysis.html",
+  "tasks.md": "openspec/changes/global-user-install/tasks.md"
  },
  "rebuild": "python cli/journal.py render-html openspec/changes/global-user-install/decisions.json --out openspec/changes/global-user-install/symphysis.html"
 };
@@ -2448,6 +2446,7 @@ const LINKS = {
   "openspec/changes/global-user-install/specs/runtime-resolution/spec.md": "specs/runtime-resolution/spec.md",
   "openspec/changes/global-user-install/specs/step-help/spec.md": "specs/step-help/spec.md",
   "openspec/changes/global-user-install/specs/user-installation/spec.md": "specs/user-installation/spec.md",
+  "openspec/changes/global-user-install/tasks.md": "tasks.md",
   "proposal.md": "proposal.md",
   "research/none.md": "research/none.md",
   "roots/roots.py": "../../../roots/roots.py",
@@ -2455,6 +2454,7 @@ const LINKS = {
   "security.md": "security.md",
   "settings/symphysis_config.py": "../../../settings/symphysis_config.py",
   "symphysis.html": "symphysis.html",
+  "tasks.md": "tasks.md",
   "upstream/openspec/src/core/artifact-graph/resolver.ts": "../../../../symphysis/upstream/openspec/src/core/artifact-graph/resolver.ts",
   "upstream/openspec/src/core/templates/workflows/new-change.ts": "../../../../symphysis/upstream/openspec/src/core/templates/workflows/new-change.ts"
  }
