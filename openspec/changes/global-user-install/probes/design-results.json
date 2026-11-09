@@ -1,0 +1,19 @@
+{
+  "requiredWorkflows": [
+    "new",
+    "continue",
+    "apply",
+    "sync",
+    "archive"
+  ],
+  "skillTemplateCount": 5,
+  "commandContentCount": 5,
+  "identityTransformCallbackInvoked": true,
+  "claudeContinuePath": ".claude/commands/opsx/continue.md",
+  "opencodeContinuePath": ".opencode/commands/opsx-continue.md",
+  "mermaidBytes": 5494801,
+  "mermaidBase64RoundTrip": true,
+  "generatedFilesInstalled": false,
+  "nativeClientsOrModelsRun": false,
+  "newGlobalHtmlLoaderExecuted": false
+}

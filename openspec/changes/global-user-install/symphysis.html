@@ -1838,7 +1838,7 @@ const SCHEME = {
 };
 const HELP = {
  "contract": 6,
- "taken_at": "2026-11-09T04:02:32+03:00",
+ "taken_at": "2026-11-09T04:25:41+03:00",
  "versions": {
   "openspec": "1.16.1+symphysis.5",
   "symphysis": null
@@ -1846,10 +1846,10 @@ const HELP = {
  "change": "global-user-install",
  "changes": null,
  "error": null,
- "current_step": "design",
- "current_text": "Следующий шаг по файлам — `design`, ход модели.",
+ "current_step": "tasks",
+ "current_text": "Следующий шаг по файлам — `tasks`, ход модели.",
  "turn": "model",
- "next_by_status": "design",
+ "next_by_status": "tasks",
  "forks": {
   "open": 0,
   "parked": 0
@@ -2181,7 +2181,7 @@ const HELP = {
   },
   {
    "id": "design",
-   "state": "ready",
+   "state": "done",
    "turn": "model",
    "optional": false,
    "blocks": [
@@ -2193,10 +2193,10 @@ const HELP = {
    "files": [
     {
      "path": "openspec/changes/global-user-install/design.md",
-     "exists": false
+     "exists": true
     }
    ],
-   "file_note": null,
+   "file_note": "файл есть, содержание не проверялось",
    "texts": {
     "title": "Дизайн",
     "why": "Как реализовать: решения журнала, риски и открытые вопросы в одном документе, от которого идут задачи.",
@@ -2213,7 +2213,7 @@ const HELP = {
   },
   {
    "id": "security",
-   "state": "ready",
+   "state": "done",
    "turn": "model",
    "optional": false,
    "blocks": [
@@ -2224,10 +2224,10 @@ const HELP = {
    "files": [
     {
      "path": "openspec/changes/global-user-install/security.md",
-     "exists": false
+     "exists": true
     }
    ],
-   "file_note": null,
+   "file_note": "файл есть, содержание не проверялось",
    "texts": {
     "title": "Чек-лист безопасности",
     "why": "Канон информационной безопасности отмечается по спецификациям пункт за пунктом: чтобы инъекции, пути и токены не остались вопросом, который никто не задал.",
@@ -2244,16 +2244,14 @@ const HELP = {
   },
   {
    "id": "tasks",
-   "state": "blocked",
+   "state": "ready",
    "turn": "model",
    "optional": false,
    "blocks": [
     "attack-artifacts"
    ],
    "stops_apply": true,
-   "waits_for": [
-    "design"
-   ],
+   "waits_for": [],
    "files": [
     {
      "path": "openspec/changes/global-user-install/tasks.md",
@@ -2283,8 +2281,6 @@ const HELP = {
    "blocks": [],
    "stops_apply": false,
    "waits_for": [
-    "design",
-    "security",
     "tasks"
    ],
    "files": [
@@ -2322,8 +2318,7 @@ const HELP = {
    "blocks": [],
    "stops_apply": false,
    "waits_for": [
-    "tasks",
-    "security"
+    "tasks"
    ],
    "files": [],
    "file_note": null,
@@ -2394,13 +2389,16 @@ const HELP = {
   "consequences.md": "openspec/changes/global-user-install/consequences.md",
   "decisions.json": "openspec/changes/global-user-install/decisions.json",
   "decisions.md": "openspec/changes/global-user-install/decisions.md",
+  "design.md": "openspec/changes/global-user-install/design.md",
   "edge-probe.md": "openspec/changes/global-user-install/edge-probe.md",
   "intent.md": "openspec/changes/global-user-install/intent.md",
   "openspec/changes/global-user-install/consequences.md": "openspec/changes/global-user-install/consequences.md",
   "openspec/changes/global-user-install/decisions.json": "openspec/changes/global-user-install/decisions.json",
+  "openspec/changes/global-user-install/design.md": "openspec/changes/global-user-install/design.md",
   "openspec/changes/global-user-install/intent.md": "openspec/changes/global-user-install/intent.md",
   "openspec/changes/global-user-install/proposal.md": "openspec/changes/global-user-install/proposal.md",
   "openspec/changes/global-user-install/research/none.md": "openspec/changes/global-user-install/research/none.md",
+  "openspec/changes/global-user-install/security.md": "openspec/changes/global-user-install/security.md",
   "openspec/changes/global-user-install/specs/client-installation/spec.md": "openspec/changes/global-user-install/specs/client-installation/spec.md",
   "openspec/changes/global-user-install/specs/decision-viewer/spec.md": "openspec/changes/global-user-install/specs/decision-viewer/spec.md",
   "openspec/changes/global-user-install/specs/onboarding-guide/spec.md": "openspec/changes/global-user-install/specs/onboarding-guide/spec.md",
@@ -2412,6 +2410,7 @@ const HELP = {
   "proposal.md": "openspec/changes/global-user-install/proposal.md",
   "research/none.md": "openspec/changes/global-user-install/research/none.md",
   "scheme.md": "openspec/changes/global-user-install/scheme.md",
+  "security.md": "openspec/changes/global-user-install/security.md",
   "symphysis.html": "openspec/changes/global-user-install/symphysis.html"
  },
  "rebuild": "python cli/journal.py render-html openspec/changes/global-user-install/decisions.json --out openspec/changes/global-user-install/symphysis.html"
@@ -2423,6 +2422,7 @@ const LINKS = {
   "decisions.json": "decisions.json",
   "decisions.md": "decisions.md",
   "decisions/skills/symphysis-brainstorm/SKILL.md": "../../../decisions/skills/symphysis-brainstorm/SKILL.md",
+  "design.md": "design.md",
   "edge-probe.md": "edge-probe.md",
   "installer/bin/symphysis.js": "../../../installer/bin/symphysis.js",
   "installer/lib/clients.js": "../../../installer/lib/clients.js",
@@ -2432,12 +2432,14 @@ const LINKS = {
   "openspec/changes/global-user-install/answers/2026-11-08-2.md": "answers/2026-11-08-2.md",
   "openspec/changes/global-user-install/consequences.md": "consequences.md",
   "openspec/changes/global-user-install/decisions.json": "decisions.json",
+  "openspec/changes/global-user-install/design.md": "design.md",
   "openspec/changes/global-user-install/intent.md": "intent.md",
   "openspec/changes/global-user-install/probes/client-matrix.md": "probes/client-matrix.md",
   "openspec/changes/global-user-install/probes/runtime-map.md": "probes/runtime-map.md",
   "openspec/changes/global-user-install/probes/store-probe.md": "probes/store-probe.md",
   "openspec/changes/global-user-install/proposal.md": "proposal.md",
   "openspec/changes/global-user-install/research/none.md": "research/none.md",
+  "openspec/changes/global-user-install/security.md": "security.md",
   "openspec/changes/global-user-install/specs/client-installation/spec.md": "specs/client-installation/spec.md",
   "openspec/changes/global-user-install/specs/decision-viewer/spec.md": "specs/decision-viewer/spec.md",
   "openspec/changes/global-user-install/specs/onboarding-guide/spec.md": "specs/onboarding-guide/spec.md",
@@ -2450,6 +2452,7 @@ const LINKS = {
   "research/none.md": "research/none.md",
   "roots/roots.py": "../../../roots/roots.py",
   "scheme.md": "scheme.md",
+  "security.md": "security.md",
   "settings/symphysis_config.py": "../../../settings/symphysis_config.py",
   "symphysis.html": "symphysis.html",
   "upstream/openspec/src/core/artifact-graph/resolver.ts": "../../../../symphysis/upstream/openspec/src/core/artifact-graph/resolver.ts",
