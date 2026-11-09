@@ -241,6 +241,39 @@ def test_snapshot_of_format_one_is_not_a_base(tmp_path):
 
 # --- границы записи (F-49, парковки F-55, F-56) -----------------------------------------------------------------------
 
+def test_capability_selection_does_not_rewrite_excluded_main_spec(tmp_path):
+    """Частичный sync: якоризируется только выбранная дельта, соседний мастер остаётся байт в байт прежним."""
+    root, base, path = project(tmp_path)
+    other_delta = base / "specs/other/spec.md"
+    other_delta.parent.mkdir()
+    other_delta.write_text(DELTA, encoding="utf-8")
+    other_master = root / "openspec/specs/other/spec.md"
+    other_master.parent.mkdir()
+    other_master.write_text(MASTER, encoding="utf-8")
+    before = other_master.read_bytes()
+    done = subprocess.run([sys.executable, "-X", "utf8", str(SCRIPT), CHANGE, "--capability", "demo"],
+                          cwd=root, capture_output=True, text=True, encoding="utf-8")
+    assert done.returncode == 0, done.stderr
+    assert "demo/F-21" in path.read_text(encoding="utf-8")
+    assert other_master.read_bytes() == before
+    anchor_refs.anchor_change(root, CHANGE, capabilities=["other", "other"])
+    assert "demo/F-21" in other_master.read_text(encoding="utf-8")
+
+
+def test_unknown_capability_is_rejected_before_any_main_spec_write(tmp_path):
+    root, _, _ = project(tmp_path)
+    before = tree_hashes(root)
+    with pytest.raises(trace_graph.Refusal, match="мастер не тронут"):
+        anchor_refs.anchor_change(root, CHANGE, capabilities=["demo", "missing"])
+    assert tree_hashes(root) == before
+
+
+def test_explicit_empty_capability_selection_writes_nothing(tmp_path):
+    root, _, _ = project(tmp_path)
+    before = tree_hashes(root)
+    assert anchor_refs.anchor_change(root, CHANGE, capabilities=[]) == [anchor_refs.NOTHING]
+    assert tree_hashes(root) == before
+
 def test_change_dir_is_untouched(tmp_path):
     """`record-anchors`: «Каталог изменения прежний» (F-49) — дельты, журнал и снимок после запуска байт в байт прежние."""
     root, base, _ = project(tmp_path)
