@@ -4279,7 +4279,7 @@ const SCHEME = {
 };
 const HELP = {
  "contract": 6,
- "taken_at": "2026-11-09T22:23:09+03:00",
+ "taken_at": "2026-11-09T22:34:49+03:00",
  "versions": {
   "openspec": "1.16.1+symphysis.5",
   "symphysis": null
@@ -4287,19 +4287,19 @@ const HELP = {
  "change": "trace-modules",
  "changes": null,
  "error": null,
- "current_step": "tasks",
- "current_text": "Следующий шаг по файлам — `tasks`, ход модели.",
+ "current_step": "apply",
+ "current_text": "Следующий шаг по файлам — `apply`, ход модели.",
  "turn": "model",
- "next_by_status": "tasks",
+ "next_by_status": "apply",
  "forks": {
   "open": 0,
   "parked": 0
  },
  "tasks": {
-  "state": "blocked",
-  "total": 0,
+  "state": "ready",
+  "total": 40,
   "complete": 0,
-  "remaining": 0
+  "remaining": 40
  },
  "steps": [
   {
@@ -4685,7 +4685,7 @@ const HELP = {
   },
   {
    "id": "tasks",
-   "state": "ready",
+   "state": "done",
    "turn": "model",
    "optional": false,
    "blocks": [
@@ -4696,10 +4696,10 @@ const HELP = {
    "files": [
     {
      "path": "openspec/changes/trace-modules/tasks.md",
-     "exists": false
+     "exists": true
     }
    ],
-   "file_note": null,
+   "file_note": "файл есть, содержание не проверялось",
    "texts": {
     "title": "Задачи реализации",
     "why": "Работа, разбитая на задачи, каждую из которых можно закрыть проверкой. По этому списку идёт реализация и считается прогресс.",
@@ -4716,14 +4716,12 @@ const HELP = {
   },
   {
    "id": "attack-artifacts",
-   "state": "blocked",
+   "state": "ready",
    "turn": "model",
    "optional": true,
    "blocks": [],
    "stops_apply": false,
-   "waits_for": [
-    "tasks"
-   ],
+   "waits_for": [],
    "files": [
     {
      "path": "openspec/changes/trace-modules/attack/artifacts.md",
@@ -4753,14 +4751,12 @@ const HELP = {
   },
   {
    "id": "apply",
-   "state": "blocked",
+   "state": "ready",
    "turn": "model",
    "optional": false,
    "blocks": [],
    "stops_apply": false,
-   "waits_for": [
-    "tasks"
-   ],
+   "waits_for": [],
    "files": [],
    "file_note": null,
    "texts": {
@@ -4855,11 +4851,13 @@ const HELP = {
   "openspec/changes/trace-modules/specs/trace-graph/spec.md": "openspec/changes/trace-modules/specs/trace-graph/spec.md",
   "openspec/changes/trace-modules/specs/trace-signals/spec.md": "openspec/changes/trace-modules/specs/trace-signals/spec.md",
   "openspec/changes/trace-modules/specs/trace-snapshot/spec.md": "openspec/changes/trace-modules/specs/trace-snapshot/spec.md",
+  "openspec/changes/trace-modules/tasks.md": "openspec/changes/trace-modules/tasks.md",
   "proposal.md": "openspec/changes/trace-modules/proposal.md",
   "scheme.md": "openspec/changes/trace-modules/scheme.md",
   "security.md": "openspec/changes/trace-modules/security.md",
   "symphysis.html": "openspec/changes/trace-modules/symphysis.html",
-  "symphysis.yaml": "symphysis.yaml"
+  "symphysis.yaml": "symphysis.yaml",
+  "tasks.md": "openspec/changes/trace-modules/tasks.md"
  },
  "rebuild": "python cli/journal.py render-html openspec/changes/trace-modules/decisions.json --out openspec/changes/trace-modules/symphysis.html"
 };
@@ -4907,6 +4905,7 @@ const LINKS = {
   "openspec/changes/trace-modules/specs/trace-graph/spec.md": "specs/trace-graph/spec.md",
   "openspec/changes/trace-modules/specs/trace-signals/spec.md": "specs/trace-signals/spec.md",
   "openspec/changes/trace-modules/specs/trace-snapshot/spec.md": "specs/trace-snapshot/spec.md",
+  "openspec/changes/trace-modules/tasks.md": "tasks.md",
   "openspec/schemas/symphysis/schema.yaml": "../../schemas/symphysis/schema.yaml",
   "openspec/specs/module-declaration/spec.md": "../../specs/module-declaration/spec.md",
   "proposal.md": "proposal.md",
@@ -4916,6 +4915,7 @@ const LINKS = {
   "settings/symphysis_config.py": "../../../settings/symphysis_config.py",
   "symphysis.html": "symphysis.html",
   "symphysis.yaml": "../../../symphysis.yaml",
+  "tasks.md": "tasks.md",
   "tests/repository_structure.py": "../../../tests/repository_structure.py",
   "trace/trace_graph.py": "../../../trace/trace_graph.py",
   "viewer/playground-template.html": "../../../viewer/playground-template.html"
