@@ -3129,7 +3129,7 @@ const SCHEME = {
 };
 const HELP = {
  "contract": 6,
- "taken_at": "2026-11-09T21:15:22+03:00",
+ "taken_at": "2026-11-09T21:20:08+03:00",
  "versions": {
   "openspec": "1.16.1+symphysis.5",
   "symphysis": null
@@ -3137,10 +3137,10 @@ const HELP = {
  "change": "trace-modules",
  "changes": null,
  "error": null,
- "current_step": "proposal",
- "current_text": "Следующий шаг по файлам — `proposal`, ход модели.",
+ "current_step": "specs",
+ "current_text": "Следующий шаг по файлам — `specs`, ход модели.",
  "turn": "model",
- "next_by_status": "proposal",
+ "next_by_status": "specs",
  "forks": {
   "open": 0,
   "parked": 0
@@ -3334,7 +3334,7 @@ const HELP = {
   },
   {
    "id": "proposal",
-   "state": "ready",
+   "state": "done",
    "turn": "model",
    "optional": false,
    "blocks": [
@@ -3346,10 +3346,10 @@ const HELP = {
    "files": [
     {
      "path": "openspec/changes/trace-modules/proposal.md",
-     "exists": false
+     "exists": true
     }
    ],
-   "file_note": null,
+   "file_note": "файл есть, содержание не проверялось",
    "texts": {
     "title": "Зачем изменение и что оно задевает",
     "why": "Договор об объёме: почему изменение нужно и какие capabilities оно затрагивает. По этому списку потом пишутся спецификации.",
@@ -3366,7 +3366,7 @@ const HELP = {
   },
   {
    "id": "specs",
-   "state": "blocked",
+   "state": "ready",
    "turn": "model",
    "optional": false,
    "blocks": [
@@ -3376,9 +3376,7 @@ const HELP = {
     "attack-artifacts"
    ],
    "stops_apply": false,
-   "waits_for": [
-    "proposal"
-   ],
+   "waits_for": [],
    "files": [
     {
      "path": "openspec/changes/trace-modules/specs/**/*.md",
@@ -3461,7 +3459,6 @@ const HELP = {
    ],
    "stops_apply": false,
    "waits_for": [
-    "proposal",
     "consequences"
    ],
    "files": [
@@ -3681,8 +3678,10 @@ const HELP = {
   "intent.md": "openspec/changes/trace-modules/intent.md",
   "openspec/changes/trace-modules/decisions.json": "openspec/changes/trace-modules/decisions.json",
   "openspec/changes/trace-modules/intent.md": "openspec/changes/trace-modules/intent.md",
+  "openspec/changes/trace-modules/proposal.md": "openspec/changes/trace-modules/proposal.md",
   "openspec/changes/trace-modules/research/F-26.md": "openspec/changes/trace-modules/research/F-26.md",
   "openspec/changes/trace-modules/research/F-27.md": "openspec/changes/trace-modules/research/F-27.md",
+  "proposal.md": "openspec/changes/trace-modules/proposal.md",
   "scheme.md": "openspec/changes/trace-modules/scheme.md",
   "symphysis.html": "openspec/changes/trace-modules/symphysis.html",
   "symphysis.yaml": "symphysis.yaml"
@@ -3715,12 +3714,14 @@ const LINKS = {
   "openspec/changes/trace-modules/answers/2026-11-09.md": "answers/2026-11-09.md",
   "openspec/changes/trace-modules/decisions.json": "decisions.json",
   "openspec/changes/trace-modules/intent.md": "intent.md",
+  "openspec/changes/trace-modules/proposal.md": "proposal.md",
   "openspec/changes/trace-modules/research/F-26-probe/summary.txt": "research/F-26-probe/summary.txt",
   "openspec/changes/trace-modules/research/F-26.md": "research/F-26.md",
   "openspec/changes/trace-modules/research/F-27-probe/results.txt": "research/F-27-probe/results.txt",
   "openspec/changes/trace-modules/research/F-27.md": "research/F-27.md",
   "openspec/schemas/symphysis/schema.yaml": "../../schemas/symphysis/schema.yaml",
   "openspec/specs/module-declaration/spec.md": "../../specs/module-declaration/spec.md",
+  "proposal.md": "proposal.md",
   "roots/roots.py": "../../../roots/roots.py",
   "scheme.md": "scheme.md",
   "settings/symphysis_config.py": "../../../settings/symphysis_config.py",
