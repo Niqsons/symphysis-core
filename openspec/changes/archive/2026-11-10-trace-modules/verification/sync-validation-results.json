@@ -1,0 +1,250 @@
+{
+  "validation": {
+    "code": 0,
+    "summary": {
+      "totals": {
+        "items": 34,
+        "passed": 34,
+        "failed": 0
+      },
+      "byType": {
+        "spec": {
+          "items": 34,
+          "passed": 34,
+          "failed": 0
+        }
+      }
+    }
+  },
+  "strict": {
+    "code": 1,
+    "summary": {
+      "totals": {
+        "items": 34,
+        "passed": 20,
+        "failed": 14
+      },
+      "byType": {
+        "spec": {
+          "items": 34,
+          "passed": 20,
+          "failed": 14
+        }
+      }
+    }
+  },
+  "baseline_strict": {
+    "code": 1,
+    "summary": {
+      "totals": {
+        "items": 32,
+        "passed": 16,
+        "failed": 16
+      },
+      "byType": {
+        "spec": {
+          "items": 32,
+          "passed": 16,
+          "failed": 16
+        }
+      }
+    }
+  },
+  "new_issues": 0,
+  "removed_issues": 2,
+  "unchanged_warnings": 32,
+  "issues": [
+    {
+      "capability": "artifact-attack",
+      "level": "WARNING",
+      "path": "requirements[4]",
+      "message": "Requirement text is very long (>500 characters). Move examples and edge cases into scenarios, or split it into separate requirements that each state one behavior."
+    },
+    {
+      "capability": "artifact-attack",
+      "level": "WARNING",
+      "path": "requirements[7]",
+      "message": "Requirement text is very long (>500 characters). Move examples and edge cases into scenarios, or split it into separate requirements that each state one behavior."
+    },
+    {
+      "capability": "artifact-attack",
+      "level": "WARNING",
+      "path": "requirements[8]",
+      "message": "Requirement text is very long (>500 characters). Move examples and edge cases into scenarios, or split it into separate requirements that each state one behavior."
+    },
+    {
+      "capability": "artifact-graph",
+      "level": "WARNING",
+      "path": "requirements[0]",
+      "message": "Requirement text is very long (>500 characters). Move examples and edge cases into scenarios, or split it into separate requirements that each state one behavior."
+    },
+    {
+      "capability": "artifact-graph",
+      "level": "WARNING",
+      "path": "requirements[1]",
+      "message": "Requirement text is very long (>500 characters). Move examples and edge cases into scenarios, or split it into separate requirements that each state one behavior."
+    },
+    {
+      "capability": "artifact-graph",
+      "level": "WARNING",
+      "path": "requirements[6]",
+      "message": "Requirement text is very long (>500 characters). Move examples and edge cases into scenarios, or split it into separate requirements that each state one behavior."
+    },
+    {
+      "capability": "brainstorm-interview",
+      "level": "WARNING",
+      "path": "requirements[0]",
+      "message": "Requirement text is very long (>500 characters). Move examples and edge cases into scenarios, or split it into separate requirements that each state one behavior."
+    },
+    {
+      "capability": "brainstorm-interview",
+      "level": "WARNING",
+      "path": "requirements[1]",
+      "message": "Requirement text is very long (>500 characters). Move examples and edge cases into scenarios, or split it into separate requirements that each state one behavior."
+    },
+    {
+      "capability": "brainstorm-interview",
+      "level": "WARNING",
+      "path": "requirements[2]",
+      "message": "Requirement text is very long (>500 characters). Move examples and edge cases into scenarios, or split it into separate requirements that each state one behavior."
+    },
+    {
+      "capability": "brainstorm-interview",
+      "level": "WARNING",
+      "path": "requirements[6]",
+      "message": "Requirement text is very long (>500 characters). Move examples and edge cases into scenarios, or split it into separate requirements that each state one behavior."
+    },
+    {
+      "capability": "decision-journal",
+      "level": "WARNING",
+      "path": "requirements[14]",
+      "message": "Requirement text is very long (>500 characters). Move examples and edge cases into scenarios, or split it into separate requirements that each state one behavior."
+    },
+    {
+      "capability": "decision-journal",
+      "level": "WARNING",
+      "path": "requirements[19]",
+      "message": "Requirement text is very long (>500 characters). Move examples and edge cases into scenarios, or split it into separate requirements that each state one behavior."
+    },
+    {
+      "capability": "decision-journal",
+      "level": "WARNING",
+      "path": "requirements[23]",
+      "message": "Requirement text is very long (>500 characters). Move examples and edge cases into scenarios, or split it into separate requirements that each state one behavior."
+    },
+    {
+      "capability": "decision-journal",
+      "level": "WARNING",
+      "path": "requirements[3]",
+      "message": "Requirement text is very long (>500 characters). Move examples and edge cases into scenarios, or split it into separate requirements that each state one behavior."
+    },
+    {
+      "capability": "decision-scheme",
+      "level": "WARNING",
+      "path": "requirements[0]",
+      "message": "Requirement text is very long (>500 characters). Move examples and edge cases into scenarios, or split it into separate requirements that each state one behavior."
+    },
+    {
+      "capability": "decision-viewer",
+      "level": "WARNING",
+      "path": "requirements[1]",
+      "message": "Requirement text is very long (>500 characters). Move examples and edge cases into scenarios, or split it into separate requirements that each state one behavior."
+    },
+    {
+      "capability": "decision-viewer",
+      "level": "WARNING",
+      "path": "requirements[4]",
+      "message": "Requirement text is very long (>500 characters). Move examples and edge cases into scenarios, or split it into separate requirements that each state one behavior."
+    },
+    {
+      "capability": "decision-viewer",
+      "level": "WARNING",
+      "path": "requirements[5]",
+      "message": "Requirement text is very long (>500 characters). Move examples and edge cases into scenarios, or split it into separate requirements that each state one behavior."
+    },
+    {
+      "capability": "plugin-core-contract",
+      "level": "WARNING",
+      "path": "requirements[3]",
+      "message": "Requirement text is very long (>500 characters). Move examples and edge cases into scenarios, or split it into separate requirements that each state one behavior."
+    },
+    {
+      "capability": "plugin-scheme-view",
+      "level": "WARNING",
+      "path": "requirements[4]",
+      "message": "Requirement text is very long (>500 characters). Move examples and edge cases into scenarios, or split it into separate requirements that each state one behavior."
+    },
+    {
+      "capability": "plugin-scheme-view",
+      "level": "WARNING",
+      "path": "requirements[5]",
+      "message": "Requirement text is very long (>500 characters). Move examples and edge cases into scenarios, or split it into separate requirements that each state one behavior."
+    },
+    {
+      "capability": "project-installer",
+      "level": "WARNING",
+      "path": "requirements[0]",
+      "message": "Requirement text is very long (>500 characters). Move examples and edge cases into scenarios, or split it into separate requirements that each state one behavior."
+    },
+    {
+      "capability": "project-installer",
+      "level": "WARNING",
+      "path": "requirements[1]",
+      "message": "Requirement text is very long (>500 characters). Move examples and edge cases into scenarios, or split it into separate requirements that each state one behavior."
+    },
+    {
+      "capability": "record-anchors",
+      "level": "WARNING",
+      "path": "requirements[0]",
+      "message": "Requirement text is very long (>500 characters). Move examples and edge cases into scenarios, or split it into separate requirements that each state one behavior."
+    },
+    {
+      "capability": "record-anchors",
+      "level": "WARNING",
+      "path": "requirements[1]",
+      "message": "Requirement text is very long (>500 characters). Move examples and edge cases into scenarios, or split it into separate requirements that each state one behavior."
+    },
+    {
+      "capability": "requirement-probes",
+      "level": "WARNING",
+      "path": "requirements[0]",
+      "message": "Requirement text is very long (>500 characters). Move examples and edge cases into scenarios, or split it into separate requirements that each state one behavior."
+    },
+    {
+      "capability": "requirement-probes",
+      "level": "WARNING",
+      "path": "requirements[1]",
+      "message": "Requirement text is very long (>500 characters). Move examples and edge cases into scenarios, or split it into separate requirements that each state one behavior."
+    },
+    {
+      "capability": "trace-conventions",
+      "level": "WARNING",
+      "path": "requirements[0]",
+      "message": "Requirement text is very long (>500 characters). Move examples and edge cases into scenarios, or split it into separate requirements that each state one behavior."
+    },
+    {
+      "capability": "trace-conventions",
+      "level": "WARNING",
+      "path": "requirements[1]",
+      "message": "Requirement text is very long (>500 characters). Move examples and edge cases into scenarios, or split it into separate requirements that each state one behavior."
+    },
+    {
+      "capability": "trace-snapshot",
+      "level": "WARNING",
+      "path": "requirements[2]",
+      "message": "Requirement text is very long (>500 characters). Move examples and edge cases into scenarios, or split it into separate requirements that each state one behavior."
+    },
+    {
+      "capability": "verdict-readiness",
+      "level": "WARNING",
+      "path": "requirements[0]",
+      "message": "Requirement text is very long (>500 characters). Move examples and edge cases into scenarios, or split it into separate requirements that each state one behavior."
+    },
+    {
+      "capability": "verdict-readiness",
+      "level": "WARNING",
+      "path": "requirements[1]",
+      "message": "Requirement text is very long (>500 characters). Move examples and edge cases into scenarios, or split it into separate requirements that each state one behavior."
+    }
+  ]
+}
