@@ -227,12 +227,12 @@ const JOURNAL = {
  "title": "Журнал решений: trace-modules",
  "source": "decisions.json",
  "generated": "2026-11-09",
- "sha256": "826ed6e8c34d77ec79c8d19e8586218d3377336c02cf6715d1c72c6a39f8a376",
+ "sha256": "a40dffff9a7feab34be3848cfbb7142b5ac2ec089309f4178153372eb7fd7354",
  "stats": {
   "records": 52,
   "forks": 33,
   "facts": 19,
-  "decided": 28,
+  "decided": 33,
   "parked": 1,
   "evidence_total": 172,
   "evidence_found": 172
@@ -3138,7 +3138,7 @@ const JOURNAL = {
     {
      "path": "openspec/changes/trace-modules/specs/repository-survey/spec.md",
      "quote": "### Requirement: Модель изменяет только своё расширение metadata",
-     "line": 80,
+     "line": 101,
      "verdict": "сверено",
      "found": true
     }
@@ -3359,7 +3359,7 @@ const JOURNAL = {
     {
      "path": "openspec/changes/trace-modules/specs/module-discovery/spec.md",
      "quote": "### Requirement: Зависимость читается из объявления README",
-     "line": 85,
+     "line": 110,
      "verdict": "сверено",
      "found": true
     }
@@ -3762,7 +3762,7 @@ const JOURNAL = {
    "id": "F-48",
    "question": "[ветка] Псевдоним repo отсутствует в карте: разрешать ли его как путь под пустым префиксом?",
    "kind": "развилка",
-   "status": "открыт",
+   "status": "решён",
    "addressee": "человек",
    "depends_on": [
     "F-31"
@@ -3803,12 +3803,20 @@ const JOURNAL = {
     "option": "A",
     "why": "A: пустой префикс тихо превращает опечатку псевдонима в другой источник и даёт правдоподобные чужие модули. Против B — имя repo уже явно привязано к псевдониму; против C — граница источника выражается коротким сценарием. Цена — сценарий, тест двух корней и сопровождение точного выбора псевдонима."
    },
-   "decision": null,
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-09"
+   },
    "reversibility": null,
-   "outcome": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Specify",
+    "reason": ""
+   },
    "parking": [],
    "dispute": "",
-   "consequences": "",
+   "consequences": "в spec.md: Неизвестный псевдоним не подменяется пустым префиксом",
    "evidence": [
     {
      "path": "roots/roots.py",
@@ -3837,7 +3845,7 @@ const JOURNAL = {
    "id": "F-49",
    "question": "[ветка] Чтение одного README вернуло VERDICT_UNREADABLE: как сохранить отличие от отсутствующего объявления?",
    "kind": "развилка",
-   "status": "открыт",
+   "status": "решён",
    "addressee": "человек",
    "depends_on": [],
    "delivery": "",
@@ -3876,12 +3884,20 @@ const JOURNAL = {
     "option": "A",
     "why": "A: если отбросить вердикт helper и оставить только None, недоступное объявление тихо станет отсутствующим и испортит состав модулей или зависимостей. Против B — это нарушает различение отсутствия и неполноты; против C — результат для соседнего модуля наблюдаем и помещается в сценарий. Цена — сценарий, тест ошибки доступа и сопровождение диагностик."
    },
-   "decision": null,
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-09"
+   },
    "reversibility": null,
-   "outcome": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Specify",
+    "reason": ""
+   },
    "parking": [],
    "dispute": "",
-   "consequences": "",
+   "consequences": "в spec.md: Нечитаемый README не скрывает соседний модуль",
    "evidence": [
     {
      "path": "roots/roots.py",
@@ -3893,7 +3909,7 @@ const JOURNAL = {
     {
      "path": "openspec/changes/trace-modules/specs/module-discovery/spec.md",
      "quote": "### Requirement: Ошибка источника не стирает доступную структуру",
-     "line": 126,
+     "line": 151,
      "verdict": "сверено",
      "found": true
     }
@@ -3910,7 +3926,7 @@ const JOURNAL = {
    "id": "F-50",
    "question": "[ветка] Общий UTF-8 reader отказывает всей сборке: что делать с одним README в CP1251 среди корректных объявлений?",
    "kind": "развилка",
-   "status": "открыт",
+   "status": "решён",
    "addressee": "человек",
    "depends_on": [
     "F-22",
@@ -3954,12 +3970,20 @@ const JOURNAL = {
     "option": "A",
     "why": "A: перенос общего отказа артефактов на README обнуляет доступную структуру; попытка угадать кодировку может тихо дать другое имя. Против B — источник объявления уже должен давать частичный граф; против C — отличие объявлений от обязательных артефактов лучше зафиксировать сценарием. Цена — сценарий, байтовая фикстура и сопровождение раздельного поведения читателей."
    },
-   "decision": null,
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-09"
+   },
    "reversibility": null,
-   "outcome": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Specify",
+    "reason": ""
+   },
    "parking": [],
    "dispute": "",
-   "consequences": "",
+   "consequences": "в spec.md: Негодная кодировка README не обрывает доступный граф",
    "evidence": [
     {
      "path": "trace/trace_graph.py",
@@ -3971,7 +3995,7 @@ const JOURNAL = {
     {
      "path": "openspec/changes/trace-modules/specs/module-discovery/spec.md",
      "quote": "### Requirement: Ошибка источника не стирает доступную структуру",
-     "line": 126,
+     "line": 151,
      "verdict": "сверено",
      "found": true
     }
@@ -3989,7 +4013,7 @@ const JOURNAL = {
    "id": "F-51",
    "question": "[ветка] Freeze отдельно собирает граф и отчёт: что делать, если README изменился между двумя сборками?",
    "kind": "развилка",
-   "status": "открыт",
+   "status": "решён",
    "addressee": "человек",
    "depends_on": [
     "F-22",
@@ -4033,12 +4057,20 @@ const JOURNAL = {
     "option": "A",
     "why": "A: два файла могут выглядеть свежими, но один подтверждает другой модуль; повтор не гарантирует обнаружение такого тихого расхождения. Против B — отчёт сопровождает этот снимок, а не произвольное следующее чтение; против C — наблюдаемый результат укладывается в сценарий. Цена — сценарий, тест подмены README и сопровождение общего состояния сборки. Глобальная блокировка репозитория этим не требуется."
    },
-   "decision": null,
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-09"
+   },
    "reversibility": null,
-   "outcome": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Specify",
+    "reason": ""
+   },
    "parking": [],
    "dispute": "",
-   "consequences": "",
+   "consequences": "в spec.md: Снимок и отчёт описывают одно прочитанное состояние",
    "evidence": [
     {
      "path": "trace/trace_graph.py",
@@ -4050,7 +4082,7 @@ const JOURNAL = {
     {
      "path": "openspec/changes/trace-modules/specs/trace-snapshot/spec.md",
      "quote": "### Requirement: Снимок и отчёт лежат в каталоге graph",
-     "line": 48,
+     "line": 69,
      "verdict": "сверено",
      "found": true
     }
@@ -4067,7 +4099,7 @@ const JOURNAL = {
    "id": "F-52",
    "question": "[ветка] saved_base сравнивает format с единственной GRAPH_FORMAT: должна ли база поддерживаемого снимка 2 пережить выпуск формата 3?",
    "kind": "развилка",
-   "status": "открыт",
+   "status": "решён",
    "addressee": "человек",
    "depends_on": [
     "F-22",
@@ -4111,12 +4143,20 @@ const JOURNAL = {
     "option": "A",
     "why": "A: простая смена GRAPH_FORMAT на 3 заставит существующий guard вернуть пустую базу формата 2; это тихо подменит смысл старых ссылок нынешним master. Против B — прежний формат принят как поддерживаемый и база 2 уже содержит пригодные строковые якоря; против C — сохранение семантики описывается сценарием. Цена — сценарий, фикстура после sync и сопровождение двух поддерживаемых форматов базы."
    },
-   "decision": null,
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-09"
+   },
    "reversibility": null,
-   "outcome": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Specify",
+    "reason": ""
+   },
    "parking": [],
    "dispute": "",
-   "consequences": "",
+   "consequences": "в spec.md: Поддерживаемая база формата 2 сохраняется после sync",
    "evidence": [
     {
      "path": "trace/trace_graph.py",
@@ -4128,7 +4168,7 @@ const JOURNAL = {
     {
      "path": "openspec/changes/trace-modules/specs/trace-snapshot/spec.md",
      "quote": "### Requirement: Предыдущий формат читается без дописывания модулей в историю",
-     "line": 36,
+     "line": 51,
      "verdict": "сверено",
      "found": true
     }
@@ -4214,6 +4254,18 @@ const JOURNAL = {
   {
    "date": "2026-11-09",
    "text": "consequences: ветки отказа и допущения включены, водитель описи выключен. code-sites с явной картой дал 3 файла: roots/roots.py и trace/trace_graph.py разобраны, change-metadata.ts исключён с конкретной причиной; installer/scripts/sync-payload.js добавлен по proposal. F-26 без улик кода: решённое обследование моделью, сканер ещё предстоит. Опись: 20 строк веток и 1 строка допущения о поставке. Новые кандидаты F-48–F-52 (5), pre-mortem 3 причины, совпавшие с F-48/F-51/F-52. Дополнительный риск установленной копии уже решён F-25; новые decision/outcome не созданы. Код и specs не менялись."
+  },
+  {
+   "date": "2026-11-09",
+   "text": "F-48–F-52: ответы владельца внесены apply из answers/2026-11-09-5.md; 5 исходов Specify отражены пятью сценариями с непосредственными маркерами. reason — пустое слово владельца. consequences.md оставлен неизменным по правилу скилла; номера в описи ведут к исходам. Затем владелец разрешил design и сразу security."
+  },
+  {
+   "date": "2026-11-09",
+   "text": "проба краёв: повтор после 5 сценариев consequences и канона security; требований 34, строк 272, не выбран 126; 7 исходных кандидатов краёв F-38–F-44 остаются Specify, новые не найдены. Проба запретов: повтор, требований 34; F-45 остаётся Specify/test, канон F-46/F-47 разобран в security без новых развилок. Три канонических требования и восемь сценариев (включая ссылку в служебный каталог) задают границы путей, недоверенные объявления и приватность диагностики; это дополнения чек-листа ИБ, не новые решения владельца. Сохранены 52 записи, 33 решения владельца и 13 исходов Specify."
+  },
+  {
+   "date": "2026-11-09",
+   "text": "security: 4 пункта парковок F-46/F-47 распределены по чек-листу: пути/reparse/служебные каталоги, приватные пути и карта, инъекции README, безопасный YAML. Проверка пока документальная; исполнение новых гарантий, отрицательные фикстуры и пробы модели должны войти в tasks. design получен render-design; Context, Goals / Non-Goals и Migration Plan дополнены вручную по принятым решениям. Секции Decisions, Risks / Trade-offs и Open Questions оставлены проекцией журнала. Код реализации, личные настройки и архивы не изменялись."
   }
  ]
 };
@@ -4227,7 +4279,7 @@ const SCHEME = {
 };
 const HELP = {
  "contract": 6,
- "taken_at": "2026-11-09T22:13:57+03:00",
+ "taken_at": "2026-11-09T22:23:09+03:00",
  "versions": {
   "openspec": "1.16.1+symphysis.5",
   "symphysis": null
@@ -4235,12 +4287,12 @@ const HELP = {
  "change": "trace-modules",
  "changes": null,
  "error": null,
- "current_step": "viewer",
- "current_text": "Следующий шаг по файлам — `viewer`, ход человека: открытых развилок 5, решаются на странице журнала. После них по файлам идёт `design`.",
- "turn": "human",
- "next_by_status": "design",
+ "current_step": "tasks",
+ "current_text": "Следующий шаг по файлам — `tasks`, ход модели.",
+ "turn": "model",
+ "next_by_status": "tasks",
  "forks": {
-  "open": 5,
+  "open": 0,
   "parked": 0
  },
  "tasks": {
@@ -4320,7 +4372,7 @@ const HELP = {
   },
   {
    "id": "viewer",
-   "state": "ready",
+   "state": "idle",
    "turn": "human",
    "optional": false,
    "blocks": [],
@@ -4570,7 +4622,7 @@ const HELP = {
   },
   {
    "id": "design",
-   "state": "ready",
+   "state": "done",
    "turn": "model",
    "optional": false,
    "blocks": [
@@ -4582,10 +4634,10 @@ const HELP = {
    "files": [
     {
      "path": "openspec/changes/trace-modules/design.md",
-     "exists": false
+     "exists": true
     }
    ],
-   "file_note": null,
+   "file_note": "файл есть, содержание не проверялось",
    "texts": {
     "title": "Дизайн",
     "why": "Как реализовать: решения журнала, риски и открытые вопросы в одном документе, от которого идут задачи.",
@@ -4602,7 +4654,7 @@ const HELP = {
   },
   {
    "id": "security",
-   "state": "ready",
+   "state": "done",
    "turn": "model",
    "optional": false,
    "blocks": [
@@ -4613,10 +4665,10 @@ const HELP = {
    "files": [
     {
      "path": "openspec/changes/trace-modules/security.md",
-     "exists": false
+     "exists": true
     }
    ],
-   "file_note": null,
+   "file_note": "файл есть, содержание не проверялось",
    "texts": {
     "title": "Чек-лист безопасности",
     "why": "Канон информационной безопасности отмечается по спецификациям пункт за пунктом: чтобы инъекции, пути и токены не остались вопросом, который никто не задал.",
@@ -4633,16 +4685,14 @@ const HELP = {
   },
   {
    "id": "tasks",
-   "state": "blocked",
+   "state": "ready",
    "turn": "model",
    "optional": false,
    "blocks": [
     "attack-artifacts"
    ],
    "stops_apply": true,
-   "waits_for": [
-    "design"
-   ],
+   "waits_for": [],
    "files": [
     {
      "path": "openspec/changes/trace-modules/tasks.md",
@@ -4672,8 +4722,6 @@ const HELP = {
    "blocks": [],
    "stops_apply": false,
    "waits_for": [
-    "design",
-    "security",
     "tasks"
    ],
    "files": [
@@ -4711,8 +4759,7 @@ const HELP = {
    "blocks": [],
    "stops_apply": false,
    "waits_for": [
-    "tasks",
-    "security"
+    "tasks"
    ],
    "files": [],
    "file_note": null,
@@ -4790,14 +4837,17 @@ const HELP = {
   "consequences.md": "openspec/changes/trace-modules/consequences.md",
   "decisions.json": "openspec/changes/trace-modules/decisions.json",
   "decisions.md": "openspec/changes/trace-modules/decisions.md",
+  "design.md": "openspec/changes/trace-modules/design.md",
   "edge-probe.md": "openspec/changes/trace-modules/edge-probe.md",
   "intent.md": "openspec/changes/trace-modules/intent.md",
   "openspec/changes/trace-modules/consequences.md": "openspec/changes/trace-modules/consequences.md",
   "openspec/changes/trace-modules/decisions.json": "openspec/changes/trace-modules/decisions.json",
+  "openspec/changes/trace-modules/design.md": "openspec/changes/trace-modules/design.md",
   "openspec/changes/trace-modules/intent.md": "openspec/changes/trace-modules/intent.md",
   "openspec/changes/trace-modules/proposal.md": "openspec/changes/trace-modules/proposal.md",
   "openspec/changes/trace-modules/research/F-26.md": "openspec/changes/trace-modules/research/F-26.md",
   "openspec/changes/trace-modules/research/F-27.md": "openspec/changes/trace-modules/research/F-27.md",
+  "openspec/changes/trace-modules/security.md": "openspec/changes/trace-modules/security.md",
   "openspec/changes/trace-modules/specs/module-discovery/spec.md": "openspec/changes/trace-modules/specs/module-discovery/spec.md",
   "openspec/changes/trace-modules/specs/repository-survey/spec.md": "openspec/changes/trace-modules/specs/repository-survey/spec.md",
   "openspec/changes/trace-modules/specs/trace-conventions/spec.md": "openspec/changes/trace-modules/specs/trace-conventions/spec.md",
@@ -4807,6 +4857,7 @@ const HELP = {
   "openspec/changes/trace-modules/specs/trace-snapshot/spec.md": "openspec/changes/trace-modules/specs/trace-snapshot/spec.md",
   "proposal.md": "openspec/changes/trace-modules/proposal.md",
   "scheme.md": "openspec/changes/trace-modules/scheme.md",
+  "security.md": "openspec/changes/trace-modules/security.md",
   "symphysis.html": "openspec/changes/trace-modules/symphysis.html",
   "symphysis.yaml": "symphysis.yaml"
  },
@@ -4830,6 +4881,7 @@ const LINKS = {
   "decisions.json": "decisions.json",
   "decisions.md": "decisions.md",
   "decisions/skills/symphysis-brainstorm/SKILL.md": "../../../decisions/skills/symphysis-brainstorm/SKILL.md",
+  "design.md": "design.md",
   "docs/GUIDE.md": "../../../docs/GUIDE.md",
   "docs/analysis/requirements-traceability-graph-of-symphysis.md": "../../../docs/analysis/requirements-traceability-graph-of-symphysis.md",
   "docs/analysis/stores-and-context-pack-2026-11-02.md": "../../../docs/analysis/stores-and-context-pack-2026-11-02.md",
@@ -4840,12 +4892,14 @@ const LINKS = {
   "openspec/changes/trace-modules/answers/2026-11-09.md": "answers/2026-11-09.md",
   "openspec/changes/trace-modules/consequences.md": "consequences.md",
   "openspec/changes/trace-modules/decisions.json": "decisions.json",
+  "openspec/changes/trace-modules/design.md": "design.md",
   "openspec/changes/trace-modules/intent.md": "intent.md",
   "openspec/changes/trace-modules/proposal.md": "proposal.md",
   "openspec/changes/trace-modules/research/F-26-probe/summary.txt": "research/F-26-probe/summary.txt",
   "openspec/changes/trace-modules/research/F-26.md": "research/F-26.md",
   "openspec/changes/trace-modules/research/F-27-probe/results.txt": "research/F-27-probe/results.txt",
   "openspec/changes/trace-modules/research/F-27.md": "research/F-27.md",
+  "openspec/changes/trace-modules/security.md": "security.md",
   "openspec/changes/trace-modules/specs/module-discovery/spec.md": "specs/module-discovery/spec.md",
   "openspec/changes/trace-modules/specs/repository-survey/spec.md": "specs/repository-survey/spec.md",
   "openspec/changes/trace-modules/specs/trace-conventions/spec.md": "specs/trace-conventions/spec.md",
@@ -4858,6 +4912,7 @@ const LINKS = {
   "proposal.md": "proposal.md",
   "roots/roots.py": "../../../roots/roots.py",
   "scheme.md": "scheme.md",
+  "security.md": "security.md",
   "settings/symphysis_config.py": "../../../settings/symphysis_config.py",
   "symphysis.html": "symphysis.html",
   "symphysis.yaml": "../../../symphysis.yaml",
