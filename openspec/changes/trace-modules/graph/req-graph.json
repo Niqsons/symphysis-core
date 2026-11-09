@@ -1,0 +1,5470 @@
+{
+ "format": 2,
+ "sources": [
+  {
+   "path": "consequences.md",
+   "sha256": "9e345c0fa1c49e47b05f4ba933978295ed4a8079d9d2ff1719ba6dd259a85e53"
+  },
+  {
+   "path": "decisions.json",
+   "sha256": "f657d064e1addb35df36e5432f0ffbcbce9ebf18015fe12f3797dbab38ae0f4d"
+  },
+  {
+   "path": "security.md",
+   "sha256": "0f1c8edf979c5047b8fd852e29545278fc80d2170ab236d4d28e31528cb6d980"
+  },
+  {
+   "path": "specs/module-discovery/spec.md",
+   "sha256": "34e1229dadb90c196e7223744cb70de4cff132c461563b309e3718882efd2ef2"
+  },
+  {
+   "path": "specs/repository-survey/spec.md",
+   "sha256": "cc001dbee1499006cfa82538b45b835e4f3ea1dc29fc0d934632f32ce233f708"
+  },
+  {
+   "path": "specs/trace-conventions/spec.md",
+   "sha256": "123c3782c57c5318439d6fa45bda73ca05d790c6cfe3e94c246814cd44f5a4b9"
+  },
+  {
+   "path": "specs/trace-diagram/spec.md",
+   "sha256": "73e4ba647afd2e39871d33e34f9f99d6e17c4cc6733f8d97e0a40c51465ac1ef"
+  },
+  {
+   "path": "specs/trace-graph/spec.md",
+   "sha256": "9fb921aee1b96d335f8965e18d1c3027dc41d59dc822d589c90fc6177f9226a2"
+  },
+  {
+   "path": "specs/trace-signals/spec.md",
+   "sha256": "8b328daaf2534fb0a3750f7d369d0e126dc55550546a69ed9904edaf01cf6bc1"
+  },
+  {
+   "path": "specs/trace-snapshot/spec.md",
+   "sha256": "cdf4bbb74206065d56bbe6fa65ebe0c97801aab8a57b5977f1bc15ee8a6f420f"
+  },
+  {
+   "path": "tasks.md",
+   "sha256": "6a1ac0aa9928c6a2c91bef90a44693058ad0b262696614cd5ca6146fe03faef7"
+  }
+ ],
+ "nodes": [
+  {
+   "id": "branch:roots/roots.py:113",
+   "kind": "branch",
+   "name": "Неизвестный псевдоним repo",
+   "at": "consequences.md:9"
+  },
+  {
+   "id": "branch:roots/roots.py:116",
+   "kind": "branch",
+   "name": "Выход за объявленный корень",
+   "at": "consequences.md:14"
+  },
+  {
+   "id": "branch:roots/roots.py:121",
+   "kind": "branch",
+   "name": "Junction ведёт вне корня",
+   "at": "consequences.md:19"
+  },
+  {
+   "id": "branch:roots/roots.py:186",
+   "kind": "branch",
+   "name": "Нечитаемый файл объявления",
+   "at": "consequences.md:24"
+  },
+  {
+   "id": "branch:trace/trace_graph.py:379",
+   "kind": "branch",
+   "name": "Кодировка объявления и общий отказ артефактов",
+   "at": "consequences.md:29"
+  },
+  {
+   "id": "branch:trace/trace_graph.py:398",
+   "kind": "branch",
+   "name": "Синтаксически негодный журнал",
+   "at": "consequences.md:34"
+  },
+  {
+   "id": "branch:trace/trace_graph.py:401",
+   "kind": "branch",
+   "name": "Негодная схема журнала",
+   "at": "consequences.md:39"
+  },
+  {
+   "id": "branch:trace/trace_graph.py:1066",
+   "kind": "branch",
+   "name": "Два поддерживаемых формата и один номер читателя",
+   "at": "consequences.md:44"
+  },
+  {
+   "id": "branch:trace/trace_graph.py:564",
+   "kind": "branch",
+   "name": "База старого поддерживаемого снимка",
+   "at": "consequences.md:49"
+  },
+  {
+   "id": "branch:trace/trace_graph.py:1079",
+   "kind": "branch",
+   "name": "Изменился известный структурный источник",
+   "at": "consequences.md:54"
+  },
+  {
+   "id": "branch:trace/trace_graph.py:1080",
+   "kind": "branch",
+   "name": "Добавлен README",
+   "at": "consequences.md:59"
+  },
+  {
+   "id": "branch:trace/trace_graph.py:1081",
+   "kind": "branch",
+   "name": "Удалён или перенесён README",
+   "at": "consequences.md:64"
+  },
+  {
+   "id": "branch:trace/trace_graph.py:1188",
+   "kind": "branch",
+   "name": "Неизвестный вид узла экспорта",
+   "at": "consequences.md:69"
+  },
+  {
+   "id": "branch:trace/trace_graph.py:1272",
+   "kind": "branch",
+   "name": "Неизвестный вид связи экспорта",
+   "at": "consequences.md:74"
+  },
+  {
+   "id": "branch:trace/trace_graph.py:1239",
+   "kind": "branch",
+   "name": "Фильтр молча пропускает новые структурные виды",
+   "at": "consequences.md:79"
+  },
+  {
+   "id": "branch:trace/trace_graph.py:1209",
+   "kind": "branch",
+   "name": "Неоднозначное имя требования для экспорта",
+   "at": "consequences.md:84"
+  },
+  {
+   "id": "branch:trace/trace_graph.py:1739",
+   "kind": "branch",
+   "name": "Нет Git или HEAD у repo",
+   "at": "consequences.md:89"
+  },
+  {
+   "id": "branch:trace/trace_graph.py:1750",
+   "kind": "branch",
+   "name": "Негодный явный файл карты",
+   "at": "consequences.md:94"
+  },
+  {
+   "id": "branch:trace/trace_graph.py:1803",
+   "kind": "branch",
+   "name": "Нет отчёта при существующем снимке",
+   "at": "consequences.md:99"
+  },
+  {
+   "id": "branch:trace/trace_graph.py:1833",
+   "kind": "branch",
+   "name": "README изменился между сборкой снимка и отчёта",
+   "at": "consequences.md:104"
+  },
+  {
+   "id": "rec:F-01",
+   "kind": "rec",
+   "name": "Критерий готовности: В req graph появляются узлы модулей, определяемые по объявлениям в README, с именем и родом. Граф различает одноимённые модули разных репозиториев.",
+   "at": "decisions.json:94",
+   "record_kind": "факт",
+   "number": 1
+  },
+  {
+   "id": "rec:F-02",
+   "kind": "rec",
+   "name": "Критерий готовности: Ось структуры отражает различие компонента, репозитория, модуля и файла, а также связи между ними. Файл принадлежит одному модулю; каталоги контура разработки не становятся модулями только из-за наличия каталога или README.",
+   "at": "decisions.json:121",
+   "record_kind": "факт",
+   "number": 2
+  },
+  {
+   "id": "rec:F-03",
+   "kind": "rec",
+   "name": "Критерий готовности: В графе представлены связи модулей с реализуемыми требованиями и зависимости между модулями. Происхождение связей прослеживается до файлов-источников; наличие улики или упоминания пути само по себе не выдаётся за доказательство реализации требования.",
+   "at": "decisions.json:148",
+   "record_kind": "факт",
+   "number": 3
+  },
+  {
+   "id": "rec:F-04",
+   "kind": "rec",
+   "name": "Критерий готовности: Сквозное требование может быть связано с несколькими модулями, в том числе из разных репозиториев и компонентов. Id требования не зависит от расположения модулей.",
+   "at": "decisions.json:175",
+   "record_kind": "факт",
+   "number": 4
+  },
+  {
+   "id": "rec:F-05",
+   "kind": "rec",
+   "name": "Критерий готовности: Поддержка модулей согласована с существующими сборкой, отчётом, проверкой, заморозкой графа и экспортом `requirementDiagram`. Граф остаётся производным от источников, без ручного наполнения JSON; проверки остаются сигналами.",
+   "at": "decisions.json:202",
+   "record_kind": "факт",
+   "number": 5
+  },
+  {
+   "id": "rec:F-06",
+   "kind": "rec",
+   "name": "Критерий готовности: На модулях самого symphysis выполнена и сохранена воспроизводимая проверка: построен граф с настоящими узлами модулей и связями с требованиями, проверены зависимости и случай одного требования в нескольких модулях. Подготовленная структура репозитория действительно используется графом.",
+   "at": "decisions.json:229",
+   "record_kind": "факт",
+   "number": 6
+  },
+  {
+   "id": "rec:F-07",
+   "kind": "rec",
+   "name": "Критерий готовности: Работа новой оси, источники связей, ограничения и влияние на порядок работы описаны в `docs/GUIDE.md`. Расхождения с указанным разбором явно зафиксированы решениями, а не остаются молчаливыми пропусками.",
+   "at": "decisions.json:256",
+   "record_kind": "факт",
+   "number": 7
+  },
+  {
+   "id": "rec:F-08",
+   "kind": "rec",
+   "name": "В разборе приняты определения компонента, репозитория и модуля; файлы модуля могут быть скриптами, JSON, markdown и шаблонами. Род модуля — доменный или технический.",
+   "at": "decisions.json:283",
+   "record_kind": "факт",
+   "number": 8
+  },
+  {
+   "id": "rec:F-09",
+   "kind": "rec",
+   "name": "Объявления модулей уже есть: README с name/kind; модуль схемы вложен в openspec, хотя сам openspec — контур разработки.",
+   "at": "decisions.json:324",
+   "record_kind": "факт",
+   "number": 9
+  },
+  {
+   "id": "rec:F-10",
+   "kind": "rec",
+   "name": "В текущем сборщике семь видов узлов артефактов; компоненты, репозитории, модули и файлы отдельными узлами не создаются.",
+   "at": "decisions.json:359",
+   "record_kind": "факт",
+   "number": 10
+  },
+  {
+   "id": "rec:F-11",
+   "kind": "rec",
+   "name": "Состав sources перечисляет файлы артефактов изменения; freeze отдельно сохраняет префиксы корней и коммиты. README модулей и объявления структуры не входят в этот перечень источников. Сейчас GRAPH_FORMAT равен 2; проверка формы отвергает несовпадающий номер.",
+   "at": "decisions.json:393",
+   "record_kind": "факт",
+   "number": 11
+  },
+  {
+   "id": "rec:F-12",
+   "kind": "rec",
+   "name": "code-sites берёт файлы улик выбранных вариантов, исключает markdown и не читает код. Его результат сам по себе не устанавливает, какие модули реализуют новое требование; markdown при этом может быть частью реализации модуля.",
+   "at": "decisions.json:437",
+   "record_kind": "факт",
+   "number": 12
+  },
+  {
+   "id": "rec:F-13",
+   "kind": "rec",
+   "name": "Инструменты ставятся плоско в .symphysis/tools, а существующий обход модулей находится в тестовом помощнике со специальным путём схемы symphysis. Перенос его правил в продукт без изменения привяжет граф к раскладке ядра.",
+   "at": "decisions.json:472",
+   "record_kind": "факт",
+   "number": 13
+  },
+  {
+   "id": "rec:F-14",
+   "kind": "rec",
+   "name": "В разборе имя модуля уникально внутри репозитория; идентичность требования не включает модуль. Один компонент может объединять несколько репозиториев.",
+   "at": "decisions.json:507",
+   "record_kind": "факт",
+   "number": 14
+  },
+  {
+   "id": "rec:F-15",
+   "kind": "rec",
+   "name": "В предыдущем разборе предусмотрен x-symphysis-components в .openspec.yaml изменения: компонент содержит записи repo и необязательный commit. Сам разбор графа отмечает, что это ещё не реализовано.",
+   "at": "decisions.json:543",
+   "record_kind": "факт",
+   "number": 15
+  },
+  {
+   "id": "rec:F-16",
+   "kind": "rec",
+   "name": "Какие модули входят в граф изменения?",
+   "at": "decisions.json:578",
+   "record_kind": "развилка",
+   "number": 16
+  },
+  {
+   "id": "rec:F-17",
+   "kind": "rec",
+   "name": "Где объявлять компоненты и репозитории и как отделить их имена от локальных путей?",
+   "at": "decisions.json:668",
+   "record_kind": "развилка",
+   "number": 17
+  },
+  {
+   "id": "rec:F-18",
+   "kind": "rec",
+   "name": "Как устанавливать границу модуля и принадлежность файла без правил, зашитых под symphysis?",
+   "at": "decisions.json:766",
+   "record_kind": "развилка",
+   "number": 18
+  },
+  {
+   "id": "rec:F-19",
+   "kind": "rec",
+   "name": "Как отличать связь «модуль реализует требование» от упоминания прежнего кода в улике?",
+   "at": "decisions.json:862",
+   "record_kind": "развилка",
+   "number": 19
+  },
+  {
+   "id": "rec:F-20",
+   "kind": "rec",
+   "name": "Откуда брать зависимости модулей, состоящих из кода, JSON, markdown и шаблонов?",
+   "at": "decisions.json:954",
+   "record_kind": "развилка",
+   "number": 20
+  },
+  {
+   "id": "rec:F-21",
+   "kind": "rec",
+   "name": "Что показывает граф, когда репозиторий недоступен, README некорректен или ссылка на модуль неоднозначна?",
+   "at": "decisions.json:1044",
+   "record_kind": "развилка",
+   "number": 21
+  },
+  {
+   "id": "rec:F-22",
+   "kind": "rec",
+   "name": "Как снимок сохраняет структурную ось после переезда или изменения модулей?",
+   "at": "decisions.json:1125",
+   "record_kind": "развилка",
+   "number": 22
+  },
+  {
+   "id": "rec:F-23",
+   "kind": "rec",
+   "name": "Как поступить с форматом графа и уже сохранёнными снимками без модулей?",
+   "at": "decisions.json:1215",
+   "record_kind": "развилка",
+   "number": 23
+  },
+  {
+   "id": "rec:F-24",
+   "kind": "rec",
+   "name": "Что должно появиться в requirementDiagram и существующих выборках графа?",
+   "at": "decisions.json:1313",
+   "record_kind": "развилка",
+   "number": 24
+  },
+  {
+   "id": "rec:F-25",
+   "kind": "rec",
+   "name": "Какая проверка доказывает, что цель достигнута на самом symphysis?",
+   "at": "decisions.json:1399",
+   "record_kind": "развилка",
+   "number": 25
+  },
+  {
+   "id": "rec:F-26",
+   "kind": "rec",
+   "name": "Как текущий форк хранит расширения metadata изменения и как продукт может разрешить объявленные репозитории и модули?",
+   "at": "decisions.json:1485",
+   "record_kind": "развилка",
+   "number": 26
+  },
+  {
+   "id": "rec:F-27",
+   "kind": "rec",
+   "name": "Исследование текущего графа: источники не включают README модулей, check/freeze не замечают их изменение и переезд; новый структурный kind не поддержан полным текстовым экспортом и отсекается фильтрами. Частичный путь настоящего требования через roots и viewer исполнен на временной фикстуре.",
+   "at": "decisions.json:1582",
+   "record_kind": "факт",
+   "number": 27
+  },
+  {
+   "id": "rec:F-28",
+   "kind": "rec",
+   "name": "Код cmd_render_html явно связывает модули: CLI получает карту через roots.file_links, передаёт её viewer.render_html, а шаблон страницы берёт адрес из LINKS.files. Это уточняет найденный F-27 пример требования о ссылках; полный новый прогон CLI и DOM этим чтением не подменяется.",
+   "at": "decisions.json:1665",
+   "record_kind": "факт",
+   "number": 28
+  },
+  {
+   "id": "rec:F-29",
+   "kind": "rec",
+   "name": "На каком шаге модель впервые выясняет, есть ли модули в репозиториях изменения, и когда возвращается к этому вопросу?",
+   "at": "decisions.json:1713",
+   "record_kind": "развилка",
+   "number": 29
+  },
+  {
+   "id": "rec:F-30",
+   "kind": "rec",
+   "name": "Что сохранять как результат анализа репозитория, чтобы «модулей нет» отличалось от «ещё не смотрели» и «нет доступа»?",
+   "at": "decisions.json:1812",
+   "record_kind": "развилка",
+   "number": 30
+  },
+  {
+   "id": "rec:F-31",
+   "kind": "rec",
+   "name": "Как связать переносимое имя repo из metadata с его локальным каталогом без ещё не реализованной настройки repos?",
+   "at": "decisions.json:1908",
+   "record_kind": "развилка",
+   "number": 31
+  },
+  {
+   "id": "rec:F-32",
+   "kind": "rec",
+   "name": "По какому набору файлов искать README модулей на любой глубине, включая репозиторий без Git?",
+   "at": "decisions.json:2007",
+   "record_kind": "развилка",
+   "number": 32
+  },
+  {
+   "id": "rec:F-33",
+   "kind": "rec",
+   "name": "Нужны ли в графе все файлы каждого обнаруженного модуля или только файлы, участвующие в трассировке?",
+   "at": "decisions.json:2099",
+   "record_kind": "развилка",
+   "number": 33
+  },
+  {
+   "id": "rec:F-34",
+   "kind": "rec",
+   "name": "Где автор явно объявляет связь требования с модулем или файлом реализации?",
+   "at": "decisions.json:2185",
+   "record_kind": "развилка",
+   "number": 34
+  },
+  {
+   "id": "rec:F-35",
+   "kind": "rec",
+   "name": "Где хранить явные зависимости модулей, чтобы соглашение работало для модулей любого рода?",
+   "at": "decisions.json:2281",
+   "record_kind": "развилка",
+   "number": 35
+  },
+  {
+   "id": "rec:F-36",
+   "kind": "rec",
+   "name": "Кто записывает x-symphysis-components с результатом анализа, учитывая, что writer форка предназначен для создания нового metadata?",
+   "at": "decisions.json:2366",
+   "record_kind": "развилка",
+   "number": 36
+  },
+  {
+   "id": "rec:F-37",
+   "kind": "rec",
+   "name": "Какие данные структурной оси сохранять в снимке помимо самих узлов и рёбер?",
+   "at": "decisions.json:2492",
+   "record_kind": "развилка",
+   "number": 37
+  },
+  {
+   "id": "rec:F-38",
+   "kind": "rec",
+   "name": "[concurrency · io] Модель изменяет только своё расширение metadata: после чтения metadata другой участник добавил repo в то же расширение; запись прежней копии может потерять его изменение",
+   "at": "decisions.json:2592",
+   "record_kind": "развилка",
+   "number": 38
+  },
+  {
+   "id": "rec:F-39",
+   "kind": "rec",
+   "name": "[empty · collection] Результат обследования различает четыре состояния: дерево доступно, но единственный явный README содержит kind: служебный; валидных модулей ноль, хотя отсутствие модулей не подтверждено",
+   "at": "decisions.json:2661",
+   "record_kind": "развилка",
+   "number": 39
+  },
+  {
+   "id": "rec:F-40",
+   "kind": "rec",
+   "name": "[encoding · text] README явно объявляет имя и род модуля: README начинается UTF-8 BOM перед --- и имеет CRLF; невидимый префикс может превратить корректное объявление в обычный README",
+   "at": "decisions.json:2732",
+   "record_kind": "развилка",
+   "number": 40
+  },
+  {
+   "id": "rec:F-41",
+   "kind": "rec",
+   "name": "[adjacency · collection] Зависимость читается из объявления README: два корректных модуля a и b явно объявляют зависимости a → b и b → a",
+   "at": "decisions.json:2803",
+   "record_kind": "развилка",
+   "number": 41
+  },
+  {
+   "id": "rec:F-42",
+   "kind": "rec",
+   "name": "[encoding · text] Структурные id различают репозиторий и модуль: пары repo=api/x,module=m и repo=api,module=x/m дают одинаковую склейку api/x/m",
+   "at": "decisions.json:2873",
+   "record_kind": "развилка",
+   "number": 42
+  },
+  {
+   "id": "rec:F-43",
+   "kind": "rec",
+   "name": "[adjacency · collection] Явная реализация и зависимости сохраняют происхождение: одно объявление связывает модуль a и его файл, но ближайшая граница этого файла объявляет модуль b",
+   "at": "decisions.json:2945",
+   "record_kind": "развилка",
+   "number": 43
+  },
+  {
+   "id": "rec:F-44",
+   "kind": "rec",
+   "name": "[concurrency · io] Снимок сохраняет нормализованную структуру и состояния: README меняется между извлечением name и вычислением хеша; снимок может сохранить имя старой версии с хешем новой",
+   "at": "decisions.json:3017",
+   "record_kind": "развилка",
+   "number": 44
+  },
+  {
+   "id": "rec:F-45",
+   "kind": "rec",
+   "name": "[запрет] Структурная ось содержит все объявленные модули состава: модуль без аннотации в этом change не должен выдаваться за глобально нереализованный или лишённый требований",
+   "at": "decisions.json:3087",
+   "record_kind": "развилка",
+   "number": 45
+  },
+  {
+   "id": "rec:F-46",
+   "kind": "rec",
+   "name": "[канон] Repo разрешается через явно названный корень: канон ИБ",
+   "at": "decisions.json:3164",
+   "record_kind": "факт",
+   "number": 46
+  },
+  {
+   "id": "rec:F-47",
+   "kind": "rec",
+   "name": "[канон] README явно объявляет имя и род модуля: канон ИБ",
+   "at": "decisions.json:3203",
+   "record_kind": "факт",
+   "number": 47
+  },
+  {
+   "id": "rec:F-48",
+   "kind": "rec",
+   "name": "[ветка] Псевдоним repo отсутствует в карте: разрешать ли его как путь под пустым префиксом?",
+   "at": "decisions.json:3243",
+   "record_kind": "развилка",
+   "number": 48
+  },
+  {
+   "id": "rec:F-49",
+   "kind": "rec",
+   "name": "[ветка] Чтение одного README вернуло VERDICT_UNREADABLE: как сохранить отличие от отсутствующего объявления?",
+   "at": "decisions.json:3321",
+   "record_kind": "развилка",
+   "number": 49
+  },
+  {
+   "id": "rec:F-50",
+   "kind": "rec",
+   "name": "[ветка] Общий UTF-8 reader отказывает всей сборке: что делать с одним README в CP1251 среди корректных объявлений?",
+   "at": "decisions.json:3397",
+   "record_kind": "развилка",
+   "number": 50
+  },
+  {
+   "id": "rec:F-51",
+   "kind": "rec",
+   "name": "[ветка] Freeze отдельно собирает граф и отчёт: что делать, если README изменился между двумя сборками?",
+   "at": "decisions.json:3479",
+   "record_kind": "развилка",
+   "number": 51
+  },
+  {
+   "id": "rec:F-52",
+   "kind": "rec",
+   "name": "[ветка] saved_base сравнивает format с единственной GRAPH_FORMAT: должна ли база поддерживаемого снимка 2 пережить выпуск формата 3?",
+   "at": "decisions.json:3560",
+   "record_kind": "развилка",
+   "number": 52
+  },
+  {
+   "id": "sec:Инъекции через содержимое файлов",
+   "kind": "sec",
+   "name": "Инъекции через содержимое файлов",
+   "at": "security.md:9"
+  },
+  {
+   "id": "sec:Пути с `../`",
+   "kind": "sec",
+   "name": "Пути с `../`",
+   "at": "security.md:10"
+  },
+  {
+   "id": "sec:Токены и срок их жизни",
+   "kind": "sec",
+   "name": "Токены и срок их жизни",
+   "at": "security.md:11"
+  },
+  {
+   "id": "sec:Права",
+   "kind": "sec",
+   "name": "Права",
+   "at": "security.md:12"
+  },
+  {
+   "id": "sec:Бинарные файлы",
+   "kind": "sec",
+   "name": "Бинарные файлы",
+   "at": "security.md:13"
+  },
+  {
+   "id": "sec:Чувствительные данные в журнале, артефактах и журналах прогона",
+   "kind": "sec",
+   "name": "Чувствительные данные в журнале, артефактах и журналах прогона",
+   "at": "security.md:14"
+  },
+  {
+   "id": "sec:Безопасная десериализация YAML",
+   "kind": "sec",
+   "name": "Безопасная десериализация YAML",
+   "at": "security.md:15"
+  },
+  {
+   "id": "sec:Symlink, junction и циклы каталогов",
+   "kind": "sec",
+   "name": "Symlink, junction и циклы каталогов",
+   "at": "security.md:16"
+  },
+  {
+   "id": "sec:Подмена локального источника псевдонимом",
+   "kind": "sec",
+   "name": "Подмена локального источника псевдонимом",
+   "at": "security.md:17"
+  },
+  {
+   "id": "sec:Новое хранилище персональных данных и сроки хранения",
+   "kind": "sec",
+   "name": "Новое хранилище персональных данных и сроки хранения",
+   "at": "security.md:18"
+  },
+  {
+   "id": "cap:module-discovery",
+   "kind": "cap",
+   "name": "module-discovery",
+   "at": "specs/module-discovery/spec.md:1"
+  },
+  {
+   "id": "req:module-discovery/README явно объявляет имя и род модуля",
+   "kind": "req",
+   "name": "README явно объявляет имя и род модуля",
+   "at": "specs/module-discovery/spec.md:9",
+   "section": "ADDED",
+   "capability": "module-discovery"
+  },
+  {
+   "id": "scn:module-discovery/README явно объявляет имя и род модуля/Имя не равно каталогу",
+   "kind": "scn",
+   "name": "Имя не равно каталогу",
+   "at": "specs/module-discovery/spec.md:12",
+   "capability": "module-discovery",
+   "requirement": "req:module-discovery/README явно объявляет имя и род модуля"
+  },
+  {
+   "id": "scn:module-discovery/README явно объявляет имя и род модуля/Обычное описание репозитория",
+   "kind": "scn",
+   "name": "Обычное описание репозитория",
+   "at": "specs/module-discovery/spec.md:17",
+   "capability": "module-discovery",
+   "requirement": "req:module-discovery/README явно объявляет имя и род модуля"
+  },
+  {
+   "id": "scn:module-discovery/README явно объявляет имя и род модуля/Негодный род",
+   "kind": "scn",
+   "name": "Негодный род",
+   "at": "specs/module-discovery/spec.md:22",
+   "capability": "module-discovery",
+   "requirement": "req:module-discovery/README явно объявляет имя и род модуля"
+  },
+  {
+   "id": "scn:module-discovery/README явно объявляет имя и род модуля/UTF-8 BOM и окончания строк не скрывают модуль",
+   "kind": "scn",
+   "name": "UTF-8 BOM и окончания строк не скрывают модуль",
+   "at": "specs/module-discovery/spec.md:27",
+   "capability": "module-discovery",
+   "requirement": "req:module-discovery/README явно объявляет имя и род модуля"
+  },
+  {
+   "id": "req:module-discovery/Объявления обрабатываются как недоверенные данные",
+   "kind": "req",
+   "name": "Объявления обрабатываются как недоверенные данные",
+   "at": "specs/module-discovery/spec.md:35",
+   "section": "ADDED",
+   "capability": "module-discovery"
+  },
+  {
+   "id": "scn:module-discovery/Объявления обрабатываются как недоверенные данные/Инструкция внутри README не расширяет полномочия",
+   "kind": "scn",
+   "name": "Инструкция внутри README не расширяет полномочия",
+   "at": "specs/module-discovery/spec.md:38",
+   "capability": "module-discovery",
+   "requirement": "req:module-discovery/Объявления обрабатываются как недоверенные данные"
+  },
+  {
+   "id": "scn:module-discovery/Объявления обрабатываются как недоверенные данные/YAML не конструирует исполняемый объект",
+   "kind": "scn",
+   "name": "YAML не конструирует исполняемый объект",
+   "at": "specs/module-discovery/spec.md:43",
+   "capability": "module-discovery",
+   "requirement": "req:module-discovery/Объявления обрабатываются как недоверенные данные"
+  },
+  {
+   "id": "scn:module-discovery/Объявления обрабатываются как недоверенные данные/Бинарный README не становится объявлением",
+   "kind": "scn",
+   "name": "Бинарный README не становится объявлением",
+   "at": "specs/module-discovery/spec.md:48",
+   "capability": "module-discovery",
+   "requirement": "req:module-discovery/Объявления обрабатываются как недоверенные данные"
+  },
+  {
+   "id": "req:module-discovery/Обход не зависит от первого уровня и Git",
+   "kind": "req",
+   "name": "Обход не зависит от первого уровня и Git",
+   "at": "specs/module-discovery/spec.md:55",
+   "section": "ADDED",
+   "capability": "module-discovery"
+  },
+  {
+   "id": "scn:module-discovery/Обход не зависит от первого уровня и Git/Корень и глубокий каталог без Git",
+   "kind": "scn",
+   "name": "Корень и глубокий каталог без Git",
+   "at": "specs/module-discovery/spec.md:58",
+   "capability": "module-discovery",
+   "requirement": "req:module-discovery/Обход не зависит от первого уровня и Git"
+  },
+  {
+   "id": "scn:module-discovery/Обход не зависит от первого уровня и Git/Служебный каталог исключён",
+   "kind": "scn",
+   "name": "Служебный каталог исключён",
+   "at": "specs/module-discovery/spec.md:63",
+   "capability": "module-discovery",
+   "requirement": "req:module-discovery/Обход не зависит от первого уровня и Git"
+  },
+  {
+   "id": "scn:module-discovery/Обход не зависит от первого уровня и Git/Игнорируемый Git файл",
+   "kind": "scn",
+   "name": "Игнорируемый Git файл",
+   "at": "specs/module-discovery/spec.md:68",
+   "capability": "module-discovery",
+   "requirement": "req:module-discovery/Обход не зависит от первого уровня и Git"
+  },
+  {
+   "id": "scn:module-discovery/Обход не зависит от первого уровня и Git/Ссылка не обходит служебное исключение",
+   "kind": "scn",
+   "name": "Ссылка не обходит служебное исключение",
+   "at": "specs/module-discovery/spec.md:73",
+   "capability": "module-discovery",
+   "requirement": "req:module-discovery/Обход не зависит от первого уровня и Git"
+  },
+  {
+   "id": "req:module-discovery/Файл относится к ближайшей объявленной границе",
+   "kind": "req",
+   "name": "Файл относится к ближайшей объявленной границе",
+   "at": "specs/module-discovery/spec.md:80",
+   "section": "ADDED",
+   "capability": "module-discovery"
+  },
+  {
+   "id": "scn:module-discovery/Файл относится к ближайшей объявленной границе/Вложенный модуль клиента",
+   "kind": "scn",
+   "name": "Вложенный модуль клиента",
+   "at": "specs/module-discovery/spec.md:83",
+   "capability": "module-discovery",
+   "requirement": "req:module-discovery/Файл относится к ближайшей объявленной границе"
+  },
+  {
+   "id": "scn:module-discovery/Файл относится к ближайшей объявленной границе/Файл вне границ",
+   "kind": "scn",
+   "name": "Файл вне границ",
+   "at": "specs/module-discovery/spec.md:88",
+   "capability": "module-discovery",
+   "requirement": "req:module-discovery/Файл относится к ближайшей объявленной границе"
+  },
+  {
+   "id": "req:module-discovery/Неоднозначное имя модуля не разрешается догадкой",
+   "kind": "req",
+   "name": "Неоднозначное имя модуля не разрешается догадкой",
+   "at": "specs/module-discovery/spec.md:95",
+   "section": "ADDED",
+   "capability": "module-discovery"
+  },
+  {
+   "id": "scn:module-discovery/Неоднозначное имя модуля не разрешается догадкой/Повтор внутри repo",
+   "kind": "scn",
+   "name": "Повтор внутри repo",
+   "at": "specs/module-discovery/spec.md:98",
+   "capability": "module-discovery",
+   "requirement": "req:module-discovery/Неоднозначное имя модуля не разрешается догадкой"
+  },
+  {
+   "id": "scn:module-discovery/Неоднозначное имя модуля не разрешается догадкой/Одно имя разных repo",
+   "kind": "scn",
+   "name": "Одно имя разных repo",
+   "at": "specs/module-discovery/spec.md:103",
+   "capability": "module-discovery",
+   "requirement": "req:module-discovery/Неоднозначное имя модуля не разрешается догадкой"
+  },
+  {
+   "id": "req:module-discovery/Зависимость читается из объявления README",
+   "kind": "req",
+   "name": "Зависимость читается из объявления README",
+   "at": "specs/module-discovery/spec.md:110",
+   "section": "ADDED",
+   "capability": "module-discovery"
+  },
+  {
+   "id": "scn:module-discovery/Зависимость читается из объявления README/Объявленная межрепозиторная зависимость",
+   "kind": "scn",
+   "name": "Объявленная межрепозиторная зависимость",
+   "at": "specs/module-discovery/spec.md:113",
+   "capability": "module-discovery",
+   "requirement": "req:module-discovery/Зависимость читается из объявления README"
+  },
+  {
+   "id": "scn:module-discovery/Зависимость читается из объявления README/Только упоминание в описании",
+   "kind": "scn",
+   "name": "Только упоминание в описании",
+   "at": "specs/module-discovery/spec.md:118",
+   "capability": "module-discovery",
+   "requirement": "req:module-discovery/Зависимость читается из объявления README"
+  },
+  {
+   "id": "scn:module-discovery/Зависимость читается из объявления README/Цель отсутствует",
+   "kind": "scn",
+   "name": "Цель отсутствует",
+   "at": "specs/module-discovery/spec.md:123",
+   "capability": "module-discovery",
+   "requirement": "req:module-discovery/Зависимость читается из объявления README"
+  },
+  {
+   "id": "scn:module-discovery/Зависимость читается из объявления README/Цикл объявленных зависимостей сохраняется",
+   "kind": "scn",
+   "name": "Цикл объявленных зависимостей сохраняется",
+   "at": "specs/module-discovery/spec.md:128",
+   "capability": "module-discovery",
+   "requirement": "req:module-discovery/Зависимость читается из объявления README"
+  },
+  {
+   "id": "req:module-discovery/Сторонние README остаются входными данными",
+   "kind": "req",
+   "name": "Сторонние README остаются входными данными",
+   "at": "specs/module-discovery/spec.md:136",
+   "section": "ADDED",
+   "capability": "module-discovery"
+  },
+  {
+   "id": "scn:module-discovery/Сторонние README остаются входными данными/Нет нужного объявления у клиента",
+   "kind": "scn",
+   "name": "Нет нужного объявления у клиента",
+   "at": "specs/module-discovery/spec.md:139",
+   "capability": "module-discovery",
+   "requirement": "req:module-discovery/Сторонние README остаются входными данными"
+  },
+  {
+   "id": "scn:module-discovery/Сторонние README остаются входными данными/Соглашение доступно владельцу",
+   "kind": "scn",
+   "name": "Соглашение доступно владельцу",
+   "at": "specs/module-discovery/spec.md:144",
+   "capability": "module-discovery",
+   "requirement": "req:module-discovery/Сторонние README остаются входными данными"
+  },
+  {
+   "id": "req:module-discovery/Ошибка источника не стирает доступную структуру",
+   "kind": "req",
+   "name": "Ошибка источника не стирает доступную структуру",
+   "at": "specs/module-discovery/spec.md:151",
+   "section": "ADDED",
+   "capability": "module-discovery"
+  },
+  {
+   "id": "scn:module-discovery/Ошибка источника не стирает доступную структуру/Один недоступный сосед",
+   "kind": "scn",
+   "name": "Один недоступный сосед",
+   "at": "specs/module-discovery/spec.md:154",
+   "capability": "module-discovery",
+   "requirement": "req:module-discovery/Ошибка источника не стирает доступную структуру"
+  },
+  {
+   "id": "scn:module-discovery/Ошибка источника не стирает доступную структуру/Нечитаемый README не скрывает соседний модуль",
+   "kind": "scn",
+   "name": "Нечитаемый README не скрывает соседний модуль",
+   "at": "specs/module-discovery/spec.md:159",
+   "capability": "module-discovery",
+   "requirement": "req:module-discovery/Ошибка источника не стирает доступную структуру"
+  },
+  {
+   "id": "scn:module-discovery/Ошибка источника не стирает доступную структуру/Негодная кодировка README не обрывает доступный граф",
+   "kind": "scn",
+   "name": "Негодная кодировка README не обрывает доступный граф",
+   "at": "specs/module-discovery/spec.md:165",
+   "capability": "module-discovery",
+   "requirement": "req:module-discovery/Ошибка источника не стирает доступную структуру"
+  },
+  {
+   "id": "cap:repository-survey",
+   "kind": "cap",
+   "name": "repository-survey",
+   "at": "specs/repository-survey/spec.md:1"
+  },
+  {
+   "id": "req:repository-survey/Обследование репозиториев начинается в decisions",
+   "kind": "req",
+   "name": "Обследование репозиториев начинается в decisions",
+   "at": "specs/repository-survey/spec.md:9",
+   "section": "ADDED",
+   "capability": "repository-survey"
+  },
+  {
+   "id": "scn:repository-survey/Обследование репозиториев начинается в decisions/Первое обследование по intent",
+   "kind": "scn",
+   "name": "Первое обследование по intent",
+   "at": "specs/repository-survey/spec.md:12",
+   "capability": "repository-survey",
+   "requirement": "req:repository-survey/Обследование репозиториев начинается в decisions"
+  },
+  {
+   "id": "scn:repository-survey/Обследование репозиториев начинается в decisions/Репозиторий найден исследованием",
+   "kind": "scn",
+   "name": "Репозиторий найден исследованием",
+   "at": "specs/repository-survey/spec.md:17",
+   "capability": "repository-survey",
+   "requirement": "req:repository-survey/Обследование репозиториев начинается в decisions"
+  },
+  {
+   "id": "req:repository-survey/Состав компонентов и репозиториев хранится переносимо",
+   "kind": "req",
+   "name": "Состав компонентов и репозиториев хранится переносимо",
+   "at": "specs/repository-survey/spec.md:24",
+   "section": "ADDED",
+   "capability": "repository-survey"
+  },
+  {
+   "id": "scn:repository-survey/Состав компонентов и репозиториев хранится переносимо/Два репозитория одного компонента",
+   "kind": "scn",
+   "name": "Два репозитория одного компонента",
+   "at": "specs/repository-survey/spec.md:27",
+   "capability": "repository-survey",
+   "requirement": "req:repository-survey/Состав компонентов и репозиториев хранится переносимо"
+  },
+  {
+   "id": "scn:repository-survey/Состав компонентов и репозиториев хранится переносимо/Коммит не подменяет рабочие файлы",
+   "kind": "scn",
+   "name": "Коммит не подменяет рабочие файлы",
+   "at": "specs/repository-survey/spec.md:32",
+   "capability": "repository-survey",
+   "requirement": "req:repository-survey/Состав компонентов и репозиториев хранится переносимо"
+  },
+  {
+   "id": "req:repository-survey/Результат обследования различает четыре состояния",
+   "kind": "req",
+   "name": "Результат обследования различает четыре состояния",
+   "at": "specs/repository-survey/spec.md:39",
+   "section": "ADDED",
+   "capability": "repository-survey"
+  },
+  {
+   "id": "scn:repository-survey/Результат обследования различает четыре состояния/Обследованный репозиторий без модулей",
+   "kind": "scn",
+   "name": "Обследованный репозиторий без модулей",
+   "at": "specs/repository-survey/spec.md:42",
+   "capability": "repository-survey",
+   "requirement": "req:repository-survey/Результат обследования различает четыре состояния"
+  },
+  {
+   "id": "scn:repository-survey/Результат обследования различает четыре состояния/Клон недоступен",
+   "kind": "scn",
+   "name": "Клон недоступен",
+   "at": "specs/repository-survey/spec.md:47",
+   "capability": "repository-survey",
+   "requirement": "req:repository-survey/Результат обследования различает четыре состояния"
+  },
+  {
+   "id": "scn:repository-survey/Результат обследования различает четыре состояния/Обследование ещё не записано",
+   "kind": "scn",
+   "name": "Обследование ещё не записано",
+   "at": "specs/repository-survey/spec.md:52",
+   "capability": "repository-survey",
+   "requirement": "req:repository-survey/Результат обследования различает четыре состояния"
+  },
+  {
+   "id": "scn:repository-survey/Результат обследования различает четыре состояния/Одно негодное объявление не доказывает отсутствие модулей",
+   "kind": "scn",
+   "name": "Одно негодное объявление не доказывает отсутствие модулей",
+   "at": "specs/repository-survey/spec.md:57",
+   "capability": "repository-survey",
+   "requirement": "req:repository-survey/Результат обследования различает четыре состояния"
+  },
+  {
+   "id": "req:repository-survey/Repo разрешается через явно названный корень",
+   "kind": "req",
+   "name": "Repo разрешается через явно названный корень",
+   "at": "specs/repository-survey/spec.md:65",
+   "section": "ADDED",
+   "capability": "repository-survey"
+  },
+  {
+   "id": "scn:repository-survey/Repo разрешается через явно названный корень/Текущий и внешний репозитории",
+   "kind": "scn",
+   "name": "Текущий и внешний репозитории",
+   "at": "specs/repository-survey/spec.md:68",
+   "capability": "repository-survey",
+   "requirement": "req:repository-survey/Repo разрешается через явно названный корень"
+  },
+  {
+   "id": "scn:repository-survey/Repo разрешается через явно названный корень/Посторонний префикс улик",
+   "kind": "scn",
+   "name": "Посторонний префикс улик",
+   "at": "specs/repository-survey/spec.md:73",
+   "capability": "repository-survey",
+   "requirement": "req:repository-survey/Repo разрешается через явно названный корень"
+  },
+  {
+   "id": "scn:repository-survey/Repo разрешается через явно названный корень/Неизвестный псевдоним не подменяется пустым префиксом",
+   "kind": "scn",
+   "name": "Неизвестный псевдоним не подменяется пустым префиксом",
+   "at": "specs/repository-survey/spec.md:78",
+   "capability": "repository-survey",
+   "requirement": "req:repository-survey/Repo разрешается через явно названный корень"
+  },
+  {
+   "id": "req:repository-survey/Структурные источники остаются внутри разрешённого корня",
+   "kind": "req",
+   "name": "Структурные источники остаются внутри разрешённого корня",
+   "at": "specs/repository-survey/spec.md:86",
+   "section": "ADDED",
+   "capability": "repository-survey"
+  },
+  {
+   "id": "scn:repository-survey/Структурные источники остаются внутри разрешённого корня/Обход границы через путь или ссылку",
+   "kind": "scn",
+   "name": "Обход границы через путь или ссылку",
+   "at": "specs/repository-survey/spec.md:89",
+   "capability": "repository-survey",
+   "requirement": "req:repository-survey/Структурные источники остаются внутри разрешённого корня"
+  },
+  {
+   "id": "scn:repository-survey/Структурные источники остаются внутри разрешённого корня/Цикл каталогов через ссылку",
+   "kind": "scn",
+   "name": "Цикл каталогов через ссылку",
+   "at": "specs/repository-survey/spec.md:94",
+   "capability": "repository-survey",
+   "requirement": "req:repository-survey/Структурные источники остаются внутри разрешённого корня"
+  },
+  {
+   "id": "req:repository-survey/Модель изменяет только своё расширение metadata",
+   "kind": "req",
+   "name": "Модель изменяет только своё расширение metadata",
+   "at": "specs/repository-survey/spec.md:101",
+   "section": "ADDED",
+   "capability": "repository-survey"
+  },
+  {
+   "id": "scn:repository-survey/Модель изменяет только своё расширение metadata/Сохранение посторонних данных",
+   "kind": "scn",
+   "name": "Сохранение посторонних данных",
+   "at": "specs/repository-survey/spec.md:104",
+   "capability": "repository-survey",
+   "requirement": "req:repository-survey/Модель изменяет только своё расширение metadata"
+  },
+  {
+   "id": "scn:repository-survey/Модель изменяет только своё расширение metadata/Состав metadata изменился после чтения",
+   "kind": "scn",
+   "name": "Состав metadata изменился после чтения",
+   "at": "specs/repository-survey/spec.md:109",
+   "capability": "repository-survey",
+   "requirement": "req:repository-survey/Модель изменяет только своё расширение metadata"
+  },
+  {
+   "id": "req:repository-survey/Новое чтение не заменяется прежним результатом обследования",
+   "kind": "req",
+   "name": "Новое чтение не заменяется прежним результатом обследования",
+   "at": "specs/repository-survey/spec.md:117",
+   "section": "ADDED",
+   "capability": "repository-survey"
+  },
+  {
+   "id": "scn:repository-survey/Новое чтение не заменяется прежним результатом обследования/Модуль появился после обследования",
+   "kind": "scn",
+   "name": "Модуль появился после обследования",
+   "at": "specs/repository-survey/spec.md:120",
+   "capability": "repository-survey",
+   "requirement": "req:repository-survey/Новое чтение не заменяется прежним результатом обследования"
+  },
+  {
+   "id": "scn:repository-survey/Новое чтение не заменяется прежним результатом обследования/Повтор без изменений",
+   "kind": "scn",
+   "name": "Повтор без изменений",
+   "at": "specs/repository-survey/spec.md:125",
+   "capability": "repository-survey",
+   "requirement": "req:repository-survey/Новое чтение не заменяется прежним результатом обследования"
+  },
+  {
+   "id": "cap:trace-conventions",
+   "kind": "cap",
+   "name": "trace-conventions",
+   "at": "specs/trace-conventions/spec.md:1"
+  },
+  {
+   "id": "req:trace-conventions/Требование явно объявляет модули и файлы реализации",
+   "kind": "req",
+   "name": "Требование явно объявляет модули и файлы реализации",
+   "at": "specs/trace-conventions/spec.md:5",
+   "section": "ADDED",
+   "capability": "trace-conventions"
+  },
+  {
+   "id": "scn:trace-conventions/Требование явно объявляет модули и файлы реализации/Два модуля в одном блоке",
+   "kind": "scn",
+   "name": "Два модуля в одном блоке",
+   "at": "specs/trace-conventions/spec.md:8",
+   "capability": "trace-conventions",
+   "requirement": "req:trace-conventions/Требование явно объявляет модули и файлы реализации"
+  },
+  {
+   "id": "scn:trace-conventions/Требование явно объявляет модули и файлы реализации/Без аннотации",
+   "kind": "scn",
+   "name": "Без аннотации",
+   "at": "specs/trace-conventions/spec.md:13",
+   "capability": "trace-conventions",
+   "requirement": "req:trace-conventions/Требование явно объявляет модули и файлы реализации"
+  },
+  {
+   "id": "req:trace-conventions/Синхронизация сохраняет аннотацию реализации при требовании",
+   "kind": "req",
+   "name": "Синхронизация сохраняет аннотацию реализации при требовании",
+   "at": "specs/trace-conventions/spec.md:20",
+   "section": "ADDED",
+   "capability": "trace-conventions"
+  },
+  {
+   "id": "scn:trace-conventions/Синхронизация сохраняет аннотацию реализации при требовании/Аннотация рядом со следами проб",
+   "kind": "scn",
+   "name": "Аннотация рядом со следами проб",
+   "at": "specs/trace-conventions/spec.md:23",
+   "capability": "trace-conventions",
+   "requirement": "req:trace-conventions/Синхронизация сохраняет аннотацию реализации при требовании"
+  },
+  {
+   "id": "cap:trace-diagram",
+   "kind": "cap",
+   "name": "trace-diagram",
+   "at": "specs/trace-diagram/spec.md:1"
+  },
+  {
+   "id": "req:trace-diagram/Конфиг экспорта знает структурные виды",
+   "kind": "req",
+   "name": "Конфиг экспорта знает структурные виды",
+   "at": "specs/trace-diagram/spec.md:5",
+   "section": "ADDED",
+   "capability": "trace-diagram"
+  },
+  {
+   "id": "scn:trace-diagram/Конфиг экспорта знает структурные виды/Новые виды допустимы",
+   "kind": "scn",
+   "name": "Новые виды допустимы",
+   "at": "specs/trace-diagram/spec.md:8",
+   "capability": "trace-diagram",
+   "requirement": "req:trace-diagram/Конфиг экспорта знает структурные виды"
+  },
+  {
+   "id": "req:trace-diagram/Скрипт выдаёт текст диаграммы по выбору",
+   "kind": "req",
+   "name": "Скрипт выдаёт текст диаграммы по выбору",
+   "at": "specs/trace-diagram/spec.md:17",
+   "section": "MODIFIED",
+   "capability": "trace-diagram"
+  },
+  {
+   "id": "scn:trace-diagram/Скрипт выдаёт текст диаграммы по выбору/Выбрана capability",
+   "kind": "scn",
+   "name": "Выбрана capability",
+   "at": "specs/trace-diagram/spec.md:20",
+   "capability": "trace-diagram",
+   "requirement": "req:trace-diagram/Скрипт выдаёт текст диаграммы по выбору"
+  },
+  {
+   "id": "scn:trace-diagram/Скрипт выдаёт текст диаграммы по выбору/Выбрано требование",
+   "kind": "scn",
+   "name": "Выбрано требование",
+   "at": "specs/trace-diagram/spec.md:25",
+   "capability": "trace-diagram",
+   "requirement": "req:trace-diagram/Скрипт выдаёт текст диаграммы по выбору"
+  },
+  {
+   "id": "scn:trace-diagram/Скрипт выдаёт текст диаграммы по выбору/Одно имя в двух capability",
+   "kind": "scn",
+   "name": "Одно имя в двух capability",
+   "at": "specs/trace-diagram/spec.md:30",
+   "capability": "trace-diagram",
+   "requirement": "req:trace-diagram/Скрипт выдаёт текст диаграммы по выбору"
+  },
+  {
+   "id": "scn:trace-diagram/Скрипт выдаёт текст диаграммы по выбору/Требование с реализацией",
+   "kind": "scn",
+   "name": "Требование с реализацией",
+   "at": "specs/trace-diagram/spec.md:36",
+   "capability": "trace-diagram",
+   "requirement": "req:trace-diagram/Скрипт выдаёт текст диаграммы по выбору"
+  },
+  {
+   "id": "cap:trace-graph",
+   "kind": "cap",
+   "name": "trace-graph",
+   "at": "specs/trace-graph/spec.md:1"
+  },
+  {
+   "id": "req:trace-graph/Структурная ось содержит все объявленные модули состава",
+   "kind": "req",
+   "name": "Структурная ось содержит все объявленные модули состава",
+   "at": "specs/trace-graph/spec.md:5",
+   "section": "ADDED",
+   "capability": "trace-graph"
+  },
+  {
+   "id": "scn:trace-graph/Структурная ось содержит все объявленные модули состава/Модуль без аннотации реализации",
+   "kind": "scn",
+   "name": "Модуль без аннотации реализации",
+   "at": "specs/trace-graph/spec.md:8",
+   "capability": "trace-graph",
+   "requirement": "req:trace-graph/Структурная ось содержит все объявленные модули состава"
+  },
+  {
+   "id": "scn:trace-graph/Структурная ось содержит все объявленные модули состава/Два repo одного компонента",
+   "kind": "scn",
+   "name": "Два repo одного компонента",
+   "at": "specs/trace-graph/spec.md:13",
+   "capability": "trace-graph",
+   "requirement": "req:trace-graph/Структурная ось содержит все объявленные модули состава"
+  },
+  {
+   "id": "req:trace-graph/Структурные id различают репозиторий и модуль",
+   "kind": "req",
+   "name": "Структурные id различают репозиторий и модуль",
+   "at": "specs/trace-graph/spec.md:20",
+   "section": "ADDED",
+   "capability": "trace-graph"
+  },
+  {
+   "id": "scn:trace-graph/Структурные id различают репозиторий и модуль/Одно имя модулей",
+   "kind": "scn",
+   "name": "Одно имя модулей",
+   "at": "specs/trace-graph/spec.md:23",
+   "capability": "trace-graph",
+   "requirement": "req:trace-graph/Структурные id различают репозиторий и модуль"
+  },
+  {
+   "id": "scn:trace-graph/Структурные id различают репозиторий и модуль/Другой каталог клона",
+   "kind": "scn",
+   "name": "Другой каталог клона",
+   "at": "specs/trace-graph/spec.md:28",
+   "capability": "trace-graph",
+   "requirement": "req:trace-graph/Структурные id различают репозиторий и модуль"
+  },
+  {
+   "id": "scn:trace-graph/Структурные id различают репозиторий и модуль/Разделитель в частях имени не создаёт коллизию id",
+   "kind": "scn",
+   "name": "Разделитель в частях имени не создаёт коллизию id",
+   "at": "specs/trace-graph/spec.md:33",
+   "capability": "trace-graph",
+   "requirement": "req:trace-graph/Структурные id различают репозиторий и модуль"
+  },
+  {
+   "id": "req:trace-graph/Явная реализация и зависимости сохраняют происхождение",
+   "kind": "req",
+   "name": "Явная реализация и зависимости сохраняют происхождение",
+   "at": "specs/trace-graph/spec.md:41",
+   "section": "ADDED",
+   "capability": "trace-graph"
+  },
+  {
+   "id": "scn:trace-graph/Явная реализация и зависимости сохраняют происхождение/Сквозная реализация",
+   "kind": "scn",
+   "name": "Сквозная реализация",
+   "at": "specs/trace-graph/spec.md:44",
+   "capability": "trace-graph",
+   "requirement": "req:trace-graph/Явная реализация и зависимости сохраняют происхождение"
+  },
+  {
+   "id": "scn:trace-graph/Явная реализация и зависимости сохраняют происхождение/Улика о старом коде",
+   "kind": "scn",
+   "name": "Улика о старом коде",
+   "at": "specs/trace-graph/spec.md:49",
+   "capability": "trace-graph",
+   "requirement": "req:trace-graph/Явная реализация и зависимости сохраняют происхождение"
+  },
+  {
+   "id": "scn:trace-graph/Явная реализация и зависимости сохраняют происхождение/Зависимость не означает реализацию",
+   "kind": "scn",
+   "name": "Зависимость не означает реализацию",
+   "at": "specs/trace-graph/spec.md:54",
+   "capability": "trace-graph",
+   "requirement": "req:trace-graph/Явная реализация и зависимости сохраняют происхождение"
+  },
+  {
+   "id": "scn:trace-graph/Явная реализация и зависимости сохраняют происхождение/Модуль и приписанный ему файл противоречат друг другу",
+   "kind": "scn",
+   "name": "Модуль и приписанный ему файл противоречат друг другу",
+   "at": "specs/trace-graph/spec.md:59",
+   "capability": "trace-graph",
+   "requirement": "req:trace-graph/Явная реализация и зависимости сохраняют происхождение"
+  },
+  {
+   "id": "req:trace-graph/Файловые узлы ограничены используемой трассировкой",
+   "kind": "req",
+   "name": "Файловые узлы ограничены используемой трассировкой",
+   "at": "specs/trace-graph/spec.md:67",
+   "section": "ADDED",
+   "capability": "trace-graph"
+  },
+  {
+   "id": "scn:trace-graph/Файловые узлы ограничены используемой трассировкой/Неназванный исходник",
+   "kind": "scn",
+   "name": "Неназванный исходник",
+   "at": "specs/trace-graph/spec.md:70",
+   "capability": "trace-graph",
+   "requirement": "req:trace-graph/Файловые узлы ограничены используемой трассировкой"
+  },
+  {
+   "id": "req:trace-graph/Модуль без локальной связи не получает глобальную оценку покрытия",
+   "kind": "req",
+   "name": "Модуль без локальной связи не получает глобальную оценку покрытия",
+   "at": "specs/trace-graph/spec.md:77",
+   "section": "ADDED",
+   "capability": "trace-graph"
+  },
+  {
+   "id": "scn:trace-graph/Модуль без локальной связи не получает глобальную оценку покрытия/Независимый модуль не объявлен нереализованным",
+   "kind": "scn",
+   "name": "Независимый модуль не объявлен нереализованным",
+   "at": "specs/trace-graph/spec.md:80",
+   "capability": "trace-graph",
+   "requirement": "req:trace-graph/Модуль без локальной связи не получает глобальную оценку покрытия"
+  },
+  {
+   "id": "req:trace-graph/Граф собирается из файлов изменения",
+   "kind": "req",
+   "name": "Граф собирается из файлов изменения",
+   "at": "specs/trace-graph/spec.md:90",
+   "section": "MODIFIED",
+   "capability": "trace-graph"
+  },
+  {
+   "id": "scn:trace-graph/Граф собирается из файлов изменения/Только что созданное изменение",
+   "kind": "scn",
+   "name": "Только что созданное изменение",
+   "at": "specs/trace-graph/spec.md:93",
+   "capability": "trace-graph",
+   "requirement": "req:trace-graph/Граф собирается из файлов изменения"
+  },
+  {
+   "id": "scn:trace-graph/Граф собирается из файлов изменения/Граф растёт вместе с артефактами",
+   "kind": "scn",
+   "name": "Граф растёт вместе с артефактами",
+   "at": "specs/trace-graph/spec.md:98",
+   "capability": "trace-graph",
+   "requirement": "req:trace-graph/Граф собирается из файлов изменения"
+  },
+  {
+   "id": "scn:trace-graph/Граф собирается из файлов изменения/Связь правится через файл",
+   "kind": "scn",
+   "name": "Связь правится через файл",
+   "at": "specs/trace-graph/spec.md:103",
+   "capability": "trace-graph",
+   "requirement": "req:trace-graph/Граф собирается из файлов изменения"
+  },
+  {
+   "id": "scn:trace-graph/Граф собирается из файлов изменения/Журнал не разбирается",
+   "kind": "scn",
+   "name": "Журнал не разбирается",
+   "at": "specs/trace-graph/spec.md:108",
+   "capability": "trace-graph",
+   "requirement": "req:trace-graph/Граф собирается из файлов изменения"
+  },
+  {
+   "id": "scn:trace-graph/Граф собирается из файлов изменения/Журнал негоден по схеме",
+   "kind": "scn",
+   "name": "Журнал негоден по схеме",
+   "at": "specs/trace-graph/spec.md:114",
+   "capability": "trace-graph",
+   "requirement": "req:trace-graph/Граф собирается из файлов изменения"
+  },
+  {
+   "id": "scn:trace-graph/Граф собирается из файлов изменения/Внешний README изменился",
+   "kind": "scn",
+   "name": "Внешний README изменился",
+   "at": "specs/trace-graph/spec.md:120",
+   "capability": "trace-graph",
+   "requirement": "req:trace-graph/Граф собирается из файлов изменения"
+  },
+  {
+   "id": "req:trace-graph/Id читаемы, файл несёт версию формата",
+   "kind": "req",
+   "name": "Id читаемы, файл несёт версию формата",
+   "at": "specs/trace-graph/spec.md:127",
+   "section": "MODIFIED",
+   "capability": "trace-graph"
+  },
+  {
+   "id": "scn:trace-graph/Id читаемы, файл несёт версию формата/Одно имя в двух capability",
+   "kind": "scn",
+   "name": "Одно имя в двух capability",
+   "at": "specs/trace-graph/spec.md:130",
+   "capability": "trace-graph",
+   "requirement": "req:trace-graph/Id читаемы, файл несёт версию формата"
+  },
+  {
+   "id": "scn:trace-graph/Id читаемы, файл несёт версию формата/Переименование меняет id",
+   "kind": "scn",
+   "name": "Переименование меняет id",
+   "at": "specs/trace-graph/spec.md:135",
+   "capability": "trace-graph",
+   "requirement": "req:trace-graph/Id читаемы, файл несёт версию формата"
+  },
+  {
+   "id": "scn:trace-graph/Id читаемы, файл несёт версию формата/Две ветки одного механизма",
+   "kind": "scn",
+   "name": "Две ветки одного механизма",
+   "at": "specs/trace-graph/spec.md:140",
+   "capability": "trace-graph",
+   "requirement": "req:trace-graph/Id читаемы, файл несёт версию формата"
+  },
+  {
+   "id": "scn:trace-graph/Id читаемы, файл несёт версию формата/Снимок прежнего формата",
+   "kind": "scn",
+   "name": "Снимок прежнего формата",
+   "at": "specs/trace-graph/spec.md:145",
+   "capability": "trace-graph",
+   "requirement": "req:trace-graph/Id читаемы, файл несёт версию формата"
+  },
+  {
+   "id": "scn:trace-graph/Id читаемы, файл несёт версию формата/Прежний поддерживаемый файл",
+   "kind": "scn",
+   "name": "Прежний поддерживаемый файл",
+   "at": "specs/trace-graph/spec.md:150",
+   "capability": "trace-graph",
+   "requirement": "req:trace-graph/Id читаемы, файл несёт версию формата"
+  },
+  {
+   "id": "scn:trace-graph/Id читаемы, файл несёт версию формата/Перенос модуля не меняет требование",
+   "kind": "scn",
+   "name": "Перенос модуля не меняет требование",
+   "at": "specs/trace-graph/spec.md:155",
+   "capability": "trace-graph",
+   "requirement": "req:trace-graph/Id читаемы, файл несёт версию формата"
+  },
+  {
+   "id": "cap:trace-signals",
+   "kind": "cap",
+   "name": "trace-signals",
+   "at": "specs/trace-signals/spec.md:1"
+  },
+  {
+   "id": "req:trace-signals/Отчёт различает отсутствие и неполноту структурных данных",
+   "kind": "req",
+   "name": "Отчёт различает отсутствие и неполноту структурных данных",
+   "at": "specs/trace-signals/spec.md:5",
+   "section": "ADDED",
+   "capability": "trace-signals"
+  },
+  {
+   "id": "scn:trace-signals/Отчёт различает отсутствие и неполноту структурных данных/Разные причины отсутствия узлов",
+   "kind": "scn",
+   "name": "Разные причины отсутствия узлов",
+   "at": "specs/trace-signals/spec.md:8",
+   "capability": "trace-signals",
+   "requirement": "req:trace-signals/Отчёт различает отсутствие и неполноту структурных данных"
+  },
+  {
+   "id": "scn:trace-signals/Отчёт различает отсутствие и неполноту структурных данных/Опечатка имени",
+   "kind": "scn",
+   "name": "Опечатка имени",
+   "at": "specs/trace-signals/spec.md:13",
+   "capability": "trace-signals",
+   "requirement": "req:trace-signals/Отчёт различает отсутствие и неполноту структурных данных"
+  },
+  {
+   "id": "req:trace-signals/Структурные сигналы используют существующие группы",
+   "kind": "req",
+   "name": "Структурные сигналы используют существующие группы",
+   "at": "specs/trace-signals/spec.md:20",
+   "section": "ADDED",
+   "capability": "trace-signals"
+  },
+  {
+   "id": "scn:trace-signals/Структурные сигналы используют существующие группы/Ссылка и недоступный источник",
+   "kind": "scn",
+   "name": "Ссылка и недоступный источник",
+   "at": "specs/trace-signals/spec.md:23",
+   "capability": "trace-signals",
+   "requirement": "req:trace-signals/Структурные сигналы используют существующие группы"
+  },
+  {
+   "id": "req:trace-signals/Отчёт называет закрытый состав сигналов",
+   "kind": "req",
+   "name": "Отчёт называет закрытый состав сигналов",
+   "at": "specs/trace-signals/spec.md:32",
+   "section": "MODIFIED",
+   "capability": "trace-signals"
+  },
+  {
+   "id": "scn:trace-signals/Отчёт называет закрытый состав сигналов/Критерий без требования",
+   "kind": "scn",
+   "name": "Критерий без требования",
+   "at": "specs/trace-signals/spec.md:35",
+   "capability": "trace-signals",
+   "requirement": "req:trace-signals/Отчёт называет закрытый состав сигналов"
+  },
+  {
+   "id": "scn:trace-signals/Отчёт называет закрытый состав сигналов/Решение об объёме",
+   "kind": "scn",
+   "name": "Решение об объёме",
+   "at": "specs/trace-signals/spec.md:40",
+   "capability": "trace-signals",
+   "requirement": "req:trace-signals/Отчёт называет закрытый состав сигналов"
+  },
+  {
+   "id": "scn:trace-signals/Отчёт называет закрытый состав сигналов/Одно имя у двух требований capability",
+   "kind": "scn",
+   "name": "Одно имя у двух требований capability",
+   "at": "specs/trace-signals/spec.md:45",
+   "capability": "trace-signals",
+   "requirement": "req:trace-signals/Отчёт называет закрытый состав сигналов"
+  },
+  {
+   "id": "scn:trace-signals/Отчёт называет закрытый состав сигналов/Тяжёлое раньше, чем раннее по файлу",
+   "kind": "scn",
+   "name": "Тяжёлое раньше, чем раннее по файлу",
+   "at": "specs/trace-signals/spec.md:51",
+   "capability": "trace-signals",
+   "requirement": "req:trace-signals/Отчёт называет закрытый состав сигналов"
+  },
+  {
+   "id": "scn:trace-signals/Отчёт называет закрытый состав сигналов/Неразрешённая структурная ссылка",
+   "kind": "scn",
+   "name": "Неразрешённая структурная ссылка",
+   "at": "specs/trace-signals/spec.md:56",
+   "capability": "trace-signals",
+   "requirement": "req:trace-signals/Отчёт называет закрытый состав сигналов"
+  },
+  {
+   "id": "cap:trace-snapshot",
+   "kind": "cap",
+   "name": "trace-snapshot",
+   "at": "specs/trace-snapshot/spec.md:1"
+  },
+  {
+   "id": "req:trace-snapshot/Снимок сохраняет нормализованную структуру и состояния",
+   "kind": "req",
+   "name": "Снимок сохраняет нормализованную структуру и состояния",
+   "at": "specs/trace-snapshot/spec.md:5",
+   "section": "ADDED",
+   "capability": "trace-snapshot"
+  },
+  {
+   "id": "scn:trace-snapshot/Снимок сохраняет нормализованную структуру и состояния/Клон после заморозки недоступен",
+   "kind": "scn",
+   "name": "Клон после заморозки недоступен",
+   "at": "specs/trace-snapshot/spec.md:8",
+   "capability": "trace-snapshot",
+   "requirement": "req:trace-snapshot/Снимок сохраняет нормализованную структуру и состояния"
+  },
+  {
+   "id": "scn:trace-snapshot/Снимок сохраняет нормализованную структуру и состояния/Декларация и её хеш относятся к одной прочитанной версии",
+   "kind": "scn",
+   "name": "Декларация и её хеш относятся к одной прочитанной версии",
+   "at": "specs/trace-snapshot/spec.md:13",
+   "capability": "trace-snapshot",
+   "requirement": "req:trace-snapshot/Снимок сохраняет нормализованную структуру и состояния"
+  },
+  {
+   "id": "req:trace-snapshot/Диагностика и снимок не копируют приватные входные данные",
+   "kind": "req",
+   "name": "Диагностика и снимок не копируют приватные входные данные",
+   "at": "specs/trace-snapshot/spec.md:21",
+   "section": "ADDED",
+   "capability": "trace-snapshot"
+  },
+  {
+   "id": "scn:trace-snapshot/Диагностика и снимок не копируют приватные входные данные/Ошибка YAML не раскрывает приватный документ",
+   "kind": "scn",
+   "name": "Ошибка YAML не раскрывает приватный документ",
+   "at": "specs/trace-snapshot/spec.md:24",
+   "capability": "trace-snapshot",
+   "requirement": "req:trace-snapshot/Диагностика и снимок не копируют приватные входные данные"
+  },
+  {
+   "id": "scn:trace-snapshot/Диагностика и снимок не копируют приватные входные данные/Снимок содержит декларацию без полного README",
+   "kind": "scn",
+   "name": "Снимок содержит декларацию без полного README",
+   "at": "specs/trace-snapshot/spec.md:29",
+   "capability": "trace-snapshot",
+   "requirement": "req:trace-snapshot/Диагностика и снимок не копируют приватные входные данные"
+  },
+  {
+   "id": "req:trace-snapshot/Состав README входит в проверку дрейфа",
+   "kind": "req",
+   "name": "Состав README входит в проверку дрейфа",
+   "at": "specs/trace-snapshot/spec.md:36",
+   "section": "ADDED",
+   "capability": "trace-snapshot"
+  },
+  {
+   "id": "scn:trace-snapshot/Состав README входит в проверку дрейфа/Новый модуль после freeze",
+   "kind": "scn",
+   "name": "Новый модуль после freeze",
+   "at": "specs/trace-snapshot/spec.md:39",
+   "capability": "trace-snapshot",
+   "requirement": "req:trace-snapshot/Состав README входит в проверку дрейфа"
+  },
+  {
+   "id": "scn:trace-snapshot/Состав README входит в проверку дрейфа/Перенос модуля",
+   "kind": "scn",
+   "name": "Перенос модуля",
+   "at": "specs/trace-snapshot/spec.md:44",
+   "capability": "trace-snapshot",
+   "requirement": "req:trace-snapshot/Состав README входит в проверку дрейфа"
+  },
+  {
+   "id": "req:trace-snapshot/Предыдущий формат читается без дописывания модулей в историю",
+   "kind": "req",
+   "name": "Предыдущий формат читается без дописывания модулей в историю",
+   "at": "specs/trace-snapshot/spec.md:51",
+   "section": "ADDED",
+   "capability": "trace-snapshot"
+  },
+  {
+   "id": "scn:trace-snapshot/Предыдущий формат читается без дописывания модулей в историю/Старый снимок и нынешние модули",
+   "kind": "scn",
+   "name": "Старый снимок и нынешние модули",
+   "at": "specs/trace-snapshot/spec.md:54",
+   "capability": "trace-snapshot",
+   "requirement": "req:trace-snapshot/Предыдущий формат читается без дописывания модулей в историю"
+  },
+  {
+   "id": "scn:trace-snapshot/Предыдущий формат читается без дописывания модулей в историю/Поддерживаемая база формата 2 сохраняется после sync",
+   "kind": "scn",
+   "name": "Поддерживаемая база формата 2 сохраняется после sync",
+   "at": "specs/trace-snapshot/spec.md:59",
+   "capability": "trace-snapshot",
+   "requirement": "req:trace-snapshot/Предыдущий формат читается без дописывания модулей в историю"
+  },
+  {
+   "id": "req:trace-snapshot/Снимок и отчёт лежат в каталоге graph",
+   "kind": "req",
+   "name": "Снимок и отчёт лежат в каталоге graph",
+   "at": "specs/trace-snapshot/spec.md:69",
+   "section": "MODIFIED",
+   "capability": "trace-snapshot"
+  },
+  {
+   "id": "scn:trace-snapshot/Снимок и отчёт лежат в каталоге graph/Заморозка",
+   "kind": "scn",
+   "name": "Заморозка",
+   "at": "specs/trace-snapshot/spec.md:72",
+   "capability": "trace-snapshot",
+   "requirement": "req:trace-snapshot/Снимок и отчёт лежат в каталоге graph"
+  },
+  {
+   "id": "scn:trace-snapshot/Снимок и отчёт лежат в каталоге graph/Каталог уезжает в архив",
+   "kind": "scn",
+   "name": "Каталог уезжает в архив",
+   "at": "specs/trace-snapshot/spec.md:77",
+   "capability": "trace-snapshot",
+   "requirement": "req:trace-snapshot/Снимок и отчёт лежат в каталоге graph"
+  },
+  {
+   "id": "scn:trace-snapshot/Снимок и отчёт лежат в каталоге graph/Снимок без отчёта",
+   "kind": "scn",
+   "name": "Снимок без отчёта",
+   "at": "specs/trace-snapshot/spec.md:82",
+   "capability": "trace-snapshot",
+   "requirement": "req:trace-snapshot/Снимок и отчёт лежат в каталоге graph"
+  },
+  {
+   "id": "scn:trace-snapshot/Снимок и отчёт лежат в каталоге graph/Абсолютных путей нет",
+   "kind": "scn",
+   "name": "Абсолютных путей нет",
+   "at": "specs/trace-snapshot/spec.md:88",
+   "capability": "trace-snapshot",
+   "requirement": "req:trace-snapshot/Снимок и отчёт лежат в каталоге graph"
+  },
+  {
+   "id": "scn:trace-snapshot/Снимок и отчёт лежат в каталоге graph/README меняет свежесть",
+   "kind": "scn",
+   "name": "README меняет свежесть",
+   "at": "specs/trace-snapshot/spec.md:93",
+   "capability": "trace-snapshot",
+   "requirement": "req:trace-snapshot/Снимок и отчёт лежат в каталоге graph"
+  },
+  {
+   "id": "scn:trace-snapshot/Снимок и отчёт лежат в каталоге graph/Снимок и отчёт описывают одно прочитанное состояние",
+   "kind": "scn",
+   "name": "Снимок и отчёт описывают одно прочитанное состояние",
+   "at": "specs/trace-snapshot/spec.md:98",
+   "capability": "trace-snapshot",
+   "requirement": "req:trace-snapshot/Снимок и отчёт лежат в каталоге graph"
+  },
+  {
+   "id": "task:1.1",
+   "kind": "task",
+   "name": "В `trace/trace_modules.py` реализовать чтение и проверку сырого x-symphysis-components, объявлений name/kind, списка логических зависимостей и аннотации в блоке требования; закрепить выбранные формы общими фикстурами `tests/fixtures/trace/modules/` и примерами `docs/GUIDE.md`, сохранив разделение component/repo и смысл commit (F-17, F-18, F-34, F-35) — проверка: тесты декодирования валидных и негодных объявлений в `trace/tests/test_trace_modules.py`; `repository-survey`: «Два репозитория одного компонента», `repository-survey`: «Коммит не подменяет рабочие файлы», `module-discovery`: «Имя не равно каталогу», `trace-conventions`: «Два модуля в одном блоке».",
+   "at": "tasks.md:13",
+   "done": false
+  },
+  {
+   "id": "task:1.2",
+   "kind": "task",
+   "name": "В читателе объявлений обеспечить безопасный разбор YAML без конструирования объектов и исполнения команд; оставить обязательному журналу прежнюю строгую обработку, не подменять её этим reader (F-21, F-47) — проверка: отрицательная фикстура с YAML-тегом и маркером побочного эффекта не исполняется, негодный источник даёт сигнал, корректный сосед сохраняется; `module-discovery`: «YAML не конструирует исполняемый объект».",
+   "at": "tasks.md:14",
+   "done": false
+  },
+  {
+   "id": "task:1.3",
+   "kind": "task",
+   "name": "Зарегистрировать `trace_modules.py` в `installer/scripts/sync-payload.js`, фильтре `installer/lib/install.js`, `TOOL_MODULES` в `installer/lib/check.js`, списках `installer/test/payload.test.js` и `check.test.js`; проверить стенды `step-help/tests/test_step_help.py`, `decisions/tests/test_journal_check.py`, `viewer/tests/test_viewer_page.py`, `settings/tests/test_settings.py` поиском соседнего `trace_graph`/`attack_scope`, обновить все ограничивающие копирование списки (F-13, F-25, F-27) — проверка: `npm --prefix installer test` и затронутые Python-стенды проходят, в плоской временной установке импорт нового helper работает; новые зависимости YAML, если нужны читателю, явно описаны в GUIDE и проверены в установленной среде, отсутствие пакета не маскируется пустой структурой. `служебная`",
+   "at": "tasks.md:15",
+   "done": false
+  },
+  {
+   "id": "task:2.1",
+   "kind": "task",
+   "name": "Добавить точный выбор псевдонима repo перед файловым resolver, сохранив прежний longest-prefix для путей улик; учитывать только repo состава, а не все префиксы карты (F-31, F-48) — проверка: тесты текущего и внешнего корней, постороннего префикса и неизвестного псевдонима при существующем пустом префиксе; каталог-двойник в текущем проекте не прочитан; `repository-survey`: «Текущий и внешний репозитории», `repository-survey`: «Посторонний префикс улик», `repository-survey`: «Неизвестный псевдоним не подменяется пустым префиксом».",
+   "at": "tasks.md:19",
+   "done": false
+  },
+  {
+   "id": "task:2.2",
+   "kind": "task",
+   "name": "Провести структурные пути через проверку границы выбранного корня после нормализации и resolve; обход каталогов должен завершаться на цикле ссылок и не читать цель вне корня (F-46) — проверка: тесты `../`, абсолютного хвоста, выхода через symlink/junction и возвращения к посещённому каталогу в `roots/tests/` и `trace/tests/test_trace_modules.py`, с утверждением отсутствия внешнего чтения; `repository-survey`: «Обход границы через путь или ссылку», `repository-survey`: «Цикл каталогов через ссылку».",
+   "at": "tasks.md:20",
+   "done": false
+  },
+  {
+   "id": "task:2.3",
+   "kind": "task",
+   "name": "Передать одну явную карту корней через build/report/check/freeze и общий контекст структурного чтения; обновить справку существующих команд (F-31) — проверка: CLI-тест запускает четыре команды из другого cwd с одной временной картой, они разрешают те же логические repo; `tests/test_flag_help.py` проходит; `repository-survey`: «Текущий и внешний репозитории».",
+   "at": "tasks.md:21",
+   "done": false
+  },
+  {
+   "id": "task:3.1",
+   "kind": "task",
+   "name": "Реализовать поиск README на любой глубине, включая сам корень, без Git index; применять служебные и переносимые исключения repo также при достижении каталога через ссылку (F-16, F-32, F-46) — проверка: фикстуры дерева без Git, `.git`, node_modules, `.symphysis`, пользовательского исключения и игнорируемого Git README; `module-discovery`: «Корень и глубокий каталог без Git», `module-discovery`: «Служебный каталог исключён», `module-discovery`: «Игнорируемый Git файл», `module-discovery`: «Ссылка не обходит служебное исключение».",
+   "at": "tasks.md:25",
+   "done": false
+  },
+  {
+   "id": "task:3.2",
+   "kind": "task",
+   "name": "Подключить декодирование README к обходу: только явные валидные name/kind создают модуль, обычное описание не создаёт его; UTF-8 BOM и окончания строк не меняют объявление (F-18, F-40) — проверка: параметризованные тесты четырёх сочетаний BOM/LF/CRLF, отличного от каталога имени, отсутствующих полей и негодного kind; `module-discovery`: «Имя не равно каталогу», `module-discovery`: «Обычное описание репозитория», `module-discovery`: «Негодный род», `module-discovery`: «UTF-8 BOM и окончания строк не скрывают модуль».",
+   "at": "tasks.md:26",
+   "done": false
+  },
+  {
+   "id": "task:3.3",
+   "kind": "task",
+   "name": "Определять владельца используемого файла по ближайшей валидной границе, различать одноимённые модули разных repo и сигнализировать неоднозначное имя внутри одного repo без выбора первого каталога (F-18, F-21) — проверка: тесты вложенной границы, файла вне модулей, двух конфликтующих README и двух независимых repo; `module-discovery`: «Вложенный модуль клиента», `module-discovery`: «Файл вне границ», `module-discovery`: «Повтор внутри repo», `module-discovery`: «Одно имя разных repo».",
+   "at": "tasks.md:27",
+   "done": false
+  },
+  {
+   "id": "task:3.4",
+   "kind": "task",
+   "name": "Собирать направленные зависимости только из объявленного списка README, сохранять источник и не выводить подтверждённую зависимость из прозы или import (F-20, F-35, F-41) — проверка: межрепозиторная зависимость, неизвестная цель, проза без декларации и цикл из двух модулей; оба ребра цикла сохранены; `module-discovery`: «Объявленная межрепозиторная зависимость», `module-discovery`: «Только упоминание в описании», `module-discovery`: «Цель отсутствует», `module-discovery`: «Цикл объявленных зависимостей сохраняется».",
+   "at": "tasks.md:28",
+   "done": false
+  },
+  {
+   "id": "task:3.5",
+   "kind": "task",
+   "name": "Сохранять корректную часть обнаружения при недоступном repo, локальной ошибке чтения, бинарном README и неверной кодировке; не угадывать кодировку и не превращать неизвестные объявления/зависимости в пустые (F-21, F-47, F-49, F-50) — проверка: управляемые ошибки чтения и байтовые фикстуры в одном repo с корректным соседом, граф доступен и источник/причина видны; `module-discovery`: «Один недоступный сосед», `module-discovery`: «Нечитаемый README не скрывает соседний модуль», `module-discovery`: «Негодная кодировка README не обрывает доступный граф», `module-discovery`: «Бинарный README не становится объявлением».",
+   "at": "tasks.md:29",
+   "done": false
+  },
+  {
+   "id": "task:3.6",
+   "kind": "task",
+   "name": "Сохранить все сторонние README входами только для чтения и завершить раздел GUIDE о модуле, роде, зависимостях, исключениях и ограничениях обнаружения (F-07, F-35) — проверка: хеши клиентских README до/после обследования совпадают, примеры GUIDE разбираются общим reader без требования раскладки symphysis; `module-discovery`: «Нет нужного объявления у клиента», `module-discovery`: «Соглашение доступно владельцу».",
+   "at": "tasks.md:30",
+   "done": false
+  },
+  {
+   "id": "task:4.1",
+   "kind": "task",
+   "name": "Соединить нормализованную структуру с `_build_all`: компоненты, объявленные repo, все валидные модули и только участвующие в трассировке файлы; сохранить принадлежность ближайшей границе (F-16, F-17, F-33) — проверка: модуль без связи остаётся узлом, один компонент содержит два repo, неназванный исходник не превращает граф в полный файловый индекс; `trace-graph`: «Модуль без аннотации реализации», `trace-graph`: «Два repo одного компонента», `trace-graph`: «Неназванный исходник».",
+   "at": "tasks.md:34",
+   "done": false
+  },
+  {
+   "id": "task:4.2",
+   "kind": "task",
+   "name": "Реализовать устойчивые структурные id из логических частей с однозначным кодированием разделителей и отдельным сохранением исходных имён (F-14, F-31, F-42) — проверка: разные repo с модулем viewer, перенос клона и пары repo=api/x,module=m и repo=api,module=x/m не сливаются; `trace-graph`: «Одно имя модулей», `trace-graph`: «Другой каталог клона», `trace-graph`: «Разделитель в частях имени не создаёт коллизию id».",
+   "at": "tasks.md:35",
+   "done": false
+  },
+  {
+   "id": "task:4.3",
+   "kind": "task",
+   "name": "Сохранить прежнюю идентичность требований, сценариев, записей, задач и веток при добавлении структурной оси (F-04, F-14) — проверка: существующие тесты идентификаторов и перенос реализации без переименования требования проходят; `trace-graph`: «Одно имя в двух capability», `trace-graph`: «Переименование меняет id», `trace-graph`: «Две ветки одного механизма», `trace-graph`: «Перенос модуля не меняет требование».",
+   "at": "tasks.md:36",
+   "done": false
+  },
+  {
+   "id": "task:4.4",
+   "kind": "task",
+   "name": "Подключить распознавание аннотации к конкретному блоку требования; отсутствие аннотации не восполнять ссылкой на запись журнала (F-19, F-34) — проверка: тесты двух модулей в одном блоке рядом с другим требованием и блока только с журналом; `trace-conventions`: «Два модуля в одном блоке», `trace-conventions`: «Без аннотации».",
+   "at": "tasks.md:37",
+   "done": false
+  },
+  {
+   "id": "task:4.5",
+   "kind": "task",
+   "name": "Построить явные связи реализации с местом аннотации и связи зависимостей с местом README; отвергать противоречивую пару модуль/файл без потери независимых деклараций (F-19, F-20, F-43) — проверка: многомодульное требование из двух repo, улика о старом коде, транзитивная зависимость без аннотации и файл ближайшего модуля b, приписанный a; `trace-graph`: «Сквозная реализация», `trace-graph`: «Улика о старом коде», `trace-graph`: «Зависимость не означает реализацию», `trace-graph`: «Модуль и приписанный ему файл противоречат друг другу».",
+   "at": "tasks.md:38",
+   "done": false
+  },
+  {
+   "id": "task:4.6",
+   "kind": "task",
+   "name": "Сохранить сборку на любом шаге и прежние отказы по негодному обязательному журналу; новое чтение README должно менять живую структуру через источники, без правки JSON (F-05, F-21, F-30) — проверка: существующие тесты артефактов и новый повтор build после изменения внешнего README; `trace-graph`: «Только что созданное изменение», `trace-graph`: «Граф растёт вместе с артефактами», `trace-graph`: «Связь правится через файл», `trace-graph`: «Журнал не разбирается», `trace-graph`: «Журнал негоден по схеме», `trace-graph`: «Внешний README изменился».",
+   "at": "tasks.md:39",
+   "done": false
+  },
+  {
+   "id": "task:5.1",
+   "kind": "task",
+   "name": "Различать четыре состояния repo, читать текущие README поверх сохранённого результата без изменения metadata и сообщать расхождение; единственное негодное объявление не доказывает отсутствие модулей (F-21, F-26, F-30, F-39) — проверка: фикстуры без модулей, недоступного клона, отсутствующего обследования, неверного kind и появившегося модуля; `repository-survey`: «Обследованный репозиторий без модулей», `repository-survey`: «Клон недоступен», `repository-survey`: «Обследование ещё не записано», `repository-survey`: «Одно негодное объявление не доказывает отсутствие модулей», `repository-survey`: «Модуль появился после обследования», `repository-survey`: «Повтор без изменений».",
+   "at": "tasks.md:43",
+   "done": false
+  },
+  {
+   "id": "task:5.2",
+   "kind": "task",
+   "name": "Включить структурные сигналы в существующие группы без нового гейта и без исправления похожих имён по догадке (F-21, F-30) — проверка: `trace/tests/test_trace_report.py` различает состояния, ставит ссылку в «Связь не разрешена», негодность источника в «Опоры нет», команды сохраняют прежний код выхода; `trace-signals`: «Разные причины отсутствия узлов», `trace-signals`: «Опечатка имени», `trace-signals`: «Ссылка и недоступный источник», `trace-signals`: «Неразрешённая структурная ссылка».",
+   "at": "tasks.md:44",
+   "done": false
+  },
+  {
+   "id": "task:5.3",
+   "kind": "task",
+   "name": "Сохранить состав прежних сигналов, разрешение одинаковых имён сценариев и порядок тяжести в отчёте (F-21) — проверка: существующие регрессионные тесты отчёта проходят вместе со структурными; `trace-signals`: «Критерий без требования», `trace-signals`: «Решение об объёме», `trace-signals`: «Одно имя у двух требований capability», `trace-signals`: «Тяжёлое раньше, чем раннее по файлу».",
+   "at": "tasks.md:45",
+   "done": false
+  },
+  {
+   "id": "task:5.4",
+   "kind": "task",
+   "name": "Исключить глобальную оценку покрытия модуля по отсутствию локальной связи в change (F-45) — проверка: негативный тест графа и отчёта с двумя модулями и одной аннотацией сохраняет второй узел без оценки глобальной нереализованности или отсутствия требований; `trace-graph`: «Независимый модуль не объявлен нереализованным».",
+   "at": "tasks.md:46",
+   "done": false
+  },
+  {
+   "id": "task:6.1",
+   "kind": "task",
+   "name": "Перевести новый JSON на format: 3, оставить чтение 2 без выдуманной структуры и сигнал неподдерживаемого 1; не пересобирать архивы и не дорисовывать в них нынешние модули (F-23) — проверка: сохранённые фикстуры 1/2/3, неизменные байты архива 2 и прежние коды check; `trace-graph`: «Снимок прежнего формата», `trace-graph`: «Прежний поддерживаемый файл», `trace-snapshot`: «Старый снимок и нынешние модули».",
+   "at": "tasks.md:50",
+   "done": false
+  },
+  {
+   "id": "task:6.2",
+   "kind": "task",
+   "name": "Научить `saved_base` принимать пригодную base поддерживаемого формата 2 при сборке формата 3, сохранив прежнюю семантику MODIFIED после sync (F-52) — проверка: тест с форматом 2, валидной base и изменившимся master не получает новых ложных ссылок из нынешнего master; `trace-snapshot`: «Поддерживаемая база формата 2 сохраняется после sync».",
+   "at": "tasks.md:51",
+   "done": false
+  },
+  {
+   "id": "task:6.3",
+   "kind": "task",
+   "name": "Сохранять нормализованную структуру, состояния, происхождение, инвентарь README и хеши одних прочитанных байтов; историческое чтение отделить от проверки доступности нынешнего клона (F-22, F-37, F-44) — проверка: тест подмены файла между извлечением полей/хеша и чтение снимка после исчезновения внешнего repo; поля не смешаны, прежние узлы остаются; `trace-snapshot`: «Декларация и её хеш относятся к одной прочитанной версии», `trace-snapshot`: «Клон после заморозки недоступен».",
+   "at": "tasks.md:52",
+   "done": false
+  },
+  {
+   "id": "task:6.4",
+   "kind": "task",
+   "name": "Учитывать структурные источники и их состав в свежести check/freeze; повторно обследовать область, чтобы заметить новый, удалённый или перенесённый README, не меняя старую структуру проверкой (F-22, F-37) — проверка: `trace/tests/test_trace_snapshot.py` на добавлении, переносе и изменении README без правки артефактов изменения; `trace-snapshot`: «Новый модуль после freeze», `trace-snapshot`: «Перенос модуля», `trace-snapshot`: «README меняет свежесть».",
+   "at": "tasks.md:53",
+   "done": false
+  },
+  {
+   "id": "task:6.5",
+   "kind": "task",
+   "name": "Связать снимок и структурные утверждения отчёта с одним прочитанным состоянием или явно сообщать несогласованность; сохранить восстановление неполной пары и перенос graph при архивировании (F-22, F-51) — проверка: управляемое изменение README между сборками не даёт ложной свежести, тесты обычного freeze, отсутствующего report и архива проходят; `trace-snapshot`: «Снимок и отчёт описывают одно прочитанное состояние», `trace-snapshot`: «Заморозка», `trace-snapshot`: «Снимок без отчёта», `trace-snapshot`: «Каталог уезжает в архив».",
+   "at": "tasks.md:54",
+   "done": false
+  },
+  {
+   "id": "task:6.6",
+   "kind": "task",
+   "name": "Очистить структурные ошибки и переносимые результаты от абсолютных локальных путей, значений личной карты и полных README/metadata; сериализовать только разрешённые нормализованные поля и хеши (F-37, F-46) — проверка: тесты с секрет-маркером в негодном и валидном README, абсолютным корнем и перехватом JSON/report/stdout/stderr не находят приватный текст или карту; `trace-snapshot`: «Ошибка YAML не раскрывает приватный документ», `trace-snapshot`: «Снимок содержит декларацию без полного README», `trace-snapshot`: «Абсолютных путей нет».",
+   "at": "tasks.md:55",
+   "done": false
+  },
+  {
+   "id": "task:7.1",
+   "kind": "task",
+   "name": "Добавить виды component/repo/module/file и их связи в конфиг requirementDiagram одновременно с поддержкой структурных узлов; сохранить оформление, имена и предел текста (F-24, F-33) — проверка: `trace/tests/test_trace_diagram.py` экспортирует все новые виды и связи без KeyError и без рендера рисунка, прежние проверки предела и очистки текста проходят; `trace-diagram`: «Новые виды допустимы».",
+   "at": "tasks.md:59",
+   "done": false
+  },
+  {
+   "id": "task:7.2",
+   "kind": "task",
+   "name": "Расширить выбор capability/требования связанной структурой и необходимыми предками, сохранив соседей-кандидатов и однозначную форму capability/имя; обход не должен втягивать все транзитивные зависимости или зацикливаться (F-24, F-41) — проверка: тесты выборок, двух repo одного требования, цепочки и цикла зависимостей завершаются и показывают только нужную структуру; `trace-diagram`: «Выбрана capability», `trace-diagram`: «Выбрано требование», `trace-diagram`: «Одно имя в двух capability», `trace-diagram`: «Требование с реализацией», `module-discovery`: «Цикл объявленных зависимостей сохраняется».",
+   "at": "tasks.md:60",
+   "done": false
+  },
+  {
+   "id": "task:8.1",
+   "kind": "task",
+   "name": "В instruction decisions/research схемы, `decisions/skills/symphysis-brainstorm/SKILL.md`, `research/skills/symphysis-research/SKILL.md` и `steps.md` закрепить обследование доступных repo и сообщение четырёх состояний, уточнение состава исследованием без нового обязательного артефакта (F-26, F-29, F-30); перед правкой тел применить канон и `writing-skill-bodies` — проверка: `tests/test_skills.py`, `openspec/schemas/symphysis/tests/`, новый разбор инструкций настоящим `openspec instructions` и примеры GUIDE; `repository-survey`: «Первое обследование по intent», `repository-survey`: «Репозиторий найден исследованием».",
+   "at": "tasks.md:64",
+   "done": false
+  },
+  {
+   "id": "task:8.2",
+   "kind": "task",
+   "name": "Добавить в инструкции анализа точечное обновление сырого x-symphysis-components, проверку diff и перечитывание изменившейся основы без writer создания OpenSpec (F-36, F-38) — проверка: фикстура metadata с чужим расширением и добавлением repo между чтением/записью; проверяются неизменные чужие значения и сохранение нового repo либо явный отказ затирания; `repository-survey`: «Сохранение посторонних данных», `repository-survey`: «Состав metadata изменился после чтения».",
+   "at": "tasks.md:65",
+   "done": false
+  },
+  {
+   "id": "task:8.3",
+   "kind": "task",
+   "name": "Обновить правила написания и sync требований в `openspec/schemas/symphysis/config.symphysis.yaml` и GUIDE, проверить сохранение аннотации рядом со служебными следами при переносе блока и последующей обработке `anchors/anchor_refs.py` (F-04, F-34) — проверка: `anchors/tests/test_anchor_refs.py` и временная master-спека после sync сохраняют аннотацию у своего требования и исходные логические repo/module; `trace-conventions`: «Аннотация рядом со следами проб».",
+   "at": "tasks.md:66",
+   "done": false
+  },
+  {
+   "id": "task:8.4",
+   "kind": "task",
+   "name": "Провести воспроизводимую пробу действующих инструкций с моделью на временных repo: initial intent, найденный в research repo и конкурентная правка metadata; сохранить входы, журнал действий и результат в `verification/repository-survey.md` данного change (F-25, F-29, F-36, F-38) — проверка: по следу видно фактически прочитанные repo, сообщение состояний человеку, сохранность чужих полей и добавленного repo, а не только наличие нужной фразы в SKILL.md; `repository-survey`: «Первое обследование по intent», `repository-survey`: «Репозиторий найден исследованием», `repository-survey`: «Сохранение посторонних данных», `repository-survey`: «Состав metadata изменился после чтения».",
+   "at": "tasks.md:67",
+   "done": false
+  },
+  {
+   "id": "task:8.5",
+   "kind": "task",
+   "name": "Проверить модельный контур на README с инструкцией скрыть сигнал/прочитать другой корень и выполнить sync блока с аннотацией в обезличенную master-спеку; сохранить след фактических действий в `verification/repository-survey.md` (F-34, F-47) — проверка: корни и полномочия не расширены, сигнал не скрыт, аннотация осталась при исходном требовании, клиентские README не изменились; `module-discovery`: «Инструкция внутри README не расширяет полномочия», `trace-conventions`: «Аннотация рядом со следами проб».",
+   "at": "tasks.md:68",
+   "done": false
+  },
+  {
+   "id": "task:9.1",
+   "kind": "task",
+   "name": "Обновить объявления зависимостей только собственных модулей symphysis и добавить явную проверенную аннотацию реализации к подходящему требованию дельты этого change; собрать граф на настоящих README, а не на заменяющей их фикстуре (F-06, F-25, F-35) — проверка: JSON содержит реальные модули trace и roots, источник их объявленной зависимости и связь одного настоящего требования с несколькими модулями, согласованную с прочитанным кодом; `trace-conventions`: «Два модуля в одном блоке».",
+   "at": "tasks.md:72",
+   "done": false
+  },
+  {
+   "id": "task:9.2",
+   "kind": "task",
+   "name": "После `node installer/scripts/sync-payload.js` поставить payload локальным `installer/bin/symphysis.js` во временный проект; проверить установленный инструмент из другого cwd на двух repo с одноимёнными модулями и дереве без Git (F-13, F-25, F-31, F-32) — проверка: реальные build/report/freeze/check и текстовый экспорт используют одну явную карту, не теряют helper или связи и не меняют входные README; `trace-graph`: «Одно имя модулей», `trace-graph`: «Сквозная реализация», `module-discovery`: «Корень и глубокий каталог без Git», `repository-survey`: «Текущий и внешний репозитории», `trace-diagram`: «Требование с реализацией».",
+   "at": "tasks.md:73",
+   "done": false
+  },
+  {
+   "id": "task:9.3",
+   "kind": "task",
+   "name": "Сохранить воспроизводимые команды, результаты догфудинга, установленного запуска и матрицу фактических проверок security в `verification/acceptance.md`, снимок и отчёт получать только штатным freeze; завершить GUIDE об обследовании, объявлениях, сигналах, формате 2/3 и ограничениях (F-06, F-07, F-25, F-37, F-46, F-47) — проверка: команды повторяются на обезличенных данных, отчёт отличает выполненные тесты от непроверенного, все 10 строк security имеют результат или сохранённую причину неприменимости, `tests/test_guide.py` проходит; `trace-snapshot`: «Заморозка», `module-discovery`: «Соглашение доступно владельцу».",
+   "at": "tasks.md:74",
+   "done": false
+  },
+  {
+   "id": "task:10.1",
+   "kind": "task",
+   "name": "Запустить `& $tracePython -X utf8 -m pytest` с xdist и `npm --prefix installer test` после завершения зависимых групп; проверить, что тесты на установленной копии и интеграция с настоящим форком не пропущены из-за окружения, причины остальных пропусков записаны — проверка: команды завершились успешно, полный вывод и числа сохранены в `verification/acceptance.md`; прежние тесты не ослаблены ради новой реализации (F-25). `служебная`",
+   "at": "tasks.md:78",
+   "done": false
+  },
+  {
+   "id": "task:10.2",
+   "kind": "task",
+   "name": "Выполнить `openspec validate trace-modules --strict`, строгую сверку журнала с явной обезличенной картой, отчёт трассируемости и гейт имён своих файлов; проверить связь задач со всеми сценариями и 13 исходами Specify — проверка: нет ошибок валидации, потерянных улик, неизвестных ссылок и необъяснённых сигналов, `git diff --check` чист; синхронизация master, архивирование, merge и push выполняются отдельными шагами, не этой задачей (F-05, F-25). `служебная`",
+   "at": "tasks.md:79",
+   "done": false
+  }
+ ],
+ "edges": [
+  {
+   "from": "branch:trace/trace_graph.py:398",
+   "to": "scn:trace-graph/Граф собирается из файлов изменения/Журнал не разбирается",
+   "type": "verifies",
+   "at": "consequences.md:37"
+  },
+  {
+   "from": "branch:trace/trace_graph.py:401",
+   "to": "scn:trace-graph/Граф собирается из файлов изменения/Журнал негоден по схеме",
+   "type": "verifies",
+   "at": "consequences.md:42"
+  },
+  {
+   "from": "branch:trace/trace_graph.py:1066",
+   "to": "scn:trace-graph/Id читаемы, файл несёт версию формата/Прежний поддерживаемый файл",
+   "type": "verifies",
+   "at": "consequences.md:47"
+  },
+  {
+   "from": "branch:trace/trace_graph.py:1066",
+   "to": "scn:trace-graph/Id читаемы, файл несёт версию формата/Снимок прежнего формата",
+   "type": "verifies",
+   "at": "consequences.md:47"
+  },
+  {
+   "from": "branch:trace/trace_graph.py:1079",
+   "to": "scn:trace-snapshot/Снимок и отчёт лежат в каталоге graph/README меняет свежесть",
+   "type": "verifies",
+   "at": "consequences.md:57"
+  },
+  {
+   "from": "branch:trace/trace_graph.py:1080",
+   "to": "scn:trace-snapshot/Состав README входит в проверку дрейфа/Новый модуль после freeze",
+   "type": "verifies",
+   "at": "consequences.md:62"
+  },
+  {
+   "from": "branch:trace/trace_graph.py:1081",
+   "to": "scn:trace-snapshot/Снимок сохраняет нормализованную структуру и состояния/Клон после заморозки недоступен",
+   "type": "verifies",
+   "at": "consequences.md:67"
+  },
+  {
+   "from": "branch:trace/trace_graph.py:1081",
+   "to": "scn:trace-snapshot/Состав README входит в проверку дрейфа/Перенос модуля",
+   "type": "verifies",
+   "at": "consequences.md:67"
+  },
+  {
+   "from": "branch:trace/trace_graph.py:1188",
+   "to": "scn:trace-diagram/Конфиг экспорта знает структурные виды/Новые виды допустимы",
+   "type": "verifies",
+   "at": "consequences.md:72"
+  },
+  {
+   "from": "branch:trace/trace_graph.py:1272",
+   "to": "scn:trace-diagram/Конфиг экспорта знает структурные виды/Новые виды допустимы",
+   "type": "verifies",
+   "at": "consequences.md:77"
+  },
+  {
+   "from": "branch:trace/trace_graph.py:1239",
+   "to": "scn:trace-diagram/Скрипт выдаёт текст диаграммы по выбору/Требование с реализацией",
+   "type": "verifies",
+   "at": "consequences.md:82"
+  },
+  {
+   "from": "branch:trace/trace_graph.py:1209",
+   "to": "scn:trace-diagram/Скрипт выдаёт текст диаграммы по выбору/Одно имя в двух capability",
+   "type": "verifies",
+   "at": "consequences.md:87"
+  },
+  {
+   "from": "branch:trace/trace_graph.py:1209",
+   "to": "scn:trace-graph/Id читаемы, файл несёт версию формата/Одно имя в двух capability",
+   "type": "verifies",
+   "at": "consequences.md:87"
+  },
+  {
+   "from": "branch:trace/trace_graph.py:1739",
+   "to": "scn:module-discovery/Обход не зависит от первого уровня и Git/Корень и глубокий каталог без Git",
+   "type": "verifies",
+   "at": "consequences.md:92"
+  },
+  {
+   "from": "branch:trace/trace_graph.py:1803",
+   "to": "scn:trace-snapshot/Снимок и отчёт лежат в каталоге graph/Снимок без отчёта",
+   "type": "verifies",
+   "at": "consequences.md:102"
+  },
+  {
+   "from": "sec:Инъекции через содержимое файлов",
+   "to": "req:module-discovery/Объявления обрабатываются как недоверенные данные",
+   "type": "refines",
+   "at": "security.md:9"
+  },
+  {
+   "from": "sec:Пути с `../`",
+   "to": "req:repository-survey/Структурные источники остаются внутри разрешённого корня",
+   "type": "refines",
+   "at": "security.md:10"
+  },
+  {
+   "from": "sec:Права",
+   "to": "req:module-discovery/Сторонние README остаются входными данными",
+   "type": "refines",
+   "at": "security.md:12"
+  },
+  {
+   "from": "sec:Бинарные файлы",
+   "to": "req:module-discovery/Объявления обрабатываются как недоверенные данные",
+   "type": "refines",
+   "at": "security.md:13"
+  },
+  {
+   "from": "sec:Чувствительные данные в журнале, артефактах и журналах прогона",
+   "to": "req:repository-survey/Состав компонентов и репозиториев хранится переносимо",
+   "type": "refines",
+   "at": "security.md:14"
+  },
+  {
+   "from": "sec:Чувствительные данные в журнале, артефактах и журналах прогона",
+   "to": "req:trace-snapshot/Диагностика и снимок не копируют приватные входные данные",
+   "type": "refines",
+   "at": "security.md:14"
+  },
+  {
+   "from": "sec:Безопасная десериализация YAML",
+   "to": "req:module-discovery/Объявления обрабатываются как недоверенные данные",
+   "type": "refines",
+   "at": "security.md:15"
+  },
+  {
+   "from": "sec:Symlink, junction и циклы каталогов",
+   "to": "req:repository-survey/Структурные источники остаются внутри разрешённого корня",
+   "type": "refines",
+   "at": "security.md:16"
+  },
+  {
+   "from": "sec:Подмена локального источника псевдонимом",
+   "to": "req:repository-survey/Repo разрешается через явно названный корень",
+   "type": "refines",
+   "at": "security.md:17"
+  },
+  {
+   "from": "sec:Новое хранилище персональных данных и сроки хранения",
+   "to": "req:trace-snapshot/Снимок сохраняет нормализованную структуру и состояния",
+   "type": "refines",
+   "at": "security.md:18"
+  },
+  {
+   "from": "cap:module-discovery",
+   "to": "req:module-discovery/README явно объявляет имя и род модуля",
+   "type": "contains",
+   "at": "specs/module-discovery/spec.md:9"
+  },
+  {
+   "from": "req:module-discovery/README явно объявляет имя и род модуля",
+   "to": "rec:F-01",
+   "type": "traces",
+   "at": "specs/module-discovery/spec.md:10"
+  },
+  {
+   "from": "req:module-discovery/README явно объявляет имя и род модуля",
+   "to": "rec:F-09",
+   "type": "traces",
+   "at": "specs/module-discovery/spec.md:10"
+  },
+  {
+   "from": "req:module-discovery/README явно объявляет имя и род модуля",
+   "to": "rec:F-18",
+   "type": "traces",
+   "at": "specs/module-discovery/spec.md:10"
+  },
+  {
+   "from": "scn:module-discovery/README явно объявляет имя и род модуля/Имя не равно каталогу",
+   "to": "req:module-discovery/README явно объявляет имя и род модуля",
+   "type": "verifies",
+   "at": "specs/module-discovery/spec.md:12"
+  },
+  {
+   "from": "scn:module-discovery/README явно объявляет имя и род модуля/Обычное описание репозитория",
+   "to": "req:module-discovery/README явно объявляет имя и род модуля",
+   "type": "verifies",
+   "at": "specs/module-discovery/spec.md:17"
+  },
+  {
+   "from": "scn:module-discovery/README явно объявляет имя и род модуля/Негодный род",
+   "to": "req:module-discovery/README явно объявляет имя и род модуля",
+   "type": "verifies",
+   "at": "specs/module-discovery/spec.md:22"
+  },
+  {
+   "from": "scn:module-discovery/README явно объявляет имя и род модуля/UTF-8 BOM и окончания строк не скрывают модуль",
+   "to": "req:module-discovery/README явно объявляет имя и род модуля",
+   "type": "verifies",
+   "at": "specs/module-discovery/spec.md:27"
+  },
+  {
+   "from": "req:module-discovery/README явно объявляет имя и род модуля",
+   "to": "rec:F-40",
+   "type": "traces",
+   "at": "specs/module-discovery/spec.md:32"
+  },
+  {
+   "from": "req:module-discovery/README явно объявляет имя и род модуля",
+   "to": "rec:F-47",
+   "type": "traces",
+   "at": "specs/module-discovery/spec.md:33"
+  },
+  {
+   "from": "cap:module-discovery",
+   "to": "req:module-discovery/Объявления обрабатываются как недоверенные данные",
+   "type": "contains",
+   "at": "specs/module-discovery/spec.md:35"
+  },
+  {
+   "from": "req:module-discovery/Объявления обрабатываются как недоверенные данные",
+   "to": "rec:F-21",
+   "type": "traces",
+   "at": "specs/module-discovery/spec.md:36"
+  },
+  {
+   "from": "req:module-discovery/Объявления обрабатываются как недоверенные данные",
+   "to": "rec:F-47",
+   "type": "traces",
+   "at": "specs/module-discovery/spec.md:36"
+  },
+  {
+   "from": "scn:module-discovery/Объявления обрабатываются как недоверенные данные/Инструкция внутри README не расширяет полномочия",
+   "to": "req:module-discovery/Объявления обрабатываются как недоверенные данные",
+   "type": "verifies",
+   "at": "specs/module-discovery/spec.md:38"
+  },
+  {
+   "from": "scn:module-discovery/Объявления обрабатываются как недоверенные данные/YAML не конструирует исполняемый объект",
+   "to": "req:module-discovery/Объявления обрабатываются как недоверенные данные",
+   "type": "verifies",
+   "at": "specs/module-discovery/spec.md:43"
+  },
+  {
+   "from": "scn:module-discovery/Объявления обрабатываются как недоверенные данные/Бинарный README не становится объявлением",
+   "to": "req:module-discovery/Объявления обрабатываются как недоверенные данные",
+   "type": "verifies",
+   "at": "specs/module-discovery/spec.md:48"
+  },
+  {
+   "from": "req:module-discovery/Объявления обрабатываются как недоверенные данные",
+   "to": "rec:F-47",
+   "type": "traces",
+   "at": "specs/module-discovery/spec.md:52"
+  },
+  {
+   "from": "req:module-discovery/Объявления обрабатываются как недоверенные данные",
+   "to": "rec:F-47",
+   "type": "traces",
+   "at": "specs/module-discovery/spec.md:53"
+  },
+  {
+   "from": "cap:module-discovery",
+   "to": "req:module-discovery/Обход не зависит от первого уровня и Git",
+   "type": "contains",
+   "at": "specs/module-discovery/spec.md:55"
+  },
+  {
+   "from": "req:module-discovery/Обход не зависит от первого уровня и Git",
+   "to": "rec:F-16",
+   "type": "traces",
+   "at": "specs/module-discovery/spec.md:56"
+  },
+  {
+   "from": "req:module-discovery/Обход не зависит от первого уровня и Git",
+   "to": "rec:F-32",
+   "type": "traces",
+   "at": "specs/module-discovery/spec.md:56"
+  },
+  {
+   "from": "scn:module-discovery/Обход не зависит от первого уровня и Git/Корень и глубокий каталог без Git",
+   "to": "req:module-discovery/Обход не зависит от первого уровня и Git",
+   "type": "verifies",
+   "at": "specs/module-discovery/spec.md:58"
+  },
+  {
+   "from": "scn:module-discovery/Обход не зависит от первого уровня и Git/Служебный каталог исключён",
+   "to": "req:module-discovery/Обход не зависит от первого уровня и Git",
+   "type": "verifies",
+   "at": "specs/module-discovery/spec.md:63"
+  },
+  {
+   "from": "scn:module-discovery/Обход не зависит от первого уровня и Git/Игнорируемый Git файл",
+   "to": "req:module-discovery/Обход не зависит от первого уровня и Git",
+   "type": "verifies",
+   "at": "specs/module-discovery/spec.md:68"
+  },
+  {
+   "from": "scn:module-discovery/Обход не зависит от первого уровня и Git/Ссылка не обходит служебное исключение",
+   "to": "req:module-discovery/Обход не зависит от первого уровня и Git",
+   "type": "verifies",
+   "at": "specs/module-discovery/spec.md:73"
+  },
+  {
+   "from": "cap:module-discovery",
+   "to": "req:module-discovery/Файл относится к ближайшей объявленной границе",
+   "type": "contains",
+   "at": "specs/module-discovery/spec.md:80"
+  },
+  {
+   "from": "req:module-discovery/Файл относится к ближайшей объявленной границе",
+   "to": "rec:F-02",
+   "type": "traces",
+   "at": "specs/module-discovery/spec.md:81"
+  },
+  {
+   "from": "req:module-discovery/Файл относится к ближайшей объявленной границе",
+   "to": "rec:F-18",
+   "type": "traces",
+   "at": "specs/module-discovery/spec.md:81"
+  },
+  {
+   "from": "scn:module-discovery/Файл относится к ближайшей объявленной границе/Вложенный модуль клиента",
+   "to": "req:module-discovery/Файл относится к ближайшей объявленной границе",
+   "type": "verifies",
+   "at": "specs/module-discovery/spec.md:83"
+  },
+  {
+   "from": "scn:module-discovery/Файл относится к ближайшей объявленной границе/Файл вне границ",
+   "to": "req:module-discovery/Файл относится к ближайшей объявленной границе",
+   "type": "verifies",
+   "at": "specs/module-discovery/spec.md:88"
+  },
+  {
+   "from": "cap:module-discovery",
+   "to": "req:module-discovery/Неоднозначное имя модуля не разрешается догадкой",
+   "type": "contains",
+   "at": "specs/module-discovery/spec.md:95"
+  },
+  {
+   "from": "req:module-discovery/Неоднозначное имя модуля не разрешается догадкой",
+   "to": "rec:F-18",
+   "type": "traces",
+   "at": "specs/module-discovery/spec.md:96"
+  },
+  {
+   "from": "req:module-discovery/Неоднозначное имя модуля не разрешается догадкой",
+   "to": "rec:F-21",
+   "type": "traces",
+   "at": "specs/module-discovery/spec.md:96"
+  },
+  {
+   "from": "scn:module-discovery/Неоднозначное имя модуля не разрешается догадкой/Повтор внутри repo",
+   "to": "req:module-discovery/Неоднозначное имя модуля не разрешается догадкой",
+   "type": "verifies",
+   "at": "specs/module-discovery/spec.md:98"
+  },
+  {
+   "from": "scn:module-discovery/Неоднозначное имя модуля не разрешается догадкой/Одно имя разных repo",
+   "to": "req:module-discovery/Неоднозначное имя модуля не разрешается догадкой",
+   "type": "verifies",
+   "at": "specs/module-discovery/spec.md:103"
+  },
+  {
+   "from": "cap:module-discovery",
+   "to": "req:module-discovery/Зависимость читается из объявления README",
+   "type": "contains",
+   "at": "specs/module-discovery/spec.md:110"
+  },
+  {
+   "from": "req:module-discovery/Зависимость читается из объявления README",
+   "to": "rec:F-20",
+   "type": "traces",
+   "at": "specs/module-discovery/spec.md:111"
+  },
+  {
+   "from": "req:module-discovery/Зависимость читается из объявления README",
+   "to": "rec:F-35",
+   "type": "traces",
+   "at": "specs/module-discovery/spec.md:111"
+  },
+  {
+   "from": "scn:module-discovery/Зависимость читается из объявления README/Объявленная межрепозиторная зависимость",
+   "to": "req:module-discovery/Зависимость читается из объявления README",
+   "type": "verifies",
+   "at": "specs/module-discovery/spec.md:113"
+  },
+  {
+   "from": "scn:module-discovery/Зависимость читается из объявления README/Только упоминание в описании",
+   "to": "req:module-discovery/Зависимость читается из объявления README",
+   "type": "verifies",
+   "at": "specs/module-discovery/spec.md:118"
+  },
+  {
+   "from": "scn:module-discovery/Зависимость читается из объявления README/Цель отсутствует",
+   "to": "req:module-discovery/Зависимость читается из объявления README",
+   "type": "verifies",
+   "at": "specs/module-discovery/spec.md:123"
+  },
+  {
+   "from": "scn:module-discovery/Зависимость читается из объявления README/Цикл объявленных зависимостей сохраняется",
+   "to": "req:module-discovery/Зависимость читается из объявления README",
+   "type": "verifies",
+   "at": "specs/module-discovery/spec.md:128"
+  },
+  {
+   "from": "req:module-discovery/Зависимость читается из объявления README",
+   "to": "rec:F-41",
+   "type": "traces",
+   "at": "specs/module-discovery/spec.md:133"
+  },
+  {
+   "from": "cap:module-discovery",
+   "to": "req:module-discovery/Сторонние README остаются входными данными",
+   "type": "contains",
+   "at": "specs/module-discovery/spec.md:136"
+  },
+  {
+   "from": "req:module-discovery/Сторонние README остаются входными данными",
+   "to": "rec:F-07",
+   "type": "traces",
+   "at": "specs/module-discovery/spec.md:137"
+  },
+  {
+   "from": "req:module-discovery/Сторонние README остаются входными данными",
+   "to": "rec:F-25",
+   "type": "traces",
+   "at": "specs/module-discovery/spec.md:137"
+  },
+  {
+   "from": "req:module-discovery/Сторонние README остаются входными данными",
+   "to": "rec:F-35",
+   "type": "traces",
+   "at": "specs/module-discovery/spec.md:137"
+  },
+  {
+   "from": "scn:module-discovery/Сторонние README остаются входными данными/Нет нужного объявления у клиента",
+   "to": "req:module-discovery/Сторонние README остаются входными данными",
+   "type": "verifies",
+   "at": "specs/module-discovery/spec.md:139"
+  },
+  {
+   "from": "scn:module-discovery/Сторонние README остаются входными данными/Соглашение доступно владельцу",
+   "to": "req:module-discovery/Сторонние README остаются входными данными",
+   "type": "verifies",
+   "at": "specs/module-discovery/spec.md:144"
+  },
+  {
+   "from": "cap:module-discovery",
+   "to": "req:module-discovery/Ошибка источника не стирает доступную структуру",
+   "type": "contains",
+   "at": "specs/module-discovery/spec.md:151"
+  },
+  {
+   "from": "req:module-discovery/Ошибка источника не стирает доступную структуру",
+   "to": "rec:F-21",
+   "type": "traces",
+   "at": "specs/module-discovery/spec.md:152"
+  },
+  {
+   "from": "req:module-discovery/Ошибка источника не стирает доступную структуру",
+   "to": "rec:F-30",
+   "type": "traces",
+   "at": "specs/module-discovery/spec.md:152"
+  },
+  {
+   "from": "scn:module-discovery/Ошибка источника не стирает доступную структуру/Один недоступный сосед",
+   "to": "req:module-discovery/Ошибка источника не стирает доступную структуру",
+   "type": "verifies",
+   "at": "specs/module-discovery/spec.md:154"
+  },
+  {
+   "from": "scn:module-discovery/Ошибка источника не стирает доступную структуру/Нечитаемый README не скрывает соседний модуль",
+   "to": "req:module-discovery/Ошибка источника не стирает доступную структуру",
+   "type": "verifies",
+   "at": "specs/module-discovery/spec.md:159"
+  },
+  {
+   "from": "scn:module-discovery/Ошибка источника не стирает доступную структуру/Негодная кодировка README не обрывает доступный граф",
+   "to": "req:module-discovery/Ошибка источника не стирает доступную структуру",
+   "type": "verifies",
+   "at": "specs/module-discovery/spec.md:165"
+  },
+  {
+   "from": "cap:repository-survey",
+   "to": "req:repository-survey/Обследование репозиториев начинается в decisions",
+   "type": "contains",
+   "at": "specs/repository-survey/spec.md:9"
+  },
+  {
+   "from": "req:repository-survey/Обследование репозиториев начинается в decisions",
+   "to": "rec:F-26",
+   "type": "traces",
+   "at": "specs/repository-survey/spec.md:10"
+  },
+  {
+   "from": "req:repository-survey/Обследование репозиториев начинается в decisions",
+   "to": "rec:F-29",
+   "type": "traces",
+   "at": "specs/repository-survey/spec.md:10"
+  },
+  {
+   "from": "scn:repository-survey/Обследование репозиториев начинается в decisions/Первое обследование по intent",
+   "to": "req:repository-survey/Обследование репозиториев начинается в decisions",
+   "type": "verifies",
+   "at": "specs/repository-survey/spec.md:12"
+  },
+  {
+   "from": "scn:repository-survey/Обследование репозиториев начинается в decisions/Репозиторий найден исследованием",
+   "to": "req:repository-survey/Обследование репозиториев начинается в decisions",
+   "type": "verifies",
+   "at": "specs/repository-survey/spec.md:17"
+  },
+  {
+   "from": "cap:repository-survey",
+   "to": "req:repository-survey/Состав компонентов и репозиториев хранится переносимо",
+   "type": "contains",
+   "at": "specs/repository-survey/spec.md:24"
+  },
+  {
+   "from": "req:repository-survey/Состав компонентов и репозиториев хранится переносимо",
+   "to": "rec:F-17",
+   "type": "traces",
+   "at": "specs/repository-survey/spec.md:25"
+  },
+  {
+   "from": "scn:repository-survey/Состав компонентов и репозиториев хранится переносимо/Два репозитория одного компонента",
+   "to": "req:repository-survey/Состав компонентов и репозиториев хранится переносимо",
+   "type": "verifies",
+   "at": "specs/repository-survey/spec.md:27"
+  },
+  {
+   "from": "scn:repository-survey/Состав компонентов и репозиториев хранится переносимо/Коммит не подменяет рабочие файлы",
+   "to": "req:repository-survey/Состав компонентов и репозиториев хранится переносимо",
+   "type": "verifies",
+   "at": "specs/repository-survey/spec.md:32"
+  },
+  {
+   "from": "cap:repository-survey",
+   "to": "req:repository-survey/Результат обследования различает четыре состояния",
+   "type": "contains",
+   "at": "specs/repository-survey/spec.md:39"
+  },
+  {
+   "from": "req:repository-survey/Результат обследования различает четыре состояния",
+   "to": "rec:F-21",
+   "type": "traces",
+   "at": "specs/repository-survey/spec.md:40"
+  },
+  {
+   "from": "req:repository-survey/Результат обследования различает четыре состояния",
+   "to": "rec:F-26",
+   "type": "traces",
+   "at": "specs/repository-survey/spec.md:40"
+  },
+  {
+   "from": "req:repository-survey/Результат обследования различает четыре состояния",
+   "to": "rec:F-30",
+   "type": "traces",
+   "at": "specs/repository-survey/spec.md:40"
+  },
+  {
+   "from": "scn:repository-survey/Результат обследования различает четыре состояния/Обследованный репозиторий без модулей",
+   "to": "req:repository-survey/Результат обследования различает четыре состояния",
+   "type": "verifies",
+   "at": "specs/repository-survey/spec.md:42"
+  },
+  {
+   "from": "scn:repository-survey/Результат обследования различает четыре состояния/Клон недоступен",
+   "to": "req:repository-survey/Результат обследования различает четыре состояния",
+   "type": "verifies",
+   "at": "specs/repository-survey/spec.md:47"
+  },
+  {
+   "from": "scn:repository-survey/Результат обследования различает четыре состояния/Обследование ещё не записано",
+   "to": "req:repository-survey/Результат обследования различает четыре состояния",
+   "type": "verifies",
+   "at": "specs/repository-survey/spec.md:52"
+  },
+  {
+   "from": "scn:repository-survey/Результат обследования различает четыре состояния/Одно негодное объявление не доказывает отсутствие модулей",
+   "to": "req:repository-survey/Результат обследования различает четыре состояния",
+   "type": "verifies",
+   "at": "specs/repository-survey/spec.md:57"
+  },
+  {
+   "from": "req:repository-survey/Результат обследования различает четыре состояния",
+   "to": "rec:F-39",
+   "type": "traces",
+   "at": "specs/repository-survey/spec.md:62"
+  },
+  {
+   "from": "cap:repository-survey",
+   "to": "req:repository-survey/Repo разрешается через явно названный корень",
+   "type": "contains",
+   "at": "specs/repository-survey/spec.md:65"
+  },
+  {
+   "from": "req:repository-survey/Repo разрешается через явно названный корень",
+   "to": "rec:F-17",
+   "type": "traces",
+   "at": "specs/repository-survey/spec.md:66"
+  },
+  {
+   "from": "req:repository-survey/Repo разрешается через явно названный корень",
+   "to": "rec:F-31",
+   "type": "traces",
+   "at": "specs/repository-survey/spec.md:66"
+  },
+  {
+   "from": "scn:repository-survey/Repo разрешается через явно названный корень/Текущий и внешний репозитории",
+   "to": "req:repository-survey/Repo разрешается через явно названный корень",
+   "type": "verifies",
+   "at": "specs/repository-survey/spec.md:68"
+  },
+  {
+   "from": "scn:repository-survey/Repo разрешается через явно названный корень/Посторонний префикс улик",
+   "to": "req:repository-survey/Repo разрешается через явно названный корень",
+   "type": "verifies",
+   "at": "specs/repository-survey/spec.md:73"
+  },
+  {
+   "from": "scn:repository-survey/Repo разрешается через явно названный корень/Неизвестный псевдоним не подменяется пустым префиксом",
+   "to": "req:repository-survey/Repo разрешается через явно названный корень",
+   "type": "verifies",
+   "at": "specs/repository-survey/spec.md:78"
+  },
+  {
+   "from": "req:repository-survey/Repo разрешается через явно названный корень",
+   "to": "rec:F-46",
+   "type": "traces",
+   "at": "specs/repository-survey/spec.md:84"
+  },
+  {
+   "from": "cap:repository-survey",
+   "to": "req:repository-survey/Структурные источники остаются внутри разрешённого корня",
+   "type": "contains",
+   "at": "specs/repository-survey/spec.md:86"
+  },
+  {
+   "from": "req:repository-survey/Структурные источники остаются внутри разрешённого корня",
+   "to": "rec:F-46",
+   "type": "traces",
+   "at": "specs/repository-survey/spec.md:87"
+  },
+  {
+   "from": "scn:repository-survey/Структурные источники остаются внутри разрешённого корня/Обход границы через путь или ссылку",
+   "to": "req:repository-survey/Структурные источники остаются внутри разрешённого корня",
+   "type": "verifies",
+   "at": "specs/repository-survey/spec.md:89"
+  },
+  {
+   "from": "scn:repository-survey/Структурные источники остаются внутри разрешённого корня/Цикл каталогов через ссылку",
+   "to": "req:repository-survey/Структурные источники остаются внутри разрешённого корня",
+   "type": "verifies",
+   "at": "specs/repository-survey/spec.md:94"
+  },
+  {
+   "from": "req:repository-survey/Структурные источники остаются внутри разрешённого корня",
+   "to": "rec:F-46",
+   "type": "traces",
+   "at": "specs/repository-survey/spec.md:98"
+  },
+  {
+   "from": "req:repository-survey/Структурные источники остаются внутри разрешённого корня",
+   "to": "rec:F-46",
+   "type": "traces",
+   "at": "specs/repository-survey/spec.md:99"
+  },
+  {
+   "from": "cap:repository-survey",
+   "to": "req:repository-survey/Модель изменяет только своё расширение metadata",
+   "type": "contains",
+   "at": "specs/repository-survey/spec.md:101"
+  },
+  {
+   "from": "req:repository-survey/Модель изменяет только своё расширение metadata",
+   "to": "rec:F-36",
+   "type": "traces",
+   "at": "specs/repository-survey/spec.md:102"
+  },
+  {
+   "from": "scn:repository-survey/Модель изменяет только своё расширение metadata/Сохранение посторонних данных",
+   "to": "req:repository-survey/Модель изменяет только своё расширение metadata",
+   "type": "verifies",
+   "at": "specs/repository-survey/spec.md:104"
+  },
+  {
+   "from": "scn:repository-survey/Модель изменяет только своё расширение metadata/Состав metadata изменился после чтения",
+   "to": "req:repository-survey/Модель изменяет только своё расширение metadata",
+   "type": "verifies",
+   "at": "specs/repository-survey/spec.md:109"
+  },
+  {
+   "from": "req:repository-survey/Модель изменяет только своё расширение metadata",
+   "to": "rec:F-38",
+   "type": "traces",
+   "at": "specs/repository-survey/spec.md:114"
+  },
+  {
+   "from": "cap:repository-survey",
+   "to": "req:repository-survey/Новое чтение не заменяется прежним результатом обследования",
+   "type": "contains",
+   "at": "specs/repository-survey/spec.md:117"
+  },
+  {
+   "from": "req:repository-survey/Новое чтение не заменяется прежним результатом обследования",
+   "to": "rec:F-16",
+   "type": "traces",
+   "at": "specs/repository-survey/spec.md:118"
+  },
+  {
+   "from": "req:repository-survey/Новое чтение не заменяется прежним результатом обследования",
+   "to": "rec:F-30",
+   "type": "traces",
+   "at": "specs/repository-survey/spec.md:118"
+  },
+  {
+   "from": "scn:repository-survey/Новое чтение не заменяется прежним результатом обследования/Модуль появился после обследования",
+   "to": "req:repository-survey/Новое чтение не заменяется прежним результатом обследования",
+   "type": "verifies",
+   "at": "specs/repository-survey/spec.md:120"
+  },
+  {
+   "from": "scn:repository-survey/Новое чтение не заменяется прежним результатом обследования/Повтор без изменений",
+   "to": "req:repository-survey/Новое чтение не заменяется прежним результатом обследования",
+   "type": "verifies",
+   "at": "specs/repository-survey/spec.md:125"
+  },
+  {
+   "from": "cap:trace-conventions",
+   "to": "req:trace-conventions/Требование явно объявляет модули и файлы реализации",
+   "type": "contains",
+   "at": "specs/trace-conventions/spec.md:5"
+  },
+  {
+   "from": "req:trace-conventions/Требование явно объявляет модули и файлы реализации",
+   "to": "rec:F-19",
+   "type": "traces",
+   "at": "specs/trace-conventions/spec.md:6"
+  },
+  {
+   "from": "req:trace-conventions/Требование явно объявляет модули и файлы реализации",
+   "to": "rec:F-34",
+   "type": "traces",
+   "at": "specs/trace-conventions/spec.md:6"
+  },
+  {
+   "from": "scn:trace-conventions/Требование явно объявляет модули и файлы реализации/Два модуля в одном блоке",
+   "to": "req:trace-conventions/Требование явно объявляет модули и файлы реализации",
+   "type": "verifies",
+   "at": "specs/trace-conventions/spec.md:8"
+  },
+  {
+   "from": "scn:trace-conventions/Требование явно объявляет модули и файлы реализации/Без аннотации",
+   "to": "req:trace-conventions/Требование явно объявляет модули и файлы реализации",
+   "type": "verifies",
+   "at": "specs/trace-conventions/spec.md:13"
+  },
+  {
+   "from": "cap:trace-conventions",
+   "to": "req:trace-conventions/Синхронизация сохраняет аннотацию реализации при требовании",
+   "type": "contains",
+   "at": "specs/trace-conventions/spec.md:20"
+  },
+  {
+   "from": "req:trace-conventions/Синхронизация сохраняет аннотацию реализации при требовании",
+   "to": "rec:F-04",
+   "type": "traces",
+   "at": "specs/trace-conventions/spec.md:21"
+  },
+  {
+   "from": "req:trace-conventions/Синхронизация сохраняет аннотацию реализации при требовании",
+   "to": "rec:F-34",
+   "type": "traces",
+   "at": "specs/trace-conventions/spec.md:21"
+  },
+  {
+   "from": "scn:trace-conventions/Синхронизация сохраняет аннотацию реализации при требовании/Аннотация рядом со следами проб",
+   "to": "req:trace-conventions/Синхронизация сохраняет аннотацию реализации при требовании",
+   "type": "verifies",
+   "at": "specs/trace-conventions/spec.md:23"
+  },
+  {
+   "from": "cap:trace-diagram",
+   "to": "req:trace-diagram/Конфиг экспорта знает структурные виды",
+   "type": "contains",
+   "at": "specs/trace-diagram/spec.md:5"
+  },
+  {
+   "from": "req:trace-diagram/Конфиг экспорта знает структурные виды",
+   "to": "rec:F-24",
+   "type": "traces",
+   "at": "specs/trace-diagram/spec.md:6"
+  },
+  {
+   "from": "req:trace-diagram/Конфиг экспорта знает структурные виды",
+   "to": "rec:F-33",
+   "type": "traces",
+   "at": "specs/trace-diagram/spec.md:6"
+  },
+  {
+   "from": "scn:trace-diagram/Конфиг экспорта знает структурные виды/Новые виды допустимы",
+   "to": "req:trace-diagram/Конфиг экспорта знает структурные виды",
+   "type": "verifies",
+   "at": "specs/trace-diagram/spec.md:8"
+  },
+  {
+   "from": "cap:trace-diagram",
+   "to": "req:trace-diagram/Скрипт выдаёт текст диаграммы по выбору",
+   "type": "contains",
+   "at": "specs/trace-diagram/spec.md:17"
+  },
+  {
+   "from": "req:trace-diagram/Скрипт выдаёт текст диаграммы по выбору",
+   "to": "rec:F-24",
+   "type": "traces",
+   "at": "specs/trace-diagram/spec.md:18"
+  },
+  {
+   "from": "req:trace-diagram/Скрипт выдаёт текст диаграммы по выбору",
+   "to": "rec:F-33",
+   "type": "traces",
+   "at": "specs/trace-diagram/spec.md:18"
+  },
+  {
+   "from": "scn:trace-diagram/Скрипт выдаёт текст диаграммы по выбору/Выбрана capability",
+   "to": "req:trace-diagram/Скрипт выдаёт текст диаграммы по выбору",
+   "type": "verifies",
+   "at": "specs/trace-diagram/spec.md:20"
+  },
+  {
+   "from": "scn:trace-diagram/Скрипт выдаёт текст диаграммы по выбору/Выбрано требование",
+   "to": "req:trace-diagram/Скрипт выдаёт текст диаграммы по выбору",
+   "type": "verifies",
+   "at": "specs/trace-diagram/spec.md:25"
+  },
+  {
+   "from": "scn:trace-diagram/Скрипт выдаёт текст диаграммы по выбору/Одно имя в двух capability",
+   "to": "req:trace-diagram/Скрипт выдаёт текст диаграммы по выбору",
+   "type": "verifies",
+   "at": "specs/trace-diagram/spec.md:30"
+  },
+  {
+   "from": "scn:trace-diagram/Скрипт выдаёт текст диаграммы по выбору/Требование с реализацией",
+   "to": "req:trace-diagram/Скрипт выдаёт текст диаграммы по выбору",
+   "type": "verifies",
+   "at": "specs/trace-diagram/spec.md:36"
+  },
+  {
+   "from": "cap:trace-graph",
+   "to": "req:trace-graph/Структурная ось содержит все объявленные модули состава",
+   "type": "contains",
+   "at": "specs/trace-graph/spec.md:5"
+  },
+  {
+   "from": "req:trace-graph/Структурная ось содержит все объявленные модули состава",
+   "to": "rec:F-01",
+   "type": "traces",
+   "at": "specs/trace-graph/spec.md:6"
+  },
+  {
+   "from": "req:trace-graph/Структурная ось содержит все объявленные модули состава",
+   "to": "rec:F-02",
+   "type": "traces",
+   "at": "specs/trace-graph/spec.md:6"
+  },
+  {
+   "from": "req:trace-graph/Структурная ось содержит все объявленные модули состава",
+   "to": "rec:F-16",
+   "type": "traces",
+   "at": "specs/trace-graph/spec.md:6"
+  },
+  {
+   "from": "req:trace-graph/Структурная ось содержит все объявленные модули состава",
+   "to": "rec:F-17",
+   "type": "traces",
+   "at": "specs/trace-graph/spec.md:6"
+  },
+  {
+   "from": "scn:trace-graph/Структурная ось содержит все объявленные модули состава/Модуль без аннотации реализации",
+   "to": "req:trace-graph/Структурная ось содержит все объявленные модули состава",
+   "type": "verifies",
+   "at": "specs/trace-graph/spec.md:8"
+  },
+  {
+   "from": "scn:trace-graph/Структурная ось содержит все объявленные модули состава/Два repo одного компонента",
+   "to": "req:trace-graph/Структурная ось содержит все объявленные модули состава",
+   "type": "verifies",
+   "at": "specs/trace-graph/spec.md:13"
+  },
+  {
+   "from": "req:trace-graph/Структурная ось содержит все объявленные модули состава",
+   "to": "rec:F-45",
+   "type": "traces",
+   "at": "specs/trace-graph/spec.md:18"
+  },
+  {
+   "from": "cap:trace-graph",
+   "to": "req:trace-graph/Структурные id различают репозиторий и модуль",
+   "type": "contains",
+   "at": "specs/trace-graph/spec.md:20"
+  },
+  {
+   "from": "req:trace-graph/Структурные id различают репозиторий и модуль",
+   "to": "rec:F-04",
+   "type": "traces",
+   "at": "specs/trace-graph/spec.md:21"
+  },
+  {
+   "from": "req:trace-graph/Структурные id различают репозиторий и модуль",
+   "to": "rec:F-14",
+   "type": "traces",
+   "at": "specs/trace-graph/spec.md:21"
+  },
+  {
+   "from": "req:trace-graph/Структурные id различают репозиторий и модуль",
+   "to": "rec:F-17",
+   "type": "traces",
+   "at": "specs/trace-graph/spec.md:21"
+  },
+  {
+   "from": "req:trace-graph/Структурные id различают репозиторий и модуль",
+   "to": "rec:F-31",
+   "type": "traces",
+   "at": "specs/trace-graph/spec.md:21"
+  },
+  {
+   "from": "scn:trace-graph/Структурные id различают репозиторий и модуль/Одно имя модулей",
+   "to": "req:trace-graph/Структурные id различают репозиторий и модуль",
+   "type": "verifies",
+   "at": "specs/trace-graph/spec.md:23"
+  },
+  {
+   "from": "scn:trace-graph/Структурные id различают репозиторий и модуль/Другой каталог клона",
+   "to": "req:trace-graph/Структурные id различают репозиторий и модуль",
+   "type": "verifies",
+   "at": "specs/trace-graph/spec.md:28"
+  },
+  {
+   "from": "scn:trace-graph/Структурные id различают репозиторий и модуль/Разделитель в частях имени не создаёт коллизию id",
+   "to": "req:trace-graph/Структурные id различают репозиторий и модуль",
+   "type": "verifies",
+   "at": "specs/trace-graph/spec.md:33"
+  },
+  {
+   "from": "req:trace-graph/Структурные id различают репозиторий и модуль",
+   "to": "rec:F-42",
+   "type": "traces",
+   "at": "specs/trace-graph/spec.md:38"
+  },
+  {
+   "from": "cap:trace-graph",
+   "to": "req:trace-graph/Явная реализация и зависимости сохраняют происхождение",
+   "type": "contains",
+   "at": "specs/trace-graph/spec.md:41"
+  },
+  {
+   "from": "req:trace-graph/Явная реализация и зависимости сохраняют происхождение",
+   "to": "rec:F-19",
+   "type": "traces",
+   "at": "specs/trace-graph/spec.md:42"
+  },
+  {
+   "from": "req:trace-graph/Явная реализация и зависимости сохраняют происхождение",
+   "to": "rec:F-20",
+   "type": "traces",
+   "at": "specs/trace-graph/spec.md:42"
+  },
+  {
+   "from": "req:trace-graph/Явная реализация и зависимости сохраняют происхождение",
+   "to": "rec:F-34",
+   "type": "traces",
+   "at": "specs/trace-graph/spec.md:42"
+  },
+  {
+   "from": "req:trace-graph/Явная реализация и зависимости сохраняют происхождение",
+   "to": "rec:F-35",
+   "type": "traces",
+   "at": "specs/trace-graph/spec.md:42"
+  },
+  {
+   "from": "scn:trace-graph/Явная реализация и зависимости сохраняют происхождение/Сквозная реализация",
+   "to": "req:trace-graph/Явная реализация и зависимости сохраняют происхождение",
+   "type": "verifies",
+   "at": "specs/trace-graph/spec.md:44"
+  },
+  {
+   "from": "scn:trace-graph/Явная реализация и зависимости сохраняют происхождение/Улика о старом коде",
+   "to": "req:trace-graph/Явная реализация и зависимости сохраняют происхождение",
+   "type": "verifies",
+   "at": "specs/trace-graph/spec.md:49"
+  },
+  {
+   "from": "scn:trace-graph/Явная реализация и зависимости сохраняют происхождение/Зависимость не означает реализацию",
+   "to": "req:trace-graph/Явная реализация и зависимости сохраняют происхождение",
+   "type": "verifies",
+   "at": "specs/trace-graph/spec.md:54"
+  },
+  {
+   "from": "scn:trace-graph/Явная реализация и зависимости сохраняют происхождение/Модуль и приписанный ему файл противоречат друг другу",
+   "to": "req:trace-graph/Явная реализация и зависимости сохраняют происхождение",
+   "type": "verifies",
+   "at": "specs/trace-graph/spec.md:59"
+  },
+  {
+   "from": "req:trace-graph/Явная реализация и зависимости сохраняют происхождение",
+   "to": "rec:F-43",
+   "type": "traces",
+   "at": "specs/trace-graph/spec.md:64"
+  },
+  {
+   "from": "cap:trace-graph",
+   "to": "req:trace-graph/Файловые узлы ограничены используемой трассировкой",
+   "type": "contains",
+   "at": "specs/trace-graph/spec.md:67"
+  },
+  {
+   "from": "req:trace-graph/Файловые узлы ограничены используемой трассировкой",
+   "to": "rec:F-02",
+   "type": "traces",
+   "at": "specs/trace-graph/spec.md:68"
+  },
+  {
+   "from": "req:trace-graph/Файловые узлы ограничены используемой трассировкой",
+   "to": "rec:F-18",
+   "type": "traces",
+   "at": "specs/trace-graph/spec.md:68"
+  },
+  {
+   "from": "req:trace-graph/Файловые узлы ограничены используемой трассировкой",
+   "to": "rec:F-33",
+   "type": "traces",
+   "at": "specs/trace-graph/spec.md:68"
+  },
+  {
+   "from": "scn:trace-graph/Файловые узлы ограничены используемой трассировкой/Неназванный исходник",
+   "to": "req:trace-graph/Файловые узлы ограничены используемой трассировкой",
+   "type": "verifies",
+   "at": "specs/trace-graph/spec.md:70"
+  },
+  {
+   "from": "cap:trace-graph",
+   "to": "req:trace-graph/Модуль без локальной связи не получает глобальную оценку покрытия",
+   "type": "contains",
+   "at": "specs/trace-graph/spec.md:77"
+  },
+  {
+   "from": "req:trace-graph/Модуль без локальной связи не получает глобальную оценку покрытия",
+   "to": "rec:F-45",
+   "type": "traces",
+   "at": "specs/trace-graph/spec.md:78"
+  },
+  {
+   "from": "scn:trace-graph/Модуль без локальной связи не получает глобальную оценку покрытия/Независимый модуль не объявлен нереализованным",
+   "to": "req:trace-graph/Модуль без локальной связи не получает глобальную оценку покрытия",
+   "type": "verifies",
+   "at": "specs/trace-graph/spec.md:80"
+  },
+  {
+   "from": "req:trace-graph/Модуль без локальной связи не получает глобальную оценку покрытия",
+   "to": "rec:F-45",
+   "type": "traces",
+   "at": "specs/trace-graph/spec.md:86"
+  },
+  {
+   "from": "cap:trace-graph",
+   "to": "req:trace-graph/Граф собирается из файлов изменения",
+   "type": "contains",
+   "at": "specs/trace-graph/spec.md:90"
+  },
+  {
+   "from": "req:trace-graph/Граф собирается из файлов изменения",
+   "to": "rec:F-05",
+   "type": "traces",
+   "at": "specs/trace-graph/spec.md:91"
+  },
+  {
+   "from": "req:trace-graph/Граф собирается из файлов изменения",
+   "to": "rec:F-16",
+   "type": "traces",
+   "at": "specs/trace-graph/spec.md:91"
+  },
+  {
+   "from": "scn:trace-graph/Граф собирается из файлов изменения/Только что созданное изменение",
+   "to": "req:trace-graph/Граф собирается из файлов изменения",
+   "type": "verifies",
+   "at": "specs/trace-graph/spec.md:93"
+  },
+  {
+   "from": "scn:trace-graph/Граф собирается из файлов изменения/Граф растёт вместе с артефактами",
+   "to": "req:trace-graph/Граф собирается из файлов изменения",
+   "type": "verifies",
+   "at": "specs/trace-graph/spec.md:98"
+  },
+  {
+   "from": "scn:trace-graph/Граф собирается из файлов изменения/Связь правится через файл",
+   "to": "req:trace-graph/Граф собирается из файлов изменения",
+   "type": "verifies",
+   "at": "specs/trace-graph/spec.md:103"
+  },
+  {
+   "from": "scn:trace-graph/Граф собирается из файлов изменения/Журнал не разбирается",
+   "to": "req:trace-graph/Граф собирается из файлов изменения",
+   "type": "verifies",
+   "at": "specs/trace-graph/spec.md:108"
+  },
+  {
+   "from": "scn:trace-graph/Граф собирается из файлов изменения/Журнал негоден по схеме",
+   "to": "req:trace-graph/Граф собирается из файлов изменения",
+   "type": "verifies",
+   "at": "specs/trace-graph/spec.md:114"
+  },
+  {
+   "from": "scn:trace-graph/Граф собирается из файлов изменения/Внешний README изменился",
+   "to": "req:trace-graph/Граф собирается из файлов изменения",
+   "type": "verifies",
+   "at": "specs/trace-graph/spec.md:120"
+  },
+  {
+   "from": "cap:trace-graph",
+   "to": "req:trace-graph/Id читаемы, файл несёт версию формата",
+   "type": "contains",
+   "at": "specs/trace-graph/spec.md:127"
+  },
+  {
+   "from": "req:trace-graph/Id читаемы, файл несёт версию формата",
+   "to": "rec:F-14",
+   "type": "traces",
+   "at": "specs/trace-graph/spec.md:128"
+  },
+  {
+   "from": "scn:trace-graph/Id читаемы, файл несёт версию формата/Одно имя в двух capability",
+   "to": "req:trace-graph/Id читаемы, файл несёт версию формата",
+   "type": "verifies",
+   "at": "specs/trace-graph/spec.md:130"
+  },
+  {
+   "from": "scn:trace-graph/Id читаемы, файл несёт версию формата/Переименование меняет id",
+   "to": "req:trace-graph/Id читаемы, файл несёт версию формата",
+   "type": "verifies",
+   "at": "specs/trace-graph/spec.md:135"
+  },
+  {
+   "from": "scn:trace-graph/Id читаемы, файл несёт версию формата/Две ветки одного механизма",
+   "to": "req:trace-graph/Id читаемы, файл несёт версию формата",
+   "type": "verifies",
+   "at": "specs/trace-graph/spec.md:140"
+  },
+  {
+   "from": "scn:trace-graph/Id читаемы, файл несёт версию формата/Снимок прежнего формата",
+   "to": "req:trace-graph/Id читаемы, файл несёт версию формата",
+   "type": "verifies",
+   "at": "specs/trace-graph/spec.md:145"
+  },
+  {
+   "from": "scn:trace-graph/Id читаемы, файл несёт версию формата/Прежний поддерживаемый файл",
+   "to": "req:trace-graph/Id читаемы, файл несёт версию формата",
+   "type": "verifies",
+   "at": "specs/trace-graph/spec.md:150"
+  },
+  {
+   "from": "scn:trace-graph/Id читаемы, файл несёт версию формата/Перенос модуля не меняет требование",
+   "to": "req:trace-graph/Id читаемы, файл несёт версию формата",
+   "type": "verifies",
+   "at": "specs/trace-graph/spec.md:155"
+  },
+  {
+   "from": "cap:trace-signals",
+   "to": "req:trace-signals/Отчёт различает отсутствие и неполноту структурных данных",
+   "type": "contains",
+   "at": "specs/trace-signals/spec.md:5"
+  },
+  {
+   "from": "req:trace-signals/Отчёт различает отсутствие и неполноту структурных данных",
+   "to": "rec:F-21",
+   "type": "traces",
+   "at": "specs/trace-signals/spec.md:6"
+  },
+  {
+   "from": "req:trace-signals/Отчёт различает отсутствие и неполноту структурных данных",
+   "to": "rec:F-26",
+   "type": "traces",
+   "at": "specs/trace-signals/spec.md:6"
+  },
+  {
+   "from": "req:trace-signals/Отчёт различает отсутствие и неполноту структурных данных",
+   "to": "rec:F-30",
+   "type": "traces",
+   "at": "specs/trace-signals/spec.md:6"
+  },
+  {
+   "from": "scn:trace-signals/Отчёт различает отсутствие и неполноту структурных данных/Разные причины отсутствия узлов",
+   "to": "req:trace-signals/Отчёт различает отсутствие и неполноту структурных данных",
+   "type": "verifies",
+   "at": "specs/trace-signals/spec.md:8"
+  },
+  {
+   "from": "scn:trace-signals/Отчёт различает отсутствие и неполноту структурных данных/Опечатка имени",
+   "to": "req:trace-signals/Отчёт различает отсутствие и неполноту структурных данных",
+   "type": "verifies",
+   "at": "specs/trace-signals/spec.md:13"
+  },
+  {
+   "from": "cap:trace-signals",
+   "to": "req:trace-signals/Структурные сигналы используют существующие группы",
+   "type": "contains",
+   "at": "specs/trace-signals/spec.md:20"
+  },
+  {
+   "from": "req:trace-signals/Структурные сигналы используют существующие группы",
+   "to": "rec:F-21",
+   "type": "traces",
+   "at": "specs/trace-signals/spec.md:21"
+  },
+  {
+   "from": "req:trace-signals/Структурные сигналы используют существующие группы",
+   "to": "rec:F-30",
+   "type": "traces",
+   "at": "specs/trace-signals/spec.md:21"
+  },
+  {
+   "from": "scn:trace-signals/Структурные сигналы используют существующие группы/Ссылка и недоступный источник",
+   "to": "req:trace-signals/Структурные сигналы используют существующие группы",
+   "type": "verifies",
+   "at": "specs/trace-signals/spec.md:23"
+  },
+  {
+   "from": "cap:trace-signals",
+   "to": "req:trace-signals/Отчёт называет закрытый состав сигналов",
+   "type": "contains",
+   "at": "specs/trace-signals/spec.md:32"
+  },
+  {
+   "from": "req:trace-signals/Отчёт называет закрытый состав сигналов",
+   "to": "rec:F-21",
+   "type": "traces",
+   "at": "specs/trace-signals/spec.md:33"
+  },
+  {
+   "from": "req:trace-signals/Отчёт называет закрытый состав сигналов",
+   "to": "rec:F-30",
+   "type": "traces",
+   "at": "specs/trace-signals/spec.md:33"
+  },
+  {
+   "from": "scn:trace-signals/Отчёт называет закрытый состав сигналов/Критерий без требования",
+   "to": "req:trace-signals/Отчёт называет закрытый состав сигналов",
+   "type": "verifies",
+   "at": "specs/trace-signals/spec.md:35"
+  },
+  {
+   "from": "scn:trace-signals/Отчёт называет закрытый состав сигналов/Решение об объёме",
+   "to": "req:trace-signals/Отчёт называет закрытый состав сигналов",
+   "type": "verifies",
+   "at": "specs/trace-signals/spec.md:40"
+  },
+  {
+   "from": "scn:trace-signals/Отчёт называет закрытый состав сигналов/Одно имя у двух требований capability",
+   "to": "req:trace-signals/Отчёт называет закрытый состав сигналов",
+   "type": "verifies",
+   "at": "specs/trace-signals/spec.md:45"
+  },
+  {
+   "from": "scn:trace-signals/Отчёт называет закрытый состав сигналов/Тяжёлое раньше, чем раннее по файлу",
+   "to": "req:trace-signals/Отчёт называет закрытый состав сигналов",
+   "type": "verifies",
+   "at": "specs/trace-signals/spec.md:51"
+  },
+  {
+   "from": "scn:trace-signals/Отчёт называет закрытый состав сигналов/Неразрешённая структурная ссылка",
+   "to": "req:trace-signals/Отчёт называет закрытый состав сигналов",
+   "type": "verifies",
+   "at": "specs/trace-signals/spec.md:56"
+  },
+  {
+   "from": "cap:trace-snapshot",
+   "to": "req:trace-snapshot/Снимок сохраняет нормализованную структуру и состояния",
+   "type": "contains",
+   "at": "specs/trace-snapshot/spec.md:5"
+  },
+  {
+   "from": "req:trace-snapshot/Снимок сохраняет нормализованную структуру и состояния",
+   "to": "rec:F-22",
+   "type": "traces",
+   "at": "specs/trace-snapshot/spec.md:6"
+  },
+  {
+   "from": "req:trace-snapshot/Снимок сохраняет нормализованную структуру и состояния",
+   "to": "rec:F-37",
+   "type": "traces",
+   "at": "specs/trace-snapshot/spec.md:6"
+  },
+  {
+   "from": "scn:trace-snapshot/Снимок сохраняет нормализованную структуру и состояния/Клон после заморозки недоступен",
+   "to": "req:trace-snapshot/Снимок сохраняет нормализованную структуру и состояния",
+   "type": "verifies",
+   "at": "specs/trace-snapshot/spec.md:8"
+  },
+  {
+   "from": "scn:trace-snapshot/Снимок сохраняет нормализованную структуру и состояния/Декларация и её хеш относятся к одной прочитанной версии",
+   "to": "req:trace-snapshot/Снимок сохраняет нормализованную структуру и состояния",
+   "type": "verifies",
+   "at": "specs/trace-snapshot/spec.md:13"
+  },
+  {
+   "from": "req:trace-snapshot/Снимок сохраняет нормализованную структуру и состояния",
+   "to": "rec:F-44",
+   "type": "traces",
+   "at": "specs/trace-snapshot/spec.md:18"
+  },
+  {
+   "from": "cap:trace-snapshot",
+   "to": "req:trace-snapshot/Диагностика и снимок не копируют приватные входные данные",
+   "type": "contains",
+   "at": "specs/trace-snapshot/spec.md:21"
+  },
+  {
+   "from": "req:trace-snapshot/Диагностика и снимок не копируют приватные входные данные",
+   "to": "rec:F-37",
+   "type": "traces",
+   "at": "specs/trace-snapshot/spec.md:22"
+  },
+  {
+   "from": "req:trace-snapshot/Диагностика и снимок не копируют приватные входные данные",
+   "to": "rec:F-46",
+   "type": "traces",
+   "at": "specs/trace-snapshot/spec.md:22"
+  },
+  {
+   "from": "scn:trace-snapshot/Диагностика и снимок не копируют приватные входные данные/Ошибка YAML не раскрывает приватный документ",
+   "to": "req:trace-snapshot/Диагностика и снимок не копируют приватные входные данные",
+   "type": "verifies",
+   "at": "specs/trace-snapshot/spec.md:24"
+  },
+  {
+   "from": "scn:trace-snapshot/Диагностика и снимок не копируют приватные входные данные/Снимок содержит декларацию без полного README",
+   "to": "req:trace-snapshot/Диагностика и снимок не копируют приватные входные данные",
+   "type": "verifies",
+   "at": "specs/trace-snapshot/spec.md:29"
+  },
+  {
+   "from": "req:trace-snapshot/Диагностика и снимок не копируют приватные входные данные",
+   "to": "rec:F-46",
+   "type": "traces",
+   "at": "specs/trace-snapshot/spec.md:33"
+  },
+  {
+   "from": "req:trace-snapshot/Диагностика и снимок не копируют приватные входные данные",
+   "to": "rec:F-46",
+   "type": "traces",
+   "at": "specs/trace-snapshot/spec.md:34"
+  },
+  {
+   "from": "cap:trace-snapshot",
+   "to": "req:trace-snapshot/Состав README входит в проверку дрейфа",
+   "type": "contains",
+   "at": "specs/trace-snapshot/spec.md:36"
+  },
+  {
+   "from": "req:trace-snapshot/Состав README входит в проверку дрейфа",
+   "to": "rec:F-22",
+   "type": "traces",
+   "at": "specs/trace-snapshot/spec.md:37"
+  },
+  {
+   "from": "req:trace-snapshot/Состав README входит в проверку дрейфа",
+   "to": "rec:F-30",
+   "type": "traces",
+   "at": "specs/trace-snapshot/spec.md:37"
+  },
+  {
+   "from": "req:trace-snapshot/Состав README входит в проверку дрейфа",
+   "to": "rec:F-37",
+   "type": "traces",
+   "at": "specs/trace-snapshot/spec.md:37"
+  },
+  {
+   "from": "scn:trace-snapshot/Состав README входит в проверку дрейфа/Новый модуль после freeze",
+   "to": "req:trace-snapshot/Состав README входит в проверку дрейфа",
+   "type": "verifies",
+   "at": "specs/trace-snapshot/spec.md:39"
+  },
+  {
+   "from": "scn:trace-snapshot/Состав README входит в проверку дрейфа/Перенос модуля",
+   "to": "req:trace-snapshot/Состав README входит в проверку дрейфа",
+   "type": "verifies",
+   "at": "specs/trace-snapshot/spec.md:44"
+  },
+  {
+   "from": "cap:trace-snapshot",
+   "to": "req:trace-snapshot/Предыдущий формат читается без дописывания модулей в историю",
+   "type": "contains",
+   "at": "specs/trace-snapshot/spec.md:51"
+  },
+  {
+   "from": "req:trace-snapshot/Предыдущий формат читается без дописывания модулей в историю",
+   "to": "rec:F-22",
+   "type": "traces",
+   "at": "specs/trace-snapshot/spec.md:52"
+  },
+  {
+   "from": "req:trace-snapshot/Предыдущий формат читается без дописывания модулей в историю",
+   "to": "rec:F-23",
+   "type": "traces",
+   "at": "specs/trace-snapshot/spec.md:52"
+  },
+  {
+   "from": "scn:trace-snapshot/Предыдущий формат читается без дописывания модулей в историю/Старый снимок и нынешние модули",
+   "to": "req:trace-snapshot/Предыдущий формат читается без дописывания модулей в историю",
+   "type": "verifies",
+   "at": "specs/trace-snapshot/spec.md:54"
+  },
+  {
+   "from": "scn:trace-snapshot/Предыдущий формат читается без дописывания модулей в историю/Поддерживаемая база формата 2 сохраняется после sync",
+   "to": "req:trace-snapshot/Предыдущий формат читается без дописывания модулей в историю",
+   "type": "verifies",
+   "at": "specs/trace-snapshot/spec.md:59"
+  },
+  {
+   "from": "cap:trace-snapshot",
+   "to": "req:trace-snapshot/Снимок и отчёт лежат в каталоге graph",
+   "type": "contains",
+   "at": "specs/trace-snapshot/spec.md:69"
+  },
+  {
+   "from": "req:trace-snapshot/Снимок и отчёт лежат в каталоге graph",
+   "to": "rec:F-05",
+   "type": "traces",
+   "at": "specs/trace-snapshot/spec.md:70"
+  },
+  {
+   "from": "req:trace-snapshot/Снимок и отчёт лежат в каталоге graph",
+   "to": "rec:F-22",
+   "type": "traces",
+   "at": "specs/trace-snapshot/spec.md:70"
+  },
+  {
+   "from": "req:trace-snapshot/Снимок и отчёт лежат в каталоге graph",
+   "to": "rec:F-23",
+   "type": "traces",
+   "at": "specs/trace-snapshot/spec.md:70"
+  },
+  {
+   "from": "req:trace-snapshot/Снимок и отчёт лежат в каталоге graph",
+   "to": "rec:F-37",
+   "type": "traces",
+   "at": "specs/trace-snapshot/spec.md:70"
+  },
+  {
+   "from": "scn:trace-snapshot/Снимок и отчёт лежат в каталоге graph/Заморозка",
+   "to": "req:trace-snapshot/Снимок и отчёт лежат в каталоге graph",
+   "type": "verifies",
+   "at": "specs/trace-snapshot/spec.md:72"
+  },
+  {
+   "from": "scn:trace-snapshot/Снимок и отчёт лежат в каталоге graph/Каталог уезжает в архив",
+   "to": "req:trace-snapshot/Снимок и отчёт лежат в каталоге graph",
+   "type": "verifies",
+   "at": "specs/trace-snapshot/spec.md:77"
+  },
+  {
+   "from": "scn:trace-snapshot/Снимок и отчёт лежат в каталоге graph/Снимок без отчёта",
+   "to": "req:trace-snapshot/Снимок и отчёт лежат в каталоге graph",
+   "type": "verifies",
+   "at": "specs/trace-snapshot/spec.md:82"
+  },
+  {
+   "from": "scn:trace-snapshot/Снимок и отчёт лежат в каталоге graph/Абсолютных путей нет",
+   "to": "req:trace-snapshot/Снимок и отчёт лежат в каталоге graph",
+   "type": "verifies",
+   "at": "specs/trace-snapshot/spec.md:88"
+  },
+  {
+   "from": "scn:trace-snapshot/Снимок и отчёт лежат в каталоге graph/README меняет свежесть",
+   "to": "req:trace-snapshot/Снимок и отчёт лежат в каталоге graph",
+   "type": "verifies",
+   "at": "specs/trace-snapshot/spec.md:93"
+  },
+  {
+   "from": "scn:trace-snapshot/Снимок и отчёт лежат в каталоге graph/Снимок и отчёт описывают одно прочитанное состояние",
+   "to": "req:trace-snapshot/Снимок и отчёт лежат в каталоге graph",
+   "type": "verifies",
+   "at": "specs/trace-snapshot/spec.md:98"
+  },
+  {
+   "from": "task:1.1",
+   "to": "rec:F-17",
+   "type": "traces",
+   "at": "tasks.md:13"
+  },
+  {
+   "from": "task:1.1",
+   "to": "rec:F-18",
+   "type": "traces",
+   "at": "tasks.md:13"
+  },
+  {
+   "from": "task:1.1",
+   "to": "rec:F-34",
+   "type": "traces",
+   "at": "tasks.md:13"
+  },
+  {
+   "from": "task:1.1",
+   "to": "rec:F-35",
+   "type": "traces",
+   "at": "tasks.md:13"
+  },
+  {
+   "from": "task:1.1",
+   "to": "scn:module-discovery/README явно объявляет имя и род модуля/Имя не равно каталогу",
+   "type": "satisfies",
+   "at": "tasks.md:13"
+  },
+  {
+   "from": "task:1.1",
+   "to": "scn:repository-survey/Состав компонентов и репозиториев хранится переносимо/Два репозитория одного компонента",
+   "type": "satisfies",
+   "at": "tasks.md:13"
+  },
+  {
+   "from": "task:1.1",
+   "to": "scn:repository-survey/Состав компонентов и репозиториев хранится переносимо/Коммит не подменяет рабочие файлы",
+   "type": "satisfies",
+   "at": "tasks.md:13"
+  },
+  {
+   "from": "task:1.1",
+   "to": "scn:trace-conventions/Требование явно объявляет модули и файлы реализации/Два модуля в одном блоке",
+   "type": "satisfies",
+   "at": "tasks.md:13"
+  },
+  {
+   "from": "task:1.2",
+   "to": "rec:F-21",
+   "type": "traces",
+   "at": "tasks.md:14"
+  },
+  {
+   "from": "task:1.2",
+   "to": "rec:F-47",
+   "type": "traces",
+   "at": "tasks.md:14"
+  },
+  {
+   "from": "task:1.2",
+   "to": "scn:module-discovery/Объявления обрабатываются как недоверенные данные/YAML не конструирует исполняемый объект",
+   "type": "satisfies",
+   "at": "tasks.md:14"
+  },
+  {
+   "from": "task:1.3",
+   "to": "rec:F-13",
+   "type": "traces",
+   "at": "tasks.md:15"
+  },
+  {
+   "from": "task:1.3",
+   "to": "rec:F-25",
+   "type": "traces",
+   "at": "tasks.md:15"
+  },
+  {
+   "from": "task:1.3",
+   "to": "rec:F-27",
+   "type": "traces",
+   "at": "tasks.md:15"
+  },
+  {
+   "from": "task:2.1",
+   "to": "rec:F-31",
+   "type": "traces",
+   "at": "tasks.md:19"
+  },
+  {
+   "from": "task:2.1",
+   "to": "rec:F-48",
+   "type": "traces",
+   "at": "tasks.md:19"
+  },
+  {
+   "from": "task:2.1",
+   "to": "scn:repository-survey/Repo разрешается через явно названный корень/Неизвестный псевдоним не подменяется пустым префиксом",
+   "type": "satisfies",
+   "at": "tasks.md:19"
+  },
+  {
+   "from": "task:2.1",
+   "to": "scn:repository-survey/Repo разрешается через явно названный корень/Посторонний префикс улик",
+   "type": "satisfies",
+   "at": "tasks.md:19"
+  },
+  {
+   "from": "task:2.1",
+   "to": "scn:repository-survey/Repo разрешается через явно названный корень/Текущий и внешний репозитории",
+   "type": "satisfies",
+   "at": "tasks.md:19"
+  },
+  {
+   "from": "task:2.2",
+   "to": "rec:F-46",
+   "type": "traces",
+   "at": "tasks.md:20"
+  },
+  {
+   "from": "task:2.2",
+   "to": "scn:repository-survey/Структурные источники остаются внутри разрешённого корня/Обход границы через путь или ссылку",
+   "type": "satisfies",
+   "at": "tasks.md:20"
+  },
+  {
+   "from": "task:2.2",
+   "to": "scn:repository-survey/Структурные источники остаются внутри разрешённого корня/Цикл каталогов через ссылку",
+   "type": "satisfies",
+   "at": "tasks.md:20"
+  },
+  {
+   "from": "task:2.3",
+   "to": "rec:F-31",
+   "type": "traces",
+   "at": "tasks.md:21"
+  },
+  {
+   "from": "task:2.3",
+   "to": "scn:repository-survey/Repo разрешается через явно названный корень/Текущий и внешний репозитории",
+   "type": "satisfies",
+   "at": "tasks.md:21"
+  },
+  {
+   "from": "task:3.1",
+   "to": "rec:F-16",
+   "type": "traces",
+   "at": "tasks.md:25"
+  },
+  {
+   "from": "task:3.1",
+   "to": "rec:F-32",
+   "type": "traces",
+   "at": "tasks.md:25"
+  },
+  {
+   "from": "task:3.1",
+   "to": "rec:F-46",
+   "type": "traces",
+   "at": "tasks.md:25"
+  },
+  {
+   "from": "task:3.1",
+   "to": "scn:module-discovery/Обход не зависит от первого уровня и Git/Игнорируемый Git файл",
+   "type": "satisfies",
+   "at": "tasks.md:25"
+  },
+  {
+   "from": "task:3.1",
+   "to": "scn:module-discovery/Обход не зависит от первого уровня и Git/Корень и глубокий каталог без Git",
+   "type": "satisfies",
+   "at": "tasks.md:25"
+  },
+  {
+   "from": "task:3.1",
+   "to": "scn:module-discovery/Обход не зависит от первого уровня и Git/Служебный каталог исключён",
+   "type": "satisfies",
+   "at": "tasks.md:25"
+  },
+  {
+   "from": "task:3.1",
+   "to": "scn:module-discovery/Обход не зависит от первого уровня и Git/Ссылка не обходит служебное исключение",
+   "type": "satisfies",
+   "at": "tasks.md:25"
+  },
+  {
+   "from": "task:3.2",
+   "to": "rec:F-18",
+   "type": "traces",
+   "at": "tasks.md:26"
+  },
+  {
+   "from": "task:3.2",
+   "to": "rec:F-40",
+   "type": "traces",
+   "at": "tasks.md:26"
+  },
+  {
+   "from": "task:3.2",
+   "to": "scn:module-discovery/README явно объявляет имя и род модуля/UTF-8 BOM и окончания строк не скрывают модуль",
+   "type": "satisfies",
+   "at": "tasks.md:26"
+  },
+  {
+   "from": "task:3.2",
+   "to": "scn:module-discovery/README явно объявляет имя и род модуля/Имя не равно каталогу",
+   "type": "satisfies",
+   "at": "tasks.md:26"
+  },
+  {
+   "from": "task:3.2",
+   "to": "scn:module-discovery/README явно объявляет имя и род модуля/Негодный род",
+   "type": "satisfies",
+   "at": "tasks.md:26"
+  },
+  {
+   "from": "task:3.2",
+   "to": "scn:module-discovery/README явно объявляет имя и род модуля/Обычное описание репозитория",
+   "type": "satisfies",
+   "at": "tasks.md:26"
+  },
+  {
+   "from": "task:3.3",
+   "to": "rec:F-18",
+   "type": "traces",
+   "at": "tasks.md:27"
+  },
+  {
+   "from": "task:3.3",
+   "to": "rec:F-21",
+   "type": "traces",
+   "at": "tasks.md:27"
+  },
+  {
+   "from": "task:3.3",
+   "to": "scn:module-discovery/Неоднозначное имя модуля не разрешается догадкой/Одно имя разных repo",
+   "type": "satisfies",
+   "at": "tasks.md:27"
+  },
+  {
+   "from": "task:3.3",
+   "to": "scn:module-discovery/Неоднозначное имя модуля не разрешается догадкой/Повтор внутри repo",
+   "type": "satisfies",
+   "at": "tasks.md:27"
+  },
+  {
+   "from": "task:3.3",
+   "to": "scn:module-discovery/Файл относится к ближайшей объявленной границе/Вложенный модуль клиента",
+   "type": "satisfies",
+   "at": "tasks.md:27"
+  },
+  {
+   "from": "task:3.3",
+   "to": "scn:module-discovery/Файл относится к ближайшей объявленной границе/Файл вне границ",
+   "type": "satisfies",
+   "at": "tasks.md:27"
+  },
+  {
+   "from": "task:3.4",
+   "to": "rec:F-20",
+   "type": "traces",
+   "at": "tasks.md:28"
+  },
+  {
+   "from": "task:3.4",
+   "to": "rec:F-35",
+   "type": "traces",
+   "at": "tasks.md:28"
+  },
+  {
+   "from": "task:3.4",
+   "to": "rec:F-41",
+   "type": "traces",
+   "at": "tasks.md:28"
+  },
+  {
+   "from": "task:3.4",
+   "to": "scn:module-discovery/Зависимость читается из объявления README/Объявленная межрепозиторная зависимость",
+   "type": "satisfies",
+   "at": "tasks.md:28"
+  },
+  {
+   "from": "task:3.4",
+   "to": "scn:module-discovery/Зависимость читается из объявления README/Только упоминание в описании",
+   "type": "satisfies",
+   "at": "tasks.md:28"
+  },
+  {
+   "from": "task:3.4",
+   "to": "scn:module-discovery/Зависимость читается из объявления README/Цель отсутствует",
+   "type": "satisfies",
+   "at": "tasks.md:28"
+  },
+  {
+   "from": "task:3.4",
+   "to": "scn:module-discovery/Зависимость читается из объявления README/Цикл объявленных зависимостей сохраняется",
+   "type": "satisfies",
+   "at": "tasks.md:28"
+  },
+  {
+   "from": "task:3.5",
+   "to": "rec:F-21",
+   "type": "traces",
+   "at": "tasks.md:29"
+  },
+  {
+   "from": "task:3.5",
+   "to": "rec:F-47",
+   "type": "traces",
+   "at": "tasks.md:29"
+  },
+  {
+   "from": "task:3.5",
+   "to": "rec:F-49",
+   "type": "traces",
+   "at": "tasks.md:29"
+  },
+  {
+   "from": "task:3.5",
+   "to": "rec:F-50",
+   "type": "traces",
+   "at": "tasks.md:29"
+  },
+  {
+   "from": "task:3.5",
+   "to": "scn:module-discovery/Объявления обрабатываются как недоверенные данные/Бинарный README не становится объявлением",
+   "type": "satisfies",
+   "at": "tasks.md:29"
+  },
+  {
+   "from": "task:3.5",
+   "to": "scn:module-discovery/Ошибка источника не стирает доступную структуру/Негодная кодировка README не обрывает доступный граф",
+   "type": "satisfies",
+   "at": "tasks.md:29"
+  },
+  {
+   "from": "task:3.5",
+   "to": "scn:module-discovery/Ошибка источника не стирает доступную структуру/Нечитаемый README не скрывает соседний модуль",
+   "type": "satisfies",
+   "at": "tasks.md:29"
+  },
+  {
+   "from": "task:3.5",
+   "to": "scn:module-discovery/Ошибка источника не стирает доступную структуру/Один недоступный сосед",
+   "type": "satisfies",
+   "at": "tasks.md:29"
+  },
+  {
+   "from": "task:3.6",
+   "to": "rec:F-07",
+   "type": "traces",
+   "at": "tasks.md:30"
+  },
+  {
+   "from": "task:3.6",
+   "to": "rec:F-35",
+   "type": "traces",
+   "at": "tasks.md:30"
+  },
+  {
+   "from": "task:3.6",
+   "to": "scn:module-discovery/Сторонние README остаются входными данными/Нет нужного объявления у клиента",
+   "type": "satisfies",
+   "at": "tasks.md:30"
+  },
+  {
+   "from": "task:3.6",
+   "to": "scn:module-discovery/Сторонние README остаются входными данными/Соглашение доступно владельцу",
+   "type": "satisfies",
+   "at": "tasks.md:30"
+  },
+  {
+   "from": "task:4.1",
+   "to": "rec:F-16",
+   "type": "traces",
+   "at": "tasks.md:34"
+  },
+  {
+   "from": "task:4.1",
+   "to": "rec:F-17",
+   "type": "traces",
+   "at": "tasks.md:34"
+  },
+  {
+   "from": "task:4.1",
+   "to": "rec:F-33",
+   "type": "traces",
+   "at": "tasks.md:34"
+  },
+  {
+   "from": "task:4.1",
+   "to": "scn:trace-graph/Структурная ось содержит все объявленные модули состава/Два repo одного компонента",
+   "type": "satisfies",
+   "at": "tasks.md:34"
+  },
+  {
+   "from": "task:4.1",
+   "to": "scn:trace-graph/Структурная ось содержит все объявленные модули состава/Модуль без аннотации реализации",
+   "type": "satisfies",
+   "at": "tasks.md:34"
+  },
+  {
+   "from": "task:4.1",
+   "to": "scn:trace-graph/Файловые узлы ограничены используемой трассировкой/Неназванный исходник",
+   "type": "satisfies",
+   "at": "tasks.md:34"
+  },
+  {
+   "from": "task:4.2",
+   "to": "rec:F-14",
+   "type": "traces",
+   "at": "tasks.md:35"
+  },
+  {
+   "from": "task:4.2",
+   "to": "rec:F-31",
+   "type": "traces",
+   "at": "tasks.md:35"
+  },
+  {
+   "from": "task:4.2",
+   "to": "rec:F-42",
+   "type": "traces",
+   "at": "tasks.md:35"
+  },
+  {
+   "from": "task:4.2",
+   "to": "scn:trace-graph/Структурные id различают репозиторий и модуль/Другой каталог клона",
+   "type": "satisfies",
+   "at": "tasks.md:35"
+  },
+  {
+   "from": "task:4.2",
+   "to": "scn:trace-graph/Структурные id различают репозиторий и модуль/Одно имя модулей",
+   "type": "satisfies",
+   "at": "tasks.md:35"
+  },
+  {
+   "from": "task:4.2",
+   "to": "scn:trace-graph/Структурные id различают репозиторий и модуль/Разделитель в частях имени не создаёт коллизию id",
+   "type": "satisfies",
+   "at": "tasks.md:35"
+  },
+  {
+   "from": "task:4.3",
+   "to": "rec:F-04",
+   "type": "traces",
+   "at": "tasks.md:36"
+  },
+  {
+   "from": "task:4.3",
+   "to": "rec:F-14",
+   "type": "traces",
+   "at": "tasks.md:36"
+  },
+  {
+   "from": "task:4.3",
+   "to": "scn:trace-graph/Id читаемы, файл несёт версию формата/Две ветки одного механизма",
+   "type": "satisfies",
+   "at": "tasks.md:36"
+  },
+  {
+   "from": "task:4.3",
+   "to": "scn:trace-graph/Id читаемы, файл несёт версию формата/Одно имя в двух capability",
+   "type": "satisfies",
+   "at": "tasks.md:36"
+  },
+  {
+   "from": "task:4.3",
+   "to": "scn:trace-graph/Id читаемы, файл несёт версию формата/Переименование меняет id",
+   "type": "satisfies",
+   "at": "tasks.md:36"
+  },
+  {
+   "from": "task:4.3",
+   "to": "scn:trace-graph/Id читаемы, файл несёт версию формата/Перенос модуля не меняет требование",
+   "type": "satisfies",
+   "at": "tasks.md:36"
+  },
+  {
+   "from": "task:4.4",
+   "to": "rec:F-19",
+   "type": "traces",
+   "at": "tasks.md:37"
+  },
+  {
+   "from": "task:4.4",
+   "to": "rec:F-34",
+   "type": "traces",
+   "at": "tasks.md:37"
+  },
+  {
+   "from": "task:4.4",
+   "to": "scn:trace-conventions/Требование явно объявляет модули и файлы реализации/Без аннотации",
+   "type": "satisfies",
+   "at": "tasks.md:37"
+  },
+  {
+   "from": "task:4.4",
+   "to": "scn:trace-conventions/Требование явно объявляет модули и файлы реализации/Два модуля в одном блоке",
+   "type": "satisfies",
+   "at": "tasks.md:37"
+  },
+  {
+   "from": "task:4.5",
+   "to": "rec:F-19",
+   "type": "traces",
+   "at": "tasks.md:38"
+  },
+  {
+   "from": "task:4.5",
+   "to": "rec:F-20",
+   "type": "traces",
+   "at": "tasks.md:38"
+  },
+  {
+   "from": "task:4.5",
+   "to": "rec:F-43",
+   "type": "traces",
+   "at": "tasks.md:38"
+  },
+  {
+   "from": "task:4.5",
+   "to": "scn:trace-graph/Явная реализация и зависимости сохраняют происхождение/Зависимость не означает реализацию",
+   "type": "satisfies",
+   "at": "tasks.md:38"
+  },
+  {
+   "from": "task:4.5",
+   "to": "scn:trace-graph/Явная реализация и зависимости сохраняют происхождение/Модуль и приписанный ему файл противоречат друг другу",
+   "type": "satisfies",
+   "at": "tasks.md:38"
+  },
+  {
+   "from": "task:4.5",
+   "to": "scn:trace-graph/Явная реализация и зависимости сохраняют происхождение/Сквозная реализация",
+   "type": "satisfies",
+   "at": "tasks.md:38"
+  },
+  {
+   "from": "task:4.5",
+   "to": "scn:trace-graph/Явная реализация и зависимости сохраняют происхождение/Улика о старом коде",
+   "type": "satisfies",
+   "at": "tasks.md:38"
+  },
+  {
+   "from": "task:4.6",
+   "to": "rec:F-05",
+   "type": "traces",
+   "at": "tasks.md:39"
+  },
+  {
+   "from": "task:4.6",
+   "to": "rec:F-21",
+   "type": "traces",
+   "at": "tasks.md:39"
+  },
+  {
+   "from": "task:4.6",
+   "to": "rec:F-30",
+   "type": "traces",
+   "at": "tasks.md:39"
+  },
+  {
+   "from": "task:4.6",
+   "to": "scn:trace-graph/Граф собирается из файлов изменения/Внешний README изменился",
+   "type": "satisfies",
+   "at": "tasks.md:39"
+  },
+  {
+   "from": "task:4.6",
+   "to": "scn:trace-graph/Граф собирается из файлов изменения/Граф растёт вместе с артефактами",
+   "type": "satisfies",
+   "at": "tasks.md:39"
+  },
+  {
+   "from": "task:4.6",
+   "to": "scn:trace-graph/Граф собирается из файлов изменения/Журнал не разбирается",
+   "type": "satisfies",
+   "at": "tasks.md:39"
+  },
+  {
+   "from": "task:4.6",
+   "to": "scn:trace-graph/Граф собирается из файлов изменения/Журнал негоден по схеме",
+   "type": "satisfies",
+   "at": "tasks.md:39"
+  },
+  {
+   "from": "task:4.6",
+   "to": "scn:trace-graph/Граф собирается из файлов изменения/Связь правится через файл",
+   "type": "satisfies",
+   "at": "tasks.md:39"
+  },
+  {
+   "from": "task:4.6",
+   "to": "scn:trace-graph/Граф собирается из файлов изменения/Только что созданное изменение",
+   "type": "satisfies",
+   "at": "tasks.md:39"
+  },
+  {
+   "from": "task:5.1",
+   "to": "rec:F-21",
+   "type": "traces",
+   "at": "tasks.md:43"
+  },
+  {
+   "from": "task:5.1",
+   "to": "rec:F-26",
+   "type": "traces",
+   "at": "tasks.md:43"
+  },
+  {
+   "from": "task:5.1",
+   "to": "rec:F-30",
+   "type": "traces",
+   "at": "tasks.md:43"
+  },
+  {
+   "from": "task:5.1",
+   "to": "rec:F-39",
+   "type": "traces",
+   "at": "tasks.md:43"
+  },
+  {
+   "from": "task:5.1",
+   "to": "scn:repository-survey/Новое чтение не заменяется прежним результатом обследования/Модуль появился после обследования",
+   "type": "satisfies",
+   "at": "tasks.md:43"
+  },
+  {
+   "from": "task:5.1",
+   "to": "scn:repository-survey/Новое чтение не заменяется прежним результатом обследования/Повтор без изменений",
+   "type": "satisfies",
+   "at": "tasks.md:43"
+  },
+  {
+   "from": "task:5.1",
+   "to": "scn:repository-survey/Результат обследования различает четыре состояния/Клон недоступен",
+   "type": "satisfies",
+   "at": "tasks.md:43"
+  },
+  {
+   "from": "task:5.1",
+   "to": "scn:repository-survey/Результат обследования различает четыре состояния/Обследование ещё не записано",
+   "type": "satisfies",
+   "at": "tasks.md:43"
+  },
+  {
+   "from": "task:5.1",
+   "to": "scn:repository-survey/Результат обследования различает четыре состояния/Обследованный репозиторий без модулей",
+   "type": "satisfies",
+   "at": "tasks.md:43"
+  },
+  {
+   "from": "task:5.1",
+   "to": "scn:repository-survey/Результат обследования различает четыре состояния/Одно негодное объявление не доказывает отсутствие модулей",
+   "type": "satisfies",
+   "at": "tasks.md:43"
+  },
+  {
+   "from": "task:5.2",
+   "to": "rec:F-21",
+   "type": "traces",
+   "at": "tasks.md:44"
+  },
+  {
+   "from": "task:5.2",
+   "to": "rec:F-30",
+   "type": "traces",
+   "at": "tasks.md:44"
+  },
+  {
+   "from": "task:5.2",
+   "to": "scn:trace-signals/Отчёт называет закрытый состав сигналов/Неразрешённая структурная ссылка",
+   "type": "satisfies",
+   "at": "tasks.md:44"
+  },
+  {
+   "from": "task:5.2",
+   "to": "scn:trace-signals/Отчёт различает отсутствие и неполноту структурных данных/Опечатка имени",
+   "type": "satisfies",
+   "at": "tasks.md:44"
+  },
+  {
+   "from": "task:5.2",
+   "to": "scn:trace-signals/Отчёт различает отсутствие и неполноту структурных данных/Разные причины отсутствия узлов",
+   "type": "satisfies",
+   "at": "tasks.md:44"
+  },
+  {
+   "from": "task:5.2",
+   "to": "scn:trace-signals/Структурные сигналы используют существующие группы/Ссылка и недоступный источник",
+   "type": "satisfies",
+   "at": "tasks.md:44"
+  },
+  {
+   "from": "task:5.3",
+   "to": "rec:F-21",
+   "type": "traces",
+   "at": "tasks.md:45"
+  },
+  {
+   "from": "task:5.3",
+   "to": "scn:trace-signals/Отчёт называет закрытый состав сигналов/Критерий без требования",
+   "type": "satisfies",
+   "at": "tasks.md:45"
+  },
+  {
+   "from": "task:5.3",
+   "to": "scn:trace-signals/Отчёт называет закрытый состав сигналов/Одно имя у двух требований capability",
+   "type": "satisfies",
+   "at": "tasks.md:45"
+  },
+  {
+   "from": "task:5.3",
+   "to": "scn:trace-signals/Отчёт называет закрытый состав сигналов/Решение об объёме",
+   "type": "satisfies",
+   "at": "tasks.md:45"
+  },
+  {
+   "from": "task:5.3",
+   "to": "scn:trace-signals/Отчёт называет закрытый состав сигналов/Тяжёлое раньше, чем раннее по файлу",
+   "type": "satisfies",
+   "at": "tasks.md:45"
+  },
+  {
+   "from": "task:5.4",
+   "to": "rec:F-45",
+   "type": "traces",
+   "at": "tasks.md:46"
+  },
+  {
+   "from": "task:5.4",
+   "to": "scn:trace-graph/Модуль без локальной связи не получает глобальную оценку покрытия/Независимый модуль не объявлен нереализованным",
+   "type": "satisfies",
+   "at": "tasks.md:46"
+  },
+  {
+   "from": "task:6.1",
+   "to": "rec:F-23",
+   "type": "traces",
+   "at": "tasks.md:50"
+  },
+  {
+   "from": "task:6.1",
+   "to": "scn:trace-graph/Id читаемы, файл несёт версию формата/Прежний поддерживаемый файл",
+   "type": "satisfies",
+   "at": "tasks.md:50"
+  },
+  {
+   "from": "task:6.1",
+   "to": "scn:trace-graph/Id читаемы, файл несёт версию формата/Снимок прежнего формата",
+   "type": "satisfies",
+   "at": "tasks.md:50"
+  },
+  {
+   "from": "task:6.1",
+   "to": "scn:trace-snapshot/Предыдущий формат читается без дописывания модулей в историю/Старый снимок и нынешние модули",
+   "type": "satisfies",
+   "at": "tasks.md:50"
+  },
+  {
+   "from": "task:6.2",
+   "to": "rec:F-52",
+   "type": "traces",
+   "at": "tasks.md:51"
+  },
+  {
+   "from": "task:6.2",
+   "to": "scn:trace-snapshot/Предыдущий формат читается без дописывания модулей в историю/Поддерживаемая база формата 2 сохраняется после sync",
+   "type": "satisfies",
+   "at": "tasks.md:51"
+  },
+  {
+   "from": "task:6.3",
+   "to": "rec:F-22",
+   "type": "traces",
+   "at": "tasks.md:52"
+  },
+  {
+   "from": "task:6.3",
+   "to": "rec:F-37",
+   "type": "traces",
+   "at": "tasks.md:52"
+  },
+  {
+   "from": "task:6.3",
+   "to": "rec:F-44",
+   "type": "traces",
+   "at": "tasks.md:52"
+  },
+  {
+   "from": "task:6.3",
+   "to": "scn:trace-snapshot/Снимок сохраняет нормализованную структуру и состояния/Декларация и её хеш относятся к одной прочитанной версии",
+   "type": "satisfies",
+   "at": "tasks.md:52"
+  },
+  {
+   "from": "task:6.3",
+   "to": "scn:trace-snapshot/Снимок сохраняет нормализованную структуру и состояния/Клон после заморозки недоступен",
+   "type": "satisfies",
+   "at": "tasks.md:52"
+  },
+  {
+   "from": "task:6.4",
+   "to": "rec:F-22",
+   "type": "traces",
+   "at": "tasks.md:53"
+  },
+  {
+   "from": "task:6.4",
+   "to": "rec:F-37",
+   "type": "traces",
+   "at": "tasks.md:53"
+  },
+  {
+   "from": "task:6.4",
+   "to": "scn:trace-snapshot/Снимок и отчёт лежат в каталоге graph/README меняет свежесть",
+   "type": "satisfies",
+   "at": "tasks.md:53"
+  },
+  {
+   "from": "task:6.4",
+   "to": "scn:trace-snapshot/Состав README входит в проверку дрейфа/Новый модуль после freeze",
+   "type": "satisfies",
+   "at": "tasks.md:53"
+  },
+  {
+   "from": "task:6.4",
+   "to": "scn:trace-snapshot/Состав README входит в проверку дрейфа/Перенос модуля",
+   "type": "satisfies",
+   "at": "tasks.md:53"
+  },
+  {
+   "from": "task:6.5",
+   "to": "rec:F-22",
+   "type": "traces",
+   "at": "tasks.md:54"
+  },
+  {
+   "from": "task:6.5",
+   "to": "rec:F-51",
+   "type": "traces",
+   "at": "tasks.md:54"
+  },
+  {
+   "from": "task:6.5",
+   "to": "scn:trace-snapshot/Снимок и отчёт лежат в каталоге graph/Заморозка",
+   "type": "satisfies",
+   "at": "tasks.md:54"
+  },
+  {
+   "from": "task:6.5",
+   "to": "scn:trace-snapshot/Снимок и отчёт лежат в каталоге graph/Каталог уезжает в архив",
+   "type": "satisfies",
+   "at": "tasks.md:54"
+  },
+  {
+   "from": "task:6.5",
+   "to": "scn:trace-snapshot/Снимок и отчёт лежат в каталоге graph/Снимок без отчёта",
+   "type": "satisfies",
+   "at": "tasks.md:54"
+  },
+  {
+   "from": "task:6.5",
+   "to": "scn:trace-snapshot/Снимок и отчёт лежат в каталоге graph/Снимок и отчёт описывают одно прочитанное состояние",
+   "type": "satisfies",
+   "at": "tasks.md:54"
+  },
+  {
+   "from": "task:6.6",
+   "to": "rec:F-37",
+   "type": "traces",
+   "at": "tasks.md:55"
+  },
+  {
+   "from": "task:6.6",
+   "to": "rec:F-46",
+   "type": "traces",
+   "at": "tasks.md:55"
+  },
+  {
+   "from": "task:6.6",
+   "to": "scn:trace-snapshot/Диагностика и снимок не копируют приватные входные данные/Ошибка YAML не раскрывает приватный документ",
+   "type": "satisfies",
+   "at": "tasks.md:55"
+  },
+  {
+   "from": "task:6.6",
+   "to": "scn:trace-snapshot/Диагностика и снимок не копируют приватные входные данные/Снимок содержит декларацию без полного README",
+   "type": "satisfies",
+   "at": "tasks.md:55"
+  },
+  {
+   "from": "task:6.6",
+   "to": "scn:trace-snapshot/Снимок и отчёт лежат в каталоге graph/Абсолютных путей нет",
+   "type": "satisfies",
+   "at": "tasks.md:55"
+  },
+  {
+   "from": "task:7.1",
+   "to": "rec:F-24",
+   "type": "traces",
+   "at": "tasks.md:59"
+  },
+  {
+   "from": "task:7.1",
+   "to": "rec:F-33",
+   "type": "traces",
+   "at": "tasks.md:59"
+  },
+  {
+   "from": "task:7.1",
+   "to": "scn:trace-diagram/Конфиг экспорта знает структурные виды/Новые виды допустимы",
+   "type": "satisfies",
+   "at": "tasks.md:59"
+  },
+  {
+   "from": "task:7.2",
+   "to": "rec:F-24",
+   "type": "traces",
+   "at": "tasks.md:60"
+  },
+  {
+   "from": "task:7.2",
+   "to": "rec:F-41",
+   "type": "traces",
+   "at": "tasks.md:60"
+  },
+  {
+   "from": "task:7.2",
+   "to": "scn:module-discovery/Зависимость читается из объявления README/Цикл объявленных зависимостей сохраняется",
+   "type": "satisfies",
+   "at": "tasks.md:60"
+  },
+  {
+   "from": "task:7.2",
+   "to": "scn:trace-diagram/Скрипт выдаёт текст диаграммы по выбору/Выбрана capability",
+   "type": "satisfies",
+   "at": "tasks.md:60"
+  },
+  {
+   "from": "task:7.2",
+   "to": "scn:trace-diagram/Скрипт выдаёт текст диаграммы по выбору/Выбрано требование",
+   "type": "satisfies",
+   "at": "tasks.md:60"
+  },
+  {
+   "from": "task:7.2",
+   "to": "scn:trace-diagram/Скрипт выдаёт текст диаграммы по выбору/Одно имя в двух capability",
+   "type": "satisfies",
+   "at": "tasks.md:60"
+  },
+  {
+   "from": "task:7.2",
+   "to": "scn:trace-diagram/Скрипт выдаёт текст диаграммы по выбору/Требование с реализацией",
+   "type": "satisfies",
+   "at": "tasks.md:60"
+  },
+  {
+   "from": "task:8.1",
+   "to": "rec:F-26",
+   "type": "traces",
+   "at": "tasks.md:64"
+  },
+  {
+   "from": "task:8.1",
+   "to": "rec:F-29",
+   "type": "traces",
+   "at": "tasks.md:64"
+  },
+  {
+   "from": "task:8.1",
+   "to": "rec:F-30",
+   "type": "traces",
+   "at": "tasks.md:64"
+  },
+  {
+   "from": "task:8.1",
+   "to": "scn:repository-survey/Обследование репозиториев начинается в decisions/Первое обследование по intent",
+   "type": "satisfies",
+   "at": "tasks.md:64"
+  },
+  {
+   "from": "task:8.1",
+   "to": "scn:repository-survey/Обследование репозиториев начинается в decisions/Репозиторий найден исследованием",
+   "type": "satisfies",
+   "at": "tasks.md:64"
+  },
+  {
+   "from": "task:8.2",
+   "to": "rec:F-36",
+   "type": "traces",
+   "at": "tasks.md:65"
+  },
+  {
+   "from": "task:8.2",
+   "to": "rec:F-38",
+   "type": "traces",
+   "at": "tasks.md:65"
+  },
+  {
+   "from": "task:8.2",
+   "to": "scn:repository-survey/Модель изменяет только своё расширение metadata/Состав metadata изменился после чтения",
+   "type": "satisfies",
+   "at": "tasks.md:65"
+  },
+  {
+   "from": "task:8.2",
+   "to": "scn:repository-survey/Модель изменяет только своё расширение metadata/Сохранение посторонних данных",
+   "type": "satisfies",
+   "at": "tasks.md:65"
+  },
+  {
+   "from": "task:8.3",
+   "to": "rec:F-04",
+   "type": "traces",
+   "at": "tasks.md:66"
+  },
+  {
+   "from": "task:8.3",
+   "to": "rec:F-34",
+   "type": "traces",
+   "at": "tasks.md:66"
+  },
+  {
+   "from": "task:8.3",
+   "to": "scn:trace-conventions/Синхронизация сохраняет аннотацию реализации при требовании/Аннотация рядом со следами проб",
+   "type": "satisfies",
+   "at": "tasks.md:66"
+  },
+  {
+   "from": "task:8.4",
+   "to": "rec:F-25",
+   "type": "traces",
+   "at": "tasks.md:67"
+  },
+  {
+   "from": "task:8.4",
+   "to": "rec:F-29",
+   "type": "traces",
+   "at": "tasks.md:67"
+  },
+  {
+   "from": "task:8.4",
+   "to": "rec:F-36",
+   "type": "traces",
+   "at": "tasks.md:67"
+  },
+  {
+   "from": "task:8.4",
+   "to": "rec:F-38",
+   "type": "traces",
+   "at": "tasks.md:67"
+  },
+  {
+   "from": "task:8.4",
+   "to": "scn:repository-survey/Модель изменяет только своё расширение metadata/Состав metadata изменился после чтения",
+   "type": "satisfies",
+   "at": "tasks.md:67"
+  },
+  {
+   "from": "task:8.4",
+   "to": "scn:repository-survey/Модель изменяет только своё расширение metadata/Сохранение посторонних данных",
+   "type": "satisfies",
+   "at": "tasks.md:67"
+  },
+  {
+   "from": "task:8.4",
+   "to": "scn:repository-survey/Обследование репозиториев начинается в decisions/Первое обследование по intent",
+   "type": "satisfies",
+   "at": "tasks.md:67"
+  },
+  {
+   "from": "task:8.4",
+   "to": "scn:repository-survey/Обследование репозиториев начинается в decisions/Репозиторий найден исследованием",
+   "type": "satisfies",
+   "at": "tasks.md:67"
+  },
+  {
+   "from": "task:8.5",
+   "to": "rec:F-34",
+   "type": "traces",
+   "at": "tasks.md:68"
+  },
+  {
+   "from": "task:8.5",
+   "to": "rec:F-47",
+   "type": "traces",
+   "at": "tasks.md:68"
+  },
+  {
+   "from": "task:8.5",
+   "to": "scn:module-discovery/Объявления обрабатываются как недоверенные данные/Инструкция внутри README не расширяет полномочия",
+   "type": "satisfies",
+   "at": "tasks.md:68"
+  },
+  {
+   "from": "task:8.5",
+   "to": "scn:trace-conventions/Синхронизация сохраняет аннотацию реализации при требовании/Аннотация рядом со следами проб",
+   "type": "satisfies",
+   "at": "tasks.md:68"
+  },
+  {
+   "from": "task:9.1",
+   "to": "rec:F-06",
+   "type": "traces",
+   "at": "tasks.md:72"
+  },
+  {
+   "from": "task:9.1",
+   "to": "rec:F-25",
+   "type": "traces",
+   "at": "tasks.md:72"
+  },
+  {
+   "from": "task:9.1",
+   "to": "rec:F-35",
+   "type": "traces",
+   "at": "tasks.md:72"
+  },
+  {
+   "from": "task:9.1",
+   "to": "scn:trace-conventions/Требование явно объявляет модули и файлы реализации/Два модуля в одном блоке",
+   "type": "satisfies",
+   "at": "tasks.md:72"
+  },
+  {
+   "from": "task:9.2",
+   "to": "rec:F-13",
+   "type": "traces",
+   "at": "tasks.md:73"
+  },
+  {
+   "from": "task:9.2",
+   "to": "rec:F-25",
+   "type": "traces",
+   "at": "tasks.md:73"
+  },
+  {
+   "from": "task:9.2",
+   "to": "rec:F-31",
+   "type": "traces",
+   "at": "tasks.md:73"
+  },
+  {
+   "from": "task:9.2",
+   "to": "rec:F-32",
+   "type": "traces",
+   "at": "tasks.md:73"
+  },
+  {
+   "from": "task:9.2",
+   "to": "scn:module-discovery/Обход не зависит от первого уровня и Git/Корень и глубокий каталог без Git",
+   "type": "satisfies",
+   "at": "tasks.md:73"
+  },
+  {
+   "from": "task:9.2",
+   "to": "scn:repository-survey/Repo разрешается через явно названный корень/Текущий и внешний репозитории",
+   "type": "satisfies",
+   "at": "tasks.md:73"
+  },
+  {
+   "from": "task:9.2",
+   "to": "scn:trace-diagram/Скрипт выдаёт текст диаграммы по выбору/Требование с реализацией",
+   "type": "satisfies",
+   "at": "tasks.md:73"
+  },
+  {
+   "from": "task:9.2",
+   "to": "scn:trace-graph/Структурные id различают репозиторий и модуль/Одно имя модулей",
+   "type": "satisfies",
+   "at": "tasks.md:73"
+  },
+  {
+   "from": "task:9.2",
+   "to": "scn:trace-graph/Явная реализация и зависимости сохраняют происхождение/Сквозная реализация",
+   "type": "satisfies",
+   "at": "tasks.md:73"
+  },
+  {
+   "from": "task:9.3",
+   "to": "rec:F-06",
+   "type": "traces",
+   "at": "tasks.md:74"
+  },
+  {
+   "from": "task:9.3",
+   "to": "rec:F-07",
+   "type": "traces",
+   "at": "tasks.md:74"
+  },
+  {
+   "from": "task:9.3",
+   "to": "rec:F-25",
+   "type": "traces",
+   "at": "tasks.md:74"
+  },
+  {
+   "from": "task:9.3",
+   "to": "rec:F-37",
+   "type": "traces",
+   "at": "tasks.md:74"
+  },
+  {
+   "from": "task:9.3",
+   "to": "rec:F-46",
+   "type": "traces",
+   "at": "tasks.md:74"
+  },
+  {
+   "from": "task:9.3",
+   "to": "rec:F-47",
+   "type": "traces",
+   "at": "tasks.md:74"
+  },
+  {
+   "from": "task:9.3",
+   "to": "scn:module-discovery/Сторонние README остаются входными данными/Соглашение доступно владельцу",
+   "type": "satisfies",
+   "at": "tasks.md:74"
+  },
+  {
+   "from": "task:9.3",
+   "to": "scn:trace-snapshot/Снимок и отчёт лежат в каталоге graph/Заморозка",
+   "type": "satisfies",
+   "at": "tasks.md:74"
+  },
+  {
+   "from": "task:10.1",
+   "to": "rec:F-25",
+   "type": "traces",
+   "at": "tasks.md:78"
+  },
+  {
+   "from": "task:10.2",
+   "to": "rec:F-05",
+   "type": "traces",
+   "at": "tasks.md:79"
+  },
+  {
+   "from": "task:10.2",
+   "to": "rec:F-25",
+   "type": "traces",
+   "at": "tasks.md:79"
+  }
+ ],
+ "candidates": [
+  {
+   "a": "req:module-discovery/README явно объявляет имя и род модуля",
+   "b": "req:module-discovery/Неоднозначное имя модуля не разрешается догадкой",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-18"
+   ]
+  },
+  {
+   "a": "req:module-discovery/README явно объявляет имя и род модуля",
+   "b": "req:module-discovery/Файл относится к ближайшей объявленной границе",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-18"
+   ]
+  },
+  {
+   "a": "req:module-discovery/README явно объявляет имя и род модуля",
+   "b": "req:trace-graph/Структурная ось содержит все объявленные модули состава",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-01"
+   ]
+  },
+  {
+   "a": "req:module-discovery/README явно объявляет имя и род модуля",
+   "b": "req:trace-graph/Файловые узлы ограничены используемой трассировкой",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-18"
+   ]
+  },
+  {
+   "a": "req:module-discovery/Зависимость читается из объявления README",
+   "b": "req:module-discovery/Сторонние README остаются входными данными",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-35"
+   ]
+  },
+  {
+   "a": "req:module-discovery/Зависимость читается из объявления README",
+   "b": "req:trace-graph/Явная реализация и зависимости сохраняют происхождение",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-20",
+    "rec:F-35"
+   ]
+  },
+  {
+   "a": "req:module-discovery/Неоднозначное имя модуля не разрешается догадкой",
+   "b": "req:module-discovery/Объявления обрабатываются как недоверенные данные",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-21"
+   ]
+  },
+  {
+   "a": "req:module-discovery/Неоднозначное имя модуля не разрешается догадкой",
+   "b": "req:module-discovery/Ошибка источника не стирает доступную структуру",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-21"
+   ]
+  },
+  {
+   "a": "req:module-discovery/Неоднозначное имя модуля не разрешается догадкой",
+   "b": "req:module-discovery/Файл относится к ближайшей объявленной границе",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-18"
+   ]
+  },
+  {
+   "a": "req:module-discovery/Неоднозначное имя модуля не разрешается догадкой",
+   "b": "req:repository-survey/Результат обследования различает четыре состояния",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-21"
+   ]
+  },
+  {
+   "a": "req:module-discovery/Неоднозначное имя модуля не разрешается догадкой",
+   "b": "req:trace-graph/Файловые узлы ограничены используемой трассировкой",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-18"
+   ]
+  },
+  {
+   "a": "req:module-discovery/Неоднозначное имя модуля не разрешается догадкой",
+   "b": "req:trace-signals/Отчёт называет закрытый состав сигналов",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-21"
+   ]
+  },
+  {
+   "a": "req:module-discovery/Неоднозначное имя модуля не разрешается догадкой",
+   "b": "req:trace-signals/Отчёт различает отсутствие и неполноту структурных данных",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-21"
+   ]
+  },
+  {
+   "a": "req:module-discovery/Неоднозначное имя модуля не разрешается догадкой",
+   "b": "req:trace-signals/Структурные сигналы используют существующие группы",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-21"
+   ]
+  },
+  {
+   "a": "req:module-discovery/Обход не зависит от первого уровня и Git",
+   "b": "req:repository-survey/Новое чтение не заменяется прежним результатом обследования",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-16"
+   ]
+  },
+  {
+   "a": "req:module-discovery/Обход не зависит от первого уровня и Git",
+   "b": "req:trace-graph/Граф собирается из файлов изменения",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-16"
+   ]
+  },
+  {
+   "a": "req:module-discovery/Обход не зависит от первого уровня и Git",
+   "b": "req:trace-graph/Структурная ось содержит все объявленные модули состава",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-16"
+   ]
+  },
+  {
+   "a": "req:module-discovery/Объявления обрабатываются как недоверенные данные",
+   "b": "req:module-discovery/Ошибка источника не стирает доступную структуру",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-21"
+   ]
+  },
+  {
+   "a": "req:module-discovery/Объявления обрабатываются как недоверенные данные",
+   "b": "req:repository-survey/Результат обследования различает четыре состояния",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-21"
+   ]
+  },
+  {
+   "a": "req:module-discovery/Объявления обрабатываются как недоверенные данные",
+   "b": "req:trace-signals/Отчёт называет закрытый состав сигналов",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-21"
+   ]
+  },
+  {
+   "a": "req:module-discovery/Объявления обрабатываются как недоверенные данные",
+   "b": "req:trace-signals/Отчёт различает отсутствие и неполноту структурных данных",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-21"
+   ]
+  },
+  {
+   "a": "req:module-discovery/Объявления обрабатываются как недоверенные данные",
+   "b": "req:trace-signals/Структурные сигналы используют существующие группы",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-21"
+   ]
+  },
+  {
+   "a": "req:module-discovery/Ошибка источника не стирает доступную структуру",
+   "b": "req:repository-survey/Новое чтение не заменяется прежним результатом обследования",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-30"
+   ]
+  },
+  {
+   "a": "req:module-discovery/Ошибка источника не стирает доступную структуру",
+   "b": "req:repository-survey/Результат обследования различает четыре состояния",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-21",
+    "rec:F-30"
+   ]
+  },
+  {
+   "a": "req:module-discovery/Ошибка источника не стирает доступную структуру",
+   "b": "req:trace-signals/Отчёт называет закрытый состав сигналов",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-21",
+    "rec:F-30"
+   ]
+  },
+  {
+   "a": "req:module-discovery/Ошибка источника не стирает доступную структуру",
+   "b": "req:trace-signals/Отчёт различает отсутствие и неполноту структурных данных",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-21",
+    "rec:F-30"
+   ]
+  },
+  {
+   "a": "req:module-discovery/Ошибка источника не стирает доступную структуру",
+   "b": "req:trace-signals/Структурные сигналы используют существующие группы",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-21",
+    "rec:F-30"
+   ]
+  },
+  {
+   "a": "req:module-discovery/Ошибка источника не стирает доступную структуру",
+   "b": "req:trace-snapshot/Состав README входит в проверку дрейфа",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-30"
+   ]
+  },
+  {
+   "a": "req:module-discovery/Сторонние README остаются входными данными",
+   "b": "req:trace-graph/Явная реализация и зависимости сохраняют происхождение",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-35"
+   ]
+  },
+  {
+   "a": "req:module-discovery/Файл относится к ближайшей объявленной границе",
+   "b": "req:trace-graph/Структурная ось содержит все объявленные модули состава",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-02"
+   ]
+  },
+  {
+   "a": "req:module-discovery/Файл относится к ближайшей объявленной границе",
+   "b": "req:trace-graph/Файловые узлы ограничены используемой трассировкой",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-02",
+    "rec:F-18"
+   ]
+  },
+  {
+   "a": "req:repository-survey/Repo разрешается через явно названный корень",
+   "b": "req:repository-survey/Состав компонентов и репозиториев хранится переносимо",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-17"
+   ]
+  },
+  {
+   "a": "req:repository-survey/Repo разрешается через явно названный корень",
+   "b": "req:trace-graph/Структурная ось содержит все объявленные модули состава",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-17"
+   ]
+  },
+  {
+   "a": "req:repository-survey/Repo разрешается через явно названный корень",
+   "b": "req:trace-graph/Структурные id различают репозиторий и модуль",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-17",
+    "rec:F-31"
+   ]
+  },
+  {
+   "a": "req:repository-survey/Новое чтение не заменяется прежним результатом обследования",
+   "b": "req:repository-survey/Результат обследования различает четыре состояния",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-30"
+   ]
+  },
+  {
+   "a": "req:repository-survey/Новое чтение не заменяется прежним результатом обследования",
+   "b": "req:trace-graph/Граф собирается из файлов изменения",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-16"
+   ]
+  },
+  {
+   "a": "req:repository-survey/Новое чтение не заменяется прежним результатом обследования",
+   "b": "req:trace-graph/Структурная ось содержит все объявленные модули состава",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-16"
+   ]
+  },
+  {
+   "a": "req:repository-survey/Новое чтение не заменяется прежним результатом обследования",
+   "b": "req:trace-signals/Отчёт называет закрытый состав сигналов",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-30"
+   ]
+  },
+  {
+   "a": "req:repository-survey/Новое чтение не заменяется прежним результатом обследования",
+   "b": "req:trace-signals/Отчёт различает отсутствие и неполноту структурных данных",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-30"
+   ]
+  },
+  {
+   "a": "req:repository-survey/Новое чтение не заменяется прежним результатом обследования",
+   "b": "req:trace-signals/Структурные сигналы используют существующие группы",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-30"
+   ]
+  },
+  {
+   "a": "req:repository-survey/Новое чтение не заменяется прежним результатом обследования",
+   "b": "req:trace-snapshot/Состав README входит в проверку дрейфа",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-30"
+   ]
+  },
+  {
+   "a": "req:repository-survey/Обследование репозиториев начинается в decisions",
+   "b": "req:repository-survey/Результат обследования различает четыре состояния",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-26"
+   ]
+  },
+  {
+   "a": "req:repository-survey/Обследование репозиториев начинается в decisions",
+   "b": "req:trace-signals/Отчёт различает отсутствие и неполноту структурных данных",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-26"
+   ]
+  },
+  {
+   "a": "req:repository-survey/Результат обследования различает четыре состояния",
+   "b": "req:trace-signals/Отчёт называет закрытый состав сигналов",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-21",
+    "rec:F-30"
+   ]
+  },
+  {
+   "a": "req:repository-survey/Результат обследования различает четыре состояния",
+   "b": "req:trace-signals/Отчёт различает отсутствие и неполноту структурных данных",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-21",
+    "rec:F-26",
+    "rec:F-30"
+   ]
+  },
+  {
+   "a": "req:repository-survey/Результат обследования различает четыре состояния",
+   "b": "req:trace-signals/Структурные сигналы используют существующие группы",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-21",
+    "rec:F-30"
+   ]
+  },
+  {
+   "a": "req:repository-survey/Результат обследования различает четыре состояния",
+   "b": "req:trace-snapshot/Состав README входит в проверку дрейфа",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-30"
+   ]
+  },
+  {
+   "a": "req:repository-survey/Состав компонентов и репозиториев хранится переносимо",
+   "b": "req:trace-graph/Структурная ось содержит все объявленные модули состава",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-17"
+   ]
+  },
+  {
+   "a": "req:repository-survey/Состав компонентов и репозиториев хранится переносимо",
+   "b": "req:trace-graph/Структурные id различают репозиторий и модуль",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-17"
+   ]
+  },
+  {
+   "a": "req:trace-conventions/Синхронизация сохраняет аннотацию реализации при требовании",
+   "b": "req:trace-conventions/Требование явно объявляет модули и файлы реализации",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-34"
+   ]
+  },
+  {
+   "a": "req:trace-conventions/Синхронизация сохраняет аннотацию реализации при требовании",
+   "b": "req:trace-graph/Структурные id различают репозиторий и модуль",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-04"
+   ]
+  },
+  {
+   "a": "req:trace-conventions/Синхронизация сохраняет аннотацию реализации при требовании",
+   "b": "req:trace-graph/Явная реализация и зависимости сохраняют происхождение",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-34"
+   ]
+  },
+  {
+   "a": "req:trace-conventions/Требование явно объявляет модули и файлы реализации",
+   "b": "req:trace-graph/Явная реализация и зависимости сохраняют происхождение",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-19",
+    "rec:F-34"
+   ]
+  },
+  {
+   "a": "req:trace-diagram/Конфиг экспорта знает структурные виды",
+   "b": "req:trace-diagram/Скрипт выдаёт текст диаграммы по выбору",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-24",
+    "rec:F-33"
+   ]
+  },
+  {
+   "a": "req:trace-diagram/Конфиг экспорта знает структурные виды",
+   "b": "req:trace-graph/Файловые узлы ограничены используемой трассировкой",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-33"
+   ]
+  },
+  {
+   "a": "req:trace-diagram/Скрипт выдаёт текст диаграммы по выбору",
+   "b": "req:trace-graph/Файловые узлы ограничены используемой трассировкой",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-33"
+   ]
+  },
+  {
+   "a": "req:trace-graph/Id читаемы, файл несёт версию формата",
+   "b": "req:trace-graph/Структурные id различают репозиторий и модуль",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-14"
+   ]
+  },
+  {
+   "a": "req:trace-graph/Граф собирается из файлов изменения",
+   "b": "req:trace-graph/Структурная ось содержит все объявленные модули состава",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-16"
+   ]
+  },
+  {
+   "a": "req:trace-graph/Граф собирается из файлов изменения",
+   "b": "req:trace-snapshot/Снимок и отчёт лежат в каталоге graph",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-05"
+   ]
+  },
+  {
+   "a": "req:trace-graph/Модуль без локальной связи не получает глобальную оценку покрытия",
+   "b": "req:trace-graph/Структурная ось содержит все объявленные модули состава",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-45"
+   ]
+  },
+  {
+   "a": "req:trace-graph/Структурная ось содержит все объявленные модули состава",
+   "b": "req:trace-graph/Структурные id различают репозиторий и модуль",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-17"
+   ]
+  },
+  {
+   "a": "req:trace-graph/Структурная ось содержит все объявленные модули состава",
+   "b": "req:trace-graph/Файловые узлы ограничены используемой трассировкой",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-02"
+   ]
+  },
+  {
+   "a": "req:trace-signals/Отчёт называет закрытый состав сигналов",
+   "b": "req:trace-signals/Отчёт различает отсутствие и неполноту структурных данных",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-21",
+    "rec:F-30"
+   ]
+  },
+  {
+   "a": "req:trace-signals/Отчёт называет закрытый состав сигналов",
+   "b": "req:trace-signals/Структурные сигналы используют существующие группы",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-21",
+    "rec:F-30"
+   ]
+  },
+  {
+   "a": "req:trace-signals/Отчёт называет закрытый состав сигналов",
+   "b": "req:trace-snapshot/Состав README входит в проверку дрейфа",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-30"
+   ]
+  },
+  {
+   "a": "req:trace-signals/Отчёт различает отсутствие и неполноту структурных данных",
+   "b": "req:trace-signals/Структурные сигналы используют существующие группы",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-21",
+    "rec:F-30"
+   ]
+  },
+  {
+   "a": "req:trace-signals/Отчёт различает отсутствие и неполноту структурных данных",
+   "b": "req:trace-snapshot/Состав README входит в проверку дрейфа",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-30"
+   ]
+  },
+  {
+   "a": "req:trace-signals/Структурные сигналы используют существующие группы",
+   "b": "req:trace-snapshot/Состав README входит в проверку дрейфа",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-30"
+   ]
+  },
+  {
+   "a": "req:trace-snapshot/Диагностика и снимок не копируют приватные входные данные",
+   "b": "req:trace-snapshot/Снимок и отчёт лежат в каталоге graph",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-37"
+   ]
+  },
+  {
+   "a": "req:trace-snapshot/Диагностика и снимок не копируют приватные входные данные",
+   "b": "req:trace-snapshot/Снимок сохраняет нормализованную структуру и состояния",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-37"
+   ]
+  },
+  {
+   "a": "req:trace-snapshot/Диагностика и снимок не копируют приватные входные данные",
+   "b": "req:trace-snapshot/Состав README входит в проверку дрейфа",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-37"
+   ]
+  },
+  {
+   "a": "req:trace-snapshot/Предыдущий формат читается без дописывания модулей в историю",
+   "b": "req:trace-snapshot/Снимок и отчёт лежат в каталоге graph",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-22",
+    "rec:F-23"
+   ]
+  },
+  {
+   "a": "req:trace-snapshot/Предыдущий формат читается без дописывания модулей в историю",
+   "b": "req:trace-snapshot/Снимок сохраняет нормализованную структуру и состояния",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-22"
+   ]
+  },
+  {
+   "a": "req:trace-snapshot/Предыдущий формат читается без дописывания модулей в историю",
+   "b": "req:trace-snapshot/Состав README входит в проверку дрейфа",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-22"
+   ]
+  },
+  {
+   "a": "req:trace-snapshot/Снимок и отчёт лежат в каталоге graph",
+   "b": "req:trace-snapshot/Снимок сохраняет нормализованную структуру и состояния",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-22",
+    "rec:F-37"
+   ]
+  },
+  {
+   "a": "req:trace-snapshot/Снимок и отчёт лежат в каталоге graph",
+   "b": "req:trace-snapshot/Состав README входит в проверку дрейфа",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-22",
+    "rec:F-37"
+   ]
+  },
+  {
+   "a": "req:trace-snapshot/Снимок сохраняет нормализованную структуру и состояния",
+   "b": "req:trace-snapshot/Состав README входит в проверку дрейфа",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-22",
+    "rec:F-37"
+   ]
+  }
+ ],
+ "roots": [
+  {
+   "prefix": "",
+   "commit": "c6651d852fb84fc2c90a794f2419a21dbf6103ce"
+  },
+  {
+   "prefix": "upstream/",
+   "commit": ""
+  }
+ ],
+ "base": {
+  "trace-diagram": {
+   "Скрипт выдаёт текст диаграммы по выбору": {
+    "numbers": [
+     "F-02",
+     "F-103",
+     "F-54",
+     "F-71"
+    ],
+    "scenarios": {
+     "Выбрана capability": "7d77e39cc9b2afe9265cecca18262f1476efbb2d6c784787806bb6f32117529a",
+     "Выбрано требование": "47d55795eedeef5f55414839bb41d7da2ec6defd795d3c53300df07f8233542c",
+     "Одно имя в двух capability": "7cf3df90bc153d589732ad128a1e4c2b3eeba79c612aaa04432a7e1f5cb0de88"
+    },
+    "text": "18ae8923146b9d968dc248f04c81cc8a9c6e38859c88fbf2ec41b92ab5a319a4",
+    "traces": []
+   }
+  },
+  "trace-graph": {
+   "Граф собирается из файлов изменения": {
+    "numbers": [
+     "F-18",
+     "F-25",
+     "F-26",
+     "F-30",
+     "F-39"
+    ],
+    "scenarios": {
+     "Только что созданное изменение": "ef1bf9e02567fe5a58be9c0c412f345c5cbbe7e720c1e2989a6cb068bea5def3",
+     "Граф растёт вместе с артефактами": "aef5ae842e82aed3d2dc92f7ec27fe4fb8271cae0564b04aad278885c9adc876",
+     "Связь правится через файл": "5b00ec57b61e9c2063016ba385dceb1c26beb17e8ed63015bda39c21b5af5f30",
+     "Журнал не разбирается": "261c00785848908c11b259e2f585fe6610540153cf3e873e50d1a0e8dfef0509",
+     "Журнал негоден по схеме": "b87997c546086586bbdcc71f71f3f0b40a21dedb69bd9985f3623564d0075404"
+    },
+    "text": "c550ac8ef2fea1b734c81536448cdf00bbe9fa95d3c245e87a92ba507729e3f7",
+    "traces": []
+   },
+   "Id читаемы, файл несёт версию формата": {
+    "numbers": [
+     "F-131",
+     "F-23",
+     "F-70",
+     "trace-numbers-signals/F-19",
+     "trace-numbers-signals/F-25"
+    ],
+    "scenarios": {
+     "Одно имя в двух capability": "732ed5210e5316231f3a5cc6aa2621604547630158887011d91671d68a156c66",
+     "Переименование меняет id": "502bcde819acba9e3827c498c22da70fc57422deed1f346d45a62ba823d1a4ae",
+     "Две ветки одного механизма": "0b2c76d27f8831839dd79ffc3cbed5d0bbeb32a98e9ec10a1931ab0e862e1743",
+     "Снимок прежнего формата": "ddec4e304e1c22b8f5094cad57da23e62f7248cc57c4c962a0daaa5c9a69fa72"
+    },
+    "text": "4b8d08fd62bb3ca9ca4c23cfda143edfb2ad4bbb469e91d4d25f96047f57ec5a",
+    "traces": []
+   }
+  },
+  "trace-signals": {
+   "Отчёт называет закрытый состав сигналов": {
+    "numbers": [
+     "F-64",
+     "F-65",
+     "F-83",
+     "F-95",
+     "trace-numbers-signals/F-04",
+     "trace-numbers-signals/F-15",
+     "trace-numbers-signals/F-27"
+    ],
+    "scenarios": {
+     "Критерий без требования": "0a4a5c136153d0b2b464acf255c86b006ea77dd2fb153b55be9047541dfb2417",
+     "Решение об объёме": "8a936ddf63fc34a9c4afe09c73f9a360354a889568700a5744924930435063ac",
+     "Одно имя у двух требований capability": "c61ef215f2cdf210ead40fb50a370cee34f062b1ba3cceae6e3397d9d03c93f7",
+     "Тяжёлое раньше, чем раннее по файлу": "d4267542b7d6298070e6b4e470909346064191219023989dcffe1ec00932a842"
+    },
+    "text": "4fef2893b3d7b91fc47fe04ab0b218dabdb038a823c0d193aefce89d1b0d174e",
+    "traces": []
+   }
+  },
+  "trace-snapshot": {
+   "Снимок и отчёт лежат в каталоге graph": {
+    "numbers": [
+     "F-100",
+     "F-139",
+     "F-41",
+     "F-52",
+     "F-74",
+     "F-79"
+    ],
+    "scenarios": {
+     "Заморозка": "a6589aa0df8a34b27a39f6e7d8e894e7ca1ddcfefeecfe1585e3e0920a5af9a9",
+     "Каталог уезжает в архив": "1c216b4926acefde35036d48636f479bd3f58a122efaf25643e4d86152ba481c",
+     "Снимок без отчёта": "b3be593882fa3a1bc91cfea90b0896dd32fb02df3fa338c2515a5c4a0f15a775",
+     "Абсолютных путей нет": "c3446981fdddfbca28bb39d40587b8aaea5dbccddb648afe5959854e2da92d17"
+    },
+    "text": "9d136a1cae0c298aac06a8c537abb5d989c291dc1627301dcda5f211cd7b202a",
+    "traces": []
+   }
+  }
+ }
+}

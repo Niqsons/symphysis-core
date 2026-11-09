@@ -241,7 +241,7 @@ def test_all_kinds_have_sysml_word_and_class_per_config(tmp_path):
 def test_every_class_has_latin_name_without_hyphen_and_own_colour():
     kinds = trace_graph.DIAGRAM["виды"]
     classes = [row["класс"] for row in kinds.values()]
-    assert set(kinds) == {"cap", "req", "scn", "task", "rec", "sec", "branch"} and len(set(classes)) == len(classes)
+    assert set(kinds) == {"cap", "req", "scn", "task", "rec", "sec", "branch", "component", "repo", "module", "file"} and len(set(classes)) == len(classes)
     assert all(re.fullmatch(r"[A-Za-z][A-Za-z0-9]*", c) for c in classes)
     assert len({(row["заливка"], row["рамка"]) for row in kinds.values()}) == len(kinds)
     assert all(row["префикс"] for row in kinds.values())

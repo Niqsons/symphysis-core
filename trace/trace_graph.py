@@ -3,10 +3,11 @@
 """Граф трассируемости изменения OpenSpec (изменение `trace-graph`, F-39): требования, сценарии, решения журнала, задачи,
 пункты security и ветки описи, связанные ссылками. Здесь: пять подкоманд с `--help`, реестр артефактов схемы, свой разбор
 спек (`parse_spec`, F-40) и `build` с узлами (`build_graph`); связи, отчёт, проверку и заморозку добавят следующие порции.
-Только стандартная библиотека."""
+Артефакты читаются стандартной библиотекой; структурные YAML-объявления — безопасным PyYAML, когда они заданы."""
 from __future__ import annotations
 
 import argparse
+import copy
 import hashlib
 import json
 import os
@@ -26,6 +27,7 @@ if not (_HERE / "roots.py").is_file():
 from roots import UNUSABLE_ROOTS, default_roots  # noqa: E402
 from journal_model import PROBE_OUTCOMES, validate_journal  # noqa: E402
 from openspec_run import ForkError, check_change_name, find_on_path, no_paths, run_fork  # noqa: E402
+from trace_modules import DeclarationError, attach_structure, discover, read_implementations  # noqa: E402
 
 # --- реестр артефактов (F-53, F-119, F-136) -----------------------------------
 # Вложенный словарь, yaml-like: на каждый артефакт `openspec/schemas/symphysis/schema.yaml` строка, что граф из него берёт.
@@ -108,6 +110,10 @@ DIAGRAM = {
                 "ширина": "3px", "префикс": "SEC"},
         "branch": {"sysml": "element", "type": "ветка", "класс": "branch", "заливка": "#ffedd5", "рамка": "#c2410c",
                    "ширина": "2px", "штрих": "6", "префикс": "BR"},
+        "component": {"sysml": "element", "type": "компонент", "класс": "component", "заливка": "#e0f2fe", "рамка": "#0369a1", "ширина": "2px", "префикс": "COMP"},
+        "repo": {"sysml": "element", "type": "репозиторий", "класс": "repo", "заливка": "#f0f9ff", "рамка": "#0369a1", "ширина": "1px", "префикс": "REPO"},
+        "module": {"sysml": "element", "type": "модуль", "класс": "module", "заливка": "#ccfbf1", "рамка": "#0f766e", "ширина": "2px", "префикс": "MOD"},
+        "file": {"sysml": "element", "type": "файл", "класс": "file", "заливка": "#f1f5f9", "рамка": "#475569", "ширина": "1px", "префикс": "FILE"},
     },
     "связи": {
         "contains": "contains",
@@ -117,6 +123,8 @@ DIAGRAM = {
         "derives": "derives",
         "refines": "refines",
         "candidate": "copies",
+        "implements": "satisfies",
+        "depends": "traces",
     },
 }
 
@@ -349,7 +357,8 @@ class Refusal(Exception):
 # байт в байт (F-81). Узел с уже виденным id в граф не входит: id — ключ графа, остаётся первый по порядку чтения, а дубль
 # уходит в список `build_graph_with_duplicates` и сигналом в stderr у `build`.
 
-GRAPH_FORMAT = 2  # 2 (F-25): база мастер-спеки хранит ссылки строками формы якоря; снимки формата 1 проверка отвергает
+GRAPH_FORMAT = 3  # trace-modules: structural declarations; reader retains supported format 2
+SUPPORTED_FORMATS = (2, 3)
 _TASK_LINE = re.compile(r"^- \[[ xX]\] (\d+(?:\.\d+)+)\s+(.*?)\s*$")
 _TABLE_ROW = re.compile(r"^\|(.*)$")
 _TABLE_RULE = re.compile(r"^\|[\s:|-]+\|?\s*$")
@@ -561,7 +570,7 @@ def saved_base(base: Path) -> dict[str, dict[str, dict]]:
         data = json.loads((base / "graph" / "req-graph.json").read_bytes().decode("utf-8-sig"))
     except (OSError, ValueError):
         return {}
-    raw = data.get("base") if isinstance(data, dict) and data.get("format") == GRAPH_FORMAT else None
+    raw = data.get("base") if isinstance(data, dict) and data.get("format") in SUPPORTED_FORMATS else None
     if not isinstance(raw, dict):
         return {}
     return {cap: {name: entry for name, entry in reqs.items() if isinstance(name, str) and _entry_fits(entry)}
@@ -716,14 +725,14 @@ READERS = {"decisions": _read_records, "specs": _read_specs, "consequences": _re
            "tasks": _read_tasks}
 
 
-def build_graph(root: Path, change: str, saved: dict | None = None) -> dict:
+def build_graph(root: Path, change: str, saved: dict | None = None, *, roots_file: Path | None = None, structure: dict | None = None) -> dict:
     """Граф изменения без списков дублей и неразрешённых ссылок; см. `build_graph_with_signals`."""
-    return build_graph_with_signals(root, change, saved)[0]
+    return build_graph_with_signals(root, change, saved, roots_file=roots_file, structure=structure)[0]
 
 
-def build_graph_with_duplicates(root: Path, change: str) -> tuple[dict, list[dict]]:
+def build_graph_with_duplicates(root: Path, change: str, *, roots_file: Path | None = None) -> tuple[dict, list[dict]]:
     """Граф изменения и список дублей id; см. `build_graph_with_signals`."""
-    graph, duplicates, _ = build_graph_with_signals(root, change)
+    graph, duplicates, _ = build_graph_with_signals(root, change, roots_file=roots_file)
     return graph, duplicates
 
 
@@ -987,12 +996,12 @@ def record_candidates(edges: list[dict], parked: set[str] = frozenset()) -> list
     return [{"a": a, "b": b, "source": CANDIDATE_SOURCE_RECORDS, "shared": shared} for (a, b), shared in sorted(pairs.items())]
 
 
-def build_graph_with_signals(root: Path, change: str, saved: dict | None = None) -> tuple[dict, list[dict], list[dict]]:
+def build_graph_with_signals(root: Path, change: str, saved: dict | None = None, *, roots_file: Path | None = None, structure: dict | None = None) -> tuple[dict, list[dict], list[dict]]:
     """Граф, дубли id и неразрешённые ссылки; описание — у `_build_all`, четвёртое значение которой здесь отброшено."""
-    return _build_all(root, change, saved)[:3]
+    return _build_all(root, change, saved, roots_file=roots_file, structure=structure)[:3]
 
 
-def _build_all(root: Path, change: str, saved: dict | None = None) -> tuple[dict, list[dict], list[dict], set]:
+def _build_all(root: Path, change: str, saved: dict | None = None, *, roots_file: Path | None = None, structure: dict | None = None) -> tuple[dict, list[dict], list[dict], set]:
     """Граф изменения `change` проекта `root`, список дублей id и список неразрешённых ссылок и множество `(id требования, id
     записи)` связей `traces` из текста требования (`_resolve_claims`, F-158). Граф: `format`, `nodes`, `edges`,
     `sources` (исходники сборки с хешами, `source_hashes`), `candidates`; читает только артефакты, из которых `REGISTRY` что-то берёт (F-53). Читатель отдаёт узлы и заявки на связи за
@@ -1024,8 +1033,38 @@ def _build_all(root: Path, change: str, saved: dict | None = None) -> tuple[dict
     nodes.sort(key=lambda n: (n["at"].rsplit(":", 1)[0], int(n["at"].rsplit(":", 1)[1]), n["id"]))
     duplicates = [{"id": node_id, "at": at} for node_id, at in places.items() if len(at) > 1]
     edges, unresolved, text_links = _resolve_claims(root, nodes, places, claims, master, change)
-    return {"format": GRAPH_FORMAT, "sources": source_hashes(base), "nodes": nodes, "edges": edges,
-            "candidates": record_candidates(edges, parked_records(base))}, duplicates, unresolved, text_links
+    graph = {"format": GRAPH_FORMAT, "sources": source_hashes(base), "nodes": nodes, "edges": edges,
+             "candidates": record_candidates(edges, parked_records(base))}
+    try:
+        structure = discover(base, roots_file=roots_file) if structure is None else copy.deepcopy(structure)
+    except DeclarationError as error:
+        raise Refusal(str(error)) from None
+    if structure.get('sources') or structure.get('components') or structure.get('signals'):
+        annotations = []
+        texts = {}
+        for requirement in list(nodes):
+            if requirement['kind'] != 'req' or requirement.get('section') not in ('ADDED', 'MODIFIED'):
+                continue
+            rel, line = requirement['at'].rsplit(':', 1)
+            if rel not in texts:
+                lines = _spec_lines(_read_text(base, rel))
+                texts[rel] = lines, _fence_mask(lines)
+            lines, mask = texts[rel]
+            first = int(line) - 1
+            end = next((i for i in range(first + 1, len(lines)) if not mask[i] and re.match(r'^#{1,3}\s', lines[i])), len(lines))
+            try:
+                for offset, declaration in read_implementations('\n'.join(lines[first:end])):
+                    annotations.append((requirement['id'], f'{rel}:{first + offset}', declaration))
+            except DeclarationError as error:
+                structure['signals'].append({'kind': 'link', 'source': requirement['at'], 'reason': str(error)})
+        try:
+            folders = default_roots(roots_file, base / 'decisions.json') if structure['repos'] else {}
+        except UNUSABLE_ROOTS:
+            raise Refusal('файл корней не прочитан') from None
+        attach_structure(graph, structure, folders, annotations)
+        graph['structure'] = structure
+        graph['sources'] += structure['sources']
+    return graph, duplicates, unresolved, text_links
 
 
 # --- состав исходников и проверка сохранённого файла (F-41, F-86, F-87, F-118) ---------------------------------------
@@ -1063,8 +1102,8 @@ def _shape_problems(data) -> list[str]:
     problems = [f"нет поля `{name}`" for name in GRAPH_FIELDS if name not in data]
     problems += [f"поле `{name}` не того вида (ждали {kind.__name__})" for name, kind in GRAPH_FIELDS.items()
                  if name in data and not isinstance(data[name], kind)]
-    if not problems and data["format"] != GRAPH_FORMAT:
-        problems.append(f"формат {data['format']}, а скрипт читает {GRAPH_FORMAT}")
+    if not problems and data["format"] not in SUPPORTED_FORMATS:
+        problems.append(f"формат {data['format']}, поддерживаемые форматы 2 и 3")
     if isinstance(data.get("sources"), list):
         for item in data["sources"]:
             if not (isinstance(item, dict) and isinstance(item.get("path"), str) and isinstance(item.get("sha256"), str)):
@@ -1073,12 +1112,20 @@ def _shape_problems(data) -> list[str]:
     return problems
 
 
-def _stale_problems(base: Path, saved: list[dict]) -> list[str]:
-    old = {item["path"]: item["sha256"] for item in saved}
-    now = {item["path"]: item["sha256"] for item in source_hashes(base)}
-    return ([f"{rel}: исходник изменён после сборки" for rel in sorted(old.keys() & now.keys()) if old[rel] != now[rel]]
-            + [f"{rel}: новый исходник, в графе его нет" for rel in sorted(now.keys() - old.keys())]
-            + [f"{rel}: исходник удалён" for rel in sorted(old.keys() - now.keys())])
+def _stale_problems(base: Path, saved: list[dict], current: list[dict] | None = None, structure: dict | None = None) -> list[str]:
+    def key(item):
+        return (str(item.get('repo', '')), item['path'])
+    def label(item):
+        return '/'.join(part for part in item if part)
+    old = {key(item): item['sha256'] for item in saved}
+    now = {key(item): item['sha256'] for item in (source_hashes(base) if current is None else current)}
+    unavailable = {r['repo'] for r in (structure or {}).get('repos', []) if r['availability'] != 'available'}
+    missing = []
+    for rel in sorted(old.keys() - now.keys()):
+        suffix = 'источник недоступен, исторический состав не сверен' if rel[0] in unavailable else 'исходник удалён'
+        missing.append(f'{label(rel)}: {suffix}')
+    return ([f'{label(rel)}: исходник изменён после сборки' for rel in sorted(old.keys() & now.keys()) if old[rel] != now[rel]]
+            + [f'{label(rel)}: новый исходник, в графе его нет' for rel in sorted(now.keys() - old.keys())] + missing)
 
 
 def _item_key(item) -> str:
@@ -1120,10 +1167,12 @@ def _diff_problems(saved: dict, fresh: dict, root: Path) -> list[str]:
                      for key in sorted(have.keys() - need.keys())]
         problems += [f"в `{name}` файла нет или не такое, как в сборке: {_item_label(name, need[key])}"
                      for key in sorted(need.keys() - have.keys())]
+    if saved.get('format') == 3 and saved.get('structure') != fresh.get('structure'):
+        problems.append('нормализованная структура файла отличается от сборки')
     return problems
 
 
-def check_graph_file(root: Path, change: str, path: Path | str) -> list[str]:
+def check_graph_file(root: Path, change: str, path: Path | str, *, roots_file: Path | None = None, structure: dict | None = None) -> list[str]:
     """Сигналы проверки сохранённого файла графа `path` изменения `change`: список строк `[!!] …`, пустой — сигналов нет.
     Ничего не печатает и код выхода не трогает (F-31); её зовёт `cmd_check` и зовёт заморозка на `graph/req-graph.json`.
     Нет изменения — `Refusal`. Порядок: форма; затем состав и хеши исходников (хеш после приведения к LF, F-87); только у
@@ -1147,10 +1196,12 @@ def check_graph_file(root: Path, change: str, path: Path | str) -> list[str]:
     problems = _shape_problems(data)
     if problems:
         return signals("форма не та", problems)
-    stale = _stale_problems(base, data["sources"])
+    # Current README cannot retroactively supply format 2's missing structure.
+    fresh = build_graph(root, change, roots_file=roots_file, structure={} if data['format'] == 2 else structure)
+    stale = _stale_problems(base, data["sources"], fresh['sources'], fresh.get('structure'))
     if stale:
         return signals("устарел", stale)
-    return signals("узел поправлен", _diff_problems(data, build_graph(root, change), root))
+    return signals("узел поправлен", _diff_problems(data, fresh, root))
 
 
 # --- текст диаграммы по графу (F-54, F-71, F-103, F-120) ------------------------------------------------------------
@@ -1238,6 +1289,21 @@ def select_diagram(graph: dict, capability: str | None = None, requirement: str 
         for near, far in ((edge["from"], edge["to"]), (edge["to"], edge["from"])):
             if near in core and nodes[far]["kind"] in attach:
                 chosen.add(far)
+    structural = {'component', 'repo', 'module', 'file'}
+    anchors = set(chosen)
+    for edge in graph['edges']:
+        if edge['type'] == 'implements' and edge['to'] in anchors:
+            chosen.add(edge['from'])
+    realized = set(chosen)
+    for edge in graph['edges']:
+        if edge['type'] == 'depends' and edge['from'] in realized:
+            chosen.add(edge['to'])  # one hop, never a transitive dependency closure
+    while True:
+        parents = {e['from'] for e in graph['edges'] if e['type'] == 'contains' and e['to'] in chosen
+                   and nodes[e['from']]['kind'] in structural and nodes[e['to']]['kind'] in structural}
+        if parents <= chosen:
+            break
+        chosen |= parents
     edges = [{"from": e["from"], "to": e["to"], "type": e["type"]} for e in graph["edges"]
              if e["from"] in chosen and e["to"] in chosen] + extra
     return [n for n in graph["nodes"] if n["id"] in chosen], edges
@@ -1310,7 +1376,7 @@ def diagram_text(graph: dict, capability: str | None = None, requirement: str | 
 def cmd_build(args: argparse.Namespace, root: Path) -> int:
     if args.format != "mermaid" and (args.capability or args.requirement):
         raise Refusal("--capability и --requirement выбирают часть диаграммы: нужен `--format mermaid`")
-    graph, duplicates = build_graph_with_duplicates(root, args.change)
+    graph, duplicates = build_graph_with_duplicates(root, args.change, roots_file=args.roots)
     for dup in duplicates:  # сигнал, не стоп (F-31): граф печатается, код 0
         print(f"[!!] дубль id {dup['id']}: места {', '.join(dup['at'])}; в графе остался первый", file=sys.stderr)
     if args.format == "mermaid":
@@ -1379,8 +1445,8 @@ DIVERGED_TITLE = "Расхождения сценариев MODIFIED"
 # и требования без базы идут своими разделами. Имя группы — подзаголовок отчёта со счётом строк (F-29); слов тяжести в именах
 # нет: строка любой группы ждёт ответа человека или записи `[сигнал]` (F-54).
 SIGNAL_GROUPS = (
-    ("Связь не разрешена", ("неизвестное имя или номер", "неоднозначное имя")),
-    ("Опоры нет", ("критерий без требования", "требование без записи", "решение без требования и задачи", "след отстал от журнала")),
+    ("Связь не разрешена", ("неизвестное имя или номер", "неоднозначное имя", "структурная ссылка")),
+    ("Опоры нет", ("критерий без требования", "требование без записи", "решение без требования и задачи", "след отстал от журнала", "структурный источник")),
     ("Реализация не закрывает", ("требование без задачи", "сценарий без задачи", "Backstop без задачи", "Specify без сценария",
                                  "задача ни к чему")),
 )
@@ -1443,7 +1509,7 @@ def _scenario_marks(lines: list[str], mask: list[bool], heading: int, own: str |
     return found
 
 
-def signal_context(root: Path, change: str, saved: dict | None = None) -> dict:
+def signal_context(root: Path, change: str, saved: dict | None = None, *, roots_file: Path | None = None, structure: dict | None = None) -> dict:
     """Данные для сигналов, которых нет в графе (U10): `records` — записи журнала (адресат, решение, исход; снимок графа
     ими не раздувается), `modified` — по требованию MODIFIED: `carried` (текст требования как в мастер-спеке; о сценариях говорит `scenarios`) и
     `scenarios` {id сценария: `same`, `new` или `changed`} по имени и тексту с приведением пробелов и концов строк (F-95),
@@ -1503,7 +1569,7 @@ def signal_context(root: Path, change: str, saved: dict | None = None) -> dict:
                 if state.get(f"scn:{cap}/{item.name}/{scn.name}") != "same":
                     marks |= _scenario_marks(lines, mask, scn.line, change)
     return {"records": records, "modified": modified, "traces": traces, "marks": marks, "unbased": unbased,
-            "text_links": _build_all(root, change, saved)[3]}
+            "text_links": _build_all(root, change, saved, roots_file=roots_file, structure=structure)[3]}
 
 
 def _stale_trace(rec: dict, word: str) -> str | None:
@@ -1621,6 +1687,14 @@ def graph_signals(graph: dict, duplicates: list[dict] | None = None, unresolved:
             why = _stale_trace(rec, word) if rec else None
             if why:
                 add(at, "след отстал от журнала", f"F-{number:02d}: в следе «{word}», {why}")
+    for structural in graph.get('structure', {}).get('signals', []):
+        at = structural['source']
+        if not at.rsplit(':', 1)[-1].isdigit():
+            at += ':1'
+        if structural.get('kind') == 'link':
+            add(at, "структурная ссылка", structural['reason'])
+        else:
+            add(at, "структурный источник", structural['reason'])
     found.sort(key=lambda f: (f[0].rsplit(":", 1)[0], int(f[0].rsplit(":", 1)[1])))
     return [line for _, line in found]
 
@@ -1654,7 +1728,7 @@ def service_line(graph: dict) -> str:
     return f"Служебных задач: {len(numbers)} ({', '.join(numbers)})." if numbers else ""
 
 
-def build_report(root: Path, change: str, saved: dict | None = None) -> str:
+def build_report(root: Path, change: str, saved: dict | None = None, *, roots_file: Path | None = None, structure: dict | None = None) -> str:
     """Текст отчёта изменения `change`: находки `openspec validate`, сигналы графа группами тяжести — подзаголовок третьего уровня
     с именем группы и счётом строк, пустая группа опущена (`grouped_signals`, F-27–F-29) — и отдельным разделом расхождения
     сценариев MODIFIED (F-95); без всех трёх — фраза, что сигналов нет. Ничего не печатает и не пишет (её зовёт `freeze` для
@@ -1663,17 +1737,25 @@ def build_report(root: Path, change: str, saved: dict | None = None) -> str:
     без базы, чей текст уже совпал с мастером, называется отдельным разделом (`UNBASED_TITLE`, F-123). `saved` — готовая база
     вместо снимка (её передаёт заморозка)."""
     check_change_name(change)
-    graph, duplicates, unresolved = build_graph_with_signals(root, change, saved)
-    context = signal_context(root, change, saved)
+    graph, duplicates, unresolved = build_graph_with_signals(root, change, saved, roots_file=roots_file, structure=structure)
+    context = signal_context(root, change, saved, roots_file=roots_file, structure=graph.get('structure', {}))
     findings = [_md(line) for line in validate_findings(root, change)]  # и находки: `<путь>` от `no_paths` голой скобкой не остаётся
     every = [_md(no_paths(line, root)) for line in graph_signals(graph, duplicates, unresolved, context)]
     unbased = [_md(no_paths(f"[!!] {UNBASED}: {rid[4:]} — {place}", root)) for rid, place in context["unbased"]]
     signals = [line for line in every if not line.startswith(f"[!!] {DIVERGED}:")]
     diverged = [line for line in every if line.startswith(f"[!!] {DIVERGED}:")]
     parts = [f"# Отчёт по изменению {change}", ""]
+    structure_rows = []
+    if 'structure' in graph:
+        structure_rows = ['## Обследование репозиториев', '']
+        for repo in graph['structure']['repos']:
+            structure_rows.append(f'- {_md(repo["repo"])}: {repo["survey"]}; новое чтение: {repo["actual"]}; доступность: {repo["availability"]}')
+        if not graph['structure']['repos']:
+            structure_rows.append('Валидный состав repo не получен; отсутствие модулей не подтверждено.')
+        structure_rows.append('')
     service = service_line(graph)  # сведение отдельной строкой, «Сигналов нет.» не отменяет (F-116)
     if not findings and not every and not unbased:
-        return "\n".join([*parts, NO_SIGNALS, "", *([service, ""] if service else [])])
+        return "\n".join([*parts, NO_SIGNALS, "", *structure_rows, *([service, ""] if service else [])])
     grouped = [line for name, rows in grouped_signals(signals) for line in (f"### {name} ({len(rows)})", "", *rows, "")]
     sections = [("Находки openspec validate", [*findings, ""] if findings else ["Находок нет.", ""]),
                 ("Сигналы графа", grouped or ["Сигналов графа нет.", ""])]
@@ -1683,16 +1765,16 @@ def build_report(root: Path, change: str, saved: dict | None = None) -> str:
         sections.append((UNBASED_TITLE, [*unbased, ""]))
     for title, lines in sections:
         parts += [f"## {title}", "", *lines]
-    return "\n".join([*parts, *([service, ""] if service else [])])
+    return "\n".join([*parts, *structure_rows, *([service, ""] if service else [])])
 
 
 def cmd_report(args: argparse.Namespace, root: Path) -> int:
-    print(build_report(root, args.change), end="")  # сигналы и находки кода не меняют (F-31)
+    print(build_report(root, args.change, roots_file=getattr(args, 'roots', None)), end="")  # сигналы и находки кода не меняют (F-31)
     return 0
 
 
 def cmd_check(args: argparse.Namespace, root: Path) -> int:
-    signals = check_graph_file(root, args.change, args.file)
+    signals = check_graph_file(root, args.change, args.file, roots_file=getattr(args, 'roots', None))
     print("\n".join(signals) if signals else "сигналов нет")  # сигнал кода не меняет (F-31)
     return 0
 
@@ -1792,7 +1874,7 @@ def _freeze_base(root: Path, change: str, prior: dict) -> dict[str, dict[str, di
     return found
 
 
-def _freeze_reason(root: Path, change: str, folder: Path) -> str:
+def _freeze_reason(root: Path, change: str, folder: Path, *, roots_file: Path | None = None, structure: dict | None = None) -> str:
     """Почему `graph/` надо собрать заново; пусто — снимок свежий и отчёт на месте (F-100, F-139)."""
     snap, report = folder / "req-graph.json", folder / "report.md"
     if not folder.is_dir():
@@ -1801,7 +1883,7 @@ def _freeze_reason(root: Path, change: str, folder: Path) -> str:
         return "снимка нет"
     if not report.is_file():
         return "отчёта нет, graph неполон"
-    signals = check_graph_file(root, change, snap)
+    signals = check_graph_file(root, change, snap, roots_file=roots_file, structure=structure)
     if signals:
         return f"снимок устарел или негоден: {no_paths(signals[0].split(': ', 1)[-1], root)}" + (
             f" (и ещё сигналов: {len(signals) - 1})" if len(signals) > 1 else "")
@@ -1820,17 +1902,25 @@ def freeze_change(root: Path, change: str, roots_file: Path | None = None) -> Fr
         raise Refusal(f"изменения «{change}» нет: нет каталога openspec/changes/{change}")
     folder = base / "graph"
     roots = _freeze_roots(root, change, roots_file)
+    try:
+        structure = discover(base, roots_file=roots_file)
+    except DeclarationError as error:
+        raise Refusal(str(error)) from None
     unnamed = [item["prefix"] for item in roots if not item["commit"]]
-    reason = _freeze_reason(root, change, folder)
+    reason = _freeze_reason(root, change, folder, roots_file=roots_file, structure=structure)
+    if not reason:
+        prior_format = json.loads((folder / 'req-graph.json').read_bytes().decode('utf-8-sig')).get('format')
+        if prior_format != GRAPH_FORMAT:
+            reason = 'активный снимок прежнего формата'
     if not reason:
         snap = json.loads((folder / "req-graph.json").read_bytes().decode("utf-8-sig"))
         snap["roots"] = roots
         _write(folder / "req-graph.json", json.dumps(snap, ensure_ascii=False, indent=1) + "\n")
         return FreezeResult("commits", unnamed=unnamed)
     frozen = _freeze_base(root, change, saved_base(base))  # до записи: прежняя база берётся из ещё не замененного снимка
-    graph = _pathless({**build_graph(root, change, frozen), "roots": roots, "base": frozen}, root)
+    graph = _pathless({**build_graph(root, change, frozen, roots_file=roots_file, structure=structure), "roots": roots, "base": frozen}, root)
     note = _roots_note(roots)
-    text = build_report(root, change, frozen).rstrip("\n") + "\n"
+    text = build_report(root, change, frozen, roots_file=roots_file, structure=structure).rstrip("\n") + "\n"
     if note:
         text += "\n## Корни без коммита\n\n" + "\n".join(_md(no_paths(line, root)) for line in note) + "\n"
     (folder / "report.md").unlink(missing_ok=True)
@@ -1980,7 +2070,7 @@ def build_parser() -> argparse.ArgumentParser:
                            help="каталог архива изменений; по умолчанию openspec/changes/archive от корня проекта")
         else:
             sp.add_argument("change", metavar="ИЗМЕНЕНИЕ", help="имя изменения, как у `openspec validate <имя>`")
-        if name == "freeze":
+        if name in ("build", "report", "check", "freeze"):
             sp.add_argument("--roots", metavar="ПУТЬ", type=Path, default=None, help="файл корней вместо tools/journal-roots.json")
         if name == "check":
             sp.add_argument("file", metavar="ФАЙЛ", type=Path, help="сохранённый граф изменения (JSON от `build --out`)")

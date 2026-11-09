@@ -43,6 +43,7 @@ const TOOLS_FILES = [
   "step-help/step_help.py",
   "openspec-run/openspec_run.py",
   "trace/trace_graph.py",
+  "trace/trace_modules.py",
   "anchors/anchor_refs.py",
 ];
 

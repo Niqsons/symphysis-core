@@ -339,7 +339,7 @@ SPEC = """## ADDED Requirements
 def test_build_of_fresh_change_is_empty_graph_with_code_zero(tmp_path):
     """`trace-graph`: «Только что созданное изменение» — граф пуст, код 0."""
     root, _ = make_change(tmp_path)
-    assert graph_of(root) == {"format": 2, "sources": [], "nodes": [], "edges": [], "candidates": []}
+    assert graph_of(root) == {"format": 3, "sources": [], "nodes": [], "edges": [], "candidates": []}
 
 
 def test_build_missing_change_is_refused_with_name(tmp_path):
@@ -1310,7 +1310,7 @@ def test_check_changed_source_names_the_file_with_code_zero(tmp_path):
     (lambda d: d.pop("edges"), "edges"),
     (lambda d: d.pop("sources"), "sources"),
     (lambda d: d.update(nodes={}), "nodes"),
-    (lambda d: d.update(format=1), "формат 1, а скрипт читает 2"),
+    (lambda d: d.update(format=1), "формат 1, поддерживаемые форматы 2 и 3"),
 ])
 def test_check_wrong_shape_names_file_and_what_is_missing(tmp_path, mutate, expect):
     """`trace-graph`: «Форма не та», `trace-graph`: «Снимок прежнего формата» — сигнал называет файл и что в нём не так
