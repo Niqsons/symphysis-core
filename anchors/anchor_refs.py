@@ -26,6 +26,7 @@ _HERE = Path(__file__).resolve().parent
 if not (_HERE / "trace_graph.py").is_file():
     sys.path[1:1] = [str(_HERE.parent / name) for name in ("trace", "roots", "decisions", "openspec-run")]
 from openspec_run import ForkError, SAFE_NAME, check_change_name  # noqa: E402
+from trace_modules import IMPLEMENTATION  # noqa: E402
 from trace_graph import (Ref, Refusal, _ANY_HEADER, _fence_mask, _read_text, _spec_lines, find_root, parse_ref,  # noqa: E402
                          parse_spec, record_ref_spans, ref_text, saved_base)
 
@@ -117,6 +118,12 @@ def rewrite_lines(lines: list[str], mask: list[bool], blocks: list[tuple[str, in
     """Строки мастера с якорями вместо голых ссылок журнала в блоках `blocks` и список замен. Строки блоков кода и ссылки
     с именем не трогаются; ссылка из `inherited` требования остаётся голой; число приводится к виду id записи (`F-7` → `F-07`)."""
     out, done = list(lines), []
+    text = '\n'.join(lines)
+    protected = [m.span() for m in IMPLEMENTATION.finditer(text)]
+    offsets, offset = [], 0
+    for line in lines:
+        offsets.append(offset)
+        offset += len(line) + 1
     for name, first, last in blocks:
         keep = inherited.get(name, set())
         for i in range(first, last):
@@ -124,6 +131,8 @@ def rewrite_lines(lines: list[str], mask: list[bool], blocks: list[tuple[str, in
                 continue
             line, pieces, pos = out[i], [], 0
             for ref, start, end in record_ref_spans(line):
+                if any(a <= offsets[i] + start < b for a, b in protected):
+                    continue  # logical module/file names are data, not journal references
                 if ref.change is not None or ref.number not in numbers or Ref(None, ref.number, ref.letter) in keep:
                     continue
                 anchor = ref_text(Ref(change, ref.number, ref.letter))

@@ -227,7 +227,7 @@ const JOURNAL = {
  "title": "Журнал решений: trace-modules",
  "source": "decisions.json",
  "generated": "2026-11-09",
- "sha256": "a40dffff9a7feab34be3848cfbb7142b5ac2ec089309f4178153372eb7fd7354",
+ "sha256": "2fa974f58e7af92d7d498e2935813126deb56513956f739c0a7497c189f9d9c8",
  "stats": {
   "records": 52,
   "forks": 33,
@@ -235,7 +235,7 @@ const JOURNAL = {
   "decided": 33,
   "parked": 1,
   "evidence_total": 172,
-  "evidence_found": 172
+  "evidence_found": 35
  },
  "records": [
   {
@@ -259,9 +259,9 @@ const JOURNAL = {
     {
      "path": "openspec/changes/trace-modules/intent.md",
      "quote": "1. В req graph появляются узлы модулей, определяемые по объявлениям в README, с именем и родом. Граф различает одноимённые модули разных репозиториев.",
-     "line": 33,
-     "verdict": "сверено",
-     "found": true
+     "line": null,
+     "verdict": "корня для пути нет",
+     "found": false
     }
    ],
    "comments": [],
@@ -289,9 +289,9 @@ const JOURNAL = {
     {
      "path": "openspec/changes/trace-modules/intent.md",
      "quote": "2. Ось структуры отражает различие компонента, репозитория, модуля и файла, а также связи между ними. Файл принадлежит одному модулю; каталоги контура разработки не становятся модулями только из-за наличия каталога или README.",
-     "line": 34,
-     "verdict": "сверено",
-     "found": true
+     "line": null,
+     "verdict": "корня для пути нет",
+     "found": false
     }
    ],
    "comments": [],
@@ -319,9 +319,9 @@ const JOURNAL = {
     {
      "path": "openspec/changes/trace-modules/intent.md",
      "quote": "3. В графе представлены связи модулей с реализуемыми требованиями и зависимости между модулями. Происхождение связей прослеживается до файлов-источников; наличие улики или упоминания пути само по себе не выдаётся за доказательство реализации требования.",
-     "line": 35,
-     "verdict": "сверено",
-     "found": true
+     "line": null,
+     "verdict": "корня для пути нет",
+     "found": false
     }
    ],
    "comments": [],
@@ -349,9 +349,9 @@ const JOURNAL = {
     {
      "path": "openspec/changes/trace-modules/intent.md",
      "quote": "4. Сквозное требование может быть связано с несколькими модулями, в том числе из разных репозиториев и компонентов. Id требования не зависит от расположения модулей.",
-     "line": 36,
-     "verdict": "сверено",
-     "found": true
+     "line": null,
+     "verdict": "корня для пути нет",
+     "found": false
     }
    ],
    "comments": [],
@@ -379,9 +379,9 @@ const JOURNAL = {
     {
      "path": "openspec/changes/trace-modules/intent.md",
      "quote": "5. Поддержка модулей согласована с существующими сборкой, отчётом, проверкой, заморозкой графа и экспортом `requirementDiagram`. Граф остаётся производным от источников, без ручного наполнения JSON; проверки остаются сигналами.",
-     "line": 37,
-     "verdict": "сверено",
-     "found": true
+     "line": null,
+     "verdict": "корня для пути нет",
+     "found": false
     }
    ],
    "comments": [],
@@ -409,9 +409,9 @@ const JOURNAL = {
     {
      "path": "openspec/changes/trace-modules/intent.md",
      "quote": "6. На модулях самого symphysis выполнена и сохранена воспроизводимая проверка: построен граф с настоящими узлами модулей и связями с требованиями, проверены зависимости и случай одного требования в нескольких модулях. Подготовленная структура репозитория действительно используется графом.",
-     "line": 38,
-     "verdict": "сверено",
-     "found": true
+     "line": null,
+     "verdict": "корня для пути нет",
+     "found": false
     }
    ],
    "comments": [],
@@ -439,9 +439,9 @@ const JOURNAL = {
     {
      "path": "openspec/changes/trace-modules/intent.md",
      "quote": "7. Работа новой оси, источники связей, ограничения и влияние на порядок работы описаны в `docs/GUIDE.md`. Расхождения с указанным разбором явно зафиксированы решениями, а не остаются молчаливыми пропусками.",
-     "line": 39,
-     "verdict": "сверено",
-     "found": true
+     "line": null,
+     "verdict": "корня для пути нет",
+     "found": false
     }
    ],
    "comments": [],
@@ -517,16 +517,16 @@ const JOURNAL = {
     {
      "path": "openspec/specs/module-declaration/spec.md",
      "quote": "README.md`, который начинается frontmatter YAML с полями `name`",
-     "line": 9,
-     "verdict": "сверено",
-     "found": true
+     "line": null,
+     "verdict": "корня для пути нет",
+     "found": false
     },
     {
      "path": "README.md",
      "quote": "[openspec/](openspec/) — контур разработки: изменения и мастер-спеки; внутри лежит модуль схемы",
-     "line": 26,
-     "verdict": "сверено",
-     "found": true
+     "line": null,
+     "verdict": "корня для пути нет",
+     "found": false
     }
    ],
    "comments": [],
@@ -557,16 +557,16 @@ const JOURNAL = {
     {
      "path": "trace/trace_graph.py",
      "quote": "READERS = {\"decisions\": _read_records",
-     "line": 715,
-     "verdict": "сверено",
-     "found": true
+     "line": null,
+     "verdict": "корня для пути нет",
+     "found": false
     },
     {
      "path": "trace/trace_graph.py",
      "quote": "# Узел — словарь: `id`, `kind` (`cap`, `req`, `scn`, `rec`, `task`, `sec`, `branch`)",
-     "line": 343,
-     "verdict": "сверено",
-     "found": true
+     "line": null,
+     "verdict": "корня для пути нет",
+     "found": false
     }
    ],
    "comments": [],
@@ -596,30 +596,30 @@ const JOURNAL = {
     {
      "path": "trace/trace_graph.py",
      "quote": "SOURCE_FILES = {\"decisions\": \"decisions.json\"",
-     "line": 1035,
-     "verdict": "сверено",
-     "found": true
+     "line": null,
+     "verdict": "корня для пути нет",
+     "found": false
     },
     {
      "path": "trace/trace_graph.py",
      "quote": "return [{\"prefix\": no_paths(prefix, root), \"commit\": root_commit(folder)}",
-     "line": 1751,
-     "verdict": "сверено",
-     "found": true
+     "line": null,
+     "verdict": "корня для пути нет",
+     "found": false
     },
     {
-     "path": "trace/trace_graph.py",
+     "path": "openspec/changes/trace-modules/verification/baseline-sources.md",
      "quote": "GRAPH_FORMAT = 2",
-     "line": 352,
-     "verdict": "сверено",
-     "found": true
+     "line": null,
+     "verdict": "корня для пути нет",
+     "found": false
     },
     {
-     "path": "trace/trace_graph.py",
+     "path": "openspec/changes/trace-modules/verification/baseline-sources.md",
      "quote": "data[\"format\"] != GRAPH_FORMAT",
-     "line": 1066,
-     "verdict": "сверено",
-     "found": true
+     "line": null,
+     "verdict": "корня для пути нет",
+     "found": false
     }
    ],
    "comments": [],
@@ -649,16 +649,16 @@ const JOURNAL = {
     {
      "path": "consequences/journal_sites.py",
      "quote": "Места кода из журнала: файлы из улик выбранных вариантов решённых развилок, кроме проб и фактов",
-     "line": 2,
-     "verdict": "сверено",
-     "found": true
+     "line": null,
+     "verdict": "корня для пути нет",
+     "found": false
     },
     {
      "path": "consequences/journal_sites.py",
      "quote": "return not path.lower().endswith(\".md\")",
-     "line": 42,
-     "verdict": "сверено",
-     "found": true
+     "line": null,
+     "verdict": "корня для пути нет",
+     "found": false
     }
    ],
    "comments": [],
@@ -689,16 +689,16 @@ const JOURNAL = {
     {
      "path": "installer/scripts/sync-payload.js",
      "quote": "Исходник разложен по модулям (F-18 A), установка плоская (F-19 A)",
-     "line": 26,
-     "verdict": "сверено",
-     "found": true
+     "line": null,
+     "verdict": "корня для пути нет",
+     "found": false
     },
     {
      "path": "tests/repository_structure.py",
      "quote": "SCHEMA_MODULE = \"openspec/schemas/symphysis\"",
-     "line": 17,
-     "verdict": "сверено",
-     "found": true
+     "line": null,
+     "verdict": "корня для пути нет",
+     "found": false
     }
    ],
    "comments": [],
@@ -812,9 +812,9 @@ const JOURNAL = {
       {
        "path": "openspec/changes/trace-modules/intent.md",
        "quote": "Подготовленная структура репозитория действительно используется графом.",
-       "line": 38,
-       "verdict": "сверено",
-       "found": true
+       "line": null,
+       "verdict": "корня для пути нет",
+       "found": false
       }
      ]
     },
@@ -827,16 +827,16 @@ const JOURNAL = {
       {
        "path": "trace/trace_graph.py",
        "quote": "READERS = {\"decisions\": _read_records",
-       "line": 715,
-       "verdict": "сверено",
-       "found": true
+       "line": null,
+       "verdict": "корня для пути нет",
+       "found": false
       },
       {
        "path": "trace/trace_graph.py",
        "quote": "# Узел — словарь: `id`, `kind` (`cap`, `req`, `scn`, `rec`, `task`, `sec`, `branch`)",
-       "line": 343,
-       "verdict": "сверено",
-       "found": true
+       "line": null,
+       "verdict": "корня для пути нет",
+       "found": false
       }
      ]
     },
@@ -934,9 +934,9 @@ const JOURNAL = {
       {
        "path": "openspec/changes/trace-modules/intent.md",
        "quote": "Формат объявления компонентов и репозиториев",
-       "line": 43,
-       "verdict": "сверено",
-       "found": true
+       "line": null,
+       "verdict": "корня для пути нет",
+       "found": false
       }
      ]
     },
@@ -1022,16 +1022,16 @@ const JOURNAL = {
       {
        "path": "openspec/specs/module-declaration/spec.md",
        "quote": "README.md`, который начинается frontmatter YAML с полями `name`",
-       "line": 9,
-       "verdict": "сверено",
-       "found": true
+       "line": null,
+       "verdict": "корня для пути нет",
+       "found": false
       },
       {
        "path": "README.md",
        "quote": "[openspec/](openspec/) — контур разработки: изменения и мастер-спеки; внутри лежит модуль схемы",
-       "line": 26,
-       "verdict": "сверено",
-       "found": true
+       "line": null,
+       "verdict": "корня для пути нет",
+       "found": false
       }
      ]
     },
@@ -1066,16 +1066,16 @@ const JOURNAL = {
       {
        "path": "installer/scripts/sync-payload.js",
        "quote": "Исходник разложен по модулям (F-18 A), установка плоская (F-19 A)",
-       "line": 26,
-       "verdict": "сверено",
-       "found": true
+       "line": null,
+       "verdict": "корня для пути нет",
+       "found": false
       },
       {
        "path": "tests/repository_structure.py",
        "quote": "SCHEMA_MODULE = \"openspec/schemas/symphysis\"",
-       "line": 17,
-       "verdict": "сверено",
-       "found": true
+       "line": null,
+       "verdict": "корня для пути нет",
+       "found": false
       }
      ],
      "deviation": "F-02"
@@ -1130,9 +1130,9 @@ const JOURNAL = {
       {
        "path": "openspec/changes/trace-modules/intent.md",
        "quote": "наличие улики или упоминания пути само по себе не выдаётся за доказательство реализации требования.",
-       "line": 35,
-       "verdict": "сверено",
-       "found": true
+       "line": null,
+       "verdict": "корня для пути нет",
+       "found": false
       }
      ]
     },
@@ -1145,16 +1145,16 @@ const JOURNAL = {
       {
        "path": "consequences/journal_sites.py",
        "quote": "Места кода из журнала: файлы из улик выбранных вариантов решённых развилок, кроме проб и фактов",
-       "line": 2,
-       "verdict": "сверено",
-       "found": true
+       "line": null,
+       "verdict": "корня для пути нет",
+       "found": false
       },
       {
        "path": "consequences/journal_sites.py",
        "quote": "return not path.lower().endswith(\".md\")",
-       "line": 42,
-       "verdict": "сверено",
-       "found": true
+       "line": null,
+       "verdict": "корня для пути нет",
+       "found": false
       }
      ],
      "deviation": "F-03"
@@ -1168,9 +1168,9 @@ const JOURNAL = {
       {
        "path": "openspec/changes/trace-modules/intent.md",
        "quote": "В графе представлены связи модулей с реализуемыми требованиями",
-       "line": 35,
-       "verdict": "сверено",
-       "found": true
+       "line": null,
+       "verdict": "корня для пути нет",
+       "found": false
       }
      ],
      "deviation": "F-03"
@@ -1260,9 +1260,9 @@ const JOURNAL = {
       {
        "path": "openspec/changes/archive/2026-11-07-module-structure/research/F-27.md",
        "quote": "cli -> decisions: 25 ссылок, например tools/journal_cli.py:31 _valid_journal -> journal_model.load_journal",
-       "line": 45,
-       "verdict": "сверено",
-       "found": true
+       "line": null,
+       "verdict": "корня для пути нет",
+       "found": false
       }
      ]
     },
@@ -1275,9 +1275,9 @@ const JOURNAL = {
       {
        "path": "openspec/changes/trace-modules/intent.md",
        "quote": "без ручного наполнения JSON",
-       "line": 37,
-       "verdict": "сверено",
-       "found": true
+       "line": null,
+       "verdict": "корня для пути нет",
+       "found": false
       }
      ],
      "deviation": "F-05"
@@ -1348,9 +1348,9 @@ const JOURNAL = {
       {
        "path": "openspec/changes/trace-modules/intent.md",
        "quote": "проверки остаются сигналами.",
-       "line": 37,
-       "verdict": "сверено",
-       "found": true
+       "line": null,
+       "verdict": "корня для пути нет",
+       "found": false
       }
      ],
      "deviation": "F-05"
@@ -1364,9 +1364,9 @@ const JOURNAL = {
       {
        "path": "openspec/changes/trace-modules/intent.md",
        "quote": "Происхождение связей прослеживается до файлов-источников",
-       "line": 35,
-       "verdict": "сверено",
-       "found": true
+       "line": null,
+       "verdict": "корня для пути нет",
+       "found": false
       }
      ]
     }
@@ -1420,16 +1420,16 @@ const JOURNAL = {
       {
        "path": "trace/trace_graph.py",
        "quote": "SOURCE_FILES = {\"decisions\": \"decisions.json\"",
-       "line": 1035,
-       "verdict": "сверено",
-       "found": true
+       "line": null,
+       "verdict": "корня для пути нет",
+       "found": false
       },
       {
        "path": "trace/trace_graph.py",
        "quote": "return [{\"prefix\": no_paths(prefix, root), \"commit\": root_commit(folder)}",
-       "line": 1751,
-       "verdict": "сверено",
-       "found": true
+       "line": null,
+       "verdict": "корня для пути нет",
+       "found": false
       }
      ]
     },
@@ -1442,9 +1442,9 @@ const JOURNAL = {
       {
        "path": "trace/trace_graph.py",
        "quote": "\"commit\": root_commit(folder)",
-       "line": 1751,
-       "verdict": "сверено",
-       "found": true
+       "line": null,
+       "verdict": "корня для пути нет",
+       "found": false
       }
      ]
     },
@@ -1457,9 +1457,9 @@ const JOURNAL = {
       {
        "path": "openspec/changes/trace-modules/intent.md",
        "quote": "заморозкой графа",
-       "line": 37,
-       "verdict": "сверено",
-       "found": true
+       "line": null,
+       "verdict": "корня для пути нет",
+       "found": false
       }
      ],
      "deviation": "F-05"
@@ -1517,18 +1517,18 @@ const JOURNAL = {
      "unlikely": null,
      "evidence": [
       {
-       "path": "trace/trace_graph.py",
+       "path": "openspec/changes/trace-modules/verification/baseline-sources.md",
        "quote": "GRAPH_FORMAT = 2",
-       "line": 352,
-       "verdict": "сверено",
-       "found": true
+       "line": null,
+       "verdict": "корня для пути нет",
+       "found": false
       },
       {
-       "path": "trace/trace_graph.py",
+       "path": "openspec/changes/trace-modules/verification/baseline-sources.md",
        "quote": "data[\"format\"] != GRAPH_FORMAT",
-       "line": 1066,
-       "verdict": "сверено",
-       "found": true
+       "line": null,
+       "verdict": "корня для пути нет",
+       "found": false
       }
      ]
     },
@@ -1541,16 +1541,16 @@ const JOURNAL = {
       {
        "path": "trace/trace_graph.py",
        "quote": "READERS = {\"decisions\": _read_records",
-       "line": 715,
-       "verdict": "сверено",
-       "found": true
+       "line": null,
+       "verdict": "корня для пути нет",
+       "found": false
       },
       {
        "path": "trace/trace_graph.py",
        "quote": "# Узел — словарь: `id`, `kind` (`cap`, `req`, `scn`, `rec`, `task`, `sec`, `branch`)",
-       "line": 343,
-       "verdict": "сверено",
-       "found": true
+       "line": null,
+       "verdict": "корня для пути нет",
+       "found": false
       }
      ]
     },
@@ -1563,16 +1563,16 @@ const JOURNAL = {
       {
        "path": "trace/trace_graph.py",
        "quote": "SOURCE_FILES = {\"decisions\": \"decisions.json\"",
-       "line": 1035,
-       "verdict": "сверено",
-       "found": true
+       "line": null,
+       "verdict": "корня для пути нет",
+       "found": false
       },
       {
        "path": "trace/trace_graph.py",
        "quote": "return [{\"prefix\": no_paths(prefix, root), \"commit\": root_commit(folder)}",
-       "line": 1751,
-       "verdict": "сверено",
-       "found": true
+       "line": null,
+       "verdict": "корня для пути нет",
+       "found": false
       }
      ]
     }
@@ -1631,16 +1631,16 @@ const JOURNAL = {
       {
        "path": "trace/trace_graph.py",
        "quote": "DIAGRAM = {",
-       "line": 93,
-       "verdict": "сверено",
-       "found": true
+       "line": null,
+       "verdict": "корня для пути нет",
+       "found": false
       },
       {
        "path": "openspec/changes/trace-modules/intent.md",
        "quote": "экспортом `requirementDiagram`",
-       "line": 37,
-       "verdict": "сверено",
-       "found": true
+       "line": null,
+       "verdict": "корня для пути нет",
+       "found": false
       }
      ]
     },
@@ -1668,9 +1668,9 @@ const JOURNAL = {
       {
        "path": "openspec/changes/trace-modules/intent.md",
        "quote": "экспортом `requirementDiagram`",
-       "line": 37,
-       "verdict": "сверено",
-       "found": true
+       "line": null,
+       "verdict": "корня для пути нет",
+       "found": false
       }
      ],
      "deviation": "F-05"
@@ -1726,9 +1726,9 @@ const JOURNAL = {
       {
        "path": "openspec/changes/trace-modules/intent.md",
        "quote": "На модулях самого symphysis выполнена и сохранена воспроизводимая проверка",
-       "line": 38,
-       "verdict": "сверено",
-       "found": true
+       "line": null,
+       "verdict": "корня для пути нет",
+       "found": false
       }
      ]
     },
@@ -1756,9 +1756,9 @@ const JOURNAL = {
       {
        "path": "openspec/changes/trace-modules/intent.md",
        "quote": "Подготовленная структура репозитория действительно используется графом.",
-       "line": 38,
-       "verdict": "сверено",
-       "found": true
+       "line": null,
+       "verdict": "корня для пути нет",
+       "found": false
       }
      ],
      "deviation": "F-06"
@@ -1852,23 +1852,23 @@ const JOURNAL = {
     {
      "path": "installer/scripts/sync-payload.js",
      "quote": "Исходник разложен по модулям (F-18 A), установка плоская (F-19 A)",
-     "line": 26,
-     "verdict": "сверено",
-     "found": true
+     "line": null,
+     "verdict": "корня для пути нет",
+     "found": false
     },
     {
      "path": "tests/repository_structure.py",
      "quote": "SCHEMA_MODULE = \"openspec/schemas/symphysis\"",
-     "line": 17,
-     "verdict": "сверено",
-     "found": true
+     "line": null,
+     "verdict": "корня для пути нет",
+     "found": false
     },
     {
      "path": "openspec/changes/trace-modules/research/F-26.md",
      "quote": "1. Metadata: расширение хранится в YAML, но не в типизированном результате чтения. Проверены CLI и публичный helper уже собранного форка; новая сборка не делалась.",
-     "line": 20,
-     "verdict": "сверено",
-     "found": true
+     "line": null,
+     "verdict": "корня для пути нет",
+     "found": false
     },
     {
      "path": "upstream/openspec/src/utils/change-metadata.ts",
@@ -1880,30 +1880,30 @@ const JOURNAL = {
     {
      "path": "openspec/changes/trace-modules/research/F-26-probe/summary.txt",
      "quote": "{\"archived\": true, \"result\": \"new creates only known metadata; repeated new refuses; status/instructions(json,text)/strict validation/archive preserve exact metadata bytes\", \"sha256\": \"e87555bc44738ab251c951d0da0ab937c58d952a9493fa8bc5b21d581a182bd4\", \"step\": \"metadata-retention\"}",
-     "line": 4,
-     "verdict": "сверено",
-     "found": true
+     "line": null,
+     "verdict": "корня для пути нет",
+     "found": false
     },
     {
      "path": "openspec/changes/trace-modules/research/F-26-probe/summary.txt",
      "quote": "{\"result\": \"repos is not accepted as repository map\", \"signals\": [\"symphysis.yaml: неизвестный ключ repos\"], \"step\": \"settings-repos\"}",
-     "line": 11,
-     "verdict": "сверено",
-     "found": true
+     "line": null,
+     "verdict": "корня для пути нет",
+     "found": false
     },
     {
      "path": "openspec/changes/trace-modules/research/F-26-probe/summary.txt",
      "quote": "{\"exit\": 128, \"result\": \"CalledProcessError from git ls-files; no fallback\", \"step\": \"module-detection-no-git\"}",
-     "line": 9,
-     "verdict": "сверено",
-     "found": true
+     "line": null,
+     "verdict": "корня для пути нет",
+     "found": false
     },
     {
      "path": "openspec/changes/trace-modules/research/F-26.md",
      "quote": "4а. Текущие места чтения исходников: brainstorm, research и общий workflow propose уже предусматривают разведку по задаче; формального результата «модули есть/нет» в них сейчас нет. Ни один из этих пунктов не назначает будущий момент анализа.",
-     "line": 54,
-     "verdict": "сверено",
-     "found": true
+     "line": null,
+     "verdict": "корня для пути нет",
+     "found": false
     }
    ],
    "comments": [],
@@ -1939,74 +1939,74 @@ const JOURNAL = {
    "consequences": "Фактическая опора для F-22–F-25. Отчёт и следы фиксируют текущие ограничения; они не выбирают новую конструкцию. Дополнительные области чтения и вопросы формата остаются материалом следующего круга.",
    "evidence": [
     {
-     "path": "trace/trace_graph.py",
+     "path": "openspec/changes/trace-modules/verification/baseline-sources.md",
      "quote": "GRAPH_FORMAT = 2",
-     "line": 352,
-     "verdict": "сверено",
-     "found": true
+     "line": null,
+     "verdict": "корня для пути нет",
+     "found": false
     },
     {
-     "path": "trace/trace_graph.py",
+     "path": "openspec/changes/trace-modules/verification/baseline-sources.md",
      "quote": "data[\"format\"] != GRAPH_FORMAT",
-     "line": 1066,
-     "verdict": "сверено",
-     "found": true
+     "line": null,
+     "verdict": "корня для пути нет",
+     "found": false
     },
     {
      "path": "trace/trace_graph.py",
      "quote": "SOURCE_FILES = {\"decisions\": \"decisions.json\"",
-     "line": 1035,
-     "verdict": "сверено",
-     "found": true
+     "line": null,
+     "verdict": "корня для пути нет",
+     "found": false
     },
     {
      "path": "trace/trace_graph.py",
      "quote": "return [{\"prefix\": no_paths(prefix, root), \"commit\": root_commit(folder)}",
-     "line": 1751,
-     "verdict": "сверено",
-     "found": true
+     "line": null,
+     "verdict": "корня для пути нет",
+     "found": false
     },
     {
      "path": "trace/trace_graph.py",
      "quote": "    return [{\"path\": rel, \"sha256\": _lf_hash(base / rel)} for rel in sorted(set(rels)) if (base / rel).is_file()]",
-     "line": 1057,
-     "verdict": "сверено",
-     "found": true
+     "line": null,
+     "verdict": "корня для пути нет",
+     "found": false
     },
     {
      "path": "trace/trace_graph.py",
      "quote": "        attach = (\"task\", \"rec\", \"sec\", \"branch\")",
-     "line": 1227,
-     "verdict": "сверено",
-     "found": true
+     "line": null,
+     "verdict": "корня для пути нет",
+     "found": false
     },
     {
      "path": "openspec/changes/trace-modules/research/F-27-probe/results.txt",
      "quote": "compatibility_summary: {\"capability_filter\": [\"cap\", \"req\", \"scn\"], \"full_diagram\": \"KeyError: 'module'\", \"new_edge\": \"KeyError: 'implements'\", \"new_kind_check_signals\": 2, \"new_kind_shape\": [], \"requirement_filter\": [\"req\", \"scn\"], \"unknown_field_format2\": {\"check\": [], \"field_preserved\": true, \"freeze_action\": \"commits\", \"shape\": []}}",
-     "line": 16,
-     "verdict": "сверено",
-     "found": true
+     "line": null,
+     "verdict": "корня для пути нет",
+     "found": false
     },
     {
      "path": "openspec/changes/trace-modules/research/F-27-probe/results.txt",
      "quote": "snapshot_bounds_summary: {\"README\": {\"check\": [], \"freeze_action\": \"commits\", \"graph_nodes_unchanged\": true, \"report_unchanged\": true}, \"missing_external\": {\"report_mentions_missing\": true, \"roots\": [{\"commit\": \"\", \"prefix\": \"core/\"}, {\"commit\": \"\", \"prefix\": \"external/\"}], \"unnamed\": [\"core/\", \"external/\"]}, \"move\": {\"check\": [], \"freeze_action\": \"commits\", \"graph_nodes_unchanged\": true}}",
-     "line": 17,
-     "verdict": "сверено",
-     "found": true
+     "line": null,
+     "verdict": "корня для пути нет",
+     "found": false
     },
     {
      "path": "openspec/changes/trace-modules/research/F-27-probe/results.txt",
      "quote": "archive_compatibility_summary: {\"counts\": {\"1\": 3, \"2\": 6}, \"format1_base\": [], \"format1_shape\": [\"формат 1, а скрипт читает 2\"], \"format2_base\": [\"artifact-attack\"], \"format2_shape\": [], \"temporary_freeze\": {\"action\": \"build\", \"reason\": \"снимок устарел или негоден: форма не та: формат 1, а скрипт читает 2\", \"result_format\": 2}}",
-     "line": 18,
-     "verdict": "сверено",
-     "found": true
+     "line": null,
+     "verdict": "корня для пути нет",
+     "found": false
     },
     {
      "path": "openspec/changes/trace-modules/research/F-27-probe/results.txt",
      "quote": "real_requirement_partial_dogfood: {\"absolute_paths_absent\": true, \"both_embedded\": true, \"limits\": \"Uses real file_links/render_html and a synthetic five-marker template; CLI wiring and browser DOM are outside the allowed source area. This is partial implementation evidence, not a new graph relation.\", \"links\": {\"external/runtime.py\": \"../../../../external-fixture/runtime.py\", \"local.py\": \"../../../local.py\"}, \"missing_external_links\": {\"local.py\": \"../../../local.py\"}, \"modules\": [\"roots\", \"viewer\"], \"requirement\": \"decision-viewer/Файлы на странице показаны ссылками\"}",
-     "line": 15,
-     "verdict": "сверено",
-     "found": true
+     "line": null,
+     "verdict": "корня для пути нет",
+     "found": false
     }
    ],
    "comments": [],
@@ -2041,30 +2041,30 @@ const JOURNAL = {
     {
      "path": "cli/journal_cli.py",
      "quote": "links = {\"root\": project_href(roots, args.out), \"files\": file_links(",
-     "line": 269,
-     "verdict": "сверено",
-     "found": true
+     "line": null,
+     "verdict": "корня для пути нет",
+     "found": false
     },
     {
      "path": "cli/journal_cli.py",
      "quote": "html = render_html(journal, args.template, attacks=attacks,",
-     "line": 271,
-     "verdict": "сверено",
-     "found": true
+     "line": null,
+     "verdict": "корня для пути нет",
+     "found": false
     },
     {
      "path": "cli/journal_cli.py",
      "quote": "help_snapshot=snapshot, links=links)",
-     "line": 273,
-     "verdict": "сверено",
-     "found": true
+     "line": null,
+     "verdict": "корня для пути нет",
+     "found": false
     },
     {
      "path": "viewer/playground-template.html",
      "quote": "const href = LINKS.files[path];",
-     "line": 629,
-     "verdict": "сверено",
-     "found": true
+     "line": null,
+     "verdict": "корня для пути нет",
+     "found": false
     }
    ],
    "comments": [],
@@ -2097,30 +2097,30 @@ const JOURNAL = {
       {
        "path": "decisions/skills/symphysis-brainstorm/SKILL.md",
        "quote": "Затем выполни запрос данных: прочитай запрос человека, каталог изменения, файлы и каталоги,",
-       "line": 122,
-       "verdict": "сверено",
-       "found": true
+       "line": null,
+       "verdict": "корня для пути нет",
+       "found": false
       },
       {
        "path": "openspec/changes/trace-modules/research/F-26.md",
        "quote": "4а. Текущие места чтения исходников: brainstorm, research и общий workflow propose",
-       "line": 54,
-       "verdict": "сверено",
-       "found": true
+       "line": null,
+       "verdict": "корня для пути нет",
+       "found": false
       },
       {
        "path": "openspec/changes/trace-modules/answers/2026-11-09.md",
        "quote": "тут важно уточнить, что репозиторий symphysis Только для примера",
-       "line": 2,
-       "verdict": "сверено",
-       "found": true
+       "line": null,
+       "verdict": "корня для пути нет",
+       "found": false
       },
       {
        "path": "openspec/changes/trace-modules/answers/2026-11-09.md",
        "quote": "думаю, что нужно определить момент, когда модель анализирует репозиторий",
-       "line": 13,
-       "verdict": "сверено",
-       "found": true
+       "line": null,
+       "verdict": "корня для пути нет",
+       "found": false
       }
      ]
     },
@@ -2133,16 +2133,16 @@ const JOURNAL = {
       {
        "path": "openspec/schemas/symphysis/schema.yaml",
        "quote": "- id: decisions",
-       "line": 14,
-       "verdict": "сверено",
-       "found": true
+       "line": null,
+       "verdict": "корня для пути нет",
+       "found": false
       },
       {
        "path": "openspec/changes/trace-modules/intent.md",
        "quote": "Формат объявления компонентов и репозиториев",
-       "line": 43,
-       "verdict": "сверено",
-       "found": true
+       "line": null,
+       "verdict": "корня для пути нет",
+       "found": false
       }
      ]
     },
@@ -2155,9 +2155,9 @@ const JOURNAL = {
       {
        "path": "openspec/changes/trace-modules/intent.md",
        "quote": "Граф должен позволять выяснить, какие модули реализуют требование",
-       "line": 21,
-       "verdict": "сверено",
-       "found": true
+       "line": null,
+       "verdict": "корня для пути нет",
+       "found": false
       }
      ]
     }
@@ -2212,23 +2212,23 @@ const JOURNAL = {
       {
        "path": "openspec/changes/trace-modules/answers/2026-11-09.md",
        "quote": "тут важно уточнить, что репозиторий symphysis Только для примера",
-       "line": 2,
-       "verdict": "сверено",
-       "found": true
+       "line": null,
+       "verdict": "корня для пути нет",
+       "found": false
       },
       {
        "path": "openspec/changes/trace-modules/answers/2026-11-09.md",
        "quote": "думаю, что нужно определить момент, когда модель анализирует репозиторий",
-       "line": 13,
-       "verdict": "сверено",
-       "found": true
+       "line": null,
+       "verdict": "корня для пути нет",
+       "found": false
       },
       {
        "path": "openspec/changes/trace-modules/research/F-26.md",
        "quote": "обязательный машинный или инструкционный выход «модули есть/нет»",
-       "line": 74,
-       "verdict": "сверено",
-       "found": true
+       "line": null,
+       "verdict": "корня для пути нет",
+       "found": false
       }
      ]
     },
@@ -2241,9 +2241,9 @@ const JOURNAL = {
       {
        "path": "openspec/changes/trace-modules/intent.md",
        "quote": "Граф остаётся производным от источников",
-       "line": 37,
-       "verdict": "сверено",
-       "found": true
+       "line": null,
+       "verdict": "корня для пути нет",
+       "found": false
       }
      ]
     },
@@ -2256,16 +2256,16 @@ const JOURNAL = {
       {
        "path": "decisions/skills/symphysis-brainstorm/SKILL.md",
        "quote": "Затем выполни запрос данных: прочитай запрос человека, каталог изменения, файлы и каталоги,",
-       "line": 122,
-       "verdict": "сверено",
-       "found": true
+       "line": null,
+       "verdict": "корня для пути нет",
+       "found": false
       },
       {
        "path": "openspec/changes/trace-modules/research/F-26.md",
        "quote": "4а. Текущие места чтения исходников: brainstorm, research и общий workflow propose",
-       "line": 54,
-       "verdict": "сверено",
-       "found": true
+       "line": null,
+       "verdict": "корня для пути нет",
+       "found": false
       }
      ]
     }
@@ -2320,23 +2320,23 @@ const JOURNAL = {
       {
        "path": "roots/roots.py",
        "quote": "Префикс пути улики -> каталог — только из файла корней",
-       "line": 71,
-       "verdict": "сверено",
-       "found": true
+       "line": null,
+       "verdict": "корня для пути нет",
+       "found": false
       },
       {
        "path": "openspec/changes/trace-modules/research/F-26.md",
        "quote": "синтетический repos отклонён",
-       "line": 33,
-       "verdict": "сверено",
-       "found": true
+       "line": null,
+       "verdict": "корня для пути нет",
+       "found": false
       },
       {
        "path": "openspec/changes/trace-modules/research/F-26.md",
        "quote": "вложенный путь разрешается по самому длинному префиксу",
-       "line": 35,
-       "verdict": "сверено",
-       "found": true
+       "line": null,
+       "verdict": "корня для пути нет",
+       "found": false
       }
      ]
     },
@@ -2356,9 +2356,9 @@ const JOURNAL = {
       {
        "path": "settings/symphysis_config.py",
        "quote": "settings.signals.append(f\"{FILE_NAME}: неизвестный ключ {group}\")",
-       "line": 87,
-       "verdict": "сверено",
-       "found": true
+       "line": null,
+       "verdict": "корня для пути нет",
+       "found": false
       }
      ]
     },
@@ -2371,9 +2371,9 @@ const JOURNAL = {
       {
        "path": "openspec/changes/trace-modules/intent.md",
        "quote": "локальные пути, worktree и контекст-пакет разработки не становятся требованиями",
-       "line": 27,
-       "verdict": "сверено",
-       "found": true
+       "line": null,
+       "verdict": "корня для пути нет",
+       "found": false
       }
      ]
     }
@@ -2433,37 +2433,37 @@ const JOURNAL = {
       {
        "path": "openspec/changes/trace-modules/research/F-26.md",
        "quote": "обход строится из Git index;",
-       "line": 47,
-       "verdict": "сверено",
-       "found": true
+       "line": null,
+       "verdict": "корня для пути нет",
+       "found": false
       },
       {
        "path": "openspec/changes/trace-modules/research/F-26.md",
        "quote": "каталог без Git приводит к exit 128",
-       "line": 52,
-       "verdict": "сверено",
-       "found": true
+       "line": null,
+       "verdict": "корня для пути нет",
+       "found": false
       },
       {
        "path": "openspec/changes/trace-modules/intent.md",
        "quote": "README, подготовленные в `module-structure`, должны стать опорой",
-       "line": 23,
-       "verdict": "сверено",
-       "found": true
+       "line": null,
+       "verdict": "корня для пути нет",
+       "found": false
       },
       {
        "path": "openspec/changes/trace-modules/answers/2026-11-09.md",
        "quote": "тут важно уточнить, что репозиторий symphysis Только для примера",
-       "line": 2,
-       "verdict": "сверено",
-       "found": true
+       "line": null,
+       "verdict": "корня для пути нет",
+       "found": false
       },
       {
        "path": "openspec/changes/trace-modules/answers/2026-11-09.md",
        "quote": "думаю, что нужно определить момент, когда модель анализирует репозиторий",
-       "line": 13,
-       "verdict": "сверено",
-       "found": true
+       "line": null,
+       "verdict": "корня для пути нет",
+       "found": false
       }
      ]
     },
@@ -2476,16 +2476,16 @@ const JOURNAL = {
       {
        "path": "tests/repository_structure.py",
        "quote": "out = subprocess.run([\"git\", \"-C\", str(self.root), \"ls-files\", \"-z\"]",
-       "line": 30,
-       "verdict": "сверено",
-       "found": true
+       "line": null,
+       "verdict": "корня для пути нет",
+       "found": false
       },
       {
        "path": "openspec/changes/trace-modules/research/F-26.md",
        "quote": "не добавленные туда файлы, включая игнорируемые в пробе, не участвуют",
-       "line": 47,
-       "verdict": "сверено",
-       "found": true
+       "line": null,
+       "verdict": "корня для пути нет",
+       "found": false
       }
      ]
     }
@@ -2540,16 +2540,16 @@ const JOURNAL = {
       {
        "path": "openspec/changes/trace-modules/intent.md",
        "quote": "Ось структуры отражает различие компонента, репозитория, модуля и файла",
-       "line": 34,
-       "verdict": "сверено",
-       "found": true
+       "line": null,
+       "verdict": "корня для пути нет",
+       "found": false
       },
       {
        "path": "openspec/changes/trace-modules/intent.md",
        "quote": "Происхождение связей прослеживается до файлов-источников",
-       "line": 35,
-       "verdict": "сверено",
-       "found": true
+       "line": null,
+       "verdict": "корня для пути нет",
+       "found": false
       }
      ]
     },
@@ -2562,9 +2562,9 @@ const JOURNAL = {
       {
        "path": "openspec/changes/trace-modules/intent.md",
        "quote": "Файл принадлежит одному модулю",
-       "line": 34,
-       "verdict": "сверено",
-       "found": true
+       "line": null,
+       "verdict": "корня для пути нет",
+       "found": false
       }
      ]
     },
@@ -2577,9 +2577,9 @@ const JOURNAL = {
       {
        "path": "openspec/changes/trace-modules/intent.md",
        "quote": "Ось структуры отражает различие компонента, репозитория, модуля и файла",
-       "line": 34,
-       "verdict": "сверено",
-       "found": true
+       "line": null,
+       "verdict": "корня для пути нет",
+       "found": false
       }
      ],
      "deviation": "F-02"
@@ -2642,9 +2642,9 @@ const JOURNAL = {
       {
        "path": "openspec/changes/trace-modules/intent.md",
        "quote": "наличие улики или упоминания пути само по себе не выдаётся за доказательство реализации требования.",
-       "line": 35,
-       "verdict": "сверено",
-       "found": true
+       "line": null,
+       "verdict": "корня для пути нет",
+       "found": false
       }
      ]
     },
@@ -2664,9 +2664,9 @@ const JOURNAL = {
       {
        "path": "trace/trace_graph.py",
        "quote": "def _read_tasks(base: Path, claims: list[dict])",
-       "line": 660,
-       "verdict": "сверено",
-       "found": true
+       "line": null,
+       "verdict": "корня для пути нет",
+       "found": false
       }
      ]
     },
@@ -2679,16 +2679,16 @@ const JOURNAL = {
       {
        "path": "openspec/changes/trace-modules/intent.md",
        "quote": "Граф остаётся производным от источников",
-       "line": 37,
-       "verdict": "сверено",
-       "found": true
+       "line": null,
+       "verdict": "корня для пути нет",
+       "found": false
       },
       {
        "path": "trace/trace_graph.py",
        "quote": "Новый артефакт схемы без строки здесь даёт красный тест",
-       "line": 35,
-       "verdict": "сверено",
-       "found": true
+       "line": null,
+       "verdict": "корня для пути нет",
+       "found": false
       }
      ]
     }
@@ -2744,16 +2744,16 @@ const JOURNAL = {
       {
        "path": "openspec/specs/module-declaration/spec.md",
        "quote": "frontmatter YAML с полями `name`",
-       "line": 9,
-       "verdict": "сверено",
-       "found": true
+       "line": null,
+       "verdict": "корня для пути нет",
+       "found": false
       },
       {
        "path": "openspec/changes/trace-modules/intent.md",
        "quote": "Граф должен позволять выяснить",
-       "line": 21,
-       "verdict": "сверено",
-       "found": true
+       "line": null,
+       "verdict": "корня для пути нет",
+       "found": false
       }
      ]
     },
@@ -2766,9 +2766,9 @@ const JOURNAL = {
       {
        "path": "openspec/specs/module-declaration/spec.md",
        "quote": "README модуля SHALL описывать модуль",
-       "line": 39,
-       "verdict": "сверено",
-       "found": true
+       "line": null,
+       "verdict": "корня для пути нет",
+       "found": false
       }
      ]
     },
@@ -2851,9 +2851,9 @@ const JOURNAL = {
       {
        "path": "openspec/changes/trace-modules/research/F-26.md",
        "quote": "status, обе формы instructions, strict validation и archive оставили все байты metadata прежними",
-       "line": 26,
-       "verdict": "сверено",
-       "found": true
+       "line": null,
+       "verdict": "корня для пути нет",
+       "found": false
       }
      ]
     },
@@ -2880,9 +2880,9 @@ const JOURNAL = {
       {
        "path": "openspec/changes/trace-modules/research/F-26.md",
        "quote": "status, обе формы instructions, strict validation и archive оставили все байты metadata прежними",
-       "line": 26,
-       "verdict": "сверено",
-       "found": true
+       "line": null,
+       "verdict": "корня для пути нет",
+       "found": false
       }
      ]
     },
@@ -2917,9 +2917,9 @@ const JOURNAL = {
       {
        "path": "openspec/changes/trace-modules/intent.md",
        "quote": "Формат объявления компонентов и репозиториев",
-       "line": 43,
-       "verdict": "сверено",
-       "found": true
+       "line": null,
+       "verdict": "корня для пути нет",
+       "found": false
       },
       {
        "path": "docs/analysis/stores-and-context-pack-2026-11-02.md",
@@ -2989,23 +2989,23 @@ const JOURNAL = {
       {
        "path": "trace/trace_graph.py",
        "quote": "return [{\"path\": rel, \"sha256\": _lf_hash(base / rel)}",
-       "line": 1057,
-       "verdict": "сверено",
-       "found": true
+       "line": null,
+       "verdict": "корня для пути нет",
+       "found": false
       },
       {
        "path": "openspec/changes/trace-modules/research/F-27.md",
        "quote": "Предел воспроизводимости:",
-       "line": 48,
-       "verdict": "сверено",
-       "found": true
+       "line": null,
+       "verdict": "корня для пути нет",
+       "found": false
       },
       {
        "path": "openspec/changes/trace-modules/research/F-27.md",
        "quote": "нынешние roots/sources/base этих различий не сохраняют",
-       "line": 93,
-       "verdict": "сверено",
-       "found": true
+       "line": null,
+       "verdict": "корня для пути нет",
+       "found": false
       }
      ]
     },
@@ -3018,9 +3018,9 @@ const JOURNAL = {
       {
        "path": "openspec/changes/trace-modules/research/F-27.md",
        "quote": "сами bytes sources не хранятся",
-       "line": 48,
-       "verdict": "сверено",
-       "found": true
+       "line": null,
+       "verdict": "корня для пути нет",
+       "found": false
       }
      ]
     },
@@ -3033,16 +3033,16 @@ const JOURNAL = {
       {
        "path": "openspec/changes/trace-modules/intent.md",
        "quote": "Происхождение связей прослеживается до файлов-источников",
-       "line": 35,
-       "verdict": "сверено",
-       "found": true
+       "line": null,
+       "verdict": "корня для пути нет",
+       "found": false
       },
       {
        "path": "openspec/changes/trace-modules/research/F-27.md",
        "quote": "По текущим roots нельзя восстановить",
-       "line": 48,
-       "verdict": "сверено",
-       "found": true
+       "line": null,
+       "verdict": "корня для пути нет",
+       "found": false
       }
      ]
     }
@@ -3138,9 +3138,9 @@ const JOURNAL = {
     {
      "path": "openspec/changes/trace-modules/specs/repository-survey/spec.md",
      "quote": "### Requirement: Модель изменяет только своё расширение metadata",
-     "line": 101,
-     "verdict": "сверено",
-     "found": true
+     "line": null,
+     "verdict": "корня для пути нет",
+     "found": false
     }
    ],
    "comments": [],
@@ -3212,9 +3212,9 @@ const JOURNAL = {
     {
      "path": "openspec/changes/trace-modules/specs/repository-survey/spec.md",
      "quote": "### Requirement: Результат обследования различает четыре состояния",
-     "line": 39,
-     "verdict": "сверено",
-     "found": true
+     "line": null,
+     "verdict": "корня для пути нет",
+     "found": false
     }
    ],
    "comments": [],
@@ -3286,9 +3286,9 @@ const JOURNAL = {
     {
      "path": "openspec/changes/trace-modules/specs/module-discovery/spec.md",
      "quote": "### Requirement: README явно объявляет имя и род модуля",
-     "line": 9,
-     "verdict": "сверено",
-     "found": true
+     "line": null,
+     "verdict": "корня для пути нет",
+     "found": false
     }
    ],
    "comments": [],
@@ -3359,9 +3359,9 @@ const JOURNAL = {
     {
      "path": "openspec/changes/trace-modules/specs/module-discovery/spec.md",
      "quote": "### Requirement: Зависимость читается из объявления README",
-     "line": 110,
-     "verdict": "сверено",
-     "found": true
+     "line": null,
+     "verdict": "корня для пути нет",
+     "found": false
     }
    ],
    "comments": [],
@@ -3434,9 +3434,9 @@ const JOURNAL = {
     {
      "path": "openspec/changes/trace-modules/specs/trace-graph/spec.md",
      "quote": "### Requirement: Структурные id различают репозиторий и модуль",
-     "line": 20,
-     "verdict": "сверено",
-     "found": true
+     "line": null,
+     "verdict": "корня для пути нет",
+     "found": false
     }
    ],
    "comments": [],
@@ -3509,9 +3509,9 @@ const JOURNAL = {
     {
      "path": "openspec/changes/trace-modules/specs/trace-graph/spec.md",
      "quote": "### Requirement: Явная реализация и зависимости сохраняют происхождение",
-     "line": 41,
-     "verdict": "сверено",
-     "found": true
+     "line": null,
+     "verdict": "корня для пути нет",
+     "found": false
     }
    ],
    "comments": [],
@@ -3582,9 +3582,9 @@ const JOURNAL = {
     {
      "path": "openspec/changes/trace-modules/specs/trace-snapshot/spec.md",
      "quote": "### Requirement: Снимок сохраняет нормализованную структуру и состояния",
-     "line": 5,
-     "verdict": "сверено",
-     "found": true
+     "line": null,
+     "verdict": "корня для пути нет",
+     "found": false
     }
    ],
    "comments": [],
@@ -3657,16 +3657,16 @@ const JOURNAL = {
     {
      "path": "openspec/changes/trace-modules/specs/trace-graph/spec.md",
      "quote": "### Requirement: Структурная ось содержит все объявленные модули состава",
-     "line": 5,
-     "verdict": "сверено",
-     "found": true
+     "line": null,
+     "verdict": "корня для пути нет",
+     "found": false
     },
     {
      "path": "openspec/changes/trace-modules/specs/trace-graph/spec.md",
      "quote": "### Requirement: Модуль без локальной связи не получает глобальную оценку покрытия",
-     "line": 77,
-     "verdict": "сверено",
-     "found": true
+     "line": null,
+     "verdict": "корня для пути нет",
+     "found": false
     }
    ],
    "comments": [],
@@ -3706,9 +3706,9 @@ const JOURNAL = {
     {
      "path": "openspec/changes/trace-modules/specs/repository-survey/spec.md",
      "quote": "### Requirement: Repo разрешается через явно названный корень",
-     "line": 65,
-     "verdict": "сверено",
-     "found": true
+     "line": null,
+     "verdict": "корня для пути нет",
+     "found": false
     }
    ],
    "comments": [],
@@ -3749,9 +3749,9 @@ const JOURNAL = {
     {
      "path": "openspec/changes/trace-modules/specs/module-discovery/spec.md",
      "quote": "### Requirement: README явно объявляет имя и род модуля",
-     "line": 9,
-     "verdict": "сверено",
-     "found": true
+     "line": null,
+     "verdict": "корня для пути нет",
+     "found": false
     }
    ],
    "comments": [],
@@ -3821,16 +3821,16 @@ const JOURNAL = {
     {
      "path": "roots/roots.py",
      "quote": "if not path.startswith(prefix.replace(\"\\\\\", \"/\")):",
-     "line": 113,
-     "verdict": "сверено",
-     "found": true
+     "line": null,
+     "verdict": "корня для пути нет",
+     "found": false
     },
     {
      "path": "openspec/changes/trace-modules/specs/repository-survey/spec.md",
      "quote": "### Requirement: Repo разрешается через явно названный корень",
-     "line": 65,
-     "verdict": "сверено",
-     "found": true
+     "line": null,
+     "verdict": "корня для пути нет",
+     "found": false
     }
    ],
    "comments": [],
@@ -3902,16 +3902,16 @@ const JOURNAL = {
     {
      "path": "roots/roots.py",
      "quote": "return None, VERDICT_UNREADABLE",
-     "line": 186,
-     "verdict": "сверено",
-     "found": true
+     "line": null,
+     "verdict": "корня для пути нет",
+     "found": false
     },
     {
      "path": "openspec/changes/trace-modules/specs/module-discovery/spec.md",
      "quote": "### Requirement: Ошибка источника не стирает доступную структуру",
-     "line": 151,
-     "verdict": "сверено",
-     "found": true
+     "line": null,
+     "verdict": "корня для пути нет",
+     "found": false
     }
    ],
    "comments": [],
@@ -3988,16 +3988,16 @@ const JOURNAL = {
     {
      "path": "trace/trace_graph.py",
      "quote": "raise Refusal(f\"{rel}: файл не в UTF-8 ({e.reason}, байт {e.start}): граф не собран\") from None",
-     "line": 379,
-     "verdict": "сверено",
-     "found": true
+     "line": null,
+     "verdict": "корня для пути нет",
+     "found": false
     },
     {
      "path": "openspec/changes/trace-modules/specs/module-discovery/spec.md",
      "quote": "### Requirement: Ошибка источника не стирает доступную структуру",
-     "line": 151,
-     "verdict": "сверено",
-     "found": true
+     "line": null,
+     "verdict": "корня для пути нет",
+     "found": false
     }
    ],
    "comments": [],
@@ -4073,18 +4073,18 @@ const JOURNAL = {
    "consequences": "в spec.md: Снимок и отчёт описывают одно прочитанное состояние",
    "evidence": [
     {
-     "path": "trace/trace_graph.py",
+     "path": "openspec/changes/trace-modules/verification/baseline-sources.md",
      "quote": "text = build_report(root, change, frozen).rstrip(\"\\n\") + \"\\n\"",
-     "line": 1833,
-     "verdict": "сверено",
-     "found": true
+     "line": null,
+     "verdict": "корня для пути нет",
+     "found": false
     },
     {
      "path": "openspec/changes/trace-modules/specs/trace-snapshot/spec.md",
      "quote": "### Requirement: Снимок и отчёт лежат в каталоге graph",
-     "line": 69,
-     "verdict": "сверено",
-     "found": true
+     "line": null,
+     "verdict": "корня для пути нет",
+     "found": false
     }
    ],
    "comments": [],
@@ -4159,18 +4159,18 @@ const JOURNAL = {
    "consequences": "в spec.md: Поддерживаемая база формата 2 сохраняется после sync",
    "evidence": [
     {
-     "path": "trace/trace_graph.py",
+     "path": "openspec/changes/trace-modules/verification/baseline-sources.md",
      "quote": "raw = data.get(\"base\") if isinstance(data, dict) and data.get(\"format\") == GRAPH_FORMAT else None",
-     "line": 564,
-     "verdict": "сверено",
-     "found": true
+     "line": null,
+     "verdict": "корня для пути нет",
+     "found": false
     },
     {
      "path": "openspec/changes/trace-modules/specs/trace-snapshot/spec.md",
      "quote": "### Requirement: Предыдущий формат читается без дописывания модулей в историю",
-     "line": 51,
-     "verdict": "сверено",
-     "found": true
+     "line": null,
+     "verdict": "корня для пути нет",
+     "found": false
     }
    ],
    "comments": [],
@@ -4266,6 +4266,10 @@ const JOURNAL = {
   {
    "date": "2026-11-09",
    "text": "security: 4 пункта парковок F-46/F-47 распределены по чек-листу: пути/reparse/служебные каталоги, приватные пути и карта, инъекции README, безопасный YAML. Проверка пока документальная; исполнение новых гарантий, отрицательные фикстуры и пробы модели должны войти в tasks. design получен render-design; Context, Goals / Non-Goals и Migration Plan дополнены вручную по принятым решениям. Секции Decisions, Risks / Trade-offs и Open Questions оставлены проекцией журнала. Код реализации, личные настройки и архивы не изменялись."
+  },
+  {
+   "date": "2026-11-09",
+   "text": "После реализации 8 улик прежнего trace_graph.py перенесены в verification/baseline-sources.md с проверкой по commit c6651d8. Цитаты, факты о прежнем состоянии, решения, слово владельца и outcome не изменены. consequences.md остаётся исходной описью до реализации; исчезнувшие цитаты проверены по тому же commit и сохранены в baseline-sources.md."
   }
  ]
 };
@@ -4279,7 +4283,7 @@ const SCHEME = {
 };
 const HELP = {
  "contract": 6,
- "taken_at": "2026-11-09T22:34:49+03:00",
+ "taken_at": "2026-11-09T23:54:29+03:00",
  "versions": {
   "openspec": "1.16.1+symphysis.5",
   "symphysis": null
@@ -4298,8 +4302,8 @@ const HELP = {
  "tasks": {
   "state": "ready",
   "total": 40,
-  "complete": 0,
-  "remaining": 40
+  "complete": 37,
+  "remaining": 3
  },
  "steps": [
   {
@@ -4353,7 +4357,7 @@ const HELP = {
    "texts": {
     "title": "Журнал решений",
     "why": "Все развилки изменения собираются в одном месте с вариантами и уликами, и решает по ним человек. Следующие шаги стоят на решённых записях, а не на догадках модели.",
-    "mechanics": "- Скилл `symphysis-brainstorm`. Интервью идёт по пяти перспективам: исследователь, упрощатель, хранитель границ, аналитик отказов, закрывающий. Вопросы человеку идут порциями по 2–3.\n- Первые записи — факты постановки: по одному на критерий готовности из `intent.md`, с цитатой.\n- У каждого вопроса свой маршрут. Ответ есть в файлах — факт с уликой, человека не спрашивают. Выбор между вариантами — развилка с вариантами, уликами и одной рекомендацией. Знает только человек — вопрос в чат. Канон безопасности (инъекции, пути, токены, права, чувствительные данные) — парковка адресату `ИБ`. Не прочитать сейчас — парковка адресату `агент`, её разберёт исследование.\n- Находка, из которой напрашивается конструкция, пишется двумя записями: факт-наблюдение и развилка.\n- `journal.py check` сверяет улики с файлами дословно: это сигнал, не стоп.\n- Решение появляется только из слова человека: `decision` пишет `journal.py apply`. Числового гейта ясности нет: круг кончается счётом новых решений и фактов, новый круг — по слову человека.",
+    "mechanics": "- Скилл `symphysis-brainstorm`. Интервью идёт по пяти перспективам: исследователь, упрощатель, хранитель границ, аналитик отказов, закрывающий. Вопросы человеку идут порциями по 2–3.\n- Первые записи — факты постановки: по одному на критерий готовности из `intent.md`, с цитатой.\n- При чтении intent модель обследует участвующие repo и сообщает четыре состояния по `.symphysis/docs/module-declarations.md`; состав и survey хранит в x-symphysis-components существующего metadata, а не в новом артефакте.\n- У каждого вопроса свой маршрут. Ответ есть в файлах — факт с уликой, человека не спрашивают. Выбор между вариантами — развилка с вариантами, уликами и одной рекомендацией. Знает только человек — вопрос в чат. Канон безопасности (инъекции, пути, токены, права, чувствительные данные) — парковка адресату `ИБ`. Не прочитать сейчас — парковка адресату `агент`, её разберёт исследование.\n- Находка, из которой напрашивается конструкция, пишется двумя записями: факт-наблюдение и развилка.\n- `journal.py check` сверяет улики с файлами дословно: это сигнал, не стоп.\n- Решение появляется только из слова человека: `decision` пишет `journal.py apply`. Числового гейта ясности нет: круг кончается счётом новых решений и фактов, новый круг — по слову человека.",
     "if_skipped": "Выбор модели уходит в артефакты минуя человека: увидеть его получится уже в коде. Proposal ссылается на решённые записи `F-NN`, а требований сверх решений в нём быть не должно, поэтому без журнала ему не на что опереться. Статус считает шаг готовым по наличию файла, поэтому журнал без единой записи тоже выглядит готовым.",
     "what_to_check": "`decisions.json` — сам журнал. `decisions.md` — он же для чтения. `scheme.md` — схема решения, шаги от неё не зависят.",
     "command": "`/opsx:continue trace-modules`",
@@ -4425,7 +4429,7 @@ const HELP = {
    "texts": {
     "title": "Исследование и второй круг",
     "why": "Вопросы, припаркованные к агенту, получают ответ с цитатами из прочитанных файлов. Второй круг брейншторма закрывает по этим ответам записи журнала.",
-    "mechanics": "- Скилл `symphysis-research`: на каждую парковку — brief (слово человека, что выяснить, область чтения) и файл исследования. По умолчанию исследование идёт субагенту-водителю, выключается ключом `drivers.research` в `symphysis.yaml`.\n- На каждую парковку адресату «агент» — файл `research/<F-NN>.md`, во frontmatter `genre` (устройство, размещение, края, проверка или аналоги), `question` и `brief`.\n- Найденное — путь, строка и дословная цитата. Ненайденное — «не найдено» и «искал:» с шаблонами дословно.\n- Ответ можно добыть пробой: раздел «Проба» с условиями и следом в каталоге изменения. След не сохранён — находка идёт в «Не найдено» с причиной «следа нет».\n- Парковок нет — один файл `research/none.md`: это законный исход.\n- Второй круг идёт скиллом `symphysis-brainstorm` после отчётов: ответ вносится в запись, улики — путём и цитатой. О новом круге модель спрашивает, отказ ложится в журнал строкой «брейншторм закончен по решению человека».",
+    "mechanics": "- Скилл `symphysis-research`: на каждую парковку — brief (слово человека, что выяснить, область чтения) и файл исследования. По умолчанию исследование идёт субагенту-водителю, выключается ключом `drivers.research` в `symphysis.yaml`.\n- На каждую парковку адресату «агент» — файл `research/<F-NN>.md`, во frontmatter `genre` (устройство, размещение, края, проверка или аналоги), `question` и `brief`.\n- Главная нить уточняет найденные исследованием repo и обследование тем же протоколом; перед записью перечитывает metadata и сохраняет чужие данные и конкурентно добавленные repo. Водитель сообщает находку, не расширяет свою область чтения.\n- Найденное — путь, строка и дословная цитата. Ненайденное — «не найдено» и «искал:» с шаблонами дословно.\n- Ответ можно добыть пробой: раздел «Проба» с условиями и следом в каталоге изменения. След не сохранён — находка идёт в «Не найдено» с причиной «следа нет».\n- Парковок нет — один файл `research/none.md`: это законный исход.\n- Второй круг идёт скиллом `symphysis-brainstorm` после отчётов: ответ вносится в запись, улики — путём и цитатой. О новом круге модель спрашивает, отказ ложится в журнал строкой «брейншторм закончен по решению человека».",
     "if_skipped": "Припаркованные вопросы дойдут до proposal без ответа, и решения встанут на том, что никто не проверил. Без второго круга находки останутся в файлах и не попадут в записи журнала, на которые опираются следующие шаги.",
     "what_to_check": "`research/<F-NN>.md` или `research/none.md`: есть ли цитаты и честно ли названо ненайденное. `decisions.json`: поле `finding` у парковок и строка о конце брейншторма в `notes[]`.",
     "command": "`/opsx:continue trace-modules`",
@@ -4835,6 +4839,7 @@ const HELP = {
   "decisions.md": "openspec/changes/trace-modules/decisions.md",
   "design.md": "openspec/changes/trace-modules/design.md",
   "edge-probe.md": "openspec/changes/trace-modules/edge-probe.md",
+  "graph/report.md": "openspec/changes/trace-modules/graph/report.md",
   "intent.md": "openspec/changes/trace-modules/intent.md",
   "openspec/changes/trace-modules/consequences.md": "openspec/changes/trace-modules/consequences.md",
   "openspec/changes/trace-modules/decisions.json": "openspec/changes/trace-modules/decisions.json",
@@ -4864,61 +4869,22 @@ const HELP = {
 const LINKS = {
  "root": "../../../",
  "files": {
-  ".claude/skills/symphysis-attack/SKILL.md": "../../../.claude/skills/symphysis-attack/SKILL.md",
-  ".claude/skills/symphysis-brainstorm/SKILL.md": "../../../.claude/skills/symphysis-brainstorm/SKILL.md",
-  ".claude/skills/symphysis-consequences/SKILL.md": "../../../.claude/skills/symphysis-consequences/SKILL.md",
-  ".claude/skills/symphysis-edge-probe/SKILL.md": "../../../.claude/skills/symphysis-edge-probe/SKILL.md",
-  ".claude/skills/symphysis-prohibition-probe/SKILL.md": "../../../.claude/skills/symphysis-prohibition-probe/SKILL.md",
-  ".claude/skills/symphysis-research/SKILL.md": "../../../.claude/skills/symphysis-research/SKILL.md",
-  ".claude/skills/symphysis-viewer/SKILL.md": "../../../.claude/skills/symphysis-viewer/SKILL.md",
   ".openspec.yaml": ".openspec.yaml",
-  "README.md": "../../../README.md",
-  "cli/journal_cli.py": "../../../cli/journal_cli.py",
   "consequences.md": "consequences.md",
-  "consequences/journal_sites.py": "../../../consequences/journal_sites.py",
   "decisions.json": "decisions.json",
   "decisions.md": "decisions.md",
-  "decisions/skills/symphysis-brainstorm/SKILL.md": "../../../decisions/skills/symphysis-brainstorm/SKILL.md",
   "design.md": "design.md",
   "docs/GUIDE.md": "../../../docs/GUIDE.md",
   "docs/analysis/requirements-traceability-graph-of-symphysis.md": "../../../docs/analysis/requirements-traceability-graph-of-symphysis.md",
   "docs/analysis/stores-and-context-pack-2026-11-02.md": "../../../docs/analysis/stores-and-context-pack-2026-11-02.md",
   "edge-probe.md": "edge-probe.md",
-  "installer/scripts/sync-payload.js": "../../../installer/scripts/sync-payload.js",
+  "graph/report.md": "graph/report.md",
   "intent.md": "intent.md",
-  "openspec/changes/archive/2026-11-07-module-structure/research/F-27.md": "../archive/2026-11-07-module-structure/research/F-27.md",
-  "openspec/changes/trace-modules/answers/2026-11-09.md": "answers/2026-11-09.md",
-  "openspec/changes/trace-modules/consequences.md": "consequences.md",
-  "openspec/changes/trace-modules/decisions.json": "decisions.json",
-  "openspec/changes/trace-modules/design.md": "design.md",
-  "openspec/changes/trace-modules/intent.md": "intent.md",
-  "openspec/changes/trace-modules/proposal.md": "proposal.md",
-  "openspec/changes/trace-modules/research/F-26-probe/summary.txt": "research/F-26-probe/summary.txt",
-  "openspec/changes/trace-modules/research/F-26.md": "research/F-26.md",
-  "openspec/changes/trace-modules/research/F-27-probe/results.txt": "research/F-27-probe/results.txt",
-  "openspec/changes/trace-modules/research/F-27.md": "research/F-27.md",
-  "openspec/changes/trace-modules/security.md": "security.md",
-  "openspec/changes/trace-modules/specs/module-discovery/spec.md": "specs/module-discovery/spec.md",
-  "openspec/changes/trace-modules/specs/repository-survey/spec.md": "specs/repository-survey/spec.md",
-  "openspec/changes/trace-modules/specs/trace-conventions/spec.md": "specs/trace-conventions/spec.md",
-  "openspec/changes/trace-modules/specs/trace-diagram/spec.md": "specs/trace-diagram/spec.md",
-  "openspec/changes/trace-modules/specs/trace-graph/spec.md": "specs/trace-graph/spec.md",
-  "openspec/changes/trace-modules/specs/trace-signals/spec.md": "specs/trace-signals/spec.md",
-  "openspec/changes/trace-modules/specs/trace-snapshot/spec.md": "specs/trace-snapshot/spec.md",
-  "openspec/changes/trace-modules/tasks.md": "tasks.md",
-  "openspec/schemas/symphysis/schema.yaml": "../../schemas/symphysis/schema.yaml",
-  "openspec/specs/module-declaration/spec.md": "../../specs/module-declaration/spec.md",
   "proposal.md": "proposal.md",
-  "roots/roots.py": "../../../roots/roots.py",
   "scheme.md": "scheme.md",
   "security.md": "security.md",
-  "settings/symphysis_config.py": "../../../settings/symphysis_config.py",
   "symphysis.html": "symphysis.html",
-  "symphysis.yaml": "../../../symphysis.yaml",
-  "tasks.md": "tasks.md",
-  "tests/repository_structure.py": "../../../tests/repository_structure.py",
-  "trace/trace_graph.py": "../../../trace/trace_graph.py",
-  "viewer/playground-template.html": "../../../viewer/playground-template.html"
+  "tasks.md": "tasks.md"
  }
 };
 const ADDRESSEES = ['агент','человек','ИБ'];

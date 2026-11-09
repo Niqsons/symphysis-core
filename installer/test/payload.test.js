@@ -36,6 +36,7 @@ const FILES = [
   "docs/candidate.md",
   "docs/attack-table.md",
   "docs/driver.md",
+  "docs/module-declarations.md",
   "docs/THIRD-PARTY-NOTICES.md",
   "agents/symphysis-attack-driver.md",
   "agents/symphysis-edge-probe-driver.md",

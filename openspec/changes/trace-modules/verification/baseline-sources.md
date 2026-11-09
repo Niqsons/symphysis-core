@@ -115,3 +115,27 @@ text = build_report(root, change, frozen).rstrip("\n") + "\n"
 ```python
 raw = data.get("base") if isinstance(data, dict) and data.get("format") == GRAPH_FORMAT else None
 ```
+
+## Consequences — trace/trace_graph.py
+
+```python
+if not problems and data["format"] != GRAPH_FORMAT:
+```
+
+## Consequences — trace/trace_graph.py
+
+```python
+return ([f"{rel}: исходник изменён после сборки" for rel in sorted(old.keys() & now.keys()) if old[rel] != now[rel]]
+```
+
+## Consequences — trace/trace_graph.py
+
+```python
++ [f"{rel}: новый исходник, в графе его нет" for rel in sorted(now.keys() - old.keys())]
+```
+
+## Consequences — trace/trace_graph.py
+
+```python
++ [f"{rel}: исходник удалён" for rel in sorted(old.keys() - now.keys())])
+```

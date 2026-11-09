@@ -116,8 +116,8 @@
 - улики:
   - улика: `trace/trace_graph.py` «SOURCE_FILES = {"decisions": "decisions.json"»
   - улика: `trace/trace_graph.py` «return [{"prefix": no_paths(prefix, root), "commit": root_commit(folder)}»
-  - улика: `trace/trace_graph.py` «GRAPH_FORMAT = 2»
-  - улика: `trace/trace_graph.py` «data["format"] != GRAPH_FORMAT»
+  - улика: `openspec/changes/trace-modules/verification/baseline-sources.md` «GRAPH_FORMAT = 2»
+  - улика: `openspec/changes/trace-modules/verification/baseline-sources.md` «data["format"] != GRAPH_FORMAT»
 - следствия: F-22, F-23
 
 ## F-12 code-sites берёт файлы улик выбранных вариантов, исключает markdown и не читает код. Его результат сам по себе не устанавливает, какие модули реализуют новое требование; markdown при этом может быть частью реализации модуля.
@@ -310,8 +310,8 @@
 - зависит от: F-05, F-11, F-27
 - варианты:
   - A. Ввести явно различимую схему расширенного графа и чтение прежнего поддерживаемого формата без автоматической правки архивов. Старый снимок не обещает структурных связей; ранее снятые с поддержки форматы не оживляются автоматически. Цена — две ветки чтения, если понадобится новый номер.
-    - улика: `trace/trace_graph.py` «GRAPH_FORMAT = 2»
-    - улика: `trace/trace_graph.py` «data["format"] != GRAPH_FORMAT»
+    - улика: `openspec/changes/trace-modules/verification/baseline-sources.md` «GRAPH_FORMAT = 2»
+    - улика: `openspec/changes/trace-modules/verification/baseline-sources.md` «data["format"] != GRAPH_FORMAT»
   - B. Оставить format 2, добавив необязательные поля и новые kind. Изменений меньше, но старые потребители должны корректно игнорировать неизвестные виды; это нужно подтвердить исследованием F-27.
     - улика: `trace/trace_graph.py` «READERS = {"decisions": _read_records»
     - улика: `trace/trace_graph.py` «# Узел — словарь: `id`, `kind` (`cap`, `req`, `scn`, `rec`, `task`, `sec`, `branch`)»
@@ -393,8 +393,8 @@
 - парковка: агент — «В research перечислить читателей JSON и kinds, фильтры requirementDiagram, check/freeze/base/sources/roots в trace/trace_graph.py; тестовые фикстуры и текущие форматы архивов; проводку установки и списки файлов ядра/плагина. Проверить на временных данных: изменение README после freeze, переезд модуля, отсутствие внешнего клона и чтение прежнего поддерживаемого снимка. Не менять реальные архивы или установку. Оценить, можно ли дополнить format 2 без ложной совместимости, какие данные нужны для воспроизводимости и какой минимальный dogfood связывает реальные требования с несколькими модулями. Выдать отчёт с уликами и следами, не принимать проектные решения.»
 - находка: research/F-27.md: 24 находки, 3 отрицания с поиском. Текущий sources не включает README и структуру; изменение README и переезд модуля не замечаются check/freeze. Пропавший внешний корень даёт пустой commit и сообщение в отчёте. В format 2 новое верхнее поле принимается, но новый kind ломает полный Mermaid и исключается фильтрами; check считает структурные узлы лишними. Текущий читатель принимает format 2, format 1 не поддерживает; архивы не переписывались. Перечислены списки payload/install/check и доступные стенды. Для настоящего требования decision-viewer/Файлы на странице показаны ссылками проверен частичный путь roots.file_links → viewer.render_html с внешним корнем на фикстуре. Это не полная CLI/DOM-проверка и не готовая связь графа. В пробе validate_findings=[]: поведение настоящего openspec validate ею не проверялось. Потребители соседних плагинов и некоторые стенды остались вне области.
 - улики:
-  - улика: `trace/trace_graph.py` «GRAPH_FORMAT = 2»
-  - улика: `trace/trace_graph.py` «data["format"] != GRAPH_FORMAT»
+  - улика: `openspec/changes/trace-modules/verification/baseline-sources.md` «GRAPH_FORMAT = 2»
+  - улика: `openspec/changes/trace-modules/verification/baseline-sources.md` «data["format"] != GRAPH_FORMAT»
   - улика: `trace/trace_graph.py` «SOURCE_FILES = {"decisions": "decisions.json"»
   - улика: `trace/trace_graph.py` «return [{"prefix": no_paths(prefix, root), "commit": root_commit(folder)}»
   - улика: `trace/trace_graph.py` «    return [{"path": rel, "sha256": _lf_hash(base / rel)} for rel in sorted(set(rels)) if (base / rel).is_file()]»
@@ -854,7 +854,7 @@
 - антиподы: —
 - рекомендация: A — A: два файла могут выглядеть свежими, но один подтверждает другой модуль; повтор не гарантирует обнаружение такого тихого расхождения. Против B — отчёт сопровождает этот снимок, а не произвольное следующее чтение; против C — наблюдаемый результат укладывается в сценарий. Цена — сценарий, тест подмены README и сопровождение общего состояния сборки. Глобальная блокировка репозитория этим не требуется.
 - улики:
-  - улика: `trace/trace_graph.py` «text = build_report(root, change, frozen).rstrip("\n") + "\n"»
+  - улика: `openspec/changes/trace-modules/verification/baseline-sources.md` «text = build_report(root, change, frozen).rstrip("\n") + "\n"»
   - улика: `openspec/changes/trace-modules/specs/trace-snapshot/spec.md` «### Requirement: Снимок и отчёт лежат в каталоге graph»
 - решение: A, 2026-11-09
 - исход: проба — Specify
@@ -874,7 +874,7 @@
 - антиподы: —
 - рекомендация: A — A: простая смена GRAPH_FORMAT на 3 заставит существующий guard вернуть пустую базу формата 2; это тихо подменит смысл старых ссылок нынешним master. Против B — прежний формат принят как поддерживаемый и база 2 уже содержит пригодные строковые якоря; против C — сохранение семантики описывается сценарием. Цена — сценарий, фикстура после sync и сопровождение двух поддерживаемых форматов базы.
 - улики:
-  - улика: `trace/trace_graph.py` «raw = data.get("base") if isinstance(data, dict) and data.get("format") == GRAPH_FORMAT else None»
+  - улика: `openspec/changes/trace-modules/verification/baseline-sources.md` «raw = data.get("base") if isinstance(data, dict) and data.get("format") == GRAPH_FORMAT else None»
   - улика: `openspec/changes/trace-modules/specs/trace-snapshot/spec.md` «### Requirement: Предыдущий формат читается без дописывания модулей в историю»
 - решение: A, 2026-11-09
 - исход: проба — Specify
@@ -902,3 +902,4 @@
 - 2026-11-09 — F-48–F-52: ответы владельца внесены apply из answers/2026-11-09-5.md; 5 исходов Specify отражены пятью сценариями с непосредственными маркерами. reason — пустое слово владельца. consequences.md оставлен неизменным по правилу скилла; номера в описи ведут к исходам. Затем владелец разрешил design и сразу security.
 - 2026-11-09 — проба краёв: повтор после 5 сценариев consequences и канона security; требований 34, строк 272, не выбран 126; 7 исходных кандидатов краёв F-38–F-44 остаются Specify, новые не найдены. Проба запретов: повтор, требований 34; F-45 остаётся Specify/test, канон F-46/F-47 разобран в security без новых развилок. Три канонических требования и восемь сценариев (включая ссылку в служебный каталог) задают границы путей, недоверенные объявления и приватность диагностики; это дополнения чек-листа ИБ, не новые решения владельца. Сохранены 52 записи, 33 решения владельца и 13 исходов Specify.
 - 2026-11-09 — security: 4 пункта парковок F-46/F-47 распределены по чек-листу: пути/reparse/служебные каталоги, приватные пути и карта, инъекции README, безопасный YAML. Проверка пока документальная; исполнение новых гарантий, отрицательные фикстуры и пробы модели должны войти в tasks. design получен render-design; Context, Goals / Non-Goals и Migration Plan дополнены вручную по принятым решениям. Секции Decisions, Risks / Trade-offs и Open Questions оставлены проекцией журнала. Код реализации, личные настройки и архивы не изменялись.
+- 2026-11-09 — После реализации 8 улик прежнего trace_graph.py перенесены в verification/baseline-sources.md с проверкой по commit c6651d8. Цитаты, факты о прежнем состоянии, решения, слово владельца и outcome не изменены. consequences.md остаётся исходной описью до реализации; исчезнувшие цитаты проверены по тому же commit и сохранены в baseline-sources.md.

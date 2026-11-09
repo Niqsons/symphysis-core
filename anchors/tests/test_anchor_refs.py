@@ -67,6 +67,18 @@ def snapshot_with_base(base, numbers):
     (base / "graph" / "req-graph.json").write_text(json.dumps(snap, ensure_ascii=False), encoding="utf-8")
 
 
+def test_implementation_annotation_is_data_and_stays_with_its_requirement(tmp_path):
+    declaration = '<!-- symphysis:implements {"modules":[{"repo":"core","module":"F-19"}],"files":[{"repo":"core","path":"F-19.py"}]} -->'
+    delta = '## ADDED Requirements\n\n### Requirement: One\nThe system SHALL work (F-19).\n' + declaration + '\n\n#### Scenario: S\n- **GIVEN** x\n- **WHEN** y\n- **THEN** z\n'
+    master = delta.replace('## ADDED Requirements', '## Requirements')
+    root, base, path = project(tmp_path, delta=delta, master=master, journal=('F-19',))
+    result = run(root)
+    assert result.returncode == 0, result.stderr
+    actual = path.read_text(encoding='utf-8')
+    assert declaration in actual
+    assert f'({CHANGE}/F-19)' in actual
+
+
 # --- переписывание (F-24, F-35) ---------------------------------------------------------------------------------------
 
 def test_bare_journal_number_becomes_anchor_and_output_names_file_line_and_reference(tmp_path):

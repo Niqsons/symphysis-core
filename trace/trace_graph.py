@@ -1035,28 +1035,31 @@ def _build_all(root: Path, change: str, saved: dict | None = None, *, roots_file
     edges, unresolved, text_links = _resolve_claims(root, nodes, places, claims, master, change)
     graph = {"format": GRAPH_FORMAT, "sources": source_hashes(base), "nodes": nodes, "edges": edges,
              "candidates": record_candidates(edges, parked_records(base))}
+    if structure == {}:  # explicit artifact-only comparison of a supported format-2 snapshot
+        return graph, duplicates, unresolved, text_links
     try:
         structure = discover(base, roots_file=roots_file) if structure is None else copy.deepcopy(structure)
     except DeclarationError as error:
         raise Refusal(str(error)) from None
-    if structure.get('sources') or structure.get('components') or structure.get('signals'):
-        annotations = []
-        texts = {}
-        for requirement in list(nodes):
-            if requirement['kind'] != 'req' or requirement.get('section') not in ('ADDED', 'MODIFIED'):
-                continue
-            rel, line = requirement['at'].rsplit(':', 1)
-            if rel not in texts:
-                lines = _spec_lines(_read_text(base, rel))
-                texts[rel] = lines, _fence_mask(lines)
-            lines, mask = texts[rel]
-            first = int(line) - 1
-            end = next((i for i in range(first + 1, len(lines)) if not mask[i] and re.match(r'^#{1,3}\s', lines[i])), len(lines))
-            try:
-                for offset, declaration in read_implementations('\n'.join(lines[first:end])):
-                    annotations.append((requirement['id'], f'{rel}:{first + offset}', declaration))
-            except DeclarationError as error:
-                structure['signals'].append({'kind': 'link', 'source': requirement['at'], 'reason': str(error)})
+    annotations = []
+    texts = {}
+    for requirement in list(nodes):
+        if requirement['kind'] != 'req' or requirement.get('section') not in ('ADDED', 'MODIFIED'):
+            continue
+        rel, line = requirement['at'].rsplit(':', 1)
+        if rel not in texts:
+            lines = _spec_lines(_read_text(base, rel))
+            texts[rel] = lines, _fence_mask(lines)
+        lines, mask = texts[rel]
+        first = int(line) - 1
+        end = next((i for i in range(first + 1, len(lines)) if not mask[i] and
+                    (_REQ_HEADER.match(lines[i]) or re.match(r'^#{1,3}\s', lines[i]))), len(lines))
+        try:
+            for offset, declaration in read_implementations('\n'.join(lines[first:end])):
+                annotations.append((requirement['id'], f'{rel}:{first + offset}', declaration))
+        except DeclarationError as error:
+            structure['signals'].append({'kind': 'link', 'source': requirement['at'], 'reason': str(error)})
+    if structure.get('sources') or structure.get('components') or structure.get('signals') or annotations:
         try:
             folders = default_roots(roots_file, base / 'decisions.json') if structure['repos'] else {}
         except UNUSABLE_ROOTS:

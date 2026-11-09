@@ -258,6 +258,8 @@ def discover(change_dir: Path, roots: dict[str, Path] | None = None, roots_file:
                     if entry.name != 'README.md':
                         continue
                     data = target.read_bytes()
+                    # Resolve for containment/read safety; the README entry declares its own directory.
+                    rel = logical_rel
                     item = {'repo': name, 'path': rel, 'sha256': content_hash(data)}
                     if any(r['repo'] == name and r['path'] == rel for r in state['inventory']):
                         continue
@@ -265,7 +267,7 @@ def discover(change_dir: Path, roots: dict[str, Path] | None = None, roots_file:
                     state['sources'].append(dict(item))
                     declaration = read_declaration(data)
                     if declaration is not None:
-                        found.append({**declaration, 'repo': name, 'path': target.parent.relative_to(folder).as_posix(),
+                        found.append({**declaration, 'repo': name, 'path': entry.parent.relative_to(folder).as_posix(),
                                       'source': rel, 'line': 2})
                 except DeclarationError as error:
                     signal(logical_rel, str(error))

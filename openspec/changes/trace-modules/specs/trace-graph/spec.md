@@ -121,6 +121,8 @@
 - **GIVEN** изменение ссылается на доступный repo с модулем
 - **WHEN** объявление README изменено и граф собран снова
 - **THEN** живая структура отражает новое объявление без ручной правки req-graph.json
+
+<!-- symphysis:implements {"modules":[{"repo":"symphysis-core","module":"trace"},{"repo":"symphysis-core","module":"roots"}]} -->
 <!-- проба краёв: форма=collection, stateful, io, исходы: нет -->
 <!-- проба запретов: исходы: нет -->
 

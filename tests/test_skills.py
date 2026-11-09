@@ -23,6 +23,18 @@ PERSPECTIVES = ("Researcher", "Simplifier", "Boundary Keeper", "Failure Analyst"
 WORDS_TARGET = 1500
 
 
+def test_repository_survey_protocol_is_shared_and_shipped():
+    shared = ROOT / 'trace/module-declarations.md'
+    assert shared.exists()
+    text = shared.read_text(encoding='utf-8')
+    for token in ('x-symphysis-components', 'unexamined', 'unavailable', 'found', 'none',
+                  'перечитай', 'README', 'MUST NOT', 'diff', 'symphysis:implements'):
+        assert token in text
+    for name in ('symphysis-brainstorm', 'symphysis-research'):
+        assert '.symphysis/docs/module-declarations.md' in (skill_dir(name) / 'SKILL.md').read_text(encoding='utf-8')
+    assert 'module-declarations.md' in SHARED_SKILL_FILES
+
+
 def read(path):
     return path.read_text(encoding="utf-8")
 

@@ -64,6 +64,7 @@ const SHARED_FILES = [
   "cli/journal-cli.md",
   "settings/config.md",
   "attack/attack-table.md",
+  "trace/module-declarations.md",
 ];
 /** Уведомления MIT о донорах: переведённые механики — производная работа, копий доноров в поставке нет. */
 const NOTICES = ["installer/THIRD-PARTY-NOTICES.md", "docs/THIRD-PARTY-NOTICES.md"];

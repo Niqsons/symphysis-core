@@ -1,0 +1,49 @@
+{
+  "counts": {
+    "req": 34,
+    "scn": 94,
+    "task": 40,
+    "module": 16
+  },
+  "scenarios_requiring_tasks": 76,
+  "all_required_scenarios_covered": true,
+  "Specify": [
+    "F-38",
+    "F-39",
+    "F-40",
+    "F-41",
+    "F-42",
+    "F-43",
+    "F-44",
+    "F-45",
+    "F-48",
+    "F-49",
+    "F-50",
+    "F-51",
+    "F-52"
+  ],
+  "real_implementations": [
+    {
+      "from": "module:symphysis-core/trace",
+      "to": "req:trace-graph/Граф собирается из файлов изменения",
+      "type": "implements",
+      "at": "specs/trace-graph/spec.md:125"
+    },
+    {
+      "from": "module:symphysis-core/roots",
+      "to": "req:trace-graph/Граф собирается из файлов изменения",
+      "type": "implements",
+      "at": "specs/trace-graph/spec.md:125"
+    }
+  ],
+  "signals": [
+    "[!!] критерий без требования: F-03 «3. В графе представлены связи модулей с реализуемыми требованиями и зависимости между модулями. Происхождение…» — decisions.json:152",
+    "[!!] критерий без требования: F-06 «6. На модулях самого symphysis выполнена и сохранена воспроизводимая проверка: построен граф с настоящими узл…» — decisions.json:233",
+    "[!!] требование без записи: repository-survey/Структурные источники остаются внутри разрешённого корня — specs/repository-survey/spec.md:86"
+  ],
+  "dispositions": {
+    "F-03": "Обобщённый критерий реализован требованиями trace-conventions/module-discovery и задачами 3.4/4.x; нет прямой ссылки F-03 в тексте требования. Семантическое покрытие проверено build/installed-results.",
+    "F-06": "Критерий приёмки на самом Symphysis, закрывается 9.1 и этой проверкой 16 реальных модулей/2 implements, не отдельное поведение продукта.",
+    "repository-survey/Структурные источники остаются внутри разрешённого корня": "Канон ИБ F-46; отдельное решение владельца не создавалось. Security и реальные junction/отрицательные тесты подтверждают требование."
+  }
+}

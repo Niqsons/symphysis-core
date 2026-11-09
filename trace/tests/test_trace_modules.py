@@ -68,7 +68,7 @@ def test_object_yaml_is_rejected_without_side_effect(tmp_path):
 def test_shared_protocol_fixtures_are_readable():
     fixture = ROOT / 'tests/fixtures/trace/modules'
     assert len(helper().read_components(fixture)['repos']) == 2
-    assert helper().read_declaration((fixture / 'README.md').read_bytes())['name'] == 'example'
+    assert helper().read_declaration((fixture / 'README.fixture').read_bytes())['name'] == 'example'
     assert helper().read_implementations((fixture / 'specs/example/spec.md').read_text(encoding='utf-8'))[0][1]['files'][0]['path'] == 'main.py'
 
 
@@ -132,11 +132,16 @@ def test_readme_bom_and_eol(bom, eol):
     assert helper().read_declaration((b'\xef\xbb\xbf' if bom else b'') + raw)['name'] == 'a'
 
 
-def test_symlink_escape_service_alias_and_cycle(tmp_path):
+def test_symlink_escape_service_alias_and_cycle(tmp_path, monkeypatch):
     base, repo, external = (tmp_path / n for n in ('change', 'repo', 'external'))
     readme(repo, name='good')
     readme(external, name='outside')
     readme(repo, 'node_modules/a/README.md', name='service')
+    original_read = Path.read_bytes
+    def guarded_read(path):
+        assert not path.is_relative_to(external), 'outside declaration content must never be read'
+        return original_read(path)
+    monkeypatch.setattr(Path, 'read_bytes', guarded_read)
     created = []
     try:
         for link, target in [(repo / 'escape', external), (repo / 'loop', repo), (repo / 'alias', repo / 'node_modules')]:
@@ -159,6 +164,27 @@ def test_symlink_escape_service_alias_and_cycle(tmp_path):
                 link.unlink()
             else:
                 link.rmdir()  # junction only; never recurse into its target
+
+
+def test_readme_file_alias_keeps_its_declared_directory_boundary(tmp_path, monkeypatch):
+    mod = helper()
+    base, repo = tmp_path / 'change', tmp_path / 'repo'
+    metadata(base, {'p': [{'repo': 'r', 'root': '', 'survey': 'found'}]})
+    repo.mkdir()
+    target = repo / 'docs/module.md'
+    target.parent.mkdir()
+    target.write_text('---\nname: root-module\nkind: технический\n---\n', encoding='utf-8')
+    alias = repo / 'README.md'
+    alias.write_text('Alias entry; resolver below models an in-root file symlink.\n', encoding='utf-8')
+    resolve = mod._resolve
+    monkeypatch.setattr(mod, '_resolve', lambda path, roots: target.resolve() if path == 'README.md' else resolve(path, roots))
+    state = mod.discover(base, roots={'': repo})
+    assert state['modules'][0]['path'] == '.'
+    assert state['modules'][0]['source'] == 'README.md'
+    assert mod.owner(state, 'r', 'main.py')['name'] == 'root-module'
+    source = next(s for s in state['sources'] if s.get('repo') == 'r')
+    assert source['path'] == 'README.md'
+    assert source['sha256'] == mod.content_hash(target.read_bytes())
 
 
 def test_quoted_metadata_extension_is_not_silently_ignored(tmp_path):
@@ -234,6 +260,25 @@ def test_graph_has_structure_explicit_realization_and_provenance(tmp_path):
     assert any(e['type'] == 'depends' and e['from'] == modules['a']['id'] and e['to'] == modules['b']['id'] for e in graph['edges'])
     assert not any(e['from'] == modules['independent']['id'] and e['type'] == 'implements' for e in graph['edges'])
     assert str(tmp_path) not in json.dumps(graph, ensure_ascii=False)
+
+
+def test_annotation_without_repo_metadata_is_reported_as_unresolved(tmp_path, monkeypatch):
+    graph_api, base, core, plugin, roots_file = graph_project(tmp_path, {'modules': [{'repo': 'missing', 'module': 'typo'}]})
+    (base / '.openspec.yaml').write_text('schema: symphysis\n', encoding='utf-8')
+    graph = graph_api.build_graph(tmp_path, 'demo', roots_file=roots_file)
+    assert any('missing/typo' in s['reason'] for s in graph.get('structure', {}).get('signals', []))
+    assert not any(e['type'] == 'implements' for e in graph['edges'])
+
+
+def test_annotation_respects_every_accepted_requirement_header(tmp_path):
+    graph_api, base, core, plugin, roots_file = graph_project(tmp_path, {})
+    spec = base / 'specs/demo/spec.md'
+    spec.write_text('## ADDED Requirements\n\n### Requirement: A\nThe system SHALL work.\n'
+                    '\n###Requirement: B\nThe system SHALL retain B.\n'
+                    '<!-- symphysis:implements {"modules":[{"repo":"core","module":"a"}]} -->\n', encoding='utf-8')
+    graph = graph_api.build_graph(tmp_path, 'demo', roots_file=roots_file)
+    implements = [e for e in graph['edges'] if e['type'] == 'implements']
+    assert {e['to'] for e in implements} == {'req:demo/B'}
 
 
 def test_conflicting_module_file_pair_does_not_erase_independent_realization(tmp_path):
@@ -364,8 +409,9 @@ def test_bad_repo_record_keeps_valid_repo_without_dangling_edges(tmp_path):
     assert all(e['from'] in ids and e['to'] in ids for e in graph['edges'])
 
 
-def test_supported_v2_file_remains_unmodified_and_does_not_gain_live_modules(tmp_path):
-    graph_api, base, core, plugin, roots_file = graph_project(tmp_path, {})
+@pytest.mark.parametrize('annotation', [{}, {'modules': [{'repo': 'core', 'module': 'a'}]}])
+def test_supported_v2_file_remains_unmodified_and_does_not_gain_live_modules(tmp_path, annotation):
+    graph_api, base, core, plugin, roots_file = graph_project(tmp_path, annotation)
     graph = graph_api.build_graph(tmp_path, 'demo', roots_file=roots_file)
     graph.pop('structure')
     graph['format'] = 2
