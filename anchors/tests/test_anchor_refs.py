@@ -10,7 +10,7 @@ from pathlib import Path
 import pytest
 
 # conftest — первым: он ставит каталоги модулей в sys.path и при запуске одного файла (pytest.ini, pythonpath)
-from conftest import ROOT
+from conftest import ROOT, make_project, requires_fork, run_openspec
 import anchor_refs
 import journal_model
 import trace_graph
@@ -148,6 +148,84 @@ def test_without_snapshot_every_bare_journal_number_is_rewritten_and_output_says
     done = run(root)
     assert "Текст SHALL (demo/F-20) и новый (demo/F-21)" in path.read_text(encoding="utf-8")
     assert "у требования «Один» нет записи базы снимка" in done.stdout, done.stdout
+
+
+def test_renamed_modified_without_snapshot_still_reports_missing_base(tmp_path):
+    """B-45: RENAMED не скрывает диагностику MODIFIED без базы снимка."""
+    renamed = ONE.replace('Requirement: Один', 'Requirement: Новое имя')
+    delta = ('## MODIFIED Requirements\n\n' + renamed + '\n## RENAMED Requirements\n'
+             '- FROM: `### Requirement: Один`\n- TO: `### Requirement: Новое имя`\n')
+    root, _, path = project(tmp_path, delta=delta, master='## Requirements\n\n' + renamed)
+    done = run(root)
+    assert done.returncode == 0, done.stderr
+    assert 'у требования «Новое имя» нет записи базы снимка' in done.stdout
+    assert '(demo/F-21)' in path.read_text(encoding='utf-8')
+
+
+@pytest.mark.parametrize('changed', [False, True])
+def test_inherited_trace_protects_only_matching_comment_not_other_references(tmp_path, changed):
+    """B-45: старый след остаётся, изменённый якорится; тот же номер вне старого комментария тоже новый."""
+    old_comment = '<!-- проба краёв: форма=io, исходы: F-20 Specify -->'
+    comment = old_comment.replace('форма=io', 'форма=text') if changed else old_comment
+    master = '## Requirements\n\n' + block('Один', 'Текст SHALL (F-20).',
+        tail='(F-21) ' + comment + ' (F-26)\n')
+    root, base, path = project(tmp_path, master=master)
+    snapshot_with_base(base, [])
+    snap_path = base / 'graph/req-graph.json'
+    snap = json.loads(snap_path.read_text(encoding='utf-8'))
+    snap['base']['demo']['Один']['traces'] = [trace_graph._hash('проба краёв: форма=io, исходы: F-20 Specify')]
+    snap_path.write_text(json.dumps(snap, ensure_ascii=False), encoding='utf-8')
+    assert run(root).returncode == 0
+    text = path.read_text(encoding='utf-8')
+    assert 'Текст SHALL (demo/F-20).' in text
+    assert '(demo/F-21) ' in text and ' (demo/F-26)' in text
+    assert (comment.replace('F-20', 'demo/F-20') if changed else old_comment) in text
+    again = run(root)
+    assert again.returncode == 0 and anchor_refs.NOTHING in again.stdout
+
+
+@requires_fork
+def test_renamed_modified_real_cli_freeze_sync_anchors_archive(tmp_path, monkeypatch):
+    """B-45: настоящий CLI принимает RENAMED+MODIFIED, а архив после sync сохраняет базу и чужой след."""
+    from conftest import FORK_BIN
+    monkeypatch.setenv('SYMPHYSIS_OPENSPEC', str(FORK_BIN))
+    root = make_project(tmp_path)
+    base = root / 'openspec/changes/demo'
+    old_trace = '<!-- проба краёв: форма=io, исходы: F-47 Specify -->\n'
+    new_trace = '<!-- проба запретов: исходы: F-49 Backstop -->\n'
+    old = block('Один', 'Система SHALL экспортировать данные (F-20).', tail=old_trace)
+    new = block('Новое имя', 'Система SHALL экспортировать данные и номер контракта (F-20, F-21).',
+                tail=old_trace + new_trace)
+    delta = ('## MODIFIED Requirements\n\n' + new + '\n## RENAMED Requirements\n'
+             '- FROM: `### Requirement: Один`\n- TO: `### Requirement: Новое имя`\n')
+    path = root / 'openspec/specs/demo/spec.md'
+    path.parent.mkdir(parents=True)
+    purpose = '# demo\n\n## Purpose\nЭкспорт данных и номера контракта обеспечивает проверку совместимости ядра и плагина.\n\n## Requirements\n\n'
+    path.write_text(purpose + old, encoding='utf-8')
+    spec = base / 'specs/demo/spec.md'
+    spec.parent.mkdir(parents=True)
+    spec.write_text(delta, encoding='utf-8')
+    records = [journal_model._new_record(n, f'Вопрос {n}?') for n in JOURNAL]
+    (base / 'decisions.json').write_text(json.dumps({'title': 't', 'source': '', 'records': records}), encoding='utf-8')
+    (base / 'proposal.md').write_text('# Proposal\n\n## Why\nЭкспорт должен называть контракт.\n\n'
+        '## What Changes\nПереименовано и дополнено требование.\n\n## Capabilities\n'
+        '### Modified Capabilities\n- `demo`: экспорт номера контракта.\n\n## Impact\nСпецификация экспорта.\n', encoding='utf-8')
+    (base / 'tasks.md').write_text('- [x] 1.1 обновить экспорт `demo`: «Сц»\n', encoding='utf-8')
+    assert run_openspec(root, 'validate', 'demo', '--type', 'change', '--strict', '--json')['items'][0]['valid']
+    trace_graph.freeze_change(root, CHANGE)
+    before = trace_graph.build_graph(root, CHANGE)
+    frozen = (base / 'graph/req-graph.json').read_bytes()
+    assert trace_graph.saved_base(base)['demo']['Новое имя']['numbers'] == ['F-20']
+    path.write_text(purpose + new, encoding='utf-8')  # действие sync: CLI-команды sync в OpenSpec нет
+    anchor_refs.anchor_change(root, CHANGE)
+    assert old_trace in path.read_text(encoding='utf-8')
+    assert 'demo/F-21' in path.read_text(encoding='utf-8') and 'demo/F-49' in path.read_text(encoding='utf-8')
+    assert anchor_refs.anchor_change(root, CHANGE) == [anchor_refs.NOTHING]
+    assert trace_graph.build_graph(root, CHANGE) == before
+    run_openspec(root, 'archive', 'demo', '--yes', '--skip-specs')
+    (archived,) = (root / 'openspec/changes/archive').iterdir()
+    assert (archived / 'graph/req-graph.json').read_bytes() == frozen
+    assert old_trace in path.read_text(encoding='utf-8') and 'demo/F-47' not in path.read_text(encoding='utf-8')
 
 
 def test_snapshot_of_format_one_is_not_a_base(tmp_path):

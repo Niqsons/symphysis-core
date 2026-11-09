@@ -5,6 +5,7 @@
 `<изменение>/F-NN`, если F-NN — запись журнала этого изменения: мастер перестаёт копить голые номера, и следующее изменение
 не спутает их со своими. Ссылки с именем или якорем, номера вне журнала и блоки других требований не трогаются; голая
 ссылка, стоящая в базе снимка `graph/req-graph.json`, унаследована от прежнего изменения и остаётся голой (F-40).
+Дословный след пробы из базы снимка тоже остаётся прежним, даже при переименовании требования (B-45).
 Зовётся моделью по строке правила `rules.specs` и подсказке архива; печатает каждую замену; повторный запуск ничего не меняет.
 Разбор ссылок — `trace_graph` (что граф читает как ссылку, то скрипт и переписывает, F-41), правило имени изменения —
 `openspec_run`. Пишет только мастер-спеки под корнем проекта (F-49); каталог изменения только читает. Только стандартная
@@ -26,8 +27,8 @@ _HERE = Path(__file__).resolve().parent
 if not (_HERE / "trace_graph.py").is_file():
     sys.path[1:1] = [str(_HERE.parent / name) for name in ("trace", "roots", "decisions", "openspec-run")]
 from openspec_run import ForkError, SAFE_NAME, check_change_name  # noqa: E402
-from trace_graph import (Ref, Refusal, _ANY_HEADER, _fence_mask, _read_text, _spec_lines, find_root, parse_ref,  # noqa: E402
-                         parse_spec, record_ref_spans, ref_text, saved_base)
+from trace_graph import (Ref, Refusal, _ANY_HEADER, _TRACE_COMMENT, _fence_mask, _hash, _read_text, _spec_lines,  # noqa: E402
+                         find_root, parse_ref, parse_spec, record_ref_spans, ref_text, saved_base)
 
 _MASTER_HEADER = re.compile(r"^## Requirements[ \t]*$")  # мастер пишет `## Requirements`, `parse_spec` читает секции дельты
 _RECORD_ID = re.compile(r"F-(\d+)")
@@ -67,7 +68,8 @@ def delta_requirements(base: Path) -> dict[str, dict[str, str]]:
             continue
         parsed = parse_spec(_read_text(base, rel))
         names = {r.name: r.section for r in parsed.requirements if r.section in ("ADDED", "MODIFIED")}
-        names.update({r.to_name: "RENAMED" for r in parsed.renames})
+        for rename in parsed.renames:
+            names.setdefault(rename.to_name, "RENAMED")
         if names:
             found[folder.name] = names
     return found
@@ -101,30 +103,24 @@ def block_ranges(lines: list[str], mask: list[bool], names: set[str]) -> list[tu
     return found
 
 
-def inherited_refs(base: Path) -> dict[str, dict[str, set[Ref]]]:
-    """Голые ссылки базы снимка по capability и имени требования (F-40): они стояли в мастере до синхронизации, это номера
-    прежнего журнала, и переписывать их нельзя. Снимка нет или он прежнего формата — база пуста."""
-    found: dict[str, dict[str, set[Ref]]] = {}
-    for cap, entries in saved_base(base).items():
-        for name, entry in entries.items():
-            refs = {ref for text in entry["numbers"] if (ref := parse_ref(text)) and ref.change is None}
-            found.setdefault(cap, {})[name] = refs
-    return found
-
-
 def rewrite_lines(lines: list[str], mask: list[bool], blocks: list[tuple[str, int, int]], change: str, numbers: set[int],
-                  inherited: dict[str, set[Ref]], rel: str) -> tuple[list[str], list[Rewrite]]:
+                  inherited: dict[str, dict], rel: str) -> tuple[list[str], list[Rewrite]]:
     """Строки мастера с якорями вместо голых ссылок журнала в блоках `blocks` и список замен. Строки блоков кода и ссылки
-    с именем не трогаются; ссылка из `inherited` требования остаётся голой; число приводится к виду id записи (`F-7` → `F-07`)."""
+    с именем не трогаются; голые ссылки базы и дословные следы проб из неё остаются прежними (B-45).
+    Число приводится к виду id записи (`F-7` → `F-07`)."""
     out, done = list(lines), []
     for name, first, last in blocks:
-        keep = inherited.get(name, set())
+        entry = inherited.get(name, {})
+        keep = {ref for text in entry.get("numbers", ()) if (ref := parse_ref(text)) and ref.change is None}
+        traces = set(entry.get("traces", ()))
         for i in range(first, last):
             if mask[i]:
                 continue
             line, pieces, pos = out[i], [], 0
+            old_comments = [m.span() for m in _TRACE_COMMENT.finditer(line) if _hash(m.group(1)) in traces]
             for ref, start, end in record_ref_spans(line):
-                if ref.change is not None or ref.number not in numbers or Ref(None, ref.number, ref.letter) in keep:
+                if (ref.change is not None or ref.number not in numbers or Ref(None, ref.number, ref.letter) in keep
+                        or any(first <= start < last for first, last in old_comments)):
                     continue
                 anchor = ref_text(Ref(change, ref.number, ref.letter))
                 pieces += [line[pos:start], anchor]
@@ -156,7 +152,7 @@ def anchor_change(root: Path, change: str) -> list[str]:
     if not base.is_dir():
         raise Refusal(f"изменения «{change}» нет: нет каталога openspec/changes/{change}")
     numbers = journal_numbers(base)
-    inherited = inherited_refs(base)
+    inherited = saved_base(base)
     lines_out, total, files = [], 0, 0
     for cap, names in delta_requirements(base).items():
         target = master_target(root, cap)
