@@ -16,6 +16,7 @@
 - [probes/](probes/) — модуль: пробы краёв и запретов
 - [research/](research/) — модуль: шаг исследования
 - [roots/](roots/) — модуль: корни улик и поиск цитат
+- [runtime/](runtime/) — модуль: проверка контекста dispatcher и запуск global entrypoints
 - [settings/](settings/) — модуль: личные настройки `symphysis.yaml`
 - [skill-shared/](skill-shared/) — модуль: общие файлы скиллов
 - [step-help/](step-help/) — модуль: справка о шаге

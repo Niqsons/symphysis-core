@@ -69,37 +69,37 @@ test("symphysis config: --project не каталог — неверный вы�
   assert.equal(r.stdout, "");
 });
 
-test("symphysis config: Python не отвечает — [!!] и код 2", () => {
+test("symphysis config: Python не отвечает — dispatcher diagnostic и код 2", () => {
   const p = installed("");
   const empty = tmp();
-  const r = cli(["config", "--project", p], { env: { ...process.env, PATH: empty, Path: empty } });
+  const r = cli(["config", "--project", p], { env: { ...process.env, SYMPHYSIS_OPENSPEC: FORK, PATH: empty, Path: empty } });
   assert.equal(r.status, 2);
-  assert.equal(r.stdout, "[!!] python: python или python3 не отвечает\n");
+  assert.equal(r.stdout, "");
+  assert.match(r.stderr, /python.*(?:не найден|не отвечает|недоступен)/i);
 });
 
-test("symphysis config: нет копии скрипта — [!!] с командой установки, код 2", () => {
+test("symphysis config: нет скрипта — отказ целостности до запуска, код 2", () => {
   const p = installed("");
   fs.rmSync(script(p));
   const r = cli(["config", "--project", p]);
   assert.equal(r.status, 2);
-  assert.equal(r.stdout, "[!!] symphysis_config.py: нет файла — выполнить: symphysis install\n");
+  assert.equal(r.stdout, "");
+  assert.match(r.stderr, /local-damaged.*symphysis_config.py/);
 });
 
-test("symphysis config: скрипт упал — [!!] с первой строкой stderr, код 2", () => {
+test("symphysis config: изменённый скрипт не исполняется, код 2", () => {
   const p = installed("");
   fs.writeFileSync(script(p), 'raise SystemExit("сломан")\n');
   const r = cli(["config", "--project", p]);
   assert.equal(r.status, 2);
-  assert.equal(r.stdout, "[!!] symphysis_config.py: не отработал (сломан)\n");
+  assert.equal(r.stdout, "");
+  assert.match(r.stderr, /local-damaged.*symphysis_config.py/);
+  assert.doesNotMatch(r.stderr, /сломан/);
 });
 
-test("справка называет команду и строку «Звать, когда» у каждой команды", () => {
+test("справка называет selectors config и назначение каждой management команды", () => {
   const r = cli(["--help"]);
   assert.equal(r.status, 0);
-  assert.match(r.stdout, /symphysis config +\[--project <dir>\]/);
-  for (const name of ["install", "check", "config"]) {
-    const entry = new RegExp(`^  ${name} +[^\n]*(?:\n {12}[^\n]*)*`, "m").exec(r.stdout);
-    assert.ok(entry, name);
-    assert.match(entry[0].replace(/\s+/g, " "), /Звать, когда/, name);
-  }
+  assert.match(r.stdout, /symphysis config +\[--scope local\|global\] \[--project <source>\] \[--store <id>\]/);
+  for (const name of ["install", "check", "config", "init", "migrate"]) assert.match(r.stdout, new RegExp(`^${name}: .+`, "m"));
 });

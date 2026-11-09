@@ -1,0 +1,118 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Symphysis resolver response, format 1",
+  "type": "object",
+  "required": ["format", "status", "store", "scope", "runtime", "resources", "compatibility", "clients", "diagnostics"],
+  "properties": {
+    "format": { "const": 1 },
+    "status": { "enum": ["ready", "blocked"] },
+    "store": { "anyOf": [{ "$ref": "#/$defs/store" }, { "type": "null" }] },
+    "scope": { "enum": ["local", "global", null] },
+    "runtime": { "anyOf": [{ "$ref": "#/$defs/runtime" }, { "type": "null" }] },
+    "resources": { "anyOf": [{ "$ref": "#/$defs/resources" }, { "type": "null" }] },
+    "compatibility": {
+      "type": "object",
+      "required": ["status", "declarationPath"],
+      "properties": {
+        "status": { "enum": ["compatible", "incompatible", "unconfirmed"] },
+        "declarationPath": { "anyOf": [{ "$ref": "#/$defs/absolutePath" }, { "type": "null" }] }
+      }
+    },
+    "clients": { "type": "array", "items": { "$ref": "#/$defs/client" } },
+    "diagnostics": { "type": "array", "items": { "$ref": "#/$defs/diagnostic" } },
+    "warnings": { "type": "array", "items": { "$ref": "#/$defs/warning" } }
+  },
+  "allOf": [{
+    "if": { "properties": { "status": { "const": "ready" } } },
+    "then": {
+      "properties": {
+        "store": { "$ref": "#/$defs/store" },
+        "scope": { "enum": ["local", "global"] },
+        "runtime": {
+          "allOf": [
+            { "$ref": "#/$defs/runtime" },
+            { "properties": { "journalContract": { "type": "integer", "minimum": 1 } } }
+          ]
+        },
+        "resources": { "$ref": "#/$defs/resources" },
+        "compatibility": { "properties": { "status": { "const": "compatible" } } }
+      }
+    },
+    "else": { "properties": { "diagnostics": { "minItems": 1 } } }
+  }],
+  "$defs": {
+    "absolutePath": { "type": "string", "pattern": "^(?:/|[A-Za-z]:[\\\\/]|\\\\\\\\)", "minLength": 1 },
+    "store": {
+      "type": "object",
+      "required": ["root", "sourceCwd", "id"],
+      "properties": {
+        "root": { "$ref": "#/$defs/absolutePath" },
+        "sourceCwd": { "$ref": "#/$defs/absolutePath" },
+        "id": { "type": ["string", "null"], "minLength": 1 }
+      }
+    },
+    "runtime": {
+      "type": "object",
+      "required": ["root", "toolsRoot", "docsRoot", "schemaRoot", "manifestPath", "generation", "sourceVersion", "legacy", "bootstrapApi", "runtimeApi", "schemaApi", "journalContract"],
+      "properties": {
+        "root": { "$ref": "#/$defs/absolutePath" },
+        "toolsRoot": { "$ref": "#/$defs/absolutePath" },
+        "docsRoot": { "$ref": "#/$defs/absolutePath" },
+        "schemaRoot": { "$ref": "#/$defs/absolutePath" },
+        "manifestPath": { "anyOf": [{ "$ref": "#/$defs/absolutePath" }, { "type": "null" }] },
+        "generation": { "type": "string", "minLength": 1 },
+        "sourceVersion": { "type": ["string", "null"], "minLength": 1 },
+        "legacy": { "type": "boolean" },
+        "bootstrapApi": { "type": "integer", "minimum": 1 },
+        "runtimeApi": { "type": "integer", "minimum": 1 },
+        "schemaApi": { "type": "integer", "minimum": 1 },
+        "journalContract": { "type": ["integer", "null"], "minimum": 1 }
+      }
+    },
+    "pathMap": { "type": "object", "additionalProperties": { "$ref": "#/$defs/absolutePath" } },
+    "resources": {
+      "type": "object",
+      "required": ["tools", "docs", "skills", "templates", "schema"],
+      "properties": {
+        "tools": { "$ref": "#/$defs/pathMap" },
+        "docs": { "$ref": "#/$defs/pathMap" },
+        "skills": { "$ref": "#/$defs/pathMap" },
+        "templates": { "$ref": "#/$defs/pathMap" },
+        "assets": { "$ref": "#/$defs/pathMap" },
+        "schema": {
+          "type": "object",
+          "required": ["name", "path"],
+          "properties": { "name": { "type": "string", "minLength": 1 }, "path": { "$ref": "#/$defs/absolutePath" } }
+        }
+      }
+    },
+    "client": {
+      "type": "object",
+      "required": ["id", "files", "workflow", "discovery"],
+      "properties": {
+        "id": { "enum": ["claude", "codex", "opencode"] },
+        "files": { "enum": ["ready", "missing", "conflict"] },
+        "workflow": { "enum": ["ready", "missing", "conflict"] },
+        "discovery": { "enum": ["confirmed", "unconfirmed"] }
+      }
+    },
+    "warning": {
+      "allOf": [{ "$ref": "#/$defs/diagnostic" }],
+      "type": "object",
+      "required": ["source", "path"],
+      "properties": {
+        "source": { "type": "string", "minLength": 1 },
+        "path": { "$ref": "#/$defs/absolutePath" }
+      }
+    },
+    "diagnostic": {
+      "type": "object",
+      "required": ["code", "message", "action"],
+      "properties": {
+        "code": { "type": "string", "pattern": "^[a-z][a-z0-9-]+$" },
+        "message": { "type": "string", "minLength": 1 },
+        "action": { "type": "string", "minLength": 1 }
+      }
+    }
+  }
+}

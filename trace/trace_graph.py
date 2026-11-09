@@ -21,6 +21,9 @@ sys.dont_write_bytecode = True  # как у соседних скриптов: `
 # Исходник ядра (F-20 A): код модулей лежит в соседних каталогах первого уровня, точка входа ставит нужные ей в `sys.path`.
 # В установке весь код рядом в `.symphysis/tools/`: `roots.py` лежит возле этого файла, и путь не меняется.
 _HERE = Path(__file__).resolve().parent
+sys.path.insert(0, str(_HERE if (_HERE / "runtime_context.py").is_file() else _HERE.parent / "runtime"))
+from runtime_context import bootstrap as _runtime_bootstrap, context as _runtime_context  # noqa: E402
+_runtime_bootstrap("trace")
 if not (_HERE / "roots.py").is_file():
     sys.path[1:1] = [str(_HERE.parent / name) for name in ("roots", "decisions", "openspec-run")]
 from roots import UNUSABLE_ROOTS, default_roots  # noqa: E402
@@ -327,6 +330,9 @@ def parse_spec(source: str | Path) -> SpecParse:
 
 def find_root(start: Path) -> Path:
     """Корень проекта — ближайший `openspec/` от каталога вызова, как у `step_help.py` и у форка."""
+    selected = _runtime_context()
+    if selected:
+        return Path(selected["store"]["root"])
     return next((folder for folder in (start, *start.parents) if (folder / "openspec").is_dir()), start)
 
 

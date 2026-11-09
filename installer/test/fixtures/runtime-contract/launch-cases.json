@@ -1,0 +1,33 @@
+{
+  "format": 1,
+  "discoveryCases": [
+    {"id":"explicit-bootstrap","platform":"win32","settings":{"commandPath":"X:/fixture/bin/symphysis.js","nodePath":"X:/fixture/bin/node.exe"},"hostPath":["X:/fixture/other"],"files":["X:/fixture/bin/symphysis.js","X:/fixture/bin/node.exe"],"expected":{"command":"X:/fixture/bin/node.exe","prefixArgs":["X:/fixture/bin/symphysis.js"]}},
+    {"id":"host-path-bootstrap","platform":"win32","settings":{},"hostPath":["X:/fixture/bin"],"files":["X:/fixture/bin/symphysis.cmd"],"expected":{"command":"X:/fixture/bin/symphysis.cmd","prefixArgs":[]}},
+    {"id":"missing-bootstrap","platform":"win32","settings":{},"hostPath":["X:/fixture/bin"],"files":["X:/fixture/workspace/symphysis.cmd"],"expected":{"diagnosticCode":"bootstrap-missing"}},
+    {"id":"relative-explicit-no-fallback","platform":"win32","settings":{"commandPath":"symphysis.cmd"},"hostPath":["X:/fixture/bin"],"files":["X:/fixture/bin/symphysis.cmd"],"expected":{"diagnosticCode":"command-path-invalid"}},
+    {"id":"missing-explicit-no-fallback","platform":"win32","settings":{"commandPath":"X:/fixture/missing/symphysis.cmd"},"hostPath":["X:/fixture/bin"],"files":["X:/fixture/bin/symphysis.cmd"],"expected":{"diagnosticCode":"command-path-invalid"}},
+    {"id":"js-needs-node","platform":"win32","settings":{"commandPath":"X:/fixture/bin/symphysis.js"},"hostPath":["X:/fixture/bin"],"files":["X:/fixture/bin/symphysis.js","X:/fixture/ide/electron.exe"],"expected":{"diagnosticCode":"node-missing"}},
+    {"id":"relative-node-no-fallback","platform":"win32","settings":{"commandPath":"X:/fixture/bin/symphysis.js","nodePath":"node.exe"},"hostPath":["X:/fixture/bin"],"files":["X:/fixture/bin/symphysis.js","X:/fixture/bin/node.exe"],"expected":{"diagnosticCode":"node-path-invalid"}},
+    {"id":"js-host-node","platform":"linux","settings":{"commandPath":"/fixture/bin/symphysis.js"},"hostPath":["/fixture/bin"],"files":["/fixture/bin/symphysis.js","/fixture/bin/node"],"expected":{"command":"/fixture/bin/node","prefixArgs":["/fixture/bin/symphysis.js"]}},
+    {"id":"relative-path-entry-ignored","platform":"win32","settings":{},"hostPath":[".","node_modules/.bin"],"files":["X:/fixture/workspace/symphysis.cmd"],"expected":{"diagnosticCode":"bootstrap-missing"}}
+  ],
+  "handshakeCases": [
+    {"id":"ready","exitCode":0,"response":"ready","expected":"accept"},
+    {"id":"blocked","exitCode":2,"response":"blocked","expected":"show-diagnostics"},
+    {"id":"old-cli-no-resolve","exitCode":2,"stdout":"Unknown command: resolve","expected":"reject-contract"},
+    {"id":"malformed-json","exitCode":0,"stdout":"{","expected":"reject-contract"},
+    {"id":"empty-json","exitCode":0,"stdout":"{}","expected":"reject-contract"},
+    {"id":"unknown-format","exitCode":0,"response":"unknown-format","expected":"reject-contract"},
+    {"id":"wrong-store","exitCode":0,"response":"wrong-store","expected":"reject-store"},
+    {"id":"wrong-journal-contract","exitCode":0,"response":"wrong-journal-contract","expected":"reject-journal-contract"},
+    {"id":"blocked-exit-zero","exitCode":0,"response":"blocked","expected":"reject-contract"},
+    {"id":"ready-exit-two","exitCode":2,"response":"ready","expected":"reject-contract"},
+    {"id":"timeout","timeout":true,"expected":"reject-timeout"},
+    {"id":"process-error","exitCode":1,"stdout":"","expected":"reject-launch"}
+  ],
+  "launchCases": [
+    {"id":"journal-argv-unchanged","launcher":{"command":"X:/fixture/node.exe","prefixArgs":["X:/fixture/bootstrap/symphysis.js"]},"source":"X:/fixture/source with spaces","store":"a","tool":"journal","argv":["apply","openspec/changes/same-change/decisions.json","answers/word & 100% \"quote\".md","--dry-run"],"expected":{"format":1,"command":"X:/fixture/node.exe","args":["X:/fixture/bootstrap/symphysis.js","--project","X:/fixture/source with spaces","--store","a","journal","apply","openspec/changes/same-change/decisions.json","answers/word & 100% \"quote\".md","--dry-run"],"cwd":"X:/fixture/stores/a","execution":"dispatcher","lease":"child-lifetime"}},
+    {"id":"newlines-remain-one-argument","launcher":{"command":"/fixture/bin/symphysis","prefixArgs":[]},"source":"/fixture/source","store":null,"tool":"journal","argv":["apply","decisions.json","answers/line\nbreak.md"],"expected":{"format":1,"command":"/fixture/bin/symphysis","args":["--project","/fixture/source","journal","apply","decisions.json","answers/line\nbreak.md"],"cwd":"/fixture/stores/a","execution":"dispatcher","lease":"child-lifetime"}},
+    {"id":"native-selectors-preserved-for-preflight","launcher":{"command":"/fixture/bin/symphysis","prefixArgs":[]},"source":"/fixture/source","store":"a","tool":"openspec","argv":["new","change","same-change","--schema","symphysis"],"expected":{"format":1,"command":"/fixture/bin/symphysis","args":["--project","/fixture/source","--store","a","openspec","new","change","same-change","--schema","symphysis"],"cwd":"/fixture/stores/a","execution":"dispatcher","lease":"child-lifetime"}}
+  ]
+}

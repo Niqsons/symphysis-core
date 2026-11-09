@@ -23,6 +23,9 @@ sys.dont_write_bytecode = True  # как у соседних скриптов: `
 # Исходник ядра: код модулей лежит в соседних каталогах первого уровня, точка входа ставит нужные ей в `sys.path`.
 # В установке весь код рядом в `.symphysis/tools/`: `trace_graph.py` лежит возле этого файла, и путь не меняется.
 _HERE = Path(__file__).resolve().parent
+sys.path.insert(0, str(_HERE if (_HERE / "runtime_context.py").is_file() else _HERE.parent / "runtime"))
+from runtime_context import bootstrap as _runtime_bootstrap  # noqa: E402
+_runtime_bootstrap("anchors")
 if not (_HERE / "trace_graph.py").is_file():
     sys.path[1:1] = [str(_HERE.parent / name) for name in ("trace", "roots", "decisions", "openspec-run")]
 from openspec_run import ForkError, SAFE_NAME, check_change_name  # noqa: E402

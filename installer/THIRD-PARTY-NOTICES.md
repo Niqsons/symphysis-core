@@ -32,7 +32,9 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SO
 ## OpenSpec
 
 Схема symphysis работает в рамке OpenSpec (Fission-AI/OpenSpec, MIT); форк поставляется
-отдельным пакетом со своей лицензией.
+отдельным пакетом со своей лицензией. Производные workflow-носители для трёх клиентов
+собираются из закреплённого артефакта OpenSpec; полный текст MIT с copyright OpenSpec
+Contributors сохраняется в поле `licenses` файла `workflow-carriers.json` рядом с ними.
 
 ## Mermaid
 

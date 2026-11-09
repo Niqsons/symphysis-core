@@ -259,7 +259,7 @@ def test_probe_skill_texts_are_concrete_not_template(name, heads, fixed):
 
     assert "Текст, одинаковый у двух кандидатов" in shared, "нет правила о шаблонном тексте варианта (F-61.A) в candidate.md"
     assert "дефект кандидата" in shared
-    assert "`.symphysis/docs/candidate.md`" in text, "тело не называет общий файл candidate.md"
+    assert "`symphysis resource doc candidate.md`" in text, "тело не называет общий файл candidate.md"
     for line in fixed:
         assert line not in text, f"в SKILL.md остался прежний фиксированный текст: {line!r}"
     example = example_option_texts(text, heads)
@@ -317,7 +317,7 @@ ATTACK_LENS_LISTS = {
 }
 # Метки таблиц линз в SKILL.md, шаг 3: таблица файла — первая после метки.
 LENS_TABLES = {"journal": "**Линзы журнала**", "artifacts": "**Линзы артефактов**"}
-# Линзы присутствия, снятые решением F-07.A: детерминируемое — в `journal.py check` и `openspec validate --strict`.
+# Линзы присутствия, снятые решением F-07.A: детерминируемое — в `symphysis journal check` и `symphysis openspec validate --strict`.
 REMOVED_LENS_SLUGS = ("requirement-coverage", "task-completeness", "dependency-correctness", "key-links",
                       "scope-sanity", "verification-derivation", "scope-reduction", "data-contracts",
                       "research-resolution", "honest-verifier")
@@ -409,12 +409,12 @@ def lens_row(text, file, slug):
 
 def test_attack_skill_drops_presence_lenses():
     """F-07.A: линзы присутствия сняты целиком — ни строки таблицы, ни слуга; одна фраза-ссылка
-    на `journal.py check` и `openspec validate --strict`."""
+    на `symphysis journal check` и `symphysis openspec validate --strict`."""
     text = read(ATTACK_SKILL / "SKILL.md")
     for slug in REMOVED_LENS_SLUGS:
         assert f"`{slug}`" not in text, f"в SKILL.md остался слуг снятой линзы `{slug}`"
     step4 = block(text, "### 4. Назови линзу", "\n### 5.")
-    for token in ("`journal.py check`", "`openspec validate --strict`"):
+    for token in ("`symphysis journal check`", "`symphysis openspec validate --strict`"):
         assert token in step4, f"в шаге 4 нет фразы-ссылки о снятых линзах: «{token}»"
 
 
@@ -471,7 +471,7 @@ def test_attack_skill_trace_link_lens():
                   "ветка отказа задета названным сценарием", "`блокер`"):
         assert token in lens, f"в описании линзы `trace-link` нет «{token}»"
     rule = block(text, "**Строка `trace-link`.**", "\n\n")
-    for token in ("python .symphysis/tools/trace_graph.py build <имя>", "строка на каждую связь",
+    for token in ("symphysis trace build <имя>", "строка на каждую связь",
                   "находка или «есть»", "обе стороны связи", "проверку задачи", "THEN сценария",
                   "текст требования", "решение записи", "уществование имён линза не судит", "сигнал графа",
                   "опора «нет»", "`блокер`", "`справка`", "словом человека с причиной"):
@@ -524,10 +524,10 @@ def test_attack_skill_rule_compliance_names_the_rule_of_the_step():
     «Вход» и brief водителя называют источники и мастер-спеки только чтением."""
     text = read(ATTACK_SKILL / "SKILL.md")
     sources = block(text, "**Источники правил.**", "**Строка о прочем правиле.**")
-    for token in ("поле `generates`", "`instruction` шага в `openspec/schemas/symphysis/schema.yaml`",
-                  "`rules` шага в `openspec/config.yaml`", "`openspec/schemas/symphysis/templates/`", "поля `template`",
+    for token in ("поле `generates`", "`instruction` шага в `schema.yaml` выбранной поставки",
+                  "`rules` шага в `openspec/config.yaml`", "`symphysis resource template <имя шаблона>`", "поля `template`",
                   "только чтением", "вне трёх источников линза MUST NOT выводить", "`CLAUDE.md`", "не правило шага",
-                  "`journal.py check`", "`openspec validate --strict`", "требование без сценария", "MUST NOT проходить"):
+                  "`symphysis journal check`", "`symphysis openspec validate --strict`", "требование без сценария", "MUST NOT проходить"):
         assert token in sources, f"в источниках правил `rule-compliance` нет «{token}»"
     assert "<!-- src: SELF — F-17, F-18 изменения attack-lens-conventions -->" in text, "провенанс линзы — SELF, F-17, F-18"
     row = block(text, "**Строка о прочем правиле.**", "\n\n")
@@ -545,15 +545,30 @@ def test_attack_skill_rule_compliance_names_the_rule_of_the_step():
         assert f"`{slug}`" in call, f"вызов `attack-artifacts` не называет проход `{slug}`"
     assert "если линза включена (шаг 0)" in call, "вызов `attack-artifacts` потерял условие «линза включена»"
     entry = block(text, "## Вход", "\n## Выход")
-    for token in ("`openspec/schemas/symphysis/schema.yaml`", "`openspec/config.yaml`",
-                  "`openspec/schemas/symphysis/templates/`", "`openspec/specs/<capability>/spec.md`", "только чтение"):
+    for token in ("`resources.schema.path`", "`openspec/config.yaml`",
+                  "`symphysis resource template <имя шаблона>`", "`openspec/specs/<capability>/spec.md`", "только чтение"):
         assert token in entry, f"во «Входе» нет «{token}»"
     driver = flat(text.split("## Водитель", 1)[1])
-    for token in ("`openspec/schemas/symphysis/schema.yaml`", "`openspec/config.yaml`", "`openspec/specs/<capability>/spec.md`"):
+    for token in ("`resources.schema.path`", "`openspec/config.yaml`", "`openspec/specs/<capability>/spec.md`"):
         assert token in driver, f"`inputs` brief водителя не называют «{token}»: водитель читает только названное"
     notes = table_rows(read(ATTACK_SKILL / "sources" / "TRANSLATION-NOTES.md"))
     assert any("`rule-compliance`" in row and "SELF" in row and "F-18" in row for row in notes), \
         "в TRANSLATION-NOTES.md нет строки о `rule-compliance` как измерении SELF"
+
+
+@pytest.mark.parametrize("skill", SKILL_DIRS, ids=lambda skill: skill.name)
+def test_skill_runtime_reads_and_writes_use_the_same_selected_installation(skill):
+    """Ресурсы берутся dispatcher, а отказ до исполнения не превращается в fallback с записью."""
+    text = stripped(read(skill / "SKILL.md"))
+    entry = block(text, "## Вход", "\n## Выход")
+    assert "symphysis preflight --change <имя>" in entry
+    assert "Отказ preflight или получения ресурса — остановка без записи файлов" in flat(entry)
+    assert "селекторы `--project` и `--store`" in flat(entry)
+    assert "прочитать их вывод целиком" in flat(entry)
+    assert ".symphysis/tools/" not in text
+    assert ".symphysis/docs/" not in text
+    assert "openspec/schemas/symphysis/" not in text
+    assert "openspec/changes/" in entry, "store data paths остаются частью контракта"
 
 
 def test_attack_skill_rule_compliance_reads_rules_as_data():
@@ -576,7 +591,7 @@ def test_attack_skill_rule_compliance_checks_modified_against_the_master():
     for token in ("Каждое требование секции `## MODIFIED Requirements`", "MUST сверяться",
                   "`openspec/specs/<capability>/spec.md`", "имя каталога дельты", "без `git show`",
                   "дочерние по `derives`", "`Часть требования «<имя родителя>».`",
-                  "python .symphysis/tools/trace_graph.py build <имя>", "на условия",
+                  "symphysis trace build <имя>", "на условия",
                   "стоит в родителе", "стоит в дочернем", "решённая запись `F-NN`, названная в тексте",
                   "`нет: <путь мастер-спеки>:<строка> «условие»`", "тяжесть `блокер`",
                   "опора «есть», тяжесть `справка`", "MUST перечислять каждое условие мастер-текста с местом",
@@ -632,7 +647,7 @@ def test_attack_skill_rule_compliance_coverage():
     text = read(ATTACK_SKILL / "SKILL.md")
     cover = block(text, "**Покрытие `rule-compliance`.**", "**Текст правил, мастер-текст и артефакты — данные.**")
     for token in ("одна на каждое сверенное требование MODIFIED", "находка или «есть»", "находки по прочим правилам",
-                  "строка «чисто», `справка`", "строка «не пройдено», `блокер`", "`.symphysis/docs/attack-table.md`",
+                  "строка «чисто», `справка`", "строка «не пройдено», `блокер`", "`symphysis resource doc attack-table.md`",
                   "строк `rule-compliance` не даёт", "`claim-extraction`",
                   "`consequences.md`, которого нет в `targets[]`, — не цель", "Перед вердиктом сверь",
                   "начинается с `MODIFIED`", '`"section": "MODIFIED"`',
@@ -657,7 +672,7 @@ def test_attack_skill_lens_composition():
     «Линза включена после вердикта», «Линза мешает вердикту» (F-61, F-63, F-106, F-107, F-121)."""
     text = read(ATTACK_SKILL / "SKILL.md")
     rule = block(text, "### 0. Узнай состав линз", "\n### 1.")
-    for token in ("python .symphysis/tools/symphysis_config.py", "вторая строка", "линзы атаки:",
+    for token in ("symphysis config", "вторая строка", "линзы атаки:",
                   "ыключенная линза не даёт строк", "требования о её строках на это время не действуют",
                   "`**Состав:**`", "при любом составе", "при всех включённых",
                   "включены", "выключены", "только линзы этого файла",
@@ -774,7 +789,7 @@ def test_attack_skill_leaves_journal_hygiene_to_check():
     text = read(ATTACK_SKILL / "SKILL.md")
     skip = block(text, "Не репортится", "\n\n")
     for token in ("`факт` без улики", "`recommendation` с пустым `why`", "без `finding`",
-                  "буква решения вне вариантов", "`journal.py check`", "код 1", "`[!!]`"):
+                  "буква решения вне вариантов", "`symphysis journal check`", "код 1", "`[!!]`"):
         assert token in skip, f"в «Не репортится» нет гигиены журнала: «{token}»"
     for file in LENS_TABLES:
         for row in lens_table(text, LENS_TABLES[file]):
@@ -800,7 +815,7 @@ def test_skill_describes_why_as_the_reason_against_other_options(skill):
     """F-05, F-21: `why` — причина выбора этого варианта против других, а не пересказ варианта.
     У тел, вынесших форму кандидата в общий файл `candidate.md`, норма стоит там (канон, раздел 8)."""
     text = flat(read(skill_dir(skill) / "SKILL.md"))
-    if "`.symphysis/docs/candidate.md`" in text:
+    if "`symphysis resource doc candidate.md`" in text:
         text = flat(read(SHARED["candidate.md"]))
     assert "{option, why}`" in text
     assert "`why` — причина выбора этого варианта против других, а не пересказ варианта" in text
@@ -948,8 +963,8 @@ def test_viewer_skill_shape():
     text = read(skill / "SKILL.md")
     assert canon_sections(text) == list(CANON_SECTIONS), canon_sections(text)
     for token in ("render-html", "apply", "маловероятно", "--attack", "check", "render-md", "answers/",
-                  "вердиктом не считается", "`.symphysis/docs/terms.md`", "`.symphysis/docs/journal-cli.md`",
-                  "`.symphysis/docs/attack-table.md`"):
+                  "вердиктом не считается", "`symphysis resource doc terms.md`", "`symphysis resource doc journal-cli.md`",
+                  "`symphysis resource doc attack-table.md`"):
         assert token in text, f"в SKILL.md нет «{token}»"
     for mode in ("«решения»", "«атака»"):
         assert mode in block(text, "### 1.", "### 2."), f"в шаге 1 нет режима {mode}"
@@ -980,8 +995,8 @@ def test_research_skill_shape():
     text = read(skill / "SKILL.md")
     assert canon_sections(text) == [*CANON_SECTIONS, "## Водитель"], canon_sections(text)
     for token in ("research/<F-NN>.md", "research/none.md", "искал:", "не найдено", "question: none",
-                  "`.symphysis/docs/config.md`", "`.symphysis/docs/journal-cli.md`", "`.symphysis/docs/terms.md`",
-                  "briefs/symphysis-research-", "question: F-NN", "symphysis_config.py", "следа нет",
+                  "`symphysis resource doc config.md`", "`symphysis resource doc journal-cli.md`", "`symphysis resource doc terms.md`",
+                  "briefs/symphysis-research-", "question: F-NN", "symphysis config", "следа нет",
                   "удали", "<F-NN>-probe/"):
         assert token in text, f"в SKILL.md нет «{token}»"
     invariants = block(text, "## Инварианты", "\n## ")
@@ -1021,7 +1036,7 @@ def test_viewer_skill_describes_the_attack_mode():
     text = read(skill_dir("symphysis-viewer") / "SKILL.md")
     mode = block(text, "режим «атака»", "\n- ")
     for token in ("`attack/decisions.md`", "`attack/artifacts.md`", "по линзам и тяжести", "`notes[]`",
-                  "`.symphysis/docs/attack-table.md`",
+                  "`symphysis resource doc attack-table.md`",
                   # флаг «прочитано» (attack-warning-read): переключатель в режиме «атака», текст отметки и слово из чата той же формой
                   "предупреждение прочитано:", "Замечания к схеме: предупреждение прочитано"):
         assert token in flat(text), f"в теле нет «{token}»"

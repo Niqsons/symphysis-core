@@ -6,13 +6,18 @@ from __future__ import annotations
 
 import json
 import re
+import base64
+import copy
+import hashlib
+import os
 from pathlib import Path
 
 from journal_render import CONTRACT, _viewer_payload
+from runtime_context import context as _execution_context
 
 __all__ = [
     "TEMPLATE_PATH", "PLACEHOLDER", "PLACEHOLDER_ATTACK", "PLACEHOLDER_SCHEME", "PLACEHOLDER_HELP", "PLACEHOLDER_LINKS",
-    "parse_scheme", "scheme_payload", "no_help_snapshot", "render_html",
+    "parse_scheme", "scheme_payload", "no_help_snapshot", "embed_help_resources", "render_html",
 ]
 
 
@@ -73,9 +78,107 @@ def scheme_payload(scheme_path: Path, out: Path) -> dict:
     """Что страница `out` получает о файле `scheme_path`: своя метка шаблона, вне `_viewer_payload`, поэтому
     в `view-json` текст схемы не уходит (F-25). Не текст файла — файл без блока, а не отказ сборки."""
     path = Path(scheme_path)
+    selected = _execution_context()
+    mermaid = None if selected and selected["scope"] == "global" else _mermaid_src(out)
+    if selected and selected["scope"] == "local" and "assets" in selected["resources"]:
+        # The resolver excludes absent or modified optional executable assets.
+        # A relative loader must not resurrect those bytes or search another store.
+        mermaid = None
+        asset = selected["resources"]["assets"].get("mermaid")
+        store = Path(selected["store"]["root"]).resolve()
+        if asset and Path(out).resolve().is_relative_to(store):
+            try:
+                mermaid = os.path.relpath(asset, Path(out).resolve().parent).replace(os.sep, "/")
+            except ValueError:
+                pass
     if not path.is_file():
-        return {**NO_SCHEME, "mermaid": _mermaid_src(out)}
-    return {"exists": True, **parse_scheme(path.read_text(encoding="utf-8", errors="replace")), "mermaid": _mermaid_src(out)}
+        return {**NO_SCHEME, "mermaid": mermaid}
+    return {"exists": True, **parse_scheme(path.read_text(encoding="utf-8", errors="replace")), "mermaid": mermaid}
+
+
+def _runtime_manifest(selected: dict) -> dict:
+    runtime = selected["runtime"]
+    manifest = json.loads(Path(runtime["manifestPath"]).read_text(encoding="utf-8"))
+    if not isinstance(manifest, dict) or manifest.get("format") != 1 or manifest.get("scope") != "global" or manifest.get("generation") != runtime["generation"] or not isinstance(manifest.get("files"), list) or not all(isinstance(entry, dict) for entry in manifest["files"]):
+        raise ValueError("Поколение ресурса изменилось")
+    return manifest
+
+
+def _owned_asset(selected: dict, source: str) -> bytes:
+    """Executable bytes are only canonical resources of the selected manifest, never journal data."""
+    runtime = selected["runtime"]
+    root = Path(runtime["root"]).resolve(strict=True)
+    file = Path(runtime["toolsRoot"]) / Path(source).name
+    manifest = _runtime_manifest(selected)
+    entries = [entry for entry in manifest.get("files", [])
+               if entry.get("source") == source and entry.get("projection") is not True]
+    if len(entries) != 1 or not file.is_file() or file.is_symlink() or not file.resolve(strict=True).is_relative_to(root):
+        raise ValueError("Ресурс выбранной поставки отсутствует")
+    if not Path(entries[0]["path"]).is_absolute() or Path(entries[0]["path"]).resolve(strict=True) != file.resolve(strict=True):
+        raise ValueError("Ресурс не принадлежит выбранному runtime")
+    content = file.read_bytes()
+    if hashlib.sha256(content).hexdigest() != entries[0].get("sha256"):
+        raise ValueError("Ресурс выбранной поставки повреждён")
+    return content
+
+
+def _global_mermaid(selected: dict) -> dict:
+    try:
+        content = _owned_asset(selected, "tools/mermaid.min.js")
+        content.decode("utf-8", errors="strict")
+        license_text = _owned_asset(selected, "tools/mermaid.LICENSE").decode("utf-8", errors="strict")
+        return {"encoding": "base64", "data": base64.b64encode(content).decode("ascii"),
+                "sha256": hashlib.sha256(content).hexdigest(), "license": license_text}
+    except (OSError, UnicodeError, ValueError, KeyError, TypeError):
+        return {"encoding": "base64", "data": None,
+                "error": "Mermaid выбранной global-поставки отсутствует или повреждён: показан текст схемы. Восстанови эту поставку."}
+
+
+def embed_help_resources(help_snapshot: dict, selected: dict | None = None, skill_install_dir: Path | str | None = None) -> dict:
+    """Global skill bodies remain escaped text data; explicit alternative lookup never supplies executable JS."""
+    selected = _execution_context() if selected is None else selected
+    if not selected or selected["scope"] != "global":
+        return help_snapshot
+    result = copy.deepcopy(help_snapshot)
+    result["skill_bodies"] = {}
+    store_root = Path(selected["store"]["root"]).resolve(strict=True)
+    runtime_root = Path(selected["runtime"]["root"]).resolve(strict=True)
+    for step in result.get("steps", []):
+        for skill in step.get("skills", []):
+            body_id = f"skill-{len(result['skill_bodies'])}"
+            skill["body_id"] = body_id
+            payload = {"name": skill.get("name"), "text": None, "source": skill.get("base")}
+            try:
+                name, relative = skill.get("name"), skill.get("path")
+                if not isinstance(name, str) or not re.fullmatch(r"symphysis-[a-z0-9-]+", name) or not isinstance(relative, str):
+                    raise ValueError("Скилл не найден")
+                rel = Path(relative)
+                if rel.is_absolute() or ":" in relative or ".." in rel.parts or len(rel.parts) < 2 or rel.parts[-2:] != (name, "SKILL.md"):
+                    raise ValueError("Путь скилла не подтверждён")
+                if skill.get("base") == "project":
+                    base = store_root
+                elif skill.get("base") == "install":
+                    base = runtime_root if skill_install_dir is None else Path(skill_install_dir).resolve(strict=True)
+                else:
+                    raise ValueError("Источник скилла не подтверждён")
+                file = (base / rel).resolve(strict=True)
+                if not file.is_file() or not file.is_relative_to(base):
+                    raise ValueError("Скилл выходит за выбранный источник")
+                if skill.get("base") == "install" and base == runtime_root:
+                    canonical = selected["resources"].get("skills", {}).get(name)
+                    if not canonical or Path(canonical).resolve(strict=True) != file:
+                        raise ValueError("Скилл не принадлежит выбранной поставке")
+                    # Verify the canonical file through its own manifest entry, not by name alone.
+                    manifest = _runtime_manifest(selected)
+                    entries = [entry for entry in manifest.get("files", []) if entry.get("source") == f"skills/{name}/SKILL.md"
+                               and entry.get("projection") is not True and Path(entry["path"]).resolve(strict=True) == file]
+                    if len(entries) != 1 or entries[0].get("sha256") != hashlib.sha256(file.read_bytes()).hexdigest():
+                        raise ValueError("Скилл выбранной поставки повреждён")
+                payload["text"] = file.read_text(encoding="utf-8", errors="strict")
+            except (OSError, UnicodeError, ValueError, KeyError, TypeError):
+                payload["error"] = "Тело скилла выбранного источника недоступно; другая установка не подставляется."
+            result["skill_bodies"][body_id] = payload
+    return result
 
 
 def no_help_snapshot(reason: str) -> dict:
@@ -86,7 +189,8 @@ def no_help_snapshot(reason: str) -> dict:
 
 
 def render_html(journal: dict, template: Path, attacks: list[dict] | None = None, journal_sha256: str | None = None,
-                scheme: dict | None = None, help_snapshot: dict | None = None, links: dict | None = None) -> str:
+                scheme: dict | None = None, help_snapshot: dict | None = None, links: dict | None = None, *,
+                resource_context: dict | None = None, skill_install_dir: Path | str | None = None) -> str:
     """Шаблон просмотрщика с журналом вместо `__JOURNAL_JSON__`, списком атак вместо `__ATTACK_JSON__`, схемой вместо
     `__SCHEME_JSON__`, справкой вместо `__HELP_JSON__` и картой ссылок на файлы вместо `__LINKS_JSON__`; все пять меток обязательны. Улики берутся такими, какие в журнале
     (`check --write` или сверка в памяти). Дата сборки `generated` — из журнала, если она
@@ -104,8 +208,15 @@ def render_html(journal: dict, template: Path, attacks: list[dict] | None = None
     for mark in marks:
         if mark not in html:
             raise ValueError(f"в шаблоне нет метки {mark}")
+    selected = _execution_context() if resource_context is None else resource_context
+    diagram = {key: copy.deepcopy(value) for key, value in (scheme or NO_SCHEME).items() if key in NO_SCHEME}
+    # The executable field cannot be supplied by a journal, a snapshot or an arbitrary scheme dict.
+    if selected and selected["scope"] == "global":
+        diagram["mermaid"] = None
+        diagram["mermaidData"] = _global_mermaid(selected)
+    help_snapshot = embed_help_resources(help_snapshot or no_help_snapshot("Справка на этой странице не считалась."), selected, skill_install_dir)
     filled = {PLACEHOLDER: _embed(_viewer_payload(journal, journal_sha256)), PLACEHOLDER_ATTACK: _embed(attacks or []),
-              PLACEHOLDER_SCHEME: _embed(scheme or NO_SCHEME),
-              PLACEHOLDER_HELP: _embed(help_snapshot or no_help_snapshot("Справка на этой странице не считалась.")),
+              PLACEHOLDER_SCHEME: _embed(diagram),
+              PLACEHOLDER_HELP: _embed(help_snapshot),
               PLACEHOLDER_LINKS: _embed(links or {"root": None, "files": {}})}
     return "".join(filled.get(part, part) for part in re.split("(" + "|".join(marks) + ")", html))

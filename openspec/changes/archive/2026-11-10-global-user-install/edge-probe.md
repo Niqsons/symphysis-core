@@ -1,0 +1,293 @@
+# Покрытие пробы краёв: global-user-install
+
+Состав: проба краёв вкл; водители проб выкл. Оценки строк выполнены в главной нити по текущим требованиям.
+
+- client-installation/Установленные скиллы обнаруживаются выбранным клиентом · boundary · неприменимо: формы collection, stateful, io; boundary применяется к numeric-range
+- client-installation/Установленные скиллы обнаруживаются выбранным клиентом · adjacency · не выбран: две копии одного skill при смешанной установке; граница и ответственность уже заданы F-13 и требованием о нативных коллизиях
+- client-installation/Установленные скиллы обнаруживаются выбранным клиентом · empty · не выбран: клиент не обнаружил ни одного поставленного skill; это нарушение требования доступности набора, а проверка готовности не может его выдать за успех
+- client-installation/Установленные скиллы обнаруживаются выбранным клиентом · encoding · неприменимо: формы collection, stateful, io; encoding применяется к text
+- client-installation/Установленные скиллы обнаруживаются выбранным клиентом · ordering · не найдено: требование о доступности множества skills не задаёт сортировку меню клиента; порядок не меняет состав
+- client-installation/Установленные скиллы обнаруживаются выбранным клиентом · precision · неприменимо: формы collection, stateful, io; precision применяется к numeric-range
+- client-installation/Установленные скиллы обнаруживаются выбранным клиентом · idempotency · не выбран: повторная установка тех же skills; действуют идемпотентность install и сохранение собственных/пользовательских файлов
+- client-installation/Установленные скиллы обнаруживаются выбранным клиентом · concurrency · не выбран: клиентская сессия уже открыта во время install; сценарий приёмки прямо требует свежую сессию, обещания hot reload нет
+- client-installation/Поддерживаемые агенты исполняют скилл в нативном формате · boundary · неприменимо: формы text, io; boundary применяется к numeric-range
+- client-installation/Поддерживаемые агенты исполняют скилл в нативном формате · adjacency · неприменимо: формы text, io; adjacency применяется к collection
+- client-installation/Поддерживаемые агенты исполняют скилл в нативном формате · empty · не выбран: отсутствует нужное тело skill у вызванного driver; требование явно требует его загрузки, пустой preload не удовлетворяет ему
+- client-installation/Поддерживаемые агенты исполняют скилл в нативном формате · encoding · не найдено: Claude/Codex/OpenCode используют разные нативные форматы, их различие уже предмет нормы; новой численной длины/нормализации идентификатора не задано
+- client-installation/Поддерживаемые агенты исполняют скилл в нативном формате · ordering · неприменимо: формы text, io; ordering применяется к collection
+- client-installation/Поддерживаемые агенты исполняют скилл в нативном формате · precision · неприменимо: формы text, io; precision применяется к numeric-range
+- client-installation/Поддерживаемые агенты исполняют скилл в нативном формате · idempotency · неприменимо: формы text, io; idempotency применяется к stateful
+- client-installation/Поддерживаемые агенты исполняют скилл в нативном формате · concurrency · не выбран: глобальные ресурсы обновлены во время вызова; общий выбор поставки сохраняет принадлежность ресурсов, другая поставка не подмешивается
+- client-installation/Проверка различает наличие файлов и готовность клиента · boundary · неприменимо: формы collection, io; boundary применяется к numeric-range
+- client-installation/Проверка различает наличие файлов и готовность клиента · adjacency · не выбран: все файлы есть, а сессия не подтвердила discovery; эти два вида готовности разделены самим требованием
+- client-installation/Проверка различает наличие файлов и готовность клиента · empty · не выбран: подтверждения сессии нет; сценарий Файлы скопированы без проверки discovery запрещает называть доступность подтверждённой
+- client-installation/Проверка различает наличие файлов и готовность клиента · encoding · неприменимо: формы collection, io; encoding применяется к text
+- client-installation/Проверка различает наличие файлов и готовность клиента · ordering · не найдено: порядок трёх статусов проверки не меняет различение целостности, носителей и discovery
+- client-installation/Проверка различает наличие файлов и готовность клиента · precision · неприменимо: формы collection, io; precision применяется к numeric-range
+- client-installation/Проверка различает наличие файлов и готовность клиента · idempotency · неприменимо: формы collection, io; idempotency применяется к stateful
+- client-installation/Проверка различает наличие файлов и готовность клиента · concurrency · не выбран: файл изменился между проверкой и новой сессией; отчёт не обещает неизменность будущего состояния и не заменяет проверку discovery
+- client-installation/Нативные коллизии смешанной установки остаются пользователю · boundary · неприменимо: формы collection, io; boundary применяется к numeric-range
+- client-installation/Нативные коллизии смешанной установки остаются пользователю · adjacency · не выбран: local/global имеют одинаковый skill id; сценарий нативного выбора уже оставляет разрешение конфликта пользователю
+- client-installation/Нативные коллизии смешанной установки остаются пользователю · empty · не выбран: один scope отсутствует; условие смешанной установки не выполнено, действует соответствующая самостоятельная установка
+- client-installation/Нативные коллизии смешанной установки остаются пользователю · encoding · неприменимо: формы collection, io; encoding применяется к text
+- client-installation/Нативные коллизии смешанной установки остаются пользователю · ordering · не выбран: у разных клиентов разные приоритеты; норма прямо запрещает обещать единый нативный порядок
+- client-installation/Нативные коллизии смешанной установки остаются пользователю · precision · неприменимо: формы collection, io; precision применяется к numeric-range
+- client-installation/Нативные коллизии смешанной установки остаются пользователю · idempotency · неприменимо: формы collection, io; idempotency применяется к stateful
+- client-installation/Нативные коллизии смешанной установки остаются пользователю · concurrency · не выбран: пользователь добавляет вторую копию во время работы; смешанный сценарий не становится поддерживаемым и не чинится автоматически
+- decision-viewer/Ресурсы страницы берутся из выбранной поставки · boundary · неприменимо: формы collection, stateful, io; boundary применяется к numeric-range
+- decision-viewer/Ресурсы страницы берутся из выбранной поставки · adjacency · не выбран: mermaid есть только в другой установке; исход уже задан сценарием Отсутствующий ресурс не подменяется другой поставкой
+- decision-viewer/Ресурсы страницы берутся из выбранной поставки · empty · не выбран: выбранная local без mermaid; прежний текстовый fallback сохранён конкретным сценарием
+- decision-viewer/Ресурсы страницы берутся из выбранной поставки · encoding · неприменимо: формы collection, stateful, io; encoding применяется к text
+- decision-viewer/Ресурсы страницы берутся из выбранной поставки · ordering · не найдено: порядок загрузки шаблона и mermaid не выбирает scope; ресурсы обязаны принадлежать одной поставке
+- decision-viewer/Ресурсы страницы берутся из выбранной поставки · precision · неприменимо: формы collection, stateful, io; precision применяется к numeric-range
+- decision-viewer/Ресурсы страницы берутся из выбранной поставки · idempotency · не найдено: повторный render может иметь новый снимок времени, но не меняет источник ресурсов; побайтовая идентичность времени не обещана
+- decision-viewer/Ресурсы страницы берутся из выбранной поставки · concurrency · не выбран: global обновляется при рендере; допустимый результат не может смешать поставки по требованию принадлежности ресурсов
+- decision-viewer/Снимок справки global runtime относится к store журнала · boundary · неприменимо: формы io; boundary применяется к numeric-range
+- decision-viewer/Снимок справки global runtime относится к store журнала · adjacency · неприменимо: формы io; adjacency применяется к collection
+- decision-viewer/Снимок справки global runtime относится к store журнала · empty · неприменимо: формы io; empty применяется к collection, text
+- decision-viewer/Снимок справки global runtime относится к store журнала · encoding · неприменимо: формы io; encoding применяется к text
+- decision-viewer/Снимок справки global runtime относится к store журнала · ordering · неприменимо: формы io; ordering применяется к collection
+- decision-viewer/Снимок справки global runtime относится к store журнала · precision · неприменимо: формы io; precision применяется к numeric-range
+- decision-viewer/Снимок справки global runtime относится к store журнала · idempotency · неприменимо: формы io; idempotency применяется к stateful
+- decision-viewer/Снимок справки global runtime относится к store журнала · concurrency · не выбран: cwd второго store при рендере журнала первого; исход уже задан сценарием Общий runtime обслуживает журнал другого store
+- decision-viewer/Ссылки на скиллы страницы используют выбранную поставку · boundary · неприменимо: формы text, io; boundary применяется к numeric-range
+- decision-viewer/Ссылки на скиллы страницы используют выбранную поставку · adjacency · неприменимо: формы text, io; adjacency применяется к collection
+- decision-viewer/Ссылки на скиллы страницы используют выбранную поставку · empty · не выбран: skill отсутствует в выбранной поставке; он остаётся ненайденным по тексту требования
+- decision-viewer/Ссылки на скиллы страницы используют выбранную поставку · encoding · не выбран: путь пользователя содержит пробелы/кириллицу; ресурс доступен без абсолютного пути в HTML, способ доставки не фиксируется этой нормой
+- decision-viewer/Ссылки на скиллы страницы используют выбранную поставку · ordering · неприменимо: формы text, io; ordering применяется к collection
+- decision-viewer/Ссылки на скиллы страницы используют выбранную поставку · precision · неприменимо: формы text, io; precision применяется к numeric-range
+- decision-viewer/Ссылки на скиллы страницы используют выбранную поставку · idempotency · неприменимо: формы text, io; idempotency применяется к stateful
+- decision-viewer/Ссылки на скиллы страницы используют выбранную поставку · concurrency · не выбран: другая поставка содержит одноимённый skill; подмена запрещена, выбора второй поставки при отказе нет
+- decision-viewer/Общий runtime не объединяет состояние страниц разных store · boundary · неприменимо: формы stateful, io; boundary применяется к numeric-range
+- decision-viewer/Общий runtime не объединяет состояние страниц разных store · adjacency · неприменимо: формы stateful, io; adjacency применяется к collection
+- decision-viewer/Общий runtime не объединяет состояние страниц разных store · empty · неприменимо: формы stateful, io; empty применяется к collection, text
+- decision-viewer/Общий runtime не объединяет состояние страниц разных store · encoding · неприменимо: формы stateful, io; encoding применяется к text
+- decision-viewer/Общий runtime не объединяет состояние страниц разных store · ordering · неприменимо: формы stateful, io; ordering применяется к collection
+- decision-viewer/Общий runtime не объединяет состояние страниц разных store · precision · неприменимо: формы stateful, io; precision применяется к numeric-range
+- decision-viewer/Общий runtime не объединяет состояние страниц разных store · idempotency · не выбран: повторная пересборка после обновления; сохранение невнесённого слова для того же журнала задано сценарием
+- decision-viewer/Общий runtime не объединяет состояние страниц разных store · concurrency · не выбран: две страницы одноимённых изменений в разных store; их состояния явно не объединяются
+- onboarding-guide/Руководство различает local и global установки · boundary · неприменимо: формы text; boundary применяется к numeric-range
+- onboarding-guide/Руководство различает local и global установки · adjacency · неприменимо: формы text; adjacency применяется к collection
+- onboarding-guide/Руководство различает local и global установки · empty · не выбран: нет команд одного из двух режимов; это прямое нарушение требования описать обе установки
+- onboarding-guide/Руководство различает local и global установки · encoding · не найдено: слова local/global являются терминами руководства, не пользовательским протоколом сравнения строк
+- onboarding-guide/Руководство различает local и global установки · ordering · неприменимо: формы text; ordering применяется к collection
+- onboarding-guide/Руководство различает local и global установки · precision · неприменимо: формы text; precision применяется к numeric-range
+- onboarding-guide/Руководство различает local и global установки · idempotency · неприменимо: формы text; idempotency применяется к stateful
+- onboarding-guide/Руководство различает local и global установки · concurrency · неприменимо: формы text; concurrency применяется к io, stateful
+- onboarding-guide/Руководство ведёт клонированный store до архивации · boundary · неприменимо: формы text; boundary применяется к numeric-range
+- onboarding-guide/Руководство ведёт клонированный store до архивации · adjacency · неприменимо: формы text; adjacency применяется к collection
+- onboarding-guide/Руководство ведёт клонированный store до архивации · empty · не выбран: инструкция не говорит, где выбран store; критерий пути от клона до архива и сценарий про cwd требуют назвать корень
+- onboarding-guide/Руководство ведёт клонированный store до архивации · encoding · не найдено: форматирование текста GUIDE не меняет требование объяснить источник runtime и данные store
+- onboarding-guide/Руководство ведёт клонированный store до архивации · ordering · неприменимо: формы text; ordering применяется к collection
+- onboarding-guide/Руководство ведёт клонированный store до архивации · precision · неприменимо: формы text; precision применяется к numeric-range
+- onboarding-guide/Руководство ведёт клонированный store до архивации · idempotency · неприменимо: формы text; idempotency применяется к stateful
+- onboarding-guide/Руководство ведёт клонированный store до архивации · concurrency · неприменимо: формы text; concurrency применяется к io, stateful
+- onboarding-guide/Руководство разделяет обновление scope и смену режима · boundary · неприменимо: формы text; boundary применяется к numeric-range
+- onboarding-guide/Руководство разделяет обновление scope и смену режима · adjacency · неприменимо: формы text; adjacency применяется к collection
+- onboarding-guide/Руководство разделяет обновление scope и смену режима · empty · не выбран: нет описания несовместимости; соответствующий сценарий уже требует отказ и явное действие
+- onboarding-guide/Руководство разделяет обновление scope и смену режима · encoding · не найдено: числовая политика SemVer вынесена в отдельную B-62; здесь различаются режимы обновления, а не строковое сравнение версий
+- onboarding-guide/Руководство разделяет обновление scope и смену режима · ordering · неприменимо: формы text; ordering применяется к collection
+- onboarding-guide/Руководство разделяет обновление scope и смену режима · precision · неприменимо: формы text; precision применяется к numeric-range
+- onboarding-guide/Руководство разделяет обновление scope и смену режима · idempotency · неприменимо: формы text; idempotency применяется к stateful
+- onboarding-guide/Руководство разделяет обновление scope и смену режима · concurrency · неприменимо: формы text; concurrency применяется к io, stateful
+- onboarding-guide/Руководство описывает явную миграцию и границу смешанной установки · boundary · неприменимо: формы text; boundary применяется к numeric-range
+- onboarding-guide/Руководство описывает явную миграцию и границу смешанной установки · adjacency · неприменимо: формы text; adjacency применяется к collection
+- onboarding-guide/Руководство описывает явную миграцию и границу смешанной установки · empty · не выбран: нет предупреждения о mixed или подтверждения миграции; эти действия перечислены в норме
+- onboarding-guide/Руководство описывает явную миграцию и границу смешанной установки · encoding · не найдено: разные формулировки перевода local/global не меняют заданные роли resolver и клиента
+- onboarding-guide/Руководство описывает явную миграцию и границу смешанной установки · ordering · неприменимо: формы text; ordering применяется к collection
+- onboarding-guide/Руководство описывает явную миграцию и границу смешанной установки · precision · неприменимо: формы text; precision применяется к numeric-range
+- onboarding-guide/Руководство описывает явную миграцию и границу смешанной установки · idempotency · неприменимо: формы text; idempotency применяется к stateful
+- onboarding-guide/Руководство описывает явную миграцию и границу смешанной установки · concurrency · неприменимо: формы text; concurrency применяется к io, stateful
+- plugin-core-contract/Контракт ядра предоставляет единое разрешение поставки для хостов · boundary · неприменимо: формы collection, io; boundary применяется к numeric-range
+- plugin-core-contract/Контракт ядра предоставляет единое разрешение поставки для хостов · adjacency · не выбран: обнаружены обе установки; сценарий Локальная поставка важнее пользовательской уже выбирает local
+- plugin-core-contract/Контракт ядра предоставляет единое разрешение поставки для хостов · empty · не найдено: незаявленная новая транспортная JSON-схема отсутствует в норме; отсутствие runtime диагностируется общим resolver и не даёт успешного выбора
+- plugin-core-contract/Контракт ядра предоставляет единое разрешение поставки для хостов · encoding · неприменимо: формы collection, io; encoding применяется к text
+- plugin-core-contract/Контракт ядра предоставляет единое разрешение поставки для хостов · ordering · не выбран: хост и CLI перечисляют установки в разном порядке; норма требует один результат общего resolver, не независимую сортировку
+- plugin-core-contract/Контракт ядра предоставляет единое разрешение поставки для хостов · precision · неприменимо: формы collection, io; precision применяется к numeric-range
+- plugin-core-contract/Контракт ядра предоставляет единое разрешение поставки для хостов · idempotency · неприменимо: формы collection, io; idempotency применяется к stateful
+- plugin-core-contract/Контракт ядра предоставляет единое разрешение поставки для хостов · concurrency · не выбран: два хоста разрешают одну установку; каждому вызову запрещено подмешивать ресурсы другой поставки
+- plugin-core-contract/Разрешение runtime не меняет рабочий store вызовов хоста · boundary · неприменимо: формы io; boundary применяется к numeric-range
+- plugin-core-contract/Разрешение runtime не меняет рабочий store вызовов хоста · adjacency · неприменимо: формы io; adjacency применяется к collection
+- plugin-core-contract/Разрешение runtime не меняет рабочий store вызовов хоста · empty · неприменимо: формы io; empty применяется к collection, text
+- plugin-core-contract/Разрешение runtime не меняет рабочий store вызовов хоста · encoding · неприменимо: формы io; encoding применяется к text
+- plugin-core-contract/Разрешение runtime не меняет рабочий store вызовов хоста · ordering · неприменимо: формы io; ordering применяется к collection
+- plugin-core-contract/Разрешение runtime не меняет рабочий store вызовов хоста · precision · неприменимо: формы io; precision применяется к numeric-range
+- plugin-core-contract/Разрешение runtime не меняет рабочий store вызовов хоста · idempotency · неприменимо: формы io; idempotency применяется к stateful
+- plugin-core-contract/Разрешение runtime не меняет рабочий store вызовов хоста · concurrency · не выбран: хост вызывает два одноимённых изменения в разных store; оба случая закрыты сценариями о двух store и сохранении ответа
+- plugin-core-contract/Контракт разрешения сообщает несовместимость выбранной поставки · boundary · неприменимо: формы io; boundary применяется к numeric-range
+- plugin-core-contract/Контракт разрешения сообщает несовместимость выбранной поставки · adjacency · неприменимо: формы io; adjacency применяется к collection
+- plugin-core-contract/Контракт разрешения сообщает несовместимость выбранной поставки · empty · неприменимо: формы io; empty применяется к collection, text
+- plugin-core-contract/Контракт разрешения сообщает несовместимость выбранной поставки · encoding · неприменимо: формы io; encoding применяется к text
+- plugin-core-contract/Контракт разрешения сообщает несовместимость выбранной поставки · ordering · неприменимо: формы io; ordering применяется к collection
+- plugin-core-contract/Контракт разрешения сообщает несовместимость выбранной поставки · precision · неприменимо: формы io; precision применяется к numeric-range
+- plugin-core-contract/Контракт разрешения сообщает несовместимость выбранной поставки · idempotency · неприменимо: формы io; idempotency применяется к stateful
+- plugin-core-contract/Контракт разрешения сообщает несовместимость выбранной поставки · concurrency · не выбран: версия изменилась до обращения хоста; несовместимость даёт явный отказ без подстановки другой поставки
+- plugin-core-contract/Контракт сохраняет проектную принадлежность черновиков · boundary · неприменимо: формы stateful, io; boundary применяется к numeric-range
+- plugin-core-contract/Контракт сохраняет проектную принадлежность черновиков · adjacency · неприменимо: формы stateful, io; adjacency применяется к collection
+- plugin-core-contract/Контракт сохраняет проектную принадлежность черновиков · empty · неприменимо: формы stateful, io; empty применяется к collection, text
+- plugin-core-contract/Контракт сохраняет проектную принадлежность черновиков · encoding · неприменимо: формы stateful, io; encoding применяется к text
+- plugin-core-contract/Контракт сохраняет проектную принадлежность черновиков · ordering · неприменимо: формы stateful, io; ordering применяется к collection
+- plugin-core-contract/Контракт сохраняет проектную принадлежность черновиков · precision · неприменимо: формы stateful, io; precision применяется к numeric-range
+- plugin-core-contract/Контракт сохраняет проектную принадлежность черновиков · idempotency · не выбран: повторное разрешение runtime после обновления; сценарий требует сохранить два черновика байт в байт
+- plugin-core-contract/Контракт сохраняет проектную принадлежность черновиков · concurrency · не выбран: два store обновляются одновременно; черновики сохраняют проектную принадлежность, runtime не становится их хранилищем
+- project-installer/Local остаётся самостоятельной полной установкой · boundary · неприменимо: формы stateful, io; boundary применяется к numeric-range
+- project-installer/Local остаётся самостоятельной полной установкой · adjacency · неприменимо: формы stateful, io; adjacency применяется к collection
+- project-installer/Local остаётся самостоятельной полной установкой · empty · неприменимо: формы stateful, io; empty применяется к collection, text
+- project-installer/Local остаётся самостоятельной полной установкой · encoding · неприменимо: формы stateful, io; encoding применяется к text
+- project-installer/Local остаётся самостоятельной полной установкой · ordering · неприменимо: формы stateful, io; ordering применяется к collection
+- project-installer/Local остаётся самостоятельной полной установкой · precision · неприменимо: формы stateful, io; precision применяется к numeric-range
+- project-installer/Local остаётся самостоятельной полной установкой · idempotency · не выбран: повторный local install; соответствующий сценарий сохраняет прежние правила и пользовательские данные
+- project-installer/Local остаётся самостоятельной полной установкой · concurrency · не выбран: global установлен одновременно; resolver выбирает local, смешивание ресурсов не является поддерживаемым выходом
+- project-installer/Global-инициализация настраивает выбранный store отдельно от runtime · boundary · неприменимо: формы stateful, io; boundary применяется к numeric-range
+- project-installer/Global-инициализация настраивает выбранный store отдельно от runtime · adjacency · неприменимо: формы stateful, io; adjacency применяется к collection
+- project-installer/Global-инициализация настраивает выбранный store отдельно от runtime · empty · неприменимо: формы stateful, io; empty применяется к collection, text
+- project-installer/Global-инициализация настраивает выбранный store отдельно от runtime · encoding · неприменимо: формы stateful, io; encoding применяется к text
+- project-installer/Global-инициализация настраивает выбранный store отдельно от runtime · ordering · неприменимо: формы stateful, io; ordering применяется к collection
+- project-installer/Global-инициализация настраивает выбранный store отдельно от runtime · precision · неприменимо: формы stateful, io; precision применяется к numeric-range
+- project-installer/Global-инициализация настраивает выбранный store отдельно от runtime · idempotency · не выбран: повторная инициализация store; требование P3 сохраняет существующее проектное состояние
+- project-installer/Global-инициализация настраивает выбранный store отдельно от runtime · concurrency · не выбран: команда вызвана из исходного repo с pointer; сценарий прямо исключает создание второго planning root
+- project-installer/Global-инициализация сохраняет проектное состояние · boundary · неприменимо: формы stateful, io; boundary применяется к numeric-range
+- project-installer/Global-инициализация сохраняет проектное состояние · adjacency · неприменимо: формы stateful, io; adjacency применяется к collection
+- project-installer/Global-инициализация сохраняет проектное состояние · empty · неприменимо: формы stateful, io; empty применяется к collection, text
+- project-installer/Global-инициализация сохраняет проектное состояние · encoding · неприменимо: формы stateful, io; encoding применяется к text
+- project-installer/Global-инициализация сохраняет проектное состояние · ordering · неприменимо: формы stateful, io; ordering применяется к collection
+- project-installer/Global-инициализация сохраняет проектное состояние · precision · неприменимо: формы stateful, io; precision применяется к numeric-range
+- project-installer/Global-инициализация сохраняет проектное состояние · idempotency · не выбран: повторная global-инициализация; сценарий сохраняет настройки, карту корней и артефакты байт в байт
+- project-installer/Global-инициализация сохраняет проектное состояние · concurrency · не выбран: инициализация одного из двух store; файлы второго не меняются по отдельному сценарию
+- project-installer/Проверка global не требует локальной копии runtime · boundary · неприменимо: формы io; boundary применяется к numeric-range
+- project-installer/Проверка global не требует локальной копии runtime · adjacency · неприменимо: формы io; adjacency применяется к collection
+- project-installer/Проверка global не требует локальной копии runtime · empty · неприменимо: формы io; empty применяется к collection, text
+- project-installer/Проверка global не требует локальной копии runtime · encoding · неприменимо: формы io; encoding применяется к text
+- project-installer/Проверка global не требует локальной копии runtime · ordering · неприменимо: формы io; ordering применяется к collection
+- project-installer/Проверка global не требует локальной копии runtime · precision · неприменимо: формы io; precision применяется к numeric-range
+- project-installer/Проверка global не требует локальной копии runtime · idempotency · неприменимо: формы io; idempotency применяется к stateful
+- project-installer/Проверка global не требует локальной копии runtime · concurrency · не выбран: global несовместим со store; сценарий Проверка не переключает scope задаёт отказ без миграции и изменения данных
+- runtime-resolution/Dispatcher и хосты используют единый выбор поставки · boundary · неприменимо: формы io; boundary применяется к numeric-range
+- runtime-resolution/Dispatcher и хосты используют единый выбор поставки · adjacency · неприменимо: формы io; adjacency применяется к collection
+- runtime-resolution/Dispatcher и хосты используют единый выбор поставки · empty · неприменимо: формы io; empty применяется к collection, text
+- runtime-resolution/Dispatcher и хосты используют единый выбор поставки · encoding · неприменимо: формы io; encoding применяется к text
+- runtime-resolution/Dispatcher и хосты используют единый выбор поставки · ordering · неприменимо: формы io; ordering применяется к collection
+- runtime-resolution/Dispatcher и хосты используют единый выбор поставки · precision · неприменимо: формы io; precision применяется к numeric-range
+- runtime-resolution/Dispatcher и хосты используют единый выбор поставки · idempotency · неприменимо: формы io; idempotency применяется к stateful
+- runtime-resolution/Dispatcher и хосты используют единый выбор поставки · concurrency · не выбран: хост и команда вызывают один store; им предписано выбрать одну поставку и сохранить store
+- runtime-resolution/Resolver предпочитает local при наличии обеих установок · boundary · неприменимо: формы collection, io; boundary применяется к numeric-range
+- runtime-resolution/Resolver предпочитает local при наличии обеих установок · adjacency · не выбран: одновременно local и global с одинаковыми ресурсами; local выбран без объединения ресурсов
+- runtime-resolution/Resolver предпочитает local при наличии обеих установок · empty · не выбран: local найден, но одного ресурса нет; сценарий запрещает брать его из global
+- runtime-resolution/Resolver предпочитает local при наличии обеих установок · encoding · неприменимо: формы collection, io; encoding применяется к text
+- runtime-resolution/Resolver предпочитает local при наличии обеих установок · ordering · не выбран: список найденных установок начинается с global; заданный приоритет local не зависит от порядка перечисления
+- runtime-resolution/Resolver предпочитает local при наличии обеих установок · precision · неприменимо: формы collection, io; precision применяется к numeric-range
+- runtime-resolution/Resolver предпочитает local при наличии обеих установок · idempotency · неприменимо: формы collection, io; idempotency применяется к stateful
+- runtime-resolution/Resolver предпочитает local при наличии обеих установок · concurrency · не выбран: после обнаружения появляется global; наличие обеих всё равно даёт local, клиентские конфликты не чинятся
+- runtime-resolution/Ресурсы принадлежат выбранной поставке · boundary · неприменимо: формы collection, io; boundary применяется к numeric-range
+- runtime-resolution/Ресурсы принадлежат выбранной поставке · adjacency · не выбран: одноимённые шаблон или JSON-схема есть в двух поставках; общий контракт и новый сценарий JSON-схемы разрешают только ресурс выбранной
+- runtime-resolution/Ресурсы принадлежат выбранной поставке · empty · не выбран: нужный шаблон или JSON-схема отсутствует; контракт предписывает диагностику, а не подмену другим runtime
+- runtime-resolution/Ресурсы принадлежат выбранной поставке · encoding · неприменимо: формы collection, io; encoding применяется к text
+- runtime-resolution/Ресурсы принадлежат выбранной поставке · ordering · не найдено: запросы разных видов ресурсов не образуют сортируемый результат; выбор определяется поставкой
+- runtime-resolution/Ресурсы принадлежат выбранной поставке · precision · неприменимо: формы collection, io; precision применяется к numeric-range
+- runtime-resolution/Ресурсы принадлежат выбранной поставке · idempotency · неприменимо: формы collection, io; idempotency применяется к stateful
+- runtime-resolution/Ресурсы принадлежат выбранной поставке · concurrency · не выбран: обновление прервано и ресурс стал недоступен; отсутствие называется, другая поставка не используется как выбранная; сохранение прежней версии отдельно не обещано
+- runtime-resolution/Расположение runtime не определяет рабочий store · boundary · неприменимо: формы io; boundary применяется к numeric-range
+- runtime-resolution/Расположение runtime не определяет рабочий store · adjacency · неприменимо: формы io; adjacency применяется к collection
+- runtime-resolution/Расположение runtime не определяет рабочий store · empty · неприменимо: формы io; empty применяется к collection, text
+- runtime-resolution/Расположение runtime не определяет рабочий store · encoding · неприменимо: формы io; encoding применяется к text
+- runtime-resolution/Расположение runtime не определяет рабочий store · ordering · неприменимо: формы io; ordering применяется к collection
+- runtime-resolution/Расположение runtime не определяет рабочий store · precision · неприменимо: формы io; precision применяется к numeric-range
+- runtime-resolution/Расположение runtime не определяет рабочий store · idempotency · неприменимо: формы io; idempotency применяется к stateful
+- runtime-resolution/Расположение runtime не определяет рабочий store · concurrency · не выбран: два store с одинаковым именем change и общий родитель runtime; оба конкретных сценария запрещают смешение корней
+- runtime-resolution/Global-вызов проверяет совместимость store · boundary · неприменимо: формы text, io; boundary применяется к numeric-range
+- runtime-resolution/Global-вызов проверяет совместимость store · adjacency · неприменимо: формы text, io; adjacency применяется к collection
+- runtime-resolution/Global-вызов проверяет совместимость store · empty · кандидат F-15
+- runtime-resolution/Global-вызов проверяет совместимость store · encoding · не найдено: конкретный синтаксис декларации совместимости ещё относится к design; норма задаёт решение при совместимости, а не лексическую нормализацию версии
+- runtime-resolution/Global-вызов проверяет совместимость store · ordering · неприменимо: формы text, io; ordering применяется к collection
+- runtime-resolution/Global-вызов проверяет совместимость store · precision · неприменимо: формы text, io; precision применяется к numeric-range
+- runtime-resolution/Global-вызов проверяет совместимость store · idempotency · неприменимо: формы text, io; idempotency применяется к stateful
+- runtime-resolution/Global-вызов проверяет совместимость store · concurrency · не выбран: активная версия стала несовместимой; требование и сценарий запрещают скрытую миграцию и другую версию
+- step-help/Тексты шагов лежат в `steps.md`, раздел на шаг · boundary · неприменимо: формы text, io; boundary применяется к numeric-range
+- step-help/Тексты шагов лежат в `steps.md`, раздел на шаг · adjacency · неприменимо: формы text, io; adjacency применяется к collection
+- step-help/Тексты шагов лежат в `steps.md`, раздел на шаг · empty · не выбран: текстов нет ни в проекте, ни в выбранной поставке; сохранён соответствующий сценарий с отсутствующим текстом
+- step-help/Тексты шагов лежат в `steps.md`, раздел на шаг · encoding · не найдено: разделы steps.md имеют точные имена шагов, новые правила сравнения заголовков не вводятся
+- step-help/Тексты шагов лежат в `steps.md`, раздел на шаг · ordering · неприменимо: формы text, io; ordering применяется к collection
+- step-help/Тексты шагов лежат в `steps.md`, раздел на шаг · precision · неприменимо: формы text, io; precision применяется к numeric-range
+- step-help/Тексты шагов лежат в `steps.md`, раздел на шаг · idempotency · неприменимо: формы text, io; idempotency применяется к stateful
+- step-help/Тексты шагов лежат в `steps.md`, раздел на шаг · concurrency · не выбран: общий runtime обслуживает store; выбранная поставка определяет тексты, а состояние берётся у этого store
+- step-help/У шага есть поле `skills` · boundary · неприменимо: формы collection, text, io; boundary применяется к numeric-range
+- step-help/У шага есть поле `skills` · adjacency · не выбран: skill в .claude и .opencode; сохранён сценарий Порядок каталогов, запись одна
+- step-help/У шага есть поле `skills` · empty · не выбран: шаг без skills или skill не найден; оба прежних сценария сохранены
+- step-help/У шага есть поле `skills` · encoding · не выбран: абсолютный путь пользователя мог бы попасть в path; нормативно остаются относительные path/base
+- step-help/У шага есть поле `skills` · ordering · не выбран: project и install содержат skill; поиск project до install задан нормой и прежним сценарием
+- step-help/У шага есть поле `skills` · precision · неприменимо: формы collection, text, io; precision применяется к numeric-range
+- step-help/У шага есть поле `skills` · idempotency · неприменимо: формы collection, text, io; idempotency применяется к stateful
+- step-help/У шага есть поле `skills` · concurrency · не выбран: project/global имеются вместе; поиск ссылки не обещает нативного выбора клиента, отдельная норма S5 сохраняет эту границу
+- step-help/Каталог установки задаётся необязательным аргументом · boundary · неприменимо: формы text, io; boundary применяется к numeric-range
+- step-help/Каталог установки задаётся необязательным аргументом · adjacency · неприменимо: формы text, io; adjacency применяется к collection
+- step-help/Каталог установки задаётся необязательным аргументом · empty · не выбран: --install-dir несуществующий или не передан; отдельные сохранённые сценарии и resolver fallback определяют результат
+- step-help/Каталог установки задаётся необязательным аргументом · encoding · не выбран: явный каталог содержит пробелы; его строка не появляется в выводе, path остаётся относительно install
+- step-help/Каталог установки задаётся необязательным аргументом · ordering · неприменимо: формы text, io; ordering применяется к collection
+- step-help/Каталог установки задаётся необязательным аргументом · precision · неприменимо: формы text, io; precision применяется к numeric-range
+- step-help/Каталог установки задаётся необязательным аргументом · idempotency · неприменимо: формы text, io; idempotency применяется к stateful
+- step-help/Каталог установки задаётся необязательным аргументом · concurrency · не выбран: explicit install-dir отличается от выбранного runtime; сценарий запрещает менять runtime/store этим аргументом
+- step-help/Источники справки принадлежат выбранной поставке · boundary · неприменимо: формы io; boundary применяется к numeric-range
+- step-help/Источники справки принадлежат выбранной поставке · adjacency · неприменимо: формы io; adjacency применяется к collection
+- step-help/Источники справки принадлежат выбранной поставке · empty · неприменимо: формы io; empty применяется к collection, text
+- step-help/Источники справки принадлежат выбранной поставке · encoding · неприменимо: формы io; encoding применяется к text
+- step-help/Источники справки принадлежат выбранной поставке · ordering · неприменимо: формы io; ordering применяется к collection
+- step-help/Источники справки принадлежат выбранной поставке · precision · неприменимо: формы io; precision применяется к numeric-range
+- step-help/Источники справки принадлежат выбранной поставке · idempotency · неприменимо: формы io; idempotency применяется к stateful
+- step-help/Источники справки принадлежат выбранной поставке · concurrency · не выбран: два store с одноимённым change и разными артефактами; отдельный сценарий сохраняет вычисление шага у каждого
+- step-help/Разрешение скиллов справкой не меняет нативную discovery клиента · boundary · неприменимо: формы collection, io; boundary применяется к numeric-range
+- step-help/Разрешение скиллов справкой не меняет нативную discovery клиента · adjacency · не выбран: native client выбрал другую одноимённую копию; сценарий не выдаёт разрешение ссылки за фактическую загрузку
+- step-help/Разрешение скиллов справкой не меняет нативную discovery клиента · empty · не найдено: норма о границе объяснения порядка не требует наличия двух установок, пустой список не создаёт нового поведения
+- step-help/Разрешение скиллов справкой не меняет нативную discovery клиента · encoding · неприменимо: формы collection, io; encoding применяется к text
+- step-help/Разрешение скиллов справкой не меняет нативную discovery клиента · ordering · не выбран: справочный порядок и native priority различаются; это прямо разрешённый и объясняемый случай
+- step-help/Разрешение скиллов справкой не меняет нативную discovery клиента · precision · неприменимо: формы collection, io; precision применяется к numeric-range
+- step-help/Разрешение скиллов справкой не меняет нативную discovery клиента · idempotency · неприменимо: формы collection, io; idempotency применяется к stateful
+- step-help/Разрешение скиллов справкой не меняет нативную discovery клиента · concurrency · не выбран: клиент меняет discovery независимо от справки; клиентские файлы не правятся этой операцией
+- user-installation/Пользовательская установка содержит общий продукт · boundary · неприменимо: формы stateful, io; boundary применяется к numeric-range
+- user-installation/Пользовательская установка содержит общий продукт · adjacency · неприменимо: формы stateful, io; adjacency применяется к collection
+- user-installation/Пользовательская установка содержит общий продукт · empty · неприменимо: формы stateful, io; empty применяется к collection, text
+- user-installation/Пользовательская установка содержит общий продукт · encoding · неприменимо: формы stateful, io; encoding применяется к text
+- user-installation/Пользовательская установка содержит общий продукт · ordering · неприменимо: формы stateful, io; ordering применяется к collection
+- user-installation/Пользовательская установка содержит общий продукт · precision · неприменимо: формы stateful, io; precision применяется к numeric-range
+- user-installation/Пользовательская установка содержит общий продукт · idempotency · не выбран: повторная установка продукта; собственные файлы и пользовательские изменения различаются по U4, состояние store не переезжает
+- user-installation/Пользовательская установка содержит общий продукт · concurrency · не выбран: два store обращаются к runtime; принадлежность ресурсов и корни данных регулируются R3/R4
+- user-installation/Local и global являются самостоятельными режимами · boundary · неприменимо: формы io; boundary применяется к numeric-range
+- user-installation/Local и global являются самостоятельными режимами · adjacency · неприменимо: формы io; adjacency применяется к collection
+- user-installation/Local и global являются самостоятельными режимами · empty · неприменимо: формы io; empty применяется к collection, text
+- user-installation/Local и global являются самостоятельными режимами · encoding · неприменимо: формы io; encoding применяется к text
+- user-installation/Local и global являются самостоятельными режимами · ordering · неприменимо: формы io; ordering применяется к collection
+- user-installation/Local и global являются самостоятельными режимами · precision · неприменимо: формы io; precision применяется к numeric-range
+- user-installation/Local и global являются самостоятельными режимами · idempotency · неприменимо: формы io; idempotency применяется к stateful
+- user-installation/Local и global являются самостоятельными режимами · concurrency · не выбран: обе установки оказались на диске; resolver local priority не превращает смешивание в поддерживаемый режим
+- user-installation/У пользователя одна активная global-поставка · boundary · неприменимо: формы stateful, io; boundary применяется к numeric-range
+- user-installation/У пользователя одна активная global-поставка · adjacency · неприменимо: формы stateful, io; adjacency применяется к collection
+- user-installation/У пользователя одна активная global-поставка · empty · неприменимо: формы stateful, io; empty применяется к collection, text
+- user-installation/У пользователя одна активная global-поставка · encoding · неприменимо: формы stateful, io; encoding применяется к text
+- user-installation/У пользователя одна активная global-поставка · ordering · неприменимо: формы stateful, io; ordering применяется к collection
+- user-installation/У пользователя одна активная global-поставка · precision · неприменимо: формы stateful, io; precision применяется к numeric-range
+- user-installation/У пользователя одна активная global-поставка · idempotency · не выбран: повторное совместимое обновление; одна active-поставка остаётся одной, собственность файлов регулирует U4
+- user-installation/У пользователя одна активная global-поставка · concurrency · не выбран: обновление прервано; частично недоступная поставка не подменяется другой по R3; отдельной гарантии безотказного отката не принято
+- user-installation/Установка сохраняет границы собственных файлов · boundary · неприменимо: формы collection, stateful, io; boundary применяется к numeric-range
+- user-installation/Установка сохраняет границы собственных файлов · adjacency · не выбран: target занят чужим файлом; соответствующий сценарий называет конфликт и сохраняет файл
+- user-installation/Установка сохраняет границы собственных файлов · empty · не выбран: собственных файлов ещё нет; новый install создаёт свою поставку, чужие target не перезаписывает
+- user-installation/Установка сохраняет границы собственных файлов · encoding · неприменимо: формы collection, stateful, io; encoding применяется к text
+- user-installation/Установка сохраняет границы собственных файлов · ordering · не найдено: норма задаёт защиту каждого файла, не последовательность независимых конфликтов; атомарность всей установки ею не обещана
+- user-installation/Установка сохраняет границы собственных файлов · precision · неприменимо: формы collection, stateful, io; precision применяется к numeric-range
+- user-installation/Установка сохраняет границы собственных файлов · idempotency · не выбран: пользователь повторяет update после изменения собственного файла; файл снова сохраняется, конфликт не становится успехом
+- user-installation/Установка сохраняет границы собственных файлов · concurrency · не выбран: файл изменён до записи; пользовательская версия должна быть сохранена, конфликт не объявляется обновлённым файлом
+- user-installation/Смена режима выполняется явно для выбранного store · boundary · неприменимо: формы stateful, io; boundary применяется к numeric-range
+- user-installation/Смена режима выполняется явно для выбранного store · adjacency · неприменимо: формы stateful, io; adjacency применяется к collection
+- user-installation/Смена режима выполняется явно для выбранного store · empty · неприменимо: формы stateful, io; empty применяется к collection, text
+- user-installation/Смена режима выполняется явно для выбранного store · encoding · неприменимо: формы stateful, io; encoding применяется к text
+- user-installation/Смена режима выполняется явно для выбранного store · ordering · неприменимо: формы stateful, io; ordering применяется к collection
+- user-installation/Смена режима выполняется явно для выбранного store · precision · неприменимо: формы stateful, io; precision применяется к numeric-range
+- user-installation/Смена режима выполняется явно для выбранного store · idempotency · не выбран: повторная миграция без подтверждения; требование оставляет переключение явным действием выбранного store
+- user-installation/Смена режима выполняется явно для выбранного store · concurrency · кандидат F-16
+
+- onboarding-guide/Руководство называет проверенных клиентов · boundary · неприменимо: формы text, collection; числовых порогов требование не задаёт
+- onboarding-guide/Руководство называет проверенных клиентов · adjacency · не выбран: CLI и IDE одного имени имеют разные статусы; требование прямо запрещает выдавать подтверждение CLI за установленную IDE-приёмку
+- onboarding-guide/Руководство называет проверенных клиентов · empty · не выбран: сессионных свидетельств клиента нет; требование обязывает назвать фактический объём и не подменять его наличием файлов
+- onboarding-guide/Руководство называет проверенных клиентов · encoding · не найдено: регистр и написание имён клиентов не меняют смысл статуса проверки; длина строки и нормализация ввода руководством не задаются
+- onboarding-guide/Руководство называет проверенных клиентов · ordering · не найдено: перестановка строк матрицы клиентов не меняет отдельный статус каждого; обязательного порядка демонстрации нет
+- onboarding-guide/Руководство называет проверенных клиентов · precision · неприменимо: формы text, collection; вычислений и округления в требовании нет
+- onboarding-guide/Руководство называет проверенных клиентов · idempotency · неприменимо: формы text, collection; требование задаёт содержание документа, не операцию записи состояния
+- onboarding-guide/Руководство называет проверенных клиентов · concurrency · неприменимо: формы text, collection; требование не обещает живого обновления статусов параллельно с тестами

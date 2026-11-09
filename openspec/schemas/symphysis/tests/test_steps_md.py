@@ -1,6 +1,7 @@
 """`openspec/schemas/symphysis/steps.md`: раздел на шаг и подразделы (F-20, F-27), имена скиллов и файлов сверены со
 скиллами модулей и `schema.yaml` (тест-страховка F-68). Содержание не проверяется: человек ещё будет его менять."""
 import fnmatch
+import json
 import re
 
 # conftest — первым: он ставит каталоги модулей в sys.path и при запуске одного файла (pytest.ini, pythonpath)
@@ -66,6 +67,22 @@ def dangling_names(text: str) -> list[str]:
 
 def test_every_step_has_a_full_section():
     assert section_problems(steps_text(), artifact_ids()) == []
+
+
+def test_native_workflow_names_match_selected_compiler_bundle():
+    """Таблица справки называет реальные носители каждого клиента, а не Claude aliases для всех."""
+    bundle = json.loads((ROOT / "installer" / "generated" / "workflow-carriers.json").read_text(encoding="utf-8"))
+    text = steps_text()
+    for workflow in ("new", "continue", "apply", "sync", "archive", "propose", "explore", "update"):
+        row = next(line for line in text.splitlines() if line.startswith(f"| {workflow} |"))
+        assert f"`/opsx:{workflow}`" in row
+        assert f"`/opsx-{workflow}`" in row
+        codex = next(item for item in bundle["files"] if item["clientId"] == "codex" and item["id"] == workflow)
+        assert f"`${codex['relativePath'].split('/')[0]}`" in row
+    for parts in step_help.parse_steps(text).values():
+        command = parts.get("command", "")
+        if "/opsx:" in command:
+            assert "из таблицы выше" in command
 
 
 def test_sections_go_in_order_of_display():
@@ -176,7 +193,7 @@ def test_apply_and_archive_sections_name_the_freeze():
     for step in ("apply", "archive"):
         mechanics = sections[step]["mechanics"]
         assert "заморозк" in mechanics.lower() and "`graph/report.md`" in mechanics, step
-        assert "trace_graph.py freeze" in mechanics, step
+        assert "symphysis trace freeze" in mechanics, step
     assert "когда отмечена последняя задача, модель зовёт" in sections["apply"]["mechanics"]
 
 

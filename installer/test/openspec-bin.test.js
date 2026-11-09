@@ -5,7 +5,7 @@ import os from "node:os";
 import path from "node:path";
 import { spawnSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
-import { describeFailure, runOpenspec } from "../lib/openspec-bin.js";
+import { describeFailure, findExecutable, runOpenspec } from "../lib/openspec-bin.js";
 import { requireFork } from "../scripts/build-vendor.js";
 import { tempDir } from "../test-support/temp-dir.js";
 
@@ -75,6 +75,22 @@ test("форка нет в PATH: notFound, текст «не найден», о�
   assert.equal(describeFailure(r), "openspec не найден");
 });
 
+test("an inaccessible PATH directory does not abort explicit executable discovery", () => {
+  const denied = tmp("symphysis-denied-path-");
+  const available = tmp("symphysis-available-path-");
+  const candidate = path.join(available, win ? "openspec.CMD" : "openspec");
+  fs.writeFileSync(candidate, "fixture");
+  if (!win) fs.chmodSync(candidate, 0o700);
+  const original = fs.statSync;
+  try {
+    fs.statSync = (file, ...args) => {
+      if (String(file).startsWith(denied + path.sep)) throw Object.assign(new Error("denied"), { code: "EACCES" });
+      return original(file, ...args);
+    };
+    assert.equal(findExecutable("openspec", { PATH: [denied, available].join(path.delimiter), PATHEXT: ".CMD" }), candidate);
+  } finally { fs.statSync = original; }
+});
+
 test("SYMPHYSIS_OPENSPEC указывает на файл, которого нет: notFound", () => {
   process.env.SYMPHYSIS_OPENSPEC = path.join(tmp(), "нет.js");
   assert.equal(runOpenspec(["--version"]).notFound, true);
@@ -95,11 +111,14 @@ test("cwd доходит до дочернего процесса", () => {
   assert.equal(fs.realpathSync(runOpenspec([], { cwd: dir }).stdout.trim()), fs.realpathSync(dir));
 });
 
-// Сценарий целиком: `install` на настоящем `.cmd`, путь проекта с пробелом, конфиг — временный на одну команду.
-test("Вызов форка через openspec.cmd: install обновляет проект с пробелом в пути", { skip: !win }, () => {
+// Сценарий целиком: native context через настоящий `.cmd`, reviewed install и путь с пробелом.
+test("Вызов форка через openspec.cmd: reviewed install принимает native файлы в проекте с пробелом", { skip: !win }, () => {
   requireFork(FORK);
   const shim = tmp();
-  fs.writeFileSync(path.join(shim, "openspec.cmd"), `@echo off\r\n"${process.execPath}" "${FORK}" %*\r\n`);
+  const calls = path.join(shim, "calls.jsonl");
+  const loggedFork = path.join(shim, "fork.cjs");
+  fs.writeFileSync(loggedFork, `const fs=require('node:fs');const {spawnSync}=require('node:child_process');const args=process.argv.slice(2);fs.appendFileSync(${JSON.stringify(calls)},JSON.stringify(args)+'\\n');const result=spawnSync(process.execPath,[${JSON.stringify(FORK)},...args],{stdio:'inherit',env:process.env});process.exit(result.status??1);\n`);
+  fs.writeFileSync(path.join(shim, "openspec.cmd"), `@echo off\r\n"${process.execPath}" "${loggedFork}" %*\r\n`);
   const project = tempDir("symphysis проект ");
   const env = { ...process.env, XDG_CONFIG_HOME: tmp(), OPENSPEC_TELEMETRY: "0" };
   delete env.SYMPHYSIS_OPENSPEC;
@@ -108,12 +127,26 @@ test("Вызов форка через openspec.cmd: install обновляет 
   const init = spawnSync(process.execPath, [FORK, "init", "--tools", "claude"], { cwd: project, encoding: "utf8", env });
   assert.equal(init.status, 0, init.stdout + init.stderr);
   const cmdFile = path.join(project, ".claude", "commands", "opsx", "continue.md");
-  fs.rmSync(cmdFile);
+  // rmSync в Node 24/Windows может молча оставить файл в кириллическом пути.
+  fs.unlinkSync(cmdFile);
   fs.rmSync(path.join(project, ".claude", "skills", "openspec-continue-change"), { recursive: true });
-  const r = spawnSync(process.execPath, [bin, "install", "--project", project], { encoding: "utf8", env });
+  const existing = path.join(project, ".claude", "commands", "opsx", "apply.md");
+  const original = fs.readFileSync(existing);
+  const refused = spawnSync(process.execPath, [bin, "install", "--project", project, "--force"], { encoding: "utf8", env });
+  assert.equal(refused.status, 2, refused.stdout + refused.stderr);
+  assert.deepEqual(fs.readFileSync(existing), original);
+  assert.equal(fs.existsSync(cmdFile), false);
+  const review = path.join(shim, "review.json");
+  const preview = spawnSync(process.execPath, [bin, "install", "--project", project, "--preview", "--out", review], { encoding: "utf8", env });
+  assert.equal(preview.status, 0, preview.stdout + preview.stderr);
+  assert.deepEqual(fs.readFileSync(existing), original);
+  const r = spawnSync(process.execPath, [bin, "install", "--apply-plan", review, "--confirm"], { encoding: "utf8", env });
   assert.equal(r.status, 0, r.stdout + r.stderr);
   assert.ok(fs.existsSync(cmdFile), r.stdout);
   assert.doesNotMatch(r.stdout, /не найден/);
+  const invoked = fs.readFileSync(calls, "utf8").trim().split(/\r?\n/).map((line) => JSON.parse(line));
+  assert.ok(invoked.some((args) => args[0] === "context" && args.includes("--json")));
+  assert.ok(!invoked.some((args) => ["init", "update"].includes(args[0])), JSON.stringify(invoked));
 });
 
 test("Вызов форка через openspec.cmd: отказ форка в install назван своим текстом, код 0", { skip: !win }, () => {
@@ -127,7 +160,8 @@ test("Вызов форка через openspec.cmd: отказ форка в in
   env.Path = [shim, nodeDir, process.env.SystemRoot ? path.join(process.env.SystemRoot, "System32") : ""].join(path.delimiter);
   const r = spawnSync(process.execPath, [bin, "install", "--project", project], { encoding: "utf8", env });
   assert.equal(r.status, 0, r.stdout + r.stderr);
-  assert.match(r.stdout, /^continue: openspec не отработал \(код 3: boom\) — выполнить потом: openspec update$/m);
+  assert.match(r.stdout, /^openspec: нужен закреплённый форк /m);
+  assert.doesNotMatch(r.stdout, /continue:|выполнить потом: openspec update/);
   assert.match(r.stdout, /^telemetry: openspec не отработал \(код 3: boom\) — выключить после установки: /m);
   assert.doesNotMatch(r.stdout, /не найден/);
 });

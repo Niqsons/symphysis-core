@@ -1,0 +1,70 @@
+{
+  "format": 1,
+  "cases": [
+    {"id":"global-only","input":{"store":"a","local":"none","global":"managed","declaration":"compatible"},"expected":{"status":"ready","scope":"global","compatibility":"compatible","exitCode":0,"writes":0}},
+    {"id":"local-only","input":{"store":"a","local":"managed","global":"none","declaration":"missing"},"expected":{"status":"ready","scope":"local","compatibility":"compatible","exitCode":0,"writes":0}},
+    {"id":"both-local-first","input":{"store":"a","local":"managed","global":"managed","declaration":"compatible"},"expected":{"status":"ready","scope":"local","compatibility":"compatible","exitCode":0,"writes":0}},
+    {"id":"legacy-local-first","input":{"store":"a","local":"legacy","global":"managed","declaration":"missing"},"expected":{"status":"ready","scope":"local","generation":"legacy-local","compatibility":"compatible","exitCode":0,"writes":0}},
+    {"id":"damaged-local-no-fallback","input":{"store":"a","local":"damaged","global":"managed","declaration":"compatible"},"expected":{"status":"blocked","scope":"local","diagnosticCode":"local-damaged","exitCode":2,"writes":0}},
+    {"id":"bad-local-manifest-no-fallback","input":{"store":"a","local":"bad-manifest","global":"managed","declaration":"compatible"},"expected":{"status":"blocked","scope":"local","diagnosticCode":"manifest-invalid","exitCode":2,"writes":0}},
+    {"id":"data-only-map-is-not-runtime","input":{"store":"a","local":"data-only","global":"managed","declaration":"compatible"},"expected":{"status":"ready","scope":"global","compatibility":"compatible","exitCode":0,"writes":0}},
+    {"id":"no-installed-runtime","input":{"store":"a","local":"none","global":"none","declaration":"missing"},"expected":{"status":"blocked","scope":null,"diagnosticCode":"runtime-missing","exitCode":2,"writes":0}},
+    {"id":"data-only-without-runtime","input":{"store":"a","local":"data-only","global":"none","declaration":"compatible"},"expected":{"status":"blocked","scope":null,"diagnosticCode":"runtime-missing","exitCode":2,"writes":0}},
+    {"id":"global-missing-declaration","input":{"store":"a","local":"none","global":"managed","declaration":"missing"},"expected":{"status":"blocked","scope":"global","compatibility":"unconfirmed","diagnosticCode":"declaration-missing","exitCode":2,"writes":0}},
+    {"id":"global-incompatible-declaration","input":{"store":"a","local":"none","global":"managed","declaration":"incompatible"},"expected":{"status":"blocked","scope":"global","compatibility":"incompatible","diagnosticCode":"declaration-incompatible","exitCode":2,"writes":0}},
+    {"id":"global-unknown-declaration","input":{"store":"a","local":"none","global":"managed","declaration":"unknown-format"},"expected":{"status":"blocked","scope":"global","compatibility":"incompatible","diagnosticCode":"declaration-incompatible","exitCode":2,"writes":0}},
+    {"id":"project-schema-shadow","input":{"store":"a","local":"none","global":"managed","declaration":"compatible","schema":"project-shadow"},"expected":{"status":"blocked","scope":"global","diagnosticCode":"schema-source-conflict","exitCode":2,"writes":0}},
+    {"id":"foreign-user-schema","input":{"store":"a","local":"none","global":"managed","declaration":"compatible","schema":"foreign-user"},"expected":{"status":"blocked","scope":"global","diagnosticCode":"schema-source-conflict","exitCode":2,"writes":0}},
+    {"id":"missing-local-resource-not-global","input":{"store":"a","local":"managed","global":"managed","declaration":"compatible","missingResource":"template:design"},"expected":{"status":"blocked","scope":"local","diagnosticCode":"resource-missing","exitCode":2,"writes":0}},
+    {"id":"same-change-store-a","input":{"store":"a","local":"none","global":"managed","declaration":"compatible","change":"same-change"},"expected":{"status":"ready","scope":"global","selectedStore":"a","exitCode":0,"writes":0}},
+    {"id":"same-change-store-b","input":{"store":"b","local":"none","global":"managed","declaration":"compatible","change":"same-change"},"expected":{"status":"ready","scope":"global","selectedStore":"b","exitCode":0,"writes":0}},
+    {"id":"pointer-source","input":{"store":"a","source":"pointer","local":"none","global":"managed","declaration":"compatible"},"expected":{"status":"ready","scope":"global","selectedStore":"a","exitCode":0,"writes":0}},
+    {"id":"addressed-journal-wrong-explicit-store","input":{"store":"a","journalStore":"b","local":"none","global":"managed","declaration":"compatible"},"expected":{"status":"blocked","diagnosticCode":"store-mismatch","exitCode":2,"writes":0}},
+    {"id":"late-store-cannot-bypass","input":{"store":"a","local":"none","global":"managed","declaration":"compatible","tool":"openspec","argv":["new","change","same-change","--store","b"]},"expected":{"status":"blocked","diagnosticCode":"selector-conflict","exitCode":2,"writes":0}},
+    {"id":"late-schema-cannot-bypass","input":{"store":"a","local":"none","global":"managed","declaration":"compatible","tool":"openspec","argv":["new","change","same-change","--schema","other-schema"]},"expected":{"status":"blocked","diagnosticCode":"schema-source-conflict","exitCode":2,"writes":0}}
+  ],
+  "responseTemplate": {
+    "format": 1,
+    "status": "ready",
+    "store": {"root":"/fixture/stores/a","sourceCwd":"/fixture/source","id":"a"},
+    "scope": "global",
+    "runtime": {
+      "root":"/fixture/user/runtime",
+      "toolsRoot":"/fixture/user/runtime/tools",
+      "docsRoot":"/fixture/user/runtime/docs",
+      "schemaRoot":"/fixture/user/runtime/openspec/schemas/symphysis",
+      "manifestPath":"/fixture/user/install-manifest.json",
+      "generation":"generation-a",
+      "sourceVersion":"0.1.0",
+      "legacy":false,
+      "bootstrapApi":1,
+      "runtimeApi":1,
+      "schemaApi":1,
+      "journalContract":"$journalContract"
+    },
+    "resources": {
+      "tools":{"journal":"/fixture/user/runtime/tools/journal.py","trace":"/fixture/user/runtime/tools/trace_graph.py","anchors":"/fixture/user/runtime/tools/anchor_refs.py","help":"/fixture/user/runtime/tools/step_help.py","config":"/fixture/user/runtime/tools/symphysis_config.py"},
+      "docs":{"terms":"/fixture/user/runtime/docs/terms.md"},
+      "skills":{"symphysis-brainstorm":"/fixture/user/runtime/skills/symphysis-brainstorm/SKILL.md"},
+      "templates":{"design":"/fixture/user/runtime/openspec/schemas/symphysis/templates/design.md"},
+      "schema":{"name":"symphysis","path":"/fixture/user/runtime/openspec/schemas/symphysis"}
+    },
+    "compatibility":{"status":"compatible","declarationPath":"/fixture/stores/a/openspec/symphysis.json"},
+    "clients":[{"id":"claude","files":"ready","workflow":"ready","discovery":"unconfirmed"}],
+    "diagnostics":[]
+  },
+  "invalidResponses": [
+    {"id":"unknown-format","set":{"/format":2}},
+    {"id":"ready-no-store","set":{"/store":null}},
+    {"id":"ready-no-runtime","set":{"/runtime":null}},
+    {"id":"ready-no-resources","set":{"/resources":null}},
+    {"id":"ready-unconfirmed-compatibility","set":{"/compatibility/status":"unconfirmed"}},
+    {"id":"empty-generation","set":{"/runtime/generation":""}},
+    {"id":"missing-journal-contract","remove":["/runtime/journalContract"]},
+    {"id":"noninteger-journal-contract","set":{"/runtime/journalContract":"current"}},
+    {"id":"relative-store","set":{"/store/root":"../store"}},
+    {"id":"relative-resource","set":{"/resources/tools/journal":"tools/journal.py"}},
+    {"id":"blocked-no-diagnostic","set":{"/status":"blocked"}},
+    {"id":"diagnostic-no-action","set":{"/status":"blocked","/diagnostics":[{"code":"runtime-missing","message":"No runtime"}]}}
+  ]
+}

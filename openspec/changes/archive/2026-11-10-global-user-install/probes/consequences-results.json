@@ -1,0 +1,78 @@
+{
+  "fixture": "X:/codex-tmp/global-consequences-probe",
+  "roots": {
+    "implicit_store_prefixes": [
+      ""
+    ],
+    "explicit_root_is_runtime_parent": true,
+    "explicit_root_is_store": false
+  },
+  "continue": {
+    "clients": [
+      {
+        "label": ".claude",
+        "name": "claude",
+        "configured": true,
+        "hasContinue": true
+      },
+      {
+        "label": ".agents",
+        "name": "agents",
+        "configured": true,
+        "hasContinue": false
+      }
+    ],
+    "lines": {
+      "findings": [],
+      "notes": []
+    },
+    "install": [],
+    "config": {
+      "text": "schema: symphysis\nrules:\n  intent:\n    - product-rule\noperations: keep-operations\n",
+      "previous": "spec-driven",
+      "warnings": [
+        "operations не словарь — подсказки symphysis не добавлены"
+      ]
+    }
+  },
+  "cross_drive": {
+    "ntpath_raises": true,
+    "relative_link_with_injected_drive_error": null,
+    "physical_second_drive_tested": false
+  },
+  "openspec": {
+    "project_schema": {
+      "args": [
+        "schema",
+        "which",
+        "symphysis",
+        "--json"
+      ],
+      "code": 0,
+      "out": "{\n  \"name\": \"symphysis\",\n  \"source\": \"project\",\n  \"path\": \"X:\\\\codex-tmp\\\\global-consequences-probe\\\\global-consequences-openspec-s83i_9x2\\\\project-local\\\\openspec\\\\schemas\\\\symphysis\",\n  \"shadows\": [\n    {\n      \"source\": \"user\",\n      \"path\": \"X:\\\\codex-tmp\\\\global-consequences-probe\\\\global-consequences-openspec-s83i_9x2\\\\data\\\\openspec\\\\schemas\\\\symphysis\"\n    }\n  ]\n}\n",
+      "err": "Note: Schema commands are experimental and may change.\n"
+    },
+    "user_schema": {
+      "args": [
+        "schema",
+        "which",
+        "symphysis",
+        "--json"
+      ],
+      "code": 0,
+      "out": "{\n  \"name\": \"symphysis\",\n  \"source\": \"user\",\n  \"path\": \"X:\\\\codex-tmp\\\\global-consequences-probe\\\\global-consequences-openspec-s83i_9x2\\\\data\\\\openspec\\\\schemas\\\\symphysis\",\n  \"shadows\": []\n}\n",
+      "err": "Note: Schema commands are experimental and may change.\n"
+    },
+    "new_without_compatibility": {
+      "args": [
+        "new",
+        "change",
+        "native-no-declaration"
+      ],
+      "code": 0,
+      "out": "Created change 'native-no-declaration' at openspec\\changes\\native-no-declaration/\nSchema: symphysis\nNext: openspec status --change native-no-declaration\n",
+      "err": "- Creating change 'native-no-declaration' with schema 'symphysis'...\n"
+    },
+    "created_without_compatibility": true
+  }
+}

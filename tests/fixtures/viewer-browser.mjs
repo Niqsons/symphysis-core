@@ -20,6 +20,8 @@ const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 const profile = mkdtempSync(join(tmpdir(), "symphysis-viewer-"));
 const proc = spawn(chrome, ["--headless=new", "--disable-gpu", "--no-first-run", "--no-default-browser-check",
   "--remote-debugging-port=0", `--user-data-dir=${profile}`, `--window-size=${w},${h}`, "about:blank"], { stdio: "ignore" });
+const exited = new Promise((resolve) => proc.once("exit", resolve));
+let closeBrowser;
 
 const MEASURE = `(() => {
   const panel = document.getElementById('schemePanel');
@@ -104,6 +106,23 @@ async function devToolsPort() {
 
 async function main() {
   const port = await devToolsPort();
+  // Browser.close belongs to the browser target. A page session can acknowledge
+  // an error without closing the browser and its profile-owning children.
+  const version = await (await fetch(`http://127.0.0.1:${port}/json/version`)).json();
+  const control = new WebSocket(version.webSocketDebuggerUrl);
+  await new Promise((resolve, reject) => { control.onopen = resolve; control.onerror = reject; });
+  let closed;
+  control.onmessage = (event) => {
+    const message = JSON.parse(event.data);
+    if (message.id === 1) closed?.(message);
+  };
+  closeBrowser = async () => {
+    const response = new Promise((resolve) => { closed = resolve; });
+    control.send(JSON.stringify({ id: 1, method: "Browser.close" }));
+    const result = await Promise.race([response, exited.then(() => null), sleep(2000).then(() => null)]);
+    control.close();
+    if (result?.error) throw new Error(`Browser.close: ${JSON.stringify(result.error)}`);
+  };
   const targets = await (await fetch(`http://127.0.0.1:${port}/json`)).json();
   const ws = new WebSocket(targets.find((t) => t.type === "page").webSocketDebuggerUrl);
   await new Promise((r) => (ws.onopen = r));
@@ -125,6 +144,8 @@ async function main() {
     if (m.method === "Runtime.exceptionThrown") errors.push(m.params.exceptionDetails.exception?.description?.split("\n")[0] ?? m.params.exceptionDetails.text);
   };
   const send = (method, params = {}) => new Promise((r) => { const i = ++id; pending.set(i, r); ws.send(JSON.stringify({ id: i, method, params })); });
+  const closeControl = closeBrowser;
+  closeBrowser = async () => { try { await closeControl(); } finally { ws.close(); } };
   const evaluate = async (expression) => (await send("Runtime.evaluate", { expression, returnByValue: true, awaitPromise: true })).result?.value;
   for (const domain of ["Page", "Runtime", "Network", "DOM"]) await send(`${domain}.enable`);
   await send("Emulation.setDeviceMetricsOverride", { width: w, height: h, deviceScaleFactor: 1, mobile: false });
@@ -154,6 +175,11 @@ async function main() {
     if (name === "mode") { await click(`#modes button[data-mode="${args[0]}"]`); await settled(); }
     if (name === "lens") { await click(`#lensFilter button[data-lens="${args[0]}"]`); await sleep(50); }
     if (name === "reload") { await send("Page.navigate", { url }); await loaded(); await settled(); }
+    if (name === "rebuilt") {
+      // A fixture supplies the newly rendered bytes at the same page address.
+      writeFileSync(page, readFileSync(args.join(":")));
+      await send("Page.navigate", { url }); await loaded(); await settled();
+    }
     if (name === "choose") {
       await evaluate(`document.querySelector('input[name="${args[0]}"][value="${args[1]}"]').scrollIntoView({ block: 'center' })`);
       await click(`input[name="${args[0]}"][value="${args[1]}"]`);
@@ -243,7 +269,6 @@ async function main() {
   const measure = await evaluate(MEASURE);
   const csp = await evaluate("window.__csp");
   await sleep(100);
-  ws.close();
   return { ...measure, http: [...sent.values()], blocked, files, errors, csp, buttons };
 }
 
@@ -266,7 +291,17 @@ try {
   process.stderr.write(String(e && e.stack || e));
   code = 1;
 } finally {
-  proc.kill();
+  if (closeBrowser) await closeBrowser().catch(() => {});
+  await Promise.race([exited, sleep(3000)]);
+  if (proc.exitCode === null && proc.signalCode === null) {
+    if (process.platform === "win32") {
+      // A killed parent leaves Chromium children holding files. Terminate only
+      // this still-live child tree before attempting recursive profile cleanup.
+      const kill = spawn("taskkill", ["/PID", String(proc.pid), "/T", "/F"], { windowsHide: true, stdio: "ignore" });
+      await new Promise((resolve) => { kill.once("exit", resolve); kill.once("error", resolve); });
+    } else proc.kill();
+    await Promise.race([exited, sleep(3000)]);
+  }
   if (!(await removeProfile())) code = 1;
 }
 process.exit(code);

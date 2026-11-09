@@ -1,0 +1,72 @@
+[
+  {
+    "cmd": "openspec context --json",
+    "cwd": "X:\\codex-tmp\\global-store-p74xxikb\\pointer-repo",
+    "code": 0,
+    "stdout": "{\n  \"root\": {\n    \"path\": \"X:\\\\codex-tmp\\\\global-store-p74xxikb\\\\team-store\",\n    \"source\": \"declared\",\n    \"store_id\": \"probe-store\",\n    \"role\": \"openspec_root\"\n  },\n  \"members\": [],\n  \"status\": []\n}\n",
+    "stderr": ""
+  },
+  {
+    "cmd": "openspec new change store-target --json",
+    "cwd": "X:\\codex-tmp\\global-store-p74xxikb\\pointer-repo",
+    "code": 0,
+    "stdout": "{\n  \"change\": {\n    \"id\": \"store-target\",\n    \"path\": \"X:\\\\codex-tmp\\\\global-store-p74xxikb\\\\team-store\\\\openspec\\\\changes\\\\store-target\",\n    \"metadataPath\": \"X:\\\\codex-tmp\\\\global-store-p74xxikb\\\\team-store\\\\openspec\\\\changes\\\\store-target\\\\.openspec.yaml\",\n    \"schema\": \"spec-driven\"\n  },\n  \"root\": {\n    \"path\": \"X:\\\\codex-tmp\\\\global-store-p74xxikb\\\\team-store\",\n    \"source\": \"declared\",\n    \"store_id\": \"probe-store\"\n  }\n}\n",
+    "stderr": ""
+  },
+  {
+    "cmd": "openspec status --change store-target --json",
+    "cwd": "X:\\codex-tmp\\global-store-p74xxikb\\pointer-repo",
+    "code": 0,
+    "stdout": "{\n  \"changeName\": \"store-target\",\n  \"schemaName\": \"spec-driven\",\n  \"planningHome\": {\n    \"kind\": \"repo\",\n    \"root\": \"X:\\\\codex-tmp\\\\global-store-p74xxikb\\\\team-store\",\n    \"changesDir\": \"X:\\\\codex-tmp\\\\global-store-p74xxikb\\\\team-store\\\\openspec\\\\changes\",\n    \"defaultSchema\": \"spec-driven\"\n  },\n  \"changeRoot\": \"X:\\\\codex-tmp\\\\global-store-p74xxikb\\\\team-store\\\\openspec\\\\changes\\\\store-target\",\n  \"artifactPaths\": {\n    \"proposal\": {\n      \"outputPath\": \"proposal.md\",\n      \"resolvedOutputPath\": \"X:\\\\codex-tmp\\\\global-store-p74xxikb\\\\team-store\\\\openspec\\\\changes\\\\store-target\\\\proposal.md\",\n      \"existingOutputPaths\": []\n    },\n    \"specs\": {\n      \"outputPath\": \"specs/**/*.md\",\n      \"resolvedOutputPath\": \"X:\\\\codex-tmp\\\\global-store-p74xxikb\\\\team-store\\\\openspec\\\\changes\\\\store-target\\\\specs\\\\**\\\\*.md\",\n      \"existingOutputPaths\": []\n    },\n    \"design\": {\n      \"outputPath\": \"design.md\",\n      \"resolvedOutputPath\": \"X:\\\\codex-tmp\\\\global-store-p74xxikb\\\\team-store\\\\openspec\\\\changes\\\\store-target\\\\design.md\",\n      \"existingOutputPaths\": []\n    },\n    \"tasks\": {\n      \"outputPath\": \"tasks.md\",\n      \"resolvedOutputPath\": \"X:\\\\codex-tmp\\\\global-store-p74xxikb\\\\team-store\\\\openspec\\\\changes\\\\store-target\\\\tasks.md\",\n      \"existingOutputPaths\": []\n    }\n  },\n  \"isPlanningComplete\": false,\n  \"isComplete\": false,\n  \"applyRequires\": [\n    \"tasks\"\n  ],\n  \"nextSteps\": [\n    \"Run openspec instructions proposal --change \\\"store-target\\\" --store probe-store --json before writing that artifact.\"\n  ],\n  \"actionContext\": {\n    \"mode\": \"repo-local\",\n    \"sourceOfTruth\": \"repo\",\n    \"planningArtifacts\": [\n      \"proposal\",\n      \"specs\",\n      \"design\",\n      \"tasks\"\n    ],\n    \"linkedContext\": [],\n    \"allowedEditRoots\": [\n      \"X:\\\\codex-tmp\\\\global-store-p74xxikb\\\\pointer-repo\",\n      \"X:\\\\codex-tmp\\\\global-store-p74xxikb\\\\team-store\"\n    ],\n    \"requiresAffectedAreaSelection\": false,\n    \"constraints\": [\n      \"Change artifacts live in store 'probe-store' (X:\\\\codex-tmp\\\\global-store-p74xxikb\\\\team-store). Implementation edits go in X:\\\\codex-tmp\\\\global-store-p74xxikb\\\\pointer-repo, the project on the current path that declares this store; ask the user before editing any other repository.\"\n    ]\n  },\n  \"artifacts\": [\n    {\n      \"id\": \"proposal\",\n      \"outputPath\": \"proposal.md\",\n      \"status\": \"ready\",\n      \"requires\": []\n    },\n    {\n      \"id\": \"specs\",\n      \"outputPath\": \"specs/**/*.md\",\n      \"status\": \"blocked\",\n      \"requires\": [\n        \"proposal\"\n      ],\n      \"missingDeps\": [\n        \"proposal\"\n      ]\n    },\n    {\n      \"id\": \"design\",\n      \"outputPath\": \"design.md\",\n      \"status\": \"blocked\",\n      \"requires\": [\n        \"proposal\"\n      ],\n      \"missingDeps\": [\n        \"proposal\"\n      ]\n    },\n    {\n      \"id\": \"tasks\",\n      \"outputPath\": \"tasks.md\",\n      \"status\": \"blocked\",\n      \"requires\": [\n        \"specs\",\n        \"design\"\n      ],\n      \"missingDeps\": [\n        \"specs\",\n        \"design\"\n      ]\n    }\n  ],\n  \"root\": {\n    \"path\": \"X:\\\\codex-tmp\\\\global-store-p74xxikb\\\\team-store\",\n    \"source\": \"declared\",\n    \"store_id\": \"probe-store\"\n  }\n}\n",
+    "stderr": ""
+  },
+  {
+    "cmd": "openspec schema which store-only --json",
+    "cwd": "X:\\codex-tmp\\global-store-p74xxikb\\pointer-repo",
+    "code": 1,
+    "stdout": "{\n  \"error\": \"Schema 'store-only' not found\",\n  \"available\": [\n    \"spec-driven\",\n    \"symphysis\"\n  ]\n}\n",
+    "stderr": "Note: Schema commands are experimental and may change.\n"
+  },
+  {
+    "cmd": "openspec schemas --store probe-store --json",
+    "cwd": "X:\\codex-tmp\\global-store-p74xxikb\\pointer-repo",
+    "code": 0,
+    "stdout": "[\n  {\n    \"name\": \"spec-driven\",\n    \"description\": \"Default OpenSpec workflow - proposal → specs → design → tasks\",\n    \"artifacts\": [\n      \"proposal\",\n      \"specs\",\n      \"design\",\n      \"tasks\"\n    ],\n    \"source\": \"package\"\n  },\n  {\n    \"name\": \"store-only\",\n    \"description\": \"Проектирование на сильной модели — намерение → решения (журнал) → исследование и второй круг → proposal → specs → опись последствий → design → security → tasks; атаки решений и артефактов вызываются по имени\",\n    \"artifacts\": [\n      \"intent\",\n      \"decisions\",\n      \"research\",\n      \"attack-decisions\",\n      \"proposal\",\n      \"specs\",\n      \"consequences\",\n      \"design\",\n      \"security\",\n      \"tasks\",\n      \"attack-artifacts\"\n    ],\n    \"source\": \"project\"\n  },\n  {\n    \"name\": \"symphysis\",\n    \"description\": \"Проектирование на сильной модели — намерение → решения (журнал) → исследование и второй круг → proposal → specs → опись последствий → design → security → tasks; атаки решений и артефактов вызываются по имени\",\n    \"artifacts\": [\n      \"intent\",\n      \"decisions\",\n      \"research\",\n      \"attack-decisions\",\n      \"proposal\",\n      \"specs\",\n      \"consequences\",\n      \"design\",\n      \"security\",\n      \"tasks\",\n      \"attack-artifacts\"\n    ],\n    \"source\": \"project\"\n  }\n]\n",
+    "stderr": ""
+  },
+  {
+    "cmd": "openspec init X:\\codex-tmp\\global-store-p74xxikb\\pointer-repo --tools claude --no-animation --force",
+    "cwd": "X:\\codex-tmp\\global-store-p74xxikb",
+    "code": 0,
+    "stdout": "\nOpenSpec Setup Complete\n\nCreated: Claude Code\n7 skills and 7 commands in .claude/\nConfig: openspec/config.yaml (exists)\n\nGetting started:\n  Start your first change: /opsx:propose \"your idea\"\n\nNote: 5 more workflows are available (new, ff, bulk-archive, verify, onboard).\nAdd them with `openspec config profile`.\n\nLearn more: https://github.com/Fission-AI/OpenSpec\nFeedback:   https://github.com/Fission-AI/OpenSpec/issues\n\n",
+    "stderr": "- Setting up Claude Code...\n✔ Setup complete for Claude Code\n"
+  },
+  {
+    "cmd": "openspec context --json",
+    "cwd": "X:\\codex-tmp\\global-store-p74xxikb\\pointer-repo",
+    "code": 0,
+    "stdout": "{\n  \"root\": {\n    \"path\": \"X:\\\\codex-tmp\\\\global-store-p74xxikb\\\\team-store\",\n    \"source\": \"declared\",\n    \"store_id\": \"probe-store\",\n    \"role\": \"openspec_root\"\n  },\n  \"members\": [],\n  \"status\": []\n}\n",
+    "stderr": ""
+  },
+  {
+    "cmd": "openspec store unregister probe-store --json",
+    "cwd": "X:\\codex-tmp\\global-store-p74xxikb",
+    "code": 0,
+    "stdout": "{\n  \"store\": {\n    \"id\": \"probe-store\",\n    \"root\": \"X:\\\\codex-tmp\\\\global-store-p74xxikb\\\\team-store\",\n    \"metadata_path\": \"X:\\\\codex-tmp\\\\global-store-p74xxikb\\\\team-store\\\\.openspec-store\\\\store.yaml\"\n  },\n  \"registry\": {\n    \"path\": \"X:\\\\codex-tmp\\\\global-store-p74xxikb\\\\data\\\\openspec\\\\stores\\\\registry.yaml\",\n    \"removed\": true\n  },\n  \"files\": {\n    \"deleted\": false,\n    \"deleted_path\": null,\n    \"left_on_disk\": \"X:\\\\codex-tmp\\\\global-store-p74xxikb\\\\team-store\"\n  },\n  \"status\": []\n}\n",
+    "stderr": ""
+  },
+  {
+    "cmd": "openspec store register X:\\codex-tmp\\global-store-p74xxikb\\cloned-store --json",
+    "cwd": "X:\\codex-tmp\\global-store-p74xxikb",
+    "code": 0,
+    "stdout": "{\n  \"store\": {\n    \"id\": \"probe-store\",\n    \"root\": \"X:\\\\codex-tmp\\\\global-store-p74xxikb\\\\cloned-store\",\n    \"metadata_path\": \"X:\\\\codex-tmp\\\\global-store-p74xxikb\\\\cloned-store\\\\.openspec-store\\\\store.yaml\"\n  },\n  \"registry\": {\n    \"path\": \"X:\\\\codex-tmp\\\\global-store-p74xxikb\\\\data\\\\openspec\\\\stores\\\\registry.yaml\",\n    \"registered\": true,\n    \"already_registered\": false\n  },\n  \"git\": {\n    \"is_repository\": false,\n    \"initialized\": false,\n    \"committed\": false\n  },\n  \"created_files\": [],\n  \"status\": []\n}\n",
+    "stderr": ""
+  },
+  {
+    "cmd": "openspec context --json",
+    "cwd": "X:\\codex-tmp\\global-store-p74xxikb\\outside",
+    "code": 0,
+    "stdout": "{\n  \"root\": {\n    \"path\": \"X:\\\\codex-tmp\\\\global-store-p74xxikb\\\\cloned-store\",\n    \"source\": \"global_default\",\n    \"store_id\": \"probe-store\",\n    \"role\": \"openspec_root\"\n  },\n  \"members\": [],\n  \"status\": []\n}\n",
+    "stderr": ""
+  }
+]

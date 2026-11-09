@@ -1,0 +1,173 @@
+{
+  "probe": "X:\\codex-tmp\\global-store-p74xxikb",
+  "cli_sha256": "85958e743ffd0daad6bccebec6b0c76fd85ab5396d45cdd00c0388bb9bb9ac09",
+  "runs": [
+    {
+      "cmd": "openspec store setup probe-store --path X:\\codex-tmp\\global-store-p74xxikb\\team-store --no-init-git --json",
+      "cwd": "X:\\codex-tmp\\global-store-p74xxikb",
+      "code": 0,
+      "stdout": "{\n  \"store\": {\n    \"id\": \"probe-store\",\n    \"root\": \"X:\\\\codex-tmp\\\\global-store-p74xxikb\\\\team-store\",\n    \"metadata_path\": \"X:\\\\codex-tmp\\\\global-store-p74xxikb\\\\team-store\\\\.openspec-store\\\\store.yaml\"\n  },\n  \"registry\": {\n    \"path\": \"X:\\\\codex-tmp\\\\global-store-p74xxikb\\\\data\\\\openspec\\\\stores\\\\registry.yaml\",\n    \"registered\": true,\n    \"already_registered\": false\n  },\n  \"git\": {\n    \"is_repository\": false,\n    \"initialized\": false,\n    \"committed\": false\n  },\n  \"created_files\": [\n    \"openspec/\",\n    \"openspec/specs/\",\n    \"openspec/changes/\",\n    \"openspec/changes/archive/\",\n    \"openspec/config.yaml\",\n    \"openspec/specs/.gitkeep\",\n    \"openspec/changes/archive/.gitkeep\",\n    \".openspec-store/store.yaml\"\n  ],\n  \"status\": []\n}\n",
+      "stderr": ""
+    },
+    {
+      "cmd": "openspec context --json",
+      "cwd": "X:\\codex-tmp\\global-store-p74xxikb\\team-store",
+      "code": 0,
+      "stdout": "{\n  \"root\": {\n    \"path\": \"X:\\\\codex-tmp\\\\global-store-p74xxikb\\\\team-store\",\n    \"source\": \"nearest\",\n    \"role\": \"openspec_root\"\n  },\n  \"members\": [],\n  \"status\": []\n}\n",
+      "stderr": ""
+    },
+    {
+      "cmd": "openspec init X:\\codex-tmp\\global-store-p74xxikb\\source-repo --tools claude,opencode,codex --no-animation --force",
+      "cwd": "X:\\codex-tmp\\global-store-p74xxikb",
+      "code": 0,
+      "stdout": "- Creating OpenSpec structure...\n▌ OpenSpec structure created\n\nOpenSpec Setup Complete\n\nCreated: Claude Code, OpenCode, Codex\n7 skills and 7 commands in .claude, .opencode, .agents/\nCommands skipped for: codex (uses skills)\nConfig: openspec/config.yaml (schema: spec-driven)\n\nGetting started:\n  Start your first change: /opsx:propose \"your idea\" (Claude Code)\n  Start your first change: /opsx-propose \"your idea\" (OpenCode)\n  Start your first change: $openspec-propose \"your idea\" (Codex CLI or IDE); in the Codex desktop app, select openspec-propose from Skills in the sidebar (Codex)\n\nNote: 5 more workflows are available (new, ff, bulk-archive, verify, onboard).\nAdd them with `openspec config profile`.\n\nLearn more: https://github.com/Fission-AI/OpenSpec\nFeedback:   https://github.com/Fission-AI/OpenSpec/issues\n\n",
+      "stderr": "- Setting up Claude Code...\n✔ Setup complete for Claude Code\n- Setting up OpenCode...\n✔ Setup complete for OpenCode\n- Setting up Codex...\n✔ Setup complete for Codex\n"
+    },
+    {
+      "cmd": "openspec update X:\\codex-tmp\\global-store-p74xxikb\\source-repo --dry-run --json",
+      "cwd": "X:\\codex-tmp\\global-store-p74xxikb",
+      "code": 0,
+      "stdout": "{\n  \"changes\": [\n    {\n      \"path\": \"X:/codex-tmp/global-store-p74xxikb/config/openspec/config.json\",\n      \"action\": \"add\",\n      \"tool\": \"openspec\"\n    }\n  ],\n  \"notes\": [],\n  \"failures\": []\n}\n",
+      "stderr": ""
+    },
+    {
+      "cmd": "openspec init X:\\codex-tmp\\global-store-p74xxikb\\source-repo --tools claude --global",
+      "cwd": "X:\\codex-tmp\\global-store-p74xxikb",
+      "code": 1,
+      "stdout": "",
+      "stderr": "error: unknown option '--global'\n"
+    },
+    {
+      "cmd": "openspec update X:\\codex-tmp\\global-store-p74xxikb\\source-repo --global --dry-run --json",
+      "cwd": "X:\\codex-tmp\\global-store-p74xxikb",
+      "code": 1,
+      "stdout": "",
+      "stderr": "error: unknown option '--global'\n"
+    },
+    {
+      "cmd": "openspec list --store probe-store --json",
+      "cwd": "X:\\codex-tmp\\global-store-p74xxikb\\source-repo",
+      "code": 0,
+      "stdout": "{\n  \"changes\": [],\n  \"root\": {\n    \"path\": \"X:\\\\codex-tmp\\\\global-store-p74xxikb\\\\team-store\",\n    \"source\": \"store\",\n    \"store_id\": \"probe-store\"\n  }\n}\n",
+      "stderr": ""
+    },
+    {
+      "cmd": "openspec context --json",
+      "cwd": "X:\\codex-tmp\\global-store-p74xxikb\\source-repo",
+      "code": 0,
+      "stdout": "{\n  \"root\": {\n    \"path\": \"X:\\\\codex-tmp\\\\global-store-p74xxikb\\\\source-repo\",\n    \"source\": \"nearest\",\n    \"role\": \"openspec_root\"\n  },\n  \"members\": [],\n  \"status\": []\n}\n",
+      "stderr": "Warning: X:\\codex-tmp\\global-store-p74xxikb\\source-repo\\openspec\\config.yaml declares store 'probe-store', but this directory is a real OpenSpec root; the declaration is ignored.\n"
+    },
+    {
+      "cmd": "openspec new change pointer-demo --schema spec-driven --json",
+      "cwd": "X:\\codex-tmp\\global-store-p74xxikb\\source-repo",
+      "code": 0,
+      "stdout": "{\n  \"change\": {\n    \"id\": \"pointer-demo\",\n    \"path\": \"X:\\\\codex-tmp\\\\global-store-p74xxikb\\\\source-repo\\\\openspec\\\\changes\\\\pointer-demo\",\n    \"metadataPath\": \"X:\\\\codex-tmp\\\\global-store-p74xxikb\\\\source-repo\\\\openspec\\\\changes\\\\pointer-demo\\\\.openspec.yaml\",\n    \"schema\": \"spec-driven\"\n  },\n  \"root\": {\n    \"path\": \"X:\\\\codex-tmp\\\\global-store-p74xxikb\\\\source-repo\",\n    \"source\": \"nearest\"\n  }\n}\n",
+      "stderr": "Warning: X:\\codex-tmp\\global-store-p74xxikb\\source-repo\\openspec\\config.yaml declares store 'probe-store', but this directory is a real OpenSpec root; the declaration is ignored.\n"
+    },
+    {
+      "cmd": "openspec schema which symphysis --json",
+      "cwd": "X:\\codex-tmp\\global-store-p74xxikb\\team-store",
+      "code": 1,
+      "stdout": "{\n  \"error\": \"Schema 'symphysis' not found\",\n  \"available\": [\n    \"spec-driven\"\n  ]\n}\n",
+      "stderr": "Note: Schema commands are experimental and may change.\n"
+    },
+    {
+      "cmd": "openspec schema which symphysis --json",
+      "cwd": "X:\\codex-tmp\\global-store-p74xxikb\\team-store",
+      "code": 0,
+      "stdout": "{\n  \"name\": \"symphysis\",\n  \"source\": \"user\",\n  \"path\": \"X:\\\\codex-tmp\\\\global-store-p74xxikb\\\\data\\\\openspec\\\\schemas\\\\symphysis\",\n  \"shadows\": []\n}\n",
+      "stderr": "Note: Schema commands are experimental and may change.\n"
+    },
+    {
+      "cmd": "openspec new change global-demo --schema symphysis --json",
+      "cwd": "X:\\codex-tmp\\global-store-p74xxikb\\source-repo",
+      "code": 0,
+      "stdout": "{\n  \"change\": {\n    \"id\": \"global-demo\",\n    \"path\": \"X:\\\\codex-tmp\\\\global-store-p74xxikb\\\\source-repo\\\\openspec\\\\changes\\\\global-demo\",\n    \"metadataPath\": \"X:\\\\codex-tmp\\\\global-store-p74xxikb\\\\source-repo\\\\openspec\\\\changes\\\\global-demo\\\\.openspec.yaml\",\n    \"schema\": \"symphysis\"\n  },\n  \"root\": {\n    \"path\": \"X:\\\\codex-tmp\\\\global-store-p74xxikb\\\\source-repo\",\n    \"source\": \"nearest\"\n  }\n}\n",
+      "stderr": "Warning: X:\\codex-tmp\\global-store-p74xxikb\\source-repo\\openspec\\config.yaml declares store 'probe-store', but this directory is a real OpenSpec root; the declaration is ignored.\n"
+    },
+    {
+      "cmd": "openspec instructions intent --change global-demo --json",
+      "cwd": "X:\\codex-tmp\\global-store-p74xxikb\\source-repo",
+      "code": 0,
+      "stdout": "{\n  \"changeName\": \"global-demo\",\n  \"artifactId\": \"intent\",\n  \"schemaName\": \"symphysis\",\n  \"changeDir\": \"X:\\\\codex-tmp\\\\global-store-p74xxikb\\\\source-repo\\\\openspec\\\\changes\\\\global-demo\",\n  \"planningHome\": {\n    \"kind\": \"repo\",\n    \"root\": \"X:\\\\codex-tmp\\\\global-store-p74xxikb\\\\source-repo\",\n    \"changesDir\": \"X:\\\\codex-tmp\\\\global-store-p74xxikb\\\\source-repo\\\\openspec\\\\changes\",\n    \"defaultSchema\": \"spec-driven\"\n  },\n  \"outputPath\": \"intent.md\",\n  \"resolvedOutputPath\": \"X:\\\\codex-tmp\\\\global-store-p74xxikb\\\\source-repo\\\\openspec\\\\changes\\\\global-demo\\\\intent.md\",\n  \"existingOutputPaths\": [],\n  \"description\": \"Намерение человека — его слова дословно и критерии готовности\",\n  \"instruction\": \"Если `intent.md` нет или он пуст (0 байт либо одна строка заголовка), спроси намерение у человека и сохрани его ответ дословно по шаблону: слова — в «Намерение», критерии — в «Критерии готовности»; «Без критериев готовности» — законное значение.\\nСодержания не пиши. Принесённый человеком файл принимается как есть; дальше файл не правится.\\n\",\n  \"template\": \"# Намерение: <имя изменения>\\r\\n\\r\\n<!-- Файл пишет человек, не модель. Модель спрашивает намерение и сохраняет ответ дословно, содержания не добавляет. -->\\r\\n\\r\\n## Намерение\\r\\n\\r\\n<!-- Слова человека дословно, цитатами блоками `>` с подписью источника (слово в чате, файл ответа). Без пересказа и правок. -->\\r\\n\\r\\n> <слова человека>\\r\\n> — <источник>\\r\\n\\r\\n## Критерии готовности\\r\\n\\r\\n<!-- Что должно быть сделано, чтобы человек счёл изменение готовым, — списком, его словами. Критериев нет — единственная строка «Без критериев готовности»: это законное значение. -->\\r\\n\\r\\n- <критерий> (<источник>)\\r\\n\",\n  \"dependencies\": [],\n  \"unlocks\": [\n    \"decisions\"\n  ],\n  \"root\": {\n    \"path\": \"X:\\\\codex-tmp\\\\global-store-p74xxikb\\\\source-repo\",\n    \"source\": \"nearest\"\n  }\n}\n",
+      "stderr": "Warning: X:\\codex-tmp\\global-store-p74xxikb\\source-repo\\openspec\\config.yaml declares store 'probe-store', but this directory is a real OpenSpec root; the declaration is ignored.\n"
+    },
+    {
+      "cmd": "openspec schema which symphysis --json",
+      "cwd": "X:\\codex-tmp\\global-store-p74xxikb\\team-store",
+      "code": 0,
+      "stdout": "{\n  \"name\": \"symphysis\",\n  \"source\": \"project\",\n  \"path\": \"X:\\\\codex-tmp\\\\global-store-p74xxikb\\\\team-store\\\\openspec\\\\schemas\\\\symphysis\",\n  \"shadows\": [\n    {\n      \"source\": \"user\",\n      \"path\": \"X:\\\\codex-tmp\\\\global-store-p74xxikb\\\\data\\\\openspec\\\\schemas\\\\symphysis\"\n    }\n  ]\n}\n",
+      "stderr": "Note: Schema commands are experimental and may change.\n"
+    },
+    {
+      "cmd": "openspec store register X:\\codex-tmp\\global-store-p74xxikb\\cloned-store --id probe-clone --json",
+      "cwd": "X:\\codex-tmp\\global-store-p74xxikb",
+      "code": 1,
+      "stdout": "{\n  \"store\": null,\n  \"registry\": null,\n  \"git\": null,\n  \"created_files\": [],\n  \"status\": [\n    {\n      \"severity\": \"error\",\n      \"code\": \"store_metadata_id_mismatch\",\n      \"message\": \"Store metadata id 'probe-store' does not match --id 'probe-clone'. The id comes from the store's committed .openspec-store/store.yaml.\",\n      \"target\": \"store.id\",\n      \"fix\": \"One checkout per store id is supported, and 'probe-store' is already registered. Run openspec store unregister probe-store first to register this checkout instead.\"\n    }\n  ]\n}\n",
+      "stderr": ""
+    },
+    {
+      "cmd": "openspec config set defaultStore probe-store",
+      "cwd": "X:\\codex-tmp\\global-store-p74xxikb",
+      "code": 0,
+      "stdout": "Set defaultStore = \"probe-store\"\n",
+      "stderr": ""
+    },
+    {
+      "cmd": "openspec context --json",
+      "cwd": "X:\\codex-tmp\\global-store-p74xxikb\\outside",
+      "code": 0,
+      "stdout": "{\n  \"root\": {\n    \"path\": \"X:\\\\codex-tmp\\\\global-store-p74xxikb\\\\team-store\",\n    \"source\": \"global_default\",\n    \"store_id\": \"probe-store\",\n    \"role\": \"openspec_root\"\n  },\n  \"members\": [],\n  \"status\": []\n}\n",
+      "stderr": ""
+    }
+  ],
+  "files": [
+    "team-store\\.openspec-store\\store.yaml",
+    "team-store\\openspec\\config.yaml",
+    "team-store\\openspec\\specs\\.gitkeep",
+    "source-repo\\openspec\\config.yaml",
+    "source-repo\\openspec\\specs\\.gitkeep",
+    "source-repo\\.opencode\\commands\\opsx-apply.md",
+    "source-repo\\.opencode\\commands\\opsx-archive.md",
+    "source-repo\\.opencode\\commands\\opsx-continue.md",
+    "source-repo\\.opencode\\commands\\opsx-explore.md",
+    "source-repo\\.opencode\\commands\\opsx-propose.md",
+    "source-repo\\.opencode\\commands\\opsx-sync.md",
+    "source-repo\\.opencode\\commands\\opsx-update.md",
+    "source-repo\\.opencode\\skills\\openspec-apply-change\\SKILL.md",
+    "source-repo\\.opencode\\skills\\openspec-archive-change\\SKILL.md",
+    "source-repo\\.opencode\\skills\\openspec-continue-change\\SKILL.md",
+    "source-repo\\.opencode\\skills\\openspec-explore\\SKILL.md",
+    "source-repo\\.opencode\\skills\\openspec-propose\\SKILL.md",
+    "source-repo\\.opencode\\skills\\openspec-sync-specs\\SKILL.md",
+    "source-repo\\.opencode\\skills\\openspec-update-change\\SKILL.md",
+    "source-repo\\.claude\\skills\\openspec-apply-change\\SKILL.md",
+    "source-repo\\.claude\\skills\\openspec-archive-change\\SKILL.md",
+    "source-repo\\.claude\\skills\\openspec-continue-change\\SKILL.md",
+    "source-repo\\.claude\\skills\\openspec-explore\\SKILL.md",
+    "source-repo\\.claude\\skills\\openspec-propose\\SKILL.md",
+    "source-repo\\.claude\\skills\\openspec-sync-specs\\SKILL.md",
+    "source-repo\\.claude\\skills\\openspec-update-change\\SKILL.md",
+    "source-repo\\.claude\\commands\\opsx\\apply.md",
+    "source-repo\\.claude\\commands\\opsx\\archive.md",
+    "source-repo\\.claude\\commands\\opsx\\continue.md",
+    "source-repo\\.claude\\commands\\opsx\\explore.md",
+    "source-repo\\.claude\\commands\\opsx\\propose.md",
+    "source-repo\\.claude\\commands\\opsx\\sync.md",
+    "source-repo\\.claude\\commands\\opsx\\update.md",
+    "source-repo\\.agents\\skills\\.openspec-target",
+    "source-repo\\.agents\\skills\\openspec-apply-change\\SKILL.md",
+    "source-repo\\.agents\\skills\\openspec-archive-change\\SKILL.md",
+    "source-repo\\.agents\\skills\\openspec-continue-change\\SKILL.md",
+    "source-repo\\.agents\\skills\\openspec-explore\\SKILL.md",
+    "source-repo\\.agents\\skills\\openspec-propose\\SKILL.md",
+    "source-repo\\.agents\\skills\\openspec-sync-specs\\SKILL.md",
+    "source-repo\\.agents\\skills\\openspec-update-change\\SKILL.md",
+    "data\\openspec\\stores\\registry.yaml",
+    "config\\openspec\\config.json",
+    "cloned-store\\.openspec-store\\store.yaml",
+    "cloned-store\\openspec\\config.yaml",
+    "cloned-store\\openspec\\specs\\.gitkeep"
+  ]
+}

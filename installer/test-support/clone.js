@@ -12,7 +12,7 @@ export const REPO = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "
  */
 export const SOURCE_MODULES = [
   "anchors", "attack", "cli", "consequences", "decisions", "openspec-run", "probes", "research", "roots", "settings",
-  "skill-shared", "step-help", "trace", "viewer",
+  "skill-shared", "step-help", "trace", "viewer", "runtime",
 ];
 
 export const gitIn = (cwd, ...args) =>
@@ -27,6 +27,9 @@ export function makeClone(dir, { git }) {
   for (const rel of [...SOURCE_MODULES, path.join("openspec", "schemas", "symphysis")]) {
     fs.cpSync(path.join(REPO, rel), path.join(dir, rel), { recursive: true, filter: keep });
   }
+  fs.mkdirSync(path.join(dir, "installer", "generated"), { recursive: true });
+  fs.copyFileSync(path.join(REPO, "installer", "generated", "workflow-carriers.json"), path.join(dir, "installer", "generated", "workflow-carriers.json"));
+  fs.copyFileSync(path.join(REPO, "installer", "package.json"), path.join(dir, "installer", "package.json"));
   const mer = path.join(dir, "installer", "node_modules", "mermaid");
   fs.mkdirSync(path.join(mer, "dist"), { recursive: true });
   fs.copyFileSync(path.join(REPO, "installer", "node_modules", "mermaid", "dist", "mermaid.min.js"), path.join(mer, "dist", "mermaid.min.js"));

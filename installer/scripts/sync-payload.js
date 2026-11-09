@@ -1,6 +1,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
+import { validateWorkflowBundle } from "./build-workflow-carriers.js";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 export const ROOT = path.resolve(here, "..", "..");
@@ -42,6 +43,7 @@ const TOOLS_FILES = [
   "settings/symphysis_config.py",
   "step-help/step_help.py",
   "openspec-run/openspec_run.py",
+  "runtime/runtime_context.py",
   "trace/trace_graph.py",
   "anchors/anchor_refs.py",
 ];
@@ -49,6 +51,8 @@ const TOOLS_FILES = [
 /** Отдельные файлы: [исходник, путь в payload]. Образец конфига лежит в модуле схемы, в payload — по прежнему пути (F-37 A). */
 const FILES = [
   ["openspec/schemas/symphysis/config.symphysis.yaml", "openspec/config.symphysis.yaml"],
+  ["installer/generated/workflow-carriers.json", "docs/workflow-carriers.json"],
+  ["decisions/journal.schema.json", "docs/journal.schema.json"],
   ...toolsFiles().map(({ name, src }) => [src, `tools/${name}`]),
 ];
 
@@ -170,6 +174,9 @@ function mermaidDir(root) {
 /** Карта payload по исходникам корня: относительный путь с «/» -> байты. Тела `.md` скиллов и общих файлов — без провенанса. */
 export function expectedPayload(root = ROOT) {
   const map = new Map();
+  const packageFile = path.join(root, "installer", "package.json");
+  const pin = fs.existsSync(packageFile) ? JSON.parse(fs.readFileSync(packageFile, "utf8")).symphysis?.openspecPin : undefined;
+  validateWorkflowBundle(JSON.parse(fs.readFileSync(path.join(root, "installer", "generated", "workflow-carriers.json"), "utf8")), { pin });
   const read = (rel) => fs.readFileSync(path.join(root, rel));
   const readStripped = (rel) => Buffer.from(stripProvenance(fs.readFileSync(path.join(root, rel), "utf8")));
   for (const dir of DIRS) for (const f of walk(path.join(root, dir))) if (!schemaFileExcluded(f)) map.set(`${dir}/${f}`, read(`${dir}/${f}`));
