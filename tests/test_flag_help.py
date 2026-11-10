@@ -69,7 +69,7 @@ def test_trace_graph_subcommand_help_names_when_and_codes(name):
 
 
 def test_trace_graph_subcommands_are_the_expected_ones():
-    assert set(TRACE_SUBCOMMANDS) == {"build", "report", "check", "freeze", "archive-gaps"}
+    assert set(TRACE_SUBCOMMANDS) == {"view", "build", "report", "check", "freeze", "archive-gaps"}
 
 
 def test_subcommands_are_the_expected_ones():

@@ -27,7 +27,7 @@ from runtime_context import bootstrap as _runtime_bootstrap, context as _runtime
 _runtime_bootstrap("trace")
 if not (_HERE / "roots.py").is_file():
     sys.path[1:1] = [str(_HERE.parent / name) for name in ("roots", "decisions", "openspec-run")]
-from roots import UNUSABLE_ROOTS, default_roots  # noqa: E402
+from roots import OUTSIDE_ROOT, UNUSABLE_ROOTS, _resolve, default_roots, project_roots, repo_root  # noqa: E402
 from journal_model import PROBE_OUTCOMES, validate_journal  # noqa: E402
 from openspec_run import ForkError, check_change_name, find_on_path, no_paths, run_fork  # noqa: E402
 from trace_modules import DeclarationError, attach_structure, discover, read_implementations  # noqa: E402
@@ -1349,7 +1349,7 @@ def _block(node: dict, name: str, ident: str, row: dict) -> list[str]:
     return [f'{row["sysml"]} "{name}" {{', f'    id: "{ident}"', f'    text: "{clean_text(text)}"', "}"]
 
 
-def _render(nodes: list[dict], edges: list[dict]) -> str:
+def render_view(nodes: list[dict], edges: list[dict]) -> dict:
     """Текст по отобранной части: шапка, `classDef`, блоки, связи, `class` — `class` строго после блоков, иначе цвет молча
     не применится (F-54)."""
     kinds = DIAGRAM["виды"]
@@ -1362,7 +1362,13 @@ def _render(nodes: list[dict], edges: list[dict]) -> str:
     for edge in edges:
         lines.append(f'"{names[edge["from"]]}" - {DIAGRAM["связи"][edge["type"]]} -> "{names[edge["to"]]}"')
     lines += [f'class "{names[n["id"]]}" {kinds[n["kind"]]["класс"]}' for n in nodes]
-    return "\n".join(lines) + "\n"
+    elements = {names[n["id"]]: {key: n[key] for key in ("id", "kind", "name", "at", "capability", "repo") if key in n}
+                for n in nodes}
+    return {"text": "\n".join(lines) + "\n", "elements": elements}
+
+
+def _render(nodes: list[dict], edges: list[dict]) -> str:
+    return render_view(nodes, edges)["text"]
 
 
 def _part(graph: dict, capability: str | None = None, requirement: str | None = None) -> tuple[int, int]:
@@ -1396,6 +1402,204 @@ def diagram_text(graph: dict, capability: str | None = None, requirement: str | 
     if requirement is None and len(text) > DIAGRAM["предел"]:
         raise _over_limit(graph, len(text), capability)
     return text
+
+
+def graph_view(graph: dict, *, capability: str | None = None, requirement: str | None = None,
+               module: str | None = None, linked_only: bool = False, diagnostics: list | None = None) -> dict:
+    """Выбранная часть, карта исходных узлов и список пропусков по всему изменению (F-23, F-24, F-45)."""
+    nodes = graph['nodes']
+    choices = {
+        'capabilities': [{'id': n['name'], 'name': n['name']} for n in nodes if n['kind'] == 'cap'],
+        'requirements': [{key: n[key] for key in ('id', 'name', 'capability')} for n in nodes if n['kind'] == 'req'],
+        'modules': [{'id': n['repo'] + '/' + n['name'], 'name': n['name'], 'repo': n['repo']}
+                    for n in nodes if n['kind'] == 'module'],
+    }
+    selection = {'capability': capability, 'requirement': requirement, 'module': module, 'linked_only': linked_only}
+    selected, edges = [], []
+    if module is not None:
+        matches = [n for n in nodes if n['kind'] == 'module' and n['repo'] + '/' + n['name'] == module]
+        if len(matches) != 1:
+            raise Refusal('выбранный модуль недоступен')
+        if capability is not None and capability not in {c['id'] for c in choices['capabilities']}:
+            raise Refusal('выбранная capability недоступна')
+        implementations = {matches[0]['id']}
+        implementations.update(e['to'] for e in graph['edges'] if e['type'] == 'contains' and e['from'] in implementations
+                               and any(n['id'] == e['to'] and n['kind'] == 'file' for n in nodes))
+        wanted = {e['to'] for e in graph['edges'] if e['type'] == 'implements' and e['from'] in implementations}
+        reqs = [n for n in nodes if n['kind'] == 'req' and n['id'] in wanted
+                and (capability is None or n['capability'] == capability)]
+        chosen = set()
+        combined_edges = []
+        for req in reqs:
+            part, links = select_diagram({**graph, 'candidates': []}, requirement=req['id'].removeprefix('req:'))
+            chosen.update(n['id'] for n in part)
+            combined_edges.extend(links)
+        selected = [n for n in nodes if n['id'] in chosen]
+        edges = list({(e['from'], e['to'], e['type']): e for e in combined_edges}.values())
+    elif capability is not None or requirement is not None:
+        selected, edges = select_diagram(graph, capability, requirement.removeprefix('req:') if requirement else None)
+    if linked_only:
+        connected = {e[end] for e in edges for end in ('from', 'to')}
+        selected = [n for n in selected if n['id'] in connected]
+    linked = set()
+    kinds = {n['id']: n['kind'] for n in nodes}
+    for edge in graph['edges']:
+        ends = {kinds[edge['from']], kinds[edge['to']]}
+        if edge['type'] == 'traces' and 'rec' in ends and ends & {'req', 'scn'}:
+            linked.update((edge['from'], edge['to']))
+    unlinked = [{key: n[key] for key in ('id', 'name', 'kind', 'at', 'capability') if key in n}
+                for n in nodes if n['kind'] in ('req', 'rec') and n['id'] not in linked]
+    rendered = render_view(selected, edges) if selected else {'text': None, 'elements': {}}
+    if rendered['text'] is not None and len(rendered['text']) > DIAGRAM['предел'] and requirement is None:
+        raise _over_limit(graph, len(rendered['text']), capability)
+    issues = list(diagnostics or [])
+    structure = graph.get('structure')
+    if not structure:
+        issues.append({'kind': 'structure', 'at': '', 'reason': 'структурные данные отсутствуют'})
+    else:
+        issues.extend({'kind': 'structure', 'at': s.get('source', ''), 'reason': s.get('reason', 'структура неполна')}
+                      for s in structure.get('signals', []))
+        for repo in structure.get('repos', []):
+            if repo.get('availability') != 'available' or repo.get('survey') == 'unexamined':
+                issues.append({'kind': 'structure', 'at': '.openspec.yaml:1', 'reason': 'repo ' + repo['repo'] + ': структура обследована не полностью'})
+    return {'view_format': 1, 'selection': selection, 'choices': choices, **rendered,
+            'empty': bool(capability or requirement or module) and not selected,
+            'unlinked': {'scope': 'change', 'items': unlinked}, 'diagnostics': issues, 'incomplete': bool(issues)}
+
+
+def _view_snapshot(path: Path) -> dict:
+    """Чтение снимка как данных, без обращения к нынешним исходникам и без пересборки."""
+    try:
+        with path.open('rb') as stream:
+            raw = stream.read(64 * 1024 * 1024 + 1)
+        if len(raw) > 64 * 1024 * 1024 or b'\x00' in raw:
+            raise ValueError('размер или бинарные данные')
+        graph = json.loads(raw.decode('utf-8-sig'))
+        if _shape_problems(graph):
+            raise ValueError('форма или версия графа')
+        ids = set()
+        for n in graph['nodes']:
+            if not isinstance(n, dict) or not all(isinstance(n.get(k), str) for k in ('id', 'name', 'kind', 'at')):
+                raise ValueError('форма узла')
+            if n['kind'] not in DIAGRAM['виды'] or n['id'] in ids:
+                raise ValueError('вид или повтор id узла')
+            if n['kind'] == 'req' and not all(isinstance(n.get(k), str) for k in ('capability', 'section')):
+                raise ValueError('форма требования')
+            if n['kind'] == 'module' and not isinstance(n.get('repo'), str):
+                raise ValueError('форма модуля')
+            if n['kind'] == 'task' and not n['id'].startswith('task:'):
+                raise ValueError('форма id задачи')
+            if n['kind'] == 'rec' and ('number' in n and (type(n['number']) is not int or n['number'] < 0)):
+                raise ValueError('форма номера записи')
+            if n['kind'] == 'scn' and not isinstance(n.get('requirement'), str):
+                raise ValueError('форма сценария')
+            ids.add(n['id'])
+        for e in graph['edges']:
+            if not isinstance(e, dict) or not all(isinstance(e.get(k), str) for k in ('from', 'to', 'type')):
+                raise ValueError('форма связи')
+            if e['from'] not in ids or e['to'] not in ids or e['type'] not in DIAGRAM['связи']:
+                raise ValueError('конец или вид связи')
+        for candidate in graph['candidates']:
+            if not isinstance(candidate, dict) or not all(isinstance(candidate.get(k), str) and candidate[k] in ids for k in ('a', 'b')):
+                raise ValueError('форма кандидата')
+        structure = graph.get('structure', {})
+        if not isinstance(structure, dict) or not all(isinstance(structure.get(k, []), list) for k in ('repos', 'signals', 'modules')):
+            raise ValueError('форма структуры')
+        if not all(isinstance(r, dict) and isinstance(r.get('repo'), str) for r in structure.get('repos', [])):
+            raise ValueError('форма repo')
+        if not all(isinstance(s, dict) and all(isinstance(s.get(k, ''), str) for k in ('source', 'reason')) for s in structure.get('signals', [])):
+            raise ValueError('форма диагностики')
+        return graph
+    except (OSError, ValueError, RecursionError) as error:
+        reason = error.strerror if isinstance(error, OSError) else 'неподдерживаемые или повреждённые данные'
+        raise Refusal('снимок не прочитан: ' + str(reason)) from None
+
+
+def _view_file(path: Path, root: Path) -> None:
+    if not path.resolve().is_relative_to(root.resolve()):
+        raise Refusal('источник за пределами проекта')
+    if path.is_file():
+        with path.open('rb') as stream:
+            raw = stream.read(64 * 1024 * 1024 + 1)
+        if len(raw) > 64 * 1024 * 1024 or b'\x00' in raw:
+            raise Refusal('источник не прочитан: бинарный файл или превышен размер')
+        raw.decode('utf-8-sig')
+
+
+def _view_live(root: Path, change: str, roots_file: Path | None) -> tuple[dict, list]:
+    base = root / 'openspec' / 'changes' / change
+    try:
+        if not base.resolve().is_relative_to(root.resolve()):
+            raise Refusal('изменение за пределами проекта')
+        _view_file(base / 'proposal.md', root)
+        proposal = _read_text(base, 'proposal.md')
+        capabilities = re.findall(r'^-\s+`([^`]+)`\s*:', proposal, re.M)
+        if not capabilities:
+            raise Refusal('specs ещё не сформированы: в proposal нет capability')
+        for cap in capabilities:
+            file = base / 'specs' / cap / 'spec.md'
+            _view_file(file, root)
+            if not file.resolve().is_relative_to(base.resolve()) or not parse_spec(_read_text(base, f'specs/{cap}/spec.md')).requirements:
+                raise Refusal('specs ещё не сформированы для всех capability')
+        files = [base / rel for rel in (*SOURCE_FILES.values(), '.openspec.yaml', 'graph/req-graph.json')]
+        files += list((base / 'specs').glob('*/spec.md')) + list((root / 'openspec' / 'specs').glob('*/spec.md'))
+        for file in files:
+            _view_file(file, root)
+        graph, duplicates, unresolved = build_graph_with_signals(root, change, roots_file=roots_file)
+    except (OSError, ValueError, RuntimeError) as error:
+        if isinstance(error, Refusal):
+            raise
+        raise Refusal('живой граф не прочитан: недоступные или повреждённые данные') from None
+    diagnostics = [{'kind': 'duplicate', 'at': item['at'][0], 'reason': 'повтор id ' + item['id']} for item in duplicates]
+    diagnostics.extend({'kind': 'unresolved', 'at': item['at'], 'reason': item['why']} for item in unresolved)
+    return graph, diagnostics
+
+
+def cmd_view(args: argparse.Namespace, root: Path) -> int:
+    if args.requirement and (args.capability or args.module):
+        raise Refusal('выбор требования задаётся отдельно от capability и модуля')
+    if args.snapshot is None:
+        graph, diagnostics = _view_live(root, args.change, args.roots)
+    else:
+        graph, diagnostics = _view_snapshot(args.snapshot), []
+    result = graph_view(graph, capability=args.capability, requirement=args.requirement, module=args.module,
+                        linked_only=args.linked_only, diagnostics=diagnostics)
+    base = root / 'openspec' / 'changes' / args.change
+    if args.snapshot is not None and args.snapshot.parent.name == 'graph' and args.snapshot.parent.parent.resolve().is_relative_to(root.resolve()):
+        base = args.snapshot.parent.parent
+    try:
+        roots = default_roots(args.roots, base / 'decisions.json') if args.roots else project_roots(root)
+    except UNUSABLE_ROOTS:
+        raise Refusal('файл разрешённых корней не прочитан') from None
+    repos = {r['repo']: r for r in graph.get('structure', {}).get('repos', [])}
+    for item in [*result['elements'].values(), *result['unlinked']['items']]:
+        rel, separator, line = item['at'].rpartition(':')
+        if not separator or not line.isdigit() or int(line) < 1:
+            continue
+        folder = root.resolve()
+        tail = rel.replace('\\', '/')
+        repo = next((name for name in repos if tail.startswith(name + '/')), None)
+        if item.get('repo') is not None and (repo is None or item['repo'] != repo):
+            continue
+        if repo:
+            alias = repos[repo].get('root')
+            folder = repo_root(alias, roots) if isinstance(alias, str) else None
+            tail = tail[len(repo) + 1:]
+        else:
+            if '..' in tail.split('/') or Path(tail).is_absolute() or tail.startswith('/') or re.match(r'^[A-Za-z]:', tail):
+                continue
+            tail = (base.relative_to(root) / tail).as_posix()
+        try:
+            file = _resolve(tail, {'': folder}) if folder else None
+            if file is not None and file != OUTSIDE_ROOT and file.is_file():
+                item['target'] = {'file': str(file), 'root': str(folder), 'line': int(line),
+                                  'journal': item['kind'] == 'rec'}
+        except (OSError, RuntimeError, ValueError):
+            continue
+    result['source'] = {'kind': 'snapshot' if args.snapshot is not None else 'live', 'change': args.change,
+                        'preliminary': args.snapshot is None and not (root / 'openspec' / 'changes' / args.change / 'graph' / 'req-graph.json').is_file()}
+    sys.stdout.write(json.dumps(result, ensure_ascii=False, indent=1) + '\n')
+    return 0
 
 
 def cmd_build(args: argparse.Namespace, root: Path) -> int:
@@ -2013,11 +2217,14 @@ def cmd_archive_gaps(args: argparse.Namespace, root: Path) -> int:
     return 0
 
 
-HANDLERS = {"build": cmd_build, "report": cmd_report, "check": cmd_check, "freeze": cmd_freeze,
+HANDLERS = {"view": cmd_view, "build": cmd_build, "report": cmd_report, "check": cmd_check, "freeze": cmd_freeze,
             "archive-gaps": cmd_archive_gaps}
 
 # Подкоманда: (что делает, когда звать, коды). Правило `tests/test_flag_help.py`: «Звать, когда» и «Коды:».
 SUBCOMMAND_HELP = {
+    "view": ("Готовит JSON выбранного вида requirementDiagram, карту узлов, диагностику и список пропусков.",
+             "Звать, когда нужен просмотр живого графа после specs или выбранного снимка. Без выбора части выдаёт перечни для выбора.",
+             "Коды: 0 — ответ выдан; 1 — отказ чтения или выбора; 2 — неверный вызов."),
     "build": ("Собирает граф трассируемости изменения из его артефактов и печатает его JSON в stdout; с `--out` пишет в указанный "
               "файл. С `--format mermaid` печатает текст `requirementDiagram` (всё изменение, `--capability ИМЯ` или "
               "`--requirement ИМЯ`); рисунка скрипт не делает и файла с ним не создаёт. Файлов изменения не пишет.",
@@ -2098,10 +2305,16 @@ def build_parser() -> argparse.ArgumentParser:
                            help="каталог архива изменений; по умолчанию openspec/changes/archive от корня проекта")
         else:
             sp.add_argument("change", metavar="ИЗМЕНЕНИЕ", help="имя изменения, как у `openspec validate <имя>`")
-        if name in ("build", "report", "check", "freeze"):
+        if name in ("view", "build", "report", "check", "freeze"):
             sp.add_argument("--roots", metavar="ПУТЬ", type=Path, default=None, help="файл корней вместо tools/journal-roots.json")
         if name == "check":
             sp.add_argument("file", metavar="ФАЙЛ", type=Path, help="сохранённый граф изменения (JSON от `build --out`)")
+        if name == "view":
+            sp.add_argument('--snapshot', type=Path, help='выбранный JSON снимка, включая архивный')
+            sp.add_argument('--capability', help='выбранная capability')
+            sp.add_argument('--requirement', help='канонический id требования или capability/имя')
+            sp.add_argument('--module', help='пара repo/module для отбора реализуемых требований')
+            sp.add_argument('--linked-only', action='store_true', help='исключить только узлы без рёбер выбранной части')
         if name == "build":
             sp.add_argument("--out", metavar="ПУТЬ", type=Path, default=None,
                             help="записать граф в этот файл вместо stdout; файлы изменения не меняются")
