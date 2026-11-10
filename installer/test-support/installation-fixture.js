@@ -14,7 +14,7 @@ export function installationFixture(t, scope = "global") {
   const runtimeRoot = scope === "global" ? path.join(root, "runtime") : root;
   const clients = [{ id: "claude", skillsRoot: f.clientRoots.claude.skills, agentsRoot: f.clientRoots.claude.agents }];
   const request = { scope, root, runtimeRoot, storeRoot: scope === "local" ? store.root : null,
-    schemaDirectory: f.at("user-data", "openspec", "schemas"), sourceVersion: "0.1.0-fixture", openspecPin: "1.16.1+symphysis.5", clients,
+    schemaDirectory: f.at("user-data", "openspec", "schemas"), sourceVersion: "0.1.0-fixture", openspecPin: "1.16.1+symphysis.6", clients,
     bootstrap: { command: process.execPath, args: [fileURLToPath(import.meta.url)] }, files: [] };
   const file = (source, bytes, properties = {}) => {
     let target = path.join(runtimeRoot, source);

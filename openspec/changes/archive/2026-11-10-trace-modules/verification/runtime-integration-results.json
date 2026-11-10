@@ -1,0 +1,165 @@
+[
+  {
+    "scope": "local",
+    "module_present": true,
+    "implements_present": true,
+    "python": "3.13.14",
+    "test_dependency_provided": "installed PyYAML via PYTHONPATH",
+    "readonly_readme": true,
+    "resource_sha256": "9e64935b0f79021b75fc9eeb85bb945e200fcc3a67883926792a6717d5cbcd06",
+    "commands": [
+      {
+        "arguments": [
+          "install",
+          "--scope",
+          "local",
+          "--client",
+          "codex",
+          "--force",
+          "--project",
+          "<case>/project"
+        ],
+        "selected_project": false,
+        "code": 0
+      },
+      {
+        "arguments": [
+          "preflight",
+          "--change",
+          "runtime-probe",
+          "--json"
+        ],
+        "selected_project": true,
+        "code": 0
+      },
+      {
+        "arguments": [
+          "resource",
+          "doc",
+          "module-declarations.md"
+        ],
+        "selected_project": true,
+        "code": 0
+      },
+      {
+        "arguments": [
+          "trace",
+          "build",
+          "runtime-probe",
+          "--roots",
+          "<case>/roots.json"
+        ],
+        "selected_project": true,
+        "code": 0
+      },
+      {
+        "arguments": [
+          "trace",
+          "freeze",
+          "runtime-probe",
+          "--roots",
+          "<case>/roots.json"
+        ],
+        "selected_project": true,
+        "code": 0
+      },
+      {
+        "arguments": [
+          "trace",
+          "check",
+          "runtime-probe",
+          "<case>/project/openspec/changes/runtime-probe/graph/req-graph.json",
+          "--roots",
+          "<case>/roots.json"
+        ],
+        "selected_project": true,
+        "code": 0
+      }
+    ]
+  },
+  {
+    "scope": "global",
+    "module_present": true,
+    "implements_present": true,
+    "python": "3.13.14",
+    "test_dependency_provided": "installed PyYAML via PYTHONPATH",
+    "readonly_readme": true,
+    "resource_sha256": "9e64935b0f79021b75fc9eeb85bb945e200fcc3a67883926792a6717d5cbcd06",
+    "commands": [
+      {
+        "arguments": [
+          "install",
+          "--scope",
+          "global",
+          "--client",
+          "codex",
+          "--force"
+        ],
+        "selected_project": false,
+        "code": 0
+      },
+      {
+        "arguments": [
+          "init",
+          "--project",
+          "<case>/project"
+        ],
+        "selected_project": false,
+        "code": 0
+      },
+      {
+        "arguments": [
+          "preflight",
+          "--change",
+          "runtime-probe",
+          "--json"
+        ],
+        "selected_project": true,
+        "code": 0
+      },
+      {
+        "arguments": [
+          "resource",
+          "doc",
+          "module-declarations.md"
+        ],
+        "selected_project": true,
+        "code": 0
+      },
+      {
+        "arguments": [
+          "trace",
+          "build",
+          "runtime-probe",
+          "--roots",
+          "<case>/roots.json"
+        ],
+        "selected_project": true,
+        "code": 0
+      },
+      {
+        "arguments": [
+          "trace",
+          "freeze",
+          "runtime-probe",
+          "--roots",
+          "<case>/roots.json"
+        ],
+        "selected_project": true,
+        "code": 0
+      },
+      {
+        "arguments": [
+          "trace",
+          "check",
+          "runtime-probe",
+          "<case>/project/openspec/changes/runtime-probe/graph/req-graph.json",
+          "--roots",
+          "<case>/roots.json"
+        ],
+        "selected_project": true,
+        "code": 0
+      }
+    ]
+  }
+]
