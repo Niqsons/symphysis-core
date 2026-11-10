@@ -6,6 +6,8 @@ import subprocess
 import sys
 from pathlib import Path
 
+import pytest
+
 from conftest import ROOT
 
 HOOK = ROOT / "tools" / "hooks" / "gate_hook.py"
@@ -140,6 +142,37 @@ def test_pre_push_reads_commit_messages(tmp_path):
     sha = commit(repo, "a.md", "чисто\n", "сообщение с ЗАПРЕТ")
     res = hook(repo, "pre-push", env, "origin", "url", stdin=f"refs/heads/main {sha} refs/heads/main {ZERO}\n")
     assert res.returncode == 1 and sha[:8] in res.stdout
+
+
+@pytest.mark.parametrize("name", ["allowed-hosts.txt", "allowed-lines.txt"])
+def test_pre_push_keeps_current_allowlists_separate_from_history(tmp_path, name):
+    repo = with_remote(tmp_path)
+    env = env_with_gate(tmp_path)
+    gate = Path(env["SYMPHYSIS_GATE"])
+    gate.write_text(
+        "from pathlib import Path\n"
+        "import sys\n"
+        f"policy = Path('tools') / {name!r}\n"
+        "sys.exit(0 if policy.read_text(encoding='utf-8') == 'current\\n' else 1)\n",
+        encoding="utf-8",
+    )
+    commit(repo, f"tools/{name}", "old\n")
+    sha = commit(repo, f"tools/{name}", "current\n")
+    res = hook(repo, "pre-push", env, "origin", "url",
+               stdin=f"refs/heads/main {sha} refs/heads/main {ZERO}\n")
+    assert res.returncode == 0, res.stdout + res.stderr
+
+
+@pytest.mark.parametrize("name", ["a.md", "tools/allowed-hosts.txt", "tools/allowed-lines.txt"])
+@pytest.mark.parametrize("forbidden_first", [True, False])
+def test_pre_push_checks_every_historical_version_of_a_path(tmp_path, name, forbidden_first):
+    repo = with_remote(tmp_path)
+    env = env_with_gate(tmp_path)
+    commit(repo, name, "ЗАПРЕТ\n" if forbidden_first else "чисто\n")
+    sha = commit(repo, name, "чисто\n" if forbidden_first else "ЗАПРЕТ\n")
+    res = hook(repo, "pre-push", env, "origin", "url",
+               stdin=f"refs/heads/main {sha} refs/heads/main {ZERO}\n")
+    assert res.returncode == 1 and name in res.stdout, res.stdout + res.stderr
 
 
 def test_pre_push_ignores_a_branch_deletion(tmp_path):

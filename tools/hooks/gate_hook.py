@@ -96,11 +96,13 @@ def check(items: list[tuple[str, bytes]]) -> int:
                 (tree / "tools").mkdir(exist_ok=True)
                 shutil.copyfile(source, tree / "tools" / name)
         names = []
-        for rel, data in items:
-            target = tree / rel
+        for index, (rel, data) in enumerate(items):
+            # Версии одного пути и настройки гейта не должны затирать друг друга.
+            checked_name = f"objects/{index}/{rel}"
+            target = tree / checked_name
             target.parent.mkdir(parents=True, exist_ok=True)
             target.write_bytes(data)
-            names.append(rel)
+            names.append(checked_name)
         code = 0
         env = dict(os.environ, PYTHONUTF8="1")
         for start in range(0, len(names), BATCH):
