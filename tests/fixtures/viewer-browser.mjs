@@ -71,8 +71,20 @@ const MEASURE = `(() => {
     recommendations: [...document.querySelectorAll('div.rec')].map((n) => n.textContent),
     chosen: [...document.querySelectorAll('input[type=radio]:checked')].map((r) => r.name + '.' + r.value),
     editor: (document.getElementById('editorPick') || {}).value || null, editorMask: (document.getElementById('editorMask') || {}).value ?? null,
-    theme: document.documentElement.dataset.theme || 'dark', themePick: (document.getElementById('themePick') || {}).value || null,
+    theme: document.documentElement.dataset.theme || 'dark', themePick: document.querySelector('#themePick [aria-pressed="true"]')?.dataset.theme || null,
+    themeButtons: [...document.querySelectorAll('#themePick button')].map(n => ({ theme: n.dataset.theme, label: n.getAttribute('aria-label'), pressed: n.getAttribute('aria-pressed') })),
+    headerOverlaps: (() => {
+      const controls = [...document.querySelectorAll('header button, header select, header input')].filter(n => n.offsetWidth && n.offsetHeight);
+      return controls.flatMap((a, i) => controls.slice(i + 1).filter(b => {
+        const x = a.getBoundingClientRect(), y = b.getBoundingClientRect();
+        return Math.min(x.right, y.right) > Math.max(x.left, y.left) && Math.min(x.bottom, y.bottom) > Math.max(x.top, y.top);
+      }).map(b => [a.id || a.dataset.theme || a.textContent, b.id || b.dataset.theme || b.textContent]));
+    })(),
     background: getComputedStyle(document.body).backgroundColor,
+    optionWidths: [...document.querySelectorAll('label.opt')].filter(n => n.offsetWidth).map(n => ({
+      row: n.getBoundingClientRect().width, text: n.querySelector('.t').getBoundingClientRect().width,
+      radio: !!n.querySelector('input[type=radio]')
+    })),
     links: [...document.querySelectorAll('a.filelink')].map((a) => ({ href: a.href, text: a.textContent })),
     codes: [...document.querySelectorAll('.card code')].map((c) => c.textContent),
     attack: { groups: [...document.querySelectorAll('#viewAttack .attack-rows h2 code')].map((n) => n.textContent),
@@ -212,7 +224,7 @@ async function main() {
     }
     if (name === "attackstate") { await evaluate(`localStorage.setItem(KEY + ':attack', ${JSON.stringify(args.join(":"))})`); }
     if (name === "theme") {
-      await evaluate(`(() => { const s = document.getElementById('themePick'); s.value = ${JSON.stringify(args[0])}; s.dispatchEvent(new Event('change', { bubbles: true })); })()`);
+      await click('#themePick button[data-theme="' + args[0] + '"]');
       await sleep(50);
     }
     if (name === "editor") {
