@@ -401,4 +401,4 @@ def test_trace_graph_help_names_its_area_without_rewrite_subcommand():
                           text=True, encoding="utf-8")
     assert done.returncode == 0 and "артефакты изменения не правит" in done.stdout
     assert not re.search(r"anchor|rewrite|якор", done.stdout, re.IGNORECASE), done.stdout
-    assert set(trace_graph.build_parser()._subparsers._group_actions[0].choices) == {"build", "report", "check", "freeze", "archive-gaps"}
+    assert set(trace_graph.build_parser()._subparsers._group_actions[0].choices) == {"view", "build", "report", "check", "freeze", "archive-gaps"}
