@@ -149,18 +149,18 @@ def test_fresh_snapshot_only_updates_root_commits(tmp_path, fork):
 
 def test_no_absolute_paths_in_snapshot_and_report(tmp_path, monkeypatch):
     """`trace-snapshot`: «Абсолютных путей нет» — `openspec` падает с путём, имя узла и файл корней несут пути."""
-    # Из основного клона `X:\symphysis` путь пункта — текущий каталог, и `no_paths` даёт `<каталог>`, а не `<путь>`.
+    # Из основного клона `X:\symphysis` путь пункта — текущий каталог, и `no_paths` даёт `<каталог>`, а не `<путь>`. gate-ok: redaction fixture
     monkeypatch.chdir(tmp_path)
-    security = "| Пункт | Статус |\n| --- | --- |\n| Чтение X:\\symphysis\\.context\\00-start-here.md | применимо |\n"
+    security = "| Пункт | Статус |\n| --- | --- |\n| Чтение X:\\symphysis\\.context\\00-start-here.md | применимо |\n"  # gate-ok: absolute-path redaction fixture
     root, base, roots, _ = frozen_project(tmp_path, security=security)
-    env = shim_env(tmp_path, fork_reply("", code=2, stderr=f"ENOENT {tmp_path}\\proj\\x and {tmp_path.as_posix()}/proj/y"))
+    env = shim_env(tmp_path, fork_reply("", code=2, stderr=f"ENOENT {tmp_path}\\proj\\x and {tmp_path.as_posix()}/proj/y"))  # gate-ok: synthetic error paths
     for key, value in env.items():
         monkeypatch.setenv(key, value)
     freeze(root, roots)
     assert "validate не запустился" in (base / "graph" / "report.md").read_text(encoding="utf-8")
     for name in ("req-graph.json", "report.md"):
         text = (base / "graph" / name).read_text(encoding="utf-8")
-        for absolute in (str(tmp_path), tmp_path.as_posix(), "X:\\\\symphysis", "X:\\symphysis", "X:/symphysis"):
+        for absolute in (str(tmp_path), tmp_path.as_posix(), "X:\\\\symphysis", "X:\\symphysis", "X:/symphysis"):  # gate-ok: assert synthetic paths absent
             assert absolute not in text, (name, absolute)
     assert [item["prefix"] for item in snapshot(base)["roots"]] == ["core/", "plugin/"]
     assert any(node["kind"] == "sec" and "<путь>" in node["name"] for node in snapshot(base)["nodes"])
@@ -439,7 +439,7 @@ def test_base_freeze_writes_numbers_scenarios_text_traces(tmp_path, fork):
     root, base = modified_project(tmp_path)
     freeze(root)
     entry = snapshot(base)["base"]["demo"]["Один"]
-    assert set(entry) == {"numbers", "scenarios", "text", "traces"} and snapshot(base)["format"] == 2
+    assert set(entry) == {"numbers", "scenarios", "text", "traces"} and snapshot(base)["format"] == 3
     assert entry["numbers"] == BASE_REFS and sorted(entry["scenarios"]) == ["Меняется", "Старый"]
     assert all(len(h) == 64 for h in [entry["text"], *entry["scenarios"].values(), *entry["traces"]]) and len(entry["traces"]) == 1
     assert "SHALL" not in json.dumps(snapshot(base)["base"], ensure_ascii=False)
@@ -635,8 +635,8 @@ def test_format_one_snapshot_is_rebuilt_with_base_from_live_master(tmp_path, for
     (base / "graph" / "req-graph.json").write_text(json.dumps(snap, ensure_ascii=False), encoding="utf-8")
     assert trace_graph.saved_base(base) == {}
     done = cli(root, env=shim_env(tmp_path, fork_reply(CLEAN)))
-    assert done.returncode == 0 and "формат 1, а скрипт читает 2" in done.stdout, done.stdout + done.stderr
-    assert snapshot(base)["format"] == 2 and snapshot(base)["base"]["demo"]["Один"]["numbers"] == BASE_REFS
+    assert done.returncode == 0 and "формат 1, поддерживаемые форматы 2 и 3" in done.stdout, done.stdout + done.stderr
+    assert snapshot(base)["format"] == 3 and snapshot(base)["base"]["demo"]["Один"]["numbers"] == BASE_REFS
 
 
 def test_base_first_freeze_after_sync_does_not_take_a_base_from_the_synced_master(tmp_path, fork):

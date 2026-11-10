@@ -1,0 +1,271 @@
+[
+  {
+    "step": "fork-head",
+    "command": [
+      "C:\\Program Files\\Git\\bin\\git.EXE",
+      "-C",
+      "<PROJECT>\\upstream\\openspec",
+      "rev-parse",
+      "HEAD"
+    ],
+    "exit": 0,
+    "stdout": "71c41a656f284f87bb32b341f7713841ad63569d\n",
+    "stderr": ""
+  },
+  {
+    "step": "fork-version",
+    "command": [
+      "C:\\Program Files\\nodejs\\node.EXE",
+      "<PROJECT>\\upstream\\openspec\\bin\\openspec.js",
+      "--version"
+    ],
+    "exit": 0,
+    "stdout": "1.16.1+symphysis.5\n",
+    "stderr": ""
+  },
+  {
+    "step": "runtime-fingerprints",
+    "head": "71c41a656f284f87bb32b341f7713841ad63569d",
+    "version": "1.16.1+symphysis.5",
+    "files": {
+      "dist/utils/change-metadata.js": "267d1ab9e49ba76aaff6b9c5b427e60957f2bbcf778c03a15c7d9fb788a8149d",
+      "dist/core/change-metadata/schema.js": "5d5f98e3f79756443f926af59bfc49894f37dc40ca6877071c1d4123188eb91a",
+      "src/utils/change-metadata.ts": "f03cef11785c05af6a98ec83d30d85da7c81d6ae4fa17e70f890304420f140c0",
+      "src/core/change-metadata/schema.ts": "df156cb3a79060e4f7bce6878b2b33bba49818ef13665f34a3b06d4b06b6b8df"
+    }
+  },
+  {
+    "step": "new",
+    "command": [
+      "C:\\Program Files\\nodejs\\node.EXE",
+      "<PROJECT>\\upstream\\openspec\\bin\\openspec.js",
+      "new",
+      "change",
+      "metadata-probe",
+      "--json"
+    ],
+    "exit": 0,
+    "stdout": "{\n  \"change\": {\n    \"id\": \"metadata-probe\",\n    \"path\": \"<TEMP>\\\\project\\\\openspec\\\\changes\\\\metadata-probe\",\n    \"metadataPath\": \"<TEMP>\\\\project\\\\openspec\\\\changes\\\\metadata-probe\\\\.openspec.yaml\",\n    \"schema\": \"spec-driven\"\n  },\n  \"root\": {\n    \"path\": \"<TEMP>\\\\project\",\n    \"source\": \"implicit\"\n  }\n}\n",
+    "stderr": ""
+  },
+  {
+    "step": "new-existing",
+    "command": [
+      "C:\\Program Files\\nodejs\\node.EXE",
+      "<PROJECT>\\upstream\\openspec\\bin\\openspec.js",
+      "new",
+      "change",
+      "metadata-probe",
+      "--json"
+    ],
+    "exit": 1,
+    "stdout": "{\n  \"change\": null,\n  \"status\": [\n    {\n      \"severity\": \"error\",\n      \"code\": \"change_error\",\n      \"message\": \"Change 'metadata-probe' already exists at <TEMP>\\\\project\\\\openspec\\\\changes\\\\metadata-probe\"\n    }\n  ]\n}\n",
+    "stderr": ""
+  },
+  {
+    "step": "status-json",
+    "command": [
+      "C:\\Program Files\\nodejs\\node.EXE",
+      "<PROJECT>\\upstream\\openspec\\bin\\openspec.js",
+      "status",
+      "--change",
+      "metadata-probe",
+      "--json"
+    ],
+    "exit": 0,
+    "stdout": "{\n  \"changeName\": \"metadata-probe\",\n  \"schemaName\": \"spec-driven\",\n  \"planningHome\": {\n    \"kind\": \"repo\",\n    \"root\": \"<TEMP>\\\\project\",\n    \"changesDir\": \"<TEMP>\\\\project\\\\openspec\\\\changes\",\n    \"defaultSchema\": \"spec-driven\"\n  },\n  \"changeRoot\": \"<TEMP>\\\\project\\\\openspec\\\\changes\\\\metadata-probe\",\n  \"artifactPaths\": {\n    \"proposal\": {\n      \"outputPath\": \"proposal.md\",\n      \"resolvedOutputPath\": \"<TEMP>\\\\project\\\\openspec\\\\changes\\\\metadata-probe\\\\proposal.md\",\n      \"existingOutputPaths\": []\n    },\n    \"specs\": {\n      \"outputPath\": \"specs/**/*.md\",\n      \"resolvedOutputPath\": \"<TEMP>\\\\project\\\\openspec\\\\changes\\\\metadata-probe\\\\specs\\\\**\\\\*.md\",\n      \"existingOutputPaths\": []\n    },\n    \"design\": {\n      \"outputPath\": \"design.md\",\n      \"resolvedOutputPath\": \"<TEMP>\\\\project\\\\openspec\\\\changes\\\\metadata-probe\\\\design.md\",\n      \"existingOutputPaths\": []\n    },\n    \"tasks\": {\n      \"outputPath\": \"tasks.md\",\n      \"resolvedOutputPath\": \"<TEMP>\\\\project\\\\openspec\\\\changes\\\\metadata-probe\\\\tasks.md\",\n      \"existingOutputPaths\": []\n    }\n  },\n  \"isPlanningComplete\": false,\n  \"isComplete\": false,\n  \"applyRequires\": [\n    \"tasks\"\n  ],\n  \"nextSteps\": [\n    \"Run openspec instructions proposal --change \\\"metadata-probe\\\" --json before writing that artifact.\"\n  ],\n  \"actionContext\": {\n    \"mode\": \"repo-local\",\n    \"sourceOfTruth\": \"repo\",\n    \"planningArtifacts\": [\n      \"proposal\",\n      \"specs\",\n      \"design\",\n      \"tasks\"\n    ],\n    \"linkedContext\": [],\n    \"allowedEditRoots\": [\n      \"<TEMP>\\\\project\"\n    ],\n    \"requiresAffectedAreaSelection\": false,\n    \"constraints\": [\n      \"Repo-local change artifacts and implementation edits are scoped to this project.\"\n    ]\n  },\n  \"artifacts\": [\n    {\n      \"id\": \"proposal\",\n      \"outputPath\": \"proposal.md\",\n      \"status\": \"ready\",\n      \"requires\": []\n    },\n    {\n      \"id\": \"specs\",\n      \"outputPath\": \"specs/**/*.md\",\n      \"status\": \"skipped\",\n      \"requires\": [\n        \"proposal\"\n      ]\n    },\n    {\n      \"id\": \"design\",\n      \"outputPath\": \"design.md\",\n      \"status\": \"blocked\",\n      \"requires\": [\n        \"proposal\"\n      ],\n      \"missingDeps\": [\n        \"proposal\"\n      ]\n    },\n    {\n      \"id\": \"tasks\",\n      \"outputPath\": \"tasks.md\",\n      \"status\": \"blocked\",\n      \"requires\": [\n        \"specs\",\n        \"design\"\n      ],\n      \"missingDeps\": [\n        \"design\"\n      ]\n    }\n  ],\n  \"root\": {\n    \"path\": \"<TEMP>\\\\project\",\n    \"source\": \"nearest\"\n  }\n}\n",
+    "stderr": ""
+  },
+  {
+    "step": "instructions-json",
+    "command": [
+      "C:\\Program Files\\nodejs\\node.EXE",
+      "<PROJECT>\\upstream\\openspec\\bin\\openspec.js",
+      "instructions",
+      "proposal",
+      "--change",
+      "metadata-probe",
+      "--json"
+    ],
+    "exit": 0,
+    "stdout": "{\n  \"changeName\": \"metadata-probe\",\n  \"artifactId\": \"proposal\",\n  \"schemaName\": \"spec-driven\",\n  \"changeDir\": \"<TEMP>\\\\project\\\\openspec\\\\changes\\\\metadata-probe\",\n  \"planningHome\": {\n    \"kind\": \"repo\",\n    \"root\": \"<TEMP>\\\\project\",\n    \"changesDir\": \"<TEMP>\\\\project\\\\openspec\\\\changes\",\n    \"defaultSchema\": \"spec-driven\"\n  },\n  \"outputPath\": \"proposal.md\",\n  \"resolvedOutputPath\": \"<TEMP>\\\\project\\\\openspec\\\\changes\\\\metadata-probe\\\\proposal.md\",\n  \"existingOutputPaths\": [],\n  \"description\": \"Initial proposal document outlining the change\",\n  \"instruction\": \"Create the proposal document that establishes WHY this change is needed.\\n\\nSections:\\n- **Why**: 1-2 sentences on the problem or opportunity. What problem does this solve? Why now?\\n- **What Changes**: Bullet list of changes. Be specific about new capabilities, modifications, or removals. Mark breaking changes with **BREAKING**.\\n- **Capabilities**: Identify which specs will be created or modified:\\n  - **New Capabilities**: List capabilities being introduced. Each becomes a new `specs/<capability-path>/spec.md`. Name each capability for a durable system behavior (for example, `user-auth`), not the work in this change (for example, `add-login-endpoint`). Choose a cohesive boundary that can own related requirements as the system evolves; avoid broad catch-all capabilities. Use kebab-case for path segments you introduce (e.g., `user-auth` or `identity/user-auth`) and follow the project's existing spec organization.\\n  - **Modified Capabilities**: List existing capabilities whose REQUIREMENTS are changing. Only include if spec-level behavior changes (not just implementation details). Each needs a delta spec file. Use the exact existing path under `openspec/specs/`. Leave empty if no requirement changes.\\n- **Impact**: Affected code, APIs, dependencies, or systems.\\n\\nIMPORTANT: The Capabilities section is critical. It creates the contract between\\nproposal and specs phases. Research existing specs before filling this in:\\nrun `openspec list --specs` for the project's capability inventory, then\\n`openspec show \\\"<spec-id>\\\" --type spec --json --no-scenarios` for any that\\nlook related - that returns a capability's purpose and requirement texts\\nwithout pulling whole spec files into context. Append `--store \\\"<id>\\\"` to\\nboth commands only for a registered standalone store, and keep `--type\\nspec`: a change and a spec sharing a name is otherwise an ambiguous-item\\nerror. `openspec list` without `--specs` lists in-flight changes, not\\nspecs - it never shows what the project already covers. Reuse an existing\\ncapability's exact path instead of introducing a near-duplicate name.\\nThe filtered read is only an overview. Before deciding what is already\\ncovered or what should change, read each relevant spec in full, including\\nscenarios, with `openspec show \\\"<spec-id>\\\" --type spec` (same `--store` rule).\\nEach capability listed here will need a corresponding spec file.\\n\\nEvery change must either declare at least one capability (new or\\nmodified) or explicitly opt out of specs: `openspec validate` rejects a\\nchange with zero deltas unless the change's `.openspec.yaml` sets\\n`skip_specs: true`. Use `skip_specs: true` only when no spec-level\\nbehavior changes (pure refactor, tooling, docs) - specs describe\\nbehavior, so if behavior does not change, no spec should change either.\\nDo not invent a requirement just to satisfy validation.\\n\\nKeep it concise (1-2 pages). Focus on the \\\"why\\\" not the \\\"how\\\" -\\nimplementation details belong in design.md.\\n\\nThis is the foundation - specs, design, and tasks all build on this.\\n\",\n  \"template\": \"# Proposal\\r\\n\\r\\n## Why\\r\\n\\r\\n<!-- Explain the motivation for this change. What problem does this solve? Why now? -->\\r\\n\\r\\n## What Changes\\r\\n\\r\\n<!-- Describe what will change. Be specific about new capabilities, modifications, or removals. -->\\r\\n\\r\\n## Capabilities\\r\\n\\r\\n### New Capabilities\\r\\n<!-- Capabilities being introduced. Name each capability for a cohesive system\\r\\n     behavior that can own related requirements as the system evolves. Do not name\\r\\n     implementation tasks or proposal sections. Avoid broad catch-all names. Use\\r\\n     kebab-case for path segments you introduce (e.g., user-auth or identity/user-auth)\\r\\n     that follow the project's existing spec organization. Each creates\\r\\n     specs/<capability-path>/spec.md. -->\\r\\n- `<capability-path>`: <brief description of what this capability covers>\\r\\n\\r\\n### Modified Capabilities\\r\\n<!-- Existing capabilities whose REQUIREMENTS are changing (not just implementation).\\r\\n     Only list here if spec-level behavior changes. Each needs a delta spec file.\\r\\n     Use the exact existing path under openspec/specs/. Leave empty if no requirement\\r\\n     changes. A change with no capabilities at all (pure refactor, tooling, docs)\\r\\n     must set `skip_specs: true` in its .openspec.yaml - openspec validate rejects\\r\\n     a zero-delta change without that marker. Do not invent a requirement just to\\r\\n     satisfy validation. -->\\r\\n- `<existing-capability-path>`: <what requirement is changing>\\r\\n\\r\\n## Impact\\r\\n\\r\\n<!-- Affected code, APIs, dependencies, systems -->\\r\\n\",\n  \"dependencies\": [],\n  \"unlocks\": [\n    \"specs\",\n    \"design\"\n  ],\n  \"root\": {\n    \"path\": \"<TEMP>\\\\project\",\n    \"source\": \"nearest\"\n  }\n}\n",
+    "stderr": ""
+  },
+  {
+    "step": "instructions-text",
+    "command": [
+      "C:\\Program Files\\nodejs\\node.EXE",
+      "<PROJECT>\\upstream\\openspec\\bin\\openspec.js",
+      "instructions",
+      "proposal",
+      "--change",
+      "metadata-probe"
+    ],
+    "exit": 0,
+    "stdout": "<artifact id=\"proposal\" change=\"metadata-probe\" schema=\"spec-driven\">\n\n<task>\nCreate the proposal artifact for change \"metadata-probe\".\nInitial proposal document outlining the change\n</task>\n\n<output>\nWrite to: <TEMP>\\project\\openspec\\changes\\metadata-probe\\proposal.md\n</output>\n\n<instruction>\nCreate the proposal document that establishes WHY this change is needed.\n\nSections:\n- **Why**: 1-2 sentences on the problem or opportunity. What problem does this solve? Why now?\n- **What Changes**: Bullet list of changes. Be specific about new capabilities, modifications, or removals. Mark breaking changes with **BREAKING**.\n- **Capabilities**: Identify which specs will be created or modified:\n  - **New Capabilities**: List capabilities being introduced. Each becomes a new `specs/<capability-path>/spec.md`. Name each capability for a durable system behavior (for example, `user-auth`), not the work in this change (for example, `add-login-endpoint`). Choose a cohesive boundary that can own related requirements as the system evolves; avoid broad catch-all capabilities. Use kebab-case for path segments you introduce (e.g., `user-auth` or `identity/user-auth`) and follow the project's existing spec organization.\n  - **Modified Capabilities**: List existing capabilities whose REQUIREMENTS are changing. Only include if spec-level behavior changes (not just implementation details). Each needs a delta spec file. Use the exact existing path under `openspec/specs/`. Leave empty if no requirement changes.\n- **Impact**: Affected code, APIs, dependencies, or systems.\n\nIMPORTANT: The Capabilities section is critical. It creates the contract between\nproposal and specs phases. Research existing specs before filling this in:\nrun `openspec list --specs` for the project's capability inventory, then\n`openspec show \"<spec-id>\" --type spec --json --no-scenarios` for any that\nlook related - that returns a capability's purpose and requirement texts\nwithout pulling whole spec files into context. Append `--store \"<id>\"` to\nboth commands only for a registered standalone store, and keep `--type\nspec`: a change and a spec sharing a name is otherwise an ambiguous-item\nerror. `openspec list` without `--specs` lists in-flight changes, not\nspecs - it never shows what the project already covers. Reuse an existing\ncapability's exact path instead of introducing a near-duplicate name.\nThe filtered read is only an overview. Before deciding what is already\ncovered or what should change, read each relevant spec in full, including\nscenarios, with `openspec show \"<spec-id>\" --type spec` (same `--store` rule).\nEach capability listed here will need a corresponding spec file.\n\nEvery change must either declare at least one capability (new or\nmodified) or explicitly opt out of specs: `openspec validate` rejects a\nchange with zero deltas unless the change's `.openspec.yaml` sets\n`skip_specs: true`. Use `skip_specs: true` only when no spec-level\nbehavior changes (pure refactor, tooling, docs) - specs describe\nbehavior, so if behavior does not change, no spec should change either.\nDo not invent a requirement just to satisfy validation.\n\nKeep it concise (1-2 pages). Focus on the \"why\" not the \"how\" -\nimplementation details belong in design.md.\n\nThis is the foundation - specs, design, and tasks all build on this.\n</instruction>\n\n<template>\n<!-- Use this as the structure for your output file. Fill in the sections. -->\n# Proposal\n\n## Why\n\n<!-- Explain the motivation for this change. What problem does this solve? Why now? -->\n\n## What Changes\n\n<!-- Describe what will change. Be specific about new capabilities, modifications, or removals. -->\n\n## Capabilities\n\n### New Capabilities\n<!-- Capabilities being introduced. Name each capability for a cohesive system\n     behavior that can own related requirements as the system evolves. Do not name\n     implementation tasks or proposal sections. Avoid broad catch-all names. Use\n     kebab-case for path segments you introduce (e.g., user-auth or identity/user-auth)\n     that follow the project's existing spec organization. Each creates\n     specs/<capability-path>/spec.md. -->\n- `<capability-path>`: <brief description of what this capability covers>\n\n### Modified Capabilities\n<!-- Existing capabilities whose REQUIREMENTS are changing (not just implementation).\n     Only list here if spec-level behavior changes. Each needs a delta spec file.\n     Use the exact existing path under openspec/specs/. Leave empty if no requirement\n     changes. A change with no capabilities at all (pure refactor, tooling, docs)\n     must set `skip_specs: true` in its .openspec.yaml - openspec validate rejects\n     a zero-delta change without that marker. Do not invent a requirement just to\n     satisfy validation. -->\n- `<existing-capability-path>`: <what requirement is changing>\n\n## Impact\n\n<!-- Affected code, APIs, dependencies, systems -->\n</template>\n\n<success_criteria>\n<!-- To be defined in schema validation rules -->\n</success_criteria>\n\n<unlocks>\nCompleting this artifact enables: specs, design\n</unlocks>\n\n</artifact>\n",
+    "stderr": "- Generating instructions...\n"
+  },
+  {
+    "step": "validate-strict",
+    "command": [
+      "C:\\Program Files\\nodejs\\node.EXE",
+      "<PROJECT>\\upstream\\openspec\\bin\\openspec.js",
+      "validate",
+      "metadata-probe",
+      "--strict",
+      "--json"
+    ],
+    "exit": 0,
+    "stdout": "{\n  \"items\": [\n    {\n      \"id\": \"metadata-probe\",\n      \"type\": \"change\",\n      \"valid\": true,\n      \"issues\": [\n        {\n          \"level\": \"INFO\",\n          \"path\": \"file\",\n          \"message\": \"skip_specs is set in .openspec.yaml: change declares no spec-level behavior changes, zero deltas accepted\"\n        }\n      ],\n      \"durationMs\": 16\n    }\n  ],\n  \"summary\": {\n    \"totals\": {\n      \"items\": 1,\n      \"passed\": 1,\n      \"failed\": 0\n    },\n    \"byType\": {\n      \"change\": {\n        \"items\": 1,\n        \"passed\": 1,\n        \"failed\": 0\n      }\n    }\n  },\n  \"version\": \"1.0\",\n  \"root\": {\n    \"path\": \"<TEMP>\\\\project\",\n    \"source\": \"nearest\"\n  }\n}\n",
+    "stderr": ""
+  },
+  {
+    "step": "archive",
+    "command": [
+      "C:\\Program Files\\nodejs\\node.EXE",
+      "<PROJECT>\\upstream\\openspec\\bin\\openspec.js",
+      "archive",
+      "metadata-probe",
+      "--yes",
+      "--json"
+    ],
+    "exit": 0,
+    "stdout": "{\n  \"archive\": {\n    \"change\": \"metadata-probe\",\n    \"archivedAs\": \"2026-11-09-metadata-probe\",\n    \"path\": \"<TEMP>\\\\project\\\\openspec\\\\changes\\\\archive\\\\2026-11-09-metadata-probe\",\n    \"specsUpdated\": false\n  },\n  \"root\": {\n    \"path\": \"<TEMP>\\\\project\",\n    \"source\": \"nearest\"\n  }\n}\n",
+    "stderr": ""
+  },
+  {
+    "step": "metadata-retention",
+    "result": "new creates only known metadata; repeated new refuses; status/instructions(json,text)/strict validation/archive preserve exact metadata bytes",
+    "sha256": "e87555bc44738ab251c951d0da0ab937c58d952a9493fa8bc5b21d581a182bd4",
+    "archived": true
+  },
+  {
+    "step": "metadata-helper",
+    "command": [
+      "C:\\Program Files\\nodejs\\node.EXE",
+      "<TEMP>\\metadata-helper.mjs",
+      "<TEMP>\\project\\openspec\\changes\\archive\\2026-11-09-metadata-probe",
+      "<TEMP>\\project"
+    ],
+    "exit": 0,
+    "stdout": "{\"keys\":[\"schema\",\"created\",\"skip_specs\"],\"unknown\":[]}\n{\"extensionAfterRewrite\":false}\n",
+    "stderr": ""
+  },
+  {
+    "step": "store-setup-without-git",
+    "command": [
+      "C:\\Program Files\\nodejs\\node.EXE",
+      "<PROJECT>\\upstream\\openspec\\bin\\openspec.js",
+      "store",
+      "setup",
+      "demo-store",
+      "--path",
+      "<TEMP>\\store",
+      "--no-init-git",
+      "--json"
+    ],
+    "exit": 0,
+    "stdout": "{\n  \"store\": {\n    \"id\": \"demo-store\",\n    \"root\": \"<TEMP>\\\\store\",\n    \"metadata_path\": \"<TEMP>\\\\store\\\\.openspec-store\\\\store.yaml\"\n  },\n  \"registry\": {\n    \"path\": \"<TEMP>\\\\xdg_data_home\\\\openspec\\\\stores\\\\registry.yaml\",\n    \"registered\": true,\n    \"already_registered\": false\n  },\n  \"git\": {\n    \"is_repository\": false,\n    \"initialized\": false,\n    \"committed\": false\n  },\n  \"created_files\": [\n    \"openspec/\",\n    \"openspec/specs/\",\n    \"openspec/changes/\",\n    \"openspec/changes/archive/\",\n    \"openspec/config.yaml\",\n    \"openspec/specs/.gitkeep\",\n    \"openspec/changes/archive/.gitkeep\",\n    \".openspec-store/store.yaml\"\n  ],\n  \"status\": []\n}\n",
+    "stderr": ""
+  },
+  {
+    "step": "store-new-from-pointer",
+    "command": [
+      "C:\\Program Files\\nodejs\\node.EXE",
+      "<PROJECT>\\upstream\\openspec\\bin\\openspec.js",
+      "new",
+      "change",
+      "store-probe",
+      "--json"
+    ],
+    "exit": 0,
+    "stdout": "{\n  \"change\": {\n    \"id\": \"store-probe\",\n    \"path\": \"<TEMP>\\\\store\\\\openspec\\\\changes\\\\store-probe\",\n    \"metadataPath\": \"<TEMP>\\\\store\\\\openspec\\\\changes\\\\store-probe\\\\.openspec.yaml\",\n    \"schema\": \"spec-driven\"\n  },\n  \"root\": {\n    \"path\": \"<TEMP>\\\\store\",\n    \"source\": \"declared\",\n    \"store_id\": \"demo-store\"\n  }\n}\n",
+    "stderr": ""
+  },
+  {
+    "step": "store-status-from-pointer",
+    "command": [
+      "C:\\Program Files\\nodejs\\node.EXE",
+      "<PROJECT>\\upstream\\openspec\\bin\\openspec.js",
+      "status",
+      "--change",
+      "store-probe",
+      "--json"
+    ],
+    "exit": 0,
+    "stdout": "{\n  \"changeName\": \"store-probe\",\n  \"schemaName\": \"spec-driven\",\n  \"planningHome\": {\n    \"kind\": \"repo\",\n    \"root\": \"<TEMP>\\\\store\",\n    \"changesDir\": \"<TEMP>\\\\store\\\\openspec\\\\changes\",\n    \"defaultSchema\": \"spec-driven\"\n  },\n  \"changeRoot\": \"<TEMP>\\\\store\\\\openspec\\\\changes\\\\store-probe\",\n  \"artifactPaths\": {\n    \"proposal\": {\n      \"outputPath\": \"proposal.md\",\n      \"resolvedOutputPath\": \"<TEMP>\\\\store\\\\openspec\\\\changes\\\\store-probe\\\\proposal.md\",\n      \"existingOutputPaths\": []\n    },\n    \"specs\": {\n      \"outputPath\": \"specs/**/*.md\",\n      \"resolvedOutputPath\": \"<TEMP>\\\\store\\\\openspec\\\\changes\\\\store-probe\\\\specs\\\\**\\\\*.md\",\n      \"existingOutputPaths\": []\n    },\n    \"design\": {\n      \"outputPath\": \"design.md\",\n      \"resolvedOutputPath\": \"<TEMP>\\\\store\\\\openspec\\\\changes\\\\store-probe\\\\design.md\",\n      \"existingOutputPaths\": []\n    },\n    \"tasks\": {\n      \"outputPath\": \"tasks.md\",\n      \"resolvedOutputPath\": \"<TEMP>\\\\store\\\\openspec\\\\changes\\\\store-probe\\\\tasks.md\",\n      \"existingOutputPaths\": []\n    }\n  },\n  \"isPlanningComplete\": false,\n  \"isComplete\": false,\n  \"applyRequires\": [\n    \"tasks\"\n  ],\n  \"nextSteps\": [\n    \"Run openspec instructions proposal --change \\\"store-probe\\\" --store demo-store --json before writing that artifact.\"\n  ],\n  \"actionContext\": {\n    \"mode\": \"repo-local\",\n    \"sourceOfTruth\": \"repo\",\n    \"planningArtifacts\": [\n      \"proposal\",\n      \"specs\",\n      \"design\",\n      \"tasks\"\n    ],\n    \"linkedContext\": [],\n    \"allowedEditRoots\": [\n      \"<TEMP>\\\\pointer\",\n      \"<TEMP>\\\\store\"\n    ],\n    \"requiresAffectedAreaSelection\": false,\n    \"constraints\": [\n      \"Change artifacts live in store 'demo-store' (<TEMP>\\\\store). Implementation edits go in <TEMP>\\\\pointer, the project on the current path that declares this store; ask the user before editing any other repository.\"\n    ]\n  },\n  \"artifacts\": [\n    {\n      \"id\": \"proposal\",\n      \"outputPath\": \"proposal.md\",\n      \"status\": \"ready\",\n      \"requires\": []\n    },\n    {\n      \"id\": \"specs\",\n      \"outputPath\": \"specs/**/*.md\",\n      \"status\": \"blocked\",\n      \"requires\": [\n        \"proposal\"\n      ],\n      \"missingDeps\": [\n        \"proposal\"\n      ]\n    },\n    {\n      \"id\": \"design\",\n      \"outputPath\": \"design.md\",\n      \"status\": \"blocked\",\n      \"requires\": [\n        \"proposal\"\n      ],\n      \"missingDeps\": [\n        \"proposal\"\n      ]\n    },\n    {\n      \"id\": \"tasks\",\n      \"outputPath\": \"tasks.md\",\n      \"status\": \"blocked\",\n      \"requires\": [\n        \"specs\",\n        \"design\"\n      ],\n      \"missingDeps\": [\n        \"specs\",\n        \"design\"\n      ]\n    }\n  ],\n  \"root\": {\n    \"path\": \"<TEMP>\\\\store\",\n    \"source\": \"declared\",\n    \"store_id\": \"demo-store\"\n  }\n}\n",
+    "stderr": ""
+  },
+  {
+    "step": "store-no-git",
+    "result": "setup --no-init-git and declared store pointer new/status succeed; no .git exists"
+  },
+  {
+    "step": "roots-explicit-map",
+    "result": "long prefix resolves nested path without Git; parent escape rejected; no personal roots file called"
+  },
+  {
+    "step": "structure-git-init",
+    "command": [
+      "C:\\Program Files\\Git\\bin\\git.EXE",
+      "init",
+      "-q",
+      "<TEMP>\\modules"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "step": "structure-index",
+    "command": [
+      "C:\\Program Files\\Git\\bin\\git.EXE",
+      "-C",
+      "<TEMP>\\modules",
+      "add",
+      "."
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "step": "module-detection",
+    "found": [
+      "openspec/schemas/symphysis",
+      "src/deep/marked",
+      "top"
+    ],
+    "placeSignals": [
+      "src/deep/marked/: модуль не на своём месте (первый уровень или openspec/schemas/symphysis/)"
+    ],
+    "notDetected": [
+      "plain README without name/kind",
+      "ignored README",
+      "untracked README"
+    ]
+  },
+  {
+    "step": "module-detection-no-git",
+    "exit": 128,
+    "result": "CalledProcessError from git ls-files; no fallback"
+  },
+  {
+    "step": "settings-reader-limitation",
+    "signals": [
+      "symphysis.yaml: нет пакета PyYAML — выполнить: python -m pip install pyyaml"
+    ],
+    "result": "isolated Python has no PyYAML; following check calls _apply on an in-memory synthetic mapping"
+  },
+  {
+    "step": "settings-repos",
+    "signals": [
+      "symphysis.yaml: неизвестный ключ repos"
+    ],
+    "result": "repos is not accepted as repository map"
+  },
+  {
+    "step": "final",
+    "result": "PASS"
+  }
+]

@@ -1,0 +1,2 @@
+local resource/preflight/build/freeze/check passed
+global resource/preflight/build/freeze/check passed

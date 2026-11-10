@@ -192,9 +192,9 @@ test("инструменты: каждый модуль из состава пр
 test("`project-installer`: «Скрипта нет при проверке установки»: находка называет файл и «нет файла» (F-126)", () => {
   const p = installed();
   const t = targets(p).toolsDir;
-  for (const m of ["trace_graph.py", "openspec_run.py", "anchor_refs.py", "sync_check.py"]) fs.rmSync(path.join(t, "tools", m));
+  for (const m of ["trace_graph.py", "trace_modules.py", "openspec_run.py", "anchor_refs.py", "sync_check.py"]) fs.rmSync(path.join(t, "tools", m));
   const r = runCheck(p);
-  for (const m of ["trace_graph.py", "openspec_run.py", "anchor_refs.py", "sync_check.py"]) assert.ok(r.findings.includes(`.symphysis/tools/${m}: нет файла`), `${m}: ${JSON.stringify(r.findings)}`);
+  for (const m of ["trace_graph.py", "trace_modules.py", "openspec_run.py", "anchor_refs.py", "sync_check.py"]) assert.ok(r.findings.includes(`.symphysis/tools/${m}: нет файла`), `${m}: ${JSON.stringify(r.findings)}`);
   assert.equal(r.ok, false);
 });
 

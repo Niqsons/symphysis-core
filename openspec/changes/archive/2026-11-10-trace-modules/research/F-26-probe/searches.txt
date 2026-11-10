@@ -1,0 +1,13 @@
+command: rg -n "x-symphysis-components|repos:|git archive|materials/|intake.py" roots/roots.py settings/symphysis_config.py installer/lib trace/trace_graph.py step-help/step_help.py research/skills/symphysis-research/SKILL.md decisions/skills/symphysis-brainstorm/SKILL.md openspec/schemas/symphysis/schema.yaml openspec/config.yaml
+exit: 1
+
+
+
+command: rg -n "repository_structure|module_dirs|README\\.md" roots/roots.py settings/symphysis_config.py installer/lib trace/trace_graph.py step-help/step_help.py research/skills/symphysis-research/SKILL.md decisions/skills/symphysis-brainstorm/SKILL.md openspec/schemas/symphysis/schema.yaml openspec/config.yaml
+exit: 1
+
+
+
+command: rg -n "module|component|модул|компонент" trace/trace_graph.py openspec/config.yaml openspec/schemas/symphysis/schema.yaml
+exit: 0
+trace/trace_graph.py:21:# Исходник ядра (F-20 A): код модулей лежит в соседних каталогах первого уровня, точка входа ставит нужные ей в `sys.path`.

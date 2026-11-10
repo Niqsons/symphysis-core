@@ -1,0 +1,42 @@
+[
+  {
+    "record": "F-11",
+    "original_path": "trace/trace_graph.py",
+    "quote": "GRAPH_FORMAT = 2"
+  },
+  {
+    "record": "F-11",
+    "original_path": "trace/trace_graph.py",
+    "quote": "data[\"format\"] != GRAPH_FORMAT"
+  },
+  {
+    "record": "F-27",
+    "original_path": "trace/trace_graph.py",
+    "quote": "GRAPH_FORMAT = 2"
+  },
+  {
+    "record": "F-27",
+    "original_path": "trace/trace_graph.py",
+    "quote": "data[\"format\"] != GRAPH_FORMAT"
+  },
+  {
+    "record": "F-51",
+    "original_path": "trace/trace_graph.py",
+    "quote": "text = build_report(root, change, frozen).rstrip(\"\\n\") + \"\\n\""
+  },
+  {
+    "record": "F-52",
+    "original_path": "trace/trace_graph.py",
+    "quote": "raw = data.get(\"base\") if isinstance(data, dict) and data.get(\"format\") == GRAPH_FORMAT else None"
+  },
+  {
+    "record": "F-23",
+    "original_path": "trace/trace_graph.py",
+    "quote": "GRAPH_FORMAT = 2"
+  },
+  {
+    "record": "F-23",
+    "original_path": "trace/trace_graph.py",
+    "quote": "data[\"format\"] != GRAPH_FORMAT"
+  }
+]

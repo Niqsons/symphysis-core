@@ -54,7 +54,8 @@ def core_clone(clone: Path) -> Path:
 
 SHARED_SKILL_FILES = {path.name: path for path in (
     ROOT / "skill-shared" / "terms.md", ROOT / "skill-shared" / "driver.md", ROOT / "decisions" / "candidate.md",
-    ROOT / "cli" / "journal-cli.md", ROOT / "settings" / "config.md", ROOT / "attack" / "attack-table.md")}
+    ROOT / "cli" / "journal-cli.md", ROOT / "settings" / "config.md", ROOT / "attack" / "attack-table.md",
+    ROOT / "trace" / "module-declarations.md")}
 
 
 def _in_modules(root: Path, pattern: str) -> list[Path]:

@@ -1,0 +1,24 @@
+{
+  "spec_validation": {
+    "totals": {
+      "items": 34,
+      "passed": 34,
+      "failed": 0
+    },
+    "byType": {
+      "spec": {
+        "items": 34,
+        "passed": 34,
+        "failed": 0
+      }
+    }
+  },
+  "active_change_absent": true,
+  "original_files_unchanged": 69,
+  "archive_regression": {
+    "command": "python3.13 -X utf8 -m pytest trace/tests/test_trace_snapshot.py anchors/tests tests/test_guide.py -q",
+    "passed": 99,
+    "skipped": 0
+  },
+  "diff_check": 0
+}

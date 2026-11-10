@@ -16,7 +16,7 @@ import { acquireReader } from "./runtime-leases.js";
 import { evaluateClientReadiness } from "./client-readiness.js";
 
 const SETTINGS_FILE = "symphysis.yaml";
-const TOOL_MODULES = ["journal.py", "journal_apply.py", "journal_cli.py", "journal_model.py", "journal_render.py", "journal.schema.json", "roots.py", "runtime_context.py", "viewer_render.py", "attack_table.py", "attack_scope.py", "journal_sites.py", "journal_consequences.py", "symphysis_config.py", "openspec_run.py", "trace_graph.py", "anchor_refs.py", "sync_check.py"];
+const TOOL_MODULES = ["journal.py", "journal_apply.py", "journal_cli.py", "journal_model.py", "journal_render.py", "journal.schema.json", "roots.py", "runtime_context.py", "viewer_render.py", "attack_table.py", "attack_scope.py", "journal_sites.py", "journal_consequences.py", "symphysis_config.py", "openspec_run.py", "trace_graph.py", "trace_modules.py", "anchor_refs.py", "sync_check.py"];
 
 const rel = (project, p) => path.relative(project, p).split(path.sep).join("/");
 

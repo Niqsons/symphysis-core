@@ -30,6 +30,7 @@ _runtime_bootstrap("anchors")
 if not (_HERE / "trace_graph.py").is_file():
     sys.path[1:1] = [str(_HERE.parent / name) for name in ("trace", "roots", "decisions", "openspec-run")]
 from openspec_run import ForkError, SAFE_NAME, check_change_name  # noqa: E402
+from trace_modules import IMPLEMENTATION  # noqa: E402
 from trace_graph import (Ref, Refusal, _ANY_HEADER, _TRACE_COMMENT, _fence_mask, _hash, _read_text, _spec_lines,  # noqa: E402
                          find_root, parse_ref, parse_spec, record_ref_spans, ref_text, saved_base)
 
@@ -112,6 +113,12 @@ def rewrite_lines(lines: list[str], mask: list[bool], blocks: list[tuple[str, in
     с именем не трогаются; голые ссылки базы и дословные следы проб из неё остаются прежними (B-45).
     Число приводится к виду id записи (`F-7` → `F-07`)."""
     out, done = list(lines), []
+    text = '\n'.join(lines)
+    protected = [m.span() for m in IMPLEMENTATION.finditer(text)]
+    offsets, offset = [], 0
+    for line in lines:
+        offsets.append(offset)
+        offset += len(line) + 1
     for name, first, last in blocks:
         entry = inherited.get(name, {})
         keep = {ref for text in entry.get("numbers", ()) if (ref := parse_ref(text)) and ref.change is None}
@@ -122,6 +129,8 @@ def rewrite_lines(lines: list[str], mask: list[bool], blocks: list[tuple[str, in
             line, pieces, pos = out[i], [], 0
             old_comments = [m.span() for m in _TRACE_COMMENT.finditer(line) if _hash(m.group(1)) in traces]
             for ref, start, end in record_ref_spans(line):
+                if any(a <= offsets[i] + start < b for a, b in protected):
+                    continue  # logical module/file names are data, not journal references
                 if (ref.change is not None or ref.number not in numbers or Ref(None, ref.number, ref.letter) in keep
                         or any(first <= start < last for first, last in old_comments)):
                     continue

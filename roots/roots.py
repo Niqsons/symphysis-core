@@ -15,6 +15,7 @@ from runtime_context import context as _runtime_context
 __all__ = [
     "ROOT", "ROOTS_PATH", "UNUSABLE_ROOTS", "OUTSIDE_ROOT", "NOT_CHECKED", "VERDICT_OUTSIDE",
     "change_of", "default_roots", "project_roots", "find_quote", "file_links", "project_href",
+    "repo_root",
 ]
 
 
@@ -154,6 +155,14 @@ def _resolve(path: str, roots: dict[str, Path]) -> Path | None:
         # корень-файл (`CLAUDE.md`): хвост пуст, файл совпадает с корнем
         return file if file == root or file.is_relative_to(root) else OUTSIDE_ROOT
     return None
+
+
+def repo_root(alias: str, roots: dict[str, Path]) -> Path | None:
+    """Exact declared repo alias, never the evidence resolver's prefix fallback."""
+    if alias not in roots:
+        return None
+    folder = Path(roots[alias]).resolve()
+    return folder if folder.is_dir() else None
 
 
 def _walk_references(value, paths: set[str]) -> None:

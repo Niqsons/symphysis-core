@@ -1,0 +1,82 @@
+[
+  {
+    "trial": 1,
+    "states": {
+      "core": "found",
+      "plugin": "found",
+      "empty": "none",
+      "lost": "unavailable",
+      "retained": "found",
+      "new": "found"
+    },
+    "events": 23,
+    "reads": 20,
+    "runs": [
+      {
+        "command": "build",
+        "code": 0
+      },
+      {
+        "command": "anchor",
+        "code": 0
+      },
+      {
+        "command": "build",
+        "code": 0
+      }
+    ],
+    "race": {
+      "action": "parent adds repo after CHECKPOINT_METADATA_READ",
+      "before_sha256": "247e745ab0ae77aa8c5cea237fc6e25db3de51725c947d1a78cad7d8082dcf09",
+      "after_sha256": "6f68b1e2fc4bb2f06f772b1a98bd37ceca2bb6329ddfa459db33343b16d97ecd",
+      "repo": "retained",
+      "preserve": [
+        "x-race",
+        "owner_note"
+      ]
+    },
+    "foreign_fields_preserved": true,
+    "readme_sources_unchanged": true,
+    "annotation_preserved": true
+  },
+  {
+    "trial": 2,
+    "states": {
+      "core": "found",
+      "plugin": "found",
+      "empty": "none",
+      "lost": "unavailable",
+      "retained": "found",
+      "new": "found"
+    },
+    "events": 21,
+    "reads": 18,
+    "runs": [
+      {
+        "command": "build",
+        "code": 0
+      },
+      {
+        "command": "anchor",
+        "code": 0
+      },
+      {
+        "command": "build",
+        "code": 0
+      }
+    ],
+    "race": {
+      "action": "parent adds repo after CHECKPOINT_METADATA_READ",
+      "before_sha256": "247e745ab0ae77aa8c5cea237fc6e25db3de51725c947d1a78cad7d8082dcf09",
+      "after_sha256": "6f68b1e2fc4bb2f06f772b1a98bd37ceca2bb6329ddfa459db33343b16d97ecd",
+      "repo": "retained",
+      "preserve": [
+        "x-race",
+        "owner_note"
+      ]
+    },
+    "foreign_fields_preserved": true,
+    "readme_sources_unchanged": true,
+    "annotation_preserved": true
+  }
+]

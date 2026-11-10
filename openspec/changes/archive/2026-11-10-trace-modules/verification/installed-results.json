@@ -1,0 +1,112 @@
+{
+  "python": "3.13.14",
+  "git": false,
+  "modules": 3,
+  "implements": 4,
+  "readmes_unchanged": true,
+  "helper_matches_source": true,
+  "private_inputs_absent": true,
+  "commands": [
+    {
+      "command": [
+        "node",
+        "<source>/installer/bin/symphysis.js",
+        "install",
+        "--project",
+        "<case>/project",
+        "--skills-dir",
+        ".agents/skills",
+        "--force"
+      ],
+      "cwd": "<source>",
+      "code": 0,
+      "stdout": "записано 58\n.gitignore: добавлена строка symphysis.yaml — правка уйдёт в git вместе с работой\ntelemetry: выключена (telemetry.enabled: false в глобальном конфиге OpenSpec)\ncontinue: клиент не настроен — выполнить потом: openspec init --tools agents\ncontinue: какой клиент есть: where.exe claude, where.exe opencode в PowerShell; which claude, which opencode в bash; каталог клиента: --skills-dir\nopenspec: глобальный конфиг <case>/config/openspec/config.json\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "python",
+        "-X",
+        "utf8",
+        "<case>/project/.symphysis/tools/trace_graph.py",
+        "build",
+        "installed-probe",
+        "--roots",
+        "<case>/roots.json"
+      ],
+      "cwd": "<case>/project/nested/working",
+      "code": 0,
+      "stdout": "{\n \"format\": 3,\n \"sources\": [\n  {\n   \"path\": \"specs/example/spec.md\",\n   \"sha256\": \"7b59af985b9177d32ad57b1d97cc570fab479e5e5fe6900b891d15040edcb358\"\n  },\n  {\n   \"path\": \".openspec.yaml\",\n   \"sha256\": \"4b586bd8d3f9685937629289a47e7a2f3713948e494b24cbbf6204fb71047b0a\"\n  },\n  {\n   \"repo\": \"core\",\n   \"path\": \"README.md\",\n   \"sha256\": \"c5092fdce90ab34e5e4e0921b5de4b9d8e871710bed746eadd9b21b384101ec4\"\n  },\n  {\n   \"repo\": \"core\",\n   \"path\": \"src/deep/README.md\",\n   \"sha256\": \"6551f6012314a2ad081fa77877af301c5080d4389c8c279459e7f5be633daabf\"\n  },\n  {\n   \"repo\": \"plugin\",\n   \"path\": \"README.md\",\n   \"sha256\": \"94ad3d5478a7ea53546e0366e7f1545f946f0178afda7ad7505d9ac20d49cd06\"\n  }\n ],\n \"nodes\": [\n  {\n   \"id\": \"cap:example\",\n   \"kind\": \"cap\",\n   \"name\": \"example\",\n   \"at\": \"specs/example/spec.md:1\"\n  },\n  {\n   \"id\": \"req:example/Shared behavior\",\n   \"kind\": \"req\",\n   \"name\": \"Shared behavior\",\n   \"at\": \"specs/example/spec.md:3\",\n   \"section\": \"ADDED\",\n   \"capability\": \"example\"\n  },\n  {\n   \"id\": \"scn:example/Shared behavior/Retained\",\n   \"kind\": \"scn\",\n   \"name\": \"Retained\",\n   \"at\": \"specs/example/spec.md:7\",\n   \"capability\": \"example\",\n   \"requirement\": \"req:example/Shared behavior\"\n  },\n  {\n   \"id\": \"component:product\",\n   \"kind\": \"component\",\n   \"name\": \"product\",\n   \"at\": \".openspec.yaml:1\"\n  },\n  {\n   \"id\": \"repo:core\",\n   \"kind\": \"repo\",\n   \"name\": \"core\",\n   \"at\": \".openspec.yaml:1\",\n   \"survey\": \"found\",\n   \"actual\": \"found\",\n   \"availability\": \"available\"\n  },\n  {\n   \"id\": \"repo:plugin\",\n   \"kind\": \"repo\",\n   \"name\": \"plugin\",\n   \"at\": \".openspec.yaml:1\",\n   \"survey\": \"found\",\n   \"actual\": \"found\",\n   \"availability\": \"available\"\n  },\n  {\n   \"id\": \"module:core/viewer\",\n   \"kind\": \"module\",\n   \"name\": \"viewer\",\n   \"at\": \"core/README.md:2\",\n   \"repo\": \"core\",\n   \"path\": \".\",\n   \"module_kind\": \"технический\"\n  },\n  {\n   \"id\": \"module:core/nested\",\n   \"kind\": \"module\",\n   \"name\": \"nested\",\n   \"at\": \"core/src/deep/README.md:2\",\n   \"repo\": \"core\",\n   \"path\": \"src/deep\",\n   \"module_kind\": \"доменный\"\n  },\n  {\n   \"id\": \"module:plugin/viewer\",\n   \"kind\": \"module\",\n   \"name\": \"viewer\",\n   \"at\": \"plugin/README.md:2\",\n   \"repo\": \"plugin\",\n   \"path\": \".\",\n   \"module_kind\": \"технический\"\n  },\n  {\n   \"id\": \"file:core/README.md\",\n   \"kind\": \"file\",\n   \"name\": \"README.md\",\n   \"at\": \"core/README.md:2\",\n   \"repo\": \"core\",\n   \"path\": \"README.md\"\n  },\n  {\n   \"id\": \"file:core/src%2Fdeep%2FREADME.md\",\n   \"kind\": \"file\",\n   \"name\": \"src/deep/README.md\",\n   \"at\": \"core/src/deep/README.md:2\",\n   \"repo\": \"core\",\n   \"path\": \"src/deep/README.md\"\n  },\n  {\n   \"id\": \"file:plugin/README.md\",\n   \"kind\": \"file\",\n   \"name\": \"README.md\",\n   \"at\": \"plugin/README.md:2\",\n   \"repo\": \"plugin\",\n   \"path\": \"README.md\"\n  },\n  {\n   \"id\": \"file:core/src%2Fdeep%2Fused.py\",\n   \"kind\": \"file\",\n   \"name\": \"src/deep/used.py\",\n   \"at\": \"specs/example/spec.md:5\",\n   \"repo\": \"core\",\n   \"path\": \"src/deep/used.py\"\n  }\n ],\n \"edges\": [\n  {\n   \"from\": \"cap:example\",\n   \"to\": \"req:example/Shared behavior\",\n   \"type\": \"contains\",\n   \"at\": \"specs/example/spec.md:3\"\n  },\n  {\n   \"from\": \"scn:example/Shared behavior/Retained\",\n   \"to\": \"req:example/Shared behavior\",\n   \"type\": \"verifies\",\n   \"at\": \"specs/example/spec.md:7\"\n  },\n  {\n   \"from\": \"component:product\",\n   \"to\": \"repo:core\",\n   \"type\": \"contains\",\n   \"at\": \".openspec.yaml:1\"\n  },\n  {\n   \"from\": \"component:product\",\n   \"to\": \"repo:plugin\",\n   \"type\": \"contains\",\n   \"at\": \".openspec.yaml:1\"\n  },\n  {\n   \"from\": \"repo:core\",\n   \"to\": \"module:core/viewer\",\n   \"type\": \"contains\",\n   \"at\": \"core/README.md:2\"\n  },\n  {\n   \"from\": \"repo:core\",\n   \"to\": \"module:core/nested\",\n   \"type\": \"contains\",\n   \"at\": \"core/src/deep/README.md:2\"\n  },\n  {\n   \"from\": \"repo:plugin\",\n   \"to\": \"module:plugin/viewer\",\n   \"type\": \"contains\",\n   \"at\": \"plugin/README.md:2\"\n  },\n  {\n   \"from\": \"module:core/viewer\",\n   \"to\": \"file:core/README.md\",\n   \"type\": \"contains\",\n   \"at\": \"core/README.md:2\"\n  },\n  {\n   \"from\": \"module:core/viewer\",\n   \"to\": \"module:plugin/viewer\",\n   \"type\": \"depends\",\n   \"at\": \"core/README.md:2\"\n  },\n  {\n   \"from\": \"module:core/nested\",\n   \"to\": \"file:core/src%2Fdeep%2FREADME.md\",\n   \"type\": \"contains\",\n   \"at\": \"core/src/deep/README.md:2\"\n  },\n  {\n   \"from\": \"module:plugin/viewer\",\n   \"to\": \"file:plugin/README.md\",\n   \"type\": \"contains\",\n   \"at\": \"plugin/README.md:2\"\n  },\n  {\n   \"from\": \"module:core/viewer\",\n   \"to\": \"req:example/Shared behavior\",\n   \"type\": \"implements\",\n   \"at\": \"specs/example/spec.md:5\"\n  },\n  {\n   \"from\": \"module:plugin/viewer\",\n   \"to\": \"req:example/Shared behavior\",\n   \"type\": \"implements\",\n   \"at\": \"specs/example/spec.md:5\"\n  },\n  {\n   \"from\": \"module:core/nested\",\n   \"to\": \"file:core/src%2Fdeep%2Fused.py\",\n   \"type\": \"contains\",\n   \"at\": \"specs/example/spec.md:5\"\n  },\n  {\n   \"from\": \"file:core/src%2Fdeep%2Fused.py\",\n   \"to\": \"req:example/Shared behavior\",\n   \"type\": \"implements\",\n   \"at\": \"specs/example/spec.md:5\"\n  },\n  {\n   \"from\": \"module:core/nested\",\n   \"to\": \"req:example/Shared behavior\",\n   \"type\": \"implements\",\n   \"at\": \"specs/example/spec.md:5\"\n  }\n ],\n \"candidates\": [],\n \"structure\": {\n  \"components\": [\n   {\n    \"name\": \"product\",\n    \"repos\": [\n     \"core\",\n     \"plugin\"\n    ]\n   }\n  ],\n  \"repos\": [\n   {\n    \"repo\": \"core\",\n    \"root\": \"\",\n    \"survey\": \"found\",\n    \"exclude\": [],\n    \"actual\": \"found\",\n    \"availability\": \"available\"\n   },\n   {\n    \"repo\": \"plugin\",\n    \"root\": \"plugin/\",\n    \"survey\": \"found\",\n    \"exclude\": [],\n    \"actual\": \"found\",\n    \"availability\": \"available\"\n   }\n  ],\n  \"signals\": [],\n  \"sources\": [\n   {\n    \"path\": \".openspec.yaml\",\n    \"sha256\": \"4b586bd8d3f9685937629289a47e7a2f3713948e494b24cbbf6204fb71047b0a\"\n   },\n   {\n    \"repo\": \"core\",\n    \"path\": \"README.md\",\n    \"sha256\": \"c5092fdce90ab34e5e4e0921b5de4b9d8e871710bed746eadd9b21b384101ec4\"\n   },\n   {\n    \"repo\": \"core\",\n    \"path\": \"src/deep/README.md\",\n    \"sha256\": \"6551f6012314a2ad081fa77877af301c5080d4389c8c279459e7f5be633daabf\"\n   },\n   {\n    \"repo\": \"plugin\",\n    \"path\": \"README.md\",\n    \"sha256\": \"94ad3d5478a7ea53546e0366e7f1545f946f0178afda7ad7505d9ac20d49cd06\"\n   }\n  ],\n  \"modules\": [\n   {\n    \"name\": \"viewer\",\n    \"kind\": \"технический\",\n    \"dependencies\": [\n     {\n      \"repo\": \"plugin\",\n      \"module\": \"viewer\"\n     }\n    ],\n    \"repo\": \"core\",\n    \"path\": \".\",\n    \"source\": \"README.md\",\n    \"line\": 2\n   },\n   {\n    \"name\": \"nested\",\n    \"kind\": \"доменный\",\n    \"dependencies\": [],\n    \"repo\": \"core\",\n    \"path\": \"src/deep\",\n    \"source\": \"src/deep/README.md\",\n    \"line\": 2\n   },\n   {\n    \"name\": \"viewer\",\n    \"kind\": \"технический\",\n    \"dependencies\": [],\n    \"repo\": \"plugin\",\n    \"path\": \".\",\n    \"source\": \"README.md\",\n    \"line\": 2\n   }\n  ],\n  \"inventory\": [\n   {\n    \"repo\": \"core\",\n    \"path\": \"README.md\",\n    \"sha256\": \"c5092fdce90ab34e5e4e0921b5de4b9d8e871710bed746eadd9b21b384101ec4\"\n   },\n   {\n    \"repo\": \"core\",\n    \"path\": \"src/deep/README.md\",\n    \"sha256\": \"6551f6012314a2ad081fa77877af301c5080d4389c8c279459e7f5be633daabf\"\n   },\n   {\n    \"repo\": \"plugin\",\n    \"path\": \"README.md\",\n    \"sha256\": \"94ad3d5478a7ea53546e0366e7f1545f946f0178afda7ad7505d9ac20d49cd06\"\n   }\n  ]\n }\n}\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "python",
+        "-X",
+        "utf8",
+        "<case>/project/.symphysis/tools/trace_graph.py",
+        "report",
+        "installed-probe",
+        "--roots",
+        "<case>/roots.json"
+      ],
+      "cwd": "<case>/project/nested/working",
+      "code": 0,
+      "stdout": "# Отчёт по изменению installed-probe\n\n## Находки openspec validate\n\nНаходок нет.\n\n## Сигналы графа\n\n### Опоры нет (1)\n\n[!!] требование без записи: example/Shared behavior — specs/example/spec.md:3\n\n### Реализация не закрывает (2)\n\n[!!] требование без задачи: example/Shared behavior — specs/example/spec.md:3\n[!!] сценарий без задачи: example/Shared behavior/Retained — specs/example/spec.md:7\n\n## Обследование репозиториев\n\n- core: found; новое чтение: found; доступность: available\n- plugin: found; новое чтение: found; доступность: available\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "python",
+        "-X",
+        "utf8",
+        "<case>/project/.symphysis/tools/trace_graph.py",
+        "freeze",
+        "installed-probe",
+        "--roots",
+        "<case>/roots.json"
+      ],
+      "cwd": "<case>/project/nested/working",
+      "code": 0,
+      "stdout": "Граф собран заново: каталога graph нет. Отчёт: openspec/changes/installed-probe/graph/report.md\nКорни без коммита: (корень проекта), plugin/.\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "python",
+        "-X",
+        "utf8",
+        "<case>/project/.symphysis/tools/trace_graph.py",
+        "check",
+        "installed-probe",
+        "<case>/project/openspec/changes/installed-probe/graph/req-graph.json",
+        "--roots",
+        "<case>/roots.json"
+      ],
+      "cwd": "<case>/project/nested/working",
+      "code": 0,
+      "stdout": "сигналов нет\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "python",
+        "-X",
+        "utf8",
+        "<case>/project/.symphysis/tools/trace_graph.py",
+        "build",
+        "installed-probe",
+        "--format",
+        "mermaid",
+        "--requirement",
+        "example/Shared behavior",
+        "--roots",
+        "<case>/roots.json"
+      ],
+      "cwd": "<case>/project/nested/working",
+      "code": 0,
+      "stdout": "requirementDiagram\ndirection LR\nclassDef cap fill:#e0e7ff,stroke:#4338ca,stroke-width:3px\nclassDef req fill:#dbeafe,stroke:#1d4ed8,stroke-width:2px\nclassDef scn fill:#dcfce7,stroke:#15803d,stroke-width:1px\nclassDef task fill:#fef9c3,stroke:#a16207,stroke-width:1px\nclassDef rec fill:#f3e8ff,stroke:#7e22ce,stroke-width:1px,stroke-dasharray:6\nclassDef sec fill:#fee2e2,stroke:#b91c1c,stroke-width:3px\nclassDef branch fill:#ffedd5,stroke:#c2410c,stroke-width:2px,stroke-dasharray:6\nclassDef component fill:#e0f2fe,stroke:#0369a1,stroke-width:2px\nclassDef repo fill:#f0f9ff,stroke:#0369a1,stroke-width:1px\nclassDef module fill:#ccfbf1,stroke:#0f766e,stroke-width:2px\nclassDef file fill:#f1f5f9,stroke:#475569,stroke-width:1px\nrequirement \"REQ_1 Shared behavior\" {\n    id: \"REQ_1\"\n    text: \"example, ADDED\"\n}\nelement \"SCN_1 Retained\" {\n    type: \"сценарий\"\n    docref: \"specs/example/spec.md:7\"\n}\nelement \"COMP_1 product\" {\n    type: \"компонент\"\n    docref: \".openspec.yaml:1\"\n}\nelement \"REPO_1 core\" {\n    type: \"репозиторий\"\n    docref: \".openspec.yaml:1\"\n}\nelement \"REPO_2 plugin\" {\n    type: \"репозиторий\"\n    docref: \".openspec.yaml:1\"\n}\nelement \"MOD_1 viewer\" {\n    type: \"модуль\"\n    docref: \"core/README.md:2\"\n}\nelement \"MOD_2 nested\" {\n    type: \"модуль\"\n    docref: \"core/src/deep/README.md:2\"\n}\nelement \"MOD_3 viewer\" {\n    type: \"модуль\"\n    docref: \"plugin/README.md:2\"\n}\nelement \"FILE_1 src/deep/used.py\" {\n    type: \"файл\"\n    docref: \"specs/example/spec.md:5\"\n}\n\"SCN_1 Retained\" - verifies -> \"REQ_1 Shared behavior\"\n\"COMP_1 product\" - contains -> \"REPO_1 core\"\n\"COMP_1 product\" - contains -> \"REPO_2 plugin\"\n\"REPO_1 core\" - contains -> \"MOD_1 viewer\"\n\"REPO_1 core\" - contains -> \"MOD_2 nested\"\n\"REPO_2 plugin\" - contains -> \"MOD_3 viewer\"\n\"MOD_1 viewer\" - traces -> \"MOD_3 viewer\"\n\"MOD_1 viewer\" - satisfies -> \"REQ_1 Shared behavior\"\n\"MOD_3 viewer\" - satisfies -> \"REQ_1 Shared behavior\"\n\"MOD_2 nested\" - contains -> \"FILE_1 src/deep/used.py\"\n\"FILE_1 src/deep/used.py\" - satisfies -> \"REQ_1 Shared behavior\"\n\"MOD_2 nested\" - satisfies -> \"REQ_1 Shared behavior\"\nclass \"REQ_1 Shared behavior\" req\nclass \"SCN_1 Retained\" scn\nclass \"COMP_1 product\" component\nclass \"REPO_1 core\" repo\nclass \"REPO_2 plugin\" repo\nclass \"MOD_1 viewer\" module\nclass \"MOD_2 nested\" module\nclass \"MOD_3 viewer\" module\nclass \"FILE_1 src/deep/used.py\" file\n",
+      "stderr": ""
+    }
+  ]
+}

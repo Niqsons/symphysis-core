@@ -1,0 +1,10 @@
+============================= test session starts =============================
+platform win32 -- Python 3.13.14, pytest-9.2.0, pluggy-1.7.0
+rootdir: <source>
+configfile: pytest.ini
+plugins: xdist-3.8.0
+created: 12/12 workers
+12 workers [1 item]
+
+.                                                                        [100%]
+======================== 1 passed in 307.18s (0:05:07) ========================

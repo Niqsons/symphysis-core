@@ -1,0 +1,38 @@
+{
+  "baseline": "c6651d852fb84fc2c90a794f2419a21dbf6103ce",
+  "journal_relocations": 8,
+  "consequences_unchanged": true,
+  "consequences_sha256": "9e345c0fa1c49e47b05f4ba933978295ed4a8079d9d2ff1719ba6dd259a85e53",
+  "historical_consequence_signals": [
+    {
+      "path": "trace/trace_graph.py",
+      "quote": "if not problems and data[\"format\"] != GRAPH_FORMAT:",
+      "baseline": "c6651d852fb84fc2c90a794f2419a21dbf6103ce"
+    },
+    {
+      "path": "trace/trace_graph.py",
+      "quote": "raw = data.get(\"base\") if isinstance(data, dict) and data.get(\"format\") == GRAPH_FORMAT else None",
+      "baseline": "c6651d852fb84fc2c90a794f2419a21dbf6103ce"
+    },
+    {
+      "path": "trace/trace_graph.py",
+      "quote": "return ([f\"{rel}: исходник изменён после сборки\" for rel in sorted(old.keys() & now.keys()) if old[rel] != now[rel]]",
+      "baseline": "c6651d852fb84fc2c90a794f2419a21dbf6103ce"
+    },
+    {
+      "path": "trace/trace_graph.py",
+      "quote": "+ [f\"{rel}: новый исходник, в графе его нет\" for rel in sorted(now.keys() - old.keys())]",
+      "baseline": "c6651d852fb84fc2c90a794f2419a21dbf6103ce"
+    },
+    {
+      "path": "trace/trace_graph.py",
+      "quote": "+ [f\"{rel}: исходник удалён\" for rel in sorted(old.keys() - now.keys())])",
+      "baseline": "c6651d852fb84fc2c90a794f2419a21dbf6103ce"
+    },
+    {
+      "path": "trace/trace_graph.py",
+      "quote": "text = build_report(root, change, frozen).rstrip(\"\\n\") + \"\\n\"",
+      "baseline": "c6651d852fb84fc2c90a794f2419a21dbf6103ce"
+    }
+  ]
+}

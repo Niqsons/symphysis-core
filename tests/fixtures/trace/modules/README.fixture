@@ -1,0 +1,9 @@
+---
+name: example
+kind: технический
+dependencies:
+  - repo: plugin
+    module: protocol
+---
+
+Portable README bytes; the fixture suffix keeps test data outside the live module inventory.

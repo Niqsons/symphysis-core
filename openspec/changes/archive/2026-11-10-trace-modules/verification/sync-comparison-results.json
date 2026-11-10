@@ -1,0 +1,43 @@
+{
+  "capabilities": [
+    {
+      "capability": "module-discovery",
+      "requirements": 8,
+      "synced": true
+    },
+    {
+      "capability": "repository-survey",
+      "requirements": 7,
+      "synced": true
+    },
+    {
+      "capability": "trace-conventions",
+      "requirements": 2,
+      "synced": true
+    },
+    {
+      "capability": "trace-diagram",
+      "requirements": 2,
+      "synced": true
+    },
+    {
+      "capability": "trace-graph",
+      "requirements": 7,
+      "synced": true
+    },
+    {
+      "capability": "trace-signals",
+      "requirements": 3,
+      "synced": true
+    },
+    {
+      "capability": "trace-snapshot",
+      "requirements": 5,
+      "synced": true
+    }
+  ],
+  "annotation_preserved": true,
+  "no_delta_headers": true,
+  "no_probe_service_traces_in_synced_blocks": true,
+  "sync_and_anchor_idempotent": true
+}

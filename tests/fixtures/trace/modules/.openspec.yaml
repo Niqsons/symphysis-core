@@ -1,0 +1,10 @@
+schema: symphysis
+x-symphysis-components:
+  example:
+    - repo: core
+      root: ""
+      survey: found
+      exclude: [generated]
+    - repo: plugin
+      root: plugin/
+      survey: unexamined
