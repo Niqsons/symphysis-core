@@ -33,7 +33,7 @@ function setup(t, scope = "global") {
     const entry = payload.manifest.files.find((entry) => entry.source === source);
     f.write(entry.path, bytes); entry.sha256 = createHash("sha256").update(bytes).digest("hex");
   };
-  for (const name of ["journal.py", "step_help.py", "trace_graph.py", "anchor_refs.py", "symphysis_config.py"]) replace(`tools/${name}`, echo);
+  for (const name of ["journal.py", "step_help.py", "trace_graph.py", "anchor_refs.py", "sync_check.py", "symphysis_config.py"]) replace(`tools/${name}`, echo);
   replace("openspec/schemas/symphysis/schema.yaml", schema);
   f.json(payload.manifestPath, payload.manifest);
   if (scope === "global") f.write(f.at("user-data", "openspec", "schemas", "symphysis", "schema.yaml"), schema);
@@ -87,6 +87,36 @@ test("help/trace/anchors dispatch through the same selected runtime", (t) => {
     assert.equal(data.runtime, payload.root); assert.equal(data.store, store.root); assert.equal(data.lease, true);
     assert.deepEqual(data.argv, argv);
   }
+});
+
+test("sync-check dispatch preserves selected store, reader lease and repeated capability scope", (t) => {
+  const { f, store, second, payload, cli } = setup(t);
+  for (const selected of [store, second]) {
+    const argv = [selected.change, "--json", "--capability", "alpha", "--capability", "beta"];
+    const response = cli("--project", selected.root, "sync-check", ...argv);
+    assert.equal(response.status, 0, response.stderr);
+    const data = JSON.parse(response.stdout);
+    assert.equal(data.runtime, payload.root);
+    assert.equal(data.store, selected.root);
+    assert.equal(data.cwd, selected.root);
+    assert.equal(data.lease, true);
+    assert.deepEqual(data.argv, argv);
+  }
+});
+
+test("an older selected runtime without sync-check remains ready and refuses that missing tool", (t) => {
+  const { f, store, payload, cli } = setup(t);
+  const entry = payload.manifest.files.find((entry) => entry.source === "tools/sync_check.py");
+  fs.unlinkSync(entry.path);
+  payload.manifest.files = payload.manifest.files.filter((entry) => entry.source !== "tools/sync_check.py");
+  f.json(payload.manifestPath, payload.manifest);
+  const ready = cli("--project", store.root, "resolve", "--json");
+  assert.equal(ready.status, 0, ready.stderr);
+  assert.equal(JSON.parse(ready.stdout).status, "ready");
+  const missing = cli("--project", store.root, "sync-check", store.change, "--json");
+  assert.equal(missing.status, 2, missing.stderr);
+  assert.match(missing.stderr, /resource-missing/);
+  assert.equal(missing.stdout, "");
 });
 
 test("resource reads only the selected named text and unknown identifiers fail explicitly", (t) => {

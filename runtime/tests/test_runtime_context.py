@@ -15,7 +15,7 @@ from conftest import ROOT, core_files, one_record_journal
 import runtime_context
 
 SOURCES = {"journal": "cli/journal.py", "trace": "trace/trace_graph.py", "anchors": "anchors/anchor_refs.py",
-           "help": "step-help/step_help.py", "config": "settings/symphysis_config.py"}
+           "sync-check": "anchors/sync_check.py", "help": "step-help/step_help.py", "config": "settings/symphysis_config.py"}
 
 
 def write_json(file, value):
@@ -93,6 +93,27 @@ def test_installed_copy_consumes_parent_reader_context_before_runtime_imports(tm
         assert result.returncode == 0, result.stderr
         assert "Коды:" in result.stdout
     assert not list(tmp_path.rglob("__pycache__"))
+
+
+@pytest.mark.parametrize("scope", ["local", "global"])
+def test_sync_checker_reads_only_selected_store_and_requested_capability(tmp_path, scope):
+    context, _, _, env = installed(tmp_path, scope)
+    store = Path(context["store"]["root"])
+    change = store / "openspec" / "changes" / "mini"
+    (change / "specs" / "alpha").mkdir(parents=True)
+    (store / "openspec" / "specs" / "alpha").mkdir(parents=True)
+    requirement = "### Requirement: Экспорт\nСистема SHALL сохранять файл. (F-01)\n\n#### Scenario: Успех\n- **WHEN** файл запрошен\n- **THEN** файл сохранён\n"
+    (change / "specs" / "alpha" / "spec.md").write_text("## ADDED Requirements\n\n" + requirement, encoding="utf-8")
+    (store / "openspec" / "specs" / "alpha" / "spec.md").write_text(
+        "# Alpha Specification\n\n## Purpose\nСохранение файла по явному запросу пользователя без изменения других capabilities.\n\n## Requirements\n\n" + requirement.replace("(F-01)", "(mini/F-01)"), encoding="utf-8")
+    write_json(change / "decisions.json", {"records": [{"id": "F-01"}]})
+    before = {str(file.relative_to(store)): digest(file) for file in store.rglob("*") if file.is_file()}
+    result = run_entry(context, env, "sync-check", ["mini", "--json", "--capability", "alpha"])
+    assert result.returncode == 0, result.stderr + result.stdout
+    data = json.loads(result.stdout)
+    assert data["status"] == "match" and data["capabilities"] == ["alpha"]
+    assert Path(data["root"]).resolve() == store.resolve()
+    assert {str(file.relative_to(store)): digest(file) for file in store.rglob("*") if file.is_file()} == before
 
 
 @pytest.mark.parametrize("bad", ["format", "relative-store", "generation", "token", "pid", "kind", "lease-path", "resource-path", "runtime-api"])

@@ -9,6 +9,7 @@ const samplePayload = {
   "tools/step_help.py": "# synthetic fixture: help entrypoint\n",
   "tools/trace_graph.py": "# synthetic fixture: trace entrypoint\n",
   "tools/anchor_refs.py": "# synthetic fixture: anchors entrypoint\n",
+  "tools/sync_check.py": "# synthetic fixture: sync result checker entrypoint\n",
   "tools/symphysis_config.py": "# synthetic fixture: config entrypoint\n",
   "tools/journal_render.py": "# synthetic fixture: independent journal contract\nCONTRACT = 1\n",
   "docs/terms.md": "# Fixture terms\n",

@@ -40,7 +40,7 @@ def test_every_argument_has_help(path):
 
 def test_entries_exist():
     assert {p.name for p in TOOLS if is_entry(p)} == {"journal.py", "symphysis_config.py", "step_help.py",
-                                                      "trace_graph.py", "anchor_refs.py"}
+                                                      "trace_graph.py", "anchor_refs.py", "sync_check.py"}
 
 
 @pytest.mark.parametrize("path", [p for p in TOOLS if is_entry(p)], ids=[p.name for p in TOOLS if is_entry(p)])

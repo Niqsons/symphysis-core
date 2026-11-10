@@ -15,7 +15,7 @@ from pathlib import Path
 
 CONTEXT_ENV = "SYMPHYSIS_RUNTIME_CONTEXT"
 TOOLS = {"journal": "journal.py", "trace": "trace_graph.py", "anchors": "anchor_refs.py",
-         "help": "step_help.py", "config": "symphysis_config.py"}
+         "sync-check": "sync_check.py", "help": "step_help.py", "config": "symphysis_config.py"}
 
 
 class ContextError(ValueError):

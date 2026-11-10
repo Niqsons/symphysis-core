@@ -46,6 +46,7 @@ const TOOLS_FILES = [
   "runtime/runtime_context.py",
   "trace/trace_graph.py",
   "anchors/anchor_refs.py",
+  "anchors/sync_check.py",
 ];
 
 /** Отдельные файлы: [исходник, путь в payload]. Образец конфига лежит в модуле схемы, в payload — по прежнему пути (F-37 A). */

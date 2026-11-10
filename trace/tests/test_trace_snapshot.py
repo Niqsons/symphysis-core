@@ -12,6 +12,7 @@ import pytest
 # conftest — первым: он ставит каталоги модулей в sys.path и при запуске одного файла (pytest.ini, pythonpath)
 from conftest import FORK_BIN, ROOT, fork_reply, make_project, requires_fork, run_openspec
 import trace_graph
+import anchor_refs
 from test_trace_graph import CHANGE, make_change
 from test_trace_report import CLEAN, DONE, ONE_REQ, decided, journal, probe, with_shim
 
@@ -328,6 +329,10 @@ BASE_REFS = ["F-07.A", "old/F-19.B"]  # строки базы по `MASTER_BEFOR
 TEXT_EQUAL_NEW_SCENARIO = CARRIED + SCN.format("Новый", "", "b")  # текст равен мастеру, набор сценариев шире
 ONE = "req:demo/Один"
 
+RENAME = '\n## RENAMED Requirements\n- FROM: `### Requirement: Один`\n- TO: `### Requirement: Новое имя`\n'
+RENAMED_MODIFIED = MODIFIED.replace('Requirement: Один', 'Requirement: Новое имя')
+NEW = 'req:demo/Новое имя'
+
 
 def master_path(root):
     return root / "openspec" / "specs" / "demo" / "spec.md"
@@ -354,6 +359,78 @@ def view(root):
     context = trace_graph.signal_context(root, CHANGE)
     edges = [(e["from"], e["to"], e["type"]) for e in graph["edges"]]
     return edges, trace_graph.graph_signals(graph, duplicates, unresolved, context), context["modified"], context["marks"]
+
+
+def test_renamed_modified_uses_old_master_for_links_scenarios_and_child(tmp_path):
+    """B-45: FROM даёт прежние номера и состояния сценариев даже для дочернего нового имени."""
+    child = CHILD.replace('«Один»', '«Новое имя»')
+    root, _ = modified_project(tmp_path, RENAMED_MODIFIED + child + RENAME)
+    edges, _, modified, marks = view(root)
+    assert (NEW, 'rec:F-19', 'traces') in edges and (NEW, 'rec:F-07', 'traces') not in edges
+    assert ('req:demo/Дитя', 'rec:F-19', 'traces') in edges
+    assert ('req:demo/Дитя', 'rec:F-07', 'traces') not in edges
+    assert modified[NEW]['scenarios'] == {'scn:demo/Новое имя/Старый': 'same',
+                                        'scn:demo/Новое имя/Меняется': 'changed',
+                                        'scn:demo/Новое имя/Новый': 'new'}
+    assert marks == set() and trace_graph.signal_context(root, CHANGE)['traces'] == []
+
+
+def test_renamed_modified_freeze_sync_anchors_preserve_old_base_and_trace(tmp_path, fork):
+    """B-45: база под TO переживает sync, якоря и пересборку; старый след с совпавшим номером не становится своим."""
+    root, base = modified_project(tmp_path, RENAMED_MODIFIED + RENAME)
+    before = view(root)
+    freeze(root)
+    assert snapshot(base)['base']['demo']['Новое имя']['numbers'] == BASE_REFS
+    graph_before = (base / 'graph/req-graph.json').read_bytes()
+    delta_before = (base / 'specs/demo/spec.md').read_bytes()
+    sync(root, RENAMED_MODIFIED)
+    anchor_refs.anchor_change(root, CHANGE)
+    master_text = master_path(root).read_text(encoding='utf-8')
+    assert TRACE in master_text and '(F-07.A)' in master_text and '(demo/F-19)' in master_text
+    assert (base / 'graph/req-graph.json').read_bytes() == graph_before
+    assert (base / 'specs/demo/spec.md').read_bytes() == delta_before
+    assert view(root) == before
+    (base / 'tasks.md').write_text('- [x] 1.1 сделать\n', encoding='utf-8')
+    assert freeze(root).action == 'build'
+    assert snapshot(base)['base']['demo']['Новое имя']['numbers'] == BASE_REFS
+    assert view(root) == before
+
+
+def test_renamed_modified_reuses_snapshot_under_from_before_synced_master(tmp_path, fork):
+    """B-45: снимок до добавления RENAMED ещё хранит FROM; TO живого мастера уже несёт новые номера."""
+    root, base = modified_project(tmp_path)
+    freeze(root)
+    (base / 'specs/demo/spec.md').write_text(RENAMED_MODIFIED + RENAME, encoding='utf-8')
+    sync(root, RENAMED_MODIFIED)
+    assert freeze(root).action == 'build'
+    assert set(snapshot(base)['base']['demo']) == {'Новое имя'}
+    assert snapshot(base)['base']['demo']['Новое имя']['numbers'] == BASE_REFS
+    assert (NEW, 'rec:F-19', 'traces') in view(root)[0]
+
+
+def test_renamed_modified_first_freeze_after_sync_does_not_invent_a_base(tmp_path, fork):
+    """B-45: при пропущенном снимке FROM уже нет; совпавший TO остаётся требованием без прежней базы."""
+    root, base = modified_project(tmp_path, RENAMED_MODIFIED + RENAME)
+    sync(root, RENAMED_MODIFIED)
+    assert trace_graph.signal_context(root, CHANGE)['unbased'] == [(NEW, 'specs/demo/spec.md:3')]
+    freeze(root)
+    assert snapshot(base)['base'] == {}
+
+
+def test_renamed_modified_mapping_does_not_leak_into_another_capability(tmp_path):
+    """B-45: одинаковые TO в двух capabilities не объединяют их базы; чужой FROM тоже существует."""
+    root, base = modified_project(tmp_path, RENAMED_MODIFIED + RENAME)
+    delta = base / 'specs/other/spec.md'
+    delta.parent.mkdir()
+    delta.write_text(RENAMED_MODIFIED, encoding='utf-8')
+    other_master = root / 'openspec/specs/other/spec.md'
+    other_master.parent.mkdir()
+    other_master.write_text('## Requirements\n\n### Requirement: Новое имя\nТекст SHALL (F-19).\n\n'
+                            + MASTER_BEFORE.removeprefix('## Requirements\n\n'), encoding='utf-8')
+    edges = view(root)[0]
+    assert (NEW, 'rec:F-19', 'traces') in edges and (NEW, 'rec:F-07', 'traces') not in edges
+    assert ('req:other/Новое имя', 'rec:F-07', 'traces') in edges
+    assert ('req:other/Новое имя', 'rec:F-19', 'traces') not in edges
 
 
 def test_base_freeze_writes_numbers_scenarios_text_traces(tmp_path, fork):

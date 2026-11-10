@@ -50,6 +50,29 @@ function archiveRoot(f, mutate) {
   return root;
 }
 
+test("managed sync tools use the selected dispatcher and store roots instead of a caller-local installation", () => {
+  const guide = "**Store selection:** fixture";
+  const body = [guide,
+    '   - From the invocation directory, find the nearest ancestor containing `.symphysis/tools/` and keep its absolute path as `toolsHome`. Locate `trace_graph.py` and `anchor_refs.py` there.',
+    '   - Set the Python command\'s working directory to `planningHome.root`. Python tools do not accept `--store`.',
+    '   - If `<toolsHome>/journal-roots.json` exists, you MUST run the complete command `python "<toolsHome>/trace_graph.py" freeze "<name>" --roots "<toolsHome>/journal-roots.json"`.',
+    '   - Otherwise, run `python "<toolsHome>/trace_graph.py" freeze "<name>"` from the same planning root.',
+    '   Run `python "<toolsHome>/anchor_refs.py" --help`, then `python "<toolsHome>/anchor_refs.py" "<name>" --capability "alpha"`.',
+    '   Verify `python "<toolsHome>/sync_check.py" "<name>" --json --capability "alpha"`.'].join("\n") + "\n";
+  const guarded = guardWorkflowBody(body, guide);
+  assert.doesNotMatch(guarded, /nearest ancestor|python "<toolsHome>|<toolsHome>\/journal-roots\.json/);
+  assert.match(guarded, /resolve --change "<name>" --json/);
+  assert.match(guarded, /store\.root/);
+  assert.match(guarded, /runtime\.toolsRoot/);
+  const prefix = 'symphysis --project "<source>" [--store "<id>"] ';
+  assert.ok(guarded.includes(prefix + 'trace freeze "<name>"'));
+  assert.ok(guarded.includes(prefix + 'anchors --help'));
+  assert.ok(guarded.includes(prefix + 'anchors "<name>" --capability "alpha"'));
+  assert.ok(guarded.includes(prefix + 'sync-check "<name>" --json --capability "alpha"'));
+  assert.match(guarded, /selected store.*roots/);
+  assert.throws(() => guardWorkflowBody(body.replace('nearest ancestor', 'nearest folder'), guide), /Pinned Symphysis/);
+});
+
 test("real pinned archive produces reproducible native carriers for all required workflows and three clients", async () => {
   const first = await buildWorkflowCarriers({ root: ROOT, tempBase });
   const second = await buildWorkflowCarriers({ root: ROOT, tempBase });

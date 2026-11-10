@@ -7,7 +7,7 @@ const HELP = `symphysis resolve / preflight — выбранные store и по
 Использование:
   symphysis resolve [--project <source>] [--store <id>] --json
   symphysis preflight [--project <source>] [--store <id>] [--json]
-  symphysis [--project <source>] [--store <id>] journal|trace|anchors|help|openspec <argv...>
+  symphysis [--project <source>] [--store <id>] journal|trace|anchors|sync-check|help|openspec <argv...>
   symphysis [--project <source>] [--store <id>] resource skill|doc|template <id>
 
 Звать, когда нужно проверить выбранный runtime и совместимость перед работой.
@@ -44,7 +44,7 @@ export async function runRuntimeCommand(args, { stdout = process.stdout, stderr 
   const offset = commandOffset(args);
   const command = args[offset];
   const discovery = ["resolve", "preflight"].includes(command);
-  if (!discovery && !["journal", "trace", "anchors", "help", "openspec", "resource"].includes(command)) return null;
+  if (!discovery && !["journal", "trace", "anchors", "sync-check", "help", "openspec", "resource"].includes(command)) return null;
   if (!discovery) {
     try {
       const { values, tokens } = parseArgs({ args: args.slice(0, offset), tokens: true, options: { project: { type: "string" }, store: { type: "string" } } });

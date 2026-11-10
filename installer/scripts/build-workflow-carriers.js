@@ -26,6 +26,30 @@ function replaceOnce(text, before, after, label) {
   return text.replace(before, after);
 }
 
+/** Bridge our fork's sync sequencing to the managed runtime selected by preflight.
+ * Source: docs/skills-canon.md section 12; merging fork-symphysis-flow with global-user-install.
+ * Older pins do not have this fragment and retain their original guarded workflow.
+ */
+function guardSyncTools(body) {
+  if (!body.includes('python "<toolsHome>/')) return body;
+  const tools = /^   - From the invocation directory, find the nearest ancestor containing `\.symphysis\/tools\/`[^\n]*\n/m.exec(body)?.[0];
+  if (!tools) throw new Error("Pinned Symphysis tools marker changed");
+  const prefix = 'symphysis --project "<source>" [--store "<id>"] ';
+  let text = replaceOnce(body, tools,
+    '   - Use the same absolute source directory and optional store id selected for preflight as `<source>` and `<id>`. Run `' + prefix + 'resolve --change "<name>" --json`. A blocked resolve/preflight MUST stop this workflow before writes; it is not a nonblocking graph error. Require the returned `store.root` to denote the same planning root as the status JSON, comparing path identity. Keep `runtime.toolsRoot` as `toolsHome` for inline coordination. Use only the returned selected runtime; do not search caller directories, borrow another installation or install tools here.\n',
+    "Symphysis tools");
+  const graph = /^   - Set the Python command's working directory[^\n]*\n   - If `<toolsHome>\/journal-roots\.json`[^\n]*\n   - Otherwise,[^\n]*\n/m.exec(text)?.[0];
+  if (!graph) throw new Error("Pinned Symphysis graph recipe changed");
+  text = replaceOnce(text, graph,
+    '   - You MUST run `' + prefix + 'trace freeze "<name>"`. The dispatcher supplies the selected store\'s roots and sets the tool cwd to `planningHome.root`; do not use a roots map from the caller or the runtime directory. Keep the same source/store prefix before every tool command.\n',
+    "Symphysis graph recipe");
+  for (const [file, command] of [["trace_graph.py", "trace"], ["anchor_refs.py", "anchors"], ["sync_check.py", "sync-check"]]) {
+    text = text.replaceAll('python "<toolsHome>/' + file + '"', prefix + command);
+  }
+  if (text.includes('python "<toolsHome>/')) throw new Error("Pinned Symphysis tool command changed");
+  return text;
+}
+
 /** Only trusted pinned CLI token boundaries are rewritten; openspec/ paths remain data paths. */
 export function guardWorkflowBody(body, storeGuidance) {
   const marker = "@@SYMPHYSIS_STORE_SELECTION@@";
@@ -36,7 +60,7 @@ export function guardWorkflowBody(body, storeGuidance) {
   text = text.replaceAll("Get-Command openspec ", "Get-Command symphysis ");
   text = text.replaceAll('symphysis openspec context --json --store "<store-id>"', 'symphysis --store "<store-id>" openspec context --json');
   text = text.replaceAll('and append `--store "<id>"` only for a registered standalone store.', 'and use the selected bootstrap `--store "<id>"` prefix only for a registered standalone store.');
-  return GUARD + text.replace(marker, STORE_GUIDANCE);
+  return GUARD + guardSyncTools(text.replace(marker, STORE_GUIDANCE));
 }
 
 function guardPermissions(content, expected) {

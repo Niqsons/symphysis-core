@@ -128,6 +128,7 @@ function effectiveSchema(context, { tool, args, change, journal, run, options, s
     if (args[0] === "archive" || exists(path.join(context.store.root, "openspec", "changes", candidate))) name = candidate;
   }
   if (!name && tool === "trace" && ["build", "report", "freeze", "check", "archive-gaps"].includes(args[0]) && args[1] && !args[1].startsWith("-")) name = checkedExistingChange(args[1]);
+  if (!name && ["anchors", "sync-check"].includes(tool) && args[0] && !args[0].startsWith("-")) name = checkedExistingChange(args[0]);
   const override = selected.schema;
   if (override !== undefined && !identifier(override)) fail("schema-source-conflict", "Неподдерживаемое имя схемы --schema", "Укажи схему выбранной поставки");
   if (name && !creating) {

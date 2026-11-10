@@ -11,8 +11,9 @@ import { isFullyAbsolute } from "./paths.js";
 import { legacySourceEvidence } from "./legacy-source-proof.js";
 
 export { BOOTSTRAP_API, RUNTIME_API, SCHEMA_API } from "./runtime-api.js";
-export const TOOL_NAMES = Object.freeze({ journal: "journal.py", trace: "trace_graph.py", anchors: "anchor_refs.py", help: "step_help.py", config: "symphysis_config.py" });
-export const LEGACY_TOOL_FILES = Object.freeze([...Object.values(TOOL_NAMES), "journal_cli.py", "journal_render.py", "journal_model.py", "roots.py", "openspec_run.py"]);
+export const TOOL_NAMES = Object.freeze({ journal: "journal.py", trace: "trace_graph.py", anchors: "anchor_refs.py", "sync-check": "sync_check.py", help: "step_help.py", config: "symphysis_config.py" });
+// The predecessor payload predates sync_check; its absence does not invalidate that installation.
+export const LEGACY_TOOL_FILES = Object.freeze([...Object.values(TOOL_NAMES).filter((file) => file !== "sync_check.py"), "journal_cli.py", "journal_render.py", "journal_model.py", "roots.py", "openspec_run.py"]);
 const LEGACY_FILES = LEGACY_TOOL_FILES;
 const object = (value) => value !== null && typeof value === "object" && !Array.isArray(value);
 const exists = (file) => fs.lstatSync(file, { throwIfNoEntry: false }) !== undefined;
@@ -237,7 +238,7 @@ function inspectSelectedRuntime(result, { tool, args = [], change, journal, env,
     result.resources = resourceMaps(runtime, manifest, result.store.root, checked.unavailable);
     const contractFile = path.join(runtime.toolsRoot, "journal_render.py");
     if (fileExists(contractFile) && (!manifest || manifest.files.some((entry) => path.relative(entry.path, contractFile) === ""))) runtime.journalContract = Number(/^CONTRACT\s*=\s*(\d+)\s*$/m.exec(fs.readFileSync(contractFile, "utf8"))?.[1]) || null;
-    const required = Object.keys(TOOL_NAMES).filter((name) => !(result.scope === "local" && name === "help") && !result.resources.tools[name]);
+    const required = Object.keys(TOOL_NAMES).filter((name) => name !== "sync-check" && !(result.scope === "local" && name === "help") && !result.resources.tools[name]);
     for (const [source, target, available] of [
       ["tools/step_help.py", path.join(runtime.toolsRoot, "step_help.py"), result.scope !== "local" || Boolean(result.resources.tools.help)],
       ["tools/mermaid.min.js", path.join(runtime.toolsRoot, "mermaid.min.js"), result.scope !== "local" || Boolean(result.resources.assets.mermaid)],

@@ -28,6 +28,7 @@ const FILES = [
   "tools/runtime_context.py",
   "tools/trace_graph.py",
   "tools/anchor_refs.py",
+  "tools/sync_check.py",
   "tools/playground-template.html",
   "tools/journal.schema.json",
   "docs/journal.schema.json",

@@ -72,7 +72,10 @@ Bootstrap API, runtime API, schema API и journal contract — разные чи
 в этих fixtures. Согласование плагина с ним — по [repo-contract.md](repo-contract.md).
 
 `resources.tools` — карта поддерживаемых входов `journal`, `trace`, `anchors`,
-`help`, `config`. Остальные карты — `docs`, `skills`, `templates` с именованными
+`sync-check`, `help`, `config`. Старые поставки могут не содержать `sync-check`:
+это не меняет их общий статус готовности; запрос отсутствующего инструмента получает
+`resource-missing`, без поиска в другой установке. Повреждённый объявленный файл
+по-прежнему нарушает целостность manifest. Остальные карты — `docs`, `skills`, `templates` с именованными
 идентификаторами manifest. `resources.schema` — `{name, path}`. Все пути
 принадлежат выбранной поставке либо её управляемой проекции. Ресурс другой
 установки не заполняет пропуск. `resource <kind> <id>` принимает идентификатор,
