@@ -25,11 +25,14 @@ const FILES = [
   "tools/symphysis_config.py",
   "tools/step_help.py",
   "tools/openspec_run.py",
+  "tools/runtime_context.py",
   "tools/trace_graph.py",
   "tools/trace_modules.py",
   "tools/anchor_refs.py",
+  "tools/sync_check.py",
   "tools/playground-template.html",
   "tools/journal.schema.json",
+  "docs/journal.schema.json",
   "docs/terms.md",
   "docs/journal-cli.md",
   "docs/config.md",
@@ -59,6 +62,15 @@ test("payload содержит все перечисленные источни�
   for (const s of skills) assert.ok(fs.existsSync(path.join(dest, "skills", s, "SKILL.md")), s);
   assert.deepEqual(fs.readdirSync(path.join(dest, "skills")).sort(), [...skills].sort());
   assert.ok(fs.readdirSync(path.join(dest, "openspec", "schemas", "symphysis", "templates")).length > 0);
+});
+
+test("схема журнала доступна как doc и побайтно совпадает с canonical и tools копией", () => {
+  const dest = tmp();
+  syncPayload(dest);
+  const canonical = fs.readFileSync(path.join(ROOT, "decisions", "journal.schema.json"));
+  for (const dir of ["tools", "docs"]) {
+    assert.deepEqual(fs.readFileSync(path.join(dest, dir, "journal.schema.json")), canonical);
+  }
 });
 
 test("образец конфига: из каталога схемы в прежний путь payload, в каталог схемы payload не идёт (F-37)", () => {

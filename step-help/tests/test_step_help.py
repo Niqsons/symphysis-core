@@ -102,7 +102,7 @@ def process_alive(pid: int) -> bool:
 
 def test_shim_answers_as_told_and_records_the_call(tmp_path):
     shim = install_fork_shim(tmp_path / "bin", status=fork_reply({"artifacts": []}, code=3, stderr="сбой"))
-    env = fork_env(tmp_path / "bin", MARK="метка")
+    env = fork_env(tmp_path / "bin", MARK="метка", FIXTURE_CREDENTIAL="synthetic-fixture-only")  # gate-ok: synthetic negative fixture
     version = subprocess.run([shim, "--version"], env=env, capture_output=True, cwd=tmp_path)
     assert version.returncode == 0 and version.stdout.decode().strip() == FORK_VERSION
     status = subprocess.run([shim, "status", "--change", "имя", "--json"], env=env, capture_output=True, cwd=tmp_path)
@@ -111,6 +111,8 @@ def test_shim_answers_as_told_and_records_the_call(tmp_path):
     calls = fork_calls(tmp_path / "bin")
     assert [call["argv"] for call in calls] == [["--version"], ["status", "--change", "имя", "--json"]]
     assert calls[1]["env"]["MARK"] == "метка" and Path(calls[1]["cwd"]) == tmp_path
+    assert all("FIXTURE_CREDENTIAL" not in call["env"] for call in calls)
+    assert "synthetic-fixture-only" not in (tmp_path / "bin/calls.jsonl").read_text(encoding="utf-8")
 
 
 def test_shim_hangs_when_told(tmp_path):
@@ -990,7 +992,7 @@ def copy_of_tools(directory: Path) -> Path:
     """Справка и то, что она импортирует, одним каталогом, как в установке."""
     directory.mkdir()
     for file in core_files():
-        if file.name in ("step_help.py", "openspec_run.py", "journal_render.py", "journal_model.py", "journal_apply.py", "roots.py",
+        if file.name in ("step_help.py", "openspec_run.py", "runtime_context.py", "journal_render.py", "journal_model.py", "journal_apply.py", "roots.py",
                          "attack_scope.py", "attack_table.py"):
             shutil.copy(file, directory)
     return directory / "step_help.py"
@@ -1158,7 +1160,9 @@ def test_real_schema_and_real_texts_fit_together(tmp_path):
     code, data, _ = run_help(project, "--change", "demo", env=env)
     assert code == 0 and [item["id"] for item in data["steps"]] == ALL_STEPS
     assert [item["id"] for item in data["steps"] if item["text_note"]] == []
-    assert page(data, "specs")["texts"]["command"] == "`/opsx:continue demo`"
+    command = page(data, "specs")["texts"]["command"]
+    assert command.splitlines()[0] == "`/opsx:continue demo`"
+    assert "Для другого клиента — workflow continue из таблицы выше." in command
     assert page(data, "intent")["texts"]["how_to_prepare"]
     assert "выполняется" not in json.dumps(data, ensure_ascii=False)
 
@@ -1332,7 +1336,7 @@ def install_layout(tmp_path, nested=False):
     tools = install / ".symphysis" / "tools"
     tools.mkdir(parents=True)
     for file in core_files():
-        if re.match(r"journal.*\.(py|json)|roots\.py|viewer_render\.py|attack_table\.py|attack_scope\.py|step_help\.py|openspec_run\.py|symphysis_config\.py", file.name):
+        if re.match(r"journal.*\.(py|json)|roots\.py|runtime_context\.py|viewer_render\.py|attack_table\.py|attack_scope\.py|step_help\.py|openspec_run\.py|symphysis_config\.py", file.name):
             shutil.copy(file, tools / file.name)   # схема журнала — рядом с кодом (F-41 A)
     (tools / "journal-roots.json").write_text('{"": "<root>/.."}\n', encoding="utf-8")
     (install / "src").mkdir()

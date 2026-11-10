@@ -22,6 +22,9 @@ sys.dont_write_bytecode = True  # как у соседних скриптов: `
 # Исходник ядра (F-20 A): код модулей лежит в соседних каталогах первого уровня, точка входа ставит нужные ей в `sys.path`.
 # В установке весь код рядом в `.symphysis/tools/`: `roots.py` лежит возле этого файла, и путь не меняется.
 _HERE = Path(__file__).resolve().parent
+sys.path.insert(0, str(_HERE if (_HERE / "runtime_context.py").is_file() else _HERE.parent / "runtime"))
+from runtime_context import bootstrap as _runtime_bootstrap, context as _runtime_context  # noqa: E402
+_runtime_bootstrap("trace")
 if not (_HERE / "roots.py").is_file():
     sys.path[1:1] = [str(_HERE.parent / name) for name in ("roots", "decisions", "openspec-run")]
 from roots import UNUSABLE_ROOTS, default_roots  # noqa: E402
@@ -335,6 +338,9 @@ def parse_spec(source: str | Path) -> SpecParse:
 
 def find_root(start: Path) -> Path:
     """Корень проекта — ближайший `openspec/` от каталога вызова, как у `step_help.py` и у форка."""
+    selected = _runtime_context()
+    if selected:
+        return Path(selected["store"]["root"])
     return next((folder for folder in (start, *start.parents) if (folder / "openspec").is_dir()), start)
 
 
@@ -579,17 +585,25 @@ def saved_base(base: Path) -> dict[str, dict[str, dict]]:
 
 class _Master:
     """Мастер-спека для сборки (F-123): запись базы по `(capability, имя требования)` берётся из `saved` — базы снимка; нет записи —
-    из живого мастера (`master_base`, один раз на capability). `entry` отдаёт `(запись или None, взята ли из базы)`."""
+    из живого мастера (`master_base`, один раз на capability). При RENAMED ищется FROM той же capability (B-45),
+    но сохранённая база под TO имеет приоритет. `entry` отдаёт `(запись или None, взята ли из базы)`."""
 
     def __init__(self, root: Path, saved: dict):
-        self.root, self.saved, self.live = root, saved, {}
+        self.root, self.saved, self.live, self.renames = root, saved, {}, {}
+
+    def set_renames(self, cap: str, renames: list[SpecRename]) -> None:
+        """B-45: пары TO → FROM только той capability, чья дельта уже разобрана."""
+        self.renames[cap] = {r.to_name: r.from_name for r in renames}
 
     def entry(self, cap: str, name: str) -> tuple[dict | None, bool]:
-        if name in self.saved.get(cap, {}):
-            return self.saved[cap][name], True
+        previous = self.renames.get(cap, {}).get(name, name)
+        for key in (name, previous):
+            if key in self.saved.get(cap, {}):
+                return self.saved[cap][key], True
         if cap not in self.live:
             self.live[cap] = master_base(self.root, cap)
-        return self.live[cap].get(name), False
+        # До sync нужен FROM; после sync он исчезает, а TO нужен для сигнала «нет прежней базы».
+        return self.live[cap].get(previous, self.live[cap].get(name)), False
 
 
 def _block_equals(entry: dict | None, req) -> bool:
@@ -624,6 +638,7 @@ def _read_specs(base: Path, claims: list[dict], master: "_Master | None" = None)
         lines = _spec_lines(text)
         mask = _fence_mask(lines)
         cap = folder.name
+        master.set_renames(cap, parsed.renames)
         cap_node = _node(f"cap:{cap}", "cap", cap, rel, 1)
         nodes.append(cap_node)
         traces: dict[int, list[tuple[int, str, str]]] = {}  # след пробы по строке заголовка требования-владельца (F-156)
@@ -1213,9 +1228,11 @@ def check_graph_file(root: Path, change: str, path: Path | str, *, roots_file: P
 # связанные задачи, записи, пункты security и ветки, соседи по кандидатам связью `copies`). Конфиг — `DIAGRAM`. Номер узла
 # стоит в имени блока (`SCN_12 Есть поле`): имя и есть ключ узла в mermaid, номер делает его уникальным (F-67, F-68);
 # подчёркивание, а не дефис: хук принимает номер с дефисом за ключ задачи (F-73). Имя с номером не длиннее `DIAGRAM["имя"]`
-# знаков (F-137). Без выбора и с `--capability` текст длиннее `DIAGRAM["предел"]` не выдаётся (F-66, F-104).
+# знаков (F-137). У задачи подпись берётся только из явного начального `**Название** — тело`, без него остаётся номер;
+# полное `name` графа не меняется. Без выбора и с `--capability` текст длиннее `DIAGRAM["предел"]` не выдаётся (F-66, F-104).
 
 DIAGRAM_HEADER = "requirementDiagram"
+_TASK_TITLE = re.compile(r"^\*\*([^*\r\n]+)\*\*[ \t]+—[ \t]+\S")
 
 
 ENTITY = re.compile(r"#\w+;")  # коды сущностей mermaid: `#37;`, `#x25;`, `#lt;`, `#percnt;` декодируются в знак
@@ -1249,8 +1266,13 @@ def diagram_ident(node: dict, counters: dict[str, int]) -> str:
 
 
 def diagram_name(node: dict, ident: str) -> str:
-    """Имя блока: номер и начало подписи узла, вместе не длиннее `DIAGRAM["имя"]` знаков (F-137), очищено `clean_text`."""
-    return clean_text(f"{ident} {node['name']}")[:DIAGRAM["имя"]].rstrip()
+    """Имя блока: номер и подпись до `DIAGRAM["имя"]` знаков (F-137). Задача берёт только явное название;
+    старое тело задачи не становится подписью. Полные данные узла остаются прежними."""
+    label = node["name"]
+    if node["kind"] == "task":
+        title = _TASK_TITLE.match(label.lstrip())
+        label = title.group(1).strip() if title else ""
+    return clean_text(f"{ident} {label}")[:DIAGRAM["имя"]].rstrip()
 
 
 def _find_requirement(graph: dict, wanted: str) -> dict:
@@ -1540,6 +1562,7 @@ def signal_context(root: Path, change: str, saved: dict | None = None, *, roots_
             continue
         text = _read_text(base, rel)
         parsed, cap = parse_spec(text), folder.name
+        master.set_renames(cap, parsed.renames)
         entries = {}  # запись мастера по имени требования MODIFIED: (запись или None, из базы ли); номера в ней из другого журнала (F-84)
         for item in parsed.requirements:
             if item.section == "MODIFIED" and item.name not in entries:
@@ -1868,7 +1891,9 @@ def _freeze_base(root: Path, change: str, prior: dict) -> dict[str, dict[str, di
         rel = f"specs/{folder.name}/spec.md"
         if not (base / rel).is_file():
             continue
-        for req in parse_spec(_read_text(base, rel)).requirements:
+        parsed = parse_spec(_read_text(base, rel))
+        master.set_renames(folder.name, parsed.renames)
+        for req in parsed.requirements:
             entry, from_base = master.entry(folder.name, req.name) if req.section == "MODIFIED" else (None, False)
             if _carried_without_base(entry, from_base, req):
                 continue  # F-123: мастер уже несёт весь блок изменения (`/opsx:sync` прошёл) — это не база, номера не отсекаются

@@ -8,14 +8,15 @@ symphysis — схема для OpenSpec: задача идёт от намер�
 
 ## Что понадобится
 
-- Node 22.14 или новее, Python с `pip`, git, клиент Claude Code.
+- Node 22.14 или новее, Python с `pip`, git и один native клиент: Claude Code, Codex или OpenCode.
 - Доступ к репозиторию symphysis и к реестру npm и индексу pip или их зеркалу. Что делать без них — в разделе «Сбои».
 
 Команды даны отдельно для PowerShell и bash. В PowerShell зови именно `where.exe`: `where` там псевдоним `Where-Object` и ничего не покажет. В Git Bash пути пиши прямыми слешами: `..\reminders` без кавычек станет `..reminders`, установка молча уйдёт не туда, а `check` там же ответит `ok`.
 
 ## Что изменится на машине
 
-Обязательных глобальных изменений четыре. У каждого шага ниже то же самое написано ещё раз перед командой.
+Базовая подготовка меняет четыре компонента. У каждого шага ниже описаны назначение
+и откат; установка самого продукта в local/global описана отдельно после CLI.
 
 | Шаг | Что меняется | Откат |
 | --- | --- | --- |
@@ -139,7 +140,7 @@ bash:
 python -m pip install pyyaml
 ```
 
-### 6. Инсталлятор
+### 6. CLI-инсталлятор
 
 **Что меняется.** `npm --prefix installer ci` работает только внутри клона: ставит зависимость и собирает `installer/payload`. `npm i -g ./installer` кладёт в глобальный каталог npm ссылку на клон и команду `symphysis` в `PATH`. Ссылка ведёт в клон: `git pull` обновляет и её, а удаление клона ломает команду.
 
@@ -164,8 +165,232 @@ symphysis --help
 Первая строка вывода справки:
 
 ```text
-symphysis — схема OpenSpec symphysis, скиллы и инструменты журнала в проект
+symphysis — установка и инструменты OpenSpec symphysis
 ```
+
+`npm i -g ./installer` делает доступной команду, но ещё не устанавливает runtime
+и скиллы в пользовательские каталоги. Выбери один из двух самостоятельных режимов:
+
+- **Local:** продукт и native носители находятся в проекте; global-поставка не нужна.
+  Продолжай шагом 8 с `symphysis install --scope local --client claude`.
+- **Global:** общий runtime и native носители устанавливаются один раз для пользователя;
+  клонированному store нужна отдельная инициализация. Используй раздел «Global: установка и store».
+
+Native клиент — агентная среда Claude/Codex/OpenCode. Плагины VS Code, GIGA IDE и
+OpenCode IDE — отдельные потребители: наличие native скиллов не устанавливает плагин.
+
+### Global: установка и store
+
+После шагов 1–6 установи продукт для нужного клиента. Повторяемый `--client`
+позволяет поставить носители для нескольких клиентов. Эти команды одинаковы в
+PowerShell и bash:
+
+```text
+symphysis install --scope global --client claude
+git clone <адрес store> my-store
+symphysis init --project ./my-store
+symphysis check --scope global --project ./my-store
+symphysis resolve --project ./my-store --json
+```
+
+Для Codex замени `claude` на `codex`, для OpenCode — на `opencode`. Global install
+не принимает `--project` и `--store`, не создаёт planning root и не мигрирует проекты.
+`init` работает с уже существующим корнем OpenSpec: добавляет правила и декларацию
+совместимости, сохраняет чужие поля planning config, личные настройки, карту и ответы.
+Неверная структура config даёт отказ до записи. Повторный init сохраняет данные.
+
+Store — самостоятельный репозиторий спецификаций OpenSpec. Если открытый репозиторий
+содержит OpenSpec pointer, `--project <source>` выбирает связанный store через форк,
+а не создаёт второй planning root в source. Явно зарегистрированный store можно
+выбрать через `--store <id>`; список показывает `symphysis openspec store list --json`.
+
+Команды инструмента выполняются из выбранного store; `--project` обозначает исходный
+каталог для его обнаружения. Например, из любого каталога:
+
+```text
+symphysis --project ./my-store openspec new change first-change
+symphysis --project ./my-store help --change first-change
+symphysis --project ./my-store journal check openspec/changes/first-change/decisions.json
+symphysis --project ./my-store trace freeze first-change
+```
+
+Пути journal, файла ответов и `--out` разрешаются от исходного каталога `--project`
+(без него — от cwd вызова), затем инструмент запускается с cwd выбранного store.
+При запуске из pointer-source бери абсолютный `changeRoot` из JSON команды
+`symphysis --project <source> openspec status --change <имя> --json`;
+в JSON инструкций артефакта тот же каталог называется `changeDir`.
+Используй его для входных и выходных файлов, например после создания журнала:
+
+```text
+symphysis --project <source> journal check "<changeRoot>/decisions.json"
+symphysis --project <source> journal render-md "<changeRoot>/decisions.json" --out "<changeRoot>/decisions.md"
+```
+
+Можно открыть терминал в самом store и использовать обычные относительные пути.
+Pointer уже выбирает связанный store; дополнительный `--store` для этого не нужен.
+Селекторы dispatcher ставь перед именем инструмента, собственные параметры — после него.
+
+Global runtime находится в `SYMPHYSIS_HOME/runtime`, если задан `SYMPHYSIS_HOME`;
+иначе в `XDG_DATA_HOME/symphysis/runtime`, а без этих переменных — в
+`%LOCALAPPDATA%/symphysis/runtime` на Windows или `~/.local/share/symphysis/runtime`
+на остальных системах. Все overrides global-каталогов должны быть полными
+абсолютными путями. Native носители имеют независимые назначения:
+
+| Клиент | Global skills | Global agents/commands |
+| --- | --- | --- |
+| Claude | `~/.claude/skills` (либо `CLAUDE_CONFIG_DIR/skills`) | `agents`, `commands` того же client root |
+| Codex | `~/.agents/skills` | `CODEX_HOME/agents` (по умолчанию `~/.codex/agents`) |
+| OpenCode | `OPENCODE_CONFIG_DIR/skills`, иначе `XDG_CONFIG_HOME/opencode/skills` или `~/.config/opencode/skills` | `agents`, `commands` того же client root |
+
+`CODEX_HOME` не переносит пользовательские skills Codex. `--skills-dir` и
+`--agents-dir` повторяемы; с global это абсолютные назначения одного явно выбранного
+клиента. Пользовательская проекция схемы OpenSpec также проверяется по manifest;
+проектная схема с тем же именем не должна незаметно её перехватить.
+
+`check` разделяет целостность файлов, наличие workflow каждого клиента и подтверждение
+реальной сессии. Скопированные носители ещё не доказывают native discovery.
+
+Установщик поддерживает самостоятельные local/global носители для Claude Code,
+Codex и OpenCode. На 2026-11-10 для проверяемых сборок подтверждён следующий объём:
+
+| Среда | Установка | Подтверждённая приёмка и её предел |
+| --- | --- | --- |
+| Claude Code | local/global | Сохранён прежний учебный пример Claude/local; свежая native-приёмка не проводилась |
+| Codex 0.167.0 | local/global | Native discovery skills и workflow подтверждён; модельная приёмка заблокирована недоступным Windows MXC в тестовом окружении |
+| OpenCode CLI 2.2.5 | local/global | Модель получила brainstorm skill, research-driver и guard до записи проверены; полный intent→archive не завершён; повторный вход водителя с готовыми выходами также не принят |
+| Плагин VS Code | local/global | Пройдена приёмка установленной сборки |
+| Плагин GIGA IDE | local/global | Пройдена приёмка установленной сборки |
+| OpenCode IDE | Порт отложен | Приёмка установленного IDE-порта не завершена; проверка native CLI её не заменяет |
+
+Ограничение проверки Codex относится к использованному Windows-окружению и не
+становится требованием продукта. IDE-плагин не требуется для работы native-клиента;
+его установленная приёмка также не подтверждает модельный флоу другого клиента.
+
+Local и global не требуют друг друга. Если установлены оба, resolver выбирает local,
+в том числе повреждённый: global не скрывает поломку. Конфликты native обнаружения
+при смешанной установке пользователь разбирает явно; автоматическое объединение
+не поддерживается.
+
+### Принятие известных прежних файлов
+
+Если OpenSpec уже создал native workflow, обычный install может отказать с
+ownership-конфликтом: файл ещё не принадлежит этой поставке. `--force` не разрешает
+замену чужого или изменённого файла. Для точных известных версий есть отдельный
+просмотр и подтверждение; сходного имени или номера версии недостаточно.
+
+Для global выполни первую команду, затем открой полученный JSON и проверь
+назначения `files`, принимаемые `adoptions`, удаляемые `retiredPredecessors` и
+`conflicts`. Продолжай второй командой только при `ready: true` и пустом списке
+конфликтов. Команды одинаковы в PowerShell и bash:
+
+```text
+symphysis install --scope global --client claude --preview --out ./install-global-plan.json
+symphysis install --apply-plan ./install-global-plan.json --confirm
+```
+
+Без `--out` preview печатает JSON в stdout и ничего не записывает. С `--out`
+записывается только сам план; существующий файл плана не перезаписывается.
+Для local принятие работает тем же способом:
+
+```text
+symphysis install --scope local --project ./my-store --client claude --preview --out ./install-local-plan.json
+symphysis install --apply-plan ./install-local-plan.json --confirm
+```
+
+`--apply-plan` не принимает новые `--scope`, `--project`, `--client`, overrides
+каталогов или `--force`: они уже зафиксированы просмотренным планом. При применении
+installer заново проверяет пути, байты, профиль и поколения. Изменение после
+просмотра даёт отказ без установки; исправь причину и создай новый preview под
+новым именем. Неизвестные и пользовательские изменения остаются конфликтами:
+сохрани свою правку отдельно и явно реши, какой файл должен остаться.
+
+### Миграция выбранного store
+
+Install обновляет поставку своего scope, а `migrate` явно переключает один store.
+Для local → global сначала нужна исправная совместимая global-поставка с нужными
+клиентами. Если её native файлы требуют принятия, пройди предыдущий раздел.
+Из каталога, содержащего `my-store`, составь план:
+
+```text
+symphysis install --scope global --client claude
+symphysis migrate --project ./my-store --to global --out ./to-global-plan.json
+```
+
+Открой JSON: проверь `storeRoot`, `from`, `to`, собственные удаляемые копии и
+назначения в `files`, а также `conflicts` и `warnings`. Только после просмотра
+готового плана подтверди переход и проверь результат:
+
+```text
+symphysis migrate --apply-plan ./to-global-plan.json --confirm
+symphysis check --scope global --project ./my-store
+symphysis resolve --project ./my-store --json
+```
+
+Миграция удаляет только подтверждённые собственные файлы прежней поставки.
+Журналы, ответы, черновики, личный `symphysis.yaml` и карта корней сохраняются;
+данные и несовместимые API автоматически не переводятся. Изменённый собственный
+файл, неизвестная прежняя генерация, несовместимый источник или неподтверждённая
+схема дают конфликт до переключения. При двух расположениях личной карты у
+плоской legacy-установки preview требует явно разрешить неоднозначность, не читая
+и не сливая содержимое карт. Остальные store продолжают работать в прежнем режиме.
+
+Если файл, реальный путь или поколение изменились после просмотра, старый план
+не применяется. После устранения причины составь и просмотри новый:
+
+```text
+symphysis migrate --project ./my-store --to global --out ./to-global-plan-v2.json
+symphysis migrate --apply-plan ./to-global-plan-v2.json --confirm
+```
+
+Обратный переход создаёт самостоятельную local-поставку:
+
+```text
+symphysis migrate --project ./my-store --to local --out ./to-local-plan.json
+symphysis migrate --apply-plan ./to-local-plan.json --confirm
+symphysis check --scope local --project ./my-store
+```
+
+Перед второй командой также просмотри план. Global runtime и пользовательские
+проекции не удаляются: ими могут пользоваться другие store. Предупреждение
+`native-discovery-mixed` означает, что local и global носители выбранного клиента
+сосуществуют. Resolver symphysis выберет local; порядок обнаружения самим native
+клиентом нужно проверить отдельно, автоматическая очистка его конфликта не обещается.
+Для local-работы открывай сам store: клиентские файлы устанавливаются в него.
+Обычная новая local-установка по-прежнему не требует global.
+
+Вместо прямого пути к store можно передать `--project ./app` с OpenSpec pointer
+либо выбрать зарегистрированный store через `--store <id>` на команде preview.
+Форк определяет единственный planning root. При `--apply-plan` селекторы не
+добавляются: подтверждается именно просмотренный store.
+
+### Справка, корни и запуск из IDE
+
+`symphysis help` читает тексты шагов и версию выбранной поставки. Карта
+`.symphysis/tools/journal-roots.json`, личный `symphysis.yaml`, журнал и ответы
+относятся к store. В карте `<root>` раскрывается от `<store>/.symphysis`, поэтому
+прежнее `<root>/..` по-прежнему обозначает store. Без карты доступен сам store;
+пользовательские префиксы из соседнего проекта либо runtime не заимствуются.
+Негодная существующая карта даёт явную диагностику.
+
+После миграции прежней плоской установки личная карта может остаться в
+`<store>/tools/journal-roots.json`: при отсутствии канонической карты используется
+она, с прежней базой `<root>` от самого store. Наличие негодной канонической карты
+не переключает чтение на эту сохранённую карту. Две разные карты не объединяются.
+
+`symphysis --project <source> help --install-dir <dir>` меняет только дополнительное
+место поиска скиллов после самого store. Этот параметр не выбирает runtime,
+planning root, тексты шагов или версию. При global-установке найденные тела скиллов
+и Mermaid включаются в HTML, поэтому странице не нужны абсолютный путь установки
+или доступ к сети. Команда пересборки на панели выполняется из store журнала.
+
+В IDE bootstrap и Python — разные уровни. Настройка `symphysis.commandPath`
+указывает абсолютный путь команды symphysis или её JS-entrypoint, а
+`symphysis.nodePath` — абсолютный Node для JS-entrypoint. Без явного commandPath
+хост ищет symphysis в своём PATH; PATH терминала может отличаться. Наличие npm CLI
+не доказывает установку global runtime: это проверяет `symphysis resolve`.
+`toolsPath` не заменяет bootstrap и не служит разрешением запускать найденный Python
+в обход отказа совместимости. Готовность конкретной сборки IDE-плагина проверяется
+её установленной приёмкой; native клиент и IDE host имеют разные настройки.
 
 ### 7. Выбор клиента
 
@@ -175,6 +400,7 @@ PowerShell:
 
 ```powershell
 where.exe claude
+where.exe codex
 where.exe opencode
 ```
 
@@ -182,14 +408,24 @@ bash:
 
 ```bash
 which claude
+which codex
 which opencode
 ```
 
-Прохождение этого руководства шло только на Claude Code, поэтому дальше команды для него. opencode и другие клиенты — раздел «Другой клиент»; opencode этим прохождением не проверен.
+Ниже сохранён учебный пример с командами Claude Code. У OpenCode имена workflow
+отличаются: раздел «Другой клиент». Подтверждённый объём работы каждого клиента и
+IDE указан в матрице готовности выше.
 
 ### 8. Проект
 
-Учебный проект лежит в `docs/guide/example/`: код `reminders.py`, его данные `reminders.json`, `README.md` и задача `intent.md`. Он копируется рядом с клоном, глобальных изменений здесь нет. `openspec init` создаёт `.claude/` и `openspec/`, `symphysis install` кладёт в проект схему, скиллы, тела агентов-водителей в `.claude/agents/`, инструменты журнала, общие файлы скиллов с уведомлениями MIT в `.symphysis/docs/` и личный `symphysis.yaml`.
+Учебный проект лежит в `docs/guide/example/`: код `reminders.py`, его данные
+`reminders.json`, `README.md` и задача `intent.md`. Он копируется рядом с клоном.
+Local install явно создаёт planning config, схему и охраняемые native workflow,
+скиллы, тела агентов в `.claude/agents/`, инструменты журнала, общие файлы с
+уведомлениями MIT в `.symphysis/docs/` и личный `symphysis.yaml`. Отдельный
+`openspec init` перед ним не нужен: уже созданные чужие носители могут конфликтовать
+с управляемыми. Если телеметрия не настроена, installer выключает её в глобальном
+конфиге OpenSpec; явное значение сохраняет.
 
 Команды идут из каталога проекта. Параметр `--project` им не нужен; если он понадобится, путь относительный и с прямыми слешами. `git init` нужен, чтобы `symphysis.yaml` было от чего отделять: файл личный и в коммит не идёт.
 
@@ -199,8 +435,7 @@ PowerShell:
 Copy-Item -Recurse docs/guide/example ../reminders
 Set-Location ../reminders
 git init
-openspec init --tools claude
-symphysis install
+symphysis install --scope local --client claude
 symphysis check
 $LASTEXITCODE
 ```
@@ -211,35 +446,16 @@ bash:
 cp -r docs/guide/example ../reminders
 cd ../reminders
 git init
-openspec init --tools claude
-symphysis install
+symphysis install --scope local --client claude
 symphysis check
 echo $?
 ```
 
-Вывод `openspec init` без строк прогресса и двух ссылок в конце. Он называет схему `spec-driven` и советует `/opsx:propose`: схему на `symphysis` переключит следующая команда, а основной путь в этом руководстве — `/opsx:continue`.
+Вывод `symphysis install` начинается числом записанных файлов; оно зависит от
+выбранных клиентов и версии payload:
 
 ```text
-OpenSpec Setup Complete
-
-Created: Claude Code
-7 skills and 7 commands in .claude/
-Config: openspec/config.yaml (schema: spec-driven)
-
-Getting started:
-  Start your first change: /opsx:propose "your idea"
-
-Note: 5 more workflows are available (new, ff, bulk-archive, verify, onboard).
-Add them with `openspec config profile`.
-```
-
-Вывод `symphysis install`:
-
-```text
-записано 52
-config.yaml уже был: схема переключена с spec-driven на symphysis, rules добавлены
-.gitignore: добавлена строка symphysis.yaml — правка уйдёт в git вместе с работой
-openspec: глобальный конфиг <каталог>\openspec\config.json
+записано <N>
 ```
 
 Строка о `.gitignore` значит: сам `.gitignore` войдёт в коммит вместе с работой, а `symphysis.yaml` в git не пойдёт.
@@ -267,17 +483,17 @@ check: ok
 PowerShell:
 
 ```powershell
-openspec new change add-overdue
+symphysis openspec new change add-overdue
 Move-Item intent.md openspec/changes/add-overdue/intent.md
-openspec status --change add-overdue
+symphysis openspec status --change add-overdue
 ```
 
 bash:
 
 ```bash
-openspec new change add-overdue
+symphysis openspec new change add-overdue
 mv intent.md openspec/changes/add-overdue/intent.md
-openspec status --change add-overdue
+symphysis openspec status --change add-overdue
 ```
 
 Вывод `openspec new change` и статуса:
@@ -315,7 +531,7 @@ Next: openspec instructions decisions --change "add-overdue" --json
 1. Открой `openspec/changes/add-overdue/symphysis.html` в браузере.
 2. У каждой развилки выбери вариант; слово к выбору необязательно. Спорный вопрос можно припарковать.
 3. Нажми «Скопировать промпт» и вставь его в чат.
-4. Модель сохраняет промпт в `answers/<дата>.md`, каталог создаёт сама, и вносит его командой `python .symphysis/tools/journal.py apply`.
+4. Модель сохраняет промпт в `answers/<дата>.md`, каталог создаёт сама, и вносит его командой `symphysis journal apply`.
 
 Улики и файлы, названные в вопросе, на странице — ссылки: открывается файл, а значок ↗ рядом открывает его в редакторе на нужной строке. Редактор выбирается один раз в шапке страницы и хранится в браузере. Значок работает из внешнего браузера: встроенные браузеры VS Code и GIGA IDE такие ссылки не открывают. Файлы `.ts` браузер в Windows скачивает, их открывай значком. Для IDEA и GIGA IDE в Windows нужен зарегистрированный протокол `jetbrains`: раздел «Сбои».
 
@@ -323,7 +539,7 @@ Next: openspec instructions decisions --change "add-overdue" --json
 
 Решить можно и без страницы: написать решение в чат, модель внесёт его тем же способом. Если тебе удобнее работать только в чате или только на странице, скажи об этом модели: этого достаточно.
 
-Справка о шагах есть на странице `symphysis.html`: открывается кнопкой «схема · справка», затем вкладка «справка»; считается командой `python .symphysis/tools/step_help.py`.
+Справка о шагах есть на странице `symphysis.html`: открывается кнопкой «схема · справка», затем вкладка «справка»; считается командой `symphysis help`.
 
 ### Шаг `decisions`: журнал решений
 
@@ -360,7 +576,7 @@ F-8  Как оформить код выбора просроченных: оп�
 
 Шаг необязательный и зовётся только по имени: модель ищет в журнале утверждения, ничем не подкреплённые, и пишет вердикт `status: passed` или `status: gaps_found` в `attack/decisions.md`. Строки с тяжестью `блокер` закрываются правкой журнала и повтором атаки. По умолчанию атаку исполняет субагент-водитель: brief с хешами целей и его отчёт лежат в `openspec/changes/add-overdue/briefs/symphysis-attack-<дата>/`, вопросы водителя главная нить задаёт в чате.
 
-Вердикт привязан к хешу журнала, а следующие шаги журнал дописывают. Поэтому позже статус покажет `attack-decisions (verdict: stale — signal, not a gate)`: это сигнал, идти дальше можно, свежий вердикт даст повтор той же команды. Что именно устарело, называет `python .symphysis/tools/journal.py check openspec/changes/add-overdue/decisions.json` строкой `[..] атака журнала: после вердикта добавлено N записей: …`; те же строки справка шага отдаёт полем `stale_scope`. Повтор той же командой проходит только названные записи и их стыки (записи, связанные с новыми через `depends_on`, `antipodes` или номера в `consequences`), остальные строки таблицы остаются. Вызванная атака входит в счёт: вместо `1/9` в строке `Progress` будет `/10`, а со второй атакой `/11`.
+Вердикт привязан к хешу журнала, а следующие шаги журнал дописывают. Поэтому позже статус покажет `attack-decisions (verdict: stale — signal, not a gate)`: это сигнал, идти дальше можно, свежий вердикт даст повтор той же команды. Что именно устарело, называет `symphysis journal check openspec/changes/add-overdue/decisions.json` строкой `[..] атака журнала: после вердикта добавлено N записей: …`; те же строки справка шага отдаёт полем `stale_scope`. Повтор той же командой проходит только названные записи и их стыки (записи, связанные с новыми через `depends_on`, `antipodes` или номера в `consequences`), остальные строки таблицы остаются. Вызванная атака входит в счёт: вместо `1/9` в строке `Progress` будет `/10`, а со второй атакой `/11`.
 
 Предупреждение можно отметить прочитанным на странице `symphysis.html`: у строки `предупреждение` в режиме «атака» стоит переключатель «прочитано», отметка уходит в промпт возврата текстом «предупреждение прочитано: <раздел>» и после `apply` ложится заметкой в `notes[]` журнала; при пересборке страница показывает флаг по этой заметке (подпись «в журнале», до внесения — «не внесено»). Заметка меняет хеш журнала, поэтому вердикт станет `stale` с составом «записей не добавлено: журнал изменён иначе»; повтор той же командой обновит хеш, а в итоге назовёт прочитанные предупреждения с пометкой «(прочитано)». Флаг — свидетельство прочтения, не снятие: тяжесть, счётчики и вердикт он не меняет.
 
@@ -543,15 +759,17 @@ python reminders.py overdue
 
 | Команда | Что даёт |
 | --- | --- |
-| `python .symphysis/tools/trace_graph.py build add-overdue` | граф в JSON в stdout: узлы, связи, кандидаты связей между требованиями (запись со статусом `припаркован` кандидатов не даёт, связь `traces` к ней остаётся) |
-| `python .symphysis/tools/trace_graph.py build add-overdue --out graph.json` | тот же граф в файле; каталоги пути создаются, файлы изменения не меняются |
-| `python .symphysis/tools/trace_graph.py build add-overdue --format mermaid` | текст `requirementDiagram` для Mermaid, предел 50 000 знаков без выбора и с `--capability`; у `--requirement` предела нет, а превышение даёт отказ с кодом 1 и подсказкой, чем выбрать меньше |
-| `python .symphysis/tools/trace_graph.py report add-overdue` | отчёт Markdown: находки `openspec validate` и сигналы графа группами тяжести — «Связь не разрешена», «Опоры нет», «Реализация не закрывает» — подзаголовком со счётом строк, внутри группы по месту в файле |
-| `python .symphysis/tools/trace_graph.py check add-overdue graph.json` | сверка сохранённого файла графа с изменением: не устарел ли и не правили ли его руками; файл другой версии формата отвергается строкой с обеими версиями («формат 1, а скрипт читает 2») |
-| `python .symphysis/tools/trace_graph.py freeze add-overdue` | заморозка: снимок `req-graph.json` и отчёт `report.md` в `graph/` изменения |
-| `python .symphysis/tools/trace_graph.py archive-gaps` | какие изменения в архиве остались без снимка |
+| `symphysis trace build add-overdue` | граф в JSON в stdout: узлы, связи, кандидаты связей между требованиями (запись со статусом `припаркован` кандидатов не даёт, связь `traces` к ней остаётся) |
+| `symphysis trace build add-overdue --out graph.json` | тот же граф в файле; каталоги пути создаются, файлы изменения не меняются |
+| `symphysis trace build add-overdue --format mermaid` | текст `requirementDiagram` для Mermaid, предел 50 000 знаков без выбора и с `--capability`; у `--requirement` предела нет, а превышение даёт отказ с кодом 1 и подсказкой, чем выбрать меньше |
+| `symphysis trace report add-overdue` | отчёт Markdown: находки `openspec validate` и сигналы графа группами тяжести — «Связь не разрешена», «Опоры нет», «Реализация не закрывает» — подзаголовком со счётом строк, внутри группы по месту в файле |
+| `symphysis trace check add-overdue graph.json` | сверка сохранённого файла графа с изменением: не устарел ли и не правили ли его руками; файл другой версии формата отвергается строкой с обеими версиями («формат 1, а скрипт читает 2») |
+| `symphysis trace freeze add-overdue` | заморозка: снимок `req-graph.json` и отчёт `report.md` в `graph/` изменения |
+| `symphysis trace archive-gaps` | какие изменения в архиве остались без снимка |
 
 Диаграмма берёт часть графа: `--capability <имя>` оставляет одну capability, `--requirement <имя>` одно требование; если имя есть у двух capability, пиши `capability/имя`. Скрипт печатает только текст: картинку по нему строишь ты или модель, файла с рисунком скрипт не создаёт. Весь граф одной картинкой в symphysis не входит, поэтому на большом изменении бери часть. Коды выхода у всех команд: 0 — выполнено, 1 — отказ с текстом в stderr (нет изменения, негодный журнал, путь не записать), 2 — вызов неверен. Справка по каждой подкоманде — `--help`.
+
+В Mermaid задача подписана номером и явным названием: `- [ ] 1.2 **Сохранить отчёт** — полное тело; проверка: …` даёт `TASK_1.2 Сохранить отчёт`. Без начальной формы `**Название** — тело` остаётся `TASK_1.2`. Название новых задач — обычный текст до 80 знаков, вся подпись ограничена 90. Полное тело, checkbox и ссылки сохраняются в tasks.md и JSON графа; Mermaid указывает исходную строку в docref. Старые задачи и снимки format 2 не требуют миграции.
 
 ### Граф и `openspec validate`
 
@@ -565,7 +783,9 @@ python reminders.py overdue
 2. Когда отмечена последняя задача `/opsx:apply`: `freeze` повторяется. Это раньше `/opsx:sync`: после синхронизации новый сценарий MODIFIED уже лежит в мастере, и сигнал о нём замолчал бы.
 3. В `/opsx:archive` до вопроса о синхронизации: `freeze` собирает граф заново, если каталога, снимка или отчёта нет либо файлы изменения разошлись со снимком; свежий снимок только обновляет коммиты корней, граф и отчёт остаются прежними.
 
-Архивирует изменение только скилл `/opsx:archive`: он зовёт синхронизацию, скрипт якорей по подсказке и переносит каталог сам. CLI `openspec archive` к общей спеке с якорями не применяется: он сверяет блоки по равенству текста, блок с якорями считает не применённым и перепишет его дельтой с голыми номерами.
+Архивирует изменение только скилл `/opsx:archive`: он дожидается выбранного sync и его якоризации, проверяет результат, затем переносит каталог сам. Уже завершённую привязку повторять не требуется. При `Archive without syncing` мастер не меняется. CLI `symphysis openspec archive` к общей спеке с якорями не применяется: он сверяет блоки по равенству текста, блок с якорями считает не применённым и перепишет его дельтой с голыми номерами.
+
+Результат переноса можно проверить отдельно: `symphysis sync-check <имя> --json`, при частичном sync — с повторяемым `--capability <имя>`. Проверщик ничего не пишет: `match` означает совпадение проверенных частей, `mismatch` называет явное расхождение, `review` требует суждения по тексту или происхождению ссылки. Голый номер и якорь одного числа не обязательно ссылаются на один журнал. Поздний снимок уже заякоренного мастера прежнего происхождения не доказывает. После запрошенного sync неразрешённая проверка оставляет изменение активным; отдельный выбор архива без sync сохраняется и при ошибке графа.
 
 Когда граф собран заново, вывод `freeze` называет путь к `graph/report.md`; на ветке «Снимок свежий: обновлены только коммиты корней, граф и отчёт прежние.» ссылки в выводе нет, отчёт лежит там же. Модель отдаёт тебе ссылку на него без пересказа и без отбора строк: читай отчёт сам. Сигнал отчёта не повод править спеки и задачи без твоего слова. Дочернее требование, вынесенное из длинного родителя, без своего номера записи получает сигнал «требование без записи»: ему нужен номер решения, по которому требование делили (F-76, F-150). Ручной `openspec archive` мимо скилла заморозку не вызывает: для этого есть `archive-gaps`.
 
@@ -574,7 +794,7 @@ python reminders.py overdue
 Граф читает связи из текста, поэтому модель держит несколько привычек в самих файлах. Знать их нужно, чтобы понять сигнал и поправить файл, если модель отступила.
 
 - Требование называет решения журнала номером в скобках: `(F-NN)` в его тексте. Запись другого изменения называется якорем `(<изменение>/F-NN)`: имя — каталог изменения, без даты архива.
-- В общей спеке `openspec/specs/` ссылки на записи синхронизированного изменения стоят якорем всегда: после переноса блоков модель зовёт `python .symphysis/tools/anchor_refs.py <имя>` по правилу `rules.specs` и подсказке архива; скрипт переписывает голые номера журнала в блоках этого изменения, маркеры и комментарии блока тоже, и печатает каждую замену. Сверь `git diff` общих спек с его выводом: других правок ссылок быть не должно, руками их не переписывают. Голый номер, который стоял в блоке до синхронизации, принадлежит прежнему журналу и остаётся голым: скрипт узнаёт его по базе снимка.
+- В общей спеке `openspec/specs/` ссылки на записи синхронизированного изменения стоят якорем всегда: после переноса блоков шаг sync зовёт `symphysis anchors <имя>` (при частичном переносе — с повторяемым `--capability <имя>` только для выбранных capabilities), завершённая привязка при архиве повторно не требуется; `rules.specs` задаёт форму ссылок; скрипт переписывает голые номера журнала в блоках этого изменения, маркеры и комментарии блока тоже, и печатает каждую замену. Сверь `git diff` общих спек с его выводом: других правок ссылок быть не должно, руками их не переписывают. Голый номер, который стоял в блоке до синхронизации, принадлежит прежнему журналу и остаётся голым: скрипт узнаёт его по базе снимка.
 - Задача называет сценарий в форме `` `capability`: «имя сценария» `` у каждого названного имени. Задача без сценария, например полный прогон тестов, заканчивается словом `` `служебная` `` в обратных кавычках: сигнал «задача ни к чему» её не считает.
 - Длинное требование делится: часть уходит в дочернее требование, и оно называет родителя фразой `Часть требования «имя».` (у другой capability — вместе с её именем).
 - Под заголовком сценария, появившегося по исходу Specify, стоит комментарий `<!-- F-NN -->` с номером записи.
@@ -619,7 +839,7 @@ python reminders.py overdue
 Снимок появляется заморозкой, а заморозку зовёт модель по подсказке, которую она может пропустить; ручной `openspec archive` подсказки не читает вовсе. Изменения в архиве без снимка находит скрипт:
 
 ```text
-python .symphysis/tools/trace_graph.py archive-gaps
+symphysis trace archive-gaps
 ```
 
 Без аргумента он читает `openspec/changes/archive`, с аргументом — любой каталог архива. Изменения без `graph/req-graph.json` он называет строками `Без снимка: <имя>`; изменения старше первого снимка идут одной строкой со счётом, поимённо только более новые. Скрипт только читает: снимок не собирает и файлов не прибавляет. `symphysis check` его не зовёт и таких изменений сам не ищет, поэтому запускай `archive-gaps` сам, например после ручного `openspec archive`.
@@ -639,17 +859,25 @@ attack:
 
 ## Остальные команды
 
-Установка ставит семь workflow профиля `core`. Три уже прошли выше вместе с `/opsx:continue`: `/opsx:apply`, `/opsx:sync`, `/opsx:archive`. Ещё три:
+Установка ставит workflow профиля `core` и обязательный `new`: восемь охраняемых
+носителей при стандартном профиле. Три уже прошли выше вместе с `/opsx:continue`:
+`/opsx:apply`, `/opsx:sync`, `/opsx:archive`. Ещё три:
 
 - `/opsx:explore` — обсудить задачу без артефактов, когда она ещё не ясна.
 - `/opsx:update` — переписать готовые артефакты изменения и свести их между собой; код не трогает.
 - `/opsx:propose` — создать изменение и все артефакты одним ходом. Для схемы symphysis основной путь — `/opsx:continue`: этим прохождением `/opsx:propose` не проверялся.
 
-Остальные пять (`new`, `ff`, `bulk-archive`, `verify`, `onboard`) есть в форке, добавляет их `openspec config profile`, затем `openspec update` в проекте.
+`/opsx:new` создаёт изменение. Дополнительные `ff`, `bulk-archive`, `verify`,
+`onboard` доступны в профилях форка. После явного выбора профиля повтори
+`symphysis install` своего scope для сборки охраняемых носителей.
 
 ## Обновление
 
-**Что меняется.** Те же глобальные записи, что при установке: новый тарбол заменяет команду `openspec`, ссылка `symphysis` остаётся. `openspec update` и `install --force` меняют только файлы проекта. `symphysis.yaml` и файл корней `.symphysis/tools/journal-roots.json` не трогаются и с `--force`.
+**Что меняется.** Новый тарбол заменяет команду `openspec`; обновление npm-пакета
+не обновляет установленный payload само по себе. Повтори install выбранного scope.
+Global install обновляет общий runtime и собственные native проекции для всех
+совместимых store; он не обходит store и не меняет их журналы, карты и ответы.
+Local install обновляет выбранный проект независимо от global.
 
 **Откат.** Вернуться на прежний коммит клона и повторить этот раздел.
 
@@ -662,8 +890,7 @@ git pull
 npm --prefix installer ci
 npm i -g ./vendor/<новый тарбол>
 Set-Location ../reminders
-openspec update
-symphysis install --force
+symphysis install --scope local --client claude
 symphysis check
 ```
 
@@ -674,38 +901,92 @@ git pull
 npm --prefix installer ci
 npm i -g ./vendor/<новый тарбол>
 cd ../reminders
-openspec update
-symphysis install --force
+symphysis install --scope local --client claude
 symphysis check
 ```
 
-В конце `check: ok`. Без `npm --prefix installer ci` будет `[!!] payload старее исходников`, а без `--force` файлы схемы, отличные от новых, пропускаются строкой `пропущен: <путь> — отличается, нужен --force`.
+Для global после обновления пакета выполни `symphysis install --scope global`,
+затем `symphysis check --scope global --project <store>`. Если store несовместим,
+команда называет причину и действие; автоматической миграции и перехода к local нет.
+
+Installer сравнивает файлы с ownership manifest. Изменённый пользователем или чужой
+файл остаётся на месте, установка сообщает конфликт. `--force` сохраняется как
+совместимый флаг и эту защиту не отключает. Повторный install без новых overrides
+сохраняет прежние client targets. Перед обновлением дождись завершения активных
+инструментов: reader lease блокирует замену используемого поколения.
+
+При обрыве не удаляй lock/backup по возрасту. Явное восстановление проверяет
+незавершённую транзакцию, владельца и байты её файлов:
+
+```text
+symphysis install --recover --scope global
+symphysis install --recover --scope local --project <project>
+symphysis init --recover --project <store>
+symphysis migrate --recover --project <source>
+```
+
+Живой либо неподтверждённый владелец, изменённые пользователем файлы и неизвестные
+остатки дают отказ. После успешного recovery повтори исходную install/init и check.
+Для миграции используй тот же source и при необходимости тот же `--store <id>`,
+что при preview. Результат `rolled-back` означает возврат прежнего режима: составь
+новый preview перед повтором. При `completed` переключение уже завершено — выполни
+check целевого scope. Не удаляй личные данные или lock-файлы для обхода отказа.
+Системные Node/Python/форк installer не ставит автоматически.
+
+Для охраняемого обновления носителей используй dispatcher. Он строит общий план
+установки и проверяет ownership до записи; прямой native генератор не запускается:
+
+```text
+symphysis --project <store> openspec update --dry-run --json
+symphysis --project <store> openspec update
+symphysis --project <store> openspec init --tools claude,codex,opencode
+```
+
+Профиль берётся из конфига OpenSpec. `init --profile core` либо `init --profile custom`
+задаёт профиль только для этой операции и не переписывает глобальный конфиг.
+Обязательные workflow добавляются к выбранному набору, ссылки на отключённые
+workflow не остаются в носителях. Без `--tools` сохраняются прежние client targets.
+Позиционный путь, если задан, должен обозначать тот же выбранный store.
+
+Внешний `openspec init/update` может перегенерировать носители без guard. Последующий
+`check` назовёт расхождение; обычный install и `--force` не заменяют изменённые файлы
+автоматически. Для принятия известной прежней генерации нужен явный просмотр
+конфликтов и подтверждение плана.
 
 ## Другой клиент
 
-Каталог скиллов выбранного клиента задаёт `--skills-dir`, параметр повторяемый, путь относительный от проекта. Он нужен и в `install`, и в `check`: без него `check` сверяет `.claude/skills`. Для opencode:
+Идентификатор клиента задаёт `--client`, а не имя каталога. `--skills-dir` и
+`--agents-dir` — независимые overrides; local пути считаются от проекта, global —
+полные абсолютные. Для local OpenCode:
 
 PowerShell:
 
 ```powershell
-openspec init --tools opencode
-symphysis install --skills-dir .opencode/skills
-symphysis check --skills-dir .opencode/skills
+symphysis install --scope local --client opencode
+symphysis check --scope local --client opencode
 ```
 
 bash:
 
 ```bash
-openspec init --tools opencode
-symphysis install --skills-dir .opencode/skills
-symphysis check --skills-dir .opencode/skills
+symphysis install --scope local --client opencode
+symphysis check --scope local --client opencode
 ```
 
-Имя команды у клиента своё: у opencode это `/opsx-continue`, файл `.opencode/commands/opsx-continue.md`. Список имён `--tools` показывает `openspec init --help`.
+Имя команды у клиента своё: у OpenCode это `/opsx-continue`, файл
+`.opencode/commands/opsx-continue.md` при local-установке. Остальные обязательные
+команды — `/opsx-new`, `/opsx-apply`, `/opsx-sync`, `/opsx-archive`.
+Список имён `--tools` показывает `symphysis openspec init --help`.
 
-Тела агентов-водителей ложатся в `agents` рядом с каталогом скиллов, здесь `.opencode/agents`; другой каталог задаёт `--agents-dir`, тоже повторяемый. Тела написаны для Claude Code: поле `skills:` во frontmatter грузит скилл в субагент. Клиент, который этот формат не читает, водителя не зовёт, и шаг идёт в главной нити.
+Для Codex укажи `--client codex`: local skills идут в `.agents/skills`, агенты — в
+`.codex/agents`; `.agents/agents` не используется. Для Claude ставится родное тело
+с preload, для Codex — TOML, для OpenCode — Markdown subagent. Два последних тела
+явно получают нужный skill через resource API. Установка не меняет модель и права
+родительской сессии. После установки проверь обнаружение в своём клиенте.
 
-Прохождение этого руководства шло только на Claude Code. Установка для opencode выше проверена до `check: ok`, сам проект на нём не проходился.
+OpenCode CLI проверен реальными модельными сессиями в local/global для получения
+скилла и работы исследовательского водителя. Текущий объём приёмки полного флоу
+указан в матрице готовности; он не распространяется автоматически на OpenCode IDE.
 
 ## Разработчику
 
@@ -754,7 +1035,20 @@ python -m pip config set global.index-url <адрес зеркала>
 
 **`[!!] symphysis.yaml: нет пакета PyYAML`.** Шаг 5 пропущен или `python` в `PATH` другой. Настройки при этом считаются включёнными.
 
-**`[!!] continue: клиент не настроен`.** В проекте не было `openspec init`: выполни команду из строки.
+**Нет ожидаемой native-команды или скилла.** Проверь выбранную поставку через
+`symphysis resolve --project <source> --json` и `symphysis check` с выбранными scope
+и client. `filesystem ready` не подтверждает обнаружение в работающем клиенте:
+проверь его собственный список skills/commands и выбранный client root.
+Используй диагностику управляемого install/init; внешний `openspec init/update`
+может перегенерировать носители без guard.
+
+**`declaration-missing` в global-store.** Выполни явный
+`symphysis init --project <source>` для нужного существующего store, затем повтори
+check/preflight. Global install сам store не инициализирует.
+
+**`selector-conflict` у journal из pointer-source.** Проверь абсолютные пути журнала,
+ответов и `--out` по `changeRoot`/`changeDir` выбранного изменения. Относительный
+путь от store не становится таким путём от открытого source автоматически.
 
 **Значок ↗ не открывает IDEA или GIGA IDE.** В Windows не зарегистрирован протокол `jetbrains`. Регистрация только для твоего пользователя, путь — к своей IDE:
 

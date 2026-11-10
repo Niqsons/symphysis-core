@@ -15,7 +15,7 @@ FIX = ROOT / "tests" / "fixtures"
 # В установке тот же код лежит одним каталогом `.symphysis/tools/` (F-19 A) — его раскладку дают `core_files`
 # и `core_clone` ниже.
 CODE_MODULES = ("roots", "decisions", "viewer", "attack", "consequences", "cli", "step-help", "trace", "openspec-run",
-                "settings", "anchors")
+                "settings", "anchors", "runtime")
 MODULE_DIRS = [ROOT / name for name in CODE_MODULES]
 CORE_SUFFIXES = (".py", ".html", ".json")   # код и данные модуля; тексты `.md` установка кладёт в `docs/`
 

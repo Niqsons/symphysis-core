@@ -1,7 +1,8 @@
 import fs from "node:fs";
 import path from "node:path";
-import { spawnSync } from "node:child_process";
+import { spawn, spawnSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
+import { isFullyAbsolute } from "./paths.js";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const win = process.platform === "win32";
@@ -18,12 +19,21 @@ function cmdArg(arg) {
 }
 
 /** Первый `openspec` из PATH по PATHEXT; null — нет. На Windows `spawn` без оболочки `.cmd` не находит. */
-function findOnPath(name) {
-  const exts = (process.env.PATHEXT || ".COM;.EXE;.BAT;.CMD").split(";").filter(Boolean);
-  for (const dir of String(process.env.PATH ?? "").split(path.delimiter).filter(Boolean)) {
-    for (const ext of exts) {
-      const file = path.join(dir, name + ext);
-      if (fs.statSync(file, { throwIfNoEntry: false })?.isFile()) return file;
+export function* executableCandidates(name, env = process.env) {
+  const exts = win ? (env.PATHEXT || ".COM;.EXE;.BAT;.CMD").split(";").filter(Boolean) : [""];
+  for (const dir of String(env.PATH ?? env.Path ?? "").split(path.delimiter).filter((d) => isFullyAbsolute(d))) {
+    for (const ext of exts) yield path.join(dir, name + ext);
+  }
+}
+
+export function findExecutable(name, env = process.env) {
+  for (const file of executableCandidates(name, env)) {
+    try {
+      if (!fs.statSync(file, { throwIfNoEntry: false })?.isFile()) continue;
+      if (!win) fs.accessSync(file, fs.constants.X_OK);
+      return file;
+    } catch (error) {
+      if (!["EACCES", "EPERM", "ENOENT", "ENOTDIR"].includes(error.code)) throw error;
     }
   }
   return null;
@@ -39,12 +49,31 @@ export function spawnTool(command, args, options = {}) {
   return spawnSync(command, args, options);
 }
 
-function spawnFile(file, args, options) {
+/** Same cwd executable guard for a child whose lifetime the dispatcher owns. */
+export function spawnToolAsync(command, args, options = {}) {
+  if (win) process.env.NoDefaultCurrentDirectoryInExePath = "1";
+  return spawn(command, args, { windowsHide: true, ...options });
+}
+
+export function executableLauncher(file, args) {
   if (win && /\.(cmd|bat)$/i.test(file)) {
     const line = [file.replace(CMD_META, "^$1"), ...args.map(cmdArg)].join(" ");
-    return spawnTool(line, [], { ...options, shell: true });
+    return { command: line, args: [], shell: true };
   }
-  return spawnTool(file, args, options);
+  return { command: file, args, shell: false };
+}
+
+/** The same pinned fork launch is used for read-only probes and leased commands. */
+export function openspecLauncher(args, env = process.env) {
+  if (env.SYMPHYSIS_OPENSPEC && !isFullyAbsolute(env.SYMPHYSIS_OPENSPEC)) throw Object.assign(new Error("SYMPHYSIS_OPENSPEC: нужен полный абсолютный путь"), { code: "fork-path-invalid", exitCode: 2 });
+  const chosen = env.SYMPHYSIS_OPENSPEC ? path.resolve(env.SYMPHYSIS_OPENSPEC) : findExecutable("openspec", env);
+  if (!chosen || !fs.existsSync(chosen)) return null;
+  return chosen.endsWith(".js") ? { command: process.execPath, args: [chosen, ...args], shell: false } : executableLauncher(chosen, args);
+}
+
+export function openspecEnvironment(env = process.env) {
+  const clean = Object.fromEntries(Object.entries(env).filter(([key]) => key.toLowerCase() !== "nodefaultcurrentdirectoryinexepath"));
+  return { ...clean, OPENSPEC_TELEMETRY: "0", NoDefaultCurrentDirectoryInExePath: "1" };
 }
 
 /**
@@ -52,24 +81,13 @@ function spawnFile(file, args, options) {
  * Инсталлятор телеметрию не порождает: каждый вызов идёт с OPENSPEC_TELEMETRY=0 (F-116.A).
  * Возвращает результат spawnSync; `notFound: true` — форка нет, ненулевой `status` или `error` — форк есть и отказал.
  */
-export function runOpenspec(args, { cwd } = {}) {
+export function runOpenspec(args, { cwd, env: suppliedEnv = process.env, timeout = 15000 } = {}) {
   // Шим npm без `node.exe` рядом зовёт голое `node`, и `cmd.exe` ищет его сначала в `cwd`. Ключ снимается без учёта регистра: дубля в блоке нет.
-  const env = Object.fromEntries(Object.entries(process.env).filter(([key]) => key.toLowerCase() !== "nodefaultcurrentdirectoryinexepath"));
-  const options = { encoding: "utf8", cwd, env: { ...env, OPENSPEC_TELEMETRY: "0", NoDefaultCurrentDirectoryInExePath: "1" } };
-  // Абсолютный путь: у вызова может быть свой cwd.
-  const chosen = process.env.SYMPHYSIS_OPENSPEC ? path.resolve(process.env.SYMPHYSIS_OPENSPEC) : null;
-  let r;
-  if (chosen) {
-    if (!fs.existsSync(chosen)) return NOT_FOUND;
-    r = chosen.endsWith(".js") ? spawnTool(process.execPath, [chosen, ...args], options) : spawnFile(chosen, args, options);
-  } else if (win) {
-    const file = findOnPath("openspec");
-    if (!file) return NOT_FOUND;
-    r = spawnFile(file, args, options);
-  } else {
-    r = spawnTool("openspec", args, options);
-    if (r.error?.code === "ENOENT") return NOT_FOUND;
-  }
+  let launch;
+  try { launch = openspecLauncher(args, suppliedEnv); }
+  catch (error) { return { notFound: false, error, status: null, stdout: "", stderr: "" }; }
+  if (!launch) return NOT_FOUND;
+  const r = spawnTool(launch.command, launch.args, { encoding: "utf8", cwd, timeout, env: openspecEnvironment(suppliedEnv), shell: launch.shell });
   return { ...r, notFound: false };
 }
 

@@ -1,7 +1,7 @@
 {
   "name": "@niqsons/symphysis",
   "version": "0.1.0",
-  "description": "Схема OpenSpec symphysis, скиллы и инструменты журнала — установка в проект",
+  "description": "OpenSpec symphysis: инструменты, схема и native скиллы в local или global установке",
   "type": "module",
   "license": "MIT",
   "repository": {
@@ -23,8 +23,8 @@
     "node": ">=22.14"
   },
   "scripts": {
-    "prepare": "node scripts/sync-payload.js",
-    "pretest": "node scripts/sync-payload.js",
+    "prepare": "node scripts/build-workflow-carriers.js && node scripts/sync-payload.js",
+    "pretest": "node scripts/build-workflow-carriers.js && node scripts/sync-payload.js",
     "test": "node --test"
   },
   "symphysis": {

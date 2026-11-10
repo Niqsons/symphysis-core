@@ -8,8 +8,8 @@ export const TELEMETRY_OFF_COMMAND = "openspec config set telemetry.enabled fals
  * "missing" — файла нет; "unreadable" — не JSON (форк в этом случае телеметрию выключает);
  * "off" — enabled: false; "on" — enabled: true; "unset" — ключа нет (у форка это «включена»).
  */
-export function telemetryState() {
-  const { state, config } = readGlobalConfig();
+export function telemetryState(env = process.env) {
+  const { state, config } = readGlobalConfig(env);
   if (state !== "ok") return state;
   const enabled = config.telemetry?.enabled;
   if (enabled === false) return "off";
@@ -22,10 +22,10 @@ export function telemetryState() {
  * Читает файл конфига (надёжнее, чем `config get`: различает «нет файла» и «ключ не задан»),
  * пишет через `openspec config set` — форк сам держит формат файла. Возвращает строку для печати или null.
  */
-export function disableTelemetryIfUnset() {
-  const state = telemetryState();
+export function disableTelemetryIfUnset({ env = process.env, run = runOpenspec } = {}) {
+  const state = telemetryState(env);
   if (state !== "missing" && state !== "unset") return null;
-  const r = runOpenspec(["config", "set", "telemetry.enabled", "false"]);
+  const r = run(["config", "set", "telemetry.enabled", "false"], { env });
   if (r.notFound || r.error || r.status !== 0) {
     return `telemetry: ${describeFailure(r)} — выключить после установки: ${TELEMETRY_OFF_COMMAND}`;
   }

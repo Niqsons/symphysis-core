@@ -12,6 +12,7 @@ import { check } from "../lib/check.js";
 import { requireFork } from "../scripts/build-vendor.js";
 import { tempDir } from "../test-support/temp-dir.js";
 import { makeClone } from "../test-support/clone.js";
+import { executableCandidates, executableLauncher, spawnTool } from "../lib/openspec-bin.js";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const bin = path.resolve(here, "..", "bin", "symphysis.js");
@@ -46,9 +47,8 @@ function installedWithSettings() {
   process.env.XDG_CONFIG_HOME = tmp();
   process.env.SYMPHYSIS_OPENSPEC = FORK;
   const p = tmp();
-  // Клиент настроен: файл команды форка; сценарии о самой команде живут ниже.
-  fs.mkdirSync(path.join(p, ".claude", "commands", "opsx"), { recursive: true });
-  fs.writeFileSync(path.join(p, ".claude", "commands", "opsx", "continue.md"), "x");
+  // The managed installer owns its guarded workflow carriers; a foreign "x"
+  // placeholder would now deliberately stop installation before this check.
   install(p, { payloadDir });
   return p;
 }
@@ -60,6 +60,16 @@ function installed() {
 }
 const runCheck = (p) => check(p, { payloadDir });
 const cli = (...args) => spawnSync(process.execPath, [bin, ...args], { encoding: "utf8", env: process.env });
+// Windows Store sys.executable may name a package path that cannot be launched
+// directly. Keep the actual working PATH launcher instead of resolving its image.
+function pythonOnPath() {
+  for (const executable of executableCandidates("python")) {
+    const launch = executableLauncher(executable, ["--version"]);
+    const probe = spawnTool(launch.command, launch.args, { shell: launch.shell, encoding: "utf8" });
+    if (!probe.error && probe.status === 0 && /^Python \d+\./.test(probe.stdout.trim())) return executable;
+  }
+  assert.fail("нет запускаемого python в PATH: тест не прогнать");
+}
 
 const MINIMAL_JOURNAL = {
   title: "т",
@@ -144,16 +154,17 @@ test("скиллы проверяются в каждом skillsDir", () => {
   assert.deepEqual(r.findings, ["b/skills/symphysis-brainstorm/SKILL.md: нет файла"]);
 });
 
-test("инструменты: нет journal.py, схемы json, корней", () => {
+test("инструменты: journal.py и схема обязательны, личная карта корней может отсутствовать", () => {
   const p = installed();
   const t = targets(p).toolsDir;
   fs.rmSync(path.join(t, "tools", "journal.py"));
   fs.rmSync(path.join(t, "tools", "journal.schema.json"));
   fs.rmSync(path.join(t, "tools", "journal-roots.json"));
   const r = runCheck(p);
-  for (const f of [".symphysis/tools/journal.py", ".symphysis/tools/journal.schema.json", ".symphysis/tools/journal-roots.json"]) {
+  for (const f of [".symphysis/tools/journal.py", ".symphysis/tools/journal.schema.json"]) {
     assert.ok(r.findings.includes(`${f}: нет файла`), `${f}: ${JSON.stringify(r.findings)}`);
   }
+  assert.ok(!r.findings.some((finding) => finding.includes("journal-roots.json")));
 });
 
 test("общие файлы docs: нет terms.md или уведомлений — finding называет файл", () => {
@@ -167,8 +178,8 @@ test("общие файлы docs: нет terms.md или уведомлений 
   }
 });
 
-test("инструменты: каждый модуль из состава проверяется, три новых тоже", () => {
-  const modules = ["journal_apply.py", "journal_cli.py", "journal_model.py", "journal_render.py", "roots.py", "viewer_render.py", "attack_table.py", "attack_scope.py", "journal_sites.py", "journal_consequences.py", "symphysis_config.py"];
+test("инструменты: каждый модуль из состава проверяется, включая runtime и проверщик sync", () => {
+  const modules = ["journal_apply.py", "journal_cli.py", "journal_model.py", "journal_render.py", "roots.py", "runtime_context.py", "viewer_render.py", "attack_table.py", "attack_scope.py", "journal_sites.py", "journal_consequences.py", "symphysis_config.py"];
   const p = installed();
   const t = targets(p).toolsDir;
   for (const m of modules) fs.rmSync(path.join(t, "tools", m));
@@ -181,9 +192,9 @@ test("инструменты: каждый модуль из состава пр
 test("`project-installer`: «Скрипта нет при проверке установки»: находка называет файл и «нет файла» (F-126)", () => {
   const p = installed();
   const t = targets(p).toolsDir;
-  for (const m of ["trace_graph.py", "trace_modules.py", "openspec_run.py", "anchor_refs.py"]) fs.rmSync(path.join(t, "tools", m));
+  for (const m of ["trace_graph.py", "trace_modules.py", "openspec_run.py", "anchor_refs.py", "sync_check.py"]) fs.rmSync(path.join(t, "tools", m));
   const r = runCheck(p);
-  for (const m of ["trace_graph.py", "trace_modules.py", "openspec_run.py", "anchor_refs.py"]) assert.ok(r.findings.includes(`.symphysis/tools/${m}: нет файла`), `${m}: ${JSON.stringify(r.findings)}`);
+  for (const m of ["trace_graph.py", "trace_modules.py", "openspec_run.py", "anchor_refs.py", "sync_check.py"]) assert.ok(r.findings.includes(`.symphysis/tools/${m}: нет файла`), `${m}: ${JSON.stringify(r.findings)}`);
   assert.equal(r.ok, false);
 });
 
@@ -225,15 +236,16 @@ test("бинаря нет ни в окружении, ни в PATH: не най�
 });
 
 test("python: находится по имени python, версия не закреплена", () => {
-  const found = spawnSync("python", ["-c", "import sys; print(sys.executable)"], { encoding: "utf8" });
-  assert.equal(found.status, 0, "нет python в PATH: тест не прогнать");
+  const executable = pythonOnPath();
   const p = installed();
   const one = path.join(p, "openspec", "changes", "one");
   fs.mkdirSync(one, { recursive: true });
   fs.writeFileSync(path.join(one, "decisions.json"), JSON.stringify(MINIMAL_JOURNAL));
   // В PATH только каталог настоящего python: других имён интерпретатора там нет.
-  process.env.PATH = path.dirname(found.stdout.trim());
+  process.env.PATH = path.dirname(executable);
   process.env.Path = process.env.PATH;
+  const version = spawnSync("python", ["--version"], { encoding: "utf8" });
+  assert.equal(version.status, 0, JSON.stringify({ executable, path: process.env.PATH, error: version.error?.message, stdout: version.stdout, stderr: version.stderr }));
   const r = runCheck(p);
   assert.ok(!r.findings.some((f) => f.startsWith("python:")), JSON.stringify(r.findings));
   assert.match(r.notes.find((n) => n.startsWith("openspec/changes/one/decisions.json: ")) ?? "", /улик сверено/);
@@ -339,12 +351,17 @@ test("telemetry: конфиг не JSON — сигнал, код 0", () => {
 const CONTINUE_MISSING = "continue: команда /opsx:continue не установлена у claude — выполнить: symphysis install";
 const CLIENT_NOT_SET = "continue: клиент не настроен — выполнить: openspec init --tools claude";
 
-/** Установка без файлов клиента: схема цела, команды нет. */
+/** Legacy client-discovery fixtures deliberately predate manifest ownership. */
 function bareInstalled(skillsDirs = []) {
   process.env.XDG_CONFIG_HOME = tmp();
   process.env.SYMPHYSIS_OPENSPEC = FORK;
   const p = tmp();
   install(p, { payloadDir, skillsDirs });
+  fs.unlinkSync(path.join(p, ".symphysis", "install-manifest.json"));
+  const commands = path.join(p, ".claude", "commands", "opsx");
+  for (const entry of fs.readdirSync(commands)) fs.unlinkSync(path.join(commands, entry));
+  fs.rmdirSync(commands);
+  fs.rmdirSync(path.dirname(commands));
   return p;
 }
 
@@ -453,12 +470,22 @@ for (const [name, text, line] of [
   });
 }
 
-test("Файла настроек нет: заметка из сценария, код не меняется, скрипт не нужен", () => {
+test("Legacy: файла настроек нет, скрипт не нужен и код не меняется", () => {
   const p = installed();
+  fs.unlinkSync(path.join(p, ".symphysis", "install-manifest.json"));
   fs.writeFileSync(path.join(targets(p).toolsDir, "tools", "symphysis_config.py"), 'raise SystemExit("не должен зваться")\n');
   const r = cli("check", "--project", p);
   assert.equal(r.status, 0, r.stdout);
   assert.ok(r.stdout.split(/\r?\n/).includes("[..] symphysis.yaml: нет файла, действует всё включено; создать: symphysis install"), r.stdout);
+});
+
+test("Managed: изменённый settings reader блокируется даже без личного файла настроек", () => {
+  const p = installed();
+  fs.writeFileSync(path.join(targets(p).toolsDir, "tools", "symphysis_config.py"), 'raise SystemExit("не должен зваться")\n');
+  const r = cli("check", "--project", p);
+  assert.equal(r.status, 2, r.stdout);
+  assert.match(r.stdout, /symphysis_config.py: байты отличаются от manifest/);
+  assert.doesNotMatch(r.stdout + r.stderr, /не должен зваться/);
 });
 
 test("BOM принимается: состав прочитан, код 0", withYaml, () => {
@@ -477,8 +504,9 @@ test("Не UTF-8: [!!] symphysis.yaml: не UTF-8, код 2", () => {
   assert.ok(r.stdout.split(/\r?\n/).includes("[!!] symphysis.yaml: не UTF-8"), r.stdout);
 });
 
-test("Скрипт настроек упал: [!!] с причиной, файл инсталлятор сам не разбирает", () => {
+test("Legacy: скрипт настроек упал, причина названа без чтения настроек инсталлятором", () => {
   const p = installedWithSettings();
+  fs.unlinkSync(path.join(p, ".symphysis", "install-manifest.json"));
   fs.writeFileSync(path.join(targets(p).toolsDir, "tools", "symphysis_config.py"), 'raise SystemExit("сломан")\n');
   const r = runCheck(p);
   assert.ok(r.findings.includes("symphysis_config.py: не отработал (сломан)"), JSON.stringify(r.findings));
@@ -496,13 +524,26 @@ test("Python нет: прежняя находка, строки состава 
 
 test("У найденного Python нет PyYAML: состав всё включено и [!!] с командой, код 2", () => {
   const venv = tmp();
+  const base = pythonOnPath();
   const made = spawnSync("python", ["-m", "venv", "--without-pip", venv], { encoding: "utf8" });
   assert.equal(made.status, 0, made.stdout + made.stderr);
+  if (process.platform === "win32" && base.split(path.sep).includes("WindowsApps")) {
+    // The generated Store venv otherwise redirects to the protected package image.
+    // Its home must use the same working app alias that created this fixture.
+    const config = path.join(venv, "pyvenv.cfg");
+    fs.writeFileSync(config, fs.readFileSync(config, "utf8").replace(/^home = .+$/m, `home = ${path.dirname(base)}`).replace(/^executable = .+$/m, `executable = ${base}`));
+  }
   const p = installed();
   fs.writeFileSync(settings(p), "edge_probe:\n  enabled: false\n");
   const env = { ...process.env, SYMPHYSIS_OPENSPEC: FORK };
   for (const k of Object.keys(env)) if (k.toLowerCase() === "path") delete env[k];
   env[process.platform === "win32" ? "Path" : "PATH"] = path.join(venv, process.platform === "win32" ? "Scripts" : "bin");
+  // The test runner may supply fixture PyYAML through PYTHONPATH; this venv
+  // deliberately tests its absence rather than inheriting those packages.
+  delete env.PYTHONPATH;
+  delete env.PYTHONHOME;
+  const version = spawnSync("python", ["--version"], { encoding: "utf8", env });
+  assert.equal(version.status, 0, JSON.stringify({ path: env.Path ?? env.PATH, error: version.error?.message, stdout: version.stdout, stderr: version.stderr }));
   const r = spawnSync(process.execPath, [bin, "check", "--project", p], { encoding: "utf8", env });
   assert.equal(r.status, 2, r.stdout + r.stderr);
   const out = r.stdout.split(/\r?\n/);

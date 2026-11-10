@@ -8,9 +8,15 @@ import { DEFAULT_PAYLOAD } from "./install.js";
 import { describeFailure, forkPin, runOpenspec, spawnTool } from "./openspec-bin.js";
 import { telemetryState, TELEMETRY_OFF_COMMAND } from "./telemetry.js";
 import { hasSources, payloadMatches, ROOT } from "../scripts/sync-payload.js";
+import { resolveRuntime } from "./runtime-resolver.js";
+import { installationHash, readInstallationManifest, normalizeInstallationRequest } from "./installation-plan.js";
+import { fileURLToPath } from "node:url";
+import { clientTargets } from "./client-targets.js";
+import { acquireReader } from "./runtime-leases.js";
+import { evaluateClientReadiness } from "./client-readiness.js";
 
 const SETTINGS_FILE = "symphysis.yaml";
-const TOOL_MODULES = ["journal.py", "journal_apply.py", "journal_cli.py", "journal_model.py", "journal_render.py", "journal.schema.json", "roots.py", "viewer_render.py", "attack_table.py", "attack_scope.py", "journal_sites.py", "journal_consequences.py", "symphysis_config.py", "openspec_run.py", "trace_graph.py", "trace_modules.py", "anchor_refs.py"];
+const TOOL_MODULES = ["journal.py", "journal_apply.py", "journal_cli.py", "journal_model.py", "journal_render.py", "journal.schema.json", "roots.py", "runtime_context.py", "viewer_render.py", "attack_table.py", "attack_scope.py", "journal_sites.py", "journal_consequences.py", "symphysis_config.py", "openspec_run.py", "trace_graph.py", "trace_modules.py", "anchor_refs.py", "sync_check.py"];
 
 const rel = (project, p) => path.relative(project, p).split(path.sep).join("/");
 
@@ -25,10 +31,10 @@ function walk(dir) {
 }
 
 /** Строка о форке или null: «не найден» и отказ самого форка — разные исходы; обе называют тарбол (F-31.A, F-36.A). */
-function forkFinding() {
+function forkFinding(env = process.env, run = runOpenspec) {
   const { openspecPin, openspecSource } = forkPin();
   const install = `npm i -g ./${openspecSource}`;
-  const r = runOpenspec(["--version"]);
+  const r = run(["--version"], { env });
   if (r.notFound) return `openspec: не найден (SYMPHYSIS_OPENSPEC или PATH); нужен форк ${openspecPin}: ${install}`;
   if (r.error || r.status !== 0) return `openspec: ${describeFailure(r).replace(/^openspec /, "")}; нужен форк ${openspecPin}: ${install}`;
   const actual = String(r.stdout).trim();
@@ -36,13 +42,13 @@ function forkFinding() {
 }
 
 /** Строки скрипта настроек: `[..]` — заметка, `[!!]` — находка. Файл инсталлятор сам не разбирает (F-135.B). */
-function settingsLines(root, py, tool, findings, notes) {
+function settingsLines(root, py, tool, findings, notes, env = process.env) {
   if (!fs.existsSync(path.join(root, SETTINGS_FILE))) {
     notes.push(`${SETTINGS_FILE}: нет файла, действует всё включено; создать: symphysis install`);
     return;
   }
   if (!py || !fs.existsSync(tool)) return;
-  const r = spawnTool(py, ["-X", "utf8", tool, "--project", root, "--strict"], { encoding: "utf8" });
+  const r = spawnTool(py, ["-X", "utf8", tool, "--project", root, "--strict"], { encoding: "utf8", env });
   if (r.error || (r.status !== 0 && r.status !== 2)) {
     const first = (r.error ? r.error.message : String(r.stderr ?? "").split(/\r?\n/).find((l) => l.trim())) ?? `код ${r.status}`;
     findings.push(`symphysis_config.py: не отработал (${first.trim()})`);
@@ -55,21 +61,24 @@ function settingsLines(root, py, tool, findings, notes) {
 }
 
 /** `symphysis.yaml` в индексе git проекта: `.gitignore` его уже не снимет (F-111.A). Нет git или репозитория — сигнала нет. */
-function settingsTracked(root) {
-  const r = spawnTool("git", ["-C", root, "ls-files", "--error-unmatch", SETTINGS_FILE], { encoding: "utf8" });
+function settingsTracked(root, env = process.env, file = SETTINGS_FILE) {
+  const r = spawnTool("git", ["-C", root, "ls-files", "--error-unmatch", file], { encoding: "utf8", env });
   return !r.error && r.status === 0;
+}
+function trackedRoots(root, env, findings) {
+  for (const file of [".symphysis/tools/journal-roots.json", "tools/journal-roots.json"]) if (settingsTracked(root, env, file)) findings.push(`${file}: отслеживается git — выполнить: git rm --cached ${file}`);
 }
 
 /** Строка о действующем глобальном конфиге: и о втором файле, если он есть (F-122). */
-function configNote() {
-  const other = otherConfigPath();
-  return `openspec: глобальный конфиг ${globalConfigPath()}${other ? `; есть ещё ${other}, он действует без XDG_CONFIG_HOME` : ""}`;
+function configNote(env = process.env) {
+  const other = otherConfigPath(env);
+  return `openspec: глобальный конфиг ${globalConfigPath(env)}${other ? `; есть ещё ${other}, он действует без XDG_CONFIG_HOME` : ""}`;
 }
 
 /** Python: `python`, затем `python3`; версия не закрепляется. Возвращает имя команды или null. */
-export function findPython() {
+export function findPython(env = process.env) {
   for (const cmd of ["python", "python3"]) {
-    const r = spawnTool(cmd, ["--version"], { encoding: "utf8" });
+    const r = spawnTool(cmd, ["--version"], { encoding: "utf8", env });
     if (!r.error && r.status === 0) return cmd;
   }
   return null;
@@ -79,17 +88,17 @@ export function findPython() {
  * Сверяет установку symphysis в проекте. Только называет расхождения, ничего не чинит.
  * `findings` — отказы (каждая строка начинается с имени файла или предмета); `notes` — сигналы (журналы).
  */
-export function check(project, { skillsDirs = [], agentsDirs = [], payloadDir = DEFAULT_PAYLOAD, sourceRoot = ROOT } = {}) {
+function checkLegacy(project, { skillsDirs = [], agentsDirs = [], payloadDir = DEFAULT_PAYLOAD, sourceRoot = ROOT, env = process.env, executeTools = true } = {}) {
   const root = path.resolve(project);
   const t = targets(root, skillsDirs, agentsDirs);
   const findings = [];
   const notes = [];
 
-  const fork = forkFinding();
+  const fork = forkFinding(env);
   if (fork) findings.push(fork);
 
   // Запуск из клона: после `git pull` установка молча положила бы прежний payload (F-114.A).
-  if (hasSources(sourceRoot) && !payloadMatches(payloadDir, sourceRoot)) findings.push("payload старее исходников — выполнить: npm --prefix installer ci");
+  if (fs.existsSync(sourceRoot) && hasSources(sourceRoot) && !payloadMatches(payloadDir, sourceRoot)) findings.push("payload старее исходников — выполнить: npm --prefix installer ci");
 
   const schemaSrc = path.join(payloadDir, "openspec", "schemas", "symphysis");
   for (const file of walk(schemaSrc).sort()) {
@@ -143,23 +152,24 @@ export function check(project, { skillsDirs = [], agentsDirs = [], payloadDir = 
   const mermaidFile = path.join(toolsDir, "mermaid.min.js");
   if (!fs.existsSync(mermaidFile)) notes.push(`${rel(root, mermaidFile)}: нет файла, страница покажет схему текстом; рисунок вернёт symphysis install`);
 
-  const py = findPython();
+  const py = findPython(env);
   if (!py) findings.push("python: python или python3 не отвечает");
 
   const clientLines = continueLines(selectedClients(root, t.skillsDirs));
   findings.push(...clientLines.findings);
   notes.push(...clientLines.notes);
 
-  settingsLines(root, py, path.join(toolsDir, "symphysis_config.py"), findings, notes);
-  if (settingsTracked(root)) findings.push(`${SETTINGS_FILE}: отслеживается git — выполнить: git rm --cached ${SETTINGS_FILE}`);
+  if (executeTools) settingsLines(root, py, path.join(toolsDir, "symphysis_config.py"), findings, notes, env);
+  if (settingsTracked(root, env)) findings.push(`${SETTINGS_FILE}: отслеживается git — выполнить: git rm --cached ${SETTINGS_FILE}`);
+  trackedRoots(root, env, findings);
 
   const changes = path.join(root, "openspec", "changes");
   const journalPy = path.join(toolsDir, "journal.py");
-  if (py && fs.existsSync(journalPy) && fs.existsSync(changes)) {
+  if (executeTools && py && fs.existsSync(journalPy) && fs.existsSync(changes)) {
     for (const e of fs.readdirSync(changes, { withFileTypes: true }).sort((a, b) => a.name.localeCompare(b.name))) {
       const j = path.join(changes, e.name, "decisions.json");
       if (!e.isDirectory() || !fs.existsSync(j)) continue;
-      const r = spawnTool(py, ["-X", "utf8", journalPy, "check", j], { encoding: "utf8" });
+      const r = spawnTool(py, ["-X", "utf8", journalPy, "check", j], { encoding: "utf8", env });
       if (r.error || r.status !== 0) {
         const err = String(r.stderr ?? "");
         if (r.error || !err.includes("[!!]")) {
@@ -176,13 +186,143 @@ export function check(project, { skillsDirs = [], agentsDirs = [], payloadDir = 
     }
   }
 
-  notes.push(configNote());
+  notes.push(configNote(env));
 
-  const tele = telemetryState();
+  const tele = telemetryState(env);
   if (tele === "off") notes.push("telemetry: выключена");
   else if (tele === "missing") notes.push("telemetry: конфиг OpenSpec не найден — появится после первого openspec init");
   else if (tele === "unreadable") notes.push("telemetry: конфиг OpenSpec не читается — форк в этом случае телеметрию выключает");
   else findings.push(`telemetry: включена — выключить: ${TELEMETRY_OFF_COMMAND}`);
 
   return { ok: findings.length === 0, findings, notes };
+}
+
+/** Scope-aware, read-only check; file readiness never asserts native discovery. */
+export function check(project, options = {}) {
+  const { scope, env = process.env, store, run } = options;
+  const root = path.resolve(project ?? process.cwd());
+  if (scope !== undefined && !["local", "global"].includes(scope)) throw Object.assign(new Error("--scope: допустимы local либо global"), { exitCode: 2 });
+  const context = resolveRuntime({ project: root, store, env, ...(run ? { run } : {}) });
+  let lease;
+  if (context.status === "ready") {
+    try { lease = acquireReader(context); }
+    catch (error) { context.status = "blocked"; context.diagnostics.push({ code: error.code, message: error.message, action: "Повтори check после завершения управления поставкой" }); }
+  }
+  try {
+    if (context.scope === "local" && context.runtime?.legacy) {
+      const result = checkLegacy(context.store.root, { ...options,
+        skillsDirs: (options.skillsDirs ?? []).map((directory) => path.resolve(root, directory)),
+        agentsDirs: (options.agentsDirs ?? []).map((directory) => path.resolve(root, directory)),
+        executeTools: context.status === "ready" && (!scope || scope === "local"),
+      });
+      result.findings.push(...context.diagnostics.map((issue) => `${issue.code}: ${issue.message}; ${issue.action}`));
+      if (scope && scope !== "local") result.findings.push(`--scope ${scope}: resolver выбрал local; требуется явная миграция`);
+      result.findings = [...new Set(result.findings)];
+      return { ...result, ok: result.findings.length === 0, clients: [], context };
+    }
+    return checkSelectedContext(context, root, options);
+  }
+  finally { lease?.release(); }
+}
+
+function checkSelectedContext(context, root, options) {
+  const { scope, env = process.env, run, payloadDir = DEFAULT_PAYLOAD, sourceRoot = ROOT } = options;
+  const findings = context.diagnostics.map((issue) => `${issue.code}: ${issue.message}; ${issue.action}`);
+  const notes = [];
+  const unavailable = new Set((context.warnings ?? []).map((warning) => warning.path).filter(Boolean));
+  for (const warning of context.warnings ?? []) notes.push(`${warning.path && context.scope === "local" ? `${rel(context.store.root, warning.path)}: ` : ""}${warning.message}; ${warning.action}`);
+  if (scope && context.scope && context.scope !== scope) findings.push(`--scope ${scope}: resolver выбрал ${context.scope}; смена режима требует явной миграции`);
+  if (fs.existsSync(sourceRoot) && hasSources(sourceRoot) && !payloadMatches(payloadDir, sourceRoot)) findings.push("payload старее исходников — выполнить: npm --prefix installer ci");
+  let manifest = null;
+  if (context.runtime?.manifestPath) {
+    try {
+      const raw = JSON.parse(fs.readFileSync(context.runtime.manifestPath, "utf8"));
+      const request = normalizeInstallationRequest({ ...raw, root: path.dirname(context.runtime.manifestPath) });
+      manifest = readInstallationManifest(context.runtime.manifestPath, request);
+    } catch (error) { findings.push(`manifest: ${error.message}`); }
+  }
+  const integrity = [];
+  for (const file of manifest?.files ?? []) {
+    if (unavailable.has(file.path) || (context.scope === "local" && file.source === "tools/symphysis-version.txt")) continue;
+    const display = context.scope === "local" ? rel(context.store.root, file.path) : file.path;
+    try {
+      if (installationHash(fs.readFileSync(file.path)) !== file.sha256) integrity.push(file.source.startsWith("openspec/schemas/") ? `схема: байты отличаются от payload: ${display}` : `${display}: байты отличаются от manifest`);
+    } catch (error) { integrity.push(`${display}: ${error.code === "ENOENT" ? "нет файла" : "файл не читается"}`); }
+  }
+  if (integrity.length) {
+    for (let index = findings.length - 1; index >= 0; index--) if (/^(?:local-damaged|resource-missing):/.test(findings[index])) findings.splice(index, 1);
+    findings.unshift(...integrity);
+  }
+  {
+    const configRoot = context.store?.root ?? root;
+    const config = ["config.yaml", "config.yml"].map((name) => path.join(configRoot, "openspec", name)).find((file) => fs.existsSync(file));
+    if (!config && (context.runtime || fs.existsSync(path.join(root, ".symphysis", "install-manifest.json")))) findings.push("openspec/config.yaml: нет файла");
+    else if (config) {
+      try {
+        const schema = parse(fs.readFileSync(config, "utf8"))?.schema;
+        if (context.runtime && schema !== "symphysis") findings.push(`${rel(configRoot, config)}: schema не symphysis (${schema ?? "не задана"})`);
+      } catch (error) { findings.push(`${rel(configRoot, config)}: не разбирается (${String(error.message).split("\n")[0]})`); }
+    }
+  }
+  if (context.diagnostics.some((issue) => ["planning-root-invalid", "fork-incompatible"].includes(issue.code))) {
+    const fork = forkFinding(env, run);
+    if (fork) findings.unshift(fork);
+  }
+  const clients = evaluateClientReadiness(manifest);
+  for (const client of clients) {
+    const files = manifest.files.filter((file) => file.clientId === client.id);
+    if (context.scope === "global") for (const file of client.missing) findings.push(`${client.id}: отсутствует или изменён ${file.path}`);
+    for (const id of client.missingWorkflows) findings.push(`${client.id}: нет управляемого workflow ${id}`);
+    if (!files.some((file) => file.purpose === "skill")) findings.push(`${client.id}: нет управляемых скиллов`);
+    if (!files.some((file) => file.purpose === "agent")) findings.push(`${client.id}: нет управляемых агентов`);
+    notes.push(`${client.id}: filesystem ${client.filesystem}; native discovery: unconfirmed; session verification: unconfirmed`);
+  }
+  if (manifest && !clients.length) findings.push("clients: нет управляемых клиентских targets");
+  if ((options.clients?.length || options.skillsDirs?.length || options.agentsDirs?.length) && context.scope) {
+    const requested = clientTargets({ scope: context.scope, project: context.store.root, clients: options.clients ?? [], skillsDirs: options.skillsDirs ?? [], agentsDirs: options.agentsDirs ?? [], env });
+    for (const client of requested) {
+      const installed = manifest?.clients.find((item) => item.id === client.id);
+      if (!installed) { findings.push(`${client.id}: клиент не входит в выбранную управляемую поставку`); continue; }
+      for (const kind of ["skills", "agents"]) for (const target of client[`${kind}Roots`]) if (!(installed[`${kind}Roots`] ?? []).some((root) => path.relative(root, target) === "")) findings.push(`${client.id}: ${target} не входит в управляемые ${kind} targets`);
+    }
+  }
+  if (!findPython(env)) findings.push("python: python или python3 не отвечает");
+  if (context.status === "ready" && (!scope || scope === context.scope)) {
+    const bin = fileURLToPath(new URL("../bin/symphysis.js", import.meta.url));
+    const selected = ["--project", context.store.root];
+    const invoke = (tool, args) => spawnTool(process.execPath, [bin, ...selected, tool, ...args], { encoding: "utf8", env });
+    if (fs.existsSync(path.join(context.store.root, SETTINGS_FILE))) {
+      const result = invoke("config", ["--strict"]);
+      for (const line of String(result.stdout ?? "").split(/\r?\n/)) {
+        if (line.startsWith("[!!] ")) findings.push(line.slice(5));
+        if (line.startsWith("[..] ")) notes.push(line.slice(5));
+      }
+      if (result.error || ![0, 2].includes(result.status) || (result.status === 2 && !String(result.stdout).includes("[!!] "))) findings.push(`settings: dispatcher не проверил настройки выбранного store (${String(result.stderr || result.error?.message || result.status).trim()})`);
+    } else notes.push(`symphysis.yaml: нет файла, действует всё включено; создать: symphysis ${context.scope === "local" ? "install" : "init"}`);
+    if (settingsTracked(context.store.root, env)) findings.push(`${SETTINGS_FILE}: отслеживается git — выполнить: git rm --cached ${SETTINGS_FILE}`);
+    trackedRoots(context.store.root, env, findings);
+    const changes = path.join(context.store.root, "openspec", "changes");
+    if (fs.existsSync(changes)) for (const entry of fs.readdirSync(changes, { withFileTypes: true })) {
+      const journal = path.join(changes, entry.name, "decisions.json");
+      if (!entry.isDirectory() || !fs.existsSync(journal)) continue;
+      const result = invoke("journal", ["check", journal]);
+      const relative = rel(context.store.root, journal);
+      if (result.error || result.status !== 0) {
+        const errorText = String(result.stderr ?? "");
+        if (!result.error && errorText.includes("[!!]")) findings.push(`${relative}: журнал негоден по схеме`);
+        else findings.push(`${relative}: journal.py check не отработал (${String(result.error?.message ?? errorText.split(/\r?\n/).find((line) => line.trim()) ?? result.status).trim()})`);
+      } else {
+        const lines = String(result.stdout).split(/\r?\n/).filter(Boolean);
+        notes.push(`${relative}: ${lines.find((line) => line.includes("улик сверено")) ?? ""}`);
+        for (const line of lines) if (line.startsWith("[!!] ")) notes.push(`${relative}: ${line.slice(5)}`);
+      }
+    }
+  }
+  notes.push(configNote(env));
+  const telemetry = telemetryState(env);
+  if (telemetry === "off") notes.push("telemetry: выключена");
+  else if (telemetry === "missing") notes.push("telemetry: конфиг OpenSpec не найден — появится после первого openspec init");
+  else if (telemetry === "unreadable") notes.push("telemetry: конфиг OpenSpec не читается — форк в этом случае телеметрию выключает");
+  else findings.push(`telemetry: включена — выключить: ${TELEMETRY_OFF_COMMAND}`);
+  return { ok: findings.length === 0, findings: [...new Set(findings)], notes, clients, context };
 }

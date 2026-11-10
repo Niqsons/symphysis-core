@@ -19,14 +19,19 @@ description: >-
 
 ## Вход
 
-- `<каталог изменения>` — `openspec/changes/<имя>/`; термины — `.symphysis/docs/terms.md`.
+- До первого изменяющего действия модель MUST выполнить `symphysis preflight --change <имя>`;
+  селекторы `--project` и `--store`, если нужны, стоят перед подкомандой и одинаковы
+  у всех вызовов. Отказ preflight или получения ресурса — остановка без записи файлов.
+- Ссылки вида `symphysis resource ...` — команды: модель MUST прочитать их вывод
+  целиком; это инструкции выбранной поставки, а не пути внутри store.
+- `<каталог изменения>` — `openspec/changes/<имя>/`; термины — `symphysis resource doc terms.md`.
 - Требования — `<каталог изменения>/specs/<capability>/spec.md`; журнал —
   `<каталог изменения>/decisions.json`, тот же, что вёл брейншторм: кандидаты получают
   следующие номера `F-NN`.
-- Состав (включена ли проба) — `.symphysis/docs/config.md`, часть «проба краёв».
+- Состав (включена ли проба) — `symphysis resource doc config.md`, часть «проба краёв».
 - Форма записи-кандидата, правило рекомендации, зеркало исхода —
-  `.symphysis/docs/candidate.md`; команды и коды `journal.py` — `.symphysis/docs/journal-cli.md`.
-- Шаблон следа — комментарий «проба краёв» в `openspec/schemas/symphysis/templates/spec.md`.
+  `symphysis resource doc candidate.md`; команды и коды `journal.py` — `symphysis resource doc journal-cli.md`.
+- Шаблон следа — комментарий «проба краёв» в `symphysis resource template spec.md`.
 - У водителя — brief (раздел «Водитель»).
 
 ## Выход
@@ -83,7 +88,7 @@ description: >-
 
 ### 1. Узнай состав
 
-Вызов скрипта состава и правила — `.symphysis/docs/config.md`. Пробе нужна часть
+Вызов скрипта состава и правила — `symphysis resource doc config.md`. Пробе нужна часть
 «проба краёв»: `вкл` — такт 2; `выкл` — такт 11, и на этом проба кончается.
 
 ### 2. Возьми требования
@@ -191,7 +196,7 @@ description: >-
 
 ### 6. Запиши кандидата
 
-Запись — по `.symphysis/docs/candidate.md`; особенное для пробы краёв:
+Запись — по `symphysis resource doc candidate.md`; особенное для пробы краёв:
 
 - `question` — `[<id категории> · <форма>] <имя требования>: <конкретный край>`: префикс —
   поле формы, которое человек может переписать; край — один, с данными этого требования;
@@ -255,7 +260,7 @@ recommendation: A — в файле то один интервал, то два,
 
 ### 9. Зеркало исхода
 
-После `apply` у каждой записи пробы с `decision` — зеркало по `.symphysis/docs/candidate.md`:
+После `apply` у каждой записи пробы с `decision` — зеркало по `symphysis resource doc candidate.md`:
 `outcome` по букве (`A → Specify, B → Dismiss, C → Backstop, D → Defer`), сценарий
 в `spec.md` у `Specify` — под требованием, после последнего сценария и выше строк следа,
 со строкой `<!-- F-NN -->` сразу под заголовком сценария, `consequences` по исходу. Выбор мимо рекомендации без слова — вопрос человеку по `candidate.md`.
@@ -306,8 +311,8 @@ recommendation: A — в файле то один интервал, то два,
 
 ## Коды и сигналы
 
-Коды и маркеры `journal.py` и скрипта состава — `.symphysis/docs/journal-cli.md`,
-`.symphysis/docs/config.md`. Особенное для пробы:
+Коды и маркеры `journal.py` и скрипта состава — `symphysis resource doc journal-cli.md`,
+`symphysis resource doc config.md`. Особенное для пробы:
 
 - `check` код 1 после записи кандидата → поле схемы пропущено или антипод внутри одной
   развилки: исправить запись до следующей.
@@ -326,7 +331,7 @@ recommendation: A — в файле то один интервал, то два,
   не оценивается — он не проектное решение.
 - Тест-страховка `Backstop` — пишет `tasks`; здесь только намерение в `consequences`.
 - Развилки замысла и вопрос «что требование значит» — скилл `symphysis-brainstorm`.
-- Состав читает только `symphysis_config.py` (`.symphysis/docs/config.md`); `symphysis.yaml`
+- Состав читает только `symphysis_config.py` (`symphysis resource doc config.md`); `symphysis.yaml`
   модель не читает и человека о составе не спрашивает.
 
 ## Приёмка
@@ -355,7 +360,7 @@ recommendation: A — в файле то один интервал, то два,
 ## Водитель
 
 Водитель у пробы — по настройке, по умолчанию проба идёт в главной нити: без контекста
-решений журнала водитель заводит лишние кандидаты (состав — `.symphysis/docs/config.md`,
+решений журнала водитель заводит лишние кандидаты (состав — `symphysis resource doc config.md`,
 часть «водители»).
 
 - Водителю идут такты 1–7 и 11: от состава до файла покрытия. Главной нити — такты 8–10:

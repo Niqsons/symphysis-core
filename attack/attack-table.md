@@ -2,7 +2,7 @@
 
 Общий файл скиллов `symphysis-attack` (пишет файлы `attack/decisions.md`, `attack/artifacts.md`)
 и `symphysis-viewer` (показывает их в режиме «атака»). Норма одна: как строка пишется и как её
-читает парсер `journal.py render-html --attack`.
+читает парсер `symphysis journal render-html --attack`.
 
 ## Столбцы
 

@@ -20,6 +20,9 @@ sys.dont_write_bytecode = True  # скрипт пишет только в stdout
 # Исходник ядра (F-20 A): код модулей лежит в соседних каталогах первого уровня, точка входа ставит нужные ей в `sys.path`.
 # В установке весь код рядом в `.symphysis/tools/`: `roots.py` лежит возле этого файла, и путь не меняется.
 _HERE = Path(__file__).resolve().parent
+sys.path.insert(0, str(_HERE if (_HERE / "runtime_context.py").is_file() else _HERE.parent / "runtime"))
+from runtime_context import bootstrap as _runtime_bootstrap, context as _runtime_context  # noqa: E402
+_runtime_bootstrap("help")
 if not (_HERE / "roots.py").is_file():
     sys.path[1:1] = [str(_HERE.parent / name) for name in ("attack", "decisions", "openspec-run", "roots")]
 from attack_scope import scope_lines  # noqa: E402
@@ -131,16 +134,22 @@ def _read_steps(root: Path, schema: str) -> dict[str, dict]:
     """Тексты шагов из схемы проекта. Файла нет или он не читается — текстов нет, данные графа остаются (старая схема)."""
     if not SAFE_NAME.fullmatch(schema):
         return {}
+    selected = _runtime_context()
+    if selected and schema != selected["resources"]["schema"]["name"]:
+        return {}
+    schema_root = Path(selected["runtime"]["schemaRoot"]) if selected else root / "openspec" / "schemas" / schema
     try:
-        return parse_steps((root / "openspec" / "schemas" / schema / "steps.md").read_text(encoding="utf-8-sig"))
+        return parse_steps((schema_root / "steps.md").read_text(encoding="utf-8-sig"))
     except (OSError, UnicodeDecodeError):
         return {}
 
 
 def _symphysis_version() -> str | None:
     """Версия из файла рядом с инструментами: справочно, ни с чем не сравнивается (F-27, F-36)."""
+    selected = _runtime_context()
+    file = Path(selected["runtime"]["toolsRoot"]) / VERSION_FILE if selected else Path(__file__).resolve().with_name(VERSION_FILE)
     try:
-        return Path(__file__).resolve().with_name(VERSION_FILE).read_text(encoding="utf-8-sig").strip() or None
+        return file.read_text(encoding="utf-8-sig").strip() or None
     except (OSError, UnicodeDecodeError):
         return None
 
@@ -317,14 +326,24 @@ def _install_skill_dirs(install_dir: Path) -> tuple[str, ...]:
                          if not entry.name.startswith(".") and (entry / "skills").is_dir())
     except OSError:
         modules = []
-    return (*PROJECT_SKILL_DIRS, *(f"{module}/skills" for module in modules))
+    selected = _runtime_context()
+    managed = bool(selected and install_dir.resolve() == Path(selected["runtime"]["root"]).resolve())
+    if not managed:
+        try:
+            manifest = json.loads((install_dir.parent / "install-manifest.json").read_text(encoding="utf-8"))
+            managed = (manifest.get("format") == 1 and manifest.get("scope") == "global"
+                       and install_dir.name == "runtime")
+        except (OSError, ValueError, AttributeError):
+            pass
+    return (*PROJECT_SKILL_DIRS, *(("skills",) if managed else ()), *(f"{module}/skills" for module in modules))
 
 
 def _find_skill(name: str, bases: list[tuple[Path, str, tuple[str, ...]]]) -> dict:
     """Файл скилла: первый по порядку `bases` (проект, затем установка); путь с `/` от того каталога, где найден (F-46, F-56)."""
     for base, label, dirs in bases:
         for directory in dirs:
-            if (base / directory / name / "SKILL.md").is_file():
+            file = base / directory / name / "SKILL.md"
+            if file.is_file() and file.resolve().is_relative_to(base.resolve()):
                 return {"name": name, "path": f"{directory}/{name}/SKILL.md", "base": label}
     return {"name": name, "path": None, "base": None}
 
@@ -349,6 +368,10 @@ def _file_links(out: dict, root: Path, change: str | None) -> dict:
         return file_links({}, project_roots(root), change_dir, None, [{**page, "skills": []} for page in out["steps"]],
                           out["current_text"], skills, from_project=True)
     except (OSError, ValueError):  # ссылки справке не нужны для работы: без карты всё остаётся текстом
+        if _runtime_context():
+            message = "journal-roots.json: карта выбранного проекта не читается; ссылки не рассчитаны"
+            out.setdefault("signals", []).append(message)
+            out["current_text"] = f"{out.get('current_text') or ''} {message}".strip()
         return {}
 
 
@@ -356,9 +379,12 @@ def compute(root: Path | str, change: str | None = None, install_dir: Path | str
     """Данные справки: `_compute` плюс поля `skills` у шагов и `file_links`, они считаются и при сбое расчёта.
     `install_dir` — где после проекта искать скиллы; корень и остальные поля он не меняет, без него ищется только в проекте."""
     root = Path(root)
+    selected = _runtime_context()
+    fallback = Path(selected["runtime"]["root"]) if selected else None
     result = _compute(root, change)
-    _add_skills(result["steps"], root, None if install_dir is None else Path(install_dir))
-    result["file_links"] = _file_links(result, root, result["change"] or change)
+    selected_root = Path(selected["store"]["root"]) if selected else root
+    _add_skills(result["steps"], selected_root, fallback if install_dir is None else Path(install_dir))
+    result["file_links"] = _file_links(result, selected_root, result["change"] or change)
     return result
 
 
@@ -370,6 +396,9 @@ def _compute(root: Path, change: str | None) -> dict:
            "error": None, "current_step": None, "current_text": None, "turn": None, "next_by_status": None, "forks": None,
            "tasks": None, "steps": _pages_without_graph(_read_steps(root, DEFAULT_SCHEMA), change)}
     try:
+        selected = _runtime_context()
+        if selected and root.resolve() != Path(selected["store"]["root"]).resolve():
+            raise ForkError("Корень справки не совпадает с выбранным store dispatcher")
         version = run_fork(root, "--version")
         if version.code != 0:
             raise ForkError(f"`{version.label}` упал с кодом {version.code}: {_reason(None, version)}")
@@ -383,6 +412,8 @@ def _compute(root: Path, change: str | None) -> dict:
                 return {**out, **_without_one_change(out["changes"])}
             change = out["changes"][0]
         status = _fork_json(root, "status", "--json", change=change)
+        if selected and status["schemaName"] != selected["resources"]["schema"]["name"]:
+            raise ForkError("Схема изменения не принадлежит выбранной поставке")
         apply = _fork_json(root, "instructions", "apply", "--json", change=change)
         return {**out, **_snapshot(root, change, status, apply)}
     except ForkError as e:
@@ -396,6 +427,9 @@ def _compute(root: Path, change: str | None) -> dict:
 
 def find_root(start: Path) -> Path:
     """Корень проекта для вызова из командной строки — ближайший `openspec/` от каталога вызова, как у форка."""
+    selected = _runtime_context()
+    if selected:
+        return Path(selected["store"]["root"])
     return next((folder for folder in (start, *start.parents) if (folder / "openspec").is_dir()), start)
 
 
@@ -408,7 +442,9 @@ def build_parser() -> argparse.ArgumentParser:
                     "Область — только расчёт: страницу не собирает, файлов проекта не меняет, содержание шагов не проверяет.\n"
                     "Звать, когда человеку или плагину нужно узнать, где работа и чей ход. Перед шагом не звать: это справка,\n"
                     "а не гейт, и шаг, названный человеком, она не подменяет.",
-        epilog="Порядок: корень — ближайший каталог с openspec/ от текущего; форк берётся из SYMPHYSIS_OPENSPEC, "
+        epilog="Порядок: через symphysis help корень store и ресурсы задаёт dispatcher; --project/--store ставятся перед help.\n"
+               "  Тексты/версия — из выбранной поставки; карта корней, настройки и изменение — из store.\n"
+               "  Прямой source/legacy-вызов: корень — ближайший каталог с openspec/ от текущего; форк берётся из SYMPHYSIS_OPENSPEC, "
                "затем из PATH;\n"
                "  без --change берётся единственное активное изменение.\n"
                "Исходы: активных изменений нет — change null, текущий шаг intent; несколько — change и current_step null, имена\n"
@@ -420,7 +456,8 @@ def build_parser() -> argparse.ArgumentParser:
                "Маркеры: их нет, вывод только JSON; сбой — поле error, тексты шагов в выводе остаются.")
     ap.add_argument("--change", metavar="ИМЯ", help="имя изменения; без него — единственное активное")
     ap.add_argument("--install-dir", metavar="КАТАЛОГ", type=Path,
-                    help="где после проекта искать файлы скиллов шагов (клон ядра или установка); без него — только в проекте; "
+                    help="где после проекта искать файлы скиллов шагов (клон ядра или установка); без него — выбранная поставка dispatcher, "
+                         "а при прямом legacy-вызове — только проект; "
                          "корень проекта и остальной вывод он не меняет")
     return ap
 

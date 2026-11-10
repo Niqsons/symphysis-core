@@ -74,14 +74,26 @@ test("npm pack: tarball с payload и скриптом, без test/ и node_mod
   assert.ok(!files.some((f) => f.startsWith("package/node_modules/")), "node_modules/ попал в пакет");
 });
 
-test("npx install в чистый проект: записано, файлы на местах", opts, () => {
+test("npx install принимает известные native файлы только через preview и confirm", opts, () => {
   assert.ok(tgz, "нужен tarball из предыдущего теста");
   requireFork(FORK);
   const project = mk("project");
-  // Клиент настроен форком до установки, как в руководстве; конфиг — временный на эту команду.
+  // Клиент уже настроен pinned OpenSpec: native файлы пока не принадлежат symphysis.
   const init = spawnSync(process.execPath, [FORK, "init", "--tools", "claude"], { cwd: project, encoding: "utf8", env: envWith({ OPENSPEC_TELEMETRY: "0" }) });
   assert.equal(init.status, 0, init.stdout + init.stderr);
-  const r = npx(["install", "--project", project], envWith({ NPM_CONFIG_CACHE: cache, npm_config_cache: cache, SYMPHYSIS_OPENSPEC: FORK }));
+  const env = envWith({ NPM_CONFIG_CACHE: cache, npm_config_cache: cache, SYMPHYSIS_OPENSPEC: FORK });
+  const carrier = path.join(project, ".claude", "commands", "opsx", "apply.md");
+  const original = fs.readFileSync(carrier);
+  const refused = npx(["install", "--project", project, "--force"], env);
+  assert.equal(refused.status, 2, refused.stdout + refused.stderr);
+  assert.match(refused.stderr, /force.*ownership/);
+  assert.deepEqual(fs.readFileSync(carrier), original);
+  assert.equal(fs.existsSync(path.join(project, ".symphysis", "install-manifest.json")), false);
+  const review = path.join(tmpRoot, "install-review.json");
+  const preview = npx(["install", "--project", project, "--preview", "--out", review], env);
+  assert.equal(preview.status, 0, preview.stdout + preview.stderr);
+  assert.deepEqual(fs.readFileSync(carrier), original);
+  const r = npx(["install", "--apply-plan", review, "--confirm"], env);
   assert.equal(r.status, 0, r.stdout + r.stderr);
   assert.match(r.stdout, /записано/);
   for (const f of [

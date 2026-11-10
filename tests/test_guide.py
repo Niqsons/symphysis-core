@@ -97,9 +97,9 @@ def test_guide_tells_how_to_mark_a_warning_read():
 def test_guide_graph_section_tells_what_the_graph_gives():
     """`onboarding-guide`: «Читатель ищет, что даёт граф» (F-04, F-05)."""
     section = graph_section()
-    for name in ("python .symphysis/tools/trace_graph.py report",   # команда отчёта
+    for name in ("symphysis trace report",   # команда отчёта
                  "build", "--out", "req-graph.json",                  # файл `--out`
-                 "python .symphysis/tools/trace_graph.py check",     # проверка файла
+                 "symphysis trace check",     # проверка файла
                  "--format mermaid", "requirementDiagram",           # текст диаграммы
                  "graph/", "report.md", "freeze",                    # каталог и заморозка
                  "/opsx:apply", "/opsx:archive",                     # шаги, где они появляются
@@ -131,5 +131,5 @@ def test_guide_lens_section_tells_about_rule_compliance():
 def test_guide_names_the_script_that_finds_changes_without_snapshot():
     """`onboarding-guide`: «Читатель ищет изменения без снимка» (F-62)."""
     section = graph_section()
-    assert "python .symphysis/tools/trace_graph.py archive-gaps" in section
+    assert "symphysis trace archive-gaps" in section
     assert "symphysis check" in section

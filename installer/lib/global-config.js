@@ -1,27 +1,33 @@
 import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
+import { isFullyAbsolute } from "./paths.js";
 
 const FILE = ["openspec", "config.json"];
 
 /** Путь конфига форка без XDG_CONFIG_HOME: APPDATA (Windows) или ~/.config. */
-function withoutXdg() {
+function absolute(value, name) {
+  if (!isFullyAbsolute(value)) throw Object.assign(new Error(`${name}: нужен полный абсолютный путь`), { exitCode: 2 });
+  return value;
+}
+function withoutXdg(env) {
+  const home = () => absolute((process.platform === "win32" ? env.USERPROFILE : env.HOME) ?? os.homedir(), "home");
   const base = process.platform === "win32"
-    ? process.env.APPDATA || path.join(os.homedir(), "AppData", "Roaming")
-    : path.join(os.homedir(), ".config");
+    ? env.APPDATA === undefined ? path.join(home(), "AppData", "Roaming") : absolute(env.APPDATA, "APPDATA")
+    : path.join(home(), ".config");
   return path.join(base, ...FILE);
 }
 
 /** Путь глобального конфига форка — как `getGlobalConfigDir` форка: XDG_CONFIG_HOME, затем APPDATA (Windows) или ~/.config. */
-export function globalConfigPath() {
-  const xdg = process.env.XDG_CONFIG_HOME;
-  return xdg ? path.join(xdg, ...FILE) : withoutXdg();
+export function globalConfigPath(env = process.env) {
+  const xdg = env.XDG_CONFIG_HOME;
+  return xdg === undefined ? withoutXdg(env) : path.join(absolute(xdg, "XDG_CONFIG_HOME"), ...FILE);
 }
 
 /** Второй файл конфига: XDG_CONFIG_HOME задана не во всех оболочках, и другая оболочка читает его (F-122). */
-export function otherConfigPath() {
-  const other = withoutXdg();
-  return process.env.XDG_CONFIG_HOME && other !== globalConfigPath() && fs.existsSync(other) ? other : null;
+export function otherConfigPath(env = process.env) {
+  const other = withoutXdg(env);
+  return env.XDG_CONFIG_HOME && other !== globalConfigPath(env) && fs.existsSync(other) ? other : null;
 }
 
 /**
@@ -29,8 +35,8 @@ export function otherConfigPath() {
  * `{ state: "missing" }` — файла нет; `{ state: "unreadable" }` — не JSON или не объект (форк в этом случае телеметрию выключает);
  * `{ state: "ok", config }` — разобран.
  */
-export function readGlobalConfig() {
-  const file = globalConfigPath();
+export function readGlobalConfig(env = process.env) {
+  const file = globalConfigPath(env);
   if (!fs.existsSync(file)) return { state: "missing" };
   let config;
   try {

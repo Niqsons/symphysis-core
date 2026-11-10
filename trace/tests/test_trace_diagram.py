@@ -105,7 +105,7 @@ def test_capability_selection_has_only_its_requirements_and_scenarios(tmp_path):
     assert {"Первое", "Соседнее", "Далёкое", "Есть поле", "Нет поля", "Соседний сценарий"} <= set(got)
     assert not {"Чужое", "Чужой сценарий"} & set(got)
     assert any("Инъекции" in n for n in got) and not any("чужое" in n for n in got)  # пункт security связан с demo
-    assert any(n.startswith("Сделать") for n in got) and not any(n.startswith("Чужое `zeta`") for n in got)
+    assert "TASK_1.1" in got and "TASK_1.2" not in got
     assert not any("Чужая ветка" in n for n in got) and any("Ветка отказа" in n for n in got)
     assert any("Вопрос F-19" in n for n in got)
     assert sorted(p for p in root.rglob("*") if p.is_file()) == before
@@ -116,7 +116,7 @@ def test_requirement_selection_has_scenarios_task_record_and_neighbour(tmp_path)
     root = project(tmp_path)
     got = titles(diagram(root, "--requirement", "Первое"))
     assert {"Первое", "Есть поле", "Нет поля", "Соседнее"} <= set(got)
-    assert any(n.startswith("Сделать") for n in got) and any("Вопрос F-19" in n for n in got)
+    assert "TASK_1.1" in got and any("Вопрос F-19" in n for n in got)
     assert not {"Далёкое", "Соседний сценарий", "Чужое", "Чужой сценарий"} & set(got)
     assert any("Инъекции" in n for n in got) and any("Ветка отказа" in n for n in got)  # security и ветка сценария (решение к ревью U15)
     assert not any("Пункт про чужое" in n or "Чужая ветка" in n for n in got)
@@ -226,7 +226,7 @@ def test_security_item_is_design_constraint_with_class_and_refines(tmp_path):
 
 def test_all_kinds_have_sysml_word_and_class_per_config(tmp_path):
     text = diagram(project(tmp_path), "--capability", "demo")
-    expect = {"Первое": ("requirement", "req"), "Есть поле": ("element", "scn"), "Сделать": ("element", "task"),
+    expect = {"Первое": ("requirement", "req"), "Есть поле": ("element", "scn"), "TASK_1.1": ("element", "task"),
               "Вопрос F-19": ("element", "rec"), "Ветка отказа": ("element", "branch")}
     for part, (sysml, cls) in expect.items():
         kind, name, body = block_of(text, part)
@@ -393,7 +393,7 @@ def test_number_record_and_task_take_it_from_themselves_others_count_in_diagram(
              node("req", "Второе", "req:c/Второе", capability="c", section="ADDED"),
              node("cap", "c"), node("sec", "Пункт"), node("branch", "Ветка", "branch:a:1")]
     text = trace_graph.diagram_text(graph_of(nodes))
-    assert names(text) == ["REC_19 Вопрос?", "TASK_3.2 Сделать", "REQ_1 Первое", "REQ_2 Второе", "CAP_1 c", "SEC_1 Пункт", "BR_1 Ветка"]
+    assert names(text) == ["REC_19 Вопрос?", "TASK_3.2", "REQ_1 Первое", "REQ_2 Второе", "CAP_1 c", "SEC_1 Пункт", "BR_1 Ветка"]
     ids = {plain(n): re.search(r'id: "([^"]+)"', body).group(1) for k, n, body in blocks(text) if k != "element"}
     assert ids == {"Первое": "REQ_1", "Второе": "REQ_2", "c": "CAP_1", "Пункт": "SEC_1"}
     assert hook_keys(text) == []
@@ -424,6 +424,54 @@ def test_number_every_name_is_within_90():
              node("scn", "С" * 300, "scn:c/R/С", capability="c", requirement="req:c/R"),
              node("task", "З" * 300, "task:12.34"), node("sec", "П" * 300)]
     assert all(len(n) <= 90 for n in names(trace_graph.diagram_text(graph_of(nodes))))
+
+
+def test_task_titles_keep_full_graph_tail_links_state_and_service_mark(tmp_path):
+    body = "**Сохранить отчёт** — " + "проверяем подробность; " * 100 + "`demo`: «Есть поле» (F-19)"
+    service = "**Прогнать проверки** — полный прогон; проверка: все тесты зелёные; `служебная`"
+    legacy = "проверяем подробность; " * 100 + "`demo`: «Есть поле»"
+    root, _ = make_change(tmp_path, journal=["F-19"], specs={"demo": DEMO},
+                          tasks=f"# Tasks\n\n- [ ] 1.1 {body}\n- [x] 1.2 {service}\n- [X] 1.3 {legacy}\n")
+    graph = trace_graph.build_graph(root, CHANGE)
+    before = json.dumps(graph, ensure_ascii=False)
+    tasks = {n["id"]: n for n in graph["nodes"] if n["kind"] == "task"}
+    assert tasks["task:1.1"]["name"] == body and tasks["task:1.3"]["name"] == legacy
+    assert [(n["done"], n["at"]) for n in tasks.values()] == [(False, "tasks.md:3"), (True, "tasks.md:4"), (True, "tasks.md:5")]
+    assert trace_graph.service_tasks(graph) == ["1.2"]
+    text = trace_graph.diagram_text(graph)
+    assert {"TASK_1.1 Сохранить отчёт", "TASK_1.2 Прогнать проверки", "TASK_1.3"} <= set(names(text))
+    assert "проверяем подробность" not in text
+    assert ("Сохранить отчёт", "satisfies", "Есть поле") in links(text)
+    assert ("Сохранить отчёт", "traces", "Вопрос F-19?") in links(text)
+    assert '"TASK_1.3" - satisfies -> "SCN_1 Есть поле"' in text
+    assert 'docref: "tasks.md:3"' in block_of(text, "TASK_1.1")[2]
+    assert text == trace_graph.diagram_text(graph)
+    assert json.dumps(graph, ensure_ascii=False) == before and trace_graph.service_tasks(graph) == ["1.2"]
+
+
+@pytest.mark.parametrize("body", [
+    "очень длинное старое тело " * 30,
+    "сначала тело **Название** — продолжение",
+    "**Название**: тело без разделителя",
+    "**Название** —",
+    "**Название** —   ",
+    "**   ** — тело",
+    "**Название\nещё** — тело",
+])
+def test_task_without_complete_initial_title_uses_only_number(body):
+    text = trace_graph.diagram_text(graph_of([node("task", body, "task:1.2")]))
+    assert names(text) == ["TASK_1.2"]
+
+
+def test_equal_long_explicit_task_titles_keep_distinct_numbers_and_safe_names():
+    title = 'Очень длинное название с "кавычками" и %%<b>разметкой</b> ' * 5
+    nodes = [node("task", f"**{title}** — тело", f"task:1.{number}") for number in (1, 2)]
+    text = trace_graph.diagram_text(graph_of(nodes))
+    got = names(text)
+    assert len(set(got)) == 2 and all(80 <= len(name) <= 90 for name in got)
+    assert got[0].startswith("TASK_1.1 Очень длинное") and got[1].startswith("TASK_1.2 Очень длинное")
+    assert all("%%" not in name and "<" not in name and '"' not in name for name in got)
+    assert hook_keys(text) == []
 
 
 # --- текст (5.4, F-15, F-54, F-59) -------------------------------------------------------

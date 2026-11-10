@@ -2,7 +2,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import path from "node:path";
 import os from "node:os";
-import { targets } from "../lib/paths.js";
+import { isFullyAbsolute, targets } from "../lib/paths.js";
 
 const p = path.resolve(os.tmpdir(), "proj-x");
 
@@ -26,4 +26,18 @@ test("schemaDir, configPath, toolsDir", () => {
   assert.equal(t.schemaDir, path.join(p, "openspec", "schemas", "symphysis"));
   assert.equal(t.configPath, path.join(p, "openspec", "config.yaml"));
   assert.equal(t.toolsDir, path.join(p, ".symphysis"));
+});
+
+test("fully absolute Windows paths include a drive or complete UNC share", () => {
+  for (const file of ["X:/fixture", "x:\\fixture", "C:/", "\\\\server\\share", "\\\\server\\share\\fixture", "//server/share/fixture"]) assert.equal(isFullyAbsolute(file, "win32"), true, file);
+  for (const file of ["relative", ".", "..", "X:fixture", "\\fixture", "/fixture", "\\\\server", "\\\\server\\", "\\\\\\server\\share", "\\\\?\\X:\\fixture", "\\\\.\\pipe\\fixture"]) assert.equal(isFullyAbsolute(file, "win32"), false, file);
+});
+
+test("fully absolute POSIX paths and invalid input types are independent of cwd", () => {
+  assert.equal(isFullyAbsolute("/fixture", "linux"), true);
+  assert.equal(isFullyAbsolute("/", "darwin"), true);
+  for (const value of ["relative", "X:/fixture", "X:\\fixture", "\\fixture", "", "bad\0path", null, undefined, 7, {}, []]) {
+    assert.equal(isFullyAbsolute(value, "linux"), false);
+    if (typeof value !== "string" || !value || value.includes("\0")) assert.equal(isFullyAbsolute(value, "win32"), false);
+  }
 });

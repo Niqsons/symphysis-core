@@ -213,8 +213,8 @@ def test_instructions_name_skills_and_stay_short(tmp_path):
     assert "symphysis-edge-probe" in text["specs"] and "symphysis-prohibition-probe" in text["specs"]
     assert "symphysis-consequences" in text["consequences"]
     assert text["research"].lstrip().startswith("Загрузи скилл `symphysis-research`")
-    assert ".symphysis/tools/symphysis_config.py" in text["consequences"]
-    assert ".symphysis/tools/journal.py code-sites" in text["consequences"]
+    assert "symphysis config" in text["consequences"]
+    assert "symphysis journal code-sites" in text["consequences"]
     for i in ("intent", "design", "security", "tasks"):
         assert "symphysis-" not in text[i], f"{i}: правила без скилла"
     # research: второй круг брейншторма стоит в конце, после правил отчётов и none.md
@@ -342,7 +342,7 @@ def test_attack_templates_name_lens_composition(name):
     assert len(lines) == 1, f"в шаблоне {name} нужна одна строка `**Состав:**`"
     assert lines[0] == "**Состав:** включены <слуги>; выключены <слуги или —>", lines[0]
     comment = next(line for line in text.splitlines() if line.startswith("<!-- Состав"))
-    for token in ("python .symphysis/tools/symphysis_config.py", "при любом составе", "и при всех включённых",
+    for token in ("symphysis config", "при любом составе", "и при всех включённых",
                   "выключенная линза строк не даёт", "таблица пуста", "заголовок остаётся", "status: passed",
                   "модель состав не меняет"):
         assert token in comment, f"в комментарии о составе шаблона {name} нет «{token}»"
@@ -489,7 +489,7 @@ def test_design_template_marks_generated_sections():
     assert headings(text, 2) == ["Context", "Goals / Non-Goals", "Decisions", "Risks / Trade-offs",
                                  "Migration Plan", "Open Questions"]
     for title in ("Decisions", "Risks / Trade-offs", "Open Questions"):
-        assert "генерируется `python .symphysis/tools/journal.py render-design`" in section(text, title), title
+        assert "генерируется `symphysis journal render-design`" in section(text, title), title
     for title in ("Context", "Goals / Non-Goals"):
         assert "render-design" not in section(text, title), title
     context = section(text, "Context")
@@ -560,7 +560,7 @@ def test_tasks_instruction_names_scenario_form_and_service_mark(tmp_path):
     assert len(text.split()) <= 150, len(text.split())
 
 
-FREEZE_COMMAND = "python .symphysis/tools/trace_graph.py freeze"
+FREEZE_COMMAND = "symphysis trace freeze"
 
 
 def ready_apply_project(tmp_path):
@@ -610,12 +610,14 @@ def test_schema_points_each_artifact_at_its_own_template():
         assert re.search(rf"^    template: {re.escape(template)}$", schema_block(artifact_id), re.M), artifact_id
 
 
-def test_instructions_call_journal_by_installed_path():
+def test_instructions_use_selected_runtime_dispatcher():
+    """Схема работает с global-only и local-only: runtime не ищется внутри store."""
     text = SCHEMA_YAML.read_bytes().decode("utf-8")
-    assert ".symphysis/tools/journal.py" in schema_block("decisions")
-    assert ".symphysis/tools/journal.py" in schema_block("design")
-    bare = re.findall(r"(?<!\.symphysis/)tools/journal\.py", text)
-    assert bare == [], f"путь скрипта без .symphysis/: {bare}"
+    assert "symphysis journal check" in schema_block("decisions")
+    assert "symphysis journal render-design" in schema_block("design")
+    assert "symphysis trace freeze" in text
+    assert ".symphysis/tools/" not in text
+    assert 'generates: "specs/**/*.md"' in text, "пути данных store должны сохраниться"
 
 
 def test_specs_instruction_names_scenario_form_with_given():
@@ -749,10 +751,9 @@ OTHER_RULES = {
     "specs": ["предположение помечается словом `предположение` и дорогой `проверить|решить`",
               "у каждого требования хотя бы один сценарий GIVEN/WHEN/THEN",
               "след проб — комментарии «проба краёв» и «проба запретов» — в общую спеку при синхронизации не переносится",
-              "явная аннотация реализации `<!-- symphysis:implements {...} -->` — данные требования: при sync сохраняется у своего блока, не удаляется как след пробы; логические repo/module и пути файлов не переименовываются как ссылки журнала; форма — `.symphysis/docs/module-declarations.md`",
-              "ссылки на записи этого изменения в общей спеке стоят в форме якоря `<изменение>/F-NN`; форму даёт скрипт "
-              "`python .symphysis/tools/anchor_refs.py <имя>` после переноса блоков, его вывод показывается человеку; руками "
-              "ссылки не переписываются"],
+              "явная аннотация реализации `<!-- symphysis:implements {...} -->` — данные требования: при sync сохраняется у своего блока, не удаляется как след пробы; логические repo/module и пути файлов не переименовываются как ссылки журнала; форма — `symphysis resource doc module-declarations.md`",
+              "ссылки на записи этого изменения в общей спеке стоят в форме якоря `<изменение>/F-NN`; "
+              "унаследованные голые ссылки и якоря других изменений сохраняют своё происхождение"],
     "proposal": [RECORD_FIRST],
     "design": ["решение излагается, не принимается", RECORD_FIRST],
     "tasks": [RECORD_FIRST],
@@ -846,7 +847,7 @@ def operation_guidance(project):
 
 
 @requires_fork
-@pytest.mark.parametrize("config_path", [CONFIG_SAMPLE, ROOT / "openspec" / "config.yaml"], ids=["sample", "core"])
+@pytest.mark.parametrize("config_path", [CONFIG_SAMPLE, ROOT / "openspec" / "config.yaml"], ids=["sample", "legacy-core"])
 def test_archive_guidance_reaches_instructions(tmp_path, config_path):
     """`trace-snapshot`: «Снимка нет», «Снимок устарел», «Сборка не удалась», «Сборка при всех отмеченных задачах»,
     «Синхронизация внутри архивации» (F-49, F-75, F-127, F-128, F-139): подсказка операции — список строк ключа
@@ -855,7 +856,10 @@ def test_archive_guidance_reaches_instructions(tmp_path, config_path):
     guidance = operation_guidance(proj)
     assert isinstance(guidance, list) and guidance and all(isinstance(g, str) for g in guidance)
     text = " ".join(guidance)
-    for token in (FREEZE_COMMAND + " <имя>", "до выбора синхронизации", "Граф собран заново", "Снимок свежий", "`graph/report.md`",
+    # Existing local planning config is data; migrating the supplied sample must
+    # not silently rewrite it. The fork still transports that legacy guidance.
+    freeze_command = FREEZE_COMMAND if config_path == CONFIG_SAMPLE else "python .symphysis/tools/trace_graph.py freeze"
+    for token in (freeze_command + " <имя>", "до выбора синхронизации", "Граф собран заново", "Снимок свежий", "`graph/report.md`",
                   "ошибку", "назови человеку", "архивацию не останавливай"):
         assert token in text, token
 
