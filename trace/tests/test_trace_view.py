@@ -263,3 +263,10 @@ def test_unknown_repo_does_not_fall_back_to_change_relative_file(tmp_path):
     assert result.returncode == 0, result.stderr
     target = next(n for n in json.loads(result.stdout)['elements'].values() if n['id'] == 'module:one/trace')
     assert 'target' not in target
+
+
+def test_traces_to_non_record_does_not_hide_missing_decision_link():
+    graph = module_graph()
+    graph['edges'].append({'from': 'req:b/Q', 'to': 'module:one/trace', 'type': 'traces'})
+    view = trace_graph.graph_view(graph, capability='b')
+    assert 'req:b/Q' in {item['id'] for item in view['unlinked']['items']}

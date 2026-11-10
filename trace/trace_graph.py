@@ -1444,7 +1444,8 @@ def graph_view(graph: dict, *, capability: str | None = None, requirement: str |
     linked = set()
     kinds = {n['id']: n['kind'] for n in nodes}
     for edge in graph['edges']:
-        if edge['type'] == 'traces' and {kinds[edge['from']], kinds[edge['to']]} & {'req', 'scn'}:
+        ends = {kinds[edge['from']], kinds[edge['to']]}
+        if edge['type'] == 'traces' and 'rec' in ends and ends & {'req', 'scn'}:
             linked.update((edge['from'], edge['to']))
     unlinked = [{key: n[key] for key in ('id', 'name', 'kind', 'at', 'capability') if key in n}
                 for n in nodes if n['kind'] in ('req', 'rec') and n['id'] not in linked]
