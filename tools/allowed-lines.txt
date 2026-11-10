@@ -2,3 +2,5 @@
 plan-implementation.journal.md  # имя файла журнала
 j.md  # имя файла в тесте
 sha512-NcV1JjO5oDzoK  # хеш целостности @types/d3-ease в installer/package-lock.json: совпадение внутри хеша случайно
+const token = `${process.pid}-${Date.now()}`;  # compiled OpenSpec schema.js: идентификатор временной операции из PID и времени, не секрет
+api_key: POSTHOG_API_KEY,  # compiled OpenSpec telemetry/index.js: ссылка на константу донора, значение ключа здесь отсутствует

@@ -10,3 +10,16 @@ docs.npmjs.com  # документация npm, область исследов�
 code.visualstudio.com  # документация VS Code, область исследования module-structure
 learn.chatgpt.com  # официальная документация Codex: скиллы и агенты, global-user-install
 learn.microsoft.com  # Win32 process identity API для Windows venv redirector
+commandcode.ai # публичная страница клиента из документации поставляемого OpenSpec
+discord.gg # публичные приглашения сообщества OpenSpec
+docs.aws.amazon.com # публичная документация AWS
+edge.openspec.dev # публичный канал сборок OpenSpec
+formulae.brew.sh # публичный каталог Homebrew
+gitverse.ru # публичная страница клиента из документации OpenSpec
+img.shields.io # публичный сервис значков README
+kiro.dev # публичная страница клиента из документации OpenSpec
+openspec.dev # публичный сайт OpenSpec
+qwenlm.github.io # публичная документация Qwen Code
+sourcecraft.dev # публичная страница клиента из документации OpenSpec
+www.npmjs.com # публичный каталог пакетов npm
+x.com # публичные ссылки сообщества OpenSpec
