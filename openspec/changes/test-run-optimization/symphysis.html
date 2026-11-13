@@ -236,12 +236,12 @@
 const JOURNAL = {
  "title": "Журнал решений: Оптимизация тестов и тестовых прогонов",
  "source": "decisions.json",
- "sha256": "8133afd4b6abdf87ff6216fb1aa9d4f11b4261594fb35a46430e45a68572200b",
+ "sha256": "393690b213bde60f33ac3f7d94e768f636d5b79d1fe74dae6175a5e22c8aded0",
  "stats": {
   "records": 23,
   "forks": 17,
   "facts": 6,
-  "decided": 13,
+  "decided": 17,
   "parked": 1,
   "evidence_total": 123,
   "evidence_found": 123
@@ -1999,7 +1999,7 @@ const JOURNAL = {
     {
      "path": "openspec/changes/test-run-optimization/specs/test-run-execution/spec.md",
      "quote": "### Requirement: Невыполненные проверки видны в результате",
-     "line": 69,
+     "line": 75,
      "verdict": "сверено",
      "found": true
     }
@@ -2048,7 +2048,7 @@ const JOURNAL = {
    "id": "F-20",
    "question": "[ветка] Разбор README: модуль с ошибочным форматом dependencies исчезает из карты. Как строить план, если потерян потребитель, а путь правки известен?",
    "kind": "развилка",
-   "status": "открыт",
+   "status": "решён",
    "addressee": "человек",
    "depends_on": [],
    "delivery": "",
@@ -2087,12 +2087,20 @@ const JOURNAL = {
     "option": "A",
     "why": "При разборе теряется целый модуль. Правка в другом известном модуле может оставить его потребителя за пределами зелёного прогона. Цена — сценарий и фикстура повреждённой декларации. Это отдельная ветка от разрешения цели корректной записи."
    },
-   "decision": null,
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-13"
+   },
    "reversibility": null,
-   "outcome": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Specify",
+    "reason": ""
+   },
    "parking": [],
    "dispute": "",
-   "consequences": "",
+   "consequences": "в spec.md: Повреждённый список зависимостей скрывает модуль.",
    "evidence": [
     {
      "path": "trace/trace_modules.py",
@@ -2109,7 +2117,7 @@ const JOURNAL = {
    "id": "F-21",
    "question": "[ветка] Таймаут браузерного драйвера: что проверять после того, как ожидание Node истекло до удаления Chrome и его профиля?",
    "kind": "развилка",
-   "status": "открыт",
+   "status": "решён",
    "addressee": "человек",
    "depends_on": [
     "F-11",
@@ -2151,12 +2159,20 @@ const JOURNAL = {
     "option": "A",
     "why": "Код очистки живёт внутри Node. Если внешний таймаут прерывает драйвер раньше, следующий прогон может унаследовать нагрузку от Chrome и занятые профили. Цена — сценарий и управляемая проба таймаута."
    },
-   "decision": null,
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-13"
+   },
    "reversibility": null,
-   "outcome": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Specify",
+    "reason": ""
+   },
    "parking": [],
    "dispute": "",
-   "consequences": "",
+   "consequences": "в spec.md: Драйвер превысил таймаут до очистки.",
    "evidence": [
     {
      "path": "viewer/tests/test_viewer_browser.py",
@@ -2173,7 +2189,7 @@ const JOURNAL = {
    "id": "F-22",
    "question": "[pre-mortem] После разделения pytest на обычный и браузерный прогоны один тест проходит проверку testpaths, но фильтры исключают его из обоих запусков",
    "kind": "развилка",
-   "status": "открыт",
+   "status": "решён",
    "addressee": "человек",
    "depends_on": [
     "F-06",
@@ -2217,12 +2233,20 @@ const JOURNAL = {
     "option": "C",
     "why": "Обе команды могут завершиться зелёным, а проверка путей не увидит отфильтрованный тест. Точная сверка коллекций обнаруживает потерю и двойной запуск без привязки спеки к маркерам pytest."
    },
-   "decision": null,
+   "decision": {
+    "option": "C",
+    "word": "",
+    "date": "2026-11-13"
+   },
    "reversibility": null,
-   "outcome": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Backstop",
+    "reason": ""
+   },
    "parking": [],
    "dispute": "",
-   "consequences": "",
+   "consequences": "тест-страховка: собрать идентификаторы тестов обычной и браузерной команд и полной коллекции pytest ядра после отделения инсталлятора. Проверить, что пересечение двух групп пусто, а объединение равно полной коллекции.",
    "evidence": [
     {
      "path": "tests/test_pytest_testpaths.py",
@@ -2239,7 +2263,7 @@ const JOURNAL = {
    "id": "F-23",
    "question": "[ветка] Сборка VS Code пропускает отсутствующий каталог: как сообщить, что уже выбранная группа тестов исчезла перед сборкой, если другие группы прошли?",
    "kind": "развилка",
-   "status": "открыт",
+   "status": "решён",
    "addressee": "человек",
    "depends_on": [
     "F-07"
@@ -2280,12 +2304,20 @@ const JOURNAL = {
     "option": "A",
     "why": "Сборка отфильтровывает отсутствующие каталоги до списка входов. Остальные тесты могут пройти и скрыть выпадение уже выбранной группы. Цена — один сценарий и фикстура с исчезнувшим входом."
    },
-   "decision": null,
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-13"
+   },
    "reversibility": null,
-   "outcome": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Specify",
+    "reason": ""
+   },
    "parking": [],
    "dispute": "",
-   "consequences": "",
+   "consequences": "в spec.md: Выбранная группа VS Code исчезла до сборки.",
    "evidence": [
     {
      "path": "vscode/build.mjs",
@@ -2328,7 +2360,7 @@ const SCHEME = {
 };
 const HELP = {
  "contract": 6,
- "taken_at": "2026-11-13T20:14:17+03:00",
+ "taken_at": "2026-11-13T20:21:13+03:00",
  "versions": {
   "openspec": "1.16.1+symphysis.6",
   "symphysis": "0.1.0+f7b6ca25"
@@ -2336,12 +2368,12 @@ const HELP = {
  "change": "test-run-optimization",
  "changes": null,
  "error": null,
- "current_step": "viewer",
- "current_text": "Следующий шаг по файлам — `viewer`, ход человека: открытых развилок 4, решаются на странице журнала. После них по файлам идёт `design`.",
- "turn": "human",
+ "current_step": "design",
+ "current_text": "Следующий шаг по файлам — `design`, ход модели.",
+ "turn": "model",
  "next_by_status": "design",
  "forks": {
-  "open": 4,
+  "open": 0,
   "parked": 0
  },
  "tasks": {
@@ -2421,7 +2453,7 @@ const HELP = {
   },
   {
    "id": "viewer",
-   "state": "ready",
+   "state": "idle",
    "turn": "human",
    "optional": false,
    "blocks": [],
