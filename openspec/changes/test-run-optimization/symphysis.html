@@ -236,15 +236,15 @@
 const JOURNAL = {
  "title": "Журнал решений: Оптимизация тестов и тестовых прогонов",
  "source": "decisions.json",
- "sha256": "33e585ddf737a6aca3996a087473b2b3d732ae53ca3333b6685161ed11184703",
+ "sha256": "bc9734ae1639d67bbc14348e9fe5a1ddd484ca178540cfdaaa6f6c3a6c72c210",
  "stats": {
   "records": 13,
   "forks": 8,
   "facts": 5,
   "decided": 8,
   "parked": 1,
-  "evidence_total": 101,
-  "evidence_found": 101
+  "evidence_total": 111,
+  "evidence_found": 111
  },
  "records": [
   {
@@ -1302,17 +1302,89 @@ const JOURNAL = {
    "parking": [
     {
      "addressee": "агент",
-     "text": "В research определить одинаковый состав браузерных тестов для сравнения, проверить доступность Chrome, Node и Mermaid, сверить очистку драйверов и профилей. Подготовить сравнение текущих 12 воркеров, последовательного режима и малых лимитов. Любые тяжёлые прогоны запускать последовательно, отдельно учитывать тест с шестью драйверами. Если замер не выполнен, явно указать причину и оставить вывод о числе воркеров открытым."
+     "text": "В research определить одинаковый состав браузерных тестов для сравнения, проверить доступность Chrome, Node и Mermaid, сверить очистку драйверов и профилей. Подготовить сравнение текущих 12 воркеров, последовательного режима и малых лимитов. Любые тяжёлые прогоны запускать последовательно, отдельно учитывать тест с шестью драйверами. Если замер не выполнен, явно указать причину и оставить вывод о числе воркеров открытым.",
+     "finding": "Два последовательных повтора каждого режима на одном наборе из 79 браузерных тестов. Среднее время: 164,33 с при -n 0, 98,98 с при -n 2, 70,22 с при -n 12. Все шесть прогонов прошли без падений, пропусков и таймаутов. После выхода и через три секунды остаток процессов и профилей пробы нулевой. Выборочные пики Chrome: 62–75 при -n 2 и 162–304 при -n 12. Тест очистки с шестью драйверами: 3,42–3,95 с при -n 2 и 14,48–17,51 с при -n 12. Сравнивали изолированную браузерную группу. Прежние сбои в этих повторах не воспроизвелись."
     }
    ],
    "dispute": "",
    "consequences": "",
-   "evidence": [],
+   "evidence": [
+    {
+     "path": "openspec/changes/test-run-optimization/research/F-11-probe/summary.log",
+     "quote": "01-n0: tests=79 failures=0 errors=0 skipped=0 exit=0 timeout=False wall_s=168,441 pytest_s=167.490",
+     "line": 15,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "openspec/changes/test-run-optimization/research/F-11-probe/summary.log",
+     "quote": "06-n0: tests=79 failures=0 errors=0 skipped=0 exit=0 timeout=False wall_s=160,225 pytest_s=159.800",
+     "line": 45,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "openspec/changes/test-run-optimization/research/F-11-probe/summary.log",
+     "quote": "02-n2: tests=79 failures=0 errors=0 skipped=0 exit=0 timeout=False wall_s=101,502 pytest_s=100.816",
+     "line": 21,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "openspec/changes/test-run-optimization/research/F-11-probe/summary.log",
+     "quote": "05-n2: tests=79 failures=0 errors=0 skipped=0 exit=0 timeout=False wall_s=96,452 pytest_s=95.199",
+     "line": 39,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "openspec/changes/test-run-optimization/research/F-11-probe/summary.log",
+     "quote": "03-n12: tests=79 failures=0 errors=0 skipped=0 exit=0 timeout=False wall_s=72,765 pytest_s=72.302",
+     "line": 27,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "openspec/changes/test-run-optimization/research/F-11-probe/summary.log",
+     "quote": "04-n12: tests=79 failures=0 errors=0 skipped=0 exit=0 timeout=False wall_s=67,676 pytest_s=67.158",
+     "line": 33,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "openspec/changes/test-run-optimization/research/F-11-probe/summary.log",
+     "quote": "03-n12: cleanup=passed cleanup_s=14.481 peak_chrome=304 peak_node=16 peak_python=25 samples=20 available_ram_kib=27632072",
+     "line": 28,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "openspec/changes/test-run-optimization/research/F-11-probe/summary.log",
+     "quote": "04-n12: cleanup=passed cleanup_s=17.514 peak_chrome=162 peak_node=16 peak_python=25 samples=20 available_ram_kib=27477740",
+     "line": 34,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "openspec/changes/test-run-optimization/research/F-11-probe/summary.log",
+     "quote": "05-n2: cleanup=passed cleanup_s=3.422 peak_chrome=75 peak_node=7 peak_python=5 samples=29 available_ram_kib=27473984",
+     "line": 40,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "openspec/changes/test-run-optimization/research/F-11-probe/summary.log",
+     "quote": "same case IDs: True",
+     "line": 51,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
    "comments": [],
    "nodes": [
     "BROWSER"
    ],
-   "finding": ""
+   "finding": "Два последовательных повтора каждого режима на одном наборе из 79 браузерных тестов. Среднее время: 164,33 с при -n 0, 98,98 с при -n 2, 70,22 с при -n 12. Все шесть прогонов прошли без падений, пропусков и таймаутов. После выхода и через три секунды остаток процессов и профилей пробы нулевой. Выборочные пики Chrome: 62–75 при -n 2 и 162–304 при -n 12. Тест очистки с шестью драйверами: 3,42–3,95 с при -n 2 и 14,48–17,51 с при -n 12. Сравнивали изолированную браузерную группу. Прежние сбои в этих повторах не воспроизвелись."
   },
   {
    "id": "F-12",
@@ -1590,7 +1662,7 @@ const SCHEME = {
 };
 const HELP = {
  "contract": 6,
- "taken_at": "2026-11-13T19:14:09+03:00",
+ "taken_at": "2026-11-13T19:33:44+03:00",
  "versions": {
   "openspec": "1.16.1+symphysis.6",
   "symphysis": "0.1.0+f7b6ca25"
@@ -1598,10 +1670,10 @@ const HELP = {
  "change": "test-run-optimization",
  "changes": null,
  "error": null,
- "current_step": "research",
- "current_text": "Следующий шаг по файлам — `research`, ход модели.",
+ "current_step": "proposal",
+ "current_text": "Следующий шаг по файлам — `proposal`, ход модели.",
  "turn": "model",
- "next_by_status": "research",
+ "next_by_status": "proposal",
  "forks": {
   "open": 0,
   "parked": 0
@@ -1713,7 +1785,7 @@ const HELP = {
   },
   {
    "id": "research",
-   "state": "ready",
+   "state": "done",
    "turn": "model",
    "optional": false,
    "blocks": [
@@ -1724,11 +1796,11 @@ const HELP = {
    "waits_for": [],
    "files": [
     {
-     "path": "openspec/changes/test-run-optimization/research/**/*.md",
-     "exists": false
+     "path": "openspec/changes/test-run-optimization/research/F-11.md",
+     "exists": true
     }
    ],
-   "file_note": null,
+   "file_note": "файл есть, содержание не проверялось",
    "texts": {
     "title": "Исследование и второй круг",
     "why": "Вопросы, припаркованные к агенту, получают ответ с цитатами из прочитанных файлов. Второй круг брейншторма закрывает по этим ответам записи журнала.",
@@ -1756,14 +1828,12 @@ const HELP = {
   },
   {
    "id": "attack-decisions",
-   "state": "blocked",
+   "state": "ready",
    "turn": "model",
    "optional": true,
    "blocks": [],
    "stops_apply": false,
-   "waits_for": [
-    "research"
-   ],
+   "waits_for": [],
    "files": [
     {
      "path": "openspec/changes/test-run-optimization/attack/decisions.md",
@@ -1793,7 +1863,7 @@ const HELP = {
   },
   {
    "id": "proposal",
-   "state": "blocked",
+   "state": "ready",
    "turn": "model",
    "optional": false,
    "blocks": [
@@ -1801,9 +1871,7 @@ const HELP = {
     "design"
    ],
    "stops_apply": false,
-   "waits_for": [
-    "research"
-   ],
+   "waits_for": [],
    "files": [
     {
      "path": "openspec/changes/test-run-optimization/proposal.md",
@@ -2142,6 +2210,7 @@ const HELP = {
   "intent.md": "openspec/changes/test-run-optimization/intent.md",
   "openspec/changes/test-run-optimization/decisions.json": "openspec/changes/test-run-optimization/decisions.json",
   "openspec/changes/test-run-optimization/intent.md": "openspec/changes/test-run-optimization/intent.md",
+  "openspec/changes/test-run-optimization/research/F-11.md": "openspec/changes/test-run-optimization/research/F-11.md",
   "scheme.md": "openspec/changes/test-run-optimization/scheme.md",
   "symphysis.html": "openspec/changes/test-run-optimization/symphysis.html",
   "symphysis.yaml": "symphysis.yaml"
@@ -2168,6 +2237,8 @@ const LINKS = {
   "intent.md": "intent.md",
   "openspec/changes/test-run-optimization/decisions.json": "decisions.json",
   "openspec/changes/test-run-optimization/intent.md": "intent.md",
+  "openspec/changes/test-run-optimization/research/F-11-probe/summary.log": "research/F-11-probe/summary.log",
+  "openspec/changes/test-run-optimization/research/F-11.md": "research/F-11.md",
   "pytest.ini": "../../../pytest.ini",
   "scheme.md": "scheme.md",
   "skills-store/CLAUDE.md": "../../../../skills-store/CLAUDE.md",

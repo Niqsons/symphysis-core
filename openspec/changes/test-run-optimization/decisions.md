@@ -217,6 +217,18 @@
 - антиподы: —
 - рекомендация: A — Отдельный профиль исключает конкуренцию с другими группами внутри сессии. Замер определит, даёт ли малый параллелизм выигрыш без возврата плавающих падений.
 - парковка: агент — «В research определить одинаковый состав браузерных тестов для сравнения, проверить доступность Chrome, Node и Mermaid, сверить очистку драйверов и профилей. Подготовить сравнение текущих 12 воркеров, последовательного режима и малых лимитов. Любые тяжёлые прогоны запускать последовательно, отдельно учитывать тест с шестью драйверами. Если замер не выполнен, явно указать причину и оставить вывод о числе воркеров открытым.»
+- находка: Два последовательных повтора каждого режима на одном наборе из 79 браузерных тестов. Среднее время: 164,33 с при -n 0, 98,98 с при -n 2, 70,22 с при -n 12. Все шесть прогонов прошли без падений, пропусков и таймаутов. После выхода и через три секунды остаток процессов и профилей пробы нулевой. Выборочные пики Chrome: 62–75 при -n 2 и 162–304 при -n 12. Тест очистки с шестью драйверами: 3,42–3,95 с при -n 2 и 14,48–17,51 с при -n 12. Сравнивали изолированную браузерную группу. Прежние сбои в этих повторах не воспроизвелись.
+- улики:
+  - улика: `openspec/changes/test-run-optimization/research/F-11-probe/summary.log` «01-n0: tests=79 failures=0 errors=0 skipped=0 exit=0 timeout=False wall_s=168,441 pytest_s=167.490»
+  - улика: `openspec/changes/test-run-optimization/research/F-11-probe/summary.log` «06-n0: tests=79 failures=0 errors=0 skipped=0 exit=0 timeout=False wall_s=160,225 pytest_s=159.800»
+  - улика: `openspec/changes/test-run-optimization/research/F-11-probe/summary.log` «02-n2: tests=79 failures=0 errors=0 skipped=0 exit=0 timeout=False wall_s=101,502 pytest_s=100.816»
+  - улика: `openspec/changes/test-run-optimization/research/F-11-probe/summary.log` «05-n2: tests=79 failures=0 errors=0 skipped=0 exit=0 timeout=False wall_s=96,452 pytest_s=95.199»
+  - улика: `openspec/changes/test-run-optimization/research/F-11-probe/summary.log` «03-n12: tests=79 failures=0 errors=0 skipped=0 exit=0 timeout=False wall_s=72,765 pytest_s=72.302»
+  - улика: `openspec/changes/test-run-optimization/research/F-11-probe/summary.log` «04-n12: tests=79 failures=0 errors=0 skipped=0 exit=0 timeout=False wall_s=67,676 pytest_s=67.158»
+  - улика: `openspec/changes/test-run-optimization/research/F-11-probe/summary.log` «03-n12: cleanup=passed cleanup_s=14.481 peak_chrome=304 peak_node=16 peak_python=25 samples=20 available_ram_kib=27632072»
+  - улика: `openspec/changes/test-run-optimization/research/F-11-probe/summary.log` «04-n12: cleanup=passed cleanup_s=17.514 peak_chrome=162 peak_node=16 peak_python=25 samples=20 available_ram_kib=27477740»
+  - улика: `openspec/changes/test-run-optimization/research/F-11-probe/summary.log` «05-n2: cleanup=passed cleanup_s=3.422 peak_chrome=75 peak_node=7 peak_python=5 samples=29 available_ram_kib=27473984»
+  - улика: `openspec/changes/test-run-optimization/research/F-11-probe/summary.log` «same case IDs: True»
 - решение: A, 2026-11-13
 
 ## F-12 Где сохранить полный прогон после появления адресного режима?
