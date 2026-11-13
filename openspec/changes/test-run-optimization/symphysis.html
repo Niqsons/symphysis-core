@@ -236,12 +236,12 @@
 const JOURNAL = {
  "title": "Журнал решений: Оптимизация тестов и тестовых прогонов",
  "source": "decisions.json",
- "sha256": "371d0c35329007e733c304012c7df68f57a50afe79c07d7a67cdcae3d9e86fc4",
+ "sha256": "b7279e948b6edc8e55bb4bdbb8d9eadbe62b8ca222820d839e3efdd93b32c982",
  "stats": {
   "records": 19,
   "forks": 13,
   "facts": 6,
-  "decided": 9,
+  "decided": 13,
   "parked": 1,
   "evidence_total": 119,
   "evidence_found": 119
@@ -1714,7 +1714,7 @@ const JOURNAL = {
    "id": "F-15",
    "question": "[empty · collection] План коммита сравнивает его с одним родителем: какие пути учитывать у первого коммита репозитория, у которого нет родителя?",
    "kind": "развилка",
-   "status": "открыт",
+   "status": "решён",
    "addressee": "человек",
    "depends_on": [
     "F-09",
@@ -1749,6 +1749,13 @@ const JOURNAL = {
      "added": false,
      "unlikely": null,
      "evidence": []
+    },
+    {
+     "letter": "E",
+     "text": "Непонятно для каких случаев сценарий. Это изменение репозитория, у которого уже есть коммиты, есть ветки. Git init тут запускаться не будет. (добавлен человеком)",
+     "added": true,
+     "unlikely": null,
+     "evidence": []
     }
    ],
    "antipodes": [],
@@ -1756,12 +1763,20 @@ const JOURNAL = {
     "option": "A",
     "why": "При сравнении первого коммита реализация может принять отсутствие родителя за отсутствие изменений и пропустить всё. Сравнение с пустым деревом даёт ожидаемые добавленные пути. Цена — один сценарий и Git-фикстура без родителя."
    },
-   "decision": null,
+   "decision": {
+    "option": "E",
+    "word": "",
+    "date": "2026-11-13"
+   },
    "reversibility": null,
-   "outcome": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Dismiss",
+    "reason": ""
+   },
    "parking": [],
    "dispute": "",
-   "consequences": "",
+   "consequences": "Выбран вариант E. Сценарий первого коммита без родителя исключён из объёма B-68 по слову в добавленном варианте владельца.",
    "evidence": [
     {
      "path": "openspec/changes/test-run-optimization/specs/test-impact-selection/spec.md",
@@ -1778,7 +1793,7 @@ const JOURNAL = {
    "id": "F-16",
    "question": "[adjacency · collection] План включает проверки затронутых модулей и потребителей: как учесть прежних потребителей, если файл перенесён и README старого модуля удалён тем же изменением?",
    "kind": "развилка",
-   "status": "открыт",
+   "status": "решён",
    "addressee": "человек",
    "depends_on": [
     "F-08",
@@ -1821,12 +1836,20 @@ const JOURNAL = {
     "option": "A",
     "why": "Старая граница может исчезнуть из текущей карты, а перенос в новый известный модуль выглядит обработанным. Сценарий удерживает проверки прежних потребителей и допускает расширение при отсутствии данных. Цена — сценарий и фикстура переноса."
    },
-   "decision": null,
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-13"
+   },
    "reversibility": null,
-   "outcome": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Specify",
+    "reason": ""
+   },
    "parking": [],
    "dispute": "",
-   "consequences": "",
+   "consequences": "в spec.md: Потребители модуля с удалённым README; Прежние связи недоступны.",
    "evidence": [
     {
      "path": "openspec/changes/test-run-optimization/specs/test-impact-selection/spec.md",
@@ -1843,7 +1866,7 @@ const JOURNAL = {
    "id": "F-17",
    "question": "[adjacency · collection] План показывает область и причины выбора: что делать, если путь известен, но декларация зависимости называет модуль, который не удаётся разрешить?",
    "kind": "развилка",
-   "status": "открыт",
+   "status": "решён",
    "addressee": "человек",
    "depends_on": [
     "F-08",
@@ -1885,17 +1908,25 @@ const JOURNAL = {
     "option": "A",
     "why": "При известном пути потеря ребра может дать узкий план, который выглядит полным. Явное расширение сохраняет покрытие при неполной карте. Цена — сценарий и фикстура неразрешимой связи."
    },
-   "decision": null,
+   "decision": {
+    "option": "B",
+    "word": "",
+    "date": "2026-11-13"
+   },
    "reversibility": null,
-   "outcome": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Dismiss",
+    "reason": ""
+   },
    "parking": [],
    "dispute": "",
-   "consequences": "",
+   "consequences": "Сохраняется сигнал механизма обнаружения модулей. Отбор использует разрешённые связи, сама неразрешённая цель не расширяет план.",
    "evidence": [
     {
      "path": "openspec/changes/test-run-optimization/specs/test-impact-selection/spec.md",
      "quote": "### Requirement: План показывает область и причины выбора",
-     "line": 64,
+     "line": 76,
      "verdict": "сверено",
      "found": true
     }
@@ -1907,7 +1938,7 @@ const JOURNAL = {
    "id": "F-18",
    "question": "[запрет] Невыполненные проверки видны в результате: отчёт не должен выдавать прогон на другом рабочем состоянии за проверку указанного коммита",
    "kind": "развилка",
-   "status": "открыт",
+   "status": "решён",
    "addressee": "человек",
    "depends_on": [
     "F-06",
@@ -1950,17 +1981,25 @@ const JOURNAL = {
     "option": "A",
     "why": "Подмена объекта проверки даёт зелёный отчёт о коммите, на котором тесты могли бы упасть. Расхождение проверяется на фикстуре, поэтому подходит автоматическая проверка. Цена — негативный сценарий и тест атрибуции."
    },
-   "decision": null,
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-13"
+   },
    "reversibility": null,
-   "outcome": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Specify",
+    "reason": ""
+   },
    "parking": [],
    "dispute": "",
-   "consequences": "",
+   "consequences": "проверка: test — фикстура с правками поверх указанного коммита сверяет, что отчёт различает источник отбора и проверенное рабочее состояние. В spec.md: Отчёт указывает проверенное рабочее состояние.",
    "evidence": [
     {
      "path": "openspec/changes/test-run-optimization/specs/test-run-execution/spec.md",
      "quote": "### Requirement: Невыполненные проверки видны в результате",
-     "line": 64,
+     "line": 69,
      "verdict": "сверено",
      "found": true
     }
@@ -2017,11 +2056,11 @@ const JOURNAL = {
   },
   {
    "date": "2026-11-13",
-   "text": "проба краёв: кандидатов 3 (F-15, F-16, F-17 открыты), Specify 0, Dismiss 0, Backstop 0, Defer 0; не выбран 21: module-declaration/README модулей описывают зависимости для отбора тестов, test-impact-selection/План изменения учитывает рабочее состояние каждого репозитория, test-impact-selection/План коммита сравнивает его с одним родителем, test-impact-selection/План включает проверки затронутых модулей и потребителей, test-impact-selection/План показывает область и причины выбора, test-run-execution/Проверки доступны отдельными командами, test-run-execution/Браузерная группа ядра запускается отдельно с двумя воркерами, test-run-execution/План выполняется последовательно и останавливается на первой ошибке, test-run-execution/Невыполненные проверки видны в результате, test-run-execution/Адресный и полный прогоны применяются на разных этапах, test-run-execution/Эффект адресного запуска проверяется сравнительным замером"
+   "text": "проба краёв: кандидатов 3, Specify 1, Dismiss 2, Backstop 0, Defer 0; не выбран 21: module-declaration/README модулей описывают зависимости для отбора тестов, test-impact-selection/План изменения учитывает рабочее состояние каждого репозитория, test-impact-selection/План коммита сравнивает его с одним родителем, test-impact-selection/План включает проверки затронутых модулей и потребителей, test-impact-selection/План показывает область и причины выбора, test-run-execution/Проверки доступны отдельными командами, test-run-execution/Браузерная группа ядра запускается отдельно с двумя воркерами, test-run-execution/План выполняется последовательно и останавливается на первой ошибке, test-run-execution/Невыполненные проверки видны в результате, test-run-execution/Адресный и полный прогоны применяются на разных этапах, test-run-execution/Эффект адресного запуска проверяется сравнительным замером"
   },
   {
    "date": "2026-11-13",
-   "text": "проба запретов: требований 11, оставлено 1 (F-18 открыт), канон → ИБ 1 (F-19), Specify 0, Dismiss 0, Defer 0"
+   "text": "проба запретов: требований 12, оставлено 1, канон → ИБ 1 (F-19), Specify 1, Dismiss 0, Defer 0"
   }
  ]
 };
@@ -2035,7 +2074,7 @@ const SCHEME = {
 };
 const HELP = {
  "contract": 6,
- "taken_at": "2026-11-13T19:52:52+03:00",
+ "taken_at": "2026-11-13T20:05:53+03:00",
  "versions": {
   "openspec": "1.16.1+symphysis.6",
   "symphysis": "0.1.0+f7b6ca25"
@@ -2043,12 +2082,12 @@ const HELP = {
  "change": "test-run-optimization",
  "changes": null,
  "error": null,
- "current_step": "viewer",
- "current_text": "Следующий шаг по файлам — `viewer`, ход человека: открытых развилок 4, решаются на странице журнала. После них по файлам идёт `consequences`.",
- "turn": "human",
+ "current_step": "consequences",
+ "current_text": "Следующий шаг по файлам — `consequences`, ход модели.",
+ "turn": "model",
  "next_by_status": "consequences",
  "forks": {
-  "open": 4,
+  "open": 0,
   "parked": 0
  },
  "tasks": {
@@ -2128,7 +2167,7 @@ const HELP = {
   },
   {
    "id": "viewer",
-   "state": "ready",
+   "state": "idle",
    "turn": "human",
    "optional": false,
    "blocks": [],
