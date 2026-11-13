@@ -14,7 +14,7 @@ from dataclasses import asdict, dataclass, replace
 from pathlib import Path
 from xml.etree import ElementTree
 
-from test_runs import (
+from run_tests import (
     CORE, GROUPS, GROUP_REPOSITORY, VSCODE, VSCODE_REAL_CORE, VSCODE_SCRIPTS,
     Group, Plan, PlanError, Selection, _repository, confined, git, revision, worktree,
 )

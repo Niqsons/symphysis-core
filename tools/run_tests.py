@@ -313,7 +313,7 @@ def _scope(path: str, prefixes: tuple[str, ...]) -> bool:
 
 
 PYTEST_CONFIG = ("pytest.ini", "tests/conftest.py", "tools/journal-roots.json")
-CORE_CONFIG = ("requirements-dev.txt", ".gitattributes", ".gitignore", "tools/test_runs.py", "tools/test_run_execution.py")
+CORE_CONFIG = ("requirements-dev.txt", ".gitattributes", ".gitignore", "tools/run_tests.py", "tools/run_execution.py")
 VSCODE_CONFIG = ("package.json", "package-lock.json", "build.mjs", "tsconfig.json", ".vscodeignore", ".gitignore",
                  "test/worktree-paths.mjs", "test/e2e/paths.mjs")
 CORE_COMMON = {
@@ -693,7 +693,7 @@ def format_plan(result: Plan) -> str:
 
 
 def main(argv=None) -> int:
-    from test_run_execution import execute, full_plan
+    from run_execution import execute, full_plan
 
     parser = argparse.ArgumentParser(description=__doc__, allow_abbrev=False)
     commands = parser.add_subparsers(dest="action", required=True)
@@ -733,5 +733,5 @@ def main(argv=None) -> int:
 
 
 if __name__ == "__main__":
-    sys.modules["test_runs"] = sys.modules[__name__]
+    sys.modules["run_tests"] = sys.modules[__name__]
     raise SystemExit(main())

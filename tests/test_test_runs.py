@@ -7,13 +7,13 @@ from pathlib import Path
 import pytest
 
 ROOT = Path(__file__).resolve().parents[1]
-TOOL = ROOT / "tools" / "test_runs.py"
+TOOL = ROOT / "tools" / "run_tests.py"
 
 
 def tool():
-    spec = importlib.util.spec_from_file_location("test_runs", TOOL)
+    spec = importlib.util.spec_from_file_location("run_tests", TOOL)
     if spec is None or not TOOL.is_file():
-        pytest.fail("нет точки входа tools/test_runs.py")
+        pytest.fail("нет точки входа tools/run_tests.py")
     entry = importlib.util.module_from_spec(spec)
     sys.modules[spec.name] = entry
     spec.loader.exec_module(entry)

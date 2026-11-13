@@ -232,7 +232,7 @@ def test_selected_vscode_input_gone_after_planning_is_incomplete(execution_trees
     (plugin / "src/a/test/two.test.ts").unlink()
     sys.path.insert(0, str(TOOL.parent))
     try:
-        from test_run_execution import execute
+        from run_execution import execute
 
         summary = core.parent / "report.json"
         assert execute(planned, summary) == 2

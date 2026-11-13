@@ -134,7 +134,7 @@ npm --prefix installer test
 каждого дерева, правки которого нужно учесть:
 
 ```powershell
-python -X utf8 tools/test_runs.py plan change --core-root X:/core-worktree --core-base main --vscode-root X:/vscode-worktree --vscode-base main
+python -X utf8 tools/run_tests.py plan change --core-root X:/core-worktree --core-base main --vscode-root X:/vscode-worktree --vscode-base main
 ```
 
 Для одного коммита используй `plan commit` и `--core-commit` либо
