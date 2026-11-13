@@ -1063,12 +1063,72 @@
    "nodes": [
     "RESULT"
    ]
+  },
+  {
+   "id": "F-14",
+   "question": "С каким числом воркеров запускать отдельную группу браузерных тестов?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-11"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Запускать отдельную группу браузерных тестов с двумя воркерами xdist (`-n 2`).",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/changes/test-run-optimization/research/F-11.md",
+       "quote": "Два воркера сократили время относительно последовательного pytest на 39,8% и потребовали в среднем на 28,757 с больше двенадцати."
+      },
+      {
+       "path": "openspec/changes/test-run-optimization/research/F-11-probe/summary.log",
+       "quote": "05-n2: cleanup=passed cleanup_s=3.422 peak_chrome=75 peak_node=7 peak_python=5 samples=29 available_ram_kib=27473984"
+      },
+      {
+       "path": "openspec/changes/test-run-optimization/research/F-11-probe/summary.log",
+       "quote": "03-n12: cleanup=passed cleanup_s=14.481 peak_chrome=304 peak_node=16 peak_python=25 samples=20 available_ram_kib=27632072"
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "На одинаковом наборе два воркера дали среднее 99 с вместо 164 с в последовательном режиме. Наблюдаемый пик процессов Chrome был ниже, чем при 12 воркерах."
+   },
+   "decision": {
+    "option": "A",
+    "word": "зафиксируем `-n 2` для отдельного прогона браузерных тестов",
+    "date": "2026-11-13"
+   },
+   "reversibility": {
+    "level": "обратимо",
+    "why": "Число воркеров задаётся отдельному прогону. При изменении лимита можно повторить замер на том же наборе, сохранив тесты и остальные команды."
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [],
+   "comments": [],
+   "nodes": [
+    "BROWSER"
+   ]
   }
  ],
  "notes": [
   {
    "date": "2026-11-13",
    "text": "круг 1 закончен: решений 8, фактов 5, открытых развилок 0, парковок агенту 1, антиподов 1"
+  },
+  {
+   "date": "2026-11-13",
+   "text": "круг 2 закончен: решений 1, фактов 0, открытых развилок 0, парковок агенту 0, антиподов 0"
   }
  ]
 }
