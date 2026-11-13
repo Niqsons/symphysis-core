@@ -1,6 +1,11 @@
 ---
 name: viewer
 kind: доменный
+dependencies:
+  - repo: symphysis-core
+    module: decisions
+  - repo: symphysis-core
+    module: runtime
 ---
 
 # viewer

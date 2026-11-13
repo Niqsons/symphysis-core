@@ -1,6 +1,9 @@
 ---
 name: roots
 kind: технический
+dependencies:
+  - repo: symphysis-core
+    module: runtime
 ---
 
 # roots

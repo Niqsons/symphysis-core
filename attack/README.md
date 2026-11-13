@@ -1,6 +1,9 @@
 ---
 name: attack
 kind: доменный
+dependencies:
+  - repo: symphysis-core
+    module: decisions
 ---
 
 # attack
