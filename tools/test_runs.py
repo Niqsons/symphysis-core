@@ -11,7 +11,7 @@ from dataclasses import dataclass
 from pathlib import Path, PurePosixPath, PureWindowsPath
 
 ROOT = Path(__file__).resolve().parents[1]
-sys.path[:0] = [str(ROOT / "trace"), str(ROOT / "roots"), str(ROOT / "runtime")]
+sys.path[:0] = [str(ROOT / name) for name in ("tools", "trace", "roots", "runtime")]
 from trace_modules import DeclarationError, module, owner, read_declaration
 
 CORE = "symphysis-core"
@@ -312,9 +312,10 @@ def _scope(path: str, prefixes: tuple[str, ...]) -> bool:
     return any(path == prefix or path.startswith(prefix + "/") for prefix in prefixes)
 
 
-PYTEST_CONFIG = ("pytest.ini", "tests/conftest.py")
-CORE_CONFIG = ("requirements-dev.txt", ".gitattributes", ".gitignore", "tools/test_runs.py")
-VSCODE_CONFIG = ("package.json", "package-lock.json", "build.mjs", "tsconfig.json", ".vscodeignore", ".gitignore")
+PYTEST_CONFIG = ("pytest.ini", "tests/conftest.py", "tools/journal-roots.json")
+CORE_CONFIG = ("requirements-dev.txt", ".gitattributes", ".gitignore", "tools/test_runs.py", "tools/test_run_execution.py")
+VSCODE_CONFIG = ("package.json", "package-lock.json", "build.mjs", "tsconfig.json", ".vscodeignore", ".gitignore",
+                 "test/worktree-paths.mjs", "test/e2e/paths.mjs")
 CORE_COMMON = {
     "anchors/anchor_refs.py": ("trace/tests/test_trace_snapshot.py", "runtime/tests/test_runtime_context.py"),
     "anchors/sync_check.py": ("runtime/tests/test_runtime_context.py",),
@@ -357,7 +358,7 @@ VSCODE_E2E = {
     "test/e2e/activation.mjs": "e2e:activation", "test/e2e/activation-scenario.ts": "e2e:activation",
     "test/e2e/hook-clients.mjs": "e2e:hook",
 }
-VSCODE_SCRIPTS = tuple(sorted(set(VSCODE_E2E.values())))
+VSCODE_SCRIPTS = tuple(sorted(set(VSCODE_E2E.values()) - {"e2e:hook"}))
 # Этот e2e проверяет активацию в настоящем VS Code, автоустановку хука,
 # палитру справки и обновление при смене состава workspace.
 ACTIVATION_INPUTS = (
@@ -526,6 +527,10 @@ def _path_rules(selection, repo, path, change, active, item):
         return True
     if path.startswith("test/e2e/"):
         scripts = tuple(sorted({name for prefix, name in VSCODE_E2E.items() if _scope(path, (prefix,))}))
+        if scripts == ("e2e:hook",):
+            selection.incomplete = True
+            selection.diagnostics.add(f"{source}: нужна ручная проверка npm run e2e:hook")
+            return True
         if not scripts:
             scripts = VSCODE_SCRIPTS
         selection.add("vscode", f"{source}: сквозная проверка", scripts=scripts)
@@ -688,32 +693,45 @@ def format_plan(result: Plan) -> str:
 
 
 def main(argv=None) -> int:
+    from test_run_execution import execute, full_plan
+
     parser = argparse.ArgumentParser(description=__doc__, allow_abbrev=False)
     commands = parser.add_subparsers(dest="action", required=True)
-    modes = commands.add_parser("plan", help="показать план, не запуская тесты").add_subparsers(dest="mode", required=True)
-    for name, suffix in (("change", "base"), ("commit", "commit")):
-        command = modes.add_parser(name, allow_abbrev=False)
-        for short in ("core", "vscode"):
-            command.add_argument(f"--{short}-root", type=Path,
-                                 help="корень Git, без ревизии — стенд с текущими декларациями")
-            command.add_argument(f"--{short}-{suffix}", dest=f"{short}_ref")
-            if name == "commit":
-                command.add_argument(f"--{short}-parent")
+    for action, help_text in (("plan", "показать план"), ("run", "выполнить план последовательно")):
+        modes = commands.add_parser(action, help=help_text).add_subparsers(dest="mode", required=True)
+        for name, suffix in (("change", "base"), ("commit", "commit"), ("full", None)):
+            command = modes.add_parser(name, allow_abbrev=False)
+            for short in ("core", "vscode"):
+                command.add_argument(f"--{short}-root", type=Path,
+                                     help="корень Git, без ревизии — стенд с текущими декларациями")
+                if suffix:
+                    command.add_argument(f"--{short}-{suffix}", dest=f"{short}_ref")
+                if name == "commit":
+                    command.add_argument(f"--{short}-parent")
+            if name == "full":
+                command.add_argument("--release", action="store_true", help="для выпуска VS Code нужен main ядра")
+            if action == "run":
+                command.add_argument("--summary", type=Path, help="записать переносимую сводку в новый JSON")
+                command.add_argument("--log-dir", type=Path,
+                                     help="сохранить сырой локальный вывод и JUnit в новый каталог")
     args = parser.parse_args(argv)
     inputs = []
     for short, name in (("core", CORE), ("vscode", VSCODE)):
         root = getattr(args, f"{short}_root")
-        ref = getattr(args, f"{short}_ref")
+        ref = getattr(args, f"{short}_ref", None)
         parent = getattr(args, f"{short}_parent", None)
         if root is None:
             if ref is not None or parent is not None:
                 parser.error(f"Для ревизии нужен --{short}-root")
         else:
             inputs.append(Repository(name, root, ref, parent))
-    result = plan(args.mode, inputs)
-    print(format_plan(result))
+    result = full_plan(inputs, args.release) if args.mode == "full" else plan(args.mode, inputs)
+    print(format_plan(result), flush=True)
+    if args.action == "run":
+        return execute(result, args.summary, args.log_dir)
     return int(result.status == "incomplete")
 
 
 if __name__ == "__main__":
+    sys.modules["test_runs"] = sys.modules[__name__]
     raise SystemExit(main())

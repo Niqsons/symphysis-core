@@ -158,6 +158,29 @@ export function removeTree(dir) {
   fs.rmdirSync(dir);
 }
 
+/** Не читать и не пересоздавать payload через ссылку или junction. */
+function checkPayloadDestination(dest) {
+  const target = path.resolve(dest);
+  let current = target;
+  while (true) {
+    if (fs.lstatSync(current, { throwIfNoEntry: false })?.isSymbolicLink())
+      throw new Error(`ссылка в пути payload: ${current}`);
+    const parent = path.dirname(current);
+    if (parent === current) break;
+    current = parent;
+  }
+  if (!fs.existsSync(target)) return;
+  const pending = [target];
+  while (pending.length) {
+    const dir = pending.pop();
+    for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+      const file = path.join(dir, entry.name);
+      if (entry.isSymbolicLink()) throw new Error(`ссылка внутри payload: ${file}`);
+      if (entry.isDirectory()) pending.push(file);
+    }
+  }
+}
+
 /**
  * Есть ли рядом исходники: инсталлятор запущен из клона, а не из тарбола. Клон узнаётся по модульной раскладке —
  * скиллы в `<модуль>/skills/`, код и общие файлы скиллов в модулях (F-60); каталога `skills/` в клоне нет.
@@ -200,6 +223,7 @@ export function expectedPayload(root = ROOT) {
 
 /** Совпадает ли dest с исходниками побайтно: тот же состав файлов и те же байты. */
 export function payloadMatches(dest = DEFAULT_DEST, root = ROOT) {
+  checkPayloadDestination(dest);
   if (!fs.existsSync(dest)) return false;
   const expected = expectedPayload(root);
   if (walk(dest).length !== expected.size) return false;

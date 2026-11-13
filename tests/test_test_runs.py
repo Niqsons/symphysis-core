@@ -376,7 +376,7 @@ def test_vscode_fallback_keeps_core_as_stand_and_adds_real_e2e(tmp_path, path):
     picked = groups(result)
     assert set(picked) == {"vscode"}
     assert picked["vscode"].full
-    assert picked["vscode"].scripts == ("e2e", "e2e:activation", "e2e:graph", "e2e:hook", "e2e:reload", "e2e:vsix")
+    assert picked["vscode"].scripts == ("e2e", "e2e:activation", "e2e:graph", "e2e:reload", "e2e:vsix")
 
 
 def test_journal_render_cli_selects_live_browser_checks(tmp_path):
