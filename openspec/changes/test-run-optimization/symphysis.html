@@ -236,15 +236,15 @@
 const JOURNAL = {
  "title": "Журнал решений: Оптимизация тестов и тестовых прогонов",
  "source": "decisions.json",
- "sha256": "b7279e948b6edc8e55bb4bdbb8d9eadbe62b8ca222820d839e3efdd93b32c982",
+ "sha256": "8133afd4b6abdf87ff6216fb1aa9d4f11b4261594fb35a46430e45a68572200b",
  "stats": {
-  "records": 19,
-  "forks": 13,
+  "records": 23,
+  "forks": 17,
   "facts": 6,
   "decided": 13,
   "parked": 1,
-  "evidence_total": 119,
-  "evidence_found": 119
+  "evidence_total": 123,
+  "evidence_found": 123
  },
  "records": [
   {
@@ -2043,6 +2043,260 @@ const JOURNAL = {
    ],
    "comments": [],
    "finding": ""
+  },
+  {
+   "id": "F-20",
+   "question": "[ветка] Разбор README: модуль с ошибочным форматом dependencies исчезает из карты. Как строить план, если потерян потребитель, а путь правки известен?",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN у известного модуля неверный формат dependencies и его декларация выпала из обнаружения WHEN строится план для затронутой области THEN команда указывает повреждённый README и расширяет применимый набор, если из-за пропуска нельзя подтвердить полноту. Цена — сценарий и фикстура с повреждённым README.",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — использовать неполный граф с диагностикой повреждённого README. Точность адресного плана в таком состоянии зависит от исправления декларации разработчиком.",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — фикстура с повреждённым README потребителя проверяет, что вывод не называет адресный выбор полным. Способ продолжения остаётся за дизайном.",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — оставить исход повреждённой декларации открытым до выбора интерфейса чтения модульной карты.",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "При разборе теряется целый модуль. Правка в другом известном модуле может оставить его потребителя за пределами зелёного прогона. Цена — сценарий и фикстура повреждённой декларации. Это отдельная ветка от разрешения цели корректной записи."
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "trace/trace_modules.py",
+     "quote": "raise DeclarationError('негодный список dependencies')",
+     "line": 100,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "finding": ""
+  },
+  {
+   "id": "F-21",
+   "question": "[ветка] Таймаут браузерного драйвера: что проверять после того, как ожидание Node истекло до удаления Chrome и его профиля?",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-11",
+    "F-13"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN драйвер не завершился до таймаута WHEN браузерная группа завершается THEN прогон сообщает о таймауте и о результате очистки процессов и профиля этого запуска. Цена — сценарий, управляемая фикстура зависшего драйвера и сопровождение проверки на Windows.",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — оставить ошибку pytest при таймауте и существующую проверку очистки на обычном завершении. Разбор временных процессов после таймаута остаётся ручным.",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — тест с коротким управляемым таймаутом проверяет, что после отказа не остались процессы и профиль пробы. Способ передачи результата в отчёте остаётся в design.",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — отложить выбор проверки до воспроизведения таймаута драйвера в отдельной браузерной группе.",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Код очистки живёт внутри Node. Если внешний таймаут прерывает драйвер раньше, следующий прогон может унаследовать нагрузку от Chrome и занятые профили. Цена — сценарий и управляемая проба таймаута."
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "viewer/tests/test_viewer_browser.py",
+     "quote": "capture_output=True, text=True, encoding=\"utf-8\", timeout=120)",
+     "line": 66,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "finding": ""
+  },
+  {
+   "id": "F-22",
+   "question": "[pre-mortem] После разделения pytest на обычный и браузерный прогоны один тест проходит проверку testpaths, но фильтры исключают его из обоих запусков",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-06",
+    "F-11",
+    "F-13",
+    "F-14"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN полный набор pytest разделён на обычную и браузерную группы WHEN проверяется состав полного прогона THEN каждый ожидаемый тест ядра входит ровно в одну из групп. Цена — сценарий и проверка состава коллекции.",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — ограничиться существующей проверкой testpaths и сравнительными прогонами на выбранных примерах. При изменении фильтров состав групп сверяется при ревью.",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — сравнить идентификаторы собранных тестов обычной и браузерной команд с полной коллекцией pytest ядра после отделения инсталлятора. Пересечение пустое, объединение равно полной коллекции. Строки спеки не меняются.",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — сверить разбиение после определения параметров штатных команд в design.",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "C",
+    "why": "Обе команды могут завершиться зелёным, а проверка путей не увидит отфильтрованный тест. Точная сверка коллекций обнаруживает потерю и двойной запуск без привязки спеки к маркерам pytest."
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "tests/test_pytest_testpaths.py",
+     "quote": "assert strays(ROOT / \"pytest.ini\", files) == []",
+     "line": 39,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "finding": ""
+  },
+  {
+   "id": "F-23",
+   "question": "[ветка] Сборка VS Code пропускает отсутствующий каталог: как сообщить, что уже выбранная группа тестов исчезла перед сборкой, если другие группы прошли?",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-07"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN план содержит две группы VS Code и вход выбранной группы исчез до сборки WHEN команда выполняет план THEN итог называет пропущенную группу и считает прогон незавершённым даже при зелёной второй группе. Цена — сценарий и тест с исчезнувшим входом.",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — оставить общую проверку недоступной обязательной группы. Для исчезнувшего каталога достаточно обычного вывода сборки и ревью плана.",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — фикстура с двумя выбранными группами удаляет каталог одной из них после планирования и проверяет, что итог не зелёный. Представление неполного результата остаётся в design.",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — определить способ сверки плана с входами после выбора интерфейса сборки VS Code.",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Сборка отфильтровывает отсутствующие каталоги до списка входов. Остальные тесты могут пройти и скрыть выпадение уже выбранной группы. Цена — один сценарий и фикстура с исчезнувшим входом."
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "vscode/build.mjs",
+     "quote": "for (const dir of [\"test/unit\", ...modules].filter((d) => fs.existsSync(d))) {",
+     "line": 26,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "finding": ""
   }
  ],
  "notes": [
@@ -2074,7 +2328,7 @@ const SCHEME = {
 };
 const HELP = {
  "contract": 6,
- "taken_at": "2026-11-13T20:05:53+03:00",
+ "taken_at": "2026-11-13T20:14:17+03:00",
  "versions": {
   "openspec": "1.16.1+symphysis.6",
   "symphysis": "0.1.0+f7b6ca25"
@@ -2082,12 +2336,12 @@ const HELP = {
  "change": "test-run-optimization",
  "changes": null,
  "error": null,
- "current_step": "consequences",
- "current_text": "Следующий шаг по файлам — `consequences`, ход модели.",
- "turn": "model",
- "next_by_status": "consequences",
+ "current_step": "viewer",
+ "current_text": "Следующий шаг по файлам — `viewer`, ход человека: открытых развилок 4, решаются на странице журнала. После них по файлам идёт `design`.",
+ "turn": "human",
+ "next_by_status": "design",
  "forks": {
-  "open": 0,
+  "open": 4,
   "parked": 0
  },
  "tasks": {
@@ -2167,7 +2421,7 @@ const HELP = {
   },
   {
    "id": "viewer",
-   "state": "idle",
+   "state": "ready",
    "turn": "human",
    "optional": false,
    "blocks": [],
@@ -2360,7 +2614,7 @@ const HELP = {
   },
   {
    "id": "consequences",
-   "state": "ready",
+   "state": "done",
    "turn": "model",
    "optional": false,
    "blocks": [
@@ -2371,10 +2625,10 @@ const HELP = {
    "files": [
     {
      "path": "openspec/changes/test-run-optimization/consequences.md",
-     "exists": false
+     "exists": true
     }
    ],
-   "file_note": null,
+   "file_note": "файл есть, содержание не проверялось",
    "texts": {
     "title": "Опись последствий",
     "why": "Что делает код, на который опирается изменение, когда что-то идёт не так, и есть ли на это сценарий в спецификациях. Здесь ветки отказа и допущения конструкции доходят до человека раньше, чем появится дизайн.",
@@ -2397,7 +2651,7 @@ const HELP = {
   },
   {
    "id": "design",
-   "state": "blocked",
+   "state": "ready",
    "turn": "model",
    "optional": false,
    "blocks": [
@@ -2405,9 +2659,7 @@ const HELP = {
     "attack-artifacts"
    ],
    "stops_apply": false,
-   "waits_for": [
-    "consequences"
-   ],
+   "waits_for": [],
    "files": [
     {
      "path": "openspec/changes/test-run-optimization/design.md",
@@ -2616,10 +2868,12 @@ const HELP = {
   ".claude/skills/symphysis-prohibition-probe/SKILL.md": ".claude/skills/symphysis-prohibition-probe/SKILL.md",
   ".claude/skills/symphysis-research/SKILL.md": ".claude/skills/symphysis-research/SKILL.md",
   ".claude/skills/symphysis-viewer/SKILL.md": ".claude/skills/symphysis-viewer/SKILL.md",
+  "consequences.md": "openspec/changes/test-run-optimization/consequences.md",
   "decisions.json": "openspec/changes/test-run-optimization/decisions.json",
   "decisions.md": "openspec/changes/test-run-optimization/decisions.md",
   "edge-probe.md": "openspec/changes/test-run-optimization/edge-probe.md",
   "intent.md": "openspec/changes/test-run-optimization/intent.md",
+  "openspec/changes/test-run-optimization/consequences.md": "openspec/changes/test-run-optimization/consequences.md",
   "openspec/changes/test-run-optimization/decisions.json": "openspec/changes/test-run-optimization/decisions.json",
   "openspec/changes/test-run-optimization/intent.md": "openspec/changes/test-run-optimization/intent.md",
   "openspec/changes/test-run-optimization/proposal.md": "openspec/changes/test-run-optimization/proposal.md",
@@ -2645,6 +2899,7 @@ const LINKS = {
   ".claude/skills/symphysis-research/SKILL.md": "../../../.claude/skills/symphysis-research/SKILL.md",
   ".claude/skills/symphysis-viewer/SKILL.md": "../../../.claude/skills/symphysis-viewer/SKILL.md",
   "backlog/symphysis-backlog.md": "../../../../symphysis/.context/backlog/symphysis-backlog.md",
+  "consequences.md": "consequences.md",
   "context/04-workflow.md": "../../../../symphysis/.context/04-workflow.md",
   "decisions.json": "decisions.json",
   "decisions.md": "decisions.md",
@@ -2653,6 +2908,7 @@ const LINKS = {
   "installer/package.json": "../../../installer/package.json",
   "installer/test/test_installer.py": "../../../installer/test/test_installer.py",
   "intent.md": "intent.md",
+  "openspec/changes/test-run-optimization/consequences.md": "consequences.md",
   "openspec/changes/test-run-optimization/decisions.json": "decisions.json",
   "openspec/changes/test-run-optimization/intent.md": "intent.md",
   "openspec/changes/test-run-optimization/proposal.md": "proposal.md",
@@ -2670,6 +2926,7 @@ const LINKS = {
   "symphysis.yaml": "../../../symphysis.yaml",
   "tests/test_pytest_testpaths.py": "../../../tests/test_pytest_testpaths.py",
   "trace/README.md": "../../../trace/README.md",
+  "trace/trace_modules.py": "../../../trace/trace_modules.py",
   "viewer/README.md": "../../../viewer/README.md",
   "viewer/tests/test_viewer_browser.py": "../../../viewer/tests/test_viewer_browser.py",
   "viewer/viewer_render.py": "../../../viewer/viewer_render.py",
