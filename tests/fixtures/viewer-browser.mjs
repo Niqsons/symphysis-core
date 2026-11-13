@@ -15,6 +15,9 @@ import { pathToFileURL } from "node:url";
 import { removeTree } from "../../installer/scripts/sync-payload.js";
 
 const [chrome, page, width, height, ...actions] = process.argv.slice(2);
+// Python освобождает запуск после присоединения драйвера к Job Object.
+const managed = process.env.SYMPHYSIS_BROWSER_WAIT === "1";
+if (managed && !readFileSync(0).length) process.exit(1);
 const [w, h] = [Number(width), Number(height)];
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 const profile = mkdtempSync(join(tmpdir(), "symphysis-viewer-"));
@@ -305,7 +308,7 @@ try {
 } finally {
   if (closeBrowser) await closeBrowser().catch(() => {});
   await Promise.race([exited, sleep(3000)]);
-  if (proc.exitCode === null && proc.signalCode === null) {
+  if (proc.exitCode === null && proc.signalCode === null && !(process.platform === "win32" && managed)) {
     if (process.platform === "win32") {
       // A killed parent leaves Chromium children holding files. Terminate only
       // this still-live child tree before attempting recursive profile cleanup.
@@ -314,6 +317,9 @@ try {
     } else proc.kill();
     await Promise.race([exited, sleep(3000)]);
   }
-  if (!(await removeProfile())) code = 1;
+  // Потомок Chrome может удерживать профиль после выхода главного процесса.
+  // Под Job Python удаляет профиль после подтверждения выхода всей группы.
+  const cleanupDelegated = process.platform === "win32" && managed;
+  if (!cleanupDelegated && !(await removeProfile())) code = 1;
 }
 process.exit(code);

@@ -105,8 +105,11 @@ Known legacy inventory — фиксированные хеши прежних п
 scripts/build-legacy-inventory.js проверяет их по whitelisted git blobs без checkout.
 Сами личные карты и настройки в inventory не входят.
 
-Основной гейт — python -X utf8 -m pytest (xdist); wrapper installer/test/test_installer.py
-выполняет Node-набор. Реальные native/IDE сессии принимаются отдельно от parser/unit tests.
+Node-набор инсталлятора запускается отдельно командой `npm --prefix installer test`.
+Перед запуском активируй ту же среду Python, из которой запускаешь pytest ядра.
+`python` в PATH этой сессии должен указывать на выбранный интерпретатор.
+Проверка — `python -c "import sys, yaml; print(sys.executable)"`.
+Реальные native/IDE сессии принимаются отдельно от parser/unit tests.
 Тестовые profiles, cache и logs задаются изолированными каталогами.
 
 ## Каталоги пакета

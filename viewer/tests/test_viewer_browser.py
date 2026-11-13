@@ -7,6 +7,7 @@ import socket
 import subprocess
 import sys
 import time
+from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 from urllib.parse import quote
 
@@ -15,10 +16,12 @@ import pytest
 # conftest — первым: он ставит каталоги модулей в sys.path и при запуске одного файла (pytest.ini, pythonpath)
 from conftest import (ALL_STEPS, FIX, FORK_VERSION, ROOT, fake_apply, fake_status, fork_env, fork_record, fork_reply,
                       install_fork_shim, journal_of, one_record_journal, steps_text)
+from browser_driver import run_browser_driver
 import journal
 
 MERMAID = ROOT / "installer" / "node_modules" / "mermaid" / "dist" / "mermaid.min.js"
 DRIVER = FIX / "viewer-browser.mjs"
+BROWSER_TIMEOUT = 120
 WIDE = (FIX / "scheme" / "wide.md").read_text(encoding="utf-8")
 SIMPLE = "# Схема\n\n```mermaid\nflowchart TD\n  A[начало] --> B[конец]\n```\n"
 node = shutil.which("node")
@@ -27,7 +30,6 @@ node = shutil.which("node")
 def find_chrome():
     named = os.environ.get("SYMPHYSIS_CHROME")
     if named:
-        assert Path(named).is_file(), f"SYMPHYSIS_CHROME={named}: файла нет"
         return named
     for path in (r"C:\Program Files\Google\Chrome\Application\chrome.exe", r"C:\Program Files (x86)\Google\Chrome\Application\chrome.exe"):
         if Path(path).is_file():
@@ -36,7 +38,8 @@ def find_chrome():
 
 
 chrome = find_chrome()
-pytestmark = [pytest.mark.skipif(node is None, reason="нет node: драйвер браузера не запустить"),
+pytestmark = [pytest.mark.browser,
+              pytest.mark.skipif(node is None, reason="нет node: драйвер браузера не запустить"),
               pytest.mark.skipif(chrome is None, reason="нет Chrome; путь задаётся SYMPHYSIS_CHROME"),
               pytest.mark.skipif(not MERMAID.is_file(), reason="нет файла mermaid: npm ci в installer")]
 
@@ -61,11 +64,10 @@ def page(tmp_path, scheme=SIMPLE, with_mermaid=True, j=None, env=None):
     return out
 
 
-def browser(html, *actions, size=(1400, 900)):
-    run = subprocess.run([node, str(DRIVER), chrome, str(html), str(size[0]), str(size[1]), *actions],
-                         capture_output=True, text=True, encoding="utf-8", timeout=120)
-    assert run.returncode == 0, run.stderr
-    return json.loads(run.stdout)
+def browser(html, *actions, size=(1400, 900), temp_dir=None):
+    assert Path(chrome).is_file(), f"SYMPHYSIS_CHROME={chrome}: файла нет"
+    args = [node, str(DRIVER), chrome, str(html), str(size[0]), str(size[1]), *actions]
+    return json.loads(run_browser_driver(args, timeout=BROWSER_TIMEOUT, temp_dir=temp_dir))
 
 
 def test_driver_removes_its_profile_under_load(tmp_path):
@@ -73,12 +75,10 @@ def test_driver_removes_its_profile_under_load(tmp_path):
     html = page(tmp_path)
     temp = tmp_path / "temp"
     temp.mkdir()
-    env = {**os.environ, "TEMP": str(temp), "TMP": str(temp), "TMPDIR": str(temp)}
-    runs = [subprocess.Popen([node, str(DRIVER), chrome, str(html), "1400", "900"], stdout=subprocess.DEVNULL, stderr=subprocess.PIPE,
-                             text=True, encoding="utf-8", env=env) for _ in range(6)]
-    errors = [run.communicate(timeout=120)[1] for run in runs]
-    assert [run.returncode for run in runs] == [0] * 6, errors
-    assert [p.name for p in temp.glob("symphysis-viewer-*")] == []
+    with ThreadPoolExecutor(max_workers=6) as pool:
+        runs = [pool.submit(browser, html, temp_dir=temp) for _ in range(6)]
+        assert all(run.result() for run in runs)
+    assert list(temp.iterdir()) == []
 
 
 def test_panel_is_off_on_first_open_and_cards_take_the_width(tmp_path):
