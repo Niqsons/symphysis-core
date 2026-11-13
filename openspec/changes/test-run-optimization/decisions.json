@@ -1,0 +1,960 @@
+{
+  "title": "Журнал решений: Оптимизация тестов и тестовых прогонов",
+  "source": "decisions.json",
+  "intro": "Первый круг. Пути без префикса идут от рабочего дерева ядра. `vscode/` указывает на VS Code, `context/` и `backlog/` — на локальные правила и бэклог, `skills-store/` — на сравнительный пример. План проверок относится к контуру разработки Symphysis.",
+  "records": [
+    {
+      "id": "F-01",
+      "question": "Критерий готовности: Без критериев готовности",
+      "kind": "факт",
+      "status": "решён",
+      "addressee": "постановка",
+      "depends_on": [],
+      "delivery": "",
+      "options": [],
+      "antipodes": [],
+      "recommendation": null,
+      "decision": null,
+      "reversibility": null,
+      "outcome": null,
+      "parking": [],
+      "dispute": "",
+      "consequences": "",
+      "evidence": [
+        {
+          "path": "openspec/changes/test-run-optimization/intent.md",
+          "quote": "Без критериев готовности"
+        }
+      ],
+      "comments": []
+    },
+    {
+      "id": "F-02",
+      "question": "Pytest запускает Node-набор инсталлятора из воркера xdist. Обёртка пересобирает payload и передаёт потомкам Python из среды pytest. У npm уже есть своя команда подготовки.",
+      "kind": "факт",
+      "status": "решён",
+      "addressee": "агент",
+      "depends_on": [],
+      "delivery": "",
+      "options": [],
+      "antipodes": [],
+      "recommendation": null,
+      "decision": null,
+      "reversibility": null,
+      "outcome": null,
+      "parking": [],
+      "dispute": "",
+      "consequences": "",
+      "evidence": [
+        {
+          "path": "pytest.ini",
+          "quote": "addopts = -n 12"
+        },
+        {
+          "path": "installer/test/test_installer.py",
+          "quote": "Единый гейт: Node-тесты инсталлятора запускаются из pytest."
+        },
+        {
+          "path": "installer/test/test_installer.py",
+          "quote": "str(Path(sys.executable).parent) + os.pathsep + os.environ.get(\"PATH\", \"\")"
+        },
+        {
+          "path": "installer/package.json",
+          "quote": "\"pretest\": \"node scripts/build-workflow-carriers.js && node scripts/sync-payload.js\""
+        }
+      ],
+      "comments": []
+    },
+    {
+      "id": "F-03",
+      "question": "У модулей есть каталоги тестов, а общие проверки лежат отдельно. У `viewer` есть импорт из `decisions`, которого нет в декларации `viewer`. Сборка VS Code кладёт модульные и общие тесты в общий каталог.",
+      "kind": "факт",
+      "status": "решён",
+      "addressee": "агент",
+      "depends_on": [],
+      "delivery": "",
+      "options": [],
+      "antipodes": [],
+      "recommendation": null,
+      "decision": null,
+      "reversibility": null,
+      "outcome": null,
+      "parking": [],
+      "dispute": "",
+      "consequences": "",
+      "evidence": [
+        {
+          "path": "pytest.ini",
+          "quote": "и сквозные проверки (справка всех входов, канон скиллов и водителей, хуки, документы контура разработки)."
+        },
+        {
+          "path": "viewer/README.md",
+          "quote": "name: viewer"
+        },
+        {
+          "path": "viewer/viewer_render.py",
+          "quote": "from journal_render import CONTRACT, _viewer_payload"
+        },
+        {
+          "path": "trace/README.md",
+          "quote": "dependencies:"
+        },
+        {
+          "path": "vscode/build.mjs",
+          "quote": "Юнит-тесты: тесты модуля — в `src/<модуль>/test/`, общие и сквозные для нескольких модулей — в `test/unit/`"
+        },
+        {
+          "path": "vscode/build.mjs",
+          "quote": "Собираются в один плоский `out/test/`"
+        }
+      ],
+      "comments": []
+    },
+    {
+      "id": "F-04",
+      "question": "Контрактная проверка живёт в плагине и использует реальное ядро. По умолчанию стенд берёт соседний клон. Выпускная проверка требует явно выбранного `main` ядра без пропусков.",
+      "kind": "факт",
+      "status": "решён",
+      "addressee": "агент",
+      "depends_on": [],
+      "delivery": "",
+      "options": [],
+      "antipodes": [],
+      "recommendation": null,
+      "decision": null,
+      "reversibility": null,
+      "outcome": null,
+      "parking": [],
+      "dispute": "",
+      "consequences": "",
+      "evidence": [
+        {
+          "path": "docs/repo-contract.md",
+          "quote": "Тест живёт в плагине: ядро плагин не читает."
+        },
+        {
+          "path": "vscode/test/core-files.mjs",
+          "quote": "export const coreRoot = (env, sibling) => env.SYMPHYSIS_ROOT || sibling;"
+        },
+        {
+          "path": "docs/repo-contract.md",
+          "quote": "Тесты плагина с `SYMPHYSIS_ROOT` на worktree `main` ядра проходят без пропусков."
+        }
+      ],
+      "comments": []
+    },
+    {
+      "id": "F-05",
+      "question": "В бэклоге зафиксированы плавающие падения браузерных тестов под `-n 12` и решение сделать исключение по типу теста. Один сценарий намеренно запускает шесть драйверов для проверки очистки профилей.",
+      "kind": "факт",
+      "status": "решён",
+      "addressee": "агент",
+      "depends_on": [],
+      "delivery": "",
+      "options": [],
+      "antipodes": [],
+      "recommendation": null,
+      "decision": null,
+      "reversibility": null,
+      "outcome": null,
+      "parking": [],
+      "dispute": "",
+      "consequences": "",
+      "evidence": [
+        {
+          "path": "backlog/symphysis-backlog.md",
+          "quote": "Под `-n 12` браузерные тесты страницы падают по одному и каждый раз разные, а отдельно проходят."
+        },
+        {
+          "path": "backlog/symphysis-backlog.md",
+          "quote": "гонять браузерные тесты под -n 12 не лучшая идея, придется делать исключение по типу теста."
+        },
+        {
+          "path": "viewer/tests/test_viewer_browser.py",
+          "quote": "text=True, encoding=\"utf-8\", env=env) for _ in range(6)]"
+        }
+      ],
+      "comments": []
+    },
+    {
+      "id": "F-06",
+      "question": "Как запускать три набора после разделения pytest и npm-тестов инсталлятора?",
+      "kind": "развилка",
+      "status": "открыт",
+      "addressee": "человек",
+      "depends_on": [],
+      "delivery": "",
+      "options": [
+        {
+          "letter": "A",
+          "text": "В первом этапе дать отдельные команды и описать порядок. Во втором дать команде выбора выполнить весь план последовательно: pytest ядра, инсталлятор при необходимости, затем плагин. Обычный прогон останавливается на первой ошибке. Для диагностики отдельную группу можно запустить напрямую. Цена — одна точка запуска должна корректно передавать коды возврата и среду, включая Python для npm.",
+          "added": false,
+          "unlikely": null,
+          "evidence": [
+            {
+              "path": "openspec/changes/test-run-optimization/intent.md",
+              "quote": "Затем добавить команду, которая показывает, какие тесты выбраны и почему, и умеет их запустить."
+            },
+            {
+              "path": "openspec/changes/test-run-optimization/intent.md",
+              "quote": "тесты ядра и плагина одна сессия в одно время не запускает: сначала ядро, потом плагин."
+            },
+            {
+              "path": "installer/test/test_installer.py",
+              "quote": "str(Path(sys.executable).parent) + os.pathsep + os.environ.get(\"PATH\", \"\")"
+            },
+            {
+              "path": "installer/package.json",
+              "quote": "\"pretest\": \"node scripts/build-workflow-carriers.js && node scripts/sync-payload.js\""
+            }
+          ]
+        },
+        {
+          "letter": "B",
+          "text": "В обоих этапах запускать команды по отдельности. Команда выбора показывает весь план и запускает только явно указанную группу. Порядок обеспечивает разработчик по инструкции. Меньше оркестрации, но агенту проще случайно наложить прогоны друг на друга.",
+          "added": false,
+          "unlikely": null,
+          "evidence": [
+            {
+              "path": "openspec/changes/test-run-optimization/intent.md",
+              "quote": "тесты ядра и плагина одна сессия в одно время не запускает: сначала ядро, потом плагин."
+            },
+            {
+              "path": "installer/package.json",
+              "quote": "\"pretest\": \"node scripts/build-workflow-carriers.js && node scripts/sync-payload.js\""
+            },
+            {
+              "path": "vscode/build.mjs",
+              "quote": "Юнит-тесты: тесты модуля — в `src/<модуль>/test/`, общие и сквозные для нескольких модулей — в `test/unit/`"
+            }
+          ]
+        },
+        {
+          "letter": "C",
+          "text": "Добавить общий локальный замок для запусков из разных сессий. Это ограничит суммарную нагрузку только для команд, которые пользуются замком. Понадобятся правила ожидания, отмены и очистки после сбоя.",
+          "added": false,
+          "unlikely": "В постановке указан порядок внутри одной сессии. Одновременные запуски независимых сессий пока не установлены как причина зависаний.",
+          "evidence": [
+            {
+              "path": "openspec/changes/test-run-optimization/intent.md",
+              "quote": "тесты ядра и плагина одна сессия в одно время не запускает: сначала ядро, потом плагин."
+            },
+            {
+              "path": "pytest.ini",
+              "quote": "addopts = -n 12"
+            }
+          ]
+        }
+      ],
+      "antipodes": [
+        {
+          "option": "A",
+          "other": "F-07.C"
+        }
+      ],
+      "recommendation": {
+        "option": "A",
+        "why": "Последовательное выполнение плана соблюдает порядок внутри сессии и оставляет прямой запуск каждой группы. Общий замок потребовал бы отдельной политики для других сессий."
+      },
+      "decision": null,
+      "reversibility": null,
+      "outcome": null,
+      "parking": [],
+      "dispute": "",
+      "consequences": "",
+      "evidence": [],
+      "comments": [],
+      "nodes": [
+        "CORE",
+        "INSTALLER",
+        "PLUGIN"
+      ]
+    },
+    {
+      "id": "F-07",
+      "question": "Для каких плагинов в этом изменении делать автоматический выбор тестов?",
+      "kind": "развилка",
+      "status": "открыт",
+      "addressee": "человек",
+      "depends_on": [],
+      "delivery": "",
+      "options": [
+        {
+          "letter": "A",
+          "text": "Начать с VS Code. Для GIGA IDE и OpenCode применять тот же порядок при ручных запусках. Их автоматический выбор рассмотреть после проверки подхода на основном плагине.",
+          "added": false,
+          "unlikely": null,
+          "evidence": [
+            {
+              "path": "docs/repo-contract.md",
+              "quote": "VS Code — основная: функциональность плагина сперва появляется и проверяется в `symphysis-vscode`."
+            },
+            {
+              "path": "docs/repo-contract.md",
+              "quote": "GIGA IDE и opencode — порты: `symphysis-giga` и `symphysis-opencode` следуют за функциями плагина VS Code и держат свои файлы сборки."
+            },
+            {
+              "path": "vscode/build.mjs",
+              "quote": "Юнит-тесты: тесты модуля — в `src/<модуль>/test/`, общие и сквозные для нескольких модулей — в `test/unit/`"
+            }
+          ]
+        },
+        {
+          "letter": "B",
+          "text": "Сразу охватить VS Code, GIGA IDE и OpenCode. Для каждого порта нужно обследовать тестовый стенд, определить общие проверки и отдельно проверить выбор.",
+          "added": false,
+          "unlikely": null,
+          "evidence": [
+            {
+              "path": "docs/repo-contract.md",
+              "quote": "GIGA IDE и opencode — порты: `symphysis-giga` и `symphysis-opencode` следуют за функциями плагина VS Code и держат свои файлы сборки."
+            },
+            {
+              "path": "docs/repo-contract.md",
+              "quote": "Тесты плагина с `SYMPHYSIS_ROOT` на worktree `main` ядра проходят без пропусков."
+            }
+          ]
+        },
+        {
+          "letter": "C",
+          "text": "Ограничить автоматизацию ядром и инсталлятором. Для VS Code оставить ручной запуск штатных команд.",
+          "added": false,
+          "unlikely": "Совместные правки входят в постановку, а у VS Code уже есть модульные тесты и отдельные сквозные сценарии.",
+          "evidence": [
+            {
+              "path": "docs/repo-contract.md",
+              "quote": "VS Code — основная: функциональность плагина сперва появляется и проверяется в `symphysis-vscode`."
+            },
+            {
+              "path": "docs/repo-contract.md",
+              "quote": "Тест живёт в плагине: ядро плагин не читает."
+            },
+            {
+              "path": "vscode/build.mjs",
+              "quote": "Юнит-тесты: тесты модуля — в `src/<модуль>/test/`, общие и сквозные для нескольких модулей — в `test/unit/`"
+            }
+          ]
+        }
+      ],
+      "antipodes": [
+        {
+          "option": "C",
+          "other": "F-06.A"
+        }
+      ],
+      "recommendation": {
+        "option": "A",
+        "why": "VS Code является основной платформой и уже имеет пригодное для отбора расположение тестов. Каждый порт потребует собственной проверки карты и стенда."
+      },
+      "decision": null,
+      "reversibility": null,
+      "outcome": null,
+      "parking": [],
+      "dispute": "",
+      "consequences": "",
+      "evidence": [],
+      "comments": [],
+      "nodes": [
+        "PLUGIN"
+      ]
+    },
+    {
+      "id": "F-08",
+      "question": "Откуда брать связи для выбора тестов затронутых модулей и их потребителей?",
+      "kind": "развилка",
+      "status": "открыт",
+      "addressee": "человек",
+      "depends_on": [],
+      "delivery": "",
+      "options": [
+        {
+          "letter": "A",
+          "text": "Использовать границы модулей и расположение тестов, добавить явные правила для потребителей, общих файлов, payload и межрепозиторного контракта. Выбирать транзитивных потребителей по этим связям. Начать с проверяемой карты и сверки того, что у каждого набора есть путь попадания в выбор. Цена — сопровождение правил при новых связях.",
+          "added": false,
+          "unlikely": null,
+          "evidence": [
+            {
+              "path": "viewer/README.md",
+              "quote": "name: viewer"
+            },
+            {
+              "path": "viewer/viewer_render.py",
+              "quote": "from journal_render import CONTRACT, _viewer_payload"
+            },
+            {
+              "path": "pytest.ini",
+              "quote": "и сквозные проверки (справка всех входов, канон скиллов и водителей, хуки, документы контура разработки)."
+            },
+            {
+              "path": "docs/repo-contract.md",
+              "quote": "Тест живёт в плагине: ядро плагин не читает."
+            },
+            {
+              "path": "tests/test_pytest_testpaths.py",
+              "quote": "assert strays(ROOT / \"pytest.ini\", files) == []"
+            }
+          ]
+        },
+        {
+          "letter": "B",
+          "text": "Выводить прямые связи из импортов Python и TypeScript и дополнять их правилами для файлов, процессов и упаковки. Меньше ручных связей для обычного кода, больше работы на разбор разных языков, псевдонимов импортов и динамических зависимостей.",
+          "added": false,
+          "unlikely": null,
+          "evidence": [
+            {
+              "path": "skills-store/CLAUDE.md",
+              "quote": "Карта вычисляется из импортов, а не пишется руками"
+            },
+            {
+              "path": "viewer/viewer_render.py",
+              "quote": "from journal_render import CONTRACT, _viewer_payload"
+            },
+            {
+              "path": "installer/package.json",
+              "quote": "\"pretest\": \"node scripts/build-workflow-carriers.js && node scripts/sync-payload.js\""
+            },
+            {
+              "path": "openspec/changes/test-run-optimization/intent.md",
+              "quote": "Разве что pick_tests.py стоит брать осторожно, ведь там другая архитектура проекта."
+            }
+          ]
+        },
+        {
+          "letter": "C",
+          "text": "Довести декларации `dependencies` в README до достаточной полноты и строить отбор на них. Общие, сквозные и упаковочные проверки потребуют своих связей. Изменится дисциплина ведения модульных README.",
+          "added": false,
+          "unlikely": null,
+          "evidence": [
+            {
+              "path": "trace/README.md",
+              "quote": "dependencies:"
+            },
+            {
+              "path": "viewer/README.md",
+              "quote": "name: viewer"
+            },
+            {
+              "path": "viewer/viewer_render.py",
+              "quote": "from journal_render import CONTRACT, _viewer_payload"
+            },
+            {
+              "path": "pytest.ini",
+              "quote": "и сквозные проверки (справка всех входов, канон скиллов и водителей, хуки, документы контура разработки)."
+            }
+          ]
+        },
+        {
+          "letter": "D",
+          "text": "Выбирать только каталог изменённого модуля.",
+          "added": false,
+          "unlikely": "Даже локальный импорт `viewer` из `decisions` даёт контрпример. Такой выбор может пропустить потребителя без изменений в его каталоге.",
+          "evidence": [
+            {
+              "path": "openspec/changes/test-run-optimization/intent.md",
+              "quote": "если модуль не был затронут изменением (или новым коммитом, если правка выполнена без создания изменения), то и гонять тесты всех модулей не обязательно."
+            },
+            {
+              "path": "vscode/build.mjs",
+              "quote": "Юнит-тесты: тесты модуля — в `src/<модуль>/test/`, общие и сквозные для нескольких модулей — в `test/unit/`"
+            },
+            {
+              "path": "viewer/viewer_render.py",
+              "quote": "from journal_render import CONTRACT, _viewer_payload"
+            }
+          ]
+        }
+      ],
+      "antipodes": [],
+      "recommendation": {
+        "option": "A",
+        "why": "В Symphysis есть зависимости от файлов, сборки payload и внешнего процесса. Небольшая явная карта покрывает эти связи с самого начала, а существующие декларации можно использовать там, где они подтверждены."
+      },
+      "decision": null,
+      "reversibility": null,
+      "outcome": null,
+      "parking": [],
+      "dispute": "",
+      "consequences": "",
+      "evidence": [],
+      "comments": [],
+      "nodes": [
+        "SELECT"
+      ]
+    },
+    {
+      "id": "F-09",
+      "question": "Как команда определяет набор изменённых файлов для изменения и для отдельного коммита?",
+      "kind": "развилка",
+      "status": "открыт",
+      "addressee": "человек",
+      "depends_on": [],
+      "delivery": "",
+      "options": [
+        {
+          "letter": "A",
+          "text": "Сделать явные режимы. Для изменения сравнивать с указанной базой в каждом участвующем репозитории и учитывать индекс, рабочее дерево и новые файлы. Для отдельного коммита сравнивать коммит с родителем, у merge-коммита явно определять родителя. Удаление и переименование учитывают исходный путь, а переименование — ещё и новый. План показывает корни и базы.",
+          "added": false,
+          "unlikely": null,
+          "evidence": [
+            {
+              "path": "openspec/changes/test-run-optimization/intent.md",
+              "quote": "если модуль не был затронут изменением (или новым коммитом, если правка выполнена без создания изменения), то и гонять тесты всех модулей не обязательно."
+            },
+            {
+              "path": "skills-store/tools/pick_tests.py",
+              "quote": "Изменённые файлы: и в индексе, и в рабочем дереве, и новые."
+            },
+            {
+              "path": "skills-store/tools/pick_tests.py",
+              "quote": "Файлы, разошедшиеся с названной ревизией."
+            },
+            {
+              "path": "vscode/test/core-files.mjs",
+              "quote": "export const coreRoot = (env, sibling) => env.SYMPHYSIS_ROOT || sibling;"
+            }
+          ]
+        },
+        {
+          "letter": "B",
+          "text": "По умолчанию выводить базу из текущей ветки, upstream и состояния рабочего дерева. Для неоднозначных случаев дать явные параметры. Меньше аргументов в обычной работе, но режим приходится проверять после коммита, на detached HEAD и при двух репозиториях.",
+          "added": false,
+          "unlikely": null,
+          "evidence": [
+            {
+              "path": "skills-store/tools/pick_tests.py",
+              "quote": "Изменённые файлы: и в индексе, и в рабочем дереве, и новые."
+            },
+            {
+              "path": "skills-store/tools/pick_tests.py",
+              "quote": "Файлы, разошедшиеся с названной ревизией."
+            },
+            {
+              "path": "openspec/changes/test-run-optimization/intent.md",
+              "quote": "если модуль не был затронут изменением (или новым коммитом, если правка выполнена без создания изменения), то и гонять тесты всех модулей не обязательно."
+            }
+          ]
+        },
+        {
+          "letter": "C",
+          "text": "Принимать только список файлов от разработчика. Это годится для ручного первого этапа, но во втором человек сам отвечает за полноту двух diff.",
+          "added": false,
+          "unlikely": "Пропущенный путь в переданном списке неотличим от отсутствия изменений.",
+          "evidence": [
+            {
+              "path": "openspec/changes/test-run-optimization/intent.md",
+              "quote": "Затем добавить команду, которая показывает, какие тесты выбраны и почему, и умеет их запустить."
+            },
+            {
+              "path": "openspec/changes/test-run-optimization/intent.md",
+              "quote": "если модуль не был затронут изменением (или новым коммитом, если правка выполнена без создания изменения), то и гонять тесты всех модулей не обязательно."
+            }
+          ]
+        }
+      ],
+      "antipodes": [],
+      "recommendation": {
+        "option": "A",
+        "why": "Явная база оставляет проверяемый след для двух репозиториев и отличает незакоммиченное изменение от уже созданного коммита. Список путей можно оставить для диагностики."
+      },
+      "decision": null,
+      "reversibility": null,
+      "outcome": null,
+      "parking": [],
+      "dispute": "",
+      "consequences": "",
+      "evidence": [],
+      "comments": [],
+      "nodes": [
+        "DIFF"
+      ]
+    },
+    {
+      "id": "F-10",
+      "question": "Что делать, если область влияния или возможность выполнить выбранный набор не подтверждена?",
+      "kind": "развилка",
+      "status": "открыт",
+      "addressee": "человек",
+      "depends_on": [
+        "F-08"
+      ],
+      "delivery": "",
+      "options": [
+        {
+          "letter": "A",
+          "text": "Для читаемого diff с неизвестным путём или общей настройкой расширять план до нужного полного набора и показывать причину. Ошибку Git, отсутствующий worktree и обязательную, но недоступную проверку выводить как незавершённый прогон. Пустой diff и ноль выполненных проверок показывать отдельно от успешного запуска.",
+          "added": false,
+          "unlikely": null,
+          "evidence": [
+            {
+              "path": "skills-store/CLAUDE.md",
+              "quote": "неизвестный\nпуть даёт **весь набор, а не пустой**"
+            },
+            {
+              "path": "pytest.ini",
+              "quote": "и сквозные проверки (справка всех входов, канон скиллов и водителей, хуки, документы контура разработки)."
+            },
+            {
+              "path": "vscode/test/core-files.mjs",
+              "quote": "export const coreRoot = (env, sibling) => env.SYMPHYSIS_ROOT || sibling;"
+            },
+            {
+              "path": "docs/repo-contract.md",
+              "quote": "Тесты плагина с `SYMPHYSIS_ROOT` на worktree `main` ядра проходят без пропусков."
+            }
+          ]
+        },
+        {
+          "letter": "B",
+          "text": "На любой неопределённости остановиться и попросить явный набор. Это предотвращает неожиданно тяжёлый запуск, но делает обычную работу зависимой от ручного решения даже при известном корне и доступных тестах.",
+          "added": false,
+          "unlikely": null,
+          "evidence": [
+            {
+              "path": "openspec/changes/test-run-optimization/intent.md",
+              "quote": "Затем добавить команду, которая показывает, какие тесты выбраны и почему, и умеет их запустить."
+            },
+            {
+              "path": "pytest.ini",
+              "quote": "addopts = -n 12"
+            },
+            {
+              "path": "vscode/test/core-files.mjs",
+              "quote": "export const coreRoot = (env, sibling) => env.SYMPHYSIS_ROOT || sibling;"
+            }
+          ]
+        },
+        {
+          "letter": "C",
+          "text": "Проверить только уверенно выбранные группы, остальные показать в отчёте. Можно быстро получить частичный результат, но его легко принять за достаточную проверку.",
+          "added": false,
+          "unlikely": "Неполный выбор для обязательной проверки может дать внешне зелёный результат.",
+          "evidence": [
+            {
+              "path": "pytest.ini",
+              "quote": "и сквозные проверки (справка всех входов, канон скиллов и водителей, хуки, документы контура разработки)."
+            },
+            {
+              "path": "docs/repo-contract.md",
+              "quote": "Тест живёт в плагине: ядро плагин не читает."
+            },
+            {
+              "path": "docs/repo-contract.md",
+              "quote": "Тесты плагина с `SYMPHYSIS_ROOT` на worktree `main` ядра проходят без пропусков."
+            }
+          ]
+        }
+      ],
+      "antipodes": [],
+      "recommendation": {
+        "option": "A",
+        "why": "При известном корне и неизвестной связи полный набор покупает покрытие. Ошибка чтения diff или недоступный стенд требует отдельного исхода, иначе результат нельзя привязать к заявленной области."
+      },
+      "decision": null,
+      "reversibility": null,
+      "outcome": null,
+      "parking": [],
+      "dispute": "",
+      "consequences": "",
+      "evidence": [],
+      "comments": [],
+      "nodes": [
+        "SELECT",
+        "RESULT"
+      ]
+    },
+    {
+      "id": "F-11",
+      "question": "Как выполнить исключение для браузерных тестов и учесть сценарий очистки профилей под нагрузкой?",
+      "kind": "развилка",
+      "status": "открыт",
+      "addressee": "человек",
+      "depends_on": [],
+      "delivery": "",
+      "options": [
+        {
+          "letter": "A",
+          "text": "В первом этапе выделить браузерные тесты в отдельный профиль ядра и запускать его последовательно с остальными группами. Сравнить один поток выполнения и малые значения xdist на одном наборе. Выбрать самый быстрый из режимов, которые проходят повторные прогоны без плавающих падений, таймаутов и оставшихся профилей. Сценарий, который намеренно запускает шесть драйверов, сохраняет свою нагрузку.",
+          "added": false,
+          "unlikely": null,
+          "evidence": [
+            {
+              "path": "backlog/symphysis-backlog.md",
+              "quote": "гонять браузерные тесты под -n 12 не лучшая идея, придется делать исключение по типу теста."
+            },
+            {
+              "path": "backlog/symphysis-backlog.md",
+              "quote": "Под `-n 12` браузерные тесты страницы падают по одному и каждый раз разные, а отдельно проходят."
+            },
+            {
+              "path": "viewer/tests/test_viewer_browser.py",
+              "quote": "capture_output=True, text=True, encoding=\"utf-8\", timeout=120)"
+            },
+            {
+              "path": "viewer/tests/test_viewer_browser.py",
+              "quote": "text=True, encoding=\"utf-8\", env=env) for _ in range(6)]"
+            }
+          ]
+        },
+        {
+          "letter": "B",
+          "text": "Оставить один вызов pytest и сгруппировать браузерные тесты в одном воркере xdist через `loadgroup`. Это ограничит одновременные браузерные тесты, но остальные воркеры смогут создавать нагрузку рядом с браузером.",
+          "added": false,
+          "unlikely": null,
+          "evidence": [
+            {
+              "path": "backlog/symphysis-backlog.md",
+              "quote": "браузерные тесты — под маркером, отдельным прогоном без xdist или одной группой (`--dist loadgroup`)"
+            },
+            {
+              "path": "pytest.ini",
+              "quote": "addopts = -n 12"
+            },
+            {
+              "path": "viewer/tests/test_viewer_browser.py",
+              "quote": "text=True, encoding=\"utf-8\", env=env) for _ in range(6)]"
+            }
+          ]
+        },
+        {
+          "letter": "C",
+          "text": "Сразу выбрать последовательный браузерный прогон без xdist. Конфигурация проще и одновременно работают меньше тестов, но цену по времени и возможный выигрыш малого числа воркеров узнаем позже.",
+          "added": false,
+          "unlikely": null,
+          "evidence": [
+            {
+              "path": "backlog/symphysis-backlog.md",
+              "quote": "браузерные тесты — под маркером, отдельным прогоном без xdist или одной группой (`--dist loadgroup`)"
+            },
+            {
+              "path": "backlog/symphysis-backlog.md",
+              "quote": "Под `-n 12` браузерные тесты страницы падают по одному и каждый раз разные, а отдельно проходят."
+            },
+            {
+              "path": "viewer/tests/test_viewer_browser.py",
+              "quote": "text=True, encoding=\"utf-8\", env=env) for _ in range(6)]"
+            }
+          ]
+        },
+        {
+          "letter": "D",
+          "text": "Отложить исключение до отдельного изменения. В этой ветке разделить наборы и наладить выбор, а браузерный профиль оставить прежним.",
+          "added": false,
+          "unlikely": "Есть согласованное исключение и наблюдение плавающих падений даже при прогоне одного файла под xdist.",
+          "evidence": [
+            {
+              "path": "backlog/symphysis-backlog.md",
+              "quote": "Под `-n 12` браузерные тесты страницы падают по одному и каждый раз разные, а отдельно проходят."
+            },
+            {
+              "path": "backlog/symphysis-backlog.md",
+              "quote": "гонять браузерные тесты под -n 12 не лучшая идея, придется делать исключение по типу теста."
+            }
+          ]
+        }
+      ],
+      "antipodes": [],
+      "recommendation": {
+        "option": "A",
+        "why": "Отдельный профиль исключает конкуренцию с другими группами внутри сессии. Замер определит, даёт ли малый параллелизм выигрыш без возврата плавающих падений."
+      },
+      "decision": null,
+      "reversibility": null,
+      "outcome": null,
+      "parking": [
+        {
+          "addressee": "агент",
+          "text": "В research определить одинаковый состав браузерных тестов для сравнения, проверить доступность Chrome, Node и Mermaid, сверить очистку драйверов и профилей. Подготовить сравнение текущих 12 воркеров, последовательного режима и малых лимитов. Любые тяжёлые прогоны запускать последовательно, отдельно учитывать тест с шестью драйверами. Если замер не выполнен, явно указать причину и оставить вывод о числе воркеров открытым."
+        }
+      ],
+      "dispute": "",
+      "consequences": "",
+      "evidence": [],
+      "comments": [],
+      "nodes": [
+        "BROWSER"
+      ]
+    },
+    {
+      "id": "F-12",
+      "question": "Где сохранить полный прогон после появления адресного режима?",
+      "kind": "развилка",
+      "status": "открыт",
+      "addressee": "человек",
+      "depends_on": [],
+      "delivery": "",
+      "options": [
+        {
+          "letter": "A",
+          "text": "Адресный прогон использовать в рабочей ветке. На интеграции в `main` сохранить полную проверку ядра и инсталлятора отдельными командами. При смене контракта проверять плагин на соответствующем ядре даже при diff только в ядре. Выпускные проверки плагина сохраняют свои требования.",
+          "added": false,
+          "unlikely": null,
+          "evidence": [
+            {
+              "path": "context/04-workflow.md",
+              "quote": "После мержа: полный pytest на `main`"
+            },
+            {
+              "path": "installer/test/test_installer.py",
+              "quote": "Единый гейт: Node-тесты инсталлятора запускаются из pytest."
+            },
+            {
+              "path": "docs/repo-contract.md",
+              "quote": "Тест живёт в плагине: ядро плагин не читает."
+            },
+            {
+              "path": "docs/repo-contract.md",
+              "quote": "Тесты плагина с `SYMPHYSIS_ROOT` на worktree `main` ядра проходят без пропусков."
+            }
+          ]
+        },
+        {
+          "letter": "B",
+          "text": "Использовать адресный план и при интеграции. Полный прогон перенести на выпуск. Это экономит время интеграции, но пробелы карты будут копиться на `main` до следующей полной проверки.",
+          "added": false,
+          "unlikely": null,
+          "evidence": [
+            {
+              "path": "openspec/changes/test-run-optimization/intent.md",
+              "quote": "если модуль не был затронут изменением (или новым коммитом, если правка выполнена без создания изменения), то и гонять тесты всех модулей не обязательно."
+            },
+            {
+              "path": "docs/repo-contract.md",
+              "quote": "Тесты плагина с `SYMPHYSIS_ROOT` на worktree `main` ядра проходят без пропусков."
+            },
+            {
+              "path": "tests/test_pytest_testpaths.py",
+              "quote": "assert strays(ROOT / \"pytest.ini\", files) == []"
+            }
+          ]
+        },
+        {
+          "letter": "C",
+          "text": "Требовать полный прогон на каждом коммите, а адресный использовать как быструю предварительную проверку.",
+          "added": false,
+          "unlikely": "Обязательный полный прогон на каждом коммите сохраняет расход, который владелец хочет убрать.",
+          "evidence": [
+            {
+              "path": "installer/test/test_installer.py",
+              "quote": "Единый гейт: Node-тесты инсталлятора запускаются из pytest."
+            },
+            {
+              "path": "pytest.ini",
+              "quote": "addopts = -n 12"
+            },
+            {
+              "path": "docs/repo-contract.md",
+              "quote": "Тесты плагина с `SYMPHYSIS_ROOT` на worktree `main` ядра проходят без пропусков."
+            }
+          ]
+        }
+      ],
+      "antipodes": [],
+      "recommendation": {
+        "option": "A",
+        "why": "Действующая интеграционная проверка ловит ошибки карты до выпуска. Разделение команд даёт сохранить её фактический состав, а повседневный цикл получает более короткий прогон."
+      },
+      "decision": null,
+      "reversibility": null,
+      "outcome": null,
+      "parking": [],
+      "dispute": "",
+      "consequences": "",
+      "evidence": [],
+      "comments": [],
+      "nodes": [
+        "RESULT"
+      ]
+    },
+    {
+      "id": "F-13",
+      "question": "Чем проверять, что оптимизация сократила время и нагрузку без потери обязательных проверок?",
+      "kind": "развилка",
+      "status": "открыт",
+      "addressee": "человек",
+      "depends_on": [],
+      "delivery": "",
+      "options": [
+        {
+          "letter": "A",
+          "text": "Сравнить до и после на одной машине и сопоставимых ревизиях. Взять локальную правку модуля, общую или контрактную правку и совместное изменение ядра с плагином. Записать выбранные группы, реально выполненные тесты и пропуски, время, пик активных воркеров и дочерних процессов, таймауты и очистку. Отдельно подтвердить полный режим. Числовой порог согласовать по базовому замеру.",
+          "added": false,
+          "unlikely": null,
+          "evidence": [
+            {
+              "path": "pytest.ini",
+              "quote": "addopts = -n 12"
+            },
+            {
+              "path": "openspec/changes/test-run-optimization/intent.md",
+              "quote": "если модуль не был затронут изменением (или новым коммитом, если правка выполнена без создания изменения), то и гонять тесты всех модулей не обязательно."
+            },
+            {
+              "path": "openspec/changes/test-run-optimization/intent.md",
+              "quote": "тесты ядра и плагина одна сессия в одно время не запускает: сначала ядро, потом плагин."
+            },
+            {
+              "path": "viewer/tests/test_viewer_browser.py",
+              "quote": "text=True, encoding=\"utf-8\", env=env) for _ in range(6)]"
+            },
+            {
+              "path": "docs/repo-contract.md",
+              "quote": "Тесты плагина с `SYMPHYSIS_ROOT` на worktree `main` ядра проходят без пропусков."
+            }
+          ]
+        },
+        {
+          "letter": "B",
+          "text": "Проверить состав команд, порядок и коды возврата без сравнительного замера. Это быстрее, но подтвердит лишь изменение механики запуска.",
+          "added": false,
+          "unlikely": null,
+          "evidence": [
+            {
+              "path": "openspec/changes/test-run-optimization/intent.md",
+              "quote": "Затем добавить команду, которая показывает, какие тесты выбраны и почему, и умеет их запустить."
+            },
+            {
+              "path": "installer/package.json",
+              "quote": "\"pretest\": \"node scripts/build-workflow-carriers.js && node scripts/sync-payload.js\""
+            },
+            {
+              "path": "vscode/build.mjs",
+              "quote": "Юнит-тесты: тесты модуля — в `src/<модуль>/test/`, общие и сквозные для нескольких модулей — в `test/unit/`"
+            }
+          ]
+        },
+        {
+          "letter": "C",
+          "text": "Задать жёсткий лимит времени и нагрузки сразу и использовать его как условие приёмки.",
+          "added": false,
+          "unlikely": "Базовый замер для текущего дерева и сопоставимого набора ещё не установлен.",
+          "evidence": [
+            {
+              "path": "pytest.ini",
+              "quote": "addopts = -n 12"
+            },
+            {
+              "path": "viewer/tests/test_viewer_browser.py",
+              "quote": "capture_output=True, text=True, encoding=\"utf-8\", timeout=120)"
+            }
+          ]
+        }
+      ],
+      "antipodes": [],
+      "recommendation": {
+        "option": "A",
+        "why": "Сравнимые прогоны покажут эффект адресного выбора отдельно от снятия наложения процессов. Проверка состава и пропусков отличит ускорение от потери обязательной проверки."
+      },
+      "decision": null,
+      "reversibility": null,
+      "outcome": null,
+      "parking": [],
+      "dispute": "",
+      "consequences": "",
+      "evidence": [],
+      "comments": [],
+      "nodes": [
+        "RESULT"
+      ]
+    }
+  ]
+}

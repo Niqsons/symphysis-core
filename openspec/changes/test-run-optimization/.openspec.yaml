@@ -1,2 +1,25 @@
 schema: symphysis
 created: 2026-11-13
+x-symphysis-components:
+  symphysis:
+    - repo: symphysis-core
+      root: ""
+      survey: found
+      exclude:
+        - tests
+        - docs
+        - upstream
+        - installer/payload
+        - openspec/changes
+        - openspec/specs
+        - .context
+        - .claude
+        - .agents
+    - repo: symphysis-vscode
+      root: vscode/
+      survey: found
+      exclude:
+        - test
+        - out
+        - .vscode-test
+        - .claude
