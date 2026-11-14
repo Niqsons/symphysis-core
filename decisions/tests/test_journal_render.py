@@ -4,8 +4,8 @@ import re
 import pytest
 
 # conftest — первым: он ставит каталоги модулей в sys.path и при запуске одного файла (pytest.ini, pythonpath)
-from conftest import (core_files, deviation_journal, FIX, one_record_journal, plan, PLAN_JOURNAL, render_page, requires_node, ROOT,
-                      run_cli, scheme_embedded, smoke, strip_check_fields, TEMPLATE)
+from conftest import (core_files, deviation_journal, one_record_journal, render_page, requires_node, ROOT,
+                      run_cli, sample_journal, scheme_embedded, smoke, strip_check_fields, TEMPLATE)
 import journal
 import journal_render
 
@@ -20,23 +20,18 @@ def roundtrip(j):
 # --- тесты из брифа ---------------------------------------------------------
 
 def test_render_md_roundtrip():
-    j = journal.import_md(FIX / "journal-plan.md")
+    j = sample_journal()
     j2 = roundtrip(j)
     assert strip_check_fields(j2) == strip_check_fields(j)
-
-
-def test_render_md_has_anchor_per_record():
-    j = journal.import_md(FIX / "journal-plan.md")
-    md = journal.render_md(j)
-    assert md.count("<!-- journal:F-") == 24
 
 
 # --- markdown: якорь, шапка, формат ----------------------------------------
 
 def test_anchor_is_the_line_right_after_the_heading():
-    lines = journal.render_md(plan()).splitlines()
+    j = sample_journal()
+    lines = journal.render_md(j).splitlines()
     heads = [i for i, line in enumerate(lines) if line.startswith("## F-")]
-    assert len(heads) == 24
+    assert len(heads) == len(j["records"]) == sum(line.startswith("<!-- journal:F-") for line in lines)
     for i in heads:
         rid = lines[i].split()[1]
         assert lines[i + 1] == f"<!-- journal:{rid} -->"
@@ -49,18 +44,17 @@ def test_import_ignores_anchor_comment():
 
 
 def test_render_md_is_stable_on_second_pass():
-    once = journal.render_md(plan())
+    once = journal.render_md(sample_journal())
     twice = journal.render_md(journal.import_md_text(once, source="x"))
     assert twice == once
 
 
 def test_header_names_the_json_and_keeps_the_intro():
-    j = plan()
-    assert j["intro"].startswith("Формат — из `plan-flexible-pipeline.md`")
-    md = journal.render_md(j, json_name="plan-implementation.journal.json")
+    j = sample_journal()
+    md = journal.render_md(j, json_name="settings.journal.json")
     head = md.split("\n## F-01")[0]
     assert head.startswith(f"# {j['title']}\n")
-    assert "`plan-implementation.journal.json`" in head and "не править руками" in head
+    assert "`settings.journal.json`" in head and "не править руками" in head
     assert j["intro"] in head
     j2 = journal.import_md_text(md)
     assert j2["intro"] == j["intro"] and j2["title"] == j["title"]
@@ -78,39 +72,36 @@ def test_import_intro_is_text_between_title_and_first_record():
 
 
 def test_fields_in_format_order():
-    md = journal.render_md(plan())
+    md = journal.render_md(sample_journal())
     f01 = md.split("\n## F-02")[0]
     keys = [line[2:].split(":")[0] for line in f01.splitlines() if line.startswith("- ")]
     assert keys == ["вид", "статус", "адресат", "зависит от", "поставка", "варианты", "антиподы",
                     "рекомендация", "парковка", "находка", "улики", "решение", "следствия"]
-    fact = md.split("\n## F-20")[1].split("\n## F-21")[0]
+    fact = md.split("\n## F-20")[1].split("\n## F-22")[0]
     keys = [line[2:].split(":")[0] for line in fact.splitlines() if line.startswith("- ")]
     assert keys == ["вид", "статус", "адресат", "зависит от", "поставка", "улики", "спор", "следствия"]
 
 
 def test_option_lines_carry_evidence_then_unlikely():
-    md = journal.render_md(plan())
+    md = journal.render_md(sample_journal())
     f01 = md.split("\n## F-02")[0].splitlines()
-    i = f01.index("  - C. Файл на решение в стиле ADR (MADR/Nygard), журнал — каталог")
-    assert f01[i + 1].startswith("    - улика: `upstream/gsd-core/")
-    assert f01[i + 2].startswith("    - маловероятно: десятки файлов")
+    i = f01.index("  - C. Отдельный каталог")
+    assert f01[i + 1] == "    - улика: `layout.md` «Каталог настроек»"
+    assert f01[i + 2] == "    - маловероятно: нужно читать несколько файлов"
 
 
 # --- рекомендация: вариант и причина ----------------------------------------
 
 def test_import_splits_the_line_into_option_and_reason():
-    recs = {r["id"]: r for r in plan()["records"]}
-    for rid in ("F-06", "F-08", "F-11", "F-18"):
-        assert set(recs[rid]["recommendation"]) == {"option", "why"} and recs[rid]["recommendation"]["why"]
-    assert recs["F-06"]["recommendation"]["option"] == "B"
-    assert recs["F-06"]["recommendation"]["why"].startswith("для процедур и A для коротких правил; слово")
+    record = sample_journal()["records"][0]
+    assert record["recommendation"] == {"option": "A", "why": "общая схема"}
 
 
 def test_render_writes_the_option_and_the_reason_of_each_recommendation():
-    j = plan()
+    j = sample_journal()
     lines = journal.render_md(j).splitlines()
     forks = [r for r in j["records"] if r["recommendation"]]
-    assert len(forks) == 19
+    assert len(forks) >= 2
     for r in forks:
         assert f"- рекомендация: {r['recommendation']['option']} — {r['recommendation']['why']}" in lines
 
@@ -133,19 +124,18 @@ def test_render_shows_the_reason_when_text_is_present():
 
 def test_import_of_a_composite_recommendation_writes_no_text():
     """Сценарий «Импорт составной рекомендации»."""
-    md = "# Т\n\n## F-01 В?\n- вид: развилка\n- рекомендация: B для процедур и A для коротких правил\n"
+    md = "# Т\n\n## F-01 В?\n- вид: развилка\n- рекомендация: B при проверке и A при запуске\n"
     assert journal.import_md_text(md)["records"][0]["recommendation"] == {
-        "option": "B", "why": "для процедур и A для коротких правил"}
+        "option": "B", "why": "при проверке и A при запуске"}
 
 
 def test_roundtrip_keeps_the_option_and_the_reason():
     """Сценарий «Круговой разбор»: запись совпадает после вывода и нового импорта, поля `text` не появляется."""
-    once = plan()
+    once = sample_journal()
     again = roundtrip(once)
     assert [r["recommendation"] for r in again["records"]] == [r["recommendation"] for r in once["records"]]
     composite = next(r for r in again["records"] if r["id"] == "F-06")["recommendation"]
-    assert composite == {"option": "B", "why": composite["why"]}
-    assert composite["why"].startswith("для процедур и A для коротких правил; слово")
+    assert composite == {"option": "B", "why": "при автоматической проверке и A для ручного прогона"}
 
 
 TEXT_OF_RECOMMENDATION = re.compile(
@@ -207,14 +197,11 @@ def test_decision_word_of_two_quoted_phrases_survives_the_roundtrip():
 
 
 def test_render_writes_word_and_parking_back_in_guillemets():
-    md = journal.render_md(plan())
+    md = journal.render_md(sample_journal())
     lines = md.splitlines()
-    assert any(line.startswith("- решение: B — «видимо тогда вариант B") and line.endswith("», 2026-10-29")
-               for line in lines)
-    assert "- решение: A, 2026-10-29" in lines          # F-04: слова нет, кавычек нет
-    j = one_record_journal("a.md", "q")                 # парковка — своя, не из фикстуры: значение адресата здесь не предмет
-    j["records"][0]["parking"] = [{"addressee": "агент", "text": "json разбирать проще, но правки не вернутся"}]
-    assert "- парковка: агент — «json разбирать проще, но правки не вернутся»" in journal.render_md(j).splitlines()
+    assert "- решение: B — «нужны настройки проекта», 2026-10-29" in lines
+    assert "- решение: A, 2026-10-29" in lines
+    assert "- парковка: агент — «проверить перенос настроек»" in lines
 
 
 def test_inner_guillemets_survive_the_roundtrip():
@@ -232,12 +219,10 @@ def test_inner_guillemets_survive_the_roundtrip():
 # --- пометка «добавлен человеком» -------------------------------------------
 
 def test_added_marker_is_not_doubled():
-    source = (FIX / "journal-plan.md").read_text(encoding="utf-8")
-    j = plan()
+    j = one_record_journal("a.md", "цитата")
+    j["records"][0]["options"][0].update(added=True, text="свой вариант (добавлен человеком)")
     md = journal.render_md(j)
-    assert md.count("(добавлен человеком") == source.count("(добавлен человеком") >= 1
-    added = [o for r in j["records"] for o in r["options"] if o["added"]]
-    assert added and all(o["text"].count("(добавлен человеком") == 1 for o in added)
+    assert md.count("(добавлен человеком)") == 1
 
 
 def test_added_option_without_marker_gets_it_once():
@@ -253,7 +238,7 @@ def test_added_option_without_marker_gets_it_once():
 
 
 def test_renderers_do_not_mutate_the_journal():
-    j = plan()
+    j = sample_journal()
     before = copy.deepcopy(j)
     journal.render_md(j)
     journal.render_html(j, TEMPLATE)
@@ -376,19 +361,6 @@ def test_import_skips_an_outcome_line_not_by_form(capsys):
     assert "F-01: исход не по форме" in capsys.readouterr().err
 
 
-# --- живой журнал ----------------------------------------------------------
-
-def test_live_journal_roundtrips_through_markdown():
-    j = journal.load_journal(PLAN_JOURNAL)
-    assert strip_check_fields(roundtrip(j)) == strip_check_fields(j)
-
-
-def test_committed_markdown_is_the_render_of_the_json():
-    j = journal.load_journal(PLAN_JOURNAL)
-    md = PLAN_JOURNAL.with_suffix(".md")
-    assert md.read_text(encoding="utf-8") == journal.render_md(j, json_name=PLAN_JOURNAL.name)
-
-
 # --- пометка «отступление от постановки»: `options[].deviation` (5.1, ruling: у варианта, F-28.E) ----
 
 
@@ -473,6 +445,6 @@ def test_page_copied_out_of_the_project_shows_scheme_text_and_runs_modes(tmp_pat
     scheme = scheme_embedded(page)
     assert scheme["mermaid"] is None and scheme["text"] == "flowchart TD\n  A --> B\n"
     done = smoke(elsewhere, page)
-    assert "F-19" in done["cards"] and done["out"]
+    assert 'id="F-01"' in done["cards"] and done["out"]
     for mode in ("check", "attack"):
         assert smoke(elsewhere, page, {"__suffixes__": {":mode": mode}})["modes"]

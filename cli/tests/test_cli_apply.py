@@ -7,14 +7,14 @@ import re
 import pytest
 
 # conftest — первым: он ставит каталоги модулей в sys.path и при запуске одного файла (pytest.ini, pythonpath)
-from conftest import comments_of, fixture_text, HEADER_LINK, line_of, plan, rec_of, rendered, run_cli
+from conftest import comments_of, fixture_text, HEADER_LINK, line_of, sample_journal, rec_of, rendered, run_cli
 import journal
 
 
 @pytest.fixture
 def workdir(tmp_path):
     path = tmp_path / "j.json"
-    journal.save_journal(path, plan())
+    journal.save_journal(path, sample_journal())
     return tmp_path, path
 
 
@@ -122,7 +122,7 @@ def write_feedback(tmp_path, md, *spans, state="sealed", name="feedback.md"):
 
 def cli_setup(tmp_path):
     """Журнал на диске, его рендер и строка первой записи F-03 в рендере."""
-    j = plan()
+    j = sample_journal()
     src = tmp_path / "j.json"
     journal.save_journal(src, j)
     md = rendered(tmp_path, j)
@@ -244,7 +244,7 @@ def sev_line(path, claim, severity, why, section="F-01"):
 def project(tmp_path):
     change = tmp_path / "openspec" / "changes" / "ch"
     (change / "attack").mkdir(parents=True)
-    j = plan()
+    j = sample_journal()
     path = change / "decisions.json"
     journal.save_journal(path, j)
     for name in ("decisions", "artifacts"):

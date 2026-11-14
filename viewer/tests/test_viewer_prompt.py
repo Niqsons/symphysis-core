@@ -10,7 +10,7 @@ import sys
 import pytest
 
 # conftest — первым: он ставит каталоги модулей в sys.path и при запуске одного файла (pytest.ini, pythonpath)
-from conftest import FIX, ROOT
+from conftest import FIX, ROOT, sample_journal
 import journal
 
 TEMPLATE = ROOT / "viewer" / "playground-template.html"
@@ -46,9 +46,9 @@ def state(**kw):
     return base
 
 
-def plan_journal():
-    """Журнал плана; F-04 сделан открытым (рекомендация A остаётся), F-02 решён вариантом B со словом."""
-    j = journal.import_md(FIX / "journal-plan.md")
+def journal_for_prompt():
+    """Учебный журнал с открытой развилкой F-04 (рекомендация A остаётся), F-02 решён вариантом B со словом."""
+    j = sample_journal()
     rec = {r["id"]: r for r in j["records"]}["F-04"]
     rec["decision"], rec["status"] = None, "открыт"
     return j
@@ -84,7 +84,7 @@ def apply_clean(j, text):
 # --- сценарии «Внесённое уходит из промпта», «Выбор без слова» -------------------
 
 def test_added_option_already_in_the_journal_leaves_the_prompt(tmp_path):
-    j = plan_journal()
+    j = journal_for_prompt()
     rec = {r["id"]: r for r in j["records"]}["F-04"]
     rec["options"].append({"letter": "C", "text": "внесённый вариант (добавлен человеком)", "added": True,
                            "unlikely": None, "evidence": []})
@@ -95,7 +95,7 @@ def test_added_option_already_in_the_journal_leaves_the_prompt(tmp_path):
 
 
 def test_cleared_notes_field_clears_the_prompt(tmp_path):
-    j = plan_journal()
+    j = journal_for_prompt()
     assert "Замечания к схеме: что-то не так" in prompt(tmp_path, j, state(notes=" что-то не так "))["text"]
     cleared = prompt(tmp_path, j, state(notes="  "))["text"]
     assert "Замечания к схеме" not in cleared and "что-то не так" not in cleared
@@ -105,7 +105,7 @@ def test_cleared_notes_field_clears_the_prompt(tmp_path):
 
 
 def test_ingested_word_park_and_dep_leave_the_prompt(tmp_path):
-    j = plan_journal()
+    j = journal_for_prompt()
     recs = {r["id"]: r for r in j["records"]}
     word = recs["F-02"]["decision"]["word"]
     st = state(decisions={"F-02": {"choice": None, "word": f"  {word}\n", "parked": []}},
@@ -115,7 +115,7 @@ def test_ingested_word_park_and_dep_leave_the_prompt(tmp_path):
 
 
 def test_choice_without_word_is_a_line_apply_accepts(tmp_path):
-    j = plan_journal()
+    j = journal_for_prompt()
     out = prompt(tmp_path, j, state(decisions={"F-04": {"choice": "B", "word": "", "parked": []}}))["text"]
     assert "- F-04: B — (без слова)" in out.splitlines()
     ops = apply_clean(j, out)
@@ -128,7 +128,7 @@ def test_choice_without_word_is_a_line_apply_accepts(tmp_path):
 # --- сценарии «Спор становится словом», «Два ответа», «Ответ повторяет» ----------
 
 def test_dispute_on_ask_the_human_row_becomes_the_word(tmp_path):
-    j = plan_journal()
+    j = journal_for_prompt()
     att = attack_file(("F-04, decision", "утверждение 1", "вопрос человеку"),
                       ("F-02, decision", "утверждение 2", "вопрос человеку"),
                       ("F-04, question", "утверждение 3", "вопрос человеку"),
@@ -150,7 +150,7 @@ def test_dispute_on_ask_the_human_row_becomes_the_word(tmp_path):
 
 
 def test_two_different_answers_to_one_decision_conflict(tmp_path):
-    j = plan_journal()
+    j = journal_for_prompt()
     att = attack_file(("F-02, decision", "первая", "вопрос человеку"), ("F-02, decision", "вторая", "вопрос человеку"),
                       ("F-04, decision", "третья", "вопрос человеку"))
     disputes = {key(att, 0): "ответ один", key(att, 1): "ответ два", key(att, 2): "ответ три"}
@@ -166,7 +166,7 @@ def test_two_different_answers_to_one_decision_conflict(tmp_path):
 
 
 def test_answer_repeating_the_decision_is_not_added(tmp_path):
-    j = plan_journal()
+    j = journal_for_prompt()
     word = {r["id"]: r for r in j["records"]}["F-02"]["decision"]["word"]
     att = attack_file(("F-02, decision", "утверждение", "вопрос человеку"))
     res = prompt(tmp_path, j, state(), [att], {key(att, 0): f" {word} "})
@@ -178,7 +178,7 @@ def test_answer_repeating_the_decision_is_not_added(tmp_path):
 def test_ingested_answer_appended_to_the_old_word_leaves_the_prompt(tmp_path):
     """`apply` дописывает ответ к прежнему слову решения (`_merge`): внесённое — вхождение, не равенство.
     Ни спор строки атаки, ни слово карточки к тому же решению не возвращаются в промпт."""
-    j = plan_journal()
+    j = journal_for_prompt()
     att = attack_file(("F-02, decision", "утверждение", "вопрос человеку"))
     first = prompt(tmp_path, j, state(), [att], {key(att, 0): "ответ  к\nF-02"})
     work = copy.deepcopy(j)
@@ -204,7 +204,7 @@ def test_card_cleanup_uses_the_same_ingested_rule():
 
 
 def test_answer_with_guillemets_survives_parse_answers(tmp_path):
-    j = plan_journal()
+    j = journal_for_prompt()
     att = attack_file(("F-02, decision", "утверждение", "вопрос человеку"))
     res = prompt(tmp_path, j, state(), [att], {key(att, 0): "берём «как есть» и `код`"})
     ops = apply_clean(j, res["text"])
@@ -235,7 +235,7 @@ def test_md_escapes_first_then_turns_backtick_pairs_into_code(tmp_path):
 def test_answer_to_an_undecided_record_goes_to_notes_and_leaves_it_open(tmp_path):
     """Слово владельца 2026-10-31: запись без решения не получает ни строки слова, ни буквы рекомендации; ответ —
     замечание `F-NN: ответ` в notes[], после apply `decision` нет."""
-    j = plan_journal()
+    j = journal_for_prompt()
     att = attack_file(("F-04, decision", "утверждение", "вопрос человеку"))
     res = prompt(tmp_path, j, state(), [att], {key(att, 0): "ответ по F-04"})
     assert not [l for l in res["text"].splitlines() if l.startswith("- F-04:")] and "- F-04: A" not in res["text"]
@@ -254,7 +254,7 @@ def test_answer_to_an_undecided_record_goes_to_notes_and_leaves_it_open(tmp_path
 def test_other_dispute_goes_to_notes_and_leaves_the_attack_file_alone(tmp_path):
     """`decision-viewer`: «Прочий спор идёт в замечания» — строка с закрытием «правка записи» и ответом в поле спора:
     ответ в «Замечания к схеме:», после `apply` он в `notes[]`, решения нет, файл атаки не изменён."""
-    j = plan_journal()
+    j = journal_for_prompt()
     att = attack_file(("F-02, decision", "утверждение", "правка записи"))
     attack_md = tmp_path / "decisions.md"
     attack_md.write_text(
@@ -309,7 +309,7 @@ def page_prompt(tmp_path, j, st):
 
 
 def ingested_fork_journal():
-    j = plan_journal()
+    j = journal_for_prompt()
     j["records"].append({**copy.deepcopy(j["records"][-1]), "id": "F-90", "kind": "развилка", "status": "открыт", "question": "Новая   развилка человека?",
                          "options": [{"letter": "A", "text": "да", "added": True, "unlikely": None, "evidence": []}], "decision": None, "recommendation": None,
                          "antipodes": [], "depends_on": [], "evidence": [], "outcome": None, "reversibility": None, "parking": [], "dispute": "", "consequences": "", "comments": [], "addressee": "человек"})
@@ -356,7 +356,7 @@ def test_the_page_takes_the_date_from_local_date():
 
 def test_scenario_decision_date_comes_from_apply(tmp_path):
     """Сценарий «Дата решения»: дата в заголовке промпта не равна дате `apply`, у решения дата из `apply`."""
-    j = plan_journal()
+    j = journal_for_prompt()
     rec = {r["id"]: r for r in j["records"]}["F-04"]
     text = run_js(tmp_path, "prompt", "buildPrompt(input.J, input.attacks, input.st, input.disputes, '2020-01-02')",
                   {"J": j, "attacks": [], "st": state(decisions={"F-04": {"choice": "A", "word": "", "parked": []}}), "disputes": {}})["text"]
@@ -383,17 +383,17 @@ def warning_file(*sections, path="attack/decisions.md"):
 def test_read_mark_goes_to_remarks_once(tmp_path):
     """Сценарий «Отметка попадает в промпт»: текст один раз, строка пригодна для `apply`."""
     att = warning_file("F-12, options.B", "F-13, options.A")
-    text = prompt(tmp_path, plan_journal(), state(), attacks=[att], read={att["path"] + "|F-12, options.B": True})["text"]
+    text = prompt(tmp_path, journal_for_prompt(), state(), attacks=[att], read={att["path"] + "|F-12, options.B": True})["text"]
     assert text.count(READ + "F-12, options.B") == 1
     assert "Замечания к схеме: " + READ + "F-12, options.B" in text
-    ops = apply_clean(plan_journal(), text)
+    ops = apply_clean(journal_for_prompt(), text)
     assert [op for op in ops if op["op"] == "note"] == [{"id": None, "op": "note", "text": READ + "F-12, options.B"}]
 
 
 def test_read_mark_and_dispute_share_one_remarks_line(tmp_path):
     """Сценарий «Отметка и спор вместе»: одна строка «Замечания к схеме:», оба текста через « · »."""
     att = warning_file("F-12, options.B", "F-13, options.A")
-    text = prompt(tmp_path, plan_journal(), state(), attacks=[att], disputes={key(att, 1): "опора есть"},
+    text = prompt(tmp_path, journal_for_prompt(), state(), attacks=[att], disputes={key(att, 1): "опора есть"},
                   read={att["path"] + "|F-12, options.B": True})["text"]
     lines = [line for line in text.splitlines() if line.startswith("Замечания к схеме: ")]
     assert len(lines) == 1
@@ -403,7 +403,7 @@ def test_read_mark_and_dispute_share_one_remarks_line(tmp_path):
 def test_read_mark_without_a_row_gives_no_text(tmp_path):
     """Сценарий «Отметка у снятой строки не идёт в промпт»."""
     att = warning_file("F-12, options.B")
-    text = prompt(tmp_path, plan_journal(), state(), attacks=[att], read={att["path"] + "|F-30, options.A": True})["text"]
+    text = prompt(tmp_path, journal_for_prompt(), state(), attacks=[att], read={att["path"] + "|F-30, options.A": True})["text"]
     assert READ not in text
 
 
@@ -411,20 +411,20 @@ def test_read_mark_on_a_blocker_gives_no_text(tmp_path):
     """Требование «Флаг только у предупреждений»: ключ отметки у блокера текста не даёт."""
     att = warning_file("F-12, options.B")
     att["rows"][0]["severity"] = "блокер"
-    text = prompt(tmp_path, plan_journal(), state(), attacks=[att], read={att["path"] + "|F-12, options.B": True})["text"]
+    text = prompt(tmp_path, journal_for_prompt(), state(), attacks=[att], read={att["path"] + "|F-12, options.B": True})["text"]
     assert READ not in text
 
 
 def test_no_marks_and_no_disputes_give_no_remarks_line(tmp_path):
     """Сценарий «Показ режима без нажатий»: без отметок и споров строки «Замечания к схеме:» нет."""
     att = warning_file("F-12, options.B")
-    text = prompt(tmp_path, plan_journal(), state(), attacks=[att], read={})["text"]
+    text = prompt(tmp_path, journal_for_prompt(), state(), attacks=[att], read={})["text"]
     assert "Замечания к схеме" not in text
 
 
 def test_ingested_mark_is_not_repeated_in_the_prompt(tmp_path):
     """Требование «Флаг на карточке берётся из журнала после внесения»: внесённая отметка в промпте не повторяется."""
-    j = plan_journal()
+    j = journal_for_prompt()
     j.setdefault("notes", []).append({"date": DATE, "text": READ + "F-12, options.B"})
     att = warning_file("F-12, options.B")
     text = prompt(tmp_path, j, state(), attacks=[att], read={att["path"] + "|F-12, options.B": True})["text"]
@@ -445,25 +445,25 @@ def sev_line(att, i, to, why):
 def test_severity_line_sits_above_the_remarks_and_is_one_item(tmp_path):
     """Сценарий «Строка о тяжести»: выше «Замечания к схеме:», `apply_clean` принимает, пункт `severity` один."""
     att = sev_att()
-    text = prompt(tmp_path, plan_journal(), state(notes="моё замечание"), attacks=[att],
+    text = prompt(tmp_path, journal_for_prompt(), state(notes="моё замечание"), attacks=[att],
                   sev={key(att, 0): {"to": "предупреждение", "why": "уточнено\n в спеке"}})["text"]
     assert sev_line(att, 0, "предупреждение", "уточнено в спеке") in text.splitlines()
     assert text.index("- тяжесть:") < text.index("Замечания к схеме:")
-    ops = apply_clean(plan_journal(), text)
+    ops = apply_clean(journal_for_prompt(), text)
     assert len([op for op in ops if op["op"] == "severity"]) == 1
 
 
 def test_severity_mark_without_a_justification_gives_no_line(tmp_path):
     """Сценарий «Кнопка без обоснования»: строки нет, остаётся заглушка «нового нет»."""
     att = sev_att()
-    text = prompt(tmp_path, plan_journal(), state(), attacks=[att], sev={key(att, 0): {"to": "предупреждение", "why": "  \n "}})["text"]
+    text = prompt(tmp_path, journal_for_prompt(), state(), attacks=[att], sev={key(att, 0): {"to": "предупреждение", "why": "  \n "}})["text"]
     assert "тяжесть" not in text and "(нового нет" in text
 
 
 def test_dispute_and_justification_stay_apart(tmp_path):
     """Сценарий «Спор и обоснование у одной строки»: спор в замечаниях, обоснование только в строке о тяжести."""
     att = sev_att()
-    text = prompt(tmp_path, plan_journal(), state(), attacks=[att], disputes={key(att, 0): "спорный довод"},
+    text = prompt(tmp_path, journal_for_prompt(), state(), attacks=[att], disputes={key(att, 0): "спорный довод"},
                   sev={key(att, 0): {"to": "предупреждение", "why": "обоснование тяжести"}})["text"]
     remarks = [line for line in text.splitlines() if line.startswith("Замечания к схеме: ")]
     sev_lines = [line for line in text.splitlines() if line.startswith("- тяжесть:")]
@@ -475,7 +475,7 @@ def test_ingested_severity_leaves_the_prompt(tmp_path):
     """Сценарий «Внесённое слово уходит из промпта»: ячейка уже несёт тяжесть и обоснование — строки нет."""
     att = sev_att()
     att["rows"][0]["severity"] = "предупреждение (обоснование  тяжести)"
-    text = prompt(tmp_path, plan_journal(), state(), attacks=[att], sev={key(att, 0): {"to": "предупреждение", "why": "обоснование тяжести"}})["text"]
+    text = prompt(tmp_path, journal_for_prompt(), state(), attacks=[att], sev={key(att, 0): {"to": "предупреждение", "why": "обоснование тяжести"}})["text"]
     assert "тяжесть" not in text
 
 
@@ -483,7 +483,7 @@ def test_severity_mark_on_a_removed_row_gives_no_line(tmp_path):
     """Сценарий «Отметка у строки, которую снял повтор атаки»: строки в `attacks` нет — строки нет."""
     att = sev_att()
     gone = {f"{att['path']}|F-99, x|нет такого": {"to": "предупреждение", "why": "причина"}}
-    assert "тяжесть" not in prompt(tmp_path, plan_journal(), state(), attacks=[att], sev=gone)["text"]
+    assert "тяжесть" not in prompt(tmp_path, journal_for_prompt(), state(), attacks=[att], sev=gone)["text"]
 
 
 def test_severity_mark_without_a_move_gives_no_line(tmp_path):
@@ -491,7 +491,7 @@ def test_severity_mark_without_a_move_gives_no_line(tmp_path):
     att = sev_att()
     att["rows"][1]["claim"] = "не пройдено"
     sev = {key(att, 0): {"to": "блокер", "why": "причина"}, key(att, 1): {"to": "предупреждение", "why": "причина"}}
-    assert "тяжесть" not in prompt(tmp_path, plan_journal(), state(), attacks=[att], sev=sev)["text"]
+    assert "тяжесть" not in prompt(tmp_path, journal_for_prompt(), state(), attacks=[att], sev=sev)["text"]
 
 
 def test_severity_lines_follow_file_and_row_order(tmp_path):
@@ -499,13 +499,13 @@ def test_severity_lines_follow_file_and_row_order(tmp_path):
     a, b = sev_att(), sev_att()
     b["path"] = "attack/artifacts.md"
     sev = {key(b, 0): {"to": "предупреждение", "why": "в"}, key(a, 1): {"to": "предупреждение", "why": "б"}, key(a, 0): {"to": "предупреждение", "why": "а"}}
-    lines = [x for x in prompt(tmp_path, plan_journal(), state(), attacks=[a, b], sev=sev)["text"].splitlines() if x.startswith("- тяжесть:")]
+    lines = [x for x in prompt(tmp_path, journal_for_prompt(), state(), attacks=[a, b], sev=sev)["text"].splitlines() if x.startswith("- тяжесть:")]
     assert [x.rsplit("«", 1)[1] for x in lines] == ["а»", "б»", "в»"]
 
 
 def test_severity_line_alone_has_no_placeholder(tmp_path):
     att = sev_att()
-    text = prompt(tmp_path, plan_journal(), state(), attacks=[att], sev={key(att, 0): {"to": "предупреждение", "why": "причина"}})["text"]
+    text = prompt(tmp_path, journal_for_prompt(), state(), attacks=[att], sev={key(att, 0): {"to": "предупреждение", "why": "причина"}})["text"]
     assert "(нового нет" not in text
 
 

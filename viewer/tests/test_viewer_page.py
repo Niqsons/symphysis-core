@@ -16,8 +16,8 @@ import pytest
 # conftest — первым: он ставит каталоги модулей в sys.path и при запуске одного файла (pytest.ini, pythonpath)
 from conftest import (ATTACK_FIX, core_files, deviation_journal, embedded_attack, fake_apply, FAKE_SHA, fake_status,
                       FIX, fork_calls, fork_env, fork_record, fork_reply, html_fixture, install_fork_shim, journal_of,
-                      one_record_journal, plan, real_fork, real_project, rec_of, render_page, requires_fork, ROOT,
-                      run_cli, scheme_embedded, smoke)
+                      one_record_journal, real_fork, real_project, rec_of, render_page, requires_fork, ROOT,
+                      run_cli, sample_journal, scheme_embedded, smoke)
 import journal
 import viewer_render
 
@@ -33,7 +33,7 @@ def embedded(html):
 
 
 def test_render_html_passes_every_parking_element_to_the_viewer():
-    j = plan()
+    j = sample_journal()
     rec_of(j, "F-01")["parking"].append({"addressee": "человек", "text": "второй вопрос"})
     data = embedded(journal.render_html(j, TEMPLATE))
     recs = {r["id"]: r for r in data["records"]}
@@ -43,7 +43,7 @@ def test_render_html_passes_every_parking_element_to_the_viewer():
 
 
 def test_render_html_generated_comes_from_the_journal_or_is_absent():
-    j = plan()
+    j = sample_journal()
     assert "generated" not in embedded(journal.render_html(j, TEMPLATE))
     j["generated"] = "2026-10-29"
     assert embedded(journal.render_html(j, TEMPLATE))["generated"] == "2026-10-29"
@@ -51,7 +51,7 @@ def test_render_html_generated_comes_from_the_journal_or_is_absent():
 
 
 def test_render_html_is_reproducible():
-    j = plan()
+    j = sample_journal()
     assert journal.render_html(j, TEMPLATE) == journal.render_html(copy.deepcopy(j), TEMPLATE)
 
 
@@ -63,7 +63,7 @@ requires_node = pytest.mark.skipif(node is None, reason="нет node: шабло
 
 @requires_node
 def test_viewer_script_is_valid_javascript(tmp_path):
-    html = journal.render_html(plan(), TEMPLATE)
+    html = journal.render_html(sample_journal(), TEMPLATE)
     script = html[html.rindex("<script>") + len("<script>"):html.rindex("</script>")]
     js = tmp_path / "viewer.js"
     js.write_text(script, encoding="utf-8")
@@ -73,7 +73,7 @@ def test_viewer_script_is_valid_javascript(tmp_path):
 
 @requires_node
 def test_viewer_renders_every_parking_element(tmp_path):
-    j = plan()
+    j = sample_journal()
     rec_of(j, "F-01")["parking"].append({"addressee": "ИБ", "text": "второй вопрос парковки"})
     html = tmp_path / "v.html"
     html.write_text(journal.render_html(j, TEMPLATE), encoding="utf-8", newline="\n")
@@ -82,7 +82,7 @@ def test_viewer_renders_every_parking_element(tmp_path):
     assert run.returncode == 0, run.stderr
     out = json.loads(run.stdout)
     assert "парковка: 2" in out["cards"]
-    assert "json разбирать проще" in out["cards"] and "второй вопрос парковки" in out["cards"]
+    assert "проверить перенос настроек" in out["cards"] and "второй вопрос парковки" in out["cards"]
     assert "в журнале" in out["cards"] and "→ ИБ" in out["cards"]
     assert "с парковкой <b>1</b>" in out["stats"]
 
@@ -90,7 +90,7 @@ def test_viewer_renders_every_parking_element(tmp_path):
 @requires_node
 def test_viewer_drops_ingested_parking_from_the_browser_state(tmp_path):
     # браузер помнит парковку, которую apply уже внёс в журнал: она не должна показываться дважды
-    j = plan()
+    j = sample_journal()
     rec_of(j, "F-01")["parking"].append({"addressee": "ИБ", "text": "второй вопрос парковки"})
     html, state = tmp_path / "v.html", tmp_path / "state.json"
     html.write_text(journal.render_html(j, TEMPLATE), encoding="utf-8", newline="\n")
@@ -107,14 +107,14 @@ def test_viewer_drops_ingested_parking_from_the_browser_state(tmp_path):
     assert [p["text"] for p in kept] == ["ещё не внесённый вопрос"]
 
 
-def test_render_html_embeds_json(tmp_path):
-    j = journal.import_md(FIX / "journal-plan.md")
+def test_render_html_embeds_json():
+    j = one_record_journal("a.md", "цитата")
     html = journal.render_html(j, ROOT / "viewer" / "playground-template.html")
-    assert "__JOURNAL_JSON__" not in html and '"F-19"' in html and "</script>" in html
+    assert "__JOURNAL_JSON__" not in html and embedded(html)["records"][0]["id"] == "F-01"
 
 
 def test_render_html_payload_follows_the_viewer_contract():
-    j = plan()
+    j = sample_journal()
     data = embedded(journal.render_html(j, TEMPLATE))
     recs = {r["id"]: r for r in data["records"]}
     park = j["records"][0]["parking"][0]
@@ -123,8 +123,8 @@ def test_render_html_payload_follows_the_viewer_contract():
     assert recs["F-01"]["finding"] == park["finding"]
     assert recs["F-02"]["parking"] == [] and recs["F-02"]["finding"] == ""
     forks = [r for r in j["records"] if r["kind"] == "развилка"]
-    assert data["source"] == "journal-plan.md" and data["title"] == j["title"]
-    assert data["stats"]["records"] == 24 and data["stats"]["forks"] == 19 and data["stats"]["facts"] == 5
+    assert data["source"] == j["source"] and data["title"] == j["title"]
+    assert data["stats"]["records"] == 11 and data["stats"]["forks"] == 9 and data["stats"]["facts"] == 2
     assert data["stats"]["decided"] == sum(1 for r in forks if r["decision"]) and data["stats"]["parked"] == 1
     assert "generated" not in data      # дата сборки — из журнала; своей даты рендер не придумывает
 
@@ -151,7 +151,7 @@ def test_render_html_requires_the_placeholder(tmp_path):
     template = tmp_path / "t.html"
     template.write_text("<html></html>", encoding="utf-8")
     with pytest.raises(ValueError, match="__JOURNAL_JSON__"):
-        journal.render_html(plan(), template)
+        journal.render_html(sample_journal(), template)
 
 
 def test_cli_render_html_writes_lf_and_checks_evidence(tmp_path):
@@ -183,7 +183,7 @@ def test_cli_render_html_reports_unmatched_evidence_and_still_renders(tmp_path):
 
 
 def test_render_html_without_attacks_embeds_empty_list():
-    html = journal.render_html(plan(), TEMPLATE)
+    html = journal.render_html(sample_journal(), TEMPLATE)
     assert "__ATTACK_JSON__" not in html
     assert embedded_attack(html) == []
     assert "sha256" not in embedded(html)      # хеш журнала — только когда подан
@@ -192,7 +192,7 @@ def test_render_html_without_attacks_embeds_empty_list():
 def test_render_html_with_attacks_embeds_rows_and_sha():
     attacks = [journal.parse_attack_md(ATTACK_FIX / "decisions.md"),
                journal.parse_attack_md(ATTACK_FIX / "artifacts.md")]
-    html = journal.render_html(plan(), TEMPLATE, attacks=attacks, journal_sha256="ab" * 32)
+    html = journal.render_html(sample_journal(), TEMPLATE, attacks=attacks, journal_sha256="ab" * 32)
     assert embedded_attack(html) == attacks      # результаты parse_attack_md как есть
     assert embedded(html)["sha256"] == "ab" * 32
 
@@ -201,10 +201,10 @@ def test_render_html_requires_both_placeholders(tmp_path):
     template = tmp_path / "t.html"
     template.write_text("<html>const JOURNAL = __JOURNAL_JSON__;</html>", encoding="utf-8")
     with pytest.raises(ValueError, match="__ATTACK_JSON__"):
-        journal.render_html(plan(), template)
+        journal.render_html(sample_journal(), template)
     template.write_text("<html>const ATTACK = __ATTACK_JSON__;</html>", encoding="utf-8")
     with pytest.raises(ValueError, match="__JOURNAL_JSON__"):
-        journal.render_html(plan(), template)
+        journal.render_html(sample_journal(), template)
 
 
 def attack_path_from_cwd(path) -> str:
@@ -270,7 +270,7 @@ def fixture_attacks():
 def test_viewer_state_belongs_to_one_page_not_to_every_journal(tmp_path):
     """Состояние браузера — своё у каждой страницы: у всех журналов `source` один (`decisions.json`), и ключ по нему
     приносил в промпт нового журнала варианты и буквы из другого журнала с теми же номерами F-NN."""
-    html = journal.render_html(plan(), TEMPLATE, journal_sha256=FAKE_SHA)
+    html = journal.render_html(sample_journal(), TEMPLATE, journal_sha256=FAKE_SHA)
     note = "замечание со страницы другого журнала"
     own = smoke(tmp_path, html, {"notes": note, "__pathname__": "/a/symphysis.html", "__key__": "symphysis:/a/symphysis.html"})
     assert note in own["out"]
@@ -280,7 +280,7 @@ def test_viewer_state_belongs_to_one_page_not_to_every_journal(tmp_path):
 
 @requires_node
 def test_viewer_has_two_modes_and_a_layout_switch(tmp_path):
-    out = smoke(tmp_path, journal.render_html(plan(), TEMPLATE))
+    out = smoke(tmp_path, journal.render_html(sample_journal(), TEMPLATE))
     assert out["modes"].count("<button") == 2
     assert 'data-mode="check"' not in out["modes"]
     assert 'data-layout="journal"' in out["layouts"] and 'data-layout="snapshot"' in out["layouts"]
@@ -289,7 +289,7 @@ def test_viewer_has_two_modes_and_a_layout_switch(tmp_path):
 
 def test_old_check_mode_migrates_to_journal_layout_without_touching_the_draft(tmp_path):
     state = {"notes": "черновик", "__suffixes__": {":mode": "check"}}
-    out = smoke(tmp_path, journal.render_html(plan(), TEMPLATE), state)
+    out = smoke(tmp_path, journal.render_html(sample_journal(), TEMPLATE), state)
     assert out["savedMode"] == "decisions" and out["savedLayout"] == "journal"
     saved = json.loads(out["saved"])
     assert saved["notes"] == "черновик" and saved["decisions"] == {}
@@ -299,7 +299,7 @@ def test_old_check_mode_migrates_to_journal_layout_without_touching_the_draft(tm
 def test_mode_write_failure_keeps_the_current_tab_and_the_draft(tmp_path):
     """Backstop F-19: `setItem` падает; страница продолжает работать, основной ключ не меняется."""
     state = {"notes": "черновик", "__suffixes__": {":mode": "check"}, "__fail_set__": ":mode"}
-    out = smoke(tmp_path, journal.render_html(plan(), TEMPLATE), state)
+    out = smoke(tmp_path, journal.render_html(sample_journal(), TEMPLATE), state)
     assert out["savedMode"] is None
     assert 'class="small active" data-mode="decisions"' in out["modes"]
     assert 'class="small active" data-layout="journal"' in out["layouts"]
@@ -308,7 +308,7 @@ def test_mode_write_failure_keeps_the_current_tab_and_the_draft(tmp_path):
 
 
 def test_snapshot_uses_the_shared_card_without_controls(tmp_path):
-    out = smoke(tmp_path, journal.render_html(plan(), TEMPLATE), {"__suffixes__": {":layout": "snapshot"}})
+    out = smoke(tmp_path, journal.render_html(sample_journal(), TEMPLATE), {"__suffixes__": {":layout": "snapshot"}})
     cards = out["cards"]
     assert '<span class="id mono">F-01</span>' in cards
     assert '<span class="letter">A.</span>' in cards and '<span class="letter">B.</span>' in cards
@@ -320,7 +320,7 @@ def test_snapshot_uses_the_shared_card_without_controls(tmp_path):
 
 
 def test_snapshot_ignores_a_choice_that_was_not_applied(tmp_path):
-    j = plan()
+    j = sample_journal()
     rec_of(j, "F-01")["decision"] = None
     rec_of(j, "F-01")["status"] = "открыт"
     state = {"decisions": {"F-01": {"choice": "B", "word": "", "parked": []}},
@@ -328,16 +328,16 @@ def test_snapshot_ignores_a_choice_that_was_not_applied(tmp_path):
     out = smoke(tmp_path, journal.render_html(j, TEMPLATE), state)
     cards = out["cards"]
     assert "Открытые развилки — с рекомендацией · 1" in cards
-    assert "решено <b>18</b>" in out["snapshotStats"] and "открыто <b>1</b>" in out["snapshotStats"]
+    assert "решено <b>8</b>" in out["snapshotStats"] and "открыто <b>1</b>" in out["snapshotStats"]
 
 
 def test_snapshot_moves_counters_to_the_header_and_makes_shared_controls_read_only(tmp_path):
-    j = plan()
+    j = sample_journal()
     j["notes"] = [{"date": "2026-11-08", "text": "заметка журнала"}]
     html = journal.render_html(j, TEMPLATE, journal_sha256=FAKE_SHA)
     snap = smoke(tmp_path, html, {"__suffixes__": {":layout": "snapshot"}})
     assert FAKE_SHA[:12] in snap["snapshotStats"] and "sha256 журнала" in snap["snapshotStats"]
-    assert "решено <b>19</b>" in snap["snapshotStats"] and "открыто <b>0</b>" in snap["snapshotStats"]
+    assert "решено <b>9</b>" in snap["snapshotStats"] and "открыто <b>0</b>" in snap["snapshotStats"]
     assert "улик не найдено <b>" in snap["snapshotStats"]
     assert snap["notesReadOnly"] is True and snap["newForkHidden"] is True and snap["outHidden"] is True
     assert "заметка журнала" in snap["journalNotes"] and "2026-11-08" in snap["journalNotes"]
@@ -351,7 +351,7 @@ def test_snapshot_layout_projects_records_like_render_design(tmp_path):
     """Раскладка «снимок»: хеш и счётчики в шапке, группа по дате решения («в одну сторону» первой, как
     `render_design`), проекция «куда уйдёт»: решение → Decisions, проба Specify → spec.md, Dismiss → никуда
     с причиной, факт → Context."""
-    j = plan()
+    j = sample_journal()
     recs = {r["id"]: r for r in j["records"]}
     recs["F-02"]["reversibility"] = {"level": "в одну сторону", "why": "контракт"}
     recs["F-04"]["outcome"] = {"kind": "проба", "value": "Specify", "reason": ""}
@@ -362,14 +362,14 @@ def test_snapshot_layout_projects_records_like_render_design(tmp_path):
     check = out["cards"]
     assert FAKE_SHA[:12] in out["snapshotStats"] and "sha256 журнала" in out["snapshotStats"]
     assert "атака не подана" in check and "вердиктом не считается" in check
-    assert "решено <b>19</b>" in out["snapshotStats"] and "открыто <b>0</b>" in out["snapshotStats"]
+    assert "решено <b>9</b>" in out["snapshotStats"] and "открыто <b>0</b>" in out["snapshotStats"]
     assert "улик не найдено <b>" in out["snapshotStats"]
     ids = re.findall(r'class="id mono">(F-\d+)<', check)
     assert ids[:3] == ["F-02", "F-01", "F-03"]          # F-02 «в одну сторону» — первой в группе 2026-10-29
-    assert "<h3>2026-10-29 · 17</h3>" in check          # 19 решённых минус две пробы
+    assert "<h3>2026-10-29 · 7</h3>" in check          # девять решённых минус две пробы
     assert "→ design.md › Decisions · в одну сторону — первой" in check
     assert "→ spec.md · исход Specify" in check and "→ никуда · причина: пары равных нет" in check
-    assert "→ design.md › Context" in check and check.count("design.md › Context") == 5
+    assert check.count("→ design.md › Context") == 2
     assert "design.md › Open Questions → research/" in check     # парковка F-01 «агент»
     assert "припарковано: агент <b>1</b>" in out["snapshotStats"]
     assert out["modes"].count("<button") == 2 and 'class="small active" data-mode="decisions"' in out["modes"]
@@ -383,7 +383,7 @@ def test_viewer_attack_mode_groups_by_lens_and_returns_disputes_as_notes(tmp_pat
     attacks = fixture_attacks()
     row = attacks[0]["rows"][1]                           # F-01, context-compliance, блокер
     key = f'{attacks[0]["path"]}|{row["section"]}|{row["claim"]}'
-    html = journal.render_html(plan(), TEMPLATE, attacks=attacks, journal_sha256=FAKE_SHA)
+    html = journal.render_html(sample_journal(), TEMPLATE, attacks=attacks, journal_sha256=FAKE_SHA)
     out = smoke(tmp_path, html, {"notes": "стрелка лишняя", "__suffixes__": {
         ":mode": "attack", ":attack": {"disputes": {key: "опора есть:\n  улика F-01 сверена"}}}})
     attack = out["attack"]
@@ -403,10 +403,10 @@ def test_viewer_attack_mode_groups_by_lens_and_returns_disputes_as_notes(tmp_pat
 @requires_node
 def test_viewer_attack_mode_marks_stale_verdict_and_missing_attack(tmp_path):
     attacks = fixture_attacks()
-    stale = smoke(tmp_path, journal.render_html(plan(), TEMPLATE, attacks=attacks, journal_sha256="ff" * 32),
+    stale = smoke(tmp_path, journal.render_html(sample_journal(), TEMPLATE, attacks=attacks, journal_sha256="ff" * 32),
                   {"__suffixes__": {":layout": "snapshot"}})
     assert "атака: gaps_found" in stale["cards"] and "вердикт устарел: журнал изменён после атаки" in stale["cards"]
-    none = smoke(tmp_path, journal.render_html(plan(), TEMPLATE), {"__suffixes__": {":mode": "attack"}})
+    none = smoke(tmp_path, journal.render_html(sample_journal(), TEMPLATE), {"__suffixes__": {":mode": "attack"}})
     assert "атака не подана: <code>render-html --attack" in none["attack"]
     assert "Замечания к схеме" not in none["out"]
 
@@ -430,7 +430,7 @@ def afile(rows, targets=JOURNAL_TARGET, path="attack/decisions.md", status="gaps
 def attack_view(tmp_path, attacks, suffixes=None, j=None):
     """Панели страницы в режиме «атака»; `suffixes` — дополнительные ключи browser storage (`:lens`)."""
     state = {"__suffixes__": dict({":mode": "attack"}, **(suffixes or {}))}
-    return smoke(tmp_path, journal.render_html(j or plan(), TEMPLATE, attacks=attacks, journal_sha256=FAKE_SHA), state)
+    return smoke(tmp_path, journal.render_html(j or sample_journal(), TEMPLATE, attacks=attacks, journal_sha256=FAKE_SHA), state)
 
 
 def without_rows(attack_html):
@@ -493,7 +493,7 @@ def test_viewer_attack_lens_lists_follow_the_target_of_the_file(tmp_path):
 @requires_node
 def test_viewer_attack_row_has_a_record_block(tmp_path):
     """6.2 и сценарий «Текст записи у строки»: `<details>` с вопросом записи, выбранным вариантом и переходом; без записи блока нет."""
-    j = plan()
+    j = sample_journal()
     rec = {r["id"]: r for r in j["records"]}["F-02"]
     picked = next(o for o in rec["options"] if o["letter"] == rec["decision"]["option"])
     rows = [arow(section="F-02, decision"), arow(section="F-99, decision", claim="нет такой записи"),
@@ -555,7 +555,7 @@ def test_viewer_attack_rule_compliance_own_warning_shows_its_reason(tmp_path):
 @requires_node
 def test_viewer_unchecked_evidence_is_neutral_not_missing(tmp_path):
     """Улика `found: null` («не проверить: бинарный файл») показана нейтрально, не как «не найдено»."""
-    j = plan()
+    j = sample_journal()
     j["records"][0]["evidence"] = [
         {"path": "a.bin", "quote": "q", "line": None, "found": None, "verdict": "не проверить: бинарный файл"},
         {"path": "b.md", "quote": "q", "line": None, "found": False, "verdict": "цитаты нет дословно"}]
@@ -571,7 +571,7 @@ XSS_IMG = "<img src=x onerror=alert(1)>"
 
 
 def xss_journal():
-    j = plan()
+    j = sample_journal()
     rec = j["records"][0]
     rec["decision"]["word"] = XSS_SCRIPT
     rec["question"] = "вопрос `код` и <b>жирный</b>"
@@ -662,7 +662,7 @@ def test_template_requires_the_scheme_mark(tmp_path):
     template = tmp_path / "t.html"
     template.write_text("<html>const JOURNAL = __JOURNAL_JSON__; const ATTACK = __ATTACK_JSON__;</html>", encoding="utf-8")
     with pytest.raises(ValueError, match="__SCHEME_JSON__"):
-        journal.render_html(plan(), template)
+        journal.render_html(sample_journal(), template)
 
 
 def test_scheme_with_script_end_keeps_the_page_whole_and_the_text_verbatim(tmp_path):
@@ -724,9 +724,9 @@ def test_page_carries_the_csp_and_no_embedded_plan_scheme():
 
 @requires_node
 def test_page_without_the_embedded_scheme_still_runs_all_modes(tmp_path):
-    html = journal.render_html(plan(), TEMPLATE, attacks=fixture_attacks(), journal_sha256=FAKE_SHA)
+    html = journal.render_html(sample_journal(), TEMPLATE, attacks=fixture_attacks(), journal_sha256=FAKE_SHA)
     done = smoke(tmp_path, html)
-    assert "F-19" in done["cards"] and done["out"]
+    assert "F-01" in done["cards"] and done["out"]
     assert smoke(tmp_path, html, {"__suffixes__": {":layout": "snapshot"}})["cards"]
     assert smoke(tmp_path, html, {"__suffixes__": {":mode": "attack"}})["attack"]
 
@@ -1254,13 +1254,13 @@ def test_no_signal_when_the_help_is_formed(tmp_path):
 
 
 def test_render_html_embeds_links_and_needs_their_mark(tmp_path):
-    html = journal.render_html(plan(), TEMPLATE, links={"root": "../", "files": {"a.md": "../a.md"}})
+    html = journal.render_html(sample_journal(), TEMPLATE, links={"root": "../", "files": {"a.md": "../a.md"}})
     assert '"a.md": "../a.md"' in html and '"root": "../"' in html
-    assert '"root": null' in journal.render_html(plan(), TEMPLATE)
+    assert '"root": null' in journal.render_html(sample_journal(), TEMPLATE)
     template = tmp_path / "t.html"
     template.write_text("const J = __JOURNAL_JSON__; const A = __ATTACK_JSON__; const S = __SCHEME_JSON__; const H = __HELP_JSON__;", encoding="utf-8")
     with pytest.raises(ValueError, match="__LINKS_JSON__"):
-        journal.render_html(plan(), template)
+        journal.render_html(sample_journal(), template)
 
 
 @requires_node

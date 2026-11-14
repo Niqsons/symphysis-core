@@ -82,18 +82,6 @@ def agent_files(root: Path = ROOT) -> list[Path]:
     return _in_modules(root, "*/agents/symphysis-*-driver.md")
 
 
-def missing_evidence_roots() -> list[str]:
-    """Корни улик из `default_roots()` (файл `tools/journal-roots.json`),
-    которых на этой машине нет: `префикс -> путь`."""
-    return [f"{prefix} -> {path}" for prefix, path in journal.default_roots().items() if not path.exists()]
-
-
-# Тест на настоящем журнале и настоящих корнях: на машине без корней — пропуск, не красное.
-requires_evidence_roots = pytest.mark.skipif(
-    bool(missing_evidence_roots()),
-    reason="на этой машине нет корней улик: " + "; ".join(missing_evidence_roots()))
-
-
 FORK_BIN = ROOT / "upstream" / "openspec" / "bin" / "openspec.js"
 FORK_DIST = ROOT / "upstream" / "openspec" / "dist" / "cli" / "index.js"
 
@@ -386,9 +374,9 @@ def deviating(target="F-01", letter="B", **fork_changes) -> dict:
 HEADER_LINK = "### Решения по журналу [j.md](http://j.md), 2026-10-29:\n\n"
 
 
-def plan():
-    """Журнал в состоянии после круга 1 (решения, парковка F-01, споры по фактам)."""
-    return journal.import_md(FIX / "journal-plan.md")
+def sample_journal():
+    """Учебные развилки, парковка с находкой и факты со спорами."""
+    return journal.import_md(FIX / "journal-sample.md")
 
 
 def rec_of(j, rid):
@@ -426,9 +414,6 @@ def fixture_text():
 
 def comments_of(j, rid):
     return next(r for r in j["records"] if r["id"] == rid)["comments"]
-
-
-PLAN_JOURNAL = FIX / "implementation-plan" / "plan-implementation.journal.json"
 
 
 TEMPLATE = ROOT / "viewer" / "playground-template.html"
@@ -510,7 +495,7 @@ def scheme_embedded(html):
 
 def render_page(tmp_path, scheme=None, out=None):
     src = tmp_path / "decisions.json"
-    journal.save_journal(src, plan())
+    journal.save_journal(src, sample_journal())
     if scheme is not None:
         (tmp_path / "scheme.md").write_text(scheme, encoding="utf-8", newline="")
     out = out or tmp_path / "page.html"

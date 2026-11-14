@@ -1,7 +1,7 @@
 import copy
 
 # conftest — первым: он ставит каталоги модулей в sys.path и при запуске одного файла (pytest.ini, pythonpath)
-from conftest import one_record_journal, PLAN_JOURNAL
+from conftest import journal_of, one_record_journal, sample_journal
 import journal
 
 
@@ -45,24 +45,6 @@ def section(md, name):
     return "\n".join(body)
 
 
-# --- тесты из брифа ---------------------------------------------------------
-
-def test_design_one_way_first():
-    j = journal.load_journal(PLAN_JOURNAL)
-    j["records"][2]["reversibility"] = {"level": "в одну сторону", "why": "форк"}
-    md = journal.render_design(j)
-    assert md.index("F-03") < md.index("F-02")
-
-
-def test_design_rejected_evidence_in_risks():
-    j = journal.load_journal(PLAN_JOURNAL)
-    md = journal.render_design(j)
-    # В брифе граница секции — `split("## ")`; улика F-01.A в живом журнале сама цитата
-    # «## F-01 <вопрос>», и такая граница рвёт Risks на первой же строке. Граница — начало строки.
-    risks = md.split("## Risks")[1].split("\n## ")[0]
-    assert "file-existence status does" in risks      # улика отвергнутой F-02.A
-
-
 # --- разделы ----------------------------------------------------------------
 
 def test_sections_follow_the_openspec_template_order():
@@ -80,8 +62,8 @@ def test_empty_sections_say_so():
     assert section(md, "Decisions").strip() == "нет: решённых развилок в журнале нет"
 
 
-def test_live_journal_renders_every_section_once():
-    md = journal.render_design(journal.load_journal(PLAN_JOURNAL))
+def test_journal_with_decisions_and_facts_renders_every_section_once():
+    md = journal.render_design(sample_journal())
     lines = md.split("\n")
     for s in SECTIONS:
         assert lines.count(s) == 1, s
@@ -340,14 +322,14 @@ def test_open_questions_carry_both_the_new_and_the_old_parking_addressee():
 # --- чистота ----------------------------------------------------------------
 
 def test_render_design_does_not_mutate_the_journal():
-    j = journal.load_journal(PLAN_JOURNAL)
+    j = journal_of(decided("F-01", "A", [opt("A", "первый"), opt("B", "второй", [ev("a.md", "цитата")])]))
     before = copy.deepcopy(j)
     journal.render_design(j)
     assert j == before
 
 
 def test_render_design_is_deterministic():
-    j = journal.load_journal(PLAN_JOURNAL)
+    j = sample_journal()
     assert journal.render_design(j) == journal.render_design(copy.deepcopy(j))
 
 

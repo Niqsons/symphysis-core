@@ -5,7 +5,7 @@ import re
 import pytest
 
 # conftest — первым: он ставит каталоги модулей в sys.path и при запуске одного файла (pytest.ini, pythonpath)
-from conftest import comments_of, FIX, FIXTURE, fixture_text, line_of, one_record_journal, plan, rendered
+from conftest import comments_of, FIXTURE, fixture_text, line_of, one_record_journal, rendered, sample_journal
 import journal
 
 
@@ -38,16 +38,16 @@ def refused(report):
 
 def test_md4h_refuses_sha_mismatch(tmp_path):
     md = tmp_path / "d.md"; md.write_text("<!-- journal:F-01 -->\n# x\n", encoding="utf-8")
-    b = journal.parse_md4h(FIX.joinpath("md4h-feedback.md").read_text(encoding="utf-8"))
-    j = journal.import_md(FIX / "journal-plan.md")
+    b = journal.parse_md4h(fixture_text())
+    j = one_record_journal("a.md", "цитата")
     report = journal.apply_md4h(j, b, md)
     assert report and "sha256" in report[0] and all(not r["comments"] for r in j["records"])
 
 
 def test_md4h_maps_comment_to_record(tmp_path):
-    j = journal.import_md(FIX / "journal-plan.md")
+    j = sample_journal()
     md = tmp_path / "d.md"; md.write_text(journal.render_md(j), encoding="utf-8")
-    b = journal.parse_md4h(FIX.joinpath("md4h-feedback.md").read_text(encoding="utf-8"))
+    b = journal.parse_md4h(fixture_text())
     b["source_sha256"] = journal.sha256_file(md); b["items"][0]["lines"] = (line_of(md, "<!-- journal:F-03 -->") + 2,) * 2
     journal.apply_md4h(j, b, md)
     assert next(r for r in j["records"] if r["id"] == "F-03")["comments"][0]["text"]
@@ -59,7 +59,7 @@ def test_parse_md4h_reads_the_fixture():
     b = journal.parse_md4h(fixture_text())
     assert {k: b[k] for k in ("schema", "state", "round", "source", "source_sha256")} == {
         "schema": "md4h-feedback/v2", "state": "sealed", "round": "20261028T201340Z-dfa6",
-        "source": "docs/plan-implementation.journal.md",
+        "source": "journal-sample.md",
         "source_sha256": "851326035e4670e223d4cdcd260a1d9a8aa1fe5953d0e29ee810857826638323"}
     assert [(i["id"], i["lines"], i["feedback"]) for i in b["items"]] == [
         ("F1", (363, 373), FEEDBACK_TEXT["F1"]),
@@ -165,7 +165,7 @@ def test_anchor_lines_match_whole_lines_only():
 
 
 def test_anchor_lines_of_a_render_cover_every_record():
-    j = plan()
+    j = sample_journal()
     anchors = journal.anchor_lines(journal.render_md(j))
     assert [rid for _, rid in anchors] == [r["id"] for r in j["records"]]
     assert [n for n, _ in anchors] == sorted(n for n, _ in anchors)
@@ -182,7 +182,7 @@ def test_sha256_file_hashes_the_bytes_on_disk(tmp_path):
 
 
 def test_comment_lands_on_the_record_with_round_lines_and_text(tmp_path):
-    j = plan()
+    j = sample_journal()
     md = rendered(tmp_path, j)
     start = line_of(md, "<!-- journal:F-03 -->")
     b = bundle_at(md, (start + 2, start + 4))
@@ -196,7 +196,7 @@ def test_comment_lands_on_the_record_with_round_lines_and_text(tmp_path):
 
 
 def test_comment_on_the_last_line_of_a_record_stays_with_it(tmp_path):
-    j = plan()
+    j = sample_journal()
     md = rendered(tmp_path, j)
     next_heading = line_of(md, "<!-- journal:F-04 -->") - 1       # заголовок F-04
     journal.apply_md4h(j, bundle_at(md, (next_heading - 2, next_heading - 2)), md)
@@ -204,7 +204,7 @@ def test_comment_on_the_last_line_of_a_record_stays_with_it(tmp_path):
 
 
 def test_comment_on_a_heading_belongs_to_that_record_not_the_one_above(tmp_path):
-    j = plan()
+    j = sample_journal()
     md = rendered(tmp_path, j)
     heading = line_of(md, "<!-- journal:F-05 -->") - 1
     assert journal.anchor_lines(md.read_bytes().decode("utf-8"))[4] == (heading + 1, "F-05")
@@ -213,7 +213,7 @@ def test_comment_on_a_heading_belongs_to_that_record_not_the_one_above(tmp_path)
 
 
 def test_comment_on_the_first_heading_belongs_to_the_first_record(tmp_path):
-    j = plan()
+    j = sample_journal()
     md = rendered(tmp_path, j)
     heading = line_of(md, "<!-- journal:F-01 -->") - 1
     report = journal.apply_md4h(j, bundle_at(md, (heading, heading)), md)
@@ -222,7 +222,7 @@ def test_comment_on_the_first_heading_belongs_to_the_first_record(tmp_path):
 
 
 def test_several_comments_go_to_their_records_in_document_order(tmp_path):
-    j = plan()
+    j = sample_journal()
     md = rendered(tmp_path, j)
     f2, f3 = line_of(md, "<!-- journal:F-02 -->"), line_of(md, "<!-- journal:F-03 -->")
     journal.apply_md4h(j, bundle_at(md, (f2 + 1, f2 + 1), (f2 + 2, f2 + 3), (f3 + 1, f3 + 1)), md)
@@ -231,7 +231,7 @@ def test_several_comments_go_to_their_records_in_document_order(tmp_path):
 
 
 def test_multiline_feedback_is_kept_as_written(tmp_path):
-    j = plan()
+    j = sample_journal()
     md = rendered(tmp_path, j)
     start = line_of(md, "<!-- journal:F-02 -->")
     b = bundle_at(md, (start + 1, start + 1), (start + 1, start + 1), (start + 1, start + 1))
@@ -240,7 +240,7 @@ def test_multiline_feedback_is_kept_as_written(tmp_path):
 
 
 def test_reapplying_the_same_bundle_adds_nothing(tmp_path):
-    j = plan()
+    j = sample_journal()
     md = rendered(tmp_path, j)
     start = line_of(md, "<!-- journal:F-03 -->")
     b = bundle_at(md, (start + 1, start + 1), (start + 1, start + 1))
@@ -252,7 +252,7 @@ def test_reapplying_the_same_bundle_adds_nothing(tmp_path):
 
 
 def test_same_lines_with_other_text_is_a_new_comment(tmp_path):
-    j = plan()
+    j = sample_journal()
     md = rendered(tmp_path, j)
     start = line_of(md, "<!-- journal:F-03 -->")
     b = bundle_at(md, (start + 1, start + 1))
@@ -263,7 +263,7 @@ def test_same_lines_with_other_text_is_a_new_comment(tmp_path):
 
 
 def test_same_text_in_another_round_is_a_new_comment(tmp_path):
-    j = plan()
+    j = sample_journal()
     md = rendered(tmp_path, j)
     start = line_of(md, "<!-- journal:F-03 -->")
     b = bundle_at(md, (start + 1, start + 1))
@@ -276,7 +276,7 @@ def test_same_text_in_another_round_is_a_new_comment(tmp_path):
 # --- отказы -----------------------------------------------------------------
 
 def test_unsealed_bundle_is_refused_without_touching_the_journal(tmp_path):
-    j = plan()
+    j = sample_journal()
     md = rendered(tmp_path, j)
     start = line_of(md, "<!-- journal:F-03 -->")
     b = bundle_at(md, (start + 1, start + 1))
@@ -289,7 +289,7 @@ def test_unsealed_bundle_is_refused_without_touching_the_journal(tmp_path):
 
 
 def test_unsealed_and_foreign_sha_both_named(tmp_path):
-    j = plan()
+    j = sample_journal()
     md = rendered(tmp_path, j)
     b = bundle_at(md, (10, 10))
     b["state"], b["source_sha256"] = "open", "0" * 64
@@ -299,7 +299,7 @@ def test_unsealed_and_foreign_sha_both_named(tmp_path):
 
 
 def test_sha_of_another_render_version_is_refused(tmp_path):
-    j = plan()
+    j = sample_journal()
     md = rendered(tmp_path, j)
     start = line_of(md, "<!-- journal:F-03 -->")
     b = bundle_at(md, (start + 1, start + 1))
@@ -311,7 +311,7 @@ def test_sha_of_another_render_version_is_refused(tmp_path):
 
 def test_sha_compares_bytes_not_text(tmp_path):
     # Тот же текст, другие концы строк — другой файл: связка к нему не относится.
-    j = plan()
+    j = sample_journal()
     md = rendered(tmp_path, j)
     start = line_of(md, "<!-- journal:F-03 -->")
     b = bundle_at(md, (start + 1, start + 1))
@@ -320,7 +320,7 @@ def test_sha_compares_bytes_not_text(tmp_path):
 
 
 def test_sha_is_compared_case_insensitively(tmp_path):
-    j = plan()
+    j = sample_journal()
     md = rendered(tmp_path, j)
     start = line_of(md, "<!-- journal:F-03 -->")
     b = bundle_at(md, (start + 1, start + 1))
@@ -329,7 +329,7 @@ def test_sha_is_compared_case_insensitively(tmp_path):
 
 
 def test_comment_above_the_first_record_is_refused_by_name(tmp_path):
-    j = plan()
+    j = sample_journal()
     md = rendered(tmp_path, j)
     b = bundle_at(md, (1, 1))
     before = copy.deepcopy(j)
@@ -339,7 +339,7 @@ def test_comment_above_the_first_record_is_refused_by_name(tmp_path):
 
 
 def test_one_refusal_keeps_every_comment_out(tmp_path):
-    j = plan()
+    j = sample_journal()
     md = rendered(tmp_path, j)
     start = line_of(md, "<!-- journal:F-03 -->")
     b = bundle_at(md, (start + 1, start + 1), (2, 2))       # первый годен, второй выше первой записи
@@ -351,7 +351,7 @@ def test_one_refusal_keeps_every_comment_out(tmp_path):
 
 
 def test_anchor_of_a_record_missing_from_the_journal_is_refused(tmp_path):
-    j = plan()
+    j = sample_journal()
     md = rendered(tmp_path, j)
     start = line_of(md, "<!-- journal:F-03 -->")
     b = bundle_at(md, (start + 1, start + 1))

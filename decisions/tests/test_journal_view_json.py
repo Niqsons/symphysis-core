@@ -11,7 +11,7 @@ import sys
 import pytest
 
 # conftest — первым: он ставит каталоги модулей в sys.path и при запуске одного файла (pytest.ini, pythonpath)
-from conftest import FIX, ROOT, fake_apply, fake_status, fork_env, fork_reply, install_fork_shim, one_record_journal
+from conftest import FIX, ROOT, fake_apply, fake_status, fork_env, fork_reply, install_fork_shim, one_record_journal, sample_journal
 import journal
 import journal_render
 
@@ -47,7 +47,7 @@ def page_payload(html: str) -> dict:
 def test_payload_is_what_the_page_gets_plus_additions(tmp_path):
     """Страница и расширение видят одну проекцию журнала: разойтись может только то, что добавлено."""
     src = tmp_path / "decisions.json"
-    journal.save_journal(src, journal.import_md(FIX / "journal-plan.md"))
+    journal.save_journal(src, sample_journal())
     out = tmp_path / "page.html"
     assert run_cli("render-html", src, "--out", out).returncode == 0
     data = view(src)
@@ -178,14 +178,14 @@ def test_broken_attack_file_does_not_hide_the_journal(tmp_path):
 
 
 def test_invalid_journal_refused_on_stderr(tmp_path):
-    j = journal.import_md(FIX / "journal-plan.md")
-    j["records"][2]["status"] = "готов"
+    j = one_record_journal("a.md", "цитата")
+    j["records"][0]["status"] = "готов"
     src = tmp_path / "decisions.json"
     journal.save_journal(src, j)
     run = run_cli("view-json", src)
     assert run.returncode == 1
     assert run.stdout == ""
-    assert run.stderr.startswith("[!!] F-03")
+    assert run.stderr.startswith("[!!] F-01")
 
 
 def test_stdout_is_utf8_whatever_the_locale(tmp_path):

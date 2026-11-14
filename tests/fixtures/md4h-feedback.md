@@ -3,7 +3,7 @@ schema: md4h-feedback/v2
 guide_version: 2
 state: sealed
 round: 20261028T201340Z-dfa6
-source: "docs/plan-implementation.journal.md"
+source: "journal-sample.md"
 source_base: workspace
 source_sha256: 851326035e4670e223d4cdcd260a1d9a8aa1fe5953d0e29ee810857826638323
 line_numbering: one-based-inclusive

@@ -9,7 +9,7 @@ import sys
 import pytest
 
 # conftest — первым: он ставит каталоги модулей в sys.path и при запуске одного файла (pytest.ini, pythonpath)
-from conftest import FIX, PLAN_JOURNAL, ROOT
+from conftest import FIX, ROOT, sample_journal
 import journal
 import journal_model
 
@@ -130,7 +130,7 @@ def test_mutations_match_reference(reference):
     assert checked > 1000
 
 
-REAL = [*sorted(ROOT.glob("openspec/changes/**/decisions.json")), PLAN_JOURNAL,
+REAL = [*sorted(ROOT.glob("openspec/changes/**/decisions.json")),
         ROOT / "openspec" / "schemas" / "symphysis" / "templates" / "decisions.json", FIX / "journal-deviation.json"]
 
 
@@ -141,7 +141,7 @@ def test_real_journals_match_reference(reference, path):
 
 
 def test_imported_markdown_matches_reference(reference):
-    doc = journal.import_md(FIX / "journal-plan.md")
+    doc = sample_journal()
     assert ours(doc) == reference(doc)
 
 
@@ -204,7 +204,7 @@ def test_unknown_schema_refused(schema):
 # --- антипод внутри одной записи (F-97) ----------------------------------------
 
 def inner_antipode_journal():
-    j = journal.import_md(FIX / "journal-plan.md")
+    j = sample_journal()
     fork = next(r for r in j["records"] if r["kind"] == "развилка" and len(r["options"]) >= 2)
     fork["antipodes"].append({"option": fork["options"][0]["letter"], "other": f"{fork['id']}.{fork['options'][1]['letter']}"})
     return j, fork["id"]

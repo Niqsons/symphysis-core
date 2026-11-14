@@ -5,7 +5,7 @@
  "records": [
   {
    "id": "F-01",
-   "question": "Журнал плана хранит парковки адресату «материалы»",
+   "question": "Старый журнал хранит парковки адресату «материалы»",
    "kind": "факт",
    "status": "решён",
    "addressee": "материалы",
@@ -22,8 +22,8 @@
    "consequences": "F-02",
    "evidence": [
     {
-     "path": "docs/plan-implementation.journal.json",
-     "quote": "\"addressee\": \"материалы\""
+     "path": "evidence.md",
+     "quote": "Прежний адресат парковки — материалы."
     }
    ],
    "comments": []

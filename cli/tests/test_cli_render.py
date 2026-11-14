@@ -6,7 +6,7 @@ import sys
 import pytest
 
 # conftest — первым: он ставит каталоги модулей в sys.path и при запуске одного файла (pytest.ini, pythonpath)
-from conftest import FIX, one_record_journal, plan, PLAN_JOURNAL, ROOT, strip_check_fields
+from conftest import FIX, one_record_journal, ROOT, sample_journal, strip_check_fields
 import journal
 
 
@@ -14,11 +14,11 @@ def test_cli_import_md_writes_valid_json(tmp_path):
     out = tmp_path / "plan.json"
     run = subprocess.run(
         [sys.executable, str(ROOT / "cli" / "journal.py"), "import-md",
-         str(FIX / "journal-plan.md"), "--out", str(out)],
+         str(FIX / "journal-sample.md"), "--out", str(out)],
         capture_output=True, text=True, encoding="utf-8")
     assert run.returncode == 0, run.stderr
     j = json.loads(out.read_text(encoding="utf-8"))
-    assert len(j["records"]) == 24 and journal.validate_journal(j) == []
+    assert j == sample_journal() and journal.validate_journal(j) == []
 
 
 def run_cli(*args):
@@ -29,7 +29,8 @@ def run_cli(*args):
 
 def test_cli_render_design_writes_the_file(tmp_path):
     src, out = tmp_path / "j.json", tmp_path / "design.md"
-    j = journal.load_journal(PLAN_JOURNAL)
+    j = one_record_journal("a.md", "цитата")
+    j["records"][0].update(status="решён", decision={"option": "A", "word": "берём", "date": "2026-10-29"})
     journal.save_journal(src, j)
     run = run_cli("render-design", src, "--out", out)
     assert run.returncode == 0, run.stderr
@@ -39,7 +40,7 @@ def test_cli_render_design_writes_the_file(tmp_path):
 
 def test_cli_render_design_writes_crlf_like_render_md(tmp_path):
     src, out = tmp_path / "j.json", tmp_path / "design.md"
-    journal.save_journal(src, journal.load_journal(PLAN_JOURNAL))
+    journal.save_journal(src, one_record_journal("a.md", "цитата"))
     assert run_cli("render-design", src, "--out", out).returncode == 0
     data = out.read_bytes()
     assert b"\r\n" in data and data.count(b"\n") == data.count(b"\r\n")      # ни одного голого \n
@@ -69,7 +70,7 @@ def test_cli_render_design_refuses_an_invalid_journal(tmp_path):
 
 def test_cli_render_md_writes_crlf_and_roundtrips(tmp_path):
     src, out = tmp_path / "j.json", tmp_path / "j.md"
-    j = plan()
+    j = sample_journal()
     journal.save_journal(src, j)
     run = run_cli("render-md", src, "--out", out)
     assert run.returncode == 0, run.stderr
@@ -82,7 +83,7 @@ def test_cli_render_md_writes_crlf_and_roundtrips(tmp_path):
 
 @pytest.mark.parametrize("command", ["render-md", "render-html"])
 def test_cli_render_refuses_an_invalid_journal(tmp_path, command):
-    j = plan()
+    j = sample_journal()
     j["records"][2]["status"] = "готов"
     src, out = tmp_path / "j.json", tmp_path / "out"
     journal.save_journal(src, j)
