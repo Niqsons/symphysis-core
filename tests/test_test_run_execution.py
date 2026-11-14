@@ -193,6 +193,36 @@ def test_run_distinguishes_core_failure_skip_and_zero_then_stops(execution_trees
     assert "PRIVATE_" in result.stdout + result.stderr or problem == "no-tests"
 
 
+@pytest.mark.parametrize(("has_journal", "reason", "skipped"), [
+    (False, "got empty parameter set for (path)", 0),
+    (True, "got empty parameter set for (path)", 1),
+    (False, "validator dependency unavailable", 1),
+])
+def test_empty_active_journal_inventory_is_not_a_missing_check(tmp_path, has_journal, reason, skipped):
+    changes = tmp_path / "openspec/changes"
+    (changes / "archive/example").mkdir(parents=True)
+    (changes / "archive/example/decisions.json").write_text("{}", encoding="utf-8")
+    if has_journal:
+        (changes / "active").mkdir()
+        (changes / "active/decisions.json").write_text("{}", encoding="utf-8")
+    xml = tmp_path / "result.xml"
+    xml.write_text(
+        '<testsuite><testcase classname="decisions.tests.test_journal_validator" '
+        'name="test_no_journal_of_this_tree_breaks_on_the_new_rule[NOTSET]">'
+        f'<skipped message="{reason}" type="pytest.skip" /></testcase></testsuite>',
+        encoding="utf-8",
+    )
+    sys.path.insert(0, str(TOOL.parent))
+    try:
+        from run_execution import _pytest_counts
+
+        result = _pytest_counts(xml, tmp_path)
+    finally:
+        sys.path.remove(str(TOOL.parent))
+
+    assert (result.passed, result.failed, result.skipped, result.not_applicable) == (0, 0, skipped, 1 - skipped)
+
+
 def test_run_reports_worktree_changed_after_the_selection_commit(execution_trees):
     core, _, plugin, _, log = execution_trees
     write(core, {"a/main.py": "selected commit\n"})

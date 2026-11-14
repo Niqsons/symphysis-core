@@ -147,6 +147,20 @@ def _invoke(name, command, root, env, log_dir):
     return proc.returncode, output, round(time.monotonic() - started, 3)
 
 
+def _no_active_journals(root):
+    # Match the validator's one-level inventory. An unreadable tree is not confirmed empty.
+    try:
+        for change in confined(root, "openspec/changes").iterdir():
+            try:
+                (change / "decisions.json").lstat()
+            except (FileNotFoundError, NotADirectoryError):
+                continue
+            return False
+    except OSError:
+        return False
+    return True
+
+
 def _pytest_counts(xml_path, root):
     try:
         cases = list(ElementTree.parse(xml_path).iter("testcase"))
@@ -157,8 +171,13 @@ def _pytest_counts(xml_path, root):
     for case in cases:
         skip = case.find("skipped")
         if skip is not None:
-            if (archived and case.get("classname") == "trace.tests.test_trace_graph"
-                    and case.get("name") in ARCHIVED_TRACE_TESTS and skip.get("message") == ARCHIVED_TRACE_REASON):
+            classname, name, reason = case.get("classname"), case.get("name"), skip.get("message")
+            archived_trace = (archived and classname == "trace.tests.test_trace_graph"
+                              and name in ARCHIVED_TRACE_TESTS and reason == ARCHIVED_TRACE_REASON)
+            empty_journals = (classname == "decisions.tests.test_journal_validator"
+                              and name == "test_no_journal_of_this_tree_breaks_on_the_new_rule[NOTSET]"
+                              and reason == "got empty parameter set for (path)" and _no_active_journals(root))
+            if archived_trace or empty_journals:
                 not_applicable += 1
             else:
                 skipped += 1
