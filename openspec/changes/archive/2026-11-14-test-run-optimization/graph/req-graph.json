@@ -4204,7 +4204,31 @@
  "roots": [
   {
    "prefix": "",
-   "commit": "d79ded14a64058f5c5007e7be13c6f285b348c75"
+   "commit": "cc8c0ccbb82eb6340685bc152f59734339eb57d0"
+  },
+  {
+   "prefix": "store/",
+   "commit": "531a2e84807eb4f3abe8fa3dacc3a53c6de95660"
+  },
+  {
+   "prefix": "playground/",
+   "commit": ""
+  },
+  {
+   "prefix": "md4h/",
+   "commit": ""
+  },
+  {
+   "prefix": "calibration/",
+   "commit": ""
+  },
+  {
+   "prefix": "archive/",
+   "commit": ""
+  },
+  {
+   "prefix": "catalog/",
+   "commit": "20c976814c279cd5cc2af9256b37e9258eb5f5d8"
   },
   {
    "prefix": "vscode/",
