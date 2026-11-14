@@ -6,7 +6,7 @@ import sys
 import pytest
 
 # conftest — первым: он ставит каталоги модулей в sys.path и при запуске одного файла (pytest.ini, pythonpath)
-from conftest import FIX, LIVE_JSON, one_record_journal, plan, ROOT, strip_check_fields
+from conftest import FIX, one_record_journal, plan, PLAN_JOURNAL, ROOT, strip_check_fields
 import journal
 
 
@@ -29,7 +29,7 @@ def run_cli(*args):
 
 def test_cli_render_design_writes_the_file(tmp_path):
     src, out = tmp_path / "j.json", tmp_path / "design.md"
-    j = journal.load_journal(LIVE_JSON)
+    j = journal.load_journal(PLAN_JOURNAL)
     journal.save_journal(src, j)
     run = run_cli("render-design", src, "--out", out)
     assert run.returncode == 0, run.stderr
@@ -39,7 +39,7 @@ def test_cli_render_design_writes_the_file(tmp_path):
 
 def test_cli_render_design_writes_crlf_like_render_md(tmp_path):
     src, out = tmp_path / "j.json", tmp_path / "design.md"
-    journal.save_journal(src, journal.load_journal(LIVE_JSON))
+    journal.save_journal(src, journal.load_journal(PLAN_JOURNAL))
     assert run_cli("render-design", src, "--out", out).returncode == 0
     data = out.read_bytes()
     assert b"\r\n" in data and data.count(b"\n") == data.count(b"\r\n")      # ни одного голого \n

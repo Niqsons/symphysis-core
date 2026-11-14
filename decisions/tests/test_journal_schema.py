@@ -6,7 +6,7 @@ import sys
 import pytest
 
 # conftest — первым: он ставит каталоги модулей в sys.path и при запуске одного файла (pytest.ini, pythonpath)
-from conftest import deviating, FIX, ROOT, setting_journal
+from conftest import deviating, FIX, PLAN_JOURNAL, ROOT, setting_journal
 import journal
 
 
@@ -190,7 +190,7 @@ def test_validate_does_not_mutate_input():
 def test_live_journal_records_attack_source_fork():
     """F-25 (D4b): источник механики атаки — слой проверки GSD, не гриль store; решено словом
     владельца 2026-10-30, улики на обе стороны — настоящие строки файлов."""
-    j = journal.load_journal(ROOT / "docs" / "plan-implementation.journal.json")
+    j = journal.load_journal(PLAN_JOURNAL)
     assert journal.validate_journal(j) == []
     rec = next(r for r in j["records"] if r["id"] == "F-25")
     assert (rec["kind"], rec["status"], rec["addressee"], rec["delivery"]) == ("развилка", "решён", "человек", "П3")
@@ -207,7 +207,7 @@ def test_live_journal_records_viewer_as_own_skill():
     """F-26 (D7): просмотрщик — свой скилл `symphysis-viewer` и свой шаблон, Playground — образец, не точка
     расширения; пересматривает F-18.B; решено словом владельца 2026-10-30, слово о группировке строк атаки
     по линзам — в следствиях, не только в TRANSLATION-NOTES."""
-    j = journal.load_journal(ROOT / "docs" / "plan-implementation.journal.json")
+    j = journal.load_journal(PLAN_JOURNAL)
     assert journal.validate_journal(j) == []
     rec = next(r for r in j["records"] if r["id"] == "F-26")
     assert (rec["kind"], rec["status"], rec["addressee"], rec["delivery"]) == ("развилка", "решён", "человек", "П7")
@@ -227,7 +227,7 @@ def test_live_journal_records_viewer_as_own_skill():
 # --- факт постановки и пометка отступления (5.1: F-17.A, F-08.A, F-36 Dismiss) ---------------
 
 FIXTURE_JOURNALS = sorted(FIX.glob("*/decisions.json"))
-LIVE_JOURNALS = [ROOT / "docs" / "plan-implementation.journal.json",
+LIVE_JOURNALS = [PLAN_JOURNAL,
                  *sorted((ROOT / "openspec" / "changes" / "archive").glob("*/decisions.json"))]
 
 

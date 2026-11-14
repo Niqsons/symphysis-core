@@ -6,22 +6,22 @@
 Ключи JSON английские, значения русские. Команды ниже — из корня ядра; в проекте скрипт лежит
 в `.symphysis/tools/journal.py`.
 
-    python cli/journal.py import-md docs/plan-implementation.journal.md \
-        --out docs/plan-implementation.journal.json
-    python cli/journal.py check docs/plan-implementation.journal.json [--strict] [--write]
-    python cli/journal.py render-md docs/plan-implementation.journal.json \
-        --out docs/plan-implementation.journal.md
-    python cli/journal.py render-html docs/plan-implementation.journal.json \
-        --out docs/plan-implementation.html [--template viewer/playground-template.html] \
+    python cli/journal.py import-md plan.journal.md \
+        --out plan.journal.json
+    python cli/journal.py check plan.journal.json [--strict] [--write]
+    python cli/journal.py render-md plan.journal.json \
+        --out plan.journal.md
+    python cli/journal.py render-html plan.journal.json \
+        --out plan.html [--template viewer/playground-template.html] \
         [--attack <каталог изменения>/attack/decisions.md [--attack <каталог изменения>/attack/artifacts.md]]
-    python cli/journal.py render-design docs/plan-implementation.journal.json \
+    python cli/journal.py render-design plan.journal.json \
         --out design.md
-    python cli/journal.py view-json docs/plan-implementation.journal.json \
+    python cli/journal.py view-json plan.journal.json \
         [--attack <каталог изменения>/attack/decisions.md]
-    python cli/journal.py apply docs/plan-implementation.journal.json answers.md \
+    python cli/journal.py apply plan.journal.json answers.md \
         [--date YYYY-MM-DD] [--dry-run]
-    python cli/journal.py apply-md4h docs/plan-implementation.journal.json feedback.md \
-        --render docs/plan-implementation.journal.md
+    python cli/journal.py apply-md4h plan.journal.json feedback.md \
+        --render plan.journal.md
     python cli/journal.py code-sites <каталог изменения>/decisions.json
 
 Markdown, HTML и design.md — производные от JSON: правится JSON, потом рендер. Корни путей

@@ -49,7 +49,7 @@ const FILES = [
 ];
 
 /** Строки контура разработки, которых в тексте продукта нет (docs/skills-canon.md, раздел 1). */
-const DEV_ONLY = [/upstream\//, /docs\/analysis\//, /TRANSLATION-NOTES/, /sources\//, /слово владельца/, /\b2026-\d\d/, /F-\d+\.[A-Z]\b/, /<!--\s*(?:src|dev)\b/];
+const DEV_ONLY = [/upstream\//, /(?:docs|plans)\/analysis\//, /TRANSLATION-NOTES/, /sources\//, /слово владельца/, /\b2026-\d\d/, /F-\d+\.[A-Z]\b/, /<!--\s*(?:src|dev)\b/];
 
 const tmp = () => tempDir("symphysis-payload-");
 

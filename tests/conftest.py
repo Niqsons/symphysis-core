@@ -428,7 +428,7 @@ def comments_of(j, rid):
     return next(r for r in j["records"] if r["id"] == rid)["comments"]
 
 
-LIVE_JSON = ROOT / "docs" / "plan-implementation.journal.json"
+PLAN_JOURNAL = FIX / "implementation-plan" / "plan-implementation.journal.json"
 
 
 TEMPLATE = ROOT / "viewer" / "playground-template.html"

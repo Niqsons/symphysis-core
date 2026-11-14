@@ -9,7 +9,7 @@ import sys
 import pytest
 
 # conftest — первым: он ставит каталоги модулей в sys.path и при запуске одного файла (pytest.ini, pythonpath)
-from conftest import FIX, ROOT
+from conftest import FIX, PLAN_JOURNAL, ROOT
 import journal
 import journal_model
 
@@ -130,7 +130,7 @@ def test_mutations_match_reference(reference):
     assert checked > 1000
 
 
-REAL = [*sorted(ROOT.glob("openspec/changes/**/decisions.json")), ROOT / "docs" / "plan-implementation.journal.json",
+REAL = [*sorted(ROOT.glob("openspec/changes/**/decisions.json")), PLAN_JOURNAL,
         ROOT / "openspec" / "schemas" / "symphysis" / "templates" / "decisions.json", FIX / "journal-deviation.json"]
 
 

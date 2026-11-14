@@ -4,14 +4,12 @@ import re
 import pytest
 
 # conftest — первым: он ставит каталоги модулей в sys.path и при запуске одного файла (pytest.ini, pythonpath)
-from conftest import (core_files, deviation_journal, FIX, one_record_journal, plan, render_page, requires_node, ROOT,
+from conftest import (core_files, deviation_journal, FIX, one_record_journal, plan, PLAN_JOURNAL, render_page, requires_node, ROOT,
                       run_cli, scheme_embedded, smoke, strip_check_fields, TEMPLATE)
 import journal
 import journal_render
 
 
-LIVE_JSON = ROOT / "docs" / "plan-implementation.journal.json"
-LIVE_MD = ROOT / "docs" / "plan-implementation.journal.md"
 
 
 def roundtrip(j):
@@ -381,13 +379,14 @@ def test_import_skips_an_outcome_line_not_by_form(capsys):
 # --- живой журнал ----------------------------------------------------------
 
 def test_live_journal_roundtrips_through_markdown():
-    j = journal.load_journal(LIVE_JSON)
+    j = journal.load_journal(PLAN_JOURNAL)
     assert strip_check_fields(roundtrip(j)) == strip_check_fields(j)
 
 
 def test_committed_markdown_is_the_render_of_the_json():
-    j = journal.load_journal(LIVE_JSON)
-    assert LIVE_MD.read_text(encoding="utf-8") == journal.render_md(j, json_name=LIVE_JSON.name)
+    j = journal.load_journal(PLAN_JOURNAL)
+    md = PLAN_JOURNAL.with_suffix(".md")
+    assert md.read_text(encoding="utf-8") == journal.render_md(j, json_name=PLAN_JOURNAL.name)
 
 
 # --- пометка «отступление от постановки»: `options[].deviation` (5.1, ruling: у варианта, F-28.E) ----

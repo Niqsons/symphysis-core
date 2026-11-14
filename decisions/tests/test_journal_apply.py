@@ -4,11 +4,10 @@ import json
 import pytest
 
 # conftest — первым: он ставит каталоги модулей в sys.path и при запуске одного файла (pytest.ini, pythonpath)
-from conftest import FIX, HEADER_LINK, plan, rec_of, ROOT, run_cli
+from conftest import FIX, HEADER_LINK, plan, PLAN_JOURNAL, rec_of, run_cli
 import journal
 
 
-LIVE_JSON = ROOT / "docs" / "plan-implementation.journal.json"
 DATE = "2026-10-30"
 
 HEADER_PLAIN = "Решения по журналу j.md, 2026-10-29:\n"
@@ -33,7 +32,7 @@ def test_apply_round1_reproduces_current_journal():
     j = journal.import_md(FIX / "journal-plan-before-round1.md")
     ans = journal.parse_answers((FIX / "answers-round1.md").read_text(encoding="utf-8"))
     journal.apply_answers(j, ans, date="2026-10-29")
-    now = journal.load_journal(ROOT / "docs/plan-implementation.journal.json")
+    now = journal.load_journal(PLAN_JOURNAL)
     # записи после круга 1 (с F-25, слово владельца 2026-10-30) дописаны в конец: промпт круга их не знал
     ids = [r["id"] for r in j["records"]]
     assert [r["id"] for r in now["records"]][:len(ids)] == ids
@@ -63,7 +62,7 @@ def round1():
     j = before()
     report = journal.apply_answers(
         j, journal.parse_answers((FIX / "answers-round1.md").read_text(encoding="utf-8")), date="2026-10-29")
-    return j, report, journal.load_journal(LIVE_JSON)
+    return j, report, journal.load_journal(PLAN_JOURNAL)
 
 
 def test_round1_has_no_refusals_and_leaves_a_valid_journal():

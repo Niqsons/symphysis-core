@@ -13,26 +13,28 @@
   `symphysis-vscode`, порты — `symphysis-giga` (GIGA IDE) и `symphysis-opencode`;
   подпись коммитов, что считается сменой контракта, пуш и пауза; читать перед
   правкой инструментов журнала и страницы.
-- `docs/plan-flexible-pipeline.md` — план и решения человека; читать
+- `plans/` — локальные планы и материалы проектирования. Из worktree
+  обращайся к `X:\symphysis\plans\` основного клона.
+- `plans/plan-flexible-pipeline.md` — план и решения человека; читать
   перед любой работой над схемой. Что берём из OpenSpec и GSD и почему
   пока без BMAD — раздел «Решение по основе».
-- `docs/analysis/sdd-frameworks-proactive-design.md` — механики поиска
+- `plans/analysis/sdd-frameworks-proactive-design.md` — механики поиска
   умолчаний с цитатами `путь:строка`: при переносе edge probe,
   prohibition probe, Failure Analyst в instruction.
-- `docs/analysis/sdd-frameworks-extensibility.md` — что OpenSpec держит
+- `plans/analysis/sdd-frameworks-extensibility.md` — что OpenSpec держит
   и чего не держит: при проектировании артефакта, гейта, вызова своего
   скилла.
-- `docs/plan-implementation.tasks.md` — план задач по частям 0, A–F
+- `plans/plan-implementation.tasks.md` — план задач по частям 0, A–F
   (окружение, журнал и скрипты, схема, форк, скиллы, инсталлятор,
   сухой прогон): файлы, сигнатуры, тесты, коммиты; исполнять
   по задачам, у каждой — свой тест.
-- `docs/plan-implementation.md` — план реализации (прикидка): поставки
+- `plans/plan-implementation.md` — план реализации (прикидка): поставки
   П1–П7, этапы Э0–Э5, сводка развилок. Развилки с уликами —
-  `docs/plan-implementation.journal.json` (источник; `.journal.md` —
+  `plans/plan-implementation.journal.json` (источник; `.journal.md` —
   его рендер, руками не править); человек решает их
-  в `docs/plan-implementation.html`, собранном командой
+  в `plans/plan-implementation.html`, собранном командой
   `cli/journal.py render-html` из шаблона `viewer/playground-template.html`.
-  Шаблон просмотрщика описан в `docs/playground-template-llm-pipeline.md`.
+  Шаблон просмотрщика описан в `plans/playground-template-llm-pipeline.md`.
 - Журнал — модули первого уровня, у каждого свой `README.md`: `cli/` (фасад `journal.py`
   с CLI и публичными именами, `journal_cli`), `decisions/` (`journal_model` — схема, проверка,
   импорт md; `journal_render` — md, html, design.md; `journal_apply` — сверка улик, внесение
@@ -64,8 +66,8 @@
 - `docs/skills-canon.md` — канон тела скилла и агента: скелет, правило с уровнем
   RFC 2119, таблицы только для справки, провенанс в `<!-- src: -->`, водитель по brief;
   читать перед правкой `<модуль>/skills/`. Ревью, по которому он написан, —
-  `docs/analysis/skills-review-2026-11-05.md`; проверка терминов —
-  `docs/analysis/terms-check-2026-11-06.md`.
+  `plans/analysis/skills-review-2026-11-05.md`; проверка терминов —
+  `plans/analysis/terms-check-2026-11-06.md`.
 - Общие файлы скиллов — у модулей, которые их держат (`skill-shared/terms.md`,
   `skill-shared/driver.md`, `cli/journal-cli.md`, `settings/config.md`, `decisions/candidate.md`,
   `attack/attack-table.md`): payload кладёт их в `docs/`, инсталлятор — в `.symphysis/docs/`.
@@ -76,7 +78,7 @@
   исследование): называют скилл и brief, не пересказывают; payload несёт их в `agents/`,
   инсталлятор кладёт в каталог агентов рядом с каждым каталогом скиллов (`.claude/agents/`),
   параметр `--agents-dir`. Какой шаг идёт водителю — ключ `drivers` в `symphysis.yaml`.
-- `docs/analysis/step0-sources.md` — чтение источников шага 0
+- `plans/analysis/step0-sources.md` — чтение источников шага 0
   с вердиктами: что берём как есть, что дорабатываем, что
   переписываем; при составлении instruction и формата журнала.
 - `upstream/openspec` — исходники OpenSpec 1.16.1, форк для правок:
@@ -87,7 +89,7 @@
   `gsd-core/references/edge-probe.md`, `prohibition-probe.md`;
   интервью — `gsd-core/workflows/spec-phase.md`, `discuss-phase.md`;
   установка проверяющих — `agents/*.md`, строка «FORCE stance».
-- `docs/analysis/gsd-openspec-integration.md` — разбор чужой связки
+- `plans/analysis/gsd-openspec-integration.md` — разбор чужой связки
   GSD Core ↔ OpenSpec: механик GSD над требованиями там нет; семь
   уроков из ошибок автора и три механики-кандидата (схема вердикта,
   классы расхождений, mutation check). Клон удалён, в разборе —

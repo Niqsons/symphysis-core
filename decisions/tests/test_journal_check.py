@@ -8,15 +8,22 @@ from pathlib import Path
 import pytest
 
 # conftest — первым: он ставит каталоги модулей в sys.path и при запуске одного файла (pytest.ini, pythonpath)
-from conftest import (core_clone, core_files, evidence_of, FIX, one_record_journal, requires_evidence_roots, ROOT,
+from conftest import (core_clone, core_files, evidence_of, FIX, one_record_journal, PLAN_JOURNAL, requires_evidence_roots, ROOT,
                       run_check)
 import journal
 
 
 @requires_evidence_roots
 def test_check_plan_journal_all_found():
-    j = journal.load_journal(ROOT / "docs/plan-implementation.journal.json")
-    r = journal.check_evidence(j, journal.default_roots())
+    j = journal.load_journal(PLAN_JOURNAL)
+    evidence = PLAN_JOURNAL.parent / "evidence"
+    plan_sources = {
+        "docs/plan-flexible-pipeline.md": evidence / "plan-flexible-pipeline.md",
+        "docs/plan-implementation.md": evidence / "plan-implementation.md",
+        "docs/analysis/step0-sources.md": evidence / "step0-sources.md",
+        "docs/analysis/gsd-openspec-integration.md": evidence / "gsd-openspec-integration.md",
+    }
+    r = journal.check_evidence(j, {**journal.default_roots(), **plan_sources})
     # 89 улик: F-01…F-24, F-25 (D4b), F-26 (D7), F-27; без нормализации (F-36). Улики прежних журналов — история
     # (F-24 A, ruling R9): путь, перенесённый изменением `module-structure`, остаётся в журнале и даёт «файла нет».
     assert r["total"] == 89
@@ -27,7 +34,7 @@ def test_check_plan_journal_all_found():
         assert item.startswith((wrapped, moved)) or item in absent, item
     for item in absent:                                          # «файла нет» называет только путь, которого в дереве нет
         path = item.split(": ", 1)[1].split(" «", 1)[0]
-        assert not (ROOT / path).exists(), item
+        assert not plan_sources.get(path, ROOT / path).exists(), item
     assert r["found"] + len(r["missing"]) == 89 and any(m.startswith(wrapped) for m in r["missing"])
 
 
@@ -264,15 +271,17 @@ def test_old_addressee_is_compared_exactly(tmp_path):
     assert run.returncode == 1 and "parking/0/addressee" in run.stderr and OLD_ADDRESSEE_SIGNAL not in run.stdout
 
 
-def test_legacy_fixture_journal_passes_check_with_a_line_per_record():
-    """Сценарий «Старый журнал годен» на фикстуре `journal-legacy`: без `--roots` улика сходится через корень `docs/`,
+def test_legacy_fixture_journal_passes_check_with_a_line_per_record(tmp_path):
+    """Сценарий «Старый журнал годен» на фикстуре `journal-legacy`: улика сходится по историческому пути,
     единственные строки `[!!]` — о старом значении у факта F-01 и у парковки F-02; код 0, с --strict — 2."""
-    run = run_check(LEGACY_FIX)
+    roots = tmp_path / "roots.json"
+    roots.write_text(json.dumps({"docs/plan-implementation.journal.json": str(PLAN_JOURNAL)}), encoding="utf-8")
+    run = run_check(LEGACY_FIX, "--roots", roots)
     assert run.returncode == 0, run.stdout + run.stderr
     assert run.stderr == "" and "[ok] улик сверено 1 из 1" in run.stdout
     assert [line for line in run.stdout.splitlines() if line.startswith("[!!]")] == [
         f"[!!] F-01: {OLD_ADDRESSEE_SIGNAL}", f"[!!] F-02: {OLD_ADDRESSEE_SIGNAL}"]
-    assert run_check(LEGACY_FIX, "--strict").returncode == 2
+    assert run_check(LEGACY_FIX, "--roots", roots, "--strict").returncode == 2
 
 
 # --- бинарные файлы (5.4) -----------------------------------------------------

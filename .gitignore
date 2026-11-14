@@ -6,7 +6,7 @@ __pycache__/
 .superpowers/
 installer/node_modules/
 installer/payload/
-# производные init форка и symphysis install — воспроизведение: docs/dry-run-journal.md, шаг 1
+# производные init форка и symphysis install — воспроизведение: plans/dry-run-journal.md, шаг 1
 .claude/
 .symphysis/
 symphysis.yaml
