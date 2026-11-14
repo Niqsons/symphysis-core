@@ -1,6 +1,13 @@
 ---
 name: anchors
 kind: доменный
+dependencies:
+  - repo: symphysis-core
+    module: openspec-run
+  - repo: symphysis-core
+    module: runtime
+  - repo: symphysis-core
+    module: trace
 ---
 
 # anchors

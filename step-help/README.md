@@ -1,6 +1,15 @@
 ---
 name: step-help
 kind: доменный
+dependencies:
+  - repo: symphysis-core
+    module: attack
+  - repo: symphysis-core
+    module: decisions
+  - repo: symphysis-core
+    module: openspec-run
+  - repo: symphysis-core
+    module: runtime
 ---
 
 # step-help

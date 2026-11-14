@@ -161,14 +161,17 @@
   `settings/symphysis_config.py`: файл настроек есть, а пакета нет — всё включено и сигнал
   с командой установки.
 - В Git Bash нет `jq` — скрипты хуков пишутся без него.
-- Тесты symphysis — `python -X utf8 -m pytest` — **всегда с xdist**:
-  `-n 12` стоит в `pytest.ini` (`addopts`), без него тесты не запускаются
+- Обычные тесты ядра — `python -X utf8 -m pytest` с `-n 12` из `pytest.ini`.
+  Браузерная группа — отдельный `python -X utf8 -m pytest -n 2 -m browser`.
+  Тесты ядра запускаются с xdist
   (правило владельца, 2026-10-30); пакеты — pytest, pytest-xdist, jsonschema,
   pyyaml (`requirements-dev.txt`). `jsonschema` — только эталон сверки проверщика
   (`decisions/tests/test_journal_validator.py`): без него сверка показывается пропуском
   и пройденной не считается. Тесты форка — `pnpm --dir upstream/openspec test`,
   сборка — `pnpm --dir upstream/openspec build`; CLI форка до сборки
   пакета — `node upstream/openspec/bin/openspec.js`.
+- Инсталлятор проверяется отдельным `npm --prefix installer test`. Ручной выбор
+  тестов и порядок запуска в одной сессии — [контракт репозиториев](docs/repo-contract.md#проверки-при-разработке).
 - git: работа идёт от `main`, своя ветка — свой worktree (`docs/repo-contract.md`);
   `upstream/` в `.gitignore`, форк —
   своя ветка `symphysis` в `upstream/openspec` с пином в `UPSTREAM.md`.

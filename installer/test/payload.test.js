@@ -99,6 +99,22 @@ test("устаревший файл в payload удаляется", () => {
   assert.ok(!fs.existsSync(path.join(dest, "tools", "old.py")));
 });
 
+test("payload не читает и не удаляет содержимое за ссылкой назначения", () => {
+  const outside = tmp();
+  const marker = path.join(outside, "marker.txt");
+  fs.writeFileSync(marker, "outside");
+  for (const nested of [false, true]) {
+    const parent = tmp();
+    const dest = path.join(parent, "payload");
+    if (nested) fs.mkdirSync(dest);
+    const alias = nested ? path.join(dest, "tools") : dest;
+    fs.symlinkSync(outside, alias, process.platform === "win32" ? "junction" : "dir");
+    assert.throws(() => syncPayload(dest), /ссылка.*payload/);
+    assert.equal(fs.readFileSync(marker, "utf8"), "outside");
+    assert.deepEqual(fs.readdirSync(outside), ["marker.txt"]);
+  }
+});
+
 test("устаревший файл удаляется и по кириллическому пути", () => {
   const dest = tempDir("symphysis-доставка-");
   fs.mkdirSync(path.join(dest, "tools"));

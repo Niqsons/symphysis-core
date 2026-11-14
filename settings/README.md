@@ -1,6 +1,11 @@
 ---
 name: settings
 kind: технический
+dependencies:
+  - repo: symphysis-core
+    module: roots
+  - repo: symphysis-core
+    module: runtime
 ---
 
 # settings

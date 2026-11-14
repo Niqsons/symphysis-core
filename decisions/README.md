@@ -1,6 +1,9 @@
 ---
 name: decisions
 kind: доменный
+dependencies:
+  - repo: symphysis-core
+    module: roots
 ---
 
 # decisions

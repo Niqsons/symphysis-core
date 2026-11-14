@@ -1,6 +1,9 @@
 ---
 name: consequences
 kind: доменный
+dependencies:
+  - repo: symphysis-core
+    module: roots
 ---
 
 # consequences

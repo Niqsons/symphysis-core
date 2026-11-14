@@ -1,0 +1,51 @@
+worktree revision: 3db11dfd
+Windows 11 Pro 10.0.26200; logical CPUs: 12
+Python 3.13.14; pytest 9.2.0; pluggy 1.7.0; pytest-xdist 3.8.0; Node 24.11.1; Chrome 157.0.8103.52; Mermaid 12.2.0
+Mermaid asset SHA-256: a8a6a6f805b074a8261a2825c86f99c8054acb3b35f50bb7e24a4f9f2c3c3b9f
+order: n0, n2, n12, n12, n2, n0
+command (from worktree): python3.13 -X utf8 -B -m pytest -p no:cacheprovider -n N -vv -rA --color=no --durations=0 --durations-min=0 --basetemp=<run-temp>/pytest --junitxml=<run-temp>/results.xml viewer/tests/test_viewer_browser.py
+env: TEMP=TMP=TMPDIR=<run-temp>, unique per run; PYTHONDONTWRITEBYTECODE=1; PYTEST_ADDOPTS and PYTEST_PLUGINS cleared; SYMPHYSIS_CHROME set to installed Chrome
+n0: pytest-xdist is loaded; zero workers are started. The test launching six drivers remains in all six runs.
+wall time: Stopwatch from before Start-Process to process exit observation (WaitForExit polls at 250 ms)
+cleanup time: JUnit testcase time for test_driver_removes_its_profile_under_load, includes setup and teardown
+process samples: every ~3 s, Python/Node/Chrome descendants of pytest or with the run-temp path in their command line, including previously observed processes with the same PID and creation time
+process/profile checks: after exit and 3 s later; process peaks are sampled lower bounds and each process type has its own maximum
+timeout: 600 s per whole run; pytest/browser-driver timeouts were not changed
+
+01-n0: tests=79 failures=0 errors=0 skipped=0 exit=0 timeout=False wall_s=168,441 pytest_s=167.490
+01-n0: cleanup=passed cleanup_s=7.667 peak_chrome=66 peak_node=6 peak_python=3 samples=52 available_ram_kib=27900624
+01-n0: after_exit_chrome/node/python/profiles=0/0/0/0 after_3s_chrome/node/python/profiles=0/0/0/0
+01-n0: cases_sha256=5e2c108aa21e90540b71c5c1ffad658454670a5fa7294afb1787d8caece4475f stderr_lines=0
+pytest: ======================= 79 passed in 167.52s (0:02:47) ========================
+
+02-n2: tests=79 failures=0 errors=0 skipped=0 exit=0 timeout=False wall_s=101,502 pytest_s=100.816
+02-n2: cleanup=passed cleanup_s=3.953 peak_chrome=62 peak_node=7 peak_python=6 samples=31 available_ram_kib=27710984
+02-n2: after_exit_chrome/node/python/profiles=0/0/0/0 after_3s_chrome/node/python/profiles=0/0/0/0
+02-n2: cases_sha256=5e2c108aa21e90540b71c5c1ffad658454670a5fa7294afb1787d8caece4475f stderr_lines=0
+pytest: ======================= 79 passed in 100.85s (0:01:40) ========================
+
+03-n12: tests=79 failures=0 errors=0 skipped=0 exit=0 timeout=False wall_s=72,765 pytest_s=72.302
+03-n12: cleanup=passed cleanup_s=14.481 peak_chrome=304 peak_node=16 peak_python=25 samples=20 available_ram_kib=27632072
+03-n12: after_exit_chrome/node/python/profiles=0/0/0/0 after_3s_chrome/node/python/profiles=0/0/0/0
+03-n12: cases_sha256=5e2c108aa21e90540b71c5c1ffad658454670a5fa7294afb1787d8caece4475f stderr_lines=0
+pytest: ======================== 79 passed in 72.34s (0:01:12) ========================
+
+04-n12: tests=79 failures=0 errors=0 skipped=0 exit=0 timeout=False wall_s=67,676 pytest_s=67.158
+04-n12: cleanup=passed cleanup_s=17.514 peak_chrome=162 peak_node=16 peak_python=25 samples=20 available_ram_kib=27477740
+04-n12: after_exit_chrome/node/python/profiles=0/0/0/0 after_3s_chrome/node/python/profiles=0/0/0/0
+04-n12: cases_sha256=5e2c108aa21e90540b71c5c1ffad658454670a5fa7294afb1787d8caece4475f stderr_lines=0
+pytest: ======================== 79 passed in 67.21s (0:01:07) ========================
+
+05-n2: tests=79 failures=0 errors=0 skipped=0 exit=0 timeout=False wall_s=96,452 pytest_s=95.199
+05-n2: cleanup=passed cleanup_s=3.422 peak_chrome=75 peak_node=7 peak_python=5 samples=29 available_ram_kib=27473984
+05-n2: after_exit_chrome/node/python/profiles=0/0/0/0 after_3s_chrome/node/python/profiles=0/0/0/0
+05-n2: cases_sha256=5e2c108aa21e90540b71c5c1ffad658454670a5fa7294afb1787d8caece4475f stderr_lines=0
+pytest: ======================== 79 passed in 95.24s (0:01:35) ========================
+
+06-n0: tests=79 failures=0 errors=0 skipped=0 exit=0 timeout=False wall_s=160,225 pytest_s=159.800
+06-n0: cleanup=passed cleanup_s=2.988 peak_chrome=11 peak_node=1 peak_python=2 samples=49 available_ram_kib=27609832
+06-n0: after_exit_chrome/node/python/profiles=0/0/0/0 after_3s_chrome/node/python/profiles=0/0/0/0
+06-n0: cases_sha256=5e2c108aa21e90540b71c5c1ffad658454670a5fa7294afb1787d8caece4475f stderr_lines=0
+pytest: ======================= 79 passed in 159.84s (0:02:39) ========================
+
+same case IDs: True
