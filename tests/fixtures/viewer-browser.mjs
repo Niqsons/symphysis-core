@@ -6,6 +6,7 @@
 // tab:<scheme|help> — переключатель панели; step:<шаг> — пункт списка справки; helpnext, helpprev — листание; howto — кнопка «Как готовить intent.md?»; theme:<dark|light> — цветовая раскладка;
 // clicklink — ссылка на файл внутри варианта; editor:<значение>[:<маска>] — выбор редактора; open:<страница> — другая страница в том же профиле.
 // layout:<journal|snapshot> — раскладка режима «решения».
+// decisionfilter:<all|open>[:enter], lens:<слуг>[:enter] — фильтр мышью или Enter; filterSteps хранит фокус и прокрутку после нажатия.
 // Итог на stdout: JSON с замером страницы, запросами наружу (`http`), запросами, которые заблокировала CSP (`blocked`), нарушениями и ошибками.
 import { spawn } from "node:child_process";
 import { existsSync, mkdirSync, mkdtempSync, readdirSync, readFileSync, writeFileSync } from "node:fs";
@@ -175,7 +176,7 @@ async function main() {
   await send("Page.navigate", { url });
   await loaded();
   await settled();
-  const buttons = {};
+  const buttons = {}, filterSteps = [];
   for (const action of actions) {
     const [name, ...args] = action.split(":");
     if (name === "panel") { await click("#btnScheme"); await settled(); }
@@ -188,7 +189,32 @@ async function main() {
     }
     if (name === "layout") { await click(`#layouts button[data-layout="${args[0]}"]`); await settled(); }
     if (name === "mode") { await click(`#modes button[data-mode="${args[0]}"]`); await settled(); }
-    if (name === "lens") { await click(`#lensFilter button[data-lens="${args[0]}"]`); await sleep(50); }
+    if (name === "lens" || name === "decisionfilter") {
+      const selector = name === "lens" ? `#lensFilter button[data-lens="${args[0]}"]` : (args[0] === "all" ? "#btnAll" : "#btnOpen");
+      const query = `document.querySelector(${JSON.stringify(selector)})`;
+      if (args[1] === "enter") {
+        await evaluate(`${query}.focus({ preventScroll: true })`);
+        const enter = { key: "Enter", code: "Enter", windowsVirtualKeyCode: 13 };
+        await send("Input.dispatchKeyEvent", { ...enter, type: "keyDown", text: "\r" });
+        await send("Input.dispatchKeyEvent", { ...enter, type: "keyUp" });
+      } else {
+        await evaluate(`(() => {
+          const button = ${query}, rect = button.getBoundingClientRect();
+          if (document.elementFromPoint(rect.x + rect.width / 2, rect.y + rect.height / 2) !== button) {
+            button.scrollIntoView({ block: 'center' });
+          }
+        })()`);
+        await click(selector);
+      }
+      filterSteps.push(await evaluate(`new Promise((resolve) => requestAnimationFrame(() => {
+        const active = document.activeElement, top = active.getBoundingClientRect().top;
+        const header = document.getElementById('pageHeader'), out = document.getElementById('outpanel');
+        resolve({ id: active.id, claim: active.dataset.claim ?? null, scrollY,
+          visibleBelowHeader: top >= header.getBoundingClientRect().bottom && top < out.getBoundingClientRect().top,
+          cards: [...document.querySelectorAll('#cards > .card')].map(card => card.id),
+          lens: document.querySelector('#lensFilter button.active')?.dataset.lens ?? null });
+      }))`));
+    }
     if (name === "reload") { await send("Page.navigate", { url }); await loaded(); await settled(); }
     if (name === "rebuilt") {
       // A fixture supplies the newly rendered bytes at the same page address.
@@ -284,7 +310,7 @@ async function main() {
   const measure = await evaluate(MEASURE);
   const csp = await evaluate("window.__csp");
   await sleep(100);
-  return { ...measure, http: [...sent.values()], blocked, files, errors, csp, buttons };
+  return { ...measure, http: [...sent.values()], blocked, files, errors, csp, buttons, filterSteps };
 }
 
 // Процессы Chrome переживают kill главного и держат файлы профиля, поэтому снятие повторяется, пока они не выйдут.
