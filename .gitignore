@@ -13,3 +13,15 @@ symphysis.yaml
 # каталоги IDE: проект открывается в разных IDE при проверках
 .idea/
 .gigaide/
+.symphysis/tools/journal-roots.json
+tools/journal-roots.json
+.symphysis/install-manifest.json
+.symphysis/.install-*
+.symphysis/.leases/
+.symphysis/store-init.json
+.symphysis/.store-init-*
+.symphysis/migration.json
+.symphysis/.migration-*
+.symphysis-install-*
+.symphysis-init-*
+.symphysis-migrate-*
