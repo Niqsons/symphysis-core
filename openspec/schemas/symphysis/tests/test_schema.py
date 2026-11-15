@@ -848,18 +848,25 @@ def operation_guidance(project):
 
 
 @requires_fork
-@pytest.mark.parametrize("config_path", [CONFIG_SAMPLE, ROOT / "openspec" / "config.yaml"], ids=["sample", "legacy-core"])
-def test_archive_guidance_reaches_instructions(tmp_path, config_path):
+@pytest.mark.parametrize(
+    ("config_path", "freeze_command"),
+    [
+        pytest.param(CONFIG_SAMPLE, FREEZE_COMMAND, id="sample"),
+        pytest.param(ROOT / "openspec" / "config.yaml", FREEZE_COMMAND, id="core"),
+        pytest.param(CONFIG_SAMPLE, "python .symphysis/tools/trace_graph.py freeze", id="legacy-command"),
+    ],
+)
+def test_archive_guidance_reaches_instructions(tmp_path, config_path, freeze_command):
     """`trace-snapshot`: «Снимка нет», «Снимок устарел», «Сборка не удалась», «Сборка при всех отмеченных задачах»,
     «Синхронизация внутри архивации» (F-49, F-75, F-127, F-128, F-139): подсказка операции — список строк ключа
     `operations.archive.guidance`, CLI отдаёт его полем `operationGuidance`."""
-    proj = make_project(tmp_path, config=config_path.read_text(encoding="utf-8"))
+    config = config_path.read_text(encoding="utf-8")
+    if freeze_command != FREEZE_COMMAND:
+        config = config.replace(FREEZE_COMMAND, freeze_command)
+    proj = make_project(tmp_path, config=config)
     guidance = operation_guidance(proj)
     assert isinstance(guidance, list) and guidance and all(isinstance(g, str) for g in guidance)
     text = " ".join(guidance)
-    # Existing local planning config is data; migrating the supplied sample must
-    # not silently rewrite it. The fork still transports that legacy guidance.
-    freeze_command = FREEZE_COMMAND if config_path == CONFIG_SAMPLE else "python .symphysis/tools/trace_graph.py freeze"
     for token in (freeze_command + " <имя>", "до выбора синхронизации", "Граф собран заново", "Снимок свежий", "`graph/report.md`",
                   "ошибку", "назови человеку", "архивацию не останавливай"):
         assert token in text, token
