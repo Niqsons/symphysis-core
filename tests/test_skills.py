@@ -1160,7 +1160,7 @@ def test_brainstorm_marks_a_deviation_from_the_setting():
     rule = block(brainstorm(), "#### Отступление от постановки", "\n#### ")
     for token in ("`options[].deviation: F-NN`", "противоречит сценарию факта", "`addressee: постановка`",
                   "у варианта, не у записи", "Уточнение без противоречия", "без поля", "видимость, не замок",
-                  "Решает человек", "выбранный вариант", "«Отступления от постановки»"):
+                  "Решает человек", "выбранный вариант", "«Deviations from Intent»"):
         assert token in rule, f"в правиле отступления нет «{token}»"
 
 
