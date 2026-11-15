@@ -509,17 +509,18 @@ def test_security_template_is_canon_checklist():
 
 def test_proposal_template_keeps_headings_the_cli_parses():
     text = template_text("proposal.md")
-    assert headings(text, 2) == ["Why", "What Changes", "Capabilities", "Impact", "Отступления от постановки"]
+    assert headings(text, 2) == ["Why", "What Changes", "Capabilities", "Impact", "Deviations from Intent"]
     assert headings(text, 3) == ["New Capabilities", "Modified Capabilities"]
-    assert section(text, "Отступления от постановки").strip().splitlines()[-1] == "нет"
+    assert section(text, "Deviations from Intent").strip().splitlines()[-1] == "нет"
     assert "F-MM против F-NN" in text and "Уточнение без противоречия" in text
 
 
 def test_proposal_deviations_come_from_the_deviation_field():
-    """5.1, решения контроллера 3 и ruling (F-28.E): раздел «Отступления от постановки» перечисляет решённые
+    """5.1, решения контроллера 3 и ruling (F-28.E): раздел «Deviations from Intent» перечисляет решённые
     развилки, чей выбранный вариант несёт поле `deviation` — строкой «F-MM против F-NN — <вариант>»."""
-    comment = section(template_text("proposal.md"), "Отступления от постановки")
+    comment = section(template_text("proposal.md"), "Deviations from Intent")
     instruction = " ".join(schema_block("proposal").split())
+    assert "«Deviations from Intent»" in instruction
     for text in (comment, instruction):
         for token in ("чей выбранный вариант несёт поле `deviation`", "`addressee: постановка`",
                       "«F-MM против F-NN — <вариант>»"):
