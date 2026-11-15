@@ -1345,10 +1345,24 @@ def test_brainstorm_reconciling_does_not_decide_for_the_human():
     assert "Тексты вариантов, рекомендации и `decision` прежних записей сверка не меняет" in step
 
 
-def test_attack_both_antipodes_is_a_warning_and_missing_nodes_is_not_a_finding():
-    """F-56: оговорка в линзе, как у `deviation`; F-114: отсутствие `nodes` не находка."""
+def test_attack_both_antipodes_is_a_warning():
+    """Оба выбранных антипода имеют свою тяжесть линзы без понижения человеком."""
+    warning = "предупреждение (оба антипода выбраны)"
     text = read(skill_dir("symphysis-attack") / "SKILL.md")
-    assert "оба антипода выбраны — `предупреждение (оба антипода выбраны)`" in text
+    assert warning in lens_row(text, "journal", "context-compliance")
+    lens = block(text, "#### context-compliance", "\n#### claim-authority")
+    assert f"оба антипода выбраны — `{warning}`" in lens
+    spec = read(ROOT / "openspec/specs/artifact-attack/spec.md")
+    rule = block(spec, "### Requirement: Собственное предупреждение линзы о выбранных антиподах", "\n### Requirement:")
+    assert f"тяжесть линзы SHALL быть `{warning}`" in rule
+    severity = block(read(SHARED["attack-table.md"]), "- **Тяжесть**", "\n- **Опора**")
+    assert f"`{warning}`" in severity
+    assert "«понижено: оба антипода выбраны»" in severity
+
+
+def test_attack_missing_nodes_is_not_a_finding():
+    """F-114: отсутствие `nodes` не находка."""
+    text = read(skill_dir("symphysis-attack") / "SKILL.md")
     assert "отсутствие поля `nodes` у записи" in block(text, "Не репортится", "### 5.")
 
 
