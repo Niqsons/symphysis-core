@@ -460,6 +460,19 @@ def test_attack_skill_reads_does_not_execute():
         assert token in rule, f"в правиле «читает, не исполняет» нет «{token}»"
 
 
+def test_attack_skill_checks_the_consequence_of_a_semantic_mismatch():
+    """Общее правило защищает обе ветви от блокера из-за разницы в формулировках."""
+    text = read(ATTACK_SKILL / "SKILL.md")
+    rule = block(text, "**Расхождение по существу.**", "\n\n")
+    assert "при смысловой сверке журнала и артефактов" in rule.lower()
+    assert "какое решение, поведение или проверка изменится" in rule
+    assert "проверяемое свойство сохраняется" in rule
+    assert "запись может сама фиксировать расхождение" in rule
+    verdict = block(text, "### 6.", "\n### 7.")
+    assert "Сигналы сверки" in verdict
+    assert "вердикт вызванной атаки" in verdict
+
+
 def test_attack_skill_demotion_needs_a_reason():
     """F-54.E, F-136.B: тяжесть «нет» — тяжесть линзы (у всех — блокер); иная — только по слову человека, с записью журнала
     или обоснованием человека, внесённым `apply`, в скобках той же ячейки; `artifact-attack`: «Понижение своим суждением»."""
