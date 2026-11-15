@@ -14,7 +14,7 @@ import { disableTelemetryIfUnset } from "./telemetry.js";
 import { parseDocument } from "yaml";
 import { validateWorkflowBundle, selectWorkflowCarriers } from "../scripts/build-workflow-carriers.js";
 import { createPredecessorAdoptionProof } from "./predecessor-adoption.js";
-import { ROOT, hasSources, payloadMatches } from "../scripts/sync-payload.js";
+import { ROOT, hasSources, isSchemaDevelopmentFile, isSourceCheckout, payloadMatches } from "../scripts/sync-payload.js";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 export const DEFAULT_PAYLOAD = path.resolve(here, "..", "payload");
@@ -172,7 +172,9 @@ export function planManagedInstall(project, options = {}) {
   const retired = new Set((adoptionProof?.retiredFiles ?? []).map((file) => installationKey(file.path)));
   const previousTargets = new Set((previous?.files ?? []).map((file) => installationKey(file.path)));
   const schemaRoots = [path.join(request.schemaDirectory, "symphysis"), ...(scope === "global" ? [path.join(runtimeRoot, "openspec", "schemas", "symphysis")] : [])];
+  const sourceCheckout = scope === "local" && isSourceCheckout(storeRoot);
   for (const schemaRoot of schemaRoots) for (const relative of payloadFiles(installationPath(schemaRoot, { directory: true }))) {
+    if (sourceCheckout && isSchemaDevelopmentFile(relative)) continue;
     const target = path.join(schemaRoot, relative);
     if (!desired.has(installationKey(target)) && !previousTargets.has(installationKey(target)) && !retired.has(installationKey(target))) throw new InstallationError("installation-conflict", `${target}: неизвестный файл схемы сохранён; native схема не совпадёт с управляемой поставкой. Требуется явное разрешение конфликта, --force его не отменяет.`);
   }

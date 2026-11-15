@@ -18,8 +18,12 @@ function inTestsDir(rel) {
  * Каталог схемы проекта получает не всё: тесты модуля схемы (F-23 A, F-58) и `README.md` модуля (F-36 A) —
  * контур разработки, образец конфига `config.symphysis.yaml` идёт отдельным файлом по прежнему пути payload (F-37 A).
  */
+export function isSchemaDevelopmentFile(rel) {
+  return rel === "README.md" || rel === "config.symphysis.yaml" || rel.startsWith("tests/");
+}
+
 function schemaFileExcluded(rel) {
-  return inTestsDir(rel) || rel === "README.md" || rel === "config.symphysis.yaml";
+  return isSchemaDevelopmentFile(rel) || inTestsDir(rel);
 }
 
 /**
@@ -191,6 +195,10 @@ export function hasSources(root = ROOT) {
     FILES.every(([src]) => fs.existsSync(path.join(root, src))) &&
     SHARED_FILES.every((src) => fs.existsSync(path.join(root, src)))
   );
+}
+
+export function isSourceCheckout(project) {
+  return path.relative(fs.realpathSync(ROOT), fs.realpathSync(project)) === "" && hasSources();
 }
 
 function mermaidDir(root) {

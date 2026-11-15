@@ -8,6 +8,7 @@ import { describeFailure, forkPin, runOpenspec } from "./openspec-bin.js";
 import { isFullyAbsolute } from "./paths.js";
 import { assertInstallationSnapshot } from "./installation-plan.js";
 import { legacySourceEvidence } from "./legacy-source-proof.js";
+import { isSchemaDevelopmentFile, isSourceCheckout } from "../scripts/sync-payload.js";
 
 const object = (value) => value !== null && typeof value === "object" && !Array.isArray(value);
 const identifier = (value) => typeof value === "string" && /^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(value);
@@ -157,7 +158,7 @@ export function userSchemaDirectory(env = process.env) {
   return path.join(base, "openspec", "schemas");
 }
 
-function schemaFiles(root) {
+function schemaFiles(root, { sourceCheckout = false } = {}) {
   if (!fs.lstatSync(root, { throwIfNoEntry: false })?.isDirectory()) fail("schema-source-conflict", "Ожидаемый каталог схемы отсутствует либо перенаправлен ссылкой", "Восстанови управляемую схему выбранной поставки");
   const files = new Map();
   const walk = (dir, prefix = "") => {
@@ -165,7 +166,9 @@ function schemaFiles(root) {
       if (entry.isSymbolicLink()) fail("schema-source-conflict", "Схема содержит перенаправленный ресурс", "Восстанови управляемую схему без посторонних ссылок");
       const rel = prefix ? `${prefix}/${entry.name}` : entry.name;
       if (entry.isDirectory()) { if (rel === "steps.md") fail("schema-source-conflict", "steps.md занят каталогом; это не отсутствие текста", "Восстанови файл текстов шагов выбранной поставки"); walk(path.join(dir, entry.name), rel); }
-      else if (entry.isFile()) files.set(rel, digest(fs.readFileSync(path.join(dir, entry.name))));
+      else if (entry.isFile()) {
+        if (!sourceCheckout || !isSchemaDevelopmentFile(rel)) files.set(rel, digest(fs.readFileSync(path.join(dir, entry.name))));
+      }
       else fail("schema-source-conflict", "Схема содержит неподдерживаемый тип ресурса", "Восстанови управляемые файлы схемы");
     }
   };
@@ -217,8 +220,9 @@ function verifySchema(context, manifest, name, run, options, env, { purpose, sch
   else if (actual.name !== name || actual.source !== (context.scope === "global" ? "user" : "project") || !isFullyAbsolute(actual.path) || path.relative(expected, actual.path) !== "" || !equalPath(expected, actual.path)) fail("schema-source-conflict", "Нативный источник схемы не совпадает с выбранной поставкой", "Сохрани конфликтующую схему и выполни явную настройку/миграцию");
   const schemaBase = context.scope === "global" ? context.runtime.root : context.store.root;
   if (!inside(fs.realpathSync(schemaBase), fs.realpathSync(context.runtime.schemaRoot))) fail("schema-source-conflict", "Каноническая схема перенаправлена за выбранную поставку", "Восстанови собственную схему без внешнего перенаправления");
-  const canonical = schemaFiles(context.runtime.schemaRoot);
-  const projected = schemaFiles(expected);
+  const inspection = { sourceCheckout: context.scope === "local" && isSourceCheckout(context.store.root) };
+  const canonical = schemaFiles(context.runtime.schemaRoot, inspection);
+  const projected = schemaFiles(expected, inspection);
   const coreCanonical = new Map([...canonical].filter(([file]) => file !== "steps.md"));
   const coreProjected = new Map([...projected].filter(([file]) => file !== "steps.md"));
   if (coreCanonical.size !== coreProjected.size || [...coreCanonical].some(([file, hash]) => coreProjected.get(file) !== hash) || (canonical.has("steps.md") && projected.has("steps.md") && canonical.get("steps.md") !== projected.get("steps.md"))) fail("schema-source-conflict", "Пользовательская проекция схемы отличается от runtime", "Восстанови управляемую проекцию; чужие файлы автоматически не заменяются");

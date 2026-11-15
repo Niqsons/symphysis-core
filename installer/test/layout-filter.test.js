@@ -68,6 +68,44 @@ test("`project-installer`: «Сверка не ждёт README»: check не н�
   assert.deepEqual(lines, []);
 });
 
+test("local install in its source checkout preserves development files and passes preflight", () => {
+  const { clone } = cloneWithReadme();
+  const installer = path.join(clone, "installer");
+  const schema = path.join(clone, "openspec", "schemas", "symphysis");
+  const developmentFiles = ["README.md", "config.symphysis.yaml", "tests/test_probe.py"]
+    .map((relative) => path.join(schema, relative));
+  const before = developmentFiles.map((file) => fs.readFileSync(file));
+  for (const directory of ["bin", "lib", "scripts", "node_modules/yaml"]) {
+    fs.cpSync(path.join(ROOT, "installer", directory), path.join(installer, directory), { recursive: true });
+  }
+  syncPayload(path.join(installer, "payload"), clone);
+  const env = { ...process.env, SYMPHYSIS_OPENSPEC: FORK, XDG_CONFIG_HOME: tmp(), XDG_DATA_HOME: tmp() };
+  const cli = (cwd, ...args) => spawnSync(process.execPath, [path.join(installer, "bin", "symphysis.js"), ...args], { cwd, env, encoding: "utf8" });
+
+  const installed = cli(clone, "install", "--scope", "local", "--client", "codex");
+  assert.equal(installed.status, 0, installed.stderr);
+  const manifest = JSON.parse(fs.readFileSync(path.join(clone, ".symphysis", "install-manifest.json"), "utf8"));
+  assert.ok(manifest.files.some((entry) => entry.path === path.join(schema, "schema.yaml")));
+  assert.ok(developmentFiles.every((file) => !manifest.files.some((entry) => entry.path === file)));
+  assert.deepEqual(developmentFiles.map((file) => fs.readFileSync(file)), before);
+  const preflight = cli(clone, "preflight", "--json");
+  assert.equal(preflight.status, 0, preflight.stderr || preflight.stdout);
+  assert.equal(JSON.parse(preflight.stdout).status, "ready");
+
+  const foreign = path.join(schema, "templates", "tests", "foreign.md");
+  fs.mkdirSync(path.dirname(foreign), { recursive: true });
+  fs.writeFileSync(foreign, "unmanaged schema resource\n");
+  assert.equal(cli(clone, "preflight", "--json").status, 2);
+  assert.match(cli(clone, "install", "--preview").stderr, /foreign\.md/);
+  const project = tmp();
+  const projectSchema = path.join(project, "openspec", "schemas", "symphysis");
+  fs.mkdirSync(projectSchema, { recursive: true });
+  fs.copyFileSync(developmentFiles[0], path.join(projectSchema, "README.md"));
+  const refused = cli(project, "install", "--scope", "local");
+  assert.equal(refused.status, 2, refused.stdout);
+  assert.match(refused.stderr, /README\.md/);
+});
+
 test("`repository-layout`: «Тесты модуля схемы»: в payload нет файлов каталогов тестов модулей (F-58)", () => {
   const { clone, skill } = cloneWithReadme();
   const payloadDir = tmp();
