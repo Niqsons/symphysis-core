@@ -104,7 +104,7 @@ requires_fork = pytest.mark.skipif(bool(fork_unavailable()), reason=fork_unavail
 # --- шим форка: `tests/fixtures/fork-shim/` --------------------------------
 
 FORK_SHIM = FIX / "fork-shim"
-FORK_VERSION = "1.16.1+symphysis.6"
+FORK_VERSION = "1.16.1+symphysis.7"
 
 # Граф схемы в порядке объявления: артефакт -> что требует, что пишет. Настоящий вывод сверяет `test_step_help.py`.
 SCHEMA_GRAPH = {
