@@ -1143,6 +1143,17 @@ def test_brainstorm_second_round_does_not_duplicate_setting_facts():
         assert token in step, f"в шаге 1 нет «{token}»"
 
 
+def test_brainstorm_surfaces_conflicting_intent_criteria_in_the_first_round():
+    text = brainstorm()
+    heading = "#### Сопоставь критерии готовности"
+    assert heading in block(text, "### 1.", "### 2.")
+    rule = block(text, heading, "\n#### ")
+    for token in ("На первом круге", "при первом чтении `intent.md`", "при одних и тех же условиях",
+                  "вопрос по шагу 5", "оба критерия дословно", "какой результат нужен",
+                  "оба исходных факта", "уточни условия их применения"):
+        assert token in rule, token
+
+
 def test_brainstorm_marks_a_deviation_from_the_setting():
     """(г) F-08.A, F-28.E, F-55.E: вариант против сценария факта постановки несёт поле `deviation: F-NN` —
     пометка у варианта, не у записи; уточнение без противоречия — без поля; пометка не замок."""
