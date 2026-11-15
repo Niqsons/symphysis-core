@@ -676,6 +676,44 @@ def test_jetbrains_preset_needs_the_project_root(tmp_path):
 
 # --- режим «атака»: фильтр по линзе (decision-viewer) ---------------------------------------------
 
+def test_decision_filter_focuses_first_matching_card(tmp_path):
+    j = journal_of(fork_record("F-01", A=["a.md"]), fork_record("F-02", chosen=None, A=["a.md"]),
+                   fork_record("F-03", chosen=None, A=["a.md"]))
+    html = page(tmp_path, j=j)
+    opened, all_records, repeated = browser(html, "decisionfilter:open", "decisionfilter:all:enter",
+                                             "decisionfilter:all:enter", size=(1400, 550))["filterSteps"]
+    assert opened["id"] == "F-02" and opened["cards"] == ["F-02", "F-03"]
+    assert all_records["id"] == "F-01" and all_records["cards"] == ["F-01", "F-02", "F-03"]
+    assert all(step["scrollY"] > 0 and step["visibleBelowHeader"] for step in (opened, all_records))
+    assert repeated["id"] == "title" and repeated["scrollY"] == 0
+    assert repeated["cards"] == all_records["cards"]
+
+
+def test_repeating_open_filter_returns_to_top_and_shows_all_records(tmp_path):
+    j = journal_of(fork_record("F-01", A=["a.md"]), fork_record("F-02", chosen=None, A=["a.md"]))
+    opened, repeated = browser(page(tmp_path, j=j), "decisionfilter:open", "decisionfilter:open:enter",
+                               size=(1400, 550))["filterSteps"]
+    assert opened["cards"] == ["F-02"]
+    assert repeated["cards"] == ["F-01", "F-02"]
+    assert repeated["id"] == "title" and repeated["scrollY"] == 0
+
+
+def test_empty_decision_filter_focuses_page_top(tmp_path):
+    j = journal_of(fork_record("F-01", A=["a.md"]))
+    result = browser(page(tmp_path, j=j), "decisionfilter:open:enter")["filterSteps"][0]
+    assert result["cards"] == []
+    assert result["id"] == "title" and result["scrollY"] == 0
+
+
+def test_repeating_filter_focuses_page_top_in_snapshot(tmp_path):
+    j = journal_of(fork_record("F-01", A=["a.md"]), fork_record("F-02", chosen=None, A=["a.md"]))
+    selected, repeated = browser(page(tmp_path, j=j), "layout:snapshot", "decisionfilter:open:enter",
+                                 "decisionfilter:open:enter")["filterSteps"]
+    assert selected["id"] == "btnOpen"
+    assert selected["cards"] == repeated["cards"] == ["", "F-01", "F-02"]
+    assert repeated["id"] == "title" and repeated["scrollY"] == 0
+
+
 def test_attack_filter_all_shows_every_lens_again(tmp_path):
     """`decision-viewer`: «Фильтр «все»» — выбрана одна линза, человек нажимает «все»: видны строки всех линз файла."""
     def row(lens):
@@ -712,6 +750,25 @@ def attack_page(tmp_path, rows, notes=(), path="attack/decisions.md"):
     html.write_text(journal.render_html(j, ROOT / "viewer" / "playground-template.html", attacks=[attack], journal_sha256="0" * 64),
                     encoding="utf-8", newline="\n")
     return html
+
+
+def test_attack_lens_focuses_first_visible_row_then_repeats_at_top(tmp_path):
+    rows = [dict(warning_row("первый раздел", "другая линза"), lens="context-compliance"),
+            warning_row("второй раздел", "первая подходящая строка"),
+            warning_row("третий раздел", "следующая строка")]
+    html = attack_page(tmp_path, rows)
+    selected, repeated, all_rows = browser(html, "mode:attack", "lens:claim-authority",
+                                          "lens:claim-authority:enter", "lens:all:enter", size=(880, 550))["filterSteps"]
+    assert selected["claim"] == "первая подходящая строка" and selected["lens"] == "claim-authority"
+    assert selected["scrollY"] > 0 and selected["visibleBelowHeader"]
+    assert repeated["id"] == "title" and repeated["scrollY"] == 0 and repeated["lens"] == "claim-authority"
+    assert all_rows["claim"] == "другая линза" and all_rows["lens"] == "all"
+
+
+def test_empty_attack_keeps_focus_at_top_when_recreating_lens_buttons(tmp_path):
+    html = attack_page(tmp_path, [])
+    result = browser(html, "mode:attack", "lens:all:enter")["filterSteps"][0]
+    assert result["id"] == "title" and result["scrollY"] == 0 and result["lens"] == "all"
 
 
 def test_read_toggle_on_one_row_marks_the_whole_section(tmp_path):
