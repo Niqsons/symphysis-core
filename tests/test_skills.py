@@ -460,6 +460,23 @@ def test_attack_skill_reads_does_not_execute():
         assert token in rule, f"в правиле «читает, не исполняет» нет «{token}»"
 
 
+def test_attack_skill_checks_the_consequence_of_a_semantic_mismatch():
+    """Общее правило защищает обе ветви от блокера из-за разницы в формулировках."""
+    text = read(ATTACK_SKILL / "SKILL.md")
+    rule = block(text, "**Расхождение по существу.**", "\n\n")
+    assert "при смысловой сверке журнала и артефактов" in rule.lower()
+    assert "какое решение, поведение или проверка изменится" in rule
+    assert "проверяемое свойство сохраняется" in rule
+    assert (
+        "решённая запись явно фиксирует расхождение с источником и принятый исход, "
+        "модель MUST пропустить строку о том же расхождении, в том числе при отсутствии "
+        "отдельной записи или пометки о нём"
+    ) in rule
+    verdict = block(text, "### 6.", "\n### 7.")
+    assert "Сигналы сверки" in verdict
+    assert "вердикт вызванной атаки" in verdict
+
+
 def test_attack_skill_demotion_needs_a_reason():
     """F-54.E, F-136.B: тяжесть «нет» — тяжесть линзы (у всех — блокер); иная — только по слову человека, с записью журнала
     или обоснованием человека, внесённым `apply`, в скобках той же ячейки; `artifact-attack`: «Понижение своим суждением»."""
@@ -1345,10 +1362,24 @@ def test_brainstorm_reconciling_does_not_decide_for_the_human():
     assert "Тексты вариантов, рекомендации и `decision` прежних записей сверка не меняет" in step
 
 
-def test_attack_both_antipodes_is_a_warning_and_missing_nodes_is_not_a_finding():
-    """F-56: оговорка в линзе, как у `deviation`; F-114: отсутствие `nodes` не находка."""
+def test_attack_both_antipodes_is_a_warning():
+    """Оба выбранных антипода имеют свою тяжесть линзы без понижения человеком."""
+    warning = "предупреждение (оба антипода выбраны)"
     text = read(skill_dir("symphysis-attack") / "SKILL.md")
-    assert "оба антипода выбраны — `предупреждение (оба антипода выбраны)`" in text
+    assert warning in lens_row(text, "journal", "context-compliance")
+    lens = block(text, "#### context-compliance", "\n#### claim-authority")
+    assert f"оба антипода выбраны — `{warning}`" in lens
+    spec = read(ROOT / "openspec/specs/artifact-attack/spec.md")
+    rule = block(spec, "### Requirement: Собственное предупреждение линзы о выбранных антиподах", "\n### Requirement:")
+    assert f"тяжесть линзы SHALL быть `{warning}`" in rule
+    severity = block(read(SHARED["attack-table.md"]), "- **Тяжесть**", "\n- **Опора**")
+    assert f"`{warning}`" in severity
+    assert "«понижено: оба антипода выбраны»" in severity
+
+
+def test_attack_missing_nodes_is_not_a_finding():
+    """F-114: отсутствие `nodes` не находка."""
+    text = read(skill_dir("symphysis-attack") / "SKILL.md")
     assert "отсутствие поля `nodes` у записи" in block(text, "Не репортится", "### 5.")
 
 
