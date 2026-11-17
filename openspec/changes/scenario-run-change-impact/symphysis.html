@@ -239,12 +239,12 @@ const JOURNAL = {
  "title": "Журнал решений: scenario-run-change-impact",
  "source": "decisions.json",
  "generated": "2026-11-17",
- "sha256": "15d27b2b064271f78caf16c2ae7891786c5ac13ec0eaf60852a0369014de751d",
+ "sha256": "298404a7b2eabe6a308637fd3d2dceafa95d5ba33329c7cee873359b8ef99a8d",
  "stats": {
   "records": 13,
   "forks": 8,
   "facts": 5,
-  "decided": 5,
+  "decided": 8,
   "parked": 0,
   "evidence_total": 42,
   "evidence_found": 42
@@ -938,7 +938,7 @@ const JOURNAL = {
    "id": "F-11",
    "question": "[ветка] Заморозка базы: первую заморозку сделали после sync и правки соседнего сценария, поэтому поздний снимок содержит уже перенесённый сценарий. Что атака считает исходной опорой?",
    "kind": "развилка",
-   "status": "открыт",
+   "status": "решён",
    "addressee": "человек",
    "depends_on": [],
    "delivery": "",
@@ -977,12 +977,20 @@ const JOURNAL = {
     "option": "A",
     "why": "Формально годный поздний снимок может скрыть изменение сценария, а отличие соседнего сценария выключает защиту по совпадению целого блока. Явный сценарий проверяет конкретный ложный допуск. Цена — фикстура порядка операций и её сопровождение."
    },
-   "decision": null,
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-17"
+   },
    "reversibility": null,
-   "outcome": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Specify",
+    "reason": ""
+   },
    "parking": [],
    "dispute": "",
-   "consequences": "",
+   "consequences": "в spec.md: Первый снимок сделан после синхронизации и правки дельты",
    "evidence": [
     {
      "path": "trace/trace_graph.py",
@@ -999,7 +1007,7 @@ const JOURNAL = {
    "id": "F-12",
    "question": "[ветка] Расчёт свежести читает подтверждённо использованную мастер-опору, файл существует, но чтение завершается ошибкой. Как это должны отразить статус и состав устаревания?",
    "kind": "развилка",
-   "status": "открыт",
+   "status": "решён",
    "addressee": "человек",
    "depends_on": [],
    "delivery": "",
@@ -1038,12 +1046,20 @@ const JOURNAL = {
     "option": "A",
     "why": "Без общего исхода одно чтение может завершиться исключением, а другой читатель продолжить показывать прежний вердикт. Различимый случай удерживает допуск и объясняет причину. Цена — сценарий и фикстуры отказа чтения для форка и ядра."
    },
-   "decision": null,
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-17"
+   },
    "reversibility": null,
-   "outcome": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Specify",
+    "reason": ""
+   },
    "parking": [],
    "dispute": "",
-   "consequences": "",
+   "consequences": "в spec.md: Использованная мастер-опора существует, но файл не читается",
    "evidence": [
     {
      "path": "attack/attack_scope.py",
@@ -1060,7 +1076,7 @@ const JOURNAL = {
    "id": "F-13",
    "question": "[ветка] Парсер отчёта узнаёт path во всём frontmatter. Если мастер-опора представлена отдельным списком с похожими полями, что проверять при чтении одного отчёта ядром и форком?",
    "kind": "развилка",
-   "status": "открыт",
+   "status": "решён",
    "addressee": "человек",
    "depends_on": [],
    "delivery": "",
@@ -1099,12 +1115,20 @@ const JOURNAL = {
     "option": "C",
     "why": "Граница целей и опор уже задана спецификациями, а точный риск возникает на уровне формата. Общая фикстура проверит чтение одного отчёта двумя парсерами и поймает расхождение, которое отдельные тесты не покажут."
    },
-   "decision": null,
+   "decision": {
+    "option": "C",
+    "word": "",
+    "date": "2026-11-17"
+   },
    "reversibility": null,
-   "outcome": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Backstop",
+    "reason": ""
+   },
    "parking": [],
    "dispute": "",
-   "consequences": "",
+   "consequences": "тест-страховка: подать ядру и форку один новый отчёт с локальной целью и мастер-опорой. При правке только опоры проверить stale и одну причину о мастере. При правке только локальной цели проверить причину о ней. Формат отчёта взять из design.",
    "evidence": [
     {
      "path": "attack/attack_table.py",
@@ -1147,7 +1171,7 @@ const SCHEME = {
 };
 const HELP = {
  "contract": 6,
- "taken_at": "2026-11-17T17:24:59+03:00",
+ "taken_at": "2026-11-17T17:31:29+03:00",
  "versions": {
   "openspec": "1.16.1+symphysis.8",
   "symphysis": "0.1.0+f11b1d25"
@@ -1155,12 +1179,12 @@ const HELP = {
  "change": "scenario-run-change-impact",
  "changes": null,
  "error": null,
- "current_step": "viewer",
- "current_text": "Следующий шаг по файлам — `viewer`, ход человека: открытых развилок 3, решаются на странице журнала. После них по файлам идёт `design`.",
- "turn": "human",
+ "current_step": "design",
+ "current_text": "Следующий шаг по файлам — `design`, ход модели.",
+ "turn": "model",
  "next_by_status": "design",
  "forks": {
-  "open": 3,
+  "open": 0,
   "parked": 0
  },
  "tasks": {
@@ -1240,7 +1264,7 @@ const HELP = {
   },
   {
    "id": "viewer",
-   "state": "ready",
+   "state": "idle",
    "turn": "human",
    "optional": false,
    "blocks": [],
