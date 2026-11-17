@@ -239,7 +239,7 @@ const JOURNAL = {
  "title": "Журнал решений: scenario-run-change-impact",
  "source": "decisions.json",
  "generated": "2026-11-17",
- "sha256": "5843a53cff567f48ca0d68514a9201efe6df237255f77b5f80417106958254b8",
+ "sha256": "5ddb07e784e77315a0057452831d6e81f2338623dfaebf3ba3d5411dfdaafcb3",
  "stats": {
   "records": 8,
   "forks": 3,
@@ -795,6 +795,10 @@ const JOURNAL = {
   {
    "date": "2026-11-17",
    "text": "круг 1 закончен: решений 3, фактов 5, открытых развилок 0, парковок агенту 0, антиподов 0"
+  },
+  {
+   "date": "2026-11-17",
+   "text": "брейншторм закончен по решению человека"
   }
  ]
 };
@@ -808,7 +812,7 @@ const SCHEME = {
 };
 const HELP = {
  "contract": 6,
- "taken_at": "2026-11-17T16:21:46+03:00",
+ "taken_at": "2026-11-17T16:24:59+03:00",
  "versions": {
   "openspec": "1.16.1+symphysis.8",
   "symphysis": "0.1.0+f11b1d25"
@@ -816,10 +820,10 @@ const HELP = {
  "change": "scenario-run-change-impact",
  "changes": null,
  "error": null,
- "current_step": "research",
- "current_text": "Следующий шаг по файлам — `research`, ход модели.",
+ "current_step": "proposal",
+ "current_text": "Следующий шаг по файлам — `proposal`, ход модели.",
  "turn": "model",
- "next_by_status": "research",
+ "next_by_status": "proposal",
  "forks": {
   "open": 0,
   "parked": 0
@@ -931,7 +935,7 @@ const HELP = {
   },
   {
    "id": "research",
-   "state": "ready",
+   "state": "done",
    "turn": "model",
    "optional": false,
    "blocks": [
@@ -942,11 +946,11 @@ const HELP = {
    "waits_for": [],
    "files": [
     {
-     "path": "openspec/changes/scenario-run-change-impact/research/**/*.md",
-     "exists": false
+     "path": "openspec/changes/scenario-run-change-impact/research/none.md",
+     "exists": true
     }
    ],
-   "file_note": null,
+   "file_note": "файл есть, содержание не проверялось",
    "texts": {
     "title": "Исследование и второй круг",
     "why": "Вопросы, припаркованные к агенту, получают ответ с цитатами из прочитанных файлов. Второй круг брейншторма закрывает по этим ответам записи журнала.",
@@ -974,14 +978,12 @@ const HELP = {
   },
   {
    "id": "attack-decisions",
-   "state": "blocked",
+   "state": "ready",
    "turn": "model",
    "optional": true,
    "blocks": [],
    "stops_apply": false,
-   "waits_for": [
-    "research"
-   ],
+   "waits_for": [],
    "files": [
     {
      "path": "openspec/changes/scenario-run-change-impact/attack/decisions.md",
@@ -1011,7 +1013,7 @@ const HELP = {
   },
   {
    "id": "proposal",
-   "state": "blocked",
+   "state": "ready",
    "turn": "model",
    "optional": false,
    "blocks": [
@@ -1019,9 +1021,7 @@ const HELP = {
     "design"
    ],
    "stops_apply": false,
-   "waits_for": [
-    "research"
-   ],
+   "waits_for": [],
    "files": [
     {
      "path": "openspec/changes/scenario-run-change-impact/proposal.md",
@@ -1360,6 +1360,8 @@ const HELP = {
   "intent.md": "openspec/changes/scenario-run-change-impact/intent.md",
   "openspec/changes/scenario-run-change-impact/decisions.json": "openspec/changes/scenario-run-change-impact/decisions.json",
   "openspec/changes/scenario-run-change-impact/intent.md": "openspec/changes/scenario-run-change-impact/intent.md",
+  "openspec/changes/scenario-run-change-impact/research/none.md": "openspec/changes/scenario-run-change-impact/research/none.md",
+  "research/none.md": "openspec/changes/scenario-run-change-impact/research/none.md",
   "scheme.md": "openspec/changes/scenario-run-change-impact/scheme.md",
   "symphysis.html": "openspec/changes/scenario-run-change-impact/symphysis.html",
   "symphysis.yaml": "symphysis.yaml"
@@ -1385,11 +1387,13 @@ const LINKS = {
   "openspec/changes/scenario-run-change-impact/answers/2026-11-17-combine-three-options.md": "answers/2026-11-17-combine-three-options.md",
   "openspec/changes/scenario-run-change-impact/decisions.json": "decisions.json",
   "openspec/changes/scenario-run-change-impact/intent.md": "intent.md",
+  "openspec/changes/scenario-run-change-impact/research/none.md": "research/none.md",
   "openspec/schemas/symphysis/templates/design.md": "../../schemas/symphysis/templates/design.md",
   "openspec/schemas/symphysis/templates/tasks.md": "../../schemas/symphysis/templates/tasks.md",
   "openspec/specs/artifact-attack/spec.md": "../../specs/artifact-attack/spec.md",
   "openspec/specs/trace-graph/spec.md": "../../specs/trace-graph/spec.md",
   "openspec/specs/trace-snapshot/spec.md": "../../specs/trace-snapshot/spec.md",
+  "research/none.md": "research/none.md",
   "scheme.md": "scheme.md",
   "symphysis.html": "symphysis.html",
   "symphysis.yaml": "../../../symphysis.yaml",
