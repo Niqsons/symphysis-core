@@ -900,3 +900,93 @@ def test_validate_findings_refuses_bad_name_before_fork(tmp_path, monkeypatch):
         trace_graph.validate_findings(tmp_path, "a&echo.>file")
     assert called == []
 
+
+def test_confirmed_sync_base_binds_the_snapshot_entry(tmp_path, fork):
+    root, base = modified_project(tmp_path)
+    freeze(root)
+    trace_graph.freeze_change(root, CHANGE, confirmed_pre_sync=True, capabilities=['demo'])
+    before = trace_graph.scenario_base(base, 'demo', 'Один')
+    assert set(before) == {'Старый', 'Меняется'}
+    sync(root)
+    freeze(root)
+    assert trace_graph.scenario_base(base, 'demo', 'Один') == before
+    snap = snapshot(base)
+    snap['base']['demo']['Один']['text'] = 'f' * 64
+    (base / 'graph/req-graph.json').write_text(json.dumps(snap), encoding='utf-8')
+    assert trace_graph.scenario_base(base, 'demo', 'Один') == {}
+
+
+def test_plain_and_late_freeze_do_not_certify_scenario_origin(tmp_path, fork):
+    root, base = modified_project(tmp_path)
+    freeze(root)
+    assert trace_graph.scenario_base(base, 'demo', 'Один') == {}
+    sync(root)
+    (base / 'specs/demo/spec.md').write_text(MODIFIED.replace('другое', 'ещё'), encoding='utf-8')
+    freeze(root)
+    assert trace_graph.scenario_base(base, 'demo', 'Один') == {}
+
+
+def test_confirmed_sync_does_not_promote_a_changed_or_repeated_base(tmp_path, fork):
+    root, base = modified_project(tmp_path)
+    freeze(root)
+    sync(root)
+    trace_graph.freeze_change(root, CHANGE, confirmed_pre_sync=True, capabilities=['demo'])
+    assert trace_graph.scenario_base(base, 'demo', 'Один') == {}
+    master_path(root).write_text(MASTER_BEFORE, encoding='utf-8')
+    trace_graph.freeze_change(root, CHANGE, confirmed_pre_sync=True, capabilities=['demo'])
+    assert trace_graph.scenario_base(base, 'demo', 'Один') == {}
+
+
+def test_scenario_origin_keeps_internal_whitespace(tmp_path, fork):
+    root, base = modified_project(tmp_path)
+    master_path(root).write_text(MASTER_BEFORE.replace('**WHEN** a', '**WHEN** a  b'), encoding='utf-8')
+    trace_graph.freeze_change(root, CHANGE, confirmed_pre_sync=True, capabilities=['demo'])
+    first = trace_graph.scenario_base(base, 'demo', 'Один')['Старый']
+    root2, base2 = modified_project(tmp_path / 'other')
+    master_path(root2).write_text(MASTER_BEFORE.replace('**WHEN** a', '**WHEN** a b'), encoding='utf-8')
+    trace_graph.freeze_change(root2, CHANGE, confirmed_pre_sync=True, capabilities=['demo'])
+    assert trace_graph.scenario_base(base2, 'demo', 'Один')['Старый'] != first
+
+
+def test_confirmed_carried_block_is_valid_origin(tmp_path, fork):
+    root, base = modified_project(tmp_path, CARRIED)
+    trace_graph.freeze_change(root, CHANGE, confirmed_pre_sync=True, capabilities=['demo'])
+    assert set(trace_graph.scenario_base(base, 'demo', 'Один')) == {'Старый', 'Меняется'}
+
+
+@pytest.mark.parametrize('capability', ['demo/inner', 'demo\\inner'])
+def test_confirmed_origin_for_nested_capability(tmp_path, fork, capability):
+    root, base = modified_project(tmp_path)
+    master = master_path(root)
+    nested_master = master.parent / 'inner/spec.md'
+    nested_master.parent.mkdir()
+    master.rename(nested_master)
+    delta = base / 'specs/demo/spec.md'
+    nested_delta = delta.parent / 'inner/spec.md'
+    nested_delta.parent.mkdir()
+    delta.rename(nested_delta)
+    trace_graph.freeze_change(root, CHANGE, confirmed_pre_sync=True, capabilities=[capability])
+    assert set(trace_graph.scenario_base(base, capability, 'Один')) == {'Старый', 'Меняется'}
+
+
+def test_confirmed_mixed_sync_keeps_existing_origin(tmp_path, fork):
+    root, base = modified_project(tmp_path)
+    added = base / 'specs/added/spec.md'
+    added.parent.mkdir()
+    added.write_text('## ADDED Requirements\n\n### Requirement: New\nText SHALL work.\n', encoding='utf-8')
+    trace_graph.freeze_change(root, CHANGE, confirmed_pre_sync=True, capabilities=['demo', 'added'])
+    assert set(trace_graph.scenario_base(base, 'demo', 'Один')) == {'Старый', 'Меняется'}
+
+
+def test_scenario_base_cli_exposes_only_bound_origin(tmp_path, fork):
+    root, base = modified_project(tmp_path)
+    trace_graph.freeze_change(root, CHANGE, confirmed_pre_sync=True, capabilities=['demo'])
+    done = subprocess.run([sys.executable, '-X', 'utf8', str(SCRIPT), 'scenario-base', CHANGE,
+                           '--capability', 'demo', '--requirement', 'Один'],
+                          cwd=root, text=True, encoding='utf-8', capture_output=True)
+    assert done.returncode == 0, done.stderr
+    result = json.loads(done.stdout)
+    assert result['scenarios'] == trace_graph.scenario_base(base, 'demo', 'Один')
+    assert result['scenarios']['Старый'] == result['delta_scenarios']['Старый']
+    assert result['scenarios']['Меняется'] != result['delta_scenarios']['Меняется']
+

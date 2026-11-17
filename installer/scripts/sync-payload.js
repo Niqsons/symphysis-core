@@ -42,6 +42,7 @@ const TOOLS_FILES = [
   "viewer/playground-template.html",
   "attack/attack_table.py",
   "attack/attack_scope.py",
+  "attack/attack_master.py",
   "consequences/journal_sites.py",
   "consequences/journal_consequences.py",
   "settings/symphysis_config.py",

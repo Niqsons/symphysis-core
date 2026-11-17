@@ -2,6 +2,7 @@
 import copy
 import hashlib
 import json
+import os
 import shutil
 import subprocess
 import sys
@@ -1455,3 +1456,108 @@ def test_probe_trace_on_the_line_of_text_number_gives_one_link(tmp_path):
     spec = spec_with("Текст (F-19) SHALL. <!-- проба краёв: исходы: F-19 Specify -->")
     root, _ = make_change(tmp_path, journal=["F-19"], specs={"demo": spec})
     assert edges_of(graph_of(root), "traces") == [("req:demo/Один", "rec:F-19", "traces", "specs/demo/spec.md:4")]
+
+
+def master_task_project(tmp_path, delta=None, name='Первый'):
+    root, base = make_change(tmp_path, specs={'demo': delta} if delta else {}, tasks=f'- [ ] 1.1 `demo`: «{name}»\n')
+    master = root / 'openspec/specs/demo/spec.md'
+    master.parent.mkdir(parents=True)
+    master.write_text(TWO_SCN.replace('## ADDED Requirements', '## Requirements'), encoding='utf-8')
+    return root, base, master
+
+
+def test_task_resolves_master_scenario_and_only_named_context(tmp_path):
+    root, _, _ = master_task_project(tmp_path)
+    graph, duplicates, unresolved = trace_graph.build_graph_with_signals(root, CHANGE)
+    assert duplicates == unresolved == []
+    assert edges_of(graph, 'satisfies') == [('task:1.1', 'scn:demo/Один/Первый', 'satisfies', 'tasks.md:1')]
+    scenarios = [node for node in graph['nodes'] if node['kind'] == 'scn']
+    assert len(scenarios) == 1 and scenarios[0]['scope'] == 'master'
+    assert scenarios[0]['at'].startswith('openspec/specs/demo/spec.md:')
+    assert edges_of(graph, 'verifies')[0][1] == 'req:demo/Один'
+    assert trace_graph.build_graph(root, CHANGE) == graph
+
+
+def test_task_prefers_delta_scenario_over_master(tmp_path):
+    root, _, _ = master_task_project(tmp_path, TWO_SCN.replace('Requirement: Один', 'Requirement: Другой'))
+    graph = graph_of(root)
+    assert edges_of(graph, 'satisfies')[0][1] == 'scn:demo/Другой/Первый'
+    assert not any(node.get('scope') == 'master' for node in graph['nodes'])
+
+
+@pytest.mark.parametrize('delta', [
+    '## REMOVED Requirements\n\n### Requirement: Один\nПричина.\n',
+    '## MODIFIED Requirements\n\n### Requirement: Один\nТекст SHALL.\n\n#### Scenario: Замена\n- **THEN** a\n',
+    TWO_SCN.replace('## ADDED Requirements', '## REMOVED Requirements'),
+])
+def test_task_does_not_restore_replaced_or_removed_master_scenario(tmp_path, delta):
+    root, _, _ = master_task_project(tmp_path, delta)
+    graph, _, unresolved = trace_graph.build_graph_with_signals(root, CHANGE)
+    assert edges_of(graph, 'satisfies') == []
+    assert len(unresolved) == 1
+
+
+def test_task_keeps_both_ambiguous_master_candidates(tmp_path):
+    root, _, path = master_task_project(tmp_path)
+    path.write_text(path.read_text(encoding='utf-8') + '\n### Requirement: Второй\nТекст SHALL.\n\n#### Scenario: Первый\n- **THEN** b\n', encoding='utf-8')
+    graph, duplicates, unresolved = trace_graph.build_graph_with_signals(root, CHANGE)
+    assert duplicates == unresolved == []
+    assert {edge[1] for edge in edges_of(graph, 'satisfies')} == {'scn:demo/Один/Первый', 'scn:demo/Второй/Первый'}
+    context = trace_graph.signal_context(root, CHANGE)
+    assert any('неоднозначное имя' in line for line in trace_graph.graph_signals(graph, [], [], context))
+
+
+def test_task_does_not_resolve_master_scenario_in_another_capability(tmp_path):
+    root, base, _ = master_task_project(tmp_path)
+    (base / 'tasks.md').write_text('- [ ] 1.1 `other`: «Первый»\n', encoding='utf-8')
+    graph, _, unresolved = trace_graph.build_graph_with_signals(root, CHANGE)
+    assert edges_of(graph, 'satisfies') == []
+    assert len(unresolved) == 1
+
+
+@pytest.mark.parametrize('location', ['capability', 'specs', 'root-alias'])
+def test_master_task_escape_is_rejected_before_read(tmp_path, monkeypatch, location):
+    root, _ = make_change(tmp_path, specs={}, tasks='- [ ] 1.1 `demo`: «Первый»\n')
+    outside = root if location == 'root-alias' else tmp_path / 'external'
+    outside.mkdir(exist_ok=True)
+    (outside / 'spec.md').write_text(TWO_SCN.replace('## ADDED Requirements', '## Requirements'), encoding='utf-8')
+    if location in ('specs', 'root-alias'):
+        (outside / 'demo').mkdir()
+        (outside / 'demo/spec.md').write_text((outside / 'spec.md').read_text(encoding='utf-8'), encoding='utf-8')
+        link = root / 'openspec/specs'
+        if link.exists():
+            link.rmdir()
+    else:
+        link = root / 'openspec/specs/demo'
+    link.parent.mkdir(parents=True, exist_ok=True)
+    if os.name == 'nt':
+        made = subprocess.run(['cmd', '/d', '/c', 'mklink', '/J', str(link), str(outside)], capture_output=True)
+        assert made.returncode == 0
+    else:
+        link.symlink_to(outside, target_is_directory=True)
+    read_text = trace_graph._read_text
+
+    def guarded(base, rel):
+        assert (base / rel).resolve() not in {(outside / 'spec.md').resolve(), (outside / 'demo/spec.md').resolve()}, 'external content was read'
+        return read_text(base, rel)
+
+    monkeypatch.setattr(trace_graph, '_read_text', guarded)
+    try:
+        graph, _, unresolved = trace_graph.build_graph_with_signals(root, CHANGE)
+        assert edges_of(graph, 'satisfies') == []
+        assert len(unresolved) == 1 and str(outside) not in json.dumps(unresolved)
+    finally:
+        if os.name == 'nt':
+            link.rmdir()
+        else:
+            link.unlink()
+
+
+def test_task_reports_duplicate_master_identity(tmp_path):
+    root, _, path = master_task_project(tmp_path)
+    text = path.read_text(encoding='utf-8')
+    path.write_text(text + '\n' + text.split('## Requirements', 1)[1], encoding='utf-8')
+    graph, duplicates, unresolved = trace_graph.build_graph_with_signals(root, CHANGE)
+    assert unresolved == []
+    assert len(edges_of(graph, 'satisfies')) == 1
+    assert any(item['id'] == 'scn:demo/Один/Первый' and len(item['at']) == 2 for item in duplicates)

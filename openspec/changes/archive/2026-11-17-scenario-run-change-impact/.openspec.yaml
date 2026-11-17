@@ -1,0 +1,8 @@
+schema: symphysis
+created: 2026-11-17
+x-symphysis-components:
+  scenario-run:
+    - repo: symphysis-core
+      root: ""
+      survey: found
+      exclude: [upstream]

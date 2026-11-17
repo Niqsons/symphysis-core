@@ -44,6 +44,82 @@
 Строка без линзы, тяжести или инварианта невалидна: парсер её отвергает, вердикт по ней
 не считается.
 
+## Мастер-опоры
+
+Если `scenario-run` использует блок мастер-спеки как опору, автор отчёта MUST записать
+идентификаторы и SHA-256 блока в отдельное верхнеуровневое поле `master_supports` frontmatter.
+Поле — однострочный JSON-массив. Элемент содержит `capability`, `requirement`, необязательное
+`scenario` и `sha256`. В массив идут только блоки, на которые опираются строки атаки.
+Найденный при поиске соседний блок сам по себе опорой не становится, иначе его правка даст ложный `stale`.
+
+`capability` — логическое имя, включая вложенное `identity/user-auth`; требование и сценарий
+именуются заголовками. Путь выводится из выбранного корня планирования и `openspec/specs/`.
+Абсолютные имена, компоненты `..` и выход по ссылке за выбранный корень или каталог мастер-спек
+отклоняются до чтения. Метаданные MUST содержать только идентификаторы и отпечатки, иначе отчёт
+скопирует исходный текст или абсолютный путь. Цели `targets[]` продолжают именовать файлы внутри изменения.
+
+Отпечаток вычисляется по строгому UTF-8 с удалением BOM только в начале файла и заменой CRLF/CR
+на LF. Блок начинается исходным заголовком и заканчивается перед следующим заголовком того же
+или высшего уровня вне fenced-блока кода, либо в конце файла. Разделительные пустые строки,
+комментарии и пробелы входят в отпечаток; блок требования включает сценарии. Используй
+`master_support` из `attack_master` при чтении используемого блока и сохрани полученный объект,
+иначе свёртка пробелов или хеш всего файла изменит область опоры. Перед оценкой строки сверь,
+что `master_block` того же модуля даёт блок с сохранённым отпечатком; оценивай прочитанный блок.
+
+Для воспроизводимой записи автор MUST получить `symphysis resolve --json` с теми же селекторами,
+сохранить доверенный stdout в UTF-8 в `<resolve.json>` и взять корень из `store.root`, инструменты
+из `runtime.toolsRoot`. Значения полей отчёта источником этих путей не служат. В `<used-blocks.json>`
+сохрани массив объектов `master_support`, полученных при чтении только использованных блоков,
+включая исходный `sha256`. Рецепт перед записью сверяет сохранённые отпечатки с текущими блоками;
+если блок изменился в ходе атаки, повтори проход по изменившейся опоре. Иначе отчёт присвоит новой
+версии блока вывод, сделанный по прежнему содержимому.
+Сохрани рецепт в `<write-master-supports.py>` в каталоге запуска и выполни
+`python -I <write-master-supports.py> <resolve.json> <имя изменения> <used-blocks.json>`.
+Иначе ручная запись отпечатков не воспроизводится при проверке свежести.
+
+```python
+import json
+import os
+import sys
+import tempfile
+from pathlib import Path
+
+try:
+    resolved = json.loads(Path(sys.argv[1]).read_text(encoding="utf-8-sig"))
+    if resolved.get("status") != "ready":
+        raise ValueError("runtime unavailable")
+    planning_root = Path(resolved["store"]["root"]).resolve()
+    changes = (planning_root / "openspec/changes").resolve()
+    change = (changes / sys.argv[2]).resolve()
+    report = (change / "attack/artifacts.md").resolve()
+    if not changes.is_relative_to(planning_root) or change.parent != changes or not report.is_relative_to(change):
+        raise ValueError("report outside selected change")
+    sys.path.insert(0, str(Path(resolved["runtime"]["toolsRoot"]).resolve()))
+    from attack_master import master_support, set_master_supports, validate_master_support
+    used = json.loads(Path(sys.argv[3]).read_text(encoding="utf-8-sig"))
+    if not isinstance(used, list):
+        raise ValueError("used blocks must be a list")
+    supports = [validate_master_support(selection) for selection in used]
+    for support in supports:
+        current = master_support(planning_root, support["capability"], support["requirement"], support.get("scenario"))
+        if current != support:
+            raise ValueError("used master block changed")
+    updated = set_master_supports(report.read_bytes().decode("utf-8"), supports).encode("utf-8")
+    with tempfile.NamedTemporaryFile(dir=report.parent, delete=False) as draft:
+        draft.write(updated)
+    try:
+        os.replace(draft.name, report)
+    finally:
+        Path(draft.name).unlink(missing_ok=True)
+except (OSError, UnicodeError, ValueError, TypeError, KeyError, IndexError):
+    raise SystemExit("master-support metadata could not be written") from None
+```
+
+`set_master_supports` заменяет поле с сохранением остальных байтов отчёта, включая `targets[]`.
+Ошибка чтения, неоднозначное имя или негодный блок не дают отпечатка. Автор MUST устранить
+ошибку перед записью `passed` с этой опорой, иначе незаписанная опора выпадет из свежести.
+Отчёт прежнего формата без поля проверяется по своим локальным целям.
+
 ## Строки покрытия
 
 - Раздел журнала без находок — `| чисто | <раздел> | coverage | — | справка | есть | — |`.

@@ -221,7 +221,7 @@ def _stale_scope(artifact: dict, status: dict) -> list[str]:
         reason = str(e)
         reason = reason[len(str(path)):].lstrip(":").strip() if reason.startswith(str(path)) else reason
         return [f"файл атаки не разбирается: {reason}"]
-    return scope_lines(attack, Path(status["changeRoot"]))
+    return scope_lines(attack, Path(status["changeRoot"]), status.get("planningHome", {}).get("root"))
 
 
 def _artifact_page(artifact: dict, status: dict, base: str, page: dict) -> dict:

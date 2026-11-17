@@ -1,0 +1,24 @@
+{
+ "format": 1,
+ "change": "scenario-run-change-impact",
+ "capabilities": {
+  "artifact-attack": {
+   "Строка атаки валидна только с линзой, тяжестью, инвариантом и опорой": {
+    "base_sha256": "580f9ebcf619f5128d3d4997b392a7e141fb4b8964ad9db27fffbf923092b5d5",
+    "scenarios": {
+     "Одна строка предупреждения": "16a1f9943e93bf41fc96015ba80f20f7fee3cd7e6fa1ce00f2d5d188566e009f",
+     "Невыводимое": "9afa9ff52759864c8c3b9eedd69bdf604dcf8e3cb7e15466656d0ce9ab83ec46",
+     "Сценарий не следует из механизма": "a364041bb7a9bcd6ac5043a59aa6418655f0d100be4d377e5ac214c443bf2e3e",
+     "Гигиена журнала не в атаке": "3ab1a1e04e3b6cd6dc02d5b66ace91d7e8089414b366cebb69eeb6b7f9c949b1",
+     "Черта в ячейке": "483fdb96fdb5c2fe382350e2a678247fbb7164692b2bd55c77e93c0dc6b8f7a2",
+     "Design молчит о механизме": "a1a743759779efc5df09127de136d7e27b9c3a5c68fbcd50b4e5a275d727160e",
+     "Два механизма на один сценарий": "d458c0c6bfd44aefc3db33af1f02fedbea1881e093a8bd7de74c5322ed00cabc",
+     "Обратная косая перед чертой в цитате кода": "07802a292f1f67e4b33ac2c45b177dc336dbd854c065c2725485b149be38d3f3"
+    }
+   }
+  },
+  "stale-verdict-scope": {},
+  "trace-graph": {},
+  "verdict-readiness": {}
+ }
+}

@@ -1,0 +1,1169 @@
+{
+ "title": "Журнал решений: scenario-run-change-impact",
+ "source": "decisions.json",
+ "intro": "Первый круг B-53. Пути улик считаются от корня worktree ядра symphysis. Основание: намерение, согласованный объём, первый проход атаки attack-lens-conventions, текущие спеки атаки и графа, design, tasks и код просмотрщика. В symphysis-core обнаружены модули anchors, attack, cli, consequences, decisions, installer, openspec-run, schema, probes, research, roots, runtime, settings, skill-shared, step-help, trace и viewer.",
+ "generated": "2026-11-17",
+ "notes": [
+  {
+   "date": "2026-11-17",
+   "text": "круг 1 закончен: решений 3, фактов 5, открытых развилок 0, парковок агенту 0, антиподов 0"
+  },
+  {
+   "date": "2026-11-17",
+   "text": "брейншторм закончен по решению человека"
+  },
+  {
+   "date": "2026-11-17",
+   "text": "проба краёв: кандидатов 1, Specify 1, Dismiss 0, Backstop 0, Defer 0; не выбран 24: artifact-attack/Строка атаки валидна только с линзой, тяжестью, инвариантом и опорой (3), artifact-attack/Scenario-run устанавливает область влияния изменения (3), artifact-attack/Scenario-run обосновывает сохранение прежнего исхода (2), artifact-attack/Адресная проверка обосновывает допуск к реализации (4), artifact-attack/Изменение мастер-опоры обесценивает вердикт (2), stale-verdict-scope/Состав устаревания называет изменившуюся мастер-опору (3), trace-graph/Граф связывает задачу со сценарием вне дельты (4), verdict-readiness/Изменившаяся мастер-опора видна в состоянии вердикта (3)"
+  },
+  {
+   "date": "2026-11-17",
+   "text": "проба запретов: требований 8, оставлено 1, канон → ИБ 0, Specify 1, Dismiss 0, Defer 0"
+  }
+ ],
+ "records": [
+  {
+   "id": "F-01",
+   "question": "Критерии готовности в намерении: «Без критериев готовности».",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "постановка",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/archive/2026-11-17-scenario-run-change-impact/intent.md",
+     "quote": "Без критериев готовности",
+     "line": 14,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-02",
+   "question": "Владелец предложил объединить описание сохраняемых свойств в design, проверку влияния в атаке и адресную проверку на реализации.",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "агент",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/archive/2026-11-17-scenario-run-change-impact/answers/2026-11-17-combine-three-options.md",
+     "quote": "Я бы попробовал взять все три",
+     "line": 11,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "openspec/changes/archive/2026-11-17-scenario-run-change-impact/answers/2026-11-17-combine-three-options.md",
+     "quote": "В `tasks.md` поставить адресную проверку для последствия, которое можно подтвердить только на реализации.",
+     "line": 7,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-03",
+   "question": "В прежней атаке шесть дословно перенесённых сценариев заблокированы из-за отсутствия механизма в design. Строки атаки служат входом существующего промпта и ключа строки тяжести.",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "агент",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/archive/2026-11-08-attack-lens-conventions/briefs/symphysis-attack-2026-11-08/report.md",
+     "quote": "шесть строк scenario-run с опорой «нет: design не называет механизм». Эти сценарии перенесены в MODIFIED без правки",
+     "line": 16,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "openspec/changes/archive/2026-11-08-attack-lens-conventions/design.md",
+     "quote": "несёт восемь сценариев мастер-спеки дословно: дельта MODIFIED заменяет мастер-требование целиком.",
+     "line": 84,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "viewer/playground-template.html",
+     "quote": "const key = att.path + '|' + r.section + '|' + r.claim, sp = norm((disputes || {})[key]);",
+     "line": 924,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "viewer/playground-template.html",
+     "quote": "return att.path + '|' + row.section + '|' + row.claim;",
+     "line": 308,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-04",
+   "question": "Сейчас отсутствие механизма в design даёт блокер; проверка до реализации читает код, а шаблон задач уже предусматривает проверяемый результат.",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "агент",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/archive/2026-11-17-scenario-run-change-impact/verification/baseline-code.md",
+     "quote": "Механизм не назван — `блокер`, воздержания нет: ответ выводится из design.",
+     "line": 10,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "openspec/specs/artifact-attack/spec.md",
+     "quote": "исход по коду выводится чтением и рассуждением, существование путей и имён проверяется грепом",
+     "line": 78,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "openspec/schemas/symphysis/templates/tasks.md",
+     "quote": "проверка: <тест, команда, наблюдаемый результат, файл>",
+     "line": 22,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-05",
+   "question": "Граф опирается на артефакты изменения и явные объявления. Снимок даёт исходную базу для MODIFIED, а смысл связи остаётся предметом атаки.",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "агент",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/specs/trace-graph/spec.md",
+     "quote": "из файлов изменения и текущих структурных объявлений участвующих repo",
+     "line": 9,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "openspec/specs/trace-graph/spec.md",
+     "quote": "Смысл связи граф SHALL NOT судить: это делает атака",
+     "line": 46,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "openspec/specs/trace-snapshot/spec.md",
+     "quote": "Заморозка SHALL писать в снимок ссылки и сценарии мастер-спеки по каждому требованию MODIFIED",
+     "line": 100,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-06",
+   "question": "Как искать сценарии мастер-спеки, затронутые через общий вход или контракт за пределами дельты?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Обязательно сверять перенос с мастером до синхронизации или пригодной базой снимка. Начинать внешний поиск с изменённых стыков и их потребителей, читать связанные сценарии мастера, продолжать по обнаруженным зависимостям до подтверждённой границы. Указать путь найденного сценария и существенные пробелы поиска. Граф помогает находить связи. Цена — поиск и объяснение по каждому затронутому стыку.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/specs/trace-snapshot/spec.md",
+       "quote": "Заморозка SHALL писать в снимок ссылки и сценарии мастер-спеки по каждому требованию MODIFIED",
+       "line": 100,
+       "verdict": "сверено",
+       "found": true
+      },
+      {
+       "path": "viewer/playground-template.html",
+       "quote": "const key = att.path + '|' + r.section + '|' + r.claim, sp = norm((disputes || {})[key]);",
+       "line": 924,
+       "verdict": "сверено",
+       "found": true
+      },
+      {
+       "path": "viewer/playground-template.html",
+       "quote": "return att.path + '|' + row.section + '|' + row.claim;",
+       "line": 308,
+       "verdict": "сверено",
+       "found": true
+      },
+      {
+       "path": "openspec/specs/trace-graph/spec.md",
+       "quote": "Смысл связи граф SHALL NOT судить: это делает атака",
+       "line": 46,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Внешние сценарии брать по явным связям графа и ссылкам в design. Сравнивать дельту с базой так же. Периметр проще повторить, работа ограничена известными связями. При отсутствии описанного ребра потребитель стыка может выпасть.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/specs/trace-graph/spec.md",
+       "quote": "из файлов изменения и текущих структурных объявлений участвующих repo",
+       "line": 9,
+       "verdict": "сверено",
+       "found": true
+      },
+      {
+       "path": "openspec/specs/trace-graph/spec.md",
+       "quote": "Смысл связи граф SHALL NOT судить: это делает атака",
+       "line": 46,
+       "verdict": "сверено",
+       "found": true
+      },
+      {
+       "path": "openspec/specs/trace-snapshot/spec.md",
+       "quote": "Заморозка SHALL писать в снимок ссылки и сценарии мастер-спеки по каждому требованию MODIFIED",
+       "line": 100,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "C",
+     "text": "Завести поддерживаемый индекс мастер-сценариев по потребителям и входам, использовать его как основной поиск. Получится единая карта для повторных атак. Цена — наполнение и сопровождение индекса в существующих проектах; смысл связи всё равно оценивает атака.",
+     "added": false,
+     "unlikely": "Нужны отдельный формат, первоначальное наполнение и правила актуализации индекса.",
+     "evidence": [
+      {
+       "path": "openspec/specs/trace-graph/spec.md",
+       "quote": "из файлов изменения и текущих структурных объявлений участвующих repo",
+       "line": 9,
+       "verdict": "сверено",
+       "found": true
+      },
+      {
+       "path": "openspec/specs/trace-graph/spec.md",
+       "quote": "Смысл связи граф SHALL NOT судить: это делает атака",
+       "line": 46,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Подхватывает реально затронутый контракт без готовой связи, как в случае ключа строки, и ограничивает работу проверенными стыками без введения обязательного индекса."
+   },
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-17"
+   },
+   "reversibility": {
+    "level": "обратимо",
+    "why": "Периметр поиска задаёт правило scenario-run. Его пересмотр потребует повторной атаки для затронутых изменений, база мастер-спек и снимки остаются пригодны."
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [],
+   "comments": [],
+   "nodes": [
+    "Baseline",
+    "Scope"
+   ]
+  },
+  {
+   "id": "F-07",
+   "question": "Какую форму должна иметь запись о сохраняемых свойствах в design.md?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Короткое обоснование на затронутый стык или группу сценариев в существующем design. Назвать, что меняется, какие входы или свойства должны сохраниться и на чём основано это утверждение. Атака читает весь design и сверяет содержательность. Переход обратим: существующая структура документа сохраняется.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/changes/archive/2026-11-08-attack-lens-conventions/design.md",
+       "quote": "несёт восемь сценариев мастер-спеки дословно: дельта MODIFIED заменяет мастер-требование целиком.",
+       "line": 84,
+       "verdict": "сверено",
+       "found": true
+      },
+      {
+       "path": "openspec/changes/archive/2026-11-08-attack-lens-conventions/design.md",
+       "quote": "шесть прочих сценариев держит прежний код страницы",
+       "line": 84,
+       "verdict": "сверено",
+       "found": true
+      },
+      {
+       "path": "openspec/changes/archive/2026-11-17-scenario-run-change-impact/verification/baseline-code.md",
+       "quote": "Механизм не назван — `блокер`, воздержания нет: ответ выводится из design.",
+       "line": 10,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Обязательная структурированная таблица для затронутых стыков: мастер-сценарий или группа, изменённый вход, сохраняемое свойство, основание. Таблицу можно проверять автоматически на заполненность и переиспользовать при поиске. Цена — поддержка формы, шаблона и повторных проверок для старых design.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/schemas/symphysis/templates/design.md",
+       "quote": "## Context",
+       "line": 3,
+       "verdict": "сверено",
+       "found": true
+      },
+      {
+       "path": "openspec/changes/archive/2026-11-08-attack-lens-conventions/design.md",
+       "quote": "несёт восемь сценариев мастер-спеки дословно: дельта MODIFIED заменяет мастер-требование целиком.",
+       "line": 84,
+       "verdict": "сверено",
+       "found": true
+      },
+      {
+       "path": "openspec/specs/trace-graph/spec.md",
+       "quote": "из файлов изменения и текущих структурных объявлений участвующих repo",
+       "line": 9,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Общее обоснование убирает повтор для шести сценариев и позволяет проверить реальный стык. Фиксированная форма добавляет перенос и проверку полей до появления устойчивой потребности в индексировании."
+   },
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-17"
+   },
+   "reversibility": {
+    "level": "обратимо",
+    "why": "Обоснование хранится в существующей структуре design.md. При смене правила достаточно привести к новой форме обоснования в активных design и проверить их повторной атакой."
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [],
+   "comments": [],
+   "nodes": [
+    "Design"
+   ]
+  },
+  {
+   "id": "F-08",
+   "question": "Когда запланированная проверка реализации достаточна, чтобы пропустить сценарий через атаку до apply?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Если проектируемый механизм согласован с THEN и осталась проверка результата на реальных изменённых входах, достаточна задача с привязкой к сценарию, способом проверки и наблюдаемым THEN. Результат ещё ожидается. Конкретное противоречие или существенный путь регрессии без достаточной проверки остаётся блокером.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/specs/artifact-attack/spec.md",
+       "quote": "исход по коду выводится чтением и рассуждением, существование путей и имён проверяется грепом",
+       "line": 78,
+       "verdict": "сверено",
+       "found": true
+      },
+      {
+       "path": "openspec/schemas/symphysis/templates/tasks.md",
+       "quote": "проверка: <тест, команда, наблюдаемый результат, файл>",
+       "line": 22,
+       "verdict": "сверено",
+       "found": true
+      },
+      {
+       "path": "openspec/changes/archive/2026-11-17-scenario-run-change-impact/verification/baseline-code.md",
+       "quote": "Механизм не назван — `блокер`, воздержания нет: ответ выводится из design.",
+       "line": 10,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Существенную неопределённость оставлять блокером до явного решения человека по строке, даже с достаточной задачей. Верификация на реализации всё равно входит в задачу. Такой подход даёт человеку слово по каждому допуску и увеличивает число остановок до apply.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/specs/artifact-attack/spec.md",
+       "quote": "исход по коду выводится чтением и рассуждением, существование путей и имён проверяется грепом",
+       "line": 78,
+       "verdict": "сверено",
+       "found": true
+      },
+      {
+       "path": "openspec/schemas/symphysis/templates/tasks.md",
+       "quote": "проверка: <тест, команда, наблюдаемый результат, файл>",
+       "line": 22,
+       "verdict": "сверено",
+       "found": true
+      },
+      {
+       "path": "openspec/specs/artifact-attack/spec.md",
+       "quote": "строки `предупреждение` вердикт не держат",
+       "line": 9,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "C",
+     "text": "При любом неопределённом исходе допускать apply, если в tasks появилась регрессионная проверка. Автор быстрее перейдёт к коду, но запланированный тест может отложить обнаруженное противоречие до реализации.",
+     "added": false,
+     "unlikely": "Тест проверяет исход, но сам по себе не исправляет уже обнаруженный дефект конструкции.",
+     "evidence": [
+      {
+       "path": "openspec/schemas/symphysis/templates/tasks.md",
+       "quote": "проверка: <тест, команда, наблюдаемый результат, файл>",
+       "line": 22,
+       "verdict": "сверено",
+       "found": true
+      },
+      {
+       "path": "openspec/specs/artifact-attack/spec.md",
+       "quote": "исход по коду выводится чтением и рассуждением, существование путей и имён проверяется грепом",
+       "line": 78,
+       "verdict": "сверено",
+       "found": true
+      },
+      {
+       "path": "openspec/changes/archive/2026-11-17-scenario-run-change-impact/verification/baseline-code.md",
+       "quote": "Механизм не назван — `блокер`, воздержания нет: ответ выводится из design.",
+       "line": 10,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Сохраняет блокер при известной проблеме проектирования и позволяет проверить эмпирический остаток штатной задачей без ручного разрешения каждой достаточной проверки."
+   },
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-17"
+   },
+   "reversibility": {
+    "level": "дорого",
+    "why": "Смена допуска к apply меняет контракт атаки и задач. Придётся пересмотреть допуски по затронутым сценариям, повторить их атаки и проверить результаты задач, уже начатых по прежнему правилу."
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [],
+   "comments": [],
+   "nodes": [
+    "Impact",
+    "Task"
+   ]
+  },
+  {
+   "id": "F-09",
+   "question": "[empty · collection, text, io] Scenario-run устанавливает область влияния изменения: как оценить сценарий MODIFIED, если он совпал с живым мастером после sync, а исходной версии в снимке нет?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-06",
+    "F-08"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN живой мастер совпадает с MODIFIED после sync, а пригодной исходной базы нет. WHEN атака определяет происхождение сценария. THEN атака явно называет пробел, не выдаёт совпадение за подтверждённый перенос и проверяет существенные риски по обычным условиям допуска. Цена — сценарий и контрольный проход с неполным снимком.",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — оставить правило сверки с пригодной базой без отдельного сценария про её отсутствие. Это допустимо, если достаточно общей строки о существенных пробелах поиска.",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — на проверочном проходе подать синхронизированный мастер и снимок без нужной записи, проверить, что совпадение не закрывает реальную регрессию. Самостоятельного правила в мастер-спеке не появляется.",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — выбрать явный исход при отсутствии базы после первого замера на уже синхронизированном изменении. До этого решение о происхождении в таком случае остаётся открытым.",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Совпадение с уже перезаписанным мастером выглядит как нормальная опора и способно тихо скрыть изменение сценария. Сценарий делает этот случай наблюдаемым для проверки на неполном снимке. Цена — поддерживать один контрольный пример."
+   },
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-17"
+   },
+   "reversibility": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Specify",
+    "reason": ""
+   },
+   "parking": [],
+   "dispute": "",
+   "consequences": "в spec.md: После синхронизации исходной базы нет",
+   "evidence": [
+    {
+     "path": "openspec/changes/archive/2026-11-17-scenario-run-change-impact/specs/artifact-attack/spec.md",
+     "quote": "### Requirement: Scenario-run устанавливает область влияния изменения",
+     "line": 52,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-10",
+   "question": "[запрет] Scenario-run устанавливает область влияния изменения: можно ли показывать прошедший вердикт как актуальный, если использованная опора из мастера затем изменилась при тех же файлах change?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-06",
+    "F-08"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify/test — вердикт MUST NOT считаться актуальным после изменения мастер-источника, на котором держалась строка scenario-run. Для теста изменить только использованный мастер-блок после атаки и убедиться, что прежний вердикт отмечен устаревшим. Цена — хранить наблюдаемые сведения об использованной внешней опоре и проверять совместимость старых отчётов.",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Specify/judgment — прежний вердикт MUST NOT подтверждать строку с изменившейся мастер-опорой без повторной сверки. На ревью перед реализацией судья сверяет конкретные источники строк с текущим мастером и фиксирует, где нужна повторная атака. Цена — ручная сверка каждого изменившегося источника.",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Dismiss — внешний источник остаётся уликой на момент атаки. Ревью может запросить повтор при изменении мастера, проверку актуальности определяют действующие цели отчёта.",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — оставить вопрос открытым до замера повторной атаки по изменившейся мастер-опоре и решения о том, как включить её в контракт свежести.",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Зелёный итог выглядит актуальным после исчезновения опоры, хотя файлы самого change не изменились. Это можно поймать детерминированной проверкой с заменой одного мастер-блока. Цена — дополнительная проверка свежести и совместимость старых отчётов."
+   },
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-17"
+   },
+   "reversibility": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Specify",
+    "reason": ""
+   },
+   "parking": [],
+   "dispute": "",
+   "consequences": "проверка: test — изменить только использованный мастер-блок после атаки и сверить устаревание прежнего вердикта\nв spec.md: Изменение мастер-опоры обесценивает вердикт",
+   "evidence": [
+    {
+     "path": "openspec/changes/archive/2026-11-17-scenario-run-change-impact/specs/artifact-attack/spec.md",
+     "quote": "### Requirement: Scenario-run устанавливает область влияния изменения",
+     "line": 52,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-11",
+   "question": "[ветка] Заморозка базы: первую заморозку сделали после sync и правки соседнего сценария, поэтому поздний снимок содержит уже перенесённый сценарий. Что атака считает исходной опорой?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN после sync в дельте правят соседний сценарий и только затем создают первый снимок, совпадающий с уже перенесённым сценарием. WHEN атака определяет происхождение этого сценария. THEN поздний снимок не подтверждает перенос, атака называет пробел и оценивает существенные риски по условиям допуска. Цена — сценарий и фикстура порядка sync, правки и заморозки.",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — поздний снимок остаётся допустимым при структурной валидности. Отклонение оценивается человеком только при наличии внешних сведений об очередности.",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — контрольный проход с sync, последующей правкой соседнего сценария и поздней заморозкой проверяет, что сценарий не признан перенесённым только по этому снимку. Правило в спецификации не добавляется.",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — критерий пригодности после поздней заморозки остаётся открытым до выбора способа подтверждения порядка sync и freeze.",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Формально годный поздний снимок может скрыть изменение сценария, а отличие соседнего сценария выключает защиту по совпадению целого блока. Явный сценарий проверяет конкретный ложный допуск. Цена — фикстура порядка операций и её сопровождение."
+   },
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-17"
+   },
+   "reversibility": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Specify",
+    "reason": ""
+   },
+   "parking": [],
+   "dispute": "",
+   "consequences": "в spec.md: Первый снимок сделан после синхронизации и правки дельты",
+   "evidence": [
+    {
+     "path": "openspec/changes/archive/2026-11-17-scenario-run-change-impact/verification/baseline-code.md",
+     "quote": "found.setdefault(folder.name, {}).setdefault(req.name, entry)",
+     "line": 18,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-12",
+   "question": "[ветка] Расчёт свежести читает подтверждённо использованную мастер-опору, файл существует, но чтение завершается ошибкой. Как это должны отразить статус и состав устаревания?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN отчёт с использованной мастер-опорой и прежними локальными целями, а чтение файла опоры завершается ошибкой. WHEN читатели проверяют свежесть. THEN OpenSpec показывает stale по действующему окну, журнал и справка называют нечитаемую опору, проверка завершается с диагностикой. Цена — сценарий и проверки отказа чтения в обоих контурах.",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — считать нечитаемый файл обычной ошибкой команды и полагаться на её явный отказ. Для временной недоступности оператор повторит команду после восстановления доступа.",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — проверка подставляет отказ чтения после успешной проверки существования и сравнивает stale и строки причины в статусе и в составе. Самостоятельного сценария в спецификации нет.",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — реакция на нечитаемую опору остаётся открытой до согласования представления внешней опоры и причин устаревания.",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Без общего исхода одно чтение может завершиться исключением, а другой читатель продолжить показывать прежний вердикт. Различимый случай удерживает допуск и объясняет причину. Цена — сценарий и фикстуры отказа чтения для форка и ядра."
+   },
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-17"
+   },
+   "reversibility": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Specify",
+    "reason": ""
+   },
+   "parking": [],
+   "dispute": "",
+   "consequences": "в spec.md: Использованная мастер-опора существует, но файл не читается",
+   "evidence": [
+    {
+     "path": "attack/attack_scope.py",
+     "quote": "if sha256_file(full) == sha:",
+     "line": 126,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-13",
+   "question": "[ветка] Парсер отчёта узнаёт path во всём frontmatter. Если мастер-опора представлена отдельным списком с похожими полями, что проверять при чтении одного отчёта ядром и форком?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN один отчёт с локальной целью и мастер-опорой, обе имеют собственные сведения для сверки. WHEN ядро и форк читают его. THEN каждый проверяет локальную цель в change, мастер-опору в мастере и оба называют одну изменившуюся опору. Цена — дополнительный сценарий и общая интеграционная фикстура.",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — достаточно выбранного в design способа раздельного представления. Нынешние проверки каждого читателя по отдельности допустимы, если их схемы явно не пересекаются.",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — один и тот же новый отчёт с локальными целями и мастер-опорой подать ядру и форку. При правке только опоры проверить stale и одну причину о мастере, при правке только локальной цели проверить причину о ней. Формат взять из design.",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — совместную проверку читателей назначить после выбора формата отчёта и только тогда решить, нужен ли общий тест.",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "C",
+    "why": "Граница целей и опор уже задана спецификациями, а точный риск возникает на уровне формата. Общая фикстура проверит чтение одного отчёта двумя парсерами и поймает расхождение, которое отдельные тесты не покажут."
+   },
+   "decision": {
+    "option": "C",
+    "word": "",
+    "date": "2026-11-17"
+   },
+   "reversibility": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Backstop",
+    "reason": ""
+   },
+   "parking": [],
+   "dispute": "",
+   "consequences": "тест-страховка: подать ядру и форку один новый отчёт с локальной целью и мастер-опорой. При правке только опоры проверить stale и одну причину о мастере. При правке только локальной цели проверить причину о ней. Формат отчёта взять из design.",
+   "evidence": [
+    {
+     "path": "openspec/changes/archive/2026-11-17-scenario-run-change-impact/verification/baseline-code.md",
+     "quote": "if (m := RE_TARGET_PATH.match(line)):",
+     "line": 26,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-14",
+   "question": "Чем подтверждать, что сохранённая база для scenario-run снята до первой синхронизации именно этого блока мастер-спеки?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-06",
+    "F-09",
+    "F-11"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Сохранять свидетельство происхождения рядом со снимком при подтверждённом управляемом sync до записи мастера. Связать его с конкретной исходной записью и её отпечатком. Обычный freeze, повторный sync после уже сделанного переноса и неизвестная очередность сами права выдать свидетельство не дают. Если доказательства нет, применяется F-09. Для дословного совпадения сравнивать содержательный текст сценария без свёртки пробелов внутри него. Цена — изменение управляемого sync и проверки порядка и совместимости снимков.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/specs/trace-snapshot/spec.md",
+       "quote": "до первой записи мастера вызвать freeze из `planningHome.root`",
+       "line": 24,
+       "verdict": "сверено",
+       "found": true
+      },
+      {
+       "path": "trace/trace_graph.py",
+       "quote": "return self.saved[cap][key], True",
+       "line": 610,
+       "verdict": "сверено",
+       "found": true
+      },
+      {
+       "path": "trace/trace_graph.py",
+       "quote": "\"scenarios\": {s.name: _hash(s.text) for s in req.scenarios}, \"text\": _hash(req.text),",
+       "line": 558,
+       "verdict": "сверено",
+       "found": true
+      },
+      {
+       "path": "openspec/changes/archive/2026-11-17-scenario-run-change-impact/specs/artifact-attack/spec.md",
+       "quote": "перенос остаётся неподтверждённым по этому снимку",
+       "line": 85,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Принимать как исходную базу только явно указанную проверяемую раннюю ревизию мастера с подтверждённой связью с текущим изменением. Снимок можно использовать, если запись в нём сверена с этой ревизией. Без такой ревизии применяется F-09. Цена — указывать исходную ревизию и поддерживать её чтение, в store без истории часть старых изменений останется без доказанной базы.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/specs/trace-snapshot/spec.md",
+       "quote": "до первой записи мастера вызвать freeze из `planningHome.root`",
+       "line": 24,
+       "verdict": "сверено",
+       "found": true
+      },
+      {
+       "path": "trace/trace_graph.py",
+       "quote": "return self.saved[cap][key], True",
+       "line": 610,
+       "verdict": "сверено",
+       "found": true
+      },
+      {
+       "path": "openspec/changes/archive/2026-11-17-scenario-run-change-impact/specs/artifact-attack/spec.md",
+       "quote": "перенос остаётся неподтверждённым по этому снимку",
+       "line": 85,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "C",
+     "text": "Опираться на живой мастер при подтверждённой работе до sync, а сохранённый снимок принимать только при отдельно зафиксированном ходе прежнего sync. Проверку последовательности выполнять по существующим материалам изменения, без нового переносимого свидетельства. Цена — ручная сверка, повторная атака в новой сессии чаще увидит пробел F-09.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/specs/trace-snapshot/spec.md",
+       "quote": "до первой записи мастера вызвать freeze из `planningHome.root`",
+       "line": 24,
+       "verdict": "сверено",
+       "found": true
+      },
+      {
+       "path": "trace/trace_graph.py",
+       "quote": "return self.saved[cap][key], True",
+       "line": 610,
+       "verdict": "сверено",
+       "found": true
+      },
+      {
+       "path": "openspec/changes/archive/2026-11-17-scenario-run-change-impact/specs/artifact-attack/spec.md",
+       "quote": "перенос остаётся неподтверждённым по этому снимку",
+       "line": 85,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Управляемый sync уже имеет точку до записи мастера. Привязка подтверждения к записи снимка делает повторную проверку воспроизводимой и исключает вывод времени только из существования файла. Цена по сравнению с ручными вариантами — явный контракт свидетельства и проверки совместимости."
+   },
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-17"
+   },
+   "reversibility": {
+    "level": "дорого",
+    "why": "Свидетельство читают вместе со снимком. При смене способа подтверждения нужно сохранить чтение прежних снимков и заново сверить базу атак, опиравшихся на эти свидетельства."
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [],
+   "comments": []
+  },
+  {
+   "id": "F-15",
+   "question": "Где хранить использованные мастер-опоры и как обеспечить одинаковую сверку блока в ядре и форке?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-10",
+    "F-12",
+    "F-13"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Добавить отдельное верхнеуровневое поле в frontmatter отчёта с однострочным JSON-массивом опор. Элемент именует capability, требование и при необходимости сценарий, а также несёт SHA-256 использованного блока. Читатели выводят путь из выбранного корня планирования и читают один и тот же блок в UTF-8 с нормализацией переносов в LF. Поле отделено от targets, старый отчёт без него проверяется по своим целям, неразбираемая или неоднозначная объявленная опора даёт диагностику и stale. Цена — два узких читателя, одна форма блока и общая проверка F-13.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "attack/attack_table.py",
+       "quote": "elif (m := RE_FRONT_KEY.match(line)):",
+       "line": 129,
+       "verdict": "сверено",
+       "found": true
+      },
+      {
+       "path": "openspec/changes/archive/2026-11-17-scenario-run-change-impact/verification/baseline-code.md",
+       "quote": "if (m := RE_TARGET_PATH.match(line)):",
+       "line": 26,
+       "verdict": "сверено",
+       "found": true
+      },
+      {
+       "path": "openspec/changes/archive/2026-11-17-scenario-run-change-impact/specs/stale-verdict-scope/spec.md",
+       "quote": "Такие опоры проверяются в области мастер-спек. Цели из `targets[]` проверяются в каталоге изменения",
+       "line": 6,
+       "verdict": "сверено",
+       "found": true
+      },
+      {
+       "path": "openspec/changes/archive/2026-11-17-scenario-run-change-impact/specs/artifact-attack/spec.md",
+       "quote": "Отчёт SHALL сохранять сведения, позволяющие опознать этот блок и сверить его содержание при проверке свежести",
+       "line": 125,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Хранить те же идентификаторы и отпечатки в отдельном JSON-файле внутри каталога изменения, а отчёт связывать с ним проверяемой ссылкой. Область мастер-спек берётся из выбранного корня планирования. Одновременно опубликованные отчёт и файл составляют комплект, пустая или потерянная часть объявленного комплекта даёт диагностику и stale. Цена — согласованная запись, проверка комплектности и ещё один файл при повторной атаке и архивации.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/changes/archive/2026-11-17-scenario-run-change-impact/verification/baseline-code.md",
+       "quote": "if (m := RE_TARGET_PATH.match(line)):",
+       "line": 26,
+       "verdict": "сверено",
+       "found": true
+      },
+      {
+       "path": "openspec/changes/archive/2026-11-17-scenario-run-change-impact/specs/stale-verdict-scope/spec.md",
+       "quote": "Такие опоры проверяются в области мастер-спек. Цели из `targets[]` проверяются в каталоге изменения",
+       "line": 6,
+       "verdict": "сверено",
+       "found": true
+      },
+      {
+       "path": "openspec/changes/archive/2026-11-17-scenario-run-change-impact/specs/artifact-attack/spec.md",
+       "quote": "Отчёт SHALL сохранять сведения, позволяющие опознать этот блок и сверить его содержание при проверке свежести",
+       "line": 125,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "C",
+     "text": "Хранить опоры обычным вложенным YAML-списком в отчёте. Выделять его отдельным структурным разбором frontmatter в обоих читателях, локальные цели брать только из targets. Идентификацию и сверку использованного блока сделать общей по контракту. Цена — изменить разбор существующих отчётов в ядре и проверить совместимость всех их вариантов.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "attack/attack_table.py",
+       "quote": "elif (m := RE_FRONT_KEY.match(line)):",
+       "line": 129,
+       "verdict": "сверено",
+       "found": true
+      },
+      {
+       "path": "openspec/changes/archive/2026-11-17-scenario-run-change-impact/verification/baseline-code.md",
+       "quote": "if (m := RE_TARGET_PATH.match(line)):",
+       "line": 26,
+       "verdict": "сверено",
+       "found": true
+      },
+      {
+       "path": "openspec/changes/archive/2026-11-17-scenario-run-change-impact/specs/stale-verdict-scope/spec.md",
+       "quote": "Такие опоры проверяются в области мастер-спек. Цели из `targets[]` проверяются в каталоге изменения",
+       "line": 6,
+       "verdict": "сверено",
+       "found": true
+      },
+      {
+       "path": "openspec/changes/archive/2026-11-17-scenario-run-change-impact/specs/artifact-attack/spec.md",
+       "quote": "Отчёт SHALL сохранять сведения, позволяющие опознать этот блок и сверить его содержание при проверке свежести",
+       "line": 125,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Одна атомарно записываемая форма отчёта позволяет подать байт-в-байт один экземпляр ядру и форку. JSON-поле можно разобрать отдельно, поэтому не нужен новый жизненный цикл второго файла и меньше риск смешать мастер-опоры с локальными целями."
+   },
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-17"
+   },
+   "reversibility": {
+    "level": "дорого",
+    "why": "Отчёты с полем опор могут жить между выпусками. При смене формата нужно согласовать ядро и форк, сохранить проверку записанных отчётов и повторить общую проверку F-13."
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [],
+   "comments": []
+  }
+ ]
+}

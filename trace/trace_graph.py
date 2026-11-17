@@ -394,6 +394,10 @@ def _read_text(base: Path, rel: str) -> str:
         raise Refusal(f"{rel}: файл не в UTF-8 ({e.reason}, байт {e.start}): граф не собран") from None
 
 
+def _spec_files(base: Path) -> list[Path]:
+    return sorted((base / 'specs').rglob('spec.md')) if (base / 'specs').is_dir() else []
+
+
 def _plain_lines(text: str) -> list[tuple[int, str]]:
     """Строки файла вне блоков кода как `(номер с 1, текст)`; BOM и CRLF не мешают счёту."""
     lines = re.sub(r"\r\n?", "\n", text.removeprefix("\ufeff")).split("\n")
@@ -517,6 +521,10 @@ def _master_lines(root: Path, rel: str) -> list[str]:
     """Строки мастер-спеки без CRLF и BOM; она пишет `## Requirements`, а `parse_spec` читает секции дельты: заголовок читается
     как `ADDED`. Перевод строк нормализуется раньше подмены: `$` не стоит перед возвратом каретки, и спека с CRLF осталась бы
     без требований."""
+    specs = (root / 'openspec/specs').resolve()
+    path = (root / rel).resolve()
+    if specs == root.resolve() or not specs.is_relative_to(root.resolve()) or not path.is_relative_to(specs):
+        return []
     return [re.sub(r"^## Requirements[ \t]*$", "## ADDED Requirements", row) for row in _spec_lines(_read_text(root, rel))]
 
 
@@ -628,16 +636,13 @@ def _read_specs(base: Path, claims: list[dict], master: "_Master | None" = None)
     nodes = []
     root = base.parents[2]
     master = master or _Master(root, saved_base(base))
-    folders = sorted(p for p in (base / "specs").iterdir() if p.is_dir()) if (base / "specs").is_dir() else []
-    for folder in folders:
-        rel = f"specs/{folder.name}/spec.md"
-        if not (base / rel).is_file():
-            continue
+    for spec in _spec_files(base):
+        rel = spec.relative_to(base).as_posix()
         text = _read_text(base, rel)
         parsed = parse_spec(text)
         lines = _spec_lines(text)
         mask = _fence_mask(lines)
-        cap = folder.name
+        cap = spec.parent.relative_to(base / 'specs').as_posix()
         master.set_renames(cap, parsed.renames)
         cap_node = _node(f"cap:{cap}", "cap", cap, rel, 1)
         nodes.append(cap_node)
@@ -771,10 +776,11 @@ def _master_names(root: Path) -> dict[str, dict[str, set[str]]]:
     """Имена требований и сценариев мастер-спек `openspec/specs/*/spec.md`: `{capability: {"req": …, "scn": …}}`. Нужны,
     чтобы родитель или сценарий, который живёт только в мастере, не считался опечаткой: узла в графе изменения у него нет."""
     found: dict[str, dict[str, set[str]]] = {}
-    for path in sorted((root / "openspec" / "specs").glob("*/spec.md")):
+    for path in sorted((root / "openspec" / "specs").rglob("spec.md")):
         rel = path.relative_to(root).as_posix()
         reqs = parse_spec("\n".join(_master_lines(root, rel))).requirements
-        found[path.parent.name] = {"req": {r.name for r in reqs}, "scn": {s.name for r in reqs for s in r.scenarios}}
+        cap = path.parent.relative_to(root / 'openspec/specs').as_posix()
+        found[cap] = {"req": {r.name for r in reqs}, "scn": {s.name for r in reqs for s in r.scenarios}}
     return found
 
 
@@ -784,13 +790,42 @@ def _take_scenario(text: str, start: int, known: set[str]) -> str:
     return max(fits, key=len) if fits else text[start:].split(";", 1)[0].strip()
 
 
-def _resolve_task_line(claim: dict, scenarios: dict, put_edge, put_unresolved) -> None:
+def _master_task_nodes(root: Path, change: str, cap: str) -> dict[str, list[tuple[dict, dict, dict]]]:
+    """Кандидаты мастер-сценариев после дельты. В граф попадут только названные задачами узлы."""
+    parts = cap.replace('\\', '/').split('/')
+    if ':' in cap or cap.startswith(('/', '\\')) or any(part in ('', '.', '..') for part in parts):
+        return {}
+    rel = f'openspec/specs/{cap}/spec.md'
+    if not (root / rel).is_file():
+        return {}
+    delta_path = root / 'openspec/changes' / change / 'specs' / cap / 'spec.md'
+    delta = parse_spec(delta_path) if delta_path.is_file() else SpecParse()
+    replacements = {req.name for req in delta.requirements}
+    renames = {rename.from_name: rename.to_name for rename in delta.renames}
+    found = {}
+    for req in parse_spec('\n'.join(_master_lines(root, rel))).requirements:
+        name = renames.get(req.name, req.name)
+        if name in replacements:
+            continue
+        cap_node = _node(f'cap:{cap}', 'cap', cap, rel, 1, scope='master')
+        req_node = _node(f'req:{cap}/{name}', 'req', name, rel, req.line,
+                         section='MASTER', capability=cap, scope='master')
+        for scn in req.scenarios:
+            node = _node(f'scn:{cap}/{name}/{scn.name}', 'scn', scn.name, rel, scn.line,
+                         capability=cap, requirement=req_node['id'], scope='master')
+            found.setdefault(node['id'], []).append((cap_node, req_node, node))
+    return found
+
+
+def _resolve_task_line(claim: dict, scenarios: dict, put_edge, put_unresolved, load_scenarios=None) -> None:
     """Сценарии, названные строкой задачи (F-42, F-89): у каждого имени своя capability, без наследования; имя, стоящее
     после запятой без своей capability, не связывается и уходит в неразрешённые."""
     text, at, task = claim["text"], claim["at"], claim["from"]
     pos = 0
     while (m := _CAP_NAME.search(text, pos)):
         cap, start, first = m.group(1), m.end(), True
+        if load_scenarios:
+            load_scenarios(cap)
         while True:
             name, end, known = _take_name(text, start, set(scenarios.get(cap, {})) if first else set())
             if first and known:
@@ -837,7 +872,7 @@ def _resolve_claims(root: Path, nodes: list[dict], places: dict, claims: list[di
     for n in nodes:
         if n["kind"] == "req":
             sections.setdefault(n["id"], n["section"])
-        if n["kind"] == "scn":
+        if n["kind"] == "scn" and sections.get(n["requirement"]) != 'REMOVED':
             scenarios.setdefault(n["capability"], {}).setdefault(n["name"], []).append(n["id"])
         elif n["kind"] == "req":
             requirements.setdefault(n["capability"], {})[n["name"]] = n["id"]
@@ -846,6 +881,35 @@ def _resolve_claims(root: Path, nodes: list[dict], places: dict, claims: list[di
     edges: dict[tuple, dict] = {}
     unresolved: dict[tuple, dict] = {}
     text_links: set[tuple[str, str]] = set()
+    master_tasks: dict[str, list[tuple[dict, dict, dict]]] = {}
+    loaded_caps: set[str] = set()
+
+    def load_task_scenarios(cap: str) -> None:
+        if cap in loaded_caps:
+            return
+        loaded_caps.add(cap)
+        candidates = _master_task_nodes(root, change, cap)
+        delta_names = set(scenarios.get(cap, {}))
+        for node_id, contexts in candidates.items():
+            node = contexts[0][2]
+            if node['name'] not in delta_names:
+                scenarios.setdefault(cap, {}).setdefault(node['name'], []).append(node_id)
+                master_tasks[node_id] = contexts
+
+    def put_task_edge(src: str, dst: str, kind: str, at: str) -> None:
+        if dst in master_tasks:
+            contexts = master_tasks[dst]
+            cap_node, req_node, scn_node = contexts[0]
+            for context in contexts:
+                for node in context:
+                    if node['id'] not in places:
+                        places[node['id']] = [node['at']]
+                        nodes.append(node)
+                    elif node['at'] not in places[node['id']]:
+                        places[node['id']].append(node['at'])
+            put_edge(cap_node['id'], req_node['id'], 'contains', req_node['at'])
+            put_edge(scn_node['id'], req_node['id'], 'verifies', scn_node['at'])
+        put_edge(src, dst, kind, at)
 
     def put_edge(src: str, dst: str, kind: str, at: str, by_place: bool = False) -> None:
         """Повтор `(from, to, type)` остаётся первым; связь по следу пробы различается ещё и местом (F-82.B, F-156): две связи
@@ -967,7 +1031,7 @@ def _resolve_claims(root: Path, nodes: list[dict], places: dict, claims: list[di
         elif claim["kind"] == "trace":
             put_records(claim, claim["text"], set(), by_place=True)
         else:
-            _resolve_task_line(claim, scenarios, put_edge, put_unresolved)
+            _resolve_task_line(claim, scenarios, put_task_edge, put_unresolved, load_task_scenarios)
             put_records(claim, claim["text"], set())
     ordered = sorted(edges.values(), key=lambda e: (e["at"].rsplit(":", 1)[0], int(e["at"].rsplit(":", 1)[1]),
                                                     e["from"], e["to"], e["type"]))
@@ -1046,8 +1110,9 @@ def _build_all(root: Path, change: str, saved: dict | None = None, *, roots_file
                 places[node["id"]] = [node["at"]]
                 nodes.append(node)
     nodes.sort(key=lambda n: (n["at"].rsplit(":", 1)[0], int(n["at"].rsplit(":", 1)[1]), n["id"]))
-    duplicates = [{"id": node_id, "at": at} for node_id, at in places.items() if len(at) > 1]
     edges, unresolved, text_links = _resolve_claims(root, nodes, places, claims, master, change)
+    duplicates = [{"id": node_id, "at": at} for node_id, at in places.items() if len(at) > 1]
+    nodes.sort(key=lambda n: (n['at'].rsplit(':', 1)[0], int(n['at'].rsplit(':', 1)[1]), n['id']))
     graph = {"format": GRAPH_FORMAT, "sources": source_hashes(base), "nodes": nodes, "edges": edges,
              "candidates": record_candidates(edges, parked_records(base))}
     if structure == {}:  # explicit artifact-only comparison of a supported format-2 snapshot
@@ -1107,8 +1172,7 @@ def source_hashes(base: Path) -> list[dict]:
         if row.get("берёт") == NOTHING:
             continue
         if artifact == "specs":
-            folders = [p for p in (base / "specs").iterdir() if p.is_dir()] if (base / "specs").is_dir() else []
-            rels += [f"specs/{p.name}/spec.md" for p in folders]
+            rels += [path.relative_to(base).as_posix() for path in _spec_files(base)]
         elif artifact in SOURCE_FILES:
             rels.append(SOURCE_FILES[artifact])
     return [{"path": rel, "sha256": _lf_hash(base / rel)} for rel in sorted(set(rels)) if (base / rel).is_file()]
@@ -1362,7 +1426,7 @@ def render_view(nodes: list[dict], edges: list[dict]) -> dict:
     for edge in edges:
         lines.append(f'"{names[edge["from"]]}" - {DIAGRAM["связи"][edge["type"]]} -> "{names[edge["to"]]}"')
     lines += [f'class "{names[n["id"]]}" {kinds[n["kind"]]["класс"]}' for n in nodes]
-    elements = {names[n["id"]]: {key: n[key] for key in ("id", "kind", "name", "at", "capability", "repo") if key in n}
+    elements = {names[n["id"]]: {key: n[key] for key in ("id", "kind", "name", "at", "capability", "repo", 'scope') if key in n}
                 for n in nodes}
     return {"text": "\n".join(lines) + "\n", "elements": elements}
 
@@ -1447,7 +1511,7 @@ def graph_view(graph: dict, *, capability: str | None = None, requirement: str |
         ends = {kinds[edge['from']], kinds[edge['to']]}
         if edge['type'] == 'traces' and 'rec' in ends and ends & {'req', 'scn'}:
             linked.update((edge['from'], edge['to']))
-    unlinked = [{key: n[key] for key in ('id', 'name', 'kind', 'at', 'capability') if key in n}
+    unlinked = [{key: n[key] for key in ('id', 'name', 'kind', 'at', 'capability', 'scope') if key in n}
                 for n in nodes if n['kind'] in ('req', 'rec') and n['id'] not in linked]
     rendered = render_view(selected, edges) if selected else {'text': None, 'elements': {}}
     if rendered['text'] is not None and len(rendered['text']) > DIAGRAM['предел'] and requirement is None:
@@ -1588,7 +1652,14 @@ def cmd_view(args: argparse.Namespace, root: Path) -> int:
         else:
             if '..' in tail.split('/') or Path(tail).is_absolute() or tail.startswith('/') or re.match(r'^[A-Za-z]:', tail):
                 continue
-            tail = (base.relative_to(root) / tail).as_posix()
+            if item.get('scope') == 'master':
+                if not tail.startswith('openspec/specs/'):
+                    continue
+                specs = (root / 'openspec/specs').resolve()
+                if specs == root.resolve() or not specs.is_relative_to(root.resolve()) or not (root / tail).resolve().is_relative_to(specs):
+                    continue
+            else:
+                tail = (base.relative_to(root) / tail).as_posix()
         try:
             file = _resolve(tail, {'': folder}) if folder else None
             if file is not None and file != OUTSIDE_ROOT and file.is_file():
@@ -2081,7 +2152,7 @@ def _write(path: Path, text: str) -> None:
         raise Refusal(f"{path.name} не записан в graph: {e.strerror or e}") from e
 
 
-def _freeze_base(root: Path, change: str, prior: dict) -> dict[str, dict[str, dict]]:
+def _freeze_base(root: Path, change: str, prior: dict, confirmed_caps: set[str] = frozenset()) -> dict[str, dict[str, dict]]:
     """База снимка: запись по каждому требованию MODIFIED изменения, у которого есть запись в `prior` (прежняя база) или требование
     в живой мастер-спеке (F-123, F-134). Прежняя запись не обновляется: после `/opsx:sync` мастер уже несёт номера и сценарии
     этого изменения. Требование, которое перестало быть MODIFIED, в базу не входит. Прежней записи нет, а весь блок MODIFIED (текст и набор
@@ -2090,19 +2161,17 @@ def _freeze_base(root: Path, change: str, prior: dict) -> dict[str, dict[str, di
     base = root / "openspec" / "changes" / change
     master = _Master(root, prior)
     found: dict[str, dict[str, dict]] = {}
-    folders = sorted(p for p in (base / "specs").iterdir() if p.is_dir()) if (base / "specs").is_dir() else []
-    for folder in folders:
-        rel = f"specs/{folder.name}/spec.md"
-        if not (base / rel).is_file():
-            continue
+    for spec in _spec_files(base):
+        cap = spec.parent.relative_to(base / 'specs').as_posix()
+        rel = spec.relative_to(base).as_posix()
         parsed = parse_spec(_read_text(base, rel))
-        master.set_renames(folder.name, parsed.renames)
+        master.set_renames(cap, parsed.renames)
         for req in parsed.requirements:
-            entry, from_base = master.entry(folder.name, req.name) if req.section == "MODIFIED" else (None, False)
-            if _carried_without_base(entry, from_base, req):
+            entry, from_base = master.entry(cap, req.name) if req.section == "MODIFIED" else (None, False)
+            if cap not in confirmed_caps and _carried_without_base(entry, from_base, req):
                 continue  # F-123: мастер уже несёт весь блок изменения (`/opsx:sync` прошёл) — это не база, номера не отсекаются
             if entry:
-                found.setdefault(folder.name, {}).setdefault(req.name, entry)
+                found.setdefault(cap, {}).setdefault(req.name, entry)
     return found
 
 
@@ -2122,13 +2191,96 @@ def _freeze_reason(root: Path, change: str, folder: Path, *, roots_file: Path | 
     return ""
 
 
-def freeze_change(root: Path, change: str, roots_file: Path | None = None) -> FreezeResult:
+def _entry_digest(entry: dict) -> str:
+    return hashlib.sha256(json.dumps(entry, sort_keys=True, ensure_ascii=False).encode('utf-8')).hexdigest()
+
+
+def scenario_base(base: Path, capability: str, requirement: str) -> dict[str, str]:
+    """Дословные отпечатки сценариев только при свидетельстве, связанном с исходной записью снимка (F-14)."""
+    capability = capability.replace('\\', '/')
+    try:
+        proof = json.loads((base / 'graph/pre-sync-base.json').read_text(encoding='utf-8'))
+        if proof.get('format') != 1 or proof.get('change') != base.name:
+            return {}
+        entry = saved_base(base).get(capability, {}).get(requirement)
+        item = proof['capabilities'][capability][requirement]
+        hashes = item['scenarios']
+        if entry is None or item['base_sha256'] != _entry_digest(entry):
+            return {}
+        if not isinstance(hashes, dict) or not all(isinstance(k, str) and isinstance(v, str)
+                                                 and re.fullmatch(r'[0-9a-f]{64}', v) for k, v in hashes.items()):
+            return {}
+        return hashes
+    except (OSError, ValueError, KeyError, TypeError, AttributeError):
+        return {}
+
+
+def _confirm_sync_base(root: Path, change: str, capabilities: list[str]) -> None:
+    """Вызывающий workflow подтверждает предзапись. Повтор и неподтверждённая старая запись не выдают новую базу."""
+    base = root / 'openspec/changes' / change
+    target = base / 'graph/pre-sync-base.json'
+    if target.exists():
+        try:
+            proof = json.loads(target.read_text(encoding='utf-8'))
+        except (OSError, ValueError):
+            raise Refusal('свидетельство исходной базы не прочитано') from None
+        if not isinstance(proof, dict) or proof.get('format') != 1 or proof.get('change') != change or not isinstance(proof.get('capabilities'), dict):
+            raise Refusal('свидетельство исходной базы негодно')
+    else:
+        proof = {'format': 1, 'change': change, 'capabilities': {}}
+    saved = saved_base(base)
+    for cap in capabilities:
+        parts = cap.replace('\\', '/').split('/')
+        if not parts or any(part in ('', '.', '..') for part in parts) or ':' in cap or cap.startswith(('/', '\\')):
+            raise Refusal('capability исходной базы недопустима')
+        if cap in proof['capabilities']:
+            continue
+        proof['capabilities'][cap] = {}
+        master_path = root / 'openspec/specs' / cap / 'spec.md'
+        delta_path = base / 'specs' / cap / 'spec.md'
+        try:
+            specs = (root / 'openspec/specs').resolve()
+            if specs == root.resolve() or not specs.is_relative_to(root.resolve()) or not master_path.resolve().is_relative_to(specs):
+                raise Refusal('мастер-опора вне области чтения')
+            if not delta_path.resolve().is_relative_to((base / 'specs').resolve()):
+                raise Refusal('дельта вне каталога изменения')
+            delta = parse_spec(delta_path)
+            if not any(req.section == 'MODIFIED' for req in delta.requirements):
+                continue
+            live = master_base(root, cap)
+            reqs = parse_spec('\n'.join(_master_lines(root, f'openspec/specs/{cap}/spec.md'))).requirements
+        except (OSError, UnicodeError):
+            raise Refusal('исходная мастер-опора не читается') from None
+        renames = {rename.to_name: rename.from_name for rename in delta.renames}
+        for req in delta.requirements:
+            if req.section != 'MODIFIED':
+                continue
+            name = renames.get(req.name, req.name)
+            original = [item for item in reqs if item.name == name]
+            entry = saved.get(cap, {}).get(req.name)
+            if len(original) != 1 or entry != live.get(name):
+                continue
+            hashes = {scenario.name: hashlib.sha256(scenario.text.encode('utf-8')).hexdigest()
+                      for scenario in original[0].scenarios}
+            if len(hashes) != len(original[0].scenarios):
+                continue
+            proof['capabilities'][cap][req.name] = {'base_sha256': _entry_digest(entry), 'scenarios': hashes}
+    _write(target, json.dumps(proof, ensure_ascii=False, indent=1) + '\n')
+
+
+def freeze_change(root: Path, change: str, roots_file: Path | None = None, *, confirmed_pre_sync: bool = False,
+                  capabilities: list[str] | None = None) -> FreezeResult:
     """Заморозка изменения `change`: сама выбирает (F-79, F-139). Нет `graph/`, снимка или отчёта либо проверка снимка дала сигнал —
     граф и отчёт собираются заново и пишутся (прежний отчёт снимается до записи снимка, чтобы прерванная запись не выглядела
     свежей, F-100). Иначе пересчитываются только `roots` снимка, граф и отчёт не трогаются. Снимок и отчёт идут без
     абсолютных путей (F-59). Имя проверяется до любого пути; нет изменения, негоден файл корней, сборка не удалась — `Refusal`
     или `ForkError`, и тогда ничего не записано."""
     check_change_name(change)
+    capabilities = [cap.replace('\\', '/') for cap in capabilities] if capabilities else None
+    if confirmed_pre_sync and not capabilities:
+        raise Refusal('подтверждённая предзапись требует выбранных capability')
+    if capabilities and not confirmed_pre_sync:
+        raise Refusal('capability допустимы только для подтверждённой предзаписи')
     base = root / "openspec" / "changes" / change
     if not base.is_dir():
         raise Refusal(f"изменения «{change}» нет: нет каталога openspec/changes/{change}")
@@ -2140,6 +2292,8 @@ def freeze_change(root: Path, change: str, roots_file: Path | None = None) -> Fr
         raise Refusal(str(error)) from None
     unnamed = [item["prefix"] for item in roots if not item["commit"]]
     reason = _freeze_reason(root, change, folder, roots_file=roots_file, structure=structure)
+    if confirmed_pre_sync:
+        reason = reason or 'подтверждённая предзапись мастера'
     if not reason:
         prior_format = json.loads((folder / 'req-graph.json').read_bytes().decode('utf-8-sig')).get('format')
         if prior_format != GRAPH_FORMAT:
@@ -2149,7 +2303,7 @@ def freeze_change(root: Path, change: str, roots_file: Path | None = None) -> Fr
         snap["roots"] = roots
         _write(folder / "req-graph.json", json.dumps(snap, ensure_ascii=False, indent=1) + "\n")
         return FreezeResult("commits", unnamed=unnamed)
-    frozen = _freeze_base(root, change, saved_base(base))  # до записи: прежняя база берётся из ещё не замененного снимка
+    frozen = _freeze_base(root, change, saved_base(base), set(capabilities or ()))  # до записи сохраняется прежняя база
     graph = _pathless({**build_graph(root, change, frozen, roots_file=roots_file, structure=structure), "roots": roots, "base": frozen}, root)
     note = _roots_note(roots)
     text = build_report(root, change, frozen, roots_file=roots_file, structure=structure).rstrip("\n") + "\n"
@@ -2158,11 +2312,13 @@ def freeze_change(root: Path, change: str, roots_file: Path | None = None) -> Fr
     (folder / "report.md").unlink(missing_ok=True)
     _write(folder / "req-graph.json", json.dumps(graph, ensure_ascii=False, indent=1) + "\n")
     _write(folder / "report.md", text)
+    if confirmed_pre_sync:
+        _confirm_sync_base(root, change, capabilities)
     return FreezeResult("build", reason, (folder / "report.md").relative_to(root).as_posix(), unnamed)
 
 
 def cmd_freeze(args: argparse.Namespace, root: Path) -> int:
-    result = freeze_change(root, args.change, args.roots)
+    result = freeze_change(root, args.change, args.roots, confirmed_pre_sync=args.confirmed_pre_sync, capabilities=args.capability)
     if result.action == "commits":
         print("Снимок свежий: обновлены только коммиты корней, граф и отчёт прежние.")
     else:
@@ -2217,11 +2373,31 @@ def cmd_archive_gaps(args: argparse.Namespace, root: Path) -> int:
     return 0
 
 
+def cmd_scenario_base(args: argparse.Namespace, root: Path) -> int:
+    base = root / 'openspec/changes' / args.change
+    if not base.is_dir():
+        raise Refusal('каталога изменения нет')
+    delta_path = base / 'specs' / args.capability / 'spec.md'
+    if not delta_path.resolve().is_relative_to((base / 'specs').resolve()):
+        raise Refusal('capability вне каталога изменения')
+    requirements = parse_spec(delta_path).requirements if delta_path.is_file() else []
+    named = [req for req in requirements if req.name == args.requirement and req.section == 'MODIFIED']
+    delta = {scn.name: hashlib.sha256(scn.text.encode('utf-8')).hexdigest() for scn in named[0].scenarios} if len(named) == 1 else {}
+    result = {'capability': args.capability, 'requirement': args.requirement,
+              'scenarios': scenario_base(base, args.capability, args.requirement), 'delta_scenarios': delta}
+    print(json.dumps(result, ensure_ascii=False))
+    return 0
+
+
 HANDLERS = {"view": cmd_view, "build": cmd_build, "report": cmd_report, "check": cmd_check, "freeze": cmd_freeze,
-            "archive-gaps": cmd_archive_gaps}
+            "archive-gaps": cmd_archive_gaps, "scenario-base": cmd_scenario_base}
 
 # Подкоманда: (что делает, когда звать, коды). Правило `tests/test_flag_help.py`: «Звать, когда» и «Коды:».
 SUBCOMMAND_HELP = {
+    'scenario-base': ('Выдаёт JSON дословных отпечатков сценариев с подтверждённой исходной базой (F-14). '
+                      'Без связанного свидетельства scenarios пуст. Файлы не меняет.',
+                      'Звать, когда нужно сверить происхождение сценария после sync.',
+                      'Коды: 0 — ответ выдан; 1 — изменения нет; 2 — неверный вызов.'),
     "view": ("Готовит JSON выбранного вида requirementDiagram, карту узлов, диагностику и список пропусков.",
              "Звать, когда нужен просмотр живого графа после specs или выбранного снимка. Без выбора части выдаёт перечни для выбора.",
              "Коды: 0 — ответ выдан; 1 — отказ чтения или выбора; 2 — неверный вызов."),
@@ -2305,10 +2481,18 @@ def build_parser() -> argparse.ArgumentParser:
                            help="каталог архива изменений; по умолчанию openspec/changes/archive от корня проекта")
         else:
             sp.add_argument("change", metavar="ИЗМЕНЕНИЕ", help="имя изменения, как у `openspec validate <имя>`")
-        if name in ("view", "build", "report", "check", "freeze"):
+        if name in ("view", "build", "report", "check", "freeze", 'scenario-base'):
             sp.add_argument("--roots", metavar="ПУТЬ", type=Path, default=None, help="файл корней вместо tools/journal-roots.json")
         if name == "check":
             sp.add_argument("file", metavar="ФАЙЛ", type=Path, help="сохранённый граф изменения (JSON от `build --out`)")
+        if name == 'freeze':
+            sp.add_argument('--confirmed-pre-sync', action='store_true',
+                            help='сохранить свидетельство только при подтверждённом workflow порядке до первой записи мастера')
+            sp.add_argument('--capability', action='append',
+                            help='выбранная capability подтверждённой предзаписи, повторяется для каждого выбранного блока')
+        if name == 'scenario-base':
+            sp.add_argument('--capability', required=True, help='capability записи исходной базы')
+            sp.add_argument('--requirement', required=True, help='имя требования записи исходной базы')
         if name == "view":
             sp.add_argument('--snapshot', type=Path, help='выбранный JSON снимка, включая архивный')
             sp.add_argument('--capability', help='выбранная capability')
