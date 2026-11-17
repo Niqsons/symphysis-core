@@ -1,0 +1,409 @@
+{
+  "title": "Журнал решений: scenario-run-change-impact",
+  "source": "decisions.json",
+  "intro": "Первый круг B-53. Пути улик считаются от корня worktree ядра symphysis. Основание: намерение, согласованный объём, первый проход атаки attack-lens-conventions, текущие спеки атаки и графа, design, tasks и код просмотрщика. В symphysis-core обнаружены модули anchors, attack, cli, consequences, decisions, installer, openspec-run, schema, probes, research, roots, runtime, settings, skill-shared, step-help, trace и viewer.",
+  "generated": "2026-11-17",
+  "notes": [],
+  "records": [
+    {
+      "id": "F-01",
+      "question": "Критерии готовности в намерении: «Без критериев готовности».",
+      "kind": "факт",
+      "status": "решён",
+      "addressee": "постановка",
+      "depends_on": [],
+      "delivery": "",
+      "options": [],
+      "antipodes": [],
+      "recommendation": null,
+      "decision": null,
+      "reversibility": null,
+      "outcome": null,
+      "parking": [],
+      "dispute": "",
+      "consequences": "",
+      "evidence": [
+        {
+          "path": "openspec/changes/scenario-run-change-impact/intent.md",
+          "quote": "Без критериев готовности"
+        }
+      ],
+      "comments": []
+    },
+    {
+      "id": "F-02",
+      "question": "Владелец предложил объединить описание сохраняемых свойств в design, проверку влияния в атаке и адресную проверку на реализации.",
+      "kind": "факт",
+      "status": "решён",
+      "addressee": "агент",
+      "depends_on": [],
+      "delivery": "",
+      "options": [],
+      "antipodes": [],
+      "recommendation": null,
+      "decision": null,
+      "reversibility": null,
+      "outcome": null,
+      "parking": [],
+      "dispute": "",
+      "consequences": "",
+      "evidence": [
+        {
+          "path": "openspec/changes/scenario-run-change-impact/answers/2026-11-17-combine-three-options.md",
+          "quote": "Я бы попробовал взять все три"
+        },
+        {
+          "path": "openspec/changes/scenario-run-change-impact/answers/2026-11-17-combine-three-options.md",
+          "quote": "В `tasks.md` поставить адресную проверку для последствия, которое можно подтвердить только на реализации."
+        }
+      ],
+      "comments": []
+    },
+    {
+      "id": "F-03",
+      "question": "В прежней атаке шесть дословно перенесённых сценариев заблокированы из-за отсутствия механизма в design. Строки атаки служат входом существующего промпта и ключа строки тяжести.",
+      "kind": "факт",
+      "status": "решён",
+      "addressee": "агент",
+      "depends_on": [],
+      "delivery": "",
+      "options": [],
+      "antipodes": [],
+      "recommendation": null,
+      "decision": null,
+      "reversibility": null,
+      "outcome": null,
+      "parking": [],
+      "dispute": "",
+      "consequences": "",
+      "evidence": [
+        {
+          "path": "openspec/changes/archive/2026-11-08-attack-lens-conventions/briefs/symphysis-attack-2026-11-08/report.md",
+          "quote": "шесть строк scenario-run с опорой «нет: design не называет механизм». Эти сценарии перенесены в MODIFIED без правки"
+        },
+        {
+          "path": "openspec/changes/archive/2026-11-08-attack-lens-conventions/design.md",
+          "quote": "несёт восемь сценариев мастер-спеки дословно: дельта MODIFIED заменяет мастер-требование целиком."
+        },
+        {
+          "path": "viewer/playground-template.html",
+          "quote": "const key = att.path + '|' + r.section + '|' + r.claim, sp = norm((disputes || {})[key]);"
+        },
+        {
+          "path": "viewer/playground-template.html",
+          "quote": "return att.path + '|' + row.section + '|' + row.claim;"
+        }
+      ],
+      "comments": []
+    },
+    {
+      "id": "F-04",
+      "question": "Сейчас отсутствие механизма в design даёт блокер; проверка до реализации читает код, а шаблон задач уже предусматривает проверяемый результат.",
+      "kind": "факт",
+      "status": "решён",
+      "addressee": "агент",
+      "depends_on": [],
+      "delivery": "",
+      "options": [],
+      "antipodes": [],
+      "recommendation": null,
+      "decision": null,
+      "reversibility": null,
+      "outcome": null,
+      "parking": [],
+      "dispute": "",
+      "consequences": "",
+      "evidence": [
+        {
+          "path": "attack/skills/symphysis-attack/SKILL.md",
+          "quote": "Механизм не назван — `блокер`, воздержания нет: ответ выводится из design."
+        },
+        {
+          "path": "openspec/specs/artifact-attack/spec.md",
+          "quote": "исход по коду выводится чтением и рассуждением, существование путей и имён проверяется грепом"
+        },
+        {
+          "path": "openspec/schemas/symphysis/templates/tasks.md",
+          "quote": "проверка: <тест, команда, наблюдаемый результат, файл>"
+        }
+      ],
+      "comments": []
+    },
+    {
+      "id": "F-05",
+      "question": "Граф опирается на артефакты изменения и явные объявления. Снимок даёт исходную базу для MODIFIED, а смысл связи остаётся предметом атаки.",
+      "kind": "факт",
+      "status": "решён",
+      "addressee": "агент",
+      "depends_on": [],
+      "delivery": "",
+      "options": [],
+      "antipodes": [],
+      "recommendation": null,
+      "decision": null,
+      "reversibility": null,
+      "outcome": null,
+      "parking": [],
+      "dispute": "",
+      "consequences": "",
+      "evidence": [
+        {
+          "path": "openspec/specs/trace-graph/spec.md",
+          "quote": "из файлов изменения и текущих структурных объявлений участвующих repo"
+        },
+        {
+          "path": "openspec/specs/trace-graph/spec.md",
+          "quote": "Смысл связи граф SHALL NOT судить: это делает атака"
+        },
+        {
+          "path": "openspec/specs/trace-snapshot/spec.md",
+          "quote": "Заморозка SHALL писать в снимок ссылки и сценарии мастер-спеки по каждому требованию MODIFIED"
+        }
+      ],
+      "comments": []
+    },
+    {
+      "id": "F-06",
+      "question": "Как искать сценарии мастер-спеки, затронутые через общий вход или контракт за пределами дельты?",
+      "kind": "развилка",
+      "status": "открыт",
+      "addressee": "человек",
+      "depends_on": [],
+      "delivery": "",
+      "options": [
+        {
+          "letter": "A",
+          "text": "Обязательно сверять перенос с мастером до синхронизации или пригодной базой снимка. Начинать внешний поиск с изменённых стыков и их потребителей, читать связанные сценарии мастера, продолжать по обнаруженным зависимостям до подтверждённой границы. Указать путь найденного сценария и существенные пробелы поиска. Граф помогает находить связи. Цена — поиск и объяснение по каждому затронутому стыку.",
+          "added": false,
+          "unlikely": null,
+          "evidence": [
+            {
+              "path": "openspec/specs/trace-snapshot/spec.md",
+              "quote": "Заморозка SHALL писать в снимок ссылки и сценарии мастер-спеки по каждому требованию MODIFIED"
+            },
+            {
+              "path": "viewer/playground-template.html",
+              "quote": "const key = att.path + '|' + r.section + '|' + r.claim, sp = norm((disputes || {})[key]);"
+            },
+            {
+              "path": "viewer/playground-template.html",
+              "quote": "return att.path + '|' + row.section + '|' + row.claim;"
+            },
+            {
+              "path": "openspec/specs/trace-graph/spec.md",
+              "quote": "Смысл связи граф SHALL NOT судить: это делает атака"
+            }
+          ]
+        },
+        {
+          "letter": "B",
+          "text": "Внешние сценарии брать по явным связям графа и ссылкам в design. Сравнивать дельту с базой так же. Периметр проще повторить, работа ограничена известными связями. При отсутствии описанного ребра потребитель стыка может выпасть.",
+          "added": false,
+          "unlikely": null,
+          "evidence": [
+            {
+              "path": "openspec/specs/trace-graph/spec.md",
+              "quote": "из файлов изменения и текущих структурных объявлений участвующих repo"
+            },
+            {
+              "path": "openspec/specs/trace-graph/spec.md",
+              "quote": "Смысл связи граф SHALL NOT судить: это делает атака"
+            },
+            {
+              "path": "openspec/specs/trace-snapshot/spec.md",
+              "quote": "Заморозка SHALL писать в снимок ссылки и сценарии мастер-спеки по каждому требованию MODIFIED"
+            }
+          ]
+        },
+        {
+          "letter": "C",
+          "text": "Завести поддерживаемый индекс мастер-сценариев по потребителям и входам, использовать его как основной поиск. Получится единая карта для повторных атак. Цена — наполнение и сопровождение индекса в существующих проектах; смысл связи всё равно оценивает атака.",
+          "added": false,
+          "unlikely": "Нужны отдельный формат, первоначальное наполнение и правила актуализации индекса.",
+          "evidence": [
+            {
+              "path": "openspec/specs/trace-graph/spec.md",
+              "quote": "из файлов изменения и текущих структурных объявлений участвующих repo"
+            },
+            {
+              "path": "openspec/specs/trace-graph/spec.md",
+              "quote": "Смысл связи граф SHALL NOT судить: это делает атака"
+            }
+          ]
+        }
+      ],
+      "antipodes": [],
+      "recommendation": {
+        "option": "A",
+        "why": "Подхватывает реально затронутый контракт без готовой связи, как в случае ключа строки, и ограничивает работу проверенными стыками без введения обязательного индекса."
+      },
+      "decision": null,
+      "reversibility": null,
+      "outcome": null,
+      "parking": [],
+      "dispute": "",
+      "consequences": "",
+      "evidence": [],
+      "comments": [],
+      "nodes": [
+        "Baseline",
+        "Scope"
+      ]
+    },
+    {
+      "id": "F-07",
+      "question": "Какую форму должна иметь запись о сохраняемых свойствах в design.md?",
+      "kind": "развилка",
+      "status": "открыт",
+      "addressee": "человек",
+      "depends_on": [],
+      "delivery": "",
+      "options": [
+        {
+          "letter": "A",
+          "text": "Короткое обоснование на затронутый стык или группу сценариев в существующем design. Назвать, что меняется, какие входы или свойства должны сохраниться и на чём основано это утверждение. Атака читает весь design и сверяет содержательность. Переход обратим: существующая структура документа сохраняется.",
+          "added": false,
+          "unlikely": null,
+          "evidence": [
+            {
+              "path": "openspec/changes/archive/2026-11-08-attack-lens-conventions/design.md",
+              "quote": "несёт восемь сценариев мастер-спеки дословно: дельта MODIFIED заменяет мастер-требование целиком."
+            },
+            {
+              "path": "openspec/changes/archive/2026-11-08-attack-lens-conventions/design.md",
+              "quote": "шесть прочих сценариев держит прежний код страницы"
+            },
+            {
+              "path": "attack/skills/symphysis-attack/SKILL.md",
+              "quote": "Механизм не назван — `блокер`, воздержания нет: ответ выводится из design."
+            }
+          ]
+        },
+        {
+          "letter": "B",
+          "text": "Обязательная структурированная таблица для затронутых стыков: мастер-сценарий или группа, изменённый вход, сохраняемое свойство, основание. Таблицу можно проверять автоматически на заполненность и переиспользовать при поиске. Цена — поддержка формы, шаблона и повторных проверок для старых design.",
+          "added": false,
+          "unlikely": null,
+          "evidence": [
+            {
+              "path": "openspec/schemas/symphysis/templates/design.md",
+              "quote": "## Context"
+            },
+            {
+              "path": "openspec/changes/archive/2026-11-08-attack-lens-conventions/design.md",
+              "quote": "несёт восемь сценариев мастер-спеки дословно: дельта MODIFIED заменяет мастер-требование целиком."
+            },
+            {
+              "path": "openspec/specs/trace-graph/spec.md",
+              "quote": "из файлов изменения и текущих структурных объявлений участвующих repo"
+            }
+          ]
+        }
+      ],
+      "antipodes": [],
+      "recommendation": {
+        "option": "A",
+        "why": "Общее обоснование убирает повтор для шести сценариев и позволяет проверить реальный стык. Фиксированная форма добавляет перенос и проверку полей до появления устойчивой потребности в индексировании."
+      },
+      "decision": null,
+      "reversibility": null,
+      "outcome": null,
+      "parking": [],
+      "dispute": "",
+      "consequences": "",
+      "evidence": [],
+      "comments": [],
+      "nodes": [
+        "Design"
+      ]
+    },
+    {
+      "id": "F-08",
+      "question": "Когда запланированная проверка реализации достаточна, чтобы пропустить сценарий через атаку до apply?",
+      "kind": "развилка",
+      "status": "открыт",
+      "addressee": "человек",
+      "depends_on": [],
+      "delivery": "",
+      "options": [
+        {
+          "letter": "A",
+          "text": "Если проектируемый механизм согласован с THEN и осталась проверка результата на реальных изменённых входах, достаточна задача с привязкой к сценарию, способом проверки и наблюдаемым THEN. Результат ещё ожидается. Конкретное противоречие или существенный путь регрессии без достаточной проверки остаётся блокером.",
+          "added": false,
+          "unlikely": null,
+          "evidence": [
+            {
+              "path": "openspec/specs/artifact-attack/spec.md",
+              "quote": "исход по коду выводится чтением и рассуждением, существование путей и имён проверяется грепом"
+            },
+            {
+              "path": "openspec/schemas/symphysis/templates/tasks.md",
+              "quote": "проверка: <тест, команда, наблюдаемый результат, файл>"
+            },
+            {
+              "path": "attack/skills/symphysis-attack/SKILL.md",
+              "quote": "Механизм не назван — `блокер`, воздержания нет: ответ выводится из design."
+            }
+          ]
+        },
+        {
+          "letter": "B",
+          "text": "Существенную неопределённость оставлять блокером до явного решения человека по строке, даже с достаточной задачей. Верификация на реализации всё равно входит в задачу. Такой подход даёт человеку слово по каждому допуску и увеличивает число остановок до apply.",
+          "added": false,
+          "unlikely": null,
+          "evidence": [
+            {
+              "path": "openspec/specs/artifact-attack/spec.md",
+              "quote": "исход по коду выводится чтением и рассуждением, существование путей и имён проверяется грепом"
+            },
+            {
+              "path": "openspec/schemas/symphysis/templates/tasks.md",
+              "quote": "проверка: <тест, команда, наблюдаемый результат, файл>"
+            },
+            {
+              "path": "openspec/specs/artifact-attack/spec.md",
+              "quote": "строки `предупреждение` вердикт не держат"
+            }
+          ]
+        },
+        {
+          "letter": "C",
+          "text": "При любом неопределённом исходе допускать apply, если в tasks появилась регрессионная проверка. Автор быстрее перейдёт к коду, но запланированный тест может отложить обнаруженное противоречие до реализации.",
+          "added": false,
+          "unlikely": "Тест проверяет исход, но сам по себе не исправляет уже обнаруженный дефект конструкции.",
+          "evidence": [
+            {
+              "path": "openspec/schemas/symphysis/templates/tasks.md",
+              "quote": "проверка: <тест, команда, наблюдаемый результат, файл>"
+            },
+            {
+              "path": "openspec/specs/artifact-attack/spec.md",
+              "quote": "исход по коду выводится чтением и рассуждением, существование путей и имён проверяется грепом"
+            },
+            {
+              "path": "attack/skills/symphysis-attack/SKILL.md",
+              "quote": "Механизм не назван — `блокер`, воздержания нет: ответ выводится из design."
+            }
+          ]
+        }
+      ],
+      "antipodes": [],
+      "recommendation": {
+        "option": "A",
+        "why": "Сохраняет блокер при известной проблеме проектирования и позволяет проверить эмпирический остаток штатной задачей без ручного разрешения каждой достаточной проверки."
+      },
+      "decision": null,
+      "reversibility": null,
+      "outcome": null,
+      "parking": [],
+      "dispute": "",
+      "consequences": "",
+      "evidence": [],
+      "comments": [],
+      "nodes": [
+        "Impact",
+        "Task"
+      ]
+    }
+  ]
+}
