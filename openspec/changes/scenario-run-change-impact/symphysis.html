@@ -239,15 +239,15 @@ const JOURNAL = {
  "title": "Журнал решений: scenario-run-change-impact",
  "source": "decisions.json",
  "generated": "2026-11-17",
- "sha256": "298404a7b2eabe6a308637fd3d2dceafa95d5ba33329c7cee873359b8ef99a8d",
+ "sha256": "66623b1430ae5b127d54725852c0da6b4d32b3f7859ad44d84c94358155a86dc",
  "stats": {
-  "records": 13,
-  "forks": 8,
+  "records": 15,
+  "forks": 10,
   "facts": 5,
   "decided": 8,
   "parked": 0,
-  "evidence_total": 42,
-  "evidence_found": 42
+  "evidence_total": 63,
+  "evidence_found": 63
  },
  "records": [
   {
@@ -1140,6 +1140,259 @@ const JOURNAL = {
    ],
    "comments": [],
    "finding": ""
+  },
+  {
+   "id": "F-14",
+   "question": "Чем подтверждать, что сохранённая база для scenario-run снята до первой синхронизации именно этого блока мастер-спеки?",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-06",
+    "F-09",
+    "F-11"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Сохранять свидетельство происхождения рядом со снимком при подтверждённом управляемом sync до записи мастера. Связать его с конкретной исходной записью и её отпечатком. Обычный freeze, повторный sync после уже сделанного переноса и неизвестная очередность сами права выдать свидетельство не дают. Если доказательства нет, применяется F-09. Для дословного совпадения сравнивать содержательный текст сценария без свёртки пробелов внутри него. Цена — изменение управляемого sync и проверки порядка и совместимости снимков.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/specs/trace-snapshot/spec.md",
+       "quote": "до первой записи мастера вызвать freeze из `planningHome.root`",
+       "line": 24,
+       "verdict": "сверено",
+       "found": true
+      },
+      {
+       "path": "trace/trace_graph.py",
+       "quote": "return self.saved[cap][key], True",
+       "line": 602,
+       "verdict": "сверено",
+       "found": true
+      },
+      {
+       "path": "trace/trace_graph.py",
+       "quote": "\"scenarios\": {s.name: _hash(s.text) for s in req.scenarios}, \"text\": _hash(req.text),",
+       "line": 550,
+       "verdict": "сверено",
+       "found": true
+      },
+      {
+       "path": "openspec/changes/scenario-run-change-impact/specs/artifact-attack/spec.md",
+       "quote": "перенос остаётся неподтверждённым по этому снимку",
+       "line": 80,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Принимать как исходную базу только явно указанную проверяемую раннюю ревизию мастера с подтверждённой связью с текущим изменением. Снимок можно использовать, если запись в нём сверена с этой ревизией. Без такой ревизии применяется F-09. Цена — указывать исходную ревизию и поддерживать её чтение, в store без истории часть старых изменений останется без доказанной базы.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/specs/trace-snapshot/spec.md",
+       "quote": "до первой записи мастера вызвать freeze из `planningHome.root`",
+       "line": 24,
+       "verdict": "сверено",
+       "found": true
+      },
+      {
+       "path": "trace/trace_graph.py",
+       "quote": "return self.saved[cap][key], True",
+       "line": 602,
+       "verdict": "сверено",
+       "found": true
+      },
+      {
+       "path": "openspec/changes/scenario-run-change-impact/specs/artifact-attack/spec.md",
+       "quote": "перенос остаётся неподтверждённым по этому снимку",
+       "line": 80,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "C",
+     "text": "Опираться на живой мастер при подтверждённой работе до sync, а сохранённый снимок принимать только при отдельно зафиксированном ходе прежнего sync. Проверку последовательности выполнять по существующим материалам изменения, без нового переносимого свидетельства. Цена — ручная сверка, повторная атака в новой сессии чаще увидит пробел F-09.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/specs/trace-snapshot/spec.md",
+       "quote": "до первой записи мастера вызвать freeze из `planningHome.root`",
+       "line": 24,
+       "verdict": "сверено",
+       "found": true
+      },
+      {
+       "path": "trace/trace_graph.py",
+       "quote": "return self.saved[cap][key], True",
+       "line": 602,
+       "verdict": "сверено",
+       "found": true
+      },
+      {
+       "path": "openspec/changes/scenario-run-change-impact/specs/artifact-attack/spec.md",
+       "quote": "перенос остаётся неподтверждённым по этому снимку",
+       "line": 80,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Управляемый sync уже имеет точку до записи мастера. Привязка подтверждения к записи снимка делает повторную проверку воспроизводимой и исключает вывод времени только из существования файла. Цена по сравнению с ручными вариантами — явный контракт свидетельства и проверки совместимости."
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [],
+   "comments": [],
+   "finding": ""
+  },
+  {
+   "id": "F-15",
+   "question": "Где хранить использованные мастер-опоры и как обеспечить одинаковую сверку блока в ядре и форке?",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-10",
+    "F-12",
+    "F-13"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Добавить отдельное верхнеуровневое поле в frontmatter отчёта с однострочным JSON-массивом опор. Элемент именует capability, требование и при необходимости сценарий, а также несёт SHA-256 использованного блока. Читатели выводят путь из выбранного корня планирования и читают один и тот же блок в UTF-8 с нормализацией переносов в LF. Поле отделено от targets, старый отчёт без него проверяется по своим целям, неразбираемая или неоднозначная объявленная опора даёт диагностику и stale. Цена — два узких читателя, одна форма блока и общая проверка F-13.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "attack/attack_table.py",
+       "quote": "elif (m := RE_FRONT_KEY.match(line)):",
+       "line": 49,
+       "verdict": "сверено",
+       "found": true
+      },
+      {
+       "path": "attack/attack_table.py",
+       "quote": "if (m := RE_TARGET_PATH.match(line)):",
+       "line": 45,
+       "verdict": "сверено",
+       "found": true
+      },
+      {
+       "path": "openspec/changes/scenario-run-change-impact/specs/stale-verdict-scope/spec.md",
+       "quote": "Такие опоры проверяются в области мастер-спек. Цели из `targets[]` проверяются в каталоге изменения",
+       "line": 6,
+       "verdict": "сверено",
+       "found": true
+      },
+      {
+       "path": "openspec/changes/scenario-run-change-impact/specs/artifact-attack/spec.md",
+       "quote": "Отчёт SHALL сохранять сведения, позволяющие опознать этот блок и сверить его содержание при проверке свежести",
+       "line": 120,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Хранить те же идентификаторы и отпечатки в отдельном JSON-файле внутри каталога изменения, а отчёт связывать с ним проверяемой ссылкой. Область мастер-спек берётся из выбранного корня планирования. Одновременно опубликованные отчёт и файл составляют комплект, пустая или потерянная часть объявленного комплекта даёт диагностику и stale. Цена — согласованная запись, проверка комплектности и ещё один файл при повторной атаке и архивации.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "attack/attack_table.py",
+       "quote": "if (m := RE_TARGET_PATH.match(line)):",
+       "line": 45,
+       "verdict": "сверено",
+       "found": true
+      },
+      {
+       "path": "openspec/changes/scenario-run-change-impact/specs/stale-verdict-scope/spec.md",
+       "quote": "Такие опоры проверяются в области мастер-спек. Цели из `targets[]` проверяются в каталоге изменения",
+       "line": 6,
+       "verdict": "сверено",
+       "found": true
+      },
+      {
+       "path": "openspec/changes/scenario-run-change-impact/specs/artifact-attack/spec.md",
+       "quote": "Отчёт SHALL сохранять сведения, позволяющие опознать этот блок и сверить его содержание при проверке свежести",
+       "line": 120,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    },
+    {
+     "letter": "C",
+     "text": "Хранить опоры обычным вложенным YAML-списком в отчёте. Выделять его отдельным структурным разбором frontmatter в обоих читателях, локальные цели брать только из targets. Идентификацию и сверку использованного блока сделать общей по контракту. Цена — изменить разбор существующих отчётов в ядре и проверить совместимость всех их вариантов.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "attack/attack_table.py",
+       "quote": "elif (m := RE_FRONT_KEY.match(line)):",
+       "line": 49,
+       "verdict": "сверено",
+       "found": true
+      },
+      {
+       "path": "attack/attack_table.py",
+       "quote": "if (m := RE_TARGET_PATH.match(line)):",
+       "line": 45,
+       "verdict": "сверено",
+       "found": true
+      },
+      {
+       "path": "openspec/changes/scenario-run-change-impact/specs/stale-verdict-scope/spec.md",
+       "quote": "Такие опоры проверяются в области мастер-спек. Цели из `targets[]` проверяются в каталоге изменения",
+       "line": 6,
+       "verdict": "сверено",
+       "found": true
+      },
+      {
+       "path": "openspec/changes/scenario-run-change-impact/specs/artifact-attack/spec.md",
+       "quote": "Отчёт SHALL сохранять сведения, позволяющие опознать этот блок и сверить его содержание при проверке свежести",
+       "line": 120,
+       "verdict": "сверено",
+       "found": true
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Одна атомарно записываемая форма отчёта позволяет подать байт-в-байт один экземпляр ядру и форку. JSON-поле можно разобрать отдельно, поэтому не нужен новый жизненный цикл второго файла и меньше риск смешать мастер-опоры с локальными целями."
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [],
+   "comments": [],
+   "finding": ""
   }
  ],
  "notes": [
@@ -1171,7 +1424,7 @@ const SCHEME = {
 };
 const HELP = {
  "contract": 6,
- "taken_at": "2026-11-17T17:31:29+03:00",
+ "taken_at": "2026-11-17T17:49:53+03:00",
  "versions": {
   "openspec": "1.16.1+symphysis.8",
   "symphysis": "0.1.0+f11b1d25"
@@ -1179,12 +1432,12 @@ const HELP = {
  "change": "scenario-run-change-impact",
  "changes": null,
  "error": null,
- "current_step": "design",
- "current_text": "Следующий шаг по файлам — `design`, ход модели.",
- "turn": "model",
- "next_by_status": "design",
+ "current_step": "viewer",
+ "current_text": "Следующий шаг по файлам — `viewer`, ход человека: открытых развилок 2, решаются на странице журнала. После них по файлам идёт `security`.",
+ "turn": "human",
+ "next_by_status": "security",
  "forks": {
-  "open": 0,
+  "open": 2,
   "parked": 0
  },
  "tasks": {
@@ -1264,7 +1517,7 @@ const HELP = {
   },
   {
    "id": "viewer",
-   "state": "idle",
+   "state": "ready",
    "turn": "human",
    "optional": false,
    "blocks": [],
@@ -1498,7 +1751,7 @@ const HELP = {
   },
   {
    "id": "design",
-   "state": "ready",
+   "state": "done",
    "turn": "model",
    "optional": false,
    "blocks": [
@@ -1510,10 +1763,10 @@ const HELP = {
    "files": [
     {
      "path": "openspec/changes/scenario-run-change-impact/design.md",
-     "exists": false
+     "exists": true
     }
    ],
-   "file_note": null,
+   "file_note": "файл есть, содержание не проверялось",
    "texts": {
     "title": "Дизайн",
     "why": "Как реализовать: решения журнала, риски и открытые вопросы в одном документе, от которого идут задачи.",
@@ -1561,16 +1814,14 @@ const HELP = {
   },
   {
    "id": "tasks",
-   "state": "blocked",
+   "state": "ready",
    "turn": "model",
    "optional": false,
    "blocks": [
     "attack-artifacts"
    ],
    "stops_apply": true,
-   "waits_for": [
-    "design"
-   ],
+   "waits_for": [],
    "files": [
     {
      "path": "openspec/changes/scenario-run-change-impact/tasks.md",
@@ -1600,7 +1851,6 @@ const HELP = {
    "blocks": [],
    "stops_apply": false,
    "waits_for": [
-    "design",
     "security",
     "tasks"
    ],
@@ -1718,10 +1968,12 @@ const HELP = {
   "consequences.md": "openspec/changes/scenario-run-change-impact/consequences.md",
   "decisions.json": "openspec/changes/scenario-run-change-impact/decisions.json",
   "decisions.md": "openspec/changes/scenario-run-change-impact/decisions.md",
+  "design.md": "openspec/changes/scenario-run-change-impact/design.md",
   "edge-probe.md": "openspec/changes/scenario-run-change-impact/edge-probe.md",
   "intent.md": "openspec/changes/scenario-run-change-impact/intent.md",
   "openspec/changes/scenario-run-change-impact/consequences.md": "openspec/changes/scenario-run-change-impact/consequences.md",
   "openspec/changes/scenario-run-change-impact/decisions.json": "openspec/changes/scenario-run-change-impact/decisions.json",
+  "openspec/changes/scenario-run-change-impact/design.md": "openspec/changes/scenario-run-change-impact/design.md",
   "openspec/changes/scenario-run-change-impact/intent.md": "openspec/changes/scenario-run-change-impact/intent.md",
   "openspec/changes/scenario-run-change-impact/proposal.md": "openspec/changes/scenario-run-change-impact/proposal.md",
   "openspec/changes/scenario-run-change-impact/research/none.md": "openspec/changes/scenario-run-change-impact/research/none.md",
@@ -1753,6 +2005,7 @@ const LINKS = {
   "consequences.md": "consequences.md",
   "decisions.json": "decisions.json",
   "decisions.md": "decisions.md",
+  "design.md": "design.md",
   "edge-probe.md": "edge-probe.md",
   "intent.md": "intent.md",
   "openspec/changes/archive/2026-11-08-attack-lens-conventions/briefs/symphysis-attack-2026-11-08/report.md": "../archive/2026-11-08-attack-lens-conventions/briefs/symphysis-attack-2026-11-08/report.md",
@@ -1760,6 +2013,7 @@ const LINKS = {
   "openspec/changes/scenario-run-change-impact/answers/2026-11-17-combine-three-options.md": "answers/2026-11-17-combine-three-options.md",
   "openspec/changes/scenario-run-change-impact/consequences.md": "consequences.md",
   "openspec/changes/scenario-run-change-impact/decisions.json": "decisions.json",
+  "openspec/changes/scenario-run-change-impact/design.md": "design.md",
   "openspec/changes/scenario-run-change-impact/intent.md": "intent.md",
   "openspec/changes/scenario-run-change-impact/proposal.md": "proposal.md",
   "openspec/changes/scenario-run-change-impact/research/none.md": "research/none.md",
