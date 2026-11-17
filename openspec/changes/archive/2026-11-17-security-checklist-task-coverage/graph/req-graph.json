@@ -15,7 +15,7 @@
   },
   {
    "path": "specs/security-checklist-coverage/spec.md",
-   "sha256": "27abd12aa7565d291dd09bbed1f7192d51a6822ea92b492348e912cda4c536d2"
+   "sha256": "4c019d81c469a4f907fb4108fb2867561446fbb76833aee6ffb6513578bdf5da"
   },
   {
    "path": "tasks.md",
@@ -2112,7 +2112,7 @@
  "roots": [
   {
    "prefix": "",
-   "commit": "94e6a96a592b8445f0c7b28ad5c51de79c116844"
+   "commit": "d01b97f6dfac2091edf02e6b8ec8cd506fcc70b1"
   },
   {
    "prefix": "docs/",
