@@ -12,12 +12,12 @@ import { check } from "../lib/check.js";
 import { requireFork } from "../scripts/build-vendor.js";
 import { tempDir } from "../test-support/temp-dir.js";
 import { makeClone } from "../test-support/clone.js";
-import { executableCandidates, executableLauncher, spawnTool } from "../lib/openspec-bin.js";
+import { executableCandidates, executableLauncher, forkPin, spawnTool } from "../lib/openspec-bin.js";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const bin = path.resolve(here, "..", "bin", "symphysis.js");
 const FORK = path.resolve(here, "..", "..", "upstream", "openspec", "bin", "openspec.js");
-const PIN = "1.16.1+symphysis.8";
+const PIN = forkPin().openspecPin;
 let payloadDir;
 const tmp = () => tempDir("symphysis-check-");
 const saved = { openspec: process.env.SYMPHYSIS_OPENSPEC, path: process.env.PATH, Path: process.env.Path, xdg: process.env.XDG_CONFIG_HOME };

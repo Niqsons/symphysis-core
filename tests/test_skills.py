@@ -472,6 +472,14 @@ def test_scenario_run_and_templates_require_the_changed_input_in_targeted_tasks(
         assert token in tasks and token in read(ROOT / "openspec/schemas/symphysis/templates/tasks.md")
 
 
+def test_scenario_run_example_marks_the_boundary_quote_as_a_placeholder():
+    text = block(read(ATTACK_SKILL / 'SKILL.md'), '#### scenario-run', '\n#### claim-extraction')
+    assert '«стык»' not in text
+    assert '«<дословная цитата проверенного стыка>»' in text
+    assert 'дословно сопоставить каждую цитату' in text
+    assert 'Отпечатки `master_supports`' in text and 'проверки свежести' in text
+
+
 def test_documented_master_support_writer_reproduces_shared_report(tmp_path):
     """Execute the published recipe so an unusable command cannot pass as documentation."""
     import shutil
