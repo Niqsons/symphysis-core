@@ -182,6 +182,27 @@ def test_view_targets_use_trusted_roots_and_ignore_snapshot_target_fields(tmp_pa
     assert target['root'] == str(root.resolve()) and target['line'] == 1
 
 
+def test_master_view_target_uses_planning_root(tmp_path):
+    root, base = make_change(tmp_path)
+    relative = 'openspec/specs/a/spec.md'
+    master = root / relative
+    master.parent.mkdir(parents=True)
+    master.write_text('master\n', encoding='utf-8')
+    decoy = base / relative
+    decoy.parent.mkdir(parents=True)
+    decoy.write_text('unrelated\n', encoding='utf-8')
+    graph = graph_of([node('req', 'R', 'req:a/R', capability='a', section='MASTER', scope='master', at=relative + ':1')])
+    graph.update(format=3, sources=[])
+    snapshot = base / 'graph/req-graph.json'
+    snapshot.parent.mkdir()
+    snapshot.write_text(json.dumps(graph), encoding='utf-8')
+    result = run('view', CHANGE, '--snapshot', str(snapshot), '--requirement', 'req:a/R', cwd=root)
+    assert result.returncode == 0, result.stderr
+    item = next(iter(json.loads(result.stdout)['elements'].values()))
+    assert item['scope'] == 'master'
+    assert item['target']['file'] == str(master.resolve())
+
+
 @pytest.mark.parametrize('at', ['../outside.md:1', '..\\outside.md:1', '/outside.md:1', 'Z:/outside.md:1', '//host/share/file:1'])
 def test_snapshot_paths_do_not_escape_project(tmp_path, at):
     root, base = make_change(tmp_path)

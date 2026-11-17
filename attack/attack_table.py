@@ -5,9 +5,11 @@
 (модуль `decisions`): attack зависит от decisions, не наоборот."""
 from __future__ import annotations
 
+import json
 import re
 from pathlib import Path
 
+from attack_master import MasterSupportError, parse_master_supports
 from journal_model import _flat
 from journal_render import _lines
 
@@ -20,6 +22,78 @@ RE_FRONT_KEY = re.compile(r"^(\w+):\s*(.*?)\s*$")
 RE_TARGET_PATH = re.compile(r"^\s+-\s+path:\s*(.*?)\s*$")
 RE_TARGET_SHA = re.compile(r"^\s+sha256:\s*(.*?)\s*$")
 RE_COMPOSITION = re.compile(r"^\*\*Состав:\*\*\s*(.*?)\s*$")
+RE_FRONT_FIELD = re.compile(r"""^\s*("(?:[^"\\]|\\.)*"|'(?:[^']|'')*'|[^\s:#][^:]*?)\s*:""")
+RE_FLOW_TOKEN = re.compile(r""""(?:[^"\\]|\\.)*"|'(?:[^']|'')*'|[{}\[\]:,]|[^{}\[\]:,\s]+""")
+
+
+def _frontmatter_key(raw: str) -> str | None:
+    """Decode only a field name; JSON strings plus YAML's hexadecimal escapes are sufficient here."""
+    raw = raw.strip()
+    if raw.startswith("'") and raw.endswith("'"):
+        return raw[1:-1].replace("''", "'")
+    if raw.startswith('"'):
+        def hexadecimal(match: re.Match) -> str:
+            value = match.group(1)
+            if value.startswith(("x", "U")):
+                return json.dumps(chr(int(value[1:], 16)))[1:-1]
+            return match.group(0)
+        try:
+            expanded = re.sub(r"\\(x[0-9a-fA-F]{2}|U[0-9a-fA-F]{8}|.)", hexadecimal, raw)
+            return json.loads(expanded)
+        except (ValueError, TypeError):
+            return None
+    return raw
+
+
+def _master_key(line: str) -> bool:
+    field = RE_FRONT_FIELD.match(line)
+    return bool(field and _frontmatter_key(field.group(1)) == "master_supports")
+
+
+def _master_fields(lines: list[str]) -> list[tuple[int, str]]:
+    declared = []
+    scalar_indent = None
+    for index, line in enumerate(lines, 1):
+        indent = len(line) - len(line.lstrip())
+        if scalar_indent is not None and (not line.strip() or indent > scalar_indent):
+            continue
+        scalar_indent = None
+        field = RE_FRONT_FIELD.match(line)
+        if field and re.fullmatch(r"[|>](?:[1-9][+-]?|[+-][1-9]?)?(?:\s+#.*)?", line[field.end():].strip()):
+            scalar_indent = indent
+        if _master_key(line):
+            declared.append((index, line))
+    return declared
+
+
+def _flow_master_field(text: str) -> bool:
+    """Detect root keys in a noncanonical flow mapping without interpreting values as declarations."""
+    text = text.strip()
+    if not text.startswith("{"):
+        return False
+    try:
+        parsed = json.loads(text)
+    except (ValueError, TypeError, RecursionError):
+        pass
+    else:
+        return isinstance(parsed, dict) and "master_supports" in parsed
+    depth, key_start, reading_key = 0, 1, True
+    for token in RE_FLOW_TOKEN.finditer(text):
+        value = token.group()
+        if value in ("{", "["):
+            depth += 1
+        elif value in ("}", "]"):
+            depth -= 1
+            if depth == 0:
+                return False
+        elif depth == 1:
+            if value == ",":
+                key_start, reading_key = token.end(), True
+            elif value == ":" and reading_key:
+                if _frontmatter_key(text[key_start:token.start()]) == "master_supports":
+                    return True
+                reading_key = False
+    return False
 
 
 def _composition(lines: list[str], start: int) -> str | None:
@@ -33,7 +107,8 @@ def _attack_frontmatter(lines: list[str], name: str) -> tuple[dict, int]:
     """Frontmatter файла атаки без YAML-библиотеки: форма задана двумя шаблонами схемы
     (`attack-decisions.md` — `target`/`target_sha256`, `attack-artifacts.md` — `targets[]`
     с `path` и `sha256`). Наружу всегда `targets[]`: форма журнала приводится к списку из одного
-    элемента. Возвращает словарь и индекс закрывающей строки `---`."""
+    элемента. Мастер-опоры разбираются отдельно; ошибка сохраняет только фиксированную причину и индекс,
+    чтобы оба читателя смогли показать её через `scope_lines`. Возвращает словарь и индекс строки `---`."""
     if not lines or lines[0].strip() != "---":
         raise ValueError(f"{name}: нет frontmatter")
     end = next((i for i, line in enumerate(lines[1:], 1) if line.strip() == "---"), None)
@@ -41,16 +116,35 @@ def _attack_frontmatter(lines: list[str], name: str) -> tuple[dict, int]:
         raise ValueError(f"{name}: frontmatter не закрыт строкой ---")
     fields: dict[str, str] = {}
     targets: list[dict] = []
-    for line in lines[1:end]:
-        if (m := RE_TARGET_PATH.match(line)):
+    supports = _master_fields(lines[1:end])
+    support_lines = {index for index, _ in supports}
+    section = ""
+    for index, line in enumerate(lines[1:end], 1):
+        if index in support_lines:
+            section = "master_supports"
+        elif (m := RE_TARGET_PATH.match(line)) and section == "targets":
             targets.append({"path": m.group(1), "sha256": ""})
-        elif (m := RE_TARGET_SHA.match(line)) and targets:
+        elif (m := RE_TARGET_SHA.match(line)) and targets and section == "targets":
             targets[-1]["sha256"] = m.group(1)
         elif (m := RE_FRONT_KEY.match(line)):
             fields[m.group(1)] = m.group(2)
+            section = m.group(1)
     if "target" in fields:
         targets.insert(0, {"path": fields["target"], "sha256": fields.get("target_sha256", "")})
-    return {"status": fields.get("status", ""), "targets": targets}, end
+    result = {"status": fields.get("status", ""), "targets": targets}
+    if supports:
+        try:
+            if len(supports) != 1:
+                raise MasterSupportError("ambiguous")
+            index, line = supports[0]
+            if not line.startswith("master_supports:") or index + 1 < end and lines[index + 1].startswith((" ", "\t")):
+                raise MasterSupportError("invalid")
+            result["master_supports"] = parse_master_supports(line.partition(":")[2].strip())
+        except MasterSupportError as error:
+            result["master_supports_error"] = {"reason": error.reason, "index": error.index}
+    elif _flow_master_field("\n".join(lines[1:end])):
+        result["master_supports_error"] = {"reason": "invalid", "index": None}
+    return result, end
 
 
 def _split_row(line: str) -> tuple[list[str], int | None]:

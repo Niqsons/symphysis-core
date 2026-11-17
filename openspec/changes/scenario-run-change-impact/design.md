@@ -42,10 +42,10 @@
 
 - **Выбрано:** A. Обязательно сверять перенос с мастером до синхронизации или пригодной базой снимка. Начинать внешний поиск с изменённых стыков и их потребителей, читать связанные сценарии мастера, продолжать по обнаруженным зависимостям до подтверждённой границы. Указать путь найденного сценария и существенные пробелы поиска. Граф помогает находить связи. Цена — поиск и объяснение по каждому затронутому стыку.
 - **Обратимость:** обратимо — Периметр поиска задаёт правило scenario-run. Его пересмотр потребует повторной атаки для затронутых изменений, база мастер-спек и снимки остаются пригодны.
-- **Улики выбранного:** openspec/specs/trace-snapshot/spec.md «Заморозка SHALL писать в снимок ссылки и сценарии мастер-спеки по каждому требованию MODIFIED»
-- **Улики выбранного:** viewer/playground-template.html «const key = att.path + '|' + r.section + '|' + r.claim, sp = norm((disputes || {})[key]);»
-- **Улики выбранного:** viewer/playground-template.html «return att.path + '|' + row.section + '|' + row.claim;»
-- **Улики выбранного:** openspec/specs/trace-graph/spec.md «Смысл связи граф SHALL NOT судить: это делает атака»
+- **Улики выбранного:** openspec/specs/trace-snapshot/spec.md:100 «Заморозка SHALL писать в снимок ссылки и сценарии мастер-спеки по каждому требованию MODIFIED»
+- **Улики выбранного:** viewer/playground-template.html:924 «const key = att.path + '|' + r.section + '|' + r.claim, sp = norm((disputes || {})[key]);»
+- **Улики выбранного:** viewer/playground-template.html:308 «return att.path + '|' + row.section + '|' + row.claim;»
+- **Улики выбранного:** openspec/specs/trace-graph/spec.md:46 «Смысл связи граф SHALL NOT судить: это делает атака»
 - **Отвергнуто:** B. Внешние сценарии брать по явным связям графа и ссылкам в design. Сравнивать дельту с базой так же. Периметр проще повторить, работа ограничена известными связями. При отсутствии описанного ребра потребитель стыка может выпасть.
 - **Отвергнуто:** C. Завести поддерживаемый индекс мастер-сценариев по потребителям и входам, использовать его как основной поиск. Получится единая карта для повторных атак. Цена — наполнение и сопровождение индекса в существующих проектах; смысл связи всё равно оценивает атака. — маловероятно: Нужны отдельный формат, первоначальное наполнение и правила актуализации индекса.
 
@@ -53,18 +53,18 @@
 
 - **Выбрано:** A. Короткое обоснование на затронутый стык или группу сценариев в существующем design. Назвать, что меняется, какие входы или свойства должны сохраниться и на чём основано это утверждение. Атака читает весь design и сверяет содержательность. Переход обратим: существующая структура документа сохраняется.
 - **Обратимость:** обратимо — Обоснование хранится в существующей структуре design.md. При смене правила достаточно привести к новой форме обоснования в активных design и проверить их повторной атакой.
-- **Улики выбранного:** openspec/changes/archive/2026-11-08-attack-lens-conventions/design.md «несёт восемь сценариев мастер-спеки дословно: дельта MODIFIED заменяет мастер-требование целиком.»
-- **Улики выбранного:** openspec/changes/archive/2026-11-08-attack-lens-conventions/design.md «шесть прочих сценариев держит прежний код страницы»
-- **Улики выбранного:** attack/skills/symphysis-attack/SKILL.md «Механизм не назван — `блокер`, воздержания нет: ответ выводится из design.»
+- **Улики выбранного:** openspec/changes/archive/2026-11-08-attack-lens-conventions/design.md:84 «несёт восемь сценариев мастер-спеки дословно: дельта MODIFIED заменяет мастер-требование целиком.»
+- **Улики выбранного:** openspec/changes/archive/2026-11-08-attack-lens-conventions/design.md:84 «шесть прочих сценариев держит прежний код страницы»
+- **Улики выбранного:** openspec/changes/scenario-run-change-impact/verification/baseline-code.md:10 «Механизм не назван — `блокер`, воздержания нет: ответ выводится из design.»
 - **Отвергнуто:** B. Обязательная структурированная таблица для затронутых стыков: мастер-сценарий или группа, изменённый вход, сохраняемое свойство, основание. Таблицу можно проверять автоматически на заполненность и переиспользовать при поиске. Цена — поддержка формы, шаблона и повторных проверок для старых design.
 
 ### F-08 Когда запланированная проверка реализации достаточна, чтобы пропустить сценарий через атаку до apply?
 
 - **Выбрано:** A. Если проектируемый механизм согласован с THEN и осталась проверка результата на реальных изменённых входах, достаточна задача с привязкой к сценарию, способом проверки и наблюдаемым THEN. Результат ещё ожидается. Конкретное противоречие или существенный путь регрессии без достаточной проверки остаётся блокером.
 - **Обратимость:** дорого — Смена допуска к apply меняет контракт атаки и задач. Придётся пересмотреть допуски по затронутым сценариям, повторить их атаки и проверить результаты задач, уже начатых по прежнему правилу.
-- **Улики выбранного:** openspec/specs/artifact-attack/spec.md «исход по коду выводится чтением и рассуждением, существование путей и имён проверяется грепом»
-- **Улики выбранного:** openspec/schemas/symphysis/templates/tasks.md «проверка: &lt;тест, команда, наблюдаемый результат, файл&gt;»
-- **Улики выбранного:** attack/skills/symphysis-attack/SKILL.md «Механизм не назван — `блокер`, воздержания нет: ответ выводится из design.»
+- **Улики выбранного:** openspec/specs/artifact-attack/spec.md:78 «исход по коду выводится чтением и рассуждением, существование путей и имён проверяется грепом»
+- **Улики выбранного:** openspec/schemas/symphysis/templates/tasks.md:22 «проверка: &lt;тест, команда, наблюдаемый результат, файл&gt;»
+- **Улики выбранного:** openspec/changes/scenario-run-change-impact/verification/baseline-code.md:10 «Механизм не назван — `блокер`, воздержания нет: ответ выводится из design.»
 - **Отвергнуто:** B. Существенную неопределённость оставлять блокером до явного решения человека по строке, даже с достаточной задачей. Верификация на реализации всё равно входит в задачу. Такой подход даёт человеку слово по каждому допуску и увеличивает число остановок до apply.
 - **Отвергнуто:** C. При любом неопределённом исходе допускать apply, если в tasks появилась регрессионная проверка. Автор быстрее перейдёт к коду, но запланированный тест может отложить обнаруженное противоречие до реализации. — маловероятно: Тест проверяет исход, но сам по себе не исправляет уже обнаруженный дефект конструкции.
 
@@ -72,10 +72,10 @@
 
 - **Выбрано:** A. Сохранять свидетельство происхождения рядом со снимком при подтверждённом управляемом sync до записи мастера. Связать его с конкретной исходной записью и её отпечатком. Обычный freeze, повторный sync после уже сделанного переноса и неизвестная очередность сами права выдать свидетельство не дают. Если доказательства нет, применяется F-09. Для дословного совпадения сравнивать содержательный текст сценария без свёртки пробелов внутри него. Цена — изменение управляемого sync и проверки порядка и совместимости снимков.
 - **Обратимость:** дорого — Свидетельство читают вместе со снимком. При смене способа подтверждения нужно сохранить чтение прежних снимков и заново сверить базу атак, опиравшихся на эти свидетельства.
-- **Улики выбранного:** openspec/specs/trace-snapshot/spec.md «до первой записи мастера вызвать freeze из `planningHome.root`»
-- **Улики выбранного:** trace/trace_graph.py «return self.saved[cap][key], True»
-- **Улики выбранного:** trace/trace_graph.py «"scenarios": {s.name: _hash(s.text) for s in req.scenarios}, "text": _hash(req.text),»
-- **Улики выбранного:** openspec/changes/scenario-run-change-impact/specs/artifact-attack/spec.md «перенос остаётся неподтверждённым по этому снимку»
+- **Улики выбранного:** openspec/specs/trace-snapshot/spec.md:24 «до первой записи мастера вызвать freeze из `planningHome.root`»
+- **Улики выбранного:** trace/trace_graph.py:610 «return self.saved[cap][key], True»
+- **Улики выбранного:** trace/trace_graph.py:558 «"scenarios": {s.name: _hash(s.text) for s in req.scenarios}, "text": _hash(req.text),»
+- **Улики выбранного:** openspec/changes/scenario-run-change-impact/specs/artifact-attack/spec.md:85 «перенос остаётся неподтверждённым по этому снимку»
 - **Отвергнуто:** B. Принимать как исходную базу только явно указанную проверяемую раннюю ревизию мастера с подтверждённой связью с текущим изменением. Снимок можно использовать, если запись в нём сверена с этой ревизией. Без такой ревизии применяется F-09. Цена — указывать исходную ревизию и поддерживать её чтение, в store без истории часть старых изменений останется без доказанной базы.
 - **Отвергнуто:** C. Опираться на живой мастер при подтверждённой работе до sync, а сохранённый снимок принимать только при отдельно зафиксированном ходе прежнего sync. Проверку последовательности выполнять по существующим материалам изменения, без нового переносимого свидетельства. Цена — ручная сверка, повторная атака в новой сессии чаще увидит пробел F-09.
 
@@ -83,42 +83,42 @@
 
 - **Выбрано:** A. Добавить отдельное верхнеуровневое поле в frontmatter отчёта с однострочным JSON-массивом опор. Элемент именует capability, требование и при необходимости сценарий, а также несёт SHA-256 использованного блока. Читатели выводят путь из выбранного корня планирования и читают один и тот же блок в UTF-8 с нормализацией переносов в LF. Поле отделено от targets, старый отчёт без него проверяется по своим целям, неразбираемая или неоднозначная объявленная опора даёт диагностику и stale. Цена — два узких читателя, одна форма блока и общая проверка F-13.
 - **Обратимость:** дорого — Отчёты с полем опор могут жить между выпусками. При смене формата нужно согласовать ядро и форк, сохранить проверку записанных отчётов и повторить общую проверку F-13.
-- **Улики выбранного:** attack/attack_table.py «elif (m := RE_FRONT_KEY.match(line)):»
-- **Улики выбранного:** attack/attack_table.py «if (m := RE_TARGET_PATH.match(line)):»
-- **Улики выбранного:** openspec/changes/scenario-run-change-impact/specs/stale-verdict-scope/spec.md «Такие опоры проверяются в области мастер-спек. Цели из `targets[]` проверяются в каталоге изменения»
-- **Улики выбранного:** openspec/changes/scenario-run-change-impact/specs/artifact-attack/spec.md «Отчёт SHALL сохранять сведения, позволяющие опознать этот блок и сверить его содержание при проверке свежести»
+- **Улики выбранного:** attack/attack_table.py:111 «elif (m := RE_FRONT_KEY.match(line)):»
+- **Улики выбранного:** openspec/changes/scenario-run-change-impact/verification/baseline-code.md:26 «if (m := RE_TARGET_PATH.match(line)):»
+- **Улики выбранного:** openspec/changes/scenario-run-change-impact/specs/stale-verdict-scope/spec.md:6 «Такие опоры проверяются в области мастер-спек. Цели из `targets[]` проверяются в каталоге изменения»
+- **Улики выбранного:** openspec/changes/scenario-run-change-impact/specs/artifact-attack/spec.md:125 «Отчёт SHALL сохранять сведения, позволяющие опознать этот блок и сверить его содержание при проверке свежести»
 - **Отвергнуто:** B. Хранить те же идентификаторы и отпечатки в отдельном JSON-файле внутри каталога изменения, а отчёт связывать с ним проверяемой ссылкой. Область мастер-спек берётся из выбранного корня планирования. Одновременно опубликованные отчёт и файл составляют комплект, пустая или потерянная часть объявленного комплекта даёт диагностику и stale. Цена — согласованная запись, проверка комплектности и ещё один файл при повторной атаке и архивации.
 - **Отвергнуто:** C. Хранить опоры обычным вложенным YAML-списком в отчёте. Выделять его отдельным структурным разбором frontmatter в обоих читателях, локальные цели брать только из targets. Идентификацию и сверку использованного блока сделать общей по контракту. Цена — изменить разбор существующих отчётов в ядре и проверить совместимость всех их вариантов.
 
 ## Risks / Trade-offs
 
-- [Risk] из файлов изменения и текущих структурных объявлений участвующих repo (F-06, отвергнут B: openspec/specs/trace-graph/spec.md) → Mitigation: решение A
-- [Risk] Смысл связи граф SHALL NOT судить: это делает атака (F-06, отвергнут B: openspec/specs/trace-graph/spec.md) → Mitigation: решение A
-- [Risk] Заморозка SHALL писать в снимок ссылки и сценарии мастер-спеки по каждому требованию MODIFIED (F-06, отвергнут B: openspec/specs/trace-snapshot/spec.md) → Mitigation: решение A
-- [Risk] из файлов изменения и текущих структурных объявлений участвующих repo (F-06, отвергнут C: openspec/specs/trace-graph/spec.md) → Mitigation: решение A
-- [Risk] Смысл связи граф SHALL NOT судить: это делает атака (F-06, отвергнут C: openspec/specs/trace-graph/spec.md) → Mitigation: решение A
-- [Risk] ## Context (F-07, отвергнут B: openspec/schemas/symphysis/templates/design.md) → Mitigation: решение A
-- [Risk] несёт восемь сценариев мастер-спеки дословно: дельта MODIFIED заменяет мастер-требование целиком. (F-07, отвергнут B: openspec/changes/archive/2026-11-08-attack-lens-conventions/design.md) → Mitigation: решение A
-- [Risk] из файлов изменения и текущих структурных объявлений участвующих repo (F-07, отвергнут B: openspec/specs/trace-graph/spec.md) → Mitigation: решение A
-- [Risk] исход по коду выводится чтением и рассуждением, существование путей и имён проверяется грепом (F-08, отвергнут B: openspec/specs/artifact-attack/spec.md) → Mitigation: решение A
-- [Risk] проверка: &lt;тест, команда, наблюдаемый результат, файл&gt; (F-08, отвергнут B: openspec/schemas/symphysis/templates/tasks.md) → Mitigation: решение A
-- [Risk] строки `предупреждение` вердикт не держат (F-08, отвергнут B: openspec/specs/artifact-attack/spec.md) → Mitigation: решение A
-- [Risk] проверка: &lt;тест, команда, наблюдаемый результат, файл&gt; (F-08, отвергнут C: openspec/schemas/symphysis/templates/tasks.md) → Mitigation: решение A
-- [Risk] исход по коду выводится чтением и рассуждением, существование путей и имён проверяется грепом (F-08, отвергнут C: openspec/specs/artifact-attack/spec.md) → Mitigation: решение A
-- [Risk] Механизм не назван — `блокер`, воздержания нет: ответ выводится из design. (F-08, отвергнут C: attack/skills/symphysis-attack/SKILL.md) → Mitigation: решение A
-- [Risk] до первой записи мастера вызвать freeze из `planningHome.root` (F-14, отвергнут B: openspec/specs/trace-snapshot/spec.md) → Mitigation: решение A
-- [Risk] return self.saved[cap][key], True (F-14, отвергнут B: trace/trace_graph.py) → Mitigation: решение A
-- [Risk] перенос остаётся неподтверждённым по этому снимку (F-14, отвергнут B: openspec/changes/scenario-run-change-impact/specs/artifact-attack/spec.md) → Mitigation: решение A
-- [Risk] до первой записи мастера вызвать freeze из `planningHome.root` (F-14, отвергнут C: openspec/specs/trace-snapshot/spec.md) → Mitigation: решение A
-- [Risk] return self.saved[cap][key], True (F-14, отвергнут C: trace/trace_graph.py) → Mitigation: решение A
-- [Risk] перенос остаётся неподтверждённым по этому снимку (F-14, отвергнут C: openspec/changes/scenario-run-change-impact/specs/artifact-attack/spec.md) → Mitigation: решение A
-- [Risk] if (m := RE_TARGET_PATH.match(line)): (F-15, отвергнут B: attack/attack_table.py) → Mitigation: решение A
-- [Risk] Такие опоры проверяются в области мастер-спек. Цели из `targets[]` проверяются в каталоге изменения (F-15, отвергнут B: openspec/changes/scenario-run-change-impact/specs/stale-verdict-scope/spec.md) → Mitigation: решение A
-- [Risk] Отчёт SHALL сохранять сведения, позволяющие опознать этот блок и сверить его содержание при проверке свежести (F-15, отвергнут B: openspec/changes/scenario-run-change-impact/specs/artifact-attack/spec.md) → Mitigation: решение A
-- [Risk] elif (m := RE_FRONT_KEY.match(line)): (F-15, отвергнут C: attack/attack_table.py) → Mitigation: решение A
-- [Risk] if (m := RE_TARGET_PATH.match(line)): (F-15, отвергнут C: attack/attack_table.py) → Mitigation: решение A
-- [Risk] Такие опоры проверяются в области мастер-спек. Цели из `targets[]` проверяются в каталоге изменения (F-15, отвергнут C: openspec/changes/scenario-run-change-impact/specs/stale-verdict-scope/spec.md) → Mitigation: решение A
-- [Risk] Отчёт SHALL сохранять сведения, позволяющие опознать этот блок и сверить его содержание при проверке свежести (F-15, отвергнут C: openspec/changes/scenario-run-change-impact/specs/artifact-attack/spec.md) → Mitigation: решение A
+- [Risk] из файлов изменения и текущих структурных объявлений участвующих repo (F-06, отвергнут B: openspec/specs/trace-graph/spec.md:9) → Mitigation: решение A
+- [Risk] Смысл связи граф SHALL NOT судить: это делает атака (F-06, отвергнут B: openspec/specs/trace-graph/spec.md:46) → Mitigation: решение A
+- [Risk] Заморозка SHALL писать в снимок ссылки и сценарии мастер-спеки по каждому требованию MODIFIED (F-06, отвергнут B: openspec/specs/trace-snapshot/spec.md:100) → Mitigation: решение A
+- [Risk] из файлов изменения и текущих структурных объявлений участвующих repo (F-06, отвергнут C: openspec/specs/trace-graph/spec.md:9) → Mitigation: решение A
+- [Risk] Смысл связи граф SHALL NOT судить: это делает атака (F-06, отвергнут C: openspec/specs/trace-graph/spec.md:46) → Mitigation: решение A
+- [Risk] ## Context (F-07, отвергнут B: openspec/schemas/symphysis/templates/design.md:3) → Mitigation: решение A
+- [Risk] несёт восемь сценариев мастер-спеки дословно: дельта MODIFIED заменяет мастер-требование целиком. (F-07, отвергнут B: openspec/changes/archive/2026-11-08-attack-lens-conventions/design.md:84) → Mitigation: решение A
+- [Risk] из файлов изменения и текущих структурных объявлений участвующих repo (F-07, отвергнут B: openspec/specs/trace-graph/spec.md:9) → Mitigation: решение A
+- [Risk] исход по коду выводится чтением и рассуждением, существование путей и имён проверяется грепом (F-08, отвергнут B: openspec/specs/artifact-attack/spec.md:78) → Mitigation: решение A
+- [Risk] проверка: &lt;тест, команда, наблюдаемый результат, файл&gt; (F-08, отвергнут B: openspec/schemas/symphysis/templates/tasks.md:22) → Mitigation: решение A
+- [Risk] строки `предупреждение` вердикт не держат (F-08, отвергнут B: openspec/specs/artifact-attack/spec.md:9) → Mitigation: решение A
+- [Risk] проверка: &lt;тест, команда, наблюдаемый результат, файл&gt; (F-08, отвергнут C: openspec/schemas/symphysis/templates/tasks.md:22) → Mitigation: решение A
+- [Risk] исход по коду выводится чтением и рассуждением, существование путей и имён проверяется грепом (F-08, отвергнут C: openspec/specs/artifact-attack/spec.md:78) → Mitigation: решение A
+- [Risk] Механизм не назван — `блокер`, воздержания нет: ответ выводится из design. (F-08, отвергнут C: openspec/changes/scenario-run-change-impact/verification/baseline-code.md:10) → Mitigation: решение A
+- [Risk] до первой записи мастера вызвать freeze из `planningHome.root` (F-14, отвергнут B: openspec/specs/trace-snapshot/spec.md:24) → Mitigation: решение A
+- [Risk] return self.saved[cap][key], True (F-14, отвергнут B: trace/trace_graph.py:610) → Mitigation: решение A
+- [Risk] перенос остаётся неподтверждённым по этому снимку (F-14, отвергнут B: openspec/changes/scenario-run-change-impact/specs/artifact-attack/spec.md:85) → Mitigation: решение A
+- [Risk] до первой записи мастера вызвать freeze из `planningHome.root` (F-14, отвергнут C: openspec/specs/trace-snapshot/spec.md:24) → Mitigation: решение A
+- [Risk] return self.saved[cap][key], True (F-14, отвергнут C: trace/trace_graph.py:610) → Mitigation: решение A
+- [Risk] перенос остаётся неподтверждённым по этому снимку (F-14, отвергнут C: openspec/changes/scenario-run-change-impact/specs/artifact-attack/spec.md:85) → Mitigation: решение A
+- [Risk] if (m := RE_TARGET_PATH.match(line)): (F-15, отвергнут B: openspec/changes/scenario-run-change-impact/verification/baseline-code.md:26) → Mitigation: решение A
+- [Risk] Такие опоры проверяются в области мастер-спек. Цели из `targets[]` проверяются в каталоге изменения (F-15, отвергнут B: openspec/changes/scenario-run-change-impact/specs/stale-verdict-scope/spec.md:6) → Mitigation: решение A
+- [Risk] Отчёт SHALL сохранять сведения, позволяющие опознать этот блок и сверить его содержание при проверке свежести (F-15, отвергнут B: openspec/changes/scenario-run-change-impact/specs/artifact-attack/spec.md:125) → Mitigation: решение A
+- [Risk] elif (m := RE_FRONT_KEY.match(line)): (F-15, отвергнут C: attack/attack_table.py:111) → Mitigation: решение A
+- [Risk] if (m := RE_TARGET_PATH.match(line)): (F-15, отвергнут C: openspec/changes/scenario-run-change-impact/verification/baseline-code.md:26) → Mitigation: решение A
+- [Risk] Такие опоры проверяются в области мастер-спек. Цели из `targets[]` проверяются в каталоге изменения (F-15, отвергнут C: openspec/changes/scenario-run-change-impact/specs/stale-verdict-scope/spec.md:6) → Mitigation: решение A
+- [Risk] Отчёт SHALL сохранять сведения, позволяющие опознать этот блок и сверить его содержание при проверке свежести (F-15, отвергнут C: openspec/changes/scenario-run-change-impact/specs/artifact-attack/spec.md:125) → Mitigation: решение A
 
 ## Migration Plan
 

@@ -122,6 +122,11 @@ def _scope_report(change: Path) -> tuple[list[str], bool]:
     строк нет. Файл есть, а не разбирается — `[!!] attack/<файл>: файл атаки не разбирается: <причина>` без пути
     к файлу (F-30), второй элемент `True`: с `--strict` это код 2. Каталога `attack/` или файла нет — ничего."""
     lines, broken = [], False
+    selected = runtime_context()
+    where = _change_of(change / "decisions.json")
+    planning_root = where[0] if where else None
+    if selected:
+        planning_root = Path(selected["store"]["root"])
     for name, label in ATTACK_FILES:
         path = change / "attack" / name
         if not path.is_file():
@@ -132,7 +137,7 @@ def _scope_report(change: Path) -> tuple[list[str], bool]:
             lines.append(f"[!!] attack/{name}: файл атаки не разбирается: {reason}")
             broken = True
             continue
-        lines += [f"[..] {label}: {line}" for line in scope_lines(att, change)]
+        lines += [f"[..] {label}: {line}" for line in scope_lines(att, change, planning_root)]
     return lines, broken
 
 

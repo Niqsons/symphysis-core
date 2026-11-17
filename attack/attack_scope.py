@@ -3,14 +3,15 @@
 и каталогу изменения. Один расчёт на двух читателей, `journal.py check` и `step_help.py`
 (capability `stale-verdict-scope`, F-17, F-18, F-19, F-23, F-24): строки без маркера `[..]` и имени атаки,
 их добавляет читатель. Хеш файла — `sha256_file` журнала (модуль `decisions`): attack зависит от decisions,
-не наоборот. Содержимое таблицы и строки `**Состав:**` — данные: наружу идут только номера записей,
-пути целей из `targets[]` и фиксированный текст (F-34)."""
+не наоборот. Содержимое отчёта — данные: наружу идут номера записей, относительные места целей и
+проверенных мастер-опор и фиксированные причины (F-34, F-15.A)."""
 from __future__ import annotations
 
 import json
 import re
 from pathlib import Path
 
+from attack_master import MasterSupportError, master_support, parse_master_supports
 from journal_apply import sha256_file
 
 __all__ = ["scope_lines", "JOURNAL", "UNREADABLE", "NO_HASH", "NOTHING_ADDED", "INCOMPLETE"]
@@ -133,15 +134,63 @@ def _artifacts_scope(attack: dict, change_dir: Path) -> list[str]:
     return lines
 
 
-def scope_lines(attack: dict, change_dir: Path | str) -> list[str]:
+MASTER_REASONS = {
+    "changed": "мастер-опора изменена после вердикта",
+    "invalid": "мастер-опора: неверный формат",
+    "outside": "мастер-опора вне каталога мастер-спек",
+    "missing": "мастер-опора: блока нет",
+    "unreadable": "мастер-опора не читается",
+    "ambiguous": "мастер-опора неоднозначна",
+}
+
+
+def _master_reason(reason: str, index: int | None, support: dict | None = None) -> str:
+    location = f"master_supports[{index}]" if index is not None else "master_supports"
+    if support is not None and reason not in ("invalid", "outside"):
+        place = f"openspec/specs/{support['capability']}/spec.md"
+        if reason == "changed":
+            place += f" / {support['requirement']}"
+            if "scenario" in support:
+                place += f" / {support['scenario']}"
+        location = f"{place} ({location})"
+    return f"{location}: {MASTER_REASONS.get(reason, MASTER_REASONS['invalid'])}"
+
+
+def _master_scope(frontmatter: dict, planning_root: Path | str | None) -> list[str]:
+    if error := frontmatter.get("master_supports_error"):
+        return [_master_reason(error["reason"], error["index"])]
+    if "master_supports" not in frontmatter:
+        return []
+    try:
+        supports = parse_master_supports(json.dumps(frontmatter["master_supports"]))
+    except MasterSupportError as error:
+        return [_master_reason(error.reason, error.index)]
+    if planning_root is None:
+        return [_master_reason("invalid", None)] if supports else []
+    lines = []
+    for index, support in enumerate(supports, 1):
+        try:
+            current = master_support(planning_root, support["capability"], support["requirement"], support.get("scenario"))
+        except MasterSupportError as error:
+            lines.append(_master_reason(error.reason, index, support))
+        else:
+            if current["sha256"] != support["sha256"]:
+                lines.append(_master_reason("changed", index, support))
+    return lines
+
+
+def scope_lines(attack: dict, change_dir: Path | str, planning_root: Path | str | None = None) -> list[str]:
     """Строки состава устаревшего вердикта по разбору `parse_attack_md` и каталогу изменения; пустой список —
     хеши совпали, читателям показывать нечего. Форма по `targets[]`: одна цель `decisions.json` — атака журнала,
     иначе — артефактов. Хеши сравниваются по байтам файла без учёта регистра, как у форка (F-20, F-28); пустой
-    хеш журнала — «не задан», состав не считается (F-27). Абсолютных путей в строках нет: пути — как объявлены
-    в `targets[]`."""
+    хеш журнала — «не задан», состав не считается (F-27). Мастер-опоры проверяются только в `planning_root`,
+    полученном читателем из выбранного store; данные отчёта корень не задают. Старый отчёт без поля
+    мастер-опор использует только прежние локальные цели."""
     change_dir = Path(change_dir)
     targets = attack["frontmatter"]["targets"]
     if len(targets) == 1 and Path(targets[0]["path"]).as_posix() == JOURNAL:
         sha = targets[0]["sha256"].strip().lower()
-        return [NO_HASH] if not sha else _journal_scope(attack, change_dir, sha)
-    return _artifacts_scope(attack, change_dir)
+        local = [NO_HASH] if not sha else _journal_scope(attack, change_dir, sha)
+    else:
+        local = _artifacts_scope(attack, change_dir)
+    return local + _master_scope(attack["frontmatter"], planning_root)

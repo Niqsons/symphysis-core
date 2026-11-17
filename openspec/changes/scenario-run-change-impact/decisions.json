@@ -42,7 +42,10 @@
    "evidence": [
     {
      "path": "openspec/changes/scenario-run-change-impact/intent.md",
-     "quote": "Без критериев готовности"
+     "quote": "Без критериев готовности",
+     "line": 14,
+     "verdict": "сверено",
+     "found": true
     }
    ],
    "comments": []
@@ -67,11 +70,17 @@
    "evidence": [
     {
      "path": "openspec/changes/scenario-run-change-impact/answers/2026-11-17-combine-three-options.md",
-     "quote": "Я бы попробовал взять все три"
+     "quote": "Я бы попробовал взять все три",
+     "line": 11,
+     "verdict": "сверено",
+     "found": true
     },
     {
      "path": "openspec/changes/scenario-run-change-impact/answers/2026-11-17-combine-three-options.md",
-     "quote": "В `tasks.md` поставить адресную проверку для последствия, которое можно подтвердить только на реализации."
+     "quote": "В `tasks.md` поставить адресную проверку для последствия, которое можно подтвердить только на реализации.",
+     "line": 7,
+     "verdict": "сверено",
+     "found": true
     }
    ],
    "comments": []
@@ -96,19 +105,31 @@
    "evidence": [
     {
      "path": "openspec/changes/archive/2026-11-08-attack-lens-conventions/briefs/symphysis-attack-2026-11-08/report.md",
-     "quote": "шесть строк scenario-run с опорой «нет: design не называет механизм». Эти сценарии перенесены в MODIFIED без правки"
+     "quote": "шесть строк scenario-run с опорой «нет: design не называет механизм». Эти сценарии перенесены в MODIFIED без правки",
+     "line": 16,
+     "verdict": "сверено",
+     "found": true
     },
     {
      "path": "openspec/changes/archive/2026-11-08-attack-lens-conventions/design.md",
-     "quote": "несёт восемь сценариев мастер-спеки дословно: дельта MODIFIED заменяет мастер-требование целиком."
+     "quote": "несёт восемь сценариев мастер-спеки дословно: дельта MODIFIED заменяет мастер-требование целиком.",
+     "line": 84,
+     "verdict": "сверено",
+     "found": true
     },
     {
      "path": "viewer/playground-template.html",
-     "quote": "const key = att.path + '|' + r.section + '|' + r.claim, sp = norm((disputes || {})[key]);"
+     "quote": "const key = att.path + '|' + r.section + '|' + r.claim, sp = norm((disputes || {})[key]);",
+     "line": 924,
+     "verdict": "сверено",
+     "found": true
     },
     {
      "path": "viewer/playground-template.html",
-     "quote": "return att.path + '|' + row.section + '|' + row.claim;"
+     "quote": "return att.path + '|' + row.section + '|' + row.claim;",
+     "line": 308,
+     "verdict": "сверено",
+     "found": true
     }
    ],
    "comments": []
@@ -132,16 +153,25 @@
    "consequences": "",
    "evidence": [
     {
-     "path": "attack/skills/symphysis-attack/SKILL.md",
-     "quote": "Механизм не назван — `блокер`, воздержания нет: ответ выводится из design."
+     "path": "openspec/changes/scenario-run-change-impact/verification/baseline-code.md",
+     "quote": "Механизм не назван — `блокер`, воздержания нет: ответ выводится из design.",
+     "line": 10,
+     "verdict": "сверено",
+     "found": true
     },
     {
      "path": "openspec/specs/artifact-attack/spec.md",
-     "quote": "исход по коду выводится чтением и рассуждением, существование путей и имён проверяется грепом"
+     "quote": "исход по коду выводится чтением и рассуждением, существование путей и имён проверяется грепом",
+     "line": 78,
+     "verdict": "сверено",
+     "found": true
     },
     {
      "path": "openspec/schemas/symphysis/templates/tasks.md",
-     "quote": "проверка: <тест, команда, наблюдаемый результат, файл>"
+     "quote": "проверка: <тест, команда, наблюдаемый результат, файл>",
+     "line": 22,
+     "verdict": "сверено",
+     "found": true
     }
    ],
    "comments": []
@@ -166,15 +196,24 @@
    "evidence": [
     {
      "path": "openspec/specs/trace-graph/spec.md",
-     "quote": "из файлов изменения и текущих структурных объявлений участвующих repo"
+     "quote": "из файлов изменения и текущих структурных объявлений участвующих repo",
+     "line": 9,
+     "verdict": "сверено",
+     "found": true
     },
     {
      "path": "openspec/specs/trace-graph/spec.md",
-     "quote": "Смысл связи граф SHALL NOT судить: это делает атака"
+     "quote": "Смысл связи граф SHALL NOT судить: это делает атака",
+     "line": 46,
+     "verdict": "сверено",
+     "found": true
     },
     {
      "path": "openspec/specs/trace-snapshot/spec.md",
-     "quote": "Заморозка SHALL писать в снимок ссылки и сценарии мастер-спеки по каждому требованию MODIFIED"
+     "quote": "Заморозка SHALL писать в снимок ссылки и сценарии мастер-спеки по каждому требованию MODIFIED",
+     "line": 100,
+     "verdict": "сверено",
+     "found": true
     }
    ],
    "comments": []
@@ -196,19 +235,31 @@
      "evidence": [
       {
        "path": "openspec/specs/trace-snapshot/spec.md",
-       "quote": "Заморозка SHALL писать в снимок ссылки и сценарии мастер-спеки по каждому требованию MODIFIED"
+       "quote": "Заморозка SHALL писать в снимок ссылки и сценарии мастер-спеки по каждому требованию MODIFIED",
+       "line": 100,
+       "verdict": "сверено",
+       "found": true
       },
       {
        "path": "viewer/playground-template.html",
-       "quote": "const key = att.path + '|' + r.section + '|' + r.claim, sp = norm((disputes || {})[key]);"
+       "quote": "const key = att.path + '|' + r.section + '|' + r.claim, sp = norm((disputes || {})[key]);",
+       "line": 924,
+       "verdict": "сверено",
+       "found": true
       },
       {
        "path": "viewer/playground-template.html",
-       "quote": "return att.path + '|' + row.section + '|' + row.claim;"
+       "quote": "return att.path + '|' + row.section + '|' + row.claim;",
+       "line": 308,
+       "verdict": "сверено",
+       "found": true
       },
       {
        "path": "openspec/specs/trace-graph/spec.md",
-       "quote": "Смысл связи граф SHALL NOT судить: это делает атака"
+       "quote": "Смысл связи граф SHALL NOT судить: это делает атака",
+       "line": 46,
+       "verdict": "сверено",
+       "found": true
       }
      ]
     },
@@ -220,15 +271,24 @@
      "evidence": [
       {
        "path": "openspec/specs/trace-graph/spec.md",
-       "quote": "из файлов изменения и текущих структурных объявлений участвующих repo"
+       "quote": "из файлов изменения и текущих структурных объявлений участвующих repo",
+       "line": 9,
+       "verdict": "сверено",
+       "found": true
       },
       {
        "path": "openspec/specs/trace-graph/spec.md",
-       "quote": "Смысл связи граф SHALL NOT судить: это делает атака"
+       "quote": "Смысл связи граф SHALL NOT судить: это делает атака",
+       "line": 46,
+       "verdict": "сверено",
+       "found": true
       },
       {
        "path": "openspec/specs/trace-snapshot/spec.md",
-       "quote": "Заморозка SHALL писать в снимок ссылки и сценарии мастер-спеки по каждому требованию MODIFIED"
+       "quote": "Заморозка SHALL писать в снимок ссылки и сценарии мастер-спеки по каждому требованию MODIFIED",
+       "line": 100,
+       "verdict": "сверено",
+       "found": true
       }
      ]
     },
@@ -240,11 +300,17 @@
      "evidence": [
       {
        "path": "openspec/specs/trace-graph/spec.md",
-       "quote": "из файлов изменения и текущих структурных объявлений участвующих repo"
+       "quote": "из файлов изменения и текущих структурных объявлений участвующих repo",
+       "line": 9,
+       "verdict": "сверено",
+       "found": true
       },
       {
        "path": "openspec/specs/trace-graph/spec.md",
-       "quote": "Смысл связи граф SHALL NOT судить: это делает атака"
+       "quote": "Смысл связи граф SHALL NOT судить: это делает атака",
+       "line": 46,
+       "verdict": "сверено",
+       "found": true
       }
      ]
     }
@@ -291,15 +357,24 @@
      "evidence": [
       {
        "path": "openspec/changes/archive/2026-11-08-attack-lens-conventions/design.md",
-       "quote": "несёт восемь сценариев мастер-спеки дословно: дельта MODIFIED заменяет мастер-требование целиком."
+       "quote": "несёт восемь сценариев мастер-спеки дословно: дельта MODIFIED заменяет мастер-требование целиком.",
+       "line": 84,
+       "verdict": "сверено",
+       "found": true
       },
       {
        "path": "openspec/changes/archive/2026-11-08-attack-lens-conventions/design.md",
-       "quote": "шесть прочих сценариев держит прежний код страницы"
+       "quote": "шесть прочих сценариев держит прежний код страницы",
+       "line": 84,
+       "verdict": "сверено",
+       "found": true
       },
       {
-       "path": "attack/skills/symphysis-attack/SKILL.md",
-       "quote": "Механизм не назван — `блокер`, воздержания нет: ответ выводится из design."
+       "path": "openspec/changes/scenario-run-change-impact/verification/baseline-code.md",
+       "quote": "Механизм не назван — `блокер`, воздержания нет: ответ выводится из design.",
+       "line": 10,
+       "verdict": "сверено",
+       "found": true
       }
      ]
     },
@@ -311,15 +386,24 @@
      "evidence": [
       {
        "path": "openspec/schemas/symphysis/templates/design.md",
-       "quote": "## Context"
+       "quote": "## Context",
+       "line": 3,
+       "verdict": "сверено",
+       "found": true
       },
       {
        "path": "openspec/changes/archive/2026-11-08-attack-lens-conventions/design.md",
-       "quote": "несёт восемь сценариев мастер-спеки дословно: дельта MODIFIED заменяет мастер-требование целиком."
+       "quote": "несёт восемь сценариев мастер-спеки дословно: дельта MODIFIED заменяет мастер-требование целиком.",
+       "line": 84,
+       "verdict": "сверено",
+       "found": true
       },
       {
        "path": "openspec/specs/trace-graph/spec.md",
-       "quote": "из файлов изменения и текущих структурных объявлений участвующих repo"
+       "quote": "из файлов изменения и текущих структурных объявлений участвующих repo",
+       "line": 9,
+       "verdict": "сверено",
+       "found": true
       }
      ]
     }
@@ -365,15 +449,24 @@
      "evidence": [
       {
        "path": "openspec/specs/artifact-attack/spec.md",
-       "quote": "исход по коду выводится чтением и рассуждением, существование путей и имён проверяется грепом"
+       "quote": "исход по коду выводится чтением и рассуждением, существование путей и имён проверяется грепом",
+       "line": 78,
+       "verdict": "сверено",
+       "found": true
       },
       {
        "path": "openspec/schemas/symphysis/templates/tasks.md",
-       "quote": "проверка: <тест, команда, наблюдаемый результат, файл>"
+       "quote": "проверка: <тест, команда, наблюдаемый результат, файл>",
+       "line": 22,
+       "verdict": "сверено",
+       "found": true
       },
       {
-       "path": "attack/skills/symphysis-attack/SKILL.md",
-       "quote": "Механизм не назван — `блокер`, воздержания нет: ответ выводится из design."
+       "path": "openspec/changes/scenario-run-change-impact/verification/baseline-code.md",
+       "quote": "Механизм не назван — `блокер`, воздержания нет: ответ выводится из design.",
+       "line": 10,
+       "verdict": "сверено",
+       "found": true
       }
      ]
     },
@@ -385,15 +478,24 @@
      "evidence": [
       {
        "path": "openspec/specs/artifact-attack/spec.md",
-       "quote": "исход по коду выводится чтением и рассуждением, существование путей и имён проверяется грепом"
+       "quote": "исход по коду выводится чтением и рассуждением, существование путей и имён проверяется грепом",
+       "line": 78,
+       "verdict": "сверено",
+       "found": true
       },
       {
        "path": "openspec/schemas/symphysis/templates/tasks.md",
-       "quote": "проверка: <тест, команда, наблюдаемый результат, файл>"
+       "quote": "проверка: <тест, команда, наблюдаемый результат, файл>",
+       "line": 22,
+       "verdict": "сверено",
+       "found": true
       },
       {
        "path": "openspec/specs/artifact-attack/spec.md",
-       "quote": "строки `предупреждение` вердикт не держат"
+       "quote": "строки `предупреждение` вердикт не держат",
+       "line": 9,
+       "verdict": "сверено",
+       "found": true
       }
      ]
     },
@@ -405,15 +507,24 @@
      "evidence": [
       {
        "path": "openspec/schemas/symphysis/templates/tasks.md",
-       "quote": "проверка: <тест, команда, наблюдаемый результат, файл>"
+       "quote": "проверка: <тест, команда, наблюдаемый результат, файл>",
+       "line": 22,
+       "verdict": "сверено",
+       "found": true
       },
       {
        "path": "openspec/specs/artifact-attack/spec.md",
-       "quote": "исход по коду выводится чтением и рассуждением, существование путей и имён проверяется грепом"
+       "quote": "исход по коду выводится чтением и рассуждением, существование путей и имён проверяется грепом",
+       "line": 78,
+       "verdict": "сверено",
+       "found": true
       },
       {
-       "path": "attack/skills/symphysis-attack/SKILL.md",
-       "quote": "Механизм не назван — `блокер`, воздержания нет: ответ выводится из design."
+       "path": "openspec/changes/scenario-run-change-impact/verification/baseline-code.md",
+       "quote": "Механизм не назван — `блокер`, воздержания нет: ответ выводится из design.",
+       "line": 10,
+       "verdict": "сверено",
+       "found": true
       }
      ]
     }
@@ -506,7 +617,10 @@
    "evidence": [
     {
      "path": "openspec/changes/scenario-run-change-impact/specs/artifact-attack/spec.md",
-     "quote": "### Requirement: Scenario-run устанавливает область влияния изменения"
+     "quote": "### Requirement: Scenario-run устанавливает область влияния изменения",
+     "line": 52,
+     "verdict": "сверено",
+     "found": true
     }
    ],
    "comments": []
@@ -574,7 +688,10 @@
    "evidence": [
     {
      "path": "openspec/changes/scenario-run-change-impact/specs/artifact-attack/spec.md",
-     "quote": "### Requirement: Scenario-run устанавливает область влияния изменения"
+     "quote": "### Requirement: Scenario-run устанавливает область влияния изменения",
+     "line": 52,
+     "verdict": "сверено",
+     "found": true
     }
    ],
    "comments": []
@@ -638,8 +755,11 @@
    "consequences": "в spec.md: Первый снимок сделан после синхронизации и правки дельты",
    "evidence": [
     {
-     "path": "trace/trace_graph.py",
-     "quote": "found.setdefault(folder.name, {}).setdefault(req.name, entry)"
+     "path": "openspec/changes/scenario-run-change-impact/verification/baseline-code.md",
+     "quote": "found.setdefault(folder.name, {}).setdefault(req.name, entry)",
+     "line": 18,
+     "verdict": "сверено",
+     "found": true
     }
    ],
    "comments": []
@@ -704,7 +824,10 @@
    "evidence": [
     {
      "path": "attack/attack_scope.py",
-     "quote": "if sha256_file(full) == sha:"
+     "quote": "if sha256_file(full) == sha:",
+     "line": 126,
+     "verdict": "сверено",
+     "found": true
     }
    ],
    "comments": []
@@ -768,8 +891,11 @@
    "consequences": "тест-страховка: подать ядру и форку один новый отчёт с локальной целью и мастер-опорой. При правке только опоры проверить stale и одну причину о мастере. При правке только локальной цели проверить причину о ней. Формат отчёта взять из design.",
    "evidence": [
     {
-     "path": "attack/attack_table.py",
-     "quote": "if (m := RE_TARGET_PATH.match(line)):"
+     "path": "openspec/changes/scenario-run-change-impact/verification/baseline-code.md",
+     "quote": "if (m := RE_TARGET_PATH.match(line)):",
+     "line": 26,
+     "verdict": "сверено",
+     "found": true
     }
    ],
    "comments": []
@@ -795,19 +921,31 @@
      "evidence": [
       {
        "path": "openspec/specs/trace-snapshot/spec.md",
-       "quote": "до первой записи мастера вызвать freeze из `planningHome.root`"
+       "quote": "до первой записи мастера вызвать freeze из `planningHome.root`",
+       "line": 24,
+       "verdict": "сверено",
+       "found": true
       },
       {
        "path": "trace/trace_graph.py",
-       "quote": "return self.saved[cap][key], True"
+       "quote": "return self.saved[cap][key], True",
+       "line": 610,
+       "verdict": "сверено",
+       "found": true
       },
       {
        "path": "trace/trace_graph.py",
-       "quote": "\"scenarios\": {s.name: _hash(s.text) for s in req.scenarios}, \"text\": _hash(req.text),"
+       "quote": "\"scenarios\": {s.name: _hash(s.text) for s in req.scenarios}, \"text\": _hash(req.text),",
+       "line": 558,
+       "verdict": "сверено",
+       "found": true
       },
       {
        "path": "openspec/changes/scenario-run-change-impact/specs/artifact-attack/spec.md",
-       "quote": "перенос остаётся неподтверждённым по этому снимку"
+       "quote": "перенос остаётся неподтверждённым по этому снимку",
+       "line": 85,
+       "verdict": "сверено",
+       "found": true
       }
      ]
     },
@@ -819,15 +957,24 @@
      "evidence": [
       {
        "path": "openspec/specs/trace-snapshot/spec.md",
-       "quote": "до первой записи мастера вызвать freeze из `planningHome.root`"
+       "quote": "до первой записи мастера вызвать freeze из `planningHome.root`",
+       "line": 24,
+       "verdict": "сверено",
+       "found": true
       },
       {
        "path": "trace/trace_graph.py",
-       "quote": "return self.saved[cap][key], True"
+       "quote": "return self.saved[cap][key], True",
+       "line": 610,
+       "verdict": "сверено",
+       "found": true
       },
       {
        "path": "openspec/changes/scenario-run-change-impact/specs/artifact-attack/spec.md",
-       "quote": "перенос остаётся неподтверждённым по этому снимку"
+       "quote": "перенос остаётся неподтверждённым по этому снимку",
+       "line": 85,
+       "verdict": "сверено",
+       "found": true
       }
      ]
     },
@@ -839,15 +986,24 @@
      "evidence": [
       {
        "path": "openspec/specs/trace-snapshot/spec.md",
-       "quote": "до первой записи мастера вызвать freeze из `planningHome.root`"
+       "quote": "до первой записи мастера вызвать freeze из `planningHome.root`",
+       "line": 24,
+       "verdict": "сверено",
+       "found": true
       },
       {
        "path": "trace/trace_graph.py",
-       "quote": "return self.saved[cap][key], True"
+       "quote": "return self.saved[cap][key], True",
+       "line": 610,
+       "verdict": "сверено",
+       "found": true
       },
       {
        "path": "openspec/changes/scenario-run-change-impact/specs/artifact-attack/spec.md",
-       "quote": "перенос остаётся неподтверждённым по этому снимку"
+       "quote": "перенос остаётся неподтверждённым по этому снимку",
+       "line": 85,
+       "verdict": "сверено",
+       "found": true
       }
      ]
     }
@@ -894,19 +1050,31 @@
      "evidence": [
       {
        "path": "attack/attack_table.py",
-       "quote": "elif (m := RE_FRONT_KEY.match(line)):"
+       "quote": "elif (m := RE_FRONT_KEY.match(line)):",
+       "line": 111,
+       "verdict": "сверено",
+       "found": true
       },
       {
-       "path": "attack/attack_table.py",
-       "quote": "if (m := RE_TARGET_PATH.match(line)):"
+       "path": "openspec/changes/scenario-run-change-impact/verification/baseline-code.md",
+       "quote": "if (m := RE_TARGET_PATH.match(line)):",
+       "line": 26,
+       "verdict": "сверено",
+       "found": true
       },
       {
        "path": "openspec/changes/scenario-run-change-impact/specs/stale-verdict-scope/spec.md",
-       "quote": "Такие опоры проверяются в области мастер-спек. Цели из `targets[]` проверяются в каталоге изменения"
+       "quote": "Такие опоры проверяются в области мастер-спек. Цели из `targets[]` проверяются в каталоге изменения",
+       "line": 6,
+       "verdict": "сверено",
+       "found": true
       },
       {
        "path": "openspec/changes/scenario-run-change-impact/specs/artifact-attack/spec.md",
-       "quote": "Отчёт SHALL сохранять сведения, позволяющие опознать этот блок и сверить его содержание при проверке свежести"
+       "quote": "Отчёт SHALL сохранять сведения, позволяющие опознать этот блок и сверить его содержание при проверке свежести",
+       "line": 125,
+       "verdict": "сверено",
+       "found": true
       }
      ]
     },
@@ -917,16 +1085,25 @@
      "unlikely": null,
      "evidence": [
       {
-       "path": "attack/attack_table.py",
-       "quote": "if (m := RE_TARGET_PATH.match(line)):"
+       "path": "openspec/changes/scenario-run-change-impact/verification/baseline-code.md",
+       "quote": "if (m := RE_TARGET_PATH.match(line)):",
+       "line": 26,
+       "verdict": "сверено",
+       "found": true
       },
       {
        "path": "openspec/changes/scenario-run-change-impact/specs/stale-verdict-scope/spec.md",
-       "quote": "Такие опоры проверяются в области мастер-спек. Цели из `targets[]` проверяются в каталоге изменения"
+       "quote": "Такие опоры проверяются в области мастер-спек. Цели из `targets[]` проверяются в каталоге изменения",
+       "line": 6,
+       "verdict": "сверено",
+       "found": true
       },
       {
        "path": "openspec/changes/scenario-run-change-impact/specs/artifact-attack/spec.md",
-       "quote": "Отчёт SHALL сохранять сведения, позволяющие опознать этот блок и сверить его содержание при проверке свежести"
+       "quote": "Отчёт SHALL сохранять сведения, позволяющие опознать этот блок и сверить его содержание при проверке свежести",
+       "line": 125,
+       "verdict": "сверено",
+       "found": true
       }
      ]
     },
@@ -938,19 +1115,31 @@
      "evidence": [
       {
        "path": "attack/attack_table.py",
-       "quote": "elif (m := RE_FRONT_KEY.match(line)):"
+       "quote": "elif (m := RE_FRONT_KEY.match(line)):",
+       "line": 111,
+       "verdict": "сверено",
+       "found": true
       },
       {
-       "path": "attack/attack_table.py",
-       "quote": "if (m := RE_TARGET_PATH.match(line)):"
+       "path": "openspec/changes/scenario-run-change-impact/verification/baseline-code.md",
+       "quote": "if (m := RE_TARGET_PATH.match(line)):",
+       "line": 26,
+       "verdict": "сверено",
+       "found": true
       },
       {
        "path": "openspec/changes/scenario-run-change-impact/specs/stale-verdict-scope/spec.md",
-       "quote": "Такие опоры проверяются в области мастер-спек. Цели из `targets[]` проверяются в каталоге изменения"
+       "quote": "Такие опоры проверяются в области мастер-спек. Цели из `targets[]` проверяются в каталоге изменения",
+       "line": 6,
+       "verdict": "сверено",
+       "found": true
       },
       {
        "path": "openspec/changes/scenario-run-change-impact/specs/artifact-attack/spec.md",
-       "quote": "Отчёт SHALL сохранять сведения, позволяющие опознать этот блок и сверить его содержание при проверке свежести"
+       "quote": "Отчёт SHALL сохранять сведения, позволяющие опознать этот блок и сверить его содержание при проверке свежести",
+       "line": 125,
+       "verdict": "сверено",
+       "found": true
       }
      ]
     }

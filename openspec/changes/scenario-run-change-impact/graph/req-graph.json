@@ -1,0 +1,2796 @@
+{
+ "format": 3,
+ "sources": [
+  {
+   "path": "consequences.md",
+   "sha256": "4fccaa9f07413a88fb58d286f3a2223b3fdd6bbe57cc87b32c092f98e63ed4a5"
+  },
+  {
+   "path": "decisions.json",
+   "sha256": "800ce88ffd6914e98aee1e33913149b36002b92c1cce8a85aa1afaf502796d4a"
+  },
+  {
+   "path": "security.md",
+   "sha256": "e8fa4cf7e45228e7eb913b74493e52871b9c34070ebfb6cb04e2a086b07ce798"
+  },
+  {
+   "path": "specs/artifact-attack/spec.md",
+   "sha256": "e458a74a412ff929d3e354535f5965f609fda8f2a34854d7261c35da5d0c4a12"
+  },
+  {
+   "path": "specs/stale-verdict-scope/spec.md",
+   "sha256": "c72209a61c20eb94fd4032a89fdf7ea2a22e14066b29c7ef3116c2c01744c1b0"
+  },
+  {
+   "path": "specs/trace-graph/spec.md",
+   "sha256": "b35793a21d44a98d047c24765fa0beda1319964400726f2030d01c092bcb80f2"
+  },
+  {
+   "path": "specs/verdict-readiness/spec.md",
+   "sha256": "09b9bab36bbc4dfda993810a67b7a85013fdcc070bc374e8844eddc863e8fd32"
+  },
+  {
+   "path": "tasks.md",
+   "sha256": "f1f86db0ba91e522661fec2c84591ddf4645b4d097c511d19283f2373615bf22"
+  },
+  {
+   "path": ".openspec.yaml",
+   "sha256": "7cd2ee0ce3568e8e82cefc6467be0b697cd81ad4e2b94f3cb99f335405b0b68d"
+  },
+  {
+   "repo": "symphysis-core",
+   "path": "README.md",
+   "sha256": "37aa30c881a74af7b3d65a239422b46a02200f1cd44c7d7da504bedf69448f94"
+  },
+  {
+   "repo": "symphysis-core",
+   "path": "viewer/README.md",
+   "sha256": "38aa0e3d1b818dbdbf21d4d9855f1913b39a726034e9e06ab19edb1b663c52bf"
+  },
+  {
+   "repo": "symphysis-core",
+   "path": "trace/README.md",
+   "sha256": "ef119e8fa7bfda05cd9ba568df458d01e7d5f6af8222c043e7f569eaf90d9e57"
+  },
+  {
+   "repo": "symphysis-core",
+   "path": "step-help/README.md",
+   "sha256": "e5886c77389f3d1d5065915f17418c7655b967d5ca465a62b9f1e870ffc02a6c"
+  },
+  {
+   "repo": "symphysis-core",
+   "path": "skill-shared/README.md",
+   "sha256": "730a973c7ed7fb459145dfe110f72f76496a0dc11797d0efed8c26d6f7b80dd5"
+  },
+  {
+   "repo": "symphysis-core",
+   "path": "settings/README.md",
+   "sha256": "6d94724f636b7989595dca507b50238e0767f8220897c91a37c299d25922333c"
+  },
+  {
+   "repo": "symphysis-core",
+   "path": "runtime/README.md",
+   "sha256": "1fff41134fd43ae0832321d68ba798b6185b42b916e5633dbba90f376cf3ac56"
+  },
+  {
+   "repo": "symphysis-core",
+   "path": "roots/README.md",
+   "sha256": "f59f9b0a123ebbe131698a33a6f87a02f9a8ebd016c157cd2ecf69dd34c6a9f9"
+  },
+  {
+   "repo": "symphysis-core",
+   "path": "research/README.md",
+   "sha256": "c1a43ad8afab67b4e2ae34dc71928beb954c67a274738441b38800dfe0ee8d59"
+  },
+  {
+   "repo": "symphysis-core",
+   "path": "probes/README.md",
+   "sha256": "2e7d1f495dd6fecca9c2c361e9a16d47deca06849accbb258a2517690c96dbc5"
+  },
+  {
+   "repo": "symphysis-core",
+   "path": "openspec-run/README.md",
+   "sha256": "1e520a016b28114eb529342e5a50afd63972bc3b67de30b5d7c86a5ee049c30b"
+  },
+  {
+   "repo": "symphysis-core",
+   "path": "openspec/schemas/symphysis/README.md",
+   "sha256": "597917bf019f497e87a40732975b53556f6dbb158be920a28c38fdda6e9e00ef"
+  },
+  {
+   "repo": "symphysis-core",
+   "path": "installer/README.md",
+   "sha256": "8916058a9db1122525baf4de3254e03769ec7d64ebb91204226f55d1e81d9a69"
+  },
+  {
+   "repo": "symphysis-core",
+   "path": "docs/guide/example/README.md",
+   "sha256": "afa77065ae43a7d9dc2f02ccec8cf5a432fb09f59ab4cd0a73c5026627f87482"
+  },
+  {
+   "repo": "symphysis-core",
+   "path": "decisions/README.md",
+   "sha256": "5d38b2b315cbd7d85c523ceb46a97858eae7bc7cd69867c64bacd1154f1da0a4"
+  },
+  {
+   "repo": "symphysis-core",
+   "path": "consequences/README.md",
+   "sha256": "758eaa323ca684c072b407f99e7c405fcfa3aa5553cf339366c9ad2d0c3cf4ec"
+  },
+  {
+   "repo": "symphysis-core",
+   "path": "cli/README.md",
+   "sha256": "79562fd6d906c2b3c62ef0a3e2cfb951eeae65247d44a7b46fdcc73301aff89f"
+  },
+  {
+   "repo": "symphysis-core",
+   "path": "attack/README.md",
+   "sha256": "049b515b3874460451246030d622531117b76f9ce0bfa4d1b4f079276e71cff2"
+  },
+  {
+   "repo": "symphysis-core",
+   "path": "anchors/README.md",
+   "sha256": "94c1188db73732137ff9b0ede287811c37a908c88080cd9599846a020ad1672e"
+  }
+ ],
+ "nodes": [
+  {
+   "id": "branch:viewer/playground-template.html:1107",
+   "kind": "branch",
+   "name": "Показ записи у строки атаки",
+   "at": "consequences.md:7"
+  },
+  {
+   "id": "branch:trace/trace_graph.py:800",
+   "kind": "branch",
+   "name": "Разрешение ссылки задачи на сценарий",
+   "at": "consequences.md:12"
+  },
+  {
+   "id": "branch:trace/trace_graph.py:606",
+   "kind": "branch",
+   "name": "Подстановка живого мастера",
+   "at": "consequences.md:17"
+  },
+  {
+   "id": "branch:trace/trace_graph.py:2105",
+   "kind": "branch",
+   "name": "Первая заморозка после синхронизации",
+   "at": "consequences.md:22"
+  },
+  {
+   "id": "branch:trace/trace_graph.py:1869",
+   "kind": "branch",
+   "name": "Сигнал о сценарии без задачи",
+   "at": "consequences.md:27"
+  },
+  {
+   "id": "branch:attack/attack_scope.py:113",
+   "kind": "branch",
+   "name": "Состав причин устаревания",
+   "at": "consequences.md:32"
+  },
+  {
+   "id": "branch:attack/attack_scope.py:125",
+   "kind": "branch",
+   "name": "Чтение файла при проверке свежести",
+   "at": "consequences.md:37"
+  },
+  {
+   "id": "branch:attack/attack_table.py:45",
+   "kind": "branch",
+   "name": "Разбор целей отчёта",
+   "at": "consequences.md:42"
+  },
+  {
+   "id": "rec:F-01",
+   "kind": "rec",
+   "name": "Критерии готовности в намерении: «Без критериев готовности».",
+   "at": "decisions.json:26",
+   "record_kind": "факт",
+   "number": 1
+  },
+  {
+   "id": "rec:F-02",
+   "kind": "rec",
+   "name": "Владелец предложил объединить описание сохраняемых свойств в design, проверку влияния в атаке и адресную проверку на реализации.",
+   "at": "decisions.json:51",
+   "record_kind": "факт",
+   "number": 2
+  },
+  {
+   "id": "rec:F-03",
+   "kind": "rec",
+   "name": "В прежней атаке шесть дословно перенесённых сценариев заблокированы из-за отсутствия механизма в design. Строки атаки служат входом существующего промпта и ключа строки тяжести.",
+   "at": "decisions.json:80",
+   "record_kind": "факт",
+   "number": 3
+  },
+  {
+   "id": "rec:F-04",
+   "kind": "rec",
+   "name": "Сейчас отсутствие механизма в design даёт блокер; проверка до реализации читает код, а шаблон задач уже предусматривает проверяемый результат.",
+   "at": "decisions.json:117",
+   "record_kind": "факт",
+   "number": 4
+  },
+  {
+   "id": "rec:F-05",
+   "kind": "rec",
+   "name": "Граф опирается на артефакты изменения и явные объявления. Снимок даёт исходную базу для MODIFIED, а смысл связи остаётся предметом атаки.",
+   "at": "decisions.json:150",
+   "record_kind": "факт",
+   "number": 5
+  },
+  {
+   "id": "rec:F-06",
+   "kind": "rec",
+   "name": "Как искать сценарии мастер-спеки, затронутые через общий вход или контракт за пределами дельты?",
+   "at": "decisions.json:183",
+   "record_kind": "развилка",
+   "number": 6
+  },
+  {
+   "id": "rec:F-07",
+   "kind": "rec",
+   "name": "Какую форму должна иметь запись о сохраняемых свойствах в design.md?",
+   "at": "decisions.json:278",
+   "record_kind": "развилка",
+   "number": 7
+  },
+  {
+   "id": "rec:F-08",
+   "kind": "rec",
+   "name": "Когда запланированная проверка реализации достаточна, чтобы пропустить сценарий через атаку до apply?",
+   "at": "decisions.json:352",
+   "record_kind": "развилка",
+   "number": 8
+  },
+  {
+   "id": "rec:F-09",
+   "kind": "rec",
+   "name": "[empty · collection, text, io] Scenario-run устанавливает область влияния изменения: как оценить сценарий MODIFIED, если он совпал с живым мастером после sync, а исходной версии в снимке нет?",
+   "at": "decisions.json:447",
+   "record_kind": "развилка",
+   "number": 9
+  },
+  {
+   "id": "rec:F-10",
+   "kind": "rec",
+   "name": "[запрет] Scenario-run устанавливает область влияния изменения: можно ли показывать прошедший вердикт как актуальный, если использованная опора из мастера затем изменилась при тех же файлах change?",
+   "at": "decisions.json:515",
+   "record_kind": "развилка",
+   "number": 10
+  },
+  {
+   "id": "rec:F-11",
+   "kind": "rec",
+   "name": "[ветка] Заморозка базы: первую заморозку сделали после sync и правки соседнего сценария, поэтому поздний снимок содержит уже перенесённый сценарий. Что атака считает исходной опорой?",
+   "at": "decisions.json:583",
+   "record_kind": "развилка",
+   "number": 11
+  },
+  {
+   "id": "rec:F-12",
+   "kind": "rec",
+   "name": "[ветка] Расчёт свежести читает подтверждённо использованную мастер-опору, файл существует, но чтение завершается ошибкой. Как это должны отразить статус и состав устаревания?",
+   "at": "decisions.json:648",
+   "record_kind": "развилка",
+   "number": 12
+  },
+  {
+   "id": "rec:F-13",
+   "kind": "rec",
+   "name": "[ветка] Парсер отчёта узнаёт path во всём frontmatter. Если мастер-опора представлена отдельным списком с похожими полями, что проверять при чтении одного отчёта ядром и форком?",
+   "at": "decisions.json:713",
+   "record_kind": "развилка",
+   "number": 13
+  },
+  {
+   "id": "rec:F-14",
+   "kind": "rec",
+   "name": "Чем подтверждать, что сохранённая база для scenario-run снята до первой синхронизации именно этого блока мастер-спеки?",
+   "at": "decisions.json:778",
+   "record_kind": "развилка",
+   "number": 14
+  },
+  {
+   "id": "rec:F-15",
+   "kind": "rec",
+   "name": "Где хранить использованные мастер-опоры и как обеспечить одинаковую сверку блока в ядре и форке?",
+   "at": "decisions.json:877",
+   "record_kind": "развилка",
+   "number": 15
+  },
+  {
+   "id": "sec:Инъекции через содержимое файлов",
+   "kind": "sec",
+   "name": "Инъекции через содержимое файлов",
+   "at": "security.md:7"
+  },
+  {
+   "id": "sec:Пути с `../`",
+   "kind": "sec",
+   "name": "Пути с `../`",
+   "at": "security.md:8"
+  },
+  {
+   "id": "sec:Токены и срок их жизни",
+   "kind": "sec",
+   "name": "Токены и срок их жизни",
+   "at": "security.md:9"
+  },
+  {
+   "id": "sec:Права",
+   "kind": "sec",
+   "name": "Права",
+   "at": "security.md:10"
+  },
+  {
+   "id": "sec:Бинарные файлы",
+   "kind": "sec",
+   "name": "Бинарные файлы",
+   "at": "security.md:11"
+  },
+  {
+   "id": "sec:Чувствительные данные в журнале, артефактах и журналах прогона",
+   "kind": "sec",
+   "name": "Чувствительные данные в журнале, артефактах и журналах прогона",
+   "at": "security.md:12"
+  },
+  {
+   "id": "cap:artifact-attack",
+   "kind": "cap",
+   "name": "artifact-attack",
+   "at": "specs/artifact-attack/spec.md:1"
+  },
+  {
+   "id": "req:artifact-attack/Строка атаки валидна только с линзой, тяжестью, инвариантом и опорой",
+   "kind": "req",
+   "name": "Строка атаки валидна только с линзой, тяжестью, инвариантом и опорой",
+   "at": "specs/artifact-attack/spec.md:5",
+   "section": "MODIFIED",
+   "capability": "artifact-attack"
+  },
+  {
+   "id": "scn:artifact-attack/Строка атаки валидна только с линзой, тяжестью, инвариантом и опорой/Одна строка предупреждения",
+   "kind": "scn",
+   "name": "Одна строка предупреждения",
+   "at": "specs/artifact-attack/spec.md:8",
+   "capability": "artifact-attack",
+   "requirement": "req:artifact-attack/Строка атаки валидна только с линзой, тяжестью, инвариантом и опорой"
+  },
+  {
+   "id": "scn:artifact-attack/Строка атаки валидна только с линзой, тяжестью, инвариантом и опорой/Невыводимое",
+   "kind": "scn",
+   "name": "Невыводимое",
+   "at": "specs/artifact-attack/spec.md:13",
+   "capability": "artifact-attack",
+   "requirement": "req:artifact-attack/Строка атаки валидна только с линзой, тяжестью, инвариантом и опорой"
+  },
+  {
+   "id": "scn:artifact-attack/Строка атаки валидна только с линзой, тяжестью, инвариантом и опорой/Сценарий не следует из механизма",
+   "kind": "scn",
+   "name": "Сценарий не следует из механизма",
+   "at": "specs/artifact-attack/spec.md:18",
+   "capability": "artifact-attack",
+   "requirement": "req:artifact-attack/Строка атаки валидна только с линзой, тяжестью, инвариантом и опорой"
+  },
+  {
+   "id": "scn:artifact-attack/Строка атаки валидна только с линзой, тяжестью, инвариантом и опорой/Гигиена журнала не в атаке",
+   "kind": "scn",
+   "name": "Гигиена журнала не в атаке",
+   "at": "specs/artifact-attack/spec.md:23",
+   "capability": "artifact-attack",
+   "requirement": "req:artifact-attack/Строка атаки валидна только с линзой, тяжестью, инвариантом и опорой"
+  },
+  {
+   "id": "scn:artifact-attack/Строка атаки валидна только с линзой, тяжестью, инвариантом и опорой/Черта в ячейке",
+   "kind": "scn",
+   "name": "Черта в ячейке",
+   "at": "specs/artifact-attack/spec.md:28",
+   "capability": "artifact-attack",
+   "requirement": "req:artifact-attack/Строка атаки валидна только с линзой, тяжестью, инвариантом и опорой"
+  },
+  {
+   "id": "scn:artifact-attack/Строка атаки валидна только с линзой, тяжестью, инвариантом и опорой/Design молчит о механизме",
+   "kind": "scn",
+   "name": "Design молчит о механизме",
+   "at": "specs/artifact-attack/spec.md:33",
+   "capability": "artifact-attack",
+   "requirement": "req:artifact-attack/Строка атаки валидна только с линзой, тяжестью, инвариантом и опорой"
+  },
+  {
+   "id": "scn:artifact-attack/Строка атаки валидна только с линзой, тяжестью, инвариантом и опорой/Два механизма на один сценарий",
+   "kind": "scn",
+   "name": "Два механизма на один сценарий",
+   "at": "specs/artifact-attack/spec.md:38",
+   "capability": "artifact-attack",
+   "requirement": "req:artifact-attack/Строка атаки валидна только с линзой, тяжестью, инвариантом и опорой"
+  },
+  {
+   "id": "scn:artifact-attack/Строка атаки валидна только с линзой, тяжестью, инвариантом и опорой/Обратная косая перед чертой в цитате кода",
+   "kind": "scn",
+   "name": "Обратная косая перед чертой в цитате кода",
+   "at": "specs/artifact-attack/spec.md:43",
+   "capability": "artifact-attack",
+   "requirement": "req:artifact-attack/Строка атаки валидна только с линзой, тяжестью, инвариантом и опорой"
+  },
+  {
+   "id": "req:artifact-attack/Scenario-run устанавливает область влияния изменения",
+   "kind": "req",
+   "name": "Scenario-run устанавливает область влияния изменения",
+   "at": "specs/artifact-attack/spec.md:52",
+   "section": "ADDED",
+   "capability": "artifact-attack"
+  },
+  {
+   "id": "scn:artifact-attack/Scenario-run устанавливает область влияния изменения/Живой мастер после синхронизации",
+   "kind": "scn",
+   "name": "Живой мастер после синхронизации",
+   "at": "specs/artifact-attack/spec.md:55",
+   "capability": "artifact-attack",
+   "requirement": "req:artifact-attack/Scenario-run устанавливает область влияния изменения"
+  },
+  {
+   "id": "scn:artifact-attack/Scenario-run устанавливает область влияния изменения/Потребитель изменённого стыка вне дельты",
+   "kind": "scn",
+   "name": "Потребитель изменённого стыка вне дельты",
+   "at": "specs/artifact-attack/spec.md:60",
+   "capability": "artifact-attack",
+   "requirement": "req:artifact-attack/Scenario-run устанавливает область влияния изменения"
+  },
+  {
+   "id": "scn:artifact-attack/Scenario-run устанавливает область влияния изменения/Текст мастер-сценария пытается изменить ход проверки",
+   "kind": "scn",
+   "name": "Текст мастер-сценария пытается изменить ход проверки",
+   "at": "specs/artifact-attack/spec.md:65",
+   "capability": "artifact-attack",
+   "requirement": "req:artifact-attack/Scenario-run устанавливает область влияния изменения"
+  },
+  {
+   "id": "scn:artifact-attack/Scenario-run устанавливает область влияния изменения/Найдена подтверждённая граница",
+   "kind": "scn",
+   "name": "Найдена подтверждённая граница",
+   "at": "specs/artifact-attack/spec.md:70",
+   "capability": "artifact-attack",
+   "requirement": "req:artifact-attack/Scenario-run устанавливает область влияния изменения"
+  },
+  {
+   "id": "scn:artifact-attack/Scenario-run устанавливает область влияния изменения/После синхронизации исходной базы нет",
+   "kind": "scn",
+   "name": "После синхронизации исходной базы нет",
+   "at": "specs/artifact-attack/spec.md:75",
+   "capability": "artifact-attack",
+   "requirement": "req:artifact-attack/Scenario-run устанавливает область влияния изменения"
+  },
+  {
+   "id": "scn:artifact-attack/Scenario-run устанавливает область влияния изменения/Первый снимок сделан после синхронизации и правки дельты",
+   "kind": "scn",
+   "name": "Первый снимок сделан после синхронизации и правки дельты",
+   "at": "specs/artifact-attack/spec.md:81",
+   "capability": "artifact-attack",
+   "requirement": "req:artifact-attack/Scenario-run устанавливает область влияния изменения"
+  },
+  {
+   "id": "req:artifact-attack/Scenario-run обосновывает сохранение прежнего исхода",
+   "kind": "req",
+   "name": "Scenario-run обосновывает сохранение прежнего исхода",
+   "at": "specs/artifact-attack/spec.md:89",
+   "section": "ADDED",
+   "capability": "artifact-attack"
+  },
+  {
+   "id": "scn:artifact-attack/Scenario-run обосновывает сохранение прежнего исхода/Добавление линзы сохраняет входы прежних сценариев",
+   "kind": "scn",
+   "name": "Добавление линзы сохраняет входы прежних сценариев",
+   "at": "specs/artifact-attack/spec.md:92",
+   "capability": "artifact-attack",
+   "requirement": "req:artifact-attack/Scenario-run обосновывает сохранение прежнего исхода"
+  },
+  {
+   "id": "scn:artifact-attack/Scenario-run обосновывает сохранение прежнего исхода/Прежний механизм получает другой вход",
+   "kind": "scn",
+   "name": "Прежний механизм получает другой вход",
+   "at": "specs/artifact-attack/spec.md:97",
+   "capability": "artifact-attack",
+   "requirement": "req:artifact-attack/Scenario-run обосновывает сохранение прежнего исхода"
+  },
+  {
+   "id": "req:artifact-attack/Адресная проверка обосновывает допуск к реализации",
+   "kind": "req",
+   "name": "Адресная проверка обосновывает допуск к реализации",
+   "at": "specs/artifact-attack/spec.md:104",
+   "section": "ADDED",
+   "capability": "artifact-attack"
+  },
+  {
+   "id": "scn:artifact-attack/Адресная проверка обосновывает допуск к реализации/Исход проверит адресная задача",
+   "kind": "scn",
+   "name": "Исход проверит адресная задача",
+   "at": "specs/artifact-attack/spec.md:107",
+   "capability": "artifact-attack",
+   "requirement": "req:artifact-attack/Адресная проверка обосновывает допуск к реализации"
+  },
+  {
+   "id": "scn:artifact-attack/Адресная проверка обосновывает допуск к реализации/Задача проверяет прежний вход",
+   "kind": "scn",
+   "name": "Задача проверяет прежний вход",
+   "at": "specs/artifact-attack/spec.md:112",
+   "capability": "artifact-attack",
+   "requirement": "req:artifact-attack/Адресная проверка обосновывает допуск к реализации"
+  },
+  {
+   "id": "scn:artifact-attack/Адресная проверка обосновывает допуск к реализации/Запланированный тест при известном противоречии",
+   "kind": "scn",
+   "name": "Запланированный тест при известном противоречии",
+   "at": "specs/artifact-attack/spec.md:117",
+   "capability": "artifact-attack",
+   "requirement": "req:artifact-attack/Адресная проверка обосновывает допуск к реализации"
+  },
+  {
+   "id": "req:artifact-attack/Изменение мастер-опоры обесценивает вердикт",
+   "kind": "req",
+   "name": "Изменение мастер-опоры обесценивает вердикт",
+   "at": "specs/artifact-attack/spec.md:124",
+   "section": "ADDED",
+   "capability": "artifact-attack"
+  },
+  {
+   "id": "scn:artifact-attack/Изменение мастер-опоры обесценивает вердикт/Изменился использованный блок мастера",
+   "kind": "scn",
+   "name": "Изменился использованный блок мастера",
+   "at": "specs/artifact-attack/spec.md:127",
+   "capability": "artifact-attack",
+   "requirement": "req:artifact-attack/Изменение мастер-опоры обесценивает вердикт"
+  },
+  {
+   "id": "cap:stale-verdict-scope",
+   "kind": "cap",
+   "name": "stale-verdict-scope",
+   "at": "specs/stale-verdict-scope/spec.md:1"
+  },
+  {
+   "id": "req:stale-verdict-scope/Состав устаревания называет изменившуюся мастер-опору",
+   "kind": "req",
+   "name": "Состав устаревания называет изменившуюся мастер-опору",
+   "at": "specs/stale-verdict-scope/spec.md:5",
+   "section": "ADDED",
+   "capability": "stale-verdict-scope"
+  },
+  {
+   "id": "scn:stale-verdict-scope/Состав устаревания называет изменившуюся мастер-опору/Общий состав называет мастер-опору",
+   "kind": "scn",
+   "name": "Общий состав называет мастер-опору",
+   "at": "specs/stale-verdict-scope/spec.md:8",
+   "capability": "stale-verdict-scope",
+   "requirement": "req:stale-verdict-scope/Состав устаревания называет изменившуюся мастер-опору"
+  },
+  {
+   "id": "scn:stale-verdict-scope/Состав устаревания называет изменившуюся мастер-опору/Изменился соседний мастер-блок",
+   "kind": "scn",
+   "name": "Изменился соседний мастер-блок",
+   "at": "specs/stale-verdict-scope/spec.md:13",
+   "capability": "stale-verdict-scope",
+   "requirement": "req:stale-verdict-scope/Состав устаревания называет изменившуюся мастер-опору"
+  },
+  {
+   "id": "scn:stale-verdict-scope/Состав устаревания называет изменившуюся мастер-опору/Мастер-опора выходит из области чтения",
+   "kind": "scn",
+   "name": "Мастер-опора выходит из области чтения",
+   "at": "specs/stale-verdict-scope/spec.md:18",
+   "capability": "stale-verdict-scope",
+   "requirement": "req:stale-verdict-scope/Состав устаревания называет изменившуюся мастер-опору"
+  },
+  {
+   "id": "cap:trace-graph",
+   "kind": "cap",
+   "name": "trace-graph",
+   "at": "specs/trace-graph/spec.md:1"
+  },
+  {
+   "id": "req:trace-graph/Граф связывает задачу со сценарием вне дельты",
+   "kind": "req",
+   "name": "Граф связывает задачу со сценарием вне дельты",
+   "at": "specs/trace-graph/spec.md:5",
+   "section": "ADDED",
+   "capability": "trace-graph"
+  },
+  {
+   "id": "scn:trace-graph/Граф связывает задачу со сценарием вне дельты/Единственная ссылка на сценарий мастера",
+   "kind": "scn",
+   "name": "Единственная ссылка на сценарий мастера",
+   "at": "specs/trace-graph/spec.md:8",
+   "capability": "trace-graph",
+   "requirement": "req:trace-graph/Граф связывает задачу со сценарием вне дельты"
+  },
+  {
+   "id": "scn:trace-graph/Граф связывает задачу со сценарием вне дельты/Дельта содержит тот же сценарий",
+   "kind": "scn",
+   "name": "Дельта содержит тот же сценарий",
+   "at": "specs/trace-graph/spec.md:13",
+   "capability": "trace-graph",
+   "requirement": "req:trace-graph/Граф связывает задачу со сценарием вне дельты"
+  },
+  {
+   "id": "scn:trace-graph/Граф связывает задачу со сценарием вне дельты/Одноимённые сценарии в мастере",
+   "kind": "scn",
+   "name": "Одноимённые сценарии в мастере",
+   "at": "specs/trace-graph/spec.md:18",
+   "capability": "trace-graph",
+   "requirement": "req:trace-graph/Граф связывает задачу со сценарием вне дельты"
+  },
+  {
+   "id": "scn:trace-graph/Граф связывает задачу со сценарием вне дельты/Сценарий исчезает после применения дельты",
+   "kind": "scn",
+   "name": "Сценарий исчезает после применения дельты",
+   "at": "specs/trace-graph/spec.md:23",
+   "capability": "trace-graph",
+   "requirement": "req:trace-graph/Граф связывает задачу со сценарием вне дельты"
+  },
+  {
+   "id": "scn:trace-graph/Граф связывает задачу со сценарием вне дельты/Такое имя есть только в другой capability",
+   "kind": "scn",
+   "name": "Такое имя есть только в другой capability",
+   "at": "specs/trace-graph/spec.md:28",
+   "capability": "trace-graph",
+   "requirement": "req:trace-graph/Граф связывает задачу со сценарием вне дельты"
+  },
+  {
+   "id": "scn:trace-graph/Граф связывает задачу со сценарием вне дельты/Файл мастер-сценария находится за границей мастер-спек",
+   "kind": "scn",
+   "name": "Файл мастер-сценария находится за границей мастер-спек",
+   "at": "specs/trace-graph/spec.md:33",
+   "capability": "trace-graph",
+   "requirement": "req:trace-graph/Граф связывает задачу со сценарием вне дельты"
+  },
+  {
+   "id": "cap:verdict-readiness",
+   "kind": "cap",
+   "name": "verdict-readiness",
+   "at": "specs/verdict-readiness/spec.md:1"
+  },
+  {
+   "id": "req:verdict-readiness/Изменившаяся мастер-опора видна в состоянии вердикта",
+   "kind": "req",
+   "name": "Изменившаяся мастер-опора видна в состоянии вердикта",
+   "at": "specs/verdict-readiness/spec.md:5",
+   "section": "ADDED",
+   "capability": "verdict-readiness"
+  },
+  {
+   "id": "scn:verdict-readiness/Изменившаяся мастер-опора видна в состоянии вердикта/Мастер-опора изменилась до реализации",
+   "kind": "scn",
+   "name": "Мастер-опора изменилась до реализации",
+   "at": "specs/verdict-readiness/spec.md:8",
+   "capability": "verdict-readiness",
+   "requirement": "req:verdict-readiness/Изменившаяся мастер-опора видна в состоянии вердикта"
+  },
+  {
+   "id": "scn:verdict-readiness/Изменившаяся мастер-опора видна в состоянии вердикта/Мастер-опора изменилась после первой задачи",
+   "kind": "scn",
+   "name": "Мастер-опора изменилась после первой задачи",
+   "at": "specs/verdict-readiness/spec.md:13",
+   "capability": "verdict-readiness",
+   "requirement": "req:verdict-readiness/Изменившаяся мастер-опора видна в состоянии вердикта"
+  },
+  {
+   "id": "scn:verdict-readiness/Изменившаяся мастер-опора видна в состоянии вердикта/Старый отчёт проверяется по своим целям",
+   "kind": "scn",
+   "name": "Старый отчёт проверяется по своим целям",
+   "at": "specs/verdict-readiness/spec.md:18",
+   "capability": "verdict-readiness",
+   "requirement": "req:verdict-readiness/Изменившаяся мастер-опора видна в состоянии вердикта"
+  },
+  {
+   "id": "scn:verdict-readiness/Изменившаяся мастер-опора видна в состоянии вердикта/Объявленная мастер-опора не разбирается",
+   "kind": "scn",
+   "name": "Объявленная мастер-опора не разбирается",
+   "at": "specs/verdict-readiness/spec.md:23",
+   "capability": "verdict-readiness",
+   "requirement": "req:verdict-readiness/Изменившаяся мастер-опора видна в состоянии вердикта"
+  },
+  {
+   "id": "scn:verdict-readiness/Изменившаяся мастер-опора видна в состоянии вердикта/Использованная мастер-опора существует, но файл не читается",
+   "kind": "scn",
+   "name": "Использованная мастер-опора существует, но файл не читается",
+   "at": "specs/verdict-readiness/spec.md:28",
+   "capability": "verdict-readiness",
+   "requirement": "req:verdict-readiness/Изменившаяся мастер-опора видна в состоянии вердикта"
+  },
+  {
+   "id": "task:1.1",
+   "kind": "task",
+   "name": "**Сохранять свидетельство исходной версии** — в ядре связать свидетельство предзаписи с конкретной записью снимка и её отпечатком (F-14.A). Сохранить прежнее чтение структурной базы графом. Проверка в `trace/tests/test_trace_snapshot.py` — у подтверждённой исходной записи совпадает отпечаток, подмена записи не проходит, внутренние пробелы различаются при дословной сверке, обычный и поздний `freeze` и снимок без подтверждённого происхождения не дают свидетельства. `artifact-attack`: «Живой мастер после синхронизации», `artifact-attack`: «После синхронизации исходной базы нет», `artifact-attack`: «Первый снимок сделан после синхронизации и правки дельты».",
+   "at": "tasks.md:5",
+   "done": false
+  },
+  {
+   "id": "task:1.2",
+   "kind": "task",
+   "name": "**Снимать исходную базу при подтверждённом sync** — связать сохранение свидетельства с подтверждённой предзаписью в форке и в защищённой поставке ядра. Проверка в тестах прямого и встроенного sync и в `installer/test/workflow-carriers.test.js` — выбранный корень и набор capability доходят до `freeze` перед первой записью, повторный sync по перенесённому блоку не выдаёт нового свидетельства, отказ предзаписи сохраняет действующую остановку. `artifact-attack`: «Первый снимок сделан после синхронизации и правки дельты».",
+   "at": "tasks.md:6",
+   "done": false
+  },
+  {
+   "id": "task:2.1",
+   "kind": "task",
+   "name": "**Разрешать ссылки задач вне дельты** — в `trace/trace_graph.py` разрешать ссылку в эффективной мастер-спеке указанной capability после поиска в дельте (F-06.A, F-08.A). Проверка в `trace/tests/test_trace_graph.py` — у `satisfies` есть место в задаче и источник мастер-сценария, неназванный узел отсутствует, дельта имеет приоритет, двусмысленность названа с обоими кандидатами, снятый или чужой сценарий не разрешается. `trace-graph`: «Единственная ссылка на сценарий мастера», `trace-graph`: «Дельта содержит тот же сценарий», `trace-graph`: «Одноимённые сценарии в мастере», `trace-graph`: «Сценарий исчезает после применения дельты», `trace-graph`: «Такое имя есть только в другой capability».",
+   "at": "tasks.md:10",
+   "done": false
+  },
+  {
+   "id": "task:2.2",
+   "kind": "task",
+   "name": "**Ограничить чтение мастер-спек графом** — перед чтением проверять разрешённый путь в каталоге мастер-спек выбранного корня планирования. Проверка в тестах графа на ссылке и junction — внешний файл не открывается, граф сообщает о неразрешённой ссылке без внешнего пути и не добавляет сценарий. `trace-graph`: «Файл мастер-сценария находится за границей мастер-спек».",
+   "at": "tasks.md:11",
+   "done": false
+  },
+  {
+   "id": "task:3.1",
+   "kind": "task",
+   "name": "**Подготовить общий формат мастер-опор** — по F-15.A зафиксировать в общей тестовой фикстуре отчёт с `targets[]` и отдельным верхнеуровневым однострочным JSON-массивом с capability, требованием, необязательным сценарием и SHA-256 блока. Подготовить воспроизводимую запись метаданных в ядре. Проверка — тест записи проверяет отпечатки блока требования и блока сценария. Для одного блока в UTF-8 с LF и CRLF отпечаток одинаков. Метаданные содержат идентификаторы и отпечатки, `targets[]` сохраняется. `служебная`",
+   "at": "tasks.md:15",
+   "done": false
+  },
+  {
+   "id": "task:3.2",
+   "kind": "task",
+   "name": "**Считать причины устаревания в ядре** — провести выбранный корень планирования в общий расчёт `attack_scope`, используемый журналом и справкой шага. Разбирать мастер-опоры отдельно от локальных целей. Проверка в `attack/tests/test_attack_scope.py` и `step-help/tests/test_step_help.py` — изменение, утрата, отказ чтения, неверный формат, ошибка декодирования UTF-8 или неоднозначное имя дают одинаковую причину у обоих потребителей. Соседний блок не влияет, внешние пути, символические ссылки и junction отклоняются до чтения, диагностика не копирует исходный ввод. `stale-verdict-scope`: «Общий состав называет мастер-опору», `stale-verdict-scope`: «Изменился соседний мастер-блок», `stale-verdict-scope`: «Мастер-опора выходит из области чтения», `verdict-readiness`: «Использованная мастер-опора существует, но файл не читается», `verdict-readiness`: «Объявленная мастер-опора не разбирается».",
+   "at": "tasks.md:16",
+   "done": false
+  },
+  {
+   "id": "task:3.3",
+   "kind": "task",
+   "name": "**Учитывать мастер-опоры в вердикте OpenSpec** — в форке провести выбранный корень планирования в расчёт `status` и допуска к `apply`. Проверка в тестах состояния артефактов, `status` и `apply` — использованная опора с изменением, утратой, отказом чтения или недопустимым объявлением даёт `stale`. До первой отметки это барьер, после неё сигнал. Проверить отдельно повреждённое поле, которое ломает разбор всего frontmatter, не-UTF-8 и выход из области чтения. Отчёт без поля проверяется по прежним целям. `verdict-readiness`: «Мастер-опора изменилась до реализации», `verdict-readiness`: «Мастер-опора изменилась после первой задачи», `verdict-readiness`: «Старый отчёт проверяется по своим целям», `verdict-readiness`: «Объявленная мастер-опора не разбирается», `verdict-readiness`: «Использованная мастер-опора существует, но файл не читается», `stale-verdict-scope`: «Мастер-опора выходит из области чтения».",
+   "at": "tasks.md:17",
+   "done": false
+  },
+  {
+   "id": "task:3.4",
+   "kind": "task",
+   "name": "**Сверить ядро и форк на одном отчёте** — тест-страховка (F-13) подаёт ядру и явно выбранной сборке форка один отчёт из 3.1. Сверить `status --json`, вывод `journal check` и `stale_scope` в справке шага. Проверка — в исходном состоянии `ok`, при правке только мастер-опоры `stale` и одна совпадающая причина о мастере в журнале и справке, при отдельной правке только локальной цели `stale` и причина о локальной цели. Правка соседнего неиспользованного блока оставляет `ok`. `artifact-attack`: «Изменился использованный блок мастера», `stale-verdict-scope`: «Общий состав называет мастер-опору», `stale-verdict-scope`: «Изменился соседний мастер-блок».",
+   "at": "tasks.md:18",
+   "done": false
+  },
+  {
+   "id": "task:4.1",
+   "kind": "task",
+   "name": "**Различать перенесённые и изменённые сценарии** — обновить `scenario-run` с учётом исходного мастера до sync и свидетельства из 1.1 (F-06.A, F-09.A, F-11.A, F-14.A). Проверка по транскрипту — после sync изменение сравнивается с пригодной исходной версией, при недоказанной базе назван пробел и оценён риск. Для нового или изменённого сценария без механизма сохраняется блокер. `artifact-attack`: «Живой мастер после синхронизации», `artifact-attack`: «После синхронизации исходной базы нет», `artifact-attack`: «Первый снимок сделан после синхронизации и правки дельты», `artifact-attack`: «Design молчит о механизме».",
+   "at": "tasks.md:22",
+   "done": false
+  },
+  {
+   "id": "task:4.2",
+   "kind": "task",
+   "name": "**Проверять влияние на потребителей изменённого стыка** — описать в инструкции `design` общее обоснование для группы и научить атаку проверять THEN каждого затронутого сценария, включая мастер за пределами дельты (F-06.A, F-07.A). Проверка по транскрипту — при сохранении входов есть справка с опорой. При потере номера записи названо противоречие THEN. Атака находит мастер-потребителя, указывает границу и существенные пробелы поиска. Текст мастер-сценария обрабатывается как данные. `artifact-attack`: «Потребитель изменённого стыка вне дельты», `artifact-attack`: «Найдена подтверждённая граница», `artifact-attack`: «Добавление линзы сохраняет входы прежних сценариев», `artifact-attack`: «Прежний механизм получает другой вход», `artifact-attack`: «Текст мастер-сценария пытается изменить ход проверки».",
+   "at": "tasks.md:23",
+   "done": false
+  },
+  {
+   "id": "task:4.3",
+   "kind": "task",
+   "name": "**Проверять достаточность задачи до реализации** — внести в `scenario-run` правило F-08.A и уточнить инструкцию для проверочной задачи. Проверка по транскрипту — задача со смешанными строками и проверкой ровно одного ответа в промпте даёт ожидаемый исход. Проверка лишь прежнего входа и известное противоречие THEN дают блокеры. `artifact-attack`: «Исход проверит адресная задача», `artifact-attack`: «Задача проверяет прежний вход», `artifact-attack`: «Запланированный тест при известном противоречии».",
+   "at": "tasks.md:24",
+   "done": false
+  },
+  {
+   "id": "task:4.4",
+   "kind": "task",
+   "name": "**Записывать опоры использованных мастер-блоков** — связать формирование отчёта `scenario-run` с записью метаданных из 3.1 и описать поле в руководстве по отчёту (F-10.A, F-15.A). Проверка на отчёте прогона — использованный мастер-блок записан по идентификатору с воспроизводимым отпечатком, соседний найденный блок, который не служил опорой, отсутствует. После правки использованного блока проверка свежести даёт `stale`. `artifact-attack`: «Изменился использованный блок мастера».",
+   "at": "tasks.md:25",
+   "done": false
+  },
+  {
+   "id": "task:5.1",
+   "kind": "task",
+   "name": "**Обновить поставку OpenSpec в ядре** — обновить версию форка и `UPSTREAM.md`, собрать тарбол из проверенного коммита отдельной ветки. Обновить `openspecPin`, `openspecSource` и руководство ядра, пересобрать носители workflow. Проверка — `pnpm test` и `pnpm build` проходят в форке, тесты `vendor` и `workflow-carriers` и `tests/test_guide.py` подтверждают новую поставку, установленный локальный CLI проходит проверку предзаписи из 1.2 и общий сценарий из 3.4. `служебная`",
+   "at": "tasks.md:29",
+   "done": false
+  },
+  {
+   "id": "component:scenario-run",
+   "kind": "component",
+   "name": "scenario-run",
+   "at": ".openspec.yaml:1"
+  },
+  {
+   "id": "repo:symphysis-core",
+   "kind": "repo",
+   "name": "symphysis-core",
+   "at": ".openspec.yaml:1",
+   "survey": "found",
+   "actual": "found",
+   "availability": "available"
+  },
+  {
+   "id": "module:symphysis-core/anchors",
+   "kind": "module",
+   "name": "anchors",
+   "at": "symphysis-core/anchors/README.md:2",
+   "repo": "symphysis-core",
+   "path": "anchors",
+   "module_kind": "доменный"
+  },
+  {
+   "id": "module:symphysis-core/attack",
+   "kind": "module",
+   "name": "attack",
+   "at": "symphysis-core/attack/README.md:2",
+   "repo": "symphysis-core",
+   "path": "attack",
+   "module_kind": "доменный"
+  },
+  {
+   "id": "module:symphysis-core/cli",
+   "kind": "module",
+   "name": "cli",
+   "at": "symphysis-core/cli/README.md:2",
+   "repo": "symphysis-core",
+   "path": "cli",
+   "module_kind": "технический"
+  },
+  {
+   "id": "module:symphysis-core/consequences",
+   "kind": "module",
+   "name": "consequences",
+   "at": "symphysis-core/consequences/README.md:2",
+   "repo": "symphysis-core",
+   "path": "consequences",
+   "module_kind": "доменный"
+  },
+  {
+   "id": "module:symphysis-core/decisions",
+   "kind": "module",
+   "name": "decisions",
+   "at": "symphysis-core/decisions/README.md:2",
+   "repo": "symphysis-core",
+   "path": "decisions",
+   "module_kind": "доменный"
+  },
+  {
+   "id": "module:symphysis-core/installer",
+   "kind": "module",
+   "name": "installer",
+   "at": "symphysis-core/installer/README.md:2",
+   "repo": "symphysis-core",
+   "path": "installer",
+   "module_kind": "технический"
+  },
+  {
+   "id": "module:symphysis-core/openspec-run",
+   "kind": "module",
+   "name": "openspec-run",
+   "at": "symphysis-core/openspec-run/README.md:2",
+   "repo": "symphysis-core",
+   "path": "openspec-run",
+   "module_kind": "технический"
+  },
+  {
+   "id": "module:symphysis-core/schema",
+   "kind": "module",
+   "name": "schema",
+   "at": "symphysis-core/openspec/schemas/symphysis/README.md:2",
+   "repo": "symphysis-core",
+   "path": "openspec/schemas/symphysis",
+   "module_kind": "доменный"
+  },
+  {
+   "id": "module:symphysis-core/probes",
+   "kind": "module",
+   "name": "probes",
+   "at": "symphysis-core/probes/README.md:2",
+   "repo": "symphysis-core",
+   "path": "probes",
+   "module_kind": "доменный"
+  },
+  {
+   "id": "module:symphysis-core/research",
+   "kind": "module",
+   "name": "research",
+   "at": "symphysis-core/research/README.md:2",
+   "repo": "symphysis-core",
+   "path": "research",
+   "module_kind": "доменный"
+  },
+  {
+   "id": "module:symphysis-core/roots",
+   "kind": "module",
+   "name": "roots",
+   "at": "symphysis-core/roots/README.md:2",
+   "repo": "symphysis-core",
+   "path": "roots",
+   "module_kind": "технический"
+  },
+  {
+   "id": "module:symphysis-core/runtime",
+   "kind": "module",
+   "name": "runtime",
+   "at": "symphysis-core/runtime/README.md:2",
+   "repo": "symphysis-core",
+   "path": "runtime",
+   "module_kind": "технический"
+  },
+  {
+   "id": "module:symphysis-core/settings",
+   "kind": "module",
+   "name": "settings",
+   "at": "symphysis-core/settings/README.md:2",
+   "repo": "symphysis-core",
+   "path": "settings",
+   "module_kind": "технический"
+  },
+  {
+   "id": "module:symphysis-core/skill-shared",
+   "kind": "module",
+   "name": "skill-shared",
+   "at": "symphysis-core/skill-shared/README.md:2",
+   "repo": "symphysis-core",
+   "path": "skill-shared",
+   "module_kind": "технический"
+  },
+  {
+   "id": "module:symphysis-core/step-help",
+   "kind": "module",
+   "name": "step-help",
+   "at": "symphysis-core/step-help/README.md:2",
+   "repo": "symphysis-core",
+   "path": "step-help",
+   "module_kind": "доменный"
+  },
+  {
+   "id": "module:symphysis-core/trace",
+   "kind": "module",
+   "name": "trace",
+   "at": "symphysis-core/trace/README.md:2",
+   "repo": "symphysis-core",
+   "path": "trace",
+   "module_kind": "доменный"
+  },
+  {
+   "id": "module:symphysis-core/viewer",
+   "kind": "module",
+   "name": "viewer",
+   "at": "symphysis-core/viewer/README.md:2",
+   "repo": "symphysis-core",
+   "path": "viewer",
+   "module_kind": "доменный"
+  },
+  {
+   "id": "file:symphysis-core/anchors%2FREADME.md",
+   "kind": "file",
+   "name": "anchors/README.md",
+   "at": "symphysis-core/anchors/README.md:2",
+   "repo": "symphysis-core",
+   "path": "anchors/README.md"
+  },
+  {
+   "id": "file:symphysis-core/attack%2FREADME.md",
+   "kind": "file",
+   "name": "attack/README.md",
+   "at": "symphysis-core/attack/README.md:2",
+   "repo": "symphysis-core",
+   "path": "attack/README.md"
+  },
+  {
+   "id": "file:symphysis-core/cli%2FREADME.md",
+   "kind": "file",
+   "name": "cli/README.md",
+   "at": "symphysis-core/cli/README.md:2",
+   "repo": "symphysis-core",
+   "path": "cli/README.md"
+  },
+  {
+   "id": "file:symphysis-core/consequences%2FREADME.md",
+   "kind": "file",
+   "name": "consequences/README.md",
+   "at": "symphysis-core/consequences/README.md:2",
+   "repo": "symphysis-core",
+   "path": "consequences/README.md"
+  },
+  {
+   "id": "file:symphysis-core/decisions%2FREADME.md",
+   "kind": "file",
+   "name": "decisions/README.md",
+   "at": "symphysis-core/decisions/README.md:2",
+   "repo": "symphysis-core",
+   "path": "decisions/README.md"
+  },
+  {
+   "id": "file:symphysis-core/installer%2FREADME.md",
+   "kind": "file",
+   "name": "installer/README.md",
+   "at": "symphysis-core/installer/README.md:2",
+   "repo": "symphysis-core",
+   "path": "installer/README.md"
+  },
+  {
+   "id": "file:symphysis-core/openspec-run%2FREADME.md",
+   "kind": "file",
+   "name": "openspec-run/README.md",
+   "at": "symphysis-core/openspec-run/README.md:2",
+   "repo": "symphysis-core",
+   "path": "openspec-run/README.md"
+  },
+  {
+   "id": "file:symphysis-core/openspec%2Fschemas%2Fsymphysis%2FREADME.md",
+   "kind": "file",
+   "name": "openspec/schemas/symphysis/README.md",
+   "at": "symphysis-core/openspec/schemas/symphysis/README.md:2",
+   "repo": "symphysis-core",
+   "path": "openspec/schemas/symphysis/README.md"
+  },
+  {
+   "id": "file:symphysis-core/probes%2FREADME.md",
+   "kind": "file",
+   "name": "probes/README.md",
+   "at": "symphysis-core/probes/README.md:2",
+   "repo": "symphysis-core",
+   "path": "probes/README.md"
+  },
+  {
+   "id": "file:symphysis-core/research%2FREADME.md",
+   "kind": "file",
+   "name": "research/README.md",
+   "at": "symphysis-core/research/README.md:2",
+   "repo": "symphysis-core",
+   "path": "research/README.md"
+  },
+  {
+   "id": "file:symphysis-core/roots%2FREADME.md",
+   "kind": "file",
+   "name": "roots/README.md",
+   "at": "symphysis-core/roots/README.md:2",
+   "repo": "symphysis-core",
+   "path": "roots/README.md"
+  },
+  {
+   "id": "file:symphysis-core/runtime%2FREADME.md",
+   "kind": "file",
+   "name": "runtime/README.md",
+   "at": "symphysis-core/runtime/README.md:2",
+   "repo": "symphysis-core",
+   "path": "runtime/README.md"
+  },
+  {
+   "id": "file:symphysis-core/settings%2FREADME.md",
+   "kind": "file",
+   "name": "settings/README.md",
+   "at": "symphysis-core/settings/README.md:2",
+   "repo": "symphysis-core",
+   "path": "settings/README.md"
+  },
+  {
+   "id": "file:symphysis-core/skill-shared%2FREADME.md",
+   "kind": "file",
+   "name": "skill-shared/README.md",
+   "at": "symphysis-core/skill-shared/README.md:2",
+   "repo": "symphysis-core",
+   "path": "skill-shared/README.md"
+  },
+  {
+   "id": "file:symphysis-core/step-help%2FREADME.md",
+   "kind": "file",
+   "name": "step-help/README.md",
+   "at": "symphysis-core/step-help/README.md:2",
+   "repo": "symphysis-core",
+   "path": "step-help/README.md"
+  },
+  {
+   "id": "file:symphysis-core/trace%2FREADME.md",
+   "kind": "file",
+   "name": "trace/README.md",
+   "at": "symphysis-core/trace/README.md:2",
+   "repo": "symphysis-core",
+   "path": "trace/README.md"
+  },
+  {
+   "id": "file:symphysis-core/viewer%2FREADME.md",
+   "kind": "file",
+   "name": "viewer/README.md",
+   "at": "symphysis-core/viewer/README.md:2",
+   "repo": "symphysis-core",
+   "path": "viewer/README.md"
+  }
+ ],
+ "edges": [
+  {
+   "from": "branch:viewer/playground-template.html:1107",
+   "to": "scn:artifact-attack/Scenario-run обосновывает сохранение прежнего исхода/Прежний механизм получает другой вход",
+   "type": "verifies",
+   "at": "consequences.md:10"
+  },
+  {
+   "from": "branch:trace/trace_graph.py:800",
+   "to": "scn:trace-graph/Граф связывает задачу со сценарием вне дельты/Единственная ссылка на сценарий мастера",
+   "type": "verifies",
+   "at": "consequences.md:15"
+  },
+  {
+   "from": "branch:trace/trace_graph.py:606",
+   "to": "scn:artifact-attack/Scenario-run устанавливает область влияния изменения/После синхронизации исходной базы нет",
+   "type": "verifies",
+   "at": "consequences.md:20"
+  },
+  {
+   "from": "branch:trace/trace_graph.py:1869",
+   "to": "scn:artifact-attack/Адресная проверка обосновывает допуск к реализации/Задача проверяет прежний вход",
+   "type": "verifies",
+   "at": "consequences.md:30"
+  },
+  {
+   "from": "branch:attack/attack_scope.py:113",
+   "to": "scn:stale-verdict-scope/Состав устаревания называет изменившуюся мастер-опору/Общий состав называет мастер-опору",
+   "type": "verifies",
+   "at": "consequences.md:35"
+  },
+  {
+   "from": "cap:artifact-attack",
+   "to": "req:artifact-attack/Строка атаки валидна только с линзой, тяжестью, инвариантом и опорой",
+   "type": "contains",
+   "at": "specs/artifact-attack/spec.md:5"
+  },
+  {
+   "from": "scn:artifact-attack/Строка атаки валидна только с линзой, тяжестью, инвариантом и опорой/Одна строка предупреждения",
+   "to": "req:artifact-attack/Строка атаки валидна только с линзой, тяжестью, инвариантом и опорой",
+   "type": "verifies",
+   "at": "specs/artifact-attack/spec.md:8"
+  },
+  {
+   "from": "scn:artifact-attack/Строка атаки валидна только с линзой, тяжестью, инвариантом и опорой/Невыводимое",
+   "to": "req:artifact-attack/Строка атаки валидна только с линзой, тяжестью, инвариантом и опорой",
+   "type": "verifies",
+   "at": "specs/artifact-attack/spec.md:13"
+  },
+  {
+   "from": "scn:artifact-attack/Строка атаки валидна только с линзой, тяжестью, инвариантом и опорой/Сценарий не следует из механизма",
+   "to": "req:artifact-attack/Строка атаки валидна только с линзой, тяжестью, инвариантом и опорой",
+   "type": "verifies",
+   "at": "specs/artifact-attack/spec.md:18"
+  },
+  {
+   "from": "scn:artifact-attack/Строка атаки валидна только с линзой, тяжестью, инвариантом и опорой/Гигиена журнала не в атаке",
+   "to": "req:artifact-attack/Строка атаки валидна только с линзой, тяжестью, инвариантом и опорой",
+   "type": "verifies",
+   "at": "specs/artifact-attack/spec.md:23"
+  },
+  {
+   "from": "scn:artifact-attack/Строка атаки валидна только с линзой, тяжестью, инвариантом и опорой/Черта в ячейке",
+   "to": "req:artifact-attack/Строка атаки валидна только с линзой, тяжестью, инвариантом и опорой",
+   "type": "verifies",
+   "at": "specs/artifact-attack/spec.md:28"
+  },
+  {
+   "from": "scn:artifact-attack/Строка атаки валидна только с линзой, тяжестью, инвариантом и опорой/Design молчит о механизме",
+   "to": "req:artifact-attack/Строка атаки валидна только с линзой, тяжестью, инвариантом и опорой",
+   "type": "verifies",
+   "at": "specs/artifact-attack/spec.md:33"
+  },
+  {
+   "from": "scn:artifact-attack/Строка атаки валидна только с линзой, тяжестью, инвариантом и опорой/Два механизма на один сценарий",
+   "to": "req:artifact-attack/Строка атаки валидна только с линзой, тяжестью, инвариантом и опорой",
+   "type": "verifies",
+   "at": "specs/artifact-attack/spec.md:38"
+  },
+  {
+   "from": "scn:artifact-attack/Строка атаки валидна только с линзой, тяжестью, инвариантом и опорой/Обратная косая перед чертой в цитате кода",
+   "to": "req:artifact-attack/Строка атаки валидна только с линзой, тяжестью, инвариантом и опорой",
+   "type": "verifies",
+   "at": "specs/artifact-attack/spec.md:43"
+  },
+  {
+   "from": "cap:artifact-attack",
+   "to": "req:artifact-attack/Scenario-run устанавливает область влияния изменения",
+   "type": "contains",
+   "at": "specs/artifact-attack/spec.md:52"
+  },
+  {
+   "from": "req:artifact-attack/Scenario-run устанавливает область влияния изменения",
+   "to": "rec:F-06",
+   "type": "traces",
+   "at": "specs/artifact-attack/spec.md:53"
+  },
+  {
+   "from": "scn:artifact-attack/Scenario-run устанавливает область влияния изменения/Живой мастер после синхронизации",
+   "to": "req:artifact-attack/Scenario-run устанавливает область влияния изменения",
+   "type": "verifies",
+   "at": "specs/artifact-attack/spec.md:55"
+  },
+  {
+   "from": "scn:artifact-attack/Scenario-run устанавливает область влияния изменения/Потребитель изменённого стыка вне дельты",
+   "to": "req:artifact-attack/Scenario-run устанавливает область влияния изменения",
+   "type": "verifies",
+   "at": "specs/artifact-attack/spec.md:60"
+  },
+  {
+   "from": "scn:artifact-attack/Scenario-run устанавливает область влияния изменения/Текст мастер-сценария пытается изменить ход проверки",
+   "to": "req:artifact-attack/Scenario-run устанавливает область влияния изменения",
+   "type": "verifies",
+   "at": "specs/artifact-attack/spec.md:65"
+  },
+  {
+   "from": "scn:artifact-attack/Scenario-run устанавливает область влияния изменения/Найдена подтверждённая граница",
+   "to": "req:artifact-attack/Scenario-run устанавливает область влияния изменения",
+   "type": "verifies",
+   "at": "specs/artifact-attack/spec.md:70"
+  },
+  {
+   "from": "scn:artifact-attack/Scenario-run устанавливает область влияния изменения/После синхронизации исходной базы нет",
+   "to": "req:artifact-attack/Scenario-run устанавливает область влияния изменения",
+   "type": "verifies",
+   "at": "specs/artifact-attack/spec.md:75"
+  },
+  {
+   "from": "scn:artifact-attack/Scenario-run устанавливает область влияния изменения/Первый снимок сделан после синхронизации и правки дельты",
+   "to": "req:artifact-attack/Scenario-run устанавливает область влияния изменения",
+   "type": "verifies",
+   "at": "specs/artifact-attack/spec.md:81"
+  },
+  {
+   "from": "req:artifact-attack/Scenario-run устанавливает область влияния изменения",
+   "to": "rec:F-09",
+   "type": "traces",
+   "at": "specs/artifact-attack/spec.md:86"
+  },
+  {
+   "from": "req:artifact-attack/Scenario-run устанавливает область влияния изменения",
+   "to": "rec:F-10",
+   "type": "traces",
+   "at": "specs/artifact-attack/spec.md:87"
+  },
+  {
+   "from": "cap:artifact-attack",
+   "to": "req:artifact-attack/Scenario-run обосновывает сохранение прежнего исхода",
+   "type": "contains",
+   "at": "specs/artifact-attack/spec.md:89"
+  },
+  {
+   "from": "req:artifact-attack/Scenario-run обосновывает сохранение прежнего исхода",
+   "to": "rec:F-06",
+   "type": "traces",
+   "at": "specs/artifact-attack/spec.md:90"
+  },
+  {
+   "from": "req:artifact-attack/Scenario-run обосновывает сохранение прежнего исхода",
+   "to": "rec:F-07",
+   "type": "traces",
+   "at": "specs/artifact-attack/spec.md:90"
+  },
+  {
+   "from": "scn:artifact-attack/Scenario-run обосновывает сохранение прежнего исхода/Добавление линзы сохраняет входы прежних сценариев",
+   "to": "req:artifact-attack/Scenario-run обосновывает сохранение прежнего исхода",
+   "type": "verifies",
+   "at": "specs/artifact-attack/spec.md:92"
+  },
+  {
+   "from": "scn:artifact-attack/Scenario-run обосновывает сохранение прежнего исхода/Прежний механизм получает другой вход",
+   "to": "req:artifact-attack/Scenario-run обосновывает сохранение прежнего исхода",
+   "type": "verifies",
+   "at": "specs/artifact-attack/spec.md:97"
+  },
+  {
+   "from": "cap:artifact-attack",
+   "to": "req:artifact-attack/Адресная проверка обосновывает допуск к реализации",
+   "type": "contains",
+   "at": "specs/artifact-attack/spec.md:104"
+  },
+  {
+   "from": "req:artifact-attack/Адресная проверка обосновывает допуск к реализации",
+   "to": "rec:F-08",
+   "type": "traces",
+   "at": "specs/artifact-attack/spec.md:105"
+  },
+  {
+   "from": "scn:artifact-attack/Адресная проверка обосновывает допуск к реализации/Исход проверит адресная задача",
+   "to": "req:artifact-attack/Адресная проверка обосновывает допуск к реализации",
+   "type": "verifies",
+   "at": "specs/artifact-attack/spec.md:107"
+  },
+  {
+   "from": "scn:artifact-attack/Адресная проверка обосновывает допуск к реализации/Задача проверяет прежний вход",
+   "to": "req:artifact-attack/Адресная проверка обосновывает допуск к реализации",
+   "type": "verifies",
+   "at": "specs/artifact-attack/spec.md:112"
+  },
+  {
+   "from": "scn:artifact-attack/Адресная проверка обосновывает допуск к реализации/Запланированный тест при известном противоречии",
+   "to": "req:artifact-attack/Адресная проверка обосновывает допуск к реализации",
+   "type": "verifies",
+   "at": "specs/artifact-attack/spec.md:117"
+  },
+  {
+   "from": "cap:artifact-attack",
+   "to": "req:artifact-attack/Изменение мастер-опоры обесценивает вердикт",
+   "type": "contains",
+   "at": "specs/artifact-attack/spec.md:124"
+  },
+  {
+   "from": "req:artifact-attack/Изменение мастер-опоры обесценивает вердикт",
+   "to": "rec:F-10",
+   "type": "traces",
+   "at": "specs/artifact-attack/spec.md:125"
+  },
+  {
+   "from": "req:artifact-attack/Изменение мастер-опоры обесценивает вердикт",
+   "to": "rec:F-12",
+   "type": "traces",
+   "at": "specs/artifact-attack/spec.md:125"
+  },
+  {
+   "from": "req:artifact-attack/Изменение мастер-опоры обесценивает вердикт",
+   "to": "rec:F-15",
+   "type": "traces",
+   "at": "specs/artifact-attack/spec.md:125"
+  },
+  {
+   "from": "scn:artifact-attack/Изменение мастер-опоры обесценивает вердикт/Изменился использованный блок мастера",
+   "to": "req:artifact-attack/Изменение мастер-опоры обесценивает вердикт",
+   "type": "verifies",
+   "at": "specs/artifact-attack/spec.md:127"
+  },
+  {
+   "from": "cap:stale-verdict-scope",
+   "to": "req:stale-verdict-scope/Состав устаревания называет изменившуюся мастер-опору",
+   "type": "contains",
+   "at": "specs/stale-verdict-scope/spec.md:5"
+  },
+  {
+   "from": "req:stale-verdict-scope/Состав устаревания называет изменившуюся мастер-опору",
+   "to": "rec:F-10",
+   "type": "traces",
+   "at": "specs/stale-verdict-scope/spec.md:6"
+  },
+  {
+   "from": "req:stale-verdict-scope/Состав устаревания называет изменившуюся мастер-опору",
+   "to": "rec:F-12",
+   "type": "traces",
+   "at": "specs/stale-verdict-scope/spec.md:6"
+  },
+  {
+   "from": "req:stale-verdict-scope/Состав устаревания называет изменившуюся мастер-опору",
+   "to": "rec:F-15",
+   "type": "traces",
+   "at": "specs/stale-verdict-scope/spec.md:6"
+  },
+  {
+   "from": "scn:stale-verdict-scope/Состав устаревания называет изменившуюся мастер-опору/Общий состав называет мастер-опору",
+   "to": "req:stale-verdict-scope/Состав устаревания называет изменившуюся мастер-опору",
+   "type": "verifies",
+   "at": "specs/stale-verdict-scope/spec.md:8"
+  },
+  {
+   "from": "scn:stale-verdict-scope/Состав устаревания называет изменившуюся мастер-опору/Изменился соседний мастер-блок",
+   "to": "req:stale-verdict-scope/Состав устаревания называет изменившуюся мастер-опору",
+   "type": "verifies",
+   "at": "specs/stale-verdict-scope/spec.md:13"
+  },
+  {
+   "from": "scn:stale-verdict-scope/Состав устаревания называет изменившуюся мастер-опору/Мастер-опора выходит из области чтения",
+   "to": "req:stale-verdict-scope/Состав устаревания называет изменившуюся мастер-опору",
+   "type": "verifies",
+   "at": "specs/stale-verdict-scope/spec.md:18"
+  },
+  {
+   "from": "cap:trace-graph",
+   "to": "req:trace-graph/Граф связывает задачу со сценарием вне дельты",
+   "type": "contains",
+   "at": "specs/trace-graph/spec.md:5"
+  },
+  {
+   "from": "req:trace-graph/Граф связывает задачу со сценарием вне дельты",
+   "to": "rec:F-05",
+   "type": "traces",
+   "at": "specs/trace-graph/spec.md:6"
+  },
+  {
+   "from": "req:trace-graph/Граф связывает задачу со сценарием вне дельты",
+   "to": "rec:F-06",
+   "type": "traces",
+   "at": "specs/trace-graph/spec.md:6"
+  },
+  {
+   "from": "req:trace-graph/Граф связывает задачу со сценарием вне дельты",
+   "to": "rec:F-08",
+   "type": "traces",
+   "at": "specs/trace-graph/spec.md:6"
+  },
+  {
+   "from": "scn:trace-graph/Граф связывает задачу со сценарием вне дельты/Единственная ссылка на сценарий мастера",
+   "to": "req:trace-graph/Граф связывает задачу со сценарием вне дельты",
+   "type": "verifies",
+   "at": "specs/trace-graph/spec.md:8"
+  },
+  {
+   "from": "scn:trace-graph/Граф связывает задачу со сценарием вне дельты/Дельта содержит тот же сценарий",
+   "to": "req:trace-graph/Граф связывает задачу со сценарием вне дельты",
+   "type": "verifies",
+   "at": "specs/trace-graph/spec.md:13"
+  },
+  {
+   "from": "scn:trace-graph/Граф связывает задачу со сценарием вне дельты/Одноимённые сценарии в мастере",
+   "to": "req:trace-graph/Граф связывает задачу со сценарием вне дельты",
+   "type": "verifies",
+   "at": "specs/trace-graph/spec.md:18"
+  },
+  {
+   "from": "scn:trace-graph/Граф связывает задачу со сценарием вне дельты/Сценарий исчезает после применения дельты",
+   "to": "req:trace-graph/Граф связывает задачу со сценарием вне дельты",
+   "type": "verifies",
+   "at": "specs/trace-graph/spec.md:23"
+  },
+  {
+   "from": "scn:trace-graph/Граф связывает задачу со сценарием вне дельты/Такое имя есть только в другой capability",
+   "to": "req:trace-graph/Граф связывает задачу со сценарием вне дельты",
+   "type": "verifies",
+   "at": "specs/trace-graph/spec.md:28"
+  },
+  {
+   "from": "scn:trace-graph/Граф связывает задачу со сценарием вне дельты/Файл мастер-сценария находится за границей мастер-спек",
+   "to": "req:trace-graph/Граф связывает задачу со сценарием вне дельты",
+   "type": "verifies",
+   "at": "specs/trace-graph/spec.md:33"
+  },
+  {
+   "from": "cap:verdict-readiness",
+   "to": "req:verdict-readiness/Изменившаяся мастер-опора видна в состоянии вердикта",
+   "type": "contains",
+   "at": "specs/verdict-readiness/spec.md:5"
+  },
+  {
+   "from": "req:verdict-readiness/Изменившаяся мастер-опора видна в состоянии вердикта",
+   "to": "rec:F-10",
+   "type": "traces",
+   "at": "specs/verdict-readiness/spec.md:6"
+  },
+  {
+   "from": "req:verdict-readiness/Изменившаяся мастер-опора видна в состоянии вердикта",
+   "to": "rec:F-12",
+   "type": "traces",
+   "at": "specs/verdict-readiness/spec.md:6"
+  },
+  {
+   "from": "req:verdict-readiness/Изменившаяся мастер-опора видна в состоянии вердикта",
+   "to": "rec:F-15",
+   "type": "traces",
+   "at": "specs/verdict-readiness/spec.md:6"
+  },
+  {
+   "from": "scn:verdict-readiness/Изменившаяся мастер-опора видна в состоянии вердикта/Мастер-опора изменилась до реализации",
+   "to": "req:verdict-readiness/Изменившаяся мастер-опора видна в состоянии вердикта",
+   "type": "verifies",
+   "at": "specs/verdict-readiness/spec.md:8"
+  },
+  {
+   "from": "scn:verdict-readiness/Изменившаяся мастер-опора видна в состоянии вердикта/Мастер-опора изменилась после первой задачи",
+   "to": "req:verdict-readiness/Изменившаяся мастер-опора видна в состоянии вердикта",
+   "type": "verifies",
+   "at": "specs/verdict-readiness/spec.md:13"
+  },
+  {
+   "from": "scn:verdict-readiness/Изменившаяся мастер-опора видна в состоянии вердикта/Старый отчёт проверяется по своим целям",
+   "to": "req:verdict-readiness/Изменившаяся мастер-опора видна в состоянии вердикта",
+   "type": "verifies",
+   "at": "specs/verdict-readiness/spec.md:18"
+  },
+  {
+   "from": "scn:verdict-readiness/Изменившаяся мастер-опора видна в состоянии вердикта/Объявленная мастер-опора не разбирается",
+   "to": "req:verdict-readiness/Изменившаяся мастер-опора видна в состоянии вердикта",
+   "type": "verifies",
+   "at": "specs/verdict-readiness/spec.md:23"
+  },
+  {
+   "from": "scn:verdict-readiness/Изменившаяся мастер-опора видна в состоянии вердикта/Использованная мастер-опора существует, но файл не читается",
+   "to": "req:verdict-readiness/Изменившаяся мастер-опора видна в состоянии вердикта",
+   "type": "verifies",
+   "at": "specs/verdict-readiness/spec.md:28"
+  },
+  {
+   "from": "task:1.1",
+   "to": "rec:F-14",
+   "type": "traces",
+   "at": "tasks.md:5"
+  },
+  {
+   "from": "task:1.1",
+   "to": "scn:artifact-attack/Scenario-run устанавливает область влияния изменения/Живой мастер после синхронизации",
+   "type": "satisfies",
+   "at": "tasks.md:5"
+  },
+  {
+   "from": "task:1.1",
+   "to": "scn:artifact-attack/Scenario-run устанавливает область влияния изменения/Первый снимок сделан после синхронизации и правки дельты",
+   "type": "satisfies",
+   "at": "tasks.md:5"
+  },
+  {
+   "from": "task:1.1",
+   "to": "scn:artifact-attack/Scenario-run устанавливает область влияния изменения/После синхронизации исходной базы нет",
+   "type": "satisfies",
+   "at": "tasks.md:5"
+  },
+  {
+   "from": "task:1.2",
+   "to": "scn:artifact-attack/Scenario-run устанавливает область влияния изменения/Первый снимок сделан после синхронизации и правки дельты",
+   "type": "satisfies",
+   "at": "tasks.md:6"
+  },
+  {
+   "from": "task:2.1",
+   "to": "rec:F-06",
+   "type": "traces",
+   "at": "tasks.md:10"
+  },
+  {
+   "from": "task:2.1",
+   "to": "rec:F-08",
+   "type": "traces",
+   "at": "tasks.md:10"
+  },
+  {
+   "from": "task:2.1",
+   "to": "scn:trace-graph/Граф связывает задачу со сценарием вне дельты/Дельта содержит тот же сценарий",
+   "type": "satisfies",
+   "at": "tasks.md:10"
+  },
+  {
+   "from": "task:2.1",
+   "to": "scn:trace-graph/Граф связывает задачу со сценарием вне дельты/Единственная ссылка на сценарий мастера",
+   "type": "satisfies",
+   "at": "tasks.md:10"
+  },
+  {
+   "from": "task:2.1",
+   "to": "scn:trace-graph/Граф связывает задачу со сценарием вне дельты/Одноимённые сценарии в мастере",
+   "type": "satisfies",
+   "at": "tasks.md:10"
+  },
+  {
+   "from": "task:2.1",
+   "to": "scn:trace-graph/Граф связывает задачу со сценарием вне дельты/Сценарий исчезает после применения дельты",
+   "type": "satisfies",
+   "at": "tasks.md:10"
+  },
+  {
+   "from": "task:2.1",
+   "to": "scn:trace-graph/Граф связывает задачу со сценарием вне дельты/Такое имя есть только в другой capability",
+   "type": "satisfies",
+   "at": "tasks.md:10"
+  },
+  {
+   "from": "task:2.2",
+   "to": "scn:trace-graph/Граф связывает задачу со сценарием вне дельты/Файл мастер-сценария находится за границей мастер-спек",
+   "type": "satisfies",
+   "at": "tasks.md:11"
+  },
+  {
+   "from": "task:3.1",
+   "to": "rec:F-15",
+   "type": "traces",
+   "at": "tasks.md:15"
+  },
+  {
+   "from": "task:3.2",
+   "to": "scn:stale-verdict-scope/Состав устаревания называет изменившуюся мастер-опору/Изменился соседний мастер-блок",
+   "type": "satisfies",
+   "at": "tasks.md:16"
+  },
+  {
+   "from": "task:3.2",
+   "to": "scn:stale-verdict-scope/Состав устаревания называет изменившуюся мастер-опору/Мастер-опора выходит из области чтения",
+   "type": "satisfies",
+   "at": "tasks.md:16"
+  },
+  {
+   "from": "task:3.2",
+   "to": "scn:stale-verdict-scope/Состав устаревания называет изменившуюся мастер-опору/Общий состав называет мастер-опору",
+   "type": "satisfies",
+   "at": "tasks.md:16"
+  },
+  {
+   "from": "task:3.2",
+   "to": "scn:verdict-readiness/Изменившаяся мастер-опора видна в состоянии вердикта/Использованная мастер-опора существует, но файл не читается",
+   "type": "satisfies",
+   "at": "tasks.md:16"
+  },
+  {
+   "from": "task:3.2",
+   "to": "scn:verdict-readiness/Изменившаяся мастер-опора видна в состоянии вердикта/Объявленная мастер-опора не разбирается",
+   "type": "satisfies",
+   "at": "tasks.md:16"
+  },
+  {
+   "from": "task:3.3",
+   "to": "scn:stale-verdict-scope/Состав устаревания называет изменившуюся мастер-опору/Мастер-опора выходит из области чтения",
+   "type": "satisfies",
+   "at": "tasks.md:17"
+  },
+  {
+   "from": "task:3.3",
+   "to": "scn:verdict-readiness/Изменившаяся мастер-опора видна в состоянии вердикта/Использованная мастер-опора существует, но файл не читается",
+   "type": "satisfies",
+   "at": "tasks.md:17"
+  },
+  {
+   "from": "task:3.3",
+   "to": "scn:verdict-readiness/Изменившаяся мастер-опора видна в состоянии вердикта/Мастер-опора изменилась до реализации",
+   "type": "satisfies",
+   "at": "tasks.md:17"
+  },
+  {
+   "from": "task:3.3",
+   "to": "scn:verdict-readiness/Изменившаяся мастер-опора видна в состоянии вердикта/Мастер-опора изменилась после первой задачи",
+   "type": "satisfies",
+   "at": "tasks.md:17"
+  },
+  {
+   "from": "task:3.3",
+   "to": "scn:verdict-readiness/Изменившаяся мастер-опора видна в состоянии вердикта/Объявленная мастер-опора не разбирается",
+   "type": "satisfies",
+   "at": "tasks.md:17"
+  },
+  {
+   "from": "task:3.3",
+   "to": "scn:verdict-readiness/Изменившаяся мастер-опора видна в состоянии вердикта/Старый отчёт проверяется по своим целям",
+   "type": "satisfies",
+   "at": "tasks.md:17"
+  },
+  {
+   "from": "task:3.4",
+   "to": "rec:F-13",
+   "type": "traces",
+   "at": "tasks.md:18"
+  },
+  {
+   "from": "task:3.4",
+   "to": "scn:artifact-attack/Изменение мастер-опоры обесценивает вердикт/Изменился использованный блок мастера",
+   "type": "satisfies",
+   "at": "tasks.md:18"
+  },
+  {
+   "from": "task:3.4",
+   "to": "scn:stale-verdict-scope/Состав устаревания называет изменившуюся мастер-опору/Изменился соседний мастер-блок",
+   "type": "satisfies",
+   "at": "tasks.md:18"
+  },
+  {
+   "from": "task:3.4",
+   "to": "scn:stale-verdict-scope/Состав устаревания называет изменившуюся мастер-опору/Общий состав называет мастер-опору",
+   "type": "satisfies",
+   "at": "tasks.md:18"
+  },
+  {
+   "from": "task:4.1",
+   "to": "rec:F-06",
+   "type": "traces",
+   "at": "tasks.md:22"
+  },
+  {
+   "from": "task:4.1",
+   "to": "rec:F-09",
+   "type": "traces",
+   "at": "tasks.md:22"
+  },
+  {
+   "from": "task:4.1",
+   "to": "rec:F-11",
+   "type": "traces",
+   "at": "tasks.md:22"
+  },
+  {
+   "from": "task:4.1",
+   "to": "rec:F-14",
+   "type": "traces",
+   "at": "tasks.md:22"
+  },
+  {
+   "from": "task:4.1",
+   "to": "scn:artifact-attack/Scenario-run устанавливает область влияния изменения/Живой мастер после синхронизации",
+   "type": "satisfies",
+   "at": "tasks.md:22"
+  },
+  {
+   "from": "task:4.1",
+   "to": "scn:artifact-attack/Scenario-run устанавливает область влияния изменения/Первый снимок сделан после синхронизации и правки дельты",
+   "type": "satisfies",
+   "at": "tasks.md:22"
+  },
+  {
+   "from": "task:4.1",
+   "to": "scn:artifact-attack/Scenario-run устанавливает область влияния изменения/После синхронизации исходной базы нет",
+   "type": "satisfies",
+   "at": "tasks.md:22"
+  },
+  {
+   "from": "task:4.1",
+   "to": "scn:artifact-attack/Строка атаки валидна только с линзой, тяжестью, инвариантом и опорой/Design молчит о механизме",
+   "type": "satisfies",
+   "at": "tasks.md:22"
+  },
+  {
+   "from": "task:4.2",
+   "to": "rec:F-06",
+   "type": "traces",
+   "at": "tasks.md:23"
+  },
+  {
+   "from": "task:4.2",
+   "to": "rec:F-07",
+   "type": "traces",
+   "at": "tasks.md:23"
+  },
+  {
+   "from": "task:4.2",
+   "to": "scn:artifact-attack/Scenario-run обосновывает сохранение прежнего исхода/Добавление линзы сохраняет входы прежних сценариев",
+   "type": "satisfies",
+   "at": "tasks.md:23"
+  },
+  {
+   "from": "task:4.2",
+   "to": "scn:artifact-attack/Scenario-run обосновывает сохранение прежнего исхода/Прежний механизм получает другой вход",
+   "type": "satisfies",
+   "at": "tasks.md:23"
+  },
+  {
+   "from": "task:4.2",
+   "to": "scn:artifact-attack/Scenario-run устанавливает область влияния изменения/Найдена подтверждённая граница",
+   "type": "satisfies",
+   "at": "tasks.md:23"
+  },
+  {
+   "from": "task:4.2",
+   "to": "scn:artifact-attack/Scenario-run устанавливает область влияния изменения/Потребитель изменённого стыка вне дельты",
+   "type": "satisfies",
+   "at": "tasks.md:23"
+  },
+  {
+   "from": "task:4.2",
+   "to": "scn:artifact-attack/Scenario-run устанавливает область влияния изменения/Текст мастер-сценария пытается изменить ход проверки",
+   "type": "satisfies",
+   "at": "tasks.md:23"
+  },
+  {
+   "from": "task:4.3",
+   "to": "rec:F-08",
+   "type": "traces",
+   "at": "tasks.md:24"
+  },
+  {
+   "from": "task:4.3",
+   "to": "scn:artifact-attack/Адресная проверка обосновывает допуск к реализации/Задача проверяет прежний вход",
+   "type": "satisfies",
+   "at": "tasks.md:24"
+  },
+  {
+   "from": "task:4.3",
+   "to": "scn:artifact-attack/Адресная проверка обосновывает допуск к реализации/Запланированный тест при известном противоречии",
+   "type": "satisfies",
+   "at": "tasks.md:24"
+  },
+  {
+   "from": "task:4.3",
+   "to": "scn:artifact-attack/Адресная проверка обосновывает допуск к реализации/Исход проверит адресная задача",
+   "type": "satisfies",
+   "at": "tasks.md:24"
+  },
+  {
+   "from": "task:4.4",
+   "to": "rec:F-10",
+   "type": "traces",
+   "at": "tasks.md:25"
+  },
+  {
+   "from": "task:4.4",
+   "to": "rec:F-15",
+   "type": "traces",
+   "at": "tasks.md:25"
+  },
+  {
+   "from": "task:4.4",
+   "to": "scn:artifact-attack/Изменение мастер-опоры обесценивает вердикт/Изменился использованный блок мастера",
+   "type": "satisfies",
+   "at": "tasks.md:25"
+  },
+  {
+   "from": "component:scenario-run",
+   "to": "repo:symphysis-core",
+   "type": "contains",
+   "at": ".openspec.yaml:1"
+  },
+  {
+   "from": "repo:symphysis-core",
+   "to": "module:symphysis-core/anchors",
+   "type": "contains",
+   "at": "symphysis-core/anchors/README.md:2"
+  },
+  {
+   "from": "repo:symphysis-core",
+   "to": "module:symphysis-core/attack",
+   "type": "contains",
+   "at": "symphysis-core/attack/README.md:2"
+  },
+  {
+   "from": "repo:symphysis-core",
+   "to": "module:symphysis-core/cli",
+   "type": "contains",
+   "at": "symphysis-core/cli/README.md:2"
+  },
+  {
+   "from": "repo:symphysis-core",
+   "to": "module:symphysis-core/consequences",
+   "type": "contains",
+   "at": "symphysis-core/consequences/README.md:2"
+  },
+  {
+   "from": "repo:symphysis-core",
+   "to": "module:symphysis-core/decisions",
+   "type": "contains",
+   "at": "symphysis-core/decisions/README.md:2"
+  },
+  {
+   "from": "repo:symphysis-core",
+   "to": "module:symphysis-core/installer",
+   "type": "contains",
+   "at": "symphysis-core/installer/README.md:2"
+  },
+  {
+   "from": "repo:symphysis-core",
+   "to": "module:symphysis-core/openspec-run",
+   "type": "contains",
+   "at": "symphysis-core/openspec-run/README.md:2"
+  },
+  {
+   "from": "repo:symphysis-core",
+   "to": "module:symphysis-core/schema",
+   "type": "contains",
+   "at": "symphysis-core/openspec/schemas/symphysis/README.md:2"
+  },
+  {
+   "from": "repo:symphysis-core",
+   "to": "module:symphysis-core/probes",
+   "type": "contains",
+   "at": "symphysis-core/probes/README.md:2"
+  },
+  {
+   "from": "repo:symphysis-core",
+   "to": "module:symphysis-core/research",
+   "type": "contains",
+   "at": "symphysis-core/research/README.md:2"
+  },
+  {
+   "from": "repo:symphysis-core",
+   "to": "module:symphysis-core/roots",
+   "type": "contains",
+   "at": "symphysis-core/roots/README.md:2"
+  },
+  {
+   "from": "repo:symphysis-core",
+   "to": "module:symphysis-core/runtime",
+   "type": "contains",
+   "at": "symphysis-core/runtime/README.md:2"
+  },
+  {
+   "from": "repo:symphysis-core",
+   "to": "module:symphysis-core/settings",
+   "type": "contains",
+   "at": "symphysis-core/settings/README.md:2"
+  },
+  {
+   "from": "repo:symphysis-core",
+   "to": "module:symphysis-core/skill-shared",
+   "type": "contains",
+   "at": "symphysis-core/skill-shared/README.md:2"
+  },
+  {
+   "from": "repo:symphysis-core",
+   "to": "module:symphysis-core/step-help",
+   "type": "contains",
+   "at": "symphysis-core/step-help/README.md:2"
+  },
+  {
+   "from": "repo:symphysis-core",
+   "to": "module:symphysis-core/trace",
+   "type": "contains",
+   "at": "symphysis-core/trace/README.md:2"
+  },
+  {
+   "from": "repo:symphysis-core",
+   "to": "module:symphysis-core/viewer",
+   "type": "contains",
+   "at": "symphysis-core/viewer/README.md:2"
+  },
+  {
+   "from": "module:symphysis-core/anchors",
+   "to": "file:symphysis-core/anchors%2FREADME.md",
+   "type": "contains",
+   "at": "symphysis-core/anchors/README.md:2"
+  },
+  {
+   "from": "module:symphysis-core/anchors",
+   "to": "module:symphysis-core/openspec-run",
+   "type": "depends",
+   "at": "symphysis-core/anchors/README.md:2"
+  },
+  {
+   "from": "module:symphysis-core/anchors",
+   "to": "module:symphysis-core/runtime",
+   "type": "depends",
+   "at": "symphysis-core/anchors/README.md:2"
+  },
+  {
+   "from": "module:symphysis-core/anchors",
+   "to": "module:symphysis-core/trace",
+   "type": "depends",
+   "at": "symphysis-core/anchors/README.md:2"
+  },
+  {
+   "from": "module:symphysis-core/attack",
+   "to": "file:symphysis-core/attack%2FREADME.md",
+   "type": "contains",
+   "at": "symphysis-core/attack/README.md:2"
+  },
+  {
+   "from": "module:symphysis-core/attack",
+   "to": "module:symphysis-core/decisions",
+   "type": "depends",
+   "at": "symphysis-core/attack/README.md:2"
+  },
+  {
+   "from": "module:symphysis-core/cli",
+   "to": "file:symphysis-core/cli%2FREADME.md",
+   "type": "contains",
+   "at": "symphysis-core/cli/README.md:2"
+  },
+  {
+   "from": "module:symphysis-core/cli",
+   "to": "module:symphysis-core/attack",
+   "type": "depends",
+   "at": "symphysis-core/cli/README.md:2"
+  },
+  {
+   "from": "module:symphysis-core/cli",
+   "to": "module:symphysis-core/consequences",
+   "type": "depends",
+   "at": "symphysis-core/cli/README.md:2"
+  },
+  {
+   "from": "module:symphysis-core/cli",
+   "to": "module:symphysis-core/decisions",
+   "type": "depends",
+   "at": "symphysis-core/cli/README.md:2"
+  },
+  {
+   "from": "module:symphysis-core/cli",
+   "to": "module:symphysis-core/roots",
+   "type": "depends",
+   "at": "symphysis-core/cli/README.md:2"
+  },
+  {
+   "from": "module:symphysis-core/cli",
+   "to": "module:symphysis-core/runtime",
+   "type": "depends",
+   "at": "symphysis-core/cli/README.md:2"
+  },
+  {
+   "from": "module:symphysis-core/cli",
+   "to": "module:symphysis-core/step-help",
+   "type": "depends",
+   "at": "symphysis-core/cli/README.md:2"
+  },
+  {
+   "from": "module:symphysis-core/cli",
+   "to": "module:symphysis-core/viewer",
+   "type": "depends",
+   "at": "symphysis-core/cli/README.md:2"
+  },
+  {
+   "from": "module:symphysis-core/consequences",
+   "to": "file:symphysis-core/consequences%2FREADME.md",
+   "type": "contains",
+   "at": "symphysis-core/consequences/README.md:2"
+  },
+  {
+   "from": "module:symphysis-core/consequences",
+   "to": "module:symphysis-core/roots",
+   "type": "depends",
+   "at": "symphysis-core/consequences/README.md:2"
+  },
+  {
+   "from": "module:symphysis-core/decisions",
+   "to": "file:symphysis-core/decisions%2FREADME.md",
+   "type": "contains",
+   "at": "symphysis-core/decisions/README.md:2"
+  },
+  {
+   "from": "module:symphysis-core/decisions",
+   "to": "module:symphysis-core/roots",
+   "type": "depends",
+   "at": "symphysis-core/decisions/README.md:2"
+  },
+  {
+   "from": "module:symphysis-core/installer",
+   "to": "file:symphysis-core/installer%2FREADME.md",
+   "type": "contains",
+   "at": "symphysis-core/installer/README.md:2"
+  },
+  {
+   "from": "module:symphysis-core/openspec-run",
+   "to": "file:symphysis-core/openspec-run%2FREADME.md",
+   "type": "contains",
+   "at": "symphysis-core/openspec-run/README.md:2"
+  },
+  {
+   "from": "module:symphysis-core/schema",
+   "to": "file:symphysis-core/openspec%2Fschemas%2Fsymphysis%2FREADME.md",
+   "type": "contains",
+   "at": "symphysis-core/openspec/schemas/symphysis/README.md:2"
+  },
+  {
+   "from": "module:symphysis-core/probes",
+   "to": "file:symphysis-core/probes%2FREADME.md",
+   "type": "contains",
+   "at": "symphysis-core/probes/README.md:2"
+  },
+  {
+   "from": "module:symphysis-core/research",
+   "to": "file:symphysis-core/research%2FREADME.md",
+   "type": "contains",
+   "at": "symphysis-core/research/README.md:2"
+  },
+  {
+   "from": "module:symphysis-core/roots",
+   "to": "file:symphysis-core/roots%2FREADME.md",
+   "type": "contains",
+   "at": "symphysis-core/roots/README.md:2"
+  },
+  {
+   "from": "module:symphysis-core/roots",
+   "to": "module:symphysis-core/runtime",
+   "type": "depends",
+   "at": "symphysis-core/roots/README.md:2"
+  },
+  {
+   "from": "module:symphysis-core/runtime",
+   "to": "file:symphysis-core/runtime%2FREADME.md",
+   "type": "contains",
+   "at": "symphysis-core/runtime/README.md:2"
+  },
+  {
+   "from": "module:symphysis-core/settings",
+   "to": "file:symphysis-core/settings%2FREADME.md",
+   "type": "contains",
+   "at": "symphysis-core/settings/README.md:2"
+  },
+  {
+   "from": "module:symphysis-core/settings",
+   "to": "module:symphysis-core/roots",
+   "type": "depends",
+   "at": "symphysis-core/settings/README.md:2"
+  },
+  {
+   "from": "module:symphysis-core/settings",
+   "to": "module:symphysis-core/runtime",
+   "type": "depends",
+   "at": "symphysis-core/settings/README.md:2"
+  },
+  {
+   "from": "module:symphysis-core/skill-shared",
+   "to": "file:symphysis-core/skill-shared%2FREADME.md",
+   "type": "contains",
+   "at": "symphysis-core/skill-shared/README.md:2"
+  },
+  {
+   "from": "module:symphysis-core/step-help",
+   "to": "file:symphysis-core/step-help%2FREADME.md",
+   "type": "contains",
+   "at": "symphysis-core/step-help/README.md:2"
+  },
+  {
+   "from": "module:symphysis-core/step-help",
+   "to": "module:symphysis-core/attack",
+   "type": "depends",
+   "at": "symphysis-core/step-help/README.md:2"
+  },
+  {
+   "from": "module:symphysis-core/step-help",
+   "to": "module:symphysis-core/decisions",
+   "type": "depends",
+   "at": "symphysis-core/step-help/README.md:2"
+  },
+  {
+   "from": "module:symphysis-core/step-help",
+   "to": "module:symphysis-core/openspec-run",
+   "type": "depends",
+   "at": "symphysis-core/step-help/README.md:2"
+  },
+  {
+   "from": "module:symphysis-core/step-help",
+   "to": "module:symphysis-core/runtime",
+   "type": "depends",
+   "at": "symphysis-core/step-help/README.md:2"
+  },
+  {
+   "from": "module:symphysis-core/trace",
+   "to": "file:symphysis-core/trace%2FREADME.md",
+   "type": "contains",
+   "at": "symphysis-core/trace/README.md:2"
+  },
+  {
+   "from": "module:symphysis-core/trace",
+   "to": "module:symphysis-core/roots",
+   "type": "depends",
+   "at": "symphysis-core/trace/README.md:2"
+  },
+  {
+   "from": "module:symphysis-core/trace",
+   "to": "module:symphysis-core/decisions",
+   "type": "depends",
+   "at": "symphysis-core/trace/README.md:2"
+  },
+  {
+   "from": "module:symphysis-core/trace",
+   "to": "module:symphysis-core/openspec-run",
+   "type": "depends",
+   "at": "symphysis-core/trace/README.md:2"
+  },
+  {
+   "from": "module:symphysis-core/trace",
+   "to": "module:symphysis-core/runtime",
+   "type": "depends",
+   "at": "symphysis-core/trace/README.md:2"
+  },
+  {
+   "from": "module:symphysis-core/viewer",
+   "to": "file:symphysis-core/viewer%2FREADME.md",
+   "type": "contains",
+   "at": "symphysis-core/viewer/README.md:2"
+  },
+  {
+   "from": "module:symphysis-core/viewer",
+   "to": "module:symphysis-core/decisions",
+   "type": "depends",
+   "at": "symphysis-core/viewer/README.md:2"
+  },
+  {
+   "from": "module:symphysis-core/viewer",
+   "to": "module:symphysis-core/runtime",
+   "type": "depends",
+   "at": "symphysis-core/viewer/README.md:2"
+  }
+ ],
+ "candidates": [
+  {
+   "a": "req:artifact-attack/Scenario-run обосновывает сохранение прежнего исхода",
+   "b": "req:artifact-attack/Scenario-run устанавливает область влияния изменения",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-06"
+   ]
+  },
+  {
+   "a": "req:artifact-attack/Scenario-run обосновывает сохранение прежнего исхода",
+   "b": "req:trace-graph/Граф связывает задачу со сценарием вне дельты",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-06"
+   ]
+  },
+  {
+   "a": "req:artifact-attack/Scenario-run устанавливает область влияния изменения",
+   "b": "req:artifact-attack/Изменение мастер-опоры обесценивает вердикт",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-10"
+   ]
+  },
+  {
+   "a": "req:artifact-attack/Scenario-run устанавливает область влияния изменения",
+   "b": "req:stale-verdict-scope/Состав устаревания называет изменившуюся мастер-опору",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-10"
+   ]
+  },
+  {
+   "a": "req:artifact-attack/Scenario-run устанавливает область влияния изменения",
+   "b": "req:trace-graph/Граф связывает задачу со сценарием вне дельты",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-06"
+   ]
+  },
+  {
+   "a": "req:artifact-attack/Scenario-run устанавливает область влияния изменения",
+   "b": "req:verdict-readiness/Изменившаяся мастер-опора видна в состоянии вердикта",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-10"
+   ]
+  },
+  {
+   "a": "req:artifact-attack/Адресная проверка обосновывает допуск к реализации",
+   "b": "req:trace-graph/Граф связывает задачу со сценарием вне дельты",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-08"
+   ]
+  },
+  {
+   "a": "req:artifact-attack/Изменение мастер-опоры обесценивает вердикт",
+   "b": "req:stale-verdict-scope/Состав устаревания называет изменившуюся мастер-опору",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-10",
+    "rec:F-12",
+    "rec:F-15"
+   ]
+  },
+  {
+   "a": "req:artifact-attack/Изменение мастер-опоры обесценивает вердикт",
+   "b": "req:verdict-readiness/Изменившаяся мастер-опора видна в состоянии вердикта",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-10",
+    "rec:F-12",
+    "rec:F-15"
+   ]
+  },
+  {
+   "a": "req:stale-verdict-scope/Состав устаревания называет изменившуюся мастер-опору",
+   "b": "req:verdict-readiness/Изменившаяся мастер-опора видна в состоянии вердикта",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-10",
+    "rec:F-12",
+    "rec:F-15"
+   ]
+  }
+ ],
+ "structure": {
+  "components": [
+   {
+    "name": "scenario-run",
+    "repos": [
+     "symphysis-core"
+    ]
+   }
+  ],
+  "repos": [
+   {
+    "repo": "symphysis-core",
+    "root": "",
+    "survey": "found",
+    "exclude": [
+     "upstream"
+    ],
+    "actual": "found",
+    "availability": "available"
+   }
+  ],
+  "signals": [],
+  "sources": [
+   {
+    "path": ".openspec.yaml",
+    "sha256": "7cd2ee0ce3568e8e82cefc6467be0b697cd81ad4e2b94f3cb99f335405b0b68d"
+   },
+   {
+    "repo": "symphysis-core",
+    "path": "README.md",
+    "sha256": "37aa30c881a74af7b3d65a239422b46a02200f1cd44c7d7da504bedf69448f94"
+   },
+   {
+    "repo": "symphysis-core",
+    "path": "viewer/README.md",
+    "sha256": "38aa0e3d1b818dbdbf21d4d9855f1913b39a726034e9e06ab19edb1b663c52bf"
+   },
+   {
+    "repo": "symphysis-core",
+    "path": "trace/README.md",
+    "sha256": "ef119e8fa7bfda05cd9ba568df458d01e7d5f6af8222c043e7f569eaf90d9e57"
+   },
+   {
+    "repo": "symphysis-core",
+    "path": "step-help/README.md",
+    "sha256": "e5886c77389f3d1d5065915f17418c7655b967d5ca465a62b9f1e870ffc02a6c"
+   },
+   {
+    "repo": "symphysis-core",
+    "path": "skill-shared/README.md",
+    "sha256": "730a973c7ed7fb459145dfe110f72f76496a0dc11797d0efed8c26d6f7b80dd5"
+   },
+   {
+    "repo": "symphysis-core",
+    "path": "settings/README.md",
+    "sha256": "6d94724f636b7989595dca507b50238e0767f8220897c91a37c299d25922333c"
+   },
+   {
+    "repo": "symphysis-core",
+    "path": "runtime/README.md",
+    "sha256": "1fff41134fd43ae0832321d68ba798b6185b42b916e5633dbba90f376cf3ac56"
+   },
+   {
+    "repo": "symphysis-core",
+    "path": "roots/README.md",
+    "sha256": "f59f9b0a123ebbe131698a33a6f87a02f9a8ebd016c157cd2ecf69dd34c6a9f9"
+   },
+   {
+    "repo": "symphysis-core",
+    "path": "research/README.md",
+    "sha256": "c1a43ad8afab67b4e2ae34dc71928beb954c67a274738441b38800dfe0ee8d59"
+   },
+   {
+    "repo": "symphysis-core",
+    "path": "probes/README.md",
+    "sha256": "2e7d1f495dd6fecca9c2c361e9a16d47deca06849accbb258a2517690c96dbc5"
+   },
+   {
+    "repo": "symphysis-core",
+    "path": "openspec-run/README.md",
+    "sha256": "1e520a016b28114eb529342e5a50afd63972bc3b67de30b5d7c86a5ee049c30b"
+   },
+   {
+    "repo": "symphysis-core",
+    "path": "openspec/schemas/symphysis/README.md",
+    "sha256": "597917bf019f497e87a40732975b53556f6dbb158be920a28c38fdda6e9e00ef"
+   },
+   {
+    "repo": "symphysis-core",
+    "path": "installer/README.md",
+    "sha256": "8916058a9db1122525baf4de3254e03769ec7d64ebb91204226f55d1e81d9a69"
+   },
+   {
+    "repo": "symphysis-core",
+    "path": "docs/guide/example/README.md",
+    "sha256": "afa77065ae43a7d9dc2f02ccec8cf5a432fb09f59ab4cd0a73c5026627f87482"
+   },
+   {
+    "repo": "symphysis-core",
+    "path": "decisions/README.md",
+    "sha256": "5d38b2b315cbd7d85c523ceb46a97858eae7bc7cd69867c64bacd1154f1da0a4"
+   },
+   {
+    "repo": "symphysis-core",
+    "path": "consequences/README.md",
+    "sha256": "758eaa323ca684c072b407f99e7c405fcfa3aa5553cf339366c9ad2d0c3cf4ec"
+   },
+   {
+    "repo": "symphysis-core",
+    "path": "cli/README.md",
+    "sha256": "79562fd6d906c2b3c62ef0a3e2cfb951eeae65247d44a7b46fdcc73301aff89f"
+   },
+   {
+    "repo": "symphysis-core",
+    "path": "attack/README.md",
+    "sha256": "049b515b3874460451246030d622531117b76f9ce0bfa4d1b4f079276e71cff2"
+   },
+   {
+    "repo": "symphysis-core",
+    "path": "anchors/README.md",
+    "sha256": "94c1188db73732137ff9b0ede287811c37a908c88080cd9599846a020ad1672e"
+   }
+  ],
+  "modules": [
+   {
+    "name": "anchors",
+    "kind": "доменный",
+    "dependencies": [
+     {
+      "repo": "symphysis-core",
+      "module": "openspec-run"
+     },
+     {
+      "repo": "symphysis-core",
+      "module": "runtime"
+     },
+     {
+      "repo": "symphysis-core",
+      "module": "trace"
+     }
+    ],
+    "repo": "symphysis-core",
+    "path": "anchors",
+    "source": "anchors/README.md",
+    "line": 2
+   },
+   {
+    "name": "attack",
+    "kind": "доменный",
+    "dependencies": [
+     {
+      "repo": "symphysis-core",
+      "module": "decisions"
+     }
+    ],
+    "repo": "symphysis-core",
+    "path": "attack",
+    "source": "attack/README.md",
+    "line": 2
+   },
+   {
+    "name": "cli",
+    "kind": "технический",
+    "dependencies": [
+     {
+      "repo": "symphysis-core",
+      "module": "attack"
+     },
+     {
+      "repo": "symphysis-core",
+      "module": "consequences"
+     },
+     {
+      "repo": "symphysis-core",
+      "module": "decisions"
+     },
+     {
+      "repo": "symphysis-core",
+      "module": "roots"
+     },
+     {
+      "repo": "symphysis-core",
+      "module": "runtime"
+     },
+     {
+      "repo": "symphysis-core",
+      "module": "step-help"
+     },
+     {
+      "repo": "symphysis-core",
+      "module": "viewer"
+     }
+    ],
+    "repo": "symphysis-core",
+    "path": "cli",
+    "source": "cli/README.md",
+    "line": 2
+   },
+   {
+    "name": "consequences",
+    "kind": "доменный",
+    "dependencies": [
+     {
+      "repo": "symphysis-core",
+      "module": "roots"
+     }
+    ],
+    "repo": "symphysis-core",
+    "path": "consequences",
+    "source": "consequences/README.md",
+    "line": 2
+   },
+   {
+    "name": "decisions",
+    "kind": "доменный",
+    "dependencies": [
+     {
+      "repo": "symphysis-core",
+      "module": "roots"
+     }
+    ],
+    "repo": "symphysis-core",
+    "path": "decisions",
+    "source": "decisions/README.md",
+    "line": 2
+   },
+   {
+    "name": "installer",
+    "kind": "технический",
+    "dependencies": [],
+    "repo": "symphysis-core",
+    "path": "installer",
+    "source": "installer/README.md",
+    "line": 2
+   },
+   {
+    "name": "openspec-run",
+    "kind": "технический",
+    "dependencies": [],
+    "repo": "symphysis-core",
+    "path": "openspec-run",
+    "source": "openspec-run/README.md",
+    "line": 2
+   },
+   {
+    "name": "schema",
+    "kind": "доменный",
+    "dependencies": [],
+    "repo": "symphysis-core",
+    "path": "openspec/schemas/symphysis",
+    "source": "openspec/schemas/symphysis/README.md",
+    "line": 2
+   },
+   {
+    "name": "probes",
+    "kind": "доменный",
+    "dependencies": [],
+    "repo": "symphysis-core",
+    "path": "probes",
+    "source": "probes/README.md",
+    "line": 2
+   },
+   {
+    "name": "research",
+    "kind": "доменный",
+    "dependencies": [],
+    "repo": "symphysis-core",
+    "path": "research",
+    "source": "research/README.md",
+    "line": 2
+   },
+   {
+    "name": "roots",
+    "kind": "технический",
+    "dependencies": [
+     {
+      "repo": "symphysis-core",
+      "module": "runtime"
+     }
+    ],
+    "repo": "symphysis-core",
+    "path": "roots",
+    "source": "roots/README.md",
+    "line": 2
+   },
+   {
+    "name": "runtime",
+    "kind": "технический",
+    "dependencies": [],
+    "repo": "symphysis-core",
+    "path": "runtime",
+    "source": "runtime/README.md",
+    "line": 2
+   },
+   {
+    "name": "settings",
+    "kind": "технический",
+    "dependencies": [
+     {
+      "repo": "symphysis-core",
+      "module": "roots"
+     },
+     {
+      "repo": "symphysis-core",
+      "module": "runtime"
+     }
+    ],
+    "repo": "symphysis-core",
+    "path": "settings",
+    "source": "settings/README.md",
+    "line": 2
+   },
+   {
+    "name": "skill-shared",
+    "kind": "технический",
+    "dependencies": [],
+    "repo": "symphysis-core",
+    "path": "skill-shared",
+    "source": "skill-shared/README.md",
+    "line": 2
+   },
+   {
+    "name": "step-help",
+    "kind": "доменный",
+    "dependencies": [
+     {
+      "repo": "symphysis-core",
+      "module": "attack"
+     },
+     {
+      "repo": "symphysis-core",
+      "module": "decisions"
+     },
+     {
+      "repo": "symphysis-core",
+      "module": "openspec-run"
+     },
+     {
+      "repo": "symphysis-core",
+      "module": "runtime"
+     }
+    ],
+    "repo": "symphysis-core",
+    "path": "step-help",
+    "source": "step-help/README.md",
+    "line": 2
+   },
+   {
+    "name": "trace",
+    "kind": "доменный",
+    "dependencies": [
+     {
+      "repo": "symphysis-core",
+      "module": "roots"
+     },
+     {
+      "repo": "symphysis-core",
+      "module": "decisions"
+     },
+     {
+      "repo": "symphysis-core",
+      "module": "openspec-run"
+     },
+     {
+      "repo": "symphysis-core",
+      "module": "runtime"
+     }
+    ],
+    "repo": "symphysis-core",
+    "path": "trace",
+    "source": "trace/README.md",
+    "line": 2
+   },
+   {
+    "name": "viewer",
+    "kind": "доменный",
+    "dependencies": [
+     {
+      "repo": "symphysis-core",
+      "module": "decisions"
+     },
+     {
+      "repo": "symphysis-core",
+      "module": "runtime"
+     }
+    ],
+    "repo": "symphysis-core",
+    "path": "viewer",
+    "source": "viewer/README.md",
+    "line": 2
+   }
+  ],
+  "inventory": [
+   {
+    "repo": "symphysis-core",
+    "path": "README.md",
+    "sha256": "37aa30c881a74af7b3d65a239422b46a02200f1cd44c7d7da504bedf69448f94"
+   },
+   {
+    "repo": "symphysis-core",
+    "path": "anchors/README.md",
+    "sha256": "94c1188db73732137ff9b0ede287811c37a908c88080cd9599846a020ad1672e"
+   },
+   {
+    "repo": "symphysis-core",
+    "path": "attack/README.md",
+    "sha256": "049b515b3874460451246030d622531117b76f9ce0bfa4d1b4f079276e71cff2"
+   },
+   {
+    "repo": "symphysis-core",
+    "path": "cli/README.md",
+    "sha256": "79562fd6d906c2b3c62ef0a3e2cfb951eeae65247d44a7b46fdcc73301aff89f"
+   },
+   {
+    "repo": "symphysis-core",
+    "path": "consequences/README.md",
+    "sha256": "758eaa323ca684c072b407f99e7c405fcfa3aa5553cf339366c9ad2d0c3cf4ec"
+   },
+   {
+    "repo": "symphysis-core",
+    "path": "decisions/README.md",
+    "sha256": "5d38b2b315cbd7d85c523ceb46a97858eae7bc7cd69867c64bacd1154f1da0a4"
+   },
+   {
+    "repo": "symphysis-core",
+    "path": "docs/guide/example/README.md",
+    "sha256": "afa77065ae43a7d9dc2f02ccec8cf5a432fb09f59ab4cd0a73c5026627f87482"
+   },
+   {
+    "repo": "symphysis-core",
+    "path": "installer/README.md",
+    "sha256": "8916058a9db1122525baf4de3254e03769ec7d64ebb91204226f55d1e81d9a69"
+   },
+   {
+    "repo": "symphysis-core",
+    "path": "openspec-run/README.md",
+    "sha256": "1e520a016b28114eb529342e5a50afd63972bc3b67de30b5d7c86a5ee049c30b"
+   },
+   {
+    "repo": "symphysis-core",
+    "path": "openspec/schemas/symphysis/README.md",
+    "sha256": "597917bf019f497e87a40732975b53556f6dbb158be920a28c38fdda6e9e00ef"
+   },
+   {
+    "repo": "symphysis-core",
+    "path": "probes/README.md",
+    "sha256": "2e7d1f495dd6fecca9c2c361e9a16d47deca06849accbb258a2517690c96dbc5"
+   },
+   {
+    "repo": "symphysis-core",
+    "path": "research/README.md",
+    "sha256": "c1a43ad8afab67b4e2ae34dc71928beb954c67a274738441b38800dfe0ee8d59"
+   },
+   {
+    "repo": "symphysis-core",
+    "path": "roots/README.md",
+    "sha256": "f59f9b0a123ebbe131698a33a6f87a02f9a8ebd016c157cd2ecf69dd34c6a9f9"
+   },
+   {
+    "repo": "symphysis-core",
+    "path": "runtime/README.md",
+    "sha256": "1fff41134fd43ae0832321d68ba798b6185b42b916e5633dbba90f376cf3ac56"
+   },
+   {
+    "repo": "symphysis-core",
+    "path": "settings/README.md",
+    "sha256": "6d94724f636b7989595dca507b50238e0767f8220897c91a37c299d25922333c"
+   },
+   {
+    "repo": "symphysis-core",
+    "path": "skill-shared/README.md",
+    "sha256": "730a973c7ed7fb459145dfe110f72f76496a0dc11797d0efed8c26d6f7b80dd5"
+   },
+   {
+    "repo": "symphysis-core",
+    "path": "step-help/README.md",
+    "sha256": "e5886c77389f3d1d5065915f17418c7655b967d5ca465a62b9f1e870ffc02a6c"
+   },
+   {
+    "repo": "symphysis-core",
+    "path": "trace/README.md",
+    "sha256": "ef119e8fa7bfda05cd9ba568df458d01e7d5f6af8222c043e7f569eaf90d9e57"
+   },
+   {
+    "repo": "symphysis-core",
+    "path": "viewer/README.md",
+    "sha256": "38aa0e3d1b818dbdbf21d4d9855f1913b39a726034e9e06ab19edb1b663c52bf"
+   }
+  ]
+ },
+ "roots": [
+  {
+   "prefix": "",
+   "commit": "8455a0f1eac701d5df8777b15e83131c861a3fdd"
+  },
+  {
+   "prefix": "docs/",
+   "commit": ""
+  },
+  {
+   "prefix": "tools/",
+   "commit": ""
+  },
+  {
+   "prefix": "upstream/",
+   "commit": ""
+  },
+  {
+   "prefix": "CLAUDE.md",
+   "commit": ""
+  },
+  {
+   "prefix": "store/",
+   "commit": "531a2e84807eb4f3abe8fa3dacc3a53c6de95660"
+  },
+  {
+   "prefix": "playground/",
+   "commit": ""
+  },
+  {
+   "prefix": "md4h/",
+   "commit": ""
+  }
+ ],
+ "base": {
+  "artifact-attack": {
+   "Строка атаки валидна только с линзой, тяжестью, инвариантом и опорой": {
+    "numbers": [
+     "F-131.A",
+     "F-25.B",
+     "F-76"
+    ],
+    "scenarios": {
+     "Одна строка предупреждения": "b00c2dbea83ed51d9ad7fb5717ae9889340e7e984c9eefa026230838b90ff2e4",
+     "Невыводимое": "ce43d823be911f51c8785893958736df5c36dbb90087fa65ec534a9c040f9caf",
+     "Сценарий не следует из механизма": "34697692f7a672b720afbca73e502cb5339c26e02a8020be88eba10715b5bf7e",
+     "Гигиена журнала не в атаке": "b15f99dec4cb2a78347c0332460793dcc5bf9de78b501e8594984b1715c28223",
+     "Черта в ячейке": "54fdf0db7da848c49cc1ed9cfd886ab3fc1a950cb34cd36d04e3d77d82d29038",
+     "Design молчит о механизме": "5d84043a7c9d95c948894b8f2021e2406a458e13a665f80cc3f711ab494b2b07",
+     "Два механизма на один сценарий": "1bf01e3dd56bef7fbfd2c3b29dd3d810a5acf9a4fc4624a9e61e9d612cf086fe",
+     "Обратная косая перед чертой в цитате кода": "b56500ac103e0ec29907394fc82ba7668da0ec936d224514eed4ef1ef75f948c"
+    },
+    "text": "e5cc536beeb6b9002fa11a36426813fe81c772fd9590866155a326609524c2e9",
+    "traces": []
+   }
+  }
+ }
+}

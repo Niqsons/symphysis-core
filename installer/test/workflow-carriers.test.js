@@ -57,6 +57,7 @@ test("managed sync tools use the selected dispatcher and store roots instead of 
     '   - Set the Python command\'s working directory to `planningHome.root`. Python tools do not accept `--store`.',
     '   - If `<toolsHome>/journal-roots.json` exists, you MUST run the complete command `python "<toolsHome>/trace_graph.py" freeze "<name>" --roots "<toolsHome>/journal-roots.json"`.',
     '   - Otherwise, run `python "<toolsHome>/trace_graph.py" freeze "<name>"` from the same planning root.',
+    '   - After a confirmed first sync, run `python "<toolsHome>/trace_graph.py" freeze "<name>" --confirmed-pre-sync --capability "alpha"` before writing.',
     '   Run `python "<toolsHome>/anchor_refs.py" --help`, then `python "<toolsHome>/anchor_refs.py" "<name>" --capability "alpha"`.',
     '   Verify `python "<toolsHome>/sync_check.py" "<name>" --json --capability "alpha"`.'].join("\n") + "\n";
   const guarded = guardWorkflowBody(body, guide);
@@ -66,6 +67,7 @@ test("managed sync tools use the selected dispatcher and store roots instead of 
   assert.match(guarded, /runtime\.toolsRoot/);
   const prefix = 'symphysis --project "<source>" [--store "<id>"] ';
   assert.ok(guarded.includes(prefix + 'trace freeze "<name>"'));
+  assert.ok(guarded.includes(prefix + 'trace freeze "<name>" --confirmed-pre-sync --capability "alpha"'));
   assert.ok(guarded.includes(prefix + 'anchors --help'));
   assert.ok(guarded.includes(prefix + 'anchors "<name>" --capability "alpha"'));
   assert.ok(guarded.includes(prefix + 'sync-check "<name>" --json --capability "alpha"'));

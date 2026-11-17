@@ -815,6 +815,36 @@ def test_stale_scope_has_no_project_directory(tmp_path):
     assert page(data, "attack-decisions")["stale_scope"] == ["после вердикта добавлена 1 запись: F-02"]
 
 
+def test_check_and_help_entry_points_use_master_in_the_selected_planning_home(tmp_path):
+    """The fork selects another planning home; source master bytes cannot hide a stale support."""
+    fixture = ROOT / "attack/tests/fixtures/master-supports"
+    selected = tmp_path / "selected-store"
+    shutil.copytree(fixture, selected)
+    change = selected / "openspec/changes/sample"
+    (change / "decisions.json").write_text(json.dumps(journal_of()), encoding="utf-8")
+    source = make_project(tmp_path / "source", change="sample")
+    source_master = source / "openspec/specs/shared-input"
+    source_master.mkdir(parents=True)
+    shutil.copy2(selected / "openspec/specs/shared-input/spec.md", source_master / "spec.md")
+    master = selected / "openspec/specs/shared-input/spec.md"
+    master.write_text(master.read_text(encoding="utf-8").replace("the original value", "the altered value"),
+                      encoding="utf-8")
+    status = fake_status(selected, change="sample", done=(*PLANNED, "attack-artifacts"),
+                         files={"attack-artifacts": ["attack/artifacts.md"]},
+                         verdicts={"attack-artifacts": "stale"})
+    install_fork_shim(tmp_path / "bin", status=fork_reply(status), apply=fork_reply(fake_apply()))
+    code, data, _ = run_help(source, "--change", "sample", env=fork_env(tmp_path / "bin"))
+    checked = subprocess.run([sys.executable, "-X", "utf8", str(ROOT / "cli/journal.py"),
+                              "check", str(change / "decisions.json")], cwd=source,
+                             capture_output=True, text=True, encoding="utf-8")
+    assert code == checked.returncode == 0, checked.stderr
+    prefix = "[..] атака артефактов: "
+    check_lines = [line.removeprefix(prefix) for line in checked.stdout.splitlines() if line.startswith(prefix)]
+    assert page(data, "attack-artifacts")["stale_scope"] == check_lines
+    assert len(check_lines) == 1 and "openspec/specs/shared-input/spec.md" in check_lines[0]
+    assert str(tmp_path) not in check_lines[0]
+
+
 def test_project_tree_stays_the_same_with_a_stale_verdict(tmp_path):
     """Сценарий «Дерево проекта не меняется» при файле атаки и устаревшем вердикте: справка только читает."""
     project = attack_files(tmp_path, ["F-01"], ["F-01", "F-02"])
@@ -993,7 +1023,7 @@ def copy_of_tools(directory: Path) -> Path:
     directory.mkdir()
     for file in core_files():
         if file.name in ("step_help.py", "openspec_run.py", "runtime_context.py", "journal_render.py", "journal_model.py", "journal_apply.py", "roots.py",
-                         "attack_scope.py", "attack_table.py"):
+                         "attack_scope.py", "attack_table.py", "attack_master.py"):
             shutil.copy(file, directory)
     return directory / "step_help.py"
 
@@ -1336,7 +1366,7 @@ def install_layout(tmp_path, nested=False):
     tools = install / ".symphysis" / "tools"
     tools.mkdir(parents=True)
     for file in core_files():
-        if re.match(r"journal.*\.(py|json)|roots\.py|runtime_context\.py|viewer_render\.py|attack_table\.py|attack_scope\.py|step_help\.py|openspec_run\.py|symphysis_config\.py", file.name):
+        if re.match(r"journal.*\.(py|json)|roots\.py|runtime_context\.py|viewer_render\.py|attack_table\.py|attack_scope\.py|attack_master\.py|step_help\.py|openspec_run\.py|symphysis_config\.py", file.name):
             shutil.copy(file, tools / file.name)   # схема журнала — рядом с кодом (F-41 A)
     (tools / "journal-roots.json").write_text('{"": "<root>/.."}\n', encoding="utf-8")
     (install / "src").mkdir()

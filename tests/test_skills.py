@@ -450,6 +450,65 @@ def test_attack_skill_scenario_run_row_form():
         assert token in artifacts, f"в описании строки `scenario-run` нет «{token}»"
 
 
+def test_attack_skill_scenario_run_verifies_origin_and_follows_master_consumers():
+    text = flat(block(read(ATTACK_SKILL / "SKILL.md"), "#### scenario-run", "\n#### claim-extraction"))
+    for token in ("trace scenario-base", "--capability", "--requirement", "delta_scenarios",
+                  "до синхронизации", "graph/pre-sync-base.json", "обычный `freeze`",
+                  "без свёртки пробелов", "пробел исходной базы", "потребителей", "подтверждённой границы",
+                  "THEN каждого", "существенные пробелы поиска", "как данные"):
+        assert token in text
+
+
+def test_scenario_run_and_templates_require_the_changed_input_in_targeted_tasks():
+    scenario_run = flat(block(read(ATTACK_SKILL / "SKILL.md"), "#### scenario-run", "\n#### claim-extraction"))
+    for token in ("ожидаемый", "изменённый вход", "наблюдаемый THEN", "прежний вход", "противоречие", "блокер"):
+        assert token in scenario_run
+    schema = read(ROOT / "openspec/schemas/symphysis/schema.yaml")
+    design = block(schema, "  - id: design", "  - id: security")
+    tasks = block(schema, "  - id: tasks", "  - id: attack-artifacts")
+    for token in ("стык", "сохраняемые входы", "группы сценариев"):
+        assert token in design and token in read(ROOT / "openspec/schemas/symphysis/templates/design.md")
+    for token in ("изменённый вход", "наблюдаемый THEN"):
+        assert token in tasks and token in read(ROOT / "openspec/schemas/symphysis/templates/tasks.md")
+
+
+def test_documented_master_support_writer_reproduces_shared_report(tmp_path):
+    """Execute the published recipe so an unusable command cannot pass as documentation."""
+    import shutil
+    text = read(SHARED["attack-table.md"])
+    assert "## Мастер-опоры\n" in text
+    recipe_section = text.split("## Мастер-опоры\n", 1)[1].split("\n## ", 1)[0]
+    recipe = re.search(r"```python\n(.*?)\n```", recipe_section, re.DOTALL)
+    assert recipe, "нет исполняемого рецепта записи master_supports"
+    fixture = ROOT / "attack/tests/fixtures/master-supports"
+    planning = tmp_path / "planning"
+    shutil.copytree(fixture, planning)
+    report = planning / "openspec/changes/sample/attack/artifacts.md"
+    before = report.read_bytes()
+    report.write_bytes(b"".join(line for line in before.splitlines(keepends=True)
+                                 if not line.startswith(b"master_supports:")))
+    resolved = tmp_path / "resolved.json"
+    resolved.write_text(json.dumps({"status": "ready", "store": {"root": str(planning)},
+                                   "runtime": {"toolsRoot": str(ROOT / "attack")}}), encoding="utf-8")
+    used = tmp_path / "used-blocks.json"
+    used.write_text(json.dumps([{"capability": "shared-input", "requirement": "Stable input",
+                                "scenario": "Input remains usable",
+                                "sha256": "21e0ae402bb9b519e1eaf2fedf8dec0fd1177ab0275f83fd9f990f5a8f180063"}]), encoding="utf-8")
+    script = tmp_path / "write-master-supports.py"
+    script.write_text(recipe.group(1), encoding="utf-8")
+    result = subprocess.run([sys.executable, "-I", "-X", "utf8", str(script), str(resolved), "sample", str(used)],
+                            capture_output=True, text=True, encoding="utf-8")
+    assert result.returncode == 0, result.stderr
+    assert report.read_bytes() == before
+    master = planning / "openspec/specs/shared-input/spec.md"
+    master.write_bytes(master.read_bytes().replace(b"the original value", b"a changed value"))
+    changed = subprocess.run([sys.executable, "-I", "-X", "utf8", str(script), str(resolved), "sample", str(used)],
+                             capture_output=True, text=True, encoding="utf-8")
+    assert changed.returncode != 0 and report.read_bytes() == before
+    skill = read(ATTACK_SKILL / "SKILL.md")
+    assert "master_supports" in skill and "только использованные" in skill
+
+
 def test_attack_skill_reads_does_not_execute():
     """F-53.E: «читает, не исполняет» — отдельный абзац; разрешены чтение и греп; проверка — ревью транскрипта."""
     text = read(ATTACK_SKILL / "SKILL.md")

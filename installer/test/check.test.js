@@ -179,7 +179,7 @@ test("общие файлы docs: нет terms.md или уведомлений 
 });
 
 test("инструменты: каждый модуль из состава проверяется, включая runtime и проверщик sync", () => {
-  const modules = ["journal_apply.py", "journal_cli.py", "journal_model.py", "journal_render.py", "roots.py", "runtime_context.py", "viewer_render.py", "attack_table.py", "attack_scope.py", "journal_sites.py", "journal_consequences.py", "symphysis_config.py"];
+  const modules = ["journal_apply.py", "journal_cli.py", "journal_model.py", "journal_render.py", "roots.py", "runtime_context.py", "viewer_render.py", "attack_table.py", "attack_scope.py", "attack_master.py", "journal_sites.py", "journal_consequences.py", "symphysis_config.py"];
   const p = installed();
   const t = targets(p).toolsDir;
   for (const m of modules) fs.rmSync(path.join(t, "tools", m));
