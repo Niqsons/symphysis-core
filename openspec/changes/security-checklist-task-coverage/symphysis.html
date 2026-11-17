@@ -238,7 +238,7 @@
 const JOURNAL = {
  "title": "Журнал решений: security-checklist-task-coverage",
  "source": "decisions.json",
- "sha256": "fa781ffef4cb8e0f3d0403b070de8f604291ed04ef896ec18371a3a8a9971c2e",
+ "sha256": "7d4d9a1f84956a3c3120ff6f4ef724d7884ab743810ead2792c05736028889c4",
  "stats": {
   "records": 8,
   "forks": 3,
@@ -807,6 +807,14 @@ const JOURNAL = {
   {
    "date": "2026-11-17",
    "text": "круг 1 закончен: решений 3, фактов 5, открытых развилок 0, парковок агенту 0, антиподов 0"
+  },
+  {
+   "date": "2026-11-17",
+   "text": "На вопрос «Начать новый круг?» владелец ответил: «Нет, переходим к следующему шагу»."
+  },
+  {
+   "date": "2026-11-17",
+   "text": "брейншторм закончен по решению человека"
   }
  ]
 };
@@ -820,7 +828,7 @@ const SCHEME = {
 };
 const HELP = {
  "contract": 6,
- "taken_at": "2026-11-17T22:09:49+03:00",
+ "taken_at": "2026-11-17T22:11:39+03:00",
  "versions": {
   "openspec": "1.16.1+symphysis.9",
   "symphysis": "0.1.0+5128d822"
@@ -828,10 +836,10 @@ const HELP = {
  "change": "security-checklist-task-coverage",
  "changes": null,
  "error": null,
- "current_step": "research",
- "current_text": "Следующий шаг по файлам — `research`, ход модели.",
+ "current_step": "proposal",
+ "current_text": "Следующий шаг по файлам — `proposal`, ход модели.",
  "turn": "model",
- "next_by_status": "research",
+ "next_by_status": "proposal",
  "forks": {
   "open": 0,
   "parked": 0
@@ -943,7 +951,7 @@ const HELP = {
   },
   {
    "id": "research",
-   "state": "ready",
+   "state": "done",
    "turn": "model",
    "optional": false,
    "blocks": [
@@ -954,11 +962,11 @@ const HELP = {
    "waits_for": [],
    "files": [
     {
-     "path": "openspec/changes/security-checklist-task-coverage/research/**/*.md",
-     "exists": false
+     "path": "openspec/changes/security-checklist-task-coverage/research/none.md",
+     "exists": true
     }
    ],
-   "file_note": null,
+   "file_note": "файл есть, содержание не проверялось",
    "texts": {
     "title": "Исследование и второй круг",
     "why": "Вопросы, припаркованные к агенту, получают ответ с цитатами из прочитанных файлов. Второй круг брейншторма закрывает по этим ответам записи журнала.",
@@ -986,14 +994,12 @@ const HELP = {
   },
   {
    "id": "attack-decisions",
-   "state": "blocked",
+   "state": "ready",
    "turn": "model",
    "optional": true,
    "blocks": [],
    "stops_apply": false,
-   "waits_for": [
-    "research"
-   ],
+   "waits_for": [],
    "files": [
     {
      "path": "openspec/changes/security-checklist-task-coverage/attack/decisions.md",
@@ -1023,7 +1029,7 @@ const HELP = {
   },
   {
    "id": "proposal",
-   "state": "blocked",
+   "state": "ready",
    "turn": "model",
    "optional": false,
    "blocks": [
@@ -1031,9 +1037,7 @@ const HELP = {
     "design"
    ],
    "stops_apply": false,
-   "waits_for": [
-    "research"
-   ],
+   "waits_for": [],
    "files": [
     {
      "path": "openspec/changes/security-checklist-task-coverage/proposal.md",
@@ -1372,6 +1376,8 @@ const HELP = {
   "intent.md": "openspec/changes/security-checklist-task-coverage/intent.md",
   "openspec/changes/security-checklist-task-coverage/decisions.json": "openspec/changes/security-checklist-task-coverage/decisions.json",
   "openspec/changes/security-checklist-task-coverage/intent.md": "openspec/changes/security-checklist-task-coverage/intent.md",
+  "openspec/changes/security-checklist-task-coverage/research/none.md": "openspec/changes/security-checklist-task-coverage/research/none.md",
+  "research/none.md": "openspec/changes/security-checklist-task-coverage/research/none.md",
   "scheme.md": "openspec/changes/security-checklist-task-coverage/scheme.md",
   "symphysis.html": "openspec/changes/security-checklist-task-coverage/symphysis.html",
   "symphysis.yaml": "symphysis.yaml"
@@ -1394,9 +1400,11 @@ const LINKS = {
   "openspec/changes/archive/2026-11-02-implementation-consequences/security.md": "../archive/2026-11-02-implementation-consequences/security.md",
   "openspec/changes/security-checklist-task-coverage/decisions.json": "decisions.json",
   "openspec/changes/security-checklist-task-coverage/intent.md": "intent.md",
+  "openspec/changes/security-checklist-task-coverage/research/none.md": "research/none.md",
   "openspec/schemas/symphysis/schema.yaml": "../../schemas/symphysis/schema.yaml",
   "openspec/schemas/symphysis/templates/security.md": "../../schemas/symphysis/templates/security.md",
   "openspec/schemas/symphysis/tests/test_schema.py": "../../schemas/symphysis/tests/test_schema.py",
+  "research/none.md": "research/none.md",
   "scheme.md": "scheme.md",
   "symphysis.html": "symphysis.html",
   "symphysis.yaml": "../../../symphysis.yaml",
