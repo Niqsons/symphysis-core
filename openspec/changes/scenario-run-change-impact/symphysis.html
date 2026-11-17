@@ -239,15 +239,15 @@ const JOURNAL = {
  "title": "Журнал решений: scenario-run-change-impact",
  "source": "decisions.json",
  "generated": "2026-11-17",
- "sha256": "99702315c7e3534c477556ac389107bef41f0493f7a329cb128cbd4c7e931f19",
+ "sha256": "15d27b2b064271f78caf16c2ae7891786c5ac13ec0eaf60852a0369014de751d",
  "stats": {
-  "records": 10,
-  "forks": 5,
+  "records": 13,
+  "forks": 8,
   "facts": 5,
   "decided": 5,
   "parked": 0,
-  "evidence_total": 39,
-  "evidence_found": 39
+  "evidence_total": 42,
+  "evidence_found": 42
  },
  "records": [
   {
@@ -933,6 +933,189 @@ const JOURNAL = {
    ],
    "comments": [],
    "finding": ""
+  },
+  {
+   "id": "F-11",
+   "question": "[ветка] Заморозка базы: первую заморозку сделали после sync и правки соседнего сценария, поэтому поздний снимок содержит уже перенесённый сценарий. Что атака считает исходной опорой?",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN после sync в дельте правят соседний сценарий и только затем создают первый снимок, совпадающий с уже перенесённым сценарием. WHEN атака определяет происхождение этого сценария. THEN поздний снимок не подтверждает перенос, атака называет пробел и оценивает существенные риски по условиям допуска. Цена — сценарий и фикстура порядка sync, правки и заморозки.",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — поздний снимок остаётся допустимым при структурной валидности. Отклонение оценивается человеком только при наличии внешних сведений об очередности.",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — контрольный проход с sync, последующей правкой соседнего сценария и поздней заморозкой проверяет, что сценарий не признан перенесённым только по этому снимку. Правило в спецификации не добавляется.",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — критерий пригодности после поздней заморозки остаётся открытым до выбора способа подтверждения порядка sync и freeze.",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Формально годный поздний снимок может скрыть изменение сценария, а отличие соседнего сценария выключает защиту по совпадению целого блока. Явный сценарий проверяет конкретный ложный допуск. Цена — фикстура порядка операций и её сопровождение."
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "trace/trace_graph.py",
+     "quote": "found.setdefault(folder.name, {}).setdefault(req.name, entry)",
+     "line": 2105,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "finding": ""
+  },
+  {
+   "id": "F-12",
+   "question": "[ветка] Расчёт свежести читает подтверждённо использованную мастер-опору, файл существует, но чтение завершается ошибкой. Как это должны отразить статус и состав устаревания?",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN отчёт с использованной мастер-опорой и прежними локальными целями, а чтение файла опоры завершается ошибкой. WHEN читатели проверяют свежесть. THEN OpenSpec показывает stale по действующему окну, журнал и справка называют нечитаемую опору, проверка завершается с диагностикой. Цена — сценарий и проверки отказа чтения в обоих контурах.",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — считать нечитаемый файл обычной ошибкой команды и полагаться на её явный отказ. Для временной недоступности оператор повторит команду после восстановления доступа.",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — проверка подставляет отказ чтения после успешной проверки существования и сравнивает stale и строки причины в статусе и в составе. Самостоятельного сценария в спецификации нет.",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — реакция на нечитаемую опору остаётся открытой до согласования представления внешней опоры и причин устаревания.",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Без общего исхода одно чтение может завершиться исключением, а другой читатель продолжить показывать прежний вердикт. Различимый случай удерживает допуск и объясняет причину. Цена — сценарий и фикстуры отказа чтения для форка и ядра."
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "attack/attack_scope.py",
+     "quote": "if sha256_file(full) == sha:",
+     "line": 125,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "finding": ""
+  },
+  {
+   "id": "F-13",
+   "question": "[ветка] Парсер отчёта узнаёт path во всём frontmatter. Если мастер-опора представлена отдельным списком с похожими полями, что проверять при чтении одного отчёта ядром и форком?",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN один отчёт с локальной целью и мастер-опорой, обе имеют собственные сведения для сверки. WHEN ядро и форк читают его. THEN каждый проверяет локальную цель в change, мастер-опору в мастере и оба называют одну изменившуюся опору. Цена — дополнительный сценарий и общая интеграционная фикстура.",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — достаточно выбранного в design способа раздельного представления. Нынешние проверки каждого читателя по отдельности допустимы, если их схемы явно не пересекаются.",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — один и тот же новый отчёт с локальными целями и мастер-опорой подать ядру и форку. При правке только опоры проверить stale и одну причину о мастере, при правке только локальной цели проверить причину о ней. Формат взять из design.",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — совместную проверку читателей назначить после выбора формата отчёта и только тогда решить, нужен ли общий тест.",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "C",
+    "why": "Граница целей и опор уже задана спецификациями, а точный риск возникает на уровне формата. Общая фикстура проверит чтение одного отчёта двумя парсерами и поймает расхождение, которое отдельные тесты не покажут."
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "attack/attack_table.py",
+     "quote": "if (m := RE_TARGET_PATH.match(line)):",
+     "line": 45,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "finding": ""
   }
  ],
  "notes": [
@@ -964,7 +1147,7 @@ const SCHEME = {
 };
 const HELP = {
  "contract": 6,
- "taken_at": "2026-11-17T17:05:59+03:00",
+ "taken_at": "2026-11-17T17:24:59+03:00",
  "versions": {
   "openspec": "1.16.1+symphysis.8",
   "symphysis": "0.1.0+f11b1d25"
@@ -972,12 +1155,12 @@ const HELP = {
  "change": "scenario-run-change-impact",
  "changes": null,
  "error": null,
- "current_step": "consequences",
- "current_text": "Следующий шаг по файлам — `consequences`, ход модели.",
- "turn": "model",
- "next_by_status": "consequences",
+ "current_step": "viewer",
+ "current_text": "Следующий шаг по файлам — `viewer`, ход человека: открытых развилок 3, решаются на странице журнала. После них по файлам идёт `design`.",
+ "turn": "human",
+ "next_by_status": "design",
  "forks": {
-  "open": 0,
+  "open": 3,
   "parked": 0
  },
  "tasks": {
@@ -1057,7 +1240,7 @@ const HELP = {
   },
   {
    "id": "viewer",
-   "state": "idle",
+   "state": "ready",
    "turn": "human",
    "optional": false,
    "blocks": [],
@@ -1254,7 +1437,7 @@ const HELP = {
   },
   {
    "id": "consequences",
-   "state": "ready",
+   "state": "done",
    "turn": "model",
    "optional": false,
    "blocks": [
@@ -1265,10 +1448,10 @@ const HELP = {
    "files": [
     {
      "path": "openspec/changes/scenario-run-change-impact/consequences.md",
-     "exists": false
+     "exists": true
     }
    ],
-   "file_note": null,
+   "file_note": "файл есть, содержание не проверялось",
    "texts": {
     "title": "Опись последствий",
     "why": "Что делает код, на который опирается изменение, когда что-то идёт не так, и есть ли на это сценарий в спецификациях. Здесь ветки отказа и допущения конструкции доходят до человека раньше, чем появится дизайн.",
@@ -1291,7 +1474,7 @@ const HELP = {
   },
   {
    "id": "design",
-   "state": "blocked",
+   "state": "ready",
    "turn": "model",
    "optional": false,
    "blocks": [
@@ -1299,9 +1482,7 @@ const HELP = {
     "attack-artifacts"
    ],
    "stops_apply": false,
-   "waits_for": [
-    "consequences"
-   ],
+   "waits_for": [],
    "files": [
     {
      "path": "openspec/changes/scenario-run-change-impact/design.md",
@@ -1510,10 +1691,12 @@ const HELP = {
   ".agents/skills/symphysis-prohibition-probe/SKILL.md": ".agents/skills/symphysis-prohibition-probe/SKILL.md",
   ".agents/skills/symphysis-research/SKILL.md": ".agents/skills/symphysis-research/SKILL.md",
   ".agents/skills/symphysis-viewer/SKILL.md": ".agents/skills/symphysis-viewer/SKILL.md",
+  "consequences.md": "openspec/changes/scenario-run-change-impact/consequences.md",
   "decisions.json": "openspec/changes/scenario-run-change-impact/decisions.json",
   "decisions.md": "openspec/changes/scenario-run-change-impact/decisions.md",
   "edge-probe.md": "openspec/changes/scenario-run-change-impact/edge-probe.md",
   "intent.md": "openspec/changes/scenario-run-change-impact/intent.md",
+  "openspec/changes/scenario-run-change-impact/consequences.md": "openspec/changes/scenario-run-change-impact/consequences.md",
   "openspec/changes/scenario-run-change-impact/decisions.json": "openspec/changes/scenario-run-change-impact/decisions.json",
   "openspec/changes/scenario-run-change-impact/intent.md": "openspec/changes/scenario-run-change-impact/intent.md",
   "openspec/changes/scenario-run-change-impact/proposal.md": "openspec/changes/scenario-run-change-impact/proposal.md",
@@ -1540,7 +1723,10 @@ const LINKS = {
   ".agents/skills/symphysis-prohibition-probe/SKILL.md": "../../../.agents/skills/symphysis-prohibition-probe/SKILL.md",
   ".agents/skills/symphysis-research/SKILL.md": "../../../.agents/skills/symphysis-research/SKILL.md",
   ".agents/skills/symphysis-viewer/SKILL.md": "../../../.agents/skills/symphysis-viewer/SKILL.md",
+  "attack/attack_scope.py": "../../../attack/attack_scope.py",
+  "attack/attack_table.py": "../../../attack/attack_table.py",
   "attack/skills/symphysis-attack/SKILL.md": "../../../attack/skills/symphysis-attack/SKILL.md",
+  "consequences.md": "consequences.md",
   "decisions.json": "decisions.json",
   "decisions.md": "decisions.md",
   "edge-probe.md": "edge-probe.md",
@@ -1548,6 +1734,7 @@ const LINKS = {
   "openspec/changes/archive/2026-11-08-attack-lens-conventions/briefs/symphysis-attack-2026-11-08/report.md": "../archive/2026-11-08-attack-lens-conventions/briefs/symphysis-attack-2026-11-08/report.md",
   "openspec/changes/archive/2026-11-08-attack-lens-conventions/design.md": "../archive/2026-11-08-attack-lens-conventions/design.md",
   "openspec/changes/scenario-run-change-impact/answers/2026-11-17-combine-three-options.md": "answers/2026-11-17-combine-three-options.md",
+  "openspec/changes/scenario-run-change-impact/consequences.md": "consequences.md",
   "openspec/changes/scenario-run-change-impact/decisions.json": "decisions.json",
   "openspec/changes/scenario-run-change-impact/intent.md": "intent.md",
   "openspec/changes/scenario-run-change-impact/proposal.md": "proposal.md",
@@ -1566,6 +1753,7 @@ const LINKS = {
   "scheme.md": "scheme.md",
   "symphysis.html": "symphysis.html",
   "symphysis.yaml": "../../../symphysis.yaml",
+  "trace/trace_graph.py": "../../../trace/trace_graph.py",
   "viewer/playground-template.html": "../../../viewer/playground-template.html"
  }
 };
