@@ -239,12 +239,12 @@ const JOURNAL = {
  "title": "Журнал решений: scenario-run-change-impact",
  "source": "decisions.json",
  "generated": "2026-11-17",
- "sha256": "8ba745b819d78746ba55834e2698a176c15b6c12e987f710a8233a95eca1354b",
+ "sha256": "5843a53cff567f48ca0d68514a9201efe6df237255f77b5f80417106958254b8",
  "stats": {
   "records": 8,
   "forks": 3,
   "facts": 5,
-  "decided": 0,
+  "decided": 3,
   "parked": 0,
   "evidence_total": 37,
   "evidence_found": 37
@@ -455,7 +455,7 @@ const JOURNAL = {
    "id": "F-06",
    "question": "Как искать сценарии мастер-спеки, затронутые через общий вход или контракт за пределами дельты?",
    "kind": "развилка",
-   "status": "открыт",
+   "status": "решён",
    "addressee": "человек",
    "depends_on": [],
    "delivery": "",
@@ -553,8 +553,15 @@ const JOURNAL = {
     "option": "A",
     "why": "Подхватывает реально затронутый контракт без готовой связи, как в случае ключа строки, и ограничивает работу проверенными стыками без введения обязательного индекса."
    },
-   "decision": null,
-   "reversibility": null,
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-17"
+   },
+   "reversibility": {
+    "level": "обратимо",
+    "why": "Периметр поиска задаёт правило scenario-run. Его пересмотр потребует повторной атаки для затронутых изменений, база мастер-спек и снимки остаются пригодны."
+   },
    "outcome": null,
    "parking": [],
    "dispute": "",
@@ -571,7 +578,7 @@ const JOURNAL = {
    "id": "F-07",
    "question": "Какую форму должна иметь запись о сохраняемых свойствах в design.md?",
    "kind": "развилка",
-   "status": "открыт",
+   "status": "решён",
    "addressee": "человек",
    "depends_on": [],
    "delivery": "",
@@ -640,8 +647,15 @@ const JOURNAL = {
     "option": "A",
     "why": "Общее обоснование убирает повтор для шести сценариев и позволяет проверить реальный стык. Фиксированная форма добавляет перенос и проверку полей до появления устойчивой потребности в индексировании."
    },
-   "decision": null,
-   "reversibility": null,
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-17"
+   },
+   "reversibility": {
+    "level": "обратимо",
+    "why": "Обоснование хранится в существующей структуре design.md. При смене правила достаточно привести к новой форме обоснования в активных design и проверить их повторной атакой."
+   },
    "outcome": null,
    "parking": [],
    "dispute": "",
@@ -657,7 +671,7 @@ const JOURNAL = {
    "id": "F-08",
    "question": "Когда запланированная проверка реализации достаточна, чтобы пропустить сценарий через атаку до apply?",
    "kind": "развилка",
-   "status": "открыт",
+   "status": "решён",
    "addressee": "человек",
    "depends_on": [],
    "delivery": "",
@@ -755,8 +769,15 @@ const JOURNAL = {
     "option": "A",
     "why": "Сохраняет блокер при известной проблеме проектирования и позволяет проверить эмпирический остаток штатной задачей без ручного разрешения каждой достаточной проверки."
    },
-   "decision": null,
-   "reversibility": null,
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-17"
+   },
+   "reversibility": {
+    "level": "дорого",
+    "why": "Смена допуска к apply меняет контракт атаки и задач. Придётся пересмотреть допуски по затронутым сценариям, повторить их атаки и проверить результаты задач, уже начатых по прежнему правилу."
+   },
    "outcome": null,
    "parking": [],
    "dispute": "",
@@ -770,7 +791,12 @@ const JOURNAL = {
    "finding": ""
   }
  ],
- "notes": []
+ "notes": [
+  {
+   "date": "2026-11-17",
+   "text": "круг 1 закончен: решений 3, фактов 5, открытых развилок 0, парковок агенту 0, антиподов 0"
+  }
+ ]
 };
 const ATTACK = [];
 const SCHEME = {
@@ -782,7 +808,7 @@ const SCHEME = {
 };
 const HELP = {
  "contract": 6,
- "taken_at": "2026-11-17T16:02:09+03:00",
+ "taken_at": "2026-11-17T16:21:46+03:00",
  "versions": {
   "openspec": "1.16.1+symphysis.8",
   "symphysis": "0.1.0+f11b1d25"
@@ -790,12 +816,12 @@ const HELP = {
  "change": "scenario-run-change-impact",
  "changes": null,
  "error": null,
- "current_step": "viewer",
- "current_text": "Следующий шаг по файлам — `viewer`, ход человека: открытых развилок 3, решаются на странице журнала. После них по файлам идёт `research`.",
- "turn": "human",
+ "current_step": "research",
+ "current_text": "Следующий шаг по файлам — `research`, ход модели.",
+ "turn": "model",
  "next_by_status": "research",
  "forks": {
-  "open": 3,
+  "open": 0,
   "parked": 0
  },
  "tasks": {
@@ -875,7 +901,7 @@ const HELP = {
   },
   {
    "id": "viewer",
-   "state": "ready",
+   "state": "idle",
    "turn": "human",
    "optional": false,
    "blocks": [],
@@ -1335,6 +1361,7 @@ const HELP = {
   "openspec/changes/scenario-run-change-impact/decisions.json": "openspec/changes/scenario-run-change-impact/decisions.json",
   "openspec/changes/scenario-run-change-impact/intent.md": "openspec/changes/scenario-run-change-impact/intent.md",
   "scheme.md": "openspec/changes/scenario-run-change-impact/scheme.md",
+  "symphysis.html": "openspec/changes/scenario-run-change-impact/symphysis.html",
   "symphysis.yaml": "symphysis.yaml"
  },
  "rebuild": "symphysis --project . journal render-html openspec/changes/scenario-run-change-impact/decisions.json --out openspec/changes/scenario-run-change-impact/symphysis.html"
@@ -1364,6 +1391,7 @@ const LINKS = {
   "openspec/specs/trace-graph/spec.md": "../../specs/trace-graph/spec.md",
   "openspec/specs/trace-snapshot/spec.md": "../../specs/trace-snapshot/spec.md",
   "scheme.md": "scheme.md",
+  "symphysis.html": "symphysis.html",
   "symphysis.yaml": "../../../symphysis.yaml",
   "viewer/playground-template.html": "../../../viewer/playground-template.html"
  }
