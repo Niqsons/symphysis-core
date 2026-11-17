@@ -217,14 +217,18 @@ def test_instructions_name_skills_and_stay_short(tmp_path):
     assert "symphysis journal code-sites" in text["consequences"]
     for i in ("intent", "design", "security", "tasks"):
         assert "symphysis-" not in text[i], f"{i}: правила без скилла"
-    # research: второй круг брейншторма стоит в конце, после правил отчётов и none.md
+    # Перенос находок выполняется до проверки отметки о новом круге.
     research = text["research"]
-    second = research.index("Второй круг брейншторма")
-    assert research.index("research/<F-NN>.md") < research.index("research/none.md") < second
-    assert second < research.index("агент", second) < research.index("research/", second) < research.index("symphysis-brainstorm")
-    assert research.rstrip().endswith("«брейншторм закончен по решению человека».")
-    # финальное ревью, minor 11: вопрос о новом круге — только без строки отказа в notes[]
-    assert "Нет в `notes[]` строки «брейншторм закончен по решению человека» — спроси, нужен ли новый круг" in research
+    transfer_start = research.index("После всех отчётов скиллом `symphysis-brainstorm`")
+    question_start = research.index("Затем проверь `notes[]`", transfer_start)
+    assert research.index("research/<F-NN>.md") < research.index("research/none.md") < transfer_start
+    transfer = research[transfer_start:question_start]
+    assert "ответы парковок «агент» в `parking[].finding`" in transfer
+    assert "улики — путём и дословной цитатой" in transfer
+    assert "Перенос обязателен даже с отметкой завершения" in transfer
+    question = research[question_start:]
+    assert "«брейншторм закончен по решению человека» снимает только вопрос о новом круге" in question
+    assert "Иначе спроси и жди ответа. Начни круг по согласию. Отказ запиши той же строкой." in question
     assert "Записи с парковкой «агент» без `finding` при файлах `research/` — сначала второй круг" in text["proposal"]
     attack = text["attack-decisions"].lstrip()
     assert attack.startswith("Загрузи скилл `symphysis-attack`"), attack[:60]
@@ -1045,7 +1049,7 @@ def test_schema_texts_name_the_agent_addressee_not_the_old_value():
             assert mark not in text, f"{name}: старое значение адресата «{mark}»"
     research = schema_block("research")
     assert "На каждую парковку с адресатом «агент»" in research and "`addressee: агент`" in research
-    assert "закрой записи с адресатом «агент»" in research
+    assert "ответы парковок «агент» в `parking[].finding`" in research
     assert "Записи с парковкой «агент» без `finding`" in schema_block("proposal")
     assert "парковка адресату `агент`, её разберёт исследование" in live["steps.md"]
     assert "Парковку адресату «агент» закрывает шаг `research`" in live["steps.md"]

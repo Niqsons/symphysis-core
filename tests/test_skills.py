@@ -1228,7 +1228,7 @@ def test_second_round_lives_at_the_end_of_research():
     assert "в конце шага `research`" in notes
     schema = read(ROOT / "openspec" / "schemas" / "symphysis" / "schema.yaml")
     research = schema.split("  - id: research")[1].split("  - id: ")[0]
-    assert "Второй круг брейншторма — после отчётов" in research and "symphysis-brainstorm" in research
+    assert "После всех отчётов скиллом `symphysis-brainstorm`" in research
 
     viewer = read(VIEWER / "SKILL.md")
     for part in (frontmatter(viewer)["description"], flat(viewer)):
