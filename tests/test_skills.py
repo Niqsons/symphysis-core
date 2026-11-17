@@ -1318,9 +1318,20 @@ def test_viewer_docs_name_the_snapshot_layout():
     steps = read(ROOT / "openspec" / "schemas" / "symphysis" / "steps.md")
     for text in (skill, steps):
         assert "раскладк" in text and "«снимок»" in text and "«по журналу»" in text
-        assert "режим «проверка»" not in text and "режиме «проверка»" not in text
+        # любое имя «проверка» в кавычках, а не только «режим «проверка»»: перечень «Режимы страницы: … «проверка» — …»
+        # проходил мимо узкой проверки
+        assert "«проверка»" not in text
     assert "режим «решения», раскладка «снимок»" in flat(skill)
     assert "в режиме «решения» раскладку «снимок»" in steps
+
+
+def test_other_specs_do_not_name_the_check_mode():
+    """`decision-viewer`: режима «проверка» нет — мастер-спеки других capabilities его не называют местом показа.
+    Сама `decision-viewer` называет его, чтобы запретить и описать миграцию, поэтому из обхода исключена."""
+    specs = ROOT / "openspec" / "specs"
+    stale = [p.parent.name for p in specs.glob("*/spec.md")
+             if p.parent.name != "decision-viewer" and "«проверка»" in p.read_text(encoding="utf-8")]
+    assert not stale, f"мастер-спеки называют режим «проверка»: {stale}"
 
 
 # Fixture-изменение после круга 1: `intent.md` с критерием из сценария «Намерение прочитано первым» и журнал,
