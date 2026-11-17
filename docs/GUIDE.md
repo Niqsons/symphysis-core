@@ -57,14 +57,14 @@ PowerShell:
 
 ```powershell
 npm ls -g @fission-ai/openspec
-npm i -g ./vendor/fission-ai-openspec-1.16.1+symphysis.7.tgz
+npm i -g ./vendor/fission-ai-openspec-1.16.1+symphysis.8.tgz
 ```
 
 bash:
 
 ```bash
 npm ls -g @fission-ai/openspec
-npm i -g ./vendor/fission-ai-openspec-1.16.1+symphysis.7.tgz
+npm i -g ./vendor/fission-ai-openspec-1.16.1+symphysis.8.tgz
 ```
 
 Следующая команда форка — только шаг 3: иначе первая же команда запишет идентификатор установки и отправит событие телеметрии.
@@ -105,7 +105,7 @@ Set telemetry.enabled = false
     "enabled": false
   }
 }
-1.16.1+symphysis.7
+1.16.1+symphysis.8
 ```
 
 Ключа `anonymousId` в файле нет. Если версия другая, раньше в `PATH` стоит другой `openspec`: `where.exe openspec` в PowerShell, `which openspec` в bash.
