@@ -22,7 +22,7 @@
    "consequences": "Дополнительные критерии в намерении не заданы.",
    "evidence": [
     {
-     "path": "openspec/changes/security-checklist-task-coverage/intent.md",
+     "path": "openspec/changes/archive/2026-11-17-security-checklist-task-coverage/intent.md",
      "quote": "Без критериев готовности"
     }
    ],
@@ -47,19 +47,19 @@
    "consequences": "Развилки уточняют порядок, форму ссылки и проверку передачи задачи.",
    "evidence": [
     {
-     "path": "openspec/changes/security-checklist-task-coverage/intent.md",
+     "path": "openspec/changes/archive/2026-11-17-security-checklist-task-coverage/intent.md",
      "quote": "**Появляется или меняется свойство безопасности.** Его фиксируем в `specs`, а задача проверяет реализацию."
     },
     {
-     "path": "openspec/changes/security-checklist-task-coverage/intent.md",
+     "path": "openspec/changes/archive/2026-11-17-security-checklist-task-coverage/intent.md",
      "quote": "**Свойство уже задано.** Достаточно сослаться на существующее требование и назвать проверку для затронутого случая."
     },
     {
-     "path": "openspec/changes/security-checklist-task-coverage/intent.md",
+     "path": "openspec/changes/archive/2026-11-17-security-checklist-task-coverage/intent.md",
      "quote": "Допускаем адресную задачу с описанием меры, способом проверки и наблюдаемым результатом."
     },
     {
-     "path": "openspec/changes/security-checklist-task-coverage/intent.md",
+     "path": "openspec/changes/archive/2026-11-17-security-checklist-task-coverage/intent.md",
      "quote": "Пока `tasks.md` ещё не написан, в чек-листе стоит «запланировано». На шаге `tasks` появляется ссылка на реальную задачу."
     }
    ],
@@ -210,7 +210,7 @@
      "unlikely": null,
      "evidence": [
       {
-       "path": "openspec/changes/security-checklist-task-coverage/intent.md",
+       "path": "openspec/changes/archive/2026-11-17-security-checklist-task-coverage/intent.md",
        "quote": "Пока `tasks.md` ещё не написан, в чек-листе стоит «запланировано». На шаге `tasks` появляется ссылка на реальную задачу."
       },
       {
@@ -230,7 +230,7 @@
      "unlikely": null,
      "evidence": [
       {
-       "path": "openspec/changes/security-checklist-task-coverage/intent.md",
+       "path": "openspec/changes/archive/2026-11-17-security-checklist-task-coverage/intent.md",
        "quote": "Пока `tasks.md` ещё не написан, в чек-листе стоит «запланировано». На шаге `tasks` появляется ссылка на реальную задачу."
       },
       {
@@ -369,7 +369,7 @@
      "unlikely": null,
      "evidence": [
       {
-       "path": "openspec/changes/security-checklist-task-coverage/intent.md",
+       "path": "openspec/changes/archive/2026-11-17-security-checklist-task-coverage/intent.md",
        "quote": "Пока `tasks.md` ещё не написан, в чек-листе стоит «запланировано». На шаге `tasks` появляется ссылка на реальную задачу."
       },
       {
@@ -503,7 +503,7 @@
    "consequences": "в spec.md: При удалении задачи пункт сохраняет план",
    "evidence": [
     {
-     "path": "openspec/changes/security-checklist-task-coverage/specs/security-checklist-coverage/spec.md",
+     "path": "openspec/changes/archive/2026-11-17-security-checklist-task-coverage/specs/security-checklist-coverage/spec.md",
      "quote": "### Requirement: Ссылка чек-листа однозначно называет актуальную задачу"
     }
    ],
@@ -537,7 +537,7 @@
    "consequences": "",
    "evidence": [
     {
-     "path": "openspec/changes/security-checklist-task-coverage/specs/security-checklist-coverage/spec.md",
+     "path": "openspec/changes/archive/2026-11-17-security-checklist-task-coverage/specs/security-checklist-coverage/spec.md",
      "quote": "### Requirement: Чек-лист и задачи согласуются при любом порядке"
     }
    ],
@@ -613,7 +613,7 @@
      "quote": "STOP - write nothing, do NOT rewrite its file"
     },
     {
-     "path": "openspec/changes/security-checklist-task-coverage/specs/security-checklist-coverage/spec.md",
+     "path": "openspec/changes/archive/2026-11-17-security-checklist-task-coverage/specs/security-checklist-coverage/spec.md",
      "quote": "### Requirement: Сверка плана выявляет пункты без достаточной задачи"
     }
    ],
@@ -688,7 +688,7 @@
      "quote": "while (m := _SEC_REQ.search(text, pos)):"
     },
     {
-     "path": "openspec/changes/security-checklist-task-coverage/specs/security-checklist-coverage/spec.md",
+     "path": "openspec/changes/archive/2026-11-17-security-checklist-task-coverage/specs/security-checklist-coverage/spec.md",
      "quote": "### Requirement: Ссылка чек-листа однозначно называет актуальную задачу"
     }
    ],
