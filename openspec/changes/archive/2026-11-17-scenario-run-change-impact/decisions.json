@@ -41,7 +41,7 @@
    "consequences": "",
    "evidence": [
     {
-     "path": "openspec/changes/scenario-run-change-impact/intent.md",
+     "path": "openspec/changes/archive/2026-11-17-scenario-run-change-impact/intent.md",
      "quote": "Без критериев готовности",
      "line": 14,
      "verdict": "сверено",
@@ -69,14 +69,14 @@
    "consequences": "",
    "evidence": [
     {
-     "path": "openspec/changes/scenario-run-change-impact/answers/2026-11-17-combine-three-options.md",
+     "path": "openspec/changes/archive/2026-11-17-scenario-run-change-impact/answers/2026-11-17-combine-three-options.md",
      "quote": "Я бы попробовал взять все три",
      "line": 11,
      "verdict": "сверено",
      "found": true
     },
     {
-     "path": "openspec/changes/scenario-run-change-impact/answers/2026-11-17-combine-three-options.md",
+     "path": "openspec/changes/archive/2026-11-17-scenario-run-change-impact/answers/2026-11-17-combine-three-options.md",
      "quote": "В `tasks.md` поставить адресную проверку для последствия, которое можно подтвердить только на реализации.",
      "line": 7,
      "verdict": "сверено",
@@ -153,7 +153,7 @@
    "consequences": "",
    "evidence": [
     {
-     "path": "openspec/changes/scenario-run-change-impact/verification/baseline-code.md",
+     "path": "openspec/changes/archive/2026-11-17-scenario-run-change-impact/verification/baseline-code.md",
      "quote": "Механизм не назван — `блокер`, воздержания нет: ответ выводится из design.",
      "line": 10,
      "verdict": "сверено",
@@ -370,7 +370,7 @@
        "found": true
       },
       {
-       "path": "openspec/changes/scenario-run-change-impact/verification/baseline-code.md",
+       "path": "openspec/changes/archive/2026-11-17-scenario-run-change-impact/verification/baseline-code.md",
        "quote": "Механизм не назван — `блокер`, воздержания нет: ответ выводится из design.",
        "line": 10,
        "verdict": "сверено",
@@ -462,7 +462,7 @@
        "found": true
       },
       {
-       "path": "openspec/changes/scenario-run-change-impact/verification/baseline-code.md",
+       "path": "openspec/changes/archive/2026-11-17-scenario-run-change-impact/verification/baseline-code.md",
        "quote": "Механизм не назван — `блокер`, воздержания нет: ответ выводится из design.",
        "line": 10,
        "verdict": "сверено",
@@ -520,7 +520,7 @@
        "found": true
       },
       {
-       "path": "openspec/changes/scenario-run-change-impact/verification/baseline-code.md",
+       "path": "openspec/changes/archive/2026-11-17-scenario-run-change-impact/verification/baseline-code.md",
        "quote": "Механизм не назван — `блокер`, воздержания нет: ответ выводится из design.",
        "line": 10,
        "verdict": "сверено",
@@ -616,7 +616,7 @@
    "consequences": "в spec.md: После синхронизации исходной базы нет",
    "evidence": [
     {
-     "path": "openspec/changes/scenario-run-change-impact/specs/artifact-attack/spec.md",
+     "path": "openspec/changes/archive/2026-11-17-scenario-run-change-impact/specs/artifact-attack/spec.md",
      "quote": "### Requirement: Scenario-run устанавливает область влияния изменения",
      "line": 52,
      "verdict": "сверено",
@@ -687,7 +687,7 @@
    "consequences": "проверка: test — изменить только использованный мастер-блок после атаки и сверить устаревание прежнего вердикта\nв spec.md: Изменение мастер-опоры обесценивает вердикт",
    "evidence": [
     {
-     "path": "openspec/changes/scenario-run-change-impact/specs/artifact-attack/spec.md",
+     "path": "openspec/changes/archive/2026-11-17-scenario-run-change-impact/specs/artifact-attack/spec.md",
      "quote": "### Requirement: Scenario-run устанавливает область влияния изменения",
      "line": 52,
      "verdict": "сверено",
@@ -755,7 +755,7 @@
    "consequences": "в spec.md: Первый снимок сделан после синхронизации и правки дельты",
    "evidence": [
     {
-     "path": "openspec/changes/scenario-run-change-impact/verification/baseline-code.md",
+     "path": "openspec/changes/archive/2026-11-17-scenario-run-change-impact/verification/baseline-code.md",
      "quote": "found.setdefault(folder.name, {}).setdefault(req.name, entry)",
      "line": 18,
      "verdict": "сверено",
@@ -891,7 +891,7 @@
    "consequences": "тест-страховка: подать ядру и форку один новый отчёт с локальной целью и мастер-опорой. При правке только опоры проверить stale и одну причину о мастере. При правке только локальной цели проверить причину о ней. Формат отчёта взять из design.",
    "evidence": [
     {
-     "path": "openspec/changes/scenario-run-change-impact/verification/baseline-code.md",
+     "path": "openspec/changes/archive/2026-11-17-scenario-run-change-impact/verification/baseline-code.md",
      "quote": "if (m := RE_TARGET_PATH.match(line)):",
      "line": 26,
      "verdict": "сверено",
@@ -941,7 +941,7 @@
        "found": true
       },
       {
-       "path": "openspec/changes/scenario-run-change-impact/specs/artifact-attack/spec.md",
+       "path": "openspec/changes/archive/2026-11-17-scenario-run-change-impact/specs/artifact-attack/spec.md",
        "quote": "перенос остаётся неподтверждённым по этому снимку",
        "line": 85,
        "verdict": "сверено",
@@ -970,7 +970,7 @@
        "found": true
       },
       {
-       "path": "openspec/changes/scenario-run-change-impact/specs/artifact-attack/spec.md",
+       "path": "openspec/changes/archive/2026-11-17-scenario-run-change-impact/specs/artifact-attack/spec.md",
        "quote": "перенос остаётся неподтверждённым по этому снимку",
        "line": 85,
        "verdict": "сверено",
@@ -999,7 +999,7 @@
        "found": true
       },
       {
-       "path": "openspec/changes/scenario-run-change-impact/specs/artifact-attack/spec.md",
+       "path": "openspec/changes/archive/2026-11-17-scenario-run-change-impact/specs/artifact-attack/spec.md",
        "quote": "перенос остаётся неподтверждённым по этому снимку",
        "line": 85,
        "verdict": "сверено",
@@ -1051,26 +1051,26 @@
       {
        "path": "attack/attack_table.py",
        "quote": "elif (m := RE_FRONT_KEY.match(line)):",
-       "line": 111,
+       "line": 129,
        "verdict": "сверено",
        "found": true
       },
       {
-       "path": "openspec/changes/scenario-run-change-impact/verification/baseline-code.md",
+       "path": "openspec/changes/archive/2026-11-17-scenario-run-change-impact/verification/baseline-code.md",
        "quote": "if (m := RE_TARGET_PATH.match(line)):",
        "line": 26,
        "verdict": "сверено",
        "found": true
       },
       {
-       "path": "openspec/changes/scenario-run-change-impact/specs/stale-verdict-scope/spec.md",
+       "path": "openspec/changes/archive/2026-11-17-scenario-run-change-impact/specs/stale-verdict-scope/spec.md",
        "quote": "Такие опоры проверяются в области мастер-спек. Цели из `targets[]` проверяются в каталоге изменения",
        "line": 6,
        "verdict": "сверено",
        "found": true
       },
       {
-       "path": "openspec/changes/scenario-run-change-impact/specs/artifact-attack/spec.md",
+       "path": "openspec/changes/archive/2026-11-17-scenario-run-change-impact/specs/artifact-attack/spec.md",
        "quote": "Отчёт SHALL сохранять сведения, позволяющие опознать этот блок и сверить его содержание при проверке свежести",
        "line": 125,
        "verdict": "сверено",
@@ -1085,21 +1085,21 @@
      "unlikely": null,
      "evidence": [
       {
-       "path": "openspec/changes/scenario-run-change-impact/verification/baseline-code.md",
+       "path": "openspec/changes/archive/2026-11-17-scenario-run-change-impact/verification/baseline-code.md",
        "quote": "if (m := RE_TARGET_PATH.match(line)):",
        "line": 26,
        "verdict": "сверено",
        "found": true
       },
       {
-       "path": "openspec/changes/scenario-run-change-impact/specs/stale-verdict-scope/spec.md",
+       "path": "openspec/changes/archive/2026-11-17-scenario-run-change-impact/specs/stale-verdict-scope/spec.md",
        "quote": "Такие опоры проверяются в области мастер-спек. Цели из `targets[]` проверяются в каталоге изменения",
        "line": 6,
        "verdict": "сверено",
        "found": true
       },
       {
-       "path": "openspec/changes/scenario-run-change-impact/specs/artifact-attack/spec.md",
+       "path": "openspec/changes/archive/2026-11-17-scenario-run-change-impact/specs/artifact-attack/spec.md",
        "quote": "Отчёт SHALL сохранять сведения, позволяющие опознать этот блок и сверить его содержание при проверке свежести",
        "line": 125,
        "verdict": "сверено",
@@ -1116,26 +1116,26 @@
       {
        "path": "attack/attack_table.py",
        "quote": "elif (m := RE_FRONT_KEY.match(line)):",
-       "line": 111,
+       "line": 129,
        "verdict": "сверено",
        "found": true
       },
       {
-       "path": "openspec/changes/scenario-run-change-impact/verification/baseline-code.md",
+       "path": "openspec/changes/archive/2026-11-17-scenario-run-change-impact/verification/baseline-code.md",
        "quote": "if (m := RE_TARGET_PATH.match(line)):",
        "line": 26,
        "verdict": "сверено",
        "found": true
       },
       {
-       "path": "openspec/changes/scenario-run-change-impact/specs/stale-verdict-scope/spec.md",
+       "path": "openspec/changes/archive/2026-11-17-scenario-run-change-impact/specs/stale-verdict-scope/spec.md",
        "quote": "Такие опоры проверяются в области мастер-спек. Цели из `targets[]` проверяются в каталоге изменения",
        "line": 6,
        "verdict": "сверено",
        "found": true
       },
       {
-       "path": "openspec/changes/scenario-run-change-impact/specs/artifact-attack/spec.md",
+       "path": "openspec/changes/archive/2026-11-17-scenario-run-change-impact/specs/artifact-attack/spec.md",
        "quote": "Отчёт SHALL сохранять сведения, позволяющие опознать этот блок и сверить его содержание при проверке свежести",
        "line": 125,
        "verdict": "сверено",

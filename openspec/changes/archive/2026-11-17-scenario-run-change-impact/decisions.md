@@ -11,7 +11,7 @@
 - адресат: постановка
 - зависит от: —
 - улики:
-  - улика: `openspec/changes/scenario-run-change-impact/intent.md` «Без критериев готовности»
+  - улика: `openspec/changes/archive/2026-11-17-scenario-run-change-impact/intent.md` «Без критериев готовности»
 
 ## F-02 Владелец предложил объединить описание сохраняемых свойств в design, проверку влияния в атаке и адресную проверку на реализации.
 <!-- journal:F-02 -->
@@ -20,8 +20,8 @@
 - адресат: агент
 - зависит от: —
 - улики:
-  - улика: `openspec/changes/scenario-run-change-impact/answers/2026-11-17-combine-three-options.md` «Я бы попробовал взять все три»
-  - улика: `openspec/changes/scenario-run-change-impact/answers/2026-11-17-combine-three-options.md` «В `tasks.md` поставить адресную проверку для последствия, которое можно подтвердить только на реализации.»
+  - улика: `openspec/changes/archive/2026-11-17-scenario-run-change-impact/answers/2026-11-17-combine-three-options.md` «Я бы попробовал взять все три»
+  - улика: `openspec/changes/archive/2026-11-17-scenario-run-change-impact/answers/2026-11-17-combine-three-options.md` «В `tasks.md` поставить адресную проверку для последствия, которое можно подтвердить только на реализации.»
 
 ## F-03 В прежней атаке шесть дословно перенесённых сценариев заблокированы из-за отсутствия механизма в design. Строки атаки служат входом существующего промпта и ключа строки тяжести.
 <!-- journal:F-03 -->
@@ -42,7 +42,7 @@
 - адресат: агент
 - зависит от: —
 - улики:
-  - улика: `openspec/changes/scenario-run-change-impact/verification/baseline-code.md` «Механизм не назван — `блокер`, воздержания нет: ответ выводится из design.»
+  - улика: `openspec/changes/archive/2026-11-17-scenario-run-change-impact/verification/baseline-code.md` «Механизм не назван — `блокер`, воздержания нет: ответ выводится из design.»
   - улика: `openspec/specs/artifact-attack/spec.md` «исход по коду выводится чтением и рассуждением, существование путей и имён проверяется грепом»
   - улика: `openspec/schemas/symphysis/templates/tasks.md` «проверка: <тест, команда, наблюдаемый результат, файл>»
 
@@ -91,7 +91,7 @@
   - A. Короткое обоснование на затронутый стык или группу сценариев в существующем design. Назвать, что меняется, какие входы или свойства должны сохраниться и на чём основано это утверждение. Атака читает весь design и сверяет содержательность. Переход обратим: существующая структура документа сохраняется.
     - улика: `openspec/changes/archive/2026-11-08-attack-lens-conventions/design.md` «несёт восемь сценариев мастер-спеки дословно: дельта MODIFIED заменяет мастер-требование целиком.»
     - улика: `openspec/changes/archive/2026-11-08-attack-lens-conventions/design.md` «шесть прочих сценариев держит прежний код страницы»
-    - улика: `openspec/changes/scenario-run-change-impact/verification/baseline-code.md` «Механизм не назван — `блокер`, воздержания нет: ответ выводится из design.»
+    - улика: `openspec/changes/archive/2026-11-17-scenario-run-change-impact/verification/baseline-code.md` «Механизм не назван — `блокер`, воздержания нет: ответ выводится из design.»
   - B. Обязательная структурированная таблица для затронутых стыков: мастер-сценарий или группа, изменённый вход, сохраняемое свойство, основание. Таблицу можно проверять автоматически на заполненность и переиспользовать при поиске. Цена — поддержка формы, шаблона и повторных проверок для старых design.
     - улика: `openspec/schemas/symphysis/templates/design.md` «## Context»
     - улика: `openspec/changes/archive/2026-11-08-attack-lens-conventions/design.md` «несёт восемь сценариев мастер-спеки дословно: дельта MODIFIED заменяет мастер-требование целиком.»
@@ -110,7 +110,7 @@
   - A. Если проектируемый механизм согласован с THEN и осталась проверка результата на реальных изменённых входах, достаточна задача с привязкой к сценарию, способом проверки и наблюдаемым THEN. Результат ещё ожидается. Конкретное противоречие или существенный путь регрессии без достаточной проверки остаётся блокером.
     - улика: `openspec/specs/artifact-attack/spec.md` «исход по коду выводится чтением и рассуждением, существование путей и имён проверяется грепом»
     - улика: `openspec/schemas/symphysis/templates/tasks.md` «проверка: <тест, команда, наблюдаемый результат, файл>»
-    - улика: `openspec/changes/scenario-run-change-impact/verification/baseline-code.md` «Механизм не назван — `блокер`, воздержания нет: ответ выводится из design.»
+    - улика: `openspec/changes/archive/2026-11-17-scenario-run-change-impact/verification/baseline-code.md` «Механизм не назван — `блокер`, воздержания нет: ответ выводится из design.»
   - B. Существенную неопределённость оставлять блокером до явного решения человека по строке, даже с достаточной задачей. Верификация на реализации всё равно входит в задачу. Такой подход даёт человеку слово по каждому допуску и увеличивает число остановок до apply.
     - улика: `openspec/specs/artifact-attack/spec.md` «исход по коду выводится чтением и рассуждением, существование путей и имён проверяется грепом»
     - улика: `openspec/schemas/symphysis/templates/tasks.md` «проверка: <тест, команда, наблюдаемый результат, файл>»
@@ -118,7 +118,7 @@
   - C. При любом неопределённом исходе допускать apply, если в tasks появилась регрессионная проверка. Автор быстрее перейдёт к коду, но запланированный тест может отложить обнаруженное противоречие до реализации.
     - улика: `openspec/schemas/symphysis/templates/tasks.md` «проверка: <тест, команда, наблюдаемый результат, файл>»
     - улика: `openspec/specs/artifact-attack/spec.md` «исход по коду выводится чтением и рассуждением, существование путей и имён проверяется грепом»
-    - улика: `openspec/changes/scenario-run-change-impact/verification/baseline-code.md` «Механизм не назван — `блокер`, воздержания нет: ответ выводится из design.»
+    - улика: `openspec/changes/archive/2026-11-17-scenario-run-change-impact/verification/baseline-code.md` «Механизм не назван — `блокер`, воздержания нет: ответ выводится из design.»
     - маловероятно: Тест проверяет исход, но сам по себе не исправляет уже обнаруженный дефект конструкции.
 - антиподы: —
 - рекомендация: A — Сохраняет блокер при известной проблеме проектирования и позволяет проверить эмпирический остаток штатной задачей без ручного разрешения каждой достаточной проверки.
@@ -138,7 +138,7 @@
 - антиподы: —
 - рекомендация: A — Совпадение с уже перезаписанным мастером выглядит как нормальная опора и способно тихо скрыть изменение сценария. Сценарий делает этот случай наблюдаемым для проверки на неполном снимке. Цена — поддерживать один контрольный пример.
 - улики:
-  - улика: `openspec/changes/scenario-run-change-impact/specs/artifact-attack/spec.md` «### Requirement: Scenario-run устанавливает область влияния изменения»
+  - улика: `openspec/changes/archive/2026-11-17-scenario-run-change-impact/specs/artifact-attack/spec.md` «### Requirement: Scenario-run устанавливает область влияния изменения»
 - решение: A, 2026-11-17
 - исход: проба — Specify
 - следствия: в spec.md: После синхронизации исходной базы нет
@@ -157,7 +157,7 @@
 - антиподы: —
 - рекомендация: A — Зелёный итог выглядит актуальным после исчезновения опоры, хотя файлы самого change не изменились. Это можно поймать детерминированной проверкой с заменой одного мастер-блока. Цена — дополнительная проверка свежести и совместимость старых отчётов.
 - улики:
-  - улика: `openspec/changes/scenario-run-change-impact/specs/artifact-attack/spec.md` «### Requirement: Scenario-run устанавливает область влияния изменения»
+  - улика: `openspec/changes/archive/2026-11-17-scenario-run-change-impact/specs/artifact-attack/spec.md` «### Requirement: Scenario-run устанавливает область влияния изменения»
 - решение: A, 2026-11-17
 - исход: проба — Specify
 - следствия: проверка: test — изменить только использованный мастер-блок после атаки и сверить устаревание прежнего вердикта
@@ -177,7 +177,7 @@
 - антиподы: —
 - рекомендация: A — Формально годный поздний снимок может скрыть изменение сценария, а отличие соседнего сценария выключает защиту по совпадению целого блока. Явный сценарий проверяет конкретный ложный допуск. Цена — фикстура порядка операций и её сопровождение.
 - улики:
-  - улика: `openspec/changes/scenario-run-change-impact/verification/baseline-code.md` «found.setdefault(folder.name, {}).setdefault(req.name, entry)»
+  - улика: `openspec/changes/archive/2026-11-17-scenario-run-change-impact/verification/baseline-code.md` «found.setdefault(folder.name, {}).setdefault(req.name, entry)»
 - решение: A, 2026-11-17
 - исход: проба — Specify
 - следствия: в spec.md: Первый снимок сделан после синхронизации и правки дельты
@@ -215,7 +215,7 @@
 - антиподы: —
 - рекомендация: C — Граница целей и опор уже задана спецификациями, а точный риск возникает на уровне формата. Общая фикстура проверит чтение одного отчёта двумя парсерами и поймает расхождение, которое отдельные тесты не покажут.
 - улики:
-  - улика: `openspec/changes/scenario-run-change-impact/verification/baseline-code.md` «if (m := RE_TARGET_PATH.match(line)):»
+  - улика: `openspec/changes/archive/2026-11-17-scenario-run-change-impact/verification/baseline-code.md` «if (m := RE_TARGET_PATH.match(line)):»
 - решение: C, 2026-11-17
 - исход: проба — Backstop
 - следствия: тест-страховка: подать ядру и форку один новый отчёт с локальной целью и мастер-опорой. При правке только опоры проверить stale и одну причину о мастере. При правке только локальной цели проверить причину о ней. Формат отчёта взять из design.
@@ -231,15 +231,15 @@
     - улика: `openspec/specs/trace-snapshot/spec.md` «до первой записи мастера вызвать freeze из `planningHome.root`»
     - улика: `trace/trace_graph.py` «return self.saved[cap][key], True»
     - улика: `trace/trace_graph.py` «"scenarios": {s.name: _hash(s.text) for s in req.scenarios}, "text": _hash(req.text),»
-    - улика: `openspec/changes/scenario-run-change-impact/specs/artifact-attack/spec.md` «перенос остаётся неподтверждённым по этому снимку»
+    - улика: `openspec/changes/archive/2026-11-17-scenario-run-change-impact/specs/artifact-attack/spec.md` «перенос остаётся неподтверждённым по этому снимку»
   - B. Принимать как исходную базу только явно указанную проверяемую раннюю ревизию мастера с подтверждённой связью с текущим изменением. Снимок можно использовать, если запись в нём сверена с этой ревизией. Без такой ревизии применяется F-09. Цена — указывать исходную ревизию и поддерживать её чтение, в store без истории часть старых изменений останется без доказанной базы.
     - улика: `openspec/specs/trace-snapshot/spec.md` «до первой записи мастера вызвать freeze из `planningHome.root`»
     - улика: `trace/trace_graph.py` «return self.saved[cap][key], True»
-    - улика: `openspec/changes/scenario-run-change-impact/specs/artifact-attack/spec.md` «перенос остаётся неподтверждённым по этому снимку»
+    - улика: `openspec/changes/archive/2026-11-17-scenario-run-change-impact/specs/artifact-attack/spec.md` «перенос остаётся неподтверждённым по этому снимку»
   - C. Опираться на живой мастер при подтверждённой работе до sync, а сохранённый снимок принимать только при отдельно зафиксированном ходе прежнего sync. Проверку последовательности выполнять по существующим материалам изменения, без нового переносимого свидетельства. Цена — ручная сверка, повторная атака в новой сессии чаще увидит пробел F-09.
     - улика: `openspec/specs/trace-snapshot/spec.md` «до первой записи мастера вызвать freeze из `planningHome.root`»
     - улика: `trace/trace_graph.py` «return self.saved[cap][key], True»
-    - улика: `openspec/changes/scenario-run-change-impact/specs/artifact-attack/spec.md` «перенос остаётся неподтверждённым по этому снимку»
+    - улика: `openspec/changes/archive/2026-11-17-scenario-run-change-impact/specs/artifact-attack/spec.md` «перенос остаётся неподтверждённым по этому снимку»
 - антиподы: —
 - рекомендация: A — Управляемый sync уже имеет точку до записи мастера. Привязка подтверждения к записи снимка делает повторную проверку воспроизводимой и исключает вывод времени только из существования файла. Цена по сравнению с ручными вариантами — явный контракт свидетельства и проверки совместимости.
 - решение: A, 2026-11-17
@@ -253,18 +253,18 @@
 - варианты:
   - A. Добавить отдельное верхнеуровневое поле в frontmatter отчёта с однострочным JSON-массивом опор. Элемент именует capability, требование и при необходимости сценарий, а также несёт SHA-256 использованного блока. Читатели выводят путь из выбранного корня планирования и читают один и тот же блок в UTF-8 с нормализацией переносов в LF. Поле отделено от targets, старый отчёт без него проверяется по своим целям, неразбираемая или неоднозначная объявленная опора даёт диагностику и stale. Цена — два узких читателя, одна форма блока и общая проверка F-13.
     - улика: `attack/attack_table.py` «elif (m := RE_FRONT_KEY.match(line)):»
-    - улика: `openspec/changes/scenario-run-change-impact/verification/baseline-code.md` «if (m := RE_TARGET_PATH.match(line)):»
-    - улика: `openspec/changes/scenario-run-change-impact/specs/stale-verdict-scope/spec.md` «Такие опоры проверяются в области мастер-спек. Цели из `targets[]` проверяются в каталоге изменения»
-    - улика: `openspec/changes/scenario-run-change-impact/specs/artifact-attack/spec.md` «Отчёт SHALL сохранять сведения, позволяющие опознать этот блок и сверить его содержание при проверке свежести»
+    - улика: `openspec/changes/archive/2026-11-17-scenario-run-change-impact/verification/baseline-code.md` «if (m := RE_TARGET_PATH.match(line)):»
+    - улика: `openspec/changes/archive/2026-11-17-scenario-run-change-impact/specs/stale-verdict-scope/spec.md` «Такие опоры проверяются в области мастер-спек. Цели из `targets[]` проверяются в каталоге изменения»
+    - улика: `openspec/changes/archive/2026-11-17-scenario-run-change-impact/specs/artifact-attack/spec.md` «Отчёт SHALL сохранять сведения, позволяющие опознать этот блок и сверить его содержание при проверке свежести»
   - B. Хранить те же идентификаторы и отпечатки в отдельном JSON-файле внутри каталога изменения, а отчёт связывать с ним проверяемой ссылкой. Область мастер-спек берётся из выбранного корня планирования. Одновременно опубликованные отчёт и файл составляют комплект, пустая или потерянная часть объявленного комплекта даёт диагностику и stale. Цена — согласованная запись, проверка комплектности и ещё один файл при повторной атаке и архивации.
-    - улика: `openspec/changes/scenario-run-change-impact/verification/baseline-code.md` «if (m := RE_TARGET_PATH.match(line)):»
-    - улика: `openspec/changes/scenario-run-change-impact/specs/stale-verdict-scope/spec.md` «Такие опоры проверяются в области мастер-спек. Цели из `targets[]` проверяются в каталоге изменения»
-    - улика: `openspec/changes/scenario-run-change-impact/specs/artifact-attack/spec.md` «Отчёт SHALL сохранять сведения, позволяющие опознать этот блок и сверить его содержание при проверке свежести»
+    - улика: `openspec/changes/archive/2026-11-17-scenario-run-change-impact/verification/baseline-code.md` «if (m := RE_TARGET_PATH.match(line)):»
+    - улика: `openspec/changes/archive/2026-11-17-scenario-run-change-impact/specs/stale-verdict-scope/spec.md` «Такие опоры проверяются в области мастер-спек. Цели из `targets[]` проверяются в каталоге изменения»
+    - улика: `openspec/changes/archive/2026-11-17-scenario-run-change-impact/specs/artifact-attack/spec.md` «Отчёт SHALL сохранять сведения, позволяющие опознать этот блок и сверить его содержание при проверке свежести»
   - C. Хранить опоры обычным вложенным YAML-списком в отчёте. Выделять его отдельным структурным разбором frontmatter в обоих читателях, локальные цели брать только из targets. Идентификацию и сверку использованного блока сделать общей по контракту. Цена — изменить разбор существующих отчётов в ядре и проверить совместимость всех их вариантов.
     - улика: `attack/attack_table.py` «elif (m := RE_FRONT_KEY.match(line)):»
-    - улика: `openspec/changes/scenario-run-change-impact/verification/baseline-code.md` «if (m := RE_TARGET_PATH.match(line)):»
-    - улика: `openspec/changes/scenario-run-change-impact/specs/stale-verdict-scope/spec.md` «Такие опоры проверяются в области мастер-спек. Цели из `targets[]` проверяются в каталоге изменения»
-    - улика: `openspec/changes/scenario-run-change-impact/specs/artifact-attack/spec.md` «Отчёт SHALL сохранять сведения, позволяющие опознать этот блок и сверить его содержание при проверке свежести»
+    - улика: `openspec/changes/archive/2026-11-17-scenario-run-change-impact/verification/baseline-code.md` «if (m := RE_TARGET_PATH.match(line)):»
+    - улика: `openspec/changes/archive/2026-11-17-scenario-run-change-impact/specs/stale-verdict-scope/spec.md` «Такие опоры проверяются в области мастер-спек. Цели из `targets[]` проверяются в каталоге изменения»
+    - улика: `openspec/changes/archive/2026-11-17-scenario-run-change-impact/specs/artifact-attack/spec.md` «Отчёт SHALL сохранять сведения, позволяющие опознать этот блок и сверить его содержание при проверке свежести»
 - антиподы: —
 - рекомендация: A — Одна атомарно записываемая форма отчёта позволяет подать байт-в-байт один экземпляр ядру и форку. JSON-поле можно разобрать отдельно, поэтому не нужен новый жизненный цикл второго файла и меньше риск смешать мастер-опоры с локальными целями.
 - решение: A, 2026-11-17
