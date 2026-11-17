@@ -239,12 +239,12 @@ const JOURNAL = {
  "title": "Журнал решений: scenario-run-change-impact",
  "source": "decisions.json",
  "generated": "2026-11-17",
- "sha256": "66623b1430ae5b127d54725852c0da6b4d32b3f7859ad44d84c94358155a86dc",
+ "sha256": "800ce88ffd6914e98aee1e33913149b36002b92c1cce8a85aa1afaf502796d4a",
  "stats": {
   "records": 15,
   "forks": 10,
   "facts": 5,
-  "decided": 8,
+  "decided": 10,
   "parked": 0,
   "evidence_total": 63,
   "evidence_found": 63
@@ -1145,7 +1145,7 @@ const JOURNAL = {
    "id": "F-14",
    "question": "Чем подтверждать, что сохранённая база для scenario-run снята до первой синхронизации именно этого блока мастер-спеки?",
    "kind": "развилка",
-   "status": "открыт",
+   "status": "решён",
    "addressee": "человек",
    "depends_on": [
     "F-06",
@@ -1254,8 +1254,15 @@ const JOURNAL = {
     "option": "A",
     "why": "Управляемый sync уже имеет точку до записи мастера. Привязка подтверждения к записи снимка делает повторную проверку воспроизводимой и исключает вывод времени только из существования файла. Цена по сравнению с ручными вариантами — явный контракт свидетельства и проверки совместимости."
    },
-   "decision": null,
-   "reversibility": null,
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-17"
+   },
+   "reversibility": {
+    "level": "дорого",
+    "why": "Свидетельство читают вместе со снимком. При смене способа подтверждения нужно сохранить чтение прежних снимков и заново сверить базу атак, опиравшихся на эти свидетельства."
+   },
    "outcome": null,
    "parking": [],
    "dispute": "",
@@ -1268,7 +1275,7 @@ const JOURNAL = {
    "id": "F-15",
    "question": "Где хранить использованные мастер-опоры и как обеспечить одинаковую сверку блока в ядре и форке?",
    "kind": "развилка",
-   "status": "открыт",
+   "status": "решён",
    "addressee": "человек",
    "depends_on": [
     "F-10",
@@ -1384,8 +1391,15 @@ const JOURNAL = {
     "option": "A",
     "why": "Одна атомарно записываемая форма отчёта позволяет подать байт-в-байт один экземпляр ядру и форку. JSON-поле можно разобрать отдельно, поэтому не нужен новый жизненный цикл второго файла и меньше риск смешать мастер-опоры с локальными целями."
    },
-   "decision": null,
-   "reversibility": null,
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-17"
+   },
+   "reversibility": {
+    "level": "дорого",
+    "why": "Отчёты с полем опор могут жить между выпусками. При смене формата нужно согласовать ядро и форк, сохранить проверку записанных отчётов и повторить общую проверку F-13."
+   },
    "outcome": null,
    "parking": [],
    "dispute": "",
@@ -1424,7 +1438,7 @@ const SCHEME = {
 };
 const HELP = {
  "contract": 6,
- "taken_at": "2026-11-17T17:49:53+03:00",
+ "taken_at": "2026-11-17T17:56:29+03:00",
  "versions": {
   "openspec": "1.16.1+symphysis.8",
   "symphysis": "0.1.0+f11b1d25"
@@ -1432,12 +1446,12 @@ const HELP = {
  "change": "scenario-run-change-impact",
  "changes": null,
  "error": null,
- "current_step": "viewer",
- "current_text": "Следующий шаг по файлам — `viewer`, ход человека: открытых развилок 2, решаются на странице журнала. После них по файлам идёт `security`.",
- "turn": "human",
+ "current_step": "security",
+ "current_text": "Следующий шаг по файлам — `security`, ход модели.",
+ "turn": "model",
  "next_by_status": "security",
  "forks": {
-  "open": 2,
+  "open": 0,
   "parked": 0
  },
  "tasks": {
@@ -1517,7 +1531,7 @@ const HELP = {
   },
   {
    "id": "viewer",
-   "state": "ready",
+   "state": "idle",
    "turn": "human",
    "optional": false,
    "blocks": [],
