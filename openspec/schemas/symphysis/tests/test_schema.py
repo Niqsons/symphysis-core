@@ -82,6 +82,20 @@ def test_apply_waits_for_security_checklist(tmp_path):
 
 
 @requires_fork
+def test_security_and_tasks_instructions_deliver_checklist_handoff(tmp_path):
+    """Оба автора получают правило сверки и совместимую форму ссылки из рабочей схемы."""
+    proj = make_project(tmp_path)
+    security = run_openspec(proj, "instructions", "security", "--change", "demo", "--json")
+    tasks = run_openspec(proj, "instructions", "tasks", "--change", "demo", "--json")
+
+    assert "`tasks.md`" in security["instruction"]
+    assert "`security.md`" in tasks["instruction"]
+    assert "[задача 2.1 — Проверить отказ](tasks.md)" in security["template"]
+    assert "«запланировано»" in security["template"]
+    assert "`update-change`" in tasks["template"]
+
+
+@requires_fork
 def test_new_change_intent_first_and_attacks_optional(tmp_path):
     """Сценарий «Новое изменение»: изменение без файлов — `intent` готов, `decisions` ждёт, обе атаки
     `optional`, гейт apply называет `tasks` (невызванная атака его не держит, вызванная — держит)."""

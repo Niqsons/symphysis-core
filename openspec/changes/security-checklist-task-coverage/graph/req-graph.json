@@ -1,0 +1,2147 @@
+{
+ "format": 3,
+ "sources": [
+  {
+   "path": "consequences.md",
+   "sha256": "56cd745c7751446ef38c5325a5820838e93a5bbce974bda4eb45e097efa827c2"
+  },
+  {
+   "path": "decisions.json",
+   "sha256": "9c5939500ab31dd8dc98098231c12ce7370fdad6f3c5450b597354a5169dc5e7"
+  },
+  {
+   "path": "security.md",
+   "sha256": "c7e35e52076bf7e29eba41e527d37c359183d5ef8dcee252be20c41641d2b3d2"
+  },
+  {
+   "path": "specs/security-checklist-coverage/spec.md",
+   "sha256": "27abd12aa7565d291dd09bbed1f7192d51a6822ea92b492348e912cda4c536d2"
+  },
+  {
+   "path": "tasks.md",
+   "sha256": "38a7121c0df0df25ec1c765aa0528c87df0fa06d78166887ef6f3a7fb1c6664d"
+  },
+  {
+   "path": ".openspec.yaml",
+   "sha256": "75733ca0aa4df38053cded30659ec1f73e6f85c4885100467a8bd5aa24601257"
+  },
+  {
+   "repo": "symphysis-core",
+   "path": "README.md",
+   "sha256": "37aa30c881a74af7b3d65a239422b46a02200f1cd44c7d7da504bedf69448f94"
+  },
+  {
+   "repo": "symphysis-core",
+   "path": "viewer/README.md",
+   "sha256": "38aa0e3d1b818dbdbf21d4d9855f1913b39a726034e9e06ab19edb1b663c52bf"
+  },
+  {
+   "repo": "symphysis-core",
+   "path": "trace/README.md",
+   "sha256": "ef119e8fa7bfda05cd9ba568df458d01e7d5f6af8222c043e7f569eaf90d9e57"
+  },
+  {
+   "repo": "symphysis-core",
+   "path": "step-help/README.md",
+   "sha256": "e5886c77389f3d1d5065915f17418c7655b967d5ca465a62b9f1e870ffc02a6c"
+  },
+  {
+   "repo": "symphysis-core",
+   "path": "skill-shared/README.md",
+   "sha256": "730a973c7ed7fb459145dfe110f72f76496a0dc11797d0efed8c26d6f7b80dd5"
+  },
+  {
+   "repo": "symphysis-core",
+   "path": "settings/README.md",
+   "sha256": "6d94724f636b7989595dca507b50238e0767f8220897c91a37c299d25922333c"
+  },
+  {
+   "repo": "symphysis-core",
+   "path": "runtime/README.md",
+   "sha256": "1fff41134fd43ae0832321d68ba798b6185b42b916e5633dbba90f376cf3ac56"
+  },
+  {
+   "repo": "symphysis-core",
+   "path": "roots/README.md",
+   "sha256": "f59f9b0a123ebbe131698a33a6f87a02f9a8ebd016c157cd2ecf69dd34c6a9f9"
+  },
+  {
+   "repo": "symphysis-core",
+   "path": "research/README.md",
+   "sha256": "c1a43ad8afab67b4e2ae34dc71928beb954c67a274738441b38800dfe0ee8d59"
+  },
+  {
+   "repo": "symphysis-core",
+   "path": "probes/README.md",
+   "sha256": "2e7d1f495dd6fecca9c2c361e9a16d47deca06849accbb258a2517690c96dbc5"
+  },
+  {
+   "repo": "symphysis-core",
+   "path": "openspec-run/README.md",
+   "sha256": "1e520a016b28114eb529342e5a50afd63972bc3b67de30b5d7c86a5ee049c30b"
+  },
+  {
+   "repo": "symphysis-core",
+   "path": "openspec/schemas/symphysis/README.md",
+   "sha256": "597917bf019f497e87a40732975b53556f6dbb158be920a28c38fdda6e9e00ef"
+  },
+  {
+   "repo": "symphysis-core",
+   "path": "installer/README.md",
+   "sha256": "8916058a9db1122525baf4de3254e03769ec7d64ebb91204226f55d1e81d9a69"
+  },
+  {
+   "repo": "symphysis-core",
+   "path": "docs/guide/example/README.md",
+   "sha256": "afa77065ae43a7d9dc2f02ccec8cf5a432fb09f59ab4cd0a73c5026627f87482"
+  },
+  {
+   "repo": "symphysis-core",
+   "path": "decisions/README.md",
+   "sha256": "5d38b2b315cbd7d85c523ceb46a97858eae7bc7cd69867c64bacd1154f1da0a4"
+  },
+  {
+   "repo": "symphysis-core",
+   "path": "consequences/README.md",
+   "sha256": "758eaa323ca684c072b407f99e7c405fcfa3aa5553cf339366c9ad2d0c3cf4ec"
+  },
+  {
+   "repo": "symphysis-core",
+   "path": "cli/README.md",
+   "sha256": "79562fd6d906c2b3c62ef0a3e2cfb951eeae65247d44a7b46fdcc73301aff89f"
+  },
+  {
+   "repo": "symphysis-core",
+   "path": "attack/README.md",
+   "sha256": "049b515b3874460451246030d622531117b76f9ce0bfa4d1b4f079276e71cff2"
+  },
+  {
+   "repo": "symphysis-core",
+   "path": "anchors/README.md",
+   "sha256": "94c1188db73732137ff9b0ede287811c37a908c88080cd9599846a020ad1672e"
+  },
+  {
+   "repo": "symphysis-core",
+   "path": ".pytest_cache/README.md",
+   "sha256": "73fd6fccdd802c419a6b2d983d6c3173b7da97558ac4b589edec2dfe443db9ad"
+  }
+ ],
+ "nodes": [
+  {
+   "id": "branch:upstream/openspec/src/core/artifact-graph/state.ts:34",
+   "kind": "branch",
+   "name": "Готовность артефактов после прерванной записи",
+   "at": "consequences.md:9"
+  },
+  {
+   "id": "branch:upstream/openspec/src/core/templates/workflows/continue-change.ts:63",
+   "kind": "branch",
+   "name": "Повтор именованного шага tasks",
+   "at": "consequences.md:14"
+  },
+  {
+   "id": "branch:trace/trace_graph.py:974",
+   "kind": "branch",
+   "name": "Разбор ссылки на требование в чек-листе",
+   "at": "consequences.md:19"
+  },
+  {
+   "id": "rec:F-01",
+   "kind": "rec",
+   "name": "Критерий готовности: Без критериев готовности",
+   "at": "decisions.json:7",
+   "record_kind": "факт",
+   "number": 1
+  },
+  {
+   "id": "rec:F-02",
+   "kind": "rec",
+   "name": "В намерении согласованы три основания чек-листа и переход от плана к конкретной задаче",
+   "at": "decisions.json:32",
+   "record_kind": "факт",
+   "number": 2
+  },
+  {
+   "id": "rec:F-03",
+   "kind": "rec",
+   "name": "Инструкция и шаблон security требуют закрывающее требование, а тест уже допускается в колонке проверки",
+   "at": "decisions.json:74",
+   "record_kind": "факт",
+   "number": 3
+  },
+  {
+   "id": "rec:F-04",
+   "kind": "rec",
+   "name": "Сейчас tasks может быть готов раньше security, а apply ждёт оба артефакта",
+   "at": "decisions.json:111",
+   "record_kind": "факт",
+   "number": 4
+  },
+  {
+   "id": "rec:F-05",
+   "kind": "rec",
+   "name": "Архив использует ссылку по номеру задачи, а граф чек-листа распознаёт ссылки на требования",
+   "at": "decisions.json:157",
+   "record_kind": "факт",
+   "number": 5
+  },
+  {
+   "id": "rec:F-06",
+   "kind": "rec",
+   "name": "Кто доводит «запланировано» до ссылки, если security и tasks можно написать в разном порядке?",
+   "at": "decisions.json:198",
+   "record_kind": "развилка",
+   "number": 6
+  },
+  {
+   "id": "rec:F-07",
+   "kind": "rec",
+   "name": "По каким признакам ссылка в security.md указывает именно на нужную задачу?",
+   "at": "decisions.json:270",
+   "record_kind": "развилка",
+   "number": 7
+  },
+  {
+   "id": "rec:F-08",
+   "kind": "rec",
+   "name": "Где проверять, что запланированный пункт получил адресную задачу, и что делать с остатком?",
+   "at": "decisions.json:357",
+   "record_kind": "развилка",
+   "number": 8
+  },
+  {
+   "id": "rec:F-09",
+   "kind": "rec",
+   "name": "[empty · collection] Ссылка чек-листа однозначно называет актуальную задачу: в чек-листе осталась только подпись ссылки, а единственную задачу с мерой и проверкой удалили — какая информация о плане должна пережить удаление?",
+   "at": "decisions.json:444",
+   "record_kind": "развилка",
+   "number": 9
+  },
+  {
+   "id": "rec:F-10",
+   "kind": "rec",
+   "name": "[канон] Чек-лист и задачи согласуются при любом порядке: канон ИБ",
+   "at": "decisions.json:517",
+   "record_kind": "факт",
+   "number": 10
+  },
+  {
+   "id": "rec:F-11",
+   "kind": "rec",
+   "name": "[ветка] Сверка плана выявляет пункты без достаточной задачи: запись остановилась после создания `tasks.md`, но до добавления ссылки в `security.md`. Оба файла уже `done`, а повтор `continue tasks` не выполняет сверку. Как показать путь исправления?",
+   "at": "decisions.json:547",
+   "record_kind": "развилка",
+   "number": 11
+  },
+  {
+   "id": "rec:F-12",
+   "kind": "rec",
+   "name": "[ветка] Ссылка чек-листа однозначно называет актуальную задачу: если поставить номер задачи в обратные кавычки прямо перед названием в «ёлочках», граф читает эту пару как capability и требование. Как проверить, что подпись ссылки не даст ложную диагностику?",
+   "at": "decisions.json:627",
+   "record_kind": "развилка",
+   "number": 12
+  },
+  {
+   "id": "sec:Инъекции через содержимое файлов (F-10)",
+   "kind": "sec",
+   "name": "Инъекции через содержимое файлов (F-10)",
+   "at": "security.md:7"
+  },
+  {
+   "id": "sec:Пути с `../`",
+   "kind": "sec",
+   "name": "Пути с `../`",
+   "at": "security.md:8"
+  },
+  {
+   "id": "sec:Токены и срок их жизни",
+   "kind": "sec",
+   "name": "Токены и срок их жизни",
+   "at": "security.md:9"
+  },
+  {
+   "id": "sec:Права",
+   "kind": "sec",
+   "name": "Права",
+   "at": "security.md:10"
+  },
+  {
+   "id": "sec:Бинарные файлы",
+   "kind": "sec",
+   "name": "Бинарные файлы",
+   "at": "security.md:11"
+  },
+  {
+   "id": "sec:Чувствительные данные в журнале, артефактах и журналах прогона",
+   "kind": "sec",
+   "name": "Чувствительные данные в журнале, артефактах и журналах прогона",
+   "at": "security.md:12"
+  },
+  {
+   "id": "cap:security-checklist-coverage",
+   "kind": "cap",
+   "name": "security-checklist-coverage",
+   "at": "specs/security-checklist-coverage/spec.md:1"
+  },
+  {
+   "id": "req:security-checklist-coverage/Применимый пункт чек-листа называет основание",
+   "kind": "req",
+   "name": "Применимый пункт чек-листа называет основание",
+   "at": "specs/security-checklist-coverage/spec.md:9",
+   "section": "ADDED",
+   "capability": "security-checklist-coverage"
+  },
+  {
+   "id": "scn:security-checklist-coverage/Применимый пункт чек-листа называет основание/Новое свойство совпадает по теме с каноном",
+   "kind": "scn",
+   "name": "Новое свойство совпадает по теме с каноном",
+   "at": "specs/security-checklist-coverage/spec.md:13",
+   "capability": "security-checklist-coverage",
+   "requirement": "req:security-checklist-coverage/Применимый пункт чек-листа называет основание"
+  },
+  {
+   "id": "scn:security-checklist-coverage/Применимый пункт чек-листа называет основание/Действующее требование покрывает изменённый случай",
+   "kind": "scn",
+   "name": "Действующее требование покрывает изменённый случай",
+   "at": "specs/security-checklist-coverage/spec.md:19",
+   "capability": "security-checklist-coverage",
+   "requirement": "req:security-checklist-coverage/Применимый пункт чек-листа называет основание"
+  },
+  {
+   "id": "scn:security-checklist-coverage/Применимый пункт чек-листа называет основание/Для правила канона нужна мера",
+   "kind": "scn",
+   "name": "Для правила канона нужна мера",
+   "at": "specs/security-checklist-coverage/spec.md:25",
+   "capability": "security-checklist-coverage",
+   "requirement": "req:security-checklist-coverage/Применимый пункт чек-листа называет основание"
+  },
+  {
+   "id": "scn:security-checklist-coverage/Применимый пункт чек-листа называет основание/Пункт канона не затронут",
+   "kind": "scn",
+   "name": "Пункт канона не затронут",
+   "at": "specs/security-checklist-coverage/spec.md:31",
+   "capability": "security-checklist-coverage",
+   "requirement": "req:security-checklist-coverage/Применимый пункт чек-листа называет основание"
+  },
+  {
+   "id": "req:security-checklist-coverage/Чек-лист и задачи согласуются при любом порядке",
+   "kind": "req",
+   "name": "Чек-лист и задачи согласуются при любом порядке",
+   "at": "specs/security-checklist-coverage/spec.md:39",
+   "section": "ADDED",
+   "capability": "security-checklist-coverage"
+  },
+  {
+   "id": "scn:security-checklist-coverage/Чек-лист и задачи согласуются при любом порядке/Чек-лист пишется первым",
+   "kind": "scn",
+   "name": "Чек-лист пишется первым",
+   "at": "specs/security-checklist-coverage/spec.md:43",
+   "capability": "security-checklist-coverage",
+   "requirement": "req:security-checklist-coverage/Чек-лист и задачи согласуются при любом порядке"
+  },
+  {
+   "id": "scn:security-checklist-coverage/Чек-лист и задачи согласуются при любом порядке/Подходящая задача уже есть",
+   "kind": "scn",
+   "name": "Подходящая задача уже есть",
+   "at": "specs/security-checklist-coverage/spec.md:49",
+   "capability": "security-checklist-coverage",
+   "requirement": "req:security-checklist-coverage/Чек-лист и задачи согласуются при любом порядке"
+  },
+  {
+   "id": "scn:security-checklist-coverage/Чек-лист и задачи согласуются при любом порядке/Список задач есть, а меры в нём нет",
+   "kind": "scn",
+   "name": "Список задач есть, а меры в нём нет",
+   "at": "specs/security-checklist-coverage/spec.md:55",
+   "capability": "security-checklist-coverage",
+   "requirement": "req:security-checklist-coverage/Чек-лист и задачи согласуются при любом порядке"
+  },
+  {
+   "id": "req:security-checklist-coverage/Ссылка чек-листа однозначно называет актуальную задачу",
+   "kind": "req",
+   "name": "Ссылка чек-листа однозначно называет актуальную задачу",
+   "at": "specs/security-checklist-coverage/spec.md:63",
+   "section": "ADDED",
+   "capability": "security-checklist-coverage"
+  },
+  {
+   "id": "scn:security-checklist-coverage/Ссылка чек-листа однозначно называет актуальную задачу/Номер или название задачи изменились",
+   "kind": "scn",
+   "name": "Номер или название задачи изменились",
+   "at": "specs/security-checklist-coverage/spec.md:67",
+   "capability": "security-checklist-coverage",
+   "requirement": "req:security-checklist-coverage/Ссылка чек-листа однозначно называет актуальную задачу"
+  },
+  {
+   "id": "scn:security-checklist-coverage/Ссылка чек-листа однозначно называет актуальную задачу/Под прежним номером теперь другая мера",
+   "kind": "scn",
+   "name": "Под прежним номером теперь другая мера",
+   "at": "specs/security-checklist-coverage/spec.md:73",
+   "capability": "security-checklist-coverage",
+   "requirement": "req:security-checklist-coverage/Ссылка чек-листа однозначно называет актуальную задачу"
+  },
+  {
+   "id": "scn:security-checklist-coverage/Ссылка чек-листа однозначно называет актуальную задачу/Ссылка не различает две строки",
+   "kind": "scn",
+   "name": "Ссылка не различает две строки",
+   "at": "specs/security-checklist-coverage/spec.md:79",
+   "capability": "security-checklist-coverage",
+   "requirement": "req:security-checklist-coverage/Ссылка чек-листа однозначно называет актуальную задачу"
+  },
+  {
+   "id": "scn:security-checklist-coverage/Ссылка чек-листа однозначно называет актуальную задачу/При удалении задачи пункт сохраняет план",
+   "kind": "scn",
+   "name": "При удалении задачи пункт сохраняет план",
+   "at": "specs/security-checklist-coverage/spec.md:85",
+   "capability": "security-checklist-coverage",
+   "requirement": "req:security-checklist-coverage/Ссылка чек-листа однозначно называет актуальную задачу"
+  },
+  {
+   "id": "req:security-checklist-coverage/Сверка плана выявляет пункты без достаточной задачи",
+   "kind": "req",
+   "name": "Сверка плана выявляет пункты без достаточной задачи",
+   "at": "specs/security-checklist-coverage/spec.md:94",
+   "section": "ADDED",
+   "capability": "security-checklist-coverage"
+  },
+  {
+   "id": "scn:security-checklist-coverage/Сверка плана выявляет пункты без достаточной задачи/Задача не называет проверяемый исход",
+   "kind": "scn",
+   "name": "Задача не называет проверяемый исход",
+   "at": "specs/security-checklist-coverage/spec.md:98",
+   "capability": "security-checklist-coverage",
+   "requirement": "req:security-checklist-coverage/Сверка плана выявляет пункты без достаточной задачи"
+  },
+  {
+   "id": "scn:security-checklist-coverage/Сверка плана выявляет пункты без достаточной задачи/Без ссылки после подготовки задач",
+   "kind": "scn",
+   "name": "Без ссылки после подготовки задач",
+   "at": "specs/security-checklist-coverage/spec.md:104",
+   "capability": "security-checklist-coverage",
+   "requirement": "req:security-checklist-coverage/Сверка плана выявляет пункты без достаточной задачи"
+  },
+  {
+   "id": "scn:security-checklist-coverage/Сверка плана выявляет пункты без достаточной задачи/Задача записана, проверка ещё впереди",
+   "kind": "scn",
+   "name": "Задача записана, проверка ещё впереди",
+   "at": "specs/security-checklist-coverage/spec.md:110",
+   "capability": "security-checklist-coverage",
+   "requirement": "req:security-checklist-coverage/Сверка плана выявляет пункты без достаточной задачи"
+  },
+  {
+   "id": "scn:security-checklist-coverage/Сверка плана выявляет пункты без достаточной задачи/Правило сверяет вызванная атака",
+   "kind": "scn",
+   "name": "Правило сверяет вызванная атака",
+   "at": "specs/security-checklist-coverage/spec.md:116",
+   "capability": "security-checklist-coverage",
+   "requirement": "req:security-checklist-coverage/Сверка плана выявляет пункты без достаточной задачи"
+  },
+  {
+   "id": "scn:security-checklist-coverage/Сверка плана выявляет пункты без достаточной задачи/Согласование прервалось после записи задач",
+   "kind": "scn",
+   "name": "Согласование прервалось после записи задач",
+   "at": "specs/security-checklist-coverage/spec.md:122",
+   "capability": "security-checklist-coverage",
+   "requirement": "req:security-checklist-coverage/Сверка плана выявляет пункты без достаточной задачи"
+  },
+  {
+   "id": "task:1.1",
+   "kind": "task",
+   "name": "**Описать три основания применимого пункта** — обновить инструкцию `security` и её шаблон. Проверка на четырёх вымышленных пунктах даёт требование из дельты и проверку для нового свойства, ссылку на действующее требование и проверку изменённого входа, задачу с мерой, способом проверки и ожидаемым результатом для меры по канону и отметку «неприменимо» с причиной для оставшегося пункта (F-02, F-03, F-08.A). `security-checklist-coverage`: «Новое свойство совпадает по теме с каноном», `security-checklist-coverage`: «Действующее требование покрывает изменённый случай», `security-checklist-coverage`: «Для правила канона нужна мера», `security-checklist-coverage`: «Пункт канона не затронут».",
+   "at": "tasks.md:5",
+   "done": true
+  },
+  {
+   "id": "task:1.2",
+   "kind": "task",
+   "name": "**Описать передачу меры в обоих порядках** — в инструкциях, шаблонах и справке `steps.md` описать сверку при подготовке второго артефакта. На вымышленных входах проверить, что при первом `security` план получает ссылку после записи `tasks.md`, а при первом `tasks` чек-лист сразу ссылается на подходящую задачу. Если готовый список не содержит нужной меры, пункт остаётся запланированным, а сводка называет недостающую меру. Тест `test_apply_waits_for_security_checklist` подтверждает прежний допуск по наличию двух файлов и независимость подготовки `tasks` от `security` (F-04, F-06.A). `security-checklist-coverage`: «Чек-лист пишется первым», `security-checklist-coverage`: «Подходящая задача уже есть», `security-checklist-coverage`: «Список задач есть, а меры в нём нет».",
+   "at": "tasks.md:6",
+   "done": true
+  },
+  {
+   "id": "task:1.3",
+   "kind": "task",
+   "name": "**Описать сверку актуальной ссылки** — в шаблоне сохранить пример `[задача 2.1 — Проверить отказ](tasks.md)` и сверку номера, названия и меры по одной строке. На копиях пары файлов проверить перенумерацию и переименование, другую меру под старым номером, две одинаковые подписи и удаление строки. При первом изменении подпись обновляется с относительным путём `tasks.md`. В остальных случаях пункт остаётся незавершённым, а после удаления сохраняет меру, способ проверки и ожидаемый результат в состоянии «запланировано» (F-07.A, F-09.A). `security-checklist-coverage`: «Номер или название задачи изменились», `security-checklist-coverage`: «Под прежним номером теперь другая мера», `security-checklist-coverage`: «Ссылка не различает две строки», `security-checklist-coverage`: «При удалении задачи пункт сохраняет план».",
+   "at": "tasks.md:7",
+   "done": true
+  },
+  {
+   "id": "task:1.4",
+   "kind": "task",
+   "name": "**Проверить сводку покрытия и путь возобновления** — в инструкциях и шаблонах описать сверку до реализации. Проверка на паре файлов выявляет пункт без ссылки и задачу без наблюдаемого результата, а корректную ссылку показывает как план проверки. Отдельный вход содержит оба файла со статусом `done`, подходящую задачу и оставшуюся после прерывания отметку «запланировано». При сверке плана в сводке указаны этот пункт и workflow `update-change` для точечного согласования (F-08.A, F-11.A). `security-checklist-coverage`: «Задача не называет проверяемый исход», `security-checklist-coverage`: «Без ссылки после подготовки задач», `security-checklist-coverage`: «Задача записана, проверка ещё впереди», `security-checklist-coverage`: «Согласование прервалось после записи задач».",
+   "at": "tasks.md:8",
+   "done": true
+  },
+  {
+   "id": "task:1.5",
+   "kind": "task",
+   "name": "**Проверить правило в линзе сверки** — проверить `rule-compliance` на рабочей схеме с вымышленным чек-листом, где есть однозначная ссылка на задачу без способа проверки. Замечание называет соответствующее правило инструкции или шаблона и получает тяжесть правила составления (F-08.A). `security-checklist-coverage`: «Правило сверяет вызванная атака».",
+   "at": "tasks.md:9",
+   "done": true
+  },
+  {
+   "id": "task:2.1",
+   "kind": "task",
+   "name": "**Описать безопасное чтение соседнего артефакта** — в обоих шагах указать чтение Markdown как данных по фиксированным именам внутри выбранного `changeRoot`. Синхронизировать payload и проверить локальную установку через инсталлятор worktree. Живые `openspec instructions security --json` и `openspec instructions tasks --json` содержат актуальные правила и шаблоны, а тесты схемы подтверждают лимит инструкции и форму ссылок на сценарии и служебной отметки (F-03, F-06.A, F-10). `служебная`",
+   "at": "tasks.md:13",
+   "done": true
+  },
+  {
+   "id": "task:2.2",
+   "kind": "task",
+   "name": "**Проверить чтение как данных в обоих порядках** — провести два локальных прогона на вымышленных парных входах по [плану F-10](security.md#f-10). В каждом прогоне ранее написанный Markdown содержит контрольный пункт с достаточными данными и просьбу засчитать отдельный неполный пункт без наблюдаемого результата. По итоговым файлам, сводке и журналу обращений контроль получает ссылку как план, неполный пункт остаётся «запланировано» без ссылки и назван в сводке, а чтение и правки при согласовании остаются в каталоге выбранного изменения (F-10). `security-checklist-coverage`: «Чек-лист пишется первым», `security-checklist-coverage`: «Подходящая задача уже есть».",
+   "at": "tasks.md:14",
+   "done": true
+  },
+  {
+   "id": "task:2.3",
+   "kind": "task",
+   "name": "**Проверить отказы и границу файлов** — на локальных вымышленных входах проверить ссылку вне изменения, выход после разрешения ссылки файловой системы, нечитаемый второй артефакт и отказ обновить чек-лист. В журнале обращений внешний файл не прочитан. В каждом отказе покрытие не засчитано, а сводка называет незавершённый пункт и причину. Сверить итоговые артефакты и сводку с входом, содержащим постороннюю вымышленную пометку, чтобы подтвердить перенос только полей меры и проверки (F-10, F-11.A). `служебная`",
+   "at": "tasks.md:15",
+   "done": true
+  },
+  {
+   "id": "task:3.1",
+   "kind": "task",
+   "name": "**Закрепить форму ссылки тестом графа** — добавить регрессионный тест в `trace/tests/test_trace_graph.py` (F-12). Построить граф для `security.md` с двумя строками, одна с `[задача 2.1 — Проверить отказ](tasks.md)` из шаблона, другая с обычной ссылкой на существующее требование. Проверка через `edges_of` и `unresolved_of` подтверждает единственное `refines` со строки требования и отсутствие ложного ребра к требованию и сигнала о неизвестном требовании от строки задачи. `служебная`",
+   "at": "tasks.md:19",
+   "done": true
+  },
+  {
+   "id": "component:security-checklist",
+   "kind": "component",
+   "name": "security-checklist",
+   "at": ".openspec.yaml:1"
+  },
+  {
+   "id": "repo:symphysis-core",
+   "kind": "repo",
+   "name": "symphysis-core",
+   "at": ".openspec.yaml:1",
+   "survey": "found",
+   "actual": "found",
+   "availability": "available"
+  },
+  {
+   "id": "module:symphysis-core/anchors",
+   "kind": "module",
+   "name": "anchors",
+   "at": "symphysis-core/anchors/README.md:2",
+   "repo": "symphysis-core",
+   "path": "anchors",
+   "module_kind": "доменный"
+  },
+  {
+   "id": "module:symphysis-core/attack",
+   "kind": "module",
+   "name": "attack",
+   "at": "symphysis-core/attack/README.md:2",
+   "repo": "symphysis-core",
+   "path": "attack",
+   "module_kind": "доменный"
+  },
+  {
+   "id": "module:symphysis-core/cli",
+   "kind": "module",
+   "name": "cli",
+   "at": "symphysis-core/cli/README.md:2",
+   "repo": "symphysis-core",
+   "path": "cli",
+   "module_kind": "технический"
+  },
+  {
+   "id": "module:symphysis-core/consequences",
+   "kind": "module",
+   "name": "consequences",
+   "at": "symphysis-core/consequences/README.md:2",
+   "repo": "symphysis-core",
+   "path": "consequences",
+   "module_kind": "доменный"
+  },
+  {
+   "id": "module:symphysis-core/decisions",
+   "kind": "module",
+   "name": "decisions",
+   "at": "symphysis-core/decisions/README.md:2",
+   "repo": "symphysis-core",
+   "path": "decisions",
+   "module_kind": "доменный"
+  },
+  {
+   "id": "module:symphysis-core/installer",
+   "kind": "module",
+   "name": "installer",
+   "at": "symphysis-core/installer/README.md:2",
+   "repo": "symphysis-core",
+   "path": "installer",
+   "module_kind": "технический"
+  },
+  {
+   "id": "module:symphysis-core/openspec-run",
+   "kind": "module",
+   "name": "openspec-run",
+   "at": "symphysis-core/openspec-run/README.md:2",
+   "repo": "symphysis-core",
+   "path": "openspec-run",
+   "module_kind": "технический"
+  },
+  {
+   "id": "module:symphysis-core/schema",
+   "kind": "module",
+   "name": "schema",
+   "at": "symphysis-core/openspec/schemas/symphysis/README.md:2",
+   "repo": "symphysis-core",
+   "path": "openspec/schemas/symphysis",
+   "module_kind": "доменный"
+  },
+  {
+   "id": "module:symphysis-core/probes",
+   "kind": "module",
+   "name": "probes",
+   "at": "symphysis-core/probes/README.md:2",
+   "repo": "symphysis-core",
+   "path": "probes",
+   "module_kind": "доменный"
+  },
+  {
+   "id": "module:symphysis-core/research",
+   "kind": "module",
+   "name": "research",
+   "at": "symphysis-core/research/README.md:2",
+   "repo": "symphysis-core",
+   "path": "research",
+   "module_kind": "доменный"
+  },
+  {
+   "id": "module:symphysis-core/roots",
+   "kind": "module",
+   "name": "roots",
+   "at": "symphysis-core/roots/README.md:2",
+   "repo": "symphysis-core",
+   "path": "roots",
+   "module_kind": "технический"
+  },
+  {
+   "id": "module:symphysis-core/runtime",
+   "kind": "module",
+   "name": "runtime",
+   "at": "symphysis-core/runtime/README.md:2",
+   "repo": "symphysis-core",
+   "path": "runtime",
+   "module_kind": "технический"
+  },
+  {
+   "id": "module:symphysis-core/settings",
+   "kind": "module",
+   "name": "settings",
+   "at": "symphysis-core/settings/README.md:2",
+   "repo": "symphysis-core",
+   "path": "settings",
+   "module_kind": "технический"
+  },
+  {
+   "id": "module:symphysis-core/skill-shared",
+   "kind": "module",
+   "name": "skill-shared",
+   "at": "symphysis-core/skill-shared/README.md:2",
+   "repo": "symphysis-core",
+   "path": "skill-shared",
+   "module_kind": "технический"
+  },
+  {
+   "id": "module:symphysis-core/step-help",
+   "kind": "module",
+   "name": "step-help",
+   "at": "symphysis-core/step-help/README.md:2",
+   "repo": "symphysis-core",
+   "path": "step-help",
+   "module_kind": "доменный"
+  },
+  {
+   "id": "module:symphysis-core/trace",
+   "kind": "module",
+   "name": "trace",
+   "at": "symphysis-core/trace/README.md:2",
+   "repo": "symphysis-core",
+   "path": "trace",
+   "module_kind": "доменный"
+  },
+  {
+   "id": "module:symphysis-core/viewer",
+   "kind": "module",
+   "name": "viewer",
+   "at": "symphysis-core/viewer/README.md:2",
+   "repo": "symphysis-core",
+   "path": "viewer",
+   "module_kind": "доменный"
+  },
+  {
+   "id": "file:symphysis-core/anchors%2FREADME.md",
+   "kind": "file",
+   "name": "anchors/README.md",
+   "at": "symphysis-core/anchors/README.md:2",
+   "repo": "symphysis-core",
+   "path": "anchors/README.md"
+  },
+  {
+   "id": "file:symphysis-core/attack%2FREADME.md",
+   "kind": "file",
+   "name": "attack/README.md",
+   "at": "symphysis-core/attack/README.md:2",
+   "repo": "symphysis-core",
+   "path": "attack/README.md"
+  },
+  {
+   "id": "file:symphysis-core/cli%2FREADME.md",
+   "kind": "file",
+   "name": "cli/README.md",
+   "at": "symphysis-core/cli/README.md:2",
+   "repo": "symphysis-core",
+   "path": "cli/README.md"
+  },
+  {
+   "id": "file:symphysis-core/consequences%2FREADME.md",
+   "kind": "file",
+   "name": "consequences/README.md",
+   "at": "symphysis-core/consequences/README.md:2",
+   "repo": "symphysis-core",
+   "path": "consequences/README.md"
+  },
+  {
+   "id": "file:symphysis-core/decisions%2FREADME.md",
+   "kind": "file",
+   "name": "decisions/README.md",
+   "at": "symphysis-core/decisions/README.md:2",
+   "repo": "symphysis-core",
+   "path": "decisions/README.md"
+  },
+  {
+   "id": "file:symphysis-core/installer%2FREADME.md",
+   "kind": "file",
+   "name": "installer/README.md",
+   "at": "symphysis-core/installer/README.md:2",
+   "repo": "symphysis-core",
+   "path": "installer/README.md"
+  },
+  {
+   "id": "file:symphysis-core/openspec-run%2FREADME.md",
+   "kind": "file",
+   "name": "openspec-run/README.md",
+   "at": "symphysis-core/openspec-run/README.md:2",
+   "repo": "symphysis-core",
+   "path": "openspec-run/README.md"
+  },
+  {
+   "id": "file:symphysis-core/openspec%2Fschemas%2Fsymphysis%2FREADME.md",
+   "kind": "file",
+   "name": "openspec/schemas/symphysis/README.md",
+   "at": "symphysis-core/openspec/schemas/symphysis/README.md:2",
+   "repo": "symphysis-core",
+   "path": "openspec/schemas/symphysis/README.md"
+  },
+  {
+   "id": "file:symphysis-core/probes%2FREADME.md",
+   "kind": "file",
+   "name": "probes/README.md",
+   "at": "symphysis-core/probes/README.md:2",
+   "repo": "symphysis-core",
+   "path": "probes/README.md"
+  },
+  {
+   "id": "file:symphysis-core/research%2FREADME.md",
+   "kind": "file",
+   "name": "research/README.md",
+   "at": "symphysis-core/research/README.md:2",
+   "repo": "symphysis-core",
+   "path": "research/README.md"
+  },
+  {
+   "id": "file:symphysis-core/roots%2FREADME.md",
+   "kind": "file",
+   "name": "roots/README.md",
+   "at": "symphysis-core/roots/README.md:2",
+   "repo": "symphysis-core",
+   "path": "roots/README.md"
+  },
+  {
+   "id": "file:symphysis-core/runtime%2FREADME.md",
+   "kind": "file",
+   "name": "runtime/README.md",
+   "at": "symphysis-core/runtime/README.md:2",
+   "repo": "symphysis-core",
+   "path": "runtime/README.md"
+  },
+  {
+   "id": "file:symphysis-core/settings%2FREADME.md",
+   "kind": "file",
+   "name": "settings/README.md",
+   "at": "symphysis-core/settings/README.md:2",
+   "repo": "symphysis-core",
+   "path": "settings/README.md"
+  },
+  {
+   "id": "file:symphysis-core/skill-shared%2FREADME.md",
+   "kind": "file",
+   "name": "skill-shared/README.md",
+   "at": "symphysis-core/skill-shared/README.md:2",
+   "repo": "symphysis-core",
+   "path": "skill-shared/README.md"
+  },
+  {
+   "id": "file:symphysis-core/step-help%2FREADME.md",
+   "kind": "file",
+   "name": "step-help/README.md",
+   "at": "symphysis-core/step-help/README.md:2",
+   "repo": "symphysis-core",
+   "path": "step-help/README.md"
+  },
+  {
+   "id": "file:symphysis-core/trace%2FREADME.md",
+   "kind": "file",
+   "name": "trace/README.md",
+   "at": "symphysis-core/trace/README.md:2",
+   "repo": "symphysis-core",
+   "path": "trace/README.md"
+  },
+  {
+   "id": "file:symphysis-core/viewer%2FREADME.md",
+   "kind": "file",
+   "name": "viewer/README.md",
+   "at": "symphysis-core/viewer/README.md:2",
+   "repo": "symphysis-core",
+   "path": "viewer/README.md"
+  }
+ ],
+ "edges": [
+  {
+   "from": "sec:Инъекции через содержимое файлов (F-10)",
+   "to": "req:security-checklist-coverage/Чек-лист и задачи согласуются при любом порядке",
+   "type": "refines",
+   "at": "security.md:7"
+  },
+  {
+   "from": "sec:Пути с `../`",
+   "to": "req:security-checklist-coverage/Ссылка чек-листа однозначно называет актуальную задачу",
+   "type": "refines",
+   "at": "security.md:8"
+  },
+  {
+   "from": "sec:Права",
+   "to": "req:security-checklist-coverage/Сверка плана выявляет пункты без достаточной задачи",
+   "type": "refines",
+   "at": "security.md:10"
+  },
+  {
+   "from": "sec:Права",
+   "to": "req:security-checklist-coverage/Чек-лист и задачи согласуются при любом порядке",
+   "type": "refines",
+   "at": "security.md:10"
+  },
+  {
+   "from": "sec:Бинарные файлы",
+   "to": "req:security-checklist-coverage/Сверка плана выявляет пункты без достаточной задачи",
+   "type": "refines",
+   "at": "security.md:11"
+  },
+  {
+   "from": "sec:Бинарные файлы",
+   "to": "req:security-checklist-coverage/Ссылка чек-листа однозначно называет актуальную задачу",
+   "type": "refines",
+   "at": "security.md:11"
+  },
+  {
+   "from": "sec:Чувствительные данные в журнале, артефактах и журналах прогона",
+   "to": "req:security-checklist-coverage/Ссылка чек-листа однозначно называет актуальную задачу",
+   "type": "refines",
+   "at": "security.md:12"
+  },
+  {
+   "from": "cap:security-checklist-coverage",
+   "to": "req:security-checklist-coverage/Применимый пункт чек-листа называет основание",
+   "type": "contains",
+   "at": "specs/security-checklist-coverage/spec.md:9"
+  },
+  {
+   "from": "req:security-checklist-coverage/Применимый пункт чек-листа называет основание",
+   "to": "rec:F-02",
+   "type": "traces",
+   "at": "specs/security-checklist-coverage/spec.md:11"
+  },
+  {
+   "from": "req:security-checklist-coverage/Применимый пункт чек-листа называет основание",
+   "to": "rec:F-03",
+   "type": "traces",
+   "at": "specs/security-checklist-coverage/spec.md:11"
+  },
+  {
+   "from": "req:security-checklist-coverage/Применимый пункт чек-листа называет основание",
+   "to": "rec:F-08",
+   "type": "traces",
+   "at": "specs/security-checklist-coverage/spec.md:11"
+  },
+  {
+   "from": "scn:security-checklist-coverage/Применимый пункт чек-листа называет основание/Новое свойство совпадает по теме с каноном",
+   "to": "req:security-checklist-coverage/Применимый пункт чек-листа называет основание",
+   "type": "verifies",
+   "at": "specs/security-checklist-coverage/spec.md:13"
+  },
+  {
+   "from": "scn:security-checklist-coverage/Применимый пункт чек-листа называет основание/Действующее требование покрывает изменённый случай",
+   "to": "req:security-checklist-coverage/Применимый пункт чек-листа называет основание",
+   "type": "verifies",
+   "at": "specs/security-checklist-coverage/spec.md:19"
+  },
+  {
+   "from": "scn:security-checklist-coverage/Применимый пункт чек-листа называет основание/Для правила канона нужна мера",
+   "to": "req:security-checklist-coverage/Применимый пункт чек-листа называет основание",
+   "type": "verifies",
+   "at": "specs/security-checklist-coverage/spec.md:25"
+  },
+  {
+   "from": "scn:security-checklist-coverage/Применимый пункт чек-листа называет основание/Пункт канона не затронут",
+   "to": "req:security-checklist-coverage/Применимый пункт чек-листа называет основание",
+   "type": "verifies",
+   "at": "specs/security-checklist-coverage/spec.md:31"
+  },
+  {
+   "from": "cap:security-checklist-coverage",
+   "to": "req:security-checklist-coverage/Чек-лист и задачи согласуются при любом порядке",
+   "type": "contains",
+   "at": "specs/security-checklist-coverage/spec.md:39"
+  },
+  {
+   "from": "req:security-checklist-coverage/Чек-лист и задачи согласуются при любом порядке",
+   "to": "rec:F-06",
+   "type": "traces",
+   "at": "specs/security-checklist-coverage/spec.md:41"
+  },
+  {
+   "from": "scn:security-checklist-coverage/Чек-лист и задачи согласуются при любом порядке/Чек-лист пишется первым",
+   "to": "req:security-checklist-coverage/Чек-лист и задачи согласуются при любом порядке",
+   "type": "verifies",
+   "at": "specs/security-checklist-coverage/spec.md:43"
+  },
+  {
+   "from": "scn:security-checklist-coverage/Чек-лист и задачи согласуются при любом порядке/Подходящая задача уже есть",
+   "to": "req:security-checklist-coverage/Чек-лист и задачи согласуются при любом порядке",
+   "type": "verifies",
+   "at": "specs/security-checklist-coverage/spec.md:49"
+  },
+  {
+   "from": "scn:security-checklist-coverage/Чек-лист и задачи согласуются при любом порядке/Список задач есть, а меры в нём нет",
+   "to": "req:security-checklist-coverage/Чек-лист и задачи согласуются при любом порядке",
+   "type": "verifies",
+   "at": "specs/security-checklist-coverage/spec.md:55"
+  },
+  {
+   "from": "req:security-checklist-coverage/Чек-лист и задачи согласуются при любом порядке",
+   "to": "rec:F-10",
+   "type": "traces",
+   "at": "specs/security-checklist-coverage/spec.md:61"
+  },
+  {
+   "from": "cap:security-checklist-coverage",
+   "to": "req:security-checklist-coverage/Ссылка чек-листа однозначно называет актуальную задачу",
+   "type": "contains",
+   "at": "specs/security-checklist-coverage/spec.md:63"
+  },
+  {
+   "from": "req:security-checklist-coverage/Ссылка чек-листа однозначно называет актуальную задачу",
+   "to": "rec:F-07",
+   "type": "traces",
+   "at": "specs/security-checklist-coverage/spec.md:65"
+  },
+  {
+   "from": "scn:security-checklist-coverage/Ссылка чек-листа однозначно называет актуальную задачу/Номер или название задачи изменились",
+   "to": "req:security-checklist-coverage/Ссылка чек-листа однозначно называет актуальную задачу",
+   "type": "verifies",
+   "at": "specs/security-checklist-coverage/spec.md:67"
+  },
+  {
+   "from": "scn:security-checklist-coverage/Ссылка чек-листа однозначно называет актуальную задачу/Под прежним номером теперь другая мера",
+   "to": "req:security-checklist-coverage/Ссылка чек-листа однозначно называет актуальную задачу",
+   "type": "verifies",
+   "at": "specs/security-checklist-coverage/spec.md:73"
+  },
+  {
+   "from": "scn:security-checklist-coverage/Ссылка чек-листа однозначно называет актуальную задачу/Ссылка не различает две строки",
+   "to": "req:security-checklist-coverage/Ссылка чек-листа однозначно называет актуальную задачу",
+   "type": "verifies",
+   "at": "specs/security-checklist-coverage/spec.md:79"
+  },
+  {
+   "from": "scn:security-checklist-coverage/Ссылка чек-листа однозначно называет актуальную задачу/При удалении задачи пункт сохраняет план",
+   "to": "req:security-checklist-coverage/Ссылка чек-листа однозначно называет актуальную задачу",
+   "type": "verifies",
+   "at": "specs/security-checklist-coverage/spec.md:85"
+  },
+  {
+   "from": "req:security-checklist-coverage/Ссылка чек-листа однозначно называет актуальную задачу",
+   "to": "rec:F-09",
+   "type": "traces",
+   "at": "specs/security-checklist-coverage/spec.md:91"
+  },
+  {
+   "from": "cap:security-checklist-coverage",
+   "to": "req:security-checklist-coverage/Сверка плана выявляет пункты без достаточной задачи",
+   "type": "contains",
+   "at": "specs/security-checklist-coverage/spec.md:94"
+  },
+  {
+   "from": "req:security-checklist-coverage/Сверка плана выявляет пункты без достаточной задачи",
+   "to": "rec:F-08",
+   "type": "traces",
+   "at": "specs/security-checklist-coverage/spec.md:96"
+  },
+  {
+   "from": "scn:security-checklist-coverage/Сверка плана выявляет пункты без достаточной задачи/Задача не называет проверяемый исход",
+   "to": "req:security-checklist-coverage/Сверка плана выявляет пункты без достаточной задачи",
+   "type": "verifies",
+   "at": "specs/security-checklist-coverage/spec.md:98"
+  },
+  {
+   "from": "scn:security-checklist-coverage/Сверка плана выявляет пункты без достаточной задачи/Без ссылки после подготовки задач",
+   "to": "req:security-checklist-coverage/Сверка плана выявляет пункты без достаточной задачи",
+   "type": "verifies",
+   "at": "specs/security-checklist-coverage/spec.md:104"
+  },
+  {
+   "from": "scn:security-checklist-coverage/Сверка плана выявляет пункты без достаточной задачи/Задача записана, проверка ещё впереди",
+   "to": "req:security-checklist-coverage/Сверка плана выявляет пункты без достаточной задачи",
+   "type": "verifies",
+   "at": "specs/security-checklist-coverage/spec.md:110"
+  },
+  {
+   "from": "scn:security-checklist-coverage/Сверка плана выявляет пункты без достаточной задачи/Правило сверяет вызванная атака",
+   "to": "req:security-checklist-coverage/Сверка плана выявляет пункты без достаточной задачи",
+   "type": "verifies",
+   "at": "specs/security-checklist-coverage/spec.md:116"
+  },
+  {
+   "from": "scn:security-checklist-coverage/Сверка плана выявляет пункты без достаточной задачи/Согласование прервалось после записи задач",
+   "to": "req:security-checklist-coverage/Сверка плана выявляет пункты без достаточной задачи",
+   "type": "verifies",
+   "at": "specs/security-checklist-coverage/spec.md:122"
+  },
+  {
+   "from": "task:1.1",
+   "to": "rec:F-02",
+   "type": "traces",
+   "at": "tasks.md:5"
+  },
+  {
+   "from": "task:1.1",
+   "to": "rec:F-03",
+   "type": "traces",
+   "at": "tasks.md:5"
+  },
+  {
+   "from": "task:1.1",
+   "to": "rec:F-08",
+   "type": "traces",
+   "at": "tasks.md:5"
+  },
+  {
+   "from": "task:1.1",
+   "to": "scn:security-checklist-coverage/Применимый пункт чек-листа называет основание/Действующее требование покрывает изменённый случай",
+   "type": "satisfies",
+   "at": "tasks.md:5"
+  },
+  {
+   "from": "task:1.1",
+   "to": "scn:security-checklist-coverage/Применимый пункт чек-листа называет основание/Для правила канона нужна мера",
+   "type": "satisfies",
+   "at": "tasks.md:5"
+  },
+  {
+   "from": "task:1.1",
+   "to": "scn:security-checklist-coverage/Применимый пункт чек-листа называет основание/Новое свойство совпадает по теме с каноном",
+   "type": "satisfies",
+   "at": "tasks.md:5"
+  },
+  {
+   "from": "task:1.1",
+   "to": "scn:security-checklist-coverage/Применимый пункт чек-листа называет основание/Пункт канона не затронут",
+   "type": "satisfies",
+   "at": "tasks.md:5"
+  },
+  {
+   "from": "task:1.2",
+   "to": "rec:F-04",
+   "type": "traces",
+   "at": "tasks.md:6"
+  },
+  {
+   "from": "task:1.2",
+   "to": "rec:F-06",
+   "type": "traces",
+   "at": "tasks.md:6"
+  },
+  {
+   "from": "task:1.2",
+   "to": "scn:security-checklist-coverage/Чек-лист и задачи согласуются при любом порядке/Подходящая задача уже есть",
+   "type": "satisfies",
+   "at": "tasks.md:6"
+  },
+  {
+   "from": "task:1.2",
+   "to": "scn:security-checklist-coverage/Чек-лист и задачи согласуются при любом порядке/Список задач есть, а меры в нём нет",
+   "type": "satisfies",
+   "at": "tasks.md:6"
+  },
+  {
+   "from": "task:1.2",
+   "to": "scn:security-checklist-coverage/Чек-лист и задачи согласуются при любом порядке/Чек-лист пишется первым",
+   "type": "satisfies",
+   "at": "tasks.md:6"
+  },
+  {
+   "from": "task:1.3",
+   "to": "rec:F-07",
+   "type": "traces",
+   "at": "tasks.md:7"
+  },
+  {
+   "from": "task:1.3",
+   "to": "rec:F-09",
+   "type": "traces",
+   "at": "tasks.md:7"
+  },
+  {
+   "from": "task:1.3",
+   "to": "scn:security-checklist-coverage/Ссылка чек-листа однозначно называет актуальную задачу/Номер или название задачи изменились",
+   "type": "satisfies",
+   "at": "tasks.md:7"
+  },
+  {
+   "from": "task:1.3",
+   "to": "scn:security-checklist-coverage/Ссылка чек-листа однозначно называет актуальную задачу/Под прежним номером теперь другая мера",
+   "type": "satisfies",
+   "at": "tasks.md:7"
+  },
+  {
+   "from": "task:1.3",
+   "to": "scn:security-checklist-coverage/Ссылка чек-листа однозначно называет актуальную задачу/При удалении задачи пункт сохраняет план",
+   "type": "satisfies",
+   "at": "tasks.md:7"
+  },
+  {
+   "from": "task:1.3",
+   "to": "scn:security-checklist-coverage/Ссылка чек-листа однозначно называет актуальную задачу/Ссылка не различает две строки",
+   "type": "satisfies",
+   "at": "tasks.md:7"
+  },
+  {
+   "from": "task:1.4",
+   "to": "rec:F-08",
+   "type": "traces",
+   "at": "tasks.md:8"
+  },
+  {
+   "from": "task:1.4",
+   "to": "rec:F-11",
+   "type": "traces",
+   "at": "tasks.md:8"
+  },
+  {
+   "from": "task:1.4",
+   "to": "scn:security-checklist-coverage/Сверка плана выявляет пункты без достаточной задачи/Без ссылки после подготовки задач",
+   "type": "satisfies",
+   "at": "tasks.md:8"
+  },
+  {
+   "from": "task:1.4",
+   "to": "scn:security-checklist-coverage/Сверка плана выявляет пункты без достаточной задачи/Задача записана, проверка ещё впереди",
+   "type": "satisfies",
+   "at": "tasks.md:8"
+  },
+  {
+   "from": "task:1.4",
+   "to": "scn:security-checklist-coverage/Сверка плана выявляет пункты без достаточной задачи/Задача не называет проверяемый исход",
+   "type": "satisfies",
+   "at": "tasks.md:8"
+  },
+  {
+   "from": "task:1.4",
+   "to": "scn:security-checklist-coverage/Сверка плана выявляет пункты без достаточной задачи/Согласование прервалось после записи задач",
+   "type": "satisfies",
+   "at": "tasks.md:8"
+  },
+  {
+   "from": "task:1.5",
+   "to": "rec:F-08",
+   "type": "traces",
+   "at": "tasks.md:9"
+  },
+  {
+   "from": "task:1.5",
+   "to": "scn:security-checklist-coverage/Сверка плана выявляет пункты без достаточной задачи/Правило сверяет вызванная атака",
+   "type": "satisfies",
+   "at": "tasks.md:9"
+  },
+  {
+   "from": "task:2.1",
+   "to": "rec:F-03",
+   "type": "traces",
+   "at": "tasks.md:13"
+  },
+  {
+   "from": "task:2.1",
+   "to": "rec:F-06",
+   "type": "traces",
+   "at": "tasks.md:13"
+  },
+  {
+   "from": "task:2.1",
+   "to": "rec:F-10",
+   "type": "traces",
+   "at": "tasks.md:13"
+  },
+  {
+   "from": "task:2.2",
+   "to": "rec:F-10",
+   "type": "traces",
+   "at": "tasks.md:14"
+  },
+  {
+   "from": "task:2.2",
+   "to": "scn:security-checklist-coverage/Чек-лист и задачи согласуются при любом порядке/Подходящая задача уже есть",
+   "type": "satisfies",
+   "at": "tasks.md:14"
+  },
+  {
+   "from": "task:2.2",
+   "to": "scn:security-checklist-coverage/Чек-лист и задачи согласуются при любом порядке/Чек-лист пишется первым",
+   "type": "satisfies",
+   "at": "tasks.md:14"
+  },
+  {
+   "from": "task:2.3",
+   "to": "rec:F-10",
+   "type": "traces",
+   "at": "tasks.md:15"
+  },
+  {
+   "from": "task:2.3",
+   "to": "rec:F-11",
+   "type": "traces",
+   "at": "tasks.md:15"
+  },
+  {
+   "from": "task:3.1",
+   "to": "rec:F-12",
+   "type": "traces",
+   "at": "tasks.md:19"
+  },
+  {
+   "from": "component:security-checklist",
+   "to": "repo:symphysis-core",
+   "type": "contains",
+   "at": ".openspec.yaml:1"
+  },
+  {
+   "from": "repo:symphysis-core",
+   "to": "module:symphysis-core/anchors",
+   "type": "contains",
+   "at": "symphysis-core/anchors/README.md:2"
+  },
+  {
+   "from": "repo:symphysis-core",
+   "to": "module:symphysis-core/attack",
+   "type": "contains",
+   "at": "symphysis-core/attack/README.md:2"
+  },
+  {
+   "from": "repo:symphysis-core",
+   "to": "module:symphysis-core/cli",
+   "type": "contains",
+   "at": "symphysis-core/cli/README.md:2"
+  },
+  {
+   "from": "repo:symphysis-core",
+   "to": "module:symphysis-core/consequences",
+   "type": "contains",
+   "at": "symphysis-core/consequences/README.md:2"
+  },
+  {
+   "from": "repo:symphysis-core",
+   "to": "module:symphysis-core/decisions",
+   "type": "contains",
+   "at": "symphysis-core/decisions/README.md:2"
+  },
+  {
+   "from": "repo:symphysis-core",
+   "to": "module:symphysis-core/installer",
+   "type": "contains",
+   "at": "symphysis-core/installer/README.md:2"
+  },
+  {
+   "from": "repo:symphysis-core",
+   "to": "module:symphysis-core/openspec-run",
+   "type": "contains",
+   "at": "symphysis-core/openspec-run/README.md:2"
+  },
+  {
+   "from": "repo:symphysis-core",
+   "to": "module:symphysis-core/schema",
+   "type": "contains",
+   "at": "symphysis-core/openspec/schemas/symphysis/README.md:2"
+  },
+  {
+   "from": "repo:symphysis-core",
+   "to": "module:symphysis-core/probes",
+   "type": "contains",
+   "at": "symphysis-core/probes/README.md:2"
+  },
+  {
+   "from": "repo:symphysis-core",
+   "to": "module:symphysis-core/research",
+   "type": "contains",
+   "at": "symphysis-core/research/README.md:2"
+  },
+  {
+   "from": "repo:symphysis-core",
+   "to": "module:symphysis-core/roots",
+   "type": "contains",
+   "at": "symphysis-core/roots/README.md:2"
+  },
+  {
+   "from": "repo:symphysis-core",
+   "to": "module:symphysis-core/runtime",
+   "type": "contains",
+   "at": "symphysis-core/runtime/README.md:2"
+  },
+  {
+   "from": "repo:symphysis-core",
+   "to": "module:symphysis-core/settings",
+   "type": "contains",
+   "at": "symphysis-core/settings/README.md:2"
+  },
+  {
+   "from": "repo:symphysis-core",
+   "to": "module:symphysis-core/skill-shared",
+   "type": "contains",
+   "at": "symphysis-core/skill-shared/README.md:2"
+  },
+  {
+   "from": "repo:symphysis-core",
+   "to": "module:symphysis-core/step-help",
+   "type": "contains",
+   "at": "symphysis-core/step-help/README.md:2"
+  },
+  {
+   "from": "repo:symphysis-core",
+   "to": "module:symphysis-core/trace",
+   "type": "contains",
+   "at": "symphysis-core/trace/README.md:2"
+  },
+  {
+   "from": "repo:symphysis-core",
+   "to": "module:symphysis-core/viewer",
+   "type": "contains",
+   "at": "symphysis-core/viewer/README.md:2"
+  },
+  {
+   "from": "module:symphysis-core/anchors",
+   "to": "file:symphysis-core/anchors%2FREADME.md",
+   "type": "contains",
+   "at": "symphysis-core/anchors/README.md:2"
+  },
+  {
+   "from": "module:symphysis-core/anchors",
+   "to": "module:symphysis-core/openspec-run",
+   "type": "depends",
+   "at": "symphysis-core/anchors/README.md:2"
+  },
+  {
+   "from": "module:symphysis-core/anchors",
+   "to": "module:symphysis-core/runtime",
+   "type": "depends",
+   "at": "symphysis-core/anchors/README.md:2"
+  },
+  {
+   "from": "module:symphysis-core/anchors",
+   "to": "module:symphysis-core/trace",
+   "type": "depends",
+   "at": "symphysis-core/anchors/README.md:2"
+  },
+  {
+   "from": "module:symphysis-core/attack",
+   "to": "file:symphysis-core/attack%2FREADME.md",
+   "type": "contains",
+   "at": "symphysis-core/attack/README.md:2"
+  },
+  {
+   "from": "module:symphysis-core/attack",
+   "to": "module:symphysis-core/decisions",
+   "type": "depends",
+   "at": "symphysis-core/attack/README.md:2"
+  },
+  {
+   "from": "module:symphysis-core/cli",
+   "to": "file:symphysis-core/cli%2FREADME.md",
+   "type": "contains",
+   "at": "symphysis-core/cli/README.md:2"
+  },
+  {
+   "from": "module:symphysis-core/cli",
+   "to": "module:symphysis-core/attack",
+   "type": "depends",
+   "at": "symphysis-core/cli/README.md:2"
+  },
+  {
+   "from": "module:symphysis-core/cli",
+   "to": "module:symphysis-core/consequences",
+   "type": "depends",
+   "at": "symphysis-core/cli/README.md:2"
+  },
+  {
+   "from": "module:symphysis-core/cli",
+   "to": "module:symphysis-core/decisions",
+   "type": "depends",
+   "at": "symphysis-core/cli/README.md:2"
+  },
+  {
+   "from": "module:symphysis-core/cli",
+   "to": "module:symphysis-core/roots",
+   "type": "depends",
+   "at": "symphysis-core/cli/README.md:2"
+  },
+  {
+   "from": "module:symphysis-core/cli",
+   "to": "module:symphysis-core/runtime",
+   "type": "depends",
+   "at": "symphysis-core/cli/README.md:2"
+  },
+  {
+   "from": "module:symphysis-core/cli",
+   "to": "module:symphysis-core/step-help",
+   "type": "depends",
+   "at": "symphysis-core/cli/README.md:2"
+  },
+  {
+   "from": "module:symphysis-core/cli",
+   "to": "module:symphysis-core/viewer",
+   "type": "depends",
+   "at": "symphysis-core/cli/README.md:2"
+  },
+  {
+   "from": "module:symphysis-core/consequences",
+   "to": "file:symphysis-core/consequences%2FREADME.md",
+   "type": "contains",
+   "at": "symphysis-core/consequences/README.md:2"
+  },
+  {
+   "from": "module:symphysis-core/consequences",
+   "to": "module:symphysis-core/roots",
+   "type": "depends",
+   "at": "symphysis-core/consequences/README.md:2"
+  },
+  {
+   "from": "module:symphysis-core/decisions",
+   "to": "file:symphysis-core/decisions%2FREADME.md",
+   "type": "contains",
+   "at": "symphysis-core/decisions/README.md:2"
+  },
+  {
+   "from": "module:symphysis-core/decisions",
+   "to": "module:symphysis-core/roots",
+   "type": "depends",
+   "at": "symphysis-core/decisions/README.md:2"
+  },
+  {
+   "from": "module:symphysis-core/installer",
+   "to": "file:symphysis-core/installer%2FREADME.md",
+   "type": "contains",
+   "at": "symphysis-core/installer/README.md:2"
+  },
+  {
+   "from": "module:symphysis-core/openspec-run",
+   "to": "file:symphysis-core/openspec-run%2FREADME.md",
+   "type": "contains",
+   "at": "symphysis-core/openspec-run/README.md:2"
+  },
+  {
+   "from": "module:symphysis-core/schema",
+   "to": "file:symphysis-core/openspec%2Fschemas%2Fsymphysis%2FREADME.md",
+   "type": "contains",
+   "at": "symphysis-core/openspec/schemas/symphysis/README.md:2"
+  },
+  {
+   "from": "module:symphysis-core/probes",
+   "to": "file:symphysis-core/probes%2FREADME.md",
+   "type": "contains",
+   "at": "symphysis-core/probes/README.md:2"
+  },
+  {
+   "from": "module:symphysis-core/research",
+   "to": "file:symphysis-core/research%2FREADME.md",
+   "type": "contains",
+   "at": "symphysis-core/research/README.md:2"
+  },
+  {
+   "from": "module:symphysis-core/roots",
+   "to": "file:symphysis-core/roots%2FREADME.md",
+   "type": "contains",
+   "at": "symphysis-core/roots/README.md:2"
+  },
+  {
+   "from": "module:symphysis-core/roots",
+   "to": "module:symphysis-core/runtime",
+   "type": "depends",
+   "at": "symphysis-core/roots/README.md:2"
+  },
+  {
+   "from": "module:symphysis-core/runtime",
+   "to": "file:symphysis-core/runtime%2FREADME.md",
+   "type": "contains",
+   "at": "symphysis-core/runtime/README.md:2"
+  },
+  {
+   "from": "module:symphysis-core/settings",
+   "to": "file:symphysis-core/settings%2FREADME.md",
+   "type": "contains",
+   "at": "symphysis-core/settings/README.md:2"
+  },
+  {
+   "from": "module:symphysis-core/settings",
+   "to": "module:symphysis-core/roots",
+   "type": "depends",
+   "at": "symphysis-core/settings/README.md:2"
+  },
+  {
+   "from": "module:symphysis-core/settings",
+   "to": "module:symphysis-core/runtime",
+   "type": "depends",
+   "at": "symphysis-core/settings/README.md:2"
+  },
+  {
+   "from": "module:symphysis-core/skill-shared",
+   "to": "file:symphysis-core/skill-shared%2FREADME.md",
+   "type": "contains",
+   "at": "symphysis-core/skill-shared/README.md:2"
+  },
+  {
+   "from": "module:symphysis-core/step-help",
+   "to": "file:symphysis-core/step-help%2FREADME.md",
+   "type": "contains",
+   "at": "symphysis-core/step-help/README.md:2"
+  },
+  {
+   "from": "module:symphysis-core/step-help",
+   "to": "module:symphysis-core/attack",
+   "type": "depends",
+   "at": "symphysis-core/step-help/README.md:2"
+  },
+  {
+   "from": "module:symphysis-core/step-help",
+   "to": "module:symphysis-core/decisions",
+   "type": "depends",
+   "at": "symphysis-core/step-help/README.md:2"
+  },
+  {
+   "from": "module:symphysis-core/step-help",
+   "to": "module:symphysis-core/openspec-run",
+   "type": "depends",
+   "at": "symphysis-core/step-help/README.md:2"
+  },
+  {
+   "from": "module:symphysis-core/step-help",
+   "to": "module:symphysis-core/runtime",
+   "type": "depends",
+   "at": "symphysis-core/step-help/README.md:2"
+  },
+  {
+   "from": "module:symphysis-core/trace",
+   "to": "file:symphysis-core/trace%2FREADME.md",
+   "type": "contains",
+   "at": "symphysis-core/trace/README.md:2"
+  },
+  {
+   "from": "module:symphysis-core/trace",
+   "to": "module:symphysis-core/roots",
+   "type": "depends",
+   "at": "symphysis-core/trace/README.md:2"
+  },
+  {
+   "from": "module:symphysis-core/trace",
+   "to": "module:symphysis-core/decisions",
+   "type": "depends",
+   "at": "symphysis-core/trace/README.md:2"
+  },
+  {
+   "from": "module:symphysis-core/trace",
+   "to": "module:symphysis-core/openspec-run",
+   "type": "depends",
+   "at": "symphysis-core/trace/README.md:2"
+  },
+  {
+   "from": "module:symphysis-core/trace",
+   "to": "module:symphysis-core/runtime",
+   "type": "depends",
+   "at": "symphysis-core/trace/README.md:2"
+  },
+  {
+   "from": "module:symphysis-core/viewer",
+   "to": "file:symphysis-core/viewer%2FREADME.md",
+   "type": "contains",
+   "at": "symphysis-core/viewer/README.md:2"
+  },
+  {
+   "from": "module:symphysis-core/viewer",
+   "to": "module:symphysis-core/decisions",
+   "type": "depends",
+   "at": "symphysis-core/viewer/README.md:2"
+  },
+  {
+   "from": "module:symphysis-core/viewer",
+   "to": "module:symphysis-core/runtime",
+   "type": "depends",
+   "at": "symphysis-core/viewer/README.md:2"
+  }
+ ],
+ "candidates": [
+  {
+   "a": "req:security-checklist-coverage/Применимый пункт чек-листа называет основание",
+   "b": "req:security-checklist-coverage/Сверка плана выявляет пункты без достаточной задачи",
+   "source": "общие записи журнала",
+   "shared": [
+    "rec:F-08"
+   ]
+  }
+ ],
+ "structure": {
+  "components": [
+   {
+    "name": "security-checklist",
+    "repos": [
+     "symphysis-core"
+    ]
+   }
+  ],
+  "repos": [
+   {
+    "repo": "symphysis-core",
+    "root": "",
+    "survey": "found",
+    "exclude": [
+     "upstream"
+    ],
+    "actual": "found",
+    "availability": "available"
+   }
+  ],
+  "signals": [],
+  "sources": [
+   {
+    "path": ".openspec.yaml",
+    "sha256": "75733ca0aa4df38053cded30659ec1f73e6f85c4885100467a8bd5aa24601257"
+   },
+   {
+    "repo": "symphysis-core",
+    "path": "README.md",
+    "sha256": "37aa30c881a74af7b3d65a239422b46a02200f1cd44c7d7da504bedf69448f94"
+   },
+   {
+    "repo": "symphysis-core",
+    "path": "viewer/README.md",
+    "sha256": "38aa0e3d1b818dbdbf21d4d9855f1913b39a726034e9e06ab19edb1b663c52bf"
+   },
+   {
+    "repo": "symphysis-core",
+    "path": "trace/README.md",
+    "sha256": "ef119e8fa7bfda05cd9ba568df458d01e7d5f6af8222c043e7f569eaf90d9e57"
+   },
+   {
+    "repo": "symphysis-core",
+    "path": "step-help/README.md",
+    "sha256": "e5886c77389f3d1d5065915f17418c7655b967d5ca465a62b9f1e870ffc02a6c"
+   },
+   {
+    "repo": "symphysis-core",
+    "path": "skill-shared/README.md",
+    "sha256": "730a973c7ed7fb459145dfe110f72f76496a0dc11797d0efed8c26d6f7b80dd5"
+   },
+   {
+    "repo": "symphysis-core",
+    "path": "settings/README.md",
+    "sha256": "6d94724f636b7989595dca507b50238e0767f8220897c91a37c299d25922333c"
+   },
+   {
+    "repo": "symphysis-core",
+    "path": "runtime/README.md",
+    "sha256": "1fff41134fd43ae0832321d68ba798b6185b42b916e5633dbba90f376cf3ac56"
+   },
+   {
+    "repo": "symphysis-core",
+    "path": "roots/README.md",
+    "sha256": "f59f9b0a123ebbe131698a33a6f87a02f9a8ebd016c157cd2ecf69dd34c6a9f9"
+   },
+   {
+    "repo": "symphysis-core",
+    "path": "research/README.md",
+    "sha256": "c1a43ad8afab67b4e2ae34dc71928beb954c67a274738441b38800dfe0ee8d59"
+   },
+   {
+    "repo": "symphysis-core",
+    "path": "probes/README.md",
+    "sha256": "2e7d1f495dd6fecca9c2c361e9a16d47deca06849accbb258a2517690c96dbc5"
+   },
+   {
+    "repo": "symphysis-core",
+    "path": "openspec-run/README.md",
+    "sha256": "1e520a016b28114eb529342e5a50afd63972bc3b67de30b5d7c86a5ee049c30b"
+   },
+   {
+    "repo": "symphysis-core",
+    "path": "openspec/schemas/symphysis/README.md",
+    "sha256": "597917bf019f497e87a40732975b53556f6dbb158be920a28c38fdda6e9e00ef"
+   },
+   {
+    "repo": "symphysis-core",
+    "path": "installer/README.md",
+    "sha256": "8916058a9db1122525baf4de3254e03769ec7d64ebb91204226f55d1e81d9a69"
+   },
+   {
+    "repo": "symphysis-core",
+    "path": "docs/guide/example/README.md",
+    "sha256": "afa77065ae43a7d9dc2f02ccec8cf5a432fb09f59ab4cd0a73c5026627f87482"
+   },
+   {
+    "repo": "symphysis-core",
+    "path": "decisions/README.md",
+    "sha256": "5d38b2b315cbd7d85c523ceb46a97858eae7bc7cd69867c64bacd1154f1da0a4"
+   },
+   {
+    "repo": "symphysis-core",
+    "path": "consequences/README.md",
+    "sha256": "758eaa323ca684c072b407f99e7c405fcfa3aa5553cf339366c9ad2d0c3cf4ec"
+   },
+   {
+    "repo": "symphysis-core",
+    "path": "cli/README.md",
+    "sha256": "79562fd6d906c2b3c62ef0a3e2cfb951eeae65247d44a7b46fdcc73301aff89f"
+   },
+   {
+    "repo": "symphysis-core",
+    "path": "attack/README.md",
+    "sha256": "049b515b3874460451246030d622531117b76f9ce0bfa4d1b4f079276e71cff2"
+   },
+   {
+    "repo": "symphysis-core",
+    "path": "anchors/README.md",
+    "sha256": "94c1188db73732137ff9b0ede287811c37a908c88080cd9599846a020ad1672e"
+   },
+   {
+    "repo": "symphysis-core",
+    "path": ".pytest_cache/README.md",
+    "sha256": "73fd6fccdd802c419a6b2d983d6c3173b7da97558ac4b589edec2dfe443db9ad"
+   }
+  ],
+  "modules": [
+   {
+    "name": "anchors",
+    "kind": "доменный",
+    "dependencies": [
+     {
+      "repo": "symphysis-core",
+      "module": "openspec-run"
+     },
+     {
+      "repo": "symphysis-core",
+      "module": "runtime"
+     },
+     {
+      "repo": "symphysis-core",
+      "module": "trace"
+     }
+    ],
+    "repo": "symphysis-core",
+    "path": "anchors",
+    "source": "anchors/README.md",
+    "line": 2
+   },
+   {
+    "name": "attack",
+    "kind": "доменный",
+    "dependencies": [
+     {
+      "repo": "symphysis-core",
+      "module": "decisions"
+     }
+    ],
+    "repo": "symphysis-core",
+    "path": "attack",
+    "source": "attack/README.md",
+    "line": 2
+   },
+   {
+    "name": "cli",
+    "kind": "технический",
+    "dependencies": [
+     {
+      "repo": "symphysis-core",
+      "module": "attack"
+     },
+     {
+      "repo": "symphysis-core",
+      "module": "consequences"
+     },
+     {
+      "repo": "symphysis-core",
+      "module": "decisions"
+     },
+     {
+      "repo": "symphysis-core",
+      "module": "roots"
+     },
+     {
+      "repo": "symphysis-core",
+      "module": "runtime"
+     },
+     {
+      "repo": "symphysis-core",
+      "module": "step-help"
+     },
+     {
+      "repo": "symphysis-core",
+      "module": "viewer"
+     }
+    ],
+    "repo": "symphysis-core",
+    "path": "cli",
+    "source": "cli/README.md",
+    "line": 2
+   },
+   {
+    "name": "consequences",
+    "kind": "доменный",
+    "dependencies": [
+     {
+      "repo": "symphysis-core",
+      "module": "roots"
+     }
+    ],
+    "repo": "symphysis-core",
+    "path": "consequences",
+    "source": "consequences/README.md",
+    "line": 2
+   },
+   {
+    "name": "decisions",
+    "kind": "доменный",
+    "dependencies": [
+     {
+      "repo": "symphysis-core",
+      "module": "roots"
+     }
+    ],
+    "repo": "symphysis-core",
+    "path": "decisions",
+    "source": "decisions/README.md",
+    "line": 2
+   },
+   {
+    "name": "installer",
+    "kind": "технический",
+    "dependencies": [],
+    "repo": "symphysis-core",
+    "path": "installer",
+    "source": "installer/README.md",
+    "line": 2
+   },
+   {
+    "name": "openspec-run",
+    "kind": "технический",
+    "dependencies": [],
+    "repo": "symphysis-core",
+    "path": "openspec-run",
+    "source": "openspec-run/README.md",
+    "line": 2
+   },
+   {
+    "name": "schema",
+    "kind": "доменный",
+    "dependencies": [],
+    "repo": "symphysis-core",
+    "path": "openspec/schemas/symphysis",
+    "source": "openspec/schemas/symphysis/README.md",
+    "line": 2
+   },
+   {
+    "name": "probes",
+    "kind": "доменный",
+    "dependencies": [],
+    "repo": "symphysis-core",
+    "path": "probes",
+    "source": "probes/README.md",
+    "line": 2
+   },
+   {
+    "name": "research",
+    "kind": "доменный",
+    "dependencies": [],
+    "repo": "symphysis-core",
+    "path": "research",
+    "source": "research/README.md",
+    "line": 2
+   },
+   {
+    "name": "roots",
+    "kind": "технический",
+    "dependencies": [
+     {
+      "repo": "symphysis-core",
+      "module": "runtime"
+     }
+    ],
+    "repo": "symphysis-core",
+    "path": "roots",
+    "source": "roots/README.md",
+    "line": 2
+   },
+   {
+    "name": "runtime",
+    "kind": "технический",
+    "dependencies": [],
+    "repo": "symphysis-core",
+    "path": "runtime",
+    "source": "runtime/README.md",
+    "line": 2
+   },
+   {
+    "name": "settings",
+    "kind": "технический",
+    "dependencies": [
+     {
+      "repo": "symphysis-core",
+      "module": "roots"
+     },
+     {
+      "repo": "symphysis-core",
+      "module": "runtime"
+     }
+    ],
+    "repo": "symphysis-core",
+    "path": "settings",
+    "source": "settings/README.md",
+    "line": 2
+   },
+   {
+    "name": "skill-shared",
+    "kind": "технический",
+    "dependencies": [],
+    "repo": "symphysis-core",
+    "path": "skill-shared",
+    "source": "skill-shared/README.md",
+    "line": 2
+   },
+   {
+    "name": "step-help",
+    "kind": "доменный",
+    "dependencies": [
+     {
+      "repo": "symphysis-core",
+      "module": "attack"
+     },
+     {
+      "repo": "symphysis-core",
+      "module": "decisions"
+     },
+     {
+      "repo": "symphysis-core",
+      "module": "openspec-run"
+     },
+     {
+      "repo": "symphysis-core",
+      "module": "runtime"
+     }
+    ],
+    "repo": "symphysis-core",
+    "path": "step-help",
+    "source": "step-help/README.md",
+    "line": 2
+   },
+   {
+    "name": "trace",
+    "kind": "доменный",
+    "dependencies": [
+     {
+      "repo": "symphysis-core",
+      "module": "roots"
+     },
+     {
+      "repo": "symphysis-core",
+      "module": "decisions"
+     },
+     {
+      "repo": "symphysis-core",
+      "module": "openspec-run"
+     },
+     {
+      "repo": "symphysis-core",
+      "module": "runtime"
+     }
+    ],
+    "repo": "symphysis-core",
+    "path": "trace",
+    "source": "trace/README.md",
+    "line": 2
+   },
+   {
+    "name": "viewer",
+    "kind": "доменный",
+    "dependencies": [
+     {
+      "repo": "symphysis-core",
+      "module": "decisions"
+     },
+     {
+      "repo": "symphysis-core",
+      "module": "runtime"
+     }
+    ],
+    "repo": "symphysis-core",
+    "path": "viewer",
+    "source": "viewer/README.md",
+    "line": 2
+   }
+  ],
+  "inventory": [
+   {
+    "repo": "symphysis-core",
+    "path": ".pytest_cache/README.md",
+    "sha256": "73fd6fccdd802c419a6b2d983d6c3173b7da97558ac4b589edec2dfe443db9ad"
+   },
+   {
+    "repo": "symphysis-core",
+    "path": "README.md",
+    "sha256": "37aa30c881a74af7b3d65a239422b46a02200f1cd44c7d7da504bedf69448f94"
+   },
+   {
+    "repo": "symphysis-core",
+    "path": "anchors/README.md",
+    "sha256": "94c1188db73732137ff9b0ede287811c37a908c88080cd9599846a020ad1672e"
+   },
+   {
+    "repo": "symphysis-core",
+    "path": "attack/README.md",
+    "sha256": "049b515b3874460451246030d622531117b76f9ce0bfa4d1b4f079276e71cff2"
+   },
+   {
+    "repo": "symphysis-core",
+    "path": "cli/README.md",
+    "sha256": "79562fd6d906c2b3c62ef0a3e2cfb951eeae65247d44a7b46fdcc73301aff89f"
+   },
+   {
+    "repo": "symphysis-core",
+    "path": "consequences/README.md",
+    "sha256": "758eaa323ca684c072b407f99e7c405fcfa3aa5553cf339366c9ad2d0c3cf4ec"
+   },
+   {
+    "repo": "symphysis-core",
+    "path": "decisions/README.md",
+    "sha256": "5d38b2b315cbd7d85c523ceb46a97858eae7bc7cd69867c64bacd1154f1da0a4"
+   },
+   {
+    "repo": "symphysis-core",
+    "path": "docs/guide/example/README.md",
+    "sha256": "afa77065ae43a7d9dc2f02ccec8cf5a432fb09f59ab4cd0a73c5026627f87482"
+   },
+   {
+    "repo": "symphysis-core",
+    "path": "installer/README.md",
+    "sha256": "8916058a9db1122525baf4de3254e03769ec7d64ebb91204226f55d1e81d9a69"
+   },
+   {
+    "repo": "symphysis-core",
+    "path": "openspec-run/README.md",
+    "sha256": "1e520a016b28114eb529342e5a50afd63972bc3b67de30b5d7c86a5ee049c30b"
+   },
+   {
+    "repo": "symphysis-core",
+    "path": "openspec/schemas/symphysis/README.md",
+    "sha256": "597917bf019f497e87a40732975b53556f6dbb158be920a28c38fdda6e9e00ef"
+   },
+   {
+    "repo": "symphysis-core",
+    "path": "probes/README.md",
+    "sha256": "2e7d1f495dd6fecca9c2c361e9a16d47deca06849accbb258a2517690c96dbc5"
+   },
+   {
+    "repo": "symphysis-core",
+    "path": "research/README.md",
+    "sha256": "c1a43ad8afab67b4e2ae34dc71928beb954c67a274738441b38800dfe0ee8d59"
+   },
+   {
+    "repo": "symphysis-core",
+    "path": "roots/README.md",
+    "sha256": "f59f9b0a123ebbe131698a33a6f87a02f9a8ebd016c157cd2ecf69dd34c6a9f9"
+   },
+   {
+    "repo": "symphysis-core",
+    "path": "runtime/README.md",
+    "sha256": "1fff41134fd43ae0832321d68ba798b6185b42b916e5633dbba90f376cf3ac56"
+   },
+   {
+    "repo": "symphysis-core",
+    "path": "settings/README.md",
+    "sha256": "6d94724f636b7989595dca507b50238e0767f8220897c91a37c299d25922333c"
+   },
+   {
+    "repo": "symphysis-core",
+    "path": "skill-shared/README.md",
+    "sha256": "730a973c7ed7fb459145dfe110f72f76496a0dc11797d0efed8c26d6f7b80dd5"
+   },
+   {
+    "repo": "symphysis-core",
+    "path": "step-help/README.md",
+    "sha256": "e5886c77389f3d1d5065915f17418c7655b967d5ca465a62b9f1e870ffc02a6c"
+   },
+   {
+    "repo": "symphysis-core",
+    "path": "trace/README.md",
+    "sha256": "ef119e8fa7bfda05cd9ba568df458d01e7d5f6af8222c043e7f569eaf90d9e57"
+   },
+   {
+    "repo": "symphysis-core",
+    "path": "viewer/README.md",
+    "sha256": "38aa0e3d1b818dbdbf21d4d9855f1913b39a726034e9e06ab19edb1b663c52bf"
+   }
+  ]
+ },
+ "roots": [
+  {
+   "prefix": "",
+   "commit": "94e6a96a592b8445f0c7b28ad5c51de79c116844"
+  },
+  {
+   "prefix": "docs/",
+   "commit": ""
+  },
+  {
+   "prefix": "tools/",
+   "commit": ""
+  },
+  {
+   "prefix": "upstream/",
+   "commit": ""
+  },
+  {
+   "prefix": "CLAUDE.md",
+   "commit": ""
+  },
+  {
+   "prefix": "store/",
+   "commit": "531a2e84807eb4f3abe8fa3dacc3a53c6de95660"
+  },
+  {
+   "prefix": "playground/",
+   "commit": ""
+  },
+  {
+   "prefix": "md4h/",
+   "commit": ""
+  }
+ ],
+ "base": {}
+}

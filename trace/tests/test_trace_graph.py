@@ -975,6 +975,21 @@ def test_security_row_links_to_named_requirement(tmp_path):
     assert unresolved_of(root) == []
 
 
+def test_security_task_caption_preserves_requirement_links(tmp_path):
+    """F-12: ссылка на задачу совместима с разбором требования в соседней строке."""
+    security = SEC_HEAD + (
+        "| Мера канона | применимо — [задача 2.1 — Проверить отказ](tasks.md) | запланировано |\n"
+        "| Свойство доступа | применимо — требование `demo` «Одно» | тест |\n"
+    )
+    tasks = "## 2. Проверка\n- [ ] 2.1 **Проверить отказ** — проверить запрос без роли и получить отказ.\n"
+    root, _ = make_change(tmp_path, specs=two_cap_specs(), tasks=tasks, security=security)
+
+    assert edges_of(graph_of(root), "refines") == [
+        ("sec:Свойство доступа", "req:demo/Одно", "refines", "security.md:4"),
+    ]
+    assert unresolved_of(root) == []
+
+
 def test_security_form_with_colon_other_column_and_quoted_name(tmp_path):
     """Форма с двоеточием, имя в любой колонке, имя с кавычками целиком, два требования в строке."""
     security = SEC_HEAD + ("| Б | `demo`: «Режим «атака» группирует строки» | `demo` «Одно» и `demo`: «Одно» |\n"
