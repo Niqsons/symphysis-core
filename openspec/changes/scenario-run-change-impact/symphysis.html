@@ -239,12 +239,12 @@ const JOURNAL = {
  "title": "Журнал решений: scenario-run-change-impact",
  "source": "decisions.json",
  "generated": "2026-11-17",
- "sha256": "1ce583415bb9e00f545aa215bb64802862650a24092bf8df41a666c2e5b5c23a",
+ "sha256": "99702315c7e3534c477556ac389107bef41f0493f7a329cb128cbd4c7e931f19",
  "stats": {
   "records": 10,
   "forks": 5,
   "facts": 5,
-  "decided": 3,
+  "decided": 5,
   "parked": 0,
   "evidence_total": 39,
   "evidence_found": 39
@@ -794,7 +794,7 @@ const JOURNAL = {
    "id": "F-09",
    "question": "[empty · collection, text, io] Scenario-run устанавливает область влияния изменения: как оценить сценарий MODIFIED, если он совпал с живым мастером после sync, а исходной версии в снимке нет?",
    "kind": "развилка",
-   "status": "открыт",
+   "status": "решён",
    "addressee": "человек",
    "depends_on": [
     "F-06",
@@ -836,12 +836,20 @@ const JOURNAL = {
     "option": "A",
     "why": "Совпадение с уже перезаписанным мастером выглядит как нормальная опора и способно тихо скрыть изменение сценария. Сценарий делает этот случай наблюдаемым для проверки на неполном снимке. Цена — поддерживать один контрольный пример."
    },
-   "decision": null,
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-17"
+   },
    "reversibility": null,
-   "outcome": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Specify",
+    "reason": ""
+   },
    "parking": [],
    "dispute": "",
-   "consequences": "",
+   "consequences": "в spec.md: После синхронизации исходной базы нет",
    "evidence": [
     {
      "path": "openspec/changes/scenario-run-change-impact/specs/artifact-attack/spec.md",
@@ -858,7 +866,7 @@ const JOURNAL = {
    "id": "F-10",
    "question": "[запрет] Scenario-run устанавливает область влияния изменения: можно ли показывать прошедший вердикт как актуальный, если использованная опора из мастера затем изменилась при тех же файлах change?",
    "kind": "развилка",
-   "status": "открыт",
+   "status": "решён",
    "addressee": "человек",
    "depends_on": [
     "F-06",
@@ -900,12 +908,20 @@ const JOURNAL = {
     "option": "A",
     "why": "Зелёный итог выглядит актуальным после исчезновения опоры, хотя файлы самого change не изменились. Это можно поймать детерминированной проверкой с заменой одного мастер-блока. Цена — дополнительная проверка свежести и совместимость старых отчётов."
    },
-   "decision": null,
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-17"
+   },
    "reversibility": null,
-   "outcome": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Specify",
+    "reason": ""
+   },
    "parking": [],
    "dispute": "",
-   "consequences": "",
+   "consequences": "проверка: test — изменить только использованный мастер-блок после атаки и сверить устаревание прежнего вердикта\nв spec.md: Изменение мастер-опоры обесценивает вердикт",
    "evidence": [
     {
      "path": "openspec/changes/scenario-run-change-impact/specs/artifact-attack/spec.md",
@@ -930,11 +946,11 @@ const JOURNAL = {
   },
   {
    "date": "2026-11-17",
-   "text": "проба краёв: кандидатов 1, Specify 0, Dismiss 0, Backstop 0, Defer 0; кандидат без решения F-09; не выбран 16: artifact-attack/Строка атаки валидна только с линзой, тяжестью, инвариантом и опорой (3), artifact-attack/Scenario-run устанавливает область влияния изменения (3), artifact-attack/Scenario-run обосновывает сохранение прежнего исхода (2), artifact-attack/Адресная проверка обосновывает допуск к реализации (4), trace-graph/Граф связывает задачу со сценарием вне дельты (4)"
+   "text": "проба краёв: кандидатов 1, Specify 1, Dismiss 0, Backstop 0, Defer 0; не выбран 24: artifact-attack/Строка атаки валидна только с линзой, тяжестью, инвариантом и опорой (3), artifact-attack/Scenario-run устанавливает область влияния изменения (3), artifact-attack/Scenario-run обосновывает сохранение прежнего исхода (2), artifact-attack/Адресная проверка обосновывает допуск к реализации (4), artifact-attack/Изменение мастер-опоры обесценивает вердикт (2), stale-verdict-scope/Состав устаревания называет изменившуюся мастер-опору (3), trace-graph/Граф связывает задачу со сценарием вне дельты (4), verdict-readiness/Изменившаяся мастер-опора видна в состоянии вердикта (3)"
   },
   {
    "date": "2026-11-17",
-   "text": "проба запретов: требований 5, оставлено 1, канон → ИБ 0, Specify 0, Dismiss 0, Defer 0; кандидат без решения F-10"
+   "text": "проба запретов: требований 8, оставлено 1, канон → ИБ 0, Specify 1, Dismiss 0, Defer 0"
   }
  ]
 };
@@ -948,7 +964,7 @@ const SCHEME = {
 };
 const HELP = {
  "contract": 6,
- "taken_at": "2026-11-17T16:50:38+03:00",
+ "taken_at": "2026-11-17T17:05:59+03:00",
  "versions": {
   "openspec": "1.16.1+symphysis.8",
   "symphysis": "0.1.0+f11b1d25"
@@ -956,12 +972,12 @@ const HELP = {
  "change": "scenario-run-change-impact",
  "changes": null,
  "error": null,
- "current_step": "viewer",
- "current_text": "Следующий шаг по файлам — `viewer`, ход человека: открытых развилок 2, решаются на странице журнала. После них по файлам идёт `consequences`.",
- "turn": "human",
+ "current_step": "consequences",
+ "current_text": "Следующий шаг по файлам — `consequences`, ход модели.",
+ "turn": "model",
  "next_by_status": "consequences",
  "forks": {
-  "open": 2,
+  "open": 0,
   "parked": 0
  },
  "tasks": {
@@ -1041,7 +1057,7 @@ const HELP = {
   },
   {
    "id": "viewer",
-   "state": "ready",
+   "state": "idle",
    "turn": "human",
    "optional": false,
    "blocks": [],
@@ -1198,7 +1214,15 @@ const HELP = {
      "exists": true
     },
     {
+     "path": "openspec/changes/scenario-run-change-impact/specs/stale-verdict-scope/spec.md",
+     "exists": true
+    },
+    {
      "path": "openspec/changes/scenario-run-change-impact/specs/trace-graph/spec.md",
+     "exists": true
+    },
+    {
+     "path": "openspec/changes/scenario-run-change-impact/specs/verdict-readiness/spec.md",
      "exists": true
     }
    ],
@@ -1495,7 +1519,9 @@ const HELP = {
   "openspec/changes/scenario-run-change-impact/proposal.md": "openspec/changes/scenario-run-change-impact/proposal.md",
   "openspec/changes/scenario-run-change-impact/research/none.md": "openspec/changes/scenario-run-change-impact/research/none.md",
   "openspec/changes/scenario-run-change-impact/specs/artifact-attack/spec.md": "openspec/changes/scenario-run-change-impact/specs/artifact-attack/spec.md",
+  "openspec/changes/scenario-run-change-impact/specs/stale-verdict-scope/spec.md": "openspec/changes/scenario-run-change-impact/specs/stale-verdict-scope/spec.md",
   "openspec/changes/scenario-run-change-impact/specs/trace-graph/spec.md": "openspec/changes/scenario-run-change-impact/specs/trace-graph/spec.md",
+  "openspec/changes/scenario-run-change-impact/specs/verdict-readiness/spec.md": "openspec/changes/scenario-run-change-impact/specs/verdict-readiness/spec.md",
   "proposal.md": "openspec/changes/scenario-run-change-impact/proposal.md",
   "research/none.md": "openspec/changes/scenario-run-change-impact/research/none.md",
   "scheme.md": "openspec/changes/scenario-run-change-impact/scheme.md",
@@ -1527,7 +1553,9 @@ const LINKS = {
   "openspec/changes/scenario-run-change-impact/proposal.md": "proposal.md",
   "openspec/changes/scenario-run-change-impact/research/none.md": "research/none.md",
   "openspec/changes/scenario-run-change-impact/specs/artifact-attack/spec.md": "specs/artifact-attack/spec.md",
+  "openspec/changes/scenario-run-change-impact/specs/stale-verdict-scope/spec.md": "specs/stale-verdict-scope/spec.md",
   "openspec/changes/scenario-run-change-impact/specs/trace-graph/spec.md": "specs/trace-graph/spec.md",
+  "openspec/changes/scenario-run-change-impact/specs/verdict-readiness/spec.md": "specs/verdict-readiness/spec.md",
   "openspec/schemas/symphysis/templates/design.md": "../../schemas/symphysis/templates/design.md",
   "openspec/schemas/symphysis/templates/tasks.md": "../../schemas/symphysis/templates/tasks.md",
   "openspec/specs/artifact-attack/spec.md": "../../specs/artifact-attack/spec.md",
