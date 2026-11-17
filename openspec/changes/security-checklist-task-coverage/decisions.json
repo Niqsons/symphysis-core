@@ -444,7 +444,7 @@
    "id": "F-09",
    "question": "[empty · collection] Ссылка чек-листа однозначно называет актуальную задачу: в чек-листе осталась только подпись ссылки, а единственную задачу с мерой и проверкой удалили — какая информация о плане должна пережить удаление?",
    "kind": "развилка",
-   "status": "открыт",
+   "status": "решён",
    "addressee": "человек",
    "depends_on": [
     "F-06",
@@ -487,12 +487,20 @@
     "option": "A",
     "why": "Когда из пункта оставили только ссылку, удаление задачи тихо теряет способ проверки и критерий результата, хотя причина незавершённости видна. A оставляет достаточно сведений для восстановления без пересмотра меры. Цена — сценарий, проверка удаления задачи и сверка двух описаний при обновлении плана."
    },
-   "decision": null,
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-17"
+   },
    "reversibility": null,
-   "outcome": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Specify",
+    "reason": ""
+   },
    "parking": [],
    "dispute": "",
-   "consequences": "",
+   "consequences": "в spec.md: При удалении задачи пункт сохраняет план",
    "evidence": [
     {
      "path": "openspec/changes/security-checklist-task-coverage/specs/security-checklist-coverage/spec.md",
@@ -551,7 +559,7 @@
   },
   {
    "date": "2026-11-17",
-   "text": "проба краёв: кандидатов 1, Specify 0, Dismiss 0, Backstop 0, Defer 0; не выбран 17: security-checklist-coverage/Применимый пункт чек-листа называет основание, security-checklist-coverage/Чек-лист и задачи согласуются при любом порядке, security-checklist-coverage/Ссылка чек-листа однозначно называет актуальную задачу, security-checklist-coverage/Сверка плана выявляет пункты без достаточной задачи; открыт F-09"
+   "text": "проба краёв: кандидатов 1, Specify 1, Dismiss 0, Backstop 0, Defer 0; не выбран 17: security-checklist-coverage/Применимый пункт чек-листа называет основание, security-checklist-coverage/Чек-лист и задачи согласуются при любом порядке, security-checklist-coverage/Ссылка чек-листа однозначно называет актуальную задачу, security-checklist-coverage/Сверка плана выявляет пункты без достаточной задачи"
   },
   {
    "date": "2026-11-17",

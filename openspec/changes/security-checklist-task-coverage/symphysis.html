@@ -238,12 +238,12 @@
 const JOURNAL = {
  "title": "Журнал решений: security-checklist-task-coverage",
  "source": "decisions.json",
- "sha256": "e498218fab79038d33578f6e0df78e5dd6ad4f3edfb12fa0abbf8a38a9f4cfb6",
+ "sha256": "31d2aa0d5cf1f185f6415a3e2fd68584408dd6f648e56e799154d47be83089bd",
  "stats": {
   "records": 10,
   "forks": 4,
   "facts": 6,
-  "decided": 3,
+  "decided": 4,
   "parked": 0,
   "evidence_total": 38,
   "evidence_found": 38
@@ -806,7 +806,7 @@ const JOURNAL = {
    "id": "F-09",
    "question": "[empty · collection] Ссылка чек-листа однозначно называет актуальную задачу: в чек-листе осталась только подпись ссылки, а единственную задачу с мерой и проверкой удалили — какая информация о плане должна пережить удаление?",
    "kind": "развилка",
-   "status": "открыт",
+   "status": "решён",
    "addressee": "человек",
    "depends_on": [
     "F-06",
@@ -849,12 +849,20 @@ const JOURNAL = {
     "option": "A",
     "why": "Когда из пункта оставили только ссылку, удаление задачи тихо теряет способ проверки и критерий результата, хотя причина незавершённости видна. A оставляет достаточно сведений для восстановления без пересмотра меры. Цена — сценарий, проверка удаления задачи и сверка двух описаний при обновлении плана."
    },
-   "decision": null,
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-17"
+   },
    "reversibility": null,
-   "outcome": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Specify",
+    "reason": ""
+   },
    "parking": [],
    "dispute": "",
-   "consequences": "",
+   "consequences": "в spec.md: При удалении задачи пункт сохраняет план",
    "evidence": [
     {
      "path": "openspec/changes/security-checklist-task-coverage/specs/security-checklist-coverage/spec.md",
@@ -921,7 +929,7 @@ const JOURNAL = {
   },
   {
    "date": "2026-11-17",
-   "text": "проба краёв: кандидатов 1, Specify 0, Dismiss 0, Backstop 0, Defer 0; не выбран 17: security-checklist-coverage/Применимый пункт чек-листа называет основание, security-checklist-coverage/Чек-лист и задачи согласуются при любом порядке, security-checklist-coverage/Ссылка чек-листа однозначно называет актуальную задачу, security-checklist-coverage/Сверка плана выявляет пункты без достаточной задачи; открыт F-09"
+   "text": "проба краёв: кандидатов 1, Specify 1, Dismiss 0, Backstop 0, Defer 0; не выбран 17: security-checklist-coverage/Применимый пункт чек-листа называет основание, security-checklist-coverage/Чек-лист и задачи согласуются при любом порядке, security-checklist-coverage/Ссылка чек-листа однозначно называет актуальную задачу, security-checklist-coverage/Сверка плана выявляет пункты без достаточной задачи"
   },
   {
    "date": "2026-11-17",
@@ -939,7 +947,7 @@ const SCHEME = {
 };
 const HELP = {
  "contract": 6,
- "taken_at": "2026-11-17T22:18:44+03:00",
+ "taken_at": "2026-11-17T22:28:57+03:00",
  "versions": {
   "openspec": "1.16.1+symphysis.9",
   "symphysis": "0.1.0+5128d822"
@@ -947,12 +955,12 @@ const HELP = {
  "change": "security-checklist-task-coverage",
  "changes": null,
  "error": null,
- "current_step": "viewer",
- "current_text": "Следующий шаг по файлам — `viewer`, ход человека: открытых развилок 1, решаются на странице журнала. После них по файлам идёт `consequences`.",
- "turn": "human",
+ "current_step": "consequences",
+ "current_text": "Следующий шаг по файлам — `consequences`, ход модели.",
+ "turn": "model",
  "next_by_status": "consequences",
  "forks": {
-  "open": 1,
+  "open": 0,
   "parked": 0
  },
  "tasks": {
@@ -1032,7 +1040,7 @@ const HELP = {
   },
   {
    "id": "viewer",
-   "state": "ready",
+   "state": "idle",
    "turn": "human",
    "optional": false,
    "blocks": [],
