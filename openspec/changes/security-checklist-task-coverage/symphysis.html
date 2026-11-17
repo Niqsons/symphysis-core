@@ -238,12 +238,12 @@
 const JOURNAL = {
  "title": "Журнал решений: security-checklist-task-coverage",
  "source": "decisions.json",
- "sha256": "5767fb31c82973162bc34269a9c8462f835ab96f3ba7b7fb45d367e702cf7ce6",
+ "sha256": "9c5939500ab31dd8dc98098231c12ce7370fdad6f3c5450b597354a5169dc5e7",
  "stats": {
   "records": 12,
   "forks": 6,
   "facts": 6,
-  "decided": 4,
+  "decided": 6,
   "parked": 0,
   "evidence_total": 43,
   "evidence_found": 43
@@ -917,7 +917,7 @@ const JOURNAL = {
    "id": "F-11",
    "question": "[ветка] Сверка плана выявляет пункты без достаточной задачи: запись остановилась после создания `tasks.md`, но до добавления ссылки в `security.md`. Оба файла уже `done`, а повтор `continue tasks` не выполняет сверку. Как показать путь исправления?",
    "kind": "развилка",
-   "status": "открыт",
+   "status": "решён",
    "addressee": "человек",
    "depends_on": [
     "F-06",
@@ -959,12 +959,20 @@ const JOURNAL = {
     "option": "A",
     "why": "Оба файла выглядят завершёнными, поэтому повтор обычной команды молча оставит разрыв для следующего шага. A называет доступный маршрут точечного согласования. Цена — сценарий и проверка восстановления без перезаписи уже созданных задач."
    },
-   "decision": null,
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-17"
+   },
    "reversibility": null,
-   "outcome": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Specify",
+    "reason": ""
+   },
    "parking": [],
    "dispute": "",
-   "consequences": "",
+   "consequences": "в spec.md: Согласование прервалось после записи задач",
    "evidence": [
     {
      "path": "upstream/openspec/src/core/artifact-graph/state.ts",
@@ -999,7 +1007,7 @@ const JOURNAL = {
    "id": "F-12",
    "question": "[ветка] Ссылка чек-листа однозначно называет актуальную задачу: если поставить номер задачи в обратные кавычки прямо перед названием в «ёлочках», граф читает эту пару как capability и требование. Как проверить, что подпись ссылки не даст ложную диагностику?",
    "kind": "развилка",
-   "status": "открыт",
+   "status": "решён",
    "addressee": "человек",
    "depends_on": [
     "F-07"
@@ -1040,12 +1048,20 @@ const JOURNAL = {
     "option": "C",
     "why": "Конфликт относится к записи подписи, его видно в отчёте и можно поймать на фактическом образце существующим графом. Backstop удержит совместимость без нового правила о поведении графа в спецификации чек-листа."
    },
-   "decision": null,
+   "decision": {
+    "option": "C",
+    "word": "",
+    "date": "2026-11-17"
+   },
    "reversibility": null,
-   "outcome": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Backstop",
+    "reason": ""
+   },
    "parking": [],
    "dispute": "",
-   "consequences": "",
+   "consequences": "тест-страховка: построить граф для чек-листа со ссылкой на задачу «задача 2.1 — Проверить отказ» и обычной ссылкой на требование. Строка задачи не создаёт ложную связь с требованием и не даёт сигнала о пропавшем требовании, обычная ссылка даёт refines.",
    "evidence": [
     {
      "path": "trace/trace_graph.py",
@@ -1102,7 +1118,7 @@ const SCHEME = {
 };
 const HELP = {
  "contract": 6,
- "taken_at": "2026-11-17T22:33:48+03:00",
+ "taken_at": "2026-11-17T22:36:27+03:00",
  "versions": {
   "openspec": "1.16.1+symphysis.9",
   "symphysis": "0.1.0+5128d822"
@@ -1110,12 +1126,12 @@ const HELP = {
  "change": "security-checklist-task-coverage",
  "changes": null,
  "error": null,
- "current_step": "viewer",
- "current_text": "Следующий шаг по файлам — `viewer`, ход человека: открытых развилок 2, решаются на странице журнала. После них по файлам идёт `design`.",
- "turn": "human",
+ "current_step": "design",
+ "current_text": "Следующий шаг по файлам — `design`, ход модели.",
+ "turn": "model",
  "next_by_status": "design",
  "forks": {
-  "open": 2,
+  "open": 0,
   "parked": 0
  },
  "tasks": {
@@ -1195,7 +1211,7 @@ const HELP = {
   },
   {
    "id": "viewer",
-   "state": "ready",
+   "state": "idle",
    "turn": "human",
    "optional": false,
    "blocks": [],
