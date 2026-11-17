@@ -238,15 +238,15 @@
 const JOURNAL = {
  "title": "Журнал решений: security-checklist-task-coverage",
  "source": "decisions.json",
- "sha256": "31d2aa0d5cf1f185f6415a3e2fd68584408dd6f648e56e799154d47be83089bd",
+ "sha256": "5767fb31c82973162bc34269a9c8462f835ab96f3ba7b7fb45d367e702cf7ce6",
  "stats": {
-  "records": 10,
-  "forks": 4,
+  "records": 12,
+  "forks": 6,
   "facts": 6,
   "decided": 4,
   "parked": 0,
-  "evidence_total": 38,
-  "evidence_found": 38
+  "evidence_total": 43,
+  "evidence_found": 43
  },
  "records": [
   {
@@ -912,6 +912,161 @@ const JOURNAL = {
    ],
    "comments": [],
    "finding": ""
+  },
+  {
+   "id": "F-11",
+   "question": "[ветка] Сверка плана выявляет пункты без достаточной задачи: запись остановилась после создания `tasks.md`, но до добавления ссылки в `security.md`. Оба файла уже `done`, а повтор `continue tasks` не выполняет сверку. Как показать путь исправления?",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-06",
+    "F-08"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN оба артефакта уже есть, подходящая задача записана, а чек-лист остался в «запланировано» после прерывания, WHEN автор возвращается к сверке плана, THEN он явно называет незавершённый пункт и указывает на точечное согласование существующих файлов через `update-change`. Цена — сценарий прерывания, проверка восстановления пары и сопровождение ссылки на действующий workflow.",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — сохранить требование сообщать о незавершённом пункте. Редактор выбирает способ согласования из уже доступных действий по обновлению артефактов. Допустимо, если проекту достаточно сообщения о том, что осталось сделать.",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — проверка готовит `tasks.md` с подходящей задачей и `security.md` со старой отметкой. Она проверяет, что указание согласовать существующий чек-лист приводит к заполненной ссылке, при этом остальные задачи остаются на своих местах. Отдельный сценарий в спеках не добавляется.",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — оставить выбор пути восстановления до дизайна шага. Пока открытым считается вопрос, как показать исправление после сообщения о незавершённом пункте.",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Оба файла выглядят завершёнными, поэтому повтор обычной команды молча оставит разрыв для следующего шага. A называет доступный маршрут точечного согласования. Цена — сценарий и проверка восстановления без перезаписи уже созданных задач."
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "upstream/openspec/src/core/artifact-graph/state.ts",
+     "quote": ": isArtifactComplete(artifact.generates, changeDir);",
+     "line": 34,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "upstream/openspec/src/core/templates/workflows/continue-change.ts",
+     "quote": "STOP - write nothing, do NOT rewrite its file",
+     "line": 63,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "openspec/changes/security-checklist-task-coverage/specs/security-checklist-coverage/spec.md",
+     "quote": "### Requirement: Сверка плана выявляет пункты без достаточной задачи",
+     "line": 94,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "T",
+    "L"
+   ],
+   "finding": ""
+  },
+  {
+   "id": "F-12",
+   "question": "[ветка] Ссылка чек-листа однозначно называет актуальную задачу: если поставить номер задачи в обратные кавычки прямо перед названием в «ёлочках», граф читает эту пару как capability и требование. Как проверить, что подпись ссылки не даст ложную диагностику?",
+   "kind": "развилка",
+   "status": "открыт",
+   "addressee": "человек",
+   "depends_on": [
+    "F-07"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN пункт содержит относительную ссылку на задачу и рядом есть обычная ссылка на требование, WHEN строится граф, THEN ссылка на задачу не даёт диагностику отсутствующего требования, а ссылка на требование сохраняет своё ребро. Цена — сценарий совместимости форматов, проверка графа и её сопровождение при смене разметки.",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — оставить сверку формы подписи автору плана. При ошибочной разметке существующий отчёт покажет неизвестную capability, её видно и можно исправить при вычитке.",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — проверить пару строк чек-листа: ссылка с подписью «задача 2.1 — Проверить отказ» и действующая ссылка на требование. Построить граф и убедиться, что строка задачи не даёт ложную ссылку или сигнал, а строка требования даёт `refines`. Строка в spec.md не добавляется.",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — решить, какие образцы подписи проверить, когда дизайн закрепит её точное написание. До этого совместимость со считыванием ссылок на требования остаётся допущением.",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "C",
+    "why": "Конфликт относится к записи подписи, его видно в отчёте и можно поймать на фактическом образце существующим графом. Backstop удержит совместимость без нового правила о поведении графа в спецификации чек-листа."
+   },
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "trace/trace_graph.py",
+     "quote": "while (m := _SEC_REQ.search(text, pos)):",
+     "line": 974,
+     "verdict": "сверено",
+     "found": true
+    },
+    {
+     "path": "openspec/changes/security-checklist-task-coverage/specs/security-checklist-coverage/spec.md",
+     "quote": "### Requirement: Ссылка чек-листа однозначно называет актуальную задачу",
+     "line": 63,
+     "verdict": "сверено",
+     "found": true
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "L"
+   ],
+   "finding": ""
   }
  ],
  "notes": [
@@ -947,7 +1102,7 @@ const SCHEME = {
 };
 const HELP = {
  "contract": 6,
- "taken_at": "2026-11-17T22:28:57+03:00",
+ "taken_at": "2026-11-17T22:33:48+03:00",
  "versions": {
   "openspec": "1.16.1+symphysis.9",
   "symphysis": "0.1.0+5128d822"
@@ -955,12 +1110,12 @@ const HELP = {
  "change": "security-checklist-task-coverage",
  "changes": null,
  "error": null,
- "current_step": "consequences",
- "current_text": "Следующий шаг по файлам — `consequences`, ход модели.",
- "turn": "model",
- "next_by_status": "consequences",
+ "current_step": "viewer",
+ "current_text": "Следующий шаг по файлам — `viewer`, ход человека: открытых развилок 2, решаются на странице журнала. После них по файлам идёт `design`.",
+ "turn": "human",
+ "next_by_status": "design",
  "forks": {
-  "open": 0,
+  "open": 2,
   "parked": 0
  },
  "tasks": {
@@ -1040,7 +1195,7 @@ const HELP = {
   },
   {
    "id": "viewer",
-   "state": "idle",
+   "state": "ready",
    "turn": "human",
    "optional": false,
    "blocks": [],
@@ -1225,7 +1380,7 @@ const HELP = {
   },
   {
    "id": "consequences",
-   "state": "ready",
+   "state": "done",
    "turn": "model",
    "optional": false,
    "blocks": [
@@ -1236,10 +1391,10 @@ const HELP = {
    "files": [
     {
      "path": "openspec/changes/security-checklist-task-coverage/consequences.md",
-     "exists": false
+     "exists": true
     }
    ],
-   "file_note": null,
+   "file_note": "файл есть, содержание не проверялось",
    "texts": {
     "title": "Опись последствий",
     "why": "Что делает код, на который опирается изменение, когда что-то идёт не так, и есть ли на это сценарий в спецификациях. Здесь ветки отказа и допущения конструкции доходят до человека раньше, чем появится дизайн.",
@@ -1262,7 +1417,7 @@ const HELP = {
   },
   {
    "id": "design",
-   "state": "blocked",
+   "state": "ready",
    "turn": "model",
    "optional": false,
    "blocks": [
@@ -1270,9 +1425,7 @@ const HELP = {
     "attack-artifacts"
    ],
    "stops_apply": false,
-   "waits_for": [
-    "consequences"
-   ],
+   "waits_for": [],
    "files": [
     {
      "path": "openspec/changes/security-checklist-task-coverage/design.md",
@@ -1481,10 +1634,12 @@ const HELP = {
   ".claude/skills/symphysis-prohibition-probe/SKILL.md": ".claude/skills/symphysis-prohibition-probe/SKILL.md",
   ".claude/skills/symphysis-research/SKILL.md": ".claude/skills/symphysis-research/SKILL.md",
   ".claude/skills/symphysis-viewer/SKILL.md": ".claude/skills/symphysis-viewer/SKILL.md",
+  "consequences.md": "openspec/changes/security-checklist-task-coverage/consequences.md",
   "decisions.json": "openspec/changes/security-checklist-task-coverage/decisions.json",
   "decisions.md": "openspec/changes/security-checklist-task-coverage/decisions.md",
   "edge-probe.md": "openspec/changes/security-checklist-task-coverage/edge-probe.md",
   "intent.md": "openspec/changes/security-checklist-task-coverage/intent.md",
+  "openspec/changes/security-checklist-task-coverage/consequences.md": "openspec/changes/security-checklist-task-coverage/consequences.md",
   "openspec/changes/security-checklist-task-coverage/decisions.json": "openspec/changes/security-checklist-task-coverage/decisions.json",
   "openspec/changes/security-checklist-task-coverage/intent.md": "openspec/changes/security-checklist-task-coverage/intent.md",
   "openspec/changes/security-checklist-task-coverage/proposal.md": "openspec/changes/security-checklist-task-coverage/proposal.md",
@@ -1508,11 +1663,13 @@ const LINKS = {
   ".claude/skills/symphysis-prohibition-probe/SKILL.md": "../../../.claude/skills/symphysis-prohibition-probe/SKILL.md",
   ".claude/skills/symphysis-research/SKILL.md": "../../../.claude/skills/symphysis-research/SKILL.md",
   ".claude/skills/symphysis-viewer/SKILL.md": "../../../.claude/skills/symphysis-viewer/SKILL.md",
+  "consequences.md": "consequences.md",
   "decisions.json": "decisions.json",
   "decisions.md": "decisions.md",
   "edge-probe.md": "edge-probe.md",
   "intent.md": "intent.md",
   "openspec/changes/archive/2026-11-02-implementation-consequences/security.md": "../archive/2026-11-02-implementation-consequences/security.md",
+  "openspec/changes/security-checklist-task-coverage/consequences.md": "consequences.md",
   "openspec/changes/security-checklist-task-coverage/decisions.json": "decisions.json",
   "openspec/changes/security-checklist-task-coverage/intent.md": "intent.md",
   "openspec/changes/security-checklist-task-coverage/proposal.md": "proposal.md",
@@ -1526,7 +1683,9 @@ const LINKS = {
   "scheme.md": "scheme.md",
   "symphysis.html": "symphysis.html",
   "symphysis.yaml": "../../../symphysis.yaml",
-  "trace/trace_graph.py": "../../../trace/trace_graph.py"
+  "trace/trace_graph.py": "../../../trace/trace_graph.py",
+  "upstream/openspec/src/core/artifact-graph/state.ts": "../../../../symphysis/upstream/openspec/src/core/artifact-graph/state.ts",
+  "upstream/openspec/src/core/templates/workflows/continue-change.ts": "../../../../symphysis/upstream/openspec/src/core/templates/workflows/continue-change.ts"
  }
 };
 const ADDRESSEES = ['агент','человек','ИБ'];
