@@ -1,0 +1,723 @@
+{
+ "title": "Журнал решений: security-checklist-task-coverage",
+ "source": "decisions.json",
+ "intro": "Пути улик считаются от корня репозитория ядра. Первый круг опирается на intent.md, инструкцию и шаблон security, порядок шагов схемы, проверку допуска apply, разбор связей графом и архивный пример ссылки на задачу.",
+ "records": [
+  {
+   "id": "F-01",
+   "question": "Критерий готовности: Без критериев готовности",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "постановка",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "Дополнительные критерии в намерении не заданы.",
+   "evidence": [
+    {
+     "path": "openspec/changes/security-checklist-task-coverage/intent.md",
+     "quote": "Без критериев готовности"
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-02",
+   "question": "В намерении согласованы три основания чек-листа и переход от плана к конкретной задаче",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "агент",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "Развилки уточняют порядок, форму ссылки и проверку передачи задачи.",
+   "evidence": [
+    {
+     "path": "openspec/changes/security-checklist-task-coverage/intent.md",
+     "quote": "**Появляется или меняется свойство безопасности.** Его фиксируем в `specs`, а задача проверяет реализацию."
+    },
+    {
+     "path": "openspec/changes/security-checklist-task-coverage/intent.md",
+     "quote": "**Свойство уже задано.** Достаточно сослаться на существующее требование и назвать проверку для затронутого случая."
+    },
+    {
+     "path": "openspec/changes/security-checklist-task-coverage/intent.md",
+     "quote": "Допускаем адресную задачу с описанием меры, способом проверки и наблюдаемым результатом."
+    },
+    {
+     "path": "openspec/changes/security-checklist-task-coverage/intent.md",
+     "quote": "Пока `tasks.md` ещё не написан, в чек-листе стоит «запланировано». На шаге `tasks` появляется ссылка на реальную задачу."
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "K",
+    "P",
+    "L"
+   ]
+  },
+  {
+   "id": "F-03",
+   "question": "Инструкция и шаблон security требуют закрывающее требование, а тест уже допускается в колонке проверки",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "агент",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "Изменение касается оснований пункта и состояния планируемой проверки.",
+   "evidence": [
+    {
+     "path": "openspec/schemas/symphysis/schema.yaml",
+     "quote": "применимый называет требование из specs, которое его закрывает."
+    },
+    {
+     "path": "openspec/schemas/symphysis/templates/security.md",
+     "quote": "применимый называет требование из specs, которое его закрывает."
+    },
+    {
+     "path": "openspec/schemas/symphysis/templates/security.md",
+     "quote": "«Чем проверено» — сценарий, тест, команда или чтение файла;"
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "C",
+    "P"
+   ]
+  },
+  {
+   "id": "F-04",
+   "question": "Сейчас tasks может быть готов раньше security, а apply ждёт оба артефакта",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "агент",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "Нужен способ согласовать два файла при разном порядке их появления и выбор уровня проверки.",
+   "evidence": [
+    {
+     "path": "openspec/schemas/symphysis/tests/test_schema.py",
+     "quote": "`tasks` от `security` не зависит"
+    },
+    {
+     "path": "openspec/schemas/symphysis/schema.yaml",
+     "quote": "Опирайся на specs (что строить) и design (как); открытый вопрос design, меняющий задачи, реши с человеком до списка."
+    },
+    {
+     "path": "openspec/schemas/symphysis/schema.yaml",
+     "quote": "requires: [tasks, security, attack-artifacts]"
+    },
+    {
+     "path": "openspec/schemas/symphysis/tests/test_schema.py",
+     "quote": "(change / \"security.md\").write_text(\"x\\n\", encoding=\"utf-8\")"
+    },
+    {
+     "path": "openspec/schemas/symphysis/tests/test_schema.py",
+     "quote": "assert run_openspec(proj, \"instructions\", \"apply\", \"--change\", \"demo\", \"--json\")[\"state\"] == \"ready\""
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "P",
+    "T",
+    "L"
+   ]
+  },
+  {
+   "id": "F-05",
+   "question": "Архив использует ссылку по номеру задачи, а граф чек-листа распознаёт ссылки на требования",
+   "kind": "факт",
+   "status": "решён",
+   "addressee": "агент",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "Форма ссылки должна однозначно называть задачу и не совпадать с разметкой ссылки на требование.",
+   "evidence": [
+    {
+     "path": "openspec/changes/archive/2026-11-02-implementation-consequences/security.md",
+     "quote": "правило в тексте скилла — задача 5.1"
+    },
+    {
+     "path": "openspec/schemas/symphysis/schema.yaml",
+     "quote": "Группы `## N. Название`, задачи `- [ ] N.M **Название** — тело`. Прогресс только по чекбоксам."
+    },
+    {
+     "path": "trace/trace_graph.py",
+     "quote": "пункт — `refines` к требованию (F-135)."
+    },
+    {
+     "path": "trace/trace_graph.py",
+     "quote": "_SEC_REQ = re.compile(r\"`([^`]+)`:?\\s*«\")"
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "T",
+    "L"
+   ]
+  },
+  {
+   "id": "F-06",
+   "question": "Кто доводит «запланировано» до ссылки, если security и tasks можно написать в разном порядке?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Согласовывать пару при создании второго артефакта. В обычном порядке шаг tasks читает запланированные пункты, оформляет или находит подходящую задачу и добавляет ссылку в security.md. Если tasks уже есть, security сверяет существующие задачи и сразу ссылается на подходящую. Если подходящей задачи ещё нет, пункт остаётся запланированным, а пользователь получает явное указание дополнить tasks и сверить ссылку. Явная зависимость шагов сохраняется в нынешнем виде. Цена — описать два порядка и обработать уже созданные файлы.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/changes/security-checklist-task-coverage/intent.md",
+       "quote": "Пока `tasks.md` ещё не написан, в чек-листе стоит «запланировано». На шаге `tasks` появляется ссылка на реальную задачу."
+      },
+      {
+       "path": "openspec/schemas/symphysis/schema.yaml",
+       "quote": "Опирайся на specs (что строить) и design (как); открытый вопрос design, меняющий задачи, реши с человеком до списка."
+      },
+      {
+       "path": "openspec/schemas/symphysis/schema.yaml",
+       "quote": "requires: [tasks, security, attack-artifacts]"
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Добавить security к зависимостям tasks. При создании задач шаг всегда имеет на входе чек-лист и в том же проходе заполняет ссылку. Для ранее созданных tasks отдельно сверять их с новым чек-листом. Цена — новое условие готовности tasks для всех изменений, включая чек-листы без запланированных задач.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/changes/security-checklist-task-coverage/intent.md",
+       "quote": "Пока `tasks.md` ещё не написан, в чек-листе стоит «запланировано». На шаге `tasks` появляется ссылка на реальную задачу."
+      },
+      {
+       "path": "openspec/schemas/symphysis/schema.yaml",
+       "quote": "Опирайся на specs (что строить) и design (как); открытый вопрос design, меняющий задачи, реши с человеком до списка."
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "A покрывает обычный порядок и уже существующие списки задач, не меняя доступность tasks для остальных изменений. B упрощает основной маршрут, но меняет порядок всего конвейера."
+   },
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-17"
+   },
+   "reversibility": {
+    "level": "обратимо",
+    "why": "Смену порядка можно провести через инструкции security и tasks. Для уже открытых изменений потребуется сверить созданные пары файлов."
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "Выбор определяет, какой шаг отвечает за запись и сверку ссылки при каждом порядке.",
+   "evidence": [],
+   "comments": [],
+   "nodes": [
+    "P",
+    "T",
+    "L"
+   ]
+  },
+  {
+   "id": "F-07",
+   "question": "По каким признакам ссылка в security.md указывает именно на нужную задачу?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Использовать относительную ссылку на tasks.md с номером и текущим названием задачи в подписи, например «задача 2.1 — Проверить отказ». Сверять номер, название и содержание меры с одной строкой задачи. При перенумерации или переименовании обновлять ссылку, при удалении или смещении смысла вернуть пункт в незакрытое состояние. Форма не требует новых полей и даёт читателю узнаваемую задачу.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/changes/archive/2026-11-02-implementation-consequences/security.md",
+       "quote": "правило в тексте скилла — задача 5.1"
+      },
+      {
+       "path": "openspec/schemas/symphysis/schema.yaml",
+       "quote": "Группы `## N. Название`, задачи `- [ ] N.M **Название** — тело`. Прогресс только по чекбоксам."
+      },
+      {
+       "path": "trace/trace_graph.py",
+       "quote": "_SEC_REQ = re.compile(r\"`([^`]+)`:?\\s*«\")"
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Добавить устойчивый якорь у строки задачи и ссылаться на него из security.md. Якорь переживает перенумерацию и редактирование заголовка. Цена — выбрать синтаксис и правила уникальности, проверить поддержку рендером, сохранить якоря при обновлениях задач и определить миграцию для старых строк.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/schemas/symphysis/schema.yaml",
+       "quote": "Группы `## N. Название`, задачи `- [ ] N.M **Название** — тело`. Прогресс только по чекбоксам."
+      },
+      {
+       "path": "trace/trace_graph.py",
+       "quote": "пункт — `refines` к требованию (F-135)."
+      }
+     ]
+    },
+    {
+     "letter": "C",
+     "text": "Указать только путь и номер строки в tasks.md. Быстро вставляется из текущего файла. Вставка любой строки выше сдвигает цель даже при неизменной задаче.",
+     "added": false,
+     "unlikely": "Строка легко сдвигается от обычной правки, а по одной позиции нельзя опознать задачу.",
+     "evidence": [
+      {
+       "path": "openspec/changes/archive/2026-11-02-implementation-consequences/security.md",
+       "quote": "правило в тексте скилла — задача 5.1"
+      },
+      {
+       "path": "openspec/schemas/symphysis/schema.yaml",
+       "quote": "Группы `## N. Название`, задачи `- [ ] N.M **Название** — тело`. Прогресс только по чекбоксам."
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "A даёт опознаваемую ссылку в существующем формате и не вводит идентификаторы со своим жизненным циклом. B устойчивее к перенумерации, но расширяет грамматику задач. C ломается от сдвига строки."
+   },
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-17"
+   },
+   "reversibility": {
+    "level": "обратимо",
+    "why": "Номер и название находятся в Markdown. При смене формы понадобится обновить такие ссылки в активных чек-листах."
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "Синтаксис и проверка ссылки учитывают переименование, удаление и совпадение с грамматикой ссылок на требования.",
+   "evidence": [],
+   "comments": [],
+   "nodes": [
+    "T",
+    "L"
+   ]
+  },
+  {
+   "id": "F-08",
+   "question": "Где проверять, что запланированный пункт получил адресную задачу, и что делать с остатком?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Проверять при согласовании security.md и tasks.md, пока готовится план. Если ссылки нет, она не разрешается или задача не содержит меру, проверку и наблюдаемый результат, считать этот пункт незавершённым и явно назвать его до начала реализации. Если атака вызвана, rule-compliance сверяет новое правило шага в своей обычной тяжести. Задача с корректной ссылкой остаётся планом, пока её проверка не выполнена. Цена — сходимость зависит от выполнения инструкции автором плана.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/changes/security-checklist-task-coverage/intent.md",
+       "quote": "Пока `tasks.md` ещё не написан, в чек-листе стоит «запланировано». На шаге `tasks` появляется ссылка на реальную задачу."
+      },
+      {
+       "path": "openspec/schemas/symphysis/tests/test_schema.py",
+       "quote": "assert run_openspec(proj, \"instructions\", \"apply\", \"--change\", \"demo\", \"--json\")[\"state\"] == \"ready\""
+      },
+      {
+       "path": "openspec/schemas/symphysis/schema.yaml",
+       "quote": "Каждая задача называет проверку завершения прямо в строке."
+      }
+     ]
+    },
+    {
+     "letter": "B",
+     "text": "Добавить машинный сигнал о незаполненной или битой ссылке после появления обоих артефактов. Автоматически сверять форму ссылки и наличие единственной задачи; соответствие меры, проверки и результата остаётся содержательной проверкой. Цена — реализовать разбор, связать его с выбранной формой ссылки и проверить совместимость старых файлов.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "trace/trace_graph.py",
+       "quote": "пункт — `refines` к требованию (F-135)."
+      },
+      {
+       "path": "trace/trace_graph.py",
+       "quote": "_SEC_REQ = re.compile(r\"`([^`]+)`:?\\s*«\")"
+      }
+     ]
+    },
+    {
+     "letter": "C",
+     "text": "Проверять ссылки машинным гейтом apply. При незакрытой передаче не допускать реализацию до постановки валидной задачи или изменения основания пункта. Цена — новый контракт готовности, отличие от текущей проверки наличия файла, обработка старых чек-листов и частично реализованных изменений.",
+     "added": false,
+     "unlikely": null,
+     "evidence": [
+      {
+       "path": "openspec/schemas/symphysis/schema.yaml",
+       "quote": "requires: [tasks, security, attack-artifacts]"
+      },
+      {
+       "path": "openspec/schemas/symphysis/tests/test_schema.py",
+       "quote": "assert run_openspec(proj, \"instructions\", \"apply\", \"--change\", \"demo\", \"--json\")[\"state\"] == \"ready\""
+      }
+     ]
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "A закрывает пробел именно при составлении плана, сохраняя текущий контракт допуска. B ловит ошибки формы и не проверяет содержание задачи. C гарантирует стоп на формальном дефекте ценой нового поведения apply."
+   },
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-17"
+   },
+   "reversibility": {
+    "level": "обратимо",
+    "why": "Проверка задаётся инструкцией согласования. При её пересмотре достаточно обновить эту инструкцию и повторно сверить незавершённые пункты активных изменений."
+   },
+   "outcome": null,
+   "parking": [],
+   "dispute": "",
+   "consequences": "Выбор задаёт уровень автоматизации и поведение при отсутствующей, устаревшей или содержательно недостаточной ссылке.",
+   "evidence": [],
+   "comments": [],
+   "nodes": [
+    "L",
+    "V"
+   ]
+  },
+  {
+   "id": "F-09",
+   "question": "[empty · collection] Ссылка чек-листа однозначно называет актуальную задачу: в чек-листе осталась только подпись ссылки, а единственную задачу с мерой и проверкой удалили — какая информация о плане должна пережить удаление?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-06",
+    "F-07",
+    "F-08"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN пункт связан с задачей, в которой названы мера, способ проверки и наблюдаемый результат, WHEN задача удалена и автор сверяет чек-лист, THEN пункт возвращается в состояние «запланировано», сохраняя эти сведения для постановки новой задачи. Цена — сценарий удаления, проверка восстановления плана и сопровождение копии его краткого содержания в чек-листе.",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — оставить обязательным только видимое сообщение о незавершённом пункте. При удалении задачи автор восстанавливает меру и проверку из плана, если они сохранились, либо заново согласует их. Это допустимо, если стоимость повторного согласования ниже стоимости дублирования.",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — проверка подаёт чек-лист со ссылкой на удалённую задачу и проверяет, что пункт назван незавершённым, а оставшиеся сведения о мере не стёрты. Формат хранения и восстановления плана не закрепляется сценарием.",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — решить, где и как хранить краткий план, когда определится форма строки чек-листа. До этого при удалении задачи действует возврат в незавершённое состояние.",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Когда из пункта оставили только ссылку, удаление задачи тихо теряет способ проверки и критерий результата, хотя причина незавершённости видна. A оставляет достаточно сведений для восстановления без пересмотра меры. Цена — сценарий, проверка удаления задачи и сверка двух описаний при обновлении плана."
+   },
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-17"
+   },
+   "reversibility": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Specify",
+    "reason": ""
+   },
+   "parking": [],
+   "dispute": "",
+   "consequences": "в spec.md: При удалении задачи пункт сохраняет план",
+   "evidence": [
+    {
+     "path": "openspec/changes/security-checklist-task-coverage/specs/security-checklist-coverage/spec.md",
+     "quote": "### Requirement: Ссылка чек-листа однозначно называет актуальную задачу"
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "P",
+    "L"
+   ]
+  },
+  {
+   "id": "F-10",
+   "question": "[канон] Чек-лист и задачи согласуются при любом порядке: канон ИБ",
+   "kind": "факт",
+   "status": "припаркован",
+   "addressee": "ИБ",
+   "depends_on": [],
+   "delivery": "",
+   "options": [],
+   "antipodes": [],
+   "recommendation": null,
+   "decision": null,
+   "reversibility": null,
+   "outcome": null,
+   "parking": [
+    {
+     "addressee": "ИБ",
+     "text": "Инъекции через содержимое файлов при взаимном чтении security.md и tasks.md для сверки ссылки — канон, покрывается чек-листом security.md; запрет не чеканится"
+    }
+   ],
+   "dispute": "",
+   "consequences": "",
+   "evidence": [
+    {
+     "path": "openspec/changes/security-checklist-task-coverage/specs/security-checklist-coverage/spec.md",
+     "quote": "### Requirement: Чек-лист и задачи согласуются при любом порядке"
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "F-11",
+   "question": "[ветка] Сверка плана выявляет пункты без достаточной задачи: запись остановилась после создания `tasks.md`, но до добавления ссылки в `security.md`. Оба файла уже `done`, а повтор `continue tasks` не выполняет сверку. Как показать путь исправления?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-06",
+    "F-08"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN оба артефакта уже есть, подходящая задача записана, а чек-лист остался в «запланировано» после прерывания, WHEN автор возвращается к сверке плана, THEN он явно называет незавершённый пункт и указывает на точечное согласование существующих файлов через `update-change`. Цена — сценарий прерывания, проверка восстановления пары и сопровождение ссылки на действующий workflow.",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — сохранить требование сообщать о незавершённом пункте. Редактор выбирает способ согласования из уже доступных действий по обновлению артефактов. Допустимо, если проекту достаточно сообщения о том, что осталось сделать.",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — проверка готовит `tasks.md` с подходящей задачей и `security.md` со старой отметкой. Она проверяет, что указание согласовать существующий чек-лист приводит к заполненной ссылке, при этом остальные задачи остаются на своих местах. Отдельный сценарий в спеках не добавляется.",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — оставить выбор пути восстановления до дизайна шага. Пока открытым считается вопрос, как показать исправление после сообщения о незавершённом пункте.",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "A",
+    "why": "Оба файла выглядят завершёнными, поэтому повтор обычной команды молча оставит разрыв для следующего шага. A называет доступный маршрут точечного согласования. Цена — сценарий и проверка восстановления без перезаписи уже созданных задач."
+   },
+   "decision": {
+    "option": "A",
+    "word": "",
+    "date": "2026-11-17"
+   },
+   "reversibility": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Specify",
+    "reason": ""
+   },
+   "parking": [],
+   "dispute": "",
+   "consequences": "в spec.md: Согласование прервалось после записи задач",
+   "evidence": [
+    {
+     "path": "upstream/openspec/src/core/artifact-graph/state.ts",
+     "quote": ": isArtifactComplete(artifact.generates, changeDir);"
+    },
+    {
+     "path": "upstream/openspec/src/core/templates/workflows/continue-change.ts",
+     "quote": "STOP - write nothing, do NOT rewrite its file"
+    },
+    {
+     "path": "openspec/changes/security-checklist-task-coverage/specs/security-checklist-coverage/spec.md",
+     "quote": "### Requirement: Сверка плана выявляет пункты без достаточной задачи"
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "T",
+    "L"
+   ]
+  },
+  {
+   "id": "F-12",
+   "question": "[ветка] Ссылка чек-листа однозначно называет актуальную задачу: если поставить номер задачи в обратные кавычки прямо перед названием в «ёлочках», граф читает эту пару как capability и требование. Как проверить, что подпись ссылки не даст ложную диагностику?",
+   "kind": "развилка",
+   "status": "решён",
+   "addressee": "человек",
+   "depends_on": [
+    "F-07"
+   ],
+   "delivery": "",
+   "options": [
+    {
+     "letter": "A",
+     "text": "Specify — GIVEN пункт содержит относительную ссылку на задачу и рядом есть обычная ссылка на требование, WHEN строится граф, THEN ссылка на задачу не даёт диагностику отсутствующего требования, а ссылка на требование сохраняет своё ребро. Цена — сценарий совместимости форматов, проверка графа и её сопровождение при смене разметки.",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "B",
+     "text": "Dismiss — оставить сверку формы подписи автору плана. При ошибочной разметке существующий отчёт покажет неизвестную capability, её видно и можно исправить при вычитке.",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "C",
+     "text": "Backstop — проверить пару строк чек-листа: ссылка с подписью «задача 2.1 — Проверить отказ» и действующая ссылка на требование. Построить граф и убедиться, что строка задачи не даёт ложную ссылку или сигнал, а строка требования даёт `refines`. Строка в spec.md не добавляется.",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    },
+    {
+     "letter": "D",
+     "text": "Defer — решить, какие образцы подписи проверить, когда дизайн закрепит её точное написание. До этого совместимость со считыванием ссылок на требования остаётся допущением.",
+     "added": false,
+     "unlikely": null,
+     "evidence": []
+    }
+   ],
+   "antipodes": [],
+   "recommendation": {
+    "option": "C",
+    "why": "Конфликт относится к записи подписи, его видно в отчёте и можно поймать на фактическом образце существующим графом. Backstop удержит совместимость без нового правила о поведении графа в спецификации чек-листа."
+   },
+   "decision": {
+    "option": "C",
+    "word": "",
+    "date": "2026-11-17"
+   },
+   "reversibility": null,
+   "outcome": {
+    "kind": "проба",
+    "value": "Backstop",
+    "reason": ""
+   },
+   "parking": [],
+   "dispute": "",
+   "consequences": "тест-страховка: построить граф для чек-листа со ссылкой на задачу «задача 2.1 — Проверить отказ» и обычной ссылкой на требование. Строка задачи не создаёт ложную связь с требованием и не даёт сигнала о пропавшем требовании, обычная ссылка даёт refines.",
+   "evidence": [
+    {
+     "path": "trace/trace_graph.py",
+     "quote": "while (m := _SEC_REQ.search(text, pos)):"
+    },
+    {
+     "path": "openspec/changes/security-checklist-task-coverage/specs/security-checklist-coverage/spec.md",
+     "quote": "### Requirement: Ссылка чек-листа однозначно называет актуальную задачу"
+    }
+   ],
+   "comments": [],
+   "nodes": [
+    "L"
+   ]
+  }
+ ],
+ "notes": [
+  {
+   "date": "2026-11-17",
+   "text": "круг 1 закончен: решений 3, фактов 5, открытых развилок 0, парковок агенту 0, антиподов 0"
+  },
+  {
+   "date": "2026-11-17",
+   "text": "На вопрос «Начать новый круг?» владелец ответил: «Нет, переходим к следующему шагу»."
+  },
+  {
+   "date": "2026-11-17",
+   "text": "брейншторм закончен по решению человека"
+  },
+  {
+   "date": "2026-11-17",
+   "text": "проба краёв: кандидатов 1, Specify 1, Dismiss 0, Backstop 0, Defer 0; не выбран 17: security-checklist-coverage/Применимый пункт чек-листа называет основание, security-checklist-coverage/Чек-лист и задачи согласуются при любом порядке, security-checklist-coverage/Ссылка чек-листа однозначно называет актуальную задачу, security-checklist-coverage/Сверка плана выявляет пункты без достаточной задачи"
+  },
+  {
+   "date": "2026-11-17",
+   "text": "проба запретов: требований 4, оставлено 0, канон → ИБ 1, Specify 0, Dismiss 0, Defer 0"
+  }
+ ]
+}
