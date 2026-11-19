@@ -1,7 +1,7 @@
 {
   "format": 1,
   "pin": "1.17.0+symphysis.10",
-  "archiveSha256": "2d4fe88b3b868256f4906dea741c584b7845a37dae71c1b37f5c531fd195426d",
+  "archiveSha256": "27533aa7e8671285ca20352d2e48b142852816e10b29780c541006ade636ded3",
   "profile": "symphysis",
   "workflows": [
     "new",

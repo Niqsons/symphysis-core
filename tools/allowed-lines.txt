@@ -4,3 +4,7 @@ j.md  # имя файла в тесте
 sha512-NcV1JjO5oDzoK  # хеш целостности @types/d3-ease в installer/package-lock.json: совпадение внутри хеша случайно
 const token = `${process.pid}-${Date.now()}`;  # compiled OpenSpec schema.js: идентификатор временной операции из PID и времени, не секрет
 api_key: POSTHOG_API_KEY,  # compiled OpenSpec telemetry/index.js: ссылка на константу донора, значение ключа здесь отсутствует
+sha512-5vvB5+W7ePv+p3uqxi+RcW1XAzLW0/hxt3/4X4Lc4qHudzOhmBiBwOY6DRob4WnanAEGvNcLjF+KNOufrUoEQw==  # SHA-512 из lockfile официального OpenSpec v1.17.0: случайное совпадение внутри хеша
+sha512-o8iY/mXwlRkedp0LNTr4+TEfXTPQwoNZmv6k+1WIAd1ZXEn8xJJTBCtB0osaVvdZo/x/cNmV16UrWrrGpM5Mvw==  # SHA-512 из lockfile официального OpenSpec v1.17.0: случайное совпадение внутри хеша
+sha512-WDWNT2ixHdmpvGg02BZWI/SWwRYzPiMUf4aIkTBgrxxD8RYFdZO3fCM4pnLMo6j8mUpj0+BuJRHQBChI4v3Anw==  # SHA-512 из lockfile официального OpenSpec v1.17.0: случайное совпадение внутри хеша
+sha512-cctsq2wp5vTsLIcaymblUriiTcZd0CwWtCbLvrOzYCDZoWyMNV8sZ7krj09FSnsiJi3WVsHLM4k6Dq/yaPyCXA==  # SHA-512 из lockfile официального OpenSpec v1.17.0: случайное совпадение внутри хеша
