@@ -1,6 +1,6 @@
 # Форк OpenSpec для symphysis
 
-upstream: Fission-AI/OpenSpec @ 0fa4a970 (1.16.1, 2026-11-07); база форка — 6d04a1b5
+upstream: Fission-AI/OpenSpec @ 579fcac (1.17.0); база форка — 6d04a1b5
 (1.15.0, 2026-10-24), выпуски upstream втягиваются мержем в ветку `symphysis` (C15)
 ветка форка: `symphysis`
 
@@ -41,6 +41,18 @@ upstream: Fission-AI/OpenSpec @ 0fa4a970 (1.16.1, 2026-11-07); база форк
 | C15 — мерж upstream v1.16.1 (`0fa4a970`, 26 коммитов от базы): конфликт один — строка `version` в package.json; область C1–C14 upstream не трогал (`artifact-graph`, шаблоны workflow, `status`, `instructions`, `profiles`); версия форка 1.16.1-symphysis.5 (package.json), engines upstream `node >=22.12.0`. Разбор — symphysis `docs/analysis/upstream-openspec-1.16.1-2026-11-07.md` | ecad6db2 |
 | C16 — форма версии `1.16.1+symphysis.5`: build metadata вместо prerelease. С `-symphysis.N` версия по SemVer ниже релиза, и `openspec version --check` на установленном форке печатал «Update available: 1.16.1» с командой поставить ваниль; с `+symphysis.N` `compareVersions` (`src/core/version-check.ts`, `split('+', 1)`) отбрасывает build-часть, пакет отвечает «up to date». Регэксп теста `generatedBy` (C10, `test/core/update.test.ts`) принимает `[-+]`. Четыре standalone-теста `version-check.test.ts` остаются красными при любом суффиксе — регэксп ленты релизов берёт только `vX.Y.Z`. Решение владельца 2026-11-07 (symphysis `docs/plan-flexible-pipeline.md`, «Сверка с upstream — 2026-11-07») | 8c0a8c0c |
 
+| C17 — direct sync для `schemaName: symphysis`: snapshot до первой записи мастера из выбранного planning root, якоризация только выбранных capabilities после переноса, реальные ошибки/вывод графа; для других схем канонический путь сохранён. Общая вставка `symphysis-sync.ts` в обе формы `sync-specs.ts`; пины парити, static skill и тесты порядка. Основание — symphysis `docs/skills-canon.md` §12 и `fork-symphysis-flow`, порция 3. Якоризатор symphysis должен поддерживать `--capability`; `rules.specs` остаётся ограничением содержимого. Archive, проверщик переноса и версия поставки — следующая порция/выпуск. | 9e334739 |
+
+| C18 — проверяемый результат symphysis sync/archive: read-only `sync_check.py` ядра с match/mismatch/review; обязательная подготовка графа независимо от optional guidance, review происхождения и семантики до переноса, явный no-sync без записи мастера и проверка already-synced; общие `symphysis-sync.ts`/`symphysis-archive.ts`, обе формы workflow, статические skills и пины. Основание — symphysis `docs/skills-canon.md` §12 и `fork-symphysis-flow`, порция 4; обновление установленного пакета/версии/vendor было отложено владельцем до конца всех порций. | 71c41a65 |
+| C19 — версия `1.16.1+symphysis.6` для поставки C17/C18 после слияния `fork-symphysis-flow` и `global-user-install` в main ядра. Managed workflow компилирует установщик ядра; standalone workflow остаются в форке. Сборка и переустановка разрешены владельцем 2026-11-10; тесты повторно не запускались. | выпуск 2026-11-10 |
+| C20 — для `ADDED` и `MODIFIED` в дельтах валидатор предупреждает о тексте длиннее 500 знаков и требует создать дочернее требование со своим сценарием. В режиме `--strict` предупреждение отклоняет изменение. | 22a8500b |
+| C21 — версия `1.16.1+symphysis.7` включает проверку длины требований из C20. | выпуск 2026-11-15 |
+| C22 — `PARTIAL_ARTIFACT_CHECK` в скилле и команде `continue` после дозаписи выполняет обязательные действия из `instruction` текущего артефакта. Остановка на вопросе к владельцу или перед следующим артефактом. Основание — symphysis `docs/skills-canon.md` §12 и `plans/analysis/continue-2026-11-17.md`. | 5948e4e6 |
+| C23 — версия `1.16.1+symphysis.8` поставляет изменение `continue` из C22. | выпуск 2026-11-17 |
+| C24 — проверка мастер-опор `master_supports` по выбранному корню планирования, строгому UTF-8 и SHA-256 используемого блока. Повреждённая, недоступная или изменившаяся опора даёт stale с прежним окном допуска к apply. Workflow sync сохраняет свидетельство только при подтверждённой предзаписи выбранных capability. | scenario-run-change-impact |
+| C25 — версия `1.16.1+symphysis.9` поставляет C24. | выпуск 2026-11-17 |
+| C26 — обновление до `1.17.0+symphysis.10`. Сохранены правки C1–C24. Конфликт только в поле `version`. Очистка устаревших файлов узнаёт точные отпечатки генерации `.9` для Claude Code, Codex и OpenCode. | решение 2026-11-19 |
+
 ## Выпуски upstream
 
 | Выпуск | Разобран | Решение |
@@ -48,11 +60,15 @@ upstream: Fission-AI/OpenSpec @ 0fa4a970 (1.16.1, 2026-11-07); база форк
 | 1.15.0 `6d04a1b5` | 2026-10-29 (`docs/analysis/step0-sources.md` symphysis) | база форка |
 | 1.16.0 `27c05157` | 2026-11-07 (symphysis `docs/analysis/upstream-openspec-1.16.1-2026-11-07.md`) | втянут мержем вместе с 1.16.1 (C15); слово владельца о порядке и Node 22.14 — symphysis `docs/plan-flexible-pipeline.md`, «Сверка с upstream — 2026-11-07» |
 | 1.16.1 `0fa4a970` | 2026-11-07 (там же) | втянут мержем (C15): исправления валидатора и парсеров, Node ≥ 22.12 → порог инсталлятора и GUIDE symphysis поднят до 22.14; `validate --strict` в `trace_graph.py` теперь красный на сценарии без WHEN/GIVEN или THEN (в корпусе symphysis нарушений нет) |
+| 1.17.0 `579fcac` | 2026-11-19 | Владелец о первом шаге обновления форка: «сделаем сначала переход на 1.17.0.» Изменения миграции и очистки старых файлов; требования Node прежние. |
+
+База рабочей ветки восстановлена из локального снимка `1.16.1+symphysis.9` поверх опубликованного `.5` (коммит `ae955c3f`): исходная история `.9` недоступна в проверенных локальных копиях, Git-база прежнего форка отсутствует. Пять синтетических ID в тестовых Markdown-фикстурах помечены `gate-ok`, чтобы исходящая история проходила гейт ключей задач. Финальный merge использует настоящий upstream-коммит `579fcac57ae00c2dff38f971b6d88b6f1f098b8a` официального тега `v1.17.0`, полученный по Git 2026-11-19. Его дерево побайтно совпадает с проверенным снимком `upstream-1.17-source` (`d8d18264`); подготовленная ветка `bcd2ced4` использована как образец разрешения конфликта версии и отпечатков `.9`.
 
 ## Прогоны тестов
 
 | Дата | Коммит форка | Результат |
 | --- | --- | --- |
+| 2026-11-19 | merge v1.17.0 с восстановленным `.9`, `1.17.0+symphysis.10` | Установка из frozen lockfile и сборка успешны. Девять адресных файлов: 361 passed, 2 skipped, 2 failed — `EPERM` при создании directory/file symlink в `released-output-sweep.test.ts`; проверки валидатора, отпечатков, очистки, optional-артефактов и мастер-опор проходят. |
 | 2026-10-29 | база, без правок (6d04a1b5) | 6560 passed, 154 skipped, **8 failed — все EPERM symlink на Windows без прав разработчика** (`test/core/update.test.ts` ×1, `test/commands/schema.test.ts` ×1, `test/core/artifact-graph/resolver.test.ts` ×6); база: «зелёный» значит без новых красных |
 | 2026-10-30 | C1–C5, после сборки `dist/` (4b100b6e) | 6624 passed, 154 skipped, **8 failed — те же восемь EPERM symlink** (`update.test.ts` ×1, `schema.test.ts` ×1, `resolver.test.ts` ×6); первый прогон на свежем `dist/` (b982f281) дал 6622 passed и 9 failed — девятым был `cli-e2e/startup-modules.test.ts`, исправлен в d88ca368; `pnpm regen:parity-hashes`: «already match the build - nothing to update», `pnpm generate:skills`: `git status` чист |
 | 2026-10-31 | C1–C10, после сборки `dist/` (версия 1.15.0-symphysis.2) | 6698 passed, 154 skipped, **8 failed — те же восемь EPERM symlink** (`update.test.ts` ×1, `schema.test.ts` ×1, `resolver.test.ts` ×6); девятое падение (`update.test.ts` «should embed generatedBy», регэксп не принимал `-symphysis.N` после C6) снято правкой регэкспа в C10; `pnpm regen:parity-hashes` после сборки сдвинул пины `continue`/`apply`, `pnpm generate:skills` обновил два SKILL.md |

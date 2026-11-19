@@ -528,8 +528,10 @@ ${requirementPrefix}${'x'.repeat(length - requirementPrefix.length)}
       return changeDir;
     };
 
-    it('fails strict, but not normal, validation on an overlong ADDED requirement', async () => {
-      const changeDir = await writeDelta('added-long', 'ADDED', MAX_REQUIREMENT_TEXT_LENGTH + 1);
+    const sections = ['ADDED', 'MODIFIED'] as const;
+
+    it.each(sections)('warns to create a child requirement for %s at 501 characters', async (section) => {
+      const changeDir = await writeDelta('over-limit', section, 501);
 
       const normal = await new Validator().validateChangeDeltaSpecs(changeDir);
       const strict = await new Validator(true).validateChangeDeltaSpecs(changeDir);
@@ -539,28 +541,19 @@ ${requirementPrefix}${'x'.repeat(length - requirementPrefix.length)}
       expect(strict.issues).toEqual([
         expect.objectContaining({
           level: 'WARNING',
-          message: `ADDED "Long": ${VALIDATION_MESSAGES.REQUIREMENT_TOO_LONG}`,
+          message: expect.stringContaining('Create a child requirement'),
         }),
       ]);
+      expect(strict.issues[0].message).toContain(`${section} "Long"`);
+      expect(normal.issues).toEqual(strict.issues);
     });
 
-    it('accepts an ADDED requirement at the limit', async () => {
-      const changeDir = await writeDelta('added-at-limit', 'ADDED', MAX_REQUIREMENT_TEXT_LENGTH);
-
+    it.each(sections)('accepts a %s requirement at 500 characters', async (section) => {
+      const changeDir = await writeDelta('at-limit', section, 500);
       const strict = await new Validator(true).validateChangeDeltaSpecs(changeDir);
 
       expect(strict.valid).toBe(true);
       expect(strict.issues).toEqual([]);
-    });
-
-    it('does not flag an overlong MODIFIED requirement, which keeps the existing text whole', async () => {
-      const changeDir = await writeDelta('modified-long', 'MODIFIED', MAX_REQUIREMENT_TEXT_LENGTH + 1);
-
-      const strict = await new Validator(true).validateChangeDeltaSpecs(changeDir);
-
-      expect(strict.issues.map((i) => i.message)).not.toContainEqual(
-        expect.stringContaining(VALIDATION_MESSAGES.REQUIREMENT_TOO_LONG)
-      );
     });
   });
 
@@ -632,7 +625,7 @@ ${requirementPrefix}${'x'.repeat(length - requirementPrefix.length)}
 ## ADDED Requirements
 
 ### Requirement: Circuit Breaker State Management SHALL be implemented
-**ID**: REQ-CB-001
+**ID**: REQ-CB-001 <!-- gate-ok: synthetic requirement identifier in a test fixture -->
 **Priority**: P1 (High)
 
 The system MUST implement a circuit breaker with three states.
@@ -662,7 +655,7 @@ The system MUST implement a circuit breaker with three states.
 ## ADDED Requirements
 
 ### Requirement: Error Handling
-**ID**: REQ-ERR-001
+**ID**: REQ-ERR-001 <!-- gate-ok: synthetic requirement identifier in a test fixture -->
 **Priority**: P2
 
 The system SHALL handle all errors gracefully.
@@ -772,7 +765,7 @@ The system SHALL record request metrics.
 ## ADDED Requirements
 
 ### Requirement: Logging Feature
-**ID**: REQ-LOG-001
+**ID**: REQ-LOG-001 <!-- gate-ok: synthetic requirement identifier in a test fixture -->
 
 The system will log all events.
 
@@ -1263,7 +1256,7 @@ This spec exercises metadata fields preceding the requirement description.
 ## Requirements
 
 ### Requirement: Metadata first
-**ID**: REQ-FILE-001
+**ID**: REQ-FILE-001 <!-- gate-ok: synthetic requirement identifier in a test fixture -->
 **Priority**: P1 (High)
 The system MUST persist the uploaded file.
 
@@ -1408,7 +1401,7 @@ ${body}`;
 ## ADDED Requirements
 
 ### Requirement: Metadata only
-**ID**: REQ-META-001
+**ID**: REQ-META-001 <!-- gate-ok: synthetic requirement identifier in a test fixture -->
 **Priority**: P1 (High)
 
 #### Scenario: Present

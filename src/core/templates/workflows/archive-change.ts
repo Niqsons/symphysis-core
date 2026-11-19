@@ -8,6 +8,8 @@ import type { SkillTemplate, CommandTemplate } from '../types.js';
 import { optionalWorkflow } from '../optional-workflow.js';
 import { STORE_SELECTION_GUIDANCE } from './store-selection.js';
 import { PROJECT_ROOT_GUARD } from './project-root.js';
+// Symphysis canon section 12: operational checks live in workflow steps, not optional guidance.
+import { SYMPHYSIS_ARCHIVE_PREPARE, SYMPHYSIS_ARCHIVE_VERIFY } from './symphysis-archive.js';
 
 /**
  * Archiving must merge delta specs into the main specs; the `sync` workflow is
@@ -121,6 +123,7 @@ ${PROJECT_ROOT_GUARD}
 
    **If \`totalTasks\` is zero:** Proceed without a task-related warning.
 
+${SYMPHYSIS_ARCHIVE_PREPARE}
 4. **Assess delta spec sync state**
 
    Use \`artifactPaths.specs.existingOutputPaths\` from status JSON as the only
@@ -145,9 +148,12 @@ ${PROJECT_ROOT_GUARD}
 
    Route on the answer:
    - "Cancel" — stop, do not archive
-   - "Archive without syncing" or "Archive now" — proceed to archive
+   - "Archive without syncing" — proceed to archive without writing main specs
+   - "Archive now" — for Symphysis, complete the already-synced result review below before step 5, without rewriting the master; for other schemas, proceed to archive
    - "Sync now" or "Sync anyway" — sync, then verify (below). Do not start any sync while a capability is sync-blocked; explain the blocker and repeat the available choices.
    - Anything else — ask again rather than archiving
+
+   For Symphysis, retain the current main blocks before the selected sync writes them and pass those provenance inputs, toolsHome and the actual graph outcome to the inline workflow. Optional guidance cannot replace these steps.
 
    Before a selected sync writes any main spec, run
    \`openspec instructions specs --change "<name>" --json\` once with the same
@@ -171,6 +177,7 @@ ${PROJECT_ROOT_GUARD}
    - Verify that no delta-style section headers (\`## ADDED Requirements\`, \`## MODIFIED Requirements\`, \`## REMOVED Requirements\`, \`## RENAMED Requirements\`) remain in the main spec, adhering strictly to the sync workflow formatting rules.
    - Requirement blocks the sync wrote or changed use \`### Requirement:\` headings, and their scenarios use \`#### Scenario:\` headings, under the spec's \`## Requirements\` section. Leave content the delta does not mention exactly as it is.
 
+${SYMPHYSIS_ARCHIVE_VERIFY}
    Then re-run the comparison from the top of this step, including the explicitly retired, missing-spec case, against every capability that has a delta spec in \`artifactPaths.specs.existingOutputPaths\` — not only the ones the sync reports it touched. A successful sync leaves nothing left to apply, so each capability must now read as already synced:
    - ADDED requirements present
    - MODIFIED requirements carrying the scenario and description changes named in the delta, with their other scenarios intact
@@ -333,6 +340,7 @@ ${PROJECT_ROOT_GUARD}
 
    **If \`totalTasks\` is zero:** Proceed without a task-related warning.
 
+${SYMPHYSIS_ARCHIVE_PREPARE}
 4. **Assess delta spec sync state**
 
    Use \`artifactPaths.specs.existingOutputPaths\` from status JSON as the only
@@ -357,9 +365,12 @@ ${PROJECT_ROOT_GUARD}
 
    Route on the answer:
    - "Cancel" — stop, do not archive
-   - "Archive without syncing" or "Archive now" — proceed to archive
+   - "Archive without syncing" — proceed to archive without writing main specs
+   - "Archive now" — for Symphysis, complete the already-synced result review below before step 5, without rewriting the master; for other schemas, proceed to archive
    - "Sync now" or "Sync anyway" — sync, then verify (below). Do not start any sync while a capability is sync-blocked; explain the blocker and repeat the available choices.
    - Anything else — ask again rather than archiving
+
+   For Symphysis, retain the current main blocks before the selected sync writes them and pass those provenance inputs, toolsHome and the actual graph outcome to the inline workflow. Optional guidance cannot replace these steps.
 
    Before a selected sync writes any main spec, run
    \`openspec instructions specs --change "<name>" --json\` once with the same
@@ -383,6 +394,7 @@ ${PROJECT_ROOT_GUARD}
    - Verify that no delta-style section headers (\`## ADDED Requirements\`, \`## MODIFIED Requirements\`, \`## REMOVED Requirements\`, \`## RENAMED Requirements\`) remain in the main spec, adhering strictly to the sync workflow formatting rules.
    - Requirement blocks the sync wrote or changed use \`### Requirement:\` headings, and their scenarios use \`#### Scenario:\` headings, under the spec's \`## Requirements\` section. Leave content the delta does not mention exactly as it is.
 
+${SYMPHYSIS_ARCHIVE_VERIFY}
    Then re-run the comparison from the top of this step, including the explicitly retired, missing-spec case, against every capability that has a delta spec in \`artifactPaths.specs.existingOutputPaths\` — not only the ones the sync reports it touched. A successful sync leaves nothing left to apply, so each capability must now read as already synced:
    - ADDED requirements present
    - MODIFIED requirements carrying the scenario and description changes named in the delta, with their other scenarios intact

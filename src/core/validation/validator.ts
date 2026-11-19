@@ -298,87 +298,49 @@ export class Validator {
         const renamedFrom = new Set<string>();
         const renamedTo = new Set<string>();
 
-        // Validate ADDED
-        for (const block of plan.added) {
-          const key = normalizeRequirementName(block.name);
-          totalDeltas++;
-          if (addedNames.has(key)) {
-            issues.push({ level: 'ERROR', path: entryPath, message: `Duplicate requirement in ADDED: "${block.name}"` });
-          } else {
-            addedNames.add(key);
+        const requirementDeltas = [
+          ['ADDED', plan.added, addedNames],
+          ['MODIFIED', plan.modified, modifiedNames],
+        ] as const;
+        for (const [section, blocks, names] of requirementDeltas) {
+          for (const block of blocks) {
+            const key = normalizeRequirementName(block.name);
+            const label = `${section} "${block.name}"`;
+            totalDeltas++;
+            if (names.has(key)) {
+              issues.push({ level: 'ERROR', path: entryPath, message: `Duplicate requirement in ${section}: "${block.name}"` });
+            } else {
+              names.add(key);
+            }
+            const requirementText = this.extractRequirementText(block.raw);
+            if (!requirementText) {
+              issues.push({
+                level: 'ERROR',
+                path: entryPath,
+                message: this.containsShallOrMust(block.name)
+                  ? this.buildMissingShallOrMustMessage(label, block.name)
+                  : `${label} is missing requirement text`,
+              });
+            } else if (!this.containsShallOrMust(requirementText)) {
+              issues.push({
+                level: 'WARNING',
+                path: entryPath,
+                message: this.buildMissingShallOrMustMessage(label, block.name, true),
+              });
+            }
+            if (requirementText && requirementText.length > MAX_REQUIREMENT_TEXT_LENGTH) {
+              issues.push({
+                level: 'WARNING',
+                path: entryPath,
+                message: `${label}: ${VALIDATION_MESSAGES.DELTA_REQUIREMENT_TOO_LONG}`,
+              });
+            }
+            const scenarioCount = this.countScenarios(block.raw);
+            if (scenarioCount < 1) {
+              issues.push({ level: 'ERROR', path: entryPath, message: `${label} must include at least one scenario${this.emptyScenarioHint(block.raw)}` });
+            }
+            issues.push(...this.findScenarioStepIssues(block.raw, label, entryPath));
           }
-          const requirementText = this.extractRequirementText(block.raw);
-          if (!requirementText) {
-            issues.push({
-              level: 'ERROR',
-              path: entryPath,
-              message: this.containsShallOrMust(block.name)
-                ? this.buildMissingShallOrMustMessage(`ADDED "${block.name}"`, block.name)
-                : `ADDED "${block.name}" is missing requirement text`,
-            });
-          } else if (!this.containsShallOrMust(requirementText)) {
-            issues.push({
-              level: 'WARNING',
-              path: entryPath,
-              message: this.buildMissingShallOrMustMessage(
-                `ADDED "${block.name}"`,
-                block.name,
-                true
-              ),
-            });
-          }
-          // Same limit the main spec enforces after archive (#1976), so
-          // `validate <change> --strict` catches a new overlong requirement
-          // before it lands. MODIFIED is left alone: its text is the existing
-          // requirement, which the specs instruction says to keep whole.
-          if (requirementText && requirementText.length > MAX_REQUIREMENT_TEXT_LENGTH) {
-            issues.push({
-              level: 'WARNING',
-              path: entryPath,
-              message: `ADDED "${block.name}": ${VALIDATION_MESSAGES.REQUIREMENT_TOO_LONG}`,
-            });
-          }
-          const scenarioCount = this.countScenarios(block.raw);
-          if (scenarioCount < 1) {
-            issues.push({ level: 'ERROR', path: entryPath, message: `ADDED "${block.name}" must include at least one scenario${this.emptyScenarioHint(block.raw)}` });
-          }
-          issues.push(...this.findScenarioStepIssues(block.raw, `ADDED "${block.name}"`, entryPath));
-        }
-
-        // Validate MODIFIED
-        for (const block of plan.modified) {
-          const key = normalizeRequirementName(block.name);
-          totalDeltas++;
-          if (modifiedNames.has(key)) {
-            issues.push({ level: 'ERROR', path: entryPath, message: `Duplicate requirement in MODIFIED: "${block.name}"` });
-          } else {
-            modifiedNames.add(key);
-          }
-          const requirementText = this.extractRequirementText(block.raw);
-          if (!requirementText) {
-            issues.push({
-              level: 'ERROR',
-              path: entryPath,
-              message: this.containsShallOrMust(block.name)
-                ? this.buildMissingShallOrMustMessage(`MODIFIED "${block.name}"`, block.name)
-                : `MODIFIED "${block.name}" is missing requirement text`,
-            });
-          } else if (!this.containsShallOrMust(requirementText)) {
-            issues.push({
-              level: 'WARNING',
-              path: entryPath,
-              message: this.buildMissingShallOrMustMessage(
-                `MODIFIED "${block.name}"`,
-                block.name,
-                true
-              ),
-            });
-          }
-          const scenarioCount = this.countScenarios(block.raw);
-          if (scenarioCount < 1) {
-            issues.push({ level: 'ERROR', path: entryPath, message: `MODIFIED "${block.name}" must include at least one scenario${this.emptyScenarioHint(block.raw)}` });
-          }
-          issues.push(...this.findScenarioStepIssues(block.raw, `MODIFIED "${block.name}"`, entryPath));
         }
 
         // Run archive's scenario-loss check here too, so the change fails at
