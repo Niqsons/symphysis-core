@@ -23,3 +23,4 @@ qwenlm.github.io # публичная документация Qwen Code
 sourcecraft.dev # публичная страница клиента из документации OpenSpec
 www.npmjs.com # публичный каталог пакетов npm
 x.com # публичные ссылки сообщества OpenSpec
+continue.dev # публичная страница клиента из CHANGELOG официального OpenSpec
