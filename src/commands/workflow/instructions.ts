@@ -638,7 +638,7 @@ export async function generateApplyInstructions(
       continue;
     }
     const verdict = withoutPassingVerdict.has(artifactId)
-      ? verdictState(artifact, changeDir)
+      ? verdictState(artifact, changeDir, planningHome.root)
       : undefined;
     if (verdict === 'missing' || verdict === 'mismatch' || verdict === 'stale') {
       artifactsWithoutPassingVerdict.push({ id: artifactId, verdict });

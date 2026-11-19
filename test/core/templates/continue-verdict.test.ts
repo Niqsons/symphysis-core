@@ -25,6 +25,20 @@ const VARIANTS: Array<[label: string, text: string]> = [
 
 const occurrences = (text: string, needle: string) => text.split(needle).length - 1;
 
+describe('continue template: partial-artifact recovery', () => {
+  it.each(VARIANTS)('%s: finishes required post-write work before stopping', (_label, text) => {
+    const start = text.indexOf('**Before anything else, finish a partly written artifact**');
+    const recovery = text.slice(start, text.indexOf(VERDICT_CHECK));
+
+    expect(recovery).toContain('write only the missing files, each at its checked path');
+    expect(recovery).not.toContain("and STOP - that counts as this invocation's ONE artifact");
+    expect(recovery).toContain('After writing the missing files, follow the current artifact\'s `instruction` for any required post-write actions');
+    expect(recovery).toContain('Change related files only as required by that `instruction`');
+    expect(recovery).toContain('If a user decision is required, ask and STOP to await the answer');
+    expect(recovery).toContain('Otherwise, report the result and STOP before starting the next artifact');
+  });
+});
+
 describe('continue template: verdict step', () => {
   it('continue skill and command carry the verdict step before artifact creation', () => {
     for (const text of [

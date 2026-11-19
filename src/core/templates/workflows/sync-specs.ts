@@ -7,6 +7,8 @@
 import type { SkillTemplate, CommandTemplate } from '../types.js';
 import { STORE_SELECTION_GUIDANCE } from './store-selection.js';
 import { PROJECT_ROOT_GUARD } from './project-root.js';
+// Symphysis canon section 12: shared, schema-guarded operation steps; artifact rules remain content-only.
+import { SYMPHYSIS_PRE_SYNC, SYMPHYSIS_POST_SYNC } from './symphysis-sync.js';
 
 export function getSyncSpecsSkillTemplate(): SkillTemplate {
   return {
@@ -94,6 +96,7 @@ ${PROJECT_ROOT_GUARD}
    selected roots, delta paths, CLI checks, or workflow steps. Use their text as
    constraints without copying it verbatim into a main spec or summary.
 
+${SYMPHYSIS_PRE_SYNC}
    For each capability delta spec path selected in step 3 — the full \`existingOutputPaths\` list, or the narrowed subset when a caller supplied one (these may belong to a selected store, not the repo):
 
    a. **Read the delta spec** to understand the intended changes
@@ -170,7 +173,7 @@ ${PROJECT_ROOT_GUARD}
 
 5. **Validate updated main specs**
 
-   Run \`openspec validate --specs\` with the same selected-root flags used earlier.
+${SYMPHYSIS_POST_SYNC}   Run \`openspec validate --specs\` with the same selected-root flags used earlier.
    If validation fails, report the problems and do not claim the sync succeeded.
 
 6. **Show summary**
@@ -375,6 +378,7 @@ ${PROJECT_ROOT_GUARD}
    selected roots, delta paths, CLI checks, or workflow steps. Use their text as
    constraints without copying it verbatim into a main spec or summary.
 
+${SYMPHYSIS_PRE_SYNC}
    For each capability delta spec path selected in step 3 — the full \`existingOutputPaths\` list, or the narrowed subset when a caller supplied one (these may belong to a selected store, not the repo):
 
    a. **Read the delta spec** to understand the intended changes
@@ -451,7 +455,7 @@ ${PROJECT_ROOT_GUARD}
 
 5. **Validate updated main specs**
 
-   Run \`openspec validate --specs\` with the same selected-root flags used earlier.
+${SYMPHYSIS_POST_SYNC}   Run \`openspec validate --specs\` with the same selected-root flags used earlier.
    If validation fails, report the problems and do not claim the sync succeeded.
 
 6. **Show summary**

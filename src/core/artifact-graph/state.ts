@@ -4,7 +4,8 @@ import * as path from 'node:path';
 import type { ApplyPhase, Artifact, CompletedSet, VerdictStatus } from './types.js';
 import type { ArtifactGraph } from './graph.js';
 import { artifactOutputExists, resolveArtifactOutputPath, resolveArtifactOutputs } from './outputs.js';
-import { readFrontmatter } from './frontmatter.js';
+import { readFrontmatter, readFrontmatterValue, readRawFrontmatterField } from './frontmatter.js';
+import { inspectMasterSupports, type MasterSupportReason } from './master-supports.js';
 import { FileSystemUtils } from '../../utils/file-system.js';
 import { parseTaskLines } from '../../utils/task-progress.js';
 
@@ -19,7 +20,7 @@ import { parseTaskLines } from '../../utils/task-progress.js';
  * @param changeDir - The change directory to scan for files
  * @returns Set of artifact IDs whose generated files exist (and, for verdict artifacts, pass)
  */
-export function detectCompleted(graph: ArtifactGraph, changeDir: string): CompletedSet {
+export function detectCompleted(graph: ArtifactGraph, changeDir: string, planningRoot?: string): CompletedSet {
   const completed = new Set<string>();
 
   // Handle missing change directory gracefully
@@ -29,7 +30,7 @@ export function detectCompleted(graph: ArtifactGraph, changeDir: string): Comple
 
   for (const artifact of graph.getAllArtifacts()) {
     const complete = artifact.verdict
-      ? verdictState(artifact, changeDir) === 'ok'
+      ? verdictState(artifact, changeDir, planningRoot) === 'ok'
       : isArtifactComplete(artifact.generates, changeDir);
     if (complete) {
       completed.add(artifact.id);
@@ -84,7 +85,8 @@ export type StaleSignal = { dependent: string } | { tracks: string };
 export function detectStaleSignals(
   graph: ArtifactGraph,
   changeDir: string,
-  apply: ApplyPhase | undefined
+  apply: ApplyPhase | undefined,
+  planningRoot?: string
 ): Map<string, StaleSignal> {
   const signals = new Map<string, StaleSignal>();
   if (!fs.existsSync(changeDir)) {
@@ -94,7 +96,7 @@ export function detectStaleSignals(
   const artifacts = graph.getAllArtifacts();
   let tracksChecked: boolean | undefined;
   for (const artifact of artifacts) {
-    if (!artifact.verdict || verdictState(artifact, changeDir) !== 'stale') {
+    if (!artifact.verdict || verdictState(artifact, changeDir, planningRoot) !== 'stale') {
       continue;
     }
 
@@ -156,8 +158,8 @@ function isArtifactComplete(generates: string, changeDir: string): boolean {
  *              no longer holds (see `staleVerdictTarget`)
  * - `ok`       the value is the declared one and every declared target hash holds
  */
-export function verdictState(artifact: Artifact, changeDir: string): 'n/a' | VerdictStatus {
-  return inspectVerdict(artifact, changeDir).state;
+export function verdictState(artifact: Artifact, changeDir: string, planningRoot?: string): 'n/a' | VerdictStatus {
+  return inspectVerdict(artifact, changeDir, planningRoot).state;
 }
 
 /**
@@ -169,20 +171,22 @@ export function verdictState(artifact: Artifact, changeDir: string): 'n/a' | Ver
  */
 export interface StaleTarget {
   path: string;
-  reason: 'changed' | 'outside' | 'malformed';
+  reason: 'changed' | 'outside' | 'malformed' | MasterSupportReason;
+  scope?: 'master';
 }
 
 /**
  * Fork (symphysis, C7): the first declared target that makes the verdict
  * `stale`, or undefined when the verdict is not `stale`.
  */
-export function staleVerdictTarget(artifact: Artifact, changeDir: string): StaleTarget | undefined {
-  return inspectVerdict(artifact, changeDir).staleTarget;
+export function staleVerdictTarget(artifact: Artifact, changeDir: string, planningRoot?: string): StaleTarget | undefined {
+  return inspectVerdict(artifact, changeDir, planningRoot).staleTarget;
 }
 
 function inspectVerdict(
   artifact: Artifact,
-  changeDir: string
+  changeDir: string,
+  planningRoot?: string
 ): { state: 'n/a' | VerdictStatus; staleTarget?: StaleTarget } {
   const verdict = artifact.verdict;
   if (!verdict) {
@@ -199,17 +203,25 @@ function inspectVerdict(
   }
 
   const frontmatter = readFrontmatter(outputPath);
-  if (!frontmatter || !Object.hasOwn(frontmatter, verdict.frontmatter)) {
+  const hasVerdict = frontmatter !== null && Object.hasOwn(frontmatter, verdict.frontmatter);
+  const masterDeclared = readRawFrontmatterField(outputPath, 'master_supports', { includeIndented: true }).length > 0;
+  const verdictValue = hasVerdict ? frontmatter[verdict.frontmatter] :
+    (masterDeclared ? readFrontmatterValue(outputPath, verdict.frontmatter) : undefined);
+  if (!hasVerdict && verdictValue === undefined) {
     return { state: 'missing' };
   }
 
   // Hashes are checked only behind the declared value: a verdict that does not
   // pass is a mismatch whatever its targets say.
-  if (String(frontmatter[verdict.frontmatter]) !== verdict.value) {
+  if (String(verdictValue) !== verdict.value) {
     return { state: 'mismatch' };
   }
 
-  const staleTarget = findStaleTarget(frontmatter, changeDir);
+  const masterSupports = inspectMasterSupports(outputPath, planningRoot);
+  if (!frontmatter && !masterSupports.staleTarget) {
+    return { state: 'missing' };
+  }
+  const staleTarget = findStaleTarget(frontmatter ?? {}, changeDir) ?? masterSupports.staleTarget;
   return staleTarget ? { state: 'stale', staleTarget } : { state: 'ok' };
 }
 

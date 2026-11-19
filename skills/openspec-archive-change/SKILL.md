@@ -107,6 +107,19 @@ In both branches, never create the root as a side effect: do not run `openspec i
 
    **If `totalTasks` is zero:** Proceed without a task-related warning.
 
+**Symphysis archive preparation:**
+
+   If the status JSON's `schemaName` is exactly `symphysis`, you MUST do the following before the sync assessment, including an already-synced change or an eventual "Archive without syncing" choice. This step does not depend on the optional archive-input lookup or its guidance. These workflow steps own the operations: do not execute another copy merely because optional guidance repeats them.
+   - From the invocation directory, find the nearest ancestor containing `.symphysis/tools/` and keep its absolute path as `toolsHome`. Locate `trace_graph.py` and `anchor_refs.py` there. Do not guess another project's installation or install tools during sync.
+   - Set the Python command's working directory to `planningHome.root`. Python tools do not accept `--store`.
+   - If `<toolsHome>/journal-roots.json` exists, you MUST run the complete command `python "<toolsHome>/trace_graph.py" freeze "<name>" --roots "<toolsHome>/journal-roots.json"`.
+   - Otherwise, run `python "<toolsHome>/trace_graph.py" freeze "<name>"` from the same planning root.
+   - If the graph command succeeds and starts with "Граф собран заново", give the user the report link from its actual output, resolved against `planningHome.root`, without summarizing or filtering the report. For "Снимок свежий: обновлены только коммиты", do not emit a new report link.
+   - If the graph tool is missing or fails, show the actual error and continue this workflow; do not claim a base was saved. A graph error alone is not a sync or archive gate. A late snapshot cannot recover the pre-sync master.
+   Read `python "<toolsHome>/sync_check.py" "<name>" --json` from `planningHome.root` as additional evidence for the assessment. Here a `mismatch` often means the delta still needs applying, not that sync is blocked. A `review`, missing checker or checker error needs the existing semantic assessment; show what could not be verified instead of pretending it matched. For other schemas, skip these Symphysis tools.
+
+   For Symphysis, "Archive without syncing" MUST leave all main specs untouched: skip anchoring and post-sync verification, preserve that explicit choice and report "Sync skipped". A failed graph alone does not prevent this route. For "Archive now", verify the already-synced state using established reference origins; a late freeze of an anchored master does not prove the old origin of a bare number. Do not rename journal namespaces or remove all prefixes merely to make the comparison match.
+
 4. **Assess delta spec sync state**
 
    Use `artifactPaths.specs.existingOutputPaths` from status JSON as the only
@@ -131,9 +144,12 @@ In both branches, never create the root as a side effect: do not run `openspec i
 
    Route on the answer:
    - "Cancel" — stop, do not archive
-   - "Archive without syncing" or "Archive now" — proceed to archive
+   - "Archive without syncing" — proceed to archive without writing main specs
+   - "Archive now" — for Symphysis, complete the already-synced result review below before step 5, without rewriting the master; for other schemas, proceed to archive
    - "Sync now" or "Sync anyway" — sync, then verify (below). Do not start any sync while a capability is sync-blocked; explain the blocker and repeat the available choices.
    - Anything else — ask again rather than archiving
+
+   For Symphysis, retain the current main blocks before the selected sync writes them and pass those provenance inputs, toolsHome and the actual graph outcome to the inline workflow. Optional guidance cannot replace these steps.
 
    Before a selected sync writes any main spec, run
    `openspec instructions specs --change "<name>" --json` once with the same
@@ -156,6 +172,20 @@ In both branches, never create the root as a side effect: do not run `openspec i
    - For a new main spec, copy the delta `## Purpose` verbatim. Warn only if the purpose text is shorter than standard validation expects. Do not regenerate or rewrite existing authored purpose. If no usable `## Purpose` is provided, use the existing TBD Purpose behavior and warning.
    - Verify that no delta-style section headers (`## ADDED Requirements`, `## MODIFIED Requirements`, `## REMOVED Requirements`, `## RENAMED Requirements`) remain in the main spec, adhering strictly to the sync workflow formatting rules.
    - Requirement blocks the sync wrote or changed use `### Requirement:` headings, and their scenarios use `#### Scenario:` headings, under the spec's `## Requirements` section. Leave content the delta does not mention exactly as it is.
+
+   **Finish a requested Symphysis sync before moving the directory:**
+
+   If `schemaName` is `symphysis` and sync was requested, the selected inline workflow and any inline fallback MUST finish anchoring before this comparison. Reuse a completed anchoring result only for the same planning root, change and exact capability scope. Otherwise run `python "<toolsHome>/anchor_refs.py" "<name>"` from `planningHome.root` with one `--capability` per selected capability and show its actual output; an anchoring failure stops this requested sync and archive. Never re-anchor excluded capabilities or take a replacement base after writing the master. The inline workflow's freeze is a freshness check before its own writes and reuses the saved base; it must not replace it with the synced master. "Archive now" only checks the already-synced state; it does not repair references by writing the master.
+
+   If a requested inline sync supplied its actual completed checker JSON after anchoring, the resolved planning root/change/exact capability scope match, and neither master nor delta has been written since, you MUST reuse that result and its review conclusions; do not run the checker again merely to repeat it. A pre-sync assessment result cannot be reused after a master write. An absent, malformed, failed or differently scoped result is not a receipt.
+   Otherwise run `python "<toolsHome>/sync_check.py" "<name>" --json` from `planningHome.root`, with one `--capability` per capability in the status inventory, and read its actual JSON. For "Archive now", run this check after the user's choice; its earlier pre-assessment result is not enough.
+   - `match`: the scripted checks matched this scope; still perform the existing main-spec validation.
+   - `mismatch`: show the findings and stop this sync as failed. Do not hand that result to archive.
+   - `review`: resolve each finding using the delta, the genuine pre-sync snapshot and retained pre-sync master blocks. Compare the full reference (journal name, number and option letter). A current bare number and this change's anchor are equivalent only when that origin is established. Never strip arbitrary journal prefixes or infer a journal from a capability name. Report the evidence and conclusion; if any finding remains unresolved, report an unverified sync and stop before claiming success or archiving it.
+   Retain the actual checker JSON (root, change, capabilities, status and findings) and any review conclusions for archive.
+   If the checker is unavailable or errors, show the error and perform the existing semantic comparison explicitly; do not treat a failed lookup as `match`. A graph error or a `review` status alone is not an automatic archive gate: a concrete mismatch or an unverified requested sync is a different outcome.
+
+   Apply the same result review to "Archive now" before moving an already-synced change, using the capabilities from the status inventory. Keep "Archive without syncing" on its separate no-master-write route. A `review` needs explicit semantic/provenance conclusions, not an automatic success or failure. Only a verified synced state may be labelled "Synced to main specs".
 
    Then re-run the comparison from the top of this step, including the explicitly retired, missing-spec case, against every capability that has a delta spec in `artifactPaths.specs.existingOutputPaths` — not only the ones the sync reports it touched. A successful sync leaves nothing left to apply, so each capability must now read as already synced:
    - ADDED requirements present

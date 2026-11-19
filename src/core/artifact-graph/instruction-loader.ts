@@ -337,11 +337,12 @@ export function loadChangeContext(
 
   const schema = resolveSchema(resolvedSchemaName, projectRoot);
   const graph = ArtifactGraph.fromSchema(schema);
-  const completed = detectCompleted(graph, changeDir);
+  const planningRoot = options.planningHome?.root ?? projectRoot;
+  const completed = detectCompleted(graph, changeDir, planningRoot);
 
   // Fork (symphysis, C11): a stale verdict past its window is a signal, not a
   // gate - the artifact counts as completed and still reports `stale`.
-  const staleSignals = detectStaleSignals(graph, changeDir, schema.apply);
+  const staleSignals = detectStaleSignals(graph, changeDir, schema.apply, planningRoot);
   for (const id of staleSignals.keys()) {
     completed.add(id);
   }
@@ -556,7 +557,8 @@ function verdictField(
   status: 'done' | 'ready',
   changeDir: string,
   absentOptional: boolean,
-  staleSignal: boolean
+  staleSignal: boolean,
+  planningRoot: string
 ): Pick<ArtifactStatus, 'verdict'> {
   if (!artifact.verdict || absentOptional) {
     return {};
@@ -564,7 +566,7 @@ function verdictField(
   if (status === 'done') {
     return { verdict: staleSignal ? 'stale' : 'ok' };
   }
-  const state = verdictState(artifact, changeDir);
+  const state = verdictState(artifact, changeDir, planningRoot);
   return state === 'n/a' ? {} : { verdict: state };
 }
 
@@ -585,6 +587,10 @@ const STALE_REASONS = {
   changed: 'changed since the verdict',
   outside: 'is outside the change directory',
   malformed: 'has no path or sha256',
+  invalid: 'has an invalid declaration or master block',
+  missing: 'no longer exists',
+  unreadable: 'cannot be read as UTF-8',
+  ambiguous: 'is ambiguous',
 } as const;
 
 /**
@@ -596,7 +602,8 @@ const STALE_REASONS = {
 function verdictHint(
   artifact: Artifact,
   state: 'missing' | 'mismatch' | 'stale',
-  changeDir: string
+  changeDir: string,
+  planningRoot: string
 ): string | undefined {
   const verdict = artifact.verdict;
   if (!verdict) {
@@ -616,11 +623,13 @@ function verdictHint(
   }
 
   if (state === 'stale') {
-    const target = staleVerdictTarget(artifact, changeDir);
+    const target = staleVerdictTarget(artifact, changeDir, planningRoot);
     if (!target) {
       return undefined;
     }
-    return `Artifact "${artifact.id}" verdict is stale: ${target.path} ${STALE_REASONS[target.reason]} — run its instruction again`;
+    const reason = target.scope === 'master' && target.reason === 'outside'
+      ? 'is outside the selected master-spec directory' : STALE_REASONS[target.reason];
+    return `Artifact "${artifact.id}" verdict is stale: ${target.path} ${reason} — run its instruction again`;
   }
 
   const actual = readFrontmatter(outputPath)?.[verdict.frontmatter];
@@ -657,6 +666,7 @@ export function formatChangeStatus(
   const applyRequires = schema.apply?.requires ?? schema.artifacts.map(a => a.id);
 
   const artifacts = context.graph.getAllArtifacts();
+  const planningRoot = context.planningHome?.root ?? context.projectRoot;
   // Fork (symphysis, C7): dependencies are met by `satisfied` (completed plus
   // optional artifacts without output); an artifact is done only when completed.
   const satisfied = satisfiedArtifacts(context);
@@ -694,7 +704,8 @@ export function formatChangeStatus(
           'done',
           context.changeDir,
           absentOptional,
-          context.staleSignals?.has(artifact.id) ?? false
+          context.staleSignals?.has(artifact.id) ?? false,
+          planningRoot
         ),
       };
     }
@@ -706,7 +717,7 @@ export function formatChangeStatus(
         status: 'ready' as const,
         requires: artifact.requires,
         ...optionalFields(artifact, absentOptional),
-        ...verdictField(artifact, 'ready', context.changeDir, absentOptional, false),
+        ...verdictField(artifact, 'ready', context.changeDir, absentOptional, false, planningRoot),
       };
     }
 
@@ -743,7 +754,7 @@ export function formatChangeStatus(
       continue;
     }
     const artifact = context.graph.getArtifact(artifactStatus.id);
-    const hint = artifact && verdictHint(artifact, artifactStatus.verdict, context.changeDir);
+    const hint = artifact && verdictHint(artifact, artifactStatus.verdict, context.changeDir, planningRoot);
     if (hint) {
       verdictHints.set(artifactStatus.id, hint);
     }

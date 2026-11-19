@@ -78,21 +78,21 @@ function specDrivenTitles(): Record<string, string> {
 const EXPECTED_FUNCTION_HASHES: Record<string, string> = {
   getExploreSkillTemplate: '80246765b685ec1e5530e8348bde84ed2ba0a6c418c9fbcd7e9e79a638d289dd',
   getNewChangeSkillTemplate: '0e5035b7b42198afc430206a1dbc9579096650ef0813d85e837d5a6cd0b98a85',
-  getContinueChangeSkillTemplate: 'ce590818505b84e13a825761d5dbf4aae0958f308d4bc5530465e35913bd6ee3',
+  getContinueChangeSkillTemplate: '0864b87f8da3f044de8e1bdc6a6c093c0b3fa152eb6c23809a1052c738271628',
   getApplyChangeSkillTemplate: '13c1b934876987d5c5e98ce68de1a40d12f37780f9fd6dd67529a3d74f89b1c3',
   getFfChangeSkillTemplate: '0eb8ddc6da710bc9ed6cd142a2eec1bec883f730125d76dc38e532bd5395bdf2',
-  getSyncSpecsSkillTemplate: 'bc80fe9b07eaa289e5eb8a3ce65eb7df722a16d864e37283c678220712e4f230',
+  getSyncSpecsSkillTemplate: '73b2347ce78f1e66d22563a37c260aef44694bade34e7944a6edf74a0f6e7207',
   getOnboardSkillTemplate: '84258a06c0ca88de708a23dd74e9a17efe11eff63a071b3864c781dcd5a0a4b7',
   getOpsxExploreCommandTemplate: 'c0af210bc070b7ac5168523b381cb9e213e4e102205bfc26bdae15677d954ae1',
   getOpsxNewCommandTemplate: '6d504fef1e0d4ced7c423f4cc9d9d2cee11b1a6224edf685e06a3f0757e0ebff',
-  getOpsxContinueCommandTemplate: '5b5579bd51e8b4ae3ac6bfce04dbee228902b2e1f20dbb7f221092eec4420e6e',
+  getOpsxContinueCommandTemplate: '934d8260d9f93de7c69564d4fdcc10b7c0f8a1e46ddfa76ac8a4d9b94ab077ad',
   getOpsxApplyCommandTemplate: 'e7c04a5edae5699e315a732ee58cab626c26fbcbc082a213c25944fe5830f053',
   getOpsxFfCommandTemplate: '625d6a4a52adeaa16dbceff378f1d7cb07556e79b19d9af63feca5125aa4da13',
-  getArchiveChangeSkillTemplate: '04a029782fc4137971fad6f54cfda3685d7e0b835b06565f9a509b4878093099',
+  getArchiveChangeSkillTemplate: '2972376d6b72b7a48e25230b25bb0e197521d8f8b55f1425f482d3151f9a4ea1',
   getBulkArchiveChangeSkillTemplate: '44dbd3c7a347e5f8339b2141393f2ac36017527cce251483fe70f2059c1e286e',
-  getOpsxSyncCommandTemplate: '60550b7bb9829421656d6324a9e4c951bc912f48f88882d1a07ce7f78397a5e7',
+  getOpsxSyncCommandTemplate: '609d0c8c7a5fab2a9b9052d8ca2fe4aba10373a2b4787c80e26cb82d9844a4cf',
   getVerifyChangeSkillTemplate: '9c45ab6d958a9fc432fa59b8d447ca8722a2275da566e91c0e545f531a921ed3',
-  getOpsxArchiveCommandTemplate: '5d153490bf1ca24207f49856826720f793c8884a6ec15059104107b0e34ee345',
+  getOpsxArchiveCommandTemplate: '31b37f74081c24608b9faa16cbe99eda4b3d0bd3b11ea0a97c613944d5125c20',
   getOpsxOnboardCommandTemplate: '0cf66e164c0e14c916c6d1ebb5d80ded07d7fb8e55d4eb34eba43e8ca9c28558',
   getOpsxBulkArchiveCommandTemplate: 'cb1d55d6ce53686bfe94be5e081c7a4d06a8e4d10b63019132df5bb3db7144cb',
   getOpsxVerifyCommandTemplate: 'ddc3fe6d529c82703ac131fb4383e4ae1f8df152d11afd75ae74ca17b12f1b24',
@@ -106,11 +106,11 @@ const EXPECTED_FUNCTION_HASHES: Record<string, string> = {
 const EXPECTED_GENERATED_SKILL_CONTENT_HASHES: Record<string, string> = {
   'openspec-explore': '90a87227a7d3dca576448bb16936cede31b4e4666d35a6f0744e0b9bc628f1ac',
   'openspec-new-change': '27e09d43785953827efc9a98bb9d6cf06db48fe6abe7e1c049409fe5b5061323',
-  'openspec-continue-change': 'f595d68a845120ce57d8269cffe1da02525a9580e6e1ec2a0142800e1f6cf341',
+  'openspec-continue-change': '10623c1c67b105dc7ba14ee19ced557189da70fae33bf3224044cd8e0e570ad8',
   'openspec-apply-change': 'd367a8d3189a387f05527d7adc0f5e41eba1dca6a3381235e56195ef2b60dca6',
   'openspec-ff-change': '224ff2ed2315eb23876fc4b83d796b60cf3cd05d853f2612e5b056ee7a6e93d2',
-  'openspec-sync-specs': '3909936a236a21a9a6d5bf495f90b396b3b68fc9220d7b2c1894668653beb2e4',
-  'openspec-archive-change': '5f0d131a885dcdcd9ba2172ea9a42bc6748125e24b8c4eecb7c86f1a4aea83af',
+  'openspec-sync-specs': '276d3dbdb4b1c659661aa1d0788363116557cb0d28ebb361cae6e35cf86e68e8',
+  'openspec-archive-change': 'fb53ca50c5851eef402fc1744fe3440c13a3e7124b305c25f10c32760540c1f3',
   'openspec-bulk-archive-change': 'd2a258055ab2f0d8086c4348d37212ebc95a5adef2d5f524db959fb93490d5c8',
   'openspec-verify-change': '082453eb0a8079a4c1c72c243373bf6489ebac56f9adaa8b58588047823ded0d',
   'openspec-onboard': '6993eff867d97d485e080078f9dfb80e968e242f3b17a924eeb077715fd548fa',
@@ -706,7 +706,8 @@ describe('skill templates split parity', () => {
         'If any capability is sync-blocked: explain why and offer only "Archive without syncing", "Cancel"'
       );
       expect(assessment).toContain('Do not start any sync while a capability is sync-blocked');
-      expect(assessment).toContain('"Archive without syncing" or "Archive now" — proceed to archive');
+      expect(assessment).toContain('"Archive without syncing" — proceed to archive without writing main specs');
+      expect(assessment).toContain('"Archive now" — for Symphysis, complete the already-synced result review below before step 5');
       expect(assessment).toContain('"Cancel" — stop, do not archive');
       expect(content).toContain('If the sync failed, or any capability does not match');
       expect(content).toContain('stop — do not archive');
