@@ -1,6 +1,6 @@
 {
   "name": "@fission-ai/openspec",
-  "version": "1.16.1+symphysis.9",
+  "version": "1.17.0+symphysis.10",
   "description": "AI-native system for spec-driven development",
   "keywords": [
     "openspec",
